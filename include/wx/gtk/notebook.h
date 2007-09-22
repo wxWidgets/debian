@@ -3,15 +3,15 @@
 // Purpose:     wxNotebook class
 // Author:      Robert Roebling
 // Modified by:
-// RCS-ID:      $Id: notebook.h,v 1.42.2.1 2002/11/04 19:06:00 VZ Exp $
+// RCS-ID:      $Id: notebook.h,v 1.55 2004/08/15 07:51:56 VS Exp $
 // Copyright:   (c) Julian Smart and Robert Roebling
-// Licence:     wxWindows license
+// Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
 
 #ifndef __GTKNOTEBOOKH__
 #define __GTKNOTEBOOKH__
 
-#if defined(__GNUG__) && !defined(__APPLE__)
+#if defined(__GNUG__) && !defined(NO_GCC_PRAGMA)
 #pragma interface
 #endif
 
@@ -56,17 +56,17 @@ public:
     // set the currently selected page, return the index of the previously
     // selected one (or -1 on error)
     // NB: this function will _not_ generate wxEVT_NOTEBOOK_PAGE_xxx events
-  int SetSelection(int nPage);
+  int SetSelection(size_t nPage);
     // get the currently selected page
   int GetSelection() const;
 
     // set/get the title of a page
-  bool SetPageText(int nPage, const wxString& strText);
-  wxString GetPageText(int nPage) const;
+  bool SetPageText(size_t nPage, const wxString& strText);
+  wxString GetPageText(size_t nPage) const;
 
     // sets/returns item's image index in the current image list
-  int  GetPageImage(int nPage) const;
-  bool SetPageImage(int nPage, int nImage);
+  int  GetPageImage(size_t nPage) const;
+  bool SetPageImage(size_t nPage, int nImage);
 
   // control the appearance of the notebook pages
     // set the size (the same for all pages)
@@ -76,17 +76,17 @@ public:
     // sets the size of the tabs (assumes all tabs are the same size)
   void SetTabSize(const wxSize& sz);
 
+  virtual int HitTest(const wxPoint& pt, long *flags = NULL) const;
+
   // operations
   // ----------
-    // remove one page from the notebook
-  bool DeletePage(int nPage);
     // remove all pages
   bool DeleteAllPages();
 
     // adds a new page to the notebook (it will be deleted ny the notebook,
     // don't delete it yourself). If bSelect, this page becomes active.
     // the same as AddPage(), but adds it at the specified position
-    bool InsertPage( int position,
+    bool InsertPage( size_t position,
                      wxNotebookPage *win,
                      const wxString& strText,
                      bool bSelect = FALSE,
@@ -96,6 +96,10 @@ public:
     // --------------------------
     void OnNavigationKey(wxNavigationKeyEvent& event);
 
+
+    static wxVisualAttributes
+    GetClassDefaultAttributes(wxWindowVariant variant = wxWINDOW_VARIANT_NORMAL);
+    
     // implementation
     // --------------
 
@@ -104,7 +108,8 @@ public:
     bool DoPhase(int phase);
 #endif
 
-    void ApplyWidgetStyle();
+    // set all page's attributes
+    void DoApplyWidgetStyle(GtkRcStyle *style);
 
     // report if window belongs to notebook
     bool IsOwnGtkWindow( GdkWindow *window );
@@ -127,7 +132,7 @@ public:
 
 protected:
     // remove one page from the notebook but do not destroy it
-    virtual wxNotebookPage *DoRemovePage(int nPage);
+    virtual wxNotebookPage *DoRemovePage(size_t nPage);
 
 private:
     // the padding set by SetPadding()

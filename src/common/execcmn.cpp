@@ -6,7 +6,7 @@
 // Author:      Vadim Zeitlin
 // Modified by:
 // Created:     20.08.02
-// RCS-ID:      $Id: execcmn.cpp,v 1.1.2.1 2002/11/04 00:40:54 VZ Exp $
+// RCS-ID:      $Id: execcmn.cpp,v 1.7 2004/05/23 20:52:00 JS Exp $
 // Copyright:   (c) 2002 Vadim Zeitlin <vadim@wxwindows.org>
 // Licence:     wxWindows licence
 ///////////////////////////////////////////////////////////////////////////////
@@ -16,7 +16,7 @@
 
 // this file should never be compiled directly, just included by other code
 #ifndef _WX_USED_BY_WXEXECUTE_
-    #error "Please don't exclude this file from build!"
+    #error "You should never directly build this file!"
 #endif
 
 // ----------------------------------------------------------------------------
@@ -65,6 +65,8 @@ private:
 
     // the size of the buffer
     size_t m_size;
+
+    DECLARE_NO_COPY_CLASS(wxStreamTempInputBuffer)
 };
 
 inline wxStreamTempInputBuffer::wxStreamTempInputBuffer()
@@ -79,6 +81,7 @@ inline void wxStreamTempInputBuffer::Init(wxPipeInputStream *stream)
     m_stream = stream;
 }
 
+inline
 void wxStreamTempInputBuffer::Update()
 {
     if ( m_stream && m_stream->CanRead() )
@@ -102,6 +105,7 @@ void wxStreamTempInputBuffer::Update()
     }
 }
 
+inline
 wxStreamTempInputBuffer::~wxStreamTempInputBuffer()
 {
     if ( m_buffer )

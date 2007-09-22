@@ -4,7 +4,7 @@
 // Author:      Robert Roebling
 // Modified by:
 // Created:     04/01/98
-// RCS-ID:      $Id: drawing.cpp,v 1.65.2.1 2002/12/14 18:19:45 MBN Exp $
+// RCS-ID:      $Id: drawing.cpp,v 1.75 2004/10/06 20:53:10 ABX Exp $
 // Copyright:   (c) Robert Roebling
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -30,7 +30,7 @@
 #endif
 
 // for all others, include the necessary headers (this file is usually all you
-// need because it includes almost all "standard" wxWindows headers
+// need because it includes almost all "standard" wxWidgets headers
 #ifndef WX_PRECOMP
     #include "wx/wx.h"
 #endif
@@ -119,7 +119,9 @@ public:
     void OnShow(wxCommandEvent &event);
     void OnOption(wxCommandEvent &event);
 
+#if wxUSE_COLOURDLG
     wxColour SelectColour();
+#endif // wxUSE_COLOURDLG
     void PrepareDC(wxDC& dc);
 
     int         m_backgroundMode;
@@ -137,7 +139,7 @@ public:
     MyCanvas   *m_canvas;
 
 private:
-    // any class wishing to process wxWindows events must use this macro
+    // any class wishing to process wxWidgets events must use this macro
     DECLARE_EVENT_TABLE()
 };
 
@@ -150,7 +152,7 @@ public:
     void OnPaint(wxPaintEvent &event);
     void OnMouseMove(wxMouseEvent &event);
 
-    void Show(ScreenToShow show) { m_show = show; Refresh(); }
+    void ToShow(ScreenToShow show) { m_show = show; Refresh(); }
 
     // set or remove the clipping region
     void Clip(bool clip) { m_clip = clip; Refresh(); }
@@ -228,9 +230,11 @@ enum
     LogicalOrigin_Set,
     LogicalOrigin_Restore,
 
+#if wxUSE_COLOURDLG
     Colour_TextForeground,
     Colour_TextBackground,
     Colour_Background,
+#endif // wxUSE_COLOURDLG
     Colour_BackgroundMode,
     Colour_TextureBackgound,
 
@@ -238,11 +242,11 @@ enum
 };
 
 // ----------------------------------------------------------------------------
-// event tables and other macros for wxWindows
+// event tables and other macros for wxWidgets
 // ----------------------------------------------------------------------------
 
 
-// Create a new application object: this macro will allow wxWindows to create
+// Create a new application object: this macro will allow wxWidgets to create
 // the application object during program execution (it's better than using a
 // static object for many reasons) and also declares the accessor function
 // wxGetApp() which will return the reference of the right type (i.e. MyApp and
@@ -273,7 +277,7 @@ bool MyApp::LoadImages()
 
     wxString path = pathList.FindValidPath(_T("pat4.bmp"));
     if ( !path )
-        return FALSE;
+        return false;
 
     /* 4 colour bitmap */
     gs_bmp4->LoadFile(path, wxBITMAP_TYPE_BMP);
@@ -284,21 +288,21 @@ bool MyApp::LoadImages()
 
     path = pathList.FindValidPath(_T("pat36.bmp"));
     if ( !path )
-        return FALSE;
+        return false;
     gs_bmp36->LoadFile(path, wxBITMAP_TYPE_BMP);
     wxMask* mask36 = new wxMask(*gs_bmp36, *wxBLACK);
     gs_bmp36->SetMask(mask36);
 
     path = pathList.FindValidPath(_T("image.bmp"));
     if ( !path )
-        return FALSE;
+        return false;
     gs_bmpNoMask->LoadFile(path, wxBITMAP_TYPE_BMP);
     gs_bmpWithMask->LoadFile(path, wxBITMAP_TYPE_BMP);
     gs_bmpWithColMask->LoadFile(path, wxBITMAP_TYPE_BMP);
 
     path = pathList.FindValidPath(_T("mask.bmp"));
     if ( !path )
-        return FALSE;
+        return false;
     gs_bmpMask->LoadFile(path, wxBITMAP_TYPE_BMP);
 
     wxMask *mask = new wxMask(*gs_bmpMask, *wxBLACK);
@@ -307,7 +311,7 @@ bool MyApp::LoadImages()
     mask = new wxMask(*gs_bmpWithColMask, *wxWHITE);
     gs_bmpWithColMask->SetMask(mask);
 
-    return TRUE;
+    return true;
 }
 
 // `Main program' equivalent: the program execution "starts" here
@@ -318,7 +322,7 @@ bool MyApp::OnInit()
                                  wxPoint(50, 50), wxSize(550, 340));
 
     // Show it and tell the application that it's our main window
-    frame->Show(TRUE);
+    frame->Show(true);
     SetTopWindow(frame);
 
     if ( !LoadImages() )
@@ -330,11 +334,11 @@ bool MyApp::OnInit()
         // stop here
         DeleteBitmaps();
 
-        return FALSE;
+        return false;
     }
 
     // ok, continue
-    return TRUE;
+    return true;
 }
 
 void MyApp::DeleteBitmaps()
@@ -360,7 +364,7 @@ void MyApp::DeleteBitmaps()
 // MyCanvas
 // ----------------------------------------------------------------------------
 
-// the event tables connect the wxWindows events with the functions (event
+// the event tables connect the wxWidgets events with the functions (event
 // handlers) which process them.
 BEGIN_EVENT_TABLE(MyCanvas, wxScrolledWindow)
     EVT_PAINT  (MyCanvas::OnPaint)
@@ -370,14 +374,14 @@ END_EVENT_TABLE()
 #include "smile.xpm"
 
 MyCanvas::MyCanvas(MyFrame *parent)
-        : wxScrolledWindow(parent, -1, wxDefaultPosition, wxDefaultSize,
+        : wxScrolledWindow(parent, wxID_ANY, wxDefaultPosition, wxDefaultSize,
                            wxHSCROLL | wxVSCROLL | wxNO_FULL_REPAINT_ON_RESIZE)
 {
     m_owner = parent;
     m_show = Show_Default;
     m_smile_bmp = wxBitmap(smile_xpm);
     m_std_icon = wxArtProvider::GetIcon(wxART_INFORMATION);
-    m_clip = FALSE;
+    m_clip = false;
 }
 
 void MyCanvas::DrawTestBrushes(wxDC& dc)
@@ -424,9 +428,25 @@ void MyCanvas::DrawTestPoly(wxDC& dc)
                 _T("hatched"), 10, 10);
     dc.DrawText(_T("except for the central region and the right ")
                 _T("one entirely hatched"), 10, 30);
+    dc.DrawText(_T("The third star only has a hatched outline"), 10, 50);
 
-    dc.DrawPolygon(WXSIZEOF(star), star);
-    dc.DrawPolygon(WXSIZEOF(star), star, 160, 0, wxWINDING_RULE);
+    dc.DrawPolygon(WXSIZEOF(star), star, 0, 30);
+    dc.DrawPolygon(WXSIZEOF(star), star, 160, 30, wxWINDING_RULE);
+
+    wxPoint star2[10];
+    star2[0] = wxPoint(0, 100);
+    star2[1] = wxPoint(-59, -81);
+    star2[2] = wxPoint(95, 31);
+    star2[3] = wxPoint(-95, 31);
+    star2[4] = wxPoint(59, -81);
+    star2[5] = wxPoint(0, 80);
+    star2[6] = wxPoint(-47, -64);
+    star2[7] = wxPoint(76, 24);
+    star2[8] = wxPoint(-76, 24);
+    star2[9] = wxPoint(47, -64);
+    int count[2] = {5, 5};
+
+    dc.DrawPolyPolygon(WXSIZEOF(count), count, star2, 450, 150);
 }
 
 void MyCanvas::DrawTestLines( int x, int y, int width, wxDC &dc )
@@ -464,18 +484,27 @@ void MyCanvas::DrawTestLines( int x, int y, int width, wxDC &dc )
 
     dc.DrawText(_T("User dash"), x + 150, y + 140);
     wxPen ud( wxT("black"), width, wxUSER_DASH );
-    wxDash dash1[1];
-    dash1[0] = 0;
-    ud.SetDashes( 1, dash1 );
+    wxDash dash1[6];
+    dash1[0] = 8;  // Long dash  <---------+
+    dash1[1] = 2;  // Short gap            |
+    dash1[2] = 3;  // Short dash           |
+    dash1[3] = 2;  // Short gap            |
+    dash1[4] = 3;  // Short dash           |
+    dash1[5] = 2;  // Short gap and repeat +
+    ud.SetDashes( 6, dash1 );
+    dc.SetPen( ud );
     dc.DrawLine( x+20, y+140, 100, y+140 );
-    dash1[0] = 1;
-    ud.SetDashes( 1, dash1 );
+    dash1[0] = 5;  // Make first dash shorter
+    ud.SetDashes( 6, dash1 );
+    dc.SetPen( ud );
     dc.DrawLine( x+20, y+150, 100, y+150 );
-    dash1[0] = 2;
-    ud.SetDashes( 1, dash1 );
+    dash1[2] = 5;  // Make second dash longer
+    ud.SetDashes( 6, dash1 );
+    dc.SetPen( ud );
     dc.DrawLine( x+20, y+160, 100, y+160 );
-    dash1[0] = 0x7F;
-    ud.SetDashes( 1, dash1 );
+    dash1[4] = 5;  // Make third dash longer
+    ud.SetDashes( 6, dash1 );
+    dc.SetPen( ud );
     dc.DrawLine( x+20, y+170, 100, y+170 );
 }
 
@@ -500,7 +529,7 @@ void MyCanvas::DrawDefault(wxDC& dc)
     dc.SetPen(*wxTRANSPARENT_PEN);
     dc.SetBrush( *wxGREEN_BRUSH );
     dc.DrawRectangle(x, 10, rectSize, rectSize);
-    dc.DrawBitmap(m_std_icon, x + 5, 15, TRUE);
+    dc.DrawBitmap(m_std_icon, x + 5, 15, true);
     x += rectSize + 10;
     dc.DrawRectangle(x, 10, rectSize, rectSize);
     dc.DrawIcon(m_std_icon, x + 5, 15);
@@ -512,7 +541,7 @@ void MyCanvas::DrawDefault(wxDC& dc)
     //dc.SetBrush( *wxTRANSPARENT_BRUSH );
 
     if (m_smile_bmp.Ok())
-        dc.DrawBitmap(m_smile_bmp, x + rectSize - 20, rectSize - 10, TRUE);
+        dc.DrawBitmap(m_smile_bmp, x + rectSize - 20, rectSize - 10, true);
 
     dc.SetBrush( *wxBLACK_BRUSH );
     dc.DrawRectangle( 0, 160, 1000, 300 );
@@ -645,11 +674,12 @@ void MyCanvas::DrawDefault(wxDC& dc)
     wxMemoryDC memdc2;
     memdc2.SelectObject(bitmap2);
 
-    wxBrush yellowBrush(wxColour(255, 255, 0), wxSOLID);
+    wxColour clr(255, 255, 0);
+    wxBrush yellowBrush(clr, wxSOLID);
     memdc2.SetBackground(yellowBrush);
     memdc2.Clear();
 
-    wxPen yellowPen(wxColour(255, 255, 0), 1, wxSOLID);
+    wxPen yellowPen(clr, 1, wxSOLID);
 
     // Now draw a white rectangle with red outline. It should
     // entirely eclipse the yellow background.
@@ -683,7 +713,7 @@ void MyCanvas::DrawDefault(wxDC& dc)
 void MyCanvas::DrawText(wxDC& dc)
 {
     // set underlined font for testing
-    dc.SetFont( wxFont(12, wxMODERN, wxNORMAL, wxNORMAL, TRUE) );
+    dc.SetFont( wxFont(12, wxMODERN, wxNORMAL, wxNORMAL, true) );
     dc.DrawText( _T("This is text"), 110, 10 );
     dc.DrawRotatedText( _T("That is text"), 20, 10, -45 );
 
@@ -763,11 +793,11 @@ void MyCanvas::DrawImages(wxDC& dc)
     dc.DrawText(_T("original image"), 0, 0);
     dc.DrawBitmap(*gs_bmpNoMask, 0, 20, 0);
     dc.DrawText(_T("with colour mask"), 0, 100);
-    dc.DrawBitmap(*gs_bmpWithColMask, 0, 120, TRUE);
+    dc.DrawBitmap(*gs_bmpWithColMask, 0, 120, true);
     dc.DrawText(_T("the mask image"), 0, 200);
     dc.DrawBitmap(*gs_bmpMask, 0, 220, 0);
     dc.DrawText(_T("masked image"), 0, 300);
-    dc.DrawBitmap(*gs_bmpWithMask, 0, 320, TRUE);
+    dc.DrawBitmap(*gs_bmpWithMask, 0, 320, true);
 
     int cx = gs_bmpWithColMask->GetWidth(),
         cy = gs_bmpWithColMask->GetHeight();
@@ -780,7 +810,7 @@ void MyCanvas::DrawImages(wxDC& dc)
 
         dc.DrawText(rasterOperations[n].name, x, y - 20);
         memDC.SelectObject(*gs_bmpWithColMask);
-        dc.Blit(x, y, cx, cy, &memDC, 0, 0, rasterOperations[n].rop, TRUE);
+        dc.Blit(x, y, cx, cy, &memDC, 0, 0, rasterOperations[n].rop, true);
     }
 }
 
@@ -860,8 +890,8 @@ void MyCanvas::DrawRegions(wxDC& dc)
                 _T("should be offset by 10 pixels."),
                 10, 5 + 2*dc.GetCharHeight());
 
-    DrawRegionsHelper(dc, 10, TRUE);
-    DrawRegionsHelper(dc, 350, FALSE);
+    DrawRegionsHelper(dc, 10, true);
+    DrawRegionsHelper(dc, 350, false);
 }
 
 void MyCanvas::DrawRegionsHelper(wxDC& dc, wxCoord x, bool firstTime)
@@ -897,11 +927,11 @@ void MyCanvas::DrawRegionsHelper(wxDC& dc, wxCoord x, bool firstTime)
 
     if (m_smile_bmp.Ok())
     {
-        dc.DrawBitmap( m_smile_bmp, x + 150, y + 150, TRUE );
-        dc.DrawBitmap( m_smile_bmp, x + 130, y + 10,  TRUE );
-        dc.DrawBitmap( m_smile_bmp, x + 130, y + 280, TRUE );
-        dc.DrawBitmap( m_smile_bmp, x + 100, y + 70,  TRUE );
-        dc.DrawBitmap( m_smile_bmp, x + 200, y + 70,  TRUE );
+        dc.DrawBitmap( m_smile_bmp, x + 150, y + 150, true );
+        dc.DrawBitmap( m_smile_bmp, x + 130, y + 10,  true );
+        dc.DrawBitmap( m_smile_bmp, x + 130, y + 280, true );
+        dc.DrawBitmap( m_smile_bmp, x + 100, y + 70,  true );
+        dc.DrawBitmap( m_smile_bmp, x + 200, y + 70,  true );
     }
 }
 
@@ -922,7 +952,8 @@ void MyCanvas::OnPaint(wxPaintEvent &WXUNUSED(event))
 
     if ( m_owner->m_textureBackground) {
         if ( ! m_owner->m_backgroundBrush.Ok() ) {
-            wxBrush b(wxColour(0,128,0), wxSOLID);
+            wxColour clr(0,128,0);
+            wxBrush b(clr, wxSOLID);
             dc.SetBackground(b);
         }
     }
@@ -984,6 +1015,7 @@ void MyCanvas::OnPaint(wxPaintEvent &WXUNUSED(event))
 
 void MyCanvas::OnMouseMove(wxMouseEvent &event)
 {
+#if wxUSE_STATUSBAR
     wxClientDC dc(this);
     PrepareDC(dc);
     m_owner->PrepareDC(dc);
@@ -994,13 +1026,16 @@ void MyCanvas::OnMouseMove(wxMouseEvent &event)
     wxString str;
     str.Printf( wxT("Current mouse position: %d,%d"), (int)x, (int)y );
     m_owner->SetStatusText( str );
+#else
+    wxUnusedVar(event);
+#endif // wxUSE_STATUSBAR
 }
 
 // ----------------------------------------------------------------------------
 // MyFrame
 // ----------------------------------------------------------------------------
 
-// the event tables connect the wxWindows events with the functions (event
+// the event tables connect the wxWidgets events with the functions (event
 // handlers) which process them. It can be also done at run-time, but for the
 // simple menu events like this the static method is much simpler.
 BEGIN_EVENT_TABLE(MyFrame, wxFrame)
@@ -1015,7 +1050,7 @@ END_EVENT_TABLE()
 
 // frame constructor
 MyFrame::MyFrame(const wxString& title, const wxPoint& pos, const wxSize& size)
-       : wxFrame((wxFrame *)NULL, -1, title, pos, size,
+       : wxFrame((wxFrame *)NULL, wxID_ANY, title, pos, size,
                  wxDEFAULT_FRAME_STYLE | wxNO_FULL_REPAINT_ON_RESIZE)
 {
     // set the frame icon
@@ -1054,8 +1089,8 @@ MyFrame::MyFrame(const wxString& title, const wxPoint& pos, const wxSize& size)
     menuUserScale->Append( UserScale_Restore, _T("&Restore to normal\tCtrl-0") );
 
     wxMenu *menuAxis = new wxMenu;
-    menuAxis->Append( AxisMirror_Horiz, _T("Mirror horizontally\tCtrl-M"), _T(""), TRUE );
-    menuAxis->Append( AxisMirror_Vertic, _T("Mirror vertically\tCtrl-N"), _T(""), TRUE );
+    menuAxis->AppendCheckItem( AxisMirror_Horiz, _T("Mirror horizontally\tCtrl-M") );
+    menuAxis->AppendCheckItem( AxisMirror_Vertic, _T("Mirror vertically\tCtrl-N") );
 
     wxMenu *menuLogical = new wxMenu;
     menuLogical->Append( LogicalOrigin_MoveDown, _T("Move &down\tCtrl-D") );
@@ -1067,11 +1102,13 @@ MyFrame::MyFrame(const wxString& title, const wxPoint& pos, const wxSize& size)
     menuLogical->Append( LogicalOrigin_Restore, _T("&Restore to normal\tShift-Ctrl-0") );
 
     wxMenu *menuColour = new wxMenu;
+#if wxUSE_COLOURDLG
     menuColour->Append( Colour_TextForeground, _T("Text &foreground...") );
     menuColour->Append( Colour_TextBackground, _T("Text &background...") );
     menuColour->Append( Colour_Background, _T("Background &colour...") );
-    menuColour->Append( Colour_BackgroundMode, _T("&Opaque/transparent\tCtrl-B"), _T(""), TRUE );
-    menuColour->Append( Colour_TextureBackgound, _T("Draw textured back&ground\tCtrl-T"), _T(""), TRUE);
+#endif // wxUSE_COLOURDLG
+    menuColour->AppendCheckItem( Colour_BackgroundMode, _T("&Opaque/transparent\tCtrl-B") );
+    menuColour->AppendCheckItem( Colour_TextureBackgound, _T("Draw textured back&ground\tCtrl-T") );
 
     // now append the freshly created menu to the menu bar...
     wxMenuBar *menuBar = new wxMenuBar;
@@ -1085,9 +1122,10 @@ MyFrame::MyFrame(const wxString& title, const wxPoint& pos, const wxSize& size)
     // ... and attach this menu bar to the frame
     SetMenuBar(menuBar);
 
-    // create a status bar just for fun (by default with 1 pane only)
+#if wxUSE_STATUSBAR
     CreateStatusBar(2);
-    SetStatusText(_T("Welcome to wxWindows!"));
+    SetStatusText(_T("Welcome to wxWidgets!"));
+#endif // wxUSE_STATUSBAR
 
     m_mapMode = wxMM_TEXT;
     m_xUserScale = 1.0;
@@ -1095,11 +1133,11 @@ MyFrame::MyFrame(const wxString& title, const wxPoint& pos, const wxSize& size)
     m_xLogicalOrigin = 0;
     m_yLogicalOrigin = 0;
     m_xAxisReversed =
-    m_yAxisReversed = FALSE;
+    m_yAxisReversed = false;
     m_backgroundMode = wxSOLID;
     m_colourForeground = *wxRED;
     m_colourBackground = *wxBLUE;
-    m_textureBackground = FALSE;
+    m_textureBackground = false;
 
     m_canvas = new MyCanvas( this );
     m_canvas->SetScrollbars( 10, 10, 100, 240 );
@@ -1109,8 +1147,8 @@ MyFrame::MyFrame(const wxString& title, const wxPoint& pos, const wxSize& size)
 
 void MyFrame::OnQuit(wxCommandEvent& WXUNUSED(event))
 {
-    // TRUE is to force the frame to close
-    Close(TRUE);
+    // true is to force the frame to close
+    Close(true);
 }
 
 void MyFrame::OnAbout(wxCommandEvent& WXUNUSED(event))
@@ -1132,7 +1170,7 @@ void MyFrame::OnClip(wxCommandEvent& event)
 
 void MyFrame::OnShow(wxCommandEvent& event)
 {
-    m_canvas->Show((ScreenToShow)(event.GetId() - MenuShow_First));
+    m_canvas->ToShow((ScreenToShow)(event.GetId() - MenuShow_First));
 }
 
 void MyFrame::OnOption(wxCommandEvent& event)
@@ -1200,6 +1238,7 @@ void MyFrame::OnOption(wxCommandEvent& event)
             m_xAxisReversed = !m_xAxisReversed;
             break;
 
+#if wxUSE_COLOURDLG
         case Colour_TextForeground:
             m_colourForeground = SelectColour();
             break;
@@ -1215,6 +1254,8 @@ void MyFrame::OnOption(wxCommandEvent& event)
                 }
             }
             break;
+#endif // wxUSE_COLOURDLG
+
         case Colour_BackgroundMode:
             m_backgroundMode = m_backgroundMode == wxSOLID ? wxTRANSPARENT
                                                            : wxSOLID;
@@ -1240,6 +1281,7 @@ void MyFrame::PrepareDC(wxDC& dc)
     dc.SetMapMode( m_mapMode );
 }
 
+#if wxUSE_COLOURDLG
 wxColour MyFrame::SelectColour()
 {
     wxColour col;
@@ -1253,3 +1295,5 @@ wxColour MyFrame::SelectColour()
 
     return col;
 }
+#endif // wxUSE_COLOURDLG
+

@@ -5,9 +5,9 @@
 // Author:      Vadim Zeitlin
 // Modified by:
 // Created:     08.06.01
-// RCS-ID:      $Id: snglinst.cpp,v 1.4 2002/07/21 12:41:38 VZ Exp $
+// RCS-ID:      $Id: snglinst.cpp,v 1.10 2004/09/04 01:53:42 ABX Exp $
 // Copyright:   (c) 2001 Vadim Zeitlin <zeitlin@dptmaths.ens-cachan.fr>
-// License:     wxWindows license
+// License:     wxWindows licence
 ///////////////////////////////////////////////////////////////////////////////
 
 // ============================================================================
@@ -18,7 +18,7 @@
 // headers
 // ----------------------------------------------------------------------------
 
-#ifdef __GNUG__
+#if defined(__GNUG__) && !defined(NO_GCC_PRAGMA)
     #pragma implementation "snglinst.h"
 #endif
 
@@ -61,18 +61,18 @@ public:
         {
             wxLogLastError(_T("CreateMutex"));
 
-            return FALSE;
+            return false;
         }
 
         // mutex was either created or opened - see what really happened
         m_wasOpened = ::GetLastError() == ERROR_ALREADY_EXISTS;
 
-        return TRUE;
+        return true;
     }
 
     bool WasOpened() const
     {
-        wxCHECK_MSG( m_hMutex, FALSE,
+        wxCHECK_MSG( m_hMutex, false,
                      _T("can't be called if mutex creation failed") );
 
         return m_wasOpened;
@@ -95,6 +95,8 @@ private:
 
     // the mutex handle, may be NULL
     HANDLE m_hMutex;
+
+    DECLARE_NO_COPY_CLASS(wxSingleInstanceCheckerImpl)
 };
 
 // ============================================================================
@@ -117,7 +119,7 @@ bool wxSingleInstanceChecker::Create(const wxString& name,
 
 bool wxSingleInstanceChecker::IsAnotherRunning() const
 {
-    wxCHECK_MSG( m_impl, FALSE, _T("must call Create() first") );
+    wxCHECK_MSG( m_impl, false, _T("must call Create() first") );
 
     // if the mutex had been opened, another instance is running - otherwise we
     // would have created it

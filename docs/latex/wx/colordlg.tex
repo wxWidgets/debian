@@ -22,40 +22,44 @@ This class represents the colour chooser dialog.
 
 \latexignore{\rtfignore{\wxheading{Members}}}
 
-\membersection{wxColourDialog::wxColourDialog}\label{wxcolourdialogwxcolourdialog}
+\membersection{wxColourDialog::wxColourDialog}\label{wxcolourdialogctor}
 
 \func{}{wxColourDialog}{\param{wxWindow* }{parent}, \param{wxColourData* }{data = NULL}}
 
 Constructor. Pass a parent window, and optionally a pointer to a block of colour
-data, which will be copied to the colour dialog's colour data.
+data, which will be copied to the colour dialog's colour data. Custom
+colours from colour data object will be be used in dialog's colour palette.
+Invalid entries in custom colours list will be ignored on some platforms (GTK)
+or replaced with white colour on platforms where custom colours palette has
+fixed size (MSW).
 
 \wxheading{See also}
 
 \helpref{wxColourData}{wxcolourdata}
 
-\membersection{wxColourDialog::\destruct{wxColourDialog}}
+\membersection{wxColourDialog::\destruct{wxColourDialog}}\label{wxcolourdialogdtor}
 
 \func{}{\destruct{wxColourDialog}}{\void}
 
 Destructor.
 
-\membersection{wxColourDialog::Create}
+\membersection{wxColourDialog::Create}\label{wxcolourdialogcreate}
 
 \func{bool}{Create}{\param{wxWindow* }{parent}, \param{wxColourData* }{data = NULL}}
 
-Same as \helpref{constructor}{wxcolourdialogwxcolourdialog}.
+Same as \helpref{constructor}{wxcolourdialogctor}.
 
-\membersection{wxColourDialog::GetColourData}
+\membersection{wxColourDialog::GetColourData}\label{wxcolourdialoggetcolourdata}
 
 \func{wxColourData\&}{GetColourData}{\void}
 
 Returns the \helpref{colour data}{wxcolourdata} associated with the colour dialog.
 
-\membersection{wxColourDialog::ShowModal}
+\membersection{wxColourDialog::ShowModal}\label{wxcolourdialogshowmodal}
 
 \func{int}{ShowModal}{\void}
 
-Shows the dialog, returning wxID\_OK if the user pressed OK, and wxOK\_CANCEL
+Shows the dialog, returning wxID\_OK if the user pressed OK, and wxID\_CANCEL
 otherwise.
 
 

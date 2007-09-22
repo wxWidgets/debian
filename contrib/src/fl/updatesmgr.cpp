@@ -4,7 +4,7 @@
 // Author:      Aleksandras Gluchovas
 // Modified by:
 // Created:     19/10/98
-// RCS-ID:      $Id: updatesmgr.cpp,v 1.3 2002/01/21 22:34:42 JS Exp $
+// RCS-ID:      $Id: updatesmgr.cpp,v 1.6 2004/06/07 16:02:23 ABX Exp $
 // Copyright:   (c) Aleksandras Gluchovas 
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -75,7 +75,7 @@ void cbSimpleUpdatesMgr::OnStartChanges()
         cbDockPane& pane = *panes[n];
         // store pane state
         pane.mUMgrData.StoreItemState( pane.mBoundsInParent );
-        pane.mUMgrData.SetDirty( FALSE );
+        pane.mUMgrData.SetDirty( false );
 
         for( size_t i = 0; i != pane.GetRowList().Count(); ++i )
         {
@@ -83,7 +83,7 @@ void cbSimpleUpdatesMgr::OnStartChanges()
 
             // store row state
             row.mUMgrData.StoreItemState( row.mBoundsInParent );
-            row.mUMgrData.SetDirty( FALSE );
+            row.mUMgrData.SetDirty( false );
 
             for( size_t k = 0; k != row.mBars.Count(); ++k )
             {
@@ -91,7 +91,7 @@ void cbSimpleUpdatesMgr::OnStartChanges()
 
                 // store bar state
                 bar.mUMgrData.StoreItemState( bar.mBoundsInParent );
-                bar.mUMgrData.SetDirty( FALSE );
+                bar.mUMgrData.SetDirty( false );
             }
         }
     }
@@ -102,23 +102,23 @@ void cbSimpleUpdatesMgr::OnFinishChanges()
     // nothing here, could be overriden by more sophisticated updates-managers
 }
 
-void cbSimpleUpdatesMgr::OnRowWillChange( cbRowInfo* pRow, cbDockPane* pInPane )
+void cbSimpleUpdatesMgr::OnRowWillChange( cbRowInfo* WXUNUSED(pRow), cbDockPane* WXUNUSED(pInPane) )
 {
     // -/-
 }
 
-void cbSimpleUpdatesMgr::OnBarWillChange( cbBarInfo* pBar, 
-                                          cbRowInfo* pInRow, cbDockPane* pInPane )
+void cbSimpleUpdatesMgr::OnBarWillChange( cbBarInfo* WXUNUSED(pBar), 
+                                          cbRowInfo* WXUNUSED(pInRow), cbDockPane* WXUNUSED(pInPane) )
 {
     // -/-
 }
 
-void cbSimpleUpdatesMgr::OnPaneMarginsWillChange( cbDockPane* pPane )
+void cbSimpleUpdatesMgr::OnPaneMarginsWillChange( cbDockPane* WXUNUSED(pPane) )
 {
     // -/-
 }
 
-void cbSimpleUpdatesMgr::OnPaneWillChange( cbDockPane* pPane )
+void cbSimpleUpdatesMgr::OnPaneWillChange( cbDockPane* WXUNUSED(pPane) )
 {
     // -/-
 }
@@ -163,7 +163,7 @@ void cbSimpleUpdatesMgr::UpdateNow()
 
             wxDC* pDc = NULL;
 
-            bool rowChanged = FALSE;
+            bool rowChanged = false;
 
             // FIXME:: the below should not be fixed
             cbBarInfo* barsToRepaint[256];
@@ -173,7 +173,7 @@ void cbSimpleUpdatesMgr::UpdateNow()
 
             if ( WasChanged( row.mUMgrData, row.mBoundsInParent ) )
             
-                rowChanged = TRUE;
+                rowChanged = true;
             else
                 for( size_t k = 0; k != row.mBars.Count(); ++k )
 
@@ -249,36 +249,36 @@ void cbSimpleUpdatesMgr::UpdateNow()
 
     // step #2 - do ordered refreshing and resizing of bar window objects now
 
-    wxNode* pNode     = mBarsToRefresh.First();
-    wxNode* pPaneNode = mPanesList.First();
+    wxNode* pNode     = mBarsToRefresh.GetFirst();
+    wxNode* pPaneNode = mPanesList.GetFirst();
 
     while( pNode )
     {
-        cbBarInfo*  pBar  = (cbBarInfo*) pNode->Data();
-        cbDockPane* pPane = (cbDockPane*)pPaneNode->Data();
+        cbBarInfo*  pBar  = (cbBarInfo*) pNode->GetData();
+        cbDockPane* pPane = (cbDockPane*)pPaneNode->GetData();
 
         pPane->SizeBar( pBar );
 
-        pNode     = pNode->Next();
-        pPaneNode = pPaneNode->Next();
+        pNode     = pNode->GetNext();
+        pPaneNode = pPaneNode->GetNext();
     }
 
-    pNode = mBarsToRefresh.First();
+    pNode = mBarsToRefresh.GetFirst();
 
     while( pNode )
     {
-        cbBarInfo* pBar = (cbBarInfo*)pNode->Data();
+        cbBarInfo* pBar = (cbBarInfo*)pNode->GetData();
 
         if ( pBar->mpBarWnd ) 
         {
             pBar->mpBarWnd->Refresh();
 
             // FIXME::
-            //info.mpBarWnd->Show(FALSE);
-            //info.mpBarWnd->Show(TRUE);
+            //info.mpBarWnd->Show(false);
+            //info.mpBarWnd->Show(true);
         }
 
-        pNode  = pNode->Next();
+        pNode  = pNode->GetNext();
     }
 
     if ( clientWindowChanged )

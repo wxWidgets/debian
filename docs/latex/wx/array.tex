@@ -117,9 +117,13 @@ Things are much simpler for wxArray and wxSortedArray however: it is enough
 just to write
 
 \begin{verbatim} 
-WX_DEFINE_ARRAY(MyDirectory *, ArrayOfDirectories);
-WX_DEFINE_SORTED_ARRAY(MyFile *, ArrayOfFiles);
+WX_DEFINE_ARRAY(int, ArrayOfDirectories);
+WX_DEFINE_SORTED_ARRAY(int, ArrayOfFiles);
 \end{verbatim}
+
+i.e. there is only one {\tt DEFINE} macro and no need for separate 
+{\tt DECLARE} one.
+
 
 \wxheading{See also:}
 
@@ -132,7 +136,7 @@ for wxObjArray.
 
 \latexignore{\rtfignore{\wxheading{Function groups}}}
 
-\membersection{Macros for template array definition}
+\membersection{Macros for template array definition}\label{arraymacros}
 
 To use an array you must first define the array class. This is done with the
 help of the macros in this section. The class of array elements must be (at
@@ -152,7 +156,40 @@ WX\_DEFINE\_OBJARRAY macro.
 \helpref{WX\_DEFINE\_EXPORTED\_OBJARRAY}{wxdefineobjarray}\\
 \helpref{WX\_DEFINE\_USER\_EXPORTED\_OBJARRAY}{wxdefineobjarray}
 
-\membersection{Constructors and destructors}
+To slightly complicate the matters even further, the operator $->$ defined by
+default for the array iterators by these macros only makes sense if the array
+element type is not a pointer itself and, although it still works, this
+provokes warnings from some compilers and to avoid them you should use the 
+{\tt \_PTR} versions of the macros above. For example, to define an array of
+pointers to {\tt double} you should use.
+
+Note that the above macros are generally only useful for 
+wxObject types.  There are seperate macros for declaring an array of a simple type, 
+such as an int.
+
+The following simple types are supported:\\
+int\\
+long\\
+size\_t\\
+double
+
+To create an array of a simple type, simply append the type you want in CAPS to
+the array definition.
+
+For example, for an integer array, you'd use one of the following variants:
+
+\helpref{WX\_DEFINE\_ARRAY\_INT}{wxdefinearray}\\
+\helpref{WX\_DEFINE\_EXPORTED\_ARRAY\_INT}{wxdefinearray}\\
+\helpref{WX\_DEFINE\_USER\_EXPORTED\_ARRAY\_INT}{wxdefinearray}\\
+\helpref{WX\_DEFINE\_SORTED\_ARRAY\_INT}{wxdefinesortedarray}\\
+\helpref{WX\_DEFINE\_SORTED\_EXPORTED\_ARRAY\_INT}{wxdefinesortedarray}\\
+\helpref{WX\_DEFINE\_SORTED\_USER\_EXPORTED\_ARRAY\_INT}{wxdefinesortedarray}\\
+
+\begin{verbatim} 
+WX_DEFINE_ARRAY_PTR(double *, MyArrayOfDoublePointers);
+\end{verbatim}
+
+\membersection{Constructors and destructors}\label{arrayconstructorsdestructors}
 
 Array classes are 100\% C++ objects and as such they have the appropriate copy
 constructors and assignment operators. Copying wxArray just copies the elements
@@ -185,7 +222,7 @@ memory more times than needed.
 \helpref{Alloc}{wxarrayalloc}\\
 \helpref{Shrink}{wxarrayshrink}
 
-\membersection{Number of elements and simple item access}
+\membersection{Number of elements and simple item access}\label{arrayelementsaccess}
 
 Functions in this section return the total number of array elements and allow to
 retrieve them - possibly using just the C array indexing $[]$ operator which
@@ -197,13 +234,14 @@ does exactly the same as \helpref{Item()}{wxarrayitem} method.
 \helpref{Item}{wxarrayitem}\\
 \helpref{Last}{wxarraylast}
 
-\membersection{Adding items}
+\membersection{Adding items}\label{arrayadding}
 
 \helpref{Add}{wxarrayadd}\\
 \helpref{Insert}{wxarrayinsert}\\
+\helpref{SetCount}{wxarraysetcount}\\
 \helpref{WX\_APPEND\_ARRAY}{wxappendarray}
 
-\membersection{Removing items}
+\membersection{Removing items}\label{arrayremoving}
 
 \helpref{WX\_CLEAR\_ARRAY}{wxcleararray}\\
 \helpref{Empty}{wxarrayempty}\\
@@ -211,7 +249,7 @@ does exactly the same as \helpref{Item()}{wxarrayitem} method.
 \helpref{RemoveAt}{wxarrayremoveat}\\
 \helpref{Remove}{wxarrayremove}
 
-\membersection{Searching and sorting}
+\membersection{Searching and sorting}\label{arraysearchingandsorting}
 
 \helpref{Index}{wxarrayindex}\\
 \helpref{Sort}{wxarraysort}
@@ -239,7 +277,7 @@ needed for exporting an array from a user DLL.
 Example:
 
 \begin{verbatim}
-WX_DEFINE_ARRAY(int, wxArrayInt);
+WX_DEFINE_ARRAY_INT(wxArrayInt);
 
 class MyClass;
 WX_DEFINE_ARRAY(MyClass *, wxArrayOfMyClass);
@@ -264,7 +302,7 @@ needed for exporting an array from a user DLL.
 Example:
 
 \begin{verbatim}
-WX_DEFINE_SORTED_ARRAY(int, wxSortedArrayInt);
+WX_DEFINE_SORTED_ARRAY_INT(wxSortedArrayInt);
 
 class MyClass;
 WX_DEFINE_SORTED_ARRAY(MyClass *, wxArrayOfMyClass);
@@ -307,7 +345,7 @@ Example:
 
 \begin{verbatim}
 class MyClass;
-WX_DEFINE_OBJARRAY(MyClass, wxArrayOfMyClass); // note: not "MyClass *"!
+WX_DECLARE_OBJARRAY(MyClass, wxArrayOfMyClass); // note: not "MyClass *"!
 \end{verbatim}
 
 You must use \helpref{WX\_DEFINE\_OBJARRAY()}{wxdefineobjarray} macro to define
@@ -485,7 +523,7 @@ Return the number of items in the array.
 
 \membersection{wxArray::Index}\label{wxarrayindex}
 
-\func{int}{Index}{\param{T\& }{item}, \param{bool }{searchFromEnd = FALSE}}
+\func{int}{Index}{\param{T\& }{item}, \param{bool }{searchFromEnd = false}}
 
 \func{int}{Index}{\param{T\& }{item}}
 
@@ -493,7 +531,7 @@ The first version of the function is for wxArray and wxObjArray, the second is
 for wxSortedArray only.
 
 Searches the element in the array, starting from either beginning or the end
-depending on the value of {\it searchFromEnd} parameter. wxNOT\_FOUND is
+depending on the value of {\it searchFromEnd} parameter. {\tt wxNOT\_FOUND} is
 returned if the element is not found, otherwise the index of the element is
 returned.
 
@@ -526,7 +564,7 @@ between the overloaded versions of this function.
 
 \constfunc{bool}{IsEmpty}{\void}
 
-Returns TRUE if the array is empty, FALSE otherwise.
+Returns true if the array is empty, false otherwise.
 
 \membersection{wxArray::Item}\label{wxarrayitem}
 
@@ -589,6 +627,19 @@ array.RemoveAt(n)
 
 See also \helpref{WX\_CLEAR\_ARRAY}{wxcleararray} macro which deletes all
 elements of a wxArray (supposed to contain pointers).
+
+\membersection{wxArray::SetCount}\label{wxarraysetcount}
+
+\func{void}{SetCount}{\param{size\_t }{count}, \param{T }{defval = T($0$)}}
+
+This function ensures that the number of array elements is at least 
+{\it count}. If the array has already {\it count} or more items, nothing is
+done. Otherwise, {\tt count - GetCount()} elements are added and initialized to
+the value {\it defval}.
+
+\wxheading{See also}
+
+\helpref{GetCount}{wxarraygetcount}
 
 \membersection{wxArray::Shrink}\label{wxarrayshrink}
 

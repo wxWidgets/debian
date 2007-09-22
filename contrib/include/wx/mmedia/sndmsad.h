@@ -3,7 +3,7 @@
 // Purpose: MS ADPCM codec
 // Date: 25/02/2000
 // Author: Guilhem Lavaux <lavaux@easynet.fr> (C) 2000
-// CVSID: $Id: sndmsad.h,v 1.3 2002/03/09 12:25:03 VZ Exp $
+// CVSID: $Id: sndmsad.h,v 1.4 2003/08/03 17:10:09 VS Exp $
 // --------------------------------------------------------------------------
 #ifndef _WX_SNDMSAD_H
 #define _WX_SNDMSAD_H
@@ -14,6 +14,7 @@
 
 #include "wx/defs.h"
 #include "wx/dynarray.h"
+#include "wx/mmedia/defs.h"
 #include "wx/mmedia/sndcodec.h"
 #include "wx/mmedia/sndbase.h"
 
@@ -22,7 +23,7 @@ WX_DEFINE_EXPORTED_ARRAY_INT(wxInt16, wxMSAdpcmCoeffs);
 //
 // MSADPCM format
 //
-class WXDLLEXPORT wxSoundFormatMSAdpcm: public wxSoundFormatBase {
+class WXDLLIMPEXP_MMEDIA wxSoundFormatMSAdpcm: public wxSoundFormatBase {
 public:
     wxSoundFormatMSAdpcm();
     ~wxSoundFormatMSAdpcm();
@@ -58,8 +59,8 @@ protected:
 //
 // MS ADPCM converter class
 //
-class WXDLLEXPORT wxSoundRouterStream;
-class WXDLLEXPORT wxSoundStreamMSAdpcm: public wxSoundStreamCodec {
+class WXDLLIMPEXP_MMEDIA wxSoundRouterStream;
+class WXDLLIMPEXP_MMEDIA wxSoundStreamMSAdpcm: public wxSoundStreamCodec {
 public:
     wxSoundStreamMSAdpcm(wxSoundStream& sndio);
     ~wxSoundStreamMSAdpcm();

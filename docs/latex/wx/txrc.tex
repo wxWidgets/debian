@@ -1,10 +1,9 @@
+% Note: -e/C++ header generation documentation added by 
+% Eduardo Marques <edrdo@netcabo.pt>
+%
 \section{XML-based resource system overview}\label{xrcoverview}
 
 Classes: \helpref{wxXmlResource}{wxxmlresource}, \helpref{wxXmlResourceHandler}{wxxmlresourcehandler}
-
-{\bf IMPORTANT NOTE:} XRC is not yet a part of the core wxWidgets library, so
-please see the next section for how to compile and link it. Otherwise if you
-try to use it, you will get link errors.
 
 The XML-based resource system, known as XRC, allows user interface elements such as
 dialogs, menu bars and toolbars, to be stored in text files and loaded into
@@ -30,39 +29,6 @@ on the XML standard, existing XML editors can be used for simple editing purpose
 
 XRC was written by Vaclav Slavik.
 
-\subsection{Compiling and using XRC}\label{compilingxrc}
-
-XRC can be found under the 'contrib' hierarchy, in the following directories:
-
-\begin{verbatim}
-  contrib/src/xrc           ; XRC source
-  contrib/include/wx/xrc    ; XRC headers
-  contrib/samples/xrc       ; XRC sample
-  contrib/utils/wxrc        ; XRC resource compiler
-  contrib/utils/wxrcedit    ; XRC editor (in progress)
-\end{verbatim}
-
-To compile XRC:
-
-\begin{itemize}\itemsep=0pt
-\item Under Windows using VC++, open the contrib/src/xrc/XrcVC.dsw project
-and compile. Also compile contrib/utils/wxrc using wxBase if you wish to compile
-resource files.
-\item Under Unix, XRC should be configured when you configured
-wxWidgets. Make XRC by changing directory to contrib/src/xrc and
-type 'make'.  Similarly compile contrib/utils/wxrc using wxBase if you wish to compile
-resource files. {\bf Note:} there is currently a
-problem with the wxWidgets build system that means that
-only the static version of library can be built at present.
-\end{itemize}
-
-To use XRC:
-
-\begin{itemize}\itemsep=0pt
-\item Under Windows using VC++, link with wxxrc[d].lib.
-\item Under Unix, link with libwxxrc[d].a.
-\end{itemize}
-
 \subsection{XRC concepts}\label{xrcconcepts}
 
 These are the typical steps for using XRC files in your application.
@@ -79,7 +45,7 @@ load using for example {\tt wxXmlResource::Get()->LoadDialog(\&dlg, this, "dlg1"
 to a suitable integer identifier, for example {\tt EVT\_MENU(XRCID("quit"), MyFrame::OnQuit)}.
 \end{itemize}
 
-To create an XRC file, use one of the following methods.
+To create an XRC file, you can use one of the following methods.
 
 \begin{itemize}\itemsep=0pt
 \item Create the file by hand;
@@ -89,11 +55,10 @@ To create an XRC file, use one of the following methods.
 dialog editor that you can find in the {\tt wxPython/tools} subdirectory of the wxWidgets
 CVS archive;
 \item use \urlref{Glade}{http://wxglade.sf.net}, a GUI designer written in wxPython. At the moment it can generate Python, C++ and XRC;
-\item use wxrcedit ({\tt utils/contrib/wxrcedit}) (under development);
 \item convert WIN32 RC files to XRC with the tool in {\tt contrib/utils/convertrc}.
 \end{itemize}
 
-A complete list of third-party tools that write to XRC can be found at \urlref{www.wxwidgets.org/lnk_tool.htm}{http://www.wxwidgets.org/lnk_tool.in}.
+A complete list of third-party tools that write to XRC can be found at \urlref{www.wxwidgets.org/lnk\_tool.htm}{http://www.wxwidgets.org/lnk\_tool.in}.
 
 It is highly recommended that you use a resource editing tool, since it's fiddly writing
 XRC files by hand.
@@ -112,6 +77,8 @@ To compile binary resource files, use the command-line wxrc utility. It takes on
 \item -h (--help): show a help message
 \item -v (--verbose): show verbose logging information
 \item -c (--cpp-code): write C++ source rather than a XRS file
+\item -e (--extra-cpp-code): if used together with -c, generates C++ header file
+containing class definitions for the windows defined by the XRC file (see special subsection) 
 \item -u (--uncompressed): do not compress XML files (C++ only)
 \item -g (--gettext): output .po catalog (to stdout, or a file if -o is used)
 \item -n (--function) <name>: specify C++ function name (use with -c)
@@ -121,17 +88,18 @@ To compile binary resource files, use the command-line wxrc utility. It takes on
 
 For example:
 \begin{verbatim}
-  % wxrc resource.wrc
-  % wxrc resource.wrc -o resource.wrs
-  % wxrc resource.wrc -v -c -o resource.cpp
+  % wxrc resource.xrc
+  % wxrc resource.xrc -o resource.xrs
+  % wxrc resource.xrc -v -c -o resource.cpp
 \end{verbatim}
 
 \wxheading{Note}
 
-XRS file is esentially a renamed ZIP archive which means that you can manipulate
+XRS file is essentially a renamed ZIP archive which means that you can manipulate
 it with standard ZIP tools. Note that if you are using XRS files, you have
 to initialize \helpref{wxFileSystem}{wxfilesystem} ZIP handler first! It is a simple
 thing to do:
+
 \begin{verbatim}
   #include <wx/filesys.h>
   #include <wx/fs_zip.h>
@@ -150,6 +118,7 @@ Use the {\tt -c} switch to
 {\tt wxrc} utility to produce C++ file with embedded resources. This file will
 contain a function called {\it InitXmlResource} (unless you override this with
 a command line switch). Use it to load the resource:
+
 \begin{verbatim}
   extern void InitXMLResource(); // defined in generated file
   ...
@@ -233,8 +202,8 @@ bool MyApp::OnInit()
 
     MyFrame *frame = new MyFrame("XML resources demo",
                                  wxPoint(50, 50), wxSize(450, 340));
-    frame->Show(TRUE);
-    return TRUE;
+    frame->Show(true);
+    return true;
 }
 
 // ----------------------------------------------------------------------------
@@ -254,8 +223,8 @@ MyFrame::MyFrame(const wxString& title, const wxPoint& pos, const wxSize& size)
 // event handlers
 void MyFrame::OnQuit(wxCommandEvent& WXUNUSED(event))
 {
-    // TRUE is to force the frame to close
-    Close(TRUE);
+    // true is to force the frame to close
+    Close(true);
 }
 
 void MyFrame::OnAbout(wxCommandEvent& WXUNUSED(event))
@@ -447,6 +416,96 @@ This is the XML file (resource.xrc) for the XRC sample.
 
 Please see Technical Note 14 (docs/tech/tn0014.txt) in your wxWidgets
 distribution.
+
+\subsection{C++ header file generation}\label{xrccppheader}
+
+Using the {\tt -e} switch together with {\tt -c}, a C++ header file is written
+containing class definitions for the GUI windows defined in the XRC file.
+This code generation can make it easier to use XRC and automate program
+development.
+The classes can be used as basis for development, freeing the
+programmer from dealing with most of the XRC specifics (e.g. {\tt XRCCTRL}).
+
+For each top level window defined in the XRC file a C++ class definition is
+generated, containing as class members the named widgets of the window.
+A default constructor for each class is also generated. Inside the constructor 
+all XRC loading is done and all class members representing widgets are initialized. 
+
+A simple example will help understand how the scheme works. Suppose you have
+a XRC file defining a top level window {\tt TestWnd\_Base}, which subclasses {\tt wxFrame} (any 
+other class like {\tt wxDialog} will do also), and has subwidgets {\tt wxTextCtrl} A and {\tt wxButton} B.
+The XRC file and corresponding class definition in the header file will be something like:
+
+\begin{verbatim}
+<?xml version="1.0"?>
+<resource version="2.3.0.1">
+    <object class="wxFrame" name="TestWnd_Base">
+        <size>-1,-1</size>
+        <title>Test</title>
+        <object class="wxBoxSizer">
+            <orient>wxHORIZONTAL</orient>
+            <object class="sizeritem">
+                <object class="wxTextCtrl" name="A">
+                    <label>Test label</label>
+                </object>
+            </object>
+            <object class="sizeritem">
+                <object class="wxButton" name="B">
+                    <label>Test button</label>
+                </object>
+            </object>
+        </object>
+    </object>
+</resource>
+
+
+class TestWnd_Base : public wxFrame {
+protected:
+ wxTextCtrl* A;
+ wxButton* B;
+
+private:
+ void InitWidgetsFromXRC(){
+  wxXmlResource::Get()->LoadObject(this,NULL,"TestWnd","wxFrame");
+  A = XRCCTRL(*this,"A",wxTextCtrl);
+  B = XRCCTRL(*this,"B",wxButton);
+ }
+public:
+TestWnd::TestWnd(){
+  InitWidgetsFromXRC();
+ }
+};
+\end{verbatim}
+
+The generated window class can be used as basis for the full window class. The
+class members which represent widgets may be accessed by name instead of using
+{\tt XRCCTRL} every time you wish to reference them (note that they are {\tt protected} class members), 
+though you must still use {\tt XRCID} to refer to widget ids in the event
+table. 
+
+Example:
+
+\begin{verbatim}
+#include "resource.h"
+
+class TestWnd : public TestWnd_Base {
+	public:
+		TestWnd(){
+			// A, B already initialised at this point
+			A->SetValue("Updated in TestWnd::TestWnd");
+			B->SetValue("Nice :)");
+		}
+		void OnBPressed(wxEvent& event){
+			Close();
+		}
+		DECLARE_EVENT_TABLE();
+};
+
+BEGIN_EVENT_TABLE(TestWnd,TestWnd_Base)
+EVT_BUTTON(XRCID("B"),TestWnd::OnBPressed)
+END_EVENT_TABLE()
+
+\end{verbatim}
 
 \subsection{Adding new resource handlers}\label{newresourcehandlers}
 

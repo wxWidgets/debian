@@ -4,15 +4,15 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     01/02/97
-// RCS-ID:      $Id: msgdlgg.h,v 1.13 2002/08/31 11:29:12 GD Exp $
+// RCS-ID:      $Id: msgdlgg.h,v 1.17 2004/06/17 16:22:27 ABX Exp $
 // Copyright:   (c)
-// Licence:   	wxWindows licence
+// Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
 
 #ifndef __MSGDLGH_G__
 #define __MSGDLGH_G__
 
-#if defined(__GNUG__) && !defined(__APPLE__)
+#if defined(__GNUG__) && !defined(NO_GCC_PRAGMA)
 #pragma interface "msgdlgg.h"
 #endif
 
@@ -47,5 +47,4 @@ private:
 #define wxMessageDialog wxGenericMessageDialog
 #endif
 
-#endif
-	// __MSGDLGH_G__
+#endif // __MSGDLGH_G__

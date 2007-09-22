@@ -5,16 +5,23 @@
 // Author:      Robin Dunn
 //
 // Created:     23-Nov-2001
-// RCS-ID:      $Id: gizmos.i,v 1.12.2.8 2004/01/15 17:36:23 RD Exp $
+// RCS-ID:      $Id: gizmos.i,v 1.37 2004/09/23 20:23:44 RD Exp $
 // Copyright:   (c) 2001 by Total Control Software
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
 
-%module gizmos
+%define DOCSTRING
+"Various *gizmo* classes: `DynamicSashWindow`, `EditableListBox`,
+`LEDNumberCtrl`, `TreeListCtrl`, etc."
+%enddef
+
+%module(package="wx", docstring=DOCSTRING) gizmos
 
 
 %{
-#include "wxPython.h"
+#include "wx/wxPython/wxPython.h"
+#include "wx/wxPython/pyclasses.h"
+
 #include <wx/gizmos/dynamicsash.h>
 #include <wx/gizmos/editlbox.h>
 #include <wx/gizmos/splittree.h>
@@ -23,35 +30,30 @@
 #include <wx/listctrl.h>
 #include <wx/treectrl.h>
 #include <wx/imaglist.h>
-#include "treelistctrl.h"
-#include "pytree.h"
+
+#include "wx/treelistctrl.h"
+#include "wx/wxPython/pytree.h"
+
 %}
 
 //---------------------------------------------------------------------------
 
-%include typemaps.i
-%include my_typemaps.i
-
-%extern wx.i
-%extern windows.i
-%extern _defs.i
-%extern events.i
-%extern controls.i
-%extern controls2.i
-%extern gdi.i
+%import windows.i
+%import controls.i
+%pythoncode { import wx }
+%pythoncode { __docfilter__ = wx._core.__DocFilter(globals()) }
 
 
-//----------------------------------------------------------------------
+MAKE_CONST_WXSTRING2(DynamicSashNameStr,     wxT("dynamicSashWindow"));
+MAKE_CONST_WXSTRING2(EditableListBoxNameStr, wxT("editableListBox"));
+MAKE_CONST_WXSTRING2(TreeListCtrlNameStr,    wxT("treelistctrl"));
 
-%{
-    // Put some wx default wxChar* values into wxStrings.
-    static const wxString wxPyDynamicSashNameStr(wxT("dynamicSashWindow"));
-    static const wxString wxPyEditableListBoxNameStr(wxT("editableListBox"));
-    static const wxString wxPyTreeListCtrlNameStr(wxT("treelistctrl"));
-    static const wxString wxPyEmptyString(wxT(""));
-%}
+MAKE_CONST_WXSTRING_NOSWIG(EmptyString);
 
-///----------------------------------------------------------------------
+
+%include _gizmos_rename.i
+
+//---------------------------------------------------------------------------
 
 enum {
     wxEVT_DYNAMIC_SASH_SPLIT,
@@ -137,21 +139,23 @@ public:
 
 */
 
+MustHaveApp(wxDynamicSashWindow);
+
 class wxDynamicSashWindow : public wxWindow {
 public:
-    wxDynamicSashWindow(wxWindow *parent, wxWindowID id,
+    %pythonAppend wxDynamicSashWindow         "self._setOORInfo(self)"
+    %pythonAppend wxDynamicSashWindow()       ""
+
+    wxDynamicSashWindow(wxWindow *parent, wxWindowID id=-1,
                         const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxDefaultSize,
                         long style = wxCLIP_CHILDREN | wxDS_MANAGE_SCROLLBARS | wxDS_DRAG_CORNER,
                         const wxString& name = wxPyDynamicSashNameStr);
-    %name(wxPreDynamicSashWindow)wxDynamicSashWindow();
+    %name(PreDynamicSashWindow)wxDynamicSashWindow();
 
-    bool Create(wxWindow *parent, wxWindowID id,
+    bool Create(wxWindow *parent, wxWindowID id=-1,
                 const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxDefaultSize,
                 long style = wxCLIP_CHILDREN | wxDS_MANAGE_SCROLLBARS | wxDS_DRAG_CORNER,
                 const wxString& name = wxPyDynamicSashNameStr);
-
-    %pragma(python) addtomethod = "__init__:self._setOORInfo(self)"
-    %pragma(python) addtomethod = "wxPreDynamicSashWindow:val._setOORInfo(val)"
 
     wxScrollBar *GetHScrollBar(const wxWindow *child) const;
     wxScrollBar *GetVScrollBar(const wxWindow *child) const;
@@ -159,19 +163,13 @@ public:
 
 
 
-//----------------------------------------------------------------------
-// Python functions to act like the event macros
+%pythoncode {
+EVT_DYNAMIC_SASH_SPLIT = wx.PyEventBinder( wxEVT_DYNAMIC_SASH_SPLIT, 1 )
+EVT_DYNAMIC_SASH_UNIFY = wx.PyEventBinder( wxEVT_DYNAMIC_SASH_UNIFY, 1 )
+}
 
-%pragma(python) code = "
-def EVT_DYNAMIC_SASH_SPLIT(win, id, func):
-    win.Connect(id, -1, wxEVT_DYNAMIC_SASH_SPLIT, func)
-
-def EVT_DYNAMIC_SASH_UNIFY(win, id, func):
-    win.Connect(id, -1, wxEVT_DYNAMIC_SASH_UNIFY, func)
-"
-
-//----------------------------------------------------------------------
-//----------------------------------------------------------------------
+//---------------------------------------------------------------------------
+//---------------------------------------------------------------------------
 
 enum {
     wxEL_ALLOW_NEW,
@@ -181,22 +179,25 @@ enum {
 
 // This class provides a composite control that lets the
 // user easily enter list of strings
+MustHaveApp(wxEditableListBox);
 class wxEditableListBox : public wxPanel
 {
 public:
-    wxEditableListBox(wxWindow *parent, wxWindowID id,
-                      const wxString& label,
+    %pythonAppend wxEditableListBox         "self._setOORInfo(self)"
+    %pythonAppend wxEditableListBox()       ""
+
+    wxEditableListBox(wxWindow *parent, wxWindowID id=-1,
+                      const wxString& label = wxPyEmptyString,
                       const wxPoint& pos = wxDefaultPosition,
                       const wxSize& size = wxDefaultSize,
                       long style = wxEL_ALLOW_NEW | wxEL_ALLOW_EDIT | wxEL_ALLOW_DELETE,
                       const wxString& name = wxPyEditableListBoxNameStr);
 
-    %pragma(python) addtomethod = "__init__:self._setOORInfo(self)"
 
     void SetStrings(const wxArrayString& strings);
 
     //void GetStrings(wxArrayString& strings);
-    %addmethods {
+    %extend {
         PyObject* GetStrings() {
             wxArrayString strings;
             self->GetStrings(strings);
@@ -204,17 +205,17 @@ public:
         }
     }
 
-    wxListCtrl* GetListCtrl()       { return m_listCtrl; }
-    wxBitmapButton* GetDelButton()  { return m_bDel; }
-    wxBitmapButton* GetNewButton()  { return m_bNew; }
-    wxBitmapButton* GetUpButton()   { return m_bUp; }
-    wxBitmapButton* GetDownButton() { return m_bDown; }
-    wxBitmapButton* GetEditButton() { return m_bEdit; }
+    wxPyListCtrl* GetListCtrl();
+    wxBitmapButton* GetDelButton();
+    wxBitmapButton* GetNewButton();
+    wxBitmapButton* GetUpButton();
+    wxBitmapButton* GetDownButton();
+    wxBitmapButton* GetEditButton();
 };
 
 
 
-//----------------------------------------------------------------------
+//---------------------------------------------------------------------------
 
 
 /*
@@ -225,15 +226,22 @@ public:
  * It also updates the scrolled window vertical scrollbar as appropriate.
  */
 
+%{
+    typedef wxTreeCtrl wxPyTreeCtrl;
+%}
+
+MustHaveApp(wxRemotelyScrolledTreeCtrl);
 
 class wxRemotelyScrolledTreeCtrl: public wxPyTreeCtrl
 {
 public:
+    %pythonAppend wxRemotelyScrolledTreeCtrl         "self._setOORInfo(self)"
+    %pythonAppend wxRemotelyScrolledTreeCtrl()       ""
+
     wxRemotelyScrolledTreeCtrl(wxWindow* parent, wxWindowID id,
                                const wxPoint& pos = wxDefaultPosition,
                                const wxSize& size = wxDefaultSize,
                                long style = wxTR_HAS_BUTTONS);
-    %pragma(python) addtomethod = "__init__:self._setOORInfo(self)"
 
 
     void HideVScrollbar();
@@ -275,17 +283,17 @@ public:
 
     virtual void DrawItem(wxDC& dc, wxTreeItemId id, const wxRect& rect) {
         bool found;
-        wxPyBeginBlockThreads();
+        bool blocked = wxPyBeginBlockThreads();
         if ((found = wxPyCBH_findCallback(m_myInst, "DrawItem"))) {
-            PyObject* dcobj = wxPyMake_wxObject(&dc);
-            PyObject* idobj = wxPyConstructObject((void*)&id, wxT("wxTreeItemId"), FALSE);
-            PyObject* recobj= wxPyConstructObject((void*)&rect, wxT("wxRect"), FALSE);
+            PyObject* dcobj = wxPyMake_wxObject(&dc,false);
+            PyObject* idobj = wxPyConstructObject((void*)&id, wxT("wxTreeItemId"), false);
+            PyObject* recobj= wxPyConstructObject((void*)&rect, wxT("wxRect"), false);
             wxPyCBH_callCallback(m_myInst, Py_BuildValue("(OOO)", dcobj, idobj, recobj));
             Py_DECREF(dcobj);
             Py_DECREF(idobj);
             Py_DECREF(recobj);
         }
-        wxPyEndBlockThreads();
+        wxPyEndBlockThreads(blocked);
         if (! found)
             wxTreeCompanionWindow::DrawItem(dc, id, rect);
     }
@@ -295,16 +303,19 @@ public:
 %}
 
 
-%name(wxTreeCompanionWindow) class wxPyTreeCompanionWindow: public wxWindow
+MustHaveApp(wxPyTreeCompanionWindow);
+
+%name(TreeCompanionWindow) class wxPyTreeCompanionWindow: public wxWindow
 {
 public:
+    %pythonAppend wxPyTreeCompanionWindow         "self._setOORInfo(self);self._setCallbackInfo(self, TreeCompanionWindow)"
+    %pythonAppend wxPyTreeCompanionWindow()       ""
+
     wxPyTreeCompanionWindow(wxWindow* parent, wxWindowID id = -1,
                             const wxPoint& pos = wxDefaultPosition,
                             const wxSize& size = wxDefaultSize,
                             long style = 0);
     void _setCallbackInfo(PyObject* self, PyObject* _class);
-    %pragma(python) addtomethod = "__init__:self._setCallbackInfo(self, wxTreeCompanionWindow)"
-    %pragma(python) addtomethod = "__init__:self._setOORInfo(self)"
 
     wxRemotelyScrolledTreeCtrl* GetTreeCtrl() const;
     void SetTreeCtrl(wxRemotelyScrolledTreeCtrl* treeCtrl);
@@ -319,16 +330,20 @@ public:
  * than the usual one.
  */
 
+MustHaveApp(wxThinSplitterWindow);
+
 class wxThinSplitterWindow: public wxSplitterWindow
 {
 public:
+    %pythonAppend wxThinSplitterWindow         "self._setOORInfo(self)"
+    %pythonAppend wxThinSplitterWindow()       ""
+
     wxThinSplitterWindow(wxWindow* parent, wxWindowID id = -1,
                          const wxPoint& pos = wxDefaultPosition,
                          const wxSize& size = wxDefaultSize,
                          long style = wxSP_3D | wxCLIP_CHILDREN);
-    %pragma(python) addtomethod = "__init__:self._setOORInfo(self)"
-
 };
+
 
 
 /*
@@ -340,19 +355,23 @@ public:
  * scroll appropriately.
  */
 
+MustHaveApp(wxSplitterScrolledWindow);
+
 class wxSplitterScrolledWindow: public wxScrolledWindow
 {
 public:
+    %pythonAppend wxSplitterScrolledWindow         "self._setOORInfo(self)"
+    %pythonAppend wxSplitterScrolledWindow()       ""
+
     wxSplitterScrolledWindow(wxWindow* parent, wxWindowID id = -1,
                              const wxPoint& pos = wxDefaultPosition,
                              const wxSize& size = wxDefaultSize,
                              long style = 0);
-    %pragma(python) addtomethod = "__init__:self._setOORInfo(self)"
 };
 
 
-//----------------------------------------------------------------------
-//----------------------------------------------------------------------
+//---------------------------------------------------------------------------
+//---------------------------------------------------------------------------
 
 
 enum wxLEDValueAlign
@@ -367,28 +386,28 @@ enum wxLEDValueAlign
 };
 
 
+MustHaveApp(wxLEDNumberCtrl);
+
 class wxLEDNumberCtrl :	public wxControl
 {
 public:
-    // Constructors.
+    %pythonAppend wxLEDNumberCtrl         "self._setOORInfo(self)"
+    %pythonAppend wxLEDNumberCtrl()       ""
+
     wxLEDNumberCtrl(wxWindow *parent, wxWindowID id = -1,
                     const wxPoint& pos = wxDefaultPosition,
                     const wxSize& size = wxDefaultSize,
                     long style =  wxLED_ALIGN_LEFT | wxLED_DRAW_FADED);
-    %name(wxPreLEDNumberCtrl) wxLEDNumberCtrl();
+    %name(PreLEDNumberCtrl) wxLEDNumberCtrl();
 
-    %pragma(python) addtomethod = "__init__:self._setOORInfo(self)"
-    %pragma(python) addtomethod = "wxPreLEDNumberCtrl:val._setOORInfo(val)"
-
-    // Create functions.
     bool Create(wxWindow *parent, wxWindowID id = -1,
                     const wxPoint& pos = wxDefaultPosition,
                     const wxSize& size = wxDefaultSize,
                     long style = wxLED_ALIGN_LEFT | wxLED_DRAW_FADED);
 
-    wxLEDValueAlign GetAlignment() const { return m_Alignment; }
-    bool GetDrawFaded() const { return m_DrawFaded; }
-    const wxString &GetValue() const { return m_Value; }
+    wxLEDValueAlign GetAlignment() const;
+    bool GetDrawFaded() const;
+    const wxString &GetValue() const;
 
     void SetAlignment(wxLEDValueAlign Alignment, bool Redraw = true);
     void SetDrawFaded(bool DrawFaded, bool Redraw = true);
@@ -415,6 +434,20 @@ enum {
 };
 
 
+enum {
+    // flags for FindItem
+    wxTL_SEARCH_VISIBLE,
+    wxTL_SEARCH_LEVEL,
+    wxTL_SEARCH_FULL,
+    wxTL_SEARCH_PARTIAL,
+    wxTL_SEARCH_NOCASE
+};
+
+enum {
+    // extra tree styles
+    wxTR_DONT_ADJUST_MAC
+};
+%pythoncode { wx.TR_DONT_ADJUST_MAC = TR_DONT_ADJUST_MAC }
 
 
 class wxTreeListColumnInfo: public wxObject {
@@ -422,14 +455,18 @@ public:
     wxTreeListColumnInfo(const wxString& text = wxPyEmptyString,
 			 int image = -1,
 			 size_t width = 100,
+                         bool shown = true,
 			 wxTreeListColumnAlign alignment = wxTL_ALIGN_LEFT);
 
+    bool GetShown() const;
     wxTreeListColumnAlign GetAlignment() const;
     wxString GetText() const;
     int GetImage() const;
     int GetSelectedImage() const;
     size_t GetWidth() const;
 
+    // TODO:  These all actually return wxTreeListColumnInfo&, any problem with doing it for Python too?
+    void SetShown(bool shown);
     void SetAlignment(wxTreeListColumnAlign alignment);
     void SetText(const wxString& text);
     void SetImage(int image);
@@ -457,7 +494,7 @@ public:
                        const wxTreeItemId& item2) {
         int rval = 0;
         bool found;
-        wxPyBeginBlockThreads();
+        bool blocked = wxPyBeginBlockThreads();
         if ((found = wxPyCBH_findCallback(m_myInst, "OnCompareItems"))) {
             PyObject *o1 = wxPyConstructObject((void*)&item1, wxT("wxTreeItemId"), 0);
             PyObject *o2 = wxPyConstructObject((void*)&item2, wxT("wxTreeItemId"), 0);
@@ -465,7 +502,7 @@ public:
             Py_DECREF(o1);
             Py_DECREF(o2);
         }
-        wxPyEndBlockThreads();
+        wxPyEndBlockThreads(blocked);
         if (! found)
             rval = wxTreeListCtrl::OnCompareItems(item1, item2);
         return rval;
@@ -480,24 +517,23 @@ IMPLEMENT_ABSTRACT_CLASS(wxPyTreeListCtrl, wxTreeListCtrl)
 
 
 
-// These are for the GetFirstChild/GetNextChild methods below
-%{
-    static const long longzero = 0;
-%}
-%typemap(python, in)     long& INOUT = long* INOUT;
-%typemap(python, argout) long& INOUT = long* INOUT;
 
 
-%name(wxTreeListCtrl) class wxPyTreeListCtrl : public wxControl
+MustHaveApp(wxPyTreeListCtrl);
+
+%name(TreeListCtrl) class wxPyTreeListCtrl : public wxControl
 {
 public:
+    %pythonAppend wxPyTreeListCtrl         "self._setOORInfo(self);self._setCallbackInfo(self, TreeListCtrl)"
+    %pythonAppend wxPyTreeListCtrl()       ""
+
     wxPyTreeListCtrl(wxWindow *parent, wxWindowID id = -1,
                    const wxPoint& pos = wxDefaultPosition,
                    const wxSize& size = wxDefaultSize,
                    long style = wxTR_DEFAULT_STYLE,
                    const wxValidator &validator = wxDefaultValidator,
                    const wxString& name = wxPyTreeListCtrlNameStr );
-    %name(wxPreTreeListCtrl)wxPyTreeListCtrl();
+    %name(PreTreeListCtrl)wxPyTreeListCtrl();
 
     bool Create(wxWindow *parent, wxWindowID id = -1,
                 const wxPoint& pos = wxDefaultPosition,
@@ -507,11 +543,6 @@ public:
                 const wxString& name = wxPyTreeListCtrlNameStr );
 
     void _setCallbackInfo(PyObject* self, PyObject* _class);
-    %pragma(python) addtomethod = "__init__:self._setCallbackInfo(self, wxTreeListCtrl)"
-
-    %pragma(python) addtomethod = "__init__:self._setOORInfo(self)"
-    %pragma(python) addtomethod = "wxPreTreeListCtrl:val._setOORInfo(val)"
-
 
 
     // get the total number of items in the control
@@ -522,10 +553,6 @@ public:
     // immediately.
     unsigned int GetIndent() const;
     void SetIndent(unsigned int indent);
-
-    // spacing is the number of pixels between the start and the Text
-    unsigned int GetSpacing() const;
-    void SetSpacing(unsigned int spacing);
 
     // line spacing is the space above and below the text on each line
     unsigned int GetLineSpacing() const;
@@ -551,19 +578,18 @@ public:
     void SetStateImageList(wxImageList *imageList);
     void SetButtonsImageList(wxImageList *imageList);
 
+    %apply SWIGTYPE *DISOWN { wxImageList *imageList };
     void AssignImageList(wxImageList *imageList);
-    %pragma(python) addtomethod = "AssignImageList:_args[0].thisown = 0"
-
     void AssignStateImageList(wxImageList *imageList);
-    %pragma(python) addtomethod = "AssignStateImageList:_args[0].thisown = 0"
-
     void AssignButtonsImageList(wxImageList *imageList);
-    %pragma(python) addtomethod = "AssignButtonsImageList:_args[0].thisown = 0"
-
+    %clear wxImageList *imageList;
 
 
     // adds a column
     void AddColumn(const wxString& text);
+//     void AddColumn(const wxString& text,
+//                    size_t width,
+//                    wxTreeListColumnAlign alignment = wxTL_ALIGN_LEFT);
     %name(AddColumnInfo) void AddColumn(const wxTreeListColumnInfo& col);
 
     // inserts a column before the given one
@@ -597,8 +623,10 @@ public:
     void SetColumnImage(size_t column, int image);
     int GetColumnImage(size_t column) const;
 
+    void ShowColumn(size_t column, bool shown);
+    bool IsColumnShown(size_t column) const;
 
-    %addmethods {
+    %extend {
         // retrieves item's label of the given column (main column by default)
         wxString GetItemText(const wxTreeItemId& item, int column = -1) {
             if (column < 0) column = self->GetMainColumn();
@@ -644,9 +672,9 @@ public:
             self->SetItemData(item, data);
         }
 
-        // [Get|Set]PyData are short-cuts.  Also made somewhat crash-proof by
+        // [Get|Set]ItemPyData are short-cuts.  Also made somewhat crash-proof by
         // automatically creating data classes.
-        PyObject* GetPyData(const wxTreeItemId& item) {
+        PyObject* GetItemPyData(const wxTreeItemId& item) {
             wxPyTreeItemData* data = (wxPyTreeItemData*)self->GetItemData(item);
             if (data == NULL) {
                 data = new wxPyTreeItemData();
@@ -656,7 +684,7 @@ public:
             return data->GetData();
         }
 
-        void SetPyData(const wxTreeItemId& item, PyObject* obj) {
+        void SetItemPyData(const wxTreeItemId& item, PyObject* obj) {
             wxPyTreeItemData* data = (wxPyTreeItemData*)self->GetItemData(item);
             if (data == NULL) {
                 data = new wxPyTreeItemData(obj);
@@ -666,23 +694,25 @@ public:
                 data->SetData(obj);
         }
     }
+    %pythoncode { GetPyData = GetItemPyData }
+    %pythoncode { SetPyData = SetItemPyData }
 
 
     // force appearance of [+] button near the item. This is useful to
     // allow the user to expand the items which don't have any children now
     // - but instead add them only when needed, thus minimizing memory
     // usage and loading time.
-    void SetItemHasChildren(const wxTreeItemId& item, bool has = TRUE);
+    void SetItemHasChildren(const wxTreeItemId& item, bool has = true);
 
     // the item will be shown in bold
-    void SetItemBold(const wxTreeItemId& item, bool bold = TRUE);
+    void SetItemBold(const wxTreeItemId& item, bool bold = true);
 
     // set the item's text colour
-    void SetItemTextColour(const wxTreeItemId& item, const wxColour& col);
+    void SetItemTextColour(const wxTreeItemId& item, const wxColour& colour);
 
     // set the item's background colour
     void SetItemBackgroundColour(const wxTreeItemId& item,
-				 const wxColour& col);
+				 const wxColour& colour);
 
     // set the item's font (should be of the same height for all items)
     void SetItemFont(const wxTreeItemId& item, const wxFont& font);
@@ -708,12 +738,12 @@ public:
     // is item text in bold font?
     bool IsBold(const wxTreeItemId& item) const;
 
-    // if 'recursively' is FALSE, only immediate children count, otherwise
+    // if 'recursively' is False, only immediate children count, otherwise
     // the returned number is the number of all items in this branch
-    size_t GetChildrenCount(const wxTreeItemId& item, bool recursively = TRUE);
+    size_t GetChildrenCount(const wxTreeItemId& item, bool recursively = true);
 
 
-    // wxTreeItemId.IsOk() will return FALSE if there is no such item
+    // wxTreeItemId.IsOk() will return False if there is no such item
 
     // get the root tree item
     wxTreeItemId GetRootItem() const;
@@ -723,26 +753,26 @@ public:
 
     // get the items currently selected, return the number of such item
     //size_t GetSelections(wxArrayTreeItemIds&) const;
-    %addmethods {
+    %extend {
         PyObject* GetSelections() {
-            wxPyBeginBlockThreads();
+            bool blocked = wxPyBeginBlockThreads();
             PyObject*           rval = PyList_New(0);
             wxArrayTreeItemIds  array;
             size_t              num, x;
             num = self->GetSelections(array);
             for (x=0; x < num; x++) {
                 wxTreeItemId *tii = new wxTreeItemId(array.Item(x));
-                PyObject* item = wxPyConstructObject((void*)tii, wxT("wxTreeItemId"), TRUE);
+                PyObject* item = wxPyConstructObject((void*)tii, wxT("wxTreeItemId"), true);
                 PyList_Append(rval, item);
             }
-            wxPyEndBlockThreads();
+            wxPyEndBlockThreads(blocked);
             return rval;
         }
     }
 
 
     // get the parent of this item (may return NULL if root)
-    %name(GetItemParent)wxTreeItemId GetParent(const wxTreeItemId& item) const;
+    wxTreeItemId GetItemParent(const wxTreeItemId& item) const;
 
     // for this enumeration function you must pass in a "cookie" parameter
     // which is opaque for the application but is necessary for the library
@@ -751,11 +781,43 @@ public:
     // the "cookie" passed to GetFirstChild() and GetNextChild() should be
     // the same!
 
-    // get the first child of this item
-    wxTreeItemId GetFirstChild(const wxTreeItemId& item, long& INOUT = longzero) const;
 
-    // get the next child
-    wxTreeItemId GetNextChild(const wxTreeItemId& item, long& INOUT) const;
+    // NOTE: These are a copy of the same methods in _treectrl.i, be sure to
+    // update both at the same time.  (Or find a good way to refactor!)
+    %extend {
+        // Get the first child of this item.  Returns a wxTreeItemId and an
+        // opaque "cookie" value that should be passed to GetNextChild in
+        // order to continue the search.
+        PyObject* GetFirstChild(const wxTreeItemId& item) {
+            void* cookie = 0;
+            wxTreeItemId* ritem = new wxTreeItemId(self->GetFirstChild(item, cookie));
+            bool blocked = wxPyBeginBlockThreads();
+            PyObject* tup = PyTuple_New(2);
+            PyTuple_SET_ITEM(tup, 0, wxPyConstructObject(ritem, wxT("wxTreeItemId"), true));
+            PyTuple_SET_ITEM(tup, 1, wxPyMakeSwigPtr(cookie, wxT("void")));
+            wxPyEndBlockThreads(blocked);
+            return tup;
+        }
+
+
+        // Get the next child of this item.  The cookie parameter is the 2nd
+        // value returned from GetFirstChild or the previous GetNextChild.
+        // Returns a wxTreeItemId and an opaque "cookie" value that should be
+        // passed to GetNextChild in order to continue the search.
+        PyObject* GetNextChild(const wxTreeItemId& item, void* cookie) {
+            wxTreeItemId* ritem = new wxTreeItemId(self->GetNextChild(item, cookie));
+            bool blocked = wxPyBeginBlockThreads();
+            PyObject* tup = PyTuple_New(2);
+            PyTuple_SET_ITEM(tup, 0, wxPyConstructObject(ritem, wxT("wxTreeItemId"), true));
+            PyTuple_SET_ITEM(tup, 1, wxPyMakeSwigPtr(cookie, wxT("void")));
+            wxPyEndBlockThreads(blocked);
+            return tup;
+        }
+
+
+        // TODO:  GetPrevChild
+        
+    }
 
     // get the last child of this item - this method doesn't use cookies
     wxTreeItemId GetLastChild(const wxTreeItemId& item) const;
@@ -843,9 +905,11 @@ public:
     void UnselectAll();
 
     // select this item
-    void SelectItem(const wxTreeItemId& item, bool unselect_others=TRUE,
-		    bool extended_select=FALSE);
+    void SelectItem(const wxTreeItemId& item, bool unselect_others=true,
+		    bool extended_select=false);
 
+    void SelectAll(bool extended_select=false);
+    
     // make sure this item is visible (expanding the parent item and/or
     // scrolling to this item if necessary)
     void EnsureVisible(const wxTreeItemId& item);
@@ -856,20 +920,19 @@ public:
     // Returns wxTreeItemId, flags, and column
     wxTreeItemId HitTest(const wxPoint& point, int& OUTPUT, int& OUTPUT);
 
-    %addmethods {
+    %extend {
         // get the bounding rectangle of the item (or of its label only)
-        PyObject* GetBoundingRect(const wxTreeItemId& item, bool textOnly = FALSE) {
+        PyObject* GetBoundingRect(const wxTreeItemId& item, bool textOnly = false) {
             wxRect rect;
             if (self->GetBoundingRect(item, rect, textOnly)) {
-                wxPyBeginBlockThreads();
+                bool blocked = wxPyBeginBlockThreads();
                 wxRect* r = new wxRect(rect);
                 PyObject* val = wxPyConstructObject((void*)r, wxT("wxRect"), 1);
-                wxPyEndBlockThreads();
+                wxPyEndBlockThreads(blocked);
                 return val;
             }
             else {
-                Py_INCREF(Py_None);
-                return Py_None;
+                RETURN_NONE();
             }
         }
     }
@@ -884,34 +947,12 @@ public:
     // sort the children of this item using OnCompareItems
     void SortChildren(const wxTreeItemId& item);
 
-    // get the selected item image
-    int GetItemSelectedImage(const wxTreeItemId& item) const;
-
-    // set the selected item image
-    void SetItemSelectedImage(const wxTreeItemId& item, int image);
-
+    // searching
+    wxTreeItemId FindItem (const wxTreeItemId& item, const wxString& str, int flags = 0);
 
     wxWindow* GetHeaderWindow() const;
-    wxWindow* GetMainWindow() const;
+    wxScrolledWindow* GetMainWindow() const;
 
-%pragma(python) addtoclass = "
-    # Redefine some methods that SWIG gets a bit confused on...
-    def GetFirstChild(self, *_args, **_kwargs):
-        val1,val2 = gizmosc.wxTreeListCtrl_GetFirstChild(self, *_args, **_kwargs)
-        val1 = wxTreeItemIdPtr(val1)
-        val1.thisown = 1
-        return (val1,val2)
-    def GetNextChild(self, *_args, **_kwargs):
-        val1,val2 = gizmosc.wxTreeListCtrl_GetNextChild(self, *_args, **_kwargs)
-        val1 = wxTreeItemIdPtr(val1)
-        val1.thisown = 1
-        return (val1,val2)
-    def HitTest(self, *_args, **_kwargs):
-        val1, val2, val3 = gizmosc.wxTreeListCtrl_HitTest(self, *_args, **_kwargs)
-        val1 = wxTreeItemIdPtr(val1)
-        val1.thisown = 1
-        return (val1, val2, val3)
-"
 };
 
 
@@ -922,9 +963,6 @@ public:
 
 %init %{
 
-    wxClassInfo::CleanUpClasses();
-    wxClassInfo::InitializeClasses();
-
     wxPyPtrTypeMap_Add("wxTreeCompanionWindow", "wxPyTreeCompanionWindow");
     wxPyPtrTypeMap_Add("wxTreeListCtrl", "wxPyTreeListCtrl");
 %}
@@ -934,9 +972,4 @@ public:
 
 //----------------------------------------------------------------------
 //----------------------------------------------------------------------
-
-
-
-
-
 

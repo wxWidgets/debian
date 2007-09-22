@@ -4,9 +4,9 @@
 // Author:      Vadim Zeitlin
 // Modified by:
 // Created:     20.02.01
-// RCS-ID:      $Id: gaugecmn.cpp,v 1.3 2002/01/07 21:52:28 GD Exp $
+// RCS-ID:      $Id: gaugecmn.cpp,v 1.8 2004/09/15 13:20:17 ABX Exp $
 // Copyright:   (c) 2001 Vadim Zeitlin <zeitlin@dptmaths.ens-cachan.fr>
-// License:     wxWindows license
+// License:     wxWindows licence
 ///////////////////////////////////////////////////////////////////////////////
 
 // ============================================================================
@@ -17,7 +17,7 @@
 // headers
 // ----------------------------------------------------------------------------
 
-#ifdef __GNUG__
+#if defined(__GNUG__) && !defined(NO_GCC_PRAGMA)
     #pragma implementation "gaugebase.h"
 #endif
 
@@ -58,7 +58,7 @@ bool wxGaugeBase::Create(wxWindow *parent,
                          const wxString& name)
 {
     if ( !wxControl::Create(parent, id, pos, size, style, validator, name) )
-        return FALSE;
+        return false;
 
     SetName(name);
 
@@ -69,7 +69,7 @@ bool wxGaugeBase::Create(wxWindow *parent,
     SetRange(range);
     SetValue(0);
 
-    return TRUE;
+    return true;
 }
 
 // ----------------------------------------------------------------------------

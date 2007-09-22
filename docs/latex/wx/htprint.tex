@@ -27,16 +27,19 @@ This class serves as printout class for HTML documents.
 Constructor. 
 
 
+\membersection{wxHtmlPrintout::AddFilter}\label{wxhtmlprintoutaddfilter}
+
+\func{static void}{AddFilter}{\param{wxHtmlFilter* }{filter}}
+
+Adds a filter to the static list of filters for wxHtmlPrintout. See \helpref{wxHtmlFilter}{wxhtmlfilter} for
+further information.
+
 \membersection{wxHtmlPrintout::SetFonts}\label{wxhtmlprintoutsetfonts}
 
 \func{void}{SetFonts}{\param{wxString }{normal\_face}, \param{wxString }{fixed\_face}, \param{const int }{*sizes = NULL}}
 
 Sets fonts. See \helpref{wxHtmlWindow::SetFonts}{wxhtmlwindowsetfonts} for
 detailed description.
-
-\wxheading{Note}
-
-This method was added in wxWidgets 2.4.1.
 
 \membersection{wxHtmlPrintout::SetFooter}\label{wxhtmlprintoutsetfooter}
 
@@ -85,7 +88,7 @@ any virtual file system or it may be normal file.
 
 \membersection{wxHtmlPrintout::SetHtmlText}\label{wxhtmlprintoutsethtmltext}
 
-\func{void}{SetHtmlText}{\param{const wxString\& }{html}, \param{const wxString\& }{basepath = wxEmptyString}, \param{bool }{isdir = TRUE}}
+\func{void}{SetHtmlText}{\param{const wxString\& }{html}, \param{const wxString\& }{basepath = wxEmptyString}, \param{bool }{isdir = true}}
 
 Prepare the class for printing this HTML text.
 
@@ -96,7 +99,7 @@ Prepare the class for printing this HTML text.
 \docparam{basepath}{base directory (html string would be stored there if it was in
 file). It is used to determine path for loading images, for example.}
 
-\docparam{isdir}{FALSE if basepath is filename, TRUE if it is directory name
+\docparam{isdir}{false if basepath is filename, true if it is directory name
 (see \helpref{wxFileSystem}{wxfilesystem} for detailed explanation)}
 
 

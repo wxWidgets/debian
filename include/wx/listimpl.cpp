@@ -4,10 +4,17 @@
 // Author:      Vadim Zeitlin
 // Modified by:
 // Created:     16/11/98
-// RCS-ID:      $Id: listimpl.cpp,v 1.4 2000/07/15 19:49:56 cvsuser Exp $
+// RCS-ID:      $Id: listimpl.cpp,v 1.7 2004/05/23 20:50:23 JS Exp $
 // Copyright:   (c) 1998 Vadim Zeitlin
-// Licence:     wxWindows license
+// Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
+
+#if wxUSE_STL
+
+#undef WX_DEFINE_LIST
+#define WX_DEFINE_LIST(name)
+
+#else // if !wxUSE_STL
 
 #define _DEFINE_LIST(T, name)                   \
     void wx##name##Node::DeleteData()    \
@@ -22,3 +29,5 @@
 
 // don't pollute preprocessor's name space
 //#undef  _DEFINE_LIST
+
+#endif

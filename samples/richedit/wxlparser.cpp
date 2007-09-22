@@ -3,7 +3,7 @@
  *                                                                  *
  * (C) 1998,1999 by Karsten Ballüder (Ballueder@usa.net)            *
  *                                                                  *
- * $Id: wxlparser.cpp,v 1.11 2001/10/30 13:32:30 GT Exp $
+ * $Id: wxlparser.cpp,v 1.14 2004/10/06 20:54:17 ABX Exp $
  *******************************************************************/
 
 #ifdef __GNUG__
@@ -28,7 +28,7 @@
 
 #define   BASE_SIZE 12
 
-inline static bool IsEndOfLine(const char *p)
+inline static bool IsEndOfLine(const wxChar *p)
 {
    // the end of line is either just '\n' or "\r\n" - we understand both (even
    // though the second is used only under DOS/Windows) to be able to import
@@ -43,9 +43,10 @@ void wxLayoutImportText(wxLayoutList *list, wxString const &str)
 
    // we change the string only temporarily inside this function
    // VZ: I still don't like it... the string data may be shared...
-   char * cptr = (char *)str.c_str(); // const_cast
-   const char * begin = cptr;
-   char  backup;
+   wxChar * cptr = (wxChar *)str.c_str(); // const_cast
+   const wxChar * begin = cptr;
+   wxUnusedVar(begin);
+   wxChar  backup;
 
    for(;;)
    {
@@ -76,26 +77,26 @@ wxString wxLayoutExportCmdAsHTML(wxLayoutObjectCmd const & cmd,
                                  wxLayoutStyleInfo *styleInfo,
                                  bool firstTime)
 {
-   static char buffer[20];
+   static wxChar buffer[20];
    wxString html;
 
    wxLayoutStyleInfo *si = cmd.GetStyle();
 
    int size, sizecount;
 
-   html += "<font ";
+   html += _T("<font ");
 
    if(si->m_fg_valid)
    {
-      html +="color=";
-      sprintf(buffer,"\"#%02X%02X%02X\"", si->m_fg.Red(),si->m_fg.Green(),si->m_fg.Blue());
+      html += _T("color=");
+      wxSprintf(buffer,_T("\"#%02X%02X%02X\""), si->m_fg.Red(),si->m_fg.Green(),si->m_fg.Blue());
       html += buffer;
    }
 
    if(si->m_bg_valid)
    {
-      html += " bgcolor=";
-      sprintf(buffer,"\"#%02X%02X%02X\"", si->m_bg.Red(),si->m_bg.Green(),si->m_bg.Blue());
+      html += _T(" bgcolor=");
+      wxSprintf(buffer,_T("\"#%02X%02X%02X\""), si->m_bg.Red(),si->m_bg.Green(),si->m_bg.Blue());
       html += buffer;
    }
 
@@ -103,11 +104,11 @@ wxString wxLayoutExportCmdAsHTML(wxLayoutObjectCmd const & cmd,
    {
    case wxSWISS:
    case wxMODERN:
-      html += " face=\"Arial,Helvetica\""; break;
+      html += _T(" face=\"Arial,Helvetica\""); break;
    case wxROMAN:
-      html += " face=\"Times New Roman, Times\""; break;
+      html += _T(" face=\"Times New Roman, Times\""); break;
    case wxTELETYPE:
-      html += " face=\"Courier New, Courier\""; break;
+      html += _T(" face=\"Courier New, Courier\""); break;
    default:
       ;
    }
@@ -123,34 +124,34 @@ wxString wxLayoutExportCmdAsHTML(wxLayoutObjectCmd const & cmd,
       sizecount --;
       size = (size*10)/12;
    }
-   html += "size=";
-   sprintf(buffer,"%+1d", sizecount);
+   html += _T("size=");
+   wxSprintf(buffer,_T("%+1d"), sizecount);
    html += buffer;
 
-   html +=">";
+   html += _T(">");
 
    if(styleInfo != NULL && ! firstTime)
-      html ="</font>"+html; // terminate any previous font command
+      html = _T("</font>")+html; // terminate any previous font command
 
    if((si->weight == wxBOLD) && ( (!styleInfo) || (styleInfo->weight != wxBOLD)))
-      html += "<b>";
+      html += _T("<b>");
    else
       if(si->weight != wxBOLD && ( styleInfo && (styleInfo->weight == wxBOLD)))
-         html += "</b>";
+         html += _T("</b>");
 
    if(si->style == wxSLANT)
       si->style = wxITALIC; // the same for html
 
    if((si->style == wxITALIC) && ( (!styleInfo) || (styleInfo->style != wxITALIC)))
-      html += "<i>";
+      html += _T("<i>");
    else
       if(si->style != wxITALIC && ( styleInfo && (styleInfo->style == wxITALIC)))
-         html += "</i>";
+         html += _T("</i>");
 
    if(si->underline && ( (!styleInfo) || ! styleInfo->underline))
-      html += "<u>";
+      html += _T("<u>");
    else if(si->underline == false && ( styleInfo && styleInfo->underline))
-      html += "</u>";
+      html += _T("</u>");
 
 
    *styleInfo = *si; // update last style info
@@ -165,7 +166,7 @@ wxLayoutExportStatus::wxLayoutExportStatus(wxLayoutList *list)
    m_si = list->GetDefaultStyleInfo();
    m_line = list->GetFirstLine();
    m_iterator = m_line->GetFirstObject();
-   m_FirstTime = TRUE;
+   m_FirstTime = true;
 }
 
 
@@ -179,10 +180,11 @@ wxLayoutExportStatus::wxLayoutExportStatus(wxLayoutList *list)
 wxLayoutExportObject *wxLayoutExport(wxLayoutExportStatus *status,
                                      int mode, int flags)
 {
+   wxLayoutObjectList::iterator nulled(NULL);
    wxASSERT(status);
    wxLayoutExportObject * exp;
 
-   if(status->m_iterator == NULLIT) // end of line
+   if(status->m_iterator == nulled) // end of line
    {
       if(!status->m_line || status->m_line->GetNextLine() == NULL)
          // reached end of list
@@ -190,7 +192,7 @@ wxLayoutExportObject *wxLayoutExport(wxLayoutExportStatus *status,
    }
    exp = new wxLayoutExportObject();
    wxLayoutObjectType type;
-   if(status->m_iterator != NULLIT)
+   if(status->m_iterator != nulled)
    {
       type = (** status->m_iterator).GetType();
       if( mode == WXLO_EXPORT_AS_OBJECTS || ! WXLO_IS_TEXT(type)) // simple case
@@ -202,7 +204,7 @@ wxLayoutExportObject *wxLayoutExport(wxLayoutExportStatus *status,
       }
    }
    else
-   {  // iterator == NULLIT
+   {  // iterator == nulled
       if(mode == WXLO_EXPORT_AS_OBJECTS)
       {
          exp->type = WXLO_EXPORT_EMPTYLINE;
@@ -215,17 +217,18 @@ wxLayoutExportObject *wxLayoutExport(wxLayoutExportStatus *status,
       else
          type = WXLO_TYPE_TEXT;
    }
+   wxUnusedVar(type);
 
    wxString *str = new wxString();
    // text must be concatenated
    for(;;)
    {
-      while(status->m_iterator == NULLIT)
+      while(status->m_iterator == nulled)
       {
          if(mode & WXLO_EXPORT_AS_HTML)
-            *str += "<br>";
+            *str += _T("<br>");
          if(flags & WXLO_EXPORT_WITH_CRLF)
-            *str += "\r\n";
+            *str += _T("\r\n");
          else
             *str += '\n';
 
@@ -250,7 +253,7 @@ wxLayoutExportObject *wxLayoutExport(wxLayoutExportStatus *status,
             *str += wxLayoutExportCmdAsHTML(
                *(wxLayoutObjectCmd const *)*status->m_iterator,
                & status->m_si, status->m_FirstTime);
-         status->m_FirstTime = FALSE;
+         status->m_FirstTime = false;
          break;
       default:  // ignore icons
          ;

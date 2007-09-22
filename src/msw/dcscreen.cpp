@@ -4,12 +4,12 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     01/02/97
-// RCS-ID:      $Id: dcscreen.cpp,v 1.8 2002/03/05 00:52:01 VZ Exp $
-// Copyright:   (c) Julian Smart and Markus Holzem
+// RCS-ID:      $Id: dcscreen.cpp,v 1.12 2004/05/23 20:52:58 JS Exp $
+// Copyright:   (c) Julian Smart
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
 
-#ifdef __GNUG__
+#if defined(__GNUG__) && !defined(NO_GCC_PRAGMA)
 #pragma implementation "dcscreen.h"
 #endif
 

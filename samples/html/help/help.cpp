@@ -16,7 +16,7 @@
 #endif
 
 // for all others, include the necessary headers (this file is usually all you
-// need because it includes almost all "standard" wxWindows headers
+// need because it includes almost all "standard" wxWidgets headers
 #ifndef WX_PRECOMP
     #include "wx/wx.h"
 #endif
@@ -61,7 +61,7 @@
    private:
       wxHtmlHelpController help;
    
-    // any class wishing to process wxWindows events must use this macro
+    // any class wishing to process wxWidgets events must use this macro
     DECLARE_EVENT_TABLE()
    };
 
@@ -78,10 +78,10 @@
    };
 
 // ----------------------------------------------------------------------------
-// event tables and other macros for wxWindows
+// event tables and other macros for wxWidgets
 // ----------------------------------------------------------------------------
 
-// the event tables connect the wxWindows events with the functions (event
+// the event tables connect the wxWidgets events with the functions (event
 // handlers) which process them. It can be also done at run-time, but for the
 // simple menu events like this the static method is much simpler.
    BEGIN_EVENT_TABLE(MyFrame, wxFrame)
@@ -90,7 +90,7 @@
    EVT_CLOSE(MyFrame::OnClose)
    END_EVENT_TABLE()
 
-   // Create a new application object: this macro will allow wxWindows to create
+   // Create a new application object: this macro will allow wxWidgets to create
    // the application object during program execution (it's better than using a
    // static object for many reasons) and also declares the accessor function
    // wxGetApp() which will return the reference of the right type (i.e. MyApp and
@@ -111,23 +111,23 @@
 #if wxUSE_STREAMS && wxUSE_ZIPSTREAM && wxUSE_ZLIB 
       wxFileSystem::AddHandler(new wxZipFSHandler);
 #endif
-      SetVendorName(wxT("wxWindows"));
+      SetVendorName(wxT("wxWidgets"));
       SetAppName(wxT("wxHTMLHelp")); 
 
     // Create the main application window
       MyFrame *frame = new MyFrame(_("HTML Help Sample"),
-         wxPoint(50, 50), wxSize(150, 50));
+         wxDefaultPosition, wxDefaultSize);
 
     // Show it and tell the application that it's our main window
     // @@@ what does it do exactly, in fact? is it necessary here?
-      frame->Show(TRUE);
+      frame->Show(true);
       SetTopWindow(frame);
 
 
     // success: wxApp::OnRun() will be called which will enter the main message
-    // loop and the application will run. If we returned FALSE here, the
+    // loop and the application will run. If we returned false here, the
     // application would exit immediately.
-      return TRUE;
+      return true;
    }
 
 // ----------------------------------------------------------------------------
@@ -137,7 +137,7 @@
 
 // frame constructor
    MyFrame::MyFrame(const wxString& title, const wxPoint& pos, const wxSize& size)
-   : wxFrame((wxFrame *)NULL, -1, title, pos, size), 
+   : wxFrame((wxFrame *)NULL, wxID_ANY, title, pos, size), 
      help(wxHF_DEFAULT_STYLE | wxHF_OPEN_FILES)
    {
     // create a menu bar
@@ -169,8 +169,8 @@
 
    void MyFrame::OnQuit(wxCommandEvent& WXUNUSED(event))
    {
-    // TRUE is to force the frame to close
-      Close(TRUE);
+    // true is to force the frame to close
+      Close(true);
    }
 
    void MyFrame::OnHelp(wxCommandEvent& WXUNUSED(event))
@@ -183,7 +183,7 @@
        // Close the help frame; this will cause the config data to
        // get written.
        if ( help.GetFrame() ) // returns NULL if no help frame active
-           help.GetFrame()->Close(TRUE);
+           help.GetFrame()->Close(true);
        // now we can safely delete the config pointer
        event.Skip();   
        delete wxConfig::Set(NULL);

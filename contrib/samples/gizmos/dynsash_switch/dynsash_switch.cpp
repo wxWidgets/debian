@@ -7,7 +7,7 @@
 // Author:      Matt Kimball
 // Modified by:
 // Created:     7/15/2001
-// RCS-ID:      $Id: dynsash_switch.cpp,v 1.3 2002/03/07 10:06:22 JS Exp $
+// RCS-ID:      $Id: dynsash_switch.cpp,v 1.7 2004/06/08 19:27:33 ABX Exp $
 // Copyright:   (c) 2001 Matt Kimball
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -20,7 +20,7 @@
 #endif
 
 // for all others, include the necessary headers (this file is usually all you
-// need because it includes almost all "standard" wxWindows headers)
+// need because it includes almost all "standard" wxWidgets headers)
 #ifndef WX_PRECOMP
     #include "wx/wx.h"
 #endif
@@ -65,19 +65,19 @@ IMPLEMENT_APP(SwitchDemo)
 
 
 SwitchView::SwitchView(wxDynamicSashWindow *win) {
-    Create(win, -1);
+    Create(win, wxID_ANY);
 
     m_dyn_sash = win;
 
-    m_bar = new wxWindow(this, -1, wxDefaultPosition, wxDefaultSize, wxRAISED_BORDER, "bar");
-    m_choice = new wxChoice(m_bar, -1);
+    m_bar = new wxWindow(this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxRAISED_BORDER, wxT("bar"));
+    m_choice = new wxChoice(m_bar, wxID_ANY);
     m_choice->SetEventHandler(this);
-    m_view = new wxWindow(this, -1, wxDefaultPosition, wxDefaultSize, 0, "view");
+    m_view = new wxWindow(this, wxID_ANY, wxDefaultPosition, wxDefaultSize, 0, wxT("view"));
     m_view->SetBackgroundColour(*wxWHITE);
     m_view->SetEventHandler(this);
 
-    m_choice->Append("Triangle");
-    m_choice->Append("Square");
+    m_choice->Append(wxT("Triangle"));
+    m_choice->Append(wxT("Square"));
     m_choice->SetSelection(0);
 
     wxLayoutConstraints *layout;
@@ -109,30 +109,60 @@ SwitchView::SwitchView(wxDynamicSashWindow *win) {
     hscroll->SetEventHandler(this);
     vscroll->SetEventHandler(this);
 
-    Connect(GetId(), wxEVT_SIZE, (wxObjectEventFunction)&SwitchView::OnSize);
-    Connect(m_choice->GetId(), wxEVT_COMMAND_CHOICE_SELECTED, (wxObjectEventFunction)&SwitchView::OnChoice);
-    Connect(m_view->GetId(), wxEVT_PAINT, (wxObjectEventFunction)&SwitchView::OnPaint);
+    Connect(GetId(), wxEVT_SIZE, (wxObjectEventFunction)
+                                 (wxEventFunction)
+                                 (wxSizeEventFunction)&SwitchView::OnSize);
+    Connect(m_choice->GetId(), wxEVT_COMMAND_CHOICE_SELECTED, (wxObjectEventFunction)
+                                                              (wxEventFunction)
+                                                              (wxCommandEventFunction)&SwitchView::OnChoice);
+    Connect(m_view->GetId(), wxEVT_PAINT, (wxObjectEventFunction)
+                                          (wxEventFunction)
+                                          (wxPaintEventFunction)&SwitchView::OnPaint);
 
-    Connect(-1, wxEVT_SET_FOCUS, (wxObjectEventFunction)&SwitchView::OnFocus);
-    Connect(-1, wxEVT_SCROLL_TOP, (wxObjectEventFunction)&SwitchView::OnScroll);
-    Connect(-1, wxEVT_SCROLL_BOTTOM, (wxObjectEventFunction)&SwitchView::OnScroll);
-    Connect(-1, wxEVT_SCROLL_LINEUP, (wxObjectEventFunction)&SwitchView::OnScroll);
-    Connect(-1, wxEVT_SCROLL_LINEDOWN, (wxObjectEventFunction)&SwitchView::OnScroll);
-    Connect(-1, wxEVT_SCROLL_PAGEUP, (wxObjectEventFunction)&SwitchView::OnScroll);
-    Connect(-1, wxEVT_SCROLL_PAGEDOWN, (wxObjectEventFunction)&SwitchView::OnScroll);
-    Connect(-1, wxEVT_SCROLL_THUMBTRACK, (wxObjectEventFunction)&SwitchView::OnScroll);
-    Connect(-1, wxEVT_SCROLL_THUMBRELEASE, (wxObjectEventFunction)&SwitchView::OnScroll);
-    Connect(-1, wxEVT_ERASE_BACKGROUND, (wxObjectEventFunction)&SwitchView::OnErase);
+    Connect(wxID_ANY, wxEVT_SET_FOCUS, (wxObjectEventFunction)
+                                 (wxEventFunction)
+                                 (wxFocusEventFunction)&SwitchView::OnFocus);
+    Connect(wxID_ANY, wxEVT_SCROLL_TOP, (wxObjectEventFunction)
+                                  (wxEventFunction)
+                                  (wxScrollEventFunction)&SwitchView::OnScroll);
+    Connect(wxID_ANY, wxEVT_SCROLL_BOTTOM, (wxObjectEventFunction)
+                                     (wxEventFunction)
+                                     (wxScrollEventFunction)&SwitchView::OnScroll);
+    Connect(wxID_ANY, wxEVT_SCROLL_LINEUP, (wxObjectEventFunction)
+                                     (wxEventFunction)
+                                     (wxScrollEventFunction)&SwitchView::OnScroll);
+    Connect(wxID_ANY, wxEVT_SCROLL_LINEDOWN, (wxObjectEventFunction)
+                                       (wxEventFunction)
+                                       (wxScrollEventFunction)&SwitchView::OnScroll);
+    Connect(wxID_ANY, wxEVT_SCROLL_PAGEUP, (wxObjectEventFunction)
+                                     (wxEventFunction)
+                                     (wxScrollEventFunction)&SwitchView::OnScroll);
+    Connect(wxID_ANY, wxEVT_SCROLL_PAGEDOWN, (wxObjectEventFunction)
+                                       (wxEventFunction)
+                                       (wxScrollEventFunction)&SwitchView::OnScroll);
+    Connect(wxID_ANY, wxEVT_SCROLL_THUMBTRACK, (wxObjectEventFunction)
+                                         (wxEventFunction)
+                                         (wxScrollEventFunction)&SwitchView::OnScroll);
+    Connect(wxID_ANY, wxEVT_SCROLL_THUMBRELEASE, (wxObjectEventFunction)
+                                           (wxEventFunction)
+                                           (wxScrollEventFunction)&SwitchView::OnScroll);
+    Connect(wxID_ANY, wxEVT_ERASE_BACKGROUND, (wxObjectEventFunction)
+                                        (wxEventFunction)
+                                        (wxEraseEventFunction)&SwitchView::OnErase);
 
-    Connect(-1, wxEVT_DYNAMIC_SASH_SPLIT, (wxObjectEventFunction)&SwitchView::OnSplit);
-    Connect(-1, wxEVT_DYNAMIC_SASH_UNIFY, (wxObjectEventFunction)&SwitchView::OnUnify);
+    Connect(wxID_ANY, wxEVT_DYNAMIC_SASH_SPLIT, (wxObjectEventFunction)
+                                          (wxEventFunction)
+                                          (wxDynamicSashSplitEventFunction)&SwitchView::OnSplit);
+    Connect(wxID_ANY, wxEVT_DYNAMIC_SASH_UNIFY, (wxObjectEventFunction)
+                                          (wxEventFunction)
+                                          (wxDynamicSashUnifyEventFunction)&SwitchView::OnUnify);
 }
 
 wxSize SwitchView::DoGetBestSize() const {
     return wxSize(64, 64);
 }
 
-void SwitchView::OnSize(wxSizeEvent& event) {
+void SwitchView::OnSize(wxSizeEvent& WXUNUSED(event)) {
     Layout();
 
     wxScrollBar *hscroll = m_dyn_sash->GetHScrollBar(this);
@@ -153,7 +183,7 @@ void SwitchView::OnSize(wxSizeEvent& event) {
     }
 }
 
-void SwitchView::OnPaint(wxPaintEvent& event) {
+void SwitchView::OnPaint(wxPaintEvent& WXUNUSED(event)) {
     wxPaintDC dc(m_view);
 
     wxScrollBar *hscroll = m_dyn_sash->GetHScrollBar(this);
@@ -174,11 +204,11 @@ void SwitchView::OnPaint(wxPaintEvent& event) {
     }
 }
 
-void SwitchView::OnErase(wxEraseEvent& event) {
+void SwitchView::OnErase(wxEraseEvent& WXUNUSED(event)) {
     // Do nothing
 }
 
-void SwitchView::OnSplit(wxDynamicSashSplitEvent& event) {
+void SwitchView::OnSplit(wxDynamicSashSplitEvent& WXUNUSED(event)) {
     SwitchView *view = new SwitchView(m_dyn_sash);
     view->m_choice->SetSelection(m_choice->GetSelection());
 
@@ -189,7 +219,7 @@ void SwitchView::OnSplit(wxDynamicSashSplitEvent& event) {
     vscroll->SetEventHandler(this);
 }
 
-void SwitchView::OnUnify(wxDynamicSashUnifyEvent& event) {
+void SwitchView::OnUnify(wxDynamicSashUnifyEvent& WXUNUSED(event)) {
     wxScrollBar *hscroll = m_dyn_sash->GetHScrollBar(this);
     wxScrollBar *vscroll = m_dyn_sash->GetVScrollBar(this);
 
@@ -197,11 +227,11 @@ void SwitchView::OnUnify(wxDynamicSashUnifyEvent& event) {
     vscroll->SetEventHandler(this);
 }
 
-void SwitchView::OnChoice(wxCommandEvent& event) {
+void SwitchView::OnChoice(wxCommandEvent& WXUNUSED(event)) {
     m_view->Refresh();
 }
 
-void SwitchView::OnScroll(wxScrollEvent& event) {
+void SwitchView::OnScroll(wxScrollEvent& WXUNUSED(event)) {
     m_view->Refresh();
 }
 
@@ -222,12 +252,12 @@ bool SwitchDemo::OnInit() {
     wxFrame *frame;
     wxDynamicSashWindow *dyn;
 
-    frame = new wxFrame(NULL, -1, "Dynamic Sash Window Switch Demo");
-    dyn = new wxDynamicSashWindow(frame, -1, wxDefaultPosition, wxDefaultSize, wxCLIP_CHILDREN);
+    frame = new wxFrame(NULL, wxID_ANY, wxT("Dynamic Sash Window Switch Demo"));
+    dyn = new wxDynamicSashWindow(frame, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxCLIP_CHILDREN);
     new SwitchView(dyn);
 
     frame->SetSize(480, 480);
     frame->Show();
 
-    return TRUE;
+    return true;
 }

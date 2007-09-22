@@ -2,7 +2,7 @@
 // Name:        imagiff.h
 // Purpose:     wxImage handler for Amiga IFF images
 // Author:      Steffen Gutmann, Thomas Meyer
-// RCS-ID:      $Id: imagiff.cpp,v 1.6 2002/05/22 23:14:47 VZ Exp $
+// RCS-ID:      $Id: imagiff.cpp,v 1.12 2004/11/10 21:02:24 VZ Exp $
 // Copyright:   (c) Steffen Gutmann, 2002
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -10,9 +10,9 @@
 // Parts of this source are based on the iff loading algorithm found
 // in xviff.c.  Permission by the original author, Thomas Meyer, and
 // by the author of xv, John Bradley for using the iff loading part
-// in wxWindows has been gratefully given.
+// in wxWidgets has been gratefully given.
 
-#ifdef __GNUG__
+#if defined(__GNUG__) && !defined(NO_GCC_PRAGMA)
 #pragma implementation "imagiff.h"
 #endif
 
@@ -33,6 +33,10 @@
 #include "wx/wfstream.h"
 #include "wx/log.h"
 #include "wx/intl.h"
+
+#if wxUSE_PALETTE
+    #include "wx/palette.h"
+#endif // wxUSE_PALETTE
 
 #include <stdlib.h>
 #include <string.h>
@@ -68,7 +72,7 @@ public:
     unsigned int w;                 /* width */
     unsigned int h;                 /* height */
     int transparent;                /* transparent color (-1 = none) */
-    int colors;			    /* number of colors */
+    int colors;                     /* number of colors */
     unsigned char *p;               /* bitmap */
     unsigned char *pal;             /* palette */
 
@@ -79,8 +83,8 @@ public:
 class WXDLLEXPORT wxIFFDecoder
 {
 private:
-    IFFImage *m_image;		// image data
-    wxInputStream *m_f; 	// input stream
+    IFFImage *m_image;        // image data
+    wxInputStream *m_f;       // input stream
     unsigned char *databuf;
     unsigned char *picptr;
     unsigned char *decomp_mem;
@@ -142,7 +146,7 @@ bool wxIFFDecoder::ConvertToImage(wxImage *image) const
     image->Create(GetWidth(), GetHeight());
 
     if (!image->Ok())
-        return FALSE;
+        return false;
 
     unsigned char *pal = GetPalette();
     unsigned char *src = GetData();
@@ -171,7 +175,7 @@ bool wxIFFDecoder::ConvertToImage(wxImage *image) const
         image->SetMaskColour(255, 0, 255);
     }
     else
-        image->SetMask(FALSE);
+        image->SetMask(false);
 
 #if wxUSE_PALETTE
     if (pal && colors > 0)
@@ -203,7 +207,7 @@ bool wxIFFDecoder::ConvertToImage(wxImage *image) const
     dst[2] = src[2];
     }
 
-    return TRUE;
+    return true;
 }
 
 
@@ -226,16 +230,16 @@ int wxIFFDecoder::GetTransparentColour() const { return m_image->transparent; }
 
 //
 // CanRead:
-//  Returns TRUE if the file looks like a valid IFF, FALSE otherwise.
+//  Returns true if the file looks like a valid IFF, false otherwise.
 //
 bool wxIFFDecoder::CanRead()
 {
     unsigned char buf[12];
 
     if ( !m_f->Read(buf, WXSIZEOF(buf)) )
-        return FALSE;
+        return false;
 
-    m_f->SeekI(-(off_t)WXSIZEOF(buf), wxFromCurrent);
+    m_f->SeekI(-(wxFileOffset)WXSIZEOF(buf), wxFromCurrent);
 
     return (memcmp(buf, "FORM", 4) == 0) && (memcmp(buf+8, "ILBM", 4) == 0);
 }
@@ -243,7 +247,7 @@ bool wxIFFDecoder::CanRead()
 
 // ReadIFF:
 // Based on xv source code by Thomas Meyer
-// Permission for use in wxWindows has been gratefully given.
+// Permission for use in wxWidgets has been gratefully given.
 
 typedef unsigned char byte;
 #define IFFDEBUG 0
@@ -335,7 +339,7 @@ int wxIFFDecoder::ReadIFF()
     }
 
     // compute file length
-    off_t currentPos = m_f->TellI();
+    wxFileOffset currentPos = m_f->TellI();
     m_f->SeekI(0, wxFromEnd);
     long filesize = m_f->TellI();
     m_f->SeekI(currentPos, wxFromStart);
@@ -380,7 +384,7 @@ int wxIFFDecoder::ReadIFF()
     // main decoding loop. searches IFF chunks and handles them.
     // terminates when BODY chunk was found or dataptr ran over end of file
     //
-    bool BMHDok = FALSE, CMAPok = FALSE, CAMGok = FALSE;
+    bool BMHDok = false, CMAPok = false, CAMGok = false;
     int bmhd_width = 0, bmhd_height = 0, bmhd_bitplanes = 0, bmhd_transcol = -1;
     byte bmhd_masking = 0, bmhd_compression = 0;
     long camg_viewmode = 0;
@@ -396,7 +400,7 @@ int wxIFFDecoder::ReadIFF()
 #else
        if (chunkLen < 0) {     // format error?
 #endif
-	  break;
+         break;
     }
     bool truncated = (dataptr + 8 + chunkLen > dataend);
 
@@ -410,7 +414,7 @@ int wxIFFDecoder::ReadIFF()
         bmhd_masking  = *(dataptr + 8 + 9);
         bmhd_compression = *(dataptr + 8 + 10);     // get compression
         bmhd_transcol    = iff_getword(dataptr + 8 + 12);
-        BMHDok = TRUE;                              // got BMHD
+        BMHDok = true;                              // got BMHD
         dataptr += 8 + chunkLen;                    // to next chunk
     }
     else if (strncmp((char *)dataptr, "CMAP", 4) == 0) { // CMAP ?
@@ -441,14 +445,14 @@ int wxIFFDecoder::ReadIFF()
         wxLogTrace(_T("iff"), _T("Read %d colors from IFF file."),
             colors);
 
-        CMAPok = TRUE;                              // got CMAP
+        CMAPok = true;                              // got CMAP
         dataptr += 8 + chunkLen;                    // to next chunk
     } else if (strncmp((char *)dataptr, "CAMG", 4) == 0) { // CAMG ?
         if (chunkLen < 4 || truncated) {
         break;
         }
         camg_viewmode = iff_getlong(dataptr + 8);   // get viewmodes
-        CAMGok = TRUE;                              // got CAMG
+        CAMGok = true;                              // got CAMG
         dataptr += 8 + chunkLen;                    // to next chunk
     }
     else if (strncmp((char *)dataptr, "BODY", 4) == 0) { // BODY ?
@@ -759,7 +763,7 @@ bool wxIFFHandler::LoadFile(wxImage *image, wxInputStream& stream,
             }
         }
         delete decod;
-        return FALSE;
+        return false;
     }
 
     if ((error == wxIFF_TRUNCATED) && verbose)
@@ -780,7 +784,7 @@ bool wxIFFHandler::SaveFile(wxImage * WXUNUSED(image),
     if (verbose)
         wxLogDebug(wxT("IFF: the handler is read-only!!"));
 
-    return FALSE;
+    return false;
 }
 
 bool wxIFFHandler::DoCanRead(wxInputStream& stream)

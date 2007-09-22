@@ -3,6 +3,14 @@
 #include <wx/wfstream.h>
 #include <wx/string.h>
 
+#ifdef WXMAKINGDLL_SVG
+    #define WXDLLIMPEXP_SVG WXEXPORT
+#elif defined(WXUSINGDLL)
+    #define WXDLLIMPEXP_SVG WXIMPORT
+#else // not making nor using DLL
+    #define WXDLLIMPEXP_SVG
+#endif
+
 #define wxSVGVersion wxT("v0100")
 #ifdef __BORLANDC__
 #pragma warn -rch
@@ -20,7 +28,7 @@
 #define mm2pt            2.83464566929
 #define pt2mm            0.352777777778
 
-class wxSVGFileDC : public wxDC
+class WXDLLIMPEXP_SVG wxSVGFileDC : public wxDC
 {
 
     private:
@@ -83,8 +91,8 @@ class wxSVGFileDC : public wxDC
 
         void DoDrawText(const wxString& text, wxCoord x, wxCoord y);
 
-        bool DoFloodFill(wxCoord x, wxCoord y, const wxColour& col,
-                             int style = wxFLOOD_SURFACE)
+        bool DoFloodFill(wxCoord WXUNUSED(x), wxCoord WXUNUSED(y), const wxColour& WXUNUSED(col),
+                             int WXUNUSED(style) = wxFLOOD_SURFACE)
             { wxASSERT_MSG (FALSE, wxT("wxSVGFILEDC::DoFloodFill Call not implemented")); return FALSE ; };
 
         void DoGetSize(int * x, int *y) const { *x = m_width; *y = m_height ; return ; } ;
@@ -183,6 +191,7 @@ class wxSVGFileDC : public wxDC
                 return (wxCoord)((double)(y) * m_scaleY - 0.5);
         }
 
+	void write(const wxString &s);
 
     public:
 
@@ -248,7 +257,7 @@ class wxSVGFileDC : public wxDC
 
         wxCoord GetCharWidth() const;
 
-        void GetClippingBox(wxCoord *x, wxCoord *y, wxCoord *width, wxCoord *height)
+        void GetClippingBox(wxCoord *WXUNUSED(x), wxCoord *WXUNUSED(y), wxCoord * WXUNUSED(width), wxCoord * WXUNUSED(height))
             { wxASSERT_MSG (FALSE, wxT("wxSVGFILEDC::GetClippingBox Call not yet implemented")); return ; };
 
         int GetLogicalFunction()
@@ -276,10 +285,10 @@ class wxSVGFileDC : public wxDC
 
         void SetAxisOrientation( bool xLeftRight, bool yBottomUp ) ;
 
-        void SetClippingRegion(wxCoord x, wxCoord y, wxCoord width, wxCoord height)
+        void SetClippingRegion(wxCoord  WXUNUSED(x), wxCoord  WXUNUSED(y), wxCoord  WXUNUSED(width), wxCoord  WXUNUSED(height))
             { wxASSERT_MSG (FALSE, wxT("wxSVGFILEDC::SetClippingRegion Call not yet implemented")); return ; };
 
-        void SetPalette(const wxPalette& palette)
+        void SetPalette(const wxPalette&  WXUNUSED(palette))
             { wxASSERT_MSG (FALSE, wxT("wxSVGFILEDC::SetPalette Call not yet implemented")); return ; };
 
         void SetBackground( const wxBrush &brush ) ;
@@ -290,7 +299,7 @@ class wxSVGFileDC : public wxDC
 
         void SetFont(const wxFont& font) ;
 
-        void SetLogicalFunction(int function)
+        void SetLogicalFunction(int  WXUNUSED(function))
             { wxASSERT_MSG (FALSE, wxT("wxSVGFILEDC::SetLogicalFunction Call implemented")); return ; };
 
         void SetLogicalScale( double x, double y ) ;
@@ -301,13 +310,13 @@ class wxSVGFileDC : public wxDC
 
         void SetMapMode(int anint) ;
 
-        void SetOptimization(bool optimize) { return ; };
+        void SetOptimization(bool  WXUNUSED(optimize)) { return ; };
 
         void SetPen(const wxPen& pen)  ;
 
         void SetUserScale(double xScale, double yScale) ;
 
-        bool StartDoc(const wxString& message)
+        bool StartDoc(const wxString&  WXUNUSED(message))
             {  return FALSE; };
 
         void StartPage()

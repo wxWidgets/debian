@@ -1,10 +1,10 @@
 /////////////////////////////////////////////////////////////////////////////
 // Name:        typetest.h
-// Purpose:     Types wxWindows sample
+// Purpose:     Types wxWidgets sample
 // Author:      Julian Smart
 // Modified by:
 // Created:     04/01/98
-// RCS-ID:      $Id: typetest.h,v 1.13 2002/08/31 22:31:03 GD Exp $
+// RCS-ID:      $Id: typetest.h,v 1.15 2004/05/25 11:19:24 JS Exp $
 // Copyright:   (c) Julian Smart
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -25,10 +25,6 @@ public:
     bool OnInit();
     int OnExit() { delete m_mimeDatabase; return wxApp::OnExit(); }
 
-#if wxUSE_TIMEDATE
-    void DoDateDemo(wxCommandEvent& event);
-#endif // wxUSE_TIMEDATE
-    void DoTimeDemo(wxCommandEvent& event);
     void DoVariantDemo(wxCommandEvent& event);
     void DoByteOrderDemo(wxCommandEvent& event);
     void DoStreamDemo(wxCommandEvent& event);

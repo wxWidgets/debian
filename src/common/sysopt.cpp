@@ -4,9 +4,9 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     2001-07-10
-// RCS-ID:      $Id: sysopt.cpp,v 1.1.2.1 2002/12/13 21:35:15 MBN Exp $
+// RCS-ID:      $Id: sysopt.cpp,v 1.8 2004/09/22 14:38:52 ABX Exp $
 // Copyright:   (c) Julian Smart
-// Licence:   	wxWindows licence
+// Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
 
 // ============================================================================
@@ -17,7 +17,7 @@
 // headers
 // ---------------------------------------------------------------------------
 
-#ifdef __GNUG__
+#if defined(__GNUG__) && !defined(NO_GCC_PRAGMA)
     #pragma implementation "sysopt.h"
 #endif
 
@@ -37,6 +37,7 @@
 #include "wx/string.h"
 #include "wx/sysopt.h"
 #include "wx/module.h"
+#include "wx/arrstr.h"
 
 // ----------------------------------------------------------------------------
 // private classes
@@ -46,7 +47,7 @@
 // singleton class so it can't be done in the dtor)
 class wxSystemOptionsModule : public wxModule
 {
-    friend class WXDLLEXPORT wxSystemOptions;
+    friend class WXDLLIMPEXP_BASE wxSystemOptions;
 public:
     virtual bool OnInit();
     virtual void OnExit();
@@ -73,7 +74,7 @@ wxArrayString wxSystemOptionsModule::sm_optionValues;
 
 bool wxSystemOptionsModule::OnInit()
 {
-    return TRUE;
+    return true;
 }
 
 void wxSystemOptionsModule::OnExit()
@@ -89,7 +90,7 @@ void wxSystemOptionsModule::OnExit()
 // Option functions (arbitrary name/value mapping)
 void wxSystemOptions::SetOption(const wxString& name, const wxString& value)
 {
-    int idx = wxSystemOptionsModule::sm_optionNames.Index(name, FALSE);
+    int idx = wxSystemOptionsModule::sm_optionNames.Index(name, false);
     if (idx == wxNOT_FOUND)
     {
         wxSystemOptionsModule::sm_optionNames.Add(name);
@@ -111,7 +112,7 @@ void wxSystemOptions::SetOption(const wxString& name, int value)
 
 wxString wxSystemOptions::GetOption(const wxString& name)
 {
-    int idx = wxSystemOptionsModule::sm_optionNames.Index(name, FALSE);
+    int idx = wxSystemOptionsModule::sm_optionNames.Index(name, false);
     if (idx == wxNOT_FOUND)
         return wxEmptyString;
     else
@@ -125,7 +126,7 @@ int wxSystemOptions::GetOptionInt(const wxString& name)
 
 bool wxSystemOptions::HasOption(const wxString& name)
 {
-    return (wxSystemOptionsModule::sm_optionNames.Index(name, FALSE) != wxNOT_FOUND);
+    return (wxSystemOptionsModule::sm_optionNames.Index(name, false) != wxNOT_FOUND);
 }
 
 #endif

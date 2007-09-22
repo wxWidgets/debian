@@ -4,9 +4,9 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     12/07/98
-// RCS-ID:      $Id: palette.h,v 1.2 2002/09/07 12:12:21 GD Exp $
+// RCS-ID:      $Id: palette.h,v 1.6 2004/06/09 16:42:26 ABX Exp $
 // Copyright:   (c) Julian Smart
-// Licence:   	wxWindows licence
+// Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
 
 #ifndef _OGLSAMPLE_PALETTE_H_
@@ -18,11 +18,8 @@
 
 #include <wx/wx.h>
 #include <wx/string.h>
-#if 0 // def __WXGTK__
-#include <wx/toolbar.h>
-#else
-#include <wx/tbarsmpl.h>
-#endif
+#include <wx/deprecated/setup.h>
+#include <wx/deprecated/tbarsmpl.h>
 
 /*
  * Object editor tool palette
@@ -32,11 +29,14 @@
 // TODO for wxWin: wxToolBar95 cannot be moved to a non-0,0 position!
 // Needs to have a parent window...
 // So use a simple toolbar at present.
-#if 0 // def __WXGTK__
+// ABX: Simple toolbar is not available in default compilation
+//      so I use wxToolBar anyway
+// #if 0 // def __WXGTK__
+// #define TOOLPALETTECLASS    wxToolBar
+// #else
+// #define TOOLPALETTECLASS    wxToolBarSimple
+// #endif
 #define TOOLPALETTECLASS    wxToolBar
-#else
-#define TOOLPALETTECLASS    wxToolBarSimple
-#endif
 
 class EditorToolPalette: public TOOLPALETTECLASS
 {

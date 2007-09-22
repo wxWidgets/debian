@@ -1,12 +1,12 @@
 /////////////////////////////////////////////////////////////////////////////
 // Name:        wx_cw.h
-// Purpose:     wxWindows definitions for CodeWarrior builds
+// Purpose:     wxWidgets definitions for CodeWarrior builds
 // Author:      Stefan Csomor
 // Modified by:
 // Created:     12/10/98
-// RCS-ID:      $Id: wxshlb_cwc.h,v 1.1 2002/01/20 16:09:58 SC Exp $
+// RCS-ID:      $Id: wxshlb_cwc.h,v 1.5 2004/09/24 14:32:18 ABX Exp $
 // Copyright:   (c) Stefan Csomor
-// Licence:   	wxWindows licence
+// Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
 
 #ifndef _WX_CW__
@@ -18,23 +18,27 @@
 
 #if __option(profile)
 #ifdef __cplusplus
-	#if __POWERPC__
-		#include <wxshlb_Carbon++_prof.mch>
-	#endif
+    #if __POWERPC__
+        #include <wxshlb_Carbon++_prof.mch>
+    #endif
 #else
-	#if __POWERPC__
-		#include <wxshlb_Carbon_prof.mch>
-	#endif
+    #if __POWERPC__
+        #include <wxshlb_Carbon_prof.mch>
+    #endif
 #endif
 #else
 #ifdef __cplusplus
-	#if __POWERPC__
-		#include <wxshlb_Carbon++.mch>
-	#endif
+    #if __POWERPC__
+        #include <wxshlb_Carbon++.mch>
+    #elif __MACH__
+        #include <wxshlb_Mach++.mch>
+    #endif
 #else
-	#if __POWERPC__
-		#include <wxshlb_Carbon.mch>
-	#endif
+    #if __POWERPC__
+        #include <wxshlb_Carbon.mch>
+    #elif __MACH__
+        #include <wxshlb_Mach.mch>
+    #endif
 #endif
 #endif
 #endif

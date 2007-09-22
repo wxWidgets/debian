@@ -4,12 +4,12 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     01/02/97
-// RCS-ID:      $Id: gdicmn.cpp,v 1.73.2.3 2003/10/22 21:49:34 VZ Exp $
-// Copyright:   (c) Julian Smart and Markus Holzem
+// RCS-ID:      $Id: gdicmn.cpp,v 1.111 2004/11/05 19:54:26 ABX Exp $
+// Copyright:   (c) Julian Smart
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
 
-#ifdef __GNUG__
+#if defined(__GNUG__) && !defined(NO_GCC_PRAGMA)
 #pragma implementation "gdicmn.h"
 #endif
 
@@ -37,12 +37,13 @@
 #include "wx/dc.h"
 #include "wx/utils.h"
 #include "wx/settings.h"
+#include "wx/hashmap.h"
 
 #include "wx/log.h"
 #include <string.h>
 
-#ifdef __WXMSW__
-#include <windows.h>
+#if defined(__WXMSW__) && !defined(__PALMOS__)
+#include "wx/msw/wrapwin.h"
 #endif
 
 #ifdef __WXMOTIF__
@@ -63,33 +64,59 @@
 #include "wx/mac/private.h"
 #include "wx/mac/uma.h"
 #endif
-IMPLEMENT_CLASS(wxColourDatabase, wxList)
-IMPLEMENT_DYNAMIC_CLASS(wxFontList, wxList)
-IMPLEMENT_DYNAMIC_CLASS(wxPenList, wxList)
-IMPLEMENT_DYNAMIC_CLASS(wxBrushList, wxList)
-IMPLEMENT_DYNAMIC_CLASS(wxBitmapList, wxList)
-IMPLEMENT_DYNAMIC_CLASS(wxResourceCache, wxList)
+
+#if wxUSE_EXTENDED_RTTI
+
+// wxPoint
+
+template<> void wxStringReadValue(const wxString &s , wxPoint &data )
+{
+    wxSscanf(s, wxT("%d,%d"), &data.x , &data.y ) ;
+}
+
+template<> void wxStringWriteValue(wxString &s , const wxPoint &data )
+{
+    s = wxString::Format(wxT("%d,%d"), data.x , data.y ) ;
+}
+
+wxCUSTOM_TYPE_INFO(wxPoint, wxToStringConverter<wxPoint> , wxFromStringConverter<wxPoint>)
+
+template<> void wxStringReadValue(const wxString &s , wxSize &data )
+{
+    wxSscanf(s, wxT("%d,%d"), &data.x , &data.y ) ;
+}
+
+template<> void wxStringWriteValue(wxString &s , const wxSize &data )
+{
+    s = wxString::Format(wxT("%d,%d"), data.x , data.y ) ;
+}
+
+wxCUSTOM_TYPE_INFO(wxSize, wxToStringConverter<wxSize> , wxFromStringConverter<wxSize>)
+
+#endif
 
 IMPLEMENT_ABSTRACT_CLASS(wxDCBase, wxObject)
 
-wxRect::wxRect(const wxPoint& topLeft, const wxPoint& bottomRight)
+wxRect::wxRect(const wxPoint& point1, const wxPoint& point2)
 {
-  x = topLeft.x;
-  y = topLeft.y;
-  width = bottomRight.x - topLeft.x + 1;
-  height = bottomRight.y - topLeft.y + 1;
+    x = point1.x;
+    y = point1.y;
+    width = point2.x - point1.x;
+    height = point2.y - point1.y;
 
-  if (width < 0)
-  {
-    width = -width;
-    x -= width;
-  }
+    if (width < 0)
+    {
+        width = -width;
+        x = point2.x;
+    }
+    width++;
 
-  if (height < 0)
-  {
-    height = -height;
-    y -= height;
-  }
+    if (height < 0)
+    {
+        height = -height;
+        y = point2.y;
+    }
+    height++;
 }
 
 wxRect::wxRect(const wxPoint& point, const wxSize& size)
@@ -98,12 +125,18 @@ wxRect::wxRect(const wxPoint& point, const wxSize& size)
     width = size.x; height = size.y;
 }
 
+wxRect::wxRect(const wxSize& size)
+{
+    x = 0; y = 0;
+    width = size.x; height = size.y;
+}
+
 bool wxRect::operator==(const wxRect& rect) const
 {
-  return ((x == rect.x) &&
-          (y == rect.y) &&
-          (width == rect.width) &&
-          (height == rect.height));
+    return ((x == rect.x) &&
+            (y == rect.y) &&
+            (width == rect.width) &&
+            (height == rect.height));
 }
 
 wxRect& wxRect::operator += (const wxRect& rect)
@@ -186,33 +219,49 @@ bool wxRect::Intersects(const wxRect& rect) const
     return r.width != 0;
 }
 
-wxColourDatabase::wxColourDatabase (int type) : wxList (type)
+// ============================================================================
+// wxColourDatabase
+// ============================================================================
+
+// ----------------------------------------------------------------------------
+// wxColourDatabase ctor/dtor
+// ----------------------------------------------------------------------------
+
+wxColourDatabase::wxColourDatabase ()
 {
+    // will be created on demand in Initialize()
+    m_map = NULL;
 }
 
 wxColourDatabase::~wxColourDatabase ()
 {
-  // Cleanup Colour allocated in Initialize()
-  wxNode *node = First ();
-  while (node)
+    if ( m_map )
     {
-      wxColour *col = (wxColour *) node->Data ();
-      wxNode *next = node->Next ();
-      delete col;
-      node = next;
+        WX_CLEAR_HASH_MAP(wxStringToColourHashMap, *m_map);
+
+        delete m_map;
     }
+
 #ifdef __WXPM__
     delete [] m_palTable;
 #endif
 }
 
 // Colour database stuff
-void wxColourDatabase::Initialize ()
+void wxColourDatabase::Initialize()
 {
+    if ( m_map )
+    {
+        // already initialized
+        return;
+    }
+
+    m_map = new wxStringToColourHashMap;
+
     static const struct wxColourDesc
     {
         const wxChar *name;
-        int r,g,b;
+        unsigned char r,g,b;
     }
     wxColourTable[] =
     {
@@ -286,20 +335,17 @@ void wxColourDatabase::Initialize ()
         {wxT("WHEAT"), 216, 216, 191},
         {wxT("WHITE"), 255, 255, 255},
         {wxT("YELLOW"), 255, 255, 0},
-        {wxT("YELLOW GREEN"), 153, 204, 50},
-        {wxT("MEDIUM GOLDENROD"), 234, 234, 173},
-        {wxT("MEDIUM FOREST GREEN"), 107, 142, 35},
-        {wxT("LIGHT MAGENTA"), 255, 0, 255},
-        {wxT("MEDIUM GREY"), 100, 100, 100},
+        {wxT("YELLOW GREEN"), 153, 204, 50}
     };
 
-    size_t      n;
+    size_t n;
 
     for ( n = 0; n < WXSIZEOF(wxColourTable); n++ )
     {
         const wxColourDesc& cc = wxColourTable[n];
-        Append(cc.name, new wxColour(cc.r,cc.g,cc.b));
+        (*m_map)[cc.name] = new wxColour(cc.r, cc.g, cc.b);
     }
+
 #ifdef __WXPM__
     m_palTable = new long[n];
     for ( n = 0; n < WXSIZEOF(wxColourTable); n++ )
@@ -311,69 +357,73 @@ void wxColourDatabase::Initialize ()
 #endif
 }
 
-/*
- * Changed by Ian Brown, July 1994.
- *
- * When running under X, the Colour Database starts off empty. The X server
- * is queried for the colour first time after which it is entered into the
- * database. This allows our client to use the server colour database which
- * is hopefully gamma corrected for the display being used.
- */
+// ----------------------------------------------------------------------------
+// wxColourDatabase operations
+// ----------------------------------------------------------------------------
 
-wxColour *wxColourDatabase::FindColour(const wxString& colour)
+void wxColourDatabase::AddColour(const wxString& name, const wxColour& colour)
 {
-    // VZ: make the comparaison case insensitive and also match both grey and
-    //     gray
-    wxString colName = colour;
+    Initialize();
+
+    // canonicalize the colour names before using them as keys: they should be
+    // in upper case
+    wxString colName = name;
     colName.MakeUpper();
-    wxString colName2 = colName;
-    if ( !colName2.Replace(_T("GRAY"), _T("GREY")) )
-        colName2.clear();
 
-    wxNode *node = First();
-    while ( node )
+    // ... and we also allow both grey/gray
+    wxString colNameAlt = colName;
+    if ( !colNameAlt.Replace(_T("GRAY"), _T("GREY")) )
     {
-        const wxChar *key = node->GetKeyString();
-        if ( colName == key || colName2 == key )
-        {
-            return (wxColour *)node->Data();
-        }
-
-        node = node->Next();
+        // but in this case it is not necessary so avoid extra search below
+        colNameAlt.clear();
     }
 
-#ifdef __WXMSW__
-  return NULL;
-#endif
-#ifdef __WXPM__
-  return NULL;
-#endif
-#ifdef __WXMGL__
-  return NULL;
-#endif
+    wxStringToColourHashMap::iterator it = m_map->find(colName);
+    if ( it == m_map->end() && !colNameAlt.empty() )
+        it = m_map->find(colNameAlt);
+    if ( it != m_map->end() )
+    {
+        *(it->second) = colour;
+    }
+    else // new colour
+    {
+        (*m_map)[name] = new wxColour(colour);
+    }
+}
 
-// TODO for other implementations. This should really go into
-// platform-specific directories.
-#ifdef __WXMAC__
-  return NULL;
-#endif
-#ifdef __WXSTUBS__
-  return NULL;
-#endif
+wxColour wxColourDatabase::Find(const wxString& colour) const
+{
+    wxColourDatabase * const self = wxConstCast(this, wxColourDatabase);
+    self->Initialize();
 
-#ifdef __WXGTK__
-  wxColour *col = new wxColour( colour );
+    // first look among the existing colours
 
-  if (!(col->Ok()))
-  {
-      delete col;
-      return (wxColour *) NULL;
-  }
-  Append( colour, col );
-  return col;
-#endif
+    // make the comparaison case insensitive and also match both grey and gray
+    wxString colName = colour;
+    colName.MakeUpper();
+    wxString colNameAlt = colName;
+    if ( !colNameAlt.Replace(_T("GRAY"), _T("GREY")) )
+        colNameAlt.clear();
 
-#ifdef __X__
+    wxStringToColourHashMap::iterator it = m_map->find(colName);
+    if ( it == m_map->end() && !colNameAlt.empty() )
+        it = m_map->find(colNameAlt);
+    if ( it != m_map->end() )
+        return *(it->second);
+
+    // if we didn't find it, query the system, maybe it knows about it
+#if defined(__WXGTK__) || defined(__X__)
+    wxColour col = wxColour::CreateByName(colour);
+
+    if ( col.Ok() )
+    {
+        // cache it
+        self->AddColour(colour, col);
+    }
+
+    return col;
+#elif defined(__X__)
+    // TODO: move this to wxColour::CreateByName()
     XColor xcolour;
 
 #ifdef __WXMOTIF__
@@ -384,7 +434,7 @@ wxColour *wxColourDatabase::FindColour(const wxString& colour)
 #endif
     /* MATTHEW: [4] Use wxGetMainColormap */
     if (!XParseColor(display, (Colormap) wxTheApp->GetMainColormap((WXDisplay*) display), colour.ToAscii() ,&xcolour))
-      return NULL;
+        return NULL;
 
 #if wxUSE_NANOX
     unsigned char r = (unsigned char)(xcolour.red);
@@ -396,46 +446,76 @@ wxColour *wxColourDatabase::FindColour(const wxString& colour)
     unsigned char b = (unsigned char)(xcolour.blue >> 8);
 #endif
 
-    wxColour *col = new wxColour(r, g, b);
-    Append(colour, col);
+    wxColour col(r, g, b);
+    AddColour(colour, col);
 
     return col;
-#endif // __X__
+#else // other platform
+    return wxNullColour;
+#endif // platforms
 }
 
-wxString wxColourDatabase::FindName (const wxColour& colour) const
+wxString wxColourDatabase::FindName(const wxColour& colour) const
 {
-    wxString name;
+    wxColourDatabase * const self = wxConstCast(this, wxColourDatabase);
+    self->Initialize();
 
-    unsigned char red = colour.Red ();
-    unsigned char green = colour.Green ();
-    unsigned char blue = colour.Blue ();
+    typedef wxStringToColourHashMap::iterator iterator;
 
-    for (wxNode * node = First (); node; node = node->Next ())
+    for ( iterator it = m_map->begin(), en = m_map->end(); it != en; ++it )
     {
-        wxColour *col = (wxColour *) node->Data ();
-
-        if (col->Red () == red && col->Green () == green && col->Blue () == blue)
-        {
-            const wxChar *found = node->GetKeyString();
-            if ( found )
-            {
-                name = found;
-
-                break;
-            }
-        }
+        if ( *(it->second) == colour )
+            return it->first;
     }
 
-    return name;
+    return wxEmptyString;
 }
+
+// ----------------------------------------------------------------------------
+// deprecated wxColourDatabase methods
+// ----------------------------------------------------------------------------
+
+wxColour *wxColourDatabase::FindColour(const wxString& name)
+{
+    // This function is deprecated, use Find() instead.
+    // Formerly this function sometimes would return a deletable pointer and
+    // sometimes a non-deletable one (when returning a colour from the database).
+    // Trying to delete the latter anyway results in problems, so probably
+    // nobody ever freed the pointers. Currently it always returns a new
+    // instance, which means there will be memory leaks.
+    wxLogDebug(wxT("wxColourDataBase::FindColour():")
+        wxT(" Please use wxColourDataBase::Find() instead"));
+
+    // using a static variable here is not the most elegant solution but unless
+    // we want to make wxStringToColourHashMap public (i.e. move it to the
+    // header) so that we could have a member function returning
+    // wxStringToColourHashMap::iterator, there is really no good way to do it
+    // otherwise
+    //
+    // and knowing that this function is going to disappear in the next release
+    // anyhow I don't want to waste time on this
+
+    static wxColour s_col;
+
+    s_col = Find(name);
+    if ( !s_col.Ok() )
+        return NULL;
+
+    return new wxColour(s_col);
+}
+
+// ============================================================================
+// stock objects
+// ============================================================================
 
 void wxInitializeStockLists()
 {
-  wxTheBrushList = new wxBrushList;
-  wxThePenList = new wxPenList;
-  wxTheFontList = new wxFontList;
-  wxTheBitmapList = new wxBitmapList;
+    wxTheColourDatabase = new wxColourDatabase;
+
+    wxTheBrushList = new wxBrushList;
+    wxThePenList = new wxPenList;
+    wxTheFontList = new wxFontList;
+    wxTheBitmapList = new wxBitmapList;
 }
 
 void wxInitializeStockObjects ()
@@ -455,179 +535,184 @@ void wxInitializeStockObjects ()
 #endif
 */
 #if defined(__WXMAC__)
+    // retrieve size of system font for all stock fonts
     int sizeFont = 12;
 
     Str255 fontName ;
     SInt16 fontSize ;
     Style fontStyle ;
 
-	GetThemeFont(kThemeSystemFont , GetApplicationScript() , fontName , &fontSize , &fontStyle ) ;
-	sizeFont = fontSize ;
-    p2cstrcpy( (char*) fontName , fontName ) ;
-    wxSWISS_FONT = new wxFont (fontSize, wxSWISS, wxNORMAL, wxNORMAL , false , fontName );
-#elif defined(__WXPM__)
-  static const int sizeFont = 12;
+    GetThemeFont(kThemeSystemFont , GetApplicationScript() , fontName , &fontSize , &fontStyle ) ;
+    sizeFont = fontSize ;
+#ifdef __WXMAC_CLASSIC__
+    wxNORMAL_FONT = new wxFont (fontSize, wxMODERN, wxNORMAL, wxNORMAL , false , wxMacMakeStringFromPascal(fontName) );
 #else
-  wxNORMAL_FONT = new wxFont(wxSystemSettings::GetFont(wxSYS_DEFAULT_GUI_FONT));
-  static const int sizeFont = wxNORMAL_FONT->GetPointSize();
+    wxNORMAL_FONT = new wxFont () ;
+    wxNORMAL_FONT->MacCreateThemeFont( kThemeSystemFont );
+#endif
+#elif defined(__WXPM__)
+    static const int sizeFont = 12;
+#else
+    wxNORMAL_FONT = new wxFont(wxSystemSettings::GetFont(wxSYS_DEFAULT_GUI_FONT));
+    static const int sizeFont = wxNORMAL_FONT->GetPointSize();
 #endif
 
 #if defined(__WXPM__)
-  /*
-  // Basic OS/2 has a fairly limited number of fonts and these are as good
-  // as I can do to get something that looks halfway "wx" normal
-  */
-  wxNORMAL_FONT = new wxFont (sizeFont, wxMODERN, wxNORMAL, wxBOLD);
-  wxSMALL_FONT = new wxFont (sizeFont - 4, wxSWISS, wxNORMAL, wxNORMAL); /* Helv */
-  wxITALIC_FONT = new wxFont (sizeFont, wxROMAN, wxITALIC, wxNORMAL);
-  wxSWISS_FONT = new wxFont (sizeFont, wxSWISS, wxNORMAL, wxNORMAL); /* Helv */
-#elif defined(__WXMAC__)
-    wxNORMAL_FONT = new wxFont (sizeFont, wxMODERN, wxNORMAL, wxNORMAL);
+    /*
+    // Basic OS/2 has a fairly limited number of fonts and these are as good
+    // as I can do to get something that looks halfway "wx" normal
+    */
+    wxNORMAL_FONT = new wxFont (sizeFont, wxMODERN, wxNORMAL, wxBOLD);
+    wxSMALL_FONT = new wxFont (sizeFont - 4, wxSWISS, wxNORMAL, wxNORMAL); /* Helv */
     wxITALIC_FONT = new wxFont (sizeFont, wxROMAN, wxITALIC, wxNORMAL);
-	GetThemeFont(kThemeSmallSystemFont , GetApplicationScript() , fontName , &fontSize , &fontStyle ) ;
-    p2cstrcpy( (char*) fontName , fontName ) ;
-    wxSMALL_FONT = new wxFont (fontSize, wxSWISS, wxNORMAL, wxNORMAL , false , fontName );
+    wxSWISS_FONT = new wxFont (sizeFont, wxSWISS, wxNORMAL, wxNORMAL); /* Helv */
+#elif defined(__WXMAC__)
+    wxSWISS_FONT = new wxFont (sizeFont, wxSWISS, wxNORMAL, wxNORMAL); /* Helv */
+    wxITALIC_FONT = new wxFont (sizeFont, wxROMAN, wxITALIC, wxNORMAL);
+#ifdef __WXMAC_CLASSIC__
+  GetThemeFont(kThemeSmallSystemFont , GetApplicationScript() , fontName , &fontSize , &fontStyle ) ;
+    wxSMALL_FONT = new wxFont (fontSize, wxSWISS, wxNORMAL, wxNORMAL , false , wxMacMakeStringFromPascal( fontName ) );
 #else
-  wxSMALL_FONT = new wxFont (sizeFont - 2, wxSWISS, wxNORMAL, wxNORMAL);
-  wxITALIC_FONT = new wxFont (sizeFont, wxROMAN, wxITALIC, wxNORMAL);
-  wxSWISS_FONT = new wxFont (sizeFont, wxSWISS, wxNORMAL, wxNORMAL);
+    wxSMALL_FONT = new wxFont () ;
+    wxSMALL_FONT->MacCreateThemeFont( kThemeSmallSystemFont );
+#endif
+#else
+    wxSMALL_FONT = new wxFont (sizeFont - 2, wxSWISS, wxNORMAL, wxNORMAL);
+    wxITALIC_FONT = new wxFont (sizeFont, wxROMAN, wxITALIC, wxNORMAL);
+    wxSWISS_FONT = new wxFont (sizeFont, wxSWISS, wxNORMAL, wxNORMAL);
 #endif
 
-  wxRED_PEN = new wxPen (wxT("RED"), 1, wxSOLID);
-  wxCYAN_PEN = new wxPen (wxT("CYAN"), 1, wxSOLID);
-  wxGREEN_PEN = new wxPen (wxT("GREEN"), 1, wxSOLID);
-  wxBLACK_PEN = new wxPen (wxT("BLACK"), 1, wxSOLID);
-  wxWHITE_PEN = new wxPen (wxT("WHITE"), 1, wxSOLID);
-  wxTRANSPARENT_PEN = new wxPen (wxT("BLACK"), 1, wxTRANSPARENT);
-  wxBLACK_DASHED_PEN = new wxPen (wxT("BLACK"), 1, wxSHORT_DASH);
-  wxGREY_PEN = new wxPen (wxT("GREY"), 1, wxSOLID);
-  wxMEDIUM_GREY_PEN = new wxPen (wxT("MEDIUM GREY"), 1, wxSOLID);
-  wxLIGHT_GREY_PEN = new wxPen (wxT("LIGHT GREY"), 1, wxSOLID);
+    wxRED_PEN = new wxPen (wxT("RED"), 1, wxSOLID);
+    wxCYAN_PEN = new wxPen (wxT("CYAN"), 1, wxSOLID);
+    wxGREEN_PEN = new wxPen (wxT("GREEN"), 1, wxSOLID);
+    wxBLACK_PEN = new wxPen (wxT("BLACK"), 1, wxSOLID);
+    wxWHITE_PEN = new wxPen (wxT("WHITE"), 1, wxSOLID);
+    wxTRANSPARENT_PEN = new wxPen (wxT("BLACK"), 1, wxTRANSPARENT);
+    wxBLACK_DASHED_PEN = new wxPen (wxT("BLACK"), 1, wxSHORT_DASH);
+    wxGREY_PEN = new wxPen (wxT("GREY"), 1, wxSOLID);
+    wxMEDIUM_GREY_PEN = new wxPen (wxT("MEDIUM GREY"), 1, wxSOLID);
+    wxLIGHT_GREY_PEN = new wxPen (wxT("LIGHT GREY"), 1, wxSOLID);
 
-  wxBLUE_BRUSH = new wxBrush (wxT("BLUE"), wxSOLID);
-  wxGREEN_BRUSH = new wxBrush (wxT("GREEN"), wxSOLID);
-  wxWHITE_BRUSH = new wxBrush (wxT("WHITE"), wxSOLID);
-  wxBLACK_BRUSH = new wxBrush (wxT("BLACK"), wxSOLID);
-  wxTRANSPARENT_BRUSH = new wxBrush (wxT("BLACK"), wxTRANSPARENT);
-  wxCYAN_BRUSH = new wxBrush (wxT("CYAN"), wxSOLID);
-  wxRED_BRUSH = new wxBrush (wxT("RED"), wxSOLID);
-  wxGREY_BRUSH = new wxBrush (wxT("GREY"), wxSOLID);
-  wxMEDIUM_GREY_BRUSH = new wxBrush (wxT("MEDIUM GREY"), wxSOLID);
-  wxLIGHT_GREY_BRUSH = new wxBrush (wxT("LIGHT GREY"), wxSOLID);
+    wxBLUE_BRUSH = new wxBrush (wxT("BLUE"), wxSOLID);
+    wxGREEN_BRUSH = new wxBrush (wxT("GREEN"), wxSOLID);
+    wxWHITE_BRUSH = new wxBrush (wxT("WHITE"), wxSOLID);
+    wxBLACK_BRUSH = new wxBrush (wxT("BLACK"), wxSOLID);
+    wxTRANSPARENT_BRUSH = new wxBrush (wxT("BLACK"), wxTRANSPARENT);
+    wxCYAN_BRUSH = new wxBrush (wxT("CYAN"), wxSOLID);
+    wxRED_BRUSH = new wxBrush (wxT("RED"), wxSOLID);
+    wxGREY_BRUSH = new wxBrush (wxT("GREY"), wxSOLID);
+    wxMEDIUM_GREY_BRUSH = new wxBrush (wxT("MEDIUM GREY"), wxSOLID);
+    wxLIGHT_GREY_BRUSH = new wxBrush (wxT("LIGHT GREY"), wxSOLID);
 
-  wxBLACK = new wxColour (wxT("BLACK"));
-  wxWHITE = new wxColour (wxT("WHITE"));
-  wxRED = new wxColour (wxT("RED"));
-  wxBLUE = new wxColour (wxT("BLUE"));
-  wxGREEN = new wxColour (wxT("GREEN"));
-  wxCYAN = new wxColour (wxT("CYAN"));
-  wxLIGHT_GREY = new wxColour (wxT("LIGHT GREY"));
+    wxBLACK = new wxColour (wxT("BLACK"));
+    wxWHITE = new wxColour (wxT("WHITE"));
+    wxRED = new wxColour (wxT("RED"));
+    wxBLUE = new wxColour (wxT("BLUE"));
+    wxGREEN = new wxColour (wxT("GREEN"));
+    wxCYAN = new wxColour (wxT("CYAN"));
+    wxLIGHT_GREY = new wxColour (wxT("LIGHT GREY"));
 
-  wxSTANDARD_CURSOR = new wxCursor (wxCURSOR_ARROW);
-  wxHOURGLASS_CURSOR = new wxCursor (wxCURSOR_WAIT);
-  wxCROSS_CURSOR = new wxCursor (wxCURSOR_CROSS);
+    wxSTANDARD_CURSOR = new wxCursor (wxCURSOR_ARROW);
+    wxHOURGLASS_CURSOR = new wxCursor (wxCURSOR_WAIT);
+    wxCROSS_CURSOR = new wxCursor (wxCURSOR_CROSS);
 }
 
 void wxDeleteStockObjects ()
 {
-  wxDELETE(wxNORMAL_FONT);
-  wxDELETE(wxSMALL_FONT);
-  wxDELETE(wxITALIC_FONT);
-  wxDELETE(wxSWISS_FONT);
+    wxDELETE(wxNORMAL_FONT);
+    wxDELETE(wxSMALL_FONT);
+    wxDELETE(wxITALIC_FONT);
+    wxDELETE(wxSWISS_FONT);
 
-  wxDELETE(wxRED_PEN);
-  wxDELETE(wxCYAN_PEN);
-  wxDELETE(wxGREEN_PEN);
-  wxDELETE(wxBLACK_PEN);
-  wxDELETE(wxWHITE_PEN);
-  wxDELETE(wxTRANSPARENT_PEN);
-  wxDELETE(wxBLACK_DASHED_PEN);
-  wxDELETE(wxGREY_PEN);
-  wxDELETE(wxMEDIUM_GREY_PEN);
-  wxDELETE(wxLIGHT_GREY_PEN);
+    wxDELETE(wxRED_PEN);
+    wxDELETE(wxCYAN_PEN);
+    wxDELETE(wxGREEN_PEN);
+    wxDELETE(wxBLACK_PEN);
+    wxDELETE(wxWHITE_PEN);
+    wxDELETE(wxTRANSPARENT_PEN);
+    wxDELETE(wxBLACK_DASHED_PEN);
+    wxDELETE(wxGREY_PEN);
+    wxDELETE(wxMEDIUM_GREY_PEN);
+    wxDELETE(wxLIGHT_GREY_PEN);
 
-  wxDELETE(wxBLUE_BRUSH);
-  wxDELETE(wxGREEN_BRUSH);
-  wxDELETE(wxWHITE_BRUSH);
-  wxDELETE(wxBLACK_BRUSH);
-  wxDELETE(wxTRANSPARENT_BRUSH);
-  wxDELETE(wxCYAN_BRUSH);
-  wxDELETE(wxRED_BRUSH);
-  wxDELETE(wxGREY_BRUSH);
-  wxDELETE(wxMEDIUM_GREY_BRUSH);
-  wxDELETE(wxLIGHT_GREY_BRUSH);
+    wxDELETE(wxBLUE_BRUSH);
+    wxDELETE(wxGREEN_BRUSH);
+    wxDELETE(wxWHITE_BRUSH);
+    wxDELETE(wxBLACK_BRUSH);
+    wxDELETE(wxTRANSPARENT_BRUSH);
+    wxDELETE(wxCYAN_BRUSH);
+    wxDELETE(wxRED_BRUSH);
+    wxDELETE(wxGREY_BRUSH);
+    wxDELETE(wxMEDIUM_GREY_BRUSH);
+    wxDELETE(wxLIGHT_GREY_BRUSH);
 
-  wxDELETE(wxBLACK);
-  wxDELETE(wxWHITE);
-  wxDELETE(wxRED);
-  wxDELETE(wxBLUE);
-  wxDELETE(wxGREEN);
-  wxDELETE(wxCYAN);
-  wxDELETE(wxLIGHT_GREY);
+    wxDELETE(wxBLACK);
+    wxDELETE(wxWHITE);
+    wxDELETE(wxRED);
+    wxDELETE(wxBLUE);
+    wxDELETE(wxGREEN);
+    wxDELETE(wxCYAN);
+    wxDELETE(wxLIGHT_GREY);
 
-  wxDELETE(wxSTANDARD_CURSOR);
-  wxDELETE(wxHOURGLASS_CURSOR);
-  wxDELETE(wxCROSS_CURSOR);
+    wxDELETE(wxSTANDARD_CURSOR);
+    wxDELETE(wxHOURGLASS_CURSOR);
+    wxDELETE(wxCROSS_CURSOR);
 }
 
 void wxDeleteStockLists()
 {
-  wxDELETE(wxTheBrushList);
-  wxDELETE(wxThePenList);
-  wxDELETE(wxTheFontList);
-  wxDELETE(wxTheBitmapList);
+    wxDELETE(wxTheBrushList);
+    wxDELETE(wxThePenList);
+    wxDELETE(wxTheFontList);
+    wxDELETE(wxTheBitmapList);
 }
 
 // ============================================================================
 // wxTheXXXList stuff (semi-obsolete)
 // ============================================================================
 
-wxBitmapList::wxBitmapList()
-{
-}
-
 wxBitmapList::~wxBitmapList ()
 {
-  wxNode *node = First ();
-  while (node)
+    wxList::compatibility_iterator node = GetFirst ();
+    while (node)
     {
-      wxBitmap *bitmap = (wxBitmap *) node->Data ();
-      wxNode *next = node->Next ();
-      if (bitmap->GetVisible())
-        delete bitmap;
-      node = next;
+        wxBitmap *bitmap = (wxBitmap *) node->GetData ();
+        wxList::compatibility_iterator next = node->GetNext ();
+        if (bitmap->GetVisible())
+            delete bitmap;
+        node = next;
     }
 }
 
 // Pen and Brush lists
 wxPenList::~wxPenList ()
 {
-  wxNode *node = First ();
-  while (node)
+    wxList::compatibility_iterator node = GetFirst ();
+    while (node)
     {
-      wxPen *pen = (wxPen *) node->Data ();
-      wxNode *next = node->Next ();
-      if (pen->GetVisible())
-        delete pen;
-      node = next;
+        wxPen *pen = (wxPen *) node->GetData ();
+        wxList::compatibility_iterator next = node->GetNext ();
+        if (pen->GetVisible())
+            delete pen;
+        node = next;
     }
 }
 
 void wxPenList::AddPen (wxPen * pen)
 {
-  Append (pen);
+    Append (pen);
 }
 
 void wxPenList::RemovePen (wxPen * pen)
 {
-  DeleteObject (pen);
+    DeleteObject (pen);
 }
 
 wxPen *wxPenList::FindOrCreatePen (const wxColour& colour, int width, int style)
 {
-    for (wxNode * node = First (); node; node = node->Next ())
+    for (wxList::compatibility_iterator node = GetFirst (); node; node = node->GetNext ())
     {
-        wxPen *each_pen = (wxPen *) node->Data ();
+        wxPen *each_pen = (wxPen *) node->GetData ();
         if (each_pen &&
                 each_pen->GetVisible() &&
                 each_pen->GetWidth () == width &&
@@ -650,34 +735,34 @@ wxPen *wxPenList::FindOrCreatePen (const wxColour& colour, int width, int style)
     AddPen(pen);
 
     // we'll delete it ourselves later
-    pen->SetVisible(TRUE);
+    pen->SetVisible(true);
 
     return pen;
 }
 
 wxBrushList::~wxBrushList ()
 {
-  wxNode *node = First ();
-  while (node)
+    wxList::compatibility_iterator node = GetFirst ();
+    while (node)
     {
-      wxBrush *brush = (wxBrush *) node->Data ();
-      wxNode *next = node->Next ();
-      if (brush && brush->GetVisible())
-        delete brush;
-      node = next;
+        wxBrush *brush = (wxBrush *) node->GetData ();
+        wxList::compatibility_iterator next = node->GetNext ();
+        if (brush && brush->GetVisible())
+            delete brush;
+        node = next;
     }
 }
 
 void wxBrushList::AddBrush (wxBrush * brush)
 {
-  Append (brush);
+    Append (brush);
 }
 
 wxBrush *wxBrushList::FindOrCreateBrush (const wxColour& colour, int style)
 {
-    for (wxNode * node = First (); node; node = node->Next ())
+    for (wxList::compatibility_iterator node = GetFirst (); node; node = node->GetNext ())
     {
-        wxBrush *each_brush = (wxBrush *) node->Data ();
+        wxBrush *each_brush = (wxBrush *) node->GetData ();
         if (each_brush &&
                 each_brush->GetVisible() &&
                 each_brush->GetStyle () == style &&
@@ -700,27 +785,27 @@ wxBrush *wxBrushList::FindOrCreateBrush (const wxColour& colour, int style)
     AddBrush(brush);
 
     // we'll delete it ourselves later
-    brush->SetVisible(TRUE);
+    brush->SetVisible(true);
 
     return brush;
 }
 
 void wxBrushList::RemoveBrush (wxBrush * brush)
 {
-  DeleteObject (brush);
+    DeleteObject (brush);
 }
 
 wxFontList::~wxFontList ()
 {
-    wxNode *node = First ();
+    wxList::compatibility_iterator node = GetFirst ();
     while (node)
     {
         // Only delete objects that are 'visible', i.e.
         // that have been created using FindOrCreate...,
         // where the pointers are expected to be shared
         // (and therefore not deleted by any one part of an app).
-        wxFont *font = (wxFont *) node->Data ();
-        wxNode *next = node->Next ();
+        wxFont *font = (wxFont *) node->GetData ();
+        wxList::compatibility_iterator next = node->GetNext ();
         if (font->GetVisible())
             delete font;
         node = next;
@@ -729,12 +814,12 @@ wxFontList::~wxFontList ()
 
 void wxFontList::AddFont (wxFont * font)
 {
-  Append (font);
+    Append (font);
 }
 
 void wxFontList::RemoveFont (wxFont * font)
 {
-  DeleteObject (font);
+    DeleteObject (font);
 }
 
 wxFont *wxFontList::FindOrCreateFont(int pointSize,
@@ -746,10 +831,10 @@ wxFont *wxFontList::FindOrCreateFont(int pointSize,
                                      wxFontEncoding encoding)
 {
     wxFont *font = (wxFont *)NULL;
-    wxNode *node;
-    for ( node = First(); node; node = node->Next() )
+    wxList::compatibility_iterator node;
+    for ( node = GetFirst(); node; node = node->GetNext() )
     {
-        font = (wxFont *)node->Data();
+        font = (wxFont *)node->GetData();
         if ( font->GetVisible() &&
              font->Ok() &&
              font->GetPointSize () == pointSize &&
@@ -775,7 +860,7 @@ wxFont *wxFontList::FindOrCreateFont(int pointSize,
             // a different font if we create it with empty facename, but it is
             // still better than never matching anything in the cache at all
             // in this case
-            if ( same && !!facename )
+            if ( same && !facename.empty() )
             {
                 const wxString& fontFace = font->GetFaceName();
 
@@ -805,7 +890,7 @@ wxFont *wxFontList::FindOrCreateFont(int pointSize,
         AddFont(font);
 
         // and mark it as being cacheable
-        font->SetVisible(TRUE);
+        font->SetVisible(true);
     }
 
     return font;
@@ -844,12 +929,12 @@ wxSize wxGetDisplaySizeMM()
 
 wxResourceCache::~wxResourceCache ()
 {
-    wxNode *node = First ();
+    wxList::compatibility_iterator node = GetFirst ();
     while (node) {
-        wxObject *item = (wxObject *)node->Data();
+        wxObject *item = (wxObject *)node->GetData();
         delete item;
 
-        node = node->Next ();
+        node = node->GetNext ();
     }
 }
 

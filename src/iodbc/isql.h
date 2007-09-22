@@ -1,7 +1,7 @@
 /*
  *  isql.h
  *
- *  $Id: isql.h,v 1.6 2002/08/25 18:29:17 SN Exp $
+ *  $Id: isql.h,v 1.7 2004/10/22 19:00:22 KH Exp $
  *
  *  iODBC defines
  *
@@ -220,7 +220,7 @@ extern "C"
   RETCODE SQL_API SQLTransact (HENV henv, HDBC hdbc, UWORD fType);
 
 /*
- *  Depreciated ODBC 1.0 function - Use SQLBindParameter
+ *  Deprecated ODBC 1.0 function - Use SQLBindParameter
  */
   RETCODE SQL_API SQLSetParam (HSTMT hstmt, UWORD ipar, SWORD fCType,
       SWORD fSqlType, UDWORD cbColDef, SWORD ibScale, PTR rgbValue,

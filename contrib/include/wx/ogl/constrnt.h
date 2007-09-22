@@ -4,9 +4,9 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     12/07/98
-// RCS-ID:      $Id: constrnt.h,v 1.2.2.1 2002/12/18 06:11:27 RD Exp $
+// RCS-ID:      $Id: constrnt.h,v 1.5 2004/06/09 16:42:21 ABX Exp $
 // Copyright:   (c) Julian Smart
-// Licence:   	wxWindows licence
+// Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
 
 #ifndef _OGL_CONSTRNT_H_
@@ -16,12 +16,13 @@
 #pragma interface "constrnt.h"
 #endif
 
+
 /*
  * OGL Constraints
  *
  */
 
-class wxOGLConstraintType: public wxObject
+class WXDLLIMPEXP_OGL wxOGLConstraintType: public wxObject
 {
  DECLARE_DYNAMIC_CLASS(wxOGLConstraintType)
 public:
@@ -57,7 +58,7 @@ extern wxList* wxOGLConstraintTypes;
 #define gyCONSTRAINT_MIDALIGNED_LEFT      14
 #define gyCONSTRAINT_MIDALIGNED_RIGHT     15
 
-class wxOGLConstraint: public wxObject
+class WXDLLIMPEXP_OGL wxOGLConstraint: public wxObject
 {
  DECLARE_DYNAMIC_CLASS(wxOGLConstraint)
  public:
@@ -68,7 +69,7 @@ class wxOGLConstraint: public wxObject
   wxOGLConstraint(int type, wxShape *constraining, wxList& constrained);
   ~wxOGLConstraint();
 
-  // Returns TRUE if anything changed
+  // Returns true if anything changed
   bool Evaluate();
   inline void SetSpacing(double x, double y) { m_xSpacing = x; m_ySpacing = y; };
   bool Equals(double a, double b);

@@ -2,12 +2,13 @@
 
 Classes: \helpref{wxString}{wxstring}, \helpref{wxArrayString}{wxarraystring}, \helpref{wxStringTokenizer}{wxstringtokenizer}
 
-\subsection{Introduction}
+\subsection{Introduction}\label{introductiontowxstring}
 
 wxString is a class which represents a character string of arbitrary length (limited by 
 {\it MAX\_INT} which is usually 2147483647 on 32 bit machines) and containing
-arbitrary characters. The ASCII NUL character is allowed, although care should be
-taken when passing strings containing it to other functions.
+arbitrary characters. The ASCII NUL character is allowed, but be aware that
+in the current string implementation some methods might not work correctly
+in this case.
 
 wxString works with both ASCII (traditional, 7 or 8 bit, characters) as well as
 Unicode (wide characters) strings.
@@ -21,7 +22,7 @@ replacing and both C-like \helpref{Printf()}{wxstringprintf} and stream-like
 insertion functions as well as much more - see \helpref{wxString}{wxstring} 
 for a list of all functions.
 
-\subsection{Comparison of wxString to other string classes}
+\subsection{Comparison of wxString to other string classes}\label{otherstringclasses}
 
 The advantages of using a special string class instead of working directly with
 C strings are so obvious that there is a huge number of such classes available.
@@ -130,7 +131,7 @@ strings inside the function faster because of
 strings should return {\it wxString} - this makes it safe to return local
 variables.
 
-\subsection{Other string related functions and classes}
+\subsection{Other string related functions and classes}\label{relatedtostring}
 
 As most programs use character strings, the standard C library provides quite
 a few functions to work with them. Unfortunately, some of them have rather
@@ -140,7 +141,7 @@ to them will probably lead to program crash). Moreover, some very useful
 functions are not standard at all. This is why in addition to all wxString
 functions, there are also a few global string functions which try to correct
 these problems: \helpref{wxIsEmpty()}{wxisempty} verifies whether the string
-is empty (returning {\tt TRUE} for {\tt NULL} pointers), 
+is empty (returning {\tt true} for {\tt NULL} pointers), 
 \helpref{wxStrlen()}{wxstrlen} also handles NULLs correctly and returns 0 for
 them and \helpref{wxStricmp()}{wxstricmp} is just a platform-independent
 version of case-insensitive string comparison function known either as

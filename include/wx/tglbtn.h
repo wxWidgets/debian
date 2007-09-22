@@ -5,7 +5,7 @@
 // Author:      John Norris, minor changes by Axel Schlueter
 // Modified by:
 // Created:     08.02.01
-// RCS-ID:      $Id: tglbtn.h,v 1.2 2001/08/25 14:52:26 VZ Exp $
+// RCS-ID:      $Id: tglbtn.h,v 1.7 2004/09/23 18:20:41 ABX Exp $
 // Copyright:   (c) 2000 Johnny C. Norris II
 // License:     Rocketeer license
 /////////////////////////////////////////////////////////////////////////////
@@ -24,21 +24,19 @@ BEGIN_DECLARE_EVENT_TYPES()
     DECLARE_EVENT_TYPE(wxEVT_COMMAND_TOGGLEBUTTON_CLICKED, 19)
 END_DECLARE_EVENT_TYPES()
 
-#define EVT_TOGGLEBUTTON(id, fn) DECLARE_EVENT_TABLE_ENTRY( wxEVT_COMMAND_TOGGLEBUTTON_CLICKED, id, -1, (wxObjectEventFunction) (wxEventFunction) (wxCommandEventFunction) & fn, (wxObject *) NULL ),
+#define EVT_TOGGLEBUTTON(id, fn) DECLARE_EVENT_TABLE_ENTRY( wxEVT_COMMAND_TOGGLEBUTTON_CLICKED, id, wxID_ANY, (wxObjectEventFunction) (wxEventFunction)  wxStaticCastEvent( wxCommandEventFunction, & fn ), (wxObject *) NULL ),
 
 #if defined(__WXMSW__)
     #include "wx/msw/tglbtn.h"
 #elif defined(__WXGTK__)
     #include "wx/gtk/tglbtn.h"
-/*
 # elif defined(__WXMOTIF__)
-#  include "wx/motif/tglbtn.h"
-# elif defined(__WXMAC__)
-#  include "wx/mac/tglbtn.h"
+    #include "wx/motif/tglbtn.h"
+#elif defined(__WXMAC__)
+    #include "wx/mac/tglbtn.h"
+/*
 # elif defined(__WXPM__)
 #  include "wx/os2/tglbtn.h"
-# elif defined(__WXSTUBS__)
-#  include "wx/stubs/tglbtn.h"
 */
 #endif
 

@@ -1,8 +1,8 @@
 /* ///////////////////////////////////////////////////////////////////////////
 // Name:        win_gtk.h
-// Purpose:     wxWindows's GTK base widget = GtkPizza
+// Purpose:     wxWidgets's GTK base widget = GtkPizza
 // Author:      Robert Roebling
-// Id:          $Id: win_gtk.h,v 1.17 2001/10/02 19:28:23 VZ Exp $
+// Id:          $Id: win_gtk.h,v 1.20 2004/09/16 22:34:07 VZ Exp $
 // Copyright:   (c) 1998 Robert Roebling
 // Licence:   	wxWindows licence
 /////////////////////////////////////////////////////////////////////////// */
@@ -82,7 +82,7 @@ struct _GtkPizzaClass
 				     GtkAdjustment  *vadjustment);
 };
 
-guint      gtk_pizza_get_type        (void);
+GtkType    gtk_pizza_get_type        (void);
 GtkWidget* gtk_pizza_new             (void);
 
 void       gtk_pizza_set_shadow_type (GtkPizza          *pizza,

@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////////
 // Name:        ScintillaWX.h
-// Purpose:     A wxWindows implementation of Scintilla.  A class derived
+// Purpose:     A wxWidgets implementation of Scintilla.  A class derived
 //              from ScintillaBase that uses the "wx platform" defined in
 //              PlatWX.cpp.  This class is one end of a bridge between
 //              the wx world and the Scintilla world.  It needs a peer
@@ -9,7 +9,7 @@
 // Author:      Robin Dunn
 //
 // Created:     13-Jan-2000
-// RCS-ID:      $Id: ScintillaWX.h,v 1.11.2.8 2003/09/23 23:41:17 RD Exp $
+// RCS-ID:      $Id: ScintillaWX.h,v 1.24 2004/09/28 15:13:27 ABX Exp $
 // Copyright:   (c) 2000 by Total Control Software
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -99,6 +99,7 @@ public:
     virtual void Initialise();
     virtual void Finalise();
     virtual void StartDrag();
+    virtual bool SetIdle(bool on);
     virtual void SetTicking(bool on);
     virtual void SetMouseCapture(bool on);
     virtual bool HaveMouseCapture();
@@ -142,6 +143,7 @@ public:
     void DoAddChar(int key);
     int  DoKeyDown(int key, bool shift, bool ctrl, bool alt, bool meta, bool* consumed);
     void DoTick() { Tick(); }
+    void DoOnIdle(wxIdleEvent& evt);
 
 #if wxUSE_DRAG_AND_DROP
     bool DoDropText(long x, long y, const wxString& data);
@@ -162,6 +164,8 @@ public:
     void DoScrollToLine(int line);
     void DoScrollToColumn(int column);
     void ClipChildren(wxDC& dc, PRectangle rect);
+    void SetUseAntiAliasing(bool useAA);
+    bool GetUseAntiAliasing();
 
 private:
     bool                capturedMouse;

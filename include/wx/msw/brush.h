@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     01/02/97
-// RCS-ID:      $Id: brush.h,v 1.9.2.1 2002/09/21 23:01:24 VZ Exp $
+// RCS-ID:      $Id: brush.h,v 1.15 2004/09/16 22:36:12 VZ Exp $
 // Copyright:   (c) Julian Smart
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -12,7 +12,7 @@
 #ifndef _WX_BRUSH_H_
 #define _WX_BRUSH_H_
 
-#ifdef __GNUG__
+#if defined(__GNUG__) && !defined(NO_GCC_PRAGMA)
     #pragma interface "brush.h"
 #endif
 
@@ -30,9 +30,9 @@ class WXDLLEXPORT wxBrush : public wxGDIObject
 {
 public:
     wxBrush();
-    wxBrush(const wxColour& col, int style);
+    wxBrush(const wxColour& col, int style = wxSOLID);
     wxBrush(const wxBitmap& stipple);
-    wxBrush(const wxBrush& brush) { Ref(brush); }
+    wxBrush(const wxBrush& brush) : wxGDIObject(brush) { Ref(brush); }
     virtual ~wxBrush();
 
     virtual void SetColour(const wxColour& col);

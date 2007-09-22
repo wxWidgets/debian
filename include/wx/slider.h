@@ -4,8 +4,8 @@
 // Author:      Vadim Zeitlin
 // Modified by:
 // Created:     09.02.01
-// RCS-ID:      $Id: slider.h,v 1.7 2001/08/25 14:52:26 VZ Exp $
-// Copyright:   (c) 1996-2001 wxWindows team
+// RCS-ID:      $Id: slider.h,v 1.17 2004/05/23 20:50:24 JS Exp $
+// Copyright:   (c) 1996-2001 wxWidgets team
 // Licence:     wxWindows licence
 ///////////////////////////////////////////////////////////////////////////////
 
@@ -42,6 +42,7 @@ public:
              const wxValidator& validator = wxDefaultValidator,
              const wxString& name = wxSliderNameStr);
     */
+    wxSliderBase() { }
 
     // get/set the current slider value (should be in range)
     virtual int GetValue() const = 0;
@@ -51,6 +52,8 @@ public:
     virtual void SetRange(int minValue, int maxValue) = 0;
     virtual int GetMin() const = 0;
     virtual int GetMax() const = 0;
+    void SetMin( int minValue ) { SetRange( minValue , GetMax() ) ; }
+    void SetMax( int maxValue ) { SetRange( GetMin() , maxValue ) ; }
 
     // the line/page size is the increment by which the slider moves when
     // cursor arrow key/page up or down are pressed (clicking the mouse is like
@@ -76,6 +79,14 @@ public:
     virtual int GetSelEnd() const { return GetMin(); }
     virtual int GetSelStart() const { return GetMax(); }
     virtual void SetSelection(int WXUNUSED(min), int WXUNUSED(max)) { }
+
+
+    virtual void ApplyParentThemeBackground(const wxColour& bg)
+        { SetBackgroundColour(bg); }
+
+
+private:
+    DECLARE_NO_COPY_CLASS(wxSliderBase)
 };
 
 // ----------------------------------------------------------------------------
@@ -85,25 +96,18 @@ public:
 #if defined(__WXUNIVERSAL__)
     #include "wx/univ/slider.h"
 #elif defined(__WXMSW__)
-    #ifdef __WIN95__
-        #include "wx/msw/slider95.h"
-        #define wxSlider wxSlider95
-        #define sm_classwxSlider sm_classwxSlider95
-    #else // Win16
-        #include "wx/msw/slidrmsw.h"
-        #define wxSlider wxSliderMSW
-        #define sm_classwxSlider sm_classwxSliderMSW
-    #endif // Win32/Win16
+    #include "wx/msw/slider95.h"
+    #define wxSlider wxSlider95
 #elif defined(__WXMOTIF__)
     #include "wx/motif/slider.h"
 #elif defined(__WXGTK__)
     #include "wx/gtk/slider.h"
 #elif defined(__WXMAC__)
     #include "wx/mac/slider.h"
+#elif defined(__WXCOCOA__)
+    #include "wx/cocoa/slider.h"
 #elif defined(__WXPM__)
     #include "wx/os2/slider.h"
-#elif defined(__WXSTUBS__)
-    #include "wx/stubs/slider.h"
 #endif
 
 #endif // wxUSE_SLIDER

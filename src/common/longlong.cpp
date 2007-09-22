@@ -2,20 +2,20 @@
 // Name:        wx/longlong.cpp
 // Purpose:     implementation of wxLongLongNative
 // Author:      Jeffrey C. Ollie <jeff@ollie.clive.ia.us>, Vadim Zeitlin
-// Remarks:     this class is not public in wxWindows 2.0! It is intentionally
+// Remarks:     this class is not public in wxWidgets 2.0! It is intentionally
 //              not documented and is for private use only.
 // Modified by:
 // Created:     10.02.99
-// RCS-ID:      $Id: longlong.cpp,v 1.24.2.1 2003/12/11 09:14:51 JS Exp $
+// RCS-ID:      $Id: longlong.cpp,v 1.30 2004/10/04 19:47:55 ABX Exp $
 // Copyright:   (c) 1998 Vadim Zeitlin <zeitlin@dptmaths.ens-cachan.fr>
-// Licence:     wxWindows license
+// Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
 
 // ============================================================================
 // headers
 // ============================================================================
 
-#ifdef __GNUG__
+#if defined(__GNUG__) && !defined(NO_GCC_PRAGMA)
     #pragma implementation "longlong.h"
 #endif
 
@@ -50,14 +50,14 @@ void *wxLongLongNative::asArray() const
 {
     static unsigned char temp[8];
 
-    temp[0] = (m_ll >> 56) & 0xFF;
-    temp[1] = (m_ll >> 48) & 0xFF;
-    temp[2] = (m_ll >> 40) & 0xFF;
-    temp[3] = (m_ll >> 32) & 0xFF;
-    temp[4] = (m_ll >> 24) & 0xFF;
-    temp[5] = (m_ll >> 16) & 0xFF;
-    temp[6] = (m_ll >> 8)  & 0xFF;
-    temp[7] = (m_ll >> 0)  & 0xFF;
+    temp[0] = (unsigned char)((m_ll >> 56) & 0xFF);
+    temp[1] = (unsigned char)((m_ll >> 48) & 0xFF);
+    temp[2] = (unsigned char)((m_ll >> 40) & 0xFF);
+    temp[3] = (unsigned char)((m_ll >> 32) & 0xFF);
+    temp[4] = (unsigned char)((m_ll >> 24) & 0xFF);
+    temp[5] = (unsigned char)((m_ll >> 16) & 0xFF);
+    temp[6] = (unsigned char)((m_ll >> 8)  & 0xFF);
+    temp[7] = (unsigned char)((m_ll >> 0)  & 0xFF);
 
     return temp;
 }
@@ -66,14 +66,14 @@ void *wxULongLongNative::asArray() const
 {
     static unsigned char temp[8];
 
-    temp[0] = (m_ll >> 56) & 0xFF;
-    temp[1] = (m_ll >> 48) & 0xFF;
-    temp[2] = (m_ll >> 40) & 0xFF;
-    temp[3] = (m_ll >> 32) & 0xFF;
-    temp[4] = (m_ll >> 24) & 0xFF;
-    temp[5] = (m_ll >> 16) & 0xFF;
-    temp[6] = (m_ll >> 8)  & 0xFF;
-    temp[7] = (m_ll >> 0)  & 0xFF;
+    temp[0] = (unsigned char)((m_ll >> 56) & 0xFF);
+    temp[1] = (unsigned char)((m_ll >> 48) & 0xFF);
+    temp[2] = (unsigned char)((m_ll >> 40) & 0xFF);
+    temp[3] = (unsigned char)((m_ll >> 32) & 0xFF);
+    temp[4] = (unsigned char)((m_ll >> 24) & 0xFF);
+    temp[5] = (unsigned char)((m_ll >> 16) & 0xFF);
+    temp[6] = (unsigned char)((m_ll >> 8)  & 0xFF);
+    temp[7] = (unsigned char)((m_ll >> 0)  & 0xFF);
 
     return temp;
 }
@@ -508,41 +508,41 @@ wxULongLongWx& wxULongLongWx::operator--()
 bool wxLongLongWx::operator<(const wxLongLongWx& ll) const
 {
     if ( m_hi < ll.m_hi )
-        return TRUE;
+        return true;
     else if ( m_hi == ll.m_hi )
         return m_lo < ll.m_lo;
     else
-        return FALSE;
+        return false;
 }
 
 bool wxULongLongWx::operator<(const wxULongLongWx& ll) const
 {
     if ( m_hi < ll.m_hi )
-        return TRUE;
+        return true;
     else if ( m_hi == ll.m_hi )
         return m_lo < ll.m_lo;
     else
-        return FALSE;
+        return false;
 }
 
 bool wxLongLongWx::operator>(const wxLongLongWx& ll) const
 {
     if ( m_hi > ll.m_hi )
-        return TRUE;
+        return true;
     else if ( m_hi == ll.m_hi )
         return m_lo > ll.m_lo;
     else
-        return FALSE;
+        return false;
 }
 
 bool wxULongLongWx::operator>(const wxULongLongWx& ll) const
 {
     if ( m_hi > ll.m_hi )
-        return TRUE;
+        return true;
     else if ( m_hi == ll.m_hi )
         return m_lo > ll.m_lo;
     else
-        return FALSE;
+        return false;
 }
 
 // bitwise operators
@@ -796,7 +796,7 @@ void wxLongLongWx::Divide(const wxLongLongWx& divisorIn,
     //
     // with 0 <= abs(remainder) < abs(divisor)
     bool negRemainder = dividend.m_hi < 0;
-    bool negQuotient = FALSE;   // assume positive
+    bool negQuotient = false;   // assume positive
     if ( dividend.m_hi < 0 )
     {
         negQuotient = !negQuotient;
@@ -1075,19 +1075,19 @@ wxLongLongWx::ToString() const
     wxLongLong ll = *this;
 
     bool neg;
-    if ( ll < 0L )
+    if ( ll < 0 )
     {
         ll.Negate();
-        neg = TRUE;
+        neg = true;
     }
     else
     {
-        neg = FALSE;
+        neg = false;
     }
 
-    while ( ll != 0L )
+    while ( ll != 0 )
     {
-        result.Prepend((wxChar)(_T('0') + (ll % 10L).ToLong()));
+        result.Prepend((wxChar)(_T('0') + (ll % 10).ToLong()));
         ll /= 10;
     }
 

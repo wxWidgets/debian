@@ -3,8 +3,8 @@
 // Purpose:     common (for all platforms) wxTopLevelWindow functions
 // Author:      Julian Smart, Vadim Zeitlin
 // Created:     01/02/97
-// Id:          $Id: toplvcmn.cpp,v 1.16 2002/08/17 12:11:03 RR Exp $
-// Copyright:   (c) 1998 Robert Roebling, Julian Smart and Markus Holzem
+// Id:          $Id: toplvcmn.cpp,v 1.32 2004/10/01 01:46:14 VZ Exp $
+// Copyright:   (c) 1998 Robert Roebling and Julian Smart
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
 
@@ -16,7 +16,7 @@
 // headers
 // ----------------------------------------------------------------------------
 
-#ifdef __GNUG__
+#if defined(__GNUG__) && !defined(NO_GCC_PRAGMA)
     #pragma implementation "toplevelbase.h"
 #endif
 
@@ -46,10 +46,7 @@ END_EVENT_TABLE()
 // implementation
 // ============================================================================
 
-// FIXME: some platforms don't have wxTopLevelWindow yet
-#ifdef wxTopLevelWindowNative
-    IMPLEMENT_DYNAMIC_CLASS(wxTopLevelWindow, wxWindow)
-#endif
+IMPLEMENT_DYNAMIC_CLASS(wxTopLevelWindow, wxWindow)
 
 // ----------------------------------------------------------------------------
 // construction/destruction
@@ -57,6 +54,8 @@ END_EVENT_TABLE()
 
 wxTopLevelWindowBase::wxTopLevelWindowBase()
 {
+    // Unlike windows, top level windows are created hidden by default.
+    m_isShown = false;
 }
 
 wxTopLevelWindowBase::~wxTopLevelWindowBase()
@@ -83,7 +82,18 @@ bool wxTopLevelWindowBase::Destroy()
     if ( !wxPendingDelete.Member(this) )
         wxPendingDelete.Append(this);
 
-    return TRUE;
+    if (wxTopLevelWindows.GetCount() > 1)
+    {
+        // Hide it immediately. This should
+        // not be done if this TLW is the
+        // only one left since we then would
+        // risk not to get any idle events
+        // at all anymore during which we
+        // could delete any pending events.
+        Hide();
+    }
+
+    return true;
 }
 
 bool wxTopLevelWindowBase::IsLastBeforeExit() const
@@ -106,11 +116,35 @@ wxSize wxTopLevelWindowBase::GetMaxSize() const
 
     wxClientDisplayRect( 0, 0, &w, &h );
 
-    if( size.GetWidth() == -1 )
+    if( size.GetWidth() == wxDefaultCoord )
         size.SetWidth( w );
 
-    if( size.GetHeight() == -1 )
+    if( size.GetHeight() == wxDefaultCoord )
         size.SetHeight( h );
+
+    return size;
+}
+
+/* static */
+wxSize wxTopLevelWindowBase::GetDefaultSize()
+{
+    wxSize size = wxGetClientDisplayRect().GetSize();
+
+    // create proportionally bigger windows on small screens
+    if ( size.x >= 1024 )
+        size.x = 400;
+    else if ( size.x >= 800 )
+        size.x = 300;
+    else if ( size.x >= 320 )
+        size.x = 240;
+
+    if ( size.y >= 768 )
+        size.y = 250;
+    else if ( size.y > 200 )
+    {
+        size.y *= 2;
+        size.y /= 3;
+    }
 
     return size;
 }
@@ -153,7 +187,7 @@ void wxTopLevelWindowBase::DoClientToScreen(int *x, int *y) const
 
 // default resizing behaviour - if only ONE subwindow, resize to fill the
 // whole client area
-void wxTopLevelWindowBase::OnSize(wxSizeEvent& WXUNUSED(event))
+void wxTopLevelWindowBase::DoLayout()
 {
     // if we're using constraints or sizers - do use them
     if ( GetAutoLayout() )
@@ -164,7 +198,7 @@ void wxTopLevelWindowBase::OnSize(wxSizeEvent& WXUNUSED(event))
     {
         // do we have _exactly_ one child?
         wxWindow *child = (wxWindow *)NULL;
-        for ( wxWindowList::Node *node = GetChildren().GetFirst();
+        for ( wxWindowList::compatibility_iterator node = GetChildren().GetFirst();
               node;
               node = node->GetNext() )
         {
@@ -218,4 +252,22 @@ bool wxTopLevelWindowBase::SendIconizeEvent(bool iconized)
     return GetEventHandler()->ProcessEvent(event);
 }
 
-// vi:sts=4:sw=4:et
+// do the window-specific processing after processing the update event
+void wxTopLevelWindowBase::DoUpdateWindowUI(wxUpdateUIEvent& event)
+{
+    if ( event.GetSetEnabled() )
+        Enable(event.GetEnabled());
+
+    if ( event.GetSetText() )
+    {
+        if ( event.GetText() != GetTitle() )
+            SetTitle(event.GetText());
+    }
+}
+
+void wxTopLevelWindowBase::RequestUserAttention(int WXUNUSED(flags))
+{
+    // it's probably better than do nothing, isn't it?
+    Raise();
+}
+

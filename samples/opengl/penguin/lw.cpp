@@ -36,6 +36,8 @@
 #include <stdio.h>
 #include <math.h>
 
+#if wxUSE_GLCANVAS
+
 #define MK_ID(a,b,c,d) ((((wxUint32)(a))<<24)| \
             (((wxUint32)(b))<<16)| \
             (((wxUint32)(c))<< 8)| \
@@ -61,7 +63,7 @@ static wxInt32 read_short(FILE *f)
     // when using the direct evaluation in the return statement
     wxInt32 first = read_char(f) ;
     wxInt32 second = read_char(f) ;
-    
+
   return (first<<8) | second ;
 }
 
@@ -89,7 +91,7 @@ static int read_string(FILE *f, char *s)
   do {
     c = read_char(f);
     if (cnt < LW_MAX_NAME_LEN)
-      s[cnt] = c;
+      s[cnt] = (char)c;
     else
       s[LW_MAX_NAME_LEN-1] = 0;
     cnt++;
@@ -168,7 +170,7 @@ static void read_surf(FILE *f, int nbytes, lwObject *lwo)
 static void read_pols(FILE *f, int nbytes, lwObject *lwo)
 {
   int guess_cnt = lwo->face_cnt;
-  
+
   while (nbytes > 0) {
     lwFace *face;
     int i;
@@ -186,17 +188,17 @@ static void read_pols(FILE *f, int nbytes, lwObject *lwo)
 
     /* allocate space for points */
     face->index = (int*) calloc(sizeof(int)*face->index_cnt,1);
-    
+
     /* read points in */
     for (i=0; i<face->index_cnt; i++) {
       face->index[i] = read_short(f);
       nbytes -= 2;
     }
-    
+
     /* read surface material */
     face->material = read_short(f);
     nbytes -= 2;
-    
+
     /* skip over detail  polygons */
     if (face->material < 0) {
       int det_cnt;
@@ -234,7 +236,7 @@ static void read_pnts(FILE *f, int nbytes, lwObject *lwo)
 
 
 
-int lw_is_lwobject(const char *lw_file)
+bool lw_is_lwobject(const char *lw_file)
 {
   FILE *f = fopen(lw_file, "rb");
   if (f) {
@@ -243,22 +245,17 @@ int lw_is_lwobject(const char *lw_file)
     wxInt32 lwob = read_long(f);
     fclose(f);
     if (form == ID_FORM && nlen != 0 && lwob == ID_LWOB)
-      return TRUE;
+      return true;
   }
-  return FALSE;
+  return false;
 }
 
 
 lwObject *lw_object_read(const char *lw_file)
 {
-  FILE *f = NULL;
-  lwObject *lw_object = NULL;
-
-  wxInt32 form_bytes = 0;
-  wxInt32 read_bytes = 0;
 
   /* open file */
-  f = fopen(lw_file, "rb");
+  FILE *f = fopen(lw_file, "rb");
   if (f == NULL) {
     return NULL;
   }
@@ -268,7 +265,10 @@ lwObject *lw_object_read(const char *lw_file)
     fclose(f);
     return NULL;
   }
-  form_bytes = read_long(f);
+
+  wxInt32 read_bytes = 0;
+
+  wxInt32 form_bytes = read_long(f);
   read_bytes += 4;
 
   if (read_long(f) != ID_LWOB) {
@@ -277,7 +277,7 @@ lwObject *lw_object_read(const char *lw_file)
   }
 
   /* create new lwObject */
-  lw_object = (lwObject*) calloc(sizeof(lwObject),1);
+  lwObject *lw_object = (lwObject*) calloc(sizeof(lwObject),1);
 
   /* read chunks */
   while (read_bytes < form_bytes) {
@@ -435,4 +435,5 @@ void lw_object_scale(lwObject *lwo, GLfloat scale)
   }
 }
 
+#endif
 

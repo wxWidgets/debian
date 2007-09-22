@@ -8,7 +8,7 @@
 // Author:      Petr Smilauer
 // Modified by:
 // Created:     01/01/99
-// RCS-ID:      $Id: readshg.h,v 1.1 1999/01/02 00:44:57 JS Exp $
+// RCS-ID:      $Id: readshg.h,v 1.2 2004/01/08 11:54:29 JS Exp $
 // Copyright:   (c) Petr Smilauer
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -46,7 +46,7 @@ struct HotSpot
                       top,
                       right,
                       bottom;
-          char        szHlpTopic_Macro[65];
+          wxChar      szHlpTopic_Macro[65];
           bool        IsVisible;
 };
 
@@ -55,10 +55,10 @@ struct HotSpot
 // HotSpots *array;
 // int n = ParseSHG("thing.shg", &array);
 
-extern int ParseSHG( const char* fileName, HotSpot **hotspots);
+extern int ParseSHG( const wxChar* fileName, HotSpot **hotspots);
 
 // Converts Windows .SHG file to HTML map file
-extern bool SHGToMap(char *filename, char *defaultFile);
+extern bool SHGToMap(wxChar *filename, wxChar *defaultFile);
 
 #endif
 

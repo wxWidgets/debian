@@ -3,9 +3,12 @@
  *                                                                  *
  * (C) 1998 by Karsten Ballüder (Ballueder@usa.net)                 *
  *                                                                  *
- * $Id: kbList.cpp,v 1.2 2002/01/16 13:39:50 GT Exp $          *
+ * $Id: kbList.cpp,v 1.3 2004/08/06 17:27:18 ABX Exp $          *
  *                                                                  *
  * $Log: kbList.cpp,v $
+ * Revision 1.3  2004/08/06 17:27:18  ABX
+ * Deleting void is undefined.
+ *
  * Revision 1.2  2002/01/16 13:39:50  GT
  * Added checks for wxUSE_IOSTREAMH to determine which iostream(.h) to use
  *
@@ -58,6 +61,14 @@
 #ifdef __GNUG__
 #   pragma implementation "kbList.h"
 #endif
+
+#include "wx/wxprec.h"
+
+#ifdef __BORLANDC__
+#  pragma hdrstop
+#endif
+
+#include   "wx/wx.h"
 
 #include   "kbList.h"
 
@@ -252,7 +263,14 @@ kbList::~kbList()
    {
       next = first->next;
       if(ownsEntries)
+      {
+#if 0
          delete first->element;
+#else
+         wxLogError(wxT("Deleting `void*' is undefined."));
+         wxLogError(wxT("Entries of kbList should be deleted by destructors of derived classes."));
+#endif
+      }
       delete first;
       first = next;
    }

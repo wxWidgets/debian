@@ -2,7 +2,7 @@
 // Purpose:     XML resources editor
 // Author:      Vaclav Slavik
 // Created:     2000/05/05
-// RCS-ID:      $Id: nodehnd.h,v 1.6 2002/09/07 12:15:24 GD Exp $
+// RCS-ID:      $Id: nodehnd.h,v 1.9 2004/06/11 13:14:23 ABX Exp $
 // Copyright:   (c) 2000 Vaclav Slavik
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -22,9 +22,9 @@ class WXDLLEXPORT wxListCtrl;
 class EditorFrame;
 
 #include "wx/treectrl.h"
-#include "wx/xrc/xml.h"
+#include "wx/xml/xml.h"
 #include "nodesdb.h"
-
+#include "wx/arrstr.h"
 
 
 
@@ -32,10 +32,10 @@ class NodeHandler : public wxObject
 {
     public:
         static NodeHandler *Find(wxXmlNode *node);
-    
+
         NodeHandler(NodeInfo *ni);
         virtual ~NodeHandler();
-        
+
         virtual bool CanHandle(wxXmlNode *node);
         virtual wxTreeItemId CreateTreeNode(wxTreeCtrl *treectrl, wxTreeItemId parent,
                                     wxXmlNode *node);
@@ -45,12 +45,12 @@ class NodeHandler : public wxObject
         wxArrayString& GetChildTypes();
         virtual void InsertNode(wxXmlNode *parent, wxXmlNode *node, wxXmlNode *insert_before = NULL);
         virtual wxXmlNode *GetRealNode(wxXmlNode *node) { return node; }
-        
+
     protected:
 
         NodeInfo *m_NodeInfo;
         wxArrayString m_ChildTypes;
-        
+
         static wxList ms_Handlers;
         static bool ms_HandlersLoaded;
 };
@@ -60,7 +60,7 @@ class NodeHandlerPanel : public NodeHandler
 {
     public:
         NodeHandlerPanel(NodeInfo *ni) : NodeHandler(ni) {}
-        
+
         virtual wxTreeItemId CreateTreeNode(wxTreeCtrl *treectrl, wxTreeItemId parent,
                                     wxXmlNode *node);
         virtual void InsertNode(wxXmlNode *parent, wxXmlNode *node, wxXmlNode *insert_before = NULL);
@@ -72,7 +72,7 @@ class NodeHandlerSizer : public NodeHandlerPanel
 {
     public:
         NodeHandlerSizer(NodeInfo *ni) : NodeHandlerPanel(ni) {}
-        
+
         virtual void InsertNode(wxXmlNode *parent, wxXmlNode *node, wxXmlNode *insert_before = NULL);
         virtual int GetTreeIcon(wxXmlNode *node);
 };
@@ -102,7 +102,7 @@ class NodeHandlerNotebook : public NodeHandlerPanel
 {
     public:
         NodeHandlerNotebook(NodeInfo *ni) : NodeHandlerPanel(ni) {}
-        
+
         virtual void InsertNode(wxXmlNode *parent, wxXmlNode *node, wxXmlNode *insert_before = NULL);
 };
 
@@ -111,7 +111,7 @@ class NodeHandlerNotebook : public NodeHandlerPanel
 class NodeHandlerNotebookPage : public NodeHandlerSizerItem
 {
     public:
-        NodeHandlerNotebookPage(NodeInfo *ni) : 
+        NodeHandlerNotebookPage(NodeInfo *ni) :
                                         NodeHandlerSizerItem(ni) {}
 };
 
@@ -122,9 +122,9 @@ class NodeHandlerUnknown : public NodeHandler
 {
     public:
         NodeHandlerUnknown() : NodeHandler(new NodeInfo) {}
-        
-        virtual bool CanHandle(wxXmlNode *node) { return TRUE; }
+
+        virtual bool CanHandle(wxXmlNode *WXUNUSED(node)) { return true; }
 };
 
 
-#endif 
+#endif

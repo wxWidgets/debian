@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     01/02/97
-// RCS-ID:      $Id: wxprec.h,v 1.24.4.1 2003/08/14 11:46:19 CE Exp $
+// RCS-ID:      $Id: wxprec.h,v 1.33 2004/09/10 13:24:12 ABX Exp $
 // Copyright:   (c)
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -14,7 +14,14 @@
 
 // check if to use precompiled headers: do it for most Windows compilers unless
 // explicitly disabled by defining NOPCH
-#if ((defined(__BORLANDC__) || defined(__VISUALC__) || defined(__DIGITALMARS__) || defined(__WATCOMC__)) && defined(__WXMSW__)) || defined(__VISAGECPP__) || defined(__MWERKS__)
+#if ( defined(__WXMSW__) && \
+       ( defined(__BORLANDC__)    || \
+         defined(__VISUALC__)     || \
+         defined(__DIGITALMARS__) || \
+         defined(__WATCOMC__) ) ) || \
+      defined(__VISAGECPP__) || \
+      defined(__MWERKS__)
+
     #if !defined(NOPCH)
         #define WX_PRECOMP
     #endif
@@ -32,13 +39,8 @@
 #include "wx/wxchar.h"
 
 // include standard Windows headers
-#if defined(__WXMSW__) && !wxUSE_MFC
-    #ifndef STRICT
-        #define STRICT 1
-    #endif
-
-    #include <windows.h>
-    #include "wx/msw/winundef.h"
+#if defined(__WXMSW__)
+    #include "wx/msw/wrapwin.h"
 #endif
 
 // include the most common wx headers

@@ -4,15 +4,15 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     01/02/97
-// RCS-ID:      $Id: frame.h,v 1.58 2002/08/22 17:03:38 VZ Exp $
-// Copyright:   (c) Julian Smart and Markus Holzem
-// Licence:     wxWindows license
+// RCS-ID:      $Id: frame.h,v 1.72 2004/08/25 12:17:51 ABX Exp $
+// Copyright:   (c) Julian Smart
+// Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
 
 #ifndef _WX_FRAME_H_
 #define _WX_FRAME_H_
 
-#ifdef __GNUG__
+#if defined(__GNUG__) && !defined(NO_GCC_PRAGMA)
     #pragma interface "frame.h"
 #endif
 
@@ -56,8 +56,8 @@ public:
 
     // Toolbar
 #if wxUSE_TOOLBAR
-    virtual wxToolBar* CreateToolBar(long style = wxNO_BORDER | wxTB_HORIZONTAL | wxTB_FLAT,
-                                     wxWindowID id = -1,
+    virtual wxToolBar* CreateToolBar(long style = -1,
+                                     wxWindowID id = wxID_ANY,
                                      const wxString& name = wxToolBarNameStr);
 
     virtual void PositionToolBar();
@@ -102,6 +102,8 @@ public:
     // current size - this has an effect of refreshing the window layout
     virtual void SendSizeEvent();
 
+    virtual wxPoint GetClientAreaOrigin() const;
+
 protected:
     // common part of all ctors
     void Init();
@@ -126,11 +128,14 @@ protected:
     bool MSWTranslateMessage(WXMSG* pMsg);
 
     // window proc for the frames
-    long MSWWindowProc(WXUINT message, WXWPARAM wParam, WXLPARAM lParam);
+    WXLRESULT MSWWindowProc(WXUINT message, WXWPARAM wParam, WXLPARAM lParam);
 
-    virtual bool IsMDIChild() const { return FALSE; }
+    // handle WM_INITMENUPOPUP message
+    bool HandleInitMenuPopup(WXHMENU hMenu);
 
-    // get default (wxWindows) icon for the frame
+    virtual bool IsMDIChild() const { return false; }
+
+    // get default (wxWidgets) icon for the frame
     virtual WXHICON GetDefaultIcon() const;
 
 #if wxUSE_STATUSBAR
@@ -151,7 +156,7 @@ private:
     bool m_wasMinimized;
 
     DECLARE_EVENT_TABLE()
-    DECLARE_DYNAMIC_CLASS(wxFrame)
+    DECLARE_DYNAMIC_CLASS_NO_COPY(wxFrame)
 };
 
 #endif

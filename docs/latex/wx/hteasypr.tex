@@ -28,16 +28,15 @@ this class stores various settings in it.
 
 \membersection{wxHtmlEasyPrinting::wxHtmlEasyPrinting}\label{wxhtmleasyprintingwxhtmleasyprinting}
 
-\func{}{wxHtmlEasyPrinting}{\param{const wxString\& }{name = "Printing"}, \param{wxFrame* }{parent\_frame = NULL}}
+\func{}{wxHtmlEasyPrinting}{\param{const wxString\& }{name = "Printing"}, \param{wxWindow* }{parentWindow = NULL}}
 
 Constructor.
 
 \wxheading{Parameters}
 
-\docparam{name}{Name of the printing. Used by preview frames and setup dialogs.}
+\docparam{name}{Name of the printing object. Used by preview frames and setup dialogs.}
 
-\docparam{parent\_frame}{pointer to the frame that will own preview frame and setup dialogs. May be NULL.}
-
+\docparam{parentWindow}{pointer to the window that will own the preview frame and setup dialogs. May be NULL.}
 
 \membersection{wxHtmlEasyPrinting::PreviewFile}\label{wxhtmleasyprintingpreviewfile}
 
@@ -45,7 +44,7 @@ Constructor.
 
 Preview HTML file. 
 
-Returns FALSE in case of error -- call
+Returns false in case of error -- call
 \helpref{wxPrinter::GetLastError}{wxprintergetlasterror} to get detailed
 information about the kind of the error.
 
@@ -56,7 +55,7 @@ information about the kind of the error.
 
 Preview HTML text (not file!). 
 
-Returns FALSE in case of error -- call
+Returns false in case of error -- call
 \helpref{wxPrinter::GetLastError}{wxprintergetlasterror} to get detailed
 information about the kind of the error.
 
@@ -73,7 +72,7 @@ file). It is used to determine path for loading images, for example.}
 
 Print HTML file.
 
-Returns FALSE in case of error -- call
+Returns false in case of error -- call
 \helpref{wxPrinter::GetLastError}{wxprintergetlasterror} to get detailed
 information about the kind of the error.
 
@@ -83,7 +82,7 @@ information about the kind of the error.
 
 Print HTML text (not file!). 
 
-Returns FALSE in case of error -- call
+Returns false in case of error -- call
 \helpref{wxPrinter::GetLastError}{wxprintergetlasterror} to get detailed
 information about the kind of the error.
 
@@ -105,6 +104,13 @@ Display printer setup dialog and allows the user to modify settings.
 \func{void}{PageSetup}{\void}
 
 Display page setup dialog and allows the user to modify settings. 
+
+\membersection{wxHtmlEasyPrinting::SetFonts}\label{wxhtmleasyprintingsetfonts}
+
+\func{void}{SetFonts}{\param{wxString }{normal\_face}, \param{wxString }{fixed\_face}, \param{const int }{*sizes = NULL}}
+
+Sets fonts. See \helpref{wxHtmlWindow::SetFonts}{wxhtmlwindowsetfonts} for
+detailed description.
 
 \membersection{wxHtmlEasyPrinting::SetHeader}\label{wxhtmleasyprintingsetheader}
 

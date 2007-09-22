@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     01/02/97
-// RCS-ID:      $Id: listbox.h,v 1.24.2.1 2002/09/22 21:01:59 VZ Exp $
+// RCS-ID:      $Id: listbox.h,v 1.39 2004/08/30 10:18:43 ABX Exp $
 // Copyright:   (c) Julian Smart
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -12,7 +12,7 @@
 #ifndef _WX_LISTBOX_H_
 #define _WX_LISTBOX_H_
 
-#ifdef __GNUG__
+#if defined(__GNUG__) && !defined(NO_GCC_PRAGMA)
     #pragma interface "listbox.h"
 #endif
 
@@ -28,11 +28,11 @@
   // define the array of list box items
   #include  "wx/dynarray.h"
 
-  WX_DEFINE_EXPORTED_ARRAY(wxOwnerDrawn *, wxListBoxItemsArray);
+  WX_DEFINE_EXPORTED_ARRAY_PTR(wxOwnerDrawn *, wxListBoxItemsArray);
 #endif // wxUSE_OWNER_DRAWN
 
 // forward decl for GetSelections()
-class wxArrayInt;
+class WXDLLIMPEXP_BASE wxArrayInt;
 
 // ----------------------------------------------------------------------------
 // List box control
@@ -53,11 +53,28 @@ public:
     {
         Create(parent, id, pos, size, n, choices, style, validator, name);
     }
+    wxListBox(wxWindow *parent, wxWindowID id,
+            const wxPoint& pos,
+            const wxSize& size,
+            const wxArrayString& choices,
+            long style = 0,
+            const wxValidator& validator = wxDefaultValidator,
+            const wxString& name = wxListBoxNameStr)
+    {
+        Create(parent, id, pos, size, choices, style, validator, name);
+    }
 
     bool Create(wxWindow *parent, wxWindowID id,
                 const wxPoint& pos = wxDefaultPosition,
                 const wxSize& size = wxDefaultSize,
                 int n = 0, const wxString choices[] = NULL,
+                long style = 0,
+                const wxValidator& validator = wxDefaultValidator,
+                const wxString& name = wxListBoxNameStr);
+    bool Create(wxWindow *parent, wxWindowID id,
+                const wxPoint& pos,
+                const wxSize& size,
+                const wxArrayString& choices,
                 long style = 0,
                 const wxValidator& validator = wxDefaultValidator,
                 const wxString& name = wxListBoxNameStr);
@@ -74,7 +91,7 @@ public:
     virtual int FindString(const wxString& s) const;
 
     virtual bool IsSelected(int n) const;
-    virtual void SetSelection(int n, bool select = TRUE);
+    virtual void SetSelection(int n, bool select = true);
     virtual int GetSelection() const;
     virtual int GetSelections(wxArrayInt& aSelections) const;
 
@@ -112,9 +129,20 @@ public:
     // Windows callbacks
     bool MSWCommand(WXUINT param, WXWORD id);
 
-    virtual void SetupColours();
+    virtual wxVisualAttributes GetDefaultAttributes() const
+    {
+        return GetClassDefaultAttributes(GetWindowVariant());
+    }
+
+    static wxVisualAttributes
+    GetClassDefaultAttributes(wxWindowVariant variant = wxWINDOW_VARIANT_NORMAL)
+    {
+        return GetCompositeControlsDefaultAttributes(variant);
+    }
 
 protected:
+    WXDWORD MSWGetStyle(long style, WXDWORD *exstyle) const;
+
     // free memory (common part of Clear() and dtor)
     void Free();
 
@@ -129,7 +157,7 @@ protected:
 #endif
 
 private:
-    DECLARE_DYNAMIC_CLASS(wxListBox)
+    DECLARE_DYNAMIC_CLASS_NO_COPY(wxListBox)
 };
 
 #endif // wxUSE_LISTBOX

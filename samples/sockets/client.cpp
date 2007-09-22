@@ -4,7 +4,7 @@
 // Author:      Guillermo Rodriguez Garcia <guille@iies.es>
 // Modified by:
 // Created:     1999/09/19
-// RCS-ID:      $Id: client.cpp,v 1.21.2.1 2002/11/11 19:07:23 RR Exp $
+// RCS-ID:      $Id: client.cpp,v 1.27 2004/10/06 20:54:32 ABX Exp $
 // Copyright:   (c) 1999 Guillermo Rodriguez Garcia
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -29,7 +29,7 @@
 #  pragma hdrstop
 #endif
 
-// for all others, include the necessary headers 
+// for all others, include the necessary headers
 #ifndef WX_PRECOMP
 #  include "wx/wx.h"
 #endif
@@ -98,7 +98,7 @@ private:
   wxMenuBar      *m_menuBar;
   bool            m_busy;
 
-  // any class wishing to process wxWindows events must use this macro
+  // any class wishing to process wxWidgets events must use this macro
   DECLARE_EVENT_TABLE()
 };
 
@@ -125,7 +125,7 @@ enum
 };
 
 // --------------------------------------------------------------------------
-// event tables and other macros for wxWindows
+// event tables and other macros for wxWidgets
 // --------------------------------------------------------------------------
 
 BEGIN_EVENT_TABLE(MyFrame, wxFrame)
@@ -157,11 +157,11 @@ bool MyApp::OnInit()
   MyFrame *frame = new MyFrame();
 
   // Show it and tell the application that it's our main window
-  frame->Show(TRUE);
+  frame->Show(true);
   SetTopWindow(frame);
 
   // success
-  return TRUE;
+  return true;
 }
 
 // --------------------------------------------------------------------------
@@ -169,7 +169,7 @@ bool MyApp::OnInit()
 // --------------------------------------------------------------------------
 
 // frame constructor
-MyFrame::MyFrame() : wxFrame((wxFrame *)NULL, -1,
+MyFrame::MyFrame() : wxFrame((wxFrame *)NULL, wxID_ANY,
                              _("wxSocket demo: Client"),
                              wxDefaultPosition, wxSize(300, 200))
 {
@@ -205,11 +205,13 @@ MyFrame::MyFrame() : wxFrame((wxFrame *)NULL, -1,
   m_menuBar->Append(m_menuProtocols, _("&Protocols"));
   SetMenuBar(m_menuBar);
 
+#if wxUSE_STATUSBAR
   // Status bar
   CreateStatusBar(2);
+#endif // wxUSE_STATUSBAR
 
   // Make a textctrl for logging
-  m_text  = new wxTextCtrl(this, -1,
+  m_text  = new wxTextCtrl(this, wxID_ANY,
                            _("Welcome to wxSocket demo: Client\nClient ready\n"),
                            wxDefaultPosition, wxDefaultSize,
                            wxTE_MULTILINE | wxTE_READONLY);
@@ -222,9 +224,9 @@ MyFrame::MyFrame() : wxFrame((wxFrame *)NULL, -1,
   m_sock->SetNotify(wxSOCKET_CONNECTION_FLAG |
                     wxSOCKET_INPUT_FLAG |
                     wxSOCKET_LOST_FLAG);
-  m_sock->Notify(TRUE);
+  m_sock->Notify(true);
 
-  m_busy = FALSE;
+  m_busy = false;
   UpdateStatusBar();
 }
 
@@ -238,8 +240,8 @@ MyFrame::~MyFrame()
 
 void MyFrame::OnQuit(wxCommandEvent& WXUNUSED(event))
 {
-  // TRUE is to force the frame to close
-  Close(TRUE);
+  // true is to force the frame to close
+  Close(true);
 }
 
 void MyFrame::OnAbout(wxCommandEvent& WXUNUSED(event))
@@ -253,8 +255,8 @@ void MyFrame::OnOpenConnection(wxCommandEvent& WXUNUSED(event))
 {
   wxIPV4address addr;
 
-  m_menuSocket->Enable(CLIENT_OPEN, FALSE);
-  m_menuSocket->Enable(CLIENT_CLOSE, FALSE);
+  m_menuSocket->Enable(CLIENT_OPEN, false);
+  m_menuSocket->Enable(CLIENT_CLOSE, false);
 
   // Ask user for server address
   wxString hostname = wxGetTextFromUser(
@@ -271,21 +273,21 @@ void MyFrame::OnOpenConnection(wxCommandEvent& WXUNUSED(event))
   // There are two ways to use Connect(): blocking and non-blocking,
   // depending on the value passed as the 'wait' (2nd) parameter.
   //
-  // Connect(addr, TRUE) will wait until the connection completes,
-  // returning TRUE on success and FALSE on failure. This call blocks
+  // Connect(addr, true) will wait until the connection completes,
+  // returning true on success and false on failure. This call blocks
   // the GUI (this might be changed in future releases to honour the
   // wxSOCKET_BLOCK flag).
   //
-  // Connect(addr, FALSE) will issue a nonblocking connection request
-  // and return immediately. If the return value is TRUE, then the
+  // Connect(addr, false) will issue a nonblocking connection request
+  // and return immediately. If the return value is true, then the
   // connection has been already succesfully established. If it is
-  // FALSE, you must wait for the request to complete, either with
+  // false, you must wait for the request to complete, either with
   // WaitOnConnect() or by watching wxSOCKET_CONNECTION / LOST
   // events (please read the documentation).
   //
   // WaitOnConnect() itself never blocks the GUI (this might change
   // in the future to honour the wxSOCKET_BLOCK flag). This call will
-  // return FALSE on timeout, or TRUE if the connection request
+  // return false on timeout, or true if the connection request
   // completes, which in turn might mean:
   //
   //   a) That the connection was successfully established
@@ -298,24 +300,24 @@ void MyFrame::OnOpenConnection(wxCommandEvent& WXUNUSED(event))
   //
   // For blocking Connect:
   //
-  //   bool success = client->Connect(addr, TRUE);
+  //   bool success = client->Connect(addr, true);
   //
   // For nonblocking Connect:
   //
-  //   client->Connect(addr, FALSE);
+  //   client->Connect(addr, false);
   //
-  //   bool waitmore = TRUE;
+  //   bool waitmore = true;
   //   while (! client->WaitOnConnect(seconds, millis) && waitmore )
   //   {
   //     // possibly give some feedback to the user,
   //     // update waitmore if needed.
   //   }
   //   bool success = client->IsConnected();
-  // 
+  //
   // And that's all :-)
 
   m_text->AppendText(_("\nTrying to connect (timeout = 10 sec) ...\n"));
-  m_sock->Connect(addr, FALSE);
+  m_sock->Connect(addr, false);
   m_sock->WaitOnConnect(10);
 
   if (m_sock->IsConnected())
@@ -326,7 +328,7 @@ void MyFrame::OnOpenConnection(wxCommandEvent& WXUNUSED(event))
     m_text->AppendText(_("Failed ! Unable to connect\n"));
     wxMessageBox(_("Can't connect to the specified host"), _("Alert !"));
   }
-  
+
   UpdateStatusBar();
 }
 
@@ -337,7 +339,7 @@ void MyFrame::OnTest1(wxCommandEvent& WXUNUSED(event))
   unsigned char len;
 
   // Disable socket menu entries (exception: Close Session)
-  m_busy = TRUE;
+  m_busy = true;
   UpdateStatusBar();
 
   m_text->AppendText(_("\n=== Test 1 begins ===\n"));
@@ -361,7 +363,7 @@ void MyFrame::OnTest1(wxCommandEvent& WXUNUSED(event))
   m_sock->SetFlags(wxSOCKET_WAITALL);
 
   buf1 = _("Test string (less than 256 chars!)");
-  len  = (wxStrlen(buf1) + 1) * sizeof(wxChar);
+  len  = (unsigned char)((wxStrlen(buf1) + 1) * sizeof(wxChar));
   buf2 = new wxChar[wxStrlen(buf1) + 1];
 
   m_text->AppendText(_("Sending a test buffer to the server ..."));
@@ -387,7 +389,7 @@ void MyFrame::OnTest1(wxCommandEvent& WXUNUSED(event))
   m_text->AppendText(_("=== Test 1 ends ===\n"));
 
   delete[] buf2;
-  m_busy = FALSE;
+  m_busy = false;
   UpdateStatusBar();
 }
 
@@ -398,7 +400,7 @@ void MyFrame::OnTest2(wxCommandEvent& WXUNUSED(event))
   size_t len;
 
   // Disable socket menu entries (exception: Close Session)
-  m_busy = TRUE;
+  m_busy = true;
   UpdateStatusBar();
 
   m_text->AppendText(_("\n=== Test 2 begins ===\n"));
@@ -419,7 +421,7 @@ void MyFrame::OnTest2(wxCommandEvent& WXUNUSED(event))
   wxString s = wxGetTextFromUser(
     _("Enter an arbitrary string to send to the server:"),
     _("Test 2 ..."),
-    _("Yes I like wxWindows!"));
+    _("Yes I like wxWidgets!"));
 
   msg1 = s.c_str();
   len  = (wxStrlen(msg1) + 1) * sizeof(wxChar);
@@ -441,7 +443,7 @@ void MyFrame::OnTest2(wxCommandEvent& WXUNUSED(event))
     m_text->AppendText(_("Comparing the two buffers ..."));
     if (memcmp(msg1, msg2, len) != 0)
     {
-      m_text->AppendText(_("failed!\n"));  
+      m_text->AppendText(_("failed!\n"));
       m_text->AppendText(_("Test 2 failed !\n"));
     }
     else
@@ -456,7 +458,7 @@ void MyFrame::OnTest2(wxCommandEvent& WXUNUSED(event))
   m_text->AppendText(_("=== Test 2 ends ===\n"));
 
   delete[] msg2;
-  m_busy = FALSE;
+  m_busy = false;
   UpdateStatusBar();
 }
 
@@ -467,7 +469,7 @@ void MyFrame::OnTest3(wxCommandEvent& WXUNUSED(event))
   unsigned char len;
 
   // Disable socket menu entries (exception: Close Session)
-  m_busy = TRUE;
+  m_busy = true;
   UpdateStatusBar();
 
   m_text->AppendText(_("\n=== Test 3 begins ===\n"));
@@ -514,7 +516,7 @@ void MyFrame::OnTest3(wxCommandEvent& WXUNUSED(event))
   m_text->AppendText(_("=== Test 3 ends ===\n"));
 
   delete[] buf2;
-  m_busy = FALSE;
+  m_busy = false;
   UpdateStatusBar();
 }
 
@@ -571,7 +573,8 @@ void MyFrame::OnTestURL(wxCommandEvent& WXUNUSED(event))
   wxYield();
 
   // Get the data
-  wxFileOutputStream sout( wxT("test.url") );
+  wxFile fileTest(wxT("test.url"));
+  wxFileOutputStream sout(fileTest);
   if (!sout.Ok())
   {
     m_text->AppendText(_("Error: couldn't open file for output\n"));
@@ -621,7 +624,9 @@ void MyFrame::UpdateStatusBar()
     s.Printf(_("%s : %d"), (addr.Hostname()).c_str(), addr.Service());
   }
 
+#if wxUSE_STATUSBAR
   SetStatusText(s, 1);
+#endif // wxUSE_STATUSBAR
 
   m_menuSocket->Enable(CLIENT_OPEN, !m_sock->IsConnected() && !m_busy);
   m_menuSocket->Enable(CLIENT_TEST1, m_sock->IsConnected() && !m_busy);

@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     12/07/98
-// RCS-ID:      $Id: shapes.h,v 1.2.2.1 2003/06/05 17:26:32 JS Exp $
+// RCS-ID:      $Id: shapes.h,v 1.6 2004/06/09 16:42:29 ABX Exp $
 // Copyright:   (c) Julian Smart
 // Licence:
 /////////////////////////////////////////////////////////////////////////////
@@ -18,7 +18,8 @@
 
 #include <wx/docview.h>
 #include <wx/string.h>
-#include <wx/wxexpr.h>
+#include <wx/deprecated/setup.h>
+#include <wx/deprecated/wxexpr.h>
 
 #include <wx/ogl/ogl.h>
 #include <wx/ogl/basicp.h>
@@ -37,10 +38,8 @@ DECLARE_CLASS(csDiagram)
 public:
     csDiagram(csDiagramDocument* doc) { m_doc = doc; }
     ~csDiagram();
-#if wxUSE_PROLOGIO
     bool OnShapeSave(wxExprDatabase& db, wxShape& shape, wxExpr& expr);
     bool OnShapeLoad(wxExprDatabase& db, wxShape& shape, wxExpr& expr);
-#endif
 
     inline csDiagramDocument* GetDocument() const { return m_doc; }
     virtual void Redraw(wxDC& dc);
@@ -74,8 +73,8 @@ public:
 
 // Overridables
     // Start/end copying
-    virtual bool OnStartCopy(wxDiagram* diagramTo) { return TRUE; };
-    virtual bool OnEndCopy(wxDiagram* diagramTo) { return TRUE; };
+    virtual bool OnStartCopy(wxDiagram* WXUNUSED(diagramTo)) { return true; };
+    virtual bool OnEndCopy(wxDiagram* WXUNUSED(diagramTo)) { return true; };
 
     // Override this to e.g. have the shape added through a Do/Undo command system.
     // By default, we'll just add it directly to the destination diagram, and
@@ -98,10 +97,10 @@ public:
     ~csDiagramClipboard() {}
 
     // Start/end copying
-    bool OnStartCopy(wxDiagram* diagramTo);
-    bool OnEndCopy(wxDiagram* diagramTo);
+    virtual bool OnStartCopy(wxDiagram* diagramTo);
+    virtual bool OnEndCopy(wxDiagram* diagramTo);
 
-    bool OnAddShape(wxDiagram* diagramTo, wxShape* newShape, wxDC* dc);
+    virtual bool OnAddShape(wxDiagram* diagramTo, wxShape* newShape, wxDC* dc);
 
 protected:
     csDiagramCommand*   m_currentCmd;
@@ -227,7 +226,7 @@ class csEvtHandler: public wxShapeEvtHandler
 {
  DECLARE_DYNAMIC_CLASS(csEvtHandler)
  public:
-  csEvtHandler(wxShapeEvtHandler *prev = NULL, wxShape *shape = NULL, const wxString& lab = "");
+  csEvtHandler(wxShapeEvtHandler *prev = NULL, wxShape *shape = NULL, const wxString& lab = wxEmptyString);
   ~csEvtHandler();
 
   void OnLeftClick(double x, double y, int keys = 0, int attachment = 0);

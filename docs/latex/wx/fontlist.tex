@@ -22,14 +22,14 @@ deleted and their resources freed, eliminating the possibility of `memory leaks'
 
 \latexignore{\rtfignore{\wxheading{Members}}}
 
-\membersection{wxFontList::wxFontList}
+\membersection{wxFontList::wxFontList}\label{wxfontlistctor}
 
 \func{}{wxFontList}{\void}
 
 Constructor. The application should not construct its own font list:
 use the object pointer {\bf wxTheFontList}.
 
-\membersection{wxFontList::AddFont}
+\membersection{wxFontList::AddFont}\label{wxfontlistaddfont}
 
 \func{void}{AddFont}{\param{wxFont *}{font}}
 
@@ -37,13 +37,13 @@ Used by wxWidgets to add a font to the list, called in the font constructor.
 
 \membersection{wxFontList::FindOrCreateFont}\label{findorcreatefont}
 
-\func{wxFont *}{FindOrCreateFont}{\param{int}{ point\_size}, \param{int}{ family}, \param{int}{ style}, \param{int}{ weight}, \param{bool}{ underline = FALSE},
+\func{wxFont *}{FindOrCreateFont}{\param{int}{ point\_size}, \param{int}{ family}, \param{int}{ style}, \param{int}{ weight}, \param{bool}{ underline = false},
  \param{const wxString\& }{facename = NULL}, \param{wxFontEncoding }{encoding = wxFONTENCODING\_DEFAULT}{}}
 
-Finds a font of the given specification, or creates one and adds it to the list. See the \helpref{wxFont constructor}{wxfontconstr} for
+Finds a font of the given specification, or creates one and adds it to the list. See the \helpref{wxFont constructor}{wxfontctor} for
 details of the arguments.
 
-\membersection{wxFontList::RemoveFont}
+\membersection{wxFontList::RemoveFont}\label{wxfontlistremovefont}
 
 \func{void}{RemoveFont}{\param{wxFont *}{font}}
 

@@ -4,8 +4,8 @@
 // Author:      Vadim Zeitlin
 // Modified by:
 // Created:     22.10.99
-// RCS-ID:      $Id: lboxcmn.cpp,v 1.5 2002/01/07 21:52:28 GD Exp $
-// Copyright:   (c) wxWindows team
+// RCS-ID:      $Id: lboxcmn.cpp,v 1.13 2004/09/17 17:57:44 ABX Exp $
+// Copyright:   (c) wxWidgets team
 // Licence:     wxWindows licence
 ///////////////////////////////////////////////////////////////////////////////
 
@@ -17,7 +17,7 @@
 // headers
 // ----------------------------------------------------------------------------
 
-#ifdef __GNUG__
+#if defined(__GNUG__) && !defined(NO_GCC_PRAGMA)
     #pragma implementation "listboxbase.h"
 #endif
 
@@ -32,6 +32,8 @@
 
 #ifndef WX_PRECOMP
     #include "wx/listbox.h"
+    #include "wx/dynarray.h"
+    #include "wx/arrstr.h"
 #endif
 
 // ============================================================================
@@ -77,12 +79,12 @@ void wxListBoxBase::Set(int nItems, const wxString* items, void **clientData)
 bool wxListBoxBase::SetStringSelection(const wxString& s, bool select)
 {
     int sel = FindString(s);
-    wxCHECK_MSG( sel != -1, FALSE,
+    wxCHECK_MSG( sel != wxNOT_FOUND, false,
                  wxT("invalid string in SetStringSelection") );
 
     SetSelection(sel, select);
 
-    return TRUE;
+    return true;
 }
 
 void wxListBoxBase::DeselectAll(int itemToLeaveSelected)
@@ -103,7 +105,7 @@ void wxListBoxBase::DeselectAll(int itemToLeaveSelected)
     else // single selection
     {
         int sel = GetSelection();
-        if ( sel != -1 && sel != itemToLeaveSelected )
+        if ( sel != wxNOT_FOUND && sel != itemToLeaveSelected )
         {
             Deselect(sel);
         }
@@ -128,7 +130,7 @@ void wxListBoxBase::SetFirstItem(const wxString& s)
 {
     int n = FindString(s);
 
-    wxCHECK_RET( n != -1, wxT("invalid string in wxListBox::SetFirstItem") );
+    wxCHECK_RET( n != wxNOT_FOUND, wxT("invalid string in wxListBox::SetFirstItem") );
 
     DoSetFirstItem(n);
 }

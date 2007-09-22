@@ -4,7 +4,7 @@
 // Author:      Vaclav Slavik
 // Modified by:
 // Created:     18/03/2002
-// RCS-ID:      $Id: artstd.cpp,v 1.8.2.1 2002/11/03 17:19:10 VS Exp $
+// RCS-ID:      $Id: artstd.cpp,v 1.16 2004/08/25 11:14:00 VS Exp $
 // Copyright:   (c) Vaclav Slavik
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -28,9 +28,6 @@
 
 #include "wx/artprov.h"
 
-// For the purposes of forcing this module to link
-char g_ArtProviderModule = 0;
-
 // ----------------------------------------------------------------------------
 // wxDefaultArtProvider
 // ----------------------------------------------------------------------------
@@ -49,23 +46,6 @@ protected:
 // Standard macro for getting a resource from XPM file:
 #define ART(artId, xpmRc) \
     if ( id == artId ) return wxBitmap(xpmRc##_xpm);
-
-// Compatibility hack to use wxApp::GetStdIcon of overriden by the user
-#if WXWIN_COMPATIBILITY_2_2
-    #define GET_STD_ICON_FROM_APP(iconId) \
-        if ( client == wxART_MESSAGE_BOX ) \
-        { \
-            wxIcon icon = wxTheApp->GetStdIcon(iconId); \
-            if ( icon.Ok() ) \
-            { \
-                wxBitmap bmp; \
-                bmp.CopyFromIcon(icon); \
-                return bmp; \
-            } \
-        }
-#else
-    #define GET_STD_ICON_FROM_APP(iconId)
-#endif
 
 // There are two ways of getting the standard icon: either via XPMs or via
 // wxIcon ctor. This depends on the platform:
@@ -87,7 +67,6 @@ protected:
 #define ART_MSGBOX(artId, iconId, xpmRc) \
     if ( id == artId ) \
     { \
-        GET_STD_ICON_FROM_APP(iconId) \
         CREATE_STD_ICON(#iconId, xpmRc) \
     }
 
@@ -97,15 +76,14 @@ protected:
 
 /*static*/ void wxArtProvider::InitStdProvider()
 {
-    // NB: A few notes about this function:
-    //     (1) it is in artstd.cpp and not in artprov.cpp on purpose. I wanted
-    //         to avoid declaring wxDefaultArtProvider in any public header as
-    //         it is only an implementation detail
-    //     (2) other default art providers (e.g. GTK one) should NOT be added
-    //         here. Instead, add them in port-specific initialialization code
-
     wxArtProvider::PushProvider(new wxDefaultArtProvider);
 }
+
+#if !defined(__WXGTK20__) || defined(__WXUNIVERSAL__)
+/*static*/ void wxArtProvider::InitNativeProvider()
+{
+}
+#endif
 
 
 // ----------------------------------------------------------------------------
@@ -135,6 +113,7 @@ protected:
     #include "../../art/htmpage.xpm"
 #endif // wxUSE_HTML
 
+#include "../../art/missimg.xpm"
 #include "../../art/addbookm.xpm"
 #include "../../art/delbookm.xpm"
 #include "../../art/back.xpm"
@@ -164,7 +143,7 @@ protected:
 // ----------------------------------------------------------------------------
 
 wxBitmap wxDefaultArtProvider::CreateBitmap(const wxArtID& id,
-                                            const wxArtClient& client,
+                                            const wxArtClient& WXUNUSED(client),
                                             const wxSize& WXUNUSED(size))
 {
     // wxMessageBox icons:
@@ -181,6 +160,7 @@ wxBitmap wxDefaultArtProvider::CreateBitmap(const wxArtID& id,
     ART(wxART_HELP_FOLDER,                         htmfoldr)
     ART(wxART_HELP_PAGE,                           htmpage)
 #endif // wxUSE_HTML
+    ART(wxART_MISSING_IMAGE,                       missimg)
     ART(wxART_ADD_BOOKMARK,                        addbookm)
     ART(wxART_DEL_BOOKMARK,                        delbookm)
     ART(wxART_GO_BACK,                             back)

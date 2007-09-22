@@ -4,12 +4,20 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     01/02/97
-// RCS-ID:      $Id: control.cpp,v 1.47.2.1 2003/05/07 08:36:35 JS Exp $
-// Copyright:   (c) Julian Smart and Markus Holzem
+// RCS-ID:      $Id: control.cpp,v 1.75 2004/09/29 05:42:47 ABX Exp $
+// Copyright:   (c) Julian Smart
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
 
-#ifdef __GNUG__
+// ============================================================================
+// declarations
+// ============================================================================
+
+// ----------------------------------------------------------------------------
+// headers
+// ----------------------------------------------------------------------------
+
+#if defined(__GNUG__) && !defined(NO_GCC_PRAGMA)
     #pragma implementation "control.h"
 #endif
 
@@ -27,15 +35,20 @@
     #include "wx/app.h"
     #include "wx/dcclient.h"
     #include "wx/log.h"
+    #include "wx/settings.h"
 #endif
 
 #include "wx/control.h"
 
 #include "wx/msw/private.h"
 
-#if defined(__WIN95__) && !((defined(__GNUWIN32_OLD__) || defined(__TWIN32__)) && !defined(__CYGWIN10__))
+#if defined(__WIN95__) && !(defined(__GNUWIN32_OLD__) && !defined(__CYGWIN10__))
     #include <commctrl.h>
 #endif
+
+// ----------------------------------------------------------------------------
+// wxWin macros
+// ----------------------------------------------------------------------------
 
 IMPLEMENT_ABSTRACT_CLASS(wxControl, wxWindow)
 
@@ -43,46 +56,48 @@ BEGIN_EVENT_TABLE(wxControl, wxWindow)
     EVT_ERASE_BACKGROUND(wxControl::OnEraseBackground)
 END_EVENT_TABLE()
 
-// Item members
-wxControl::wxControl()
-{
-#if WXWIN_COMPATIBILITY
-    m_callback = 0;
-#endif // WXWIN_COMPATIBILITY
-}
+// ============================================================================
+// wxControl implementation
+// ============================================================================
+
+// ----------------------------------------------------------------------------
+// wxControl ctor/dtor
+// ----------------------------------------------------------------------------
 
 wxControl::~wxControl()
 {
-    m_isBeingDeleted = TRUE;
+    m_isBeingDeleted = true;
 }
 
+// ----------------------------------------------------------------------------
+// control window creation
+// ----------------------------------------------------------------------------
 
 bool wxControl::Create(wxWindow *parent,
                        wxWindowID id,
                        const wxPoint& pos,
                        const wxSize& size,
                        long style,
-                       const wxValidator& validator,
+                       const wxValidator& wxVALIDATOR_PARAM(validator),
                        const wxString& name)
 {
     if ( !wxWindow::Create(parent, id, pos, size, style, name) )
-        return FALSE;
+        return false;
 
 #if wxUSE_VALIDATORS
     SetValidator(validator);
 #endif
 
-    return TRUE;
+    return true;
 }
 
 bool wxControl::MSWCreateControl(const wxChar *classname,
                                  const wxString& label,
                                  const wxPoint& pos,
-                                 const wxSize& size,
-                                 long style)
+                                 const wxSize& size)
 {
     WXDWORD exstyle;
-    WXDWORD msStyle = MSWGetStyle(style, &exstyle);
+    WXDWORD msStyle = MSWGetStyle(GetWindowStyle(), &exstyle);
 
     return MSWCreateControl(classname, msStyle, pos, size, label, exstyle);
 }
@@ -98,22 +113,26 @@ bool wxControl::MSWCreateControl(const wxChar *classname,
     if ( exstyle == (WXDWORD)-1 )
     {
         exstyle = 0;
-        (void) MSWGetStyle(GetWindowStyle(), & exstyle) ;
+        (void) MSWGetStyle(GetWindowStyle(), &exstyle);
     }
 
     // all controls should have this style
     style |= WS_CHILD;
 
-    // create the control visible if it's currently shown for wxWindows
+    // create the control visible if it's currently shown for wxWidgets
     if ( m_isShown )
     {
         style |= WS_VISIBLE;
     }
 
-    int x = pos.x == -1 ? 0 : pos.x,
-        y = pos.y == -1 ? 0 : pos.y,
-        w = size.x == -1 ? 0 : size.x,
-        h = size.y == -1 ? 0 : size.y;
+    // choose the position for the control
+    int x = pos.x == wxDefaultCoord ? 0 : pos.x,
+        y = pos.y == wxDefaultCoord ? 0 : pos.y,
+        w = size.x == wxDefaultCoord ? 0 : size.x,
+        h = size.y == wxDefaultCoord ? 0 : size.y;
+
+    // ... and adjust it to account for a possible parent frames toolbar
+    AdjustForParentClientOrigin(x, y);
 
     m_hWnd = (WXHWND)::CreateWindowEx
                        (
@@ -131,24 +150,55 @@ bool wxControl::MSWCreateControl(const wxChar *classname,
     if ( !m_hWnd )
     {
         wxLogDebug(wxT("Failed to create a control of class '%s'"), classname);
-        wxFAIL_MSG(_T("something is very wrong"));
+        wxFAIL_MSG(_T("something is very wrong, CreateWindowEx failed"));
 
-        return FALSE;
+        return false;
     }
 
-    // install wxWindows window proc for this window
+#if wxUSE_CTL3D
+    if ( want3D )
+    {
+        Ctl3dSubclassCtl(GetHwnd());
+        m_useCtl3D = true;
+    }
+#endif // wxUSE_CTL3D
+
+    // install wxWidgets window proc for this window
     SubclassWin(m_hWnd);
 
-    // controls use the same font and colours as their parent dialog by default
+    // set up fonts and colours
     InheritAttributes();
+    if (!m_hasFont)
+        SetFont(GetDefaultAttributes().font);
 
     // set the size now if no initial size specified
-    if ( w <= 0 || h <= 0 )
+    SetInitialBestSize(size);
+
+    return true;
+}
+
+// ----------------------------------------------------------------------------
+// various accessors
+// ----------------------------------------------------------------------------
+
+wxBorder wxControl::GetDefaultBorder() const
+{
+    // we want to automatically give controls a sunken style (confusingly,
+    // it may not really mean sunken at all as we map it to WS_EX_CLIENTEDGE
+    // which is not sunken at all under Windows XP -- rather, just the default)
+    return wxBORDER_SUNKEN;
+}
+
+WXDWORD wxControl::MSWGetStyle(long style, WXDWORD *exstyle) const
+{
+    long msStyle = wxWindow::MSWGetStyle(style, exstyle);
+
+    if ( AcceptsFocus() )
     {
-        SetBestSize(size);
+        msStyle |= WS_TABSTOP;
     }
 
-    return TRUE;
+    return msStyle;
 }
 
 wxSize wxControl::DoGetBestSize() const
@@ -156,18 +206,73 @@ wxSize wxControl::DoGetBestSize() const
     return wxSize(DEFAULT_ITEM_WIDTH, DEFAULT_ITEM_HEIGHT);
 }
 
+// This is a helper for all wxControls made with UPDOWN native control.
+// In wxMSW it was only wxSpinCtrl derived from wxSpinButton but in
+// WinCE of Smartphones this happens also for native wxTextCtrl,
+// wxChoice and others.
+wxSize wxControl::GetBestSpinerSize(const bool is_vertical) const
+{
+    // take size according to layout
+    wxSize bestSize(
+#if defined(__SMARTPHONE__) && defined(__WXWINCE__)
+                    0,GetCharHeight()
+#else
+                    GetSystemMetrics(is_vertical ? SM_CXVSCROLL : SM_CXHSCROLL),
+                    GetSystemMetrics(is_vertical ? SM_CYVSCROLL : SM_CYHSCROLL)
+#endif
+    );
+
+    // correct size as for undocumented MSW variants cases (WinCE and perhaps others)
+    if (bestSize.x==0)
+        bestSize.x = bestSize.y;
+    if (bestSize.y==0)
+        bestSize.y = bestSize.x;
+
+    // double size according to layout
+    if (is_vertical)
+        bestSize.y *= 2;
+    else
+        bestSize.x *= 2;
+
+    return bestSize;
+}
+
+/* static */ wxVisualAttributes
+wxControl::GetClassDefaultAttributes(wxWindowVariant WXUNUSED(variant))
+{
+    wxVisualAttributes attrs;
+
+    // old school (i.e. not "common") controls use the standard dialog font
+    // by default
+    attrs.font = wxSystemSettings::GetFont(wxSYS_DEFAULT_GUI_FONT);
+
+    // most, or at least many, of the controls use the same colours as the
+    // buttons -- others will have to override this (and possibly simply call
+    // GetCompositeControlsDefaultAttributes() from their versions)
+    attrs.colFg = wxSystemSettings::GetColour(wxSYS_COLOUR_BTNTEXT);
+    attrs.colBg = wxSystemSettings::GetColour(wxSYS_COLOUR_BTNFACE);
+
+    return attrs;
+}
+
+// another version for the "composite", i.e. non simple controls
+/* static */ wxVisualAttributes
+wxControl::GetCompositeControlsDefaultAttributes(wxWindowVariant WXUNUSED(variant))
+{
+    wxVisualAttributes attrs;
+    attrs.font = wxSystemSettings::GetFont(wxSYS_DEFAULT_GUI_FONT);
+    attrs.colFg = wxSystemSettings::GetColour(wxSYS_COLOUR_WINDOWTEXT);
+    attrs.colBg = wxSystemSettings::GetColour(wxSYS_COLOUR_WINDOW);
+
+    return attrs;
+}
+
+// ----------------------------------------------------------------------------
+// message handling
+// ----------------------------------------------------------------------------
+
 bool wxControl::ProcessCommand(wxCommandEvent& event)
 {
-#if WXWIN_COMPATIBILITY
-    if ( m_callback )
-    {
-        (void)(*m_callback)(*this, event);
-
-        return TRUE;
-    }
-    else
-#endif // WXWIN_COMPATIBILITY
-
     return GetEventHandler()->ProcessEvent(event);
 }
 
@@ -176,7 +281,7 @@ bool wxControl::MSWOnNotify(int idCtrl,
                             WXLPARAM lParam,
                             WXLPARAM* result)
 {
-    wxEventType eventType = wxEVT_NULL;
+    wxEventType eventType wxDUMMY_INITIALIZE(wxEVT_NULL);
 
     NMHDR *hdr = (NMHDR*) lParam;
     switch ( hdr->code )
@@ -233,11 +338,17 @@ void wxControl::OnEraseBackground(wxEraseEvent& event)
     HBRUSH hBrush = ::CreateSolidBrush(wxColourToRGB(GetBackgroundColour()));
 
     HDC hdc = GetHdcOf((*event.GetDC()));
+
+#ifndef __WXWINCE__
     int mode = ::SetMapMode(hdc, MM_TEXT);
+#endif
 
     ::FillRect(hdc, &rect, hBrush);
     ::DeleteObject(hBrush);
+
+#ifndef __WXWINCE__
     ::SetMapMode(hdc, mode);
+#endif
 }
 
 WXHBRUSH wxControl::OnCtlColor(WXHDC pDC, WXHWND WXUNUSED(pWnd), WXUINT WXUNUSED(nCtlColor),
@@ -261,11 +372,6 @@ WXHBRUSH wxControl::OnCtlColor(WXHDC pDC, WXHWND WXUNUSED(pWnd), WXUINT WXUNUSED
 #endif // wxUSE_CTL3D
 
     HDC hdc = (HDC)pDC;
-    if (GetParent()->GetTransparentBackground())
-        SetBkMode(hdc, TRANSPARENT);
-    else
-        SetBkMode(hdc, OPAQUE);
-
     wxColour colBack = GetBackgroundColour();
 
     ::SetBkColor(hdc, wxColourToRGB(colBack));
@@ -276,25 +382,16 @@ WXHBRUSH wxControl::OnCtlColor(WXHDC pDC, WXHWND WXUNUSED(pWnd), WXUINT WXUNUSED
     return (WXHBRUSH)brush->GetResourceHandle();
 }
 
-WXDWORD wxControl::MSWGetStyle(long style, WXDWORD *exstyle) const
-{
-    long msStyle = wxWindow::MSWGetStyle(style, exstyle);
-
-    if ( AcceptsFocus() )
-    {
-        msStyle |= WS_TABSTOP;
-    }
-
-    return msStyle;
-}
-
 // ---------------------------------------------------------------------------
 // global functions
 // ---------------------------------------------------------------------------
 
+// this is used in radiobox.cpp and slider95.cpp and should be removed as soon
+// as it is not needed there any more!
+//
 // Call this repeatedly for several wnds to find the overall size
 // of the widget.
-// Call it initially with -1 for all values in rect.
+// Call it initially with wxDefaultCoord for all values in rect.
 // Keep calling for other widgets, and rect will be modified
 // to calculate largest bounding rectangle.
 void wxFindMaxSize(WXHWND wnd, RECT *rect)

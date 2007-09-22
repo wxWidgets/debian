@@ -3,7 +3,7 @@
 // Purpose:     STC test Preferences initialization
 // Maintainer:  Wyo
 // Created:     2003-09-01
-// RCS-ID:      $Id: prefs.h,v 1.1.2.1 2003/09/18 18:14:30 RD Exp $
+// RCS-ID:      $Id: prefs.h,v 1.2 2004/05/25 11:14:03 JS Exp $
 // Copyright:   (c) wxGuide
 // Licence:     wxWindows licence
 //////////////////////////////////////////////////////////////////////////////
@@ -20,9 +20,9 @@
 // headers
 //----------------------------------------------------------------------------
 
-//! wxWindows headers
+//! wxWidgets headers
 
-//! wxWindows/contrib headers
+//! wxWidgets/contrib headers
 #include <wx/stc/stc.h>  // styled text control
 
 //! application headers

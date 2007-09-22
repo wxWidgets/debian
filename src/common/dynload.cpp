@@ -5,12 +5,12 @@
 //               (derived in part from dynlib.cpp (c) 1998 Guilhem Lavaux)
 // Modified by:
 // Created:      03/12/01
-// RCS-ID:       $Id: dynload.cpp,v 1.19.2.5 2003/06/01 12:58:30 JS Exp $
+// RCS-ID:       $Id: dynload.cpp,v 1.41 2004/09/10 12:56:07 ABX Exp $
 // Copyright:    (c) 2001 Ron Lee <ron@debian.org>
-// Licence:      wxWindows license
+// Licence:      wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
 
-#ifdef __GNUG__
+#if defined(__GNUG__) && !defined(NO_GCC_PRAGMA)
 #pragma implementation "dynload.h"
 #endif
 
@@ -34,275 +34,13 @@
     #include "wx/log.h"
     #include "wx/intl.h"
     #include "wx/hash.h"
+    #include "wx/utils.h"
 #endif
 
-#include "wx/filename.h"        // for SplitPath()
 #include "wx/strconv.h"
 
 #include "wx/dynload.h"
 #include "wx/module.h"
-
-#if defined(__DARWIN__)
-/* Porting notes:
- *   The dlopen port is a port from dl_next.xs by Anno Siegel.
- *   dl_next.xs is itself a port from dl_dlopen.xs by Paul Marquess.
- *   The method used here is just to supply the sun style dlopen etc.
- *   functions in terms of Darwin NS*.
- */
-void *dlopen(const char *path, int mode /* mode is ignored */);
-void *dlsym(void *handle, const char *symbol);
-int   dlclose(void *handle);
-const char *dlerror(void);
-#endif
-
-// ============================================================================
-// implementation
-// ============================================================================
-
-// ---------------------------------------------------------------------------
-// wxDynamicLibrary
-// ---------------------------------------------------------------------------
-
-//FIXME:  This class isn't really common at all, it should be moved into
-//        platform dependent files.
-
-#if defined(__WINDOWS__) || defined(__WXPM__) || defined(__EMX__)
-    const wxChar *wxDynamicLibrary::ms_dllext = _T(".dll");
-#elif defined(__UNIX__)
-    #if defined(__HPUX__)
-        const wxChar *wxDynamicLibrary::ms_dllext = _T(".sl");
-    #else
-        const wxChar *wxDynamicLibrary::ms_dllext = _T(".so");
-    #endif
-#endif
-
-wxDllType wxDynamicLibrary::GetProgramHandle()
-{
-#if defined( HAVE_DLOPEN ) && !defined(__EMX__)
-   return dlopen(0, RTLD_LAZY);
-#elif defined (HAVE_SHL_LOAD)
-   return PROG_HANDLE;
-#else
-   wxFAIL_MSG( wxT("This method is not implemented under Windows or OS/2"));
-   return 0;
-#endif
-}
-
-bool wxDynamicLibrary::Load(wxString libname, int flags)
-{
-    wxASSERT_MSG(m_handle == 0, _T("Library already loaded."));
-
-    // add the proper extension for the DLL ourselves unless told not to
-    if ( !(flags & wxDL_VERBATIM) )
-    {
-        // and also check that the libname doesn't already have it
-        wxString ext;
-        wxFileName::SplitPath(libname, NULL, NULL, &ext);
-        if ( ext.empty() )
-        {
-            libname += GetDllExt();
-        }
-    }
-
-    // different ways to load a shared library
-    //
-    // FIXME: should go to the platform-specific files!
-#if defined(__WXMAC__) && !defined(__DARWIN__)
-    FSSpec      myFSSpec;
-    Ptr         myMainAddr;
-    Str255      myErrName;
-
-    wxMacFilename2FSSpec( libname , &myFSSpec );
-
-    if( GetDiskFragment( &myFSSpec,
-                         0,
-                         kCFragGoesToEOF,
-                         "\p",
-                         kPrivateCFragCopy,
-                         &m_handle,
-                         &myMainAddr,
-                         myErrName ) != noErr )
-    {
-        p2cstr( myErrName );
-        wxLogSysError( _("Failed to load shared library '%s' Error '%s'"),
-                       libname.c_str(),
-                       (char*)myErrName );
-        m_handle = 0;
-    }
-
-#elif defined(__WXPM__) || defined(__EMX__)
-    char    err[256] = "";
-    DosLoadModule(err, sizeof(err), libname.c_str(), &m_handle);
-
-#elif defined(HAVE_DLOPEN) || defined(__DARWIN__)
-
-#if defined(__VMS) || defined(__DARWIN__)
-    m_handle = dlopen(libname.c_str(), 0);  // The second parameter is ignored
-#else // !__VMS  && !__DARWIN__
-    int rtldFlags = 0;
-
-    if ( flags & wxDL_LAZY )
-    {
-        wxASSERT_MSG( (flags & wxDL_NOW) == 0,
-                      _T("wxDL_LAZY and wxDL_NOW are mutually exclusive.") );
-#ifdef RTLD_LAZY
-        rtldFlags |= RTLD_LAZY;
-#else
-        wxLogDebug(_T("wxDL_LAZY is not supported on this platform"));
-#endif
-    }
-    else if ( flags & wxDL_NOW )
-    {
-#ifdef RTLD_NOW
-        rtldFlags |= RTLD_NOW;
-#else
-        wxLogDebug(_T("wxDL_NOW is not supported on this platform"));
-#endif
-    }
-
-    if ( flags & wxDL_GLOBAL )
-    {
-#ifdef RTLD_GLOBAL
-        rtldFlags |= RTLD_GLOBAL;
-#else
-        wxLogDebug(_T("RTLD_GLOBAL is not supported on this platform."));
-#endif
-    }
-
-    m_handle = dlopen(libname.fn_str(), rtldFlags);
-#endif  // __VMS || __DARWIN__ ?
-
-#elif defined(HAVE_SHL_LOAD)
-    int shlFlags = 0;
-
-    if( flags & wxDL_LAZY )
-    {
-        wxASSERT_MSG( (flags & wxDL_NOW) == 0,
-                      _T("wxDL_LAZY and wxDL_NOW are mutually exclusive.") );
-        shlFlags |= BIND_DEFERRED;
-    }
-    else if( flags & wxDL_NOW )
-    {
-        shlFlags |= BIND_IMMEDIATE;
-    }
-    m_handle = shl_load(libname.fn_str(), BIND_DEFERRED, 0);
-
-#elif defined(__WINDOWS__)
-    m_handle = ::LoadLibrary(libname.c_str());
-#else
-    #error  "runtime shared lib support not implemented on this platform"
-#endif
-
-    if ( m_handle == 0 )
-    {
-        wxString msg(_("Failed to load shared library '%s'"));
-#if defined(HAVE_DLERROR) && !defined(__EMX__)
-
-#if wxUSE_UNICODE
-        wxWCharBuffer buffer = wxConvLocal.cMB2WC( dlerror() );
-        const wxChar *err = buffer;
-#else
-        const wxChar *err = dlerror();
-#endif
-
-        if( err )
-            wxLogError( msg, err );
-#else
-        wxLogSysError( msg, libname.c_str() );
-#endif
-    }
-
-    return IsLoaded();
-}
-
-void wxDynamicLibrary::Unload()
-{
-    if( IsLoaded() )
-    {
-#if defined(__WXPM__) || defined(__EMX__)
-        DosFreeModule( m_handle );
-#elif defined(HAVE_DLOPEN) || defined(__DARWIN__)
-        dlclose( m_handle );
-#elif defined(HAVE_SHL_LOAD)
-        shl_unload( m_handle );
-#elif defined(__WINDOWS__)
-        ::FreeLibrary( m_handle );
-#elif defined(__WXMAC__) && !defined(__DARWIN__)
-        CloseConnection( (CFragConnectionID*) &m_handle );
-#else
-#error  "runtime shared lib support not implemented"
-#endif
-        m_handle = 0;
-    }
-}
-
-void *wxDynamicLibrary::GetSymbol(const wxString &name, bool *success) const
-{
-    wxCHECK_MSG( IsLoaded(), NULL,
-                 _T("Can't load symbol from unloaded library") );
-
-    bool     failed = FALSE;
-    void    *symbol = 0;
-
-#if defined(__WXMAC__) && !defined(__DARWIN__)
-    Ptr                 symAddress;
-    CFragSymbolClass    symClass;
-    Str255              symName;
-#if TARGET_CARBON
-    c2pstrcpy( (StringPtr) symName, name );
-#else
-    strcpy( (char *)symName, name );
-    c2pstr( (char *)symName );
-#endif
-    if( FindSymbol( dllHandle, symName, &symAddress, &symClass ) == noErr )
-        symbol = (void *)symAddress;
-
-#elif defined(__WXPM__) || defined(__EMX__)
-    DosQueryProcAddr( m_handle, 1L, name.c_str(), (PFN*)symbol );
-
-#elif defined(HAVE_DLOPEN) || defined(__DARWIN__)
-    symbol = dlsym( m_handle, name.fn_str() );
-
-#elif defined(HAVE_SHL_LOAD)
-    // use local variable since shl_findsym modifies the handle argument
-    // to indicate where the symbol was found (GD)
-    wxDllType the_handle = m_handle;
-    if( shl_findsym( &the_handle, name.fn_str(), TYPE_UNDEFINED, &symbol ) != 0 )
-        symbol = 0;
-
-#elif defined(__WINDOWS__)
-    symbol = (void*) ::GetProcAddress( m_handle, name.mb_str() );
-
-#else
-#error  "runtime shared lib support not implemented"
-#endif
-
-    if ( !symbol )
-    {
-#if defined(HAVE_DLERROR) && !defined(__EMX__)
-
-#if wxUSE_UNICODE
-        wxWCharBuffer buffer = wxConvLocal.cMB2WC( dlerror() );
-        const wxChar *err = buffer;
-#else
-        const wxChar *err = dlerror();
-#endif
-
-        if( err )
-        {
-            wxLogError(wxT("%s"), err);
-        }
-#else
-        failed = TRUE;
-        wxLogSysError(_("Couldn't find symbol '%s' in a dynamic library"),
-                      name.c_str());
-#endif
-    }
-    if( success )
-        *success = !failed;
-
-    return symbol;
-}
 
 
 // ---------------------------------------------------------------------------
@@ -320,9 +58,9 @@ public:
     // TODO: create ms_classes on demand, why always preallocate it?
     virtual bool OnInit()
     {
-        wxPluginLibrary::ms_classes = new wxDLImports(wxKEY_STRING);
+        wxPluginLibrary::ms_classes = new wxDLImports;
         wxPluginManager::CreateManifest();
-        return TRUE;
+        return true;
     }
 
     virtual void OnExit()
@@ -349,7 +87,7 @@ wxPluginLibrary::wxPluginLibrary(const wxString &libname, int flags)
 
     if( m_handle != 0 )
     {
-        UpdateClassInfo();
+        UpdateClasses();
         RegisterModules();
     }
     else
@@ -364,7 +102,7 @@ wxPluginLibrary::~wxPluginLibrary()
     if( m_handle != 0 )
     {
         UnregisterModules();
-        RestoreClassInfo();
+        RestoreClasses();
     }
 }
 
@@ -382,75 +120,41 @@ bool wxPluginLibrary::UnrefLib()
     wxASSERT_MSG( m_objcount == 0,
                   _T("Library unloaded before all objects were destroyed") );
 
-    if ( --m_linkcount == 0 )
+    if ( m_linkcount == 0 || --m_linkcount == 0 )
     {
         delete this;
-        return TRUE;
+        return true;
     }
 
-    return FALSE;
+    return false;
 }
 
 // ------------------------
 // Private methods
 // ------------------------
 
-void wxPluginLibrary::UpdateClassInfo()
+void wxPluginLibrary::UpdateClasses()
 {
-    wxClassInfo     *info;
-    wxHashTable     *t = wxClassInfo::sm_classTable;
-
-        // FIXME: Below is simply a cut and paste specialisation of
-        //        wxClassInfo::InitializeClasses.  Once this stabilises,
-        //        the two should probably be merged.
-        //
-        //        Actually it's becoming questionable whether we should merge
-        //        this info with the main ClassInfo tables since we can nearly
-        //        handle this completely internally now and it does expose
-        //        certain (minimal % user_stupidy) risks.
-
-    for(info = m_after; info != m_before; info = info->m_next)
+    for (wxClassInfo *info = m_after; info != m_before; info = info->m_next)
     {
         if( info->m_className )
         {
-            if( t->Get(info->m_className) == 0 )
-                t->Put(info->m_className, (wxObject *)info);
-
             // Hash all the class names into a local table too so
             // we can quickly find the entry they correspond to.
             (*ms_classes)[info->m_className] = this;
         }
     }
-
-    for(info = m_after; info != m_before; info = info->m_next)
-    {
-        if( info->m_baseClassName1 )
-            info->m_baseInfo1 = (wxClassInfo *)t->Get(info->m_baseClassName1);
-        if( info->m_baseClassName2 )
-            info->m_baseInfo2 = (wxClassInfo *)t->Get(info->m_baseClassName2);
-    }
 }
 
-void wxPluginLibrary::RestoreClassInfo()
+void wxPluginLibrary::RestoreClasses()
 {
-    wxClassInfo *info;
+    // Check if there is a need to restore classes.
+    if (!ms_classes)
+        return;
 
-    for(info = m_after; info != m_before; info = info->m_next)
+    for(wxClassInfo *info = m_after; info != m_before; info = info->m_next)
     {
-        wxClassInfo::sm_classTable->Delete(info->m_className);
         ms_classes->erase(ms_classes->find(info->m_className));
-    }
-
-    if( wxClassInfo::sm_first == m_after )
-        wxClassInfo::sm_first = m_before;
-    else
-    {
-        info = wxClassInfo::sm_first;
-        while( info->m_next && info->m_next != m_after ) info = info->m_next;
-
-        wxASSERT_MSG( info, _T("ClassInfo from wxPluginLibrary not found on purge"));
-
-        info->m_next = m_before;
     }
 }
 
@@ -475,18 +179,18 @@ void wxPluginLibrary::RegisterModules()
 
             wxASSERT_MSG( m, _T("wxDynamicCast of wxModule failed") );
 
-            m_wxmodules.Append(m);
+            m_wxmodules.push_back(m);
             wxModule::RegisterModule(m);
         }
     }
 
     // FIXME: Likewise this is (well was) very similar to InitializeModules()
 
-    for ( wxModuleList::Node *node = m_wxmodules.GetFirst();
-          node;
-          node = node->GetNext())
+    for ( wxModuleList::iterator it = m_wxmodules.begin();
+          it != m_wxmodules.end();
+          ++it)
     {
-        if( !node->GetData()->Init() )
+        if( !(*it)->Init() )
         {
             wxLogDebug(_T("wxModule::Init() failed for wxPluginLibrary"));
 
@@ -497,13 +201,14 @@ void wxPluginLibrary::RegisterModules()
             // let the dtor Exit the rest on shutdown, (which we'll initiate
             // shortly).
 
-            wxModuleList::Node *oldNode = 0;
+            wxModuleList::iterator oldNode = m_wxmodules.end();
             do {
-                node = node->GetNext();
-                delete oldNode;
-                wxModule::UnregisterModule( node->GetData() );
-                oldNode = node;
-            } while( node );
+                ++it;
+                if( oldNode != m_wxmodules.end() )
+                    m_wxmodules.erase(oldNode);
+                wxModule::UnregisterModule( *it );
+                oldNode = it;
+            } while( it != m_wxmodules.end() );
 
             --m_linkcount;     // Flag us for deletion
             break;
@@ -513,15 +218,16 @@ void wxPluginLibrary::RegisterModules()
 
 void wxPluginLibrary::UnregisterModules()
 {
-    wxModuleList::Node  *node;
+    wxModuleList::iterator it;
 
-    for ( node = m_wxmodules.GetFirst(); node; node = node->GetNext() )
-        node->GetData()->Exit();
+    for ( it = m_wxmodules.begin(); it != m_wxmodules.end(); ++it )
+        (*it)->Exit();
 
-    for ( node = m_wxmodules.GetFirst(); node; node = node->GetNext() )
-        wxModule::UnregisterModule( node->GetData() );
+    for ( it = m_wxmodules.begin(); it != m_wxmodules.end(); ++it )
+        wxModule::UnregisterModule( *it );
 
-    m_wxmodules.DeleteContents(TRUE);
+    // NB: content of the list was deleted by UnregisterModule calls above:
+    m_wxmodules.clear();
 }
 
 
@@ -610,7 +316,7 @@ bool wxPluginManager::UnloadLibrary(const wxString& libname)
         wxLogDebug(_T("Attempt to unload library '%s' which is not loaded."),
                    libname.c_str());
 
-        return FALSE;
+        return false;
     }
 
     wxLogTrace(_T("dll"), _T("UnloadLibrary(%s)"), realname.c_str());
@@ -618,30 +324,13 @@ bool wxPluginManager::UnloadLibrary(const wxString& libname)
     if ( !entry->UnrefLib() )
     {
         // not really unloaded yet
-        return FALSE;
+        return false;
     }
 
     ms_manifest->erase(ms_manifest->find(realname));
 
-    return TRUE;
+    return true;
 }
-
-#if WXWIN_COMPATIBILITY_2_2
-wxPluginLibrary *wxPluginManager::GetObjectFromHandle(wxDllType handle)
-{
-    for ( wxDLManifest::iterator i = ms_manifest->begin();
-          i != ms_manifest->end();
-          ++i )
-    {
-        wxPluginLibrary * const lib = i->second;
-
-        if ( lib->GetLibHandle() == handle )
-            return lib;
-    }
-
-    return NULL;
-}
-#endif // WXWIN_COMPATIBILITY_2_2
 
 // ------------------------
 // Class implementation
@@ -674,11 +363,29 @@ void wxPluginManager::Unload()
     m_entry = NULL;
 }
 
+
+
+#if WXWIN_COMPATIBILITY_2_2
+
+wxPluginLibrary *wxPluginManager::GetObjectFromHandle(wxDllType handle)
+{
+    for ( wxDLManifest::iterator i = ms_manifest->begin();
+          i != ms_manifest->end();
+          ++i )
+    {
+        wxPluginLibrary * const lib = i->second;
+
+        if ( lib->GetLibHandle() == handle )
+            return lib;
+    }
+
+    return NULL;
+}
+
 // ---------------------------------------------------------------------------
 // wxDllLoader   (all these methods are static)
 // ---------------------------------------------------------------------------
 
-#if WXWIN_COMPATIBILITY_2_2
 
 wxDllType wxDllLoader::LoadLibrary(const wxString &name, bool *success)
 {
@@ -713,7 +420,7 @@ wxDllLoader::GetSymbol(wxDllType dllHandle, const wxString &name, bool *success)
         wxFAIL_MSG( _T("Using a library not loaded with wxDllLoader?") );
 
         if ( success )
-            *success = FALSE;
+            *success = false;
 
         return NULL;
     }
@@ -721,7 +428,160 @@ wxDllLoader::GetSymbol(wxDllType dllHandle, const wxString &name, bool *success)
     return p->GetSymbol(name, success);
 }
 
+
+// ---------------------------------------------------------------------------
+// Global variables
+// ---------------------------------------------------------------------------
+
+wxLibraries wxTheLibraries;
+
+// ============================================================================
+// implementation
+// ============================================================================
+
+// construct the full name from the base shared object name: adds a .dll
+// suffix under Windows or .so under Unix
+static wxString ConstructLibraryName(const wxString& basename)
+{
+    wxString fullname;
+    fullname << basename << wxDllLoader::GetDllExt();
+
+    return fullname;
+}
+
+// ---------------------------------------------------------------------------
+// wxLibrary (one instance per dynamic library)
+// ---------------------------------------------------------------------------
+
+wxLibrary::wxLibrary(wxDllType handle)
+{
+    typedef wxClassInfo *(*t_get_first)(void);
+    t_get_first get_first;
+
+    m_handle = handle;
+
+    // Some system may use a local heap for library.
+    get_first = (t_get_first)GetSymbol(_T("wxGetClassFirst"));
+    // It is a wxWidgets DLL.
+    if (get_first)
+        PrepareClasses(get_first());
+}
+
+wxLibrary::~wxLibrary()
+{
+    if ( m_handle )
+    {
+        wxDllLoader::UnloadLibrary(m_handle);
+    }
+}
+
+wxObject *wxLibrary::CreateObject(const wxString& name)
+{
+    wxClassInfo *info = (wxClassInfo *)classTable.Get(name);
+
+    if (!info)
+        return NULL;
+
+    return info->CreateObject();
+}
+
+void wxLibrary::PrepareClasses(wxClassInfo *first)
+{
+    // Index all class infos by their class name
+    wxClassInfo *info = first;
+    while (info)
+    {
+        if (info->m_className)
+            classTable.Put(info->m_className, (wxObject *)info);
+        info = info->m_next;
+    }
+
+#if !wxUSE_EXTENDED_RTTI
+    // Set base pointers for each wxClassInfo
+    info = first;
+    while (info)
+    {
+        if (info->GetBaseClassName1())
+            info->m_baseInfo1 = (wxClassInfo *)classTable.Get(info->GetBaseClassName1());
+        if (info->GetBaseClassName2())
+            info->m_baseInfo2 = (wxClassInfo *)classTable.Get(info->GetBaseClassName2());
+        info = info->m_next;
+    }
+#endif
+}
+
+void *wxLibrary::GetSymbol(const wxString& symbname)
+{
+   return wxDllLoader::GetSymbol(m_handle, symbname);
+}
+
+
+// ---------------------------------------------------------------------------
+// wxLibraries (only one instance should normally exist)
+// ---------------------------------------------------------------------------
+
+wxLibraries::wxLibraries():m_loaded(wxKEY_STRING)
+{
+}
+
+wxLibraries::~wxLibraries()
+{
+    wxNode *node = m_loaded.First();
+
+    while (node) {
+        wxLibrary *lib = (wxLibrary *)node->Data();
+        delete lib;
+
+        node = node->Next();
+    }
+}
+
+wxLibrary *wxLibraries::LoadLibrary(const wxString& name)
+{
+    wxLibrary   *lib;
+    wxClassInfo *old_sm_first;
+    wxNode      *node = m_loaded.Find(name.GetData());
+
+    if (node != NULL)
+        return ((wxLibrary *)node->Data());
+
+    // If DLL shares data, this is necessary.
+    old_sm_first = wxClassInfo::sm_first;
+    wxClassInfo::sm_first = NULL;
+
+    wxString libname = ConstructLibraryName(name);
+
+    bool success = false;
+    wxDllType handle = wxDllLoader::LoadLibrary(libname, &success);
+    if(success)
+    {
+       lib = new wxLibrary(handle);
+       wxClassInfo::sm_first = old_sm_first;
+
+       m_loaded.Append(name.GetData(), lib);
+    }
+    else
+       lib = NULL;
+    return lib;
+}
+
+wxObject *wxLibraries::CreateObject(const wxString& path)
+{
+    wxNode *node = m_loaded.First();
+    wxObject *obj;
+
+    while (node) {
+        obj = ((wxLibrary *)node->Data())->CreateObject(path);
+        if (obj)
+            return obj;
+
+        node = node->Next();
+    }
+    return NULL;
+}
+
 #endif  // WXWIN_COMPATIBILITY_2_2
+
 
 #endif  // wxUSE_DYNAMIC_LOADER
 

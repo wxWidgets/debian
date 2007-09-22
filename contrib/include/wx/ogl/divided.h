@@ -4,17 +4,18 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     12/07/98
-// RCS-ID:      $Id: divided.h,v 1.2.2.1 2002/11/19 02:13:32 RD Exp $
+// RCS-ID:      $Id: divided.h,v 1.6 2004/06/09 16:42:21 ABX Exp $
 // Copyright:   (c) Julian Smart
-// Licence:   	wxWindows licence
+// Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
 
 #ifndef _OGL_DIVIDED_H_
 #define _OGL_DIVIDED_H_
 
 #if defined(__GNUG__) && !defined(__APPLE__)
-#pragma interface "basic.h"
+#pragma interface "divided.h"
 #endif
+
 
 /*
  * Definition of a region
@@ -27,7 +28,7 @@
  */
 
 extern wxFont *g_oglNormalFont;
-class wxDividedShape: public wxRectangleShape
+class WXDLLIMPEXP_OGL wxDividedShape: public wxRectangleShape
 {
  DECLARE_DYNAMIC_CLASS(wxDividedShape)
 
@@ -38,7 +39,7 @@ class wxDividedShape: public wxRectangleShape
   void OnDraw(wxDC& dc);
   void OnDrawContents(wxDC& dc);
 
-  void SetSize(double w, double h, bool recursive = TRUE);
+  void SetSize(double w, double h, bool recursive = true);
 
   void MakeControlPoints();
   void ResetControlPoints();
@@ -63,7 +64,7 @@ class wxDividedShape: public wxRectangleShape
   // Attachment points correspond to regions in the divided box
   bool GetAttachmentPosition(int attachment, double *x, double *y,
                                      int nth = 0, int no_arcs = 1, wxLineShape *line = NULL);
-  bool AttachmentIsValid(int attachment);
+  bool AttachmentIsValid(int attachment) const;
   int GetNumberOfAttachments() const;
 
   // Invoke editor on CTRL-right click

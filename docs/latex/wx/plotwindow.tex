@@ -76,15 +76,15 @@ Returns number of curves.
 
 Get the nth curve.
 
-\membersection{wxPlotWindow::SetCurrent}\label{wxplotwindowsetcurrent}
+\membersection{wxPlotWindow::SetCurrentCurve}\label{wxplotwindowsetcurrentcurve}
 
-\func{void}{SetCurrent}{\param{wxPlotCurve* }{current}}
+\func{void}{SetCurrentCurve}{\param{wxPlotCurve* }{current}}
 
 Make one curve the current curve. This will emit a wxPlotEvent.
 
-\membersection{wxPlotWindow::GetCurrent}\label{wxplotwindowgetcurrent}
+\membersection{wxPlotWindow::GetCurrentCurve}\label{wxplotwindowgetcurrentcurve}
 
-\func{wxPlotCurve*}{GetCurrent}{\void}
+\func{wxPlotCurve*}{GetCurrentCurve}{\void}
 
 Returns a pointer to the current curve, or NULL.
 
@@ -158,7 +158,7 @@ Helper function which redraws the Y axis.
 
 \membersection{wxPlotWindow::SetScrollOnThumbRelease}\label{wxplotwindowsetscrollonthumbrelease}
 
-\func{void}{SetScrollOnThumbRelease}{\param{bool}{ onrelease = TRUE}}
+\func{void}{SetScrollOnThumbRelease}{\param{bool}{ onrelease = true}}
 
 This function controls if the plot area will get scrolled only if the scrollbar thumb
 has been release or also if the thumb is being dragged. When displaying large amounts
@@ -167,7 +167,7 @@ scrolling and then this function should be called.
 
 \membersection{wxPlotWindow::SetEnlargeAroundWindowCentre}\label{wxplotwindowsetenlargearoundwindowcentre}
 
-\func{void}{SetEnlargeAroundWindowCentre}{\param{bool}{ aroundwindow = TRUE}}
+\func{void}{SetEnlargeAroundWindowCentre}{\param{bool}{ aroundwindow = true}}
 
 Depending on the kind of data you display, enlarging the individual curves might
 have different desired effects. Sometimes, the data will be supposed to get enlarged

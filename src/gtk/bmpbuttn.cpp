@@ -2,14 +2,17 @@
 // Name:        gtk/bmpbuttn.cpp
 // Purpose:
 // Author:      Robert Roebling
-// Id:          $Id: bmpbuttn.cpp,v 1.40 2002/05/04 11:57:39 VZ Exp $
+// Id:          $Id: bmpbuttn.cpp,v 1.57 2004/10/18 13:13:39 VS Exp $
 // Copyright:   (c) 1998 Robert Roebling
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
 
-#ifdef __GNUG__
+#if defined(__GNUG__) && !defined(NO_GCC_PRAGMA)
 #pragma implementation "bmpbuttn.h"
 #endif
+
+// For compilers that support precompilation, includes "wx.h".
+#include "wx/wxprec.h"
 
 #include "wx/defs.h"
 
@@ -134,27 +137,15 @@ bool wxBitmapButton::Create( wxWindow *parent,
         return FALSE;
     }
 
-    m_bmpNormal   =
-    m_bmpDisabled =
-    m_bmpFocus    =
-    m_bmpSelected = bitmap;
+    m_bmpNormal = bitmap;
 
     m_widget = gtk_button_new();
 
-#if (GTK_MINOR_VERSION > 0)
     if (style & wxNO_BORDER)
        gtk_button_set_relief( GTK_BUTTON(m_widget), GTK_RELIEF_NONE );
-#endif
 
     if (m_bmpNormal.Ok())
     {
-        wxSize newSize = size;
-        int border = (style & wxNO_BORDER) ? 4 : 10;
-        if (newSize.x == -1)
-            newSize.x = m_bmpNormal.GetWidth()+border;
-        if (newSize.y == -1)
-            newSize.y = m_bmpNormal.GetHeight()+border;
-        SetSize( newSize.x, newSize.y );
         OnSetBitmap();
     }
 
@@ -172,11 +163,7 @@ bool wxBitmapButton::Create( wxWindow *parent,
 
     m_parent->DoAddChild( this );
 
-    PostCreation();
-
-    SetBackgroundColour( parent->GetBackgroundColour() );
-
-    Show( TRUE );
+    PostCreation(size);
 
     return TRUE;
 }
@@ -203,18 +190,20 @@ wxString wxBitmapButton::GetLabel() const
     return wxControl::GetLabel();
 }
 
-void wxBitmapButton::ApplyWidgetStyle()
+void wxBitmapButton::DoApplyWidgetStyle(GtkRcStyle *style)
 {
     if ( !BUTTON_CHILD(m_widget) )
         return;
 
-    wxButton::ApplyWidgetStyle();
+    wxButton::DoApplyWidgetStyle(style);
 }
 
 void wxBitmapButton::OnSetBitmap()
 {
     wxCHECK_RET( m_widget != NULL, wxT("invalid bitmap button") );
 
+    InvalidateBestSize();
+    
     wxBitmap the_one;
     if (!m_isEnabled)
         the_one = m_bmpDisabled;
@@ -247,15 +236,36 @@ void wxBitmapButton::OnSetBitmap()
     if (child == NULL)
     {
         // initial bitmap
-        GtkWidget *pixmap = gtk_pixmap_new(the_one.GetPixmap(), mask);
+        GtkWidget *pixmap;
+#ifdef __WXGTK20__
+        if (the_one.HasPixbuf())
+            pixmap = gtk_image_new_from_pixbuf(the_one.GetPixbuf());
+        else
+            pixmap = gtk_image_new_from_pixmap(the_one.GetPixmap(), mask);
+#else
+        pixmap = gtk_pixmap_new(the_one.GetPixmap(), mask);
+#endif
         gtk_widget_show(pixmap);
         gtk_container_add(GTK_CONTAINER(m_widget), pixmap);
     }
     else
     {   // subsequent bitmaps
-        GtkPixmap *g_pixmap = GTK_PIXMAP(child);
-        gtk_pixmap_set(g_pixmap, the_one.GetPixmap(), mask);
+#ifdef __WXGTK20__
+        GtkImage *pixmap = GTK_IMAGE(child);
+        if (the_one.HasPixbuf())
+            gtk_image_set_from_pixbuf(pixmap, the_one.GetPixbuf());
+        else
+            gtk_image_set_from_pixmap(pixmap, the_one.GetPixmap(), mask);
+#else
+        GtkPixmap *pixmap = GTK_PIXMAP(child);
+        gtk_pixmap_set(pixmap, the_one.GetPixmap(), mask);
+#endif
     }
+}
+
+wxSize wxBitmapButton::DoGetBestSize() const
+{
+    return wxControl::DoGetBestSize();
 }
 
 bool wxBitmapButton::Enable( bool enable )

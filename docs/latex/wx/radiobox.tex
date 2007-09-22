@@ -42,7 +42,7 @@ when a radiobutton is clicked.}
 
 \latexignore{\rtfignore{\wxheading{Members}}}
 
-\membersection{wxRadioBox::wxRadioBox}\label{wxradioboxconstr}
+\membersection{wxRadioBox::wxRadioBox}\label{wxradioboxctor}
 
 \func{}{wxRadioBox}{\void}
 
@@ -51,6 +51,13 @@ Default constructor.
 \func{}{wxRadioBox}{\param{wxWindow* }{parent}, \param{wxWindowID }{id}, \param{const wxString\& }{label},\rtfsp
 \param{const wxPoint\& }{point = wxDefaultPosition}, \param{const wxSize\& }{size = wxDefaultSize},\rtfsp
 \param{int}{ n = 0}, \param{const wxString}{ choices[] = NULL},\rtfsp
+\param{int}{ majorDimension = 0}, \param{long}{ style = wxRA\_SPECIFY\_COLS},\rtfsp
+\param{const wxValidator\& }{validator = wxDefaultValidator},\rtfsp
+\param{const wxString\& }{name = ``radioBox"}}
+
+\func{}{wxRadioBox}{\param{wxWindow* }{parent}, \param{wxWindowID }{id}, \param{const wxString\& }{label},\rtfsp
+\param{const wxPoint\& }{point}, \param{const wxSize\& }{size},\rtfsp
+\param{const wxArrayString\&}{ choices},\rtfsp
 \param{int}{ majorDimension = 0}, \param{long}{ style = wxRA\_SPECIFY\_COLS},\rtfsp
 \param{const wxValidator\& }{validator = wxDefaultValidator},\rtfsp
 \param{const wxString\& }{name = ``radioBox"}}
@@ -93,7 +100,7 @@ a list of strings.}
 \perlnote{In wxPerl there is just an array reference in place of {\tt n}
 and {\tt choices}.}
 
-\membersection{wxRadioBox::\destruct{wxRadioBox}}
+\membersection{wxRadioBox::\destruct{wxRadioBox}}\label{wxradioboxdtor}
 
 \func{}{\destruct{wxRadioBox}}{\void}
 
@@ -108,22 +115,29 @@ Destructor, destroying the radiobox item.
 \param{const wxValidator\& }{validator = wxDefaultValidator},\rtfsp
 \param{const wxString\& }{name = ``radioBox"}}
 
-Creates the radiobox for two-step construction. See \helpref{wxRadioBox::wxRadioBox}{wxradioboxconstr}\rtfsp
+\func{bool}{Create}{\param{wxWindow* }{parent}, \param{wxWindowID }{id}, \param{const wxString\& }{label},\rtfsp
+\param{const wxPoint\& }{point}, \param{const wxSize\& }{size},\rtfsp
+\param{const wxArrayString\&}{ choices},\rtfsp
+\param{int}{ majorDimension = 0}, \param{long}{ style = wxRA\_SPECIFY\_COLS},\rtfsp
+\param{const wxValidator\& }{validator = wxDefaultValidator},\rtfsp
+\param{const wxString\& }{name = ``radioBox"}}
+
+Creates the radiobox for two-step construction. See \helpref{wxRadioBox::wxRadioBox}{wxradioboxctor}\rtfsp
 for further details.
 
 \membersection{wxRadioBox::Enable}\label{wxradioboxenable}
 
-\func{void}{Enable}{\param{bool}{ enable = {\tt TRUE}}}
+\func{void}{Enable}{\param{bool}{ enable = {\tt true}}}
 
 Enables or disables the entire radiobox.
 
-\func{void}{Enable}{\param{int}{ n}, \param{bool}{ enable = {\tt TRUE}}}
+\func{void}{Enable}{\param{int}{ n}, \param{bool}{ enable = {\tt true}}}
 
 Enables or disables an individual button in the radiobox.
 
 \wxheading{Parameters}
 
-\docparam{enable}{TRUE to enable, FALSE to disable.}
+\docparam{enable}{true to enable, false to disable.}
 
 \docparam{n}{The zero-based button to enable or disable.}
 
@@ -192,6 +206,16 @@ Returns the zero-based position of the selected button.
 \constfunc{wxString}{GetStringSelection}{\void}
 
 Returns the selected string.
+
+\membersection{wxRadioBox::GetString}\label{wxradioboxgetstring}
+
+\constfunc{wxString}{GetString}{\param{int}{ n}}
+
+Returns the label for the button at the given position.
+
+\wxheading{Parameters}
+
+\docparam{n}{The zero-based button position.}
 
 \membersection{wxRadioBox::Number}\label{wxradioboxnumber}
 
@@ -263,7 +287,7 @@ Shows or hides individual buttons.
 
 \wxheading{Parameters}
 
-\docparam{show}{TRUE to show, FALSE to hide.}
+\docparam{show}{true to show, false to hide.}
 
 \docparam{item}{The zero-based position of the button to show or hide.}
 
@@ -274,15 +298,4 @@ implements the following methods:\par
 \twocolitem{{\bf ShowItem(n, flag)}}{Shows or hides individual buttons.}
 \end{twocollist}}
 }
-
-\membersection{wxRadioBox::GetString}\label{wxradioboxgetstring}
-
-\constfunc{wxString}{GetString}{\param{int}{ n}}
-
-Returns the label for the button at the given position.
-
-\wxheading{Parameters}
-
-\docparam{n}{The zero-based button position.}
-
 

@@ -6,7 +6,15 @@ there, wxString implements about 90\% of methods of the std::string class (itera
 are not supported, nor all methods which use them).
 These standard functions are not documented in this manual so please see the STL documentation.
 The behaviour of all these functions is identical to the behaviour described
-there.
+there (except that wxString is sensitive to null character).
+
+You may notice that wxString sometimes has many functions which do the same
+thing like, for example, \helpref{Length()}{wxstringlength}, 
+\helpref{Len()}{wxstringlen} and {\tt length()} which all return the string
+length. In all cases of such duplication the {\tt std::string}-compatible
+method ({\tt length()} in this case, always the lowercase version) should be
+used as it will ensure smoother transition to {\tt std::string} when wxWidgets
+starts using it instead of wxString.
 
 \wxheading{Derived from}
 
@@ -28,7 +36,7 @@ Objects:
 
 \latexignore{\rtfignore{\wxheading{Function groups}}}
 
-\membersection{Constructors and assignment operators}
+\membersection{Constructors and assignment operators}\label{constructorsinwxstring}
 
 A string may be constructed either from a C string, (some number of copies of)
 a single character or a wide (UNICODE) string. For all constructors (except the
@@ -39,7 +47,7 @@ operator.
 \helpref{operator $=$}{wxstringoperatorassign}\\
 \helpref{\destruct{wxString}}{wxstringdestruct}
 
-\membersection{String length}
+\membersection{String length}\label{lengthfunctionsinwxstring}
 
 These functions return the string length and check whether the string is empty
 or empty it.
@@ -50,7 +58,7 @@ or empty it.
 \helpref{Empty}{wxstringempty}\\
 \helpref{Clear}{wxstringclear}
 
-\membersection{Character access}
+\membersection{Character access}\label{characteraccessinwxstring}
 
 Many functions in this section take a character index in the string. As with C
 strings and/or arrays, the indices start from $0$, so the first character of a
@@ -71,9 +79,12 @@ use it.
 \helpref{Last}{wxstringlast}\\
 \helpref{operator []}{wxstringoperatorbracket}\\
 \helpref{c\_str}{wxstringcstr}\\
+\helpref{mb\_str}{wxstringmbstr}\\
+\helpref{wc\_str}{wxstringwcstr}\\
+\helpref{fn\_str}{wxstringfnstr}\\
 \helpref{operator const char*}{wxstringoperatorconstcharpt}
 
-\membersection{Concatenation}
+\membersection{Concatenation}\label{concatenationinwxstring}
 
 Anything may be concatenated (appended to) with a string. However, you can't
 append something to a C string (including literal constants), so to do this it
@@ -85,14 +96,14 @@ should be converted to a wxString first.
 \helpref{Append}{wxstringappend}\\
 \helpref{Prepend}{wxstringprepend}
 
-\membersection{Comparison}
+\membersection{Comparison}\label{comparisoninwxstring}
 
 The default comparison function \helpref{Cmp}{wxstringcmp} is case-sensitive and
 so is the default version of \helpref{IsSameAs}{wxstringissameas}. For case
 insensitive comparisons you should use \helpref{CmpNoCase}{wxstringcmpnocase} or
 give a second parameter to IsSameAs. This last function is may be more
 convenient if only equality of the strings matters because it returns a boolean
-true value if the strings are the same and not 0 (which is usually FALSE in C)
+true value if the strings are the same and not 0 (which is usually false in C)
 as {\tt Cmp()} does.
 
 \helpref{Matches}{wxstringmatches} is a poor man's regular expression matcher:
@@ -110,7 +121,7 @@ length of the prefix then.
 \helpref{Matches}{wxstringmatches}\\
 \helpref{StartsWith}{wxstringstartswith}
 
-\membersection{Substring extraction}
+\membersection{Substring extraction}\label{substringextractioninwxstring}
 
 These functions allow to extract substring from this string. All of them don't
 modify the original string and return a new string containing the extracted
@@ -126,7 +137,7 @@ substring.
 \helpref{AfterLast}{wxstringafterlast}\\
 \helpref{StartsWith}{wxstringstartswith}
 
-\membersection{Case conversion}
+\membersection{Case conversion}\label{caseconversioninwxstring}
 
 The MakeXXX() variants modify the string in place, while the other functions
 return a new string which contains the original text converted to the upper or
@@ -137,7 +148,7 @@ lower case and leave the original string unchanged.
 \helpref{MakeLower}{wxstringmakelower}\\
 \helpref{Lower}{wxstringlower}
 
-\membersection{Searching and replacing}
+\membersection{Searching and replacing}\label{searchingandreplacinginwxstring}
 
 These functions replace the standard {\it strchr()} and {\it strstr()} 
 functions.
@@ -145,18 +156,18 @@ functions.
 \helpref{Find}{wxstringfind}\\
 \helpref{Replace}{wxstringreplace}
 
-\membersection{Conversion to numbers}
+\membersection{Conversion to numbers}\label{conversiontonumbersinwxstring}
 
 The string provides functions for conversion to signed and unsigned integer and
 floating point numbers. All three functions take a pointer to the variable to
-put the numeric value in and return TRUE if the {\bf entire} string could be
+put the numeric value in and return true if the {\bf entire} string could be
 converted to a number.
 
 \helpref{ToLong}{wxstringtolong}\\
 \helpref{ToULong}{wxstringtoulong}\\
 \helpref{ToDouble}{wxstringtodouble}
 
-\membersection{Writing values into the string}
+\membersection{Writing values into the string}\label{writingintostringinwxstring}
 
 Both formatted versions (\helpref{Printf}{wxstringprintf}) and stream-like
 insertion operators exist (for basic types only). Additionally, the 
@@ -179,7 +190,7 @@ formatted value to a string:
 \helpref{PrintfV}{wxstringprintfv}\\
 \helpref{operator \cinsert}{wxstringoperatorout}
 
-\membersection{Memory management}
+\membersection{Memory management}\label{memoryinwxstring}
 
 These are "advanced" functions and they will be needed quite rarely. 
 \helpref{Alloc}{wxstringalloc} and \helpref{Shrink}{wxstringshrink} are only
@@ -195,7 +206,7 @@ must} be called!
 \helpref{GetWriteBuf}{wxstringgetwritebuf}\\
 \helpref{UngetWriteBuf}{wxstringungetwritebuf}
 
-\membersection{Miscellaneous}
+\membersection{Miscellaneous}\label{miscellaneousinwxstring}
 
 Other string functions.
 
@@ -203,7 +214,7 @@ Other string functions.
 \helpref{Pad}{wxstringpad}\\
 \helpref{Truncate}{wxstringtruncate}
 
-\membersection{wxWidgets 1.xx compatibility functions}
+\membersection{wxWidgets 1.xx compatibility functions}\label{backwardcompatibilityinwxstring}
 
 These functions are deprecated, please consider using new wxWidgets 2.0
 functions instead of them (or, even better, std::string compatible variants).
@@ -389,7 +400,7 @@ their documentation.
 
 \func{}{wxString}{\void}
 
-Default constructor.
+Default constructor. Initializes the string to {\tt ""} (empty string).
 
 \func{}{wxString}{\param{const wxString\&}{ x}}
 
@@ -402,7 +413,7 @@ Constructs a string of {\it n} copies of character {\it ch}.
 \func{}{wxString}{\param{const char*}{ psz}, \param{size\_t}{ nLength = wxSTRING\_MAXLEN}}
 
 Takes first {\it nLength} characters from the C string {\it psz}.
-The default value of wxSTRING\_MAXLEN means to take all the string.
+The default value of {\tt wxSTRING\_MAXLEN} means to take all the string.
 
 Note that this constructor may be used even if {\it psz} points to a buffer
 with binary data (i.e. containing {\tt NUL} characters) as long as you provide
@@ -414,11 +425,36 @@ results otherwise.
 \func{}{wxString}{\param{const unsigned char*}{ psz}, \param{size\_t}{ nLength = wxSTRING\_MAXLEN}}
 
 For compilers using unsigned char: takes first {\it nLength} characters from the C string {\it psz}.
-The default value of wxSTRING\_MAXLEN means take all the string.
+The default value of {\tt wxSTRING\_MAXLEN} means take all the string.
 
-\func{}{wxString}{\param{const wchar\_t*}{ psz}}
+{\bf Note:} In Unicode build, all of the above constructors take
+{\tt wchar\_t} arguments instead of {\tt char}.
 
-Constructs a string from the wide (UNICODE) string.
+\wxheading{Constructors with conversion}
+
+The following constructors allow you to construct wxString from wide string
+in ANSI build or from C string in Unicode build.
+
+\func{}{wxString}{\param{const wchar\_t*}{ psz}, \param{wxMBConv\&}{ conv}, \param{size\_t}{ nLength = wxSTRING\_MAXLEN}}
+
+Initializes the string from first \arg{nLength} characters of wide string. 
+The default value of {\tt wxSTRING\_MAXLEN} means take all the string.
+In ANSI build, \arg{conv}'s 
+\helpref{WC2MB}{wxmbconvwc2mb} method is called to
+convert \arg{psz} to wide string. It is ignored in Unicode build.
+
+\func{}{wxString}{\param{const char*}{ psz}, \param{wxMBConv\&}{ conv}, \param{size\_t}{ nLength = wxSTRING\_MAXLEN}}
+
+Initializes the string from first \arg{nLength} characters of C string.
+The default value of {\tt wxSTRING\_MAXLEN} means take all the string.
+In Unicode build, \arg{conv}'s 
+\helpref{MB2WC}{wxmbconvmb2wc} method is called to
+convert \arg{psz} to wide string. It is ignored in ANSI build.
+
+\wxheading{See also}
+
+\helpref{wxMBConv classes}{mbconvclasses}, \helpref{mb\_str}{wxstringmbstr},
+\helpref{wc\_str}{wxstringwcstr}
 
 \membersection{wxString::\destruct{wxString}}\label{wxstringdestruct}
 
@@ -456,7 +492,7 @@ wxString DeleteAllVowels(const wxString& original)
 
 \end{verbatim}
 
-because it will avoid the need of reallocating string memory many times (in case
+because it will avoid the need to reallocate string memory many times (in case
 of long strings). Note that it does not set the maximal length of a string - it
 will still expand if more than {\it nLen} characters are stored in it. Also, it
 does not truncate the existing string (use 
@@ -506,7 +542,13 @@ Returns the empty string if {\it ch} is not found.
 
 \constfunc{const char *}{c\_str}{\void}
 
-Returns a pointer to the string data.
+Returns a pointer to the string data ({\tt const char*} in ANSI build,
+{\tt const wchar\_t*} in Unicode build).
+
+\wxheading{See also}
+
+\helpref{mb\_str}{wxstringmbstr}, \helpref{wc\_str}{wxstringwcstr},
+\helpref{fn\_str}{wxstringfnstr}
 
 \membersection{wxString::Clear}\label{wxstringclear}
 
@@ -555,7 +597,7 @@ Case-sensitive comparison. Returns 0 if equal, 1 if greater or -1 if less.
 
 \constfunc{bool}{Contains}{\param{const wxString\&}{ str}}
 
-Returns 1 if target appears anyhere in wxString; else 0.
+Returns 1 if target appears anywhere in wxString; else 0.
 
 \membersection{wxString::Empty}\label{wxstringempty}
 
@@ -567,7 +609,7 @@ See also: \helpref{Clear()}{wxstringclear}.
 
 \membersection{wxString::Find}\label{wxstringfind}
 
-\constfunc{int}{Find}{\param{char}{ ch}, \param{bool}{ fromEnd = FALSE}}
+\constfunc{int}{Find}{\param{char}{ ch}, \param{bool}{ fromEnd = false}}
 
 Searches for the given character. Returns the starting index, or -1 if not found.
 
@@ -577,15 +619,32 @@ Searches for the given string. Returns the starting index, or -1 if not found.
 
 \membersection{wxString::First}\label{wxstringfirst}
 
-\func{size\_t}{First}{\param{char}{ c}}
+\func{int}{First}{\param{char}{ c}}
 
-\constfunc{size\_t}{First}{\param{const char*}{ psz}}
+\constfunc{int}{First}{\param{const char*}{ psz}}
 
-\constfunc{size\_t}{First}{\param{const wxString\&}{ str}}
+\constfunc{int}{First}{\param{const wxString\&}{ str}}
 
-\constfunc{size\_t}{First}{\param{const char}{ ch}}
+Same as \helpref{Find}{wxstringfind}.
 
-Returns the first occurrence of the item.
+\membersection{wxString::fn\_str}\label{wxstringfnstr}
+
+\constfunc{const wchar\_t*}{fn\_str}{\void}
+
+\constfunc{const char*}{fn\_str}{\void}
+
+\constfunc{const wxCharBuffer}{fn\_str}{\void}
+
+Returns string representation suitable for passing to OS' functions for
+file handling. In ANSI build, this is same as \helpref{c\_str}{wxstringcstr}.
+In Unicode build, returned value can be either wide character string
+or C string in charset matching the {\tt wxConvFile} object, depending on
+the OS.
+
+\wxheading{See also}
+
+\helpref{wxMBConv}{wxmbconv},
+\helpref{wc\_str}{wxstringwcstr}, \helpref{mb\_str}{wxstringwcstr}
 
 \membersection{wxString::Format}\label{wxstringformat}
 
@@ -624,6 +683,8 @@ Returns the number of occurrences of {\it ch} in the string.
 Converts the string or character from an ASCII, 7-bit form
 to the native wxString representation. Most useful when using
 a Unicode build of wxWidgets.
+Use \helpref{wxString constructors}{wxstringconstruct} if you
+need to convert from another charset.
 
 \membersection{wxString::GetChar}\label{wxstringgetchar}
 
@@ -645,7 +706,7 @@ Returns a reference to the character at position {\it n}.
 
 \membersection{wxString::GetWriteBuf}\label{wxstringgetwritebuf}
 
-\func{char*}{GetWriteBuf}{\param{size\_t}{ len}}
+\func{wxChar*}{GetWriteBuf}{\param{size\_t}{ len}}
 
 Returns a writable buffer of at least {\it len} bytes.
 It returns a pointer to a new memory block, and the
@@ -658,21 +719,9 @@ to put the string back into a reasonable state.
 
 \constfunc{size\_t}{Index}{\param{char}{ ch}}
 
-Same as \helpref{wxString::Find}{wxstringfind}.
-
 \constfunc{size\_t}{Index}{\param{const char*}{ sz}}
 
 Same as \helpref{wxString::Find}{wxstringfind}.
-
-\constfunc{size\_t}{Index}{\param{const char*}{ sz}, \param{bool}{ caseSensitive = TRUE}, \param{bool}{ fromEnd = FALSE}}
-
-Search the element in the array, starting from either side.
-
-If {\it fromEnd} is TRUE, reverse search direction.
-
-If {\bf caseSensitive}, comparison is case sensitive (the default).
-
-Returns the index of the first item matched, or wxNOT\_FOUND.
 
 % TODO
 %\membersection{wxString::insert}\label{wxstringinsert}
@@ -685,54 +734,52 @@ Returns the index of the first item matched, or wxNOT\_FOUND.
 
 \constfunc{bool}{IsAscii}{\void}
 
-Returns TRUE if the string contains only ASCII characters.
+Returns true if the string contains only ASCII characters.
 
 \membersection{wxString::IsEmpty}\label{wxstringisempty}
 
 \constfunc{bool}{IsEmpty}{\void}
 
-Returns TRUE if the string is empty.
+Returns true if the string is empty.
 
 \membersection{wxString::IsNull}\label{wxstringisnull}
 
 \constfunc{bool}{IsNull}{\void}
 
-Returns TRUE if the string is empty (same as \helpref{IsEmpty}{wxstringisempty}).
+Returns true if the string is empty (same as \helpref{IsEmpty}{wxstringisempty}).
 
 \membersection{wxString::IsNumber}\label{wxstringisnumber}
 
 \constfunc{bool}{IsNumber}{\void}
 
-Returns TRUE if the string is an integer (with possible sign).
+Returns true if the string is an integer (with possible sign).
 
 \membersection{wxString::IsSameAs}\label{wxstringissameas}
 
-\constfunc{bool}{IsSameAs}{\param{const char*}{ psz}, \param{bool}{ caseSensitive = TRUE}}
+\constfunc{bool}{IsSameAs}{\param{const char*}{ psz}, \param{bool}{ caseSensitive = true}}
 
 Test for string equality, case-sensitive (default) or not.
 
-caseSensitive is TRUE by default (case matters).
+caseSensitive is true by default (case matters).
 
-Returns TRUE if strings are equal, FALSE otherwise.
+Returns true if strings are equal, false otherwise.
 
-See also \helpref{Cmp}{wxstringcmp}, \helpref{CmpNoCase}{wxstringcmpnocase}, \helpref{IsSameAs}{wxstringissameas2}
+See also \helpref{Cmp}{wxstringcmp}, \helpref{CmpNoCase}{wxstringcmpnocase}
 
-\membersection{wxString::IsSameAs}\label{wxstringissameas2}
-
-\constfunc{bool}{IsSameAs}{\param{char}{ c}, \param{bool}{ caseSensitive = TRUE}}
+\constfunc{bool}{IsSameAs}{\param{char}{ c}, \param{bool}{ caseSensitive = true}}
 
 Test whether the string is equal to the single character {\it c}. The test is
-case-sensitive if {\it caseSensitive} is TRUE (default) or not if it is FALSE.
+case-sensitive if {\it caseSensitive} is true (default) or not if it is false.
 
-Returns TRUE if the string is equal to the character, FALSE otherwise.
+Returns true if the string is equal to the character, false otherwise.
 
-See also \helpref{Cmp}{wxstringcmp}, \helpref{CmpNoCase}{wxstringcmpnocase}, \helpref{IsSameAs}{wxstringissameas}
+See also \helpref{Cmp}{wxstringcmp}, \helpref{CmpNoCase}{wxstringcmpnocase}
 
 \membersection{wxString::IsWord}\label{wxstringisword}
 
 \constfunc{bool}{IsWord}{\void}
 
-Returns TRUE if the string is a word. TODO: what's the definition of a word?
+Returns true if the string is a word. TODO: what's the definition of a word?
 
 \membersection{wxString::Last}\label{wxstringlast}
 
@@ -790,7 +837,25 @@ Converts all characters to upper case and returns the result.
 
 \constfunc{bool}{Matches}{\param{const char*}{ szMask}}
 
-Returns TRUE if the string contents matches a mask containing '*' and '?'.
+Returns true if the string contents matches a mask containing '*' and '?'.
+
+\membersection{wxString::mb\_str}\label{wxstringmbstr}
+
+\constfunc{const char*}{mb\_str}{\param{wxMBConv\&}{ conv}}
+
+\constfunc{const wxCharBuffer}{mb\_str}{\param{wxMBConv\&}{ conv}}
+
+Returns multibyte (C string) representation of the string.
+In Unicode build, converts using \arg{conv}'s \helpref{cWC2MB}{wxmbconvcwc2mb}
+method and returns wxCharBuffer. In ANSI build, this function is same
+as \helpref{c\_str}{wxstringcstr}.
+The macro wxWX2MBbuf is defined as the correct return type (without const).
+
+\wxheading{See also}
+
+\helpref{wxMBConv}{wxmbconv},
+\helpref{c\_str}{wxstringcstr}, \helpref{wc\_str}{wxstringwcstr},
+\helpref{fn\_str}{wxstringfnstr}
 
 \membersection{wxString::Mid}\label{wxstringmid}
 
@@ -801,7 +866,7 @@ the string if {\it count} is the default value.
 
 \membersection{wxString::Pad}\label{wxstringpad}
 
-\func{wxString\&}{Pad}{\param{size\_t}{ count}, \param{char}{ pad = ' '}, \param{bool}{ fromRight = TRUE}}
+\func{wxString\&}{Pad}{\param{size\_t}{ count}, \param{char}{ pad = ' '}, \param{bool}{ fromRight = true}}
 
 Adds {\it count} copies of {\it pad} to the beginning, or to the end of the string (the default).
 
@@ -850,7 +915,7 @@ Removes the last character.
 
 \membersection{wxString::Replace}\label{wxstringreplace}
 
-\func{size\_t}{Replace}{\param{const char*}{ szOld}, \param{const char*}{ szNew}, \param{bool}{ replaceAll = TRUE}}
+\func{size\_t}{Replace}{\param{const char*}{ szOld}, \param{const char*}{ szNew}, \param{bool}{ replaceAll = true}}
 
 Replace first (or all) occurrences of substring with another one.
 
@@ -888,9 +953,9 @@ The same as Printf.
 \constfunc{bool}{StartsWith}{\param{const wxChar }{*prefix}, \param{wxString }{*rest = NULL}}
 
 This function can be used to test if the string starts with the specified 
-{\it prefix}. If it does, the function will return {\tt TRUE} and put the rest
+{\it prefix}. If it does, the function will return {\tt true} and put the rest
 of the string (i.e. after the prefix) into {\it rest} string if it is not 
-{\tt NULL}. Otherwise, the function returns {\tt FALSE} and doesn't modify the 
+{\tt NULL}. Otherwise, the function returns {\tt false} and doesn't modify the 
 {\it rest}.
 
 \membersection{wxString::Strip}\label{wxstringstrip}
@@ -925,12 +990,16 @@ Converts the string to an ASCII, 7-bit string (ANSI builds only).
 Converts the string to an ASCII, 7-bit string in the form of
 a wxCharBuffer (Unicode builds only).
 
+Note that this conversion only works if the string contains only ASCII
+characters. The \helpref{mb\_str}{wxstringmbstr} method provides more
+powerful means of converting wxString to C string.
+
 \membersection{wxString::ToDouble}\label{wxstringtodouble}
 
 \constfunc{bool}{ToDouble}{\param{double}{ *val}}
 
-Attempts to convert the string to a floating point number. Returns TRUE on
-success (the number is stored in the location pointed to by {\it val}) or FALSE
+Attempts to convert the string to a floating point number. Returns true on
+success (the number is stored in the location pointed to by {\it val}) or false
 if the string does not represent such number.
 
 \wxheading{See also}
@@ -943,8 +1012,8 @@ if the string does not represent such number.
 \constfunc{bool}{ToLong}{\param{long}{ *val}, \param{int }{base = $10$}}
 
 Attempts to convert the string to a signed integer in base {\it base}. Returns
-{\tt TRUE} on success in which case the number is stored in the location
-pointed to by {\it val} or {\tt FALSE} if the string does not represent a
+{\tt true} on success in which case the number is stored in the location
+pointed to by {\it val} or {\tt false} if the string does not represent a
 valid number in the given base.
 
 The value of {\it base} must be comprised between $2$ and $36$, inclusive, or
@@ -964,9 +1033,9 @@ familiar with C) results.
 
 \constfunc{bool}{ToULong}{\param{unsigned long}{ *val}, \param{int }{base = $10$}}
 
-Attempts to convert the string to a ansigned integer in base {\it base}.
-Returns {\tt TRUE} on success in which case the number is stored in the
-location pointed to by {\it val} or {\tt FALSE} if the string does not
+Attempts to convert the string to a unsigned integer in base {\it base}.
+Returns {\tt true} on success in which case the number is stored in the
+location pointed to by {\it val} or {\tt false} if the string does not
 represent a valid number in the given base.
 
 See \helpref{wxString::ToLong}{wxstringtolong} for the more detailed
@@ -979,7 +1048,7 @@ description of the {\it base} parameter.
 
 \membersection{wxString::Trim}\label{wxstringtrim}
 
-\func{wxString\&}{Trim}{\param{bool}{ fromRight = TRUE}}
+\func{wxString\&}{Trim}{\param{bool}{ fromRight = true}}
 
 Removes spaces from the left or from the right (default).
 
@@ -993,10 +1062,18 @@ Truncate the string to the given length.
 
 \func{void}{UngetWriteBuf}{\void}
 
-\func{void}{UngetWriteBuf}{\param{size_t}{ len}}
+\func{void}{UngetWriteBuf}{\param{size\_t }{len}}
 
-Puts the string back into a reasonable state, after
+Puts the string back into a reasonable state (in which it can be used
+normally), after
 \rtfsp\helpref{wxString::GetWriteBuf}{wxstringgetwritebuf} was called.
+
+The version of the function without the {\it len} parameter will calculate the
+new string length itself assuming that the string is terminated by the first
+{\tt NUL} character in it while the second one will use the specified length
+and thus is the only version which should be used with the strings with
+embedded {\tt NUL}s (it is also slightly more efficient as {\tt strlen()} 
+doesn't have to be called).
 
 \membersection{wxString::Upper}\label{wxstringupper}
 
@@ -1010,12 +1087,30 @@ Returns this string converted to upper case.
 
 The same as MakeUpper.
 
+\membersection{wxString::wc\_str}\label{wxstringwcstr}
+
+\constfunc{const wchar\_t*}{wc\_str}{\param{wxMBConv\&}{ conv}}
+
+\constfunc{const wxWCharBuffer}{wc\_str}{\param{wxMBConv\&}{ conv}}
+
+Returns wide character representation of the string.
+In ANSI build, converts using \arg{conv}'s \helpref{cMB2WC}{wxmbconvcmb2wc}
+method and returns wxWCharBuffer. In Unicode build, this function is same
+as \helpref{c\_str}{wxstringcstr}.
+The macro wxWX2WCbuf is defined as the correct return type (without const).
+
+\wxheading{See also}
+
+\helpref{wxMBConv}{wxmbconv},
+\helpref{c\_str}{wxstringcstr}, \helpref{mb\_str}{wxstringwcstr},
+\helpref{fn\_str}{wxstringfnstr}
+
 \membersection{wxString::operator!}\label{wxstringoperatornot}
 
 \constfunc{bool}{operator!}{\void}
 
-Empty string is FALSE, so !string will only return TRUE if the string is empty.
-This allows the tests for NULLness of a {\it const char *} pointer and emptyness
+Empty string is false, so !string will only return true if the string is empty.
+This allows the tests for NULLness of a {\it const char *} pointer and emptiness
 of the string to look the same in the code and makes it easier to port old code
 to wxString.
 
@@ -1038,8 +1133,8 @@ constructor (see \helpref{wxString constructors}{wxstringconstruct}).
 
 \membersection{wxString::operator $+$}\label{wxstringoperatorplus}
 
-Concatenation: all these operators return a new strign equal to the sum of the
-operands.
+Concatenation: all these operators return a new string equal to the
+concatenation of the operands.
 
 \func{wxString}{operator $+$}{\param{const wxString\&}{ x}, \param{const wxString\&}{ y}}
 
@@ -1141,7 +1236,7 @@ These comparisons are case-sensitive.
 \section{\class{wxStringBuffer}}\label{wxstringbuffer}
 
 This tiny class allows to conveniently access the \helpref{wxString}{wxstring} 
-internal buffer as a writable pointer without any risk to forget to restore
+internal buffer as a writable pointer without any risk of forgetting to restore
 the string to the usable state later.
 
 For example, assuming you have a low-level OS function called 
@@ -1157,6 +1252,13 @@ buffer (which must be writable, of course) you might call it like this:
     }
 \end{verbatim}
 
+Note that the exact usage of this depends on whether on not wxUSE\_STL is enabled.  If
+wxUSE\_STL is enabled, wxStringBuffer creates a seperate empty character buffer, and
+if wxUSE\_STL is disabled, it uses GetWriteBuf() from wxString, keeping the same buffer
+wxString uses intact.  In other words, relying on wxStringBuffer containing the old 
+wxString data is probably not a good idea if you want to build your program in both
+with and without wxUSE\_STL.
+
 \wxheading{Derived from}
 
 None
@@ -1167,7 +1269,7 @@ None
 
 \latexignore{\rtfignore{\wxheading{Members}}}
 
-\membersection{wxStringBuffer::wxStringBuffer}
+\membersection{wxStringBuffer::wxStringBuffer}\label{wxstringbufferctor}
 
 \func{}{wxStringBuffer}{\param{const wxString\& }{str}, \param{size\_t }{len}}
 
@@ -1176,16 +1278,92 @@ and containing enough space for at least {\it len} characters. Basically, this
 is equivalent to calling \helpref{GetWriteBuf}{wxstringgetwritebuf} and
 saving the result.
 
-\membersection{wxStringBuffer::\destruct{wxStringBuffer}}
+\membersection{wxStringBuffer::\destruct{wxStringBuffer}}\label{wxstringbufferdtor}
 
 \func{}{\destruct{wxStringBuffer}}{\void}
 
 Restores the string passed to the constructor to the usable state by calling 
 \helpref{UngetWriteBuf}{wxstringungetwritebuf} on it.
 
-\membersection{wxStringBuffer::operator wxChar *}
+\membersection{wxStringBuffer::operator wxChar *}\label{wxstringbufferwxchar}
 
-\constfunc{wxChar *}{operator wxChar *}{\void}
+\func{wxChar *}{operator wxChar *}{\void}
+
+Returns the writable pointer to a buffer of the size at least equal to the
+length specified in the constructor.
+
+
+
+\section{\class{wxStringBufferLength}}\label{wxstringbufferlength}
+
+This tiny class allows to conveniently access the \helpref{wxString}{wxstring} 
+internal buffer as a writable pointer without any risk of forgetting to restore
+the string to the usable state later, and allows the user to set the internal
+length of the string.
+
+For example, assuming you have a low-level OS function called 
+{\tt int GetMeaningOfLifeAsString(char *)} copying the value in the provided
+buffer (which must be writable, of course), and returning the actual length
+of the string, you might call it like this:
+
+\begin{verbatim}
+    wxString theAnswer;
+    wxStringBuffer theAnswerBuffer(theAnswer, 1024);
+    int nLength = GetMeaningOfLifeAsString(theAnswerBuffer);
+    theAnswerBuffer.SetLength(nLength);
+    if ( theAnswer != "42" )
+    {
+        wxLogError("Something is very wrong!");
+    }
+\end{verbatim}
+
+Note that the exact usage of this depends on whether on not wxUSE\_STL is enabled.  If
+wxUSE\_STL is enabled, wxStringBuffer creates a seperate empty character buffer, and
+if wxUSE\_STL is disabled, it uses GetWriteBuf() from wxString, keeping the same buffer
+wxString uses intact.  In other words, relying on wxStringBuffer containing the old 
+wxString data is probably not a good idea if you want to build your program in both
+with and without wxUSE\_STL.
+
+Note that SetLength {\tt must} be called before wxStringBufferLength destructs.
+
+\wxheading{Derived from}
+
+None
+
+\wxheading{Include files}
+
+<wx/string.h>
+
+\latexignore{\rtfignore{\wxheading{Members}}}
+
+\membersection{wxStringBufferLength::wxStringBufferLength}\label{wxstringbufferlengthctor}
+
+\func{}{wxStringBuffer}{\param{const wxString\& }{str}, \param{size\_t }{len}}
+
+Constructs a writable string buffer object associated with the given string
+and containing enough space for at least {\it len} characters. Basically, this
+is equivalent to calling \helpref{GetWriteBuf}{wxstringgetwritebuf} and
+saving the result.
+
+\membersection{wxStringBufferLength::\destruct{wxStringBufferLength}}\label{wxstringbufferlengthdtor}
+
+\func{}{\destruct{wxStringBufferLength}}{\void}
+
+Restores the string passed to the constructor to the usable state by calling 
+\helpref{UngetWriteBuf}{wxstringungetwritebuf} on it.
+
+\membersection{wxStringBufferLength::SetLength}\label{wxstringbufferlengthsetlength}
+
+\func{void}{SetLength}{\param{size\_t }{nLength}}
+
+Sets the internal length of the string referred to by wxStringBufferLength to 
+{\it nLength} characters.
+
+Must be called before wxStringBufferLength destructs.
+
+\membersection{wxStringBufferLength::operator wxChar *}\label{wxstringbufferlengthwxchar}
+
+\func{wxChar *}{operator wxChar *}{\void}
 
 Returns the writable pointer to a buffer of the size at least equal to the
 length specified in the constructor.

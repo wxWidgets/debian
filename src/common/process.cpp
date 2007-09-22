@@ -4,9 +4,9 @@
 // Author:      Guilhem Lavaux
 // Modified by: Vadim Zeitlin to check error codes, added Detach() method
 // Created:     24/06/98
-// RCS-ID:      $Id: process.cpp,v 1.16.2.2 2002/11/04 21:33:20 VZ Exp $
+// RCS-ID:      $Id: process.cpp,v 1.22 2004/09/20 11:31:49 ABX Exp $
 // Copyright:   (c) Guilhem Lavaux
-// Licence:     wxWindows license
+// Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
 
 // ============================================================================
@@ -17,7 +17,7 @@
 // headers
 // ----------------------------------------------------------------------------
 
-#ifdef __GNUG__
+#if defined(__GNUG__) && !defined(NO_GCC_PRAGMA)
     #pragma implementation "process.h"
 #endif
 
@@ -157,7 +157,7 @@ bool wxProcess::Exists(int pid)
     {
         case wxKILL_OK:
         case wxKILL_ACCESS_DENIED:
-            return TRUE;
+            return true;
 
         default:
         case wxKILL_ERROR:
@@ -166,7 +166,7 @@ bool wxProcess::Exists(int pid)
             // fall through
 
         case wxKILL_NO_PROCESS:
-            return FALSE;
+            return false;
     }
 }
 

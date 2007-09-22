@@ -20,19 +20,19 @@ wxServerBase\\
 
 \latexignore{\rtfignore{\wxheading{Members}}}
 
-\membersection{wxTCPServer::wxTCPServer}
+\membersection{wxTCPServer::wxTCPServer}\label{wxtcpserverctor}
 
 \func{}{wxTCPServer}{\void}
 
 Constructs a server object.
 
-\membersection{wxTCPServer::Create}
+\membersection{wxTCPServer::Create}\label{wxtcpservercreate}
 
 \func{bool}{Create}{\param{const wxString\& }{service}}
 
 Registers the server using the given service name. Under Unix, the
 string must contain an integer id which is used as an Internet port
-number. FALSE is returned if the call failed (for example, the port
+number. false is returned if the call failed (for example, the port
 number is already in use).
 
 \membersection{wxTCPServer::OnAcceptConnection}\label{wxtcpserveronacceptconnection}

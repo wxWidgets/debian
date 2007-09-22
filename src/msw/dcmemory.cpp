@@ -4,8 +4,8 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     01/02/97
-// RCS-ID:      $Id: dcmemory.cpp,v 1.25 2001/04/09 01:22:48 VZ Exp $
-// Copyright:   (c) Julian Smart and Markus Holzem
+// RCS-ID:      $Id: dcmemory.cpp,v 1.32 2004/08/24 10:31:41 ABX Exp $
+// Copyright:   (c) Julian Smart
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
 
@@ -17,7 +17,7 @@
 // headers
 // ----------------------------------------------------------------------------
 
-#ifdef __GNUG__
+#if defined(__GNUG__) && !defined(NO_GCC_PRAGMA)
     #pragma implementation "dcmemory.h"
 #endif
 
@@ -89,7 +89,7 @@ bool wxMemoryDC::CreateCompatible(wxDC *dc)
     m_hDC = (WXHDC)::CreateCompatibleDC(dc ? GetHdcOf(*dc) : NULL);
 
     // as we created the DC, we must delete it in the dtor
-    m_bOwnsDC = TRUE;
+    m_bOwnsDC = true;
 
     m_ok = m_hDC != 0;
 
@@ -104,22 +104,26 @@ void wxMemoryDC::SelectObject(const wxBitmap& bitmap)
         ::SelectObject(GetHdc(), (HBITMAP) m_oldBitmap);
         if ( m_selectedBitmap.Ok() )
         {
+#ifdef __WXDEBUG__
             m_selectedBitmap.SetSelectedInto(NULL);
+#endif
             m_selectedBitmap = wxNullBitmap;
         }
     }
 
     // check for whether the bitmap is already selected into a device context
-    wxCHECK_RET( !bitmap.GetSelectedInto() ||
-                 (bitmap.GetSelectedInto() == this),
-                 wxT("Bitmap is selected in another wxMemoryDC, delete the first wxMemoryDC or use SelectObject(NULL)") );
+    wxASSERT_MSG( !bitmap.GetSelectedInto() ||
+                  (bitmap.GetSelectedInto() == this),
+                  wxT("Bitmap is selected in another wxMemoryDC, delete the first wxMemoryDC or use SelectObject(NULL)") );
 
     m_selectedBitmap = bitmap;
     WXHBITMAP hBmp = m_selectedBitmap.GetHBITMAP();
     if ( !hBmp )
         return;
 
+#ifdef __WXDEBUG__
     m_selectedBitmap.SetSelectedInto(this);
+#endif
     hBmp = (WXHBITMAP)::SelectObject(GetHdc(), (HBITMAP)hBmp);
 
     if ( !hBmp )

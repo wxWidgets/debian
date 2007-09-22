@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     02/07/2001
-// RCS-ID:      $Id: anitest.cpp,v 1.2 2002/03/21 10:32:01 JS Exp $
+// RCS-ID:      $Id: anitest.cpp,v 1.6 2004/07/19 15:10:10 ABX Exp $
 // Copyright:   (c) Julian Smart
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -65,13 +65,13 @@ bool MyApp::OnInit()
 {
     // Create the main frame window
 
-    MyFrame* frame = new MyFrame((wxFrame *)NULL, -1, "Animation Demo",
+    MyFrame* frame = new MyFrame((wxFrame *)NULL, -1, _T("Animation Demo"),
                         wxPoint(-1, -1), wxSize(500, 400),
                         wxDEFAULT_FRAME_STYLE);
 
     // Give it an icon
 #ifdef __WXMSW__
-    frame->SetIcon(wxIcon("mdi_icn"));
+    frame->SetIcon(wxIcon(_T("mdi_icn")));
 #else
     frame->SetIcon(wxIcon( mondrian_xpm ));
 #endif
@@ -79,21 +79,23 @@ bool MyApp::OnInit()
     // Make a menubar
     wxMenu *file_menu = new wxMenu;
 
-    file_menu->Append(ANITEST_OPEN, "&Open Animation...\tCtrl+O", "Open a GIF animation");
-    file_menu->Append(ANITEST_QUIT, "&Exit\tAlt+X", "Quit the program");
+    file_menu->Append(ANITEST_OPEN, _T("&Open Animation...\tCtrl+O"), _T("Open a GIF animation"));
+    file_menu->Append(ANITEST_QUIT, _T("&Exit\tAlt+X"), _T("Quit the program"));
 
     wxMenu *help_menu = new wxMenu;
-    help_menu->Append(ANITEST_ABOUT, "&About\tF1");
+    help_menu->Append(ANITEST_ABOUT, _T("&About\tF1"));
 
     wxMenuBar *menu_bar = new wxMenuBar;
 
-    menu_bar->Append(file_menu, "&File");
-    menu_bar->Append(help_menu, "&Help");
+    menu_bar->Append(file_menu, _T("&File"));
+    menu_bar->Append(help_menu, _T("&Help"));
 
     // Associate the menu bar with the frame
     frame->SetMenuBar(menu_bar);
 
+#if wxUSE_STATUSBAR
     frame->CreateStatusBar();
+#endif // wxUSE_STATUSBAR
 
     frame->Show(TRUE);
 
@@ -139,14 +141,14 @@ void MyFrame::OnQuit(wxCommandEvent& WXUNUSED(event))
 
 void MyFrame::OnAbout(wxCommandEvent& WXUNUSED(event) )
 {
-    (void)wxMessageBox("wxWindows 2 Animation Demo\n"
-                       "Author: Julian Smart (c) 2001\n",
-                       "About Animation Demo");
+    (void)wxMessageBox(_T("wxWidgets 2 Animation Demo\n")
+                       _T("Author: Julian Smart (c) 2001\n"),
+                       _T("About Animation Demo"));
 }
 
-void MyFrame::OnOpen(wxCommandEvent& event)
+void MyFrame::OnOpen(wxCommandEvent& WXUNUSED(event))
 {
-    wxFileDialog dialog(this, wxT("Please choose an animated GIF"),
+    wxFileDialog dialog(this, _T("Please choose an animated GIF"),
         wxEmptyString, wxEmptyString, wxT("*.gif"), wxOPEN);
     if (dialog.ShowModal() == wxID_OK)
     {
@@ -159,7 +161,7 @@ void MyFrame::OnOpen(wxCommandEvent& event)
         }
         else
         {
-            wxMessageBox("Sorry, this animation was not a valid animated GIF.");
+            wxMessageBox(_T("Sorry, this animation was not a valid animated GIF."));
         }
     }
 }
@@ -180,10 +182,10 @@ MyCanvas::MyCanvas(wxWindow *parent, const wxPoint& pos, const wxSize& size)
                            wxNO_FULL_REPAINT_ON_RESIZE |
                            wxVSCROLL | wxHSCROLL)
 {
-    SetBackgroundColour(wxColour("YELLOW"));
+    SetBackgroundColour(wxColour(_T("YELLOW")));
 }
 
-void MyCanvas::OnPaint(wxPaintEvent& event)
+void MyCanvas::OnPaint(wxPaintEvent& WXUNUSED(event))
 {
     wxPaintDC dc(this);
 #if 0

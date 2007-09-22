@@ -4,9 +4,9 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     12/07/98
-// RCS-ID:      $Id: doc.h,v 1.4.2.1 2003/06/05 17:26:31 JS Exp $
+// RCS-ID:      $Id: doc.h,v 1.8 2004/06/09 16:42:26 ABX Exp $
 // Copyright:   (c) Julian Smart
-// Licence:   	wxWindows licence
+// Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
 
 #ifndef _OGLSAMPLE_DOC_H_
@@ -19,7 +19,12 @@
 #include <wx/docview.h>
 #include <wx/cmdproc.h>
 #include <wx/string.h>
-#include <wx/wxexpr.h>
+
+#include <wx/deprecated/setup.h>
+
+#if wxUSE_PROLOGIO
+#include <wx/deprecated/wxexpr.h>
+#endif
 
 #include <wx/ogl/ogl.h>
 
@@ -71,7 +76,7 @@ class MyEvtHandler: public wxShapeEvtHandler
 {
  public:
   wxString label;
-  MyEvtHandler(wxShapeEvtHandler *prev = NULL, wxShape *shape = NULL, const wxString& lab = ""):wxShapeEvtHandler(prev, shape)
+  MyEvtHandler(wxShapeEvtHandler *prev = NULL, wxShape *shape = NULL, const wxString& lab = wxEmptyString):wxShapeEvtHandler(prev, shape)
   {
     label = lab;
   }
@@ -158,12 +163,12 @@ class DiagramCommand: public wxCommand
   wxString shapeLabel;
  public:
   // Multi-purpose constructor for creating, deleting shapes
-  DiagramCommand(char *name, int cmd, DiagramDocument *ddoc, wxClassInfo *shapeInfo = NULL,
-     double x = 0.0, double y = 0.0, bool sel = FALSE, wxShape *theShape = NULL, wxShape *fs = NULL, wxShape *ts = NULL);
+  DiagramCommand(const wxString& name, int cmd, DiagramDocument *ddoc, wxClassInfo *shapeInfo = NULL,
+     double x = 0.0, double y = 0.0, bool sel = false, wxShape *theShape = NULL, wxShape *fs = NULL, wxShape *ts = NULL);
 
   // Property-changing command constructors
-  DiagramCommand(char *name, int cmd, DiagramDocument *ddoc, wxBrush *backgroundColour, wxShape *theShape);
-  DiagramCommand(char *name, int cmd, DiagramDocument *ddoc, const wxString& lab, wxShape *theShape);
+  DiagramCommand(const wxString& name, int cmd, DiagramDocument *ddoc, wxBrush *backgroundColour, wxShape *theShape);
+  DiagramCommand(const wxString& name, int cmd, DiagramDocument *ddoc, const wxString& lab, wxShape *theShape);
 
   ~DiagramCommand(void);
 

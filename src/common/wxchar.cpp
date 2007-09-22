@@ -2,14 +2,14 @@
 // Name:        wxchar.cpp
 // Purpose:     wxChar implementation
 // Author:      Ove Kåven
-// Modified by:
+// Modified by: Ron Lee
 // Created:     09/04/99
-// RCS-ID:      $Id: wxchar.cpp,v 1.49.2.2 2003/07/25 18:55:02 RR Exp $
-// Copyright:   (c) wxWindows copyright
-// Licence:     wxWindows license
+// RCS-ID:      $Id: wxchar.cpp,v 1.97 2004/10/30 06:14:10 DE Exp $
+// Copyright:   (c) wxWidgets copyright
+// Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
 
-#ifdef __GNUG__
+#if defined(__GNUG__) && !defined(NO_GCC_PRAGMA)
   #pragma implementation "wxchar.h"
 #endif
 
@@ -30,8 +30,13 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <locale.h>
+
+#ifndef __WXWINCE__
 #include <time.h>
+#include <locale.h>
+#else
+#include "wx/msw/wince/time.h"
+#endif
 
 #ifndef WX_PRECOMP
   #include "wx/defs.h"
@@ -45,6 +50,15 @@
   #include <winbase.h>
   #include <winnls.h>
   #include <winnt.h>
+#endif
+
+#if defined(__MWERKS__) && __MSL__ >= 0x6000
+namespace std {}
+using namespace std ;
+#endif
+
+#ifdef __WXMAC__
+    #include "wx/mac/private.h"
 #endif
 
 #if wxUSE_WCHAR_T
@@ -105,7 +119,7 @@ size_t WXDLLEXPORT wxWC2MB(char *buf, const wchar_t *pwz, size_t n)
 
 bool WXDLLEXPORT wxOKlibc()
 {
-#if wxUSE_WCHAR_T && defined(__UNIX__) && defined(__GLIBC__)
+#if wxUSE_WCHAR_T && defined(__UNIX__) && defined(__GLIBC__) && !defined(__WINE__)
   // glibc 2.0 uses UTF-8 even when it shouldn't
   wchar_t res = 0;
   if ((MB_CUR_MAX == 2) &&
@@ -117,11 +131,11 @@ bool WXDLLEXPORT wxOKlibc()
             (strcasecmp(cur_locale + strlen(cur_locale) - 4, "utf8")) ||
             (strcasecmp(cur_locale + strlen(cur_locale) - 5, "utf-8"))) {
       // nope, don't use libc conversion
-      return FALSE;
+      return false;
     }
   }
 #endif
-  return TRUE;
+  return true;
 }
 
 // ============================================================================
@@ -167,10 +181,10 @@ int WXDLLEXPORT wxVsnprintf_(wxChar *buf, size_t lenMax,
         {
             static char s_szFlags[256] = "%";
             size_t flagofs = 1;
-            bool adj_left = FALSE,
-                 in_prec = FALSE,
-                 prec_dot = FALSE,
-                 done = FALSE;
+            bool adj_left = false,
+                 in_prec = false,
+                 prec_dot = false,
+                 done = false;
             int ilen = 0;
             size_t min_width = 0,
                    max_width = wxSTRING_MAXLEN;
@@ -181,14 +195,16 @@ int WXDLLEXPORT wxVsnprintf_(wxChar *buf, size_t lenMax,
                 if (in_prec && !prec_dot) \
                 { \
                     s_szFlags[flagofs++] = '.'; \
-                    prec_dot = TRUE; \
+                    prec_dot = true; \
                 }
 
 #define APPEND_CH(ch) \
-                if ( lenCur == lenMax ) \
-                    return -1; \
-                \
-                buf[lenCur++] = ch
+                { \
+                    if ( lenCur == lenMax ) \
+                        return -1; \
+                    \
+                    buf[lenCur++] = ch; \
+                }
 
 #define APPEND_STR(s) \
                 { \
@@ -205,12 +221,12 @@ int WXDLLEXPORT wxVsnprintf_(wxChar *buf, size_t lenMax,
                     case wxT('\0'):
                         APPEND_CH(_T('\0'));
 
-                        done = TRUE;
+                        done = true;
                         break;
 
                     case wxT('%'):
                         APPEND_CH(_T('%'));
-                        done = TRUE;
+                        done = true;
                         break;
 
                     case wxT('#'):
@@ -224,14 +240,14 @@ int WXDLLEXPORT wxVsnprintf_(wxChar *buf, size_t lenMax,
 
                     case wxT('-'):
                         CHECK_PREC
-                        adj_left = TRUE;
+                        adj_left = true;
                         s_szFlags[flagofs++] = ch;
                         break;
 
                     case wxT('.'):
                         CHECK_PREC
-                        in_prec = TRUE;
-                        prec_dot = FALSE;
+                        in_prec = true;
+                        prec_dot = false;
                         max_width = 0;
                         // dot will be auto-added to s_szFlags if non-negative
                         // number follows
@@ -357,7 +373,7 @@ int WXDLLEXPORT wxVsnprintf_(wxChar *buf, size_t lenMax,
                             APPEND_STR(tmp);
                         }
 
-                        done = TRUE;
+                        done = true;
                         break;
 
                     case wxT('e'):
@@ -385,7 +401,7 @@ int WXDLLEXPORT wxVsnprintf_(wxChar *buf, size_t lenMax,
                             APPEND_STR(tmp);
                         }
 
-                        done = TRUE;
+                        done = true;
                         break;
 
                     case wxT('p'):
@@ -400,52 +416,77 @@ int WXDLLEXPORT wxVsnprintf_(wxChar *buf, size_t lenMax,
                                 wxConvLibc.cMB2WX(szScratch);
                             APPEND_STR(tmp);
 
-                            done = TRUE;
+                            done = true;
                         }
                         break;
 
                     case wxT('c'):
                         {
-                            wxChar val = va_arg(argptr, int);
-                            // we don't need to honor padding here, do we?
+                            int val = va_arg(argptr, int);
+#if wxUSE_UNICODE
+                            if (ilen == -1)
+                            {
+                                const char buf[2] = { val, 0 };
+                                val = wxString(buf, wxConvLibc)[0u];
+                            }
+#elif wxUSE_WCHAR_T
+                            if (ilen == 1)
+                            {
+                                const wchar_t buf[2] = { val, 0 };
+                                val = wxString(buf, wxConvLibc)[0u];
+                            }
+#endif
+                            size_t i;
+
+                            if (!adj_left)
+                                for (i = 1; i < min_width; i++)
+                                    APPEND_CH(_T(' '));
+
                             APPEND_CH(val);
 
-                            done = TRUE;
+                            if (adj_left)
+                                for (i = 1; i < min_width; i++)
+                                    APPEND_CH(_T(' '));
+
+                            done = true;
                         }
                         break;
 
                     case wxT('s'):
-                        if (ilen == -1)
                         {
-                            // wx extension: we'll let %hs mean non-Unicode
-                            // strings
-                            char *val = va_arg(argptr, char *);
+                            const wxChar *val = NULL;
 #if wxUSE_UNICODE
-                            // ASCII->Unicode constructor handles max_width
-                            // right
-                            wxString s(val, wxConvLibc, max_width);
-#else
-                            size_t len = wxSTRING_MAXLEN;
-                            if (val)
+                            wxString s;
+
+                            if (ilen == -1)
                             {
-                                for ( len = 0;
-                                      val[len] && (len < max_width);
-                                      len++ )
-                                    ;
+                                // wx extension: we'll let %hs mean non-Unicode
+                                // strings
+                                char *v = va_arg(argptr, char *);
+
+                                if (v)
+                                    val = s = wxString(v, wxConvLibc);
                             }
                             else
-                                val = wxT("(null)");
-                            wxString s(val, len);
+#elif wxUSE_WCHAR_T
+                            wxString s;
+
+                            if (ilen == 1)
+                            {
+                                // %ls means Unicode strings
+                                wchar_t *v = va_arg(argptr, wchar_t *);
+
+                                if (v)
+                                    val = s = wxString(v, wxConvLibc);
+                            }
+                            else
 #endif
-                            if (s.Len() < min_width)
-                                s.Pad(min_width - s.Len(), wxT(' '), adj_left);
+                            {
+                                val = va_arg(argptr, wxChar *);
+                            }
 
-                            APPEND_STR(s);
-                        }
-                        else
-                        {
-                            wxChar *val = va_arg(argptr, wxChar *);
-                            size_t len = wxSTRING_MAXLEN;
+                            size_t len = 0;
+
                             if (val)
                             {
                                 for ( len = 0;
@@ -453,16 +494,32 @@ int WXDLLEXPORT wxVsnprintf_(wxChar *buf, size_t lenMax,
                                       len++ )
                                     ;
                             }
-                            else
+                            else if (max_width >= 6)
+                            {
                                 val = wxT("(null)");
+                                len = 6;
+                            }
+                            else
+                            {
+                                val = wxT("");
+                                len = 0;
+                            }
 
-                            wxString s(val, len);
-                            if (s.Len() < min_width)
-                                s.Pad(min_width - s.Len(), wxT(' '), adj_left);
+                            size_t i;
 
-                            APPEND_STR(s);
+                            if (!adj_left)
+                                for (i = len; i < min_width; i++)
+                                    APPEND_CH(_T(' '));
+
+                            for (i = 0; i < len; i++)
+                                APPEND_CH(val[i]);
+
+                            if (adj_left)
+                                for (i = len; i < min_width; i++)
+                                    APPEND_CH(_T(' '));
+
+                            done = true;
                         }
-                        done = TRUE;
                         break;
 
                     case wxT('n'):
@@ -481,14 +538,14 @@ int WXDLLEXPORT wxVsnprintf_(wxChar *buf, size_t lenMax,
                             long int *val = va_arg(argptr, long int *);
                             *val = lenCur;
                         }
-                        done = TRUE;
+                        done = true;
                         break;
 
                     default:
                         // bad format, leave unchanged
                         APPEND_CH(_T('%'));
                         APPEND_CH(ch);
-                        done = TRUE;
+                        done = true;
                         break;
                 }
             }
@@ -527,27 +584,60 @@ int WXDLLEXPORT wxSnprintf_(wxChar *buf, size_t len, const wxChar *format, ...)
 }
 #endif // wxSnprintf_
 
+#if defined(__DMC__)
+    /* Digital Mars adds count to _stprintf (C99) so convert */
+    #if wxUSE_UNICODE
+        int wxSprintf (wchar_t * __RESTRICT s, const wchar_t * __RESTRICT format, ... )
+        {
+            va_list arglist;
+
+            va_start( arglist, format );
+            int iLen = swprintf ( s, -1, format, arglist );
+            va_end( arglist );
+            return iLen ;
+        }
+
+    #endif // wxUSE_UNICODE
+
+#endif //__DMC__
+
 // ----------------------------------------------------------------------------
 // implement the standard IO functions for wide char if libc doesn't have them
 // ----------------------------------------------------------------------------
 
-#ifdef wxNEED_FPUTWC
-
+#ifdef wxNEED_FPUTS
 int wxFputs(const wchar_t *ws, FILE *stream)
 {
     // counting the number of wide characters written isn't worth the trouble,
     // simply distinguish between ok and error
     return fputs(wxConvLibc.cWC2MB(ws), stream) == -1 ? -1 : 0;
 }
+#endif // wxNEED_FPUTS
 
+#ifdef wxNEED_PUTS
+int wxPuts(const wxChar *ws)
+{
+    int rc = wxFputs(ws, stdout);
+    if ( rc != -1 )
+    {
+        if ( wxFputs(L"\n", stdout) == -1 )
+            return -1;
+
+        rc++;
+    }
+
+    return rc;
+}
+#endif // wxNEED_PUTS
+
+#ifdef wxNEED_PUTC
 int /* not wint_t */ wxPutc(wchar_t wc, FILE *stream)
 {
     wchar_t ws[2] = { wc, L'\0' };
 
     return wxFputs(ws, stream);
 }
-
-#endif // wxNEED_FPUTWC
+#endif // wxNEED_PUTC
 
 // NB: we only implement va_list functions here, the ones taking ... are
 //     defined below for wxNEED_PRINTF_CONVERSION case anyhow and we reuse
@@ -564,9 +654,19 @@ int vwscanf(const wxChar *format, va_list argptr)
 
 int vswscanf(const wxChar *ws, const wxChar *format, va_list argptr)
 {
-    wxFAIL_MSG( _T("TODO") );
-
-    return -1;
+    // The best we can do without proper Unicode support in glibc is to
+    // convert the strings into MB representation and run ANSI version
+    // of the function. This doesn't work with %c and %s because of difference
+    // in size of char and wchar_t, though.
+    
+    wxCHECK_MSG( wxStrstr(format, _T("%s")) == NULL, -1,
+                 _T("incomplete vswscanf implementation doesn't allow %s") );
+    wxCHECK_MSG( wxStrstr(format, _T("%c")) == NULL, -1,
+                 _T("incomplete vswscanf implementation doesn't allow %c") );
+    
+    va_list argcopy;
+    wxVaCopy(argcopy, argptr);
+    return vsscanf(wxConvLibc.cWX2MB(ws), wxConvLibc.cWX2MB(format), argcopy);
 }
 
 int vfwscanf(FILE *stream, const wxChar *format, va_list argptr)
@@ -586,7 +686,7 @@ int vfwprintf(FILE *stream, const wxChar *format, va_list argptr)
     if ( rc != -1 )
     {
         // we can't do much better without Unicode support in libc...
-        if ( fprintf(stream, "%s", (const char*)s.mb_str()) == -1 )
+        if ( fprintf(stream, "%s", (const char*)s.mb_str() ) == -1 )
             return -1;
     }
 
@@ -631,7 +731,7 @@ int vwprintf(const wxChar *format, va_list argptr)
    So to use native functions in order to get our semantics we must do the
    following translations in Unicode mode (nothing to do in ANSI mode):
 
-   wxWindows specifier      POSIX specifier
+   wxWidgets specifier      POSIX specifier
    ----------------------------------------
 
    %hc, %C, %hC             %c
@@ -701,10 +801,10 @@ private:
                ch == _T('0') || ch == _T(' ') || ch == _T('#');
     }
 
-    void SkipDigits(const wxChar **ppc)
+    void SkipDigits(const wxChar **ptpc)
     {
-        while ( **ppc >= _T('0') && **ppc <= _T('9') )
-            CopyFmtChar(*(*ppc)++);
+        while ( **ptpc >= _T('0') && **ptpc <= _T('9') )
+            CopyFmtChar(*(*ptpc)++);
     }
 
     // the translated format
@@ -739,7 +839,11 @@ wxFormatConverter::wxFormatConverter(const wxChar *format)
             // precision?
             if ( *format == _T('.') )
             {
-                SkipDigits(&format);
+                CopyFmtChar(*format++);
+                if ( *format == _T('*') )
+                    CopyFmtChar(*format++);
+                else
+                    SkipDigits(&format);
             }
 
             // next we can have a size modifier
@@ -786,23 +890,14 @@ wxFormatConverter::wxFormatConverter(const wxChar *format)
                 case _T('c'):
                 case _T('s'):
                     // %c -> %lc but %hc stays %hc and %lc is still %lc
-                    switch ( size )
-                    {
-                        case Default:
-                            InsertFmtChar(_T('l'));
-                            break;
-
-                        case Short:
-                            CopyFmtChar(_T('h'));
-                            break;
-
-                        case Long:
-                            ;
-                    }
+                    if ( size == Default)
+                        InsertFmtChar(_T('l'));
                     // fall through
 
                 default:
                     // nothing special to do
+                    if ( size != Default )
+                        CopyFmtChar(*(format - 1));
                     CopyFmtChar(*format++);
             }
         }
@@ -813,6 +908,14 @@ wxFormatConverter::wxFormatConverter(const wxChar *format)
     // no conversion necessary
     #define wxFormatConverter(x) (x)
 #endif // wxNEED_PRINTF_CONVERSION/!wxNEED_PRINTF_CONVERSION
+
+#ifdef __WXDEBUG__
+// For testing the format converter
+wxString wxConvertFormat(const wxChar *format)
+{
+    return wxString(wxFormatConverter(format));
+}
+#endif
 
 // ----------------------------------------------------------------------------
 // wxPrintf(), wxScanf() and relatives
@@ -848,7 +951,6 @@ int wxFscanf( FILE *stream, const wxChar *format, ... )
 {
     va_list argptr;
     va_start(argptr, format);
-
     int ret = vfwscanf(stream, wxFormatConverter(format), argptr);
 
     va_end(argptr);
@@ -887,12 +989,14 @@ int wxSprintf( wxChar *str, const wxChar *format, ... )
     va_list argptr;
     va_start(argptr, format);
 
-    // callers of wxSprintf() deserve what they get
-    int ret = vswprintf( str, UINT_MAX, wxFormatConverter(format), argptr );
+    // note that wxString::FormatV() uses wxVsnprintf(), not wxSprintf(), so
+    // it's safe to implement this one in terms of it
+    wxString s(wxString::FormatV(format, argptr));
+    wxStrcpy(str, s);
 
     va_end(argptr);
 
-    return ret;
+    return s.length();
 }
 
 int wxFprintf( FILE *stream, const wxChar *format, ... )
@@ -932,10 +1036,12 @@ int wxVsnprintf( wxChar *str, size_t size, const wxChar *format, va_list argptr 
 int wxVsprintf( wxChar *str, const wxChar *format, va_list argptr )
 {
     // same as for wxSprintf()
-    return vswprintf(str, UINT_MAX, wxFormatConverter(format), argptr);
+    return vswprintf(str, INT_MAX / 4, wxFormatConverter(format), argptr);
 }
 
 #endif // wxNEED_PRINTF_CONVERSION
+
+#if wxUSE_WCHAR_T
 
 // ----------------------------------------------------------------------------
 // ctype.h stuff (currently unused)
@@ -951,7 +1057,7 @@ inline WORD wxMSW_ctype(wxChar ch)
 
 WXDLLEXPORT int wxIsalnum(wxChar ch) { return IsCharAlphaNumeric(ch); }
 WXDLLEXPORT int wxIsalpha(wxChar ch) { return IsCharAlpha(ch); }
-WXDLLEXPORT int wxIsctrl(wxChar ch) { return wxMSW_ctype(ch) & C1_CNTRL; }
+WXDLLEXPORT int wxIscntrl(wxChar ch) { return wxMSW_ctype(ch) & C1_CNTRL; }
 WXDLLEXPORT int wxIsdigit(wxChar ch) { return wxMSW_ctype(ch) & C1_DIGIT; }
 WXDLLEXPORT int wxIsgraph(wxChar ch) { return wxMSW_ctype(ch) & (C1_DIGIT|C1_PUNCT|C1_ALPHA); }
 WXDLLEXPORT int wxIslower(wxChar ch) { return IsCharLower(ch); }
@@ -964,15 +1070,105 @@ WXDLLEXPORT int wxTolower(wxChar ch) { return (wxChar)CharLower((LPTSTR)(ch)); }
 WXDLLEXPORT int wxToupper(wxChar ch) { return (wxChar)CharUpper((LPTSTR)(ch)); }
 #endif
 
-#ifndef wxStrdup
-WXDLLEXPORT wxChar * wxStrdup(const wxChar *psz)
+#if defined(__DARWIN__) && ( MAC_OS_X_VERSION_MAX_ALLOWED <= MAC_OS_X_VERSION_10_2 ) 
+
+WXDLLEXPORT size_t wxInternalMbstowcs (wchar_t * out, const char * in, size_t outlen)
 {
-  size_t size = (wxStrlen(psz) + 1) * sizeof(wxChar);
-  wxChar *ret = (wxChar *) malloc(size);
-  memcpy(ret, psz, size);
+    if (!out)
+    {
+        size_t outsize = 0;
+        while(*in++)
+            outsize++;
+        return outsize;
+    }
+    
+    const char* origin = in;
+    
+    while (outlen-- && *in)
+    {
+        *out++ = (wchar_t) *in++;
+    }
+    
+    *out = '\0';
+    
+    return in - origin;
+}
+
+WXDLLEXPORT size_t	wxInternalWcstombs (char * out, const wchar_t * in, size_t outlen)
+{
+    if (!out)
+    {
+        size_t outsize = 0;
+        while(*in++)
+            outsize++;
+        return outsize;
+    }
+    
+    const wchar_t* origin = in;
+    
+    while (outlen-- && *in)
+    {
+        *out++ = (char) *in++;
+    }
+    
+    *out = '\0';
+    
+    return in - origin;
+}
+        
+#if defined(wxNEED_WX_CTYPE_H)
+
+#include <CoreFoundation/CoreFoundation.h>
+
+#define cfalnumset CFCharacterSetGetPredefined(kCFCharacterSetAlphaNumeric)
+#define cfalphaset CFCharacterSetGetPredefined(kCFCharacterSetLetter)
+#define cfcntrlset CFCharacterSetGetPredefined(kCFCharacterSetControl)
+#define cfdigitset CFCharacterSetGetPredefined(kCFCharacterSetDecimalDigit)
+//CFCharacterSetRef cfgraphset = kCFCharacterSetControl && !' '
+#define cflowerset CFCharacterSetGetPredefined(kCFCharacterSetLowercaseLetter)
+//CFCharacterSetRef cfprintset = !kCFCharacterSetControl
+#define cfpunctset CFCharacterSetGetPredefined(kCFCharacterSetPunctuation)
+#define cfspaceset CFCharacterSetGetPredefined(kCFCharacterSetWhitespaceAndNewline)
+#define cfupperset CFCharacterSetGetPredefined(kCFCharacterSetUppercaseLetter)
+
+WXDLLEXPORT int wxIsalnum(wxChar ch) { return CFCharacterSetIsCharacterMember(cfalnumset, ch); }
+WXDLLEXPORT int wxIsalpha(wxChar ch) { return CFCharacterSetIsCharacterMember(cfalphaset, ch); }
+WXDLLEXPORT int wxIscntrl(wxChar ch) { return CFCharacterSetIsCharacterMember(cfcntrlset, ch); }
+WXDLLEXPORT int wxIsdigit(wxChar ch) { return CFCharacterSetIsCharacterMember(cfdigitset, ch); }
+WXDLLEXPORT int wxIsgraph(wxChar ch) { return !CFCharacterSetIsCharacterMember(cfcntrlset, ch) && ch != ' '; }
+WXDLLEXPORT int wxIslower(wxChar ch) { return CFCharacterSetIsCharacterMember(cflowerset, ch); }
+WXDLLEXPORT int wxIsprint(wxChar ch) { return !CFCharacterSetIsCharacterMember(cfcntrlset, ch); }
+WXDLLEXPORT int wxIspunct(wxChar ch) { return CFCharacterSetIsCharacterMember(cfpunctset, ch); }
+WXDLLEXPORT int wxIsspace(wxChar ch) { return CFCharacterSetIsCharacterMember(cfspaceset, ch); }
+WXDLLEXPORT int wxIsupper(wxChar ch) { return CFCharacterSetIsCharacterMember(cfupperset, ch); }
+WXDLLEXPORT int wxIsxdigit(wxChar ch) { return wxIsdigit(ch) || (ch>='a' && ch<='f') || (ch>='A' && ch<='F'); }
+WXDLLEXPORT int wxTolower(wxChar ch) { return (wxChar)tolower((char)(ch)); }
+WXDLLEXPORT int wxToupper(wxChar ch) { return (wxChar)toupper((char)(ch)); }
+
+#endif  // wxNEED_WX_CTYPE_H
+
+#endif  // defined(__DARWIN__) and OSX <= 10.2
+
+#ifndef wxStrdupA
+
+WXDLLEXPORT char *wxStrdupA(const char *s)
+{
+    return strcpy((char *)malloc(strlen(s) + 1), s);
+}
+
+#endif // wxStrdupA
+
+#ifndef wxStrdupW
+
+WXDLLEXPORT wchar_t * wxStrdupW(const wchar_t *pwz)
+{
+  size_t size = (wxWcslen(pwz) + 1) * sizeof(wchar_t);
+  wchar_t *ret = (wchar_t *) malloc(size);
+  memcpy(ret, pwz, size);
   return ret;
 }
-#endif
+
+#endif // wxStrdupW
 
 #ifndef wxStricmp
 int WXDLLEXPORT wxStricmp(const wxChar *psz1, const wxChar *psz2)
@@ -989,7 +1185,8 @@ int WXDLLEXPORT wxStricmp(const wxChar *psz1, const wxChar *psz2)
 #ifndef wxStricmp
 int WXDLLEXPORT wxStrnicmp(const wxChar *s1, const wxChar *s2, size_t n)
 {
-  register wxChar c1, c2;
+  // initialize the variables just to suppress stupid gcc warning
+  register wxChar c1 = 0, c2 = 0;
   while (n && ((c1 = wxTolower(*s1)) == (c2 = wxTolower(*s2)) ) && c1) n--, s1++, s2++;
   if (n) {
     if (c1 < c2) return -1;
@@ -998,39 +1195,6 @@ int WXDLLEXPORT wxStrnicmp(const wxChar *s1, const wxChar *s2, size_t n)
   return 0;
 }
 #endif
-
-#ifndef wxStrtok
-WXDLLEXPORT wxChar * wxStrtok(wxChar *psz, const wxChar *delim, wxChar **save_ptr)
-{
-    if (!psz)
-    {
-        psz = *save_ptr;
-        if ( !psz )
-            return NULL;
-    }
-
-    psz += wxStrspn(psz, delim);
-    if (!*psz)
-    {
-        *save_ptr = (wxChar *)NULL;
-        return (wxChar *)NULL;
-    }
-
-    wxChar *ret = psz;
-    psz = wxStrpbrk(psz, delim);
-    if (!psz)
-    {
-        *save_ptr = (wxChar*)NULL;
-    }
-    else
-    {
-        *psz = wxT('\0');
-        *save_ptr = psz + 1;
-    }
-
-    return ret;
-}
-#endif // wxStrtok
 
 #ifndef wxSetlocale
 WXDLLEXPORT wxWCharBuffer wxSetlocale(int category, const wxChar *locale)
@@ -1041,11 +1205,28 @@ WXDLLEXPORT wxWCharBuffer wxSetlocale(int category, const wxChar *locale)
 }
 #endif
 
+#if wxUSE_WCHAR_T && !defined(HAVE_WCSLEN)
+WXDLLEXPORT size_t wxWcslen(const wchar_t *s)
+{
+    size_t n = 0;
+    while ( *s++ )
+        n++;
+
+    return n;
+}
+#endif
+
 // ----------------------------------------------------------------------------
 // string.h functions
 // ----------------------------------------------------------------------------
 
 #ifdef wxNEED_WX_STRING_H
+
+// RN:  These need to be c externed for the regex lib
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 WXDLLEXPORT wxChar * wxStrcat(wxChar *dest, const wxChar *src)
 {
   wxChar *ret = dest;
@@ -1080,6 +1261,16 @@ WXDLLEXPORT wxChar * wxStrcpy(wxChar *dest, const wxChar *src)
   while ((*dest++ = *src++));
   return ret;
 }
+
+WXDLLEXPORT size_t wxStrlen_(const wxChar *s)
+{
+    size_t n = 0;
+    while ( *s++ )
+        n++;
+            
+    return n;
+}
+
 
 WXDLLEXPORT wxChar * wxStrncat(wxChar *dest, const wxChar *src, size_t n)
 {
@@ -1138,7 +1329,7 @@ WXDLLEXPORT size_t wxStrspn(const wxChar *s, const wxChar *accept)
 
 WXDLLEXPORT const wxChar *wxStrstr(const wxChar *haystack, const wxChar *needle)
 {
-    wxCHECK_RET( needle, NULL, _T("NULL argument in wxStrstr") );
+    wxASSERT_MSG( needle != NULL, _T("NULL argument in wxStrstr") );
 
     // VZ: this is not exactly the most efficient string search algorithm...
 
@@ -1154,6 +1345,10 @@ WXDLLEXPORT const wxChar *wxStrstr(const wxChar *haystack, const wxChar *needle)
 
     return NULL;
 }
+
+#ifdef __cplusplus
+}
+#endif
 
 WXDLLEXPORT double wxStrtod(const wxChar *nptr, wxChar **endptr)
 {
@@ -1201,7 +1396,7 @@ WXDLLEXPORT long int wxStrtol(const wxChar *nptr, wxChar **endptr, int base)
   while ((wxIsdigit(*nptr) && (*nptr - wxT('0') < base)) ||
          (wxIsalpha(*nptr) && (wxToupper(*nptr) - wxT('A') + 10 < base))) nptr++;
 
-  wxString data(nptr, nptr-start);
+  wxString data(start, nptr-start);
   wxWX2MBbuf dat = data.mb_str(wxConvLocal);
   char *rdat = wxMBSTRINGCAST dat;
   long int ret = strtol(dat, &rdat, base);
@@ -1210,6 +1405,12 @@ WXDLLEXPORT long int wxStrtol(const wxChar *nptr, wxChar **endptr, int base)
 
   return ret;
 }
+
+WXDLLEXPORT unsigned long int wxStrtoul(const wxChar *nptr, wxChar **endptr, int base)
+{
+    return (unsigned long int) wxStrtol(nptr, endptr, base);
+}
+
 #endif // wxNEED_WX_STRING_H
 
 #ifdef wxNEED_WX_STDIO_H
@@ -1245,7 +1446,16 @@ WXDLLEXPORT int wxRename(const wxChar *oldpath, const wxChar *newpath)
 #ifndef wxAtof
 double   WXDLLEXPORT wxAtof(const wxChar *psz)
 {
-  return atof(wxConvLocal.cWX2MB(psz));
+#ifdef __WXWINCE__
+    double d;
+    wxString str(psz);
+    if (str.ToDouble(& d))
+        return d;
+    else
+        return 0.0;
+#else
+    return atof(wxConvLocal.cWX2MB(psz));
+#endif
 }
 #endif
 
@@ -1262,36 +1472,16 @@ long     WXDLLEXPORT wxAtol(const wxChar *psz)
 
 wxChar * WXDLLEXPORT wxGetenv(const wxChar *name)
 {
-  static wxHashTable env;
-
-  // check if we already have stored the converted env var
-  wxObject *data = env.Get(name);
-  if (!data)
-  {
-    // nope, retrieve it,
 #if wxUSE_UNICODE
-    wxCharBuffer buffer = wxConvLocal.cWX2MB(name);
-    // printf( "buffer %s\n", (const char*) buffer );
-    const char *val = getenv( (const char *)buffer );
+    // NB: buffer returned by getenv() is allowed to be overwritten next
+    //     time getenv() is called, so it is OK to use static string
+    //     buffer to hold the data.
+    static wxWCharBuffer value((wxChar*)NULL);
+    value = wxConvLocal.cMB2WX(getenv(wxConvLocal.cWX2MB(name)));
+    return value.data();
 #else
-    const char *val = getenv( name );
+    return getenv(name);
 #endif
-
-    if (!val) return (wxChar *)NULL;
-    // printf( "home %s\n", val );
-
-    // convert it,
-#ifdef wxUSE_UNICODE
-    data = (wxObject *)new wxString(val, wxConvLocal);
-#else
-    data = (wxObject *)new wxString(val);
-#endif
-
-    // and store it
-    env.Put(name, data);
-  }
-  // return converted env var
-  return (wxChar *)((wxString *)data)->c_str();
 }
 
 int WXDLLEXPORT wxSystem(const wxChar *psz)
@@ -1299,7 +1489,7 @@ int WXDLLEXPORT wxSystem(const wxChar *psz)
     return system(wxConvLocal.cWX2MB(psz));
 }
 
-#endif
+#endif // wxNEED_WX_STDLIB_H
 
 #ifdef wxNEED_WX_TIME_H
 WXDLLEXPORT size_t   wxStrftime(wxChar *s, size_t max, const wxChar *fmt, const struct tm *tm)
@@ -1321,4 +1511,84 @@ WXDLLEXPORT size_t   wxStrftime(wxChar *s, size_t max, const wxChar *fmt, const 
         return 0;
   }
 }
-#endif
+#endif // wxNEED_WX_TIME_H
+
+#ifndef wxCtime
+WXDLLEXPORT wxChar *wxCtime(const time_t *timep)
+{
+    static wxChar   buf[128];
+
+    wxStrncpy( buf, wxConvertMB2WX( ctime( timep ) ), sizeof( buf ) );
+    buf[ sizeof( buf ) - 1 ] = _T('\0');
+
+    return buf;
+}
+#endif // wxCtime
+
+#endif // wxUSE_WCHAR_T
+
+// ----------------------------------------------------------------------------
+// functions which we may need even if !wxUSE_WCHAR_T
+// ----------------------------------------------------------------------------
+
+#ifndef wxStrtok
+
+WXDLLEXPORT wxChar * wxStrtok(wxChar *psz, const wxChar *delim, wxChar **save_ptr)
+{
+    if (!psz)
+    {
+        psz = *save_ptr;
+        if ( !psz )
+            return NULL;
+    }
+
+    psz += wxStrspn(psz, delim);
+    if (!*psz)
+    {
+        *save_ptr = (wxChar *)NULL;
+        return (wxChar *)NULL;
+    }
+
+    wxChar *ret = psz;
+    psz = wxStrpbrk(psz, delim);
+    if (!psz)
+    {
+        *save_ptr = (wxChar*)NULL;
+    }
+    else
+    {
+        *psz = wxT('\0');
+        *save_ptr = psz + 1;
+    }
+
+    return ret;
+}
+
+#endif // wxStrtok
+
+// ----------------------------------------------------------------------------
+// missing C RTL functions
+// ----------------------------------------------------------------------------
+
+#if wxNEED_STRDUP
+
+char *strdup(const char *s)
+{
+    char *dest = (char*) malloc( strlen( s ) + 1 ) ;
+    if ( dest )
+        strcpy( dest , s ) ;
+    return dest ;
+}
+#endif // wxNEED_STRDUP
+
+#if defined(__WXWINCE__) && (_WIN32_WCE <= 211)
+
+void *calloc( size_t num, size_t size )
+{
+    void** ptr = (void **)malloc(num * size);
+    memset( ptr, 0, num * size);
+    return ptr;
+}
+
+#endif // __WXWINCE__ <= 211
+

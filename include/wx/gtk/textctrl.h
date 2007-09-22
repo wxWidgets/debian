@@ -3,15 +3,15 @@
 // Purpose:
 // Author:      Robert Roebling
 // Created:     01/02/97
-// Id:          $Id: textctrl.h,v 1.42 2002/09/07 12:28:46 GD Exp $
-// Copyright:   (c) 1998 Robert Roebling, Julian Smart and Markus Holzem
+// Id:          $Id: textctrl.h,v 1.51 2004/07/23 20:26:25 RD Exp $
+// Copyright:   (c) 1998 Robert Roebling
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
 
 #ifndef __GTKTEXTCTRLH__
 #define __GTKTEXTCTRLH__
 
-#if defined(__GNUG__) && !defined(__APPLE__)
+#if defined(__GNUG__) && !defined(NO_GCC_PRAGMA)
     #pragma interface "textctrl.h"
 #endif
 
@@ -65,7 +65,8 @@ public:
     virtual void Replace(long from, long to, const wxString& value);
     virtual void Remove(long from, long to);
 
-    // clears the dirty flag
+    // sets/clears the dirty flag
+    virtual void MarkDirty();
     virtual void DiscardEdits();
 
     virtual void SetMaxLength(unsigned long len);
@@ -86,6 +87,16 @@ public:
     virtual bool PositionToXY(long pos, long *x, long *y) const;
 
     virtual void ShowPosition(long pos);
+
+#ifdef __WXGTK20__
+    virtual wxTextCtrlHitTestResult HitTest(const wxPoint& pt, long *pos) const;
+    virtual wxTextCtrlHitTestResult HitTest(const wxPoint& pt,
+                                            wxTextCoord *col,
+                                            wxTextCoord *row) const
+    {
+        return wxTextCtrlBase::HitTest(pt, col, row);
+    }
+#endif // __WXGTK20__
 
     // Clipboard operations
     virtual void Copy();
@@ -132,10 +143,16 @@ public:
 
     GtkWidget* GetConnectWidget();
     bool IsOwnGtkWindow( GdkWindow *window );
-    void ApplyWidgetStyle();
+    void DoApplyWidgetStyle(GtkRcStyle *style);
     void CalculateScrollbar();
     void OnInternalIdle();
+
+#ifdef __WXGTK20__
+    void SetUpdateFont(bool WXUNUSED(update)) { }
+#else // !__WXGTK20__
+    void SetUpdateFont(bool update) { m_updateFont = update; }
     void UpdateFontIfNeeded();
+#endif // __WXGTK20__/!__WXGTK20__
 
     void SetModified() { m_modified = TRUE; }
 
@@ -161,6 +178,9 @@ public:
     // should we ignore the changed signal? always resets the flag
     bool IgnoreTextUpdate();
 
+    static wxVisualAttributes
+    GetClassDefaultAttributes(wxWindowVariant variant = wxWINDOW_VARIANT_NORMAL);
+    
 protected:
     virtual wxSize DoGetBestSize() const;
 
@@ -174,6 +194,10 @@ protected:
     // scroll position changed
     bool DoScroll(GtkAdjustment *adj, int diff);
 
+    // Widgets that use the style->base colour for the BG colour should
+    // override this and return true.
+    virtual bool UseGTKStyleBase() const { return true; }
+
 private:
     // change the font for everything in this control
     void ChangeFontGlobally();
@@ -183,7 +207,9 @@ private:
 
     bool        m_modified:1;
     bool        m_vScrollbarVisible:1;
+#ifndef __WXGTK20__
     bool        m_updateFont:1;
+#endif // !__WXGTK20__
     bool        m_ignoreNextUpdate:1;
 
     DECLARE_EVENT_TABLE()

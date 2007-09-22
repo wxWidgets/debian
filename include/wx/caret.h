@@ -4,8 +4,8 @@
 // Author:      Vadim Zeitlin
 // Modified by:
 // Created:     23.05.99
-// RCS-ID:      $Id: caret.h,v 1.12 2002/08/31 11:29:09 GD Exp $
-// Copyright:   (c) wxWindows team
+// RCS-ID:      $Id: caret.h,v 1.18 2004/09/10 12:55:45 ABX Exp $
+// Copyright:   (c) wxWidgets team
 // Licence:     wxWindows licence
 ///////////////////////////////////////////////////////////////////////////////
 
@@ -16,7 +16,7 @@
 
 #if wxUSE_CARET
 
-#if defined(__GNUG__) && !defined(__APPLE__)
+#if defined(__GNUG__) && !defined(NO_GCC_PRAGMA)
 #pragma interface "caret.h"
 #endif
 
@@ -118,7 +118,7 @@ public:
         // show/hide the caret (should be called by wxWindow when needed):
         // Show() must be called as many times as Hide() + 1 to make the caret
         // visible
-    virtual void Show(bool show = TRUE)
+    virtual void Show(bool show = true)
         {
             if ( show )
             {
@@ -131,7 +131,7 @@ public:
                     DoHide();
             }
         }
-    virtual void Hide() { Show(FALSE); }
+    virtual void Hide() { Show(false); }
 
         // blink time is measured in milliseconds and is the time elapsed
         // between 2 inversions of the caret (blink time of the caret is common
@@ -156,7 +156,7 @@ protected:
         m_width = width;
         m_height = height;
 
-        return TRUE;
+        return true;
     }
 
     // pure virtuals to implement in the derived class
@@ -212,18 +212,25 @@ public:
     wxCaretSuspend(wxWindow *win)
     {
         m_caret = win->GetCaret();
-        if ( m_caret )
+        m_show = false;
+        if ( m_caret && m_caret->IsVisible() )
+        {
             m_caret->Hide();
+            m_show = true;
+        }
     }
 
     ~wxCaretSuspend()
     {
-        if ( m_caret )
+        if ( m_caret && m_show )
             m_caret->Show();
     }
 
 private:
     wxCaret *m_caret;
+    bool     m_show;
+
+    DECLARE_NO_COPY_CLASS(wxCaretSuspend)
 };
 
 #endif // wxUSE_CARET

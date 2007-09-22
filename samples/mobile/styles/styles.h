@@ -11,7 +11,7 @@
     #pragma interface "styles.cpp"
 #endif
 
-// Include wxWindows' headers
+// Include wxWidgets' headers
 
 #ifndef WX_PRECOMP
     #include <wx/wx.h>
@@ -36,16 +36,16 @@ public:
         const wxPoint& pos = wxDefaultPosition,
         const wxSize& size = wxDefaultSize,
         long style = wxDEFAULT_FRAME_STYLE );
-    
+
 private:
     void CreateMyMenuBar();
-    
+
 private:
     void OnAbout( wxCommandEvent &event );
     void OnQuit( wxCommandEvent &event );
-    
+
     void OnCloseWindow( wxCloseEvent &event );
-    
+
 private:
     DECLARE_EVENT_TABLE()
 };
@@ -57,8 +57,8 @@ private:
 class MyApp: public wxApp
 {
 public:
-    MyApp();
-    
+    MyApp(){};
+
     virtual bool OnInit();
     virtual int OnExit();
 };

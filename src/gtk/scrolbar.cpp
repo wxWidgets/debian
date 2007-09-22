@@ -2,17 +2,18 @@
 // Name:        src/gtk/scrolbar.cpp
 // Purpose:
 // Author:      Robert Roebling
-// Id:          $Id: scrolbar.cpp,v 1.43.2.2 2003/03/01 20:29:30 VS Exp $
+// Id:          $Id: scrolbar.cpp,v 1.51 2004/06/14 17:30:41 VS Exp $
 // Copyright:   (c) 1998 Robert Roebling
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
 
 
-#ifdef __GNUG__
+#if defined(__GNUG__) && !defined(NO_GCC_PRAGMA)
 #pragma implementation "scrolbar.h"
 #endif
 
-#include "wx/defs.h"
+// For compilers that support precompilation, includes "wx.h".
+#include "wx/wxprec.h"
 
 #if wxUSE_SCROLLBAR
 
@@ -178,13 +179,7 @@ bool wxScrollBar::Create(wxWindow *parent, wxWindowID id,
 
     m_parent->DoAddChild( this );
 
-    PostCreation();
-
-    SetBestSize(size);
-
-    SetBackgroundColour( parent->GetBackgroundColour() );
-
-    Show( TRUE );
+    PostCreation(size);
 
     return TRUE;
 }
@@ -330,10 +325,16 @@ bool wxScrollBar::IsOwnGtkWindow( GdkWindow *window )
            );
 }
 
-void wxScrollBar::ApplyWidgetStyle()
+wxSize wxScrollBar::DoGetBestSize() const
 {
-    SetWidgetStyle();
-    gtk_widget_set_style( m_widget, m_widgetStyle );
+    return wxControl::DoGetBestSize();
+}
+
+// static
+wxVisualAttributes
+wxScrollBar::GetClassDefaultAttributes(wxWindowVariant WXUNUSED(variant))
+{
+    return GetDefaultAttributesFromGTKWidget(gtk_vscrollbar_new);
 }
 
 #endif

@@ -4,16 +4,16 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     04/01/98
-// RCS-ID:      $Id: brush.cpp,v 1.12.2.1 2002/09/21 23:01:25 VZ Exp $
-// Copyright:   (c) Julian Smart and Markus Holzem
-// Licence:     wxWindows license
+// RCS-ID:      $Id: brush.cpp,v 1.20 2004/05/23 20:52:56 JS Exp $
+// Copyright:   (c) Julian Smart
+// Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
 
 // ============================================================================
 // declarations
 // ============================================================================
 
-#ifdef __GNUG__
+#if defined(__GNUG__) && !defined(NO_GCC_PRAGMA)
 #pragma implementation "brush.h"
 #endif
 
@@ -149,28 +149,32 @@ void wxBrushRefData::Free()
     }
 }
 
-static int TransllateHatchStyle(int style)
+#if !defined(__WXMICROWIN__) && !defined(__WXWINCE__)
+
+static int TranslateHatchStyle(int style)
 {
     switch ( style )
     {
-#ifndef __WXMICROWIN__
         case wxBDIAGONAL_HATCH: return HS_BDIAGONAL;
         case wxCROSSDIAG_HATCH: return HS_DIAGCROSS;
         case wxFDIAGONAL_HATCH: return HS_FDIAGONAL;
         case wxCROSS_HATCH:     return HS_CROSS;
         case wxHORIZONTAL_HATCH:return HS_HORIZONTAL;
         case wxVERTICAL_HATCH:  return HS_VERTICAL;
-#endif // __WXMICROWIN__
         default:                return -1;
     }
 }
+
+#endif // !__WXMICROWIN__ && !__WXWINCE__
 
 HBRUSH wxBrushRefData::GetHBRUSH()
 {
     if ( !m_hBrush )
     {
-        int hatchStyle = TransllateHatchStyle(m_style);
+#if !defined(__WXMICROWIN__) && !defined(__WXWINCE__)
+        int hatchStyle = TranslateHatchStyle(m_style);
         if ( hatchStyle == -1 )
+#endif // !__WXMICROWIN__ && !__WXWINCE__
         {
             switch ( m_style )
             {
@@ -196,10 +200,12 @@ HBRUSH wxBrushRefData::GetHBRUSH()
                     break;
             }
         }
+#ifndef __WXWINCE__
         else // create a hatched brush
         {
             m_hBrush = ::CreateHatchBrush(hatchStyle, m_colour.GetPixel());
         }
+#endif
 
         if ( !m_hBrush )
         {
@@ -242,7 +248,7 @@ wxBrush::~wxBrush()
 
 wxBrush& wxBrush::operator=(const wxBrush& brush)
 {
-    if ( *this != brush )
+    if ( this != &brush )
     {
         Ref(brush);
     }

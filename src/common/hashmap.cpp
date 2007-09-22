@@ -4,12 +4,12 @@
 // Author:      Mattia Barbon
 // Modified by:
 // Created:     29/01/2002
-// RCS-ID:      $Id: hashmap.cpp,v 1.3 2002/02/01 14:58:55 VZ Exp $
+// RCS-ID:      $Id: hashmap.cpp,v 1.9 2004/05/23 20:52:02 JS Exp $
 // Copyright:   (c) Mattia Barbon
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
 
-#ifdef __GNUG__
+#if defined(__GNUG__) && !defined(NO_GCC_PRAGMA)
 #pragma implementation "hashmap.h"
 #endif
 
@@ -59,6 +59,8 @@ unsigned long wxStringHash::charStringHash( const char* k )
     return hash + (hash << 15);
 }
 #endif
+
+#if !wxUSE_STL || !defined(HAVE_STL_HASH_MAP)
 
 /* from SGI STL */
 const unsigned long _wxHashTableBase2::ms_primes[prime_count] =
@@ -151,3 +153,4 @@ _wxHashTable_NodeBase* _wxHashTableBase2::DummyProcessNode(_wxHashTable_NodeBase
     return node;
 }
 
+#endif // !wxUSE_STL || !defined(HAVE_STL_HASH_MAP)

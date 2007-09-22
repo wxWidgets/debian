@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     27/7/98
-// RCS-ID:      $Id: mainfrm.cpp,v 1.1 2000/03/03 11:24:42 JS Exp $
+// RCS-ID:      $Id: mainfrm.cpp,v 1.6 2004/06/09 16:42:29 ABX Exp $
 // Copyright:   (c) Julian Smart
 // Licence:
 /////////////////////////////////////////////////////////////////////////////
@@ -52,9 +52,8 @@ BEGIN_EVENT_TABLE(csFrame, wxDocMDIParentFrame)
 END_EVENT_TABLE()
 
 // Define my frame constructor
-csFrame::csFrame(wxDocManager* manager, wxFrame *parent, wxWindowID id, const wxString& title, const wxPoint& pos, const wxSize& size,
-	long style):
-  wxDocMDIParentFrame(manager, parent, id, title, pos, size, style, "frame")
+csFrame::csFrame(wxDocManager* manager, wxFrame *parent, wxWindowID id, const wxString& title, const wxPoint& pos, const wxSize& size, long style):
+  wxDocMDIParentFrame(manager, parent, id, title, pos, size, style, _T("frame"))
 {
     CreateToolBar(wxNO_BORDER|wxTB_FLAT|wxTB_HORIZONTAL);
     wxGetApp().InitToolBar(GetToolBar());
@@ -71,26 +70,29 @@ csFrame::csFrame(wxDocManager* manager, wxFrame *parent, wxWindowID id, const wx
     SetAcceleratorTable(accel);
 }
 
-void csFrame::OnHelp(wxCommandEvent& event)
+void csFrame::OnHelp(wxCommandEvent& WXUNUSED(event))
 {
-    wxGetApp().GetHelpController().DisplayContents();
+    wxHelpControllerBase* help;
+    help = wxGetApp().GetHelpController();
+    if (help)
+        help->DisplayContents();
 }
 
-void csFrame::OnSettings(wxCommandEvent& event)
+void csFrame::OnSettings(wxCommandEvent& WXUNUSED(event))
 {
     csSettingsDialog* dialog = new csSettingsDialog(this);
-    int ret = dialog->ShowModal();
+    /* int ret = */ dialog->ShowModal();
     dialog->Destroy();
 }
 
-void csFrame::OnQuit(wxCommandEvent& event)
+void csFrame::OnQuit(wxCommandEvent& WXUNUSED(event))
 {
-      Close(TRUE);
+      Close(true);
 }
 
-void csFrame::OnAbout(wxCommandEvent& event)
+void csFrame::OnAbout(wxCommandEvent& WXUNUSED(event))
 {
-      (void)wxMessageBox("OGL Studio\n(c) 1999, Julian Smart", "About OGL Studio", wxICON_INFORMATION);
+      (void)wxMessageBox(_T("OGL Studio\n(c) 1999, Julian Smart"), _T("About OGL Studio"), wxICON_INFORMATION);
 }
 
 void csFrame::OnSashDragPaletteWindow(wxSashEvent& event)
@@ -145,35 +147,34 @@ void csFrame::OnSize(wxSizeEvent& event)
 {
     wxLayoutAlgorithm layout;
     layout.LayoutMDIFrame(this);
+    event.Skip();
 }
 
 // Make sure the correct toolbars are showing for the active view
 void csFrame::OnIdle(wxIdleEvent& event)
 {
-    wxDocMDIParentFrame::OnIdle(event);
-
     wxSashLayoutWindow* paletteWin = wxGetApp().GetDiagramPaletteSashWindow();
     wxSashLayoutWindow* diagramToolBarWin = wxGetApp().GetDiagramToolBarSashWindow();
     if (!paletteWin || !diagramToolBarWin)
         return;
-    bool doLayout = FALSE;
+    bool doLayout = false;
     if (GetActiveChild())
     {
         if (!paletteWin->IsShown() || !diagramToolBarWin->IsShown())
         {
-            paletteWin->Show(TRUE);
-            diagramToolBarWin->Show(TRUE);
+            paletteWin->Show(true);
+            diagramToolBarWin->Show(true);
 
-            doLayout = TRUE;
+            doLayout = true;
         }
     }
     else
     {
         if (paletteWin->IsShown() || diagramToolBarWin->IsShown())
         {
-            paletteWin->Show(FALSE);
-            diagramToolBarWin->Show(FALSE);
-            doLayout = TRUE;
+            paletteWin->Show(false);
+            diagramToolBarWin->Show(false);
+            doLayout = true;
         }
     }
     if (doLayout)
@@ -187,7 +188,7 @@ void csFrame::OnIdle(wxIdleEvent& event)
         // window doesn't cause the proper refresh. Just refreshing the
         // client doesn't work (presumably because it's clipping the
         // children).
-        // FIXED in wxWindows, by intercepting wxMDIClientWindow::DoSetSize
+        // FIXED in wxWidgets, by intercepting wxMDIClientWindow::DoSetSize
         // and checking if the position has changed, before redrawing the
         // child windows.
 #if 0
@@ -201,12 +202,13 @@ void csFrame::OnIdle(wxIdleEvent& event)
 #endif
 #endif
     }
+    event.Skip();
 }
 
 // General handler for disabling items
 void csFrame::OnUpdateDisable(wxUpdateUIEvent& event)
 {
-    event.Enable(FALSE);
+    event.Enable(false);
 }
 
 void csFrame::OnSaveUpdate(wxUpdateUIEvent& event)

@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     01/02/97
-// RCS-ID:      $Id: tbar95.h,v 1.29 2002/09/14 21:36:18 VZ Exp $
+// RCS-ID:      $Id: tbar95.h,v 1.35 2004/05/23 20:51:29 JS Exp $
 // Copyright:   (c) Julian Smart
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -12,7 +12,7 @@
 #ifndef _WX_TBAR95_H_
 #define _WX_TBAR95_H_
 
-#ifdef __GNUG__
+#if defined(__GNUG__) && !defined(NO_GCC_PRAGMA)
     #pragma interface "tbar95.h"
 #endif
 
@@ -76,8 +76,8 @@ protected:
     // common part of all ctors
     void Init();
 
-    // create the toolbar control
-    bool MSWCreateToolbar(const wxPoint& pos, const wxSize& size, long style);
+    // create the native toolbar control
+    bool MSWCreateToolbar(const wxPoint& pos, const wxSize& size);
 
     // recreate the control completely
     void Recreate();
@@ -101,7 +101,7 @@ protected:
     virtual wxToolBarToolBase *CreateTool(wxControl *control);
 
     // override WndProc mainly to process WM_SIZE
-    virtual long MSWWindowProc(WXUINT nMsg, WXWPARAM wParam, WXLPARAM lParam);
+    virtual WXLRESULT MSWWindowProc(WXUINT nMsg, WXWPARAM wParam, WXLPARAM lParam);
 
     // return the appropriate size and flags for the toolbar control
     virtual wxSize DoGetBestSize() const;
@@ -127,6 +127,7 @@ protected:
 private:
     DECLARE_EVENT_TABLE()
     DECLARE_DYNAMIC_CLASS(wxToolBar)
+    DECLARE_NO_COPY_CLASS(wxToolBar)
 };
 
 #endif // wxUSE_TOOLBAR

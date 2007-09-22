@@ -7,7 +7,7 @@
 //              dependencies (and hence the rebuild time) in debug builds.
 // Modified by:
 // Created:     30.11.99
-// RCS-ID:      $Id: datetime.inl,v 1.22.2.1 2002/10/24 16:10:56 VZ Exp $
+// RCS-ID:      $Id: datetime.inl,v 1.28 2003/09/09 22:17:30 VZ Exp $
 // Copyright:   (c) 1999 Vadim Zeitlin <zeitlin@dptmaths.ens-cachan.fr>
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -34,11 +34,6 @@
 // ----------------------------------------------------------------------------
 // wxDateTime construction
 // ----------------------------------------------------------------------------
-
-// only define this once, when included from datetime.cpp
-#ifdef wxDEFINE_TIME_CONSTANTS
-    const long wxDateTime::TIME_T_FACTOR = 1000l;
-#endif // wxDEFINE_TIME_CONSTANTS
 
 inline bool wxDateTime::IsInStdRange() const
 {
@@ -105,7 +100,8 @@ inline wxDateTime& wxDateTime::Set(const Tm& tm)
 {
     wxASSERT_MSG( tm.IsValid(), _T("invalid broken down date/time") );
 
-    return Set(tm.mday, (Month)tm.mon, tm.year, tm.hour, tm.min, tm.sec);
+    return Set(tm.mday, (Month)tm.mon, tm.year,
+               tm.hour, tm.min, tm.sec, tm.msec);
 }
 
 inline wxDateTime::wxDateTime(wxDateTime_t hour,

@@ -4,9 +4,9 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     12/07/98
-// RCS-ID:      $Id: drawnp.h,v 1.3.2.1 2002/11/19 02:13:32 RD Exp $
+// RCS-ID:      $Id: drawnp.h,v 1.8 2004/06/09 16:42:21 ABX Exp $
 // Copyright:   (c) Julian Smart
-// Licence:   	wxWindows licence
+// Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
 
 #ifndef _OGL_DRAWNP_H_
@@ -16,7 +16,6 @@
 #pragma interface "drawnp.h"
 #endif
 
-#include <wx/ogl/drawn.h>
 
 /*
  * Drawing operations
@@ -55,14 +54,14 @@
  *
  */
 
-class wxDrawOp: public wxObject
+class WXDLLIMPEXP_OGL wxDrawOp: public wxObject
 {
 public:
   inline wxDrawOp(int theOp) { m_op = theOp; }
   inline ~wxDrawOp() {}
-  inline virtual void Scale(double xScale, double yScale) {};
-  inline virtual void Translate(double x, double y) {};
-  inline virtual void Rotate(double x, double y, double theta, double sinTheta, double cosTheta) {};
+  inline virtual void Scale(double WXUNUSED(xScale), double WXUNUSED(yScale)) {};
+  inline virtual void Translate(double WXUNUSED(x), double WXUNUSED(y)) {};
+  inline virtual void Rotate(double WXUNUSED(x), double WXUNUSED(y), double WXUNUSED(theta), double WXUNUSED(sinTheta), double WXUNUSED(cosTheta)) {};
   virtual void Do(wxDC& dc, double xoffset, double yoffset) = 0;
   virtual wxDrawOp *Copy(wxPseudoMetaFile *newImage) = 0;
 #if wxUSE_PROLOGIO
@@ -71,17 +70,17 @@ public:
 #endif
   inline int GetOp() const { return m_op; }
 
-  // Draw an outline using the current operation. By default, return FALSE (not drawn)
-  virtual bool OnDrawOutline(wxDC& dc, double x, double y, double w, double h,
-    double oldW, double oldH) { return FALSE; }
+  // Draw an outline using the current operation. By default, return false (not drawn)
+  virtual bool OnDrawOutline(wxDC& WXUNUSED(dc), double WXUNUSED(x), double WXUNUSED(y), double WXUNUSED(w), double WXUNUSED(h),
+    double WXUNUSED(oldW), double WXUNUSED(oldH)) { return false; }
 
   // Get the perimeter point using this data
-  virtual bool GetPerimeterPoint(double x1, double y1,
-                                     double x2, double y2,
-                                     double *x3, double *y3,
-                                     double xOffset, double yOffset,
-                                     int attachmentMode)
-  { return FALSE; }
+  virtual bool GetPerimeterPoint(double WXUNUSED(x1), double WXUNUSED(y1),
+                                     double WXUNUSED(x2), double WXUNUSED(y2),
+                                     double *WXUNUSED(x3), double *WXUNUSED(y3),
+                                     double WXUNUSED(xOffset), double WXUNUSED(yOffset),
+                                     int WXUNUSED(attachmentMode))
+  { return false; }
 
 protected:
   int           m_op;
@@ -93,7 +92,7 @@ protected:
  *
  */
 
-class wxOpSetGDI: public wxDrawOp
+class WXDLLIMPEXP_OGL wxOpSetGDI: public wxDrawOp
 {
  public:
   wxOpSetGDI(int theOp, wxPseudoMetaFile *theImage, int theGdiIndex, int theMode = 0);
@@ -118,7 +117,7 @@ public:
  *
  */
 
-class wxOpSetClipping: public wxDrawOp
+class WXDLLIMPEXP_OGL wxOpSetClipping: public wxDrawOp
 {
 public:
   wxOpSetClipping(int theOp, double theX1, double theY1, double theX2, double theY2);
@@ -143,11 +142,11 @@ public:
  *
  */
 
-class wxOpDraw: public wxDrawOp
+class WXDLLIMPEXP_OGL wxOpDraw: public wxDrawOp
 {
  public:
   wxOpDraw(int theOp, double theX1, double theY1, double theX2, double theY2,
-         double radius = 0.0, wxChar *s = NULL);
+         double radius = 0.0, const wxString& s = wxEmptyString);
   ~wxOpDraw();
   void Do(wxDC& dc, double xoffset, double yoffset);
   void Scale(double scaleX, double scaleY);
@@ -167,7 +166,7 @@ public:
   double     m_x3;
   double     m_y3;
   double     m_radius;
-  wxChar*    m_textString;
+  wxString   m_textString;
 
 };
 
@@ -176,7 +175,7 @@ public:
  *
  */
 
-class wxOpPolyDraw: public wxDrawOp
+class WXDLLIMPEXP_OGL wxOpPolyDraw: public wxDrawOp
 {
 public:
   wxOpPolyDraw(int theOp, int n, wxRealPoint *thePoints);

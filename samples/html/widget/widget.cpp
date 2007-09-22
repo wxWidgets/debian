@@ -17,7 +17,7 @@
 #endif
 
 // for all others, include the necessary headers (this file is usually all you
-// need because it includes almost all "standard" wxWindows headers
+// need because it includes almost all "standard" wxWidgets headers
 #ifndef WX_PRECOMP
     #include "wx/wx.h"
 #endif
@@ -50,14 +50,14 @@ TAG_HANDLER_PROC(tag)
 
     if (tag.HasParam(wxT("FLOAT"))) fl = ax;
 
-    wnd = new wxTextCtrl(m_WParser->GetWindow(), -1, tag.GetParam(wxT("NAME")),
+    wnd = new wxTextCtrl(m_WParser->GetWindow(), wxID_ANY, tag.GetParam(wxT("NAME")),
         wxPoint(0,0), wxSize(ax, ay), wxTE_MULTILINE);
 
-    wnd->Show(TRUE);
+    wnd->Show(true);
 
     m_WParser->GetContainer()->InsertCell(new wxHtmlWidgetCell(wnd, fl));
 
-    return FALSE;
+    return false;
 }
 
 TAG_HANDLER_END(MYBIND)
@@ -101,7 +101,7 @@ public:
     void OnForward(wxCommandEvent& event);
 
 private:
-    // any class wishing to process wxWindows events must use this macro
+    // any class wishing to process wxWidgets events must use this macro
     DECLARE_EVENT_TABLE()
 };
 
@@ -122,10 +122,10 @@ enum
 };
 
 // ----------------------------------------------------------------------------
-// event tables and other macros for wxWindows
+// event tables and other macros for wxWidgets
 // ----------------------------------------------------------------------------
 
-// the event tables connect the wxWindows events with the functions (event
+// the event tables connect the wxWidgets events with the functions (event
 // handlers) which process them. It can be also done at run-time, but for the
 // simple menu events like this the static method is much simpler.
 BEGIN_EVENT_TABLE(MyFrame, wxFrame)
@@ -134,7 +134,7 @@ BEGIN_EVENT_TABLE(MyFrame, wxFrame)
     EVT_MENU(Minimal_Forward, MyFrame::OnForward)
 END_EVENT_TABLE()
 
-// Create a new application object: this macro will allow wxWindows to create
+// Create a new application object: this macro will allow wxWidgets to create
 // the application object during program execution (it's better than using a
 // static object for many reasons) and also declares the accessor function
 // wxGetApp() which will return the reference of the right type (i.e. MyApp and
@@ -154,17 +154,17 @@ bool MyApp::OnInit()
 {
     // Create the main application window
     MyFrame *frame = new MyFrame( _("wxHtmlWindow testing application"),
-        wxPoint(50, 50), wxSize(640, 480) );
+        wxDefaultPosition, wxSize(640, 480) );
 
     // Show it and tell the application that it's our main window
     // @@@ what does it do exactly, in fact? is it necessary here?
-    frame->Show(TRUE);
+    frame->Show(true);
     SetTopWindow(frame);
 
     // success: wxApp::OnRun() will be called which will enter the main message
-    // loop and the application will run. If we returned FALSE here, the
+    // loop and the application will run. If we returned false here, the
     // application would exit immediately.
-    return TRUE;
+    return true;
 }
 
 // ----------------------------------------------------------------------------
@@ -175,7 +175,7 @@ wxHtmlWindow *html;
 
 // frame constructor
 MyFrame::MyFrame(const wxString& title, const wxPoint& pos, const wxSize& size)
-: wxFrame((wxFrame *)NULL, -1, title, pos, size)
+: wxFrame((wxFrame *)NULL, wxID_ANY, title, pos, size)
 {
     // create a menu bar
     wxMenu *menuFile = new wxMenu;
@@ -193,11 +193,15 @@ MyFrame::MyFrame(const wxString& title, const wxPoint& pos, const wxSize& size)
     // ... and attach this menu bar to the frame
     SetMenuBar(menuBar);
 
+#if wxUSE_STATUSBAR
     CreateStatusBar(2);
+#endif // wxUSE_STATUSBAR
 
     html = new wxHtmlWindow(this);
     html -> SetRelatedFrame(this, _("VFS Demo: '%s'"));
+#if wxUSE_STATUSBAR
     html -> SetRelatedStatusBar(1);
+#endif // wxUSE_STATUSBAR
     html -> LoadPage(wxT("start.htm"));
 }
 
@@ -206,8 +210,8 @@ MyFrame::MyFrame(const wxString& title, const wxPoint& pos, const wxSize& size)
 
 void MyFrame::OnQuit(wxCommandEvent& WXUNUSED(event))
 {
-    // TRUE is to force the frame to close
-    Close(TRUE);
+    // true is to force the frame to close
+    Close(true);
 }
 
 void MyFrame::OnBack(wxCommandEvent& WXUNUSED(event))

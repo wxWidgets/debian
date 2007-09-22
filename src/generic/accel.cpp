@@ -3,7 +3,7 @@
 // Purpose:     generic implementation of wxAcceleratorTable class
 // Author:      Robert Roebling
 // Modified:    VZ pn 31.05.01: use typed lists, Unicode cleanup, Add/Remove
-// Id:          $Id: accel.cpp,v 1.5.2.1 2003/10/01 17:04:23 VS Exp $
+// Id:          $Id: accel.cpp,v 1.11 2004/11/05 21:11:11 ABX Exp $
 // Copyright:   (c) 1998 Robert Roebling
 // Licence:     wxWindows licence
 ///////////////////////////////////////////////////////////////////////////////
@@ -16,7 +16,7 @@
 // headers
 // ----------------------------------------------------------------------------
 
-#ifdef __GNUG__
+#if defined(__GNUG__) && !defined(NO_GCC_PRAGMA)
     #pragma implementation "accel.h"
 #endif
 
@@ -55,14 +55,17 @@ class wxAccelRefData : public wxObjectRefData
 public:
     wxAccelRefData()
     {
-        m_accels.DeleteContents(TRUE);
     }
 
     wxAccelRefData(const wxAccelRefData& data)
         : wxObjectRefData()
     {
-        m_accels.DeleteContents(TRUE);
         m_accels = data.m_accels;
+    }
+
+    virtual ~wxAccelRefData()
+    {
+        WX_CLEAR_LIST(wxAccelList, m_accels);
     }
 
     wxAccelList m_accels;
@@ -94,9 +97,7 @@ wxAcceleratorTable::wxAcceleratorTable(int n, const wxAcceleratorEntry entries[]
     {
         const wxAcceleratorEntry& entry = entries[i];
 
-        int keycode = entry.GetKeyCode();
-        if ( wxIslower(keycode) )
-            keycode = wxToupper(keycode);
+        int keycode = wxToupper(entry.GetKeyCode());
 
         M_ACCELDATA->m_accels.Append(new wxAcceleratorEntry(entry.GetFlags(),
                                                             keycode,
@@ -133,14 +134,15 @@ void wxAcceleratorTable::Remove(const wxAcceleratorEntry& entry)
 {
     AllocExclusive();
 
-    wxAccelList::Node *node = M_ACCELDATA->m_accels.GetFirst();
+    wxAccelList::compatibility_iterator node = M_ACCELDATA->m_accels.GetFirst();
     while ( node )
     {
         const wxAcceleratorEntry *entryCur = node->GetData();
 
         if ( *entryCur == entry )
         {
-            M_ACCELDATA->m_accels.DeleteNode(node);
+            delete node->GetData();
+            M_ACCELDATA->m_accels.Erase(node);
 
             return;
         }
@@ -164,7 +166,7 @@ wxAcceleratorTable::GetEntry(const wxKeyEvent& event) const
         return NULL;
     }
 
-    wxAccelList::Node *node = M_ACCELDATA->m_accels.GetFirst();
+    wxAccelList::compatibility_iterator node = M_ACCELDATA->m_accels.GetFirst();
     while ( node )
     {
         const wxAcceleratorEntry *entry = node->GetData();

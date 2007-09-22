@@ -10,8 +10,15 @@ WXDLLEXPORT_DATA(extern const wxChar*) wxStaticTextNameStr;
 class WXDLLEXPORT wxStaticTextBase : public wxControl
 {
 public:
-    // overriden base class virtuals
-    virtual bool AcceptsFocus() const { return FALSE; }
+    wxStaticTextBase() { }
+
+    // overriden base virtuals
+    virtual bool AcceptsFocus() const { return false; }
+    virtual void ApplyParentThemeBackground(const wxColour& bg)
+        { SetBackgroundColour(bg); }
+
+private:
+    DECLARE_NO_COPY_CLASS(wxStaticTextBase)
 };
 
 #if defined(__WXUNIVERSAL__)
@@ -24,10 +31,10 @@ public:
     #include "wx/gtk/stattext.h"
 #elif defined(__WXMAC__)
     #include "wx/mac/stattext.h"
+#elif defined(__WXCOCOA__)
+    #include "wx/cocoa/stattext.h"
 #elif defined(__WXPM__)
     #include "wx/os2/stattext.h"
-#elif defined(__WXSTUBS__)
-    #include "wx/stubs/stattext.h"
 #endif
 
 #endif // wxUSE_STATTEXT

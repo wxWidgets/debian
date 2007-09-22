@@ -2,15 +2,18 @@
 // Name:        dc.cpp
 // Purpose:
 // Author:      Robert Roebling
-// RCS-ID:      $Id: dc.cpp,v 1.30 2001/01/31 15:57:09 vadz Exp $
-// Copyright:   (c) 1998 Robert Roebling, Markus Holzem
+// RCS-ID:      $Id: dc.cpp,v 1.35 2004/05/23 20:52:19 JS Exp $
+// Copyright:   (c) 1998 Robert Roebling
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
 
 
-#ifdef __GNUG__
+#if defined(__GNUG__) && !defined(NO_GCC_PRAGMA)
     #pragma implementation "dc.h"
 #endif
+
+// For compilers that support precompilation, includes "wx.h".
+#include "wx/wxprec.h"
 
 #include "wx/dc.h"
 
@@ -60,11 +63,6 @@ void wxDC::DoSetClippingRegion( wxCoord x, wxCoord y, wxCoord width, wxCoord hei
     m_clipY1 = y;
     m_clipX2 = x + width;
     m_clipY2 = y + height;
-}
-
-void wxDC::DestroyClippingRegion()
-{
-    m_clipping = FALSE;
 }
 
 // ---------------------------------------------------------------------------

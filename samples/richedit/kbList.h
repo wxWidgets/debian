@@ -3,7 +3,7 @@
  *                                                                  *
  * (C) 1998-1999 by Karsten Ballüder (karsten@phy.hw.ac.uk)         *
  *                                                                  *
- * $Id: kbList.h,v 1.2 1999/07/21 16:13:27 KB Exp $
+ * $Id: kbList.h,v 1.4 2004/06/02 17:13:19 ABX Exp $
  *
  *******************************************************************/
 
@@ -136,7 +136,7 @@ public:
        deleted by list. See the constructor for more details.
        @param ownsflag if true, list will own entries
    */
-   void ownsObjects(bool ownsflag = true)
+   void ownsObjects(bool ownsflag)
       { ownsEntries = ownsflag; }
 
    /** Query whether list owns entries.
@@ -236,7 +236,10 @@ protected:
        param iterator i
    */
    inline void deleteContent(iterator i)
-      { if(ownsEntries) delete *i; }
+   {
+      iterator *i_ptr = &i;
+      if(ownsEntries) delete i_ptr;
+   }
 
 
 private:
@@ -274,7 +277,7 @@ public: \
          /* the cast is needed for MS VC++ 5.0 */ \
          { return (type *)((kbList::iterator *)this)->operator*() ; } \
    }; \
-   inline name(bool ownsEntriesFlag = TRUE) \
+   inline name(bool ownsEntriesFlag = true) \
       : kbList(ownsEntriesFlag) {} \
    \
    inline type *pop_back(void) \

@@ -2,7 +2,7 @@
 // Name:        dcclient.h
 // Purpose:
 // Author:      Robert Roebling
-// Id:          $Id: dcclient.h,v 1.32.2.1 2002/10/28 00:20:52 RR Exp $
+// Id:          $Id: dcclient.h,v 1.37 2004/05/23 20:50:53 JS Exp $
 // Copyright:   (c) 1998 Robert Roebling
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -10,7 +10,7 @@
 #ifndef __GTKDCCLIENTH__
 #define __GTKDCCLIENTH__
 
-#if defined(__GNUG__) && !defined(__APPLE__)
+#if defined(__GNUG__) && !defined(NO_GCC_PRAGMA)
 #pragma interface
 #endif
 
@@ -122,6 +122,7 @@ public:
     // PangoContext stuff for GTK 2.0
 #ifdef __WXGTK20__
     PangoContext *m_context;
+    PangoLayout *m_layout;
     PangoFontDescription *m_fontdesc;
 #endif
 

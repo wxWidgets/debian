@@ -1,9 +1,10 @@
-from wxPython.wx import *
-from wxPython.grid import *
+
+import  wx
+import  wx.grid as  gridlib
 
 #---------------------------------------------------------------------------
 
-class HugeTable(wxPyGridTableBase):
+class HugeTable(gridlib.PyGridTableBase):
 
     """
     This is all it takes to make a custom data table to plug into a
@@ -13,20 +14,20 @@ class HugeTable(wxPyGridTableBase):
     """
 
     def __init__(self, log):
-        wxPyGridTableBase.__init__(self)
+        gridlib.PyGridTableBase.__init__(self)
         self.log = log
 
-        self.odd=wxGridCellAttr()
+        self.odd=gridlib.GridCellAttr()
         self.odd.SetBackgroundColour("sky blue")
-        self.even=wxGridCellAttr()
+        self.even=gridlib.GridCellAttr()
         self.even.SetBackgroundColour("sea green")
 
-     def GetAttr(self, row, col, kind):
-        attr = [self.even,self.odd][row%2]
+    def GetAttr(self, row, col, kind):
+        attr = [self.even, self.odd][row % 2]
         attr.IncRef()
         return attr
 
-   def GetNumberRows(self):
+    def GetNumberRows(self):
         return 10000
 
     def GetNumberCols(self):
@@ -46,9 +47,9 @@ class HugeTable(wxPyGridTableBase):
 
 
 
-class HugeTableGrid(wxGrid):
+class HugeTableGrid(gridlib.Grid):
     def __init__(self, parent, log):
-        wxGrid.__init__(self, parent, -1)
+        gridlib.Grid.__init__(self, parent, -1)
 
         table = HugeTable(log)
 
@@ -57,21 +58,18 @@ class HugeTableGrid(wxGrid):
         # a reference to it and call it's Destroy method later.
         self.SetTable(table, True)
 
-        EVT_GRID_CELL_RIGHT_CLICK(self, self.OnRightDown)  #added
+        self.Bind(gridlib.EVT_GRID_CELL_RIGHT_CLICK, self.OnRightDown)  
 
-    def OnRightDown(self, event):                          #added
+    def OnRightDown(self, event):
         print "hello"
-        print self.GetSelectedRows()                       #added
-
-
-
+        print self.GetSelectedRows()
 
 
 #---------------------------------------------------------------------------
 
-class TestFrame(wxFrame):
+class TestFrame(wx.Frame):
     def __init__(self, parent, log):
-        wxFrame.__init__(self, parent, -1, "Huge (virtual) Table Demo", size=(640,480))
+        wx.Frame.__init__(self, parent, -1, "Huge (virtual) Table Demo", size=(640,480))
         grid = HugeTableGrid(self, log)
 
         grid.SetReadOnly(5,5, True)
@@ -80,7 +78,7 @@ class TestFrame(wxFrame):
 
 if __name__ == '__main__':
     import sys
-    app = wxPySimpleApp()
+    app = wx.PySimpleApp()
     frame = TestFrame(None, sys.stdout)
     frame.Show(True)
     app.MainLoop()

@@ -2,14 +2,17 @@
 // Name:        utilres.cpp
 // Purpose:
 // Author:      Robert Roebling
-// Id:          $Id: utilsres.cpp,v 1.24 2000/01/03 02:24:26 OK Exp $
+// Id:          $Id: utilsres.cpp,v 1.28 2004/05/26 10:49:32 JS Exp $
 // Copyright:   (c) 1998 Robert Roebling
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
 
-//#ifdef __GNUG__
+//#if defined(__GNUG__) && !defined(NO_GCC_PRAGMA)
 //#pragma implementation "utils.h"
 //#endif
+
+// For compilers that support precompilation, includes "wx.h".
+#include "wx/wxprec.h"
 
 #include "wx/utils.h"
 #include "wx/string.h"

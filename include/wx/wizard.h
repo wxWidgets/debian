@@ -7,10 +7,11 @@
 // Modified by: Robert Cavanaugh
 //              Added capability to use .WXR resource files in Wizard pages
 //              Added wxWIZARD_HELP event
+//              Robert Vazan (sizers)
 // Created:     15.08.99
-// RCS-ID:      $Id: wizard.h,v 1.23.2.2 2002/12/09 09:46:08 JS Exp $
+// RCS-ID:      $Id: wizard.h,v 1.39 2004/09/24 14:32:17 ABX Exp $
 // Copyright:   (c) 1999 Vadim Zeitlin <zeitlin@dptmaths.ens-cachan.fr>
-// Licence:     wxWindows license
+// Licence:     wxWindows licence
 ///////////////////////////////////////////////////////////////////////////////
 
 #ifndef _WX_WIZARD_H_
@@ -29,11 +30,13 @@
     #include "wx/event.h"       // wxEVT_XXX constants
 #endif // WX_PRECOMP
 
+#include "wx/bitmap.h"
+
 // Extended style to specify a help button
 #define wxWIZARD_EX_HELPBUTTON   0x00000010
 
 // forward declarations
-class WXDLLEXPORT wxWizard;
+class WXDLLIMPEXP_ADV wxWizard;
 
 // ----------------------------------------------------------------------------
 // wxWizardPage is one of the wizards screen: it must know what are the
@@ -43,7 +46,7 @@ class WXDLLEXPORT wxWizard;
 // used as such (i.e. controls may be placed directly on it &c).
 // ----------------------------------------------------------------------------
 
-class WXDLLEXPORT wxWizardPage : public wxPanel
+class WXDLLIMPEXP_ADV wxWizardPage : public wxPanel
 {
 public:
     wxWizardPage() { Init(); }
@@ -71,6 +74,22 @@ public:
     // wxNullBitmap from here - the default one will be used then.
     virtual wxBitmap GetBitmap() const { return m_bitmap; }
 
+#if wxUSE_VALIDATOR
+    /// Override the base functions to allow a validator to be assigned to this page.
+    bool TransferDataToWindow()
+    {
+        return GetValidator() ? GetValidator()->TransferToWindow() : wxPanel::TransferDataToWindow();
+    }
+    bool TransferDataFromWindow()
+    {
+        return GetValidator() ? GetValidator()->TransferFromWindow() : wxPanel::TransferDataFromWindow();
+    }
+    bool Validate()
+    {
+        return GetValidator() ? GetValidator()->Validate(this) : wxPanel::Validate();
+    }
+#endif // wxUSE_VALIDATOR
+
 protected:
     // common part of ctors:
     void Init();
@@ -78,7 +97,7 @@ protected:
     wxBitmap m_bitmap;
 
 private:
-    DECLARE_ABSTRACT_CLASS(wxWizardPage)
+    DECLARE_DYNAMIC_CLASS_NO_COPY(wxWizardPage)
 };
 
 // ----------------------------------------------------------------------------
@@ -90,7 +109,7 @@ private:
 // this, you must derive from wxWizardPage directly.
 // ----------------------------------------------------------------------------
 
-class WXDLLEXPORT wxWizardPageSimple : public wxWizardPage
+class WXDLLIMPEXP_ADV wxWizardPageSimple : public wxWizardPage
 {
 public:
     wxWizardPageSimple() { Init(); }
@@ -146,14 +165,14 @@ private:
     wxWizardPage *m_prev,
                  *m_next;
 
-    DECLARE_DYNAMIC_CLASS(wxWizardPageSimple)
+    DECLARE_DYNAMIC_CLASS_NO_COPY(wxWizardPageSimple)
 };
 
 // ----------------------------------------------------------------------------
 // wxWizard
 // ----------------------------------------------------------------------------
 
-class WXDLLEXPORT wxWizardBase : public wxDialog
+class WXDLLIMPEXP_ADV wxWizardBase : public wxDialog
 {
 public:
     /*
@@ -161,14 +180,16 @@ public:
        function taking the following arguments:
 
         wxWizard(wxWindow *parent,
-                 int id = -1,
+                 int id = wxID_ANY,
                  const wxString& title = wxEmptyString,
                  const wxBitmap& bitmap = wxNullBitmap,
-                 const wxPoint& pos = wxDefaultPosition);
+                 const wxPoint& pos = wxDefaultPosition,
+                 long style = wxDEFAULT_DIALOG_STYLE);
     */
+    wxWizardBase() { }
 
-    // executes the wizard starting from the given page, returns TRUE if it was
-    // successfully finished, FALSE if user cancelled it
+    // executes the wizard starting from the given page, returns true if it was
+    // successfully finished, false if user cancelled it
     virtual bool RunWizard(wxWizardPage *firstPage) = 0;
 
     // get the current page (NULL if RunWizard() isn't running)
@@ -179,8 +200,7 @@ public:
     // itself and will never be less than some predefined fixed size
     virtual void SetPageSize(const wxSize& size) = 0;
 
-    // get the size available for the page: the wizards are not resizeable, so
-    // this size doesn't change
+    // get the size available for the page
     virtual wxSize GetPageSize() const = 0;
 
     // set the best size for the wizard, i.e. make it big enough to contain all
@@ -192,10 +212,17 @@ public:
     // default)
     virtual void FitToPage(const wxWizardPage *firstPage) = 0;
 
+    // Adding pages to page area sizer enlarges wizard
+    virtual wxSizer *GetPageAreaSizer() const = 0;
+
+    // Set border around page area. Default is 0 if you add at least one
+    // page to GetPageAreaSizer and 5 if you don't.
+    virtual void SetBorder(int border) = 0;
+
     // wxWizard should be created using "new wxWizard" now, not with Create()
-#ifdef WXWIN_COMPATIBILITY_2_2
+#if WXWIN_COMPATIBILITY_2_2
     static wxWizard *Create(wxWindow *parent,
-                            int id = -1,
+                            int id = wxID_ANY,
                             const wxString& title = wxEmptyString,
                             const wxBitmap& bitmap = wxNullBitmap,
                             const wxPoint& pos = wxDefaultPosition,
@@ -210,6 +237,16 @@ public:
 
     virtual bool HasPrevPage(wxWizardPage *page)
         { return page->GetPrev() != NULL; }
+
+    /// Override these functions to stop InitDialog from calling TransferDataToWindow
+    /// for _all_ pages when the wizard starts. Instead 'ShowPage' will call
+    /// TransferDataToWindow for the first page only.
+    bool TransferDataToWindow() { return true; }
+    bool TransferDataFromWindow() { return true; }
+    bool Validate() { return true; }
+
+private:
+    DECLARE_NO_COPY_CLASS(wxWizardBase)
 };
 
 // include the real class declaration
@@ -221,17 +258,17 @@ public:
 // window hierarchy as usual
 // ----------------------------------------------------------------------------
 
-class WXDLLEXPORT wxWizardEvent : public wxNotifyEvent
+class WXDLLIMPEXP_ADV wxWizardEvent : public wxNotifyEvent
 {
 public:
     wxWizardEvent(wxEventType type = wxEVT_NULL,
-                  int id = -1,
-                  bool direction = TRUE,
+                  int id = wxID_ANY,
+                  bool direction = true,
                   wxWizardPage* page = NULL);
 
-    // for EVT_WIZARD_PAGE_CHANGING, return TRUE if we're going forward or
-    // FALSE otherwise and for EVT_WIZARD_PAGE_CHANGED return TRUE if we came
-    // from the previous page and FALSE if we returned from the next one
+    // for EVT_WIZARD_PAGE_CHANGING, return true if we're going forward or
+    // false otherwise and for EVT_WIZARD_PAGE_CHANGED return true if we came
+    // from the previous page and false if we returned from the next one
     // (this function doesn't make sense for CANCEL events)
     bool GetDirection() const { return m_direction; }
 
@@ -242,6 +279,7 @@ private:
     wxWizardPage*    m_page;
 
     DECLARE_DYNAMIC_CLASS(wxWizardEvent)
+    DECLARE_NO_COPY_CLASS(wxWizardEvent)
 };
 
 // ----------------------------------------------------------------------------
@@ -249,31 +287,31 @@ private:
 // ----------------------------------------------------------------------------
 
 BEGIN_DECLARE_EVENT_TYPES()
-    DECLARE_EVENT_TYPE(wxEVT_WIZARD_PAGE_CHANGED, 900)
-    DECLARE_EVENT_TYPE(wxEVT_WIZARD_PAGE_CHANGING, 901)
-    DECLARE_EVENT_TYPE(wxEVT_WIZARD_CANCEL, 902)
-    DECLARE_EVENT_TYPE(wxEVT_WIZARD_HELP, 903)
-    DECLARE_EVENT_TYPE(wxEVT_WIZARD_FINISHED, 903)
+    DECLARE_EXPORTED_EVENT_TYPE(WXDLLIMPEXP_ADV, wxEVT_WIZARD_PAGE_CHANGED, 900)
+    DECLARE_EXPORTED_EVENT_TYPE(WXDLLIMPEXP_ADV, wxEVT_WIZARD_PAGE_CHANGING, 901)
+    DECLARE_EXPORTED_EVENT_TYPE(WXDLLIMPEXP_ADV, wxEVT_WIZARD_CANCEL, 902)
+    DECLARE_EXPORTED_EVENT_TYPE(WXDLLIMPEXP_ADV, wxEVT_WIZARD_HELP, 903)
+    DECLARE_EXPORTED_EVENT_TYPE(WXDLLIMPEXP_ADV, wxEVT_WIZARD_FINISHED, 903)
 END_DECLARE_EVENT_TYPES()
 
 typedef void (wxEvtHandler::*wxWizardEventFunction)(wxWizardEvent&);
 
 // notifies that the page has just been changed (can't be vetoed)
-#define EVT_WIZARD_PAGE_CHANGED(id, fn) DECLARE_EVENT_TABLE_ENTRY(wxEVT_WIZARD_PAGE_CHANGED, id, -1, (wxObjectEventFunction) (wxEventFunction) (wxWizardEventFunction) & fn, (wxObject *)NULL),
+#define EVT_WIZARD_PAGE_CHANGED(id, fn) DECLARE_EVENT_TABLE_ENTRY(wxEVT_WIZARD_PAGE_CHANGED, id, wxID_ANY, (wxObjectEventFunction) (wxEventFunction)  wxStaticCastEvent( wxWizardEventFunction, & fn ), (wxObject *)NULL),
 
 // the user pressed "<Back" or "Next>" button and the page is going to be
 // changed - unless the event handler vetoes the event
-#define EVT_WIZARD_PAGE_CHANGING(id, fn) DECLARE_EVENT_TABLE_ENTRY(wxEVT_WIZARD_PAGE_CHANGING, id, -1, (wxObjectEventFunction) (wxEventFunction) (wxWizardEventFunction) & fn, (wxObject *)NULL),
+#define EVT_WIZARD_PAGE_CHANGING(id, fn) DECLARE_EVENT_TABLE_ENTRY(wxEVT_WIZARD_PAGE_CHANGING, id, wxID_ANY, (wxObjectEventFunction) (wxEventFunction)  wxStaticCastEvent( wxWizardEventFunction, & fn ), (wxObject *)NULL),
 
 // the user pressed "Cancel" button and the wizard is going to be dismissed -
 // unless the event handler vetoes the event
-#define EVT_WIZARD_CANCEL(id, fn) DECLARE_EVENT_TABLE_ENTRY(wxEVT_WIZARD_CANCEL, id, -1, (wxObjectEventFunction) (wxEventFunction) (wxWizardEventFunction) & fn, (wxObject *)NULL),
+#define EVT_WIZARD_CANCEL(id, fn) DECLARE_EVENT_TABLE_ENTRY(wxEVT_WIZARD_CANCEL, id, wxID_ANY, (wxObjectEventFunction) (wxEventFunction)  wxStaticCastEvent( wxWizardEventFunction, & fn ), (wxObject *)NULL),
 
 // the user pressed "Finish" button and the wizard is going to be dismissed -
-#define EVT_WIZARD_FINISHED(id, fn) DECLARE_EVENT_TABLE_ENTRY(wxEVT_WIZARD_FINISHED, id, -1, (wxObjectEventFunction) (wxEventFunction) (wxWizardEventFunction) & fn, (wxObject *)NULL),
+#define EVT_WIZARD_FINISHED(id, fn) DECLARE_EVENT_TABLE_ENTRY(wxEVT_WIZARD_FINISHED, id, wxID_ANY, (wxObjectEventFunction) (wxEventFunction)  wxStaticCastEvent( wxWizardEventFunction, & fn ), (wxObject *)NULL),
 
-// the user pressed "Help" button 
-#define EVT_WIZARD_HELP(id, fn) DECLARE_EVENT_TABLE_ENTRY(wxEVT_WIZARD_HELP, id, -1, (wxObjectEventFunction) (wxEventFunction) (wxWizardEventFunction) & fn, (wxObject *)NULL),
+// the user pressed "Help" button
+#define EVT_WIZARD_HELP(id, fn) DECLARE_EVENT_TABLE_ENTRY(wxEVT_WIZARD_HELP, id, wxID_ANY, (wxObjectEventFunction) (wxEventFunction)  wxStaticCastEvent( wxWizardEventFunction, & fn ), (wxObject *)NULL),
 
 #endif // wxUSE_WIZARDDLG
 

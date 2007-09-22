@@ -4,17 +4,19 @@
 // Author:      Vadim Zeitlin
 // Modified by:
 // Created:     04.12.99
-// RCS-ID:      $Id: listctrl.h,v 1.47.2.1 2002/10/29 21:47:17 RR Exp $
-// Copyright:   (c) wxWindows team
+// RCS-ID:      $Id: listctrl.h,v 1.59 2004/09/17 17:57:39 ABX Exp $
+// Copyright:   (c) wxWidgets team
 // Licence:     wxWindows licence
 ///////////////////////////////////////////////////////////////////////////////
 
 #ifndef _WX_LISTCTRL_H_BASE_
 #define _WX_LISTCTRL_H_BASE_
 
-#if defined(__GNUG__) && !defined(__APPLE__)
+#if defined(__GNUG__) && !defined(NO_GCC_PRAGMA)
     #pragma interface "listctrlbase.h"
 #endif
+
+#include "wx/defs.h" // headers should include this before first wxUSE_XXX check
 
 #if wxUSE_LISTCTRL
 
@@ -39,21 +41,21 @@ class WXDLLEXPORT wxListView : public wxListCtrl
 public:
     wxListView() { }
     wxListView( wxWindow *parent,
-                wxWindowID id = -1,
+                wxWindowID winid = wxID_ANY,
                 const wxPoint& pos = wxDefaultPosition,
                 const wxSize& size = wxDefaultSize,
                 long style = wxLC_REPORT,
                 const wxValidator& validator = wxDefaultValidator,
                 const wxString &name = wxT("listctrl") )
     {
-        Create(parent, id, pos, size, style, validator, name);
+        Create(parent, winid, pos, size, style, validator, name);
     }
 
     // focus/selection stuff
     // ---------------------
 
     // [de]select an item
-    void Select(long n, bool on = TRUE)
+    void Select(long n, bool on = true)
     {
         SetItemState(n, on ? wxLIST_STATE_SELECTED : 0, wxLIST_STATE_SELECTED);
     }
@@ -77,7 +79,7 @@ public:
     long GetFirstSelected() const
         { return GetNextSelected(-1); }
 
-    // return TRUE if the item is selected
+    // return true if the item is selected
     bool IsSelected(long index)
         { return GetItemState(index, wxLIST_STATE_SELECTED) != 0; }
 
@@ -95,7 +97,7 @@ public:
     void ClearColumnImage(int col) { SetColumnImage(col, -1); }
 
 private:
-    DECLARE_DYNAMIC_CLASS(wxListView)
+    DECLARE_DYNAMIC_CLASS_NO_COPY(wxListView)
 };
 
 #endif // wxUSE_LISTCTRL

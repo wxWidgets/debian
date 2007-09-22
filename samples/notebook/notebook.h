@@ -4,12 +4,20 @@
 // Author:      Julian Smart
 // Modified by: Dimitri Schoolwerth
 // Created:     25/10/98
-// RCS-ID:      $Id: notebook.h,v 1.6 2002/08/16 00:09:29 VZ Exp $
-// Copyright:   (c) 1998-2002 wxWindows team
+// RCS-ID:      $Id: notebook.h,v 1.15 2004/09/24 13:45:52 ABX Exp $
+// Copyright:   (c) 1998-2002 wxWidgets team
 // License:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
 
+#include "wx/choicebk.h"
+#include "wx/listbook.h"
 #include "wx/notebook.h"
+
+#if wxUSE_LOG && !defined( __SMARTPHONE__ )
+    #define USE_LOG 1
+#else
+    #define USE_LOG 0
+#endif
 
 // Define a new application
 class MyApp : public wxApp
@@ -20,119 +28,101 @@ public:
 
 DECLARE_APP(MyApp)
 
-//
-class MyNotebook : public wxNotebook
-{
-public:
-    MyNotebook(wxWindow *parent, wxWindowID id = -1,
-        const wxPoint& pos = wxDefaultPosition,
-        const wxSize& size = wxDefaultSize, long style = 0);
-
-    void CreateInitialPages();
-
-    wxPanel *CreatePage(const wxString& pageName);
-
-    wxPanel *CreateUserCreatedPage();
-
-    int GetIconIndex() const;
-
-private:
-    wxPanel *CreateInsertPage();
-    wxPanel *CreateRadioButtonsPage();
-    wxPanel *CreateVetoPage();
-    wxPanel *CreateBigButtonPage();
-};
-
-//
 class MyFrame : public wxFrame
 {
 public:
     MyFrame(const wxString& title, const wxPoint& pos = wxDefaultPosition,
-        const wxSize& size = wxDefaultSize, long style = wxDEFAULT_FRAME_STYLE);
+        const wxSize& size = wxDefaultSize, long style = wxDEFAULT_FRAME_STYLE|wxCLIP_CHILDREN|wxNO_FULL_REPAINT_ON_RESIZE);
 
     virtual ~MyFrame();
 
-    // Recreates the notebook with the same pages, but with possibly
-    // a different orientation and optionally with images.
-    void ReInitNotebook();
+    void OnType(wxCommandEvent& event);
+    void OnOrient(wxCommandEvent& event);
+    void OnShowImages(wxCommandEvent& event);
+    void OnMulti(wxCommandEvent& event);
+    void OnExit(wxCommandEvent& event);
 
-    void OnCheckOrRadioBox(wxCommandEvent& event);
+    void OnAddPage(wxCommandEvent& event);
+    void OnInsertPage(wxCommandEvent& event);
+    void OnDeleteCurPage(wxCommandEvent& event);
+    void OnDeleteLastPage(wxCommandEvent& event);
+    void OnNextPage(wxCommandEvent& event);
 
-    void OnButtonAddPage(wxCommandEvent& event);
-    void OnButtonInsertPage(wxCommandEvent& event);
-    void OnButtonDeleteCurPage(wxCommandEvent& event);
-    void OnButtonDeleteLastPage(wxCommandEvent& event);
-    void OnButtonNextPage(wxCommandEvent& event);
-    void OnButtonExit(wxCommandEvent& event);
-
+#if wxUSE_NOTEBOOK
     void OnNotebook(wxNotebookEvent& event);
-
-    void OnUpdateUIBtnDeleteCurPage(wxUpdateUIEvent& event);
-    void OnUpdateUIBtnDeleteLastPage(wxUpdateUIEvent& event);
+#endif
+#if wxUSE_CHOICEBOOK
+    void OnChoicebook(wxChoicebookEvent& event);
+#endif
+#if wxUSE_LISTBOOK
+    void OnListbook(wxListbookEvent& event);
+#endif
 
     void OnIdle(wxIdleEvent& event);
+
+    wxBookCtrl *GetCurrentBook();
 
 private:
     wxLog *m_logTargetOld;
 
+    int SelectFlag(int id, int nb, int lb, int chb);
+    void ShowCurrentBook();
+    void RecreateBooks();
+
+    // Sample setup
+    int m_type;
+    int m_orient;
+    bool m_chkShowImages;
+    bool m_multi;
 
     // Controls
 
     wxPanel *m_panel; // Panel containing notebook and other controls
 
-    wxRadioBox *m_radioOrient;
-    wxCheckBox *m_chkShowImages;
+#if wxUSE_NOTEBOOK
+    wxNotebook   *m_notebook;
+#endif
+#if wxUSE_CHOICEBOOK
+    wxChoicebook *m_choicebook;
+#endif
+#if wxUSE_LISTBOOK
+    wxListbook   *m_listbook;
+#endif
 
-    wxButton *m_btnAddPage;
-    wxButton *m_btnInsertPage;
-    wxButton *m_btnDeleteCurPage;
-    wxButton *m_btnDeleteLastPage;
-    wxButton *m_btnNextPage;
-    wxButton *m_btnExit;
-
-    MyNotebook *m_notebook;
-
+#if USE_LOG
     // Log window
     wxTextCtrl *m_text;
+#endif // USE_LOG
 
-
-    // Sizers
-
-    // The frame's sizer. Consists of m_sizerTop and the log window
-    // at the bottom.
     wxBoxSizer *m_sizerFrame;
-
-    // Sizer that contains the notebook and controls on the left
-    wxBoxSizer *m_sizerTop;
-
-    // Sizer for m_notebook
-    wxNotebookSizer *m_sizerNotebook;
 
     wxImageList *m_imageList;
 
     DECLARE_EVENT_TABLE()
 };
 
-enum ID_CONTROLS
+enum ID_COMMANDS
 {
-    ID_RADIO_ORIENT = wxID_HIGHEST,
-    ID_CHK_SHOWIMAGES,
-    ID_BTN_ADD_PAGE,
-    ID_BTN_INSERT_PAGE,
-    ID_BTN_DELETE_CUR_PAGE,
-    ID_BTN_DELETE_LAST_PAGE,
-    ID_BTN_NEXT_PAGE,
-    ID_NOTEBOOK
-};
-
-// notebook orientations
-enum ORIENT
-{
-    ORIENT_TOP,
-    ORIENT_BOTTOM,
-    ORIENT_LEFT,
-    ORIENT_RIGHT,
-    ORIENT_MAX
+    ID_BOOK_NOTEBOOK = wxID_HIGHEST,
+    ID_BOOK_LISTBOOK,
+    ID_BOOK_CHOICEBOOK,
+    ID_BOOK_MAX,
+    ID_ORIENT_DEFAULT,
+    ID_ORIENT_TOP,
+    ID_ORIENT_BOTTOM,
+    ID_ORIENT_LEFT,
+    ID_ORIENT_RIGHT,
+    ID_ORIENT_MAX,
+    ID_SHOW_IMAGES,
+    ID_MULTI,
+    ID_ADD_PAGE,
+    ID_INSERT_PAGE,
+    ID_DELETE_CUR_PAGE,
+    ID_DELETE_LAST_PAGE,
+    ID_NEXT_PAGE,
+    ID_NOTEBOOK,
+    ID_LISTBOOK,
+    ID_CHOICEBOOK
 };
 
 /*

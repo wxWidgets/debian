@@ -4,9 +4,9 @@
 // Author:      Vadim Zeitlin
 // Modified by:
 // Created:     03.06.01
-// RCS-ID:      $Id: radiocmn.cpp,v 1.2 2001/06/27 00:27:23 VZ Exp $
+// RCS-ID:      $Id: radiocmn.cpp,v 1.7 2004/09/21 18:15:58 ABX Exp $
 // Copyright:   (c) 2001 Vadim Zeitlin <zeitlin@dptmaths.ens-cachan.fr>
-// License:     wxWindows license
+// License:     wxWindows licence
 ///////////////////////////////////////////////////////////////////////////////
 
 // ============================================================================
@@ -17,7 +17,7 @@
 // headers
 // ----------------------------------------------------------------------------
 
-#ifdef __GNUG__
+#if defined(__GNUG__) && !defined(NO_GCC_PRAGMA)
     #pragma implementation "radioboxbase.h"
 #endif
 
@@ -98,7 +98,7 @@ int wxRadioBoxBase::GetNextItem(int item, wxDirection dir, long style) const
 
         default:
             wxFAIL_MSG( _T("unexpected wxDirection value") );
-            return -1;
+            return wxNOT_FOUND;
     }
 
     // ensure that the item is in range [0..count)

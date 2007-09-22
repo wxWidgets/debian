@@ -4,24 +4,32 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     2001-08-21
-// RCS-ID:      $Id: msg.h,v 1.3 2002/09/07 12:10:20 GD Exp $
+// RCS-ID:      $Id: msg.h,v 1.5 2004/07/25 15:44:47 VZ Exp $
 // Copyright:   (c) Julian Smart
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
 
-#if defined(__GNUG__) && !defined(__APPLE__)
-#pragma interface "msg.h"
-#endif
-
 #ifndef _WX_MSG_H_
 #define _WX_MSG_H_
+
+#ifdef WXMAKINGDLL_NETUTILS
+    #define WXDLLIMPEXP_NETUTILS WXEXPORT
+    #define WXDLLIMPEXP_DATA_NETUTILS(type) WXEXPORT type
+#elif defined(WXUSINGDLL)
+    #define WXDLLIMPEXP_NETUTILS WXIMPORT
+    #define WXDLLIMPEXP_DATA_NETUTILS(type) WXIMPORT type
+#else // not making nor using DLL
+    #define WXDLLIMPEXP_NETUTILS
+    #define WXDLLIMPEXP_DATA_NETUTILS(type) type
+#endif
+
 
 /*
  * wxMailMessage
  * Encapsulates an email message
  */
 
-class wxMailMessage
+class WXDLLIMPEXP_NETUTILS wxMailMessage
 {
 public:
 

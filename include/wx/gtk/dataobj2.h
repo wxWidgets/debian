@@ -3,15 +3,15 @@
 // Purpose:     declaration of standard wxDataObjectSimple-derived classes
 // Author:      Robert Roebling
 // Created:     19.10.99 (extracted from gtk/dataobj.h)
-// RCS-ID:      $Id: dataobj2.h,v 1.5 2002/09/07 12:28:46 GD Exp $
+// RCS-ID:      $Id: dataobj2.h,v 1.9 2004/05/23 20:50:53 JS Exp $
 // Copyright:   (c) 1998, 1999 Vadim Zeitlin, Robert Roebling
-// Licence:     wxWindows license
+// Licence:     wxWindows licence
 ///////////////////////////////////////////////////////////////////////////////
 
 #ifndef _WX_GTK_DATAOBJ2_H_
 #define _WX_GTK_DATAOBJ2_H_
 
-#if defined(__GNUG__) && !defined(__APPLE__)
+#if defined(__GNUG__) && !defined(NO_GCC_PRAGMA)
     #pragma interface "dataobj.h"
 #endif
 

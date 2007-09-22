@@ -2,7 +2,7 @@
 // Purpose:     XML resources editor
 // Author:      Vaclav Slavik
 // Created:     2000/05/05
-// RCS-ID:      $Id: pe_adv.h,v 1.4 2002/09/07 12:15:24 GD Exp $
+// RCS-ID:      $Id: pe_adv.h,v 1.5 2004/06/11 13:14:23 ABX Exp $
 // Copyright:   (c) 2000 Vaclav Slavik
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -25,7 +25,7 @@ class PropEditCtrlFont : public PropEditCtrlTxt
     public:
         PropEditCtrlFont(PropertiesFrame *propFrame)
            : PropEditCtrlTxt(propFrame) {}
-                
+
         virtual wxWindow* CreateEditCtrl();
         virtual wxTreeItemId CreateTreeEntry(wxTreeItemId parent, const PropertyInfo& pinfo);
 };
@@ -37,12 +37,12 @@ class PropEditCtrlChoice : public PropEditCtrl
     public:
         PropEditCtrlChoice(PropertiesFrame *propFrame)
            : PropEditCtrl(propFrame) {}
-                
+
         virtual wxWindow* CreateEditCtrl();
-        
+
         virtual void ReadValue();
         virtual void WriteValue();
-    
+
     protected:
         wxChoice *m_Choice;
 
@@ -57,7 +57,7 @@ class PropEditCtrlColor : public PropEditCtrlTxt
         PropEditCtrlColor(PropertiesFrame *propFrame)
             : PropEditCtrlTxt(propFrame) {}
 
-        virtual bool HasDetails() { return TRUE; }
+        virtual bool HasDetails() { return true; }
         virtual void OnDetails();
 };
 
@@ -70,7 +70,7 @@ class PropEditCtrlFlags : public PropEditCtrlTxt
         PropEditCtrlFlags(PropertiesFrame *propFrame)
             : PropEditCtrlTxt(propFrame) {}
 
-        virtual bool HasDetails() { return TRUE; }
+        virtual bool HasDetails() { return true; }
         virtual void OnDetails();
 };
 
@@ -82,9 +82,9 @@ class PropEditCtrlFile : public PropEditCtrlTxt
         PropEditCtrlFile(PropertiesFrame *propFrame)
             : PropEditCtrlTxt(propFrame) {}
 
-        virtual bool HasDetails() { return TRUE; }
+        virtual bool HasDetails() { return true; }
         virtual void OnDetails();
-        
+
         virtual wxString GetFileTypes();
 };
 

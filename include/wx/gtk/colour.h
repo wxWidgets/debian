@@ -2,7 +2,7 @@
 // Name:        colour.h
 // Purpose:
 // Author:      Robert Roebling
-// Id:          $Id: colour.h,v 1.15.2.1 2002/10/29 21:47:31 RR Exp $
+// Id:          $Id: colour.h,v 1.21 2004/05/23 20:50:53 JS Exp $
 // Copyright:   (c) 1998 Robert Roebling
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -11,7 +11,7 @@
 #ifndef __GTKCOLOURH__
 #define __GTKCOLOURH__
 
-#if defined(__GNUG__) && !defined(__APPLE__)
+#if defined(__GNUG__) && !defined(NO_GCC_PRAGMA)
 #pragma interface
 #endif
 
@@ -40,7 +40,7 @@ class wxColour: public wxGDIObject
 {
 public:
     wxColour() { }
-  
+
     // Construct from RGB
     wxColour( unsigned char red, unsigned char green, unsigned char blue );
     wxColour( unsigned long colRGB ) { Set(colRGB); }
@@ -61,7 +61,7 @@ public:
     ~wxColour();
 
     bool Ok() const { return m_refData != NULL; }
-  
+
     bool operator == ( const wxColour& col ) const;
     bool operator != ( const wxColour& col ) const { return !(*this == col); }
 
@@ -80,18 +80,21 @@ public:
     unsigned char Blue() const;
 
 
+    // Get colour from name or wxNullColour
+    static wxColour CreateByName(const wxString& name);
+
     // Implementation part
     void CalcPixel( GdkColormap *cmap );
     int GetPixel() const;
     GdkColor *GetColor() const;
 
+    void InitFromName(const wxString& colourName);
+
 protected:
     // ref counting code
     virtual wxObjectRefData *CreateRefData() const;
     virtual wxObjectRefData *CloneRefData(const wxObjectRefData *data) const;
-    
-    // Helper functions
-    void InitFromName(const wxString& colourName);
+
 
 private:
     DECLARE_DYNAMIC_CLASS(wxColour)

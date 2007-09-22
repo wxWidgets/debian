@@ -4,15 +4,15 @@
 // Author:      Vadim Zeitlin
 // Modified by:
 // Created:     06.01.01
-// RCS-ID:      $Id: popupwin.h,v 1.20 2002/08/31 11:29:11 GD Exp $
+// RCS-ID:      $Id: popupwin.h,v 1.29 2004/09/20 11:31:41 ABX Exp $
 // Copyright:   (c) 2001 Vadim Zeitlin <zeitlin@dptmaths.ens-cachan.fr>
-// License:     wxWindows license
+// License:     wxWindows licence
 ///////////////////////////////////////////////////////////////////////////////
 
 #ifndef _WX_POPUPWIN_H_BASE_
 #define _WX_POPUPWIN_H_BASE_
 
-#if defined(__GNUG__) && !defined(__APPLE__)
+#if defined(__GNUG__) && !defined(NO_GCC_PRAGMA)
     #pragma interface "popupwinbase.h"
 #endif
 
@@ -45,6 +45,10 @@ public:
     // the point must be given in screen coordinates!
     virtual void Position(const wxPoint& ptOrigin,
                           const wxSize& size);
+
+    virtual bool IsTopLevel() const { return true; }
+
+    DECLARE_NO_COPY_CLASS(wxPopupWindowBase)
 };
 
 
@@ -57,6 +61,8 @@ public:
     #include "wx/gtk/popupwin.h"
 #elif __WXX11__
     #include "wx/x11/popupwin.h"
+#elif __WXMOTIF__
+    #include "wx/motif/popupwin.h"
 #elif __WXMGL__
     #include "wx/mgl/popupwin.h"
 #else
@@ -91,9 +97,9 @@ public:
     //
     // VZ: where is this used??
     virtual bool CanDismiss()
-        { return TRUE; }
+        { return true; }
 
-    // called when a mouse is pressed while the popup is shown: return TRUE
+    // called when a mouse is pressed while the popup is shown: return true
     // from here to prevent its normal processing by the popup (which consists
     // in dismissing it if the mouse is cilcked outside it)
     virtual bool ProcessLeftDown(wxMouseEvent& event);
@@ -127,6 +133,7 @@ protected:
     wxPopupFocusHandler  *m_handlerFocus;
 
     DECLARE_DYNAMIC_CLASS(wxPopupTransientWindow)
+    DECLARE_NO_COPY_CLASS(wxPopupTransientWindow)
 };
 
 #if wxUSE_COMBOBOX && defined(__WXUNIVERSAL__)

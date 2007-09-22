@@ -2,7 +2,7 @@
 // Purpose:     XML resources editor
 // Author:      Vaclav Slavik
 // Created:     2000/05/05
-// RCS-ID:      $Id: nodesdb.h,v 1.2 2002/09/07 12:15:24 GD Exp $
+// RCS-ID:      $Id: nodesdb.h,v 1.4 2004/06/11 13:14:23 ABX Exp $
 // Copyright:   (c) 2000 Vaclav Slavik
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -15,6 +15,7 @@
 #define _NODESDB_H_
 
 #include "wx/dynarray.h"
+#include "wx/arrstr.h"
 
 class WXDLLEXPORT wxXmlNode;
 class WXDLLEXPORT wxString;
@@ -27,13 +28,13 @@ class PropertyInfo
         PropertyInfo() {}
         PropertyInfo(const wxString& atype, const wxString& aname, const wxString& amoreinfo)
           : Type(atype), Name(aname), MoreInfo(amoreinfo) {}
-       
+
         PropertyInfo& operator=(const PropertyInfo& p)
         {
             Type = p.Type; Name = p.Name; MoreInfo = p.MoreInfo;
             return *this;
         }
-       
+
         wxString Type;
         wxString Name;
         wxString MoreInfo;
@@ -46,13 +47,13 @@ class NodeInfo
 {
     public:
         wxString NodeClass;
-        wxString Type;   
+        wxString Type;
         PropertyInfoArray Props;
         wxArrayString DerivedFrom;
         bool Abstract;
         wxString ChildType;
         int Icon;
-    
+
         void Read(const wxString& filename, wxPathList& list);
 };
 
@@ -64,15 +65,15 @@ class NodesDb
 {
     public:
         NodesDb();
-    
+
         void Load();
         void LoadDir(const wxString& path);
         void LoadFile(const wxString& file);
-        
+
         NodeInfoArray& GetNodesInfo() { return m_Infos; }
-    
+
         static NodesDb *Get();
-    
+
     private:
         static NodesDb *ms_Instance;
         NodeInfoArray m_Infos;
@@ -81,4 +82,4 @@ class NodesDb
 
 
 
-#endif 
+#endif

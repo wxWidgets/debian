@@ -1,15 +1,15 @@
 ///////////////////////////////////////////////////////////////////////////////
 // Name:        dbtest.h
-// Purpose:     wxWindows database demo app
+// Purpose:     wxWidgets database demo app
 // Author:      George Tasker
 // Modified by:
 // Created:     1998
-// RCS-ID:      $Id: dbtest.h,v 1.24 2002/08/31 22:36:13 GD Exp $
+// RCS-ID:      $Id: dbtest.h,v 1.33 2004/11/10 12:12:37 GT Exp $
 // Copyright:   (c) 1998 Remstar International, Inc.
 // Licence:     wxWindows licence
 ///////////////////////////////////////////////////////////////////////////////
 
-#ifdef __GNUG__
+#if defined(__GNUG__) && !defined(__APPLE__)
 #pragma interface "dbtest.h"
 #endif
 
@@ -19,10 +19,11 @@
 enum    DialogModes {mView,mCreate,mEdit,mSearch};
 
 // ID for the menu quit command
-#define FILE_CREATE           100
+#define FILE_CREATE_ID        100
 #define FILE_RECREATE_TABLE   110
 #define FILE_RECREATE_INDEXES 120
-#if wxUSE_NEW_GRID
+
+#if wxUSE_GRID
 #define FILE_DBGRID_TABLE     130
 #endif
 #define FILE_EXIT             199
@@ -39,20 +40,20 @@ enum    DialogModes {mView,mCreate,mEdit,mSearch};
 #endif
 
 // Name of the table to be created/opened
-const wxChar     CONTACT_TABLE_NAME[]       = "contacts";
+const wxString     CONTACT_TABLE_NAME       = wxT("contacts");
 
+#define wxODBC_BLOB_SUPPORT
 
-#define wxODBC_BLOB_EXPERIMENT 0
 
 // Number of columns in the CONTACT table
-#if wxODBC_BLOB_EXPERIMENT > 0
-const int        CONTACT_NO_COLS            = 13;        // 0-12
+#ifdef wxODBC_BLOB_SUPPORT
+    const int        CONTACT_NO_COLS        = 14;        // 0-13
+    const int        MAX_PICTURE_SIZE       = 128000;    // in bytes
 #else
-const int        CONTACT_NO_COLS            = 12;        // 0-11
+    const int        CONTACT_NO_COLS        = 12;        // 0-11
 #endif
 
-const wxChar     PARAM_FILENAME[]           = "dbtest.cfg";
-
+const wxString       PARAM_FILENAME         = wxT("dbtest.cfg");
 
 enum Language {langENGLISH, langFRENCH, langGERMAN, langSPANISH, langOTHER};
 
@@ -68,7 +69,7 @@ void DisplayDbDiagnostics(wxDb *pDb);
 
 //
 // This class contains the actual data members that are used for transferring
-// data back and forth from the database to the program.  
+// data back and forth from the database to the program.
 //
 // NOTE: The object described in this class is just for example purposes, and has no
 // real meaning other than to show each type of field being used by the database
@@ -83,12 +84,11 @@ class CstructContact : public wxObject
         wxChar             State[25+1];
         wxChar             PostalCode[15+1];
         wxChar             Country[20+1];
-        TIMESTAMP_STRUCT   JoinDate;            // Date on which this person joined the wxWindows project
+        TIMESTAMP_STRUCT   JoinDate;            // Date on which this person joined the wxWidgets project
         Language           NativeLanguage;      // Enumerated type indicating person's native language
-#if wxODBC_BLOB_EXPERIMENT > 0
-        wxChar             Picture[50000];
-#endif
-        bool               IsDeveloper;         // Is this person a developer for wxWindows, or just a subscriber
+        ULONG              BlobSize;
+        wxChar             Picture[MAX_PICTURE_SIZE];
+        bool               IsDeveloper;         // Is this person a developer for wxWidgets, or just a subscriber
         UCHAR              Contributions;       // Something to show off an integer field
         ULONG              LinesOfCode;         // Something to show off a 'long' field
 };  // CstructContact
@@ -101,10 +101,10 @@ class CstructContact : public wxObject
 // all combined in this one class.
 //
 class Ccontact : public wxDbTable, public CstructContact
-{ 
+{
     private:
         // Used to keep track of whether this class had a wxDb instance
-        // passed in to it or not.  If an existing wxDb instance was not 
+        // passed in to it or not.  If an existing wxDb instance was not
         // passed in at Ccontact creation time, then when the Ccontact
         // instance is deleted, the connection will be freed as Ccontact
         // created its own connection when it was created.
@@ -116,7 +116,7 @@ class Ccontact : public wxDbTable, public CstructContact
         void                 SetupColumns();
 
     public:
-        // Used in places where we need to construct a WHERE clause to 
+        // Used in places where we need to construct a WHERE clause to
         // be passed to the SetWhereClause() function.  From example,
         // where building the WHERE clause requires using ::Printf()
         // to build the string.
@@ -153,7 +153,7 @@ typedef struct Cparameters
 
 // Define a new frame type
 class DatabaseDemoFrame: public wxFrame
-{ 
+{
     private:
         CeditorDlg      *pEditorDlg;
         CparameterDlg   *pParamDlg;
@@ -169,9 +169,9 @@ class DatabaseDemoFrame: public wxFrame
         void    OnExit(wxCommandEvent& event);
         void    OnEditParameters(wxCommandEvent& event);
         void    OnAbout(wxCommandEvent& event);
-#if wxUSE_NEW_GRID
+#if wxUSE_GRID
         void    OnDbGridTable( wxCommandEvent& );
-#endif 
+#endif
         void    CreateDataTable(bool recreate);
         void    BuildEditorDialog();
         void    BuildParameterDialog(wxWindow *parent);
@@ -180,7 +180,7 @@ DECLARE_EVENT_TABLE()
 };  // DatabaseDemoFrame
 
 
-#if wxUSE_NEW_GRID
+#if wxUSE_GRID
 
 // *************************** DBGridFrame ***************************
 
@@ -214,26 +214,26 @@ class DatabaseDemoApp: public wxApp
         // Pointer to the main database connection used in the program.  This
         // pointer would normally be used for doing things as database lookups
         // for user login names and passwords, getting workstation settings, etc.
-        //         
+        //
         // ---> IMPORTANT <---
-        // 
+        //
         // For each database object created which uses this wxDb pointer
         // connection to the database, when a CommitTrans() or RollBackTrans()
         // will commit or rollback EVERY object which uses this wxDb pointer.
-        // 
-        // To allow each table object (those derived from wxDbTable) to be 
+        //
+        // To allow each table object (those derived from wxDbTable) to be
         // individually committed or rolled back, you MUST use a different
-        // instance of wxDb in the constructor of the table.  Doing so creates 
+        // instance of wxDb in the constructor of the table.  Doing so creates
         // more overhead, and will use more database connections (some DBs have
         // connection limits...), so use connections sparringly.
-        // 
+        //
         // It is recommended that one "main" database connection be created for
         // the entire program to use for READ-ONLY database accesses, but for each
         // table object which will do a CommitTrans() or RollbackTrans() that a
         // new wxDb object be created and used for it.
         wxDb            *READONLY_DB;
 
-        // Contains the ODBC connection information used by 
+        // Contains the ODBC connection information used by
         // all database connections
         wxDbConnectInf  *DbConnectInf;
 
@@ -261,13 +261,13 @@ class CeditorDlg : public wxPanel
 {
     private:
         // Used to indicate whether all of the widget pointers (defined
-        // below) have been initialized to point to the memory for 
+        // below) have been initialized to point to the memory for
         // the named widget.  Used as a safeguard from using the widget
         // before it has been initialized.
         bool             widgetPtrsSet;
 
-        // Used when the EDIT button has been pressed to maintain the 
-        // original name that was displayed in the editor before the 
+        // Used when the EDIT button has been pressed to maintain the
+        // original name that was displayed in the editor before the
         // EDIT button was pressed, so that if CANCEL is pressed, a
         // FetchByName() can be done to retrieve the original data
         // to repopulate the dialog.
@@ -285,6 +285,11 @@ class CeditorDlg : public wxPanel
         wxRadioBox      *pDeveloperRadio;
         wxChoice        *pNativeLangChoice;
         wxStaticText    *pNativeLangMsg;
+#ifdef wxODBC_BLOB_SUPPORT
+        wxStaticText    *pPictureMsg, *pPictSizeMsg;
+        wxButton        *pChooseImageBtn, *pShowImageBtn;
+        wxTextCtrl      *pPictSizeTxt;
+#endif
 
     public:
         // Indicates if the editor dialog has been initialized yet (used to
@@ -303,6 +308,13 @@ class CeditorDlg : public wxPanel
 
         bool    Initialize();
 
+#ifdef wxODBC_BLOB_SUPPORT
+        // Methods for reading image file into current table, and
+        // also displaying the image.
+        void    OnSelectPict();
+        void    OnShowImage();
+#endif
+
         // Sets wxStaticText fields to be editable or not depending
         // on the current value of 'mode'
         void    FieldsEditable();
@@ -320,7 +332,7 @@ class CeditorDlg : public wxPanel
         // retrieved from the editor dialog
         bool    Save();
 
-        // Database functions for changing the data that is to 
+        // Database functions for changing the data that is to
         // be displayed on the dialog.  GetNextRec()/GetPrevRec()
         // provide database independent methods that do not require
         // backward scrolling cursors to obtain the record that
@@ -328,7 +340,7 @@ class CeditorDlg : public wxPanel
         bool    GetNextRec();
         bool    GetPrevRec();
         bool    GetRec(const wxString &whereStr);
-        
+
 DECLARE_EVENT_TABLE()
 };  // CeditorDlg
 
@@ -376,6 +388,13 @@ DECLARE_EVENT_TABLE()
 #define EDITOR_DIALOG_CATALOG           240
 #define EDITOR_DIALOG_DATATYPES         250
 #define EDITOR_DIALOG_DB_DIAGS          260
+#ifdef wxODBC_BLOB_SUPPORT
+	#define EDITOR_DIALOG_PIC_MSG           270
+	#define EDITOR_DIALOG_PICSIZE_MSG       271
+	#define EDITOR_DIALOG_PIC_BROWSE        272
+	#define EDITOR_DIALOG_PIC_SHOW          273
+	#define EDITOR_DIALOG_PIC_SIZE_TEXT     274
+#endif
 
 // *************************** CparameterDlg ***************************
 
@@ -383,14 +402,14 @@ class CparameterDlg : public wxDialog
 {
     private:
         // Used to indicate whether all of the widget pointers (defined
-        // below) have been initialized to point to the memory for 
+        // below) have been initialized to point to the memory for
         // the named widget.  Used as a safeguard from using the widget
         // before it has been initialized.
         bool                 widgetPtrsSet;
 
         enum DialogModes     mode;
 
-        // Have the parameters been saved yet, or do they 
+        // Have the parameters been saved yet, or do they
         // need to be saved to update the params on disk
         bool                 saved;
 
@@ -460,15 +479,15 @@ enum qryOp
 
 
 // Query strings
-wxChar * const langQRY_EQ           = "column = column | value";
-wxChar * const langQRY_LT           = "column < column | value";
-wxChar * const langQRY_GT           = "column > column | value";
-wxChar * const langQRY_LE           = "column <= column | value";
-wxChar * const langQRY_GE           = "column >= column | value";
-wxChar * const langQRY_BEGINS       = "columns that BEGIN with the string entered";
-wxChar * const langQRY_CONTAINS     = "columns that CONTAIN the string entered";
-wxChar * const langQRY_LIKE         = "% matches 0 or more of any char; _ matches 1 char";
-wxChar * const langQRY_BETWEEN      = "column BETWEEN value AND value";
+wxString const & langQRY_EQ           = wxT("column = column | value");
+const wxString & langQRY_LT           = wxT("column < column | value");
+const wxString & langQRY_GT           = wxT("column > column | value");
+const wxString & langQRY_LE           = wxT("column <= column | value");
+const wxString & langQRY_GE           = wxT("column >= column | value");
+const wxString & langQRY_BEGINS       = wxT("columns that BEGIN with the string entered");
+const wxString & langQRY_CONTAINS     = wxT("columns that CONTAIN the string entered");
+const wxString & langQRY_LIKE         = wxT("% matches 0 or more of any char; _ matches 1 char");
+const wxString & langQRY_BETWEEN      = wxT("column BETWEEN value AND value");
 
 
 class CqueryDlg : public wxDialog
@@ -482,7 +501,7 @@ class CqueryDlg : public wxDialog
 
     public:
         // Used to indicate whether all of the widget pointers (defined
-        // below) have been initialized to point to the memory for 
+        // below) have been initialized to point to the memory for
         // the named widget.  Used as a safeguard from using the widget
         // before it has been initialized.
         bool                     widgetPtrsSet;
@@ -560,95 +579,122 @@ DECLARE_EVENT_TABLE()
 #define QUERY_DIALOG_HINT_GROUP         323
 #define QUERY_DIALOG_HINT_MSG           324
 
-char * const langNO                        = "No";
-char * const langYES                       = "Yes";
-char * const langDBINF_DB_NAME             = "Database Name = ";
-char * const langDBINF_DB_VER              = "Database Version = ";
-char * const langDBINF_DRIVER_NAME         = "Driver Name = ";
-char * const langDBINF_DRIVER_ODBC_VER     = "Driver ODBC Version = ";
-char * const langDBINF_DRIVER_MGR_ODBC_VER = "Driver Manager ODBC Version = ";
-char * const langDBINF_DRIVER_VER          = "Driver Version = ";
-char * const langDBINF_SERVER_NAME         = "Server Name = ";
-char * const langDBINF_FILENAME            = "Filename = ";
-char * const langDBINF_OUTER_JOINS         = "Outer Joins = ";
-char * const langDBINF_STORED_PROC         = "Stored Procedures = ";
-char * const langDBINF_MAX_HDBC            = "Max # of Db connections = ";
-char * const langDBINF_MAX_HSTMT           = "Max # of cursors (per db connection) = ";
-char * const langDBINF_UNLIMITED           = "Unlimited or Unknown"; 
-char * const langDBINF_API_LVL             = "ODBC API conformance level = ";
-char * const langDBINF_CLI_LVL             = "Client (SAG) conformance level = ";
-char * const langDBINF_SQL_LVL             = "SQL conformance level = ";
-char * const langDBINF_COMMIT_BEHAVIOR     = "Commit Behavior = ";
-char * const langDBINF_ROLLBACK_BEHAVIOR   = "Rollback Behavior = ";
-char * const langDBINF_SUPP_NOT_NULL       = "Support NOT NULL clause = ";
-char * const langDBINF_SUPP_IEF            = "Support IEF = ";
-char * const langDBINF_TXN_ISOLATION       = "Transaction Isolation Level (default) = ";
-char * const langDBINF_TXN_ISOLATION_CURR  = "Transaction Isolation Level (current) = ";
-char * const langDBINF_TXN_ISOLATION_OPTS  = "Transaction Isolation Options Available = ";
-char * const langDBINF_FETCH_DIRS          = "Fetch Directions = ";
-char * const langDBINF_LOCK_TYPES          = "Lock Types (SQLSetPos) = ";
-char * const langDBINF_POS_OPERS           = "Position Operations (SQLSetPos) = ";
-char * const langDBINF_POS_STMTS           = "Position Statements = ";
-char * const langDBINF_SCROLL_CONCURR      = "Concurrency Options (scrollable cursors) = ";
-char * const langDBINF_SCROLL_OPTS         = "Scroll Options (scrollable cursors) = ";
-char * const langDBINF_STATIC_SENS         = "Static Sensitivity = ";
-char * const langDBINF_TXN_CAPABLE         = "Transaction Support = ";
-char * const langDBINF_LOGIN_TIMEOUT       = "Login Timeout = ";
-char * const langDBINF_NONE                = "None";
-char * const langDBINF_LEVEL1              = "Level 1";
-char * const langDBINF_LEVEL2              = "Level 2";
-char * const langDBINF_NOT_COMPLIANT       = "Not Compliant";
-char * const langDBINF_COMPLIANT           = "Compliant";
-char * const langDBINF_MIN_GRAMMAR         = "Minimum Grammer";
-char * const langDBINF_CORE_GRAMMAR        = "Core Grammer";
-char * const langDBINF_EXT_GRAMMAR         = "Extended Grammer";
-char * const langDBINF_DELETE_CURSORS      = "Delete cursors";
-char * const langDBINF_CLOSE_CURSORS       = "Close cursors";
-char * const langDBINF_PRESERVE_CURSORS    = "Preserve cursors";
-char * const langDBINF_READ_UNCOMMITTED    = "Read Uncommitted";
-char * const langDBINF_READ_COMMITTED      = "Read Committed";
-char * const langDBINF_REPEATABLE_READ     = "Repeatable Read";
-char * const langDBINF_SERIALIZABLE        = "Serializable";
-char * const langDBINF_VERSIONING          = "Versioning";
-char * const langDBINF_NEXT                = "Next";
-char * const langDBINF_PREV                = "Prev";
-char * const langDBINF_FIRST               = "First";
-char * const langDBINF_LAST                = "Last";
-char * const langDBINF_ABSOLUTE            = "Absolute";
-char * const langDBINF_RELATIVE            = "Relative";
-char * const langDBINF_RESUME              = "Resume";
-char * const langDBINF_BOOKMARK            = "Bookmark";
-char * const langDBINF_NO_CHANGE           = "No Change";
-char * const langDBINF_EXCLUSIVE           = "Exclusive";
-char * const langDBINF_UNLOCK              = "Unlock";
-char * const langDBINF_POSITION            = "Position";
-char * const langDBINF_REFRESH             = "Refresh";
-char * const langDBINF_UPD                 = "Upd";
-char * const langDBINF_DEL                 = "Del";
-char * const langDBINF_ADD                 = "Add";
-char * const langDBINF_POS_DEL             = "Pos Delete";
-char * const langDBINF_POS_UPD             = "Pos Update";
-char * const langDBINF_SELECT_FOR_UPD      = "Select For Update";
-char * const langDBINF_READ_ONLY           = "Read Only";
-char * const langDBINF_LOCK                = "Lock";
-char * const langDBINF_OPT_ROWVER          = "Opt. Rowver";
-char * const langDBINF_OPT_VALUES          = "Opt. Values";
-char * const langDBINF_FWD_ONLY            = "Fwd Only";
-char * const langDBINF_STATIC              = "Static";
-char * const langDBINF_KEYSET_DRIVEN       = "Keyset Driven";
-char * const langDBINF_DYNAMIC             = "Dynamic";
-char * const langDBINF_MIXED               = "Mixed";
-char * const langDBINF_ADDITIONS           = "Additions";
-char * const langDBINF_DELETIONS           = "Deletions";
-char * const langDBINF_UPDATES             = "Updates";
-char * const langDBINF_DML_ONLY            = "DML Only";
-char * const langDBINF_DDL_COMMIT          = "DDL Commit";
-char * const langDBINF_DDL_IGNORE          = "DDL Ignore";
-char * const langDBINF_DDL_AND_DML         = "DDL and DML";
-char * const langDBINF_ORACLE_BANNER       = ">>> ORACLE STATISTICS AND TUNING INFORMATION <<<";
-char * const langDBINF_DB_BLOCK_GETS       = "DB block gets";
-char * const langDBINF_CONSISTENT_GETS     = "Consistent gets";
-char * const langDBINF_PHYSICAL_READS      = "Physical reads";
-char * const langDBINF_CACHE_HIT_RATIO     = "Cache hit ratio";
-char * const langDBINF_TABLESPACE_IO       = "TABLESPACE I/O LEVELS";
-char * const langDBINF_PHYSICAL_WRITES     = "Physical writes";
+#ifdef wxODBC_BLOB_SUPPORT
+
+class CimageDlg : public wxDialog
+{
+public:
+    CimageDlg(wxWindow *parent, wxChar *pImageData, off_t iSize);
+    ~CimageDlg();
+
+    void OnCloseWindow(wxCloseEvent &event);
+
+private:
+    wxStaticBitmap *m_pDisplayBmp;
+    wxBitmap       *m_pBmp;
+    wxImage        *m_pImage;
+
+protected:
+
+
+DECLARE_EVENT_TABLE()
+};  // CimageDlg
+
+#define IMAGE_DIALOG            400
+
+#define IMAGE_DIALOG_STATIC_BMP 401
+
+#endif
+
+wxChar * const langNO                        = wxT("No");
+wxChar * const langYES                       = wxT("Yes");
+wxChar * const langDBINF_DB_NAME             = wxT("Database Name = ");
+wxChar * const langDBINF_DB_VER              = wxT("Database Version = ");
+wxChar * const langDBINF_DRIVER_NAME         = wxT("Driver Name = ");
+wxChar * const langDBINF_DRIVER_ODBC_VER     = wxT("Driver ODBC Version = ");
+wxChar * const langDBINF_DRIVER_MGR_ODBC_VER = wxT("Driver Manager ODBC Version = ");
+wxChar * const langDBINF_DRIVER_VER          = wxT("Driver Version = ");
+wxChar * const langDBINF_SERVER_NAME         = wxT("Server Name = ");
+wxChar * const langDBINF_FILENAME            = wxT("Filename = ");
+wxChar * const langDBINF_OUTER_JOINS         = wxT("Outer Joins = ");
+wxChar * const langDBINF_STORED_PROC         = wxT("Stored Procedures = ");
+wxChar * const langDBINF_MAX_HDBC            = wxT("Max # of Db connections = ");
+wxChar * const langDBINF_MAX_HSTMT           = wxT("Max # of cursors (per db connection) = ");
+wxChar * const langDBINF_UNLIMITED           = wxT("Unlimited or Unknown");
+wxChar * const langDBINF_API_LVL             = wxT("ODBC API conformance level = ");
+wxChar * const langDBINF_CLI_LVL             = wxT("Client (SAG) conformance level = ");
+wxChar * const langDBINF_SQL_LVL             = wxT("SQL conformance level = ");
+wxChar * const langDBINF_COMMIT_BEHAVIOR     = wxT("Commit Behavior = ");
+wxChar * const langDBINF_ROLLBACK_BEHAVIOR   = wxT("Rollback Behavior = ");
+wxChar * const langDBINF_SUPP_NOT_NULL       = wxT("Support NOT NULL clause = ");
+wxChar * const langDBINF_SUPP_IEF            = wxT("Support IEF = ");
+wxChar * const langDBINF_TXN_ISOLATION       = wxT("Transaction Isolation Level (default) = ");
+wxChar * const langDBINF_TXN_ISOLATION_CURR  = wxT("Transaction Isolation Level (current) = ");
+wxChar * const langDBINF_TXN_ISOLATION_OPTS  = wxT("Transaction Isolation Options Available = ");
+wxChar * const langDBINF_FETCH_DIRS          = wxT("Fetch Directions = ");
+wxChar * const langDBINF_LOCK_TYPES          = wxT("Lock Types (SQLSetPos) = ");
+wxChar * const langDBINF_POS_OPERS           = wxT("Position Operations (SQLSetPos) = ");
+wxChar * const langDBINF_POS_STMTS           = wxT("Position Statements = ");
+wxChar * const langDBINF_SCROLL_CONCURR      = wxT("Concurrency Options (scrollable cursors) = ");
+wxChar * const langDBINF_SCROLL_OPTS         = wxT("Scroll Options (scrollable cursors) = ");
+wxChar * const langDBINF_STATIC_SENS         = wxT("Static Sensitivity = ");
+wxChar * const langDBINF_TXN_CAPABLE         = wxT("Transaction Support = ");
+wxChar * const langDBINF_LOGIN_TIMEOUT       = wxT("Login Timeout = ");
+wxChar * const langDBINF_NONE                = wxT("None");
+wxChar * const langDBINF_LEVEL1              = wxT("Level 1");
+wxChar * const langDBINF_LEVEL2              = wxT("Level 2");
+wxChar * const langDBINF_NOT_COMPLIANT       = wxT("Not Compliant");
+wxChar * const langDBINF_COMPLIANT           = wxT("Compliant");
+wxChar * const langDBINF_MIN_GRAMMAR         = wxT("Minimum Grammer");
+wxChar * const langDBINF_CORE_GRAMMAR        = wxT("Core Grammer");
+wxChar * const langDBINF_EXT_GRAMMAR         = wxT("Extended Grammer");
+wxChar * const langDBINF_DELETE_CURSORS      = wxT("Delete cursors");
+wxChar * const langDBINF_CLOSE_CURSORS       = wxT("Close cursors");
+wxChar * const langDBINF_PRESERVE_CURSORS    = wxT("Preserve cursors");
+wxChar * const langDBINF_READ_UNCOMMITTED    = wxT("Read Uncommitted");
+wxChar * const langDBINF_READ_COMMITTED      = wxT("Read Committed");
+wxChar * const langDBINF_REPEATABLE_READ     = wxT("Repeatable Read");
+wxChar * const langDBINF_SERIALIZABLE        = wxT("Serializable");
+wxChar * const langDBINF_VERSIONING          = wxT("Versioning");
+wxChar * const langDBINF_NEXT                = wxT("Next");
+wxChar * const langDBINF_PREV                = wxT("Prev");
+wxChar * const langDBINF_FIRST               = wxT("First");
+wxChar * const langDBINF_LAST                = wxT("Last");
+wxChar * const langDBINF_ABSOLUTE            = wxT("Absolute");
+wxChar * const langDBINF_RELATIVE            = wxT("Relative");
+wxChar * const langDBINF_RESUME              = wxT("Resume");
+wxChar * const langDBINF_BOOKMARK            = wxT("Bookmark");
+wxChar * const langDBINF_NO_CHANGE           = wxT("No Change");
+wxChar * const langDBINF_EXCLUSIVE           = wxT("Exclusive");
+wxChar * const langDBINF_UNLOCK              = wxT("Unlock");
+wxChar * const langDBINF_POSITION            = wxT("Position");
+wxChar * const langDBINF_REFRESH             = wxT("Refresh");
+wxChar * const langDBINF_UPD                 = wxT("Upd");
+wxChar * const langDBINF_DEL                 = wxT("Del");
+wxChar * const langDBINF_ADD                 = wxT("Add");
+wxChar * const langDBINF_POS_DEL             = wxT("Pos Delete");
+wxChar * const langDBINF_POS_UPD             = wxT("Pos Update");
+wxChar * const langDBINF_SELECT_FOR_UPD      = wxT("Select For Update");
+wxChar * const langDBINF_READ_ONLY           = wxT("Read Only");
+wxChar * const langDBINF_LOCK                = wxT("Lock");
+wxChar * const langDBINF_OPT_ROWVER          = wxT("Opt. Rowver");
+wxChar * const langDBINF_OPT_VALUES          = wxT("Opt. Values");
+wxChar * const langDBINF_FWD_ONLY            = wxT("Fwd Only");
+wxChar * const langDBINF_STATIC              = wxT("Static");
+wxChar * const langDBINF_KEYSET_DRIVEN       = wxT("Keyset Driven");
+wxChar * const langDBINF_DYNAMIC             = wxT("Dynamic");
+wxChar * const langDBINF_MIXED               = wxT("Mixed");
+wxChar * const langDBINF_ADDITIONS           = wxT("Additions");
+wxChar * const langDBINF_DELETIONS           = wxT("Deletions");
+wxChar * const langDBINF_UPDATES             = wxT("Updates");
+wxChar * const langDBINF_DML_ONLY            = wxT("DML Only");
+wxChar * const langDBINF_DDL_COMMIT          = wxT("DDL Commit");
+wxChar * const langDBINF_DDL_IGNORE          = wxT("DDL Ignore");
+wxChar * const langDBINF_DDL_AND_DML         = wxT("DDL and DML");
+wxChar * const langDBINF_ORACLE_BANNER       = wxT(">>> ORACLE STATISTICS AND TUNING INFORMATION <<<");
+wxChar * const langDBINF_DB_BLOCK_GETS       = wxT("DB block gets");
+wxChar * const langDBINF_CONSISTENT_GETS     = wxT("Consistent gets");
+wxChar * const langDBINF_PHYSICAL_READS      = wxT("Physical reads");
+wxChar * const langDBINF_CACHE_HIT_RATIO     = wxT("Cache hit ratio");
+wxChar * const langDBINF_TABLESPACE_IO       = wxT("TABLESPACE I/O LEVELS");
+wxChar * const langDBINF_PHYSICAL_WRITES     = wxT("Physical writes");

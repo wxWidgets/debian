@@ -4,8 +4,8 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     04/01/98
-// RCS-ID:      $Id: view.h,v 1.5 2002/03/17 14:15:40 VZ Exp $
-// Copyright:   (c) Julian Smart and Markus Holzem
+// RCS-ID:      $Id: view.h,v 1.7 2004/05/27 18:07:04 ABX Exp $
+// Copyright:   (c) Julian Smart
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
 
@@ -52,7 +52,7 @@ public:
     bool OnCreate(wxDocument *doc, long flags);
     void OnDraw(wxDC *dc);
     void OnUpdate(wxView *sender, wxObject *hint = (wxObject *) NULL);
-    bool OnClose(bool deleteWindow = TRUE);
+    bool OnClose(bool deleteWindow = true);
     
     void OnCut(wxCommandEvent& event);
     
@@ -73,7 +73,7 @@ public:
     bool OnCreate(wxDocument *doc, long flags);
     void OnDraw(wxDC *dc);
     void OnUpdate(wxView *sender, wxObject *hint = (wxObject *) NULL);
-    bool OnClose(bool deleteWindow = TRUE);
+    bool OnClose(bool deleteWindow = true);
 };
 
 #endif

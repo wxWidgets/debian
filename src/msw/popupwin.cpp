@@ -4,9 +4,9 @@
 // Author:      Vadim Zeitlin
 // Modified by:
 // Created:     08.05.02
-// RCS-ID:      $Id: popupwin.cpp,v 1.4.2.1 2003/11/16 20:43:06 DS Exp $
+// RCS-ID:      $Id: popupwin.cpp,v 1.15 2004/08/31 12:38:46 ABX Exp $
 // Copyright:   (c) 2002 Vadim Zeitlin <zeitlin@dptmaths.ens-cachan.fr>
-// License:     wxWindows license
+// License:     wxWindows licence
 ///////////////////////////////////////////////////////////////////////////////
 
 // ============================================================================
@@ -17,7 +17,7 @@
 // headers
 // ----------------------------------------------------------------------------
 
-#ifdef __GNUG__
+#if defined(__GNUG__) && !defined(NO_GCC_PRAGMA)
     #pragma implementation "popup.h"
 #endif
 
@@ -29,7 +29,7 @@
 #endif
 
 #ifndef WX_PRECOMP
-#include "wx/wx.h"
+#include "wx/defs.h"
 #endif //WX_PRECOMP
 
 #if wxUSE_POPUPWIN
@@ -46,8 +46,11 @@ IMPLEMENT_DYNAMIC_CLASS(wxPopupWindow, wxWindow)
 
 bool wxPopupWindow::Create(wxWindow *parent, int flags)
 {
+    // popup windows are created hidden by default
+    Hide();
+
     return wxPopupWindowBase::Create(parent) &&
-               wxWindow::Create(parent, -1,
+               wxWindow::Create(parent, wxID_ANY,
                                 wxDefaultPosition, wxDefaultSize,
                                 flags | wxPOPUP_WINDOW);
 }
@@ -85,7 +88,30 @@ WXHWND wxPopupWindow::MSWGetParent() const
     //     WS_CHILD but then showing a popup would deactivate the parent which
     //     is ugly and working around this, although possible, is even more
     //     ugly
+    // GetDesktopWindow() is not always supported on WinCE, and if
+    // it is, it often returns NULL.
+#ifdef __WXWINCE__
+    return 0;
+#else
     return (WXHWND)::GetDesktopWindow();
+#endif
+}
+
+bool wxPopupWindow::Show(bool show)
+{
+    if ( !wxWindowMSW::Show(show) )
+        return false;
+
+    if ( show )
+    {
+        // raise to top of z order
+        if (!::SetWindowPos(GetHwnd(), HWND_TOP, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE))
+        {
+            wxLogLastError(_T("SetWindowPos"));
+        }
+    }
+
+    return true;
 }
 
 #endif // #if wxUSE_POPUPWIN

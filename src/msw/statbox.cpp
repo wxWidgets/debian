@@ -4,9 +4,9 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     04/01/98
-// RCS-ID:      $Id: statbox.cpp,v 1.30 2002/02/20 00:21:26 VZ Exp $
-// Copyright:   (c) Julian Smart and Markus Holzem
-// Licence:     wxWindows license
+// RCS-ID:      $Id: statbox.cpp,v 1.48 2004/09/04 01:53:42 ABX Exp $
+// Copyright:   (c) Julian Smart
+// Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
 
 // ============================================================================
@@ -17,7 +17,7 @@
 // headers
 // ----------------------------------------------------------------------------
 
-#ifdef __GNUG__
+#if defined(__GNUG__) && !defined(NO_GCC_PRAGMA)
     #pragma implementation "statbox.h"
 #endif
 
@@ -43,7 +43,57 @@
 // wxWin macros
 // ----------------------------------------------------------------------------
 
+#if wxUSE_EXTENDED_RTTI
+WX_DEFINE_FLAGS( wxStaticBoxStyle )
+
+wxBEGIN_FLAGS( wxStaticBoxStyle )
+    // new style border flags, we put them first to
+    // use them for streaming out
+    wxFLAGS_MEMBER(wxBORDER_SIMPLE)
+    wxFLAGS_MEMBER(wxBORDER_SUNKEN)
+    wxFLAGS_MEMBER(wxBORDER_DOUBLE)
+    wxFLAGS_MEMBER(wxBORDER_RAISED)
+    wxFLAGS_MEMBER(wxBORDER_STATIC)
+    wxFLAGS_MEMBER(wxBORDER_NONE)
+
+    // old style border flags
+    wxFLAGS_MEMBER(wxSIMPLE_BORDER)
+    wxFLAGS_MEMBER(wxSUNKEN_BORDER)
+    wxFLAGS_MEMBER(wxDOUBLE_BORDER)
+    wxFLAGS_MEMBER(wxRAISED_BORDER)
+    wxFLAGS_MEMBER(wxSTATIC_BORDER)
+    wxFLAGS_MEMBER(wxBORDER)
+
+    // standard window styles
+    wxFLAGS_MEMBER(wxTAB_TRAVERSAL)
+    wxFLAGS_MEMBER(wxCLIP_CHILDREN)
+    wxFLAGS_MEMBER(wxTRANSPARENT_WINDOW)
+    wxFLAGS_MEMBER(wxWANTS_CHARS)
+    wxFLAGS_MEMBER(wxFULL_REPAINT_ON_RESIZE)
+    wxFLAGS_MEMBER(wxALWAYS_SHOW_SB )
+    wxFLAGS_MEMBER(wxVSCROLL)
+    wxFLAGS_MEMBER(wxHSCROLL)
+
+wxEND_FLAGS( wxStaticBoxStyle )
+
+IMPLEMENT_DYNAMIC_CLASS_XTI(wxStaticBox, wxControl,"wx/statbox.h")
+
+wxBEGIN_PROPERTIES_TABLE(wxStaticBox)
+    wxPROPERTY( Label,wxString, SetLabel, GetLabel, wxString() , 0 /*flags*/ , wxT("Helpstring") , wxT("group"))
+    wxPROPERTY_FLAGS( WindowStyle , wxStaticBoxStyle , long , SetWindowStyleFlag , GetWindowStyleFlag , EMPTY_MACROVALUE, 0 /*flags*/ , wxT("Helpstring") , wxT("group")) // style
+/*
+    TODO PROPERTIES :
+        label
+*/
+wxEND_PROPERTIES_TABLE()
+
+wxBEGIN_HANDLERS_TABLE(wxStaticBox)
+wxEND_HANDLERS_TABLE()
+
+wxCONSTRUCTOR_6( wxStaticBox , wxWindow* , Parent , wxWindowID , Id , wxString , Label , wxPoint , Position , wxSize , Size , long , WindowStyle )
+#else
 IMPLEMENT_DYNAMIC_CLASS(wxStaticBox, wxControl)
+#endif
 
 // ============================================================================
 // implementation
@@ -62,7 +112,7 @@ bool wxStaticBox::Create(wxWindow *parent,
                          const wxString& name)
 {
     if ( !CreateControl(parent, id, pos, size, style, wxDefaultValidator, name) )
-        return FALSE;
+        return false;
 
     // as wxStaticBox doesn't draw its own background, we make it transparent
     // to force redrawing its background which could have been overwritten by
@@ -71,24 +121,29 @@ bool wxStaticBox::Create(wxWindow *parent,
     // FIXME: I still think that it isn't the right solution because the static
     //        boxes shouldn't have to be transparent if the redrawing was done
     //        right elsewhere - who ever had to make them transparent in non
-    //        wxWindows programs, after all? But for now it does fix a serious
+    //        wxWidgets programs, after all? But for now it does fix a serious
     //        problem (try resizing the sizers test screen in the layout sample
     //        after removing WS_EX_TRANSPARENT bit) and so let's use it until
     //        we fix the real underlying problem
     if ( !MSWCreateControl(wxT("BUTTON"), BS_GROUPBOX, pos, size, label,
-                           WS_EX_TRANSPARENT) )
-        return FALSE;
+#ifdef __WXWINCE__
+        0
+#else
+        WS_EX_TRANSPARENT
+#endif
+                           ) )
+        return false;
 
     // to be transparent we should have the same colour as the parent as well
     SetBackgroundColour(GetParent()->GetBackgroundColour());
 
-    return TRUE;
+    return true;
 }
 
 wxSize wxStaticBox::DoGetBestSize() const
 {
     int cx, cy;
-    wxGetCharSize(GetHWND(), &cx, &cy, &GetFont());
+    wxGetCharSize(GetHWND(), &cx, &cy, GetFont());
 
     int wBox;
     GetTextExtent(wxGetWindowText(m_hWnd), &wBox, &cy);
@@ -99,10 +154,11 @@ wxSize wxStaticBox::DoGetBestSize() const
     return wxSize(wBox, hBox);
 }
 
-long wxStaticBox::MSWWindowProc(WXUINT nMsg, WXWPARAM wParam, WXLPARAM lParam)
+WXLRESULT wxStaticBox::MSWWindowProc(WXUINT nMsg, WXWPARAM wParam, WXLPARAM lParam)
 {
     switch ( nMsg )
     {
+#ifndef __WXWINCE__
         case WM_NCHITTEST:
             // FIXME: this hack is specific to dialog ed, shouldn't it be
             //        somehow disabled during normal operation?
@@ -118,7 +174,7 @@ long wxStaticBox::MSWWindowProc(WXUINT nMsg, WXWPARAM wParam, WXLPARAM lParam)
                     return (long)HTCLIENT;
             }
             break;
-
+#endif
         case WM_ERASEBKGND:
             // prevent wxControl from processing this message because it will
             // erase the background incorrectly and there is no way for us to

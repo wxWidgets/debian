@@ -3,10 +3,10 @@
 // Purpose:     HTTP and FTP file system
 // Author:      Vaclav Slavik
 // Copyright:   (c) 1999 Vaclav Slavik
-// Licence:     wxWindows Licence
+// Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
 
-#ifdef __GNUG__
+#if defined(__GNUG__) && !defined(NO_GCC_PRAGMA)
 #pragma implementation "fs_inet.h"
 #endif
 
@@ -42,7 +42,7 @@ class wxTemporaryFileInputStream : public wxFileInputStream
 public:
     wxTemporaryFileInputStream(const wxString& filename) :
         wxFileInputStream(filename), m_filename(filename) {}
-    
+
     ~wxTemporaryFileInputStream()
     {
         // NB: copied from wxFileInputStream dtor, we need to do it before
@@ -52,7 +52,7 @@ public:
             delete m_file;
             m_file_destroy = false;
         }
-        wxRemoveFile(m_filename);        
+        wxRemoveFile(m_filename);
     }
 
 protected:
@@ -84,19 +84,24 @@ static wxString StripProtocolAnchor(const wxString& location)
 
 bool wxInternetFSHandler::CanOpen(const wxString& location)
 {
+#if wxUSE_URL
     wxString p = GetProtocol(location);
     if ((p == wxT("http")) || (p == wxT("ftp")))
     {
         wxURL url(p + wxT(":") + StripProtocolAnchor(location));
         return (url.GetError() == wxURL_NOERR);
     }
-
-    return FALSE;
+#endif
+    return false;
 }
 
 
-wxFSFile* wxInternetFSHandler::OpenFile(wxFileSystem& WXUNUSED(fs), const wxString& location)
+wxFSFile* wxInternetFSHandler::OpenFile(wxFileSystem& WXUNUSED(fs),
+                                        const wxString& location)
 {
+#if !wxUSE_URL
+    return NULL;
+#else
     wxString right =
         GetProtocol(location) + wxT(":") + StripProtocolAnchor(location);
 
@@ -116,7 +121,7 @@ wxFSFile* wxInternetFSHandler::OpenFile(wxFileSystem& WXUNUSED(fs), const wxStri
                 s->Read(sout);
             }
             delete s;
-    
+
             return new wxFSFile(new wxTemporaryFileInputStream(tmpfile),
                                 right,
                                 content,
@@ -129,13 +134,9 @@ wxFSFile* wxInternetFSHandler::OpenFile(wxFileSystem& WXUNUSED(fs), const wxStri
     }
 
     return (wxFSFile*) NULL; // incorrect URL
+#endif
 }
 
-
-
-wxInternetFSHandler::~wxInternetFSHandler()
-{
-}
 
 class wxFileSystemInternetModule : public wxModule
 {
@@ -145,7 +146,7 @@ class wxFileSystemInternetModule : public wxModule
         virtual bool OnInit()
         {
             wxFileSystem::AddHandler(new wxInternetFSHandler);
-            return TRUE;
+            return true;
         }
         virtual void OnExit() {}
 };

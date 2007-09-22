@@ -1,10 +1,10 @@
 /////////////////////////////////////////////////////////////////////////////
 // Name:        emulator.cpp
-// Purpose:     Emulator wxWindows sample
+// Purpose:     Emulator wxWidgets sample
 // Author:      Julian Smart
 // Modified by:
 // Created:     04/01/98
-// RCS-ID:      $Id: emulator.cpp,v 1.5 2002/07/13 12:14:07 GD Exp $
+// RCS-ID:      $Id: emulator.cpp,v 1.14 2004/10/05 15:38:36 ABX Exp $
 // Copyright:   (c) Julian Smart
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -13,7 +13,7 @@
 // declarations
 // ============================================================================
 
-#ifdef __GNUG__
+#if defined(__GNUG__) && !defined(NO_GCC_PRAGMA)
     #pragma implementation "emulator.h"
 #endif
 
@@ -29,7 +29,7 @@
 #endif
 
 // for all others, include the necessary headers (this file is usually all you
-// need because it includes almost all "standard" wxWindows headers)
+// need because it includes almost all "standard" wxWidgets headers)
 #ifndef WX_PRECOMP
     #include "wx/wx.h"
 #endif
@@ -38,8 +38,9 @@
 #include "wx/fileconf.h"
 #include "wx/cmdline.h"
 #include "wx/image.h"
+#include "wx/file.h"
 
-#ifdef __WXX11__    
+#ifdef __WXX11__
 #include "wx/x11/reparent.h"
 #endif
 
@@ -55,10 +56,10 @@
 #endif
 
 // ----------------------------------------------------------------------------
-// event tables and other macros for wxWindows
+// event tables and other macros for wxWidgets
 // ----------------------------------------------------------------------------
 
-// the event tables connect the wxWindows events with the functions (event
+// the event tables connect the wxWidgets events with the functions (event
 // handlers) which process them. It can be also done at run-time, but for the
 // simple menu events like this the static method is much simpler.
 BEGIN_EVENT_TABLE(wxEmulatorFrame, wxFrame)
@@ -67,7 +68,7 @@ BEGIN_EVENT_TABLE(wxEmulatorFrame, wxFrame)
     EVT_CLOSE(wxEmulatorFrame::OnCloseWindow)
 END_EVENT_TABLE()
 
-// Create a new application object: this macro will allow wxWindows to create
+// Create a new application object: this macro will allow wxWidgets to create
 // the application object during program execution (it's better than using a
 // static object for many reasons) and also declares the accessor function
 // wxGetApp() which will return the reference of the right type (i.e. wxEmulatorApp and
@@ -76,12 +77,12 @@ IMPLEMENT_APP(wxEmulatorApp)
 
 static const wxCmdLineEntryDesc sg_cmdLineDesc[] =
 {
-    { wxCMD_LINE_OPTION, "u", "use-display",   "display number to use (default 100)" },
+    { wxCMD_LINE_OPTION, _T("u"), _T("use-display"),   _T("display number to use (default 100)") },
 
-    { wxCMD_LINE_SWITCH, "h", "help",   "displays help on the command line parameters" },
-    { wxCMD_LINE_SWITCH, "v", "version",    "print version" },
+    { wxCMD_LINE_SWITCH, _T("h"), _T("help"),   _T("displays help on the command line parameters") },
+    { wxCMD_LINE_SWITCH, _T("v"), _T("version"),    _T("print version") },
 
-    { wxCMD_LINE_PARAM,  NULL, NULL, "config file 1", wxCMD_LINE_VAL_STRING, wxCMD_LINE_PARAM_OPTIONAL },
+    { wxCMD_LINE_PARAM,  NULL, NULL, _T("config file 1"), wxCMD_LINE_VAL_STRING, wxCMD_LINE_PARAM_OPTIONAL },
 
     { wxCMD_LINE_NONE }
 };
@@ -107,20 +108,22 @@ wxEmulatorApp::wxEmulatorApp()
 // 'Main program' equivalent: the program execution "starts" here
 bool wxEmulatorApp::OnInit()
 {
+#if wxUSE_LOG
     wxLog::SetTimestamp(NULL);
+#endif // wxUSE_LOG
     wxInitAllImageHandlers();
 
     wxString currentDir = wxGetCwd();
 
     // Use argv to get current app directory
     m_appDir = wxFindAppPath(argv[0], currentDir, wxT("WXEMUDIR"));
-    
+
     // If the development version, go up a directory.
 #ifdef __WXMSW__
-    if ((m_appDir.Right(5).CmpNoCase("DEBUG") == 0) ||
-        (m_appDir.Right(11).CmpNoCase("DEBUGSTABLE") == 0) ||
-        (m_appDir.Right(7).CmpNoCase("RELEASE") == 0) ||
-        (m_appDir.Right(13).CmpNoCase("RELEASESTABLE") == 0)
+    if ((m_appDir.Right(5).CmpNoCase(_T("DEBUG")) == 0) ||
+        (m_appDir.Right(11).CmpNoCase(_T("DEBUGSTABLE")) == 0) ||
+        (m_appDir.Right(7).CmpNoCase(_T("RELEASE")) == 0) ||
+        (m_appDir.Right(13).CmpNoCase(_T("RELEASESTABLE")) == 0)
         )
         m_appDir = wxPathOnly(m_appDir);
 #endif
@@ -138,7 +141,7 @@ bool wxEmulatorApp::OnInit()
         wxLog::SetActiveTarget(new wxLogStderr);
 #endif
         parser.Usage();
-        return FALSE;
+        return false;
     }
     if (parser.Found(wxT("v")))
     {
@@ -146,9 +149,9 @@ bool wxEmulatorApp::OnInit()
         wxLog::SetActiveTarget(new wxLogStderr);
 #endif
         wxString msg;
-        msg.Printf(wxT("wxWindows PDA Emulator (c) Julian Smart, 2002 Version %.2f, %s"), wxEMULATOR_VERSION, __DATE__);
+        msg.Printf(wxT("wxWidgets PDA Emulator (c) Julian Smart, 2002 Version %.2f, %s"), wxEMULATOR_VERSION, __DATE__);
         wxLogMessage(msg);
-        return FALSE;
+        return false;
     }
     if (parser.Found(wxT("u"), & m_displayNumber))
     {
@@ -172,30 +175,32 @@ bool wxEmulatorApp::OnInit()
     if (!LoadEmulator(m_appDir))
     {
         //wxMessageBox(wxT("Sorry, could not load this emulator. Please check bitmaps are valid."));
-        return FALSE;        
+        return false;
     }
-    
+
     // create the main application window
     wxEmulatorFrame *frame = new wxEmulatorFrame(_T("wxEmulator"),
                                  wxPoint(50, 50), wxSize(450, 340));
-                                
+
+#if wxUSE_STATUSBAR
     frame->SetStatusText(m_emulatorInfo.m_emulatorTitle, 0);
 
     wxString sizeStr;
     sizeStr.Printf(wxT("Screen: %dx%d"), (int) m_emulatorInfo.m_emulatorScreenSize.x,
             (int) m_emulatorInfo.m_emulatorScreenSize.y);
     frame->SetStatusText(sizeStr, 1);
+#endif // wxUSE_STATUSBAR
 
-    m_containerWindow = new wxEmulatorContainer(frame, -1);
+    m_containerWindow = new wxEmulatorContainer(frame, wxID_ANY);
 
     frame->SetClientSize(m_emulatorInfo.m_emulatorDeviceSize.x,
                          m_emulatorInfo.m_emulatorDeviceSize.y);
-    
+
     // and show it (the frames, unlike simple controls, are not shown when
     // created initially)
-    frame->Show(TRUE);
-    
-#ifdef __WXX11__    
+    frame->Show(true);
+
+#ifdef __WXX11__
     m_xnestWindow = new wxAdoptedWindow;
 
     wxString cmd;
@@ -210,24 +215,24 @@ bool wxEmulatorApp::OnInit()
     {
         frame->Destroy();
         wxMessageBox(wxT("Sorry, could not run Xnest. Please check your PATH."));
-        return FALSE;
+        return false;
     }
-    
+
     wxReparenter reparenter;
     if (!reparenter.WaitAndReparent(m_containerWindow, m_xnestWindow, wxT("Xnest")))
     {
         wxMessageBox(wxT("Sorry, could not reparent Xnest.."));
         frame->Destroy();
-        return FALSE;
+        return false;
     }
 
 #endif
     m_containerWindow->DoResize();
 
     // success: wxApp::OnRun() will be called which will enter the main message
-    // loop and the application will run. If we returned FALSE here, the
+    // loop and the application will run. If we returned false here, the
     // application would exit immediately.
-    return TRUE;
+    return true;
 }
 
 // Prepend the current program directory to the name
@@ -241,7 +246,7 @@ wxString wxEmulatorApp::GetFullAppPath(const wxString& filename) const
         path += '\\';
 #endif
     path += filename;
-    
+
     return path;
 }
 
@@ -259,8 +264,9 @@ bool wxEmulatorApp::LoadEmulator(const wxString& appDir)
 // ----------------------------------------------------------------------------
 
 // frame constructor
-wxEmulatorFrame::wxEmulatorFrame(const wxString& title, const wxPoint& pos, const wxSize& size)
-       : wxFrame(NULL, -1, title, pos, size)
+wxEmulatorFrame::wxEmulatorFrame(const wxString& title,
+    const wxPoint& pos, const wxSize& size)
+    : wxFrame(NULL, wxID_ANY, title, pos, size)
 {
     // set the frame icon
     SetIcon(wxICON(emulator));
@@ -295,8 +301,8 @@ wxEmulatorFrame::wxEmulatorFrame(const wxString& title, const wxPoint& pos, cons
 
 void wxEmulatorFrame::OnQuit(wxCommandEvent& WXUNUSED(event))
 {
-    // TRUE is to force the frame to close
-    Close(TRUE);
+    // true is to force the frame to close
+    Close(true);
 }
 
 void wxEmulatorFrame::OnAbout(wxCommandEvent& WXUNUSED(event))
@@ -307,7 +313,7 @@ void wxEmulatorFrame::OnAbout(wxCommandEvent& WXUNUSED(event))
     wxMessageBox(msg, _T("About wxEmulator"), wxOK | wxICON_INFORMATION, this);
 }
 
-void wxEmulatorFrame::OnCloseWindow(wxCloseEvent& event)
+void wxEmulatorFrame::OnCloseWindow(wxCloseEvent& WXUNUSED(event))
 {
 #ifdef __WXX11__
     if (wxGetApp().m_xnestWindow)
@@ -336,7 +342,7 @@ wxEmulatorContainer::wxEmulatorContainer(wxWindow* parent, wxWindowID id):
 {
 }
 
-void wxEmulatorContainer::OnSize(wxSizeEvent& event)
+void wxEmulatorContainer::OnSize(wxSizeEvent& WXUNUSED(event))
 {
     DoResize();
 }
@@ -352,39 +358,39 @@ void wxEmulatorContainer::DoResize()
     {
         int deviceWidth = wxGetApp().m_emulatorInfo.m_emulatorDeviceSize.x;
         int deviceHeight = wxGetApp().m_emulatorInfo.m_emulatorDeviceSize.y;
-        
+
         int x = wxMax(0, (int) ((sz.x - deviceWidth)/2.0));
         int y = wxMax(0, (int) ((sz.y - deviceHeight)/2.0));
-        
+
         x += wxGetApp().m_emulatorInfo.m_emulatorScreenPosition.x;
         y += wxGetApp().m_emulatorInfo.m_emulatorScreenPosition.y;
-        
+
         wxGetApp().m_xnestWindow->Move(x, y);
     }
     Refresh();
 }
 
-void wxEmulatorContainer::OnPaint(wxPaintEvent& event)
+void wxEmulatorContainer::OnPaint(wxPaintEvent& WXUNUSED(event))
 {
     wxPaintDC dc(this);
-    
+
     wxSize sz = GetClientSize();
     if (wxGetApp().m_emulatorInfo.m_emulatorBackgroundBitmap.Ok())
     {
         int deviceWidth = wxGetApp().m_emulatorInfo.m_emulatorDeviceSize.x;
         int deviceHeight = wxGetApp().m_emulatorInfo.m_emulatorDeviceSize.y;
-        
+
         int x = wxMax(0, (int) ((sz.x - deviceWidth)/2.0));
         int y = wxMax(0, (int) ((sz.y - deviceHeight)/2.0));
-        
+
         dc.DrawBitmap(wxGetApp().m_emulatorInfo.m_emulatorBackgroundBitmap, x, y);
     }
 }
 
 void wxEmulatorContainer::OnEraseBackground(wxEraseEvent& event)
 {
-    wxDC* dc = NULL;
-    
+    wxDC* dc wxDUMMY_INITIALIZE(NULL);
+
     if (event.GetDC())
     {
         dc = event.GetDC();
@@ -393,10 +399,10 @@ void wxEmulatorContainer::OnEraseBackground(wxEraseEvent& event)
     {
         dc = new wxClientDC(this);
     }
-    
+
     dc->SetBackground(wxBrush(wxGetApp().m_emulatorInfo.m_emulatorBackgroundColour, wxSOLID));
     dc->Clear();
-    
+
     if (!event.GetDC())
         delete dc;
 }
@@ -428,27 +434,31 @@ bool wxEmulatorInfo::Load(const wxString& appDir)
 {
     // Try to find absolute path
     wxString absoluteConfigPath = m_emulatorFilename;
-    if (!wxIsAbsolutePath(absoluteConfigPath))
+    if ( !::wxIsAbsolutePath(absoluteConfigPath) )
     {
         wxString currDir = wxGetCwd();
         absoluteConfigPath = currDir + wxString(wxFILE_SEP_PATH) + m_emulatorFilename;
-        if (!wxFileExists(absoluteConfigPath))
+        if ( !wxFile::Exists(absoluteConfigPath) )
         {
-            absoluteConfigPath = appDir + wxString(wxFILE_SEP_PATH) + m_emulatorFilename;
+            absoluteConfigPath = appDir + wxString(wxFILE_SEP_PATH)
+                + m_emulatorFilename;
         }
     }
-    if (!wxFileExists(absoluteConfigPath))
+
+    if ( !wxFile::Exists(absoluteConfigPath) )
     {
         wxString str;
-        str.Printf(wxT("Could not find config file %s"), absoluteConfigPath.c_str()), 
+        str.Printf( wxT("Could not find config file %s"),
+            absoluteConfigPath.c_str() );
+
         wxMessageBox(str);
-        return FALSE;
+        return false;
     }
 
     wxString rootPath = wxPathOnly(absoluteConfigPath);
 
     {
-        wxFileConfig config(wxT("wxEmulator"), wxT("wxWindows"),
+        wxFileConfig config(wxT("wxEmulator"), wxT("wxWidgets"),
             absoluteConfigPath, wxEmptyString, wxCONFIG_USE_LOCAL_FILE);
 
         config.Read(wxT("/General/title"), & m_emulatorTitle);
@@ -476,33 +486,36 @@ bool wxEmulatorInfo::Load(const wxString& appDir)
         m_emulatorScreenPosition = wxPoint(x, y);
         m_emulatorScreenSize = wxSize(w, h);
     }
-    
+
     if (!m_emulatorBackgroundBitmapName.IsEmpty())
     {
         wxString absoluteBackgroundBitmapName = rootPath + wxString(wxFILE_SEP_PATH) + m_emulatorBackgroundBitmapName;
-        if (!wxFileExists(absoluteBackgroundBitmapName))
+        if ( !wxFile::Exists(absoluteBackgroundBitmapName) )
         {
             wxString str;
-            str.Printf(wxT("Could not find bitmap %s"), absoluteBackgroundBitmapName.c_str()), 
+            str.Printf( wxT("Could not find bitmap %s"),
+                absoluteBackgroundBitmapName.c_str() );
             wxMessageBox(str);
-            return FALSE;
+            return false;
         }
-        
+
         wxBitmapType type = wxDetermineImageType(m_emulatorBackgroundBitmapName);
         if (type == wxBITMAP_TYPE_INVALID)
-            return FALSE;
-        
+            return false;
+
         if (!m_emulatorBackgroundBitmap.LoadFile(m_emulatorBackgroundBitmapName, type))
         {
             wxString str;
-            str.Printf(wxT("Could not load bitmap file %s"), m_emulatorBackgroundBitmapName.c_str()), 
+            str.Printf( wxT("Could not load bitmap file %s"),
+                m_emulatorBackgroundBitmapName.c_str() );
             wxMessageBox(str);
-            return FALSE;
+            return false;
         }
+
         m_emulatorDeviceSize = wxSize(m_emulatorBackgroundBitmap.GetWidth(),
             m_emulatorBackgroundBitmap.GetHeight());
     }
-    return TRUE;
+    return true;
 }
 
 // Returns the image type, or -1, determined from the extension.
@@ -513,19 +526,19 @@ wxBitmapType wxDetermineImageType(const wxString& filename)
     wxSplitPath(filename, & path, & name, & ext);
 
     ext.MakeLower();
-    if (ext == "jpg" || ext == "jpeg")
+    if (ext == _T("jpg") || ext == _T("jpeg"))
         return wxBITMAP_TYPE_JPEG;
-    if (ext == "gif")
+    if (ext == _T("gif"))
         return wxBITMAP_TYPE_GIF;
-    if (ext == "bmp")
+    if (ext == _T("bmp"))
         return wxBITMAP_TYPE_BMP;
-    if (ext == "png")
+    if (ext == _T("png"))
         return wxBITMAP_TYPE_PNG;
-    if (ext == "pcx")
+    if (ext == _T("pcx"))
         return wxBITMAP_TYPE_PCX;
-    if (ext == "tif" || ext == "tiff")
+    if (ext == _T("tif") || ext == _T("tiff"))
         return wxBITMAP_TYPE_TIF;
-    
+
     return wxBITMAP_TYPE_INVALID;
 }
 
@@ -544,12 +557,9 @@ wxString wxColourToHexString(const wxColour& col)
 // Convert 6-digit hex string to a colour
 wxColour wxHexStringToColour(const wxString& hex)
 {
-    unsigned int r = 0;
-    unsigned int g = 0;
-    unsigned int b = 0;
-    r = wxHexToDec(hex.Mid(0, 2));
-    g = wxHexToDec(hex.Mid(2, 2));
-    b = wxHexToDec(hex.Mid(4, 2));
+    unsigned char r = (unsigned char)wxHexToDec(hex.Mid(0, 2));
+    unsigned char g = (unsigned char)wxHexToDec(hex.Mid(2, 2));
+    unsigned char b = (unsigned char)wxHexToDec(hex.Mid(4, 2));
 
     return wxColour(r, g, b);
 }
@@ -578,11 +588,11 @@ wxString wxFindAppPath(const wxString& argv0, const wxString& cwd, const wxStrin
     {
         // Is it a relative path?
         wxString currentDir(cwd);
-        if (currentDir.Last() != wxFILE_SEP_PATH)
+        if (!wxEndsWithPathSeparator(currentDir))
             currentDir += wxFILE_SEP_PATH;
 
         str = currentDir + argv0;
-        if (wxFileExists(str))
+        if ( wxFile::Exists(str) )
             return wxPathOnly(str);
     }
 

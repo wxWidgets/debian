@@ -4,7 +4,7 @@
 // Author:      Aleksandras Gluchovas
 // Modified by:
 // Created:     27/12/98
-// RCS-ID:      $Id: ifcontext.h,v 1.1 1999/09/13 14:29:40 JS Exp $
+// RCS-ID:      $Id: ifcontext.h,v 1.2 2003/10/22 20:54:50 MBN Exp $
 // Copyright:   (c) Aleskandars Gluchovas
 // Licence:   	wxWindows licence
 /////////////////////////////////////////////////////////////////////////////

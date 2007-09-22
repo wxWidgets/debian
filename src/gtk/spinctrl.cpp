@@ -3,14 +3,17 @@
 // Purpose:     wxSpinCtrl
 // Author:      Robert
 // Modified by:
-// RCS-ID:      $Id: spinctrl.cpp,v 1.26.2.1 2003/07/07 14:21:56 RR Exp $
+// RCS-ID:      $Id: spinctrl.cpp,v 1.40 2004/06/24 20:04:01 RD Exp $
 // Copyright:   (c) Robert Roebling
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
 
-#ifdef __GNUG__
+#if defined(__GNUG__) && !defined(NO_GCC_PRAGMA)
 #pragma implementation "spinctrl.h"
 #endif
+
+// For compilers that support precompilation, includes "wx.h".
+#include "wx/wxprec.h"
 
 #include "wx/spinctrl.h"
 
@@ -123,26 +126,9 @@ bool wxSpinCtrl::Create(wxWindow *parent, wxWindowID id,
     
     m_parent->DoAddChild( this );
 
-    PostCreation();
-
-    SetFont( parent->GetFont() );
-    
-    wxSize size_best( DoGetBestSize() );
-    wxSize new_size( size );
-    if (new_size.x == -1)
-        new_size.x = size_best.x;
-    if (new_size.y == -1)
-        new_size.y = size_best.y;
-    if (new_size.y > size_best.y)
-        new_size.y = size_best.y;
-    if ((new_size.x != size.x) || (new_size.y != size.y))
-        SetSize( new_size.x, new_size.y );
-
-    SetBackgroundColour( parent->GetBackgroundColour() );
+    PostCreation(size);
 
     SetValue( value );
-
-    Show( TRUE );
 
     return TRUE;
 }
@@ -228,6 +214,19 @@ void wxSpinCtrl::SetValue( int value )
     GtkEnableEvents();
 }
 
+void wxSpinCtrl::SetSelection(long from, long to)
+{
+    // translate from wxWidgets conventions to GTK+ ones: (-1, -1) means the
+    // entire range
+    if ( from == -1 && to == -1 )
+    {
+        from = 0;
+        to = INT_MAX;
+    }
+
+    gtk_editable_select_region( GTK_EDITABLE(m_widget), (gint)from, (gint)to );
+}
+
 void wxSpinCtrl::SetRange(int minVal, int maxVal)
 {
     wxCHECK_RET( (m_widget != NULL), wxT("invalid spin button") );
@@ -255,10 +254,10 @@ void wxSpinCtrl::OnChar( wxKeyEvent &event )
 {
     wxCHECK_RET( m_widget != NULL, wxT("invalid spin ctrl") );
 
-    if (event.KeyCode() == WXK_RETURN)
+    if (event.GetKeyCode() == WXK_RETURN)
     {
         wxWindow *top_frame = m_parent;
-        while (top_frame->GetParent() && !(top_frame->GetParent()->IsTopLevel()))
+        while (top_frame->GetParent() && !(top_frame->IsTopLevel()))
             top_frame = top_frame->GetParent();
 
         if ( GTK_IS_WINDOW(top_frame->m_widget) )
@@ -268,13 +267,23 @@ void wxSpinCtrl::OnChar( wxKeyEvent &event )
             {
                 GtkWidget *widgetDef = window->default_widget;
 
-                if ( widgetDef && GTK_IS_WINDOW(widgetDef) )
+                if ( widgetDef )
                 {
                     gtk_widget_activate(widgetDef);
                     return;
                 }
             }
         }
+    }
+
+    if ((event.GetKeyCode() == WXK_RETURN) && (m_windowStyle & wxPROCESS_ENTER))
+    {
+        wxCommandEvent evt( wxEVT_COMMAND_TEXT_ENTER, m_windowId );
+        evt.SetEventObject(this);
+        GtkSpinButton *gsb = GTK_SPIN_BUTTON(m_widget);
+        wxString val = wxGTK_CONV_BACK( gtk_entry_get_text( &gsb->entry ) );
+        evt.SetString( val );
+        if (GetEventHandler()->ProcessEvent(evt)) return;
     }
 
     event.Skip();
@@ -289,16 +298,21 @@ bool wxSpinCtrl::IsOwnGtkWindow( GdkWindow *window )
     return FALSE;
 }
 
-void wxSpinCtrl::ApplyWidgetStyle()
-{
-    SetWidgetStyle();
-    gtk_widget_set_style( m_widget, m_widgetStyle );
-}
-
 wxSize wxSpinCtrl::DoGetBestSize() const
 {
     wxSize ret( wxControl::DoGetBestSize() );
-    return wxSize(95, ret.y);
+    wxSize best(95, ret.y);
+    CacheBestSize(best);
+    return best;
+}
+
+// static
+wxVisualAttributes
+wxSpinCtrl::GetClassDefaultAttributes(wxWindowVariant WXUNUSED(variant))
+{
+    // TODO: overload to accept functions like gtk_spin_button_new?
+    // Until then use a similar type
+    return GetDefaultAttributesFromGTKWidget(gtk_entry_new, true);
 }
 
 #endif

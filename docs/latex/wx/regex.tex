@@ -4,45 +4,36 @@
 %% Author:      Vadim Zeitlin
 %% Modified by:
 %% Created:     14.07.01
-%% RCS-ID:      $Id: regex.tex,v 1.9.2.1 2004/05/04 08:52:01 JS Exp $
+%% RCS-ID:      $Id: regex.tex,v 1.16 2004/09/23 23:38:05 RN Exp $
 %% Copyright:   (c) 2001 Vadim Zeitlin
 %% License:     wxWidgets license
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \section{\class{wxRegEx}}\label{wxregex}
 
-wxRegEx represents a regular expression. The regular expressions syntax
-supported is the POSIX one. Both basic and extended regular expressions are
-supported but, unlike POSIX C API, the extended ones are used by default.
+wxRegEx represents a regular expression.  This class provides support
+for regular expressions matching and also replacement.
 
-This class provides support for regular expressions matching and also
-replacement. It is built on top of either the system library (if it has support
-for POSIX regular expressions - which is the case of the most modern Unices) or
-uses the built in Henry Spencer's library. In the latter case you need to abide
-by the terms of its copyright:
+It is built on top of either the system library (if it has support
+for POSIX regular expressions - which is the case of the most modern
+Unices) or uses the built in Henry Spencer's library.  Henry Spencer
+would appreciate being given credit in the documentation of software
+which uses his library, but that is not a requirement.
 
-\begin{verbatim}
-Copyright 1992, 1993, 1994, 1997 Henry Spencer.  All rights reserved.
-This software is not subject to any license of the American Telephone
-and Telegraph Company or of the Regents of the University of California.
+Regular expressions, as defined by POSIX, come in two flavours: {\it extended}
+and {\it basic}.  The builtin library also adds a third flavour
+of expression \helpref{advanced}{wxresyn}, which is not available
+when using the system library.
 
-Permission is granted to anyone to use this software for any purpose on
-any computer system, and to alter it and redistribute it, subject
-to the following restrictions:
+Unicode is fully supported only when using the builtin library.
+When using the system library in Unicode mode, the expressions and data
+are translated to the default 8-bit encoding before being passed to
+the library.
 
-1. The author is not responsible for the consequences of use of this
-   software, no matter how awful, even if they arise from flaws in it.
-
-2. The origin of this software must not be misrepresented, either by
-   explicit claim or by omission.  Since few users ever read sources,
-   credits must appear in the documentation.
-
-3. Altered versions must be plainly marked as such, and must not be
-   misrepresented as being the original software.  Since few users
-   ever read sources, credits must appear in the documentation.
-
-4. This notice may not be removed or altered.
-\end{verbatim}
+On platforms where a system library is available, the default is to use
+the builtin library for Unicode builds, and the system library otherwise.
+It is possible to use the other if preferred by selecting it when building
+the wxWidgets.
 
 \wxheading{Derived from}
 
@@ -55,8 +46,13 @@ Flags for regex compilation to be used with \helpref{Compile()}{wxregexcompile}:
 \begin{verbatim}
 enum
 {
-    // use extended regex syntax (default)
+    // use extended regex syntax
     wxRE_EXTENDED = 0,
+    
+    // use advanced RE syntax (built-in regex only)
+#ifdef wxHAS_REGEX_ADVANCED
+    wxRE_ADVANCED = 1,
+#endif
 
     // use basic RE syntax
     wxRE_BASIC    = 2,
@@ -102,19 +98,19 @@ is bad because the real email addresses can have more complicated form than
 \begin{verbatim}
 wxString text;
 ...
-wxRegEx reEmail = "([^@]+)@([[:alnum:].-_].)+([[:alnum:]]+)";
+wxRegEx reEmail = wxT("([^@]+)@([[:alnum:].-_].)+([[:alnum:]]+)");
 if ( reEmail.Matches(text) )
 {
     wxString text = reEmail.GetMatch(email);
     wxString username = reEmail.GetMatch(email, 1);
-    if ( reEmail.GetMatch(email, 3) == "com" ) // .com TLD?
+    if ( reEmail.GetMatch(email, 3) == wxT("com") ) // .com TLD?
     {
         ...
     }
 }
 
 // or we could do this to hide the email address
-size_t count = reEmail.ReplaceAll(text, "HIDDEN@\\2\\3");
+size_t count = reEmail.ReplaceAll(text, wxT("HIDDEN@\\2\\3"));
 printf("text now contains %u hidden addresses", count);
 \end{verbatim}
 
@@ -141,14 +137,14 @@ dtor not virtual, don't derive from this class
 
 \func{bool}{Compile}{\param{const wxString\& }{pattern}, \param{int }{flags = wxRE\_DEFAULT}}
 
-Compile the string into regular expression, return {\tt TRUE} if ok or {\tt FALSE} 
+Compile the string into regular expression, return {\tt true} if ok or {\tt false} 
 if string has a syntax error.
 
 \membersection{wxRegEx::IsValid}\label{wxregexisvalid}
 
 \constfunc{bool}{IsValid}{\void}
 
-Return {\tt TRUE} if this is a valid compiled regular expression, {\tt FALSE} 
+Return {\tt true} if this is a valid compiled regular expression, {\tt false} 
 otherwise.
 
 \membersection{wxRegEx::GetMatch}\label{wxregexgetmatch}
@@ -163,7 +159,7 @@ May only be called after successful call to \helpref{Matches()}{wxregexmatches}
 and only if {\tt wxRE\_NOSUB} was {\bf not} used in 
 \helpref{Compile()}{wxregexcompile}.
 
-Returns {\tt FALSE} if no match or if an error occured.
+Returns {\tt false} if no match or if an error occured.
 
 \constfunc{wxString}{GetMatch}{\param{const wxString\& }{text}, \param{size\_t }{index = 0}}
 
@@ -174,12 +170,22 @@ May only be called after successful call to \helpref{Matches()}{wxregexmatches}
 and only if {\tt wxRE\_NOSUB} was {\bf not} used in 
 \helpref{Compile()}{wxregexcompile}.
 
+\membersection{wxRegEx::GetMatchCount}\label{wxregexgetmatchcount}
+
+\constfunc{size\_t}{GetMatchCount}{\void}
+
+Returns the size of the array of matches, i.e. the number of bracketed
+subexpressions plus one for the expression itself, or $0$ on error.
+
+May only be called after successful call to \helpref{Compile()}{wxregexcompile}.
+and only if {\tt wxRE\_NOSUB} was {\bf not} used.
+
 \membersection{wxRegEx::Matches}\label{wxregexmatches}
 
 \constfunc{bool}{Matches}{\param{const wxChar* }{text}, \param{int }{flags = 0}}
 
 Matches the precompiled regular expression against the string {\it text},
-returns {\tt TRUE} if matches and {\tt FALSE} otherwise.
+returns {\tt true} if matches and {\tt false} otherwise.
 
 Flags may be combination of {\tt wxRE\_NOTBOL} and {\tt wxRE\_NOTEOL}.
 

@@ -2,16 +2,20 @@
 // Name:        src/gtk/brush.cpp
 // Purpose:
 // Author:      Robert Roebling
-// Id:          $Id: brush.cpp,v 1.20 2002/05/07 21:58:26 GD Exp $
+// Id:          $Id: brush.cpp,v 1.24 2004/05/23 20:52:19 JS Exp $
 // Copyright:   (c) 1998 Robert Roebling
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
 
-#ifdef __GNUG__
+#if defined(__GNUG__) && !defined(NO_GCC_PRAGMA)
 #pragma implementation "brush.h"
 #endif
 
+// For compilers that support precompilation, includes "wx.h".
+#include "wx/wxprec.h"
+
 #include "wx/brush.h"
+#include "wx/colour.h"
 
 #include <gdk/gdk.h>
 

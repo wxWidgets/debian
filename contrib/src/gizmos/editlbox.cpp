@@ -2,7 +2,7 @@
 // Name:        editlbox.cpp
 // Purpose:     ListBox with editable items
 // Author:      Vaclav Slavik
-// RCS-ID:      $Id: editlbox.cpp,v 1.13.2.1 2002/11/12 23:28:35 VS Exp $
+// RCS-ID:      $Id: editlbox.cpp,v 1.20 2004/11/05 21:17:45 VS Exp $
 // Copyright:   (c) Vaclav Slavik
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -19,7 +19,7 @@
 #endif
 
 // for all others, include the necessary headers (this file is usually all you
-// need because it includes almost all "standard" wxWindows headers)
+// need because it includes almost all "standard" wxWidgets headers)
 #ifndef WX_PRECOMP
     #include "wx/wx.h"
 #endif
@@ -36,7 +36,7 @@ class CleverListCtrl : public wxListCtrl
 {
 public:
    CleverListCtrl(wxWindow *parent,
-                  wxWindowID id = -1,
+                  wxWindowID id = wxID_ANY,
                   const wxPoint &pos = wxDefaultPosition,
                   const wxSize &size = wxDefaultSize,
                   long style = wxLC_ICON,
@@ -85,21 +85,18 @@ END_EVENT_TABLE()
 
 IMPLEMENT_CLASS(wxEditableListBox, wxPanel)
 
-enum
-{
-    // ID value doesn't matter, it won't propagate out of wxEditableListBox
-    // instance
-    wxID_ELB_DELETE = wxID_HIGHEST + 1,
-    wxID_ELB_NEW,
-    wxID_ELB_UP,
-    wxID_ELB_DOWN,
-    wxID_ELB_EDIT,
-    wxID_ELD_LISTCTRL
-};
+// NB: generate the IDs at runtime to avoid conflict with XRCID values,
+//     they could cause XRCCTRL() failures in XRC-based dialogs
+const int wxID_ELB_DELETE = wxNewId();
+const int wxID_ELB_EDIT = wxNewId();
+const int wxID_ELB_NEW = wxNewId();
+const int wxID_ELB_UP = wxNewId();
+const int wxID_ELB_DOWN = wxNewId();
+const int wxID_ELB_LISTCTRL = wxNewId();
 
 BEGIN_EVENT_TABLE(wxEditableListBox, wxPanel)
-    EVT_LIST_ITEM_SELECTED(wxID_ELD_LISTCTRL, wxEditableListBox::OnItemSelected)
-    EVT_LIST_END_LABEL_EDIT(wxID_ELD_LISTCTRL, wxEditableListBox::OnEndLabelEdit)
+    EVT_LIST_ITEM_SELECTED(wxID_ELB_LISTCTRL, wxEditableListBox::OnItemSelected)
+    EVT_LIST_END_LABEL_EDIT(wxID_ELB_LISTCTRL, wxEditableListBox::OnEndLabelEdit)
     EVT_BUTTON(wxID_ELB_NEW, wxEditableListBox::OnNewItem)
     EVT_BUTTON(wxID_ELB_UP, wxEditableListBox::OnUpItem)
     EVT_BUTTON(wxID_ELB_DOWN, wxEditableListBox::OnDownItem)
@@ -115,14 +112,14 @@ wxEditableListBox::wxEditableListBox(wxWindow *parent, wxWindowID id,
    : wxPanel(parent, id, pos, size, wxTAB_TRAVERSAL, name)
 {
     m_style = style;
-    m_bEdit = m_bNew = m_bDel = m_bUp = m_bDown = NULL;    
+    m_bEdit = m_bNew = m_bDel = m_bUp = m_bDown = NULL;
 
     wxSizer *sizer = new wxBoxSizer(wxVERTICAL);
 
-    wxPanel *subp = new wxPanel(this, -1, wxDefaultPosition, wxDefaultSize,
+    wxPanel *subp = new wxPanel(this, wxID_ANY, wxDefaultPosition, wxDefaultSize,
                                 wxSUNKEN_BORDER | wxTAB_TRAVERSAL);
     wxSizer *subsizer = new wxBoxSizer(wxHORIZONTAL);
-    subsizer->Add(new wxStaticText(subp, -1, label), 1, wxALIGN_CENTRE_VERTICAL | wxLEFT, 4);
+    subsizer->Add(new wxStaticText(subp, wxID_ANY, label), 1, wxALIGN_CENTRE_VERTICAL | wxLEFT, 4);
 
 #ifdef __WXMSW__
     #define BTN_BORDER 4
@@ -158,14 +155,13 @@ wxEditableListBox::wxEditableListBox(wxWindow *parent, wxWindowID id,
     subsizer->Add(m_bDown, 0, wxALIGN_CENTRE_VERTICAL | wxTOP | wxBOTTOM, BTN_BORDER);
 
 #if wxUSE_TOOLTIPS
-    if ( m_bEdit ) m_bEdit->SetToolTip(wxT("Edit item"));
-    if ( m_bNew ) m_bNew->SetToolTip(wxT("New item"));
-    if ( m_bDel ) m_bDel->SetToolTip(wxT("Delete item"));
-    m_bUp->SetToolTip(wxT("Move up"));
-    m_bDown->SetToolTip(wxT("Move down"));
+    if ( m_bEdit ) m_bEdit->SetToolTip(_("Edit item"));
+    if ( m_bNew ) m_bNew->SetToolTip(_("New item"));
+    if ( m_bDel ) m_bDel->SetToolTip(_("Delete item"));
+    m_bUp->SetToolTip(_("Move up"));
+    m_bDown->SetToolTip(_("Move down"));
 #endif
 
-    subp->SetAutoLayout(TRUE);
     subp->SetSizer(subsizer);
     subsizer->Fit(subp);
 
@@ -174,14 +170,13 @@ wxEditableListBox::wxEditableListBox(wxWindow *parent, wxWindowID id,
     long st = wxLC_REPORT | wxLC_NO_HEADER | wxLC_SINGLE_SEL | wxSUNKEN_BORDER;
     if ( style & wxEL_ALLOW_EDIT )
          st |= wxLC_EDIT_LABELS;
-    m_listCtrl = new CleverListCtrl(this, wxID_ELD_LISTCTRL,
+    m_listCtrl = new CleverListCtrl(this, wxID_ELB_LISTCTRL,
                                     wxDefaultPosition, wxDefaultSize, st);
     wxArrayString empty_ar;
     SetStrings(empty_ar);
 
     sizer->Add(m_listCtrl, 1, wxEXPAND);
 
-    SetAutoLayout(TRUE);
     SetSizer(sizer);
     Layout();
 }
@@ -194,7 +189,7 @@ void wxEditableListBox::SetStrings(const wxArrayString& strings)
     for (i = 0; i < strings.GetCount(); i++)
         m_listCtrl->InsertItem(i, strings[i]);
 
-    m_listCtrl->InsertItem(strings.GetCount(), _T(""));
+    m_listCtrl->InsertItem(strings.GetCount(), wxEmptyString);
     m_listCtrl->SetItemState(0, wxLIST_STATE_SELECTED, wxLIST_STATE_SELECTED);
 }
 
@@ -217,7 +212,7 @@ void wxEditableListBox::OnItemSelected(wxListEvent& event)
         m_bDel->Enable(m_selection < m_listCtrl->GetItemCount()-1);
 }
 
-void wxEditableListBox::OnNewItem(wxCommandEvent& event)
+void wxEditableListBox::OnNewItem(wxCommandEvent& WXUNUSED(event))
 {
     m_listCtrl->SetItemState(m_listCtrl->GetItemCount()-1,
                              wxLIST_STATE_SELECTED, wxLIST_STATE_SELECTED);
@@ -226,29 +221,29 @@ void wxEditableListBox::OnNewItem(wxCommandEvent& event)
 
 void wxEditableListBox::OnEndLabelEdit(wxListEvent& event)
 {
-    if ( event.GetIndex() == m_listCtrl->GetItemCount()-1 && 
+    if ( event.GetIndex() == m_listCtrl->GetItemCount()-1 &&
          !event.GetText().IsEmpty() )
     {
         // The user edited last (empty) line, i.e. added new entry. We have to
         // add new empty line here so that adding one more line is still
         // possible:
-        m_listCtrl->InsertItem(m_listCtrl->GetItemCount(), _T(""));
+        m_listCtrl->InsertItem(m_listCtrl->GetItemCount(), wxEmptyString);
     }
 }
 
-void wxEditableListBox::OnDelItem(wxCommandEvent& event)
+void wxEditableListBox::OnDelItem(wxCommandEvent& WXUNUSED(event))
 {
     m_listCtrl->DeleteItem(m_selection);
     m_listCtrl->SetItemState(m_selection,
                              wxLIST_STATE_SELECTED, wxLIST_STATE_SELECTED);
 }
 
-void wxEditableListBox::OnEditItem(wxCommandEvent& event)
+void wxEditableListBox::OnEditItem(wxCommandEvent& WXUNUSED(event))
 {
     m_listCtrl->EditLabel(m_selection);
 }
 
-void wxEditableListBox::OnUpItem(wxCommandEvent& event)
+void wxEditableListBox::OnUpItem(wxCommandEvent& WXUNUSED(event))
 {
     wxString t1, t2;
 
@@ -260,7 +255,7 @@ void wxEditableListBox::OnUpItem(wxCommandEvent& event)
                              wxLIST_STATE_SELECTED, wxLIST_STATE_SELECTED);
 }
 
-void wxEditableListBox::OnDownItem(wxCommandEvent& event)
+void wxEditableListBox::OnDownItem(wxCommandEvent& WXUNUSED(event))
 {
     wxString t1, t2;
 

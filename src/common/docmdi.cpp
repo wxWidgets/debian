@@ -4,12 +4,12 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     01/02/97
-// RCS-ID:      $Id: docmdi.cpp,v 1.16 2002/07/22 14:46:41 DW Exp $
+// RCS-ID:      $Id: docmdi.cpp,v 1.24 2004/09/10 12:56:07 ABX Exp $
 // Copyright:   (c) Julian Smart
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
 
-#ifdef __GNUG__
+#if defined(__GNUG__) && !defined(NO_GCC_PRAGMA)
 #pragma implementation "docmdi.h"
 #endif
 
@@ -20,7 +20,7 @@
   #pragma hdrstop
 #endif
 
-#if wxUSE_MDI_ARCHITECTURE && wxUSE_DOC_VIEW_ARCHITECTURE
+#if wxUSE_MDI_ARCHITECTURE
 
 #include "wx/docmdi.h"
 
@@ -36,16 +36,33 @@ BEGIN_EVENT_TABLE(wxDocMDIParentFrame, wxMDIParentFrame)
     EVT_CLOSE(wxDocMDIParentFrame::OnCloseWindow)
 END_EVENT_TABLE()
 
-wxDocMDIParentFrame::wxDocMDIParentFrame(wxDocManager *manager, wxFrame *frame, wxWindowID id, const wxString& title,
-  const wxPoint& pos, const wxSize& size, long style, const wxString& name):
-  wxMDIParentFrame(frame, id, title, pos, size, style, name)
+wxDocMDIParentFrame::wxDocMDIParentFrame()
 {
-  m_docManager = manager;
+    Init();
+}
+
+wxDocMDIParentFrame::wxDocMDIParentFrame(wxDocManager *manager, wxFrame *frame, wxWindowID id, const wxString& title,
+  const wxPoint& pos, const wxSize& size, long style, const wxString& name)
+{
+    Init();
+    Create(manager, frame, id, title, pos, size, style, name);
+}
+
+bool wxDocMDIParentFrame::Create(wxDocManager *manager, wxFrame *frame, wxWindowID id, const wxString& title,
+  const wxPoint& pos, const wxSize& size, long style, const wxString& name)
+{
+    m_docManager = manager;
+    return wxMDIParentFrame::Create(frame, id, title, pos, size, style, name);
 }
 
 void wxDocMDIParentFrame::OnExit(wxCommandEvent& WXUNUSED(event))
 {
     Close();
+}
+
+void wxDocMDIParentFrame::Init()
+{
+    m_docManager = NULL;
 }
 
 void wxDocMDIParentFrame::OnMRUFile(wxCommandEvent& event)
@@ -62,7 +79,7 @@ bool wxDocMDIParentFrame::ProcessEvent(wxEvent& event)
     if (!m_docManager || !m_docManager->ProcessEvent(event))
         return wxEvtHandler::ProcessEvent(event);
     else
-        return TRUE;
+        return true;
 }
 
 void wxDocMDIParentFrame::OnCloseWindow(wxCloseEvent& event)
@@ -87,19 +104,42 @@ BEGIN_EVENT_TABLE(wxDocMDIChildFrame, wxMDIChildFrame)
     EVT_CLOSE(wxDocMDIChildFrame::OnCloseWindow)
 END_EVENT_TABLE()
 
-wxDocMDIChildFrame::wxDocMDIChildFrame(wxDocument *doc, wxView *view, wxMDIParentFrame *frame, wxWindowID  id,
-  const wxString& title, const wxPoint& pos, const wxSize& size, long style, const wxString& name):
-    wxMDIChildFrame(frame, id, title, pos, size, style, name)
+void wxDocMDIChildFrame::Init()
 {
-  m_childDocument = doc;
-  m_childView = view;
-  if (view)
-    view->SetFrame(this);
+    m_childDocument = (wxDocument*)  NULL;
+    m_childView = (wxView*) NULL;
+}
+
+wxDocMDIChildFrame::wxDocMDIChildFrame()
+{
+    Init();
+}
+
+wxDocMDIChildFrame::wxDocMDIChildFrame(wxDocument *doc, wxView *view, wxMDIParentFrame *frame, wxWindowID  id,
+  const wxString& title, const wxPoint& pos, const wxSize& size, long style, const wxString& name)
+{
+    Init();
+    Create(doc, view, frame, id, title, pos, size, style, name);
+}
+
+bool wxDocMDIChildFrame::Create(wxDocument *doc, wxView *view, wxMDIParentFrame *frame, wxWindowID  id,
+  const wxString& title, const wxPoint& pos, const wxSize& size, long style, const wxString& name)
+{
+    m_childDocument = doc;
+    m_childView = view;
+    if (wxMDIChildFrame::Create(frame, id, title, pos, size, style, name))
+    {
+        if (view)
+            view->SetFrame(this);
+        return true;
+    }
+
+    return false;
 }
 
 wxDocMDIChildFrame::~wxDocMDIChildFrame(void)
 {
-	m_childView = (wxView *) NULL;
+    m_childView = (wxView *) NULL;
 }
 
 // Extend event processing to search the view's event table
@@ -109,21 +149,21 @@ bool wxDocMDIChildFrame::ProcessEvent(wxEvent& event)
 
     // Break recursion loops
     if (ActiveEvent == &event)
-        return FALSE;
+        return false;
 
     ActiveEvent = &event;
 
     bool ret;
-	if ( !m_childView || ! m_childView->ProcessEvent(event) )
+    if ( !m_childView || ! m_childView->ProcessEvent(event) )
     {
         // Only hand up to the parent if it's a menu command
         if (!event.IsKindOf(CLASSINFO(wxCommandEvent)) || !GetParent() || !GetParent()->ProcessEvent(event))
             ret = wxEvtHandler::ProcessEvent(event);
         else
-            ret = TRUE;
+            ret = true;
     }
-	else
-        ret = TRUE;
+    else
+        ret = true;
 
     ActiveEvent = NULL;
     return ret;
@@ -140,18 +180,16 @@ void wxDocMDIChildFrame::OnActivate(wxActivateEvent& event)
 void wxDocMDIChildFrame::OnCloseWindow(wxCloseEvent& event)
 {
   // Close view but don't delete the frame while doing so!
-  // ...since it will be deleted by wxWindows if we return TRUE.
+  // ...since it will be deleted by wxWidgets if we return true.
   if (m_childView)
   {
-    bool ans = FALSE;
-    if (!event.CanVeto())
-      ans = TRUE; // Must delete.
-    else
-      ans = m_childView->Close(FALSE); // FALSE means don't delete associated window
+    bool ans = event.CanVeto()
+                ? m_childView->Close(false) // false means don't delete associated window
+                : true; // Must delete.
 
     if (ans)
     {
-      m_childView->Activate(FALSE);
+      m_childView->Activate(false);
       delete m_childView;
       m_childView = (wxView *) NULL;
       m_childDocument = (wxDocument *) NULL;

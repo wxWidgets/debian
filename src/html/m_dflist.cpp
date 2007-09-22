@@ -2,12 +2,12 @@
 // Name:        m_dflist.cpp
 // Purpose:     wxHtml module for definition lists (DL,DT,DD)
 // Author:      Vaclav Slavik
-// RCS-ID:      $Id: m_dflist.cpp,v 1.6.2.3 2002/11/09 00:07:31 VS Exp $
+// RCS-ID:      $Id: m_dflist.cpp,v 1.13 2004/09/27 19:15:05 ABX Exp $
 // Copyright:   (c) 1999 Vaclav Slavik
-// Licence:     wxWindows Licence
+// Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
 
-#ifdef __GNUG__
+#if defined(__GNUG__) && !defined(NO_GCC_PRAGMA)
 #pragma implementation
 #endif
 
@@ -36,6 +36,8 @@ FORCE_LINK_ME(m_dflist)
 
 TAG_HANDLER_BEGIN(DEFLIST, "DL,DT,DD" )
 
+    TAG_HANDLER_CONSTR(DEFLIST) { }
+
     TAG_HANDLER_PROC(tag)
     {
         wxHtmlContainerCell *c;
@@ -43,7 +45,7 @@ TAG_HANDLER_BEGIN(DEFLIST, "DL,DT,DD" )
 
         if (tag.GetName() == wxT("DL"))
         {
-            if (m_WParser->GetContainer()->GetFirstCell() != NULL)
+            if (m_WParser->GetContainer()->GetFirstChild() != NULL)
             {
                 m_WParser->CloseContainer();
                 m_WParser->OpenContainer();
@@ -52,14 +54,14 @@ TAG_HANDLER_BEGIN(DEFLIST, "DL,DT,DD" )
 
             ParseInner(tag);
 
-            if (m_WParser->GetContainer()->GetFirstCell() != NULL)
+            if (m_WParser->GetContainer()->GetFirstChild() != NULL)
             {
                 m_WParser->CloseContainer();
                 m_WParser->OpenContainer();
             }
             m_WParser->GetContainer()->SetIndent(m_WParser->GetCharHeight(), wxHTML_INDENT_TOP);
 
-            return TRUE;
+            return true;
         }
         else if (tag.GetName() == wxT("DT"))
         {
@@ -67,14 +69,14 @@ TAG_HANDLER_BEGIN(DEFLIST, "DL,DT,DD" )
             c = m_WParser->OpenContainer();
             c->SetAlignHor(wxHTML_ALIGN_LEFT);
             c->SetMinHeight(m_WParser->GetCharHeight());
-            return FALSE;
+            return false;
         }
         else // "DD"
         {
             m_WParser->CloseContainer();
             c = m_WParser->OpenContainer();
             c->SetIndent(5 * m_WParser->GetCharWidth(), wxHTML_INDENT_LEFT);
-            return FALSE;
+            return false;
         }
     }
 

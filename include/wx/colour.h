@@ -1,7 +1,9 @@
 #ifndef _WX_COLOUR_H_BASE_
 #define _WX_COLOUR_H_BASE_
 
-#if defined(__WXMSW__)
+#if defined(__PALMOS__)
+#include "wx/palmos/colour.h"
+#elif defined(__WXMSW__)
 #include "wx/msw/colour.h"
 #elif defined(__WXMOTIF__)
 #include "wx/motif/colour.h"
@@ -13,10 +15,10 @@
 #include "wx/x11/colour.h"
 #elif defined(__WXMAC__)
 #include "wx/mac/colour.h"
+#elif defined(__WXCOCOA__)
+#include "wx/cocoa/colour.h"
 #elif defined(__WXPM__)
 #include "wx/os2/colour.h"
-#elif defined(__WXSTUBS__)
-#include "wx/stubs/colour.h"
 #endif
 
 #define wxColor wxColour

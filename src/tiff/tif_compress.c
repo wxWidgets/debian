@@ -1,4 +1,4 @@
-/* $Header: /pack/cvsroots/wxwindows/wxWindows/src/tiff/tif_compress.c,v 1.2.6.1 2002/11/10 13:13:55 JS Exp $ */
+/* $Header: /pack/cvsroots/wxwindows/wxWindows/src/tiff/tif_compress.c,v 1.4 2003/07/08 23:19:01 VZ Exp $ */
 
 /*
  * Copyright (c) 1988-1997 Sam Leffler
@@ -145,7 +145,7 @@ _TIFFSetDefaultCompressionState(TIFF* tif)
 }
 
 int
-TIFFSetCompressionScheme(TIFF* tif, int scheme)
+TIFFSetCompressionScheme(TIFF* tif, uint16 scheme)
 {
 	const TIFFCodec *c = TIFFFindCODEC(scheme);
 

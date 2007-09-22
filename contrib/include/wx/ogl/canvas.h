@@ -4,9 +4,9 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     12/07/98
-// RCS-ID:      $Id: canvas.h,v 1.3 2002/09/07 12:10:20 GD Exp $
+// RCS-ID:      $Id: canvas.h,v 1.6 2004/06/09 16:42:21 ABX Exp $
 // Copyright:   (c) Julian Smart
-// Licence:   	wxWindows licence
+// Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
 
 #ifndef _OGL_CANVAS_H_
@@ -16,6 +16,7 @@
 #pragma interface "canvas.h"
 #endif
 
+
 // Drag states
 #define NoDragging             0
 #define StartDraggingLeft      1
@@ -23,17 +24,17 @@
 #define StartDraggingRight     3
 #define ContinueDraggingRight  4
 
-extern wxChar* wxShapeCanvasNameStr;
+WXDLLIMPEXP_OGL extern const wxChar* wxShapeCanvasNameStr;
 
 // When drag_count reaches 0, process drag message
 
-class wxDiagram;
+class WXDLLIMPEXP_OGL wxDiagram;
 
-class wxShapeCanvas: public wxScrolledWindow
+class WXDLLIMPEXP_OGL wxShapeCanvas: public wxScrolledWindow
 {
  DECLARE_DYNAMIC_CLASS(wxShapeCanvas)
  public:
-  wxShapeCanvas(wxWindow *parent = NULL, wxWindowID id = -1,
+  wxShapeCanvas(wxWindow *parent = NULL, wxWindowID id = wxID_ANY,
                 const wxPoint& pos = wxDefaultPosition,
                 const wxSize& size = wxDefaultSize,
                 long style = wxBORDER | wxRETAINED,

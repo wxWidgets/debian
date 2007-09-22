@@ -4,7 +4,7 @@
 // Author:      Julian Smart and others
 // Modified by:
 // Created:     01/02/97
-// RCS-ID:      $Id: cmndata.h,v 1.31.2.2 2003/05/22 21:14:56 SC Exp $
+// RCS-ID:      $Id: cmndata.h,v 1.49 2004/11/07 10:11:48 RR Exp $
 // Copyright:   (c)
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -12,14 +12,23 @@
 #ifndef _WX_CMNDATA_H_BASE_
 #define _WX_CMNDATA_H_BASE_
 
-#if defined(__GNUG__) && !defined(__APPLE__)
+#if defined(__GNUG__) && !defined(NO_GCC_PRAGMA)
 #pragma interface "cmndata.h"
 #endif
 
 #include "wx/window.h"
 #include "wx/font.h"
+#include "wx/encinfo.h"
 #include "wx/colour.h"
 #include "wx/gdicmn.h"
+
+#if wxUSE_STREAMS
+#include "wx/stream.h"
+#endif
+
+
+class WXDLLEXPORT wxPrintNativeDataBase;
+
 
 class WXDLLEXPORT wxColourData: public wxObject
 {
@@ -28,11 +37,11 @@ public:
     wxColourData(const wxColourData& data);
     ~wxColourData();
 
-    void SetChooseFull(bool flag) { chooseFull = flag; }
-    bool GetChooseFull() const { return chooseFull; }
-    void SetColour(const wxColour& colour) { dataColour = colour; }
-    const wxColour& GetColour() const { return dataColour; }
-    wxColour& GetColour() { return dataColour; }
+    void SetChooseFull(bool flag) { m_chooseFull = flag; }
+    bool GetChooseFull() const { return m_chooseFull; }
+    void SetColour(const wxColour& colour) { m_dataColour = colour; }
+    const wxColour& GetColour() const { return m_dataColour; }
+    wxColour& GetColour() { return m_dataColour; }
 
     // Array of 16 custom colours
     void SetCustomColour(int i, const wxColour& colour);
@@ -41,10 +50,10 @@ public:
     void operator=(const wxColourData& data);
 
 public:
-    wxColour        dataColour;
-    wxColour        custColours[16];
-    bool            chooseFull;
-    
+    wxColour        m_dataColour;
+    wxColour        m_custColours[16];
+    bool            m_chooseFull;
+
 private:
     DECLARE_DYNAMIC_CLASS(wxColourData)
 };
@@ -57,14 +66,14 @@ public:
 
     wxFontData(const wxFontData& data)
         : wxObject()
-        , fontColour(data.fontColour)
-        , showHelp(data.showHelp)
-        , allowSymbols(data.allowSymbols)
-        , enableEffects(data.enableEffects)
-        , initialFont(data.initialFont)
-        , chosenFont(data.chosenFont)
-        , minSize(data.minSize)
-        , maxSize(data.maxSize)
+        , m_fontColour(data.m_fontColour)
+        , m_showHelp(data.m_showHelp)
+        , m_allowSymbols(data.m_allowSymbols)
+        , m_enableEffects(data.m_enableEffects)
+        , m_initialFont(data.m_initialFont)
+        , m_chosenFont(data.m_chosenFont)
+        , m_minSize(data.m_minSize)
+        , m_maxSize(data.m_maxSize)
         , m_encoding(data.m_encoding)
         , m_encodingInfo(data.m_encodingInfo)
     {
@@ -73,38 +82,38 @@ public:
     wxFontData& operator=(const wxFontData& data)
     {
         wxObject::operator=(data);
-        fontColour     = data.fontColour;
-        showHelp       = data.showHelp;
-        allowSymbols   = data.allowSymbols;
-        enableEffects  = data.enableEffects;
-        initialFont    = data.initialFont;
-        chosenFont     = data.chosenFont;
-        minSize        = data.minSize;
-        maxSize        = data.maxSize;
+        m_fontColour     = data.m_fontColour;
+        m_showHelp       = data.m_showHelp;
+        m_allowSymbols   = data.m_allowSymbols;
+        m_enableEffects  = data.m_enableEffects;
+        m_initialFont    = data.m_initialFont;
+        m_chosenFont     = data.m_chosenFont;
+        m_minSize        = data.m_minSize;
+        m_maxSize        = data.m_maxSize;
         m_encoding     = data.m_encoding;
         m_encodingInfo = data.m_encodingInfo;
         return *this;
     }
-                          
-    void SetAllowSymbols(bool flag) { allowSymbols = flag; }
-    bool GetAllowSymbols() const { return allowSymbols; }
 
-    void SetColour(const wxColour& colour) { fontColour = colour; }
-    wxColour &GetColour() { return fontColour; }
+    void SetAllowSymbols(bool flag) { m_allowSymbols = flag; }
+    bool GetAllowSymbols() const { return m_allowSymbols; }
 
-    void SetShowHelp(bool flag) { showHelp = flag; }
-    bool GetShowHelp() const { return showHelp; }
+    void SetColour(const wxColour& colour) { m_fontColour = colour; }
+    wxColour &GetColour() { return m_fontColour; }
 
-    void EnableEffects(bool flag) { enableEffects = flag; }
-    bool GetEnableEffects() const { return enableEffects; }
+    void SetShowHelp(bool flag) { m_showHelp = flag; }
+    bool GetShowHelp() const { return m_showHelp; }
 
-    void SetInitialFont(const wxFont& font) { initialFont = font; }
-    wxFont GetInitialFont() const { return initialFont; }
+    void EnableEffects(bool flag) { m_enableEffects = flag; }
+    bool GetEnableEffects() const { return m_enableEffects; }
 
-    void SetChosenFont(const wxFont& font) { chosenFont = font; }
-    wxFont GetChosenFont() const { return chosenFont; }
+    void SetInitialFont(const wxFont& font) { m_initialFont = font; }
+    wxFont GetInitialFont() const { return m_initialFont; }
 
-    void SetRange(int minRange, int maxRange) { minSize = minRange; maxSize = maxRange; }
+    void SetChosenFont(const wxFont& font) { m_chosenFont = font; }
+    wxFont GetChosenFont() const { return m_chosenFont; }
+
+    void SetRange(int minRange, int maxRange) { m_minSize = minRange; m_maxSize = maxRange; }
 
     // encoding info is split into 2 parts: the logical wxWin encoding
     // (wxFontEncoding) and a structure containing the native parameters for
@@ -115,19 +124,19 @@ public:
     wxNativeEncodingInfo& EncodingInfo() { return m_encodingInfo; }
 
 public:
-    wxColour        fontColour;
-    bool            showHelp;
-    bool            allowSymbols;
-    bool            enableEffects;
-    wxFont          initialFont;
-    wxFont          chosenFont;
-    int             minSize;
-    int             maxSize;
+    wxColour        m_fontColour;
+    bool            m_showHelp;
+    bool            m_allowSymbols;
+    bool            m_enableEffects;
+    wxFont          m_initialFont;
+    wxFont          m_chosenFont;
+    int             m_minSize;
+    int             m_maxSize;
 
 private:
     wxFontEncoding       m_encoding;
     wxNativeEncodingInfo m_encodingInfo;
-    
+
 private:
     DECLARE_DYNAMIC_CLASS(wxFontData)
 };
@@ -137,6 +146,34 @@ private:
  * wxPrintData
  * Encapsulates printer information (not printer dialog information)
  */
+
+#ifdef __WXMAC__
+
+class wxNativePrintData ;
+
+#endif
+
+enum wxPrintBin
+{
+    wxPRINTBIN_DEFAULT,
+
+    wxPRINTBIN_ONLYONE,
+    wxPRINTBIN_LOWER,
+    wxPRINTBIN_MIDDLE,
+    wxPRINTBIN_MANUAL,
+    wxPRINTBIN_ENVELOPE,
+    wxPRINTBIN_ENVMANUAL,
+    wxPRINTBIN_AUTO,
+    wxPRINTBIN_TRACTOR,
+    wxPRINTBIN_SMALLFMT,
+    wxPRINTBIN_LARGEFMT,
+    wxPRINTBIN_LARGECAPACITY,
+    wxPRINTBIN_CASSETTE,
+    wxPRINTBIN_FORMSOURCE,
+
+    wxPRINTBIN_USER
+};
+
 
 class WXDLLEXPORT wxPrintData: public wxObject
 {
@@ -159,6 +196,8 @@ public:
     const wxSize& GetPaperSize() const { return m_paperSize; } // Not used yet: confusable with paper size
                                                                       // in wxPageSetupDialogData
     wxPrintQuality GetQuality() const { return m_printQuality; }
+    wxPrintBin GetBin() const { return m_bin; }
+    wxPrintMode GetPrintMode() const { return m_printMode; }
 
     void SetNoCopies(int v) { m_printNoCopies = v; };
     void SetCollate(bool flag) { m_printCollate = flag; };
@@ -170,84 +209,67 @@ public:
     void SetPaperId(wxPaperSize sizeId) { m_paperId = sizeId; }
     void SetPaperSize(const wxSize& sz) { m_paperSize = sz; }
     void SetQuality(wxPrintQuality quality) { m_printQuality = quality; }
-
-    // PostScript-specific data
-    const wxString& GetPrinterCommand() const { return m_printerCommand; }
-    const wxString& GetPrinterOptions() const { return m_printerOptions; }
-    const wxString& GetPreviewCommand() const { return m_previewCommand; }
-    const wxString& GetFilename() const { return m_filename; }
-    const wxString& GetFontMetricPath() const { return m_afmPath; }
-    double GetPrinterScaleX() const { return m_printerScaleX; }
-    double GetPrinterScaleY() const { return m_printerScaleY; }
-    long GetPrinterTranslateX() const { return m_printerTranslateX; }
-    long GetPrinterTranslateY() const { return m_printerTranslateY; }
-    wxPrintMode GetPrintMode() const { return m_printMode; }
-
-    void SetPrinterCommand(const wxString& command) { m_printerCommand = command; }
-    void SetPrinterOptions(const wxString& options) { m_printerOptions = options; }
-    void SetPreviewCommand(const wxString& command) { m_previewCommand = command; }
-    void SetFilename(const wxString& filename) { m_filename = filename; }
-    void SetFontMetricPath(const wxString& path) { m_afmPath = path; }
-    void SetPrinterScaleX(double x) { m_printerScaleX = x; }
-    void SetPrinterScaleY(double y) { m_printerScaleY = y; }
-    void SetPrinterScaling(double x, double y) { m_printerScaleX = x; m_printerScaleY = y; }
-    void SetPrinterTranslateX(long x) { m_printerTranslateX = x; }
-    void SetPrinterTranslateY(long y) { m_printerTranslateY = y; }
-    void SetPrinterTranslation(long x, long y) { m_printerTranslateX = x; m_printerTranslateY = y; }
+    void SetBin(wxPrintBin bin) { m_bin = bin; }
     void SetPrintMode(wxPrintMode printMode) { m_printMode = printMode; }
 
+    wxString GetFilename() const { return m_filename; }
+    void SetFilename( const wxString &filename ) { m_filename = filename; }
+    
     void operator=(const wxPrintData& data);
 
-#if defined(__WXMSW__)
-    // Convert to/from the DEVMODE structure
-    void ConvertToNative();
-    void ConvertFromNative();
-    void* GetNativeData() const { return m_devMode; }
-    void SetNativeData(void* data) { m_devMode = data; }
-    void* GetNativeDataDevNames() const { return m_devNames; }
-    void SetNativeDataDevNames(void* data) { m_devNames = data; }
-#elif defined(__WXMAC__)
-  void ConvertToNative();
-  void ConvertFromNative();
-  void ValidateOrCreate() ;
+#if WXWIN_COMPATIBILITY_2_4
+    // PostScript-specific data
+    wxString GetPrinterCommand() const;
+    wxString GetPrinterOptions() const;
+    wxString GetPreviewCommand() const;
+    wxString GetFontMetricPath() const;
+    double GetPrinterScaleX() const;
+    double GetPrinterScaleY() const;
+    long GetPrinterTranslateX() const;
+    long GetPrinterTranslateY() const;
+
+    void SetPrinterCommand(const wxString& command);
+    void SetPrinterOptions(const wxString& options);
+    void SetPreviewCommand(const wxString& command);
+    void SetFontMetricPath(const wxString& path);
+    void SetPrinterScaleX(double x);
+    void SetPrinterScaleY(double y);
+    void SetPrinterScaling(double x, double y);
+    void SetPrinterTranslateX(long x);
+    void SetPrinterTranslateY(long y);
+    void SetPrinterTranslation(long x, long y);
 #endif
 
+    // Convert between wxPrintData and native data
+    void ConvertToNative();
+    void ConvertFromNative();
+    // Holds the native print data
+    wxPrintNativeDataBase *GetNativeData() const { return m_nativeData; }
+
 public:
-#if defined(__WXMSW__)
-    void*           m_devMode;
-    void*           m_devNames;
-#elif defined(__WXMAC__)
-    void*           m_macPageFormat ;
-    void*           m_macPrintSettings ;
-    void*			m_macPrintSession ;
+#if defined(__WXMAC__)
+    wxNativePrintData* m_nativePrintData ;
 #endif
 
 private:
+    wxPrintBin      m_bin;
+    wxPrintMode     m_printMode;
 
     int             m_printNoCopies;
     int             m_printOrientation;
     bool            m_printCollate;
 
-    // New members, 24/3/99
     wxString        m_printerName;
     bool            m_colour;
     wxDuplexMode    m_duplexMode;
     wxPrintQuality  m_printQuality;
     wxPaperSize     m_paperId;
     wxSize          m_paperSize;
-
-    // PostScript-specific data
-    wxString        m_printerCommand;
-    wxString        m_previewCommand;
-    wxString        m_printerOptions;
-    wxString        m_filename;
-    wxString        m_afmPath;
-    double          m_printerScaleX;
-    double          m_printerScaleY;
-    long            m_printerTranslateX;
-    long            m_printerTranslateY;
-    wxPrintMode     m_printMode;
     
+    wxString        m_filename;
+    
+    wxPrintNativeDataBase  *m_nativeData;
+
 private:
     DECLARE_DYNAMIC_CLASS(wxPrintData)
 };
@@ -276,8 +298,9 @@ public:
     bool GetSelection() const { return m_printSelection; };
     bool GetCollate() const { return m_printCollate; };
     bool GetPrintToFile() const { return m_printToFile; };
+#if WXWIN_COMPATIBILITY_2_4
     bool GetSetupDialog() const { return m_printSetupDialog; };
-
+#endif
     void SetFromPage(int v) { m_printFromPage = v; };
     void SetToPage(int v) { m_printToPage = v; };
     void SetMinPage(int v) { m_printMinPage = v; };
@@ -287,8 +310,9 @@ public:
     void SetSelection(bool flag) { m_printSelection = flag; };
     void SetCollate(bool flag) { m_printCollate = flag; };
     void SetPrintToFile(bool flag) { m_printToFile = flag; };
+#if WXWIN_COMPATIBILITY_2_4
     void SetSetupDialog(bool flag) { m_printSetupDialog = flag; };
-
+#endif
     void EnablePrintToFile(bool flag) { m_printEnablePrintToFile = flag; };
     void EnableSelection(bool flag) { m_printEnableSelection = flag; };
     void EnablePageNumbers(bool flag) { m_printEnablePageNumbers = flag; };
@@ -308,19 +332,9 @@ public:
     void operator=(const wxPrintDialogData& data);
     void operator=(const wxPrintData& data); // Sets internal m_printData member
 
-#ifdef __WXMSW__
-    // Convert to/from the PRINTDLG structure
+#if defined(__WXMAC__)
     void ConvertToNative();
     void ConvertFromNative();
-    void SetOwnerWindow(wxWindow* win);
-    void* GetNativeData() const { return m_printDlgData; }
-#elif defined(__WXMAC__)
-    void ConvertToNative();
-    void ConvertFromNative();
-#endif
-
-#ifdef __WXMSW__
-    void*           m_printDlgData;
 #endif
 
 private:
@@ -337,10 +351,12 @@ private:
     bool            m_printEnablePageNumbers;
     bool            m_printEnableHelp;
     bool            m_printEnablePrintToFile;
+#if WXWIN_COMPATIBILITY_2_4
     bool            m_printSetupDialog;
+#endif
     wxPrintData     m_printData;
 
-private:    
+private:
     DECLARE_DYNAMIC_CLASS(wxPrintDialogData)
 };
 
@@ -399,13 +415,7 @@ public:
     void EnablePrinter(bool flag) { m_enablePrinter = flag; };
     void EnableHelp(bool flag) { m_enableHelp = flag; };
 
-#if defined(__WIN95__)
-    // Convert to/from the PAGESETUPDLG structure
-    void ConvertToNative();
-    void ConvertFromNative();
-    void SetOwnerWindow(wxWindow* win);
-    void* GetNativeData() const { return m_pageSetupData; }
-#elif defined(__WXMAC__)
+#if defined(__WXMAC__)
     void ConvertToNative();
     void ConvertFromNative();
 #endif
@@ -423,10 +433,6 @@ public:
     wxPrintData& GetPrintData() { return m_printData; }
     void SetPrintData(const wxPrintData& printData) { m_printData = printData; }
 
-#if defined(__WIN95__)
-    void*           m_pageSetupData;
-#endif
-
 private:
     wxSize          m_paperSize; // The dimensions selected by the user (on return, same as in wxPrintData?)
     wxPoint         m_minMarginTopLeft;
@@ -441,7 +447,7 @@ private:
     bool            m_getDefaultInfo; // Equiv. to PSD_RETURNDEFAULT
     bool            m_enableHelp;
     wxPrintData     m_printData;
-    
+
 private:
     DECLARE_DYNAMIC_CLASS(wxPageSetupDialogData)
 };

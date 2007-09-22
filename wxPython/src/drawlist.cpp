@@ -2,10 +2,10 @@
 // Name:        drawlist.cpp
 // Purpose:     Helper functions for optimized list drawing on a wxDC
 //
-// Author:      Robin Dunn Chris Barker
+// Author:      Robin Dunn,  Chris Barker
 //
 // Created:
-// RCS-ID:      $Id: drawlist.cpp,v 1.1.2.2 2003/03/30 06:22:12 RD Exp $
+// RCS-ID:      $Id: drawlist.cpp,v 1.10 2004/09/24 00:11:19 RD Exp $
 // Copyright:   (c) 2003 by Total Control Software
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -13,17 +13,24 @@
 
 #undef DEBUG
 #include <Python.h>
-#include "helpers.h"
+#include "wx/wxPython/wxPython.h"
+#include "wx/wxPython/pydrawxxx.h"
 
 
-//----------------------------------------------------------------------
+//---------------------------------------------------------------------------
 
+
+// Called from _gdiinit so we can do the API import while the GIL is held
+void wxPyDrawList_SetAPIPtr()
+{
+    wxPyCoreAPI_IMPORT();
+}
 
 
 PyObject* wxPyDrawXXXList(wxDC& dc, wxPyDrawListOp_t doDraw,
-                          PyObject* pyCoords, PyObject* pyPens, PyObject* pyBrushes) {
-
-    wxPyBeginBlockThreads(); // _DrawXXXList
+                          PyObject* pyCoords, PyObject* pyPens, PyObject* pyBrushes)
+{
+    bool blocked = wxPyBeginBlockThreads(); 
 
     bool      isFastSeq  = PyList_Check(pyCoords) || PyTuple_Check(pyCoords);
     bool      isFastPens = PyList_Check(pyPens) || PyTuple_Check(pyPens);
@@ -59,7 +66,7 @@ PyObject* wxPyDrawXXXList(wxDC& dc, wxPyDrawListOp_t doDraw,
             else {
                 obj = PySequence_GetItem(pyPens, i);
             }
-            if (SWIG_GetPtrObj(obj, (void **) &pen, "_wxPen_p")) {
+            if (! wxPyConvertSwigPtr(obj, (void **) &pen, wxT("wxPen"))) {
                 if (!isFastPens)
                     Py_DECREF(obj);
                 goto err1;
@@ -77,7 +84,7 @@ PyObject* wxPyDrawXXXList(wxDC& dc, wxPyDrawListOp_t doDraw,
             else {
                 obj = PySequence_GetItem(pyBrushes, i);
             }
-            if (SWIG_GetPtrObj(obj, (void **) &brush, "_wxBrush_p")) {
+            if (!wxPyConvertSwigPtr(obj, (void **) &brush, wxT("wxBrush"))) {
                 if (!isFastBrushes)
                     Py_DECREF(obj);
                 goto err2;
@@ -131,77 +138,84 @@ PyObject* wxPyDrawXXXList(wxDC& dc, wxPyDrawListOp_t doDraw,
 
 
  exit:
-    wxPyEndBlockThreads();
+    wxPyEndBlockThreads(blocked);
     return retval;
 }
 
 
 
-bool wxPyDrawXXXPoint(wxDC& dc, PyObject* coords) {
+bool wxPyDrawXXXPoint(wxDC& dc, PyObject* coords)
+{
     int x, y;
 
     if (! wxPy2int_seq_helper(coords, &x, &y)) {
         PyErr_SetString(PyExc_TypeError, "Expected a sequence of (x,y) sequences.");
-        return FALSE;
+        return false;
     }
     dc.DrawPoint(x, y);
-    return TRUE;
+    return true;
 }
 
-bool wxPyDrawXXXLine(wxDC& dc, PyObject* coords) {
+bool wxPyDrawXXXLine(wxDC& dc, PyObject* coords)
+{
     int x1, y1, x2, y2;
 
     if (! wxPy4int_seq_helper(coords, &x1, &y1, &x2, &y2)) {
         PyErr_SetString(PyExc_TypeError, "Expected a sequence of (x1,y1, x1,y2) sequences.");
-        return FALSE;
+        return false;
     }
     dc.DrawLine(x1,y1, x2,y2);
-    return TRUE;
+    return true;
 }
 
-bool wxPyDrawXXXRectangle(wxDC& dc, PyObject* coords) {
+bool wxPyDrawXXXRectangle(wxDC& dc, PyObject* coords)
+{
     int x, y, w, h;
 
     if (! wxPy4int_seq_helper(coords, &x, &y, &w, &h)) {
         PyErr_SetString(PyExc_TypeError, "Expected a sequence of (x,y, w,h) sequences.");
-        return FALSE;
+        return false;
     }
     dc.DrawRectangle(x, y, w, h);
-    return TRUE;
+    return true;
 }
 
-bool wxPyDrawXXXEllipse(wxDC& dc, PyObject* coords) {
+bool wxPyDrawXXXEllipse(wxDC& dc, PyObject* coords)
+{
     int x, y, w, h;
 
     if (! wxPy4int_seq_helper(coords, &x, &y, &w, &h)) {
         PyErr_SetString(PyExc_TypeError, "Expected a sequence of (x,y, w,h) sequences.");
-        return FALSE;
+        return false;
     }
     dc.DrawEllipse(x, y, w, h);
-    return TRUE;
+    return true;
 }
 
 
-bool wxPyDrawXXXPolygon(wxDC& dc, PyObject* coords) {
+bool wxPyDrawXXXPolygon(wxDC& dc, PyObject* coords)
+{
     wxPoint* points;
     int numPoints;
 
     points = wxPoint_LIST_helper(coords, &numPoints);
     if (! points) {
         PyErr_SetString(PyExc_TypeError, "Expected a sequence of sequences of (x,y) sequences.");
-        return FALSE;
+        return false;
     }
     dc.DrawPolygon(numPoints, points);
-    return TRUE;
+    delete [] points;
+    return true;
 }
 
 
-//----------------------------------------------------------------------
+//---------------------------------------------------------------------------
 
 
 
-PyObject* wxPyDrawTextList(wxDC& dc, PyObject* textList, PyObject* pyPoints, PyObject* foregroundList, PyObject* backgroundList) {
-    wxPyBeginBlockThreads();
+PyObject* wxPyDrawTextList(wxDC& dc, PyObject* textList, PyObject* pyPoints, PyObject* foregroundList, PyObject* backgroundList)
+{
+    bool blocked = wxPyBeginBlockThreads();
 
     bool      isFastSeq  = PyList_Check(pyPoints) || PyTuple_Check(pyPoints);
     bool      isFastText = PyList_Check(textList) || PyTuple_Check(textList);
@@ -261,7 +275,7 @@ PyObject* wxPyDrawTextList(wxDC& dc, PyObject* textList, PyObject* pyPoints, PyO
             else {
                 obj = PySequence_GetItem(foregroundList, i);
             }
-            if (SWIG_GetPtrObj(obj, (void **) &color, "_wxColour_p")) {
+            if (! wxPyConvertSwigPtr(obj, (void **) &color, wxT("wxColour"))) {
                 if (!isFastForeground)
                     Py_DECREF(obj);
                 goto err2;
@@ -279,7 +293,7 @@ PyObject* wxPyDrawTextList(wxDC& dc, PyObject* textList, PyObject* pyPoints, PyO
             else {
                 obj = PySequence_GetItem(backgroundList, i);
             }
-            if (SWIG_GetPtrObj(obj, (void **) &color, "_wxColour_p")) {
+            if (! wxPyConvertSwigPtr(obj, (void **) &color, wxT("wxColour"))) {
                 if (!isFastBackground)
                     Py_DECREF(obj);
                 goto err3;
@@ -340,10 +354,10 @@ PyObject* wxPyDrawTextList(wxDC& dc, PyObject* textList, PyObject* pyPoints, PyO
     goto exit;
 
  exit:
-    wxPyEndBlockThreads();
+    wxPyEndBlockThreads(blocked);
     return retval;
 }
 
 
 
-//----------------------------------------------------------------------
+//---------------------------------------------------------------------------

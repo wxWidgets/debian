@@ -2,7 +2,7 @@
 // Name:        listbox.h
 // Purpose:     wxListBox class declaration
 // Author:      Robert Roebling
-// Id:          $Id: listbox.h,v 1.41 2002/09/07 12:28:46 GD Exp $
+// Id:          $Id: listbox.h,v 1.48 2004/06/14 17:31:25 VS Exp $
 // Copyright:   (c) 1998 Robert Roebling
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -11,11 +11,13 @@
 #ifndef __GTKLISTBOXH__
 #define __GTKLISTBOXH__
 
-#if defined(__GNUG__) && !defined(__APPLE__)
+#if defined(__GNUG__) && !defined(NO_GCC_PRAGMA)
 #pragma interface "listbox.h"
 #endif
 
 #include "wx/list.h"
+
+class WXDLLIMPEXP_BASE wxSortedArrayString;
 
 //-----------------------------------------------------------------------------
 // wxListBox
@@ -39,12 +41,32 @@ public:
 #endif // wxUSE_CHECKLISTBOX
         Create(parent, id, pos, size, n, choices, style, validator, name);
     }
+    wxListBox( wxWindow *parent, wxWindowID id,
+            const wxPoint& pos,
+            const wxSize& size,
+            const wxArrayString& choices,
+            long style = 0,
+            const wxValidator& validator = wxDefaultValidator,
+            const wxString& name = wxListBoxNameStr )
+    {
+#if wxUSE_CHECKLISTBOX
+        m_hasCheckBoxes = FALSE;
+#endif // wxUSE_CHECKLISTBOX
+        Create(parent, id, pos, size, choices, style, validator, name);
+    }
     virtual ~wxListBox();
 
     bool Create(wxWindow *parent, wxWindowID id,
                 const wxPoint& pos = wxDefaultPosition,
                 const wxSize& size = wxDefaultSize,
                 int n = 0, const wxString choices[] = (const wxString *) NULL,
+                long style = 0,
+                const wxValidator& validator = wxDefaultValidator,
+                const wxString& name = wxListBoxNameStr);
+    bool Create(wxWindow *parent, wxWindowID id,
+                const wxPoint& pos,
+                const wxSize& size,
+                const wxArrayString& choices,
                 long style = 0,
                 const wxValidator& validator = wxDefaultValidator,
                 const wxString& name = wxListBoxNameStr);
@@ -74,13 +96,16 @@ public:
     virtual void DoSetItemClientObject(int n, wxClientData* clientData);
     virtual wxClientData* DoGetItemClientObject(int n) const;
 
+    static wxVisualAttributes
+    GetClassDefaultAttributes(wxWindowVariant variant = wxWINDOW_VARIANT_NORMAL);
+    
     // implementation from now on
 
     void GtkAddItem( const wxString &item, int pos=-1 );
     int GtkGetIndex( GtkWidget *item ) const;
     GtkWidget *GetConnectWidget();
     bool IsOwnGtkWindow( GdkWindow *window );
-    void ApplyWidgetStyle();
+    void DoApplyWidgetStyle(GtkRcStyle *style);
     void OnInternalIdle();
 
 #if wxUSE_TOOLTIPS
@@ -104,6 +129,10 @@ protected:
 
     // return the string label for the given item
     wxString GetRealLabel(struct _GList *item) const;
+
+    // Widgets that use the style->base colour for the BG colour should
+    // override this and return true.
+    virtual bool UseGTKStyleBase() const { return true; }
 
 private:
     // this array is only used for controls with wxCB_SORT style, so only

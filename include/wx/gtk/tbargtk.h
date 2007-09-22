@@ -2,7 +2,7 @@
 // Name:        tbargtk.h
 // Purpose:     GTK toolbar
 // Author:      Robert Roebling
-// RCS-ID:      $Id: tbargtk.h,v 1.28 2002/09/07 12:28:46 GD Exp $
+// RCS-ID:      $Id: tbargtk.h,v 1.33 2004/06/14 13:27:26 VS Exp $
 // Copyright:   (c) Robert Roebling
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -10,7 +10,7 @@
 #ifndef _WX_GTK_TBARGTK_H_
 #define _WX_GTK_TBARGTK_H_
 
-#if defined(__GNUG__) && !defined(__APPLE__)
+#if defined(__GNUG__) && !defined(NO_GCC_PRAGMA)
     #pragma interface "tbargtk.h"
 #endif
 
@@ -56,13 +56,13 @@ public:
 
     virtual void SetWindowStyleFlag( long style );
 
+    static wxVisualAttributes
+    GetClassDefaultAttributes(wxWindowVariant variant = wxWINDOW_VARIANT_NORMAL);
+    
     // implementation from now on
     // --------------------------
 
     GtkToolbar   *m_toolbar;
-
-    GdkColor     *m_fg;
-    GdkColor     *m_bg;
 
     bool          m_blockEvent;
 

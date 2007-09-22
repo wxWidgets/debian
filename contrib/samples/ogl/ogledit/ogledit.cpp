@@ -4,9 +4,9 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     12/07/98
-// RCS-ID:      $Id: ogledit.cpp,v 1.4 2002/03/21 10:32:03 JS Exp $
+// RCS-ID:      $Id: ogledit.cpp,v 1.9 2004/07/19 15:10:37 ABX Exp $
 // Copyright:   (c) Julian Smart
-// Licence:   	wxWindows licence
+// Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
 
 #ifdef __GNUG__
@@ -57,7 +57,7 @@ bool MyApp::OnInit(void)
   myDocManager = new wxDocManager;
 
   //// Create a template relating drawing documents to their views
-  (void) new wxDocTemplate(myDocManager, "Diagram", "*.dia", "", "dia", "Diagram Doc", "Diagram View",
+  (void) new wxDocTemplate(myDocManager, _T("Diagram"), _T("*.dia"), wxEmptyString, _T("dia"), _T("Diagram Doc"), _T("Diagram View"),
           CLASSINFO(DiagramDocument), CLASSINFO(DiagramView));
 
   // If we've only got one window, we only get to edit
@@ -65,66 +65,67 @@ bool MyApp::OnInit(void)
   myDocManager->SetMaxDocsOpen(1);
 
   //// Create the main frame window
-  frame = new MyFrame(myDocManager, NULL, "OGLEdit Demo", wxPoint(0, 0), wxSize(500, 400), wxDEFAULT_FRAME_STYLE);
+  frame = new MyFrame(myDocManager, NULL, _T("OGLEdit Demo"), wxPoint(0, 0), wxSize(500, 400), wxDEFAULT_FRAME_STYLE);
 
   //// Give it an icon
   frame->SetIcon(wxICON(ogl));
 
   //// Make a menubar
   wxMenu *file_menu = new wxMenu;
-  wxMenu *edit_menu = NULL;
 
-  file_menu->Append(wxID_NEW, "&New...");
-  file_menu->Append(wxID_OPEN, "&Open...");
+  file_menu->Append(wxID_NEW, _T("&New..."));
+  file_menu->Append(wxID_OPEN, _T("&Open..."));
 
-  file_menu->Append(wxID_CLOSE, "&Close");
-  file_menu->Append(wxID_SAVE, "&Save");
-  file_menu->Append(wxID_SAVEAS, "Save &As...");
+  file_menu->Append(wxID_CLOSE, _T("&Close"));
+  file_menu->Append(wxID_SAVE, _T("&Save"));
+  file_menu->Append(wxID_SAVEAS, _T("Save &As..."));
   file_menu->AppendSeparator();
-  file_menu->Append(wxID_PRINT, "&Print...");
-  file_menu->Append(wxID_PRINT_SETUP, "Print &Setup...");
-  file_menu->Append(wxID_PREVIEW, "Print Pre&view");
+  file_menu->Append(wxID_PRINT, _T("&Print..."));
+  file_menu->Append(wxID_PRINT_SETUP, _T("Print &Setup..."));
+  file_menu->Append(wxID_PREVIEW, _T("Print Pre&view"));
 
-  edit_menu = new wxMenu;
-  edit_menu->Append(wxID_UNDO, "&Undo");
-  edit_menu->Append(wxID_REDO, "&Redo");
+  wxMenu *edit_menu = new wxMenu;
+  edit_menu->Append(wxID_UNDO, _T("&Undo"));
+  edit_menu->Append(wxID_REDO, _T("&Redo"));
   edit_menu->AppendSeparator();
-  edit_menu->Append(OGLEDIT_CUT, "&Cut");
+  edit_menu->Append(OGLEDIT_CUT, _T("&Cut"));
   edit_menu->AppendSeparator();
-  edit_menu->Append(OGLEDIT_CHANGE_BACKGROUND_COLOUR, "Change &background colour");
-  edit_menu->Append(OGLEDIT_EDIT_LABEL, "Edit &label");
+  edit_menu->Append(OGLEDIT_CHANGE_BACKGROUND_COLOUR, _T("Change &background colour"));
+  edit_menu->Append(OGLEDIT_EDIT_LABEL, _T("Edit &label"));
 
   frame->editMenu = edit_menu;
   
   file_menu->AppendSeparator();
-  file_menu->Append(wxID_EXIT, "E&xit");
+  file_menu->Append(wxID_EXIT, _T("E&xit"));
 
   // A nice touch: a history of files visited. Use this menu.
   myDocManager->FileHistoryUseMenu(file_menu);
 
   wxMenu *help_menu = new wxMenu;
-  help_menu->Append(OGLEDIT_ABOUT, "&About");
+  help_menu->Append(OGLEDIT_ABOUT, _T("&About"));
 
   wxMenuBar *menu_bar = new wxMenuBar;
 
-  menu_bar->Append(file_menu, "&File");
+  menu_bar->Append(file_menu, _T("&File"));
   if (edit_menu)
-    menu_bar->Append(edit_menu, "&Edit");
-  menu_bar->Append(help_menu, "&Help");
+    menu_bar->Append(edit_menu, _T("&Edit"));
+  menu_bar->Append(help_menu, _T("&Help"));
 
   frame->canvas = frame->CreateCanvas(NULL, frame);
   frame->palette = wxGetApp().CreatePalette(frame);
-  myDocManager->CreateDocument("", wxDOC_NEW);
+  myDocManager->CreateDocument(wxEmptyString, wxDOC_NEW);
 
   //// Associate the menu bar with the frame
   frame->SetMenuBar(menu_bar);
 
+#if wxUSE_STATUSBAR
   frame->CreateStatusBar(1);
+#endif // wxUSE_STATUSBAR
 
   frame->Centre(wxBOTH);
-  frame->Show(TRUE);
+  frame->Show(true);
 
-  return TRUE;
+  return true;
 }
 
 int MyApp::OnExit(void)
@@ -148,7 +149,7 @@ END_EVENT_TABLE()
 
 MyFrame::MyFrame(wxDocManager *manager, wxFrame *frame, const wxString& title,
     const wxPoint& pos, const wxSize& size, long type):
-  wxDocParentFrame(manager, frame, -1, title, pos, size, type)
+  wxDocParentFrame(manager, frame, wxID_ANY, title, pos, size, type)
 {
   canvas = NULL;
   palette = NULL;
@@ -173,6 +174,7 @@ void MyFrame::OnSize(wxSizeEvent& event)
     palette->SetSize(paletteX, paletteY, paletteW, paletteH);
     canvas->SetSize(canvasX, canvasY, canvasW, canvasH);
   }
+  event.Skip();
 }
 
 void MyFrame::OnCloseWindow(wxCloseEvent& event)
@@ -185,9 +187,9 @@ void MyFrame::OnCloseWindow(wxCloseEvent& event)
 }
 
 // Intercept menu commands
-void MyFrame::OnAbout(wxCommandEvent& event)
+void MyFrame::OnAbout(wxCommandEvent& WXUNUSED(event))
 {
-      (void)wxMessageBox("OGLEdit Demo\nTo draw a shape, select a shape on the toolbar and left-click on the canvas.\nTo draw a line, right-drag between shapes.\nFor further details, see the OGL manual.\n (c) Julian Smart 1996", "About OGLEdit");
+      (void)wxMessageBox(_T("OGLEdit Demo\nTo draw a shape, select a shape on the toolbar and left-click on the canvas.\nTo draw a line, right-drag between shapes.\nFor further details, see the OGL manual.\n (c) Julian Smart 1996"), _T("About OGLEdit"));
 }
 
 // Creates a canvas. Called by OnInit as a child of the main window
@@ -197,7 +199,7 @@ MyCanvas *MyFrame::CreateCanvas(wxView *view, wxFrame *parent)
   parent->GetClientSize(&width, &height);
 
   // Non-retained canvas
-  MyCanvas *canvas = new MyCanvas(view, parent, -1, wxPoint(0, 0), wxSize(width, height), 0);
+  MyCanvas *canvas = new MyCanvas(view, parent, wxID_ANY, wxPoint(0, 0), wxSize(width, height), 0);
   canvas->SetCursor(wxCursor(wxCURSOR_HAND));
 
   // Give it scrollbars

@@ -1,10 +1,10 @@
 /////////////////////////////////////////////////////////////////////////////
-// Program:     wxWindows Widgets Sample
+// Program:     wxWidgets Widgets Sample
 // Name:        widgets.h
 // Purpose:     Common stuff for all widgets project files
 // Author:      Vadim Zeitlin
 // Created:     27.03.01
-// Id:          $Id: widgets.h,v 1.3.2.1 2002/10/02 00:16:49 RD Exp $
+// Id:          $Id: widgets.h,v 1.7 2004/05/25 11:19:43 JS Exp $
 // Copyright:   (c) 2001 Vadim Zeitlin
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -40,24 +40,24 @@ protected:
     // (pointer to which will be saved in the provided variable if not NULL)
     // with the specified id
     wxSizer *CreateSizerWithText(wxControl *control,
-                                 wxWindowID id = -1,
+                                 wxWindowID id = wxID_ANY,
                                  wxTextCtrl **ppText = NULL);
 
     // create a sizer containing a label and a text ctrl
     wxSizer *CreateSizerWithTextAndLabel(const wxString& label,
-                                         wxWindowID id = -1,
+                                         wxWindowID id = wxID_ANY,
                                          wxTextCtrl **ppText = NULL);
 
     // create a sizer containing a button and a text ctrl
     wxSizer *CreateSizerWithTextAndButton(wxWindowID idBtn,
                                           const wxString& labelBtn,
-                                          wxWindowID id = -1,
+                                          wxWindowID id = wxID_ANY,
                                           wxTextCtrl **ppText = NULL);
 
     // create a checkbox and add it to the sizer
     wxCheckBox *CreateCheckBoxAndAddToSizer(wxSizer *sizer,
                                             const wxString& label,
-                                            wxWindowID id = -1);
+                                            wxWindowID id = wxID_ANY);
 
 public:
     // the head of the linked list containinginfo about all pages
@@ -81,6 +81,8 @@ public:
     const wxString& GetLabel() const { return m_label; }
     Constructor GetCtor() const { return m_ctor; }
     WidgetsPageInfo *GetNext() const { return m_next; }
+
+    void SetNext(WidgetsPageInfo *next) { m_next = next; }
 
 private:
     // the label of the page

@@ -4,9 +4,9 @@
 // Author:      Vadim Zeitlin
 // Modified by:
 // Created:     05.11.99
-// RCS-ID:      $Id: fontutil.cpp,v 1.34.2.7 2003/12/01 09:37:30 RR Exp $
+// RCS-ID:      $Id: fontutil.cpp,v 1.51 2004/07/21 21:54:54 VZ Exp $
 // Copyright:   (c) Vadim Zeitlin
-// Licence:     wxWindows license
+// Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
 
 // ============================================================================
@@ -17,7 +17,7 @@
 // headers
 // ----------------------------------------------------------------------------
 
-#ifdef __GNUG__
+#if defined(__GNUG__) && !defined(NO_GCC_PRAGMA)
     #pragma implementation "fontutil.h"
 #endif
 
@@ -29,6 +29,7 @@
 #endif
 
 #ifndef WX_PRECOMP
+    #include "wx/encinfo.h"
 #endif // PCH
 
 #include "wx/fontutil.h"
@@ -54,6 +55,21 @@
 void wxNativeFontInfo::Init()
 {
     description = NULL;
+}
+
+void
+wxNativeFontInfo::Init(const wxNativeFontInfo& info)
+{
+    if (info.description)
+        description = pango_font_description_copy(info.description);
+    else
+        description = NULL;
+}
+
+void wxNativeFontInfo::Free()
+{
+    if (description)
+        pango_font_description_free(description);
 }
 
 int wxNativeFontInfo::GetPointSize() const
@@ -132,14 +148,50 @@ wxFontEncoding wxNativeFontInfo::GetEncoding() const
     return wxFONTENCODING_SYSTEM;
 }
 
-bool wxNativeFontInfo::FromString( const wxString& str )
+
+void wxNativeFontInfo::SetPointSize(int WXUNUSED(pointsize))
+{
+    wxFAIL_MSG( _T("not implemented") );
+}
+
+void wxNativeFontInfo::SetStyle(wxFontStyle WXUNUSED(style))
+{
+    wxFAIL_MSG( _T("not implemented") );
+}
+
+void wxNativeFontInfo::SetWeight(wxFontWeight WXUNUSED(weight))
+{
+    wxFAIL_MSG( _T("not implemented") );
+}
+
+void wxNativeFontInfo::SetUnderlined(bool WXUNUSED(underlined))
+{
+    wxFAIL_MSG( _T("not implemented") );
+}
+
+void wxNativeFontInfo::SetFaceName(wxString WXUNUSED(facename))
+{
+    wxFAIL_MSG( _T("not implemented") );
+}
+
+void wxNativeFontInfo::SetFamily(wxFontFamily WXUNUSED(family))
+{
+    wxFAIL_MSG( _T("not implemented") );
+}
+
+void wxNativeFontInfo::SetEncoding(wxFontEncoding WXUNUSED(encoding))
+{
+    wxFAIL_MSG( _T("not implemented") );
+}
+
+
+
+bool wxNativeFontInfo::FromString(const wxString& s)
 {
     if (description)
         pango_font_description_free( description );
 
-    description = pango_font_description_from_string( wxGTK_CONV( str ) );
-    
-    // wxPrintf( L"FromString before: %s result: %s\n", str.c_str(), ToString().c_str() );
+    description = pango_font_description_from_string( wxGTK_CONV( s ) );
 
     return TRUE;
 }
@@ -153,9 +205,9 @@ wxString wxNativeFontInfo::ToString() const
     return tmp;
 }
 
-bool wxNativeFontInfo::FromUserString( const wxString& str )
+bool wxNativeFontInfo::FromUserString(const wxString& s)
 {
-    return FromString( str );
+    return FromString( s );
 }
 
 wxString wxNativeFontInfo::ToUserString() const
@@ -185,7 +237,17 @@ bool wxTestFontEncoding(const wxNativeEncodingInfo& info)
 bool wxGetNativeFontEncoding(wxFontEncoding encoding,
                              wxNativeEncodingInfo *info)
 {
-    return FALSE;
+    // we *must* return true for default encoding as otherwise wxFontMapper
+    // considers that we can't load any font and aborts with wxLogFatalError!
+    if ( encoding == wxFONTENCODING_SYSTEM )
+    {
+        info->facename.clear();
+        info->encoding = wxFONTENCODING_SYSTEM;
+    }
+
+    // pretend that we support everything, it's better than to always return
+    // false as the old code did
+    return true;
 }
 
 #else // GTK+ 1.x
@@ -237,7 +299,13 @@ static wxHashTable *g_fontHash = (wxHashTable*) NULL;
 #elif defined(__WXGTK__)
     wxNativeFont wxLoadFont(const wxString& fontSpec)
     {
-       return gdk_font_load( wxConvertWX2MB(fontSpec) );
+        // VZ: we should use gdk_fontset_load() instead of gdk_font_load()
+        //     here to be able to display Japanese fonts correctly (at least
+        //     this is what people report) but unfortunately doing it results
+        //     in tons of warnings when using GTK with "normal" European
+        //     languages and so we can't always do it and I don't know enough
+        //     to determine when should this be done... (FIXME)
+        return gdk_font_load( wxConvertWX2MB(fontSpec) );
     }
 
     inline void wxFreeFont(wxNativeFont font)
@@ -376,9 +444,6 @@ bool wxNativeFontInfo::FromXFontName(const wxString& fontname)
     // TODO: we should be able to handle the font aliases here, but how?
     wxStringTokenizer tokenizer(fontname, _T("-"));
 
-    // we're not initialized yet.
-    m_isDefault = TRUE;
-
     // skip the leading, usually empty field (font name registry)
     if ( !tokenizer.HasMoreTokens() )
         return FALSE;
@@ -392,9 +457,10 @@ bool wxNativeFontInfo::FromXFontName(const wxString& fontname)
             // not enough elements in the XLFD - or maybe an alias
             return FALSE;
         }
-        
+
         wxString field = tokenizer.GetNextToken();
-        if (!field.empty() && field != _T('*')) {
+        if ( !field.empty() && field != _T('*') )
+        {
             // we're really initialized now
             m_isDefault = FALSE;
         }
@@ -405,7 +471,7 @@ bool wxNativeFontInfo::FromXFontName(const wxString& fontname)
     // this should be all
     if ( tokenizer.HasMoreTokens() )
         return FALSE;
- 
+
     return TRUE;
 }
 
@@ -522,13 +588,13 @@ bool wxNativeFontInfo::GetUnderlined() const
 
 wxString wxNativeFontInfo::GetFaceName() const
 {
-    // wxWindows facename probably more accurately corresponds to X family
+    // wxWidgets facename probably more accurately corresponds to X family
     return GetXFontComponent(wxXLFD_FAMILY);
 }
 
 wxFontFamily wxNativeFontInfo::GetFamily() const
 {
-    // and wxWindows family -- to X foundry, but we have to translate it to
+    // and wxWidgets family -- to X foundry, but we have to translate it to
     // wxFontFamily somehow...
     wxFAIL_MSG(_T("not implemented")); // GetXFontComponent(wxXLFD_FOUNDRY);
 
@@ -669,11 +735,12 @@ bool wxGetNativeFontEncoding(wxFontEncoding encoding,
             break;
 
         case wxFONTENCODING_GB2312:
-            info->xregistry = wxT("GB2312");   // or the otherway round? 
+            info->xregistry = wxT("GB2312");   // or the otherway round?
             info->xencoding = wxT("*");
             break;
 
         case wxFONTENCODING_KOI8:
+        case wxFONTENCODING_KOI8_U:
             info->xregistry = wxT("koi8");
 
             // we don't make distinction between koi8-r, koi8-u and koi8-ru (so far)

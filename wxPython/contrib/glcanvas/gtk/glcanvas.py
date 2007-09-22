@@ -1,149 +1,140 @@
 # This file was created automatically by SWIG.
-import glcanvasc
+# Don't modify this file, modify the SWIG interface instead.
 
-from misc import *
+"""
+`GLCanvas` provides an OpenGL Context on a `wx.Window`.
+"""
 
-from misc2 import *
+import _glcanvas
 
-from windows import *
-
-from gdi import *
-
-from fonts import *
-
-from clip_dnd import *
-
-from events import *
-
-from streams import *
-
-from utils import *
-
-from mdi import *
-
-from frames import *
-
-from stattool import *
-
-from controls import *
-
-from controls2 import *
-
-from windows2 import *
-
-from cmndlgs import *
-
-from windows3 import *
-
-from image import *
-
-from printfw import *
-
-from sizers import *
-
-from filesys import *
-import wx
-class wxGLContextPtr(wxObjectPtr):
-    def __init__(self,this):
-        self.this = this
-        self.thisown = 0
-    def __del__(self, delfunc=glcanvasc.delete_wxGLContext):
-        if self.thisown == 1:
-            try:
-                delfunc(self)
-            except:
-                pass
-    def SetCurrent(self, *_args, **_kwargs):
-        val = glcanvasc.wxGLContext_SetCurrent(self, *_args, **_kwargs)
-        return val
-    def SetColour(self, *_args, **_kwargs):
-        val = glcanvasc.wxGLContext_SetColour(self, *_args, **_kwargs)
-        return val
-    def SwapBuffers(self, *_args, **_kwargs):
-        val = glcanvasc.wxGLContext_SwapBuffers(self, *_args, **_kwargs)
-        return val
-    def SetupPixelFormat(self, *_args, **_kwargs):
-        val = glcanvasc.wxGLContext_SetupPixelFormat(self, *_args, **_kwargs)
-        return val
-    def SetupPalette(self, *_args, **_kwargs):
-        val = glcanvasc.wxGLContext_SetupPalette(self, *_args, **_kwargs)
-        return val
-    def CreateDefaultPalette(self, *_args, **_kwargs):
-        val = glcanvasc.wxGLContext_CreateDefaultPalette(self, *_args, **_kwargs)
-        if val: val = wxPalettePtr(val) ; val.thisown = 1
-        return val
-    def GetPalette(self, *_args, **_kwargs):
-        val = glcanvasc.wxGLContext_GetPalette(self, *_args, **_kwargs)
-        if val: val = wxPalettePtr(val) 
-        return val
-    def GetWindow(self, *_args, **_kwargs):
-        val = glcanvasc.wxGLContext_GetWindow(self, *_args, **_kwargs)
-        return val
+import _core
+wx = _core 
+__docfilter__ = wx.__DocFilter(globals()) 
+class GLContext(_core.Object):
     def __repr__(self):
-        return "<%s.%s instance; proxy of C++ wxGLContext instance at %s>" % (self.__class__.__module__, self.__class__.__name__, self.this)
-class wxGLContext(wxGLContextPtr):
-    def __init__(self,*_args,**_kwargs):
-        self.this = glcanvasc.new_wxGLContext(*_args,**_kwargs)
+        return "<%s.%s; proxy of C++ wxGLContext instance at %s>" % (self.__class__.__module__, self.__class__.__name__, self.this,)
+    def __init__(self, *args, **kwargs):
+        """
+        __init__(self, bool isRGB, GLCanvas win, wxPalette palette=wxNullPalette, 
+            GLContext other=None) -> GLContext
+        """
+        newobj = _glcanvas.new_GLContext(*args, **kwargs)
+        self.this = newobj.this
         self.thisown = 1
+        del newobj.thisown
+    def __del__(self, destroy=_glcanvas.delete_GLContext):
+        """__del__(self)"""
+        try:
+            if self.thisown: destroy(self)
+        except: pass
+
+    def SetCurrent(*args, **kwargs):
+        """SetCurrent(self)"""
+        return _glcanvas.GLContext_SetCurrent(*args, **kwargs)
+
+    def SetColour(*args, **kwargs):
+        """SetColour(self, String colour)"""
+        return _glcanvas.GLContext_SetColour(*args, **kwargs)
+
+    def SwapBuffers(*args, **kwargs):
+        """SwapBuffers(self)"""
+        return _glcanvas.GLContext_SwapBuffers(*args, **kwargs)
+
+    def SetupPixelFormat(*args, **kwargs):
+        """SetupPixelFormat(self)"""
+        return _glcanvas.GLContext_SetupPixelFormat(*args, **kwargs)
+
+    def SetupPalette(*args, **kwargs):
+        """SetupPalette(self, wxPalette palette)"""
+        return _glcanvas.GLContext_SetupPalette(*args, **kwargs)
+
+    def CreateDefaultPalette(*args, **kwargs):
+        """CreateDefaultPalette(self) -> wxPalette"""
+        return _glcanvas.GLContext_CreateDefaultPalette(*args, **kwargs)
+
+    def GetPalette(*args, **kwargs):
+        """GetPalette(self) -> wxPalette"""
+        return _glcanvas.GLContext_GetPalette(*args, **kwargs)
+
+    def GetWindow(*args, **kwargs):
+        """GetWindow(self) -> Window"""
+        return _glcanvas.GLContext_GetWindow(*args, **kwargs)
 
 
-
-
-class wxGLCanvasPtr(wxWindowPtr):
-    def __init__(self,this):
+class GLContextPtr(GLContext):
+    def __init__(self, this):
         self.this = this
-        self.thisown = 0
-    def SetCurrent(self, *_args, **_kwargs):
-        val = glcanvasc.wxGLCanvas_SetCurrent(self, *_args, **_kwargs)
-        return val
-    def SetColour(self, *_args, **_kwargs):
-        val = glcanvasc.wxGLCanvas_SetColour(self, *_args, **_kwargs)
-        return val
-    def SwapBuffers(self, *_args, **_kwargs):
-        val = glcanvasc.wxGLCanvas_SwapBuffers(self, *_args, **_kwargs)
-        return val
-    def GetContext(self, *_args, **_kwargs):
-        val = glcanvasc.wxGLCanvas_GetContext(self, *_args, **_kwargs)
-        if val: val = wxGLContextPtr(val) 
-        return val
+        if not hasattr(self,"thisown"): self.thisown = 0
+        self.__class__ = GLContext
+_glcanvas.GLContext_swigregister(GLContextPtr)
+cvar = _glcanvas.cvar
+GLCanvasNameStr = cvar.GLCanvasNameStr
+
+WX_GL_RGBA = _glcanvas.WX_GL_RGBA
+WX_GL_BUFFER_SIZE = _glcanvas.WX_GL_BUFFER_SIZE
+WX_GL_LEVEL = _glcanvas.WX_GL_LEVEL
+WX_GL_DOUBLEBUFFER = _glcanvas.WX_GL_DOUBLEBUFFER
+WX_GL_STEREO = _glcanvas.WX_GL_STEREO
+WX_GL_AUX_BUFFERS = _glcanvas.WX_GL_AUX_BUFFERS
+WX_GL_MIN_RED = _glcanvas.WX_GL_MIN_RED
+WX_GL_MIN_GREEN = _glcanvas.WX_GL_MIN_GREEN
+WX_GL_MIN_BLUE = _glcanvas.WX_GL_MIN_BLUE
+WX_GL_MIN_ALPHA = _glcanvas.WX_GL_MIN_ALPHA
+WX_GL_DEPTH_SIZE = _glcanvas.WX_GL_DEPTH_SIZE
+WX_GL_STENCIL_SIZE = _glcanvas.WX_GL_STENCIL_SIZE
+WX_GL_MIN_ACCUM_RED = _glcanvas.WX_GL_MIN_ACCUM_RED
+WX_GL_MIN_ACCUM_GREEN = _glcanvas.WX_GL_MIN_ACCUM_GREEN
+WX_GL_MIN_ACCUM_BLUE = _glcanvas.WX_GL_MIN_ACCUM_BLUE
+WX_GL_MIN_ACCUM_ALPHA = _glcanvas.WX_GL_MIN_ACCUM_ALPHA
+class GLCanvas(_core.Window):
     def __repr__(self):
-        return "<%s.%s instance; proxy of C++ wxGLCanvas instance at %s>" % (self.__class__.__module__, self.__class__.__name__, self.this)
-class wxGLCanvas(wxGLCanvasPtr):
-    def __init__(self,*_args,**_kwargs):
-        self.this = glcanvasc.new_wxGLCanvas(*_args,**_kwargs)
+        return "<%s.%s; proxy of C++ wxGLCanvas instance at %s>" % (self.__class__.__module__, self.__class__.__name__, self.this,)
+    def __init__(self, *args, **kwargs):
+        """
+        __init__(self, Window parent, int id=-1, Point pos=DefaultPosition, 
+            Size size=DefaultSize, long style=0, String name=GLCanvasNameStr, 
+            int attribList=None, wxPalette palette=wxNullPalette) -> GLCanvas
+        """
+        newobj = _glcanvas.new_GLCanvas(*args, **kwargs)
+        self.this = newobj.this
         self.thisown = 1
+        del newobj.thisown
         self._setOORInfo(self)
 
+    def SetCurrent(*args, **kwargs):
+        """SetCurrent(self)"""
+        return _glcanvas.GLCanvas_SetCurrent(*args, **kwargs)
+
+    def SetColour(*args, **kwargs):
+        """SetColour(self, String colour)"""
+        return _glcanvas.GLCanvas_SetColour(*args, **kwargs)
+
+    def SwapBuffers(*args, **kwargs):
+        """SwapBuffers(self)"""
+        return _glcanvas.GLCanvas_SwapBuffers(*args, **kwargs)
+
+    def GetContext(*args, **kwargs):
+        """GetContext(self) -> GLContext"""
+        return _glcanvas.GLCanvas_GetContext(*args, **kwargs)
 
 
-def wxGLCanvasWithContext(*_args,**_kwargs):
-    val = wxGLCanvasPtr(glcanvasc.new_wxGLCanvasWithContext(*_args,**_kwargs))
+class GLCanvasPtr(GLCanvas):
+    def __init__(self, this):
+        self.this = this
+        if not hasattr(self,"thisown"): self.thisown = 0
+        self.__class__ = GLCanvas
+_glcanvas.GLCanvas_swigregister(GLCanvasPtr)
+
+def GLCanvasWithContext(*args, **kwargs):
+    """
+    GLCanvasWithContext(Window parent, GLContext shared=None, int id=-1, Point pos=DefaultPosition, 
+        Size size=DefaultSize, 
+        long style=0, String name=GLCanvasNameStr, 
+        int attribList=None, wxPalette palette=wxNullPalette) -> GLCanvas
+    """
+    val = _glcanvas.new_GLCanvasWithContext(*args, **kwargs)
     val.thisown = 1
-    val._setOORInfo(self)
+    val._setOORInfo(val)
     return val
 
 
-
-
-#-------------- FUNCTION WRAPPERS ------------------
-
-
-
-#-------------- VARIABLE WRAPPERS ------------------
-
-WX_GL_RGBA = glcanvasc.WX_GL_RGBA
-WX_GL_BUFFER_SIZE = glcanvasc.WX_GL_BUFFER_SIZE
-WX_GL_LEVEL = glcanvasc.WX_GL_LEVEL
-WX_GL_DOUBLEBUFFER = glcanvasc.WX_GL_DOUBLEBUFFER
-WX_GL_STEREO = glcanvasc.WX_GL_STEREO
-WX_GL_AUX_BUFFERS = glcanvasc.WX_GL_AUX_BUFFERS
-WX_GL_MIN_RED = glcanvasc.WX_GL_MIN_RED
-WX_GL_MIN_GREEN = glcanvasc.WX_GL_MIN_GREEN
-WX_GL_MIN_BLUE = glcanvasc.WX_GL_MIN_BLUE
-WX_GL_MIN_ALPHA = glcanvasc.WX_GL_MIN_ALPHA
-WX_GL_DEPTH_SIZE = glcanvasc.WX_GL_DEPTH_SIZE
-WX_GL_STENCIL_SIZE = glcanvasc.WX_GL_STENCIL_SIZE
-WX_GL_MIN_ACCUM_RED = glcanvasc.WX_GL_MIN_ACCUM_RED
-WX_GL_MIN_ACCUM_GREEN = glcanvasc.WX_GL_MIN_ACCUM_GREEN
-WX_GL_MIN_ACCUM_BLUE = glcanvasc.WX_GL_MIN_ACCUM_BLUE
-WX_GL_MIN_ACCUM_ALPHA = glcanvasc.WX_GL_MIN_ACCUM_ALPHA

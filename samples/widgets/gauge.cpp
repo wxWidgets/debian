@@ -1,10 +1,10 @@
 /////////////////////////////////////////////////////////////////////////////
-// Program:     wxWindows Widgets Sample
+// Program:     wxWidgets Widgets Sample
 // Name:        gauge.cpp
 // Purpose:     Part of the widgets sample showing wxGauge
 // Author:      Vadim Zeitlin
 // Created:     27.03.01
-// Id:          $Id: gauge.cpp,v 1.5 2002/08/01 19:12:24 MBN Exp $
+// Id:          $Id: gauge.cpp,v 1.12 2004/05/25 11:19:43 JS Exp $
 // Copyright:   (c) 2001 Vadim Zeitlin
 // License:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -29,6 +29,7 @@
     #include "wx/log.h"
     #include "wx/timer.h"
 
+    #include "wx/bitmap.h"
     #include "wx/button.h"
     #include "wx/checkbox.h"
     #include "wx/combobox.h"
@@ -41,7 +42,7 @@
 #include "wx/sizer.h"
 
 #include "widgets.h"
-#if 1
+#if wxUSE_GAUGE
 #include "icons/gauge.xpm"
 
 // ----------------------------------------------------------------------------
@@ -143,8 +144,8 @@ BEGIN_EVENT_TABLE(GaugeWidgetsPage, WidgetsPage)
 
     EVT_UPDATE_UI(GaugePage_CurValueText, GaugeWidgetsPage::OnUpdateUICurValueText)
 
-    EVT_CHECKBOX(-1, GaugeWidgetsPage::OnCheckOrRadioBox)
-    EVT_RADIOBOX(-1, GaugeWidgetsPage::OnCheckOrRadioBox)
+    EVT_CHECKBOX(wxID_ANY, GaugeWidgetsPage::OnCheckOrRadioBox)
+    EVT_RADIOBOX(wxID_ANY, GaugeWidgetsPage::OnCheckOrRadioBox)
 
     EVT_TIMER(GaugePage_Timer, GaugeWidgetsPage::OnProgressTimer)
 END_EVENT_TABLE()
@@ -175,7 +176,7 @@ GaugeWidgetsPage::GaugeWidgetsPage(wxNotebook *notebook,
     wxSizer *sizerTop = new wxBoxSizer(wxHORIZONTAL);
 
     // left pane
-    wxStaticBox *box = new wxStaticBox(this, -1, _T("&Set style"));
+    wxStaticBox *box = new wxStaticBox(this, wxID_ANY, _T("&Set style"));
 
     wxSizer *sizerLeft = new wxStaticBoxSizer(box, wxVERTICAL);
 
@@ -188,14 +189,15 @@ GaugeWidgetsPage::GaugeWidgetsPage(wxNotebook *notebook,
     sizerLeft->Add(btn, 0, wxALIGN_CENTRE_HORIZONTAL | wxALL, 15);
 
     // middle pane
-    wxStaticBox *box2 = new wxStaticBox(this, -1, _T("&Change gauge value"));
+    wxStaticBox *box2 = new wxStaticBox(this, wxID_ANY,
+        _T("&Change gauge value"));
     wxSizer *sizerMiddle = new wxStaticBoxSizer(box2, wxVERTICAL);
 
     wxTextCtrl *text;
     wxSizer *sizerRow = CreateSizerWithTextAndLabel(_T("Current value"),
                                                     GaugePage_CurValueText,
                                                     &text);
-    text->SetEditable(FALSE);
+    text->SetEditable(false);
 
     sizerMiddle->Add(sizerRow, 0, wxALL | wxGROW, 5);
 
@@ -233,7 +235,6 @@ GaugeWidgetsPage::GaugeWidgetsPage(wxNotebook *notebook,
     // final initializations
     Reset();
 
-    SetAutoLayout(TRUE);
     SetSizer(sizerTop);
 
     sizerTop->Fit(this);
@@ -250,8 +251,8 @@ GaugeWidgetsPage::~GaugeWidgetsPage()
 
 void GaugeWidgetsPage::Reset()
 {
-    m_chkVert->SetValue(FALSE);
-    m_chkSmooth->SetValue(FALSE);
+    m_chkVert->SetValue(false);
+    m_chkSmooth->SetValue(false);
 }
 
 void GaugeWidgetsPage::CreateGauge()
@@ -271,7 +272,7 @@ void GaugeWidgetsPage::CreateGauge()
     {
         val = m_gauge->GetValue();
 
-        m_sizerGauge->Remove(m_gauge);
+        m_sizerGauge->Detach( m_gauge );
         delete m_gauge;
     }
 
@@ -332,6 +333,7 @@ void GaugeWidgetsPage::OnButtonSetRange(wxCommandEvent& WXUNUSED(event))
     if ( !m_textRange->GetValue().ToULong(&val) )
         return;
 
+    m_range = val;
     m_gauge->SetRange(val);
 }
 
@@ -361,7 +363,7 @@ void GaugeWidgetsPage::OnUpdateUIResetButton(wxUpdateUIEvent& event)
     event.Enable( m_chkVert->GetValue() || m_chkSmooth->GetValue() );
 }
 
-void GaugeWidgetsPage::OnCheckOrRadioBox(wxCommandEvent& event)
+void GaugeWidgetsPage::OnCheckOrRadioBox(wxCommandEvent& WXUNUSED(event))
 {
     CreateGauge();
 }
@@ -401,3 +403,4 @@ void GaugeWidgetsPage::StopTimer()
 }
 
 #endif
+    // wxUSE_GAUGE

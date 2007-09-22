@@ -2,7 +2,7 @@
 // Name:        gtk/mdi.h
 // Purpose:
 // Author:      Robert Roebling
-// Id:          $Id: mdi.h,v 1.33.2.1 2003/07/25 18:52:26 RR Exp $
+// Id:          $Id: mdi.h,v 1.37 2004/09/30 16:37:49 VS Exp $
 // Copyright:   (c) 1998 Robert Roebling
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -11,7 +11,7 @@
 #ifndef __MDIH__
 #define __MDIH__
 
-#if defined(__GNUG__) && !defined(__APPLE__)
+#if defined(__GNUG__) && !defined(NO_GCC_PRAGMA)
 #pragma interface
 #endif
 
@@ -22,8 +22,6 @@
 #include "wx/panel.h"
 #include "wx/frame.h"
 #include "wx/toolbar.h"
-
-#if wxUSE_MDI_ARCHITECTURE
 
 //-----------------------------------------------------------------------------
 // classes
@@ -146,7 +144,7 @@ public:
 #endif
 
     // no size hints
-    virtual void SetSizeHints( int WXUNUSED(minW),
+    virtual void DoSetSizeHints( int WXUNUSED(minW),
                                int WXUNUSED(minH),
                                int WXUNUSED(maxW) = -1,
                                int WXUNUSED(maxH) = -1,
@@ -213,8 +211,6 @@ public:
 private:
     DECLARE_DYNAMIC_CLASS(wxMDIClientWindow)
 };
-
-#endif // if USE_MDI...
 
 #endif // __MDIH__
 

@@ -1,8 +1,8 @@
 
-from wxPython.wx import *
-from wxPython.lib.printout import PrintTable
+import  os
 
-import os
+import  wx
+import  wx.lib.printout as  printout
 
 #---------------------------------------------------------------------------
 
@@ -15,21 +15,22 @@ buttonDefs = {
     }
 
 
-class TablePanel(wxPanel):
+class TablePanel(wx.Panel):
     def __init__(self, parent, log, frame):
-        wxPanel.__init__(self, parent, -1)
+        wx.Panel.__init__(self, parent, -1)
         self.log = log
         self.frame = frame
 
-        box = wxBoxSizer(wxVERTICAL)
-        box.Add(20, 30)
+        box = wx.BoxSizer(wx.VERTICAL)
+        box.Add((20, 30))
         keys = buttonDefs.keys()
         keys.sort()
+
         for k in keys:
             text = buttonDefs[k][1]
-            btn = wxButton(self, k, text)
-            box.Add(btn, 0, wxALIGN_CENTER|wxALL, 15)
-            EVT_BUTTON(self, k, self.OnButton)
+            btn = wx.Button(self, k, text)
+            box.Add(btn, 0, wx.ALIGN_CENTER|wx.ALL, 15)
+            self.Bind(wx.EVT_BUTTON, self.OnButton, btn)
 
         self.SetAutoLayout(True)
         self.SetSizer(box)
@@ -60,7 +61,7 @@ class TablePanel(wxPanel):
 
     def PreviewWide(self):
         self.ReadData()
-        prt = PrintTable(self.frame)
+        prt = printout.PrintTable(self.frame)
         prt.data = self.data
         prt.left_margin = 0.5
         prt.set_column = [1.0, 1.0, 1.0, 1.5, 1.0, 3.0]
@@ -68,14 +69,14 @@ class TablePanel(wxPanel):
         prt.SetLandscape()
 
         prt.SetColumnLineSize(2, 3)
-        prt.SetColumnLineColour(3, wxNamedColour('RED'))
+        prt.SetColumnLineColour(3, wx.NamedColour('RED'))
 
         prt.SetRowLineSize(1, 3)
-        prt.SetRowLineColour(5, wxNamedColour('RED'))
+        prt.SetRowLineColour(5, wx.NamedColour('RED'))
 
-        prt.SetHeader("wxWindows Applications")
+        prt.SetHeader("wx.Windows Applications")
         prt.SetFooter()
-        prt.SetFooter("Date: ", type = "Date", align=wxALIGN_RIGHT, indent = -2, colour = wxNamedColour('RED'))
+        prt.SetFooter("Date: ", type = "Date", align=wx.ALIGN_RIGHT, indent = -2, colour = wx.NamedColour('RED'))
         prt.Preview()
 
     def PreviewNarrow(self):
@@ -87,26 +88,26 @@ class TablePanel(wxPanel):
         val = self.header
         new_header = [val[0], val[1], val[2], val[4], val[5]]
 
-        prt = PrintTable(self.frame)
+        prt = printout.PrintTable(self.frame)
         prt.data = new_data
         prt.set_column = [ 1, 1, 1, 1, 2]
         prt.label = new_header
-        prt.SetColAlignment(1, wxALIGN_CENTRE)
-        prt.SetColBackgroundColour(0, wxNamedColour('RED'))
-        prt.SetColTextColour(0, wxNamedColour('WHITE'))
-        prt.SetCellColour(4, 0, wxNamedColour('LIGHT BLUE'))
-        prt.SetCellColour(4, 1, wxNamedColour('LIGHT BLUE'))
-        prt.SetCellColour(17, 1, wxNamedColour('LIGHT BLUE'))
+        prt.SetColAlignment(1, wx.ALIGN_CENTRE)
+        prt.SetColBackgroundColour(0, wx.NamedColour('RED'))
+        prt.SetColTextColour(0, wx.NamedColour('WHITE'))
+        prt.SetCellColour(4, 0, wx.NamedColour('LIGHT BLUE'))
+        prt.SetCellColour(4, 1, wx.NamedColour('LIGHT BLUE'))
+        prt.SetCellColour(17, 1, wx.NamedColour('LIGHT BLUE'))
 
-        prt.SetColBackgroundColour(2, wxNamedColour('LIGHT BLUE'))
-        prt.SetCellText(4, 2, wxNamedColour('RED'))
+        prt.SetColBackgroundColour(2, wx.NamedColour('LIGHT BLUE'))
+        prt.SetCellText(4, 2, wx.NamedColour('RED'))
 
-        prt.SetColTextColour(3, wxNamedColour('RED'))
-        prt.label_font_colour = wxNamedColour('WHITE')
-        prt.SetHeader("wxWindows Applications", colour = wxNamedColour('RED'))
+        prt.SetColTextColour(3, wx.NamedColour('RED'))
+        prt.label_font_colour = wx.NamedColour('WHITE')
+        prt.SetHeader("wxWindows Applications", colour = wx.NamedColour('RED'))
 
-        prt.SetHeader("Printed: ", type = "Date & Time", align=wxALIGN_RIGHT, indent = -2, colour = wxNamedColour('BLUE'))
-        prt.SetFooter("Page No", colour = wxNamedColour('RED'), type ="Num")
+        prt.SetHeader("Printed: ", type = "Date & Time", align=wx.ALIGN_RIGHT, indent = -2, colour = wx.NamedColour('BLUE'))
+        prt.SetFooter("Page No", colour = wx.NamedColour('RED'), type ="Num")
         prt.Preview()
 
     def OnPreviewMatrix(self):
@@ -121,7 +122,7 @@ class TablePanel(wxPanel):
         for val in range(total_col):
             columns.append(hsize)
 
-        prt = PrintTable(self.frame)
+        prt = printout.PrintTable(self.frame)
 
         for row in range(total_row):
             value = []
@@ -130,7 +131,7 @@ class TablePanel(wxPanel):
             data.append(value)
 
         for col in range(total_col):
-            prt.SetColAlignment(col, wxALIGN_CENTRE)
+            prt.SetColAlignment(col, wx.ALIGN_CENTRE)
 
         prt.SetLandscape()
         prt.text_font_size = 8
@@ -142,7 +143,7 @@ class TablePanel(wxPanel):
         prt.Preview()
 
     def PreviewLine(self):
-        prt = PrintTable(self.frame)
+        prt = printout.PrintTable(self.frame)
         prt.label = ["Header 1", "Header 2", "Header 3"]
         prt.set_column = []
         prt.data = [["Row 1", "1", "2"], ["Row 2", "3", "4\nNew Line to see if it also can wrap around the cell region properly\nAnother new line"]]
@@ -151,7 +152,7 @@ class TablePanel(wxPanel):
 
     def PrintWide(self):
         self.ReadData()
-        prt = PrintTable(self.frame)
+        prt = printout.PrintTable(self.frame)
         prt.data = self.data
 
         prt.left_margin = 0.5
@@ -169,12 +170,6 @@ def runTest(frame, nb, log):
 
 #---------------------------------------------------------------------------
 
-
-
-
-
-import os
-import wxPython.lib.printout
 
 
 
@@ -203,7 +198,7 @@ the program knows it before trying to parse through the available pages.  This w
 when the framework allows for it.
 
 
-""" % os.path.join(os.path.dirname(wxPython.lib.printout.__file__), "printout.py")
+""" % os.path.join(os.path.dirname(printout.__file__), "printout.py")
 
 
 
@@ -212,5 +207,5 @@ when the framework allows for it.
 if __name__ == '__main__':
     import sys,os
     import run
-    run.main(['', os.path.basename(sys.argv[0])])
+    run.main(['', os.path.basename(sys.argv[0])] + sys.argv[1:])
 

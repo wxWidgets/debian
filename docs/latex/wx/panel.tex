@@ -29,15 +29,13 @@ See also \helpref{window styles overview}{windowstyles}.
 
 By default, a panel has the same colouring as a dialog.
 
-A panel may be loaded from a wxWidgets resource file (extension {\tt wxr}).
-
 \wxheading{See also}
 
 \helpref{wxDialog}{wxdialog}
 
 \latexignore{\rtfignore{\wxheading{Members}}}
 
-\membersection{wxPanel::wxPanel}\label{wxpanelconstr}
+\membersection{wxPanel::wxPanel}\label{wxpanelctor}
 
 \func{}{wxPanel}{\void}
 
@@ -73,7 +71,7 @@ individual dialog boxes.}
 
 \helpref{wxPanel::Create}{wxpanelcreate}
 
-\membersection{wxPanel::\destruct{wxPanel}}
+\membersection{wxPanel::\destruct{wxPanel}}\label{wxpaneldtor}
 
 \func{}{\destruct{wxPanel}}{\void}
 
@@ -87,7 +85,7 @@ Destructor. Deletes any child windows before deleting the physical window.
 \param{long}{ style = wxTAB\_TRAVERSAL},\rtfsp
 \param{const wxString\& }{name = ``panel"}}
 
-Used for two-step panel construction. See \helpref{wxPanel::wxPanel}{wxpanelconstr}\rtfsp
+Used for two-step panel construction. See \helpref{wxPanel::wxPanel}{wxpanelctor}\rtfsp
 for details.
 
 \membersection{wxPanel::GetDefaultItem}\label{wxpanelgetdefaultitem}

@@ -4,9 +4,9 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     12/07/98
-// RCS-ID:      $Id: view.h,v 1.2 2002/09/07 12:12:21 GD Exp $
+// RCS-ID:      $Id: view.h,v 1.3 2004/06/09 16:42:26 ABX Exp $
 // Copyright:   (c) Julian Smart
-// Licence:   	wxWindows licence
+// Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
 
 #ifndef _OGLSAMPLE_VIEW_H_
@@ -26,7 +26,7 @@ class MyCanvas: public wxShapeCanvas
  public:
   wxView *view;
 
-  MyCanvas(wxView *view, wxWindow *parent = NULL, wxWindowID id = -1,
+  MyCanvas(wxView *view, wxWindow *parent = NULL, wxWindowID id = wxID_ANY,
             const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxDefaultSize,
             long style = wxRETAINED);
   ~MyCanvas(void);
@@ -62,7 +62,7 @@ class DiagramView: public wxView
   bool OnCreate(wxDocument *doc, long flags);
   void OnDraw(wxDC *dc);
   void OnUpdate(wxView *sender, wxObject *hint = NULL);
-  bool OnClose(bool deleteWindow = TRUE);
+  bool OnClose(bool deleteWindow = true);
 
   wxShape *FindSelectedShape(void);
 

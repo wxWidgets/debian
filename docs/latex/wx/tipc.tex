@@ -1,8 +1,8 @@
 \section{Interprocess communication overview}\label{ipcoverview}
 
-Classes: \helpref{wxServer}{wxddeserver},
+Classes: \helpref{wxServer}{wxserver},
 \helpref{wxConnection}{wxddeconnection},
-\helpref{wxClient}{wxddeclient}
+\helpref{wxClient}{wxclient}
 %\helpref{wxTCPServer}{wxtcpserver}, \helpref{wxTCPConnection}{wxtcpconnection},
 %\helpref{wxTCPClient}{wxtcpclient}
 
@@ -34,8 +34,8 @@ convenient synonyms for the IPC classes: {\tt wxServer} for either
 DDE-based or socket-based implementation is used and the same
 thing for {\tt wxClient} and {\tt wxConnection}.
 
-By default, DDE implementation is used under Windows. DDE works
-only within one computer. If you want to use IPC between
+By default, the DDE implementation is used under Windows. DDE works
+within one computer only. If you want to use IPC between
 different workstations you should define {\tt
 wxUSE\_DDE\_FOR\_IPC} as $0$ before including this header -- this
 will force using TCP/IP implementation even under Windows.
@@ -70,7 +70,7 @@ used for the communications or a valid file name (which shouldn't
 exist and will be deleted afterwards) in which case a Unix domain
 socket is created.
 
-{\bf SECURITY NOTE:} Using Internet domain sockets if extremely insecure for
+{\bf SECURITY NOTE:} Using Internet domain sockets is extremely insecure for
 IPC as there is absolutely no access control for them, use Unix domain sockets
 whenever possible!
 
@@ -108,7 +108,7 @@ need to be overridden.
 create and return an instance of the derived connection class.
 \item Create an instance of your client object.
 \item When appropriate, create a new connection using
-\helpref{wxClient::MakeConnection}{wxddeclientmakeconnection},
+\helpref{wxClient::MakeConnection}{wxclientmakeconnection},
 with arguments host name (processed in Unix only, use `localhost'
 for local computer), service name, and topic name for this
 connection. The client object will call
@@ -118,7 +118,7 @@ successful.
 \item Use the wxConnection member functions to send messages to the server.
 \end{enumerate}
 
-\subsection{Data transfer}
+\subsection{Data transfer}\label{datatransfer}
 
 These are the ways that data can be transferred from one
 application to another. These are methods of wxConnection.
@@ -145,7 +145,7 @@ The default data type is wxCF\_TEXT (ASCII text), and the default data
 size is the length of the null-terminated string. Windows-specific data
 types could also be used on the PC.
 
-\subsection{Examples}
+\subsection{Examples}\label{ipcexamples}
 
 See the sample programs {\it server}\/ and {\it client}\/ in the IPC
 samples directory.  Run the server, then the client. This demonstrates
@@ -153,7 +153,7 @@ using the Execute, Request, and Poke commands from the client, together
 with an Advise loop: selecting an item in the server list box causes
 that item to be highlighted in the client list box.
 
-\subsection{More DDE details}
+\subsection{More DDE details}\label{ddedetails}
 
 A wxClient object initiates the client part of a client-server
 DDE-like (Dynamic Data Exchange) conversation (available in both
@@ -164,8 +164,8 @@ you need to derive a class from wxConnection and another from
 wxClient. The custom wxConnection class will receive
 communications in a `conversation' with a server.  and the custom
 wxServer is required so that a user-overridden
-\helpref{wxDDEClient::OnMakeConnection}{wxddeclientonmakeconnection}
-member can return a wxDDEConnection of the required class, when a
+\helpref{wxClient::OnMakeConnection}{wxddeclientonmakeconnection}
+member can return a wxConnection of the required class, when a
 connection is made.
 
 For example:
@@ -196,7 +196,7 @@ the derived wxClient. In the following, command line arguments
 are used to pass the host name (the name of the machine the
 server is running on) and the server name (identifying the server
 process). Calling
-\helpref{wxDDEClient::MakeConnection}{wxddeclientmakeconnection}\rtfsp
+\helpref{wxClient::MakeConnection}{wxddeclientmakeconnection}\rtfsp
 implicitly creates an instance of {\bf MyConnection} if the
 request for a connection is accepted, and the client then
 requests an {\it Advise} loop from the server (an Advise loop is
@@ -218,7 +218,4 @@ where the server calls the client when data has changed).
   }
   connection->StartAdvise("Item");
 \end{verbatim}
-
-Note that it is no longer necessary to call wxDDEInitialize or wxDDECleanUp, since
-wxWidgets will do this itself if necessary.
 

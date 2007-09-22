@@ -5,11 +5,11 @@
 // Modified by:
 // Created:     25/05/2001
 // RCS-ID:
-// Copyright:   (c) wxWindows team
+// Copyright:   (c) wxWidgets team
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
 
-#if defined(__GNUG__) && !defined(__APPLE__)
+#if defined(__GNUG__) && !defined(NO_GCC_PRAGMA)
     #pragma interface "genericfdrepdlg.h"
 #endif
 

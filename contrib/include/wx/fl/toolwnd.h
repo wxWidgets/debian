@@ -5,7 +5,7 @@
 // Author:      Aleksandras Gluchovas
 // Modified by:
 // Created:     06/09/98
-// RCS-ID:      $Id: toolwnd.h,v 1.3.2.1 2002/10/24 11:21:36 JS Exp $
+// RCS-ID:      $Id: toolwnd.h,v 1.9 2004/06/07 16:02:14 ABX Exp $
 // Copyright:   (c) Aleksandras Gluchovas
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -27,18 +27,18 @@
 #define BTN_BOX_WIDTH        12
 #define BTN_X_WIEGHT         2
 
-class WXFL_DECLSPEC cbMiniButton;
+class WXDLLIMPEXP_FL cbMiniButton;
 
 typedef cbMiniButton* cbMinitButtonPtrT;
 
-WXFL_DEFINE_ARRAY( cbMinitButtonPtrT, cbMiniButtonArrayT );
+WXFL_DEFINE_ARRAY_PTR( cbMinitButtonPtrT, cbMiniButtonArrayT );
 
 /*
 A tool window is a special kind of frame that paints its own title, and
 can be used to implement small floating windows.
 */
 
-class WXFL_DECLSPEC wxToolWindow : public wxFrame
+class WXDLLIMPEXP_FL wxToolWindow : public wxFrame
 {
     DECLARE_DYNAMIC_CLASS( wxToolWindow )
 
@@ -144,10 +144,10 @@ public:
 
         // Called when a mini button is clicked.
         // By default, does nothing.
-    virtual void OnMiniButtonClicked( int btnIdx ) {}
+    virtual void OnMiniButtonClicked( int WXUNUSED(btnIdx) ) {}
 
         // Handles clicking on the title. By default, does nothing.
-    virtual bool HandleTitleClick( wxMouseEvent& event ) { return FALSE; }
+    virtual bool HandleTitleClick( wxMouseEvent& WXUNUSED(event) ) { return false; }
 
     DECLARE_EVENT_TABLE()
 };
@@ -186,7 +186,7 @@ public:
         // Set the position of the button.
     void SetPos( const wxPoint& pos );
 
-        // Returns TRUE if the given position was over the button.
+        // Returns true if the given position was over the button.
     bool HitTest( const wxPoint& pos );
 
         // Responds to a left down event.
@@ -205,7 +205,7 @@ public:
         // the desired appearance.
     virtual void Draw( wxDC& dc );
 
-        // Returns TRUE if the button was clicked.
+        // Returns true if the button was clicked.
     bool WasClicked();
 
         // Reset the button.
@@ -214,7 +214,7 @@ public:
         // Enable or disable the button.
     void Enable( bool enable ) { mEnabled = enable; }
 
-        // Returns TRUE if this button is pressed.
+        // Returns true if this button is pressed.
     bool IsPressed() { return mPressed; }
 };
 
@@ -222,7 +222,7 @@ public:
 cbCloseBox is a window close button, used in a wxToolWindow titlebar.
 */
 
-class WXFL_DECLSPEC cbCloseBox : public cbMiniButton
+class WXDLLIMPEXP_FL cbCloseBox : public cbMiniButton
 {
 public:
         // Draws the close button appearance.
@@ -233,7 +233,7 @@ public:
 cbCollapseBox is a window collapse button, used in a wxToolWindow titlebar.
 */
 
-class WXFL_DECLSPEC cbCollapseBox  : public cbMiniButton
+class WXDLLIMPEXP_FL cbCollapseBox  : public cbMiniButton
 {
 public:
     bool mIsAtLeft;
@@ -246,7 +246,7 @@ public:
 cbDockBox is a window dock button, used in a wxToolWindow titlebar.
 */
 
-class WXFL_DECLSPEC cbDockBox : public cbMiniButton
+class WXDLLIMPEXP_FL cbDockBox : public cbMiniButton
 {
 public:
         // Draws the dock button appearance.
@@ -258,7 +258,7 @@ cbFloatedBarWindow is a kind of wxToolWindow,
 implementing floating toolbars.
 */
 
-class WXFL_DECLSPEC cbFloatedBarWindow : public wxToolWindow
+class WXDLLIMPEXP_FL cbFloatedBarWindow : public wxToolWindow
 {
     DECLARE_DYNAMIC_CLASS( cbFloatedBarWindow )
 protected:

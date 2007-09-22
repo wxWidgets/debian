@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     01/02/97
-// RCS-ID:      $Id: combobox.h,v 1.12 2001/06/26 20:59:07 VZ Exp $
+// RCS-ID:      $Id: combobox.h,v 1.27 2004/11/10 19:17:40 ABX Exp $
 // Copyright:   (c) Julian Smart
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -12,7 +12,7 @@
 #ifndef _WX_COMBOBOX_H_
 #define _WX_COMBOBOX_H_
 
-#ifdef __GNUG__
+#if defined(__GNUG__) && !defined(NO_GCC_PRAGMA)
     #pragma interface "combobox.h"
 #endif
 
@@ -20,18 +20,14 @@
 
 #if wxUSE_COMBOBOX
 
-WXDLLEXPORT_DATA(extern const wxChar*) wxEmptyString;
-
 // ----------------------------------------------------------------------------
 // Combobox control
 // ----------------------------------------------------------------------------
 
 class WXDLLEXPORT wxComboBox: public wxChoice
 {
-    DECLARE_DYNAMIC_CLASS(wxComboBox)
-
 public:
-    wxComboBox() { }
+    wxComboBox() { Init(); }
 
     wxComboBox(wxWindow *parent, wxWindowID id,
             const wxString& value = wxEmptyString,
@@ -42,7 +38,22 @@ public:
             const wxValidator& validator = wxDefaultValidator,
             const wxString& name = wxComboBoxNameStr)
     {
+        Init();
+
         Create(parent, id, value, pos, size, n, choices, style, validator, name);
+    }
+    wxComboBox(wxWindow *parent, wxWindowID id,
+            const wxString& value,
+            const wxPoint& pos,
+            const wxSize& size,
+            const wxArrayString& choices,
+            long style = 0,
+            const wxValidator& validator = wxDefaultValidator,
+            const wxString& name = wxComboBoxNameStr)
+    {
+        Init();
+
+        Create(parent, id, value, pos, size, choices, style, validator, name);
     }
 
     bool Create(wxWindow *parent,
@@ -55,11 +66,20 @@ public:
                 long style = 0,
                 const wxValidator& validator = wxDefaultValidator,
                 const wxString& name = wxComboBoxNameStr);
+    bool Create(wxWindow *parent,
+                wxWindowID id,
+                const wxString& value,
+                const wxPoint& pos,
+                const wxSize& size,
+                const wxArrayString& choices,
+                long style = 0,
+                const wxValidator& validator = wxDefaultValidator,
+                const wxString& name = wxComboBoxNameStr);
 
     // List functions: see wxChoice
 
     // Text field functions
-    wxString GetValue() const { return GetLabel(); }
+    wxString GetValue() const { return m_value; }
     virtual void SetValue(const wxString& value);
 
     // Clipboard operations
@@ -75,14 +95,33 @@ public:
     virtual void SetSelection(int n) { wxChoice::SetSelection(n); }
     virtual void SetSelection(long from, long to);
     virtual void SetEditable(bool editable);
+    virtual void Clear() { wxChoice::Clear(); m_selectionOld = -1; }
 
     // implementation only from now on
     virtual bool MSWCommand(WXUINT param, WXWORD id);
     bool MSWProcessEditMsg(WXUINT msg, WXWPARAM wParam, WXLPARAM lParam);
+    virtual WXLRESULT MSWWindowProc(WXUINT nMsg, WXWPARAM wParam, WXLPARAM lParam);
+
     virtual WXHBRUSH OnCtlColor(WXHDC pDC, WXHWND pWnd, WXUINT nCtlColor,
             WXUINT message, WXWPARAM wParam, WXLPARAM lParam);
 
     WXHWND GetEditHWND() const;
+
+protected:
+    virtual WXDWORD MSWGetStyle(long style, WXDWORD *exstyle) const;
+
+    // common part of all ctors
+    void Init() { m_selectionOld = -1; }
+
+
+    // the previous selection (see MSWCommand() to see why it is needed)
+    int m_selectionOld;
+
+    // the current selection (also see MSWCommand())
+    wxString m_value;
+
+private:
+    DECLARE_DYNAMIC_CLASS_NO_COPY(wxComboBox)
 };
 
 #endif // wxUSE_COMBOBOX

@@ -2,16 +2,17 @@
 // Name:        popupwin.cpp
 // Purpose:
 // Author:      Robert Roebling
-// Id:          $Id: popupwin.cpp,v 1.6.2.1 2002/10/29 21:48:06 RR Exp $
+// Id:          $Id: popupwin.cpp,v 1.11 2004/05/23 20:52:21 JS Exp $
 // Copyright:   (c) 1998 Robert Roebling
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
 
-#ifdef __GNUG__
+#if defined(__GNUG__) && !defined(NO_GCC_PRAGMA)
 #pragma implementation "popupwin.h"
 #endif
 
-#include "wx/defs.h"
+// For compilers that support precompilation, includes "wx.h".
+#include "wx/wxprec.h"
 
 #if wxUSE_POPUPWIN
 
@@ -117,7 +118,7 @@ gtk_dialog_realized_callback( GtkWidget * WXUNUSED(widget), wxPopupWindow *win )
 
 /* Callback for wxFrame. This very strange beast has to be used because
  * C++ has no virtual methods in a constructor. We have to emulate a
- * virtual function here as wxWindows requires different ways to insert
+ * virtual function here as wxWidgets requires different ways to insert
  * a child in container classes. */
 
 static void wxInsertChildInDialog( wxPopupWindow* parent, wxWindow* child )
@@ -151,8 +152,6 @@ IMPLEMENT_DYNAMIC_CLASS(wxPopupWindow, wxWindow)
 
 wxPopupWindow::~wxPopupWindow()
 {
-    if (GTK_WIDGET_HAS_GRAB(m_widget))
-        gtk_grab_remove( m_widget );
 }
 
 bool wxPopupWindow::Create( wxWindow *parent, int style )
@@ -349,13 +348,7 @@ bool wxPopupWindow::Show( bool show )
         GtkOnSize( m_x, m_y, m_width, m_height );
     }
     
-    if (!show)
-        gtk_grab_remove( m_widget );
-    
     bool ret = wxWindow::Show( show );
-    
-    if (show)
-        gtk_grab_add( m_widget );
     
     return ret;
 }

@@ -32,7 +32,7 @@ See also \helpref{Generic window styles}{windowstyles}.
 
 \latexignore{\rtfignore{\wxheading{Members}}}
 
-\membersection{wxDirDialog::wxDirDialog}\label{wxdirdialogconstr}
+\membersection{wxDirDialog::wxDirDialog}\label{wxdirdialogctor}
 
 \func{}{wxDirDialog}{\param{wxWindow* }{parent}, \param{const wxString\& }{message = "Choose a directory"},\rtfsp
 \param{const wxString\& }{defaultPath = ""}, \param{long }{style = 0},\rtfsp
@@ -59,7 +59,7 @@ the dialog.
 
 \docparam{name}{The dialog name, not used.}
 
-\membersection{wxDirDialog::\destruct{wxDirDialog}}
+\membersection{wxDirDialog::\destruct{wxDirDialog}}\label{wxdirdialogdtor}
 
 \func{}{\destruct{wxDirDialog}}{\void}
 
@@ -105,7 +105,7 @@ Sets the dialog style. This is currently unused.
 
 \func{int}{ShowModal}{\void}
 
-Shows the dialog, returning wxID\_OK if the user pressed OK, and wxOK\_CANCEL
+Shows the dialog, returning wxID\_OK if the user pressed OK, and wxID\_CANCEL
 otherwise.
 
 

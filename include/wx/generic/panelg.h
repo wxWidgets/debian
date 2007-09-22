@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     01/02/97
-// RCS-ID:      $Id: panelg.h,v 1.31.2.2 2002/09/21 20:38:05 VZ Exp $
+// RCS-ID:      $Id: panelg.h,v 1.41 2004/06/23 16:41:40 VS Exp $
 // Copyright:   (c)
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -12,7 +12,7 @@
 #ifndef _WX_GENERIC_PANEL_H_
 #define _WX_GENERIC_PANEL_H_
 
-#if defined(__GNUG__) && !defined(__APPLE__)
+#if defined(__GNUG__) && !defined(NO_GCC_PRAGMA)
     #pragma interface "panelg.h"
 #endif
 
@@ -45,12 +45,12 @@ public:
     {
         Init();
 
-        Create(parent, -1, wxPoint(x, y), wxSize(width, height), style, name);
+        Create(parent, wxID_ANY, wxPoint(x, y), wxSize(width, height), style, name);
     }
 
     // Constructor
     wxPanel(wxWindow *parent,
-            wxWindowID id = -1,
+            wxWindowID winid = wxID_ANY,
             const wxPoint& pos = wxDefaultPosition,
             const wxSize& size = wxDefaultSize,
             long style = wxTAB_TRAVERSAL | wxNO_BORDER,
@@ -58,11 +58,11 @@ public:
     {
         Init();
 
-        Create(parent, id, pos, size, style, name);
+        Create(parent, winid, pos, size, style, name);
     }
 
     // Pseudo ctor
-    bool Create(wxWindow *parent, wxWindowID id,
+    bool Create(wxWindow *parent, wxWindowID winid,
                 const wxPoint& pos = wxDefaultPosition,
                 const wxSize& size = wxDefaultSize,
                 long style = wxTAB_TRAVERSAL | wxNO_BORDER,
@@ -73,18 +73,19 @@ public:
     // implementation from now on
     // --------------------------
 
-        // responds to colour changes
-    void OnSysColourChanged(wxSysColourChangedEvent& event);
-
         // calls layout for layout constraints and sizers
     void OnSize(wxSizeEvent& event);
 
     virtual void InitDialog();
 
 #ifdef __WXUNIVERSAL__
-    virtual bool IsCanvasWindow() const { return TRUE; }
-    virtual bool ProvidesBackground() const { return TRUE; }
+    virtual bool IsCanvasWindow() const { return true; }
+    virtual bool ProvidesBackground() const { return true; }
 #endif
+
+    virtual void ApplyParentThemeBackground(const wxColour& bg)
+        { SetBackgroundColour(bg); }
+
 
     WX_DECLARE_CONTROL_CONTAINER();
 
@@ -93,7 +94,7 @@ protected:
     void Init();
 
 private:
-    DECLARE_DYNAMIC_CLASS(wxPanel)
+    DECLARE_DYNAMIC_CLASS_NO_COPY(wxPanel)
     DECLARE_EVENT_TABLE()
 };
 

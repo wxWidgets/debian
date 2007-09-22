@@ -4,12 +4,12 @@
 // Author:      Vaclav Slavik
 // Modified by:
 // Created:     2002/02/17
-// RCS-ID:      $Id: mslu.cpp,v 1.3.2.2 2002/11/04 18:52:18 VZ Exp $
+// RCS-ID:      $Id: mslu.cpp,v 1.17 2004/09/27 13:06:30 RR Exp $
 // Copyright:   (c) 2002 Vaclav Slavik
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
 
-#ifdef __GNUG__
+#if defined(__GNUG__) && !defined(NO_GCC_PRAGMA)
 #pragma implementation
 #endif
 
@@ -18,11 +18,31 @@
 
 #ifdef __BORLANDC__
 #pragma hdrstop
+#include <dir.h>
 #endif
 
 #ifndef WX_PRECOMP
     #include "wx/defs.h"
+    #include "wx/utils.h"
 #endif
+
+//------------------------------------------------------------------------
+// Check for use of MSLU
+//------------------------------------------------------------------------
+
+#if wxUSE_BASE
+
+bool WXDLLIMPEXP_BASE wxUsingUnicowsDll()
+{
+#if wxUSE_UNICODE_MSLU
+    return (wxGetOsVersion() == wxWIN95);
+#else
+    return false;
+#endif
+}
+
+#endif // wxUSE_BASE
+
 
 #if wxUSE_UNICODE_MSLU
 
@@ -130,7 +150,10 @@ WXDLLEXPORT int wxMSLU_GetSaveFileNameW(void *ofn)
 // Missing libc file manipulation functions in Win9x
 //------------------------------------------------------------------------
 
-WXDLLEXPORT int wxMSLU__trename(const wxChar *oldname, const wxChar *newname)
+#if wxUSE_BASE
+
+WXDLLIMPEXP_BASE int wxMSLU__trename(const wxChar *oldname,
+                                     const wxChar *newname)
 {
     if ( wxUsingUnicowsDll() )
         return rename(wxConvFile.cWX2MB(oldname), wxConvFile.cWX2MB(newname));
@@ -138,7 +161,7 @@ WXDLLEXPORT int wxMSLU__trename(const wxChar *oldname, const wxChar *newname)
         return _trename(oldname, newname);
 }
 
-WXDLLEXPORT int wxMSLU__tremove(const wxChar *name)
+WXDLLIMPEXP_BASE int wxMSLU__tremove(const wxChar *name)
 {
     if ( wxUsingUnicowsDll() )
         return remove(wxConvFile.cWX2MB(name));
@@ -148,17 +171,22 @@ WXDLLEXPORT int wxMSLU__tremove(const wxChar *name)
 
 #if defined( __VISUALC__ ) \
     || ( defined(__MINGW32__) && wxCHECK_W32API_VERSION( 0, 5 ) ) \
-    || ( defined(__MWERKS__) && defined(__WXMSW__) )
+    || ( defined(__MWERKS__) && defined(__WXMSW__) ) \
+    || ( defined(__BORLANDC__) && (__BORLANDC__ > 0x460) )
 
-WXDLLEXPORT int wxMSLU__wopen(const wxChar *name, int flags, int mode)
+WXDLLIMPEXP_BASE int wxMSLU__wopen(const wxChar *name, int flags, int mode)
 {
     if ( wxUsingUnicowsDll() )
+#ifdef __BORLANDC__
+        return open(wxConvFile.cWX2MB(name), flags, mode);
+#else
         return _open(wxConvFile.cWX2MB(name), flags, mode);
+#endif
     else
         return _wopen(name, flags, mode);
 }
 
-WXDLLEXPORT int wxMSLU__waccess(const wxChar *name, int mode)
+WXDLLIMPEXP_BASE int wxMSLU__waccess(const wxChar *name, int mode)
 {
     if ( wxUsingUnicowsDll() )
         return _access(wxConvFile.cWX2MB(name), mode);
@@ -166,7 +194,7 @@ WXDLLEXPORT int wxMSLU__waccess(const wxChar *name, int mode)
         return _waccess(name, mode);
 }
 
-WXDLLEXPORT int wxMSLU__wmkdir(const wxChar *name)
+WXDLLIMPEXP_BASE int wxMSLU__wmkdir(const wxChar *name)
 {
     if ( wxUsingUnicowsDll() )
         return _mkdir(wxConvFile.cWX2MB(name));
@@ -174,7 +202,7 @@ WXDLLEXPORT int wxMSLU__wmkdir(const wxChar *name)
         return _wmkdir(name);
 }
 
-WXDLLEXPORT int wxMSLU__wrmdir(const wxChar *name)
+WXDLLIMPEXP_BASE int wxMSLU__wrmdir(const wxChar *name)
 {
     if ( wxUsingUnicowsDll() )
         return _rmdir(wxConvFile.cWX2MB(name));
@@ -182,7 +210,7 @@ WXDLLEXPORT int wxMSLU__wrmdir(const wxChar *name)
         return _wrmdir(name);
 }
 
-WXDLLEXPORT int wxMSLU__wstat(const wxChar *name, struct _stat *buffer)
+WXDLLIMPEXP_BASE int wxMSLU__wstat(const wxChar *name, struct _stat *buffer)
 {
     if ( wxUsingUnicowsDll() )
         return _stat((const char*)wxConvFile.cWX2MB(name), buffer);
@@ -190,6 +218,16 @@ WXDLLEXPORT int wxMSLU__wstat(const wxChar *name, struct _stat *buffer)
         return _wstat(name, buffer);
 }
 
-#endif
+WXDLLIMPEXP_BASE int wxMSLU__wstati64(const wxChar *name, struct _stati64 *buffer)
+{
+    if ( wxUsingUnicowsDll() )
+        return _stati64((const char*)wxConvFile.cWX2MB(name), buffer);
+    else
+        return _wstati64(name, buffer);
+}
+
+#endif // compilers having wopen() &c
+
+#endif // wxUSE_BASE
 
 #endif // wxUSE_UNICODE_MSLU

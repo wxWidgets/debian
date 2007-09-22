@@ -4,9 +4,9 @@
 // Author:      Vadim Zeitlin
 // Modified by:
 // Created:     26.07.99
-// RCS-ID:      $Id: choiccmn.cpp,v 1.8 2002/01/07 21:52:28 GD Exp $
-// Copyright:   (c) wxWindows team
-// Licence:     wxWindows license
+// RCS-ID:      $Id: choiccmn.cpp,v 1.17 2004/10/12 20:13:14 ABX Exp $
+// Copyright:   (c) wxWidgets team
+// Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
 
 // ============================================================================
@@ -17,7 +17,7 @@
 // headers
 // ----------------------------------------------------------------------------
 
-#ifdef __GNUG__
+#if defined(__GNUG__) && !defined(NO_GCC_PRAGMA)
     #pragma implementation "choicebase.h"
 #endif
 
@@ -50,12 +50,12 @@ wxChoiceBase::~wxChoiceBase()
 bool wxChoiceBase::SetStringSelection(const wxString& s)
 {
     int sel = FindString(s);
-    wxCHECK_MSG( sel != -1, FALSE,
+    wxCHECK_MSG( sel != -1, false,
                  wxT("invalid string in wxChoice::SetStringSelection") );
 
     Select(sel);
 
-    return TRUE;
+    return true;
 }
 
 // ----------------------------------------------------------------------------

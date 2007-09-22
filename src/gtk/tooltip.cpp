@@ -2,25 +2,26 @@
 // Name:        tooltip.cpp
 // Purpose:     wxToolTip implementation
 // Author:      Robert Roebling
-// Id:          $Id: tooltip.cpp,v 1.14.2.2 2004/07/03 12:16:33 VS Exp $
+// Id:          $Id: tooltip.cpp,v 1.22 2004/11/03 21:13:20 RR Exp $
 // Copyright:   (c) 1998 Robert Roebling
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
 
-#ifdef __GNUG__
+#if defined(__GNUG__) && !defined(NO_GCC_PRAGMA)
     #pragma implementation "tooltip.h"
 #endif
+
+// For compilers that support precompilation, includes "wx.h".
+#include "wx/wxprec.h"
 
 #include "wx/setup.h"
 
 #if wxUSE_TOOLTIPS
 
-#include "wx/window.h"
 #include "wx/tooltip.h"
+#include "wx/window.h"
 
 #include "wx/gtk/private.h"
-
-extern GdkFont *GtkGetDefaultGuiFont();
 
 //-----------------------------------------------------------------------------
 // global data

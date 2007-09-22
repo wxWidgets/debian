@@ -4,9 +4,9 @@
 // Author:      Vadim Zeitlin
 // Modified by:
 // Created:     31.01.99
-// RCS-ID:      $Id: tooltip.cpp,v 1.28.2.4 2004/02/19 15:04:54 JS Exp $
+// RCS-ID:      $Id: tooltip.cpp,v 1.39 2004/05/23 20:53:01 JS Exp $
 // Copyright:   (c) 1999 Vadim Zeitlin
-// Licence:     wxWindows license
+// Licence:     wxWindows licence
 ///////////////////////////////////////////////////////////////////////////////
 
 // ============================================================================
@@ -32,14 +32,8 @@
 #include "wx/tooltip.h"
 #include "wx/msw/private.h"
 
-#if defined(__WIN95__) && !((defined(__GNUWIN32_OLD__) || defined(__TWIN32__)) && !defined(__CYGWIN10__))
-    #include <commctrl.h>
-#endif
-
-#ifndef _WIN32_IE
-    // minimal set of features by default
-    #define _WIN32_IE 0x0200
-#endif
+// include <commctrl.h> "properly"
+#include "wx/msw/wrapcctl.h"
 
 // VZ: normally, the trick with subclassing the tooltip control and processing
 //     TTM_WINDOWFROMPOINT should work but, somehow, it doesn't. I leave the
@@ -153,7 +147,7 @@ LRESULT APIENTRY wxToolTipWndProc(HWND hwndTT,
         OutputDebugString("TTM_WINDOWFROMPOINT: ");
         OutputDebugString(wxString::Format("0x%08x => ", hwnd));
 
-        // return a HWND corresponding to a wxWindow because only wxWindows are
+        // return a HWND corresponding to a wxWindow because only wxWidgets are
         // associated with tooltips using TTM_ADDTOOL
         wxWindow *win = wxGetWindowFromHWND((WXHWND)hwnd);
 
@@ -223,8 +217,7 @@ WXHWND wxToolTip::GetToolTipCtrl()
 
 #if wxUSE_TTM_WINDOWFROMPOINT
            // subclass the newly created control
-           gs_wndprocToolTip = (WNDPROC)::GetWindowLong(hwnd, GWL_WNDPROC);
-           ::SetWindowLong(hwnd, GWL_WNDPROC, (long)wxToolTipWndProc);
+           gs_wndprocToolTip = wxSetWindowProc(hwnd, wxToolTipWndProc);
 #endif // wxUSE_TTM_WINDOWFROMPOINT
        }
     }
@@ -295,10 +288,10 @@ void wxToolTip::Add(WXHWND hWnd)
 
         if ( index != wxNOT_FOUND )
         {
-#if _WIN32_IE >= 0x0300
+#ifdef TTM_SETMAXTIPWIDTH
             if ( wxTheApp->GetComCtl32Version() >= 470 )
             {
-                // use TTM_SETMAXWIDTH to make tooltip multiline using the
+                // use TTM_SETMAXTIPWIDTH to make tooltip multiline using the
                 // extent of its first line as max value
                 HFONT hfont = (HFONT)SendTooltipMessage(GetToolTipCtrl(),
                                                         WM_GETFONT,
@@ -357,7 +350,7 @@ void wxToolTip::SetWindow(wxWindow *win)
     wxControl *control = wxDynamicCast(m_window, wxControl);
     if ( control )
     {
-        const wxArrayLong subcontrols = control->GetSubcontrols();
+        const wxArrayLong& subcontrols = control->GetSubcontrols();
         size_t count = subcontrols.GetCount();
         for ( size_t n = 0; n < count; n++ )
         {
@@ -367,7 +360,7 @@ void wxToolTip::SetWindow(wxWindow *win)
             {
                 // may be it's a child of parent of the control, in fact?
                 // (radiobuttons are subcontrols, i.e. children of the radiobox
-                // for wxWindows but are its siblings at Windows level)
+                // for wxWidgets but are its siblings at Windows level)
                 hwnd = GetDlgItem(GetHwndOf(m_window->GetParent()), id);
             }
 

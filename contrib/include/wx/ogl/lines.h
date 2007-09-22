@@ -4,9 +4,9 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     12/07/98
-// RCS-ID:      $Id: lines.h,v 1.2.2.2 2002/12/18 06:11:27 RD Exp $
+// RCS-ID:      $Id: lines.h,v 1.7 2004/06/09 16:42:21 ABX Exp $
 // Copyright:   (c) Julian Smart
-// Licence:   	wxWindows licence
+// Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
 
 #ifndef _OGL_LINES_H_
@@ -16,9 +16,10 @@
 #pragma interface "lines.h"
 #endif
 
-class wxLabelShape;
-class wxPseudoMetaFile;
-class wxLineControlPoint;
+
+class WXDLLIMPEXP_OGL wxLabelShape;
+class WXDLLIMPEXP_OGL wxPseudoMetaFile;
+class WXDLLIMPEXP_OGL wxLineControlPoint;
 /*
  * Arcs with multiple arrowheads
  *
@@ -46,7 +47,7 @@ class wxLineControlPoint;
 #define LINE_ALIGNMENT_TO_NEXT_HANDLE     2
 #define LINE_ALIGNMENT_NONE               0
 
-class wxArrowHead: public wxObject
+class WXDLLIMPEXP_OGL wxArrowHead: public wxObject
 {
  DECLARE_DYNAMIC_CLASS(wxArrowHead)
 
@@ -82,14 +83,14 @@ class wxArrowHead: public wxObject
   double             m_spacing;          // Spacing from the last arrowhead
   double             m_arrowSize;        // Length of arrowhead
   wxString          m_arrowName;        // Name of arrow
-  bool              m_saveToFile;       // TRUE if we want to save custom arrowheads to file.
+  bool              m_saveToFile;       // true if we want to save custom arrowheads to file.
   wxPseudoMetaFile* m_metaFile;         // Pseudo metafile if this is a custom arrowhead
   long              m_id;               // identifier
 };
 
 // Line object
-class wxLabelShape;
-class wxLineShape: public wxShape
+class WXDLLIMPEXP_OGL wxLabelShape;
+class WXDLLIMPEXP_OGL wxLineShape: public wxShape
 {
  DECLARE_DYNAMIC_CLASS(wxLineShape)
 
@@ -101,14 +102,14 @@ class wxLineShape: public wxShape
   // correct position
   // moveControlPoints must be disabled when a control point is being
   // dragged.
-  void OnMoveLink(wxDC& dc, bool moveControlPoints = TRUE);
-  bool OnMovePre(wxDC& dc, double x, double y, double old_x, double old_y, bool display = TRUE);
+  void OnMoveLink(wxDC& dc, bool moveControlPoints = true);
+  bool OnMovePre(wxDC& dc, double x, double y, double old_x, double old_y, bool display = true);
   void OnDraw(wxDC& dc);
   void OnDrawContents(wxDC& dc);
   void OnDrawControlPoints(wxDC& dc);
   void OnEraseControlPoints(wxDC& dc);
   void OnErase(wxDC& dc);
-  virtual bool OnMoveControlPoint(int WXUNUSED(which), double WXUNUSED(x), double WXUNUSED(y)) { return FALSE; }
+  virtual bool OnMoveControlPoint(int WXUNUSED(which), double WXUNUSED(x), double WXUNUSED(y)) { return false; }
   virtual bool OnMoveMiddleControlPoint(wxDC& dc, wxLineControlPoint* lpt, const wxRealPoint& pt);
   virtual bool OnLabelMovePre(wxDC& dc, wxLabelShape* labelShape, double x, double y, double old_x, double old_y, bool display);
   void OnDrawOutline(wxDC& dc, double x, double y, double w, double h);
@@ -175,9 +176,9 @@ class wxLineShape: public wxShape
   virtual void OnSizingEndDragLeft(wxControlPoint* pt, double x, double y, int keys=0, int attachment = 0);
 
   // Override select, to create/delete temporary label-moving objects
-  void Select(bool select = TRUE, wxDC* dc = NULL);
+  void Select(bool select = true, wxDC* dc = NULL);
 
-  // Set to spline (TRUE) or line (FALSE)
+  // Set to spline (true) or line (false)
   inline void SetSpline(bool spl) { m_isSpline = spl; }
   inline bool IsSpline() const { return m_isSpline; }
 
@@ -203,7 +204,7 @@ class wxLineShape: public wxShape
   // This is really to distinguish between lines and other images.
   // For lines, want to pass drag to canvas, since lines tend to prevent
   // dragging on a canvas (they get in the way.)
-  virtual bool Draggable() const { return FALSE; }
+  virtual bool Draggable() const { return false; }
 
   // Does the copying for this object
   void Copy(wxShape& copy);
@@ -220,7 +221,7 @@ class wxLineShape: public wxShape
   // E.g. reference list:      a b c d e
   //      Current line list:   a d
   // Add c, then line list is: a c d
-  // If no legal arrowhead position, return FALSE.
+  // If no legal arrowhead position, return false.
   // Assume reference list is for one end only, since it potentially defines
   // the ordering for any one of the 3 positions. So we don't check
   // the reference list for arrowhead position.
@@ -247,6 +248,8 @@ class wxLineShape: public wxShape
   void SetAlignmentType(bool isEnd, int alignType);
   bool GetAlignmentOrientation(bool isEnd);
   int GetAlignmentType(bool isEnd);
+  int GetAlignmentStart() const { return m_alignmentStart; }
+  int GetAlignmentEnd() const { return m_alignmentEnd; }
 
   // Find next control point in line after the start/end point
   // (depending on whether the node object is at start or end)

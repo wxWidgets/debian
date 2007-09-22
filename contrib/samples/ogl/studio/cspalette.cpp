@@ -4,9 +4,9 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     12/07/98
-// RCS-ID:      $Id: cspalette.cpp,v 1.6 2002/03/21 10:32:03 JS Exp $
+// RCS-ID:      $Id: cspalette.cpp,v 1.11 2004/07/20 10:08:40 ABX Exp $
 // Copyright:   (c) Julian Smart
-// Licence:   	wxWindows licence
+// Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
 
 #ifdef __GNUG__
@@ -59,7 +59,7 @@ bool csEditorToolPalette::OnLeftClick(int toolIndex, bool toggled)
 {
   // BEGIN mutual exclusivity code
   if (toggled && (m_currentlySelected != -1) && (toolIndex != m_currentlySelected))
-    ToggleTool(m_currentlySelected, FALSE);
+    ToggleTool(m_currentlySelected, false);
 
   if (toggled)
     m_currentlySelected = toolIndex;
@@ -67,14 +67,15 @@ bool csEditorToolPalette::OnLeftClick(int toolIndex, bool toggled)
     m_currentlySelected = -1;
   //  END mutual exclusivity code
 
-  return TRUE;
+  return true;
 }
 
 void csEditorToolPalette::OnMouseEnter(int toolIndex)
 {
-    wxString msg("");
+#if wxUSE_STATUSBAR
+    wxString msg = wxEmptyString;
     if (toolIndex == PALETTE_ARROW)
-        msg = "Pointer";
+        msg = _T("Pointer");
     else if (toolIndex != -1)
     {
         csSymbol* symbol = wxGetApp().GetSymbolDatabase()->FindSymbol(toolIndex);
@@ -82,6 +83,9 @@ void csEditorToolPalette::OnMouseEnter(int toolIndex)
             msg = symbol->GetName();
     }
     ((wxFrame*) wxGetApp().GetTopWindow())->SetStatusText(msg);
+#else
+    wxUnusedVar(toolIndex);
+#endif // wxUSE_STATUSBAR
 }
 
 void csEditorToolPalette::SetSize(int x, int y, int width, int height, int sizeFlags)
@@ -93,10 +97,10 @@ void csEditorToolPalette::SetSelection(int sel)
 {
     if ((sel != m_currentlySelected) && (m_currentlySelected != -1))
     {
-        ToggleTool(m_currentlySelected, FALSE);
+        ToggleTool(m_currentlySelected, false);
     }
     m_currentlySelected = sel;
-    ToggleTool(m_currentlySelected, TRUE);
+    ToggleTool(m_currentlySelected, true);
 }
 
 bool csApp::CreatePalette(wxFrame *parent)
@@ -107,16 +111,16 @@ bool csApp::CreatePalette(wxFrame *parent)
     win->SetOrientation(wxLAYOUT_HORIZONTAL);
     win->SetAlignment(wxLAYOUT_TOP);
     win->SetBackgroundColour(wxSystemSettings::GetColour(wxSYS_COLOUR_3DFACE));
-    win->SetSashVisible(wxSASH_BOTTOM, TRUE);
+    win->SetSashVisible(wxSASH_BOTTOM, true);
 
     m_diagramPaletteSashWindow = win;
 
-    m_diagramPaletteSashWindow->Show(FALSE);
+    m_diagramPaletteSashWindow->Show(false);
 
   // Load palette bitmaps
 #ifdef __WXMSW__
-    wxBitmap PaletteArrow("arrowtool");
-    wxBitmap TextTool("texttool");
+    wxBitmap PaletteArrow(_T("arrowtool"));
+    wxBitmap TextTool(_T("texttool"));
     wxSize toolBitmapSize(32, 32);
 #elif defined(__WXGTK__) || defined(__WXX11__) || defined(__WXMOTIF__) || defined(__WXMAC__)
     wxBitmap PaletteArrow(arrow_xpm);
@@ -124,43 +128,43 @@ bool csApp::CreatePalette(wxFrame *parent)
     wxSize toolBitmapSize(22, 22);
 #endif
 
-  csEditorToolPalette *palette = new csEditorToolPalette(m_diagramPaletteSashWindow, ID_DIAGRAM_PALETTE, wxPoint(0, 0), wxSize(-1, -1), wxTB_HORIZONTAL|wxNO_BORDER);
+  csEditorToolPalette *palette = new csEditorToolPalette(m_diagramPaletteSashWindow, ID_DIAGRAM_PALETTE, wxPoint(0, 0), wxDefaultSize, wxTB_HORIZONTAL|wxNO_BORDER);
 
   palette->SetMargins(2, 2);
 
   palette->SetToolBitmapSize(toolBitmapSize);
 
-  palette->AddTool(PALETTE_ARROW, PaletteArrow, wxNullBitmap, TRUE, 0, -1, NULL, "Pointer");
-  palette->AddTool(PALETTE_TEXT_TOOL, TextTool, wxNullBitmap, TRUE, 0, -1, NULL, "Text");
+  palette->AddTool(PALETTE_ARROW, PaletteArrow, wxNullBitmap, true, 0, wxDefaultCoord, NULL, _T("Pointer"));
+  palette->AddTool(PALETTE_TEXT_TOOL, TextTool, wxNullBitmap, true, 0, wxDefaultCoord, NULL, _T("Text"));
 
-  char** symbols = new char*[20];
+  wxChar** symbols = new wxChar*[20];
   int noSymbols = 0;
 
-  symbols[noSymbols] = "Wide Rectangle";
+  symbols[noSymbols] = _T("Wide Rectangle");
   noSymbols ++;
 
-  symbols[noSymbols] =  "Thin Rectangle";
+  symbols[noSymbols] =  _T("Thin Rectangle");
   noSymbols ++;
  
-  symbols[noSymbols] =  "Triangle";
+  symbols[noSymbols] =  _T("Triangle");
   noSymbols ++;
 
-  symbols[noSymbols] =  "Octagon";
+  symbols[noSymbols] =  _T("Octagon");
   noSymbols ++;
 
   // For some reason, we're getting Gdk errors with
   // some shapes, such as ones that use DrawEllipse.
 #ifndef __WXGTK__
-  symbols[noSymbols] =  "Group";
+  symbols[noSymbols] =  _T("Group");
   noSymbols ++;
 
-  symbols[noSymbols] =  "Circle";
+  symbols[noSymbols] =  _T("Circle");
   noSymbols ++;
 
-  symbols[noSymbols] =  "Circle shadow";
+  symbols[noSymbols] =  _T("Circle shadow");
   noSymbols ++;
 
-  symbols[noSymbols] =  "SemiCircle";
+  symbols[noSymbols] =  _T("SemiCircle");
   noSymbols ++;
 #endif
 
@@ -171,7 +175,7 @@ bool csApp::CreatePalette(wxFrame *parent)
       if (symbol)
       {
            wxBitmap* bitmap = GetSymbolDatabase()->CreateToolBitmap(symbol, toolBitmapSize);
-           palette->AddTool(symbol->GetToolId(), *bitmap, wxNullBitmap, TRUE, 0, -1, NULL, symbol->GetName());
+           palette->AddTool(symbol->GetToolId(), *bitmap, wxNullBitmap, true, 0, wxDefaultCoord, NULL, symbol->GetName());
 
            delete bitmap;
       }
@@ -185,7 +189,7 @@ bool csApp::CreatePalette(wxFrame *parent)
     csSymbol* symbol = (csSymbol*) node->Data();
 
     wxBitmap* bitmap = GetSymbolDatabase()->CreateToolBitmap(symbol, toolBitmapSize);
-    palette->AddTool(symbol->GetToolId(), *bitmap, wxNullBitmap, TRUE, 0, -1, NULL, symbol->GetName());
+    palette->AddTool(symbol->GetToolId(), *bitmap, wxNullBitmap, true, 0, wxDefaultCoord, NULL, symbol->GetName());
 
     delete bitmap;
 
@@ -198,6 +202,6 @@ bool csApp::CreatePalette(wxFrame *parent)
   palette->SetSelection(PALETTE_ARROW);
   m_diagramPalette = palette;
 
-  return TRUE;
+  return true;
 }
 

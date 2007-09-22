@@ -4,15 +4,15 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     2002-03-10
-// RCS-ID:      $Id: emulator.h,v 1.5 2002/07/13 12:14:07 GD Exp $
-// Copyright:   (c) wxWindows team
+// RCS-ID:      $Id: emulator.h,v 1.7 2004/05/25 11:20:15 JS Exp $
+// Copyright:   (c) wxWidgets team
 // Licence:     wxWindows licence
 ///////////////////////////////////////////////////////////////////////////////
 
 #ifndef _WX_EMULATOR_H_
 #define _WX_EMULATOR_H_
 
-#ifdef __GNUG__
+#if defined(__GNUG__) && !defined(NO_GCC_PRAGMA)
     #pragma interface "emulator.h"
 #endif
 
@@ -131,7 +131,7 @@ public:
     void OnCloseWindow(wxCloseEvent& event);
 
 private:
-    // any class wishing to process wxWindows events must use this macro
+    // any class wishing to process wxWidgets events must use this macro
     DECLARE_EVENT_TABLE()
 };
 

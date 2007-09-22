@@ -1,23 +1,15 @@
-/////////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////////
 // Name:        filedlgg.cpp
-// Purpose:     wxFileDialog
+// Purpose:     wxGenericFileDialog
 // Author:      Robert Roebling
 // Modified by:
 // Created:     12/12/98
-// RCS-ID:      $Id: filedlgg.cpp,v 1.72.2.16 2003/11/23 22:49:37 SN Exp $
+// RCS-ID:      $Id: filedlgg.cpp,v 1.126 2004/10/15 22:54:56 VZ Exp $
 // Copyright:   (c) Robert Roebling
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
 
-// ============================================================================
-// declarations
-// ============================================================================
-
-// ----------------------------------------------------------------------------
-// headers
-// ----------------------------------------------------------------------------
-
-#ifdef __GNUG__
+#if defined(__GNUG__) && !defined(NO_GCC_PRAGMA)
 #pragma implementation "filedlgg.h"
 #endif
 
@@ -28,14 +20,11 @@
 #pragma hdrstop
 #endif
 
-#ifdef __EMX__
-#define __OS2__
-#endif
-
 #if wxUSE_FILEDLG
 
+// NOTE : it probably also supports MAC, untested
 #if !defined(__UNIX__) && !defined(__DOS__) && !defined(__WIN32__) && !defined(__OS2__)
-#error wxFileDialog currently only supports Unix, win32 and DOS
+#error wxGenericFileDialog currently only supports Unix, win32 and DOS
 #endif
 
 #include "wx/checkbox.h"
@@ -43,22 +32,22 @@
 #include "wx/choice.h"
 #include "wx/checkbox.h"
 #include "wx/stattext.h"
-#include "wx/filedlg.h"
 #include "wx/debug.h"
 #include "wx/log.h"
 #include "wx/intl.h"
-#include "wx/listctrl.h"
 #include "wx/msgdlg.h"
 #include "wx/sizer.h"
 #include "wx/bmpbuttn.h"
 #include "wx/tokenzr.h"
-#include "wx/mimetype.h"
-#include "wx/image.h"
-#include "wx/module.h"
 #include "wx/config.h"
 #include "wx/imaglist.h"
 #include "wx/dir.h"
 #include "wx/artprov.h"
+#include "wx/settings.h"
+#include "wx/file.h"        // for wxS_IXXX constants only
+#include "wx/filedlg.h"     // wxOPEN, wxSAVE...
+#include "wx/generic/filedlgg.h"
+#include "wx/generic/dirctrlg.h" // for wxFileIconsTable
 
 #if wxUSE_TOOLTIPS
     #include "wx/tooltip.h"
@@ -75,6 +64,11 @@
     #endif
 #endif
 
+#ifdef __WINDOWS__
+    #include "wx/msw/wrapwin.h"
+    #include "wx/msw/mslu.h"
+#endif
+
 #ifdef __WATCOMC__
     #include <direct.h>
 #endif
@@ -85,342 +79,60 @@
 #endif
 
 // ----------------------------------------------------------------------------
-// constants
-// ----------------------------------------------------------------------------
-
-// the list ctrl fields in report view
-enum FileListField
-{
-    FileList_Name,
-    FileList_Type,
-    FileList_Date,
-    FileList_Time,
-#ifdef __UNIX__
-    FileList_Perm,
-#endif // __UNIX__
-    FileList_Max
-};
-
-//-----------------------------------------------------------------------------
-//  wxFileData
-//-----------------------------------------------------------------------------
-
-class wxFileData
-{
-public:
-    wxFileData( const wxString &name, const wxString &fname );
-    wxString GetName() const;
-    wxString GetFullName() const;
-    wxString GetHint() const;
-    wxString GetEntry( FileListField num ) const;
-
-    bool IsDir() const { return m_isDir; }
-    bool IsLink() const { return m_isLink; }
-    bool IsExe() const { return m_isExe; }
-    long GetSize() const { return m_size; }
-
-    void MakeItem( wxListItem &item );
-    void SetNewName( const wxString &name, const wxString &fname );
-
-private:
-    wxString m_name;
-    wxString m_fileName;
-    long     m_size;
-    int      m_hour;
-    int      m_minute;
-    int      m_year;
-    int      m_month;
-    int      m_day;
-    wxString m_permissions;
-    bool     m_isDir;
-    bool     m_isLink;
-    bool     m_isExe;
-};
-
-//-----------------------------------------------------------------------------
-//  wxFileCtrl
-//-----------------------------------------------------------------------------
-
-class wxFileCtrl : public wxListCtrl
-{
-public:
-    wxFileCtrl();
-    wxFileCtrl( wxWindow *win,
-                wxStaticText *labelDir,
-                wxWindowID id,
-                const wxString &wild,
-                bool showHidden,
-                const wxPoint &pos = wxDefaultPosition,
-                const wxSize &size = wxDefaultSize,
-                long style = wxLC_LIST,
-                const wxValidator &validator = wxDefaultValidator,
-                const wxString &name = wxT("filelist") );
-    virtual ~wxFileCtrl();
-
-    void ChangeToListMode();
-    void ChangeToReportMode();
-    void ChangeToIconMode();
-    void ShowHidden( bool show = TRUE );
-    long Add( wxFileData *fd, wxListItem &item );
-    void UpdateFiles();
-    virtual void StatusbarText( wxChar *WXUNUSED(text) ) {};
-    void MakeDir();
-    void GoToParentDir();
-    void GoToHomeDir();
-    void GoToDir( const wxString &dir );
-    void SetWild( const wxString &wild );
-    void GetDir( wxString &dir );
-    void OnListDeleteItem( wxListEvent &event );
-    void OnListEndLabelEdit( wxListEvent &event );
-
-    // Associate commonly used UI controls with wxFileCtrl so that they can be
-    // disabled when they cannot be used (e.g. can't go to parent directory
-    // if wxFileCtrl already is in the root dir):
-    void SetGoToParentControl(wxWindow *ctrl) { m_goToParentControl = ctrl; }
-    void SetNewDirControl(wxWindow *ctrl) { m_newDirControl = ctrl; }
-
-private:
-    void FreeItemData(const wxListItem& item);
-    void FreeAllItemsData();
-
-    wxString      m_dirName;
-    bool          m_showHidden;
-    wxString      m_wild;
-
-    wxWindow     *m_goToParentControl;
-    wxWindow     *m_newDirControl;
-
-    // the label showing the current directory
-    wxStaticText *m_labelDir;
-
-    DECLARE_DYNAMIC_CLASS(wxFileCtrl);
-    DECLARE_EVENT_TABLE()
-};
-
-// ----------------------------------------------------------------------------
-// private classes - icons list management
-// ----------------------------------------------------------------------------
-
-class wxFileIconEntry : public wxObject
-{
-public:
-    wxFileIconEntry(int i) { id = i; }
-
-    int id;
-};
-
-
-class wxFileIconsTable
-{
-public:
-    wxFileIconsTable();
-
-    int GetIconID(const wxString& extension, const wxString& mime = wxEmptyString);
-    wxImageList *GetImageList() { return &m_ImageList; }
-
-protected:
-    wxImageList m_ImageList;
-    wxHashTable m_HashTable;
-};
-
-static wxFileIconsTable *g_IconsTable = NULL;
-
-#define FI_FOLDER     0
-#define FI_UNKNOWN    1
-#define FI_EXECUTABLE 2
-
-wxFileIconsTable::wxFileIconsTable() :
-                    m_ImageList(16, 16),
-                    m_HashTable(wxKEY_STRING)
-{
-    m_HashTable.DeleteContents(TRUE);
-    // FI_FOLDER:
-    m_ImageList.Add(wxArtProvider::GetBitmap(wxART_FOLDER, wxART_CMN_DIALOG));
-    // FI_UNKNOWN:
-    m_ImageList.Add(wxArtProvider::GetBitmap(wxART_NORMAL_FILE, wxART_CMN_DIALOG));
-    // FI_EXECUTABLE:
-    if (GetIconID(wxEmptyString, _T("application/x-executable")) == FI_UNKNOWN)
-    {
-        m_ImageList.Add(wxArtProvider::GetBitmap(wxART_EXECUTABLE_FILE, wxART_CMN_DIALOG));
-        m_HashTable.Delete(_T("exe"));
-        m_HashTable.Put(_T("exe"), new wxFileIconEntry(FI_EXECUTABLE));
-    }
-    /* else put into list by GetIconID
-       (KDE defines application/x-executable for *.exe and has nice icon)
-     */
-}
-
-
-
-#if wxUSE_MIMETYPE
-// VS: we don't need this function w/o wxMimeTypesManager because we'll only have
-//     one icon and we won't resize it
-
-static wxBitmap CreateAntialiasedBitmap(const wxImage& img)
-{
-    wxImage smallimg (16, 16);
-    unsigned char *p1, *p2, *ps;
-    unsigned char mr = img.GetMaskRed(),
-                  mg = img.GetMaskGreen(),
-                  mb = img.GetMaskBlue();
-
-    unsigned x, y;
-    unsigned sr, sg, sb, smask;
-
-    p1 = img.GetData(), p2 = img.GetData() + 3 * 32, ps = smallimg.GetData();
-    smallimg.SetMaskColour(mr, mr, mr);
-
-    for (y = 0; y < 16; y++)
-    {
-        for (x = 0; x < 16; x++)
-        {
-            sr = sg = sb = smask = 0;
-            if (p1[0] != mr || p1[1] != mg || p1[2] != mb)
-                sr += p1[0], sg += p1[1], sb += p1[2];
-            else smask++;
-            p1 += 3;
-            if (p1[0] != mr || p1[1] != mg || p1[2] != mb)
-                sr += p1[0], sg += p1[1], sb += p1[2];
-            else smask++;
-            p1 += 3;
-            if (p2[0] != mr || p2[1] != mg || p2[2] != mb)
-                sr += p2[0], sg += p2[1], sb += p2[2];
-            else smask++;
-            p2 += 3;
-            if (p2[0] != mr || p2[1] != mg || p2[2] != mb)
-                sr += p2[0], sg += p2[1], sb += p2[2];
-            else smask++;
-            p2 += 3;
-
-            if (smask > 2)
-                ps[0] = ps[1] = ps[2] = mr;
-            else
-                ps[0] = sr >> 2, ps[1] = sg >> 2, ps[2] = sb >> 2;
-            ps += 3;
-        }
-        p1 += 32 * 3, p2 += 32 * 3;
-    }
-
-    return wxBitmap(smallimg);
-}
-
-// finds empty borders and return non-empty area of image:
-static wxImage CutEmptyBorders(const wxImage& img)
-{
-    unsigned char mr = img.GetMaskRed(),
-                  mg = img.GetMaskGreen(),
-                  mb = img.GetMaskBlue();
-    unsigned char *dt = img.GetData(), *dttmp;
-    unsigned w = img.GetWidth(), h = img.GetHeight();
-
-    unsigned top, bottom, left, right, i;
-    bool empt;
-
-#define MK_DTTMP(x,y)      dttmp = dt + ((x + y * w) * 3)
-#define NOEMPTY_PIX(empt)  if (dttmp[0] != mr || dttmp[1] != mg || dttmp[2] != mb) {empt = FALSE; break;}
-
-    for (empt = TRUE, top = 0; empt && top < h; top++)
-    {
-        MK_DTTMP(0, top);
-        for (i = 0; i < w; i++, dttmp+=3)
-            NOEMPTY_PIX(empt)
-    }
-    for (empt = TRUE, bottom = h-1; empt && bottom > top; bottom--)
-    {
-        MK_DTTMP(0, bottom);
-        for (i = 0; i < w; i++, dttmp+=3)
-            NOEMPTY_PIX(empt)
-    }
-    for (empt = TRUE, left = 0; empt && left < w; left++)
-    {
-        MK_DTTMP(left, 0);
-        for (i = 0; i < h; i++, dttmp+=3*w)
-            NOEMPTY_PIX(empt)
-    }
-    for (empt = TRUE, right = w-1; empt && right > left; right--)
-    {
-        MK_DTTMP(right, 0);
-        for (i = 0; i < h; i++, dttmp+=3*w)
-            NOEMPTY_PIX(empt)
-    }
-    top--, left--, bottom++, right++;
-
-    return img.GetSubImage(wxRect(left, top, right - left + 1, bottom - top + 1));
-}
-#endif // wxUSE_MIMETYPE
-
-
-
-int wxFileIconsTable::GetIconID(const wxString& extension, const wxString& mime)
-{
-#if wxUSE_MIMETYPE
-    if (!extension.IsEmpty())
-    {
-        wxFileIconEntry *entry = (wxFileIconEntry*) m_HashTable.Get(extension);
-        if (entry) return (entry -> id);
-    }
-
-    wxFileType *ft = (mime.IsEmpty()) ?
-                   wxTheMimeTypesManager -> GetFileTypeFromExtension(extension) :
-                   wxTheMimeTypesManager -> GetFileTypeFromMimeType(mime);
-    wxIcon ic;
-    if (ft == NULL || (!ft -> GetIcon(&ic)) || (!ic.Ok()))
-    {
-        int newid = FI_UNKNOWN;
-        m_HashTable.Put(extension, new wxFileIconEntry(newid));
-        if (ft) delete ft;
-        return newid;
-    }
-#ifdef __WIN32__
-    wxBitmap myBitmap (ic.GetWidth(), ic.GetHeight() ) ;
-    wxMemoryDC memDC;
-    memDC.SelectObject( myBitmap );
-    memDC.DrawIcon(ic,0,0);
-    memDC.SelectObject( wxNullBitmap );
-    wxImage img = myBitmap.ConvertToImage();
-#else
-    wxImage img = ic.ConvertToImage();
-#endif
-    delete ft;
-
-    int id = m_ImageList.GetImageCount();
-    if (img.GetWidth() == 16 && img.GetHeight() == 16)
-        m_ImageList.Add(wxBitmap(img));
-    else
-    {
-        if (img.GetWidth() != 32 || img.GetHeight() != 32)
-            m_ImageList.Add(CreateAntialiasedBitmap(CutEmptyBorders(img).Rescale(32, 32)));
-        else
-            m_ImageList.Add(CreateAntialiasedBitmap(img));
-    }
-    m_HashTable.Put(extension, new wxFileIconEntry(id));
-    return id;
-
-#else // !wxUSE_MIMETYPE
-
-    if (extension == wxT("exe"))
-        return FI_EXECUTABLE;
-    else
-        return FI_UNKNOWN;
-#endif // wxUSE_MIMETYPE/!wxUSE_MIMETYPE
-}
-
-
-
-// ----------------------------------------------------------------------------
 // private functions
 // ----------------------------------------------------------------------------
 
 static
-int ListCompare( long data1, long data2, long WXUNUSED(data))
+int wxCALLBACK wxFileDataNameCompare( long data1, long data2, long data)
 {
-     wxFileData *fd1 = (wxFileData*)data1 ;
-     wxFileData *fd2 = (wxFileData*)data2 ;
-     if (fd1->GetName() == wxT("..")) return -1;
-     if (fd2->GetName() == wxT("..")) return 1;
-     if (fd1->IsDir() && !fd2->IsDir()) return -1;
-     if (fd2->IsDir() && !fd1->IsDir()) return 1;
-     return wxStrcmp( fd1->GetName(), fd2->GetName() );
+     wxFileData *fd1 = (wxFileData*)data1;
+     wxFileData *fd2 = (wxFileData*)data2;
+     if (fd1->GetFileName() == wxT("..")) return -data;
+     if (fd2->GetFileName() == wxT("..")) return data;
+     if (fd1->IsDir() && !fd2->IsDir()) return -data;
+     if (fd2->IsDir() && !fd1->IsDir()) return data;
+     return data*wxStrcmp( fd1->GetFileName(), fd2->GetFileName() );
+}
+
+static
+int wxCALLBACK wxFileDataSizeCompare( long data1, long data2, long data)
+{
+     wxFileData *fd1 = (wxFileData*)data1;
+     wxFileData *fd2 = (wxFileData*)data2;
+     if (fd1->GetFileName() == wxT("..")) return -data;
+     if (fd2->GetFileName() == wxT("..")) return data;
+     if (fd1->IsDir() && !fd2->IsDir()) return -data;
+     if (fd2->IsDir() && !fd1->IsDir()) return data;
+     if (fd1->IsLink() && !fd2->IsLink()) return -data;
+     if (fd2->IsLink() && !fd1->IsLink()) return data;
+     return data*(fd1->GetSize() - fd2->GetSize());
+}
+
+static
+int wxCALLBACK wxFileDataTypeCompare( long data1, long data2, long data)
+{
+     wxFileData *fd1 = (wxFileData*)data1;
+     wxFileData *fd2 = (wxFileData*)data2;
+     if (fd1->GetFileName() == wxT("..")) return -data;
+     if (fd2->GetFileName() == wxT("..")) return data;
+     if (fd1->IsDir() && !fd2->IsDir()) return -data;
+     if (fd2->IsDir() && !fd1->IsDir()) return data;
+     if (fd1->IsLink() && !fd2->IsLink()) return -data;
+     if (fd2->IsLink() && !fd1->IsLink()) return data;
+     return data*wxStrcmp( fd1->GetFileType(), fd2->GetFileType() );
+}
+
+static
+int wxCALLBACK wxFileDataTimeCompare( long data1, long data2, long data)
+{
+     wxFileData *fd1 = (wxFileData*)data1;
+     wxFileData *fd2 = (wxFileData*)data2;
+     if (fd1->GetFileName() == wxT("..")) return -data;
+     if (fd2->GetFileName() == wxT("..")) return data;
+     if (fd1->IsDir() && !fd2->IsDir()) return -data;
+     if (fd2->IsDir() && !fd1->IsDir()) return data;
+
+     return fd1->GetDateTime().IsLaterThan(fd2->GetDateTime()) ? int(data) : -int(data);
 }
 
 #if defined(__UNIX__) && !defined(__OS2__)
@@ -432,145 +144,182 @@ int ListCompare( long data1, long data2, long WXUNUSED(data))
 #endif
 
 #if defined(__DOS__) || defined(__WINDOWS__) || defined(__OS2__)
+// defined in src/generic/dirctrlg.cpp
 extern bool wxIsDriveAvailable(const wxString& dirName);
 #endif
+
+// defined in src/generic/dirctrlg.cpp
+extern size_t wxGetAvailableDrives(wxArrayString &paths, wxArrayString &names, wxArrayInt &icon_ids);
 
 //-----------------------------------------------------------------------------
 //  wxFileData
 //-----------------------------------------------------------------------------
 
-wxFileData::wxFileData( const wxString &name, const wxString &fname )
+wxFileData::wxFileData( const wxString &filePath, const wxString &fileName, fileType type, int image_id )
 {
-    m_name = name;
-    m_fileName = fname;
+    m_fileName = fileName;
+    m_filePath = filePath;
+    m_type = type;
+    m_image = image_id;
 
-#if defined(__DOS__) || defined(__WINDOWS__) || defined(__OS2__)
-    // VS: In case the file is root directory of a volume (e.g. "C:"),
-    //     we don't want it stat()ed, since the drive may not be in:
-    if (name.length() == 2 && name[1u] == wxT(':'))
+    ReadData();
+}
+
+void wxFileData::Copy( const wxFileData& fileData )
+{
+    m_fileName = fileData.GetFileName();
+    m_filePath = fileData.GetFilePath();
+    m_size = fileData.GetSize();
+    m_dateTime = fileData.GetDateTime();
+    m_permissions = fileData.GetPermissions();
+    m_type = fileData.GetType();
+    m_image = GetImageId();
+}
+
+void wxFileData::ReadData()
+{
+    if (IsDrive())
     {
-        m_isDir = TRUE;
-        m_isExe = m_isLink = FALSE;
         m_size = 0;
         return;
     }
-#endif
+
+#if defined(__DOS__) || defined(__WINDOWS__) || defined(__OS2__)
+    // c:\.. is a drive don't stat it
+    if ((m_fileName == wxT("..")) && (m_filePath.length() <= 5))
+    {
+        m_type = is_drive;
+        m_size = 0;
+        return;
+    }
+#endif // __DOS__ || __WINDOWS__
 
     wxStructStat buff;
-    wxStat( m_fileName, &buff );
 
 #if defined(__UNIX__) && (!defined( __OS2__ ) && !defined(__VMS))
-    struct stat lbuff;
-    lstat( m_fileName.fn_str(), &lbuff );
-    m_isLink = S_ISLNK( lbuff.st_mode );
-    struct tm *t = localtime( &lbuff.st_mtime );
-#else
-    m_isLink = FALSE;
-    struct tm *t = localtime( &buff.st_mtime );
+    lstat( m_filePath.fn_str(), &buff );
+    m_type |= S_ISLNK( buff.st_mode ) != 0 ? is_link : 0;
+#else // no lstat()
+    wxStat( m_filePath, &buff );
 #endif
 
-//  struct passwd *user = getpwuid( buff.st_uid );
-//  struct group *grp = getgrgid( buff.st_gid );
+    m_type |= (buff.st_mode & S_IFDIR) != 0 ? is_dir : 0;
+    m_type |= (buff.st_mode & wxS_IXUSR) != 0 ? is_exe : 0;
 
-#ifdef __VISUALC__
-    m_isDir = ((buff.st_mode & _S_IFDIR ) == _S_IFDIR );
-#else
-    m_isDir = S_ISDIR( buff.st_mode );
-#endif // VC++
-    m_isExe = ((buff.st_mode & wxS_IXUSR ) == wxS_IXUSR );
+    // try to get a better icon
+    if (m_image == wxFileIconsTable::file)
+    {
+        if (m_fileName.Find(wxT('.'), true) != wxNOT_FOUND)
+        {
+            m_image = wxTheFileIconsTable->GetIconID( m_fileName.AfterLast(wxT('.')));
+        } else if (IsExe())
+        {
+            m_image = wxFileIconsTable::executable;
+        }
+    }
 
-    m_size = buff.st_size;
+    m_size = (long)buff.st_size;
 
-    m_hour = t->tm_hour;
-    m_minute = t->tm_min;
-    m_month = t->tm_mon+1;
-    m_day = t->tm_mday;
-    m_year = t->tm_year;
-    m_year += 1900;
+    m_dateTime = buff.st_mtime;
 
-    char buffer[10];
-    sprintf( buffer, "%c%c%c",
-     ((( buff.st_mode & wxS_IRUSR ) == wxS_IRUSR ) ? 'r' : '-'),
-     ((( buff.st_mode & wxS_IWUSR ) == wxS_IWUSR ) ? 'w' : '-'),
-     ((( buff.st_mode & wxS_IXUSR ) == wxS_IXUSR ) ? 'x' : '-') );
-#if wxUSE_UNICODE
-    m_permissions = wxConvUTF8.cMB2WC( buffer );
-#else
-    m_permissions = buffer;
+#if defined(__UNIX__)
+    m_permissions.Printf(_T("%c%c%c%c%c%c%c%c%c"),
+                         buff.st_mode & wxS_IRUSR ? _T('r') : _T('-'),
+                         buff.st_mode & wxS_IWUSR ? _T('w') : _T('-'),
+                         buff.st_mode & wxS_IXUSR ? _T('x') : _T('-'),
+                         buff.st_mode & wxS_IRGRP ? _T('r') : _T('-'),
+                         buff.st_mode & wxS_IWGRP ? _T('w') : _T('-'),
+                         buff.st_mode & wxS_IXGRP ? _T('x') : _T('-'),
+                         buff.st_mode & wxS_IROTH ? _T('r') : _T('-'),
+                         buff.st_mode & wxS_IWOTH ? _T('w') : _T('-'),
+                         buff.st_mode & wxS_IXOTH ? _T('x') : _T('-'));
+#elif defined(__WIN32__)
+    DWORD attribs = GetFileAttributes(m_filePath);
+    if (attribs != (DWORD)-1)
+    {
+        m_permissions.Printf(_T("%c%c%c%c"),
+                             attribs & FILE_ATTRIBUTE_ARCHIVE  ? _T('A') : _T(' '),
+                             attribs & FILE_ATTRIBUTE_READONLY ? _T('R') : _T(' '),
+                             attribs & FILE_ATTRIBUTE_HIDDEN   ? _T('H') : _T(' '),
+                             attribs & FILE_ATTRIBUTE_SYSTEM   ? _T('S') : _T(' '));
+    }
 #endif
-
-//    m_permissions.sprintf( wxT("%c%c%c"),
-//     ((( buff.st_mode & S_IRUSR ) == S_IRUSR ) ? wxT('r') : wxT('-')),
-//     ((( buff.st_mode & S_IWUSR ) == S_IWUSR ) ? wxT('w') : wxT('-')),
-//     ((( buff.st_mode & S_IXUSR ) == S_IXUSR ) ? wxT('x') : wxT('-')) );
 }
 
-wxString wxFileData::GetName() const
+wxString wxFileData::GetFileType() const
 {
-    return m_name;
+    if (IsDir())
+        return _("<DIR>");
+    else if (IsLink())
+        return _("<LINK>");
+    else if (IsDrive())
+        return _("<DRIVE>");
+   else if (m_fileName.Find(wxT('.'), true) != wxNOT_FOUND)
+        return m_fileName.AfterLast(wxT('.'));
+
+    return wxEmptyString;
 }
 
-wxString wxFileData::GetFullName() const
+wxString wxFileData::GetModificationTime() const
 {
-    return m_fileName;
+    // want time as 01:02 so they line up nicely, no %r in WIN32
+    return m_dateTime.FormatDate() + wxT(" ") + m_dateTime.Format(wxT("%I:%M:%S %p"));
 }
 
 wxString wxFileData::GetHint() const
 {
-    wxString s = m_fileName;
+    wxString s = m_filePath;
     s += wxT("  ");
-    if (m_isDir) s += wxT("<DIR> ");
-    else if (m_isLink) s += wxT("<LINK> ");
-    else
+
+    if (IsDir())
+        s += _("<DIR>");
+    else if (IsLink())
+        s += _("<LINK>");
+    else if (IsDrive())
+        s += _("<DRIVE>");
+    else // plain file
+        s += wxString::Format( _("%ld bytes"), m_size );
+
+    s += wxT(' ');
+
+    if ( !IsDrive() )
     {
-        s += LongToString( m_size );
-        s += wxT(" bytes ");
+        s << GetModificationTime()
+          << wxT("  ")
+          << m_permissions;
     }
-    s += IntToString( m_day );
-    s += wxT(".");
-    s += IntToString( m_month );
-    s += wxT(".");
-    s += IntToString( m_year );
-    s += wxT("  ");
-    s += IntToString( m_hour );
-    s += wxT(":");
-    s += IntToString( m_minute );
-    s += wxT("  ");
-    s += m_permissions;
+
     return s;
 };
 
-wxString wxFileData::GetEntry( FileListField num ) const
+wxString wxFileData::GetEntry( fileListFieldType num ) const
 {
     wxString s;
     switch ( num )
     {
         case FileList_Name:
-            s = m_name;
+            s = m_fileName;
             break;
 
-        case FileList_Type:
-            if (m_isDir)
-                s = _("<DIR>");
-            else if (m_isLink)
-                s = _("<LINK>");
-            else
+        case FileList_Size:
+            if (!IsDir() && !IsLink() && !IsDrive())
                 s.Printf(_T("%ld"), m_size);
             break;
 
-        case FileList_Date:
-            s.Printf(_T("%02d.%02d.%d"), m_day, m_month, m_year);
+        case FileList_Type:
+            s = GetFileType();
             break;
 
         case FileList_Time:
-            s.Printf(_T("%02d:%02d"), m_hour, m_minute);
+                if (!IsDrive())
+                s = GetModificationTime();
             break;
 
-#ifdef __UNIX__
+#if defined(__UNIX__) || defined(__WIN32__)
         case FileList_Perm:
             s = m_permissions;
             break;
-#endif // __UNIX__
+#endif // defined(__UNIX__) || defined(__WIN32__)
 
         default:
             wxFAIL_MSG( _T("unexpected field in wxFileData::GetEntry()") );
@@ -579,34 +328,28 @@ wxString wxFileData::GetEntry( FileListField num ) const
     return s;
 }
 
-void wxFileData::SetNewName( const wxString &name, const wxString &fname )
+void wxFileData::SetNewName( const wxString &filePath, const wxString &fileName )
 {
-    m_name = name;
-    m_fileName = fname;
+    m_fileName = fileName;
+    m_filePath = filePath;
 }
 
 void wxFileData::MakeItem( wxListItem &item )
 {
-    item.m_text = m_name;
+    item.m_text = m_fileName;
     item.ClearAttributes();
     if (IsExe())
         item.SetTextColour(*wxRED);
     if (IsDir())
         item.SetTextColour(*wxBLUE);
 
-    if (IsDir())
-        item.m_image = FI_FOLDER;
-    else if (IsExe())
-        item.m_image = FI_EXECUTABLE;
-    else if (m_name.Find(wxT('.')) != wxNOT_FOUND)
-        item.m_image = g_IconsTable->GetIconID(m_name.AfterLast(wxT('.')));
-    else
-        item.m_image = FI_UNKNOWN;
+    item.m_image = m_image;
 
     if (IsLink())
     {
-        wxColour *dg = wxTheColourDatabase->FindColour( _T("MEDIUM GREY") );
-        item.SetTextColour(*dg);
+        wxColour dg = wxTheColourDatabase->Find( _T("MEDIUM GREY") );
+        if ( dg.Ok() )
+            item.SetTextColour(dg);
     }
     item.m_data = (long)this;
 }
@@ -618,18 +361,21 @@ void wxFileData::MakeItem( wxListItem &item )
 IMPLEMENT_DYNAMIC_CLASS(wxFileCtrl,wxListCtrl)
 
 BEGIN_EVENT_TABLE(wxFileCtrl,wxListCtrl)
-    EVT_LIST_DELETE_ITEM(-1, wxFileCtrl::OnListDeleteItem)
-    EVT_LIST_END_LABEL_EDIT(-1, wxFileCtrl::OnListEndLabelEdit)
+    EVT_LIST_DELETE_ITEM(wxID_ANY, wxFileCtrl::OnListDeleteItem)
+    EVT_LIST_DELETE_ALL_ITEMS(wxID_ANY, wxFileCtrl::OnListDeleteAllItems)
+    EVT_LIST_END_LABEL_EDIT(wxID_ANY, wxFileCtrl::OnListEndLabelEdit)
+    EVT_LIST_COL_CLICK(wxID_ANY, wxFileCtrl::OnListColClick)
 END_EVENT_TABLE()
 
 
 wxFileCtrl::wxFileCtrl()
 {
-    m_showHidden = FALSE;
+    m_showHidden = false;
+    m_sort_foward = 1;
+    m_sort_field = wxFileData::FileList_Name;
 }
 
 wxFileCtrl::wxFileCtrl(wxWindow *win,
-                       wxStaticText *labelDir,
                        wxWindowID id,
                        const wxString& wild,
                        bool showHidden,
@@ -641,35 +387,59 @@ wxFileCtrl::wxFileCtrl(wxWindow *win,
           : wxListCtrl(win, id, pos, size, style, validator, name),
             m_wild(wild)
 {
-    if (! g_IconsTable)
-        g_IconsTable = new wxFileIconsTable;
-    wxImageList *imageList = g_IconsTable->GetImageList();
+    wxImageList *imageList = wxTheFileIconsTable->GetSmallImageList();
 
     SetImageList( imageList, wxIMAGE_LIST_SMALL );
 
-    m_goToParentControl =
-    m_newDirControl = NULL;
-
-    m_labelDir = labelDir;
-
     m_showHidden = showHidden;
+
+    m_sort_foward = 1;
+    m_sort_field = wxFileData::FileList_Name;
+
+    m_dirName = wxT("*");
+
+    if (style & wxLC_REPORT)
+        ChangeToReportMode();
 }
 
 void wxFileCtrl::ChangeToListMode()
 {
+    ClearAll();
     SetSingleStyle( wxLC_LIST );
     UpdateFiles();
 }
 
 void wxFileCtrl::ChangeToReportMode()
 {
+    ClearAll();
     SetSingleStyle( wxLC_REPORT );
+
+    // do this since WIN32 does mm/dd/yy UNIX does mm/dd/yyyy
+    // don't hardcode since mm/dd is dd/mm elsewhere
+    int w, h;
+    wxDateTime dt(22, wxDateTime::Dec, 2002, 22, 22, 22);
+    wxString txt = dt.FormatDate() + wxT("22") + dt.Format(wxT("%I:%M:%S %p"));
+    GetTextExtent(txt, &w, &h);
+
+    InsertColumn( 0, _("Name"), wxLIST_FORMAT_LEFT, w );
+    InsertColumn( 1, _("Size"), wxLIST_FORMAT_LEFT, w/2 );
+    InsertColumn( 2, _("Type"), wxLIST_FORMAT_LEFT, w/2 );
+    InsertColumn( 3, _("Modified"), wxLIST_FORMAT_LEFT, w );
+#if defined(__UNIX__)
+    GetTextExtent(wxT("Permissions 2"), &w, &h);
+    InsertColumn( 4, _("Permissions"), wxLIST_FORMAT_LEFT, w );
+#elif defined(__WIN32__)
+    GetTextExtent(wxT("Attributes 2"), &w, &h);
+    InsertColumn( 4, _("Attributes"), wxLIST_FORMAT_LEFT, w );
+#endif
+
     UpdateFiles();
 }
 
-void wxFileCtrl::ChangeToIconMode()
+void wxFileCtrl::ChangeToSmallIconMode()
 {
-    SetSingleStyle( wxLC_ICON );
+    ClearAll();
+    SetSingleStyle( wxLC_SMALL_ICON );
     UpdateFiles();
 }
 
@@ -688,72 +458,65 @@ long wxFileCtrl::Add( wxFileData *fd, wxListItem &item )
     if (my_style & wxLC_REPORT)
     {
         ret = InsertItem( item );
-        for (int i = 1; i < FileList_Max; i++)
-            SetItem( item.m_itemId, i, fd->GetEntry((FileListField)i) );
+        for (int i = 1; i < wxFileData::FileList_Max; i++)
+            SetItem( item.m_itemId, i, fd->GetEntry((wxFileData::fileListFieldType)i) );
     }
-    else if (my_style & wxLC_LIST)
+    else if ((my_style & wxLC_LIST) || (my_style & wxLC_SMALL_ICON))
     {
         ret = InsertItem( item );
     }
     return ret;
 }
 
+void wxFileCtrl::UpdateItem(const wxListItem &item)
+{
+    wxFileData *fd = (wxFileData*)GetItemData(item);
+    wxCHECK_RET(fd, wxT("invalid filedata"));
+
+    fd->ReadData();
+
+    SetItemText(item, fd->GetFileName());
+    SetItemImage(item, fd->GetImageId());
+
+    if (GetWindowStyleFlag() & wxLC_REPORT)
+    {
+        for (int i = 1; i < wxFileData::FileList_Max; i++)
+            SetItem( item.m_itemId, i, fd->GetEntry((wxFileData::fileListFieldType)i) );
+    }
+}
+
 void wxFileCtrl::UpdateFiles()
 {
     // don't do anything before ShowModal() call which sets m_dirName
-#ifndef __OS2__
-    if ( m_dirName.empty() )
+    if ( m_dirName == wxT("*") )
         return;
-#endif
 
     wxBusyCursor bcur; // this may take a while...
 
-    long my_style = GetWindowStyleFlag();
-    int name_col_width = 0;
-    if (my_style & wxLC_REPORT)
-    {
-        if (GetColumnCount() > 0)
-            name_col_width = GetColumnWidth( 0 );
-    }
+    DeleteAllItems();
 
-    FreeAllItemsData();
-    ClearAll();
-
-    if (my_style & wxLC_REPORT)
-    {
-        if (name_col_width < 140) name_col_width = 140;
-        InsertColumn( 0, _("Name"), wxLIST_FORMAT_LEFT, name_col_width );
-        InsertColumn( 1, _("Size"), wxLIST_FORMAT_LEFT, 60 );
-        InsertColumn( 2, _("Date"), wxLIST_FORMAT_LEFT, 65 );
-        InsertColumn( 3, _("Time"), wxLIST_FORMAT_LEFT, 50 );
-#ifdef __UNIX__
-        InsertColumn( 4, _("Permissions"), wxLIST_FORMAT_LEFT, 120 );
-#endif
-    }
-    wxFileData *fd = (wxFileData *) NULL;
     wxListItem item;
     item.m_itemId = 0;
     item.m_col = 0;
 
-#if defined(__DOS__) || defined(__WINDOWS__) || defined(__OS2__)
+#if defined(__WINDOWS__) || defined(__DOS__) || defined(__WXMAC__) || defined(__OS2__)
     if ( IsTopMostDir(m_dirName) )
-    {
-        // Pseudo-directory with all available drives listed...
-        for (int drive = 1; drive <= 26; drive++)
         {
-            wxString path;
-            path.Printf(wxT("%c:\\"), (char)(drive + 'A' - 1));
-            if ( wxIsDriveAvailable(path) )
+        wxArrayString names, paths;
+        wxArrayInt icons;
+        size_t n, count = wxGetAvailableDrives(paths, names, icons);
+
+        for (n=0; n<count; n++)
             {
-                path.RemoveLast();
-                fd = new wxFileData(path, path);
-                Add(fd, item);
+            wxFileData *fd = new wxFileData(paths[n], names[n], wxFileData::is_drive, icons[n]);
+            if (Add(fd, item) != -1)
                 item.m_itemId++;
+            else
+                delete fd;
             }
         }
-    }
     else
-#endif
+#endif // defined(__DOS__) || defined(__WINDOWS__)
     {
         // Real directory...
         if ( !IsTopMostDir(m_dirName) )
@@ -761,24 +524,27 @@ void wxFileCtrl::UpdateFiles()
             wxString p(wxPathOnly(m_dirName));
 #if defined(__UNIX__) && !defined(__OS2__)
             if (p.IsEmpty()) p = wxT("/");
-#endif
-            fd = new wxFileData( wxT(".."), p );
-            Add(fd, item);
+#endif // __UNIX__
+            wxFileData *fd = new wxFileData(p, wxT(".."), wxFileData::is_dir, wxFileIconsTable::folder);
+            if (Add(fd, item) != -1)
             item.m_itemId++;
+            else
+                delete fd;
         }
 
         wxString dirname(m_dirName);
 #if defined(__DOS__) || defined(__WINDOWS__) || defined(__OS2__)
         if (dirname.length() == 2 && dirname[1u] == wxT(':'))
             dirname << wxT('\\');
-#endif
+#endif // defined(__DOS__) || defined(__WINDOWS__) || defined(__OS2__)
         wxDir dir(dirname);
 
         if ( dir.IsOpened() )
         {
             wxString dirPrefix(dirname);
-	    if (!wxIsPathSeparator(dirPrefix.Last()))
-                dirPrefix << wxFILE_SEP_PATH;
+            if (dirPrefix.Last() != wxFILE_SEP_PATH)
+                dirPrefix += wxFILE_SEP_PATH;
+
             int hiddenFlag = m_showHidden ? wxDIR_HIDDEN : 0;
 
             bool cont;
@@ -788,9 +554,12 @@ void wxFileCtrl::UpdateFiles()
             cont = dir.GetFirst(&f, wxEmptyString, wxDIR_DIRS | hiddenFlag);
             while (cont)
             {
-                fd = new wxFileData(f, dirPrefix + f);
-                Add(fd, item);
+                wxFileData *fd = new wxFileData(dirPrefix + f, f, wxFileData::is_dir, wxFileIconsTable::folder);
+                if (Add(fd, item) != -1)
                 item.m_itemId++;
+                else
+                    delete fd;
+
                 cont = dir.GetNext(&f);
             }
 
@@ -803,35 +572,26 @@ void wxFileCtrl::UpdateFiles()
                                         wxDIR_FILES | hiddenFlag);
                 while (cont)
                 {
-                    fd = new wxFileData(f, dirPrefix + f);
-                    Add(fd, item);
+                    wxFileData *fd = new wxFileData(dirPrefix + f, f, wxFileData::is_file, wxFileIconsTable::file);
+                    if (Add(fd, item) != -1)
                     item.m_itemId++;
+                    else
+                        delete fd;
+
                     cont = dir.GetNext(&f);
                 }
             }
         }
     }
 
-    SortItems((wxListCtrlCompare)ListCompare, 0);
-
-    if ( my_style & wxLC_REPORT )
-    {
-       SetColumnWidth(1, wxLIST_AUTOSIZE);
-       SetColumnWidth(2, wxLIST_AUTOSIZE);
-       SetColumnWidth(3, wxLIST_AUTOSIZE);
-    }
-
-    // Finally, enable/disable context-dependent controls:
-    if ( m_goToParentControl )
-        m_goToParentControl->Enable(!IsTopMostDir(m_dirName));
-#if defined(__DOS__) || defined(__WINDOWS__) || defined(__OS2__)
-    if ( m_newDirControl )
-        m_newDirControl->Enable(!IsTopMostDir(m_dirName));
-#endif
+    SortItems(m_sort_field, m_sort_foward);
 }
 
 void wxFileCtrl::SetWild( const wxString &wild )
 {
+    if (wild.Find(wxT('|')) != wxNOT_FOUND)
+        return;
+
     m_wild = wild;
     UpdateFiles();
 }
@@ -867,7 +627,7 @@ void wxFileCtrl::MakeDir()
         return;
     }
 
-    wxFileData *fd = new wxFileData( new_name, path );
+    wxFileData *fd = new wxFileData( path, new_name, wxFileData::is_dir, wxFileIconsTable::folder );
     wxListItem item;
     item.m_itemId = 0;
     item.m_col = 0;
@@ -875,11 +635,13 @@ void wxFileCtrl::MakeDir()
 
     if (id != -1)
     {
-        SortItems( (wxListCtrlCompare) ListCompare, 0 );
+        SortItems(m_sort_field, m_sort_foward);
         id = FindItem( 0, (long)fd );
         EnsureVisible( id );
         EditLabel( id );
     }
+    else
+        delete fd;
 }
 
 void wxFileCtrl::GoToParentDir()
@@ -887,13 +649,16 @@ void wxFileCtrl::GoToParentDir()
     if (!IsTopMostDir(m_dirName))
     {
         size_t len = m_dirName.Len();
-        if (m_dirName[len-1] == wxFILE_SEP_PATH)
+        if (wxEndsWithPathSeparator(m_dirName))
             m_dirName.Remove( len-1, 1 );
         wxString fname( wxFileNameFromPath(m_dirName) );
         m_dirName = wxPathOnly( m_dirName );
-#if defined(__OS2__)
-        if (!m_dirName.IsEmpty() && fname.IsEmpty())
-            m_dirName = wxT("");
+#if defined(__DOS__) || defined(__WINDOWS__) || defined(__OS2__)
+        if (!m_dirName.IsEmpty())
+        {
+            if (m_dirName.Last() == wxT('.'))
+                m_dirName = wxEmptyString;
+        }
 #elif defined(__UNIX__)
         if (m_dirName.IsEmpty())
             m_dirName = wxT("/");
@@ -905,8 +670,6 @@ void wxFileCtrl::GoToParentDir()
             SetItemState( id, wxLIST_STATE_SELECTED, wxLIST_STATE_SELECTED );
             EnsureVisible( id );
         }
-
-        m_labelDir->SetLabel(m_dirName);
     }
 }
 
@@ -918,28 +681,33 @@ void wxFileCtrl::GoToHomeDir()
 
 void wxFileCtrl::GoToDir( const wxString &dir )
 {
+    if (!wxDirExists(dir)) return;
+
     m_dirName = dir;
     UpdateFiles();
     SetItemState( 0, wxLIST_STATE_SELECTED, wxLIST_STATE_SELECTED );
     EnsureVisible( 0 );
-
-    m_labelDir->SetLabel(dir);
 }
 
-void wxFileCtrl::GetDir( wxString &dir )
+void wxFileCtrl::FreeItemData(wxListItem& item)
 {
-    dir = m_dirName;
-}
+    if ( item.m_data )
+    {
+        wxFileData *fd = (wxFileData*)item.m_data;
+        delete fd;
 
-void wxFileCtrl::FreeItemData(const wxListItem& item)
-{
-    wxFileData *fd = (wxFileData*)item.m_data;
-    delete fd;
+        item.m_data = 0;
+    }
 }
 
 void wxFileCtrl::OnListDeleteItem( wxListEvent &event )
 {
     FreeItemData(event.m_item);
+}
+
+void wxFileCtrl::OnListDeleteAllItems( wxListEvent & WXUNUSED(event) )
+{
+    FreeAllItemsData();
 }
 
 void wxFileCtrl::FreeAllItemsData()
@@ -972,7 +740,7 @@ void wxFileCtrl::OnListEndLabelEdit( wxListEvent &event )
         return;
     }
 
-    wxString new_name( wxPathOnly( fd->GetFullName() ) );
+    wxString new_name( wxPathOnly( fd->GetFilePath() ) );
     new_name += wxFILE_SEP_PATH;
     new_name += event.GetLabel();
 
@@ -985,10 +753,11 @@ void wxFileCtrl::OnListEndLabelEdit( wxListEvent &event )
         event.Veto();
     }
 
-    if (wxRenameFile(fd->GetFullName(),new_name))
+    if (wxRenameFile(fd->GetFilePath(),new_name))
     {
         fd->SetNewName( new_name, event.GetLabel() );
         SetItemState( event.GetItem(), wxLIST_STATE_SELECTED, wxLIST_STATE_SELECTED );
+        UpdateItem( event.GetItem() );
         EnsureVisible( event.GetItem() );
     }
     else
@@ -999,13 +768,69 @@ void wxFileCtrl::OnListEndLabelEdit( wxListEvent &event )
     }
 }
 
+void wxFileCtrl::OnListColClick( wxListEvent &event )
+{
+    int col = event.GetColumn();
+
+    switch (col)
+    {
+        case wxFileData::FileList_Name :
+        case wxFileData::FileList_Size :
+        case wxFileData::FileList_Type :
+        case wxFileData::FileList_Time : break;
+        default : return;
+    }
+
+    if ((wxFileData::fileListFieldType)col == m_sort_field)
+        m_sort_foward = !m_sort_foward;
+    else
+        m_sort_field = (wxFileData::fileListFieldType)col;
+
+    SortItems(m_sort_field, m_sort_foward);
+}
+
+void wxFileCtrl::SortItems(wxFileData::fileListFieldType field, bool foward)
+{
+    m_sort_field = field;
+    m_sort_foward = foward;
+    long sort_dir = foward ? 1 : -1;
+
+    switch (m_sort_field)
+    {
+        case wxFileData::FileList_Name :
+        {
+            wxListCtrl::SortItems((wxListCtrlCompare)wxFileDataNameCompare, sort_dir);
+            break;
+        }
+        case wxFileData::FileList_Size :
+        {
+             wxListCtrl::SortItems((wxListCtrlCompare)wxFileDataSizeCompare, sort_dir);
+            break;
+        }
+        case wxFileData::FileList_Type :
+        {
+             wxListCtrl::SortItems((wxListCtrlCompare)wxFileDataTypeCompare, sort_dir);
+             break;
+        }
+        case wxFileData::FileList_Time :
+        {
+             wxListCtrl::SortItems((wxListCtrlCompare)wxFileDataTimeCompare, sort_dir);
+             break;
+        }
+        default : break;
+    }
+}
+
 wxFileCtrl::~wxFileCtrl()
 {
+    // Normally the data are freed via an EVT_LIST_DELETE_ALL_ITEMS event and
+    // wxFileCtrl::OnListDeleteAllItems. But if the event is generated after
+    // the destruction of the wxFileCtrl we need to free any data here:
     FreeAllItemsData();
 }
 
 //-----------------------------------------------------------------------------
-// wxFileDialog
+// wxGenericFileDialog
 //-----------------------------------------------------------------------------
 
 #define  ID_LIST_MODE     (wxID_FILEDLGG    )
@@ -1019,37 +844,39 @@ wxFileCtrl::~wxFileCtrl()
 #define  ID_ACTIVATED     (wxID_FILEDLGG + 11)
 #define  ID_CHECK         (wxID_FILEDLGG + 12)
 
-IMPLEMENT_DYNAMIC_CLASS(wxFileDialog,wxDialog)
+IMPLEMENT_DYNAMIC_CLASS(wxGenericFileDialog, wxFileDialogBase)
 
-BEGIN_EVENT_TABLE(wxFileDialog,wxDialog)
-        EVT_BUTTON(ID_LIST_MODE, wxFileDialog::OnList)
-        EVT_BUTTON(ID_REPORT_MODE, wxFileDialog::OnReport)
-        EVT_BUTTON(ID_UP_DIR, wxFileDialog::OnUp)
-        EVT_BUTTON(ID_PARENT_DIR, wxFileDialog::OnHome)
-        EVT_BUTTON(ID_NEW_DIR, wxFileDialog::OnNew)
-        EVT_BUTTON(wxID_OK, wxFileDialog::OnListOk)
-        EVT_LIST_ITEM_SELECTED(ID_LIST_CTRL, wxFileDialog::OnSelected)
-        EVT_LIST_ITEM_ACTIVATED(ID_LIST_CTRL, wxFileDialog::OnActivated)
-        EVT_CHOICE(ID_CHOICE,wxFileDialog::OnChoiceFilter)
-        EVT_TEXT_ENTER(ID_TEXT,wxFileDialog::OnTextEnter)
-        EVT_TEXT(ID_TEXT,wxFileDialog::OnTextChange)
-        EVT_CHECKBOX(ID_CHECK,wxFileDialog::OnCheck)
+BEGIN_EVENT_TABLE(wxGenericFileDialog,wxDialog)
+        EVT_BUTTON(ID_LIST_MODE, wxGenericFileDialog::OnList)
+        EVT_BUTTON(ID_REPORT_MODE, wxGenericFileDialog::OnReport)
+        EVT_BUTTON(ID_UP_DIR, wxGenericFileDialog::OnUp)
+        EVT_BUTTON(ID_PARENT_DIR, wxGenericFileDialog::OnHome)
+        EVT_BUTTON(ID_NEW_DIR, wxGenericFileDialog::OnNew)
+        EVT_BUTTON(wxID_OK, wxGenericFileDialog::OnListOk)
+        EVT_LIST_ITEM_SELECTED(ID_LIST_CTRL, wxGenericFileDialog::OnSelected)
+        EVT_LIST_ITEM_ACTIVATED(ID_LIST_CTRL, wxGenericFileDialog::OnActivated)
+        EVT_CHOICE(ID_CHOICE,wxGenericFileDialog::OnChoiceFilter)
+        EVT_TEXT_ENTER(ID_TEXT,wxGenericFileDialog::OnTextEnter)
+        EVT_TEXT(ID_TEXT,wxGenericFileDialog::OnTextChange)
+        EVT_CHECKBOX(ID_CHECK,wxGenericFileDialog::OnCheck)
 END_EVENT_TABLE()
 
-long wxFileDialog::ms_lastViewStyle = wxLC_LIST;
-bool wxFileDialog::ms_lastShowHidden = FALSE;
+long wxGenericFileDialog::ms_lastViewStyle = wxLC_LIST;
+bool wxGenericFileDialog::ms_lastShowHidden = false;
 
-wxFileDialog::wxFileDialog(wxWindow *parent,
+wxGenericFileDialog::wxGenericFileDialog(wxWindow *parent,
                            const wxString& message,
                            const wxString& defaultDir,
                            const wxString& defaultFile,
                            const wxString& wildCard,
                            long style,
                            const wxPoint& pos )
-            : wxDialog( parent, -1, message, pos, wxDefaultSize,
-                        wxDEFAULT_DIALOG_STYLE | wxRESIZE_BORDER )
+                    :wxFileDialogBase(parent, message, defaultDir, defaultFile, wildCard, style, pos)
 {
-    if (wxConfig::Get(FALSE))
+    wxDialog::Create( parent, wxID_ANY, message, pos, wxDefaultSize,
+                      wxDEFAULT_DIALOG_STYLE | wxRESIZE_BORDER );
+
+    if (wxConfig::Get(false))
     {
         wxConfig::Get()->Read(wxT("/wxWindows/wxFileDialog/ViewStyle"),
                               &ms_lastViewStyle);
@@ -1057,58 +884,27 @@ wxFileDialog::wxFileDialog(wxWindow *parent,
                               &ms_lastShowHidden);
     }
 
-    m_message = message;
-    m_dialogStyle = style;
-
     if (m_dialogStyle == 0)
         m_dialogStyle = wxOPEN;
     if ((m_dialogStyle & wxMULTIPLE ) && !(m_dialogStyle & wxOPEN))
         m_dialogStyle |= wxOPEN;
 
-    m_dir = defaultDir;
     if ((m_dir.empty()) || (m_dir == wxT(".")))
     {
         m_dir = wxGetCwd();
     }
 
     size_t len = m_dir.Len();
-    if ((len > 1) && (m_dir[len-1] == wxFILE_SEP_PATH))
+    if ((len > 1) && (wxEndsWithPathSeparator(m_dir)))
         m_dir.Remove( len-1, 1 );
 
     m_path = m_dir;
     m_path += wxFILE_SEP_PATH;
     m_path += defaultFile;
-    m_fileName = defaultFile;
-    m_wildCard = wildCard;
-    m_filterIndex = 0;
     m_filterExtension = wxEmptyString;
 
-    // interpret wildcards
-
-    if (m_wildCard.IsEmpty())
-        m_wildCard = _("All files (*)|*");
-
-    wxStringTokenizer tokens( m_wildCard, wxT("|") );
-    wxString firstWild;
-    wxString firstWildText;
-    if (tokens.CountTokens() == 1)
-    {
-        firstWildText = tokens.GetNextToken();
-        firstWild = firstWildText;
-    }
-    else
-    {
-        wxASSERT_MSG( tokens.CountTokens() % 2 == 0, wxT("Wrong file type descripition") );
-        firstWildText = tokens.GetNextToken();
-        firstWild = tokens.GetNextToken();
-    }
-    if ( firstWild.Left( 2 ) == wxT("*.") )
-        m_filterExtension = firstWild.Mid( 1 );
-    if ( m_filterExtension == wxT(".*") )
-        m_filterExtension = wxEmptyString;
-
     // layout
-    
+
     bool is_pda = (wxSystemSettings::GetScreenType() <= wxSYS_SCREEN_PDA);
 
     wxBoxSizer *mainsizer = new wxBoxSizer( wxVERTICAL );
@@ -1118,14 +914,14 @@ wxFileDialog::wxFileDialog(wxWindow *parent,
     wxBitmapButton *but;
 
     but = new wxBitmapButton(this, ID_LIST_MODE,
-                             wxArtProvider::GetBitmap(wxART_LIST_VIEW, wxART_CMN_DIALOG));
+                             wxArtProvider::GetBitmap(wxART_LIST_VIEW, wxART_BUTTON));
 #if wxUSE_TOOLTIPS
     but->SetToolTip( _("View files as a list view") );
 #endif
     buttonsizer->Add( but, 0, wxALL, 5 );
 
     but = new wxBitmapButton(this, ID_REPORT_MODE,
-                             wxArtProvider::GetBitmap(wxART_REPORT_VIEW, wxART_CMN_DIALOG));
+                             wxArtProvider::GetBitmap(wxART_REPORT_VIEW, wxART_BUTTON));
 #if wxUSE_TOOLTIPS
     but->SetToolTip( _("View files as a detailed view") );
 #endif
@@ -1133,17 +929,16 @@ wxFileDialog::wxFileDialog(wxWindow *parent,
 
     buttonsizer->Add( 30, 5, 1 );
 
-    wxWindow *butDirUp =
-        new wxBitmapButton(this, ID_UP_DIR,
-                           wxArtProvider::GetBitmap(wxART_GO_DIR_UP, wxART_CMN_DIALOG));
+    m_upDirButton = new wxBitmapButton(this, ID_UP_DIR,
+                           wxArtProvider::GetBitmap(wxART_GO_DIR_UP, wxART_BUTTON));
 #if wxUSE_TOOLTIPS
-    butDirUp->SetToolTip( _("Go to parent directory") );
+    m_upDirButton->SetToolTip( _("Go to parent directory") );
 #endif
-    buttonsizer->Add( butDirUp, 0, wxALL, 5 );
+    buttonsizer->Add( m_upDirButton, 0, wxALL, 5 );
 
 #ifndef __DOS__ // VS: Home directory is meaningless in MS-DOS...
     but = new wxBitmapButton(this, ID_PARENT_DIR,
-                             wxArtProvider::GetBitmap(wxART_GO_HOME, wxART_CMN_DIALOG));
+                             wxArtProvider::GetBitmap(wxART_GO_HOME, wxART_BUTTON));
 #if wxUSE_TOOLTIPS
     but->SetToolTip( _("Go to home directory") );
 #endif
@@ -1152,13 +947,12 @@ wxFileDialog::wxFileDialog(wxWindow *parent,
     buttonsizer->Add( 20, 20 );
 #endif //!__DOS__
 
-    wxWindow *butNewDir =
-        new wxBitmapButton(this, ID_NEW_DIR,
-                           wxArtProvider::GetBitmap(wxART_NEW_DIR, wxART_CMN_DIALOG));
+    m_newDirButton = new wxBitmapButton(this, ID_NEW_DIR,
+                           wxArtProvider::GetBitmap(wxART_NEW_DIR, wxART_BUTTON));
 #if wxUSE_TOOLTIPS
-    butNewDir->SetToolTip( _("Create new directory") );
+    m_newDirButton->SetToolTip( _("Create new directory") );
 #endif
-    buttonsizer->Add( butNewDir, 0, wxALL, 5 );
+    buttonsizer->Add( m_newDirButton, 0, wxALL, 5 );
 
     if (is_pda)
         mainsizer->Add( buttonsizer, 0, wxALL | wxEXPAND, 0 );
@@ -1167,8 +961,8 @@ wxFileDialog::wxFileDialog(wxWindow *parent,
 
     wxBoxSizer *staticsizer = new wxBoxSizer( wxHORIZONTAL );
     if (is_pda)
-        staticsizer->Add( new wxStaticText( this, -1, _("Current directory:") ), 0, wxRIGHT, 10 );
-    m_static = new wxStaticText( this, -1, m_dir );
+        staticsizer->Add( new wxStaticText( this, wxID_ANY, _("Current directory:") ), 0, wxRIGHT, 10 );
+    m_static = new wxStaticText( this, wxID_ANY, m_dir );
     staticsizer->Add( m_static, 1 );
     mainsizer->Add( staticsizer, 0, wxEXPAND | wxLEFT|wxRIGHT|wxBOTTOM, 10 );
 
@@ -1176,13 +970,10 @@ wxFileDialog::wxFileDialog(wxWindow *parent,
     if ( !(m_dialogStyle & wxMULTIPLE) )
         style2 |= wxLC_SINGLE_SEL;
 
-    m_list = new wxFileCtrl( this, m_static, ID_LIST_CTRL,
-                             firstWild, ms_lastShowHidden,
+    m_list = new wxFileCtrl( this, ID_LIST_CTRL,
+                             _T(""), ms_lastShowHidden,
                              wxDefaultPosition, wxSize(540,200),
                              style2);
-
-    m_list->SetNewDirControl(butNewDir);
-    m_list->SetGoToParentControl(butDirUp);
 
     if (is_pda)
     {
@@ -1199,8 +990,8 @@ wxFileDialog::wxFileDialog(wxWindow *parent,
         textsizer->Add( m_choice, 1, wxCENTER|wxALL, 5 );
 
         buttonsizer = new wxBoxSizer( wxHORIZONTAL );
-        buttonsizer->Add( new wxButton( this, wxID_OK, _("OK") ), 0, wxCENTER | wxALL, 5 );
-        buttonsizer->Add( new wxButton( this, wxID_CANCEL, _("Cancel") ), 0, wxCENTER | wxALL, 5 );
+        buttonsizer->Add( new wxButton( this, wxID_OK ), 0, wxCENTER | wxALL, 5 );
+        buttonsizer->Add( new wxButton( this, wxID_CANCEL ), 0, wxCENTER | wxALL, 5 );
         mainsizer->Add( buttonsizer, 0, wxALIGN_RIGHT );
     }
     else
@@ -1210,7 +1001,7 @@ wxFileDialog::wxFileDialog(wxWindow *parent,
         wxBoxSizer *textsizer = new wxBoxSizer( wxHORIZONTAL );
         m_text = new wxTextCtrl( this, ID_TEXT, m_fileName, wxDefaultPosition, wxDefaultSize, wxPROCESS_ENTER );
         textsizer->Add( m_text, 1, wxCENTER | wxLEFT|wxRIGHT|wxTOP, 10 );
-        textsizer->Add( new wxButton( this, wxID_OK, _("OK") ), 0, wxCENTER | wxLEFT|wxRIGHT|wxTOP, 10 );
+        textsizer->Add( new wxButton( this, wxID_OK ), 0, wxCENTER | wxLEFT|wxRIGHT|wxTOP, 10 );
         mainsizer->Add( textsizer, 0, wxEXPAND );
 
         wxBoxSizer *choicesizer = new wxBoxSizer( wxHORIZONTAL );
@@ -1219,20 +1010,13 @@ wxFileDialog::wxFileDialog(wxWindow *parent,
         m_check = new wxCheckBox( this, ID_CHECK, _("Show hidden files") );
         m_check->SetValue( ms_lastShowHidden );
         choicesizer->Add( m_check, 0, wxCENTER|wxALL, 10 );
-        choicesizer->Add( new wxButton( this, wxID_CANCEL, _("Cancel") ), 0, wxCENTER | wxALL, 10 );
+        choicesizer->Add( new wxButton( this, wxID_CANCEL ), 0, wxCENTER | wxALL, 10 );
         mainsizer->Add( choicesizer, 0, wxEXPAND );
     }
 
-    m_choice->Append( firstWildText, (void*) new wxString( firstWild ) );
-    while (tokens.HasMoreTokens())
-    {
-        firstWildText = tokens.GetNextToken();
-        firstWild = tokens.GetNextToken();
-        m_choice->Append( firstWildText, (void*) new wxString( firstWild ) );
-    }
-    m_choice->SetSelection( 0 );
+    SetWildcard(wildCard);
 
-    SetAutoLayout( TRUE );
+    SetAutoLayout( true );
     SetSizer( mainsizer );
 
     mainsizer->Fit( this );
@@ -1243,9 +1027,9 @@ wxFileDialog::wxFileDialog(wxWindow *parent,
     m_text->SetFocus();
 }
 
-wxFileDialog::~wxFileDialog()
+wxGenericFileDialog::~wxGenericFileDialog()
 {
-    if (wxConfig::Get(FALSE))
+    if (wxConfig::Get(false))
     {
         wxConfig::Get()->Write(wxT("/wxWindows/wxFileDialog/ViewStyle"),
                                ms_lastViewStyle);
@@ -1253,23 +1037,35 @@ wxFileDialog::~wxFileDialog()
                                ms_lastShowHidden);
     }
 
-    const size_t count = m_choice->GetCount();
-    size_t i;
-    for ( i = 0; i < count; i++ )
+    const int count = m_choice->GetCount();
+    for ( int i = 0; i < count; i++ )
     {
         delete (wxString *)m_choice->GetClientData(i);
     }
 }
 
-int wxFileDialog::ShowModal()
+int wxGenericFileDialog::ShowModal()
 {
     m_list->GoToDir(m_dir);
+    UpdateControls();
     m_text->SetValue(m_fileName);
 
     return wxDialog::ShowModal();
 }
 
-void wxFileDialog::DoSetFilterIndex(int filterindex)
+bool wxGenericFileDialog::Show( bool show )
+{
+    if (show)
+    {
+        m_list->GoToDir(m_dir);
+        UpdateControls();
+        m_text->SetValue(m_fileName);
+    }
+
+    return wxDialog::Show( show );
+}
+
+void wxGenericFileDialog::DoSetFilterIndex(int filterindex)
 {
     wxString *str = (wxString*) m_choice->GetClientData( filterindex );
     m_list->SetWild( *str );
@@ -1286,38 +1082,57 @@ void wxFileDialog::DoSetFilterIndex(int filterindex)
     }
 }
 
-void wxFileDialog::SetFilterIndex( int filterindex )
+void wxGenericFileDialog::SetWildcard(const wxString& wildCard)
+{
+    wxFileDialogBase::SetWildcard(wildCard);
+
+    wxArrayString wildDescriptions, wildFilters;
+    const size_t count = wxParseCommonDialogsFilter(m_wildCard,
+                                                    wildDescriptions,
+                                                    wildFilters);
+    wxCHECK_RET( count, wxT("wxFileDialog: bad wildcard string") );
+
+    m_choice->Clear();
+    for ( size_t n = 0; n < count; n++ )
+    {
+        m_choice->Append( wildDescriptions[n], new wxString( wildFilters[n] ) );
+    }
+
+    SetFilterIndex( 0 );
+}
+
+void wxGenericFileDialog::SetFilterIndex( int filterindex )
 {
     m_choice->SetSelection( filterindex );
 
     DoSetFilterIndex(filterindex);
 }
 
-void wxFileDialog::OnChoiceFilter( wxCommandEvent &event )
+void wxGenericFileDialog::OnChoiceFilter( wxCommandEvent &event )
 {
     DoSetFilterIndex((int)event.GetInt());
 }
 
-void wxFileDialog::OnCheck( wxCommandEvent &event )
+void wxGenericFileDialog::OnCheck( wxCommandEvent &event )
 {
     m_list->ShowHidden( (ms_lastShowHidden = event.GetInt() != 0) );
 }
 
-void wxFileDialog::OnActivated( wxListEvent &event )
+void wxGenericFileDialog::OnActivated( wxListEvent &event )
 {
     HandleAction( event.m_item.m_text );
 }
 
-void wxFileDialog::OnTextEnter( wxCommandEvent &WXUNUSED(event) )
+void wxGenericFileDialog::OnTextEnter( wxCommandEvent &WXUNUSED(event) )
 {
     wxCommandEvent cevent(wxEVT_COMMAND_BUTTON_CLICKED, wxID_OK);
     cevent.SetEventObject( this );
     GetEventHandler()->ProcessEvent( cevent );
 }
 
-static bool ignoreChanges = FALSE;
+static bool ignoreChanges = false;
 
-void wxFileDialog::OnTextChange( wxCommandEvent &WXUNUSED(event) )
+void wxGenericFileDialog::OnTextChange( wxCommandEvent &WXUNUSED(event) )
 {
     if (!ignoreChanges)
     {
@@ -1336,35 +1151,39 @@ void wxFileDialog::OnTextChange( wxCommandEvent &WXUNUSED(event) )
     }
 }
 
-void wxFileDialog::OnSelected( wxListEvent &event )
+void wxGenericFileDialog::OnSelected( wxListEvent &event )
 {
     wxString filename( event.m_item.m_text );
     if (filename == wxT("..")) return;
 
-    wxString dir;
-    m_list->GetDir( dir );
+    wxString dir = m_list->GetDir();
     if (!IsTopMostDir(dir))
         dir += wxFILE_SEP_PATH;
     dir += filename;
     if (wxDirExists(dir)) return;
 
-    ignoreChanges = TRUE;
+    ignoreChanges = true;
     m_text->SetValue( filename );
-    ignoreChanges = FALSE;
+    ignoreChanges = false;
 }
 
-void wxFileDialog::HandleAction( const wxString &fn )
+void wxGenericFileDialog::HandleAction( const wxString &fn )
 {
     wxString filename( fn );
-    wxString dir;
-    m_list->GetDir( dir );
+    wxString dir = m_list->GetDir();
     if (filename.IsEmpty()) return;
     if (filename == wxT(".")) return;
+
+    // "some/place/" means they want to chdir not try to load "place"
+    bool want_dir = filename.Last() == wxFILE_SEP_PATH;
+    if (want_dir)
+        filename = filename.RemoveLast();
 
     if (filename == wxT(".."))
     {
         m_list->GoToParentDir();
         m_list->SetFocus();
+        UpdateControls();
         return;
     }
 
@@ -1373,16 +1192,13 @@ void wxFileDialog::HandleAction( const wxString &fn )
     {
         m_list->GoToHomeDir();
         m_list->SetFocus();
+        UpdateControls();
         return;
     }
 
-    if (filename[0u] == wxT('~'))
+    if (filename.BeforeFirst(wxT('/')) == wxT("~"))
     {
-        filename.Remove( 0, 1 );
-        wxString tmp( wxGetUserHome() );
-        tmp += wxT('/');
-        tmp += filename;
-        filename = tmp;
+        filename = wxGetUserHome() + filename.Remove(0, 1);
     }
 #endif // __UNIX__
 
@@ -1409,6 +1225,15 @@ void wxFileDialog::HandleAction( const wxString &fn )
     if (wxDirExists(filename))
     {
         m_list->GoToDir( filename );
+        UpdateControls();
+        return;
+    }
+
+    // they really wanted a dir, but it doesn't exist
+    if (want_dir)
+    {
+        wxMessageBox(_("Directory doesn't exist."), _("Error"),
+                     wxOK | wxICON_ERROR );
         return;
     }
 
@@ -1419,13 +1244,7 @@ void wxFileDialog::HandleAction( const wxString &fn )
     //     file without extension as well?
     if ( !(m_dialogStyle & wxOPEN) || !wxFileExists(filename) )
     {
-        wxString ext;
-        wxSplitPath(filename, NULL, NULL, &ext);
-        if ( ext.empty() )
-        {
-            // append the first extension of the filter string
-            filename += m_filterExtension.BeforeFirst(_T(';'));
-        }
+        filename = AppendExtension(filename, m_filterExtension);
     }
 
     // check that the file [doesn't] exist if necessary
@@ -1434,8 +1253,7 @@ void wxFileDialog::HandleAction( const wxString &fn )
                 wxFileExists( filename ) )
     {
         wxString msg;
-        msg.Printf( _("File '%s' already exists, do you really want to "
-                     "overwrite it?"), filename.c_str() );
+        msg.Printf( _("File '%s' already exists, do you really want to overwrite it?"), filename.c_str() );
 
         if (wxMessageBox(msg, _("Confirm"), wxYES_NO) != wxYES)
             return;
@@ -1466,43 +1284,45 @@ void wxFileDialog::HandleAction( const wxString &fn )
     wxDialog::OnOK(event);
 }
 
-void wxFileDialog::OnListOk( wxCommandEvent &WXUNUSED(event) )
+void wxGenericFileDialog::OnListOk( wxCommandEvent &WXUNUSED(event) )
 {
     HandleAction( m_text->GetValue() );
 }
 
-void wxFileDialog::OnList( wxCommandEvent &WXUNUSED(event) )
+void wxGenericFileDialog::OnList( wxCommandEvent &WXUNUSED(event) )
 {
     m_list->ChangeToListMode();
     ms_lastViewStyle = wxLC_LIST;
     m_list->SetFocus();
 }
 
-void wxFileDialog::OnReport( wxCommandEvent &WXUNUSED(event) )
+void wxGenericFileDialog::OnReport( wxCommandEvent &WXUNUSED(event) )
 {
     m_list->ChangeToReportMode();
     ms_lastViewStyle = wxLC_REPORT;
     m_list->SetFocus();
 }
 
-void wxFileDialog::OnUp( wxCommandEvent &WXUNUSED(event) )
+void wxGenericFileDialog::OnUp( wxCommandEvent &WXUNUSED(event) )
 {
     m_list->GoToParentDir();
     m_list->SetFocus();
+    UpdateControls();
 }
 
-void wxFileDialog::OnHome( wxCommandEvent &WXUNUSED(event) )
+void wxGenericFileDialog::OnHome( wxCommandEvent &WXUNUSED(event) )
 {
     m_list->GoToHomeDir();
     m_list->SetFocus();
+    UpdateControls();
 }
 
-void wxFileDialog::OnNew( wxCommandEvent &WXUNUSED(event) )
+void wxGenericFileDialog::OnNew( wxCommandEvent &WXUNUSED(event) )
 {
     m_list->MakeDir();
 }
 
-void wxFileDialog::SetPath( const wxString& path )
+void wxGenericFileDialog::SetPath( const wxString& path )
 {
     // not only set the full path but also update filename and dir
     m_path = path;
@@ -1518,7 +1338,7 @@ void wxFileDialog::SetPath( const wxString& path )
     }
 }
 
-void wxFileDialog::GetPaths( wxArrayString& paths ) const
+void wxGenericFileDialog::GetPaths( wxArrayString& paths ) const
 {
     paths.Empty();
     if (m_list->GetSelectedItemCount() == 0)
@@ -1529,8 +1349,7 @@ void wxFileDialog::GetPaths( wxArrayString& paths ) const
 
     paths.Alloc( m_list->GetSelectedItemCount() );
 
-    wxString dir;
-    m_list->GetDir( dir );
+    wxString dir = m_list->GetDir();
 #ifdef __UNIX__
     if (dir != wxT("/"))
 #endif
@@ -1549,7 +1368,7 @@ void wxFileDialog::GetPaths( wxArrayString& paths ) const
     }
 }
 
-void wxFileDialog::GetFilenames(wxArrayString& files) const
+void wxGenericFileDialog::GetFilenames(wxArrayString& files) const
 {
     files.Empty();
     if (m_list->GetSelectedItemCount() == 0)
@@ -1572,118 +1391,24 @@ void wxFileDialog::GetFilenames(wxArrayString& files) const
     }
 }
 
-
-
-// ----------------------------------------------------------------------------
-// global functions
-// ----------------------------------------------------------------------------
-
-wxString
-wxFileSelectorEx(const wxChar *message,
-                 const wxChar *default_path,
-                 const wxChar *default_filename,
-                 int *WXUNUSED(indexDefaultExtension),
-                 const wxChar *wildcard,
-                 int flags,
-                 wxWindow *parent,
-                 int x, int y)
+void wxGenericFileDialog::UpdateControls()
 {
-    // TODO: implement this somehow
-    return wxFileSelector(message, default_path, default_filename, wxT(""),
-                          wildcard, flags, parent, x, y);
+    wxString dir = m_list->GetDir();
+    m_static->SetLabel(dir);
+
+    bool enable = !IsTopMostDir(dir);
+    m_upDirButton->Enable(enable);
+
+#if defined(__DOS__) || defined(__WINDOWS__) || defined(__OS2__)
+    m_newDirButton->Enable(enable);
+#endif // defined(__DOS__) || defined(__WINDOWS__) || defined(__OS2__)
 }
 
-wxString wxFileSelector( const wxChar *title,
-                      const wxChar *defaultDir, const wxChar *defaultFileName,
-                      const wxChar *defaultExtension, const wxChar *filter, int flags,
-                      wxWindow *parent, int x, int y )
-{
-    wxString filter2;
-    if ( defaultExtension && !filter )
-        filter2 = wxString(wxT("*.")) + wxString(defaultExtension) ;
-    else if ( filter )
-        filter2 = filter;
+#ifdef USE_GENERIC_FILEDIALOG
 
-    wxString defaultDirString;
-    if (defaultDir)
-        defaultDirString = defaultDir;
+IMPLEMENT_DYNAMIC_CLASS(wxFileDialog, wxGenericFileDialog);
 
-    wxString defaultFilenameString;
-    if (defaultFileName)
-        defaultFilenameString = defaultFileName;
-
-    wxFileDialog fileDialog( parent, title, defaultDirString, defaultFilenameString, filter2, flags, wxPoint(x, y) );
-
-    if ( fileDialog.ShowModal() == wxID_OK )
-    {
-        return fileDialog.GetPath();
-    }
-    else
-    {
-        return wxEmptyString;
-    }
-}
-
-static wxString GetWildcardString(const wxChar *ext)
-{
-    wxString wild;
-    if ( ext )
-    {
-        if ( *ext == wxT('.') )
-            ext++;
-
-        wild << _T("*.") << ext;
-    }
-    else // no extension specified
-    {
-        wild = wxFileSelectorDefaultWildcardStr;
-    }
-
-    return wild;
-}
-
-wxString wxLoadFileSelector(const wxChar *what,
-                            const wxChar *ext,
-                            const wxChar *nameDef,
-                            wxWindow *parent)
-{
-    wxString prompt;
-    if ( what && *what )
-        prompt = wxString::Format(_("Load %s file"), what);
-    else
-        prompt = _("Load file");
-
-    return wxFileSelector(prompt, NULL, nameDef, ext,
-                          GetWildcardString(ext), 0, parent);
-}
-
-wxString wxSaveFileSelector(const wxChar *what,
-                            const wxChar *ext,
-                            const wxChar *nameDef,
-                            wxWindow *parent)
-{
-    wxString prompt;
-    if ( what && *what )
-        prompt = wxString::Format(_("Save %s file"), what);
-    else
-        prompt = _("Save file");
-
-    return wxFileSelector(prompt, NULL, nameDef, ext,
-                          GetWildcardString(ext), 0, parent);
-}
-
-// A module to allow icons table cleanup
-
-class wxFileDialogGenericModule: public wxModule
-{
-DECLARE_DYNAMIC_CLASS(wxFileDialogGenericModule)
-public:
-    wxFileDialogGenericModule() {}
-    bool OnInit() { return TRUE; }
-    void OnExit() { if (g_IconsTable) {delete g_IconsTable; g_IconsTable = NULL;} }
-};
-
-IMPLEMENT_DYNAMIC_CLASS(wxFileDialogGenericModule, wxModule)
+#endif // USE_GENERIC_FILEDIALOG
 
 #endif // wxUSE_FILEDLG
 

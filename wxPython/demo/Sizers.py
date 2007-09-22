@@ -1,103 +1,155 @@
+# 11/26/2003 - Jeff Grimmett (grimmtooth@softhome.net)
+#
+# o Had to do a bit of rework for the demo; there was no panel attached
+#   to the demo window, so all buttons were showing as dark gray on
+#   dark gray. I have no idea why this didn't break before. Robin,
+#   please examine my changes to ensure you approve. It's rather
+#   hackish looking.
+#
+
 #----------------------------------------------------------------------
 # sizer test code
 #----------------------------------------------------------------------
 
-from wxPython.wx             import *
-from wxPython.lib.grids      import wxGridSizer, wxFlexGridSizer
+import  wx
+
+#----------------------------------------------------------------------
+
+class SampleWindow(wx.PyWindow):
+    """
+    A simple window that is used as sizer items in the tests below to
+    show how the various sizers work.
+    """
+    def __init__(self, parent, text, pos=wx.DefaultPosition, size=wx.DefaultSize):
+        wx.PyWindow.__init__(self, parent, -1,
+                             #style=wx.RAISED_BORDER
+                             #style=wx.SUNKEN_BORDER
+                             style=wx.SIMPLE_BORDER
+                             )
+        self.text = text
+        if size != wx.DefaultSize:
+            self.bestsize = size
+        else:
+            self.bestsize = (80,25)
+        self.SetSize(self.GetBestSize())
+        
+        self.Bind(wx.EVT_PAINT, self.OnPaint)
+        self.Bind(wx.EVT_SIZE, self.OnSize)
+        self.Bind(wx.EVT_LEFT_UP, self.OnCloseParent)
+        
+
+    def OnPaint(self, evt):
+        sz = self.GetSize()
+        dc = wx.PaintDC(self)
+        w,h = dc.GetTextExtent(self.text)
+        dc.Clear()
+        dc.DrawText(self.text, (sz.width-w)/2, (sz.height-h)/2)
+
+    def OnSize(self, evt):
+        self.Refresh()
+
+    def OnCloseParent(self, evt):
+        p = wx.GetTopLevelParent(self)
+        if p:
+            p.Close()            
+
+    def DoGetBestSize(self):
+        return self.bestsize
+    
 
 #----------------------------------------------------------------------
 
 def makeSimpleBox1(win):
-    box = wxBoxSizer(wxHORIZONTAL)
-    box.Add(wxButton(win, 1010, "one"), 0, wxEXPAND)
-    box.Add(wxButton(win, 1010, "two"), 0, wxEXPAND)
-    box.Add(wxButton(win, 1010, "three"), 0, wxEXPAND)
-    box.Add(wxButton(win, 1010, "four"), 0, wxEXPAND)
+    box = wx.BoxSizer(wx.HORIZONTAL)
+    box.Add(SampleWindow(win, "one"), 0, wx.EXPAND)
+    box.Add(SampleWindow(win, "two"), 0, wx.EXPAND)
+    box.Add(SampleWindow(win, "three"), 0, wx.EXPAND)
+    box.Add(SampleWindow(win, "four"), 0, wx.EXPAND)
 
     return box
 
 #----------------------------------------------------------------------
 
 def makeSimpleBox2(win):
-    box = wxBoxSizer(wxVERTICAL)
-    box.Add(wxButton(win, 1010, "one"), 0, wxEXPAND)
-    box.Add(wxButton(win, 1010, "two"), 0, wxEXPAND)
-    box.Add(wxButton(win, 1010, "three"), 0, wxEXPAND)
-    box.Add(wxButton(win, 1010, "four"), 0, wxEXPAND)
+    box = wx.BoxSizer(wx.VERTICAL)
+    box.Add(SampleWindow(win, "one"), 0, wx.EXPAND)
+    box.Add(SampleWindow(win, "two"), 0, wx.EXPAND)
+    box.Add(SampleWindow(win, "three"), 0, wx.EXPAND)
+    box.Add(SampleWindow(win, "four"), 0, wx.EXPAND)
 
     return box
 
 #----------------------------------------------------------------------
 
 def makeSimpleBox3(win):
-    box = wxBoxSizer(wxHORIZONTAL)
-    box.Add(wxButton(win, 1010, "one"), 0, wxEXPAND)
-    box.Add(wxButton(win, 1010, "two"), 0, wxEXPAND)
-    box.Add(wxButton(win, 1010, "three"), 0, wxEXPAND)
-    box.Add(wxButton(win, 1010, "four"), 0, wxEXPAND)
-    box.Add(wxButton(win, 1010, "five"), 1, wxEXPAND)
+    box = wx.BoxSizer(wx.HORIZONTAL)
+    box.Add(SampleWindow(win, "one"), 0, wx.EXPAND)
+    box.Add(SampleWindow(win, "two"), 0, wx.EXPAND)
+    box.Add(SampleWindow(win, "three"), 0, wx.EXPAND)
+    box.Add(SampleWindow(win, "four"), 0, wx.EXPAND)
+    box.Add(SampleWindow(win, "five"), 1, wx.EXPAND)
 
     return box
 
 #----------------------------------------------------------------------
 
 def makeSimpleBox4(win):
-    box = wxBoxSizer(wxHORIZONTAL)
-    box.Add(wxButton(win, 1010, "one"), 0, wxEXPAND)
-    box.Add(wxButton(win, 1010, "two"), 0, wxEXPAND)
-    box.Add(wxButton(win, 1010, "three"), 1, wxEXPAND)
-    box.Add(wxButton(win, 1010, "four"), 1, wxEXPAND)
-    box.Add(wxButton(win, 1010, "five"), 1, wxEXPAND)
+    box = wx.BoxSizer(wx.HORIZONTAL)
+    box.Add(SampleWindow(win, "one"), 0, wx.EXPAND)
+    box.Add(SampleWindow(win, "two"), 0, wx.EXPAND)
+    box.Add(SampleWindow(win, "three"), 1, wx.EXPAND)
+    box.Add(SampleWindow(win, "four"), 1, wx.EXPAND)
+    box.Add(SampleWindow(win, "five"), 1, wx.EXPAND)
 
     return box
 
 #----------------------------------------------------------------------
 
 def makeSimpleBox5(win):
-    box = wxBoxSizer(wxHORIZONTAL)
-    box.Add(wxButton(win, 1010, "one"), 0, wxEXPAND)
-    box.Add(wxButton(win, 1010, "two"), 0, wxEXPAND)
-    box.Add(wxButton(win, 1010, "three"), 3, wxEXPAND)
-    box.Add(wxButton(win, 1010, "four"), 1, wxEXPAND)
-    box.Add(wxButton(win, 1010, "five"), 1, wxEXPAND)
+    box = wx.BoxSizer(wx.HORIZONTAL)
+    box.Add(SampleWindow(win, "one"), 0, wx.EXPAND)
+    box.Add(SampleWindow(win, "two"), 0, wx.EXPAND)
+    box.Add(SampleWindow(win, "three"), 3, wx.EXPAND)
+    box.Add(SampleWindow(win, "four"), 1, wx.EXPAND)
+    box.Add(SampleWindow(win, "five"), 1, wx.EXPAND)
 
     return box
 
 #----------------------------------------------------------------------
 
 def makeSimpleBox6(win):
-    box = wxBoxSizer(wxHORIZONTAL)
-    box.Add(wxButton(win, 1010, "one"), 1, wxALIGN_TOP)
-    box.Add(wxButton(win, 1010, "two"), 1, wxEXPAND)
-    box.Add(wxButton(win, 1010, "three"), 1, wxALIGN_CENTER)
-    box.Add(wxButton(win, 1010, "four"), 1, wxEXPAND)
-    box.Add(wxButton(win, 1010, "five"), 1, wxALIGN_BOTTOM)
+    box = wx.BoxSizer(wx.HORIZONTAL)
+    box.Add(SampleWindow(win, "one"), 1, wx.ALIGN_TOP)
+    box.Add(SampleWindow(win, "two"), 1, wx.EXPAND)
+    box.Add(SampleWindow(win, "three"), 1, wx.ALIGN_CENTER)
+    box.Add(SampleWindow(win, "four"), 1, wx.EXPAND)
+    box.Add(SampleWindow(win, "five"), 1, wx.ALIGN_BOTTOM)
 
     return box
 
 #----------------------------------------------------------------------
 
 def makeSimpleBox7(win):
-    box = wxBoxSizer(wxHORIZONTAL)
-    box.Add(wxButton(win, 1010, "one"), 0, wxEXPAND)
-    box.Add(wxButton(win, 1010, "two"), 0, wxEXPAND)
-    box.Add(wxButton(win, 1010, "three"), 0, wxEXPAND)
-    box.Add(60, 20, 0, wxEXPAND)
-    box.Add(wxButton(win, 1010, "five"), 1, wxEXPAND)
+    box = wx.BoxSizer(wx.HORIZONTAL)
+    box.Add(SampleWindow(win, "one"), 0, wx.EXPAND)
+    box.Add(SampleWindow(win, "two"), 0, wx.EXPAND)
+    box.Add(SampleWindow(win, "three"), 0, wx.EXPAND)
+    box.Add((60, 20), 0, wx.EXPAND)
+    box.Add(SampleWindow(win, "five"), 1, wx.EXPAND)
 
     return box
 
 #----------------------------------------------------------------------
 
 def makeSimpleBox8(win):
-    box = wxBoxSizer(wxVERTICAL)
-    box.Add(wxButton(win, 1010, "one"), 0, wxEXPAND)
-    box.Add(0,0, 1)
-    box.Add(wxButton(win, 1010, "two"), 0, wxALIGN_CENTER)
-    box.Add(0,0, 1)
-    box.Add(wxButton(win, 1010, "three"), 0, wxEXPAND)
-    box.Add(wxButton(win, 1010, "four"), 0, wxEXPAND)
-#    box.Add(wxButton(win, 1010, "five"), 1, wxEXPAND)
+    box = wx.BoxSizer(wx.VERTICAL)
+    box.Add(SampleWindow(win, "one"), 0, wx.EXPAND)
+    box.Add((0,0), 1)
+    box.Add(SampleWindow(win, "two"), 0, wx.ALIGN_CENTER)
+    box.Add((0,0), 1)
+    box.Add(SampleWindow(win, "three"), 0, wx.EXPAND)
+    box.Add(SampleWindow(win, "four"), 0, wx.EXPAND)
+#    box.Add(SampleWindow(win, "five"), 1, wx.EXPAND)
 
     return box
 
@@ -105,30 +157,30 @@ def makeSimpleBox8(win):
 #----------------------------------------------------------------------
 
 def makeSimpleBorder1(win):
-    bdr = wxBoxSizer(wxHORIZONTAL)
-    btn = wxButton(win, 1010, "border")
-    btn.SetSize(wxSize(80, 80))
-    bdr.Add(btn, 1, wxEXPAND|wxALL, 15)
+    bdr = wx.BoxSizer(wx.HORIZONTAL)
+    btn = SampleWindow(win, "border")
+    btn.SetSize((80, 80))
+    bdr.Add(btn, 1, wx.EXPAND|wx.ALL, 15)
 
     return bdr
 
 #----------------------------------------------------------------------
 
 def makeSimpleBorder2(win):
-    bdr = wxBoxSizer(wxHORIZONTAL)
-    btn = wxButton(win, 1010, "border")
-    btn.SetSize(wxSize(80, 80))
-    bdr.Add(btn, 1, wxEXPAND | wxEAST | wxWEST, 15)
+    bdr = wx.BoxSizer(wx.HORIZONTAL)
+    btn = SampleWindow(win, "border")
+    btn.SetSize((80, 80))
+    bdr.Add(btn, 1, wx.EXPAND | wx.EAST | wx.WEST, 15)
 
     return bdr
 
 #----------------------------------------------------------------------
 
 def makeSimpleBorder3(win):
-    bdr = wxBoxSizer(wxHORIZONTAL)
-    btn = wxButton(win, 1010, "border")
-    btn.SetSize(wxSize(80, 80))
-    bdr.Add(btn, 1, wxEXPAND | wxNORTH | wxWEST, 15)
+    bdr = wx.BoxSizer(wx.HORIZONTAL)
+    btn = SampleWindow(win, "border")
+    btn.SetSize((80, 80))
+    bdr.Add(btn, 1, wx.EXPAND | wx.NORTH | wx.WEST, 15)
 
     return bdr
 
@@ -136,28 +188,28 @@ def makeSimpleBorder3(win):
 #----------------------------------------------------------------------
 
 def makeBoxInBox(win):
-    box = wxBoxSizer(wxVERTICAL)
+    box = wx.BoxSizer(wx.VERTICAL)
 
-    box.Add(wxButton(win, 1010, "one"), 0, wxEXPAND)
+    box.Add(SampleWindow(win, "one"), 0, wx.EXPAND)
 
-    box2 = wxBoxSizer(wxHORIZONTAL)
-    box2.Add(wxButton(win, 1010, "two"), 0, wxEXPAND)
-    btn3 = wxButton(win, 1010, "three")
-    box2.Add(btn3, 0, wxEXPAND)
-    box2.Add(wxButton(win, 1010, "four"), 0, wxEXPAND)
-    box2.Add(wxButton(win, 1010, "five"), 0, wxEXPAND)
+    box2 = wx.BoxSizer(wx.HORIZONTAL)
+    box2.Add(SampleWindow(win, "two"), 0, wx.EXPAND)
+    btn3 = SampleWindow(win, "three")
+    box2.Add(btn3, 0, wx.EXPAND)
+    box2.Add(SampleWindow(win, "four"), 0, wx.EXPAND)
+    box2.Add(SampleWindow(win, "five"), 0, wx.EXPAND)
 
-    box3 = wxBoxSizer(wxVERTICAL)
-    box3.AddMany([ (wxButton(win, 1010, "six"),   0, wxEXPAND),
-                   (wxButton(win, 1010, "seven"), 2, wxEXPAND),
-                   (wxButton(win, 1010, "eight"), 1, wxEXPAND),
-                   (wxButton(win, 1010, "nine"),  1, wxEXPAND),
+    box3 = wx.BoxSizer(wx.VERTICAL)
+    box3.AddMany([ (SampleWindow(win, "six"),   0, wx.EXPAND),
+                   (SampleWindow(win, "seven"), 2, wx.EXPAND),
+                   (SampleWindow(win, "eight"), 1, wx.EXPAND),
+                   (SampleWindow(win, "nine"),  1, wx.EXPAND),
                    ])
 
-    box2.Add(box3, 1, wxEXPAND)
-    box.Add(box2, 1, wxEXPAND)
+    box2.Add(box3, 1, wx.EXPAND)
+    box.Add(box2, 1, wx.EXPAND)
 
-    box.Add(wxButton(win, 1010, "ten"), 0, wxEXPAND)
+    box.Add(SampleWindow(win, "ten"), 0, wx.EXPAND)
 
     ##box.Hide(btn3)
 
@@ -166,43 +218,43 @@ def makeBoxInBox(win):
 #----------------------------------------------------------------------
 
 def makeBoxInBorder(win):
-    bdr = wxBoxSizer(wxHORIZONTAL)
+    bdr = wx.BoxSizer(wx.HORIZONTAL)
     box = makeSimpleBox3(win)
-    bdr.Add(box, 1, wxEXPAND | wxALL, 15)
+    bdr.Add(box, 1, wx.EXPAND | wx.ALL, 15)
 
     return bdr
 
 #----------------------------------------------------------------------
 
 def makeBorderInBox(win):
-    insideBox = wxBoxSizer(wxHORIZONTAL)
+    insideBox = wx.BoxSizer(wx.HORIZONTAL)
 
-    box2 = wxBoxSizer(wxHORIZONTAL)
-    box2.AddMany([ (wxButton(win, 1010, "one"), 0, wxEXPAND),
-                   (wxButton(win, 1010, "two"), 0, wxEXPAND),
-                   (wxButton(win, 1010, "three"), 0, wxEXPAND),
-                   (wxButton(win, 1010, "four"), 0, wxEXPAND),
-                   (wxButton(win, 1010, "five"), 0, wxEXPAND),
+    box2 = wx.BoxSizer(wx.HORIZONTAL)
+    box2.AddMany([ (SampleWindow(win, "one"), 0, wx.EXPAND),
+                   (SampleWindow(win, "two"), 0, wx.EXPAND),
+                   (SampleWindow(win, "three"), 0, wx.EXPAND),
+                   (SampleWindow(win, "four"), 0, wx.EXPAND),
+                   (SampleWindow(win, "five"), 0, wx.EXPAND),
                  ])
 
-    insideBox.Add(box2, 0, wxEXPAND)
+    insideBox.Add(box2, 0, wx.EXPAND)
 
-    bdr = wxBoxSizer(wxHORIZONTAL)
-    bdr.Add(wxButton(win, 1010, "border"), 1, wxEXPAND | wxALL)
-    insideBox.Add(bdr, 1, wxEXPAND | wxALL, 20)
+    bdr = wx.BoxSizer(wx.HORIZONTAL)
+    bdr.Add(SampleWindow(win, "border"), 1, wx.EXPAND | wx.ALL)
+    insideBox.Add(bdr, 1, wx.EXPAND | wx.ALL, 20)
 
-    box3 = wxBoxSizer(wxVERTICAL)
-    box3.AddMany([ (wxButton(win, 1010, "six"),   0, wxEXPAND),
-                   (wxButton(win, 1010, "seven"), 2, wxEXPAND),
-                   (wxButton(win, 1010, "eight"), 1, wxEXPAND),
-                   (wxButton(win, 1010, "nine"),  1, wxEXPAND),
+    box3 = wx.BoxSizer(wx.VERTICAL)
+    box3.AddMany([ (SampleWindow(win, "six"),   0, wx.EXPAND),
+                   (SampleWindow(win, "seven"), 2, wx.EXPAND),
+                   (SampleWindow(win, "eight"), 1, wx.EXPAND),
+                   (SampleWindow(win, "nine"),  1, wx.EXPAND),
                  ])
-    insideBox.Add(box3, 1, wxEXPAND)
+    insideBox.Add(box3, 1, wx.EXPAND)
 
-    outsideBox = wxBoxSizer(wxVERTICAL)
-    outsideBox.Add(wxButton(win, 1010, "top"), 0, wxEXPAND)
-    outsideBox.Add(insideBox, 1, wxEXPAND)
-    outsideBox.Add(wxButton(win, 1010, "bottom"), 0, wxEXPAND)
+    outsideBox = wx.BoxSizer(wx.VERTICAL)
+    outsideBox.Add(SampleWindow(win, "top"), 0, wx.EXPAND)
+    outsideBox.Add(insideBox, 1, wx.EXPAND)
+    outsideBox.Add(SampleWindow(win, "bottom"), 0, wx.EXPAND)
 
     return outsideBox
 
@@ -210,18 +262,18 @@ def makeBorderInBox(win):
 #----------------------------------------------------------------------
 
 def makeGrid1(win):
-    gs = wxGridSizer(3, 3, 2, 2)  # rows, cols, hgap, vgap
+    gs = wx.GridSizer(3, 3, 2, 2)  # rows, cols, hgap, vgap
 
-    gs.AddMany([ (wxButton(win, 1010, 'one'),   0, wxEXPAND),
-                 (wxButton(win, 1010, 'two'),   0, wxEXPAND),
-                 (wxButton(win, 1010, 'three'), 0, wxEXPAND),
-                 (wxButton(win, 1010, 'four'),  0, wxEXPAND),
-                 (wxButton(win, 1010, 'five'),  0, wxEXPAND),
+    gs.AddMany([ (SampleWindow(win, 'one'),   0, wx.EXPAND),
+                 (SampleWindow(win, 'two'),   0, wx.EXPAND),
+                 (SampleWindow(win, 'three'), 0, wx.EXPAND),
+                 (SampleWindow(win, 'four'),  0, wx.EXPAND),
+                 (SampleWindow(win, 'five'),  0, wx.EXPAND),
                  #(75, 50),
-                 (wxButton(win, 1010, 'six'),   0, wxEXPAND),
-                 (wxButton(win, 1010, 'seven'), 0, wxEXPAND),
-                 (wxButton(win, 1010, 'eight'), 0, wxEXPAND),
-                 (wxButton(win, 1010, 'nine'),  0, wxEXPAND),
+                 (SampleWindow(win, 'six'),   0, wx.EXPAND),
+                 (SampleWindow(win, 'seven'), 0, wx.EXPAND),
+                 (SampleWindow(win, 'eight'), 0, wx.EXPAND),
+                 (SampleWindow(win, 'nine'),  0, wx.EXPAND),
                  ])
 
     return gs
@@ -229,27 +281,27 @@ def makeGrid1(win):
 #----------------------------------------------------------------------
 
 def makeGrid2(win):
-    gs = wxGridSizer(3, 3)  # rows, cols, hgap, vgap
+    gs = wx.GridSizer(3, 3)  # rows, cols, hgap, vgap
 
-    box = wxBoxSizer(wxVERTICAL)
-    box.Add(wxButton(win, 1010, 'A'), 0, wxEXPAND)
-    box.Add(wxButton(win, 1010, 'B'), 1, wxEXPAND)
+    box = wx.BoxSizer(wx.VERTICAL)
+    box.Add(SampleWindow(win, 'A'), 0, wx.EXPAND)
+    box.Add(SampleWindow(win, 'B'), 1, wx.EXPAND)
 
-    gs2 = wxGridSizer(2,2, 4, 4)
-    gs2.AddMany([ (wxButton(win, 1010, 'C'), 0, wxEXPAND),
-                  (wxButton(win, 1010, 'E'), 0, wxEXPAND),
-                  (wxButton(win, 1010, 'F'), 0, wxEXPAND),
-                  (wxButton(win, 1010, 'G'), 0, wxEXPAND)])
+    gs2 = wx.GridSizer(2,2, 4, 4)
+    gs2.AddMany([ (SampleWindow(win, 'C'), 0, wx.EXPAND),
+                  (SampleWindow(win, 'E'), 0, wx.EXPAND),
+                  (SampleWindow(win, 'F'), 0, wx.EXPAND),
+                  (SampleWindow(win, 'G'), 0, wx.EXPAND)])
 
-    gs.AddMany([ (wxButton(win, 1010, 'one'),   0, wxALIGN_RIGHT | wxALIGN_BOTTOM),
-                 (wxButton(win, 1010, 'two'),   0, wxEXPAND),
-                 (wxButton(win, 1010, 'three'), 0, wxALIGN_LEFT | wxALIGN_BOTTOM),
-                 (wxButton(win, 1010, 'four'),  0, wxEXPAND),
-                 (wxButton(win, 1010, 'five'),  0, wxALIGN_CENTER),
-                 (wxButton(win, 1010, 'six'),   0, wxEXPAND),
-                 (box,                          0, wxEXPAND | wxALL, 10),
-                 (wxButton(win, 1010, 'eight'), 0, wxEXPAND),
-                 (gs2,                          0, wxEXPAND | wxALL, 4),
+    gs.AddMany([ (SampleWindow(win, 'one'),   0, wx.ALIGN_RIGHT | wx.ALIGN_BOTTOM),
+                 (SampleWindow(win, 'two'),   0, wx.EXPAND),
+                 (SampleWindow(win, 'three'), 0, wx.ALIGN_LEFT | wx.ALIGN_BOTTOM),
+                 (SampleWindow(win, 'four'),  0, wx.EXPAND),
+                 (SampleWindow(win, 'five'),  0, wx.ALIGN_CENTER),
+                 (SampleWindow(win, 'six'),   0, wx.EXPAND),
+                 (box,                          0, wx.EXPAND | wx.ALL, 10),
+                 (SampleWindow(win, 'eight'), 0, wx.EXPAND),
+                 (gs2,                          0, wx.EXPAND | wx.ALL, 4),
                  ])
 
     return gs
@@ -257,18 +309,18 @@ def makeGrid2(win):
 #----------------------------------------------------------------------
 
 def makeGrid3(win):
-    gs = wxFlexGridSizer(3, 3, 2, 2)  # rows, cols, hgap, vgap
+    gs = wx.FlexGridSizer(3, 3, 2, 2)  # rows, cols, hgap, vgap
 
-    gs.AddMany([ (wxButton(win, 1010, 'one'),   0, wxEXPAND),
-                 (wxButton(win, 1010, 'two'),   0, wxEXPAND),
-                 (wxButton(win, 1010, 'three'), 0, wxEXPAND),
-                 (wxButton(win, 1010, 'four'),  0, wxEXPAND),
-                 #(wxButton(win, 1010, 'five'),  0, wxEXPAND),
-                 (175, 50),
-                 (wxButton(win, 1010, 'six'),   0, wxEXPAND),
-                 (wxButton(win, 1010, 'seven'), 0, wxEXPAND),
-                 (wxButton(win, 1010, 'eight'), 0, wxEXPAND),
-                 (wxButton(win, 1010, 'nine'),  0, wxEXPAND),
+    gs.AddMany([ (SampleWindow(win, 'one'),   0, wx.EXPAND),
+                 (SampleWindow(win, 'two'),   0, wx.EXPAND),
+                 (SampleWindow(win, 'three'), 0, wx.EXPAND),
+                 (SampleWindow(win, 'four'),  0, wx.EXPAND),
+                 #(SampleWindow(win, 'five'),  0, wx.EXPAND),
+                 ((175, 50)),
+                 (SampleWindow(win, 'six'),   0, wx.EXPAND),
+                 (SampleWindow(win, 'seven'), 0, wx.EXPAND),
+                 (SampleWindow(win, 'eight'), 0, wx.EXPAND),
+                 (SampleWindow(win, 'nine'),  0, wx.EXPAND),
                  ])
 
     gs.AddGrowableRow(0)
@@ -279,28 +331,28 @@ def makeGrid3(win):
 #----------------------------------------------------------------------
 
 def makeGrid4(win):
-    bpos = wxDefaultPosition
-    bsize = wxSize(100, 50)
-    gs = wxGridSizer(3, 3, 2, 2)  # rows, cols, hgap, vgap
+    bpos = wx.DefaultPosition
+    bsize = wx.Size(100, 50)
+    gs = wx.GridSizer(3, 3, 2, 2)  # rows, cols, hgap, vgap
 
-    gs.AddMany([ (wxButton(win, 1010, 'one', bpos, bsize),
-                  0, wxALIGN_TOP | wxALIGN_LEFT ),
-                 (wxButton(win, 1010, 'two', bpos, bsize),
-                  0, wxALIGN_TOP | wxALIGN_CENTER_HORIZONTAL ),
-                 (wxButton(win, 1010, 'three', bpos, bsize),
-                  0, wxALIGN_TOP | wxALIGN_RIGHT ),
-                 (wxButton(win, 1010, 'four', bpos, bsize),
-                  0, wxALIGN_CENTER_VERTICAL | wxALIGN_LEFT ),
-                 (wxButton(win, 1010, 'five', bpos, bsize),
-                  0, wxALIGN_CENTER ),
-                 (wxButton(win, 1010, 'six', bpos, bsize),
-                  0, wxALIGN_CENTER_VERTICAL | wxALIGN_RIGHT ),
-                 (wxButton(win, 1010, 'seven', bpos, bsize),
-                  0, wxALIGN_BOTTOM | wxALIGN_LEFT ),
-                 (wxButton(win, 1010, 'eight', bpos, bsize),
-                  0, wxALIGN_BOTTOM | wxALIGN_CENTER_HORIZONTAL ),
-                 (wxButton(win, 1010, 'nine', bpos, bsize),
-                  0, wxALIGN_BOTTOM | wxALIGN_RIGHT ),
+    gs.AddMany([ (SampleWindow(win, 'one', bpos, bsize),
+                  0, wx.ALIGN_TOP | wx.ALIGN_LEFT ),
+                 (SampleWindow(win, 'two', bpos, bsize),
+                  0, wx.ALIGN_TOP | wx.ALIGN_CENTER_HORIZONTAL ),
+                 (SampleWindow(win, 'three', bpos, bsize),
+                  0, wx.ALIGN_TOP | wx.ALIGN_RIGHT ),
+                 (SampleWindow(win, 'four', bpos, bsize),
+                  0, wx.ALIGN_CENTER_VERTICAL | wx.ALIGN_LEFT ),
+                 (SampleWindow(win, 'five', bpos, bsize),
+                  0, wx.ALIGN_CENTER ),
+                 (SampleWindow(win, 'six', bpos, bsize),
+                  0, wx.ALIGN_CENTER_VERTICAL | wx.ALIGN_RIGHT ),
+                 (SampleWindow(win, 'seven', bpos, bsize),
+                  0, wx.ALIGN_BOTTOM | wx.ALIGN_LEFT ),
+                 (SampleWindow(win, 'eight', bpos, bsize),
+                  0, wx.ALIGN_BOTTOM | wx.ALIGN_CENTER_HORIZONTAL ),
+                 (SampleWindow(win, 'nine', bpos, bsize),
+                  0, wx.ALIGN_BOTTOM | wx.ALIGN_RIGHT ),
                  ])
 
     return gs
@@ -308,28 +360,28 @@ def makeGrid4(win):
 #----------------------------------------------------------------------
 
 def makeShapes(win):
-    bpos = wxDefaultPosition
-    bsize = wxSize(100, 50)
-    gs = wxGridSizer(3, 3, 2, 2)  # rows, cols, hgap, vgap
+    bpos = wx.DefaultPosition
+    bsize = wx.Size(100, 50)
+    gs = wx.GridSizer(3, 3, 2, 2)  # rows, cols, hgap, vgap
 
-    gs.AddMany([ (wxButton(win, 1010, 'one', bpos, bsize),
-                  0, wxSHAPED | wxALIGN_TOP | wxALIGN_LEFT ),
-                 (wxButton(win, 1010, 'two', bpos, bsize),
-                  0, wxSHAPED | wxALIGN_TOP | wxALIGN_CENTER_HORIZONTAL ),
-                 (wxButton(win, 1010, 'three', bpos, bsize),
-                  0, wxSHAPED | wxALIGN_TOP | wxALIGN_RIGHT ),
-                 (wxButton(win, 1010, 'four', bpos, bsize),
-                  0, wxSHAPED | wxALIGN_CENTER_VERTICAL | wxALIGN_LEFT ),
-                 (wxButton(win, 1010, 'five', bpos, bsize),
-                  0, wxSHAPED | wxALIGN_CENTER ),
-                 (wxButton(win, 1010, 'six', bpos, bsize),
-                  0, wxSHAPED | wxALIGN_CENTER_VERTICAL | wxALIGN_RIGHT ),
-                 (wxButton(win, 1010, 'seven', bpos, bsize),
-                  0, wxSHAPED |  wxALIGN_BOTTOM | wxALIGN_LEFT ),
-                 (wxButton(win, 1010, 'eight', bpos, bsize),
-                  0, wxSHAPED | wxALIGN_BOTTOM | wxALIGN_CENTER_HORIZONTAL ),
-                 (wxButton(win, 1010, 'nine', bpos, bsize),
-                  0, wxSHAPED | wxALIGN_BOTTOM | wxALIGN_RIGHT ),
+    gs.AddMany([ (SampleWindow(win, 'one', bpos, bsize),
+                  0, wx.SHAPED | wx.ALIGN_TOP | wx.ALIGN_LEFT ),
+                 (SampleWindow(win, 'two', bpos, bsize),
+                  0, wx.SHAPED | wx.ALIGN_TOP | wx.ALIGN_CENTER_HORIZONTAL ),
+                 (SampleWindow(win, 'three', bpos, bsize),
+                  0, wx.SHAPED | wx.ALIGN_TOP | wx.ALIGN_RIGHT ),
+                 (SampleWindow(win, 'four', bpos, bsize),
+                  0, wx.SHAPED | wx.ALIGN_CENTER_VERTICAL | wx.ALIGN_LEFT ),
+                 (SampleWindow(win, 'five', bpos, bsize),
+                  0, wx.SHAPED | wx.ALIGN_CENTER ),
+                 (SampleWindow(win, 'six', bpos, bsize),
+                  0, wx.SHAPED | wx.ALIGN_CENTER_VERTICAL | wx.ALIGN_RIGHT ),
+                 (SampleWindow(win, 'seven', bpos, bsize),
+                  0, wx.SHAPED |  wx.ALIGN_BOTTOM | wx.ALIGN_LEFT ),
+                 (SampleWindow(win, 'eight', bpos, bsize),
+                  0, wx.SHAPED | wx.ALIGN_BOTTOM | wx.ALIGN_CENTER_HORIZONTAL ),
+                 (SampleWindow(win, 'nine', bpos, bsize),
+                  0, wx.SHAPED | wx.ALIGN_BOTTOM | wx.ALIGN_RIGHT ),
                  ])
 
     return gs
@@ -337,12 +389,12 @@ def makeShapes(win):
 #----------------------------------------------------------------------
 
 def makeSimpleBoxShaped(win):
-    box = wxBoxSizer(wxHORIZONTAL)
-    box.Add(wxButton(win, 1010, "one"), 0, wxEXPAND)
-    box.Add(wxButton(win, 1010, "two"), 0, wxEXPAND)
-    box.Add(wxButton(win, 1010, "three"), 0, wxEXPAND)
-    box.Add(wxButton(win, 1010, "four"), 0, wxEXPAND)
-    box.Add(wxButton(win, 1010, "five"), 1, wxSHAPED)
+    box = wx.BoxSizer(wx.HORIZONTAL)
+    box.Add(SampleWindow(win, "one"), 0, wx.EXPAND)
+    box.Add(SampleWindow(win, "two"), 0, wx.EXPAND)
+    box.Add(SampleWindow(win, "three"), 0, wx.EXPAND)
+    box.Add(SampleWindow(win, "four"), 0, wx.EXPAND)
+    box.Add(SampleWindow(win, "five"), 1, wx.SHAPED)
 
     return box
 
@@ -393,14 +445,14 @@ theTests = [
      ),
 
 #    ("Percent Sizer", makeSimpleBox6,
-#     "You can use the wxBoxSizer like a Percent Sizer.  Just make sure that all "
+#     "You can use the wx.BoxSizer like a Percent Sizer.  Just make sure that all "
 #     "the weighting factors add up to 100!"
 #     ),
 
     ("", None, ""),
 
     ("Simple border sizer", makeSimpleBorder1,
-     "The wxBoxSizer can leave empty space around its contents.  This one "
+     "The wx.BoxSizer can leave empty space around its contents.  This one "
      "gives a border all the way around."
      ),
 
@@ -432,14 +484,14 @@ theTests = [
     ("", None, ""),
 
     ("Simple Grid", makeGrid1,
-     "This is an example of the wxGridSizer.  In this case all row heights "
+     "This is an example of the wx.GridSizer.  In this case all row heights "
      "and column widths are kept the same as all the others and all items "
      "fill their available space.  The horizontal and vertical gaps are set to "
      "2 pixels each."
      ),
 
     ("More Grid Features", makeGrid2,
-     "This is another example of the wxGridSizer.  This one has no gaps in the grid, "
+     "This is another example of the wx.GridSizer.  This one has no gaps in the grid, "
      "but various cells are given different alignment options and some of them "
      "hold nested sizers."
      ),
@@ -461,7 +513,7 @@ theTests = [
 
     ("Proportional resize", makeSimpleBoxShaped,
      "Managed items can preserve their original aspect ratio.  The last item has the "
-     "wxSHAPED flag set and will resize proportional to its original size."
+     "wx.SHAPED flag set and will resize proportional to its original size."
      ),
 
     ("Proportional resize with Alignments", makeShapes,
@@ -471,53 +523,51 @@ theTests = [
     ]
 #----------------------------------------------------------------------
 
-class TestFrame(wxFrame):
+class TestFrame(wx.Frame):
     def __init__(self, parent, title, sizerFunc):
-        wxFrame.__init__(self, parent, -1, title)
-        EVT_BUTTON(self, 1010, self.OnButton)
+        wx.Frame.__init__(self, parent, -1, title)
 
-        self.sizer = sizerFunc(self)
+        p = wx.Panel(self, -1)
+
+        self.sizer = sizerFunc(p)
         self.CreateStatusBar()
         self.SetStatusText("Resize this frame to see how the sizers respond...")
-        self.sizer.Fit(self)
+        self.sizer.Fit(p)
 
-        self.SetAutoLayout(True)
-        self.SetSizer(self.sizer)
-        EVT_CLOSE(self, self.OnCloseWindow)
+        p.SetSizer(self.sizer)
+        self.Bind(wx.EVT_CLOSE, self.OnCloseWindow)
+        self.Fit()
 
     def OnCloseWindow(self, event):
         self.MakeModal(False)
         self.Destroy()
 
-    def OnButton(self, event):
-        self.Close(True)
 
 #----------------------------------------------------------------------
 
 
 
-class TestSelectionPanel(wxPanel):
+class TestSelectionPanel(wx.Panel):
     def __init__(self, parent, frame):
-        wxPanel.__init__(self, parent, -1)
+        wx.Panel.__init__(self, parent, -1)
         self.frame = frame
 
-        self.list = wxListBox(self, 401,
-                              wxDLG_PNT(self, 10, 10), wxDLG_SZE(self, 100, 100),
+        self.list = wx.ListBox(self, -1,
+                              wx.DLG_PNT(self, 10, 10), wx.DLG_SZE(self, 100, 100),
                               [])
-        EVT_LISTBOX(self, 401, self.OnSelect)
-        EVT_LISTBOX_DCLICK(self, 401, self.OnDClick)
+        self.Bind(wx.EVT_LISTBOX, self.OnSelect, id=self.list.GetId())
+        self.Bind(wx.EVT_LISTBOX_DCLICK, self.OnDClick, id=self.list.GetId())
 
-        self.btn = wxButton(self, 402, "Try it!", wxDLG_PNT(self, 120, 10)).SetDefault()
-        EVT_BUTTON(self, 402, self.OnDClick)
+        self.btn = wx.Button(self, -1, "Try it!", wx.DLG_PNT(self, 120, 10)).SetDefault()
+        self.Bind(wx.EVT_BUTTON, self.OnDClick)
 
-        self.text = wxTextCtrl(self, -1, "",
-                               wxDLG_PNT(self, 10, 115),
-                               wxDLG_SZE(self, 200, 50),
-                               wxTE_MULTILINE | wxTE_READONLY)
+        self.text = wx.TextCtrl(self, -1, "",
+                               wx.DLG_PNT(self, 10, 115),
+                               wx.DLG_SZE(self, 200, 50),
+                               wx.TE_MULTILINE | wx.TE_READONLY)
 
         for item in theTests:
             self.list.Append(item[0])
-
 
 
     def OnSelect(self, event):
@@ -532,7 +582,7 @@ class TestSelectionPanel(wxPanel):
 
         if func:
             win = TestFrame(self, title, func)
-            win.CentreOnParent(wxBOTH)
+            win.CentreOnParent(wx.BOTH)
             win.Show(True)
             win.MakeModal(True)
 
@@ -543,30 +593,25 @@ def runTest(frame, nb, log):
     return win
 
 overview = ""
-#wxSizer.__doc__        + '\n' + '-' * 80 + '\n' + \
-#wxBoxSizer.__doc__     + '\n' + '-' * 80 + '\n' + \
-#wxBorderSizer.__doc__
 
 #----------------------------------------------------------------------
 
-
-
 if __name__ == '__main__':
 
-    class MainFrame(wxFrame):
+    class MainFrame(wx.Frame):
         def __init__(self):
-            wxFrame.__init__(self, None, -1, "Testing...")
+            wx.Frame.__init__(self, None, -1, "Testing...")
 
             self.CreateStatusBar()
-            mainmenu = wxMenuBar()
-            menu = wxMenu()
+            mainmenu = wx.MenuBar()
+            menu = wx.Menu()
             menu.Append(200, 'E&xit', 'Get the heck outta here!')
             mainmenu.Append(menu, "&File")
             self.SetMenuBar(mainmenu)
-            EVT_MENU(self, 200, self.OnExit)
+            self.Bind(wx.EVT_MENU, self.OnExit, id=200)
             self.panel = TestSelectionPanel(self, self)
-            self.SetSize(wxSize(400, 380))
-            EVT_CLOSE(self, self.OnCloseWindow)
+            self.SetSize((400, 380))
+            self.Bind(wx.EVT_CLOSE, self.OnCloseWindow)
 
         def OnCloseWindow(self, event):
             self.Destroy()
@@ -575,14 +620,14 @@ if __name__ == '__main__':
             self.Close(True)
 
 
-    class TestApp(wxApp):
+    class TestApp(wx.App):
         def OnInit(self):
             frame = MainFrame()
             frame.Show(True)
             self.SetTopWindow(frame)
             return True
 
-    app = TestApp(0)
+    app = TestApp(False)
     app.MainLoop()
 
 

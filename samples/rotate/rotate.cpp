@@ -4,7 +4,7 @@
 // Author:    Carlos Moreno
 // Modified by:
 // Created:   6/2/2000
-// RCS-ID:    $Id: rotate.cpp,v 1.8.2.1 2002/12/15 17:25:32 MBN Exp $
+// RCS-ID:    $Id: rotate.cpp,v 1.13 2004/06/02 17:01:33 ABX Exp $
 // Copyright: (c) 2000
 // Licence:   wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -21,6 +21,7 @@
 #endif
 
 #include "wx/image.h"
+#include "wx/numdlg.h"
 
 /* GRG: This is not ANSI standard, define M_PI explicitly
 #include <math.h>       // M_PI
@@ -98,19 +99,19 @@ bool MyApp::OnInit()
     {
         wxLogError(wxT("Can't load the test image, please copy it to the ")
                    wxT("program directory"));
-        return FALSE;
+        return false;
     }
 
-    MyFrame *frame = new MyFrame (_T("wxWindows rotate sample"),
+    MyFrame *frame = new MyFrame (_T("wxWidgets rotate sample"),
                                   wxPoint(20,20), wxSize(600,450));
 
-    frame->Show (TRUE);
+    frame->Show (true);
     SetTopWindow (frame);
-    return TRUE;
+    return true;
 }
 
 MyFrame::MyFrame(const wxString& title, const wxPoint& pos, const wxSize& size)
-    : wxFrame((wxFrame *)NULL, -1, title, pos, size)
+    : wxFrame((wxFrame *)NULL, wxID_ANY, title, pos, size)
 {
     m_angle = 0.1;
 
@@ -132,7 +133,7 @@ void MyFrame::OnAngle (wxCommandEvent &)
     long degrees = (long)((180*m_angle)/M_PI);
     degrees = wxGetNumberFromUser(_T("Change the image rotation angle"),
                                   _T("Angle in degrees:"),
-                                  _T("wxWindows rotate sample"),
+                                  _T("wxWidgets rotate sample"),
                                   degrees,
                                   -180, +180,
                                   this);
@@ -142,14 +143,14 @@ void MyFrame::OnAngle (wxCommandEvent &)
 
 void MyFrame::OnQuit (wxCommandEvent &)
 {
-    Close (TRUE);
+    Close (true);
 }
 
 MyCanvas::MyCanvas(wxWindow* parent):
-  wxScrolledWindow(parent, -1)
+  wxScrolledWindow(parent, wxID_ANY)
 {
     SetBackgroundColour (wxColour (0,80,60));
-    Clear();
+    ClearBackground();
 }
 
 // Rotate with interpolation and with offset correction
@@ -159,12 +160,12 @@ void MyCanvas::OnMouseLeftUp (wxMouseEvent & event)
 
     wxPoint offset;
     const wxImage& img = wxGetApp().GetImage();
-    wxImage img2 = img.Rotate(frame->m_angle, wxPoint(img.GetWidth()/2, img.GetHeight()/2), TRUE, &offset);
+    wxImage img2 = img.Rotate(frame->m_angle, wxPoint(img.GetWidth()/2, img.GetHeight()/2), true, &offset);
 
     wxBitmap bmp(img2);
 
     wxClientDC dc (this);
-    dc.DrawBitmap (bmp, event.m_x + offset.x, event.m_y + offset.y, TRUE);
+    dc.DrawBitmap (bmp, event.m_x + offset.x, event.m_y + offset.y, true);
 }
 
 // without interpolation, and without offset correction
@@ -173,10 +174,10 @@ void MyCanvas::OnMouseRightUp (wxMouseEvent & event)
     MyFrame* frame = (MyFrame*) GetParent();
 
     const wxImage& img = wxGetApp().GetImage();
-    wxImage img2 = img.Rotate(frame->m_angle, wxPoint(img.GetWidth()/2, img.GetHeight()/2), FALSE);
+    wxImage img2 = img.Rotate(frame->m_angle, wxPoint(img.GetWidth()/2, img.GetHeight()/2), false);
 
     wxBitmap bmp(img2);
 
     wxClientDC dc (this);
-    dc.DrawBitmap (bmp, event.m_x, event.m_y, TRUE);
+    dc.DrawBitmap (bmp, event.m_x, event.m_y, true);
 }

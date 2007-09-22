@@ -2,11 +2,11 @@
 // Name:        m_layout.cpp
 // Purpose:     wxHtml module for basic paragraphs/layout handling
 // Author:      Vaclav Slavik
-// RCS-ID:      $Id: m_layout.cpp,v 1.16.2.7 2003/06/09 17:06:40 VS Exp $
+// RCS-ID:      $Id: m_layout.cpp,v 1.35 2004/09/27 19:15:06 ABX Exp $
 // Copyright:   (c) 1999 Vaclav Slavik
-// Licence:     wxWindows Licence
+// Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
-#ifdef __GNUG__
+#if defined(__GNUG__) && !defined(NO_GCC_PRAGMA)
 #pragma implementation
 #endif
 
@@ -30,8 +30,11 @@
 
 FORCE_LINK_ME(m_layout)
 
-
-#include <stdlib.h> // bsearch()
+#ifdef __WXWINCE__
+    #include "wx/msw/wince/missing.h"       // for bsearch()
+#else
+    #include <stdlib.h>                     // bsearch()
+#endif
 
 //-----------------------------------------------------------------------------
 // wxHtmlPageBreakCell
@@ -66,16 +69,20 @@ FORCE_LINK_ME(m_layout)
 // array wxHtmlPrintout::m_PageBreaks of pagebreaks already set, and
 // set a new one only if it's not in that array.
 
-class WXDLLEXPORT wxHtmlPageBreakCell : public wxHtmlCell
+class wxHtmlPageBreakCell : public wxHtmlCell
 {
-  public:
+public:
     wxHtmlPageBreakCell() {}
 
-// wx 2.5 will use this signature:
-//    bool AdjustPagebreak(int* pagebreak, int* known_pagebreaks = NULL, int number_of_pages = 0) const;
-    bool AdjustPagebreak(int* pagebreak) const;
+    bool AdjustPagebreak(int* pagebreak,
+                         int* known_pagebreaks = NULL,
+                         int number_of_pages = 0) const;
+    void Draw(wxDC& WXUNUSED(dc),
+              int WXUNUSED(x), int WXUNUSED(y),
+              int WXUNUSED(view_y1), int WXUNUSED(view_y2),
+              wxHtmlRenderingInfo& WXUNUSED(info)) {}
 
-  private:
+private:
     DECLARE_NO_COPY_CLASS(wxHtmlPageBreakCell)
 };
 
@@ -85,36 +92,21 @@ extern "C" int wxCMPFUNC_CONV wxInteger_compare(void const* i0, void const* i1)
     return *(int*)i0 - *(int*)i1;
 }
 
-// wx 2.5 will use this signature:
-//   bool wxHtmlContainerCell::AdjustPagebreak(int *pagebreak, int* known_pagebreaks, int number_of_pages) const
-//
-// Workaround to backport html pagebreaks to 2.4.0:
-// Actually, we're passing a pointer to struct wxHtmlKludge, casting
-// that pointer to an int* . We don't need to do anything special
-// here because that struct's first element is an int* to 'pagebreak'.
-// Other struct members are addressed by casting that int* back to
-// wxHtmlKludge*; they don't get modified, so we don't have to pass
-// them back to the caller.
-bool wxHtmlPageBreakCell::AdjustPagebreak(int* pagebreak) const
+bool wxHtmlPageBreakCell::AdjustPagebreak(int* pagebreak, int* known_pagebreaks, int number_of_pages) const
 {
-    // Workaround to backport html pagebreaks to 2.4.0:
-    wxHtmlKludge* kludge = (wxHtmlKludge*)pagebreak;
-    int* known_pagebreaks = kludge->known_pagebreaks;
-    int number_of_pages = kludge->number_of_pages;
-
     // When we are counting pages, 'known_pagebreaks' is non-NULL.
     // That's the only time we change 'pagebreak'. Otherwise, pages
     // were already counted, 'known_pagebreaks' is NULL, and we don't
-    // do anything except return FALSE.
+    // do anything except return false.
     //
-    // We also simply return FALSE if the 'pagebreak' argument is
+    // We also simply return false if the 'pagebreak' argument is
     // less than (vertically above) or the same as the current
     // vertical position. Otherwise we'd be setting a pagebreak above
     // the current cell, which is incorrect, or duplicating a
     // pagebreak that has already been set.
     if(NULL == known_pagebreaks || *pagebreak <= m_PosY)
         {
-        return FALSE;
+        return false;
         }
 
     // m_PosY is only the vertical offset from the parent. The pagebreak
@@ -134,27 +126,28 @@ bool wxHtmlPageBreakCell::AdjustPagebreak(int* pagebreak) const
     // Add a pagebreak only if there isn't one already set here.
     if(NULL != where)
         {
-        return FALSE;
+        return false;
         }
     else
         {
         *pagebreak = m_PosY;
-        return TRUE;
+        return true;
         }
 }
 
 TAG_HANDLER_BEGIN(P, "P")
+    TAG_HANDLER_CONSTR(P) { }
 
     TAG_HANDLER_PROC(tag)
     {
-        if (m_WParser->GetContainer()->GetFirstCell() != NULL)
+        if (m_WParser->GetContainer()->GetFirstChild() != NULL)
         {
             m_WParser->CloseContainer();
             m_WParser->OpenContainer();
         }
         m_WParser->GetContainer()->SetIndent(m_WParser->GetCharHeight(), wxHTML_INDENT_TOP);
         m_WParser->GetContainer()->SetAlign(tag);
-        return FALSE;
+        return false;
     }
 
 TAG_HANDLER_END(P)
@@ -162,6 +155,7 @@ TAG_HANDLER_END(P)
 
 
 TAG_HANDLER_BEGIN(BR, "BR")
+    TAG_HANDLER_CONSTR(BR) { }
 
     TAG_HANDLER_PROC(tag)
     {
@@ -173,7 +167,7 @@ TAG_HANDLER_BEGIN(BR, "BR")
         c->SetAlignHor(al);
         c->SetAlign(tag);
         c->SetMinHeight(m_WParser->GetCharHeight());
-        return FALSE;
+        return false;
     }
 
 TAG_HANDLER_END(BR)
@@ -181,6 +175,7 @@ TAG_HANDLER_END(BR)
 
 
 TAG_HANDLER_BEGIN(CENTER, "CENTER")
+    TAG_HANDLER_CONSTR(CENTER) { }
 
     TAG_HANDLER_PROC(tag)
     {
@@ -188,7 +183,7 @@ TAG_HANDLER_BEGIN(CENTER, "CENTER")
         wxHtmlContainerCell *c = m_WParser->GetContainer();
 
         m_WParser->SetAlign(wxHTML_ALIGN_CENTER);
-        if (c->GetFirstCell() != NULL)
+        if (c->GetFirstChild() != NULL)
         {
             m_WParser->CloseContainer();
             m_WParser->OpenContainer();
@@ -201,7 +196,7 @@ TAG_HANDLER_BEGIN(CENTER, "CENTER")
             ParseInner(tag);
 
             m_WParser->SetAlign(old);
-            if (c->GetFirstCell() != NULL)
+            if (c->GetFirstChild() != NULL)
             {
                 m_WParser->CloseContainer();
                 m_WParser->OpenContainer();
@@ -209,9 +204,9 @@ TAG_HANDLER_BEGIN(CENTER, "CENTER")
             else
                 c->SetAlignHor(old);
 
-            return TRUE;
+            return true;
         }
-        else return FALSE;
+        else return false;
     }
 
 TAG_HANDLER_END(CENTER)
@@ -219,30 +214,31 @@ TAG_HANDLER_END(CENTER)
 
 
 TAG_HANDLER_BEGIN(DIV, "DIV")
+    TAG_HANDLER_CONSTR(DIV) { }
 
     TAG_HANDLER_PROC(tag)
     {
-        if (tag.HasParam(wxT("STYLE")))
+        if(tag.HasParam(wxT("STYLE")))
         {
-            if (tag.GetParam(wxT("STYLE")).IsSameAs(wxString(wxT("PAGE-BREAK-BEFORE:ALWAYS")), FALSE))
+            if(tag.GetParam(wxT("STYLE")).IsSameAs(wxT("PAGE-BREAK-BEFORE:ALWAYS"), false))
             {
                 m_WParser->CloseContainer();
                 m_WParser->OpenContainer()->InsertCell(new wxHtmlPageBreakCell);
                 m_WParser->CloseContainer();
                 m_WParser->OpenContainer();
-                return FALSE;
+                return false;
             }
             else
             {
                 // Treat other STYLE parameters here when they're supported.
-                return FALSE;
+                return false;
             }
         }
-        else if (tag.HasParam(wxT("ALIGN")))
+        else if(tag.HasParam(wxT("ALIGN")))
         {
             int old = m_WParser->GetAlign();
             wxHtmlContainerCell *c = m_WParser->GetContainer();
-            if (c->GetFirstCell() != NULL)
+            if (c->GetFirstChild() != NULL)
             {
                 m_WParser->CloseContainer();
                 m_WParser->OpenContainer();
@@ -259,7 +255,7 @@ TAG_HANDLER_BEGIN(DIV, "DIV")
             ParseInner(tag);
 
             m_WParser->SetAlign(old);
-            if (c->GetFirstCell() != NULL)
+            if (c->GetFirstChild() != NULL)
             {
                 m_WParser->CloseContainer();
                 m_WParser->OpenContainer();
@@ -267,11 +263,20 @@ TAG_HANDLER_BEGIN(DIV, "DIV")
             else
                 c->SetAlignHor(old);
 
-            return TRUE;
+            return true;
         }
         else
         {
-            return FALSE;
+            // Same as BR
+            int al = m_WParser->GetContainer()->GetAlignHor();
+            wxHtmlContainerCell *c;
+
+            m_WParser->CloseContainer();
+            c = m_WParser->OpenContainer();
+            c->SetAlignHor(al);
+            c->SetAlign(tag);
+            c->SetMinHeight(m_WParser->GetCharHeight());
+            return false;
         }
     }
 
@@ -281,6 +286,7 @@ TAG_HANDLER_END(DIV)
 
 
 TAG_HANDLER_BEGIN(TITLE, "TITLE")
+    TAG_HANDLER_CONSTR(TITLE) { }
 
     TAG_HANDLER_PROC(tag)
     {
@@ -289,12 +295,18 @@ TAG_HANDLER_BEGIN(TITLE, "TITLE")
             wxHtmlWindow *wfr = (wxHtmlWindow*)(m_WParser->GetWindow());
             if (wfr)
             {
-                const wxString& src = *m_WParser->GetSource();
-                wfr->OnSetTitle(src.Mid(tag.GetBeginPos(),
-                                        tag.GetEndPos1()-tag.GetBeginPos()));
+                wxString title = m_WParser->GetSource()->Mid(
+                                        tag.GetBeginPos(),
+                                        tag.GetEndPos1()-tag.GetBeginPos());
+#if !wxUSE_UNICODE
+                wxCSConv conv(m_WParser->GetInputEncoding());
+                title = wxString(title.wc_str(conv), wxConvLocal);
+#endif
+                title = m_WParser->GetEntitiesParser()->Parse(title);
+                wfr->OnSetTitle(title);
             }
         }
-        return TRUE;
+        return true;
     }
 
 TAG_HANDLER_END(TITLE)
@@ -303,6 +315,7 @@ TAG_HANDLER_END(TITLE)
 
 
 TAG_HANDLER_BEGIN(BODY, "BODY")
+    TAG_HANDLER_CONSTR(BODY) { }
 
     TAG_HANDLER_PROC(tag)
     {
@@ -324,7 +337,7 @@ TAG_HANDLER_BEGIN(BODY, "BODY")
             if (m_WParser->GetWindow() != NULL)
                 m_WParser->GetWindow()->SetBackgroundColour(clr);
         }
-        return FALSE;
+        return false;
     }
 
 TAG_HANDLER_END(BODY)
@@ -332,6 +345,7 @@ TAG_HANDLER_END(BODY)
 
 
 TAG_HANDLER_BEGIN(BLOCKQUOTE, "BLOCKQUOTE")
+    TAG_HANDLER_CONSTR(BLOCKQUOTE) { }
 
     TAG_HANDLER_PROC(tag)
     {
@@ -352,7 +366,7 @@ TAG_HANDLER_BEGIN(BLOCKQUOTE, "BLOCKQUOTE")
         c->SetIndent(m_WParser->GetCharHeight(), wxHTML_INDENT_BOTTOM);
         m_WParser->CloseContainer();
         m_WParser->OpenContainer();
-        return TRUE;
+        return true;
     }
 
 TAG_HANDLER_END(BLOCKQUOTE)
@@ -362,7 +376,9 @@ TAG_HANDLER_END(BLOCKQUOTE)
 // Tag handler for tags that we have to ignore, otherwise non-text data
 // would show up as text:
 TAG_HANDLER_BEGIN(DoNothing, "SCRIPT")
-    TAG_HANDLER_PROC(tag)
+    TAG_HANDLER_CONSTR(DoNothing) { }
+
+    TAG_HANDLER_PROC(WXUNUSED(tag))
     {
         return true;
     }

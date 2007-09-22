@@ -4,7 +4,7 @@
 // Author:      Aleksandras Gluchovas
 // Modified by:
 // Created:     22/09/98
-// RCS-ID:      $Id: scriptbinder.h,v 1.1 1999/09/13 14:29:40 JS Exp $
+// RCS-ID:      $Id: scriptbinder.h,v 1.2 2004/07/15 06:27:13 ABX Exp $
 // Copyright:   (c) Aleskandars Gluchovas
 // Licence:   	wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -327,7 +327,7 @@ protected:
 	// return FALSE, if something has gone wrong and
 	// document cannot be saved now
 
-	virtual bool OnSaveDocument( ScriptStream& stm ) 
+	virtual bool OnSaveDocument( ScriptStream& WXUNUSED(stm) ) 
 		{ return 1; }
 
 	// override this method to provide reference to

@@ -2,7 +2,7 @@
 // Name:        dcmemory.h
 // Purpose:
 // Author:      Robert Roebling
-// RCS-ID:      $Id: dcmemory.h,v 1.12 2002/09/07 12:28:46 GD Exp $
+// RCS-ID:      $Id: dcmemory.h,v 1.16 2004/05/23 20:50:53 JS Exp $
 // Copyright:   (c) 1998 Robert Roebling
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -11,7 +11,7 @@
 #ifndef __GTKDCMEMORYH__
 #define __GTKDCMEMORYH__
 
-#if defined(__GNUG__) && !defined(__APPLE__)
+#if defined(__GNUG__) && !defined(NO_GCC_PRAGMA)
 #pragma interface
 #endif
 
@@ -43,6 +43,7 @@ public:
     // and everything else as drawing 1.
     virtual void SetPen( const wxPen &pen );
     virtual void SetBrush( const wxBrush &brush );
+    virtual void SetBackground( const wxBrush &brush );
     virtual void SetTextForeground( const wxColour &col );
     virtual void SetTextBackground( const wxColour &col );
 

@@ -2,19 +2,21 @@
 // Name:        gtk/settings.cpp
 // Purpose:
 // Author:      Robert Roebling
-// Id:          $Id: settings.cpp,v 1.38.2.4 2003/06/20 20:20:16 VS Exp $
+// Id:          $Id: settings.cpp,v 1.52 2004/09/29 21:56:04 RD Exp $
 // Copyright:   (c) 1998 Robert Roebling
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
 
 
-#ifdef __GNUG__
+#if defined(__GNUG__) && !defined(NO_GCC_PRAGMA)
 #pragma implementation "settings.h"
 #endif
 
+// For compilers that support precompilation, includes "wx.h".
+#include "wx/wxprec.h"
+
 #include "wx/settings.h"
 #include "wx/debug.h"
-#include "wx/module.h"
 #include "wx/cmndata.h"
 #include "wx/fontutil.h"
 
@@ -24,41 +26,24 @@
 
 #define SHIFT (8*(sizeof(short int)-sizeof(char)))
 
-//wxColour *g_systemWinColour          = (wxColour *) NULL;
-wxColour *g_systemBtnFaceColour       = (wxColour *) NULL;
-wxColour *g_systemBtnShadowColour     = (wxColour *) NULL;
-wxColour *g_systemBtnHighlightColour  = (wxColour *) NULL;
-wxColour *g_systemHighlightColour     = (wxColour *) NULL;
-wxColour *g_systemHighlightTextColour = (wxColour *) NULL;
-wxColour *g_systemListBoxColour       = (wxColour *) NULL;
-wxColour *g_systemBtnTextColour       = (wxColour *) NULL;
-
-wxFont *g_systemFont = (wxFont *) NULL;
-
 // ----------------------------------------------------------------------------
-// wxSystemSettingsModule
+// wxSystemObjects
 // ----------------------------------------------------------------------------
 
-class wxSystemSettingsModule : public wxModule
+struct wxSystemObjects
 {
-public:
-    bool OnInit() { return TRUE; }
-    void OnExit()
-    {
-        //delete g_systemWinColour;
-        delete g_systemBtnFaceColour;
-        delete g_systemBtnShadowColour;
-        delete g_systemBtnHighlightColour;
-        delete g_systemHighlightColour;
-        delete g_systemHighlightTextColour;
-        delete g_systemListBoxColour;
-        delete g_systemFont;
-        delete g_systemBtnTextColour;
-    }
-    DECLARE_DYNAMIC_CLASS(wxSystemSettingsModule)
+    wxColour m_colBtnFace,
+             m_colBtnShadow,
+             m_colBtnHighlight,
+             m_colHighlight,
+             m_colHighlightText,
+             m_colListBox,
+             m_colBtnText;
+
+    wxFont m_fontSystem;
 };
 
-IMPLEMENT_DYNAMIC_CLASS(wxSystemSettingsModule, wxModule)
+static wxSystemObjects gs_objects;
 
 // ----------------------------------------------------------------------------
 // wxSystemSettings implementation
@@ -159,7 +144,7 @@ wxColour wxSystemSettingsNative::GetColour( wxSystemColour index )
         case wxSYS_COLOUR_BTNFACE:
         case wxSYS_COLOUR_MENUBAR:
         case wxSYS_COLOUR_3DLIGHT:
-            if (!g_systemBtnFaceColour)
+            if (!gs_objects.m_colBtnFace.Ok())
             {
                 int red, green, blue;
                 if ( !GetColourFromGTKWidget(red, green, blue) )
@@ -169,11 +154,11 @@ wxColour wxSystemSettingsNative::GetColour( wxSystemColour index )
                     blue = 0x9c40;
                 }
 
-                g_systemBtnFaceColour = new wxColour( red   >> SHIFT,
-                                                      green >> SHIFT,
-                                                      blue  >> SHIFT );
+                gs_objects.m_colBtnFace = wxColour( red   >> SHIFT,
+                                                   green >> SHIFT,
+                                                   blue  >> SHIFT );
             }
-            return *g_systemBtnFaceColour;
+            return gs_objects.m_colBtnFace;
 
         case wxSYS_COLOUR_WINDOW:
             return *wxWHITE;
@@ -184,35 +169,23 @@ wxColour wxSystemSettingsNative::GetColour( wxSystemColour index )
         case wxSYS_COLOUR_GRAYTEXT:
         case wxSYS_COLOUR_BTNSHADOW:
         //case wxSYS_COLOUR_3DSHADOW:
-            if (!g_systemBtnShadowColour)
+            if (!gs_objects.m_colBtnShadow.Ok())
             {
                 wxColour faceColour(GetColour(wxSYS_COLOUR_3DFACE));
-                g_systemBtnShadowColour =
-                   new wxColour((unsigned char) (faceColour.Red() * 0.666),
-                                (unsigned char) (faceColour.Green() * 0.666),
-                                (unsigned char) (faceColour.Blue() * 0.666));
+                gs_objects.m_colBtnShadow =
+                   wxColour((unsigned char) (faceColour.Red() * 0.666),
+                            (unsigned char) (faceColour.Green() * 0.666),
+                            (unsigned char) (faceColour.Blue() * 0.666));
             }
 
-            return *g_systemBtnShadowColour;
+            return gs_objects.m_colBtnShadow;
 
         case wxSYS_COLOUR_3DHIGHLIGHT:
         //case wxSYS_COLOUR_BTNHIGHLIGHT:
             return * wxWHITE;
-/* I think this should normally be white (JACS 8/2000)
-
-   Hmm, I'm quite sure it shouldn't ... (VZ 20.08.01)
-            if (!g_systemBtnHighlightColour)
-            {
-                g_systemBtnHighlightColour =
-                    new wxColour( 0xea60 >> SHIFT,
-                                  0xea60 >> SHIFT,
-                                  0xea60 >> SHIFT );
-            }
-            return *g_systemBtnHighlightColour;
-*/
 
         case wxSYS_COLOUR_HIGHLIGHT:
-            if (!g_systemHighlightColour)
+            if (!gs_objects.m_colHighlight.Ok())
             {
                 int red, green, blue;
                 if ( !GetColourFromGTKWidget(red, green, blue,
@@ -224,14 +197,14 @@ wxColour wxSystemSettingsNative::GetColour( wxSystemColour index )
                     blue = 0x9c40;
                 }
 
-                g_systemHighlightColour = new wxColour( red   >> SHIFT,
+                gs_objects.m_colHighlight = wxColour( red   >> SHIFT,
                                                         green >> SHIFT,
                                                         blue  >> SHIFT );
             }
-            return *g_systemHighlightColour;
+            return gs_objects.m_colHighlight;
 
         case wxSYS_COLOUR_LISTBOX:
-            if (!g_systemListBoxColour)
+            if (!gs_objects.m_colListBox.Ok())
             {
                 int red, green, blue;
                 if ( GetColourFromGTKWidget(red, green, blue,
@@ -239,16 +212,16 @@ wxColour wxSystemSettingsNative::GetColour( wxSystemColour index )
                                             GTK_STATE_NORMAL,
                                             wxGTK_BASE) )
                 {
-                    g_systemListBoxColour = new wxColour( red   >> SHIFT,
+                    gs_objects.m_colListBox = wxColour( red   >> SHIFT,
                                                           green >> SHIFT,
                                                           blue  >> SHIFT );
                 }
                 else
                 {
-                    g_systemListBoxColour = new wxColour(*wxWHITE);
+                    gs_objects.m_colListBox = wxColour(*wxWHITE);
                 }
             }
-            return *g_systemListBoxColour;
+            return gs_objects.m_colListBox;
 
         case wxSYS_COLOUR_MENUTEXT:
         case wxSYS_COLOUR_WINDOWTEXT:
@@ -256,7 +229,7 @@ wxColour wxSystemSettingsNative::GetColour( wxSystemColour index )
         case wxSYS_COLOUR_INACTIVECAPTIONTEXT:
         case wxSYS_COLOUR_BTNTEXT:
         case wxSYS_COLOUR_INFOTEXT:
-            if (!g_systemBtnTextColour)
+            if (!gs_objects.m_colBtnText.Ok())
             {
                 int red, green, blue;
                 if ( !GetColourFromGTKWidget(red, green, blue,
@@ -269,11 +242,11 @@ wxColour wxSystemSettingsNative::GetColour( wxSystemColour index )
                     blue = 0;
                 }
 
-                g_systemBtnTextColour = new wxColour( red   >> SHIFT,
+                gs_objects.m_colBtnText = wxColour( red   >> SHIFT,
                                                       green >> SHIFT,
                                                       blue  >> SHIFT );
             }
-            return *g_systemBtnTextColour;
+            return gs_objects.m_colBtnText;
 
             // this (as well as wxSYS_COLOUR_INFOTEXT above) is used for
             // tooltip windows - Robert, please change this code to use the
@@ -282,15 +255,15 @@ wxColour wxSystemSettingsNative::GetColour( wxSystemColour index )
             return wxColour(255, 255, 225);
 
         case wxSYS_COLOUR_HIGHLIGHTTEXT:
-            if (!g_systemHighlightTextColour)
+            if (!gs_objects.m_colHighlightText.Ok())
             {
                 wxColour hclr = GetColour(wxSYS_COLOUR_HIGHLIGHT);
                 if (hclr.Red() > 200 && hclr.Green() > 200 && hclr.Blue() > 200)
-                    g_systemHighlightTextColour = new wxColour(*wxBLACK);
+                    gs_objects.m_colHighlightText = wxColour(*wxBLACK);
                 else
-                    g_systemHighlightTextColour = new wxColour(*wxWHITE);
+                    gs_objects.m_colHighlightText = wxColour(*wxWHITE);
             }
-            return *g_systemHighlightTextColour;
+            return gs_objects.m_colHighlightText;
 
         case wxSYS_COLOUR_APPWORKSPACE:
             return *wxWHITE;    // ?
@@ -325,7 +298,7 @@ wxFont wxSystemSettingsNative::GetFont( wxSystemFont index )
         case wxSYS_DEVICE_DEFAULT_FONT:
         case wxSYS_DEFAULT_GUI_FONT:
         {
-            if (!g_systemFont)
+            if (!gs_objects.m_fontSystem.Ok())
             {
 #ifdef __WXGTK20__
                 GtkWidget *widget = gtk_button_new();
@@ -335,21 +308,30 @@ wxFont wxSystemSettingsNative::GetFont( wxSystemFont index )
                 if ( def && def->font_desc )
                 {  
                     wxNativeFontInfo info;  
-                    info.description = def->font_desc;  
-                    g_systemFont = new wxFont(info);  
+                    info.description = 
+                        pango_font_description_copy(def->font_desc);
+                    gs_objects.m_fontSystem = wxFont(info);  
                 }  
                 else  
                 {  
-                    const gchar *font_name =
-                        _gtk_rc_context_get_default_font_name(gtk_settings_get_default());
-                    g_systemFont = new wxFont(wxString::FromAscii(font_name));
+                    GtkSettings *settings = gtk_settings_get_default();
+                    gchar *font_name = NULL;
+                    g_object_get ( settings,
+                                   "gtk-font-name", 
+                                   &font_name,
+                                   NULL);
+                    if (!font_name)
+                        gs_objects.m_fontSystem = wxFont( 12, wxSWISS, wxNORMAL, wxNORMAL );
+                    else
+                        gs_objects.m_fontSystem = wxFont(wxString::FromAscii(font_name));
+                    g_free (font_name);
                 }  
                 gtk_widget_destroy( widget );
 #else
-                g_systemFont = new wxFont( 12, wxSWISS, wxNORMAL, wxNORMAL );
+                gs_objects.m_fontSystem = wxFont( 12, wxSWISS, wxNORMAL, wxNORMAL );
 #endif
             }
-            return *g_systemFont;
+            return gs_objects.m_fontSystem;
         }
 
         default:
@@ -366,15 +348,37 @@ int wxSystemSettingsNative::GetMetric( wxSystemMetric index )
         case wxSYS_HSCROLL_Y:  return 15;
         case wxSYS_VSCROLL_X:  return 15;
 
+#if defined(__WXGTK20__) && GTK_CHECK_VERSION(2, 4, 0)
+        case wxSYS_DCLICK_X:
+        case wxSYS_DCLICK_Y:
+            gint dclick_distance;
+            g_object_get(gtk_settings_get_default(), "gtk-double-click-distance", &dclick_distance, NULL);
+            return dclick_distance * 2;
+#endif
+
+#if defined(__WXGTK20__)
+        case wxSYS_DRAG_X:
+        case wxSYS_DRAG_Y:
+            gint drag_threshold;
+            g_object_get(gtk_settings_get_default(), "gtk-dnd-drag-threshold", &drag_threshold, NULL);
+            return drag_threshold * 2;
+#endif
+
         // VZ: is there any way to get the cursor size with GDK?
+        // Mart Raudsepp: Yes, there is a way to get the default cursor size for a display ever since GDK 2.4
+#if defined(__WXGTK20__) && GTK_CHECK_VERSION(2, 4, 0)
+        case wxSYS_CURSOR_X:
+        case wxSYS_CURSOR_Y:
+            return gdk_display_get_default_cursor_size(gdk_display_get_default());
+#else
         case wxSYS_CURSOR_X:   return 16;
         case wxSYS_CURSOR_Y:   return 16;
+#endif
         // MBN: ditto for icons
         case wxSYS_ICON_X:     return 32;
         case wxSYS_ICON_Y:     return 32;
         default:               
-            wxFAIL_MSG( wxT("wxSystemSettings::GetMetric not fully implemented") );
-            return 0;
+            return -1;   // metric is unknown
     }
 }
 

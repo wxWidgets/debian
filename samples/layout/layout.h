@@ -4,8 +4,8 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     04/01/98
-// RCS-ID:      $Id: layout.h,v 1.6.2.2 2002/12/15 10:22:18 MBN Exp $
-// Copyright:   (c) Julian Smart and Markus Holzem
+// RCS-ID:      $Id: layout.h,v 1.13 2004/10/06 20:53:32 ABX Exp $
+// Copyright:   (c) Julian Smart
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
 
@@ -13,62 +13,81 @@
 class MyApp: public wxApp
 {
 public:
-    MyApp();
+    MyApp(){};
     bool OnInit();
 };
 
-// Define a new frame
-class MyTextWindow;
-class MyWindow;
-
-class MyFrame: public wxFrame
+// the main frame class
+class MyFrame : public wxFrame
 {
 public:
-    MyFrame(wxFrame *frame, const wxChar *title, int x, int y, int w, int h);
+    MyFrame();
 
+    void TestFlexSizers(wxCommandEvent& event);
+    void TestNotebookSizers(wxCommandEvent& event);
+    void TestGridBagSizer(wxCommandEvent& event);
+
+    void OnAbout(wxCommandEvent& event);
     void OnQuit(wxCommandEvent& event);
 
-    void TestSizers(wxCommandEvent& event);
-    void TestNotebookSizers(wxCommandEvent& event);
-    void About(wxCommandEvent& event);
-
 private:
     DECLARE_EVENT_TABLE()
 };
 
-// Define a new text subwindow that can respond to drag-and-drop
-class MyTextWindow: public wxTextCtrl
+// a frame using flex sizers for layout
+class MyFlexSizerFrame : public wxFrame
 {
 public:
-    MyTextWindow(wxFrame *frame, int x=-1, int y=-1, int width=-1, int height=-1,
-               long style=wxTE_MULTILINE):
-    wxTextCtrl(frame, -1, _T(""), wxPoint(x, y), wxSize(width, height), style)
-    {
-    }
-
-};
-
-// Define a new canvas which can receive some events
-class MyWindow: public wxWindow
-{
-public:
-    MyWindow(wxFrame *frame, int x, int y, int w, int h, long style = wxRETAINED);
-    ~MyWindow();
-    void OnPaint(wxPaintEvent& event);
+    MyFlexSizerFrame(const wxChar *title, int x, int y );
 
 private:
+    void InitFlexSizer(wxFlexGridSizer *sizer);
+};
+
+
+// a dialog using notebook sizer for layout
+class MySizerDialog : public wxDialog
+{
+public:
+    MySizerDialog(wxWindow *parent, const wxChar *title);
+};
+
+
+// a frame using wxGridBagSizer for layout
+class MyGridBagSizerFrame : public wxFrame
+{
+public:
+    MyGridBagSizerFrame(const wxChar *title, int x, int y );
+
+    void OnHideBtn(wxCommandEvent&);
+    void OnShowBtn(wxCommandEvent&);
+    void OnMoveBtn(wxCommandEvent&);
+
+private:
+    wxGridBagSizer*     m_gbs;
+    wxPanel*            m_panel;
+    wxButton*           m_hideBtn;
+    wxButton*           m_showBtn;
+    wxTextCtrl*         m_hideTxt;
+
+    wxButton*           m_moveBtn1;
+    wxButton*           m_moveBtn2;
+    wxGBPosition        m_lastPos;
+
     DECLARE_EVENT_TABLE()
 };
 
-class MySizerFrame: public wxFrame
+
+
+
+
+// controls and menu constants
+enum
 {
-public:
-    wxPanel *panel;
-    MySizerFrame(wxFrame *frame, wxChar *title, int x, int y );
+    LAYOUT_QUIT = 100,
+    LAYOUT_ABOUT,
+    LAYOUT_TEST_SIZER,
+    LAYOUT_TEST_NB_SIZER,
+    LAYOUT_TEST_GB_SIZER
 };
 
-#define LAYOUT_QUIT       100
-#define LAYOUT_TEST       101
-#define LAYOUT_ABOUT      102
-#define LAYOUT_TEST_SIZER 104
-#define LAYOUT_TEST_NB    105

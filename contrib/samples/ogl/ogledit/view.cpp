@@ -4,9 +4,9 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     12/07/98
-// RCS-ID:      $Id: view.cpp,v 1.3 2001/10/30 13:28:45 GT Exp $
+// RCS-ID:      $Id: view.cpp,v 1.9 2004/07/23 18:04:05 ABX Exp $
 // Copyright:   (c) Julian Smart
-// Licence:   	wxWindows licence
+// Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
 
 #ifdef __GNUG__
@@ -45,14 +45,14 @@ END_EVENT_TABLE()
 
 // What to do when a view is created. Creates actual
 // windows for displaying the view.
-bool DiagramView::OnCreate(wxDocument *doc, long flags)
+bool DiagramView::OnCreate(wxDocument *doc, long WXUNUSED(flags))
 {
   frame = GetMainFrame();
   canvas = GetMainFrame()->canvas;
   canvas->view = this;
 
   SetFrame(frame);
-  Activate(TRUE);
+  Activate(true);
 
   // Initialize the edit menu Undo and Redo items
   doc->GetCommandProcessor()->SetEditMenu(((MyFrame *)frame)->editMenu);
@@ -63,102 +63,101 @@ bool DiagramView::OnCreate(wxDocument *doc, long flags)
   shapeCanvas->SetDiagram(diagramDoc->GetDiagram());
   diagramDoc->GetDiagram()->SetCanvas(shapeCanvas);
 
-  return TRUE;
+  return true;
 }
 
-#define CENTER  FALSE // Place the drawing to the center of the page
+#define CENTER  false // Place the drawing to the center of the page
 
 
 // Sneakily gets used for default print/preview
-// as well as drawing on the screen. 
-void DiagramView::OnDraw(wxDC *dc) 
-{ 
+// as well as drawing on the screen.
+void DiagramView::OnDraw(wxDC *dc)
+{
 
-  /* You might use THIS code if you were scaling 
-   * graphics of known size to fit on the page. 
-   */ 
-  int w, h; 
+  /* You might use THIS code if you were scaling
+   * graphics of known size to fit on the page.
+   */
+  int w, h;
 
-  // We need to adjust for the graphic size, a formula will be added 
-  float maxX = 900; 
-  float maxY = 700; 
-  // A better way of find the maxium values would be to search through 
-  // the linked list 
+  // We need to adjust for the graphic size, a formula will be added
+  float maxX = 900;
+  float maxY = 700;
+  // A better way of find the maxium values would be to search through
+  // the linked list
 
-  // Let's have at least 10 device units margin 
-  float marginX = 10; 
-  float marginY = 10; 
+  // Let's have at least 10 device units margin
+  float marginX = 10;
+  float marginY = 10;
 
-  // Add the margin to the graphic size 
-  maxX += (2 * marginX); 
-  maxY += (2 * marginY); 
+  // Add the margin to the graphic size
+  maxX += (2 * marginX);
+  maxY += (2 * marginY);
 
-  // Get the size of the DC in pixels 
-  dc->GetSize (&w, &h); 
+  // Get the size of the DC in pixels
+  dc->GetSize (&w, &h);
 
-  // Calculate a suitable scaling factor 
-  float scaleX = (float) (w / maxX); 
-  float scaleY = (float) (h / maxY); 
+  // Calculate a suitable scaling factor
+  float scaleX = (float) (w / maxX);
+  float scaleY = (float) (h / maxY);
 
-  // Use x or y scaling factor, whichever fits on the DC 
-  float actualScale = wxMin (scaleX, scaleY); 
+  // Use x or y scaling factor, whichever fits on the DC
+  float actualScale = wxMin (scaleX, scaleY);
 
-  float posX, posY; 
-  // Calculate the position on the DC for centring the graphic 
-  if (CENTER == TRUE) // center the drawing 
-    { 
-      posX = (float) ((w - (200 * actualScale)) / 2.0); 
-      posY = (float) ((h - (200 * actualScale)) / 2.0); 
-    } 
-  else    // Use defined presets 
-    { 
-      posX = 10; 
-      posY = 35; 
-    } 
-  
+  float posX, posY;
+  // Calculate the position on the DC for centring the graphic
+  #if 0
+     // center the drawing
+      posX = (float) ((w - (200 * actualScale)) / 2.0);
+      posY = (float) ((h - (200 * actualScale)) / 2.0);
+  #else
+     // Use defined presets
+      posX = 10;
+      posY = 35;
+  #endif
 
-  // Set the scale and origin 
-  dc->SetUserScale (actualScale, actualScale); 
-  dc->SetDeviceOrigin ((long) posX, (long) posY); 
 
-  // This part was added to preform the print preview and printing functions 
+  // Set the scale and origin
+  dc->SetUserScale (actualScale, actualScale);
+  dc->SetDeviceOrigin ((long) posX, (long) posY);
 
-  dc->BeginDrawing(); // Allows optimization of drawing code under MS Windows. 
+  // This part was added to preform the print preview and printing functions
+
+  dc->BeginDrawing(); // Allows optimization of drawing code under MS Windows.
   wxDiagram *diagram_p=((DiagramDocument*)GetDocument())->GetDiagram();  // Get the current diagram
-  if (diagram_p->GetShapeList()) 
-  { 
-    wxCursor *old_cursor = NULL; 
-    wxNode *current = diagram_p->GetShapeList()->First();
+  if (diagram_p->GetShapeList())
+  {
+    /* wxCursor *old_cursor = NULL; */
+    wxObjectList::compatibility_iterator current = diagram_p->GetShapeList()->GetFirst();
 
-    while (current) // Loop through the entire list of shapes 
+    while (current) // Loop through the entire list of shapes
     {
-        wxShape *object = (wxShape *)current->Data();
+        wxShape *object = (wxShape *)current->GetData();
         if (!object->GetParent())
         {
             object->Draw(* dc); // Draw the shape onto our printing dc
         }
-        current = current->Next();  // Procede to the next shape in the list
+        current = current->GetNext();  // Procede to the next shape in the list
     }
   }
-  dc->EndDrawing(); // Allows optimization of drawing code under MS Windows. 
+  dc->EndDrawing(); // Allows optimization of drawing code under MS Windows.
 }
 
-void DiagramView::OnUpdate(wxView *sender, wxObject *hint)
+void DiagramView::OnUpdate(wxView *WXUNUSED(sender), wxObject *WXUNUSED(hint))
 {
   if (canvas)
     canvas->Refresh();
 }
 
 // Clean up windows used for displaying the view.
-bool DiagramView::OnClose(bool deleteWindow)
+bool DiagramView::OnClose(bool WXUNUSED(deleteWindow))
 {
   if (!GetDocument()->Close())
-    return FALSE;
+    return false;
 
   DiagramDocument *diagramDoc = (DiagramDocument *)GetDocument();
   diagramDoc->GetDiagram()->SetCanvas(NULL);
 
-  canvas->Clear();
+  canvas->ClearBackground();
   canvas->SetDiagram(NULL);
   canvas->view = NULL;
   canvas = NULL;
@@ -169,39 +168,37 @@ bool DiagramView::OnClose(bool deleteWindow)
 
   SetFrame(NULL);
 
-  Activate(FALSE);
-  
-  return TRUE;
+  Activate(false);
+
+  return true;
 }
 
 wxShape *DiagramView::FindSelectedShape(void)
 {
   DiagramDocument *doc = (DiagramDocument *)GetDocument();
-  wxShape *theShape = NULL;
-  wxNode *node = doc->GetDiagram()->GetShapeList()->First();
+  wxObjectList::compatibility_iterator node = doc->GetDiagram()->GetShapeList()->GetFirst();
   while (node)
   {
-    wxShape *eachShape = (wxShape *)node->Data();
+    wxShape *eachShape = (wxShape *)node->GetData();
     if ((eachShape->GetParent() == NULL) && eachShape->Selected())
     {
-      theShape = eachShape;
-      node = NULL;
+      return eachShape;
     }
-    else node = node->Next();
+    else node = node->GetNext();
   }
-  return theShape;
+  return NULL;
 }
 
-void DiagramView::OnCut(wxCommandEvent& event)
+void DiagramView::OnCut(wxCommandEvent& WXUNUSED(event))
 {
   DiagramDocument *doc = (DiagramDocument *)GetDocument();
 
   wxShape *theShape = FindSelectedShape();
   if (theShape)
-    doc->GetCommandProcessor()->Submit(new DiagramCommand("Cut", OGLEDIT_CUT, doc, NULL, 0.0, 0.0, TRUE, theShape));
+    doc->GetCommandProcessor()->Submit(new DiagramCommand(_T("Cut"), OGLEDIT_CUT, doc, NULL, 0.0, 0.0, true, theShape));
 }
 
-void DiagramView::OnChangeBackgroundColour(wxCommandEvent& event)
+void DiagramView::OnChangeBackgroundColour(wxCommandEvent& WXUNUSED(event))
 {
       DiagramDocument *doc = (DiagramDocument *)GetDocument();
 
@@ -209,7 +206,7 @@ void DiagramView::OnChangeBackgroundColour(wxCommandEvent& event)
       if (theShape)
       {
         wxColourData data;
-        data.SetChooseFull(TRUE);
+        data.SetChooseFull(true);
         data.SetColour(theShape->GetBrush()->GetColour());
 
         wxColourDialog *dialog = new wxColourDialog(frame, &data);
@@ -223,18 +220,18 @@ void DiagramView::OnChangeBackgroundColour(wxCommandEvent& event)
         dialog->Close();
 
         if (theBrush)
-          doc->GetCommandProcessor()->Submit(new DiagramCommand("Change colour", OGLEDIT_CHANGE_BACKGROUND_COLOUR, doc,
+          doc->GetCommandProcessor()->Submit(new DiagramCommand(_T("Change colour"), OGLEDIT_CHANGE_BACKGROUND_COLOUR, doc,
             theBrush, theShape));
       }
 }
 
-void DiagramView::OnEditLabel(wxCommandEvent& event)
+void DiagramView::OnEditLabel(wxCommandEvent& WXUNUSED(event))
 {
       wxShape *theShape = FindSelectedShape();
       if (theShape)
       {
-        wxString newLabel = wxGetTextFromUser("Enter new label", "Shape Label", ((MyEvtHandler *)theShape->GetEventHandler())->label);
-        GetDocument()->GetCommandProcessor()->Submit(new DiagramCommand("Edit label", OGLEDIT_EDIT_LABEL, (DiagramDocument*) GetDocument(), newLabel, theShape));
+        wxString newLabel = wxGetTextFromUser(_T("Enter new label"), _T("Shape Label"), ((MyEvtHandler *)theShape->GetEventHandler())->label);
+        GetDocument()->GetCommandProcessor()->Submit(new DiagramCommand(_T("Edit label"), OGLEDIT_EDIT_LABEL, (DiagramDocument*) GetDocument(), newLabel, theShape));
       }
 }
 
@@ -261,7 +258,7 @@ MyCanvas::~MyCanvas(void)
 {
 }
 
-void MyCanvas::OnLeftClick(double x, double y, int keys)
+void MyCanvas::OnLeftClick(double x, double y, int WXUNUSED(keys))
 {
   EditorToolPalette *palette = wxGetApp().frame->palette;
   wxClassInfo *info = NULL;
@@ -293,36 +290,36 @@ void MyCanvas::OnLeftClick(double x, double y, int keys)
   if (info)
   {
     view->GetDocument()->GetCommandProcessor()->Submit(
-      new DiagramCommand((char*) info->GetClassName(), OGLEDIT_ADD_SHAPE, (DiagramDocument *)view->GetDocument(), info,
+      new DiagramCommand( info->GetClassName(), OGLEDIT_ADD_SHAPE, (DiagramDocument *)view->GetDocument(), info,
          x, y));
   }
 }
 
-void MyCanvas::OnRightClick(double x, double y, int keys)
+void MyCanvas::OnRightClick(double WXUNUSED(x), double WXUNUSED(y), int WXUNUSED(keys))
 {
 }
 
-void MyCanvas::OnDragLeft(bool draw, double x, double y, int keys)
+void MyCanvas::OnDragLeft(bool WXUNUSED(draw), double WXUNUSED(x), double WXUNUSED(y), int WXUNUSED(keys))
 {
 }
 
-void MyCanvas::OnBeginDragLeft(double x, double y, int keys)
+void MyCanvas::OnBeginDragLeft(double WXUNUSED(x), double WXUNUSED(y), int WXUNUSED(keys))
 {
 }
 
-void MyCanvas::OnEndDragLeft(double x, double y, int keys)
+void MyCanvas::OnEndDragLeft(double WXUNUSED(x), double WXUNUSED(y), int WXUNUSED(keys))
 {
 }
 
-void MyCanvas::OnDragRight(bool draw, double x, double y, int keys)
+void MyCanvas::OnDragRight(bool WXUNUSED(draw), double WXUNUSED(x), double WXUNUSED(y), int WXUNUSED(keys))
 {
 }
 
-void MyCanvas::OnBeginDragRight(double x, double y, int keys)
+void MyCanvas::OnBeginDragRight(double WXUNUSED(x), double WXUNUSED(y), int WXUNUSED(keys))
 {
 }
 
-void MyCanvas::OnEndDragRight(double x, double y, int keys)
+void MyCanvas::OnEndDragRight(double WXUNUSED(x), double WXUNUSED(y), int WXUNUSED(keys))
 {
 }
 

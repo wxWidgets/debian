@@ -2,20 +2,22 @@
 // Name:        gtk/filedlg.cpp
 // Purpose:
 // Author:      Robert Roebling
-// Id:          $Id: filedlg.cpp,v 1.38.2.1 2003/09/21 00:06:02 VZ Exp $
+// Id:          $Id: filedlg.cpp,v 1.45 2004/05/25 12:44:56 DS Exp $
 // Copyright:   (c) 1998 Robert Roebling
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
 
-#ifdef __GNUG__
+#if defined(__GNUG__) && !defined(NO_GCC_PRAGMA)
 #pragma implementation "filedlg.h"
 #endif
+
+// For compilers that support precompilation, includes "wx.h".
+#include "wx/wxprec.h"
 
 #include "wx/filedlg.h"
 #include "wx/utils.h"
 #include "wx/intl.h"
 #include "wx/generic/msgdlgg.h"
-
 
 #include <gtk/gtk.h>
 
@@ -120,29 +122,22 @@ void gtk_filedialog_cancel_callback( GtkWidget *WXUNUSED(w), wxFileDialog *dialo
 // wxFileDialog
 //-----------------------------------------------------------------------------
 
-IMPLEMENT_DYNAMIC_CLASS(wxFileDialog,wxDialog)
+IMPLEMENT_DYNAMIC_CLASS(wxFileDialog,wxFileDialogBase)
 
 wxFileDialog::wxFileDialog( wxWindow *parent, const wxString& message,
                             const wxString& defaultDir, const wxString& defaultFileName,
                             const wxString& wildCard,
                             long style, const wxPoint& pos )
+             :wxFileDialogBase(parent, message, defaultDir, defaultFileName, wildCard, style, pos)
 {
     m_needParent = FALSE;
 
     if (!PreCreation( parent, pos, wxDefaultSize ) ||
-        !CreateBase( parent, -1, pos, wxDefaultSize, style | wxDIALOG_MODAL, wxDefaultValidator, wxT("filedialog") ))
+        !CreateBase( parent, wxID_ANY, pos, wxDefaultSize, style, wxDefaultValidator, wxT("filedialog") ))
     {
         wxFAIL_MSG( wxT("wxXX creation failed") );
         return;
     }
-
-    m_message = message;
-    m_path = wxT("");
-    m_fileName = defaultFileName;
-    m_dir = defaultDir;
-    m_wildCard = wildCard;
-    m_dialogStyle = style;
-    m_filterIndex = 1;
 
     m_widget = gtk_file_selection_new( m_message.mbc_str() );
 
@@ -190,86 +185,5 @@ void wxFileDialog::SetPath(const wxString& path)
             m_fileName += ext;
         }
     }
-}
-
-// ----------------------------------------------------------------------------
-// global functions
-// ----------------------------------------------------------------------------
-
-wxString
-wxFileSelectorEx(const wxChar *message,
-                 const wxChar *default_path,
-                 const wxChar *default_filename,
-                 int *indexDefaultExtension,
-                 const wxChar *wildcard,
-                 int flags,
-                 wxWindow *parent,
-                 int x, int y)
-{
-    // TODO: implement this somehow
-    return wxFileSelector(message, default_path, default_filename, wxT(""),
-                          wildcard, flags, parent, x, y);
-}
-
-wxString wxFileSelector( const wxChar *title,
-                      const wxChar *defaultDir, const wxChar *defaultFileName,
-                      const wxChar *defaultExtension, const wxChar *filter, int flags,
-                      wxWindow *parent, int x, int y )
-{
-    wxString filter2;
-    if ( defaultExtension && !filter )
-        filter2 = wxString(wxT("*.")) + wxString(defaultExtension) ;
-    else if ( filter )
-        filter2 = filter;
-
-    wxString defaultDirString;
-    if (defaultDir)
-        defaultDirString = defaultDir;
-
-    wxString defaultFilenameString;
-    if (defaultFileName)
-        defaultFilenameString = defaultFileName;
-
-    wxFileDialog fileDialog( parent, title, defaultDirString, defaultFilenameString, filter2, flags, wxPoint(x, y) );
-
-    if ( fileDialog.ShowModal() == wxID_OK )
-    {
-        return fileDialog.GetPath();
-    }
-    else
-    {
-        return wxEmptyString;
-    }
-}
-
-wxString wxLoadFileSelector( const wxChar *what, const wxChar *extension, const wxChar *default_name, wxWindow *parent )
-{
-    wxChar *ext = (wxChar *)extension;
-
-    wxString prompt = wxString::Format(_("Load %s file"), what);
-
-    if (*ext == wxT('.'))
-        ext++;
-
-    wxString wild = wxString::Format(_T("*.%s"), ext);
-
-    return wxFileSelector(prompt, (const wxChar *) NULL, default_name,
-                          ext, wild, 0, parent);
-}
-
-wxString wxSaveFileSelector(const wxChar *what, const wxChar *extension, const wxChar *default_name,
-         wxWindow *parent )
-{
-    wxChar *ext = (wxChar *)extension;
-
-    wxString prompt = wxString::Format(_("Save %s file"), what);
-
-    if (*ext == wxT('.'))
-        ext++;
-
-    wxString wild = wxString::Format(_T("*.%s"), ext);
-
-    return wxFileSelector(prompt, (const wxChar *) NULL, default_name,
-                          ext, wild, 0, parent);
 }
 

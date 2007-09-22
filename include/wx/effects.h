@@ -5,12 +5,12 @@
 // Author:      Julian Smart et al
 // Modified by:
 // Created:     25/4/2000
-// RCS-ID:      $Id: effects.h,v 1.3 2002/09/05 19:37:25 RD Exp $
+// RCS-ID:      $Id: effects.h,v 1.7 2004/09/13 18:03:38 ABX Exp $
 // Copyright:   (c) Julian Smart
-// Licence:   	wxWindows licence
+// Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
 
-#if defined(__GNUG__) && !defined(__APPLE__)
+#if defined(__GNUG__) && !defined(NO_GCC_PRAGMA)
 #pragma interface "effects.h"
 #endif
 

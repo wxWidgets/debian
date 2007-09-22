@@ -4,12 +4,12 @@
 // Notes:       Based on htmlhelp.cpp, implementing a monolithic
 //              HTML Help controller class,  by Vaclav Slavik
 // Author:      Harm van der Heijden and Vaclav Slavik
-// RCS-ID:      $Id: helpctrl.cpp,v 1.26.2.3 2002/12/29 05:52:26 RL Exp $
+// RCS-ID:      $Id: helpctrl.cpp,v 1.38 2004/09/27 19:15:03 ABX Exp $
 // Copyright:   (c) Harm van der Heijden and Vaclav Slavik
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
 
-#ifdef __GNUG__
+#if defined(__GNUG__) && !defined(NO_GCC_PRAGMA)
 #pragma implementation "helpctrl.h"
 #endif
 
@@ -37,6 +37,12 @@
 
 #if wxUSE_HELP
     #include "wx/tipwin.h"
+#endif
+
+
+#if wxUSE_LIBMSPACK
+#include "wx/html/forcelnk.h"
+FORCE_LINK(wxhtml_chm_support)
 #endif
 
 IMPLEMENT_DYNAMIC_CLASS(wxHtmlHelpController, wxHelpControllerBase)
@@ -105,8 +111,10 @@ bool wxHtmlHelpController::AddBook(const wxString& book, bool show_wait_msg)
 #if wxUSE_BUSYINFO
     if (show_wait_msg)
         delete busy;
+#else
+    wxUnusedVar(show_wait_msg);
 #endif
-    if (m_helpFrame) 
+    if (m_helpFrame)
         m_helpFrame->RefreshLists();
     return retval;
 }
@@ -129,7 +137,7 @@ void wxHtmlHelpController::CreateHelpWindow()
 
     if (m_Config == NULL)
     {
-        m_Config = wxConfigBase::Get(FALSE);
+        m_Config = wxConfigBase::Get(false);
         if (m_Config != NULL)
             m_ConfigRoot = _T("wxWindows/wxHtmlHelpController");
     }
@@ -142,7 +150,8 @@ void wxHtmlHelpController::CreateHelpWindow()
 
     m_helpFrame->Create(NULL, wxID_HTML_HELPFRAME, wxEmptyString, m_FrameStyle);
     m_helpFrame->SetTitleFormat(m_titleFormat);
-    m_helpFrame->Show(TRUE);
+
+    m_helpFrame->Show(true);
 }
 
 void wxHtmlHelpController::ReadCustomization(wxConfigBase* cfg, const wxString& path)
@@ -187,17 +196,22 @@ bool wxHtmlHelpController::Initialize(const wxString& file)
         {
             actualFilename = dir + filename + wxString(wxT(".hhp"));
             if (!wxFileExists(actualFilename))
-                return FALSE;
+            {
+#if wxUSE_LIBMSPACK
+                actualFilename = dir + filename + wxString(wxT(".chm"));
+                if (!wxFileExists(actualFilename))
+#endif
+                    return false;
+            }
         }
     }
-
     return AddBook(wxFileName(actualFilename));
 }
 
 bool wxHtmlHelpController::LoadFile(const wxString& WXUNUSED(file))
 {
     // Don't reload the file or we'll have it appear again, presumably.
-    return TRUE;
+    return true;
 }
 
 bool wxHtmlHelpController::DisplaySection(int sectionNo)
@@ -223,11 +237,11 @@ bool wxHtmlHelpController::DisplayTextPopup(const wxString& text, const wxPoint&
     {
         s_tipWindow = new wxTipWindow(wxTheApp->GetTopWindow(), text, 100, & s_tipWindow);
 
-        return TRUE;
+        return true;
     }
 #endif // wxUSE_TIPWINDOW
 
-    return FALSE;
+    return false;
 }
 
 void wxHtmlHelpController::SetFrameParameters(const wxString& title,
@@ -247,7 +261,7 @@ wxFrame* wxHtmlHelpController::GetFrameParameters(wxSize *size,
                                    bool *newFrameEachTime)
 {
     if (newFrameEachTime)
-        (* newFrameEachTime) = FALSE;
+        (* newFrameEachTime) = false;
     if (size && m_helpFrame)
         (* size) = m_helpFrame->GetSize();
     if (pos && m_helpFrame)
@@ -258,7 +272,7 @@ wxFrame* wxHtmlHelpController::GetFrameParameters(wxSize *size,
 bool wxHtmlHelpController::Quit()
 {
     DestroyHelpWindow();
-    return TRUE;
+    return true;
 }
 
 // Make the help controller's frame 'modal' if
@@ -267,11 +281,11 @@ void wxHtmlHelpController::AddGrabIfNeeded()
 {
     // So far, wxGTK only
 #ifdef __WXGTK__
-    bool needGrab = FALSE;
-    
+    bool needGrab = false;
+
     // Check if there are any modal windows present,
     // in which case we need to add a grab.
-    for ( wxWindowList::Node * node = wxTopLevelWindows.GetFirst();
+    for ( wxWindowList::compatibility_iterator node = wxTopLevelWindows.GetFirst();
           node;
           node = node->GetNext() )
     {
@@ -279,7 +293,7 @@ void wxHtmlHelpController::AddGrabIfNeeded()
         wxDialog *dialog = wxDynamicCast(win, wxDialog);
 
         if (dialog && dialog->IsModal())
-            needGrab = TRUE;
+            needGrab = true;
     }
 
     if (needGrab && m_helpFrame)
@@ -292,7 +306,7 @@ bool wxHtmlHelpController::Display(const wxString& x)
     CreateHelpWindow();
     bool success = m_helpFrame->Display(x);
     AddGrabIfNeeded();
-    return success;    
+    return success;
 }
 
 bool wxHtmlHelpController::Display(int id)
@@ -319,10 +333,11 @@ bool wxHtmlHelpController::DisplayIndex()
     return success;
 }
 
-bool wxHtmlHelpController::KeywordSearch(const wxString& keyword)
+bool wxHtmlHelpController::KeywordSearch(const wxString& keyword,
+                                         wxHelpSearchMode mode)
 {
     CreateHelpWindow();
-    bool success = m_helpFrame->KeywordSearch(keyword);
+    bool success = m_helpFrame->KeywordSearch(keyword, mode);
     AddGrabIfNeeded();
     return success;
 }

@@ -16,7 +16,7 @@ None
 
 \latexignore{\rtfignore{\wxheading{Members}}}
 
-\membersection{wxAcceleratorEntry::wxAcceleratorEntry}\label{wxacceleratorentryconstr}
+\membersection{wxAcceleratorEntry::wxAcceleratorEntry}\label{wxacceleratorentryctor}
 
 \func{}{wxAcceleratorEntry}{\void}
 
@@ -97,13 +97,13 @@ initial accelerator table for a window.
   wxAcceleratorTable accel(4, entries);
   frame->SetAcceleratorTable(accel);
 \end{verbatim}
-}
+}%
 
 \wxheading{Remarks}
 
 An accelerator takes precedence over normal processing and can be a convenient way to program some event handling.
 For example, you can use an accelerator table to enable a dialog with a multi-line text control to
-accept CTRL-Enter as meaning `OK' (but not in GTK at present).
+accept CTRL-Enter as meaning `OK' (but not in GTK+ at present).
 
 \wxheading{See also}
 
@@ -111,7 +111,7 @@ accept CTRL-Enter as meaning `OK' (but not in GTK at present).
 
 \latexignore{\rtfignore{\wxheading{Members}}}
 
-\membersection{wxAcceleratorTable::wxAcceleratorTable}\label{wxacceleratortableconstr}
+\membersection{wxAcceleratorTable::wxAcceleratorTable}\label{wxacceleratortablector}
 
 \func{}{wxAcceleratorTable}{\void}
 
@@ -145,7 +145,7 @@ and cmd values like you would construct wxAcceleratorEntry objects with.}
   Wx::AcceleratorEntry objects or references to 3-element arrays
   ( flags, keyCode, cmd ), like the parameters of Wx::AcceleratorEntry::new.}
 
-\membersection{wxAcceleratorTable::\destruct{wxAcceleratorTable}}
+\membersection{wxAcceleratorTable::\destruct{wxAcceleratorTable}}\label{wxacceleratortabledtor}
 
 \func{}{\destruct{wxAcceleratorTable}}{\void}
 
@@ -155,9 +155,9 @@ Destroys the wxAcceleratorTable object.
 
 \constfunc{bool}{Ok}{\void}
 
-Returns TRUE if the accelerator table is valid.
+Returns true if the accelerator table is valid.
 
-\membersection{wxAcceleratorTable::operator $=$}
+\membersection{wxAcceleratorTable::operator $=$}\label{wxacceleratortableassign}
 
 \func{wxAcceleratorTable\& }{operator $=$}{\param{const wxAcceleratorTable\& }{accel}}
 
@@ -173,7 +173,7 @@ counter. It is a fast operation.
 
 Returns reference to this object.
 
-\membersection{wxAcceleratorTable::operator $==$}
+\membersection{wxAcceleratorTable::operator $==$}\label{wxacceleratortableequal}
 
 \func{bool}{operator $==$}{\param{const wxAcceleratorTable\& }{accel}}
 
@@ -186,9 +186,9 @@ equal (a fast test).
 
 \wxheading{Return value}
 
-Returns TRUE if the accelerator tables were effectively equal, FALSE otherwise.
+Returns true if the accelerator tables were effectively equal, false otherwise.
 
-\membersection{wxAcceleratorTable::operator $!=$}
+\membersection{wxAcceleratorTable::operator $!=$}\label{wxacceleratortablenotequal}
 
 \func{bool}{operator $!=$}{\param{const wxAcceleratorTable\& }{accel}}
 
@@ -201,6 +201,6 @@ unequal (a fast test).
 
 \wxheading{Return value}
 
-Returns TRUE if the accelerator tables were unequal, FALSE otherwise.
+Returns true if the accelerator tables were unequal, false otherwise.
 
 

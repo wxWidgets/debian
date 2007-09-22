@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     12/07/98
-// RCS-ID:      $Id: symbols.h,v 1.3 2002/09/07 12:12:22 GD Exp $
+// RCS-ID:      $Id: symbols.h,v 1.4 2003/03/31 14:45:44 JS Exp $
 // Copyright:   (c) Julian Smart
 // Licence:
 /////////////////////////////////////////////////////////////////////////////
@@ -18,7 +18,9 @@
 
 #include <wx/docview.h>
 #include <wx/string.h>
-#include <wx/wxexpr.h>
+
+#include <wx/deprecated/setup.h>
+#include <wx/deprecated/wxexpr.h>
 
 #include <wx/ogl/ogl.h>
 

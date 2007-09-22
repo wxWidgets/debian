@@ -3,7 +3,7 @@
 // Purpose:
 // Date: 08/11/1999
 // Author: Guilhem Lavaux <lavaux@easynet.fr> (C) 1999
-// CVSID: $Id: sndpcm.cpp,v 1.2 2001/10/30 13:28:45 GT Exp $
+// CVSID: $Id: sndpcm.cpp,v 1.3 2004/06/16 15:22:59 ABX Exp $
 // --------------------------------------------------------------------------
 #ifdef __GNUG__
 #pragma implementation "sndpcm.cpp"
@@ -88,7 +88,7 @@ bool wxSoundFormatPcm::operator!=(const wxSoundFormatBase& format) const
   wxSoundFormatPcm *format2 = (wxSoundFormatPcm *)&format;
 
   if (format.GetType() != wxSOUND_PCM)
-    return TRUE;
+    return true;
 
   return ( (m_srate != format2->m_srate) ||
            (m_bps != format2->m_bps) ||

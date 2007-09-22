@@ -59,7 +59,8 @@ See also \helpref{window styles overview}{windowstyles}.
 
 \latexignore{\rtfignore{\wxheading{Members}}}
 
-\membersection{wxScrollBar::wxScrollBar}\label{wxscrollbarconstr}
+
+\membersection{wxScrollBar::wxScrollBar}\label{wxscrollbarctor}
 
 \func{}{wxScrollBar}{\void}
 
@@ -92,11 +93,13 @@ Constructor, creating and showing a scrollbar.
 
 \helpref{wxScrollBar::Create}{wxscrollbarcreate}, \helpref{wxValidator}{wxvalidator}
 
-\membersection{wxScrollBar::\destruct{wxScrollBar}}
+
+\membersection{wxScrollBar::\destruct{wxScrollBar}}\label{wxscrollbardtor}
 
 \func{void}{\destruct{wxScrollBar}}{\void}
 
 Destructor, destroying the scrollbar.
+
 
 \membersection{wxScrollBar::Create}\label{wxscrollbarcreate}
 
@@ -106,7 +109,8 @@ Destructor, destroying the scrollbar.
 \param{const wxString\& }{name = ``scrollBar"}}
 
 Scrollbar creation function called by the scrollbar constructor.
-See \helpref{wxScrollBar::wxScrollBar}{wxscrollbarconstr} for details.
+See \helpref{wxScrollBar::wxScrollBar}{wxscrollbarctor} for details.
+
 
 \membersection{wxScrollBar::GetRange}\label{wxscrollbargetrange}
 
@@ -117,6 +121,7 @@ Returns the length of the scrollbar.
 \wxheading{See also}
 
 \helpref{wxScrollBar::SetScrollbar}{wxscrollbarsetscrollbar}
+
 
 \membersection{wxScrollBar::GetPageSize}\label{wxscrollbargetpagesize}
 
@@ -130,6 +135,7 @@ same as the thumb size.
 
 \helpref{wxScrollBar::SetScrollbar}{wxscrollbarsetscrollbar}
 
+
 \membersection{wxScrollBar::GetThumbPosition}\label{wxscrollbargetthumbposition}
 
 \constfunc{int}{GetThumbPosition}{\void}
@@ -140,9 +146,10 @@ Returns the current position of the scrollbar thumb.
 
 \helpref{wxScrollBar::SetThumbPosition}{wxscrollbarsetthumbposition}
 
-\membersection{wxScrollBar::GetThumbLength}\label{wxscrollbargetthumblength}
 
-\constfunc{int}{GetThumbLength}{\void}
+\membersection{wxScrollBar::GetThumbSize}\label{wxscrollbargetthumbsize}
+
+\constfunc{int}{GetThumbSize}{\void}
 
 Returns the thumb or `view' size.
 
@@ -151,6 +158,7 @@ Returns the thumb or `view' size.
 \helpref{wxScrollBar::SetScrollbar}{wxscrollbarsetscrollbar}
 
 \begin{comment}
+
 \membersection{wxScrollBar::SetObjectLength}\label{wxscrollbarsetobjectlength}
 
 \func{void}{SetObjectLength}{\param{int}{ objectLength}}
@@ -176,6 +184,7 @@ contents (the object length).
 
 \helpref{wxScrollBar::GetObjectLength}{wxscrollbargetobjectlength}
 
+
 \membersection{wxScrollBar::SetPageSize}\label{wxscrollbarsetpagesize}
 
 \func{void}{SetPageSize}{\param{int}{ pageSize}}
@@ -196,6 +205,7 @@ At present, this needs to be called {\it before} other set functions.
 \helpref{wxScrollBar::GetPageSize}{wxscrollbargetpagesize}
 \end{comment}
 
+
 \membersection{wxScrollBar::SetThumbPosition}\label{wxscrollbarsetthumbposition}
 
 \func{void}{SetThumbPosition}{\param{int}{ viewStart}}
@@ -210,12 +220,13 @@ Sets the position of the scrollbar.
 
 \helpref{wxScrollBar::GetThumbPosition}{wxscrollbargetthumbposition}
 
+
 \membersection{wxScrollBar::SetScrollbar}\label{wxscrollbarsetscrollbar}
 
 \func{virtual void}{SetScrollbar}{\param{int }{position},\rtfsp
 \param{int }{thumbSize}, \param{int }{range},\rtfsp
 \param{int }{pageSize},\rtfsp
-\param{const bool }{refresh = TRUE}}
+\param{const bool }{refresh = true}}
 
 Sets the scrollbar properties.
 
@@ -231,7 +242,7 @@ Sets the scrollbar properties.
 the scrollbar will scroll when it is paged up or down. Often it is the same as
 the thumb size.}
 
-\docparam{refresh}{TRUE to redraw the scrollbar, FALSE otherwise.}
+\docparam{refresh}{true to redraw the scrollbar, false otherwise.}
 
 \wxheading{Remarks}
 
@@ -266,7 +277,9 @@ from a \helpref{wxSizeEvent}{wxsizeevent} event handler function.
 \helpref{Scrolling overview}{scrollingoverview},\rtfsp
 \helpref{wxWindow::SetScrollbar}{wxwindowsetscrollbar}, \helpref{wxScrolledWindow}{wxscrolledwindow}
 
+
 \begin{comment}
+
 \membersection{wxScrollBar::SetViewLength}\label{wxscrollbarsetviewlength}
 
 \func{void}{SetViewLength}{\param{int}{ viewLength}}

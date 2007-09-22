@@ -4,7 +4,7 @@
 // Author:      Aleksandras Gluchovas
 // Modified by:
 // Created:     23/01/99
-// RCS-ID:      $Id: dyntbarhnd.h,v 1.3.2.1 2002/10/24 11:21:33 JS Exp $
+// RCS-ID:      $Id: dyntbarhnd.h,v 1.5 2003/07/08 20:47:16 VS Exp $
 // Copyright:   (c) Aleksandras Gluchovas
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -23,7 +23,7 @@
 Dynamic toolbar dimension handler.
 */
 
-class WXFL_DECLSPEC cbDynToolBarDimHandler : public cbBarDimHandlerBase
+class WXDLLIMPEXP_FL cbDynToolBarDimHandler : public cbBarDimHandlerBase
 {
     DECLARE_DYNAMIC_CLASS( cbDynToolBarDimHandler )
 public:

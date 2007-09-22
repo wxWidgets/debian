@@ -4,9 +4,9 @@
 // Author:      Vadim Zeitlin
 // Modified by:
 // Created:     08.12.99
-// RCS-ID:      $Id: dir.cpp,v 1.8.2.3 2003/11/23 22:19:00 SN Exp $
+// RCS-ID:      $Id: dir.cpp,v 1.13 2004/05/23 20:53:26 JS Exp $
 // Copyright:   (c) 1999 Vadim Zeitlin <zeitlin@dptmaths.ens-cachan.fr>
-// Licence:     wxWindows license
+// Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
 
 // ============================================================================
@@ -17,7 +17,7 @@
 // headers
 // ----------------------------------------------------------------------------
 
-#ifdef __GNUG__
+#if defined(__GNUG__) && !defined(NO_GCC_PRAGMA)
     #pragma implementation "dir.h"
 #endif
 
@@ -36,13 +36,10 @@
 #include "wx/dir.h"
 #include "wx/filefn.h"          // for wxMatchWild
 
-#ifdef __WXGTK20__
-    #include "glib.h"
-#endif
-
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <unistd.h>
+
 #include <dirent.h>
 
 // ----------------------------------------------------------------------------
@@ -67,21 +64,13 @@ public:
     void SetFileSpec(const wxString& filespec) { m_filespec = filespec; }
     void SetFlags(int flags) { m_flags = flags; }
 
-#ifdef __WXGTK20__
-    void Rewind() { g_dir_rewind(m_dir); }
-#else
     void Rewind() { rewinddir(m_dir); }
-#endif
     bool Read(wxString *filename);
 
     const wxString& GetName() const { return m_dirname; }
 
 private:
-#ifdef __WXGTK20__
-    GDir    *m_dir;
-#else
     DIR     *m_dir;
-#endif
 
     wxString m_dirname;
     wxString m_filespec;
@@ -114,76 +103,48 @@ wxDirData::wxDirData(const wxString& dirname)
     m_dirname.Truncate(n + 1);
 
     // do open the dir
-#ifdef __WXGTK20__
-    GError *error = NULL;
-    m_dir = g_dir_open( m_dirname.fn_str(), 0, &error );
-#else
     m_dir = opendir(m_dirname.fn_str());
-#endif
 }
 
 wxDirData::~wxDirData()
 {
     if ( m_dir )
     {
-#ifdef __WXGTK20__
-        g_dir_close(m_dir);
-#else
         if ( closedir(m_dir) != 0 )
         {
             wxLogLastError(_T("closedir"));
         }
-#endif
     }
 }
 
 bool wxDirData::Read(wxString *filename)
 {
-#ifdef __WXGTK20__
-    const char *de;
-#else
     dirent *de = (dirent *)NULL;    // just to silence compiler warnings
-#endif
     bool matches = FALSE;
 
     // speed up string concatenation in the loop a bit
     wxString path = m_dirname;
-    if (!wxIsPathSeparator(path.Last()))
-        path += _T('/');
+    path += _T('/');
     path.reserve(path.length() + 255);
     
     wxString de_d_name;
-    
+
     while ( !matches )
     {
-#ifdef __WXGTK20__
-        de = g_dir_read_name( m_dir );
-        
+        de = readdir(m_dir);
         if ( !de )
             return FALSE;
             
-        de_d_name = wxConvLibc.cMB2WC( de );
-        
-        // don't return "." and ".." unless asked for
-        if ( de[0] == '.' &&
-             ((de[1] == '.' && de[2] == '\0') ||
-              (de[1] == '\0')) )
-#else
-        de = readdir(m_dir);
-        
-        if ( !de )
-            return FALSE;
 #if wxUSE_UNICODE
         de_d_name = wxConvLibc.cMB2WC( de->d_name );
 #else
         de_d_name = de->d_name;
 #endif            
+
         // don't return "." and ".." unless asked for
         if ( de->d_name[0] == '.' &&
              ((de->d_name[1] == '.' && de->d_name[2] == '\0') ||
               (de->d_name[1] == '\0')) )
-#endif
-
         {
             if ( !(m_flags & wxDIR_DOTDOT) )
                 continue;
@@ -207,11 +168,7 @@ bool wxDirData::Read(wxString *filename)
         // finally, check the name
         if ( m_filespec.empty() )
         {
-#ifdef __WXGTK20__
-            matches = m_flags & wxDIR_HIDDEN ? TRUE : de[0] != '.';
-#else
             matches = m_flags & wxDIR_HIDDEN ? TRUE : de->d_name[0] != '.';
-#endif
         }
         else
         {

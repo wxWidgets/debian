@@ -4,9 +4,9 @@
 // Author:      Guilhem Lavaux
 // Modified by: VZ (23.11.00): general code review
 // Created:     04/01/98
-// RCS-ID:      $Id: mstream.cpp,v 1.24.2.1 2002/11/04 19:31:55 VZ Exp $
+// RCS-ID:      $Id: mstream.cpp,v 1.31 2004/09/26 13:18:45 RL Exp $
 // Copyright:   (c) Guilhem Lavaux
-// Licence:     wxWindows license
+// Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
 
 // ============================================================================
@@ -17,7 +17,7 @@
 // headers
 // ----------------------------------------------------------------------------
 
-#ifdef __GNUG__
+#if defined(__GNUG__) && !defined(NO_GCC_PRAGMA)
 #pragma implementation "mstream.h"
 #endif
 
@@ -47,7 +47,7 @@ wxMemoryInputStream::wxMemoryInputStream(const void *data, size_t len)
     m_i_streambuf = new wxStreamBuffer(wxStreamBuffer::read);
     m_i_streambuf->SetBufferIO((void *)data, len); // const_cast
     m_i_streambuf->SetIntPosition(0); // seek to start pos
-    m_i_streambuf->Fixed(TRUE);
+    m_i_streambuf->Fixed(true);
 
     m_length = len;
 }
@@ -85,12 +85,12 @@ size_t wxMemoryInputStream::OnSysRead(void *buffer, size_t nbytes)
     return m_i_streambuf->GetIntPosition() - pos;
 }
 
-off_t wxMemoryInputStream::OnSysSeek(off_t pos, wxSeekMode mode)
+wxFileOffset wxMemoryInputStream::OnSysSeek(wxFileOffset pos, wxSeekMode mode)
 {
     return m_i_streambuf->Seek(pos, mode);
 }
 
-off_t wxMemoryInputStream::OnSysTell() const
+wxFileOffset wxMemoryInputStream::OnSysTell() const
 {
     return m_i_streambuf->Tell();
 }
@@ -104,8 +104,8 @@ wxMemoryOutputStream::wxMemoryOutputStream(void *data, size_t len)
     m_o_streambuf = new wxStreamBuffer(wxStreamBuffer::write);
     if ( data )
         m_o_streambuf->SetBufferIO(data, len);
-    m_o_streambuf->Fixed(FALSE);
-    m_o_streambuf->Flushable(FALSE);
+    m_o_streambuf->Fixed(false);
+    m_o_streambuf->Flushable(false);
 }
 
 wxMemoryOutputStream::~wxMemoryOutputStream()
@@ -126,12 +126,12 @@ size_t wxMemoryOutputStream::OnSysWrite(const void *buffer, size_t nbytes)
     return newpos - oldpos;
 }
 
-off_t wxMemoryOutputStream::OnSysSeek(off_t pos, wxSeekMode mode)
+wxFileOffset wxMemoryOutputStream::OnSysSeek(wxFileOffset pos, wxSeekMode mode)
 {
     return m_o_streambuf->Seek(pos, mode);
 }
 
-off_t wxMemoryOutputStream::OnSysTell() const
+wxFileOffset wxMemoryOutputStream::OnSysTell() const
 {
     return m_o_streambuf->Tell();
 }

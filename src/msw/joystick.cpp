@@ -4,12 +4,12 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     04/01/98
-// RCS-ID:      $Id: joystick.cpp,v 1.12.2.1 2002/11/09 00:20:33 VS Exp $
-// Copyright:   (c) Julian Smart and Markus Holzem
-// Licence:     wxWindows license
+// RCS-ID:      $Id: joystick.cpp,v 1.19 2004/08/30 10:18:54 ABX Exp $
+// Copyright:   (c) Julian Smart
+// Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
 
-#ifdef __GNUG__
+#if defined(__GNUG__) && !defined(NO_GCC_PRAGMA)
 #pragma implementation "joystick.h"
 #endif
 
@@ -32,14 +32,12 @@
 typedef UINT MMRESULT;
 #endif
 
-#ifndef __TWIN32__
 #ifdef __GNUWIN32_OLD__
 #include "wx/msw/gnuwin32/extra.h"
 #endif
-#endif
 
 // Why doesn't BC++ have joyGetPosEx?
-#if !defined(__WIN32__) || defined(__BORLANDC__) || defined(__TWIN32__)
+#if !defined(__WIN32__) || defined(__BORLANDC__)
 #define NO_JOYGETPOSEX
 #endif
 
@@ -52,34 +50,34 @@ IMPLEMENT_DYNAMIC_CLASS(wxJoystick, wxObject)
 ////////////////////////////////////////////////////////////////////////////
 
 /**
-	johan@linkdata.se 2002-08-20:
-	Now returns only valid, functioning
-	joysticks, counting from the first
-	available and upwards.
+    johan@linkdata.se 2002-08-20:
+    Now returns only valid, functioning
+    joysticks, counting from the first
+    available and upwards.
 */
 wxJoystick::wxJoystick(int joystick)
 {
     JOYINFO joyInfo;
-	int i, maxsticks;
+    int i, maxsticks;
 
-	maxsticks = joyGetNumDevs();
-	for( i=0; i<maxsticks; i++ )
-	{
-	    if( joyGetPos(i, & joyInfo) == JOYERR_NOERROR )
-	    {
-	    	if( !joystick )
-	    	{
-	    		/* Found the one we want, store actual OS id and return */
-	    		m_joystick = i;
-	    		return;
-	    	}
-	    	joystick --;
-	    }
-	}
+    maxsticks = joyGetNumDevs();
+    for( i=0; i<maxsticks; i++ )
+    {
+        if( joyGetPos(i, & joyInfo) == JOYERR_NOERROR )
+        {
+            if( !joystick )
+            {
+                /* Found the one we want, store actual OS id and return */
+                m_joystick = i;
+                return;
+            }
+            joystick --;
+        }
+    }
 
-	/* No such joystick, return ID 0 */
-	m_joystick = 0;
-	return;
+    /* No such joystick, return ID 0 */
+    m_joystick = 0;
+    return;
 };
 
 wxPoint wxJoystick::GetPosition() const
@@ -103,9 +101,9 @@ int wxJoystick::GetZPosition() const
 }
 
 /**
-	johan@linkdata.se 2002-08-20:
-	Return a bitmap with all button states in it,
-	like the GTK version does and Win32 does.
+    johan@linkdata.se 2002-08-20:
+    Return a bitmap with all button states in it,
+    like the GTK version does and Win32 does.
 */
 int wxJoystick::GetButtonState() const
 {
@@ -113,7 +111,7 @@ int wxJoystick::GetButtonState() const
     MMRESULT res = joyGetPos(m_joystick, & joyInfo);
     if (res == JOYERR_NOERROR )
     {
-    	return joyInfo.wButtons;
+        return joyInfo.wButtons;
 #if 0
         int buttons = 0;
 
@@ -134,8 +132,8 @@ int wxJoystick::GetButtonState() const
 }
 
 /**
-	JLI 2002-08-20:
-	Returns -1 to signify error.
+    JLI 2002-08-20:
+    Returns -1 to signify error.
 */
 int wxJoystick::GetPOVPosition() const
 {
@@ -156,8 +154,8 @@ int wxJoystick::GetPOVPosition() const
 }
 
 /**
-	johan@linkdata.se 2002-08-20:
-	Returns -1 to signify error.
+    johan@linkdata.se 2002-08-20:
+    Returns -1 to signify error.
 */
 int wxJoystick::GetPOVCTSPosition() const
 {
@@ -253,30 +251,30 @@ void wxJoystick::SetMovementThreshold(int threshold)
 ////////////////////////////////////////////////////////////////////////////
 
 /**
-	johan@linkdata.se 2002-08-20:
-	Now returns the number of connected, functioning
-	joysticks, as intended.
+    johan@linkdata.se 2002-08-20:
+    Now returns the number of connected, functioning
+    joysticks, as intended.
 */
 int wxJoystick::GetNumberJoysticks()
 {
     JOYINFO joyInfo;
-	int i, maxsticks, actualsticks;
-	maxsticks = joyGetNumDevs();
-	actualsticks = 0;
-	for( i=0; i<maxsticks; i++ )
-	{
-		if( joyGetPos( i, & joyInfo ) == JOYERR_NOERROR )
-		{
-			actualsticks ++;
-		}
-	}
+    int i, maxsticks, actualsticks;
+    maxsticks = joyGetNumDevs();
+    actualsticks = 0;
+    for( i=0; i<maxsticks; i++ )
+    {
+        if( joyGetPos( i, & joyInfo ) == JOYERR_NOERROR )
+        {
+            actualsticks ++;
+        }
+    }
     return actualsticks;
 }
 
 /**
-	johan@linkdata.se 2002-08-20:
-	The old code returned true if there were any
-	joystick capable drivers loaded (=always).
+    johan@linkdata.se 2002-08-20:
+    The old code returned true if there were any
+    joystick capable drivers loaded (=always).
 */
 bool wxJoystick::IsOk() const
 {
@@ -376,7 +374,7 @@ int wxJoystick::GetNumberButtons() const
 
 int wxJoystick::GetNumberAxes() const
 {
-#if defined(__WIN32__) && !defined(__TWIN32__)
+#if defined(__WIN32__)
     JOYCAPS joyCaps;
     if (joyGetDevCaps(m_joystick, & joyCaps, sizeof(JOYCAPS)) != JOYERR_NOERROR)
         return 0;
@@ -389,7 +387,7 @@ int wxJoystick::GetNumberAxes() const
 
 int wxJoystick::GetMaxButtons() const
 {
-#if defined(__WIN32__) && !defined(__TWIN32__)
+#if defined(__WIN32__)
     JOYCAPS joyCaps;
     if (joyGetDevCaps(m_joystick, & joyCaps, sizeof(JOYCAPS)) != JOYERR_NOERROR)
         return 0;
@@ -402,7 +400,7 @@ int wxJoystick::GetMaxButtons() const
 
 int wxJoystick::GetMaxAxes() const
 {
-#if defined(__WIN32__) && !defined(__TWIN32__)
+#if defined(__WIN32__)
     JOYCAPS joyCaps;
     if (joyGetDevCaps(m_joystick, & joyCaps, sizeof(JOYCAPS)) != JOYERR_NOERROR)
         return 0;
@@ -433,7 +431,7 @@ int wxJoystick::GetPollingMax() const
 
 int wxJoystick::GetRudderMin() const
 {
-#if defined(__WIN32__) && !defined(__TWIN32__)
+#if defined(__WIN32__)
     JOYCAPS joyCaps;
     if (joyGetDevCaps(m_joystick, & joyCaps, sizeof(JOYCAPS)) != JOYERR_NOERROR)
         return 0;
@@ -446,7 +444,7 @@ int wxJoystick::GetRudderMin() const
 
 int wxJoystick::GetRudderMax() const
 {
-#if defined(__WIN32__) && !defined(__TWIN32__)
+#if defined(__WIN32__)
     JOYCAPS joyCaps;
     if (joyGetDevCaps(m_joystick, & joyCaps, sizeof(JOYCAPS)) != JOYERR_NOERROR)
         return 0;
@@ -459,7 +457,7 @@ int wxJoystick::GetRudderMax() const
 
 int wxJoystick::GetUMin() const
 {
-#if defined(__WIN32__) && !defined(__TWIN32__)
+#if defined(__WIN32__)
     JOYCAPS joyCaps;
     if (joyGetDevCaps(m_joystick, & joyCaps, sizeof(JOYCAPS)) != JOYERR_NOERROR)
         return 0;
@@ -472,7 +470,7 @@ int wxJoystick::GetUMin() const
 
 int wxJoystick::GetUMax() const
 {
-#if defined(__WIN32__) && !defined(__TWIN32__)
+#if defined(__WIN32__)
     JOYCAPS joyCaps;
     if (joyGetDevCaps(m_joystick, & joyCaps, sizeof(JOYCAPS)) != JOYERR_NOERROR)
         return 0;
@@ -485,7 +483,7 @@ int wxJoystick::GetUMax() const
 
 int wxJoystick::GetVMin() const
 {
-#if defined(__WIN32__) && !defined(__TWIN32__)
+#if defined(__WIN32__)
     JOYCAPS joyCaps;
     if (joyGetDevCaps(m_joystick, & joyCaps, sizeof(JOYCAPS)) != JOYERR_NOERROR)
         return 0;
@@ -498,7 +496,7 @@ int wxJoystick::GetVMin() const
 
 int wxJoystick::GetVMax() const
 {
-#if defined(__WIN32__) && !defined(__TWIN32__)
+#if defined(__WIN32__)
     JOYCAPS joyCaps;
     if (joyGetDevCaps(m_joystick, & joyCaps, sizeof(JOYCAPS)) != JOYERR_NOERROR)
         return 0;
@@ -512,92 +510,92 @@ int wxJoystick::GetVMax() const
 
 bool wxJoystick::HasRudder() const
 {
-#if defined(__WIN32__) && !defined(__TWIN32__)
+#if defined(__WIN32__)
     JOYCAPS joyCaps;
     if (joyGetDevCaps(m_joystick, & joyCaps, sizeof(JOYCAPS)) != JOYERR_NOERROR)
-        return FALSE;
+        return false;
     else
         return ((joyCaps.wCaps & JOYCAPS_HASR) == JOYCAPS_HASR);
 #else
-    return FALSE;
+    return false;
 #endif
 }
 
 bool wxJoystick::HasZ() const
 {
-#if defined(__WIN32__) && !defined(__TWIN32__)
+#if defined(__WIN32__)
     JOYCAPS joyCaps;
     if (joyGetDevCaps(m_joystick, & joyCaps, sizeof(JOYCAPS)) != JOYERR_NOERROR)
-        return FALSE;
+        return false;
     else
         return ((joyCaps.wCaps & JOYCAPS_HASZ) == JOYCAPS_HASZ);
 #else
-    return FALSE;
+    return false;
 #endif
 }
 
 bool wxJoystick::HasU() const
 {
-#if defined(__WIN32__) && !defined(__TWIN32__)
+#if defined(__WIN32__)
     JOYCAPS joyCaps;
     if (joyGetDevCaps(m_joystick, & joyCaps, sizeof(JOYCAPS)) != JOYERR_NOERROR)
-        return FALSE;
+        return false;
     else
         return ((joyCaps.wCaps & JOYCAPS_HASU) == JOYCAPS_HASU);
 #else
-    return FALSE;
+    return false;
 #endif
 }
 
 bool wxJoystick::HasV() const
 {
-#if defined(__WIN32__) && !defined(__TWIN32__)
+#if defined(__WIN32__)
     JOYCAPS joyCaps;
     if (joyGetDevCaps(m_joystick, & joyCaps, sizeof(JOYCAPS)) != JOYERR_NOERROR)
-        return FALSE;
+        return false;
     else
         return ((joyCaps.wCaps & JOYCAPS_HASV) == JOYCAPS_HASV);
 #else
-    return FALSE;
+    return false;
 #endif
 }
 
 bool wxJoystick::HasPOV() const
 {
-#if defined(__WIN32__) && !defined(__TWIN32__)
+#if defined(__WIN32__)
     JOYCAPS joyCaps;
     if (joyGetDevCaps(m_joystick, & joyCaps, sizeof(JOYCAPS)) != JOYERR_NOERROR)
-        return FALSE;
+        return false;
     else
         return ((joyCaps.wCaps & JOYCAPS_HASPOV) == JOYCAPS_HASPOV);
 #else
-    return FALSE;
+    return false;
 #endif
 }
 
 bool wxJoystick::HasPOV4Dir() const
 {
-#if defined(__WIN32__) && !defined(__TWIN32__)
+#if defined(__WIN32__)
     JOYCAPS joyCaps;
     if (joyGetDevCaps(m_joystick, & joyCaps, sizeof(JOYCAPS)) != JOYERR_NOERROR)
-        return FALSE;
+        return false;
     else
         return ((joyCaps.wCaps & JOYCAPS_POV4DIR) == JOYCAPS_POV4DIR);
 #else
-    return FALSE;
+    return false;
 #endif
 }
 
 bool wxJoystick::HasPOVCTS() const
 {
-#if defined(__WIN32__) && !defined(__TWIN32__)
+#if defined(__WIN32__)
     JOYCAPS joyCaps;
     if (joyGetDevCaps(m_joystick, & joyCaps, sizeof(JOYCAPS)) != JOYERR_NOERROR)
-        return FALSE;
+        return false;
     else
         return ((joyCaps.wCaps & JOYCAPS_POVCTS) == JOYCAPS_POVCTS);
 #else
-    return FALSE;
+    return false;
 #endif
 }
 

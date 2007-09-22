@@ -4,8 +4,8 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     04/01/98
-// RCS-ID:      $Id: listtest.h,v 1.31.2.2 2002/11/04 22:25:55 VZ Exp $
-// Copyright:   (c) Julian Smart and Markus Holzem
+// RCS-ID:      $Id: listtest.h,v 1.40 2004/09/30 19:13:38 JS Exp $
+// Copyright:   (c) Julian Smart
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
 
@@ -13,7 +13,12 @@
 class MyApp: public wxApp
 {
 public:
+    MyApp() { }
+
     virtual bool OnInit();
+
+private:
+    DECLARE_NO_COPY_CLASS(MyApp)
 };
 
 class MyListCtrl: public wxListCtrl
@@ -43,8 +48,10 @@ public:
     void OnEndLabelEdit(wxListEvent& event);
     void OnDeleteItem(wxListEvent& event);
     void OnDeleteAllItems(wxListEvent& event);
+#if WXWIN_COMPATIBILITY_2_4
     void OnGetInfo(wxListEvent& event);
     void OnSetInfo(wxListEvent& event);
+#endif
     void OnSelected(wxListEvent& event);
     void OnDeselected(wxListEvent& event);
     void OnListKeyDown(wxListEvent& event);
@@ -66,6 +73,7 @@ private:
 
     wxListItemAttr m_attr;
 
+    DECLARE_NO_COPY_CLASS(MyListCtrl)
     DECLARE_EVENT_TABLE()
 };
 
@@ -74,7 +82,9 @@ class MyFrame: public wxFrame
 {
 public:
     MyFrame(const wxChar *title, int x, int y, int w, int h);
-    ~MyFrame();
+    virtual ~MyFrame();
+
+    void DoSize();
 
 protected:
     void OnSize(wxSizeEvent& event);
@@ -105,8 +115,10 @@ protected:
     void OnShowSelInfo(wxCommandEvent& event);
     void OnFreeze(wxCommandEvent& event);
     void OnThaw(wxCommandEvent& event);
+    void OnToggleLines(wxCommandEvent& event);
 
     void OnUpdateShowColInfo(wxUpdateUIEvent& event);
+    void OnUpdateToggleMultiSel(wxUpdateUIEvent& event);
 
     wxImageList *m_imageListNormal;
     wxImageList *m_imageListSmall;
@@ -117,16 +129,22 @@ protected:
 
 private:
     // recreate the list control with the new flags
-    void RecreateList(long flags, bool withText = TRUE);
+    void RecreateList(long flags, bool withText = true);
 
     // fill the control with items depending on the view
     void InitWithListItems();
     void InitWithReportItems();
-    void InitWithIconItems(bool withText, bool sameIcon = FALSE);
+    void InitWithIconItems(bool withText, bool sameIcon = false);
     void InitWithVirtualItems();
+
+    // return true if the control is not in virtual view, give an error message
+    // and return false if it is
+    bool CheckNonVirtual() const;
+
 
     wxLog *m_logOld;
 
+    DECLARE_NO_COPY_CLASS(MyFrame)
     DECLARE_EVENT_TABLE()
 };
 
@@ -161,6 +179,7 @@ enum
     LIST_FOCUS_LAST,
     LIST_FREEZE,
     LIST_THAW,
+    LIST_TOGGLE_LINES,
 
     LIST_CTRL                   = 1000
 };

@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     01/02/97
-// RCS-ID:      $Id: statbox.h,v 1.14 2001/06/26 20:59:07 VZ Exp $
+// RCS-ID:      $Id: statbox.h,v 1.20 2004/09/04 01:53:38 ABX Exp $
 // Copyright:   (c) Julian Smart
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -12,7 +12,7 @@
 #ifndef _WX_STATBOX_H_
 #define _WX_STATBOX_H_
 
-#ifdef __GNUG__
+#if defined(__GNUG__) && !defined(NO_GCC_PRAGMA)
     #pragma interface "statbox.h"
 #endif
 
@@ -42,16 +42,16 @@ public:
     // implementation from now on
     // --------------------------
 
-    virtual long MSWWindowProc(WXUINT nMsg, WXWPARAM wParam, WXLPARAM lParam);
+    virtual WXLRESULT MSWWindowProc(WXUINT nMsg, WXWPARAM wParam, WXLPARAM lParam);
 
     // overriden base class virtuals
-    virtual bool AcceptsFocus() const { return FALSE; }
+    virtual bool AcceptsFocus() const { return false; }
 
 protected:
     virtual wxSize DoGetBestSize() const;
 
 private:
-    DECLARE_DYNAMIC_CLASS(wxStaticBox)
+    DECLARE_DYNAMIC_CLASS_NO_COPY(wxStaticBox)
 };
 
 #endif

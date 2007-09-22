@@ -16,7 +16,7 @@ None
 
 \latexignore{\rtfignore{\wxheading{Members}}}
 
-\membersection{wxRect::wxRect}
+\membersection{wxRect::wxRect}\label{wxrectctor}
 
 \func{}{wxRect}{\void}
 
@@ -34,25 +34,29 @@ Creates a wxRect object from top-left and bottom-right points.
 
 Creates a wxRect object from position and size values.
 
-\membersection{wxRect::x}
+\func{}{wxRect}{\param{const wxSize\&}{ size}}
+
+Creates a wxRect object from size values at the origin.
+
+\membersection{wxRect::x}\label{wxrectx}
 
 \member{int}{x}
 
 x coordinate of the top-level corner of the rectangle.
 
-\membersection{wxRect::y}
+\membersection{wxRect::y}\label{wxrecty}
 
 \member{int}{y}
 
 y coordinate of the top-level corner of the rectangle.
 
-\membersection{wxRect::width}
+\membersection{wxRect::width}\label{wxrectwidth}
 
 \member{int}{width}
 
 Width member.
 
-\membersection{wxRect::height}
+\membersection{wxRect::height}\label{wxrectheight}
 
 \member{int}{height}
 
@@ -102,6 +106,18 @@ Gets the left point of the rectangle (the same as \helpref{wxRect::GetX}{wxrectg
 \constfunc{wxPoint}{GetPosition}{\void}
 
 Gets the position.
+
+\membersection{wxRect::GetTopLeft}\label{wxrectgettopleft}
+
+\constfunc{wxPoint}{GetTopLeft}{\void}
+
+Gets the topleft position of the rectangle. (Same as GetPosition).
+
+\membersection{wxRect::GetBottomRight}\label{wxrectgetbottomright}
+
+\constfunc{wxPoint}{GetBottomRight}{\void}
+
+Gets the the bottom right position. Returns the bottom right point inside the rectangle.
 
 \membersection{wxRect::GetRight}\label{wxrectgetright}
 
@@ -160,21 +176,21 @@ new rectangle leaving this one unchanged.
 
 \helpref{Deflate}{wxrectdeflate}
 
-\membersection{wxRect:Inside}\label{wxrectinside}
+\membersection{wxRect::Inside}\label{wxrectinside}
 
 \constfunc{bool}{Inside}{\param{int }{x}, \param{int }{y}}
 
 \constfunc{bool}{Inside}{\param{const wxPoint\& }{pt}}
 
-Returns {\tt TRUE} if the given point is inside the rectangle (or on its
-boundary) and {\tt FALSE} otherwise.
+Returns {\tt true} if the given point is inside the rectangle (or on its
+boundary) and {\tt false} otherwise.
 
-\membersection{wxRect:Intersects}\label{wxrectintersects}
+\membersection{wxRect::Intersects}\label{wxrectintersects}
 
 \constfunc{bool}{Intersects}{\param{const wxRect\& }{rect}}
 
-Returns {\tt TRUE} if this rectangle has a non empty intersection with the
-rectangle {\it rect} and {\tt FALSE} otherwise.
+Returns {\tt true} if this rectangle has a non empty intersection with the
+rectangle {\it rect} and {\tt false} otherwise.
 
 \membersection{wxRect::Offset}\label{wxrectoffset}
 
@@ -210,19 +226,19 @@ Sets the x position.
 
 Sets the y position.
 
-\membersection{wxRect::operator $=$}
+\membersection{wxRect::operator $=$}\label{wxrectassign}
 
 \func{void}{operator $=$}{\param{const wxRect\& }{rect}}
 
 Assignment operator.
 
-\membersection{wxRect::operator $==$}
+\membersection{wxRect::operator $==$}\label{wxrectequal}
 
 \func{bool}{operator $==$}{\param{const wxRect\& }{rect}}
 
 Equality operator.
 
-\membersection{wxRect::operator $!=$}
+\membersection{wxRect::operator $!=$}\label{wxrectnotequal}
 
 \func{bool}{operator $!=$}{\param{const wxRect\& }{rect}}
 

@@ -4,9 +4,9 @@
 // Author:      Vadim Zeitlin
 // Modified by:
 // Created:     05.11.99
-// RCS-ID:      $Id: fontutil.cpp,v 1.19 2002/01/26 22:25:14 VZ Exp $
+// RCS-ID:      $Id: fontutil.cpp,v 1.33 2004/10/07 13:36:41 ABX Exp $
 // Copyright:   (c) 1999 Vadim Zeitlin <zeitlin@dptmaths.ens-cachan.fr>
-// Licence:     wxWindows license
+// Licence:     wxWindows licence
 ///////////////////////////////////////////////////////////////////////////////
 
 // ============================================================================
@@ -17,7 +17,7 @@
 // headers
 // ----------------------------------------------------------------------------
 
-#ifdef __GNUG__
+#if defined(__GNUG__) && !defined(NO_GCC_PRAGMA)
     #pragma implementation "fontutil.h"
 #endif
 
@@ -32,6 +32,7 @@
     #include "wx/string.h"
     #include "wx/log.h"
     #include "wx/intl.h"
+    #include "wx/encinfo.h"
 #endif //WX_PRECOMP
 
 #include "wx/msw/private.h"
@@ -62,10 +63,29 @@ bool wxNativeEncodingInfo::FromString(const wxString& s)
     wxStringTokenizer tokenizer(s, _T(";"));
 
     wxString encid = tokenizer.GetNextToken();
+
+    // we support 2 formats: the old one (and still used if !wxUSE_FONTMAP)
+    // used the raw encoding values but the new one uses the encoding names
     long enc;
-    if ( !encid.ToLong(&enc) )
-        return FALSE;
-    encoding = (wxFontEncoding)enc;
+    if ( encid.ToLong(&enc) )
+    {
+        // old format, intepret as encoding -- but after minimal checks
+        if ( enc < 0 || enc >= wxFONTENCODING_MAX )
+            return false;
+
+        encoding = (wxFontEncoding)enc;
+    }
+    else // not a number, interpret as an encoding name
+    {
+#if wxUSE_FONTMAP
+        encoding = wxFontMapper::GetEncodingFromName(encid);
+        if ( encoding == wxFONTENCODING_MAX )
+#endif // wxUSE_FONTMAP
+        {
+            // failed to parse the name (or couldn't even try...)
+            return false;
+        }
+    }
 
     facename = tokenizer.GetNextToken();
 
@@ -82,18 +102,28 @@ bool wxNativeEncodingInfo::FromString(const wxString& s)
         if ( wxSscanf(tmp, _T("%u"), &charset) != 1 )
         {
             // should be a number!
-            return FALSE;
+            return false;
         }
     }
 
-    return TRUE;
+    return true;
 }
 
 wxString wxNativeEncodingInfo::ToString() const
 {
     wxString s;
 
-    s << (long)encoding << _T(';') << facename;
+    s
+#if wxUSE_FONTMAP
+      // use the encoding names as this is safer than using the numerical
+      // values which may change with time (because new encodings are
+      // inserted...)
+      << wxFontMapper::GetEncodingName(encoding)
+#else // !wxUSE_FONTMAP
+      // we don't have any choice but to use the raw value
+      << (long)encoding
+#endif // wxUSE_FONTMAP/!wxUSE_FONTMAP
+      << _T(';') << facename;
 
     // ANSI_CHARSET is assumed anyhow
     if ( charset != ANSI_CHARSET )
@@ -111,94 +141,21 @@ wxString wxNativeEncodingInfo::ToString() const
 bool wxGetNativeFontEncoding(wxFontEncoding encoding,
                              wxNativeEncodingInfo *info)
 {
-    wxCHECK_MSG( info, FALSE, _T("bad pointer in wxGetNativeFontEncoding") );
+    wxCHECK_MSG( info, false, _T("bad pointer in wxGetNativeFontEncoding") );
 
     if ( encoding == wxFONTENCODING_DEFAULT )
     {
         encoding = wxFont::GetDefaultEncoding();
     }
 
-    switch ( encoding )
-    {
-        // although this function is supposed to return an exact match, do do
-        // some mappings here for the most common case of "standard" encoding
-        case wxFONTENCODING_SYSTEM:
-            info->charset = DEFAULT_CHARSET;
-            break;
-
-        case wxFONTENCODING_ISO8859_1:
-        case wxFONTENCODING_ISO8859_15:
-        case wxFONTENCODING_CP1252:
-            info->charset = ANSI_CHARSET;
-            break;
-
-#if !defined(__WIN16__) && !defined(__WXMICROWIN__)
-
-        // The following four fonts are multi-byte charsets
-        case wxFONTENCODING_CP932:
-            info->charset = SHIFTJIS_CHARSET;
-            break;
-
-        case wxFONTENCODING_CP936:
-            info->charset = GB2312_CHARSET;
-            break;
-
-        case wxFONTENCODING_CP949:
-            info->charset = HANGUL_CHARSET;
-            break;
-
-        case wxFONTENCODING_CP950:
-            info->charset = CHINESEBIG5_CHARSET;
-            break;
-
-        // The rest are single byte encodings
-        case wxFONTENCODING_CP1250:
-            info->charset = EASTEUROPE_CHARSET;
-            break;
-
-        case wxFONTENCODING_CP1251:
-            info->charset = RUSSIAN_CHARSET;
-            break;
-
-        case wxFONTENCODING_CP1253:
-            info->charset = GREEK_CHARSET;
-            break;
-
-        case wxFONTENCODING_CP1254:
-            info->charset = TURKISH_CHARSET;
-            break;
-
-        case wxFONTENCODING_CP1255:
-            info->charset = HEBREW_CHARSET;
-            break;
-
-        case wxFONTENCODING_CP1256:
-            info->charset = ARABIC_CHARSET;
-            break;
-
-        case wxFONTENCODING_CP1257:
-            info->charset = BALTIC_CHARSET;
-            break;
-
-        case wxFONTENCODING_CP874:
-            info->charset = THAI_CHARSET;
-            break;
-
-
-#endif // !Win16
-
-        case wxFONTENCODING_CP437:
-            info->charset = OEM_CHARSET;
-            break;
-
-        default:
-            // no way to translate this encoding into a Windows charset
-            return FALSE;
-    }
+    extern WXDLLIMPEXP_BASE long wxEncodingToCharset(wxFontEncoding encoding);
+    info->charset = wxEncodingToCharset(encoding);
+    if ( info->charset == -1 )
+        return false;
 
     info->encoding = encoding;
 
-    return TRUE;
+    return true;
 }
 
 bool wxTestFontEncoding(const wxNativeEncodingInfo& info)
@@ -207,19 +164,19 @@ bool wxTestFontEncoding(const wxNativeEncodingInfo& info)
     LOGFONT lf;
     wxZeroMemory(lf);       // all default values
 
-    lf.lfCharSet = info.charset;
+    lf.lfCharSet = (BYTE)info.charset;
     wxStrncpy(lf.lfFaceName, info.facename, WXSIZEOF(lf.lfFaceName));
 
     HFONT hfont = ::CreateFontIndirect(&lf);
     if ( !hfont )
     {
         // no such font
-        return FALSE;
+        return false;
     }
 
     ::DeleteObject((HGDIOBJ)hfont);
 
-    return TRUE;
+    return true;
 }
 
 // ----------------------------------------------------------------------------
@@ -233,12 +190,20 @@ wxFontEncoding wxGetFontEncFromCharSet(int cs)
     switch ( cs )
     {
         default:
-            // assume the system charset
+            wxFAIL_MSG( _T("unexpected Win32 charset") );
+            // fall through and assume the system charset
+
+        case DEFAULT_CHARSET:
             fontEncoding = wxFONTENCODING_SYSTEM;
             break;
 
         case ANSI_CHARSET:
             fontEncoding = wxFONTENCODING_CP1252;
+            break;
+
+        case SYMBOL_CHARSET:
+            // what can we do here?
+            fontEncoding = wxFONTENCODING_MAX;
             break;
 
 #if defined(__WIN32__) && !defined(__WXMICROWIN__)
@@ -306,36 +271,20 @@ wxFontEncoding wxGetFontEncFromCharSet(int cs)
 
 void wxFillLogFont(LOGFONT *logFont, const wxFont *font)
 {
+    wxNativeFontInfo fi;
+
     // maybe we already have LOGFONT for this font?
-    wxNativeFontInfo *fontinfo = font->GetNativeFontInfo();
-    if ( !fontinfo )
+    const wxNativeFontInfo *pFI = font->GetNativeFontInfo();
+    if ( !pFI )
     {
         // use wxNativeFontInfo methods to build a LOGFONT for this font
-        fontinfo = new wxNativeFontInfo;
+        fi.InitFromFont(*font);
 
-        // translate all font parameters
-        fontinfo->SetStyle((wxFontStyle)font->GetStyle());
-        fontinfo->SetWeight((wxFontWeight)font->GetWeight());
-        fontinfo->SetUnderlined(font->GetUnderlined());
-        fontinfo->SetPointSize(font->GetPointSize());
-
-        // set the family/facename
-        fontinfo->SetFamily((wxFontFamily)font->GetFamily());
-        wxString facename = font->GetFaceName();
-        if ( !facename.empty() )
-        {
-            fontinfo->SetFaceName(facename);
-        }
-
-        // deal with encoding now (it may override the font family and facename
-        // so do it after setting them)
-        fontinfo->SetEncoding(font->GetEncoding());
+        pFI = &fi;
     }
 
     // transfer all the data to LOGFONT
-    *logFont = fontinfo->lf;
-
-    delete fontinfo;
+    *logFont = pFI->lf;
 }
 
 wxFont wxCreateFontFromLogFont(const LOGFONT *logFont)

@@ -4,15 +4,15 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     01/02/97
-// RCS-ID:      $Id: scrolwin.h,v 1.24.2.1 2002/11/09 13:29:19 RL Exp $
-// Copyright:   (c) Julian Smart and Markus Holzem
-// Licence:     wxWindows license
+// RCS-ID:      $Id: scrolwin.h,v 1.38 2004/09/26 14:04:32 SC Exp $
+// Copyright:   (c) Julian Smart
+// Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
 
 #ifndef _WX_GENERIC_SCROLLWIN_H_
 #define _WX_GENERIC_SCROLLWIN_H_
 
-#if defined(__GNUG__) && !defined(__APPLE__)
+#if defined(__GNUG__) && !defined(NO_GCC_PRAGMA)
     #pragma interface "genscrolwin.h"
 #endif
 
@@ -45,20 +45,20 @@ class WXDLLEXPORT wxGenericScrolledWindow : public wxPanel,
 public:
     wxGenericScrolledWindow() : wxScrollHelper(this) { }
     wxGenericScrolledWindow(wxWindow *parent,
-                     wxWindowID id = -1,
+                     wxWindowID winid = wxID_ANY,
                      const wxPoint& pos = wxDefaultPosition,
                      const wxSize& size = wxDefaultSize,
                      long style = wxScrolledWindowStyle,
                      const wxString& name = wxPanelNameStr)
         : wxScrollHelper(this)
     {
-        Create(parent, id, pos, size, style, name);
+        Create(parent, winid, pos, size, style, name);
     }
 
     virtual ~wxGenericScrolledWindow();
 
     bool Create(wxWindow *parent,
-                wxWindowID id,
+                wxWindowID winid,
                 const wxPoint& pos = wxDefaultPosition,
                 const wxSize& size = wxDefaultSize,
                 long style = wxScrolledWindowStyle,
@@ -71,6 +71,9 @@ public:
 
     virtual void DoSetVirtualSize(int x, int y);
 
+#ifdef __WXMAC__
+	virtual bool MacClipChildren() const { return true ; }
+#endif
 protected:
     // this is needed for wxEVT_PAINT processing hack described in
     // wxScrollHelperEvtHandler::ProcessEvent()
@@ -79,11 +82,11 @@ protected:
     // we need to return a special WM_GETDLGCODE value to process just the
     // arrows but let the other navigation characters through
 #ifdef __WXMSW__
-    virtual long MSWWindowProc(WXUINT nMsg, WXWPARAM wParam, WXLPARAM lParam);
+    virtual WXLRESULT MSWWindowProc(WXUINT nMsg, WXWPARAM wParam, WXLPARAM lParam);
 #endif // __WXMSW__
 
 private:
-    DECLARE_ABSTRACT_CLASS(wxGenericScrolledWindow)
+    DECLARE_DYNAMIC_CLASS_NO_COPY(wxGenericScrolledWindow)
     DECLARE_EVENT_TABLE()
 };
 

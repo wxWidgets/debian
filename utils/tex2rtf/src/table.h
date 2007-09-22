@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     7.9.93
-// RCS-ID:      $Id: table.h,v 1.1 1999/01/02 00:45:09 JS Exp $
+// RCS-ID:      $Id: table.h,v 1.3 2004/06/04 17:58:55 ABX Exp $
 // Copyright:   (c) Julian Smart
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -21,7 +21,7 @@ struct ColumnData
   int spacing;        // Space between columns in twips
   bool leftBorder;
   bool rightBorder;
-  bool absWidth;      // If FALSE (the default), don't use an absolute width if you can help it.
+  bool absWidth;      // If false (the default), don't use an absolute width if you can help it.
 };
 
 extern ColumnData TableData[];
@@ -33,4 +33,4 @@ extern int noColumns;   // Current number of columns in table
 extern int ruleTop;
 extern int ruleBottom;
 extern int currentRowNumber;
-extern bool ParseTableArgument(char *value);
+extern bool ParseTableArgument(wxChar *value);

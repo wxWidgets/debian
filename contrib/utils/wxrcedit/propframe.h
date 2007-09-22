@@ -2,7 +2,7 @@
 // Purpose:     XML resources editor
 // Author:      Vaclav Slavik
 // Created:     2000/05/05
-// RCS-ID:      $Id: propframe.h,v 1.3 2002/09/07 12:15:24 GD Exp $
+// RCS-ID:      $Id: propframe.h,v 1.4 2004/06/11 13:14:23 ABX Exp $
 // Copyright:   (c) 2000 Vaclav Slavik
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -27,15 +27,15 @@ class PropertiesFrame : public wxFrame
     public:
         PropertiesFrame();
         ~PropertiesFrame();
-        
+
         void ShowProps(wxXmlNode *node);
-        
+
         void ClearProps();
         void AddProps(PropertyInfoArray& plist);
         void AddSingleProp(const PropertyInfo& pinfo, wxTreeItemId *root = NULL);
-      
+
         static PropertiesFrame *Get();
-           
+
     private:
 
         static PropertiesFrame *ms_Instance;
@@ -43,11 +43,11 @@ class PropertiesFrame : public wxFrame
 
         wxRemotelyScrolledTreeCtrl *m_tree;
         wxThinSplitterWindow *m_splitter;
-	    wxSplitterScrolledWindow *m_scrolledWindow;
+        wxSplitterScrolledWindow *m_scrolledWindow;
         wxTreeCompanionWindow *m_valueWindow;
-        
+
         wxHashTable m_EditCtrls;
-        
+
         friend class PropEditCtrl;
 };
 

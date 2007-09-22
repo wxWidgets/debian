@@ -4,7 +4,7 @@
 // Author:      Aleksandras Gluchovas
 // Modified by:
 // Created:     ??/10/98
-// RCS-ID:      $Id: dyntbar.h,v 1.6.2.2 2003/04/02 14:14:05 JS Exp $
+// RCS-ID:      $Id: dyntbar.h,v 1.16 2004/07/20 10:08:27 ABX Exp $
 // Copyright:   (c) Aleksandras Gluchovas
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -24,7 +24,7 @@
 Tool layout item.
 */
 
-class WXFL_DECLSPEC wxToolLayoutItem : public wxObject
+class WXDLLIMPEXP_FL wxToolLayoutItem : public wxObject
 {
     DECLARE_DYNAMIC_CLASS(wxToolLayoutItem)
 
@@ -33,19 +33,19 @@ public:
     bool      mIsSeparator;
 };
 
-class WXFL_DECLSPEC wxDynToolInfo;
+class WXDLLIMPEXP_FL wxDynToolInfo;
 
 typedef wxToolLayoutItem* wxToolLayoutItemPtrT;
 typedef wxDynToolInfo*    wxDynToolInfoPtrT;
 
-WXFL_DEFINE_ARRAY( wxToolLayoutItemPtrT, wxLayoutItemArrayT  );
-WXFL_DEFINE_ARRAY( wxDynToolInfoPtrT,    wxDynToolInfoArrayT );
+WXFL_DEFINE_ARRAY_PTR( wxToolLayoutItemPtrT, wxLayoutItemArrayT  );
+WXFL_DEFINE_ARRAY_PTR( wxDynToolInfoPtrT,    wxDynToolInfoArrayT );
 
 /*
 This is a base class for layout algorithm implementations.
 */
 
-class WXFL_DECLSPEC LayoutManagerBase
+class WXDLLIMPEXP_FL LayoutManagerBase
 {
 public:
         // Constructor.
@@ -64,7 +64,7 @@ BagLayout lays out items in left-to-right order from
 top to bottom.
 */
 
-class WXFL_DECLSPEC BagLayout : public LayoutManagerBase
+class WXDLLIMPEXP_FL BagLayout : public LayoutManagerBase
 {
 public:
         // Constructor.
@@ -79,7 +79,7 @@ public:
 This class holds dynamic toolbar item information.
 */
 
-class WXFL_DECLSPEC wxDynToolInfo : public wxToolLayoutItem
+class WXDLLIMPEXP_FL wxDynToolInfo : public wxToolLayoutItem
 {
     DECLARE_DYNAMIC_CLASS(wxDynToolInfo)
 
@@ -99,7 +99,7 @@ public:
 wxDynamicToolBar manages containment and layout of tool windows.
 */
 
-class WXFL_DECLSPEC wxDynamicToolBar : public wxToolBarBase
+class WXDLLIMPEXP_FL wxDynamicToolBar : public wxToolBarBase
 {
 protected:
     friend class wxDynamicToolBarSerializer;
@@ -148,25 +148,35 @@ public:
     virtual void AddTool( int toolIndex,
                               const wxString& imageFileName,
                               wxBitmapType imageFileType = wxBITMAP_TYPE_BMP,
-                              const wxString& labelText = wxT(""), bool alignTextRight = FALSE,
-                              bool isFlat = TRUE );
+                              const wxString& labelText = wxT(""), bool alignTextRight = false,
+                              bool isFlat = true );
         // Adds a tool. See the documentation for wxToolBar for details.
 
     virtual void AddTool( int toolIndex, wxBitmap labelBmp,
-                              const wxString& labelText = wxT(""), bool alignTextRight = FALSE,
-                              bool isFlat = TRUE );
+                              const wxString& labelText = wxT(""), bool alignTextRight = false,
+                              bool isFlat = true );
+
+        // Unhide method from parent.
+
+    virtual wxToolBarToolBase *AddTool (wxToolBarToolBase *tool)
+                              { return wxToolBarBase::AddTool(tool); };
 
     // Method from wxToolBarBase (for compatibility), only
     // the first two arguments are valid.
     // See the documentation for wxToolBar for details.
 
     virtual wxToolBarToolBase *AddTool(const int toolIndex, const wxBitmap& bitmap, const wxBitmap& pushedBitmap = wxNullBitmap,
-               const bool toggle = FALSE, const long xPos = -1, const long yPos = -1, wxObject *clientData = NULL,
+               const bool toggle = false, const long xPos = wxDefaultCoord, const long yPos = wxDefaultCoord, wxObject *clientData = NULL,
                const wxString& helpString1 = wxT(""), const wxString& helpString2 = wxT(""));
 
         // Adds a separator. See the documentation for wxToolBar for details.
 
-    virtual void AddSeparator( wxWindow* pSepartorWnd = NULL );
+    virtual void AddSeparator( wxWindow* pSepartorWnd );
+
+        // Unhide method from parent.
+
+    virtual wxToolBarToolBase *AddSeparator()
+                              { return wxToolBarBase::AddSeparator(); };
 
         // Returns tool information for the given tool index.
 
@@ -199,7 +209,7 @@ public:
 
         // Enables or disables the given tool.
 
-    virtual void EnableTool(const int toolIndex, const bool enable = TRUE);
+    virtual void EnableTool(int toolIndex, bool enable = true);
 
         // Responds to size events, calling Layout.
 

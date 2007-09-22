@@ -1,37 +1,10 @@
-wxwindows for Debian
+wxwidgets for Debian
 ----------------------
 
-Note:  After some eleven years, the wxWindows project has undergone a
-       change of name and is now formally known upstream as wxWidgets.
-       This will not be altered retroactively for the existing Debian
-       packages of 2.4, since forcing a recompile for every dependent
-       package just to change this is simply unwarranted.  The Debian
-       packages will adopt the name wxwidgets for use from 2.5 onward.
+The following packages are built from the wxWidgets CVS source.
 
-       The name change itself will not cause source incompatibilities,
-       and the library api will not be altered because of it, however
-       other maintainers will need to update their build dependencies
-       to accommodate a name as well as a version change for this one.
-
-       wxwindows.org will continue to refer to the existing project
-       site probably until sometime in 2005.  You should update any
-       references to use wxwidgets.org before then.
-
-       Why have we done this?
-       The new owners of the wxwindows.org domain have requested it.
-
-       Why have they done this?
-       Who can say...  I see pat@sf is crowing about a project named
-       WiX that they just accepted.  Perhaps they can tell you more.
-
-
-The following packages are built from the wxWindows CVS source.
-
-libwxbase		wxBase runtime shared libraries
-libwxbase-dev		extra files and static libs for building wxBase apps
-libwxbase-dbg		wxBase libraries built with -g and __WXDEBUG__
-
-libwxgtk		wxGTK runtime shared libraries
+libwxgtk		wxGTK runtime shared libraries, including selected
+			contrib libs.
 libwxgtk-dev		extra files and static libs for building wxGTK apps
 libwxgtk-dbg		wxGTK libraries built with -g and __WXDEBUG__
 
@@ -39,24 +12,21 @@ libwxgtk-python		Python binding to wxGTK  (from 2.2.3 onward, this
 			obsoletes the libwxgtk-python-contrib package as
 			all python modules are built into a single monolith)
 
-wxwin-contrib		wxWin contrib runtime shared libs (built with wxGTK)
-wxwin-contrib-dev	extra files and static contrib libs for building apps
-
-wxwin-headers		common header files for building wxWindows apps
-wxwin-doc		HTML version of the wxWindows manual
-wxwin-examples		wxWindows and wxPython demos and samples (source)
-wxwin-i18n		message catalogs for native language support
+wx-headers		common header files for building wxWidgets apps
+wx-doc			HTML version of the wxWidgets manual
+wx-examples		wxWidgets and wxPython demos and samples (source)
+wx-i18n			message catalogs for native language support
 
 
 	The following binaries can be built from the source package
 	with the mingw32 cross compiler, but are not currently
 	distributed by Debian.  If you feel that should change,
-	please file a bug against the wxwindows2.4 package, or
+	please file a bug against the wxwidgets2.5 package, or
 	append your views to a report already there if you're not
 	the first to do so.
 
 	[ you can check the current state of affairs at:
-	  http://bugs.debian.org/cgi-bin/pkgreport.cgi?pkg=wxwindows2.4 ]
+	  http://bugs.debian.org/cgi-bin/pkgreport.cgi?pkg=wxwidgets2.5 ]
 
 	Oh and, please do *not* file bug reports for these packages
 	to the Debian bts.  But do feel free to email me personally
@@ -64,12 +34,10 @@ wxwin-i18n		message catalogs for native language support
 
 libwxmsw-dev		mingw32-cross wxMSW libs.
 libwxmsw-dbg		mingw32-cross wxMSW (debug) libs.
-libwxbase-msw-dev	mingw32-cross wxBase libs.
-libwxbase-msw-dbg	mingw32-cross wxBase (debug) libs.
-wxwin-headers-msw	extra headers needed for wxMSW.
+wx-headers-msw		extra headers needed for wxMSW.
 
-	You can build all of these extra packages using the binary-cross
-	target in debian/rules.
+	You can build these extra packages using the binary-cross target
+	in debian/rules.
 
 
 	It is also possible to build a libwxgtk-dbg-python package.
@@ -89,7 +57,9 @@ wxwin-headers-msw	extra headers needed for wxMSW.
 	builds will automatically parallelise to suit the number of hosts
 	you have listed in DISTCC_HOSTS.  This will work for both native
 	and cross builds of the c++ libraries, if you have the relevant
-	compilers on all your build hosts.
+	compilers on all your build hosts.  wxPython builds cannot be
+	parallelised at this stage and will run serially regardless of
+	your configuration.
 
 
  -- Ron Lee <ron@debian.org>, Sun, 13 Feb 2000 18:40:00 +1030

@@ -43,38 +43,39 @@
 // Implementation
 // ---------------------------------------------------------------------------
 
+IMPLEMENT_DYNAMIC_CLASS(wxCDAudioWin, wxCDAudio)
+    
 wxCDAudioWin::wxCDAudioWin(void)
-  : wxCDAudio(), m_trksize(NULL), m_trkpos(NULL), m_ok(TRUE), m_toc(NULL)
+  : wxCDAudio(), m_trksize(NULL), m_trkpos(NULL), m_toc(NULL), m_ok(true)
 {
   MCI_OPEN_PARMS open_struct;
   MCI_SET_PARMS set_struct;
-  DWORD ret;
 
   m_internal = new CDAW_Internal;
-  open_struct.lpstrDeviceType = "cdaudio";
-  ret = mciSendCommand(NULL, MCI_OPEN, MCI_OPEN_TYPE,
+  open_struct.lpstrDeviceType = _T("cdaudio");
+  DWORD ret = mciSendCommand((MCIDEVICEID)NULL, MCI_OPEN, MCI_OPEN_TYPE,
                        (DWORD)&open_struct);
   if (ret) {
-    m_ok = FALSE;
+    m_ok = false;
     return;
   }
   m_internal->dev_id = open_struct.wDeviceID;
 
   set_struct.dwTimeFormat = MCI_FORMAT_MSF;
-  ret = mciSendCommand(m_internal->dev_id, MCI_SET, MCI_SET_TIME_FORMAT,
+  mciSendCommand(m_internal->dev_id, MCI_SET, MCI_SET_TIME_FORMAT,
                        (DWORD)(LPVOID)&set_struct);
 
   PrepareToc();
 
   set_struct.dwTimeFormat = MCI_FORMAT_TMSF;
-  ret = mciSendCommand(m_internal->dev_id, MCI_SET, MCI_SET_TIME_FORMAT,
+  mciSendCommand(m_internal->dev_id, MCI_SET, MCI_SET_TIME_FORMAT,
                        (DWORD)(LPVOID)&set_struct);
 }
 
 wxCDAudioWin::~wxCDAudioWin(void)
 {
   if (m_ok) {
-    mciSendCommand(m_internal->dev_id, MCI_CLOSE, 0, NULL);
+    mciSendCommand(m_internal->dev_id, MCI_CLOSE, 0,(DWORD_PTR)NULL);
     delete m_toc;
     delete[] m_trksize;
     delete[] m_trkpos;
@@ -87,13 +88,13 @@ void wxCDAudioWin::PrepareToc(void)
   MCI_STATUS_PARMS status_struct;
   wxUint16 i, nb_m_trksize;
   wxCDtime total_time, *trk;
-  DWORD ret, tmem;
+  DWORD tmem;
 
   if (!m_ok)
     return;
 
   status_struct.dwItem = MCI_STATUS_NUMBER_OF_TRACKS;
-  ret = mciSendCommand(m_internal->dev_id, MCI_STATUS, MCI_STATUS_ITEM,
+  mciSendCommand(m_internal->dev_id, MCI_STATUS, MCI_STATUS_ITEM,
                  (DWORD)&status_struct);
   nb_m_trksize = status_struct.dwReturn;
 
@@ -101,7 +102,7 @@ void wxCDAudioWin::PrepareToc(void)
   m_trkpos = new wxCDtime[nb_m_trksize+1];
 
   status_struct.dwItem = MCI_STATUS_LENGTH;
-  ret = mciSendCommand(m_internal->dev_id, MCI_STATUS, MCI_STATUS_ITEM,
+  mciSendCommand(m_internal->dev_id, MCI_STATUS, MCI_STATUS_ITEM,
                  (DWORD)&status_struct);
   total_time.track = nb_m_trksize;
   tmem = status_struct.dwReturn;
@@ -113,7 +114,7 @@ void wxCDAudioWin::PrepareToc(void)
   for (i=1;i<=nb_m_trksize;i++) {
     status_struct.dwItem = MCI_STATUS_POSITION;
     status_struct.dwTrack = i;
-    ret  = mciSendCommand(m_internal->dev_id, MCI_STATUS,
+    mciSendCommand(m_internal->dev_id, MCI_STATUS,
                    MCI_STATUS_ITEM | MCI_TRACK,
                    (DWORD)(LPVOID)&status_struct);
     tmem = status_struct.dwReturn;
@@ -127,7 +128,7 @@ void wxCDAudioWin::PrepareToc(void)
 
     status_struct.dwItem = MCI_STATUS_LENGTH;
     status_struct.dwTrack = i;
-    ret  = mciSendCommand(m_internal->dev_id, MCI_STATUS,
+    mciSendCommand(m_internal->dev_id, MCI_STATUS,
                    MCI_STATUS_ITEM | MCI_TRACK,
                    (DWORD)(LPVOID)&status_struct);
     tmem = status_struct.dwReturn;
@@ -149,7 +150,7 @@ bool wxCDAudioWin::Play(const wxCDtime& beg_time, const wxCDtime& end_time)
   MCI_PLAY_PARMS play_struct;
 
   if (!m_ok)
-    return FALSE;
+    return false;
 
   tmsf = MCI_MAKE_TMSF(beg_time.track, beg_time.min,
                        beg_time.sec, 0);
@@ -159,13 +160,13 @@ bool wxCDAudioWin::Play(const wxCDtime& beg_time, const wxCDtime& end_time)
   play_struct.dwTo = tmsf;
 
   mciSendCommand(m_internal->dev_id, MCI_PLAY, 0, (DWORD)&play_struct);
-  return TRUE;
+  return true;
 }
 
 bool wxCDAudioWin::Pause(void)
 {
   if (!m_ok)
-    return FALSE;
+    return false;
 
   return (mciSendCommand(m_internal->dev_id, MCI_PAUSE, 0, 0) == 0);
 }
@@ -173,7 +174,7 @@ bool wxCDAudioWin::Pause(void)
 bool wxCDAudioWin::Resume(void)
 {
   if (!m_ok)
-    return FALSE;
+    return false;
 
   return (mciSendCommand(m_internal->dev_id, MCI_RESUME, 0, 0) == 0);
 }
@@ -200,7 +201,7 @@ wxCDAudio::CDstatus wxCDAudioWin::GetStatus(void)
 wxCDtime wxCDAudioWin::GetTime(void)
 {
   MCI_STATUS_PARMS status_struct;
-  wxCDtime cd_time = {-1, -1, -1, -1};
+  wxCDtime cd_time = {0,0,0,0};
 
   if (!m_ok)
     return cd_time;

@@ -2,12 +2,12 @@
 // Name:        m_hline.cpp
 // Purpose:     wxHtml module for horizontal line (HR tag)
 // Author:      Vaclav Slavik
-// RCS-ID:      $Id: m_hline.cpp,v 1.15.2.3 2002/11/09 00:07:32 VS Exp $
+// RCS-ID:      $Id: m_hline.cpp,v 1.23 2004/09/27 19:15:05 ABX Exp $
 // Copyright:   (c) 1999 Vaclav Slavik
-// Licence:     wxWindows Licence
+// Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
 
-#ifdef __GNUG__
+#if defined(__GNUG__) && !defined(NO_GCC_PRAGMA)
 #pragma implementation
 #endif
 
@@ -42,17 +42,22 @@ class wxHtmlLineCell : public wxHtmlCell
 {
     public:
         wxHtmlLineCell(int size, bool shading) : wxHtmlCell() {m_Height = size; m_HasShading = shading;}
-        void Draw(wxDC& dc, int x, int y, int view_y1, int view_y2);
+        void Draw(wxDC& dc, int x, int y, int view_y1, int view_y2,
+                  wxHtmlRenderingInfo& info);
         void Layout(int w)
             { m_Width = w; wxHtmlCell::Layout(w); }
 
     private:
         // Should we draw 3-D shading or not
       bool m_HasShading;
+
+      DECLARE_NO_COPY_CLASS(wxHtmlLineCell)
 };
 
 
-void wxHtmlLineCell::Draw(wxDC& dc, int x, int y, int WXUNUSED(view_y1), int WXUNUSED(view_y2))
+void wxHtmlLineCell::Draw(wxDC& dc, int x, int y,
+                          int WXUNUSED(view_y1), int WXUNUSED(view_y2),
+                          wxHtmlRenderingInfo& WXUNUSED(info))
 {
     wxBrush mybrush(wxT("GREY"), (m_HasShading) ? wxTRANSPARENT : wxSOLID);
     wxPen mypen(wxT("GREY"), 1, wxSOLID);
@@ -70,6 +75,7 @@ void wxHtmlLineCell::Draw(wxDC& dc, int x, int y, int WXUNUSED(view_y1), int WXU
 
 
 TAG_HANDLER_BEGIN(HR, "HR")
+    TAG_HANDLER_CONSTR(HR) { }
 
     TAG_HANDLER_PROC(tag)
     {
@@ -92,7 +98,7 @@ TAG_HANDLER_BEGIN(HR, "HR")
         m_WParser->CloseContainer();
         m_WParser->OpenContainer();
 
-        return FALSE;
+        return false;
     }
 
 TAG_HANDLER_END(HR)

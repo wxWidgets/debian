@@ -2,14 +2,17 @@
 // Name:        gauge.cpp
 // Purpose:
 // Author:      Robert Roebling
-// Id:          $Id: gauge.cpp,v 1.19.2.1 2002/10/15 13:25:36 VZ Exp $
+// Id:          $Id: gauge.cpp,v 1.30 2004/06/24 20:04:01 RD Exp $
 // Copyright:   (c) 1998 Robert Roebling
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
 
-#ifdef __GNUG__
+#if defined(__GNUG__) && !defined(NO_GCC_PRAGMA)
 #pragma implementation "gauge.h"
 #endif
+
+// For compilers that support precompilation, includes "wx.h".
+#include "wx/wxprec.h"
 
 #include "wx/gauge.h"
 
@@ -52,10 +55,9 @@ bool wxGauge::Create( wxWindow *parent,
 
     m_parent->DoAddChild( this );
 
-    PostCreation();
-
-    Show( TRUE );
-
+    PostCreation(size);
+    SetBestSize(size);
+    
     return TRUE;
 }
 
@@ -66,6 +68,17 @@ void wxGauge::DoSetGauge()
 
     gtk_progress_bar_update( GTK_PROGRESS_BAR(m_widget),
                              m_rangeMax ? ((float)m_gaugePos)/m_rangeMax : 0.);
+}
+
+wxSize wxGauge::DoGetBestSize() const
+{
+    wxSize best;
+    if (HasFlag(wxGA_VERTICAL))
+        best = wxSize(28, 100);
+    else
+        best = wxSize(100, 28);
+    CacheBestSize(best);
+    return best;
 }
 
 void wxGauge::SetRange( int range )
@@ -96,10 +109,21 @@ int wxGauge::GetValue() const
     return m_gaugePos;
 }
 
-void wxGauge::ApplyWidgetStyle()
+wxVisualAttributes wxGauge::GetDefaultAttributes() const
 {
-    SetWidgetStyle();
-    gtk_widget_set_style( m_widget, m_widgetStyle );
+    // Visible gauge colours use a different colour state
+    return GetDefaultAttributesFromGTKWidget(m_widget,
+                                             UseGTKStyleBase(),
+                                             GTK_STATE_ACTIVE);
+
+}
+
+// static
+wxVisualAttributes
+wxGauge::GetClassDefaultAttributes(wxWindowVariant WXUNUSED(variant))
+{
+    return GetDefaultAttributesFromGTKWidget(gtk_progress_bar_new,
+                                             false, GTK_STATE_ACTIVE);
 }
 
 #endif // wxUSE_GAUGE

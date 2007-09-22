@@ -5,67 +5,63 @@
 // Author:      Robin Dunn
 //
 // Created:     15-Mar-1999
-// RCS-ID:      $Id: glcanvas.i,v 1.16.2.3 2003/09/23 16:28:19 RD Exp $
+// RCS-ID:      $Id: glcanvas.i,v 1.31 2004/06/02 02:29:46 RD Exp $
 // Copyright:   (c) 1998 by Total Control Software
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
 
 
-%module glcanvas
+%define DOCSTRING
+"`GLCanvas` provides an OpenGL Context on a `wx.Window`."
+%enddef
+
+%module(package="wx", docstring=DOCSTRING) glcanvas
 
 %{
-#include "wxPython.h"
+#include "wx/wxPython/wxPython.h"
+#include "wx/wxPython/pyclasses.h"
 
-#ifdef __WXMSW__
-#include "myglcanvas.h"
-#else
 #include <wx/glcanvas.h>
-#endif
 
 %}
 
 //---------------------------------------------------------------------------
 
-%include typemaps.i
-%include my_typemaps.i
-
-%extern wx.i
-%extern windows.i
-%extern windows2.i
-%extern windows3.i
-%extern frames.i
-%extern _defs.i
-%extern misc.i
-%extern gdi.i
-%extern controls.i
-%extern events.i
+%import core.i
+%pythoncode { wx = _core }
+%pythoncode { __docfilter__ = wx.__DocFilter(globals()) }
 
 
-%pragma(python) code = "import wx"
+MAKE_CONST_WXSTRING2(GLCanvasNameStr, wxT("GLCanvas"));
+MAKE_CONST_WXSTRING_NOSWIG(EmptyString);
 
-//----------------------------------------------------------------------
 
-%{
-    // Put some wx default wxChar* values into wxStrings.
-    static const wxString wxPyGLCanvasNameStr(wxT("GLCanvas"));
-    static const wxString wxPyEmptyString(wxT(""));
-%}
+%include _glcanvas_rename.i
 
 //---------------------------------------------------------------------------
 
 class wxPalette;
-class wxWindow;
-class wxSize;
-class wxPoint;
-class wxGLCanvas;
 
 //---------------------------------------------------------------------------
 
+MustHaveApp(wxGLContext);
+
 class wxGLContext : public wxObject {
 public:
-#ifndef __WXMAC__  //  fix this?
+#ifndef __WXMAC__  
     wxGLContext(bool isRGB, wxGLCanvas *win,
-                const wxPalette& palette = wxNullPalette);
+                const wxPalette& palette = wxNullPalette,
+                const wxGLContext* other = NULL);
+#else
+    %extend {
+        wxGLContext(bool isRGB, wxGLCanvas *win,
+                    const wxPalette& palette = wxNullPalette,
+                    const wxGLContext* other = NULL) {
+            AGLPixelFormat fmt;  // TODO: How should this be initialized?
+            return new wxGLContext(fmt, win, palette, other);
+        }
+    }
+
 #endif
     ~wxGLContext();
 
@@ -105,28 +101,31 @@ enum {
 };
 
 
-%typemap(python, in) int *attribList (int *temp) {
+%typemap(in) int *attribList (int *temp) {
     int i;
-    if (PySequence_Check($source)) {
-        int size = PyObject_Length($source);
+    if (PySequence_Check($input)) {
+        int size = PyObject_Length($input);
         temp = new int[size+1]; // (int*)malloc((size + 1) * sizeof(int));
         for (i = 0; i < size; i++) {
-            temp[i] = PyInt_AsLong(PySequence_GetItem($source, i));
+            temp[i] = PyInt_AsLong(PySequence_GetItem($input, i));
         }
         temp[size] = 0;
-        $target = temp;
+        $1 = temp;
     }
 }
 
-%typemap(python, freearg) int *attribList
+%typemap(freearg) int *attribList
 {
-    delete [] $source;
+    delete [] $1;
 }
 
 
 
+MustHaveApp(wxGLCanvas);
+
 class wxGLCanvas : public wxWindow {
 public:
+    %pythonAppend wxGLCanvas   "self._setOORInfo(self)"
     wxGLCanvas(wxWindow *parent, wxWindowID id = -1,
                const wxPoint& pos = wxDefaultPosition,
                const wxSize& size = wxDefaultSize, long style = 0,
@@ -134,7 +133,8 @@ public:
                int *attribList = NULL,
                const wxPalette& palette = wxNullPalette);
 
-    %name(wxGLCanvasWithContext)
+    %pythonAppend wxGLCanvas   "val._setOORInfo(val)"
+    %name(GLCanvasWithContext)
         wxGLCanvas( wxWindow *parent,
                     const wxGLContext *shared = NULL,
                     wxWindowID id = -1,
@@ -145,11 +145,6 @@ public:
                     int *attribList = NULL,
                     const wxPalette& palette = wxNullPalette );
 
-//      bool Create(wxWindow *parent, wxWindowID id,
-//                  const wxPoint& pos, const wxSize& size, long style, const wxString& name);
-
-    %pragma(python) addtomethod = "__init__:self._setOORInfo(self)"
-    %pragma(python) addtomethod = "wxGLCanvasWithContext:val._setOORInfo(self)"
 
     void SetCurrent();
     void SetColour(const wxString& colour);
@@ -169,9 +164,6 @@ public:
 //---------------------------------------------------------------------------
 
 %init %{
-
-    wxClassInfo::CleanUpClasses();
-    wxClassInfo::InitializeClasses();
 
 %}
 

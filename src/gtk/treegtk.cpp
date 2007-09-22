@@ -4,12 +4,12 @@
 // Author:      Denis Pershin
 // Modified by:
 // Created:     07/05/98
-// RCS-ID:      $Id: treegtk.cpp,v 1.3.6.1 2002/12/29 07:48:20 RL Exp $
+// RCS-ID:      $Id: treegtk.cpp,v 1.7 2004/05/23 20:52:21 JS Exp $
 // Copyright:   (c) Denis Pershin
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
 
-#ifdef __GNUG__
+#if defined(__GNUG__) && !defined(NO_GCC_PRAGMA)
 #pragma implementation "treectrl.h"
 #endif
 

@@ -4,9 +4,9 @@
 // Author:      Vadim Zeitlin
 // Modified by:
 // Created:     10.05.98
-// RCS-ID:      $Id: dropsrc.cpp,v 1.21 2002/07/09 11:52:11 VZ Exp $
+// RCS-ID:      $Id: dropsrc.cpp,v 1.29 2004/08/16 12:45:45 ABX Exp $
 // Copyright:   (c) 1998 Vadim Zeitlin <zeitlin@dptmaths.ens-cachan.fr>
-// Licence:     wxWindows license
+// Licence:     wxWindows licence
 ///////////////////////////////////////////////////////////////////////////////
 
 // ============================================================================
@@ -17,7 +17,7 @@
 // headers
 // ----------------------------------------------------------------------------
 
-#ifdef __GNUG__
+#if defined(__GNUG__) && !defined(NO_GCC_PRAGMA)
   #pragma implementation "dropsrc.h"
 #endif
 
@@ -38,15 +38,11 @@
 #include "wx/log.h"
 #include "wx/dnd.h"
 
-#include <windows.h>
+#include "wx/msw/private.h"
 
-#if wxUSE_NORLANDER_HEADERS
+// for some compilers, the entire ole2.h must be included, not only oleauto.h
+#if wxUSE_NORLANDER_HEADERS || defined(__WATCOMC__) || defined(__WXWINCE__)
     #include <ole2.h>
-#endif
-
-#ifndef __WIN32__
-    #include <ole2.h>
-    #include <olestd.h>
 #endif
 
 #include <oleauto.h>
@@ -71,6 +67,8 @@ public:
 private:
   DWORD         m_grfInitKeyState;  // button which started the d&d operation
   wxDropSource *m_pDropSource;      // pointer to C++ class we belong to
+
+    DECLARE_NO_COPY_CLASS(wxIDropSource)
 };
 
 // ============================================================================
@@ -243,11 +241,11 @@ bool wxDropSource::GiveFeedback(wxDragResult effect)
     {
         ::SetCursor((HCURSOR)cursor.GetHCURSOR());
 
-        return TRUE;
+        return true;
     }
     else
     {
-        return FALSE;
+        return false;
     }
 }
 

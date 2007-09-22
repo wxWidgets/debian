@@ -4,15 +4,15 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     01/02/97
-// RCS-ID:      $Id: msgdlg.h,v 1.5 2001/06/27 00:27:23 VZ Exp $
+// RCS-ID:      $Id: msgdlg.h,v 1.10 2004/08/30 10:18:43 ABX Exp $
 // Copyright:   (c) Julian Smart
-// Licence:   	wxWindows licence
+// Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
 
 #ifndef _WX_MSGBOXDLG_H_
 #define _WX_MSGBOXDLG_H_
 
-#ifdef __GNUG__
+#if defined(__GNUG__) && !defined(NO_GCC_PRAGMA)
 #pragma interface "msgdlg.h"
 #endif
 
@@ -38,6 +38,8 @@ public:
         long style = wxOK|wxCENTRE, const wxPoint& pos = wxDefaultPosition);
 
     int ShowModal(void);
+
+    DECLARE_NO_COPY_CLASS(wxMessageDialog)
 };
 
 

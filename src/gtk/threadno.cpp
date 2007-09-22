@@ -4,18 +4,21 @@
 // Author:      Guilhem Lavaux
 // Modified by:
 // Created:     04/22/98
-// RCS-ID:      $Id: threadno.cpp,v 1.12 1999/03/06 00:10:29 VZ Exp $
+// RCS-ID:      $Id: threadno.cpp,v 1.16 2004/11/03 21:13:19 RR Exp $
 // Copyright:   (c) Wolfram Gloger (1996, 1997); Guilhem Lavaux (1998)
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
 
-#ifdef __GNUG__
+#if defined(__GNUG__) && !defined(NO_GCC_PRAGMA)
     #pragma implementation "thread.h"
 #endif
 
+// For compilers that support precompilation, includes "wx.h".
+#include "wx/wxprec.h"
+
+#include "wx/thread.h"
 #include "wx/wx.h"
 #include "wx/module.h"
-#include "wx/thread.h"
 #include "wx/log.h"
 
 wxMutex::wxMutex()

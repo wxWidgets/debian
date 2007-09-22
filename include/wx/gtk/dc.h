@@ -2,7 +2,7 @@
 // Name:        dc.h
 // Purpose:
 // Author:      Robert Roebling
-// Id:          $Id: dc.h,v 1.23 2002/09/07 12:28:46 GD Exp $
+// Id:          $Id: dc.h,v 1.28 2004/10/07 16:42:06 JS Exp $
 // Copyright:   (c) 1998 Robert Roebling
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -11,7 +11,7 @@
 #ifndef __GTKDCH__
 #define __GTKDCH__
 
-#if defined(__GNUG__) && !defined(__APPLE__)
+#if defined(__GNUG__) && !defined(NO_GCC_PRAGMA)
 #pragma interface
 #endif
 
@@ -25,6 +25,7 @@ class wxDC;
 // constants
 //-----------------------------------------------------------------------------
 
+#ifndef MM_TEXT
 #define MM_TEXT         0
 #define MM_ISOTROPIC    1
 #define MM_ANISOTROPIC  2
@@ -33,6 +34,7 @@ class wxDC;
 #define MM_TWIPS        5
 #define MM_POINTS       6
 #define MM_METRIC       7
+#endif
 
 //-----------------------------------------------------------------------------
 // wxDC
@@ -45,9 +47,6 @@ public:
     ~wxDC() { }
 
     void SetColourMap( const wxPalette& palette ) { SetPalette(palette); };
-
-    // the first two must be overridden and called
-    virtual void DestroyClippingRegion();
 
     // Resolution in pixels per logical inch
     virtual wxSize GetPPI() const;

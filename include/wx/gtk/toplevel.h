@@ -2,7 +2,7 @@
 // Name:        wx/gtk/toplevel.h
 // Purpose:
 // Author:      Robert Roebling
-// Id:          $Id: toplevel.h,v 1.8.2.2 2003/03/29 19:17:46 RD Exp $
+// Id:          $Id: toplevel.h,v 1.15 2004/09/26 14:32:06 VZ Exp $
 // Copyright:   (c) 1998 Robert Roebling, Julian Smart
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -11,7 +11,7 @@
 #ifndef __GTKTOPLEVELH__
 #define __GTKTOPLEVELH__
 
-#if defined(__GNUG__) && !defined(__APPLE__)
+#if defined(__GNUG__) && !defined(NO_GCC_PRAGMA)
     #pragma interface "toplevel.h"
 #endif
 
@@ -60,9 +60,11 @@ public:
     virtual bool ShowFullScreen(bool show, long style = wxFULLSCREEN_ALL);
     virtual bool IsFullScreen() const { return m_fsIsShowing; };
 
-    /*virtual*/ bool SetShape(const wxRegion& region);
+    virtual bool SetShape(const wxRegion& region);
 
     virtual bool Show(bool show = TRUE);
+
+    virtual bool IsActive();
 
     virtual void SetTitle( const wxString &title );
     virtual wxString GetTitle() const { return m_title; }
@@ -79,9 +81,6 @@ public:
     // move the window to the specified location and resize it: this is called
     // from both DoSetSize() and DoSetClientSize()
     virtual void DoMoveWindow(int x, int y, int width, int height);
-
-    // set the icon for this window
-    void DoSetIcon( const wxIcon& icon );
 
     // GTK callbacks
     virtual void GtkOnSize( int x, int y, int width, int height );

@@ -4,7 +4,7 @@
 // Author:      Vadim Zeitlin
 // Modified by:
 // Created:     03.04.198
-// RCS-ID:      $Id: registry.h,v 1.24 2002/01/21 15:52:03 VZ Exp $
+// RCS-ID:      $Id: registry.h,v 1.31 2004/09/03 18:32:50 ABX Exp $
 // Copyright:   (c) 1998 Vadim Zeitlin <zeitlin@dptmaths.ens-cachan.fr>
 // Licence:     wxWindows licence
 ///////////////////////////////////////////////////////////////////////////////
@@ -12,7 +12,7 @@
 #ifndef   _REGISTRY_H
 #define   _REGISTRY_H
 
-#ifdef __GNUG__
+#if defined(__GNUG__) && !defined(NO_GCC_PRAGMA)
 #pragma interface "registry.h"
 #endif
 
@@ -32,7 +32,7 @@ typedef unsigned long ulong;
 // ----------------------------------------------------------------------------
 // class wxRegKey encapsulates window HKEY handle
 // ----------------------------------------------------------------------------
-class WXDLLEXPORT wxRegKey 
+class WXDLLIMPEXP_BASE wxRegKey
 {
 public:
   // NB: do _not_ change the values of elements in these enumerations!
@@ -76,6 +76,13 @@ public:
 #endif  // Win32/16
   };
 
+  // access mode for the key
+  enum AccessMode
+  {
+      Read,     // read-only
+      Write     // read and write
+  };
+
   // information about standard (predefined) registry keys
     // number of standard keys
   static const size_t nStdKeys;
@@ -99,7 +106,7 @@ public:
   wxRegKey(StdKey keyParent, const wxString& strKey);
     // strKey is the name of key under (previously created) keyParent
   wxRegKey(const wxRegKey& keyParent, const wxString& strKey);
-    //
+    // dtor closes the key
  ~wxRegKey();
 
   // change key (closes the previously opened key if any)
@@ -114,7 +121,7 @@ public:
 
   // get infomation about the key
     // get the (full) key name. Abbreviate std root keys if bShortPrefix.
-  wxString GetName(bool bShortPrefix = TRUE) const;
+  wxString GetName(bool bShortPrefix = true) const;
     // return true if the key exists
   bool  Exists() const;
     // get the info about key (any number of these pointers may be NULL)
@@ -130,9 +137,9 @@ public:
   // operations on the key itself
     // explicitly open the key (will be automatically done by all functions
     // which need the key to be opened if the key is not opened yet)
-  bool  Open();
+  bool  Open(AccessMode mode = Write);
     // create the key: will fail if the key already exists and !bOkIfExists
-  bool  Create(bool bOkIfExists = TRUE);
+  bool  Create(bool bOkIfExists = true);
     // rename a value from old name to new one
   bool  RenameValue(const wxChar *szValueOld, const wxChar *szValueNew);
     // rename the key
@@ -159,7 +166,7 @@ public:
   // access to values and subkeys
     // get value type
   ValueType GetValueType(const wxChar *szValue) const;
-    // returns TRUE if the value contains a number (else it's some string)
+    // returns true if the value contains a number (else it's some string)
   bool IsNumericValue(const wxChar *szValue) const;
 
     // assignment operators set the default value of the key
@@ -178,10 +185,10 @@ public:
   bool  SetValue(const wxChar *szValue, const wxString& strValue);
     // retrieve the string value
   bool  QueryValue(const wxChar *szValue, wxString& strValue) const
-    { return QueryValue(szValue, strValue, FALSE); }
+    { return QueryValue(szValue, strValue, false); }
     // retrieve raw string value
   bool  QueryRawValue(const wxChar *szValue, wxString& strValue) const
-    { return QueryValue(szValue, strValue, TRUE); }
+    { return QueryValue(szValue, strValue, true); }
     // retrieve either raw or expanded string value
   bool  QueryValue(const wxChar *szValue, wxString& strValue, bool raw) const;
 
@@ -190,6 +197,10 @@ public:
   bool  SetValue(const wxChar *szValue, long lValue);
     // return the numeric value
   bool  QueryValue(const wxChar *szValue, long *plValue) const;
+    // set the binary value
+  bool  SetValue(const wxChar *szValue, const wxMemoryBuffer& buf);
+    // return the binary value
+  bool  QueryValue(const wxChar *szValue, wxMemoryBuffer& buf) const;
 #endif  //Win32
 
   // query existence of a key/value

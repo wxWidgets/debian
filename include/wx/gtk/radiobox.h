@@ -2,7 +2,7 @@
 // Name:        wx/gtk/radiobox.h
 // Purpose:
 // Author:      Robert Roebling
-// Id:          $Id: radiobox.h,v 1.28 2002/09/07 12:28:46 GD Exp $
+// Id:          $Id: radiobox.h,v 1.36 2004/10/22 19:09:54 KH Exp $
 // Copyright:   (c) 1998 Robert Roebling
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -11,7 +11,7 @@
 #ifndef __GTKRADIOBOXH__
 #define __GTKRADIOBOXH__
 
-#if defined(__GNUG__) && !defined(__APPLE__)
+#if defined(__GNUG__) && !defined(NO_GCC_PRAGMA)
 #pragma interface
 #endif
 
@@ -41,6 +41,21 @@ public:
 
         Create( parent, id, title, pos, size, n, choices, majorDim, style, val, name );
     }
+    wxRadioBox(wxWindow *parent,
+               wxWindowID id,
+               const wxString& title,
+               const wxPoint& pos,
+               const wxSize& size,
+               const wxArrayString& choices,
+               int majorDim = 1,
+               long style = wxRA_HORIZONTAL,
+               const wxValidator& val = wxDefaultValidator,
+               const wxString& name = wxRadioBoxNameStr)
+    {
+        Init();
+
+        Create( parent, id, title, pos, size, choices, majorDim, style, val, name );
+    }
 
     virtual ~wxRadioBox();
     bool Create(wxWindow *parent,
@@ -50,6 +65,16 @@ public:
                 const wxSize& size = wxDefaultSize,
                 int n = 0,
                 const wxString choices[] = (const wxString *) NULL,
+                int majorDim = 0,
+                long style = wxRA_HORIZONTAL,
+                const wxValidator& val = wxDefaultValidator,
+                const wxString& name = wxRadioBoxNameStr);
+    bool Create(wxWindow *parent,
+                wxWindowID id,
+                const wxString& title,
+                const wxPoint& pos,
+                const wxSize& size,
+                const wxArrayString& choices,
                 int majorDim = 0,
                 long style = wxRA_HORIZONTAL,
                 const wxValidator& val = wxDefaultValidator,
@@ -86,6 +111,9 @@ public:
     virtual bool Show( bool show = TRUE );
     virtual bool Enable( bool enable = TRUE );
 
+    static wxVisualAttributes
+    GetClassDefaultAttributes(wxWindowVariant variant = wxWINDOW_VARIANT_NORMAL);
+
     // implementation
     // --------------
 
@@ -93,11 +121,14 @@ public:
     void GtkDisableEvents();
     void GtkEnableEvents();
     bool IsOwnGtkWindow( GdkWindow *window );
-    void ApplyWidgetStyle();
+    void DoApplyWidgetStyle(GtkRcStyle *style);
 #if wxUSE_TOOLTIPS
     void ApplyToolTip( GtkTooltips *tips, const wxChar *tip );
 #endif // wxUSE_TOOLTIPS
-    wxSize LayoutItems();
+
+    // reposition the radio buttons correctly unless justCalc == true and
+    // return the total size needed to accommodate them
+    wxSize LayoutItems(bool justCalc) const;
 
     virtual void DoSetSize( int x, int y, int width, int height, int sizeFlags = wxSIZE_AUTO );
     virtual void OnInternalIdle();
@@ -108,6 +139,9 @@ public:
     wxList           m_boxes;
 
 protected:
+    // implement some base class methods
+    virtual wxSize DoGetBestSize() const;
+
     // common part of all ctors
     void Init();
 

@@ -4,8 +4,8 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     04/01/98
-// RCS-ID:      $Id: mdi.h,v 1.13 2002/01/19 14:47:57 GD Exp $
-// Copyright:   (c) Julian Smart and Markus Holzem
+// RCS-ID:      $Id: mdi.h,v 1.15 2004/06/01 16:09:27 ABX Exp $
+// Copyright:   (c) Julian Smart
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
 
@@ -58,7 +58,7 @@ class MyChild: public wxMDIChildFrame
 {
 public:
     MyCanvas *canvas;
-    MyChild(wxMDIParentFrame *parent, const wxString& title, const wxPoint& pos, const wxSize& size, const long style);
+    MyChild(wxMDIParentFrame *parent, const wxString& title);
     ~MyChild();
 
     void OnActivate(wxActivateEvent& event);

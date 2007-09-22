@@ -4,12 +4,12 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     04/01/98
-// RCS-ID:      $Id: validate.cpp,v 1.9 1999/12/14 23:42:49 VS Exp $
-// Copyright:   (c) Julian Smart and Markus Holzem
-// Licence:     wxWindows license
+// RCS-ID:      $Id: validate.cpp,v 1.14 2004/09/24 14:32:33 ABX Exp $
+// Copyright:   (c) Julian Smart
+// Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
 
-#ifdef __GNUG__
+#if defined(__GNUG__) && !defined(NO_GCC_PRAGMA)
 #pragma implementation "validate.h"
 #endif
 
@@ -36,9 +36,9 @@ const wxValidator wxDefaultValidator;
 
     IMPLEMENT_DYNAMIC_CLASS(wxValidator, wxEvtHandler)
 
-// VZ: personally, I think TRUE would be more appropriate - these bells are
+// VZ: personally, I think true would be more appropriate - these bells are
 //     _annoying_
-bool wxValidator::ms_isSilent = FALSE;
+bool wxValidator::ms_isSilent = false;
 
 wxValidator::wxValidator()
 {

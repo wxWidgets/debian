@@ -1,15 +1,15 @@
 /////////////////////////////////////////////////////////////////////////////
 // Name:        src/msw/glcanvas.cpp
-// Purpose:     wxGLCanvas, for using OpenGL with wxWindows under MS Windows
+// Purpose:     wxGLCanvas, for using OpenGL with wxWidgets under MS Windows
 // Author:      Julian Smart
 // Modified by:
 // Created:     04/01/98
-// RCS-ID:      $Id: glcanvas.cpp,v 1.16.2.2 2003/05/07 08:36:35 JS Exp $
+// RCS-ID:      $Id: glcanvas.cpp,v 1.31 2004/10/15 15:29:31 ABX Exp $
 // Copyright:   (c) Julian Smart
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
 
-#ifdef __GNUG__
+#if defined(__GNUG__) && !defined(NO_GCC_PRAGMA)
 #pragma implementation "glcanvas.h"
 #endif
 
@@ -26,11 +26,47 @@
     #include "wx/settings.h"
     #include "wx/intl.h"
     #include "wx/log.h"
+    #include "wx/app.h"
 #endif
+
+#include "wx/module.h"
 
 #include "wx/msw/private.h"
 
+// DLL options compatibility check:
+#include "wx/build.h"
+WX_CHECK_BUILD_OPTIONS("wxGL")
+
 #include "wx/glcanvas.h"
+
+#if GL_EXT_vertex_array
+    #define WXUNUSED_WITHOUT_GL_EXT_vertex_array(name) name
+#else
+    #define WXUNUSED_WITHOUT_GL_EXT_vertex_array(name) WXUNUSED(name)
+#endif
+
+/*
+  The following two compiler directives are specific to the Microsoft Visual
+  C++ family of compilers
+
+  Fundementally what they do is instruct the linker to use these two libraries
+  for the resolution of symbols. In essence, this is the equivalent of adding
+  these two libraries to either the Makefile or project file.
+
+  This is NOT a recommended technique, and certainly is unlikely to be used
+  anywhere else in wxWidgets given it is so specific to not only wxMSW, but
+  also the VC compiler. However, in the case of opengl support, it's an
+  applicable technique as opengl is optional in setup.h This code (wrapped by
+  wxUSE_GLCANVAS), now allows opengl support to be added purely by modifying
+  setup.h rather than by having to modify either the project or DSP fle.
+
+  See MSDN for further information on the exact usage of these commands.
+*/
+#ifdef _MSC_VER
+#  pragma comment( lib, "opengl32" )
+#  pragma comment( lib, "glu32" )
+#endif
+
 
 static const wxChar *wxGLCanvasClassName = wxT("wxGLCanvasClass");
 static const wxChar *wxGLCanvasClassNameNoRedraw = wxT("wxGLCanvasClassNR");
@@ -38,25 +74,135 @@ static const wxChar *wxGLCanvasClassNameNoRedraw = wxT("wxGLCanvasClassNR");
 LRESULT WXDLLEXPORT APIENTRY _EXPORT wxWndProc(HWND hWnd, UINT message,
                                    WPARAM wParam, LPARAM lParam);
 
+// ----------------------------------------------------------------------------
+// wxGLModule is responsible for unregistering wxGLCanvasClass Windows class
+// ----------------------------------------------------------------------------
+
+class wxGLModule : public wxModule
+{
+public:
+    bool OnInit() { return true; }
+    void OnExit() { UnregisterClasses(); }
+
+    // register the GL classes if not done yet, return true if ok, false if
+    // registration failed
+    static bool RegisterClasses();
+
+    // unregister the classes, done automatically on program termination
+    static void UnregisterClasses();
+
+private:
+    // wxGLCanvas is only used from the main thread so this is MT-ok
+    static bool ms_registeredGLClasses;
+
+    DECLARE_DYNAMIC_CLASS(wxGLModule)
+};
+
+IMPLEMENT_DYNAMIC_CLASS(wxGLModule, wxModule)
+
+bool wxGLModule::ms_registeredGLClasses = false;
+
+/* static */
+bool wxGLModule::RegisterClasses()
+{
+    if (ms_registeredGLClasses)
+        return true;
+
+    // We have to register a special window class because we need the CS_OWNDC
+    // style for GLCanvas.
+
+  /*
+  From Angel Popov <jumpo@bitex.com>
+
+  Here are two snips from a dicussion in the OpenGL Gamedev list that explains
+  how this problem can be fixed:
+
+  "There are 5 common DCs available in Win95. These are aquired when you call
+  GetDC or GetDCEx from a window that does _not_ have the OWNDC flag.
+  OWNDC flagged windows do not get their DC from the common DC pool, the issue
+  is they require 800 bytes each from the limited 64Kb local heap for GDI."
+
+  "The deal is, if you hold onto one of the 5 shared DC's too long (as GL apps
+  do), Win95 will actually "steal" it from you.  MakeCurrent fails,
+  apparently, because Windows re-assigns the HDC to a different window.  The
+  only way to prevent this, the only reliable means, is to set CS_OWNDC."
+  */
+
+    WNDCLASS wndclass;
+
+    // the fields which are common to all classes
+    wndclass.lpfnWndProc   = (WNDPROC)wxWndProc;
+    wndclass.cbClsExtra    = 0;
+    wndclass.cbWndExtra    = sizeof( DWORD ); // VZ: what is this DWORD used for?
+    wndclass.hInstance     = wxhInstance;
+    wndclass.hIcon         = (HICON) NULL;
+    wndclass.hCursor       = ::LoadCursor((HINSTANCE)NULL, IDC_ARROW);
+    wndclass.lpszMenuName  = NULL;
+
+    // Register the GLCanvas class name
+    wndclass.hbrBackground = (HBRUSH)NULL;
+    wndclass.lpszClassName = wxGLCanvasClassName;
+    wndclass.style         = CS_HREDRAW | CS_VREDRAW | CS_DBLCLKS | CS_OWNDC;
+
+    if ( !::RegisterClass(&wndclass) )
+    {
+        wxLogLastError(wxT("RegisterClass(wxGLCanvasClass)"));
+        return false;
+    }
+
+    // Register the GLCanvas class name for windows which don't do full repaint
+    // on resize
+    wndclass.lpszClassName = wxGLCanvasClassNameNoRedraw;
+    wndclass.style        &= ~(CS_HREDRAW | CS_VREDRAW);
+
+    if ( !::RegisterClass(&wndclass) )
+    {
+        wxLogLastError(wxT("RegisterClass(wxGLCanvasClassNameNoRedraw)"));
+
+        ::UnregisterClass(wxGLCanvasClassName, wxhInstance);
+
+        return false;
+    }
+
+    ms_registeredGLClasses = true;
+
+    return true;
+}
+
+/* static */
+void wxGLModule::UnregisterClasses()
+{
+    // we need to unregister the classes in case we're in a DLL which is
+    // unloaded and then loaded again because if we don't, the registration is
+    // going to fail in wxGLCanvas::Create() the next time we're loaded
+    if ( ms_registeredGLClasses )
+    {
+        ::UnregisterClass(wxGLCanvasClassName, wxhInstance);
+        ::UnregisterClass(wxGLCanvasClassNameNoRedraw, wxhInstance);
+
+        ms_registeredGLClasses = false;
+    }
+}
+
 /*
  * GLContext implementation
  */
 
-wxGLContext::wxGLContext(bool isRGB, wxGLCanvas *win, const wxPalette& palette)
+wxGLContext::wxGLContext(bool WXUNUSED(isRGB), wxGLCanvas *win, const wxPalette& WXUNUSED(palette))
 {
   m_window = win;
 
   m_hDC = win->GetHDC();
 
   m_glContext = wglCreateContext((HDC) m_hDC);
-  wxCHECK_RET( m_glContext, wxT("Couldn't create OpenGl context") );
+  wxCHECK_RET( m_glContext, wxT("Couldn't create OpenGL context") );
 
   wglMakeCurrent((HDC) m_hDC, m_glContext);
 }
 
 wxGLContext::wxGLContext(
-               bool isRGB, wxGLCanvas *win,
-               const wxPalette& palette,
+               bool WXUNUSED(isRGB), wxGLCanvas *win,
+               const wxPalette& WXUNUSED(palette),
                const wxGLContext *other  /* for sharing display lists */
              )
 {
@@ -65,7 +211,7 @@ wxGLContext::wxGLContext(
   m_hDC = win->GetHDC();
 
   m_glContext = wglCreateContext((HDC) m_hDC);
-  wxCHECK_RET( m_glContext, wxT("Couldn't create OpenGl context") );
+  wxCHECK_RET( m_glContext, wxT("Couldn't create OpenGL context") );
 
   if( other != 0 )
     wglShareLists( other->m_glContext, m_glContext );
@@ -106,17 +252,14 @@ void wxGLContext::SetCurrent()
 
 void wxGLContext::SetColour(const wxChar *colour)
 {
-  float r = 0.0;
-  float g = 0.0;
-  float b = 0.0;
-  wxColour *col = wxTheColourDatabase->FindColour(colour);
-  if (col)
-  {
-    r = (float)(col->Red()/256.0);
-    g = (float)(col->Green()/256.0);
-    b = (float)(col->Blue()/256.0);
-    glColor3f( r, g, b);
-  }
+    wxColour col = wxTheColourDatabase->Find(colour);
+    if (col.Ok())
+    {
+        float r = (float)(col.Red()/256.0);
+        float g = (float)(col.Green()/256.0);
+        float b = (float)(col.Blue()/256.0);
+        glColor3f( r, g, b);
+    }
 }
 
 
@@ -143,7 +286,6 @@ wxGLCanvas::wxGLCanvas(wxWindow *parent, wxWindowID id,
   if ( ret )
   {
     SetBackgroundColour(wxSystemSettings::GetColour(wxSYS_COLOUR_3DFACE));
-    SetFont(wxSystemSettings::GetFont(wxSYS_DEFAULT_GUI_FONT));
   }
 
   m_hDC = (WXHDC) ::GetDC((HWND) GetHWND());
@@ -151,7 +293,7 @@ wxGLCanvas::wxGLCanvas(wxWindow *parent, wxWindowID id,
   SetupPixelFormat(attribList);
   SetupPalette(palette);
 
-  m_glContext = new wxGLContext(TRUE, this, palette);
+  m_glContext = new wxGLContext(true, this, palette);
 }
 
 wxGLCanvas::wxGLCanvas( wxWindow *parent,
@@ -167,7 +309,6 @@ wxGLCanvas::wxGLCanvas( wxWindow *parent,
   if ( ret )
   {
     SetBackgroundColour(wxSystemSettings::GetColour(wxSYS_COLOUR_3DFACE));
-    SetFont(wxSystemSettings::GetFont(wxSYS_DEFAULT_GUI_FONT));
   }
 
   m_hDC = (WXHDC) ::GetDC((HWND) GetHWND());
@@ -175,7 +316,7 @@ wxGLCanvas::wxGLCanvas( wxWindow *parent,
   SetupPixelFormat(attribList);
   SetupPalette(palette);
 
-  m_glContext = new wxGLContext(TRUE, this, palette, shared );
+  m_glContext = new wxGLContext(true, this, palette, shared );
 }
 
 // Not very useful for wxMSW, but this is to be wxGTK compliant
@@ -192,7 +333,6 @@ wxGLCanvas::wxGLCanvas( wxWindow *parent, const wxGLCanvas *shared, wxWindowID i
   if ( ret )
   {
     SetBackgroundColour(wxSystemSettings::GetColour(wxSYS_COLOUR_3DFACE));
-    SetFont(wxSystemSettings::GetFont(wxSYS_DEFAULT_GUI_FONT));
   }
 
   m_hDC = (WXHDC) ::GetDC((HWND) GetHWND());
@@ -202,13 +342,12 @@ wxGLCanvas::wxGLCanvas( wxWindow *parent, const wxGLCanvas *shared, wxWindowID i
 
   wxGLContext *sharedContext=0;
   if (shared) sharedContext=shared->GetContext();
-  m_glContext = new wxGLContext(TRUE, this, palette, sharedContext );
+  m_glContext = new wxGLContext(true, this, palette, sharedContext );
 }
 
 wxGLCanvas::~wxGLCanvas()
 {
-  if (m_glContext)
-    delete m_glContext;
+  delete m_glContext;
 
   ::ReleaseDC((HWND) GetHWND(), (HDC) m_hDC);
 }
@@ -222,90 +361,34 @@ bool wxGLCanvas::Create(wxWindow *parent,
                         long style,
                         const wxString& name)
 {
-  static bool s_registeredGLCanvasClass = FALSE;
+    wxCHECK_MSG( parent, false, wxT("can't create wxWindow without parent") );
 
-  // We have to register a special window class because we need
-  // the CS_OWNDC style for GLCanvas.
-
-  /*
-  From Angel Popov <jumpo@bitex.com>
-
-  Here are two snips from a dicussion in the OpenGL Gamedev list that explains
-  how this problem can be fixed:
-
-  "There are 5 common DCs available in Win95. These are aquired when you call
-  GetDC or GetDCEx from a window that does _not_ have the OWNDC flag.
-  OWNDC flagged windows do not get their DC from the common DC pool, the issue
-  is they require 800 bytes each from the limited 64Kb local heap for GDI."
-
-  "The deal is, if you hold onto one of the 5 shared DC's too long (as GL apps
-  do), Win95 will actually "steal" it from you.  MakeCurrent fails,
-  apparently, because Windows re-assigns the HDC to a different window.  The
-  only way to prevent this, the only reliable means, is to set CS_OWNDC."
-  */
-
-  if (!s_registeredGLCanvasClass)
-  {
-    WNDCLASS wndclass;
-
-    // the fields which are common to all classes
-    wndclass.lpfnWndProc   = (WNDPROC)wxWndProc;
-    wndclass.cbClsExtra    = 0;
-    wndclass.cbWndExtra    = sizeof( DWORD ); // VZ: what is this DWORD used for?
-    wndclass.hInstance     = wxhInstance;
-    wndclass.hIcon         = (HICON) NULL;
-    wndclass.hCursor       = ::LoadCursor((HINSTANCE)NULL, IDC_ARROW);
-    wndclass.lpszMenuName  = NULL;
-
-    // Register the GLCanvas class name
-    wndclass.hbrBackground = (HBRUSH)NULL;
-    wndclass.lpszClassName = wxGLCanvasClassName;
-    wndclass.style         = CS_HREDRAW | CS_VREDRAW | CS_DBLCLKS | CS_OWNDC;
-
-    if ( !::RegisterClass(&wndclass) )
+    if ( !wxGLModule::RegisterClasses() )
     {
-      wxLogLastError(wxT("RegisterClass(wxGLCanvasClass)"));
-      return FALSE;
+        wxLogError(_("Failed to register OpenGL window class."));
+
+        return false;
     }
 
-    // Register the GLCanvas class name for windows which don't do full repaint
-    // on resize
-    wndclass.lpszClassName = wxGLCanvasClassNameNoRedraw;
-    wndclass.style        &= ~(CS_HREDRAW | CS_VREDRAW);
+    if ( !CreateBase(parent, id, pos, size, style, wxDefaultValidator, name) )
+        return false;
 
-    if ( !::RegisterClass(&wndclass) )
-    {
-        wxLogLastError(wxT("RegisterClass(wxGLCanvasClassNameNoRedraw)"));
+    parent->AddChild(this);
 
-        ::UnregisterClass(wxGLCanvasClassName, wxhInstance);
+    DWORD msflags = 0;
 
-        return FALSE;
-    }
+    /*
+       A general rule with OpenGL and Win32 is that any window that will have a
+       HGLRC built for it must have two flags:  WS_CLIPCHILDREN & WS_CLIPSIBLINGS.
+       You can find references about this within the knowledge base and most OpenGL
+       books that contain the wgl function descriptions.
+     */
 
-    s_registeredGLCanvasClass = TRUE;
-  }
+    WXDWORD exStyle = 0;
+    msflags |= WS_CHILD | WS_VISIBLE | WS_CLIPSIBLINGS | WS_CLIPCHILDREN;
+    msflags |= MSWGetStyle(style, & exStyle) ;
 
-  wxCHECK_MSG( parent, FALSE, wxT("can't create wxWindow without parent") );
-
-  if ( !CreateBase(parent, id, pos, size, style, wxDefaultValidator, name) )
-    return FALSE;
-
-  parent->AddChild(this);
-
-  DWORD msflags = 0;
-
-  /*
-  A general rule with OpenGL and Win32 is that any window that will have a
-  HGLRC built for it must have two flags:  WS_CLIPCHILDREN & WS_CLIPSIBLINGS.
-  You can find references about this within the knowledge base and most OpenGL
-  books that contain the wgl function descriptions.
-  */
-
-  WXDWORD exStyle = 0;
-  msflags |= WS_CHILD | WS_VISIBLE | WS_CLIPSIBLINGS | WS_CLIPCHILDREN;
-  msflags |= MSWGetStyle(style, & exStyle) ;
-
-  return MSWCreate(wxGLCanvasClassName, NULL, pos, size, msflags, exStyle);
+    return MSWCreate(wxGLCanvasClassName, NULL, pos, size, msflags, exStyle);
 }
 
 static void AdjustPFDForAttributes(PIXELFORMATDESCRIPTOR& pfd, int *attribList)
@@ -324,7 +407,7 @@ static void AdjustPFDForAttributes(PIXELFORMATDESCRIPTOR& pfd, int *attribList)
           pfd.iPixelType = PFD_TYPE_RGBA;
           break;
         case WX_GL_BUFFER_SIZE:
-          pfd.cColorBits = attribList[arg++];
+          pfd.cColorBits = (BYTE)attribList[arg++];
           break;
         case WX_GL_LEVEL:
           // this member looks like it may be obsolete
@@ -344,38 +427,38 @@ static void AdjustPFDForAttributes(PIXELFORMATDESCRIPTOR& pfd, int *attribList)
           pfd.dwFlags |= PFD_STEREO;
           break;
         case WX_GL_AUX_BUFFERS:
-          pfd.cAuxBuffers = attribList[arg++];
+          pfd.cAuxBuffers = (BYTE)attribList[arg++];
           break;
         case WX_GL_MIN_RED:
-          pfd.cColorBits += (pfd.cRedBits = attribList[arg++]);
+          pfd.cColorBits = (BYTE)(pfd.cColorBits + (pfd.cRedBits = (BYTE)attribList[arg++]));
           break;
         case WX_GL_MIN_GREEN:
-          pfd.cColorBits += (pfd.cGreenBits = attribList[arg++]);
+          pfd.cColorBits = (BYTE)(pfd.cColorBits + (pfd.cGreenBits = (BYTE)attribList[arg++]));
           break;
         case WX_GL_MIN_BLUE:
-          pfd.cColorBits += (pfd.cBlueBits = attribList[arg++]);
+          pfd.cColorBits = (BYTE)(pfd.cColorBits + (pfd.cBlueBits = (BYTE)attribList[arg++]));
           break;
         case WX_GL_MIN_ALPHA:
           // doesn't count in cColorBits
-          pfd.cAlphaBits = attribList[arg++];
+          pfd.cAlphaBits = (BYTE)attribList[arg++];
           break;
         case WX_GL_DEPTH_SIZE:
-          pfd.cDepthBits = attribList[arg++];
+          pfd.cDepthBits = (BYTE)attribList[arg++];
           break;
         case WX_GL_STENCIL_SIZE:
-          pfd.cStencilBits = attribList[arg++];
+          pfd.cStencilBits = (BYTE)attribList[arg++];
           break;
         case WX_GL_MIN_ACCUM_RED:
-          pfd.cAccumBits += (pfd.cAccumRedBits = attribList[arg++]);
+          pfd.cAccumBits = (BYTE)(pfd.cAccumBits + (pfd.cAccumRedBits = (BYTE)attribList[arg++]));
           break;
         case WX_GL_MIN_ACCUM_GREEN:
-          pfd.cAccumBits += (pfd.cAccumGreenBits = attribList[arg++]);
+          pfd.cAccumBits = (BYTE)(pfd.cAccumBits + (pfd.cAccumGreenBits = (BYTE)attribList[arg++]));
           break;
         case WX_GL_MIN_ACCUM_BLUE:
-          pfd.cAccumBits += (pfd.cAccumBlueBits = attribList[arg++]);
+          pfd.cAccumBits = (BYTE)(pfd.cAccumBits + (pfd.cAccumBlueBits = (BYTE)attribList[arg++]));
           break;
         case WX_GL_MIN_ACCUM_ALPHA:
-          pfd.cAccumBits += (pfd.cAccumAlphaBits = attribList[arg++]);
+          pfd.cAccumBits = (BYTE)(pfd.cAccumBits + (pfd.cAccumAlphaBits = (BYTE)attribList[arg++]));
           break;
         default:
           break;
@@ -444,8 +527,8 @@ void wxGLCanvas::SetupPalette(const wxPalette& palette)
 
     if (m_palette.Ok())
     {
-        SelectPalette((HDC) m_hDC, (HPALETTE) m_palette.GetHPALETTE(), FALSE);
-        RealizePalette((HDC) m_hDC);
+        ::SelectPalette((HDC) m_hDC, (HPALETTE) m_palette.GetHPALETTE(), FALSE);
+        ::RealizePalette((HDC) m_hDC);
     }
 }
 
@@ -462,7 +545,7 @@ wxPalette wxGLCanvas::CreateDefaultPalette()
     LOGPALETTE* pPal =
      (LOGPALETTE*) malloc(sizeof(LOGPALETTE) + paletteSize * sizeof(PALETTEENTRY));
     pPal->palVersion = 0x300;
-    pPal->palNumEntries = paletteSize;
+    pPal->palNumEntries = (WORD)paletteSize;
 
     /* build a simple RGB color palette */
     {
@@ -473,11 +556,11 @@ wxPalette wxGLCanvas::CreateDefaultPalette()
 
     for (i=0; i<paletteSize; ++i) {
         pPal->palPalEntry[i].peRed =
-            (((i >> pfd.cRedShift) & redMask) * 255) / redMask;
+            (BYTE)((((i >> pfd.cRedShift) & redMask) * 255) / redMask);
         pPal->palPalEntry[i].peGreen =
-            (((i >> pfd.cGreenShift) & greenMask) * 255) / greenMask;
+            (BYTE)((((i >> pfd.cGreenShift) & greenMask) * 255) / greenMask);
         pPal->palPalEntry[i].peBlue =
-            (((i >> pfd.cBlueShift) & blueMask) * 255) / blueMask;
+            (BYTE)((((i >> pfd.cBlueShift) & blueMask) * 255) / blueMask);
         pPal->palPalEntry[i].peFlags = 0;
     }
     }
@@ -497,7 +580,7 @@ void wxGLCanvas::SwapBuffers()
     m_glContext->SwapBuffers();
 }
 
-void wxGLCanvas::OnSize(wxSizeEvent& event)
+void wxGLCanvas::OnSize(wxSizeEvent& WXUNUSED(event))
 {
 }
 
@@ -525,10 +608,10 @@ void wxGLCanvas::OnQueryNewPalette(wxQueryNewPaletteEvent& event)
     ::SelectPalette((HDC) GetHDC(), (HPALETTE) GetPalette()->GetHPALETTE(), FALSE);
     ::RealizePalette((HDC) GetHDC());
     Refresh();
-    event.SetPaletteRealized(TRUE);
+    event.SetPaletteRealized(true);
   }
   else
-    event.SetPaletteRealized(FALSE);
+    event.SetPaletteRealized(false);
 }
 
 // I think this doesn't have to be propagated to child windows.
@@ -548,15 +631,17 @@ void wxGLCanvas::OnPaletteChanged(wxPaletteChangedEvent& event)
 /* Give extensions proper function names. */
 
 /* EXT_vertex_array */
-void glArrayElementEXT(GLint i)
+void glArrayElementEXT(GLint WXUNUSED(i))
 {
 }
 
-void glColorPointerEXT(GLint size, GLenum type, GLsizei stride, GLsizei count, const GLvoid *pointer)
+void glColorPointerEXT(GLint WXUNUSED(size), GLenum WXUNUSED(type), GLsizei WXUNUSED(stride), GLsizei WXUNUSED(count), const GLvoid *WXUNUSED(pointer))
 {
 }
 
-void glDrawArraysEXT(GLenum mode, GLint first, GLsizei count)
+void glDrawArraysEXT(GLenum  WXUNUSED_WITHOUT_GL_EXT_vertex_array(mode),
+                     GLint   WXUNUSED_WITHOUT_GL_EXT_vertex_array(first),
+                     GLsizei WXUNUSED_WITHOUT_GL_EXT_vertex_array(count))
 {
 #ifdef GL_EXT_vertex_array
     static PFNGLDRAWARRAYSEXTPROC proc = 0;
@@ -571,19 +656,22 @@ void glDrawArraysEXT(GLenum mode, GLint first, GLsizei count)
 #endif
 }
 
-void glEdgeFlagPointerEXT(GLsizei stride, GLsizei count, const GLboolean *pointer)
+void glEdgeFlagPointerEXT(GLsizei WXUNUSED(stride), GLsizei WXUNUSED(count), const GLboolean *WXUNUSED(pointer))
 {
 }
 
-void glGetPointervEXT(GLenum pname, GLvoid* *params)
+void glGetPointervEXT(GLenum WXUNUSED(pname), GLvoid* *WXUNUSED(params))
 {
 }
 
-void glIndexPointerEXT(GLenum type, GLsizei stride, GLsizei count, const GLvoid *pointer)
+void glIndexPointerEXT(GLenum WXUNUSED(type), GLsizei WXUNUSED(stride), GLsizei WXUNUSED(count), const GLvoid *WXUNUSED(pointer))
 {
 }
 
-void glNormalPointerEXT(GLenum type, GLsizei stride, GLsizei count, const GLvoid *pointer)
+void glNormalPointerEXT(GLenum        WXUNUSED_WITHOUT_GL_EXT_vertex_array(type),
+                        GLsizei       WXUNUSED_WITHOUT_GL_EXT_vertex_array(stride),
+                        GLsizei       WXUNUSED_WITHOUT_GL_EXT_vertex_array(count),
+                        const GLvoid *WXUNUSED_WITHOUT_GL_EXT_vertex_array(pointer))
 {
 #ifdef GL_EXT_vertex_array
   static PFNGLNORMALPOINTEREXTPROC proc = 0;
@@ -598,11 +686,15 @@ void glNormalPointerEXT(GLenum type, GLsizei stride, GLsizei count, const GLvoid
 #endif
 }
 
-void glTexCoordPointerEXT(GLint size, GLenum type, GLsizei stride, GLsizei count, const GLvoid *pointer)
+void glTexCoordPointerEXT(GLint WXUNUSED(size), GLenum WXUNUSED(type), GLsizei WXUNUSED(stride), GLsizei WXUNUSED(count), const GLvoid *WXUNUSED(pointer))
 {
 }
 
-void glVertexPointerEXT(GLint size, GLenum type, GLsizei stride, GLsizei count, const GLvoid *pointer)
+void glVertexPointerEXT(GLint         WXUNUSED_WITHOUT_GL_EXT_vertex_array(size),
+                        GLenum        WXUNUSED_WITHOUT_GL_EXT_vertex_array(type),
+                        GLsizei       WXUNUSED_WITHOUT_GL_EXT_vertex_array(stride),
+                        GLsizei       WXUNUSED_WITHOUT_GL_EXT_vertex_array(count),
+                        const GLvoid *WXUNUSED_WITHOUT_GL_EXT_vertex_array(pointer))
 {
 #ifdef GL_EXT_vertex_array
   static PFNGLVERTEXPOINTEREXTPROC proc = 0;
@@ -617,33 +709,33 @@ void glVertexPointerEXT(GLint size, GLenum type, GLsizei stride, GLsizei count, 
 }
 
 /* EXT_color_subtable */
-void glColorSubtableEXT(GLenum target, GLsizei start, GLsizei count, GLenum format, GLenum type, const GLvoid *table)
+void glColorSubtableEXT(GLenum WXUNUSED(target), GLsizei WXUNUSED(start), GLsizei WXUNUSED(count), GLenum WXUNUSED(format), GLenum WXUNUSED(type), const GLvoid *WXUNUSED(table))
 {
 }
 
 /* EXT_color_table */
-void glColorTableEXT(GLenum target, GLenum internalformat, GLsizei width, GLenum format, GLenum type, const GLvoid *table)
+void glColorTableEXT(GLenum WXUNUSED(target), GLenum WXUNUSED(internalformat), GLsizei WXUNUSED(width), GLenum WXUNUSED(format), GLenum WXUNUSED(type), const GLvoid *WXUNUSED(table))
 {
 }
 
-void glCopyColorTableEXT(GLenum target, GLenum internalformat, GLint x, GLint y, GLsizei width)
+void glCopyColorTableEXT(GLenum WXUNUSED(target), GLenum WXUNUSED(internalformat), GLint WXUNUSED(x), GLint WXUNUSED(y), GLsizei WXUNUSED(width))
 {
 }
 
-void glGetColorTableEXT(GLenum target, GLenum format, GLenum type, GLvoid *table)
+void glGetColorTableEXT(GLenum WXUNUSED(target), GLenum WXUNUSED(format), GLenum WXUNUSED(type), GLvoid *WXUNUSED(table))
 {
 }
 
-void glGetColorTableParamaterfvEXT(GLenum target, GLenum pname, GLfloat *params)
+void glGetColorTableParamaterfvEXT(GLenum WXUNUSED(target), GLenum WXUNUSED(pname), GLfloat *WXUNUSED(params))
 {
 }
 
-void glGetColorTavleParameterivEXT(GLenum target, GLenum pname, GLint *params)
+void glGetColorTavleParameterivEXT(GLenum WXUNUSED(target), GLenum WXUNUSED(pname), GLint *WXUNUSED(params))
 {
 }
 
 /* SGI_compiled_vertex_array */
-void glLockArraysSGI(GLint first, GLsizei count)
+void glLockArraysSGI(GLint WXUNUSED(first), GLsizei WXUNUSED(count))
 {
 }
 
@@ -653,26 +745,26 @@ void glUnlockArraysSGI()
 
 
 /* SGI_cull_vertex */
-void glCullParameterdvSGI(GLenum pname, GLdouble* params)
+void glCullParameterdvSGI(GLenum WXUNUSED(pname), GLdouble* WXUNUSED(params))
 {
 }
 
-void glCullParameterfvSGI(GLenum pname, GLfloat* params)
+void glCullParameterfvSGI(GLenum WXUNUSED(pname), GLfloat* WXUNUSED(params))
 {
 }
 
 /* SGI_index_func */
-void glIndexFuncSGI(GLenum func, GLclampf ref)
+void glIndexFuncSGI(GLenum WXUNUSED(func), GLclampf WXUNUSED(ref))
 {
 }
 
 /* SGI_index_material */
-void glIndexMaterialSGI(GLenum face, GLenum mode)
+void glIndexMaterialSGI(GLenum WXUNUSED(face), GLenum WXUNUSED(mode))
 {
 }
 
 /* WIN_swap_hint */
-void glAddSwapHintRectWin(GLint x, GLint y, GLsizei width, GLsizei height)
+void glAddSwapHintRectWin(GLint WXUNUSED(x), GLint WXUNUSED(y), GLsizei WXUNUSED(width), GLsizei WXUNUSED(height))
 {
 }
 
@@ -714,10 +806,10 @@ bool wxGLApp::InitGLVisual(int *attribList)
 
   if (pixelFormat == 0) {
     wxLogError(_("Failed to initialize OpenGL"));
-    return FALSE;
+    return false;
   }
 
-  return TRUE;
+  return true;
 }
 
 wxGLApp::~wxGLApp()

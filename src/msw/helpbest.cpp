@@ -4,12 +4,12 @@
 // Author:      Mattia Barbon
 // Modified by:
 // Created:     02/04/2001
-// RCS-ID:      $Id: helpbest.cpp,v 1.6.2.1 2002/11/09 00:20:15 VS Exp $
+// RCS-ID:      $Id: helpbest.cpp,v 1.12 2004/08/27 18:59:37 ABX Exp $
 // Copyright:   (c) Mattia Barbon
-// Licence:   	wxWindows licence
+// Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
 
-#ifdef __GNUG__
+#if defined(__GNUG__) && !defined(NO_GCC_PRAGMA)
 #pragma implementation "helpbest.h"
 #endif
 
@@ -27,7 +27,9 @@
 #include "wx/filefn.h"
 #include "wx/log.h"
 
-#if wxUSE_HELP && wxUSE_MS_HTML_HELP && defined(__WIN95__) && wxUSE_WXHTML_HELP
+#if wxUSE_HELP && wxUSE_MS_HTML_HELP && defined(__WIN95__) \
+    && wxUSE_WXHTML_HELP && !defined(__WXUNIVERSAL__)
+
 #include "wx/msw/helpchm.h"
 #include "wx/html/helpctrl.h"
 #include "wx/msw/helpbest.h"
@@ -46,7 +48,7 @@ bool wxBestHelpController::Initialize( const wxString& filename )
     if( chm->Initialize( GetValidFilename( filename ) ) )
     {
         m_helpController = chm;
-        return TRUE;
+        return true;
     }
 
     // failed
@@ -59,13 +61,13 @@ bool wxBestHelpController::Initialize( const wxString& filename )
     if( html->Initialize( GetValidFilename( filename ) ) )
     {
         m_helpController = html;
-        return TRUE;
+        return true;
     }
 
     // failed
     delete html;
 
-    return FALSE;
+    return false;
 }
 
 wxString wxBestHelpController::GetValidFilename( const wxString& filename ) const

@@ -1,10 +1,10 @@
 /////////////////////////////////////////////////////////////////////////////
 // Name:        wizard.cpp
-// Purpose:     wxWindows sample demonstrating wxWizard control
+// Purpose:     wxWidgets sample demonstrating wxWizard control
 // Author:      Vadim Zeitlin
-// Modified by:
+// Modified by: Robert Vazan (sizers)
 // Created:     15.08.99
-// RCS-ID:      $Id: wizard.cpp,v 1.7.2.1 2002/12/13 21:38:55 MBN Exp $
+// RCS-ID:      $Id: wizard.cpp,v 1.14 2004/10/02 12:35:56 VS Exp $
 // Copyright:   (c) Vadim Zeitlin
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -17,11 +17,6 @@
 // headers
 // ----------------------------------------------------------------------------
 
-#if defined(__GNUG__) && !defined(__APPLE__)
-    #pragma implementation "wizard.cpp"
-    #pragma interface "wizard.cpp"
-#endif
-
 // For compilers that support precompilation, includes "wx/wx.h".
 #include "wx/wxprec.h"
 
@@ -29,10 +24,16 @@
     #pragma hdrstop
 #endif
 
-// for all others, include the necessary headers (this file is usually all you
-// need because it includes almost all "standard" wxWindows headers
+// for all others, include the necessary headers
 #ifndef WX_PRECOMP
-    #include "wx/wx.h"
+    #include "wx/stattext.h"
+    #include "wx/log.h"
+    #include "wx/app.h"
+    #include "wx/checkbox.h"
+    #include "wx/msgdlg.h"
+    #include "wx/radiobox.h"
+    #include "wx/menu.h"
+    #include "wx/sizer.h"
 #endif
 
 #include "wx/wizard.h"
@@ -77,9 +78,10 @@ public:
     void OnAbout(wxCommandEvent& event);
     void OnRunWizard(wxCommandEvent& event);
     void OnWizardCancel(wxWizardEvent& event);
+    void OnWizardFinished(wxWizardEvent& event);
 
 private:
-    // any class wishing to process wxWindows events must use this macro
+    // any class wishing to process wxWidgets events must use this macro
     DECLARE_EVENT_TABLE()
 };
 
@@ -100,7 +102,26 @@ public:
     {
         m_bitmap = wxBITMAP(wiztest2);
 
-        m_checkbox = new wxCheckBox(this, -1, _T("&Check me"));
+        m_checkbox = new wxCheckBox(this, wxID_ANY, _T("&Check me"));
+        
+        wxBoxSizer *mainSizer = new wxBoxSizer(wxVERTICAL);
+        mainSizer->Add(
+            new wxStaticText(this, wxID_ANY,
+                             _T("You need to check the checkbox\n")
+                             _T("below before going to the next page\n")),
+            0,
+            wxALL,
+            5
+        );
+
+        mainSizer->Add(
+            m_checkbox,
+            0, // No stretching
+            wxALL,
+            5 // Border
+        );
+        SetSizer(mainSizer);
+        mainSizer->Fit(this);
     }
 
     virtual bool TransferDataFromWindow()
@@ -110,10 +131,10 @@ public:
             wxMessageBox(_T("Check the checkbox first!"), _T("No way"),
                          wxICON_WARNING | wxOK, this);
 
-            return FALSE;
+            return false;
         }
 
-        return TRUE;
+        return true;
     }
 
 private:
@@ -143,11 +164,21 @@ public:
         choices[2] = _T("both");
         choices[3] = _T("neither");
 
-        m_radio = new wxRadioBox(this, -1, _T("Allow to proceed:"),
-                                 wxPoint(5, 5), wxDefaultSize,
+        m_radio = new wxRadioBox(this, wxID_ANY, _T("Allow to proceed:"),
+                                 wxDefaultPosition, wxDefaultSize,
                                  WXSIZEOF(choices), choices,
                                  1, wxRA_SPECIFY_COLS);
         m_radio->SetSelection(Both);
+        
+        wxBoxSizer *mainSizer = new wxBoxSizer(wxVERTICAL);
+        mainSizer->Add(
+            m_radio,
+            0, // No stretching
+            wxALL,
+            5 // Border
+        );
+        SetSizer(mainSizer);
+        mainSizer->Fit(this);
     }
 
     // wizard event handlers
@@ -197,12 +228,27 @@ public:
     {
         m_prev = prev;
         m_next = next;
+        
+        wxBoxSizer *mainSizer = new wxBoxSizer(wxVERTICAL);
 
-        (void)new wxStaticText(this, -1, _T("Try checking the box below and\n")
-                                         _T("then going back and clearing it"));
+        mainSizer->Add(
+            new wxStaticText(this, wxID_ANY, _T("Try checking the box below and\n")
+                                       _T("then going back and clearing it")),
+            0, // No vertical stretching
+            wxALL,
+            5 // Border width
+        );
 
-        m_checkbox = new wxCheckBox(this, -1, _T("&Skip the next page"),
-                                    wxPoint(5, 30));
+        m_checkbox = new wxCheckBox(this, wxID_ANY, _T("&Skip the next page"));
+        mainSizer->Add(
+            m_checkbox,
+            0, // No vertical stretching
+            wxALL,
+            5 // Border width
+        );
+        
+        SetSizer(mainSizer);
+        mainSizer->Fit(this);
     }
 
     // implement wxWizardPage functions
@@ -232,12 +278,13 @@ BEGIN_EVENT_TABLE(MyFrame, wxFrame)
     EVT_MENU(Wizard_About, MyFrame::OnAbout)
     EVT_MENU(Wizard_Run,   MyFrame::OnRunWizard)
 
-    EVT_WIZARD_CANCEL(-1, MyFrame::OnWizardCancel)
+    EVT_WIZARD_CANCEL(wxID_ANY, MyFrame::OnWizardCancel)
+    EVT_WIZARD_FINISHED(wxID_ANY, MyFrame::OnWizardFinished)
 END_EVENT_TABLE()
 
 BEGIN_EVENT_TABLE(wxRadioboxPage, wxWizardPageSimple)
-    EVT_WIZARD_PAGE_CHANGING(-1, wxRadioboxPage::OnWizardPageChanging)
-    EVT_WIZARD_CANCEL(-1, wxRadioboxPage::OnWizardCancel)
+    EVT_WIZARD_PAGE_CHANGING(wxID_ANY, wxRadioboxPage::OnWizardPageChanging)
+    EVT_WIZARD_CANCEL(wxID_ANY, wxRadioboxPage::OnWizardCancel)
 END_EVENT_TABLE()
 
 IMPLEMENT_APP(MyApp)
@@ -253,10 +300,10 @@ bool MyApp::OnInit()
 
     // and show it (the frames, unlike simple controls, are not shown when
     // created initially)
-    frame->Show(TRUE);
+    frame->Show(true);
 
     // we're done
-    return TRUE;
+    return true;
 }
 
 // ----------------------------------------------------------------------------
@@ -264,7 +311,7 @@ bool MyApp::OnInit()
 // ----------------------------------------------------------------------------
 
 MyFrame::MyFrame(const wxString& title)
-       : wxFrame((wxFrame *)NULL, -1, title,
+       : wxFrame((wxFrame *)NULL, wxID_ANY, title,
                   wxDefaultPosition, wxSize(250, 150))  // small frame
 {
     wxMenu *menuFile = new wxMenu;
@@ -284,34 +331,39 @@ MyFrame::MyFrame(const wxString& title)
     SetMenuBar(menuBar);
 
     // also create status bar which we use in OnWizardCancel
+#if wxUSE_STATUSBAR
     CreateStatusBar();
+#endif // wxUSE_STATUSBAR
 }
 
 void MyFrame::OnQuit(wxCommandEvent& WXUNUSED(event))
 {
-    // TRUE is to force the frame to close
-    Close(TRUE);
+    // true is to force the frame to close
+    Close(true);
 }
 
 void MyFrame::OnAbout(wxCommandEvent& WXUNUSED(event))
 {
     wxMessageBox(_T("Demo of wxWizard class\n")
-                 _T("© 1999, 2000 Vadim Zeitlin"),
+                 _T("(c) 1999, 2000 Vadim Zeitlin"),
                  _T("About wxWizard sample"), wxOK | wxICON_INFORMATION, this);
 }
 
 void MyFrame::OnRunWizard(wxCommandEvent& WXUNUSED(event))
 {
-    wxWizard *wizard = new wxWizard(this, -1,
+    wxWizard *wizard = new wxWizard(this, wxID_ANY,
                     _T("Absolutely Useless Wizard"),
-                    wxBITMAP(wiztest));
+                    wxBITMAP(wiztest),
+                    wxDefaultPosition,
+                    wxDEFAULT_DIALOG_STYLE | wxRESIZE_BORDER);
 
     // a wizard page may be either an object of predefined class
     wxWizardPageSimple *page1 = new wxWizardPageSimple(wizard);
-    wxStaticText *text = new wxStaticText(page1, -1,
-             _T("This wizard doesn't help you to do anything at all.\n")
+    wxStaticText *text = new wxStaticText(page1, wxID_ANY,
+             _T("This wizard doesn't help you\nto do anything at all.\n")
              _T("\n")
-             _T("The next pages will present you with more useless controls.")
+             _T("The next pages will present you\nwith more useless controls."),
+             wxPoint(5,5)
         );
     wxSize size = text->GetBestSize();
 
@@ -330,6 +382,8 @@ void MyFrame::OnRunWizard(wxCommandEvent& WXUNUSED(event))
     page3->SetPrev(page2);
 
     wizard->SetPageSize(size);
+    wizard->GetPageAreaSizer()->Add(page1);
+    
     if ( wizard->RunWizard(page1) )
     {
         wxMessageBox(_T("The wizard successfully completed"), _T("That's all"),
@@ -337,6 +391,11 @@ void MyFrame::OnRunWizard(wxCommandEvent& WXUNUSED(event))
     }
 
     wizard->Destroy();
+}
+
+void MyFrame::OnWizardFinished(wxWizardEvent& WXUNUSED(event))
+{
+    wxLogStatus(this, wxT("The wizard finished successfully."));
 }
 
 void MyFrame::OnWizardCancel(wxWizardEvent& WXUNUSED(event))

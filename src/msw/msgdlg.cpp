@@ -4,12 +4,12 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     04/01/98
-// RCS-ID:      $Id: msgdlg.cpp,v 1.10 2002/09/02 00:41:43 VZ Exp $
-// Copyright:   (c) Julian Smart and Markus Holzem
-// Licence:     wxWindows license
+// RCS-ID:      $Id: msgdlg.cpp,v 1.19 2004/09/28 18:17:07 ABX Exp $
+// Copyright:   (c) Julian Smart
+// Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
 
-#ifdef __GNUG__
+#if defined(__GNUG__) && !defined(NO_GCC_PRAGMA)
 #pragma implementation "msgdlg.h"
 #endif
 
@@ -30,6 +30,11 @@
 
 #include "wx/msw/private.h"
 
+// For MB_TASKMODAL
+#ifdef __WXWINCE__
+#include "wx/msw/wince/missing.h"
+#endif
+
 IMPLEMENT_CLASS(wxMessageDialog, wxDialog)
 
 wxMessageDialog::wxMessageDialog(wxWindow *parent,
@@ -38,6 +43,15 @@ wxMessageDialog::wxMessageDialog(wxWindow *parent,
                                  long style,
                                  const wxPoint& WXUNUSED(pos))
 {
+#ifdef __WXDEBUG__
+    // check for common programming errors
+    if ( (style & wxID_OK) == wxID_OK )
+    {
+        // programmer probably confused wxID_OK with wxOK. Correct one is wxOK.
+        wxFAIL_MSG( _T("wxMessageBox: Did you mean wxOK (and not wxID_OK)?") );
+    }
+#endif // __WXDEBUG__
+
     m_caption = caption;
     m_message = message;
     m_dialogStyle = style;
@@ -65,9 +79,11 @@ int wxMessageDialog::ShowModal()
     unsigned int msStyle = MB_OK;
     if (m_dialogStyle & wxYES_NO)
     {
+#if !(defined(__SMARTPHONE__) && defined(__WXWINCE__))
         if (m_dialogStyle & wxCANCEL)
             msStyle = MB_YESNOCANCEL;
         else
+#endif // !(__SMARTPHONE__ && __WXWINCE__)
             msStyle = MB_YESNO;
 
         if (m_dialogStyle & wxNO_DEFAULT)

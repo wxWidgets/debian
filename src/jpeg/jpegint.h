@@ -142,7 +142,6 @@ struct jpeg_decomp_master {
   boolean is_dummy_pass;	/* True during 1st pass for 2-pass quant */
 };
 
-
 /* Input control module */
 struct jpeg_input_controller {
   JMETHOD(int, consume_input, (j_decompress_ptr cinfo));
@@ -154,7 +153,6 @@ struct jpeg_input_controller {
   boolean has_multiple_scans;	/* True if file has multiple scans */
   boolean eoi_reached;		/* True when EOI has been consumed */
 };
-
 
 /* Main buffer control (downsampled-data buffer) */
 struct jpeg_d_main_controller {

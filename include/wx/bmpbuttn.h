@@ -4,13 +4,15 @@
 // Author:      Vadim Zeitlin
 // Modified by:
 // Created:     25.08.00
-// RCS-ID:      $Id: bmpbuttn.h,v 1.9 2002/05/07 21:58:25 GD Exp $
+// RCS-ID:      $Id: bmpbuttn.h,v 1.20 2004/06/24 20:04:06 RD Exp $
 // Copyright:   (c) 2000 Vadim Zeitlin
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
 
 #ifndef _WX_BMPBUTTON_H_BASE_
 #define _WX_BMPBUTTON_H_BASE_
+
+#include "wx/defs.h"
 
 #if wxUSE_BMPBUTTON
 
@@ -59,9 +61,13 @@ public:
     int GetMarginX() const { return m_marginX; }
     int GetMarginY() const { return m_marginY; }
 
+    virtual void ApplyParentThemeBackground(const wxColour& bg)
+        { SetBackgroundColour(bg); }
+
+
 protected:
     // function called when any of the bitmaps changes
-    virtual void OnSetBitmap() { }
+    virtual void OnSetBitmap() { InvalidateBestSize(); }
 
     // the bitmaps for various states
     wxBitmap m_bmpNormal,
@@ -72,10 +78,13 @@ protected:
     // the margins around the bitmap
     int m_marginX,
         m_marginY;
+
 private:
     // Prevent Virtual function hiding warnings
     void SetLabel(const wxString& rsLabel)
-    { wxWindowBase::SetLabel(rsLabel); }
+        { wxWindowBase::SetLabel(rsLabel); }
+
+    DECLARE_NO_COPY_CLASS(wxBitmapButtonBase)
 };
 
 #if defined(__WXUNIVERSAL__)
@@ -88,10 +97,10 @@ private:
     #include "wx/gtk/bmpbuttn.h"
 #elif defined(__WXMAC__)
     #include "wx/mac/bmpbuttn.h"
+#elif defined(__WXCOCOA__)
+    #include "wx/cocoa/bmpbuttn.h"
 #elif defined(__WXPM__)
     #include "wx/os2/bmpbuttn.h"
-#elif defined(__WXSTUBS__)
-    #include "wx/stubs/bmpbuttn.h"
 #endif
 
 #endif // wxUSE_BMPBUTTON

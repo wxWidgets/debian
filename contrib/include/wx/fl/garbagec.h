@@ -4,7 +4,7 @@
 // Author:      Aleksandras Gluchovas (@Lithuania)
 // Modified by:
 // Created:     ??/10/98
-// RCS-ID:      $Id: garbagec.h,v 1.3.2.1 2002/10/24 11:21:34 JS Exp $
+// RCS-ID:      $Id: garbagec.h,v 1.7 2004/07/22 18:51:10 ABX Exp $
 // Copyright:   (c) Aleksandras Gluchovas
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -25,16 +25,16 @@ struct GCItem
     wxList    mRefs;   // references to other nodes
 };
 
-inline void* gc_node_to_obj( wxNode* pGCNode )
+inline void* gc_node_to_obj( wxObjectList::compatibility_iterator pGCNode )
 {
-    return ( (GCItem*) (pGCNode->Data()) )->mpObj;
+    return ( (GCItem*) (pGCNode->GetData()) )->mpObj;
 }
 
 /*
 This class implements an extremely slow but simple garbage collection algorithm.
 */
 
-class WXFL_DECLSPEC GarbageCollector
+class WXDLLIMPEXP_FL GarbageCollector
 {
 protected:
     wxList mAllNodes;

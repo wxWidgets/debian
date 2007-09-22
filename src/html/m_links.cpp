@@ -2,12 +2,12 @@
 // Name:        m_links.cpp
 // Purpose:     wxHtml module for links & anchors
 // Author:      Vaclav Slavik
-// RCS-ID:      $Id: m_links.cpp,v 1.8.2.3 2002/11/09 00:07:34 VS Exp $
+// RCS-ID:      $Id: m_links.cpp,v 1.16 2004/09/27 19:15:06 ABX Exp $
 // Copyright:   (c) 1999 Vaclav Slavik
-// Licence:     wxWindows Licence
+// Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
 
-#ifdef __GNUG__
+#if defined(__GNUG__) && !defined(NO_GCC_PRAGMA)
 #pragma implementation
 #endif
 
@@ -32,23 +32,37 @@ FORCE_LINK_ME(m_links)
 
 class wxHtmlAnchorCell : public wxHtmlCell
 {
-    private:
-        wxString m_AnchorName;
+private:
+    wxString m_AnchorName;
 
-    public:
-        wxHtmlAnchorCell(const wxString& name) : wxHtmlCell() {m_AnchorName = name;}
-        virtual const wxHtmlCell* Find(int condition, const void* param) const
+public:
+    wxHtmlAnchorCell(const wxString& name) : wxHtmlCell()
+        { m_AnchorName = name; }
+    void Draw(wxDC& WXUNUSED(dc),
+              int WXUNUSED(x), int WXUNUSED(y),
+              int WXUNUSED(view_y1), int WXUNUSED(view_y2),
+              wxHtmlRenderingInfo& WXUNUSED(info)) {}
+
+    virtual const wxHtmlCell* Find(int condition, const void* param) const
+    {
+        if ((condition == wxHTML_COND_ISANCHOR) &&
+            (m_AnchorName == (*((const wxString*)param))))
         {
-            if ((condition == wxHTML_COND_ISANCHOR) && (m_AnchorName == (*((const wxString*)param))))
-                return this;
-            else
-                return wxHtmlCell::Find(condition, param);
+            return this;
         }
+        else
+        {
+            return wxHtmlCell::Find(condition, param);
+        }
+    }
+
+    DECLARE_NO_COPY_CLASS(wxHtmlAnchorCell)
 };
 
 
 
 TAG_HANDLER_BEGIN(A, "A")
+    TAG_HANDLER_CONSTR(A) { }
 
     TAG_HANDLER_PROC(tag)
     {
@@ -67,7 +81,7 @@ TAG_HANDLER_BEGIN(A, "A")
             if (tag.HasParam( wxT("TARGET") )) target = tag.GetParam( wxT("TARGET") );
             m_WParser->SetActualColor(m_WParser->GetLinkColor());
             m_WParser->GetContainer()->InsertCell(new wxHtmlColourCell(m_WParser->GetLinkColor()));
-            m_WParser->SetFontUnderlined(TRUE);
+            m_WParser->SetFontUnderlined(true);
             m_WParser->GetContainer()->InsertCell(new wxHtmlFontCell(m_WParser->CreateCurrentFont()));
             m_WParser->SetLink(wxHtmlLinkInfo(name, target));
 
@@ -79,9 +93,9 @@ TAG_HANDLER_BEGIN(A, "A")
             m_WParser->SetActualColor(oldclr);
             m_WParser->GetContainer()->InsertCell(new wxHtmlColourCell(oldclr));
 
-            return TRUE;
+            return true;
         }
-        else return FALSE;
+        else return false;
     }
 
 TAG_HANDLER_END(A)

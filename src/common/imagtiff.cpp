@@ -2,12 +2,12 @@
 // Name:        imagtiff.cpp
 // Purpose:     wxImage TIFF handler
 // Author:      Robert Roebling
-// RCS-ID:      $Id: imagtiff.cpp,v 1.22 2002/05/22 23:14:47 VZ Exp $
+// RCS-ID:      $Id: imagtiff.cpp,v 1.30 2004/11/10 21:02:24 VZ Exp $
 // Copyright:   (c) Robert Roebling
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
 
-#ifdef __GNUG__
+#if defined(__GNUG__) && !defined(NO_GCC_PRAGMA)
 #pragma implementation "imagtiff.h"
 #endif
 
@@ -46,6 +46,8 @@ extern "C"
 //-----------------------------------------------------------------------------
 
 IMPLEMENT_DYNAMIC_CLASS(wxTIFFHandler,wxImageHandler)
+
+#if wxUSE_STREAMS
 
 extern "C"
 {
@@ -87,7 +89,7 @@ _tiffSeekIProc(thandle_t handle, toff_t off, int whence)
         default:       mode = wxFromCurrent; break;
     }
 
-    return (toff_t)stream->SeekI( (off_t)off, mode );
+    return (toff_t)stream->SeekI( (wxFileOffset)off, mode );
 }
 
 toff_t TIFFLINKAGEMODE
@@ -103,7 +105,7 @@ _tiffSeekOProc(thandle_t handle, toff_t off, int whence)
         default:       mode = wxFromCurrent; break;
     }
 
-    return (toff_t)stream->SeekO( (off_t)off, mode );
+    return (toff_t)stream->SeekO( (wxFileOffset)off, mode );
 }
 
 int TIFFLINKAGEMODE
@@ -134,6 +136,22 @@ _tiffUnmapProc(thandle_t WXUNUSED(handle),
 {
 }
 
+static void
+TIFFwxWarningHandler(const char* module, const char* fmt, va_list ap)
+{
+    if (module != NULL)
+            wxLogWarning(_("tiff module: %s"), module);
+    wxLogWarning((wxChar *) fmt, ap);
+}
+
+static void
+TIFFwxErrorHandler(const char* module, const char* fmt, va_list ap)
+{
+    if (module != NULL)
+            wxLogError(_("tiff module: %s"), module);
+    wxVLogError((wxChar *) fmt, ap);
+}
+
 } // extern "C"
 
 TIFF*
@@ -160,6 +178,16 @@ TIFFwxOpen(wxOutputStream &stream, const char* name, const char* mode)
     return tif;
 }
 
+wxTIFFHandler::wxTIFFHandler()
+{
+    m_name = wxT("TIFF file");
+    m_extension = wxT("tif");
+    m_type = wxBITMAP_TYPE_TIF;
+    m_mime = wxT("image/tiff");
+    TIFFSetWarningHandler((TIFFErrorHandler) TIFFwxWarningHandler);
+    TIFFSetErrorHandler((TIFFErrorHandler) TIFFwxErrorHandler);
+}
+
 bool wxTIFFHandler::LoadFile( wxImage *image, wxInputStream& stream, bool verbose, int index )
 {
     if (index == -1)
@@ -174,7 +202,7 @@ bool wxTIFFHandler::LoadFile( wxImage *image, wxInputStream& stream, bool verbos
         if (verbose)
             wxLogError( _("TIFF: Error loading image.") );
 
-        return FALSE;
+        return false;
     }
 
     if (!TIFFSetDirectory( tif, (tdir_t)index ))
@@ -184,7 +212,7 @@ bool wxTIFFHandler::LoadFile( wxImage *image, wxInputStream& stream, bool verbos
 
         TIFFClose( tif );
 
-        return FALSE;
+        return false;
     }
 
     uint32 w, h;
@@ -205,7 +233,7 @@ bool wxTIFFHandler::LoadFile( wxImage *image, wxInputStream& stream, bool verbos
 
         TIFFClose( tif );
 
-        return FALSE;
+        return false;
     }
 
     image->Create( (int)w, (int)h );
@@ -217,7 +245,7 @@ bool wxTIFFHandler::LoadFile( wxImage *image, wxInputStream& stream, bool verbos
         _TIFFfree( raster );
         TIFFClose( tif );
 
-        return FALSE;
+        return false;
     }
 
     if (!TIFFReadRGBAImage( tif, w, h, raster, 0 ))
@@ -229,10 +257,10 @@ bool wxTIFFHandler::LoadFile( wxImage *image, wxInputStream& stream, bool verbos
         image->Destroy();
         TIFFClose( tif );
 
-        return FALSE;
+        return false;
     }
 
-    bool hasmask = FALSE;
+    bool hasmask = false;
 
     unsigned char *ptr = image->GetData();
     ptr += w*3*(h-1);
@@ -245,7 +273,7 @@ bool wxTIFFHandler::LoadFile( wxImage *image, wxInputStream& stream, bool verbos
             unsigned char alpha = (unsigned char)TIFFGetA(raster[pos]);
             if (alpha < 127)
             {
-                hasmask = TRUE;
+                hasmask = true;
                 ptr[0] = image->GetMaskRed();
                 ptr++;
                 ptr[0] = image->GetMaskGreen();
@@ -273,7 +301,7 @@ bool wxTIFFHandler::LoadFile( wxImage *image, wxInputStream& stream, bool verbos
 
     image->SetMask( hasmask );
 
-    return TRUE;
+    return true;
 }
 
 int wxTIFFHandler::GetImageCount( wxInputStream& stream )
@@ -302,7 +330,7 @@ bool wxTIFFHandler::SaveFile( wxImage *image, wxOutputStream& stream, bool verbo
         if (verbose)
             wxLogError( _("TIFF: Error saving image.") );
 
-        return FALSE;
+        return false;
     }
 
     TIFFSetField(tif, TIFFTAG_IMAGEWIDTH,  (uint32)image->GetWidth());
@@ -327,7 +355,7 @@ bool wxTIFFHandler::SaveFile( wxImage *image, wxOutputStream& stream, bool verbo
 
             TIFFClose( tif );
 
-            return FALSE;
+            return false;
         }
     }
     else
@@ -353,7 +381,7 @@ bool wxTIFFHandler::SaveFile( wxImage *image, wxOutputStream& stream, bool verbo
             if (buf)
                 _TIFFfree(buf);
 
-            return FALSE;
+            return false;
         }
         ptr += image->GetWidth()*3;
     }
@@ -363,22 +391,21 @@ bool wxTIFFHandler::SaveFile( wxImage *image, wxOutputStream& stream, bool verbo
     if (buf)
     _TIFFfree(buf);
 
-    return TRUE;
+    return true;
 }
 
 bool wxTIFFHandler::DoCanRead( wxInputStream& stream )
 {
     unsigned char hdr[2];
 
-    if ( !stream.Read(&hdr, WXSIZEOF(hdr)) )
-        return FALSE;
+    if ( !stream.Read(&hdr[0], WXSIZEOF(hdr)) )
+        return false;
 
     return (hdr[0] == 'I' && hdr[1] == 'I') ||
            (hdr[0] == 'M' && hdr[1] == 'M');
 }
 
+#endif  // wxUSE_STREAMS
 
-#endif
-   // wxUSE_LIBTIFF
-
+#endif  // wxUSE_LIBTIFF
 

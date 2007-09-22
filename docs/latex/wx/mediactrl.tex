@@ -1,0 +1,130 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% Name:        mediactrl.tex
+%% Purpose:     wxMediaCtrl docs
+%% Author:      Ryan Norton <wxprojects@comcast.net>
+%% Modified by:
+%% Created:     11/7/2004
+%% RCS-ID:      $Id: mediactrl.tex,v 1.2 2004/11/11 09:32:31 RN Exp $
+%% Copyright:   (c) Ryan Norton
+%% License:     wxWindows license
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\section{\class{wxMediaCtrl}}\label{wxmediactrl}
+
+wxMediaCtrl is a class that allows a way to convieniently display types of media,
+such as videos, audio files, natively through native codecs.
+
+On Windows wxMediaCtrl uses DirectShow, and on Macintosh wxMediaCtrl uses QuickTime.
+
+wxMediaCtrl is not currently available on unix systems. 
+
+\wxheading{Derived from}
+
+\helpref{wxControl}{wxcontrol}
+
+\wxheading{Include files}
+
+<wx/mediactrl.h>
+
+\latexignore{\rtfignore{\wxheading{Members}}}
+
+
+\membersection{wxMediaCtrl::wxMediaCtrl}\label{wxmediactrlwxmediactrl}
+
+\func{}{wxMediaCtrl}{\void}
+
+Default constructor - you \tt{must} call Create before calling any other methods
+of wxMediaCtrl.
+
+\func{}{wxMediaCtrl}{\param{wxWindow* }{parent}, \param{wxWindowID }{id}, \param{const wxString\& }{fileName}, \param{const wxString\& }{label = wxT("")}, \param{const wxPoint\& }{pos = wxDefaultPosition}, \param{const wxSize\& }{size = wxDefaultSize}, \param{long }{style = 0}, \param{long }{driver = 0}, \param{const wxString\& }{name = wxPanelNameStr}}
+
+Constructor that calls Create.  You may prefer to call Create directly to check to see if wxMediaCtrl is available
+on the system.
+
+\docparam{parent}{parent of this control.  Must not be NULL.}
+\docparam{id}{id to use for events}
+\docparam{fileName}{If not empty, loads this file and starts playing it immediately.}
+\docparam{pos}{Position to put control at.}
+\docparam{size}{Size to put the control at and to stretch movie to.}
+\docparam{style}{Optional styles.}
+\docparam{driver}{Reserved for future use.}
+\docparam{name}{Window name.}
+
+
+\membersection{wxMediaCtrl::Create}\label{wxmediactrlcreate}
+
+\func{bool}{Create}{\param{wxWindow* }{parent}, \param{wxWindowID }{id}, \param{const wxString\& }{fileName}, \param{const wxString\& }{label = wxT("")}, \param{const wxPoint\& }{pos = wxDefaultPosition}, \param{const wxSize\& }{size = wxDefaultSize}, \param{long }{style = 0}, \param{long }{driver = 0}, \param{const wxString\& }{name = wxPanelNameStr}}
+
+Creates this control.  Returns \tt{false} if it can't load the movie located at \tt{fileName} or it cannot load
+one of its native backends.
+
+\docparam{parent}{parent of this control.  Must not be NULL.}
+\docparam{id}{id to use for events}
+\docparam{fileName}{If not empty, loads this file and starts playing it immediately.}
+\docparam{pos}{Position to put control at.}
+\docparam{size}{Size to put the control at and to stretch movie to.}
+\docparam{style}{Optional styles.}
+\docparam{driver}{Reserved for future use.}
+\docparam{name}{Window name.}
+
+
+\membersection{wxMediaCtrl::GetDuration}\label{wxmediactrlgetduration}
+
+\func{long}{GetDuration}{\void}
+
+Obtains the length - the total amount of time the movie has in milliseconds.
+
+
+\membersection{wxMediaCtrl::GetPosition}\label{wxmediactrlgetposition}
+
+\func{long}{GetPosition}{\void}
+
+Obtains the current position in time within the movie in milliseconds.
+
+
+\membersection{wxMediaCtrl::GetState}\label{wxmediactrlgetstate}
+
+\func{wxMediaCtrlState}{GetState}{\void}
+
+Obtains the state the playback of the movie is in - 
+
+\twocolwidtha{7cm}
+\begin{twocollist}\itemsep=0pt
+\twocolitem{{\bf wxMEDIASTATE\_STOPPED}}{The movie has stopped.}
+\twocolitem{{\bf wxMEDIASTATE\_PAUSED}}{The movie is paused.}
+\twocolitem{{\bf wxMEDIASTATE\_PLAYING}}{The movie is currently playing.}
+\end{twocollist}
+
+
+\membersection{wxMediaCtrl::Load}\label{wxmediactrlload}
+
+\func{bool}{Load}{\param{const wxString\& }{fileName}}
+
+Loads the file that \tt{fileName} refers to.  Returns false if loading fails.
+
+\membersection{wxMediaCtrl::Pause}\label{wxmediactrlpause}
+
+\func{bool}{Pause}{\void}
+
+Pauses playback of the movie.
+
+
+\membersection{wxMediaCtrl::Play}\label{wxmediactrlplay}
+
+\func{bool}{Play}{\void}
+
+Resumes playback of the movie.
+
+
+\membersection{wxMediaCtrl::SetPosition}\label{wxmediactrlsetposition}
+
+\func{bool}{SetPosition}{\param{long }{where}}
+
+Seeks to a position within the movie.
+
+
+\membersection{wxMediaCtrl::Stop}\label{wxmediactrlstop}
+
+\func{bool}{Stop}{\void}
+
+Stops the media.

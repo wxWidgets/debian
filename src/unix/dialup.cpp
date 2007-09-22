@@ -1,19 +1,22 @@
 // -*- c++ -*- ////////////////////////////////////////////////////////////////
 // Name:        unix/dialup.cpp
-// Purpose:     Network related wxWindows classes and functions
+// Purpose:     Network related wxWidgets classes and functions
 // Author:      Karsten Ballüder
 // Modified by:
 // Created:     03.10.99
-// RCS-ID:      $Id: dialup.cpp,v 1.35.2.2 2002/11/03 16:19:31 RR Exp $
+// RCS-ID:      $Id: dialup.cpp,v 1.41 2004/05/23 20:53:26 JS Exp $
 // Copyright:   (c) Karsten Ballüder
 // Licence:     wxWindows licence
 ///////////////////////////////////////////////////////////////////////////////
 
-#include "wx/setup.h"
-
-#ifdef __GNUG__
+#if defined(__GNUG__) && !defined(NO_GCC_PRAGMA)
 #   pragma implementation "dialup.h"
 #endif
+
+// for compilers that support precompilation, includes "wx.h".
+#include "wx/wxprec.h"
+
+#include "wx/setup.h"
 
 #if wxUSE_DIALUP_MANAGER
 
@@ -247,21 +250,18 @@ class AutoCheckTimer : public wxTimer
 {
 public:
    AutoCheckTimer(wxDialUpManagerImpl *dupman)
-      {
-         m_dupman = dupman;
-         m_started = FALSE;
-      }
-
-   virtual bool Start( int millisecs = -1, bool WXUNUSED(one_shot) = FALSE )
-      { m_started = TRUE; return wxTimer::Start(millisecs, FALSE); }
+   {
+       m_dupman = dupman;
+   }
 
    virtual void Notify()
-      { wxLogTrace(wxT("Checking dial up network status.")); m_dupman->CheckStatus(); }
+   {
+       wxLogTrace(_T("dialup"), wxT("Checking dial up network status."));
 
-   virtual void Stop()
-      { if ( m_started ) wxTimer::Stop(); }
+       m_dupman->CheckStatus();
+   }
+
 public:
-   bool m_started;
    wxDialUpManagerImpl *m_dupman;
 };
 
@@ -716,8 +716,8 @@ wxDialUpManagerImpl::CheckIfconfig()
 
 #if defined(__SOLARIS__) || defined (__SUNOS__)
                     // dialup device under SunOS/Solaris
-                    hasModem = strstr(output,"ipdptp") != (char *)NULL;
-                    hasLAN = strstr(output, "hme") != (char *)NULL;
+                    hasModem = strstr(output.fn_str(),"ipdptp") != (char *)NULL;
+                    hasLAN = strstr(output.fn_str(), "hme") != (char *)NULL;
 #elif defined(__LINUX__) || defined (__FREEBSD__)
                     hasModem = strstr(output.fn_str(),"ppp")    // ppp
                         || strstr(output.fn_str(),"sl")  // slip

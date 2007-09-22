@@ -4,8 +4,8 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     01/02/97
-// RCS-ID:      $Id: fontdlg.cpp,v 1.15 2002/08/30 20:34:25 JS Exp $
-// Copyright:   (c) Julian Smart and Markus Holzem
+// RCS-ID:      $Id: fontdlg.cpp,v 1.23 2004/05/23 20:52:58 JS Exp $
+// Copyright:   (c) Julian Smart
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
 
@@ -17,7 +17,7 @@
 // headers
 // ----------------------------------------------------------------------------
 
-#ifdef __GNUG__
+#if defined(__GNUG__) && !defined(NO_GCC_PRAGMA)
     #pragma implementation "fontdlg.h"
 #endif
 
@@ -37,13 +37,12 @@
 #endif
 
 #include "wx/fontdlg.h"
+#include "wx/msw/private.h"
 
-#if !defined(__WIN32__) || defined(__SALFORDC__) || defined(__WXWINE__)
-#include <windows.h>
+#if !defined(__WIN32__) || defined(__WXWINCE__)
 #include <commdlg.h>
 #endif
 
-#include "wx/msw/private.h"
 #include "wx/cmndata.h"
 #include "wx/log.h"
 
@@ -79,15 +78,15 @@ int wxFontDialog::ShowModal()
         chooseFontStruct.hwndOwner = GetHwndOf(m_parent);
     chooseFontStruct.lpLogFont = &logFont;
 
-    if ( m_fontData.initialFont.Ok() )
+    if ( m_fontData.m_initialFont.Ok() )
     {
         flags |= CF_INITTOLOGFONTSTRUCT;
-        wxFillLogFont(&logFont, &m_fontData.initialFont);
+        wxFillLogFont(&logFont, &m_fontData.m_initialFont);
     }
 
-    if ( m_fontData.fontColour.Ok() )
+    if ( m_fontData.m_fontColour.Ok() )
     {
-        chooseFontStruct.rgbColors = wxColourToRGB(m_fontData.fontColour);
+        chooseFontStruct.rgbColors = wxColourToRGB(m_fontData.m_fontColour);
 
         // need this for the colour to be taken into account
         flags |= CF_EFFECTS;
@@ -96,12 +95,8 @@ int wxFontDialog::ShowModal()
     // CF_ANSIONLY flag is obsolete for Win32
     if ( !m_fontData.GetAllowSymbols() )
     {
-#ifdef __WIN16__
-      flags |= CF_ANSIONLY;
-#else // Win32
       flags |= CF_SELECTSCRIPT;
       logFont.lfCharSet = ANSI_CHARSET;
-#endif // Win16/32
     }
 
     if ( m_fontData.GetEnableEffects() )
@@ -109,10 +104,10 @@ int wxFontDialog::ShowModal()
     if ( m_fontData.GetShowHelp() )
       flags |= CF_SHOWHELP;
 
-    if ( m_fontData.minSize != 0 || m_fontData.maxSize != 0 )
+    if ( m_fontData.m_minSize != 0 || m_fontData.m_maxSize != 0 )
     {
-        chooseFontStruct.nSizeMin = m_fontData.minSize;
-        chooseFontStruct.nSizeMax = m_fontData.maxSize;
+        chooseFontStruct.nSizeMin = m_fontData.m_minSize;
+        chooseFontStruct.nSizeMax = m_fontData.m_maxSize;
         flags |= CF_LIMITSIZE;
     }
 
@@ -120,8 +115,8 @@ int wxFontDialog::ShowModal()
 
     if ( ChooseFont(&chooseFontStruct) != 0 )
     {
-        wxRGBToColour(m_fontData.fontColour, chooseFontStruct.rgbColors);
-        m_fontData.chosenFont = wxCreateFontFromLogFont(&logFont);
+        wxRGBToColour(m_fontData.m_fontColour, chooseFontStruct.rgbColors);
+        m_fontData.m_chosenFont = wxCreateFontFromLogFont(&logFont);
         m_fontData.EncodingInfo().facename = logFont.lfFaceName;
         m_fontData.EncodingInfo().charset = logFont.lfCharSet;
 

@@ -4,9 +4,9 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     12/07/98
-// RCS-ID:      $Id: doc.h,v 1.3 2002/09/07 12:12:22 GD Exp $
+// RCS-ID:      $Id: doc.h,v 1.5 2004/06/09 16:42:29 ABX Exp $
 // Copyright:   (c) Julian Smart
-// Licence:   	wxWindows licence
+// Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
 
 #ifndef _STUDIO_DOC_H_
@@ -19,7 +19,9 @@
 #include <wx/docview.h>
 #include <wx/cmdproc.h>
 #include <wx/string.h>
-#include <wx/wxexpr.h>
+
+#include <wx/deprecated/setup.h>
+#include <wx/deprecated/wxexpr.h>
 
 #include <wx/ogl/ogl.h>
 #include "shapes.h"

@@ -4,7 +4,7 @@
 // Author:      Vadim Zeitlin
 // Modified by:
 // Created:     15.01.00
-// RCS-ID:      $Id: exec.cpp,v 1.21.2.3 2003/01/12 20:47:49 MBN Exp $
+// RCS-ID:      $Id: exec.cpp,v 1.35 2004/10/02 12:35:37 VS Exp $
 // Copyright:   (c) Vadim Zeitlin
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -30,7 +30,7 @@
 #endif
 
 // for all others, include the necessary headers (this file is usually all you
-// need because it includes almost all "standard" wxWindows headers
+// need because it includes almost all "standard" wxWidgets headers
 #ifndef WX_PRECOMP
     #include "wx/app.h"
     #include "wx/log.h"
@@ -55,6 +55,8 @@
 #endif
 
 #include "wx/txtstrm.h"
+#include "wx/numdlg.h"
+#include "wx/ffile.h"
 
 #include "wx/process.h"
 
@@ -83,7 +85,7 @@ public:
 
 // Define an array of process pointers used by MyFrame
 class MyPipedProcess;
-WX_DEFINE_ARRAY(MyPipedProcess *, MyProcessesArray);
+WX_DEFINE_ARRAY_PTR(MyPipedProcess *, MyProcessesArray);
 
 // Define a new frame type: this is going to be our main frame
 class MyFrame : public wxFrame
@@ -176,7 +178,7 @@ private:
     // the idle event wake up timer
     wxTimer m_timerIdleWakeUp;
 
-    // any class wishing to process wxWindows events must use this macro
+    // any class wishing to process wxWidgets events must use this macro
     DECLARE_EVENT_TABLE()
 };
 
@@ -192,9 +194,11 @@ public:
                 wxProcess *process);
 
 protected:
-    void OnTextEnter(wxCommandEvent& event) { DoSend(); }
-    void OnBtnSend(wxCommandEvent& event) { DoSend(); }
-    void OnBtnGet(wxCommandEvent& event) { DoGet(); }
+    void OnTextEnter(wxCommandEvent& WXUNUSED(event)) { DoSend(); }
+    void OnBtnSend(wxCommandEvent& WXUNUSED(event)) { DoSend(); }
+    void OnBtnSendFile(wxCommandEvent& WXUNUSED(event));
+    void OnBtnGet(wxCommandEvent& WXUNUSED(event)) { DoGet(); }
+    void OnBtnClose(wxCommandEvent& WXUNUSED(event)) { DoClose(); }
 
     void OnClose(wxCloseEvent& event);
 
@@ -202,22 +206,32 @@ protected:
 
     void DoSend()
     {
-        m_out.WriteString(m_textIn->GetValue() + _T('\n'));
-        m_textIn->Clear();
+        wxString s(m_textOut->GetValue());
+        s += _T('\n');
+        m_out.Write(s.c_str(), s.length());
+        m_textOut->Clear();
 
         DoGet();
     }
 
     void DoGet();
+    void DoClose();
 
 private:
+    void DoGetFromStream(wxTextCtrl *text, wxInputStream& in);
+    void DisableInput();
+    void DisableOutput();
+
+
     wxProcess *m_process;
 
-    wxTextInputStream m_in;
-    wxTextOutputStream m_out;
+    wxOutputStream &m_out;
+    wxInputStream &m_in,
+                  &m_err;
 
-    wxTextCtrl *m_textIn,
-               *m_textOut;
+    wxTextCtrl *m_textOut,
+               *m_textIn,
+               *m_textErr;
 
     DECLARE_EVENT_TABLE()
 };
@@ -301,16 +315,18 @@ enum
 
     // control ids
     Exec_Btn_Send = 1000,
-    Exec_Btn_Get
+    Exec_Btn_SendFile,
+    Exec_Btn_Get,
+    Exec_Btn_Close
 };
 
 static const wxChar *DIALOG_TITLE = _T("Exec sample");
 
 // ----------------------------------------------------------------------------
-// event tables and other macros for wxWindows
+// event tables and other macros for wxWidgets
 // ----------------------------------------------------------------------------
 
-// the event tables connect the wxWindows events with the functions (event
+// the event tables connect the wxWidgets events with the functions (event
 // handlers) which process them. It can be also done at run-time, but for the
 // simple menu events like this the static method is much simpler.
 BEGIN_EVENT_TABLE(MyFrame, wxFrame)
@@ -337,21 +353,23 @@ BEGIN_EVENT_TABLE(MyFrame, wxFrame)
 
     EVT_IDLE(MyFrame::OnIdle)
 
-    EVT_TIMER(-1, MyFrame::OnTimer)
+    EVT_TIMER(wxID_ANY, MyFrame::OnTimer)
 END_EVENT_TABLE()
 
 BEGIN_EVENT_TABLE(MyPipeFrame, wxFrame)
     EVT_BUTTON(Exec_Btn_Send, MyPipeFrame::OnBtnSend)
+    EVT_BUTTON(Exec_Btn_SendFile, MyPipeFrame::OnBtnSendFile)
     EVT_BUTTON(Exec_Btn_Get, MyPipeFrame::OnBtnGet)
+    EVT_BUTTON(Exec_Btn_Close, MyPipeFrame::OnBtnClose)
 
-    EVT_TEXT_ENTER(-1, MyPipeFrame::OnTextEnter)
+    EVT_TEXT_ENTER(wxID_ANY, MyPipeFrame::OnTextEnter)
 
     EVT_CLOSE(MyPipeFrame::OnClose)
 
-    EVT_END_PROCESS(-1, MyPipeFrame::OnProcessTerm)
+    EVT_END_PROCESS(wxID_ANY, MyPipeFrame::OnProcessTerm)
 END_EVENT_TABLE()
 
-// Create a new application object: this macro will allow wxWindows to create
+// Create a new application object: this macro will allow wxWidgets to create
 // the application object during program execution (it's better than using a
 // static object for many reasons) and also declares the accessor function
 // wxGetApp() which will return the reference of the right type (i.e. MyApp and
@@ -370,17 +388,17 @@ IMPLEMENT_APP(MyApp)
 bool MyApp::OnInit()
 {
     // Create the main application window
-    MyFrame *frame = new MyFrame(_T("Exec wxWindows sample"),
+    MyFrame *frame = new MyFrame(_T("Exec wxWidgets sample"),
                                  wxDefaultPosition, wxSize(500, 140));
 
     // Show it and tell the application that it's our main window
-    frame->Show(TRUE);
+    frame->Show(true);
     SetTopWindow(frame);
 
     // success: wxApp::OnRun() will be called which will enter the main message
-    // loop and the application will run. If we returned FALSE here, the
+    // loop and the application will run. If we returned false here, the
     // application would exit immediately.
-    return TRUE;
+    return true;
 }
 
 // ----------------------------------------------------------------------------
@@ -393,7 +411,7 @@ bool MyApp::OnInit()
 
 // frame constructor
 MyFrame::MyFrame(const wxString& title, const wxPoint& pos, const wxSize& size)
-       : wxFrame((wxFrame *)NULL, -1, title, pos, size),
+       : wxFrame((wxFrame *)NULL, wxID_ANY, title, pos, size),
          m_timerIdleWakeUp(this)
 {
     m_pidLast = 0;
@@ -451,7 +469,7 @@ MyFrame::MyFrame(const wxString& title, const wxPoint& pos, const wxSize& size)
     SetMenuBar(menuBar);
 
     // create the listbox in which we will show misc messages as they come
-    m_lbox = new wxListBox(this, -1);
+    m_lbox = new wxListBox(this, wxID_ANY);
     wxFont font(12, wxFONTFAMILY_TELETYPE, wxFONTSTYLE_NORMAL,
                 wxFONTWEIGHT_NORMAL);
     if ( font.Ok() )
@@ -460,7 +478,7 @@ MyFrame::MyFrame(const wxString& title, const wxPoint& pos, const wxSize& size)
 #if wxUSE_STATUSBAR
     // create a status bar just for fun (by default with 1 pane only)
     CreateStatusBar();
-    SetStatusText(_T("Welcome to wxWindows exec sample!"));
+    SetStatusText(_T("Welcome to wxWidgets exec sample!"));
 #endif // wxUSE_STATUSBAR
 }
 
@@ -470,8 +488,8 @@ MyFrame::MyFrame(const wxString& title, const wxPoint& pos, const wxSize& size)
 
 void MyFrame::OnQuit(wxCommandEvent& WXUNUSED(event))
 {
-    // TRUE is to force the frame to close
-    Close(TRUE);
+    // true is to force the frame to close
+    Close(true);
 }
 
 void MyFrame::OnClear(wxCommandEvent& WXUNUSED(event))
@@ -481,7 +499,7 @@ void MyFrame::OnClear(wxCommandEvent& WXUNUSED(event))
 
 void MyFrame::OnAbout(wxCommandEvent& WXUNUSED(event))
 {
-    wxMessageBox(_T("Exec wxWindows Sample\n© 2000-2002 Vadim Zeitlin"),
+    wxMessageBox(_T("Exec wxWidgets Sample\n(c) 2000-2002 Vadim Zeitlin"),
                  _T("About Exec"), wxOK | wxICON_INFORMATION, this);
 }
 
@@ -668,11 +686,11 @@ void MyFrame::OnExecWithRedirect(wxCommandEvent& WXUNUSED(event))
                           wxYES_NO | wxCANCEL | wxICON_QUESTION, this) )
     {
         case wxYES:
-            sync = TRUE;
+            sync = true;
             break;
 
         case wxNO:
-            sync = FALSE;
+            sync = false;
             break;
 
         default:
@@ -746,7 +764,7 @@ void MyFrame::OnExecWithPipe(wxCommandEvent& WXUNUSED(event))
     m_cmdLast = cmd;
 }
 
-void MyFrame::OnPOpen(wxCommandEvent& event)
+void MyFrame::OnPOpen(wxCommandEvent& WXUNUSED(event))
 {
     wxString cmd = wxGetTextFromUser(_T("Enter the command to launch: "),
                                      DIALOG_TITLE,
@@ -778,7 +796,7 @@ void MyFrame::OnPOpen(wxCommandEvent& event)
     new MyPipeFrame(this, cmd, process);
 }
 
-void MyFrame::OnFileExec(wxCommandEvent& event)
+void MyFrame::OnFileExec(wxCommandEvent& WXUNUSED(event))
 {
     static wxString s_filename;
 
@@ -822,23 +840,23 @@ bool MyFrame::GetDDEServer()
     wxString server = wxGetTextFromUser(_T("Server to connect to:"),
                                         DIALOG_TITLE, m_server);
     if ( !server )
-        return FALSE;
+        return false;
 
     m_server = server;
 
     wxString topic = wxGetTextFromUser(_T("DDE topic:"), DIALOG_TITLE, m_topic);
     if ( !topic )
-        return FALSE;
+        return false;
 
     m_topic = topic;
 
     wxString cmd = wxGetTextFromUser(_T("DDE command:"), DIALOG_TITLE, m_cmdDde);
     if ( !cmd )
-        return FALSE;
+        return false;
 
     m_cmdDde = cmd;
 
-    return TRUE;
+    return true;
 }
 
 void MyFrame::OnDDEExec(wxCommandEvent& WXUNUSED(event))
@@ -962,7 +980,7 @@ void MyProcess::OnTerminate(int pid, int status)
 
 bool MyPipedProcess::HasInput()
 {
-    bool hasInput = FALSE;
+    bool hasInput = false;
 
     if ( IsInputAvailable() )
     {
@@ -974,7 +992,7 @@ bool MyPipedProcess::HasInput()
 
         m_parent->GetLogListBox()->Append(msg);
 
-        hasInput = TRUE;
+        hasInput = true;
     }
 
     if ( IsErrorAvailable() )
@@ -987,7 +1005,7 @@ bool MyPipedProcess::HasInput()
 
         m_parent->GetLogListBox()->Append(msg);
 
-        hasInput = TRUE;
+        hasInput = true;
     }
 
     return hasInput;
@@ -1019,7 +1037,7 @@ bool MyPipedProcess2::HasInput()
         m_input.clear();
 
         // call us once again - may be we'll have output
-        return TRUE;
+        return true;
     }
 
     return MyPipedProcess::HasInput();
@@ -1032,33 +1050,45 @@ bool MyPipedProcess2::HasInput()
 MyPipeFrame::MyPipeFrame(wxFrame *parent,
                          const wxString& cmd,
                          wxProcess *process)
-           : wxFrame(parent, -1, cmd),
+           : wxFrame(parent, wxID_ANY, cmd),
              m_process(process),
              // in a real program we'd check that the streams are !NULL here
+             m_out(*process->GetOutputStream()),
              m_in(*process->GetInputStream()),
-             m_out(*process->GetOutputStream())
+             m_err(*process->GetErrorStream())
 {
     m_process->SetNextHandler(this);
 
-    wxPanel *panel = new wxPanel(this, -1);
+    wxPanel *panel = new wxPanel(this, wxID_ANY);
 
-    m_textIn = new wxTextCtrl(panel, -1, _T(""),
+    m_textOut = new wxTextCtrl(panel, wxID_ANY, _T(""),
                               wxDefaultPosition, wxDefaultSize,
                               wxTE_PROCESS_ENTER);
-    m_textOut = new wxTextCtrl(panel, -1, _T(""));
-    m_textOut->SetEditable(FALSE);
+    m_textIn = new wxTextCtrl(panel, wxID_ANY, _T(""),
+                               wxDefaultPosition, wxDefaultSize,
+                               wxTE_MULTILINE | wxTE_RICH);
+    m_textIn->SetEditable(false);
+    m_textErr = new wxTextCtrl(panel, wxID_ANY, _T(""),
+                               wxDefaultPosition, wxDefaultSize,
+                               wxTE_MULTILINE | wxTE_RICH);
+    m_textErr->SetEditable(false);
 
     wxSizer *sizerTop = new wxBoxSizer(wxVERTICAL);
-    sizerTop->Add(m_textIn, 0, wxGROW | wxALL, 5);
+    sizerTop->Add(m_textOut, 0, wxGROW | wxALL, 5);
 
     wxSizer *sizerBtns = new wxBoxSizer(wxHORIZONTAL);
-    sizerBtns->Add(new wxButton(panel, Exec_Btn_Send, _T("&Send")), 0,
-                   wxALL, 10);
-    sizerBtns->Add(new wxButton(panel, Exec_Btn_Get, _T("&Get")), 0,
-                   wxALL, 10);
+    sizerBtns->
+        Add(new wxButton(panel, Exec_Btn_Send, _T("&Send")), 0, wxALL, 5);
+    sizerBtns->
+        Add(new wxButton(panel, Exec_Btn_SendFile, _T("&File...")), 0, wxALL, 5);
+    sizerBtns->
+        Add(new wxButton(panel, Exec_Btn_Get, _T("&Get")), 0, wxALL, 5);
+    sizerBtns->
+        Add(new wxButton(panel, Exec_Btn_Close, _T("&Close")), 0, wxALL, 5);
 
     sizerTop->Add(sizerBtns, 0, wxCENTRE | wxALL, 5);
-    sizerTop->Add(m_textOut, 0, wxGROW | wxALL, 5);
+    sizerTop->Add(m_textIn, 1, wxGROW | wxALL, 5);
+    sizerTop->Add(m_textErr, 1, wxGROW | wxALL, 5);
 
     panel->SetSizer(sizerTop);
     sizerTop->Fit(this);
@@ -1066,18 +1096,74 @@ MyPipeFrame::MyPipeFrame(wxFrame *parent,
     Show();
 }
 
+void MyPipeFrame::OnBtnSendFile(wxCommandEvent& WXUNUSED(event))
+{
+    wxFileDialog filedlg(this, _T("Select file to send"));
+    if ( filedlg.ShowModal() != wxID_OK )
+        return;
+
+    wxFFile file(filedlg.GetFilename(), _T("r"));
+    wxString data;
+    if ( !file.IsOpened() || !file.ReadAll(&data) )
+        return;
+
+    // can't write the entire string at once, this risk overflowing the pipe
+    // and we would dead lock
+    size_t len = data.length();
+    const wxChar *pc = data.c_str();
+    while ( len )
+    {
+        const size_t CHUNK_SIZE = 4096;
+        m_out.Write(pc, len > CHUNK_SIZE ? CHUNK_SIZE : len);
+
+        // note that not all data could have been written as we don't block on
+        // the write end of the pipe
+        const size_t lenChunk = m_out.LastWrite();
+
+        pc += lenChunk;
+        len -= lenChunk;
+
+        DoGet();
+    }
+}
+
 void MyPipeFrame::DoGet()
 {
     // we don't have any way to be notified when any input appears on the
     // stream so we have to poll it :-(
-    //
-    // NB: this really must be done because otherwise the other program might
-    //     not have enough time to receive or process our data and we'd read
-    //     an empty string
-    while ( !m_process->IsInputAvailable() && m_process->IsInputOpened() )
-        ;
+    DoGetFromStream(m_textIn, m_in);
+    DoGetFromStream(m_textErr, m_err);
+}
 
-    m_textOut->SetValue(m_in.ReadLine());
+void MyPipeFrame::DoGetFromStream(wxTextCtrl *text, wxInputStream& in)
+{
+    while ( in.CanRead() )
+    {
+        wxChar buffer[4096];
+        buffer[in.Read(buffer, WXSIZEOF(buffer) - 1).LastRead()] = _T('\0');
+
+        text->AppendText(buffer);
+    }
+}
+
+void MyPipeFrame::DoClose()
+{
+    m_process->CloseOutput();
+
+    DisableInput();
+}
+
+void MyPipeFrame::DisableInput()
+{
+    m_textOut->SetEditable(false);
+    FindWindow(Exec_Btn_Send)->Disable();
+    FindWindow(Exec_Btn_SendFile)->Disable();
+    FindWindow(Exec_Btn_Close)->Disable();
+}
+
+void MyPipeFrame::DisableOutput()
+{
+    FindWindow(Exec_Btn_Get)->Disable();
 }
 
 void MyPipeFrame::OnClose(wxCloseEvent& event)
@@ -1096,12 +1182,15 @@ void MyPipeFrame::OnClose(wxCloseEvent& event)
     event.Skip();
 }
 
-void MyPipeFrame::OnProcessTerm(wxProcessEvent& event)
+void MyPipeFrame::OnProcessTerm(wxProcessEvent& WXUNUSED(event))
 {
+    DoGet();
+
     delete m_process;
     m_process = NULL;
 
     wxLogWarning(_T("The other process has terminated, closing"));
 
-    Close();
+    DisableInput();
+    DisableOutput();
 }

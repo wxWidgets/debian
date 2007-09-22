@@ -4,9 +4,9 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     2001-07-10
-// RCS-ID:      $Id: sysopt.h,v 1.1 2001/07/11 10:06:49 JS Exp $
+// RCS-ID:      $Id: sysopt.h,v 1.6 2004/09/22 14:38:31 ABX Exp $
 // Copyright:   (c) Julian Smart
-// Licence:   	wxWindows licence
+// Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
 
 #ifndef _WX_SYSOPT_H_
@@ -17,15 +17,15 @@
 #if wxUSE_SYSTEM_OPTIONS
 
 // ----------------------------------------------------------------------------
-// Enables an application to influence the wxWindows implementation
+// Enables an application to influence the wxWidgets implementation
 // ----------------------------------------------------------------------------
 
-class WXDLLEXPORT wxSystemOptions : public wxObject
+class WXDLLIMPEXP_BASE wxSystemOptions : public wxObject
 {
 public:
     wxSystemOptions() { }
 
-    // User-customizable hints to wxWindows or associated libraries
+    // User-customizable hints to wxWidgets or associated libraries
     // These could also be used to influence GetSystem... calls, indeed
     // to implement SetSystemColour/Font/Metric
 

@@ -4,7 +4,7 @@
 // Author:      Guillermo Rodriguez Garcia <guille@iies.es>
 // Modified by:
 // Created:     1999/09/19
-// RCS-ID:      $Id: server.cpp,v 1.15 2002/08/31 22:30:58 GD Exp $
+// RCS-ID:      $Id: server.cpp,v 1.18 2004/07/19 15:35:33 ABX Exp $
 // Copyright:   (c) 1999 Guillermo Rodriguez Garcia
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -84,7 +84,7 @@ private:
   bool            m_busy;
   int             m_numClients;
 
-  // any class wishing to process wxWindows events must use this macro
+  // any class wishing to process wxWidgets events must use this macro
   DECLARE_EVENT_TABLE()
 };
 
@@ -105,7 +105,7 @@ enum
 };
 
 // --------------------------------------------------------------------------
-// event tables and other macros for wxWindows
+// event tables and other macros for wxWidgets
 // --------------------------------------------------------------------------
 
 BEGIN_EVENT_TABLE(MyFrame, wxFrame)
@@ -132,11 +132,11 @@ bool MyApp::OnInit()
   MyFrame *frame = new MyFrame();
 
   // Show it and tell the application that it's our main window
-  frame->Show(TRUE);
+  frame->Show(true);
   SetTopWindow(frame);
 
   // Success
-  return TRUE;
+  return true;
 }
 
 // --------------------------------------------------------------------------
@@ -145,7 +145,7 @@ bool MyApp::OnInit()
 
 // frame constructor
 
-MyFrame::MyFrame() : wxFrame((wxFrame *)NULL, -1,
+MyFrame::MyFrame() : wxFrame((wxFrame *)NULL, wxID_ANY,
                              _("wxSocket demo: Server"),
                              wxDefaultPosition, wxSize(300, 200))
 {
@@ -163,11 +163,13 @@ MyFrame::MyFrame() : wxFrame((wxFrame *)NULL, -1,
   m_menuBar->Append(m_menuFile, _("&File"));
   SetMenuBar(m_menuBar);
 
+#if wxUSE_STATUSBAR
   // Status bar
   CreateStatusBar(2);
+#endif // wxUSE_STATUSBAR
 
   // Make a textctrl for logging
-  m_text  = new wxTextCtrl(this, -1,
+  m_text  = new wxTextCtrl(this, wxID_ANY,
                            _("Welcome to wxSocket demo: Server\n"),
                            wxDefaultPosition, wxDefaultSize,
                            wxTE_MULTILINE | wxTE_READONLY);
@@ -193,9 +195,9 @@ MyFrame::MyFrame() : wxFrame((wxFrame *)NULL, -1,
   // Setup the event handler and subscribe to connection events
   m_server->SetEventHandler(*this, SERVER_ID);
   m_server->SetNotify(wxSOCKET_CONNECTION_FLAG);
-  m_server->Notify(TRUE);
+  m_server->Notify(true);
 
-  m_busy = FALSE;
+  m_busy = false;
   m_numClients = 0;
   UpdateStatusBar();
 }
@@ -210,8 +212,8 @@ MyFrame::~MyFrame()
 
 void MyFrame::OnQuit(wxCommandEvent& WXUNUSED(event))
 {
-  // TRUE is to force the frame to close
-  Close(TRUE);
+  // true is to force the frame to close
+  Close(true);
 }
 
 void MyFrame::OnAbout(wxCommandEvent& WXUNUSED(event))
@@ -320,11 +322,11 @@ void MyFrame::OnServerEvent(wxSocketEvent& event)
   m_text->AppendText(s);
 
   // Accept new connection if there is one in the pending
-  // connections queue, else exit. We use Accept(FALSE) for
+  // connections queue, else exit. We use Accept(false) for
   // non-blocking accept (although if we got here, there
   // should ALWAYS be a pending connection).
 
-  sock = m_server->Accept(FALSE);
+  sock = m_server->Accept(false);
 
   if (sock)
   {
@@ -338,7 +340,7 @@ void MyFrame::OnServerEvent(wxSocketEvent& event)
 
   sock->SetEventHandler(*this, SOCKET_ID);
   sock->SetNotify(wxSOCKET_INPUT_FLAG | wxSOCKET_LOST_FLAG);
-  sock->Notify(TRUE);
+  sock->Notify(true);
 
   m_numClients++;
   UpdateStatusBar();
@@ -412,7 +414,9 @@ void MyFrame::OnSocketEvent(wxSocketEvent& event)
 
 void MyFrame::UpdateStatusBar()
 {
+#if wxUSE_STATUSBAR
   wxString s;
   s.Printf(_("%d clients connected"), m_numClients);
   SetStatusText(s, 1);
+#endif // wxUSE_STATUSBAR
 }

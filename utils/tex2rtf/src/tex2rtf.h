@@ -2,20 +2,42 @@
 // Name:        tex2any.h
 // Purpose:     tex2RTF conversion header
 // Author:      Julian Smart
-// Modified by:
+// Modified by: Wlodzimiez ABX Skiba 2003/2004 Unicode support
 // Created:     7.9.93
-// RCS-ID:      $Id: tex2rtf.h,v 1.2 2001/05/24 16:54:19 GT Exp $
+// RCS-ID:      $Id: tex2rtf.h,v 1.8 2004/10/31 08:31:03 VS Exp $
 // Copyright:   (c) Julian Smart
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
 
+#include "wx/app.h"
+
 #ifndef NO_GUI
+    #include "wx/frame.h"
+    #include "wx/textctrl.h"
+
+#ifdef __WXMSW__
+    #include "wx/dde.h"
+#endif
+
+#endif
+
 // Define a new application type
-class MyApp: public wxApp
+class MyApp: public
+                    #ifndef NO_GUI
+                        wxApp
+                    #else
+                        wxAppConsole
+                    #endif
 { public:
     bool OnInit();
+#ifdef NO_GUI
+    int OnRun() { return EXIT_SUCCESS; }
+#else
     int OnExit();
+#endif
 };
+
+#ifndef NO_GUI
 
 // Define a new frame type
 class MyFrame: public wxFrame
@@ -38,7 +60,7 @@ class MyFrame: public wxFrame
     void OnModeWinHelp(wxCommandEvent& event);
     void OnModeHTML(wxCommandEvent& event);
     void OnModeXLP(wxCommandEvent& event);
-    void OnOptionsCurleyBrace(wxCommandEvent& event);
+    void OnOptionsCurlyBrace(wxCommandEvent& event);
     void OnOptionsSyntaxChecking(wxCommandEvent& event);
     void OnHelp(wxCommandEvent& event);
     void OnAbout(wxCommandEvent& event);
@@ -47,15 +69,14 @@ DECLARE_EVENT_TABLE()
 };
 
 #ifdef __WXMSW__
-#include "wx/dde.h"
 
 class Tex2RTFConnection: public wxDDEConnection
 {
  public:
-  Tex2RTFConnection(char *buf, int size);
-  ~Tex2RTFConnection(void);
-  bool OnExecute(const wxString& topic, char *data, int size, int format);
-  char *OnRequest(const wxString& topic, const wxString& item, int *size, int format);
+  Tex2RTFConnection(wxChar *buf, int size);
+  ~Tex2RTFConnection(void){};
+  bool OnExecute(const wxString& topic, wxChar *data, int size, wxIPCFormat format);
+  wxChar *OnRequest(const wxString& topic, const wxString& item, int *size, wxIPCFormat format);
 };
 
 class Tex2RTFServer: public wxDDEServer
@@ -110,7 +131,7 @@ class ItemizeStruc: public wxObject
 #define TEX_MODE_HTML   11
 #define TEX_MODE_XLP    12
 
-#define TEX_OPTIONS_CURELY_BRACE 13
+#define TEX_OPTIONS_CURLY_BRACE 13
 #define TEX_OPTIONS_SYNTAX_CHECKING 14
 
 #define TEX_HELP        15
@@ -119,7 +140,7 @@ class ItemizeStruc: public wxObject
 
 extern TexChunk *currentMember;
 extern bool startedSections;
-extern char *contentsString;
+extern wxChar *contentsString;
 extern bool suppressNameDecoration;
 extern wxList itemizeStack;
 
@@ -129,21 +150,21 @@ extern FILE *Sections;
 extern FILE *Subsections;
 extern FILE *Subsubsections;
 
-extern char *InputFile;
-extern char *OutputFile;
-extern char *MacroFile;
+extern wxChar *InputFile;
+extern wxChar *OutputFile;
+extern wxChar *MacroFile;
 
-extern char *FileRoot;
-extern char *ContentsName;    // Contents page from last time around
-extern char *TmpContentsName; // Current contents page
-extern char *TmpFrameContentsName; // Current frame contents page
-extern char *WinHelpContentsFileName; // WinHelp .cnt file
-extern char *RefName;         // Reference file name
-extern char *bulletFile;
+extern wxChar *FileRoot;
+extern wxChar *ContentsName;    // Contents page from last time around
+extern wxChar *TmpContentsName; // Current contents page
+extern wxChar *TmpFrameContentsName; // Current frame contents page
+extern wxChar *WinHelpContentsFileName; // WinHelp .cnt file
+extern wxChar *RefName;         // Reference file name
+extern wxChar *bulletFile;
 
 #ifndef NO_GUI
-void ChooseOutputFile(bool force = FALSE);
-void ChooseInputFile(bool force = FALSE);
+void ChooseOutputFile(bool force = false);
+void ChooseInputFile(bool force = false);
 #endif
 
 void RTFOnMacro(int macroId, int no_args, bool start);

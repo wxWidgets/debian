@@ -4,9 +4,9 @@
 // Author:      Vadim Zeitlin
 // Modified by:
 // Created:     23.09.98
-// RCS-ID:      $Id: mimetype.cpp,v 1.27.2.11 2004/04/15 22:15:12 VZ Exp $
+// RCS-ID:      $Id: mimetype.cpp,v 1.52 2004/05/23 20:53:26 JS Exp $
 // Copyright:   (c) 1998 Vadim Zeitlin <zeitlin@dptmaths.ens-cachan.fr>
-// Licence:     wxWindows license (part of wxExtra library)
+// Licence:     wxWindows licence (part of wxExtra library)
 /////////////////////////////////////////////////////////////////////////////
 
 // known bugs; there may be others!! chris elliott, biol75@york.ac.uk 27 Mar 01
@@ -40,7 +40,7 @@
 // headers
 // ----------------------------------------------------------------------------
 
-#ifdef __GNUG__
+#if defined(__GNUG__) && !defined(NO_GCC_PRAGMA)
     #pragma implementation "mimetype.h"
 #endif
 
@@ -59,10 +59,6 @@
 
 #ifndef WX_PRECOMP
   #include "wx/string.h"
-  #if wxUSE_GUI
-    #include "wx/icon.h"
-
-  #endif
 #endif //WX_PRECOMP
 
 
@@ -77,6 +73,8 @@
 #include "wx/dir.h"
 #include "wx/utils.h"
 #include "wx/tokenzr.h"
+#include "wx/iconloc.h"
+#include "wx/filename.h"
 
 #include "wx/unix/mimetype.h"
 
@@ -529,7 +527,8 @@ bool wxMimeTypesManagerImpl::WriteGnomeMimeFile(int index, bool delete_index)
 }
 
 
-void wxMimeTypesManagerImpl::LoadGnomeDataFromKeyFile(const wxString& filename)
+void wxMimeTypesManagerImpl::LoadGnomeDataFromKeyFile(const wxString& filename,
+                                                      const wxArrayString& dirs)
 {
     wxTextFile textfile(filename);
 #if defined(__WXGTK20__) && wxUSE_UNICODE
@@ -564,9 +563,30 @@ void wxMimeTypesManagerImpl::LoadGnomeDataFromKeyFile(const wxString& filename)
             wxString sTmp(pc);
             if (sTmp.Contains(wxT("=")) )
             {
+                // GNOME 1:
                 if (sTmp.Contains( wxT("icon-filename=") ) )
                 {
                     curIconFile = sTmp.AfterFirst(wxT('='));
+                }
+                // GNOME 2:
+                else if (sTmp.Contains( wxT("icon_filename=") ) )
+                {
+                    curIconFile = sTmp.AfterFirst(wxT('='));
+            
+                    if (!wxFileExists(curIconFile))
+                    {
+                        size_t nDirs = dirs.GetCount();
+                        for (size_t nDir = 0; nDir < nDirs; nDir++)
+                        {
+                            wxFileName newFile( curIconFile );
+                            newFile.SetPath( dirs[nDir] );
+                            newFile.AppendDir( wxT("pixmaps") );
+                            newFile.AppendDir( wxT("document-icons") );
+                            newFile.SetExt( wxT("png") );
+                            if (newFile.FileExists())
+                                curIconFile = newFile.GetFullPath();
+                        }
+                    }
                 }
                 else //: some other field,
                 {
@@ -611,11 +631,9 @@ void wxMimeTypesManagerImpl::LoadGnomeDataFromKeyFile(const wxString& filename)
         // ignore blank lines
         nLine ++;
     } // end of while, save any data
+    
     if (! curMimeType.empty())
-    {
         AddToMimeData ( curMimeType, curIconFile, entry, strExtensions, strDesc);
-    }
-
 }
 
 
@@ -623,14 +641,12 @@ void wxMimeTypesManagerImpl::LoadGnomeDataFromKeyFile(const wxString& filename)
 void wxMimeTypesManagerImpl::LoadGnomeMimeTypesFromMimeFile(const wxString& filename)
 {
     wxTextFile textfile(filename);
-#if defined(__WXGTK20__) && wxUSE_UNICODE
-    if ( !textfile.Open( wxConvUTF8) )
-#else
     if ( !textfile.Open() )
-#endif
         return;
-    wxLogTrace(TRACE_MIME, wxT("--- Opened Gnome file %s  ---"),
-                 filename.c_str());
+
+    wxLogTrace(TRACE_MIME,
+               wxT("--- Opened Gnome file %s  ---"),
+               filename.c_str());
 
     // values for the entry being parsed
     wxString curMimeType, curExtList;
@@ -659,9 +675,10 @@ void wxMimeTypesManagerImpl::LoadGnomeMimeTypesFromMimeFile(const wxString& file
             // end of the entry
             if ( !!curMimeType && !!curExtList )
             {
-                 wxLogTrace(TRACE_MIME, wxT("--- At end of Gnome file  finding mimetype %s  ---"),
-                 curMimeType.c_str());
-
+                 wxLogTrace(TRACE_MIME,
+                            wxT("--- At end of Gnome file  finding mimetype %s  ---"),
+                            curMimeType.c_str());
+                
                  AddMimeTypeInfo(curMimeType, curExtList, wxEmptyString);
             }
 
@@ -682,20 +699,20 @@ void wxMimeTypesManagerImpl::LoadGnomeMimeTypesFromMimeFile(const wxString& file
             // this is a field=value ling
             pc++; // skip leading TAB
 
-            static const int lenField = 4; // strlen("ext:")
-            if ( wxStrncmp(pc, wxT("ext:"), lenField) == 0 )
+            static const int lenField = 5; // strlen("ext: ")
+            if ( wxStrncmp(pc, wxT("ext: "), lenField) == 0 )
             {
-                // skip ' ' which follows and take everything left until the end
-                // of line
-                curExtList = pc + lenField + 1;
+                // skip it and take everything left until the end of line
+                curExtList = pc + lenField;
             }
             //else: some other field, we don't care
         }
         else
         {
             // this is the start of the new section
-            wxLogTrace(TRACE_MIME, wxT("--- In Gnome file  finding mimetype %s  ---"),
-                 curMimeType.c_str());
+            wxLogTrace(TRACE_MIME,
+                       wxT("--- In Gnome file  finding mimetype %s  ---"),
+                       curMimeType.c_str());
 
             if (! curMimeType.empty())
                 AddMimeTypeInfo(curMimeType, curExtList, wxEmptyString);
@@ -711,14 +728,15 @@ void wxMimeTypesManagerImpl::LoadGnomeMimeTypesFromMimeFile(const wxString& file
 }
 
 
-void wxMimeTypesManagerImpl::LoadGnomeMimeFilesFromDir(const wxString& dirbase)
+void wxMimeTypesManagerImpl::LoadGnomeMimeFilesFromDir(
+                      const wxString& dirbase, const wxArrayString& dirs)
 {
     wxASSERT_MSG( !!dirbase && !wxEndsWithPathSeparator(dirbase),
                   _T("base directory shouldn't end with a slash") );
 
     wxString dirname = dirbase;
     dirname << wxT("/mime-info");
-
+    
     if ( !wxDir::Exists(dirname) )
         return;
 
@@ -730,7 +748,8 @@ void wxMimeTypesManagerImpl::LoadGnomeMimeFilesFromDir(const wxString& dirbase)
     dirname += wxT('/');
 
     wxString filename;
-    bool cont = dir.GetFirst(&filename, _T("*.mime"), wxDIR_FILES);
+    bool cont;
+    cont = dir.GetFirst(&filename, _T("*.mime"), wxDIR_FILES);
     while ( cont )
     {
         LoadGnomeMimeTypesFromMimeFile(dirname + filename);
@@ -741,32 +760,75 @@ void wxMimeTypesManagerImpl::LoadGnomeMimeFilesFromDir(const wxString& dirbase)
     cont = dir.GetFirst(&filename, _T("*.keys"), wxDIR_FILES);
     while ( cont )
     {
-        LoadGnomeDataFromKeyFile(dirname + filename);
+        LoadGnomeDataFromKeyFile(dirname + filename, dirs);
 
         cont = dir.GetNext(&filename);
     }
+
+    // Hack alert: We scan all icons and deduce the
+    //             mime-type from the file name.
+    dirname = dirbase;
+    dirname << wxT("/pixmaps/document-icons");
+    
+    // these are always empty in this file
+    wxArrayString strExtensions;
+    wxString strDesc;
+    
+    if ( !wxDir::Exists(dirname) )
+    {
+        // Jst test for default GPE dir also
+        dirname = wxT("/usr/share/gpe/pixmaps/default/filemanager/document-icons");
+        
+        if ( !wxDir::Exists(dirname) )
+           return;
+    }
+
+    wxDir dir2( dirname );
+
+    cont = dir2.GetFirst(&filename, wxT("gnome-*.png"), wxDIR_FILES);
+    while ( cont )
+    {
+        wxString mimeType = filename;
+        mimeType.Remove( 0, 6 ); // remove "gnome-"
+        mimeType.Remove( mimeType.Len()-4, 4 ); // remove ".png"
+        int pos = mimeType.Find( wxT("-") );
+        if (pos != wxNOT_FOUND)
+        {
+            mimeType.SetChar( pos, wxT('/') );
+            wxString iconFile = dirname;
+            iconFile << wxT("/");
+            iconFile << filename;
+            AddToMimeData ( mimeType, iconFile, NULL, strExtensions, strDesc, TRUE );
+        }
+
+        cont = dir2.GetNext(&filename);
+    }
 }
-
-
-
 
 void wxMimeTypesManagerImpl::GetGnomeMimeInfo(const wxString& sExtraDir)
 {
-
     wxArrayString dirs;
+    
+    wxString gnomedir = wxGetenv( wxT("GNOMEDIR") );;
+    if (!gnomedir.empty())
+    {
+        gnomedir << wxT("/share");
+        dirs.Add( gnomedir );
+    }
+
     dirs.Add(wxT("/usr/share"));
     dirs.Add(wxT("/usr/local/share"));
-
-    wxString gnomedir;
-    wxGetHomeDir( &gnomedir );
-    gnomedir += wxT("/.gnome");
+    
+    gnomedir = wxGetHomeDir();
+    gnomedir << wxT("/.gnome");
     dirs.Add( gnomedir );
+    
     if (!sExtraDir.empty()) dirs.Add( sExtraDir );
 
     size_t nDirs = dirs.GetCount();
     for ( size_t nDir = 0; nDir < nDirs; nDir++ )
     {
-        LoadGnomeMimeFilesFromDir(dirs[nDir]);
+        LoadGnomeMimeFilesFromDir(dirs[nDir], dirs);
     }
 }
 
@@ -788,20 +850,21 @@ void wxMimeTypesManagerImpl::GetGnomeMimeInfo(const wxString& sExtraDir)
 // kde writing; see http://webcvs.kde.org/cgi-bin/cvsweb.cgi/~checkout~/kdelibs/kio/DESKTOP_ENTRY_STANDARD
 // for now write to .kdelnk but should eventually do .desktop instead (in preference??)
 
-bool wxMimeTypesManagerImpl::CheckKDEDirsExist ( const wxString & sOK, const wxString & sTest )
-
-    {
+bool wxMimeTypesManagerImpl::CheckKDEDirsExist ( const wxString &sOK, const wxString &sTest )
+{
     if (sTest.empty())
-        {
-            if (wxDir::Exists(sOK)) return TRUE;
-            else return FALSE;
-        }
+    {
+        if (wxDir::Exists(sOK))
+            return TRUE;
+        else
+            return FALSE;
+    }
     else
-        {
-            wxString sStart = sOK + wxT("/") + sTest.BeforeFirst(wxT('/'));
-            if (!wxDir::Exists(sStart))  wxMkdir(sStart);
-            wxString sEnd = sTest.AfterFirst(wxT('/'));
-            return CheckKDEDirsExist(sStart, sEnd);
+    {
+        wxString sStart = sOK + wxT("/") + sTest.BeforeFirst(wxT('/'));
+        if (!wxDir::Exists(sStart))  wxMkdir(sStart);
+        wxString sEnd = sTest.AfterFirst(wxT('/'));
+        return CheckKDEDirsExist(sStart, sEnd);
     }
 }
 
@@ -909,8 +972,6 @@ bool wxMimeTypesManagerImpl::WriteKDEMimeFile(int index, bool delete_index)
     appoutfile.Close ();
 
     return bTemp;
-
-
 }
 
 void wxMimeTypesManagerImpl::LoadKDELinksForMimeSubtype(const wxString& dirbase,
@@ -921,6 +982,9 @@ void wxMimeTypesManagerImpl::LoadKDELinksForMimeSubtype(const wxString& dirbase,
     wxMimeTextFile file;
     if ( !file.Open(dirbase + filename) ) return;
 
+    wxLogTrace(TRACE_MIME, wxT("loading KDE file %s"),
+                           (dirbase+filename).c_str());
+    
     wxMimeTypeCommands * entry = new wxMimeTypeCommands;
     wxArrayString sExts;
     wxString mimetype, mime_desc, strIcon;
@@ -984,14 +1048,16 @@ void wxMimeTypesManagerImpl::LoadKDELinksForMimeSubtype(const wxString& dirbase,
     }
     sExts.Add(mime_extension);
 
-
     // ok, now we can take care of icon:
 
     nIndex = file.pIndexOf(_T("Icon="));
     if ( nIndex != wxNOT_FOUND )
     {
         strIcon = file.GetCmd(nIndex);
+        wxLogTrace(TRACE_MIME, wxT("  icon %s"), strIcon.c_str());
         //it could be the real path, but more often a short name
+    
+    
         if (!wxFileExists(strIcon))
         {
             // icon is just the short name
@@ -1001,11 +1067,17 @@ void wxMimeTypesManagerImpl::LoadKDELinksForMimeSubtype(const wxString& dirbase,
                 // in many locations, at least ~/.kde and $KDEDIR
                 size_t nDir, nDirs = icondirs.GetCount();
                 for ( nDir = 0; nDir < nDirs; nDir++ )
-                    if (wxFileExists(icondirs[nDir] + strIcon))
+                {
+                    wxFileName fnameIcon( strIcon );
+                    wxFileName fname( icondirs[nDir], fnameIcon.GetName() );
+                    fname.SetExt( wxT("png") );
+                    if (fname.FileExists())
                     {
-                        strIcon.Prepend(icondirs[nDir]);
+                        strIcon = fname.GetFullPath();
+                        wxLogTrace(TRACE_MIME, wxT("  iconfile %s"), strIcon.c_str());
                         break;
                     }
+                }
             }
         }
     }
@@ -1042,6 +1114,9 @@ void wxMimeTypesManagerImpl::LoadKDELinksForMimeType(const wxString& dirbase,
     if ( !dir.IsOpened() )
         return;
 
+    wxLogTrace(TRACE_MIME, wxT("--- Loading from KDE directory %s  ---"),
+                           dirname.c_str());
+    
     dirname += _T('/');
 
     wxString filename;
@@ -1096,13 +1171,100 @@ void wxMimeTypesManagerImpl::GetKDEMimeInfo(const wxString& sExtraDir)
     wxArrayString dirs;
     wxArrayString icondirs;
 
+    // FIXME: This code is heavily broken. There are three bugs in it:
+    //        1) it uses only KDEDIR, which is deprecated, instead of using
+    //           list of paths from KDEDIRS and using KDEDIR only if KDEDIRS
+    //           is not set
+    //        2) it doesn't look into ~/.kde/share/config/kdeglobals where
+    //           user's settings are stored and thus *ignores* user's settings
+    //           instead of respecting them
+    //        3) it "tries to guess KDEDIR" and "tries a few likely theme
+    //           names", both of which is completely arbitrary; instead, the
+    //           code should give up if KDEDIR(S) is not set and/or the icon
+    //           theme cannot be determined, because it means that the user is
+    //           not using KDE (and thus is not interested in KDE icons anyway)
+    
+    // the variable $KDEDIR is set when KDE is running
+    wxString kdedir = wxGetenv( wxT("KDEDIR") );
+    
+    if (!kdedir.empty())
+    {
+        // $(KDEDIR)/share/config/kdeglobals holds info
+        // the current icons theme
+        wxFileName configFile( kdedir, wxEmptyString );
+        configFile.AppendDir( wxT("share") );
+        configFile.AppendDir( wxT("config") );
+        configFile.SetName( wxT("kdeglobals") );
+           
+        wxTextFile config;
+        if (configFile.FileExists() && config.Open(configFile.GetFullPath()))
+        {
+            // $(KDEDIR)/share/config -> $(KDEDIR)/share
+            configFile.RemoveDir( configFile.GetDirCount()-1 );
+            // $(KDEDIR)/share/ -> $(KDEDIR)/share/icons
+            configFile.AppendDir( wxT("icons") );
+
+            // Check for entry
+            wxString theme(wxT("default.kde"));
+            size_t cnt = config.GetLineCount();
+            for (size_t i = 0; i < cnt; i++)
+            {
+                if (config[i].StartsWith(wxT("Theme="), &theme/*rest*/))
+                    break;
+            }
+            configFile.AppendDir(theme);
+        }
+        else
+        {
+            // $(KDEDIR)/share/config -> $(KDEDIR)/share
+            configFile.RemoveDir( configFile.GetDirCount()-1 );
+            // $(KDEDIR)/share/ -> $(KDEDIR)/share/icons
+            configFile.AppendDir( wxT("icons") );
+            // $(KDEDIR)/share/icons -> $(KDEDIR)/share/icons/default.kde
+            configFile.AppendDir( wxT("default.kde") );
+        }
+        
+        configFile.SetName( wxEmptyString );
+        configFile.AppendDir( wxT("32x32") );
+        configFile.AppendDir( wxT("mimetypes") );
+        
+        // Just try a few likely icons theme names
+        
+        int pos = configFile.GetDirCount()-3;
+        
+        if (!wxDir::Exists(configFile.GetPath()))
+        {
+            configFile.RemoveDir( pos );
+            configFile.InsertDir( pos, wxT("default.kde") );
+        }
+        
+        if (!wxDir::Exists(configFile.GetPath()))
+        {
+            configFile.RemoveDir( pos );
+            configFile.InsertDir( pos, wxT("default") );
+        }
+        
+        if (!wxDir::Exists(configFile.GetPath()))
+        {
+            configFile.RemoveDir( pos );
+            configFile.InsertDir( pos, wxT("crystalsvg") );
+        }
+        
+        if (!wxDir::Exists(configFile.GetPath()))
+        {
+            configFile.RemoveDir( pos );
+            configFile.InsertDir( pos, wxT("crystal") );
+        }
+        
+        if (wxDir::Exists(configFile.GetPath()))
+            icondirs.Add( configFile.GetFullPath() );
+    }
+
     // settings in ~/.kde have maximal priority
     dirs.Add(wxGetHomeDir() + wxT("/.kde/share"));
     icondirs.Add(wxGetHomeDir() + wxT("/.kde/share/icons/"));
 
-    // the variable KDEDIR is set when KDE is running
-    const wxChar *kdedir = wxGetenv( wxT("KDEDIR") );
-    if ( kdedir )
+    if (kdedir)
     {
         dirs.Add( wxString(kdedir) + wxT("/share") );
         icondirs.Add( wxString(kdedir) + wxT("/share/icons/") );
@@ -1144,12 +1306,9 @@ wxString wxFileTypeImpl::GetExpandedCommand(const wxString & verb, const wxFileT
     return wxFileType::ExpandCommand(sTmp, params);
 }
 
-bool wxFileTypeImpl::GetIcon(wxIcon *icon,
-                             wxString *iconFile /*= NULL */,
-                             int *iconIndex /*= NULL*/) const
+bool wxFileTypeImpl::GetIcon(wxIconLocation *iconLoc) const
 
 {
-#if wxUSE_GUI
     wxString sTmp;
     size_t i = 0;
     while ( (i < m_index.GetCount() ) && sTmp.empty() )
@@ -1157,25 +1316,15 @@ bool wxFileTypeImpl::GetIcon(wxIcon *icon,
         sTmp = m_manager->m_aIcons[m_index[i]];
         i ++;
     }
-    if ( sTmp.empty () ) return FALSE;
+    if ( sTmp.empty () )
+        return FALSE;
 
-    wxIcon icn;
-
-    if (sTmp.Right(4).MakeUpper() == _T(".XPM"))
-        icn = wxIcon(sTmp);
-    else
-        icn = wxIcon(sTmp, wxBITMAP_TYPE_ANY);
-
-    if ( icn.Ok() )
+    if ( iconLoc )
     {
-        *icon = icn;
-        if (iconFile) *iconFile = sTmp;
-        if (iconIndex) *iconIndex = 0;
-        return TRUE;
+        iconLoc->SetFileName(sTmp);
     }
-#endif // wxUSE_GUI
 
-    return FALSE;
+    return TRUE;
 }
 
 
@@ -1330,6 +1479,26 @@ wxMimeTypesManagerImpl::wxMimeTypesManagerImpl()
     m_mailcapStylesInited = 0;
 }
 
+void wxMimeTypesManagerImpl::InitIfNeeded()
+{
+    if ( !m_initialized )
+    {
+        // set the flag first to prevent recursion
+        m_initialized = TRUE;
+    
+#if 0
+    wxString wm = wxGetenv( wxT("WINDOWMANAGER") );
+    
+    if (wm.Find( wxT("kde") ) != wxNOT_FOUND)
+        Initialize( wxMAILCAP_KDE|wxMAILCAP_STANDARD );
+    else if (wm.Find( wxT("gnome") ) != wxNOT_FOUND)
+        Initialize( wxMAILCAP_GNOME|wxMAILCAP_STANDARD );
+    else
+#endif
+            Initialize();
+    }
+}
+
 // read system and user mailcaps and other files
 void wxMimeTypesManagerImpl::Initialize(int mailcapStyles,
                                         const wxString& sExtraDir)
@@ -1340,11 +1509,11 @@ void wxMimeTypesManagerImpl::Initialize(int mailcapStyles,
         GetMimeInfo(sExtraDir);
 
     // read GNOME tables
-    if ( mailcapStyles & wxMAILCAP_GNOME)
+    if (mailcapStyles & wxMAILCAP_GNOME)
         GetGnomeMimeInfo(sExtraDir);
 
     // read KDE tables
-    if ( mailcapStyles & wxMAILCAP_KDE)
+    if (mailcapStyles & wxMAILCAP_KDE)
         GetKDEMimeInfo(sExtraDir);
 
     m_mailcapStylesInited |= mailcapStyles;
@@ -1805,7 +1974,8 @@ int wxMimeTypesManagerImpl::AddToMimeData(const wxString& strType,
         m_aEntries.Add(entry ? entry : new wxMimeTypeCommands);
 
         // change nIndex so we can use it below to add the extensions
-        nIndex = m_aExtensions.Add(wxEmptyString);
+        m_aExtensions.Add(wxEmptyString);
+        nIndex = m_aExtensions.size() - 1;
 
         m_aDescriptions.Add(strDesc);
     }
@@ -2119,8 +2289,7 @@ bool wxMimeTypesManagerImpl::ReadMimeTypes(const wxString& strFileName)
                 // the string is quoted and ends at the matching quote
                 pEnd = wxStrchr(++pc, wxT('"'));
                 if ( pEnd == NULL ) {
-                    wxLogWarning(_("Mime.types file %s, line %d: unterminated "
-                                   "quoted string."),
+                    wxLogWarning(_("Mime.types file %s, line %d: unterminated quoted string."),
                                  strFileName.c_str(), nLine + 1);
                 }
             }
@@ -2396,9 +2565,7 @@ bool wxMimeTypesManagerImpl::ReadMailcap(const wxString& strFileName,
                             // something is wrong, bail out
                             cont = FALSE;
 
-                            wxLogDebug(wxT("Mailcap file %s, line %lu: "
-                                           "'\\' on the end of the last line "
-                                           "ignored."),
+                            wxLogDebug(wxT("Mailcap file %s, line %lu: '\\' on the end of the last line ignored."),
                                        strFileName.c_str(),
                                        (unsigned long)nLine + 1);
                         }
@@ -2462,9 +2629,7 @@ bool wxMimeTypesManagerImpl::ReadMailcap(const wxString& strFileName,
                                 // this might be useful for the programmer
                                 wxLogDebug
                                 (
-                                    wxT("Mailcap file %s, line %lu: "
-                                        "unknown field '%s' for the "
-                                        "MIME type '%s' ignored."),
+                                    wxT("Mailcap file %s, line %lu: unknown field '%s' for the MIME type '%s' ignored."),
                                     strFileName.c_str(),
                                     (unsigned long)nLine + 1,
                                     curField.c_str(),
@@ -2503,8 +2668,7 @@ bool wxMimeTypesManagerImpl::ReadMailcap(const wxString& strFileName,
         // check that we really read something reasonable
         if ( currentToken < Field_Other )
         {
-            wxLogWarning(_("Mailcap file %s, line %d: incomplete entry "
-                           "ignored."),
+            wxLogWarning(_("Mailcap file %s, line %d: incomplete entry ignored."),
                          strFileName.c_str(), nLine + 1);
 
             continue;
@@ -2557,7 +2721,8 @@ bool wxMimeTypesManagerImpl::ReadMailcap(const wxString& strFileName,
             // have we seen this one before?
             int nIndex = m_aTypes.Index(data.type);
 
-            // and if we have, was it in this file?
+            // and if we have, was it in this file? if not, we should
+            // overwrite the previously seen one
             overwrite = nIndex == wxNOT_FOUND ||
                             aIndicesSeenHere.Index(nIndex) == wxNOT_FOUND;
         }

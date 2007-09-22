@@ -1,10 +1,10 @@
 /////////////////////////////////////////////////////////////////////////////
-// Program:     wxWindows Widgets Sample
+// Program:     wxWidgets Widgets Sample
 // Name:        widgets.cpp
-// Purpose:     Sample showing most of the simple wxWindows widgets
+// Purpose:     Sample showing most of the simple wxWidgets widgets
 // Author:      Vadim Zeitlin
 // Created:     27.03.01
-// Id:          $Id: widgets.cpp,v 1.11 2002/09/06 19:45:26 JS Exp $
+// Id:          $Id: widgets.cpp,v 1.21 2004/07/21 10:29:21 ABX Exp $
 // Copyright:   (c) 2001 Vadim Zeitlin
 // License:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -80,7 +80,9 @@ public:
 
 protected:
     // event handlers
+#if wxUSE_LOG
     void OnButtonClearLog(wxCommandEvent& event);
+#endif // wxUSE_LOG
     void OnButtonQuit(wxCommandEvent& event);
 
     // initialize the notebook: add all pages to it
@@ -90,11 +92,13 @@ private:
     // the panel containing everything
     wxPanel *m_panel;
 
+#if wxUSE_LOG
     // the listbox for logging messages
     wxListBox *m_lboxLog;
 
     // the log target we use to redirect messages to the listbox
     wxLog *m_logTarget;
+#endif // wxUSE_LOG
 
     // the notebook containing the test pages
     wxNotebook *m_notebook;
@@ -102,10 +106,11 @@ private:
     // and the image list for it
     wxImageList *m_imaglist;
 
-    // any class wishing to process wxWindows events must use this macro
+    // any class wishing to process wxWidgets events must use this macro
     DECLARE_EVENT_TABLE()
 };
 
+#if wxUSE_LOG
 // A log target which just redirects the messages to a listbox
 class LboxLogger : public wxLog
 {
@@ -142,7 +147,7 @@ private:
         }
     }
 
-    virtual void DoLogString(const wxChar *szString, time_t t)
+    virtual void DoLogString(const wxChar *szString, time_t WXUNUSED(t))
     {
         wxString msg;
         TimeStamp(&msg);
@@ -162,9 +167,10 @@ private:
     // the old log target
     wxLog *m_logOld;
 };
+#endif // wxUSE_LOG
 
 // array of pages
-WX_DEFINE_ARRAY(WidgetsPage *, ArrayWidgetsPage);
+WX_DEFINE_ARRAY_PTR(WidgetsPage *, ArrayWidgetsPage);
 
 // ----------------------------------------------------------------------------
 // misc macros
@@ -177,7 +183,9 @@ IMPLEMENT_APP(WidgetsApp)
 // ----------------------------------------------------------------------------
 
 BEGIN_EVENT_TABLE(WidgetsFrame, wxFrame)
+#if wxUSE_LOG
     EVT_BUTTON(Widgets_ClearLog, WidgetsFrame::OnButtonClearLog)
+#endif // wxUSE_LOG
     EVT_BUTTON(Widgets_Quit, WidgetsFrame::OnButtonQuit)
 END_EVENT_TABLE()
 
@@ -192,7 +200,7 @@ END_EVENT_TABLE()
 bool WidgetsApp::OnInit()
 {
     if ( !wxApp::OnInit() )
-        return FALSE;
+        return false;
 
     // the reason for having these ifdef's is that I often run two copies of
     // this sample side by side and it is useful to see which one is which
@@ -210,7 +218,7 @@ bool WidgetsApp::OnInit()
 #elif defined(__WXMOTIF__)
     title += _T("wxMOTIF");
 #else
-    title += _T("wxWindows");
+    title += _T("wxWidgets");
 #endif
 
     wxFrame *frame = new WidgetsFrame(title + _T(" widgets demo"));
@@ -220,7 +228,7 @@ bool WidgetsApp::OnInit()
     //wxLog::AddTraceMask(_T("scrollbar"));
     //wxLog::AddTraceMask(_T("focus"));
 
-    return TRUE;
+    return true;
 }
 
 // ----------------------------------------------------------------------------
@@ -228,59 +236,75 @@ bool WidgetsApp::OnInit()
 // ----------------------------------------------------------------------------
 
 WidgetsFrame::WidgetsFrame(const wxString& title)
-            : wxFrame(NULL, -1, title, wxPoint(0, 50))
+            : wxFrame(NULL, wxID_ANY, title,
+                      wxPoint(0, 50), wxDefaultSize,
+                      wxDEFAULT_FRAME_STYLE |
+                      wxNO_FULL_REPAINT_ON_RESIZE |
+                      wxCLIP_CHILDREN |
+                      wxTAB_TRAVERSAL)
 {
     // init everything
+#if wxUSE_LOG
     m_lboxLog = (wxListBox *)NULL;
     m_logTarget = (wxLog *)NULL;
+#endif // wxUSE_LOG
     m_notebook = (wxNotebook *)NULL;
     m_imaglist = (wxImageList *)NULL;
 
     // create controls
-    m_panel = new wxPanel(this, -1);
+    m_panel = new wxPanel(this, wxID_ANY,
+        wxDefaultPosition, wxDefaultSize, wxCLIP_CHILDREN);
 
     wxSizer *sizerTop = new wxBoxSizer(wxVERTICAL);
 
     // we have 2 panes: notebook which pages demonstrating the controls in the
     // upper one and the log window with some buttons in the lower
 
-    m_notebook = new wxNotebook(m_panel, -1);
+    m_notebook = new wxNotebook(m_panel, wxID_ANY, wxDefaultPosition,
+        wxDefaultSize, wxNO_FULL_REPAINT_ON_RESIZE|wxCLIP_CHILDREN);
     InitNotebook();
-    wxSizer *sizerUp = new wxNotebookSizer(m_notebook);
 
     // the lower one only has the log listbox and a button to clear it
-    wxSizer *sizerDown = new wxStaticBoxSizer
-                             (
-                               new wxStaticBox(m_panel, -1, _T("&Log window")),
-                               wxVERTICAL
-                             );
-    m_lboxLog = new wxListBox(m_panel, -1);
+#if wxUSE_LOG
+    wxSizer *sizerDown = new wxStaticBoxSizer(
+        new wxStaticBox( m_panel, wxID_ANY, _T("&Log window") ),
+        wxVERTICAL);
+
+    m_lboxLog = new wxListBox(m_panel, wxID_ANY);
     sizerDown->Add(m_lboxLog, 1, wxGROW | wxALL, 5);
     sizerDown->SetMinSize(100, 150);
+#else
+    wxSizer *sizerDown = new wxBoxSizer(wxVERTICAL);
+#endif // wxUSE_LOG
 
     wxBoxSizer *sizerBtns = new wxBoxSizer(wxHORIZONTAL);
-    wxButton *btn = new wxButton(m_panel, Widgets_ClearLog, _T("Clear &log"));
+    wxButton *btn;
+#if wxUSE_LOG
+    btn = new wxButton(m_panel, Widgets_ClearLog, _T("Clear &log"));
     sizerBtns->Add(btn);
     sizerBtns->Add(10, 0); // spacer
+#endif // wxUSE_LOG
     btn = new wxButton(m_panel, Widgets_Quit, _T("E&xit"));
     sizerBtns->Add(btn);
     sizerDown->Add(sizerBtns, 0, wxALL | wxALIGN_RIGHT, 5);
 
     // put everything together
-    sizerTop->Add(sizerUp, 1, wxGROW | (wxALL & ~(wxTOP | wxBOTTOM)), 10);
+    sizerTop->Add(m_notebook, 1, wxGROW | (wxALL & ~(wxTOP | wxBOTTOM)), 10);
     sizerTop->Add(0, 5, 0, wxGROW); // spacer in between
     sizerTop->Add(sizerDown, 0,  wxGROW | (wxALL & ~wxTOP), 10);
 
-    m_panel->SetAutoLayout(TRUE);
     m_panel->SetSizer(sizerTop);
 
     sizerTop->Fit(this);
     sizerTop->SetSizeHints(this);
 
+#if wxUSE_LOG && !defined(__WXCOCOA__)
+    // wxCocoa's listbox is too flakey to use for logging right now
     // now that everything is created we can redirect the log messages to the
     // listbox
     m_logTarget = new LboxLogger(m_lboxLog, wxLog::GetActiveTarget());
     wxLog::SetActiveTarget(m_logTarget);
+#endif
 }
 
 void WidgetsFrame::InitNotebook()
@@ -312,7 +336,7 @@ void WidgetsFrame::InitNotebook()
         m_notebook->AddPage(
                             pages[n],
                             labels[n],
-                            FALSE, // don't select
+                            false, // don't select
                             n // image id
                            );
     }
@@ -320,7 +344,9 @@ void WidgetsFrame::InitNotebook()
 
 WidgetsFrame::~WidgetsFrame()
 {
+#if wxUSE_LOG
     delete m_logTarget;
+#endif // wxUSE_LOG
     delete m_imaglist;
 }
 
@@ -333,10 +359,12 @@ void WidgetsFrame::OnButtonQuit(wxCommandEvent& WXUNUSED(event))
     Close();
 }
 
-void WidgetsFrame::OnButtonClearLog(wxCommandEvent& event)
+#if wxUSE_LOG
+void WidgetsFrame::OnButtonClearLog(wxCommandEvent& WXUNUSED(event))
 {
     m_lboxLog->Clear();
 }
+#endif // wxUSE_LOG
 
 // ----------------------------------------------------------------------------
 // WidgetsPageInfo
@@ -349,8 +377,54 @@ WidgetsPageInfo::WidgetsPageInfo(Constructor ctor, const wxChar *label)
 {
     m_ctor = ctor;
 
-    m_next = WidgetsPage::ms_widgetPages;
-    WidgetsPage::ms_widgetPages = this;
+    m_next = NULL;
+
+    // dummy sorting: add and immediately sort on list according to label
+
+    if(WidgetsPage::ms_widgetPages)
+    {
+        WidgetsPageInfo *node_prev = WidgetsPage::ms_widgetPages;
+        if(wxStrcmp(label,node_prev->GetLabel().c_str())<0)
+        {
+            // add as first
+            m_next = node_prev;
+            WidgetsPage::ms_widgetPages = this;
+        }
+        else
+        {
+            WidgetsPageInfo *node_next;
+            do
+            {
+                node_next = node_prev->GetNext();
+                if(node_next)
+                {
+                    // add if between two
+                    if(wxStrcmp(label,node_next->GetLabel().c_str())<0)
+                    {
+                        node_prev->SetNext(this);
+                        m_next = node_next;
+                        // force to break loop
+                        node_next = NULL;
+                    }
+                }
+                else
+                {
+                    // add as last
+                    node_prev->SetNext(this);
+                    m_next = node_next;
+                }
+                node_prev = node_next;
+            }while(node_next);
+        }
+    }
+    else
+    {
+        // add when first
+
+        WidgetsPage::ms_widgetPages = this;
+
+    }
+
 }
 
 // ----------------------------------------------------------------------------
@@ -358,7 +432,11 @@ WidgetsPageInfo::WidgetsPageInfo(Constructor ctor, const wxChar *label)
 // ----------------------------------------------------------------------------
 
 WidgetsPage::WidgetsPage(wxNotebook *notebook)
-           : wxPanel(notebook, -1)
+           : wxPanel(notebook, wxID_ANY,
+                     wxDefaultPosition, wxDefaultSize,
+                     wxNO_FULL_REPAINT_ON_RESIZE |
+                     wxCLIP_CHILDREN |
+                     wxTAB_TRAVERSAL)
 {
 }
 
@@ -367,7 +445,8 @@ wxSizer *WidgetsPage::CreateSizerWithText(wxControl *control,
                                           wxTextCtrl **ppText)
 {
     wxSizer *sizerRow = new wxBoxSizer(wxHORIZONTAL);
-    wxTextCtrl *text = new wxTextCtrl(this, id, _T(""), wxDefaultPosition, wxDefaultSize, wxTE_PROCESS_ENTER);
+    wxTextCtrl *text = new wxTextCtrl(this, id, wxEmptyString,
+        wxDefaultPosition, wxDefaultSize, wxTE_PROCESS_ENTER);
 
     sizerRow->Add(control, 0, wxRIGHT | wxALIGN_CENTRE_VERTICAL, 5);
     sizerRow->Add(text, 1, wxLEFT | wxALIGN_CENTRE_VERTICAL, 5);
@@ -383,7 +462,8 @@ wxSizer *WidgetsPage::CreateSizerWithTextAndLabel(const wxString& label,
                                                   wxWindowID id,
                                                   wxTextCtrl **ppText)
 {
-    return CreateSizerWithText(new wxStaticText(this, -1, label), id, ppText);
+    return CreateSizerWithText(new wxStaticText(this, wxID_ANY, label),
+        id, ppText);
 }
 
 // create a sizer containing a button and a text ctrl

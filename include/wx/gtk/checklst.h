@@ -3,7 +3,7 @@
 // Purpose:     wxCheckListBox class
 // Author:      Robert Roebling
 // Modified by:
-// RCS-ID:      $Id: checklst.h,v 1.12 2002/09/07 12:28:46 GD Exp $
+// RCS-ID:      $Id: checklst.h,v 1.16 2004/05/23 20:50:52 JS Exp $
 // Copyright:   (c) 1998 Robert Roebling
 // Licence:     wxWindows licence
 ///////////////////////////////////////////////////////////////////////////////
@@ -11,7 +11,7 @@
 #ifndef __GTKCHECKLISTH__
 #define __GTKCHECKLISTH__
 
-#if defined(__GNUG__) && !defined(__APPLE__)
+#if defined(__GNUG__) && !defined(NO_GCC_PRAGMA)
 #pragma interface
 #endif
 
@@ -41,6 +41,13 @@ public:
             const wxSize& size = wxDefaultSize,
             int nStrings = 0,
             const wxString *choices = (const wxString *)NULL,
+            long style = 0,
+            const wxValidator& validator = wxDefaultValidator,
+            const wxString& name = wxListBoxNameStr);
+    wxCheckListBox(wxWindow *parent, wxWindowID id,
+            const wxPoint& pos,
+            const wxSize& size,
+            const wxArrayString& choices,
             long style = 0,
             const wxValidator& validator = wxDefaultValidator,
             const wxString& name = wxListBoxNameStr);

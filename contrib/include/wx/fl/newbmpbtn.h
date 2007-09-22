@@ -4,7 +4,7 @@
 // Author:      Aleksandras Gluchovas
 // Modified by:
 // Created:     ??/09/98
-// RCS-ID:      $Id: newbmpbtn.h,v 1.7.2.2 2003/04/02 14:14:06 JS Exp $
+// RCS-ID:      $Id: newbmpbtn.h,v 1.13 2004/06/07 16:02:14 ABX Exp $
 // Copyright:   (c) Aleksandras Gluchovas
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -32,8 +32,8 @@
 
 // classes declared in this header file
 
-class WXFL_DECLSPEC wxNewBitmapButton;
-class WXFL_DECLSPEC wxBorderLessBitmapButton;
+class WXDLLIMPEXP_FL wxNewBitmapButton;
+class WXDLLIMPEXP_FL wxBorderLessBitmapButton;
 
 /*
 This is an alternative class to wxBitmapButton. It is used
@@ -63,7 +63,7 @@ protected:
                             // labels for particular state
 
     wxBitmap mFocusedBmp;   // may not be always present -
-                            // only if mHasFocusedBmp is TRUE
+                            // only if mHasFocusedBmp is true
 
     wxBitmap* mpDepressedImg;
     wxBitmap* mpPressedImg;
@@ -74,6 +74,7 @@ protected:
     bool      mDragStarted;
     bool      mIsPressed;
     bool      mIsInFocus;
+    bool      mIsToggled;
 
     bool      mHasFocusedBmp;
 
@@ -103,8 +104,12 @@ protected:
                             wxPen& upperLeftSidePen,
                             wxPen& lowerRightSidePen );
 
-        // Returns TRUE if the given point is in the window.
+        // Returns true if the given point is in the window.
     bool IsInWindow( int x, int y );
+
+    virtual void OnIdle(wxIdleEvent& event);
+    // (EVT_UPDATE_UI handler)
+    virtual void DoButtonUpdate();
 
 public:
 
@@ -112,13 +117,13 @@ public:
     wxNewBitmapButton( const wxBitmap& labelBitmap = wxNullBitmap,
                        const wxString& labelText   = wxT(""),
                        int   alignText             = NB_ALIGN_TEXT_BOTTOM,
-                       bool  isFlat                = TRUE,
+                       bool  isFlat                = true,
                        // this is the default type of fired events
                        int firedEventType = wxEVT_COMMAND_MENU_SELECTED,
                        int marginX        = NB_DEFAULT_MARGIN,
                        int marginY        = NB_DEFAULT_MARGIN,
                        int textToLabelGap = 2,
-                       bool isSticky      = FALSE
+                       bool isSticky      = false
                      );
 
         // Use this constructor if buttons have to be persistant
@@ -126,13 +131,13 @@ public:
                            const wxBitmapType     bitmapFileType = wxBITMAP_TYPE_BMP,
                            const wxString& labelText      = wxT(""),
                            int alignText                  = NB_ALIGN_TEXT_BOTTOM,
-                           bool  isFlat                   = TRUE,
+                           bool  isFlat                   = true,
                            // this is the default type of fired events
                            int firedEventType = wxEVT_COMMAND_MENU_SELECTED,
                            int marginX        = NB_DEFAULT_MARGIN,
                            int marginY        = NB_DEFAULT_MARGIN,
                            int textToLabelGap = 2,
-                           bool isSticky      = FALSE
+                           bool isSticky      = false
                              );
 
         // Destructor.
@@ -144,6 +149,11 @@ public:
 
         // Sets the label and optionally label text.
     virtual void SetLabel(const wxBitmap& labelBitmap, const wxString& labelText = wxT("") );
+
+        // Unhide method from parents.
+
+    virtual void SetLabel(const wxString& label)
+                         { wxPanel::SetLabel(label); };
 
         // Sets the text alignment and margins.
     virtual void SetAlignments( int alignText = NB_ALIGN_TEXT_BOTTOM,
@@ -159,8 +169,8 @@ public:
 
         // Renders the label image.
     virtual void RenderLabelImage( wxBitmap*& destBmp, wxBitmap* srcBmp, 
-                                   bool isEnabled = TRUE,
-                                   bool isPressed = FALSE);
+                                   bool isEnabled = true,
+                                   bool isPressed = false);
 
         // Renders label images.
     virtual void RenderLabelImages();
@@ -170,6 +180,9 @@ public:
 
         // Enables/disables button
     virtual bool Enable(bool enable);
+
+        // Depress button
+    virtual bool Toggle(bool enable);
 
         // Responds to a left mouse button down event.
     void OnLButtonDown( wxMouseEvent& event );

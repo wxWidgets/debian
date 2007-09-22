@@ -20,11 +20,12 @@ almost any other window.
 
 \twocolwidtha{5cm}%
 \begin{twocollist}\itemsep=0pt
-\twocolitem{\windowstyle{wxBU\_LEFT}}{Left-justifies the label. WIN32 only.}
-\twocolitem{\windowstyle{wxBU\_TOP}}{Aligns the label to the top of the button. WIN32 only.}
-\twocolitem{\windowstyle{wxBU\_RIGHT}}{Right-justifies the bitmap label. WIN32 only.}
-\twocolitem{\windowstyle{wxBU\_BOTTOM}}{Aligns the label to the bottom of the button. WIN32 only.}
+\twocolitem{\windowstyle{wxBU\_LEFT}}{Left-justifies the label. Windows and GTK+ only.}
+\twocolitem{\windowstyle{wxBU\_TOP}}{Aligns the label to the top of the button. Windows and GTK+ only.}
+\twocolitem{\windowstyle{wxBU\_RIGHT}}{Right-justifies the bitmap label. Windows and GTK+ only.}
+\twocolitem{\windowstyle{wxBU\_BOTTOM}}{Aligns the label to the bottom of the button. Windows and GTK+ only.}
 \twocolitem{\windowstyle{wxBU\_EXACTFIT}}{Creates the button as small as possible instead of making it of the standard size (which is the default behaviour ).}
+\twocolitem{\windowstyle{wxNO\_BORDER}}{Creates a flat button. Windows and GTK+ only.}
 \end{twocollist}
 
 See also \helpref{window styles overview}{windowstyles}.
@@ -43,17 +44,22 @@ when the button is clicked.}
 
 \latexignore{\rtfignore{\wxheading{Members}}}
 
-\membersection{wxButton::wxButton}\label{wxbuttonconstr}
+\membersection{wxButton::wxButton}\label{wxbuttonctor}
 
 \func{}{wxButton}{\void}
 
 Default constructor.
 
-\func{}{wxButton}{\param{wxWindow* }{parent}, \param{wxWindowID}{ id}, \param{const wxString\& }{label},\rtfsp
+\func{}{wxButton}{\param{wxWindow* }{parent}, \param{wxWindowID}{ id}, \param{const wxString\& }{label = wxEmptyString},\rtfsp
 \param{const wxPoint\& }{pos}, \param{const wxSize\& }{size = wxDefaultSize},\rtfsp
-\param{long}{ style = 0}, \param{const wxValidator\& }{validator}, \param{const wxString\& }{name = ``button"}}
+\param{long}{ style = 0}, \param{const wxValidator\& }{validator = wxDefaultValidator}, \param{const wxString\& }{name = ``button"}}
 
 Constructor, creating and showing a button.
+
+The preferred way to create standard buttons is to use default value of
+\arg{label}. If no label is supplied and \arg{id} is one of standard IDs from
+\helpref{this list}{stockitems}, standard label will be used. In addition to
+that, the button will be decorated with stock icons under GTK+ 2.
 
 \wxheading{Parameters}
 
@@ -78,7 +84,7 @@ appropriately for the text.}
 
 \helpref{wxButton::Create}{wxbuttoncreate}, \helpref{wxValidator}{wxvalidator}
 
-\membersection{wxButton::\destruct{wxButton}}
+\membersection{wxButton::\destruct{wxButton}}\label{wxbuttondtor}
 
 \func{}{\destruct{wxButton}}{\void}
 
@@ -86,11 +92,12 @@ Destructor, destroying the button.
 
 \membersection{wxButton::Create}\label{wxbuttoncreate}
 
-\func{bool}{Create}{\param{wxWindow* }{parent}, \param{wxWindowID}{ id}, \param{const wxString\& }{label},\rtfsp
+\func{bool}{Create}{\param{wxWindow* }{parent}, \param{wxWindowID}{ id}, \param{const wxString\& }{label = wxEmptyString},\rtfsp
 \param{const wxPoint\& }{pos}, \param{const wxSize\& }{size = wxDefaultSize},\rtfsp
 \param{long}{ style = 0}, \param{const wxValidator\& }{validator}, \param{const wxString\& }{name = ``button"}}
 
-Button creation function for two-step creation. For more details, see \helpref{wxButton::wxButton}{wxbuttonconstr}.
+Button creation function for two-step creation. For more details, see
+\helpref{wxButton::wxButton}{wxbuttonctor}.
 
 \membersection{wxButton::GetLabel}\label{wxbuttongetlabel}
 

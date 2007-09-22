@@ -2,7 +2,7 @@
 // Name:        dcscreen.h
 // Purpose:
 // Author:      Robert Roebling
-// Id:          $Id: dcscreen.h,v 1.8 2000/10/30 16:43:37 vadz Exp $
+// Id:          $Id: dcscreen.h,v 1.10 2004/05/23 20:50:53 JS Exp $
 // Copyright:   (c) 1998 Robert Roebling
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////

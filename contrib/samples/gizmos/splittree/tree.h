@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     04/01/98
-// RCS-ID:      $Id: tree.h,v 1.4 2001/12/03 20:52:06 JS Exp $
+// RCS-ID:      $Id: tree.h,v 1.6 2004/06/08 19:27:40 ABX Exp $
 // Copyright:   (c) Julian Smart
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -49,7 +49,7 @@ protected:
     TestValueWindow*		m_valueWindow;
 
 private:
-    // any class wishing to process wxWindows events must use this macro
+    // any class wishing to process wxWidgets events must use this macro
     DECLARE_EVENT_TABLE()
 };
 
@@ -87,7 +87,7 @@ protected:
 class TestValueWindow: public wxTreeCompanionWindow
 {
 public:
-    TestValueWindow(wxWindow* parent, wxWindowID id = -1,
+    TestValueWindow(wxWindow* parent, wxWindowID id = wxID_ANY,
       const wxPoint& pos = wxDefaultPosition,
       const wxSize& sz = wxDefaultSize,
       long style = 0);

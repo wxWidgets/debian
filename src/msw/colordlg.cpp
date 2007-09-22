@@ -4,8 +4,8 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     01/02/97
-// RCS-ID:      $Id: colordlg.cpp,v 1.12 2002/05/09 22:31:44 VZ Exp $
-// Copyright:   (c) Julian Smart and Markus Holzem
+// RCS-ID:      $Id: colordlg.cpp,v 1.28 2004/09/28 18:17:06 ABX Exp $
+// Copyright:   (c) Julian Smart
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
 
@@ -17,7 +17,7 @@
 // headers
 // ----------------------------------------------------------------------------
 
-#ifdef __GNUG__
+#if defined(__GNUG__) && !defined(NO_GCC_PRAGMA)
     #pragma implementation "colordlg.h"
 #endif
 
@@ -42,15 +42,15 @@
     #include "wx/msgdlg.h"
 #endif
 
-#include <windows.h>
-
-#if !defined(__WIN32__) || defined(__SALFORDC__) || defined(__WXWINE__)
-    #include <commdlg.h>
-#endif
+#if wxUSE_COLOURDLG && !(defined(__SMARTPHONE__) && defined(__WXWINCE__))
 
 #include "wx/msw/private.h"
 #include "wx/colordlg.h"
 #include "wx/cmndata.h"
+
+#if !defined(__WIN32__) || defined(__WXWINCE__)
+    #include <commdlg.h>
+#endif
 
 #include <math.h>
 #include <stdlib.h>
@@ -70,10 +70,11 @@ IMPLEMENT_DYNAMIC_CLASS(wxColourDialog, wxDialog)
 // colour dialog hook proc
 // ----------------------------------------------------------------------------
 
-UINT CALLBACK wxColourDialogHookProc(HWND hwnd,
-                                     UINT uiMsg,
-                                     WPARAM WXUNUSED(wParam),
-                                     LPARAM lParam)
+UINT_PTR CALLBACK
+wxColourDialogHookProc(HWND hwnd,
+                       UINT uiMsg,
+                       WPARAM WXUNUSED(wParam),
+                       LPARAM lParam)
 {
     if ( uiMsg == WM_INITDIALOG )
     {
@@ -116,7 +117,7 @@ bool wxColourDialog::Create(wxWindow *parent, wxColourData *data)
     if (data)
         m_colourData = *data;
 
-    return TRUE;
+    return true;
 }
 
 int wxColourDialog::ShowModal()
@@ -127,12 +128,17 @@ int wxColourDialog::ShowModal()
 
     int i;
     for (i = 0; i < 16; i++)
-      custColours[i] = wxColourToRGB(m_colourData.custColours[i]);
+    {
+        if (m_colourData.m_custColours[i].Ok())
+            custColours[i] = wxColourToRGB(m_colourData.m_custColours[i]);
+        else
+            custColours[i] = RGB(255,255,255);
+    }
 
     chooseColorStruct.lStructSize = sizeof(CHOOSECOLOR);
     if ( m_parent )
         chooseColorStruct.hwndOwner = GetHwndOf(m_parent);
-    chooseColorStruct.rgbResult = wxColourToRGB(m_colourData.dataColour);
+    chooseColorStruct.rgbResult = wxColourToRGB(m_colourData.m_dataColour);
     chooseColorStruct.lpCustColors = custColours;
 
     chooseColorStruct.Flags = CC_RGBINIT | CC_ENABLEHOOK;
@@ -146,10 +152,9 @@ int wxColourDialog::ShowModal()
     bool success = ::ChooseColor(&(chooseColorStruct)) != 0;
 
     // Try to highlight the correct window (the parent)
-    HWND hWndParent = 0;
     if (GetParent())
     {
-      hWndParent = (HWND) GetParent()->GetHWND();
+      HWND hWndParent = (HWND) GetParent()->GetHWND();
       if (hWndParent)
         ::BringWindowToTop(hWndParent);
     }
@@ -158,10 +163,10 @@ int wxColourDialog::ShowModal()
     // Restore values
     for (i = 0; i < 16; i++)
     {
-      wxRGBToColour(m_colourData.custColours[i], custColours[i]);
+      wxRGBToColour(m_colourData.m_custColours[i], custColours[i]);
     }
 
-    wxRGBToColour(m_colourData.dataColour, chooseColorStruct.rgbResult);
+    wxRGBToColour(m_colourData.m_dataColour, chooseColorStruct.rgbResult);
 
     return success ? wxID_OK : wxID_CANCEL;
 }
@@ -196,10 +201,10 @@ void wxColourDialog::DoSetSize(int x, int y,
                                int WXUNUSED(width), int WXUNUSED(height),
                                int WXUNUSED(sizeFlags))
 {
-    if ( x != -1 )
+    if ( x != wxDefaultCoord )
         m_pos.x = x;
 
-    if ( y != -1 )
+    if ( y != wxDefaultCoord )
         m_pos.y = y;
 
     // ignore the size params - we can't change the size of a standard dialog
@@ -226,3 +231,4 @@ void wxColourDialog::DoGetClientSize(int *width, int *height) const
         *height = 299;
 }
 
+#endif // wxUSE_COLOURDLG && !(__SMARTPHONE__ && __WXWINCE__)

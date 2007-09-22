@@ -6,9 +6,9 @@
 // Author:      Aleksandras Gluchovas
 // Modified by: AG on 28/12/98
 // Created:     22/09/98
-// RCS-ID:      $Id: srcparser.h,v 1.1.6.1 2004/05/29 20:23:34 DS Exp $
+// RCS-ID:      $Id: srcparser.h,v 1.5 2004/07/15 06:27:13 ABX Exp $
 // Copyright:   (c) Aleskandars Gluchovas
-// Licence:       wxWindows licence
+// Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
 
 #ifndef __SRCPARSER_G__
@@ -202,25 +202,25 @@ public:
     //        multiple times by variouse visitors (there can
     //        be more the one visitor visiting content at a time)
 
-    virtual void VisitFile( spFile& fl ) {}
+    virtual void VisitFile( spFile& WXUNUSED(fl) ) {}
 
-    virtual void VisitNameSpace( spNameSpace& ns ) {}
+    virtual void VisitNameSpace( spNameSpace& WXUNUSED(ns) ) {}
 
-    virtual void VisitClass( spClass& cl ) {}
+    virtual void VisitClass( spClass& WXUNUSED(cl) ) {}
 
-    virtual void VisitEnumeration( spEnumeration& en ) {}
+    virtual void VisitEnumeration( spEnumeration& WXUNUSED(en) ) {}
 
-    virtual void VisitTypeDef( spTypeDef& td ) {}
+    virtual void VisitTypeDef( spTypeDef& WXUNUSED(td) ) {}
 
-    virtual void VisitPreprocessorLine( spPreprocessorLine& pd ) {}
+    virtual void VisitPreprocessorLine( spPreprocessorLine& WXUNUSED(pd) ) {}
 
-    virtual void VisitAttribute( spAttribute& attr ) {}
+    virtual void VisitAttribute( spAttribute& WXUNUSED(attr) ) {}
 
-    virtual void VisitOperation( spOperation& op ) {}
+    virtual void VisitOperation( spOperation& WXUNUSED(op) ) {}
 
-    virtual void VisitParameter( spParameter& param ) {}
+    virtual void VisitParameter( spParameter& WXUNUSED(param) ) {}
 
-    virtual void VisitCustomContext( spContext& ctx ) {}
+    virtual void VisitCustomContext( spContext& WXUNUSED(ctx) ) {}
 };
 
 // stores one section of comments,
@@ -358,7 +358,7 @@ public:
 
     void SetVirtualContextBody( const string& body,
                                 bool  hasChildren = FALSE,
-                                const string& footer = "" );
+                                const string& footer = wxEmptyString );
 
     string GetVirtualContextBody();
     string GetFooterOfVirtualContextBody();

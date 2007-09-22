@@ -1,8 +1,8 @@
 /////////////////////////////////////////////////////////////////////////////
-// Name:        pen.h
+// Name:        wx/gtk/pen.h
 // Purpose:
 // Author:      Robert Roebling
-// Id:          $Id: pen.h,v 1.15 2002/09/07 12:28:46 GD Exp $
+// Id:          $Id: pen.h,v 1.19 2004/05/23 20:50:54 JS Exp $
 // Copyright:   (c) 1998 Robert Roebling
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -11,7 +11,7 @@
 #ifndef __GTKPENH__
 #define __GTKPENH__
 
-#if defined(__GNUG__) && !defined(__APPLE__)
+#if defined(__GNUG__) && !defined(NO_GCC_PRAGMA)
 #pragma interface
 #endif
 
@@ -42,7 +42,7 @@ class wxPen: public wxGDIObject
 public:
     wxPen() { }
     
-    wxPen( const wxColour &colour, int width, int style );
+    wxPen( const wxColour &colour, int width = 1, int style = wxSOLID );
     ~wxPen();
     
     wxPen( const wxPen& pen )

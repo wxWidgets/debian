@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     01/02/97
-// RCS-ID:      $Id: slidrmsw.h,v 1.11 2001/06/27 11:55:32 JS Exp $
+// RCS-ID:      $Id: slidrmsw.h,v 1.14 2004/05/23 20:51:29 JS Exp $
 // Copyright:   (c) Julian Smart
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -12,7 +12,7 @@
 #ifndef _SLIDRMSW_H_
 #define _SLIDRMSW_H_
 
-#ifdef __GNUG__
+#if defined(__GNUG__) && !defined(NO_GCC_PRAGMA)
 #pragma interface "slidrmsw.h"
 #endif
 

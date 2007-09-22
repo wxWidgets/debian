@@ -4,7 +4,7 @@
 // Author:      Vadim Zeitlin
 // Modified by:
 // Created:     22.07.99
-// RCS-ID:      $Id: spinctrl.h,v 1.13 2002/09/01 20:24:25 VZ Exp $
+// RCS-ID:      $Id: spinctrl.h,v 1.21 2004/09/22 14:38:29 ABX Exp $
 // Copyright:   (c) Vadim Zeitlin
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -55,7 +55,7 @@ protected:
 
 #if defined(__WXUNIVERSAL__)
     #include "wx/generic/spinctlg.h"
-#elif defined(__WXMSW__) && defined(__WIN32__)
+#elif defined(__WXMSW__)
     #include "wx/msw/spinctrl.h"
 #elif defined(__WXPM__)
     #include "wx/os2/spinctrl.h"
@@ -65,12 +65,12 @@ protected:
     #include "wx/generic/spinctlg.h"
 #elif defined(__WXMAC__)
     #include "wx/mac/spinctrl.h"
-#else // Win16 || !Win
+#elif defined(__WXCOCOA__)
     #include "wx/generic/spinctlg.h"
 #endif // platform
 
 #define EVT_SPINCTRL(id, fn) \
-    DECLARE_EVENT_TABLE_ENTRY( wxEVT_COMMAND_SPINCTRL_UPDATED, id, -1, (wxObjectEventFunction) (wxEventFunction) (wxSpinEventFunction) & fn, (wxObject *) NULL ),
+    DECLARE_EVENT_TABLE_ENTRY( wxEVT_COMMAND_SPINCTRL_UPDATED, id, wxID_ANY, (wxObjectEventFunction) (wxEventFunction)  wxStaticCastEvent( wxSpinEventFunction, & fn ), (wxObject *) NULL ),
 
 #endif // _WX_SPINCTRL_H_
 

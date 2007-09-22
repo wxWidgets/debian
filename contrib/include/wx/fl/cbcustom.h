@@ -4,7 +4,7 @@
 // Author:      Aleksandras Gluchovas
 // Modified by:
 // Created:     28/10/98
-// RCS-ID:      $Id: cbcustom.h,v 1.4.2.1 2002/10/24 11:21:32 JS Exp $
+// RCS-ID:      $Id: cbcustom.h,v 1.6 2003/07/08 20:47:16 VS Exp $
 // Copyright:   (c) Aleksandras Gluchovas
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -24,7 +24,7 @@ menu and handling basic customization such as floating
 and horizontal/vertical alignment of the bar.
 */
 
-class WXFL_DECLSPEC cbSimpleCustomizationPlugin : public cbPluginBase
+class WXDLLIMPEXP_FL cbSimpleCustomizationPlugin : public cbPluginBase
 {
 public:
     DECLARE_DYNAMIC_CLASS( cbSimpleCustomizationPlugin )

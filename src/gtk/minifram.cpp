@@ -2,14 +2,17 @@
 // Name:        minifram.cpp
 // Purpose:
 // Author:      Robert Roebling
-// Id:          $Id: minifram.cpp,v 1.29.2.1 2003/02/11 11:35:12 RR Exp $
+// Id:          $Id: minifram.cpp,v 1.34 2004/11/02 19:47:41 RR Exp $
 // Copyright:   (c) 1998 Robert Roebling
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
 
-#ifdef __GNUG__
-#pragma implementation "minifram.h"
+#if defined(__GNUG__) && !defined(NO_GCC_PRAGMA)
+    #pragma implementation "minifram.h"
 #endif
+
+// For compilers that support precompilation, includes "wx.h".
+#include "wx/wxprec.h"
 
 #include "wx/minifram.h"
 
@@ -384,6 +387,17 @@ bool wxMiniFrame::Create( wxWindow *parent, wxWindowID id, const wxString &title
       GTK_SIGNAL_FUNC(gtk_window_motion_notify_callback), (gpointer)this );
 
     return TRUE;
+}
+
+void wxMiniFrame::SetTitle( const wxString &title )
+{
+    wxFrame::SetTitle( title );
+    
+#ifdef __WXGTK20__
+    gdk_window_invalidate_rect( GTK_PIZZA(m_mainWidget)->bin_window, NULL, true );
+#else
+    gtk_widget_draw( m_mainWidget, (GdkRectangle*) NULL );
+#endif
 }
 
 #endif

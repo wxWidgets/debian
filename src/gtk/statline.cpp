@@ -2,14 +2,17 @@
 // Name:        statline.cpp
 // Purpose:
 // Author:      Robert Roebling
-// Id:          $Id: statline.cpp,v 1.9 2000/08/08 06:11:45 cvsuser Exp $
+// Id:          $Id: statline.cpp,v 1.14 2004/05/23 20:52:21 JS Exp $
 // Copyright:   (c) 1998 Robert Roebling
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
 
-#ifdef __GNUG__
+#if defined(__GNUG__) && !defined(NO_GCC_PRAGMA)
 #pragma implementation "statline.h"
 #endif
+
+// For compilers that support precompilation, includes "wx.h".
+#include "wx/wxprec.h"
 
 #include "wx/statline.h"
 
@@ -71,11 +74,16 @@ bool wxStaticLine::Create( wxWindow *parent, wxWindowID id,
 
     m_parent->DoAddChild( this );
 
-    PostCreation();
-
-    Show( TRUE );
+    PostCreation(size);
 
     return TRUE;
+}
+
+// static
+wxVisualAttributes
+wxStaticLine::GetClassDefaultAttributes(wxWindowVariant WXUNUSED(variant))
+{
+    return GetDefaultAttributesFromGTKWidget(gtk_vseparator_new);
 }
 
 #endif

@@ -4,16 +4,16 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     13.07.99
-// RCS-ID:      $Id: textcmn.cpp,v 1.22 2002/08/05 18:04:07 RR Exp $
-// Copyright:   (c) wxWindows team
-// Licence:     wxWindows license
+// RCS-ID:      $Id: textcmn.cpp,v 1.40 2004/10/28 11:19:30 VS Exp $
+// Copyright:   (c) wxWidgets team
+// Licence:     wxWindows licence
 ///////////////////////////////////////////////////////////////////////////////
 
 // ============================================================================
 // declarations
 // ============================================================================
 
-#ifdef __GNUG__
+#if defined(__GNUG__) && !defined(NO_GCC_PRAGMA)
     #pragma implementation "textctrlbase.h"
 #endif
 
@@ -54,20 +54,34 @@ DEFINE_EVENT_TYPE(wxEVT_COMMAND_TEXT_URL)
 DEFINE_EVENT_TYPE(wxEVT_COMMAND_TEXT_MAXLEN)
 
 // ----------------------------------------------------------------------------
-// ctor
-// ----------------------------------------------------------------------------
-
-wxTextCtrlBase::wxTextCtrlBase()
-{
-}
-
-wxTextCtrlBase::~wxTextCtrlBase()
-{
-}
-
-// ----------------------------------------------------------------------------
 // style functions - not implemented here
 // ----------------------------------------------------------------------------
+
+wxTextAttr::wxTextAttr(const wxColour& colText,
+               const wxColour& colBack,
+               const wxFont& font,
+               wxTextAttrAlignment alignment)
+    : m_colText(colText), m_colBack(colBack), m_font(font), m_textAlignment(alignment)
+{
+    m_flags = 0;
+    m_leftIndent = 0;
+    m_leftSubIndent = 0;
+    m_rightIndent = 0;
+    if (m_colText.Ok()) m_flags |= wxTEXT_ATTR_TEXT_COLOUR;
+    if (m_colBack.Ok()) m_flags |= wxTEXT_ATTR_BACKGROUND_COLOUR;
+    if (m_font.Ok()) m_flags |= wxTEXT_ATTR_FONT;
+    if (alignment != wxTEXT_ALIGNMENT_DEFAULT)
+        m_flags |= wxTEXT_ATTR_ALIGNMENT;
+}
+
+void wxTextAttr::Init()
+{
+    m_textAlignment = wxTEXT_ALIGNMENT_DEFAULT;
+    m_flags = 0;
+    m_leftIndent = 0;
+    m_leftSubIndent = 0;
+    m_rightIndent = 0;
+}
 
 /* static */
 wxTextAttr wxTextAttr::Combine(const wxTextAttr& attr,
@@ -101,15 +115,58 @@ wxTextAttr wxTextAttr::Combine(const wxTextAttr& attr,
             colBg = text->GetBackgroundColour();
     }
 
-    return wxTextAttr(colFg, colBg, font);
+    wxTextAttr newAttr(colFg, colBg, font);
+
+    if (attr.HasAlignment())
+        newAttr.SetAlignment(attr.GetAlignment());
+    else if (attrDef.HasAlignment())
+        newAttr.SetAlignment(attrDef.GetAlignment());
+
+    if (attr.HasTabs())
+        newAttr.SetTabs(attr.GetTabs());
+    else if (attrDef.HasTabs())
+        newAttr.SetTabs(attrDef.GetTabs());
+
+    if (attr.HasLeftIndent())
+        newAttr.SetLeftIndent(attr.GetLeftIndent(), attr.GetLeftSubIndent());
+    else if (attrDef.HasLeftIndent())
+        newAttr.SetLeftIndent(attrDef.GetLeftIndent(), attr.GetLeftSubIndent());
+
+    if (attr.HasRightIndent())
+        newAttr.SetRightIndent(attr.GetRightIndent());
+    else if (attrDef.HasRightIndent())
+        newAttr.SetRightIndent(attrDef.GetRightIndent());
+
+    return newAttr;
 }
+
+void wxTextAttr::operator= (const wxTextAttr& attr)
+{
+    m_font = attr.m_font;
+    m_colText = attr.m_colText;
+    m_colBack = attr.m_colBack;
+    m_textAlignment = attr.m_textAlignment;
+    m_leftIndent = attr.m_leftIndent;
+    m_leftSubIndent = attr.m_leftSubIndent;
+    m_rightIndent = attr.m_rightIndent;
+    m_tabs = attr.m_tabs;
+    m_flags = attr.m_flags;
+}
+
 
 // apply styling to text range
 bool wxTextCtrlBase::SetStyle(long WXUNUSED(start), long WXUNUSED(end),
                               const wxTextAttr& WXUNUSED(style))
 {
     // to be implemented in derived TextCtrl classes
-    return FALSE;
+    return false;
+}
+
+// get the styling at the given position
+bool wxTextCtrlBase::GetStyle(long WXUNUSED(position), wxTextAttr& WXUNUSED(style))
+{
+    // to be implemented in derived TextCtrl classes
+    return false;
 }
 
 // change default text attributes
@@ -123,7 +180,7 @@ bool wxTextCtrlBase::SetDefaultStyle(const wxTextAttr& style)
     else
         m_defaultStyle = wxTextAttr::Combine(style, m_defaultStyle, this);
 
-    return TRUE;
+    return true;
 }
 
 // get default text attributes
@@ -151,43 +208,44 @@ bool wxTextCtrlBase::LoadFile(const wxString& filename)
 
             m_filename = filename;
 
-            return TRUE;
+            return true;
         }
     }
 
     wxLogError(_("File couldn't be loaded."));
 #endif // wxUSE_FFILE
 
-    return FALSE;
+    return false;
 }
 
 bool wxTextCtrlBase::SaveFile(const wxString& filename)
 {
     wxString filenameToUse = filename.IsEmpty() ? m_filename : filename;
-    if ( !filenameToUse )
+    if ( filenameToUse.empty() )
     {
         // what kind of message to give? is it an error or a program bug?
         wxLogDebug(wxT("Can't save textctrl to file without filename."));
 
-        return FALSE;
+        return false;
     }
 
 #if wxUSE_FFILE
-    wxFFile file(filename, "w");
+    wxFFile file(filenameToUse, _T("w"));
     if ( file.IsOpened() && file.Write(GetValue()) )
     {
         // it's not modified any longer
         DiscardEdits();
 
-        m_filename = filename;
+        // if it worked, save for future calls
+        m_filename = filenameToUse;
 
-        return TRUE;
+        return true;
     }
-
-    wxLogError(_("The text couldn't be saved."));
 #endif // wxUSE_FFILE
 
-    return FALSE;
+    wxLogError(_("The text couldn't be saved."));
+
+    return false;
 }
 
 // ----------------------------------------------------------------------------
@@ -281,11 +339,16 @@ bool wxTextCtrlBase::CanPaste() const
 // emulating key presses
 // ----------------------------------------------------------------------------
 
+#ifdef __WIN32__
+// the generic version is unused in wxMSW
+bool wxTextCtrlBase::EmulateKeyPress(const wxKeyEvent& WXUNUSED(event))
+{
+    return false;
+}
+#else // !__WIN32__
 bool wxTextCtrlBase::EmulateKeyPress(const wxKeyEvent& event)
 {
-    // the generic version is unused in wxMSW
-#ifndef __WIN32__
-    wxChar ch;
+    wxChar ch = 0;
     int keycode = event.GetKeyCode();
     switch ( keycode )
     {
@@ -327,7 +390,34 @@ bool wxTextCtrlBase::EmulateKeyPress(const wxKeyEvent& event)
             ch = _T('/');
             break;
 
+        case WXK_DELETE:
+        case WXK_NUMPAD_DELETE:
+            // delete the character at cursor
+            {
+                const long pos = GetInsertionPoint(),
+                           last = GetLastPosition();
+                if ( pos < last )
+                    Remove(pos, pos + 1);
+            }
+            break;
+
+        case WXK_BACK:
+            // delete the character before the cursor
+            {
+                const long pos = GetInsertionPoint();
+                if ( pos > 0 )
+                    Remove(pos - 1, pos);
+            }
+            break;
+
         default:
+#if wxUSE_UNICODE
+            if ( event.GetUnicodeKey() )
+            {
+                ch = event.GetUnicodeKey();
+            }
+            else
+#endif
             if ( keycode < 256 && keycode >= 0 && wxIsprint(keycode) )
             {
                 // FIXME this is not going to work for non letters...
@@ -348,12 +438,12 @@ bool wxTextCtrlBase::EmulateKeyPress(const wxKeyEvent& event)
     {
         WriteText(ch);
 
-        return TRUE;
+        return true;
     }
-#endif // !__WIN32__
 
-    return FALSE;
+    return false;
 }
+#endif // !__WIN32__
 
 // ----------------------------------------------------------------------------
 // selection and ranges
@@ -381,6 +471,48 @@ wxString wxTextCtrlBase::GetRange(long from, long to) const
     }
 
     return sel;
+}
+
+// do the window-specific processing after processing the update event
+void wxTextCtrlBase::DoUpdateWindowUI(wxUpdateUIEvent& event)
+{
+    if ( event.GetSetEnabled() )
+        Enable(event.GetEnabled());
+
+    if ( event.GetSetText() )
+    {
+        if ( event.GetText() != GetValue() )
+            SetValue(event.GetText());
+    }
+}
+
+// ----------------------------------------------------------------------------
+// hit testing
+// ----------------------------------------------------------------------------
+
+wxTextCtrlHitTestResult
+wxTextCtrlBase::HitTest(const wxPoint& pt, wxTextCoord *x, wxTextCoord *y) const
+{
+    // implement in terms of the other overload as the native ports typically
+    // can get the position and not (x, y) pair directly (although wxUniv
+    // directly gets x and y -- and so overrides this method as well)
+    long pos;
+    wxTextCtrlHitTestResult rc = HitTest(pt, &pos);
+
+    if ( rc != wxTE_HT_UNKNOWN )
+    {
+        PositionToXY(pos, x, y);
+    }
+
+    return rc;
+}
+
+wxTextCtrlHitTestResult
+wxTextCtrlBase::HitTest(const wxPoint& WXUNUSED(pt),
+                        long * WXUNUSED(pos)) const
+{
+    // not implemented
+    return wxTE_HT_UNKNOWN;
 }
 
 #else // !wxUSE_TEXTCTRL

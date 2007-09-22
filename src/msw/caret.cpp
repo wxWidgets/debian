@@ -4,8 +4,8 @@
 // Author:      Vadim Zeitlin
 // Modified by:
 // Created:     23.05.99
-// RCS-ID:      $Id: caret.cpp,v 1.14.2.1 2003/04/06 14:26:29 JS Exp $
-// Copyright:   (c) wxWindows team
+// RCS-ID:      $Id: caret.cpp,v 1.21 2004/08/20 12:03:07 ABX Exp $
+// Copyright:   (c) wxWidgets team
 // Licence:     wxWindows licence
 ///////////////////////////////////////////////////////////////////////////////
 
@@ -17,7 +17,7 @@
 // headers
 // ---------------------------------------------------------------------------
 
-#ifdef __GNUG__
+#if defined(__GNUG__) && !defined(NO_GCC_PRAGMA)
     #pragma implementation "caret.h"
 #endif
 
@@ -35,21 +35,17 @@
 
 #include "wx/caret.h"
 
+#if wxUSE_CARET
+
 #include "wx/msw/private.h"
 
 // ---------------------------------------------------------------------------
 // macros
 // ---------------------------------------------------------------------------
 
-// under Win16 the caret APIs are void but under Win32 they may return an
-// error code which we want to check - this macro does just this
-#ifdef __WIN16__
-    #define CALL_CARET_API(api, args)   api args
-#else // Win32
-    #define CALL_CARET_API(api, args)   \
+#define CALL_CARET_API(api, args)   \
         if ( !api args )                \
             wxLogLastError(_T(#api))
-#endif // Win16/32
 
 // ===========================================================================
 // implementation
@@ -91,7 +87,7 @@ bool wxCaret::MSWCreateCaret()
         CALL_CARET_API(CreateCaret, (GetWinHwnd(GetWindow()), 0,
                                      m_width, m_height));
 
-        m_hasCaret = TRUE;
+        m_hasCaret = true;
     }
 
     return m_hasCaret;
@@ -117,7 +113,7 @@ void wxCaret::OnKillFocus()
 {
     if ( m_hasCaret )
     {
-        m_hasCaret = FALSE;
+        m_hasCaret = false;
 
         CALL_CARET_API(DestroyCaret, ());
     }
@@ -186,9 +182,11 @@ void wxCaret::DoSize()
 {
     if ( m_hasCaret )
     {
-        m_hasCaret = FALSE;
+        m_hasCaret = false;
         CALL_CARET_API(DestroyCaret, ());
         MSWCreateCaret();
         OnSetFocus();
     }
 }
+
+#endif

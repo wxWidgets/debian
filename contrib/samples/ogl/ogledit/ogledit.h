@@ -4,9 +4,9 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     12/07/98
-// RCS-ID:      $Id: ogledit.h,v 1.2 2002/09/07 12:12:21 GD Exp $
+// RCS-ID:      $Id: ogledit.h,v 1.4 2004/06/09 16:42:26 ABX Exp $
 // Copyright:   (c) Julian Smart
-// Licence:   	wxWindows licence
+// Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
 
 #if defined(__GNUG__) && !defined(__APPLE__)
@@ -17,6 +17,7 @@
 #define _OGLSAMPLE_OGLEDIT_H_
 
 #include <wx/docview.h>
+#include <wx/deprecated/setup.h>
 
 // Define a new application
 class MyFrame;

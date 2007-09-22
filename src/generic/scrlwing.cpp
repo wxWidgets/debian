@@ -5,9 +5,9 @@
 // Modified by: Vadim Zeitlin on 31.08.00: wxScrollHelper allows to implement.
 //              Ron Lee on 10.4.02:  virtual size / auto scrollbars et al.
 // Created:     01/02/97
-// RCS-ID:      $Id: scrlwing.cpp,v 1.28.2.9 2003/08/13 23:55:52 VZ Exp $
-// Copyright:   (c) wxWindows team
-// Licence:     wxWindows license
+// RCS-ID:      $Id: scrlwing.cpp,v 1.56 2004/08/09 23:08:16 RD Exp $
+// Copyright:   (c) wxWidgets team
+// Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
 
 // ============================================================================
@@ -18,7 +18,7 @@
 // headers
 // ----------------------------------------------------------------------------
 
-#ifdef __GNUG__
+#if defined(__GNUG__) && !defined(NO_GCC_PRAGMA)
     #pragma implementation "genscrolwin.h"
 #endif
 
@@ -40,8 +40,11 @@
 
 #include "wx/scrolwin.h"
 #include "wx/panel.h"
+#if wxUSE_TIMER
 #include "wx/timer.h"
+#endif
 #include "wx/sizer.h"
+#include "wx/recguard.h"
 
 #ifdef __WXMSW__
     #include <windows.h> // for DLGC_WANTARROWS
@@ -61,6 +64,11 @@
 
 IMPLEMENT_CLASS(wxScrolledWindow, wxGenericScrolledWindow)
 
+/*
+    TODO PROPERTIES
+        style wxHSCROLL | wxVSCROLL
+*/
+
 // ----------------------------------------------------------------------------
 // wxScrollHelperEvtHandler: intercept the events from the window and forward
 // them to wxScrollHelper
@@ -76,14 +84,17 @@ public:
 
     virtual bool ProcessEvent(wxEvent& event);
 
-    void ResetDrawnFlag() { m_hasDrawnWindow = FALSE; }
+    void ResetDrawnFlag() { m_hasDrawnWindow = false; }
 
 private:
     wxScrollHelper *m_scrollHelper;
 
     bool m_hasDrawnWindow;
+
+    DECLARE_NO_COPY_CLASS(wxScrollHelperEvtHandler)
 };
 
+#if wxUSE_TIMER
 // ----------------------------------------------------------------------------
 // wxAutoScrollTimer: the timer used to generate a stream of scroll events when
 // a captured mouse is held outside the window
@@ -104,6 +115,8 @@ private:
     wxEventType m_eventType;
     int m_pos,
         m_orient;
+
+    DECLARE_NO_COPY_CLASS(wxAutoScrollTimer)
 };
 
 // ============================================================================
@@ -166,6 +179,7 @@ void wxAutoScrollTimer::Notify()
         }
     }
 }
+#endif
 
 // ----------------------------------------------------------------------------
 // wxScrollHelperEvtHandler
@@ -191,7 +205,7 @@ bool wxScrollHelperEvtHandler::ProcessEvent(wxEvent& event)
     // anything in the window. We set it to true here but reset it to false in
     // wxScrolledWindow::OnPaint() handler (which wouldn't be called if the
     // user code defined OnPaint() in the derived class)
-    m_hasDrawnWindow = TRUE;
+    m_hasDrawnWindow = true;
 
     // pass it on to the real handler
     bool processed = wxEvtHandler::ProcessEvent(event);
@@ -207,7 +221,7 @@ bool wxScrollHelperEvtHandler::ProcessEvent(wxEvent& event)
     {
         m_scrollHelper->HandleOnSize((wxSizeEvent &)event);
 
-        return TRUE;
+        return true;
     }
 
     if ( processed )
@@ -217,18 +231,18 @@ bool wxScrollHelperEvtHandler::ProcessEvent(wxEvent& event)
         // OnDraw() below (from HandleOnPaint)
         if ( m_hasDrawnWindow )
         {
-            return TRUE;
+            return true;
         }
     }
 
-    // reset the skipped flag to FALSE as it might have been set to TRUE in
+    // reset the skipped flag to false as it might have been set to true in
     // ProcessEvent() above
-    event.Skip(FALSE);
+    event.Skip(false);
 
     if ( evType == wxEVT_PAINT )
     {
         m_scrollHelper->HandleOnPaint((wxPaintEvent &)event);
-        return TRUE;
+        return true;
     }
 
     if ( evType == wxEVT_SCROLLWIN_TOP ||
@@ -264,7 +278,7 @@ bool wxScrollHelperEvtHandler::ProcessEvent(wxEvent& event)
         return !event.GetSkipped();
     }
 
-    return FALSE;
+    return false;
 }
 
 // ----------------------------------------------------------------------------
@@ -283,7 +297,7 @@ wxScrollHelper::wxScrollHelper(wxWindow *win)
     m_yScrollLinesPerPage = 0;
 
     m_xScrollingEnabled =
-    m_yScrollingEnabled = TRUE;
+    m_yScrollingEnabled = true;
 
     m_scaleX =
     m_scaleY = 1.0;
@@ -340,13 +354,13 @@ void wxScrollHelper::SetScrollbars(int pixelsPerUnitX,
     m_xScrollPosition = xPos;
     m_yScrollPosition = yPos;
 
+    int w = noUnitsX * pixelsPerUnitX;
+    int h = noUnitsY * pixelsPerUnitY;
+
     // For better backward compatibility we set persisting limits
     // here not just the size.  It makes SetScrollbars 'sticky'
     // emulating the old non-autoscroll behaviour.
 
-    int w = noUnitsX * pixelsPerUnitX;
-    int h = noUnitsY * pixelsPerUnitY;
-     
     m_targetWindow->SetVirtualSizeHints( w, h );
 
     // The above should arguably be deprecated, this however we still need.
@@ -354,7 +368,7 @@ void wxScrollHelper::SetScrollbars(int pixelsPerUnitX,
     m_targetWindow->SetVirtualSize( w, h );
 
     if (do_refresh && !noRefresh)
-        m_targetWindow->Refresh(TRUE, GetRect());
+        m_targetWindow->Refresh(true, GetScrollRect());
 
 #ifndef __WXUNIVERSAL__
     // If the target is not the same as the window with the scrollbars,
@@ -369,9 +383,6 @@ void wxScrollHelper::SetScrollbars(int pixelsPerUnitX,
     else
     {
         // otherwise this has been done by AdjustScrollbars, above
-#ifdef __WXMAC__
-        m_targetWindow->MacUpdateImmediately() ;
-#endif
     }
 #endif // !__WXUNIVERSAL__
 }
@@ -465,7 +476,7 @@ void wxScrollHelper::HandleOnScroll(wxScrollWinEvent& event)
         m_win->SetScrollPos(wxVERTICAL, m_yScrollPosition);
     }
 
-    bool needsRefresh = FALSE;
+    bool needsRefresh = false;
     int dx = 0,
         dy = 0;
     if (orient == wxHORIZONTAL)
@@ -476,7 +487,7 @@ void wxScrollHelper::HandleOnScroll(wxScrollWinEvent& event)
        }
        else
        {
-           needsRefresh = TRUE;
+           needsRefresh = true;
        }
     }
     else
@@ -487,22 +498,18 @@ void wxScrollHelper::HandleOnScroll(wxScrollWinEvent& event)
         }
         else
         {
-            needsRefresh = TRUE;
+            needsRefresh = true;
         }
     }
 
     if ( needsRefresh )
     {
-        m_targetWindow->Refresh(TRUE, GetRect());
+        m_targetWindow->Refresh(true, GetScrollRect());
     }
     else
     {
-        m_targetWindow->ScrollWindow(dx, dy, GetRect());
+        m_targetWindow->ScrollWindow(dx, dy, GetScrollRect());
     }
-
-#ifdef __WXMAC__
-    m_targetWindow->MacUpdateImmediately() ;
-#endif
 }
 
 int wxScrollHelper::CalcScrollInc(wxScrollWinEvent& event)
@@ -574,27 +581,32 @@ int wxScrollHelper::CalcScrollInc(wxScrollWinEvent& event)
                 nScrollInc = noPositions - m_xScrollPosition; // As +ve as we can go
         }
         else
-            m_targetWindow->Refresh(TRUE, GetRect());
+            m_targetWindow->Refresh(true, GetScrollRect());
     }
     else
     {
-        if (m_yScrollPixelsPerLine > 0)
+        if ( m_yScrollPixelsPerLine > 0 )
         {
-            int w, h;
-            GetTargetSize(&w, &h);
-
-            int nMaxHeight = m_yScrollLines*m_yScrollPixelsPerLine;
-            int noPositions = (int) ( ((nMaxHeight - h)/(double)m_yScrollPixelsPerLine) + 0.5 );
-            if (noPositions < 0)
-                noPositions = 0;
-
-            if ( (m_yScrollPosition + nScrollInc) < 0 )
-                nScrollInc = -m_yScrollPosition; // As -ve as we can go
-            else if ( (m_yScrollPosition + nScrollInc) > noPositions )
-                nScrollInc = noPositions - m_yScrollPosition; // As +ve as we can go
+            if ( m_yScrollPosition + nScrollInc < 0 )
+            {
+                // As -ve as we can go
+                nScrollInc = -m_yScrollPosition;
+            }
+            else // check for the other bound
+            {
+                const int posMax = m_yScrollLines - m_yScrollLinesPerPage;
+                if ( m_yScrollPosition + nScrollInc > posMax )
+                {
+                    // As +ve as we can go
+                    nScrollInc = posMax - m_yScrollPosition;
+                }
+            }
         }
         else
-            m_targetWindow->Refresh(TRUE, GetRect());
+        {
+            // VZ: why do we do this? (FIXME)
+            m_targetWindow->Refresh(true, GetScrollRect());
+        }
     }
 
     return nScrollInc;
@@ -603,8 +615,9 @@ int wxScrollHelper::CalcScrollInc(wxScrollWinEvent& event)
 // Adjust the scrollbars - new version.
 void wxScrollHelper::AdjustScrollbars()
 {
-    static bool s_isInside = false;
-    if ( s_isInside )
+    static wxRecursionGuardFlag s_flagReentrancy;
+    wxRecursionGuard guard(s_flagReentrancy);
+    if ( guard.IsInside() )
     {
         // don't reenter AdjustScrollbars() while another call to
         // AdjustScrollbars() is in progress because this may lead to calling
@@ -615,26 +628,27 @@ void wxScrollHelper::AdjustScrollbars()
         return;
     }
 
-    s_isInside = true;
-
-#ifdef __WXMAC__
-    m_targetWindow->MacUpdateImmediately();
-#endif
-
     int w = 0, h = 0;
     int oldw, oldh;
 
     int oldXScroll = m_xScrollPosition;
     int oldYScroll = m_yScrollPosition;
 
-    do {
+    // VZ: at least under Windows this loop is useless because when scrollbars
+    //     [dis]appear we get a WM_SIZE resulting in another call to
+    //     AdjustScrollbars() anyhow. As it doesn't seem to do any harm I leave
+    //     it here for now but it would be better to ensure that all ports
+    //     generate EVT_SIZE when scrollbars [dis]appear, emulating it if
+    //     necessary, and remove it later
+    do
+    {
         GetTargetSize(&w, 0);
 
         if (m_xScrollPixelsPerLine == 0)
         {
             m_xScrollLines = 0;
             m_xScrollPosition = 0;
-            m_win->SetScrollbar (wxHORIZONTAL, 0, 0, 0, FALSE);
+            m_win->SetScrollbar (wxHORIZONTAL, 0, 0, 0, false);
         }
         else
         {
@@ -659,35 +673,54 @@ void wxScrollHelper::AdjustScrollbars()
 
         GetTargetSize(0, &h);
 
-        if (m_yScrollPixelsPerLine == 0)
+        // scroll lines per page: if 0, no scrolling is needed
+        int linesPerPage;
+
+        if ( m_yScrollPixelsPerLine == 0 )
         {
+            // scrolling is disabled
             m_yScrollLines = 0;
             m_yScrollPosition = 0;
-            m_win->SetScrollbar (wxVERTICAL, 0, 0, 0, FALSE);
+            linesPerPage = 0;
         }
-        else
+        else // might need scrolling
         {
-            m_yScrollLines = m_targetWindow->GetVirtualSize().GetHeight() / m_yScrollPixelsPerLine;
+            int hVirt = m_targetWindow->GetVirtualSize().GetHeight();
+            m_yScrollLines = hVirt / m_yScrollPixelsPerLine;
 
             // Calculate page size i.e. number of scroll units you get on the
             // current client window
-            int noPagePositions = (int) ( (h/(double)m_yScrollPixelsPerLine) + 0.5 );
-            if (noPagePositions < 1) noPagePositions = 1;
-            if ( noPagePositions > m_yScrollLines )
-                noPagePositions = m_yScrollLines;
+            linesPerPage = h / m_yScrollPixelsPerLine;
+            if ( linesPerPage >= m_yScrollLines )
+            {
+                // we're big enough to not need scrolling
+                linesPerPage =
+                m_yScrollLines =
+                m_yScrollPosition = 0;
+            }
+            else // we do need a scrollbar
+            {
+                if ( linesPerPage < 1 )
+                    linesPerPage = 1;
 
-            // Correct position if greater than extent of canvas minus
-            // the visible portion of it or if below zero
-            m_yScrollPosition = wxMin( m_yScrollLines - noPagePositions, m_yScrollPosition );
-            m_yScrollPosition = wxMax( 0, m_yScrollPosition );
-
-            m_win->SetScrollbar(wxVERTICAL, m_yScrollPosition, noPagePositions, m_yScrollLines);
-            // The amount by which we scroll when paging
-            SetScrollPageSize(wxVERTICAL, noPagePositions);
+                // Correct position if greater than extent of canvas minus
+                // the visible portion of it or if below zero
+                const int posMax = m_yScrollLines - linesPerPage;
+                if ( m_yScrollPosition > posMax )
+                    m_yScrollPosition = posMax;
+                else if ( m_yScrollPosition < 0 )
+                    m_yScrollPosition = 0;
+            }
         }
 
-        // If a scrollbar (dis)appeared as a result of this, adjust them again.
+        m_win->SetScrollbar(wxVERTICAL, m_yScrollPosition,
+                            linesPerPage, m_yScrollLines);
 
+        // The amount by which we scroll when paging
+        SetScrollPageSize(wxVERTICAL, linesPerPage);
+
+
+        // If a scrollbar (dis)appeared as a result of this, adjust them again.
         oldw = w;
         oldh = h;
 
@@ -731,25 +764,19 @@ void wxScrollHelper::AdjustScrollbars()
     {
        if (m_xScrollingEnabled)
             m_targetWindow->ScrollWindow( m_xScrollPixelsPerLine * (oldXScroll - m_xScrollPosition), 0,
-                                          GetRect() );
+                                          GetScrollRect() );
        else
-            m_targetWindow->Refresh(TRUE, GetRect());
+            m_targetWindow->Refresh(true, GetScrollRect());
     }
 
     if (oldYScroll != m_yScrollPosition)
     {
         if (m_yScrollingEnabled)
             m_targetWindow->ScrollWindow( 0, m_yScrollPixelsPerLine * (oldYScroll-m_yScrollPosition),
-                                          GetRect() );
+                                          GetScrollRect() );
         else
-            m_targetWindow->Refresh(TRUE, GetRect());
+            m_targetWindow->Refresh(true, GetScrollRect());
     }
-
-#ifdef __WXMAC__
-    m_targetWindow->MacUpdateImmediately();
-#endif
-
-    s_isInside = false;
 }
 
 void wxScrollHelper::DoPrepareDC(wxDC& dc)
@@ -813,10 +840,6 @@ void wxScrollHelper::Scroll( int x_pos, int y_pos )
     if (((x_pos == -1) || (x_pos == m_xScrollPosition)) &&
         ((y_pos == -1) || (y_pos == m_yScrollPosition))) return;
 
-#ifdef __WXMAC__
-    m_targetWindow->MacUpdateImmediately();
-#endif
-
     int w, h;
     GetTargetSize(&w, &h);
 
@@ -838,7 +861,7 @@ void wxScrollHelper::Scroll( int x_pos, int y_pos )
         if (old_x != m_xScrollPosition) {
             m_win->SetScrollPos( wxHORIZONTAL, m_xScrollPosition );
             m_targetWindow->ScrollWindow( (old_x-m_xScrollPosition)*m_xScrollPixelsPerLine, 0,
-                                          GetRect() );
+                                          GetScrollRect() );
         }
     }
     if ((y_pos != -1) && (m_yScrollPixelsPerLine))
@@ -859,14 +882,9 @@ void wxScrollHelper::Scroll( int x_pos, int y_pos )
         if (old_y != m_yScrollPosition) {
             m_win->SetScrollPos( wxVERTICAL, m_yScrollPosition );
             m_targetWindow->ScrollWindow( 0, (old_y-m_yScrollPosition)*m_yScrollPixelsPerLine,
-                                          GetRect() );
+                                          GetScrollRect() );
         }
     }
-
-#ifdef __WXMAC__
-    m_targetWindow->MacUpdateImmediately();
-#endif
-
 }
 
 void wxScrollHelper::EnableScrolling (bool x_scroll, bool y_scroll)
@@ -975,7 +993,7 @@ void wxScrollHelper::HandleOnChar(wxKeyEvent& event)
         yScrollOld = m_yScrollPosition;
 
     int dsty;
-    switch ( event.KeyCode() )
+    switch ( event.GetKeyCode() )
     {
         case WXK_PAGEUP:
         case WXK_PRIOR:
@@ -1048,11 +1066,13 @@ bool wxScrollHelper::SendAutoScrollEvents(wxScrollWinEvent& event) const
 
 void wxScrollHelper::StopAutoScrolling()
 {
+#if wxUSE_TIMER
     if ( m_timerAutoScroll )
     {
         delete m_timerAutoScroll;
         m_timerAutoScroll = (wxTimer *)NULL;
     }
+#endif
 }
 
 void wxScrollHelper::HandleOnMouseEnter(wxMouseEvent& event)
@@ -1114,6 +1134,7 @@ void wxScrollHelper::HandleOnMouseLeave(wxMouseEvent& event)
         if ( !m_targetWindow->HasScrollbar(orient) )
             return;
 
+#if wxUSE_TIMER
         delete m_timerAutoScroll;
         m_timerAutoScroll = new wxAutoScrollTimer
                                 (
@@ -1124,6 +1145,9 @@ void wxScrollHelper::HandleOnMouseLeave(wxMouseEvent& event)
                                     orient
                                 );
         m_timerAutoScroll->Start(50); // FIXME: make configurable
+#else
+        wxUnusedVar(pos);
+#endif
     }
 }
 
@@ -1189,7 +1213,7 @@ bool wxGenericScrolledWindow::Create(wxWindow *parent,
 {
     m_targetWindow = this;
 
-    bool ok = wxPanel::Create(parent, id, pos, size, style, name);
+    bool ok = wxPanel::Create(parent, id, pos, size, style|wxHSCROLL|wxVSCROLL, name);
 
     return ok;
 }
@@ -1209,7 +1233,7 @@ bool wxGenericScrolledWindow::Layout()
         CalcScrolledPosition(0,0, &x,&y);
         GetVirtualSize(&w, &h);
         GetSizer()->SetDimension(x, y, w, h);
-        return TRUE;
+        return true;
     }
 
     // fall back to default for LayoutConstraints
@@ -1221,10 +1245,8 @@ void wxGenericScrolledWindow::DoSetVirtualSize(int x, int y)
     wxPanel::DoSetVirtualSize( x, y );
     AdjustScrollbars();
 
-#if wxUSE_CONSTRAINTS
     if (GetAutoLayout())
         Layout();
-#endif
 }
 
 void wxGenericScrolledWindow::OnPaint(wxPaintEvent& event)
@@ -1237,41 +1259,25 @@ void wxGenericScrolledWindow::OnPaint(wxPaintEvent& event)
 }
 
 #ifdef __WXMSW__
-long
+WXLRESULT
 wxGenericScrolledWindow::MSWWindowProc(WXUINT nMsg,
                                        WXWPARAM wParam,
                                        WXLPARAM lParam)
 {
-    long rc = wxPanel::MSWWindowProc(nMsg, wParam, lParam);
+    WXLRESULT rc = wxPanel::MSWWindowProc(nMsg, wParam, lParam);
 
+#ifndef __WXWINCE__
     // we need to process arrows ourselves for scrolling
     if ( nMsg == WM_GETDLGCODE )
     {
         rc |= DLGC_WANTARROWS;
     }
+#endif
 
     return rc;
 }
 
 #endif // __WXMSW__
-
-#if WXWIN_COMPATIBILITY
-
-void wxGenericScrolledWindow::GetScrollUnitsPerPage (int *x_page, int *y_page) const
-{
-      *x_page = GetScrollPageSize(wxHORIZONTAL);
-      *y_page = GetScrollPageSize(wxVERTICAL);
-}
-
-void wxGenericScrolledWindow::CalcUnscrolledPosition(int x, int y, float *xx, float *yy) const
-{
-    if ( xx )
-        *xx = (float)(x + m_xScrollPosition * m_xScrollPixelsPerLine);
-    if ( yy )
-        *yy = (float)(y + m_yScrollPosition * m_yScrollPixelsPerLine);
-}
-
-#endif // WXWIN_COMPATIBILITY
 
 #endif // !wxGTK
 

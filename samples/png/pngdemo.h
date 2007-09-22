@@ -4,8 +4,8 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     01/02/97
-// RCS-ID:      $Id: pngdemo.h,v 1.5 2002/08/31 22:30:50 GD Exp $
-// Copyright:   (c) Julian Smart and Markus Holzem
+// RCS-ID:      $Id: pngdemo.h,v 1.7 2004/10/06 20:54:09 ABX Exp $
+// Copyright:   (c) Julian Smart
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
 
@@ -19,7 +19,7 @@
 class MyApp: public wxApp
 {
   public:
-    MyApp(void) ;
+    MyApp(void){};
     bool OnInit(void);
 };
 
@@ -46,7 +46,7 @@ class MyCanvas: public wxScrolledWindow
 {
   public:
     MyCanvas(wxWindow *parent, const wxPoint& pos, const wxSize& size);
-    ~MyCanvas(void) ;
+    ~MyCanvas(void){};
 
     void OnPaint(wxPaintEvent& event);
 DECLARE_EVENT_TABLE()

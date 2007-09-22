@@ -2,7 +2,7 @@
 // Purpose:     XML resources editor
 // Author:      Vaclav Slavik
 // Created:     2000/05/05
-// RCS-ID:      $Id: editor.h,v 1.10 2002/09/07 12:15:24 GD Exp $
+// RCS-ID:      $Id: editor.h,v 1.11 2004/06/11 13:14:23 ABX Exp $
 // Copyright:   (c) 2000 Vaclav Slavik
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -63,7 +63,7 @@ class EditorFrame : public wxFrame
 {
     public:
         friend class EditorTreeCtrl;
-    
+
         EditorFrame(wxFrame *parent, const wxString& filename);
         ~EditorFrame();
 
@@ -71,31 +71,31 @@ class EditorFrame : public wxFrame
         void NewFile();
         void SaveFile(const wxString& filename);
         wxString GetFileName() { return m_FileName; }
-        
+
         void RefreshTree();
         void RefreshTitle();
         bool SelectNode(wxXmlNode *node, wxTreeItemId *root = NULL);
-        
+
         wxTreeItemId CreateTreeNode(wxTreeCtrl *treectrl, wxTreeItemId parent, wxXmlNode *node);
-  
+
         void NotifyChanged(int change_type);
-        
+
         static EditorFrame *Get() { return ms_Instance; }
-        
+
     private:
         static EditorFrame *ms_Instance;
-    
+
         wxTreeCtrl *m_TreeCtrl;
-        
+
         wxXmlNode *m_SelectedNode;
-        
+
         wxXmlNode *m_Clipboard;
 
         wxString m_FileName;
         wxXmlRcEditDocument *m_Resource;
-        
+
         bool m_Modified;
-        
+
         bool AskToSave();
         void DeleteSelectedNode();
 

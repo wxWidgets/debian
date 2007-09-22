@@ -2,7 +2,7 @@
 // Name:        unix/utilsunx.cpp
 // Purpose:     generic Unix implementation of many wx functions
 // Author:      Vadim Zeitlin
-// Id:          $Id: utilsunx.cpp,v 1.86.2.6 2003/04/06 16:47:36 JS Exp $
+// Id:          $Id: utilsunx.cpp,v 1.115 2004/11/10 22:08:32 VZ Exp $
 // Copyright:   (c) 1998 Robert Roebling, Vadim Zeitlin
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -15,18 +15,56 @@
 // headers
 // ----------------------------------------------------------------------------
 
+#include <pwd.h>
+
+// for compilers that support precompilation, includes "wx.h".
+#include "wx/wxprec.h"
+
 #include "wx/defs.h"
 #include "wx/string.h"
 
 #include "wx/intl.h"
 #include "wx/log.h"
 #include "wx/app.h"
+#include "wx/apptrait.h"
 
 #include "wx/utils.h"
 #include "wx/process.h"
 #include "wx/thread.h"
 
 #include "wx/wfstream.h"
+
+#include "wx/unix/execute.h"
+
+#if wxUSE_STREAMS
+
+// define this to let wxexec.cpp know that we know what we're doing
+#define _WX_USED_BY_WXEXECUTE_
+#include "../common/execcmn.cpp"
+
+#endif // wxUSE_STREAMS
+
+#if wxUSE_BASE
+
+#if defined(__MWERKS__) && defined(__MACH__)
+    #ifndef WXWIN_OS_DESCRIPTION
+        #define WXWIN_OS_DESCRIPTION "MacOS X"
+    #endif
+    #ifndef HAVE_NANOSLEEP
+        #define HAVE_NANOSLEEP
+    #endif
+    #ifndef HAVE_UNAME
+        #define HAVE_UNAME
+    #endif
+
+    // our configure test believes we can use sigaction() if the function is
+    // available but Metrowekrs with MSL run-time does have the function but
+    // doesn't have sigaction struct so finally we can't use it...
+    #ifdef __MSL__
+        #undef wxUSE_ON_FATAL_EXCEPTION
+        #define wxUSE_ON_FATAL_EXCEPTION 0
+    #endif
+#endif
 
 // not only the statfs syscall is called differently depending on platform, but
 // one of its incarnations, statvfs(), takes different arguments under
@@ -55,10 +93,6 @@
     #define wxStatfs_t WX_STATFS_T
 #endif
 
-#if wxUSE_GUI
-    #include "wx/unix/execute.h"
-#endif
-
 // SGI signal.h defines signal handler arguments differently depending on
 // whether _LANGUAGE_C_PLUS_PLUS is set or not - do set it
 #if defined(__SGI__) && !defined(_LANGUAGE_C_PLUS_PLUS)
@@ -70,9 +104,8 @@
 #include <string.h>
 #include <sys/stat.h>
 #include <sys/types.h>
-#include <unistd.h>
 #include <sys/wait.h>
-#include <pwd.h>
+#include <unistd.h>
 #include <errno.h>
 #include <netdb.h>
 #include <signal.h>
@@ -131,12 +164,12 @@ void wxSleep(int nSecs)
     sleep(nSecs);
 }
 
-void wxUsleep(unsigned long milliseconds)
+void wxMicroSleep(unsigned long microseconds)
 {
 #if defined(HAVE_NANOSLEEP)
     timespec tmReq;
-    tmReq.tv_sec = (time_t)(milliseconds / 1000);
-    tmReq.tv_nsec = (milliseconds % 1000) * 1000 * 1000;
+    tmReq.tv_sec = (time_t)(microseconds / 1000000);
+    tmReq.tv_nsec = (microseconds % 1000000) * 1000;
 
     // we're not interested in remaining time nor in return value
     (void)nanosleep(&tmReq, (timespec *)NULL);
@@ -149,13 +182,18 @@ void wxUsleep(unsigned long milliseconds)
         #error "usleep() cannot be used in MT programs under Solaris."
     #endif // Sun
 
-    usleep(milliseconds * 1000); // usleep(3) wants microseconds
+    usleep(microseconds);
 #elif defined(HAVE_SLEEP)
     // under BeOS sleep() takes seconds (what about other platforms, if any?)
-    sleep(milliseconds * 1000);
+    sleep(microseconds * 1000000);
 #else // !sleep function
-    #error "usleep() or nanosleep() function required for wxUsleep"
+    #error "usleep() or nanosleep() function required for wxMicroSleep"
 #endif // sleep function
+}
+
+void wxMilliSleep(unsigned long milliseconds)
+{
+    wxMicroSleep(milliseconds*1000);
 }
 
 // ----------------------------------------------------------------------------
@@ -202,6 +240,16 @@ int wxKill(long pid, wxSignal sig, wxKillError *rc)
 long wxExecute( const wxString& command, int flags, wxProcess *process )
 {
     wxCHECK_MSG( !command.IsEmpty(), 0, wxT("can't exec empty command") );
+
+#if wxUSE_THREADS
+    // fork() doesn't mix well with POSIX threads: on many systems the program
+    // deadlocks or crashes for some reason. Probably our code is buggy and
+    // doesn't do something which must be done to allow this to work, but I
+    // don't know what yet, so for now just warn the user (this is the least we
+    // can do) about it
+    wxASSERT_MSG( wxThread::IsMain(),
+                    _T("wxExecute() can be called only from the main thread") );
+#endif // wxUSE_THREADS
 
     int argc = 0;
     wxChar *argv[WXEXECUTE_NARGS];
@@ -325,51 +373,11 @@ bool wxShutdown(wxShutdownFlags wFlags)
 }
 
 
-#if wxUSE_GUI
-
-void wxHandleProcessTermination(wxEndProcessData *proc_data)
-{
-    // notify user about termination if required
-    if ( proc_data->process )
-    {
-        proc_data->process->OnTerminate(proc_data->pid, proc_data->exitcode);
-    }
-
-    // clean up
-    if ( proc_data->pid > 0 )
-    {
-       delete proc_data;
-    }
-    else
-    {
-       // let wxExecute() know that the process has terminated
-       proc_data->pid = 0;
-    }
-}
-
-#endif // wxUSE_GUI
-
 // ----------------------------------------------------------------------------
 // wxStream classes to support IO redirection in wxExecute
 // ----------------------------------------------------------------------------
 
 #if wxUSE_STREAMS
-
-// ----------------------------------------------------------------------------
-// wxPipeInputStream: stream for reading from a pipe
-// ----------------------------------------------------------------------------
-
-class wxPipeInputStream : public wxFileInputStream
-{
-public:
-    wxPipeInputStream(int fd) : wxFileInputStream(fd) { }
-
-    // return TRUE if the pipe is still opened
-    bool IsOpened() const { return !Eof(); }
-
-    // return TRUE if we have anything to read, don't block
-    virtual bool CanRead() const;
-};
 
 bool wxPipeInputStream::CanRead() const
 {
@@ -407,88 +415,7 @@ bool wxPipeInputStream::CanRead() const
     }
 }
 
-// define this to let wxexec.cpp know that we know what we're doing
-#define _WX_USED_BY_WXEXECUTE_
-#include "../common/execcmn.cpp"
-
 #endif // wxUSE_STREAMS
-
-// ----------------------------------------------------------------------------
-// wxPipe: this encapsulates pipe() system call
-// ----------------------------------------------------------------------------
-
-class wxPipe
-{
-public:
-    // the symbolic names for the pipe ends
-    enum Direction
-    {
-        Read,
-        Write
-    };
-
-    enum
-    {
-        INVALID_FD = -1
-    };
-
-    // default ctor doesn't do anything
-    wxPipe() { m_fds[Read] = m_fds[Write] = INVALID_FD; }
-
-    // create the pipe, return TRUE if ok, FALSE on error
-    bool Create()
-    {
-        if ( pipe(m_fds) == -1 )
-        {
-            wxLogSysError(_("Pipe creation failed"));
-
-            return FALSE;
-        }
-
-        return TRUE;
-    }
-
-    // return TRUE if we were created successfully
-    bool IsOk() const { return m_fds[Read] != INVALID_FD; }
-
-    // return the descriptor for one of the pipe ends
-    int operator[](Direction which) const
-    {
-        wxASSERT_MSG( which >= 0 && (size_t)which < WXSIZEOF(m_fds),
-                      _T("invalid pipe index") );
-
-        return m_fds[which];
-    }
-
-    // detach a descriptor, meaning that the pipe dtor won't close it, and
-    // return it
-    int Detach(Direction which)
-    {
-        wxASSERT_MSG( which >= 0 && (size_t)which < WXSIZEOF(m_fds),
-                      _T("invalid pipe index") );
-
-        int fd = m_fds[which];
-        m_fds[which] = INVALID_FD;
-
-        return fd;
-    }
-
-    // close the pipe descriptors
-    void Close()
-    {
-        for ( size_t n = 0; n < WXSIZEOF(m_fds); n++ )
-        {
-            if ( m_fds[n] != INVALID_FD )
-                close(m_fds[n]);
-        }
-    }
-
-    // dtor closes the pipe descriptors
-    ~wxPipe() { Close(); }
-
-private:
-    int m_fds[2];
-};
 
 // ----------------------------------------------------------------------------
 // wxExecute: the real worker function
@@ -534,10 +461,21 @@ long wxExecute(wxChar **argv,
     wxChar **mb_argv = argv;
 #endif // Unicode/ANSI
 
-#if wxUSE_GUI && !defined(__DARWIN__)
+    // we want this function to work even if there is no wxApp so ensure that
+    // we have a valid traits pointer
+    wxConsoleAppTraits traitsConsole;
+    wxAppTraits *traits = wxTheApp ? wxTheApp->GetTraits() : NULL;
+    if ( !traits )
+        traits = &traitsConsole;
+
+    // this struct contains all information which we pass to and from
+    // wxAppTraits methods
+    wxExecuteData execData;
+    execData.flags = flags;
+    execData.process = process;
+
     // create pipes
-    wxPipe pipeEndProcDetect;
-    if ( !pipeEndProcDetect.Create() )
+    if ( !traits->CreateEndProcessPipe(execData) )
     {
         wxLogError( _("Failed to execute '%s'\n"), *argv );
 
@@ -545,7 +483,6 @@ long wxExecute(wxChar **argv,
 
         return ERROR_RETURN_CODE;
     }
-#endif // wxUSE_GUI && !defined(__DARWIN__)
 
     // pipes for inter process communication
     wxPipe pipeIn,      // stdin
@@ -591,15 +528,14 @@ long wxExecute(wxChar **argv,
         // start an xterm executing it.
         if ( !(flags & wxEXEC_SYNC) )
         {
-            for ( int fd = 0; fd < FD_SETSIZE; fd++ )
+            // FD_SETSIZE is unsigned under BSD, signed under other platforms
+            // so we need a cast to avoid warnings on all platforms
+            for ( int fd = 0; fd < (int)FD_SETSIZE; fd++ )
             {
                 if ( fd == pipeIn[wxPipe::Read]
                         || fd == pipeOut[wxPipe::Write]
                         || fd == pipeErr[wxPipe::Write]
-#if wxUSE_GUI && !defined(__DARWIN__)
-                        || fd == pipeEndProcDetect[wxPipe::Write]
-#endif // wxUSE_GUI && !defined(__DARWIN__)
-                   )
+                        || traits->IsWriteFDOfEndProcessPipe(execData, fd) )
                 {
                     // don't close this one, we still need it
                     continue;
@@ -620,12 +556,9 @@ long wxExecute(wxChar **argv,
         }
 #endif // !__VMS
 
-#if wxUSE_GUI && !defined(__DARWIN__)
         // reading side can be safely closed but we should keep the write one
         // opened
-        pipeEndProcDetect.Detach(wxPipe::Write);
-        pipeEndProcDetect.Close();
-#endif // wxUSE_GUI && !defined(__DARWIN__)
+        traits->DetachWriteFDOfEndProcessPipe(execData);
 
         // redirect stdin, stdout and stderr
         if ( pipeIn.IsOk() )
@@ -644,6 +577,12 @@ long wxExecute(wxChar **argv,
 
         execvp (*mb_argv, mb_argv);
 
+        fprintf(stderr, "execvp(");
+        // CS changed ppc to ppc_ as ppc is not available under mac os CW Mach-O
+        for ( char **ppc_ = mb_argv; *ppc_; ppc_++ )
+            fprintf(stderr, "%s%s", ppc_ == mb_argv ? "" : ", ", *ppc_);
+        fprintf(stderr, ") failed with error %d!\n", errno);
+
         // there is no return after successful exec()
         _exit(-1);
 
@@ -660,6 +599,9 @@ long wxExecute(wxChar **argv,
     else // we're in parent
     {
         ARGS_CLEANUP;
+
+        // save it for WaitForChild() use
+        execData.pid = pid;
 
         // prepare for IO redirection
 
@@ -686,6 +628,9 @@ long wxExecute(wxChar **argv,
 
             bufOut.Init(outStream);
             bufErr.Init(errStream);
+
+            execData.bufOut = &bufOut;
+            execData.bufErr = &bufErr;
 #endif // wxUSE_STREAMS
         }
 
@@ -696,85 +641,7 @@ long wxExecute(wxChar **argv,
             pipeErr.Close();
         }
 
-#if wxUSE_GUI && !defined(__WXMICROWIN__)
-        wxEndProcessData *data = new wxEndProcessData;
-
-        // wxAddProcessCallback is now (with DARWIN) allowed to call the
-        // callback function directly if the process terminates before
-        // the callback can be added to the run loop. Set up the data.
-        if ( flags & wxEXEC_SYNC )
-        {
-            // we may have process for capturing the program output, but it's
-            // not used in wxEndProcessData in the case of sync execution
-            data->process = NULL;
-
-            // sync execution: indicate it by negating the pid
-            data->pid = -pid;
-        }
-        else
-        {
-            // async execution, nothing special to do - caller will be
-            // notified about the process termination if process != NULL, data
-            // will be deleted in GTK_EndProcessDetector
-            data->process  = process;
-            data->pid      = pid;
-        }
-
-
-#if defined(__DARWIN__)
-        data->tag = wxAddProcessCallbackForPid(data,pid);
-#else
-        data->tag = wxAddProcessCallback
-                    (
-                        data,
-                        pipeEndProcDetect.Detach(wxPipe::Read)
-                    );
-
-        pipeEndProcDetect.Close();
-#endif // defined(__DARWIN__)
-
-        if ( flags & wxEXEC_SYNC )
-        {
-            wxBusyCursor bc;
-            wxWindowDisabler wd;
-
-            // data->pid will be set to 0 from GTK_EndProcessDetector when the
-            // process terminates
-            while ( data->pid != 0 )
-            {
-#if wxUSE_STREAMS
-                bufOut.Update();
-                bufErr.Update();
-#endif // wxUSE_STREAMS
-
-                // give GTK+ a chance to call GTK_EndProcessDetector here and
-                // also repaint the GUI
-                wxYield();
-            }
-
-            int exitcode = data->exitcode;
-
-            delete data;
-
-            return exitcode;
-        }
-        else // async execution
-        {
-            return pid;
-        }
-#else // !wxUSE_GUI
-
-        wxASSERT_MSG( flags & wxEXEC_SYNC,
-                      wxT("async execution not supported yet") );
-
-        int exitcode = 0;
-        if ( waitpid(pid, &exitcode, 0) == -1 || !WIFEXITED(exitcode) )
-        {
-            wxLogSysError(_("Waiting for subprocess termination failed"));
-        }
-
-        return exitcode;
-#endif // wxUSE_GUI
+        return traits->WaitForChild(execData);
     }
 
     return ERROR_RETURN_CODE;
@@ -965,41 +832,28 @@ bool wxGetUserName(wxChar *buf, int sz)
     return FALSE;
 }
 
+// this function is in mac/utils.cpp for wxMac
 #ifndef __WXMAC__
+
 wxString wxGetOsDescription()
 {
-#ifndef WXWIN_OS_DESCRIPTION
-    #error WXWIN_OS_DESCRIPTION should be defined in config.h by configure
-#else
-    return wxString::FromAscii( WXWIN_OS_DESCRIPTION );
-#endif
-}
-#endif
-
-// this function returns the GUI toolkit version in GUI programs, but OS
-// version in non-GUI ones
-#if !wxUSE_GUI
-
-int wxGetOsVersion(int *majorVsn, int *minorVsn)
-{
-    int major, minor;
-    char name[256];
-
-    if ( sscanf(WXWIN_OS_DESCRIPTION, "%s %d.%d", name, &major, &minor) != 3 )
+    FILE *f = popen("uname -s -r -m", "r");
+    if (f)
     {
-        // unreckognized uname string format
-        major = minor = -1;
+        char buf[256];
+        size_t c = fread(buf, 1, sizeof(buf) - 1, f);
+        pclose(f);
+        // Trim newline from output.
+        if (c && buf[c - 1] == '\n')
+            --c;
+        buf[c] = '\0';
+        return wxString::FromAscii( buf );
     }
-
-    if ( majorVsn )
-        *majorVsn = major;
-    if ( minorVsn )
-        *minorVsn = minor;
-
-    return wxUNIX;
+    wxFAIL_MSG( _T("uname failed") );
+    return _T("");
 }
 
-#endif // !wxUSE_GUI
+#endif // !__WXMAC__
 
 unsigned long wxGetProcessId()
 {
@@ -1103,7 +957,7 @@ bool wxSetEnv(const wxString& variable, const wxChar *value)
         s << _T('=') << value;
 
     // transform to ANSI
-    const char *p = s.mb_str();
+    const wxWX2MBbuf p = s.mb_str();
 
     // the string will be free()d by libc
     char *buf = (char *)malloc(strlen(p) + 1);
@@ -1111,7 +965,7 @@ bool wxSetEnv(const wxString& variable, const wxChar *value)
 
     return putenv(buf) == 0;
 #else // no way to set an env var
-    return FALSE;
+    return false;
 #endif
 }
 
@@ -1222,3 +1076,162 @@ void wxFatalError( const wxString &msg, const wxString &title )
 
 #endif // WXWIN_COMPATIBILITY_2_2
 
+#endif // wxUSE_BASE
+
+#if wxUSE_GUI
+
+// ----------------------------------------------------------------------------
+// wxExecute support
+// ----------------------------------------------------------------------------
+
+// Darwin doesn't use the same process end detection mechanisms so we don't
+// need wxExecute-related helpers for it
+#if !(defined(__DARWIN__) && defined(__WXMAC__))
+
+bool wxGUIAppTraits::CreateEndProcessPipe(wxExecuteData& execData)
+{
+    return execData.pipeEndProcDetect.Create();
+}
+
+bool wxGUIAppTraits::IsWriteFDOfEndProcessPipe(wxExecuteData& execData, int fd)
+{
+    return fd == (execData.pipeEndProcDetect)[wxPipe::Write];
+}
+
+void wxGUIAppTraits::DetachWriteFDOfEndProcessPipe(wxExecuteData& execData)
+{
+    execData.pipeEndProcDetect.Detach(wxPipe::Write);
+    execData.pipeEndProcDetect.Close();
+}
+
+#else // !Darwin
+
+bool wxGUIAppTraits::CreateEndProcessPipe(wxExecuteData& WXUNUSED(execData))
+{
+    return true;
+}
+
+bool
+wxGUIAppTraits::IsWriteFDOfEndProcessPipe(wxExecuteData& WXUNUSED(execData),
+                                          int WXUNUSED(fd))
+{
+    return false;
+}
+
+void
+wxGUIAppTraits::DetachWriteFDOfEndProcessPipe(wxExecuteData& WXUNUSED(execData))
+{
+    // nothing to do here, we don't use the pipe
+}
+
+#endif // !Darwin/Darwin
+
+int wxGUIAppTraits::WaitForChild(wxExecuteData& execData)
+{
+    wxEndProcessData *endProcData = new wxEndProcessData;
+
+    // wxAddProcessCallback is now (with DARWIN) allowed to call the
+    // callback function directly if the process terminates before
+    // the callback can be added to the run loop. Set up the endProcData.
+    if ( execData.flags & wxEXEC_SYNC )
+    {
+        // we may have process for capturing the program output, but it's
+        // not used in wxEndProcessData in the case of sync execution
+        endProcData->process = NULL;
+
+        // sync execution: indicate it by negating the pid
+        endProcData->pid = -execData.pid;
+    }
+    else
+    {
+        // async execution, nothing special to do -- caller will be
+        // notified about the process termination if process != NULL, endProcData
+        // will be deleted in GTK_EndProcessDetector
+        endProcData->process  = execData.process;
+        endProcData->pid      = execData.pid;
+    }
+
+
+#if defined(__DARWIN__) && (defined(__WXMAC__) || defined(__WXCOCOA__))
+    endProcData->tag = wxAddProcessCallbackForPid(endProcData, execData.pid);
+#else
+    endProcData->tag = wxAddProcessCallback
+                (
+                    endProcData,
+                    execData.pipeEndProcDetect.Detach(wxPipe::Read)
+                );
+
+    execData.pipeEndProcDetect.Close();
+#endif // defined(__DARWIN__) && (defined(__WXMAC__) || defined(__WXCOCOA__))
+
+    if ( execData.flags & wxEXEC_SYNC )
+    {
+        wxBusyCursor bc;
+        wxWindowDisabler wd;
+
+        // endProcData->pid will be set to 0 from GTK_EndProcessDetector when the
+        // process terminates
+        while ( endProcData->pid != 0 )
+        {
+            bool idle = true;
+
+#if wxUSE_STREAMS
+            if ( execData.bufOut )
+            {
+                execData.bufOut->Update();
+                idle = false;
+            }
+
+            if ( execData.bufErr )
+            {
+                execData.bufErr->Update();
+                idle = false;
+            }
+#endif // wxUSE_STREAMS
+
+            // don't consume 100% of the CPU while we're sitting in this
+            // loop
+            if ( idle )
+                wxMilliSleep(1);
+
+            // give GTK+ a chance to call GTK_EndProcessDetector here and
+            // also repaint the GUI
+            wxYield();
+        }
+
+        int exitcode = endProcData->exitcode;
+
+        delete endProcData;
+
+        return exitcode;
+    }
+    else // async execution
+    {
+        return execData.pid;
+    }
+}
+
+#endif // wxUSE_GUI
+#if wxUSE_BASE
+
+void wxHandleProcessTermination(wxEndProcessData *proc_data)
+{
+    // notify user about termination if required
+    if ( proc_data->process )
+    {
+        proc_data->process->OnTerminate(proc_data->pid, proc_data->exitcode);
+    }
+
+    // clean up
+    if ( proc_data->pid > 0 )
+    {
+       delete proc_data;
+    }
+    else
+    {
+       // let wxExecute() know that the process has terminated
+       proc_data->pid = 0;
+    }
+}
+
+#endif // wxUSE_BASE

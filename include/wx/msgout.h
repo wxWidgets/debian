@@ -4,8 +4,8 @@
 // Author:      Mattia Barbon
 // Modified by:
 // Created:     17.07.02
-// RCS-ID:      $Id: msgout.h,v 1.4 2002/08/31 11:29:11 GD Exp $
-// Copyright:   (c) wxWindows team
+// RCS-ID:      $Id: msgout.h,v 1.12 2004/09/17 22:23:54 ABX Exp $
+// Copyright:   (c) wxWidgets team
 // Licence:     wxWindows licence
 ///////////////////////////////////////////////////////////////////////////////
 
@@ -16,7 +16,14 @@
 // headers
 // ----------------------------------------------------------------------------
 
-#if defined(__GNUG__) && !defined(__APPLE__)
+#if defined(__GNUG__) && !defined(NO_GCC_PRAGMA) && !defined(__EMX__)
+// Some older compilers (such as EMX) cannot handle
+// #pragma interface/implementation correctly, iff
+// #pragma implementation is used in _two_ translation
+// units (as created by e.g. event.cpp compiled for
+// libwx_base and event.cpp compiled for libwx_gui_core).
+// So we must not use those pragmas for those compilers in
+// such files.
     #pragma interface "msgout.h"
 #endif
 
@@ -28,7 +35,7 @@
 // something you can printf() to
 // ----------------------------------------------------------------------------
 
-class WXDLLEXPORT wxMessageOutput
+class WXDLLIMPEXP_BASE wxMessageOutput
 {
 public:
     virtual ~wxMessageOutput() { }
@@ -50,7 +57,7 @@ private:
 // implementation which sends output to stderr
 // ----------------------------------------------------------------------------
 
-class WXDLLEXPORT wxMessageOutputStderr : public wxMessageOutput
+class WXDLLIMPEXP_BASE wxMessageOutputStderr : public wxMessageOutput
 {
 public:
     wxMessageOutputStderr() { }
@@ -64,7 +71,7 @@ public:
 
 #if wxUSE_GUI
 
-class WXDLLEXPORT wxMessageOutputMessageBox : public wxMessageOutput
+class WXDLLIMPEXP_CORE wxMessageOutputMessageBox : public wxMessageOutput
 {
 public:
     wxMessageOutputMessageBox() { }
@@ -75,10 +82,22 @@ public:
 #endif // wxUSE_GUI
 
 // ----------------------------------------------------------------------------
+// implementation using the native way of outputting debug messages
+// ----------------------------------------------------------------------------
+
+class WXDLLIMPEXP_BASE wxMessageOutputDebug : public wxMessageOutput
+{
+public:
+    wxMessageOutputDebug() { }
+
+    virtual void Printf(const wxChar* format, ...) ATTRIBUTE_PRINTF_2;
+};
+
+// ----------------------------------------------------------------------------
 // implementation using wxLog (mainly for backwards compatibility)
 // ----------------------------------------------------------------------------
 
-class WXDLLEXPORT wxMessageOutputLog : public wxMessageOutput
+class WXDLLIMPEXP_BASE wxMessageOutputLog : public wxMessageOutput
 {
 public:
     wxMessageOutputLog() { }

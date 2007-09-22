@@ -1,8 +1,13 @@
 \section{\class{wxURL}}\label{wxurl}
 
+Parses URLs.
+
+Supports standard assignment operators, copy constructors,
+and comparison operators.
+
 \wxheading{Derived from}
 
-\helpref{wxObject}{wxobject}
+\helpref{wxURI}{wxuri}
 
 \wxheading{Include files}
 
@@ -12,69 +17,45 @@
 
 \helpref{wxSocketBase}{wxsocketbase}, \helpref{wxProtocol}{wxprotocol}
 
-\wxheading{Example}
-
-\begin{verbatim}
-  wxURL url("http://a.host/a.dir/a.file");
-  wxInputStream *in_stream;
-
-  in_stream = url.GetInputStream();
-  // Then, you can use all IO calls of in_stream (See wxStream)
-\end{verbatim}
-
 % ----------------------------------------------------------------------------
 % Members
 % ----------------------------------------------------------------------------
 
 \latexignore{\rtfignore{\wxheading{Members}}}
 
-\membersection{wxURL::wxURL}\label{wxurlconstr}
+\membersection{wxURL::wxURL}\label{wxurlctor}
 
 \func{}{wxURL}{\param{const wxString\&}{ url}}
 
-Constructs an URL object from the string.
+Constructs a URL object from the string.  The URL must be valid according
+to RFC 1738.  In particular, file URLs must be of the format
+'file://hostname/path/to/file'.  It is valid to leave out the hostname
+but slashes must remain in place-- i.e. a file URL without a hostname must
+contain three consecutive slashes.
 
 \wxheading{Parameters}
 
 \docparam{url}{Url string to parse.}
 
-\membersection{wxURL::\destruct{wxURL}}
+\membersection{wxURL::\destruct{wxURL}}\label{wxurldtor}
 
 \func{}{\destruct{wxURL}}{\void}
 
 Destroys the URL object.
 
 %
-% GetProtocolName
-%
-\membersection{wxURL::GetProtocolName}
-
-\constfunc{wxString}{GetProtocolName}{\void}
-
-Returns the name of the protocol which will be used to get the URL.
-
-%
 % GetProtocol
 %
-\membersection{wxURL::GetProtocol}
+\membersection{wxURL::GetProtocol}\label{wxurlgetprotocol}
 
 \func{wxProtocol\&}{GetProtocol}{\void}
 
 Returns a reference to the protocol which will be used to get the URL.
 
 %
-% GetPath
-%
-\membersection{wxURL::GetPath}
-
-\func{wxString}{GetPath}{\void}
-
-Returns the path of the file to fetch. This path was encoded in the URL.
-
-%
 % GetError
 %
-\membersection{wxURL::GetError}
+\membersection{wxURL::GetError}\label{wxurlgeterror}
 
 \constfunc{wxURLError}{GetError}{\void}
 
@@ -95,13 +76,29 @@ It can be one of these errors:
 %
 % GetInputStream
 %
-\membersection{wxURL::GetInputStream}
+\membersection{wxURL::GetInputStream}\label{wxurlgetinputstream}
 
 \func{wxInputStream *}{GetInputStream}{\void}
 
 Creates a new input stream on the the specified URL. You can use all but seek
 functionality of wxStream. Seek isn't available on all stream. For example,
 http or ftp streams doesn't deal with it.
+
+Note that this method is somewhat depreciated, all future wxWidgets applications
+should really use \helpref{wxFileSystem}{wxfilesystem} instead.
+
+Example:
+
+\begin{verbatim}
+  wxURL url("http://a.host/a.dir/a.file");
+  if (url.GetError() == wxURL_NOERR)
+  {
+      wxInputStream *in_stream;
+
+      in_stream = url.GetInputStream();
+      // Then, you can use all IO calls of in_stream (See wxStream)
+  }
+\end{verbatim}
 
 \wxheading{Return value}
 
@@ -141,14 +138,4 @@ Sets the proxy to use for this URL.
 \wxheading{See also}
 
 \helpref{wxURL::SetDefaultProxy}{wxurlsetdefaultproxy}
-
-%
-% SetProxy
-%
-\membersection{wxURL::ConvertToValidURI}
-
-\func{static wxString}{ConvertToValidURI}{\param{const wxString\&}{ uri}}
-
-It converts a non-standardized URI to a valid network URI. It encodes non
-standard characters.
 

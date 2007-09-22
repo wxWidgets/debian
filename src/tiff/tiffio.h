@@ -1,4 +1,4 @@
-/* $Header: /pack/cvsroots/wxwindows/wxWindows/src/tiff/tiffio.h,v 1.3.6.1 2002/11/10 13:13:58 JS Exp $ */
+/* $Header: /pack/cvsroots/wxwindows/wxWindows/src/tiff/tiffio.h,v 1.4 2002/12/04 14:10:23 VZ Exp $ */
 
 /*
  * Copyright (c) 1988-1997 Sam Leffler

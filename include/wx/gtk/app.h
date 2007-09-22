@@ -2,7 +2,7 @@
 // Name:        wx/gtk/app.h
 // Purpose:
 // Author:      Robert Roebling
-// Id:          $Id: app.h,v 1.38 2002/09/07 12:28:46 GD Exp $
+// Id:          $Id: app.h,v 1.52 2004/11/04 20:03:56 VS Exp $
 // Copyright:   (c) 1998 Robert Roebling, Julian Smart
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -10,7 +10,7 @@
 #ifndef __GTKAPPH__
 #define __GTKAPPH__
 
-#if defined(__GNUG__) && !defined(__APPLE__)
+#if defined(__GNUG__) && !defined(NO_GCC_PRAGMA)
 #pragma interface
 #endif
 
@@ -41,24 +41,13 @@ public:
     virtual bool OnInitGui();
 
     // override base class (pure) virtuals
-    virtual int MainLoop();
-    virtual void ExitMainLoop();
-    virtual bool Initialized();
-    virtual bool Pending();
-    virtual void Dispatch();
     virtual bool Yield(bool onlyIfNeeded = FALSE);
-    virtual bool ProcessIdle();
+    virtual void WakeUpIdle();
 
-    // implementation only from now on
-    void OnIdle( wxIdleEvent &event );
-    bool SendIdleEvents();
-    bool SendIdleEvents( wxWindow* win );
+    virtual bool Initialize(int& argc, wxChar **argv);
+    virtual void CleanUp();
 
-    static bool Initialize();
     static bool InitialzeVisual();
-    static void CleanUp();
-
-    void DeletePendingObjects();
 
 #ifdef __WXDEBUG__
     virtual void OnAssert(const wxChar *file, int line, const wxChar *cond, const wxChar *msg);
@@ -66,12 +55,9 @@ public:
     bool IsInAssert() const { return m_isInAssert; }
 #endif // __WXDEBUG__
 
-    bool            m_initialized;
-
     gint            m_idleTag;
-#if wxUSE_THREADS
-    gint            m_wakeUpTimerTag;
-#endif
+    void RemoveIdleTag();
+    
     unsigned char  *m_colorCube;
 
     // Used by the the wxGLApp and wxGLCanvas class for GL-based X visual
@@ -87,12 +73,8 @@ private:
     bool m_isInAssert;
 #endif // __WXDEBUG__
 
-    bool CallInternalIdle( wxWindow* win );
-
     DECLARE_DYNAMIC_CLASS(wxApp)
     DECLARE_EVENT_TABLE()
 };
-
-int WXDLLEXPORT wxEntry( int argc, char *argv[] );
 
 #endif // __GTKAPPH__

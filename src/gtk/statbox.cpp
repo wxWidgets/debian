@@ -2,16 +2,17 @@
 // Name:        gtk/statbox.cpp
 // Purpose:
 // Author:      Robert Roebling
-// Id:          $Id: statbox.cpp,v 1.28 2002/08/05 17:59:20 RR Exp $
+// Id:          $Id: statbox.cpp,v 1.39 2004/07/04 11:11:39 VZ Exp $
 // Copyright:   (c) 1998 Robert Roebling
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
 
-#ifdef __GNUG__
+#if defined(__GNUG__) && !defined(NO_GCC_PRAGMA)
 #pragma implementation "statbox.h"
 #endif
 
-#include "wx/defs.h"
+// For compilers that support precompilation, includes "wx.h".
+#include "wx/wxprec.h"
 
 #if wxUSE_STATBOX
 
@@ -65,9 +66,7 @@ bool wxStaticBox::Create( wxWindow *parent,
 
     m_parent->DoAddChild( this );
 
-    PostCreation();
-
-    InheritAttributes();
+    PostCreation(size);
 
     // need to set non default alignment?
     gfloat xalign;
@@ -81,8 +80,6 @@ bool wxStaticBox::Create( wxWindow *parent,
     if ( xalign )
         gtk_frame_set_label_align(GTK_FRAME( m_widget ), xalign, 0.0);
 
-    Show( TRUE );
-
     return TRUE;
 }
 
@@ -94,10 +91,19 @@ void wxStaticBox::SetLabel( const wxString &label )
                          m_label.empty() ? (char *)NULL : (const char*) wxGTK_CONV( m_label ) );
 }
 
-void wxStaticBox::ApplyWidgetStyle()
+void wxStaticBox::DoApplyWidgetStyle(GtkRcStyle *style)
 {
-    SetWidgetStyle();
-    gtk_widget_set_style( m_widget, m_widgetStyle );
+    gtk_widget_modify_style(m_widget, style);
+#ifdef __WXGTK20__
+    gtk_widget_modify_style(GTK_FRAME(m_widget)->label_widget, style);
+#endif
+}
+
+// static
+wxVisualAttributes
+wxStaticBox::GetClassDefaultAttributes(wxWindowVariant WXUNUSED(variant))
+{
+    return GetDefaultAttributesFromGTKWidget(gtk_frame_new);
 }
 
 #endif // wxUSE_STATBOX

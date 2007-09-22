@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     01/02/97
-// RCS-ID:      $Id: radiobox.h,v 1.20 2002/06/04 18:09:19 VZ Exp $
+// RCS-ID:      $Id: radiobox.h,v 1.33 2004/10/13 14:04:19 ABX Exp $
 // Copyright:   (c) Julian Smart
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -12,7 +12,7 @@
 #ifndef _WX_RADIOBOX_H_
 #define _WX_RADIOBOX_H_
 
-#ifdef __GNUG__
+#if defined(__GNUG__) && !defined(NO_GCC_PRAGMA)
     #pragma interface "radiobox.h"
 #endif
 
@@ -41,6 +41,20 @@ public:
         (void)Create(parent, id, title, pos, size, n, choices, majorDim,
                      style, val, name);
     }
+    wxRadioBox(wxWindow *parent,
+               wxWindowID id,
+               const wxString& title,
+               const wxPoint& pos,
+               const wxSize& size,
+               const wxArrayString& choices,
+               int majorDim = 0,
+               long style = wxRA_HORIZONTAL,
+               const wxValidator& val = wxDefaultValidator,
+               const wxString& name = wxRadioBoxNameStr)
+    {
+        (void)Create(parent, id, title, pos, size, choices, majorDim,
+                     style, val, name);
+    }
 
     ~wxRadioBox();
 
@@ -54,6 +68,16 @@ public:
                 long style = wxRA_HORIZONTAL,
                 const wxValidator& val = wxDefaultValidator,
                 const wxString& name = wxRadioBoxNameStr);
+    bool Create(wxWindow *parent,
+                wxWindowID id,
+                const wxString& title,
+                const wxPoint& pos,
+                const wxSize& size,
+                const wxArrayString& choices,
+                int majorDim = 0,
+                long style = wxRA_HORIZONTAL,
+                const wxValidator& val = wxDefaultValidator,
+                const wxString& name = wxRadioBoxNameStr);
 
     // implement the radiobox interface
     virtual void SetSelection(int n);
@@ -61,15 +85,15 @@ public:
     virtual int GetCount() const;
     virtual wxString GetString(int n) const;
     virtual void SetString(int n, const wxString& label);
-    virtual void Enable(int n, bool enable = TRUE);
-    virtual void Show(int n, bool show = TRUE);
+    virtual void Enable(int n, bool enable = true);
+    virtual void Show(int n, bool show = true);
     virtual int GetColumnCount() const;
     virtual int GetRowCount() const;
 
-    virtual bool Show(bool show = TRUE);
+    virtual bool Show(bool show = true);
     void SetFocus();
-    virtual bool Enable(bool enable = TRUE);
-    void SetLabelFont(const wxFont& WXUNUSED(font)) {};
+    virtual bool Enable(bool enable = true);
+    void SetLabelFont(const wxFont& WXUNUSED(font)) {}
     void SetButtonFont(const wxFont& font) { SetFont(font); }
 
     void Command(wxCommandEvent& event);
@@ -88,7 +112,7 @@ public:
 
     virtual bool SetFont(const wxFont& font);
 
-    long MSWWindowProc(WXUINT nMsg, WXWPARAM wParam, WXLPARAM lParam);
+    WXLRESULT MSWWindowProc(WXUINT nMsg, WXWPARAM wParam, WXLPARAM lParam);
     virtual WXHBRUSH OnCtlColor(WXHDC pDC, WXHWND pWnd, WXUINT nCtlColor,
                                 WXUINT message,
                                 WXWPARAM wParam, WXLPARAM lParam);
@@ -100,15 +124,13 @@ public:
     int GetNumVer() const;
     int GetNumHor() const;
 
-    // compatibility ctor
-#if WXWIN_COMPATIBILITY
-    wxRadioBox(wxWindow *parent, wxFunction func, const char *title,
-            int x = -1, int y = -1, int width = -1, int height = -1,
-            int n = 0, char **choices = NULL,
-            int majorDim = 0, long style = wxRA_HORIZONTAL, const char *name = wxRadioBoxNameStr);
-#endif // WXWIN_COMPATIBILITY
+    virtual void ApplyParentThemeBackground(const wxColour& bg)
+        { SetBackgroundColour(bg); }
 
 protected:
+    // we can't compute our best size before the items are added to the control
+    virtual void SetInitialBestSize(const wxSize& WXUNUSED(size)) { }
+
     // subclass one radio button
     void SubclassRadioButton(WXHWND hWndBtn);
 
@@ -134,6 +156,7 @@ protected:
 
 private:
     DECLARE_DYNAMIC_CLASS(wxRadioBox)
+    DECLARE_NO_COPY_CLASS(wxRadioBox)
 };
 
 #endif

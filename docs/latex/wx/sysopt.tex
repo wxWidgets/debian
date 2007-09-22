@@ -15,6 +15,12 @@ These options are currently recognised by wxWidgets:
 In some circumstances the MaskBlt function can be slower than using the fallback code, especially if using
 DC cacheing. By default, MaskBlt will be used where it is implemented by the operating system and driver.
 }
+\twocolitem{mgl.aa-threshold}{(wxMGL only) Set this integer option to point
+size below which fonts are not antialiased. Default: 10.
+}
+\twocolitem{mgl.aa-threshold}{(wxMGL only) Screen refresh rate in Hz.
+Reasonable default is used if not specified.
+}
 \end{twocollist}
 
 The compile-time option to include or exclude this functionality
@@ -30,7 +36,7 @@ is wxUSE\_SYSTEM\_OPTIONS.
 
 \latexignore{\rtfignore{\wxheading{Members}}}
 
-\membersection{wxSystemOptions::wxSystemOptions}
+\membersection{wxSystemOptions::wxSystemOptions}\label{wxsystemoptionsctor}
 
 \func{}{wxSystemOptions}{\void}
 
@@ -65,7 +71,7 @@ Gets an option as an integer. The function is case-insensitive to {\it name}.
 
 \constfunc{bool}{HasOption}{\param{const wxString\&}{ name}}
 
-Returns TRUE if the given option is present. The function is case-insensitive to {\it name}.
+Returns true if the given option is present. The function is case-insensitive to {\it name}.
 
 \wxheading{See also}
 

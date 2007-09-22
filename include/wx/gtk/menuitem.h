@@ -2,15 +2,15 @@
 // Name:        menuitem.h
 // Purpose:     wxMenuItem class
 // Author:      Robert Roebling
-// RCS-ID:      $Id: menuitem.h,v 1.19 2002/09/07 12:28:46 GD Exp $
+// RCS-ID:      $Id: menuitem.h,v 1.23 2004/05/23 20:50:53 JS Exp $
 // Copyright:   (c) 1998 Robert Roebling
-// Licence:     wxWindows license
+// Licence:     wxWindows licence
 ///////////////////////////////////////////////////////////////////////////////
 
 #ifndef __GTKMENUITEMH__
 #define __GTKMENUITEMH__
 
-#if defined(__GNUG__) && !defined(__APPLE__)
+#if defined(__GNUG__) && !defined(NO_GCC_PRAGMA)
 #pragma interface
 #endif
 

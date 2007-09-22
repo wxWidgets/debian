@@ -1,7 +1,7 @@
 /////////////////////////////////////////////////////////////////////////////
 // Author:      Vaclav Slavik
 // Created:     2000/05/05
-// RCS-ID:      $Id: editor.cpp,v 1.18.2.3 2002/12/29 07:48:09 RL Exp $
+// RCS-ID:      $Id: editor.cpp,v 1.28 2004/07/20 10:08:51 ABX Exp $
 // Copyright:   (c) 2000 Vaclav Slavik
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -19,7 +19,7 @@
 #endif
 
 #include "wx/wx.h"
-#include "wx/xrc/xml.h"
+#include "wx/xml/xml.h"
 #include "wx/xrc/xmlres.h"
 #include "wx/splitter.h"
 #include "wx/config.h"
@@ -101,13 +101,13 @@ class EditorTreeCtrl : public wxTreeCtrl
     public:
         EditorTreeCtrl(wxWindow *parent, int id, EditorFrame *frame)
                  : wxTreeCtrl(parent, id), m_EdFrame(frame) {}
-                 
+
     private:
         EditorFrame *m_EdFrame;
-        
+
         void OnRightClick(wxMouseEvent &event)
         {
-            wxTreeItemId item = 
+            wxTreeItemId item =
                 m_EdFrame->m_TreeCtrl->HitTest(event.GetPosition());
             if (item.IsOk())
             {
@@ -123,7 +123,7 @@ BEGIN_EVENT_TABLE(EditorTreeCtrl, wxTreeCtrl)
 END_EVENT_TABLE()
 
 
-enum 
+enum
 {
     ID_PREVIEW = wxID_HIGHEST + 100,
     ID_NEW,
@@ -133,18 +133,19 @@ enum
     ID_SAVEAS,
     ID_DELETE_NODE,
     ID_EXIT,
-    ID_TREE,    
-    
+    ID_TREE,
+
     ID_CUT,
     ID_PASTE_SYBLING,
     ID_PASTE_CHILD,
     ID_COPY,
 
     ID_NEWDIALOG,
+    ID_NEWFRAME,
     ID_NEWPANEL,
     ID_NEWMENU,
     ID_NEWMENUBAR,
-    ID_NEWTOOLBAR,   
+    ID_NEWTOOLBAR,
     ID_NEWNODE = wxID_HIGHEST + 10000, // safely out of XRCID range :)
     ID_NEWSYBNODE = ID_NEWNODE + 20000
 };
@@ -182,66 +183,66 @@ END_EVENT_TABLE()
 EditorFrame *EditorFrame::ms_Instance = NULL;
 
 EditorFrame::EditorFrame(wxFrame *parent, const wxString& filename)
-    : wxFrame(parent, -1, filename + _("- wxWindows resources editor"))
+    : wxFrame(parent, wxID_ANY, filename + _("- wxWidgets resources editor"))
 {
     ms_Instance = this;
 
     m_Clipboard = NULL;
-    m_Modified = FALSE;
-    
+    m_Modified = false;
+
     wxConfigBase *cfg = wxConfigBase::Get();
-    
-    SetSize(wxRect(wxPoint(cfg->Read("editor_x", -1), cfg->Read("editor_y", -1)),
-            wxSize(cfg->Read("editor_w", 400), cfg->Read("editor_h", 400))));
+
+    SetSize(wxRect(wxPoint(cfg->Read(_T("editor_x"), wxDefaultCoord), cfg->Read(_T("editor_y"), wxDefaultCoord)),
+            wxSize(cfg->Read(_T("editor_w"), 400), cfg->Read(_T("editor_h"), 400))));
 
     m_SelectedNode = NULL;
     m_Resource = NULL;
     m_FileName = wxEmptyString;
 
     wxMenu *menuFile = new wxMenu;
-    menuFile->Append(ID_NEW, "&New");
-    menuFile->Append(ID_OPEN, "&Open\tCtrl-O");
-    menuFile->Append(ID_SAVE, "&Save\tCtrl-S");
-    menuFile->Append(ID_SAVEAS, "Save &as...");
+    menuFile->Append(ID_NEW, _T("&New"));
+    menuFile->Append(ID_OPEN, _T("&Open\tCtrl-O"));
+    menuFile->Append(ID_SAVE, _T("&Save\tCtrl-S"));
+    menuFile->Append(ID_SAVEAS, _T("Save &as..."));
     menuFile->AppendSeparator();
-    menuFile->Append(ID_EXIT, "E&xit\tAlt-X");
+    menuFile->Append(ID_EXIT, _T("E&xit\tAlt-X"));
 
     wxMenu *menuEdit = new wxMenu;
-    menuEdit->Append(ID_CUT, "Cut\tCtrl-X");
-    menuEdit->Append(ID_COPY, "Copy\tCtrl-C");
-    menuEdit->Append(ID_PASTE_SYBLING, "Paste as sybling\tCtrl-V");
-    menuEdit->Append(ID_PASTE_CHILD, "Paste as child");
+    menuEdit->Append(ID_CUT, _T("Cut\tCtrl-X"));
+    menuEdit->Append(ID_COPY, _T("Copy\tCtrl-C"));
+    menuEdit->Append(ID_PASTE_SYBLING, _T("Paste as sybling\tCtrl-V"));
+    menuEdit->Append(ID_PASTE_CHILD, _T("Paste as child"));
     menuEdit->AppendSeparator();
-    menuEdit->Append(ID_DELETE_NODE,  "Delete");
+    menuEdit->Append(ID_DELETE_NODE,  _T("Delete"));
 
-    menuEdit->Enable(ID_PASTE_SYBLING, FALSE);
-    menuEdit->Enable(ID_PASTE_CHILD, FALSE);
-    
+    menuEdit->Enable(ID_PASTE_SYBLING, false);
+    menuEdit->Enable(ID_PASTE_CHILD, false);
+
     wxMenuBar *menuBar = new wxMenuBar();
-    menuBar->Append(menuFile, "&File");
-    menuBar->Append(menuEdit, "&Edit");
+    menuBar->Append(menuFile, _T("&File"));
+    menuBar->Append(menuEdit, _T("&Edit"));
     SetMenuBar(menuBar);
-  
+
     // Create toolbar:
     wxToolBar *toolBar = CreateToolBar(wxNO_BORDER | wxTB_HORIZONTAL | wxTB_FLAT);
     toolBar->SetMargins(2, 2);
     toolBar->SetToolBitmapSize(wxSize(24, 24));
     toolBar -> AddTool(ID_EXIT, wxBITMAP(close), wxNullBitmap,
-                       FALSE, -1, -1, (wxObject *) NULL,
+                       false, wxDefaultCoord, wxDefaultCoord, (wxObject *) NULL,
                        _("Quit the editor"));
     toolBar -> AddTool(ID_OPEN, wxBITMAP(open), wxNullBitmap,
-                       FALSE, -1, -1, (wxObject *) NULL,
-                       _("Open XML resource file"));   
+                       false, wxDefaultCoord, wxDefaultCoord, (wxObject *) NULL,
+                       _("Open XML resource file"));
     toolBar -> AddTool(ID_SAVE, wxBITMAP(save), wxNullBitmap,
-                       FALSE, -1, -1, (wxObject *) NULL,
+                       false, wxDefaultCoord, wxDefaultCoord, (wxObject *) NULL,
                        _("Save XML file"));
     toolBar -> AddTool(ID_PREVIEW, wxBITMAP(preview), wxNullBitmap,
-                       FALSE, -1, -1, (wxObject *) NULL,
-                       _("Preview"));   
+                       false, wxDefaultCoord, wxDefaultCoord, (wxObject *) NULL,
+                       _("Preview"));
     toolBar -> Realize();
 
     wxSizer *sizer = new wxBoxSizer(wxHORIZONTAL);
-    
+
     // Create tree control:
     m_TreeCtrl = new EditorTreeCtrl(this, ID_TREE, this);
     wxImageList *imgList = new wxImageList(16, 16);
@@ -254,7 +255,6 @@ EditorFrame::EditorFrame(wxFrame *parent, const wxString& filename)
     m_TreeCtrl->AssignImageList(imgList);
     sizer->Add(m_TreeCtrl, 1, wxEXPAND);
 
-    SetAutoLayout(TRUE);
     SetSizer(sizer);
 
     // Load file:
@@ -272,7 +272,7 @@ EditorFrame::~EditorFrame()
     PropertiesFrame::Get()->Close();
 
     wxConfigBase *cfg = wxConfigBase::Get();
-    
+
     cfg->Write(_T("editor_x"), (long)GetPosition().x);
     cfg->Write(_T("editor_y"), (long)GetPosition().y);
     cfg->Write(_T("editor_w"), (long)GetSize().x);
@@ -289,20 +289,20 @@ void EditorFrame::LoadFile(const wxString& filename)
     if (!AskToSave()) return;
 
     delete m_Resource;
-    
+
      // create new resource in order to handle version differences properly
     PreviewFrame::Get()->ResetResource();
-    
-    m_FileName = "";
+
+    m_FileName = wxEmptyString;
     m_Resource = new wxXmlRcEditDocument;
-    m_Modified = FALSE;
-    
+    m_Modified = false;
+
     if (!m_Resource->Load(filename,  wxLocale::GetSystemEncodingName()))
     {
         delete m_Resource;
         m_Resource = NULL;
         NewFile();
-        wxLogError("Error parsing " + filename);
+        wxLogError(_T("Error parsing ") + filename);
     }
     else
     {
@@ -320,12 +320,12 @@ void EditorFrame::LoadFile(const wxString& filename)
 void EditorFrame::SaveFile(const wxString& filename)
 {
     m_FileName = filename;
-    
+
     // save it:
     if (!m_Resource->Save(filename))
         wxLogError(_("Error saving ") + filename);
     else
-        m_Modified = FALSE;
+        m_Modified = false;
 
     RefreshTitle();
 }
@@ -333,22 +333,24 @@ void EditorFrame::SaveFile(const wxString& filename)
 
 
 void EditorFrame::NewFile()
-{  
+{
     if (!AskToSave()) return;
 
     delete m_Resource;
-    
-    m_FileName = "";
+
+    m_FileName = wxEmptyString;
     m_Resource = new wxXmlRcEditDocument;
     m_Resource->SetRoot(new wxXmlNode(wxXML_ELEMENT_NODE, _("resource")));
-	m_Resource->SetFileEncoding("utf-8");
+
+    m_Resource->SetFileEncoding(_T("utf-8"));
 #if !wxUSE_UNICODE
     m_Resource->SetEncoding(wxLocale::GetSystemEncodingName());
 #endif
-	m_Resource->GetRoot()->AddProperty(_T("version"),
+
+    m_Resource->GetRoot()->AddProperty(_T("version"),
                                        WX_XMLRES_CURRENT_VERSION_STRING);
-    
-    m_Modified = FALSE;
+
+    m_Modified = false;
     RefreshTree();
     RefreshTitle();
 }
@@ -360,7 +362,7 @@ void EditorFrame::RefreshTitle()
     wxString s;
     if (m_Modified) s << _T("* ");
     s << _("wxrcedit");
-    if (m_FileName != "")
+    if (m_FileName != wxEmptyString)
         s << _T(" - ") << wxFileNameFromPath(m_FileName);
     SetTitle(s);
 }
@@ -370,11 +372,12 @@ void EditorFrame::RefreshTitle()
 void EditorFrame::RefreshTree()
 {
     wxXmlNode *sel = m_SelectedNode;
-    
-    m_TreeCtrl->DeleteAllItems(); 
-    wxTreeItemId root = m_TreeCtrl->AddRoot("Resource: " + wxFileNameFromPath(m_FileName), 5, 5);
 
-    wxXmlNode *n = m_Resource->GetRoot()->GetChildren();  
+    m_TreeCtrl->DeleteAllItems();
+
+    wxTreeItemId root = m_TreeCtrl->AddRoot(_T("Resource: ") + wxFileNameFromPath(m_FileName), 5, 5);
+
+    wxXmlNode *n = m_Resource->GetRoot()->GetChildren();
     while (n)
     {
         if (n->GetType() == wxXML_ELEMENT_NODE)
@@ -392,7 +395,7 @@ void EditorFrame::RefreshTree()
 static void RecursivelyExpand(wxTreeCtrl *t, wxTreeItemId item)
 {
     t->Expand(item);
-    long cookie;
+    void* cookie;
     wxTreeItemId id = t->GetFirstChild(item, cookie);
     while (id.IsOk())
     {
@@ -412,33 +415,33 @@ bool EditorFrame::SelectNode(wxXmlNode *node, wxTreeItemId *root)
     wxTreeItemId item;
     XmlTreeData *dt;
     wxXmlNode *nd;
-    long cookie;
-    
+    void* cookie;
+
     item = m_TreeCtrl->GetFirstChild(*root, cookie);
     while (item.IsOk())
     {
         dt = (XmlTreeData*)(m_TreeCtrl->GetItemData(item));
         nd = (dt) ? dt->Node : NULL;
-        if (nd == node) 
+        if (nd == node)
         {
             RecursivelyExpand(m_TreeCtrl, *root);
             m_TreeCtrl->SelectItem(item);
             m_TreeCtrl->EnsureVisible(item);
-            return TRUE; 
+            return true;
         }
-        if (m_TreeCtrl->ItemHasChildren(item) && SelectNode(node, &item)) 
-            return TRUE; 
+        if (m_TreeCtrl->ItemHasChildren(item) && SelectNode(node, &item))
+            return true;
         item = m_TreeCtrl->GetNextChild(*root, cookie);
     }
 
-    return FALSE;
+    return false;
 }
 
 
 
 wxTreeItemId EditorFrame::CreateTreeNode(wxTreeCtrl *treectrl, wxTreeItemId parent, wxXmlNode *node)
 {
-    if (!node) 
+    if (!node)
     {
         wxTreeItemId invalid;
         return invalid;
@@ -457,7 +460,7 @@ void EditorFrame::NotifyChanged(int change_type)
     if (change_type & CHANGED_TREE_SELECTED)
     {
         wxTreeItemId sel = m_TreeCtrl->GetSelection();
-        m_TreeCtrl->SetItemText(sel, 
+        m_TreeCtrl->SetItemText(sel,
              NodeHandler::Find(m_SelectedNode)->GetTreeString(m_SelectedNode));
     }
 
@@ -467,13 +470,13 @@ void EditorFrame::NotifyChanged(int change_type)
         int icon = NodeHandler::Find(m_SelectedNode)->GetTreeIcon(m_SelectedNode);
         m_TreeCtrl->SetItemImage(sel, icon);
     }
-    
+
     if (!m_Modified)
     {
-        m_Modified = TRUE;
+        m_Modified = true;
         RefreshTitle();
     }
-    
+
     PreviewFrame::Get()->MakeDirty();
 }
 
@@ -482,8 +485,8 @@ void EditorFrame::NotifyChanged(int change_type)
 void EditorFrame::OnTreeSel(wxTreeEvent& event)
 {
     XmlTreeData *dt = (XmlTreeData*)(m_TreeCtrl->GetItemData(event.GetItem()));
-    wxXmlNode *node = (dt) ? dt->Node : NULL;      
-            
+    wxXmlNode *node = (dt) ? dt->Node : NULL;
+
     m_SelectedNode = node;
     if (node)
         PropertiesFrame::Get()->ShowProps(node);
@@ -508,7 +511,7 @@ void EditorFrame::OnTreeSel(wxTreeEvent& event)
 
 void EditorFrame::OnToolbar(wxCommandEvent& event)
 {
-    switch (event.GetId()) 
+    switch (event.GetId())
     {
         case ID_PREVIEW :
             {
@@ -519,7 +522,7 @@ void EditorFrame::OnToolbar(wxCommandEvent& event)
             }
 
         case ID_EXIT :
-            Close(TRUE);
+            Close(true);
             break;
 
         case ID_NEW :
@@ -529,7 +532,7 @@ void EditorFrame::OnToolbar(wxCommandEvent& event)
         case ID_OPEN :
             {
             wxString cwd = wxGetCwd(); // workaround for 2.2
-            wxString name = wxFileSelector(_("Open XML resource"), _T(""), _T(""), _T(""), _("XML resources (*.xrc)|*.xrc"), wxOPEN | wxFILE_MUST_EXIST);
+            wxString name = wxFileSelector(_("Open XML resource"), wxEmptyString, wxEmptyString, wxEmptyString, _("XML resources (*.xrc)|*.xrc"), wxOPEN | wxFILE_MUST_EXIST);
             wxSetWorkingDirectory(cwd);
             if (!name.IsEmpty())
                 LoadFile(name);
@@ -537,13 +540,13 @@ void EditorFrame::OnToolbar(wxCommandEvent& event)
             }
 
         case ID_SAVE :
-            if (m_FileName != "") { SaveFile(m_FileName); break;}
+            if (m_FileName != wxEmptyString) { SaveFile(m_FileName); break;}
             // else go to SAVEAS
 
         case ID_SAVEAS :
             {
             wxString cwd = wxGetCwd(); // workaround for 2.2
-            wxString name = wxFileSelector(_("Save as"), _T(""), m_FileName, _T(""), _("XML resources (*.xrc)|*.xrc"), wxSAVE | wxOVERWRITE_PROMPT);
+            wxString name = wxFileSelector(_("Save as"), wxEmptyString, m_FileName, wxEmptyString, _("XML resources (*.xrc)|*.xrc"), wxSAVE | wxOVERWRITE_PROMPT);
             wxSetWorkingDirectory(cwd);
             if (!name.IsEmpty())
                 SaveFile((m_FileName = name));
@@ -577,7 +580,7 @@ void EditorFrame::OnNewNode(wxCommandEvent& event)
 {
     if (event.GetId() >= ID_NEWSYBNODE)
     {
-        XmlTreeData *pardt = 
+        XmlTreeData *pardt =
             (XmlTreeData*)(m_TreeCtrl->GetItemData(
                 m_TreeCtrl->GetItemParent(m_TreeCtrl->GetSelection())));
 
@@ -612,20 +615,21 @@ void EditorFrame::OnNewNode(wxCommandEvent& event)
         wxTreeItemId root = m_TreeCtrl->GetSelection();
         SelectNode(node, &root);
     }
-    
+
     else
     {
         wxString name;
         switch (event.GetId())
         {
             case ID_NEWDIALOG : name = _T("wxDialog"); break;
+            case ID_NEWFRAME : name = _T("wxFrame"); break;
             case ID_NEWPANEL : name = _T("wxPanel"); break;
             case ID_NEWMENU : name = _T("wxMenu"); break;
             case ID_NEWMENUBAR : name = _T("wxMenuBar"); break;
             case ID_NEWTOOLBAR : name = _T("wxToolBar"); break;
             default : return; // never occurs
         }
-        
+
         wxXmlNode *node = new wxXmlNode(wxXML_ELEMENT_NODE, _T("object"));
         node->AddProperty(_T("class"), name);
         m_Resource->GetRoot()->AddChild(node);
@@ -639,21 +643,22 @@ void EditorFrame::OnNewNode(wxCommandEvent& event)
 void EditorFrame::OnRightClickTree(wxPoint pos)
 {
     wxMenu *popup = new wxMenu;
-    
+
     if (m_SelectedNode == NULL || m_SelectedNode == m_Resource->GetRoot())
     {
         popup->Append(ID_NEWDIALOG, _("New wxDialog"));
+        popup->Append(ID_NEWFRAME, _("New wxFrame"));
         popup->Append(ID_NEWPANEL, _("New wxPanel"));
         popup->Append(ID_NEWMENU, _("New wxMenu"));
         popup->Append(ID_NEWMENUBAR, _("New wxMenuBar"));
         popup->Append(ID_NEWTOOLBAR, _("New wxToolBar"));
     }
-    
+
     else
-    {   
+    {
         bool has_children;
         {
-            wxArrayString& arr = 
+            wxArrayString& arr =
                 NodeHandler::Find(NodeHandler::Find(m_SelectedNode)->GetRealNode(m_SelectedNode))->
                     GetChildTypes();
 
@@ -666,7 +671,7 @@ void EditorFrame::OnRightClickTree(wxPoint pos)
                 {
                     news2->Append(i + ID_NEWNODE, arr[i]);
 #ifdef __WXGTK__ // doesn't support Break
-                    if (i % 20 == 19) 
+                    if (i % 20 == 19)
                     {
                         wxMenu *m = new wxMenu;
                         news2->Append(ID_NEWNODE+arr.GetCount(), _("More..."), m);
@@ -681,13 +686,13 @@ void EditorFrame::OnRightClickTree(wxPoint pos)
         }
 
 
-        XmlTreeData *pardt = 
+        XmlTreeData *pardt =
             (XmlTreeData*)(m_TreeCtrl->GetItemData(
                 m_TreeCtrl->GetItemParent(m_TreeCtrl->GetSelection())));
         if (pardt && pardt->Node && pardt->Node != m_Resource->GetRoot())
         {
             wxXmlNode *nd = pardt->Node;
-            wxArrayString& arr = 
+            wxArrayString& arr =
                 NodeHandler::Find(NodeHandler::Find(nd)->GetRealNode(nd))->
                     GetChildTypes();
 
@@ -699,7 +704,7 @@ void EditorFrame::OnRightClickTree(wxPoint pos)
                 {
                     news2->Append(i + ID_NEWSYBNODE, arr[i]);
 #ifdef __WXGTK__ // doesn't support Break
-                    if (i % 20 == 19) 
+                    if (i % 20 == 19)
                     {
                         wxMenu *m = new wxMenu;
                         news2->Append(ID_NEWSYBNODE+arr.GetCount(), _("More..."), m);
@@ -724,7 +729,7 @@ void EditorFrame::OnRightClickTree(wxPoint pos)
         popup->Enable(ID_PASTE_SYBLING, m_Clipboard != NULL);
         popup->Enable(ID_PASTE_CHILD, has_children && m_Clipboard != NULL);
     }
-    
+
     m_TreeCtrl->PopupMenu(popup, pos);
     delete popup;
 }
@@ -739,14 +744,14 @@ void EditorFrame::OnClipboardAction(wxCommandEvent& event)
         case ID_CUT:
             delete m_Clipboard;
             m_Clipboard = new wxXmlNode(*m_SelectedNode);
-            GetMenuBar()->Enable(ID_PASTE_SYBLING, TRUE);
-            GetMenuBar()->Enable(ID_PASTE_CHILD, TRUE);
+            GetMenuBar()->Enable(ID_PASTE_SYBLING, true);
+            GetMenuBar()->Enable(ID_PASTE_CHILD, true);
             if (event.GetId() == ID_CUT) DeleteSelectedNode();
             break;
-            
+
         case ID_PASTE_SYBLING:
             {
-            XmlTreeData *pardt = 
+            XmlTreeData *pardt =
                 (XmlTreeData*)(m_TreeCtrl->GetItemData(
                     m_TreeCtrl->GetItemParent(m_TreeCtrl->GetSelection())));
 
@@ -763,7 +768,7 @@ void EditorFrame::OnClipboardAction(wxCommandEvent& event)
             }
             }
             break;
-            
+
         case ID_PASTE_CHILD:
             wxXmlNode *realnode = NodeHandler::Find(m_SelectedNode)->GetRealNode(m_SelectedNode);
             NodeHandler *hnd = NodeHandler::Find(realnode);
@@ -780,12 +785,12 @@ void EditorFrame::OnClipboardAction(wxCommandEvent& event)
 
 bool EditorFrame::AskToSave()
     // asks the user to save current document (if modified)
-    // returns FALSE if user cancelled the action, TRUE of he choosed
+    // returns false if user cancelled the action, true of he choosed
     // 'yes' or 'no'
 {
-    if (!m_Modified) return TRUE;
-    
-    int res = wxMessageBox(_("File modified. Do you want to save changes?"), _("Save changes"), 
+    if (!m_Modified) return true;
+
+    int res = wxMessageBox(_("File modified. Do you want to save changes?"), _("Save changes"),
                             wxYES_NO | wxCANCEL | wxCENTRE | wxICON_QUESTION);
     if (res == wxYES)
         SaveFile(m_FileName);

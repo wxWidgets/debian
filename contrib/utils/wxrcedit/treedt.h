@@ -2,7 +2,7 @@
 // Purpose:     XML resources editor
 // Author:      Vaclav Slavik
 // Created:     2000/05/05
-// RCS-ID:      $Id: treedt.h,v 1.3 2002/09/07 12:15:24 GD Exp $
+// RCS-ID:      $Id: treedt.h,v 1.4 2004/06/11 13:14:23 ABX Exp $
 // Copyright:   (c) 2000 Vaclav Slavik
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -22,7 +22,7 @@ class WXDLLEXPORT wxXmlNode;
 class XmlTreeData : public wxTreeItemData
 {
     public:
-        XmlTreeData(wxXmlNode *n) : Node(n) {}        
+        XmlTreeData(wxXmlNode *n) : Node(n) {}
         wxXmlNode *Node;
 };
 

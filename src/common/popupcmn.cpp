@@ -4,9 +4,9 @@
 // Author:      Vadim Zeitlin
 // Modified by:
 // Created:     06.01.01
-// RCS-ID:      $Id: popupcmn.cpp,v 1.31 2002/06/18 14:43:55 DW Exp $
+// RCS-ID:      $Id: popupcmn.cpp,v 1.39 2004/09/20 11:31:48 ABX Exp $
 // Copyright:   (c) 2001 Vadim Zeitlin <zeitlin@dptmaths.ens-cachan.fr>
-// License:     wxWindows license
+// License:     wxWindows licence
 ///////////////////////////////////////////////////////////////////////////////
 
 // ============================================================================
@@ -17,7 +17,7 @@
 // headers
 // ----------------------------------------------------------------------------
 
-#ifdef __GNUG__
+#if defined(__GNUG__) && !defined(NO_GCC_PRAGMA)
     #pragma implementation "popupwinbase.h"
 #endif
 
@@ -28,7 +28,7 @@
     #pragma hdrstop
 #endif
 
-#if wxUSE_POPUPWIN && !defined(__WXMOTIF__)
+#if wxUSE_POPUPWIN
 
 #include "wx/popupwin.h"
 
@@ -74,6 +74,7 @@ private:
     wxPopupTransientWindow *m_popup;
 
     DECLARE_EVENT_TABLE()
+    DECLARE_NO_COPY_CLASS(wxPopupWindowHandler)
 };
 
 class wxPopupFocusHandler : public wxEvtHandler
@@ -104,6 +105,7 @@ private:
 #endif // __WXGTK__
 
     DECLARE_EVENT_TABLE()
+    DECLARE_NO_COPY_CLASS(wxPopupFocusHandler)
 };
 
 // ----------------------------------------------------------------------------
@@ -134,7 +136,7 @@ wxPopupWindowBase::~wxPopupWindowBase()
 
 bool wxPopupWindowBase::Create(wxWindow* WXUNUSED(parent), int WXUNUSED(flags))
 {
-    return TRUE;
+    return true;
 }
 
 void wxPopupWindowBase::Position(const wxPoint& ptOrigin,
@@ -196,8 +198,9 @@ wxPopupTransientWindow::wxPopupTransientWindow(wxWindow *parent, int style)
 wxPopupTransientWindow::~wxPopupTransientWindow()
 {
     PopHandlers();
-
+#ifndef __WXX11__
     delete m_handlerFocus;
+#endif
     delete m_handlerPopup;
 }
 
@@ -295,7 +298,7 @@ void wxPopupTransientWindow::OnDismiss()
 bool wxPopupTransientWindow::ProcessLeftDown(wxMouseEvent& WXUNUSED(event))
 {
     // no special processing here
-    return FALSE;
+    return false;
 }
 
 #if wxUSE_COMBOBOX && defined(__WXUNIVERSAL__)

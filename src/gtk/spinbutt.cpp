@@ -3,15 +3,18 @@
 // Purpose:     wxSpinButton
 // Author:      Robert
 // Modified by:
-// RCS-ID:      $Id: spinbutt.cpp,v 1.28 2002/03/12 19:24:30 VZ Exp $
+// RCS-ID:      $Id: spinbutt.cpp,v 1.36 2004/06/24 20:04:01 RD Exp $
 // Copyright:   (c) Robert Roebling
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
 
-#ifdef __GNUG__
+#if defined(__GNUG__) && !defined(NO_GCC_PRAGMA)
     #pragma implementation "spinbutt.h"
     #pragma implementation "spinbutbase.h"
 #endif
+
+// For compilers that support precompilation, includes "wx.h".
+#include "wx/wxprec.h"
 
 #include "wx/spinbutt.h"
 
@@ -147,11 +150,7 @@ bool wxSpinButton::Create(wxWindow *parent,
 
     m_parent->DoAddChild( this );
 
-    PostCreation();
-
-    SetBackgroundColour( parent->GetBackgroundColour() );
-
-    Show( TRUE );
+    PostCreation(new_size);
 
     return TRUE;
 }
@@ -226,15 +225,20 @@ bool wxSpinButton::IsOwnGtkWindow( GdkWindow *window )
     return GTK_SPIN_BUTTON(m_widget)->panel == window;
 }
 
-void wxSpinButton::ApplyWidgetStyle()
-{
-    SetWidgetStyle();
-    gtk_widget_set_style( m_widget, m_widgetStyle );
-}
-
 wxSize wxSpinButton::DoGetBestSize() const
 {
-    return wxSize(15, 26);
+    wxSize best(15, 26); // FIXME
+    CacheBestSize(best);
+    return best;
+}
+
+// static
+wxVisualAttributes
+wxSpinButton::GetClassDefaultAttributes(wxWindowVariant WXUNUSED(variant))
+{
+    // TODO: overload to accept functions like gtk_spin_button_new?
+    // Until then use a similar type
+    return GetDefaultAttributesFromGTKWidget(gtk_button_new);
 }
 
 #endif

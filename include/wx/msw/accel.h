@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     31/7/98
-// RCS-ID:      $Id: accel.h,v 1.6 2001/06/26 20:59:07 VZ Exp $
+// RCS-ID:      $Id: accel.h,v 1.11 2004/09/16 22:36:12 VZ Exp $
 // Copyright:   (c) Julian Smart
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -12,7 +12,7 @@
 #ifndef _WX_ACCEL_H_
 #define _WX_ACCEL_H_
 
-#ifdef __GNUG__
+#if defined(__GNUG__) && !defined(NO_GCC_PRAGMA)
     #pragma interface "accel.h"
 #endif
 
@@ -27,7 +27,7 @@ public:
     wxAcceleratorTable();
 
     // copy ctor
-    wxAcceleratorTable(const wxAcceleratorTable& accel) { Ref(accel); }
+    wxAcceleratorTable(const wxAcceleratorTable& accel) : wxObject(accel) { Ref(accel); }
 
     // load from .rc resource (Windows specific)
     wxAcceleratorTable(const wxString& resource);
@@ -47,7 +47,7 @@ public:
     void SetHACCEL(WXHACCEL hAccel);
     WXHACCEL GetHACCEL() const;
 
-    // translate the accelerator, return TRUE if done
+    // translate the accelerator, return true if done
     bool Translate(wxWindow *window, WXMSG *msg) const;
 
 private:

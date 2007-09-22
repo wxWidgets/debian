@@ -2,7 +2,7 @@
 // Name:        icon.h
 // Purpose:
 // Author:      Robert Roebling
-// Id:          $Id: icon.h,v 1.17 2002/09/07 12:28:46 GD Exp $
+// Id:          $Id: icon.h,v 1.22 2004/05/23 20:50:53 JS Exp $
 // Copyright:   (c) 1998 Robert Roebling
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -11,7 +11,7 @@
 #ifndef __GTKICONH__
 #define __GTKICONH__
 
-#if defined(__GNUG__) && !defined(__APPLE__)
+#if defined(__GNUG__) && !defined(NO_GCC_PRAGMA)
 #pragma interface
 #endif
 
@@ -44,6 +44,11 @@ public:
     {
     }
     wxIcon( char **bits, int width=-1, int height=-1 );
+
+    wxIcon(const wxIconLocation& loc)
+        : wxBitmap(loc.GetFileName(), wxBITMAP_TYPE_ANY)
+    {
+    }
 
     wxIcon& operator=(const wxIcon& icon);
     bool operator==(const wxIcon& icon) const { return m_refData == icon.m_refData; }

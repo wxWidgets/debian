@@ -26,7 +26,7 @@
 #endif
 
 // for all others, include the necessary headers (this file is usually all you
-// need because it includes almost all "standard" wxWindows headers
+// need because it includes almost all "standard" wxWidgets headers
 #ifndef WX_PRECOMP
     #include "wx/defs.h"
     #include "wx/string.h"
@@ -44,6 +44,7 @@
 // ----------------------------------------------------------------------------
 // wxMMedia2 headers
 
+#include "wx/mmedia/defs.h"
 #include "wx/mmedia/vidbase.h"
 
 // ----------------------------------------------------------------------------
@@ -65,7 +66,7 @@ typedef struct wxXANIMinternal {
 // ----------------------------------------------------------------------------
 // Class definition
 
-class WXDLLEXPORT wxVideoXANIM : public wxVideoBaseDriver {
+class WXDLLIMPEXP_MMEDIA wxVideoXANIM : public wxVideoBaseDriver {
     DECLARE_DYNAMIC_CLASS(wxVideoXANIM)
  protected:
     // Remember the state of the subprocess

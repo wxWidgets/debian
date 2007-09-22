@@ -4,9 +4,9 @@
 // Author:      Vadim Zeitlin
 // Modified by:
 // Created:     05.01.00
-// RCS-ID:      $Id: cmdline.cpp,v 1.29.2.2 2002/10/29 21:47:40 RR Exp $
+// RCS-ID:      $Id: cmdline.cpp,v 1.40 2004/09/09 17:42:35 ABX Exp $
 // Copyright:   (c) 2000 Vadim Zeitlin <zeitlin@dptmaths.ens-cachan.fr>
-// Licence:     wxWindows license
+// Licence:     wxWindows licence
 ///////////////////////////////////////////////////////////////////////////////
 
 // ============================================================================
@@ -17,7 +17,7 @@
 // headers
 // ----------------------------------------------------------------------------
 
-#ifdef __GNUG__
+#if defined(__GNUG__) && !defined(NO_GCC_PRAGMA)
     #pragma implementation "cmdline.h"
 #endif
 
@@ -86,7 +86,7 @@ struct wxCmdLineOption
                 GetLongOptionName(lng).Len() == lng.Len(),
                 wxT("Long option contains invalid characters")
             );
-            
+
 
         kind = k;
 
@@ -97,7 +97,7 @@ struct wxCmdLineOption
         type = typ;
         flags = fl;
 
-        m_hasVal = FALSE;
+        m_hasVal = false;
     }
 
     // can't use union easily here, so just store all possible data fields, we
@@ -114,17 +114,21 @@ struct wxCmdLineOption
         { Check(wxCMD_LINE_VAL_NUMBER); return m_longVal; }
     const wxString& GetStrVal() const
         { Check(wxCMD_LINE_VAL_STRING); return m_strVal;  }
+#if wxUSE_DATETIME
     const wxDateTime& GetDateVal() const
         { Check(wxCMD_LINE_VAL_DATE);   return m_dateVal; }
+#endif // wxUSE_DATETIME
 
     void SetLongVal(long val)
-        { Check(wxCMD_LINE_VAL_NUMBER); m_longVal = val; m_hasVal = TRUE; }
+        { Check(wxCMD_LINE_VAL_NUMBER); m_longVal = val; m_hasVal = true; }
     void SetStrVal(const wxString& val)
-        { Check(wxCMD_LINE_VAL_STRING); m_strVal = val; m_hasVal = TRUE; }
+        { Check(wxCMD_LINE_VAL_STRING); m_strVal = val; m_hasVal = true; }
+#if wxUSE_DATETIME
     void SetDateVal(const wxDateTime val)
-        { Check(wxCMD_LINE_VAL_DATE); m_dateVal = val; m_hasVal = TRUE; }
+        { Check(wxCMD_LINE_VAL_DATE); m_dateVal = val; m_hasVal = true; }
+#endif // wxUSE_DATETIME
 
-    void SetHasValue(bool hasValue = TRUE) { m_hasVal = hasValue; }
+    void SetHasValue(bool hasValue = true) { m_hasVal = hasValue; }
     bool HasValue() const { return m_hasVal; }
 
 public:
@@ -140,7 +144,9 @@ private:
 
     long m_longVal;
     wxString m_strVal;
+#if wxUSE_DATETIME
     wxDateTime m_dateVal;
+#endif // wxUSE_DATETIME
 };
 
 struct wxCmdLineParam
@@ -172,7 +178,7 @@ struct wxCmdLineParserData
 {
     // options
     wxString m_switchChars;     // characters which may start an option
-    bool m_enableLongOptions;   // TRUE if long options are enabled
+    bool m_enableLongOptions;   // true if long options are enabled
     wxString m_logo;            // some extra text to show in Usage()
 
     // cmd line data
@@ -200,7 +206,7 @@ struct wxCmdLineParserData
 
 wxCmdLineParserData::wxCmdLineParserData()
 {
-    m_enableLongOptions = TRUE;
+    m_enableLongOptions = true;
 #ifdef __UNIX_LIKE__
     m_switchChars = _T("-");
 #else // !Unix
@@ -210,19 +216,19 @@ wxCmdLineParserData::wxCmdLineParserData()
 
 void wxCmdLineParserData::SetArguments(int argc, wxChar **argv)
 {
-    m_arguments.Empty();
+    m_arguments.clear();
 
     for ( int n = 0; n < argc; n++ )
     {
-        m_arguments.Add(argv[n]);
+        m_arguments.push_back(argv[n]);
     }
 }
 
 void wxCmdLineParserData::SetArguments(const wxString& cmdLine)
 {
-    m_arguments.Empty();
+    m_arguments.clear();
 
-    m_arguments.Add(wxTheApp->GetAppName());
+    m_arguments.push_back(wxTheApp->GetAppName());
 
     wxArrayString args = wxCmdLineParser::ConvertStringToArgs(cmdLine);
 
@@ -412,13 +418,13 @@ bool wxCmdLineParser::Found(const wxString& name) const
     if ( i == wxNOT_FOUND )
         i = m_data->FindOptionByLongName(name);
 
-    wxCHECK_MSG( i != wxNOT_FOUND, FALSE, _T("unknown switch") );
+    wxCHECK_MSG( i != wxNOT_FOUND, false, _T("unknown switch") );
 
     wxCmdLineOption& opt = m_data->m_options[(size_t)i];
     if ( !opt.HasValue() )
-        return FALSE;
+        return false;
 
-    return TRUE;
+    return true;
 }
 
 bool wxCmdLineParser::Found(const wxString& name, wxString *value) const
@@ -427,17 +433,17 @@ bool wxCmdLineParser::Found(const wxString& name, wxString *value) const
     if ( i == wxNOT_FOUND )
         i = m_data->FindOptionByLongName(name);
 
-    wxCHECK_MSG( i != wxNOT_FOUND, FALSE, _T("unknown option") );
+    wxCHECK_MSG( i != wxNOT_FOUND, false, _T("unknown option") );
 
     wxCmdLineOption& opt = m_data->m_options[(size_t)i];
     if ( !opt.HasValue() )
-        return FALSE;
+        return false;
 
-    wxCHECK_MSG( value, FALSE, _T("NULL pointer in wxCmdLineOption::Found") );
+    wxCHECK_MSG( value, false, _T("NULL pointer in wxCmdLineOption::Found") );
 
     *value = opt.GetStrVal();
 
-    return TRUE;
+    return true;
 }
 
 bool wxCmdLineParser::Found(const wxString& name, long *value) const
@@ -446,41 +452,43 @@ bool wxCmdLineParser::Found(const wxString& name, long *value) const
     if ( i == wxNOT_FOUND )
         i = m_data->FindOptionByLongName(name);
 
-    wxCHECK_MSG( i != wxNOT_FOUND, FALSE, _T("unknown option") );
+    wxCHECK_MSG( i != wxNOT_FOUND, false, _T("unknown option") );
 
     wxCmdLineOption& opt = m_data->m_options[(size_t)i];
     if ( !opt.HasValue() )
-        return FALSE;
+        return false;
 
-    wxCHECK_MSG( value, FALSE, _T("NULL pointer in wxCmdLineOption::Found") );
+    wxCHECK_MSG( value, false, _T("NULL pointer in wxCmdLineOption::Found") );
 
     *value = opt.GetLongVal();
 
-    return TRUE;
+    return true;
 }
 
+#if wxUSE_DATETIME
 bool wxCmdLineParser::Found(const wxString& name, wxDateTime *value) const
 {
     int i = m_data->FindOption(name);
     if ( i == wxNOT_FOUND )
         i = m_data->FindOptionByLongName(name);
 
-    wxCHECK_MSG( i != wxNOT_FOUND, FALSE, _T("unknown option") );
+    wxCHECK_MSG( i != wxNOT_FOUND, false, _T("unknown option") );
 
     wxCmdLineOption& opt = m_data->m_options[(size_t)i];
     if ( !opt.HasValue() )
-        return FALSE;
+        return false;
 
-    wxCHECK_MSG( value, FALSE, _T("NULL pointer in wxCmdLineOption::Found") );
+    wxCHECK_MSG( value, false, _T("NULL pointer in wxCmdLineOption::Found") );
 
     *value = opt.GetDateVal();
 
-    return TRUE;
+    return true;
 }
+#endif // wxUSE_DATETIME
 
 size_t wxCmdLineParser::GetParamCount() const
 {
-    return m_data->m_parameters.GetCount();
+    return m_data->m_parameters.size();
 }
 
 wxString wxCmdLineParser::GetParam(size_t n) const
@@ -496,7 +504,7 @@ void wxCmdLineParser::Reset()
     for ( size_t i = 0; i < m_data->m_options.Count(); i++ )
     {
         wxCmdLineOption& opt = m_data->m_options[i];
-        opt.SetHasValue(FALSE);
+        opt.SetHasValue(false);
     }
 }
 
@@ -507,10 +515,10 @@ void wxCmdLineParser::Reset()
 
 int wxCmdLineParser::Parse(bool showUsage)
 {
-    bool maybeOption = TRUE;    // can the following arg be an option?
-    bool ok = TRUE;             // TRUE until an error is detected
-    bool helpRequested = FALSE; // TRUE if "-h" was given
-    bool hadRepeatableParam = FALSE; // TRUE if found param with MULTIPLE flag
+    bool maybeOption = true;    // can the following arg be an option?
+    bool ok = true;             // true until an error is detected
+    bool helpRequested = false; // true if "-h" was given
+    bool hadRepeatableParam = false; // true if found param with MULTIPLE flag
 
     size_t currentParam = 0;    // the index in m_paramDesc
 
@@ -521,7 +529,7 @@ int wxCmdLineParser::Parse(bool showUsage)
 
     // parse everything
     wxString arg;
-    size_t count = m_data->m_arguments.GetCount();
+    size_t count = m_data->m_arguments.size();
     for ( size_t n = 1; ok && (n < count); n++ )    // 0 is program name
     {
         arg = m_data->m_arguments[n];
@@ -531,7 +539,7 @@ int wxCmdLineParser::Parse(bool showUsage)
         // not like options (this is POSIX-like)
         if ( arg == _T("--") )
         {
-            maybeOption = FALSE;
+            maybeOption = false;
 
             continue;
         }
@@ -548,7 +556,7 @@ int wxCmdLineParser::Parse(bool showUsage)
             if ( arg[0u] == _T('-') && arg[1u] == _T('-') )
             {
                 // a long one
-                isLong = TRUE;
+                isLong = true;
 
                 // Skip leading "--"
                 const wxChar *p = arg.c_str() + 2;
@@ -577,7 +585,7 @@ int wxCmdLineParser::Parse(bool showUsage)
             }
             else
             {
-                isLong = FALSE;
+                isLong = false;
 
                 // a short one: as they can be cumulated, we try to find the
                 // longest substring which is a valid option
@@ -624,7 +632,8 @@ int wxCmdLineParser::Parse(bool showUsage)
                         wxString arg2 = arg[0u];
                         arg2 += arg.Mid(len + 1); // +1 for leading '-'
 
-                        m_data->m_arguments.Insert(arg2, n + 1);
+                        m_data->m_arguments.insert
+                            (m_data->m_arguments.begin() + n + 1, arg2);
                         count++;
                     }
                     //else: it's our value, we'll deal with it below
@@ -633,7 +642,7 @@ int wxCmdLineParser::Parse(bool showUsage)
 
             if ( optInd == wxNOT_FOUND )
             {
-                ok = FALSE;
+                ok = false;
 
                 continue;   // will break, in fact
             }
@@ -646,10 +655,10 @@ int wxCmdLineParser::Parse(bool showUsage)
 
                 if ( opt.flags & wxCMD_LINE_OPTION_HELP )
                 {
-                    helpRequested = TRUE;
+                    helpRequested = true;
 
                     // it's not an error, but we still stop here
-                    ok = FALSE;
+                    ok = false;
                 }
             }
             else
@@ -666,7 +675,7 @@ int wxCmdLineParser::Parse(bool showUsage)
                     {
                         errorMsg << wxString::Format(_("Option '%s' requires a value, '=' expected."), name.c_str()) << wxT("\n");
 
-                        ok = FALSE;
+                        ok = false;
                     }
                 }
                 else
@@ -687,7 +696,7 @@ int wxCmdLineParser::Parse(bool showUsage)
                                 errorMsg << wxString::Format(_("Option '%s' requires a value."),
                                                              name.c_str()) << wxT("\n");
 
-                                ok = FALSE;
+                                ok = false;
                             }
                             else
                             {
@@ -704,7 +713,7 @@ int wxCmdLineParser::Parse(bool showUsage)
                                 errorMsg << wxString::Format(_("Separator expected after the option '%s'."),
                                                              name.c_str()) << wxT("\n");
 
-                                ok = FALSE;
+                                ok = false;
                             }
                     }
                 }
@@ -734,11 +743,12 @@ int wxCmdLineParser::Parse(bool showUsage)
                                     errorMsg << wxString::Format(_("'%s' is not a correct numeric value for option '%s'."),
                                                                  value.c_str(), name.c_str()) << wxT("\n");
 
-                                    ok = FALSE;
+                                    ok = false;
                                 }
                             }
                             break;
 
+#if wxUSE_DATETIME
                         case wxCMD_LINE_VAL_DATE:
                             {
                                 wxDateTime dt;
@@ -748,7 +758,7 @@ int wxCmdLineParser::Parse(bool showUsage)
                                     errorMsg << wxString::Format(_("Option '%s': '%s' cannot be converted to a date."),
                                                                  name.c_str(), value.c_str()) << wxT("\n");
 
-                                    ok = FALSE;
+                                    ok = false;
                                 }
                                 else
                                 {
@@ -756,6 +766,7 @@ int wxCmdLineParser::Parse(bool showUsage)
                                 }
                             }
                             break;
+#endif // wxUSE_DATETIME
                     }
                 }
             }
@@ -769,7 +780,7 @@ int wxCmdLineParser::Parse(bool showUsage)
 
                 // TODO check the param type
 
-                m_data->m_parameters.Add(arg);
+                m_data->m_parameters.push_back(arg);
 
                 if ( !(param.flags & wxCMD_LINE_PARAM_MULTIPLE) )
                 {
@@ -781,14 +792,14 @@ int wxCmdLineParser::Parse(bool showUsage)
                                   _T("all parameters after the one with wxCMD_LINE_PARAM_MULTIPLE style are ignored") );
 
                     // remember that we did have this last repeatable parameter
-                    hadRepeatableParam = TRUE;
+                    hadRepeatableParam = true;
                 }
             }
             else
             {
                 errorMsg << wxString::Format(_("Unexpected parameter '%s'"), arg.c_str()) << wxT("\n");
 
-                ok = FALSE;
+                ok = false;
             }
         }
     }
@@ -825,7 +836,7 @@ int wxCmdLineParser::Parse(bool showUsage)
                 errorMsg << wxString::Format(_("The value for the option '%s' must be specified."),
                                              optName.c_str()) << wxT("\n");
 
-                ok = FALSE;
+                ok = false;
             }
         }
 
@@ -846,7 +857,7 @@ int wxCmdLineParser::Parse(bool showUsage)
                 errorMsg << wxString::Format(_("The required parameter '%s' was not specified."),
                                              param.description.c_str()) << wxT("\n");
 
-                ok = FALSE;
+                ok = false;
             }
         }
     }
@@ -895,7 +906,7 @@ wxString wxCmdLineParser::GetUsageString()
     wxString appname = wxTheApp->GetAppName();
     if ( !appname )
     {
-        wxCHECK_MSG( !m_data->m_arguments.IsEmpty(), wxEmptyString,
+        wxCHECK_MSG( m_data->m_arguments.size() != 0, wxEmptyString,
                      _T("no program name") );
 
         appname = wxFileNameFromPath(m_data->m_arguments[0]);
@@ -979,8 +990,8 @@ wxString wxCmdLineParser::GetUsageString()
             usage << _T(']');
         }
 
-        namesOptions.Add(option);
-        descOptions.Add(opt.description);
+        namesOptions.push_back(option);
+        descOptions.push_back(opt.description);
     }
 
     count = m_data->m_paramDesc.GetCount();
@@ -1011,7 +1022,7 @@ wxString wxCmdLineParser::GetUsageString()
 
     // now construct the detailed help message
     size_t len, lenMax = 0;
-    count = namesOptions.GetCount();
+    count = namesOptions.size();
     for ( n = 0; n < count; n++ )
     {
         len = namesOptions[n].length();
@@ -1110,24 +1121,10 @@ static wxString GetLongOptionName(const wxChar *p)
 
 /*
    This function is mainly used under Windows (as under Unix we always get the
-   command line arguments as argc/argv anyhow) and so it tries to handle the
-   Windows path names (separated by backslashes) correctly. For this it only
-   considers that a backslash may be used to escape another backslash (but
-   normally this is _not_ needed) or a quote but nothing else.
-
-   In particular, to pass a single argument containing a space to the program
-   it should be quoted:
-
-   myprog.exe foo bar       -> argc = 3, argv[1] = "foo", argv[2] = "bar"
-   myprog.exe "foo bar"     -> argc = 2, argv[1] = "foo bar"
-
-   To pass an argument containing spaces and quotes, the latter should be
-   escaped with a backslash:
-
-   myprog.exe "foo \"bar\"" -> argc = 2, argv[1] = "foo "bar""
-
-   This hopefully matches the conventions used by Explorer/command line
-   interpreter under Windows. If not, this function should be fixed.
+   command line arguments as argc/argv anyhow) and so it tries to follow
+   Windows conventions for the command line handling, not Unix ones. For
+   instance, backslash is not special except when it precedes double quote when
+   it does quote it.
  */
 
 /* static */
@@ -1138,7 +1135,7 @@ wxArrayString wxCmdLineParser::ConvertStringToArgs(const wxChar *p)
     wxString arg;
     arg.reserve(1024);
 
-    bool isInsideQuotes = FALSE;
+    bool isInsideQuotes = false;
     for ( ;; )
     {
         // skip white space
@@ -1150,83 +1147,52 @@ wxArrayString wxCmdLineParser::ConvertStringToArgs(const wxChar *p)
             break;
 
         // parse this parameter
-        arg.clear();
-        for ( ;; p++ )
+        bool endParam = false;
+        bool lastBS = false;
+        for ( arg.clear(); !endParam; p++ )
         {
-            // do we have a (lone) backslash?
-            bool isQuotedByBS = FALSE;
-            while ( *p == _T('\\') )
-            {
-                p++;
-
-                // if we have 2 backslashes in a row, output one
-                // unless it looks like a UNC path \\machine\dir\file.ext
-                if ( isQuotedByBS || arg.Len() == 0 )
-                {
-                    arg += _T('\\');
-                    isQuotedByBS = FALSE;
-                }
-                else // the next char is quoted
-                {
-                    isQuotedByBS = TRUE;
-                }
-            }
-
-            bool skipChar = FALSE,
-                 endParam = FALSE;
             switch ( *p )
             {
                 case _T('"'):
-                    if ( !isQuotedByBS )
+                    if ( !lastBS )
                     {
-                        // don't put the quote itself in the arg
-                        skipChar = TRUE;
-
                         isInsideQuotes = !isInsideQuotes;
-                    }
-                    //else: insert a literal quote
 
+                        // don't put quote in arg
+                        continue;
+                    }
+                    //else: quote has no special meaning but the backslash
+                    //      still remains -- makes no sense but this is what
+                    //      Windows does
                     break;
 
                 case _T(' '):
                 case _T('\t'):
-                    // we intentionally don't check for preceding backslash
-                    // here as if we allowed it to be used to escape spaces the
-                    // cmd line of the form "foo.exe a:\ c:\bar" wouldn't be
-                    // parsed correctly
+                    // backslash does *not* quote the space, only quotes do
                     if ( isInsideQuotes )
                     {
-                        // preserve it, skip endParam below
+                        // skip assignment below
                         break;
                     }
-                    //else: fall through
+                    // fall through
 
                 case _T('\0'):
-                    endParam = TRUE;
+                    endParam = true;
+
                     break;
-
-                default:
-                    if ( isQuotedByBS )
-                    {
-                        // ignore backslash before an ordinary character - this
-                        // is needed to properly handle the file names under
-                        // Windows appearing in the command line
-                        arg += _T('\\');
-                    }
             }
 
-            // end of argument?
             if ( endParam )
-                break;
-
-            // otherwise copy this char to arg
-            if ( !skipChar )
             {
-                arg += *p;
+                break;
             }
+
+            lastBS = *p == _T('\\');
+
+            arg += *p;
         }
 
-        args.Add(arg);
+        args.push_back(arg);
     }
 
     return args;

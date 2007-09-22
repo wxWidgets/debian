@@ -2,7 +2,7 @@
 // Purpose:     XML resources editor
 // Author:      Vaclav Slavik
 // Created:     2000/05/05
-// RCS-ID:      $Id: xmlhelpr.h,v 1.4 2002/09/07 12:15:24 GD Exp $
+// RCS-ID:      $Id: xmlhelpr.h,v 1.5 2004/06/11 13:14:23 ABX Exp $
 // Copyright:   (c) 2000 Vaclav Slavik
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -28,4 +28,4 @@ wxXmlNode *XmlFindNodeSimple(wxXmlNode *parent, const wxString& path);
 wxString XmlGetClass(wxXmlNode *parent);
 void XmlSetClass(wxXmlNode *parent, const wxString& classname);
 
-#endif 
+#endif

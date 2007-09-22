@@ -4,12 +4,12 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     25/4/2000
-// RCS-ID:      $Id: effects.cpp,v 1.5 2002/01/08 23:52:53 VS Exp $
+// RCS-ID:      $Id: effects.cpp,v 1.9 2004/09/13 18:03:44 ABX Exp $
 // Copyright:   (c) Julian Smart
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
 
-#ifdef __GNUG__
+#if defined(__GNUG__) && !defined(NO_GCC_PRAGMA)
 #pragma implementation "effects.h"
 #endif
 
@@ -122,5 +122,5 @@ bool wxEffects::TileBitmap(const wxRect& rect, wxDC& dc, wxBitmap& bitmap)
     }
 #endif // wxUSE_PALETTE
 
-    return TRUE;
+    return true;
 }

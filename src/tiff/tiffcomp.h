@@ -1,4 +1,4 @@
-/* $Header: /pack/cvsroots/wxwindows/wxWindows/src/tiff/tiffcomp.h,v 1.6.2.2 2003/08/14 11:48:37 CE Exp $ */
+/* $Header: /pack/cvsroots/wxwindows/wxWindows/src/tiff/tiffcomp.h,v 1.10 2004/01/14 10:05:39 SC Exp $ */
 
 /*
  * Copyright (c) 1990-1997 Sam Leffler
@@ -52,8 +52,12 @@
 #endif
 
 #if defined(__MWERKS__) || defined(THINK_C)
+#ifdef __MACH__
+#include <sys/types.h>
+#else
 #include <unix.h>
 #include <math.h>
+#endif
 #endif
 
 #if defined (__SC__) && !defined (__DMC__)
@@ -85,7 +89,9 @@
  */
 #if defined(__MWERKS__) || defined(THINK_C) || defined(__PPCC__) || defined(__SYMANTEC__) || defined(__MRC__)
 #include <stdlib.h>
+#ifndef __MACH__
 #define	BSDTYPES
+#endif
 #define	HAVE_UNISTD_H	0
 #elif defined(_WINDOWS) || defined(__WIN32__) || defined(_Windows)
 #define BSDTYPES

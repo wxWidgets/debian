@@ -2,12 +2,12 @@
 // Name:        imagjpeg.cpp
 // Purpose:     wxImage JPEG handler
 // Author:      Vaclav Slavik
-// RCS-ID:      $Id: imagjpeg.cpp,v 1.30.2.3 2004/01/30 12:20:39 VS Exp $
+// RCS-ID:      $Id: imagjpeg.cpp,v 1.44 2004/10/17 21:39:04 ABX Exp $
 // Copyright:   (c) Vaclav Slavik
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
 
-#ifdef __GNUG__
+#if defined(__GNUG__) && !defined(NO_GCC_PRAGMA)
 #pragma implementation "imagjpeg.h"
 #endif
 
@@ -35,11 +35,14 @@
 //     defining HAVE_BOOLEAN.
 #if defined(__WXMSW__) && (defined(__MWERKS__) || defined(__DIGITALMARS__) || (defined(__WATCOMC__) && __WATCOMC__ < 1200))
     #define HAVE_BOOLEAN
-    #include <windows.h>
+    #include "wx/msw/wrapwin.h"
 #endif
 
 extern "C"
 {
+    #if defined(__WXMSW__)
+        #define XMD_H
+    #endif
     #include "jpeglib.h"
 }
 
@@ -178,7 +181,6 @@ void wx_jpeg_io_src( j_decompress_ptr cinfo, wxInputStream& infile )
         cinfo->src = (struct jpeg_source_mgr *)
             (*cinfo->mem->alloc_small) ((j_common_ptr) cinfo, JPOOL_PERMANENT,
             sizeof(wx_source_mgr));
-        src = (wx_src_ptr) cinfo->src;
     }
     src = (wx_src_ptr) cinfo->src;
     src->pub.bytes_in_buffer = 0; /* forces fill_input_buffer on first read */
@@ -224,7 +226,7 @@ bool wxJPEGHandler::LoadFile( wxImage *image, wxInputStream& stream, bool verbos
       (cinfo.src->term_source)(&cinfo);
       jpeg_destroy_decompress(&cinfo);
       if (image->Ok()) image->Destroy();
-      return FALSE;
+      return false;
     }
 
     jpeg_create_decompress( &cinfo );
@@ -237,9 +239,9 @@ bool wxJPEGHandler::LoadFile( wxImage *image, wxInputStream& stream, bool verbos
     if (!image->Ok()) {
         jpeg_finish_decompress( &cinfo );
         jpeg_destroy_decompress( &cinfo );
-        return FALSE;
+        return false;
     }
-    image->SetMask( FALSE );
+    image->SetMask( false );
     ptr = image->GetData();
     stride = cinfo.output_width * 3;
     tempbuf = (*cinfo.mem->alloc_sarray)
@@ -252,7 +254,7 @@ bool wxJPEGHandler::LoadFile( wxImage *image, wxInputStream& stream, bool verbos
     }
     jpeg_finish_decompress( &cinfo );
     jpeg_destroy_decompress( &cinfo );
-    return TRUE;
+    return true;
 }
 
 typedef struct {
@@ -336,7 +338,7 @@ bool wxJPEGHandler::SaveFile( wxImage *image, wxOutputStream& stream, bool verbo
          if (verbose)
             wxLogError(_("JPEG: Couldn't save image."));
          jpeg_destroy_compress(&cinfo);
-         return FALSE;
+         return false;
     }
 
     jpeg_create_compress(&cinfo);
@@ -357,6 +359,21 @@ bool wxJPEGHandler::SaveFile( wxImage *image, wxOutputStream& stream, bool verbo
     if (image->HasOption(wxT("quality")))
         jpeg_set_quality(&cinfo, image->GetOptionInt(wxT("quality")), TRUE);
 
+    // sets the resolution fields in the output file
+    if (image->HasOption(wxIMAGE_OPTION_RESOLUTION))
+    {
+        cinfo.X_density =
+        cinfo.Y_density = (UINT16)image->GetOptionInt(wxIMAGE_OPTION_RESOLUTION);
+    }
+
+    // sets the resolution unit field in the output file
+    // wxIMAGE_RESOLUTION_INCHES for inches
+    // wxIMAGE_RESOLUTION_CM for centimeters
+    if (image->HasOption(wxIMAGE_OPTION_RESOLUTIONUNIT))
+    {
+        cinfo.density_unit = (UINT8)image->GetOptionInt(wxIMAGE_OPTION_RESOLUTIONUNIT);
+    }
+
     jpeg_start_compress(&cinfo, TRUE);
 
     stride = cinfo.image_width * 3;    /* JSAMPLEs per row in image_buffer */
@@ -368,7 +385,7 @@ bool wxJPEGHandler::SaveFile( wxImage *image, wxOutputStream& stream, bool verbo
     jpeg_finish_compress(&cinfo);
     jpeg_destroy_compress(&cinfo);
 
-    return TRUE;
+    return true;
 }
 
 #ifdef __VISUALC__
@@ -380,7 +397,7 @@ bool wxJPEGHandler::DoCanRead( wxInputStream& stream )
     unsigned char hdr[2];
 
     if ( !stream.Read(hdr, WXSIZEOF(hdr)) )
-        return FALSE;
+        return false;
 
     return hdr[0] == 0xFF && hdr[1] == 0xD8;
 }

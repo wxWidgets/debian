@@ -3,7 +3,7 @@
 // Purpose:     STC test declarations
 // Maintainer:  Wyo
 // Created:     2003-09-01
-// RCS-ID:      $Id: defsext.h,v 1.1.2.1 2003/09/18 18:14:30 RD Exp $
+// RCS-ID:      $Id: defsext.h,v 1.2 2004/05/25 11:14:03 JS Exp $
 // Copyright:   (c) wxGuide
 // Licence:     wxWindows licence
 //////////////////////////////////////////////////////////////////////////////
@@ -15,7 +15,7 @@
 // headers
 //----------------------------------------------------------------------------
 
-//! wxWindows headers
+//! wxWidgets headers
 #include <wx/print.h>    // printing support
 #include <wx/printdlg.h> // printing dialog
 

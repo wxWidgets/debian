@@ -4,9 +4,9 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     12/07/98
-// RCS-ID:      $Id: divided.cpp,v 1.3.2.2 2002/12/18 06:13:00 RD Exp $
+// RCS-ID:      $Id: divided.cpp,v 1.16 2004/07/23 18:04:12 ABX Exp $
 // Copyright:   (c) Julian Smart
-// Licence:   	wxWindows licence
+// Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
 
 #ifdef __GNUG__
@@ -24,14 +24,12 @@
 #include <wx/wx.h>
 #endif
 
-#include <wx/wxexpr.h>
+#if wxUSE_PROLOGIO
+#include <wx/deprecated/wxexpr.h>
+#endif
 
-#include <wx/ogl/basic.h>
-#include <wx/ogl/basicp.h>
-#include <wx/ogl/canvas.h>
-#include <wx/ogl/divided.h>
-#include <wx/ogl/lines.h>
-#include <wx/ogl/misc.h>
+#include "wx/ogl/ogl.h"
+
 
 class wxDividedShapeControlPoint: public wxControlPoint
 {
@@ -74,7 +72,7 @@ void wxDividedShape::OnDraw(wxDC& dc)
 
 void wxDividedShape::OnDrawContents(wxDC& dc)
 {
-  double defaultProportion = (double)(GetRegions().Number() > 0 ? (1.0/((double)(GetRegions().Number()))) : 0.0);
+  double defaultProportion = (double)(GetRegions().GetCount() > 0 ? (1.0/((double)(GetRegions().GetCount()))) : 0.0);
   double currentY = (double)(m_ypos - (m_height / 2.0));
   double maxY = (double)(m_ypos + (m_height / 2.0));
 
@@ -83,7 +81,7 @@ void wxDividedShape::OnDrawContents(wxDC& dc)
 
   if (m_pen) dc.SetPen(* m_pen);
 
-  if (m_textColour) dc.SetTextForeground(* m_textColour);
+  dc.SetTextForeground(m_textColour);
 
 #ifdef __WXMSW__
   // For efficiency, don't do this under X - doesn't make
@@ -95,7 +93,7 @@ void wxDividedShape::OnDrawContents(wxDC& dc)
   if (!formatted)
   {
     FormatRegionText();
-    formatted = TRUE;
+    formatted = true;
   }
 */
   if (GetDisableLabel()) return;
@@ -104,12 +102,12 @@ void wxDividedShape::OnDrawContents(wxDC& dc)
   double yMargin = 2;
   dc.SetBackgroundMode(wxTRANSPARENT);
 
-  wxNode *node = GetRegions().First();
+  wxObjectList::compatibility_iterator node = GetRegions().GetFirst();
   while (node)
   {
-    wxShapeRegion *region = (wxShapeRegion *)node->Data();
+    wxShapeRegion *region = (wxShapeRegion *)node->GetData();
     dc.SetFont(* region->GetFont());
-    dc.SetTextForeground(* region->GetActualColourObject());
+    dc.SetTextForeground(region->GetActualColourObject());
 
     double proportion =
       region->m_regionProportionY < 0.0 ? defaultProportion : region->m_regionProportionY;
@@ -123,7 +121,7 @@ void wxDividedShape::OnDrawContents(wxDC& dc)
     oglDrawFormattedText(dc, &region->m_formattedText,
              (double)(centreX), (double)(centreY), (double)(m_width-2*xMargin), (double)(actualY - currentY - 2*yMargin),
              region->m_formatMode);
-    if ((y <= maxY) && (node->Next()))
+    if ((y <= maxY) && (node->GetNext()))
     {
       wxPen *regionPen = region->GetActualPen();
       if (regionPen)
@@ -135,11 +133,11 @@ void wxDividedShape::OnDrawContents(wxDC& dc)
 
     currentY = actualY;
 
-    node = node->Next();
+    node = node->GetNext();
   }
 }
 
-void wxDividedShape::SetSize(double w, double h, bool recursive)
+void wxDividedShape::SetSize(double w, double h, bool WXUNUSED(recursive))
 {
   SetAttachmentSize(w, h);
   m_width = w;
@@ -149,20 +147,20 @@ void wxDividedShape::SetSize(double w, double h, bool recursive)
 
 void wxDividedShape::SetRegionSizes()
 {
-  if (GetRegions().Number() == 0)
+  if (GetRegions().GetCount() == 0)
     return;
 
-  double defaultProportion = (double)(GetRegions().Number() > 0 ? (1.0/((double)(GetRegions().Number()))) : 0.0);
+  double defaultProportion = (double)(GetRegions().GetCount() > 0 ? (1.0/((double)(GetRegions().GetCount()))) : 0.0);
   double currentY = (double)(m_ypos - (m_height / 2.0));
   double maxY = (double)(m_ypos + (m_height / 2.0));
 
 //  double leftX = (double)(m_xpos - (m_width / 2.0));
 //  double rightX = (double)(m_xpos + (m_width / 2.0));
 
-  wxNode *node = GetRegions().First();
+  wxObjectList::compatibility_iterator node = GetRegions().GetFirst();
   while (node)
   {
-    wxShapeRegion *region = (wxShapeRegion *)node->Data();
+    wxShapeRegion *region = (wxShapeRegion *)node->GetData();
     double proportion =
       region->m_regionProportionY <= 0.0 ? defaultProportion : region->m_regionProportionY;
 
@@ -175,7 +173,7 @@ void wxDividedShape::SetRegionSizes()
     region->SetSize(m_width, sizeY);
     region->SetPosition(0.0, (double)(centreY - m_ypos));
     currentY = actualY;
-    node = node->Next();
+    node = node->GetNext();
   }
 }
 
@@ -183,13 +181,13 @@ void wxDividedShape::SetRegionSizes()
 bool wxDividedShape::GetAttachmentPosition(int attachment, double *x, double *y, int nth, int no_arcs,
   wxLineShape *line)
 {
-  int totalNumberAttachments = (GetRegions().Number() * 2) + 2;
+  int totalNumberAttachments = (GetRegions().GetCount() * 2) + 2;
   if ((GetAttachmentMode() == ATTACHMENT_MODE_NONE) || (attachment >= totalNumberAttachments))
   {
     return wxShape::GetAttachmentPosition(attachment, x, y, nth, no_arcs);
   }
 
-  int n = GetRegions().Number();
+  int n = GetRegions().GetCount();
   bool isEnd = (line && line->IsEnd(this));
 
   double left = (double)(m_xpos - m_width/2.0);
@@ -245,22 +243,12 @@ bool wxDividedShape::GetAttachmentPosition(int attachment, double *x, double *y,
   // Left or right.
   else
   {
-    int i = 0;
-    bool isLeft = FALSE;
-    if (attachment < (n+1))
-    {
-      i = attachment-1;
-      isLeft = FALSE;
-    }
-    else
-    {
-      i = (totalNumberAttachments - attachment - 1);
-      isLeft = TRUE;
-    }
-    wxNode *node = GetRegions().Nth(i);
+    bool isLeft = !(attachment < (n+1));
+    int i = (isLeft) ? (totalNumberAttachments - attachment - 1) : (attachment-1);
+    wxObjectList::compatibility_iterator node = GetRegions().Item(i);
     if (node)
     {
-      wxShapeRegion *region = (wxShapeRegion *)node->Data();
+      wxShapeRegion *region = (wxShapeRegion *)node->GetData();
 
       if (isLeft)
         *x = left;
@@ -297,41 +285,41 @@ bool wxDividedShape::GetAttachmentPosition(int attachment, double *x, double *y,
     {
       *x = m_xpos;
       *y = m_ypos;
-      return FALSE;
+      return false;
     }
   }
-  return TRUE;
+  return true;
 }
 
 int wxDividedShape::GetNumberOfAttachments() const
 {
   // There are two attachments for each region (left and right),
   // plus one on the top and one on the bottom.
-  int n = (GetRegions().Number() * 2) + 2;
+  int n = (GetRegions().GetCount() * 2) + 2;
 
   int maxN = n - 1;
-  wxNode *node = m_attachmentPoints.First();
+  wxObjectList::compatibility_iterator node = m_attachmentPoints.GetFirst();
   while (node)
   {
-    wxAttachmentPoint *point = (wxAttachmentPoint *)node->Data();
+    wxAttachmentPoint *point = (wxAttachmentPoint *)node->GetData();
     if (point->m_id > maxN)
       maxN = point->m_id;
-    node = node->Next();
+    node = node->GetNext();
   }
   return maxN + 1;
 }
 
-bool wxDividedShape::AttachmentIsValid(int attachment)
+bool wxDividedShape::AttachmentIsValid(int attachment) const
 {
-  int totalNumberAttachments = (GetRegions().Number() * 2) + 2;
+  int totalNumberAttachments = (GetRegions().GetCount() * 2) + 2;
   if (attachment >= totalNumberAttachments)
   {
     return wxShape::AttachmentIsValid(attachment);
   }
   else if (attachment >= 0)
-    return TRUE;
+    return true;
   else
-    return FALSE;
+    return false;
 }
 
 void wxDividedShape::Copy(wxShape& copy)
@@ -353,18 +341,18 @@ void wxDividedShape::MakeMandatoryControlPoints()
   double currentY = (double)(GetY() - (m_height / 2.0));
   double maxY = (double)(GetY() + (m_height / 2.0));
 
-  wxNode *node = GetRegions().First();
+  wxObjectList::compatibility_iterator node = GetRegions().GetFirst();
   int i = 0;
   while (node)
   {
-    wxShapeRegion *region = (wxShapeRegion *)node->Data();
+    wxShapeRegion *region = (wxShapeRegion *)node->GetData();
 
     double proportion = region->m_regionProportionY;
 
     double y = currentY + m_height*proportion;
     double actualY = (double)(maxY < y ? maxY : y);
 
-    if (node->Next())
+    if (node->GetNext())
     {
       wxDividedShapeControlPoint *controlPoint =
         new wxDividedShapeControlPoint(m_canvas, this, i, CONTROL_POINT_SIZE, 0.0, (double)(actualY - GetY()), 0);
@@ -373,14 +361,14 @@ void wxDividedShape::MakeMandatoryControlPoints()
     }
     currentY = actualY;
     i ++;
-    node = node->Next();
+    node = node->GetNext();
   }
 }
 
 void wxDividedShape::ResetControlPoints()
 {
   // May only have the region handles, (n - 1) of them.
-  if (m_controlPoints.Number() > (GetRegions().Number() - 1))
+  if (m_controlPoints.GetCount() > (GetRegions().GetCount() - 1))
     wxRectangleShape::ResetControlPoints();
 
   ResetMandatoryControlPoints();
@@ -391,15 +379,15 @@ void wxDividedShape::ResetMandatoryControlPoints()
   double currentY = (double)(GetY() - (m_height / 2.0));
   double maxY = (double)(GetY() + (m_height / 2.0));
 
-  wxNode *node = m_controlPoints.First();
+  wxObjectList::compatibility_iterator node = m_controlPoints.GetFirst();
   int i = 0;
   while (node)
   {
-    wxControlPoint *controlPoint = (wxControlPoint *)node->Data();
+    wxControlPoint *controlPoint = (wxControlPoint *)node->GetData();
     if (controlPoint->IsKindOf(CLASSINFO(wxDividedShapeControlPoint)))
     {
-      wxNode *node1 = GetRegions().Nth(i);
-      wxShapeRegion *region = (wxShapeRegion *)node1->Data();
+      wxObjectList::compatibility_iterator node1 = GetRegions().Item(i);
+      wxShapeRegion *region = (wxShapeRegion *)node1->GetData();
 
       double proportion = region->m_regionProportionY;
 
@@ -411,7 +399,7 @@ void wxDividedShape::ResetMandatoryControlPoints()
       currentY = actualY;
       i ++;
     }
-    node = node->Next();
+    node = node->GetNext();
   }
 }
 
@@ -438,7 +426,7 @@ void wxDividedShape::EditRegions()
 
   // TODO
 #if 0
-  if (GetRegions().Number() < 2)
+  if (GetRegions().GetCount() < 2)
     return;
 
   wxBeginBusyCursor();
@@ -446,15 +434,15 @@ void wxDividedShape::EditRegions()
   GraphicsForm *form = new GraphicsForm("Divided nodes");
   // Need an array to store all the style strings,
   // since they need to be converted to integers
-  char **styleStrings = new char *[GetRegions().Number()];
-  for (int j = 0; j < GetRegions().Number(); j++)
+  char **styleStrings = new char *[GetRegions().GetCount()];
+  for (int j = 0; j < GetRegions().GetCount(); j++)
     styleStrings[j] = NULL;
 
   int i = 0;
-  wxNode *node = GetRegions().First();
-  while (node && node->Next())
+  wxNode *node = GetRegions().GetFirst();
+  while (node && node->GetNext())
   {
-    wxShapeRegion *region = (wxShapeRegion *)node->Data();
+    wxShapeRegion *region = (wxShapeRegion *)node->GetData();
     char buf[50];
     sprintf(buf, "Region %d", (i+1));
     form->Add(wxMakeFormMessage(buf));
@@ -518,9 +506,9 @@ void wxDividedShape::EditRegions()
     "Dot Dash"         ,
     NULL),
     NULL), NULL, wxVERTICAL, 100));
-    node = node->Next();
+    node = node->GetNext();
     i ++;
-    if (node && node->Next())
+    if (node && node->GetNext())
       form->Add(wxMakeFormNewLine());
   }
   wxDialogBox *dialog = new wxDialogBox(m_canvas->GetParent(), "Divided object properties", 10, 10, 500, 500);
@@ -536,13 +524,13 @@ void wxDividedShape::EditRegions()
 
   wxEndBusyCursor();
 
-  dialog->Show(TRUE);
+  dialog->Show(true);
 
-  node = GetRegions().First();
+  node = GetRegions().GetFirst();
   i = 0;
   while (node)
   {
-    wxShapeRegion *region = (wxShapeRegion *)node->Data();
+    wxShapeRegion *region = (wxShapeRegion *)node->GetData();
 
     if (styleStrings[i])
     {
@@ -559,7 +547,7 @@ void wxDividedShape::EditRegions()
       delete[] styleStrings[i];
     }
     region->m_actualPenObject = NULL;
-    node = node->Next();
+    node = node->GetNext();
     i ++;
   }
   delete[] styleStrings;
@@ -591,7 +579,7 @@ wxDividedShapeControlPoint::~wxDividedShapeControlPoint()
 }
 
 // Implement resizing of divided object division
-void wxDividedShapeControlPoint::OnDragLeft(bool draw, double x, double y, int keys, int attachment)
+void wxDividedShapeControlPoint::OnDragLeft(bool WXUNUSED(draw), double WXUNUSED(x), double y, int WXUNUSED(keys), int WXUNUSED(attachment))
 {
     wxClientDC dc(GetCanvas());
     GetCanvas()->PrepareDC(dc);
@@ -609,7 +597,7 @@ void wxDividedShapeControlPoint::OnDragLeft(bool draw, double x, double y, int k
     dc.DrawLine(WXROUND(x1), WXROUND(y1), WXROUND(x2), WXROUND(y2));
 }
 
-void wxDividedShapeControlPoint::OnBeginDragLeft(double x, double y, int keys, int attachment)
+void wxDividedShapeControlPoint::OnBeginDragLeft(double WXUNUSED(x), double y, int WXUNUSED(keys), int WXUNUSED(attachment))
 {
     wxClientDC dc(GetCanvas());
     GetCanvas()->PrepareDC(dc);
@@ -628,17 +616,17 @@ void wxDividedShapeControlPoint::OnBeginDragLeft(double x, double y, int keys, i
     m_canvas->CaptureMouse();
 }
 
-void wxDividedShapeControlPoint::OnEndDragLeft(double x, double y, int keys, int attachment)
+void wxDividedShapeControlPoint::OnEndDragLeft(double WXUNUSED(x), double y, int WXUNUSED(keys), int WXUNUSED(attachment))
 {
     wxClientDC dc(GetCanvas());
     GetCanvas()->PrepareDC(dc);
 
     wxDividedShape *dividedObject = (wxDividedShape *)m_shape;
-    wxNode *node = dividedObject->GetRegions().Nth(regionId);
+    wxObjectList::compatibility_iterator node = dividedObject->GetRegions().Item(regionId);
     if (!node)
     return;
 
-    wxShapeRegion *thisRegion = (wxShapeRegion *)node->Data();
+    wxShapeRegion *thisRegion = (wxShapeRegion *)node->GetData();
     wxShapeRegion *nextRegion = NULL; // Region below this one
 
     dc.SetLogicalFunction(wxCOPY);
@@ -654,13 +642,12 @@ void wxDividedShapeControlPoint::OnEndDragLeft(double x, double y, int keys, int
 
     // Save values
     double thisRegionTop = 0.0;
-    double thisRegionBottom = 0.0;
     double nextRegionBottom = 0.0;
 
-    node = dividedObject->GetRegions().First();
+    node = dividedObject->GetRegions().GetFirst();
     while (node)
     {
-      wxShapeRegion *region = (wxShapeRegion *)node->Data();
+      wxShapeRegion *region = (wxShapeRegion *)node->GetData();
 
       double proportion = region->m_regionProportionY;
       double yy = currentY + (dividedObject->GetHeight()*proportion);
@@ -669,9 +656,8 @@ void wxDividedShapeControlPoint::OnEndDragLeft(double x, double y, int keys, int
       if (region == thisRegion)
       {
         thisRegionTop = currentY;
-        thisRegionBottom = actualY;
-        if (node->Next())
-          nextRegion = (wxShapeRegion *)node->Next()->Data();
+        if (node->GetNext())
+          nextRegion = (wxShapeRegion *)node->GetNext()->GetData();
       }
       if (region == nextRegion)
       {
@@ -679,7 +665,7 @@ void wxDividedShapeControlPoint::OnEndDragLeft(double x, double y, int keys, int
       }
 
       currentY = actualY;
-      node = node->Next();
+      node = node->GetNext();
     }
     if (!nextRegion)
       return;
@@ -700,17 +686,16 @@ void wxDividedShapeControlPoint::OnEndDragLeft(double x, double y, int keys, int
 
     // Now reformat text
     int i = 0;
-    node = dividedObject->GetRegions().First();
+    node = dividedObject->GetRegions().GetFirst();
     while (node)
     {
-        wxShapeRegion *region = (wxShapeRegion *)node->Data();
+        wxShapeRegion *region = (wxShapeRegion *)node->GetData();
         if (region->GetText())
         {
-        wxChar *s = copystring(region->GetText());
-        dividedObject->FormatText(dc, s, i);
-        delete[] s;
+        wxString s(region->GetText());
+        dividedObject->FormatText(dc, s.c_str(), i);
         }
-        node = node->Next();
+        node = node->GetNext();
         i++;
     }
     dividedObject->SetRegionSizes();

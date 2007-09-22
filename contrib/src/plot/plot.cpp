@@ -4,7 +4,7 @@
 // Author:      Robert Roebling
 // Modified by:
 // Created:     12/01/2000
-// RCS-ID:      $Id: plot.cpp,v 1.4 2002/01/31 21:27:53 JS Exp $
+// RCS-ID:      $Id: plot.cpp,v 1.9 2004/05/19 23:01:04 DS Exp $
 // Copyright:   (c) Robert Roebling
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -136,7 +136,7 @@ wxPlotOnOffCurve::wxPlotOnOffCurve( int offsetY )
 
 void wxPlotOnOffCurve::Add( wxInt32 on, wxInt32 off, void *clientData )
 {
-    wxASSERT_MSG( on > 0, wxT("plot index < 0") );
+    wxASSERT_MSG( on > 0, _T("plot index < 0") );
     wxASSERT( on <= off );
 
     if (m_minX == -1)
@@ -204,7 +204,7 @@ BEGIN_EVENT_TABLE(wxPlotArea, wxWindow)
 END_EVENT_TABLE()
 
 wxPlotArea::wxPlotArea( wxPlotWindow *parent )
-        : wxWindow( parent, -1, wxDefaultPosition, wxDefaultSize, wxSIMPLE_BORDER, "plotarea" )
+        : wxWindow( parent, -1, wxDefaultPosition, wxDefaultSize, wxSIMPLE_BORDER, _T("plotarea") )
 {
     m_owner = parent;
     
@@ -229,10 +229,10 @@ void wxPlotArea::OnMouse( wxMouseEvent &event )
     x += view_x;
     y += view_y;
     
-    wxNode *node = m_owner->m_curves.First();
+    wxList::compatibility_iterator node = m_owner->m_curves.GetFirst();
     while (node)
     {
-        wxPlotCurve *curve = (wxPlotCurve*)node->Data();
+        wxPlotCurve *curve = (wxPlotCurve*)node->GetData();
             
         double double_client_height = (double)client_height;
         double range = curve->GetEndY() - curve->GetStartY();
@@ -251,7 +251,7 @@ void wxPlotArea::OnMouse( wxMouseEvent &event )
             event1.SetPosition( (int)floor(x/m_owner->GetZoom()) );
             m_owner->GetEventHandler()->ProcessEvent( event1 );
             
-            if (curve != m_owner->GetCurrent())
+            if (curve != m_owner->GetCurrentCurve())
             {
                 wxPlotEvent event2( wxEVT_PLOT_SEL_CHANGING, m_owner->GetId() );
                 event2.SetEventObject( m_owner );
@@ -259,13 +259,13 @@ void wxPlotArea::OnMouse( wxMouseEvent &event )
                 event2.SetCurve( curve );
                 if (!m_owner->GetEventHandler()->ProcessEvent( event2 ) || event2.IsAllowed())
                 {
-                    m_owner->SetCurrent( curve );
+                    m_owner->SetCurrentCurve( curve );
                 }
             }
             return;
         }
             
-        node = node->Next();
+        node = node->GetNext();
     }
 }
 
@@ -309,11 +309,11 @@ void wxPlotArea::DrawCurve( wxDC *dc, wxPlotCurve *curve, int from, int to )
     double end = curve->GetEndY();
     wxCoord offset_y = curve->GetOffsetY();
             
-    wxCoord y=0,last_y=0;
+    wxCoord last_y=0;
     for (int x = start_x; x < end_x; x++)
     {
         double dy = (end - curve->GetY( (wxInt32)(x/zoom) )) / range;
-        y = (wxCoord)(dy * double_client_height) - offset_y - 1;
+        wxCoord y = (wxCoord)(dy * double_client_height) - offset_y - 1;
             
         if (x != start_x)
            dc->DrawLine( x-1, last_y, x, y );
@@ -397,12 +397,12 @@ void wxPlotArea::OnPaint( wxPaintEvent &WXUNUSED(event) )
     
     while (upd)
     {
-        int update_x = upd.GetX();
-        int update_y = upd.GetY();
+        int update_x = upd.GetX() + view_x;
+#if 0
+        // unused var
+        int update_y = upd.GetY() + view_y;
+#endif
         int update_width = upd.GetWidth();
-        
-        update_x += view_x;
-        update_y += view_y;
         
 /*
         if (m_owner->m_current)
@@ -413,31 +413,31 @@ void wxPlotArea::OnPaint( wxPaintEvent &WXUNUSED(event) )
         }
 */
         
-        wxNode *node = m_owner->m_curves.First();
+        wxList::compatibility_iterator node = m_owner->m_curves.GetFirst();
         while (node)
         {
-            wxPlotCurve *curve = (wxPlotCurve*) node->Data();
+            wxPlotCurve *curve = (wxPlotCurve*) node->GetData();
             
-            if (curve == m_owner->GetCurrent())
+            if (curve == m_owner->GetCurrentCurve())
                 dc.SetPen( *wxBLACK_PEN );
             else
                 dc.SetPen( *wxGREY_PEN );
                 
             DrawCurve( &dc, curve, update_x-1, update_x+update_width+2 );
 
-            node = node->Next();
+            node = node->GetNext();
         }
         
         dc.SetPen( *wxRED_PEN );
         
-        node = m_owner->m_onOffCurves.First();
+        node = m_owner->m_onOffCurves.GetFirst();
         while (node)
         {
-            wxPlotOnOffCurve *curve = (wxPlotOnOffCurve*) node->Data();
+            wxPlotOnOffCurve *curve = (wxPlotOnOffCurve*) node->GetData();
             
             DrawOnOffCurve( &dc, curve, update_x-1, update_x+update_width+2 );
             
-            node = node->Next();
+            node = node->GetNext();
         }
         
         upd ++;
@@ -462,7 +462,7 @@ BEGIN_EVENT_TABLE(wxPlotXAxisArea, wxWindow)
 END_EVENT_TABLE()
 
 wxPlotXAxisArea::wxPlotXAxisArea( wxPlotWindow *parent )
-        : wxWindow( parent, -1, wxDefaultPosition, wxSize(-1,40), 0, "plotxaxisarea" )
+        : wxWindow( parent, -1, wxDefaultPosition, wxSize(-1,40), 0, _T("plotxaxisarea") )
 {
     m_owner = parent;
     
@@ -481,12 +481,12 @@ void wxPlotXAxisArea::OnMouse( wxMouseEvent &event )
     view_x *= wxPLOT_SCROLL_STEP;
     view_y *= wxPLOT_SCROLL_STEP;
     
-    wxCoord x = event.GetX();
-    wxCoord y = event.GetY();
-    x += view_x;
-    y += view_y;
+    wxCoord x = event.GetX() + view_x;
+    wxCoord y = event.GetY() + view_y;
     
-    /* do something here */
+    /* TO DO: do something here */
+    wxUnusedVar(x);
+    wxUnusedVar(y);
 }
 
 void wxPlotXAxisArea::OnPaint( wxPaintEvent &WXUNUSED(event) )
@@ -558,14 +558,14 @@ void wxPlotXAxisArea::OnPaint( wxPaintEvent &WXUNUSED(event) )
             wxString label;
             if (range < 50)
             {
-                label.Printf( wxT("%f"), current );
-                while (label.Last() == wxT('0')) 
+                label.Printf( _T("%f"), current );
+                while (label.Last() == _T('0')) 
                     label.RemoveLast();
-                if ((label.Last() == wxT('.')) || (label.Last() == wxT(',')))
-                    label.Append( wxT('0') );
+                if ((label.Last() == _T('.')) || (label.Last() == _T(',')))
+                    label.Append( _T('0') );
             }
             else
-                label.Printf( wxT("%d"), (int)floor(current) );
+                label.Printf( _T("%d"), (int)floor(current) );
             dc.DrawText( label, x-4, 20 );
         }
 
@@ -589,7 +589,7 @@ BEGIN_EVENT_TABLE(wxPlotYAxisArea, wxWindow)
 END_EVENT_TABLE()
 
 wxPlotYAxisArea::wxPlotYAxisArea( wxPlotWindow *parent )
-        : wxWindow( parent, -1, wxDefaultPosition, wxSize(60,-1), 0, "plotyaxisarea" )
+        : wxWindow( parent, -1, wxDefaultPosition, wxSize(60,-1), 0, _T("plotyaxisarea") )
 {
     m_owner = parent;
     
@@ -606,7 +606,7 @@ void wxPlotYAxisArea::OnPaint( wxPaintEvent &WXUNUSED(event) )
 {
     wxPaintDC dc( this );
     
-    wxPlotCurve *curve = m_owner->GetCurrent();
+    wxPlotCurve *curve = m_owner->GetCurrentCurve();
     
     if (!curve) return;
     
@@ -664,14 +664,14 @@ void wxPlotYAxisArea::OnPaint( wxPaintEvent &WXUNUSED(event) )
             wxString label;
             if (range < 50)
             {
-                label.Printf( wxT("%f"), current );
-                while (label.Last() == wxT('0')) 
+                label.Printf( _T("%f"), current );
+                while (label.Last() == _T('0')) 
                     label.RemoveLast();
-                if ((label.Last() == wxT('.')) || (label.Last() == wxT(',')))
-                    label.Append( wxT('0') );
+                if ((label.Last() == _T('.')) || (label.Last() == _T(',')))
+                    label.Append( _T('0') );
             }
             else
-                label.Printf( wxT("%d"), (int)floor(current) );
+                label.Printf( _T("%d"), (int)floor(current) );
             dc.DrawText( label, 5, y-7 );
         }
 
@@ -713,7 +713,7 @@ BEGIN_EVENT_TABLE(wxPlotWindow, wxScrolledWindow)
 END_EVENT_TABLE()
 
 wxPlotWindow::wxPlotWindow( wxWindow *parent, wxWindowID id, const wxPoint &pos, const wxSize &size, int flag )
-        : wxScrolledWindow( parent, id, pos, size, flag, "plotcanvas" )
+        : wxScrolledWindow( parent, id, pos, size, flag, _T("plotcanvas") )
 {
     m_xUnitsPerValue = 1.0;
     m_xZoom = 1.0;
@@ -810,14 +810,14 @@ size_t wxPlotWindow::GetCount()
 
 wxPlotCurve *wxPlotWindow::GetAt( size_t n )
 {
-    wxNode *node = m_curves.Nth( n );
+    wxList::compatibility_iterator node = m_curves.Item( n );
     if (!node)
         return (wxPlotCurve*) NULL;
         
-    return (wxPlotCurve*) node->Data();
+    return (wxPlotCurve*) node->GetData();
 }
 
-void wxPlotWindow::SetCurrent( wxPlotCurve* current )
+void wxPlotWindow::SetCurrentCurve( wxPlotCurve* current )
 {
     m_current = current;
     m_area->Refresh( FALSE );
@@ -833,7 +833,7 @@ void wxPlotWindow::SetCurrent( wxPlotCurve* current )
 
 void wxPlotWindow::Delete( wxPlotCurve* curve )
 {
-    wxNode *node = m_curves.Find( curve );
+    wxList::compatibility_iterator node = m_curves.Find( curve );
     if (!node) return;
     
     m_curves.DeleteObject( curve );
@@ -844,7 +844,7 @@ void wxPlotWindow::Delete( wxPlotCurve* curve )
     if (curve == m_current) m_current = (wxPlotCurve *) NULL;
 }
 
-wxPlotCurve *wxPlotWindow::GetCurrent()
+wxPlotCurve *wxPlotWindow::GetCurrentCurve()
 {
     return m_current;
 }
@@ -856,7 +856,7 @@ void wxPlotWindow::Add( wxPlotOnOffCurve *curve )
 
 void wxPlotWindow::Delete( wxPlotOnOffCurve* curve )
 {
-    wxNode *node = m_onOffCurves.Find( curve );
+    wxList::compatibility_iterator node = m_onOffCurves.Find( curve );
     if (!node) return;
     
     m_onOffCurves.DeleteObject( curve );
@@ -869,11 +869,11 @@ size_t wxPlotWindow::GetOnOffCurveCount()
 
 wxPlotOnOffCurve *wxPlotWindow::GetOnOffCurveAt( size_t n )
 {
-    wxNode *node = m_onOffCurves.Nth( n );
+    wxList::compatibility_iterator node = m_onOffCurves.Item( n );
     if (!node)
         return (wxPlotOnOffCurve*) NULL;
         
-    return (wxPlotOnOffCurve*) node->Data();
+    return (wxPlotOnOffCurve*) node->GetData();
 }
 
 void wxPlotWindow::Move( wxPlotCurve* curve, int pixels_up )
@@ -950,13 +950,13 @@ void wxPlotWindow::SetZoom( double zoom )
     GetViewStart( &view_x, &view_y );
     
     wxInt32 max = 0;
-    wxNode *node = m_curves.First();
+    wxList::compatibility_iterator node = m_curves.GetFirst();
     while (node)
     {
-        wxPlotCurve *curve = (wxPlotCurve*) node->Data();
+        wxPlotCurve *curve = (wxPlotCurve*) node->GetData();
         if (curve->GetEndX() > max)
             max = curve->GetEndX();
-        node = node->Next();
+        node = node->GetNext();
     }
     SetScrollbars( wxPLOT_SCROLL_STEP, wxPLOT_SCROLL_STEP, 
                    (int)((max*m_xZoom)/wxPLOT_SCROLL_STEP)+1, 0, 
@@ -970,13 +970,13 @@ void wxPlotWindow::SetZoom( double zoom )
 void wxPlotWindow::ResetScrollbar()
 {
     wxInt32 max = 0;
-    wxNode *node = m_curves.First();
+    wxList::compatibility_iterator node = m_curves.GetFirst();
     while (node)
     {
-        wxPlotCurve *curve = (wxPlotCurve*) node->Data();
+        wxPlotCurve *curve = (wxPlotCurve*) node->GetData();
         if (curve->GetEndX() > max)
             max = curve->GetEndX();
-        node = node->Next();
+        node = node->GetNext();
     }
     
     SetScrollbars( wxPLOT_SCROLL_STEP, wxPLOT_SCROLL_STEP, 
@@ -1052,7 +1052,7 @@ static wxBitmap *GetEnlargeBitmap()
         s_loaded = TRUE; // set it to TRUE anyhow, we won't try again
 
         #if defined(__WXMSW__) || defined(__WXPM__)
-            s_bitmap = new wxBitmap("plot_enl_bmp", wxBITMAP_TYPE_RESOURCE);
+            s_bitmap = new wxBitmap(_T("plot_enl_bmp"), wxBITMAP_TYPE_RESOURCE);
         #else
             s_bitmap = new wxBitmap( plot_enl_xpm );
         #endif
@@ -1071,7 +1071,7 @@ static wxBitmap *GetShrinkBitmap()
         s_loaded = TRUE; // set it to TRUE anyhow, we won't try again
 
         #if defined(__WXMSW__) || defined(__WXPM__)
-            s_bitmap = new wxBitmap("plot_shr_bmp", wxBITMAP_TYPE_RESOURCE);
+            s_bitmap = new wxBitmap(_T("plot_shr_bmp"), wxBITMAP_TYPE_RESOURCE);
         #else
             s_bitmap = new wxBitmap( plot_shr_xpm );
         #endif
@@ -1090,7 +1090,7 @@ static wxBitmap *GetZoomInBitmap()
         s_loaded = TRUE; // set it to TRUE anyhow, we won't try again
 
         #if defined(__WXMSW__) || defined(__WXPM__)
-            s_bitmap = new wxBitmap("plot_zin_bmp", wxBITMAP_TYPE_RESOURCE);
+            s_bitmap = new wxBitmap(_T("plot_zin_bmp"), wxBITMAP_TYPE_RESOURCE);
         #else
             s_bitmap = new wxBitmap( plot_zin_xpm );
         #endif
@@ -1109,7 +1109,7 @@ static wxBitmap *GetZoomOutBitmap()
         s_loaded = TRUE; // set it to TRUE anyhow, we won't try again
 
         #if defined(__WXMSW__) || defined(__WXPM__)
-            s_bitmap = new wxBitmap("plot_zot_bmp", wxBITMAP_TYPE_RESOURCE);
+            s_bitmap = new wxBitmap(_T("plot_zot_bmp"), wxBITMAP_TYPE_RESOURCE);
         #else
             s_bitmap = new wxBitmap( plot_zot_xpm );
         #endif
@@ -1128,7 +1128,7 @@ static wxBitmap *GetUpBitmap()
         s_loaded = TRUE; // set it to TRUE anyhow, we won't try again
 
         #if defined(__WXMSW__) || defined(__WXPM__)
-            s_bitmap = new wxBitmap("plot_up_bmp", wxBITMAP_TYPE_RESOURCE);
+            s_bitmap = new wxBitmap(_T("plot_up_bmp"), wxBITMAP_TYPE_RESOURCE);
         #else
             s_bitmap = new wxBitmap( plot_up_xpm );
         #endif
@@ -1147,7 +1147,7 @@ static wxBitmap *GetDownBitmap()
         s_loaded = TRUE; // set it to TRUE anyhow, we won't try again
 
         #if defined(__WXMSW__) || defined(__WXPM__)
-            s_bitmap = new wxBitmap("plot_dwn_bmp", wxBITMAP_TYPE_RESOURCE);
+            s_bitmap = new wxBitmap(_T("plot_dwn_bmp"), wxBITMAP_TYPE_RESOURCE);
         #else
             s_bitmap = new wxBitmap( plot_dwn_xpm );
         #endif

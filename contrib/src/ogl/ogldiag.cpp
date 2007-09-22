@@ -4,9 +4,9 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     12/07/98
-// RCS-ID:      $Id: ogldiag.cpp,v 1.5.2.2 2002/12/28 18:32:09 JS Exp $
+// RCS-ID:      $Id: ogldiag.cpp,v 1.15 2004/06/09 16:42:34 ABX Exp $
 // Copyright:   (c) Julian Smart
-// Licence:   	wxWindows licence
+// Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
 
 #ifdef __GNUG__
@@ -24,7 +24,9 @@
 #include <wx/wx.h>
 #endif
 
-#include <wx/wxexpr.h>
+#if wxUSE_PROLOGIO
+#include <wx/deprecated/wxexpr.h>
+#endif
 
 #ifdef new
 #undef new
@@ -34,13 +36,8 @@
 #include <math.h>
 #include <stdlib.h>
 
-#include <wx/ogl/basic.h>
-#include <wx/ogl/basicp.h>
-#include <wx/ogl/canvas.h>
-#include <wx/ogl/ogldiag.h>
-#include <wx/ogl/lines.h>
-#include <wx/ogl/composit.h>
-#include <wx/ogl/misc.h>
+#include "wx/ogl/ogl.h"
+
 
 IMPLEMENT_DYNAMIC_CLASS(wxDiagram, wxObject)
 
@@ -48,8 +45,8 @@ IMPLEMENT_DYNAMIC_CLASS(wxDiagram, wxObject)
 wxDiagram::wxDiagram()
 {
   m_diagramCanvas = NULL;
-  m_quickEditMode = FALSE;
-  m_snapToGrid = TRUE;
+  m_quickEditMode = false;
+  m_snapToGrid = true;
   m_gridSpacing = 5.0;
   m_shapeList = new wxList;
   m_mouseTolerance = DEFAULT_MOUSE_TOLERANCE;
@@ -87,15 +84,15 @@ void wxDiagram::Redraw(wxDC& dc)
   {
     if (GetCanvas())
       GetCanvas()->SetCursor(* wxHOURGLASS_CURSOR);
-    wxNode *current = m_shapeList->First();
+    wxNode *current = m_shapeList->GetFirst();
 
     while (current)
     {
-      wxShape *object = (wxShape *)current->Data();
+      wxShape *object = (wxShape *)current->GetData();
       if (!object->GetParent())
         object->Draw(dc);
 
-      current = current->Next();
+      current = current->GetNext();
     }
     if (GetCanvas())
       GetCanvas()->SetCursor(* wxSTANDARD_CURSOR);
@@ -118,8 +115,8 @@ void wxDiagram::AddShape(wxShape *object, wxShape *addAfter)
   {
     if (nodeAfter)
     {
-      if (nodeAfter->Next())
-        m_shapeList->Insert(nodeAfter->Next(), object);
+      if (nodeAfter->GetNext())
+        m_shapeList->Insert(nodeAfter->GetNext(), object);
       else
         m_shapeList->Append(object);
     }
@@ -148,31 +145,31 @@ void wxDiagram::RemoveAllShapes()
 
 void wxDiagram::DeleteAllShapes()
 {
-  wxNode *node = m_shapeList->First();
+  wxNode *node = m_shapeList->GetFirst();
   while (node)
   {
-    wxShape *shape = (wxShape *)node->Data();
+    wxShape *shape = (wxShape *)node->GetData();
     if (!shape->GetParent())
     {
       RemoveShape(shape);
       delete shape;
-      node = m_shapeList->First();
+      node = m_shapeList->GetFirst();
     }
     else
-      node = node->Next();
+      node = node->GetNext();
   }
 }
 
 void wxDiagram::ShowAll(bool show)
 {
-  wxNode *current = m_shapeList->First();
+  wxNode *current = m_shapeList->GetFirst();
 
   while (current)
   {
-    wxShape *object = (wxShape *)current->Data();
+    wxShape *object = (wxShape *)current->GetData();
     object->Show(show);
 
-    current = current->Next();
+    current = current->GetNext();
   }
 }
 
@@ -204,12 +201,12 @@ void wxDiagram::DrawOutline(wxDC& dc, double x1, double y1, double x2, double y2
 // Make sure all text that should be centred, is centred.
 void wxDiagram::RecentreAll(wxDC& dc)
 {
-  wxNode *object_node = m_shapeList->First();
+  wxNode *object_node = m_shapeList->GetFirst();
   while (object_node)
   {
-    wxShape *obj = (wxShape *)object_node->Data();
+    wxShape *obj = (wxShape *)object_node->GetData();
     obj->Recentre(dc);
-    object_node = object_node->Next();
+    object_node = object_node->GetNext();
   }
 }
 
@@ -222,27 +219,27 @@ bool wxDiagram::SaveFile(const wxString& filename)
   wxExprDatabase *database = new wxExprDatabase;
 
   // First write the diagram type
-  wxExpr *header = new wxExpr("diagram");
+  wxExpr *header = new wxExpr(_T("diagram"));
   OnHeaderSave(*database, *header);
 
   database->Append(header);
 
-  wxNode *node = m_shapeList->First();
+  wxNode *node = m_shapeList->GetFirst();
   while (node)
   {
-    wxShape *shape = (wxShape *)node->Data();
+    wxShape *shape = (wxShape *)node->GetData();
 
     if (!shape->IsKindOf(CLASSINFO(wxControlPoint)))
     {
-      wxExpr *expr = NULL;
+      wxExpr *expr;
       if (shape->IsKindOf(CLASSINFO(wxLineShape)))
-        expr = new wxExpr("line");
+        expr = new wxExpr(_T("line"));
        else
-        expr = new wxExpr("shape");
+        expr = new wxExpr(_T("shape"));
 
       OnShapeSave(*database, *shape, *expr);
     }
-    node = node->Next();
+    node = node->GetNext();
   }
   OnDatabaseSave(*database);
 
@@ -253,7 +250,7 @@ bool wxDiagram::SaveFile(const wxString& filename)
   {
     wxEndBusyCursor();
     delete database;
-    return FALSE;
+    return false;
   }
 
   database->Write(file);
@@ -288,37 +285,37 @@ bool wxDiagram::SaveFile(const wxString& filename)
   }
 
   wxEndBusyCursor();
-  return TRUE;
+  return true;
 }
 
 bool wxDiagram::LoadFile(const wxString& filename)
 {
   wxBeginBusyCursor();
 
-  wxExprDatabase database(wxExprInteger, "id");
+  wxExprDatabase database(wxExprInteger, _T("id"));
   if (!database.Read(filename))
   {
     wxEndBusyCursor();
-    return FALSE;
+    return false;
   }
 
   DeleteAllShapes();
 
   database.BeginFind();
-  wxExpr *header = database.FindClauseByFunctor("diagram");
+  wxExpr *header = database.FindClauseByFunctor(_T("diagram"));
 
   if (header)
     OnHeaderLoad(database, *header);
 
   // Scan through all clauses and register the ids
-  wxNode *node = database.First();
+  wxNode *node = database.GetFirst();
   while (node)
   {
-    wxExpr *clause = (wxExpr *)node->Data();
+    wxExpr *clause = (wxExpr *)node->GetData();
     long id = -1;
-    clause->GetAttributeValue("id", id);
+    clause->GetAttributeValue(_T("id"), id);
     wxRegisterId(id);
-    node = node->Next();
+    node = node->GetNext();
   }
 
   ReadNodes(database);
@@ -329,14 +326,14 @@ bool wxDiagram::LoadFile(const wxString& filename)
 
   wxEndBusyCursor();
 
-  return TRUE;
+  return true;
 }
 
 void wxDiagram::ReadNodes(wxExprDatabase& database)
 {
   // Find and create the node images
   database.BeginFind();
-  wxExpr *clause = database.FindClauseByFunctor("shape");
+  wxExpr *clause = database.FindClauseByFunctor(_T("shape"));
   while (clause)
   {
     wxChar *type = NULL;
@@ -351,14 +348,14 @@ void wxDiagram::ReadNodes(wxExprDatabase& database)
       OnShapeLoad(database, *shape, *clause);
 
       shape->SetCanvas(GetCanvas());
-      shape->Show(TRUE);
+      shape->Show(true);
 
       m_shapeList->Append(shape);
 
       // If child of composite, link up
       if (parentId > -1)
       {
-        wxExpr *parentExpr = database.HashFind("shape", parentId);
+        wxExpr *parentExpr = database.HashFind(_T("shape"), parentId);
         if (parentExpr && parentExpr->GetClientData())
         {
           wxShape *parent = (wxShape *)parentExpr->GetClientData();
@@ -372,7 +369,7 @@ void wxDiagram::ReadNodes(wxExprDatabase& database)
     if (type)
       delete[] type;
 
-    clause = database.FindClauseByFunctor("shape");
+    clause = database.FindClauseByFunctor(_T("shape"));
   }
   return;
 }
@@ -380,34 +377,34 @@ void wxDiagram::ReadNodes(wxExprDatabase& database)
 void wxDiagram::ReadLines(wxExprDatabase& database)
 {
   database.BeginFind();
-  wxExpr *clause = database.FindClauseByFunctor("line");
+  wxExpr *clause = database.FindClauseByFunctor(_T("line"));
   while (clause)
   {
     wxString type;
     long parentId = -1;
 
-    clause->GetAttributeValue("type", type);
-    clause->GetAttributeValue("parent", parentId);
+    clause->GetAttributeValue(_T("type"), type);
+    clause->GetAttributeValue(_T("parent"), parentId);
     wxClassInfo *classInfo = wxClassInfo::FindClass(type);
     if (classInfo)
     {
       wxLineShape *shape = (wxLineShape *)classInfo->CreateObject();
-      shape->Show(TRUE);
+      shape->Show(true);
 
       OnShapeLoad(database, *shape, *clause);
       shape->SetCanvas(GetCanvas());
 
       long image_to = -1; long image_from = -1;
-      clause->GetAttributeValue("to", image_to);
-      clause->GetAttributeValue("from", image_from);
+      clause->GetAttributeValue(_T("to"), image_to);
+      clause->GetAttributeValue(_T("from"), image_from);
 
-      wxExpr *image_to_expr = database.HashFind("shape", image_to);
+      wxExpr *image_to_expr = database.HashFind(_T("shape"), image_to);
 
       if (!image_to_expr)
       {
         // Error
       }
-      wxExpr *image_from_expr = database.HashFind("shape", image_from);
+      wxExpr *image_from_expr = database.HashFind(_T("shape"), image_from);
 
       if (!image_from_expr)
       {
@@ -429,7 +426,7 @@ void wxDiagram::ReadLines(wxExprDatabase& database)
       m_shapeList->Append(shape);
     }
 
-    clause = database.FindClauseByFunctor("line");
+    clause = database.FindClauseByFunctor(_T("line"));
   }
 }
 
@@ -439,7 +436,7 @@ void wxDiagram::ReadLines(wxExprDatabase& database)
 void wxDiagram::ReadContainerGeometry(wxExprDatabase& database)
 {
   database.BeginFind();
-  wxExpr *clause = database.FindClauseByFunctor("shape");
+  wxExpr *clause = database.FindClauseByFunctor(_T("shape"));
   while (clause)
   {
     wxShape *image = (wxShape *)clause->GetClientData();
@@ -449,7 +446,7 @@ void wxDiagram::ReadContainerGeometry(wxExprDatabase& database)
       wxExpr *divisionExpr = NULL;
 
       // Find the list of divisions in the composite
-      clause->GetAttributeValue("divisions", &divisionExpr);
+      clause->GetAttributeValue(_T("divisions"), &divisionExpr);
       if (divisionExpr)
       {
         int i = 0;
@@ -457,7 +454,7 @@ void wxDiagram::ReadContainerGeometry(wxExprDatabase& database)
         while (idExpr)
         {
           long divisionId = idExpr->IntegerValue();
-          wxExpr *childExpr = database.HashFind("shape", divisionId);
+          wxExpr *childExpr = database.HashFind(_T("shape"), divisionId);
           if (childExpr && childExpr->GetClientData())
           {
             wxDivisionShape *child = (wxDivisionShape *)childExpr->GetClientData();
@@ -468,13 +465,13 @@ void wxDiagram::ReadContainerGeometry(wxExprDatabase& database)
             long topSideId = -1;
             long rightSideId = -1;
             long bottomSideId = -1;
-            childExpr->GetAttributeValue("left_side", leftSideId);
-            childExpr->GetAttributeValue("top_side", topSideId);
-            childExpr->GetAttributeValue("right_side", rightSideId);
-            childExpr->GetAttributeValue("bottom_side", bottomSideId);
+            childExpr->GetAttributeValue(_T("left_side"), leftSideId);
+            childExpr->GetAttributeValue(_T("top_side"), topSideId);
+            childExpr->GetAttributeValue(_T("right_side"), rightSideId);
+            childExpr->GetAttributeValue(_T("bottom_side"), bottomSideId);
             if (leftSideId > -1)
             {
-              wxExpr *leftExpr = database.HashFind("shape", leftSideId);
+              wxExpr *leftExpr = database.HashFind(_T("shape"), leftSideId);
               if (leftExpr && leftExpr->GetClientData())
               {
                 wxDivisionShape *leftSide = (wxDivisionShape *)leftExpr->GetClientData();
@@ -483,7 +480,7 @@ void wxDiagram::ReadContainerGeometry(wxExprDatabase& database)
             }
             if (topSideId > -1)
             {
-              wxExpr *topExpr = database.HashFind("shape", topSideId);
+              wxExpr *topExpr = database.HashFind(_T("shape"), topSideId);
               if (topExpr && topExpr->GetClientData())
               {
                 wxDivisionShape *topSide = (wxDivisionShape *)topExpr->GetClientData();
@@ -492,7 +489,7 @@ void wxDiagram::ReadContainerGeometry(wxExprDatabase& database)
             }
             if (rightSideId > -1)
             {
-              wxExpr *rightExpr = database.HashFind("shape", rightSideId);
+              wxExpr *rightExpr = database.HashFind(_T("shape"), rightSideId);
               if (rightExpr && rightExpr->GetClientData())
               {
                 wxDivisionShape *rightSide = (wxDivisionShape *)rightExpr->GetClientData();
@@ -501,7 +498,7 @@ void wxDiagram::ReadContainerGeometry(wxExprDatabase& database)
             }
             if (bottomSideId > -1)
             {
-              wxExpr *bottomExpr = database.HashFind("shape", bottomSideId);
+              wxExpr *bottomExpr = database.HashFind(_T("shape"), bottomSideId);
               if (bottomExpr && bottomExpr->GetClientData())
               {
                 wxDivisionShape *bottomSide = (wxDivisionShape *)bottomExpr->GetClientData();
@@ -515,19 +512,19 @@ void wxDiagram::ReadContainerGeometry(wxExprDatabase& database)
       }
     }
 
-    clause = database.FindClauseByFunctor("shape");
+    clause = database.FindClauseByFunctor(_T("shape"));
   }
 }
 
 // Allow for modifying file
-bool wxDiagram::OnDatabaseLoad(wxExprDatabase& db)
+bool wxDiagram::OnDatabaseLoad(wxExprDatabase& WXUNUSED(db))
 {
-  return TRUE;
+  return true;
 }
 
-bool wxDiagram::OnDatabaseSave(wxExprDatabase& db)
+bool wxDiagram::OnDatabaseSave(wxExprDatabase& WXUNUSED(db))
 {
-  return TRUE;
+  return true;
 }
 
 bool wxDiagram::OnShapeSave(wxExprDatabase& db, wxShape& shape, wxExpr& expr)
@@ -537,33 +534,33 @@ bool wxDiagram::OnShapeSave(wxExprDatabase& db, wxShape& shape, wxExpr& expr)
 
   if (shape.IsKindOf(CLASSINFO(wxCompositeShape)))
   {
-    wxNode *node = shape.GetChildren().First();
+    wxNode *node = shape.GetChildren().GetFirst();
     while (node)
     {
-      wxShape *childShape = (wxShape *)node->Data();
-      wxExpr *childExpr = new wxExpr("shape");
+      wxShape *childShape = (wxShape *)node->GetData();
+      wxExpr *childExpr = new wxExpr(_T("shape"));
       OnShapeSave(db, *childShape, *childExpr);
-      node = node->Next();
+      node = node->GetNext();
     }
   }
 
-  return TRUE;
+  return true;
 }
 
-bool wxDiagram::OnShapeLoad(wxExprDatabase& db, wxShape& shape, wxExpr& expr)
+bool wxDiagram::OnShapeLoad(wxExprDatabase& WXUNUSED(db), wxShape& shape, wxExpr& expr)
 {
   shape.ReadAttributes(&expr);
-  return TRUE;
+  return true;
 }
 
-bool wxDiagram::OnHeaderSave(wxExprDatabase& db, wxExpr& expr)
+bool wxDiagram::OnHeaderSave(wxExprDatabase& WXUNUSED(db), wxExpr& WXUNUSED(expr))
 {
-  return TRUE;
+  return true;
 }
 
-bool wxDiagram::OnHeaderLoad(wxExprDatabase& db, wxExpr& expr)
+bool wxDiagram::OnHeaderLoad(wxExprDatabase& WXUNUSED(db), wxExpr& WXUNUSED(expr))
 {
-  return TRUE;
+  return true;
 }
 
 #endif
@@ -576,13 +573,13 @@ void wxDiagram::SetCanvas(wxShapeCanvas *can)
 // Find a shape by its id
 wxShape* wxDiagram::FindShape(long id) const
 {
-    wxNode* node = GetShapeList()->First();
+    wxNode* node = GetShapeList()->GetFirst();
     while (node)
     {
-        wxShape* shape = (wxShape*) node->Data();
+        wxShape* shape = (wxShape*) node->GetData();
         if (shape->GetId() == id)
             return shape;
-        node = node->Next();
+        node = node->GetNext();
     }
     return NULL;
 }
@@ -602,27 +599,27 @@ wxLineCrossings::~wxLineCrossings()
 void wxLineCrossings::FindCrossings(wxDiagram& diagram)
 {
     ClearCrossings();
-    wxNode* node1 = diagram.GetShapeList()->First();
+    wxNode* node1 = diagram.GetShapeList()->GetFirst();
     while (node1)
     {
-        wxShape* shape1 = (wxShape*) node1->Data();
+        wxShape* shape1 = (wxShape*) node1->GetData();
         if (shape1->IsKindOf(CLASSINFO(wxLineShape)))
         {
             wxLineShape* lineShape1 = (wxLineShape*) shape1;
             // Iterate through the segments
             wxList* pts1 = lineShape1->GetLineControlPoints();
-            int i;
-            for (i = 0; i < (pts1->Number() - 1); i++)
+            size_t i;
+            for (i = 0; i < (pts1->GetCount() - 1); i++)
             {
-                wxRealPoint* pt1_a = (wxRealPoint*) (pts1->Nth(i)->Data());
-                wxRealPoint* pt1_b = (wxRealPoint*) (pts1->Nth(i+1)->Data());
+                wxRealPoint* pt1_a = (wxRealPoint*) (pts1->Item(i)->GetData());
+                wxRealPoint* pt1_b = (wxRealPoint*) (pts1->Item(i+1)->GetData());
 
                 // Now we iterate through the segments again
 
-                wxNode* node2 = diagram.GetShapeList()->First();
+                wxNode* node2 = diagram.GetShapeList()->GetFirst();
                 while (node2)
                 {
-                    wxShape* shape2 = (wxShape*) node2->Data();
+                    wxShape* shape2 = (wxShape*) node2->GetData();
 
                     // Assume that the same line doesn't cross itself
                     if (shape2->IsKindOf(CLASSINFO(wxLineShape)) && (shape1 != shape2))
@@ -631,10 +628,10 @@ void wxLineCrossings::FindCrossings(wxDiagram& diagram)
                         // Iterate through the segments
                         wxList* pts2 = lineShape2->GetLineControlPoints();
                         int j;
-                        for (j = 0; j < (pts2->Number() - 1); j++)
+                        for (j = 0; j < (int) (pts2->GetCount() - 1); j++)
                         {
-                            wxRealPoint* pt2_a = (wxRealPoint*) (pts2->Nth(j)->Data());
-                            wxRealPoint* pt2_b = (wxRealPoint*) (pts2->Nth(j+1)->Data());
+                            wxRealPoint* pt2_a = (wxRealPoint*) (pts2->Item(j)->GetData());
+                            wxRealPoint* pt2_b = (wxRealPoint*) (pts2->Item(j+1)->GetData());
 
                             // Now let's see if these two segments cross.
                             double ratio1, ratio2;
@@ -661,25 +658,25 @@ void wxLineCrossings::FindCrossings(wxDiagram& diagram)
                             }
                         }
                     }
-                    node2 = node2->Next();
+                    node2 = node2->GetNext();
                 }
             }
         }
 
-        node1 = node1->Next();
+        node1 = node1->GetNext();
     }
 }
 
-void wxLineCrossings::DrawCrossings(wxDiagram& diagram, wxDC& dc)
+void wxLineCrossings::DrawCrossings(wxDiagram& WXUNUSED(diagram), wxDC& dc)
 {
     dc.SetBrush(*wxTRANSPARENT_BRUSH);
 
     long arcWidth = 8;
 
-    wxNode* node = m_crossings.First();
+    wxNode* node = m_crossings.GetFirst();
     while (node)
     {
-        wxLineCrossing* crossing = (wxLineCrossing*) node->Data();
+        wxLineCrossing* crossing = (wxLineCrossing*) node->GetData();
 //        dc.DrawEllipse((long) (crossing->m_intersect.x - (arcWidth/2.0) + 0.5), (long) (crossing->m_intersect.y - (arcWidth/2.0) + 0.5),
 //           arcWidth, arcWidth);
 
@@ -731,18 +728,18 @@ void wxLineCrossings::DrawCrossings(wxDiagram& diagram, wxDC& dc)
         dc.SetPen(*wxWHITE_PEN);
         dc.DrawLine( (long) arcX1, (long) arcY1, (long) arcX2, (long) arcY2 );
 
-        node = node->Next();
+        node = node->GetNext();
     }
 }
 
 void wxLineCrossings::ClearCrossings()
 {
-    wxNode* node = m_crossings.First();
+    wxNode* node = m_crossings.GetFirst();
     while (node)
     {
-        wxLineCrossing* crossing = (wxLineCrossing*) node->Data();
+        wxLineCrossing* crossing = (wxLineCrossing*) node->GetData();
         delete crossing;
-        node = node->Next();
+        node = node->GetNext();
     }
     m_crossings.Clear();
 }

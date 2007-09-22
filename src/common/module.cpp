@@ -4,12 +4,12 @@
 // Author:      Wolfram Gloger/adapted by Guilhem Lavaux
 // Modified by:
 // Created:     04/11/98
-// RCS-ID:      $Id: module.cpp,v 1.6 2001/12/19 07:09:55 RL Exp $
+// RCS-ID:      $Id: module.cpp,v 1.15 2004/09/17 22:23:59 ABX Exp $
 // Copyright:   (c) Wolfram Gloger and Guilhem Lavaux
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
 
-#ifdef __GNUG__
+#if defined(__GNUG__) && !defined(NO_GCC_PRAGMA)
 #pragma implementation "module.h"
 #endif
 
@@ -24,14 +24,7 @@
 #include "wx/hash.h"
 #include "wx/listimpl.cpp"
 
-#ifdef __SALFORDC__
-void wxwxModuleListNode::DeleteData()
-{
-    delete (_WX_LIST_ITEM_TYPE_wxModuleList *)GetData();
-}
-#else
 WX_DEFINE_LIST(wxModuleList);
-#endif
 
 IMPLEMENT_CLASS(wxModule, wxObject)
 
@@ -45,22 +38,23 @@ void wxModule::RegisterModule(wxModule* module)
 void wxModule::UnregisterModule(wxModule* module)
 {
     m_modules.DeleteObject(module);
+    delete module;
 }
 
 // Collect up all module-derived classes, create an instance of each,
 // and register them.
 void wxModule::RegisterModules()
 {
-    wxNode *node;
+    wxHashTable::compatibility_iterator node;
     wxClassInfo* classInfo;
 
     wxClassInfo::sm_classTable->BeginFind();
     node = wxClassInfo::sm_classTable->Next();
     while (node)
     {
-        classInfo = (wxClassInfo *)node->Data();
+        classInfo = (wxClassInfo *)node->GetData();
         if ( classInfo->IsKindOf(CLASSINFO(wxModule)) &&
-            (classInfo != (& (wxModule::sm_classwxModule))) )
+            (classInfo != (& (wxModule::ms_classInfo))) )
         {
             wxModule* module = (wxModule *)classInfo->CreateObject();
             RegisterModule(module);
@@ -72,35 +66,34 @@ void wxModule::RegisterModules()
 bool wxModule::InitializeModules()
 {
     // Initialize user-defined modules
-    wxModuleList::Node *node;
+    wxModuleList::compatibility_iterator node;
     for ( node = m_modules.GetFirst(); node; node = node->GetNext() )
     {
         if ( !node->GetData()->Init() )
         {
             // clean up already initialized modules - process in reverse order
-            wxModuleList::Node *n;
+            wxModuleList::compatibility_iterator n;
             for ( n = node->GetPrevious(); n; n = n->GetPrevious() )
             {
                 n->GetData()->OnExit();
             }
 
-            return FALSE;
+            return false;
         }
     }
 
-    return TRUE;
+    return true;
 }
 
 void wxModule::CleanUpModules()
 {
     // Cleanup user-defined modules
-    wxModuleList::Node *node;
+    wxModuleList::compatibility_iterator node;
     for ( node = m_modules.GetFirst(); node; node = node->GetNext() )
     {
         node->GetData()->Exit();
     }
 
-    m_modules.DeleteContents(TRUE);
-    m_modules.Clear();
+    WX_CLEAR_LIST(wxModuleList, m_modules);
 }
 

@@ -21,19 +21,19 @@ wxServerBase
 
 \latexignore{\rtfignore{\wxheading{Members}}}
 
-\membersection{wxDDEServer::wxDDEServer}
+\membersection{wxDDEServer::wxDDEServer}\label{wxddeserverctor}
 
 \func{}{wxDDEServer}{\void}
 
 Constructs a server object.
 
-\membersection{wxDDEServer::Create}
+\membersection{wxDDEServer::Create}\label{wxddeservercreate}
 
 \func{bool}{Create}{\param{const wxString\& }{service}}
 
 Registers the server using the given service name. Under UNIX, the
 string must contain an integer id which is used as an Internet port
-number. FALSE is returned if the call failed (for example, the port
+number. false is returned if the call failed (for example, the port
 number is already in use).
 
 \membersection{wxDDEServer::OnAcceptConnection}\label{wxddeserveronacceptconnection}

@@ -3,15 +3,16 @@
 Classes: \helpref{wxColourDialog}{wxcolourdialog}, \helpref{wxFontDialog}{wxfontdialog},
 \rtfsp\helpref{wxPrintDialog}{wxprintdialog}, \helpref{wxFileDialog}{wxfiledialog},\rtfsp
 \helpref{wxDirDialog}{wxdirdialog}, \helpref{wxTextEntryDialog}{wxtextentrydialog},\rtfsp
+\helpref{wxPasswordEntryDialog}{wxpasswordentrydialog},\rtfsp
 \helpref{wxMessageDialog}{wxmessagedialog}, \helpref{wxSingleChoiceDialog}{wxsinglechoicedialog},\rtfsp
-\helpref{wxMultipleChoiceDialog}{wxmultiplechoicedialog}
+\helpref{wxMultiChoiceDialog}{wxmultichoicedialog}
 
 Common dialog classes and functions encapsulate commonly-needed dialog box requirements.
 They are all `modal', grabbing the flow of control until the user dismisses the dialog,
 to make them easy to use within an application.
 
 Some dialogs have both platform-dependent and platform-independent implementations,
-so that if underlying windowing systems that do not provide the required functionality,
+so that if underlying windowing systems do not provide the required functionality,
 the generic classes and functions can stand in. For example, under MS Windows, wxColourDialog
 uses the standard colour selector. There is also an equivalent called wxGenericColourDialog
 for other platforms, and a macro defines wxColourDialog to be the same as wxGenericColourDialog
@@ -59,7 +60,7 @@ uses it to set the background of a window.
 
 \begin{verbatim}
   wxColourData data;
-  data.SetChooseFull(TRUE);
+  data.SetChooseFull(true);
   for (int i = 0; i < 16; i++)
   {
     wxColour colour(i*16, i*16, i*16);
@@ -95,8 +96,7 @@ font is shown on a white area of the dialog box. Note that
 in the translation from full MS Windows fonts to wxWidgets font
 conventions, strikeout is ignored and a font family (such as
 Swiss or Modern) is deduced from the actual font name (such as Arial
-or Courier). The full range of Windows fonts cannot be used in wxWidgets
-at present.
+or Courier).
 
 {\bf The generic font selector}
 
@@ -105,11 +105,6 @@ Controls for font family, point size, style, weight,
 underlining and text foreground colour are provided, and
 a sample is shown upon a white background. The generic font selector
 is also available under MS Windows; use the name wxGenericFontDialog.
-
-In both cases, the application is responsible for deleting the
-new font returned from calling wxFontDialog::Show (if any).
-This returned font is guaranteed to be a new object and not
-one currently in use in the application.
 
 {\bf Example}
 
@@ -184,6 +179,13 @@ Classes: \helpref{wxTextEntryDialog}{wxtextentrydialog}
 This is a dialog with a text entry field. The value that the user
 entered is obtained using \helpref{wxTextEntryDialog::GetValue}{wxtextentrydialoggetvalue}.
 
+\subsection{wxPasswordEntryDialog overview}\label{wxpasswordentrydialogoverview}
+
+Classes: \helpref{wxPasswordEntryDialog}{wxpasswordentrydialog}
+
+This is a dialog with a password entry field. The value that the user
+entered is obtained using \helpref{wxTextEntryDialog::GetValue}{wxtextentrydialoggetvalue}.
+
 \subsection{wxMessageDialog overview}\label{wxmessagedialogoverview}
 
 Classes: \helpref{wxMessageDialog}{wxmessagedialog}
@@ -202,11 +204,10 @@ This dialog shows a list of choices, plus OK and (optionally) Cancel. The user c
 select one of them. The selection can be obtained from the dialog as an index,
 a string or client data.
 
-\subsection{wxMultipleChoiceDialog overview}\label{wxmultiplechoicedialogoverview}
+\subsection{wxMultiChoiceDialog overview}\label{wxmultichoicedialogoverview}
 
-Classes: \helpref{wxMultipleChoiceDialog}{wxmultiplechoicedialog}
+Classes: \helpref{wxMultiChoiceDialog}{wxmultichoicedialog}
 
 This dialog shows a list of choices, plus OK and (optionally) Cancel. The user can
 select one or more of them.
-
 

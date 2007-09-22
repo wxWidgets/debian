@@ -6,7 +6,7 @@
 # Author:       Robin Dunn
 #
 # Created:      6-March-2000
-# RCS-ID:       $Id: run.py,v 1.10.2.8 2003/07/31 17:13:42 RD Exp $
+# RCS-ID:       $Id: run.py,v 1.27 2004/08/25 16:58:38 RD Exp $
 # Copyright:    (c) 2000 by Total Control Software
 # Licence:      wxWindows license
 #----------------------------------------------------------------------------
@@ -18,9 +18,16 @@ on the command line.
 """
 
 import wx                  # This module uses the new wx namespace
-print "wx.VERSION_STRING = ", wx.VERSION_STRING
-
 import sys, os
+
+# stuff for debugging
+print "wx.VERSION_STRING = ", wx.VERSION_STRING
+print "pid:", os.getpid()
+##raw_input("Press Enter...")
+
+assertMode = wx.PYAPP_ASSERT_DIALOG
+##assertMode = wx.PYAPP_ASSERT_EXCEPTION
+
 
 #----------------------------------------------------------------------------
 
@@ -33,29 +40,37 @@ class Log:
 
 
 class RunDemoApp(wx.App):
-    def __init__(self, name, module):
+    def __init__(self, name, module, useShell):
         self.name = name
         self.demoModule = module
-        wx.App.__init__(self, 0)
+        self.useShell = useShell
+        wx.App.__init__(self, redirect=False)
 
 
     def OnInit(self):
-        wx.InitAllImageHandlers()
         wx.Log_SetActiveTarget(wx.LogStderr())
 
-        #self.SetAssertMode(wx.PYAPP_ASSERT_DIALOG)
+        self.SetAssertMode(assertMode)
 
-        frame = wx.Frame(None, -1, "RunDemo: " + self.name, pos=(50,50), size=(0,0),
-                        style=wx.NO_FULL_REPAINT_ON_RESIZE|wx.DEFAULT_FRAME_STYLE)
+        frame = wx.Frame(None, -1, "RunDemo: " + self.name, pos=(50,50), size=(200,100),
+                        style=wx.DEFAULT_FRAME_STYLE)
         frame.CreateStatusBar()
+
         menuBar = wx.MenuBar()
         menu = wx.Menu()
-        menu.Append(101, "E&xit\tAlt-X", "Exit demo")
-        wx.EVT_MENU(self, 101, self.OnButton)
+        item = menu.Append(-1, "E&xit\tAlt-X", "Exit demo")
+        self.Bind(wx.EVT_MENU, self.OnButton, item)
         menuBar.Append(menu, "&File")
+
+        ns = {}
+        ns['wx'] = wx
+        ns['app'] = self
+        ns['module'] = self.demoModule
+        ns['frame'] = frame
+        
         frame.SetMenuBar(menuBar)
         frame.Show(True)
-        wx.EVT_CLOSE(frame, self.OnCloseFrame)
+        frame.Bind(wx.EVT_CLOSE, self.OnCloseFrame)
 
         win = self.demoModule.runTest(frame, frame, Log())
 
@@ -66,14 +81,19 @@ class RunDemoApp(wx.App):
             frame.SetSize((640, 480))
             win.SetFocus()
             self.window = win
+            ns['win'] = win
+            frect = frame.GetRect()
 
         else:
             # otherwise the demo made its own frame, so just put a
             # button in this one
             if hasattr(frame, 'otherWin'):
-                b = wx.Button(frame, -1, " Exit ")
-                frame.SetSize((200, 100))
-                wx.EVT_BUTTON(frame, b.GetId(), self.OnButton)
+                ns['win'] = frame.otherWin
+                frect = frame.otherWin.GetRect()
+                p = wx.Panel(frame, -1)
+                b = wx.Button(p, -1, " Exit ", (10,10))
+                wx.CallAfter(frame.SetClientSize, (200, 100))
+                frame.Bind(wx.EVT_BUTTON, self.OnButton, b)
             else:
                 # It was probably a dialog or something that is already
                 # gone, so we're done.
@@ -84,6 +104,24 @@ class RunDemoApp(wx.App):
         self.frame = frame
         #wx.Log_SetActiveTarget(wx.LogStderr())
         #wx.Log_SetTraceMask(wx.TraceMessages)
+
+        if self.useShell:
+            # Make a PyShell window, and position it below our test window
+            from wx import py
+            shell = py.shell.ShellFrame(None, locals=ns)
+            frect.OffsetXY(0, frect.height)
+            frect.height = 400
+            shell.SetRect(frect)
+            shell.Show()
+
+            # Hook the close event of the test window so that we close
+            # the shell at the same time
+            def CloseShell(evt):
+                if shell:
+                    shell.Close()
+                evt.Skip()
+            frame.Bind(wx.EVT_CLOSE, CloseShell)
+                    
         return True
 
 
@@ -101,17 +139,22 @@ class RunDemoApp(wx.App):
 
 
 def main(argv):
+    useShell = False
+    for x in range(len(sys.argv)):
+        if sys.argv[x] in ['--shell', '-shell', '-s']:
+            useShell = True
+            del sys.argv[x]
+            break
+            
     if len(argv) < 2:
         print "Please specify a demo module name on the command-line"
         raise SystemExit
 
-    name = argv[1]
-    if name[-3:] == '.py':
-        name = name[:-3]
+    name, ext  = os.path.splitext(argv[1])
     module = __import__(name)
 
 
-    app = RunDemoApp(name, module)
+    app = RunDemoApp(name, module, useShell)
     app.MainLoop()
 
 

@@ -18,29 +18,49 @@ wxInputStream is an abstract base class which may not be used directly.
 % -----------
 % ctor & dtor
 % -----------
-\membersection{wxInputStream::wxInputStream}
+\membersection{wxInputStream::wxInputStream}\label{wxinputstreamctor}
 
 \func{}{wxInputStream}{\void}
 
 Creates a dummy input stream.
 
-\membersection{wxInputStream::\destruct{wxInputStream}}
+\membersection{wxInputStream::\destruct{wxInputStream}}\label{wxinputstreamdtor}
 
 \func{}{\destruct{wxInputStream}}{\void}
 
 Destructor.
 
-\membersection{wxInputStream::GetC}
+\membersection{wxInputStream::CanRead}\label{wxinputstreamcanread}
+
+\constfunc{bool}{CanRead}{\void}
+
+Returns true if some data is available in the stream right now, so that
+calling \helpref{Read()}{wxinputstreamread} wouldn't block.
+
+\membersection{wxInputStream::GetC}\label{wxinputstreamgetc}
 
 \func{char}{GetC}{\void}
 
-Returns the first character in the input queue and removes it.
+Returns the first character in the input queue and removes it, 
+blocking until it appears if necessary.
+
+\wxheading{Note}
+
+If EOF, return value is undefined and LastRead() will return 0 and not 1.
 
 \membersection{wxInputStream::Eof}\label{wxinputstreameof}
 
-\constfunc{wxInputStream}{Eof}{\void}
+\constfunc{bool}{Eof}{\void}
 
-Returns TRUE if the end of stream has been reached.
+Returns true if the end of stream has been reached.
+
+\wxheading{Note}
+
+For some streams Eof() will not return true until an
+attempt has been made to read past the end of the stream.
+\helpref{LastRead()}{wxinputstreamlastread}
+should be called after each read to check that
+a non-zero number of bytes have been read.
 
 \membersection{wxInputStream::LastRead}\label{wxinputstreamlastread}
 
@@ -48,13 +68,19 @@ Returns TRUE if the end of stream has been reached.
 
 Returns the last number of bytes read.
 
-\membersection{wxInputStream::Peek}
+\membersection{wxInputStream::Peek}\label{wxinputstreampeek}
 
 \func{char}{Peek}{\void}
 
 Returns the first character in the input queue without removing it.
 
-\membersection{wxInputStream::Read}
+\wxheading{Note}
+
+Blocks until something appears in the stream if necessary, if nothing
+ever does (i.e. EOF) LastRead() will return 0 (and the return value is
+undefined), otherwise LastRead() returns 1.
+
+\membersection{wxInputStream::Read}\label{wxinputstreamread}
 
 \func{wxInputStream\&}{Read}{\param{void *}{buffer}, \param{size\_t}{ size}}
 
@@ -79,13 +105,23 @@ The data is read until an error is raised by one of the two streams.
 This function returns a reference on the current object, so the user can test
 any states of the stream right away.
 
-\membersection{wxInputStream::SeekI}
+\membersection{wxInputStream::SeekI}\label{wxinputstreamseeki}
 
 \func{off\_t}{SeekI}{\param{off\_t}{ pos}, \param{wxSeekMode}{ mode = wxFromStart}}
 
 Changes the stream current position.
 
-\membersection{wxInputStream::TellI}
+\wxheading{Parameters}
+
+\docparam{pos}{Offset to seek to.}
+
+\docparam{mode}{One of {\bf wxFromStart}, {\bf wxFromEnd}, {\bf wxFromCurrent}.}
+
+\wxheading{Return value}
+
+The new stream position or wxInvalidOffset on error.
+
+\membersection{wxInputStream::TellI}\label{wxinputstreamtelli}
 
 \constfunc{off\_t}{TellI}{\void}
 

@@ -4,7 +4,7 @@
 // Author:      Aleksandras Gluchovas
 // Modified by:
 // Created:     23/01/99
-// RCS-ID:      $Id: dyntbarhnd.cpp,v 1.2 2002/01/21 22:34:41 JS Exp $
+// RCS-ID:      $Id: dyntbarhnd.cpp,v 1.3 2003/08/19 15:40:40 JS Exp $
 // Copyright:   (c) Aleksandras Gluchovas
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -29,7 +29,7 @@
 
 IMPLEMENT_DYNAMIC_CLASS( cbDynToolBarDimHandler, cbBarDimHandlerBase )
 
-void cbDynToolBarDimHandler::OnChangeBarState(cbBarInfo* pBar, int newState )
+void cbDynToolBarDimHandler::OnChangeBarState(cbBarInfo* WXUNUSED(pBar), int WXUNUSED(newState) )
 {
     // nothing
 }

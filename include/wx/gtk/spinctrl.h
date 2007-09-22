@@ -3,7 +3,7 @@
 // Purpose:     wxSpinCtrl class
 // Author:      Robert Roebling
 // Modified by:
-// RCS-ID:      $Id: spinctrl.h,v 1.8 2002/09/07 12:28:46 GD Exp $
+// RCS-ID:      $Id: spinctrl.h,v 1.14 2004/06/14 17:31:26 VS Exp $
 // Copyright:   (c) Robert Roebling
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -11,7 +11,7 @@
 #ifndef __GTKSPINCTRLH__
 #define __GTKSPINCTRLH__
 
-#if defined(__GNUG__) && !defined(__APPLE__)
+#if defined(__GNUG__) && !defined(NO_GCC_PRAGMA)
 #pragma interface
 #endif
 
@@ -51,6 +51,7 @@ public:
                 const wxString& name = _T("wxSpinCtrl"));
 
     void SetValue(const wxString& text);
+    void SetSelection(long from, long to);
 
     virtual int GetValue() const;
     virtual void SetValue( int value );
@@ -58,11 +59,13 @@ public:
     virtual int GetMin() const;
     virtual int GetMax() const;
 
+    static wxVisualAttributes
+    GetClassDefaultAttributes(wxWindowVariant variant = wxWINDOW_VARIANT_NORMAL);
+    
     // implementation
     void OnChar( wxKeyEvent &event );
     
     bool IsOwnGtkWindow( GdkWindow *window );
-    void ApplyWidgetStyle();
     void GtkDisableEvents();
     void GtkEnableEvents();
 
@@ -71,6 +74,10 @@ public:
 
 protected:
     virtual wxSize DoGetBestSize() const;
+
+    // Widgets that use the style->base colour for the BG colour should
+    // override this and return true.
+    virtual bool UseGTKStyleBase() const { return true; }
 
 private:
     DECLARE_DYNAMIC_CLASS(wxSpinCtrl)

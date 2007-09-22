@@ -1,6 +1,6 @@
-# $Id: Makefile.in,v 1.2 2000/09/26 21:58:37 vaclavslavik Exp $
+# $Id: Makefile.in,v 1.3 2004/09/30 22:17:55 VS Exp $
 
-CONTRIB_UTILS=wxrc wxrcedit convertrc
+CONTRIB_UTILS=wxrcedit convertrc
 
 all:
 	@for d in $(CONTRIB_UTILS); do (cd $$d && $(MAKE)); done

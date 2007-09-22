@@ -4,9 +4,9 @@
 // Author:      Aleksandras Gluchovas
 // Modified by:
 // Created:     19/10/98
-// RCS-ID:      $Id: gcupdatesmgr.cpp,v 1.3 2002/01/21 22:34:42 JS Exp $
+// RCS-ID:      $Id: gcupdatesmgr.cpp,v 1.6 2004/06/07 16:02:23 ABX Exp $
 // Copyright:   (c) Aleksandras Gluchovas 
-// Licence:       wxWindows licence
+// Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
 
 #ifdef __GNUG__
@@ -53,7 +53,7 @@ struct cbRectInfo
 
 static inline cbRectInfo& node_to_rect_info( wxNode* pNode )
 {
-    return *( (cbRectInfo*) (pNode->Data()) );
+    return *( (cbRectInfo*) (pNode->GetData()) );
 }
 
 /***** Implementation for class cbSimpleUpdatesMgr *****/
@@ -96,7 +96,7 @@ void cbGCUpdatesMgr::OnStartChanges()
 
         // store pane state
         pane.mUMgrData.StoreItemState( pane.mBoundsInParent );
-        pane.mUMgrData.SetDirty( FALSE );
+        pane.mUMgrData.SetDirty( false );
 
         cbRowInfo* pRow = pane.GetFirstRow();
 
@@ -106,13 +106,13 @@ void cbGCUpdatesMgr::OnStartChanges()
 
             // store row state
             pRow->mUMgrData.StoreItemState( pRow->mBoundsInParent );
-            pRow->mUMgrData.SetDirty( FALSE );
+            pRow->mUMgrData.SetDirty( false );
 
             while( pBar )
             {
                 // store bar state
                 pBar->mUMgrData.StoreItemState( pBar->mBoundsInParent );
-                pBar->mUMgrData.SetDirty( FALSE );
+                pBar->mUMgrData.SetDirty( false );
 
                 pBar = pBar->mpNext;
             }
@@ -164,20 +164,20 @@ void cbGCUpdatesMgr::UpdateNow()
 
             cbBarInfo* pBar = pRow->GetFirstBar();
 
-            bool rowChanged = FALSE;
-//            bool rowBkPainted  = FALSE;
+            bool rowChanged = false;
+//            bool rowBkPainted  = false;
 
             // FIXME:: the below should not be fixed
             cbBarInfo* barsToRepaint[128];
             // number of bars, that were changed in the current row
             int nBars = 0; 
 
-            wxRect r1 = pRow->mUMgrData.mPrevBounds;
-            wxRect r2 = pRow->mBoundsInParent;
+            //wxRect r1 = pRow->mUMgrData.mPrevBounds;
+            //wxRect r2 = pRow->mBoundsInParent;
 
             if ( WasChanged( pRow->mUMgrData, pRow->mBoundsInParent ) )
             
-                rowChanged = TRUE;
+                rowChanged = true;
             else
                 while( pBar )
                 {
@@ -276,13 +276,13 @@ void cbGCUpdatesMgr::UpdateNow()
 
 void cbGCUpdatesMgr::DoRepositionItems( wxList& items )
 {
-    wxNode* pNode1 = items.First();
+    wxNode* pNode1 = items.GetFirst();
 
     while( pNode1 )
     {
         cbRectInfo& info = node_to_rect_info( pNode1 );
 
-        wxNode* pNode2 = items.First();
+        wxNode* pNode2 = items.GetFirst();
 
         // and node itself
 
@@ -305,10 +305,10 @@ void cbGCUpdatesMgr::DoRepositionItems( wxList& items )
                     mGC.AddDependency( &info,      &otherInfo      );
             }
 
-            pNode2 = pNode2->Next();
+            pNode2 = pNode2->GetNext();
         }
 
-        pNode1 = pNode1->Next();
+        pNode1 = pNode1->GetNext();
     }
 
     mGC.ArrangeCollection(); // order nodes according "least-dependency" rule,
@@ -318,7 +318,7 @@ void cbGCUpdatesMgr::DoRepositionItems( wxList& items )
     // they stand in linear (not cyclic) dependency with other
     // regular nodes).
 
-    wxNode* pNode = mGC.GetRegularObjects().First();
+    wxNode* pNode = mGC.GetRegularObjects().GetFirst();
 
     while ( pNode )
     {
@@ -330,12 +330,12 @@ void cbGCUpdatesMgr::DoRepositionItems( wxList& items )
         else
             info.mpPane->SizeBar( info.mpBar );
 
-        pNode = pNode->Next();
+        pNode = pNode->GetNext();
     }
 
     // cycled item nodes, need to be both resized and repainted
 
-    pNode = mGC.GetCycledObjects().First();
+    pNode = mGC.GetCycledObjects().GetFirst();
 
     while ( pNode )
     {
@@ -349,8 +349,8 @@ void cbGCUpdatesMgr::DoRepositionItems( wxList& items )
 
             // FIXME FIXME:: excessive!
 
-            pClntWnd->Show( FALSE );
-            pClntWnd->Show( TRUE  );
+            pClntWnd->Show( false );
+            pClntWnd->Show( true  );
 
             // OLD STUFF:: mpLayout->PositionClientWindow();
         }
@@ -374,26 +374,26 @@ void cbGCUpdatesMgr::DoRepositionItems( wxList& items )
             // FIXME FIXME:: there's no other way to repaint non-client area of the wxWindow!!
             //                 so we do *excessive* "hide 'n show"
 
-            pWnd->Show(FALSE);
-            pWnd->Show(TRUE);
+            pWnd->Show(false);
+            pWnd->Show(true);
                 
             pWnd->Refresh();
         }
 
-        pNode = pNode->Next();
+        pNode = pNode->GetNext();
     }
 
     // release data prepared for GC alg.
 
-    pNode = items.First();
+    pNode = items.GetFirst();
 
     while( pNode )
     {
-        cbRectInfo* pInfo = (cbRectInfo*)(pNode->Data());
+        cbRectInfo* pInfo = (cbRectInfo*)(pNode->GetData());
 
         delete pInfo;
 
-        pNode = pNode->Next();
+        pNode = pNode->GetNext();
     }
 
     mGC.Reset(); // reinit GC

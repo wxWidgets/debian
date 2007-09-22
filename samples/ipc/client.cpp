@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     25/01/99
-// RCS-ID:      $Id: client.cpp,v 1.11.2.1 2002/12/15 17:25:07 MBN Exp $
+// RCS-ID:      $Id: client.cpp,v 1.14 2004/06/02 17:01:24 ABX Exp $
 // Copyright:   (c) Julian Smart
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -99,7 +99,7 @@ bool MyApp::OnInit()
                               wxICON_ERROR | wxYES_NO | wxCANCEL ) != wxYES )
             {
                 // no server
-                return FALSE;
+                return false;
             }
 
             the_connection = (MyConnection *)my_client->MakeConnection(hostName, service, _T("IPC TEST"));
@@ -110,9 +110,9 @@ bool MyApp::OnInit()
         wxMessageBox(_T("StartAdvise failed"), _T("Client Demo Error"));
 
     // Create the main frame window
-    (new MyFrame(NULL, _T("Client")))->Show(TRUE);
+    (new MyFrame(NULL, _T("Client")))->Show(true);
 
-    return TRUE;
+    return true;
 }
 
 int MyApp::OnExit()
@@ -131,7 +131,7 @@ int MyApp::OnExit()
 
 // Define my frame constructor
 MyFrame::MyFrame(wxFrame *frame, const wxString& title)
-        : wxFrame(frame, -1, title, wxDefaultPosition, wxSize(300, 200))
+        : wxFrame(frame, wxID_ANY, title, wxDefaultPosition, wxSize(300, 200))
 {
     // Give it an icon
     SetIcon(wxICON(mondrian));
@@ -160,21 +160,21 @@ MyFrame::MyFrame(wxFrame *frame, const wxString& title)
     the_list->Append(_T("Fruit"));
 }
 
-void MyFrame::OnExecute(wxCommandEvent& event)
+void MyFrame::OnExecute(wxCommandEvent& WXUNUSED(event))
 {
     if (the_connection)
         if (!the_connection->Execute(_T("Hello from the client!")))
             wxMessageBox(_T("Execute failed"), _T("Client Demo Error"));
 }
 
-void MyFrame::OnPoke(wxCommandEvent& event)
+void MyFrame::OnPoke(wxCommandEvent& WXUNUSED(event))
 {
     if (the_connection)
         if (!the_connection->Poke(_T("An item"), _T("Some data to poke at the server!")))
             wxMessageBox(_T("Poke failed"), _T("Client Demo Error"));
 }
 
-void MyFrame::OnRequest(wxCommandEvent& event)
+void MyFrame::OnRequest(wxCommandEvent& WXUNUSED(event))
 {
     if (the_connection)
     {
@@ -186,7 +186,7 @@ void MyFrame::OnRequest(wxCommandEvent& event)
     }
 }
 
-void MyFrame::OnExit(wxCommandEvent& event)
+void MyFrame::OnExit(wxCommandEvent& WXUNUSED(event))
 {
     Close();
 }
@@ -196,15 +196,15 @@ wxConnectionBase *MyClient::OnMakeConnection()
     return new MyConnection;
 }
 
-bool MyConnection::OnAdvise(const wxString& topic, const wxString& item, wxChar *data, int size, wxIPCFormat format)
+bool MyConnection::OnAdvise(const wxString& WXUNUSED(topic), const wxString& WXUNUSED(item), wxChar *data, int WXUNUSED(size), wxIPCFormat WXUNUSED(format))
 {
     if (the_list)
     {
         int n = the_list->FindString(data);
-        if (n > -1)
+        if (n > wxNOT_FOUND)
             the_list->SetSelection(n);
     }
-    return TRUE;
+    return true;
 }
 
 bool MyConnection::OnDisconnect()

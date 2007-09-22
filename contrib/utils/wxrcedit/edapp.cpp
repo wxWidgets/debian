@@ -2,7 +2,7 @@
 // Purpose:     XML resources editor
 // Author:      Vaclav Slavik
 // Created:     2000/05/05
-// RCS-ID:      $Id: edapp.cpp,v 1.6 2002/09/07 12:17:00 GD Exp $
+// RCS-ID:      $Id: edapp.cpp,v 1.10 2004/06/11 13:14:23 ABX Exp $
 // Copyright:   (c) 2000 Vaclav Slavik
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -20,12 +20,12 @@
 #endif
 
 // for all others, include the necessary headers (this file is usually all you
-// need because it includes almost all "standard" wxWindows headers
+// need because it includes almost all "standard" wxWidgets headers
 #ifndef WX_PRECOMP
     #include "wx/wx.h"
 #endif
 
-#include "wx/xrc/xml.h"
+#include "wx/xml/xml.h"
 #include "wx/image.h"
 #include "wx/wx.h"
 
@@ -47,15 +47,15 @@ IMPLEMENT_APP(MyApp)
 
 bool MyApp::OnInit()
 {
-    SetVendorName(wxT("wxWindows"));
+    SetVendorName(wxT("wxWidgets"));
     SetAppName(wxT("wxrcedit"));
-    wxString arg = (argc >= 1) ? argv[1] : "";
+    wxString arg = (argc >= 1) ? argv[1] : _T("");
     wxInitAllImageHandlers();
     wxFrame *frame = new EditorFrame(NULL, arg);
     SetTopWindow(frame);
-    frame->Show(TRUE);
-    PreviewFrame::Get()->Show(TRUE);
-    PropertiesFrame::Get()->Show(TRUE);
-    return TRUE;
+    frame->Show(true);
+    PreviewFrame::Get()->Show(true);
+    PropertiesFrame::Get()->Show(true);
+    return true;
 }
 

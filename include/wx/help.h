@@ -5,21 +5,26 @@
 
 #include "wx/helpbase.h"
 
-#ifdef __WXMSW__
+#ifdef __WXWINCE__
+    #include "wx/msw/wince/helpwce.h"
+
+    #define wxHelpController wxWinceHelpController
+#elif defined(__PALMOS__)
+    #include "wx/palmos/help.h"
+
+    #define wxHelpController wxPalmHelpController
+#elif defined(__WXMSW__)
     #include "wx/msw/helpwin.h"
 
     #define wxHelpController wxWinHelpController
-    #define sm_classwxHelpController sm_classwxWinHelpController
 #else // !MSW
 
 #if wxUSE_WXHTML_HELP
     #include "wx/html/helpctrl.h"
     #define wxHelpController wxHtmlHelpController
-    #define sm_classwxHelpController sm_classwxHtmlHelpController
 #else
     #include "wx/generic/helpext.h"
     #define wxHelpController wxExtHelpController
-    #define sm_classwxHelpController sm_classwxExtHelpController
 #endif
 
 #endif // MSW/!MSW

@@ -2,15 +2,15 @@
 // Name:        wx/gtk/slider.h
 // Purpose:
 // Author:      Robert Roebling
-// Id:          $Id: slider.h,v 1.13 2002/09/07 12:28:46 GD Exp $
-// Copyright:   (c) 1998 Robert Roebling, Julian Smart and Markus Holzem
+// Id:          $Id: slider.h,v 1.19 2004/06/14 17:31:26 VS Exp $
+// Copyright:   (c) 1998 Robert Roebling
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
 
 #ifndef __GTKSLIDERH__
 #define __GTKSLIDERH__
 
-#if defined(__GNUG__) && !defined(__APPLE__)
+#if defined(__GNUG__) && !defined(NO_GCC_PRAGMA)
 #pragma interface
 #endif
 
@@ -60,9 +60,11 @@ public:
     virtual void SetThumbLength(int lenPixels);
     virtual int GetThumbLength() const;
 
+    static wxVisualAttributes
+    GetClassDefaultAttributes(wxWindowVariant variant = wxWINDOW_VARIANT_NORMAL);
+    
     // implementation
     bool IsOwnGtkWindow( GdkWindow *window );
-    void ApplyWidgetStyle();
     void GtkDisableEvents();
     void GtkEnableEvents();
 

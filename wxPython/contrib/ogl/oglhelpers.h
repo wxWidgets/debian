@@ -5,7 +5,7 @@
 // Author:      Robin Dunn
 //
 // Created:     9-Sept-1999
-// RCS-ID:      $Id: oglhelpers.h,v 1.9.2.1 2003/06/13 01:03:32 RD Exp $
+// RCS-ID:      $Id: oglhelpers.h,v 1.12 2004/05/07 19:52:02 RD Exp $
 // Copyright:   (c) 1998 by Total Control Software
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -97,11 +97,11 @@
 //---------------------------------------------------------------------------
 // These are prototypes of some helper functions found in ogl.i
 
-wxList* wxPy_wxListHelper(PyObject* pyList, char* className);
+wxList* wxPy_wxListHelper(PyObject* pyList, const wxChar* className);
 wxList* wxPy_wxRealPoint_ListHelper(PyObject* pyList);
 PyObject* wxPyMake_wxShapeEvtHandler(wxShapeEvtHandler* source);
-PyObject* wxPy_ConvertShapeList(wxListBase* list, const char* className);
-
+PyObject* wxPy_ConvertShapeList(wxListBase* list);
+PyObject* wxPy_ConvertRealPointList(wxListBase* list);
 
 
 //---------------------------------------------------------------------------
@@ -147,6 +147,12 @@ class wxPyShape : public wxShape {
 public:
     wxPyShape(wxPyShapeCanvas *can = NULL)
         : wxShape(can) {}
+
+    virtual void GetBoundingBoxMin(double *width, double *height)
+    {
+        if (width) *width = 0.0;
+        if (height) *height = 0.0;
+    }
 
     WXSHAPE_DEC_CALLBACKS();
 

@@ -4,9 +4,9 @@
 // Author:      Vadim Zeitlin
 // Modified by:
 // Created:     10.09.00
-// RCS-ID:      $Id: tipwin.cpp,v 1.19 2002/01/22 15:39:40 VZ Exp $
+// RCS-ID:      $Id: tipwin.cpp,v 1.26 2004/06/17 16:22:36 ABX Exp $
 // Copyright:   (c) 2000 Vadim Zeitlin <zeitlin@dptmaths.ens-cachan.fr>
-// Licence:     wxWindows license
+// Licence:     wxWindows licence
 ///////////////////////////////////////////////////////////////////////////////
 
 // ============================================================================
@@ -17,7 +17,7 @@
 // headers
 // ----------------------------------------------------------------------------
 
-#ifdef __GNUG__
+#if defined(__GNUG__) && !defined(NO_GCC_PRAGMA)
     #pragma implementation "tipwin.h"
 #endif
 
@@ -31,7 +31,9 @@
 #ifndef WX_PRECOMP
     #include "wx/dcclient.h"
 #endif // WX_PRECOMP
-
+#ifdef __WXGTK__
+    #include <gtk/gtk.h>
+#endif
 #include "wx/tipwin.h"
 
 #if wxUSE_TIPWINDOW
@@ -76,6 +78,7 @@ private:
 #endif // !wxUSE_POPUPWIN
 
     DECLARE_EVENT_TABLE()
+    DECLARE_NO_COPY_CLASS(wxTipWindowView)
 };
 
 // ============================================================================
@@ -123,7 +126,7 @@ wxTipWindow::wxTipWindow(wxWindow *parent,
 #if wxUSE_POPUPWIN
            : wxPopupTransientWindow(parent)
 #else
-           : wxFrame(parent, -1, _T(""),
+           : wxFrame(parent, wxID_ANY, wxEmptyString,
                      wxDefaultPosition, wxDefaultSize,
                      wxNO_BORDER | wxFRAME_NO_TASKBAR )
 #endif
@@ -156,9 +159,13 @@ wxTipWindow::wxTipWindow(wxWindow *parent,
 #if wxUSE_POPUPWIN
     Position(wxPoint(x, y), wxSize(0, 0));
     Popup(m_view);
+    #ifdef __WXGTK__
+        if (!GTK_WIDGET_HAS_GRAB(m_widget))
+            gtk_grab_add( m_widget );
+    #endif
 #else
     Move(x, y);
-    Show(TRUE);
+    Show(true);
 #endif
 }
 
@@ -168,6 +175,12 @@ wxTipWindow::~wxTipWindow()
     {
         *m_windowPtr = NULL;
     }
+    #ifdef wxUSE_POPUPWIN
+        #ifdef __WXGTK__
+            if (GTK_WIDGET_HAS_GRAB(m_widget))
+                gtk_grab_remove( m_widget );
+        #endif
+    #endif
 }
 
 void wxTipWindow::OnMouseClick(wxMouseEvent& WXUNUSED(event))
@@ -216,7 +229,11 @@ void wxTipWindow::Close()
     }
 
 #if wxUSE_POPUPWIN
-    Show(FALSE);
+    Show(false);
+    #ifdef __WXGTK__
+        if (GTK_WIDGET_HAS_GRAB(m_widget))
+            gtk_grab_remove( m_widget );
+    #endif
     Destroy();
 #else
     wxFrame::Close();
@@ -228,7 +245,7 @@ void wxTipWindow::Close()
 // ----------------------------------------------------------------------------
 
 wxTipWindowView::wxTipWindowView(wxWindow *parent)
-               : wxWindow(parent, -1,
+               : wxWindow(parent, wxID_ANY,
                           wxDefaultPosition, wxDefaultSize,
                           wxNO_BORDER)
 {
@@ -255,7 +272,7 @@ void wxTipWindowView::Adjust(const wxString& text, wxCoord maxLength)
             widthMax = 0;
     m_parent->m_heightLine = 0;
 
-    bool breakLine = FALSE;
+    bool breakLine = false;
     for ( const wxChar *p = text.c_str(); ; p++ )
     {
         if ( *p == _T('\n') || *p == _T('\0') )
@@ -276,21 +293,21 @@ void wxTipWindowView::Adjust(const wxString& text, wxCoord maxLength)
             }
 
             current.clear();
-            breakLine = FALSE;
+            breakLine = false;
         }
         else if ( breakLine && (*p == _T(' ') || *p == _T('\t')) )
         {
             // word boundary - break the line here
             m_parent->m_textLines.Add(current);
             current.clear();
-            breakLine = FALSE;
+            breakLine = false;
         }
         else // line goes on
         {
             current += *p;
             dc.GetTextExtent(current, &width, &height);
             if ( width > maxLength )
-                breakLine = TRUE;
+                breakLine = true;
 
             if ( width > widthMax )
                 widthMax = width;

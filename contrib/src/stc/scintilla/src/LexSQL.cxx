@@ -44,6 +44,7 @@ static void ColouriseSQLDoc(unsigned int startPos, int length,
 	styler.StartAt(startPos);
 
 	bool fold = styler.GetPropertyInt("fold") != 0;
+	bool sqlBackslashEscapes = styler.GetPropertyInt("sql.backslash.escapes", 0) != 0;
 	int lineCurrent = styler.GetLine(startPos);
 	int spaceFlags = 0;
 
@@ -88,7 +89,13 @@ static void ColouriseSQLDoc(unsigned int startPos, int length,
 			} else if (ch == '-' && chNext == '-') {
 				styler.ColourTo(i - 1, state);
 				state = SCE_C_COMMENTLINE;
-			} else if ((ch == '\'') || (ch == '"')) {
+			} else if (ch == '#') {
+				styler.ColourTo(i - 1, state);
+				state = SCE_C_COMMENTLINEDOC;
+			} else if (ch == '\'') {
+				styler.ColourTo(i - 1, state);
+				state = SCE_C_CHARACTER;
+			} else if (ch == '"') {
 				styler.ColourTo(i - 1, state);
 				state = SCE_C_STRING;
 			} else if (isoperator(ch)) {
@@ -103,7 +110,11 @@ static void ColouriseSQLDoc(unsigned int startPos, int length,
 					state = SCE_C_COMMENT;
 				} else if (ch == '-' && chNext == '-') {
 					state = SCE_C_COMMENTLINE;
-				} else if ((ch == '\'') || (ch == '"'))  {
+				} else if (ch == '#') {
+					state = SCE_C_COMMENTLINEDOC;
+				} else if (ch == '\'') {
+					state = SCE_C_CHARACTER;
+				} else if (ch == '"') {
 					state = SCE_C_STRING;
 				} else if (isoperator(ch)) {
 					styler.ColourTo(i, SCE_C_OPERATOR);
@@ -118,14 +129,18 @@ static void ColouriseSQLDoc(unsigned int startPos, int length,
 						state = SCE_C_DEFAULT;
 					}
 				}
-			} else if (state == SCE_C_COMMENTLINE) {
+			} else if (state == SCE_C_COMMENTLINE || state == SCE_C_COMMENTLINEDOC) {
 				if (ch == '\r' || ch == '\n') {
 					styler.ColourTo(i - 1, state);
 					state = SCE_C_DEFAULT;
 				}
-			} else if (state == SCE_C_STRING) {
-				if (ch == '\'') {
-					if ( chNext == '\'' ) {
+			} else if (state == SCE_C_CHARACTER) {
+				if (sqlBackslashEscapes && ch == '\\') {
+					i++;
+					ch = chNext;
+					chNext = styler.SafeGetCharAt(i + 1);
+				} else if (ch == '\'') {
+					if (chNext == '\'') {
 						i++;
 					} else {
 						styler.ColourTo(i, state);
@@ -134,7 +149,9 @@ static void ColouriseSQLDoc(unsigned int startPos, int length,
 					}
 					ch = chNext;
 					chNext = styler.SafeGetCharAt(i + 1);
-				} else if (ch == '"') {
+				}
+			} else if (state == SCE_C_STRING) {
+				if (ch == '"') {
 					if (chNext == '"') {
 						i++;
 					} else {
@@ -151,7 +168,11 @@ static void ColouriseSQLDoc(unsigned int startPos, int length,
 					state = SCE_C_COMMENT;
 				} else if (ch == '-' && chNext == '-') {
 					state = SCE_C_COMMENTLINE;
-				} else if ((ch == '\'') || (ch == '"')) {
+				} else if (ch == '#') {
+					state = SCE_C_COMMENTLINEDOC;
+				} else if (ch == '\'') {
+					state = SCE_C_CHARACTER;
+				} else if (ch == '"') {
 					state = SCE_C_STRING;
 				} else if (iswordstart(ch)) {
 					state = SCE_C_WORD;

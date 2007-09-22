@@ -1,7 +1,9 @@
 #ifndef _WX_DCCLIENT_H_BASE_
 #define _WX_DCCLIENT_H_BASE_
 
-#if defined(__WXMSW__)
+#if defined(__PALMOS__)
+#include "wx/palmos/dcclient.h"
+#elif defined(__WXMSW__)
 #include "wx/msw/dcclient.h"
 #elif defined(__WXMOTIF__)
 #include "wx/motif/dcclient.h"
@@ -13,10 +15,10 @@
 #include "wx/mgl/dcclient.h"
 #elif defined(__WXMAC__)
 #include "wx/mac/dcclient.h"
+#elif defined(__WXCOCOA__)
+#include "wx/cocoa/dcclient.h"
 #elif defined(__WXPM__)
 #include "wx/os2/dcclient.h"
-#elif defined(__WXSTUBS__)
-#include "wx/stubs/dcclient.h"
 #endif
 
 #endif

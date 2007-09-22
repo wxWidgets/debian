@@ -3,7 +3,7 @@
 // Purpose:
 // Author:      Robert Roebling
 // Modified:    VZ at 05.10.00: use AllocExclusive(), comparison fixed
-// Id:          $Id: region.cpp,v 1.37.2.1 2002/09/21 10:38:36 VZ Exp $
+// Id:          $Id: region.cpp,v 1.42 2004/11/03 21:13:19 RR Exp $
 // Copyright:   (c) 1998 Robert Roebling
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -12,7 +12,7 @@
 // declarations
 // ============================================================================
 
-#ifdef __GNUG__
+#if defined(__GNUG__) && !defined(NO_GCC_PRAGMA)
     #pragma implementation "region.h"
 #endif
 
@@ -20,10 +20,11 @@
 // headers
 // ----------------------------------------------------------------------------
 
-#include "wx/log.h"
+// For compilers that support precompilation, includes "wx.h".
+#include "wx/wxprec.h"
 
 #include "wx/region.h"
-
+#include "wx/log.h"
 #include "wx/gtk/private.h"
 
 #ifndef __WXGTK20__

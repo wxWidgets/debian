@@ -18,7 +18,7 @@ and user interface element sizes.
 
 \latexignore{\rtfignore{\wxheading{Members}}}
 
-\membersection{wxSystemSettings::wxSystemSettings}
+\membersection{wxSystemSettings::wxSystemSettings}\label{wxsystemsettingsctor}
 
 \func{}{wxSystemSettings}{\void}
 
@@ -86,8 +86,10 @@ Returns a system font.
 \twocolitem{{\bf wxSYS\_ANSI\_VAR\_FONT}}{Windows variable-pitch (proportional) font.}
 \twocolitem{{\bf wxSYS\_SYSTEM\_FONT}}{System font.}
 \twocolitem{{\bf wxSYS\_DEVICE\_DEFAULT\_FONT}}{Device-dependent font (Windows NT only).}
-\twocolitem{{\bf wxSYS\_DEFAULT\_GUI\_FONT}}{Default font for user interface objects such as menus and dialog boxes.
-Not available in versions of Windows earlier than Windows 95 or Windows NT 4.0.}
+\twocolitem{{\bf wxSYS\_DEFAULT\_GUI\_FONT}}{Default font for user interface
+objects such as menus and dialog boxes. Note that with modern GUIs nothing
+guarantees that the same font is used for all GUI elements, so some controls
+might use a different font by default.}
 \end{twocollist}
 
 \pythonnote{This static method is implemented in Python as a
@@ -97,7 +99,8 @@ standalone function named {\tt wxSystemSettings\_GetFont}}
 
 \func{static int}{GetMetric}{\param{wxSystemMetric}{ index}}
 
-Returns a system metric.
+Returns the value of a system metric, or -1 if the metric is not
+supported on the current platform.
 
 {\it index} can be one of:
 

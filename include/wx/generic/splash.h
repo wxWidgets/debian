@@ -4,12 +4,12 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     28/6/2000
-// RCS-ID:      $Id: splash.h,v 1.5 2002/08/31 11:29:12 GD Exp $
+// RCS-ID:      $Id: splash.h,v 1.10 2004/10/13 14:04:11 ABX Exp $
 // Copyright:   (c) Julian Smart
 // Licence:
 /////////////////////////////////////////////////////////////////////////////
 
-#if defined(__GNUG__) && !defined(__APPLE__)
+#if defined(__GNUG__) && !defined(NO_GCC_PRAGMA)
 #pragma interface "splash.h"
 #endif
 
@@ -34,17 +34,17 @@
 #define wxSPLASH_TIMEOUT            0x04
 #define wxSPLASH_NO_TIMEOUT         0x00
 
-class WXDLLEXPORT wxSplashScreenWindow;
+class WXDLLIMPEXP_ADV wxSplashScreenWindow;
 
 /*
  * wxSplashScreen
  */
 
-class WXDLLEXPORT wxSplashScreen: public wxFrame
+class WXDLLIMPEXP_ADV wxSplashScreen: public wxFrame
 {
 public:
     // for RTTI macros only
-    wxSplashScreen() {};
+    wxSplashScreen() {}
     wxSplashScreen(const wxBitmap& bitmap, long splashStyle, int milliseconds,
                    wxWindow* parent, wxWindowID id,
                    const wxPoint& pos = wxDefaultPosition,
@@ -65,15 +65,16 @@ protected:
     int                     m_milliseconds;
     wxTimer                 m_timer;
 
-DECLARE_DYNAMIC_CLASS(wxSplashScreen)
-DECLARE_EVENT_TABLE()
+    DECLARE_DYNAMIC_CLASS(wxSplashScreen)
+    DECLARE_EVENT_TABLE()
+    DECLARE_NO_COPY_CLASS(wxSplashScreen)
 };
 
 /*
  * wxSplashScreenWindow
  */
 
-class WXDLLEXPORT wxSplashScreenWindow: public wxWindow
+class WXDLLIMPEXP_ADV wxSplashScreenWindow: public wxWindow
 {
 public:
     wxSplashScreenWindow(const wxBitmap& bitmap, wxWindow* parent, wxWindowID id, const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxDefaultSize, long style = wxNO_BORDER);
@@ -89,7 +90,8 @@ public:
 protected:
     wxBitmap    m_bitmap;
 
-DECLARE_EVENT_TABLE()
+    DECLARE_EVENT_TABLE()
+    DECLARE_NO_COPY_CLASS(wxSplashScreenWindow)
 };
 
 

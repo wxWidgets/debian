@@ -2,14 +2,17 @@
 // Name:        dnd.cpp
 // Purpose:     wxDropTarget class
 // Author:      Robert Roebling
-// Id:          $Id: dnd.cpp,v 1.86 2002/08/30 13:48:41 CE Exp $
+// Id:          $Id: dnd.cpp,v 1.89 2004/05/23 20:52:20 JS Exp $
 // Copyright:   (c) 1998 Robert Roebling
 // Licence:     wxWindows licence
 ///////////////////////////////////////////////////////////////////////////////
 
-#ifdef __GNUG__
+#if defined(__GNUG__) && !defined(NO_GCC_PRAGMA)
     #pragma implementation "dnd.h"
 #endif
+
+// For compilers that support precompilation, includes "wx.h".
+#include "wx/wxprec.h"
 
 #include "wx/dnd.h"
 #include "wx/log.h"
@@ -112,7 +115,7 @@ static const char * page_xpm[] = {
 // ============================================================================
 
 // ----------------------------------------------------------------------------
-// convert between GTK+ and wxWindows DND constants
+// convert between GTK+ and wxWidgets DND constants
 // ----------------------------------------------------------------------------
 
 static wxDragResult ConvertFromGTK(long action)

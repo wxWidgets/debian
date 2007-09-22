@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     01/02/97
-// RCS-ID:      $Id: button.h,v 1.17 2002/08/22 20:34:29 VZ Exp $
+// RCS-ID:      $Id: button.h,v 1.27 2004/08/30 14:38:59 VS Exp $
 // Copyright:   (c) Julian Smart
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -12,7 +12,7 @@
 #ifndef _WX_BUTTON_H_
 #define _WX_BUTTON_H_
 
-#ifdef __GNUG__
+#if defined(__GNUG__) && !defined(NO_GCC_PRAGMA)
 #pragma interface "button.h"
 #endif
 
@@ -26,7 +26,7 @@ public:
     wxButton() { }
     wxButton(wxWindow *parent,
              wxWindowID id,
-             const wxString& label,
+             const wxString& label = wxEmptyString,
              const wxPoint& pos = wxDefaultPosition,
              const wxSize& size = wxDefaultSize,
              long style = 0,
@@ -38,7 +38,7 @@ public:
 
     bool Create(wxWindow *parent,
                 wxWindowID id,
-                const wxString& label,
+                const wxString& label = wxEmptyString,
                 const wxPoint& pos = wxDefaultPosition,
                 const wxSize& size = wxDefaultSize,
                 long style = 0,
@@ -51,8 +51,14 @@ public:
 
     // implementation from now on
     virtual void Command(wxCommandEvent& event);
-    virtual long MSWWindowProc(WXUINT nMsg, WXWPARAM wParam, WXLPARAM lParam);
+    virtual WXLRESULT MSWWindowProc(WXUINT nMsg, WXWPARAM wParam, WXLPARAM lParam);
     virtual bool MSWCommand(WXUINT param, WXWORD id);
+
+    virtual void ApplyParentThemeBackground(const wxColour& bg)
+    {
+        // avoide switching into owner-drawn mode
+        wxControl::SetBackgroundColour(bg);
+    }
 
 #ifdef __WIN32__
     // coloured buttons support
@@ -66,7 +72,7 @@ private:
 #endif // __WIN32__
 
 protected:
-    // send a notification event, return TRUE if processed
+    // send a notification event, return true if processed
     bool SendClickEvent();
 
     // default button handling
@@ -78,10 +84,10 @@ protected:
 
     // usually overridden base class virtuals
     virtual wxSize DoGetBestSize() const;
-    virtual WXDWORD MSWGetStyle(long style, WXDWORD *exstyle) const;
+    virtual WXDWORD MSWGetStyle(long style, WXDWORD *exstyle) const ;
 
 private:
-    DECLARE_DYNAMIC_CLASS(wxButton)
+    DECLARE_DYNAMIC_CLASS_NO_COPY(wxButton)
 };
 
 #endif

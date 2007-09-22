@@ -4,12 +4,12 @@
 // Author:      Vadim Zeitlin
 // Modified by:
 // Created:     29.12.99
-// RCS-ID:      $Id: calctrl.h,v 1.16.2.3 2003/12/11 09:50:37 JS Exp $
+// RCS-ID:      $Id: calctrl.h,v 1.27 2004/06/30 21:49:17 RD Exp $
 // Copyright:   (c) 1999 Vadim Zeitlin <zeitlin@dptmaths.ens-cachan.fr>
-// Licence:     wxWindows license
+// Licence:     wxWindows licence
 ///////////////////////////////////////////////////////////////////////////////
 
-#if defined(__GNUG__) && !defined(__APPLE__)
+#if defined(__GNUG__) && !defined(NO_GCC_PRAGMA)
     #pragma interface "calctrl.h"
 #endif
 
@@ -29,7 +29,7 @@ class WXDLLEXPORT wxSpinCtrl;
 // wxCalendarCtrl: a control allowing the user to pick a date interactively
 // ----------------------------------------------------------------------------
 
-class WXDLLEXPORT wxCalendarCtrl : public wxControl
+class WXDLLIMPEXP_ADV wxCalendarCtrl : public wxControl
 {
 friend class wxMonthComboBox;
 friend class wxYearSpinCtrl;
@@ -81,13 +81,13 @@ public:
     // should be used instead for them
 
     // corresponds to wxCAL_NO_YEAR_CHANGE bit
-    void EnableYearChange(bool enable = TRUE);
+    void EnableYearChange(bool enable = true);
 
     // corresponds to wxCAL_NO_MONTH_CHANGE bit
-    void EnableMonthChange(bool enable = TRUE);
+    void EnableMonthChange(bool enable = true);
 
     // corresponds to wxCAL_SHOW_HOLIDAYS bit
-    void EnableHolidayDisplay(bool display = TRUE);
+    void EnableHolidayDisplay(bool display = true);
 
     // customization
     // -------------
@@ -159,8 +159,14 @@ public:
     // -------------------------------
 
     // forward these functions to all subcontrols
-    virtual bool Enable(bool enable = TRUE);
-    virtual bool Show(bool show = TRUE);
+    virtual bool Enable(bool enable = true);
+    virtual bool Show(bool show = true);
+
+    virtual wxVisualAttributes GetDefaultAttributes() const
+        { return GetClassDefaultAttributes(GetWindowVariant()); }
+
+    static wxVisualAttributes
+    GetClassDefaultAttributes(wxWindowVariant variant = wxWINDOW_VARIANT_NORMAL);
 
 private:
     // common part of all ctors
@@ -260,7 +266,7 @@ private:
 
     // Set the flag for SetDate(): otherwise it would overwrite the year
     // typed in by the user
-    void SetUserChangedYear() { m_userChangedYear = TRUE; }
+    void SetUserChangedYear() { m_userChangedYear = true; }
 
     // the subcontrols
     wxStaticText *m_staticMonth;
@@ -298,12 +304,13 @@ private:
     // the week day names
     wxString m_weekdays[7];
 
-    // TRUE if SetDate() is being called as the result of changing the year in
+    // true if SetDate() is being called as the result of changing the year in
     // the year control
     bool m_userChangedYear;
 
     DECLARE_DYNAMIC_CLASS(wxCalendarCtrl)
     DECLARE_EVENT_TABLE()
+    DECLARE_NO_COPY_CLASS(wxCalendarCtrl)
 };
 
 #endif // _WX_GENERIC_CALCTRL_H

@@ -2,15 +2,15 @@
 // Name:        gtk/dataobj.h
 // Purpose:     declaration of the wxDataObject
 // Author:      Robert Roebling
-// RCS-ID:      $Id: dataobj.h,v 1.19.2.1 2002/11/25 01:51:00 VZ Exp $
+// RCS-ID:      $Id: dataobj.h,v 1.24 2004/05/23 20:50:53 JS Exp $
 // Copyright:   (c) 1998, 1999 Vadim Zeitlin, Robert Roebling
-// Licence:     wxWindows license
+// Licence:     wxWindows licence
 ///////////////////////////////////////////////////////////////////////////////
 
 #ifndef _WX_GTK_DATAOBJ_H_
 #define _WX_GTK_DATAOBJ_H_
 
-#if defined(__GNUG__) && !defined(__APPLE__)
+#if defined(__GNUG__) && !defined(NO_GCC_PRAGMA)
     #pragma interface "dataobj.h"
 #endif
 

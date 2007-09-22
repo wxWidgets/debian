@@ -1,10 +1,10 @@
 /////////////////////////////////////////////////////////////////////////////
 // Name:        printing.h
-// Purpose:     Printing demo for wxWindows
+// Purpose:     Printing demo for wxWidgets
 // Author:      Julian Smart
 // Modified by:
 // Created:     1995
-// RCS-ID:      $Id: printing.h,v 1.6.2.1 2002/12/15 17:25:23 MBN Exp $
+// RCS-ID:      $Id: printing.h,v 1.11 2004/10/31 23:43:33 RR Exp $
 // Copyright:   (c) Julian Smart
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -17,11 +17,11 @@
 class MyApp: public wxApp
 {
   public:
-    MyApp() ;
+    MyApp(){};
     bool OnInit();
     int OnExit();
 
-    wxFont* m_testFont;
+    wxFont m_testFont;
 };
 
 DECLARE_APP(MyApp)
@@ -40,12 +40,10 @@ class MyFrame: public wxFrame
     void OnSize(wxSizeEvent& event);
     void OnPrint(wxCommandEvent& event);
     void OnPrintPreview(wxCommandEvent& event);
-    void OnPrintSetup(wxCommandEvent& event);
     void OnPageSetup(wxCommandEvent& event);
 #if defined(__WXMSW__) && wxTEST_POSTSCRIPT_IN_MSW
     void OnPrintPS(wxCommandEvent& event);
     void OnPrintPreviewPS(wxCommandEvent& event);
-    void OnPrintSetupPS(wxCommandEvent& event);
     void OnPageSetupPS(wxCommandEvent& event);
 #endif
 
@@ -59,7 +57,7 @@ class MyCanvas: public wxScrolledWindow
 {
   public:
     MyCanvas(wxFrame *frame, const wxPoint& pos, const wxSize& size, long style = wxRETAINED);
-    ~MyCanvas(void) ;
+    ~MyCanvas(void){};
 
     virtual void OnDraw(wxDC& dc);
     void OnEvent(wxMouseEvent& event);
@@ -82,12 +80,10 @@ class MyPrintout: public wxPrintout
 
 #define WXPRINT_QUIT            100
 #define WXPRINT_PRINT           101
-#define WXPRINT_PRINT_SETUP     102
 #define WXPRINT_PAGE_SETUP      103
 #define WXPRINT_PREVIEW         104
 
 #define WXPRINT_PRINT_PS        105
-#define WXPRINT_PRINT_SETUP_PS  106
 #define WXPRINT_PAGE_SETUP_PS   107
 #define WXPRINT_PREVIEW_PS      108
 

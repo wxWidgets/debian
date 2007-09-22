@@ -4,15 +4,15 @@
 // Author:      Vadim Zeitlin
 // Modified by:
 // Created:     10.09.00
-// RCS-ID:      $Id: radiobox.h,v 1.10.2.1 2003/06/01 19:00:41 JS Exp $
-// Copyright:   (c) wxWindows team
-// Licence:     wxWindows license
+// RCS-ID:      $Id: radiobox.h,v 1.19 2004/09/21 18:15:50 ABX Exp $
+// Copyright:   (c) wxWidgets team
+// Licence:     wxWindows licence
 ///////////////////////////////////////////////////////////////////////////////
 
 #ifndef _WX_RADIOBOX_H_BASE_
 #define _WX_RADIOBOX_H_BASE_
 
-#if defined(__GNUG__) && !defined(__APPLE__)
+#if defined(__GNUG__) && !defined(NO_GCC_PRAGMA)
     #pragma interface "radioboxbase.h"
 #endif
 
@@ -21,10 +21,6 @@
 #include "wx/control.h"
 
 WXDLLEXPORT_DATA(extern const wxChar*) wxRadioBoxNameStr;
-
-#ifdef __BORLANDC__
-#   pragma option -w-inl
-#endif
 
 // ----------------------------------------------------------------------------
 // wxRadioBoxBase is not a normal base class, but rather a mix-in because the
@@ -56,10 +52,10 @@ public:
         {
             SetSelection(sel);
 
-            return TRUE;
+            return true;
         }
 
-        return FALSE;
+        return false;
     }
 
     // string access
@@ -80,8 +76,8 @@ public:
     virtual void SetString(int n, const wxString& label) = 0;
 
     // change the individual radio button state
-    virtual void Enable(int n, bool enable = TRUE) = 0;
-    virtual void Show(int n, bool show = TRUE) = 0;
+    virtual void Enable(int n, bool enable = true) = 0;
+    virtual void Show(int n, bool show = true) = 0;
 
     // layout parameters
     virtual int GetColumnCount() const = 0;
@@ -98,10 +94,6 @@ public:
 #endif // WXWIN_COMPATIBILITY_2_2
 };
 
-#ifdef __BORLANDC__
-#   pragma option -w.inl
-#endif
-
 #if defined(__WXUNIVERSAL__)
     #include "wx/univ/radiobox.h"
 #elif defined(__WXMSW__)
@@ -112,10 +104,10 @@ public:
     #include "wx/gtk/radiobox.h"
 #elif defined(__WXMAC__)
     #include "wx/mac/radiobox.h"
+#elif defined(__WXCOCOA__)
+    #include "wx/cocoa/radiobox.h"
 #elif defined(__WXPM__)
     #include "wx/os2/radiobox.h"
-#elif defined(__WXSTUBS__)
-    #include "wx/stubs/radiobox.h"
 #endif
 
 #endif // wxUSE_RADIOBOX

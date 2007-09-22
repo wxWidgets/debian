@@ -4,8 +4,8 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     01/02/97
-// RCS-ID:      $Id: dde.cpp,v 1.27 2002/09/03 11:22:56 JS Exp $
-// Copyright:   (c) Julian Smart and Markus Holzem
+// RCS-ID:      $Id: dde.cpp,v 1.42 2004/08/24 10:31:41 ABX Exp $
+// Copyright:   (c) Julian Smart
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
 
@@ -17,7 +17,7 @@
 // headers
 // ----------------------------------------------------------------------------
 
-#ifdef __GNUG__
+#if defined(__GNUG__) && !defined(NO_GCC_PRAGMA)
     #pragma implementation "dde.h"
 #endif
 
@@ -38,39 +38,16 @@
 #include "wx/module.h"
 #include "wx/dde.h"
 #include "wx/intl.h"
-
+#include "wx/hashmap.h"
 
 #include "wx/msw/private.h"
 
 #include <string.h>
-#include <windows.h>
 #include <ddeml.h>
 
-#ifdef __WXWINE__
-#define PCONVCONTEXT CONVCONTEXT*
-#endif
-
-#if defined(__TWIN32__) || defined(__GNUWIN32_OLD__)
+#ifdef __GNUWIN32_OLD__
     #include "wx/msw/gnuwin32/extra.h"
 #endif
-
-// some compilers headers don't define this one (mingw32)
-#ifndef DMLERR_NO_ERROR
-    #define DMLERR_NO_ERROR (0)
-
-    // this one is also missing from some mingw32 headers, but there is no way
-    // to test for it (I know of) - the test for DMLERR_NO_ERROR works for me,
-    // but is surely not the right thing to do
-    extern "C"
-    HDDEDATA STDCALL DdeClientTransaction(LPBYTE pData,
-                                          DWORD cbData,
-                                          HCONV hConv,
-                                          HSZ hszItem,
-                                          UINT wFmt,
-                                          UINT wType,
-                                          DWORD dwTimeout,
-                                          LPDWORD pdwResult);
-#endif // no DMLERR_NO_ERROR
 
 // ----------------------------------------------------------------------------
 // macros and constants
@@ -117,6 +94,7 @@ static HSZ DDEGetAtom(const wxString& string);
 // string handles
 static HSZ DDEAtomFromString(const wxString& s);
 static wxString DDEStringFromAtom(HSZ hsz);
+static void DDEFreeString(HSZ hsz);
 
 // error handling
 static wxString DDEGetErrorMsg(UINT error);
@@ -126,14 +104,22 @@ static void DDELogError(const wxString& s, UINT error = DMLERR_NO_ERROR);
 // global variables
 // ----------------------------------------------------------------------------
 
+WX_DECLARE_STRING_HASH_MAP( HSZ, wxAtomMap );
+
 static DWORD DDEIdInst = 0L;
 static wxDDEConnection *DDECurrentlyConnecting = NULL;
+static wxAtomMap wxAtomTable;
 
-static wxList wxAtomTable(wxKEY_STRING);
-static wxList wxDDEClientObjects;
-static wxList wxDDEServerObjects;
+#include "wx/listimpl.cpp"
 
-static bool DDEInitialized = FALSE;
+WX_DEFINE_LIST(wxDDEClientList);
+WX_DEFINE_LIST(wxDDEServerList);
+WX_DEFINE_LIST(wxDDEConnectionList);
+
+static wxDDEClientList wxDDEClientObjects;
+static wxDDEServerList wxDDEServerObjects;
+
+static bool DDEInitialized = false;
 
 // ----------------------------------------------------------------------------
 // private classes
@@ -146,7 +132,7 @@ class wxDDEModule : public wxModule
 {
 public:
     wxDDEModule() {}
-    bool OnInit() { return TRUE; }
+    bool OnInit() { return true; }
     void OnExit() { wxDDECleanUp(); }
 
 private:
@@ -184,22 +170,19 @@ extern void wxDDEInitialize()
         }
         else
         {
-            DDEInitialized = TRUE;
+            DDEInitialized = true;
         }
     }
 }
 
 void wxDDECleanUp()
 {
-    wxDDEClientObjects.DeleteContents(TRUE);
-    wxDDEClientObjects.Clear();
-    wxDDEClientObjects.DeleteContents(FALSE);
+    // deleting them later won't work as DDE won't be initialized any more
+    wxASSERT_MSG( wxDDEServerObjects.empty() &&
+                    wxDDEClientObjects.empty(),
+                    _T("all DDE objects should be deleted by now") );
 
-    wxDDEServerObjects.DeleteContents(TRUE);
-    wxDDEServerObjects.Clear();
-    wxDDEServerObjects.DeleteContents(FALSE);
-
-    wxAtomTable.Clear();
+    wxAtomTable.clear();
 
     if ( DDEIdInst != 0 )
     {
@@ -215,64 +198,75 @@ void wxDDECleanUp()
 // Global find connection
 static wxDDEConnection *DDEFindConnection(HCONV hConv)
 {
-  wxNode *node = wxDDEServerObjects.First();
-  wxDDEConnection *found = NULL;
-  while (node && !found)
-  {
-    wxDDEServer *object = (wxDDEServer *)node->Data();
-    found = object->FindConnection((WXHCONV) hConv);
-    node = node->Next();
-  }
-  if (found)
-      return found;
+    wxDDEServerList::compatibility_iterator serverNode = wxDDEServerObjects.GetFirst();
+    wxDDEConnection *found = NULL;
+    while (serverNode && !found)
+    {
+        wxDDEServer *object = serverNode->GetData();
+        found = object->FindConnection((WXHCONV) hConv);
+        serverNode = serverNode->GetNext();
+    }
 
-  node = wxDDEClientObjects.First();
-  while (node && !found)
-  {
-    wxDDEClient *object = (wxDDEClient *)node->Data();
-    found = object->FindConnection((WXHCONV) hConv);
-    node = node->Next();
-  }
-  return found;
+    if (found)
+    {
+        return found;
+    }
+
+    wxDDEClientList::compatibility_iterator clientNode = wxDDEClientObjects.GetFirst();
+    while (clientNode && !found)
+    {
+        wxDDEClient *object = clientNode->GetData();
+        found = object->FindConnection((WXHCONV) hConv);
+        clientNode = clientNode->GetNext();
+    }
+    return found;
 }
 
 // Global delete connection
 static void DDEDeleteConnection(HCONV hConv)
 {
-  wxNode *node = wxDDEServerObjects.First();
-  bool found = FALSE;
-  while (node && !found)
-  {
-    wxDDEServer *object = (wxDDEServer *)node->Data();
-    found = object->DeleteConnection((WXHCONV) hConv);
-    node = node->Next();
-  }
-  if (found)
-    return;
+    wxDDEServerList::compatibility_iterator serverNode = wxDDEServerObjects.GetFirst();
+    bool found = false;
+    while (serverNode && !found)
+    {
+        wxDDEServer *object = serverNode->GetData();
+        found = object->DeleteConnection((WXHCONV) hConv);
+        serverNode = serverNode->GetNext();
+    }
+    if (found)
+    {
+        return;
+    }
 
-  node = wxDDEClientObjects.First();
-  while (node && !found)
-  {
-    wxDDEClient *object = (wxDDEClient *)node->Data();
-    found = object->DeleteConnection((WXHCONV) hConv);
-    node = node->Next();
-  }
+    wxDDEClientList::compatibility_iterator clientNode = wxDDEClientObjects.GetFirst();
+    while (clientNode && !found)
+    {
+        wxDDEClient *object = clientNode->GetData();
+        found = object->DeleteConnection((WXHCONV) hConv);
+        clientNode = clientNode->GetNext();
+    }
 }
 
 // Find a server from a service name
 static wxDDEServer *DDEFindServer(const wxString& s)
 {
-  wxNode *node = wxDDEServerObjects.First();
-  wxDDEServer *found = NULL;
-  while (node && !found)
-  {
-    wxDDEServer *object = (wxDDEServer *)node->Data();
+    wxDDEServerList::compatibility_iterator node = wxDDEServerObjects.GetFirst();
+    wxDDEServer *found = NULL;
+    while (node && !found)
+    {
+        wxDDEServer *object = node->GetData();
 
-    if (object->GetServiceName() == s)
-      found = object;
-    else node = node->Next();
-  }
-  return found;
+        if (object->GetServiceName() == s)
+        {
+            found = object;
+        }
+        else
+        {
+            node = node->GetNext();
+        }
+    }
+
+    return found;
 }
 
 // ----------------------------------------------------------------------------
@@ -290,47 +284,66 @@ bool wxDDEServer::Create(const wxString& server)
 {
     m_serviceName = server;
 
-    if ( !DdeNameService(DDEIdInst, DDEAtomFromString(server), (HSZ)NULL, DNS_REGISTER) )
-    {
-        DDELogError(wxString::Format(_("Failed to register DDE server '%s'"),
-                                     server.c_str()));
+    HSZ hsz = DDEAtomFromString(server);
 
-        return FALSE;
+    if ( !hsz )
+    {
+        return false;
     }
 
-    return TRUE;
+
+    bool success = (DdeNameService(DDEIdInst, hsz, (HSZ) NULL, DNS_REGISTER)
+        != NULL);
+
+    if (!success)
+    {
+        DDELogError(wxString::Format(_("Failed to register DDE server '%s'"),
+            server.c_str()));
+    }
+
+    DDEFreeString(hsz);
+
+    return success;
 }
 
 wxDDEServer::~wxDDEServer()
 {
-    if ( !!m_serviceName )
+    if ( !m_serviceName.IsEmpty() )
     {
-        if ( !DdeNameService(DDEIdInst, DDEAtomFromString(m_serviceName),
-                             (HSZ)NULL, DNS_UNREGISTER) )
+        HSZ hsz = DDEAtomFromString(m_serviceName);
+
+        if (hsz)
         {
-            DDELogError(wxString::Format(_("Failed to unregister DDE server '%s'"),
-                                         m_serviceName.c_str()));
+            if ( !DdeNameService(DDEIdInst, hsz,
+                (HSZ) NULL, DNS_UNREGISTER) )
+            {
+                DDELogError(wxString::Format(
+                    _("Failed to unregister DDE server '%s'"),
+                    m_serviceName.c_str()));
+            }
+
+            DDEFreeString(hsz);
         }
     }
 
     wxDDEServerObjects.DeleteObject(this);
 
-    wxNode *node = m_connections.First();
+    wxDDEConnectionList::compatibility_iterator node = m_connections.GetFirst();
     while (node)
     {
-        wxDDEConnection *connection = (wxDDEConnection *)node->Data();
-        wxNode *next = node->Next();
+        wxDDEConnection *connection = node->GetData();
+        wxDDEConnectionList::compatibility_iterator next = node->GetNext();
         connection->SetConnected(false);
         connection->OnDisconnect(); // May delete the node implicitly
         node = next;
     }
 
     // If any left after this, delete them
-    node = m_connections.First();
+    node = m_connections.GetFirst();
     while (node)
     {
-        wxDDEConnection *connection = (wxDDEConnection *)node->Data();
-        wxNode *next = node->Next();
+        wxDDEConnection *connection = node->GetData();
+        wxDDEConnectionList::compatibility_iterator next = node->GetNext();
         delete connection;
         node = next;
     }
@@ -343,14 +356,14 @@ wxConnectionBase *wxDDEServer::OnAcceptConnection(const wxString& /* topic */)
 
 wxDDEConnection *wxDDEServer::FindConnection(WXHCONV conv)
 {
-    wxNode *node = m_connections.First();
+    wxDDEConnectionList::compatibility_iterator node = m_connections.GetFirst();
     wxDDEConnection *found = NULL;
     while (node && !found)
     {
-        wxDDEConnection *connection = (wxDDEConnection *)node->Data();
+        wxDDEConnection *connection = node->GetData();
         if (connection->m_hConv == conv)
             found = connection;
-        else node = node->Next();
+        else node = node->GetNext();
     }
     return found;
 }
@@ -358,19 +371,21 @@ wxDDEConnection *wxDDEServer::FindConnection(WXHCONV conv)
 // Only delete the entry in the map, not the actual connection
 bool wxDDEServer::DeleteConnection(WXHCONV conv)
 {
-    wxNode *node = m_connections.First();
-    bool found = FALSE;
-    while (node && !found)
+    wxDDEConnectionList::compatibility_iterator node = m_connections.GetFirst();
+    while (node)
     {
-        wxDDEConnection *connection = (wxDDEConnection *)node->Data();
+        wxDDEConnection *connection = node->GetData();
         if (connection->m_hConv == conv)
         {
-            found = TRUE;
-            delete node;
+            m_connections.Erase(node);
+            return true;
         }
-        else node = node->Next();
+        else
+        {
+            node = node->GetNext();
+        }
     }
-    return found;
+    return false;
 }
 
 // ----------------------------------------------------------------------------
@@ -387,30 +402,53 @@ wxDDEClient::wxDDEClient()
 wxDDEClient::~wxDDEClient()
 {
     wxDDEClientObjects.DeleteObject(this);
-    wxNode *node = m_connections.First();
+    wxDDEConnectionList::compatibility_iterator node = m_connections.GetFirst();
     while (node)
     {
-        wxDDEConnection *connection = (wxDDEConnection *)node->Data();
+        wxDDEConnection *connection = node->GetData();
         delete connection;  // Deletes the node implicitly (see ~wxDDEConnection)
-        node = m_connections.First();
+        node = m_connections.GetFirst();
     }
 }
 
 bool wxDDEClient::ValidHost(const wxString& /* host */)
 {
-    return TRUE;
+    return true;
 }
 
 wxConnectionBase *wxDDEClient::MakeConnection(const wxString& WXUNUSED(host),
                                               const wxString& server,
                                               const wxString& topic)
 {
-    HCONV hConv = DdeConnect(DDEIdInst, DDEAtomFromString(server), DDEAtomFromString(topic),
-                             (PCONVCONTEXT)NULL);
+    HSZ hszServer = DDEAtomFromString(server);
+
+    if ( !hszServer )
+    {
+        return (wxConnectionBase*) NULL;
+    }
+
+
+    HSZ hszTopic = DDEAtomFromString(topic);
+
+    if ( !hszTopic )
+    {
+        DDEFreeString(hszServer);
+        return (wxConnectionBase*) NULL;
+    }
+
+
+    HCONV hConv = ::DdeConnect(DDEIdInst, hszServer, hszTopic,
+        (PCONVCONTEXT) NULL);
+
+    DDEFreeString(hszServer);
+    DDEFreeString(hszTopic);
+
+
     if ( !hConv )
     {
-        DDELogError(wxString::Format(_("Failed to create connection to server '%s' on topic '%s'"),
-                                     server.c_str(), topic.c_str()));
+        DDELogError( wxString::Format(
+            _("Failed to create connection to server '%s' on topic '%s'"),
+            server.c_str(), topic.c_str()) );
     }
     else
     {
@@ -435,14 +473,14 @@ wxConnectionBase *wxDDEClient::OnMakeConnection()
 
 wxDDEConnection *wxDDEClient::FindConnection(WXHCONV conv)
 {
-    wxNode *node = m_connections.First();
+    wxDDEConnectionList::compatibility_iterator node = m_connections.GetFirst();
     wxDDEConnection *found = NULL;
     while (node && !found)
     {
-        wxDDEConnection *connection = (wxDDEConnection *)node->Data();
+        wxDDEConnection *connection = node->GetData();
         if (connection->m_hConv == conv)
             found = connection;
-        else node = node->Next();
+        else node = node->GetNext();
     }
     return found;
 }
@@ -450,19 +488,18 @@ wxDDEConnection *wxDDEClient::FindConnection(WXHCONV conv)
 // Only delete the entry in the map, not the actual connection
 bool wxDDEClient::DeleteConnection(WXHCONV conv)
 {
-    wxNode *node = m_connections.First();
-    bool found = FALSE;
-    while (node && !found)
+    wxDDEConnectionList::compatibility_iterator node = m_connections.GetFirst();
+    while (node)
     {
-        wxDDEConnection *connection = (wxDDEConnection *)node->Data();
+        wxDDEConnection *connection = node->GetData();
         if (connection->m_hConv == conv)
         {
-            found = TRUE;
-            delete node;
+            m_connections.Erase(node);
+            return true;
         }
-        else node = node->Next();
+        else node = node->GetNext();
     }
-    return found;
+    return false;
 }
 
 // ----------------------------------------------------------------------------
@@ -524,7 +561,8 @@ bool wxDDEConnection::Execute(const wxChar *data, int size, wxIPCFormat format)
         size = wxStrlen(data) + 1;
     }
 
-    bool ok = DdeClientTransaction((LPBYTE)data, size,
+    bool ok = DdeClientTransaction((LPBYTE)data,
+                                    size * sizeof(wxChar),
                                     GetHConv(),
                                     NULL,
                                     format,
@@ -561,15 +599,15 @@ wxChar *wxDDEConnection::Request(const wxString& item, int *size, wxIPCFormat fo
 
     DWORD len = DdeGetData(returned_data, NULL, 0, 0);
 
-    wxChar *data = GetBufferAtLeast( len );
+    wxChar *data = GetBufferAtLeast( len/sizeof(wxChar) );
     wxASSERT_MSG(data != NULL,
                  _T("Buffer too small in wxDDEConnection::Request") );
-    DdeGetData(returned_data, (LPBYTE)data, len, 0);
+    (void) DdeGetData(returned_data, (LPBYTE)data, len, 0);
 
-    DdeFreeDataHandle(returned_data);
+    (void) DdeFreeDataHandle(returned_data);
 
     if (size)
-        *size = (int)len;
+        *size = (int)len/sizeof(wxChar);
 
     return data;
 }
@@ -583,7 +621,8 @@ bool wxDDEConnection::Poke(const wxString& item, wxChar *data, int size, wxIPCFo
     }
 
     HSZ item_atom = DDEGetAtom(item);
-    bool ok = DdeClientTransaction((LPBYTE)data, size,
+    bool ok = DdeClientTransaction((LPBYTE)data,
+                                   size * sizeof(wxChar),
                                    GetHConv(),
                                    item_atom, format,
                                    XTYP_POKE,
@@ -664,7 +703,7 @@ bool wxDDEConnection::Advise(const wxString& item,
 bool wxDDEConnection::OnDisconnect()
 {
     delete this;
-    return TRUE;
+    return true;
 }
 
 // ----------------------------------------------------------------------------
@@ -701,7 +740,7 @@ _DDECallback(WORD wType,
                         connection->m_hConv = 0;
                         connection->m_topicName = topic;
                         DDECurrentlyConnecting = connection;
-                        return (DDERETURN)(DWORD)TRUE;
+                        return (DDERETURN)(DWORD)true;
                     }
                 }
                 break;
@@ -713,7 +752,7 @@ _DDECallback(WORD wType,
                 {
                     DDECurrentlyConnecting->m_hConv = (WXHCONV) hConv;
                     DDECurrentlyConnecting = NULL;
-                    return (DDERETURN)(DWORD)TRUE;
+                    return (DDERETURN)(DWORD)true;
                 }
                 break;
             }
@@ -727,7 +766,7 @@ _DDECallback(WORD wType,
                     if (connection->OnDisconnect())
                     {
                         DDEDeleteConnection(hConv);  // Delete mapping: hConv => connection
-                        return (DDERETURN)(DWORD)TRUE;
+                        return (DDERETURN)(DWORD)true;
                     }
                 }
                 break;
@@ -741,7 +780,7 @@ _DDECallback(WORD wType,
                 {
                     DWORD len = DdeGetData(hData, NULL, 0, 0);
 
-                    wxChar *data = connection->GetBufferAtLeast( len );
+                    wxChar *data = connection->GetBufferAtLeast( len/sizeof(wxChar) );
                     wxASSERT_MSG(data != NULL,
                                  _T("Buffer too small in _DDECallback (XTYP_EXECUTE)") );
 
@@ -751,7 +790,7 @@ _DDECallback(WORD wType,
 
                     if ( connection->OnExecute(connection->m_topicName,
                                                data,
-                                               (int)len,
+                                               (int)len/sizeof(wxChar),
                                                (wxIPCFormat) wFmt) )
                     {
                         return (DDERETURN)(DWORD)DDE_FACK;
@@ -781,7 +820,7 @@ _DDECallback(WORD wType,
 
                         HDDEDATA handle = DdeCreateDataHandle(DDEIdInst,
                                                               (LPBYTE)data,
-                                                              user_size,
+                                                              user_size*sizeof(wxChar),
                                                               0,
                                                               hsz2,
                                                               wFmt,
@@ -802,7 +841,7 @@ _DDECallback(WORD wType,
 
                     DWORD len = DdeGetData(hData, NULL, 0, 0);
 
-                    wxChar *data = connection->GetBufferAtLeast( len );
+                    wxChar *data = connection->GetBufferAtLeast( len/sizeof(wxChar) );
                     wxASSERT_MSG(data != NULL,
                                  _T("Buffer too small in _DDECallback (XTYP_EXECUTE)") );
 
@@ -813,7 +852,7 @@ _DDECallback(WORD wType,
                     connection->OnPoke(connection->m_topicName,
                                        item_name,
                                        data,
-                                       (int)len,
+                                       (int)len/sizeof(wxChar),
                                        (wxIPCFormat) wFmt);
 
                     return (DDERETURN)DDE_FACK;
@@ -864,7 +903,7 @@ _DDECallback(WORD wType,
                                     (
                                         DDEIdInst,
                                         (LPBYTE)connection->m_sendingData,
-                                        connection->m_dataSize,
+                                        connection->m_dataSize*sizeof(wxChar),
                                         0,
                                         hsz2,
                                         connection->m_dataType,
@@ -889,7 +928,7 @@ _DDECallback(WORD wType,
 
                     DWORD len = DdeGetData(hData, NULL, 0, 0);
 
-                    wxChar *data = connection->GetBufferAtLeast( len );
+                    wxChar *data = connection->GetBufferAtLeast( len/sizeof(wxChar) );
                     wxASSERT_MSG(data != NULL,
                                  _T("Buffer too small in _DDECallback (XTYP_ADVDATA)") );
 
@@ -899,7 +938,7 @@ _DDECallback(WORD wType,
                     if ( connection->OnAdvise(connection->m_topicName,
                                               item_name,
                                               data,
-                                              (int)len,
+                                              (int)len/sizeof(wxChar),
                                               (wxIPCFormat) wFmt) )
                     {
                         return (DDERETURN)(DWORD)DDE_FACK;
@@ -918,26 +957,27 @@ _DDECallback(WORD wType,
 // ----------------------------------------------------------------------------
 
 // Atom table stuff
-static HSZ DDEAddAtom(const wxString& string)
+static HSZ DDEAddAtom(const wxString& str)
 {
-    HSZ atom = DDEAtomFromString(string);
-    wxAtomTable.Append(string, (wxObject *)atom);
+    HSZ atom = DDEAtomFromString(str);
+    wxAtomTable[str] = atom;
     return atom;
 }
 
-static HSZ DDEGetAtom(const wxString& string)
+static HSZ DDEGetAtom(const wxString& str)
 {
-    wxNode *node = wxAtomTable.Find(string);
-    if (node)
-        return (HSZ)node->Data();
-    else
-    {
-        DDEAddAtom(string);
-        return (HSZ)(wxAtomTable.Find(string)->Data());
-    }
+    wxAtomMap::iterator it = wxAtomTable.find(str);
+
+    if (it != wxAtomTable.end())
+        return it->second;
+
+    return DDEAddAtom(str);
 }
 
-// atom <-> strings
+/* atom <-> strings
+The returned handle has to be freed by the caller (using
+(static) DDEFreeString).
+*/
 static HSZ DDEAtomFromString(const wxString& s)
 {
     wxASSERT_MSG( DDEIdInst, _T("DDE not initialized") );
@@ -957,10 +997,18 @@ static wxString DDEStringFromAtom(HSZ hsz)
     static const size_t len = 256;
 
     wxString s;
-    (void)DdeQueryString(DDEIdInst, hsz, s.GetWriteBuf(len), len, DDE_CP);
-    s.UngetWriteBuf();
+    (void)DdeQueryString(DDEIdInst, hsz, wxStringBuffer(s, len), len, DDE_CP);
 
     return s;
+}
+
+static void DDEFreeString(HSZ hsz)
+{
+    // DS: Failure to free a string handle might indicate there's
+    // some other severe error.
+    bool ok = (::DdeFreeStringHandle(DDEIdInst, hsz) != 0);
+    wxASSERT_MSG( ok, wxT("Failed to free DDE string handle") );
+    wxUnusedVar(ok);
 }
 
 // ----------------------------------------------------------------------------

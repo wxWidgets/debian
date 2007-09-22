@@ -4,12 +4,12 @@
 // Author:      Julian Smart, Robert Roebling
 // Modified by:
 // Created:     04/01/98
-// RCS-ID:      $Id: msgdlgg.cpp,v 1.34.2.1 2002/09/19 20:22:13 RR Exp $
-// Copyright:   (c) Julian Smart, Markus Holzem, Robert Roebling
-// Licence:     wxWindows license
+// RCS-ID:      $Id: msgdlgg.cpp,v 1.48 2004/08/18 22:27:42 VS Exp $
+// Copyright:   (c) Julian Smart and Robert Roebling
+// Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
 
-#ifdef __GNUG__
+#if defined(__GNUG__) && !defined(NO_GCC_PRAGMA)
 #pragma implementation "msgdlgg.h"
 #endif
 
@@ -20,7 +20,7 @@
 #pragma hdrstop
 #endif
 
-#if wxUSE_MSGDLG
+#if wxUSE_MSGDLG && (!defined(__WXGTK20__) || defined(__WXUNIVERSAL__) || defined(__WXGPE__))
 
 #ifndef WX_PRECOMP
     #include "wx/utils.h"
@@ -63,7 +63,7 @@ wxGenericMessageDialog::wxGenericMessageDialog( wxWindow *parent,
                                                 const wxString& caption,
                                                 long style,
                                                 const wxPoint& pos)
-                      : wxDialog( parent, -1, caption, pos, wxDefaultSize, wxDEFAULT_DIALOG_STYLE )
+                      : wxDialog( parent, wxID_ANY, caption, pos, wxDefaultSize, wxDEFAULT_DIALOG_STYLE )
 {
     m_dialogStyle = style;
 
@@ -99,7 +99,7 @@ wxGenericMessageDialog::wxGenericMessageDialog( wxWindow *parent,
                 bitmap = wxArtProvider::GetIcon(wxART_QUESTION, wxART_MESSAGE_BOX);
                 break;
         }
-        wxStaticBitmap *icon = new wxStaticBitmap(this, -1, bitmap);
+        wxStaticBitmap *icon = new wxStaticBitmap(this, wxID_ANY, bitmap);
         if (is_pda)
             topsizer->Add( icon, 0, wxTOP|wxLEFT|wxRIGHT | wxALIGN_LEFT, 10 );
         else
@@ -113,13 +113,14 @@ wxGenericMessageDialog::wxGenericMessageDialog( wxWindow *parent,
 
 #if wxUSE_STATLINE
     // 3) static line
-    topsizer->Add( new wxStaticLine( this, -1 ), 0, wxEXPAND | wxLEFT|wxRIGHT|wxTOP, 10 );
-#endif
+    topsizer->Add( new wxStaticLine( this, wxID_ANY ), 0, wxEXPAND | wxLEFT|wxRIGHT|wxTOP, 10 );
+#endif // wxUSE_STATLINE
 
     // 4) buttons
-    topsizer->Add( CreateButtonSizer( style ), 0, wxCENTRE | wxALL, 10 );
+    topsizer->Add( CreateButtonSizer( style & (wxOK|wxCANCEL|wxYES_NO|wxYES_DEFAULT|wxNO_DEFAULT) ),
+                   0, wxCENTRE | wxALL, 10 );
 
-    SetAutoLayout( TRUE );
+    SetAutoLayout( true );
     SetSizer( topsizer );
 
     topsizer->SetSizeHints( this );
@@ -154,5 +155,5 @@ void wxGenericMessageDialog::OnCancel(wxCommandEvent& WXUNUSED(event))
     }
 }
 
-#endif // wxUSE_MSGDLG
+#endif // wxUSE_MSGDLG && !defined(__WXGTK20__)
 

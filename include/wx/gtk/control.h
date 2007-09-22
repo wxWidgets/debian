@@ -2,7 +2,7 @@
 // Name:        control.h
 // Purpose:
 // Author:      Robert Roebling
-// Id:          $Id: control.h,v 1.16.2.1 2003/04/06 17:55:49 JS Exp $
+// Id:          $Id: control.h,v 1.27 2004/06/21 22:58:10 RD Exp $
 // Copyright:   (c) 1998 Robert Roebling, Julian Smart
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -10,7 +10,7 @@
 #ifndef __GTKCONTROLH__
 #define __GTKCONTROLH__
 
-#if defined(__GNUG__) && !defined(__APPLE__)
+#if defined(__GNUG__) && !defined(NO_GCC_PRAGMA)
 #pragma interface
 #endif
 
@@ -52,12 +52,39 @@ public:
     // char (the one immediately after '&') into m_chAccel (TODO not yet)
     virtual void SetLabel( const wxString &label );
     virtual wxString GetLabel() const;
+    
+    virtual wxVisualAttributes GetDefaultAttributes() const;
 
 protected:
     virtual wxSize DoGetBestSize() const;
+    void PostCreation(const wxSize& size);
+
 #ifdef __WXGTK20__
     wxString PrepareLabelMnemonics( const wxString &label ) const;
 #endif
+
+    // These are used by GetDefaultAttributes
+    static wxVisualAttributes
+        GetDefaultAttributesFromGTKWidget(GtkWidget* widget,
+                                          bool useBase = false,
+                                          int state = -1);
+    static wxVisualAttributes
+        GetDefaultAttributesFromGTKWidget(GtkWidget* (*widget_new)(void),
+                                          bool useBase = false,
+                                          int state = -1);
+    static wxVisualAttributes
+        GetDefaultAttributesFromGTKWidget(GtkWidget* (*widget_new)(const gchar*),
+                                          bool useBase = false,
+                                          int state = -1);
+
+    static wxVisualAttributes
+        GetDefaultAttributesFromGTKWidget(GtkWidget* (*widget_new)(GtkAdjustment*),
+                                          bool useBase = false,
+                                          int state = -1);
+
+    // Widgets that use the style->base colour for the BG colour should
+    // override this and return true.
+    virtual bool UseGTKStyleBase() const { return false; }
 
     wxString   m_label;
     char       m_chAccel;  // enabled to avoid breaking binary compatibility later on

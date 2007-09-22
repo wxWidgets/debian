@@ -4,9 +4,9 @@
 // Author:      Vadim Zeitlin
 // Modified by:
 // Created:     10.07.01
-// RCS-ID:      $Id: evtloop.cpp,v 1.2 2001/08/12 22:10:10 VS Exp $
+// RCS-ID:      $Id: evtloop.cpp,v 1.10 2004/11/04 20:04:59 VS Exp $
 // Copyright:   (c) 2001 Vadim Zeitlin <zeitlin@dptmaths.ens-cachan.fr>
-// License:     wxWindows license
+// License:     wxWindows licence
 ///////////////////////////////////////////////////////////////////////////////
 
 // ============================================================================
@@ -17,7 +17,7 @@
 // headers
 // ----------------------------------------------------------------------------
 
-#ifdef __GNUG__
+#if defined(__GNUG__) && !defined(NO_GCC_PRAGMA)
     #pragma implementation "evtloop.h"
 #endif
 
@@ -28,10 +28,8 @@
     #pragma hdrstop
 #endif
 
-#ifndef WX_PRECOMP
-#endif //WX_PRECOMP
-
 #include "wx/evtloop.h"
+#include "wx/app.h"
 
 #include <gtk/gtk.h>
 
@@ -62,16 +60,11 @@ private:
 // wxEventLoop running and exiting
 // ----------------------------------------------------------------------------
 
-wxEventLoop *wxEventLoop::ms_activeLoop = NULL;
+wxEventLoop *wxEventLoopBase::ms_activeLoop = NULL;
 
 wxEventLoop::~wxEventLoop()
 {
     wxASSERT_MSG( !m_impl, _T("should have been deleted in Run()") );
-}
-
-bool wxEventLoop::IsRunning() const
-{
-    return m_impl != NULL;
 }
 
 int wxEventLoop::Run()
@@ -108,9 +101,19 @@ void wxEventLoop::Exit(int rc)
 // wxEventLoop message processing dispatching
 // ----------------------------------------------------------------------------
 
+extern bool g_isIdle;
+
 bool wxEventLoop::Pending() const
 {
-    return gtk_events_pending() > 0;
+    if (wxTheApp && !g_isIdle)
+    {
+        // We need to remove idle callbacks or gtk_events_pending will
+        // never return false.
+        wxTheApp->RemoveIdleTag();
+        g_isIdle = TRUE;
+    }
+
+    return gtk_events_pending();
 }
 
 bool wxEventLoop::Dispatch()

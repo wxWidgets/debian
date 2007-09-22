@@ -4,7 +4,7 @@
 // Author:      Vadim Zeitlin
 // Modified by:
 // Created:     22.07.99
-// RCS-ID:      $Id: spinctrl.h,v 1.14.2.1 2003/04/06 16:47:43 JS Exp $
+// RCS-ID:      $Id: spinctrl.h,v 1.22 2004/09/04 01:53:38 ABX Exp $
 // Copyright:   (c) Vadim Zeitlin
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -12,7 +12,7 @@
 #ifndef _WX_MSW_SPINCTRL_H_
 #define _WX_MSW_SPINCTRL_H_
 
-#ifdef __GNUG__
+#if defined(__GNUG__) && !defined(NO_GCC_PRAGMA)
     #pragma interface "spinctrl.h"
 #endif
 
@@ -21,7 +21,7 @@
 #include "wx/dynarray.h"
 
 class WXDLLEXPORT wxSpinCtrl;
-WX_DEFINE_EXPORTED_ARRAY(wxSpinCtrl *, wxArraySpins);
+WX_DEFINE_EXPORTED_ARRAY_PTR(wxSpinCtrl *, wxArraySpins);
 
 // ----------------------------------------------------------------------------
 // Under Win32, wxSpinCtrl is a wxSpinButton with a buddy (as MSDN docs call
@@ -35,7 +35,7 @@ public:
     wxSpinCtrl() { }
 
     wxSpinCtrl(wxWindow *parent,
-               wxWindowID id = -1,
+               wxWindowID id = wxID_ANY,
                const wxString& value = wxEmptyString,
                const wxPoint& pos = wxDefaultPosition,
                const wxSize& size = wxDefaultSize,
@@ -47,7 +47,7 @@ public:
     }
 
     bool Create(wxWindow *parent,
-                wxWindowID id = -1,
+                wxWindowID id = wxID_ANY,
                 const wxString& value = wxEmptyString,
                 const wxPoint& pos = wxDefaultPosition,
                 const wxSize& size = wxDefaultSize,
@@ -72,8 +72,8 @@ public:
     virtual bool SetFont(const wxFont &font);
     virtual void SetFocus();
 
-    virtual bool Enable(bool enable = TRUE);
-    virtual bool Show(bool show = TRUE);
+    virtual bool Enable(bool enable = true);
+    virtual bool Show(bool show = true);
 
     // wxSpinButton doesn't accept focus, but we do
     virtual bool AcceptsFocus() const { return wxWindow::AcceptsFocus(); }
@@ -113,6 +113,7 @@ protected:
 private:
     DECLARE_DYNAMIC_CLASS(wxSpinCtrl)
     DECLARE_EVENT_TABLE()
+    DECLARE_NO_COPY_CLASS(wxSpinCtrl)
 };
 
 #endif // _WX_MSW_SPINCTRL_H_

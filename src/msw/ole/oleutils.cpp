@@ -4,9 +4,9 @@
 // Author:      Vadim Zeitlin
 // Modified by:
 // Created:     19.02.98
-// RCS-ID:      $Id: oleutils.cpp,v 1.16.2.1 2003/05/03 13:47:02 JS Exp $
+// RCS-ID:      $Id: oleutils.cpp,v 1.23 2004/08/16 12:45:46 ABX Exp $
 // Copyright:   (c) 1998 Vadim Zeitlin <zeitlin@dptmaths.ens-cachan.fr>
-// Licence:     wxWindows license
+// Licence:     wxWindows licence
 ///////////////////////////////////////////////////////////////////////////////
 
 // ============================================================================
@@ -17,7 +17,7 @@
 // headers
 // ----------------------------------------------------------------------------
 
-#ifdef __GNUG__
+#if defined(__GNUG__) && !defined(NO_GCC_PRAGMA)
 #pragma implementation "oleutils.h"
 #endif
 
@@ -35,10 +35,21 @@
 
 #ifndef __CYGWIN10__
 
-#include <windows.h>
+#include "wx/msw/private.h"
+
+#ifdef __WXWINCE__
+    #include <winreg.h>
+    #include <ole2.h>
+
+    #define GUID_DEFINED
+    #define UUID_DEFINED
+#endif
 
 // OLE
+#ifndef __WXWINCE__
 #include  "wx/msw/ole/uuid.h"
+#endif
+
 #include  "wx/msw/ole/oleutils.h"
 
 #if defined(__VISUALC__) && (__VISUALC__ > 1000)
@@ -49,15 +60,15 @@
 // Implementation
 // ============================================================================
 
-// return TRUE if the iid is in the array
+// return true if the iid is in the array
 bool IsIidFromList(REFIID riid, const IID *aIids[], size_t nCount)
 {
   for ( size_t i = 0; i < nCount; i++ ) {
     if ( riid == *aIids[i] )
-      return TRUE;
+      return true;
   }
 
-  return FALSE;
+  return false;
 }
 
 #if wxUSE_DATAOBJ
@@ -169,9 +180,13 @@ static wxString GetIidName(REFIID riid)
     }
   }
 
+#ifndef __WXWINCE__
   // unknown IID, just transform to string
   Uuid uuid(riid);
   return wxString((const wxChar *)uuid);
+#else
+  return wxEmptyString;
+#endif
 }
 
 void wxLogQueryInterface(const wxChar *szInterface, REFIID riid)

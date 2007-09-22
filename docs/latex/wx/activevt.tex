@@ -32,30 +32,32 @@ bar changing colour, and a subwindow gaining the keyboard focus.
 An application is activated or deactivated when one of its frames becomes activated,
 or a frame becomes inactivate resulting in all application frames being inactive. (Windows only)
 
+Please note that usually you should call \helpref{event.Skip()}{wxeventskip} in
+your handlers for these events as not doing so can result in strange effects,
+especially on Mac platform.
+
 \wxheading{See also}
 
-%\helpref{wxWindow::OnActivate}{wxwindowonactivate},\rtfsp
-%% GD: OnXXX functions are not documented
-%%\helpref{wxApp::OnActivate}{wxapponactivate},\rtfsp
-\helpref{Event handling overview}{eventhandlingoverview}
+\helpref{Event handling overview}{eventhandlingoverview},\rtfsp
+\helpref{wxApp::IsActive}{wxappisactive}
 
 \latexignore{\rtfignore{\wxheading{Members}}}
 
-\membersection{wxActivateEvent::wxActivateEvent}
+\membersection{wxActivateEvent::wxActivateEvent}\label{wxactivateeventctor}
 
-\func{}{wxActivateEvent}{\param{WXTYPE }{eventType = 0}, \param{bool}{ active = TRUE}, \param{int }{id = 0}}
+\func{}{wxActivateEvent}{\param{WXTYPE }{eventType = 0}, \param{bool}{ active = true}, \param{int }{id = 0}}
 
 Constructor.
 
-\membersection{wxActivateEvent::m\_active}
+\membersection{wxActivateEvent::m\_active}\label{wxactivateeventmactive}
 
 \member{bool}{m\_active}
 
-TRUE if the window or application was activated.
+true if the window or application was activated.
 
 \membersection{wxActivateEvent::GetActive}\label{wxactivateeventgetactive}
 
 \constfunc{bool}{GetActive}{\void}
 
-Returns TRUE if the application or window is being activated, FALSE otherwise.
+Returns true if the application or window is being activated, false otherwise.
 

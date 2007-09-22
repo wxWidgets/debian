@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     01/02/97
-// RCS-ID:      $Id: colrdlgg.h,v 1.11 2002/08/31 11:29:12 GD Exp $
+// RCS-ID:      $Id: colrdlgg.h,v 1.15 2004/06/04 10:13:36 VS Exp $
 // Copyright:   (c)
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -12,7 +12,7 @@
 #ifndef __COLORDLGH_G__
 #define __COLORDLGH_G__
 
-#if defined(__GNUG__) && !defined(__APPLE__)
+#if defined(__GNUG__) && !defined(NO_GCC_PRAGMA)
 #pragma interface "colrdlgg.h"
 #endif
 
@@ -113,11 +113,5 @@ protected:
     DECLARE_EVENT_TABLE()
     DECLARE_DYNAMIC_CLASS(wxGenericColourDialog)
 };
-
-/* This shouldn't be necessary, we have a #define in wx/colordlg.h.
-#ifdef __WXGTK__
-typedef wxGenericColourDialog wxColourDialog;
-#endif
-*/
 
 #endif

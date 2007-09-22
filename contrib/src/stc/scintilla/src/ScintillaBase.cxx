@@ -198,16 +198,18 @@ void ScintillaBase::AutoCompleteStart(int lenEntered, const char *list) {
 
 	if (ac.chooseSingle && (listType == 0)) {
 		if (list && !strchr(list, ac.GetSeparator())) {
+			const char *typeSep = strchr(list, ac.GetTypesep());
+			size_t lenInsert = (typeSep) ? (typeSep-list) : strlen(list);
 			if (ac.ignoreCase) {
 				SetEmptySelection(currentPos - lenEntered);
 				pdoc->DeleteChars(currentPos, lenEntered);
 				SetEmptySelection(currentPos);
-				pdoc->InsertString(currentPos, list);
-				SetEmptySelection(currentPos + static_cast<int>(strlen(list)));
+				pdoc->InsertString(currentPos, list, lenInsert);
+				SetEmptySelection(currentPos + lenInsert);
 			} else {
 				SetEmptySelection(currentPos);
-				pdoc->InsertString(currentPos, list + lenEntered);
-				SetEmptySelection(currentPos + static_cast<int>(strlen(list + lenEntered)));
+				pdoc->InsertString(currentPos, list + lenEntered, lenInsert - lenEntered);
+				SetEmptySelection(currentPos + lenInsert - lenEntered);
 			}
 			return;
 		}
@@ -295,7 +297,7 @@ void ScintillaBase::AutoCompleteCharacterAdded(char ch) {
 }
 
 void ScintillaBase::AutoCompleteCharacterDeleted() {
-	if (currentPos <= ac.posStart - ac.startLen) {
+	if (currentPos < ac.posStart - ac.startLen) {
 		ac.Cancel();
 	} else if (ac.cancelAtStartPos && (currentPos <= ac.posStart)) {
 		ac.Cancel();
@@ -312,6 +314,8 @@ void ScintillaBase::AutoCompleteCompleted() {
 		ac.lb->GetValue(item, selected, sizeof(selected));
 	}
 	ac.Cancel();
+	if (item == -1)
+		return;
 
 	if (listType > 0) {
 		userListSelected = selected;
@@ -343,6 +347,10 @@ void ScintillaBase::AutoCompleteCompleted() {
 		SetEmptySelection(firstPos + static_cast<int>(piece.length()));
 	}
 	pdoc->EndUndoAction();
+}
+
+int ScintillaBase::AutoCompleteGetCurrent() {
+	return ac.lb->GetSelection();
 }
 
 void ScintillaBase::CallTipShow(Point pt, const char *defn) {
@@ -497,6 +505,9 @@ sptr_t ScintillaBase::WndProc(unsigned int iMessage, uptr_t wParam, sptr_t lPara
 		ac.Select(reinterpret_cast<char *>(lParam));
 		break;
 
+	case SCI_AUTOCGETCURRENT:
+		return AutoCompleteGetCurrent();
+
 	case SCI_AUTOCSETCANCELATSTART:
 		ac.cancelAtStartPos = wParam != 0;
 		break;
@@ -557,7 +568,7 @@ sptr_t ScintillaBase::WndProc(unsigned int iMessage, uptr_t wParam, sptr_t lPara
 		return ac.GetTypesep();
 
 	case SCI_CALLTIPSHOW:
-		CallTipShow(LocationFromPosition(wParam), 
+		CallTipShow(LocationFromPosition(wParam),
 			reinterpret_cast<const char *>(lParam));
 		break;
 

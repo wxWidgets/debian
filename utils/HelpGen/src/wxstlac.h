@@ -4,7 +4,7 @@
 // Author:      Aleksandras Gluchovas
 // Modified by:
 // Created:     27/09/98
-// RCS-ID:      $Id: wxstlac.h,v 1.2 2001/11/18 12:25:11 GD Exp $
+// RCS-ID:      $Id: wxstlac.h,v 1.3 2003/10/13 17:21:30 MBN Exp $
 // Copyright:   (c) Aleskandars Gluchovas
 // Licence:   	wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -22,7 +22,7 @@
 #endif
 #include <memory.h>
 #include <limits.h>
-#include <new.h>
+/* #include <new.h> */
 
 // the below macro used internally (see actual interface after this macro)
 

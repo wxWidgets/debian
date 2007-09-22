@@ -2,9 +2,9 @@
 // Name:        common/settcmn.cpp
 // Purpose:     common (to all ports) wxWindow functions
 // Author:      Robert Roebling
-// RCS-ID:      $Id: settcmn.cpp,v 1.2.2.2 2003/07/25 18:55:01 RR Exp $
-// Copyright:   (c) wxWindows team
-// Licence:     wxWindows license
+// RCS-ID:      $Id: settcmn.cpp,v 1.9 2004/09/22 14:38:50 ABX Exp $
+// Copyright:   (c) wxWidgets team
+// Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
 
 // ============================================================================
@@ -15,7 +15,7 @@
 // headers
 // ----------------------------------------------------------------------------
 
-#ifdef __GNUG__
+#if defined(__GNUG__) && !defined(NO_GCC_PRAGMA)
     #pragma implementation "settings.h"
 #endif
 
@@ -49,20 +49,24 @@ wxSystemScreenType wxSystemSettings::GetScreenType()
         int x = GetMetric( wxSYS_SCREEN_X );
 
         ms_screen = wxSYS_SCREEN_DESKTOP;
-            
+
         if (x < 800)
             ms_screen = wxSYS_SCREEN_SMALL;
-            
+
         if (x < 640)
             ms_screen = wxSYS_SCREEN_PDA;
-            
+
         if (x < 200)
             ms_screen = wxSYS_SCREEN_TINY;
+
+        // This is probably a bug, but VNC seems to report 0
+        if (x < 10)
+            ms_screen = wxSYS_SCREEN_DESKTOP;
     }
 
     return ms_screen;
 }
-    
+
 void wxSystemSettings::SetScreenType( wxSystemScreenType screen )
 {
     ms_screen = screen;

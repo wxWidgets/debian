@@ -84,6 +84,7 @@ ViewStyle::ViewStyle(const ViewStyle &source) {
 	hotspotBackgroundSet = source.hotspotBackgroundSet;
 	hotspotBackground.desired = source.hotspotBackground.desired;
 	hotspotUnderline = source.hotspotUnderline;
+	hotspotSingleLine = source.hotspotSingleLine;
 
 	whitespaceForegroundSet = source.whitespaceForegroundSet;
 	whitespaceForeground.desired = source.whitespaceForeground.desired;
@@ -97,6 +98,7 @@ ViewStyle::ViewStyle(const ViewStyle &source) {
 	edgecolour.desired = source.edgecolour.desired;
 	edgeState = source.edgeState;
 	caretWidth = source.caretWidth;
+	someStylesProtected = false;
 	leftMarginWidth = source.leftMarginWidth;
 	rightMarginWidth = source.rightMarginWidth;
 	for (int i=0;i < margins; i++) {
@@ -110,6 +112,7 @@ ViewStyle::ViewStyle(const ViewStyle &source) {
 	viewIndentationGuides = source.viewIndentationGuides;
 	viewEOL = source.viewEOL;
 	showMarkedLines = source.showMarkedLines;
+	extraFontFlag = source.extraFontFlag;
 }
 
 ViewStyle::~ViewStyle() {
@@ -164,6 +167,7 @@ void ViewStyle::Init() {
 	hotspotBackgroundSet = false;
 	hotspotBackground.desired = ColourDesired(0xff, 0xff, 0xff);
 	hotspotUnderline = true;
+	hotspotSingleLine = true;
 
 	leftMarginWidth = 1;
 	rightMarginWidth = 1;
@@ -190,6 +194,7 @@ void ViewStyle::Init() {
 	viewIndentationGuides = false;
 	viewEOL = false;
 	showMarkedLines = true;
+	extraFontFlag = false;
 }
 
 void ViewStyle::RefreshColourPalette(Palette &pal, bool want) {
@@ -225,13 +230,13 @@ void ViewStyle::RefreshColourPalette(Palette &pal, bool want) {
 void ViewStyle::Refresh(Surface &surface) {
 	selbar.desired = Platform::Chrome();
 	selbarlight.desired = Platform::ChromeHighlight();
-	styles[STYLE_DEFAULT].Realise(surface, zoomLevel);
+	styles[STYLE_DEFAULT].Realise(surface, zoomLevel, NULL, extraFontFlag);
 	maxAscent = styles[STYLE_DEFAULT].ascent;
 	maxDescent = styles[STYLE_DEFAULT].descent;
 	someStylesProtected = false;
 	for (unsigned int i=0;i<(sizeof(styles)/sizeof(styles[0]));i++) {
 		if (i != STYLE_DEFAULT) {
-			styles[i].Realise(surface, zoomLevel, &styles[STYLE_DEFAULT]);
+			styles[i].Realise(surface, zoomLevel, &styles[STYLE_DEFAULT], extraFontFlag);
 			if (maxAscent < styles[i].ascent)
 				maxAscent = styles[i].ascent;
 			if (maxDescent < styles[i].descent)

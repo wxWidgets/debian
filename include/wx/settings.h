@@ -4,8 +4,8 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     01/02/97
-// RCS-ID:      $Id: settings.h,v 1.23 2002/05/19 22:44:26 VS Exp $
-// Copyright:   (c) Julian Smart and Markus Holzem
+// RCS-ID:      $Id: settings.h,v 1.28 2004/05/23 20:50:24 JS Exp $
+// Copyright:   (c) Julian Smart
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
 
@@ -28,7 +28,10 @@ enum wxSystemFont
     wxSYS_DEVICE_DEFAULT_FONT,
     wxSYS_DEFAULT_PALETTE,
     wxSYS_SYSTEM_FIXED_FONT,
-    wxSYS_DEFAULT_GUI_FONT
+    wxSYS_DEFAULT_GUI_FONT,
+
+    // this was just a temporary aberration, do not use it any more
+    wxSYS_ICONTITLE_FONT = wxSYS_DEFAULT_GUI_FONT
 };
 
 // possible values for wxSystemSettings::GetColour() parameter

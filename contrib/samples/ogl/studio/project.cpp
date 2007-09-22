@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     27/7/98
-// RCS-ID:      $Id: project.cpp,v 1.2 2002/01/08 23:27:53 VS Exp $
+// RCS-ID:      $Id: project.cpp,v 1.5 2004/06/09 16:42:29 ABX Exp $
 // Copyright:   (c) Julian Smart
 // Licence:
 /////////////////////////////////////////////////////////////////////////////
@@ -31,14 +31,13 @@ BEGIN_EVENT_TABLE(csProjectTreeCtrl, wxTreeCtrl)
 END_EVENT_TABLE()
 
 // Define my frame constructor
-csProjectTreeCtrl::csProjectTreeCtrl(wxWindow *parent, wxWindowID id, const wxPoint& pos, const wxSize& size,
-	long style):
+csProjectTreeCtrl::csProjectTreeCtrl(wxWindow *parent, const wxWindowID id, const wxPoint& pos, const wxSize& size, long style):
 
   wxTreeCtrl(parent, id, pos, size, style),
   m_imageList(16, 16)
 {
-    m_imageList.Add(wxIcon("folder1"));
-    m_imageList.Add(wxIcon("file1"));
+    m_imageList.Add(wxIcon(_T("folder1")));
+    m_imageList.Add(wxIcon(_T("file1")));
 
     SetImageList(& m_imageList);
 }
@@ -49,7 +48,7 @@ csProjectTreeCtrl::~csProjectTreeCtrl()
 }
 
 // Create the project window
-bool csApp::CreateProjectWindow(wxFrame *parent)
+bool csApp::CreateProjectWindow(wxFrame *WXUNUSED(parent))
 {
 #if 0
     // Create a layout window
@@ -58,7 +57,7 @@ bool csApp::CreateProjectWindow(wxFrame *parent)
     win->SetOrientation(wxLAYOUT_VERTICAL);
     win->SetAlignment(wxLAYOUT_LEFT);
     win->SetBackgroundColour(wxSystemSettings::GetColour(wxSYS_COLOUR_3DFACE));
-    win->SetSashVisible(wxSASH_RIGHT, TRUE);
+    win->SetSashVisible(wxSASH_RIGHT, true);
     win->SetExtraBorderSize(5);
 
     m_projectSashWindow = win;
@@ -67,10 +66,10 @@ bool csApp::CreateProjectWindow(wxFrame *parent)
         wxDefaultSize, wxTR_HAS_BUTTONS|wxTR_LINES_AT_ROOT|wxDOUBLE_BORDER);
 
     // For now, hide the window
-    m_projectSashWindow->Show(FALSE);
+    m_projectSashWindow->Show(false);
 #endif
 
-    return TRUE;
+    return true;
 }
 
 // Fill out the project tree control

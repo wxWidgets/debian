@@ -2,14 +2,17 @@
 // Name:        dcscreen.cpp
 // Purpose:
 // Author:      Robert Roebling
-// Id:          $Id: dcscreen.cpp,v 1.18 2000/10/30 16:43:37 vadz Exp $
+// Id:          $Id: dcscreen.cpp,v 1.22 2004/05/23 20:52:20 JS Exp $
 // Copyright:   (c) 1998 Robert Roebling
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
 
-#ifdef __GNUG__
+#if defined(__GNUG__) && !defined(NO_GCC_PRAGMA)
 #pragma implementation "dcscreen.h"
 #endif
+
+// For compilers that support precompilation, includes "wx.h".
+#include "wx/wxprec.h"
 
 #include "wx/dcscreen.h"
 #include "wx/window.h"
@@ -37,6 +40,12 @@ wxScreenDC::wxScreenDC()
     m_ok = FALSE;
     m_cmap = gdk_colormap_get_system();
     m_window = GDK_ROOT_PARENT();
+
+#ifdef __WXGTK20__
+    m_context = gdk_pango_context_get();
+    m_layout = pango_layout_new( m_context );
+//    m_fontdesc = pango_font_description_copy( widget->style->font_desc );
+#endif
 
     m_isScreenDC = TRUE;
 

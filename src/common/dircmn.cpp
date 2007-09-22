@@ -4,9 +4,9 @@
 // Author:      Vadim Zeitlin
 // Modified by:
 // Created:     19.05.01
-// RCS-ID:      $Id: dircmn.cpp,v 1.6.2.1 2003/10/05 21:39:15 SN Exp $
+// RCS-ID:      $Id: dircmn.cpp,v 1.17 2004/08/13 21:56:11 VS Exp $
 // Copyright:   (c) 2001 Vadim Zeitlin <zeitlin@dptmaths.ens-cachan.fr>
-// License:     wxWindows license
+// License:     wxWindows licence
 ///////////////////////////////////////////////////////////////////////////////
 
 // ============================================================================
@@ -18,7 +18,7 @@
 // ----------------------------------------------------------------------------
 
 /* this is done in platform-specific files
-#ifdef __GNUG__
+#if defined(__GNUG__) && !defined(NO_GCC_PRAGMA)
     #pragma implementation "dir.h"
 #endif
 */
@@ -37,11 +37,22 @@
     #include "wx/filefn.h"
 #endif //WX_PRECOMP
 
+#include "wx/arrstr.h"
 #include "wx/dir.h"
 
 // ============================================================================
 // implementation
 // ============================================================================
+
+// ----------------------------------------------------------------------------
+// wxDirTraverser
+// ----------------------------------------------------------------------------
+
+wxDirTraverseResult
+wxDirTraverser::OnOpenError(const wxString& WXUNUSED(dirname))
+{
+    return wxDIR_IGNORE;
+}
 
 // ----------------------------------------------------------------------------
 // wxDir::HasFiles() and HasSubDirs()
@@ -56,7 +67,7 @@ bool wxDir::HasFiles(const wxString& spec)
 }
 
 // we have a (much) faster version for Unix
-#if (defined(__CYGWIN__) && defined(__WINDOWS__)) || defined(__WXPM__) || !defined(__UNIX_LIKE__) || defined(__WXMAC__)
+#if (defined(__CYGWIN__) && defined(__WINDOWS__)) || !defined(__UNIX_LIKE__) || defined(__WXMAC__) || defined(__EMX__)
 
 bool wxDir::HasSubDirs(const wxString& spec)
 {
@@ -88,29 +99,75 @@ size_t wxDir::Traverse(wxDirTraverser& sink,
     if ( flags & wxDIR_DIRS )
     {
         wxString dirname;
-        bool cont = GetFirst(&dirname, _T(""), wxDIR_DIRS | wxDIR_HIDDEN);
-        while ( cont )
+        for ( bool cont = GetFirst(&dirname, _T(""), wxDIR_DIRS | (flags & wxDIR_HIDDEN) );
+              cont;
+              cont = cont && GetNext(&dirname) )
         {
-            wxDirTraverseResult res = sink.OnDir(prefix + dirname);
+            const wxString fulldirname = prefix + dirname;
 
-            if ( res == wxDIR_STOP )
-                break;
-
-            if ( res == wxDIR_CONTINUE )
+            switch ( sink.OnDir(fulldirname) )
             {
-                wxDir subdir(prefix + dirname);
-                if ( subdir.IsOpened() )
-                {
-                    nFiles += subdir.Traverse(sink, filespec, flags);
-                }
-            }
-            else
-            {
-                wxASSERT_MSG( res == wxDIR_IGNORE,
-                              _T("unexpected OnDir() return value") );
-            }
+                default:
+                    wxFAIL_MSG(_T("unexpected OnDir() return value") );
+                    // fall through
 
-            cont = GetNext(&dirname);
+                case wxDIR_STOP:
+                    cont = false;
+                    break;
+
+                case wxDIR_CONTINUE:
+                    {
+                        wxDir subdir;
+
+                        // don't give the error messages for the directories
+                        // which we can't open: there can be all sorts of good
+                        // reason for this (e.g. insufficient privileges) and
+                        // this shouldn't be treated as an error -- instead
+                        // let the user code decide what to do
+                        bool ok;
+                        do
+                        {
+                            wxLogNull noLog;
+                            ok = subdir.Open(fulldirname);
+                            if ( !ok )
+                            {
+                                // ask the user code what to do
+                                bool tryagain;
+                                switch ( sink.OnOpenError(fulldirname) )
+                                {
+                                    default:
+                                        wxFAIL_MSG(_T("unexpected OnOpenError() return value") );
+                                        // fall through
+
+                                    case wxDIR_STOP:
+                                        cont = false;
+                                        // fall through
+
+                                    case wxDIR_IGNORE:
+                                        tryagain = false;
+                                        break;
+
+                                    case wxDIR_CONTINUE:
+                                        tryagain = true;
+                                }
+
+                                if ( !tryagain )
+                                    break;
+                            }
+                        }
+                        while ( !ok );
+
+                        if ( ok )
+                        {
+                            nFiles += subdir.Traverse(sink, filespec, flags);
+                        }
+                    }
+                    break;
+
+                case wxDIR_IGNORE:
+                    // nothing to do
+                    ;
+            }
         }
     }
 
@@ -150,7 +207,7 @@ public:
 
     virtual wxDirTraverseResult OnFile(const wxString& filename)
     {
-        m_files.Add(filename);
+        m_files.push_back(filename);
         return wxDIR_CONTINUE;
     }
 
@@ -161,6 +218,8 @@ public:
 
 private:
     wxArrayString& m_files;
+
+    DECLARE_NO_COPY_CLASS(wxDirTraverserSimple)
 };
 
 /* static */

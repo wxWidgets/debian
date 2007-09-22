@@ -4,7 +4,7 @@
 %% Author:      Vadim Zeitlin
 %% Modified by:
 %% Created:     02.11.99
-%% RCS-ID:      $Id: dobjsmpl.tex,v 1.7.2.1 2004/05/04 08:51:56 JS Exp $
+%% RCS-ID:      $Id: dobjsmpl.tex,v 1.9 2004/05/04 08:25:43 JS Exp $
 %% Copyright:   (c) Vadim Zeitlin
 %% License:     wxWidgets license
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -85,7 +85,7 @@ object supports rendering its data.
 
 \constfunc{virtual bool}{GetDataHere}{\param{void }{*buf}}
 
-Copy the data to the buffer, return TRUE on success. Must be implemented in the
+Copy the data to the buffer, return true on success. Must be implemented in the
 derived class if the object supports rendering its data.
 
 \pythonnote{When implementing this method in wxPython, no additional
@@ -96,7 +96,7 @@ method as a string.}
 
 \func{virtual bool}{SetData}{\param{size\_t }{len}, \param{const void }{*buf}}
 
-Copy the data from the buffer, return TRUE on success. Must be implemented in
+Copy the data from the buffer, return true on success. Must be implemented in
 the derived class if the object supports setting its data.
 
 \pythonnote{When implementing this method in wxPython, the data comes

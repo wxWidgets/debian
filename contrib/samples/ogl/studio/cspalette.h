@@ -4,9 +4,9 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     12/07/98
-// RCS-ID:      $Id: cspalette.h,v 1.2 2002/09/07 12:12:21 GD Exp $
+// RCS-ID:      $Id: cspalette.h,v 1.5 2004/06/09 16:42:29 ABX Exp $
 // Copyright:   (c) Julian Smart
-// Licence:   	wxWindows licence
+// Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
 
 #ifndef _STUDIO_CSPALETTE_H_
@@ -18,7 +18,7 @@
 
 #include <wx/wx.h>
 #include <wx/string.h>
-#include <wx/tbarsmpl.h>
+#include <wx/deprecated/tbarsmpl.h>
 
 /*
  * Object editor tool palette
@@ -28,13 +28,16 @@
 // TODO for wxWin: wxToolBar95 cannot be moved to a non-0,0 position!
 // Needs to have a parent window...
 // So use a simple toolbar at present.
-#define TOOLPALETTECLASS    wxToolBarSimple
+// ABX: Simple toolbar is not available in default compilation and is deprecated
+//      so I use wxToolBar anyway
+// #define TOOLPALETTECLASS    wxToolBarSimple
+#define TOOLPALETTECLASS    wxToolBar
 
 class csEditorToolPalette: public TOOLPALETTECLASS
 {
 public:
 
-  csEditorToolPalette(wxWindow *parent, wxWindowID id = -1, const wxPoint& pos = wxDefaultPosition,
+  csEditorToolPalette(wxWindow *parent, wxWindowID id = wxID_ANY, const wxPoint& pos = wxDefaultPosition,
     const wxSize& size = wxDefaultSize,
     long style = wxTB_VERTICAL);
 

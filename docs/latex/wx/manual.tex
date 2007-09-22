@@ -26,13 +26,13 @@
 %\special{!/@scaleunit 1 def}
 \parskip=10pt
 \parindent=0pt
-\title{wxWidgets 2.4.2: A portable C++ and Python GUI toolkit}
+\title{wxWidgets 2.5.3: A portable C++ and Python GUI toolkit}
 \winhelponly{\author{by Julian Smart et al
 %\winhelponly{\\$$\image{1cm;0cm}{wxwin.wmf}$$}
 }}
 \winhelpignore{\author{Julian Smart, Robert Roebling, Vadim Zeitlin,
 Robin Dunn, et al}
-\date{September 2003}
+\date{October, 2004}
 }
 \makeindex
 \begin{document}
@@ -82,7 +82,7 @@ Robin Dunn, et al}
 }
 \end{comment}
 
-\chapter{Copyright notice}
+\chapter{Copyright notice}\label{copyrightnotice}
 \setheader{{\it COPYRIGHT}}{}{}{}{}{{\it COPYRIGHT}}%
 \setfooter{\thepage}{}{}{}{}{\thepage}%
 
@@ -92,12 +92,14 @@ members of the wxWidgets team\\
 Portions (c) 1996 Artificial Intelligence Applications Institute\\
 \end{center}
 
-Please also see the wxWidgets license files (preamble.txt, lgpl.txt, gpl.txt, license.txt,
+Please also see the wxWidgets license files (preamble.txt, lgpl.txt, gpl.txt, licence.txt,
 licendoc.txt) for conditions of software and documentation use.
+Note that we use the old name wxWindows in the license, pending
+recognition of the new name by OSI.
 
-\section*{wxWidgets Library License, Version 3}
+\section*{wxWindows Library License, Version 3}\label{wxlicense}
 
-Copyright (c) 1992-2002 Julian Smart, Robert Roebling, Vadim Zeitlin et al. 
+Copyright (c) 1992-2004 Julian Smart, Robert Roebling, Vadim Zeitlin et al. 
 
 Everyone is permitted to copy and distribute verbatim copies
 of this license document, but changing it is not allowed. 
@@ -126,7 +128,7 @@ EXCEPTION NOTICE
 
 1. As a special exception, the copyright holders of this library give 
 permission for additional uses of the text contained in this release of 
-the library as licensed under the wxWidgets Library License, applying 
+the library as licensed under the wxWindows Library License, applying 
 either version 3 of the License, or (at your option) any later version of 
 the License as published by the copyright holders of version 3 of the 
 License document. 
@@ -149,7 +151,7 @@ choice whether to permit this exception to apply to your modifications.
 If you do not wish that, you must delete the exception notice from such 
 code and/or adjust the licensing conditions notice accordingly. 
 
-\section*{GNU Library General Public License, Version 2}
+\section*{GNU Library General Public License, Version 2}\label{gnulicense}
 
 Copyright (C) 1991 Free Software Foundation, Inc.
 675 Mass Ave, Cambridge, MA 02139, USA
@@ -632,7 +634,7 @@ You should have received a copy of the GNU Library General Public
 License along with this library; if not, write to the Free
 Software Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 \end{verbatim}
-}
+}%
 
 Also add information on how to contact you by electronic and paper mail.
 
@@ -648,11 +650,12 @@ library `Frob' (a library for tweaking knobs) written by James Random Hacker.
 <signature of Ty Coon>, 1 April 1990
 Ty Coon, President of Vice
 \end{verbatim} 
-}
+}%
 
 That's all there is to it!
 
 \input body.tex
+\input libs.tex
 \input classes.tex
 \input function.tex
 \input constant.tex

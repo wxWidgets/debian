@@ -4,7 +4,7 @@
 // Author:      Vadim Zeitlin
 // Modified by:
 // Created:     19.02.1998
-// RCS-ID:      $Id: oleutils.h,v 1.11.2.1 2003/08/14 11:46:24 CE Exp $
+// RCS-ID:      $Id: oleutils.h,v 1.19 2004/08/16 12:45:40 ABX Exp $
 // Copyright:   (c) 1998 Vadim Zeitlin <zeitlin@dptmaths.ens-cachan.fr>
 // Licence:     wxWindows licence
 ///////////////////////////////////////////////////////////////////////////////
@@ -12,15 +12,14 @@
 #ifndef   _WX_OLEUTILS_H
 #define   _WX_OLEUTILS_H
 
-#ifdef __GNUG__
+#if defined(__GNUG__) && !defined(NO_GCC_PRAGMA)
 #pragma interface "oleutils.h"
 #endif
 
 #include "wx/defs.h"
 
-#if wxUSE_NORLANDER_HEADERS
-    #include <ole2.h>
-#endif
+// get IUnknown, REFIID &c
+#include <ole2.h>
 
 // ============================================================================
 // General purpose functions and macros
@@ -40,7 +39,7 @@ inline void ReleaseInterface(IUnknown *pIUnk)
 // release the interface pointer (if !NULL) and make it NULL
 #define   RELEASE_AND_NULL(p)   if ( (p) != NULL ) { p->Release(); p = NULL; };
 
-// return TRUE if the iid is in the array
+// return true if the iid is in the array
 extern bool IsIidFromList(REFIID riid, const IID *aIids[], size_t nCount);
 
 // ============================================================================
@@ -73,8 +72,8 @@ public:
     wxAutoULong(ULONG value = 0) : m_Value(value) { }
 
     operator ULONG&() { return m_Value; }
-    ULONG& operator=(ULONG value) { return m_Value = value; }
-    
+    ULONG& operator=(ULONG value) { m_Value = value; return m_Value;  }
+
     wxAutoULong& operator++() { ++m_Value; return *this; }
     const wxAutoULong operator++( int ) { wxAutoULong temp = *this; ++m_Value; return temp; }
 
@@ -167,6 +166,45 @@ void wxLogRelease(const wxChar *szInterface, ULONG cRef);
   #define   wxLogAddRef(szInterface, cRef)
   #define   wxLogRelease(szInterface, cRef)
 #endif  //WXDEBUG
+
+// wrapper around BSTR type (by Vadim Zeitlin)
+
+class WXDLLEXPORT wxBasicString
+{
+public:
+    // ctors & dtor
+    wxBasicString(const char *sz);
+    wxBasicString(const wxString& str);
+    ~wxBasicString();
+
+    void Init(const char* sz);
+
+    // accessors
+    // just get the string
+    operator BSTR() const { return m_wzBuf; }
+    // retrieve a copy of our string - caller must SysFreeString() it later!
+    BSTR Get() const { return SysAllocString(m_wzBuf); }
+
+private:
+    // @@@ not implemented (but should be)
+    wxBasicString(const wxBasicString&);
+    wxBasicString& operator=(const wxBasicString&);
+
+    OLECHAR *m_wzBuf;     // actual string
+};
+
+// Convert variants
+class WXDLLEXPORT wxVariant;
+
+bool wxConvertVariantToOle(const wxVariant& variant, VARIANTARG& oleVariant) ;
+bool wxConvertOleToVariant(const VARIANTARG& oleVariant, wxVariant& variant) ;
+
+// Convert string to Unicode
+BSTR wxConvertStringToOle(const wxString& str);
+
+// Convert string from BSTR to wxString
+wxString wxConvertStringFromOle(BSTR bStr);
+
 
 #endif  //_WX_OLEUTILS_H
 

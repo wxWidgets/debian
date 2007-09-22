@@ -2,7 +2,7 @@
 // Name:        scrolbar.h
 // Purpose:
 // Author:      Robert Roebling
-// Id:          $Id: scrolbar.h,v 1.14.2.1 2002/10/20 18:21:36 RR Exp $
+// Id:          $Id: scrolbar.h,v 1.21 2004/06/14 17:31:26 VS Exp $
 // Copyright:   (c) 1998 Robert Roebling
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -11,7 +11,7 @@
 #ifndef __GTKSCROLLBARH__
 #define __GTKSCROLLBARH__
 
-#if defined(__GNUG__) && !defined(__APPLE__)
+#if defined(__GNUG__) && !defined(NO_GCC_PRAGMA)
 #pragma interface "scrolbar.h"
 #endif
 
@@ -68,14 +68,19 @@ public:
     void SetObjectLength( int objectLength );
     void SetViewLength( int viewLength );
 
+    static wxVisualAttributes
+    GetClassDefaultAttributes(wxWindowVariant variant = wxWINDOW_VARIANT_NORMAL);
+    
     // implementation
     // --------------
 
     bool IsOwnGtkWindow( GdkWindow *window );
-    void ApplyWidgetStyle();
 
     GtkAdjustment  *m_adjust;
     float           m_oldPos;
+
+protected:
+    virtual wxSize DoGetBestSize() const;
 
 private:
     DECLARE_DYNAMIC_CLASS(wxScrollBar)

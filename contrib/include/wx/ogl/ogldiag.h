@@ -4,9 +4,9 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     12/07/98
-// RCS-ID:      $Id: ogldiag.h,v 1.2.2.1 2002/11/19 02:13:31 RD Exp $
+// RCS-ID:      $Id: ogldiag.h,v 1.10 2004/06/09 16:42:21 ABX Exp $
 // Copyright:   (c) Julian Smart
-// Licence:   	wxWindows licence
+// Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
 
 #ifndef _OGL_OGLDIAG_H_
@@ -16,9 +16,14 @@
 #pragma interface "ogldiag.h"
 #endif
 
-#include <wx/ogl/basic.h>
+#include "wx/ogl/basic.h"
 
-class wxDiagram: public wxObject
+#if wxUSE_PROLOGIO
+#include <wx/deprecated/wxexpr.h>
+#endif
+
+
+class WXDLLIMPEXP_OGL wxDiagram: public wxObject
 {
  DECLARE_DYNAMIC_CLASS(wxDiagram)
 
@@ -62,7 +67,7 @@ public:
   inline void SetMouseTolerance(int tol) { m_mouseTolerance = tol; }
   inline int GetMouseTolerance() const { return m_mouseTolerance; }
   inline wxList *GetShapeList() const { return m_shapeList; }
-  inline int GetCount() const { return m_shapeList->Number(); }
+  inline int GetCount() const { return m_shapeList->GetCount(); }
 
   // Make sure all text that should be centred, is centred.
   void RecentreAll(wxDC& dc);
@@ -93,7 +98,7 @@ protected:
   wxList*               m_shapeList;
 };
 
-class wxLineCrossing: public wxObject
+class WXDLLIMPEXP_OGL wxLineCrossing: public wxObject
 {
 public:
     wxLineCrossing() { m_lineShape1 = NULL; m_lineShape2 = NULL; }
@@ -106,7 +111,7 @@ public:
     wxLineShape*    m_lineShape2;
 };
 
-class wxLineCrossings: public wxObject
+class WXDLLIMPEXP_OGL wxLineCrossings: public wxObject
 {
 public:
     wxLineCrossings();

@@ -4,7 +4,7 @@
 // Author:      Aleksandras Gluchovas
 // Modified by:
 // Created:     ??/09/98
-// RCS-ID:      $Id: newbmpbtn.cpp,v 1.8.2.3 2003/04/02 14:14:13 JS Exp $
+// RCS-ID:      $Id: newbmpbtn.cpp,v 1.15 2004/07/20 10:08:45 ABX Exp $
 // Copyright:   (c) Aleksandras Gluchovas
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -222,13 +222,15 @@ BEGIN_EVENT_TABLE( wxNewBitmapButton, wxPanel )
 
     EVT_ERASE_BACKGROUND( wxNewBitmapButton::OnEraseBackground )
 
+    EVT_IDLE(wxNewBitmapButton::OnIdle)
+
 END_EVENT_TABLE()
 
-wxNewBitmapButton::wxNewBitmapButton( const wxBitmap& labelBitmap, 
+wxNewBitmapButton::wxNewBitmapButton( const wxBitmap& labelBitmap,
                                       const wxString& labelText,
                                       int  alignText,
                                       bool isFlat,
-                                      int  firedEventType, 
+                                      int  firedEventType,
                                       int  marginX,
                                       int  marginY,
                                       int  textToLabelGap,
@@ -249,10 +251,11 @@ wxNewBitmapButton::wxNewBitmapButton( const wxBitmap& labelBitmap,
         mpFocusedImg  ( NULL ),
 
 
-        mDragStarted     ( FALSE ),
-        mIsPressed       ( FALSE ),
-        mIsInFocus( FALSE ),
-        mHasFocusedBmp( FALSE ),
+        mDragStarted  ( false ),
+        mIsPressed    ( false ),
+        mIsInFocus    ( false ),
+        mIsToggled    ( false ),
+        mHasFocusedBmp( false ),
         mFiredEventType( firedEventType ),
 
         mBlackPen( wxColour(  0,  0,  0), 1, wxSOLID ),
@@ -260,8 +263,8 @@ wxNewBitmapButton::wxNewBitmapButton( const wxBitmap& labelBitmap,
         mGrayPen ( wxSystemSettings::GetColour(wxSYS_COLOUR_3DFACE), 1, wxSOLID ),
         mLightPen( wxSystemSettings::GetColour(wxSYS_COLOUR_3DHIGHLIGHT), 1, wxSOLID ),
 
-        mIsCreated( FALSE ),
-        mSizeIsSet( FALSE )
+        mIsCreated( false ),
+        mSizeIsSet( false )
 
 {
 }
@@ -271,17 +274,17 @@ wxNewBitmapButton::wxNewBitmapButton( const wxString& bitmapFileName,
                                       const wxString& labelText,
                                       int  alignText,
                                       bool isFlat,
-                                      int  firedEventType, 
-                                      int  marginX,
-                                      int  marginY,
-                                      int  textToLabelGap,
-                                      bool isSticky)
+                                      int  WXUNUSED(firedEventType), 
+                                      int  WXUNUSED(marginX),
+                                      int  WXUNUSED(marginY),
+                                      int  WXUNUSED(textToLabelGap),
+                                      bool WXUNUSED(isSticky))
 
     :   mTextToLabelGap  ( 2 ),
         mMarginX( 2 ),
         mMarginY( 2 ),
         mTextAlignment( alignText ),
-        mIsSticky( FALSE ),
+        mIsSticky( false ),
         mIsFlat( isFlat ),
         mLabelText( labelText ),
         mImageFileName( bitmapFileName ),
@@ -292,10 +295,11 @@ wxNewBitmapButton::wxNewBitmapButton( const wxString& bitmapFileName,
         mpDisabledImg ( NULL ),
         mpFocusedImg  ( NULL ),
 
-        mDragStarted     ( FALSE ),
-        mIsPressed       ( FALSE ),
-        mIsInFocus       ( FALSE ),
-        mHasFocusedBmp( FALSE ),
+        mDragStarted  ( false ),
+        mIsPressed    ( false ),
+        mIsInFocus    ( false ),
+        mIsToggled    ( false ),
+        mHasFocusedBmp( false ),
         mFiredEventType( wxEVT_COMMAND_MENU_SELECTED ),
 
         mBlackPen( wxColour(  0,  0,  0), 1, wxSOLID ),
@@ -303,8 +307,8 @@ wxNewBitmapButton::wxNewBitmapButton( const wxString& bitmapFileName,
         mGrayPen ( wxSystemSettings::GetColour(wxSYS_COLOUR_3DFACE), 1, wxSOLID ),
         mLightPen( wxSystemSettings::GetColour(wxSYS_COLOUR_3DHIGHLIGHT), 1, wxSOLID ),
 
-        mIsCreated( FALSE ),
-        mSizeIsSet( FALSE )
+        mIsCreated( false ),
+        mSizeIsSet( false )
 
 {
 }
@@ -321,11 +325,11 @@ void wxNewBitmapButton::DrawShade( int outerLevel,
 {
     wxBitmap* pBmp = GetStateLabel();
 
-    int x = mMarginX - (outerLevel + 1);
-    int y = mMarginY - (outerLevel + 1);
+    int x = mMarginX - (outerLevel + 2);
+    int y = mMarginY - (outerLevel + 2);
 
-    int height = pBmp->GetHeight() + (outerLevel + 1)*2 - 1;
-    int width  = pBmp->GetWidth()  + (outerLevel + 1)*2 - 1;
+    int height = pBmp->GetHeight() + (outerLevel + 2)*2 - 1;
+    int width  = pBmp->GetWidth()  + (outerLevel + 2)*2 - 1;
 
     dc.SetPen( upperLeftSidePen );
     dc.DrawLine( x,y, x + width, y  );
@@ -410,7 +414,7 @@ void wxNewBitmapButton::RenderLabelImage( wxBitmap*& destBmp, wxBitmap* srcBmp,
         {
             destDim.x = srcBmp->GetWidth() + 2*mTextToLabelGap + txtWidth;
 
-            destDim.y = 
+            destDim.y =
                 wxMax( srcBmp->GetHeight(), txtHeight );
 
             txtPos.x = srcBmp->GetWidth() + mTextToLabelGap;
@@ -421,7 +425,7 @@ void wxNewBitmapButton::RenderLabelImage( wxBitmap*& destBmp, wxBitmap* srcBmp,
         else
         if ( mTextAlignment == NB_ALIGN_TEXT_BOTTOM )
         {
-            destDim.x = 
+            destDim.x =
                 wxMax( srcBmp->GetWidth(), txtWidth );
 
             destDim.y = srcBmp->GetHeight() + mTextToLabelGap + txtHeight;
@@ -431,7 +435,7 @@ void wxNewBitmapButton::RenderLabelImage( wxBitmap*& destBmp, wxBitmap* srcBmp,
             imgPos.x = (destDim.x - srcBmp->GetWidth())/2;
             imgPos.y = 0;
         }
-        else 
+        else
         {
             wxFAIL_MSG(wxT("Unsupported FL alignment type detected in wxNewBitmapButton::RenderLabelImage()"));
         }
@@ -466,10 +470,10 @@ void wxNewBitmapButton::RenderLabelImage( wxBitmap*& destBmp, wxBitmap* srcBmp,
     if ( hasImage )
     {
 
-        destDc.Blit( imgPos.x, imgPos.y, 
+        destDc.Blit( imgPos.x, imgPos.y,
                  srcBmp->GetWidth()+1,
                  srcBmp->GetHeight()+1,
-                 &srcDc, 0,0, wxCOPY,TRUE );
+                 &srcDc, 0,0, wxCOPY,true );
     }
 
     if ( hasText )
@@ -502,7 +506,7 @@ void wxNewBitmapButton::RenderLabelImage( wxBitmap*& destBmp, wxBitmap* srcBmp,
     }
 
     if ( !isEnabled ){
-    
+
 #ifdef __WXMSW__ // This is currently MSW specific
         gray_out_image_on_dc( destDc, destDim.x, destDim.y );
 #else
@@ -515,33 +519,33 @@ void wxNewBitmapButton::RenderLabelImage( wxBitmap*& destBmp, wxBitmap* srcBmp,
     // adjust button size to fit the new dimensions of the label
     if ( !mSizeIsSet && 0 )
     {
-        mSizeIsSet = TRUE; 
-        SetSize( -1,-1, 
+        mSizeIsSet = true;
+        SetSize( wxDefaultCoord, wxDefaultCoord,
                  destBmp->GetWidth()  + mMarginX*2,
-                 destBmp->GetHeight() + mMarginY*2, 0 
+                 destBmp->GetHeight() + mMarginY*2, 0
             );
     }
     destDc.SelectObject( wxNullBitmap );
-    
+
 #if defined(__WXMSW__) && !defined(__WXUNIVERSAL__)
     // Map to system colours
     (void) wxToolBar::MapBitmap(destBmp->GetHBITMAP(), destBmp->GetWidth(), destBmp->GetHeight());
-#endif    
+#endif
 }
 
 void wxNewBitmapButton::RenderAllLabelImages()
 {
     if ( !mIsCreated )
         return;
-    RenderLabelImage( mpDisabledImg, &mDepressedBmp, FALSE );
-    RenderLabelImage( mpPressedImg,   &mDepressedBmp, TRUE, TRUE );
-    RenderLabelImage( mpDepressedImg, &mDepressedBmp, TRUE, FALSE );
+    RenderLabelImage( mpDisabledImg, &mDepressedBmp, false );
+    RenderLabelImage( mpPressedImg,   &mDepressedBmp, true, true );
+    RenderLabelImage( mpDepressedImg, &mDepressedBmp, true, false );
     if ( mHasFocusedBmp )
     {
-        RenderLabelImage( mpFocusedImg, &mFocusedBmp, TRUE, FALSE );
+        RenderLabelImage( mpFocusedImg, &mFocusedBmp, true, false );
     }
 }
-    
+
 
 void wxNewBitmapButton::RenderLabelImages()
 {
@@ -550,25 +554,38 @@ void wxNewBitmapButton::RenderLabelImages()
 
     if ( !IsEnabled() )
     {
-        RenderLabelImage( mpDisabledImg, &mDepressedBmp, FALSE );
+        RenderLabelImage( mpDisabledImg, &mDepressedBmp, false );
     }
     else
 
-    if ( mIsPressed ) 
+    if ( mIsPressed )
 
-        RenderLabelImage( mpPressedImg,   &mDepressedBmp, TRUE, TRUE );
+        RenderLabelImage( mpPressedImg,   &mDepressedBmp, true, true );
     else
     {
         if ( mIsInFocus )
         {
             if ( mHasFocusedBmp )
-                RenderLabelImage( mpFocusedImg, &mFocusedBmp, TRUE, FALSE );
+                RenderLabelImage( mpFocusedImg, &mFocusedBmp, true, false );
             else
-                RenderLabelImage( mpDepressedImg, &mDepressedBmp, TRUE, FALSE );
+                RenderLabelImage( mpDepressedImg, &mDepressedBmp, true, false );
         }
         else
-            RenderLabelImage( mpDepressedImg, &mDepressedBmp, TRUE, FALSE );
+            RenderLabelImage( mpDepressedImg, &mDepressedBmp, true, false );
     }
+}
+
+bool wxNewBitmapButton::Toggle(bool enable)
+{
+    if ( mIsToggled == enable )
+    {
+        return false;
+    }
+
+    mIsToggled = enable;
+    Refresh();
+
+    return true;
 }
 
 bool wxNewBitmapButton::Enable(bool enable)
@@ -577,12 +594,12 @@ bool wxNewBitmapButton::Enable(bool enable)
     {
         if ( mIsInFocus )
         {
-            mIsInFocus = FALSE;
+            mIsInFocus = false;
         }
 
         if ( mIsPressed )
         {
-            mIsPressed = FALSE;
+            mIsPressed = false;
         }
 
         Refresh();
@@ -596,8 +613,11 @@ void wxNewBitmapButton::DrawDecorations( wxDC& dc )
     if ( mIsFlat )
     {
         DrawShade( 1, dc, mGrayPen,  mGrayPen  );
-        
-        if ( mIsInFocus )
+        if ( mIsToggled )
+        {
+            DrawShade( 0, dc, mDarkPen,  mLightPen  );
+        }
+        else if ( mIsInFocus )
         {
             if ( mIsPressed )
                 DrawShade( 0, dc, mDarkPen,  mLightPen  );
@@ -609,7 +629,7 @@ void wxNewBitmapButton::DrawDecorations( wxDC& dc )
     }
     else
     {
-        if ( mIsPressed )
+        if ( mIsPressed || mIsToggled )
         {
             DrawShade( 0, dc, mDarkPen,  mGrayPen  );
             DrawShade( 1, dc, mBlackPen, mLightPen );
@@ -622,7 +642,7 @@ void wxNewBitmapButton::DrawDecorations( wxDC& dc )
     }
 }
 
-void wxNewBitmapButton::SetLabel(const wxBitmap& labelBitmap, 
+void wxNewBitmapButton::SetLabel(const wxBitmap& labelBitmap,
                                  const wxString& labelText )
 {
     DestroyLabels();
@@ -652,10 +672,10 @@ void wxNewBitmapButton::SetAlignments( int alignText,
 
 // event handlers
 
-void wxNewBitmapButton::OnLButtonDown( wxMouseEvent& event )
+void wxNewBitmapButton::OnLButtonDown( wxMouseEvent& WXUNUSED(event) )
 {
-    mDragStarted      = TRUE;
-    mIsPressed        = TRUE;
+    mDragStarted      = true;
+    mIsPressed        = true;
     Refresh();
 }
 
@@ -664,8 +684,8 @@ void wxNewBitmapButton::OnLButtonUp( wxMouseEvent& event )
     if ( !mDragStarted )
         return;
 
-    mDragStarted = FALSE;
-    mIsPressed   = FALSE;
+    mDragStarted = false;
+    mIsPressed   = false;
     Refresh();
 
     if ( IsInWindow( event.m_x, event.m_y ) ) 
@@ -687,13 +707,13 @@ bool wxNewBitmapButton::IsInWindow( int x, int y )
              y < height );
 }
 
-void wxNewBitmapButton::OnMouseEnter( wxMouseEvent& event )
+void wxNewBitmapButton::OnMouseEnter( wxMouseEvent& WXUNUSED(event) )
 {
     bool prevIsInFocus = mIsInFocus;
 
     if ( !mIsInFocus )
     {
-        mIsInFocus = TRUE;
+        mIsInFocus = true;
     }
     if ( prevIsInFocus != mIsInFocus )
     {
@@ -701,14 +721,14 @@ void wxNewBitmapButton::OnMouseEnter( wxMouseEvent& event )
     }
 }
 
-void wxNewBitmapButton::OnMouseLeave( wxMouseEvent& event )
+void wxNewBitmapButton::OnMouseLeave( wxMouseEvent& WXUNUSED(event) )
 {
     bool prevIsInFocus = mIsInFocus;
     bool prevIsPressed = mIsPressed;
     if ( mIsInFocus )
     {
-        mIsInFocus = FALSE;
-        mIsPressed = FALSE;
+        mIsInFocus = false;
+        mIsPressed = false;
     }
     if ( prevIsInFocus != mIsInFocus || prevIsPressed != mIsPressed )
     {
@@ -716,7 +736,7 @@ void wxNewBitmapButton::OnMouseLeave( wxMouseEvent& event )
     }
 }
 
-void wxNewBitmapButton::OnSize( wxSizeEvent& event )
+void wxNewBitmapButton::OnSize( wxSizeEvent& WXUNUSED(event) )
 {
         //Reshape();
 }
@@ -724,7 +744,7 @@ void wxNewBitmapButton::OnSize( wxSizeEvent& event )
 void wxNewBitmapButton::Reshape( )
 {   
     bool wasCreated = mIsCreated;
-    mIsCreated = TRUE;
+    mIsCreated = true;
 
     if ( !wasCreated )
     {
@@ -775,7 +795,7 @@ void wxNewBitmapButton::DrawLabel( wxDC& dc )
     mdc.SelectObject( wxNullBitmap );
 }
 
-void wxNewBitmapButton::OnPaint( wxPaintEvent& event )
+void wxNewBitmapButton::OnPaint( wxPaintEvent& WXUNUSED(event) )
 {
     wxPaintDC dc(this);
 
@@ -787,15 +807,44 @@ void wxNewBitmapButton::OnPaint( wxPaintEvent& event )
     DrawDecorations( dc );
 }
 
-void wxNewBitmapButton::OnEraseBackground( wxEraseEvent& event )
+void wxNewBitmapButton::OnEraseBackground( wxEraseEvent& WXUNUSED(event) )
 {
     // do nothing
 }
 
-void wxNewBitmapButton::OnKillFocus( wxFocusEvent& event )
+void wxNewBitmapButton::OnKillFocus( wxFocusEvent& WXUNUSED(event) )
 {
     // useless
 
     wxMessageBox(wxT("kill-focus for button!"));
 }
 
+// ----------------------------------------------------------------------------
+// UI updates
+// ----------------------------------------------------------------------------
+
+void wxNewBitmapButton::OnIdle(wxIdleEvent& event)
+{
+    DoButtonUpdate();
+
+    event.Skip();
+}
+
+// Do the toolbar button updates (check for EVT_UPDATE_UI handlers)
+void wxNewBitmapButton::DoButtonUpdate()
+{
+    wxUpdateUIEvent event(GetId());
+    event.SetEventObject(this);
+
+    if ( GetParent()->ProcessEvent(event) )
+    {
+        if ( event.GetSetEnabled() )
+        {
+            bool enabled = event.GetEnabled();
+            if ( enabled != IsEnabled() )
+                Enable( enabled );
+        }
+        if ( event.GetSetChecked() )
+            Toggle( event.GetChecked() );
+    }
+}

@@ -2,7 +2,7 @@
 // Name:        statline.h
 // Purpose:
 // Author:      Robert Roebling
-// Id:          $Id: statline.h,v 1.6 2002/09/07 12:28:46 GD Exp $
+// Id:          $Id: statline.h,v 1.10 2004/05/23 20:50:54 JS Exp $
 // Copyright:   (c) 1998 Robert Roebling
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -11,7 +11,7 @@
 #ifndef __GTKSTATICLINEH__
 #define __GTKSTATICLINEH__
 
-#if defined(__GNUG__) && !defined(__APPLE__)
+#if defined(__GNUG__) && !defined(NO_GCC_PRAGMA)
 #pragma interface
 #endif
 
@@ -45,6 +45,10 @@ public:
     bool Create(  wxWindow *parent, wxWindowID id,
             const wxPoint &pos = wxDefaultPosition, const wxSize &size = wxDefaultSize, 
             long style = wxLI_HORIZONTAL, const wxString &name = wxStaticTextNameStr );
+
+    static wxVisualAttributes
+    GetClassDefaultAttributes(wxWindowVariant variant = wxWINDOW_VARIANT_NORMAL);
+    
 };
 
 #endif 

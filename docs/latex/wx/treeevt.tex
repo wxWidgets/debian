@@ -26,7 +26,7 @@ functions that take a wxTreeEvent argument.
 \twocolitem{{\bf EVT\_TREE\_END\_DRAG(id, func)}}{The user has released the mouse after dragging an item.}
 \twocolitem{{\bf EVT\_TREE\_END\_LABEL\_EDIT(id, func)}}{The user has finished editing a label. This can be prevented by calling \helpref{Veto()}{wxnotifyeventveto}.}
 \twocolitem{{\bf EVT\_TREE\_DELETE\_ITEM(id, func)}}{A tree item has been deleted.}
-% thy're not very (or at all) useful currently
+% they're not very (or at all) useful currently
 %\twocolitem{{\bf EVT\_TREE\_GET\_INFO(id, func)}}{Request information from the application.}
 %\twocolitem{{\bf EVT\_TREE\_SET\_INFO(id, func)}}{Information is being supplied.}
 \twocolitem{{\bf EVT\_TREE\_ITEM\_ACTIVATED(id, func)}}{An item has been activated (e.g. double clicked).}
@@ -39,7 +39,10 @@ functions that take a wxTreeEvent argument.
 \twocolitem{{\bf EVT\_TREE\_KEY\_DOWN(id, func)}}{A key has been pressed.}
 \twocolitem{{\bf EVT\_TREE\_SEL\_CHANGED(id, func)}}{Selection has changed.}
 \twocolitem{{\bf EVT\_TREE\_SEL\_CHANGING(id, func)}}{Selection is changing. This can be prevented by calling \helpref{Veto()}{wxnotifyeventveto}.}
-\end{twocollist}%
+\twocolitem{{\bf EVT\_TREE\_KEY\_DOWN(id, func)}}{A key has been pressed.}
+\twocolitem{{\bf EVT\_TREE\_ITEM\_GETTOOLTIP(id, func)}}{The opportunity to set the item tooltip
+is being given to the application (call wxTreeEvent::SetToolTip). Windows only.}
+\end{twocollist}
 
 \wxheading{See also}
 
@@ -47,13 +50,13 @@ functions that take a wxTreeEvent argument.
 
 \latexignore{\rtfignore{\wxheading{Members}}}
 
-\membersection{wxTreeEvent::wxTreeEvent}
+\membersection{wxTreeEvent::wxTreeEvent}\label{wxtreeeventctor}
 
 \func{}{wxTreeEvent}{\param{WXTYPE }{commandType = 0}, \param{int }{id = 0}}
 
 Constructor.
 
-\membersection{wxTreeEvent::GetKeyCode}
+\membersection{wxTreeEvent::GetKeyCode}\label{wxtreeeventgetkeycode}
 
 \constfunc{int}{GetKeyCode}{}
 
@@ -61,7 +64,7 @@ Returns the key code if the event was is a key event. Use
 \helpref{GetKeyEvent}{wxtreeeventgetkeyevent} to get the values of the
 modifier keys for this event (i.e. Shift or Ctrl).
 
-\membersection{wxTreeEvent::GetItem}
+\membersection{wxTreeEvent::GetItem}\label{wxtreeeventgetitem}
 
 \constfunc{wxTreeItemId}{GetItem}{}
 
@@ -73,28 +76,35 @@ Returns the item (valid for all events).
 
 Returns the key event for {\tt EVT\_TREE\_KEY\_DOWN} events.
 
-\membersection{wxTreeEvent::GetLabel}
+\membersection{wxTreeEvent::GetLabel}\label{wxtreeeventgetlabel}
 
 \constfunc{const wxString\&}{GetLabel}{}
 
 Returns the label if the event was a begin or end edit label event.
 
-\membersection{wxTreeEvent::GetOldItem}
+\membersection{wxTreeEvent::GetOldItem}\label{wxtreeeventgetolditem}
 
 \constfunc{wxTreeItemId}{GetOldItem}{}
 
 Returns the old item index (valid for EVT\_TREE\_ITEM\_CHANGING and CHANGED events)
 
-\membersection{wxTreeEvent::GetPoint()}
+\membersection{wxTreeEvent::GetPoint()}\label{wxtreeeventgetpoint}
 
 \constfunc{wxPoint}{GetPoint}{}
 
 Returns the position of the mouse pointer if the event is a drag event.
 
-\membersection{wxTreeEvent::IsEditCancelled()}
+\membersection{wxTreeEvent::IsEditCancelled()}\label{wxtreeeventiseditcancelled}
 
 \constfunc{bool}{IsEditCancelled}{}
 
-Returns TRUE if the label edit was cancelled. This should be
+Returns true if the label edit was cancelled. This should be
 called from within an EVT\_TREE\_END\_LABEL\_EDIT handler.
+
+\membersection{wxTreeEvent::SetToolTip}\label{wxtreeeventsettooltip}
+
+\func{void}{SetToolTip}{\param{const wxString\&}{ tooltip}}
+
+Set the tooltip for the item (valid for EVT\_TREE\_ITEM\_GETTOOLTIP events).
+Windows only.
 

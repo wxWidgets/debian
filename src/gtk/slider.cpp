@@ -2,14 +2,17 @@
 // Name:        gtk/slider.cpp
 // Purpose:
 // Author:      Robert Roebling
-// Id:          $Id: slider.cpp,v 1.46.2.1 2002/11/20 17:45:14 RR Exp $
+// Id:          $Id: slider.cpp,v 1.54 2004/06/14 17:30:41 VS Exp $
 // Copyright:   (c) 1998 Robert Roebling
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
 
-#ifdef __GNUG__
+#if defined(__GNUG__) && !defined(NO_GCC_PRAGMA)
 #pragma implementation "slider.h"
 #endif
+
+// For compilers that support precompilation, includes "wx.h".
+#include "wx/wxprec.h"
 
 #include "wx/slider.h"
 
@@ -138,11 +141,7 @@ bool wxSlider::Create(wxWindow *parent, wxWindowID id,
 
     m_parent->DoAddChild( this );
 
-    PostCreation();
-
-    SetBackgroundColour( parent->GetBackgroundColour() );
-
-    Show( TRUE );
+    PostCreation(size);
 
     return TRUE;
 }
@@ -266,12 +265,6 @@ bool wxSlider::IsOwnGtkWindow( GdkWindow *window )
 #endif
 }
 
-void wxSlider::ApplyWidgetStyle()
-{
-    SetWidgetStyle();
-    gtk_widget_set_style( m_widget, m_widgetStyle );
-}
-
 void wxSlider::GtkDisableEvents()
 {
     gtk_signal_disconnect_by_func( GTK_OBJECT(m_adjust),
@@ -285,6 +278,13 @@ void wxSlider::GtkEnableEvents()
                         "value_changed",
                         GTK_SIGNAL_FUNC(gtk_slider_callback),
                         (gpointer) this );
+}
+
+// static
+wxVisualAttributes
+wxSlider::GetClassDefaultAttributes(wxWindowVariant WXUNUSED(variant))
+{
+    return GetDefaultAttributesFromGTKWidget(gtk_vscale_new);
 }
 
 #endif

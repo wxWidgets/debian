@@ -20,18 +20,19 @@ take up too much screen area.
 \begin{twocollist}\itemsep=0pt
 \twocolitem{\windowstyle{wxICONIZE}}{Display the frame iconized (minimized) (Windows only).}
 \twocolitem{\windowstyle{wxCAPTION}}{Puts a caption on the frame.}
-\twocolitem{\windowstyle{wxDEFAULT\_FRAME\_STYLE}}{Defined as {\bf wxMINIMIZE\_BOX \pipe wxMAXIMIZE\_BOX \pipe wxTHICK\_FRAME \pipe wxSYSTEM\_MENU \pipe wxCAPTION}.}
+\twocolitem{\windowstyle{wxDEFAULT\_FRAME\_STYLE}}{Defined as {\bf wxMINIMIZE\_BOX \pipe wxMAXIMIZE\_BOX \pipe wxTHICK\_FRAME \pipe wxSYSTEM\_MENU \pipe wxCAPTION \pipe wxCLOSE\_BOX}.}
 \twocolitem{\windowstyle{wxMINIMIZE}}{Identical to {\bf wxICONIZE}.}
 \twocolitem{\windowstyle{wxMINIMIZE\_BOX}}{Displays a minimize box on the frame (Windows and Motif only).}
 \twocolitem{\windowstyle{wxMAXIMIZE}}{Displays the frame maximized (Windows only).}
 \twocolitem{\windowstyle{wxMAXIMIZE\_BOX}}{Displays a maximize box on the frame (Windows and Motif only).}
+\twocolitem{\windowstyle{wxCLOSE\_BOX}}{Displays a close box on the frame.}
 \twocolitem{\windowstyle{wxSTAY\_ON\_TOP}}{Stay on top of other windows (Windows only).}
 \twocolitem{\windowstyle{wxSYSTEM\_MENU}}{Displays a system menu (Windows and Motif only).}
 \twocolitem{\windowstyle{wxTHICK\_FRAME}}{Displays a thick frame around the window (Windows and Motif only).}
-\twocolitem{\windowstyle{wxTINY\_CAPTION\_HORIZ}}{Displays a small horizontal caption. Use instead of
-wxCAPTION.}
-\twocolitem{\windowstyle{wxTINY\_CAPTION\_VERT}}{Under Windows, displays a small vertical caption. Use instead of
-wxCAPTION.}
+\twocolitem{\windowstyle{wxTINY\_CAPTION\_HORIZ}}{This style is obsolete and
+not used any longer.}
+\twocolitem{\windowstyle{wxTINY\_CAPTION\_VERT}}{This style is obsolete and not
+used any longer.}
 \twocolitem{\windowstyle{wxRESIZE\_BORDER}}{Displays a resizeable border around the window (Motif only;
 for Windows, it is implicit in {\bf wxTHICK\_FRAME}).}
 \end{twocollist}
@@ -52,7 +53,7 @@ On other platforms, it behaves like a normal frame.
 
 \latexignore{\rtfignore{\wxheading{Members}}}
 
-\membersection{wxMiniFrame::wxMiniFrame}\label{wxminiframeconstr}
+\membersection{wxMiniFrame::wxMiniFrame}\label{wxminiframector}
 
 \func{}{wxMiniFrame}{\void}
 
@@ -94,7 +95,7 @@ The frame behaves like a normal frame on non-Windows platforms.
 
 \helpref{wxMiniFrame::Create}{wxminiframecreate}
 
-\membersection{wxMiniFrame::\destruct{wxMiniFrame}}
+\membersection{wxMiniFrame::\destruct{wxMiniFrame}}\label{wxminiframedtor}
 
 \func{void}{\destruct{wxMiniFrame}}{\void}
 
@@ -107,7 +108,7 @@ Destructor. Destroys all child windows and menu bar if present.
 \param{const wxSize\&}{ size = wxDefaultSize}, \param{long}{ style = wxDEFAULT\_FRAME\_STYLE},\rtfsp
 \param{const wxString\& }{name = ``frame"}}
 
-Used in two-step frame construction. See \helpref{wxMiniFrame::wxMiniFrame}{wxminiframeconstr}\rtfsp
+Used in two-step frame construction. See \helpref{wxMiniFrame::wxMiniFrame}{wxminiframector}\rtfsp
 for further details.
 
 

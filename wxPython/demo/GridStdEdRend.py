@@ -1,27 +1,29 @@
-from wxPython.wx import *
-from wxPython.grid import *
 
-import random
+import  random
+
+import  wx
+import  wx.grid as  gridlib
 
 #---------------------------------------------------------------------------
 
-class MyCustomRenderer(wxPyGridCellRenderer):
+class MyCustomRenderer(gridlib.PyGridCellRenderer):
     def __init__(self):
-        wxPyGridCellRenderer.__init__(self)
+        gridlib.PyGridCellRenderer.__init__(self)
 
     def Draw(self, grid, attr, dc, rect, row, col, isSelected):
-        dc.SetBackgroundMode(wxSOLID)
-        dc.SetBrush(wxBrush(wxBLACK, wxSOLID))
-        dc.SetPen(wxTRANSPARENT_PEN)
-        dc.DrawRectangle(rect.x, rect.y, rect.width, rect.height)
+        dc.SetBackgroundMode(wx.SOLID)
+        dc.SetBrush(wx.Brush(wx.BLACK, wx.SOLID))
+        dc.SetPen(wx.TRANSPARENT_PEN)
+        dc.DrawRectangleRect(rect)
 
-        dc.SetBackgroundMode(wxTRANSPARENT)
+        dc.SetBackgroundMode(wx.TRANSPARENT)
         dc.SetFont(attr.GetFont())
 
         text = grid.GetCellValue(row, col)
-        colors = [wxRED, wxWHITE, wxCYAN]
+        colors = ["RED", "WHITE", "SKY BLUE"]
         x = rect.x + 1
         y = rect.y + 1
+
         for ch in text:
             dc.SetTextForeground(random.choice(colors))
             dc.DrawText(ch, x, y)
@@ -35,7 +37,7 @@ class MyCustomRenderer(wxPyGridCellRenderer):
         text = grid.GetCellValue(row, col)
         dc.SetFont(attr.GetFont())
         w, h = dc.GetTextExtent(text)
-        return wxSize(w, h)
+        return wx.Size(w, h)
 
 
     def Clone(self):
@@ -45,34 +47,33 @@ class MyCustomRenderer(wxPyGridCellRenderer):
 #---------------------------------------------------------------------------
 
 rendererDemoData = [
-    ('wxGridCellStringRenderer\n(the default)', 'this is a text value', wxGridCellStringRenderer, ()),
-    ('wxGridCellNumberRenderer', '12345', wxGridCellNumberRenderer, ()),
-    ('wxGridCellFloatRenderer', '1234.5678', wxGridCellFloatRenderer, (6,2)),
-    ('wxGridCellBoolRenderer', '1', wxGridCellBoolRenderer, ()),
+    ('GridCellStringRenderer\n(the default)', 'this is a text value', gridlib.GridCellStringRenderer, ()),
+    ('GridCellNumberRenderer', '12345', gridlib.GridCellNumberRenderer, ()),
+    ('GridCellFloatRenderer', '1234.5678', gridlib.GridCellFloatRenderer, (6,2)),
+    ('GridCellBoolRenderer', '1', gridlib.GridCellBoolRenderer, ()),
     ('MyCustomRenderer', 'This is my renderer', MyCustomRenderer, ()),
     ]
 
 editorDemoData = [
-    ('wxGridCellTextEditor\n(the default)', 'Here is some more text', wxGridCellTextEditor, ()),
-    ('wxGridCellNumberEditor\nwith min,max', '101', wxGridCellNumberEditor, (5, 10005)),
-    ('wxGridCellNumberEditor\nwithout bounds', '101', wxGridCellNumberEditor, ()),
-    ('wxGridCellFloatEditor', '1234.5678', wxGridCellFloatEditor, ()),
-    ('wxGridCellBoolEditor', '1', wxGridCellBoolEditor, ()),
-    ('wxGridCellChoiceEditor', 'one', wxGridCellChoiceEditor, (['one', 'two', 'three', 'four',
+    ('GridCellTextEditor\n(the default)', 'Here is some more text', gridlib.GridCellTextEditor, ()),
+    ('GridCellNumberEditor\nwith min,max', '101', gridlib.GridCellNumberEditor, (5, 10005)),
+    ('GridCellNumberEditor\nwithout bounds', '101', gridlib.GridCellNumberEditor, ()),
+    ('GridCellFloatEditor', '1234.5678', gridlib.GridCellFloatEditor, ()),
+    ('GridCellBoolEditor', '1', gridlib.GridCellBoolEditor, ()),
+    ('GridCellChoiceEditor', 'one', gridlib.GridCellChoiceEditor, (['one', 'two', 'three', 'four',
                                                          'kick', 'Microsoft', 'out the',
                                                          'door'], False)),
     ]
 
-
 comboDemoData = [
-    ('wxGridCellNumberRenderer\nwxGridCellNumberEditor', '20792', wxGridCellNumberRenderer, wxGridCellNumberEditor),
-    ('wxGridCellBoolRenderer\nwxGridCellBoolEditor', '1', wxGridCellBoolRenderer, wxGridCellBoolEditor),
+    ('GridCellNumberRenderer\nGridCellNumberEditor', '20792', gridlib.GridCellNumberRenderer, gridlib.GridCellNumberEditor),
+    ('GridCellBoolRenderer\nGridCellBoolEditor', '1', gridlib.GridCellBoolRenderer, gridlib.GridCellBoolEditor),
     ]
 
 
-class EditorsAndRenderersGrid(wxGrid):
+class EditorsAndRenderersGrid(gridlib.Grid):
     def __init__(self, parent, log):
-        wxGrid.__init__(self, parent, -1)
+        gridlib.Grid.__init__(self, parent, -1)
         self.log = log
 
         self.CreateGrid(25, 8)
@@ -106,8 +107,9 @@ Renderers used together.
 ''')
 
         row = 2
+
         for label, value, renderClass, args in rendererDemoData:
-            renderer = apply(renderClass, args)
+            renderer = renderClass(*args)
             self.SetCellValue(row, renCol, label)
             self.SetCellValue(row, renCol+1, value)
             self.SetCellRenderer(row, renCol+1, renderer)
@@ -115,8 +117,9 @@ Renderers used together.
 
 
         row = 2
+
         for label, value, editorClass, args in editorDemoData:
-            editor = apply(editorClass, args)
+            editor = editorClass(*args)
             self.SetCellValue(row, edCol, label)
             self.SetCellValue(row, edCol+1, value)
             self.SetCellEditor(row, edCol+1, editor)
@@ -124,23 +127,23 @@ Renderers used together.
 
 
         row = 18
+
         for label, value, renClass, edClass in comboDemoData:
             self.SetCellValue(row, renCol, label)
             self.SetCellValue(row, renCol+1, value)
-            editor = apply(edClass, ()) #args)
-            renderer = apply(renClass, ()) #args)
+            editor = edClass()
+            renderer = renClass()
             self.SetCellEditor(row, renCol+1, editor)
             self.SetCellRenderer(row, renCol+1, renderer)
             row = row + 2
 
-
         font = self.GetFont()
-        font.SetWeight(wxBOLD)
-        attr = wxGridCellAttr()
+        font.SetWeight(wx.BOLD)
+        attr = gridlib.GridCellAttr()
         attr.SetFont(font)
-        attr.SetBackgroundColour(wxLIGHT_GREY)
+        attr.SetBackgroundColour(wx.LIGHT_GREY)
         attr.SetReadOnly(True)
-        attr.SetAlignment(wxRIGHT, -1)
+        attr.SetAlignment(wx.RIGHT, -1)
         self.SetColAttr(renCol, attr)
         attr.IncRef()
         self.SetColAttr(edCol, attr)
@@ -149,7 +152,7 @@ Renderers used together.
         self.AutoSizeColumns(True)
         self.AutoSizeRows(True)
 
-        EVT_GRID_CELL_LEFT_DCLICK(self, self.OnLeftDClick)
+        self.Bind(gridlib.EVT_GRID_CELL_LEFT_DCLICK, self.OnLeftDClick)
 
 
     # I do this because I don't like the default behaviour of not starting the
@@ -161,9 +164,9 @@ Renderers used together.
 
 #---------------------------------------------------------------------------
 
-class TestFrame(wxFrame):
+class TestFrame(wx.Frame):
     def __init__(self, parent, log):
-        wxFrame.__init__(self, parent, -1, "Editors and Renderers Demo", size=(640,480))
+        wx.Frame.__init__(self, parent, -1, "Editors and Renderers Demo", size=(640,480))
         grid = EditorsAndRenderersGrid(self, log)
 
 
@@ -172,7 +175,7 @@ class TestFrame(wxFrame):
 
 if __name__ == '__main__':
     import sys
-    app = wxPySimpleApp()
+    app = wx.PySimpleApp()
     frame = TestFrame(None, sys.stdout)
     frame.Show(True)
     app.MainLoop()

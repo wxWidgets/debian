@@ -1,10 +1,10 @@
 /////////////////////////////////////////////////////////////////////////////
 // Name:        erase.cpp
-// Purpose:     Erase wxWindows sample
+// Purpose:     Erase wxWidgets sample
 // Author:      Robert Roebling
 // Modified by:
 // Created:     04/01/98
-// RCS-ID:      $Id: erase.cpp,v 1.13.2.3 2002/12/14 18:19:47 MBN Exp $
+// RCS-ID:      $Id: erase.cpp,v 1.19 2004/10/06 20:53:12 ABX Exp $
 // Copyright:   (c) Robert Roebling
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -30,7 +30,7 @@
 #endif
 
 // for all others, include the necessary headers (this file is usually all you
-// need because it includes almost all "standard" wxWindows headers)
+// need because it includes almost all "standard" wxWidgets headers)
 #ifndef WX_PRECOMP
     #include "wx/wx.h"
 #endif
@@ -105,9 +105,9 @@ bool MyApp::OnInit()
     MyFrame *frame = new MyFrame(_T("Erase sample"),
                                  wxPoint(50, 50), wxSize(450, 340));
 
-    frame->Show(TRUE);
+    frame->Show(true);
 
-    return TRUE;
+    return true;
 }
 
 // ----------------------------------------------------------------------------
@@ -121,7 +121,7 @@ END_EVENT_TABLE()
 
 // frame constructor
 MyFrame::MyFrame(const wxString& title, const wxPoint& pos, const wxSize& size)
-       : wxFrame((wxFrame *)NULL, -1, title, pos, size)
+       : wxFrame((wxFrame *)NULL, wxID_ANY, title, pos, size)
 {
     SetIcon(wxICON(mondrian));
 
@@ -141,7 +141,7 @@ MyFrame::MyFrame(const wxString& title, const wxPoint& pos, const wxSize& size)
 #if wxUSE_STATUSBAR
     // create a status bar just for fun (by default with 1 pane only)
     CreateStatusBar(2);
-    SetStatusText(_T("Welcome to wxWindows erase sample!"));
+    SetStatusText(_T("Welcome to wxWidgets erase sample!"));
 #endif // wxUSE_STATUSBAR
 
     (void)new MyCanvas( this );
@@ -150,7 +150,7 @@ MyFrame::MyFrame(const wxString& title, const wxPoint& pos, const wxSize& size)
 
 void MyFrame::OnQuit(wxCommandEvent& WXUNUSED(event))
 {
-    Close(TRUE);
+    Close(true);
 }
 
 void MyFrame::OnAbout(wxCommandEvent& WXUNUSED(event))
@@ -167,7 +167,7 @@ BEGIN_EVENT_TABLE(MyCanvas, wxScrolledWindow)
 END_EVENT_TABLE()
 
 MyCanvas::MyCanvas( MyFrame *parent )
-        : wxScrolledWindow( parent, -1, wxDefaultPosition, wxDefaultSize,
+        : wxScrolledWindow( parent, wxID_ANY, wxDefaultPosition, wxDefaultSize,
                             wxScrolledWindowStyle |
                             wxNO_FULL_REPAINT_ON_RESIZE|
                             wxSUNKEN_BORDER )
@@ -176,7 +176,7 @@ MyCanvas::MyCanvas( MyFrame *parent )
 
     m_bitmap = wxBitmap( wxICON(mondrian) );
 
-    new wxStaticBitmap( this, -1, m_bitmap, wxPoint(80,20) );
+    new wxStaticBitmap( this, wxID_ANY, m_bitmap, wxPoint(80,20) );
 }
 
 void MyCanvas::OnChar( wxKeyEvent &event )
@@ -198,12 +198,12 @@ void MyCanvas::OnChar( wxKeyEvent &event )
         case WXK_RIGHT: m_text += wxT( "<RIGHT>" ); break;
         case WXK_DOWN: m_text += wxT( "<DOWN>" ); break;
         case WXK_RETURN: m_text += wxT( "<ENTER>" ); break;
-        default: m_text += event.m_keyCode; break;
+        default: m_text += (wxChar)event.m_keyCode; break;
     }
-    
+
 }
 
-void MyCanvas::OnPaint( wxPaintEvent &event )
+void MyCanvas::OnPaint( wxPaintEvent &WXUNUSED(event) )
 {
     wxPaintDC dc(this);
     PrepareDC( dc );
@@ -211,11 +211,11 @@ void MyCanvas::OnPaint( wxPaintEvent &event )
     dc.SetBrush( *wxBLACK_BRUSH );
     dc.DrawRectangle( 0,0,200,50 );
 
-    dc.DrawBitmap( m_bitmap, 10, 20, TRUE );
+    dc.DrawBitmap( m_bitmap, 10, 20, true );
 
     dc.SetTextForeground(*wxBLUE);
     dc.DrawText(_T("This text is drawn from OnPaint"), 65, 65);
-    
+
     wxString tmp;
     tmp.Printf( _T("Hit any key to display more text: %s"), m_text.c_str() );
     int w,h;

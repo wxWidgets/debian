@@ -4,12 +4,12 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     01/02/97
-// RCS-ID:      $Id: gdiobj.cpp,v 1.2 1999/12/14 23:48:52 VS Exp $
-// Copyright:   (c) Julian Smart and Markus Holzem
-// Licence:   	wxWindows licence
+// RCS-ID:      $Id: gdiobj.cpp,v 1.10 2004/08/26 08:46:18 ABX Exp $
+// Copyright:   (c) Julian Smart
+// Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
 
-#ifdef __GNUG__
+#if defined(__GNUG__) && !defined(NO_GCC_PRAGMA)
 #pragma implementation "gdiobj.h"
 #endif
 
@@ -30,15 +30,14 @@
 
 #include "wx/gdiobj.h"
 #include "wx/msw/private.h"
-#include "assert.h"
 
 IMPLEMENT_DYNAMIC_CLASS(wxGDIObject, wxObject)
 
 /*
 void wxGDIObject::IncrementResourceUsage(void)
 {
-	if ( !M_GDIDATA )
-		return;
+    if ( !M_GDIDATA )
+        return;
 
 //  wxDebugMsg("Object %ld about to be incremented: %d\n", (long)this, m_usageCount);
   M_GDIDATA->m_usageCount ++;
@@ -46,12 +45,12 @@ void wxGDIObject::IncrementResourceUsage(void)
 
 void wxGDIObject::DecrementResourceUsage(void)
 {
-	if ( !M_GDIDATA )
-		return;
+    if ( !M_GDIDATA )
+        return;
 
   M_GDIDATA->m_usageCount --;
   if (wxTheApp)
-    wxTheApp->SetPendingCleanup(TRUE);
+    wxTheApp->SetPendingCleanup(true);
 //  wxDebugMsg("Object %ld decremented: %d\n", (long)this, M_GDIDATA->m_usageCount);
   if (M_GDIDATA->m_usageCount < 0)
   {

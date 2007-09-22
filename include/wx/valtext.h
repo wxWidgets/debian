@@ -4,21 +4,21 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     29/01/98
-// RCS-ID:      $Id: valtext.h,v 1.11 2002/08/31 11:29:11 GD Exp $
+// RCS-ID:      $Id: valtext.h,v 1.19 2004/10/18 05:55:42 ABX Exp $
 // Copyright:   (c) 1998 Julian Smart
-// Licence:   	wxWindows license
+// Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
 
 #ifndef _WX_VALTEXTH__
 #define _WX_VALTEXTH__
 
-#if defined(__GNUG__) && !defined(__APPLE__)
+#if defined(__GNUG__) && !defined(NO_GCC_PRAGMA)
 #pragma interface "valtext.h"
 #endif
 
 #include "wx/defs.h"
 
-#if wxUSE_VALIDATORS
+#if wxUSE_VALIDATORS && wxUSE_TEXTCTRL
 
 #include "wx/textctrl.h"
 #include "wx/validate.h"
@@ -41,7 +41,7 @@ public:
     wxTextValidator(long style = wxFILTER_NONE, wxString *val = 0);
     wxTextValidator(const wxTextValidator& val);
 
-    ~wxTextValidator();
+    ~wxTextValidator(){}
 
     // Make a clone of this validator (or return NULL) - currently necessary
     // if you're passing a reference to a validator.
@@ -86,19 +86,27 @@ protected:
 
     bool CheckValidator() const
     {
-        wxCHECK_MSG( m_validatorWindow, FALSE,
+        wxCHECK_MSG( m_validatorWindow, false,
                      _T("No window associated with validator") );
-        wxCHECK_MSG( m_validatorWindow->IsKindOf(CLASSINFO(wxTextCtrl)), FALSE,
+        wxCHECK_MSG( m_validatorWindow->IsKindOf(CLASSINFO(wxTextCtrl)), false,
                      _T("wxTextValidator is only for wxTextCtrl's") );
-        wxCHECK_MSG( m_stringValue, FALSE,
+        wxCHECK_MSG( m_stringValue, false,
                      _T("No variable storage for validator") );
 
-        return TRUE;
+        return true;
     }
+
+private:
+// Cannot use
+//  DECLARE_NO_COPY_CLASS(wxTextValidator)
+// because copy constructor is explicitly declared above;
+// but no copy assignment operator is defined, so declare
+// it private to prevent the compiler from defining it:
+    wxTextValidator& operator=(const wxTextValidator&);
 };
 
 #endif
-  // wxUSE_VALIDATORS
+  // wxUSE_VALIDATORS && wxUSE_TEXTCTRL
 
 #endif
   // _WX_VALTEXTH__

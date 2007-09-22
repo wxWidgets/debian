@@ -1,10 +1,10 @@
 /////////////////////////////////////////////////////////////////////////////
 // Name:        net.cpp
-// Purpose:     wxWindows sample demonstrating network-related functions
+// Purpose:     wxWidgets sample demonstrating network-related functions
 // Author:      Vadim Zeitlin
 // Modified by:
 // Created:     07.07.99
-// RCS-ID:      $Id: nettest.cpp,v 1.6.2.1 2002/12/13 21:38:52 MBN Exp $
+// RCS-ID:      $Id: nettest.cpp,v 1.13 2004/10/02 12:35:50 VS Exp $
 // Copyright:   (c) Vadim Zeitlin
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -17,7 +17,7 @@
 // headers
 // ----------------------------------------------------------------------------
 
-#ifdef __GNUG__
+#if defined(__GNUG__) && !defined(NO_GCC_PRAGMA)
     #pragma implementation "nettest.cpp"
     #pragma interface "nettest.cpp"
 #endif
@@ -30,7 +30,7 @@
 #endif
 
 // for all others, include the necessary headers (this file is usually all you
-// need because it includes almost all "standard" wxWindows headers
+// need because it includes almost all "standard" wxWidgets headers
 #ifndef WX_PRECOMP
     #include "wx/wx.h"
 #endif
@@ -91,7 +91,7 @@ public:
     void OnIdle(wxIdleEvent& event);
 
 private:
-    // any class wishing to process wxWindows events must use this macro
+    // any class wishing to process wxWidgets events must use this macro
     DECLARE_EVENT_TABLE()
 };
 
@@ -113,7 +113,7 @@ enum
 };
 
 // ----------------------------------------------------------------------------
-// event tables and other macros for wxWindows
+// event tables and other macros for wxWidgets
 // ----------------------------------------------------------------------------
 
 BEGIN_EVENT_TABLE(MyApp, wxApp)
@@ -121,7 +121,7 @@ BEGIN_EVENT_TABLE(MyApp, wxApp)
     EVT_DIALUP_DISCONNECTED(MyApp::OnConnected)
 END_EVENT_TABLE()
 
-// the event tables connect the wxWindows events with the functions (event
+// the event tables connect the wxWidgets events with the functions (event
 // handlers) which process them. It can be also done at run-time, but for the
 // simple menu events like this the static method is much simpler.
 BEGIN_EVENT_TABLE(MyFrame, wxFrame)
@@ -137,7 +137,7 @@ BEGIN_EVENT_TABLE(MyFrame, wxFrame)
     EVT_IDLE(MyFrame::OnIdle)
 END_EVENT_TABLE()
 
-// Create a new application object: this macro will allow wxWindows to create
+// Create a new application object: this macro will allow wxWidgets to create
 // the application object during program execution (it's better than using a
 // static object for many reasons) and also declares the accessor function
 // wxGetApp() which will return the reference of the right type (i.e. MyApp and
@@ -156,11 +156,11 @@ IMPLEMENT_APP(MyApp)
 bool MyApp::OnInit()
 {
     // Create the main application window
-    MyFrame *frame = new MyFrame(_T("Dial-up wxWindows demo"),
+    MyFrame *frame = new MyFrame(_T("Dial-up wxWidgets demo"),
                                  wxPoint(50, 50), wxSize(450, 340));
 
     // Show it and tell the application that it's our main window
-    frame->Show(TRUE);
+    frame->Show(true);
     SetTopWindow(frame);
 
     // Init dial up manager
@@ -170,17 +170,21 @@ bool MyApp::OnInit()
     {
         wxLogError(wxT("The sample can't run on this system."));
 
+#if wxUSE_LOG
         wxLog::GetActiveTarget()->Flush();
+#endif // wxUSE_LOG
 
         // do it here, OnExit() won't be called
         delete m_dial;
 
-        return FALSE;
+        return false;
     }
 
+#if wxUSE_STATUSBAR
     frame->SetStatusText(GetDialer()->IsAlwaysOnline() ? _T("LAN") : _T("No LAN"), 2);
+#endif // wxUSE_STATUSBAR
 
-    return TRUE;
+    return true;
 }
 
 int MyApp::OnExit()
@@ -216,7 +220,7 @@ void MyApp::OnConnected(wxDialUpEvent& event)
 
 // frame constructor
 MyFrame::MyFrame(const wxString& title, const wxPoint& pos, const wxSize& size)
-       : wxFrame((wxFrame *)NULL, -1, title, pos, size)
+       : wxFrame((wxFrame *)NULL, wxID_ANY, title, pos, size)
 {
     // create a menu bar
     wxMenu *menuFile = new wxMenu;
@@ -238,10 +242,12 @@ MyFrame::MyFrame(const wxString& title, const wxPoint& pos, const wxSize& size)
     // ... and attach this menu bar to the frame
     SetMenuBar(menuBar);
 
+#if wxUSE_STATUSBAR
     // create status bar and fill the LAN field
     CreateStatusBar(3);
     static const int widths[3] = { -1, 100, 60 };
     SetStatusWidths(3, widths);
+#endif // wxUSE_STATUSBAR
 }
 
 
@@ -249,15 +255,15 @@ MyFrame::MyFrame(const wxString& title, const wxPoint& pos, const wxSize& size)
 
 void MyFrame::OnQuit(wxCommandEvent& WXUNUSED(event))
 {
-    // TRUE is to force the frame to close
-    Close(TRUE);
+    // true is to force the frame to close
+    Close(true);
 }
 
 void MyFrame::OnAbout(wxCommandEvent& WXUNUSED(event))
 {
     wxString msg;
     msg.Printf( wxT("This is the network functions test sample.\n")
-                wxT("© 1999 Vadim Zeitlin") );
+                wxT("(c) 1999 Vadim Zeitlin") );
 
     wxMessageBox(msg, wxT("About NetTest"), wxOK | wxICON_INFORMATION, this);
 }
@@ -328,13 +334,15 @@ void MyFrame::OnUpdateUI(wxUpdateUIEvent& event)
 
 void MyFrame::OnIdle(wxIdleEvent& WXUNUSED(event))
 {
-    static int s_isOnline = -1; // not TRUE nor FALSE
+    static int s_isOnline = -1; // not true nor false
 
     bool isOnline = wxGetApp().GetDialer()->IsOnline();
     if ( s_isOnline != (int)isOnline )
     {
         s_isOnline = isOnline;
 
+#if wxUSE_STATUSBAR
         SetStatusText(isOnline ? _T("Online") : _T("Offline"), 1);
+#endif // wxUSE_STATUSBAR
     }
 }

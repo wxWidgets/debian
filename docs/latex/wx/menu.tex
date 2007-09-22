@@ -68,7 +68,7 @@ not be used in the new code, it is provided for backwards compatibility only.
 
 \latexignore{\rtfignore{\wxheading{Members}}}
 
-\membersection{wxMenu::wxMenu}\label{wxmenuconstr}
+\membersection{wxMenu::wxMenu}\label{wxmenuctor}
 
 \func{}{wxMenu}{\param{const wxString\& }{title = ""}, \param{long}{ style = 0}}
 
@@ -88,7 +88,7 @@ Constructs a wxMenu object.
 
 \docparam{style}{If set to {\tt wxMENU\_TEAROFF}, the menu will be detachable (wxGTK only).}
 
-\membersection{wxMenu::\destruct{wxMenu}}
+\membersection{wxMenu::\destruct{wxMenu}}\label{wxmenudtor}
 
 \func{}{\destruct{wxMenu}}{\void}
 
@@ -103,19 +103,19 @@ and recreation of internal data structures.
 
 \membersection{wxMenu::Append}\label{wxmenuappend}
 
-\func{void}{Append}{\param{int}{ id}, \param{const wxString\& }{ item}, \param{const wxString\& }{helpString = ""},\rtfsp
+\func{wxMenuItem*}{Append}{\param{int}{ id}, \param{const wxString\& }{ item}, \param{const wxString\& }{helpString = ""},\rtfsp
 \param{wxItemKind}{ kind = wxITEM\_NORMAL}}
 
 Adds a string item to the end of the menu.
 
-\func{void}{Append}{\param{int}{ id}, \param{const wxString\& }{ item}, \param{wxMenu *}{subMenu},\rtfsp
+\func{wxMenuItem*}{Append}{\param{int}{ id}, \param{const wxString\& }{ item}, \param{wxMenu *}{subMenu},\rtfsp
 \param{const wxString\& }{helpString = ""}}
 
 Adds a pull-right submenu to the end of the menu. Append the submenu to the parent
 menu {\it after} you have added your menu items, or accelerators may not be
 registered properly.
 
-\func{void}{Append}{\param{wxMenuItem*}{ menuItem}}
+\func{wxMenuItem*}{Append}{\param{wxMenuItem*}{ menuItem}}
 
 Adds a menu item object. This is the most generic variant of Append() method
 because it may be used for both items (including separators) and submenus and
@@ -134,7 +134,7 @@ such as bitmaps and fonts.
 {\tt wxITEM\_CHECK} or {\tt wxITEM\_RADIO}}
 
 \docparam{helpString}{An optional help string associated with the item.
-By default, \helpref{wxFrame::OnMenuHighlight}{wxframeonmenuhighlight} displays
+By default, the handler for the wxEVT\_MENU\_HIGHLIGHT event displays
 this string in the status line.}
 
 \docparam{menuItem}{A menuitem object. It will be owned by the wxMenu object after this function
@@ -144,6 +144,33 @@ is called, so do not delete it yourself.}
 
 This command can be used after the menu has been shown, as well as on initial
 creation of a menu or menubar.
+
+The {\it item} string for the normal menu items (not submenus or separators)
+may include the accelerator which can be used to activate the menu item
+from keyboard. The accelerator string follows the item label and is separated
+from it by a {\tt TAB} character ({\tt '$\backslash$t'}). Its general syntax is
+any combination of {\tt "CTRL"}, {\tt "ALT"} and {\tt "SHIFT"} strings (case
+doesn't matter) separated by either {\tt '-'} or {\tt '+'} characters and
+followed by the accelerator itself. The accelerator may be any alphanumeric
+character, any function key (from {\tt F1} to {\tt F12}) or one of the special
+characters listed in the table below (again, case doesn't matter):
+
+\begin{twocollist}\itemsep=0pt
+\twocolitem{{\tt DEL} or {\tt DELETE}}{Delete key}
+\twocolitem{{\tt INS} or {\tt INSERT}}{Insert key}
+\twocolitem{{\tt ENTER} or {\tt RETURN}}{Enter key}
+\twocolitem{{\tt PGUP}}{PageUp key}
+\twocolitem{{\tt PGDN}}{PageDown key}
+\twocolitem{{\tt LEFT}}{Left cursor arrow key}
+\twocolitem{{\tt RIGHT}}{Right cursor arrow key}
+\twocolitem{{\tt UP}}{Up cursor arrow key}
+\twocolitem{{\tt DOWN}}{Down cursor arrow key}
+\twocolitem{{\tt HOME}}{Home key}
+\twocolitem{{\tt END}}{End key}
+\twocolitem{{\tt SPACE}}{Space}
+\twocolitem{{\tt TAB}}{Tab key}
+\twocolitem{{\tt ESC} or {\tt ESCAPE}}{Escape key (Windows only)}
+\end{twocollist}
 
 \wxheading{See also}
 
@@ -155,9 +182,10 @@ creation of a menu or menubar.
 \helpref{wxMenu::SetHelpString}{wxmenusethelpstring}, \helpref{wxMenuItem}{wxmenuitem}
 
 \pythonnote{In place of a single overloaded method name, wxPython
-implements the following methods:\par
+implements the following methods:
+
 \indented{2cm}{\begin{twocollist}
-\twocolitem{{\bf Append(id, string, helpStr="", checkable=FALSE)}}{}
+\twocolitem{{\bf Append(id, string, helpStr="", checkable=false)}}{}
 \twocolitem{{\bf AppendMenu(id, string, aMenu, helpStr="")}}{}
 \twocolitem{{\bf AppendItem(aMenuItem)}}{}
 \end{twocollist}}
@@ -165,7 +193,7 @@ implements the following methods:\par
 
 \membersection{wxMenu::AppendCheckItem}\label{wxmenuappendcheckitem}
 
-\func{void}{AppendCheckItem}{\param{int}{ id},\rtfsp
+\func{wxMenuItem*}{AppendCheckItem}{\param{int}{ id},\rtfsp
 \param{const wxString\& }{ item}, \param{const wxString\& }{helpString = ""}}
 
 Adds a checkable item to the end of the menu.
@@ -177,7 +205,7 @@ Adds a checkable item to the end of the menu.
 
 \membersection{wxMenu::AppendRadioItem}\label{wxmenuappendradioitem}
 
-\func{void}{AppendRadioItem}{\param{int}{ id},\rtfsp
+\func{wxMenuItem*}{AppendRadioItem}{\param{int}{ id},\rtfsp
 \param{const wxString\& }{ item}, \param{const wxString\& }{helpString = ""}}
 
 Adds a radio item to the end of the menu. All consequent radio items form a
@@ -194,7 +222,7 @@ automatically unchecked.
 
 \membersection{wxMenu::AppendSeparator}\label{wxmenuappendseparator}
 
-\func{void}{AppendSeparator}{\void}
+\func{wxMenuItem*}{AppendSeparator}{\void}
 
 Adds a separator to the end of the menu.
 
@@ -219,7 +247,7 @@ Checks or unchecks the menu item.
 
 \docparam{id}{The menu item identifier.}
 
-\docparam{check}{If TRUE, the item will be checked, otherwise it will be unchecked.}
+\docparam{check}{If true, the item will be checked, otherwise it will be unchecked.}
 
 \wxheading{See also}
 
@@ -279,7 +307,7 @@ Enables or disables (greys out) a menu item.
 
 \docparam{id}{The menu item identifier.}
 
-\docparam{enable}{TRUE to enable the menu item, FALSE to disable it.}
+\docparam{enable}{true to enable the menu item, false to disable it.}
 
 \wxheading{See also}
 
@@ -311,7 +339,7 @@ parent menu (if the item was found)}
 
 \wxheading{Return value}
 
-First form: menu item identifier, or wxNOT\_FOUND if none is found.
+First form: menu item identifier, or {\tt wxNOT\_FOUND} if none is found.
 
 Second form: returns the menu item object, or NULL if it is not found.
 
@@ -327,7 +355,7 @@ and it does not support the second parameter.}
 
 \constfunc{wxMenuItem*}{FindItemByPosition}{\param{size\_t }{position}}
 
-Finds the menu item for the given position, returning NULL if not found.
+Returns the wxMenuItem given a position in the menu.
 
 \membersection{wxMenu::GetHelpString}\label{wxmenugethelpstring}
 
@@ -397,9 +425,9 @@ menubar.
 
 \membersection{wxMenu::Insert}\label{wxmenuinsert}
 
-\func{bool}{Insert}{\param{size\_t }{pos}, \param{wxMenuItem *}{item}}
+\func{wxMenuItem*}{Insert}{\param{size\_t }{pos}, \param{wxMenuItem *}{item}}
 
-\func{void}{Insert}{\param{size\_t }{pos}, \param{int}{ id},\rtfsp
+\func{wxMenuItem*}{Insert}{\param{size\_t }{pos}, \param{int}{ id},\rtfsp
 \param{const wxString\& }{ item}, \param{const wxString\& }{helpString = ""},\rtfsp
 \param{wxItemKind}{ kind = wxITEM\_NORMAL}}
 
@@ -414,7 +442,7 @@ as appending it.
 
 \membersection{wxMenu::InsertCheckItem}\label{wxmenuinsertcheckitem}
 
-\func{void}{InsertCheckItem}{\param{size\_t }{pos}, \param{int}{ id},\rtfsp
+\func{wxMenuItem*}{InsertCheckItem}{\param{size\_t }{pos}, \param{int}{ id},\rtfsp
 \param{const wxString\& }{ item}, \param{const wxString\& }{helpString = ""}}
 
 Inserts a checkable item at the given position.
@@ -426,7 +454,7 @@ Inserts a checkable item at the given position.
 
 \membersection{wxMenu::InsertRadioItem}\label{wxmenuinsertradioitem}
 
-\func{void}{InsertRadioItem}{\param{size\_t }{pos}, \param{int}{ id},\rtfsp
+\func{wxMenuItem*}{InsertRadioItem}{\param{size\_t }{pos}, \param{int}{ id},\rtfsp
 \param{const wxString\& }{ item}, \param{const wxString\& }{helpString = ""}}
 
 Inserts a radio item at the given position.
@@ -438,7 +466,7 @@ Inserts a radio item at the given position.
 
 \membersection{wxMenu::InsertSeparator}\label{wxmenuinsertseparator}
 
-\func{void}{InsertSeparator}{\param{size\_t }{pos}}
+\func{wxMenuItem*}{InsertSeparator}{\param{size\_t }{pos}}
 
 Inserts a separator at the given position.
 
@@ -459,7 +487,7 @@ Determines whether a menu item is checked.
 
 \wxheading{Return value}
 
-TRUE if the menu item is checked, FALSE otherwise.
+true if the menu item is checked, false otherwise.
 
 \wxheading{See also}
 
@@ -477,7 +505,7 @@ Determines whether a menu item is enabled.
 
 \wxheading{Return value}
 
-TRUE if the menu item is enabled, FALSE otherwise.
+true if the menu item is enabled, false otherwise.
 
 \wxheading{See also}
 
@@ -485,13 +513,14 @@ TRUE if the menu item is enabled, FALSE otherwise.
 
 \membersection{wxMenu::Prepend}\label{wxmenuprepend}
 
-\func{bool}{Prepend}{\param{size\_t }{pos}, \param{wxMenuItem *}{item}}
+\func{wxMenuItem*}{Prepend}{\param{wxMenuItem *}{item}}
 
-\func{void}{Prepend}{\param{int}{ id},\rtfsp
+\func{wxMenuItem*}{Prepend}{\param{int}{ id},\rtfsp
 \param{const wxString\& }{ item}, \param{const wxString\& }{helpString = ""},\rtfsp
 \param{wxItemKind}{ kind = wxITEM\_NORMAL}}
 
-Inserts the given {\it item} at the position $0$.
+Inserts the given {\it item} at the position $0$, i.e. before all the other
+existing items.
 
 \wxheading{See also}
 
@@ -500,7 +529,7 @@ Inserts the given {\it item} at the position $0$.
 
 \membersection{wxMenu::PrependCheckItem}\label{wxmenuprependcheckitem}
 
-\func{void}{PrependCheckItem}{\param{int}{ id},\rtfsp
+\func{wxMenuItem*}{PrependCheckItem}{\param{int}{ id},\rtfsp
 \param{const wxString\& }{ item}, \param{const wxString\& }{helpString = ""}}
 
 Inserts a checkable item at the position $0$.
@@ -512,7 +541,7 @@ Inserts a checkable item at the position $0$.
 
 \membersection{wxMenu::PrependRadioItem}\label{wxmenuprependradioitem}
 
-\func{void}{PrependRadioItem}{\param{int}{ id},\rtfsp
+\func{wxMenuItem*}{PrependRadioItem}{\param{int}{ id},\rtfsp
 \param{const wxString\& }{ item}, \param{const wxString\& }{helpString = ""}}
 
 Inserts a radio item at the position $0$.
@@ -524,7 +553,7 @@ Inserts a radio item at the position $0$.
 
 \membersection{wxMenu::PrependSeparator}\label{wxmenuprependseparator}
 
-\func{void}{PrependSeparator}{\param{size\_t }{pos}}
+\func{wxMenuItem*}{PrependSeparator}{\param{size\_t }{pos}}
 
 Inserts a separator at the position $0$.
 
@@ -623,6 +652,7 @@ A menu bar is a series of menus accessible from the top of a frame.
 
 \wxheading{Derived from}
 
+\helpref{wxWindow}{wxwindow}\\
 \helpref{wxEvtHandler}{wxevthandler}\\
 \helpref{wxObject}{wxobject}
 
@@ -637,12 +667,6 @@ that contains the menu bar. If you have a toolbar which uses the same identifier
 as your EVT\_MENU entries, events from the toolbar will also be processed by your
 EVT\_MENU event handlers.
 
-Note that menu commands (and UI update events for menus) are first sent to
-the focus window within the frame. If no window within the frame has the focus,
-then the events are sent directly to the frame. This allows command and UI update
-handling to be processed by specific windows and controls, and not necessarily
-by the application frame.
-
 {\bf Tip:} under Windows, if you discover that menu shortcuts (for example, Alt-F to show the file menu)
 are not working, check any EVT\_CHAR events you are handling in child windows.
 If you are not calling {\tt event.Skip()} for events that you don't process in these event handlers,
@@ -654,7 +678,7 @@ menu shortcuts may cease to work.
 
 \latexignore{\rtfignore{\wxheading{Members}}}
 
-\membersection{wxMenuBar::wxMenuBar}\label{wxmenubarconstr}
+\membersection{wxMenuBar::wxMenuBar}\label{wxmenubarctor}
 
 \func{void}{wxMenuBar}{\param{long }{style = 0}}
 
@@ -681,7 +705,7 @@ Use wxMenuBar.Append instead.}
 \perlnote{wxPerl only supports the first constructor: 
 use {\tt Append} instead.}
 
-\membersection{wxMenuBar::\destruct{wxMenuBar}}
+\membersection{wxMenuBar::\destruct{wxMenuBar}}\label{wxmenubardtor}
 
 \func{void}{\destruct{wxMenuBar}}{\void}
 
@@ -701,7 +725,7 @@ Adds the item to the end of the menu bar.
 
 \wxheading{Return value}
 
-TRUE on success, FALSE if an error occurred.
+true on success, false if an error occurred.
 
 \wxheading{See also}
 
@@ -717,7 +741,7 @@ Checks or unchecks a menu item.
 
 \docparam{id}{The menu item identifier.}
 
-\docparam{check}{If TRUE, checks the menu item, otherwise the item is unchecked.}
+\docparam{check}{If true, checks the menu item, otherwise the item is unchecked.}
 
 \wxheading{Remarks}
 
@@ -734,7 +758,7 @@ Enables or disables (greys out) a menu item.
 
 \docparam{id}{The menu item identifier.}
 
-\docparam{enable}{TRUE to enable the item, FALSE to disable it.}
+\docparam{enable}{true to enable the item, false to disable it.}
 
 \wxheading{Remarks}
 
@@ -751,7 +775,7 @@ Enables or disables a whole menu.
 
 \docparam{pos}{The position of the menu, starting from zero.}
 
-\docparam{enable}{TRUE to enable the menu, FALSE to disable it.}
+\docparam{enable}{true to enable the menu, false to disable it.}
 
 \wxheading{Remarks}
 
@@ -762,7 +786,7 @@ associated with a frame.
 
 \constfunc{int}{FindMenu}{\param{const wxString\& }{title}}
 
-Returns the index of the menu with the given {\it title} or wxNOT\_FOUND if no
+Returns the index of the menu with the given {\it title} or {\tt wxNOT\_FOUND} if no
 such menu exists in this menubar. The {\it title} parameter may specify either
 the menu title (with accelerator characters, i.e. {\tt "\&File"}) or just the
 menu label ({\tt "File"}) indifferently.
@@ -781,7 +805,7 @@ Finds the menu item id for a menu name/menu item string pair.
 
 \wxheading{Return value}
 
-The menu item identifier, or wxNOT\_FOUND if none was found.
+The menu item identifier, or {\tt wxNOT\_FOUND} if none was found.
 
 \wxheading{Remarks}
 
@@ -896,7 +920,7 @@ position $0$ will insert it in the very beginning of it, inserting at position
 
 \wxheading{Return value}
 
-TRUE on success, FALSE if an error occurred.
+true on success, false if an error occurred.
 
 \wxheading{See also}
 
@@ -914,7 +938,7 @@ Determines whether an item is checked.
 
 \wxheading{Return value}
 
-TRUE if the item was found and is checked, FALSE otherwise.
+true if the item was found and is checked, false otherwise.
 
 \membersection{wxMenuBar::IsEnabled}\label{wxmenubarisenabled}
 
@@ -928,7 +952,7 @@ Determines whether an item is enabled.
 
 \wxheading{Return value}
 
-TRUE if the item was found and is enabled, FALSE otherwise.
+true if the item was found and is enabled, false otherwise.
 
 \membersection{wxMenuBar::Refresh}\label{wxmenubarrefresh}
 

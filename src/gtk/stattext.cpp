@@ -2,17 +2,17 @@
 // Name:        stattext.cpp
 // Purpose:
 // Author:      Robert Roebling
-// Id:          $Id: stattext.cpp,v 1.39 2002/08/17 17:35:36 RR Exp $
+// Id:          $Id: stattext.cpp,v 1.55 2004/06/27 13:47:52 VS Exp $
 // Copyright:   (c) 1998 Robert Roebling
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
 
-
-#ifdef __GNUG__
+#if defined(__GNUG__) && !defined(NO_GCC_PRAGMA)
     #pragma implementation "stattext.h"
 #endif
 
-#include "wx/defs.h"
+// For compilers that support precompilation, includes "wx.h".
+#include "wx/wxprec.h"
 
 #if wxUSE_STATTEXT
 
@@ -21,6 +21,11 @@
 
 #include "gdk/gdk.h"
 #include "gtk/gtk.h"
+
+extern "C"
+void wxgtk_window_size_request_callback(GtkWidget *widget,
+                                        GtkRequisition *requisition,
+                                        wxWindow *win);
 
 //-----------------------------------------------------------------------------
 // wxStaticText
@@ -56,7 +61,7 @@ bool wxStaticText::Create(wxWindow *parent,
     if (!PreCreation( parent, pos, size ) ||
         !CreateBase( parent, id, pos, size, style, wxDefaultValidator, name ))
     {
-        wxFAIL_MSG( wxT("wxXX creation failed") );
+        wxFAIL_MSG( wxT("wxStaticText creation failed") );
         return FALSE;
     }
 
@@ -85,24 +90,24 @@ bool wxStaticText::Create(wxWindow *parent,
 
     m_parent->DoAddChild( this );
 
-    PostCreation();
+    PostCreation(size);
     
-    ApplyWidgetStyle();
-
-    wxControl::SetFont( parent->GetFont() );
-    
-    wxSize size_best( DoGetBestSize() );
-    wxSize new_size( size );
-    if (new_size.x == -1)
-        new_size.x = size_best.x;
-    if (new_size.y == -1)
-        new_size.y = size_best.y;
-    if ((new_size.x != size.x) || (new_size.y != size.y))
-        SetSize( new_size.x, new_size.y );
-
-    SetBackgroundColour( parent->GetBackgroundColour() );
-    SetForegroundColour( parent->GetForegroundColour() );
-    Show( TRUE );
+    // the bug below only happens with GTK 2
+#ifdef __WXGTK20__
+    if ( justify != GTK_JUSTIFY_LEFT )
+    {
+        // if we let GTK call wxgtk_window_size_request_callback the label
+        // always shrinks to its minimal size for some reason and so no
+        // alignment except the default left doesn't work (in fact it does,
+        // but you don't see it)
+        gtk_signal_disconnect_by_func
+        (
+            GTK_OBJECT(m_widget),
+            GTK_SIGNAL_FUNC(wxgtk_window_size_request_callback),
+            (gpointer) this
+        );
+    }
+#endif // __WXGTK20__
 
     return TRUE;
 }
@@ -124,11 +129,30 @@ void wxStaticText::SetLabel( const wxString &label )
 {
     wxControl::SetLabel(label);
 
-    gtk_label_set( GTK_LABEL(m_widget), wxGTK_CONV( m_label ) );
+#ifdef __WXGTK20__
+    // Build the colorized version of the label (markup only allowed
+    // under GTK2):
+    if (m_foregroundColour.Ok())
+    {
+        // If the color has been set, create a markup string to pass to
+        // the label setter
+        wxString colorlabel;
+        colorlabel.Printf(_T("<span foreground=\"#%02x%02x%02x\">%s</span>"),
+                          m_foregroundColour.Red(), m_foregroundColour.Green(),
+                          m_foregroundColour.Blue(),
+                          wxEscapeStringForPangoMarkup(label).c_str());
+        gtk_label_set_markup( GTK_LABEL(m_widget), wxGTK_CONV( colorlabel ) );
+    }
+    else
+#endif
+        gtk_label_set( GTK_LABEL(m_widget), wxGTK_CONV( m_label ) );
 
     // adjust the label size to the new label unless disabled
     if (!HasFlag(wxST_NO_AUTORESIZE))
+    {
+        InvalidateBestSize();
         SetSize( GetBestSize() );
+    }
 }
 
 bool wxStaticText::SetFont( const wxFont &font )
@@ -137,15 +161,11 @@ bool wxStaticText::SetFont( const wxFont &font )
 
     // adjust the label size to the new label unless disabled
     if (!HasFlag(wxST_NO_AUTORESIZE))
+    {
+        InvalidateBestSize();
         SetSize( GetBestSize() );
-    
+    }
     return ret;
-}
-
-void wxStaticText::ApplyWidgetStyle()
-{
-    SetWidgetStyle();
-    gtk_widget_set_style( m_widget, m_widgetStyle );
 }
 
 wxSize wxStaticText::DoGetBestSize() const
@@ -163,7 +183,25 @@ wxSize wxStaticText::DoGetBestSize() const
     (* GTK_WIDGET_CLASS( GTK_OBJECT_GET_CLASS(m_widget) )->size_request )
         (m_widget, &req );
 
-    return wxSize(req.width, req.height);
+    wxSize best(req.width, req.height);
+    CacheBestSize(best);
+    return best;
+}
+
+bool wxStaticText::SetForegroundColour(const wxColour& colour)
+{
+    // First, we call the base class member
+    wxControl::SetForegroundColour(colour);
+    // Then, to force the color change, we set the label with the current label
+    SetLabel(GetLabel());
+    return true;
+}
+
+// static
+wxVisualAttributes
+wxStaticText::GetClassDefaultAttributes(wxWindowVariant WXUNUSED(variant))
+{
+    return GetDefaultAttributesFromGTKWidget(gtk_label_new);
 }
 
 #endif // wxUSE_STATTEXT

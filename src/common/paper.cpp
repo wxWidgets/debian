@@ -1,15 +1,15 @@
 /////////////////////////////////////////////////////////////////////////////
 // Name:        paper.cpp
 // Purpose:     Paper size classes
-// Author:      Julian Smart 
+// Author:      Julian Smart
 // Modified by:
 // Created:     04/01/98
-// RCS-ID:      $Id: paper.cpp,v 1.5.4.1 2002/11/03 19:08:57 RR Exp $
+// RCS-ID:      $Id: paper.cpp,v 1.16 2004/09/20 11:31:48 ABX Exp $
 // Copyright:   (c) Julian Smart
-// Licence:   	wxWindows licence
+// Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
 
-#ifdef __GNUG__
+#if defined(__GNUG__) && !defined(NO_GCC_PRAGMA)
 #pragma implementation "paper.h"
 #endif
 
@@ -38,7 +38,7 @@
 #include <string.h>
 
 #ifdef __WXMSW__
-#include <windows.h>
+#include "wx/msw/wrapwin.h"
 #include <commdlg.h>
 
 #ifndef __WIN32__
@@ -49,7 +49,7 @@
  // End __WXMSW__
 
 IMPLEMENT_DYNAMIC_CLASS(wxPrintPaperType, wxObject)
-IMPLEMENT_DYNAMIC_CLASS(wxPrintPaperDatabase, wxList)
+// IMPLEMENT_DYNAMIC_CLASS(wxPrintPaperDatabase, wxList)
 
 /*
  * Paper size database for all platforms
@@ -83,11 +83,21 @@ wxSize wxPrintPaperType::GetSizeDeviceUnits() const
  * Print paper database for PostScript
  */
 
+WX_DECLARE_LIST(wxPrintPaperType, wxPrintPaperTypeList);
+#include "wx/listimpl.cpp"
+WX_DEFINE_LIST(wxPrintPaperTypeList);
+
 wxPrintPaperDatabase* wxThePrintPaperDatabase = (wxPrintPaperDatabase*) NULL;
 
-wxPrintPaperDatabase::wxPrintPaperDatabase():wxList(wxKEY_STRING)
+wxPrintPaperDatabase::wxPrintPaperDatabase()
 {
-    DeleteContents(TRUE);
+    m_map = new wxStringToPrintPaperTypeHashMap;
+    m_list = new wxPrintPaperTypeList;
+}
+
+wxPrintPaperDatabase::~wxPrintPaperDatabase()
+{
+    ClearDatabase();
 }
 
 void wxPrintPaperDatabase::CreateDatabase()
@@ -175,65 +185,75 @@ void wxPrintPaperDatabase::CreateDatabase()
 
 void wxPrintPaperDatabase::ClearDatabase()
 {
-    Clear();
+    delete m_list;
+    WX_CLEAR_HASH_MAP(wxStringToPrintPaperTypeHashMap, *m_map);
+    delete m_map;
 }
 
 void wxPrintPaperDatabase::AddPaperType(wxPaperSize paperId, const wxString& name, int w, int h)
 {
-    Append(name, new wxPrintPaperType(paperId, 0, name, w, h));
+    wxPrintPaperType* tmp = new wxPrintPaperType(paperId, 0, name, w, h);
+    (*m_map)[name] = tmp;
+    m_list->push_back(tmp);
 }
 
 void wxPrintPaperDatabase::AddPaperType(wxPaperSize paperId, int platformId, const wxString& name, int w, int h)
 {
-    Append(name, new wxPrintPaperType(paperId, platformId, name, w, h));
+    wxPrintPaperType* tmp = new wxPrintPaperType(paperId, platformId, name, w, h);
+    (*m_map)[name] = tmp;
+    m_list->push_back(tmp);
 }
 
 wxPrintPaperType *wxPrintPaperDatabase::FindPaperType(const wxString& name)
 {
-    wxNode *node = Find(name);
-    if (node)
-        return (wxPrintPaperType *)node->Data();
+    wxStringToPrintPaperTypeHashMap::iterator it = m_map->find(name);
+    if (it != m_map->end())
+        return it->second;
     else
-        return (wxPrintPaperType *) NULL;
+        return NULL;
 }
 
 wxPrintPaperType *wxPrintPaperDatabase::FindPaperType(wxPaperSize id)
 {
-    wxNode *node = First();
-    while (node)
+    typedef wxStringToPrintPaperTypeHashMap::iterator iterator;
+
+    for (iterator it = m_map->begin(), en = m_map->end(); it != en; ++it)
     {
-        wxPrintPaperType* paperType = (wxPrintPaperType*) node->Data();
+        wxPrintPaperType* paperType = it->second;
         if (paperType->GetId() == id)
             return paperType;
-        node = node->Next();
     }
-    return (wxPrintPaperType *) NULL;
+
+    return NULL;
 }
 
 wxPrintPaperType *wxPrintPaperDatabase::FindPaperTypeByPlatformId(int id)
 {
-    wxNode *node = First();
-    while (node)
+    typedef wxStringToPrintPaperTypeHashMap::iterator iterator;
+
+    for (iterator it = m_map->begin(), en = m_map->end(); it != en; ++it)
     {
-        wxPrintPaperType* paperType = (wxPrintPaperType*) node->Data();
+        wxPrintPaperType* paperType = it->second;
         if (paperType->GetPlatformId() == id)
             return paperType;
-        node = node->Next();
     }
-    return (wxPrintPaperType *) NULL;
+
+    return NULL;
 }
 
 wxPrintPaperType *wxPrintPaperDatabase::FindPaperType(const wxSize& sz)
 {
-    wxNode *node = First();
-    while (node)
+    typedef wxStringToPrintPaperTypeHashMap::iterator iterator;
+
+    for (iterator it = m_map->begin(), en = m_map->end(); it != en; ++it)
     {
-        wxPrintPaperType* paperType = (wxPrintPaperType*) node->Data();
-        if (paperType->GetSize() == sz)
+        wxPrintPaperType* paperType = it->second;
+        wxSize paperSize = paperType->GetSize() ;
+        if ( abs( paperSize.x - sz.x ) < 10 && abs( paperSize.y - sz.y ) < 10 )
             return paperType;
-        node = node->Next();
     }
-    return (wxPrintPaperType *) NULL;
+
+    return NULL;
 }
 
 // Convert name to size id
@@ -276,6 +296,17 @@ wxPaperSize wxPrintPaperDatabase::GetSize(const wxSize& size)
         return wxPAPER_NONE;
 }
 
+// QUICK and DIRTY
+size_t wxPrintPaperDatabase::GetCount() const
+{
+    return m_list->GetCount();
+}
+
+wxPrintPaperType* wxPrintPaperDatabase::Item(size_t index) const
+{
+    return m_list->Item(index)->GetData();
+}
+
 // A module to allow initialization/cleanup of print paper
 // things without calling these functions from app.cpp.
 
@@ -299,7 +330,7 @@ bool wxPrintPaperModule::OnInit()
     wxThePrintPaperDatabase = new wxPrintPaperDatabase;
     wxThePrintPaperDatabase->CreateDatabase();
 
-    return TRUE;
+    return true;
 }
 
 void wxPrintPaperModule::OnExit()

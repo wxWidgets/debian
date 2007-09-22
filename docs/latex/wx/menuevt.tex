@@ -4,7 +4,7 @@ This class is used for a variety of menu-related events. Note that
 these do not include menu command events, which are
 handled using \helpref{wxCommandEvent}{wxcommandevent} objects.
 
-The handler \helpref{wxFrame::OnMenuHighlight}{wxframeonmenuhighlight} displays help
+The default handler for wxEVT\_MENU\_HIGHLIGHT displays help
 text in the first field of the status bar.
 
 \wxheading{Derived from}
@@ -31,7 +31,7 @@ specified id has been highlighted: used to show help prompts in the status bar
 by \helpref{wxFrame}{wxframe}}
 \twocolitem{{\bf EVT\_MENU\_HIGHLIGHT\_ALL(func)}}{A menu item has been
 highlighted, i.e. the currently selected menu item has changed.}
-\end{twocollist}%
+\end{twocollist}
 
 \wxheading{See also}
 
@@ -40,17 +40,28 @@ highlighted, i.e. the currently selected menu item has changed.}
 
 \latexignore{\rtfignore{\wxheading{Members}}}
 
-\membersection{wxMenuEvent::wxMenuEvent}
+
+\membersection{wxMenuEvent::wxMenuEvent}\label{wxmenueventctor}
 
 \func{}{wxMenuEvent}{\param{WXTYPE }{id = 0}, \param{int }{id = 0}, \param{wxDC* }{dc = NULL}}
 
 Constructor.
 
-\membersection{wxMenuEvent::m\_menuId}
+
+\membersection{wxMenuEvent::m\_menuId}\label{wxmenueventmmenuid}
 
 \member{int}{m\_menuId}
 
 The relevant menu identifier.
+
+
+\membersection{wxMenuEvent::GetMenu}\label{wxmenueventgetmenu}
+
+\constfunc{wxMenu *}{GetMenu}{\void}
+
+Returns the menu which is being opened or closed. This method should be only
+used with the \texttt{OPEN} and \texttt{CLOSE} events.
+
 
 \membersection{wxMenuEvent::GetMenuId}\label{wxmenueventgetmenuid}
 
@@ -59,12 +70,13 @@ The relevant menu identifier.
 Returns the menu identifier associated with the event. This method should be
 only used with the {\tt HIGHLIGHT} events.
 
+
 \membersection{wxMenuEvent::IsPopup}\label{wxmenueventispopup}
 
 \constfunc{bool}{IsPopup}{\void}
 
-Returns {\tt TRUE} if the menu which is being opened or closed is a popup menu, 
-{\tt FALSE} if it is a normal one.
+Returns {\tt true} if the menu which is being opened or closed is a popup menu, 
+{\tt false} if it is a normal one.
 
 This method should be only used with the {\tt OPEN} and {\tt CLOSE} events.
 

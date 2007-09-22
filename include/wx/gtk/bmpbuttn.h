@@ -2,7 +2,7 @@
 // Name:        wx/gtk/bmpbutton.h
 // Purpose:
 // Author:      Robert Roebling
-// Id:          $Id: bmpbuttn.h,v 1.22 2002/09/07 12:28:46 GD Exp $
+// Id:          $Id: bmpbuttn.h,v 1.29 2004/10/18 13:12:39 VS Exp $
 // Copyright:   (c) 1998 Robert Roebling
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -11,7 +11,7 @@
 #ifndef __BMPBUTTONH__
 #define __BMPBUTTONH__
 
-#if defined(__GNUG__) && !defined(__APPLE__)
+#if defined(__GNUG__) && !defined(NO_GCC_PRAGMA)
 #pragma interface
 #endif
 
@@ -61,13 +61,14 @@ public:
     void NotFocus();
     void StartSelect();
     void EndSelect();
-    void ApplyWidgetStyle();
+    void DoApplyWidgetStyle(GtkRcStyle *style);
 
     bool         m_hasFocus:1;
     bool         m_isSelected:1;
 
 protected:
     virtual void OnSetBitmap();
+    virtual wxSize DoGetBestSize() const;
 
     void Init();
 

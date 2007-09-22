@@ -57,6 +57,10 @@ alpha channel, and accum buffer. Other implementations may support them.
 \twocolitem{\windowstyle{WX\_GL\_MIN\_ACCUM\_ALPHA}}{Use blue buffer with most bits (> MIN\_ACCUM\_ALPHA bits)}
 \end{twocollist}
 
+\wxheading{See also}
+
+\helpref{wxGLContext}{wxglcontext}
+
 \latexignore{\rtfignore{\wxheading{Members}}}
 
 \membersection{wxGLCanvas::wxGLCanvas}\label{wxglcanvasconstr}
@@ -77,6 +81,8 @@ Constructor.
 
 \docparam{parent}{Pointer to a parent window.}
 
+\docparam{sharedcontext}{Context to share object resources with.}
+
 \docparam{id}{Window identifier. If -1, will automatically create an identifier.}
 
 \docparam{pos}{Window position. wxDefaultPosition is (-1, -1) which indicates that wxWidgets
@@ -93,24 +99,29 @@ generate a default size for the window. If no suitable size can be found, the wi
 This array is zero-terminated: it should be set up with constants described in the table above.
 If a constant should be followed by a value, put it in the next array position.
 For example, the WX\_GL\_DEPTH\_SIZE should be followed by the value that indicates the number of
-bits for the depth buffer, so:
+bits for the depth buffer, so:}
 
 \begin{verbatim}
 attribList[index]= WX_GL_DEPTH_SIZE;
 attribList[index+1]=32;
 and so on.
 \end{verbatim}
-}
 
 \docparam{palette}{If the window has the palette, it should by pass this value.
 Note: palette and WX\_GL\_RGBA are mutually exclusive.}
+
+\membersection{wxGLCanvas::GetContext}\label{wxglcanvasgetcontext}
+
+\func{wxGLContext*}{GetContext}{\void}
+
+Obtains the context that is associated with this canvas.
 
 \membersection{wxGLCanvas::SetCurrent}\label{wxglcanvassetcurrent}
 
 \func{void}{SetCurrent}{\void}
 
 Sets this canvas as the current recipient of OpenGL calls.
-Each canvas contain an OpenGL device context that has been created during
+Each canvas contains an OpenGL device context that has been created during
 the creation of this window. So this call sets the current device context
 as the target device context for OpenGL operations.
 

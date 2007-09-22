@@ -4,9 +4,9 @@
 // Author:      Vadim Zeitlin
 // Modified by:
 // Created:     20.11.99
-// RCS-ID:      $Id: gdiimage.cpp,v 1.24.2.3 2004/02/02 14:16:25 CE Exp $
+// RCS-ID:      $Id: gdiimage.cpp,v 1.46 2004/11/10 21:02:44 VZ Exp $
 // Copyright:   (c) 1999 Vadim Zeitlin <zeitlin@dptmaths.ens-cachan.fr>
-// Licence:     wxWindows license
+// Licence:     wxWindows licence
 ///////////////////////////////////////////////////////////////////////////////
 
 // ============================================================================
@@ -17,7 +17,7 @@
 // headers
 // ----------------------------------------------------------------------------
 
-#ifdef __GNUG__
+#if defined(__GNUG__) && !defined(NO_GCC_PRAGMA)
     #pragma implementation "gdiimage.h"
 #endif
 
@@ -37,17 +37,31 @@
 
 #include "wx/app.h"
 
-#ifndef __WXMICROWIN__
+#include "wx/bitmap.h"
+#include "wx/msw/gdiimage.h"
+
+#if wxUSE_WXDIB
 #include "wx/msw/dib.h"
 #endif
 
-#include "wx/msw/bitmap.h"
-#include "wx/msw/gdiimage.h"
-#include "wx/bitmap.h"
+#ifdef __WXWINCE__
+#include <winreg.h>
+#include <shellapi.h>
+#endif
 
-#ifdef __WIN16__
-#   include "wx/msw/curico.h"
-#endif // __WIN16__
+#include "wx/file.h"
+
+#include "wx/listimpl.cpp"
+WX_DEFINE_LIST(wxGDIImageHandlerList);
+
+// ----------------------------------------------------------------------------
+// auxiliary functions
+// ----------------------------------------------------------------------------
+
+#ifdef __WXWINCE__
+// Used in wxBMPFileHandler::LoadFile
+HBITMAP wxLoadBMP(const wxString& filename) ;
+#endif
 
 // ----------------------------------------------------------------------------
 // private classes
@@ -110,14 +124,14 @@ public:
                         int WXUNUSED(height),
                         int WXUNUSED(depth) = 1)
     {
-        return FALSE;
+        return false;
     }
 
     virtual bool Save(wxGDIImage *WXUNUSED(image),
                       const wxString& WXUNUSED(name),
                       int WXUNUSED(type))
     {
-        return FALSE;
+        return false;
     }
 
     virtual bool Load(wxGDIImage *image,
@@ -126,7 +140,7 @@ public:
                       int desiredWidth, int desiredHeight)
     {
         wxIcon *icon = wxDynamicCast(image, wxIcon);
-        wxCHECK_MSG( icon, FALSE, _T("wxIconHandler only works with icons") );
+        wxCHECK_MSG( icon, false, _T("wxIconHandler only works with icons") );
 
         return LoadIcon(icon, name, flags, desiredWidth, desiredHeight);
     }
@@ -191,7 +205,7 @@ IMPLEMENT_DYNAMIC_CLASS(wxICOResourceHandler, wxObject)
 // implementation
 // ============================================================================
 
-wxList wxGDIImage::ms_handlers;
+wxGDIImageHandlerList wxGDIImage::ms_handlers;
 
 // ----------------------------------------------------------------------------
 // wxGDIImage functions forwarded to wxGDIImageRefData
@@ -205,7 +219,7 @@ bool wxGDIImage::FreeResource(bool WXUNUSED(force))
         GetGDIImageData()->m_handle = 0;
     }
 
-    return TRUE;
+    return true;
 }
 
 WXHANDLE wxGDIImage::GetResourceHandle() const
@@ -233,21 +247,21 @@ bool wxGDIImage::RemoveHandler(const wxString& name)
     if ( handler )
     {
         ms_handlers.DeleteObject(handler);
-        return TRUE;
+        return true;
     }
     else
-        return FALSE;
+        return false;
 }
 
 wxGDIImageHandler *wxGDIImage::FindHandler(const wxString& name)
 {
-    wxNode *node = ms_handlers.First();
+    wxGDIImageHandlerList::compatibility_iterator node = ms_handlers.GetFirst();
     while ( node )
     {
-        wxGDIImageHandler *handler = (wxGDIImageHandler *)node->Data();
+        wxGDIImageHandler *handler = node->GetData();
         if ( handler->GetName() == name )
             return handler;
-        node = node->Next();
+        node = node->GetNext();
     }
 
     return NULL;
@@ -256,31 +270,31 @@ wxGDIImageHandler *wxGDIImage::FindHandler(const wxString& name)
 wxGDIImageHandler *wxGDIImage::FindHandler(const wxString& extension,
                                            long type)
 {
-    wxNode *node = ms_handlers.First();
+    wxGDIImageHandlerList::compatibility_iterator node = ms_handlers.GetFirst();
     while ( node )
     {
-        wxGDIImageHandler *handler = (wxGDIImageHandler *)node->Data();
+        wxGDIImageHandler *handler = node->GetData();
         if ( (handler->GetExtension() = extension) &&
              (type == -1 || handler->GetType() == type) )
         {
             return handler;
         }
 
-        node = node->Next();
+        node = node->GetNext();
     }
     return NULL;
 }
 
 wxGDIImageHandler *wxGDIImage::FindHandler(long type)
 {
-    wxNode *node = ms_handlers.First();
+    wxGDIImageHandlerList::compatibility_iterator node = ms_handlers.GetFirst();
     while ( node )
     {
-        wxGDIImageHandler *handler = (wxGDIImageHandler *)node->Data();
+        wxGDIImageHandler *handler = node->GetData();
         if ( handler->GetType() == type )
             return handler;
 
-        node = node->Next();
+        node = node->GetNext();
     }
 
     return NULL;
@@ -288,13 +302,13 @@ wxGDIImageHandler *wxGDIImage::FindHandler(long type)
 
 void wxGDIImage::CleanUpHandlers()
 {
-    wxNode *node = ms_handlers.First();
+    wxGDIImageHandlerList::compatibility_iterator node = ms_handlers.GetFirst();
     while ( node )
     {
-        wxGDIImageHandler *handler = (wxGDIImageHandler *)node->Data();
-        wxNode *next = node->Next();
+        wxGDIImageHandler *handler = node->GetData();
+        wxGDIImageHandlerList::compatibility_iterator next = node->GetNext();
         delete handler;
-        delete node;
+        ms_handlers.Erase( node );
         node = next;
     }
 }
@@ -323,27 +337,29 @@ bool wxBMPResourceHandler::LoadFile(wxBitmap *bitmap,
     // TODO: load colourmap.
     bitmap->SetHBITMAP((WXHBITMAP)::LoadBitmap(wxGetInstance(), name));
 
-    wxBitmapRefData *data = bitmap->GetBitmapData();
-    if ( bitmap->Ok() )
-    {
-        BITMAP bm;
-        if ( !::GetObject(GetHbitmapOf(*bitmap), sizeof(BITMAP), (LPSTR) &bm) )
-        {
-            wxLogLastError(wxT("GetObject(HBITMAP)"));
-        }
-
-        data->m_width = bm.bmWidth;
-        data->m_height = bm.bmHeight;
-        data->m_depth = bm.bmBitsPixel;
-    }
-    else
+    if ( !bitmap->Ok() )
     {
         // it's probably not found
         wxLogError(wxT("Can't load bitmap '%s' from resources! Check .rc file."),
                    name.c_str());
+
+        return false;
     }
 
-    return bitmap->Ok();
+    BITMAP bm;
+    if ( !::GetObject(GetHbitmapOf(*bitmap), sizeof(BITMAP), (LPSTR) &bm) )
+    {
+        wxLogLastError(wxT("GetObject(HBITMAP)"));
+    }
+
+    bitmap->SetWidth(bm.bmWidth);
+    bitmap->SetHeight(bm.bmHeight);
+    bitmap->SetDepth(bm.bmBitsPixel);
+
+    // use 0xc0c0c0 as transparent colour by default
+    bitmap->SetMask(new wxMask(*bitmap, *wxLIGHT_GREY));
+
+    return true;
 }
 
 bool wxBMPFileHandler::LoadFile(wxBitmap *bitmap,
@@ -351,44 +367,36 @@ bool wxBMPFileHandler::LoadFile(wxBitmap *bitmap,
                                 int WXUNUSED(desiredWidth),
                                 int WXUNUSED(desiredHeight))
 {
-#if wxUSE_IMAGE_LOADING_IN_MSW
-    wxPalette *palette = NULL;
-    bool success = wxLoadIntoBitmap(WXSTRINGCAST name, bitmap, &palette) != 0;
+#if wxUSE_WXDIB
+    wxCHECK_MSG( bitmap, false, _T("NULL bitmap in LoadFile") );
 
-#if wxUSE_PALETTE
-    if ( success && palette )
-    {
-        bitmap->SetPalette(*palette);
-    }
+    wxDIB dib(name);
 
-    // it was copied by the bitmap if it was loaded successfully
-    delete palette;
-#endif // wxUSE_PALETTE
-
-    return success;
+    bool ok = dib.IsOk() && bitmap->CopyFromDIB(dib);
+    return ok;
 #else
-    return FALSE;
+  WXHBITMAP hBitmap = (WXHBITMAP)wxLoadBMP(name);
+  if(hBitmap) {
+      bitmap->SetHBITMAP(hBitmap);
+      return true;
+  }
+    return false;
 #endif
 }
 
 bool wxBMPFileHandler::SaveFile(wxBitmap *bitmap,
                                 const wxString& name,
                                 int WXUNUSED(type),
-                                const wxPalette *pal)
+                                const wxPalette * WXUNUSED(pal))
 {
-#if wxUSE_IMAGE_LOADING_IN_MSW
+#if wxUSE_WXDIB
+    wxCHECK_MSG( bitmap, false, _T("NULL bitmap in SaveFile") );
 
-#if wxUSE_PALETTE
-    wxPalette *actualPalette = (wxPalette *)pal;
-    if ( !actualPalette )
-        actualPalette = bitmap->GetPalette();
-#else
-    wxPalette *actualPalette = NULL;
-#endif // wxUSE_PALETTE
+    wxDIB dib(*bitmap);
 
-    return wxSaveBitmap(WXSTRINGCAST name, bitmap, actualPalette) != 0;
+    return dib.Save(name);
 #else
-    return FALSE;
+    return false;
 #endif
 }
 
@@ -401,13 +409,11 @@ bool wxICOFileHandler::LoadIcon(wxIcon *icon,
                                 long WXUNUSED(flags),
                                 int desiredWidth, int desiredHeight)
 {
-#if wxUSE_RESOURCE_LOADING_IN_MSW
     icon->UnRef();
 
     // actual size
     wxSize size;
 
-#ifdef __WIN32__
     HICON hicon = NULL;
 
     // Parse the filename: it may be of the form "filename;n" in order to
@@ -445,7 +451,7 @@ bool wxICOFileHandler::LoadIcon(wxIcon *icon,
     }
     else
 #endif
-    // were we asked for a large icon?
+        // were we asked for a large icon?
     if ( desiredWidth == ::GetSystemMetrics(SM_CXICON) &&
          desiredHeight == ::GetSystemMetrics(SM_CYICON) )
     {
@@ -472,47 +478,41 @@ bool wxICOFileHandler::LoadIcon(wxIcon *icon,
     }
     //else: not standard size, load below
 
+#ifndef __WXWINCE__
     if ( !hicon )
     {
         // take any size icon from the file by index
         hicon = ::ExtractIcon(wxGetInstance(), nameReal, iconIndex);
     }
+#endif
 
     if ( !hicon )
     {
         wxLogSysError(_T("Failed to load icon from the file '%s'"),
                       name.c_str());
 
-        return FALSE;
+        return false;
     }
 
     size = wxGetHiconSize(hicon);
-#else // Win16
-    HICON hicon = ReadIconFile((wxChar *)name.c_str(),
-                               wxGetInstance(),
-                               &size.x, &size.y);
-#endif // Win32/Win16
 
     if ( (desiredWidth != -1 && desiredWidth != size.x) ||
          (desiredHeight != -1 && desiredHeight != size.y) )
     {
         wxLogTrace(_T("iconload"),
-                   _T("Returning FALSE from wxICOFileHandler::Load because of the size mismatch: actual (%d, %d), requested (%d, %d)"),
+                   _T("Returning false from wxICOFileHandler::Load because of the size mismatch: actual (%d, %d), requested (%d, %d)"),
                    size.x, size.y,
                    desiredWidth, desiredHeight);
 
         ::DestroyIcon(hicon);
 
-        return FALSE;
+        return false;
     }
 
     icon->SetHICON((WXHICON)hicon);
     icon->SetSize(size.x, size.y);
 
     return icon->Ok();
-#else
-    return FALSE;
-#endif
 }
 
 bool wxICOResourceHandler::LoadIcon(wxIcon *icon,
@@ -534,7 +534,6 @@ bool wxICOResourceHandler::LoadIcon(wxIcon *icon,
 
     // note that we can't just always call LoadImage() because it seems to do
     // some icon rescaling internally which results in very ugly 16x16 icons
-#if defined(__WIN32__) && (!defined(__SC__) || defined (__DIGITALMARS__) )
     if ( hasSize )
     {
         hicon = (HICON)::LoadImage(wxGetInstance(), name, IMAGE_ICON,
@@ -542,12 +541,12 @@ bool wxICOResourceHandler::LoadIcon(wxIcon *icon,
                                     LR_DEFAULTCOLOR);
     }
     else
-#endif // Win32/!Win32
     {
         hicon = ::LoadIcon(wxGetInstance(), name);
     }
 
     // next check if it's not a standard icon
+#ifndef __WXWINCE__
     if ( !hicon && !hasSize )
     {
         static const struct
@@ -570,6 +569,7 @@ bool wxICOResourceHandler::LoadIcon(wxIcon *icon,
             }
         }
     }
+#endif
 
     wxSize size = wxGetHiconSize(hicon);
     icon->SetSize(size.x, size.y);
@@ -585,10 +585,11 @@ bool wxICOResourceHandler::LoadIcon(wxIcon *icon,
 
 wxSize wxGetHiconSize(HICON hicon)
 {
-    wxSize size(32, 32);    // default
+    // default icon size on this hardware
+    // usually 32x32 but can be other (smaller) on pocket devices
+    wxSize size(::GetSystemMetrics(SM_CXICON), ::GetSystemMetrics(SM_CYICON));
 
-#ifdef __WIN32__
-    // Win32s doesn't have GetIconInfo function...
+#ifndef __WXWINCE__
     if ( hicon && wxGetOsVersion() != wxWIN32S )
     {
         ICONINFO info;
@@ -613,9 +614,88 @@ wxSize wxGetHiconSize(HICON hicon)
                 ::DeleteObject(info.hbmColor);
         }
     }
+#else
+    wxUnusedVar(hicon);
 #endif
-
     return size;
 }
+
+#endif // __WXMICROWIN__
+
+#ifdef __WXWINCE__
+// Used in wxBMPFileHandler::LoadFile
+HBITMAP wxLoadBMP(const wxString& filename)
+{
+  wxFile file;
+  if(!file.Open(filename))
+        return 0;
+
+    // The first part of the file contains the file header.
+  // This will tell us if it is a bitmap, how big the header is, and how big
+    // the file is. The header size in the file header includes the color table.
+  BITMAPFILEHEADER BmpFileHdr;
+  BITMAPINFO *pBmpInfo = (BITMAPINFO*)malloc(sizeof(BITMAPINFO)+255*sizeof(RGBQUAD));
+  BYTE* pBits = 0;
+  HBITMAP hBitmap = 0;
+
+  if(file.Read(&BmpFileHdr, sizeof(BmpFileHdr))==sizeof(BmpFileHdr)
+    && !strncmp((char*)&BmpFileHdr.bfType,"BM",2)
+    && file.Read(pBmpInfo, sizeof(BITMAPINFOHEADER))==sizeof(BITMAPINFOHEADER)
+    && pBmpInfo->bmiHeader.biSize == sizeof(BITMAPINFOHEADER)) {
+
+
+      unsigned int nColors = pBmpInfo->bmiHeader.biClrUsed ?
+      pBmpInfo->bmiHeader.biClrUsed : 1 << pBmpInfo->bmiHeader.biBitCount;
+    if (nColors < 1
+      || file.Read(pBmpInfo->bmiColors, nColors * sizeof(RGBQUAD))
+        == nColors * sizeof(RGBQUAD)) {
+
+      // So how big the bitmap surface is.
+      int nBitsSize = BmpFileHdr.bfSize - BmpFileHdr.bfOffBits;
+
+        // Allocate the memory for the bits and read the bits from the file.
+      pBits = (BYTE*) malloc(nBitsSize*2);
+      if (pBits) {
+        // Seek to the bits in the file.
+        file.Seek(BmpFileHdr.bfOffBits);
+
+        // read the bits
+        if(file.Read(pBits, nBitsSize)==nBitsSize) {
+          // Everything went OK.
+          pBmpInfo->bmiHeader.biSizeImage = nBitsSize;
+
+          //HBITMAP hBitmap=SetBitmap((LPBITMAPINFO)pBmpInfo, pBits);
+          //DWORD dwBitmapInfoSize = sizeof(BITMAPINFO) + nColors*sizeof(RGBQUAD);
+
+            // Create a DC which will be used to get DIB, then create DIBsection
+            HDC hDC = ::GetDC(NULL);
+          if (hDC) {
+            LPVOID bits;
+            hBitmap = CreateDIBSection(hDC, (const BITMAPINFO*) pBmpInfo,
+              DIB_RGB_COLORS, &bits, NULL, 0);
+            ReleaseDC(0,hDC);
+
+            if (hBitmap) {
+              DWORD dwImageSize = pBmpInfo->bmiHeader.biSizeImage;
+              if (dwImageSize == 0) {
+                int nBytesPerLine = pBmpInfo->bmiHeader.biWidth * pBmpInfo->bmiHeader.biBitCount;
+                nBytesPerLine = ( (nBytesPerLine + 31) & (~31) ) / 8;
+                dwImageSize = nBytesPerLine * pBmpInfo->bmiHeader.biHeight;
+              }
+              memcpy(bits, pBits, dwImageSize);
+            }
+          }
+        }
+      }
+    }
+  }
+
+  if(pBmpInfo)
+    free(pBmpInfo);
+  if(pBits)
+      free(pBits);
+
+  return hBitmap;
+}
 #endif
-    // __WXMICROWIN__
+

@@ -1,16 +1,13 @@
-from wxPython.wx import *
-from wxPython.grid import *
-from wxPython.lib.gridmovers import wxGridColMover, EVT_GRID_COL_MOVE
-from wxPython.lib.gridmovers import wxGridRowMover, EVT_GRID_ROW_MOVE
+
+import  wx
+import  wx.grid             as  gridlib
+import  wx.lib.gridmovers   as  gridmovers
 
 #---------------------------------------------------------------------------
 
-class CustomDataTable(wxPyGridTableBase):
-    """
-    """
-
+class CustomDataTable(gridlib.PyGridTableBase):
     def __init__(self, log):
-        wxPyGridTableBase.__init__(self)
+        gridlib.PyGridTableBase.__init__(self)
         self.log = log
 
         self.identifiers = ['id','ds','sv','pr','pl','op','fx','ts']
@@ -93,10 +90,12 @@ class CustomDataTable(wxPyGridTableBase):
     # Move the column
     def MoveColumn(self,frm,to):
         grid = self.GetView()
+
         if grid:
             # Move the identifiers
             old = self.identifiers[frm]
             del self.identifiers[frm]
+
             if to > frm:
                 self.identifiers.insert(to-1,old)
             else:
@@ -104,23 +103,30 @@ class CustomDataTable(wxPyGridTableBase):
 
             # Notify the grid
             grid.BeginBatch()
-            msg = wxGridTableMessage(self,wxGRIDTABLE_NOTIFY_COLS_DELETED,
-                                     frm,1)
+            msg = gridlib.GridTableMessage(
+                    self, gridlib.GRIDTABLE_NOTIFY_COLS_DELETED, frm, 1
+                    )
+                    
             grid.ProcessTableMessage(msg)
-            msg = wxGridTableMessage(self,wxGRIDTABLE_NOTIFY_COLS_INSERTED,
-                                     to,1)
+            
+            msg = gridlib.GridTableMessage(
+                    self, gridlib.GRIDTABLE_NOTIFY_COLS_INSERTED, to, 1
+                    )
+
             grid.ProcessTableMessage(msg)
             grid.EndBatch()
 
     # Move the row
     def MoveRow(self,frm,to):
         grid = self.GetView()
+
         if grid:
             # Move the rowLabels and data rows
             oldLabel = self.rowLabels[frm]
             oldData = self.data[frm]
             del self.rowLabels[frm]
             del self.data[frm]
+
             if to > frm:
                 self.rowLabels.insert(to-1,oldLabel)
                 self.data.insert(to-1,oldData)
@@ -130,11 +136,17 @@ class CustomDataTable(wxPyGridTableBase):
 
             # Notify the grid
             grid.BeginBatch()
-            msg = wxGridTableMessage(self,wxGRIDTABLE_NOTIFY_ROWS_DELETED,
-                                     frm,1)
+
+            msg = gridlib.GridTableMessage(
+                    self, gridlib.GRIDTABLE_NOTIFY_ROWS_DELETED, frm, 1
+                    )
+
             grid.ProcessTableMessage(msg)
-            msg = wxGridTableMessage(self,wxGRIDTABLE_NOTIFY_ROWS_INSERTED,
-                                     to,1)
+
+            msg = gridlib.GridTableMessage(
+                    self, gridlib.GRIDTABLE_NOTIFY_ROWS_INSERTED, to, 1
+                    )
+
             grid.ProcessTableMessage(msg)
             grid.EndBatch()
 
@@ -142,9 +154,9 @@ class CustomDataTable(wxPyGridTableBase):
 #---------------------------------------------------------------------------
 
 
-class DragableGrid(wxGrid):
+class DragableGrid(gridlib.Grid):
     def __init__(self, parent, log):
-        wxGrid.__init__(self, parent, -1)
+        gridlib.Grid.__init__(self, parent, -1)
 
         table = CustomDataTable(log)
 
@@ -154,12 +166,12 @@ class DragableGrid(wxGrid):
         self.SetTable(table, True)
 
         # Enable Column moving
-        wxGridColMover(self)
-        EVT_GRID_COL_MOVE(self,self.GetId(),self.OnColMove)
+        gridmovers.GridColMover(self)
+        self.Bind(gridmovers.EVT_GRID_COL_MOVE, self.OnColMove, self)
 
         # Enable Row moving
-        wxGridRowMover(self)
-        EVT_GRID_ROW_MOVE(self,self.GetId(),self.OnRowMove)
+        gridmovers.GridRowMover(self)
+        self.Bind(gridmovers.EVT_GRID_ROW_MOVE, self.OnRowMove, self)
 
     # Event method called when a column move needs to take place
     def OnColMove(self,evt):
@@ -175,9 +187,9 @@ class DragableGrid(wxGrid):
 
 #---------------------------------------------------------------------------
 
-class TestFrame(wxFrame):
+class TestFrame(wx.Frame):
     def __init__(self, parent, log):
-        wxFrame.__init__(self, parent, -1, "Custom Table, data driven Grid  Demo", size=(640,480))
+        wx.Frame.__init__(self, parent, -1, "Custom Table, data driven Grid  Demo", size=(640,480))
         grid = DragableGrid(self, log)
 
 
@@ -185,7 +197,7 @@ class TestFrame(wxFrame):
 
 if __name__ == '__main__':
     import sys
-    app = wxPySimpleApp()
+    app = wx.PySimpleApp()
     frame = TestFrame(None, sys.stdout)
     frame.Show(True)
     app.MainLoop()

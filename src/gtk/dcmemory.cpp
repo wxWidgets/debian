@@ -2,14 +2,17 @@
 // Name:        dcmemory.cpp
 // Purpose:
 // Author:      Robert Roebling
-// RCS-ID:      $Id: dcmemory.cpp,v 1.19 2000/02/23 17:47:43 RR Exp $
+// RCS-ID:      $Id: dcmemory.cpp,v 1.25 2004/08/21 22:48:45 VS Exp $
 // Copyright:   (c) 1998 Robert Roebling
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
 
-#ifdef __GNUG__
+#if defined(__GNUG__) && !defined(NO_GCC_PRAGMA)
 #pragma implementation "dcmemory.h"
 #endif
+
+// For compilers that support precompilation, includes "wx.h".
+#include "wx/wxprec.h"
 
 #include "wx/dcmemory.h"
 
@@ -27,6 +30,12 @@ wxMemoryDC::wxMemoryDC() : wxWindowDC()
     m_ok = FALSE;
 
     m_cmap = gtk_widget_get_default_colormap();
+    
+#ifdef __WXGTK20__
+    m_context = gdk_pango_context_get();
+    m_layout = pango_layout_new( m_context );
+    m_fontdesc = pango_font_description_copy( pango_context_get_font_description( m_context ) );
+#endif
 }
 
 wxMemoryDC::wxMemoryDC( wxDC *WXUNUSED(dc) )
@@ -35,6 +44,12 @@ wxMemoryDC::wxMemoryDC( wxDC *WXUNUSED(dc) )
     m_ok = FALSE;
 
     m_cmap = gtk_widget_get_default_colormap();
+    
+#ifdef __WXGTK20__
+    m_context = gdk_pango_context_get();
+    m_layout = pango_layout_new( m_context );
+    m_fontdesc = pango_font_description_copy( pango_context_get_font_description( m_context ) );
+#endif
 }
 
 wxMemoryDC::~wxMemoryDC()
@@ -56,6 +71,10 @@ void wxMemoryDC::SelectObject( const wxBitmap& bitmap )
             m_window = m_selected.GetBitmap();
         }
 
+#ifdef __WXGTK20__
+        m_selected.PurgeOtherRepresentations(wxBitmap::Pixmap);
+#endif
+
         m_isMemDC = TRUE;
 
         SetUpDC();
@@ -67,44 +86,51 @@ void wxMemoryDC::SelectObject( const wxBitmap& bitmap )
     }
 }
 
-void wxMemoryDC::SetPen( const wxPen &pen )
+void wxMemoryDC::SetPen( const wxPen& penOrig )
 {
-    if (m_selected.Ok() && m_selected.GetBitmap() && (*wxTRANSPARENT_PEN != pen))
+    wxPen pen( penOrig );
+    if ( m_selected.Ok() &&
+            m_selected.GetBitmap() &&
+                (pen != *wxTRANSPARENT_PEN) )
     {
-        if (*wxWHITE_PEN == pen)
-            wxWindowDC::SetPen( *wxBLACK_PEN );
-        else
-            wxWindowDC::SetPen( *wxWHITE_PEN );
+        pen.SetColour( pen.GetColour() == *wxWHITE ? *wxBLACK : *wxWHITE );
     }
-    else
-    {
-        wxWindowDC::SetPen( pen );
-    }
+
+    wxWindowDC::SetPen( pen );
 }
 
-void wxMemoryDC::SetBrush( const wxBrush &brush )
+void wxMemoryDC::SetBrush( const wxBrush& brushOrig )
 {
-    if (m_selected.Ok() && m_selected.GetBitmap() && (*wxTRANSPARENT_BRUSH != brush))
+    wxBrush brush( brushOrig );
+    if ( m_selected.Ok() &&
+            m_selected.GetBitmap() &&
+                (brush != *wxTRANSPARENT_BRUSH) )
     {
-        if (*wxWHITE_BRUSH == brush)
-            wxWindowDC::SetBrush( *wxBLACK_BRUSH );
-        else
-            wxWindowDC::SetBrush( *wxWHITE_BRUSH );
+        brush.SetColour( brush.GetColour() == *wxWHITE ? *wxBLACK : *wxWHITE);
     }
-    else
-    {
-        wxWindowDC::SetBrush( brush );
-    }
+
+    wxWindowDC::SetBrush( brush );
 }
 
-void wxMemoryDC::SetTextForeground( const wxColour &col )
+void wxMemoryDC::SetBackground( const wxBrush& brushOrig ) 
 {
-    if (m_selected.Ok() && m_selected.GetBitmap())
+    wxBrush brush(brushOrig);
+
+    if ( m_selected.Ok() &&
+            m_selected.GetBitmap() &&
+                (brush != *wxTRANSPARENT_BRUSH) )
     {
-        if (col == *wxWHITE)
-            wxWindowDC::SetTextForeground( *wxBLACK );
-        else
-            wxWindowDC::SetTextForeground( *wxWHITE );
+        brush.SetColour( brush.GetColour() == *wxWHITE ? *wxBLACK : *wxWHITE );
+    }
+
+    wxWindowDC::SetBackground( brush );
+}
+
+void wxMemoryDC::SetTextForeground( const wxColour& col )
+{
+    if ( m_selected.Ok() && m_selected.GetBitmap() )
+    {
+        wxWindowDC::SetTextForeground( col == *wxWHITE ? *wxBLACK : *wxWHITE);
     }
     else
     {
@@ -116,10 +142,7 @@ void wxMemoryDC::SetTextBackground( const wxColour &col )
 {
     if (m_selected.Ok() && m_selected.GetBitmap())
     {
-        if (col == *wxWHITE)
-            wxWindowDC::SetTextBackground( *wxBLACK );
-        else
-            wxWindowDC::SetTextBackground( *wxWHITE );
+        wxWindowDC::SetTextBackground( col == *wxWHITE ? *wxBLACK : *wxWHITE );
     }
     else
     {

@@ -7,7 +7,7 @@ A wxWidgets application does not have a {\it main} procedure; the equivalent is 
 \rtfsp{\it OnInit} will usually create a top window as a bare minimum.
 
 Unlike in earlier versions of wxWidgets, OnInit does not return a frame. Instead it
-returns a boolean value which indicates whether processing should continue (TRUE) or not (FALSE).
+returns a boolean value which indicates whether processing should continue (true) or not (false).
 You call \helpref{wxApp::SetTopWindow}{wxappsettopwindow} to let wxWidgets know
 about the top window.
 
@@ -22,7 +22,7 @@ is to explicitly delete child frames in the top-level frame's \helpref{wxCloseEv
 handler.
 
 In emergencies the \helpref{wxExit}{wxexit} function can be called to kill the
-application however normally the applications shuts down automatically, 
+application however normally the application shuts down automatically, 
 \helpref{see below}{wxappshutdownoverview}.
 
 An example of defining an application follows:
@@ -40,10 +40,10 @@ bool DerivedApp::OnInit()
 {
   wxFrame *the_frame = new wxFrame(NULL, ID_MYFRAME, argv[0]);
   ...
-  the_frame->Show(TRUE);
+  the_frame->Show(true);
   SetTopWindow(the_frame);
 
-  return TRUE;
+  return true;
 }
 \end{verbatim}
 
@@ -54,7 +54,9 @@ because required global initialization may not have been performed at applicatio
 construction time.
 
 You can also use DECLARE\_APP(appClass) in a header file to declare the wxGetApp function which returns
-a reference to the application object.
+a reference to the application object. Otherwise you can only use the global 
+\texttt{wxTheApp} pointer which is of type \texttt{wxApp *}.
+
 
 \subsection{Application shutdown}\label{wxappshutdownoverview}
 
@@ -71,9 +73,9 @@ terminates when this dialog -- which is the last top level window for the
 moment -- is closed.
 
 
-Another aspect of the application shutdown is the \helpref{OnExit}{wxapponexit} 
+Another aspect of the application shutdown is \helpref{OnExit}{wxapponexit} 
 which is called when the application exits but {\it before} wxWidgets cleans up
-its internal structures. Your should delete all wxWidgets object that your
+its internal structures. You should delete all wxWidgets object that you
 created by the time OnExit finishes. In particular, do {\bf not} destroy them
 from application class' destructor!
 

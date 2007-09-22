@@ -3,7 +3,7 @@
 // Purpose:
 // Date: 08/11/1999
 // Author: Guilhem Lavaux <lavaux@easynet.fr> (C) 1999
-// CVSID: $Id: sndwav.h,v 1.2 2000/06/04 08:38:36 GL Exp $
+// CVSID: $Id: sndwav.h,v 1.3 2003/08/03 17:10:09 VS Exp $
 // --------------------------------------------------------------------------
 #ifndef _WX_SNDWAV_H
 #define _WX_SNDWAV_H
@@ -16,6 +16,7 @@
 #include "wx/string.h"
 #include "wx/stream.h"
 #include "wx/datstrm.h"
+#include "wx/mmedia/defs.h"
 #include "wx/mmedia/sndbase.h"
 #include "wx/mmedia/sndcodec.h"
 #include "wx/mmedia/sndfile.h"

@@ -4,9 +4,9 @@
 // Author:      Vadim Zeitlin
 // Modified by:
 // Created:     23.07.99
-// RCS-ID:      $Id: numdlgg.cpp,v 1.20 2001/06/26 20:59:13 VZ Exp $
+// RCS-ID:      $Id: numdlgg.cpp,v 1.34 2004/09/28 17:29:37 ABX Exp $
 // Copyright:   (c) Vadim Zeitlin
-// Licence:     wxWindows license
+// Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
 
 // ============================================================================
@@ -17,7 +17,7 @@
 // headers
 // ----------------------------------------------------------------------------
 
-#ifdef __GNUG__
+#if defined(__GNUG__) && !defined(NO_GCC_PRAGMA)
     #pragma implementation "numdlgg.cpp"
 #endif
 
@@ -46,46 +46,31 @@
   #include "wx/statline.h"
 #endif
 
-#if !defined(__WIN16__) && wxUSE_SPINCTRL
+#if wxUSE_SPINCTRL
 #include "wx/spinctrl.h"
 #endif
 
 // this is where wxGetNumberFromUser() is declared
-#include "wx/textdlg.h"
+#include "wx/numdlg.h"
 
 #if !wxUSE_SPINCTRL
     // wxTextCtrl will do instead of wxSpinCtrl if we don't have it
     #define wxSpinCtrl wxTextCtrl
 #endif
 
-// ----------------------------------------------------------------------------
-// private classes
-// ----------------------------------------------------------------------------
+// ---------------------------------------------------------------------------
+// macros
+// ---------------------------------------------------------------------------
 
-class WXDLLEXPORT wxNumberEntryDialog : public wxDialog
-{
-public:
-    wxNumberEntryDialog(wxWindow *parent,
-                        const wxString& message,
-                        const wxString& prompt,
-                        const wxString& caption,
-                        long value, long min, long max,
-                        const wxPoint& pos);
+/* Macro for avoiding #ifdefs when value have to be different depending on size of
+   device we display on - take it from something like wxDesktopPolicy in the future
+ */
 
-    long GetValue() const { return m_value; }
-
-    // implementation only
-    void OnOK(wxCommandEvent& event);
-    void OnCancel(wxCommandEvent& event);
-
-protected:
-    wxSpinCtrl *m_spinctrl;
-
-    long m_value, m_min, m_max;
-
-private:
-    DECLARE_EVENT_TABLE()
-};
+#if defined(__SMARTPHONE__)
+    #define wxLARGESMALL(large,small) small
+#else
+    #define wxLARGESMALL(large,small) large
+#endif
 
 // ============================================================================
 // implementation
@@ -100,6 +85,8 @@ BEGIN_EVENT_TABLE(wxNumberEntryDialog, wxDialog)
     EVT_BUTTON(wxID_CANCEL, wxNumberEntryDialog::OnCancel)
 END_EVENT_TABLE()
 
+IMPLEMENT_CLASS(wxNumberEntryDialog, wxDialog)
+
 wxNumberEntryDialog::wxNumberEntryDialog(wxWindow *parent,
                                          const wxString& message,
                                          const wxString& prompt,
@@ -108,9 +95,8 @@ wxNumberEntryDialog::wxNumberEntryDialog(wxWindow *parent,
                                          long min,
                                          long max,
                                          const wxPoint& pos)
-                   : wxDialog(parent, -1, caption,
-                              pos, wxDefaultSize,
-                              wxDEFAULT_DIALOG_STYLE | wxDIALOG_MODAL )
+                   : wxDialog(parent, wxID_ANY, caption,
+                              pos, wxDefaultSize)
 {
     m_value = value;
     m_max = max;
@@ -127,34 +113,44 @@ wxNumberEntryDialog::wxNumberEntryDialog(wxWindow *parent,
     wxBoxSizer *inputsizer = new wxBoxSizer( wxHORIZONTAL );
     // prompt if any
     if (!prompt.IsEmpty())
-        inputsizer->Add( new wxStaticText( this, -1, prompt ), 0, wxCENTER | wxLEFT, 10 );
+        inputsizer->Add( new wxStaticText( this, wxID_ANY, prompt ), 0, wxCENTER | wxLEFT, 10 );
     // spin ctrl
     wxString valStr;
-    valStr.Printf(wxT("%lu"), m_value);
-    m_spinctrl = new wxSpinCtrl(this, -1, valStr, wxDefaultPosition, wxSize( 140, -1 ) );
-#if !defined(__WIN16__) && wxUSE_SPINCTRL
+    valStr.Printf(wxT("%ld"), m_value);
+    m_spinctrl = new wxSpinCtrl(this, wxID_ANY, valStr, wxDefaultPosition, wxSize( 140, wxDefaultCoord ) );
+#if wxUSE_SPINCTRL
     m_spinctrl->SetRange((int)m_min, (int)m_max);
 #endif
     inputsizer->Add( m_spinctrl, 1, wxCENTER | wxLEFT | wxRIGHT, 10 );
     // add both
     topsizer->Add( inputsizer, 1, wxEXPAND | wxLEFT|wxRIGHT, 5 );
 
+    // smart phones does not support or do not waste space for wxButtons
+#ifdef __SMARTPHONE__
+
+    SetRightMenu(wxID_CANCEL, _("Cancel"));
+
+#else // __SMARTPHONE__/!__SMARTPHONE__
+
 #if wxUSE_STATLINE
     // 3) static line
-    topsizer->Add( new wxStaticLine( this, -1 ), 0, wxEXPAND | wxLEFT|wxRIGHT|wxTOP, 10 );
+    topsizer->Add( new wxStaticLine( this, wxID_ANY ), 0, wxEXPAND | wxLEFT|wxRIGHT|wxTOP, 10 );
 #endif
 
     // 4) buttons
     topsizer->Add( CreateButtonSizer( wxOK|wxCANCEL ), 0, wxCENTRE | wxALL, 10 );
 
+#endif // !__SMARTPHONE__
+
     SetSizer( topsizer );
-    SetAutoLayout( TRUE );
+    SetAutoLayout( true );
 
     topsizer->SetSizeHints( this );
     topsizer->Fit( this );
 
     Centre( wxBOTH );
 
+    m_spinctrl->SetSelection(-1, -1);
     m_spinctrl->SetFocus();
 
     wxEndBusyCursor();
@@ -165,7 +161,7 @@ void wxNumberEntryDialog::OnOK(wxCommandEvent& WXUNUSED(event))
 #if !wxUSE_SPINCTRL
     wxString tmp = m_spinctrl->GetValue();
     if ( wxSscanf(tmp, _T("%ld"), &m_value) != 1 )
-        m_value = -1;
+        EndModal(wxID_CANCEL);
     else
 #else
     m_value = m_spinctrl->GetValue();
@@ -173,7 +169,7 @@ void wxNumberEntryDialog::OnOK(wxCommandEvent& WXUNUSED(event))
     if ( m_value < m_min || m_value > m_max )
     {
         // not a number or out of range
-        m_value = -1;
+        EndModal(wxID_CANCEL);
     }
 
     EndModal(wxID_OK);
@@ -181,8 +177,6 @@ void wxNumberEntryDialog::OnOK(wxCommandEvent& WXUNUSED(event))
 
 void wxNumberEntryDialog::OnCancel(wxCommandEvent& WXUNUSED(event))
 {
-    m_value = -1;
-
     EndModal(wxID_CANCEL);
 }
 
@@ -203,9 +197,10 @@ long wxGetNumberFromUser(const wxString& msg,
 {
     wxNumberEntryDialog dialog(parent, msg, prompt, title,
                                value, min, max, pos);
-    (void)dialog.ShowModal();
-
+    if (dialog.ShowModal() == wxID_OK)
     return dialog.GetValue();
+
+    return -1;
 }
 
 #endif // wxUSE_NUMBERDLG

@@ -4,8 +4,8 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     01/02/97
-// RCS-ID:      $Id: gauge95.cpp,v 1.24.2.1 2003/05/07 08:36:35 JS Exp $
-// Copyright:   (c) Julian Smart and Markus Holzem
+// RCS-ID:      $Id: gauge95.cpp,v 1.47 2004/08/26 08:46:18 ABX Exp $
+// Copyright:   (c) Julian Smart
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
 
@@ -17,7 +17,7 @@
 // headers
 // ----------------------------------------------------------------------------
 
-#ifdef __GNUG__
+#if defined(__GNUG__) && !defined(NO_GCC_PRAGMA)
     #pragma implementation "gauge95.h"
 #endif
 
@@ -25,19 +25,19 @@
 #include "wx/wxprec.h"
 
 #ifdef __BORLANDC__
-#pragma hdrstop
+    #pragma hdrstop
 #endif
 
 #ifndef WX_PRECOMP
     #include "wx/defs.h"
 #endif
 
-#if wxUSE_GAUGE && defined(__WIN95__)
+#if wxUSE_GAUGE
 
-#include "wx/msw/gauge95.h"
+#include "wx/gauge.h"
 #include "wx/msw/private.h"
 
-#if defined(__WIN95__) && !((defined(__GNUWIN32_OLD__) || defined(__TWIN32__)) && !defined(__CYGWIN10__))
+#if !(defined(__GNUWIN32_OLD__) && !defined(__CYGWIN10__))
     #include <commctrl.h>
 #endif
 
@@ -66,138 +66,159 @@
 // wxWin macros
 // ----------------------------------------------------------------------------
 
+#if wxUSE_EXTENDED_RTTI
+WX_DEFINE_FLAGS( wxGaugeStyle )
+
+wxBEGIN_FLAGS( wxGaugeStyle )
+    // new style border flags, we put them first to
+    // use them for streaming out
+    wxFLAGS_MEMBER(wxBORDER_SIMPLE)
+    wxFLAGS_MEMBER(wxBORDER_SUNKEN)
+    wxFLAGS_MEMBER(wxBORDER_DOUBLE)
+    wxFLAGS_MEMBER(wxBORDER_RAISED)
+    wxFLAGS_MEMBER(wxBORDER_STATIC)
+    wxFLAGS_MEMBER(wxBORDER_NONE)
+
+    // old style border flags
+    wxFLAGS_MEMBER(wxSIMPLE_BORDER)
+    wxFLAGS_MEMBER(wxSUNKEN_BORDER)
+    wxFLAGS_MEMBER(wxDOUBLE_BORDER)
+    wxFLAGS_MEMBER(wxRAISED_BORDER)
+    wxFLAGS_MEMBER(wxSTATIC_BORDER)
+    wxFLAGS_MEMBER(wxBORDER)
+
+    // standard window styles
+    wxFLAGS_MEMBER(wxTAB_TRAVERSAL)
+    wxFLAGS_MEMBER(wxCLIP_CHILDREN)
+    wxFLAGS_MEMBER(wxTRANSPARENT_WINDOW)
+    wxFLAGS_MEMBER(wxWANTS_CHARS)
+    wxFLAGS_MEMBER(wxFULL_REPAINT_ON_RESIZE)
+    wxFLAGS_MEMBER(wxALWAYS_SHOW_SB )
+    wxFLAGS_MEMBER(wxVSCROLL)
+    wxFLAGS_MEMBER(wxHSCROLL)
+
+    wxFLAGS_MEMBER(wxGA_HORIZONTAL)
+    wxFLAGS_MEMBER(wxGA_VERTICAL)
+    wxFLAGS_MEMBER(wxGA_PROGRESSBAR)
+    wxFLAGS_MEMBER(wxGA_SMOOTH)
+
+wxEND_FLAGS( wxGaugeStyle )
+
+IMPLEMENT_DYNAMIC_CLASS_XTI(wxGauge, wxControl,"wx/gauge.h")
+
+wxBEGIN_PROPERTIES_TABLE(wxGauge95)
+    wxPROPERTY( Value , int , SetValue, GetValue, 0 , 0 /*flags*/ , wxT("Helpstring") , wxT("group"))
+    wxPROPERTY( Range , int , SetRange, GetRange, 0 , 0 /*flags*/ , wxT("Helpstring") , wxT("group"))
+    wxPROPERTY( ShadowWidth , int , SetShadowWidth, GetShadowWidth, 0 , 0 /*flags*/ , wxT("Helpstring") , wxT("group"))
+    wxPROPERTY( BezelFace , int , SetBezelFace, GetBezelFace, 0 , 0 /*flags*/ , wxT("Helpstring") , wxT("group"))
+    wxPROPERTY_FLAGS( WindowStyle , wxGaugeStyle , long , SetWindowStyleFlag , GetWindowStyleFlag , EMPTY_MACROVALUE , 0 /*flags*/ , wxT("Helpstring") , wxT("group")) // style
+wxEND_PROPERTIES_TABLE()
+
+wxBEGIN_HANDLERS_TABLE(wxGauge95)
+wxEND_HANDLERS_TABLE()
+
+wxCONSTRUCTOR_6( wxGauge95 , wxWindow* , Parent , wxWindowID , Id , int , Range , wxPoint , Position , wxSize , Size , long , WindowStyle )
+#else
 IMPLEMENT_DYNAMIC_CLASS(wxGauge95, wxControl)
+#endif
 
 // ============================================================================
-// implementation
+// wxGauge95 implementation
 // ============================================================================
 
-bool wxGauge95::Create(wxWindow *parent, wxWindowID id,
-           int range,
-           const wxPoint& pos,
-           const wxSize& size,
-           long style,
-           const wxValidator& validator,
-           const wxString& name)
+// ----------------------------------------------------------------------------
+// wxGauge95 creation
+// ----------------------------------------------------------------------------
+
+bool wxGauge95::Create(wxWindow *parent,
+                       wxWindowID id,
+                       int range,
+                       const wxPoint& pos,
+                       const wxSize& size,
+                       long style,
+                       const wxValidator& validator,
+                       const wxString& name)
 {
-  SetName(name);
-#if wxUSE_VALIDATORS
-  SetValidator(validator);
-#endif // wxUSE_VALIDATORS
+    if ( !CreateControl(parent, id, pos, size, style, validator, name) )
+        return false;
 
-  if (parent) parent->AddChild(this);
-  m_rangeMax = range;
-  m_gaugePos = 0;
+    if ( !MSWCreateControl(PROGRESS_CLASS, wxEmptyString, pos, size) )
+        return false;
 
-  m_windowStyle = style;
+    SetRange(range);
 
-  if ( id == -1 )
-      m_windowId = (int)NewControlId();
-  else
-      m_windowId = id;
-
-  int x = pos.x;
-  int y = pos.y;
-  int width = size.x;
-  int height = size.y;
-
-  WXDWORD exStyle = 0;
-  long msFlags = MSWGetStyle(style, & exStyle) ;
-
-  if (m_windowStyle & wxGA_VERTICAL)
-    msFlags |= PBS_VERTICAL;
-
-  if (m_windowStyle & wxGA_SMOOTH)
-    msFlags |= PBS_SMOOTH;
-
-  HWND wx_button =
-      CreateWindowEx(exStyle, PROGRESS_CLASS, NULL, msFlags,
-                    0, 0, 0, 0, (HWND) parent->GetHWND(), (HMENU)m_windowId,
-                    wxGetInstance(), NULL);
-
-  m_hWnd = (WXHWND)wx_button;
-
-  SetBackgroundColour(parent->GetBackgroundColour());
-  SetForegroundColour(parent->GetForegroundColour());
-
-  // Subclass again for purposes of dialog editing mode
-  SubclassWin((WXHWND) wx_button);
-
-  SendMessage((HWND) GetHWND(), PBM_SETRANGE, 0, MAKELPARAM(0, range));
-
-  SetFont(parent->GetFont());
-
-  if (width == -1)
-    width = 50;
-  if (height == -1)
-    height = 28;
-  SetSize(x, y, width, height);
-
-  ShowWindow((HWND) GetHWND(), SW_SHOW);
-
-  return TRUE;
+    return true;
 }
 
-void wxGauge95::SetShadowWidth(int WXUNUSED(w))
+WXDWORD wxGauge95::MSWGetStyle(long style, WXDWORD *exstyle) const
 {
+    WXDWORD msStyle = wxControl::MSWGetStyle(style, exstyle);
+
+    if ( style & wxGA_VERTICAL )
+        msStyle |= PBS_VERTICAL;
+
+    if ( style & wxGA_SMOOTH )
+        msStyle |= PBS_SMOOTH;
+
+    return msStyle;
 }
 
-void wxGauge95::SetBezelFace(int WXUNUSED(w))
+// ----------------------------------------------------------------------------
+// wxGauge95 geometry
+// ----------------------------------------------------------------------------
+
+wxSize wxGauge95::DoGetBestSize() const
 {
+    // VZ: no idea where does 28 come from, it was there before my changes and
+    //     as nobody ever complained I guess we can leave it...
+    if (HasFlag(wxGA_VERTICAL))
+        return wxSize(28, 100);
+    else
+        return wxSize(100, 28);
 }
+
+// ----------------------------------------------------------------------------
+// wxGauge95 setters
+// ----------------------------------------------------------------------------
 
 void wxGauge95::SetRange(int r)
 {
-  m_rangeMax = r;
+    m_rangeMax = r;
 
-  SendMessage((HWND) GetHWND(), PBM_SETRANGE, 0, MAKELPARAM(0, r));
+#ifdef PBM_SETRANGE32
+    ::SendMessage(GetHwnd(), PBM_SETRANGE32, 0, r);
+#else // !PBM_SETRANGE32
+    // fall back to PBM_SETRANGE (limited to 16 bits)
+    ::SendMessage(GetHwnd(), PBM_SETRANGE, 0, MAKELPARAM(0, r));
+#endif // PBM_SETRANGE32/!PBM_SETRANGE32
 }
 
 void wxGauge95::SetValue(int pos)
 {
-  m_gaugePos = pos;
+    m_gaugePos = pos;
 
-  SendMessage((HWND) GetHWND(), PBM_SETPOS, pos, 0);
-}
-
-int wxGauge95::GetShadowWidth() const
-{
-  return 0;
-}
-
-int wxGauge95::GetBezelFace() const
-{
-  return 0;
-}
-
-int wxGauge95::GetRange() const
-{
-  return m_rangeMax;
-}
-
-int wxGauge95::GetValue() const
-{
-  return m_gaugePos;
+    ::SendMessage(GetHwnd(), PBM_SETPOS, pos, 0);
 }
 
 bool wxGauge95::SetForegroundColour(const wxColour& col)
 {
     if ( !wxControl::SetForegroundColour(col) )
-        return FALSE;
+        return false;
 
-    SendMessage(GetHwnd(), PBM_SETBARCOLOR, 0, (LPARAM)wxColourToRGB(col));
+    ::SendMessage(GetHwnd(), PBM_SETBARCOLOR, 0, (LPARAM)wxColourToRGB(col));
 
-    return TRUE;
+    return true;
 }
 
 bool wxGauge95::SetBackgroundColour(const wxColour& col)
 {
     if ( !wxControl::SetBackgroundColour(col) )
-        return FALSE;
+        return false;
 
-    SendMessage(GetHwnd(), PBM_SETBKCOLOR, 0, (LPARAM)wxColourToRGB(col));
+    ::SendMessage(GetHwnd(), PBM_SETBKCOLOR, 0, (LPARAM)wxColourToRGB(col));
 
-    return TRUE;
+    return true;
 }
 
 #endif // wxUSE_GAUGE
+

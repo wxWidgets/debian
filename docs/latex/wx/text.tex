@@ -2,8 +2,12 @@
 
 \section{\class{wxTextAttr}}\label{wxtextattr}
 
-wxTextAttr represents the attributes, or style, for a range of text in a\rtfsp
+wxTextAttr represents the character and paragraph attributes, or style, for a range of text in a\rtfsp
 \helpref{wxTextCtrl}{wxtextctrl}.
+
+When setting up a wxTextAttr object, pass a bitlist mask to SetFlags to indicate
+which style elements should be changed. As a convenience, when you call a
+setter such as SetFont, the relevant bit will be set.
 
 \wxheading{Derived from}
 
@@ -13,60 +17,244 @@ No base class
 
 <wx/textctrl.h>
 
+\wxheading{Typedefs}
+
+\texttt{wxTextPos} is the type containing the index of a position in a text
+control. \texttt{wxTextCoord} contains the index of a column or a row in the
+control.
+
+Note that although both of these types should probably have been unsigned, due
+to backwards compatibility reasons, are defined as \texttt{long} currently.
+Their use (instead of plain \texttt{long}) is still encouraged as it makes the
+code more readable.
+
+\wxheading{Constants}
+
+The following values can be passed to SetAlignment to determine
+paragraph alignment.
+
+{\small
+\begin{verbatim}
+enum wxTextAttrAlignment
+{
+    wxTEXT_ALIGNMENT_DEFAULT,
+    wxTEXT_ALIGNMENT_LEFT,
+    wxTEXT_ALIGNMENT_CENTRE,
+    wxTEXT_ALIGNMENT_CENTER = wxTEXT_ALIGNMENT_CENTRE,
+    wxTEXT_ALIGNMENT_RIGHT,
+    wxTEXT_ALIGNMENT_JUSTIFIED
+};
+\end{verbatim}
+}
+
+These values are passed in a bitlist to SetFlags to determine
+what attributes will be considered when setting the attributes
+for a text control.
+
+{\small
+\begin{verbatim}
+#define wxTEXT_ATTR_TEXT_COLOUR             0x0001
+#define wxTEXT_ATTR_BACKGROUND_COLOUR       0x0002
+#define wxTEXT_ATTR_FONT_FACE               0x0004
+#define wxTEXT_ATTR_FONT_SIZE               0x0008
+#define wxTEXT_ATTR_FONT_WEIGHT             0x0010
+#define wxTEXT_ATTR_FONT_ITALIC             0x0020
+#define wxTEXT_ATTR_FONT_UNDERLINE          0x0040
+#define wxTEXT_ATTR_FONT \
+  wxTEXT_ATTR_FONT_FACE | wxTEXT_ATTR_FONT_SIZE | wxTEXT_ATTR_FONT_WEIGHT \
+| wxTEXT_ATTR_FONT_ITALIC | wxTEXT_ATTR_FONT_UNDERLINE
+#define wxTEXT_ATTR_ALIGNMENT               0x0080
+#define wxTEXT_ATTR_LEFT_INDENT             0x0100
+#define wxTEXT_ATTR_RIGHT_INDENT            0x0200
+#define wxTEXT_ATTR_TABS                    0x0400
+\end{verbatim}
+}
+
+The values below are the possible return codes of the 
+\helpref{HitTest}{wxtextctrlhittest} method:
+{\small
+\begin{verbatim}
+// the point asked is ...
+enum wxTextCtrlHitTestResult
+{
+    wxTE_HT_UNKNOWN = -2,   // this means HitTest() is simply not implemented
+    wxTE_HT_BEFORE,         // either to the left or upper
+    wxTE_HT_ON_TEXT,        // directly on
+    wxTE_HT_BELOW,          // below [the last line]
+    wxTE_HT_BEYOND          // after [the end of line]
+};
+// ... the character returned
+\end{verbatim}
+}
+
+
 \latexignore{\rtfignore{\wxheading{Members}}}
+
 
 \membersection{wxTextAttr::wxTextAttr}\label{wxtextattrctor}
 
 \func{}{wxTextAttr}{\void}
 
-\func{}{wxTextAttr}{\param{const wxColour\& }{colText}, \param{const wxColour\& }{colBack = wxNullColour}, \param{const wxFont\& }{font = wxNullFont}}
+\func{}{wxTextAttr}{\param{const wxColour\& }{colText}, \param{const wxColour\& }{colBack = wxNullColour},
+ \param{const wxFont\& }{font = wxNullFont}, \param{wxTextAttrAlignment }{alignment = wxTEXT\_ALIGNMENT\_DEFAULT}}
 
-The constructors initialize one or more of the text foreground and background
-colours and font. The values not initialized in the constructor can be set
+The constructors initialize one or more of the text foreground colour, background
+colour, font, and alignment. The values not initialized in the constructor can be set
 later, otherwise \helpref{wxTextCtrl::SetStyle}{wxtextctrlsetstyle} will use
 the default values for them.
 
-\membersection{wxTextAttr::GetBackgroundColour}
+
+\membersection{wxTextAttr::GetAlignment}\label{wxtextattrgetalignment}
+
+\constfunc{wxTextAttrAlignment}{GetAlignment}{\void}
+
+Returns the paragraph alignment.
+
+
+\membersection{wxTextAttr::GetBackgroundColour}\label{wxtextattrgetbackgroundcolour}
 
 \constfunc{const wxColour\&}{GetBackgroundColour}{\void}
 
 Return the background colour specified by this attribute.
 
-\membersection{wxTextAttr::GetFont}
+
+\membersection{wxTextAttr::GetFont}\label{wxtextattrgetfont}
 
 \constfunc{const wxFont\&}{GetFont}{\void}
 
 Return the text font specified by this attribute.
 
-\membersection{wxTextAttr::GetTextColour}
+
+\membersection{wxTextAttr::GetLeftIndent}\label{wxtextattrgetleftindent}
+
+\constfunc{int}{GetLeftIndent}{\void}
+
+Returns the left indent in tenths of a millimetre.
+
+
+\membersection{wxTextAttr::GetLeftSubIndent}\label{wxtextattrgetleftsubindent}
+
+\constfunc{int}{GetLeftSubIndent}{\void}
+
+Returns the left sub indent for all lines but the first line in a paragraph in
+tenths of a millimetre.
+
+
+\membersection{wxTextAttr::GetRightIndent}\label{wxtextattrgetrightindent}
+
+\constfunc{int}{GetRightIndent}{\void}
+
+Returns the right indent in tenths of a millimetre.
+
+
+\membersection{wxTextAttr::GetTabs}\label{wxtextattrgettabs}
+
+\constfunc{const wxArrayInt\&}{GetTabs}{\void}
+
+Returns the array of integers representing the tab stops. Each
+array element specifies the tab stop in tenths of a millimetre.
+
+
+\membersection{wxTextAttr::GetTextColour}\label{wxtextattrgettextcolour}
 
 \constfunc{const wxColour\&}{GetTextColour}{\void}
 
 Return the text colour specified by this attribute.
 
-\membersection{wxTextAttr::HasBackgroundColour}
+
+\membersection{wxTextAttr::HasBackgroundColour}\label{wxtextattrhasbackgroundcolour}
 
 \constfunc{bool}{HasBackgroundColour}{\void}
 
-Returns {\tt TRUE} if this style specifies the background colour to use.
+Returns {\tt true} if this style specifies the background colour to use.
 
-\membersection{wxTextAttr::HasFont}
+
+\membersection{wxTextAttr::HasFont}\label{wxtextattrhasfont}
 
 \constfunc{bool}{HasFont}{\void}
 
-Returns {\tt TRUE} if this style specifies the font to use.
+Returns {\tt true} if this style specifies the font to use.
 
-\membersection{wxTextAttr::HasTextColour}
+
+\membersection{wxTextAttr::HasTextColour}\label{wxtextattrhastextcolour}
 
 \constfunc{bool}{HasTextColour}{\void}
 
-Returns {\tt TRUE} if this style specifies the foreground colour to use.
+Returns {\tt true} if this style specifies the foreground colour to use.
 
-\membersection{wxTextAttr::IsDefault}
+
+\membersection{wxTextAttr::GetFlags}\label{wxtextattrgetflags}
+
+\func{long}{GetFlags}{\void}
+
+Returns a bitlist indicating which attributes will be set.
+
+
+\membersection{wxTextAttr::IsDefault}\label{wxtextattrisdefault}
 
 \constfunc{bool}{IsDefault}{\void}
 
-Returns {\tt TRUE} if this style specifies any non-default attributes.
+Returns {\tt true} if this style specifies any non-default attributes.
+
+
+\membersection{wxTextAttr::SetAlignment}\label{wxtextattrsetalignment}
+
+\func{void}{SetAlignment}{\param{wxTextAttrAlignment}{ alignment}}
+
+Sets the paragraph alignment.
+
+
+\membersection{wxTextAttr::SetBackgroundColour}\label{wxtextattrsetbackgroundcolour}
+
+\func{void}{SetBackgroundColour}{\param{const wxColour\& }{colour}}
+
+Sets the background colour.
+
+
+\membersection{wxTextAttr::SetFlags}\label{wxtextattrsetflags}
+
+\func{void}{SetFlags}{\param{long}{ flags}}
+
+Pass a bitlist indicating which attributes will be set.
+
+
+\membersection{wxTextAttr::SetFont}\label{wxtextattrsetfont}
+
+\func{void}{SetFont}{\param{const wxFont\&}{ font}}
+
+Sets the text font.
+
+
+\membersection{wxTextAttr::SetLeftIndent}\label{wxtextattrsetleftindent}
+
+\func{void}{SetLeftIndent}{\param{int }{indent}, \param{int }{subIndent = 0}}
+
+Sets the left indent in tenths of a millimetre.
+subIndent sets the indent for all lines but the first line in a paragraph 
+relative to the first line.
+
+
+\membersection{wxTextAttr::SetRightIndent}\label{wxtextattrsetrightindent}
+
+\func{void}{SetRightIndent}{\param{int }{indent}}
+
+Sets the right indent in tenths of a millimetre.
+
+
+\membersection{wxTextAttr::SetTabs}\label{wxtextattrsettabs}
+
+\func{void}{SetTabs}{\param{const wxArrayInt\&}{ tabs}}
+
+Sets the array of integers representing the tab stops. Each
+array element specifies the tab stop in tenths of a millimetre.
+
+
+\membersection{wxTextAttr::SetTextColour}\label{wxtextattrsettextcolour}
+
+\func{void}{SetTextColour}{\param{const wxColour\& }{colour}}
+
+Sets the text colour.
+
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%% wxTextCtrl %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
@@ -92,18 +280,18 @@ streambuf\\
 \twocolwidtha{5cm}
 \begin{twocollist}\itemsep=0pt
 \twocolitem{\windowstyle{wxTE\_PROCESS\_ENTER}}{The control will generate
-the message wxEVENT\_TYPE\_TEXT\_ENTER\_COMMAND (otherwise pressing <Enter> is
-either processed internally by the control or used for navigation between
+the event wxEVT\_COMMAND\_TEXT\_ENTER (otherwise pressing Enter key
+is either processed internally by the control or used for navigation between
 dialog controls).}
 \twocolitem{\windowstyle{wxTE\_PROCESS\_TAB}}{The control will receive
-EVT\_CHAR messages for TAB pressed - normally, TAB is used for passing to the
+wxEVT\_CHAR events for TAB pressed - normally, TAB is used for passing to the
 next control in a dialog instead. For the control created with this style,
 you can still use Ctrl-Enter to pass to the next control from the keyboard.}
 \twocolitem{\windowstyle{wxTE\_MULTILINE}}{The text control allows multiple lines.}
 \twocolitem{\windowstyle{wxTE\_PASSWORD}}{The text will be echoed as asterisks.}
 \twocolitem{\windowstyle{wxTE\_READONLY}}{The text will not be user-editable.}
 \twocolitem{\windowstyle{wxTE\_RICH}}{Use rich text control under Win32, this
-allows to have more than 64Kb of text in the control even under Win9x. This
+allows to have more than 64KB of text in the control even under Win9x. This
 style is ignored under other platforms.}
 \twocolitem{\windowstyle{wxTE\_RICH2}}{Use rich text control version 2.0 or 3.0
 under Win32, this style is ignored under other platforms}
@@ -113,17 +301,18 @@ under Win32 only and requires wxTE\_RICH.}
 \twocolitem{\windowstyle{wxTE\_NOHIDESEL}}{By default, the Windows text control
 doesn't show the selection when it doesn't have focus - use this style to force
 it to always show it. It doesn't do anything under other platforms.}
-\twocolitem{\windowstyle{wxHSCROLL}}{A horizontal scrollbar will be created. No effect under GTK+.}
-\twocolitem{\windowstyle{wxTE\_LEFT}}{The text control will be left-justified (default).}
-\twocolitem{\windowstyle{wxTE\_CENTRE}}{The text control will be centre-justified.}
-\twocolitem{\windowstyle{wxTE\_RIGHT}}{The text control will be right-justified.}
+\twocolitem{\windowstyle{wxHSCROLL}}{A horizontal scrollbar will be created and
+used, so that text won't be wrapped. No effect under GTK+.}
+\twocolitem{\windowstyle{wxTE\_LEFT}}{The text in the control will be left-justified (default).}
+\twocolitem{\windowstyle{wxTE\_CENTRE}}{The text in the control will be centered (currently wxMSW and wxGTK2 only).}
+\twocolitem{\windowstyle{wxTE\_RIGHT}}{The text in the control will be right-justified (currently wxMSW and wxGTK2 only).}
 \twocolitem{\windowstyle{wxTE\_DONTWRAP}}{Same as {\tt wxHSCROLL} style.}
 \twocolitem{\windowstyle{wxTE\_LINEWRAP}}{Wrap the lines too long to be shown entirely at any position (wxUniv only currently).}
 \twocolitem{\windowstyle{wxTE\_WORDWRAP}}{Wrap the lines too long to be shown entirely at word boundaries only (wxUniv only currently).}
 \end{twocollist}
 
 See also \helpref{window styles overview}{windowstyles} and
-\helpref{wxTextCtrl::wxTextCtrl}{wxtextctrlconstr}.
+\helpref{wxTextCtrl::wxTextCtrl}{wxtextctrlctor}.
 
 \wxheading{wxTextCtrl text format}
 
@@ -269,7 +458,8 @@ generated when the text changes. Notice that this event will always be sent
 when the text controls contents changes - whether this is due to user input or
 comes from the program itself (for example, if SetValue() is called)}
 \twocolitem{{\bf EVT\_TEXT\_ENTER(id, func)}}{Respond to a wxEVT\_COMMAND\_TEXT\_ENTER event,
-generated when enter is pressed in a single-line text control.}
+generated when enter is pressed in a text control (which must have
+wxTE\_PROCESS\_ENTER style for this event to be generated).}
 \twocolitem{{\bf EVT\_TEXT\_URL(id, func)}}{A mouse event occured over an URL
 in the text control (Win32 only)}
 \twocolitem{{\bf EVT\_TEXT\_MAXLEN(id, func)}}{User tried to enter more text
@@ -279,7 +469,8 @@ into the control than the limit set by
 
 \latexignore{\rtfignore{\wxheading{Members}}}
 
-\membersection{wxTextCtrl::wxTextCtrl}\label{wxtextctrlconstr}
+
+\membersection{wxTextCtrl::wxTextCtrl}\label{wxtextctrlctor}
 
 \func{}{wxTextCtrl}{\void}
 
@@ -328,11 +519,13 @@ visible.
 
 \helpref{wxTextCtrl::Create}{wxtextctrlcreate}, \helpref{wxValidator}{wxvalidator}
 
-\membersection{wxTextCtrl::\destruct{wxTextCtrl}}
+
+\membersection{wxTextCtrl::\destruct{wxTextCtrl}}\label{wxtextctrldtor}
 
 \func{}{\destruct{wxTextCtrl}}{\void}
 
 Destructor, destroying the text control.
+
 
 \membersection{wxTextCtrl::AppendText}\label{wxtextctrlappendtext}
 
@@ -353,39 +546,45 @@ the programmer should use \helpref{GetInsertionPoint}{wxtextctrlgetinsertionpoin
 
 \helpref{wxTextCtrl::WriteText}{wxtextctrlwritetext}
 
+
 \membersection{wxTextCtrl::CanCopy}\label{wxtextctrlcancopy}
 
 \func{virtual bool}{CanCopy}{\void}
 
-Returns {\tt TRUE} if the selection can be copied to the clipboard.
+Returns {\tt true} if the selection can be copied to the clipboard.
+
 
 \membersection{wxTextCtrl::CanCut}\label{wxtextctrlcancut}
 
 \func{virtual bool}{CanCut}{\void}
 
-Returns {\tt TRUE} if the selection can be cut to the clipboard.
+Returns {\tt true} if the selection can be cut to the clipboard.
+
 
 \membersection{wxTextCtrl::CanPaste}\label{wxtextctrlcanpaste}
 
 \func{virtual bool}{CanPaste}{\void}
 
-Returns {\tt TRUE} if the contents of the clipboard can be pasted into the
+Returns {\tt true} if the contents of the clipboard can be pasted into the
 text control. On some platforms (Motif, GTK) this is an approximation
-and returns {\tt TRUE} if the control is editable, {\tt FALSE} otherwise.
+and returns {\tt true} if the control is editable, {\tt false} otherwise.
+
 
 \membersection{wxTextCtrl::CanRedo}\label{wxtextctrlcanredo}
 
 \func{virtual bool}{CanRedo}{\void}
 
-Returns {\tt TRUE} if there is a redo facility available and the last operation
+Returns {\tt true} if there is a redo facility available and the last operation
 can be redone.
+
 
 \membersection{wxTextCtrl::CanUndo}\label{wxtextctrlcanundo}
 
 \func{virtual bool}{CanUndo}{\void}
 
-Returns {\tt TRUE} if there is an undo facility available and the last operation
+Returns {\tt true} if there is an undo facility available and the last operation
 can be undone.
+
 
 \membersection{wxTextCtrl::Clear}\label{wxtextctrlclear}
 
@@ -396,11 +595,13 @@ Clears the text in the control.
 Note that this function will generate a {\tt wxEVT\_COMMAND\_TEXT\_UPDATED}
 event.
 
+
 \membersection{wxTextCtrl::Copy}\label{wxtextctrlcopy}
 
 \func{virtual void}{Copy}{\void}
 
 Copies the selected text to the clipboard under Motif and MS Windows.
+
 
 \membersection{wxTextCtrl::Create}\label{wxtextctrlcreate}
 
@@ -409,8 +610,9 @@ Copies the selected text to the clipboard under Motif and MS Windows.
 \param{long}{ style = 0}, \param{const wxValidator\& }{validator = wxDefaultValidator}, \param{const wxString\& }{name = wxTextCtrlNameStr}}
 
 Creates the text control for two-step construction. Derived classes
-should call or replace this function. See \helpref{wxTextCtrl::wxTextCtrl}{wxtextctrlconstr}\rtfsp
+should call or replace this function. See \helpref{wxTextCtrl::wxTextCtrl}{wxtextctrlctor}\rtfsp
 for further details.
+
 
 \membersection{wxTextCtrl::Cut}\label{wxtextctrlcut}
 
@@ -418,13 +620,15 @@ for further details.
 
 Copies the selected text to the clipboard and removes the selection.
 
-\membersection{wxTextCtrl::DiscardEdits}
+
+\membersection{wxTextCtrl::DiscardEdits}\label{wxtextctrldiscardedits}
 
 \func{void}{DiscardEdits}{\void}
 
 Resets the internal `modified' flag as if the current edits had been saved.
 
-\membersection{wxTextCtrl::EmulateKeyPress}
+
+\membersection{wxTextCtrl::EmulateKeyPress}\label{wxtextctrlemulatekeypress}
 
 \func{bool}{EmulateKeyPress}{\param{const wxKeyEvent\& }{event}}
 
@@ -433,10 +637,14 @@ inserted if the given key event had occured in the text control. The
 {\it event} object should be the same as the one passed to {\tt EVT\_KEY\_DOWN}
 handler previously by wxWidgets.
 
+Please note that this function doesn't currently work correctly for all keys
+under any platform but MSW.
+
 \wxheading{Return value}
 
-{\tt TRUE} if the event resulted in a change to the control, {\tt FALSE}
+{\tt true} if the event resulted in a change to the control, {\tt false}
 otherwise.
+
 
 \membersection{wxTextCtrl::GetDefaultStyle}\label{wxtextctrlgetdefaultstyle}
 
@@ -447,6 +655,7 @@ Returns the style currently used for the new text.
 \wxheading{See also}
 
 \helpref{SetDefaultStyle}{wxtextctrlsetdefaultstyle}
+
 
 \membersection{wxTextCtrl::GetInsertionPoint}\label{wxtextctrlgetinsertionpoint}
 
@@ -471,12 +680,14 @@ point or the zero character if the point is at the end of the control.
 \end{verbatim}
 }%
 
+
 \membersection{wxTextCtrl::GetLastPosition}\label{wxtextctrlgetlastposition}
 
 \constfunc{virtual long}{GetLastPosition}{\void}
 
 Returns the zero based index of the last position in the text control,
 which is equal to the number of characters in the control.
+
 
 \membersection{wxTextCtrl::GetLineLength}\label{wxtextctrlgetlinelength}
 
@@ -493,6 +704,7 @@ character(s).
 
 The length of the line, or -1 if {\it lineNo} was invalid.
 
+
 \membersection{wxTextCtrl::GetLineText}\label{wxtextctrlgetlinetext}
 
 \constfunc{wxString}{GetLineText}{\param{long}{ lineNo}}
@@ -507,6 +719,7 @@ any trailing newline character(s).
 \wxheading{Return value}
 
 The contents of the line.
+
 
 \membersection{wxTextCtrl::GetNumberOfLines}\label{wxtextctrlgetnumberoflines}
 
@@ -524,6 +737,7 @@ calculated by actually counting newline characters in the buffer. You
 may wish to avoid using functions that work with line numbers if you are
 working with controls that contain large amounts of text.
 
+
 \membersection{wxTextCtrl::GetRange}\label{wxtextctrlgetrange}
 
 \constfunc{virtual wxString}{GetRange}{\param{long}{ from}, \param{long}{ to}}
@@ -538,6 +752,7 @@ correspond to the indices in the string returned by
 representations ({\tt CR} or {\tt CR LF}) and so this method should be used to
 obtain the correct results instead of extracting parts of the entire value. It
 may also be more efficient, especially if the control contains a lot of data.
+
 
 \membersection{wxTextCtrl::GetSelection}\label{wxtextctrlgetselection}
 
@@ -565,12 +780,31 @@ consisting of the from and to values.}
 \perlnote{In wxPerl this method takes no parameter and returns a
 2-element list {\tt ( from, to )}.}
 
+
 \membersection{wxTextCtrl::GetStringSelection}\label{wxtextctrlgetstringselection}
 
 \func{virtual wxString}{GetStringSelection}{\void}
 
 Gets the text currently selected in the control. If there is no selection, the
 returned string is empty.
+
+
+\membersection{wxTextCtrl::GetStyle}\label{wxtextctrlgetstyle}
+
+\func{bool}{GetStyle}{\param{long }{position}, \param{wxTextAttr\& }{style}}
+
+Returns the style at this position in the text control. Not all platforms
+support this function.
+
+\wxheading{Return value}
+
+{\tt true} on success, {\tt false} if an error occured - it may also mean that
+the styles are not supported under this platform.
+
+\wxheading{See also}
+
+\helpref{wxTextCtrl::SetStyle}{wxtextctrlsetstyle}, \helpref{wxTextAttr}{wxtextattr}
+
 
 \membersection{wxTextCtrl::GetValue}\label{wxtextctrlgetvalue}
 
@@ -581,43 +815,67 @@ the lines will be separated by (Unix-style) $\backslash$n characters, even
 under Windows where they are separated by a $\backslash$r$\backslash$n
 sequence in the native control.
 
+
+\membersection{wxTextCtrl::HitTest}\label{wxtextctrlhittest}
+
+\constfunc{wxTextCtrlHitTestResult}{HitTest}{\param{const wxPoint\& }{pt}, \param{wxTextCoord }{*col}, \param{wxTextCoord }{*row}}
+
+This function finds the character at the specified position expressed in
+pixels. If the return code is not \texttt{wxTE\_HT\_UNKNOWN} the row and column
+of the character closest to this position are returned in the \arg{col} and 
+\arg{row} parameters (unless the pointers are {\tt NULL} which is allowed).
+
+Please note that this function is currently only implemented in wxUniv,
+wxMSW and wxGTK2 ports.
+
+\wxheading{See also}
+
+\helpref{PositionToXY}{wxtextctrlpositiontoxy}, \helpref{XYToPosition}{wxtextctrlxytoposition}
+
+\perlnote{In wxPerl this function takes only the position argument and
+returns a 3-element list \texttt{(result, col, row)}}.
+
 \membersection{wxTextCtrl::IsEditable}\label{wxtextctrliseditable}
 
 \constfunc{bool}{IsEditable}{\void}
 
-Returns {\tt TRUE} if the controls contents may be edited by user (note that it
+Returns {\tt true} if the controls contents may be edited by user (note that it
 always can be changed by the program), i.e. if the control hasn't been put in
 read-only mode by a previous call to 
 \helpref{SetEditable}{wxtextctrlseteditable}.
+
 
 \membersection{wxTextCtrl::IsModified}\label{wxtextctrlismodified}
 
 \constfunc{bool}{IsModified}{\void}
 
-Returns {\tt TRUE} if the text has been modified by user. Note that calling 
+Returns {\tt true} if the text has been modified by user. Note that calling 
 \helpref{SetValue}{wxtextctrlsetvalue} doesn't make the control modified.
+
 
 \membersection{wxTextCtrl::IsMultiLine}\label{wxtextctrlismultiline}
 
 \constfunc{bool}{IsMultiLine}{\void}
 
-Returns {\tt TRUE} if this is a multi line edit control and {\tt FALSE}
+Returns {\tt true} if this is a multi line edit control and {\tt false}
 otherwise.
 
 \wxheading{See also}
 
 \helpref{IsSingleLine}{wxtextctrlissingleline}
 
+
 \membersection{wxTextCtrl::IsSingleLine}\label{wxtextctrlissingleline}
 
 \constfunc{bool}{IsSingleLine}{\void}
 
-Returns {\tt TRUE} if this is a single line edit control and {\tt FALSE}
+Returns {\tt true} if this is a single line edit control and {\tt false}
 otherwise.
 
 \wxheading{See also}
 
 \helpref{IsMultiLine}{wxtextctrlissingleline}
+
 
 \membersection{wxTextCtrl::LoadFile}\label{wxtextctrlloadfile}
 
@@ -631,7 +889,7 @@ Loads and displays the named file, if it exists.
 
 \wxheading{Return value}
 
-{\tt TRUE} if successful, {\tt FALSE} otherwise.
+{\tt true} if successful, {\tt false} otherwise.
 
 % VZ: commenting this out as: (a) the docs are wrong (you can't replace
 %     anything), (b) wxTextCtrl doesn't have any OnChar() anyhow
@@ -663,6 +921,7 @@ Loads and displays the named file, if it exists.
 %% 
 %% \helpref{wxKeyEvent}{wxkeyevent}
 
+
 \membersection{wxTextCtrl::OnDropFiles}\label{wxtextctrlondropfiles}
 
 \func{void}{OnDropFiles}{\param{wxDropFilesEvent\& }{event}}
@@ -682,11 +941,13 @@ This is not implemented on non-Windows platforms.
 
 \helpref{wxDropFilesEvent}{wxdropfilesevent}
 
+
 \membersection{wxTextCtrl::Paste}\label{wxtextctrlpaste}
 
 \func{virtual void}{Paste}{\void}
 
 Pastes text from the clipboard to the text item.
+
 
 \membersection{wxTextCtrl::PositionToXY}\label{wxtextctrlpositiontoxy}
 
@@ -704,7 +965,7 @@ Converts given position to a zero-based column, line number pair.
 
 \wxheading{Return value}
 
-{\tt TRUE} on success, {\tt FALSE} on failure (most likely due to a too large position
+{\tt true} on success, {\tt false} on failure (most likely due to a too large position
 parameter).
 
 \wxheading{See also}
@@ -718,12 +979,14 @@ above.}
 \perlnote{In wxPerl this method only takes the {\tt pos} parameter, and
 returns a 2-element list {\tt ( x, y )}.}
 
+
 \membersection{wxTextCtrl::Redo}\label{wxtextctrlredo}
 
 \func{virtual void}{Redo}{\void}
 
 If there is a redo facility and the last operation can be redone, redoes the last operation. Does nothing
 if there is no redo facility.
+
 
 \membersection{wxTextCtrl::Remove}\label{wxtextctrlremove}
 
@@ -737,6 +1000,7 @@ the character at the last position.
 \docparam{from}{The first position.}
 
 \docparam{to}{The last position.}
+
 
 \membersection{wxTextCtrl::Replace}\label{wxtextctrlreplace}
 
@@ -753,6 +1017,7 @@ the character at the last position with the given text.
 
 \docparam{value}{The value to replace the existing text with.}
 
+
 \membersection{wxTextCtrl::SaveFile}\label{wxtextctrlsavefile}
 
 \func{bool}{SaveFile}{\param{const wxString\& }{ filename}}
@@ -765,7 +1030,8 @@ Saves the contents of the control in a text file.
 
 \wxheading{Return value}
 
-{\tt TRUE} if the operation was successful, {\tt FALSE} otherwise.
+{\tt true} if the operation was successful, {\tt false} otherwise.
+
 
 \membersection{wxTextCtrl::SetDefaultStyle}\label{wxtextctrlsetdefaultstyle}
 
@@ -790,12 +1056,13 @@ wouldn't change it at all).
 
 \wxheading{Return value}
 
-{\tt TRUE} on success, {\tt FALSE} if an error occured - may also mean that
+{\tt true} on success, {\tt false} if an error occured - may also mean that
 the styles are not supported under this platform.
 
 \wxheading{See also}
 
 \helpref{GetDefaultStyle}{wxtextctrlgetdefaultstyle}
+
 
 \membersection{wxTextCtrl::SetEditable}\label{wxtextctrlseteditable}
 
@@ -805,11 +1072,12 @@ Makes the text item editable or read-only, overriding the {\bf wxTE\_READONLY} f
 
 \wxheading{Parameters}
 
-\docparam{editable}{If {\tt TRUE}, the control is editable. If {\tt FALSE}, the control is read-only.}
+\docparam{editable}{If {\tt true}, the control is editable. If {\tt false}, the control is read-only.}
 
 \wxheading{See also}
 
 \helpref{IsEditable}{wxtextctrliseditable}
+
 
 \membersection{wxTextCtrl::SetInsertionPoint}\label{wxtextctrlsetinsertionpoint}
 
@@ -821,12 +1089,14 @@ Sets the insertion point at the given position.
 
 \docparam{pos}{Position to set.}
 
+
 \membersection{wxTextCtrl::SetInsertionPointEnd}\label{wxtextctrlsetinsertionpointend}
 
 \func{virtual void}{SetInsertionPointEnd}{\void}
 
 Sets the insertion point at the end of the text control. This is equivalent
 to \helpref{SetInsertionPoint}{wxtextctrlsetinsertionpoint}(\helpref{GetLastPosition}{wxtextctrlgetlastposition}()).
+
 
 \membersection{wxTextCtrl::SetMaxLength}\label{wxtextctrlsetmaxlength}
 
@@ -852,6 +1122,7 @@ Note that under GTK+, this function may only be used with single line text contr
 
 Only implemented in wxMSW/wxGTK starting with wxWidgets 2.3.2.
 
+
 \membersection{wxTextCtrl::SetSelection}\label{wxtextctrlsetselection}
 
 \func{virtual void}{SetSelection}{\param{long}{ from}, \param{long}{ to}}
@@ -866,33 +1137,38 @@ in the control is selected.
 
 \docparam{to}{The last position.}
 
+
 \membersection{wxTextCtrl::SetStyle}\label{wxtextctrlsetstyle}
 
 \func{bool}{SetStyle}{\param{long }{start}, \param{long }{end}, \param{const wxTextAttr\& }{style}}
 
-Changes the style of the selection. If either of the font, foreground, or
-background colour is not set in {\it style}, the values of\rtfsp
-\helpref{GetDefaultStyle()}{wxtextctrlgetdefaultstyle} are used.
+Changes the style of the given range. If any attribute within {\it style} is
+not set, the corresponding attribute from \helpref{GetDefaultStyle()}{wxtextctrlgetdefaultstyle} is used.
 
 \wxheading{Parameters}
 
-\docparam{start}{The start of selection to change.}
+\docparam{start}{The start of the range to change.}
 
-\docparam{end}{The end of selection to change.}
+\docparam{end}{The end of the range to change.}
 
-\docparam{style}{The new style for the selection.}
+\docparam{style}{The new style for the range.}
 
 \wxheading{Return value}
 
-{\tt TRUE} on success, {\tt FALSE} if an error occured - may also mean that
+{\tt true} on success, {\tt false} if an error occured - it may also mean that
 the styles are not supported under this platform.
+
+\wxheading{See also}
+
+\helpref{wxTextCtrl::GetStyle}{wxtextctrlgetstyle}, \helpref{wxTextAttr}{wxtextattr}
+
 
 \membersection{wxTextCtrl::SetValue}\label{wxtextctrlsetvalue}
 
 \func{virtual void}{SetValue}{\param{const wxString\& }{ value}}
 
 Sets the text value and marks the control as not-modified (which means that 
-\helpref{IsModified}{wxtextctrlismodified} would return {\tt FALSE} immediately
+\helpref{IsModified}{wxtextctrlismodified} would return {\tt false} immediately
 after the call to SetValue).
 
 Note that this function will generate a {\tt wxEVT\_COMMAND\_TEXT\_UPDATED}
@@ -901,6 +1177,7 @@ event.
 \wxheading{Parameters}
 
 \docparam{value}{The new value to set. It may contain newline characters if the text control is multi-line.}
+
 
 \membersection{wxTextCtrl::ShowPosition}\label{wxtextctrlshowposition}
 
@@ -912,12 +1189,14 @@ Makes the line containing the given position visible.
 
 \docparam{pos}{The position that should be visible.}
 
+
 \membersection{wxTextCtrl::Undo}\label{wxtextctrlundo}
 
 \func{virtual void}{Undo}{\void}
 
 If there is an undo facility and the last operation can be undone, undoes the last operation. Does nothing
 if there is no undo facility.
+
 
 \membersection{wxTextCtrl::WriteText}\label{wxtextctrlwritetext}
 
@@ -937,6 +1216,7 @@ line breaks.  See \helpref{wxTextCtrl::\cinsert}{wxtextctrlinsert} and \helpref{
 
 After the write operation, the insertion point will be at the end of the inserted text, so subsequent write operations will be appended. To append text after the user may have interacted with the control, call \helpref{wxTextCtrl::SetInsertionPointEnd}{wxtextctrlsetinsertionpointend} before writing.
 
+
 \membersection{wxTextCtrl::XYToPosition}\label{wxtextctrlxytoposition}
 
 \func{long}{XYToPosition}{\param{long}{ x}, \param{long}{ y}}
@@ -952,6 +1232,7 @@ Converts the given zero based column and line number to a position.
 \wxheading{Return value}
 
 The position value.
+
 
 \membersection{wxTextCtrl::operator \cinsert}\label{wxtextctrlinsert}
 

@@ -1,34 +1,37 @@
+
 """ Demonstrate filebrowsebutton module of the wxPython.lib Library.
 
 14.1.2001 Bernhard Reiter <bernhard@intevation.de>
     Added demo for DirBrowseButton and improved overview text.
 """
-from wxPython.wx import *
-from wxPython.lib.filebrowsebutton import FileBrowseButton, FileBrowseButtonWithHistory,DirBrowseButton
 
+import  wx
+import  wx.lib.filebrowsebutton as filebrowse
 
 #----------------------------------------------------------------------
 
-class TestPanel(wxPanel):
+class TestPanel(wx.Panel):
     def __init__(self, parent, ID, log):
-        wxPanel.__init__(self, parent, ID)
+        wx.Panel.__init__(self, parent, ID)
         self.log = log
-        self.fbb = FileBrowseButton(self, -1, wxPoint(20,20), wxSize(450, -1),
-                                    changeCallback = self.fbbCallback)
-        self.fbbh = FileBrowseButtonWithHistory(self, -1, wxPoint(20, 50),
-                                                wxSize(450, -1),
-                                                #changeCallback = self.fbbhCallback
-                                                )
-        self.dbb = DirBrowseButton(self, -1, wxPoint(20,80), wxSize(450,-1),
-                                    changeCallback = self.dbbCallback)
 
+        self.fbb = filebrowse.FileBrowseButton(
+            self, -1, (20, 20), (450, -1), changeCallback = self.fbbCallback
+            )
 
-        self.fbbh.SetHistory(['You', 'can', 'put', 'some', 'file', 'names', 'here'])
+        self.fbbh = filebrowse.FileBrowseButtonWithHistory(
+            self, -1, (20, 50), (450, -1),  changeCallback = self.fbbhCallback
+            )
+            
+        self.dbb = filebrowse.DirBrowseButton(
+            self, -1, (20, 80), (450, -1), changeCallback = self.dbbCallback
+            )
+
+        self.fbbh.SetHistory(['You', 'can', 'put', 'some', 'filenames', 'here'])
 
 
     def fbbCallback(self, evt):
         self.log.write('FileBrowseButton: %s\n' % evt.GetString())
-
 
 
     def fbbhCallback(self, evt):
@@ -36,12 +39,14 @@ class TestPanel(wxPanel):
             value = evt.GetString()
             self.log.write('FileBrowseButtonWithHistory: %s\n' % value)
             history = self.fbbh.GetHistory()
-            history.append(value)
-            self.fbbh.SetHistory(history)
+            if value not in history:
+                history.append(value)
+                self.fbbh.SetHistory(history)
+                self.fbbh.GetHistoryControl().SetStringSelection(value)
+
 
     def dbbCallback(self, evt):
         self.log.write('DirBrowseButton: %s\n' % evt.GetString())
-
 
 
 #----------------------------------------------------------------------
@@ -49,7 +54,6 @@ class TestPanel(wxPanel):
 def runTest(frame, nb, log):
     win = TestPanel(nb, -1, log)
     return win
-
 
 
 #----------------------------------------------------------------------
@@ -71,15 +75,14 @@ overview = """<html><body>
 </pre></small>
 
 </body><</html>
-""" % ( FileBrowseButton.__doc__,
-        FileBrowseButtonWithHistory.__doc__ ,
-        str(DirBrowseButton.__doc__) )
-
-
+""" % ( filebrowse.FileBrowseButton.__doc__,
+        filebrowse.FileBrowseButtonWithHistory.__doc__ , 
+        filebrowse.DirBrowseButton.__doc__
+        ) 
 
 
 if __name__ == '__main__':
     import sys,os
     import run
-    run.main(['', os.path.basename(sys.argv[0])])
+    run.main(['', os.path.basename(sys.argv[0])] + sys.argv[1:])
 

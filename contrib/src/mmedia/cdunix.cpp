@@ -5,7 +5,7 @@
 // Created:    1997
 // Updated:    1998
 // Copyright:  (C) 1997, 1998, Guilhem Lavaux
-// CVS Id: $Id: cdunix.cpp,v 1.1 2000/03/05 19:03:17 GL Exp $
+// CVS Id: $Id: cdunix.cpp,v 1.4 2004/06/16 15:22:59 ABX Exp $
 // License:    wxWindows license
 ////////////////////////////////////////////////////////////////////////////////
 #ifdef __GNUG__
@@ -21,6 +21,8 @@
 #ifdef __BORLANDC__
     #pragma hdrstop
 #endif
+
+#if HAVE_KNOWN_CDROM_INTERFACE
 
 // ---------------------------------------------------------------------------
 // MMedia headers
@@ -55,7 +57,7 @@ IMPLEMENT_DYNAMIC_CLASS(wxCDAudioLinux, wxCDAudio)
 wxCDAudioLinux::wxCDAudioLinux()
     : wxCDAudio(), m_fd(-1)
 {
-  OpenDevice("/dev/cdrom");
+  OpenDevice(wxT("/dev/cdrom"));
 }
 
 wxCDAudioLinux::wxCDAudioLinux(const wxString& dev_name)
@@ -78,7 +80,7 @@ void wxCDAudioLinux::OpenDevice(const wxString& dev_name)
   struct cdrom_tocentry entry, old_entry;
   struct cdrom_tochdr diskinf;
   struct cdrom_msf0 *msf = &entry.cdte_addr.msf,
-  		    *old_msf = &old_entry.cdte_addr.msf;
+              *old_msf = &old_entry.cdte_addr.msf;
   wxCDtime *the_track;
   wxCDtime tot_tm;
   wxUint8 nb_tracks, i;
@@ -216,3 +218,5 @@ wxCDAudio::CDtoc& wxCDAudioLinux::GetToc()
 {
   return *m_toc;
 }
+
+#endif

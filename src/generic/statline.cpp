@@ -3,7 +3,7 @@
 // Purpose:     a generic wxStaticLine class
 // Author:      Vadim Zeitlin
 // Created:     28.06.99
-// Version:     $Id: statline.cpp,v 1.7 2002/07/29 21:05:43 MBN Exp $
+// Version:     $Id: statline.cpp,v 1.14 2004/06/17 16:22:36 ABX Exp $
 // Copyright:   (c) 1998 Vadim Zeitlin
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -16,12 +16,13 @@
 // headers
 // ----------------------------------------------------------------------------
 
-#ifdef __GNUG__
+#if defined(__GNUG__) && !defined(NO_GCC_PRAGMA)
     #pragma implementation "statline.h"
 #endif
 
-// For compilers that support precompilation, includes "wx.h".
 #include "wx/wxprec.h"
+#if wxUSE_STATLINE
+// For compilers that support precompilation, includes "wx.h".
 
 #ifdef __BORLANDC__
     #pragma hdrstop
@@ -47,19 +48,25 @@ bool wxStaticLine::Create( wxWindow *parent,
                            long style,
                            const wxString &name)
 {
+    m_statbox = NULL;
+
     if ( !CreateBase(parent, id, pos, size, style, wxDefaultValidator, name) )
-        return FALSE;
+        return false;
 
     // ok, this is ugly but it's better than nothing: use a thin static box to
     // emulate static line
 
     wxSize sizeReal = AdjustSize(size);
 
-    m_statbox = new wxStaticBox(parent, id, wxT(""), pos, sizeReal, style, name);
+    m_statbox = new wxStaticBox(parent, id, wxEmptyString, pos, sizeReal, style, name);
 
-    return TRUE;
+    return true;
 }
 
+wxStaticLine::~wxStaticLine()
+{
+    delete m_statbox;
+}
 
 WXWidget wxStaticLine::GetMainWidget() const
 {
@@ -75,3 +82,6 @@ void wxStaticLine::DoMoveWindow(int x, int y, int width, int height)
 {
     m_statbox->SetSize(x, y, width, height);
 }
+
+#endif
+  // wxUSE_STATLINE

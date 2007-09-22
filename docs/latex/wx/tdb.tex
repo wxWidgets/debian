@@ -1,29 +1,9 @@
 \section{Database classes overview}\label{odbcoverview}
 
-\normalboxd{The more sophisticated wxODBC classes (wxDb/wxDbTable) are the 
-recommended classes for doing database/ODBC work with wxWidgets. These new 
-classes replace the wxWidgets v1.6x classes wxDatabase. Documentation for the 
-old wxDatabase class and its associated classes is still 
-included in the class documentation and in this overview section, but support 
-for these old classes has been phased out, and all future development work 
-is being done solely on the new wxDb/wxDbTable classes.}
-
-\subsection{Different ODBC Class Libraries in wxWidgets}
-
 Following is a detailed overview of how to use the wxWidgets ODBC classes - \helpref{wxDb}{wxdb} 
 and \helpref{wxDbTable}{wxdbtable} and their associated functions. These are 
 the ODBC classes donated by Remstar International, and are collectively 
-referred to herein as the wxODBC classes. Since their initial inclusion with 
-wxWidgets v2.x, they have become the recommended wxWidgets classes for database 
-access.
-
-An older version of some classes ported over from wxWidgets v1.68 still exist 
-(see \helpref{wxDatabase}{wxdatabase} in odbc.cpp), but are now deprecated in favor of the more 
-robust and comprehensive wxDb/wxDbTable classes. All current and future 
-feature development, as well as active debugging, are only being done on 
-the wxODBC classes. Documentation for the older classes is still provided 
-in this manual. The \helpref{wxDatabase overview}{wxdatabaseoverview} of the 
-older classes follows the overview of the new classes.
+referred to herein as the wxODBC classes.
 
 \subsection{wxDb/wxDbTable wxODBC Overview}\label{wxodbcoverview}
 
@@ -290,7 +270,7 @@ only forward scrolling cursors, or forward and backward scrolling cursors
 (see the section in "WHERE TO START" on cursors for more information on 
 cursors). This default can be overridden by passing a second parameter to 
 either the \helpref{wxDbGetConnection}{wxdbfunctions} or 
-\helpref{wxDb constructor}{wxdbconstr}. The default is 1.}
+\helpref{wxDb constructor}{wxdbctor}. The default is 1.}
 \twocolitem{wxODBC\_BACKWARD\_COMPATABILITY}{Between v2.0 and 2.2, massive 
 renaming efforts were done to the ODBC classes to get naming conventions 
 similar to those used throughout wxWidgets, as well as to preface all wxODBC 
@@ -310,8 +290,6 @@ You are required to include the "odbc32.lib" provided by your compiler vendor
 in the list of external libraries to be linked in. If using the makefiles 
 supplied with wxWidgets, this library should already be included for use with 
 makefile.b32, makefile.vc, and makefile.g95. 
-
-You cannot compile the wxODBC classes under Win16 - sorry.
 
 \normalbox{MORE TO COME}
 
@@ -424,7 +402,7 @@ the necessary handle:
 \end{verbatim}
 
 When the wxDbConnectInf::AllocHenv() function is called successfully, a 
-value of TRUE will be returned. A value of FALSE means allocation failed, 
+value of true will be returned. A value of false means allocation failed, 
 and the handle will be undefined.
 
 A shorter form of doing the above steps is encapsulated into the 
@@ -579,9 +557,9 @@ can specify anywhere from one column up to all columns in the table.
 
 \begin{verbatim}
     table->SetColDefs(0, "FIRST_NAME", DB_DATA_TYPE_VARCHAR, FirstName,
-                      SQL_C_CHAR, sizeof(name), TRUE, TRUE);
+                      SQL_C_CHAR, sizeof(FirstName), true, true);
     table->SetColDefs(1, "LAST_NAME", DB_DATA_TYPE_VARCHAR, LastName,
-                      SQL_C_CHAR, sizeof(LastName), TRUE, TRUE);
+                      SQL_C_CHAR, sizeof(LastName), true, true);
 \end{verbatim}
 
 Notice that column definitions start at index 0 and go up to one less than 
@@ -718,7 +696,7 @@ syntax problem in the WHERE clause that was specified. The exact SQL
 parsing the table's database connection's "errorList[]" array member for 
 the stored text of the error.
 
-When the \helpref{wxDbTable::Query}{wxdbtablequery} returns TRUE, the 
+When the \helpref{wxDbTable::Query}{wxdbtablequery} returns true, the 
 database was able to successfully complete the requested query using the 
 provided criteria. This does not mean that there are any rows in the 
 result set, it just mean that the query was successful.
@@ -740,7 +718,7 @@ set into the bound memory variables. After \helpref{wxDbTable::Query}{wxdbtableq
 has completed successfully, the default/current cursor is placed so it 
 is pointing just before the first record in the result set. If the 
 result set is empty (no rows matched the criteria), then any calls to 
-retrieve data from the result set will return FALSE.
+retrieve data from the result set will return false.
 
 \begin{verbatim}
     wxString msg;
@@ -762,7 +740,7 @@ in the result set.
 When \helpref{wxDbTable::GetNext}{wxdbtablegetnext} is called and there are 
 no rows remaining in the result set after the current cursor position, 
 \helpref{wxDbTable::GetNext}{wxdbtablegetnext} (as well as all the other 
-wxDbTable::GetXxxxx() functions) will return FALSE.
+wxDbTable::GetXxxxx() functions) will return false.
 
 {\bf Close the table}
 
@@ -894,7 +872,7 @@ functionality as the driver can emulate.
 \begin{itemize}\itemsep=0pt
 \item Does not support the SQL\_TIMESTAMP structure
 \item Supports only one cursor and one connect (apparently? with Microsoft driver only?)
-\item Does not automatically create the primary index if the 'keyField' param of SetColDef is TRUE. The user must create ALL indexes from their program with calls to \helpref{wxDbTable::CreateIndex}{wxdbtablecreateindex}
+\item Does not automatically create the primary index if the 'keyField' param of SetColDef is true. The user must create ALL indexes from their program with calls to \helpref{wxDbTable::CreateIndex}{wxdbtablecreateindex}
 \item Table names can only be 8 characters long
 \item Column names can only be 10 characters long
 \item Currently cannot CREATE a dBase table - bug or limitation of the drivers used??
@@ -916,7 +894,7 @@ functionality as the driver can emulate.
 {\it mySQL}
 \begin{itemize}\itemsep=0pt
 \item If a column is part of the Primary Key, the column cannot be NULL.
-\item Cannot support selecting for update [\helpref{wxDbTable::CanSelectForUpdate}{wxdbtablecanselectforupdate}]. Always returns FALSE.
+\item Cannot support selecting for update [\helpref{wxDbTable::CanSelectForUpdate}{wxdbtablecanselectforupdate}]. Always returns false.
 \item Columns that are part of primary or secondary keys must be defined as being NOT NULL when they are created. Some code is added in \helpref{wxDbTable::CreateIndex}{wxdbtablecreateindex} to try to adjust the column definition if it is not defined correctly, but it is experimental (as of wxWidgets v2.2.1)
 \item Does not support sub-queries in SQL statements
 \end{itemize}
@@ -940,113 +918,209 @@ report the bugs/problems you have encountered in the latter case.
 
 \subsection{wxODBC - Sample Code}\label{wxodbcsamplecode1}
 
-This is the simplest example of establishing/opening a connection to an ODBC datasource, 
+Simplest example of establishing/opening a connection to an ODBC datasource, 
 binding variables to the columns for read/write usage, opening an 
-existing table in the datasource, setting the query parameters 
+existing table in the datasource, inserting a record, setting query parameters 
 (where/orderBy/from), querying the datasource, reading each row of the 
-result set, and then cleaning up.
+result set, deleting a record, releasing the connection, then cleaning up.
 
-NOTE: Not all error trapping is shown here, to reduce the size of the 
-code and to make it more easily readable.
+NOTE: Very basic error handling is shown here, to reduce the size of the 
+code and to make it more easily readable.  The HandleError() function uses the wxDbLogExtendedErrorMsg() function for retrieving database error messages.
 
 \begin{verbatim}
-wxDbConnectInf  *DbConnectInf = NULL;
+// ----------------------------------------------------------------------------
+// HEADERS
+// ----------------------------------------------------------------------------
+#include "wx/log.h"         // #included to enable output of messages only
+#include "wx/dbtable.h"
 
-wxDb        *db    = NULL;       // The database connection
-wxDbTable   *table = NULL;       // The data table to access
+// ----------------------------------------------------------------------------
+// FUNCTION USED FOR HANDLING/DISPLAYING ERRORS
+// ----------------------------------------------------------------------------
+// Very generic error handling function.  
+// If a connection to the database is passed in, then we retrieve all the 
+// database errors for the connection and add them to the displayed message
+int HandleError(wxString errmsg, wxDb *pDb=NULL)
+{
+    // Retrieve all the error message for the errors that occurred
+    wxString allErrors;
+    if (!pDb == NULL)
+        // Get the database errors and append them to the error message
+        allErrors = wxDbLogExtendedErrorMsg(errmsg.c_str(), pDb, 0, 0);
+    else
+        allErrors = errmsg;
 
-wxChar       FirstName[50+1];    // buffer for data from column "FIRST_NAME"
-wxChar       LastName[50+1];     // buffer for data from column "LAST_NAME"
+    // Do whatever you wish with the error message here
+    // wxLogDebug() is called inside wxDbLogExtendedErrorMsg() so this
+    // console program will show the errors in the console window,
+    // but these lines will show the errors in RELEASE builds also
+    wxFprintf(stderr, wxT("\n%s\n"), allErrors.c_str());
+    fflush(stderr);
 
-bool         errorOccured = FALSE;
+    return 1;
+}
 
-const wxChar tableName[]          = "CONTACTS";
-const UWORD  numTableColumns      = 2;           // Number of bound columns
 
-FirstName[0] = 0;
-LastName[0]  = 0;
+// ----------------------------------------------------------------------------
+// entry point
+// ----------------------------------------------------------------------------
+int main(int argc, char **argv)
+{
+wxDbConnectInf  *DbConnectInf    = NULL;    // DB connection information
 
-DbConnectInf = new wxDbConnectInf(NULL,"MyDSN","MyUserName", "MyPassword");
+wxDb            *db              = NULL;    // Database connection
 
+wxDbTable       *table           = NULL;    // Data table to access
+const wxChar     tableName[]     = wxT("USERS"); // Name of database table
+const UWORD      numTableColumns = 2;       // Number table columns
+wxChar           FirstName[50+1];           // column data: "FIRST_NAME"
+wxChar           LastName[50+1];            // column data: "LAST_NAME"
+
+wxString         msg;                       // Used for display messages
+
+// -----------------------------------------------------------------------
+// DEFINE THE CONNECTION HANDLE FOR THE DATABASE
+// -----------------------------------------------------------------------
+DbConnectInf = new wxDbConnectInf(NULL, 
+                                    wxT("CONTACTS-SqlServer"),
+                                    wxT("sa"),
+                                    wxT("abk"));
+
+// Error checking....
 if (!DbConnectInf || !DbConnectInf->GetHenv())
 {
-  wxMessageBox("Unable to allocate an ODBC environment handle",
-            "DB CONNECTION ERROR", wxOK | wxICON_EXCLAMATION);
-  return;
-} 
+    return HandleError(wxT("DB ENV ERROR: Cannot allocate ODBC env handle"));
+}
 
-// Get a database connection from the cached connections
+
+// -----------------------------------------------------------------------
+// GET A DATABASE CONNECTION
+// -----------------------------------------------------------------------
 db = wxDbGetConnection(DbConnectInf);
 
-// Create the table connection
-table = new wxDbTable(db, tableName, numTableColumns, "", 
-                      !wxDB_QUERY_ONLY, "");
+if (!db)
+{
+    return HandleError(wxT("CONNECTION ERROR - Cannot get DB connection"));
+}
 
+
+// -----------------------------------------------------------------------
+// DEFINE THE TABLE, AND THE COLUMNS THAT WILL BE ACCESSED
+// -----------------------------------------------------------------------
+table = new wxDbTable(db, tableName, numTableColumns, wxT(""), 
+                    !wxDB_QUERY_ONLY, wxT(""));
 //
 // Bind the columns that you wish to retrieve. Note that there must be
-// 'numTableColumns' calls to SetColDefs(), to match the wxDbTable definition
+// 'numTableColumns' calls to SetColDefs(), to match the wxDbTable def
 //
 // Not all columns need to be bound, only columns whose values are to be 
 // returned back to the client.
 //
-table->SetColDefs(0, "FIRST_NAME", DB_DATA_TYPE_VARCHAR, FirstName,
-                  SQL_C_CHAR, sizeof(name), TRUE, TRUE);
-table->SetColDefs(1, "LAST_NAME", DB_DATA_TYPE_VARCHAR, LastName,
-                  SQL_C_CHAR, sizeof(LastName), TRUE, TRUE);
+table->SetColDefs(0, wxT("FIRST_NAME"), DB_DATA_TYPE_VARCHAR, FirstName,
+                SQL_C_CHAR, sizeof(FirstName), true, true);
+table->SetColDefs(1, wxT("LAST_NAME"), DB_DATA_TYPE_VARCHAR, LastName,
+                SQL_C_CHAR, sizeof(LastName), true, true);
 
-// Open the table for access
-table->Open();
 
-// Set the WHERE clause to limit the result set to only
-// return all rows that have a value of 'GEORGE' in the
-// FIRST_NAME column of the table.
-table->SetWhereClause("FIRST_NAME = 'GEORGE'");
+// -----------------------------------------------------------------------
+// CREATE (or RECREATE) THE TABLE IN THE DATABASE
+// -----------------------------------------------------------------------
+if (!table->CreateTable(true))  //NOTE: No CommitTrans is required
+{
+    return HandleError(wxT("TABLE CREATION ERROR: "), table->GetDb());
+}
+
+
+// -----------------------------------------------------------------------
+// OPEN THE TABLE FOR ACCESS
+// -----------------------------------------------------------------------
+if (!table->Open())
+{
+    return HandleError(wxT("TABLE OPEN ERROR: "), table->GetDb());
+}
+
+
+// -----------------------------------------------------------------------
+// INSERT A NEW ROW INTO THE TABLE
+// -----------------------------------------------------------------------
+wxStrcpy(FirstName, wxT("JULIAN"));
+wxStrcpy(LastName, wxT("SMART"));
+if (!table->Insert())
+{
+    return HandleError(wxT("INSERTION ERROR: "), table->GetDb());
+}
+
+// Must commit the insert to write the data to the DB
+table->GetDb()->CommitTrans();
+
+
+// -----------------------------------------------------------------------
+// RETRIEVE ROWS FROM THE TABLE BASED ON SUPPLIED CRITERIA
+// -----------------------------------------------------------------------
+// Set the WHERE clause to limit the result set to return
+// all rows that have a value of 'JULIAN' in the FIRST_NAME
+// column of the table.
+table->SetWhereClause(wxT("FIRST_NAME = 'JULIAN'"));
 
 // Result set will be sorted in ascending alphabetical 
 // order on the data in the 'LAST_NAME' column of each row
-table->SetOrderByClause("LAST_NAME");
+table->SetOrderByClause(wxT("LAST_NAME"));
 
 // No other tables (joins) are used for this query
-table->SetFromClause("");
+table->SetFromClause(wxT(""));
 
 // Instruct the datasource to perform a query based on the 
 // criteria specified above in the where/orderBy/from clauses.
 if (!table->Query())
 {
-    wxMessageBox("Error on Query()","ERROR!",
-                  wxOK | wxICON_EXCLAMATION);
-    errorOccured = TRUE;
+    return HandleError(wxT("QUERY ERROR: "), table->GetDb());
 }
 
-wxString msg;
-
-// Start and continue reading every record in the table
-// displaying info about each record read.
+// Loop through all rows matching the query criteria until
+// there are no more records to read
 while (table->GetNext())
 {
-    msg.Printf("Row #%lu -- First Name : %s  Last Name is %s",
-               table->GetRowNum(), FirstName, LastName);
-    wxMessageBox(msg, "Data", wxOK | wxICON_INFORMATION, NULL);
+    msg.Printf(wxT("Row #%lu -- First Name : %s  Last Name is %s"),
+            table->GetRowNum(), FirstName, LastName);
+
+    // Code to display 'msg' here
+    wxLogMessage(wxT("\n%s\n"), msg.c_str());
 }
 
-// If the wxDbTable instance was successfully created
-// then delete it as I am done with it now.
-if (table)
+
+// -----------------------------------------------------------------------
+// DELETE A ROW FROM THE TABLE
+// -----------------------------------------------------------------------
+// Select the row which has FIRST_NAME of 'JULIAN' and LAST_NAME
+// of 'SMART', then delete the retrieved row
+//
+if (!table->DeleteWhere(wxT("FIRST_NAME = 'JULIAN' and LAST_NAME = 'SMART'")))
 {
-    delete table;
-    table = NULL;
+    return HandleError(wxT("DELETION ERROR: "), table->GetDb());
 }
+    
+// Must commit the deletion to the database
+table->GetDb()->CommitTrans();
 
-// If we have a valid wxDb instance, then free the connection
+
+// -----------------------------------------------------------------------
+// TAKE CARE OF THE ODBC CLASS INSTANCES THAT WERE BEING USED
+// -----------------------------------------------------------------------
+// If the wxDbTable instance was successfully created
+// then delete it as we are done with it now.
+wxDELETE(table);
+
+// Free the cached connection
 // (meaning release it back in to the cache of datasource
 // connections) for the next time a call to wxDbGetConnection()
 // is made.
-if (db)
-{
-    wxDbFreeConnection(db);
-    db = NULL;
-}
+wxDbFreeConnection(db);
+db = NULL;
 
+
+// -----------------------------------------------------------------------
+// CLEANUP BEFORE EXITING APP
+// -----------------------------------------------------------------------
 // The program is now ending, so we need to close
 // any cached connections that are still being 
 // maintained.
@@ -1054,198 +1128,16 @@ wxDbCloseConnections();
 
 // Release the environment handle that was created
 // for use with the ODBC datasource connections
-delete DbConnectInf;
+wxDELETE(DbConnectInf);
 
+wxUnusedVar(argc);  // Here just to prevent compiler warnings
+wxUnusedVar(argv);  // Here just to prevent compiler warnings
+
+return 0;
+}
 \end{verbatim}
 
-\subsection{wxDatabase ODBC class overview [DEPRECATED]}\label{oldwxodbcoverview}
-
-Classes: \helpref{wxDatabase}{wxdatabase}, \helpref{wxRecordSet}{wxrecordset}, \helpref{wxQueryCol}{wxquerycol},
-\rtfsp\helpref{wxQueryField}{wxqueryfield}
-
-\normalboxd{The more sophisticated wxODBC classes (wxDb/wxDbTable) are the 
-recommended classes for doing database/ODBC work with wxWidgets. These new 
-classes replace the wxWidgets v1.6x classes wxDatabase.
-
-Documentation for the old wxDatabase class and its associated classes is still 
-included in the class documentation and in this overview section, but support 
-for these old classes has been phased out, and all future development work 
-is being done solely on the new wxDb/wxDbTable classes.}
-
-wxWidgets provides a set of classes for accessing a subset of Microsoft's ODBC (Open Database Connectivity)
-product. Currently, this wrapper is available under MS Windows only, although
-ODBC may appear on other platforms, and a generic or product-specific SQL emulator for the ODBC
-classes may be provided in wxWidgets at a later date.
-
-ODBC presents a unified API (Application Programmer's Interface) to a
-wide variety of databases, by interfacing indirectly to each database or
-file via an ODBC driver. The language for most of the database
-operations is SQL, so you need to learn a small amount of SQL as well as
-the wxWidgets ODBC wrapper API. Even though the databases may not be
-SQL-based, the ODBC drivers translate SQL into appropriate operations
-for the database or file: even text files have rudimentary ODBC support,
-along with dBASE, Access, Excel and other file formats.
-
-The run-time files for ODBC are bundled with many existing database
-packages, including MS Office. The required header files, sql.h and
-sqlext.h, are bundled with several compilers including MS VC++ and
-Watcom C++. The only other way to obtain these header files is from the
-ODBC SDK, which is only available with the MS Developer Network CD-ROMs
--- at great expense. If you have odbc.dll, you can make the required
-import library odbc.lib using the tool `implib'. You need to have odbc.lib
-in your compiler library path.
-
-The minimum you need to distribute with your application is odbc.dll, which must
-go in the Windows system directory. For the application to function correctly,
-ODBC drivers must be installed on the user's machine. If you do not use the database
-classes, odbc.dll will be loaded but not called (so ODBC does not need to be
-setup fully if no ODBC calls will be made).
-
-A sample is distributed with wxWidgets in {\tt samples/odbc}. You will need to install
-the sample dbf file as a data source using the ODBC setup utility, available from
-the control panel if ODBC has been fully installed.
-
-\subsection{Procedures for writing an ODBC application using wxDatabase [DEPRECATED]}
-
-You first need to create a wxDatabase object. If you want to get information
-from the ODBC manager instead of from a particular database (for example
-using \helpref{wxRecordSet::GetDataSources}{wxrecordsetgetdatasources}), then you
-do not need to call \helpref{wxDatabase::Open}{wxdatabaseopen}.
-If you do wish to connect to a datasource, then call wxDatabase::Open.
-You can reuse your wxDatabase object, calling wxDatabase::Close and wxDatabase::Open
-multiple times.
-
-Then, create a wxRecordSet object for retrieving or sending information.
-For ODBC manager information retrieval, you can create it as a dynaset (retrieve the
-information as needed) or a snapshot (get all the data at once).
-If you are going to call \helpref{wxRecordSet::ExecuteSQL}{wxrecordsetexecutesql}, you need to create it as a snapshot.
-Dynaset mode is not yet implemented for user data.
-
-Having called a function such as wxRecordSet::ExecuteSQL or
-wxRecordSet::GetDataSources, you may have a number of records
-associated with the recordset, if appropriate to the operation. You can
-now retrieve information such as the number of records retrieved and the
-actual data itself. Use \helpref{wxRecordSet::GetFieldData}{wxrecordsetgetfielddata} or
-\helpref{wxRecordSet::GetFieldDataPtr}{wxrecordsetgetfielddataptr} to get the data or a pointer to it, passing
-a column index or name. The data returned will be for the current
-record. To move around the records, use \helpref{wxRecordSet::MoveNext}{wxrecordsetmovenext},
-\rtfsp\helpref{wxRecordSet::MovePrev}{wxrecordsetmoveprev} and associated functions.
-
-You can use the same recordset for multiple operations, or delete
-the recordset and create a new one.
-
-Note that when you delete a wxDatabase, any associated recordsets
-also get deleted, so beware of holding onto invalid pointers.
-
-\subsection{wxDatabase class overview [DEPRECATED]}\label{wxdatabaseoverview}
-
-Class: \helpref{wxDatabase}{wxdatabase} 
-
-\wxheading{DEPRECATED}
-
-Use \helpref{wxDb}{wxdb} and \helpref{wxDbTable}{wxdbtable} instead.
-
-Every database object represents an ODBC connection. To do anything useful
-with a database object you need to bind a wxRecordSet object to it. All you
-can do with wxDatabase is opening/closing connections and getting some info
-about it (users, passwords, and so on).
-
-\wxheading{See also}
-
-\helpref{Database classes overview}{odbcoverview}
-
-\subsection{wxQueryCol class overview [DEPRECATED]}\label{wxquerycoloverview}
-
-Class: \helpref{wxQueryCol}{wxquerycol}
-
-\wxheading{DEPRECATED}
-
-Use \helpref{wxDb}{wxdb} and \helpref{wxDbTable}{wxdbtable} instead.
-
-Every data column is represented by an instance of this class.
-It contains the name and type of a column and a list of wxQueryFields where
-the real data is stored. The links to user-defined variables are stored
-here, as well.
-
-\wxheading{See also}
-
-\helpref{Database classes overview}{odbcoverview}
-
-\subsection{wxQueryField class overview [DEPRECATED]}\label{wxqueryfieldoverview}
-
-Class: \helpref{wxQueryField}{wxqueryfield}
-
-\wxheading{DEPRECATED}
-
-Use \helpref{wxDb}{wxdb} and \helpref{wxDbTable}{wxdbtable} instead.
-
-As every data column is represented by an instance of the class wxQueryCol,
-every data item of a specific column is represented by an instance of
-wxQueryField. Each column contains a list of wxQueryFields. If wxRecordSet is
-of the type wxOPEN\_TYPE\_DYNASET, there will be only one field for each column,
-which will be updated every time you call functions like wxRecordSet::Move
-or wxRecordSet::GoTo. If wxRecordSet is of the type wxOPEN\_TYPE\_SNAPSHOT,
-all data returned by an ODBC function will be loaded at once and the number
-of wxQueryField instances for each column will depend on the number of records.
-
-\wxheading{See also}
-
-\helpref{Database classes overview}{odbcoverview}
-
-\subsection{wxRecordSet overview [DEPRECATED]}\label{wxrecordsetoverview}
-
-Class: \helpref{wxRecordSet}{wxrecordset}
-
-\wxheading{DEPRECATED}
-
-Use \helpref{wxDb}{wxdb} and \helpref{wxDbTable}{wxdbtable} instead.
-
-Each wxRecordSet represents a database query. You can make multiple queries
-at a time by using multiple wxRecordSets with a wxDatabase or you can make
-your queries in sequential order using the same wxRecordSet.
-
-\wxheading{See also}
-
-\helpref{Database classes overview}{odbcoverview}
-
-\subsection{ODBC SQL data types [DEPRECATED]}\label{sqltypes}
-
-These are the data types supported in ODBC SQL. Note that there are other, extended level conformance
-types, not currently supported in wxWidgets.
-
-\begin{twocollist}\itemsep=0pt
-\twocolitem{CHAR(n)}{A character string of fixed length {\it n}.}
-\twocolitem{VARCHAR(n)}{A varying length character string of maximum length {\it n}.}
-\twocolitem{LONG VARCHAR(n)}{A varying length character string: equivalent to VARCHAR for the purposes
-of ODBC.}
-\twocolitem{DECIMAL(p, s)}{An exact numeric of precision {\it p} and scale {\it s}.}
-\twocolitem{NUMERIC(p, s)}{Same as DECIMAL.}
-\twocolitem{SMALLINT}{A 2 byte integer.}
-\twocolitem{INTEGER}{A 4 byte integer.}
-\twocolitem{REAL}{A 4 byte floating point number.}
-\twocolitem{FLOAT}{An 8 byte floating point number.}
-\twocolitem{DOUBLE PRECISION}{Same as FLOAT.}
-\end{twocollist}
-
-These data types correspond to the following ODBC identifiers:
-
-\begin{twocollist}\itemsep=0pt
-\twocolitem{SQL\_CHAR}{A character string of fixed length.}
-\twocolitem{SQL\_VARCHAR}{A varying length character string.}
-\twocolitem{SQL\_DECIMAL}{An exact numeric.}
-\twocolitem{SQL\_NUMERIC}{Same as SQL\_DECIMAL.}
-\twocolitem{SQL\_SMALLINT}{A 2 byte integer.}
-\twocolitem{SQL\_INTEGER}{A 4 byte integer.}
-\twocolitem{SQL\_REAL}{A 4 byte floating point number.}
-\twocolitem{SQL\_FLOAT}{An 8 byte floating point number.}
-\twocolitem{SQL\_DOUBLE}{Same as SQL\_FLOAT.}
-\end{twocollist}
-
-\wxheading{See also}
-
-\helpref{Database classes overview}{odbcoverview}
-
-\subsection{A selection of SQL commands [DEPRECATED]}\label{sqlcommands}
+\subsection{A selection of SQL commands}\label{sqlcommands}
 
 The following is a very brief description of some common SQL commands, with
 examples.
@@ -1254,7 +1146,7 @@ examples.
 
 \helpref{Database classes overview}{odbcoverview}
 
-\subsubsection{Create}
+\subsubsection{Create}\label{odbccreateexample}
 
 Creates a table.
 
@@ -1270,7 +1162,7 @@ CREATE TABLE Book
  )
 \end{verbatim}
 
-\subsubsection{Insert}
+\subsubsection{Insert}\label{odbcinsertexample}
 
 Inserts records into a table.
 
@@ -1282,7 +1174,7 @@ INSERT INTO Book
   VALUES(5, 'HR', 'The Lark Ascending')
 \end{verbatim}
 
-\subsubsection{Select}
+\subsubsection{Select}\label{odbcselectexample}
 
 The Select operation retrieves rows and columns from a table. The criteria
 for selection and the columns returned may be specified.
@@ -1317,7 +1209,7 @@ descending order, add DESC after the ORDER BY Title clause.
 
 Selects records where RetailPriceAmount conforms to the WHERE expression.
 
-\subsubsection{Update}
+\subsubsection{Update}\label{odbcupdateexample}
 
 Updates records in a table.
 

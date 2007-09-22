@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     22/6/2000
-// RCS-ID:      $Id: quantize.cpp,v 1.11 2002/02/07 18:46:24 KLB Exp $
+// RCS-ID:      $Id: quantize.cpp,v 1.21 2004/10/17 21:39:05 ABX Exp $
 // Copyright:   (c) Thomas G. Lane, Vaclav Slavik, Julian Smart
 // Licence:     wxWindows licence + JPEG library licence
 /////////////////////////////////////////////////////////////////////////////
@@ -30,7 +30,7 @@
 
 /* modified by Vaclav Slavik for use as jpeglib-independent module */
 
-#ifdef __GNUG__
+#if defined(__GNUG__) && !defined(NO_GCC_PRAGMA)
 #pragma implementation "quantize.h"
 #endif
 
@@ -42,13 +42,16 @@
 #endif
 
 #ifndef WX_PRECOMP
+    #include "wx/palette.h"
 #endif
+
+#if wxUSE_IMAGE
 
 #include "wx/image.h"
 #include "wx/quantize.h"
 
 #ifdef __WXMSW__
-#include <windows.h>
+#include "wx/msw/private.h"
 #endif
 
 #include <stdlib.h>
@@ -74,7 +77,9 @@
 
 typedef unsigned short UINT16;
 typedef signed short INT16;
+#ifndef __WATCOMC__
 typedef signed int INT32;
+#endif
 
 typedef unsigned char JSAMPLE;
 typedef JSAMPLE *JSAMPROW;
@@ -1113,13 +1118,13 @@ pass2_fs_dither (j_decompress_ptr cinfo,
       dir = -1;
       dir3 = -3;
       errorptr = cquantize->fserrors + (width+1)*3; /* => entry after last column */
-      cquantize->on_odd_row = FALSE; /* flip for next time */
+      cquantize->on_odd_row = false; /* flip for next time */
     } else {
       /* work left to right in this row */
       dir = 1;
       dir3 = 3;
       errorptr = cquantize->fserrors; /* => entry before first real column */
-      cquantize->on_odd_row = TRUE; /* flip for next time */
+      cquantize->on_odd_row = true; /* flip for next time */
     }
     /* Preset error values: no error propagated to first pixel from left */
     cur0 = cur1 = cur2 = 0;
@@ -1279,7 +1284,7 @@ finish_pass1 (j_decompress_ptr cinfo)
   cinfo->colormap = cquantize->sv_colormap;
   select_colors(cinfo, cquantize->desired);
   /* Force next pass to zero the color index table */
-  cquantize->needs_zeroed = TRUE;
+  cquantize->needs_zeroed = true;
 }
 
 
@@ -1299,20 +1304,16 @@ start_pass_2_quant (j_decompress_ptr cinfo, bool is_pre_scan)
 {
   my_cquantize_ptr cquantize = (my_cquantize_ptr) cinfo->cquantize;
   hist3d histogram = cquantize->histogram;
-  int i;
 
   if (is_pre_scan) {
     /* Set up method pointers */
     cquantize->pub.color_quantize = prescan_quantize;
     cquantize->pub.finish_pass = finish_pass1;
-    cquantize->needs_zeroed = TRUE; /* Always zero histogram */
+    cquantize->needs_zeroed = true; /* Always zero histogram */
   } else {
     /* Set up method pointers */
     cquantize->pub.color_quantize = pass2_fs_dither;
     cquantize->pub.finish_pass = finish_pass2;
-
-    /* Make sure color count is acceptable */
-    i = cinfo->actual_number_of_colors;
 
     {
       size_t arraysize = (size_t) ((cinfo->output_width + 2) *
@@ -1325,17 +1326,17 @@ start_pass_2_quant (j_decompress_ptr cinfo, bool is_pre_scan)
       /* Make the error-limit table if we didn't already. */
       if (cquantize->error_limiter == NULL)
     init_error_limit(cinfo);
-      cquantize->on_odd_row = FALSE;
+      cquantize->on_odd_row = false;
     }
 
   }
   /* Zero the histogram or inverse color map, if necessary */
   if (cquantize->needs_zeroed) {
-    for (i = 0; i < HIST_C0_ELEMS; i++) {
+    for (int i = 0; i < HIST_C0_ELEMS; i++) {
       memset((void  *) histogram[i], 0,
         HIST_C1_ELEMS*HIST_C2_ELEMS * sizeof(histcell));
     }
-    cquantize->needs_zeroed = FALSE;
+    cquantize->needs_zeroed = false;
   }
 }
 
@@ -1350,7 +1351,7 @@ new_color_map_2_quant (j_decompress_ptr cinfo)
   my_cquantize_ptr cquantize = (my_cquantize_ptr) cinfo->cquantize;
 
   /* Reset the inverse color map */
-  cquantize->needs_zeroed = TRUE;
+  cquantize->needs_zeroed = true;
 }
 
 
@@ -1377,7 +1378,7 @@ jinit_2pass_quantizer (j_decompress_ptr cinfo)
   for (i = 0; i < HIST_C0_ELEMS; i++) {
     cquantize->histogram[i] = (hist2d) malloc(HIST_C1_ELEMS*HIST_C2_ELEMS * sizeof(histcell));
   }
-  cquantize->needs_zeroed = TRUE; /* histogram is garbage now */
+  cquantize->needs_zeroed = true; /* histogram is garbage now */
 
   /* Allocate storage for the completed colormap, if required.
    * We do this now since it is  storage and may affect
@@ -1466,11 +1467,11 @@ void wxQuantize::DoQuantize(unsigned w, unsigned h, unsigned char **in_rows, uns
     cquantize = (my_cquantize_ptr) dec.cquantize;
 
 
-    cquantize->pub.start_pass(&dec, TRUE);
+    cquantize->pub.start_pass(&dec, true);
     cquantize->pub.color_quantize(&dec, in_rows, out_rows, h);
     cquantize->pub.finish_pass(&dec);
 
-    cquantize->pub.start_pass(&dec, FALSE);
+    cquantize->pub.start_pass(&dec, false);
     cquantize->pub.color_quantize(&dec, in_rows, out_rows, h);
     cquantize->pub.finish_pass(&dec);
 
@@ -1507,8 +1508,6 @@ bool wxQuantize::Quantize(const wxImage& src, wxImage& dest,
 
 {
     int i;
-    int w = src.GetWidth();
-    int h = src.GetHeight();
 
     int windowsSystemColourCount = 20;
 
@@ -1526,8 +1525,9 @@ bool wxQuantize::Quantize(const wxImage& src, wxImage& dest,
 #endif
 
     // create rows info:
+    int h = src.GetHeight();
+    int w = src.GetWidth();
     unsigned char **rows = new unsigned char *[h];
-    h = src.GetHeight(), w = src.GetWidth();
     unsigned char *imgdt = src.GetData();
     for (i = 0; i < h; i++)
         rows[i] = imgdt + 3/*RGB*/ * w * i;
@@ -1571,7 +1571,7 @@ bool wxQuantize::Quantize(const wxImage& src, wxImage& dest,
             // We need to shift the palette entries up
             // to make room for the Windows system colours.
             for (i = 0; i < w * h; i++)
-                data8bit[i] = data8bit[i] + paletteShift;
+                data8bit[i] = (unsigned char)(data8bit[i] + paletteShift);
         }
 #endif
         *eightBitData = data8bit;
@@ -1580,7 +1580,7 @@ bool wxQuantize::Quantize(const wxImage& src, wxImage& dest,
         delete[] data8bit;
 
 #if wxUSE_PALETTE
-    // Make a wxWindows palette
+    // Make a wxWidgets palette
     if (pPalette)
     {
         unsigned char* r = new unsigned char[256];
@@ -1627,7 +1627,7 @@ bool wxQuantize::Quantize(const wxImage& src, wxImage& dest,
     }
 #endif // wxUSE_PALETTE
 
-    return TRUE;
+    return true;
 }
 
 // This version sets a palette in the destination image so you don't
@@ -1641,7 +1641,7 @@ bool wxQuantize::Quantize(const wxImage& src,
 {
     wxPalette* palette = NULL;
     if ( !Quantize(src, dest, & palette, desiredNoColours, eightBitData, flags) )
-        return FALSE;
+        return false;
 
 #if wxUSE_PALETTE
     if (palette)
@@ -1651,6 +1651,9 @@ bool wxQuantize::Quantize(const wxImage& src,
     }
 #endif // wxUSE_PALETTE
 
-    return TRUE;
+    return true;
 }
+
+#endif
+    // wxUSE_IMAGE
 

@@ -4,7 +4,7 @@
 // Author:      Aleksandras Gluchovas
 // Modified by:
 // Created:     9/11/98
-// RCS-ID:      $Id: hintanimpl.h,v 1.3.2.1 2002/10/24 11:21:35 JS Exp $
+// RCS-ID:      $Id: hintanimpl.h,v 1.6 2004/06/07 16:02:14 ABX Exp $
 // Copyright:   (c) Aleksandras Gluchovas
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -20,13 +20,13 @@
 
 #include "wx/timer.h"
 
-class WXFL_DECLSPEC cbHintAnimTimer;
+class WXDLLIMPEXP_FL cbHintAnimTimer;
 
 /*
 A plugin to draw animated hints when the user drags a pane.
 */
 
-class WXFL_DECLSPEC cbHintAnimationPlugin : public cbPluginBase
+class WXDLLIMPEXP_FL cbHintAnimationPlugin : public cbPluginBase
 {
     DECLARE_DYNAMIC_CLASS( cbHintAnimationPlugin )
 protected:
@@ -55,8 +55,8 @@ public:
 
     int    mInClientHintBorder; // default: 4 pixels
 
-    bool   mAccelerationOn;     // TRUE, if morph accelerates, otherwise morph
-                                // speed is constant. Default: TRUE
+    bool   mAccelerationOn;     // true, if morph accelerates, otherwise morph
+                                // speed is constant. Default: true
 
     // TBD:: get/set methods for above members
 
@@ -101,7 +101,7 @@ public:
 A private helper class.
 */
 
-struct WXFL_DECLSPEC MorphInfoT
+struct WXDLLIMPEXP_FL MorphInfoT
 {
     wxPoint mFrom;
     wxPoint mTill;
@@ -111,7 +111,7 @@ struct WXFL_DECLSPEC MorphInfoT
 A private helper class.
 */
 
-class WXFL_DECLSPEC cbHintAnimTimer : public wxTimer 
+class WXDLLIMPEXP_FL cbHintAnimTimer : public wxTimer 
 {
 protected:
 

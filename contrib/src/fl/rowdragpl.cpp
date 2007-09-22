@@ -4,9 +4,9 @@
 // Author:      Aleksandras Gluchovas
 // Modified by:
 // Created:     06/10/98
-// RCS-ID:      $Id: rowdragpl.cpp,v 1.3 2002/01/21 22:34:42 JS Exp $
+// RCS-ID:      $Id: rowdragpl.cpp,v 1.7 2004/06/07 16:02:23 ABX Exp $
 // Copyright:   (c) Aleksandras Gluchovas
-// Licence:       wxWindows licence
+// Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
 
 #ifdef __GNUG__
@@ -66,10 +66,10 @@ cbRowDragPlugin::cbRowDragPlugin(void)
       mTrianInnerColor     ( 0,0,255 ),
       mTrianInnerPen       ( mTrianInnerColor, 1, wxSOLID ),
  
-      mDragStarted         ( FALSE ),
-      mDecisionMode        ( FALSE ),
+      mDragStarted         ( false ),
+      mDecisionMode        ( false ),
       mCurDragOfs          ( 0 ),
-      mCaptureIsOn         ( FALSE ),
+      mCaptureIsOn         ( false ),
       mSvTopMargin         ( -1 ),
       mSvBottomMargin      ( -1 ),
       mSvLeftMargin        ( -1 ),
@@ -95,10 +95,10 @@ cbRowDragPlugin::cbRowDragPlugin( wxFrameLayout* pLayout, int paneMask )
       mTrianInnerColor     ( 0,0,255 ),
       mTrianInnerPen       ( mTrianInnerColor, 1, wxSOLID ),
    
-      mDragStarted         ( FALSE ),
-      mDecisionMode        ( FALSE ),
+      mDragStarted         ( false ),
+      mDecisionMode        ( false ),
       mCurDragOfs          ( 0 ),
-      mCaptureIsOn         ( FALSE ),
+      mCaptureIsOn         ( false ),
       mSvTopMargin         ( -1 ),
       mSvBottomMargin      ( -1 ),
       mSvLeftMargin        ( -1 ),
@@ -152,8 +152,8 @@ void cbRowDragPlugin::OnMouseMove( cbMotionEvent& event )
                 //wxPoint drg = mDragOrigin;
                 //int dif = event.mPos.x - mDragOrigin.x;
 
-                mDragStarted  = TRUE;
-                mDecisionMode = FALSE;
+                mDragStarted  = true;
+                mDecisionMode = false;
                 mDragOrigin   = pos;
 
                 PrepareForRowDrag();
@@ -166,16 +166,16 @@ void cbRowDragPlugin::OnMouseMove( cbMotionEvent& event )
 
         cbRowInfo* pRow = GetFirstRow();
 
-        bool focusFound = FALSE;
+        bool focusFound = false;
 
         while( pRow )
         {
             if ( HitTestRowDragHint( pRow, pos ) )
             {
                 CheckPrevItemInFocus( pRow, -1 );
-                SetMouseCapture( TRUE );
+                SetMouseCapture( true );
 
-                focusFound = TRUE;
+                focusFound = true;
 
                 mpRowInFocus          = pRow;
                 mCollapsedIconInFocus = -1;
@@ -194,9 +194,9 @@ void cbRowDragPlugin::OnMouseMove( cbMotionEvent& event )
                 if ( HitTestCollapsedRowIcon( i, pos ) )
                 {
                     CheckPrevItemInFocus( NULL, i );
-                    SetMouseCapture( TRUE );
+                    SetMouseCapture( true );
 
-                    focusFound = TRUE;
+                    focusFound = true;
 
                     mCollapsedIconInFocus = i;
                     mpRowInFocus          = NULL;
@@ -212,7 +212,7 @@ void cbRowDragPlugin::OnMouseMove( cbMotionEvent& event )
 
             mpRowInFocus          = NULL;
             mCollapsedIconInFocus = -1;
-            SetMouseCapture( FALSE );
+            SetMouseCapture( false );
         }
 
         if ( !ItemIsInFocus() ) 
@@ -226,21 +226,11 @@ void cbRowDragPlugin::OnMouseMove( cbMotionEvent& event )
 
         if ( mpPane->IsHorizontal() )
         {
-            // DBG::
-            wxPoint p = event.mPos;
-            wxPoint d = mDragOrigin;
-//            int dif = event.mPos.x - mDragOrigin.x;
-
             // row is dragged up or down;
             ShowDraggedRow( pos.y - mDragOrigin.y );
         }
         else
         {
-            // DBG::
-            wxPoint p = event.mPos;
-            wxPoint d = mDragOrigin;
-//            int dif = event.mPos.x - mDragOrigin.x;
-
             // row is dragged left or right
             ShowDraggedRow( pos.x - mDragOrigin.x );
         }
@@ -258,14 +248,14 @@ void cbRowDragPlugin::OnLButtonDown( cbLeftDownEvent& event )
 
     if ( ItemIsInFocus() )
     {
-        mDecisionMode = TRUE;
+        mDecisionMode = true;
 
         wxPoint pos = event.mPos;
         mpPane->PaneToFrame( &pos.x, &pos.y );
 
         mDragOrigin = pos;
 
-        SetMouseCapture( TRUE );
+        SetMouseCapture( true );
     }
     else
         // propagate event to other plugins
@@ -286,10 +276,10 @@ void cbRowDragPlugin::OnLButtonUp  ( cbLeftUpEvent& event )
     {
         cbDockPane* pPane = mpPane;
 
-        SetMouseCapture( FALSE );
+        SetMouseCapture( false );
 
-        mDecisionMode = FALSE;
-        mDragStarted  = FALSE;
+        mDecisionMode = false;
+        mDragStarted  = false;
 
         wxPoint frmPos = event.mPos;
         pPane->PaneToFrame( &frmPos.x, &frmPos.y );
@@ -332,19 +322,19 @@ void cbRowDragPlugin::OnLButtonUp  ( cbLeftUpEvent& event )
 
         mpLayout->GetUpdatesManager().OnStartChanges();
 
-        pRow->mUMgrData.SetDirty(TRUE);
+        pRow->mUMgrData.SetDirty(true);
 
         cbBarInfo* pBar = mpRowInFocus->mBars[0];
 
         while ( pBar )
         {
-            pBar->mUMgrData.SetDirty(TRUE);
+            pBar->mUMgrData.SetDirty(true);
 
             if ( pBar->mpBarWnd )
             {
                 // do complete refresh
-                pBar->mpBarWnd->Show(FALSE);
-                pBar->mpBarWnd->Show(TRUE);
+                pBar->mpBarWnd->Show(false);
+                pBar->mpBarWnd->Show(true);
             }
 
             pBar = pBar->mpNext;
@@ -365,15 +355,15 @@ void cbRowDragPlugin::OnLButtonUp  ( cbLeftUpEvent& event )
 
         mpRowInFocus = NULL;
 
-        mpLayout->RecalcLayout(FALSE);
+        mpLayout->RecalcLayout(false);
 
         // finish change "transaction"
         mpLayout->GetUpdatesManager().OnFinishChanges();
         mpLayout->GetUpdatesManager().UpdateNow();
 
         // finish drag action
-        SetMouseCapture( FALSE );
-        mDragStarted = FALSE;
+        SetMouseCapture( false );
+        mDragStarted = false;
     }
 }
 
@@ -388,7 +378,7 @@ void cbRowDragPlugin::OnDrawPaneBackground ( cbDrawPaneDecorEvent& event )
         // first, let other plugins add their decorations now
     
         GetNextHandler()->ProcessEvent( event );
-        event.Skip(FALSE);
+        event.Skip(false);
     }
 
     wxClientDC dc( &mpLayout->GetParentFrame() );
@@ -412,30 +402,30 @@ void cbRowDragPlugin::OnDrawPaneBackground ( cbDrawPaneDecorEvent& event )
 
     while( pRow )
     {
-        DrawRowDragHint( pRow, dc, FALSE );
+        DrawRowDragHint( pRow, dc, false );
         pRow = pRow->mpNext;
     }
 
     for( int i = 0; i != cnt; ++i )
 
-        DrawCollapsedRowIcon(i, dc, FALSE );
+        DrawCollapsedRowIcon(i, dc, false );
 }
 
 int cbRowDragPlugin::GetHRowsCountForPane( cbDockPane* pPane )
 {
-    wxNode* pNode = mHiddenBars.First();
+    wxNode* pNode = mHiddenBars.GetFirst();
 
     int maxIconNo = -1;
 
     while( pNode )
     {
-        cbHiddenBarInfo* pHBInfo = (cbHiddenBarInfo*)pNode->Data();
+        cbHiddenBarInfo* pHBInfo = (cbHiddenBarInfo*)pNode->GetData();
 
         if ( pHBInfo->mAlignment == pPane->mAlignment )
 
             maxIconNo = wxMax( maxIconNo, pHBInfo->mIconNo );
 
-        pNode = pNode->Next();
+        pNode = pNode->GetNext();
     }
 
     return ( maxIconNo + 1 );
@@ -524,11 +514,11 @@ void cbRowDragPlugin::UnhighlightItemInFocus()
 
     if ( mpRowInFocus ) 
 
-        DrawRowDragHint( mpRowInFocus, dc, FALSE );
+        DrawRowDragHint( mpRowInFocus, dc, false );
     else
     if ( mCollapsedIconInFocus != - 1 )
 
-        DrawCollapsedRowIcon( mCollapsedIconInFocus, dc, FALSE );
+        DrawCollapsedRowIcon( mCollapsedIconInFocus, dc, false );
 }
 
 void cbRowDragPlugin::ShowDraggedRow( int offset )
@@ -771,7 +761,7 @@ void cbRowDragPlugin::CollapseRow( cbRowInfo* pRow )
         // hide it
         if ( pBar->mpBarWnd )
 
-            pBar->mpBarWnd->Show( FALSE );
+            pBar->mpBarWnd->Show( false );
 
         pBar->mState = wxCBAR_HIDDEN;
 
@@ -791,7 +781,7 @@ void cbRowDragPlugin::CollapseRow( cbRowInfo* pRow )
 
     SetPaneMargins();
 
-    mpLayout->RecalcLayout(FALSE);
+    mpLayout->RecalcLayout(false);
 
     mpRowInFocus = NULL;
 
@@ -805,7 +795,7 @@ void cbRowDragPlugin::ExpandRow( int collapsedIconIdx )
 
     cbRowInfo* pNewRow = new cbRowInfo();
 
-    wxNode* pNode = mHiddenBars.First();
+    wxNode* pNode = mHiddenBars.GetFirst();
 
     int rowNo = 0;
 
@@ -813,7 +803,7 @@ void cbRowDragPlugin::ExpandRow( int collapsedIconIdx )
 
     while( pNode )
     {
-        cbHiddenBarInfo* pHBInfo = (cbHiddenBarInfo*)pNode->Data();
+        cbHiddenBarInfo* pHBInfo = (cbHiddenBarInfo*)pNode->GetData();
 
         if ( pHBInfo->mAlignment     == mpPane->mAlignment &&
              pHBInfo->mIconNo        == collapsedIconIdx   )
@@ -831,7 +821,7 @@ void cbRowDragPlugin::ExpandRow( int collapsedIconIdx )
 
             // remove bar info from internal list
 
-            wxNode* pNext = pNode->Next();
+            wxNode* pNext = pNode->GetNext();
 
             delete pHBInfo;
             mHiddenBars.DeleteNode( pNode );
@@ -848,7 +838,7 @@ void cbRowDragPlugin::ExpandRow( int collapsedIconIdx )
 
                 --pHBInfo->mIconNo;
 
-            pNode = pNode->Next();
+            pNode = pNode->GetNext();
         }
     }
 
@@ -867,7 +857,7 @@ void cbRowDragPlugin::ExpandRow( int collapsedIconIdx )
 
     SetPaneMargins();
 
-    mpLayout->RecalcLayout(FALSE);
+    mpLayout->RecalcLayout(false);
 
     mCollapsedIconInFocus = -1;
 
@@ -889,7 +879,7 @@ void cbRowDragPlugin::ExpandRow( int collapsedIconIdx )
 
     SetPaneMargins();
 
-    mpLayout->RecalcLayout(FALSE);
+    mpLayout->RecalcLayout(false);
 
     mCollapsedIconInFocus = -1;
 
@@ -915,7 +905,7 @@ void cbRowDragPlugin::InsertDraggedRowBefore( cbRowInfo* pBeforeRow )
         //wxClientDC dc( &mpLayout->GetParentFrame() );
 
         //mpPane->PaintRow( mpRowInFocus, dc );
-        //DrawRowDragHint( mpRowInFocus, dc, FALSE );
+        //DrawRowDragHint( mpRowInFocus, dc, false );
     }
 }
 
@@ -935,12 +925,12 @@ void cbRowDragPlugin::CheckPrevItemInFocus( cbRowInfo* pRow, int iconIdx )
 
     if ( iconIdx != - 1 )
     
-        DrawCollapsedRowIcon( iconIdx, dc, TRUE );
+        DrawCollapsedRowIcon( iconIdx, dc, true );
 
     else
     if ( pRow != NULL )
 
-        DrawRowDragHint( pRow, dc, TRUE );
+        DrawRowDragHint( pRow, dc, true );
 }
 
 cbRowInfo* cbRowDragPlugin::GetFirstRow()
@@ -1409,7 +1399,7 @@ void cbRowDragPlugin::DrawRowDragHint( cbRowInfo* pRow , wxDC& dc, bool isHighli
     }
 }
 
-void cbRowDragPlugin::DrawRowsDragHintsBorder( wxDC& dc )
+void cbRowDragPlugin::DrawRowsDragHintsBorder( wxDC& WXUNUSED(dc) )
 {
     // FIXME:: what was that?
 }

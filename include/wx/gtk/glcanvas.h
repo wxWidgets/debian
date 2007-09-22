@@ -1,20 +1,20 @@
 /////////////////////////////////////////////////////////////////////////////
 // Name:        glcanvas.h
-// Purpose:     wxGLCanvas, for using OpenGL/Mesa with wxWindows and GTK
+// Purpose:     wxGLCanvas, for using OpenGL/Mesa with wxWidgets and GTK
 // Author:      Robert Roebling
 // Modified by:
 // Created:     17/8/98
-// RCS-ID:      $Id: glcanvas.h,v 1.6.2.1 2002/12/02 21:21:23 VZ Exp $
+// RCS-ID:      $Id: glcanvas.h,v 1.11 2004/07/25 16:36:43 VZ Exp $
 // Copyright:   (c) Robert Roebling
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
 
-#if defined(__GNUG__) && !defined(__APPLE__)
-#pragma interface "glcanvas.h"
-#endif
-
 #ifndef _WX_GLCANVAS_H_
 #define _WX_GLCANVAS_H_
+
+#if defined(__GNUG__) && !defined(NO_GCC_PRAGMA)
+#pragma interface "glcanvas.h"
+#endif
 
 #include "wx/scrolwin.h"
 #include "wx/app.h"

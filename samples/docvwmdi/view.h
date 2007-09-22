@@ -4,8 +4,8 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     04/01/98
-// RCS-ID:      $Id: view.h,v 1.7 2002/08/20 09:09:53 JS Exp $
-// Copyright:   (c) Julian Smart and Markus Holzem
+// RCS-ID:      $Id: view.h,v 1.9 2004/05/27 18:17:50 ABX Exp $
+// Copyright:   (c) Julian Smart
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
 
@@ -51,7 +51,7 @@ public:
     bool OnCreate(wxDocument *doc, long flags);
     void OnDraw(wxDC *dc);
     void OnUpdate(wxView *sender, wxObject *hint = (wxObject *) NULL);
-    bool OnClose(bool deleteWindow = TRUE);
+    bool OnClose(bool deleteWindow = true);
 
     void OnCut(wxCommandEvent& event);
 
@@ -72,7 +72,7 @@ public:
     bool OnCreate(wxDocument *doc, long flags);
     void OnDraw(wxDC *dc);
     void OnUpdate(wxView *sender, wxObject *hint = (wxObject *) NULL);
-    bool OnClose(bool deleteWindow = TRUE);
+    bool OnClose(bool deleteWindow = true);
     
 private:
   DECLARE_DYNAMIC_CLASS(TextEditView)

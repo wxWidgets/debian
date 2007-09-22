@@ -1,4 +1,4 @@
-/* $Header: /pack/cvsroots/wxwindows/wxWindows/src/tiff/tiffiop.h,v 1.3.2.1 2002/11/10 13:13:58 JS Exp $ */
+/* $Header: /pack/cvsroots/wxwindows/wxWindows/src/tiff/tiffiop.h,v 1.5 2003/07/08 23:19:01 VZ Exp $ */
 
 /*
  * Copyright (c) 1988-1997 Sam Leffler
@@ -213,7 +213,7 @@ extern	void _TIFFSwab64BitData(TIFF*, tidata_t, tsize_t);
 extern	int  TIFFFlushData1(TIFF*);
 extern	void  TIFFFreeDirectory(TIFF*);
 extern	int  TIFFDefaultDirectory(TIFF*);
-extern	int  TIFFSetCompressionScheme(TIFF*, int);
+extern	int  TIFFSetCompressionScheme(TIFF*, uint16);
 extern	int  TIFFSetDefaultCompressionState(TIFF*);
 extern	uint32 _TIFFDefaultStripSize(TIFF*, uint32);
 extern	void _TIFFDefaultTileSize(TIFF*, uint32*, uint32*);

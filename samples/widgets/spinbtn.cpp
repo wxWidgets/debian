@@ -1,10 +1,10 @@
 /////////////////////////////////////////////////////////////////////////////
-// Program:     wxWindows Widgets Sample
+// Program:     wxWidgets Widgets Sample
 // Name:        spinbtn.cpp
 // Purpose:     Part of the widgets sample showing wxSpinButton
 // Author:      Vadim Zeitlin
 // Created:     16.04.01
-// Id:          $Id: spinbtn.cpp,v 1.6 2002/08/01 19:12:24 MBN Exp $
+// Id:          $Id: spinbtn.cpp,v 1.15 2004/10/04 20:25:15 ABX Exp $
 // Copyright:   (c) 2001 Vadim Zeitlin
 // License:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -28,6 +28,7 @@
 #ifndef WX_PRECOMP
     #include "wx/log.h"
 
+    #include "wx/bitmap.h"
     #include "wx/button.h"
     #include "wx/checkbox.h"
     #include "wx/radiobox.h"
@@ -41,7 +42,7 @@
 #include "wx/sizer.h"
 
 #include "widgets.h"
-#if 1
+#if wxUSE_SPINBTN
 #include "icons/spinbtn.xpm"
 
 // ----------------------------------------------------------------------------
@@ -71,7 +72,7 @@ class SpinBtnWidgetsPage : public WidgetsPage
 {
 public:
     SpinBtnWidgetsPage(wxNotebook *notebook, wxImageList *imaglist);
-    virtual ~SpinBtnWidgetsPage();
+    virtual ~SpinBtnWidgetsPage(){};
 
 protected:
     // event handlers
@@ -82,10 +83,10 @@ protected:
 
     void OnCheckOrRadioBox(wxCommandEvent& event);
 
-    void OnSpinBtn(wxCommandEvent& event);
-    void OnSpinBtnUp(wxCommandEvent& event);
-    void OnSpinBtnDown(wxCommandEvent& event);
-    void OnSpinCtrl(wxCommandEvent& event);
+    void OnSpinBtn(wxSpinEvent& event);
+    void OnSpinBtnUp(wxSpinEvent& event);
+    void OnSpinBtnDown(wxSpinEvent& event);
+    void OnSpinCtrl(wxSpinEvent& event);
 
     void OnUpdateUIValueButton(wxUpdateUIEvent& event);
     void OnUpdateUIMinMaxButton(wxUpdateUIEvent& event);
@@ -151,8 +152,8 @@ BEGIN_EVENT_TABLE(SpinBtnWidgetsPage, WidgetsPage)
     EVT_SPIN_DOWN(SpinBtnPage_SpinBtn, SpinBtnWidgetsPage::OnSpinBtnDown)
     EVT_SPINCTRL(SpinBtnPage_SpinCtrl, SpinBtnWidgetsPage::OnSpinCtrl)
 
-    EVT_CHECKBOX(-1, SpinBtnWidgetsPage::OnCheckOrRadioBox)
-    EVT_RADIOBOX(-1, SpinBtnWidgetsPage::OnCheckOrRadioBox)
+    EVT_CHECKBOX(wxID_ANY, SpinBtnWidgetsPage::OnCheckOrRadioBox)
+    EVT_RADIOBOX(wxID_ANY, SpinBtnWidgetsPage::OnCheckOrRadioBox)
 END_EVENT_TABLE()
 
 // ============================================================================
@@ -187,7 +188,7 @@ SpinBtnWidgetsPage::SpinBtnWidgetsPage(wxNotebook *notebook,
     wxSizer *sizerTop = new wxBoxSizer(wxHORIZONTAL);
 
     // left pane
-    wxStaticBox *box = new wxStaticBox(this, -1, _T("&Set style"));
+    wxStaticBox *box = new wxStaticBox(this, wxID_ANY, _T("&Set style"));
     wxSizer *sizerLeft = new wxStaticBoxSizer(box, wxVERTICAL);
 
     m_chkVert = CreateCheckBoxAndAddToSizer(sizerLeft, _T("&Vertical"));
@@ -199,14 +200,16 @@ SpinBtnWidgetsPage::SpinBtnWidgetsPage(wxNotebook *notebook,
     sizerLeft->Add(btn, 0, wxALIGN_CENTRE_HORIZONTAL | wxALL, 15);
 
     // middle pane
-    wxStaticBox *box2 = new wxStaticBox(this, -1, _T("&Change spinbtn value"));
+    wxStaticBox *box2 = new wxStaticBox(this, wxID_ANY,
+        _T("&Change spinbtn value"));
+
     wxSizer *sizerMiddle = new wxStaticBoxSizer(box2, wxVERTICAL);
 
     wxTextCtrl *text;
     wxSizer *sizerRow = CreateSizerWithTextAndLabel(_T("Current value"),
                                                     SpinBtnPage_CurValueText,
                                                     &text);
-    text->SetEditable(FALSE);
+    text->SetEditable(false);
 
     sizerMiddle->Add(sizerRow, 0, wxALL | wxGROW, 5);
 
@@ -221,7 +224,7 @@ SpinBtnWidgetsPage::SpinBtnWidgetsPage(wxNotebook *notebook,
                                             SpinBtnPage_MinText,
                                             &m_textMin);
 
-    m_textMax = new wxTextCtrl(this, SpinBtnPage_MaxText, _T(""));
+    m_textMax = new wxTextCtrl(this, SpinBtnPage_MaxText, wxEmptyString);
     sizerRow->Add(m_textMax, 1, wxLEFT | wxALIGN_CENTRE_VERTICAL, 5);
 
     m_textMin->SetValue( wxString::Format(_T("%d"), m_min) );
@@ -243,14 +246,9 @@ SpinBtnWidgetsPage::SpinBtnWidgetsPage(wxNotebook *notebook,
     sizerTop->Add(sizerRight, 1, wxGROW | (wxALL & ~wxRIGHT), 10);
 
     // final initializations
-    SetAutoLayout(TRUE);
     SetSizer(sizerTop);
 
     sizerTop->Fit(this);
-}
-
-SpinBtnWidgetsPage::~SpinBtnWidgetsPage()
-{
 }
 
 // ----------------------------------------------------------------------------
@@ -259,8 +257,8 @@ SpinBtnWidgetsPage::~SpinBtnWidgetsPage()
 
 void SpinBtnWidgetsPage::Reset()
 {
-    m_chkVert->SetValue(TRUE);
-    m_chkWrap->SetValue(FALSE);
+    m_chkVert->SetValue(true);
+    m_chkWrap->SetValue(false);
 }
 
 void SpinBtnWidgetsPage::CreateSpin()
@@ -285,13 +283,13 @@ void SpinBtnWidgetsPage::CreateSpin()
             val = valOld;
         }
 
-        m_sizerSpin->Remove(m_spinbtn);
-        m_sizerSpin->Remove(m_spinctrl);
+        m_sizerSpin->Detach( m_spinbtn );
+        m_sizerSpin->Detach( m_spinctrl );
 
         // there are 3 spacers left
-        m_sizerSpin->Remove((int)0);
-        m_sizerSpin->Remove((int)0);
-        m_sizerSpin->Remove((int)0);
+        m_sizerSpin->Remove( 0 );
+        m_sizerSpin->Remove( 0 );
+        m_sizerSpin->Remove( 0 );
 
         delete m_spinbtn;
         delete m_spinctrl;
@@ -383,7 +381,7 @@ void SpinBtnWidgetsPage::OnUpdateUIResetButton(wxUpdateUIEvent& event)
     event.Enable( !m_chkVert->GetValue() || m_chkWrap->GetValue() );
 }
 
-void SpinBtnWidgetsPage::OnCheckOrRadioBox(wxCommandEvent& event)
+void SpinBtnWidgetsPage::OnCheckOrRadioBox(wxCommandEvent& WXUNUSED(event))
 {
     CreateSpin();
 }
@@ -393,7 +391,7 @@ void SpinBtnWidgetsPage::OnUpdateUICurValueText(wxUpdateUIEvent& event)
     event.SetText( wxString::Format(_T("%d"), m_spinbtn->GetValue()));
 }
 
-void SpinBtnWidgetsPage::OnSpinBtn(wxCommandEvent& event)
+void SpinBtnWidgetsPage::OnSpinBtn(wxSpinEvent& event)
 {
     int value = event.GetInt();
 
@@ -403,19 +401,19 @@ void SpinBtnWidgetsPage::OnSpinBtn(wxCommandEvent& event)
     wxLogMessage(_T("Spin button value changed, now %d"), value);
 }
 
-void SpinBtnWidgetsPage::OnSpinBtnUp(wxCommandEvent& event)
+void SpinBtnWidgetsPage::OnSpinBtnUp(wxSpinEvent& event)
 {
     wxLogMessage( _T("Spin button value incremented, will be %ld (was %d)"),
                   event.GetInt(), m_spinbtn->GetValue() );
 }
 
-void SpinBtnWidgetsPage::OnSpinBtnDown(wxCommandEvent& event)
+void SpinBtnWidgetsPage::OnSpinBtnDown(wxSpinEvent& event)
 {
     wxLogMessage( _T("Spin button value decremented, will be %ld (was %d)"),
                   event.GetInt(), m_spinbtn->GetValue() );
 }
 
-void SpinBtnWidgetsPage::OnSpinCtrl(wxCommandEvent& event)
+void SpinBtnWidgetsPage::OnSpinCtrl(wxSpinEvent& event)
 {
     if (!m_spinctrl)
         return;
@@ -427,3 +425,4 @@ void SpinBtnWidgetsPage::OnSpinCtrl(wxCommandEvent& event)
     wxLogMessage(_T("Spin control value changed, now %d"), value);
 }
 #endif
+    // wxUSE_SPINBTN

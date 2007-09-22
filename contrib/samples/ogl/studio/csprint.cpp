@@ -4,9 +4,9 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     12/07/98
-// RCS-ID:      $Id: csprint.cpp,v 1.2 2001/10/30 13:28:45 GT Exp $
+// RCS-ID:      $Id: csprint.cpp,v 1.10 2004/07/23 18:04:07 ABX Exp $
 // Copyright:   (c) Julian Smart
-// Licence:   	wxWindows licence
+// Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
 
 #ifdef __GNUG__
@@ -24,7 +24,9 @@
 #include <wx/wx.h>
 #endif
 
-#include <wx/wxexpr.h>
+#include <wx/deprecated/setup.h>
+#include <wx/deprecated/wxexpr.h>
+
 #include <wx/clipbrd.h>
 
 #ifdef __WXMSW__
@@ -43,14 +45,14 @@ bool wxDiagramClipboard::Copy(wxDiagram* diagram)
 {
     DeleteAllShapes();
 
-    return DoCopy(diagram, this, FALSE, NULL);
+    return DoCopy(diagram, this, false, NULL);
 }
 
 // Copy contents to the diagram, with new ids.
 
 bool wxDiagramClipboard::Paste(wxDiagram* diagram, wxDC* dc, int offsetX, int offsetY)
 {
-    return DoCopy(this, diagram, TRUE, dc, offsetX, offsetY);
+    return DoCopy(this, diagram, true, dc, offsetX, offsetY);
 }
 
 // Universal copy function (to or from clipboard).
@@ -68,10 +70,10 @@ bool wxDiagramClipboard::DoCopy(wxDiagram* diagramFrom, wxDiagram* diagramTo, bo
 
     // First copy all node shapes.
     wxList* shapeList = diagramFrom->GetShapeList();
-    wxNode* node = shapeList->First();
+    wxObjectList::compatibility_iterator node = shapeList->GetFirst();
     while (node)
     {
-        wxShape* shape = (wxShape*) node->Data();
+        wxShape* shape = (wxShape*) node->GetData();
         if (((diagramFrom == this) || shape->Selected()) && !shape->IsKindOf(CLASSINFO(wxLineShape)))
         {
             wxShape* newShape = shape->CreateNewCopy();
@@ -88,13 +90,13 @@ bool wxDiagramClipboard::DoCopy(wxDiagram* diagramFrom, wxDiagram* diagramTo, bo
             OnAddShape(diagramTo, newShape, dc);
 
         }
-        node = node->Next();
+        node = node->GetNext();
     }
 
-    node = shapeList->First();
+    node = shapeList->GetFirst();
     while (node)
     {
-        wxShape* shape = (wxShape*) node->Data();
+        wxShape* shape = (wxShape*) node->GetData();
         if (((diagramFrom == this) || shape->Selected()) && shape->IsKindOf(CLASSINFO(wxLineShape)))
         {
             wxLineShape* lineShape = (wxLineShape*) shape;
@@ -110,8 +112,8 @@ bool wxDiagramClipboard::DoCopy(wxDiagram* diagramFrom, wxDiagram* diagramTo, bo
                 wxShape* fromShape = (wxShape*) mapping.Get((long) lineShape->GetFrom());
                 wxShape* toShape = (wxShape*) mapping.Get((long) lineShape->GetTo());
 
-                wxASSERT_MSG( (fromShape != NULL), "Could not find 'from' shape");
-                wxASSERT_MSG( (toShape != NULL), "Could not find 'to' shape");
+                wxASSERT_MSG( (fromShape != NULL), _T("Could not find 'from' shape"));
+                wxASSERT_MSG( (toShape != NULL), _T("Could not find 'to' shape"));
 
                 fromShape->AddLine(newShape, toShape, newShape->GetAttachmentFrom(),
                   newShape->GetAttachmentTo());
@@ -120,14 +122,14 @@ bool wxDiagramClipboard::DoCopy(wxDiagram* diagramFrom, wxDiagram* diagramTo, bo
 
             }
         }
-        node = node->Next();
+        node = node->GetNext();
     }
 
     // Now make sure line ordering is correct
-    node = shapeList->First();
+    node = shapeList->GetFirst();
     while (node)
     {
-        wxShape* shape = (wxShape*) node->Data();
+        wxShape* shape = (wxShape*) node->GetData();
         if (((diagramFrom == this) || shape->Selected()) && !shape->IsKindOf(CLASSINFO(wxLineShape)))
         {
             wxShape* newShape = (wxShape*) mapping.Get((long) shape);
@@ -135,31 +137,31 @@ bool wxDiagramClipboard::DoCopy(wxDiagram* diagramFrom, wxDiagram* diagramTo, bo
             // Make a list of all the new lines, in the same order as the old lines.
             // Then apply the list of new lines to the shape.
             wxList newLines;
-            wxNode* lineNode = shape->GetLines().First();
+            wxObjectList::compatibility_iterator lineNode = shape->GetLines().GetFirst();
             while (lineNode)
             {
-                wxLineShape* lineShape = (wxLineShape*) lineNode->Data();
+                wxLineShape* lineShape = (wxLineShape*) lineNode->GetData();
                 if ((diagramFrom == this) || (lineShape->GetTo()->Selected() && lineShape->GetFrom()->Selected()))
                 {
                     wxLineShape* newLineShape = (wxLineShape*) mapping.Get((long) lineShape);
 
-                    wxASSERT_MSG( (newLineShape != NULL), "Could not find new line shape");
+                    wxASSERT_MSG( (newLineShape != NULL), _T("Could not find new line shape"));
 
                     newLines.Append(newLineShape);
                 }
 
-                lineNode = lineNode->Next();
+                lineNode = lineNode->GetNext();
             }
 
-            if (newLines.Number() > 0)
+            if (newLines.GetCount() > 0)
                 newShape->ApplyAttachmentOrdering(newLines);
         }
-        node = node->Next();
+        node = node->GetNext();
     }
 
     OnEndCopy(diagramTo);
 
-    return TRUE;
+    return true;
 }
 
 #ifdef __WXMSW__
@@ -167,6 +169,7 @@ bool wxDiagramClipboard::DoCopy(wxDiagram* diagramFrom, wxDiagram* diagramTo, bo
 // these to the Windows clipboard
 bool wxDiagramClipboard::CopyToClipboard(double scale)
 {
+#if wxUSE_METAFILE
   // Make a metafile DC
   wxMetaFileDC mfDC;
   if (mfDC.Ok())
@@ -176,8 +179,8 @@ bool wxDiagramClipboard::CopyToClipboard(double scale)
     // Draw on metafile DC
     Redraw(mfDC);
 
-    int printWidth = mfDC.MaxX() - mfDC.MinX();
-    int printHeight = mfDC.MaxY() - mfDC.MinY();
+    // int printWidth = mfDC.MaxX() - mfDC.MinX();
+    // int printHeight = mfDC.MaxY() - mfDC.MinY();
     int maxX = (int)mfDC.MaxX();
     int maxY = (int)mfDC.MaxY();
     wxMetaFile *mf = mfDC.Close();
@@ -188,10 +191,10 @@ bool wxDiagramClipboard::CopyToClipboard(double scale)
     {
       delete newBitmap;
       
-      char buf[200];
-      sprintf(buf, "Sorry, could not allocate clipboard bitmap (%dx%d)", (maxX+10), (maxY+10));
-      wxMessageBox(buf, "Clipboard copy problem");
-      return FALSE;
+      wxChar buf[200];
+      wxSprintf(buf, _T("Sorry, could not allocate clipboard bitmap (%dx%d)"), (maxX+10), (maxY+10));
+      wxMessageBox(buf, _T("Clipboard copy problem"));
+      return false;
     }
 
     wxMemoryDC memDC;
@@ -228,7 +231,11 @@ bool wxDiagramClipboard::CopyToClipboard(double scale)
     delete mf;
 
   }
-  return TRUE;
+  return true;
+#else
+  wxMessageBox("wxUSE_METAFILE in build required to use Clipboard", _T("Clipboard copy problem"));
+  return false;
+#endif
 }
 #endif
     // __WXMSW__
@@ -241,10 +248,10 @@ bool wxDiagramClipboard::OnAddShape(wxDiagram* diagramTo, wxShape* newShape, wxD
 
     if (dc && (diagramTo != this))
     {
-        newShape->Select(TRUE, dc);
+        newShape->Select(true, dc);
     }
 
-    return TRUE;
+    return true;
 }
 
 /*
@@ -258,31 +265,31 @@ bool csDiagramClipboard::OnStartCopy(wxDiagram* diagramTo)
 {
     // Do nothing if copying to the clipboard
     if (diagramTo == this)
-        return TRUE;
+        return true;
 
     // Deselect all objects initially.
 
     csDiagram* diagram = (csDiagram*) diagramTo;
     csDiagramDocument* doc = diagram->GetDocument();
-    ((csDiagramView*)doc->GetFirstView())->SelectAll(FALSE);
+    ((csDiagramView*)doc->GetFirstView())->SelectAll(false);
 
-    m_currentCmd = new csDiagramCommand("Paste", doc);
+    m_currentCmd = new csDiagramCommand(_T("Paste"), doc);
 
-    return TRUE;
+    return true;
 }
 
 bool csDiagramClipboard::OnEndCopy(wxDiagram* diagramTo)
 {
     // Do nothing if copying to the clipboard
     if (diagramTo == this)
-        return TRUE;
+        return true;
 
     csDiagram* diagram = (csDiagram*) diagramTo;
     csDiagramDocument* doc = diagram->GetDocument();
 
     if (m_currentCmd)
     {
-        if (m_currentCmd->GetStates().Number() == 0)
+        if (m_currentCmd->GetStates().GetCount() == 0)
         {
             delete m_currentCmd;
         }
@@ -292,12 +299,12 @@ bool csDiagramClipboard::OnEndCopy(wxDiagram* diagramTo)
             m_currentCmd = NULL;
         }
     }
-    return TRUE;
+    return true;
 }
 
 // Use the command framework to add the shapes, if we're copying to a diagram and
 // not the clipboard.
-bool csDiagramClipboard::OnAddShape(wxDiagram* diagramTo, wxShape* newShape, wxDC* dc)
+bool csDiagramClipboard::OnAddShape(wxDiagram* diagramTo, wxShape* newShape, wxDC* WXUNUSED(dc))
 {
     if (diagramTo == this)
     {
@@ -306,7 +313,7 @@ bool csDiagramClipboard::OnAddShape(wxDiagram* diagramTo, wxShape* newShape, wxD
     else
     {
         csDiagram* diagram = (csDiagram*) diagramTo;
-        csDiagramDocument* doc = diagram->GetDocument();
+        /* csDiagramDocument* doc = */ diagram->GetDocument();
 
         if (newShape->IsKindOf(CLASSINFO(wxLineShape)))
             m_currentCmd->AddState(new csCommandState(ID_CS_ADD_LINE_SELECT, newShape, NULL));
@@ -314,7 +321,7 @@ bool csDiagramClipboard::OnAddShape(wxDiagram* diagramTo, wxShape* newShape, wxD
             m_currentCmd->AddState(new csCommandState(ID_CS_ADD_SHAPE_SELECT, newShape, NULL));
     }
 
-    return TRUE;
+    return true;
 }
 
 

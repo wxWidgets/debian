@@ -1,3 +1,76 @@
+wxwidgets2.5 (2.5.3.2) unstable; urgency=low
+
+  * This time, really now.
+    A snapshot that is actually ready for wider release.
+    Thanks to all who've been patient.  We know who you are.
+  * Update path to wxPython site-packages, build them with
+    --no_rpath since we will install the in tree build.
+
+ -- Ron Lee <ron@debian.org>  Thu, 11 Nov 2004 11:01:00 +1030
+
+wxwidgets2.5 (2.5.3.1) unstable; urgency=low
+
+  * Functioning concurrent installs for both the C++ libs
+    and wxPython along with legacy support for existing 2.4
+    users mean we can now safely introduce this release to
+    unstable without an adverse effect on existing users.
+
+ -- Ron Lee <ron@debian.org>  Sun, 31 Oct 2004 15:54:46 +1030
+
+wxwidgets2.5 (2.5.3.0) experimental; urgency=low
+
+  * Experimental prerelease.
+
+ -- Ron Lee <ron@debian.org>  Wed, 22 Sep 2004 03:29:56 +0930
+
+wxwidgets2.5 (2.5.2.3) experimental; urgency=low
+
+  * Greatly improved concurrent installs.  We can now install
+    a much wider range of builds without conflicting and select
+    between them without the need to go changing symlinks or
+    the suite of applications you have installed.
+  * Contrib is dead.  Long live contrib.
+    Better multi-library builds have made contrib more or less
+    obsolete.  This is the big crunch before the boom.  Everything
+    useful out of contrib has been moved back into the main package.
+    Later we will split many out again along the lines of shared
+    dependencies, so a minimal wx install really can remain minimal
+    without losing any future potential.
+
+ -- Ron Lee <ron@debian.org>  Sat, 18 Sep 2004 00:59:01 +0930
+
+wxwidgets2.5 (2.5.1.1) experimental; urgency=low
+
+  * The s/ndow/dget/g release.
+  * Yes, the name has changed and the terrorists have won again.
+    Having a name too similar to Lindows apparently makes us a
+    liability to the illusion their assailants will want to project
+    in court.  Eleven or so years of unbroken, unquestioned usage
+    was not nearly so interesting to these people as the fact we
+    were a soft target and easy to deprive of due process.
+  * wxGTK is now built with gtk2 and unicode support.
+  * wxBase is no longer a separate package, it is built with the
+    GUI libs which now depend on it.  We might split it out again
+    one day if there is a need for that.
+  * Added support for GNU/K*BSD (thanks again to Robert Millan).
+  * Non-core functionality is now provided by separate libraries
+    rather than simply being built into a single behemoth unit.
+    Of course, given the way these things work, almost none of
+    them are actually smaller, and the load time is unlikely to
+    improve either, but the logical separation may be beneficial.
+  * Removed many elements of the build scripts that are no longer
+    required due to improvements and changes elsewhere.
+  * Added README.examples for people who think these are packaged
+    as demos instead of as extended documentation.
+
+ -- Ron Lee <ron@debian.org>  Fri, 27 Feb 2004 17:00:29 +1030
+
+wxwindows2.5 (2.5.0) unstable; urgency=low
+
+  * New beginnings.  Back to development flavored chaos again.
+
+ -- Ron Lee <ron@debian.org>  Thu, 19 Dec 2002 01:08:50 -0800
+
 wxwindows2.4 (2.4.2.6) unstable; urgency=high
 
   * High urgency so as not to reset the shotclock for getting wx and
@@ -59,7 +132,7 @@ wxwindows2.4 (2.4.2.4) unstable; urgency=low
   * Enabled iostream support despite my opinion of this c++ 'feature'.
     Closes: #211050
   * Event handling for menus with bitmaps fixed.  Closes: #214788
-  * Includes fixed from cvs for wxHTTP and wxURL. Closes: #211023, #213600
+  * Includes fixes for wxHTTP and wxURL parsing. Closes: #211023, #213600
 
  -- Ron Lee <ron@debian.org>  Sat, 25 Oct 2003 13:48:07 +0930
 

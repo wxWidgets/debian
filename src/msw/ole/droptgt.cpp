@@ -4,9 +4,9 @@
 // Author:      Vadim Zeitlin
 // Modified by:
 // Created:
-// RCS-ID:      $Id: droptgt.cpp,v 1.29 2002/07/09 11:52:11 VZ Exp $
+// RCS-ID:      $Id: droptgt.cpp,v 1.39 2004/08/16 12:45:46 ABX Exp $
 // Copyright:   (c) 1998 Vadim Zeitlin <zeitlin@dptmaths.ens-cachan.fr>
-// Licence:     wxWindows license
+// Licence:     wxWindows licence
 ///////////////////////////////////////////////////////////////////////////////
 
 // ============================================================================
@@ -17,7 +17,7 @@
 // headers
 // ----------------------------------------------------------------------------
 
-#ifdef __GNUG__
+#if defined(__GNUG__) && !defined(NO_GCC_PRAGMA)
 #pragma implementation "droptgt.h"
 #endif
 
@@ -32,12 +32,18 @@
 
 #if wxUSE_OLE && wxUSE_DRAG_AND_DROP
 
+#include "wx/msw/private.h"
 #include "wx/log.h"
+
+#ifdef __WXWINCE__
+    #include <winreg.h>
+    #include <ole2.h>
+#endif
 
 #ifdef __WIN32__
     #if !defined(__GNUWIN32__) || wxUSE_NORLANDER_HEADERS
         #if wxCHECK_W32API_VERSION( 1, 0 )
-            #include <windows.h>
+            #include "wx/msw/wrapwin.h"
         #endif
         #include <shlobj.h>            // for DROPFILES structure
     #endif
@@ -46,11 +52,6 @@
 #endif
 
 #include "wx/dnd.h"
-
-#ifndef __WIN32__
-    #include <ole2.h>
-    #include <olestd.h>
-#endif
 
 #include "wx/msw/ole/oleutils.h"
 
@@ -85,6 +86,8 @@ protected:
 
     // get default drop effect for given keyboard flags
     static inline DWORD GetDropEffect(DWORD flags);
+
+    DECLARE_NO_COPY_CLASS(wxIDropTarget)
 };
 
 // ----------------------------------------------------------------------------
@@ -291,7 +294,7 @@ STDMETHODIMP wxIDropTarget::Drop(IDataObject *pIDataSource,
         }
         //else: *pdwEffect is already DROPEFFECT_NONE
     }
-    //else: OnDrop() returned FALSE, no need to copy data
+    //else: OnDrop() returned false, no need to copy data
 
     // release the held object
     RELEASE_AND_NULL(m_pIDataObject);
@@ -327,48 +330,70 @@ wxDropTarget::~wxDropTarget()
 
 bool wxDropTarget::Register(WXHWND hwnd)
 {
-    HRESULT hr = ::CoLockObjectExternal(m_pIDropTarget, TRUE, FALSE);
+    // FIXME
+    // RegisterDragDrop not available on Windows CE >= 400?
+    // Or maybe we can dynamically load them from ceshell.dll
+    // or similar.
+#if defined(__WXWINCE__) && _WIN32_WCE >= 400
+    return false;
+#else
+    HRESULT hr;
+
+    // May exist in later WinCE versions
+#ifndef __WXWINCE__
+    hr = ::CoLockObjectExternal(m_pIDropTarget, TRUE, FALSE);
     if ( FAILED(hr) ) {
         wxLogApiError(wxT("CoLockObjectExternal"), hr);
-        return FALSE;
+        return false;
     }
+#endif
 
     hr = ::RegisterDragDrop((HWND) hwnd, m_pIDropTarget);
     if ( FAILED(hr) ) {
+    // May exist in later WinCE versions
+#ifndef __WXWINCE__
         ::CoLockObjectExternal(m_pIDropTarget, FALSE, FALSE);
-
+#endif
         wxLogApiError(wxT("RegisterDragDrop"), hr);
-        return FALSE;
+        return false;
     }
 
     // we will need the window handle for coords transformation later
     m_pIDropTarget->SetHwnd((HWND)hwnd);
 
-    return TRUE;
+    return true;
+#endif
 }
 
 void wxDropTarget::Revoke(WXHWND hwnd)
 {
+#if defined(__WXWINCE__) && _WIN32_WCE >= 400
+    // Not available, see note above
+#else
     HRESULT hr = ::RevokeDragDrop((HWND) hwnd);
 
     if ( FAILED(hr) ) {
         wxLogApiError(wxT("RevokeDragDrop"), hr);
     }
 
+    // May exist in later WinCE versions
+#ifndef __WXWINCE__
     ::CoLockObjectExternal(m_pIDropTarget, FALSE, TRUE);
+#endif
 
     m_pIDropTarget->SetHwnd(0);
+#endif
 }
 
 // ----------------------------------------------------------------------------
 // base class pure virtuals
 // ----------------------------------------------------------------------------
 
-// OnDrop() is called only if we previously returned TRUE from
+// OnDrop() is called only if we previously returned true from
 // IsAcceptedData(), so no need to check anything here
 bool wxDropTarget::OnDrop(wxCoord WXUNUSED(x), wxCoord WXUNUSED(y))
 {
-    return TRUE;
+    return true;
 }
 
 // copy the data from the data source to the target data object
@@ -379,7 +404,7 @@ bool wxDropTarget::GetData()
         // this is strange because IsAcceptedData() succeeded previously!
         wxFAIL_MSG(wxT("strange - did supported formats list change?"));
 
-        return FALSE;
+        return false;
     }
 
     STGMEDIUM stm;
@@ -390,7 +415,7 @@ bool wxDropTarget::GetData()
     fmtMemory.lindex    = -1;
     fmtMemory.tymed     = TYMED_HGLOBAL;  // TODO to add other media
 
-    bool rc = FALSE;
+    bool rc = false;
 
     HRESULT hr = m_pIDataSource->GetData(&fmtMemory, &stm);
     if ( SUCCEEDED(hr) ) {
@@ -398,7 +423,7 @@ bool wxDropTarget::GetData()
 
         hr = dataObject->SetData(&fmtMemory, &stm, TRUE);
         if ( SUCCEEDED(hr) ) {
-            rc = TRUE;
+            rc = true;
         }
         else {
             wxLogApiError(wxT("IDataObject::SetData()"), hr);

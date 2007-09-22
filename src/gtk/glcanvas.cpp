@@ -1,17 +1,20 @@
 /////////////////////////////////////////////////////////////////////////////
 // Name:        gtk/glcanvas.cpp
-// Purpose:     wxGLCanvas, for using OpenGL/Mesa with wxWindows and GTK
+// Purpose:     wxGLCanvas, for using OpenGL/Mesa with wxWidgets and GTK
 // Author:      Robert Roebling
 // Modified by:
 // Created:     17/08/98
-// RCS-ID:      $Id: glcanvas.cpp,v 1.9.2.3 2003/05/06 07:01:14 RR Exp $
+// RCS-ID:      $Id: glcanvas.cpp,v 1.18 2004/10/12 14:10:06 RN Exp $
 // Copyright:   (c) Robert Roebling
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
 
-#ifdef __GNUG__
+#if defined(__GNUG__) && !defined(NO_GCC_PRAGMA)
 #pragma implementation "glcanvas.h"
 #endif
+
+// For compilers that support precompilation, includes "wx.h".
+#include "wx/wxprec.h"
 
 #include "wx/setup.h"
 
@@ -32,6 +35,10 @@ extern "C"
 }
 
 #include "wx/gtk/win_gtk.h"
+
+// DLL options compatibility check:
+#include "wx/build.h"
+WX_CHECK_BUILD_OPTIONS("wxGL")
 
 //---------------------------------------------------------------------------
 // global data
@@ -123,15 +130,12 @@ void wxGLContext::SetCurrent()
 
 void wxGLContext::SetColour(const wxChar *colour)
 {
-    float r = 0.0;
-    float g = 0.0;
-    float b = 0.0;
-    wxColour *col = wxTheColourDatabase->FindColour(colour);
-    if (col)
+    wxColour col = wxTheColourDatabase->Find(colour);
+    if (col.Ok())
     {
-        r = (float)(col->Red()/256.0);
-        g = (float)(col->Green()/256.0);
-        b = (float)(col->Blue()/256.0);
+        float r = (float)(col.Red()/256.0);
+        float g = (float)(col.Green()/256.0);
+        float b = (float)(col.Blue()/256.0);
         glColor3f( r, g, b);
     }
 }
@@ -156,10 +160,16 @@ wxPalette wxGLContext::CreateDefaultPalette()
 static gint
 gtk_glwindow_realized_callback( GtkWidget * WXUNUSED(widget), wxGLCanvas *win )
 {
-    wxGLContext *share= win->m_sharedContext;
-    if (share==NULL && win->m_sharedContextOf) share=win->m_sharedContextOf->GetContext();
+    // VZ: apparently in some cases we're called twice -- no idea why,
+    //     but a check doesn't hurt
+    if ( !win->m_glContext )
+    {
+        wxGLContext *share = win->m_sharedContext;
+        if ( !share && win->m_sharedContextOf )
+            share = win->m_sharedContextOf->GetContext();
 
-    win->m_glContext = new wxGLContext( TRUE, win, wxNullPalette, share );
+        win->m_glContext = new wxGLContext( TRUE, win, wxNullPalette, share );
+    }
 
     return FALSE;
 }
@@ -312,7 +322,7 @@ bool wxGLCanvas::Create( wxWindow *parent,
     wxCHECK_MSG( m_vi, FALSE, _T("required visual couldn't be found") );
 
     GdkVisual *visual = gdkx_visual_get( vi->visualid );
-    GdkColormap *colormap = gdk_colormap_new( gdkx_visual_get(vi->visualid), TRUE );
+    GdkColormap *colormap = gdk_colormap_new( visual, TRUE );
 
     gtk_widget_push_colormap( colormap );
     gtk_widget_push_visual( visual );
@@ -361,7 +371,7 @@ wxGLCanvas::~wxGLCanvas()
     XVisualInfo *vi = (XVisualInfo *) m_vi;
 
     if (vi && m_canFreeVi) XFree( vi );
-    if (m_glContext) delete m_glContext;
+    delete m_glContext;
 }
 
 void* wxGLCanvas::ChooseGLVisual(int *attribList)

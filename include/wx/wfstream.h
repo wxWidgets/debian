@@ -4,7 +4,7 @@
 // Author:      Guilhem Lavaux
 // Modified by:
 // Created:     11/07/98
-// RCS-ID:      $Id: wfstream.h,v 1.11 2002/08/31 11:29:11 GD Exp $
+// RCS-ID:      $Id: wfstream.h,v 1.20 2004/11/10 21:10:16 VZ Exp $
 // Copyright:   (c) Guilhem Lavaux
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -12,7 +12,7 @@
 #ifndef _WX_WXFSTREAM_H__
 #define _WX_WXFSTREAM_H__
 
-#if defined(__GNUG__) && !defined(__APPLE__)
+#if defined(__GNUG__) && !defined(NO_GCC_PRAGMA)
 #pragma interface "wfstream.h"
 #endif
 
@@ -30,14 +30,14 @@
 // wxFileStream using wxFile
 // ----------------------------------------------------------------------------
 
-class WXDLLEXPORT wxFileInputStream: public wxInputStream {
+class WXDLLIMPEXP_BASE wxFileInputStream: public wxInputStream {
  public:
   wxFileInputStream(const wxString& ifileName);
   wxFileInputStream(wxFile& file);
   wxFileInputStream(int fd);
   ~wxFileInputStream();
 
-  size_t GetSize() const;
+  wxFileOffset GetLength() const;
 
   bool Ok() const { return m_file->IsOpened(); }
 
@@ -45,15 +45,17 @@ class WXDLLEXPORT wxFileInputStream: public wxInputStream {
   wxFileInputStream();
 
   size_t OnSysRead(void *buffer, size_t size);
-  off_t OnSysSeek(off_t pos, wxSeekMode mode);
-  off_t OnSysTell() const;
+  wxFileOffset OnSysSeek(wxFileOffset pos, wxSeekMode mode);
+  wxFileOffset OnSysTell() const;
 
  protected:
   wxFile *m_file;
   bool m_file_destroy;
+
+    DECLARE_NO_COPY_CLASS(wxFileInputStream)
 };
 
-class WXDLLEXPORT wxFileOutputStream: public wxOutputStream {
+class WXDLLIMPEXP_BASE wxFileOutputStream: public wxOutputStream {
  public:
   wxFileOutputStream(const wxString& fileName);
   wxFileOutputStream(wxFile& file);
@@ -65,7 +67,7 @@ class WXDLLEXPORT wxFileOutputStream: public wxOutputStream {
 //     { return wxOutputStream::Write(buffer, size); }
 
   void Sync();
-  size_t GetSize() const;
+  wxFileOffset GetLength() const;
 
   bool Ok() const { return m_file->IsOpened(); }
 
@@ -73,31 +75,38 @@ class WXDLLEXPORT wxFileOutputStream: public wxOutputStream {
   wxFileOutputStream();
 
   size_t OnSysWrite(const void *buffer, size_t size);
-  off_t OnSysSeek(off_t pos, wxSeekMode mode);
-  off_t OnSysTell() const;
+  wxFileOffset OnSysSeek(wxFileOffset pos, wxSeekMode mode);
+  wxFileOffset OnSysTell() const;
 
  protected:
   wxFile *m_file;
   bool m_file_destroy;
+
+    DECLARE_NO_COPY_CLASS(wxFileOutputStream)
 };
 
-class WXDLLEXPORT wxFileStream: public wxFileInputStream, public wxFileOutputStream {
- public:
-  wxFileStream(const wxString& fileName);
+class WXDLLIMPEXP_BASE wxFileStream : public wxFileInputStream,
+                                      public wxFileOutputStream
+{
+public:
+    wxFileStream(const wxString& fileName);
+
+private:
+    DECLARE_NO_COPY_CLASS(wxFileStream)
 };
 
 // ----------------------------------------------------------------------------
 // wxFFileStream using wxFFile
 // ----------------------------------------------------------------------------
 
-class WXDLLEXPORT wxFFileInputStream: public wxInputStream {
+class WXDLLIMPEXP_BASE wxFFileInputStream: public wxInputStream {
  public:
   wxFFileInputStream(const wxString& ifileName);
   wxFFileInputStream(wxFFile& file);
   wxFFileInputStream(FILE *file);
   ~wxFFileInputStream();
 
-  size_t GetSize() const;
+  wxFileOffset GetLength() const;
 
   bool Ok() const { return m_file->IsOpened(); }
 
@@ -105,15 +114,17 @@ class WXDLLEXPORT wxFFileInputStream: public wxInputStream {
   wxFFileInputStream();
 
   size_t OnSysRead(void *buffer, size_t size);
-  off_t OnSysSeek(off_t pos, wxSeekMode mode);
-  off_t OnSysTell() const;
+  wxFileOffset OnSysSeek(wxFileOffset pos, wxSeekMode mode);
+  wxFileOffset OnSysTell() const;
 
  protected:
   wxFFile *m_file;
   bool m_file_destroy;
+
+    DECLARE_NO_COPY_CLASS(wxFFileInputStream)
 };
 
-class WXDLLEXPORT wxFFileOutputStream: public wxOutputStream {
+class WXDLLIMPEXP_BASE wxFFileOutputStream: public wxOutputStream {
  public:
   wxFFileOutputStream(const wxString& fileName);
   wxFFileOutputStream(wxFFile& file);
@@ -125,7 +136,7 @@ class WXDLLEXPORT wxFFileOutputStream: public wxOutputStream {
 //     { return wxOutputStream::Write(buffer, size); }
 
   void Sync();
-  size_t GetSize() const;
+  wxFileOffset GetLength() const;
 
   bool Ok() const { return m_file->IsOpened(); }
 
@@ -133,18 +144,26 @@ class WXDLLEXPORT wxFFileOutputStream: public wxOutputStream {
   wxFFileOutputStream();
 
   size_t OnSysWrite(const void *buffer, size_t size);
-  off_t OnSysSeek(off_t pos, wxSeekMode mode);
-  off_t OnSysTell() const;
+  wxFileOffset OnSysSeek(wxFileOffset pos, wxSeekMode mode);
+  wxFileOffset OnSysTell() const;
 
  protected:
   wxFFile *m_file;
   bool m_file_destroy;
+
+    DECLARE_NO_COPY_CLASS(wxFFileOutputStream)
 };
 
-class WXDLLEXPORT wxFFileStream: public wxFFileInputStream, public wxFFileOutputStream {
- public:
-  wxFFileStream(const wxString& fileName);
+class WXDLLIMPEXP_BASE wxFFileStream : public wxFFileInputStream,
+                                       public wxFFileOutputStream
+{
+public:
+    wxFFileStream(const wxString& fileName);
+
+private:
+    DECLARE_NO_COPY_CLASS(wxFFileStream)
 };
+
 #endif
   // wxUSE_STREAMS && wxUSE_FILE
 

@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     22/6/2000
-// RCS-ID:      $Id: quantize.h,v 1.5 2002/08/31 11:29:11 GD Exp $
+// RCS-ID:      $Id: quantize.h,v 1.7 2004/09/20 11:31:41 ABX Exp $
 // Copyright:   (c) Julian Smart
 // Licence:
 /////////////////////////////////////////////////////////////////////////////
@@ -17,7 +17,7 @@
  * For conditions of distribution and use, see the accompanying README file.
  */
 
-#if defined(__GNUG__) && !defined(__APPLE__)
+#if defined(__GNUG__) && !defined(NO_GCC_PRAGMA)
 #pragma interface "quantize.h"
 #endif
 
@@ -65,7 +65,7 @@ DECLARE_DYNAMIC_CLASS(wxQuantize)
 //// Helpers
 
     // Converts input bitmap(s) into 8bit representation with custom palette
-    
+
     // in_rows and out_rows are arrays [0..h-1] of pointer to rows
     // (in_rows contains w * 3 bytes per row, out_rows w bytes per row)
     // fills out_rows with indexes into palette (which is also stored into palette variable)

@@ -4,9 +4,9 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     12/07/98
-// RCS-ID:      $Id: doc.cpp,v 1.2.2.1 2003/06/05 17:26:32 JS Exp $
+// RCS-ID:      $Id: doc.cpp,v 1.8 2004/07/22 19:01:40 ABX Exp $
 // Copyright:   (c) Julian Smart
-// Licence:   	wxWindows licence
+// Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
 
 #ifdef __GNUG__
@@ -24,8 +24,6 @@
 #include <wx/wx.h>
 #endif
 
-#include <wx/wxexpr.h>
-
 #include "studio.h"
 #include "doc.h"
 #include "view.h"
@@ -33,7 +31,7 @@
 
 IMPLEMENT_DYNAMIC_CLASS(csDiagramDocument, wxDocument)
 
-#ifdef _MSC_VER
+#ifdef __VISUALC__
 #pragma warning(disable:4355)
 #endif
 
@@ -41,7 +39,7 @@ csDiagramDocument::csDiagramDocument():m_diagram(this)
 {
 }
 
-#ifdef _MSC_VER
+#ifdef __VISUALC__
 #pragma warning(default:4355)
 #endif
 
@@ -52,61 +50,57 @@ csDiagramDocument::~csDiagramDocument()
 bool csDiagramDocument::OnCloseDocument()
 {
   m_diagram.DeleteAllShapes();
-  return TRUE;
+  return true;
 }
 
 bool csDiagramDocument::OnSaveDocument(const wxString& file)
 {
-  if (file == "")
-    return FALSE;
+  if (file == wxEmptyString)
+    return false;
 
-#if wxUSE_PROLOGIO
   if (!m_diagram.SaveFile(file))
   {
     wxString msgTitle;
-    if (wxTheApp->GetAppName() != "")
+    if (wxTheApp->GetAppName() != wxEmptyString)
         msgTitle = wxTheApp->GetAppName();
     else
-        msgTitle = wxString("File error");
+        msgTitle = wxString(_T("File error"));
 
-    (void)wxMessageBox("Sorry, could not open this file for saving.", msgTitle, wxOK | wxICON_EXCLAMATION,
+    (void)wxMessageBox(_T("Sorry, could not open this file for saving."), msgTitle, wxOK | wxICON_EXCLAMATION,
       GetDocumentWindow());
-    return FALSE;
+    return false;
   }
-#endif
 
-  Modify(FALSE);
+  Modify(false);
   SetFilename(file);
-  return TRUE;
+  return true;
 }
-	
+
 bool csDiagramDocument::OnOpenDocument(const wxString& file)
 {
   if (!OnSaveModified())
-    return FALSE;
+    return false;
 
   wxString msgTitle;
-  if (wxTheApp->GetAppName() != "")
+  if (wxTheApp->GetAppName() != wxEmptyString)
     msgTitle = wxTheApp->GetAppName();
   else
-    msgTitle = wxString("File error");
+    msgTitle = wxString(_T("File error"));
 
   m_diagram.DeleteAllShapes();
-#if wxUSE_PROLOGIO
   if (!m_diagram.LoadFile(file))
   {
-    (void)wxMessageBox("Sorry, could not open this file.", msgTitle, wxOK|wxICON_EXCLAMATION,
+    (void)wxMessageBox(_T("Sorry, could not open this file."), msgTitle, wxOK|wxICON_EXCLAMATION,
      GetDocumentWindow());
-    return FALSE;
+    return false;
   }
-#endif
-  SetFilename(file, TRUE);
-  Modify(FALSE);
+  SetFilename(file, true);
+  Modify(false);
   UpdateAllViews();
   
-  return TRUE;
+  return true;
 }
-	
+
 
 /*
  * Implementation of drawing command
@@ -114,7 +108,7 @@ bool csDiagramDocument::OnOpenDocument(const wxString& file)
 
 csDiagramCommand::csDiagramCommand(const wxString& name, csDiagramDocument *doc,
     csCommandState* onlyState):
-  wxCommand(TRUE, name)
+  wxCommand(true, name)
 {
   m_doc = doc;
 
@@ -126,12 +120,12 @@ csDiagramCommand::csDiagramCommand(const wxString& name, csDiagramDocument *doc,
 
 csDiagramCommand::~csDiagramCommand()
 {
-    wxNode* node = m_states.First();
+    wxObjectList::compatibility_iterator node = m_states.GetFirst();
     while (node)
     {
-        csCommandState* state = (csCommandState*) node->Data();
+        csCommandState* state = (csCommandState*) node->GetData();
         delete state;
-        node = node->Next();
+        node = node->GetNext();
     }
 }
 
@@ -153,68 +147,68 @@ void csDiagramCommand::InsertState(csCommandState* state)
 // Schedule all lines connected to the states to be cut.
 void csDiagramCommand::RemoveLines()
 {
-    wxNode* node = m_states.First();
+    wxObjectList::compatibility_iterator node = m_states.GetFirst();
     while (node)
     {
-        csCommandState* state = (csCommandState*) node->Data();
+        csCommandState* state = (csCommandState*) node->GetData();
         wxShape* shape = state->GetShapeOnCanvas();
         wxASSERT( (shape != NULL) );
 
-        wxNode *node1 = shape->GetLines().First();
+        wxObjectList::compatibility_iterator node1 = shape->GetLines().GetFirst();
         while (node1)
         {
-            wxLineShape *line = (wxLineShape *)node1->Data();
+            wxLineShape *line = (wxLineShape *)node1->GetData();
             if (!FindStateByShape(line))
             {
                 csCommandState* newState = new csCommandState(ID_CS_CUT, NULL, line);
                 InsertState(newState);
             }
 
-            node1 = node1->Next();
+            node1 = node1->GetNext();
         }
-        node = node->Next();
+        node = node->GetNext();
     }
 }
 
 csCommandState* csDiagramCommand::FindStateByShape(wxShape* shape)
 {
-    wxNode* node = m_states.First();
+    wxObjectList::compatibility_iterator node = m_states.GetFirst();
     while (node)
     {
-        csCommandState* state = (csCommandState*) node->Data();
+        csCommandState* state = (csCommandState*) node->GetData();
         if (shape == state->GetShapeOnCanvas() || shape == state->GetSavedState())
             return state;
-        node = node->Next();
+        node = node->GetNext();
     }
     return NULL;
 }
 
 bool csDiagramCommand::Do()
 {
-    wxNode* node = m_states.First();
+    wxObjectList::compatibility_iterator node = m_states.GetFirst();
     while (node)
     {
-        csCommandState* state = (csCommandState*) node->Data();
+        csCommandState* state = (csCommandState*) node->GetData();
         if (!state->Do())
-            return FALSE;
-        node = node->Next();
+            return false;
+        node = node->GetNext();
     }
-    return TRUE;
+    return true;
 }
 
 bool csDiagramCommand::Undo()
 {
     // Undo in reverse order, so e.g. shapes get added
     // back before the lines do.
-    wxNode* node = m_states.Last();
+    wxObjectList::compatibility_iterator node = m_states.GetLast();
     while (node)
     {
-        csCommandState* state = (csCommandState*) node->Data();
+        csCommandState* state = (csCommandState*) node->GetData();
         if (!state->Undo())
-            return FALSE;
-        node = node->Previous();
+            return false;
+        node = node->GetPrevious();
     }
-    return TRUE;
+    return true;
 }
 
 csCommandState::csCommandState(int cmd, wxShape* savedState, wxShape* shapeOnCanvas)
@@ -270,8 +264,8 @@ bool csCommandState::Do()
             m_linePositionTo = lineTo->GetLinePosition(lineShape);
         }
 
-        m_shapeOnCanvas->Select(FALSE);
-        ((csDiagramView*) m_doc->GetFirstView())->SelectShape(m_shapeOnCanvas, FALSE);
+        m_shapeOnCanvas->Select(false);
+        ((csDiagramView*) m_doc->GetFirstView())->SelectShape(m_shapeOnCanvas, false);
 
         m_shapeOnCanvas->Unlink();
         
@@ -294,7 +288,7 @@ bool csCommandState::Do()
             lineTo->MoveLinks(dc);
         }
 
-        m_doc->Modify(TRUE);
+        m_doc->Modify(true);
         m_doc->UpdateAllViews();
         break;
     }
@@ -315,7 +309,7 @@ bool csCommandState::Do()
         m_savedState = NULL;
 
         m_doc->GetDiagram()->AddShape(m_shapeOnCanvas);
-        m_shapeOnCanvas->Show(TRUE);
+        m_shapeOnCanvas->Show(true);
 
         wxClientDC dc(m_shapeOnCanvas->GetCanvas());
         m_shapeOnCanvas->GetCanvas()->PrepareDC(dc);
@@ -327,11 +321,11 @@ bool csCommandState::Do()
 
         if (m_cmd == ID_CS_ADD_SHAPE_SELECT)
         {
-            m_shapeOnCanvas->Select(TRUE, &dc);
-            ((csDiagramView*) m_doc->GetFirstView())->SelectShape(m_shapeOnCanvas, TRUE);
+            m_shapeOnCanvas->Select(true, &dc);
+            ((csDiagramView*) m_doc->GetFirstView())->SelectShape(m_shapeOnCanvas, true);
         }
 
-        m_doc->Modify(TRUE);
+        m_doc->Modify(true);
         m_doc->UpdateAllViews();
         break;
     }
@@ -354,7 +348,7 @@ bool csCommandState::Do()
         lineShape->GetFrom()->AddLine(lineShape, lineShape->GetTo(),
             lineShape->GetAttachmentFrom(), lineShape->GetAttachmentTo());
       
-        lineShape->Show(TRUE);
+        lineShape->Show(true);
 
         wxClientDC dc(lineShape->GetCanvas());
         lineShape->GetCanvas()->PrepareDC(dc);
@@ -366,11 +360,11 @@ bool csCommandState::Do()
 
         if (m_cmd == ID_CS_ADD_LINE_SELECT)
         {
-            lineShape->Select(TRUE, &dc);
-            ((csDiagramView*) m_doc->GetFirstView())->SelectShape(m_shapeOnCanvas, TRUE);
+            lineShape->Select(true, &dc);
+            ((csDiagramView*) m_doc->GetFirstView())->SelectShape(m_shapeOnCanvas, true);
         }
 
-        m_doc->Modify(TRUE);
+        m_doc->Modify(true);
         m_doc->UpdateAllViews();
         break;
     }
@@ -407,7 +401,7 @@ bool csCommandState::Do()
 
         bool isSelected = m_shapeOnCanvas->Selected();
         if (isSelected)
-            m_shapeOnCanvas->Select(FALSE, & dc);
+            m_shapeOnCanvas->Select(false, & dc);
 
         if (m_cmd == ID_CS_SIZE || m_cmd == ID_CS_ROTATE_CLOCKWISE || m_cmd == ID_CS_ROTATE_ANTICLOCKWISE ||
             m_cmd == ID_CS_CHANGE_LINE_ORDERING || m_cmd == ID_CS_CHANGE_LINE_ATTACHMENT)
@@ -460,11 +454,11 @@ bool csCommandState::Do()
             m_shapeOnCanvas->SetSize(width, height);
             m_shapeOnCanvas->Move(dc, m_shapeOnCanvas->GetX(), m_shapeOnCanvas->GetY());
 
-            m_shapeOnCanvas->Show(TRUE);
+            m_shapeOnCanvas->Show(true);
 
             // Recursively redraw links if we have a composite.
-            if (m_shapeOnCanvas->GetChildren().Number() > 0)
-                m_shapeOnCanvas->DrawLinks(dc, -1, TRUE);
+            if (m_shapeOnCanvas->GetChildren().GetCount() > 0)
+                m_shapeOnCanvas->DrawLinks(dc, -1, true);
 
             m_shapeOnCanvas->GetEventHandler()->OnEndSize(width, height);
         }
@@ -480,15 +474,15 @@ bool csCommandState::Do()
         }
 
         if (isSelected)
-            m_shapeOnCanvas->Select(TRUE, & dc);
+            m_shapeOnCanvas->Select(true, & dc);
         
-        m_doc->Modify(TRUE);
+        m_doc->Modify(true);
         m_doc->UpdateAllViews();
 
         break;
     }
   }
-  return TRUE;
+  return true;
 }
 
 bool csCommandState::Undo()
@@ -520,9 +514,9 @@ bool csCommandState::Undo()
             lineShape->GetTo()->MoveLinks(dc);
 
         }
-        m_shapeOnCanvas->Show(TRUE);
+        m_shapeOnCanvas->Show(true);
 
-        m_doc->Modify(TRUE);
+        m_doc->Modify(true);
         m_doc->UpdateAllViews();
         break;
     }
@@ -553,8 +547,8 @@ bool csCommandState::Undo()
         wxClientDC dc(m_shapeOnCanvas->GetCanvas());
         m_shapeOnCanvas->GetCanvas()->PrepareDC(dc);
 
-        m_shapeOnCanvas->Select(FALSE, &dc);
-        ((csDiagramView*) m_doc->GetFirstView())->SelectShape(m_shapeOnCanvas, FALSE);
+        m_shapeOnCanvas->Select(false, &dc);
+        ((csDiagramView*) m_doc->GetFirstView())->SelectShape(m_shapeOnCanvas, false);
         m_doc->GetDiagram()->RemoveShape(m_shapeOnCanvas);
         m_shapeOnCanvas->Unlink(); // Unlinks the line, if it is a line
 
@@ -570,7 +564,7 @@ bool csCommandState::Undo()
         m_savedState = m_shapeOnCanvas;
         m_shapeOnCanvas = NULL;
 
-        m_doc->Modify(TRUE);
+        m_doc->Modify(true);
         m_doc->UpdateAllViews();
         break;
     }
@@ -597,6 +591,6 @@ bool csCommandState::Undo()
     }
   }
 
-    return TRUE;
+    return true;
 }
 

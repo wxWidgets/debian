@@ -3,7 +3,7 @@
 // Purpose:     a generic wxStaticLine class
 // Author:      Vadim Zeitlin
 // Created:     28.06.99
-// Version:     $Id: statline.h,v 1.5 2002/08/31 11:29:12 GD Exp $
+// Version:     $Id: statline.h,v 1.9 2004/05/23 20:50:48 JS Exp $
 // Copyright:   (c) 1998 Vadim Zeitlin
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -11,7 +11,7 @@
 #ifndef _WX_GENERIC_STATLINE_H_
 #define _WX_GENERIC_STATLINE_H_
 
-#if defined(__GNUG__) && !defined(__APPLE__)
+#if defined(__GNUG__) && !defined(NO_GCC_PRAGMA)
     #pragma interface "statline.h"
 #endif
 
@@ -27,7 +27,7 @@ class WXDLLEXPORT wxStaticLine : public wxStaticLineBase
 
 public:
     // constructors and pseudo-constructors
-    wxStaticLine() { }
+    wxStaticLine() { m_statbox = NULL; }
 
     wxStaticLine( wxWindow *parent,
                   wxWindowID id,
@@ -38,6 +38,8 @@ public:
     {
         Create(parent, id, pos, size, style, name);
     }
+
+    virtual ~wxStaticLine();
 
     bool Create( wxWindow *parent,
                  wxWindowID id,

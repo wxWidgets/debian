@@ -4,12 +4,12 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     04/01/98
-// RCS-ID:      $Id: accel.cpp,v 1.18 2001/06/26 20:59:16 VZ Exp $
+// RCS-ID:      $Id: accel.cpp,v 1.29 2004/10/07 13:36:40 ABX Exp $
 // Copyright:   (c) Julian Smart
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
 
-#ifdef __GNUG__
+#if defined(__GNUG__) && !defined(NO_GCC_PRAGMA)
 #pragma implementation "accel.h"
 #endif
 
@@ -26,6 +26,8 @@
 
 #include "wx/accel.h"
 
+#if wxUSE_ACCEL
+
 #include "wx/msw/private.h"
 
 IMPLEMENT_DYNAMIC_CLASS(wxAcceleratorTable, wxObject)
@@ -41,13 +43,15 @@ public:
 protected:
     HACCEL      m_hAccel;
     bool        m_ok;
+
+    DECLARE_NO_COPY_CLASS(wxAcceleratorRefData)
 };
 
 #define M_ACCELDATA ((wxAcceleratorRefData *)m_refData)
 
 wxAcceleratorRefData::wxAcceleratorRefData()
 {
-  m_ok = FALSE;
+  m_ok = false;
   m_hAccel = 0;
 }
 
@@ -55,10 +59,7 @@ wxAcceleratorRefData::~wxAcceleratorRefData()
 {
   if (m_hAccel)
   {
-    // This function not available in WIN16
-#if !defined(__WIN16__) && !defined(__TWIN32__)
     DestroyAcceleratorTable((HACCEL) m_hAccel);
-#endif
   }
   m_hAccel = 0 ;
 }
@@ -78,7 +79,7 @@ wxAcceleratorTable::wxAcceleratorTable(const wxString& resource)
     m_refData = new wxAcceleratorRefData;
 
     HACCEL hAccel =
-#if defined(__WIN32__) && !defined(__TWIN32__)
+#if defined(__WIN32__)
 #ifdef UNICODE
         ::LoadAcceleratorsW(wxGetInstance(), (const wxChar *)resource);
 #else
@@ -91,13 +92,11 @@ wxAcceleratorTable::wxAcceleratorTable(const wxString& resource)
     M_ACCELDATA->m_ok = (hAccel != 0);
 }
 
-extern int wxCharCodeWXToMSW(int id, bool *isVirtual);
+extern WXWORD wxCharCodeWXToMSW(int id, bool *isVirtual);
 
 // Create from an array
-#if !defined(__WIN16__) && !defined(__TWIN32__) && !defined(__WXWINE__)
 wxAcceleratorTable::wxAcceleratorTable(int n, const wxAcceleratorEntry entries[])
 {
-    // Not available in WIN16
     m_refData = new wxAcceleratorRefData;
 
     ACCEL* arr = new ACCEL[n];
@@ -121,7 +120,7 @@ wxAcceleratorTable::wxAcceleratorTable(int n, const wxAcceleratorEntry entries[]
 
         arr[i].fVirt = fVirt;
         arr[i].key = key;
-        arr[i].cmd = entries[i].GetCommand();
+        arr[i].cmd = (WORD)entries[i].GetCommand();
     }
 
     M_ACCELDATA->m_hAccel = ::CreateAcceleratorTable(arr, n);
@@ -129,14 +128,6 @@ wxAcceleratorTable::wxAcceleratorTable(int n, const wxAcceleratorEntry entries[]
 
     M_ACCELDATA->m_ok = (M_ACCELDATA->m_hAccel != 0);
 }
-#else // Win16
-wxAcceleratorTable::wxAcceleratorTable(int WXUNUSED(n), const wxAcceleratorEntry WXUNUSED(entries)[])
-{
-    // No, we simply gracefully degrade; we don't expect the
-    // developer to pepper their code with #ifdefs just for this.
-    // wxFAIL_MSG("not implemented");
-}
-#endif // Win32/16
 
 bool wxAcceleratorTable::Ok() const
 {
@@ -164,3 +155,4 @@ bool wxAcceleratorTable::Translate(wxWindow *window, WXMSG *wxmsg) const
     return Ok() && ::TranslateAccelerator(GetHwndOf(window), GetHaccel(), msg);
 }
 
+#endif

@@ -4,7 +4,7 @@
 // Author:      Aleksandras Gluchovas <mailto:alex@soften.ktu.lt>
 // Modified by:
 // Created:     06/09/98
-// RCS-ID:      $Id: panedrawpl.h,v 1.3.2.1 2002/10/24 11:21:35 JS Exp $
+// RCS-ID:      $Id: panedrawpl.h,v 1.5 2003/07/08 20:47:16 VS Exp $
 // Copyright:   (c) Aleksandras Gluchovas
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -27,7 +27,7 @@ would be enough for the frame layout to function properly
 (they are plugged in automatically by the wxFrameLayout class).
 */
 
-class WXFL_DECLSPEC cbPaneDrawPlugin : public cbPluginBase
+class WXDLLIMPEXP_FL cbPaneDrawPlugin : public cbPluginBase
 {
 public:
     DECLARE_DYNAMIC_CLASS( cbPaneDrawPlugin )

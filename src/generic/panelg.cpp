@@ -4,9 +4,9 @@
 // Author:      Julian Smart, Robert Roebling, Vadim Zeitlin
 // Modified by:
 // Created:     04/01/98
-// RCS-ID:      $Id: panelg.cpp,v 1.56.2.1 2002/09/28 07:01:33 RL Exp $
-// Copyright:   (c) Julian Smart and Markus Holzem
-// Licence:     wxWindows license
+// RCS-ID:      $Id: panelg.cpp,v 1.76 2004/06/23 16:41:04 VS Exp $
+// Copyright:   (c) Julian Smart
+// Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
 
 // ============================================================================
@@ -17,7 +17,7 @@
 // headers
 // ----------------------------------------------------------------------------
 
-#ifdef __GNUG__
+#if defined(__GNUG__) && !defined(NO_GCC_PRAGMA)
     #pragma implementation "panelg.h"
 #endif
 
@@ -43,11 +43,56 @@
 // wxWin macros
 // ----------------------------------------------------------------------------
 
+#if wxUSE_EXTENDED_RTTI
+WX_DEFINE_FLAGS( wxPanelStyle )
+
+wxBEGIN_FLAGS( wxPanelStyle )
+    // new style border flags, we put them first to
+    // use them for streaming out
+    wxFLAGS_MEMBER(wxBORDER_SIMPLE)
+    wxFLAGS_MEMBER(wxBORDER_SUNKEN)
+    wxFLAGS_MEMBER(wxBORDER_DOUBLE)
+    wxFLAGS_MEMBER(wxBORDER_RAISED)
+    wxFLAGS_MEMBER(wxBORDER_STATIC)
+    wxFLAGS_MEMBER(wxBORDER_NONE)
+
+    // old style border flags
+    wxFLAGS_MEMBER(wxSIMPLE_BORDER)
+    wxFLAGS_MEMBER(wxSUNKEN_BORDER)
+    wxFLAGS_MEMBER(wxDOUBLE_BORDER)
+    wxFLAGS_MEMBER(wxRAISED_BORDER)
+    wxFLAGS_MEMBER(wxSTATIC_BORDER)
+    wxFLAGS_MEMBER(wxBORDER)
+
+    // standard window styles
+    wxFLAGS_MEMBER(wxTAB_TRAVERSAL)
+    wxFLAGS_MEMBER(wxCLIP_CHILDREN)
+    wxFLAGS_MEMBER(wxTRANSPARENT_WINDOW)
+    wxFLAGS_MEMBER(wxWANTS_CHARS)
+    wxFLAGS_MEMBER(wxFULL_REPAINT_ON_RESIZE)
+    wxFLAGS_MEMBER(wxALWAYS_SHOW_SB )
+    wxFLAGS_MEMBER(wxVSCROLL)
+    wxFLAGS_MEMBER(wxHSCROLL)
+
+wxEND_FLAGS( wxPanelStyle )
+
+IMPLEMENT_DYNAMIC_CLASS_XTI(wxPanel, wxWindow,"wx/panel.h")
+
+wxBEGIN_PROPERTIES_TABLE(wxPanel)
+    wxPROPERTY_FLAGS( WindowStyle , wxPanelStyle , long , SetWindowStyleFlag , GetWindowStyleFlag , EMPTY_MACROVALUE, 0 /*flags*/ , wxT("Helpstring") , wxT("group")) // style
+// style wxTAB_TRAVERSAL
+wxEND_PROPERTIES_TABLE()
+
+wxBEGIN_HANDLERS_TABLE(wxPanel)
+wxEND_HANDLERS_TABLE()
+
+wxCONSTRUCTOR_5( wxPanel , wxWindow* , Parent , wxWindowID , Id , wxPoint , Position , wxSize , Size , long , WindowStyle )
+
+#else
 IMPLEMENT_DYNAMIC_CLASS(wxPanel, wxWindow)
+#endif
 
 BEGIN_EVENT_TABLE(wxPanel, wxWindow)
-    EVT_SYS_COLOUR_CHANGED(wxPanel::OnSysColourChanged)
-
     EVT_SIZE(wxPanel::OnSize)
 
     WX_EVENT_TABLE_CONTROL_CONTAINER(wxPanel)
@@ -74,7 +119,13 @@ bool wxPanel::Create(wxWindow *parent, wxWindowID id,
                      long style,
                      const wxString& name)
 {
-    return wxWindow::Create(parent, id, pos, size, style, name);
+    if ( !wxWindow::Create(parent, id, pos, size, style, name) )
+        return false;
+
+    // so that non-solid background renders correctly under GTK+:
+    SetThemeEnabled(true);
+
+    return true;
 }
 
 wxPanel::~wxPanel()
@@ -92,21 +143,11 @@ void wxPanel::InitDialog()
 // event handlers
 // ----------------------------------------------------------------------------
 
-// Responds to colour changes, and passes event on to children.
-void wxPanel::OnSysColourChanged(wxSysColourChangedEvent& event)
-{
-    SetBackgroundColour(wxSystemSettings::GetColour(wxSYS_COLOUR_3DFACE));
-    Refresh();
-
-    // Propagate the event to the non-top-level children
-    wxWindow::OnSysColourChanged(event);
-}
-
 void wxPanel::OnSize(wxSizeEvent& event)
 {
-#if wxUSE_CONSTRAINTS
     if (GetAutoLayout())
         Layout();
+#if wxUSE_CONSTRAINTS
 #if defined(__WXPM__)
     else
     {
@@ -119,8 +160,8 @@ void wxPanel::OnSize(wxSizeEvent& event)
             // Uninitialized
 
             ::WinQueryWindowPos(GetHWND(), pWinSwp);
-	}
-	else
+        }
+        else
         {
             SWP                     vSwp;
             int                     nYDiff;

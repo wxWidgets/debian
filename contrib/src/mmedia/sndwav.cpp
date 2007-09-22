@@ -3,7 +3,7 @@
 // Purpose:
 // Date: 08/11/1999
 // Author: Guilhem Lavaux <lavaux@easynet.fr> (C) 1999
-// CVSID: $Id: sndwav.cpp,v 1.3 2001/10/30 13:28:45 GT Exp $
+// CVSID: $Id: sndwav.cpp,v 1.6 2004/06/16 15:22:59 ABX Exp $
 // --------------------------------------------------------------------------
 #ifdef __GNUG__
 #pragma implementation "sndwav.cpp"
@@ -64,7 +64,7 @@ wxString wxSoundWave::GetCodecName() const
     return wxString(wxT("wxSoundWave codec"));
 }
 
-#define FAIL_WITH(condition, err) if (condition) { m_snderror = err; return FALSE; }
+#define FAIL_WITH(condition, err) if (condition) { m_snderror = err; return false; }
 
 bool wxSoundWave::CanRead()
 {
@@ -77,7 +77,7 @@ bool wxSoundWave::CanRead()
     
     if (wxUINT32_SWAP_ON_BE(signature1) != RIFF_SIGNATURE) {
         m_input->Ungetch(&signature1, 4);
-        return FALSE;
+        return false;
     }
 
     // Pass the global length
@@ -93,36 +93,36 @@ bool wxSoundWave::CanRead()
 
     // Test the second signature
     if (wxUINT32_SWAP_ON_BE(signature2) != WAVE_SIGNATURE)
-        return FALSE;
+        return false;
     
-    return TRUE;
+    return true;
 }
 
-bool wxSoundWave::HandleOutputPCM(wxDataInputStream& data, wxUint32 len,
+bool wxSoundWave::HandleOutputPCM(wxDataInputStream& WXUNUSED(data), wxUint32 len,
                                   wxUint16 channels, 
-                                  wxUint32 sample_fq, wxUint32 byte_p_sec,
-                                  wxUint16 byte_p_spl, wxUint16 bits_p_spl)
+                                  wxUint32 sample_fq, wxUint32 WXUNUSED(byte_p_sec),
+                                  wxUint16 WXUNUSED(byte_p_spl), wxUint16 bits_p_spl)
 {
     wxSoundFormatPcm sndformat;
     
     sndformat.SetSampleRate(sample_fq);
     sndformat.SetBPS(bits_p_spl);
     sndformat.SetChannels(channels);
-    sndformat.Signed(TRUE);
+    sndformat.Signed(true);
     sndformat.SetOrder(wxLITTLE_ENDIAN);
     
     if (!SetSoundFormat(sndformat))
-        return FALSE;
+        return false;
     
     m_input->SeekI(len, wxFromCurrent);
 
-    return TRUE;
+    return true;
 }
 
 bool wxSoundWave::HandleOutputMSADPCM(wxDataInputStream& data, wxUint32 len,
                                       wxUint16 channels, 
-                                      wxUint32 sample_fq, wxUint32 byte_p_sec,
-                                      wxUint16 byte_p_spl, wxUint16 bits_p_spl)
+                                      wxUint32 sample_fq, wxUint32 WXUNUSED(byte_p_sec),
+                                      wxUint16 WXUNUSED(byte_p_spl), wxUint16 WXUNUSED(bits_p_spl))
 {
     wxSoundFormatMSAdpcm sndformat;
     wxInt16 *coefs[2];
@@ -150,19 +150,19 @@ bool wxSoundWave::HandleOutputMSADPCM(wxDataInputStream& data, wxUint32 len,
     delete[] coefs[1];
     
     if (!SetSoundFormat(sndformat))
-        return FALSE;
+        return false;
 
     len -= coefs_len*4 + 4;
     
     m_input->SeekI(len, wxFromCurrent);
     
-    return TRUE;
+    return true;
 }
 
-bool wxSoundWave::HandleOutputG721(wxDataInputStream& data, wxUint32 len,
-                                   wxUint16 channels,
-                                   wxUint32 sample_fq, wxUint32 byte_p_sec,
-                                   wxUint16 byte_p_spl, wxUint16 bits_p_spl)
+bool wxSoundWave::HandleOutputG721(wxDataInputStream& WXUNUSED(data), wxUint32 len,
+                                   wxUint16 WXUNUSED(channels),
+                                   wxUint32 sample_fq, wxUint32 WXUNUSED(byte_p_sec),
+                                   wxUint16 WXUNUSED(byte_p_spl), wxUint16 WXUNUSED(bits_p_spl))
 {
     wxSoundFormatG72X sndformat;
     
@@ -170,11 +170,11 @@ bool wxSoundWave::HandleOutputG721(wxDataInputStream& data, wxUint32 len,
     sndformat.SetG72XType(wxSOUND_G721);
     
     if (!SetSoundFormat(sndformat))
-        return FALSE;
+        return false;
     
     m_input->SeekI(len, wxFromCurrent);
 
-    return TRUE;
+    return true;
 }
 
 bool wxSoundWave::PrepareToPlay()
@@ -184,11 +184,11 @@ bool wxSoundWave::PrepareToPlay()
     
     if (!m_input) {
         m_snderror = wxSOUND_INVSTRM;
-        return FALSE;
+        return false;
     }
     
     wxDataInputStream data(*m_input);
-    data.BigEndianOrdered(FALSE);
+    data.BigEndianOrdered(false);
 
     // Get the first signature
     FAIL_WITH(m_input->Read(&signature, 4).LastRead() != 4, wxSOUND_INVSTRM);
@@ -196,6 +196,7 @@ bool wxSoundWave::PrepareToPlay()
     // "RIFF"
     
     len = data.Read32();
+    wxUnusedVar(len);
     FAIL_WITH(m_input->LastRead() != 4, wxSOUND_INVSTRM);
     // dummy len
 
@@ -204,7 +205,7 @@ bool wxSoundWave::PrepareToPlay()
     FAIL_WITH(wxUINT32_SWAP_ON_BE(signature) != WAVE_SIGNATURE, wxSOUND_INVSTRM);
     // "WAVE"
     
-    end_headers = FALSE;
+    end_headers = false;
     // Chunk loop
     while (!end_headers) {
         FAIL_WITH(m_input->Read(&signature, 4).LastRead() != 4, wxSOUND_INVSTRM);
@@ -227,31 +228,31 @@ bool wxSoundWave::PrepareToPlay()
                         if (!HandleOutputPCM(data, len, channels, sample_fq,
                                              byte_p_sec, byte_p_spl,
                                              bits_p_spl))
-                            return FALSE;
+                            return false;
                         break;
                     case 0x02: // MS ADPCM
                         if (!HandleOutputMSADPCM(data, len,
                                                  channels, sample_fq,
                                                  byte_p_sec, byte_p_spl,
                                                  bits_p_spl))
-                            return FALSE;
+                            return false;
                         break;
                     case 0x40: // G721
                         if (!HandleOutputG721(data, len,
                                               channels, sample_fq,
                                               byte_p_sec, byte_p_spl,
                                               bits_p_spl))
-                            return FALSE;
+                            return false;
                         break;
                     default: 
                         m_snderror = wxSOUND_NOCODEC;
-                        return FALSE;
+                        return false;
                 }
                 break;
             }
             case DATA_SIGNATURE: // "data"
                 m_base_offset = m_input->TellI();
-                end_headers = TRUE;
+                end_headers = true;
                 FinishPreparation(len);
                 break;
             default:
@@ -260,7 +261,7 @@ bool wxSoundWave::PrepareToPlay()
                 break;
         }
     }
-    return TRUE;
+    return true;
 }
 
 wxSoundFormatBase *wxSoundWave::HandleInputPCM(wxDataOutputStream& data)
@@ -281,7 +282,7 @@ wxSoundFormatBase *wxSoundWave::HandleInputPCM(wxDataOutputStream& data)
     byte_p_sec = pcm->GetBytesFromTime(1);
     format     = 0x01;
     
-    pcm->Signed(TRUE);
+    pcm->Signed(true);
     pcm->SetOrder(wxLITTLE_ENDIAN);
     
     data << format << channels << sample_fq
@@ -329,14 +330,14 @@ FAIL_WITH(s->Write(&signature, 4).LastWrite() != 4, wxSOUND_INVSTRM);
     
     if (!m_output) {
         m_snderror = wxSOUND_INVSTRM;
-        return FALSE;
+        return false;
     }
     
     wxDataOutputStream data(*m_output);
     wxDataOutputStream fmt_d_data(fmt_data);
     
-    data.BigEndianOrdered(FALSE);
-    fmt_d_data.BigEndianOrdered(FALSE);
+    data.BigEndianOrdered(false);
+    fmt_d_data.BigEndianOrdered(false);
     
     WRITE_SIGNATURE(m_output, RIFF_SIGNATURE);
     
@@ -358,14 +359,14 @@ FAIL_WITH(s->Write(&signature, 4).LastWrite() != 4, wxSOUND_INVSTRM);
                 break;
             default:
                 m_snderror = wxSOUND_NOCODEC;
-                return FALSE;
+                return false;
         }
         
         FAIL_WITH(!frmt, wxSOUND_NOCODEC);
         
         if (!SetSoundFormat(*frmt)) {
             delete frmt;
-            return FALSE;
+            return false;
         }
         
         delete frmt;
@@ -386,28 +387,28 @@ FAIL_WITH(s->Write(&signature, 4).LastWrite() != 4, wxSOUND_INVSTRM);
     
     WRITE_SIGNATURE(m_output, DATA_SIGNATURE);
     data.Write32(m_sndformat->GetBytesFromTime(time));
-    return TRUE;
+    return true;
 }
 
 bool wxSoundWave::FinishRecording()
 {
     if (m_output->SeekO(0, wxFromStart) == wxInvalidOffset)
         // We can't but there is no error.
-        return TRUE;
+        return true;
     
     if (m_bytes_left == 0)
-        return TRUE;
+        return true;
     
     // TODO: Update headers when we stop before the specified time (if possible)
-    return TRUE;
+    return true;
 }
 
-bool wxSoundWave::RepositionStream(wxUint32 position)
+bool wxSoundWave::RepositionStream(wxUint32 WXUNUSED(position))
 {
     if (m_base_offset == wxInvalidOffset)
-        return FALSE;
+        return false;
     m_input->SeekI(m_base_offset, wxFromStart);
-    return TRUE;
+    return true;
 }
 
 wxUint32 wxSoundWave::GetData(void *buffer, wxUint32 len)

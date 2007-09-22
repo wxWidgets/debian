@@ -1,4 +1,4 @@
-/* $Header: /pack/cvsroots/wxwindows/wxWindows/src/tiff/tif_tile.c,v 1.1.6.1 2002/11/10 13:13:57 JS Exp $ */
+/* $Header: /pack/cvsroots/wxwindows/wxWindows/src/tiff/tif_tile.c,v 1.2 2002/12/04 14:10:21 VZ Exp $ */
 
 /*
  * Copyright (c) 1991-1997 Sam Leffler

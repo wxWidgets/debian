@@ -2,14 +2,17 @@
 // Name:        checklst.cpp
 // Purpose:
 // Author:      Robert Roebling
-// Id:          $Id: checklst.cpp,v 1.19 2002/08/05 17:59:19 RR Exp $
+// Id:          $Id: checklst.cpp,v 1.25 2004/05/23 20:52:19 JS Exp $
 // Copyright:   (c) 1998 Robert Roebling
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
 
-#ifdef __GNUG__
+#if defined(__GNUG__) && !defined(NO_GCC_PRAGMA)
 #pragma implementation "checklst.h"
 #endif
+
+// For compilers that support precompilation, includes "wx.h".
+#include "wx/wxprec.h"
 
 #include "wx/defs.h"
 
@@ -43,6 +46,19 @@ wxCheckListBox::wxCheckListBox(wxWindow *parent, wxWindowID id,
 {
     m_hasCheckBoxes = TRUE;
     wxListBox::Create( parent, id, pos, size, nStrings, choices, style, validator, name );
+}
+
+wxCheckListBox::wxCheckListBox(wxWindow *parent, wxWindowID id,
+                               const wxPoint& pos,
+                               const wxSize& size,
+                               const wxArrayString& choices,
+                               long style,
+                               const wxValidator& validator,
+                               const wxString& name )
+{
+    m_hasCheckBoxes = TRUE;
+    wxListBox::Create( parent, id, pos, size, choices,
+                       style, validator, name );
 }
 
 bool wxCheckListBox::IsChecked( int index ) const

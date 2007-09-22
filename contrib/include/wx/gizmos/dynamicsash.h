@@ -5,7 +5,7 @@
 // Author:      Matt Kimball
 // Modified by:
 // Created:     7/15/2001
-// RCS-ID:      $Id: dynamicsash.h,v 1.5.2.1 2002/12/18 06:11:08 RD Exp $
+// RCS-ID:      $Id: dynamicsash.h,v 1.9 2004/01/08 08:35:19 JS Exp $
 // Copyright:   (c) 2001 Matt Kimball
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -13,12 +13,7 @@
 #ifndef _WX_DYNAMICSASH_H_
 #define _WX_DYNAMICSASH_H_
 
-#ifdef GIZMOISDLL
-#define GIZMODLLEXPORT WXDLLEXPORT
-#else
-#define GIZMODLLEXPORT
-#endif
-
+#include "wx/gizmos/gizmos.h"
 
 /*
 
@@ -102,7 +97,7 @@ class wxScrollBar;
     a child of the wxDynamicSashWindow.  wxDynamicSashWindow will
     automatically reparent it to the proper place in its window hierarchy.
 */
-class GIZMODLLEXPORT wxDynamicSashSplitEvent : public wxCommandEvent {
+class WXDLLIMPEXP_GIZMOS wxDynamicSashSplitEvent : public wxCommandEvent {
 public:
     wxDynamicSashSplitEvent();
     wxDynamicSashSplitEvent(const wxDynamicSashSplitEvent& event): wxCommandEvent(event) { }
@@ -124,7 +119,7 @@ private:
     the scrollbars' event handlers connected to your view's event handler
     class.
 */
-class GIZMODLLEXPORT wxDynamicSashUnifyEvent : public wxCommandEvent {
+class WXDLLIMPEXP_GIZMOS wxDynamicSashUnifyEvent : public wxCommandEvent {
 public:
     wxDynamicSashUnifyEvent();
     wxDynamicSashUnifyEvent(const wxDynamicSashUnifyEvent& event): wxCommandEvent(event) {}
@@ -137,14 +132,14 @@ private:
 };
 
 typedef void (wxEvtHandler::*wxDynamicSashSplitEventFunction)(wxDynamicSashSplitEvent&);
-typedef void (wxEvtHandler::*wxDynamicSashUnifyEventFunction)(wxDynamicSashSplitEvent&);
+typedef void (wxEvtHandler::*wxDynamicSashUnifyEventFunction)(wxDynamicSashUnifyEvent&);
 
 /*
     wxDynamicSashWindow.  See above.
 */
-extern const wxChar* GIZMODLLEXPORT wxDynamicSashWindowNameStr;
+WXDLLIMPEXP_GIZMOS extern const wxChar* wxDynamicSashWindowNameStr;
 
-class GIZMODLLEXPORT wxDynamicSashWindow : public wxWindow {
+class WXDLLIMPEXP_GIZMOS wxDynamicSashWindow : public wxWindow {
 public:
     wxDynamicSashWindow();
     wxDynamicSashWindow(wxWindow *parent, wxWindowID id,

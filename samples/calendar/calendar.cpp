@@ -4,7 +4,7 @@
 // Author:      Vadim Zeitlin
 // Modified by:
 // Created:     02.01.00
-// RCS-ID:      $Id: calendar.cpp,v 1.17.2.3 2003/06/05 18:07:53 MBN Exp $
+// RCS-ID:      $Id: calendar.cpp,v 1.25 2004/10/02 12:35:45 VS Exp $
 // Copyright:   (c) Vadim Zeitlin
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -41,6 +41,7 @@
     #include "wx/msgdlg.h"
 #endif
 
+#include "wx/sizer.h"
 #include "wx/calctrl.h"
 
 // ----------------------------------------------------------------------------
@@ -117,7 +118,7 @@ public:
 private:
     MyPanel *m_panel;
 
-    // any class wishing to process wxWindows events must use this macro
+    // any class wishing to process wxWidgets events must use this macro
     DECLARE_EVENT_TABLE()
 };
 
@@ -144,10 +145,10 @@ enum
 };
 
 // ----------------------------------------------------------------------------
-// event tables and other macros for wxWindows
+// event tables and other macros for wxWidgets
 // ----------------------------------------------------------------------------
 
-// the event tables connect the wxWindows events with the functions (event
+// the event tables connect the wxWidgets events with the functions (event
 // handlers) which process them. It can be also done at run-time, but for the
 // simple menu events like this the static method is much simpler.
 BEGIN_EVENT_TABLE(MyFrame, wxFrame)
@@ -179,7 +180,7 @@ BEGIN_EVENT_TABLE(MyPanel, wxPanel)
     EVT_CALENDAR_WEEKDAY_CLICKED(Calendar_CalCtrl, MyPanel::OnCalendarWeekDayClick)
 END_EVENT_TABLE()
 
-// Create a new application object: this macro will allow wxWindows to create
+// Create a new application object: this macro will allow wxWidgets to create
 // the application object during program execution (it's better than using a
 // static object for many reasons) and also declares the accessor function
 // wxGetApp() which will return the reference of the right type (i.e. MyApp and
@@ -198,15 +199,15 @@ IMPLEMENT_APP(MyApp)
 bool MyApp::OnInit()
 {
     // Create the main application window
-    MyFrame *frame = new MyFrame(_T("Calendar wxWindows sample"),
+    MyFrame *frame = new MyFrame(_T("Calendar wxWidgets sample"),
                                  wxPoint(50, 50), wxSize(450, 340));
 
-    frame->Show(TRUE);
+    frame->Show(true);
 
     // success: wxApp::OnRun() will be called which will enter the main message
-    // loop and the application will run. If we returned FALSE here, the
+    // loop and the application will run. If we returned false here, the
     // application would exit immediately.
-    return TRUE;
+    return true;
 }
 
 // ----------------------------------------------------------------------------
@@ -215,7 +216,7 @@ bool MyApp::OnInit()
 
 // frame constructor
 MyFrame::MyFrame(const wxString& title, const wxPoint& pos, const wxSize& size)
-       : wxFrame((wxFrame *)NULL, -1, title, pos, size)
+       : wxFrame((wxFrame *)NULL, wxID_ANY, title, pos, size)
 {
     // create a menu bar
     wxMenu *menuFile = new wxMenu;
@@ -228,28 +229,28 @@ MyFrame::MyFrame(const wxString& title, const wxPoint& pos, const wxSize& size)
     menuCal->Append(Calendar_Cal_Monday,
                     _T("Monday &first weekday\tCtrl-F"),
                     _T("Toggle between Mon and Sun as the first week day"),
-                    TRUE);
+                    true);
     menuCal->Append(Calendar_Cal_Holidays, _T("Show &holidays\tCtrl-H"),
                     _T("Toggle highlighting the holidays"),
-                    TRUE);
+                    true);
     menuCal->Append(Calendar_Cal_Special, _T("Highlight &special dates\tCtrl-S"),
                     _T("Test custom highlighting"),
-                    TRUE);
+                    true);
     menuCal->Append(Calendar_Cal_SurroundWeeks,
                     _T("Show s&urrounding weeks\tCtrl-W"),
                     _T("Show the neighbouring weeks in the prev/next month"),
-                    TRUE);
+                    true);
     menuCal->AppendSeparator();
     menuCal->Append(Calendar_Cal_SeqMonth,
                     _T("To&ggle month selector style\tCtrl-G"),
                     _T("Use another style for the calendar controls"),
-                    TRUE);
+                    true);
     menuCal->Append(Calendar_Cal_Month, _T("&Month can be changed\tCtrl-M"),
                     _T("Allow changing the month in the calendar"),
-                    TRUE);
+                    true);
     menuCal->Append(Calendar_Cal_Year, _T("&Year can be changed\tCtrl-Y"),
                     _T("Allow changing the year in the calendar"),
-                    TRUE);
+                    true);
     menuCal->AppendSeparator();
     menuCal->Append(Calendar_Cal_SetDate, _T("SetDate()"), _T("Set date to 2005-12-24."));
     menuCal->Append(Calendar_Cal_Today, _T("Today()"), _T("Set the current date."));
@@ -259,10 +260,10 @@ MyFrame::MyFrame(const wxString& title, const wxPoint& pos, const wxSize& size)
     menuBar->Append(menuFile, _T("&File"));
     menuBar->Append(menuCal, _T("&Calendar"));
 
-    menuBar->Check(Calendar_Cal_Monday, TRUE);
-    menuBar->Check(Calendar_Cal_Holidays, TRUE);
-    menuBar->Check(Calendar_Cal_Month, TRUE);
-    menuBar->Check(Calendar_Cal_Year, TRUE);
+    menuBar->Check(Calendar_Cal_Monday, true);
+    menuBar->Check(Calendar_Cal_Holidays, true);
+    menuBar->Check(Calendar_Cal_Month, true);
+    menuBar->Check(Calendar_Cal_Year, true);
 
     // ... and attach this menu bar to the frame
     SetMenuBar(menuBar);
@@ -272,19 +273,19 @@ MyFrame::MyFrame(const wxString& title, const wxPoint& pos, const wxSize& size)
 #if wxUSE_STATUSBAR
     // create a status bar just for fun (by default with 1 pane only)
     CreateStatusBar(2);
-    SetStatusText(_T("Welcome to wxWindows!"));
+    SetStatusText(_T("Welcome to wxWidgets!"));
 #endif // wxUSE_STATUSBAR
 }
 
 void MyFrame::OnQuit(wxCommandEvent& WXUNUSED(event))
 {
-    // TRUE is to force the frame to close
-    Close(TRUE);
+    // true is to force the frame to close
+    Close(true);
 }
 
 void MyFrame::OnAbout(wxCommandEvent& WXUNUSED(event))
 {
-    wxMessageBox(_T("wxCalendarCtrl sample\n© 2000 Vadim Zeitlin"),
+    wxMessageBox(_T("wxCalendarCtrl sample\n(c) 2000 Vadim Zeitlin"),
                  _T("About Calendar"), wxOK | wxICON_INFORMATION, this);
 }
 
@@ -340,12 +341,12 @@ void MyFrame::OnAllowYearUpdate(wxUpdateUIEvent& event)
     event.Enable( GetMenuBar()->IsChecked(Calendar_Cal_Month));
 }
 
-void MyFrame::OnSetDate(wxCommandEvent &event)
+void MyFrame::OnSetDate(wxCommandEvent &WXUNUSED(event))
 {
     m_panel->SetDate();
 }
 
-void MyFrame::OnToday(wxCommandEvent &event)
+void MyFrame::OnToday(wxCommandEvent &WXUNUSED(event))
 {
     m_panel->Today();
 }
@@ -355,14 +356,12 @@ void MyFrame::OnToday(wxCommandEvent &event)
 // ----------------------------------------------------------------------------
 
 MyPanel::MyPanel(wxFrame *frame)
-       : wxPanel(frame, -1)
+       : wxPanel(frame, wxID_ANY)
 {
-    SetAutoLayout(TRUE);
-
     wxString date;
     date.Printf(wxT("Selected date: %s"),
                 wxDateTime::Today().FormatISODate().c_str());
-    m_date = new wxStaticText(this, -1, date);
+    m_date = new wxStaticText(this, wxID_ANY, date);
     m_calendar = new wxCalendarCtrl(this, Calendar_CalCtrl,
                                     wxDefaultDateTime,
                                     wxDefaultPosition,
@@ -371,21 +370,13 @@ MyPanel::MyPanel(wxFrame *frame)
                                     wxCAL_SHOW_HOLIDAYS |
                                     wxRAISED_BORDER);
 
-    wxLayoutConstraints *c = new wxLayoutConstraints;
-    c->left.SameAs(this, wxLeft, 10);
-    c->centreY.SameAs(this, wxCentreY);
-    c->height.AsIs();
-    c->width.AsIs();
+    wxBoxSizer *m_sizer = new wxBoxSizer( wxHORIZONTAL );
 
-    m_date->SetConstraints(c);
+    m_sizer->Add(m_date, 0, wxALIGN_CENTER | wxALL, 10 );
+    m_sizer->Add(m_calendar, 0, wxALIGN_CENTER | wxALIGN_LEFT);
 
-    c = new wxLayoutConstraints;
-    c->left.SameAs(m_date, wxRight, 20);
-    c->centreY.SameAs(this, wxCentreY);
-    c->height.AsIs();
-    c->width.AsIs();
-
-    m_calendar->SetConstraints(c);
+    SetSizer( m_sizer );
+    m_sizer->SetSizeHints( this );
 }
 
 void MyPanel::OnCalendar(wxCalendarEvent& event)

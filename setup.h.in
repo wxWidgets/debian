@@ -39,6 +39,9 @@
 /* Define to `unsigned' if <sys/types.h> doesn't define.  */
 #undef size_t
 
+/* Define if ssize_t type is available.  */
+#undef HAVE_SSIZE_T
+
 /* Define if you have the ANSI C header files.  */
 #undef STDC_HEADERS
 
@@ -61,39 +64,48 @@
 /* Define this if your version of GTK+ is greater than 1.3 */
 #undef __WXGTK20__
 
+/* Define this if you want to use GPE features */
+#undef __WXGPE__
+
+/* Define this if your version of Motif is greater than 2.0 */
+#undef __WXMOTIF20__
+
 /*
  * Define to 1 for Unix[-like] system
  */
 #define wxUSE_UNIX 0
 
 #undef __UNIX__
-#undef __LINUX__
-#undef __SGI__
-#undef __HPUX__
-#undef __SYSV__
-#undef __SVR4__
+
 #undef __AIX__
-#undef __SUN__
-#undef __SOLARIS__
-#undef __SUNOS__
-#undef __ALPHA__
-#undef __IA64__
-#undef __OSF__
 #undef __BSD__
-#undef __FREEBSD__
 #undef __DARWIN__
+#undef __EMX__
+#undef __FREEBSD__
+#undef __HPUX__
+#undef __LINUX__
 #undef __NETBSD__
 #undef __OPENBSD__
-#undef __VMS__
+#undef __OSF__
+#undef __SGI__
+#undef __SOLARIS__
+#undef __SUN__
+#undef __SUNOS__
+#undef __SVR4__
+#undef __SYSV__
 #undef __ULTRIX__
-#undef __DATA_GENERAL__
-#undef __EMX__
+#undef __UNIXWARE__
+#undef __VMS__
+
+#undef __IA64__
+#undef __ALPHA__
 
 /* NanoX (with wxX11) */
 #define wxUSE_NANOX 0
 
 /* PowerPC Darwin & Mac OS X */
 #undef __POWERPC__
+#undef TARGET_CARBON
 
 /* MS-DOS with DJGPP */
 #undef __DOS__
@@ -103,12 +115,24 @@
 #undef __WINDOWS__
 #endif
 
+#ifndef __WIN95__
+#undef __WIN95__
+#endif
 #ifndef __WIN32__
 #undef __WIN32__
 #endif
+#ifndef __GNUWIN32__
 #undef __GNUWIN32__
+#endif
+#ifndef STRICT
 #undef STRICT
+#endif
+#ifndef WINVER
 #undef WINVER
+#endif
+
+/* OS/2 with EMX */
+#undef __OS2__
 
 /* enable native status bar under Win32 */
 #if defined(__WIN95__) && !defined(__WXUNIVERSAL__)
@@ -121,7 +145,7 @@
 #endif
 
 /* enable rich edit under Win32 */
-#if defined(__WIN95__) && !defined(__TWIN32__) && !defined(__GNUWIN32_OLD__)
+#if defined(__WIN95__) && !defined(__WINE__) && !defined(__GNUWIN32_OLD__)
 #define wxUSE_RICHEDIT 1
 #else
 #define wxUSE_RICHEDIT 0
@@ -138,9 +162,73 @@
 #undef HAVE_EXPLICIT
 
 /*
+ * Define if your compiler supports const_cast<>()
+ */
+#undef HAVE_CONST_CAST
+
+/*
+ * Define if your compiler supports reinterpret_cast<>()
+ */
+#undef HAVE_REINTERPRET_CAST
+
+/*
+ * Define if your compiler supports static_cast<>()
+ */
+#undef HAVE_STATIC_CAST
+
+/*
+ * Define if your compiler has C99 va_copy
+ */
+#undef HAVE_VA_COPY
+
+/*
+ * Define if va_list type is an array
+ */
+#undef VA_LIST_IS_ARRAY
+
+/*
+ * Define if your compiler has std::wstring
+ */
+#undef HAVE_STD_WSTRING
+/*
+ * Define if your compiler has compliant std::string::compare
+ */
+#undef HAVE_STD_STRING_COMPARE
+/*
+ * Define if your compiler has <hash_map>
+ */
+#undef HAVE_HASH_MAP
+/*
+ * Define if your compiler has <ext/hash_map>
+ */
+#undef HAVE_EXT_HASH_MAP
+/*
+ * Define if your compiler has std::hash_map/hash_set
+ */
+#undef HAVE_STD_HASH_MAP
+/*
+ * Define if your compiler has __gnu_cxx::hash_map/hash_set
+ */
+#undef HAVE_GNU_CXX_HASH_MAP
+
+/*
+ * use STL for containers and wxString
+ */
+#define wxUSE_STL 0
+/*
  * Use regex support
  */
 #define wxUSE_REGEX 0
+/*
+ * The built-in regex supports advanced REs in additional to POSIX's basic
+ * and extended. Your system regex probably won't support this, and in this
+ * case WX_NO_REGEX_ADVANCED should be defined.
+ */
+#undef WX_NO_REGEX_ADVANCED
+/*
+ * Use XML support
+ */
+#define wxUSE_XML 0
 /*
  * Use zlib
  */
@@ -158,11 +246,19 @@
  */
 #define wxUSE_LIBTIFF 0
 /*
+ * Use SDL for audio (Unix)
+ */
+#define wxUSE_LIBSDL 0
+/*
+ * Use GNOME print for printing under GTK+ 2.0
+ */
+#define wxUSE_LIBGNOMEPRINT 0
+/*
  * Use iODBC
  */
 #define wxUSE_ODBC 0
+#define wxUSE_BUILTIN_IODBC 0
 #define wxODBC_FWD_ONLY_CURSORS 1
-#define wxODBC_BACKWARD_COMPATABILITY 0
 /*
  * Use freetype
  */
@@ -188,7 +284,9 @@
 /*
  * Use GUI
  */
+#ifndef wxUSE_GUI
 #define wxUSE_GUI 0
+#endif
 /*
  * Don't use GUI (defined to 1 when compiling/using base only)
  */
@@ -310,6 +408,11 @@
 #define wxUSE_DRAGIMAGE 0
 
 /*
+ * Enable accessibility support
+ */
+#define wxUSE_ACCESSIBILITY 0
+
+/*
  * Use property sheet classes
  */
 #define wxUSE_PROPSHEET 0
@@ -358,6 +461,10 @@
  */
 #define wxUSE_CHOICE 0
 /*
+ * Use wxDisplay class
+ */
+#define wxUSE_DISPLAY 0
+/*
  * Use this control
  */
 #define wxUSE_GAUGE 0
@@ -366,12 +473,12 @@
  */
 #define wxUSE_GRID 0
 /*
- * Use this control
+ * Use the new prototype wxGrid classes
+ * (wxUSE_GRID must also be defined)
  */
 #define wxUSE_NEW_GRID 0
 /*
- * Use the new prototype wxGrid classes
- * (wxUSE_GRID must also be defined)
+ * Use wxImageList class
  */
 #define wxUSE_IMAGLIST 0
 /*
@@ -390,6 +497,8 @@
  * Use this control
  */
 #define wxUSE_NOTEBOOK 0
+#define wxUSE_LISTBOOK 0
+#define wxUSE_CHOICEBOOK 0
 /*
  * Use this control
  */
@@ -470,17 +579,6 @@
 #define wxUSE_TOOLBAR_NATIVE 0
 
 /*
- * Use generic wxToolBar instead of/together with the native one?
- */
-#define wxUSE_TOOLBAR_SIMPLE 0
-
-#if defined(__WXWINE__) || defined(__GNUWIN32__) || defined(__WXPM__)
-  #if wxUSE_TOOLBAR
-    #define wxUSE_BUTTONBAR 1
-  #endif
-#endif
-
-/*
  * Use wxTreeLayout class
  */
 #define wxUSE_TREELAYOUT 0
@@ -530,6 +628,8 @@
  */
 #define wxUSE_TEXTFILE 0
 
+#define wxUSE_EXCEPTIONS 0
+
 /*
  * Use log classes and logging functions
  */
@@ -557,7 +657,15 @@
 /*
  * Use wave class
  */
-#define wxUSE_WAVE 0
+#define wxUSE_SOUND 0
+/*
+ * Use wxMediaCtrl class
+ */
+#define wxUSE_MEDIACTRL 0
+/*
+ * Use DirectShow
+ */
+#define wxUSE_DIRECTSHOW 0
 /*
  * Use config system
  */
@@ -629,7 +737,7 @@
 #define wxUSE_WCHAR_T 0
 
 /*
- * Compile wxWindows in Unicode mode (Win32 only for now)?
+ * Compile wxWindows in Unicode mode?
  */
 #define wxUSE_UNICODE 0
 
@@ -637,6 +745,27 @@
  * Use MS Layer for Unicode on Win9X (Win32 only)?
  */
 #define wxUSE_UNICODE_MSLU 0
+
+/*
+ * Set to 1 to compile MS Windows XP theme engine support
+ */
+#define wxUSE_UXTHEME 1
+
+/*
+ *  Set to 1 to auto-adapt to MS Windows XP themes where possible
+ * (notably, wxNotebook pages)
+ */
+#define wxUSE_UXTHEME_AUTO 1
+
+/*
+ *  Set to 1 to use mousewheel events on Windows
+ */
+#define wxUSE_MOUSEWHEEL 1
+
+/*
+ * Hotkey support (Windows)
+ */
+#define wxUSE_HOTKEY 1
 
 /*
  * Use wxURL class
@@ -693,6 +822,10 @@
 #define wxUSE_SPLINES 0
 
 /*
+ * Use MDI.
+ */
+#define wxUSE_MDI 0
+/*
  * Use the mdi architecture
  */
 #define wxUSE_MDI_ARCHITECTURE 0
@@ -729,6 +862,10 @@
  * Use MS HTML Help controller (win32)
  */
 #define wxUSE_MS_HTML_HELP 0
+/*
+ * Use MS HTML Help via libmspack (Unix)
+ */
+#define wxUSE_LIBMSPACK 0
 
 /*
  * Use iostream.h rather than iostream
@@ -739,13 +876,13 @@
  */
 #define wxUSE_APPLE_IEEE 0
 /*
- * Compatibility with 2.0 API.
- */
-#define WXWIN_COMPATIBILITY_2 0
-/*
  * Compatibility with 2.2 API
  */
 #define WXWIN_COMPATIBILITY_2_2 0
+/*
+ * Compatibility with 2.4 API
+ */
+#define WXWIN_COMPATIBILITY_2_4 0
 /*
  * Enables debugging: memory tracing, assert, etc., contains debug level
  */
@@ -799,6 +936,16 @@
  * wxHTML
  */
 #define wxUSE_HTML 0
+
+/*
+ * wxXRC
+ */
+#define wxUSE_XRC 0
+
+/*
+ * wxWebKitCtrl
+ */
+#define wxUSE_WEBKIT 0
 
 /*
  * (virtual) filesystems code
@@ -859,14 +1006,9 @@
 #define wxUSE_ICO_CUR 0
 
 /*
- * Use dynamic DIB loading/saving code in utils/dib under MSW
+ * Set to 1 if for dynamically loadable plugins support
  */
-#define wxUSE_IMAGE_LOADING_IN_MSW 0
-
-/*
- * Use dynamic cursor/icon loading/saving code under MSW
- */
-#define wxUSE_RESOURCE_LOADING_IN_MSW 0
+#define wxUSE_PLUGINS 0
 
 /*
  * Disable this if your compiler can't cope
@@ -969,6 +1111,9 @@
 /* Define if you have vsnprintf() */
 #undef HAVE_VSNPRINTF
 
+/* Define if you have vsnprintf() declaration in the header */
+#undef HAVE_VSNPRINTF_DECL
+
 /* Define if you have usleep() */
 #undef HAVE_USLEEP
 
@@ -987,8 +1132,8 @@
 /* The number of bytes in a int.  */
 #undef SIZEOF_INT
 
-/* The number of bytes in a int *.  */
-#undef SIZEOF_INT_P
+/* The number of bytes in a pointer.  */
+#undef SIZEOF_VOID_P
 
 /* The number of bytes in a long.  */
 #undef SIZEOF_LONG
@@ -998,6 +1143,9 @@
 
 /* The number of bytes in a short.  */
 #undef SIZEOF_SHORT
+
+/* The number of bytes in a size_t.  */
+#undef SIZEOF_SIZE_T
 
 /* Define if size_t on your machine is the same type as unsigned int. */
 #undef wxSIZE_T_IS_UINT
@@ -1059,6 +1207,9 @@
 /* Define if you have the <X11/XKBlib.h> header file.  */
 #undef HAVE_X11_XKBLIB_H
 
+/* Define if you have the <X11/extensions/xf86vmode.h> header file.  */
+#undef HAVE_X11_EXTENSIONS_XF86VMODE_H
+
 /* Define if you have the fnmatch() function */
 #undef HAVE_FNMATCH
 
@@ -1073,9 +1224,6 @@
 
 /* Define if you have the <sched.h> header file.  */
 #undef HAVE_SCHED_H
-
-/* Define if you have the <strings.h> header file.  */
-#undef HAVE_STRINGS_H
 
 /* Define if you have the <unistd.h> header file.  */
 #undef HAVE_UNISTD_H
@@ -1104,11 +1252,35 @@
 /* Define if you have the <w32api.h> header file (mingw,cygwin).  */
 #undef HAVE_W32API_H
 
+/* Define if you have the <esd.h> header file.  */
+#undef HAVE_ESD_H
+
+/* Define if you have the <sys/soundcard.h> header file. */
+#undef HAVE_SYS_SOUNDCARD_H
+
+/* Define if you have a CD-ROM interface known to mmedia.  */
+#undef HAVE_KNOWN_CDROM_INTERFACE
+
 /* Define if you have wcsrtombs() function */
 #undef HAVE_WCSRTOMBS
 
-/* Define this if you have fputws() and putwc() */
-#undef HAVE_FPUTWC
+/* Define this if you have wputc() */
+#undef HAVE_WPUTC
+
+/* Define this if you have wputchar() */
+#undef HAVE_WPUTCHAR
+
+/* Define this if you have putws() */
+#undef HAVE_PUTWS
+
+/* Define this if you have fputws() */
+#undef HAVE_FPUTWS
+
+/* Define this if you have strcasecmp() function in <string.h> */
+#undef HAVE_STRCASECMP_IN_STRING_H
+
+/* Define this if you have strcasecmp() function in <strings.h> */
+#undef HAVE_STRCASECMP_IN_STRINGS_H
 
 /* Define this if you have wprintf() and related functions */
 #undef HAVE_WPRINTF
@@ -1122,6 +1294,14 @@
 /* Define this if you are using gtk and gdk contains support for X11R6 XIM */
 #undef HAVE_XIM
 
+/* Define this if you have X11/extensions/shape.h */
+#undef HAVE_XSHAPE
+
+/* Define this if you have type SPBCDATA */
+#undef HAVE_SPBCDATA
+
+/* Define if you have pango_font_family_is_monospace() (Pango >= 1.3.3) */
+#undef HAVE_PANGO_FONT_FAMILY_IS_MONOSPACE
 
 /* -------------------------------------------------------------------------
    Win32 adjustments section

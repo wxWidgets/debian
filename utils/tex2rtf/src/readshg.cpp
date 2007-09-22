@@ -6,9 +6,10 @@
 //              reverse-engineering
 //              and guesswork at its best.
 // Author:      Petr Smilauer
-// Modified by:
+// Modified by: Wlodzimiez ABX Skiba 2003/2004 Unicode support
+//              Ron Lee
 // Created:     01/01/99
-// RCS-ID:      $Id: readshg.cpp,v 1.1 1999/01/02 00:44:56 JS Exp $
+// RCS-ID:      $Id: readshg.cpp,v 1.5 2004/10/04 20:03:27 ABX Exp $
 // Copyright:   (c) Petr Smilauer
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -25,7 +26,6 @@
 #endif
 
 #ifndef WX_PRECOMP
-#include "wx/wx.h"
 #endif
 
 #include <stdio.h>
@@ -39,8 +39,8 @@
 // HotSpots *array;
 // int n = ParseSHG("thing.shg", &array);
 
-int   ParseSHG( const char* fileName, HotSpot **hotspots)
-{ FILE*   fSHG = fopen( fileName, "rb");
+int   ParseSHG( const wxChar* fileName, HotSpot **hotspots)
+{ FILE*   fSHG = wxFopen( fileName, _T("rb"));
   long    offset;
   int nHotspots = 0;
 
@@ -90,7 +90,7 @@ int   ParseSHG( const char* fileName, HotSpot **hotspots)
   if(nMacroStrings > 0)
     fseek( fSHG, nMacroStrings, SEEK_CUR);  //nMacroStrings is byte offset...
   // and, at the last, read through the strings: hotspot-id[ignored], then topic/macro
-  int  c;
+  int c;
   for( i = 0 ; i < nHotspots ; ++i)
   {
     while( (c = fgetc( fSHG)) != 0)
@@ -99,7 +99,7 @@ int   ParseSHG( const char* fileName, HotSpot **hotspots)
     int j = 0;
     while( (c = fgetc( fSHG)) != 0)
     {
-      (*hotspots)[i].szHlpTopic_Macro[j] = c;
+      (*hotspots)[i].szHlpTopic_Macro[j] = (wxChar)c;
       ++j;
     }
     (*hotspots)[i].szHlpTopic_Macro[j] = 0;
@@ -111,53 +111,53 @@ int   ParseSHG( const char* fileName, HotSpot **hotspots)
 
 // Convert Windows .SHG file to HTML map file
 
-bool SHGToMap(char *filename, char *defaultFile)
+bool SHGToMap(wxChar *filename, wxChar *defaultFile)
 {
   // Test the SHG parser
   HotSpot *hotspots = NULL;
   int n = ParseSHG(filename, &hotspots);
   if (n == 0)
-    return FALSE;
+    return false;
 
-  char buf[100];
-  sprintf(buf, "Converting .SHG file to HTML map file: there are %d hotspots in %s.", n, filename);
+  wxChar buf[100];
+  wxSnprintf(buf, sizeof(buf), _T("Converting .SHG file to HTML map file: there are %d hotspots in %s."), n, filename);
   OnInform(buf);
 
-  char outBuf[256];
-  strcpy(outBuf, filename);
+  wxChar outBuf[256];
+  wxStrcpy(outBuf, filename);
   StripExtension(outBuf);
-  strcat(outBuf, ".map");
+  wxStrcat(outBuf, _T(".map"));
 
-  FILE *fd = fopen(outBuf, "w");
+  FILE *fd = wxFopen(outBuf, _T("w"));
   if (!fd)
   {
-    OnError("Could not open .map file for writing.");
+    OnError(_T("Could not open .map file for writing."));
     delete[] hotspots;
-    return FALSE;
+    return false;
   }
 
-  fprintf(fd, "default %s\n", defaultFile);
+  wxFprintf(fd, _T("default %s\n"), defaultFile);
   for (int i = 0; i < n; i++)
   {
-    char *refFilename = "??";
+    wxChar *refFilename = _T("??");
     
     TexRef *texRef = FindReference(hotspots[i].szHlpTopic_Macro);
     if (texRef)
       refFilename = texRef->refFile;
     else
     {
-      char buf[300];
-      sprintf(buf, "Warning: could not find hotspot reference %s", hotspots[i].szHlpTopic_Macro);
+      wxChar buf[300];
+      wxSnprintf(buf, sizeof(buf), _T("Warning: could not find hotspot reference %s"), hotspots[i].szHlpTopic_Macro);
       OnInform(buf);
     }
-    fprintf(fd, "rect %s %d %d %d %d\n", refFilename, (int)hotspots[i].left, (int)hotspots[i].top,
+    wxFprintf(fd, _T("rect %s %d %d %d %d\n"), refFilename, (int)hotspots[i].left, (int)hotspots[i].top,
       (int)hotspots[i].right, (int)hotspots[i].bottom);
   }
-  fprintf(fd, "\n");
+  wxFprintf(fd, _T("\n"));
 
   fclose(fd);
 
   delete[] hotspots;
-  return TRUE;
+  return true;
 }
 

@@ -41,7 +41,7 @@ when the radiobutton is clicked.}
 
 \latexignore{\rtfignore{\wxheading{Members}}}
 
-\membersection{wxRadioButton::wxRadioButton}\label{wxradiobuttonconstr}
+\membersection{wxRadioButton::wxRadioButton}\label{wxradiobuttonctor}
 
 \func{}{wxRadioButton}{\void}
 
@@ -77,7 +77,7 @@ Constructor, creating and showing a radio button.
 
 \helpref{wxRadioButton::Create}{wxradiobuttoncreate}, \helpref{wxValidator}{wxvalidator}
 
-\membersection{wxRadioButton::\destruct{wxRadioButton}}
+\membersection{wxRadioButton::\destruct{wxRadioButton}}\label{wxradiobuttondtor}
 
 \func{void}{\destruct{wxRadioButton}}{\void}
 
@@ -91,14 +91,14 @@ Destructor, destroying the radio button item.
 \param{const wxValidator\& }{validator = wxDefaultValidator},\rtfsp
 \param{const wxString\& }{name = ``radioButton"}}
 
-Creates the choice for two-step construction. See \helpref{wxRadioButton::wxRadioButton}{wxradiobuttonconstr} for
+Creates the choice for two-step construction. See \helpref{wxRadioButton::wxRadioButton}{wxradiobuttonctor} for
 further details.
 
 \membersection{wxRadioButton::GetValue}\label{wxradiobuttongetvalue}
 
 \constfunc{bool}{GetValue}{\void}
 
-Returns TRUE if the radio button is depressed, FALSE otherwise.
+Returns true if the radio button is depressed, false otherwise.
 
 \membersection{wxRadioButton::SetValue}\label{wxradiobuttonsetvalue}
 
@@ -109,6 +109,6 @@ wxEVT\_COMMAND\_RADIOBUTTON\_SELECTED event to get emitted.
 
 \wxheading{Parameters}
 
-\docparam{value}{TRUE to select, FALSE to deselect.}
+\docparam{value}{true to select, false to deselect.}
 
 

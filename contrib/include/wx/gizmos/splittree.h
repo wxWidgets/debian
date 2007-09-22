@@ -6,7 +6,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     8/7/2000
-// RCS-ID:      $Id: splittree.h,v 1.9 2002/09/07 12:10:20 GD Exp $
+// RCS-ID:      $Id: splittree.h,v 1.12 2004/06/08 19:27:28 ABX Exp $
 // Copyright:   (c) Julian Smart
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -18,11 +18,7 @@
     #pragma interface "splittree.h"
 #endif
 
-#ifdef GIZMOISDLL
-#define GIZMODLLEXPORT WXDLLEXPORT
-#else
-#define GIZMODLLEXPORT
-#endif
+#include "wx/gizmos/gizmos.h"
 
 // Set this to 1 to use generic tree control (doesn't yet work properly)
 #define USE_GENERIC_TREECTRL 0
@@ -52,7 +48,7 @@ class wxSplitterScrolledWindow;
  * It also updates the scrolled window vertical scrollbar as appropriate.
  */
 
-class GIZMODLLEXPORT wxRemotelyScrolledTreeCtrl: public wxTreeCtrl
+class WXDLLIMPEXP_GIZMOS wxRemotelyScrolledTreeCtrl: public wxTreeCtrl
 {
     DECLARE_CLASS(wxRemotelyScrolledTreeCtrl)
 public:
@@ -76,7 +72,7 @@ public:
     virtual void SetScrollbars(int pixelsPerUnitX, int pixelsPerUnitY,
                              int noUnitsX, int noUnitsY,
                              int xPos = 0, int yPos = 0,
-                             bool noRefresh = FALSE );
+                             bool noRefresh = false );
 
     // In case we're using the generic tree control.
     // Get the view start
@@ -126,12 +122,12 @@ protected:
  * A window displaying values associated with tree control items.
  */
 
-class GIZMODLLEXPORT wxTreeCompanionWindow: public wxWindow
+class WXDLLIMPEXP_GIZMOS wxTreeCompanionWindow: public wxWindow
 {
 public:
     DECLARE_CLASS(wxTreeCompanionWindow)
 
-    wxTreeCompanionWindow(wxWindow* parent, wxWindowID id = -1,
+    wxTreeCompanionWindow(wxWindow* parent, wxWindowID id = wxID_ANY,
       const wxPoint& pos = wxDefaultPosition,
       const wxSize& sz = wxDefaultSize,
       long style = 0);
@@ -165,15 +161,16 @@ protected:
  * than the usual one.
  */
 
-class GIZMODLLEXPORT wxThinSplitterWindow: public wxSplitterWindow
+class WXDLLIMPEXP_GIZMOS wxThinSplitterWindow: public wxSplitterWindow
 {
 public:
     DECLARE_DYNAMIC_CLASS(wxThinSplitterWindow)
 
-    wxThinSplitterWindow(wxWindow* parent, wxWindowID id = -1,
+    wxThinSplitterWindow(wxWindow* parent, wxWindowID id = wxID_ANY,
       const wxPoint& pos = wxDefaultPosition,
       const wxSize& sz = wxDefaultSize,
       long style = wxSP_3D | wxCLIP_CHILDREN);
+    ~wxThinSplitterWindow();
 
 //// Overrides
 
@@ -193,6 +190,9 @@ public:
 
 //// Data members
 protected:
+    wxPen*      m_facePen;
+    wxBrush*    m_faceBrush;
+
     DECLARE_EVENT_TABLE()
 };
 
@@ -205,12 +205,12 @@ protected:
  * scroll appropriately.
  */
 
-class GIZMODLLEXPORT wxSplitterScrolledWindow: public wxScrolledWindow
+class WXDLLIMPEXP_GIZMOS wxSplitterScrolledWindow: public wxScrolledWindow
 {
 public:
     DECLARE_DYNAMIC_CLASS(wxSplitterScrolledWindow)
 
-    wxSplitterScrolledWindow(wxWindow* parent, wxWindowID id = -1,
+    wxSplitterScrolledWindow(wxWindow* parent, wxWindowID id = wxID_ANY,
       const wxPoint& pos = wxDefaultPosition,
       const wxSize& sz = wxDefaultSize,
       long style = 0);

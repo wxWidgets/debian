@@ -4,8 +4,8 @@
 // Author:      Vadim Zeitlin
 // Modified by:
 // Created:     22.10.99
-// RCS-ID:      $Id: ctrlsub.cpp,v 1.6 2002/05/11 17:14:46 GD Exp $
-// Copyright:   (c) wxWindows team
+// RCS-ID:      $Id: ctrlsub.cpp,v 1.14 2004/05/23 20:51:58 JS Exp $
+// Copyright:   (c) wxWidgets team
 // Licence:     wxWindows licence
 ///////////////////////////////////////////////////////////////////////////////
 
@@ -17,7 +17,7 @@
 // headers
 // ----------------------------------------------------------------------------
 
-#ifdef __GNUG__
+#if defined(__GNUG__) && !defined(NO_GCC_PRAGMA)
     #pragma implementation "controlwithitems.h"
 #endif
 
@@ -32,6 +32,7 @@
 
 #ifndef WX_PRECOMP
     #include "wx/ctrlsub.h"
+    #include "wx/arrstr.h"
 #endif
 
 // ============================================================================
@@ -57,6 +58,15 @@ wxString wxItemContainer::GetStringSelection() const
     return s;
 }
 
+wxArrayString wxItemContainer::GetStrings() const
+{
+    wxArrayString result ;
+    size_t count = GetCount() ;
+    for ( size_t n = 0 ; n < count ; n++ )
+        result.Add(GetString(n));
+    return result ;
+}
+
 // ----------------------------------------------------------------------------
 // appending items
 // ----------------------------------------------------------------------------
@@ -68,6 +78,25 @@ void wxItemContainer::Append(const wxArrayString& strings)
     {
         Append(strings[n]);
     }
+}
+
+int wxItemContainer::Insert(const wxString& item, int pos, void *clientData)
+{
+    int n = DoInsert(item, pos);
+    if ( n != wxNOT_FOUND )
+        SetClientData(n, clientData);
+
+    return n;
+}
+
+int
+wxItemContainer::Insert(const wxString& item, int pos, wxClientData *clientData)
+{
+    int n = DoInsert(item, pos);
+    if ( n != wxNOT_FOUND )
+        SetClientObject(n, clientData);
+
+    return n;
 }
 
 // ----------------------------------------------------------------------------

@@ -4,15 +4,15 @@
 // Author:      Denis Pershin
 // Modified by:
 // Created:     08/08/98
-// RCS-ID:      $Id: treectrl.h,v 1.13.2.1 2002/12/29 07:48:12 RL Exp $
+// RCS-ID:      $Id: treectrl.h,v 1.18 2004/05/23 20:50:54 JS Exp $
 // Copyright:   (c) Denis Pershin
-// Licence:     wxWindows license
+// Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
 
 #ifndef _WX_TREECTRL_H_
 #define _WX_TREECTRL_H_
 
-#if defined(__GNUG__) && !defined(__APPLE__)
+#if defined(__GNUG__) && !defined(NO_GCC_PRAGMA)
 #pragma interface "treectrl.h"
 #endif
 
@@ -101,7 +101,7 @@ public:
 
   // conversion to/from either real (system-dependent) tree item id or
   // to "long" which used to be the type for tree item ids in previous
-  // versions of wxWindows
+  // versions of wxWidgets
 
   // for wxTreeCtrl usage only
   wxTreeItemId(GtkTreeItem *itemId) { m_itemId = itemId; }
@@ -356,7 +356,7 @@ public:
     // ----------
 
     // these methods are deprecated and will be removed in future versions of
-    // wxWindows, they're here for compatibility only, don't use them in new
+    // wxWidgets, they're here for compatibility only, don't use them in new
     // code (the comments indicate why these methods are now useless and how to
     // replace them)
 

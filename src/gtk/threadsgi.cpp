@@ -4,21 +4,24 @@
 // Author:      Original from Wolfram Gloger/Guilhem Lavaux
 // Modified by:
 // Created:     04/22/98
-// RCS-ID:      $Id: threadsgi.cpp,v 1.12 1999/01/06 21:09:02 RR Exp $
+// RCS-ID:      $Id: threadsgi.cpp,v 1.16 2004/11/03 21:13:19 RR Exp $
 // Copyright:   (c) Wolfram Gloger (1996, 1997); Guilhem Lavaux (1998)
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
-#ifdef __GNUG__
+#if defined(__GNUG__) && !defined(NO_GCC_PRAGMA)
 #pragma implementation "thread.h"
 #endif
 
+// For compilers that support precompilation, includes "wx.h".
+#include "wx/wxprec.h"
+
+#include "wx/thread.h"
 #include <stdio.h>
 #include <unistd.h>
 
 #include <signal.h>
 #include <sys/wait.h>
 #include <sys/prctl.h>
-#include "wx/thread.h"
 #include "wx/module.h"
 #include "wx/utils.h"
 #include "wx/log.h"

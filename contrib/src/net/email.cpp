@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     2001-08-21
-// RCS-ID:      $Id: email.cpp,v 1.3 2001/09/09 18:06:25 GD Exp $
+// RCS-ID:      $Id: email.cpp,v 1.4 2004/05/25 11:14:25 JS Exp $
 // Copyright:   (c) Julian Smart
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -40,7 +40,7 @@
 #endif
 
 // Send a message.
-// Specify profile, or leave it to wxWindows to find the current user name
+// Specify profile, or leave it to wxWidgets to find the current user name
 
 #ifdef __WXMSW__
 bool wxEmail::Send(wxMailMessage& message, const wxString& profileName, const wxString& WXUNUSED(sendMail))

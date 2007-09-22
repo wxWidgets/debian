@@ -4,12 +4,12 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     04/01/98
-// RCS-ID:      $Id: ipcbase.cpp,v 1.5.2.1 2003/04/28 10:33:05 JS Exp $
-// Copyright:   (c) Julian Smart and Markus Holzem
-// Licence:   	wxWindows license
+// RCS-ID:      $Id: ipcbase.cpp,v 1.11 2004/09/16 18:13:32 ABX Exp $
+// Copyright:   (c) Julian Smart
+// Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
 
-#ifdef __GNUG__
+#if defined(__GNUG__) && !defined(NO_GCC_PRAGMA)
 #pragma implementation "ipcbase.h"
 #endif
 
@@ -31,23 +31,23 @@ IMPLEMENT_CLASS(wxClientBase, wxObject)
 IMPLEMENT_CLASS(wxConnectionBase, wxObject)
 
 wxConnectionBase::wxConnectionBase(wxChar *buffer, int size)
-    : m_connected(TRUE),
+    : m_connected(true),
       m_buffer(buffer),
       m_buffersize(size),
-      m_deletebufferwhendone(FALSE)
+      m_deletebufferwhendone(false)
 {
   if ( buffer == (wxChar *)NULL )
   { // behave like next constructor
     m_buffersize = 0;
-    m_deletebufferwhendone = TRUE;
+    m_deletebufferwhendone = true;
   }
 }
 
 wxConnectionBase::wxConnectionBase()
-    : m_connected(TRUE),
+    : m_connected(true),
       m_buffer(NULL),
       m_buffersize(0),
-      m_deletebufferwhendone(TRUE)
+      m_deletebufferwhendone(true)
 {
 }
 
@@ -55,7 +55,7 @@ wxConnectionBase::wxConnectionBase(wxConnectionBase& copy)
     : m_connected(copy.m_connected),
       m_buffer(copy.m_buffer),
       m_buffersize(copy.m_buffersize),
-      m_deletebufferwhendone(FALSE)
+      m_deletebufferwhendone(false)
 
 {
   // copy constructor would require ref-counted pointer to buffer

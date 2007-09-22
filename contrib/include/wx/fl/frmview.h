@@ -4,7 +4,7 @@
 // Author:      Aleksandras Gluchovas
 // Modified by:
 // Created:     02/01/99
-// RCS-ID:      $Id: frmview.h,v 1.3.2.1 2002/10/24 11:21:34 JS Exp $
+// RCS-ID:      $Id: frmview.h,v 1.10 2004/07/22 18:51:10 ABX Exp $
 // Copyright:   (c) Aleksandras Gluchovas
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -32,7 +32,7 @@ class wxFrameManager;
 It is not clear what this class does. It is not used elsewhere in FL.
 */
 
-class WXFL_DECLSPEC wxFrameView : public wxEvtHandler
+class WXDLLIMPEXP_FL wxFrameView : public wxEvtHandler
 {
 protected:
     wxStringList    mTopMenus;
@@ -63,14 +63,14 @@ public:
     void CreateLayout();
     wxFrameLayout* GetLayout();
     void SetLayout( wxFrameLayout* pLayout );
-    void SetToolUpdates( bool doToolUpdates = TRUE );
+    void SetToolUpdates( bool doToolUpdates = true );
 
 
     // hooks for specific frame-views
 
     virtual void OnInit() {}
 
-    virtual void OnSerialize( wxObjectStorage& store ) {}
+    virtual void OnSerialize( wxObjectStorage& WXUNUSED(store) ) {}
     virtual void OnActiveate() {}
     virtual void OnDeactivate() {}
 
@@ -87,7 +87,7 @@ class wxFrame;
 It is not clear what this class does. It is not used elsewhere in FL.
 */
 
-class WXFL_DECLSPEC wxFrameManager : wxObject
+class WXDLLIMPEXP_FL wxFrameManager : public wxObject
 {
 protected:
     wxList       mViews;
@@ -114,7 +114,8 @@ public:
 
     // if file name is empty, views are are not saved/loaded
 
-    virtual void Init( wxWindow* pMainFrame, const wxString& settingsFile = "" );
+    virtual void Init( wxWindow* pMainFrame,
+                       const wxString& settingsFile = wxEmptyString );
 
     // synonyms
     wxFrame* GetParentFrame();
@@ -122,7 +123,7 @@ public:
 
     int GetActiveViewNo();
     wxFrameView* GetActiveView();
-    wxNode* GetActiveViewNode();
+    wxObjectList::compatibility_iterator GetActiveViewNode();
 
     wxFrameView* GetView( int viewNo );
 

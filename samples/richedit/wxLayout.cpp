@@ -17,8 +17,8 @@
 #endif
 
 #include "wxLayout.h"
-#include <wx/textfile.h>
-#include <wx/image.h>
+#include "wx/textfile.h"
+#include "wx/image.h"
 
 #if wxUSE_IOSTREAMH
     #include <iostream.h>
@@ -26,7 +26,10 @@
     #include <iostream>
 #endif
 
-#include   "Micon.xpm"
+#include "wx/wfstream.h"
+#include "wx/txtstrm.h"
+
+#include "Micon.xpm"
 
 
 //-----------------------------------------------------------------------------
@@ -63,69 +66,72 @@ BEGIN_EVENT_TABLE(MyFrame,wxFrame)
    EVT_MENU(ID_PREVIEW_PS, MyFrame::OnPrintPreviewPS)
    EVT_MENU(ID_PRINT_SETUP_PS, MyFrame::OnPrintSetupPS)
    EVT_MENU(ID_PAGE_SETUP_PS, MyFrame::OnPageSetupPS)
-   EVT_MENU    (-1,       MyFrame::OnCommand)
-   EVT_COMMAND (-1,-1,    MyFrame::OnCommand)
+   EVT_MENU    (wxID_ANY,       MyFrame::OnCommand)
+   EVT_COMMAND (wxID_ANY,wxID_ANY,    MyFrame::OnCommand)
    EVT_CHAR    (  wxLayoutWindow::OnChar  )
 END_EVENT_TABLE()
 
 
-MyFrame::MyFrame(void) :
-   wxFrame( (wxFrame *) NULL, -1, "wxLayout",
-             wxPoint(880,100), wxSize(256,256) )
+MyFrame::MyFrame() :
+   wxFrame( (wxFrame *) NULL, wxID_ANY, _T("wxLayout"),
+             wxDefaultPosition, wxDefaultSize )
 {
+#if wxUSE_STATUSBAR
    CreateStatusBar( 2 );
-
-   SetStatusText( "wxLayout by Karsten Ballüder." );
+   SetStatusText( _T("wxLayout by Karsten Ballüder.") );
+#endif // wxUSE_STATUSBAR
 
    wxMenuBar *menu_bar = new wxMenuBar();
 
    wxMenu *file_menu = new wxMenu;
-   file_menu->Append(ID_PRINT, "&Print...", "Print");
-   file_menu->Append(ID_PRINT_SETUP, "Print &Setup...","Setup printer properties");
-   file_menu->Append(ID_PAGE_SETUP, "Page Set&up...", "Page setup");
-   file_menu->Append(ID_PREVIEW, "Print Pre&view", "Preview");
+   file_menu->Append(ID_PRINT, _T("&Print..."), _T("Print"));
+   file_menu->Append(ID_PRINT_SETUP, _T("Print &Setup..."),_T("Setup printer properties"));
+   file_menu->Append(ID_PAGE_SETUP, _T("Page Set&up..."), _T("Page setup"));
+   file_menu->Append(ID_PREVIEW, _T("Print Pre&view"), _T("Preview"));
 #ifdef __WXMSW__
    file_menu->AppendSeparator();
-   file_menu->Append(ID_PRINT_PS, "Print PostScript...", "Print (PostScript)");
-   file_menu->Append(ID_PRINT_SETUP_PS, "Print Setup PostScript...", "Setup printer properties (PostScript)");
-   file_menu->Append(ID_PAGE_SETUP_PS, "Page Setup PostScript...", "Page setup (PostScript)");
-   file_menu->Append(ID_PREVIEW_PS, "Print Preview PostScript", "Preview (PostScript)");
+   file_menu->Append(ID_PRINT_PS, _T("Print PostScript..."), _T("Print (PostScript)"));
+   file_menu->Append(ID_PRINT_SETUP_PS, _T("Print Setup PostScript..."), _T("Setup printer properties (PostScript)"));
+   file_menu->Append(ID_PAGE_SETUP_PS, _T("Page Setup PostScript..."), _T("Page setup (PostScript)"));
+   file_menu->Append(ID_PREVIEW_PS, _T("Print Preview PostScript"), _T("Preview (PostScript)"));
 #endif
    file_menu->AppendSeparator();
-   file_menu->Append( ID_TEXT, "Export &Text");
-   file_menu->Append( ID_HTML, "Export &HTML");
-   file_menu->Append( ID_QUIT, "E&xit");
-   menu_bar->Append(file_menu, "&File" );
+   file_menu->Append( ID_TEXT, _T("Export &Text"));
+   file_menu->Append( ID_HTML, _T("Export &HTML"));
+   file_menu->Append( ID_QUIT, _T("E&xit"));
+   menu_bar->Append(file_menu, _T("&File"));
 
    wxMenu *edit_menu = new wxMenu;
-   edit_menu->Append( ID_CLEAR, "C&lear");
-   edit_menu->Append( ID_ADD_SAMPLE, "&Example");
-   edit_menu->Append( ID_LONG_TEST, "Add &many lines");
+   edit_menu->Append( ID_CLEAR, _T("C&lear"));
+   edit_menu->Append( ID_ADD_SAMPLE, _T("&Example"));
+   edit_menu->Append( ID_LONG_TEST, _T("Add &many lines"));
    edit_menu->AppendSeparator();
-   edit_menu->Append( ID_LINEBREAKS_TEST, "Add &several lines");
-   edit_menu->Append( ID_URL_TEST, "Insert an &URL");
+   edit_menu->Append( ID_LINEBREAKS_TEST, _T("Add &several lines"));
+   edit_menu->Append( ID_URL_TEST, _T("Insert an &URL"));
    edit_menu->AppendSeparator();
-   edit_menu->Append(ID_WRAP, "&Wrap mode", "Activate wrapping at pixel 200.");
-   edit_menu->Append(ID_NOWRAP, "&No-wrap mode", "Deactivate wrapping.");
+   edit_menu->Append(ID_WRAP, _T("&Wrap mode"), _T("Activate wrapping at pixel 200."));
+   edit_menu->Append(ID_NOWRAP, _T("&No-wrap mode"), _T("Deactivate wrapping."));
    edit_menu->AppendSeparator();
-   edit_menu->Append(ID_COPY, "&Copy", "Copy text to clipboard.");
-   edit_menu->Append(ID_CUT, "Cu&t", "Cut text to clipboard.");
-   edit_menu->Append(ID_PASTE,"&Paste", "Paste text from clipboard.");
+   edit_menu->Append(ID_COPY, _T("&Copy"), _T("Copy text to clipboard."));
+   edit_menu->Append(ID_CUT, _T("Cu&t"), _T("Cut text to clipboard."));
+   edit_menu->Append(ID_PASTE,_T("&Paste"), _T("Paste text from clipboard."));
 #ifdef __WXGTK__
-   edit_menu->Append(ID_COPY_PRIMARY, "C&opy primary", "Copy text to primary selecton.");
-   edit_menu->Append(ID_PASTE_PRIMARY,"&Paste primary", "Paste text from primary selection.");
+   edit_menu->Append(ID_COPY_PRIMARY, _T("C&opy primary"), _T("Copy text to primary selecton."));
+   edit_menu->Append(ID_PASTE_PRIMARY, _T("&Paste primary"), _T("Paste text from primary selection."));
 #endif
-   edit_menu->Append(ID_FIND, "&Find", "Find text.");
-   menu_bar->Append(edit_menu, "&Edit" );
+   edit_menu->Append(ID_FIND, _T("&Find"), _T("Find text."));
+   menu_bar->Append(edit_menu, _T("&Edit") );
 
 #ifndef __WXMSW__
-   menu_bar->Show( TRUE );
+   menu_bar->Show(true);
 #endif // MSW
 
    SetMenuBar( menu_bar );
 
    m_lwin = new wxLayoutWindow(this);
+#if wxUSE_STATUSBAR
    m_lwin->SetStatusBar(GetStatusBar(), 0, 1);
+#endif // wxUSE_STATUSBAR
    m_lwin->SetMouseTracking(true);
    m_lwin->SetEditable(true);
    m_lwin->SetWrapMargin(40);
@@ -157,107 +163,107 @@ MyFrame::MyFrame(void) :
 #endif // 0
 };
 
-void
-MyFrame::AddSampleText(wxLayoutList *llist)
+void MyFrame::AddSampleText(wxLayoutList *llist)
 {
    llist->Clear(wxSWISS,16,wxNORMAL,wxNORMAL, false);
-   llist->SetFont(-1,-1,-1,-1,-1,"blue");
-   llist->Insert("blue");
-   llist->SetFont(-1,-1,-1,-1,-1,"black");
-   llist->Insert("The quick brown fox jumps over the lazy dog.");
+   llist->SetFont(-1,-1,-1,-1,-1,_T("blue"));
+   llist->Insert(_T("blue"));
+   llist->LineBreak();
+
+   llist->SetFont(-1,-1,-1,-1,-1,_T("black"));
+   llist->Insert(_T("The quick brown fox jumps over the lazy dog."));
    llist->LineBreak();
 
    llist->SetFont(wxROMAN,16,wxNORMAL,wxNORMAL, false);
-   llist->Insert("--");
+   llist->Insert(_T("--"));
    llist->LineBreak();
 
    llist->SetFont(wxROMAN);
-   llist->Insert("The quick brown fox jumps over the lazy dog.");
-   llist->LineBreak();
-   llist->Insert("Hello ");
-#if wxICON_IS_BITMAP
-   llist->Insert(new wxLayoutObjectIcon(new wxICON(Micon)));
-#else
-   llist->Insert(new wxLayoutObjectIcon(new wxBitmap (wxICON(Micon))));
-#endif
-   llist->SetFontWeight(wxBOLD);
-   llist->Insert("World! ");
-   llist->SetFontWeight(wxNORMAL);
-   llist->Insert("The quick brown fox jumps...");
-   llist->LineBreak();
-   llist->Insert("over the lazy dog.");
-   llist->SetFont(-1,-1,-1,-1,true);
-   llist->Insert("underlined");
-   llist->SetFont(-1,-1,-1,-1,false);
-   llist->SetFont(wxROMAN);
-   llist->Insert("This is ");
-   llist->SetFont(-1,-1,-1,wxBOLD);  llist->Insert("BOLD ");  llist->SetFont(-1,-1,-1,wxNORMAL);
-   llist->Insert("and ");
-   llist->SetFont(-1,-1,wxITALIC);
-   llist->Insert("italics ");
-   llist->SetFont(-1,-1,wxNORMAL);
-   llist->LineBreak();
-   llist->Insert("and ");
-   llist->SetFont(-1,-1,wxSLANT);
-   llist->Insert("slanted");
-   llist->SetFont(-1,-1,wxNORMAL);
-   llist->Insert(" text.");
-   llist->LineBreak();
-   llist->Insert("and ");
-   llist->SetFont(-1,-1,-1,-1,-1,"blue");
-   llist->Insert("blue");
-   llist->SetFont(-1,-1,-1,-1,-1,"black");
-   llist->Insert(" and ");
-   llist->SetFont(-1,-1,-1,-1,-1,"green","black");
-   llist->Insert("green on black");
-   llist->SetFont(-1,-1,-1,-1,-1,"black","white");
-   llist->Insert(" text.");
+   llist->Insert(_T("The quick brown fox jumps over the lazy dog."));
    llist->LineBreak();
 
-   llist->SetFont(-1,-1,wxSLANT);
-   llist->Insert("Slanted");
-   llist->SetFont(-1,-1,wxNORMAL);
-   llist->Insert(" and normal text and ");
-   llist->SetFont(-1,-1,wxSLANT);
-   llist->Insert("slanted");
-   llist->SetFont(-1,-1,wxNORMAL);
-   llist->Insert(" again.");
-   llist->LineBreak();
+    llist->Insert(_T("Hello "));
+    wxBitmap *icon = new wxBitmap (wxIcon(Micon_xpm));
 
-   // add some more text for testing:
-   llist->Insert("And here the source for the test program:");
-   llist->LineBreak();
-   llist->SetFont(wxTELETYPE,16);
-   llist->Insert("And here the source for the test program:");
-   llist->LineBreak();
-   llist->Insert("And here the source for the test program:");
-   llist->LineBreak();
-   llist->Insert("And here the source for the test program:");
+    llist->Insert(new wxLayoutObjectIcon(icon));
+    llist->SetFontWeight(wxBOLD);
+    llist->Insert(_T("World! "));
+    llist->SetFontWeight(wxNORMAL);
+    llist->Insert(_T("The quick brown fox jumps..."));
+    llist->LineBreak();
 
-   char buffer[1024];
-   FILE *in = fopen("wxLayout.cpp","r");
-   if(in)
-   {
-      for(;;)
-      {
-         fgets(buffer,1024,in);
-         if(feof(in))
-            break;
-         wxLayoutImportText(llist, buffer);
-      }
-   }
+    llist->Insert(_T("over the lazy dog."));
+    llist->SetFont(-1,-1,-1,-1,true);
+    llist->Insert(_T("underlined"));
+    llist->SetFont(-1,-1,-1,-1,false);
+    llist->SetFont(wxROMAN);
+    llist->Insert(_T("This is "));
+    llist->SetFont(-1,-1,-1,wxBOLD);
+    llist->Insert(_T("BOLD "));
+    llist->SetFont(-1,-1,-1,wxNORMAL);
+    llist->Insert(_T("and "));
+    llist->SetFont(-1,-1,wxITALIC);
+    llist->Insert(_T("italics "));
+    llist->SetFont(-1,-1,wxNORMAL);
+    llist->LineBreak();
 
-   llist->MoveCursorTo(wxPoint(0,0));
-   m_lwin->SetDirty();
-   m_lwin->Refresh();
+    llist->Insert(_T("and "));
+    llist->SetFont(-1,-1,wxSLANT);
+    llist->Insert(_T("slanted"));
+    llist->SetFont(-1,-1,wxNORMAL);
+    llist->Insert(_T(" text."));
+    llist->LineBreak();
+
+    llist->Insert(_T("and "));
+    llist->SetFont(-1,-1,-1,-1,-1,_T("blue"));
+    llist->Insert(_T("blue"));
+    llist->SetFont(-1,-1,-1,-1,-1,_T("black"));
+    llist->Insert(_T(" and "));
+    llist->SetFont(-1,-1,-1,-1,-1,_T("green"),_T("black"));
+    llist->Insert(_T("green on black"));
+    llist->SetFont(-1,-1,-1,-1,-1,_T("black"),_T("white"));
+    llist->Insert(_T(" text."));
+    llist->LineBreak();
+
+    llist->SetFont(-1,-1,wxSLANT);
+    llist->Insert(_T("Slanted"));
+    llist->SetFont(-1,-1,wxNORMAL);
+    llist->Insert(_T(" and normal text and "));
+    llist->SetFont(-1,-1,wxSLANT);
+    llist->Insert(_T("slanted"));
+    llist->SetFont(-1,-1,wxNORMAL);
+    llist->Insert(_T(" again."));
+    llist->LineBreak();
+
+    // add some more text for testing:
+    llist->Insert(_T("And here the source for the test program:"));
+    llist->LineBreak();
+
+    llist->SetFont(wxTELETYPE,16);
+    llist->Insert(_T("And here the source for the test program:"));
+    llist->LineBreak();
+
+    wxTextFile file(_T("wxLayout.cpp"));
+    if ( file.Open() )
+    {
+        for ( wxString s = file.GetFirstLine(); !file.Eof(); s = file.GetNextLine() )
+        {
+            wxString line;
+            llist->Insert(line.Format(_T("%6u: %s"),file.GetCurrentLine()+1,s.c_str()));
+            llist->LineBreak();
+        }
+    }
+
+    llist->MoveCursorTo(wxPoint(0,0));
+    m_lwin->SetDirty();
+    m_lwin->Refresh();
 }
 
-void
-MyFrame::Clear(void)
+void MyFrame::Clear()
 {
-   wxColour colBg(0, 0, 0);
+    wxColour colBg(0, 0, 0);
 
-   m_lwin->Clear(wxROMAN,16,wxNORMAL,wxNORMAL, false, wxRED, &colBg);
+    m_lwin->Clear(wxROMAN,16,wxNORMAL,wxNORMAL, false, wxRED, &colBg);
 }
 
 
@@ -266,13 +272,13 @@ void MyFrame::OnCommand( wxCommandEvent &event )
     switch (event.GetId())
     {
     case ID_QUIT:
-        Close( TRUE );
+        Close(true);
         break;
     case ID_PRINT:
     {
         wxPrinter printer;
         wxLayoutPrintout printout(m_lwin->GetLayoutList(),_("M: Printout"));
-        if (! printer.Print(this, &printout, TRUE))
+        if (! printer.Print(this, &printout, true))
         {
             // Had to remove the split up strings that used to be below, and
             // put them into one long strong. Otherwise MSVC would give an
@@ -298,75 +304,99 @@ void MyFrame::OnCommand( wxCommandEvent &event )
         Clear();
         break;
    case ID_CLICK:
-        cerr << "Received click event." << endl;
+        wxLogError( _T("Received click event.") );
         break;
    case ID_PASTE:
-        m_lwin->Paste(TRUE);
-        m_lwin->Refresh(FALSE);
+        m_lwin->Paste(true);
+        m_lwin->Refresh(false);
         break;
 #ifdef __WXGTK__
     case ID_PASTE_PRIMARY:
         // text only from primary:
-        m_lwin->Paste(FALSE, TRUE);
-        m_lwin->Refresh(FALSE);
+        m_lwin->Paste(false, true);
+        m_lwin->Refresh(false);
         break;
     case ID_COPY_PRIMARY:
         // copy text-only to primary selection:
-        m_lwin->Copy(FALSE,FALSE,TRUE);
-        m_lwin->Refresh(FALSE);
+        m_lwin->Copy(false, false, true);
+        m_lwin->Refresh(false);
         break;
 #endif
     case ID_COPY:
-        m_lwin->Copy(TRUE,TRUE,FALSE);
-        m_lwin->Refresh(FALSE);
+        m_lwin->Copy(true, true, false);
+        m_lwin->Refresh(false);
         break;
     case ID_CUT:
         m_lwin->Cut();
-        m_lwin->Refresh(FALSE);
+        m_lwin->Refresh(false);
         break;
 #ifdef M_BASEDIR
     case ID_FIND:
         m_lwin->Find("void");
-        m_lwin->Refresh(FALSE);
+        m_lwin->Refresh(false);
         break;
 #endif
     case ID_HTML:
     {
-        wxLayoutExportObject *export0;
-        wxLayoutExportStatus status(m_lwin->GetLayoutList());
+        wxFileDialog
+           HTML_dialog( this,
+                       _T("Save As HTML..."),
+                       wxEmptyString,
+                       wxEmptyString,
+                       _T("HTML file (*.html)|*.html|Text file (*.txt)|*.txt|Any file (*)|*"),
+                       wxSAVE|wxOVERWRITE_PROMPT
+                     );
+        if (HTML_dialog.ShowModal() == wxID_OK)
+        {
+            wxFFileOutputStream output( HTML_dialog.GetPath() );
+            wxTextOutputStream textout( output );
 
-        cout << "<HTML>" << endl;
-        while((export0 = wxLayoutExport( &status,
-                                         WXLO_EXPORT_AS_HTML)) != NULL)
+        wxLayoutExportObject *export0;
+            wxString object;
+        wxLayoutExportStatus status(m_lwin->GetLayoutList());
+            while((export0 = wxLayoutExport( &status, WXLO_EXPORT_AS_HTML)) != NULL)
         {
             if(export0->type == WXLO_EXPORT_HTML)
-                cout << *(export0->content.text);
+                    object = *(export0->content.text);
             else
-                ; // ignore itcout << "<!--UNKNOWN OBJECT>";
-
+                    ; // ignore "<!--UNKNOWN OBJECT>";
             delete export0;
+                textout << object;
+            }
         }
         break;
     }
 
     case ID_TEXT:
     {
-        wxLayoutExportObject *export0;
-        wxLayoutExportStatus status(m_lwin->GetLayoutList());
+        wxFileDialog
+           TEXT_dialog( this,
+                       _T("Save As TXT..."),
+                       wxEmptyString,
+                       wxEmptyString,
+                       _T("Text file (*.txt)|*.txt|Any file (*)|*"),
+                       wxSAVE|wxOVERWRITE_PROMPT
+                     );
+        if (TEXT_dialog.ShowModal() == wxID_OK)
+        {
+            wxFFileOutputStream output( TEXT_dialog.GetPath() );
+            wxTextOutputStream textout( output );
 
+        wxLayoutExportObject *export0;
+            wxString object;
+        wxLayoutExportStatus status(m_lwin->GetLayoutList());
         while((export0 = wxLayoutExport( &status, WXLO_EXPORT_AS_TEXT)) != NULL)
         {
             if(export0->type == WXLO_EXPORT_TEXT)
-                cout << *(export0->content.text);
+                    object = *(export0->content.text);
             else
-                cout << "<!--UNKNOWN OBJECT>";
-
+                    object = _T("<!--UNKNOWN OBJECT>");
             delete export0;
+                textout << object;
+            }
         }
-
         break;
     }
-
 
     case ID_LONG_TEST:
     {
@@ -400,7 +430,8 @@ void MyFrame::OnCommand( wxCommandEvent &event )
         // VZ: this doesn't work, of course, but I think it should -
         //     wxLayoutWindow should have a flag m_highlightUrls and do it itself
         //     (instead of doing it manually like M does now)
-        m_lwin->GetLayoutList()->Insert("http://www.wxwindows.org/");
+        m_lwin->GetLayoutList()->Insert(_T("http://www.wxwidgets.org/"));
+        m_lwin->Refresh();
     }
 };
 
@@ -412,11 +443,11 @@ void MyFrame::OnPrint(wxCommandEvent& WXUNUSED(event))
    wxGetApp().SetPrintMode(wxPRINT_POSTSCRIPT);
 #endif
    wxPrinter printer;
-   wxLayoutPrintout printout( m_lwin->GetLayoutList(),"Printout from wxLayout");
-   if (! printer.Print(this, &printout, TRUE))
+   wxLayoutPrintout printout( m_lwin->GetLayoutList(), _T("Printout from wxLayout"));
+   if (! printer.Print(this, &printout, true))
       wxMessageBox(
-         "There was a problem printing.\nPerhaps your current printer is not set correctly?",
-         "Printing", wxOK);
+         _T("There was a problem printing.\nPerhaps your current printer is not set correctly?"),
+         _T("Printing"), wxOK);
 }
 
 void MyFrame::OnPrintPS(wxCommandEvent& WXUNUSED(event))
@@ -426,7 +457,7 @@ void MyFrame::OnPrintPS(wxCommandEvent& WXUNUSED(event))
 #ifdef OS_UNIX
    wxPostScriptPrinter printer;
    wxLayoutPrintout printout( m_lwin->GetLayoutList(),"My printout");
-   printer.Print(this, &printout, TRUE);
+   printer.Print(this, &printout, true);
 #endif
 }
 
@@ -446,14 +477,14 @@ void MyFrame::OnPrintPreview(wxCommandEvent& WXUNUSED(event))
    if (!preview->Ok())
    {
       delete preview;
-      wxMessageBox("There was a problem previewing.\nPerhaps your current printer is not set correctly?", "Previewing", wxOK);
+      wxMessageBox(_T("There was a problem previewing.\nPerhaps your current printer is not set correctly?"), _T("Previewing"), wxOK);
       return;
    }
 
-   wxPreviewFrame *frame = new wxPreviewFrame(preview, this, "Demo Print Preview", wxPoint(100, 100), wxSize(600, 650));
+   wxPreviewFrame *frame = new wxPreviewFrame(preview, this, _T("Demo Print Preview"), wxPoint(100, 100), wxSize(600, 650));
    frame->Centre(wxBOTH);
    frame->Initialize();
-   frame->Show(TRUE);
+   frame->Show(true);
 }
 
 void MyFrame::OnPrintPreviewPS(wxCommandEvent& WXUNUSED(event))
@@ -464,10 +495,10 @@ void MyFrame::OnPrintPreviewPS(wxCommandEvent& WXUNUSED(event))
 
    // Pass two printout objects: for preview, and possible printing.
    wxPrintPreview *preview = new wxPrintPreview(new wxLayoutPrintout( m_lwin->GetLayoutList()), new wxLayoutPrintout( m_lwin->GetLayoutList()), & printData);
-   wxPreviewFrame *frame = new wxPreviewFrame(preview, this, "Demo Print Preview", wxPoint(100, 100), wxSize(600, 650));
+   wxPreviewFrame *frame = new wxPreviewFrame(preview, this, _T("Demo Print Preview"), wxPoint(100, 100), wxSize(600, 650));
    frame->Centre(wxBOTH);
    frame->Initialize();
-   frame->Show(TRUE);
+   frame->Show(true);
 }
 
 void MyFrame::OnPrintSetup(wxCommandEvent& WXUNUSED(event))
@@ -532,18 +563,18 @@ void MyFrame::OnPageSetupPS(wxCommandEvent& WXUNUSED(event))
 // MyApp
 //-----------------------------------------------------------------------------
 
-MyApp::MyApp(void) :
+MyApp::MyApp() :
    wxApp( )
 {
 };
 
-bool MyApp::OnInit(void)
+bool MyApp::OnInit()
 {
    wxFrame *frame = new MyFrame();
    wxInitAllImageHandlers();
-   frame->Show( TRUE );
-//   wxSetAFMPath("/usr/local/src/wxWindows/misc/afm/");
-   return TRUE;
+   frame->Show( true );
+//   wxSetAFMPath("/usr/local/src/wxWidgets/misc/afm/");
+   return true;
 };
 
 

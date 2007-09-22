@@ -3,16 +3,16 @@
 // Author:      Robert Roebling
 // Modified by:
 // Created:     19.10.99
-// RCS-ID:      $Id: dndcmn.cpp,v 1.1 2000/01/24 13:13:39 RR Exp $
-// Copyright:   (c) wxWindows Team
-// Licence:     wxWindows license
+// RCS-ID:      $Id: dndcmn.cpp,v 1.5 2004/05/23 20:52:00 JS Exp $
+// Copyright:   (c) wxWidgets Team
+// Licence:     wxWindows licence
 ///////////////////////////////////////////////////////////////////////////////
 
 // ----------------------------------------------------------------------------
 // headers
 // ----------------------------------------------------------------------------
 
-#ifdef __GNUG__
+#if defined(__GNUG__) && !defined(NO_GCC_PRAGMA)
     #pragma implementation "dndbase.h"
 #endif
 

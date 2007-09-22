@@ -2,17 +2,18 @@
 // Name:        gtk/timer.cpp
 // Purpose:     wxTimer implementation
 // Author:      Robert Roebling
-// Id:          $Id: timer.cpp,v 1.16.2.3 2003/06/19 19:03:47 RR Exp $
+// Id:          $Id: timer.cpp,v 1.21 2004/05/23 20:52:21 JS Exp $
 // Copyright:   (c) 1998 Robert Roebling
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
 
 
-#ifdef __GNUG__
+#if defined(__GNUG__) && !defined(NO_GCC_PRAGMA)
 #pragma implementation "timer.h"
 #endif
 
-#include "wx/defs.h"
+// For compilers that support precompilation, includes "wx.h".
+#include "wx/wxprec.h"
 
 #if wxUSE_TIMER
 
@@ -24,7 +25,7 @@
 // wxTimer
 // ----------------------------------------------------------------------------
 
-IMPLEMENT_ABSTRACT_CLASS(wxTimer, wxObject)
+IMPLEMENT_ABSTRACT_CLASS(wxTimer, wxEvtHandler)
 
 extern "C" gint timeout_callback( gpointer data )
 {
@@ -32,20 +33,20 @@ extern "C" gint timeout_callback( gpointer data )
 
     // Don't change the order of anything in this callback!
     
-    if ( timer->IsOneShot() )
+    if (timer->IsOneShot())
     {
         // This sets m_tag to -1
         timer->Stop();
     }
-
-    // when getting called from GDK's timer handler we
+    
+    // When getting called from GDK's timer handler we
     // are no longer within GDK's grab on the GUI
-    // thread so we must lock it here ourselves
+    // thread so we must lock it here ourselves.
     gdk_threads_enter();
 
     timer->Notify();
 
-    /* release lock again */
+    // Release lock again.
     gdk_threads_leave();
 
     if (timer->IsOneShot())

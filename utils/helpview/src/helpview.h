@@ -4,7 +4,7 @@
 // Author:      Vaclav Slavik, Julian Smart
 // Modified by:
 // Created:     2002-07-09
-// RCS-ID:      $Id: helpview.h,v 1.3.2.4 2002/12/19 20:00:08 JS Exp $
+// RCS-ID:      $Id: helpview.h,v 1.8 2003/03/19 19:20:44 JS Exp $
 // Copyright:   (c) 2002 Vaclav Slavik, Julian Smart and others
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -16,7 +16,7 @@
 #pragma interface "help.cpp"
 #endif
 
-#define hvVERSION 1.02
+#define hvVERSION 1.03
 
 // If 1, start a server to allow this to be used
 // as an external help viewer.
@@ -47,7 +47,12 @@ public:
 
     /// Clean up the application's data.
     virtual int OnExit();
-    
+
+#ifdef __WXMAC__
+    /// Respond to Apple Event for opening a document
+    virtual void MacOpenFile(const wxString& filename);
+#endif
+
     /// Prompt the user for a book to open
     bool OpenBook(wxHtmlHelpController* controller);
 

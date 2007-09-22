@@ -4,9 +4,9 @@
 // Author:      Vadim Zeitlin
 // Modified by:
 // Created:     31.01.99
-// RCS-ID:      $Id: tooltip.h,v 1.8 2001/07/14 03:23:29 RD Exp $
+// RCS-ID:      $Id: tooltip.h,v 1.12 2004/05/23 20:51:29 JS Exp $
 // Copyright:   (c) 1999 Robert Roebling, Vadim Zeitlin
-// Licence:     wxWindows license
+// Licence:     wxWindows licence
 ///////////////////////////////////////////////////////////////////////////////
 
 class WXDLLEXPORT wxToolTip : public wxObject
@@ -55,5 +55,6 @@ private:
     wxWindow *m_window;         // window we're associated with
 
     DECLARE_ABSTRACT_CLASS(wxToolTip)
+    DECLARE_NO_COPY_CLASS(wxToolTip)
 };
 

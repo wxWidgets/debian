@@ -4,11 +4,11 @@
 // Author:      Guilhem Lavaux
 // Modified by:
 // Created:     17/07/97
-// RCS-ID:      $Id: sckstrm.cpp,v 1.9.6.1 2002/11/04 19:31:57 VZ Exp $
+// RCS-ID:      $Id: sckstrm.cpp,v 1.13 2004/05/23 20:52:04 JS Exp $
 // Copyright:   (c)
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
-#ifdef __GNUG__
+#if defined(__GNUG__) && !defined(NO_GCC_PRAGMA)
 #pragma implementation "sckstrm.h"
 #endif
 

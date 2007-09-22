@@ -2,14 +2,17 @@
 // Name:        notebook.cpp
 // Purpose:
 // Author:      Robert Roebling
-// Id:          $Id: notebook.cpp,v 1.88.2.4 2004/03/06 13:10:32 RR Exp $
+// Id:          $Id: notebook.cpp,v 1.116 2004/10/05 21:11:18 RR Exp $
 // Copyright:   (c) 1998 Robert Roebling, Vadim Zeitlin
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
 
-#ifdef __GNUG__
+#if defined(__GNUG__) && !defined(NO_GCC_PRAGMA)
 #pragma implementation "notebook.h"
 #endif
+
+// For compilers that support precompilation, includes "wx.h".
+#include "wx/wxprec.h"
 
 #include "wx/notebook.h"
 
@@ -20,11 +23,15 @@
 #include "wx/imaglist.h"
 #include "wx/intl.h"
 #include "wx/log.h"
+#include "wx/bitmap.h"
+#include "wx/fontutil.h"
 
 #include "wx/gtk/private.h"
 #include "wx/gtk/win_gtk.h"
 
 #include <gdk/gdkkeysyms.h>
+
+#include "wx/msgdlg.h"
 
 // ----------------------------------------------------------------------------
 // events
@@ -60,22 +67,24 @@ extern bool g_blockEventsOnDrag;
 class wxGtkNotebookPage: public wxObject
 {
 public:
-  wxGtkNotebookPage()
-  {
-    m_image = -1;
-    m_page = (GtkNotebookPage *) NULL;
-    m_box = (GtkWidget *) NULL;
-  }
-
-  wxString           m_text;
-  int                m_image;
-  GtkNotebookPage   *m_page;
-  GtkLabel          *m_label;
-  GtkWidget         *m_box;     // in which the label and image are packed
+    wxGtkNotebookPage()
+    {
+        m_image = -1;
+        m_page = (GtkNotebookPage *) NULL;
+        m_box = (GtkWidget *) NULL;
+    }
+    
+    wxString           m_text;
+    int                m_image;
+    GtkNotebookPage   *m_page;
+    GtkLabel          *m_label;
+    GtkWidget         *m_box;     // in which the label and image are packed
 };
+
 
 #include "wx/listimpl.cpp"
 WX_DEFINE_LIST(wxGtkNotebookPagesList);
+
 
 //-----------------------------------------------------------------------------
 // "switch_page"
@@ -176,33 +185,60 @@ gtk_notebook_realized_callback( GtkWidget * WXUNUSED(widget), wxWindow *win )
 // "key_press_event"
 //-----------------------------------------------------------------------------
 
-static gint gtk_notebook_key_press_callback( GtkWidget *widget, GdkEventKey *gdk_event, wxNotebook *win )
+static gint gtk_notebook_key_press_callback( GtkWidget *widget, GdkEventKey *gdk_event, wxNotebook *notebook )
 {
     if (g_isIdle)
         wxapp_install_idle_handler();
 
-    if (!win->m_hasVMT) return FALSE;
+    if (!notebook->m_hasVMT) return FALSE;
     if (g_blockEventsOnDrag) return FALSE;
+    
+    /* win is a control: tab can be propagated up */
+    if ((gdk_event->keyval == GDK_Left) || (gdk_event->keyval == GDK_Right))
+    {
+        int page;
+        int nMax = notebook->GetPageCount();
+        if ( nMax-- ) // decrement it to get the last valid index
+        {
+            int nSel = notebook->GetSelection();
 
-    // win is a control: tab can be propagated up
+            // change selection wrapping if it becomes invalid
+            page = (gdk_event->keyval != GDK_Left) ? nSel == nMax ? 0
+                                       : nSel + 1
+                        : nSel == 0 ? nMax
+                                    : nSel - 1;
+        }
+        else // notebook is empty, no next page
+        {
+            return FALSE;
+        }
+    
+        // m_selection = page;
+        gtk_notebook_set_page( GTK_NOTEBOOK(widget), page );
+        
+        gtk_signal_emit_stop_by_name( GTK_OBJECT(widget), "key_press_event" );
+        return TRUE;
+    }
+
+    /* win is a control: tab can be propagated up */
     if ((gdk_event->keyval == GDK_Tab) || (gdk_event->keyval == GDK_ISO_Left_Tab))
     {
-        int sel = win->GetSelection();
+        int sel = notebook->GetSelection();
         if (sel == -1)
             return TRUE;
-            
-        wxGtkNotebookPage *nb_page = win->GetNotebookPage(sel);
+        wxGtkNotebookPage *nb_page = notebook->GetNotebookPage(sel);
         wxCHECK_MSG( nb_page, FALSE, _T("invalid selection in wxNotebook") );
 
         wxNavigationKeyEvent event;
-        event.SetEventObject( win );
+        event.SetEventObject( notebook );
         /* GDK reports GDK_ISO_Left_Tab for SHIFT-TAB */
         event.SetDirection( (gdk_event->keyval == GDK_Tab) );
         /* CTRL-TAB changes the (parent) window, i.e. switch notebook page */
-        event.SetWindowChange( (gdk_event->state & GDK_CONTROL_MASK) );
-        event.SetCurrentFocus( win );
+        event.SetWindowChange( (gdk_event->state & GDK_CONTROL_MASK) || 
+                               (gdk_event->keyval == GDK_Left) || (gdk_event->keyval == GDK_Right) );
+        event.SetCurrentFocus( notebook );
 
-        wxNotebookPage *client = win->GetPage(sel);
+        wxNotebookPage *client = notebook->GetPage(sel);
         if ( !client->GetEventHandler()->ProcessEvent( event ) )
         {
              client->SetFocus();
@@ -219,9 +255,21 @@ static gint gtk_notebook_key_press_callback( GtkWidget *widget, GdkEventKey *gdk
 // InsertChild callback for wxNotebook
 //-----------------------------------------------------------------------------
 
-static void wxInsertChildInNotebook( wxNotebook* WXUNUSED(parent), wxWindow* WXUNUSED(child) )
+static void wxInsertChildInNotebook( wxNotebook* parent, wxWindow* child )
 {
-    /* we don't do anything here but pray */
+    // Hack Alert! (Part I): This sets the notebook as the parent of the child
+    // widget, and takes care of some details such as updating the state and
+    // style of the child to reflect its new location.  We do this early
+    // because without it GetBestSize (which is used to set the initial size
+    // of controls if an explicit size is not given) will often report
+    // incorrect sizes since the widget's style context is not fully known.
+    // See bug #901694 for details
+    // (http://sourceforge.net/tracker/?func=detail&aid=901694&group_id=9863&atid=109863)
+    gtk_widget_set_parent(child->m_widget, parent->m_widget);
+
+    // NOTE: This should be considered a temporary workaround until we can
+    // work out the details and implement delaying the setting of the initial
+    // size of widgets until the size is really needed.
 }
 
 //-----------------------------------------------------------------------------
@@ -240,7 +288,6 @@ void wxNotebook::Init()
     m_inSwitchPage = FALSE;
 
     m_imageList = (wxImageList *) NULL;
-    m_pagesData.DeleteContents( TRUE );
     m_selection = -1;
     m_themeEnabled = TRUE;
 }
@@ -260,10 +307,6 @@ wxNotebook::wxNotebook( wxWindow *parent, wxWindowID id,
 
 wxNotebook::~wxNotebook()
 {
-    /* don't generate change page events any more */
-    gtk_signal_disconnect_by_func( GTK_OBJECT(m_widget),
-      GTK_SIGNAL_FUNC(gtk_notebook_page_change_callback), (gpointer) this );
-
     DeleteAllPages();
 }
 
@@ -302,14 +345,10 @@ bool wxNotebook::Create(wxWindow *parent, wxWindowID id,
     gtk_signal_connect( GTK_OBJECT(m_widget), "key_press_event",
       GTK_SIGNAL_FUNC(gtk_notebook_key_press_callback), (gpointer)this );
 
-    PostCreation();
-
-    SetFont( parent->GetFont() );
+    PostCreation(size);
 
     gtk_signal_connect( GTK_OBJECT(m_widget), "realize",
                             GTK_SIGNAL_FUNC(gtk_notebook_realized_callback), (gpointer) this );
-
-    Show( TRUE );
 
     return TRUE;
 }
@@ -338,7 +377,7 @@ int wxNotebook::GetSelection() const
     return m_selection;
 }
 
-wxString wxNotebook::GetPageText( int page ) const
+wxString wxNotebook::GetPageText( size_t page ) const
 {
     wxCHECK_MSG( m_widget != NULL, wxT(""), wxT("invalid notebook") );
 
@@ -349,7 +388,7 @@ wxString wxNotebook::GetPageText( int page ) const
         return wxT("");
 }
 
-int wxNotebook::GetPageImage( int page ) const
+int wxNotebook::GetPageImage( size_t page ) const
 {
     wxCHECK_MSG( m_widget != NULL, -1, wxT("invalid notebook") );
 
@@ -369,11 +408,11 @@ wxGtkNotebookPage* wxNotebook::GetNotebookPage( int page ) const
     return m_pagesData.Item(page)->GetData();
 }
 
-int wxNotebook::SetSelection( int page )
+int wxNotebook::SetSelection( size_t page )
 {
     wxCHECK_MSG( m_widget != NULL, -1, wxT("invalid notebook") );
 
-    wxCHECK_MSG( page >= 0 && page < (int)m_pagesData.GetCount(), -1, wxT("invalid notebook index") );
+    wxCHECK_MSG( page < m_pagesData.GetCount(), -1, wxT("invalid notebook index") );
 
     int selOld = GetSelection();
 
@@ -388,7 +427,7 @@ int wxNotebook::SetSelection( int page )
     return selOld;
 }
 
-bool wxNotebook::SetPageText( int page, const wxString &text )
+bool wxNotebook::SetPageText( size_t page, const wxString &text )
 {
     wxCHECK_MSG( m_widget != NULL, FALSE, wxT("invalid notebook") );
 
@@ -403,7 +442,7 @@ bool wxNotebook::SetPageText( int page, const wxString &text )
     return TRUE;
 }
 
-bool wxNotebook::SetPageImage( int page, int image )
+bool wxNotebook::SetPageImage( size_t page, int image )
 {
     /* HvdH 28-12-98: now it works, but it's a bit of a kludge */
 
@@ -534,29 +573,18 @@ bool wxNotebook::DeleteAllPages()
 
     wxASSERT_MSG( GetPageCount() == 0, _T("all pages must have been deleted") );
 
+    InvalidateBestSize();
     return wxNotebookBase::DeleteAllPages();
 }
 
-bool wxNotebook::DeletePage( int page )
+wxNotebookPage *wxNotebook::DoRemovePage( size_t page )
 {
-    // GTK sets GtkNotebook.cur_page to NULL before sending the switch page
-    // event so we have to store the selection internally
-    if ( m_selection == -1 )
+    if ( m_selection != -1 && (size_t)m_selection >= page )
     {
-        m_selection = GetSelection();
-        if ( m_selection == (int)m_pagesData.GetCount() - 1 )
-        {
-            // the index will become invalid after the page is deleted
-            m_selection = -1;
-        }
+        // the index will become invalid after the page is deleted
+        m_selection = -1;
     }
 
-    // it will call our DoRemovePage() to do the real work
-    return wxNotebookBase::DeletePage(page);
-}
-
-wxNotebookPage *wxNotebook::DoRemovePage( int page )
-{
     wxNotebookPage *client = wxNotebookBase::DoRemovePage(page);
     if ( !client )
         return NULL;
@@ -565,14 +593,25 @@ wxNotebookPage *wxNotebook::DoRemovePage( int page )
     gtk_widget_unrealize( client->m_widget );
     gtk_widget_unparent( client->m_widget );
 
+    // gtk_notebook_remove_page() sends "switch_page" signal with some strange
+    // new page index (when deleting selected page 0, new page is 1 although,
+    // clearly, the selection should stay 0), so suppress this
+    gtk_signal_disconnect_by_func( GTK_OBJECT(m_widget),
+      GTK_SIGNAL_FUNC(gtk_notebook_page_change_callback), (gpointer) this );
+
     gtk_notebook_remove_page( GTK_NOTEBOOK(m_widget), page );
 
-    m_pagesData.DeleteObject(GetNotebookPage(page));
+    gtk_signal_connect( GTK_OBJECT(m_widget), "switch_page",
+      GTK_SIGNAL_FUNC(gtk_notebook_page_change_callback), (gpointer)this );
+
+    wxGtkNotebookPage* p = GetNotebookPage(page);
+    m_pagesData.DeleteObject(p);
+    delete p;
 
     return client;
 }
 
-bool wxNotebook::InsertPage( int position,
+bool wxNotebook::InsertPage( size_t position,
                              wxNotebookPage* win,
                              const wxString& text,
                              bool select,
@@ -583,10 +622,17 @@ bool wxNotebook::InsertPage( int position,
     wxCHECK_MSG( win->GetParent() == this, FALSE,
                wxT("Can't add a page whose parent is not the notebook!") );
 
-    wxCHECK_MSG( position >= 0 && position <= GetPageCount(), FALSE,
+    wxCHECK_MSG( position <= GetPageCount(), FALSE,
                  _T("invalid page index in wxNotebookPage::InsertPage()") );
 
-    /* don't receive switch page during addition */
+    // Hack Alert! (Part II): See above in wxInsertChildInNotebook callback
+    // why this has to be done.  NOTE: using gtk_widget_unparent here does not
+    // work as it seems to undo too much and will cause errors in the
+    // gtk_notebook_insert_page below, so instead just clear the parent by
+    // hand here.
+    win->m_widget->parent = NULL;
+
+    // don't receive switch page during addition
     gtk_signal_disconnect_by_func( GTK_OBJECT(m_widget),
       GTK_SIGNAL_FUNC(gtk_notebook_page_change_callback), (gpointer) this );
 
@@ -610,10 +656,13 @@ bool wxNotebook::InsertPage( int position,
     gtk_signal_connect( GTK_OBJECT(win->m_widget), "size_allocate",
       GTK_SIGNAL_FUNC(gtk_page_size_callback), (gpointer)win );
 
-    if (position < 0)
+#ifndef __VMS
+   // On VMS position is unsigned and thus always positive
+   if (position < 0)
         gtk_notebook_append_page( notebook, win->m_widget, nb_page->m_box );
     else
-        gtk_notebook_insert_page( notebook, win->m_widget, nb_page->m_box, position );
+#endif
+     gtk_notebook_insert_page( notebook, win->m_widget, nb_page->m_box, position );
 
     nb_page->m_page = (GtkNotebookPage*) g_list_last(notebook->children)->data;
 
@@ -640,26 +689,114 @@ bool wxNotebook::InsertPage( int position,
     }
 
     /* set the label text */
+
     nb_page->m_text = text;
     if (nb_page->m_text.IsEmpty()) nb_page->m_text = wxT("");
-  
+
     nb_page->m_label = GTK_LABEL( gtk_label_new(wxGTK_CONV(nb_page->m_text)) );
     gtk_box_pack_end( GTK_BOX(nb_page->m_box), GTK_WIDGET(nb_page->m_label), FALSE, FALSE, m_padding );
-  
+
+    /* apply current style */
+    GtkRcStyle *style = CreateWidgetStyle();
+    if ( style )
+    {
+        gtk_widget_modify_style(GTK_WIDGET(nb_page->m_label), style);
+        gtk_rc_style_unref(style);
+    }    
+    
     /* show the label */
     gtk_widget_show( GTK_WIDGET(nb_page->m_label) );
     if (select && (m_pagesData.GetCount() > 1))
     {
+#ifndef __VMS
+   // On VMS position is unsigned and thus always positive
         if (position < 0)
             SetSelection( GetPageCount()-1 );
         else
-            SetSelection( position );
+#endif
+	    SetSelection( position );
     }
 
     gtk_signal_connect( GTK_OBJECT(m_widget), "switch_page",
       GTK_SIGNAL_FUNC(gtk_notebook_page_change_callback), (gpointer)this );
 
+    InvalidateBestSize();
     return TRUE;
+}
+
+// helper for HitTest(): check if the point lies inside the given widget which
+// is the child of the notebook whose position and border size are passed as
+// parameters
+static bool
+IsPointInsideWidget(const wxPoint& pt, GtkWidget *w,
+                    gint x, gint y, gint border = 0)
+{
+    return
+        (pt.x >= w->allocation.x - x - border) &&
+        (pt.x <= w->allocation.x - x + border + w->allocation.width) &&
+        (pt.y >= w->allocation.y - y - border) &&
+        (pt.y <= w->allocation.y - y + border + w->allocation.height);
+}
+
+int wxNotebook::HitTest(const wxPoint& pt, long *flags) const
+{
+    const gint x = m_widget->allocation.x;
+    const gint y = m_widget->allocation.y;
+
+    const size_t count = GetPageCount();
+    for ( size_t i = 0; i < count; i++ )
+    {
+        wxGtkNotebookPage* nb_page = GetNotebookPage(i);
+        GtkWidget *box = nb_page->m_box;
+
+        // VZ: don't know how to find the border width in GTK+ 1.2
+#ifdef __WXGTK20__
+        const gint border = gtk_container_get_border_width(GTK_CONTAINER(box));
+#else // !GTK+ 2.x
+        const gint border = 0;
+#endif
+        if ( IsPointInsideWidget(pt, box, x, y, border) )
+        {
+            // ok, we're inside this tab -- now find out where, if needed
+            if ( flags )
+            {
+                GtkWidget *pixmap = NULL;
+
+                GList *children = gtk_container_children(GTK_CONTAINER(box));
+                for ( GList *child = children; child; child = child->next )
+                {
+                    if ( GTK_IS_PIXMAP(child->data) )
+                    {
+                        pixmap = GTK_WIDGET(child->data);
+                        break;
+                    }
+                }
+
+                if ( children )
+                    g_list_free(children);
+
+                if ( pixmap && IsPointInsideWidget(pt, pixmap, x, y) )
+                {
+                    *flags = wxNB_HITTEST_ONICON;
+                }
+                else if ( IsPointInsideWidget(pt, GTK_WIDGET(nb_page->m_label), x, y) )
+                {
+                    *flags = wxNB_HITTEST_ONLABEL;
+                }
+                else
+                {
+                    *flags = wxNB_HITTEST_ONITEM;
+                }
+            }
+
+            return i;
+        }
+    }
+
+    if ( flags )
+        *flags = wxNB_HITTEST_NOWHERE;
+
+    return wxNOT_FOUND;
 }
 
 void wxNotebook::OnNavigationKey(wxNavigationKeyEvent& event)
@@ -686,18 +823,25 @@ bool wxNotebook::DoPhase( int WXUNUSED(nPhase) )
 
 #endif
 
-void wxNotebook::ApplyWidgetStyle()
+void wxNotebook::DoApplyWidgetStyle(GtkRcStyle *style)
 {
-    // TODO, font for labels etc
-
-    SetWidgetStyle();
-    gtk_widget_set_style( m_widget, m_widgetStyle );
+    gtk_widget_modify_style(m_widget, style);
+    size_t cnt = m_pagesData.GetCount();
+    for (size_t i = 0; i < cnt; i++)
+        gtk_widget_modify_style(GTK_WIDGET(GetNotebookPage(i)->m_label), style);
 }
 
 bool wxNotebook::IsOwnGtkWindow( GdkWindow *window )
 {
     return ((m_widget->window == window) ||
             (NOTEBOOK_PANEL(m_widget) == window));
+}
+
+// static
+wxVisualAttributes
+wxNotebook::GetClassDefaultAttributes(wxWindowVariant WXUNUSED(variant))
+{
+    return GetDefaultAttributesFromGTKWidget(gtk_notebook_new);
 }
 
 //-----------------------------------------------------------------------------

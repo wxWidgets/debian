@@ -1,6 +1,8 @@
 
-from wxPython.wx import *
-import whrandom, time
+import  random
+import  time
+
+import  wx
 
 #----------------------------------------------------------------------
 
@@ -28,87 +30,109 @@ colours = [
 
 def makeRandomPoints(num, w, h):
     pnts = []
+
     for i in range(num):
-        x = whrandom.randint(0, w)
-        y = whrandom.randint(0, h)
+        x = random.randint(0, w)
+        y = random.randint(0, h)
         pnts.append( (x,y) )
+
     return pnts
 
 
 def makeRandomLines(num, w, h):
     pnts = []
+
     for i in range(num):
-        x1 = whrandom.randint(0, w)
-        y1 = whrandom.randint(0, h)
-        x2 = whrandom.randint(0, w)
-        y2 = whrandom.randint(0, h)
+        x1 = random.randint(0, w)
+        y1 = random.randint(0, h)
+        x2 = random.randint(0, w)
+        y2 = random.randint(0, h)
         pnts.append( (x1,y1, x2,y2) )
+
     return pnts
 
 
 def makeRandomRectangles(num, W, H):
     rects = []
+
     for i in range(num):
-        w = whrandom.randint(10, W/2)
-        h = whrandom.randint(10, H/2)
-        x = whrandom.randint(0, W - w)
-        y = whrandom.randint(0, H - h)
+        w = random.randint(10, W/2)
+        h = random.randint(10, H/2)
+        x = random.randint(0, W - w)
+        y = random.randint(0, H - h)
         rects.append( (x, y, w, h) )
+
     return rects
 
 
 def makeRandomText(num):
     Np = 8 # number of characters in text
     text = []
+
     for i in range(num):
         word = []
+
         for i in range(Np):
-            c = chr( whrandom.randint(48, 122) )
+            c = chr( random.randint(48, 122) )
             word.append( c )
+
         text.append( "".join(word) )
+
     return text
 
 
 def makeRandomPolygons(num, W, H):
     Np = 8 # number of points per polygon
     polys = []
+
     for i in range(num):
         poly = []
-        for i in range(Np):
-            x = whrandom.randint(0, W)
-            y = whrandom.randint(0, H)
-            poly.append( (x,y) )
-        polys.append( poly )
-    return polys
 
+        for i in range(Np):
+            x = random.randint(0, W)
+            y = random.randint(0, H)
+            poly.append( (x,y) )
+
+        polys.append( poly )
+
+    return polys
 
 
 def makeRandomPens(num, cache):
     pens = []
+
     for i in range(num):
-        c = whrandom.choice(colours)
-        t = whrandom.randint(1, 4)
+        c = random.choice(colours)
+        t = random.randint(1, 4)
+
         if not cache.has_key( (c, t) ):
-            cache[(c, t)] = wxPen(c, t)
+            cache[(c, t)] = wx.Pen(c, t)
+
         pens.append( cache[(c, t)] )
+
     return pens
 
 
 def makeRandomBrushes(num, cache):
     brushes = []
+
     for i in range(num):
-        c = whrandom.choice(colours)
+        c = random.choice(colours)
+
         if not cache.has_key(c):
-            cache[c] = wxBrush(c)
+            cache[c] = wx.Brush(c)
+
         brushes.append( cache[c] )
+
     return brushes
 
 
 def makeRandomColors(num):
     colors = []
+
     for i in range(num):
-        c = whrandom.choice(colours)
-        colors.append(wxNamedColor(c))
+        c = random.choice(colours)
+        colors.append(wx.NamedColour(c))
     return colors
 
 
@@ -141,11 +165,13 @@ def Init(w, h, n):
 
     # make some lists of random shapes
     points = makeRandomPoints(n, w, h)
+
     try:
         import Numeric
         Apoints = Numeric.array(points)
     except:
         pass
+
     lines = makeRandomLines(n, w, h)
     rectangles = makeRandomRectangles(n, w, h)
     polygons = makeRandomPolygons(n, w, h)
@@ -163,10 +189,10 @@ def Init(w, h, n):
 def TestPoints(dc,log):
     dc.BeginDrawing()
     start = time.time()
-    dc.SetPen(wxPen("BLACK", 4))
+    dc.SetPen(wx.Pen("BLACK", 4))
 
     dc.DrawPointList(points)
-    dc.DrawPointList(points, wxPen("RED", 2))
+    dc.DrawPointList(points, wx.Pen("RED", 2))
     dc.DrawPointList(points, pens)
 
     dc.EndDrawing()
@@ -179,10 +205,12 @@ def TestArrayPoints(dc,log):
 
         dc.BeginDrawing()
         start = time.time()
-        dc.SetPen(wxPen("BLACK", 1))
+        dc.SetPen(wx.Pen("BLACK", 1))
+
         for i in range(1):
             dc.DrawPointList(Apoints)
-        #dc.DrawPointList(Apoints, wxPen("RED", 2))
+
+        #dc.DrawPointList(Apoints, wx.Pen("RED", 2))
         #dc.DrawPointList(Apoints, pens)
         dc.EndDrawing()
         log.write("DrawTime: %s seconds with DrawPointList an Numpy Array\n" % (time.time() - start))
@@ -195,9 +223,9 @@ def TestLines(dc,log):
     dc.BeginDrawing()
     start = time.time()
 
-    dc.SetPen(wxPen("BLACK", 2))
+    dc.SetPen(wx.Pen("BLACK", 2))
     dc.DrawLineList(lines)
-    dc.DrawLineList(lines, wxPen("RED", 2))
+    dc.DrawLineList(lines, wx.Pen("RED", 2))
     dc.DrawLineList(lines, pens)
 
     dc.EndDrawing()
@@ -208,8 +236,8 @@ def TestRectangles(dc,log):
     dc.BeginDrawing()
     start = time.time()
 
-    dc.SetPen( wxPen("BLACK",1) )
-    dc.SetBrush( wxBrush("RED") )
+    dc.SetPen( wx.Pen("BLACK",1) )
+    dc.SetBrush( wx.Brush("RED") )
 
     dc.DrawRectangleList(rectangles)
     dc.DrawRectangleList(rectangles,pens)
@@ -228,8 +256,8 @@ def TestEllipses(dc,log):
     dc.BeginDrawing()
     start = time.time()
 
-    dc.SetPen( wxPen("BLACK",1) )
-    dc.SetBrush( wxBrush("RED") )
+    dc.SetPen( wx.Pen("BLACK",1) )
+    dc.SetBrush( wx.Brush("RED") )
 
     dc.DrawEllipseList(rectangles)
     dc.DrawEllipseList(rectangles,pens)
@@ -249,7 +277,7 @@ def TestRectanglesArray(dc,log):
 
         dc.BeginDrawing()
         start = time.time()
-        dc.SetPen(wxPen("BLACK", 1))
+        dc.SetPen(wx.Pen("BLACK", 1))
         dc.DrawRectangleList(rectangles)
         dc.DrawRectangleList(rectangles,pens)
         dc.DrawRectangleList(rectangles,pens[0],brushes)
@@ -274,10 +302,12 @@ def TestRectanglesLoop(dc,log):
     log.write("DrawTime: %s seconds with DrawRectanglesList\n" % (time.time() - start))
 
     start = time.time()
+
     for i in range(len(rectangles)):
         dc.SetPen( pens[i] )
         dc.SetBrush( brushes[i]  )
         dc.DrawRectangle(rectangles[i][0],rectangles[i][1],rectangles[i][2],rectangles[i][3])
+
     dc.EndDrawing()
     log.write("DrawTime: %s seconds with Python loop\n" % (time.time() - start))
 
@@ -286,7 +316,7 @@ def TestPolygons(dc,log):
     dc.BeginDrawing()
 
     start = time.time()
-    dc.SetPen(wxPen("BLACK", 1))
+    dc.SetPen(wx.Pen("BLACK", 1))
     dc.DrawPolygonList(polygons)
     dc.DrawPolygonList(polygons,pens)
     dc.DrawPolygonList(polygons,pens[0],brushes)
@@ -303,7 +333,7 @@ def TestText(dc,log):
     start = time.time()
 
     # NOTE: you need to set BackgroundMode for the background colors to be used.
-    dc.SetBackgroundMode(wxSOLID)
+    dc.SetBackgroundMode(wx.SOLID)
     foreground = colors1
     background = colors2
     dc.DrawTextList(text, points, foreground, background)
@@ -314,14 +344,17 @@ def TestText(dc,log):
 
 
 
-class TestNB(wxNotebook):
+class TestNB(wx.Notebook):
     def __init__(self, parent, id, log):
-        style = wxNB_BOTTOM
-        if wxPlatform == "__WXMAC__":
+        style = wx.NB_BOTTOM
+
+        if wx.Platform == "__WXMAC__":
             style = 0
-        wxNotebook.__init__(self, parent, id, style=style)
+
+        wx.Notebook.__init__(self, parent, id, style=style)
         self.log = log
 
+        # Initialize our various samples and add them to the notebook.
         win = DrawPanel(self, TestEllipses, log)
         self.AddPage(win, 'Ellipses')
 
@@ -340,19 +373,21 @@ class TestNB(wxNotebook):
         win = DrawPanel(self, TestRectangles, log)
         self.AddPage(win, 'Rectangles')
 
-
-class DrawPanel(wxPanel):
+# Class used for all the various sample pages; the mechanics are the same
+# for each one with regards to the notebook. The only difference is
+# the function we use to draw on it.
+class DrawPanel(wx.Panel):
     def __init__(self, parent, drawFun, log):
-        wxPanel.__init__(self, parent, -1)
-        self.SetBackgroundColour(wxWHITE)
+        wx.Panel.__init__(self, parent, -1)
+        self.SetBackgroundColour(wx.WHITE)
 
         self.log = log
         self.drawFun = drawFun
-        EVT_PAINT(self, self.OnPaint)
+        self.Bind(wx.EVT_PAINT, self.OnPaint)
 
 
     def OnPaint(self, evt):
-        dc = wxPaintDC(self)
+        dc = wx.PaintDC(self)
         dc.Clear()
         self.drawFun(dc,self.log)
 
@@ -373,7 +408,7 @@ def runTest(frame, nb, log):
 
 overview = """\
 
-Some methods have been added to wxDC to help with optimization of
+Some methods have been added to wx.DC to help with optimization of
 drawing routines.  Currently they are:
 
 <pre>
@@ -414,5 +449,5 @@ drawing routines.  Currently they are:
 if __name__ == '__main__':
     import sys,os
     import run
-    run.main(['', os.path.basename(sys.argv[0])])
+    run.main(['', os.path.basename(sys.argv[0])] + sys.argv[1:])
 

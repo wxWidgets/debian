@@ -3,9 +3,9 @@
  * Purpose:     wxWINE module mapping main() to WinMain()
  * Author:      Robert Roebling
  * Created:     04/01/98
- * RCS-ID:      $Id: winestub.c,v 1.1 1999/06/10 10:21:05 RR Exp $
+ * RCS-ID:      $Id: winestub.c,v 1.3 2004/09/07 11:11:05 ABX Exp $
  * Copyright:   (c) Robert Roebling
- * Licence:     wxWindows Licence
+ * Licence:     wxWidgets Licence
  *****************************************************************************/
 
 #include <string.h>
@@ -39,7 +39,7 @@ int main( int argc, char *argv [] )
   for (i = 2; i < argc; i++) strcat(strcat(lpszCmdParam, " "), argv[i]);
 
   return WinMain (hInstance,    /* hInstance */
-		  0,	        /* hPrevInstance */
-		  lpszCmdParam, /* lpszCmdParam */
-		  SW_NORMAL);   /* nCmdShow */
+          0,            /* hPrevInstance */
+          lpszCmdParam, /* lpszCmdParam */
+          SW_NORMAL);   /* nCmdShow */
 }

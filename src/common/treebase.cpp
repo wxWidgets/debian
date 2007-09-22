@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Created:     01/02/97
 // Modified:
-// Id:          $Id: treebase.cpp,v 1.8 2002/09/05 19:50:40 JS Exp $
+// Id:          $Id: treebase.cpp,v 1.16 2004/11/10 19:24:22 ABX Exp $
 // Copyright:   (c) 1998 Robert Roebling, Julian Smart et al
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -17,7 +17,7 @@
 // headers
 // -----------------------------------------------------------------------------
 
-#ifdef __GNUG__
+#if defined(__GNUG__) && !defined(NO_GCC_PRAGMA)
   #pragma implementation "treebase.h"
 #endif
 
@@ -37,7 +37,6 @@
 #include "wx/dynarray.h"
 #include "wx/arrimpl.cpp"
 #include "wx/dcclient.h"
-#include "wx/msgdlg.h"
 
 
 // ----------------------------------------------------------------------------
@@ -62,6 +61,8 @@ DEFINE_EVENT_TYPE(wxEVT_COMMAND_TREE_ITEM_ACTIVATED)
 DEFINE_EVENT_TYPE(wxEVT_COMMAND_TREE_ITEM_RIGHT_CLICK)
 DEFINE_EVENT_TYPE(wxEVT_COMMAND_TREE_ITEM_MIDDLE_CLICK)
 DEFINE_EVENT_TYPE(wxEVT_COMMAND_TREE_END_DRAG)
+DEFINE_EVENT_TYPE(wxEVT_COMMAND_TREE_STATE_IMAGE_CLICK)
+DEFINE_EVENT_TYPE(wxEVT_COMMAND_TREE_ITEM_GETTOOLTIP)
 
 // ----------------------------------------------------------------------------
 // Tree event
@@ -74,7 +75,18 @@ wxTreeEvent::wxTreeEvent(wxEventType commandType, int id)
            : wxNotifyEvent(commandType, id)
 {
     m_itemOld = 0l;
-    m_editCancelled = FALSE;
+    m_editCancelled = false;
+}
+
+wxTreeEvent::wxTreeEvent(const wxTreeEvent & event)
+           : wxNotifyEvent(event)
+{
+    m_evtKey = event.m_evtKey;
+    m_item = event.m_item;
+    m_itemOld = event.m_itemOld;
+    m_pointDrag = event.m_pointDrag;
+    m_label = event.m_label;
+    m_editCancelled = event.m_editCancelled;
 }
 
 #endif // wxUSE_TREECTRL

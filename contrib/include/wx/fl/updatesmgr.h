@@ -4,9 +4,9 @@
 // Author:      Aleksandras Gluchovas (@Lithuania)
 // Modified by:
 // Created:     19/10/98
-// RCS-ID:      $Id: updatesmgr.h,v 1.3.2.1 2002/10/24 11:21:36 JS Exp $
+// RCS-ID:      $Id: updatesmgr.h,v 1.6 2004/06/07 16:02:14 ABX Exp $
 // Copyright:   (c) Aleksandras Gluchovas
-// Licence:       wxWindows licence
+// Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
 
 #ifndef __UPDATESMGR_G__
@@ -23,7 +23,7 @@ This class implements slightly optimized logic for refreshing
 the areas of frame layout that actually need to be updated.
 */
 
-class WXFL_DECLSPEC cbSimpleUpdatesMgr : public cbUpdatesManagerBase
+class WXDLLIMPEXP_FL cbSimpleUpdatesMgr : public cbUpdatesManagerBase
 {
     DECLARE_DYNAMIC_CLASS( cbSimpleUpdatesMgr )
 protected:

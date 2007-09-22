@@ -22,13 +22,15 @@ wxPen, wxBitmap and others.
 
 \latexignore{\rtfignore{\wxheading{Members}}}
 
-\membersection{wxObject::wxObject}\label{wxobjectconstr}
+\membersection{wxObject::wxObject}\label{wxobjectctor}
 
 \func{}{wxObject}{\void}
 
-Default constructor.
+\func{}{wxObject}{\param{const wxObject\&}{ other}}
 
-\membersection{wxObject::\destruct{wxObject}}
+Default and copy constructors.
+
+\membersection{wxObject::\destruct{wxObject}}\label{wxobjectdtor}
 
 \func{}{wxObject}{\void}
 
@@ -48,19 +50,15 @@ Pointer to an object which is the object's reference-counted data.
 \helpref{wxObject::GetRefData}{wxobjectgetrefdata},\rtfsp
 \helpref{wxObjectRefData}{wxobjectrefdata}
 
-\membersection{wxObject::CopyObject}\label{wxobjectcopyobject}
-
-\func{virtual void}{CopyObject}{\param{wxObject\&}{ object\_dest}}
-
-Create a copy of this object in object\_dest. Must perform a full copy of self
-so that object\_dest will be valid after this object is deleted
-
 \membersection{wxObject::Dump}\label{wxobjectdump}
 
 \func{void}{Dump}{\param{ostream\&}{ stream}}
 
-A virtual function that should be redefined by derived classes to allow dumping of
+A virtual function that may be redefined by derived classes to allow dumping of
 memory states.
+
+This function is only defined in debug build and doesn't exist at all if
+{\tt \_\_WXDEBUG\_\_} is not defined.
 
 \wxheading{Parameters}
 
@@ -70,10 +68,11 @@ memory states.
 
 Currently wxWidgets does not define Dump for derived classes, but
 programmers may wish to use it for their own applications. Be sure to
-call the Dump member of the class's base class to allow all information to be dumped.
+call the Dump member of the class's base class to allow all information to be
+dumped.
 
-The implementation of this function just writes the class name of the object
-in debug build (\_\_WXDEBUG\_\_ defined), otherwise it does nothing.
+The implementation of this function in wxObject just writes the class name of
+the object.
 
 \membersection{wxObject::GetClassInfo}\label{wxobjectgetclassinfo}
 
@@ -108,7 +107,7 @@ by using the CLASSINFO macro.}
 
 \wxheading{Return value}
 
-TRUE if the class represented by {\it info} is the same class as
+true if the class represented by {\it info} is the same class as
 this one or is derived from it.
 
 \wxheading{Example}
@@ -198,20 +197,20 @@ you will need to cast to your own derived class.
 
 \latexignore{\rtfignore{\wxheading{Members}}}
 
-\membersection{wxObjectRefData::m\_count}
+\membersection{wxObjectRefData::m\_count}\label{wxobjectrefdatamcount}
 
 \member{int}{m\_count}
 
 Reference count. When this goes to zero during a \helpref{wxObject::UnRef}{wxobjectunref}, an object
 can delete the {\bf wxObjectRefData} object.
 
-\membersection{wxObjectRefData::wxObjectRefData}\label{wxobjectrefdataconstr}
+\membersection{wxObjectRefData::wxObjectRefData}\label{wxobjectrefdatactor}
 
 \func{}{wxObjectRefData}{\void}
 
 Default constructor. Initialises the {\bf m\_count} member to 1.
 
-\membersection{wxObjectRefData::\destruct{wxObjectRefData}}
+\membersection{wxObjectRefData::\destruct{wxObjectRefData}}\label{wxobjectrefdatadtor}
 
 \func{}{wxObjectRefData}{\void}
 

@@ -3,7 +3,7 @@
 // Purpose:     STC test module
 // Maintainer:  Wyo
 // Created:     2003-09-01
-// RCS-ID:      $Id: edit.h,v 1.1.2.1 2003/09/18 18:14:30 RD Exp $
+// RCS-ID:      $Id: edit.h,v 1.3 2004/09/28 15:13:24 ABX Exp $
 // Copyright:   (c) wxGuide
 // Licence:     wxWindows licence
 //////////////////////////////////////////////////////////////////////////////
@@ -20,9 +20,9 @@
 // headers
 //----------------------------------------------------------------------------
 
-//! wxWindows headers
+//! wxWidgets headers
 
-//! wxWindows/contrib headers
+//! wxWidgets/contrib headers
 #include <wx/stc/stc.h>  // styled text control
 
 //! application headers
@@ -45,7 +45,7 @@ class Edit: public wxStyledTextCtrl {
 
 public:
     //! constructor
-    Edit (wxWindow *parent, wxWindowID id = -1,
+    Edit (wxWindow *parent, wxWindowID id = wxID_ANY,
           const wxPoint &pos = wxDefaultPosition,
           const wxSize &size = wxDefaultSize,
           long style = wxSUNKEN_BORDER|wxVSCROLL

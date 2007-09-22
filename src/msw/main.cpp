@@ -1,12 +1,12 @@
 /////////////////////////////////////////////////////////////////////////////
 // Name:        msw/main.cpp
-// Purpose:     Main/DllMain
+// Purpose:     WinMain/DllMain
 // Author:      Julian Smart
 // Modified by:
 // Created:     04/01/98
-// RCS-ID:      $Id: main.cpp,v 1.12.2.1 2002/12/17 10:50:43 JS Exp $
-// Copyright:   (c) Julian Smart and Markus Holzem
-// Licence:     wxWindows license
+// RCS-ID:      $Id: main.cpp,v 1.37 2004/09/27 10:58:26 VZ Exp $
+// Copyright:   (c) Julian Smart
+// Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
 
 // ============================================================================
@@ -17,7 +17,7 @@
 // headers
 // ----------------------------------------------------------------------------
 
-#ifdef __GNUG__
+#if defined(__GNUG__) && !defined(NO_GCC_PRAGMA)
     #pragma implementation
 #endif
 
@@ -30,115 +30,130 @@
 
 #include "wx/event.h"
 #include "wx/app.h"
+#include "wx/cmdline.h"
 
 #include "wx/msw/private.h"
 
-// Don't implement WinMain if we're building an MFC/wxWindows
-// hybrid app.
-#if wxUSE_MFC && !defined(NOMAIN)
-#define NOMAIN 1
+#ifdef __BORLANDC__
+    // BC++ has to be special: its run-time expects the DLL entry point to be
+    // named DllEntryPoint instead of the (more) standard DllMain
+    #define DllMain DllEntryPoint
 #endif
 
-// from src/msw/app.cpp
-extern void WXDLLEXPORT wxEntryCleanup();
+#if defined(__WXMICROWIN__)
+    #define HINSTANCE HANDLE
+#endif
 
-// ----------------------------------------------------------------------------
-// globals
-// ----------------------------------------------------------------------------
-
-HINSTANCE wxhInstance = 0;
+#if wxUSE_GUI
 
 // ============================================================================
-// implementation
+// implementation: various entry points
 // ============================================================================
 
 // ----------------------------------------------------------------------------
-// various entry points
+// Windows-specific wxEntry
 // ----------------------------------------------------------------------------
+
+WXDLLEXPORT int wxEntry(HINSTANCE hInstance,
+                        HINSTANCE WXUNUSED(hPrevInstance),
+                        wxCmdLineArgType WXUNUSED(pCmdLine),
+                        int nCmdShow)
+{
+    // remember the parameters Windows gave us
+    wxSetInstance(hInstance);
+    wxApp::m_nCmdShow = nCmdShow;
+
+    // parse the command line: we can't use pCmdLine in Unicode build so it is
+    // simpler to never use it at all (this also results in a more correct
+    // argv[0])
+
+    // break the command line in words
+    wxArrayString args;
+
+    const wxChar *cmdLine = ::GetCommandLine();
+    if ( cmdLine )
+    {
+        args = wxCmdLineParser::ConvertStringToArgs(cmdLine);
+    }
+
+#ifdef __WXWINCE__
+    // WinCE doesn't insert the program itself, so do it ourselves.
+    args.Insert(wxGetFullModuleName(), 0);
+#endif
+
+    int argc = args.GetCount();
+
+    // +1 here for the terminating NULL
+    wxChar **argv = new wxChar *[argc + 1];
+    for ( int i = 0; i < argc; i++ )
+    {
+        argv[i] = wxStrdup(args[i]);
+    }
+
+    // argv[] must be NULL-terminated
+    argv[argc] = NULL;
+
+    return wxEntry(argc, argv);
+}
 
 // May wish not to have a DllMain or WinMain, e.g. if we're programming
 // a Netscape plugin or if we're writing a console application
-#if wxUSE_GUI && !defined(NOMAIN)
+#if !defined(NOMAIN)
 
-// NT defines APIENTRY, 3.x not
-#if !defined(APIENTRY)
-    #define APIENTRY FAR PASCAL
-#endif
-
-/////////////////////////////////////////////////////////////////////////////////
-// WinMain
-// Note that WinMain is also defined in dummy.obj, which is linked to
-// an application that is using the DLL version of wxWindows.
-
-#if !defined(_WINDLL)
-
-#if defined(__WXWINE__)
-    #define HINSTANCE HINSTANCE__*
-
-    extern "C"
-#elif defined(__TWIN32__) || defined(__WXMICROWIN__)
-    #define HINSTANCE HANDLE
-
-    extern "C"
-#endif // WINE
-
-int PASCAL WinMain(HINSTANCE hInstance,
-                   HINSTANCE hPrevInstance,
-                   LPSTR lpCmdLine,
-                   int nCmdShow)
+extern "C"
 {
-    return wxEntry((WXHINSTANCE) hInstance, (WXHINSTANCE) hPrevInstance,
-                   lpCmdLine, nCmdShow);
-}
 
-#endif // !defined(_WINDLL)
+// ----------------------------------------------------------------------------
+// WinMain
+// ----------------------------------------------------------------------------
 
-/////////////////////////////////////////////////////////////////////////////////
-// DllMain
+// Note that WinMain is also defined in dummy.obj, which is linked to
+// an application that is using the DLL version of wxWidgets.
 
 #if defined(_WINDLL)
 
 // DLL entry point
 
-extern "C"
-#ifdef __BORLANDC__
-// SCD: I don't know why, but also OWL uses this function
-BOOL WINAPI DllEntryPoint (HANDLE hModule, DWORD fdwReason, LPVOID lpReserved)
-#else
-BOOL WINAPI DllMain (HANDLE hModule, DWORD fdwReason, LPVOID lpReserved)
-#endif
+BOOL WINAPI
+DllMain(HANDLE hModule, DWORD fdwReason, LPVOID WXUNUSED(lpReserved))
 {
+    // Only call wxEntry if the application itself is part of the DLL.
+    // If only the wxWidgets library is in the DLL, then the
+    // initialisation will be called when the application implicitly
+    // calls WinMain.
 #ifndef WXMAKINGDLL
     switch (fdwReason)
     {
         case DLL_PROCESS_ATTACH:
-            // Only call wxEntry if the application itself is part of the DLL.
-            // If only the wxWindows library is in the DLL, then the
-            // initialisation will be called when the application implicitly
-            // calls WinMain.
-            return wxEntry((WXHINSTANCE) hModule);
+            return wxEntry(hModule);
 
         case DLL_PROCESS_DETACH:
-           if ( wxTheApp )
-              wxTheApp->OnExit();
-           wxEntryCleanup();
-           break;
+            wxEntryCleanup();
+            break;
     }
 #else
-	(void)hModule;
-	(void)fdwReason;
+    (void)hModule;
+    (void)fdwReason;
 #endif // !WXMAKINGDLL
-	(void)lpReserved;
+
     return TRUE;
 }
 
 #endif // _WINDLL
 
+} // extern "C"
+
 #endif // !NOMAIN
 
+#endif // wxUSE_GUI
+
 // ----------------------------------------------------------------------------
-// global functions
+// global HINSTANCE
 // ----------------------------------------------------------------------------
+
+#if wxUSE_BASE
+
+HINSTANCE wxhInstance = 0;
 
 HINSTANCE wxGetInstance()
 {
@@ -149,4 +164,6 @@ void wxSetInstance(HINSTANCE hInst)
 {
     wxhInstance = hInst;
 }
+
+#endif // wxUSE_BASE
 

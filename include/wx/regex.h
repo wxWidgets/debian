@@ -4,7 +4,7 @@
 // Author:      Karsten Ballüder
 // Modified by: VZ at 13.07.01 (integrated to wxWin)
 // Created:     05.02.2000
-// RCS-ID:      $Id: regex.h,v 1.6 2002/08/31 11:29:11 GD Exp $
+// RCS-ID:      $Id: regex.h,v 1.14 2004/09/21 18:15:50 ABX Exp $
 // Copyright:   (c) 2000 Karsten Ballüder <ballueder@gmx.net>
 // Licence:     wxWindows licence
 ///////////////////////////////////////////////////////////////////////////////
@@ -12,7 +12,7 @@
 #ifndef _WX_REGEX_H_
 #define _WX_REGEX_H_
 
-#if defined(__GNUG__) && !defined(__APPLE__)
+#if defined(__GNUG__) && !defined(NO_GCC_PRAGMA)
     #pragma interface "regex.h"
 #endif
 
@@ -20,7 +20,7 @@
 
 #if wxUSE_REGEX
 
-class WXDLLEXPORT wxString;
+class WXDLLIMPEXP_BASE wxString;
 
 // ----------------------------------------------------------------------------
 // constants
@@ -29,8 +29,13 @@ class WXDLLEXPORT wxString;
 // flags for regex compilation: these can be used with Compile()
 enum
 {
-    // use extended regex syntax (default)
+    // use extended regex syntax
     wxRE_EXTENDED = 0,
+
+    // use advanced RE syntax (built-in regex only)
+#ifdef wxHAS_REGEX_ADVANCED
+    wxRE_ADVANCED = 1,
+#endif
 
     // use basic RE syntax
     wxRE_BASIC    = 2,
@@ -67,9 +72,9 @@ enum
 // wxRegEx: a regular expression
 // ----------------------------------------------------------------------------
 
-class WXDLLEXPORT wxRegExImpl;
+class WXDLLIMPEXP_BASE wxRegExImpl;
 
-class WXDLLEXPORT wxRegEx
+class WXDLLIMPEXP_BASE wxRegEx
 {
 public:
     // default ctor: use Compile() later
@@ -82,15 +87,15 @@ public:
         (void)Compile(expr, flags);
     }
 
-    // return TRUE if this is a valid compiled regular expression
+    // return true if this is a valid compiled regular expression
     bool IsValid() const { return m_impl != NULL; }
 
-    // compile the string into regular expression, return TRUE if ok or FALSE
+    // compile the string into regular expression, return true if ok or false
     // if string has a syntax error
     bool Compile(const wxString& pattern, int flags = wxRE_DEFAULT);
 
     // matches the precompiled regular expression against a string, return
-    // TRUE if matches and FALSE otherwise
+    // true if matches and false otherwise
     //
     // flags may be combination of wxRE_NOTBOL and wxRE_NOTEOL
     //
@@ -102,7 +107,7 @@ public:
     //
     // may only be called after successful call to Matches()
     //
-    // return FALSE if no match or on error
+    // return false if no match or on error
     bool GetMatch(size_t *start, size_t *len, size_t index = 0) const;
 
     // return the part of string corresponding to the match, empty string is
@@ -110,6 +115,12 @@ public:
     //
     // may only be called after successful call to Matches()
     wxString GetMatch(const wxString& text, size_t index = 0) const;
+
+    // return the size of the array of matches, i.e. the number of bracketed
+    // subexpressions plus one for the expression itself, or 0 on error.
+    //
+    // may only be called after successful call to Compile()
+    size_t GetMatchCount() const;
 
     // replaces the current regular expression in the string pointed to by
     // pattern, with the text in replacement and return number of matches

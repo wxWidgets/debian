@@ -5,7 +5,7 @@
 // Created:    1997
 // Updated:    1998
 // Copyright:  (C) 1997, 1998, Guilhem Lavaux
-// CVS:	       $Id: vidbase.h,v 1.1 2000/03/05 19:03:13 GL Exp $
+// CVS:        $Id: vidbase.h,v 1.4 2004/06/16 15:22:54 ABX Exp $
 // License:    wxWindows license
 // /////////////////////////////////////////////////////////////////////////////
 /* Real -*- C++ -*- */
@@ -27,7 +27,7 @@
 #endif
 
 // for all others, include the necessary headers (this file is usually all you
-// need because it includes almost all "standard" wxWindows headers
+// need because it includes almost all "standard" wxWidgets headers
 #ifndef WX_PRECOMP
     #include "wx/defs.h"
     #include "wx/stream.h"
@@ -35,6 +35,8 @@
     #include "wx/window.h"
     #include "wx/frame.h"
 #endif
+
+#include "wx/mmedia/defs.h"
 
 // ----------------------------------------------------------------------------
 // wxMMedia2 (video) types
@@ -54,7 +56,7 @@ typedef enum {
 // ----------------------------------------------------------------------------
 // Classes definition
 
-class WXDLLEXPORT wxVideoBaseDriver : public wxObject {
+class WXDLLIMPEXP_MMEDIA wxVideoBaseDriver : public wxObject {
     DECLARE_ABSTRACT_CLASS(wxVideoBaseDriver)
 protected:
     wxWindow *m_video_output;
@@ -66,7 +68,7 @@ public:
     // Dtor
     virtual ~wxVideoBaseDriver();
     
-    // Usual functions ... They all return FALSE in case of errors.
+    // Usual functions ... They all return false in case of errors.
     virtual bool Play() = 0;
     virtual bool Stop() = 0;
     virtual bool Pause() = 0;
@@ -77,7 +79,7 @@ public:
     virtual bool GetSize(wxSize& size) const = 0;
     
     // Test the capability of the driver to handle the specified type
-    virtual bool IsCapable(wxVideoType WXUNUSED(v_type)) const { return FALSE; }
+    virtual bool IsCapable(wxVideoType WXUNUSED(v_type)) const { return false; }
 
     // Return the video codec name
     virtual wxString GetMovieCodec() const = 0;
@@ -104,7 +106,7 @@ public:
     virtual bool IsStopped() const = 0;
 };
 
-WXDLLEXPORT wxFrame *wxVideoCreateFrame(wxVideoBaseDriver *vid_drv);
+WXDLLIMPEXP_MMEDIA wxFrame *wxVideoCreateFrame(wxVideoBaseDriver *vid_drv);
 
 
 #endif

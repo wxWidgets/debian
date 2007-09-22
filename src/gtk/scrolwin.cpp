@@ -1,12 +1,12 @@
 /////////////////////////////////////////////////////////////////////////////
 // Name:        gtk/scrolwin.cpp
 // Purpose:     wxScrolledWindow implementation
-// Author:      Julian Smart
+// Author:      Robert Roebling
 // Modified by: Ron Lee
 // Created:     01/02/97
-// RCS-ID:      $Id: scrolwin.cpp,v 1.24.2.8 2003/04/06 12:03:07 JS Exp $
-// Copyright:   (c) Julian Smart and Markus Holzem
-// Licence:     wxWindows license
+// RCS-ID:      $Id: scrolwin.cpp,v 1.36 2004/11/03 21:13:19 RR Exp $
+// Copyright:   (c) Robert Roebling
+// Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
 
 // ============================================================================
@@ -17,7 +17,7 @@
 // headers
 // ----------------------------------------------------------------------------
 
-#ifdef __GNUG__
+#if defined(__GNUG__) && !defined(NO_GCC_PRAGMA)
     #pragma implementation "scrolwin.h"
 #endif
 
@@ -28,10 +28,9 @@
     #pragma hdrstop
 #endif
 
+#include "wx/scrolwin.h"
 #include "wx/utils.h"
 #include "wx/dcclient.h"
-
-#include "wx/scrolwin.h"
 #include "wx/panel.h"
 #include "wx/sizer.h"
 
@@ -83,7 +82,7 @@ static void gtk_scrolled_window_vscroll_callback( GtkAdjustment *adjust,
     if (g_blockEventsOnDrag) return;
 
     if (!win->m_hasVMT) return;
-
+    
     win->GtkVScroll( adjust->value,
             GET_SCROLL_TYPE(GTK_SCROLLED_WINDOW(win->m_widget)->vscrollbar) );
 }
@@ -288,7 +287,7 @@ bool wxScrolledWindow::Create(wxWindow *parent,
     GtkHConnectEvent();
 
     // these handlers block mouse events to any window during scrolling such as
-    // motion events and prevent GTK and wxWindows from fighting over where the
+    // motion events and prevent GTK and wxWidgets from fighting over where the
     // slider should be
 
     gtk_signal_connect( GTK_OBJECT(scrolledWindow->vscrollbar), "button_press_event",
@@ -378,12 +377,14 @@ void wxScrolledWindow::AdjustScrollbars()
     if (m_xScrollPixelsPerLine == 0)
     {
         m_hAdjust->upper = 1.0;
+        m_hAdjust->page_increment = 1.0;
         m_hAdjust->page_size = 1.0;
     }
     else
     {
         m_hAdjust->upper = vw / m_xScrollPixelsPerLine;
-        m_hAdjust->page_size = (w / m_xScrollPixelsPerLine);
+        m_hAdjust->page_increment = (w / m_xScrollPixelsPerLine);
+        m_hAdjust->page_size = m_hAdjust->page_increment;
 
         // If the scrollbar hits the right side, move the window
         // right to keep it from over extending.
@@ -404,12 +405,14 @@ void wxScrolledWindow::AdjustScrollbars()
     if (m_yScrollPixelsPerLine == 0)
     {
         m_vAdjust->upper = 1.0;
+        m_vAdjust->page_increment = 1.0;
         m_vAdjust->page_size = 1.0;
     }
     else
     {
         m_vAdjust->upper = vh / m_yScrollPixelsPerLine;
-        m_vAdjust->page_size = (h / m_yScrollPixelsPerLine);
+        m_vAdjust->page_increment = (h / m_yScrollPixelsPerLine);
+        m_vAdjust->page_size = m_vAdjust->page_increment;
 
         if ((m_vAdjust->value != 0.0) && (m_vAdjust->value + m_vAdjust->page_size > m_vAdjust->upper))
         {
@@ -424,8 +427,8 @@ void wxScrolledWindow::AdjustScrollbars()
         }
     }
 
-    m_xScrollLinesPerPage = (int)(m_hAdjust->page_size + 0.5);
-    m_yScrollLinesPerPage = (int)(m_vAdjust->page_size + 0.5);
+    m_xScrollLinesPerPage = (int)(m_hAdjust->page_increment + 0.5);
+    m_yScrollLinesPerPage = (int)(m_vAdjust->page_increment + 0.5);
 
     gtk_signal_emit_by_name( GTK_OBJECT(m_vAdjust), "changed" );
     gtk_signal_emit_by_name( GTK_OBJECT(m_hAdjust), "changed" );
@@ -442,14 +445,14 @@ void wxScrolledWindow::SetTargetWindow( wxWindow *target, bool WXUNUSED(pushEven
     m_targetWindow = target;
 }
 
-wxWindow *wxScrolledWindow::GetTargetWindow()
+wxWindow *wxScrolledWindow::GetTargetWindow() const
 {
     return m_targetWindow;
 }
 
 // Override this function if you don't want to have wxScrolledWindow
 // automatically change the origin according to the scroll position.
-void wxScrolledWindow::PrepareDC(wxDC& dc)
+void wxScrolledWindow::DoPrepareDC(wxDC& dc)
 {
     dc.SetDeviceOrigin( -m_xScrollPosition * m_xScrollPixelsPerLine,
                         -m_yScrollPosition * m_yScrollPixelsPerLine );
@@ -558,7 +561,7 @@ void wxScrolledWindow::Scroll( int x_pos, int y_pos )
 
         m_targetWindow->ScrollWindow( (old_x-m_xScrollPosition)*m_xScrollPixelsPerLine, 0 );
 
-        // Just update the scrollbar, don't send any wxWindows event
+        // Just update the scrollbar, don't send any wxWidgets event
         GtkHDisconnectEvent();
         gtk_signal_emit_by_name( GTK_OBJECT(m_hAdjust), "value_changed" );
         GtkHConnectEvent();
@@ -577,7 +580,7 @@ void wxScrolledWindow::Scroll( int x_pos, int y_pos )
 
         m_targetWindow->ScrollWindow( 0, (old_y-m_yScrollPosition)*m_yScrollPixelsPerLine );
 
-        // Just update the scrollbar, don't send any wxWindows event
+        // Just update the scrollbar, don't send any wxWidgets event
         GtkVDisconnectEvent();
         gtk_signal_emit_by_name( GTK_OBJECT(m_vAdjust), "value_changed" );
         GtkVConnectEvent();
@@ -779,14 +782,14 @@ void wxScrolledWindow::SetScrollPos( int orient, int pos, bool refresh )
     {
         if (orient == wxHORIZONTAL)
         {
-            // Just update the scrollbar, don't send any wxWindows event
+            // Just update the scrollbar, don't send any wxWidgets event
             GtkHDisconnectEvent();
             gtk_signal_emit_by_name( GTK_OBJECT(m_hAdjust), "value_changed" );
             GtkHConnectEvent();
         }
         else
         {
-            // Just update the scrollbar, don't send any wxWindows event
+            // Just update the scrollbar, don't send any wxWidgets event
             GtkVDisconnectEvent();
             gtk_signal_emit_by_name( GTK_OBJECT(m_vAdjust), "value_changed" );
             GtkVConnectEvent();
@@ -911,7 +914,7 @@ void wxScrolledWindow::OnChar(wxKeyEvent& event)
         yScrollOld = GetScrollPos(wxVERTICAL);
 
     int dsty;
-    switch ( event.KeyCode() )
+    switch ( event.GetKeyCode() )
     {
         case WXK_PAGEUP:
         case WXK_PRIOR:

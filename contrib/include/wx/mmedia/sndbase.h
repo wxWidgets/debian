@@ -3,7 +3,7 @@
 // Purpose:
 // Date: 08/11/1999
 // Author: Guilhem Lavaux <lavaux@easynet.fr> (C) 1999
-// CVSID: $Id: sndbase.h,v 1.2 2000/06/04 08:38:36 GL Exp $
+// CVSID: $Id: sndbase.h,v 1.4 2004/06/16 15:22:54 ABX Exp $
 // --------------------------------------------------------------------------
 #ifndef _WX_SNDBASE_H
 #define _WX_SNDBASE_H
@@ -13,6 +13,7 @@
 #endif
 
 #include "wx/defs.h"
+#include "wx/mmedia/defs.h"
 
 // ------------------------------------------------------------------------
 // DEFINITIONS
@@ -76,7 +77,7 @@ typedef enum {
   wxSOUND_NOTSTARTED
 } wxSoundError;
 
-class WXDLLEXPORT wxSoundStream;
+class WXDLLIMPEXP_MMEDIA wxSoundStream;
 
 // ---------------------
 // wxSoundCallback(stream, evt, cdata): C callback for sound event.
@@ -92,7 +93,7 @@ typedef void (*wxSoundCallback)(wxSoundStream *stream, int evt,
 // Base class for sound format specification
 //
 
-class WXDLLEXPORT wxSoundFormatBase {
+class WXDLLIMPEXP_MMEDIA wxSoundFormatBase {
  public:
   wxSoundFormatBase();
   virtual ~wxSoundFormatBase();
@@ -112,7 +113,7 @@ class WXDLLEXPORT wxSoundFormatBase {
 // Base class for sound streams
 //
 
-class WXDLLEXPORT wxSoundStream {
+class WXDLLIMPEXP_MMEDIA wxSoundStream {
  public:
   wxSoundStream();
   virtual ~wxSoundStream();
@@ -124,7 +125,7 @@ class WXDLLEXPORT wxSoundStream {
   // Returns the best size for IO calls
   virtual wxUint32 GetBestSize() const { return 1024; }
 
-  // SetSoundFormat returns TRUE when the format can be handled.
+  // SetSoundFormat returns true when the format can be handled.
   virtual bool SetSoundFormat(const wxSoundFormatBase& format);
 
   // GetSoundFormat returns the current sound format.
@@ -145,7 +146,7 @@ class WXDLLEXPORT wxSoundStream {
   wxUint32 GetLastAccess() const { return m_lastcount; }
 
   // This is only useful for device (I think).
-  virtual bool QueueFilled() const { return TRUE; }
+  virtual bool QueueFilled() const { return true; }
 
  protected:
   // Current sound format

@@ -4,7 +4,7 @@
 // Author:      PJ Naughter <pjna@naughter.com>
 // Modified by: Julian Smart
 // Created:     2001-08-21
-// RCS-ID:      $Id: smapi.h,v 1.2 2002/09/07 12:10:20 GD Exp $
+// RCS-ID:      $Id: smapi.h,v 1.3 2003/08/03 17:10:13 VS Exp $
 // Copyright:   (c) PJ Naughter
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -18,10 +18,10 @@
 
 #include "wx/net/msg.h"
 
-class wxMapiData;
+class WXDLLIMPEXP_NETUTILS wxMapiData;
 
 //The class which encapsulates the MAPI connection
-class wxMapiSession
+class WXDLLIMPEXP_NETUTILS wxMapiSession
 {
 public:
     //Constructors / Destructors

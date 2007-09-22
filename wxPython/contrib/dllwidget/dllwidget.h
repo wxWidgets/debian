@@ -3,7 +3,7 @@
 // Purpose:     Dynamically loadable C++ widget for wxPython
 // Author:      Vaclav Slavik
 // Created:     2001/12/03
-// RCS-ID:      $Id: dllwidget.h,v 1.2 2001/12/07 04:32:43 RD Exp $
+// RCS-ID:      $Id: dllwidget.h,v 1.3 2004/06/12 23:44:07 DS Exp $
 // Copyright:   (c) 2001 Vaclav Slavik
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -41,7 +41,7 @@ Example of use:
     {
     public:
         MyWindow(wxWindow *parent, long style)
-            : wxWindow(parent, -1) {}
+            : wxWindow(parent, wxID_ANY) {}
 
         int HandleCommand(int cmd, const wxString& param)
         {
@@ -75,7 +75,7 @@ class wxDllWidget : public wxPanel
 {
 public:
     wxDllWidget(wxWindow *parent,
-                wxWindowID id = -1,
+                wxWindowID id = wxID_ANY,
                 const wxString& dllName = wxEmptyString,
                 const wxString& className = wxEmptyString,
                 const wxPoint& pos = wxDefaultPosition,
@@ -132,12 +132,12 @@ private:
         { \
             *classInst = new widget(parent, style); \
             *cmdFunc = SendCommandTo##widget; \
-            return TRUE; \
+            return true; \
         }
 
 
 #define END_WIDGET_LIBRARY() \
-       return FALSE; \
+       return false; \
     }
 
 #endif // __DLLWIDGET_H__

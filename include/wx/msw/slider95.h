@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     01/02/97
-// RCS-ID:      $Id: slider95.h,v 1.11 2002/06/20 12:52:06 VZ Exp $
+// RCS-ID:      $Id: slider95.h,v 1.18 2004/09/04 01:53:38 ABX Exp $
 // Copyright:   (c) Julian Smart
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -12,7 +12,7 @@
 #ifndef _SLIDER95_H_
 #define _SLIDER95_H_
 
-#ifdef __GNUG__
+#if defined(__GNUG__) && !defined(NO_GCC_PRAGMA)
 #pragma interface "slider95.h"
 #endif
 
@@ -46,11 +46,9 @@ public:
     virtual int GetValue() const;
     virtual void SetValue(int);
 
-    void GetSize(int *w, int *h) const;
-
     void GetPosition(int *x, int *y) const;
 
-    bool Show(bool show = TRUE);
+    bool Show(bool show = true);
 
     void SetRange(int minValue, int maxValue);
 
@@ -101,7 +99,9 @@ protected:
                            int width, int height,
                            int sizeFlags = wxSIZE_AUTO);
 
-    DECLARE_DYNAMIC_CLASS(wxSlider95)
+    virtual wxSize DoGetBestSize() const;
+
+    DECLARE_DYNAMIC_CLASS_NO_COPY(wxSlider95)
 };
 
 #endif

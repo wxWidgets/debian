@@ -2,9 +2,10 @@
 // Name:        table.cpp
 // Purpose:     Utilities for manipulating tables
 // Author:      Julian Smart
-// Modified by:
+// Modified by: Wlodzimiez ABX Skiba 2003/2004 Unicode support
+//              Ron Lee
 // Created:     01/01/99
-// RCS-ID:      $Id: table.cpp,v 1.3 2001/11/22 21:55:24 GD Exp $
+// RCS-ID:      $Id: table.cpp,v 1.7 2004/07/15 06:31:31 ABX Exp $
 // Copyright:   (c) Julian Smart
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -21,7 +22,6 @@
 #endif
 
 #ifndef WX_PRECOMP
-#include "wx/wx.h"
 #endif
 
 #include "wx/hash.h"
@@ -43,11 +43,11 @@
 #include "table.h"
 
 ColumnData TableData[40];
-bool inTabular = FALSE;
+bool inTabular = false;
 
-bool startRows = FALSE;
-bool tableVerticalLineLeft = FALSE;
-bool tableVerticalLineRight = FALSE;
+bool startRows = false;
+bool tableVerticalLineLeft = false;
+bool tableVerticalLineRight = false;
 int noColumns = 0;   // Current number of columns in table
 int ruleTop = 0;
 int ruleBottom = 0;
@@ -58,71 +58,71 @@ int currentRowNumber = 0;
  *
  */
 
-bool ParseTableArgument(char *value)
+bool ParseTableArgument(wxChar *value)
 {
   noColumns = 0;
   int i = 0;
-  int len = strlen(value);
-  bool isBorder = FALSE;
+  int len = wxStrlen(value);
+  bool isBorder = false;
   while (i < len)
   {
     int ch = value[i];
     if (ch == '|')
     {
       i ++;
-      isBorder = TRUE;
+      isBorder = true;
     }
     else if (ch == 'l')
     {
       TableData[noColumns].leftBorder = isBorder;
-      TableData[noColumns].rightBorder = FALSE;
+      TableData[noColumns].rightBorder = false;
       TableData[noColumns].justification = 'l';
       TableData[noColumns].width = 2000; // Estimate
-      TableData[noColumns].absWidth = FALSE;
+      TableData[noColumns].absWidth = false;
 //      TableData[noColumns].spacing = ??
       noColumns ++;
       i ++;
-      isBorder = FALSE;
+      isBorder = false;
     }
     else if (ch == 'c')
     {
       TableData[noColumns].leftBorder = isBorder;
-      TableData[noColumns].rightBorder = FALSE;
+      TableData[noColumns].rightBorder = false;
       TableData[noColumns].justification = 'c';
       TableData[noColumns].width = defaultTableColumnWidth; // Estimate
-      TableData[noColumns].absWidth = FALSE;
+      TableData[noColumns].absWidth = false;
 //      TableData[noColumns].spacing = ??
       noColumns ++;
       i ++;
-      isBorder = FALSE;
+      isBorder = false;
     }
     else if (ch == 'r')
     {
       TableData[noColumns].leftBorder = isBorder;
-      TableData[noColumns].rightBorder = FALSE;
+      TableData[noColumns].rightBorder = false;
       TableData[noColumns].justification = 'r';
       TableData[noColumns].width = 2000; // Estimate
-      TableData[noColumns].absWidth = FALSE;
+      TableData[noColumns].absWidth = false;
 //      TableData[noColumns].spacing = ??
       noColumns ++;
       i ++;
-      isBorder = FALSE;
+      isBorder = false;
     }
     else if (ch == 'p')
     {
       i ++;
       int j = 0;
-      char numberBuf[50];
+      wxChar numberBuf[50];
       ch = value[i];
       if (ch == '{')
       {
         i++;
         ch = value[i];
       }
-        
+
       while ((i < len) && (isdigit(ch) || ch == '.'))
       {
-        numberBuf[j] = ch;
+        numberBuf[j] = (wxChar)ch;
         j ++;
         i ++;
         ch = value[i];
@@ -134,26 +134,26 @@ bool ParseTableArgument(char *value)
       j ++; i++;
       numberBuf[j] = 0;
       if (value[i] == '}') i++;
-      
+
       TableData[noColumns].leftBorder = isBorder;
-      TableData[noColumns].rightBorder = FALSE;
+      TableData[noColumns].rightBorder = false;
       TableData[noColumns].justification = 'l';
       TableData[noColumns].width = 20*ParseUnitArgument(numberBuf);
-      TableData[noColumns].absWidth = TRUE;
+      TableData[noColumns].absWidth = true;
 //      TableData[noColumns].spacing = ??
       noColumns ++;
-      isBorder = FALSE;
+      isBorder = false;
     }
     else
     {
-      char *buf = new char[strlen(value) + 80];
-      sprintf(buf, "Tabular first argument \"%s\" too complex!", value);
+      wxChar *buf = new wxChar[wxStrlen(value) + 80];
+      wxSnprintf(buf, wxStrlen(value) + 80, _T("Tabular first argument \"%s\" too complex!"), value);
       OnError(buf);
       delete[] buf;
-      return FALSE;
+      return false;
     }
   }
   if (isBorder)
-    TableData[noColumns-1].rightBorder = TRUE;
-  return TRUE;
+    TableData[noColumns-1].rightBorder = true;
+  return true;
 }

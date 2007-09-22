@@ -4,9 +4,9 @@
 // Author:      Julian Smart
 // Modified by: Vadim Zeitlin to derive from wxChoiceBase
 // Created:     04/01/98
-// RCS-ID:      $Id: choice.cpp,v 1.51.2.1 2002/11/28 21:27:30 VZ Exp $
-// Copyright:   (c) Julian Smart and Markus Holzem
-// Licence:     wxWindows license
+// RCS-ID:      $Id: choice.cpp,v 1.93 2004/11/07 00:09:39 RN Exp $
+// Copyright:   (c) Julian Smart
+// Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
 
 // ============================================================================
@@ -17,7 +17,7 @@
 // headers
 // ----------------------------------------------------------------------------
 
-#ifdef __GNUG__
+#if defined(__GNUG__) && !defined(NO_GCC_PRAGMA)
     #pragma implementation "choice.h"
 #endif
 
@@ -28,7 +28,7 @@
     #pragma hdrstop
 #endif
 
-#if wxUSE_CHOICE
+#if wxUSE_CHOICE && !(defined(__SMARTPHONE__) && defined(__WXWINCE__))
 
 #ifndef WX_PRECOMP
     #include "wx/choice.h"
@@ -40,7 +40,63 @@
 
 #include "wx/msw/private.h"
 
+#if wxUSE_EXTENDED_RTTI
+WX_DEFINE_FLAGS( wxChoiceStyle )
+
+wxBEGIN_FLAGS( wxChoiceStyle )
+    // new style border flags, we put them first to
+    // use them for streaming out
+    wxFLAGS_MEMBER(wxBORDER_SIMPLE)
+    wxFLAGS_MEMBER(wxBORDER_SUNKEN)
+    wxFLAGS_MEMBER(wxBORDER_DOUBLE)
+    wxFLAGS_MEMBER(wxBORDER_RAISED)
+    wxFLAGS_MEMBER(wxBORDER_STATIC)
+    wxFLAGS_MEMBER(wxBORDER_NONE)
+
+    // old style border flags
+    wxFLAGS_MEMBER(wxSIMPLE_BORDER)
+    wxFLAGS_MEMBER(wxSUNKEN_BORDER)
+    wxFLAGS_MEMBER(wxDOUBLE_BORDER)
+    wxFLAGS_MEMBER(wxRAISED_BORDER)
+    wxFLAGS_MEMBER(wxSTATIC_BORDER)
+    wxFLAGS_MEMBER(wxBORDER)
+
+    // standard window styles
+    wxFLAGS_MEMBER(wxTAB_TRAVERSAL)
+    wxFLAGS_MEMBER(wxCLIP_CHILDREN)
+    wxFLAGS_MEMBER(wxTRANSPARENT_WINDOW)
+    wxFLAGS_MEMBER(wxWANTS_CHARS)
+    wxFLAGS_MEMBER(wxFULL_REPAINT_ON_RESIZE)
+    wxFLAGS_MEMBER(wxALWAYS_SHOW_SB )
+    wxFLAGS_MEMBER(wxVSCROLL)
+    wxFLAGS_MEMBER(wxHSCROLL)
+
+wxEND_FLAGS( wxChoiceStyle )
+
+IMPLEMENT_DYNAMIC_CLASS_XTI(wxChoice, wxControl,"wx/choice.h")
+
+wxBEGIN_PROPERTIES_TABLE(wxChoice)
+    wxEVENT_PROPERTY( Select , wxEVT_COMMAND_CHOICE_SELECTED , wxCommandEvent )
+
+    wxPROPERTY( Font , wxFont , SetFont , GetFont  , EMPTY_MACROVALUE , 0 /*flags*/ , wxT("Helpstring") , wxT("group"))
+    wxPROPERTY_COLLECTION( Choices , wxArrayString , wxString , AppendString , GetStrings , 0 /*flags*/ , wxT("Helpstring") , wxT("group"))
+    wxPROPERTY( Selection ,int, SetSelection, GetSelection, EMPTY_MACROVALUE , 0 /*flags*/ , wxT("Helpstring") , wxT("group"))
+    wxPROPERTY_FLAGS( WindowStyle , wxChoiceStyle , long , SetWindowStyleFlag , GetWindowStyleFlag , EMPTY_MACROVALUE , 0 /*flags*/ , wxT("Helpstring") , wxT("group")) // style
+wxEND_PROPERTIES_TABLE()
+
+wxBEGIN_HANDLERS_TABLE(wxChoice)
+wxEND_HANDLERS_TABLE()
+
+wxCONSTRUCTOR_4( wxChoice , wxWindow* , Parent , wxWindowID , Id , wxPoint , Position , wxSize , Size )
+#else
 IMPLEMENT_DYNAMIC_CLASS(wxChoice, wxControl)
+#endif
+/*
+    TODO PROPERTIES
+        selection (long)
+        content (list)
+            item
+*/
 
 // ============================================================================
 // implementation
@@ -59,17 +115,6 @@ bool wxChoice::Create(wxWindow *parent,
                       const wxValidator& validator,
                       const wxString& name)
 {
-    if ( !CreateControl(parent, id, pos, size, style, validator, name) )
-        return FALSE;
-
-    long msStyle = WS_CHILD | CBS_DROPDOWNLIST | WS_TABSTOP | WS_VISIBLE | WS_HSCROLL | WS_VSCROLL /* | WS_CLIPSIBLINGS */;
-    if ( style & wxCB_SORT )
-        msStyle |= CBS_SORT;
-
-    if ( style & wxCLIP_SIBLINGS )
-        msStyle |= WS_CLIPSIBLINGS;
-
-
     // Experience shows that wxChoice vs. wxComboBox distinction confuses
     // quite a few people - try to help them
     wxASSERT_MSG( !(style & wxCB_DROPDOWN) &&
@@ -78,21 +123,93 @@ bool wxChoice::Create(wxWindow *parent,
                   _T("this style flag is ignored by wxChoice, you ")
                   _T("probably want to use a wxComboBox") );
 
-    if ( !MSWCreateControl(wxT("COMBOBOX"), msStyle) )
-        return FALSE;
+    return CreateAndInit(parent, id, pos, size, n, choices, style,
+                         validator, name);
+}
 
-    // A choice/combobox normally has a white background (or other, depending
-    // on global settings) rather than inheriting the parent's background colour.
+bool wxChoice::CreateAndInit(wxWindow *parent,
+                             wxWindowID id,
+                             const wxPoint& pos,
+                             const wxSize& size,
+                             int n, const wxString choices[],
+                             long style,
+                             const wxValidator& validator,
+                             const wxString& name)
+{
+    // initialize wxControl
+    if ( !CreateControl(parent, id, pos, size, style, validator, name) )
+        return false;
+
+    // now create the real HWND
+    if ( !MSWCreateControl(wxT("COMBOBOX"), _T(""), pos, size) )
+        return false;
+
+
+    // choice/combobox normally has "white" (depends on colour scheme, of
+    // course) background rather than inheriting the parent's background
     SetBackgroundColour(wxSystemSettings::GetColour(wxSYS_COLOUR_WINDOW));
 
+    // initialize the controls contents
     for ( int i = 0; i < n; i++ )
     {
         Append(choices[i]);
     }
 
-    SetSize(pos.x, pos.y, size.x, size.y);
+    // and now we may finally size the control properly (if needed)
+    SetBestSize(size);
 
-    return TRUE;
+    return true;
+}
+
+bool wxChoice::Create(wxWindow *parent,
+                      wxWindowID id,
+                      const wxPoint& pos,
+                      const wxSize& size,
+                      const wxArrayString& choices,
+                      long style,
+                      const wxValidator& validator,
+                      const wxString& name)
+{
+    wxCArrayString chs(choices);
+    return Create(parent, id, pos, size, chs.GetCount(), chs.GetStrings(),
+                  style, validator, name);
+}
+
+bool wxChoice::MSWShouldPreProcessMessage(WXMSG *pMsg)
+{
+    MSG *msg = (MSG *) pMsg;
+
+    // if the dropdown list is visible, don't preprocess certain keys
+    if ( msg->message == WM_KEYDOWN
+        && (msg->wParam == VK_ESCAPE || msg->wParam == VK_RETURN) )
+    {
+        if (::SendMessage(GetHwndOf(this), CB_GETDROPPEDSTATE, 0, 0))
+        {
+            return false;
+        }
+    }
+
+    return wxControl::MSWShouldPreProcessMessage(pMsg);
+}
+
+WXDWORD wxChoice::MSWGetStyle(long style, WXDWORD *exstyle) const
+{
+    // we never have an external border
+    WXDWORD msStyle = wxControl::MSWGetStyle
+                      (
+                        (style & ~wxBORDER_MASK) | wxBORDER_NONE, exstyle
+                      );
+
+    // WS_CLIPSIBLINGS is useful with wxChoice and doesn't seem to result in
+    // any problems
+    msStyle |= WS_CLIPSIBLINGS;
+
+    // wxChoice-specific styles
+    msStyle |= CBS_DROPDOWNLIST | WS_HSCROLL | WS_VSCROLL;
+    if ( style & wxCB_SORT )
+        msStyle |= CBS_SORT;
+
+    return msStyle;
 }
 
 wxChoice::~wxChoice()
@@ -106,10 +223,36 @@ wxChoice::~wxChoice()
 
 int wxChoice::DoAppend(const wxString& item)
 {
-    int n = (int)SendMessage(GetHwnd(), CB_ADDSTRING, 0, (LONG)item.c_str());
+    int n = (int)SendMessage(GetHwnd(), CB_ADDSTRING, 0, (LPARAM)item.c_str());
     if ( n == CB_ERR )
     {
         wxLogLastError(wxT("SendMessage(CB_ADDSTRING)"));
+    }
+    else // ok
+    {
+        // we need to refresh our size in order to have enough space for the
+        // newly added items
+        if ( !IsFrozen() )
+            UpdateVisibleHeight();
+    }
+
+    return n;
+}
+
+int wxChoice::DoInsert(const wxString& item, int pos)
+{
+    wxCHECK_MSG(!(GetWindowStyle() & wxCB_SORT), -1, wxT("can't insert into sorted list"));
+    wxCHECK_MSG((pos>=0) && (pos<=GetCount()), -1, wxT("invalid index"));
+
+    int n = (int)SendMessage(GetHwnd(), CB_INSERTSTRING, pos, (LPARAM)item.c_str());
+    if ( n == CB_ERR )
+    {
+        wxLogLastError(wxT("SendMessage(CB_INSERTSTRING)"));
+    }
+    else // ok
+    {
+        if ( !IsFrozen() )
+            UpdateVisibleHeight();
     }
 
     return n;
@@ -125,6 +268,9 @@ void wxChoice::Delete(int n)
     }
 
     SendMessage(GetHwnd(), CB_DELETESTRING, n, 0);
+
+    if ( !IsFrozen() )
+        UpdateVisibleHeight();
 }
 
 void wxChoice::Clear()
@@ -132,6 +278,9 @@ void wxChoice::Clear()
     Free();
 
     SendMessage(GetHwnd(), CB_RESETCONTENT, 0, 0);
+
+    if ( !IsFrozen() )
+        UpdateVisibleHeight();
 }
 
 void wxChoice::Free()
@@ -178,16 +327,32 @@ int wxChoice::FindString(const wxString& s) const
     for ( int i = 0; i < count; i++ )
     {
         // as CB_FINDSTRINGEXACT is case insensitive, be case insensitive too
-        if ( GetString(i).IsSameAs(s, FALSE) )
+        if ( GetString(i).IsSameAs(s, false) )
             return i;
     }
 
     return wxNOT_FOUND;
 #else // !Watcom
-    int pos = (int)SendMessage(GetHwnd(), CB_FINDSTRINGEXACT,
-                               (WPARAM)-1, (LPARAM)s.c_str());
+   //TODO:  Evidently some MSW versions (all?) don't like empty strings
+   //passed to SendMessage, so we have to do it ourselves in that case
+   if ( s.size() == 0 )
+   {
+     int count = GetCount();
+     for ( int i = 0; i < count; i++ )
+     {
+       if ( GetString(i).size() == 0 )
+           return i;
+     }
 
-    return pos == LB_ERR ? wxNOT_FOUND : pos;
+     return wxNOT_FOUND;
+   }
+   else
+   {
+     int pos = (int)SendMessage(GetHwnd(), CB_FINDSTRINGEXACT,
+                                (WPARAM)-1, (LPARAM)s.c_str());
+ 
+     return pos == LB_ERR ? wxNOT_FOUND : pos;
+   }
 #endif // Watcom/!Watcom
 }
 
@@ -237,8 +402,6 @@ wxString wxChoice::GetString(int n) const
         {
             wxLogLastError(wxT("SendMessage(CB_GETLBTEXT)"));
         }
-
-        str.UngetWriteBuf();
     }
 
     return str;
@@ -285,6 +448,12 @@ wxClientData* wxChoice::DoGetItemClientObject( int n ) const
 // wxMSW specific helpers
 // ----------------------------------------------------------------------------
 
+void wxChoice::UpdateVisibleHeight()
+{
+    // be careful to not change the width here
+    DoSetSize(wxDefaultCoord, wxDefaultCoord, wxDefaultCoord, GetSize().y, wxSIZE_USE_EXISTING);
+}
+
 void wxChoice::DoMoveWindow(int x, int y, int width, int height)
 {
     // here is why this is necessary: if the width is negative, the combobox
@@ -303,29 +472,72 @@ void wxChoice::DoMoveWindow(int x, int y, int width, int height)
     wxControl::DoMoveWindow(x, y, width, height);
 }
 
+void wxChoice::DoGetSize(int *w, int *h) const
+{
+    // this is weird: sometimes, the height returned by Windows is clearly the
+    // total height of the control including the drop down list -- but only
+    // sometimes, and normally it isn't... I have no idea about what to do with
+    // this
+    wxControl::DoGetSize(w, h);
+}
+
 void wxChoice::DoSetSize(int x, int y,
-                         int width, int WXUNUSED(height),
+                         int width, int height,
                          int sizeFlags)
 {
-    // Ignore height parameter because height doesn't mean 'initially
-    // displayed' height, it refers to the drop-down menu as well. The
-    // wxWindows interpretation is different; also, getting the size returns
-    // the _displayed_ size (NOT the drop down menu size) so
-    // setting-getting-setting size would not work.
+    int heightOrig = height;
 
-    wxControl::DoSetSize(x, y, width, -1, sizeFlags);
+    // the height which we must pass to Windows should be the total height of
+    // the control including the drop down list while the height given to us
+    // is, of course, just the height of the permanently visible part of it
+    if ( height != wxDefaultCoord )
+    {
+        // don't make the drop down list too tall, arbitrarily limit it to 40
+        // items max and also don't leave it empty
+        size_t nItems = GetCount();
+        if ( !nItems )
+            nItems = 9;
+        else if ( nItems > 24 )
+            nItems = 24;
+
+        // add space for the drop down list
+        const int hItem = SendMessage(GetHwnd(), CB_GETITEMHEIGHT, 0, 0);
+        height += hItem*(nItems + 1);
+    }
+
+    wxControl::DoSetSize(x, y, width, height, sizeFlags);
+
+    // I'm commenting this out since the code appears to make choices
+    // and comboxes too high when they have associated sizers. I'm sure this
+    // is not the end of the story, which is why I'm leaving it #if'ed out for
+    // now. JACS.
+#if 0
+    // if the height specified for the visible part of the control is
+    // different from the current one, we need to change it separately
+    // as it is not affected by normal WM_SETSIZE
+    if ( height != wxDefaultCoord )
+    {
+        const int delta = heightOrig - GetSize().y;
+        if ( delta )
+        {
+            int h = ::SendMessage(GetHwnd(), CB_GETITEMHEIGHT, (WPARAM)-1, 0);
+            SendMessage(GetHwnd(), CB_SETITEMHEIGHT, (WPARAM)-1, h + delta);
+        }
+    }
+#else
+    wxUnusedVar(heightOrig);
+#endif
 }
 
 wxSize wxChoice::DoGetBestSize() const
 {
     // find the widest string
-    int wLine;
     int wChoice = 0;
-    int nItems = GetCount();
-    for ( int i = 0; i < nItems; i++ )
+    const size_t nItems = GetCount();
+    for ( size_t i = 0; i < nItems; i++ )
     {
-        wxString str(GetString(i));
-        GetTextExtent(str, &wLine, NULL);
+        int wLine;
+        GetTextExtent(GetString(i), &wLine, NULL);
         if ( wLine > wChoice )
             wChoice = wLine;
     }
@@ -335,33 +547,45 @@ wxSize wxChoice::DoGetBestSize() const
     if ( wChoice == 0 )
         wChoice = 100;
 
-    // the combobox should be larger than the widest string
-    int cx, cy;
-    wxGetCharSize(GetHWND(), &cx, &cy, &GetFont());
+    // the combobox should be slightly larger than the widest string
+    wChoice += 5*GetCharWidth();
 
-    wChoice += 5*cx;
-
-    // Choice drop-down list depends on number of items (limited to 10)
-    size_t nStrings = nItems == 0 ? 10 : wxMin(10, nItems) + 1;
-    int hChoice = EDIT_HEIGHT_FROM_CHAR_HEIGHT(cy)*nStrings;
-
-    return wxSize(wChoice, hChoice);
+    return wxSize(wChoice, EDIT_HEIGHT_FROM_CHAR_HEIGHT(GetCharHeight()));
 }
 
-long wxChoice::MSWWindowProc(WXUINT nMsg, WXWPARAM wParam, WXLPARAM lParam)
+WXLRESULT wxChoice::MSWWindowProc(WXUINT nMsg, WXWPARAM wParam, WXLPARAM lParam)
 {
-    if ( nMsg == WM_LBUTTONUP )
+    switch ( nMsg )
     {
-        int x = (int)LOWORD(lParam);
-        int y = (int)HIWORD(lParam);
+        case WM_LBUTTONUP:
+            {
+                int x = (int)LOWORD(lParam);
+                int y = (int)HIWORD(lParam);
 
-        // Ok, this is truly weird, but if a panel with a wxChoice loses the
-        // focus, then you get a *fake* WM_LBUTTONUP message with x = 65535 and
-        // y = 65535. Filter out this nonsense.
-        //
-        // VZ: I'd like to know how to reproduce this please...
-        if ( x == 65535 && y == 65535 )
-            return 0;
+                // Ok, this is truly weird, but if a panel with a wxChoice
+                // loses the focus, then you get a *fake* WM_LBUTTONUP message
+                // with x = 65535 and y = 65535. Filter out this nonsense.
+                //
+                // VZ: I'd like to know how to reproduce this please...
+                if ( x == 65535 && y == 65535 )
+                    return 0;
+            }
+            break;
+
+            // we have to handle both: one for the normal case and the other
+            // for readonly
+        case WM_CTLCOLOREDIT:
+        case WM_CTLCOLORLISTBOX:
+        case WM_CTLCOLORSTATIC:
+            {
+                WXWORD nCtlColor;
+                WXHDC hdc;
+                WXHWND hwnd;
+                UnpackCtlColor(wParam, lParam, &nCtlColor, &hdc, &hwnd);
+
+                return (WXLRESULT)OnCtlColor(hdc, hwnd, nCtlColor,
+                                             nMsg, wParam, lParam);
+            }
     }
 
     return wxWindow::MSWWindowProc(nMsg, wParam, lParam);
@@ -372,7 +596,7 @@ bool wxChoice::MSWCommand(WXUINT param, WXWORD WXUNUSED(id))
     if ( param != CBN_SELCHANGE)
     {
         // "selection changed" is the only event we're after
-        return FALSE;
+        return false;
     }
 
     int n = GetSelection();
@@ -389,35 +613,16 @@ bool wxChoice::MSWCommand(WXUINT param, WXWORD WXUNUSED(id))
         ProcessCommand(event);
     }
 
-    return TRUE;
+    return true;
 }
 
 WXHBRUSH wxChoice::OnCtlColor(WXHDC pDC, WXHWND WXUNUSED(pWnd), WXUINT WXUNUSED(nCtlColor),
-#if wxUSE_CTL3D
-                               WXUINT message,
-                               WXWPARAM wParam,
-                               WXLPARAM lParam
-#else
                                WXUINT WXUNUSED(message),
                                WXWPARAM WXUNUSED(wParam),
                                WXLPARAM WXUNUSED(lParam)
-#endif
      )
 {
-#if wxUSE_CTL3D
-    if ( m_useCtl3D )
-    {
-        HBRUSH hbrush = Ctl3dCtlColorEx(message, wParam, lParam);
-        return (WXHBRUSH) hbrush;
-    }
-#endif // wxUSE_CTL3D
-
     HDC hdc = (HDC)pDC;
-    if (GetParent()->GetTransparentBackground())
-        SetBkMode(hdc, TRANSPARENT);
-    else
-        SetBkMode(hdc, OPAQUE);
-
     wxColour colBack = GetBackgroundColour();
 
     if (!IsEnabled())
@@ -431,4 +636,4 @@ WXHBRUSH wxChoice::OnCtlColor(WXHDC pDC, WXHWND WXUNUSED(pWnd), WXUINT WXUNUSED(
     return (WXHBRUSH)brush->GetResourceHandle();
 }
 
-#endif // wxUSE_CHOICE
+#endif // wxUSE_CHOICE && !(__SMARTPHONE__ && __WXWINCE__)

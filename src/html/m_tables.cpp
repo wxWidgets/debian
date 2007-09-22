@@ -2,12 +2,12 @@
 // Name:        m_tables.cpp
 // Purpose:     wxHtml module for tables
 // Author:      Vaclav Slavik
-// RCS-ID:      $Id: m_tables.cpp,v 1.27.2.4 2003/08/21 14:47:05 VS Exp $
+// RCS-ID:      $Id: m_tables.cpp,v 1.36 2004/09/27 19:15:06 ABX Exp $
 // Copyright:   (c) 1999 Vaclav Slavik
-// Licence:     wxWindows Licence
+// Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
 
-#ifdef __GNUG__
+#if defined(__GNUG__) && !defined(NO_GCC_PRAGMA)
 #pragma implementation
 #endif
 
@@ -21,14 +21,6 @@
 
 #ifndef WXPRECOMP
 #endif
-
-
-/*
-REMARKS:
-    1. This version of m_tables doesn't support auto-layout algorithm.
-       This means that all columns are of same width unless explicitly specified.
-*/
-
 
 #include "wx/html/forcelnk.h"
 #include "wx/html/m_templ.h"
@@ -73,6 +65,7 @@ struct cellStruct
     int colspan, rowspan;
     int minheight, valign;
     cellState flag;
+    bool nowrap;
 };
 
 
@@ -123,8 +116,10 @@ private:
     void ReallocRows(int rows);
 
     // Computes minimal and maximal widths of columns. Needs to be called
-    // only once, before first Layout(). 
+    // only once, before first Layout().
     void ComputeMinMaxWidths();
+
+    DECLARE_NO_COPY_CLASS(wxHtmlTableCell)
 };
 
 
@@ -133,7 +128,7 @@ wxHtmlTableCell::wxHtmlTableCell(wxHtmlContainerCell *parent, const wxHtmlTag& t
  : wxHtmlContainerCell(parent)
 {
     m_PixelScale = pixel_scale;
-    m_HasBorders = 
+    m_HasBorders =
             (tag.HasParam(wxT("BORDER")) && tag.GetParam(wxT("BORDER")) != wxT("0"));
     m_ColsInfo = NULL;
     m_NumCols = m_NumRows = 0;
@@ -293,14 +288,14 @@ void wxHtmlTableCell::AddCell(wxHtmlContainerCell *cell, const wxHtmlTag& tag)
         tag.GetParamAsInt(wxT("ROWSPAN"), &m_CellInfo[r][c].rowspan);
 
         // VS: the standard says this about col/rowspan:
-        //     "This attribute specifies the number of rows spanned by the 
-        //     current cell. The default value of this attribute is one ("1"). 
-        //     The value zero ("0") means that the cell spans all rows from the 
-        //     current row to the last row of the table." All mainstream 
+        //     "This attribute specifies the number of rows spanned by the
+        //     current cell. The default value of this attribute is one ("1").
+        //     The value zero ("0") means that the cell spans all rows from the
+        //     current row to the last row of the table." All mainstream
         //     browsers act as if 0==1, though, and so does wxHTML.
-        if (m_CellInfo[r][c].colspan < 1) 
+        if (m_CellInfo[r][c].colspan < 1)
             m_CellInfo[r][c].colspan = 1;
-        if (m_CellInfo[r][c].rowspan < 1) 
+        if (m_CellInfo[r][c].rowspan < 1)
             m_CellInfo[r][c].rowspan = 1;
 
         if ((m_CellInfo[r][c].colspan > 1) || (m_CellInfo[r][c].rowspan > 1))
@@ -344,13 +339,21 @@ void wxHtmlTableCell::AddCell(wxHtmlContainerCell *cell, const wxHtmlTag& tag)
         else m_CellInfo[r][c].valign = wxHTML_ALIGN_CENTER;
     }
 
+    // nowrap
+    if (tag.HasParam(wxT("NOWRAP")))
+        m_CellInfo[r][c].nowrap = true;
+    else
+        m_CellInfo[r][c].nowrap = false;
+
     cell->SetIndent(m_Padding, wxHTML_INDENT_ALL, wxHTML_UNITS_PIXELS);
 }
 
 void wxHtmlTableCell::ComputeMinMaxWidths()
 {
-    if (m_NumCols == 0 || m_ColsInfo[0].minWidth != -1) return;
-    
+    if (m_NumCols == 0 || m_ColsInfo[0].minWidth != wxDefaultCoord) return;
+
+    m_MaxTotalWidth = 0;
+    int percentage = 0;
     for (int c = 0; c < m_NumCols; c++)
     {
         for (int r = 0; r < m_NumRows; r++)
@@ -359,26 +362,46 @@ void wxHtmlTableCell::ComputeMinMaxWidths()
             if (cell.flag == cellUsed)
             {
                 cell.cont->Layout(2*m_Padding + 1);
-                int width = cell.cont->GetWidth();
+                int maxWidth = cell.cont->GetMaxTotalWidth();
+                int width = cell.nowrap?maxWidth:cell.cont->GetWidth();
                 width -= (cell.colspan-1) * m_Spacing;
+                maxWidth -= (cell.colspan-1) * m_Spacing;
                 // HTML 4.0 says it is acceptable to distribute min/max
                 width /= cell.colspan;
-                for (int j = 0; j < cell.colspan; j++)
+                maxWidth /= cell.colspan;
+                for (int j = 0; j < cell.colspan; j++) {
                     if (width > m_ColsInfo[c+j].minWidth)
                         m_ColsInfo[c+j].minWidth = width;
+                    if (maxWidth > m_ColsInfo[c+j].maxWidth)
+                        m_ColsInfo[c+j].maxWidth = maxWidth;
+                }
             }
         }
+        // Calculate maximum table width, required for nested tables
+        if (m_ColsInfo[c].units == wxHTML_UNITS_PIXELS)
+            m_MaxTotalWidth += wxMax(m_ColsInfo[c].width, m_ColsInfo[c].minWidth);
+        else if ((m_ColsInfo[c].units == wxHTML_UNITS_PERCENT) && (m_ColsInfo[c].width != 0))
+            percentage += m_ColsInfo[c].width;
+        else
+            m_MaxTotalWidth += m_ColsInfo[c].maxWidth;
     }
-    
-    // FIXME -- compute maxWidth as well. Not needed yet, so there's no
-    //          point in computing it. 
-}
 
+    if (percentage >= 100)
+    {
+        // Table would have infinite length
+        // Make it ridiculous large
+        m_MaxTotalWidth = 0xFFFFFF;
+    }
+    else
+        m_MaxTotalWidth = m_MaxTotalWidth * 100 / (100 - percentage);
+
+    m_MaxTotalWidth += (m_NumCols + 1) * m_Spacing;
+}
 
 void wxHtmlTableCell::Layout(int w)
 {
     ComputeMinMaxWidths();
-    
+
     wxHtmlCell::Layout(w);
 
     /*
@@ -389,8 +412,18 @@ void wxHtmlTableCell::Layout(int w)
 
     if (m_WidthFloatUnits == wxHTML_UNITS_PERCENT)
     {
-        if (m_WidthFloat < 0) m_Width = (100 + m_WidthFloat) * w / 100;
-        else m_Width = m_WidthFloat * w / 100;
+        if (m_WidthFloat < 0)
+        {
+            if (m_WidthFloat < -100)
+                m_WidthFloat = -100;
+            m_Width = (100 + m_WidthFloat) * w / 100;
+        }
+        else
+        {
+            if (m_WidthFloat > 100)
+                m_WidthFloat = 100;
+            m_Width = m_WidthFloat * w / 100;
+        }
     }
     else
     {
@@ -405,7 +438,10 @@ void wxHtmlTableCell::Layout(int w)
 
     */
 
-    /* 1.  setup columns widths: */
+    /* 1.  setup columns widths:
+
+           The algorithm tries to keep the table size less than w if possible.
+       */
     {
         int wpix = m_Width - (m_NumCols + 1) * m_Spacing;
         int i, j;
@@ -414,34 +450,108 @@ void wxHtmlTableCell::Layout(int w)
         for (i = 0; i < m_NumCols; i++)
             if (m_ColsInfo[i].units == wxHTML_UNITS_PIXELS)
             {
-                m_ColsInfo[i].pixwidth = wxMax(m_ColsInfo[i].width, 
+                m_ColsInfo[i].pixwidth = wxMax(m_ColsInfo[i].width,
                                                m_ColsInfo[i].minWidth);
                 wpix -= m_ColsInfo[i].pixwidth;
             }
 
-        // 1b. setup floating-width columns:
-        int wtemp = 0;
-        for (i = 0; i < m_NumCols; i++)
-            if ((m_ColsInfo[i].units == wxHTML_UNITS_PERCENT) && (m_ColsInfo[i].width != 0))
-            {
-                m_ColsInfo[i].pixwidth = wxMax(m_ColsInfo[i].width * wpix / 100,
-                                               m_ColsInfo[i].minWidth);
-                wtemp += m_ColsInfo[i].pixwidth;
-            }
-        wpix -= wtemp;
-
-        // 1c. setup defalut columns (no width specification supplied):
-        // FIXME: This algorithm doesn't conform to HTML standard : it assigns
-        //        equal widths instead of optimal
-        for (i = j = 0; i < m_NumCols; i++)
-            if (m_ColsInfo[i].width == 0) j++;
+        // 1b. Calculate maximum possible width if line wrapping would be disabled
+        // Recalculate total width if m_WidthFloat is zero to keep tables as small
+        // as possible.
+        int maxWidth = 0;
         for (i = 0; i < m_NumCols; i++)
             if (m_ColsInfo[i].width == 0)
             {
-                // FIXME: this is not optimal, because if we allocate more than
-                //        wpix/j pixels to one column, we should try to allocate
-                //        smaller place to other columns
-                m_ColsInfo[i].pixwidth = wxMax(wpix/j, m_ColsInfo[i].minWidth);
+                maxWidth += m_ColsInfo[i].maxWidth;
+            }
+
+        if (!m_WidthFloat)
+        {
+            // Recalculate table width since no table width was initially given
+            int newWidth = m_Width - wpix +  maxWidth;
+
+            // Make sure that floating-width columns will have the right size.
+            // Calculate sum of all floating-width columns
+            int percentage = 0;
+            for (i = 0; i < m_NumCols; i++)
+                if ((m_ColsInfo[i].units == wxHTML_UNITS_PERCENT) && (m_ColsInfo[i].width != 0))
+                    percentage += m_ColsInfo[i].width;
+
+            if (percentage >= 100)
+                newWidth = w;
+            else
+                newWidth = newWidth * 100 / (100 - percentage);
+
+            newWidth = wxMin(newWidth, w - (m_NumCols + 1) * m_Spacing);
+            wpix -= m_Width - newWidth;
+            m_Width = newWidth;
+        }
+
+
+        // 1c. setup floating-width columns:
+        int wtemp = wpix;
+        for (i = 0; i < m_NumCols; i++)
+            if ((m_ColsInfo[i].units == wxHTML_UNITS_PERCENT) && (m_ColsInfo[i].width != 0))
+            {
+                m_ColsInfo[i].pixwidth = wxMin(m_ColsInfo[i].width, 100) * wpix / 100;
+
+                // Make sure to leave enough space for the other columns
+                int minRequired = 0;
+                for (j = 0; j < m_NumCols; j++)
+                {
+                    if ((m_ColsInfo[j].units == wxHTML_UNITS_PERCENT && j > i) ||
+                        !m_ColsInfo[j].width)
+                        minRequired += m_ColsInfo[j].minWidth;
+                }
+                m_ColsInfo[i].pixwidth = wxMax(wxMin(wtemp - minRequired, m_ColsInfo[i].pixwidth), m_ColsInfo[i].minWidth);
+
+                wtemp -= m_ColsInfo[i].pixwidth;
+            }
+        wpix = wtemp;
+
+        // 1d. setup default columns (no width specification supplied):
+        // The algorithm assigns calculates the maximum possible width if line
+        // wrapping would be disabled and assigns column width as a fraction
+        // based upon the maximum width of a column
+        // FIXME: I'm not sure if this algorithm is conform to HTML standard,
+        //        though it seems to be much better than the old one
+
+        for (i = j = 0; i < m_NumCols; i++)
+            if (m_ColsInfo[i].width == 0) j++;
+        if (wpix < 0)
+            wpix = 0;
+
+        // Assign widths
+        for (i = 0; i < m_NumCols; i++)
+            if (m_ColsInfo[i].width == 0)
+            {
+                // Assign with, make sure not to drop below minWidth
+                if (maxWidth)
+                    m_ColsInfo[i].pixwidth = (int)(wpix * (m_ColsInfo[i].maxWidth / (float)maxWidth) + 0.5);
+                else
+                    m_ColsInfo[i].pixwidth = wpix / j;
+
+                // Make sure to leave enough space for the other columns
+                int minRequired = 0;
+                int r;
+                for (r = i + 1; r < m_NumCols; r++)
+                {
+                    if (!m_ColsInfo[r].width)
+                        minRequired += m_ColsInfo[r].minWidth;
+                }
+                m_ColsInfo[i].pixwidth = wxMax(wxMin(wpix - minRequired, m_ColsInfo[i].pixwidth), m_ColsInfo[i].minWidth);
+
+                if (maxWidth)
+                {
+                    if (m_ColsInfo[i].pixwidth > (wpix * (m_ColsInfo[i].maxWidth / (float)maxWidth) + 0.5))
+                    {
+                        int diff = (int)(m_ColsInfo[i].pixwidth - (wpix * m_ColsInfo[i].maxWidth / (float)maxWidth + 0.5));
+                        maxWidth += diff - m_ColsInfo[i].maxWidth;
+                    }
+                    else
+                        maxWidth -= m_ColsInfo[i].maxWidth;
+                }
+                wpix -= m_ColsInfo[i].pixwidth;
             }
     }
 
@@ -512,7 +622,7 @@ void wxHtmlTableCell::Layout(int w)
     /* 4. adjust table's width if it was too small: */
     if (m_NumCols > 0)
     {
-        int twidth = m_ColsInfo[m_NumCols-1].leftpos + 
+        int twidth = m_ColsInfo[m_NumCols-1].leftpos +
                      m_ColsInfo[m_NumCols-1].pixwidth + m_Spacing;
         if (twidth > m_Width)
             m_Width = twidth;
@@ -554,8 +664,30 @@ TAG_HANDLER_BEGIN(TABLE, "TABLE,TR,TD,TH")
 
             oldcont = c = m_WParser->OpenContainer();
 
-            c->SetWidthFloat(tag, m_WParser->GetPixelScale());
-            m_Table = new wxHtmlTableCell(c, tag, m_WParser->GetPixelScale());
+            m_Table = new wxHtmlTableCell(c, tag);
+
+            // width:
+            {
+                if (tag.HasParam(wxT("WIDTH")))
+                {
+                    wxString wd = tag.GetParam(wxT("WIDTH"));
+
+                    if (wd[wd.Length()-1] == wxT('%'))
+                    {
+                        int width = 0;
+                        wxSscanf(wd.c_str(), wxT("%i%%"), &width);
+                        m_Table->SetWidthFloat(width, wxHTML_UNITS_PERCENT);
+                    }
+                    else
+                    {
+                        int width = 0;
+                        wxSscanf(wd.c_str(), wxT("%i"), &width);
+                        m_Table->SetWidthFloat((int)(m_WParser->GetPixelScale() * width), wxHTML_UNITS_PIXELS);
+                    }
+                }
+                else
+                    m_Table->SetWidthFloat(0, wxHTML_UNITS_PIXELS);
+            }
             int oldAlign = m_WParser->GetAlign();
             m_tAlign = wxEmptyString;
             if (tag.HasParam(wxT("ALIGN")))
@@ -566,9 +698,9 @@ TAG_HANDLER_BEGIN(TABLE, "TABLE,TR,TD,TH")
             m_WParser->SetAlign(oldAlign);
             m_WParser->SetContainer(oldcont);
             m_WParser->CloseContainer();
-            
+
             m_Table = oldt;
-            return TRUE;
+            return true;
         }
 
 
@@ -612,7 +744,7 @@ TAG_HANDLER_BEGIN(TABLE, "TABLE,TR,TD,TH")
                 m_WParser->OpenContainer();
             }
         }
-        return FALSE;
+        return false;
     }
 
 TAG_HANDLER_END(TABLE)

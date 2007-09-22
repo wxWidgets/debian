@@ -1,5 +1,3 @@
-#!/usr/bin/env python
-#----------------------------------------------------------------------
 
 """
 This is a way to save the startup time when running img2py on lots of
@@ -7,7 +5,8 @@ files...
 """
 
 import sys
-from wxPython.tools import img2py
+
+from wx.tools import img2py
 
 
 command_lines = [
@@ -23,6 +22,7 @@ command_lines = [
     "-a -u -n TestMask bmp_source/testmask.bmp images.py",
 
     "-a -u -n Test2 bmp_source/test2.bmp images.py",
+    "-a -u -n Test2m -m #0000FF  bmp_source/test2.bmp images.py",
     "-a -u -n Robin bmp_source/robin.jpg images.py",
 
     "-a -u -n Bulb1 bmp_source/lb1.bmp images.py",
@@ -64,6 +64,32 @@ command_lines = [
     "-a -u -n Tux bmp_source/Tux.png images.py",
 
 
+    "-a -u -n Blom01 bmp_source/toblom01.png images.py",
+    "-a -u -n Blom02 bmp_source/toblom02.png images.py",
+    "-a -u -n Blom03 bmp_source/toblom03.png images.py",
+    "-a -u -n Blom04 bmp_source/toblom04.png images.py",
+    "-a -u -n Blom05 bmp_source/toblom05.png images.py",
+    "-a -u -n Blom06 bmp_source/toblom06.png images.py",
+    "-a -u -n Blom07 bmp_source/toblom07.png images.py",
+    "-a -u -n Blom08 bmp_source/toblom08.png images.py",
+    "-a -u -n Blom09 bmp_source/toblom09.png images.py",
+    "-a -u -n Blom10 bmp_source/toblom10.png images.py",
+    "-a -u -n Blom11 bmp_source/toblom11.png images.py",
+    "-a -u -n Blom12 bmp_source/toblom12.png images.py",
+    "-a -u -n Blom13 bmp_source/toblom13.png images.py",
+    "-a -u -n Blom14 bmp_source/toblom14.png images.py",
+    "-a -u -n Blom15 bmp_source/toblom15.png images.py",
+
+    "-a -u -n Blom08m -m #FFFFFF bmp_source/toblom08.png images.py",
+    "-a -u -n Blom10m -m #FFFFFF bmp_source/toblom10.png images.py",
+    "-a -u -n Blom15m -m #FFFFFF bmp_source/toblom15.png images.py",
+
+    "-a -u -n FloatCanvas bmp_source/floatcanvas.png images.py",
+    
+    "-a -u -i -n WXP bmp_source/wxp.ico images.py",
+    "-a -u -i -n WXPdemo bmp_source/wxpdemo.ico images.py",
+
+
     "   -u -c bmp_source/001.png throbImages.py",
     "-a -u -c bmp_source/002.png throbImages.py",
     "-a -u -c bmp_source/003.png throbImages.py",
@@ -101,7 +127,8 @@ command_lines = [
     ]
 
 
-for line in command_lines:
-    args = line.split()
-    img2py.main(args)
+if __name__ == "__main__":
+    for line in command_lines:
+        args = line.split()
+        img2py.main(args)
 

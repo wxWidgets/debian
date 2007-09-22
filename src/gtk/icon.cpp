@@ -2,14 +2,17 @@
 // Name:        icon.cpp
 // Purpose:
 // Author:      Robert Roebling
-// Id:          $Id: icon.cpp,v 1.8 2000/08/15 21:44:18 VS Exp $
+// Id:          $Id: icon.cpp,v 1.11 2004/05/23 20:52:20 JS Exp $
 // Copyright:   (c) 1998 Robert Roebling
 // Licence:   	wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
 
-#ifdef __GNUG__
+#if defined(__GNUG__) && !defined(NO_GCC_PRAGMA)
 #pragma implementation "icon.h"
 #endif
+
+// For compilers that support precompilation, includes "wx.h".
+#include "wx/wxprec.h"
 
 #include "wx/icon.h"
 

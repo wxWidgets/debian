@@ -2,7 +2,7 @@
 // Name:        bitmap.h
 // Purpose:
 // Author:      Robert Roebling
-// RCS-ID:      $Id: bitmap.h,v 1.36.2.1 2003/10/07 12:42:05 RR Exp $
+// RCS-ID:      $Id: bitmap.h,v 1.42 2004/08/21 22:41:33 VS Exp $
 // Copyright:   (c) 1998 Robert Roebling
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -11,7 +11,7 @@
 #ifndef __GTKBITMAPH__
 #define __GTKBITMAPH__
 
-#if defined(__GNUG__) && !defined(__APPLE__)
+#if defined(__GNUG__) && !defined(NO_GCC_PRAGMA)
 #pragma interface
 #endif
 
@@ -20,6 +20,10 @@
 #include "wx/string.h"
 #include "wx/palette.h"
 #include "wx/gdiobj.h"
+
+#ifdef __WXGTK20__
+typedef struct _GdkPixbuf GdkPixbuf;
+#endif
 
 //-----------------------------------------------------------------------------
 // classes
@@ -96,8 +100,10 @@ public:
     bool LoadFile( const wxString &name, int type = wxBITMAP_TYPE_XPM );
 
     wxPalette *GetPalette() const;
-    wxPalette *GetColourMap() const
-    { return GetPalette(); };
+    wxPalette *GetColourMap() const { return GetPalette(); };
+
+    static void InitStandardHandlers() { }
+    static void CleanUpHandlers() { }
 
     // implementation
     // --------------
@@ -107,18 +113,44 @@ public:
     void SetDepth( int depth );
     void SetPixmap( GdkPixmap *pixmap );
     void SetBitmap( GdkBitmap *bitmap );
+#ifdef __WXGTK20__
+    void SetPixbuf(GdkPixbuf *pixbuf);
+#endif
 
     GdkPixmap *GetPixmap() const;
     GdkBitmap *GetBitmap() const;
+    bool HasPixmap() const;
+#ifdef __WXGTK20__
+    bool HasPixbuf() const;
+    GdkPixbuf *GetPixbuf() const;
+#endif
     
     // Basically, this corresponds to Win32 StretchBlt()
     wxBitmap Rescale( int clipx, int clipy, int clipwidth, int clipheight, int width, int height );
-    
 protected:
     bool CreateFromXpm(const char **bits);
     bool CreateFromImage(const wxImage& image, int depth);
 
 private:
+    // to be called from CreateFromImage only!
+    bool CreateFromImageAsBitmap(const wxImage& image);
+    bool CreateFromImageAsPixmap(const wxImage& image);
+
+#ifdef __WXGTK20__
+    bool CreateFromImageAsPixbuf(const wxImage& image);
+
+    enum Representation
+    {
+        Pixmap,
+        Pixbuf
+    };
+    // removes other representations from memory, keeping only 'keep'
+    // (wxBitmap may keep same bitmap e.g. as both pixmap and pixbuf):
+    void PurgeOtherRepresentations(Representation keep);
+
+    friend class wxMemoryDC;
+#endif
+    
     DECLARE_DYNAMIC_CLASS(wxBitmap)
 };
 

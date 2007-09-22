@@ -5,7 +5,7 @@
 // Author:      Robin Dunn
 //
 // Created:     04-Dec-2001
-// RCS-ID:      $Id: dllwidget_.i,v 1.4 2002/05/02 02:46:14 RD Exp $
+// RCS-ID:      $Id: dllwidget_.i,v 1.5 2003/08/08 21:31:11 RD Exp $
 // Copyright:   (c) 2001 by Total Control Software
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -108,9 +108,6 @@ public:
 //---------------------------------------------------------------------------
 
 %init %{
-
-    wxClassInfo::CleanUpClasses();
-    wxClassInfo::InitializeClasses();
 
 %}
 

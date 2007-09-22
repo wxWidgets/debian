@@ -37,9 +37,9 @@ enum wxDragResult
 
 \membersection{wxDropSource::wxDropSource}\label{wxdropsourcewxdropsource}
 
-\func{}{wxDropSource}{\param{wxWindow*}{ win = NULL},\param{const wxIconOrCursor\& }{iconCopy = wxNullIconOrCursor}, \param{const wxIconOrCursor\& }{iconCopy = wxNullIconOrCursor}, \param{const wxIconOrCursor\& }{iconNone = wxNullIconOrCursor}}
+\func{}{wxDropSource}{\param{wxWindow*}{ win = NULL},\param{const wxIconOrCursor\& }{iconCopy = wxNullIconOrCursor}, \param{const wxIconOrCursor\& }{iconMove = wxNullIconOrCursor}, \param{const wxIconOrCursor\& }{iconNone = wxNullIconOrCursor}}
 
-\func{}{wxDropSource}{\param{wxDataObject\&}{ data}, \param{wxWindow*}{ win = NULL},\param{const wxIconOrCursor\& }{iconCopy = wxNullIconOrCursor}, \param{const wxIconOrCursor\& }{iconCopy = wxNullIconOrCursor}, \param{const wxIconOrCursor\& }{iconNone = wxNullIconOrCursor}}
+\func{}{wxDropSource}{\param{wxDataObject\&}{ data}, \param{wxWindow*}{ win = NULL},\param{const wxIconOrCursor\& }{iconCopy = wxNullIconOrCursor}, \param{const wxIconOrCursor\& }{iconMove = wxNullIconOrCursor}, \param{const wxIconOrCursor\& }{iconNone = wxNullIconOrCursor}}
 
 The constructors for wxDataObject.
 
@@ -96,7 +96,7 @@ wxDragMove}, {\tt wxDragCancel} or {\tt wxDragNone} if an error occured.
 
 \membersection{wxDropSource::GiveFeedback}\label{wxdropsourcegivefeedback}
 
-\func{virtual bool}{GiveFeedback}{\param{wxDragResult }{effect}, \param{bool }{scrolling}}
+\func{virtual bool}{GiveFeedback}{\param{wxDragResult }{effect}}
 
 Overridable: you may give some custom UI feedback during the drag and drop operation
 in this function. It is called on each mouse move, so your implementation must not be too
@@ -106,10 +106,10 @@ slow.
 
 \docparam{effect}{The effect to implement. One of wxDragCopy, wxDragMove and wxDragNone. }
 
-\docparam{scrolling}{TRUE if the window is scrolling. MSW only. }
+\docparam{scrolling}{true if the window is scrolling. MSW only. }
 
 \wxheading{Return value}
 
-Return FALSE if you want default feedback, or TRUE if you implement your own
+Return false if you want default feedback, or true if you implement your own
 feedback. The return values is ignored under GTK.
 

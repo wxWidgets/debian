@@ -2,7 +2,7 @@
  *
  *  isqlext.h
  *
- *  $Id: isqlext.h,v 1.6 2000/02/03 13:17:32 BJ Exp $
+ *  $Id: isqlext.h,v 1.7 2004/10/22 19:00:22 KH Exp $
  *
  *  iODBC defines (ext)
  *
@@ -1165,7 +1165,7 @@ RETCODE SQL_API SQLBindParameter (HSTMT hstmt, UWORD ipar, SWORD fParamType,
     SDWORD cbValueMax, SDWORD FAR * pcbValue);
 
 /*
- *  Depreciated - use SQLSetStmtOptions
+ *  Deprecated - use SQLSetStmtOptions
  */
 RETCODE SQL_API SQLSetScrollOptions (HSTMT hstmt, UWORD fConcurrency,
     SDWORD crowKeyset, UWORD crowRowset);

@@ -2,12 +2,12 @@
 // Name:        gdiobj.cpp
 // Purpose:     wxGDIObject class
 // Author:      Julian Smart
-// RCS-ID:      $Id: gdiobj.cpp,v 1.3 1999/12/14 23:44:22 VS Exp $
-// Copyright:   (c) Julian Smart and Markus Holzem
+// RCS-ID:      $Id: gdiobj.cpp,v 1.7 2004/05/23 20:52:20 JS Exp $
+// Copyright:   (c) Julian Smart
 // Licence:   	wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
 
-#ifdef __GNUG__
+#if defined(__GNUG__) && !defined(NO_GCC_PRAGMA)
 #pragma implementation "gdiobj.h"
 #endif
 

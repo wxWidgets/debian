@@ -3,7 +3,6 @@
 Classes: \helpref{wxSizer}{wxsizer}, \helpref{wxGridSizer}{wxgridsizer}, 
 \helpref{wxFlexGridSizer}{wxflexgridsizer}, \helpref{wxBoxSizer}{wxboxsizer}, 
 \helpref{wxStaticBoxSizer}{wxstaticboxsizer}, 
-\helpref{wxNotebookSizer}{wxnotebooksizer},
 \helpref{CreateButtonSizer}{createbuttonsizer}
 
 Sizers, as represented by the wxSizer class and its descendants in
@@ -12,7 +11,7 @@ define the layout of controls in dialogs in wxWidgets because of
 their ability to create visually appealing dialogs independent of the
 platform, taking into account the differences in size and style of
 the individual controls. Unlike the original wxWidgets Dialog Editor,
-editors such as wxDesigner, wxrcedit, XRCed and wxWorkshop create dialogs based exclusively on sizers,
+editors such as wxDesigner, DialogBlocks, wxrcedit, XRCed and wxWorkshop create dialogs based exclusively on sizers,
 practically forcing the user to create platform independent layouts without compromises.
 
 The next section describes and shows what can be done with sizers.
@@ -113,6 +112,21 @@ initial width:
 
 Within wxDesigner, this stretch factor gets set from the {\it Option} menu.
 
+\subsubsection{Hiding controls using sizers}\label{sizershiding}
+
+You can hide controls contained in sizers the same way you would hide any control,
+using the \helpref{wxWindow::Show}{wxwindowshow} method.
+
+However, wxSizer also offers a separate method which can tell the sizer not to 
+consider that control in its size calculations.  To hide a window using the sizer,
+call \helpref{wxSizer::Show}{wxsizershow}.  You must then call Layout on the sizer 
+to force an update.
+
+This is useful when hiding parts of the interface, since you can avoid removing
+the controls from the sizer and having to add them back later.
+
+Note: This is supported only by wxBoxSizer and wxFlexGridSizer.
+
 \wxheading{wxBoxSizer}
 
 \helpref{wxBoxSizer}{wxboxsizer} can lay out its children either vertically
@@ -166,14 +180,6 @@ the same dialog as the one above, but using a flex grid sizer:
 \begin{center}
 \myimage{sizer11.eps}
 \end{center}
-
-\wxheading{wxNotebookSizer}
-
-\helpref{wxNotebookSizer}{wxnotebooksizer} can be used
-with notebooks. It calculates the size of each
-notebook page and sets the size of the notebook to the size
-of the biggest page plus some extra space required for the
-notebook tabs and decorations.
 
 \subsection{Programming with wxBoxSizer}\label{boxsizerprogramming}
 
@@ -273,39 +279,6 @@ table with all table fields in one row having the same
 height and all fields in one column having the same width, but all
 rows or all columns are not necessarily the same height or width as in
 the \helpref{wxGridSizer}{wxgridsizer}.
-
-\subsection{Programming with wxNotebookSizer}\label{notebooksizerprogramming}
-
-\helpref{wxNotebookSizer}{wxnotebooksizer} is a specialized sizer to make sizers work in connection
-with using notebooks. This sizer is different from any other sizer as 
-you must not add any children to it - instead, it queries the notebook class itself.
-The only thing this sizer does is to determine the size of the biggest
-page of the notebook and report an adjusted minimal size to a more toplevel
-sizer.
-
-In order to query the size of notebook page, this page needs to have its
-own sizer, otherwise the wxNotebookSizer will ignore it. Notebook pages
-get their sizer by assigning one to them using \helpref{wxWindow::SetSizer}{wxwindowsetsizer} 
-and setting the auto-layout option to TRUE using 
-\helpref{wxWindow::SetAutoLayout}{wxwindowsetautolayout}. Here is one
-example showing how to add a notebook page that the notebook sizer is
-aware of:
-
-\begin{verbatim}
-    wxNotebook *notebook = new wxNotebook( &dialog, -1 );
-    wxNotebookSizer *nbs = new wxNotebookSizer( notebook );
-
-    // Add panel as notebook page
-    wxPanel *panel = new wxPanel( notebook, -1 );
-    notebook->AddPage( panel, "My Notebook Page" );
-
-    wxBoxSizer *panelsizer = new wxBoxSizer( wxVERTICAL );
-
-    // Add controls to panel and panelsizer here...
-
-    panel->SetAutoLayout( TRUE );
-    panel->SetSizer( panelsizer );
-\end{verbatim}
 
 \subsection{Programming with wxStaticBoxSizer}\label{staticboxsizerprogramming}
 

@@ -3,12 +3,12 @@
 // Purpose:     wxBitmapBase
 // Author:      VaclavSlavik
 // Created:     2001/04/11
-// RCS-ID:      $Id: bmpbase.cpp,v 1.5 2002/02/05 00:14:48 VZ Exp $
+// RCS-ID:      $Id: bmpbase.cpp,v 1.15 2004/09/09 17:42:35 ABX Exp $
 // Copyright:   (c) 2001, Vaclav Slavik
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
 
-#ifdef __GNUG__
+#if defined(__GNUG__) && !defined(NO_GCC_PRAGMA)
 #pragma implementation "bitmapbase.h"
 #endif
 
@@ -19,9 +19,9 @@
     #pragma hdrstop
 #endif
 
-#if defined(__WXMGL__) || defined(__WXMAC__)
+#if defined(__WXMGL__) || defined(__WXMAC__) \
+    || defined(__WXMOTIF__) || defined(__WXX11__)
 
-#include "wx/wx.h"
 #include "wx/setup.h"
 #include "wx/utils.h"
 #include "wx/palette.h"
@@ -52,61 +52,61 @@ bool wxBitmapBase::RemoveHandler(const wxString& name)
     if ( handler )
     {
         sm_handlers.DeleteObject(handler);
-        return TRUE;
+        return true;
     }
     else
-        return FALSE;
+        return false;
 }
 
 wxBitmapHandler *wxBitmapBase::FindHandler(const wxString& name)
 {
-    wxNode *node = sm_handlers.First();
+    wxList::compatibility_iterator node = sm_handlers.GetFirst();
     while ( node )
     {
-        wxBitmapHandler *handler = (wxBitmapHandler *)node->Data();
+        wxBitmapHandler *handler = (wxBitmapHandler *)node->GetData();
         if ( handler->GetName() == name )
             return handler;
-        node = node->Next();
+        node = node->GetNext();
     }
     return NULL;
 }
 
 wxBitmapHandler *wxBitmapBase::FindHandler(const wxString& extension, wxBitmapType bitmapType)
 {
-    wxNode *node = sm_handlers.First();
+    wxList::compatibility_iterator node = sm_handlers.GetFirst();
     while ( node )
     {
-        wxBitmapHandler *handler = (wxBitmapHandler *)node->Data();
+        wxBitmapHandler *handler = (wxBitmapHandler *)node->GetData();
         if ( handler->GetExtension() == extension &&
                     (bitmapType == -1 || handler->GetType() == bitmapType) )
             return handler;
-        node = node->Next();
+        node = node->GetNext();
     }
     return NULL;
 }
 
 wxBitmapHandler *wxBitmapBase::FindHandler(wxBitmapType bitmapType)
 {
-    wxNode *node = sm_handlers.First();
+    wxList::compatibility_iterator node = sm_handlers.GetFirst();
     while ( node )
     {
-        wxBitmapHandler *handler = (wxBitmapHandler *)node->Data();
+        wxBitmapHandler *handler = (wxBitmapHandler *)node->GetData();
         if (handler->GetType() == bitmapType)
             return handler;
-        node = node->Next();
+        node = node->GetNext();
     }
     return NULL;
 }
 
 void wxBitmapBase::CleanUpHandlers()
 {
-    wxNode *node = sm_handlers.First();
+    wxList::compatibility_iterator node = sm_handlers.GetFirst();
     while ( node )
     {
-        wxBitmapHandler *handler = (wxBitmapHandler *)node->Data();
-        wxNode *next = node->Next();
+        wxBitmapHandler *handler = (wxBitmapHandler *)node->GetData();
+        wxList::compatibility_iterator next = node->GetNext();
         delete handler;
-        delete node;
+        sm_handlers.Erase(node);
         node = next;
     }
 }
@@ -116,11 +116,11 @@ class wxBitmapBaseModule: public wxModule
 DECLARE_DYNAMIC_CLASS(wxBitmapBaseModule)
 public:
     wxBitmapBaseModule() {}
-    bool OnInit() { wxBitmap::InitStandardHandlers(); return TRUE; };
+    bool OnInit() { wxBitmap::InitStandardHandlers(); return true; };
     void OnExit() { wxBitmap::CleanUpHandlers(); };
 };
 
 IMPLEMENT_DYNAMIC_CLASS(wxBitmapBaseModule, wxModule)
 
-#endif // defined(__WXMGL__) || defined(__WXMAC__)
+#endif // defined(__WXMGL__) || defined(__WXMAC__) || defined(__WXCOCOA__) || defined(__WXMOTIF__) || defined(__WXX11__)
 

@@ -4,9 +4,9 @@
 // Author:      Paul Thiessen
 // Modified by:
 // Created:     20.02.01
-// RCS-ID:      $Id: dseldlg.cpp,v 1.2 2001/12/14 00:28:47 VZ Exp $
-// Copyright:   (c) 2001 wxWindows team
-// License:     wxWindows license
+// RCS-ID:      $Id: dseldlg.cpp,v 1.6 2004/05/23 20:52:00 JS Exp $
+// Copyright:   (c) 2001 wxWidgets team
+// License:     wxWindows licence
 ///////////////////////////////////////////////////////////////////////////////
 
 // ============================================================================
@@ -17,7 +17,7 @@
 // headers
 // ----------------------------------------------------------------------------
 
-#ifdef __GNUG__
+#if defined(__GNUG__) && !defined(NO_GCC_PRAGMA)
     #pragma implementation "dseldlg.h"
 #endif
 

@@ -4,15 +4,15 @@
 // Author:      Vadim Zeitlin
 // Modified by:
 // Created:     14.07.99
-// RCS-ID:      $Id: ffile.h,v 1.7 2002/08/31 11:29:10 GD Exp $
+// RCS-ID:      $Id: ffile.h,v 1.17 2004/05/23 20:50:21 JS Exp $
 // Copyright:   (c) 1998 Vadim Zeitlin <zeitlin@dptmaths.ens-cachan.fr>
-// Licence:     wxWindows license
+// Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
 
 #ifndef   _WX_FFILE_H_
 #define   _WX_FFILE_H_
 
-#if defined(__GNUG__) && !defined(__APPLE__)
+#if defined(__GNUG__) && !defined(NO_GCC_PRAGMA)
     #pragma interface "ffile.h"
 #endif
 
@@ -34,7 +34,7 @@
 //     dtor which is _not_ virtual, so it shouldn't be used as a base class.
 // ----------------------------------------------------------------------------
 
-class WXDLLEXPORT wxFFile
+class WXDLLIMPEXP_BASE wxFFile
 {
 public:
   // ctors
@@ -42,18 +42,18 @@ public:
     // def ctor
   wxFFile() { m_fp = NULL; }
     // open specified file (may fail, use IsOpened())
-  wxFFile(const wxChar *filename, const char *mode = "r");
+  wxFFile(const wxChar *filename, const wxChar *mode = _T("r"));
     // attach to (already opened) file
   wxFFile(FILE *fp) { m_fp = fp; }
 
   // open/close
     // open a file (existing or not - the mode controls what happens)
-  bool Open(const wxChar *filename, const char *mode = "r");
+  bool Open(const wxChar *filename, const wxChar *mode = _T("r"));
     // closes the opened file (this is a NOP if not opened)
   bool Close();
 
   // assign an existing file descriptor and get it back from wxFFile object
-  void Attach(FILE *fp, const wxString& name = wxT(""))
+  void Attach(FILE *fp, const wxString& name = wxEmptyString)
     { Close(); m_fp = fp; m_name = name; }
   void Detach() { m_fp = NULL; }
   FILE *fp() const { return m_fp; }
@@ -67,7 +67,7 @@ public:
     // returns the number of bytes written
   size_t Write(const void *pBuf, size_t nCount);
     // returns true on success
-  bool Write(const wxString& s, wxMBConv& conv = wxConvLibc)
+  bool Write(const wxString& s, wxMBConv& conv = wxConvUTF8)
   {
       const wxWX2MBbuf buf = s.mb_str(conv);
       size_t size = strlen(buf);
@@ -86,7 +86,8 @@ public:
     // get current file length
   size_t Length() const;
 
-  // simple accessors
+  // simple accessors: note that Eof() and Error() may only be called if
+  // IsOpened()!
     // is file opened?
   bool IsOpened() const { return m_fp != NULL; }
     // is end of file reached?

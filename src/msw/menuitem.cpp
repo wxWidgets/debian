@@ -4,9 +4,9 @@
 // Author:      Vadim Zeitlin
 // Modified by:
 // Created:     11.11.97
-// RCS-ID:      $Id: menuitem.cpp,v 1.42.2.3 2004/01/17 17:05:35 JS Exp $
+// RCS-ID:      $Id: menuitem.cpp,v 1.60 2004/09/18 09:59:01 VZ Exp $
 // Copyright:   (c) 1998 Vadim Zeitlin <zeitlin@dptmaths.ens-cachan.fr>
-// Licence:     wxWindows license
+// Licence:     wxWindows licence
 ///////////////////////////////////////////////////////////////////////////////
 
 // ===========================================================================
@@ -17,7 +17,7 @@
 // headers
 // ---------------------------------------------------------------------------
 
-#ifdef __GNUG__
+#if defined(__GNUG__) && !defined(NO_GCC_PRAGMA)
     #pragma implementation "menuitem.h"
 #endif
 
@@ -50,6 +50,11 @@
 
 #include "wx/msw/private.h"
 
+#ifdef __WXWINCE__
+// Implemented in menu.cpp
+UINT GetMenuState(HMENU hMenu, UINT id, UINT flags) ;
+#endif
+
 // ---------------------------------------------------------------------------
 // macro
 // ---------------------------------------------------------------------------
@@ -72,7 +77,48 @@
 // dynamic classes implementation
 // ----------------------------------------------------------------------------
 
+#if wxUSE_EXTENDED_RTTI
+
+bool wxMenuItemStreamingCallback( const wxObject *object, wxWriter * , wxPersister * , wxxVariantArray & )
+{
+    const wxMenuItem * mitem = dynamic_cast<const wxMenuItem*>(object) ;
+    if ( mitem->GetMenu() && !mitem->GetMenu()->GetTitle().IsEmpty() )
+    {
+        // we don't stream out the first two items for menus with a title, they will be reconstructed
+        if ( mitem->GetMenu()->FindItemByPosition(0) == mitem || mitem->GetMenu()->FindItemByPosition(1) == mitem )
+            return false ;
+    }
+    return true ;
+}
+
+wxBEGIN_ENUM( wxItemKind )
+    wxENUM_MEMBER( wxITEM_SEPARATOR )
+    wxENUM_MEMBER( wxITEM_NORMAL )
+    wxENUM_MEMBER( wxITEM_CHECK )
+    wxENUM_MEMBER( wxITEM_RADIO )
+wxEND_ENUM( wxItemKind )
+
+IMPLEMENT_DYNAMIC_CLASS_XTI_CALLBACK(wxMenuItem, wxObject,"wx/menuitem.h",wxMenuItemStreamingCallback)
+
+wxBEGIN_PROPERTIES_TABLE(wxMenuItem)
+    wxPROPERTY( Parent,wxMenu*, SetMenu, GetMenu, EMPTY_MACROVALUE , 0 /*flags*/ , wxT("Helpstring") , wxT("group") )
+    wxPROPERTY( Id,int, SetId, GetId, EMPTY_MACROVALUE , 0 /*flags*/ , wxT("Helpstring") , wxT("group") )
+    wxPROPERTY( Text, wxString , SetText, GetText, wxString(), 0 /*flags*/ , wxT("Helpstring") , wxT("group") )
+    wxPROPERTY( Help, wxString , SetHelp, GetHelp, wxString(), 0 /*flags*/ , wxT("Helpstring") , wxT("group") )
+    wxREADONLY_PROPERTY( Kind, wxItemKind , GetKind , EMPTY_MACROVALUE , 0 /*flags*/ , wxT("Helpstring") , wxT("group") )
+    wxPROPERTY( SubMenu,wxMenu*, SetSubMenu, GetSubMenu, EMPTY_MACROVALUE , 0 /*flags*/ , wxT("Helpstring") , wxT("group") )
+    wxPROPERTY( Enabled , bool , Enable , IsEnabled , wxxVariant((bool)true) , 0 /*flags*/ , wxT("Helpstring") , wxT("group"))
+    wxPROPERTY( Checked , bool , Check , IsChecked , wxxVariant((bool)false) , 0 /*flags*/ , wxT("Helpstring") , wxT("group"))
+    wxPROPERTY( Checkable , bool , SetCheckable , IsCheckable , wxxVariant((bool)false) , 0 /*flags*/ , wxT("Helpstring") , wxT("group"))
+wxEND_PROPERTIES_TABLE()
+
+wxBEGIN_HANDLERS_TABLE(wxMenuItem)
+wxEND_HANDLERS_TABLE()
+
+wxDIRECT_CONSTRUCTOR_6( wxMenuItem , wxMenu* , Parent , int , Id , wxString , Text , wxString , Help , wxItemKind , Kind , wxMenu* , SubMenu  )
+#else
 IMPLEMENT_DYNAMIC_CLASS(wxMenuItem, wxObject)
+#endif
 
 // ----------------------------------------------------------------------------
 // wxMenuItem
@@ -89,7 +135,7 @@ wxMenuItem::wxMenuItem(wxMenu *pParentMenu,
                        wxMenu *pSubMenu)
           : wxMenuItemBase(pParentMenu, id, text, strHelp, kind, pSubMenu)
 #if wxUSE_OWNER_DRAWN
-            , wxOwnerDrawn(text, kind == wxITEM_CHECK, TRUE)
+            , wxOwnerDrawn(text, kind == wxITEM_CHECK, true)
 #endif // owner drawn
 {
     Init();
@@ -104,7 +150,7 @@ wxMenuItem::wxMenuItem(wxMenu *parentMenu,
           : wxMenuItemBase(parentMenu, id, text, help,
                            isCheckable ? wxITEM_CHECK : wxITEM_NORMAL, subMenu)
 #if wxUSE_OWNER_DRAWN
-           , wxOwnerDrawn(text, isCheckable, TRUE)
+           , wxOwnerDrawn(text, isCheckable, true)
 #endif // owner drawn
 {
     Init();
@@ -113,7 +159,7 @@ wxMenuItem::wxMenuItem(wxMenu *parentMenu,
 void wxMenuItem::Init()
 {
     m_radioGroup.start = -1;
-    m_isRadioGroupStart = FALSE;
+    m_isRadioGroupStart = false;
 
 #if  wxUSE_OWNER_DRAWN
     // set default menu colors
@@ -150,6 +196,11 @@ int wxMenuItem::GetRealId() const
 
 bool wxMenuItem::IsChecked() const
 {
+    // fix that RTTI is always getting the correct state (separators cannot be checked, but the call below
+    // returns true
+    if ( GetId() == wxID_SEPARATOR )
+        return false ;
+
     int flag = ::GetMenuState(GetHMenuOf(m_parentMenu), GetId(), MF_BYCOMMAND);
 
     return (flag & MF_CHECKED) != 0;
@@ -166,7 +217,7 @@ wxString wxMenuItemBase::GetLabelFromText(const wxString& text)
 
 void wxMenuItem::SetAsRadioGroupStart()
 {
-    m_isRadioGroupStart = TRUE;
+    m_isRadioGroupStart = true;
 }
 
 void wxMenuItem::SetRadioGroupStart(int start)
@@ -262,19 +313,13 @@ void wxMenuItem::Check(bool check)
 #endif // __WIN32__
 
         // also uncheck all the other items in this radio group
-        wxMenuItemList::Node *node = items.Item(start);
+        wxMenuItemList::compatibility_iterator node = items.Item(start);
         for ( int n = start; n <= end && node; n++ )
         {
             if ( n != pos )
             {
-                node->GetData()->m_isChecked = FALSE;
+                node->GetData()->m_isChecked = false;
             }
-
-            // we also have to do it in the menu for Win16 (under Win32
-            // CheckMenuRadioItem() does it for us)
-#ifndef __WIN32__
-            ::CheckMenuItem(hmenu, n, n == pos ? MF_CHECKED : MF_UNCHECKED);
-#endif // Win16
 
             node = node->GetNext();
         }
@@ -285,7 +330,7 @@ void wxMenuItem::Check(bool check)
                              GetRealId(),
                              MF_BYCOMMAND | flags) == (DWORD)-1 )
         {
-            wxLogLastError(wxT("CheckMenuItem"));
+            wxFAIL_MSG( _T("CheckMenuItem() failed, item not in the menu?") );
         }
     }
 
@@ -316,7 +361,8 @@ void wxMenuItem::SetText(const wxString& text)
     UINT flagsOld = ::GetMenuState(hMenu, id, MF_BYCOMMAND);
     if ( flagsOld == 0xFFFFFFFF )
     {
-        wxLogLastError(wxT("GetMenuState"));
+        // It's not an error, it means that the menu item doesn't exist
+        //wxLogLastError(wxT("GetMenuState"));
     }
     else
     {
@@ -342,12 +388,31 @@ void wxMenuItem::SetText(const wxString& text)
             data = (wxChar*) text.c_str();
         }
 
+#ifdef __WXWINCE__
+        // FIXME: complete this, applying the old
+        // flags.
+        // However, the WinCE doc for SetMenuItemInfo
+        // says that you can't use it to set the menu
+        // item state; only data, id and type.
+        MENUITEMINFO info;
+        wxZeroMemory(info);
+        info.cbSize = sizeof(info);
+        info.fMask = MIIM_TYPE;
+        info.fType = MFT_STRING;
+        info.cch = text.Length();
+        info.dwTypeData = (LPTSTR) data ;
+        if ( !::SetMenuItemInfo(hMenu, id, FALSE, & info) )
+        {
+            wxLogLastError(wxT("SetMenuItemInfo"));
+        }
+#else
         if ( ::ModifyMenu(hMenu, id,
                           MF_BYCOMMAND | flagsOld,
                           id, data) == (int)0xFFFFFFFF )
         {
             wxLogLastError(wxT("ModifyMenu"));
         }
+#endif
     }
 }
 

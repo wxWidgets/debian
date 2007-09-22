@@ -4,9 +4,9 @@
 // Author:      Vadim Zeitlin
 // Modified by:
 // Created:     26.07.99
-// RCS-ID:      $Id: ctrlcmn.cpp,v 1.13 2002/08/05 03:13:59 DW Exp $
-// Copyright:   (c) wxWindows team
-// Licence:     wxWindows license
+// RCS-ID:      $Id: ctrlcmn.cpp,v 1.28 2004/09/09 17:42:36 ABX Exp $
+// Copyright:   (c) wxWidgets team
+// Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
 
 // ============================================================================
@@ -17,7 +17,7 @@
 // headers
 // ----------------------------------------------------------------------------
 
-#ifdef __GNUG__
+#if defined(__GNUG__) && !defined(NO_GCC_PRAGMA)
     #pragma implementation "controlbase.h"
     #pragma implementation "statbmpbase.h"
 #endif
@@ -55,7 +55,7 @@ bool wxControlBase::Create(wxWindow *parent,
                            const wxPoint &pos,
                            const wxSize &size,
                            long style,
-                           const wxValidator& validator,
+                           const wxValidator& wxVALIDATOR_PARAM(validator),
                            const wxString &name)
 {
     bool ret = wxWindow::Create(parent, id, pos, size, style, name);
@@ -79,35 +79,14 @@ bool wxControlBase::CreateControl(wxWindowBase *parent,
     // even if it's possible to create controls without parents in some port,
     // it should surely be discouraged because it doesn't work at all under
     // Windows
-    wxCHECK_MSG( parent, FALSE, wxT("all controls must have parents") );
+    wxCHECK_MSG( parent, false, wxT("all controls must have parents") );
 
     if ( !CreateBase(parent, id, pos, size, style, validator, name) )
-        return FALSE;
+        return false;
 
     parent->AddChild(this);
 
-    return TRUE;
-}
-
-// inherit colour and font settings from the parent window
-void wxControlBase::InheritAttributes()
-{
-    // it definitely doesn't make sense to inherit the background colour as the
-    // controls typically have their own standard one and probably not the
-    // foreground neither?
-#if 0
-    SetBackgroundColour(GetParent()->GetBackgroundColour());
-    SetForegroundColour(GetParent()->GetForegroundColour());
-#endif // 0
-
-#ifdef __WXPM__
-    //
-    // All OS/2 ctrls use the small font
-    //
-    SetFont(*wxSMALL_FONT);
-#else
-    SetFont(GetParent()->GetFont());
-#endif
+    return true;
 }
 
 void wxControlBase::Command(wxCommandEvent& event)
@@ -137,6 +116,19 @@ void wxControlBase::InitCommandEvent(wxCommandEvent& event) const
     }
 }
 
+
+void wxControlBase::SetLabel( const wxString &label )
+{
+    InvalidateBestSize();
+    wxWindow::SetLabel(label);
+}
+
+bool wxControlBase::SetFont(const wxFont& font)
+{
+    InvalidateBestSize();
+    return wxWindow::SetFont(font);
+}
+
 // ----------------------------------------------------------------------------
 // wxStaticBitmap
 // ----------------------------------------------------------------------------
@@ -148,14 +140,17 @@ wxStaticBitmapBase::~wxStaticBitmapBase()
     // this destructor is required for Darwin
 }
 
-wxSize wxStaticBitmapBase::DoGetBestClientSize() const
+wxSize wxStaticBitmapBase::DoGetBestSize() const
 {
+    wxSize best;
     wxBitmap bmp = GetBitmap();
     if ( bmp.Ok() )
-        return wxSize(bmp.GetWidth(), bmp.GetHeight());
-
-    // this is completely arbitrary
-    return wxSize(16, 16);
+        best = wxSize(bmp.GetWidth(), bmp.GetHeight());
+    else
+        // this is completely arbitrary
+        best = wxSize(16, 16);
+    CacheBestSize(best);
+    return best;
 }
 
 #endif // wxUSE_STATBMP

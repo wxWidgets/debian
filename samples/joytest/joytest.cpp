@@ -4,8 +4,8 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     04/01/98
-// RCS-ID:      $Id: joytest.cpp,v 1.10.2.1 2002/12/15 17:25:11 MBN Exp $
-// Copyright:   (c) Julian Smart and Markus Holzem
+// RCS-ID:      $Id: joytest.cpp,v 1.18 2004/10/06 20:53:29 ABX Exp $
+// Copyright:   (c) Julian Smart
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
 
@@ -24,11 +24,7 @@
 #   error You must set wxUSE_JOYSTICK to 1 in setup.h
 #endif
 
-#if !wxUSE_STATUSBAR
-#   error You must set wxUSE_STATUSBAR to 1 in setup.h
-#endif
-
-#include "wx/wave.h"
+#include "wx/sound.h"
 #include "wx/joystick.h"
 
 #include "joytest.h"
@@ -50,13 +46,15 @@ bool MyApp::OnInit()
     if (!stick.IsOk())
     {
         wxMessageBox(_T("No joystick detected!"));
-        return FALSE;
+        return false;
     }
 
-#if wxUSE_WAVE
+#if wxUSE_SOUND
     m_fire.Create(_T("gun.wav"));
-#endif // wxUSE_WAVE
+#endif // wxUSE_SOUND
 
+    m_minX = stick.GetXMin();
+    m_minY = stick.GetYMin();
     m_maxX = stick.GetXMax();
     m_maxY = stick.GetYMax();
 
@@ -85,14 +83,16 @@ bool MyApp::OnInit()
     // Associate the menu bar with the frame
     frame->SetMenuBar(menu_bar);
 
+#if wxUSE_STATUSBAR
     frame->CreateStatusBar();
+#endif // wxUSE_STATUSBAR
 
     frame->CenterOnScreen();
-    frame->Show(TRUE);
+    frame->Show(true);
 
     SetTopWindow(frame);
 
-    return TRUE;
+    return true;
 }
 
 BEGIN_EVENT_TABLE(MyCanvas, wxScrolledWindow)
@@ -101,16 +101,16 @@ END_EVENT_TABLE()
 
 // Define a constructor for my canvas
 MyCanvas::MyCanvas(wxWindow *parent, const wxPoint& pos, const wxSize& size):
-    wxScrolledWindow(parent, -1, pos, size, wxSUNKEN_BORDER)
+    wxScrolledWindow(parent, wxID_ANY, pos, size, wxSUNKEN_BORDER)
 {
-    wxJoystick joystick(wxJOYSTICK1);
-    joystick.SetCapture(this);
+    m_stick = new wxJoystick(wxJOYSTICK1);
+    m_stick->SetCapture(this, 10);
 }
 
 MyCanvas::~MyCanvas()
 {
-    wxJoystick joystick(wxJOYSTICK1);
-    joystick.ReleaseCapture();
+    m_stick->ReleaseCapture();
+    delete m_stick;
 }
 
 void MyCanvas::OnJoystickEvent(wxJoystickEvent& event)
@@ -119,12 +119,26 @@ void MyCanvas::OnJoystickEvent(wxJoystickEvent& event)
 
     wxPoint pt(event.GetPosition());
 
+    // if negative positions are possible then shift everything up
+    int xmin = wxGetApp().m_minX;
+    int xmax = wxGetApp().m_maxX;
+    int ymin = wxGetApp().m_minY;
+    int ymax = wxGetApp().m_maxY;
+    if (xmin < 0) {
+        xmax += abs(xmin);
+        pt.x += abs(xmin);
+    }
+    if (ymin < 0) {
+        ymax += abs(ymin);
+        pt.y += abs(ymin);
+    }
+
     // Scale to canvas size
     int cw, ch;
     GetSize(&cw, &ch);
 
-    pt.x = (long) (((double)pt.x/(double)wxGetApp().m_maxX) * cw);
-    pt.y = (long) (((double)pt.y/(double)wxGetApp().m_maxY) * ch);
+    pt.x = (long) (((double)pt.x/(double)xmax) * cw);
+    pt.y = (long) (((double)pt.y/(double)ymax) * ch);
 
     if (xpos > -1 && ypos > -1 && event.IsMove() && event.ButtonIsDown())
     {
@@ -135,6 +149,7 @@ void MyCanvas::OnJoystickEvent(wxJoystickEvent& event)
     xpos = pt.x;
     ypos = pt.y;
 
+#if wxUSE_STATUSBAR
     wxString buf;
     if (event.ButtonDown())
         buf.Printf(_T("Joystick (%d, %d) Fire!"), pt.x, pt.y);
@@ -142,13 +157,14 @@ void MyCanvas::OnJoystickEvent(wxJoystickEvent& event)
         buf.Printf(_T("Joystick (%d, %d)"), pt.x, pt.y);
 
     frame->SetStatusText(buf);
+#endif // wxUSE_STATUSBAR
 
-#if wxUSE_WAVE
+#if wxUSE_SOUND
     if (event.ButtonDown() && wxGetApp().m_fire.IsOk())
     {
         wxGetApp().m_fire.Play();
     }
-#endif // wxUSE_WAVE
+#endif // wxUSE_SOUND
 }
 
 BEGIN_EVENT_TABLE(MyFrame, wxFrame)
@@ -157,19 +173,14 @@ END_EVENT_TABLE()
 
 MyFrame::MyFrame(wxFrame *parent, const wxString& title, const wxPoint& pos,
     const wxSize& size, const long style)
-    : wxFrame(parent, -1, title, pos, size, style)
+    : wxFrame(parent, wxID_ANY, title, pos, size, style)
 {
     canvas = new MyCanvas(this);
 }
 
-MyFrame::~MyFrame()
+void MyFrame::OnQuit(wxCommandEvent& WXUNUSED(event))
 {
-    // Empty
-}
-
-void MyFrame::OnQuit(wxCommandEvent& event)
-{
-    Close(TRUE);
+    Close(true);
 }
 
 void MyFrame::OnActivate(wxActivateEvent& event)

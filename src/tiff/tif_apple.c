@@ -1,4 +1,4 @@
-/* $Header: /pack/cvsroots/wxwindows/wxWindows/src/tiff/tif_apple.c,v 1.1.6.2 2003/08/14 11:48:37 CE Exp $ */
+/* $Header: /pack/cvsroots/wxwindows/wxWindows/src/tiff/tif_apple.c,v 1.4 2003/05/02 11:14:31 CE Exp $ */
 
 /*
  * Copyright (c) 1988-1997 Sam Leffler
@@ -41,8 +41,15 @@
  * the file first and TIFFOpen'ing it later.
  */
 
+#ifdef __MACH__
+   	  #include <ansi_prefix.mach.h>
+   	  #include <msl_c_version.h>
+   	  #include <stdint.h>
+   	  #undef WCHAR_MAX
+   	  #include <machine/ansi.h>
+#endif
 #include "tiffiop.h"
-#include <Errors.h>
+#include <MacErrors.h>
 #include <Files.h>
 #include <Memory.h>
 

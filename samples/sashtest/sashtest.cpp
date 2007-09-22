@@ -4,8 +4,8 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     04/01/98
-// RCS-ID:      $Id: sashtest.cpp,v 1.11.2.1 2002/12/15 17:25:33 MBN Exp $
-// Copyright:   (c) Julian Smart and Markus Holzem
+// RCS-ID:      $Id: sashtest.cpp,v 1.17 2004/07/19 15:35:23 ABX Exp $
+// Copyright:   (c) Julian Smart
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
 
@@ -42,7 +42,7 @@ bool MyApp::OnInit(void)
 {
   // Create the main frame window
 
-  frame = new MyFrame(NULL, -1, _T("Sash Demo"), wxPoint(0, 0), wxSize(500, 400),
+  frame = new MyFrame(NULL, wxID_ANY, _T("Sash Demo"), wxPoint(0, 0), wxSize(500, 400),
                       wxDEFAULT_FRAME_STYLE |
                       wxNO_FULL_REPAINT_ON_RESIZE |
                       wxHSCROLL | wxVSCROLL);
@@ -50,9 +50,6 @@ bool MyApp::OnInit(void)
   // Give it an icon (this is ignored in MDI mode: uses resources)
 #ifdef __WXMSW__
   frame->SetIcon(wxIcon(_T("sashtest_icn")));
-#endif
-#ifdef __X__
-  frame->SetIcon(wxIcon(_T("sashtest.xbm")));
 #endif
 
   // Make a menubar
@@ -73,13 +70,15 @@ bool MyApp::OnInit(void)
   // Associate the menu bar with the frame
   frame->SetMenuBar(menu_bar);
 
+#if wxUSE_STATUSBAR
   frame->CreateStatusBar();
+#endif // wxUSE_STATUSBAR
 
-  frame->Show(TRUE);
+  frame->Show(true);
 
   SetTopWindow(frame);
 
-  return TRUE;
+  return true;
 }
 
 BEGIN_EVENT_TABLE(MyFrame, wxMDIParentFrame)
@@ -109,7 +108,7 @@ MyFrame::MyFrame(wxWindow *parent, const wxWindowID id, const wxString& title, c
   win->SetOrientation(wxLAYOUT_HORIZONTAL);
   win->SetAlignment(wxLAYOUT_TOP);
   win->SetBackgroundColour(wxColour(255, 0, 0));
-  win->SetSashVisible(wxSASH_BOTTOM, TRUE);
+  win->SetSashVisible(wxSASH_BOTTOM, true);
 
   m_topWindow = win;
 
@@ -121,7 +120,7 @@ MyFrame::MyFrame(wxWindow *parent, const wxWindowID id, const wxString& title, c
   win->SetOrientation(wxLAYOUT_HORIZONTAL);
   win->SetAlignment(wxLAYOUT_BOTTOM);
   win->SetBackgroundColour(wxColour(0, 0, 255));
-  win->SetSashVisible(wxSASH_TOP, TRUE);
+  win->SetSashVisible(wxSASH_TOP, true);
 
   m_bottomWindow = win;
 
@@ -133,10 +132,10 @@ MyFrame::MyFrame(wxWindow *parent, const wxWindowID id, const wxString& title, c
   win->SetOrientation(wxLAYOUT_VERTICAL);
   win->SetAlignment(wxLAYOUT_LEFT);
   win->SetBackgroundColour(wxColour(0, 255, 0));
-  win->SetSashVisible(wxSASH_RIGHT, TRUE);
+  win->SetSashVisible(wxSASH_RIGHT, true);
   win->SetExtraBorderSize(10);
 
-  wxTextCtrl* textWindow = new wxTextCtrl(win, -1, _T(""), wxDefaultPosition, wxDefaultSize,
+  wxTextCtrl* textWindow = new wxTextCtrl(win, wxID_ANY, _T(""), wxDefaultPosition, wxDefaultSize,
         wxTE_MULTILINE|wxSUNKEN_BORDER);
 //        wxTE_MULTILINE|wxNO_BORDER);
   textWindow->SetValue(_T("A help window"));
@@ -151,30 +150,30 @@ MyFrame::MyFrame(wxWindow *parent, const wxWindowID id, const wxString& title, c
   win->SetOrientation(wxLAYOUT_VERTICAL);
   win->SetAlignment(wxLAYOUT_LEFT);
   win->SetBackgroundColour(wxColour(0, 255, 255));
-  win->SetSashVisible(wxSASH_RIGHT, TRUE);
+  win->SetSashVisible(wxSASH_RIGHT, true);
 
   m_leftWindow2 = win;
 }
 
 void MyFrame::OnQuit(wxCommandEvent& WXUNUSED(event))
 {
-      Close(TRUE);
+      Close(true);
 }
 
 void MyFrame::OnAbout(wxCommandEvent& WXUNUSED(event))
 {
-      (void)wxMessageBox(_T("wxWindows 2.0 Sash Demo\nAuthor: Julian Smart (c) 1998"), _T("About Sash Demo"));
+      (void)wxMessageBox(_T("wxWidgets 2.0 Sash Demo\nAuthor: Julian Smart (c) 1998"), _T("About Sash Demo"));
 }
 
 void MyFrame::OnToggleWindow(wxCommandEvent& WXUNUSED(event))
 {
     if (m_leftWindow1->IsShown())
     {
-        m_leftWindow1->Show(FALSE);
+        m_leftWindow1->Show(false);
     }
     else
     {
-        m_leftWindow1->Show(TRUE);
+        m_leftWindow1->Show(true);
     }
     wxLayoutAlgorithm layout;
     layout.LayoutMDIFrame(this);
@@ -231,8 +230,10 @@ void MyFrame::OnNewWindow(wxCommandEvent& WXUNUSED(event))
       subframe->SetIcon(wxIcon(_T("sashtest_icn")));
 #endif
 
+#if wxUSE_STATUSBAR
       // Give it a status line
       subframe->CreateStatusBar();
+#endif // wxUSE_STATUSBAR
 
       // Make a menubar
       wxMenu *file_menu = new wxMenu;
@@ -267,7 +268,7 @@ void MyFrame::OnNewWindow(wxCommandEvent& WXUNUSED(event))
       // Give it scrollbars
       canvas->SetScrollbars(20, 20, 50, 50);
 
-      subframe->Show(TRUE);
+      subframe->Show(true);
 }
 
 BEGIN_EVENT_TABLE(MyCanvas, wxScrolledWindow)
@@ -276,7 +277,7 @@ END_EVENT_TABLE()
 
 // Define a constructor for my canvas
 MyCanvas::MyCanvas(wxWindow *parent, const wxPoint& pos, const wxSize& size)
-        : wxScrolledWindow(parent, -1, pos, size,
+        : wxScrolledWindow(parent, wxID_ANY, pos, size,
                            wxSUNKEN_BORDER | wxNO_FULL_REPAINT_ON_RESIZE)
 {
     SetBackgroundColour(* wxWHITE);
@@ -344,7 +345,7 @@ END_EVENT_TABLE()
 
 MyChild::MyChild(wxMDIParentFrame *parent, const wxString& title, const wxPoint& pos, const wxSize& size,
 const long style):
-  wxMDIChildFrame(parent, -1, title, pos, size, style)
+  wxMDIChildFrame(parent, wxID_ANY, title, pos, size, style)
 {
   canvas = NULL;
   my_children.Append(this);
@@ -357,7 +358,7 @@ MyChild::~MyChild(void)
 
 void MyChild::OnQuit(wxCommandEvent& WXUNUSED(event))
 {
-      Close(TRUE);
+      Close(true);
 }
 
 void MyChild::OnActivate(wxActivateEvent& event)

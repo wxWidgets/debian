@@ -16,7 +16,7 @@
 #endif
 
 // for all others, include the necessary headers (this file is usually all you
-// need because it includes almost all "standard" wxWindows headers
+// need because it includes almost all "standard" wxWidgets headers
 #ifndef WX_PRECOMP
     #include "wx/wx.h"
 #endif
@@ -56,7 +56,7 @@
       void OnAbout(wxCommandEvent& event);
 
    private:
-    // any class wishing to process wxWindows events must use this macro
+    // any class wishing to process wxWidgets events must use this macro
     DECLARE_EVENT_TABLE()
    };
 
@@ -78,10 +78,10 @@
    };
 
 // ----------------------------------------------------------------------------
-// event tables and other macros for wxWindows
+// event tables and other macros for wxWidgets
 // ----------------------------------------------------------------------------
 
-// the event tables connect the wxWindows events with the functions (event
+// the event tables connect the wxWidgets events with the functions (event
 // handlers) which process them. It can be also done at run-time, but for the
 // simple menu events like this the static method is much simpler.
    BEGIN_EVENT_TABLE(MyFrame, wxFrame)
@@ -89,7 +89,7 @@
    EVT_MENU(Minimal_About, MyFrame::OnAbout)
    END_EVENT_TABLE()
 
-   // Create a new application object: this macro will allow wxWindows to create
+   // Create a new application object: this macro will allow wxWidgets to create
    // the application object during program execution (it's better than using a
    // static object for many reasons) and also declares the accessor function
    // wxGetApp() which will return the reference of the right type (i.e. MyApp and
@@ -109,18 +109,18 @@
     wxImage::AddHandler(new wxPNGHandler);
     // Create the main application window
       MyFrame *frame = new MyFrame(_("wxHtmlWindow testing application"),
-         wxPoint(50, 50), wxSize(150, 50));
+         wxDefaultPosition, wxDefaultSize);
 
     // Show it and tell the application that it's our main window
     // @@@ what does it do exactly, in fact? is it necessary here?
-      frame->Show(TRUE);
+      frame->Show(true);
       SetTopWindow(frame);
 
 
     // success: wxApp::OnRun() will be called which will enter the main message
-    // loop and the application will run. If we returned FALSE here, the
+    // loop and the application will run. If we returned false here, the
     // application would exit immediately.
-      return TRUE;
+      return true;
    }
 
 // ----------------------------------------------------------------------------
@@ -130,7 +130,7 @@
 
 // frame constructor
    MyFrame::MyFrame(const wxString& title, const wxPoint& pos, const wxSize& size)
-   : wxFrame((wxFrame *)NULL, -1, title, pos, size)
+   : wxFrame((wxFrame *)NULL, wxID_ANY, title, pos, size)
    {
     // create a menu bar
       wxMenu *menuFile = new wxMenu;
@@ -151,34 +151,35 @@
 
    void MyFrame::OnQuit(wxCommandEvent& WXUNUSED(event))
    {
-    // TRUE is to force the frame to close
-      Close(TRUE);
+    // true is to force the frame to close
+      Close(true);
    }
 
    void MyFrame::OnAbout(wxCommandEvent& WXUNUSED(event))
    {
         wxBoxSizer *topsizer;
         wxHtmlWindow *html;
-        wxDialog dlg(this, -1, wxString(_("About")));
+        wxDialog dlg(this, wxID_ANY, wxString(_("About")));
 
         topsizer = new wxBoxSizer(wxVERTICAL);
 
-        html = new wxHtmlWindow(&dlg, -1, wxDefaultPosition, wxSize(380, 160), wxHW_SCROLLBAR_NEVER);
+        html = new wxHtmlWindow(&dlg, wxID_ANY, wxDefaultPosition, wxSize(380, 160), wxHW_SCROLLBAR_NEVER);
         html -> SetBorders(0);
         html -> LoadPage(wxT("data/about.htm"));
-        html -> SetSize(html -> GetInternalRepresentation() -> GetWidth(), 
+        html -> SetSize(html -> GetInternalRepresentation() -> GetWidth(),
                         html -> GetInternalRepresentation() -> GetHeight());
 
         topsizer -> Add(html, 1, wxALL, 10);
 
-        topsizer -> Add(new wxStaticLine(&dlg, -1), 0, wxEXPAND | wxLEFT | wxRIGHT, 10);
-                        
+#if wxUSE_STATLINE
+        topsizer -> Add(new wxStaticLine(&dlg, wxID_ANY), 0, wxEXPAND | wxLEFT | wxRIGHT, 10);
+#endif // wxUSE_STATLINE
+
         wxButton *bu1 = new wxButton(&dlg, wxID_OK, _("OK"));
         bu1 -> SetDefault();
 
         topsizer -> Add(bu1, 0, wxALL | wxALIGN_RIGHT, 15);
 
-        dlg.SetAutoLayout(TRUE);
         dlg.SetSizer(topsizer);
         topsizer -> Fit(&dlg);
 

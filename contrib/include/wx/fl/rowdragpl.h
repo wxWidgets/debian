@@ -4,7 +4,7 @@
 // Author:      Aleksandras Gluchovas
 // Modified by:
 // Created:     06/10/98
-// RCS-ID:      $Id: rowdragpl.h,v 1.3.2.1 2002/10/24 11:21:35 JS Exp $
+// RCS-ID:      $Id: rowdragpl.h,v 1.5 2003/07/08 20:47:17 VS Exp $
 // Copyright:   (c) Aleksandras Gluchovas
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -25,7 +25,7 @@ The behaviour and appearance resembles drag and drop positioning
 of the toolbar rows in Netscape Communicator 4.xx.
 */
 
-class WXFL_DECLSPEC cbRowDragPlugin : public cbPluginBase
+class WXDLLIMPEXP_FL cbRowDragPlugin : public cbPluginBase
 {
     DECLARE_DYNAMIC_CLASS( cbRowDragPlugin )
 public:
@@ -217,7 +217,7 @@ public:
 Internal helper class.
 */
 
-class WXFL_DECLSPEC cbHiddenBarInfo : public wxObject
+class WXDLLIMPEXP_FL cbHiddenBarInfo : public wxObject
 {
     DECLARE_DYNAMIC_CLASS( cbHiddenBarInfo )
 public:

@@ -1,12 +1,12 @@
 ///////////////////////////////////////////////////////////////////////////////
 // Name:        wx/metafile.h
 // Purpose:     wxMetaFile class declaration
-// Author:      wxWindows team
+// Author:      wxWidgets team
 // Modified by:
 // Created:     13.01.00
-// RCS-ID:      $Id: metafile.h,v 1.7 2000/08/09 11:14:15 SC Exp $
-// Copyright:   (c) wxWindows team
-// Licence:     wxWindows license
+// RCS-ID:      $Id: metafile.h,v 1.12 2004/10/19 13:39:05 JS Exp $
+// Copyright:   (c) wxWidgets team
+// Licence:     wxWindows licence
 ///////////////////////////////////////////////////////////////////////////////
 
 #ifndef _WX_METAFILE_H_BASE_
@@ -20,8 +20,12 @@
 #define wxMakeMetaFilePlaceable wxMakeMetafilePlaceable
 
 #if defined(__WXMSW__)
-    #if defined(__WIN32__) && wxUSE_ENH_METAFILE
+    #if wxUSE_ENH_METAFILE
+        #if defined(__PALMOS__)
+            #include "wx/palmos/enhmeta.h"
+        #else
         #include "wx/msw/enhmeta.h"
+        #endif
 
         // map all metafile classes to enh metafile
         #if !wxUSE_WIN_METAFILES_ALWAYS
@@ -33,8 +37,12 @@
             // this flag will be set if wxMetafile class is wxEnhMetaFile
             #define wxMETAFILE_IS_ENH
         #endif // wxUSE_WIN_METAFILES_ALWAYS
-    #else // Win16
+    #else // !wxUSE_ENH_METAFILE
+        #if defined(__PALMOS__)
+            #include "wx/palmos/metafile.h"
+        #else
         #include "wx/msw/metafile.h"
+    #endif
     #endif
 #elif defined(__WXPM__)
     #include "wx/os2/metafile.h"

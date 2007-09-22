@@ -30,7 +30,7 @@ See \helpref{wxListBox}{wxlistbox}.
 
 \twocolwidtha{7cm}
 \begin{twocollist}\itemsep=0pt
-\twocolitem{{\bf EVT\_CHECKLISTBOX(id, func)}}{Process a wxEVT\_COMMAND\_CHECKLISTBOX\_TOGGLE event,
+\twocolitem{{\bf EVT\_CHECKLISTBOX(id, func)}}{Process a wxEVT\_COMMAND\_CHECKLISTBOX\_TOGGLED event,
 when an item in the check list box is checked or unchecked.}
 \end{twocollist}
 
@@ -41,7 +41,7 @@ when an item in the check list box is checked or unchecked.}
 
 \latexignore{\rtfignore{\wxheading{Members}}}
 
-\membersection{wxCheckListBox::wxCheckListBox}\label{wxchecklistboxconstr}
+\membersection{wxCheckListBox::wxCheckListBox}\label{wxchecklistboxctor}
 
 \func{}{wxCheckListBox}{\void}
 
@@ -50,6 +50,11 @@ Default constructor.
 \func{}{wxCheckListBox}{\param{wxWindow*}{ parent}, \param{wxWindowID}{ id},\rtfsp
 \param{const wxPoint\&}{ pos = wxDefaultPosition}, \param{const wxSize\&}{ size = wxDefaultSize},\rtfsp
 \param{int}{ n}, \param{const wxString }{choices[] = NULL},\rtfsp
+\param{long}{ style = 0}, \param{const wxValidator\& }{validator = wxDefaultValidator}, \param{const wxString\& }{name = ``listBox"}}
+
+\func{}{wxCheckListBox}{\param{wxWindow*}{ parent}, \param{wxWindowID}{ id},\rtfsp
+\param{const wxPoint\&}{ pos}, \param{const wxSize\&}{ size},\rtfsp
+\param{const wxArrayString\& }{choices},\rtfsp
 \param{long}{ style = 0}, \param{const wxValidator\& }{validator = wxDefaultValidator}, \param{const wxString\& }{name = ``listBox"}}
 
 Constructor, creating and showing a list box.
@@ -82,7 +87,7 @@ a list of strings.}
 \perlnote{In wxPerl there is just an array reference in place of {\tt n}
 and {\tt choices}.}
 
-\membersection{wxCheckListBox::\destruct{wxCheckListBox}}
+\membersection{wxCheckListBox::\destruct{wxCheckListBox}}\label{wxchecklistboxdtor}
 
 \func{void}{\destruct{wxCheckListBox}}{\void}
 
@@ -90,7 +95,7 @@ Destructor, destroying the list box.
 
 \membersection{wxCheckListBox::Check}\label{wxchecklistboxcheck}
 
-\func{void}{Check}{\param{int }{item}, \param{bool}{ check = TRUE}}
+\func{void}{Check}{\param{int }{item}, \param{bool}{ check = true}}
 
 Checks the given item. Note that calling this method doesn't result in
 wxEVT\_COMMAND\_CHECKLISTBOX\_TOGGLE being emitted.
@@ -99,13 +104,13 @@ wxEVT\_COMMAND\_CHECKLISTBOX\_TOGGLE being emitted.
 
 \docparam{item}{Index of item to check.}
 
-\docparam{check}{TRUE if the item is to be checked, FALSE otherwise.}
+\docparam{check}{true if the item is to be checked, false otherwise.}
 
 \membersection{wxCheckListBox::IsChecked}\label{wxchecklistboxischecked}
 
 \constfunc{bool}{IsChecked}{\param{int}{ item}}
 
-Returns TRUE if the given item is checked, FALSE otherwise.
+Returns true if the given item is checked, false otherwise.
 
 \wxheading{Parameters}
 

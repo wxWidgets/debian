@@ -4,15 +4,15 @@
 // Author:      Robert Roebling
 // Modified by:
 // Created:     01/02/97
-// RCS-ID:      $Id: scrolwin.h,v 1.13 2002/09/07 12:28:46 GD Exp $
+// RCS-ID:      $Id: scrolwin.h,v 1.20 2004/07/20 18:13:12 RD Exp $
 // Copyright:   (c) Robert Roebling
-// Licence:     wxWindows license
+// Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
 
 #ifndef _WX_GTK_SCROLLWIN_H_
 #define _WX_GTK_SCROLLWIN_H_
 
-#if defined(__GNUG__) && !defined(__APPLE__)
+#if defined(__GNUG__) && !defined(NO_GCC_PRAGMA)
     #pragma interface "scrolwin.h"
 #endif
 
@@ -63,7 +63,7 @@ public:
     // the area between the scrollbars (spreadsheet: only cell area
     // will move).
     virtual void SetTargetWindow( wxWindow *target, bool pushEventHandler = FALSE );
-    virtual wxWindow *GetTargetWindow();
+    virtual wxWindow *GetTargetWindow() const;
 
     // Set the scrolled area of the window.
     virtual void DoSetVirtualSize( int x, int y );
@@ -90,7 +90,7 @@ public:
     virtual void GetScrollPixelsPerUnit(int *x_unit, int *y_unit) const;
 
     // Enable/disable Windows scrolling in either direction.
-    // If TRUE, wxWindows scrolls the canvas and only a bit of
+    // If TRUE, wxWidgets scrolls the canvas and only a bit of
     // the canvas is invalidated; no Clear() is necessary.
     // If FALSE, the whole canvas is invalidated and a Clear() is
     // necessary. Disable for when the scroll increment is used
@@ -127,7 +127,7 @@ public:
 
     // Override this function if you don't want to have wxScrolledWindow
     // automatically change the origin according to the scroll position.
-    virtual void PrepareDC(wxDC& dc);
+    void PrepareDC(wxDC& dc) { DoPrepareDC(dc); }
 
     // lay out the window and its children
     virtual bool Layout();
@@ -156,13 +156,15 @@ public:
     // Calculate scroll increment
     virtual int CalcScrollInc(wxScrollWinEvent& event);
 
-    // Overridden from wxWindows due callback being static
+    // Overridden from wxWidgets due callback being static
     virtual void SetScrollPos( int orient, int pos, bool refresh = TRUE );
 
 #if WXWIN_COMPATIBILITY_2_2
     // Compatibility
     void ViewStart(int *x, int *y) const { GetViewStart( x, y ); }
 #endif // WXWIN_COMPATIBILITY_2_2
+
+    virtual void DoPrepareDC(wxDC& dc);
 
 protected:
     wxWindow             *m_targetWindow;

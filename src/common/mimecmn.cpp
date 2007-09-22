@@ -5,9 +5,9 @@
 // Modified by:
 //  Chris Elliott (biol75@york.ac.uk) 5 Dec 00: write support for Win32
 // Created:     23.09.98
-// RCS-ID:      $Id: mimecmn.cpp,v 1.22.2.2 2003/07/17 12:50:04 VZ Exp $
+// RCS-ID:      $Id: mimecmn.cpp,v 1.37 2004/09/17 22:23:59 ABX Exp $
 // Copyright:   (c) 1998 Vadim Zeitlin <zeitlin@dptmaths.ens-cachan.fr>
-// Licence:     wxWindows license (part of wxExtra library)
+// Licence:     wxWindows licence (part of wxExtra library)
 /////////////////////////////////////////////////////////////////////////////
 
 // ============================================================================
@@ -32,20 +32,13 @@
 #if wxUSE_MIMETYPE
 
 #ifndef WX_PRECOMP
-    #include "wx/module.h"
-#endif
-// this one is needed for MSVC5
-#include "wx/module.h"
-
-#ifndef WX_PRECOMP
   #include "wx/string.h"
-  #if wxUSE_GUI
-    #include "wx/icon.h"
-  #endif
 #endif //WX_PRECOMP
 
+#include "wx/module.h"
 #include "wx/log.h"
 #include "wx/file.h"
+#include "wx/iconloc.h"
 #include "wx/intl.h"
 #include "wx/dynarray.h"
 #include "wx/confbase.h"
@@ -60,8 +53,9 @@
     #include "wx/msw/mimetype.h"
 #elif defined(__WXMAC__)
     #include "wx/mac/mimetype.h"
-#elif defined(__WXPM__)
+#elif defined(__WXPM__) || defined (__EMX__)
     #include "wx/os2/mimetype.h"
+    #undef __UNIX__
 #else // Unix
     #include "wx/unix/mimetype.h"
 #endif
@@ -132,7 +126,7 @@ WX_DEFINE_OBJARRAY(wxArrayFileTypeInfo);
 wxString wxFileType::ExpandCommand(const wxString& command,
                                    const wxFileType::MessageParameters& params)
 {
-    bool hasFilename = FALSE;
+    bool hasFilename = false;
 
     wxString str;
     for ( const wxChar *pc = command.c_str(); *pc != wxT('\0'); pc++ ) {
@@ -150,7 +144,7 @@ wxString wxFileType::ExpandCommand(const wxString& command,
                         str << wxT('"') << params.GetFileName() << wxT('"');
 #endif
                     str << params.GetFileName();
-                    hasFilename = TRUE;
+                    hasFilename = true;
                     break;
 
                 case wxT('t'):
@@ -236,7 +230,7 @@ bool wxFileType::GetExtensions(wxArrayString& extensions)
     if ( m_info )
     {
         extensions = m_info->GetExtensions();
-        return TRUE;
+        return true;
     }
 
     return m_impl->GetExtensions(extensions);
@@ -244,13 +238,13 @@ bool wxFileType::GetExtensions(wxArrayString& extensions)
 
 bool wxFileType::GetMimeType(wxString *mimeType) const
 {
-    wxCHECK_MSG( mimeType, FALSE, _T("invalid parameter in GetMimeType") );
+    wxCHECK_MSG( mimeType, false, _T("invalid parameter in GetMimeType") );
 
     if ( m_info )
     {
         *mimeType = m_info->GetMimeType();
 
-        return TRUE;
+        return true;
     }
 
     return m_impl->GetMimeType(mimeType);
@@ -263,50 +257,58 @@ bool wxFileType::GetMimeTypes(wxArrayString& mimeTypes) const
         mimeTypes.Clear();
         mimeTypes.Add(m_info->GetMimeType());
 
-        return TRUE;
+        return true;
     }
 
     return m_impl->GetMimeTypes(mimeTypes);
 }
 
-bool wxFileType::GetIcon(wxIcon *icon,
-                         wxString *iconFile,
-                         int *iconIndex) const
+bool wxFileType::GetIcon(wxIconLocation *iconLoc) const
 {
     if ( m_info )
     {
-        if ( iconFile )
-            *iconFile = m_info->GetIconFile();
-        if ( iconIndex )
-            *iconIndex = m_info->GetIconIndex();
-
-#if wxUSE_GUI
-        if ( icon && !m_info->GetIconFile().empty() )
+        if ( iconLoc )
         {
-            // FIXME: what about the index?
-            icon->LoadFile(m_info->GetIconFile());
+            iconLoc->SetFileName(m_info->GetIconFile());
+#ifdef __WXMSW__
+            iconLoc->SetIndex(m_info->GetIconIndex());
+#endif // __WXMSW__
         }
-#endif // wxUSE_GUI
 
-        return TRUE;
+        return true;
     }
 
-#if defined(__WXMSW__) || defined(__UNIX__)
-    return m_impl->GetIcon(icon, iconFile, iconIndex);
-#else
-    return m_impl->GetIcon(icon);
-#endif
+    return m_impl->GetIcon(iconLoc);
+}
+
+bool
+wxFileType::GetIcon(wxIconLocation *iconloc,
+                    const MessageParameters& params) const
+{
+    if ( !GetIcon(iconloc) )
+    {
+        return false;
+    }
+
+    // we may have "%s" in the icon location string, at least under Windows, so
+    // expand this
+    if ( iconloc )
+    {
+        iconloc->SetFileName(ExpandCommand(iconloc->GetFileName(), params));
+    }
+
+    return true;
 }
 
 bool wxFileType::GetDescription(wxString *desc) const
 {
-    wxCHECK_MSG( desc, FALSE, _T("invalid parameter in GetDescription") );
+    wxCHECK_MSG( desc, false, _T("invalid parameter in GetDescription") );
 
     if ( m_info )
     {
         *desc = m_info->GetDescription();
 
-        return TRUE;
+        return true;
     }
 
     return m_impl->GetDescription(desc);
@@ -316,13 +318,13 @@ bool
 wxFileType::GetOpenCommand(wxString *openCmd,
                            const wxFileType::MessageParameters& params) const
 {
-    wxCHECK_MSG( openCmd, FALSE, _T("invalid parameter in GetOpenCommand") );
+    wxCHECK_MSG( openCmd, false, _T("invalid parameter in GetOpenCommand") );
 
     if ( m_info )
     {
         *openCmd = ExpandCommand(m_info->GetOpenCommand(), params);
 
-        return TRUE;
+        return true;
     }
 
     return m_impl->GetOpenCommand(openCmd, params);
@@ -344,13 +346,13 @@ bool
 wxFileType::GetPrintCommand(wxString *printCmd,
                             const wxFileType::MessageParameters& params) const
 {
-    wxCHECK_MSG( printCmd, FALSE, _T("invalid parameter in GetPrintCommand") );
+    wxCHECK_MSG( printCmd, false, _T("invalid parameter in GetPrintCommand") );
 
     if ( m_info )
     {
         *printCmd = ExpandCommand(m_info->GetPrintCommand(), params);
 
-        return TRUE;
+        return true;
     }
 
     return m_impl->GetPrintCommand(printCmd, params);
@@ -400,11 +402,11 @@ bool wxFileType::Unassociate()
 {
 #if defined(__WXMSW__)
     return m_impl->Unassociate();
-#elif defined(__UNIX__) && !defined(__WXPM__)
+#elif defined(__UNIX__)
     return m_impl->Unassociate(this);
 #else
     wxFAIL_MSG( _T("not implemented") ); // TODO
-    return FALSE;
+    return false;
 #endif
 }
 
@@ -415,7 +417,7 @@ bool overwriteprompt)
     return m_impl->SetCommand(cmd, verb, overwriteprompt);
 #else
     wxFAIL_MSG(_T("not implemented"));
-    return FALSE;
+    return false;
 #endif
 }
 
@@ -428,14 +430,14 @@ bool wxFileType::SetDefaultIcon(const wxString& cmd, int index)
     if ( sTmp.empty() )
         GetOpenCommand(&sTmp, wxFileType::MessageParameters(wxT(""), wxT("")));
 #endif
-    wxCHECK_MSG( !sTmp.empty(), FALSE, _T("need the icon file") );
+    wxCHECK_MSG( !sTmp.empty(), false, _T("need the icon file") );
 
 #if defined (__WXMSW__) || defined(__UNIX__)
     return m_impl->SetDefaultIcon (cmd, index);
 #else
     wxFAIL_MSG(_T("not implemented"));
 
-    return FALSE;
+    return false;
 #endif
 }
 
@@ -456,21 +458,21 @@ bool wxMimeTypesManager::IsOfType(const wxString& mimeType,
     wxASSERT_MSG( mimeType.Find(wxT('*')) == wxNOT_FOUND,
                   wxT("first MIME type can't contain wildcards") );
 
-    // all comparaisons are case insensitive (2nd arg of IsSameAs() is FALSE)
+    // all comparaisons are case insensitive (2nd arg of IsSameAs() is false)
     if ( wildcard.BeforeFirst(wxT('/')).
-            IsSameAs(mimeType.BeforeFirst(wxT('/')), FALSE) )
+            IsSameAs(mimeType.BeforeFirst(wxT('/')), false) )
     {
         wxString strSubtype = wildcard.AfterFirst(wxT('/'));
 
         if ( strSubtype == wxT("*") ||
-             strSubtype.IsSameAs(mimeType.AfterFirst(wxT('/')), FALSE) )
+             strSubtype.IsSameAs(mimeType.AfterFirst(wxT('/')), false) )
         {
             // matches (either exactly or it's a wildcard)
-            return TRUE;
+            return true;
         }
     }
 
-    return FALSE;
+    return false;
 }
 
 wxMimeTypesManager::wxMimeTypesManager()
@@ -486,7 +488,7 @@ wxMimeTypesManager::~wxMimeTypesManager()
 
 bool wxMimeTypesManager::Unassociate(wxFileType *ft)
 {
-#if defined(__UNIX__) && !defined(__WXPM__) && !defined(__CYGWIN__) && !defined(__WXWINE__)
+#if defined(__UNIX__) && !defined(__CYGWIN__) && !defined(__WINE__)
     return m_impl->Unassociate(ft);
 #else
     return ft->Unassociate();
@@ -499,7 +501,7 @@ wxMimeTypesManager::Associate(const wxFileTypeInfo& ftInfo)
 {
     EnsureImpl();
 
-#if defined(__WXMSW__) || (defined(__UNIX__) && !defined(__WXPM__))
+#if defined(__WXMSW__) || defined(__UNIX__)
     return m_impl->Associate(ftInfo);
 #else // other platforms
     wxFAIL_MSG( _T("not implemented") ); // TODO
@@ -540,8 +542,8 @@ wxMimeTypesManager::GetFileTypeFromMimeType(const wxString& mimeType)
     if ( !ft ) {
         // check the fallbacks
         //
-        // TODO linear search is potentially slow, perhaps we should use a sorted
-        //      array?
+        // TODO linear search is potentially slow, perhaps we should use a
+        //      sorted array?
         size_t count = m_fallbacks.GetCount();
         for ( size_t n = 0; n < count; n++ ) {
             if ( wxMimeTypesManager::IsOfType(mimeType,
@@ -596,20 +598,20 @@ size_t wxMimeTypesManager::EnumAllFileTypes(wxArrayString& mimetypes)
 void wxMimeTypesManager::Initialize(int mcapStyle,
                                     const wxString& sExtraDir)
 {
-#if defined(__UNIX__) && !defined(__WXPM__) && !defined(__CYGWIN__) && !defined(__WXWINE__)
+#if defined(__UNIX__) && !defined(__CYGWIN__) && !defined(__WINE__)
     EnsureImpl();
 
     m_impl->Initialize(mcapStyle, sExtraDir);
 #else
-	(void)mcapStyle;	
-	(void)sExtraDir;	
+    (void)mcapStyle;
+    (void)sExtraDir;
 #endif // Unix
 }
 
 // and this function clears all the data from the manager
 void wxMimeTypesManager::ClearData()
 {
-#if defined(__UNIX__) && !defined(__WXPM__) && !defined(__CYGWIN__) && !defined(__WXWINE__)
+#if defined(__UNIX__) && !defined(__CYGWIN__) && !defined(__WINE__)
     EnsureImpl();
 
     m_impl->ClearData();
@@ -630,7 +632,7 @@ class wxMimeTypeCmnModule: public wxModule
 {
 public:
     wxMimeTypeCmnModule() : wxModule() { }
-    virtual bool OnInit() { return TRUE; }
+    virtual bool OnInit() { return true; }
     virtual void OnExit()
     {
         // this avoids false memory leak allerts:

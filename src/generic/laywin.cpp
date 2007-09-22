@@ -7,12 +7,12 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     04/01/98
-// RCS-ID:      $Id: laywin.cpp,v 1.16 2001/07/05 18:48:48 VZ Exp $
+// RCS-ID:      $Id: laywin.cpp,v 1.22 2004/06/17 16:22:35 ABX Exp $
 // Copyright:   (c) Julian Smart
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
 
-#ifdef __GNUG__
+#if defined(__GNUG__) && !defined(NO_GCC_PRAGMA)
 #pragma implementation "laywin.h"
 #endif
 
@@ -167,7 +167,7 @@ void wxSashLayoutWindow::OnCalculateLayout(wxCalculateLayoutEvent& event)
         // Make sure the sash is erased when the window is resized
         if ((pos.x != thisRect.x || pos.y != thisRect.y || sz.x != thisRect.width || sz.y != thisRect.height) &&
             (GetSashVisible(wxSASH_TOP) || GetSashVisible(wxSASH_RIGHT) || GetSashVisible(wxSASH_BOTTOM) || GetSashVisible(wxSASH_LEFT)))
-            Refresh(TRUE);
+            Refresh(true);
 
     }
 
@@ -195,10 +195,10 @@ bool wxLayoutAlgorithm::LayoutMDIFrame(wxMDIParentFrame* frame, wxRect* r)
     wxCalculateLayoutEvent event;
     event.SetRect(rect);
 
-    wxNode* node = frame->GetChildren().First();
+    wxWindowList::compatibility_iterator node = frame->GetChildren().GetFirst();
     while (node)
     {
-        wxWindow* win = (wxWindow*) node->Data();
+        wxWindow* win = node->GetData();
 
         event.SetId(win->GetId());
         event.SetEventObject(win);
@@ -206,7 +206,7 @@ bool wxLayoutAlgorithm::LayoutMDIFrame(wxMDIParentFrame* frame, wxRect* r)
 
         win->GetEventHandler()->ProcessEvent(event);
 
-        node = node->Next();
+        node = node->GetNext();
     }
 
     wxWindow* clientWindow = frame->GetClientWindow();
@@ -215,7 +215,7 @@ bool wxLayoutAlgorithm::LayoutMDIFrame(wxMDIParentFrame* frame, wxRect* r)
 
     clientWindow->SetSize(rect.x, rect.y, rect.width, rect.height);
 
-    return TRUE;
+    return true;
 }
 
 #endif // wxUSE_MDI_ARCHITECTURE
@@ -263,11 +263,12 @@ bool wxLayoutAlgorithm::LayoutWindow(wxWindow* parent, wxWindow* mainWindow)
 
     // Find the last layout-aware window, so we can make it fill all remaining
     // space.
-    wxWindow* lastAwareWindow = NULL;
-    wxNode* node = parent->GetChildren().First();
+    wxWindow *lastAwareWindow = NULL;
+    wxWindowList::compatibility_iterator node = parent->GetChildren().GetFirst();
+
     while (node)
     {
-        wxWindow* win = (wxWindow*) node->Data();
+        wxWindow* win = node->GetData();
 
         if (win->IsShown())
         {
@@ -279,14 +280,14 @@ bool wxLayoutAlgorithm::LayoutWindow(wxWindow* parent, wxWindow* mainWindow)
                 lastAwareWindow = win;
         }
 
-        node = node->Next();
+        node = node->GetNext();
     }
 
     // Now do a dummy run to see if we have any space left for the final window (fail if not)
-    node = parent->GetChildren().First();
+    node = parent->GetChildren().GetFirst();
     while (node)
     {
-        wxWindow* win = (wxWindow*) node->Data();
+        wxWindow* win = node->GetData();
 
         // If mainWindow is NULL and we're at the last window,
         // skip this, because we'll simply make it fit the remaining space.
@@ -299,18 +300,18 @@ bool wxLayoutAlgorithm::LayoutWindow(wxWindow* parent, wxWindow* mainWindow)
             win->GetEventHandler()->ProcessEvent(event);
         }
 
-        node = node->Next();
+        node = node->GetNext();
     }
 
     if (event.GetRect().GetWidth() < 0 || event.GetRect().GetHeight() < 0)
-        return FALSE;
+        return false;
 
     event.SetRect(rect);
 
-    node = parent->GetChildren().First();
+    node = parent->GetChildren().GetFirst();
     while (node)
     {
-        wxWindow* win = (wxWindow*) node->Data();
+        wxWindow* win = node->GetData();
 
         // If mainWindow is NULL and we're at the last window,
         // skip this, because we'll simply make it fit the remaining space.
@@ -323,7 +324,7 @@ bool wxLayoutAlgorithm::LayoutWindow(wxWindow* parent, wxWindow* mainWindow)
             win->GetEventHandler()->ProcessEvent(event);
         }
 
-        node = node->Next();
+        node = node->GetNext();
     }
 
     rect = event.GetRect();
@@ -336,6 +337,6 @@ bool wxLayoutAlgorithm::LayoutWindow(wxWindow* parent, wxWindow* mainWindow)
         lastAwareWindow->SetSize(rect.x, rect.y, wxMax(0, rect.width), wxMax(0, rect.height));
     }
 
-    return TRUE;
+    return true;
 }
 

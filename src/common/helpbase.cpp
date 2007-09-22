@@ -4,12 +4,12 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     04/01/98
-// RCS-ID:      $Id: helpbase.cpp,v 1.10 2001/07/03 19:38:09 VZ Exp $
-// Copyright:   (c) Julian Smart and Markus Holzem
-// Licence:   	wxWindows license
+// RCS-ID:      $Id: helpbase.cpp,v 1.15 2004/09/15 13:20:18 ABX Exp $
+// Copyright:   (c) Julian Smart
+// Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
 
-#ifdef __GNUG__
+#if defined(__GNUG__) && !defined(NO_GCC_PRAGMA)
 #pragma implementation "helpbase.h"
 #endif
 

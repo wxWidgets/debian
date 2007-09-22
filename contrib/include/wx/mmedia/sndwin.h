@@ -3,19 +3,20 @@
 // Purpose:
 // Date: 08/11/1999
 // Author: Guilhem Lavaux <lavaux@easynet.fr> (C) 1999
-// CVSID: $Id: sndwin.h,v 1.2 2000/03/06 17:34:25 JS Exp $
+// CVSID: $Id: sndwin.h,v 1.4 2003/09/11 09:55:17 JS Exp $
 // --------------------------------------------------------------------------
 #ifndef _WX_SNDWIN_H
 #define _WX_SNDWIN_H
 
 #include "wx/defs.h"
+#include "wx/mmedia/defs.h"
 #include "wx/mmedia/sndbase.h"
 
 typedef struct _wxSoundInternal wxSoundInternal;
 typedef struct _wxSoundInfoHeader wxSoundInfoHeader;
 
-// class WXDLLEXPORT wxSoundInternal;
-class WXDLLEXPORT wxSoundStreamWin : public wxSoundStream {
+// class WXDLLIMPEXP_MMEDIA wxSoundInternal;
+class WXDLLIMPEXP_MMEDIA wxSoundStreamWin : public wxSoundStream {
  public:
   wxSoundStreamWin();
   ~wxSoundStreamWin();
@@ -23,7 +24,7 @@ class WXDLLEXPORT wxSoundStreamWin : public wxSoundStream {
   wxSoundStream& Write(const void *buffer, wxUint32 len);
   wxSoundStream& Read(void *buffer, wxUint32 len); 
 
-  bool SetSoundFormat(wxSoundFormatBase& base);
+  bool SetSoundFormat(const wxSoundFormatBase& base);
 
   bool StartProduction(int evt);
   bool StopProduction();

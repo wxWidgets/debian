@@ -9,7 +9,7 @@
 // Licence:           wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
 
-#ifdef __GNUG__
+#if defined(__GNUG__) && !defined(NO_GCC_PRAGMA)
 #pragma implementation "valgen.h"
 #endif
 
@@ -44,13 +44,13 @@
   #include "wx/slider.h"
 #endif
 
-#if wxUSE_SPINCTRL && !defined(__WIN16__)
+
   #include "wx/spinctrl.h"
-#endif
-#if wxUSE_SPINBTN && !defined(__WIN16__)
+
+#if wxUSE_SPINBTN
   #include "wx/spinbutt.h"
 #endif
-#if wxUSE_CHECKLISTBOX && !defined(__WIN16__)
+#if wxUSE_CHECKLISTBOX
   #include "wx/checklst.h"
 #endif
 
@@ -97,18 +97,14 @@ bool wxGenericValidator::Copy(const wxGenericValidator& val)
     m_pString = val.m_pString;
     m_pArrayInt = val.m_pArrayInt;
 
-    return TRUE;
-}
-
-wxGenericValidator::~wxGenericValidator()
-{
+    return true;
 }
 
 // Called to transfer data to the window
 bool wxGenericValidator::TransferToWindow(void)
 {
     if ( !m_validatorWindow )
-        return FALSE;
+        return false;
 
     // bool controls
 #if wxUSE_CHECKBOX
@@ -118,7 +114,7 @@ bool wxGenericValidator::TransferToWindow(void)
         if (m_pBool)
         {
             pControl->SetValue(*m_pBool);
-            return TRUE;
+            return true;
         }
     } else
 #endif
@@ -129,7 +125,7 @@ bool wxGenericValidator::TransferToWindow(void)
         if (m_pBool)
         {
             pControl->SetValue(*m_pBool) ;
-            return TRUE;
+            return true;
         }
     } else
 #endif
@@ -142,7 +138,7 @@ bool wxGenericValidator::TransferToWindow(void)
         if (m_pInt)
         {
             pControl->SetValue(*m_pInt);
-            return TRUE;
+            return true;
         }
     } else
 #endif
@@ -153,7 +149,7 @@ bool wxGenericValidator::TransferToWindow(void)
         if (m_pInt)
         {
             pControl->SetSelection(*m_pInt) ;
-            return TRUE;
+            return true;
         }
     } else
 #endif
@@ -164,29 +160,29 @@ bool wxGenericValidator::TransferToWindow(void)
         if (m_pInt)
         {
             pControl->SetThumbPosition(*m_pInt) ;
-            return TRUE;
+            return true;
         }
     } else
 #endif
-#if wxUSE_SPINCTRL && !defined(__WIN16__) && !defined(__WXMOTIF__)
+#if wxUSE_SPINCTRL && !defined(__WXMOTIF__)
     if (m_validatorWindow->IsKindOf(CLASSINFO(wxSpinCtrl)) )
     {
         wxSpinCtrl* pControl = (wxSpinCtrl*) m_validatorWindow;
         if (m_pInt)
         {
             pControl->SetValue(*m_pInt);
-            return TRUE;
+            return true;
         }
     } else
 #endif
-#if wxUSE_SPINBTN && !defined(__WIN16__)
+#if wxUSE_SPINBTN
     if (m_validatorWindow->IsKindOf(CLASSINFO(wxSpinButton)) )
     {
         wxSpinButton* pControl = (wxSpinButton*) m_validatorWindow;
         if (m_pInt)
         {
             pControl->SetValue(*m_pInt) ;
-            return TRUE;
+            return true;
         }
     } else
 #endif
@@ -197,21 +193,23 @@ bool wxGenericValidator::TransferToWindow(void)
         if (m_pInt)
         {
             pControl->SetValue(*m_pInt) ;
-            return TRUE;
+            return true;
         }
     } else
 #endif
 
     // string controls
+#if wxUSE_BUTTON
     if (m_validatorWindow->IsKindOf(CLASSINFO(wxButton)) )
     {
         wxButton* pControl = (wxButton*) m_validatorWindow;
         if (m_pString)
         {
             pControl->SetLabel(*m_pString) ;
-            return TRUE;
+            return true;
         }
     } else
+#endif
 #if wxUSE_COMBOBOX
     if (m_validatorWindow->IsKindOf(CLASSINFO(wxComboBox)) )
     {
@@ -219,19 +217,19 @@ bool wxGenericValidator::TransferToWindow(void)
         if (m_pInt)
         {
             pControl->SetSelection(*m_pInt) ;
-            return TRUE;
+            return true;
         }
         else if (m_pString)
         {
-            if (pControl->FindString(* m_pString) > -1)
+            if (pControl->FindString(* m_pString) != wxNOT_FOUND)
             {
                 pControl->SetStringSelection(* m_pString);
             }
-            else
+            if ((m_validatorWindow->GetWindowStyle() & wxCB_READONLY) == 0)
             {
                 pControl->SetValue(* m_pString);
             }
-            return TRUE;
+            return true;
         }
     } else
 #endif
@@ -242,15 +240,15 @@ bool wxGenericValidator::TransferToWindow(void)
         if (m_pInt)
         {
             pControl->SetSelection(*m_pInt) ;
-            return TRUE;
+            return true;
         }
         else if (m_pString)
         {
-            if (pControl->FindString(* m_pString) > -1)
+            if (pControl->FindString(* m_pString) != wxNOT_FOUND)
             {
                 pControl->SetStringSelection(* m_pString);
             }
-            return TRUE;
+            return true;
         }
     } else
 #endif
@@ -260,27 +258,29 @@ bool wxGenericValidator::TransferToWindow(void)
         if (m_pString)
         {
             pControl->SetLabel(*m_pString) ;
-            return TRUE;
+            return true;
         }
     } else
+#if wxUSE_TEXTCTRL
     if (m_validatorWindow->IsKindOf(CLASSINFO(wxTextCtrl)) )
     {
         wxTextCtrl* pControl = (wxTextCtrl*) m_validatorWindow;
         if (m_pString)
         {
             pControl->SetValue(*m_pString) ;
-            return TRUE;
+            return true;
         }
         else if (m_pInt)
         {
             wxString str;
             str.Printf(wxT("%d"), *m_pInt);
             pControl->SetValue(str);
-            return TRUE;
+            return true;
         }
     } else
+#endif
     // array controls
-#if wxUSE_CHECKLISTBOX && !defined(__WIN16__)
+#if wxUSE_CHECKLISTBOX
     // NOTE: wxCheckListBox is a wxListBox, so wxCheckListBox MUST come first:
     if (m_validatorWindow->IsKindOf(CLASSINFO(wxCheckListBox)) )
     {
@@ -291,17 +291,17 @@ bool wxGenericValidator::TransferToWindow(void)
             size_t i,
                    count = pControl->GetCount();
             for ( i = 0 ; i < count; i++ )
-                pControl->Check(i, FALSE);
+                pControl->Check(i, false);
 
             // select each item in our array
             count = m_pArrayInt->GetCount();
             for ( i = 0 ; i < count; i++ )
                 pControl->Check(m_pArrayInt->Item(i));
 
-            return TRUE;
+            return true;
         }
         else
-            return FALSE;
+            return false;
     } else
 #endif
 #if wxUSE_LISTBOX
@@ -321,21 +321,21 @@ bool wxGenericValidator::TransferToWindow(void)
             for ( i = 0 ; i < count; i++ )
                 pControl->SetSelection(m_pArrayInt->Item(i));
 
-            return TRUE;
+            return true;
         }
     } else
 #endif
         ;   // to match the last 'else' above
 
   // unrecognized control, or bad pointer
-  return FALSE;
+  return false;
 }
 
 // Called to transfer data from the window
 bool wxGenericValidator::TransferFromWindow(void)
 {
   if ( !m_validatorWindow )
-    return FALSE;
+    return false;
 
   // bool controls
 #if wxUSE_CHECKBOX
@@ -345,7 +345,7 @@ bool wxGenericValidator::TransferFromWindow(void)
         if (m_pBool)
     {
       *m_pBool = pControl->GetValue() ;
-      return TRUE;
+      return true;
     }
   } else
 #endif
@@ -356,7 +356,7 @@ bool wxGenericValidator::TransferFromWindow(void)
         if (m_pBool)
     {
       *m_pBool = pControl->GetValue() ;
-      return TRUE;
+      return true;
     }
   } else
 #endif
@@ -368,7 +368,7 @@ bool wxGenericValidator::TransferFromWindow(void)
         if (m_pInt)
     {
       *m_pInt = pControl->GetValue() ;
-      return TRUE;
+      return true;
     }
   } else
 #endif
@@ -379,7 +379,7 @@ bool wxGenericValidator::TransferFromWindow(void)
         if (m_pInt)
     {
       *m_pInt = pControl->GetSelection() ;
-      return TRUE;
+      return true;
     }
   } else
 #endif
@@ -390,29 +390,29 @@ bool wxGenericValidator::TransferFromWindow(void)
         if (m_pInt)
     {
       *m_pInt = pControl->GetThumbPosition() ;
-      return TRUE;
+      return true;
     }
   } else
 #endif
-#if wxUSE_SPINCTRL && !defined(__WIN16__) && !defined(__WXMOTIF__)
+#if wxUSE_SPINCTRL && !defined(__WXMOTIF__)
     if (m_validatorWindow->IsKindOf(CLASSINFO(wxSpinCtrl)) )
     {
         wxSpinCtrl* pControl = (wxSpinCtrl*) m_validatorWindow;
         if (m_pInt)
         {
             *m_pInt=pControl->GetValue();
-            return TRUE;
+            return true;
         }
     } else
 #endif
-#if wxUSE_SPINBTN && !defined(__WIN16__)
+#if wxUSE_SPINBTN
   if (m_validatorWindow->IsKindOf(CLASSINFO(wxSpinButton)) )
   {
     wxSpinButton* pControl = (wxSpinButton*) m_validatorWindow;
         if (m_pInt)
     {
       *m_pInt = pControl->GetValue() ;
-      return TRUE;
+      return true;
     }
   } else
 #endif
@@ -423,21 +423,22 @@ bool wxGenericValidator::TransferFromWindow(void)
     if (m_pInt)
     {
       *m_pInt = pControl->GetValue() ;
-      return TRUE;
+      return true;
     }
   } else
 #endif
   // string controls
+#if wxUSE_BUTTON
   if (m_validatorWindow->IsKindOf(CLASSINFO(wxButton)) )
   {
     wxButton* pControl = (wxButton*) m_validatorWindow;
         if (m_pString)
     {
       *m_pString = pControl->GetLabel() ;
-      return TRUE;
+      return true;
     }
-  }
-  else
+  } else
+#endif
 #if wxUSE_COMBOBOX
   if (m_validatorWindow->IsKindOf(CLASSINFO(wxComboBox)) )
   {
@@ -445,12 +446,15 @@ bool wxGenericValidator::TransferFromWindow(void)
     if (m_pInt)
     {
       *m_pInt = pControl->GetSelection() ;
-      return TRUE;
+      return true;
     }
     else if (m_pString)
     {
-        *m_pString = pControl->GetValue();
-        return TRUE;
+        if (m_validatorWindow->GetWindowStyle() & wxCB_READONLY)
+            *m_pString = pControl->GetStringSelection();
+        else
+            *m_pString = pControl->GetValue();
+        return true;
     }
   } else
 #endif
@@ -461,12 +465,12 @@ bool wxGenericValidator::TransferFromWindow(void)
         if (m_pInt)
     {
       *m_pInt = pControl->GetSelection() ;
-      return TRUE;
+      return true;
     }
     else if (m_pString)
     {
         *m_pString = pControl->GetStringSelection();
-        return TRUE;
+        return true;
     }
   } else
 #endif
@@ -476,26 +480,27 @@ bool wxGenericValidator::TransferFromWindow(void)
         if (m_pString)
     {
       *m_pString = pControl->GetLabel() ;
-      return TRUE;
+      return true;
     }
   } else
+#if wxUSE_TEXTCTRL
   if (m_validatorWindow->IsKindOf(CLASSINFO(wxTextCtrl)) )
   {
     wxTextCtrl* pControl = (wxTextCtrl*) m_validatorWindow;
         if (m_pString)
     {
       *m_pString = pControl->GetValue() ;
-      return TRUE;
+      return true;
     }
     else if (m_pInt)
     {
         *m_pInt = wxAtoi(pControl->GetValue());
-        return TRUE;
+        return true;
     }
   } else
+#endif
   // array controls
 #if wxUSE_CHECKLISTBOX
-#ifndef __WIN16__
   // NOTE: wxCheckListBox isa wxListBox, so wxCheckListBox MUST come first:
   if (m_validatorWindow->IsKindOf(CLASSINFO(wxCheckListBox)) )
   {
@@ -514,12 +519,11 @@ bool wxGenericValidator::TransferFromWindow(void)
           m_pArrayInt->Add(i);
       }
 
-      return TRUE;
+      return true;
     }
     else
-      return FALSE;
+      return false;
   } else
-#endif
 #endif
 #if wxUSE_LISTBOX
   if (m_validatorWindow->IsKindOf(CLASSINFO(wxListBox)) )
@@ -539,14 +543,14 @@ bool wxGenericValidator::TransferFromWindow(void)
           m_pArrayInt->Add(i);
       }
 
-      return TRUE;
+      return true;
     }
   } else
 #endif
 
   // unrecognized control, or bad pointer
-    return FALSE;
-  return FALSE;
+    return false;
+  return false;
 }
 
 /*

@@ -4,9 +4,9 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     12/07/98
-// RCS-ID:      $Id: doc.cpp,v 1.3.2.1 2003/06/05 17:26:31 JS Exp $
+// RCS-ID:      $Id: doc.cpp,v 1.10 2004/07/22 19:01:37 ABX Exp $
 // Copyright:   (c) Julian Smart
-// Licence:   	wxWindows licence
+// Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
 
 #ifdef __GNUG__
@@ -28,7 +28,6 @@
 #error You must set wxUSE_DOC_VIEW_ARCHITECTURE to 1 in wx_setup.h!
 #endif
 
-#include <wx/wxexpr.h>
 #include "ogledit.h"
 #include "doc.h"
 #include "view.h"
@@ -50,7 +49,7 @@ DiagramDocument::~DiagramDocument(void)
 bool DiagramDocument::OnCloseDocument(void)
 {
   diagram.DeleteAllShapes();
-  return TRUE;
+  return true;
 }
 
 #if wxUSE_STD_IOSTREAM
@@ -88,39 +87,37 @@ wxSTD istream& DiagramDocument::LoadObject(wxSTD istream& stream)
 
 wxOutputStream& DiagramDocument::SaveObject(wxOutputStream& stream)
 {
-  wxDocument::SaveObject(stream);
-  char buf[400];
-  (void) wxGetTempFileName("diag", buf);
-
 #if wxUSE_PROLOGIO
+
+  wxDocument::SaveObject(stream);
+  wxChar buf[400];
+  (void) wxGetTempFileName(_T("diag"), buf);
+
   diagram.SaveFile(buf);
-#endif
 
   wxTransferFileToStream(buf, stream);
 
   wxRemoveFile(buf);
-  
+
+#endif
 
   return stream;
 }
 
 wxInputStream& DiagramDocument::LoadObject(wxInputStream& stream)
 {
+#if wxUSE_PROLOGIO
   wxDocument::LoadObject(stream);
 
-
-  char buf[400];
-  (void) wxGetTempFileName("diag", buf);
+  wxChar buf[400];
+  (void) wxGetTempFileName(_T("diag"), buf);
 
   wxTransferStreamToFile(stream, buf);
 
   diagram.DeleteAllShapes();
-
-#if wxUSE_PROLOGIO
   diagram.LoadFile(buf);
-#endif
-
   wxRemoveFile(buf);
+#endif
 
   return stream;
 }
@@ -131,9 +128,9 @@ wxInputStream& DiagramDocument::LoadObject(wxInputStream& stream)
  * Implementation of drawing command
  */
 
-DiagramCommand::DiagramCommand(char *name, int command, DiagramDocument *ddoc, wxClassInfo *info, double xx, double yy,
+DiagramCommand::DiagramCommand(const wxString& name, int command, DiagramDocument *ddoc, wxClassInfo *info, double xx, double yy,
   bool sel, wxShape *theShape, wxShape *fs, wxShape *ts):
-  wxCommand(TRUE, name)
+  wxCommand(true, name)
 {
   doc = ddoc;
   cmd = command;
@@ -146,11 +143,11 @@ DiagramCommand::DiagramCommand(char *name, int command, DiagramDocument *ddoc, w
   x = xx;
   y = yy;
   selected = sel;
-  deleteShape = FALSE;
+  deleteShape = false;
 }
 
-DiagramCommand::DiagramCommand(char *name, int command, DiagramDocument *ddoc, wxBrush *backgroundColour, wxShape *theShape):
-  wxCommand(TRUE, name)
+DiagramCommand::DiagramCommand(const wxString& name, int command, DiagramDocument *ddoc, wxBrush *backgroundColour, wxShape *theShape):
+  wxCommand(true, name)
 {
   doc = ddoc;
   cmd = command;
@@ -160,14 +157,14 @@ DiagramCommand::DiagramCommand(char *name, int command, DiagramDocument *ddoc, w
   shapeInfo = NULL;
   x = 0.0;
   y = 0.0;
-  selected = FALSE;
-  deleteShape = FALSE;
+  selected = false;
+  deleteShape = false;
   shapeBrush = backgroundColour;
   shapePen = NULL;
 }
 
-DiagramCommand::DiagramCommand(char *name, int command, DiagramDocument *ddoc, const wxString& lab, wxShape *theShape):
-  wxCommand(TRUE, name)
+DiagramCommand::DiagramCommand(const wxString& name, int command, DiagramDocument *ddoc, const wxString& lab, wxShape *theShape):
+  wxCommand(true, name)
 {
   doc = ddoc;
   cmd = command;
@@ -177,8 +174,8 @@ DiagramCommand::DiagramCommand(char *name, int command, DiagramDocument *ddoc, c
   shapeInfo = NULL;
   x = 0.0;
   y = 0.0;
-  selected = FALSE;
-  deleteShape = FALSE;
+  selected = false;
+  deleteShape = false;
   shapeBrush = NULL;
   shapePen = NULL;
   shapeLabel = lab;
@@ -201,9 +198,9 @@ bool DiagramCommand::Do(void)
     {
       if (shape)
       {
-        deleteShape = TRUE;
+        deleteShape = true;
         
-        shape->Select(FALSE);
+        shape->Select(false);
         
         // Generate commands to explicitly remove each connected line.
         RemoveLines(shape);
@@ -217,7 +214,7 @@ bool DiagramCommand::Do(void)
         }
         shape->Unlink();
         
-        doc->Modify(TRUE);
+        doc->Modify(true);
         doc->UpdateAllViews();
       }
 
@@ -225,22 +222,22 @@ bool DiagramCommand::Do(void)
     }
     case OGLEDIT_ADD_SHAPE:
     {
-      wxShape *theShape = NULL;
+      wxShape *theShape;
       if (shape)
         theShape = shape; // Saved from undoing the shape
       else
       {
         theShape = (wxShape *)shapeInfo->CreateObject();
         theShape->AssignNewIds();
-        theShape->SetEventHandler(new MyEvtHandler(theShape, theShape, wxString("")));
-        theShape->SetCentreResize(FALSE);
+        theShape->SetEventHandler(new MyEvtHandler(theShape, theShape, wxEmptyString));
+        theShape->SetCentreResize(false);
         theShape->SetPen(wxBLACK_PEN);
         theShape->SetBrush(wxCYAN_BRUSH);
       
         theShape->SetSize(60, 60);
       }
       doc->GetDiagram()->AddShape(theShape);
-      theShape->Show(TRUE);
+      theShape->Show(true);
 
       wxClientDC dc(theShape->GetCanvas());
       theShape->GetCanvas()->PrepareDC(dc);
@@ -248,22 +245,22 @@ bool DiagramCommand::Do(void)
       theShape->Move(dc, x, y);
       
       shape = theShape;
-      deleteShape = FALSE;
+      deleteShape = false;
 
-      doc->Modify(TRUE);
+      doc->Modify(true);
       doc->UpdateAllViews();
       break;
     }
     case OGLEDIT_ADD_LINE:
     {
-      wxShape *theShape = NULL;
+      wxShape *theShape;
       if (shape)
         theShape = shape; // Saved from undoing the line
       else
       {
         theShape = (wxShape *)shapeInfo->CreateObject();
         theShape->AssignNewIds();
-        theShape->SetEventHandler(new MyEvtHandler(theShape, theShape, wxString("")));
+        theShape->SetEventHandler(new MyEvtHandler(theShape, theShape, wxEmptyString));
         theShape->SetPen(wxBLACK_PEN);
         theShape->SetBrush(wxRED_BRUSH);
 
@@ -272,14 +269,14 @@ bool DiagramCommand::Do(void)
         // Yes, you can have more than 2 control points, in which case
         // it becomes a multi-segment line.
         lineShape->MakeLineControlPoints(2);
-        lineShape->AddArrow(ARROW_ARROW, ARROW_POSITION_END, 10.0, 0.0, "Normal arrowhead");
+        lineShape->AddArrow(ARROW_ARROW, ARROW_POSITION_END, 10.0, 0.0, _T("Normal arrowhead"));
       }
       
       doc->GetDiagram()->AddShape(theShape);
       
       fromShape->AddLine((wxLineShape *)theShape, toShape);
       
-      theShape->Show(TRUE);
+      theShape->Show(true);
 
       wxClientDC dc(theShape->GetCanvas());
       theShape->GetCanvas()->PrepareDC(dc);
@@ -290,9 +287,9 @@ bool DiagramCommand::Do(void)
       toShape->Move(dc, toShape->GetX(), toShape->GetY());
       
       shape = theShape;
-      deleteShape = FALSE;
+      deleteShape = false;
 
-      doc->Modify(TRUE);
+      doc->Modify(true);
       doc->UpdateAllViews();
       break;
     }
@@ -308,7 +305,7 @@ bool DiagramCommand::Do(void)
         shapeBrush = oldBrush;
         shape->Draw(dc);
         
-        doc->Modify(TRUE);
+        doc->Modify(true);
         doc->UpdateAllViews();
       }
 
@@ -326,17 +323,17 @@ bool DiagramCommand::Do(void)
         wxClientDC dc(shape->GetCanvas());
         shape->GetCanvas()->PrepareDC(dc);
 
-        shape->FormatText(dc, (char*) (const char*) myHandler->label);
+        shape->FormatText(dc, /* (char*) (const char*) */ myHandler->label);
         shape->Draw(dc);
         
-        doc->Modify(TRUE);
+        doc->Modify(true);
         doc->UpdateAllViews();
       }
 
       break;
     }
   }
-  return TRUE;
+  return true;
 }
 
 bool DiagramCommand::Undo(void)
@@ -348,7 +345,7 @@ bool DiagramCommand::Undo(void)
       if (shape)
       {
         doc->GetDiagram()->AddShape(shape);
-        shape->Show(TRUE);
+        shape->Show(true);
 
         if (shape->IsKindOf(CLASSINFO(wxLineShape)))
         {
@@ -357,11 +354,11 @@ bool DiagramCommand::Undo(void)
           fromShape->AddLine(lineShape, toShape);
         }
         if (selected)
-          shape->Select(TRUE);
+          shape->Select(true);
 
-        deleteShape = FALSE;
+        deleteShape = false;
       }
-      doc->Modify(TRUE);
+      doc->Modify(true);
       doc->UpdateAllViews();
       break;
     }
@@ -373,12 +370,12 @@ bool DiagramCommand::Undo(void)
         wxClientDC dc(shape->GetCanvas());
         shape->GetCanvas()->PrepareDC(dc);
 
-        shape->Select(FALSE, &dc);
+        shape->Select(false, &dc);
         doc->GetDiagram()->RemoveShape(shape);
         shape->Unlink();
-        deleteShape = TRUE;
+        deleteShape = true;
       }
-      doc->Modify(TRUE);
+      doc->Modify(true);
       doc->UpdateAllViews();
       break;
     }
@@ -394,7 +391,7 @@ bool DiagramCommand::Undo(void)
         shapeBrush = oldBrush;
         shape->Draw(dc);
         
-        doc->Modify(TRUE);
+        doc->Modify(true);
         doc->UpdateAllViews();
       }
       break;
@@ -411,29 +408,29 @@ bool DiagramCommand::Undo(void)
         wxClientDC dc(shape->GetCanvas());
         shape->GetCanvas()->PrepareDC(dc);
 
-        shape->FormatText(dc, (char*) (const char*) myHandler->label);
+        shape->FormatText(dc, /* (char*) (const char*) */ myHandler->label);
         shape->Draw(dc);
         
-        doc->Modify(TRUE);
+        doc->Modify(true);
         doc->UpdateAllViews();
       }
 
       break;
     }
   }
-  return TRUE;
+  return true;
 }
 
 // Remove each individual line connected to a shape by sending a command.
 void DiagramCommand::RemoveLines(wxShape *shape)
 {
-  wxNode *node = shape->GetLines().First();
+  wxObjectList::compatibility_iterator node = shape->GetLines().GetFirst();
   while (node)
   {
-    wxLineShape *line = (wxLineShape *)node->Data();
-    doc->GetCommandProcessor()->Submit(new DiagramCommand("Cut", OGLEDIT_CUT, doc, NULL, 0.0, 0.0, line->Selected(), line));
+    wxLineShape *line = (wxLineShape *)node->GetData();
+    doc->GetCommandProcessor()->Submit(new DiagramCommand(_T("Cut"), OGLEDIT_CUT, doc, NULL, 0.0, 0.0, line->Selected(), line));
     
-    node = shape->GetLines().First();
+    node = shape->GetLines().GetFirst();
   }
 }
 
@@ -441,7 +438,7 @@ void DiagramCommand::RemoveLines(wxShape *shape)
  * MyEvtHandler: an event handler class for all shapes
  */
  
-void MyEvtHandler::OnLeftClick(double x, double y, int keys, int attachment)
+void MyEvtHandler::OnLeftClick(double WXUNUSED(x), double WXUNUSED(y), int keys, int WXUNUSED(attachment))
 {
   wxClientDC dc(GetShape()->GetCanvas());
   GetShape()->GetCanvas()->PrepareDC(dc);
@@ -451,28 +448,28 @@ void MyEvtHandler::OnLeftClick(double x, double y, int keys, int attachment)
     // Selection is a concept the library knows about
     if (GetShape()->Selected())
     {
-      GetShape()->Select(FALSE, &dc);
+      GetShape()->Select(false, &dc);
       GetShape()->GetCanvas()->Redraw(dc); // Redraw because bits of objects will be are missing
     }
     else
     {
       // Ensure no other shape is selected, to simplify Undo/Redo code
-      bool redraw = FALSE;
-      wxNode *node = GetShape()->GetCanvas()->GetDiagram()->GetShapeList()->First();
+      bool redraw = false;
+      wxObjectList::compatibility_iterator node = GetShape()->GetCanvas()->GetDiagram()->GetShapeList()->GetFirst();
       while (node)
       {
-        wxShape *eachShape = (wxShape *)node->Data();
+        wxShape *eachShape = (wxShape *)node->GetData();
         if (eachShape->GetParent() == NULL)
         {
           if (eachShape->Selected())
           {
-            eachShape->Select(FALSE, &dc);
-            redraw = TRUE;
+            eachShape->Select(false, &dc);
+            redraw = true;
           }
         }
-        node = node->Next();
+        node = node->GetNext();
       }
-      GetShape()->Select(TRUE, &dc);
+      GetShape()->Select(true, &dc);
       if (redraw)
         GetShape()->GetCanvas()->Redraw(dc);
     }
@@ -483,7 +480,9 @@ void MyEvtHandler::OnLeftClick(double x, double y, int keys, int attachment)
   }
   else
   {
+#if wxUSE_STATUSBAR
     wxGetApp().frame->SetStatusText(label);
+#endif // wxUSE_STATUSBAR
   }
 }
 
@@ -491,7 +490,7 @@ void MyEvtHandler::OnLeftClick(double x, double y, int keys, int attachment)
  * Implement connection of two shapes by right-dragging between them.
  */
 
-void MyEvtHandler::OnBeginDragRight(double x, double y, int keys, int attachment)
+void MyEvtHandler::OnBeginDragRight(double x, double y, int WXUNUSED(keys), int attachment)
 {
   // Force attachment to be zero for now. Eventually we can deal with
   // the actual attachment point, e.g. a rectangle side if attachment mode is on.
@@ -509,7 +508,7 @@ void MyEvtHandler::OnBeginDragRight(double x, double y, int keys, int attachment
   GetShape()->GetCanvas()->CaptureMouse();
 }
 
-void MyEvtHandler::OnDragRight(bool draw, double x, double y, int keys, int attachment)
+void MyEvtHandler::OnDragRight(bool WXUNUSED(draw), double x, double y, int WXUNUSED(keys), int attachment)
 {
   // Force attachment to be zero for now
   attachment = 0;
@@ -525,7 +524,7 @@ void MyEvtHandler::OnDragRight(bool draw, double x, double y, int keys, int atta
   dc.DrawLine((long) xp, (long) yp, (long) x, (long) y);
 }
 
-void MyEvtHandler::OnEndDragRight(double x, double y, int keys, int attachment)
+void MyEvtHandler::OnEndDragRight(double x, double y, int WXUNUSED(keys), int WXUNUSED(attachment))
 {
   GetShape()->GetCanvas()->ReleaseMouse();
   MyCanvas *canvas = (MyCanvas *)GetShape()->GetCanvas();
@@ -537,44 +536,46 @@ void MyEvtHandler::OnEndDragRight(double x, double y, int keys, int attachment)
   if (otherShape && !otherShape->IsKindOf(CLASSINFO(wxLineShape)))
   {
     canvas->view->GetDocument()->GetCommandProcessor()->Submit(
-      new DiagramCommand("wxLineShape", OGLEDIT_ADD_LINE, (DiagramDocument *)canvas->view->GetDocument(), CLASSINFO(wxLineShape),
-      0.0, 0.0, FALSE, NULL, GetShape(), otherShape));
+      new DiagramCommand(_T("wxLineShape"), OGLEDIT_ADD_LINE, (DiagramDocument *)canvas->view->GetDocument(), CLASSINFO(wxLineShape),
+      0.0, 0.0, false, NULL, GetShape(), otherShape));
   }
 }
 
-void MyEvtHandler::OnEndSize(double x, double y)
+void MyEvtHandler::OnEndSize(double WXUNUSED(x), double WXUNUSED(y))
 {
   wxClientDC dc(GetShape()->GetCanvas());
   GetShape()->GetCanvas()->PrepareDC(dc);
 
-  GetShape()->FormatText(dc, (char*) (const char*) label);
+  GetShape()->FormatText(dc, /* (char*) (const char*) */ label);
 }
 
 /*
  * Diagram
  */
- 
+
 #if wxUSE_PROLOGIO
+ 
 bool MyDiagram::OnShapeSave(wxExprDatabase& db, wxShape& shape, wxExpr& expr)
 {
   wxDiagram::OnShapeSave(db, shape, expr);
   MyEvtHandler *handler = (MyEvtHandler *)shape.GetEventHandler();
-  expr.AddAttributeValueString("label", handler->label);
-  return TRUE;
+  expr.AddAttributeValueString(_T("label"), handler->label);
+  return true;
 }
 
 bool MyDiagram::OnShapeLoad(wxExprDatabase& db, wxShape& shape, wxExpr& expr)
 {
   wxDiagram::OnShapeLoad(db, shape, expr);
-  char *label = NULL;
-  expr.AssignAttributeValue("label", &label);
+  wxChar *label = NULL;
+  expr.AssignAttributeValue(_T("label"), &label);
   MyEvtHandler *handler = new MyEvtHandler(&shape, &shape, wxString(label));
   shape.SetEventHandler(handler);
   
   if (label)
     delete[] label;
-  return TRUE;
+  return true;
 }
+
 #endif
 
 /*

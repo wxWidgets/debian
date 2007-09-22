@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     01/02/97
-// RCS-ID:      $Id: printdlg.h,v 1.5 1999/06/13 22:54:00 VZ Exp $
+// RCS-ID:      $Id: printdlg.h,v 1.14 2004/11/01 15:55:14 JS Exp $
 // Copyright:   (c) Julian Smart
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -12,7 +12,7 @@
 #ifndef _WX_PRINTDLG_H_
 #define _WX_PRINTDLG_H_
 
-#ifdef __GNUG__
+#if defined(__GNUG__) && !defined(NO_GCC_PRAGMA)
 #pragma interface "printdlg.h"
 #endif
 
@@ -20,22 +20,49 @@
 
 #include "wx/dialog.h"
 #include "wx/cmndata.h"
+#include "wx/prntbase.h"
+#include "wx/printdlg.h"
 
 class WXDLLEXPORT wxDC;
 
+//----------------------------------------------------------------------------
+// wxWindowsPrintNativeData
+//----------------------------------------------------------------------------
+
+class WXDLLEXPORT wxWindowsPrintNativeData: public wxPrintNativeDataBase
+{
+public:
+    wxWindowsPrintNativeData();
+    virtual ~wxWindowsPrintNativeData();
+    
+    virtual bool TransferTo( wxPrintData &data );
+    virtual bool TransferFrom( const wxPrintData &data );
+    
+    virtual bool Ok() const;
+    
+    void* GetDevMode() const { return m_devMode; }
+    void SetDevMode(void* data) { m_devMode = data; }
+    void* GetDevNames() const { return m_devNames; }
+    void SetDevNames(void* data) { m_devNames = data; }
+    
+private:
+    void* m_devMode;
+    void* m_devNames;
+
+private:
+    DECLARE_DYNAMIC_CLASS(wxWindowsPrintNativeData)
+};
+    
 // ---------------------------------------------------------------------------
 // wxPrinterDialog: the common dialog for printing.
 // ---------------------------------------------------------------------------
 
-class WXDLLEXPORT wxPrintDialog : public wxDialog
+class WXDLLEXPORT wxWindowsPrintDialog : public wxPrintDialogBase
 {
-    DECLARE_DYNAMIC_CLASS(wxPrintDialog)
-
 public:
-    wxPrintDialog();
-    wxPrintDialog(wxWindow *parent, wxPrintDialogData* data = NULL);
-    wxPrintDialog(wxWindow *parent, wxPrintData* data);
-    virtual ~wxPrintDialog();
+    wxWindowsPrintDialog(wxWindow *parent, wxPrintDialogData* data = NULL);
+    wxWindowsPrintDialog(wxWindow *parent, wxPrintData* data);
+    virtual ~wxWindowsPrintDialog();
 
     bool Create(wxWindow *parent, wxPrintDialogData* data = NULL);
     virtual int ShowModal();
@@ -49,6 +76,17 @@ private:
     wxDC*             m_printerDC;
     bool              m_destroyDC;
     wxWindow*         m_dialogParent;
+    
+private:
+    bool ConvertToNative( wxPrintDialogData &data );
+    bool ConvertFromNative( wxPrintDialogData &data );
+    
+    // holds MSW handle
+    void*             m_printDlg;
+
+private:
+    DECLARE_NO_COPY_CLASS(wxWindowsPrintDialog)
+    DECLARE_CLASS(wxWindowsPrintDialog)
 };
 
 class WXDLLEXPORT wxPageSetupDialog: public wxDialog
@@ -62,12 +100,17 @@ public:
 
     bool Create(wxWindow *parent, wxPageSetupData *data = NULL);
     virtual int ShowModal();
+    bool ConvertToNative( wxPageSetupDialogData &data );
+    bool ConvertFromNative( wxPageSetupDialogData &data );
 
     wxPageSetupData& GetPageSetupData() { return m_pageSetupData; }
 
 private:
     wxPageSetupData   m_pageSetupData;
     wxWindow*         m_dialogParent;
+    void*             m_pageDlg;
+
+    DECLARE_NO_COPY_CLASS(wxPageSetupDialog)
 };
 
 #endif // wxUSE_PRINTING_ARCHITECTURE

@@ -4,9 +4,9 @@
 // Author:      Vadim Zeitlin
 // Modified by:
 // Created:     11.11.97
-// RCS-ID:      $Id: ownerdrw.h,v 1.17 2002/09/02 19:15:40 GD Exp $
+// RCS-ID:      $Id: ownerdrw.h,v 1.23 2004/09/20 11:31:40 ABX Exp $
 // Copyright:   (c) 1998 Vadim Zeitlin <zeitlin@dptmaths.ens-cachan.fr>
-// Licence:     wxWindows license
+// Licence:     wxWindows licence
 ///////////////////////////////////////////////////////////////////////////////
 
 #ifndef   _OWNERDRW_H
@@ -14,7 +14,7 @@
 
 #if wxUSE_OWNER_DRAWN
 
-#if defined(__GNUG__) && !defined(__APPLE__)
+#if defined(__GNUG__) && !defined(NO_GCC_PRAGMA)
     #pragma interface "ownerdrw.h"
 #endif
 
@@ -36,23 +36,23 @@ class WXDLLEXPORT wxOwnerDrawn
 public:
   // ctor & dtor
   wxOwnerDrawn(const wxString& str = wxEmptyString,
-               bool bCheckable = FALSE,
-               bool bMenuItem = FALSE); // FIXME kludge for colors
+               bool bCheckable = false,
+               bool bMenuItem = false); // FIXME kludge for colors
   virtual ~wxOwnerDrawn() { }
 
   // fix appearance
   void SetFont(const wxFont& font)
-      { m_font = font; m_bOwnerDrawn = TRUE; }
+      { m_font = font; m_bOwnerDrawn = true; }
 
   wxFont& GetFont() const { return (wxFont &)m_font; }
 
   void SetTextColour(const wxColour& colText)
-      { m_colText = colText; m_bOwnerDrawn = TRUE; }
+      { m_colText = colText; m_bOwnerDrawn = true; }
 
   wxColour& GetTextColour() const { return (wxColour&) m_colText; }
 
   void SetBackgroundColour(const wxColour& colBack)
-      { m_colBack = colBack; m_bOwnerDrawn = TRUE; }
+      { m_colBack = colBack; m_bOwnerDrawn = true; }
 
   wxColour& GetBackgroundColour() const
       { return (wxColour&) m_colBack ; }
@@ -61,14 +61,21 @@ public:
                   const wxBitmap& bmpUnchecked = wxNullBitmap)
       { m_bmpChecked = bmpChecked;
         m_bmpUnchecked = bmpUnchecked;
-        m_bOwnerDrawn = TRUE; }
+        m_bOwnerDrawn = true; }
 
   void SetBitmap(const wxBitmap& bmpChecked)
       { m_bmpChecked = bmpChecked;
-        m_bOwnerDrawn = TRUE; }
+        m_bOwnerDrawn = true; }
 
-  const wxBitmap& GetBitmap(bool bChecked = TRUE) const
+  void SetDisabledBitmap( const wxBitmap& bmpDisabled )
+      { m_bmpDisabled = bmpDisabled;
+        m_bOwnerDrawn = true; }
+
+  const wxBitmap& GetBitmap(bool bChecked = true) const
       { return (bChecked ? m_bmpChecked : m_bmpUnchecked); }
+
+  const wxBitmap& GetDisabledBitmap() const
+      { return m_bmpDisabled; }
 
   // the height of the menu checkmark (or bitmap) is determined by the font
   // for the current item, but the width should be always the same (for the
@@ -80,7 +87,7 @@ public:
   {
       ms_nLastMarginWidth = m_nMarginWidth = (size_t) nWidth;
       if ( ((size_t) nWidth) != ms_nDefaultMarginWidth )
-          m_bOwnerDrawn = TRUE;
+          m_bOwnerDrawn = true;
   }
 
   int GetMarginWidth() const { return (int) m_nMarginWidth; }
@@ -96,13 +103,16 @@ public:
   // menu item if not empty
   void SetAccelString(const wxString& strAccel) { m_strAccel = strAccel; }
 
-  // this function might seem strange, but if it returns FALSE it means that
+  // this function might seem strange, but if it returns false it means that
   // no non-standard attribute are set, so there is no need for this control
-  // to be owner-drawn. Moreover, you can force owner-drawn to FALSE if you
+  // to be owner-drawn. Moreover, you can force owner-drawn to false if you
   // want to change, say, the color for the item but only if it is owner-drawn
   // (see wxMenuItem::wxMenuItem for example)
   bool IsOwnerDrawn() const { return m_bOwnerDrawn;   }
-  void ResetOwnerDrawn() { m_bOwnerDrawn = FALSE;  }
+
+  // switch on/off owner-drawing the item
+  void SetOwnerDrawn(bool ownerDrawn = true) { m_bOwnerDrawn = ownerDrawn; }
+  void ResetOwnerDrawn() { m_bOwnerDrawn = false;  }
 
 public:
   // constants used in OnDrawItem
@@ -124,7 +134,7 @@ public:
     wxODDefault   = 0x0020          // item is the default item
   };
 
-  // virtual functions to implement drawing (return TRUE if processed)
+  // virtual functions to implement drawing (return true if processed)
   virtual bool OnMeasureItem(size_t *pwidth, size_t *pheight);
   virtual bool OnDrawItem(wxDC& dc, const wxRect& rc, wxODAction act, wxODStatus stat);
 
@@ -143,7 +153,8 @@ private:
   wxColour  m_colText,      // color ----"---"---"----
             m_colBack;      // background color
   wxBitmap  m_bmpChecked,   // bitmap to put near the item
-            m_bmpUnchecked; // (checked is used also for 'uncheckable' items)
+            m_bmpUnchecked, // (checked is used also for 'uncheckable' items)
+            m_bmpDisabled;
 
   size_t    m_nHeight,      // font height
             m_nMinHeight,   // minimum height, as determined by user's system settings

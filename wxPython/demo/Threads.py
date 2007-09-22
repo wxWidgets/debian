@@ -1,15 +1,15 @@
 
-from wxPython.wx import *
-from wxPython.lib import newevent
+import  random
+import  time
+import  thread
 
-import thread
-import time
-from   whrandom import random
+import  wx
+import  wx.lib.newevent
 
 #----------------------------------------------------------------------
 
 # This creates a new Event class and a EVT binder function
-UpdateBarEvent, EVT_UPDATE_BARGRAPH = newevent.NewEvent()
+(UpdateBarEvent, EVT_UPDATE_BARGRAPH) = wx.lib.newevent.NewEvent()
 
 
 #----------------------------------------------------------------------
@@ -33,14 +33,13 @@ class CalcBarThread:
     def Run(self):
         while self.keepGoing:
             evt = UpdateBarEvent(barNum = self.barNum, value = int(self.val))
-            wxPostEvent(self.win, evt)
-            #del evt
-
-            sleeptime = (random() * 2) + 0.5
+            wx.PostEvent(self.win, evt)
+ 
+            sleeptime = (random.random() * 2) + 0.5
             time.sleep(sleeptime/4)
 
             sleeptime = sleeptime * 5
-            if int(random() * 2):
+            if int(random.random() * 2):
                 self.val = self.val + sleeptime
             else:
                 self.val = self.val - sleeptime
@@ -53,22 +52,22 @@ class CalcBarThread:
 #----------------------------------------------------------------------
 
 
-class GraphWindow(wxWindow):
+class GraphWindow(wx.Window):
     def __init__(self, parent, labels):
-        wxWindow.__init__(self, parent, -1)
+        wx.Window.__init__(self, parent, -1)
 
         self.values = []
         for label in labels:
             self.values.append((label, 0))
 
-        font = wxFont(12, wxSWISS, wxNORMAL, wxBOLD)
+        font = wx.Font(12, wx.SWISS, wx.NORMAL, wx.BOLD)
         self.SetFont(font)
 
-        self.colors = [ wxRED, wxGREEN, wxBLUE, wxCYAN,
+        self.colors = [ wx.RED, wx.GREEN, wx.BLUE, wx.CYAN,
                         "Yellow", "Navy" ]
 
-        EVT_ERASE_BACKGROUND(self, self.OnEraseBackground)
-        EVT_PAINT(self, self.OnPaint)
+        self.Bind(wx.EVT_ERASE_BACKGROUND, self.OnEraseBackground)
+        self.Bind(wx.EVT_PAINT, self.OnPaint)
 
 
     def SetValue(self, index, value):
@@ -78,7 +77,7 @@ class GraphWindow(wxWindow):
 
 
     def SetFont(self, font):
-        wxWindow.SetFont(self, font)
+        wx.Window.SetFont(self, font)
         wmax = hmax = 0
         for label, val in self.values:
             w,h = self.GetTextExtent(label)
@@ -94,10 +93,10 @@ class GraphWindow(wxWindow):
 
     def Draw(self, dc, size):
         dc.SetFont(self.GetFont())
-        dc.SetTextForeground(wxBLUE)
-        dc.SetBackground(wxBrush(self.GetBackgroundColour()))
+        dc.SetTextForeground(wx.BLUE)
+        dc.SetBackground(wx.Brush(self.GetBackgroundColour()))
         dc.Clear()
-        dc.SetPen(wxPen(wxBLACK, 3, wxSOLID))
+        dc.SetPen(wx.Pen(wx.BLACK, 3, wx.SOLID))
         dc.DrawLine(self.linePos, 0, self.linePos, size.height-10)
 
         bh = ypos = self.barHeight
@@ -107,28 +106,31 @@ class GraphWindow(wxWindow):
 
             if val:
                 color = self.colors[ x % len(self.colors) ]
-                dc.SetPen(wxPen(color))
-                dc.SetBrush(wxBrush(color))
+                dc.SetPen(wx.Pen(color))
+                dc.SetBrush(wx.Brush(color))
                 dc.DrawRectangle(self.linePos+3, ypos, val, bh)
 
             ypos = ypos + 2*bh
-            if ypos > size.height-10:
+            if ypos > size[1]-10:
                 break
 
 
     def OnPaint(self, evt):
-        size = self.GetSize()
-        bmp = wxEmptyBitmap(size.width, size.height)
-        dc = wxMemoryDC()
+        width, height = size =self.GetSize()
+        bmp = wx.EmptyBitmap(width, height)
+
+        dc = wx.MemoryDC()
         dc.SelectObject(bmp)
+
+        
         self.Draw(dc, size)
 
-        wdc = wxPaintDC(self)
+        wdc = wx.PaintDC(self)
         wdc.BeginDrawing()
-        wdc.Blit(0,0, size.width, size.height, dc, 0,0)
+        wdc.Blit(0,0, size[0], size[1], dc, 0,0)
         wdc.EndDrawing()
 
-        dc.SelectObject(wxNullBitmap)
+        dc.SelectObject(wx.NullBitmap)
 
 
     def OnEraseBackground(self, evt):
@@ -139,34 +141,35 @@ class GraphWindow(wxWindow):
 
 #----------------------------------------------------------------------
 
-class TestFrame(wxFrame):
+class TestFrame(wx.Frame):
     def __init__(self, parent, log):
-        wxFrame.__init__(self, parent, -1, "Thread Test", size=(450,300))
+        wx.Frame.__init__(self, parent, -1, "Thread Test", size=(450,300))
         self.log = log
 
         #self.CenterOnParent()
 
-        panel = wxPanel(self, -1)
-        panel.SetFont(wxFont(10, wxSWISS, wxNORMAL, wxBOLD))
-        wxStaticText(panel, -1,
+        panel = wx.Panel(self, -1)
+        panel.SetFont(wx.Font(10, wx.SWISS, wx.NORMAL, wx.BOLD))
+        wx.StaticText(panel, -1,
                      "This demo shows multiple threads interacting with this\n"
                      "window by sending events to it, one thread for each bar.",
-                     wxPoint(5,5))
+                     (5,5))
         panel.Fit()
 
         self.graph = GraphWindow(self, ['Zero', 'One', 'Two', 'Three', 'Four',
                                         'Five', 'Six', 'Seven'])
         self.graph.SetSize((450, self.graph.GetBestHeight()))
 
-        sizer = wxBoxSizer(wxVERTICAL)
-        sizer.Add(panel, 0, wxEXPAND)
-        sizer.Add(self.graph, 1, wxEXPAND)
+        sizer = wx.BoxSizer(wx.VERTICAL)
+        sizer.Add(panel, 0, wx.EXPAND)
+        sizer.Add(self.graph, 1, wx.EXPAND)
 
         self.SetSizer(sizer)
         self.SetAutoLayout(True)
         sizer.Fit(self)
 
-        EVT_UPDATE_BARGRAPH(self, self.OnUpdate)
+        self.Bind(EVT_UPDATE_BARGRAPH, self.OnUpdate)
+
         self.threads = []
         self.threads.append(CalcBarThread(self, 0, 50))
         self.threads.append(CalcBarThread(self, 1, 75))
@@ -180,7 +183,7 @@ class TestFrame(wxFrame):
         for t in self.threads:
             t.Start()
 
-        EVT_CLOSE(self, self.OnCloseWindow)
+        self.Bind(wx.EVT_CLOSE, self.OnCloseWindow)
 
 
     def OnUpdate(self, evt):
@@ -189,29 +192,51 @@ class TestFrame(wxFrame):
 
 
     def OnCloseWindow(self, evt):
-        busy = wxBusyInfo("One moment please, waiting for threads to die...")
-        wxYield()
+        busy = wx.BusyInfo("One moment please, waiting for threads to die...")
+        wx.Yield()
+
         for t in self.threads:
             t.Stop()
+
         running = 1
+
         while running:
             running = 0
+
             for t in self.threads:
                 running = running + t.IsRunning()
+
             time.sleep(0.1)
+
         self.Destroy()
 
 
 
-#----------------------------------------------------------------------
+#---------------------------------------------------------------------------
+
+class TestPanel(wx.Panel):
+    def __init__(self, parent, log):
+        self.log = log
+        wx.Panel.__init__(self, parent, -1)
+
+        b = wx.Button(self, -1, "Show Threads sample", (50,50))
+        self.Bind(wx.EVT_BUTTON, self.OnButton, b)
+
+
+    def OnButton(self, evt):
+        win = TestFrame(self, self.log)
+        win.Show(True)
+
+
+#---------------------------------------------------------------------------
+
 
 def runTest(frame, nb, log):
-    win = TestFrame(frame, log)
-    frame.otherWin = win
-    win.Show(True)
-    return None
+    win = TestPanel(nb, log)
+    return win
 
 #----------------------------------------------------------------------
+
 
 
 
@@ -228,7 +253,7 @@ application and makes it difficult to use additional threads at all.
 
 Since wxPython already makes extensive use of event handlers, it is a
 logical extension to allow events to be sent to GUI objects from
-alternate threads.  A function called wxPostEvent allows you to do
+alternate threads.  A function called wx.PostEvent allows you to do
 this.  It accepts an event and an event handler (window) and instead
 of sending the event immediately in the current context like
 ProcessEvent does, it processes it later from the context of the GUI
@@ -241,5 +266,5 @@ thread.
 if __name__ == '__main__':
     import sys,os
     import run
-    run.main(['', os.path.basename(sys.argv[0])])
+    run.main(['', os.path.basename(sys.argv[0])] + sys.argv[1:])
 

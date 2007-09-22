@@ -2,7 +2,7 @@
 // Name:        gauge.h
 // Purpose:
 // Author:      Robert Roebling
-// Id:          $Id: gauge.h,v 1.10.2.1 2002/10/15 13:25:41 VZ Exp $
+// Id:          $Id: gauge.h,v 1.19 2004/06/14 17:31:25 VS Exp $
 // Copyright:   (c) 1998 Robert Roebling
 // Licence:   	wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -11,7 +11,7 @@
 #ifndef __GTKGAUGEH__
 #define __GTKGAUGEH__
 
-#if defined(__GNUG__) && !defined(__APPLE__)
+#if defined(__GNUG__) && !defined(NO_GCC_PRAGMA)
 #pragma interface
 #endif
 
@@ -75,18 +75,21 @@ public:
     int GetRange() const;
     int GetValue() const;
 
+    bool IsVertical() const { return HasFlag(wxGA_VERTICAL); }
+    
+    static wxVisualAttributes
+    GetClassDefaultAttributes(wxWindowVariant variant = wxWINDOW_VARIANT_NORMAL);
+    
     // implementation
     // -------------
-
-    void ApplyWidgetStyle();
 
     // the max and current gauge values
     int m_rangeMax,
         m_gaugePos;
 
     // obsolete functions, don't use
-#ifdef WXWIN_COMPATIBILITY_2_2
-    bool GetProgressBar() const { return TRUE; }
+#if WXWIN_COMPATIBILITY_2_2
+    bool GetProgressBar() const { return true; }
 #endif // WXWIN_COMPATIBILITY_2_2
 
 protected:
@@ -95,6 +98,10 @@ protected:
 
     // set the gauge value to the value of m_gaugePos
     void DoSetGauge();
+
+    virtual wxSize DoGetBestSize() const;
+
+    virtual wxVisualAttributes GetDefaultAttributes() const;
 
 private:
     DECLARE_DYNAMIC_CLASS(wxGauge)

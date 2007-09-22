@@ -2,7 +2,7 @@
 // Name:        toplevel.cpp
 // Purpose:
 // Author:      Robert Roebling
-// Id:          $Id: toplevel.cpp,v 1.33.2.8 2003/09/09 18:02:27 RR Exp $
+// Id:          $Id: toplevel.cpp,v 1.69 2004/11/04 23:57:19 VS Exp $
 // Copyright:   (c) 1998 Robert Roebling
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -15,9 +15,12 @@
 // headers
 // ----------------------------------------------------------------------------
 
-#ifdef __GNUG__
+#if defined(__GNUG__) && !defined(NO_GCC_PRAGMA)
     #pragma implementation "toplevel.h"
 #endif
+
+// For compilers that support precompilation, includes "wx.h".
+#include "wx/wxprec.h"
 
 #ifdef __VMS
 #define XIconifyWindow XICONIFYWINDOW
@@ -25,6 +28,7 @@
 
 #include "wx/defs.h"
 
+#include "wx/toplevel.h"
 #include "wx/log.h"
 #include "wx/dialog.h"
 #include "wx/control.h"
@@ -58,10 +62,92 @@ extern bool g_isIdle;
 // data
 // ----------------------------------------------------------------------------
 
-extern wxList         wxPendingDelete;
+extern wxList           wxPendingDelete;
 
-extern int            g_openDialogs;
-extern wxWindowGTK   *g_delayedFocus;
+extern int              g_openDialogs;
+extern wxWindowGTK     *g_delayedFocus;
+
+// the frame that is currently active (i.e. its child has focus). It is
+// used to generate wxActivateEvents
+static wxTopLevelWindowGTK *g_activeFrame = (wxTopLevelWindowGTK*) NULL;
+static wxTopLevelWindowGTK *g_lastActiveFrame = (wxTopLevelWindowGTK*) NULL;
+
+// if we detect that the app has got/lost the focus, we set this variable to
+// either TRUE or FALSE and an activate event will be sent during the next
+// OnIdle() call and it is reset to -1: this value means that we shouldn't
+// send any activate events at all
+static int              g_sendActivateEvent = -1;
+
+//-----------------------------------------------------------------------------
+// "focus_in_event"
+//-----------------------------------------------------------------------------
+
+static gint gtk_frame_focus_in_callback( GtkWidget *widget,
+                                         GdkEvent *WXUNUSED(event),
+                                         wxTopLevelWindowGTK *win )
+{
+    if (g_isIdle)
+        wxapp_install_idle_handler();
+        
+    switch ( g_sendActivateEvent )
+    {
+        case -1:
+            // we've got focus from outside, synthetize wxActivateEvent
+            g_sendActivateEvent = 1;
+            break;
+
+        case 0:
+            // another our window just lost focus, it was already ours before
+            // - don't send any wxActivateEvent
+            g_sendActivateEvent = -1;
+            break;
+    }
+
+    g_activeFrame = win;
+    g_lastActiveFrame = g_activeFrame;
+        
+    // wxPrintf( wxT("active: %s\n"), win->GetTitle().c_str() );
+        
+    wxLogTrace(wxT("activate"), wxT("Activating frame %p (from focus_in)"), g_activeFrame);
+    wxActivateEvent event(wxEVT_ACTIVATE, TRUE, g_activeFrame->GetId());
+    event.SetEventObject(g_activeFrame);
+    g_activeFrame->GetEventHandler()->ProcessEvent(event);
+
+    return FALSE;
+}
+
+//-----------------------------------------------------------------------------
+// "focus_out_event"
+//-----------------------------------------------------------------------------
+
+static gint gtk_frame_focus_out_callback( GtkWidget *widget, 
+                                          GdkEventFocus *WXUNUSED(gdk_event), 
+                                          wxTopLevelWindowGTK *win )
+{
+    if (g_isIdle)
+        wxapp_install_idle_handler();
+
+    // if the focus goes out of our app alltogether, OnIdle() will send
+    // wxActivateEvent, otherwise gtk_window_focus_in_callback() will reset
+    // g_sendActivateEvent to -1
+    g_sendActivateEvent = 0;
+        
+    // wxASSERT_MSG( (g_activeFrame == win), wxT("TLW deactivatd although it wasn't active") );
+        
+    // wxPrintf( wxT("inactive: %s\n"), win->GetTitle().c_str() );
+
+    if (g_activeFrame)
+    {
+        wxLogTrace(wxT("activate"), wxT("Activating frame %p (from focus_in)"), g_activeFrame);
+        wxActivateEvent event(wxEVT_ACTIVATE, FALSE, g_activeFrame->GetId());
+        event.SetEventObject(g_activeFrame);
+        g_activeFrame->GetEventHandler()->ProcessEvent(event);
+
+        g_activeFrame = NULL;
+    }
+        
+    return FALSE;
+}
 
 //-----------------------------------------------------------------------------
 // "focus" from m_window
@@ -103,7 +189,6 @@ static void gtk_frame_size_callback( GtkWidget *WXUNUSED(widget), GtkAllocation*
 
         win->m_width = alloc->width;
         win->m_height = alloc->height;
-        win->m_queuedFullRedraw = TRUE;
         win->GtkUpdateSize();
     }
 }
@@ -262,7 +347,7 @@ static void gtk_window_draw_callback( GtkWidget *widget, GdkRectangle *rect, wxW
 
 /* Callback for wxTopLevelWindowGTK. This very strange beast has to be used because
  * C++ has no virtual methods in a constructor. We have to emulate a
- * virtual function here as wxWindows requires different ways to insert
+ * virtual function here as wxWidgets requires different ways to insert
  * a child in container classes. */
 
 static void wxInsertChildInTopLevelWindow( wxTopLevelWindowGTK* parent, wxWindow* child )
@@ -324,14 +409,8 @@ bool wxTopLevelWindowGTK::Create( wxWindow *parent,
     // always create a frame of some reasonable, even if arbitrary, size (at
     // least for MSW compatibility)
     wxSize size = sizeOrig;
-    if ( size.x == -1 || size.y == -1 )
-    {
-        wxSize sizeDpy = wxGetDisplaySize();
-        if ( size.x == -1 )
-            size.x = sizeDpy.x / 3;
-        if ( size.y == -1 )
-            size.y = sizeDpy.y / 5;
-    }
+    size.x = WidthDefault(size.x);
+    size.y = HeightDefault(size.y);
 
     wxTopLevelWindows.Append( this );
 
@@ -348,29 +427,51 @@ bool wxTopLevelWindowGTK::Create( wxWindow *parent,
 
     m_insertCallback = (wxInsertChildFunction) wxInsertChildInTopLevelWindow;
 
-    GtkWindowType win_type = GTK_WINDOW_TOPLEVEL;
-
-    if (style & wxFRAME_TOOL_WINDOW)
-        win_type = GTK_WINDOW_POPUP;
-
-    if (GetExtraStyle() & wxTOPLEVEL_EX_DIALOG)
+    // NB: m_widget may be !=NULL if it was created by derived class' Create,
+    //     e.g. in wxTaskBarIconAreaGTK
+    if (m_widget == NULL)
     {
-        // there is no more GTK_WINDOW_DIALOG in 2.0
+        if (GetExtraStyle() & wxTOPLEVEL_EX_DIALOG)
+        {
 #ifdef __WXGTK20__
-        win_type = GTK_WINDOW_TOPLEVEL;
+            m_widget = gtk_window_new(GTK_WINDOW_TOPLEVEL);
+            // Tell WM that this is a dialog window and make it center
+            // on parent by default (this is what GtkDialog ctor does):
+            gtk_window_set_type_hint(GTK_WINDOW(m_widget),
+                                     GDK_WINDOW_TYPE_HINT_DIALOG);
+            gtk_window_set_position(GTK_WINDOW(m_widget),
+                                    GTK_WIN_POS_CENTER_ON_PARENT);
 #else
-        win_type = GTK_WINDOW_DIALOG;
+            m_widget = gtk_window_new(GTK_WINDOW_DIALOG);
 #endif
+        }
+        else
+        {
+            m_widget = gtk_window_new(GTK_WINDOW_TOPLEVEL);
+#if GTK_CHECK_VERSION(2,1,0)
+            if (style & wxFRAME_TOOL_WINDOW)
+                gtk_window_set_type_hint(GTK_WINDOW(m_widget),
+                                         GDK_WINDOW_TYPE_HINT_UTILITY);
+#endif
+
+        }
     }
 
-    m_widget = gtk_window_new( win_type );
-
-    if (m_parent && (((GTK_IS_WINDOW(m_parent->m_widget)) &&
-              (GetExtraStyle() & wxTOPLEVEL_EX_DIALOG)) ||
-             (style & wxFRAME_FLOAT_ON_PARENT)))
+    wxWindow *topParent = wxGetTopLevelParent(m_parent);
+    if (topParent && (((GTK_IS_WINDOW(topParent->m_widget)) &&
+		      (GetExtraStyle() & wxTOPLEVEL_EX_DIALOG)) ||
+		     (style & wxFRAME_FLOAT_ON_PARENT)))
     {
-        gtk_window_set_transient_for( GTK_WINDOW(m_widget), GTK_WINDOW(m_parent->m_widget) );
+        gtk_window_set_transient_for( GTK_WINDOW(m_widget),
+                                      GTK_WINDOW(topParent->m_widget) );
     }
+
+#if GTK_CHECK_VERSION(2,2,0)
+    if (style & wxFRAME_NO_TASKBAR)
+    {
+        gtk_window_set_skip_taskbar_hint(GTK_WINDOW(m_widget), TRUE);
+    }
+#endif
 
     if (!name.IsEmpty())
         gtk_window_set_wmclass( GTK_WINDOW(m_widget), wxGTK_CONV( name ), wxGTK_CONV( name ) );
@@ -387,13 +488,16 @@ bool wxTopLevelWindowGTK::Create( wxWindow *parent,
     GTK_WIDGET_UNSET_FLAGS( m_mainWidget, GTK_CAN_FOCUS );
     gtk_container_add( GTK_CONTAINER(m_widget), m_mainWidget );
 
-    // for m_mainWidget themes
-    gtk_signal_connect( GTK_OBJECT(m_mainWidget), "expose_event",
+    if (m_miniEdge == 0) // wxMiniFrame has its own version.
+    {
+       // For m_mainWidget themes
+       gtk_signal_connect( GTK_OBJECT(m_mainWidget), "expose_event",
                 GTK_SIGNAL_FUNC(gtk_window_expose_callback), (gpointer)this );
 #ifndef __WXGTK20__
-    gtk_signal_connect( GTK_OBJECT(m_mainWidget), "draw",
+       gtk_signal_connect( GTK_OBJECT(m_mainWidget), "draw",
                 GTK_SIGNAL_FUNC(gtk_window_draw_callback), (gpointer)this );
 #endif
+    }
 
     // m_wxwindow only represents the client area without toolbar and menubar
     m_wxwindow = gtk_pizza_new();
@@ -440,6 +544,12 @@ bool wxTopLevelWindowGTK::Create( wxWindow *parent,
     gtk_signal_connect( GTK_OBJECT(m_widget), "focus",
         GTK_SIGNAL_FUNC(gtk_frame_focus_callback), (gpointer)this );
 
+    // activation
+    gtk_signal_connect( GTK_OBJECT(m_widget), "focus_in_event",
+        GTK_SIGNAL_FUNC(gtk_frame_focus_in_callback), (gpointer)this );
+    gtk_signal_connect( GTK_OBJECT(m_widget), "focus_out_event",
+        GTK_SIGNAL_FUNC(gtk_frame_focus_out_callback), (gpointer)this );
+            
     // decorations
     if ((m_miniEdge > 0) || (style & wxSIMPLE_BORDER) || (style & wxNO_BORDER))
     {
@@ -449,13 +559,17 @@ bool wxTopLevelWindowGTK::Create( wxWindow *parent,
     else
     {
         m_gdkDecor = (long) GDK_DECOR_BORDER;
-        m_gdkFunc = (long) GDK_FUNC_MOVE | GDK_FUNC_CLOSE;
+        m_gdkFunc = (long) GDK_FUNC_MOVE;
 
         // All this is for Motif Window Manager "hints" and is supposed to be
         // recognized by other WMs as well.
         if ((style & wxCAPTION) != 0)
         {
             m_gdkDecor |= GDK_DECOR_TITLE;
+        }
+        if ((style & wxCLOSE_BOX) != 0)
+        {
+            m_gdkFunc |= GDK_FUNC_CLOSE;
         }
         if ((style & wxSYSTEM_MENU) != 0)
         {
@@ -496,6 +610,11 @@ wxTopLevelWindowGTK::~wxTopLevelWindowGTK()
     {
         gtk_window_set_focus( GTK_WINDOW(m_widget), NULL );
     }
+    
+    if (g_activeFrame == this)
+        g_activeFrame = NULL;
+    if (g_lastActiveFrame == this)
+        g_lastActiveFrame = NULL;
 }
 
 
@@ -520,8 +639,8 @@ bool wxTopLevelWindowGTK::ShowFullScreen(bool show, long style )
         int screen_width,screen_height;
         wxDisplaySize( &screen_width, &screen_height );
 
-        gint client_x, client_y, root_x, root_y;
-        gint width, height;
+		gint client_x, client_y, root_x, root_y;
+		gint width, height;
 
         if (method != wxX11_FS_WMSPEC)
         {
@@ -533,12 +652,12 @@ bool wxTopLevelWindowGTK::ShowFullScreen(bool show, long style )
             gdk_window_set_functions(window, (GdkWMFunction)0);
         }
 
-        gdk_window_get_origin (m_widget->window, &root_x, &root_y);
-        gdk_window_get_geometry (m_widget->window, &client_x, &client_y,
-                     &width, &height, NULL);
+		gdk_window_get_origin (m_widget->window, &root_x, &root_y);
+		gdk_window_get_geometry (m_widget->window, &client_x, &client_y,
+					 &width, &height, NULL);
 
-        gdk_window_move_resize (m_widget->window, -client_x, -client_y,
-                    screen_width + 1, screen_height + 1);
+		gdk_window_move_resize (m_widget->window, -client_x, -client_y,
+					screen_width + 1, screen_height + 1);
 
         wxSetFullScreenStateX11((WXDisplay*)GDK_DISPLAY(),
                                 (WXWindow)GDK_ROOT_WINDOW(),
@@ -643,6 +762,16 @@ void wxTopLevelWindowGTK::DoSetSize( int x, int y, int width, int height, int si
         maxWidth = GetMaxWidth(),
         maxHeight = GetMaxHeight();
 
+#ifdef __WXGPE__
+    // GPE's window manager doesn't like size hints
+    // at all, esp. when the user has to use the
+    // virtual keyboard.
+    minWidth = -1;
+    minHeight = -1;
+    maxWidth = -1;
+    maxHeight = -1;
+#endif
+    
     if ((minWidth != -1) && (m_width < minWidth)) m_width = minWidth;
     if ((minHeight != -1) && (m_height < minHeight)) m_height = minHeight;
     if ((maxWidth != -1) && (m_width > maxWidth)) m_width = maxWidth;
@@ -712,28 +841,27 @@ void wxTopLevelWindowGTK::GtkOnSize( int WXUNUSED(x), int WXUNUSED(y),
     m_width = width;
     m_height = height;
 
-    // wxMDIChildFrame derives from wxFrame but it _is_ a wxWindow as it uses
-    // wxWindow::Create to create it's GTK equivalent. m_mainWidget is only
-    // set in wxFrame::Create so it is used to check what kind of frame we
-    // have here. if m_mainWidget is NULL it is a wxMDIChildFrame and so we
-    // skip the part which handles m_frameMenuBar, m_frameToolBar and (most
-    // importantly) m_mainWidget
+    /* wxMDIChildFrame derives from wxFrame but it _is_ a wxWindow as it uses
+       wxWindow::Create to create it's GTK equivalent. m_mainWidget is only
+       set in wxFrame::Create so it is used to check what kind of frame we
+       have here. if m_mainWidget is NULL it is a wxMDIChildFrame and so we
+       skip the part which handles m_frameMenuBar, m_frameToolBar and (most
+       importantly) m_mainWidget */
 
     int minWidth = GetMinWidth(),
         minHeight = GetMinHeight(),
         maxWidth = GetMaxWidth(),
         maxHeight = GetMaxHeight();
 
-    if (wxSystemSettings::GetScreenType() <= wxSYS_SCREEN_PDA)
-    {
-        // GPE's window manager doesn't like size hints
-        // at all, esp. when the user has to use the
-        // virtual keyboard.
-        minWidth = -1;
-        minHeight = -1;
-        maxWidth = -1;
-        maxHeight = -1;
-    }
+#ifdef __WXGPE__
+    // GPE's window manager doesn't like size hints
+    // at all, esp. when the user has to use the
+    // virtual keyboard.
+    minWidth = -1;
+    minHeight = -1;
+    maxWidth = -1;
+    maxHeight = -1;
+#endif
     
     if ((minWidth != -1) && (m_width < minWidth)) m_width = minWidth;
     if ((minHeight != -1) && (m_height < minHeight)) m_height = minHeight;
@@ -839,6 +967,20 @@ void wxTopLevelWindowGTK::OnInternalIdle()
     }
 
     wxWindow::OnInternalIdle();
+    
+    // Synthetize activate events.
+    if ( g_sendActivateEvent != -1 )
+    {
+        bool activate = g_sendActivateEvent != 0;
+        
+        // if (!activate) wxPrintf( wxT("de") );
+        // wxPrintf( wxT("activate\n") );
+        
+        // do it only once
+        g_sendActivateEvent = -1;
+
+        wxTheApp->SetActive(activate, (wxWindow *)g_lastActiveFrame);
+    }
 }
 
 // ----------------------------------------------------------------------------
@@ -853,21 +995,6 @@ void wxTopLevelWindowGTK::SetTitle( const wxString &title )
     gtk_window_set_title( GTK_WINDOW(m_widget), wxGTK_CONV( title ) );
 }
 
-void wxTopLevelWindowGTK::DoSetIcon( const wxIcon &icon )
-{
-    if ( !icon.Ok() )
-        return;
-
-    if (!m_widget->window)
-        return;
-
-    wxMask *mask = icon.GetMask();
-    GdkBitmap *bm = (GdkBitmap *) NULL;
-    if (mask) bm = mask->GetBitmap();
-
-    gdk_window_set_icon( m_widget->window, (GdkWindow *) NULL, icon.GetPixmap(), bm );
-}
-
 void wxTopLevelWindowGTK::SetIcon( const wxIcon &icon )
 {
     SetIcons( wxIconBundle( icon ) );
@@ -876,16 +1003,41 @@ void wxTopLevelWindowGTK::SetIcon( const wxIcon &icon )
 void wxTopLevelWindowGTK::SetIcons( const wxIconBundle &icons )
 {
     wxASSERT_MSG( (m_widget != NULL), wxT("invalid frame") );
-    GdkWindow* window = m_widget->window;
 
     wxTopLevelWindowBase::SetIcons( icons );
 
-    DoSetIcon( icons.GetIcon( -1 ) );
-    if ( window )
+#ifdef __WXGTK20__
+    GList *list = NULL;
+    size_t max = icons.m_icons.GetCount();
+
+    for (size_t i = 0; i < max; i++)
     {
-        wxSetIconsX11( (WXDisplay*)GDK_WINDOW_XDISPLAY( window ),
-                       (WXWindow)GDK_WINDOW_XWINDOW( window ), icons );
+        if (icons.m_icons[i].Ok())
+        {
+            list = g_list_prepend(list, icons.m_icons[i].GetPixbuf());
+        }
     }
+    gtk_window_set_icon_list(GTK_WINDOW(m_widget), list);
+    g_list_free(list);
+    
+#else // !__WXGTK20__
+    GdkWindow* window = m_widget->window;
+    if (!window)
+        return;
+
+    wxIcon icon = icons.GetIcon(-1);
+    if (icon.Ok())
+    {
+        wxMask *mask = icon.GetMask();
+        GdkBitmap *bm = (GdkBitmap *) NULL;
+        if (mask) bm = mask->GetBitmap();
+
+        gdk_window_set_icon( m_widget->window, (GdkWindow *) NULL, icon.GetPixmap(), bm );
+    }
+
+    wxSetIconsX11( (WXDisplay*)GDK_WINDOW_XDISPLAY( window ),
+                   (WXWindow)GDK_WINDOW_XWINDOW( window ), icons );
+#endif // !__WXGTK20__
 }
 
 // ----------------------------------------------------------------------------
@@ -906,15 +1058,22 @@ void wxTopLevelWindowGTK::Maximize(bool maximize)
 
 bool wxTopLevelWindowGTK::IsMaximized() const
 {
+#ifdef __WXGTK20__
+    if(!m_widget->window)
+        return false;
+
+    return gdk_window_get_state(m_widget->window) & GDK_WINDOW_STATE_MAXIMIZED;
+#else
   //    wxFAIL_MSG( _T("not implemented") );
 
     // This is an approximation
     return FALSE;
+#endif
 }
 
 void wxTopLevelWindowGTK::Restore()
 {
-#ifdef __GTK20__
+#ifdef __WXGTK20__
     // "Present" seems similar enough to "restore"
     gtk_window_present( GTK_WINDOW( m_widget ) );
 #else
@@ -1020,4 +1179,8 @@ bool wxTopLevelWindowGTK::SetShape(const wxRegion& region)
     return do_shape_combine_region(window, region);
 }
 
-// vi:sts=4:sw=4:et
+bool wxTopLevelWindowGTK::IsActive()
+{
+    return (this == (wxTopLevelWindowGTK*)g_activeFrame);
+}
+

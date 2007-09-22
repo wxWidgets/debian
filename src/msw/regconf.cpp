@@ -4,12 +4,12 @@
 // Author:      Vadim Zeitlin
 // Modified by:
 // Created:     27.04.98
-// RCS-ID:      $Id: regconf.cpp,v 1.42.2.1 2002/11/09 00:22:19 VS Exp $
+// RCS-ID:      $Id: regconf.cpp,v 1.55 2004/10/11 16:30:39 ABX Exp $
 // Copyright:   (c) 1998 Vadim Zeitlin <zeitlin@dptmaths.ens-cachan.fr>
-// Licence:     wxWindows license
+// Licence:     wxWindows licence
 ///////////////////////////////////////////////////////////////////////////////
 
-#ifdef __GNUG__
+#if defined(__GNUG__) && !defined(NO_GCC_PRAGMA)
 #pragma implementation "regconf.h"
 #endif
 
@@ -32,8 +32,6 @@
 #if wxUSE_CONFIG
 
 #include "wx/config.h"
-
-#ifndef __WIN16__
 
 #include "wx/msw/registry.h"
 #include "wx/msw/regconf.h"
@@ -124,7 +122,7 @@ wxRegConfig::wxRegConfig(const wxString& appName, const wxString& vendorName,
   m_keyLocal.ReserveMemoryForName(MEMORY_PREALLOC);
 
   m_keyLocalRoot.SetName(wxRegKey::HKCU, SOFTWARE_KEY + str);
-  m_keyLocal.SetName(m_keyLocalRoot, _T(""));
+  m_keyLocal.SetName(m_keyLocalRoot, wxEmptyString);
 
   if ( bDoUseGlobal )
   {
@@ -134,7 +132,7 @@ wxRegConfig::wxRegConfig(const wxString& appName, const wxString& vendorName,
     m_keyGlobal.ReserveMemoryForName(MEMORY_PREALLOC);
 
     m_keyGlobalRoot.SetName(wxRegKey::HKLM, SOFTWARE_KEY + str);
-    m_keyGlobal.SetName(m_keyGlobalRoot, _T(""));
+    m_keyGlobal.SetName(m_keyGlobalRoot, wxEmptyString);
   }
 
   // Create() will Open() if key already exists
@@ -148,14 +146,9 @@ wxRegConfig::wxRegConfig(const wxString& appName, const wxString& vendorName,
   if ( bDoUseGlobal )
   {
     wxLogNull nolog;
-    m_keyGlobalRoot.Open();
-    m_keyGlobal.Open();
+    m_keyGlobalRoot.Open(wxRegKey::Read);
+    m_keyGlobal.Open(wxRegKey::Read);
   }
-}
-
-wxRegConfig::~wxRegConfig()
-{
-  // nothing to do - key will be closed in their dtors
 }
 
 // ----------------------------------------------------------------------------
@@ -222,9 +215,9 @@ void wxRegConfig::SetPath(const wxString& strPath)
             strFullPath.reserve(2*m_strPath.length());
 
             strFullPath << m_strPath;
-            if ( strFullPath.Len() == 0 || 
+            if ( strFullPath.Len() == 0 ||
                  strFullPath.Last() != wxCONFIG_PATH_SEPARATOR )
-                strFullPath << wxCONFIG_PATH_SEPARATOR; 
+                strFullPath << wxCONFIG_PATH_SEPARATOR;
             strFullPath << strPath;
         }
 
@@ -245,7 +238,8 @@ void wxRegConfig::SetPath(const wxString& strPath)
         size_t len = strFullPath.length();
         const wxChar *end = src + len;
 
-        wxChar *dst = m_strPath.GetWriteBuf(len);
+        wxStringBufferLength buf(m_strPath, len);
+        wxChar *dst = buf;
         wxChar *start = dst;
 
         for ( ; src < end; src++, dst++ )
@@ -337,8 +331,7 @@ void wxRegConfig::SetPath(const wxString& strPath)
         }
 
         *dst = _T('\0');
-
-        m_strPath.UngetWriteBuf(dst - start);
+        buf.SetLength(dst - start);
     }
 
 #ifdef WX_DEBUG_SET_PATH
@@ -355,7 +348,8 @@ void wxRegConfig::SetPath(const wxString& strPath)
         size_t len = m_strPath.length();
 
         const wxChar *src = m_strPath.c_str();
-        wxChar *dst = strRegPath.GetWriteBuf(len);
+        wxStringBufferLength buf(strRegPath, len);
+        wxChar *dst = buf;
 
         const wxChar *end = src + len;
         for ( ; src < end; src++, dst++ )
@@ -366,7 +360,7 @@ void wxRegConfig::SetPath(const wxString& strPath)
                 *dst = *src;
         }
 
-        strRegPath.UngetWriteBuf(len);
+        buf.SetLength(len);
     }
 
     // this is not needed any longer as we don't create keys unnecessarily any
@@ -385,13 +379,14 @@ void wxRegConfig::SetPath(const wxString& strPath)
 
     // change current key(s)
     m_keyLocal.SetName(m_keyLocalRoot, strRegPath);
-    m_keyGlobal.SetName(m_keyGlobalRoot, strRegPath);
 
-    // don't create it right now, wait until it is accessed
-    //m_keyLocal.Create();
+    if ( GetStyle() & wxCONFIG_USE_GLOBAL_FILE )
+    {
+      m_keyGlobal.SetName(m_keyGlobalRoot, strRegPath);
 
-    wxLogNull nolog;
-    m_keyGlobal.Open();
+      wxLogNull nolog;
+      m_keyGlobal.Open(wxRegKey::Read);
+    }
 }
 
 // ----------------------------------------------------------------------------
@@ -423,7 +418,7 @@ bool wxRegConfig::GetNextGroup(wxString& str, long& lIndex) const
     while ( m_keyGlobal.GetNextKey(str, lIndex) ) {
       if ( !m_keyLocal.Exists() || !LocalKey().HasSubKey(str) ) {
         // ok, found one - return it
-        return TRUE;
+        return true;
       }
     }
 
@@ -433,7 +428,7 @@ bool wxRegConfig::GetNextGroup(wxString& str, long& lIndex) const
 
   // if we don't have the key at all, don't try to enumerate anything under it
   if ( !m_keyLocal.Exists() )
-      return FALSE;
+      return false;
 
   // much easier with local entries: get the next one we find
   // (don't forget to clear our flag bit and set it again later)
@@ -458,7 +453,7 @@ bool wxRegConfig::GetNextEntry(wxString& str, long& lIndex) const
     while ( m_keyGlobal.GetNextValue(str, lIndex) ) {
       if ( !m_keyLocal.Exists() || !LocalKey().HasValue(str) ) {
         // ok, found one - return it
-        return TRUE;
+        return true;
       }
     }
 
@@ -468,7 +463,7 @@ bool wxRegConfig::GetNextEntry(wxString& str, long& lIndex) const
 
   // if we don't have the key at all, don't try to enumerate anything under it
   if ( !m_keyLocal.Exists() )
-      return FALSE;
+      return false;
 
   // much easier with local entries: get the next one we find
   // (don't forget to clear our flag bit and set it again later)
@@ -560,11 +555,11 @@ wxConfigBase::EntryType wxRegConfig::GetEntryType(const wxString& key) const
 
 bool wxRegConfig::DoReadString(const wxString& key, wxString *pStr) const
 {
-    wxCHECK_MSG( pStr, FALSE, _T("wxRegConfig::Read(): NULL param") );
+    wxCHECK_MSG( pStr, false, _T("wxRegConfig::Read(): NULL param") );
 
   wxConfigPathChanger path(this, key);
 
-  bool bQueryGlobal = TRUE;
+  bool bQueryGlobal = true;
 
   // if immutable key exists in global key we must check that it's not
   // overriden by the local key with the same name
@@ -575,21 +570,21 @@ bool wxRegConfig::DoReadString(const wxString& key, wxString *pStr) const
                    path.Name().c_str());
       }
 
-      return TRUE;
+      return true;
     }
     else {
       // don't waste time - it's not there anyhow
-      bQueryGlobal = FALSE;
+      bQueryGlobal = false;
     }
   }
 
   // first try local key
   if ( (m_keyLocal.Exists() && TryGetValue(LocalKey(), path.Name(), *pStr)) ||
        (bQueryGlobal && TryGetValue(m_keyGlobal, path.Name(), *pStr)) ) {
-    return TRUE;
+    return true;
   }
 
-  return FALSE;
+  return false;
 }
 
 // this exactly reproduces the string version above except for ExpandEnvVars(),
@@ -597,11 +592,11 @@ bool wxRegConfig::DoReadString(const wxString& key, wxString *pStr) const
 
 bool wxRegConfig::DoReadLong(const wxString& key, long *plResult) const
 {
-    wxCHECK_MSG( plResult, FALSE, _T("wxRegConfig::Read(): NULL param") );
+    wxCHECK_MSG( plResult, false, _T("wxRegConfig::Read(): NULL param") );
 
   wxConfigPathChanger path(this, key);
 
-  bool bQueryGlobal = TRUE;
+  bool bQueryGlobal = true;
 
   // if immutable key exists in global key we must check that it's not
   // overriden by the local key with the same name
@@ -612,21 +607,21 @@ bool wxRegConfig::DoReadLong(const wxString& key, long *plResult) const
                      path.Name().c_str());
       }
 
-      return TRUE;
+      return true;
     }
     else {
       // don't waste time - it's not there anyhow
-      bQueryGlobal = FALSE;
+      bQueryGlobal = false;
     }
   }
 
   // first try local key
   if ( (m_keyLocal.Exists() && TryGetValue(LocalKey(), path.Name(), plResult)) ||
        (bQueryGlobal && TryGetValue(m_keyGlobal, path.Name(), plResult)) ) {
-    return TRUE;
+    return true;
   }
 
-  return FALSE;
+  return false;
 }
 
 bool wxRegConfig::DoWriteString(const wxString& key, const wxString& szValue)
@@ -635,7 +630,7 @@ bool wxRegConfig::DoWriteString(const wxString& key, const wxString& szValue)
 
   if ( IsImmutable(path.Name()) ) {
     wxLogError(wxT("Can't change immutable entry '%s'."), path.Name().c_str());
-    return FALSE;
+    return false;
   }
 
   return LocalKey().SetValue(path.Name(), szValue);
@@ -647,7 +642,7 @@ bool wxRegConfig::DoWriteLong(const wxString& key, long lValue)
 
   if ( IsImmutable(path.Name()) ) {
     wxLogError(wxT("Can't change immutable entry '%s'."), path.Name().c_str());
-    return FALSE;
+    return false;
   }
 
   return LocalKey().SetValue(path.Name(), lValue);
@@ -661,11 +656,11 @@ bool wxRegConfig::RenameEntry(const wxString& oldName, const wxString& newName)
 {
     // check that the old entry exists...
     if ( !HasEntry(oldName) )
-        return FALSE;
+        return false;
 
     // and that the new one doesn't
     if ( HasEntry(newName) )
-        return FALSE;
+        return false;
 
     return m_keyLocal.RenameValue(oldName, newName);
 }
@@ -674,11 +669,11 @@ bool wxRegConfig::RenameGroup(const wxString& oldName, const wxString& newName)
 {
     // check that the old group exists...
     if ( !HasGroup(oldName) )
-        return FALSE;
+        return false;
 
     // and that the new one doesn't
     if ( HasGroup(newName) )
-        return FALSE;
+        return false;
 
     return wxRegKey(m_keyLocal, oldName).Rename(newName);
 }
@@ -686,29 +681,30 @@ bool wxRegConfig::RenameGroup(const wxString& oldName, const wxString& newName)
 // ----------------------------------------------------------------------------
 // deleting
 // ----------------------------------------------------------------------------
-bool wxRegConfig::DeleteEntry(const wxString& value, bool WXUNUSED(bGroupIfEmptyAlso))
+
+bool wxRegConfig::DeleteEntry(const wxString& value, bool bGroupIfEmptyAlso)
 {
   wxConfigPathChanger path(this, value);
 
   if ( m_keyLocal.Exists() ) {
     if ( !m_keyLocal.DeleteValue(path.Name()) )
-      return FALSE;
+      return false;
 
-    if ( m_keyLocal.IsEmpty() ) {
+    if ( bGroupIfEmptyAlso && m_keyLocal.IsEmpty() ) {
       wxString strKey = GetPath().AfterLast(wxCONFIG_PATH_SEPARATOR);
       SetPath(_T(".."));  // changes m_keyLocal
       return LocalKey().DeleteKey(strKey);
     }
   }
 
-  return TRUE;
+  return true;
 }
 
 bool wxRegConfig::DeleteGroup(const wxString& key)
 {
   wxConfigPathChanger path(this, key);
 
-  return m_keyLocal.Exists() ? LocalKey().DeleteKey(path.Name()) : TRUE;
+  return m_keyLocal.Exists() ? LocalKey().DeleteKey(path.Name()) : true;
 }
 
 bool wxRegConfig::DeleteAll()
@@ -725,9 +721,6 @@ bool wxRegConfig::DeleteAll()
 
   return bOk;
 }
-
-#endif
-  // __WIN16__
 
 #endif
   // wxUSE_CONFIG

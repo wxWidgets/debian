@@ -4,9 +4,9 @@
 // Author:      Vadim Zeitlin
 // Modified by:
 // Created:     12.03.02
-// RCS-ID:      $Id: private.h,v 1.3 2002/08/05 17:57:53 RR Exp $
-// Copyright:   (c) 2002 Vadim Zeitlin <vadim@wxwindows.org>
-// Licence:     wxWindows license
+// RCS-ID:      $Id: private.h,v 1.10 2004/06/27 13:41:43 VS Exp $
+// Copyright:   (c) 2002 Vadim Zeitlin <vadim@wxwidgets.org>
+// Licence:     wxWindows licence
 ///////////////////////////////////////////////////////////////////////////////
 
 #ifndef _WX_GTK_PRIVATE_H_
@@ -59,20 +59,6 @@
     #define TOGGLE_BUTTON_EVENT_WIN(w) GTK_BUTTON((w))->event_window
 #else
     #define TOGGLE_BUTTON_EVENT_WIN(w) GTK_TOGGLE_BUTTON((w))->event_window
-#endif
-
-// get the font from a style
-//
-// TODO: GdkFont has been replaced by PangoFontDescription in GTK+ 2.0
-//       and we really should use it instead of GdkFont (see also dclient.cpp)
-#ifdef __WXGTK20__
-    #define GET_STYLE_FONT(style) gtk_style_get_font(style)
-    #define SET_STYLE_FONT(style, font) gtk_style_set_font(style, font)
-#else
-    #define GET_STYLE_FONT(style) ((style)->font)
-    #define SET_STYLE_FONT(style, fnt) \
-        gdk_font_unref( style->font );  \
-        style->font = gdk_font_ref( fnt )
 #endif
 
 // gtk_editable_{copy|cut|paste}_clipboard() had an extra argument under
@@ -144,6 +130,11 @@ inline wxEventType GtkScrollWinTypeToWx(guint scrollType)
     return GtkScrollTypeToWx(scrollType) +
             wxEVT_SCROLLWIN_TOP - wxEVT_SCROLL_TOP;
 }
+
+#ifdef __WXGTK20__
+// Escapes string so that it is valid Pango markup XML string:
+wxString wxEscapeStringForPangoMarkup(const wxString& str);
+#endif
 
 #endif // _WX_GTK_PRIVATE_H_
 

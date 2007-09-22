@@ -3,13 +3,14 @@
 // Purpose:
 // Date: 08/11/1999
 // Author: Guilhem Lavaux <lavaux@easynet.fr> (C) 1999
-// CVSID: $Id: sndfile.h,v 1.1 2000/03/05 19:03:12 GL Exp $
+// CVSID: $Id: sndfile.h,v 1.3 2004/06/16 15:22:54 ABX Exp $
 // --------------------------------------------------------------------------
 #ifndef _WX_SNDFILE_H
 #define _WX_SNDFILE_H
 
 #include "wx/defs.h"
 #include "wx/stream.h"
+#include "wx/mmedia/defs.h"
 #include "wx/mmedia/sndbase.h"
 #include "wx/mmedia/sndcodec.h"
 
@@ -19,7 +20,7 @@
 // Codec router class
 //
 
-class WXDLLEXPORT wxSoundRouterStream: public wxSoundStreamCodec {
+class WXDLLIMPEXP_MMEDIA wxSoundRouterStream: public wxSoundStreamCodec {
  public:
   wxSoundRouterStream(wxSoundStream& sndio);
   ~wxSoundRouterStream();
@@ -97,7 +98,7 @@ public:
     
     // You should use this function to test whether this file codec can read
     // the stream you passed to it.
-    virtual bool CanRead() { return FALSE; }
+    virtual bool CanRead() { return false; }
     
 protected:
     wxSoundRouterStream m_codec; 

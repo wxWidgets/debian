@@ -6,12 +6,12 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     01/02/97
-// RCS-ID:      $Id: sashwin.cpp,v 1.32.2.1 2002/09/21 14:16:24 JS Exp $
+// RCS-ID:      $Id: sashwin.cpp,v 1.45 2004/10/11 16:30:32 ABX Exp $
 // Copyright:   (c) Julian Smart
-// Licence:     wxWindows license
+// Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
 
-#ifdef __GNUG__
+#if defined(__GNUG__) && !defined(NO_GCC_PRAGMA)
 #pragma implementation "sashwin.h"
 #endif
 
@@ -46,7 +46,7 @@ BEGIN_EVENT_TABLE(wxSashWindow, wxWindow)
     EVT_PAINT(wxSashWindow::OnPaint)
     EVT_SIZE(wxSashWindow::OnSize)
     EVT_MOUSE_EVENTS(wxSashWindow::OnMouseEvent)
-#ifdef __WXMSW__
+#if defined( __WXMSW__ ) || defined( __WXMAC__)
     EVT_SET_CURSOR(wxSashWindow::OnSetCursor)
 #endif // wxMSW
 
@@ -80,7 +80,7 @@ void wxSashWindow::Init()
     m_maximumPaneSizeY = 10000;
     m_sashCursorWE = new wxCursor(wxCURSOR_SIZEWE);
     m_sashCursorNS = new wxCursor(wxCURSOR_SIZENS);
-    m_mouseCaptured = FALSE;
+    m_mouseCaptured = false;
     m_currentCursor = NULL;
 
     // Eventually, we'll respond to colour change messages
@@ -105,7 +105,7 @@ void wxSashWindow::OnMouseEvent(wxMouseEvent& event)
     if (event.LeftDown())
     {
         CaptureMouse();
-        m_mouseCaptured = TRUE;
+        m_mouseCaptured = true;
 
         if ( sashHit != wxSASH_NONE )
         {
@@ -154,7 +154,7 @@ void wxSashWindow::OnMouseEvent(wxMouseEvent& event)
         // Wasn't a proper drag
         if (m_mouseCaptured)
             ReleaseMouse();
-        m_mouseCaptured = FALSE;
+        m_mouseCaptured = false;
 
         wxScreenDC::EndDrawingOnTop();
         m_dragMode = wxSASH_DRAG_NONE;
@@ -166,7 +166,7 @@ void wxSashWindow::OnMouseEvent(wxMouseEvent& event)
         m_dragMode = wxSASH_DRAG_NONE;
         if (m_mouseCaptured)
             ReleaseMouse();
-        m_mouseCaptured = FALSE;
+        m_mouseCaptured = false;
 
         // Erase old tracker
         DrawSashTracker(m_draggingEdge, m_oldX, m_oldY);
@@ -187,8 +187,8 @@ void wxSashWindow::OnMouseEvent(wxMouseEvent& event)
         wxSashDragStatus status = wxSASH_STATUS_OK;
 
         // the new height and width of the window - if -1, it didn't change
-        int newHeight = -1,
-            newWidth = -1;
+        int newHeight = wxDefaultCoord,
+            newWidth = wxDefaultCoord;
 
         // NB: x and y may be negative and they're relative to the sash window
         //     upper left corner, while xp and yp are expressed in the parent
@@ -253,7 +253,7 @@ void wxSashWindow::OnMouseEvent(wxMouseEvent& event)
                 break;
         }
 
-        if ( newHeight == -1 )
+        if ( newHeight == wxDefaultCoord )
         {
             // didn't change
             newHeight = h;
@@ -265,7 +265,7 @@ void wxSashWindow::OnMouseEvent(wxMouseEvent& event)
             newHeight = wxMin(newHeight, m_maximumPaneSizeY);
         }
 
-        if ( newWidth == -1 )
+        if ( newWidth == wxDefaultCoord )
         {
             // didn't change
             newWidth = w;
@@ -289,7 +289,7 @@ void wxSashWindow::OnMouseEvent(wxMouseEvent& event)
     {
         if (m_mouseCaptured)
            ReleaseMouse();
-        m_mouseCaptured = FALSE;
+        m_mouseCaptured = false;
     }
     else if (event.Moving() && !event.Dragging())
     {
@@ -483,16 +483,14 @@ void wxSashWindow::DrawSash(wxSashEdgePosition edge, wxDC& dc)
     wxPen darkShadowPen(m_darkShadowColour, 1, wxSOLID);
     wxPen lightShadowPen(m_lightShadowColour, 1, wxSOLID);
     wxPen hilightPen(m_hilightColour, 1, wxSOLID);
-    wxPen blackPen(wxColour(0, 0, 0), 1, wxSOLID);
-    wxPen whitePen(wxColour(255, 255, 255), 1, wxSOLID);
+    wxColour blackClr(0, 0, 0);
+    wxColour whiteClr(255, 255, 255);
+    wxPen blackPen(blackClr, 1, wxSOLID);
+    wxPen whitePen(whiteClr, 1, wxSOLID);
 
     if ( edge == wxSASH_LEFT || edge == wxSASH_RIGHT )
     {
-        int sashPosition = 0;
-        if (edge == wxSASH_LEFT)
-            sashPosition = 0;
-        else
-            sashPosition = w - GetEdgeMargin(edge);
+        int sashPosition = (edge == wxSASH_LEFT) ? 0 : ( w - GetEdgeMargin(edge) );
 
         dc.SetPen(facePen);
         dc.SetBrush(faceBrush);
@@ -518,11 +516,7 @@ void wxSashWindow::DrawSash(wxSashEdgePosition edge, wxDC& dc)
     }
     else // top or bottom
     {
-        int sashPosition = 0;
-        if (edge == wxSASH_TOP)
-            sashPosition = 0;
-        else
-            sashPosition = h - GetEdgeMargin(edge);
+        int sashPosition = (edge == wxSASH_TOP) ? 0 : ( h - GetEdgeMargin(edge) );
 
         dc.SetPen(facePen);
         dc.SetBrush(faceBrush);
@@ -617,9 +611,9 @@ void wxSashWindow::SizeWindows()
     int cw, ch;
     GetClientSize(&cw, &ch);
 
-    if (GetChildren().Number() == 1)
+    if (GetChildren().GetCount() == 1)
     {
-        wxWindow* child = (wxWindow*) (GetChildren().First()->Data());
+        wxWindow* child = GetChildren().GetFirst()->GetData();
 
         int x = 0;
         int y = 0;
@@ -658,7 +652,7 @@ void wxSashWindow::SizeWindows()
 
         child->SetSize(x, y, width, height);
     }
-    else if (GetChildren().Number() > 1)
+    else if (GetChildren().GetCount() > 1)
     {
         // Perhaps multiple children are themselves sash windows.
         // TODO: this doesn't really work because the subwindows sizes/positions
@@ -678,19 +672,11 @@ void wxSashWindow::SizeWindows()
 void wxSashWindow::InitColours()
 {
     // Shadow colours
-#ifndef __WIN16__
     m_faceColour = wxSystemSettings::GetColour(wxSYS_COLOUR_3DFACE);
     m_mediumShadowColour = wxSystemSettings::GetColour(wxSYS_COLOUR_3DSHADOW);
     m_darkShadowColour = wxSystemSettings::GetColour(wxSYS_COLOUR_3DDKSHADOW);
     m_lightShadowColour = wxSystemSettings::GetColour(wxSYS_COLOUR_3DLIGHT);
     m_hilightColour = wxSystemSettings::GetColour(wxSYS_COLOUR_3DHILIGHT);
-#else
-    m_faceColour = *(wxTheColourDatabase->FindColour("LIGHT GREY"));
-    m_mediumShadowColour = *(wxTheColourDatabase->FindColour("GREY"));
-    m_darkShadowColour = *(wxTheColourDatabase->FindColour("BLACK"));
-    m_lightShadowColour = *(wxTheColourDatabase->FindColour("LIGHT GREY"));
-    m_hilightColour = *(wxTheColourDatabase->FindColour("WHITE"));
-#endif
 }
 
 void wxSashWindow::SetSashVisible(wxSashEdgePosition edge, bool sash)
@@ -702,7 +688,7 @@ void wxSashWindow::SetSashVisible(wxSashEdgePosition edge, bool sash)
         m_sashes[edge].m_margin = 0;
 }
 
-#ifdef __WXMSW__
+#if defined( __WXMSW__ ) || defined( __WXMAC__)
 
 // this is currently called (and needed) under MSW only...
 void wxSashWindow::OnSetCursor(wxSetCursorEvent& event)

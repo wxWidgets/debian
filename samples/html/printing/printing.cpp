@@ -12,7 +12,7 @@
 #endif
 
 // for all others, include the necessary headers (this file is usually all you
-// need because it includes almost all "standard" wxWindows headers
+// need because it includes almost all "standard" wxWidgets headers
 #ifndef WX_PRECOMP
 #include "wx/wx.h"
 #endif
@@ -59,12 +59,16 @@ class MyFrame : public wxFrame
         void OnPreview(wxCommandEvent& event);
         void OnOpen(wxCommandEvent& event);
         
+        void OnPrintSmall(wxCommandEvent& event);
+        void OnPrintNormal(wxCommandEvent& event);
+        void OnPrintHuge(wxCommandEvent& event);
+
 
     private:
         wxHtmlWindow *m_Html;
         wxHtmlEasyPrinting *m_Prn;
         wxString m_Name;
-        // any class wishing to process wxWindows events must use this macro
+        // any class wishing to process wxWidgets events must use this macro
         DECLARE_EVENT_TABLE()
 };
 
@@ -81,15 +85,18 @@ enum
     Minimal_Preview,
     Minimal_PageSetup,
     Minimal_PrintSetup,
-    Minimal_Open
+    Minimal_Open,
+    Minimal_PrintSmall,
+    Minimal_PrintNormal,
+    Minimal_PrintHuge
 
 };
 
 // ----------------------------------------------------------------------------
-// event tables and other macros for wxWindows
+// event tables and other macros for wxWidgets
 // ----------------------------------------------------------------------------
 
-// the event tables connect the wxWindows events with the functions (event
+// the event tables connect the wxWidgets events with the functions (event
 // handlers) which process them. It can be also done at run-time, but for the
 // simple menu events like this the static method is much simpler.
 BEGIN_EVENT_TABLE(MyFrame, wxFrame)
@@ -100,9 +107,12 @@ BEGIN_EVENT_TABLE(MyFrame, wxFrame)
     EVT_MENU(Minimal_PageSetup, MyFrame::OnPageSetup)
     EVT_MENU(Minimal_PrintSetup, MyFrame::OnPrintSetup)
     EVT_MENU(Minimal_Open, MyFrame::OnOpen)
+    EVT_MENU(Minimal_PrintSmall, MyFrame::OnPrintSmall)
+    EVT_MENU(Minimal_PrintNormal, MyFrame::OnPrintNormal)
+    EVT_MENU(Minimal_PrintHuge, MyFrame::OnPrintHuge)
 END_EVENT_TABLE()
 
-// Create a new application object: this macro will allow wxWindows to create
+// Create a new application object: this macro will allow wxWidgets to create
 // the application object during program execution (it's better than using a
 // static object for many reasons) and also declares the accessor function
 // wxGetApp() which will return the reference of the right type (i.e. MyApp and
@@ -130,18 +140,18 @@ bool MyApp::OnInit()
 #endif
 
     MyFrame *frame = new MyFrame(_("Printing test"),
-                                 wxPoint(150, 50), wxSize(640, 480));
+        wxDefaultPosition, wxSize(640, 480));
 
     // Show it and tell the application that it's our main window
     // @@@ what does it do exactly, in fact? is it necessary here?
-    frame->Show(TRUE);
+    frame->Show(true);
     SetTopWindow(frame);
 
 
     // success: wxApp::OnRun() will be called which will enter the main message
-    // loop and the application will run. If we returned FALSE here, the
+    // loop and the application will run. If we returned false here, the
     // application would exit immediately.
-    return TRUE;
+    return true;
 }
 
 // ----------------------------------------------------------------------------
@@ -151,7 +161,7 @@ bool MyApp::OnInit()
 
 // frame constructor
 MyFrame::MyFrame(const wxString& title, const wxPoint& pos, const wxSize& size)
-        : wxFrame((wxFrame *)NULL, -1, title, pos, size)
+        : wxFrame((wxFrame *)NULL, wxID_ANY, title, pos, size)
 {
     // create a menu bar
     wxMenu *menuFile = new wxMenu;
@@ -166,23 +176,37 @@ MyFrame::MyFrame(const wxString& title, const wxPoint& pos, const wxSize& size)
     menuFile->AppendSeparator();
     menuFile->Append(Minimal_Quit, _("&Exit"));
 
+    wxMenu *testFile = new wxMenu;
+    testFile->Append(Minimal_PrintSmall, _("Small Printer Fonts"));
+    testFile->Append(Minimal_PrintNormal, _("Normal Printer Fonts"));
+    testFile->Append(Minimal_PrintHuge, _("Huge Printer Fonts"));
+    
     // now append the freshly created menu to the menu bar...
     wxMenuBar *menuBar = new wxMenuBar;
     menuBar->Append(menuFile, _("&File"));
+    menuBar->Append(testFile, _("&Test"));
 
     // ... and attach this menu bar to the frame
     SetMenuBar(menuBar);
 
+#if wxUSE_STATUSBAR
     CreateStatusBar(1);
+#endif // wxUSE_STATUSBAR
 
     m_Html = new wxHtmlWindow(this);
     m_Html -> SetRelatedFrame(this, _("HTML : %s"));
+#if wxUSE_STATUSBAR
     m_Html -> SetRelatedStatusBar(0);
+#endif // wxUSE_STATUSBAR
     m_Name = wxT("test.htm");
     m_Html -> LoadPage(m_Name);
     
     m_Prn = new wxHtmlEasyPrinting(_("Easy Printing Demo"), this);
     m_Prn -> SetHeader(m_Name + wxT("(@PAGENUM@/@PAGESCNT@)<hr>"), wxPAGE_ALL);
+
+    // To specify where the AFM files are kept on Unix,
+    // you may wish to do something like this
+    // m_Prn->GetPrintData()->SetFontMetricPath(wxT("/home/julians/afm"));
 }
 
 // frame destructor
@@ -197,8 +221,8 @@ MyFrame::~MyFrame()
 
 void MyFrame::OnQuit(wxCommandEvent& WXUNUSED(event))
 {
-    // TRUE is to force the frame to close
-    Close(TRUE);
+    // true is to force the frame to close
+    Close(true);
 }
 
 
@@ -245,3 +269,19 @@ void MyFrame::OnOpen(wxCommandEvent& WXUNUSED(event))
 }
 
 
+void MyFrame::OnPrintSmall(wxCommandEvent& WXUNUSED(event))
+{
+    int fontsizes[] = { 4, 6, 8, 10, 12, 20, 24 }; 
+    m_Prn->SetFonts(wxEmptyString, wxEmptyString, fontsizes);
+}
+
+void MyFrame::OnPrintNormal(wxCommandEvent& WXUNUSED(event))
+{
+    m_Prn->SetFonts(wxEmptyString, wxEmptyString, 0);
+}
+
+void MyFrame::OnPrintHuge(wxCommandEvent& WXUNUSED(event))
+{
+    int fontsizes[] = { 20, 26, 28, 30, 32, 40, 44 }; 
+    m_Prn->SetFonts(wxEmptyString, wxEmptyString, fontsizes);
+}

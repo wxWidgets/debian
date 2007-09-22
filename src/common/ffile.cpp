@@ -1,12 +1,12 @@
 /////////////////////////////////////////////////////////////////////////////
 // Name:        ffile.cpp
-// Purpose:     wxFFile - encapsulates "FILE *" IO stream
+// Purpose:     wxFFile encapsulates "FILE *" IO stream
 // Author:      Vadim Zeitlin
 // Modified by:
 // Created:     14.07.99
-// RCS-ID:      $Id: ffile.cpp,v 1.11 2001/06/26 20:59:09 VZ Exp $
+// RCS-ID:      $Id: ffile.cpp,v 1.18 2004/09/14 12:08:27 ABX Exp $
 // Copyright:   (c) 1998 Vadim Zeitlin <zeitlin@dptmaths.ens-cachan.fr>
-// Licence:     wxWindows license
+// Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
 
 // ============================================================================
@@ -17,7 +17,7 @@
 // headers
 // ----------------------------------------------------------------------------
 
-#ifdef __GNUG__
+#if defined(__GNUG__) && !defined(NO_GCC_PRAGMA)
     #pragma implementation "ffile.h"
 #endif
 
@@ -45,43 +45,29 @@
 // opening the file
 // ----------------------------------------------------------------------------
 
-wxFFile::wxFFile(const wxChar *filename, const char *mode)
+wxFFile::wxFFile(const wxChar *filename, const wxChar *mode)
 {
     Detach();
 
     (void)Open(filename, mode);
 }
 
-bool wxFFile::Open(const wxChar *filename, const char *mode)
+bool wxFFile::Open(const wxChar *filename, const wxChar *mode)
 {
     wxASSERT_MSG( !m_fp, wxT("should close or detach the old file first") );
 
-#if wxUSE_UNICODE
-    char *tmp_fname;
-    size_t fname_len;
-
-    fname_len = wxStrlen(filename)+1;
-    tmp_fname = new char[fname_len];
-    wxWX2MB(tmp_fname, filename, fname_len);
-
-    m_fp = fopen(tmp_fname, mode);
-
-    delete tmp_fname;
-#else
-    m_fp = fopen(filename, mode);
-#endif
-
+    m_fp = wxFopen(filename, mode);
 
     if ( !m_fp )
     {
         wxLogSysError(_("can't open file '%s'"), filename);
 
-        return FALSE;
+        return false;
     }
 
     m_name = filename;
 
-    return TRUE;
+    return true;
 }
 
 bool wxFFile::Close()
@@ -92,13 +78,13 @@ bool wxFFile::Close()
         {
             wxLogSysError(_("can't close file '%s'"), m_name.c_str());
 
-            return FALSE;
+            return false;
         }
 
         Detach();
     }
 
-    return TRUE;
+    return true;
 }
 
 // ----------------------------------------------------------------------------
@@ -107,8 +93,8 @@ bool wxFFile::Close()
 
 bool wxFFile::ReadAll(wxString *str)
 {
-    wxCHECK_MSG( str, FALSE, wxT("invalid parameter") );
-    wxCHECK_MSG( IsOpened(), FALSE, wxT("can't read from closed file") );
+    wxCHECK_MSG( str, false, wxT("invalid parameter") );
+    wxCHECK_MSG( IsOpened(), false, wxT("can't read from closed file") );
 
     clearerr(m_fp);
 
@@ -124,7 +110,7 @@ bool wxFFile::ReadAll(wxString *str)
         {
             wxLogSysError(_("Read error on file '%s'"), m_name.c_str());
 
-            return FALSE;
+            return false;
         }
         //else: just EOF
 
@@ -132,7 +118,7 @@ bool wxFFile::ReadAll(wxString *str)
         *str += buf;
     }
 
-    return TRUE;
+    return true;
 }
 
 size_t wxFFile::Read(void *pBuf, size_t nCount)
@@ -173,11 +159,11 @@ bool wxFFile::Flush()
         {
             wxLogSysError(_("failed to flush the file '%s'"), m_name.c_str());
 
-            return FALSE;
+            return false;
         }
     }
 
-    return TRUE;
+    return true;
 }
 
 // ----------------------------------------------------------------------------
@@ -186,7 +172,7 @@ bool wxFFile::Flush()
 
 bool wxFFile::Seek(long ofs, wxSeekMode mode)
 {
-    wxCHECK_MSG( IsOpened(), FALSE, wxT("can't seek on closed file") );
+    wxCHECK_MSG( IsOpened(), false, wxT("can't seek on closed file") );
 
     int origin;
     switch ( mode )
@@ -212,14 +198,17 @@ bool wxFFile::Seek(long ofs, wxSeekMode mode)
     {
         wxLogSysError(_("Seek error on file '%s'"), m_name.c_str());
 
-        return FALSE;
+        return false;
     }
 
-    return TRUE;
+    return true;
 }
 
 size_t wxFFile::Tell() const
 {
+    wxCHECK_MSG( IsOpened(), (size_t)-1,
+                 _T("wxFFile::Tell(): file is closed!") );
+
     long rc = ftell(m_fp);
     if ( rc == -1 )
     {
@@ -232,6 +221,9 @@ size_t wxFFile::Tell() const
 
 size_t wxFFile::Length() const
 {
+    wxCHECK_MSG( IsOpened(), (size_t)-1,
+                 _T("wxFFile::Length(): file is closed!") );
+
     wxFFile& self = *(wxFFile *)this;   // const_cast
 
     size_t posOld = Tell();

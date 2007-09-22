@@ -3,7 +3,7 @@
 // Purpose:
 // Date: 08/11/1999
 // Author: Guilhem Lavaux <lavaux@easynet.fr> (C) 1999
-// CVSID: $Id: sndulaw.h,v 1.1 2000/03/05 19:03:13 GL Exp $
+// CVSID: $Id: sndulaw.h,v 1.2 2003/08/03 17:10:09 VS Exp $
 // --------------------------------------------------------------------------
 #ifndef _WX_SNDULAW_H
 #define _WX_SNDULAW_H
@@ -13,13 +13,14 @@
 #endif
 
 #include "wx/defs.h"
+#include "wx/mmedia/defs.h"
 #include "wx/mmedia/sndcodec.h"
 #include "wx/mmedia/sndbase.h"
 
 //
 // ULAW format
 //
-class WXDLLEXPORT wxSoundFormatUlaw: public wxSoundFormatBase {
+class WXDLLIMPEXP_MMEDIA wxSoundFormatUlaw: public wxSoundFormatBase {
 public:
     wxSoundFormatUlaw();
     ~wxSoundFormatUlaw();
@@ -47,8 +48,8 @@ protected:
 // ULAW converter class
 //
 
-class WXDLLEXPORT wxSoundRouterStream;
-class WXDLLEXPORT wxSoundStreamUlaw: public wxSoundStreamCodec {
+class WXDLLIMPEXP_MMEDIA wxSoundRouterStream;
+class WXDLLIMPEXP_MMEDIA wxSoundStreamUlaw: public wxSoundStreamCodec {
 public:
     wxSoundStreamUlaw(wxSoundStream& sndio);
     ~wxSoundStreamUlaw();

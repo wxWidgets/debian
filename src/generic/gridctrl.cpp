@@ -4,12 +4,12 @@
 // Author:      Paul Gammans, Roger Gammans
 // Modified by:
 // Created:     11/04/2001
-// RCS-ID:      $Id: gridctrl.cpp,v 1.9 2002/09/06 14:42:47 JS Exp $
+// RCS-ID:      $Id: gridctrl.cpp,v 1.15 2004/06/17 16:22:34 ABX Exp $
 // Copyright:   (c) The Computer Surgery (paul@compsurg.co.uk)
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
 
-#ifdef __GNUG__
+#if defined(__GNUG__) && !defined(NO_GCC_PRAGMA)
     #pragma implementation "gridctrl.h"
 #endif
 
@@ -19,7 +19,7 @@
     #pragma hdrstop
 #endif
 
-#if wxUSE_GRID || wxUSE_NEW_GRID
+#if wxUSE_GRID
 
 #ifndef WX_PRECOMP
     #include "wx/textctrl.h"
@@ -32,6 +32,8 @@
 // ----------------------------------------------------------------------------
 // wxGridCellDateTimeRenderer
 // ----------------------------------------------------------------------------
+
+#if wxUSE_DATETIME
 
 // Enables a grid cell to display a formated date and or time
 
@@ -58,7 +60,7 @@ wxString wxGridCellDateTimeRenderer::GetString(wxGrid& grid, int row, int col)
 {
     wxGridTableBase *table = grid.GetTable();
 
-    bool hasDatetime = FALSE;
+    bool hasDatetime = false;
     wxDateTime val;
     wxString text;
     if ( table->CanGetValueAs(row, col, wxGRID_VALUE_DATETIME) )
@@ -67,7 +69,7 @@ wxString wxGridCellDateTimeRenderer::GetString(wxGrid& grid, int row, int col)
 
         if (tempval){
             val = *((wxDateTime *)tempval);
-            hasDatetime = TRUE;
+            hasDatetime = true;
             delete (wxDateTime *)tempval;
         }
 
@@ -120,6 +122,8 @@ void wxGridCellDateTimeRenderer::SetParameters(const wxString& params){
     if (!params.IsEmpty())
         m_oformat=params;
 }
+
+#endif // wxUSE_DATETIME
 
 // ----------------------------------------------------------------------------
 // wxGridCellChoiceNumberRenderer
@@ -340,7 +344,7 @@ wxGridCellAutoWrapStringRenderer::GetTextLines(wxGrid& grid,
 
     dc.SetFont(attr.GetFont());
     wxStringTokenizer tk(data , _T(" \n\t\r"));
-    wxString thisline(wxT(""));
+    wxString thisline = wxEmptyString;
 
     while ( tk.HasMoreTokens() )
     {

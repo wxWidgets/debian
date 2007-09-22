@@ -2,17 +2,18 @@
 // Name:        radiobut.cpp
 // Purpose:
 // Author:      Robert Roebling
-// Id:          $Id: radiobut.cpp,v 1.42.2.1 2003/04/06 17:55:52 JS Exp $
+// Id:          $Id: radiobut.cpp,v 1.56 2004/08/15 20:36:04 VS Exp $
 // Copyright:   (c) 1998 Robert Roebling
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
 
 
-#ifdef __GNUG__
+#if defined(__GNUG__) && !defined(NO_GCC_PRAGMA)
 #pragma implementation "radiobut.h"
 #endif
 
-#include "wx/defs.h"
+// For compilers that support precompilation, includes "wx.h".
+#include "wx/wxprec.h"
 
 #if wxUSE_RADIOBOX
 
@@ -94,7 +95,7 @@ bool wxRadioButton::Create( wxWindow *parent,
     {
         // search backward for last group start
         wxRadioButton *chief = (wxRadioButton*) NULL;
-        wxWindowList::Node *node = parent->GetChildren().GetLast();
+        wxWindowList::compatibility_iterator node = parent->GetChildren().GetLast();
         while (node)
         {
             wxWindow *child = node->GetData();
@@ -127,23 +128,7 @@ bool wxRadioButton::Create( wxWindow *parent,
        
     m_parent->DoAddChild( this );
   
-    PostCreation();
-
-    SetFont( parent->GetFont() );
-
-    wxSize size_best( DoGetBestSize() );
-    wxSize new_size( size );
-    if (new_size.x == -1)
-        new_size.x = size_best.x;
-    if (new_size.y == -1)
-        new_size.y = size_best.y;
-    if ((new_size.x != size.x) || (new_size.y != size.y))
-        SetSize( new_size.x, new_size.y );
-        
-    SetBackgroundColour( parent->GetBackgroundColour() );
-    SetForegroundColour( parent->GetForegroundColour() );
-  
-    Show( TRUE );
+    PostCreation(size);
 
     return TRUE;
 }
@@ -202,11 +187,10 @@ bool wxRadioButton::Enable( bool enable )
     return TRUE;
 }
 
-void wxRadioButton::ApplyWidgetStyle()
+void wxRadioButton::DoApplyWidgetStyle(GtkRcStyle *style)
 {
-    SetWidgetStyle();
-    gtk_widget_set_style( m_widget, m_widgetStyle );
-    gtk_widget_set_style( BUTTON_CHILD(m_widget), m_widgetStyle );
+    gtk_widget_modify_style(m_widget, style);
+    gtk_widget_modify_style(BUTTON_CHILD(m_widget), style);
 }
 
 bool wxRadioButton::IsOwnGtkWindow( GdkWindow *window )
@@ -239,12 +223,28 @@ void wxRadioButton::OnInternalIdle()
         }
     }
 
-    UpdateWindowUI();
+    if (wxUpdateUIEvent::CanUpdate(this))
+        UpdateWindowUI(wxUPDATE_UI_FROMIDLE);
 }
 
 wxSize wxRadioButton::DoGetBestSize() const
 {
     return wxControl::DoGetBestSize();
 }
+
+// static
+wxVisualAttributes
+wxRadioButton::GetClassDefaultAttributes(wxWindowVariant WXUNUSED(variant))
+{
+    wxVisualAttributes attr;
+    // NB: we need toplevel window so that GTK+ can find the right style
+    GtkWidget *wnd = gtk_window_new(GTK_WINDOW_TOPLEVEL);
+    GtkWidget* widget = gtk_radio_button_new_with_label(NULL, "");
+    gtk_container_add(GTK_CONTAINER(wnd), widget);
+    attr = GetDefaultAttributesFromGTKWidget(widget);
+    gtk_widget_destroy(wnd);
+    return attr;
+}
+
 
 #endif

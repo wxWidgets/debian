@@ -4,9 +4,9 @@
 // Author:      Julian Smart
 // Modified by: 20.11.99 (VZ): don't derive from wxBitmap any more
 // Created:     04/01/98
-// RCS-ID:      $Id: icon.cpp,v 1.23 2002/02/06 01:42:02 VZ Exp $
-// Copyright:   (c) Julian Smart and Markus Holzem
-// Licence:     wxWindows license
+// RCS-ID:      $Id: icon.cpp,v 1.35 2004/09/17 22:09:23 VZ Exp $
+// Copyright:   (c) Julian Smart
+// Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
 
 // ============================================================================
@@ -17,7 +17,7 @@
 // headers
 // ----------------------------------------------------------------------------
 
-#ifdef __GNUG__
+#if defined(__GNUG__) && !defined(NO_GCC_PRAGMA)
     #pragma implementation "icon.h"
 #endif
 
@@ -39,11 +39,6 @@
 #endif
 
 #include "wx/msw/private.h"
-
-#if wxUSE_RESOURCE_LOADING_IN_MSW
-    #include "wx/msw/curico.h"
-    #include "wx/msw/curicop.h"
-#endif
 
 // ----------------------------------------------------------------------------
 // wxWin macros
@@ -90,43 +85,42 @@ wxIcon::wxIcon(const wxString& iconfile,
     LoadFile(iconfile, flags, desiredWidth, desiredHeight);
 }
 
+wxIcon::wxIcon(const wxIconLocation& loc)
+{
+    // wxICOFileHandler accepts names in the format "filename;index"
+    wxString fullname = loc.GetFileName();
+    if ( loc.GetIndex() )
+    {
+        fullname << _T(';') << loc.GetIndex();
+    }
+    //else: 0 is default
+
+    LoadFile(fullname, wxBITMAP_TYPE_ICO);
+}
+
 wxIcon::~wxIcon()
 {
+}
+
+wxObjectRefData *wxIcon::CloneRefData(const wxObjectRefData *dataOrig) const
+{
+    const wxIconRefData *
+        data = wx_static_cast(const wxIconRefData *, dataOrig);
+    if ( !data )
+        return NULL;
+
+    // we don't have to copy m_hIcon because we're only called from SetHICON()
+    // which overwrites m_hIcon anyhow currently
+    //
+    // and if we're called from SetWidth/Height/Depth(), it doesn't make sense
+    // to copy it neither as the handle would be inconsistent with the new size
+    return new wxIconRefData(*data);
 }
 
 void wxIcon::CopyFromBitmap(const wxBitmap& bmp)
 {
 #ifndef __WXMICROWIN__
-#ifdef __WIN32__
-    wxMask *mask = bmp.GetMask();
-    if ( !mask )
-    {
-        // we must have a mask for an icon, so even if it's probably incorrect,
-        // do create it (grey is the "standard" transparent colour)
-        mask = new wxMask(bmp, *wxLIGHT_GREY);
-    }
-
-    ICONINFO iconInfo;
-    iconInfo.fIcon = TRUE;  // we want an icon, not a cursor
-    iconInfo.hbmMask = wxInvertMask((HBITMAP)mask->GetMaskBitmap());
-    iconInfo.hbmColor = GetHbitmapOf(bmp);
-
-    // black out the transparent area to preserve background colour, because
-    // Windows blits the original bitmap using SRCINVERT (XOR) after applying
-    // the mask to the dest rect.
-    {
-        MemoryHDC dcSrc, dcDst;
-        SelectInHDC selectMask(dcSrc, (HBITMAP)mask->GetMaskBitmap()),
-                    selectBitmap(dcDst, iconInfo.hbmColor);
-
-        if ( !::BitBlt(dcDst, 0, 0, bmp.GetWidth(), bmp.GetHeight(),
-                       dcSrc, 0, 0, SRCAND) )
-        {
-            wxLogLastError(_T("BitBlt"));
-        }
-    }
-
-    HICON hicon = ::CreateIconIndirect(&iconInfo);
+    HICON hicon = wxBitmapToHICON(bmp);
     if ( !hicon )
     {
         wxLogLastError(wxT("CreateIconIndirect"));
@@ -136,30 +130,7 @@ void wxIcon::CopyFromBitmap(const wxBitmap& bmp)
         SetHICON((WXHICON)hicon);
         SetSize(bmp.GetWidth(), bmp.GetHeight());
     }
-
-    if ( !bmp.GetMask() )
-    {
-        // we created the mask, now delete it
-        delete mask;
-    }
-
-    // delete the inverted mask bitmap we created as well
-    ::DeleteObject(iconInfo.hbmMask);
-#else // Win16
-    // there are some functions in curico.cpp which probably could be used
-    // here...
-    // This probably doesn't work.
-    HBITMAP hBitmap = (HBITMAP) bmp.GetHBITMAP();
-    HICON hIcon = MakeIconFromBitmap((HINSTANCE) wxGetInstance(), hBitmap);
-    if (hIcon)
-    {
-        SetHICON((WXHICON)hIcon);
-        SetSize(bmp.GetWidth(), bmp.GetHeight());
-    }
-
-//    wxFAIL_MSG("Bitmap to icon conversion (including use of XPMs for icons) not implemented");
-#endif // Win32/16
-#endif
+#endif // __WXMICROWIN__
 }
 
 void wxIcon::CreateIconFromXpm(const char **data)
@@ -179,7 +150,7 @@ bool wxIcon::LoadFile(const wxString& filename,
     if ( !handler )
     {
         // say something?
-        return FALSE;
+        return false;
     }
 
     return handler->Load(this, filename, type, desiredWidth, desiredHeight);

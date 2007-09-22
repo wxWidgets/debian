@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     25/01/99
-// RCS-ID:      $Id: server.cpp,v 1.11.2.1 2002/12/15 17:25:08 MBN Exp $
+// RCS-ID:      $Id: server.cpp,v 1.17 2004/08/09 11:07:24 ABX Exp $
 // Copyright:   (c) Julian Smart
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -70,7 +70,7 @@ MyConnection *the_connection = NULL;
 bool MyApp::OnInit()
 {
     // Create the main frame window
-    (new MyFrame(NULL, _T("Server")))->Show(TRUE);
+    (new MyFrame(NULL, _T("Server")))->Show(true);
 
     // service name (DDE classes) or port number (TCP/IP based classes)
     wxString service = IPC_SERVICE;
@@ -82,7 +82,7 @@ bool MyApp::OnInit()
     m_server = new MyServer;
     m_server->Create(service);
 
-    return TRUE;
+    return true;
 }
 
 int MyApp::OnExit()
@@ -98,9 +98,11 @@ int MyApp::OnExit()
 
 // Define my frame constructor
 MyFrame::MyFrame(wxFrame *frame, const wxString& title)
-       : wxFrame(frame, -1, title, wxDefaultPosition, wxSize(350, 250))
+       : wxFrame(frame, wxID_ANY, title, wxDefaultPosition, wxSize(350, 250))
 {
+#if wxUSE_STATUSBAR
     CreateStatusBar();
+#endif // wxUSE_STATUSBAR
 
     // Give it an icon
     SetIcon(wxICON(mondrian));
@@ -118,7 +120,7 @@ MyFrame::MyFrame(wxFrame *frame, const wxString& title)
     SetMenuBar(menu_bar);
 
     // Make a listbox
-    wxListBox *list = new wxListBox(this, SERVER_LISTBOX, wxPoint(5, 5));
+    wxListBox *list = new wxListBox(this, SERVER_LISTBOX);
     list->Append(_T("Apple"));
     list->Append(_T("Pear"));
     list->Append(_T("Orange"));
@@ -145,7 +147,7 @@ void MyFrame::OnListBoxClick(wxCommandEvent& WXUNUSED(event))
 
 void MyFrame::OnExit(wxCommandEvent& WXUNUSED(event))
 {
-    Close(TRUE);
+    Close(true);
 }
 
 // ----------------------------------------------------------------------------
@@ -155,7 +157,7 @@ void MyFrame::OnExit(wxCommandEvent& WXUNUSED(event))
 IPCDialogBox::IPCDialogBox(wxWindow *parent, const wxString& title,
                            const wxPoint& pos, const wxSize& size,
                            MyConnection *connection)
-            : wxDialog(parent, -1, title, pos, size)
+            : wxDialog(parent, wxID_ANY, title, pos, size)
 {
     m_connection = connection;
     (void)new wxButton(this, SERVER_QUIT_BUTTON, _T("Quit this connection"),
@@ -165,13 +167,13 @@ IPCDialogBox::IPCDialogBox(wxWindow *parent, const wxString& title,
 
 IPCDialogBox::~IPCDialogBox( )
 {
-    // wxWindows exit code destroys dialog before destroying the connection in
+    // wxWidgets exit code destroys dialog before destroying the connection in
     // OnExit, so make sure connection won't try to delete the dialog later.
     if (m_connection)
         m_connection->dialog = NULL;
 }
 
-void IPCDialogBox::OnQuit(wxCommandEvent& event)
+void IPCDialogBox::OnQuit(wxCommandEvent& WXUNUSED(event))
 {
     m_connection->Disconnect();
     delete m_connection;
@@ -198,8 +200,8 @@ MyConnection::MyConnection()
             : wxConnection()
 {
     dialog = new IPCDialogBox(wxTheApp->GetTopWindow(), _T("Connection"),
-                              wxPoint(100, 100), wxSize(500, 500), this);
-    dialog->Show(TRUE);
+                              wxDefaultPosition, wxDefaultSize, this);
+    dialog->Show(true);
     the_connection = this;
 }
 
@@ -222,7 +224,7 @@ bool MyConnection::OnExecute(const wxString& WXUNUSED(topic),
                              wxIPCFormat WXUNUSED(format))
 {
     wxLogStatus(wxT("Execute command: %s"), data);
-    return TRUE;
+    return true;
 }
 
 bool MyConnection::OnPoke(const wxString& WXUNUSED(topic),
@@ -232,7 +234,7 @@ bool MyConnection::OnPoke(const wxString& WXUNUSED(topic),
                           wxIPCFormat WXUNUSED(format))
 {
     wxLogStatus(wxT("Poke command: %s = %s"), item.c_str(), data);
-    return TRUE;
+    return true;
 }
 
 wxChar *MyConnection::OnRequest(const wxString& WXUNUSED(topic),
@@ -246,6 +248,6 @@ wxChar *MyConnection::OnRequest(const wxString& WXUNUSED(topic),
 bool MyConnection::OnStartAdvise(const wxString& WXUNUSED(topic),
                                  const wxString& WXUNUSED(item))
 {
-    return TRUE;
+    return true;
 }
 

@@ -2,7 +2,7 @@
 // Name:        editlbox.h
 // Purpose:     ListBox with editable items
 // Author:      Vaclav Slavik
-// RCS-ID:      $Id: editlbox.h,v 1.7 2002/09/07 12:10:20 GD Exp $
+// RCS-ID:      $Id: editlbox.h,v 1.9 2004/06/08 19:27:28 ABX Exp $
 // Copyright:   (c) Vaclav Slavik
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -12,17 +12,11 @@
 #define __WX_EDITLBOX_H__
 
 #if defined(__GNUG__) && !defined(__APPLE__)
-	#pragma interface "editlbox.h"
+    #pragma interface "editlbox.h"
 #endif
 
 #include "wx/panel.h"
-
-#ifdef GIZMOISDLL
-#define GIZMODLLEXPORT WXDLLEXPORT
-#else
-#define GIZMODLLEXPORT
-#endif
-
+#include "wx/gizmos/gizmos.h"
 
 class WXDLLEXPORT wxBitmapButton;
 class WXDLLEXPORT wxListCtrl;
@@ -35,9 +29,9 @@ class WXDLLEXPORT wxListEvent;
 // This class provides a composite control that lets the
 // user easily enter list of strings
 
-class GIZMODLLEXPORT wxEditableListBox : public wxPanel
+class WXDLLIMPEXP_GIZMOS wxEditableListBox : public wxPanel
 {
-	DECLARE_CLASS(wxEditableListBox);
+    DECLARE_CLASS(wxEditableListBox);
 
 public:
     wxEditableListBox(wxWindow *parent, wxWindowID id,

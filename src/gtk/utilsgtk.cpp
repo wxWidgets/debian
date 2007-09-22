@@ -2,14 +2,18 @@
 // Name:        src/gtk/utilsgtk.cpp
 // Purpose:
 // Author:      Robert Roebling
-// Id:          $Id: utilsgtk.cpp,v 1.52 2002/01/09 12:49:11 VZ Exp $
-// Copyright:   (c) 1998 Robert Roebling, Julian Smart and Markus Holzem
+// Id:          $Id: utilsgtk.cpp,v 1.62 2004/06/27 13:42:17 VS Exp $
+// Copyright:   (c) 1998 Robert Roebling
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
+
+// For compilers that support precompilation, includes "wx.h".
+#include "wx/wxprec.h"
 
 #include "wx/utils.h"
 #include "wx/string.h"
 
+#include "wx/apptrait.h"
 #include "wx/intl.h"
 #include "wx/log.h"
 
@@ -52,11 +56,14 @@ extern GtkWidget *wxGetRootWindow();
 //----------------------------------------------------------------------------
 // misc.
 //----------------------------------------------------------------------------
+#ifndef __EMX__
+// on OS/2, we use the wxBell from wxBase library
 
 void wxBell()
 {
     gdk_beep();
 }
+#endif
 
 /* Don't synthesize KeyUp events holding down a key and producing
    KeyDown events with autorepeat. */
@@ -73,6 +80,43 @@ bool wxSetDetectableAutoRepeat( bool WXUNUSED(flag) )
     return FALSE;
 }
 #endif
+
+#ifdef __WXGTK20__
+// Escapes string so that it is valid Pango markup XML string:
+wxString wxEscapeStringForPangoMarkup(const wxString& str)
+{
+    size_t len = str.length();
+    wxString out;
+    out.Alloc(len);
+    for (size_t i = 0; i < len; i++)
+    {
+        wxChar c = str[i];
+        switch (c)
+        {
+            case _T('&'):
+                out << _T("&amp;");
+                break;
+            case _T('<'):
+                out << _T("&lt;");
+                break;
+            case _T('>'):
+                out << _T("&gt;");
+                break;
+            case _T('\''):
+                out << _T("&apos;");
+                break;
+            case _T('"'):
+                out << _T("&quot;");
+                break;
+            default:
+                out << c;
+                break;
+        }
+    }
+    return out;
+}
+#endif
+
 
 // ----------------------------------------------------------------------------
 // display characterstics
@@ -121,12 +165,23 @@ int wxDisplayDepth()
     return gdk_window_get_visual( wxGetRootWindow()->window )->depth;
 }
 
-int wxGetOsVersion(int *majorVsn, int *minorVsn)
+wxToolkitInfo& wxGUIAppTraits::GetToolkitInfo()
 {
-  if (majorVsn) *majorVsn = GTK_MAJOR_VERSION;
-  if (minorVsn) *minorVsn = GTK_MINOR_VERSION;
-
-  return wxGTK;
+    static wxToolkitInfo info;
+#ifdef __WXGTK20__
+    info.shortName = _T("gtk2");
+#else
+    info.shortName = _T("gtk");
+#endif
+    info.name = _T("wxGTK");
+#ifdef __WXUNIVERSAL__
+    info.shortName << _T("univ");
+    info.name << _T("/wxUniversal");
+#endif
+    info.versionMajor = gtk_major_version;
+    info.versionMinor = gtk_minor_version;
+    info.os = wxGTK;
+    return info;
 }
 
 wxWindow* wxFindWindowAtPoint(const wxPoint& pt)

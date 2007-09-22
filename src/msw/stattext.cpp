@@ -4,12 +4,12 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     04/01/98
-// RCS-ID:      $Id: stattext.cpp,v 1.31.2.3 2003/05/07 08:36:36 JS Exp $
-// Copyright:   (c) Julian Smart and Markus Holzem
-// Licence:     wxWindows license
+// RCS-ID:      $Id: stattext.cpp,v 1.57 2004/09/04 01:53:42 ABX Exp $
+// Copyright:   (c) Julian Smart
+// Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
 
-#ifdef __GNUG__
+#if defined(__GNUG__) && !defined(NO_GCC_PRAGMA)
 #pragma implementation "stattext.h"
 #endif
 
@@ -32,60 +32,97 @@
 #include "wx/msw/private.h"
 #include <stdio.h>
 
+#if wxUSE_EXTENDED_RTTI
+WX_DEFINE_FLAGS( wxStaticTextStyle )
+
+wxBEGIN_FLAGS( wxStaticTextStyle )
+    // new style border flags, we put them first to
+    // use them for streaming out
+    wxFLAGS_MEMBER(wxBORDER_SIMPLE)
+    wxFLAGS_MEMBER(wxBORDER_SUNKEN)
+    wxFLAGS_MEMBER(wxBORDER_DOUBLE)
+    wxFLAGS_MEMBER(wxBORDER_RAISED)
+    wxFLAGS_MEMBER(wxBORDER_STATIC)
+    wxFLAGS_MEMBER(wxBORDER_NONE)
+
+    // old style border flags
+    wxFLAGS_MEMBER(wxSIMPLE_BORDER)
+    wxFLAGS_MEMBER(wxSUNKEN_BORDER)
+    wxFLAGS_MEMBER(wxDOUBLE_BORDER)
+    wxFLAGS_MEMBER(wxRAISED_BORDER)
+    wxFLAGS_MEMBER(wxSTATIC_BORDER)
+    wxFLAGS_MEMBER(wxBORDER)
+
+    // standard window styles
+    wxFLAGS_MEMBER(wxTAB_TRAVERSAL)
+    wxFLAGS_MEMBER(wxCLIP_CHILDREN)
+    wxFLAGS_MEMBER(wxTRANSPARENT_WINDOW)
+    wxFLAGS_MEMBER(wxWANTS_CHARS)
+    wxFLAGS_MEMBER(wxFULL_REPAINT_ON_RESIZE)
+    wxFLAGS_MEMBER(wxALWAYS_SHOW_SB )
+    wxFLAGS_MEMBER(wxVSCROLL)
+    wxFLAGS_MEMBER(wxHSCROLL)
+
+    wxFLAGS_MEMBER(wxST_NO_AUTORESIZE)
+    wxFLAGS_MEMBER(wxALIGN_LEFT)
+    wxFLAGS_MEMBER(wxALIGN_RIGHT)
+    wxFLAGS_MEMBER(wxALIGN_CENTRE)
+
+wxEND_FLAGS( wxStaticTextStyle )
+
+IMPLEMENT_DYNAMIC_CLASS_XTI(wxStaticText, wxControl,"wx/stattext.h")
+
+wxBEGIN_PROPERTIES_TABLE(wxStaticText)
+    wxPROPERTY( Label,wxString, SetLabel, GetLabel, wxString() , 0 /*flags*/ , wxT("Helpstring") , wxT("group"))
+    wxPROPERTY_FLAGS( WindowStyle , wxStaticTextStyle , long , SetWindowStyleFlag , GetWindowStyleFlag , EMPTY_MACROVALUE, 0 /*flags*/ , wxT("Helpstring") , wxT("group")) // style
+wxEND_PROPERTIES_TABLE()
+
+wxBEGIN_HANDLERS_TABLE(wxStaticText)
+wxEND_HANDLERS_TABLE()
+
+wxCONSTRUCTOR_6( wxStaticText , wxWindow* , Parent , wxWindowID , Id , wxString , Label , wxPoint , Position , wxSize , Size , long , WindowStyle )
+#else
 IMPLEMENT_DYNAMIC_CLASS(wxStaticText, wxControl)
+#endif
 
-bool wxStaticText::Create(wxWindow *parent, wxWindowID id,
-           const wxString& label,
-           const wxPoint& pos,
-           const wxSize& size,
-           long style,
-           const wxString& name)
+bool wxStaticText::Create(wxWindow *parent,
+                          wxWindowID id,
+                          const wxString& label,
+                          const wxPoint& pos,
+                          const wxSize& size,
+                          long style,
+                          const wxString& name)
 {
-    // By default, a static text should have no border.
-    if ((style & wxBORDER_MASK) == wxBORDER_DEFAULT)
-        style |= wxBORDER_NONE;
+    if ( !CreateControl(parent, id, pos, size, style, wxDefaultValidator, name) )
+        return false;
 
-  SetName(name);
-  if (parent) parent->AddChild(this);
+    if ( !MSWCreateControl(wxT("STATIC"), label, pos, size) )
+        return false;
 
-  SetBackgroundColour(parent->GetBackgroundColour()) ;
-  SetForegroundColour(parent->GetForegroundColour()) ;
+    return true;
+}
 
-  if ( id == -1 )
-    m_windowId = (int)NewControlId();
-  else
-  m_windowId = id;
+wxBorder wxStaticText::GetDefaultBorder() const
+{
+    return wxBORDER_NONE;
+}
 
-  int x = pos.x;
-  int y = pos.y;
-  int width = size.x;
-  int height = size.y;
+WXDWORD wxStaticText::MSWGetStyle(long style, WXDWORD *exstyle) const
+{
+    WXDWORD msStyle = wxControl::MSWGetStyle(style, exstyle);
 
-  m_windowStyle = style;
+    // translate the alignment flags to the Windows ones
+    //
+    // note that both wxALIGN_LEFT and SS_LEFT are equal to 0 so we shouldn't
+    // test for them using & operator
+    if ( style & wxALIGN_CENTRE )
+        msStyle |= SS_CENTER;
+    else if ( style & wxALIGN_RIGHT )
+        msStyle |= SS_RIGHT;
+    else
+        msStyle |= SS_LEFT;
 
-  WXDWORD exStyle = 0;
-  WXDWORD msStyle = MSWGetStyle(GetWindowStyle(), & exStyle) ;
-
-  if (m_windowStyle & wxALIGN_CENTRE)
-    msStyle |= SS_CENTER;
-  else if (m_windowStyle & wxALIGN_RIGHT)
-    msStyle |= SS_RIGHT;
-  else
-    msStyle |= SS_LEFT;
-
-  m_hWnd = (WXHWND)::CreateWindowEx(exStyle, wxT("STATIC"), (const wxChar *)label,
-                         msStyle,
-                         0, 0, 0, 0, (HWND) parent->GetHWND(), (HMENU)m_windowId,
-                         wxGetInstance(), NULL);
-
-  wxCHECK_MSG( m_hWnd, FALSE, wxT("Failed to create static ctrl") );
-
-  SubclassWin(m_hWnd);
-
-  wxControl::SetFont(parent->GetFont());
-  SetSize(x, y, width, height);
-
-  return TRUE;
+    return msStyle;
 }
 
 wxSize wxStaticText::DoGetBestSize() const
@@ -95,7 +132,7 @@ wxSize wxStaticText::DoGetBestSize() const
     int widthTextMax = 0, widthLine,
         heightTextTotal = 0, heightLineDefault = 0, heightLine = 0;
 
-    bool lastWasAmpersand = FALSE;
+    bool lastWasAmpersand = false;
 
     wxString curLine;
     for ( const wxChar *pc = text; ; pc++ )
@@ -142,20 +179,22 @@ wxSize wxStaticText::DoGetBestSize() const
             {
                 if ( !lastWasAmpersand )
                 {
-                    lastWasAmpersand = TRUE;
+                    lastWasAmpersand = true;
 
                     // skip the statement adding pc to curLine below
                     continue;
                 }
 
                 // it is a literal ampersand
-                lastWasAmpersand = FALSE;
+                lastWasAmpersand = false;
             }
 
             curLine += *pc;
         }
     }
-
+#ifdef __WXWINCE__
+    if(widthTextMax) widthTextMax += 2;
+#endif
     return wxSize(widthTextMax, heightTextTotal);
 }
 
@@ -176,7 +215,9 @@ void wxStaticText::SetLabel(const wxString& label)
     // disabled
     if ( !(GetWindowStyle() & wxST_NO_AUTORESIZE) )
     {
-        DoSetSize(-1, -1, -1, -1, wxSIZE_AUTO_WIDTH | wxSIZE_AUTO_HEIGHT);
+        InvalidateBestSize();
+        DoSetSize(wxDefaultCoord, wxDefaultCoord, wxDefaultCoord, wxDefaultCoord,
+                  wxSIZE_AUTO_WIDTH | wxSIZE_AUTO_HEIGHT);
     }
 }
 
@@ -189,7 +230,9 @@ bool wxStaticText::SetFont(const wxFont& font)
     // disabled
     if ( !(GetWindowStyle() & wxST_NO_AUTORESIZE) )
     {
-        DoSetSize(-1, -1, -1, -1, wxSIZE_AUTO_WIDTH | wxSIZE_AUTO_HEIGHT);
+        InvalidateBestSize();
+        DoSetSize(wxDefaultCoord, wxDefaultCoord, wxDefaultCoord, wxDefaultCoord,
+                  wxSIZE_AUTO_WIDTH | wxSIZE_AUTO_HEIGHT);
     }
 
     return ret;

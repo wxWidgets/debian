@@ -5,67 +5,58 @@
 // Author:      Robin Dunn
 //
 // Created:     16-Aug-2002
-// RCS-ID:      $Id: wizard.i,v 1.4.2.2 2002/12/24 00:06:08 RD Exp $
+// RCS-ID:      $Id: wizard.i,v 1.19 2004/09/23 20:23:12 RD Exp $
 // Copyright:   (c) 2002 by Total Control Software
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
 
-%module wizard
+%define DOCSTRING
+"`Wizard` is a dialog class that guides the user through a sequence of steps,
+or pages."
+%enddef
+
+%module(package="wx", docstring=DOCSTRING) wizard
 
 %{
-#include "wxPython.h"
+#include "wx/wxPython/wxPython.h"
+#include "wx/wxPython/pyclasses.h"
+#include "wx/wxPython/printfw.h"
+
 #include <wx/wizard.h>
+    
 %}
 
 //----------------------------------------------------------------------
 
-%include typemaps.i
-%include my_typemaps.i
-
-// Import some definitions of other classes, etc.
-%import _defs.i
 %import windows.i
-%import frames.i
-%import misc.i
-%import controls.i
+%pythoncode { wx = _core }
+%pythoncode { __docfilter__ = wx.__DocFilter(globals()) }
 
+%include _wizard_rename.i
 
-//----------------------------------------------------------------------
-%{
-    // Put some wx default wxChar* values into wxStrings.
-    static const wxString wxPyEmptyString(wxT(""));
-%}
+MAKE_CONST_WXSTRING_NOSWIG(EmptyString);
+
 //----------------------------------------------------------------------
 
 enum {
     wxWIZARD_EX_HELPBUTTON,
-
-    wxEVT_WIZARD_PAGE_CHANGED,
-    wxEVT_WIZARD_PAGE_CHANGING,
-    wxEVT_WIZARD_CANCEL,
-    wxEVT_WIZARD_HELP,
-    wxEVT_WIZARD_FINISHED
 };
 
+%constant wxEventType wxEVT_WIZARD_PAGE_CHANGED;
+%constant wxEventType wxEVT_WIZARD_PAGE_CHANGING;
+%constant wxEventType wxEVT_WIZARD_CANCEL;
+%constant wxEventType wxEVT_WIZARD_HELP;
+%constant wxEventType wxEVT_WIZARD_FINISHED;
 
-%pragma(python) code = "
-# wizard events
-def EVT_WIZARD_PAGE_CHANGED(win, id, func):
-    win.Connect(id, -1, wxEVT_WIZARD_PAGE_CHANGED, func)
 
-def EVT_WIZARD_PAGE_CHANGING(win, id, func):
-    win.Connect(id, -1, wxEVT_WIZARD_PAGE_CHANGING, func)
 
-def EVT_WIZARD_CANCEL(win, id, func):
-    win.Connect(id, -1, wxEVT_WIZARD_CANCEL, func)
-
-def EVT_WIZARD_HELP(win, id, func):
-    win.Connect(id, -1, wxEVT_WIZARD_HELP, func)
-
-def EVT_WIZARD_FINISHED(win, id, func):
-    win.Connect(id, -1, wxEVT_WIZARD_FINISHED, func)
-
-"
+%pythoncode {
+EVT_WIZARD_PAGE_CHANGED  = wx.PyEventBinder( wxEVT_WIZARD_PAGE_CHANGED, 1)
+EVT_WIZARD_PAGE_CHANGING = wx.PyEventBinder( wxEVT_WIZARD_PAGE_CHANGING, 1)
+EVT_WIZARD_CANCEL        = wx.PyEventBinder( wxEVT_WIZARD_CANCEL, 1)
+EVT_WIZARD_HELP          = wx.PyEventBinder( wxEVT_WIZARD_HELP, 1)
+EVT_WIZARD_FINISHED      = wx.PyEventBinder( wxEVT_WIZARD_FINISHED, 1)
+}
 
 //----------------------------------------------------------------------
 
@@ -74,12 +65,12 @@ class wxWizardEvent : public wxNotifyEvent
 public:
     wxWizardEvent(wxEventType type = wxEVT_NULL,
                   int id = -1,
-                  bool direction = TRUE,
+                  bool direction = true,
                   wxWizardPage* page = NULL);
 
-    // for EVT_WIZARD_PAGE_CHANGING, return TRUE if we're going forward or
-    // FALSE otherwise and for EVT_WIZARD_PAGE_CHANGED return TRUE if we came
-    // from the previous page and FALSE if we returned from the next one
+    // for EVT_WIZARD_PAGE_CHANGING, return True if we're going forward or
+    // False otherwise and for EVT_WIZARD_PAGE_CHANGED return True if we came
+    // from the previous page and False if we returned from the next one
     // (this function doesn't make sense for CANCEL events)
     bool GetDirection() const { return m_direction; }
 
@@ -94,6 +85,7 @@ public:
 //
 // Other than GetNext/Prev() functions, wxWizardPage is just a panel and may be
 // used as such (i.e. controls may be placed directly on it &c).
+MustHaveApp(wxWizardPage);
 class wxWizardPage : public wxPanel
 {
 public:
@@ -104,9 +96,9 @@ public:
 //     wxWizardPage(wxWizard *parent,
 //                  const wxBitmap& bitmap = wxNullBitmap,
 //                  const char* resource = NULL);
-//     %name(wxPreWizardPage)wxWizardPage();
+//     %name(PreWizardPage)wxWizardPage();
 
-    %addmethods {
+    %extend {
         bool Create(wxWizard *parent,
                     const wxBitmap& bitmap = wxNullBitmap,
                     const wxString& resource = wxPyEmptyString) {
@@ -208,13 +200,20 @@ IMP_PYCALLBACK_VOID_WXWINBASE(wxPyWizardPage, wxWizardPage, RemoveChild);
 
 
 
+MustHaveApp(wxPyWizardPage);
+
 class wxPyWizardPage : public wxWizardPage {
 public:
+
+    %pythonAppend wxPyWizardPage   "self._setCallbackInfo(self, PyWizardPage);self._setOORInfo(self)"
+    %pythonAppend wxPyWizardPage() ""
+    %typemap(out) wxPyWizardPage*;    // turn off this typemap
+    
     // ctor accepts an optional bitmap which will be used for this page instead
     // of the default one for this wizard (should be of the same size). Notice
     // that no other parameters are needed because the wizard will resize and
     // reposition the page anyhow
-    %addmethods {
+    %extend {
         wxPyWizardPage(wxWizard *parent,
                        const wxBitmap* bitmap = &wxNullBitmap,
                        const wxString* resource = &wxPyEmptyString) {
@@ -225,9 +224,12 @@ public:
         }
     }
 
-    %name(wxPrePyWizardPage)wxPyWizardPage();
+    %name(PrePyWizardPage)wxPyWizardPage();
 
-    %addmethods {
+    // Turn it back on again
+    %typemap(out) wxPyWizardPage* { $result = wxPyMake_wxObject($1, $owner); }
+
+    %extend {
         bool Create(wxWizard *parent,
                     const wxBitmap& bitmap = wxNullBitmap,
                     const wxString& resource = wxPyEmptyString) {
@@ -239,10 +241,6 @@ public:
     }
 
     void _setCallbackInfo(PyObject* self, PyObject* _class);
-    %pragma(python) addtomethod = "__init__:self._setCallbackInfo(self, wxPyWizardPage)"
-
-    %pragma(python) addtomethod = "__init__:self._setOORInfo(self)"
-    %pragma(python) addtomethod = "wxPrePyWizardPage:val._setOORInfo(val)"
 
     void base_DoMoveWindow(int x, int y, int width, int height);
     void base_DoSetSize(int x, int y, int width, int height,
@@ -250,9 +248,15 @@ public:
     void base_DoSetClientSize(int width, int height);
     void base_DoSetVirtualSize( int x, int y );
 
-    void base_DoGetSize( int *OUTPUT, int *OUTPUT ) const;
-    void base_DoGetClientSize( int *OUTPUT, int *OUTPUT ) const;
-    void base_DoGetPosition( int *OUTPUT, int *OUTPUT ) const;
+    DocDeclA(
+        void, base_DoGetSize( int *OUTPUT, int *OUTPUT ) const,
+        "base_DoGetSize() -> (width, height)");
+    DocDeclA(
+        void, base_DoGetClientSize( int *OUTPUT, int *OUTPUT ) const,
+        "base_DoGetClientSize() -> (width, height)");
+    DocDeclA(
+        void, base_DoGetPosition( int *OUTPUT, int *OUTPUT ) const,
+        "base_DoGetPosition() -> (x,y)");
 
     wxSize base_DoGetVirtualSize() const;
     wxSize base_DoGetBestSize() const;
@@ -279,25 +283,27 @@ public:
 // OTOH, it is also possible to dynamicly decide which page to return (i.e.
 // depending on the user's choices) as the wizard sample shows - in order to do
 // this, you must derive from wxWizardPage directly.
+MustHaveApp(wxWizardPageSimple);
 class wxWizardPageSimple : public wxWizardPage
 {
 public:
+
+    %pythonAppend wxWizardPageSimple   "self._setOORInfo(self)"
+    %pythonAppend wxWizardPageSimple() ""
+    
     // ctor takes the previous and next pages
     wxWizardPageSimple(wxWizard *parent,
                        wxWizardPage *prev = NULL,
                        wxWizardPage *next = NULL,
                        const wxBitmap& bitmap = wxNullBitmap,
                        const wxChar* resource = NULL);
-    %name(wxPreWizardPageSimple)wxWizardPageSimple();
+    %name(PreWizardPageSimple)wxWizardPageSimple();
 
     bool Create(wxWizard *parent = NULL,
                 wxWizardPage *prev = NULL,
                 wxWizardPage *next = NULL,
                 const wxBitmap& bitmap = wxNullBitmap,
                 const wxChar* resource = NULL);
-
-    %pragma(python) addtomethod = "__init__:self._setOORInfo(self)"
-    %pragma(python) addtomethod = "wxPreWizardPageSimple:val._setOORInfo(val)"
 
     // the pointers may be also set later - but before starting the wizard
     void SetPrev(wxWizardPage *prev);
@@ -310,31 +316,34 @@ public:
 
 //----------------------------------------------------------------------
 
+MustHaveApp(wxWizard);
+
 class  wxWizard : public wxDialog
 {
 public:
+    %pythonAppend wxWizard   "self._setOORInfo(self)"
+    %pythonAppend wxWizard() ""
+    
     // ctor
     wxWizard(wxWindow *parent,
              int id = -1,
-             const wxString& title = wxEmptyString,
+             const wxString& title = wxPyEmptyString,
              const wxBitmap& bitmap = wxNullBitmap,
-             const wxPoint& pos = wxDefaultPosition);
-    %name(wxPreWizard)wxWizard();
-
-    %pragma(python) addtomethod = "__init__:self._setOORInfo(self)"
-    %pragma(python) addtomethod = "wxPreWizard:val._setOORInfo(val)"
+             const wxPoint& pos = wxDefaultPosition,
+             long style = wxDEFAULT_DIALOG_STYLE);
+    %name(PreWizard)wxWizard();
 
     bool Create(wxWindow *parent,
              int id = -1,
-             const wxString& title = wxEmptyString,
+             const wxString& title = wxPyEmptyString,
              const wxBitmap& bitmap = wxNullBitmap,
              const wxPoint& pos = wxDefaultPosition);
 
     void Init();
 
 
-    // executes the wizard starting from the given page, returns TRUE if it was
-    // successfully finished, FALSE if user cancelled it
+    // executes the wizard starting from the given page, returns True if it was
+    // successfully finished, False if user cancelled it
     virtual bool RunWizard(wxWizardPage *firstPage);
 
     // get the current page (NULL if RunWizard() isn't running)
@@ -358,13 +367,20 @@ public:
     // default)
     virtual void FitToPage(const wxWizardPage *firstPage);
 
+    // Adding pages to page area sizer enlarges wizard
+    virtual wxSizer *GetPageAreaSizer() const;
+
+    // Set border around page area. Default is 0 if you add at least one
+    // page to GetPageAreaSizer and 5 if you don't.
+    virtual void SetBorder(int border);
+
     // is the wizard running?
     bool IsRunning() const { return m_page != NULL; }
 
     // show the prev/next page, but call TransferDataFromWindow on the current
-    // page first and return FALSE without changing the page if
-    // TransferDataFromWindow() returns FALSE - otherwise, returns TRUE
-    bool ShowPage(wxWizardPage *page, bool goingForward = TRUE);
+    // page first and return False without changing the page if
+    // TransferDataFromWindow() returns False - otherwise, returns True
+    bool ShowPage(wxWizardPage *page, bool goingForward = true);
 
     bool HasNextPage(wxWizardPage* page);
     bool HasPrevPage(wxWizardPage* page);
@@ -374,14 +390,6 @@ public:
 //----------------------------------------------------------------------
 
 %init %{
-    wxClassInfo::CleanUpClasses();
-    wxClassInfo::InitializeClasses();
 %}
-
-//----------------------------------------------------------------------
-// This file gets appended to the shadow class file.
-//----------------------------------------------------------------------
-
-%pragma(python) include="_wizardextras.py";
 
 //---------------------------------------------------------------------------

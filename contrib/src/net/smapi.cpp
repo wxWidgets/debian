@@ -4,7 +4,7 @@
 // Author:      PJ Naughter <pjna@naughter.com>
 // Modified by: Julian Smart
 // Created:     2001-08-21
-// RCS-ID:      $Id: smapi.cpp,v 1.2.2.4 2003/08/25 18:42:38 JS Exp $
+// RCS-ID:      $Id: smapi.cpp,v 1.8 2003/09/10 09:14:01 MBN Exp $
 // Copyright:   (c) PJ Naughter
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -20,6 +20,8 @@
 #pragma hdrstop
 #endif
 
+#ifdef __WXMSW__
+
 #ifndef WX_PRECOMP
 #include "wx/wx.h"
 #endif
@@ -31,7 +33,7 @@
 
 #include "wx/net/smapi.h"
 
-class wxMapiData
+class WXDLLIMPEXP_NETUTILS wxMapiData
 {
 public:
     wxMapiData()
@@ -487,3 +489,5 @@ long wxMapiSession::GetLastError() const
 {
     return m_data->m_nLastError;
 }
+
+#endif // __WXMSW__

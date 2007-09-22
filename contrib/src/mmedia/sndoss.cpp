@@ -3,7 +3,7 @@
 // Purpose:
 // Date: 08/11/1999
 // Author: Guilhem Lavaux <lavaux@easynet.fr> (C) 1999, 2000
-// CVSID: $Id: sndoss.cpp,v 1.1 2000/03/05 19:03:18 GL Exp $
+// CVSID: $Id: sndoss.cpp,v 1.4 2004/09/15 14:00:40 ABX Exp $
 // --------------------------------------------------------------------------
 #ifdef __GNUG__
 #pragma implementation "sndoss.cpp"
@@ -24,7 +24,7 @@
 #endif
 
 // --------------------------------------------------------------------------
-// wxWindows headers
+// wxWidgets headers
 // --------------------------------------------------------------------------
 #include "wx/defs.h"
 #include "wx/string.h"
@@ -35,12 +35,12 @@
 wxSoundStreamOSS::wxSoundStreamOSS(const wxString& dev_name)
 {
     wxSoundFormatPcm pcm_default;
-    
+
     // Open the OSS device
     m_fd = open(dev_name.mb_str(), O_WRONLY);
     if (m_fd == -1) {
         // OSS not found
-        m_oss_ok   = FALSE;
+        m_oss_ok   = false;
         m_snderror = wxSOUND_INVDEV;
         return;
     }
@@ -53,15 +53,15 @@ wxSoundStreamOSS::wxSoundStreamOSS(const wxString& dev_name)
 
     // Get the default best size for OSS
     ioctl(m_fd, SNDCTL_DSP_GETBLKSIZE, &m_bufsize);
-    
+
     m_snderror = wxSOUND_NOERROR;
 
     // Close OSS
     close(m_fd);
-    
-    m_oss_ok   = TRUE;
-    m_oss_stop = TRUE;
-    m_q_filled = TRUE;
+
+    m_oss_ok   = true;
+    m_oss_stop = true;
+    m_q_filled = true;
 }
 
 wxSoundStreamOSS::~wxSoundStreamOSS()
@@ -84,15 +84,16 @@ wxSoundStream& wxSoundStreamOSS::Read(void *buffer, wxUint32 len)
         m_lastcount = 0;
         return *this;
     }
-    
-    m_lastcount = (wxUint32)ret = read(m_fd, buffer, len);
-    m_q_filled  = TRUE;
-    
+
+    ret = read(m_fd, buffer, len);
+    m_lastcount = (wxUint32)ret;
+    m_q_filled  = true;
+
     if (ret < 0)
         m_snderror = wxSOUND_IOERROR;
     else
         m_snderror = wxSOUND_NOERROR;
-    
+
     return *this;
 }
 
@@ -107,8 +108,8 @@ wxSoundStream& wxSoundStreamOSS::Write(const void *buffer, wxUint32 len)
     }
 
     ret = write(m_fd, buffer, len);
-    m_q_filled = TRUE;
-    
+    m_q_filled = true;
+
     if (ret < 0) {
         m_lastcount = 0;
         m_snderror  = wxSOUND_IOERROR;
@@ -116,7 +117,7 @@ wxSoundStream& wxSoundStreamOSS::Write(const void *buffer, wxUint32 len)
         m_snderror = wxSOUND_NOERROR;
         m_lastcount = (wxUint32)ret;
     }
-    
+
     return *this;
 }
 
@@ -124,24 +125,24 @@ bool wxSoundStreamOSS::SetSoundFormat(const wxSoundFormatBase& format)
 {
     int tmp;
     wxSoundFormatPcm *pcm_format;
-    
+
     if (format.GetType() != wxSOUND_PCM) {
         m_snderror = wxSOUND_INVFRMT;
-        return FALSE;
+        return false;
     }
-    
+
     if (!m_oss_ok) {
         m_snderror = wxSOUND_INVDEV;
-        return FALSE;
+        return false;
     }
-    
+
     if (m_sndformat)
         delete m_sndformat;
-    
+
     m_sndformat = format.Clone();
     if (!m_sndformat) {
         m_snderror = wxSOUND_MEMERROR;
-        return FALSE;
+        return false;
     }
     pcm_format = (wxSoundFormatPcm *)m_sndformat;
 
@@ -150,21 +151,21 @@ bool wxSoundStreamOSS::SetSoundFormat(const wxSoundFormatBase& format)
         m_fd = open(m_devname.mb_str(), O_WRONLY);
         if (m_fd == -1) {
             m_snderror = wxSOUND_INVDEV;
-            return FALSE;
+            return false;
         }
     }
-    
+
     // Set the sample rate field.
     tmp = pcm_format->GetSampleRate();
     ioctl(m_fd, SNDCTL_DSP_SPEED, &tmp);
-    
+
     pcm_format->SetSampleRate(tmp);
-    
+
     // Detect the best format
     DetectBest(pcm_format);
     // Try to apply it
     SetupFormat(pcm_format);
-    
+
     tmp = pcm_format->GetChannels();
     ioctl(m_fd, SNDCTL_DSP_CHANNELS, &tmp);
     pcm_format->SetChannels(tmp);
@@ -172,20 +173,20 @@ bool wxSoundStreamOSS::SetSoundFormat(const wxSoundFormatBase& format)
     // Close the OSS device
     if (m_oss_stop)
         close(m_fd);
-    
+
     m_snderror = wxSOUND_NOERROR;
     if (*pcm_format != format) {
         m_snderror = wxSOUND_NOEXACT;
-        return FALSE;
+        return false;
     }
 
-    return TRUE;
+    return true;
 }
 
 bool wxSoundStreamOSS::SetupFormat(wxSoundFormatPcm *pcm_format)
 {
     int tmp;
-    
+
     switch(pcm_format->GetBPS()) {
         case 8:
             if (pcm_format->Signed())
@@ -210,41 +211,41 @@ bool wxSoundStreamOSS::SetupFormat(wxSoundFormatPcm *pcm_format)
             }
             break;
     }
-    
+
     ioctl(m_fd, SNDCTL_DSP_SETFMT, &tmp);
-    
+
     // Demangling.
     switch (tmp) {
         case AFMT_U8:
             pcm_format->SetBPS(8);
-            pcm_format->Signed(FALSE);
+            pcm_format->Signed(false);
             break;
         case AFMT_S8:
             pcm_format->SetBPS(8);
-            pcm_format->Signed(TRUE);
+            pcm_format->Signed(true);
             break;
         case AFMT_U16_LE:
             pcm_format->SetBPS(16);
-            pcm_format->Signed(FALSE);
+            pcm_format->Signed(false);
             pcm_format->SetOrder(wxLITTLE_ENDIAN);
             break;
         case AFMT_U16_BE:
             pcm_format->SetBPS(16);
-            pcm_format->Signed(FALSE);
+            pcm_format->Signed(false);
             pcm_format->SetOrder(wxBIG_ENDIAN);
             break;
         case AFMT_S16_LE:
             pcm_format->SetBPS(16);
-            pcm_format->Signed(TRUE);
+            pcm_format->Signed(true);
             pcm_format->SetOrder(wxLITTLE_ENDIAN);
             break;
         case AFMT_S16_BE:
             pcm_format->SetBPS(16);
-            pcm_format->Signed(TRUE);
+            pcm_format->Signed(true);
             pcm_format->SetOrder(wxBIG_ENDIAN);
             break;
     }
-    return TRUE;
+    return true;
 }
 
 #ifdef __WXGTK__
@@ -252,7 +253,7 @@ static void _wxSound_OSS_CBack(gpointer data, int source,
                                GdkInputCondition condition)
 {
     wxSoundStreamOSS *oss = (wxSoundStreamOSS *)data;
-    
+
     switch (condition) {
         case GDK_INPUT_READ:
             oss->WakeUpEvt(wxSOUND_INPUT);
@@ -268,38 +269,38 @@ static void _wxSound_OSS_CBack(gpointer data, int source,
 
 void wxSoundStreamOSS::WakeUpEvt(int evt)
 {
-    m_q_filled = FALSE;
+    m_q_filled = false;
     OnSoundEvent(evt);
 }
 
 bool wxSoundStreamOSS::StartProduction(int evt)
 {
     wxSoundFormatBase *old_frmt;
-    
+
     if (!m_oss_stop)
         StopProduction();
-    
+
     old_frmt = m_sndformat->Clone();
     if (!old_frmt) {
         m_snderror = wxSOUND_MEMERROR;
-        return FALSE;
+        return false;
     }
-    
+
     if (evt == wxSOUND_OUTPUT)
         m_fd = open(m_devname.mb_str(), O_WRONLY);
     else if (evt == wxSOUND_INPUT)
         m_fd = open(m_devname.mb_str(), O_RDONLY);
-    
+
     if (m_fd == -1) {
         m_snderror = wxSOUND_INVDEV;
-        return FALSE;
+        return false;
     }
-    
+
     SetSoundFormat(*old_frmt);
     delete old_frmt;
-    
+
     int trig;
-    
+
     if (evt == wxSOUND_OUTPUT) {
 #ifdef __WXGTK__
         m_tag = gdk_input_add(m_fd, GDK_INPUT_WRITE, _wxSound_OSS_CBack, (gpointer)this);
@@ -314,25 +315,25 @@ bool wxSoundStreamOSS::StartProduction(int evt)
 
   ioctl(m_fd, SNDCTL_DSP_SETTRIGGER, &trig);
 
-  m_oss_stop = FALSE;
-  m_q_filled = FALSE;
+  m_oss_stop = false;
+  m_q_filled = false;
 
-  return TRUE;
+  return true;
 }
 
 bool wxSoundStreamOSS::StopProduction()
 {
   if (m_oss_stop)
-    return FALSE;
+    return false;
 
 #ifdef __WXGTK__
   gdk_input_remove(m_tag);
 #endif
 
   close(m_fd);
-  m_oss_stop = TRUE;
-  m_q_filled = TRUE;
-  return TRUE;
+  m_oss_stop = true;
+  m_q_filled = true;
+  return true;
 }
 
 bool wxSoundStreamOSS::QueueFilled() const
@@ -375,12 +376,12 @@ void wxSoundStreamOSS::DetectBest(wxSoundFormatPcm *pcm)
   // It supports signed samples
   if (pcm->Signed() &&
       ((fmt_mask & (AFMT_S16_LE | AFMT_S16_BE | AFMT_S8)) != 0))
-    best_pcm.Signed(TRUE);
+    best_pcm.Signed(true);
 
   // It supports unsigned samples
   if (!pcm->Signed() &&
       ((fmt_mask & (AFMT_U16_LE | AFMT_U16_BE | AFMT_U8)) != 0))
-    best_pcm.Signed(FALSE);
+    best_pcm.Signed(false);
 
   // Finally recopy the new format
   *pcm = best_pcm;

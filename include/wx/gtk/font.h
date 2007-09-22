@@ -2,15 +2,15 @@
 // Name:        font.h
 // Purpose:
 // Author:      Robert Roebling
-// Id:          $Id: font.h,v 1.22.2.1 2002/10/28 01:51:44 RR Exp $
-// Copyright:   (c) 1998 Robert Roebling, Julian Smart and Markus Holzem
+// Id:          $Id: font.h,v 1.32 2004/07/14 16:24:13 SC Exp $
+// Copyright:   (c) 1998 Robert Roebling
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
 
 #ifndef __GTKFONTH__
 #define __GTKFONTH__
 
-#if defined(__GNUG__) && !defined(__APPLE__)
+#if defined(__GNUG__) && !defined(NO_GCC_PRAGMA)
     #pragma interface
 #endif
 
@@ -51,7 +51,7 @@ public:
            int family,
            int style,
            int weight,
-           bool underlined = FALSE,
+           bool underlined = false,
            const wxString& face = wxEmptyString,
            wxFontEncoding encoding = wxFONTENCODING_DEFAULT)
     {
@@ -64,7 +64,7 @@ public:
                 int family,
                 int style,
                 int weight,
-                bool underlined = FALSE,
+                bool underlined = false,
                 const wxString& face = wxEmptyString,
                 wxFontEncoding encoding = wxFONTENCODING_DEFAULT);
 
@@ -84,7 +84,7 @@ public:
     virtual wxString GetFaceName() const;
     virtual bool GetUnderlined() const;
     virtual wxFontEncoding GetEncoding() const;
-    virtual wxNativeFontInfo *GetNativeFontInfo() const;
+    virtual const wxNativeFontInfo *GetNativeFontInfo() const;
     virtual bool IsFixedWidth() const;
 
     virtual void SetPointSize( int pointSize );
@@ -94,19 +94,22 @@ public:
     virtual void SetFaceName( const wxString& faceName );
     virtual void SetUnderlined( bool underlined );
     virtual void SetEncoding(wxFontEncoding encoding);
-    virtual void SetNativeFontInfo( const wxNativeFontInfo& info );
 
-    virtual void SetNoAntiAliasing( bool no = TRUE );
-    virtual bool GetNoAntiAliasing();
-    
+    virtual void SetNoAntiAliasing( bool no = true );
+    virtual bool GetNoAntiAliasing() const ;
+
     // implementation from now on
     void Unshare();
 
+#ifndef __WXGTK20__
     GdkFont* GetInternalFont(float scale = 1.0) const;
+#endif
 
     // no data :-)
 
 protected:
+    virtual void DoSetNativeFontInfo( const wxNativeFontInfo& info );
+
     // common part of all ctors
     void Init();
 

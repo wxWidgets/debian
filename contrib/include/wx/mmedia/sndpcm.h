@@ -3,7 +3,7 @@
 // Purpose:
 // Date: 08/11/1999
 // Author: Guilhem Lavaux <lavaux@easynet.fr> (C) 1999
-// CVSID: $Id: sndpcm.h,v 1.1 2000/03/05 19:03:13 GL Exp $
+// CVSID: $Id: sndpcm.h,v 1.3 2004/06/16 15:22:54 ABX Exp $
 // --------------------------------------------------------------------------
 #ifndef _WX_SNDPCM_H
 #define _WX_SNDPCM_H
@@ -13,6 +13,7 @@
 #endif
 
 #include "wx/defs.h"
+#include "wx/mmedia/defs.h"
 #include "wx/mmedia/sndbase.h"
 
 //
@@ -22,7 +23,7 @@
 class wxSoundFormatPcm : public wxSoundFormatBase {
 public:
   wxSoundFormatPcm(wxUint32 srate = 22500, wxUint8 bps = 8,
-                   wxUint16 channels = 2, bool sign = TRUE,
+                   wxUint16 channels = 2, bool sign = true,
                    int order = wxLITTLE_ENDIAN); 
   ~wxSoundFormatPcm();
 

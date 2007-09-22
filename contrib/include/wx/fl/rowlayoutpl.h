@@ -4,9 +4,9 @@
 // Author:      Aleksandras Gluchovas
 // Modified by:
 // Created:     02/10/98
-// RCS-ID:      $Id: rowlayoutpl.h,v 1.3.2.1 2002/10/24 11:21:35 JS Exp $
+// RCS-ID:      $Id: rowlayoutpl.h,v 1.6 2004/06/07 16:02:14 ABX Exp $
 // Copyright:   (c) Aleksandras Gluchovas
-// Licence:       wxWindows licence
+// Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
 
 #ifndef __ROWLAYOUTPL_G__
@@ -23,7 +23,7 @@ Simple implementation of a plugin which handles row layout
 requests sent from a frame layout.
 */
 
-class WXFL_DECLSPEC cbRowLayoutPlugin : public cbPluginBase
+class WXDLLIMPEXP_FL cbRowLayoutPlugin : public cbPluginBase
 {
     DECLARE_DYNAMIC_CLASS( cbRowLayoutPlugin )
 protected:

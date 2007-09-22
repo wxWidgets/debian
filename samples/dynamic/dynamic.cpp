@@ -1,11 +1,11 @@
 /////////////////////////////////////////////////////////////////////////////
 // Name:        dynamic.cpp
-// Purpose:     Dynamic events wxWindows sample
+// Purpose:     Dynamic events wxWidgets sample
 // Author:      Julian Smart
 // Modified by:
 // Created:     04/01/98
-// RCS-ID:      $Id: dynamic.cpp,v 1.9.2.1 2002/12/14 18:19:43 MBN Exp $
-// Copyright:   (c) Julian Smart and Markus Holzem
+// RCS-ID:      $Id: dynamic.cpp,v 1.13 2004/05/28 10:43:14 ABX Exp $
+// Copyright:   (c) Julian Smart
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
 
@@ -57,12 +57,12 @@ IMPLEMENT_APP  (MyApp)
 bool MyApp::OnInit(void)
 {
   // Create the main frame window
-  MyFrame *frame = new MyFrame(NULL, _T("Dynamic wxWindows App"), 50, 50, 450, 340);
+  MyFrame *frame = new MyFrame(NULL, _T("Dynamic wxWidgets App"), 50, 50, 450, 340);
 
-  frame->Connect( DYNAMIC_QUIT,  -1, wxEVT_COMMAND_MENU_SELECTED,
+  frame->Connect( DYNAMIC_QUIT,  wxID_ANY, wxEVT_COMMAND_MENU_SELECTED,
                   (wxObjectEventFunction) (wxEventFunction) (wxCommandEventFunction)
                   &MyFrame::OnQuit );
-  frame->Connect( DYNAMIC_ABOUT, -1, wxEVT_COMMAND_MENU_SELECTED,
+  frame->Connect( DYNAMIC_ABOUT, wxID_ANY, wxEVT_COMMAND_MENU_SELECTED,
                   (wxObjectEventFunction) (wxEventFunction) (wxCommandEventFunction)
                   &MyFrame::OnAbout );
 
@@ -83,26 +83,26 @@ bool MyApp::OnInit(void)
   frame->SetMenuBar(menu_bar);
 
   // Make a panel with a message
-  wxPanel *panel = new wxPanel(frame, -1, wxPoint(0, 0), wxSize(400, 200), wxTAB_TRAVERSAL);
+  wxPanel *panel = new wxPanel(frame, wxID_ANY, wxPoint(0, 0), wxSize(400, 200), wxTAB_TRAVERSAL);
 
-  (void)new wxStaticText(panel, 311, _T("Hello!"), wxPoint(10, 10), wxSize(-1, -1), 0);
+  (void)new wxStaticText(panel, 311, _T("Hello!"), wxPoint(10, 10), wxDefaultSize, 0);
 
   // Show the frame
-  frame->Show(TRUE);
+  frame->Show(true);
 
   SetTopWindow(frame);
 
-  return TRUE;
+  return true;
 }
 
 // My frame constructor
 MyFrame::MyFrame(wxFrame *frame, wxChar *title, int x, int y, int w, int h):
-  wxFrame(frame, -1, title, wxPoint(x, y), wxSize(w, h))
+  wxFrame(frame, wxID_ANY, title, wxPoint(x, y), wxSize(w, h))
 {}
 
 void MyFrame::OnQuit(wxCommandEvent& WXUNUSED(event) )
 {
-  Close(TRUE);
+  Close(true);
 }
 
 void MyFrame::OnAbout(wxCommandEvent& WXUNUSED(event) )

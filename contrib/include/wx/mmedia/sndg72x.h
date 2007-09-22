@@ -3,7 +3,7 @@
 // Purpose:
 // Date: 08/26/1999
 // Author: Guilhem Lavaux <lavaux@easynet.fr> (C) 1999
-// CVSID: $Id: sndg72x.h,v 1.1 2000/03/05 19:03:13 GL Exp $
+// CVSID: $Id: sndg72x.h,v 1.2 2003/08/03 17:10:09 VS Exp $
 // --------------------------------------------------------------------------
 #ifndef _WX_SNDG72X_H
 #define _WX_SNDG72X_H
@@ -13,6 +13,7 @@
 #endif
 
 #include "wx/defs.h"
+#include "wx/mmedia/defs.h"
 #include "wx/mmedia/sndbase.h"
 #include "wx/mmedia/sndcodec.h"
 #include "wx/mmedia/sndbase.h"
@@ -29,7 +30,7 @@ typedef struct g72x_state g72state;
 //
 // G72X format
 //
-class WXDLLEXPORT wxSoundFormatG72X: public wxSoundFormatBase {
+class WXDLLIMPEXP_MMEDIA wxSoundFormatG72X: public wxSoundFormatBase {
  public:
   wxSoundFormatG72X();
   ~wxSoundFormatG72X();
@@ -57,8 +58,8 @@ class WXDLLEXPORT wxSoundFormatG72X: public wxSoundFormatBase {
 // ULAW converter class
 //
 
-class WXDLLEXPORT wxSoundRouterStream;
-class WXDLLEXPORT wxSoundStreamG72X: public wxSoundStreamCodec {
+class WXDLLIMPEXP_MMEDIA wxSoundRouterStream;
+class WXDLLIMPEXP_MMEDIA wxSoundStreamG72X: public wxSoundStreamCodec {
  public:
   wxSoundStreamG72X(wxSoundStream& sndio);
   ~wxSoundStreamG72X();

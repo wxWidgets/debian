@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     2001-08-21
-// RCS-ID:      $Id: email.h,v 1.3 2002/09/07 12:10:20 GD Exp $
+// RCS-ID:      $Id: email.h,v 1.5 2004/05/25 11:13:34 JS Exp $
 // Copyright:   (c) Julian Smart
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -23,7 +23,7 @@
  * Miscellaneous email functions
  */
 
-class wxEmail
+class WXDLLIMPEXP_NETUTILS wxEmail
 {
 public:
 //// Ctor/dtor
@@ -32,7 +32,7 @@ public:
 //// Operations
 
     // Send a message.
-    // Specify profile, or leave it to wxWindows to find the current user name
+    // Specify profile, or leave it to wxWidgets to find the current user name
     static bool Send(wxMailMessage& message, const wxString& profileName = wxEmptyString,
         const wxString& sendMail = wxT("/usr/lib/sendmail -t"));
     

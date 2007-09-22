@@ -2,7 +2,7 @@
 // Name:        cursor.h
 // Purpose:
 // Author:      Robert Roebling
-// Id:          $Id: cursor.h,v 1.8 2002/09/07 12:28:46 GD Exp $
+// Id:          $Id: cursor.h,v 1.11 2004/05/23 20:50:53 JS Exp $
 // Copyright:   (c) 1998 Robert Roebling
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -11,7 +11,7 @@
 #ifndef __GTKCURSORH__
 #define __GTKCURSORH__
 
-#if defined(__GNUG__) && !defined(__APPLE__)
+#if defined(__GNUG__) && !defined(NO_GCC_PRAGMA)
 #pragma interface
 #endif
 

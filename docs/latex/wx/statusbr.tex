@@ -39,7 +39,7 @@ from an {\bf OnSize} event handler.
 
 \latexignore{\rtfignore{\wxheading{Members}}}
 
-\membersection{wxStatusBar::wxStatusBar}\label{wxstatusbarconstr}
+\membersection{wxStatusBar::wxStatusBar}\label{wxstatusbarctor}
 
 \func{}{wxStatusBar}{\void}
 
@@ -67,7 +67,7 @@ individual windows.}
 
 \helpref{wxStatusBar::Create}{wxstatusbarcreate}
 
-\membersection{wxStatusBar::\destruct{wxStatusBar}}
+\membersection{wxStatusBar::\destruct{wxStatusBar}}\label{wxstatusbardtor}
 
 \func{void}{\destruct{wxStatusBar}}{\void}
 
@@ -81,13 +81,13 @@ Destructor.
 
 Creates the window, for two-step construction.
 
-See \helpref{wxStatusBar::wxStatusBar}{wxstatusbarconstr} for details.
+See \helpref{wxStatusBar::wxStatusBar}{wxstatusbarctor} for details.
 
 \membersection{wxStatusBar::GetFieldRect}\label{wxstatusbargetfieldrect}
 
 \constfunc{virtual bool}{GetFieldRect}{\param{int}{ i}, \param{wxRect\&}{ rect}}
 
-Returns the size and position of a fields internal bounding rectangle.
+Returns the size and position of a field's internal bounding rectangle.
 
 \wxheading{Parameters}
 
@@ -97,7 +97,7 @@ Returns the size and position of a fields internal bounding rectangle.
 
 \wxheading{Return value}
 
-TRUE if the field index is valid, FALSE otherwise.
+true if the field index is valid, false otherwise.
 
 \wxheading{See also}
 
@@ -114,7 +114,7 @@ Returns the number of fields in the status bar.
 
 \membersection{wxStatusBar::GetStatusText}\label{wxstatusbargetstatustext}
 
-\constfunc{virtual wxString}{GetStatusText}{\param{int}{ ir = 0}}
+\constfunc{virtual wxString}{GetStatusText}{\param{int}{ i = 0}}
 
 Returns the string associated with a status bar field.
 
@@ -143,7 +143,7 @@ strings.
 
 \membersection{wxStatusBar::PushStatusText}\label{wxstatusbarpushstatustext}
 
-\func{void}{PushStatusText}{\param{const wxString&}{ string}, \param{int}{ field = 0}}
+\func{void}{PushStatusText}{\param{const wxString\&}{ string}, \param{int}{ field = 0}}
 
 Saves the current field text in a per field stack, and sets the field text
 to the string passed as argument.
@@ -171,7 +171,7 @@ in \helpref{SetStatusWidths}{wxstatusbarsetstatuswidths}}
 
 \func{void}{SetMinHeight}{\param{int}{ height}}
 
-Sets the minimal possible hight for the status bar. The real height may be
+Sets the minimal possible height for the status bar. The real height may be
 bigger than the height specified here depending on the size of the font used by
 the status bar.
 
@@ -231,4 +231,29 @@ variable fields.
 integers.}
 
 \perlnote{In wxPerl this method takes as parameters the field widths.}
+
+\membersection{wxStatusBar::SetStatusStyles}\label{wxstatusbarsetstatusstyles}
+
+\func{virtual void}{SetStatusStyles}{\param{int}{ n}, \param{int *}{styles}}
+
+Sets the styles of the fields in the status line which can make fields appear flat
+or raised instead of the standard sunken 3D border.
+
+\wxheading{Parameters}
+
+\docparam{n}{The number of fields in the status bar. Must be equal to the
+number passed to \helpref{SetFieldsCount}{wxstatusbarsetfieldscount} the last
+time it was called.}
+
+\docparam{styles}{Contains an array of {\it n} integers with the styles for each field. There 
+are three possible styles:
+
+\twocolwidtha{5cm}
+\begin{twocollist}\itemsep=0pt
+\twocolitem{\windowstyle{wxSB\_NORMAL}}{(default) The field appears sunken with a standard 3D border.}
+\twocolitem{\windowstyle{wxSB\_FLAT}}{No border is painted around the field so that it appears flat.}
+\twocolitem{\windowstyle{wxSB\_RAISED}}{A raised 3D border is painted around the field.}
+\end{twocollist}
+}
+
 

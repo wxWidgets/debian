@@ -2,12 +2,12 @@
 // Name:        m_style.cpp
 // Purpose:     wxHtml module for parsing <style> tag
 // Author:      Vaclav Slavik
-// RCS-ID:      $Id: m_style.cpp,v 1.2.2.3 2002/11/09 00:07:35 VS Exp $
+// RCS-ID:      $Id: m_style.cpp,v 1.8 2004/09/27 19:15:06 ABX Exp $
 // Copyright:   (c) 2002 Vaclav Slavik
-// Licence:     wxWindows Licence
+// Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
 
-#ifdef __GNUG__
+#if defined(__GNUG__) && !defined(NO_GCC_PRAGMA)
 #pragma implementation
 #endif
 
@@ -31,12 +31,13 @@ FORCE_LINK_ME(m_style)
 
 
 TAG_HANDLER_BEGIN(STYLE, "STYLE")
+    TAG_HANDLER_CONSTR(STYLE) { }
 
     TAG_HANDLER_PROC(WXUNUSED(tag))
     {
         // VS: Ignore styles for now. We must have this handler present,
         //     because CSS style text would be rendered verbatim otherwise
-        return TRUE;
+        return true;
     }
 
 TAG_HANDLER_END(STYLE)

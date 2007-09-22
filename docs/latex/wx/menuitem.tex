@@ -22,11 +22,12 @@ wxOwnerDrawn (Windows only)\\
 
 \latexignore{\rtfignore{\wxheading{Members}}}
 
-\membersection{wxMenuItem::wxMenuItem}\label{wxmenuitemconstr}
 
-\func{}{wxMenuItem}{\param{wxMenu*}{ parentMenu = NULL}, \param{int}{ id = ID\_SEPARATOR},
+\membersection{wxMenuItem::wxMenuItem}\label{wxmenuitemctor}
+
+\func{}{wxMenuItem}{\param{wxMenu*}{ parentMenu = NULL}, \param{int}{ id = wxID\_SEPARATOR},
  \param{const wxString\& }{text = ""},  \param{const wxString\& }{helpString = ""},
- \param{wxItemKind }{kind = wxItem\_Normal}, \param{wxMenu*}{ subMenu = NULL}, }
+ \param{wxItemKind }{kind = wxITEM\_NORMAL}, \param{wxMenu*}{ subMenu = NULL}, }
 
 Constructs a wxMenuItem object.
 
@@ -34,7 +35,7 @@ Constructs a wxMenuItem object.
 
 \docparam{parentMenu}{Menu that the menu item belongs to.}
 
-\docparam{id}{Identifier for this menu item, or ID\_SEPARATOR to indicate a separator.}
+\docparam{id}{Identifier for this menu item, or wxID\_SEPARATOR to indicate a separator.}
 
 \docparam{text}{Text for the menu item, as shown on the menu. An accelerator
 key can be specified using the ampersand '\&' character. In order to embed an
@@ -42,16 +43,18 @@ ampersand character in the menu item text, the ampersand must be doubled.}
 
 \docparam{helpString}{Optional help string that will be shown on the status bar.}
 
-\docparam{kind}{May be {\tt wxItem\_Separator}, {\tt wxItem\_Normal}, 
-{\tt wxItem\_Check} or {\tt wxItem\_Radio}}
+\docparam{kind}{May be {\tt wxITEM\_SEPARATOR}, {\tt wxITEM\_NORMAL}, 
+{\tt wxITEM\_CHECK} or {\tt wxITEM\_RADIO}}
 
 \docparam{subMenu}{If non-NULL, indicates that the menu item is a submenu.}
 
-\membersection{wxMenuItem::\destruct{wxMenuItem}}
+
+\membersection{wxMenuItem::\destruct{wxMenuItem}}\label{wxmenuitemdtor}
 
 \func{}{\destruct{wxMenuItem}}{\void}
 
 Destructor.
+
 
 \membersection{wxMenuItem::Check}\label{wxmenuitemcheck}
 
@@ -59,11 +62,8 @@ Destructor.
 
 Checks or unchecks the menu item.
 
-\membersection{wxMenuItem::DeleteSubMenu}\label{wxmenuitemdeletesubmenu}
+Note that this only works when the item is already appended to a menu.
 
-\func{void}{DeleteSubMenu}{\void}
-
-Deletes the submenu, if any.
 
 \membersection{wxMenuItem::Enable}\label{wxmenuitemenable}
 
@@ -71,17 +71,20 @@ Deletes the submenu, if any.
 
 Enables or disables the menu item.
 
+
 \membersection{wxMenuItem::GetBackgroundColour}\label{wxmenuitemgetbackgroundcolour}
 
 \constfunc{wxColour\&}{GetBackgroundColour}{\void}
 
 Returns the background colour associated with the menu item (Windows only).
 
+
 \membersection{wxMenuItem::GetBitmap}\label{wxmenuitemgetbitmap}
 
-\constfunc{wxBitmap\&}{GetBitmap}{\param{bool}{ checked = TRUE}}
+\constfunc{wxBitmap\&}{GetBitmap}{\param{bool}{ checked = true}}
 
 Returns the checked or unchecked bitmap (Windows only).
+
 
 \membersection{wxMenuItem::GetFont}\label{wxmenuitemgetfont}
 
@@ -89,11 +92,13 @@ Returns the checked or unchecked bitmap (Windows only).
 
 Returns the font associated with the menu item (Windows only).
 
+
 \membersection{wxMenuItem::GetHelp}\label{wxmenuitemgethelp}
 
 \constfunc{wxString}{GetHelp}{\void}
 
 Returns the help string associated with the menu item.
+
 
 \membersection{wxMenuItem::GetId}\label{wxmenuitemgetid}
 
@@ -101,12 +106,14 @@ Returns the help string associated with the menu item.
 
 Returns the menu item identifier.
 
+
 \membersection{wxMenuItem::GetKind}\label{wxmenuitemgetkind}
 
 \constfunc{wxItemKind}{GetKind}{\void}
 
-Returns the item kind, one of {\tt wxItem\_Separator}, {\tt wxItem\_Normal}, 
-{\tt wxItem\_Check} or {\tt wxItem\_Radio}.
+Returns the item kind, one of {\tt wxITEM\_SEPARATOR}, {\tt wxITEM\_NORMAL}, 
+{\tt wxITEM\_CHECK} or {\tt wxITEM\_RADIO}.
+
 
 \membersection{wxMenuItem::GetLabel}\label{wxmenuitemgetlabel}
 
@@ -119,6 +126,7 @@ characters it might contain.
 
 \helpref{GetText}{wxmenuitemgettext}, 
 \helpref{GetLabelFromText}{wxmenuitemgetlabelfromtext}
+
 
 \membersection{wxMenuItem::GetLabelFromText}\label{wxmenuitemgetlabelfromtext}
 
@@ -138,11 +146,13 @@ will return just {\tt "Hello"}.
 \helpref{GetText}{wxmenuitemgettext}, 
 \helpref{GetLabel}{wxmenuitemgetlabel}
 
+
 \membersection{wxMenuItem::GetMarginWidth}\label{wxmenuitemgetmarginwidth}
 
 \constfunc{int}{GetMarginWidth}{\void}
 
 Gets the width of the menu item checkmark bitmap (Windows only).
+
 
 \membersection{wxMenuItem::GetName}\label{wxmenuitemgetname}
 
@@ -153,6 +163,7 @@ Returns the text associated with the menu item.
 {\bf NB:} this function is deprecated, please use 
 \helpref{GetText}{wxmenuitemgettext} or \helpref{GetLabel}{wxmenuitemgetlabel} 
 instead.
+
 
 \membersection{wxMenuItem::GetText}\label{wxmenuitemgettext}
 
@@ -166,11 +177,13 @@ wxMenuItem constructor, i.e. with any accelerator characters it may contain.
 \helpref{GetLabel}{wxmenuitemgetlabel}, 
 \helpref{GetLabelFromText}{wxmenuitemgetlabelfromtext}
 
+
 \membersection{wxMenuItem::GetSubMenu}\label{wxmenuitemgetsubmenu}
 
 \constfunc{wxMenu*}{GetSubMenu}{\void}
 
 Returns the submenu associated with the menu item, or NULL if there isn't one.
+
 
 \membersection{wxMenuItem::GetTextColour}\label{wxmenuitemgettextcolour}
 
@@ -178,29 +191,41 @@ Returns the submenu associated with the menu item, or NULL if there isn't one.
 
 Returns the text colour associated with the menu item (Windows only).
 
+
 \membersection{wxMenuItem::IsCheckable}\label{wxmenuitemischeckable}
 
 \constfunc{bool}{IsCheckable}{\void}
 
-Returns TRUE if the item is checkable.
+Returns true if the item is checkable.
+
 
 \membersection{wxMenuItem::IsChecked}\label{wxmenuitemischecked}
 
 \constfunc{bool}{IsChecked}{\void}
 
-Returns TRUE if the item is checked.
+Returns true if the item is checked.
+
 
 \membersection{wxMenuItem::IsEnabled}\label{wxmenuitemisenabled}
 
 \constfunc{bool}{IsEnabled}{\void}
 
-Returns TRUE if the item is enabled.
+Returns true if the item is enabled.
+
 
 \membersection{wxMenuItem::IsSeparator}\label{wxmenuitemisseparator}
 
 \constfunc{bool}{IsSeparator}{\void}
 
-Returns TRUE if the item is a separator.
+Returns true if the item is a separator.
+
+
+\membersection{wxMenuItem::IsSubMenu}\label{wxmenuitemissubmenu}
+
+\constfunc{bool}{IsSubMenu}{\void}
+
+Returns true if the item is a submenu.
+
 
 \membersection{wxMenuItem::SetBackgroundColour}\label{wxmenuitemsetbackgroundcolour}
 
@@ -208,12 +233,14 @@ Returns TRUE if the item is a separator.
 
 Sets the background colour associated with the menu item (Windows only).
 
+
 \membersection{wxMenuItem::SetBitmap}\label{wxmenuitemsetbitmap}
 
 \constfunc{void}{SetBitmap}{\param{const wxBitmap\& }{bmp}}
 
 Sets the bitmap for the menu item (Windows and GTK+ only). It is
 equivalent to \helpref{SetBitmaps}{wxmenuitemsetbitmaps}(bmp, wxNullBitmap).
+
 
 \membersection{wxMenuItem::SetBitmaps}\label{wxmenuitemsetbitmaps}
 
@@ -223,11 +250,13 @@ equivalent to \helpref{SetBitmaps}{wxmenuitemsetbitmaps}(bmp, wxNullBitmap).
 Sets the checked/unchecked bitmaps for the menu item (Windows only). The first bitmap
 is also used as the single bitmap for uncheckable menu items.
 
+
 \membersection{wxMenuItem::SetFont}\label{wxmenuitemsetfont}
 
 \constfunc{void}{SetFont}{\param{const wxFont\& }{font}}
 
 Sets the font associated with the menu item (Windows only).
+
 
 \membersection{wxMenuItem::SetHelp}\label{wxmenuitemsethelp}
 
@@ -235,17 +264,20 @@ Sets the font associated with the menu item (Windows only).
 
 Sets the help string.
 
+
 \membersection{wxMenuItem::SetMarginWidth}\label{wxmenuitemsetmarginwidth}
 
 \constfunc{void}{SetMarginWidth}{\param{int}{ width}}
 
 Sets the width of the menu item checkmark bitmap (Windows only).
 
+
 \membersection{wxMenuItem::SetText}\label{wxmenuitemsettext}
 
 \constfunc{void}{SetText}{\param{const wxString\& }{text}}
 
 Sets the text associated with the menu item.
+
 
 \membersection{wxMenuItem::SetTextColour}\label{wxmenuitemsettextcolour}
 

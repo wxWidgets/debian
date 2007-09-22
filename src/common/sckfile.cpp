@@ -4,11 +4,11 @@
 // Author:      Guilhem Lavaux
 // Modified by:
 // Created:     20/07/97
-// RCS-ID:      $Id: sckfile.cpp,v 1.13.2.1 2003/10/01 11:46:21 VS Exp $
+// RCS-ID:      $Id: sckfile.cpp,v 1.22 2004/10/29 20:19:49 RN Exp $
 // Copyright:   (c) 1997, 1998 Guilhem Lavaux
-// Licence:     wxWindows license
+// Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
-#ifdef __GNUG__
+#if defined(__GNUG__) && !defined(NO_GCC_PRAGMA)
 #pragma implementation "sckfile.h"
 #endif
 
@@ -30,7 +30,7 @@
 #include "wx/protocol/file.h"
 
 IMPLEMENT_DYNAMIC_CLASS(wxFileProto, wxProtocol)
-IMPLEMENT_PROTOCOL(wxFileProto, wxT("file"), NULL, FALSE)
+IMPLEMENT_PROTOCOL(wxFileProto, wxT("file"), NULL, false)
 
 wxFileProto::wxFileProto()
   : wxProtocol()
@@ -43,7 +43,13 @@ wxFileProto::~wxFileProto()
 
 wxInputStream *wxFileProto::GetInputStream(const wxString& path)
 {
-  return new wxFileInputStream(wxURL::ConvertFromURI(path));
+  wxFileInputStream* retval = new wxFileInputStream(wxURI::Unescape(path));
+  if (retval->Ok()) {
+    return retval;
+  } else {
+    delete retval;
+    return 0;
+  }
 }
 
 #endif // wxUSE_STREAMS && wxUSE_PROTOCOL_FILE
