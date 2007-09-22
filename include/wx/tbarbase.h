@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     01/02/97
-// RCS-ID:      $Id: tbarbase.h,v 1.20.2.4 2001/02/23 20:28:54 vadz Exp $
+// RCS-ID:      $Id: tbarbase.h,v 1.20.2.5 2001/04/12 22:29:30 VZ Exp $
 // Copyright:   (c) Julian Smart and Markus Holzem
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -409,6 +409,9 @@ public:
 
     // Do the toolbar button updates (check for EVT_UPDATE_UI handlers)
     virtual void DoToolbarUpdates();
+
+    // Don't want toolbars to accept the focus
+    virtual bool AcceptsFocus() const { return FALSE; }
 
 protected:
     // to implement in derived classes

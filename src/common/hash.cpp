@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by: VZ at 25.02.00: type safe hashes with WX_DECLARE_HASH()
 // Created:     01/02/97
-// RCS-ID:      $Id: hash.cpp,v 1.15.2.1 2000/07/26 16:09:16 VZ Exp $
+// RCS-ID:      $Id: hash.cpp,v 1.15.2.2 2001/04/12 22:29:30 VZ Exp $
 // Copyright:   (c) Julian Smart and Markus Holzem
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -597,12 +597,15 @@ void wxHashTable::DeleteContents (bool flag)
 
 void wxHashTable::Clear ()
 {
-  int i;
-  for (i = 0; i < n; i++)
+    if ( hash_table )
     {
-      if (hash_table[i])
-        hash_table[i]->Clear ();
+        for ( int i = 0; i < n; i++ )
+        {
+            if ( hash_table[i] )
+                hash_table[i]->Clear();
+        }
     }
-  m_count = 0;
+
+    m_count = 0;
 }
 

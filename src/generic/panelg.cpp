@@ -4,7 +4,7 @@
 // Author:      Julian Smart, Robert Roebling, Vadim Zeitlin
 // Modified by:
 // Created:     04/01/98
-// RCS-ID:      $Id: panelg.cpp,v 1.43.2.3 2000/06/19 08:00:27 JS Exp $
+// RCS-ID:      $Id: panelg.cpp,v 1.43.2.4 2001/04/14 21:41:08 VZ Exp $
 // Copyright:   (c) Julian Smart and Markus Holzem
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -353,6 +353,8 @@ bool wxPanel::SetFocusToChild()
 
 bool wxSetFocusToChild(wxWindow *win, wxWindow **childLastFocused)
 {
+    wxCHECK_MSG( win, FALSE, _T("wxSetFocusToChild(): invalid window") );
+
     if ( *childLastFocused )
     {
         // It might happen that the window got reparented or no longer accepts

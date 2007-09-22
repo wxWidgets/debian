@@ -9,7 +9,7 @@
 // Author:      Robin Dunn
 //
 // Created:     13-Jan-2000
-// RCS-ID:      $Id: ScintillaWX.cpp,v 1.3.2.6 2000/10/26 07:35:32 robind Exp $
+// RCS-ID:      $Id: ScintillaWX.cpp,v 1.3.2.7 2001/03/28 22:08:16 VS Exp $
 // Copyright:   (c) 2000 by Total Control Software
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -489,13 +489,16 @@ void ScintillaWX::DoDragLeave() {
 // Redraw all of text area. This paint will not be abandoned.
 void ScintillaWX::FullPaint() {
     paintState = painting;
-//      rcPaint = GetTextRectangle();
-//      wxClientDC dc(wMain.GetID());
-//      Surface surfaceWindow;
-//      surfaceWindow.Init(&dc);
-//      Paint(&surfaceWindow, rcPaint);
-//      surfaceWindow.Release();
-    wMain.GetID()->Refresh(FALSE);
+    rcPaint = GetTextRectangle();
+    paintingAllText = true;
+    wxClientDC dc(wMain.GetID());
+    Surface surfaceWindow;
+    surfaceWindow.Init(&dc);
+    Paint(&surfaceWindow, rcPaint);
+    surfaceWindow.Release();
+
+//     wMain.GetID()->Refresh(FALSE);
+
     paintState = notPainting;
 }
 

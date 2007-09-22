@@ -4,7 +4,7 @@
 // Author:      Robin Dunn
 // Modified by:
 // Created:     3-Feb-2000
-// RCS-ID:      $Id: stctest.cpp,v 1.1 2000/03/09 19:38:28 RD Exp $
+// RCS-ID:      $Id: stctest.cpp,v 1.1.2.1 2001/03/27 23:25:54 VS Exp $
 // Copyright:   (c) 2000 by Total Control Software
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -165,7 +165,7 @@ MyFrame::MyFrame(const wxString& title, const wxPoint& pos, const wxSize& size)
     ed->EmptyUndoBuffer();
 
     ed->SetLexer(wxSTC_LEX_CPP);
-    ed->SetKeywords(0,
+    ed->SetKeyWords(0,
                     "asm auto bool break case catch char class const "
                     "const_cast continue default delete do double "
                     "dynamic_cast else enum explicit export extern "

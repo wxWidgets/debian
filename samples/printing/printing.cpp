@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     1995
-// RCS-ID:      $Id: printing.cpp,v 1.25.2.2 2000/12/18 23:05:01 roebling Exp $
+// RCS-ID:      $Id: printing.cpp,v 1.25.2.3 2001/03/27 17:10:47 VZ Exp $
 // Copyright:   (c) Julian Smart
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -492,7 +492,7 @@ void MyPrintout::DrawPageTwo(wxDC *dc)
         wxString words[8] = {"This ", "is ", "a very long string for testing:"," GetTextExtent", " testing", "string. ", "Enjoy ", "it!"};
         long w, h;
         long x = 200, y= 250;
-        wxFont fnt(15, wxTELETYPE, wxBOLD, wxNORMAL);
+        wxFont fnt(15, wxTELETYPE, wxNORMAL, wxBOLD);
         
         dc->SetFont(fnt);
         for (int i = 0; i < 8; i++) {

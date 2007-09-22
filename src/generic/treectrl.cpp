@@ -4,7 +4,7 @@
 // Author:      Robert Roebling
 // Created:     01/02/97
 // Modified:    22/10/98 - almost total rewrite, simpler interface (VZ)
-// Id:          $Id: treectrl.cpp,v 1.118.2.14 2001/03/08 15:07:19 VZ Exp $
+// Id:          $Id: treectrl.cpp,v 1.118.2.17 2001/04/08 21:12:40 RR Exp $
 // Copyright:   (c) 1998 Robert Roebling, Julian Smart and Markus Holzem
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -1362,6 +1362,17 @@ void wxTreeCtrl::SelectItem(const wxTreeItemId& itemId,
 
     if ( GetEventHandler()->ProcessEvent( event ) && !event.IsAllowed() )
       return;
+      
+    wxTreeItemId parent = GetParent( itemId );
+    while (parent.IsOk())
+    {
+        if (!IsExpanded(parent))
+            Expand( parent );
+            
+        parent = GetParent( parent );
+    }
+    
+    EnsureVisible( itemId );
 
     // ctrl press
     if (unselect_others)
@@ -2321,11 +2332,24 @@ void wxTreeCtrl::OnMouse( wxMouseEvent &event )
                 m_lastOnSame = FALSE;
             }
         }
-        else
+        else // !RightDown() && !LeftUp() ==> LeftDown() || LeftDClick()
         {
             if ( event.LeftDown() )
             {
                 m_lastOnSame = item == m_current;
+            }
+
+            if ( flags & wxTREE_HITTEST_ONITEMBUTTON )
+            {
+                // only toggle the item for a single click, double click on
+                // the button doesn't do anything (it toggles the item twice)
+                if ( event.LeftDown() )
+                {
+                    Toggle( item );
+                }
+
+                // don't select the item if the button was clicked
+                return;
             }
 
             // how should the selection work for this event?
@@ -2334,13 +2358,6 @@ void wxTreeCtrl::OnMouse( wxMouseEvent &event )
                                 event.ShiftDown(),
                                 event.ControlDown(),
                                 is_multiple, extended_select, unselect_others);
-
-            if ( (flags & wxTREE_HITTEST_ONITEMBUTTON) && event.LeftDown() )
-            {
-                Toggle( item );
-                if ( is_multiple )
-                    return;
-            }
 
             SelectItem(item, unselect_others, extended_select);
 

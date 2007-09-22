@@ -5,7 +5,7 @@
 // Author:      Vadim Zeitlin
 // Modified by:
 // Created:     29/01/98
-// RCS-ID:      $Id: file.cpp,v 1.46.2.7 2000/06/19 08:09:51 VZ Exp $
+// RCS-ID:      $Id: file.cpp,v 1.46.2.10 2001/04/12 22:05:36 VZ Exp $
 // Copyright:   (c) 1998 Vadim Zeitlin <zeitlin@dptmaths.ens-cachan.fr>
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -253,7 +253,7 @@ bool wxFile::Open(const wxChar *szFileName, OpenMode mode, int accessMode)
 bool wxFile::Close()
 {
     if ( IsOpened() ) {
-        if ( close(m_fd) == -1 ) {
+        if ( wxClose(m_fd) == -1 ) {
             wxLogSysError(_("can't close file descriptor %d"), m_fd);
             m_fd = fd_invalid;
             return FALSE;
@@ -274,10 +274,12 @@ off_t wxFile::Read(void *pBuf, off_t nCount)
 {
     wxCHECK( (pBuf != NULL) && IsOpened(), 0 );
 
+    // note: we have to use scope resolution operator because there is also an
+    // enum value "read"
 #ifdef __MWERKS__
-    int iRc = ::read(m_fd, (char*) pBuf, nCount);
+    int iRc = ::read(m_fd, (char *) pBuf, nCount);
 #else
-    int iRc = ::read(m_fd, pBuf, nCount);
+    int iRc = ::wxRead(m_fd, pBuf, nCount);
 #endif
     if ( iRc == -1 ) {
         wxLogSysError(_("can't read from file descriptor %d"), m_fd);
@@ -292,10 +294,11 @@ size_t wxFile::Write(const void *pBuf, size_t nCount)
 {
     wxCHECK( (pBuf != NULL) && IsOpened(), 0 );
 
+    // have to use scope resolution for the same reason as above
 #ifdef __MWERKS__
-    int iRc = ::write(m_fd, (const char*) pBuf, nCount);
+    int iRc = ::write(m_fd, (const char *) pBuf, nCount);
 #else
-    int iRc = ::write(m_fd, pBuf, nCount);
+    int iRc = ::wxWrite(m_fd, pBuf, nCount);
 #endif
     if ( iRc == -1 ) {
         wxLogSysError(_("can't write to file descriptor %d"), m_fd);
@@ -351,7 +354,7 @@ off_t wxFile::Seek(off_t ofs, wxSeekMode mode)
             break;
     }
 
-    int iRc = lseek(m_fd, ofs, origin);
+    int iRc = wxLseek(m_fd, ofs, origin);
     if ( iRc == -1 ) {
         wxLogSysError(_("can't seek on file descriptor %d"), m_fd);
         return wxInvalidOffset;
@@ -384,8 +387,7 @@ off_t wxFile::Length() const
 #else // !VC++
     int iRc = wxTell(m_fd);
     if ( iRc != -1 ) {
-        // @ have to use const_cast :-(
-        int iLen = ((wxFile *)this)->SeekEnd();
+        int iLen = ((wxFile *)this)->SeekEnd(); // const_cast
         if ( iLen != -1 ) {
             // restore old position
             if ( ((wxFile *)this)->Seek(iRc) == -1 ) {
@@ -414,7 +416,7 @@ bool wxFile::Eof() const
     int iRc;
 
 #if defined(__UNIX__) || defined(__GNUWIN32__) || defined( __MWERKS__ ) || defined(__SALFORDC__)
-    // @@ this doesn't work, of course, on unseekable file descriptors
+    // FIXME this doesn't work, of course, on unseekable file descriptors
     off_t ofsCur = Tell(),
     ofsMax = Length();
     if ( ofsCur == wxInvalidOffset || ofsMax == wxInvalidOffset )
@@ -422,7 +424,7 @@ bool wxFile::Eof() const
     else
         iRc = ofsCur == ofsMax;
 #else  // Windows and "native" compiler
-    iRc = eof(m_fd);
+    iRc = wxEof(m_fd);
 #endif // Windows/Unix
 
     switch ( iRc ) {

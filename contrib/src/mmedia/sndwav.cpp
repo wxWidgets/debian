@@ -3,7 +3,7 @@
 // Purpose:
 // Date: 08/11/1999
 // Author: Guilhem Lavaux <lavaux@easynet.fr> (C) 1999
-// CVSID: $Id: sndwav.cpp,v 1.1 2000/03/05 19:03:19 GL Exp $
+// CVSID: $Id: sndwav.cpp,v 1.1.2.1 2001/04/07 16:12:10 RL Exp $
 // --------------------------------------------------------------------------
 #ifdef __GNUG__
 #pragma implementation "sndwav.cpp"
@@ -312,8 +312,19 @@ FAIL_WITH(s->Write(&signature, 4).LastWrite() != 4, wxSOUND_INVSTRM);
         
         delete frmt;
     }
-    
+
+#ifdef __ALPHA__
+    // FIXME:
+    // Linux Alpha spits passing size_t to a wxDataOutputStream, since it
+    // appears to be an unsigned long type there.
+    // This is a bandaid for 2.2 to get it to build there until we fix it
+    // more sensibly.
+
+    data << (unsigned int)( fmt_data.GetSize() +
+                            m_sndformat->GetBytesFromTime(time) );
+#else
     data << (fmt_data.GetSize() + m_sndformat->GetBytesFromTime(time));
+#endif
 
     // We, finally, copy the header block to the output stream 
     {

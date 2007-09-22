@@ -2,7 +2,7 @@
 // Name:        textctrl.cpp
 // Purpose:
 // Author:      Robert Roebling
-// Id:          $Id: textctrl.cpp,v 1.105.2.6 2000/08/29 16:18:38 JS Exp $
+// Id:          $Id: textctrl.cpp,v 1.105.2.7 2001/03/31 13:50:20 RR Exp $
 // Copyright:   (c) 1998 Robert Roebling, Vadim Zeitlin
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -212,10 +212,6 @@ bool wxTextCtrl::Create( wxWindow *parent,
     if (multi_line)
         gtk_widget_show(m_text);
 
-    /* we want to be notified about text changes */
-    gtk_signal_connect( GTK_OBJECT(m_text), "changed",
-      GTK_SIGNAL_FUNC(gtk_text_changed_callback), (gpointer)this);
-
     if (multi_line)
     {
         gtk_signal_connect(GTK_OBJECT(GTK_TEXT(m_text)->vadj), "changed",
@@ -263,6 +259,10 @@ bool wxTextCtrl::Create( wxWindow *parent,
         if (multi_line)
             gtk_text_set_editable( GTK_TEXT(m_text), 1 );
     }
+
+    /* we want to be notified about text changes */
+    gtk_signal_connect( GTK_OBJECT(m_text), "changed",
+      GTK_SIGNAL_FUNC(gtk_text_changed_callback), (gpointer)this);
 
     SetBackgroundColour( wxSystemSettings::GetSystemColour(wxSYS_COLOUR_WINDOW) );
     SetForegroundColour( parent->GetForegroundColour() );
