@@ -3,12 +3,13 @@ Section: libs
 Priority: optional
 Build-Depends: debhelper (>=4.0), flex, bison, gettext, libgtk2.0-dev, =PY, =PY-dev, zlib1g-dev, libjpeg62-dev, libpng12-dev, libtiff4-dev, libgl1-mesa-dev | libgl-dev, libglu1-mesa-dev | libglu-dev, libesd0-dev, libgnomeprintui2.2-dev
 Maintainer: Ron Lee <ron@debian.org>
-Standards-Version: 3.6.2.1
+Standards-Version: 3.7.0.0
 
 Package: libwxbase=SOV
 Architecture: any
 Section: libs
 Depends: ${shlibs:Depends}
+Replaces: libwxgtk2.6-0 (<<2.6.3.2)
 Description: wxBase library (runtime) - non-GUI support classes of wxWidgets toolkit
  wxBase is a collection of C++ classes providing basic data structures
  (strings, lists, arrays), powerful wxDateTime class for date manipulations,
@@ -26,6 +27,7 @@ Package: libwxbase=V-dev
 Architecture: any
 Section: libdevel
 Depends: wx=V-headers (= ${Source-Version}), libwxbase=SOV (= ${Source-Version}), libc6-dev
+Replaces: libwxgtk2.6-dev (<<2.6.3.2)
 Suggests: wx=V-doc, gettext
 Description: wxBase library (development) - non-GUI support classes of wxWidgets toolkit
  wxBase is a collection of C++ classes providing basic data structures
@@ -44,6 +46,7 @@ Architecture: any
 Section: libdevel
 Priority: extra
 Depends: wx=V-headers (= ${Source-Version}), libc6-dev
+Replaces: libwxgtk2.6-dbg (<<2.6.3.2)
 Description: wxBase library (debug) - non-GUI support classes of wxWidgets toolkit
  wxBase is a collection of C++ classes providing basic data structures
  (strings, lists, arrays), powerful wxDateTime class for date manipulations,

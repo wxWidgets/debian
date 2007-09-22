@@ -4,7 +4,7 @@
 // Author:      Guilhem Lavaux, Guillermo Rodriguez Garcia, Vadim Zeitlin
 // Modified by:
 // Created:     11/07/98
-// RCS-ID:      $Id: stream.h,v 1.71 2005/06/26 15:46:08 RR Exp $
+// RCS-ID:      $Id: stream.h,v 1.71.2.1 2006/04/19 09:33:33 RL Exp $
 // Copyright:   (c) Guilhem Lavaux
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////

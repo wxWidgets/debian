@@ -4,7 +4,7 @@
 // Author:      Julian Smart, Vadim Zeitlin
 // Modified by:
 // Created:     13/07/98
-// RCS-ID:      $Id: wincmn.cpp,v 1.237.2.5 2006/03/04 20:52:21 ABX Exp $
+// RCS-ID:      $Id: wincmn.cpp,v 1.237.2.6 2006/04/19 09:33:36 RL Exp $
 // Copyright:   (c) wxWidgets team
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////

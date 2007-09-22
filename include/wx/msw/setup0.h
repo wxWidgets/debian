@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     01/02/97
-// RCS-ID:      $Id: setup0.h,v 1.212 2005/08/04 20:31:07 VZ Exp $
+// RCS-ID:      $Id: setup0.h,v 1.212.2.1 2006/04/19 14:36:52 RL Exp $
 // Copyright:   (c) Julian Smart
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -44,6 +44,14 @@
 //
 // Recommended setting: 0 (please update your code)
 #define WXWIN_COMPATIBILITY_2_4 1
+
+// This setting controls the inclusion of reserved virtual functions
+// that were introduced just prior to the 2.6 freeze but have been
+// removed again for 2.7+
+//
+// Default is 1, typically you should not change it unless you know
+// exactly why you don't want them included.
+#define WX_USE_RESERVED_VIRTUALS 1
 
 // MSW-only: Set to 0 for accurate dialog units, else 1 for old behaviour when
 // default system font is used for wxWindow::GetCharWidth/Height() instead of

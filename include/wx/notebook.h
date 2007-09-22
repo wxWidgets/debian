@@ -4,7 +4,7 @@
 // Author:      Vadim Zeitlin
 // Modified by:
 // Created:     01.02.01
-// RCS-ID:      $Id: notebook.h,v 1.53 2005/06/26 15:46:08 RR Exp $
+// RCS-ID:      $Id: notebook.h,v 1.53.2.1 2006/04/19 09:33:32 RL Exp $
 // Copyright:   (c) 1996-2000 Vadim Zeitlin
 // Licence:     wxWindows licence
 ///////////////////////////////////////////////////////////////////////////////

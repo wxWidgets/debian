@@ -4,7 +4,7 @@
 // Author:      Vadim Zeitlin
 // Modified by:
 // Created:     26.07.99
-// RCS-ID:      $Id: control.h,v 1.45 2005/06/26 15:46:07 RR Exp $
+// RCS-ID:      $Id: control.h,v 1.45.2.1 2006/04/19 09:33:32 RL Exp $
 // Copyright:   (c) wxWidgets team
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////

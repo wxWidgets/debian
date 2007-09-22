@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by: Ron Lee
 // Created:     01/02/97
-// RCS-ID:      $Id: object.h,v 1.119 2005/07/22 16:56:23 ABX Exp $
+// RCS-ID:      $Id: object.h,v 1.119.2.1 2006/04/19 09:33:33 RL Exp $
 // Copyright:   (c) 1997 Julian Smart
 //              (c) 2001 Ron Lee <ron@debian.org>
 // Licence:     wxWindows licence

@@ -1,3 +1,10 @@
+wxwidgets2.6 (2.6.3.2.1) unstable; urgency=low
+
+  * Add 'Replaces' for the wxbase packages when upgrading from
+    earlier than 2.6.3.2 where they split again.  Closes: #365561
+
+ -- Ron Lee <ron@debian.org>  Mon,  1 May 2006 14:02:26 +0930
+
 wxwidgets2.6 (2.6.3.2) unstable; urgency=low
 
   * Next try for an upload candidate.
