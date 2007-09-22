@@ -1,3 +1,12 @@
+wxwindows2.4 (2.4.4.1.1) unstable; urgency=low
+
+  * Disable building of the common packages.  The 2.6 source package
+    builds them now and that precludes 'earlier' versions from being
+    provided by this one in future.  It is a bit premature, but
+    clearly a goal to punt toward for etch.
+
+ -- Ron Lee <ron@debian.org>  Tue, 23 Aug 2005 00:43:23 +0930
+
 wxwindows2.4 (2.4.4.1) unstable; urgency=low
 
   * Rebuild for the xorg transition ^W^W^W^W^W^W

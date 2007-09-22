@@ -25,6 +25,17 @@ endif
 
 -include debian/python-version
 
+
+# If another source package is to supply the common binary packages
+# for a particular Debian release, then define this variable to indicate
+# the $(release) that is expected to provide it.  Do not define it at
+# all if this is to be the default (or only) wx source package for the
+# target release.
+#
+# for etch:
+DEBIAN_WX_DEFAULT_VERSION = 2.6
+
+
 release   := $(shell dpkg-parsechangelog | sed -n 's/^Source: wxwindows//p')
 soversion := $(shell grep '^WX_CURRENT=' configure.in | sed 's/WX_CURRENT=\([0-9]\+\).*/\1/')
 sorelease := $(release:%-$(DEBIAN_WXFLAVOUR)=%)-$(soversion)$(addprefix -,$(DEBIAN_WXFLAVOUR))
@@ -35,41 +46,59 @@ alt_prio  := $(subst .,,$(release))
 pydir     := usr/lib/$(python_ver)/site-packages
 wxpydir   := $(pydir)/wx-$(release)-gtk-ansi
 
-cross_host  = i586-mingw32msvc
-cross_build = $(shell ./config.guess)
+cross_host  := i586-mingw32msvc
+cross_build := $(shell ./config.guess)
 
 config_cache       = ../config_deb.cache
 config_cache_cross = ../config_deb_cross.cache
 
+
 # Packages to build:
-package_wxbase_lib      = libwxbase$(sorelease)
-package_wxbase_dev      = libwxbase$(release)-dev
-package_wxbase_dbg      = libwxbase$(release)-dbg
-package_gtk_lib         = libwxgtk$(sorelease)
-package_gtk_dev         = libwxgtk$(release)-dev
-package_gtk_dbg         = libwxgtk$(release)-dbg
+package_wxbase_lib      := libwxbase$(sorelease)
+package_wxbase_dev      := libwxbase$(release)-dev
+package_wxbase_dbg      := libwxbase$(release)-dbg
 
-package_gtk_py_lib      = python-wxgtk$(release)
-package_gtk_py_ver      = python-wxversion
-package_gtk_py_tools    = python-wxtools
+package_gtk_lib         := libwxgtk$(sorelease)
+package_gtk_dev         := libwxgtk$(release)-dev
+package_gtk_dbg         := libwxgtk$(release)-dbg
 
-package_gtk_contrib     = libwxgtk$(sorelease)-contrib
-package_gtk_contrib_dev = libwxgtk$(release)-contrib-dev
+package_gtk_contrib     := libwxgtk$(sorelease)-contrib
+package_gtk_contrib_dev := libwxgtk$(release)-contrib-dev
 
-package_common          = wx-common
-package_headers         = wx$(release)-headers
-package_i18n            = wx$(release)-i18n
-package_doc             = wx$(release)-doc
-package_examples        = wx$(release)-examples
+package_gtk_py_lib      := python-wxgtk$(release)
+package_gtk_py_ver       = python-wxversion
+package_gtk_py_tools     = python-wxtools
 
-package_gtk_dbg_py      = python-wxgtk$(release)-dbg
+package_headers         := wx$(release)-headers
+package_i18n            := wx$(release)-i18n
+package_doc             := wx$(release)-doc
+package_examples        := wx$(release)-examples
+package_common           = wx-common
+
+# The packages listed here are common to all wx versions, and may be provided
+# by another source package if more than one is in the release simultaneously.
+common_packages	:= $(package_common) $(package_gtk_py_ver) $(package_gtk_py_tools)
 
 
-package_wxbase_msw_dev  = libwxbase-msw$(release)-dev
-package_wxbase_msw_dbg  = libwxbase-msw$(release)-dbg
-package_msw_dev         = libwxmsw$(release)-dev
-package_msw_dbg         = libwxmsw$(release)-dbg
-package_headers_msw     = wx$(release)-headers-msw
+package_gtk_dbg_py      := python-wxgtk$(release)-dbg
+
+package_wxbase_msw_dev  := libwxbase-msw$(release)-dev
+package_wxbase_msw_dbg  := libwxbase-msw$(release)-dbg
+package_msw_dev         := libwxmsw$(release)-dev
+package_msw_dbg         := libwxmsw$(release)-dbg
+package_headers_msw     := wx$(release)-headers-msw
+
+# The packages listed here will not be built by default.
+extra_packages := $(package_gtk_dbg_py)                                      \
+		  $(package_wxbase_msw_dev) $(package_wxbase_msw_dbg)        \
+		  $(package_msw_dev) $(package_msw_dbg) $(package_headers_msw)
+
+ifdef DEBIAN_WX_DEFAULT_VERSION
+
+  extra_packages += $(common_packages)
+
+endif
+
 
 # Build directories:
 objdir_wxbase_shared       = objs_wxbase_sh
@@ -90,13 +119,13 @@ objdir_msw_shared          = objs_msw_sh
 objdir_msw_static          = objs_msw_st
 objdir_msw_dbg             = objs_msw_d
 
-objdirs = $(objdir_wxbase_shared) $(objdir_wxbase_debug)                     \
-	  $(objdir_gtk_shared) $(objdir_gtk_debug)                           \
-	  $(objdir_gtk_install) $(objdir_gtk_contrib_install)                \
-	  $(objdir_doc_cruft) $(objdir_doc) $(objdir_examples)               \
-	  $(objdir_wxbase_msw_shared) $(objdir_wxbase_msw_static)            \
-	  $(objdir_wxbase_msw_dbg) $(objdir_msw_shared) $(objdir_msw_static) \
-	  $(objdir_msw_dbg)
+objdirs := $(objdir_wxbase_shared) $(objdir_wxbase_debug)                    \
+	   $(objdir_gtk_shared) $(objdir_gtk_debug)                          \
+	   $(objdir_gtk_install) $(objdir_gtk_contrib_install)               \
+	   $(objdir_doc_cruft) $(objdir_doc) $(objdir_examples)              \
+	   $(objdir_wxbase_msw_shared) $(objdir_wxbase_msw_static)           \
+	   $(objdir_wxbase_msw_dbg) $(objdir_msw_shared) $(objdir_msw_static)\
+	   $(objdir_msw_dbg)
 
 #	note that the i18n package is actually arch indep (once built)
 #	but must be built (and installed) during the arch any phase as
@@ -115,27 +144,34 @@ build_arch_stamps = build-wxbase-shared-stamp build-wxbase-debug-stamp       \
 build_indep_stamps = build-examples-stamp build-doc-stamp
 
 build_cross_stamps = build-wxbase-msw-shared-stamp build-wxbase-msw-static-stamp \
-		     build-wxbase-msw-dbg-stamp build-msw-shared-stamp \
+		     build-wxbase-msw-dbg-stamp build-msw-shared-stamp       \
 		     build-msw-static-stamp build-msw-dbg-stamp
 
-build_stamps_native = $(build_arch_stamps) $(build_indep_stamps)
+build_stamps_native := $(build_arch_stamps) $(build_indep_stamps)
 
-build_stamps = $(build_stamps_native) $(build_cross_stamps)
+build_stamps := $(build_stamps_native) $(build_cross_stamps)
 
 
 # Install targets:
-install_all_arch = install-wxbase-lib install-wxbase-dev install-wxbase-dbg \
-                   install-gtk-lib install-gtk-dev install-gtk-dbg \
-                   install-gtk-contrib install-gtk-contrib-dev install-gtk-py \
-                   install-common install-headers install-i18n
+install_all_arch = install-wxbase-lib install-wxbase-dev install-wxbase-dbg  \
+                   install-gtk-lib install-gtk-dev install-gtk-dbg           \
+                   install-gtk-contrib install-gtk-contrib-dev install-gtk-py\
+                   install-headers install-i18n
+
+ifndef DEBIAN_WX_DEFAULT_VERSION
+
+  install_all_arch += install-common
+
+endif
 
 install_all_indep = install-examples install-doc
 
-install_all_cross = install-wxbase-msw-dev install-wxbase-msw-dbg install-msw-dev install-msw-dbg install-headers-msw
+install_all_cross = install-wxbase-msw-dev install-wxbase-msw-dbg            \
+		    install-msw-dev install-msw-dbg install-headers-msw
 
-install_all_native = $(install_all_arch) $(install_all_indep)
+install_all_native := $(install_all_arch) $(install_all_indep)
 
-install_all = $(install_all_native) $(install_all_cross)
+install_all := $(install_all_native) $(install_all_cross)
 
 
 wxconfig := $(shell pwd)/$(objdir_gtk_shared)/wx-config          \
@@ -709,7 +745,12 @@ install-gtk-py-ver: install-gtk-py-lib
 	dh_testroot
 	dh_clean -k
 
+ifndef DEBIAN_WX_DEFAULT_VERSION
+
 	dh_movefiles --sourcedir=debian/$(package_gtk_py_lib) $(pydir)/wxversion.py
+else
+	rm debian/$(package_gtk_py_lib)/$(pydir)/wxversion.py
+endif
 
 install-gtk-py-tools: DH_OPTIONS=-p$(package_gtk_py_tools)
 install-gtk-py-tools: install-gtk-py-ver
@@ -717,8 +758,9 @@ install-gtk-py-tools: install-gtk-py-ver
 	dh_testroot
 	dh_clean -k
 
+ifndef DEBIAN_WX_DEFAULT_VERSION
+
 	dh_movefiles --sourcedir=debian/$(package_gtk_py_lib) usr/bin
-	rm -r debian/$(package_gtk_py_lib)/usr/bin
 
 	dh_installman debian/wxPython-tools.1
 	dh_link usr/share/man/man1/wxPython-tools.1 usr/share/man/man1/img2py.1     \
@@ -735,6 +777,8 @@ install-gtk-py-tools: install-gtk-py-ver
 
 	dh_installdirs usr/share/lintian/overrides
 	cp debian/lintian-override debian/$(package_gtk_py_tools)/usr/share/lintian/overrides/$(package_gtk_py_tools)
+endif
+	rm -r debian/$(package_gtk_py_lib)/usr/bin
 
 install-gtk-py: install-gtk-py-tools
 
@@ -902,13 +946,13 @@ binary-common:
 # building the arch specific package files needed to create them.
 binary-indep: build_all install
 	$(MAKE) -f debian/rules \
-		DH_OPTIONS="-i -N$(package_gtk_dbg_py) -N$(package_wxbase_msw_dev) -N$(package_wxbase_msw_dbg) -N$(package_msw_dev) -N$(package_msw_dbg) -N$(package_headers_msw)" \
+		DH_OPTIONS="-i $(addprefix -N,$(extra_packages))" \
 		binary-common
 
 # Build just the architecture-dependent files here.
 binary-arch: build_arch install_arch
 	$(MAKE) -f debian/rules \
-		DH_OPTIONS="-a -N$(package_gtk_dbg_py) -N$(package_wxbase_msw_dev) -N$(package_wxbase_msw_dbg) -N$(package_msw_dev) -N$(package_msw_dbg) -N$(package_headers_msw)" \
+		DH_OPTIONS="-a $(addprefix -N,$(extra_packages))" \
 		binary-common
 
 # Build all packages target.
