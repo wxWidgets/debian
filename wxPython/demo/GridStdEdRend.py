@@ -142,11 +142,11 @@ Renderers used together.
         attr.SetReadOnly(true)
         attr.SetAlignment(wxRIGHT, -1)
         self.SetColAttr(renCol, attr)
+        attr.IncRef()
         self.SetColAttr(edCol, attr)
 
         # There is a bug in wxGTK for this method...
-        if wxPlatform != '__WXGTK__':
-            self.AutoSizeColumns(true)
+        self.AutoSizeColumns(true)
         self.AutoSizeRows(true)
 
         EVT_GRID_CELL_LEFT_DCLICK(self, self.OnLeftDClick)

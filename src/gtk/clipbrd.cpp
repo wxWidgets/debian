@@ -2,7 +2,7 @@
 // Name:        gtk/clipbrd.cpp
 // Purpose:
 // Author:      Robert Roebling
-// Id:          $Id: clipbrd.cpp,v 1.47.2.1 2001/04/02 19:31:26 VZ Exp $
+// Id:          $Id: clipbrd.cpp,v 1.52 2002/08/19 17:02:10 RR Exp $
 // Copyright:   (c) 1998 Robert Roebling
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -28,8 +28,6 @@
 //-----------------------------------------------------------------------------
 
 #if wxUSE_THREADS
-extern void wxapp_install_thread_wakeup();
-extern void wxapp_uninstall_thread_wakeup();
 #endif
 
 //-----------------------------------------------------------------------------
@@ -76,14 +74,12 @@ struct _GtkSelectionData
 static void
 targets_selection_received( GtkWidget *WXUNUSED(widget),
                             GtkSelectionData *selection_data,
-#if (GTK_MINOR_VERSION > 0)
                             guint32 WXUNUSED(time),
-#endif
                             wxClipboard *clipboard )
 {
     if ( wxTheClipboard && selection_data->length > 0 )
     {
-        /* make sure we got the data in the correct form */
+        // make sure we got the data in the correct form
         GdkAtom type = selection_data->type;
         if ( type != GDK_SELECTION_TYPE_ATOM )
         {
@@ -115,6 +111,10 @@ targets_selection_received( GtkWidget *WXUNUSED(widget),
                         wxT("selection received for targets, format %s"),
                         format.GetId().c_str() );
 
+//            printf( "format %s requested %s\n", 
+//                    gdk_atom_name( atoms[i] ),
+//                    gdk_atom_name( clipboard->m_targetRequested ) );
+
             if (format == clipboard->m_targetRequested)
             {
                 clipboard->m_waiting = FALSE;
@@ -134,9 +134,7 @@ targets_selection_received( GtkWidget *WXUNUSED(widget),
 static void
 selection_received( GtkWidget *WXUNUSED(widget),
                     GtkSelectionData *selection_data,
-#if (GTK_MINOR_VERSION > 0)
                     guint32 WXUNUSED(time),
-#endif
                     wxClipboard *clipboard )
 {
     if (!wxTheClipboard)
@@ -161,7 +159,7 @@ selection_received( GtkWidget *WXUNUSED(widget),
 
     wxDataFormat format( selection_data->target );
 
-    /* make sure we got the data in the correct format */
+    // make sure we got the data in the correct format
     if (!data_object->IsSupportedFormat( format ) )
     {
         clipboard->m_waiting = FALSE;
@@ -244,36 +242,14 @@ selection_handler( GtkWidget *WXUNUSED(widget),
 
     if (!data->IsSupportedFormat( format )) return;
 
-    /* this will fail for composite formats */
-    if (format.GetType() == wxDF_TEXT)
-    {
-        wxTextDataObject *text_object = (wxTextDataObject*) data;
-        wxString text( text_object->GetText() );
-
-#if wxUSE_UNICODE
-        const wxWX2MBbuf s = text.mbc_str();
-        int len = strlen(s);
-#else // more efficient in non-Unicode
-        const char *s = text.c_str();
-        int len = (int) text.Length();
-#endif
-        gtk_selection_data_set(
-            selection_data,
-            GDK_SELECTION_TYPE_STRING,
-            8*sizeof(gchar),
-            (unsigned char*) (const char*) s,
-            len );
-
-        return;
-    }
-
     int size = data->GetDataSize( format );
 
     if (size == 0) return;
 
-    char *d = new char[size];
+    void *d = malloc(size);
 
-    data->GetDataHere( selection_data->target, (void*) d );
+    // Text data will be in UTF8 in Unicode mode.
+    data->GetDataHere( selection_data->target, d );
 
     gtk_selection_data_set(
         selection_data,
@@ -281,6 +257,8 @@ selection_handler( GtkWidget *WXUNUSED(widget),
         8*sizeof(gchar),
         (unsigned char*) d,
         size );
+
+    free(d);
 }
 
 //-----------------------------------------------------------------------------
@@ -347,11 +325,10 @@ void wxClipboard::Clear()
     {
 #if wxUSE_THREADS
         /* disable GUI threads */
-        wxapp_uninstall_thread_wakeup();
 #endif
 
-        /*  As we have data we also own the clipboard. Once we no longer own
-            it, clear_selection is called which will set m_data to zero */
+        //  As we have data we also own the clipboard. Once we no longer own
+        //  it, clear_selection is called which will set m_data to zero
         if (gdk_selection_owner_get( g_clipboardAtom ) == m_clipboardWidget->window)
         {
             m_waiting = TRUE;
@@ -380,7 +357,6 @@ void wxClipboard::Clear()
 
 #if wxUSE_THREADS
         /* re-enable GUI threads */
-        wxapp_install_thread_wakeup();
 #endif
     }
 
@@ -414,16 +390,16 @@ bool wxClipboard::AddData( wxDataObject *data )
 
     wxCHECK_MSG( data, FALSE, wxT("data is invalid") );
 
-    /* we can only store one wxDataObject */
+    // we can only store one wxDataObject
     Clear();
 
     m_data = data;
 
-    /* get formats from wxDataObjects */
+    // get formats from wxDataObjects
     wxDataFormat *array = new wxDataFormat[ m_data->GetFormatCount() ];
     m_data->GetAllFormats( array );
 
-    /* primary selection or clipboard */
+    // primary selection or clipboard
     GdkAtom clipboard = m_usePrimary ? (GdkAtom)GDK_SELECTION_PRIMARY
                                      : g_clipboardAtom;
 
@@ -434,6 +410,9 @@ bool wxClipboard::AddData( wxDataObject *data )
                     wxT("wxClipboard now supports atom %s"),
                     array[i].GetId().c_str() );
 
+//        printf( "added %s\n", 
+//                    gdk_atom_name( array[i].GetFormatId() ) );
+                    
         gtk_selection_add_target( GTK_WIDGET(m_clipboardWidget),
                                   clipboard,
                                   array[i],
@@ -449,7 +428,6 @@ bool wxClipboard::AddData( wxDataObject *data )
 
 #if wxUSE_THREADS
     /* disable GUI threads */
-    wxapp_uninstall_thread_wakeup();
 #endif
 
     /* Tell the world we offer clipboard data */
@@ -464,7 +442,6 @@ bool wxClipboard::AddData( wxDataObject *data )
 
 #if wxUSE_THREADS
     /* re-enable GUI threads */
-    wxapp_install_thread_wakeup();
 #endif
 
     return res;

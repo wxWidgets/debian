@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     04/01/98
-// RCS-ID:      $Id: winstyle.cpp,v 1.5.2.2 2000/05/10 17:39:35 JS Exp $
+// RCS-ID:      $Id: winstyle.cpp,v 1.9 2001/11/19 16:05:55 JS Exp $
 // Copyright:   (c) Julian Smart
 // Licence:   	wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -23,6 +23,9 @@
 #ifndef WX_PRECOMP
 #include "wx/wx.h"
 #endif
+
+#include "wx/listctrl.h"
+#include "wx/treectrl.h"
 
 #include <ctype.h>
 #include <stdlib.h>

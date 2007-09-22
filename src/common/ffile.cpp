@@ -4,7 +4,7 @@
 // Author:      Vadim Zeitlin
 // Modified by:
 // Created:     14.07.99
-// RCS-ID:      $Id: ffile.cpp,v 1.8 1999/11/11 16:11:09 SC Exp $
+// RCS-ID:      $Id: ffile.cpp,v 1.11 2001/06/26 20:59:09 VZ Exp $
 // Copyright:   (c) 1998 Vadim Zeitlin <zeitlin@dptmaths.ens-cachan.fr>
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -28,7 +28,7 @@
   #pragma hdrstop
 #endif
 
-#if wxUSE_FILE
+#if wxUSE_FFILE
 
 #ifndef WX_PRECOMP
     #include "wx/intl.h"
@@ -64,19 +64,11 @@ bool wxFFile::Open(const wxChar *filename, const char *mode)
     tmp_fname = new char[fname_len];
     wxWX2MB(tmp_fname, filename, fname_len);
 
-#ifdef __WXMAC__
-  	m_fp = fopen(wxUnix2MacFilename( tmp_fname ), mode);
-#else
     m_fp = fopen(tmp_fname, mode);
-#endif
 
     delete tmp_fname;
 #else
-#ifdef __WXMAC__
-  	m_fp = fopen(wxUnix2MacFilename( filename ), mode);
-#else
     m_fp = fopen(filename, mode);
-#endif
 #endif
 
 
@@ -258,4 +250,4 @@ size_t wxFFile::Length() const
     return (size_t)-1;
 }
 
-#endif // wxUSE_FILE
+#endif // wxUSE_FFILE

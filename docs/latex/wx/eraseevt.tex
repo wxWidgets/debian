@@ -2,6 +2,16 @@
 
 An erase event is sent when a window's background needs to be repainted.
 
+On some platforms, such as GTK+, this event is simulated (simply generated just before the
+paint event) and may cause flicker. It is therefore recommended that
+you set the text background colour explicitly in order to prevent flicker.
+The default background colour under GTK+ is grey.
+
+To intercept this event, use the EVT\_ERASE\_BACKGROUND macro in an event table definition.
+
+You must call wxEraseEvent::GetDC and use the returned device context if it is non-NULL.
+If it is NULL, create your own temporary wxClientDC object. 
+
 \wxheading{Derived from}
 
 \helpref{wxEvent}{wxevent}\\
@@ -23,11 +33,13 @@ function that takes a wxEraseEvent argument.
 
 \wxheading{Remarks}
 
-If the {\bf m\_DC} member is non-NULL, draw into this device context.
+Use the {\bf m\_DC} device context to draw into, don't create wxPaintDC in 
+the event handler.
 
 \wxheading{See also}
 
-\helpref{wxWindow::OnEraseBackground}{wxwindowonerasebackground}, \helpref{Event handling overview}{eventhandlingoverview}
+%\helpref{wxWindow::OnEraseBackground}{wxwindowonerasebackground},
+\helpref{Event handling overview}{eventhandlingoverview}
 
 \latexignore{\rtfignore{\wxheading{Members}}}
 
@@ -41,12 +53,11 @@ Constructor.
 
 \member{wxDC*}{m\_dc}
 
-The device context associated with the erase event (may be NULL).
+The device context associated with the erase event.
 
 \membersection{wxEraseEvent::GetDC}\label{wxeraseeventgetdc}
 
 \constfunc{wxDC*}{GetDC}{\void}
 
-Returns the device context to draw into. If this is non-NULL, you should draw
-into it to perform the erase operation.
+Returns the device context to draw into.
 

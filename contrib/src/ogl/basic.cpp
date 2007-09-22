@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     12/07/98
-// RCS-ID:      $Id: basic.cpp,v 1.1 2000/03/03 11:25:03 JS Exp $
+// RCS-ID:      $Id: basic.cpp,v 1.8 2002/03/17 00:19:43 RD Exp $
 // Copyright:   (c) Julian Smart
 // Licence:   	wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -14,7 +14,7 @@
 #endif
 
 // For compilers that support precompilation, includes "wx.h".
-#include <wx/wxprec.h>
+#include "wx/wxprec.h"
 
 #ifdef __BORLANDC__
 #pragma hdrstop
@@ -25,6 +25,10 @@
 #endif
 
 #include <wx/wxexpr.h>
+
+#ifdef new
+#undef new
+#endif
 
 #if wxUSE_IOSTREAMH
 #include <iostream.h>
@@ -284,7 +288,6 @@ wxShape::wxShape(wxShapeCanvas *can)
   m_textColour = wxBLACK;
   m_textColourName = "BLACK";
   m_visible = FALSE;
-  m_clientData = NULL;
   m_selected = FALSE;
   m_attachmentMode = ATTACHMENT_MODE_NONE;
   m_spaceAttachments = TRUE;
@@ -815,25 +818,26 @@ int wxShape::GetRegionId(const wxString& name)
 void wxShape::NameRegions(const wxString& parentName)
 {
   int n = GetNumberOfTextRegions();
-  char buf[100];
+  wxString buff;
   for (int i = 0; i < n; i++)
   {
     if (parentName.Length() > 0)
-      sprintf(buf, "%s.%d", (const char*) parentName, i);
+      buff << parentName << "." << i;
     else
-      sprintf(buf, "%d", i);
-    SetRegionName(buf, i);
+      buff << i;
+    SetRegionName(buff, i);
   }
   wxNode *node = m_children.First();
   int j = 0;
   while (node)
   {
+    buff.Empty();
     wxShape *child = (wxShape *)node->Data();
     if (parentName.Length() > 0)
-      sprintf(buf, "%s.%d", (const char*) parentName, j);
+      buff << parentName << "." << j;
     else
-      sprintf(buf, "%d", j);
-    child->NameRegions(buf);
+      buff << j;
+    child->NameRegions(buff);
     node = node->Next();
     j ++;
   }
@@ -869,7 +873,7 @@ void wxShape::FindRegionNames(wxStringList& list)
   for (int i = 0; i < n; i++)
   {
     wxString name(GetRegionName(i));
-    list.Add((const char*) name);
+    list.Add(name);
   }
 
   wxNode *node = m_children.First();
@@ -988,8 +992,9 @@ void wxShape::OnEraseContents(wxDC& dc)
     if (m_pen)
       penWidth = m_pen->GetWidth();
 
-    dc.SetPen(* g_oglWhiteBackgroundPen);
-    dc.SetBrush(* g_oglWhiteBackgroundBrush);
+    dc.SetPen(GetBackgroundPen());
+    dc.SetBrush(GetBackgroundBrush());
+
     dc.DrawRectangle(WXROUND(topLeftX - penWidth), WXROUND(topLeftY - penWidth),
                       WXROUND(maxX + penWidth*2.0 + 4.0), WXROUND(maxY + penWidth*2.0 + 4.0));
 }
@@ -1927,7 +1932,7 @@ void wxShape::ReadAttributes(wxExpr *clause)
           }
       }
       wxShapeTextLine *line =
-            new wxShapeTextLine(the_x, the_y, (char*) (const char*) the_string);
+            new wxShapeTextLine(the_x, the_y, the_string);
       m_text.Append(line);
 
       node = node->next;
@@ -2222,7 +2227,7 @@ void wxShape::ReadRegions(wxExpr *clause)
         if (the_string)
         {
           wxShapeTextLine *line =
-              new wxShapeTextLine(the_x, the_y, (char*) (const char*) the_string);
+              new wxShapeTextLine(the_x, the_y, the_string);
           region->m_formattedText.Append(line);
         }
         node = node->next;
@@ -2988,7 +2993,7 @@ bool wxShape::GetBranchingAttachmentInfo(int attachment, wxRealPoint& root, wxRe
         }
         default:
         {
-            wxFAIL_MSG( "Unrecognised attachment point in GetBranchingAttachmentInfo." );
+            wxFAIL_MSG( wxT("Unrecognised attachment point in GetBranchingAttachmentInfo.") );
             break;
         }
     }
@@ -3047,7 +3052,7 @@ bool wxShape::GetBranchingAttachmentPoint(int attachment, int n, wxRealPoint& pt
         }
         default:
         {
-            wxFAIL_MSG( "Unrecognised attachment point in GetBranchingAttachmentPoint." );
+            wxFAIL_MSG( wxT("Unrecognised attachment point in GetBranchingAttachmentPoint.") );
             break;
         }
     }
@@ -3112,7 +3117,7 @@ wxRealPoint wxShape::GetBranchingAttachmentRoot(int attachment)
         }
         default:
         {
-            wxFAIL_MSG( "Unrecognised attachment point in GetBranchingAttachmentRoot." );
+            wxFAIL_MSG( wxT("Unrecognised attachment point in GetBranchingAttachmentRoot.") );
             break;
         }
     }
@@ -3270,5 +3275,27 @@ void wxShape::Rotate(double WXUNUSED(x), double WXUNUSED(y), double theta)
     {
         m_rotation -= 2*pi;
     }
+}
+
+
+wxPen wxShape::GetBackgroundPen()
+{
+    if (GetCanvas())
+    {
+        wxColour c = GetCanvas()->GetBackgroundColour();
+        return wxPen(c, 1, wxSOLID);
+    }
+    return * g_oglWhiteBackgroundPen;
+}
+
+
+wxBrush wxShape::GetBackgroundBrush()
+{
+    if (GetCanvas())
+    {
+        wxColour c = GetCanvas()->GetBackgroundColour();
+        return wxBrush(c, wxSOLID);
+    }
+    return * g_oglWhiteBackgroundBrush;
 }
 

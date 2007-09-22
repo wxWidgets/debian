@@ -6,7 +6,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     01/02/97
-// RCS-ID:      $Id: sashwin.h,v 1.4.2.2 2000/04/25 14:35:57 JS Exp $
+// RCS-ID:      $Id: sashwin.h,v 1.10.2.1 2002/09/21 14:16:24 JS Exp $
 // Copyright:   (c) Julian Smart
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -14,7 +14,7 @@
 #ifndef _WX_SASHWIN_H_G_
 #define _WX_SASHWIN_H_G_
 
-#ifdef __GNUG__
+#if defined(__GNUG__) && !defined(__APPLE__)
 #pragma interface "sashwin.h"
 #endif
 
@@ -144,6 +144,11 @@ public:
     // Adjusts the panes
     void OnSize(wxSizeEvent& event);
 
+#ifdef __WXMSW__
+    // Handle cursor correctly
+    void OnSetCursor(wxSetCursorEvent& event);
+#endif // wxMSW
+
     // Draws borders
     void DrawBorders(wxDC& dc);
 
@@ -188,11 +193,17 @@ private:
     wxColour    m_darkShadowColour;
     wxColour    m_hilightColour;
     wxColour    m_faceColour;
+    bool        m_mouseCaptured;
+    wxCursor*   m_currentCursor;
 
 DECLARE_EVENT_TABLE()
 };
 
-#define wxEVT_SASH_DRAGGED (wxEVT_FIRST + 1200)
+BEGIN_DECLARE_EVENT_TYPES()
+    DECLARE_EVENT_TYPE(wxEVT_SASH_DRAGGED, wxEVT_FIRST + 1200)
+END_DECLARE_EVENT_TYPES()
+
+// #define wxEVT_SASH_DRAGGED (wxEVT_FIRST + 1200)
 
 enum wxSashDragStatus
 {
@@ -227,8 +238,10 @@ class WXDLLEXPORT wxSashEvent: public wxCommandEvent
 
 typedef void (wxEvtHandler::*wxSashEventFunction)(wxSashEvent&);
 
-#define EVT_SASH_DRAGGED(id, fn) { wxEVT_SASH_DRAGGED, id, -1, (wxObjectEventFunction) (wxEventFunction) (wxSashEventFunction) & fn, NULL },
-#define EVT_SASH_DRAGGED_RANGE(id1, id2, fn) { wxEVT_SASH_DRAGGED, id1, id2, (wxObjectEventFunction) (wxEventFunction) (wxSashEventFunction) & fn, NULL },
+#define EVT_SASH_DRAGGED(id, fn) \
+    DECLARE_EVENT_TABLE_ENTRY( wxEVT_SASH_DRAGGED, id, -1, (wxObjectEventFunction) (wxEventFunction) (wxSashEventFunction) & fn, NULL ),
+#define EVT_SASH_DRAGGED_RANGE(id1, id2, fn) \
+    DECLARE_EVENT_TABLE_ENTRY( wxEVT_SASH_DRAGGED, id1, id2, (wxObjectEventFunction) (wxEventFunction) (wxSashEventFunction) & fn, NULL ),
 
 #endif // wxUSE_SASH
 

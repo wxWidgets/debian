@@ -6,7 +6,7 @@
 //              Guillermo Rodriguez (updated for wxSocket v2) Jan 2000
 //                                  (callbacks deprecated)    Mar 2000
 // Created:     1993
-// RCS-ID:      $Id: sckipc.h,v 1.14.2.1 2000/03/21 20:34:06 GRG Exp $
+// RCS-ID:      $Id: sckipc.h,v 1.19 2002/09/03 11:22:55 JS Exp $
 // Copyright:   (c) Julian Smart 1993
 //              (c) Guilhem Lavaux 1997, 1998
 //              (c) 2000 Guillermo Rodriguez <guille@iies.es>
@@ -16,7 +16,7 @@
 #ifndef _WX_SCKIPC_H
 #define _WX_SCKIPC_H
 
-#ifdef __GNUG__
+#if defined(__GNUG__) && !defined(__APPLE__)
 #pragma interface "sckipc.h"
 #endif
 
@@ -61,13 +61,13 @@ class WXDLLEXPORT wxTCPConnection: public wxConnectionBase
   DECLARE_DYNAMIC_CLASS(wxTCPConnection)
 
 public:
-  wxTCPConnection(char *buffer, int size);
+  wxTCPConnection(wxChar *buffer, int size);
   wxTCPConnection();
   virtual ~wxTCPConnection();
 
   // Calls that CLIENT can make
   virtual bool Execute(const wxChar *data, int size = -1, wxIPCFormat format = wxIPC_TEXT);
-  virtual char *Request(const wxString& item, int *size = NULL, wxIPCFormat format = wxIPC_TEXT);
+  virtual wxChar *Request(const wxString& item, int *size = NULL, wxIPCFormat format = wxIPC_TEXT);
   virtual bool Poke(const wxString& item, wxChar *data, int size = -1, wxIPCFormat format = wxIPC_TEXT);
   virtual bool StartAdvise(const wxString& item);
   virtual bool StopAdvise(const wxString& item);
@@ -122,6 +122,11 @@ public:
 
 protected:
   wxSocketServer *m_server;
+
+#ifdef __UNIX_LIKE__
+  // the name of the file associated to the Unix domain socket, may be empty
+  wxString m_filename;
+#endif // __UNIX_LIKE__
 };
 
 class wxTCPClient: public wxClientBase

@@ -2,7 +2,7 @@
 // Name:        gdiobj.h
 // Purpose:
 // Author:      Robert Roebling
-// Id:          $Id: gdiobj.h,v 1.5 2000/03/04 16:23:25 RR Exp $
+// Id:          $Id: gdiobj.h,v 1.6 2002/09/07 12:28:46 GD Exp $
 // Copyright:   (c) 1998 Robert Roebling, Julian Smart
 // Licence:   	wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -13,7 +13,7 @@
 
 #include "wx/object.h"
 
-#ifdef __GNUG__
+#if defined(__GNUG__) && !defined(__APPLE__)
 #pragma interface
 #endif
 

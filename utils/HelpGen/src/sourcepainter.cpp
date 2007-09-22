@@ -4,7 +4,7 @@
 // Author:      Aleksandras Gluchovas
 // Modified by:
 // Created:     22/09/98
-// RCS-ID:      $Id: sourcepainter.cpp,v 1.3 2000/02/11 18:00:42 RR Exp $
+// RCS-ID:      $Id: sourcepainter.cpp,v 1.5 2001/11/18 12:25:11 GD Exp $
 // Copyright:   (c) Aleskandars Gluchovas
 // Licence:   	wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -21,12 +21,9 @@
 #endif
 
 #if defined( wxUSE_TEMPLATE_STL )
-
-	#include <map>
+#  include <map>
 #else
-
-	#include "wxstlac.h"
-
+#  include "wxstlac.h"
 #endif
 
 #include "sourcepainter.h"
@@ -403,9 +400,9 @@ void check_keyword_map( int keywordMapNr )
 		// "make sure" the address of the first member of non-polimorphic class
 		// coinsides with the address of the instance
 
+/*
 		KeywordT dummy;
 
-/*
 		if ( (char*)& dummy != &dummy.keyWord[0] )
 			throw;
 */

@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     12/07/98
-// RCS-ID:      $Id: doc.cpp,v 1.1 2000/03/03 11:24:37 JS Exp $
+// RCS-ID:      $Id: doc.cpp,v 1.3 2001/10/30 13:28:45 GT Exp $
 // Copyright:   (c) Julian Smart
 // Licence:   	wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -14,7 +14,7 @@
 #endif
 
 // For compilers that support precompilation, includes "wx.h".
-#include <wx/wxprec.h>
+#include "wx/wxprec.h"
 
 #ifdef __BORLANDC__
 #pragma hdrstop
@@ -34,7 +34,7 @@
 #include "view.h"
 
 #if wxUSE_STD_IOSTREAM
-#include <iostream.h>
+#include <ioswrap.h>
 #endif
 
 IMPLEMENT_DYNAMIC_CLASS(DiagramDocument, wxDocument)
@@ -54,7 +54,7 @@ bool DiagramDocument::OnCloseDocument(void)
 }
 
 #if wxUSE_STD_IOSTREAM
-ostream& DiagramDocument::SaveObject(ostream& stream)
+wxSTD ostream& DiagramDocument::SaveObject(wxSTD ostream& stream)
 {
   wxDocument::SaveObject(stream);
   
@@ -69,7 +69,7 @@ ostream& DiagramDocument::SaveObject(ostream& stream)
   return stream;
 }
 
-istream& DiagramDocument::LoadObject(istream& stream)
+wxSTD istream& DiagramDocument::LoadObject(wxSTD istream& stream)
 {
   wxDocument::LoadObject(stream);
 

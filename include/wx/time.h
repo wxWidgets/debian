@@ -5,7 +5,7 @@
 // Author:      Julian Smart, after K. E. Gorlen
 // Modified by: 18.12.99 by VZ to use the new wxDateTime class
 // Created:     01/02/97
-// RCS-ID:      $Id: time.h,v 1.11 2000/01/05 15:35:01 VZ Exp $
+// RCS-ID:      $Id: time.h,v 1.14 2002/08/31 11:29:11 GD Exp $
 // Copyright:   (c) Julian Smart and Markus Holzem
 // Licence:     wxWindows licence
 ///////////////////////////////////////////////////////////////////////////////
@@ -21,7 +21,7 @@
 #include "wx/datetime.h"
 #include "wx/date.h"
 
-#ifdef __GNUG__
+#if defined(__GNUG__) && !defined(__APPLE__)
     #pragma interface "time.h"
 #endif
 
@@ -47,7 +47,7 @@ public:
     wxTime() : m_time(wxDateTime::Now()) { }
     wxTime(clockTy s) : m_time((time_t)(s - wxTIME_EPOCH_DIFF)) { }
     void operator=(const wxTime& t) { m_time = t.m_time; }
-    wxTime(const wxTime& t) { *this = t; }
+    wxTime(const wxTime& t) : wxObject() { *this = t; }
     wxTime(hourTy h, minuteTy m, secondTy s = 0, bool WXUNUSED(dst) = FALSE)
         : m_time(h, m, s) { }
 
@@ -123,17 +123,16 @@ public:
             { _T("%H:%M:%S"),    _T("%H:%M")    }   // wx24h
         };
 
-        static wxChar s_bufTime[128];
+        wxStrncpy(ms_bufTime, m_time.Format(formats[ms_Format][ms_Precision]),
+                  WXSIZEOF(ms_bufTime));
 
-        wxStrncpy(s_bufTime, m_time.Format(formats[ms_Format][ms_Precision]),
-                  WXSIZEOF(s_bufTime));
-
-        return s_bufTime;
+        return ms_bufTime;
     }
 
 private:
     static tFormat      ms_Format;
     static tPrecision   ms_Precision;
+    static wxChar       ms_bufTime[128];
 
 #if 0 // old wxTime members unused any more
     clockTy    sec;        /* seconds since 1/1/1901 */

@@ -1,8 +1,8 @@
 /////////////////////////////////////////////////////////////////////////////
-// Name:        fontdlg.cpp
+// Name:        gtk/fontdlg.cpp
 // Purpose:     wxFontDialog
 // Author:      Robert Roebling
-// Id:          $Id: fontdlg.cpp,v 1.9 2000/03/07 09:00:26 JJ Exp $
+// Id:          $Id: fontdlg.cpp,v 1.18 2002/08/06 16:41:31 RR Exp $
 // Copyright:   (c) 1998 Robert Roebling
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -11,18 +11,18 @@
 #pragma implementation "fontdlg.h"
 #endif
 
+#include "wx/defs.h"
+
+#if wxUSE_FONTDLG
+
+#include "wx/fontutil.h"
 #include "wx/fontdlg.h"
 #include "wx/utils.h"
 #include "wx/intl.h"
 #include "wx/debug.h"
 #include "wx/msgdlg.h"
 
-#ifdef __VMS__
-#define gtk_font_selection_dialog_get_type gtk_font_selection_dialog_get_t
-#define gtk_font_selection_dialog_get_font gtk_font_selection_dialog_get_f
-#define gtk_font_selection_dialog_get_font_name gtk_font_selection_dialog_getnf
-#endif
-#include <gtk/gtk.h>
+#include "wx/gtk/private.h"
 
 //-----------------------------------------------------------------------------
 // idle system
@@ -57,7 +57,6 @@ bool gtk_fontdialog_delete_callback( GtkWidget *WXUNUSED(widget), GdkEvent *WXUN
 // "clicked" for OK-button
 //-----------------------------------------------------------------------------
 
-#ifdef __WXGTK12__
 static
 void gtk_fontdialog_ok_callback( GtkWidget *WXUNUSED(widget), wxFontDialog *dialog )
 {
@@ -69,50 +68,16 @@ void gtk_fontdialog_ok_callback( GtkWidget *WXUNUSED(widget), wxFontDialog *dial
 
     if (!gfont)
     {
-        wxMessageBox(_("Please choose a valid font."), _("Error"), wxOK);
+        wxMessageBox(_("Please choose a valid font."), _("Error"),
+                     wxOK | wxICON_ERROR);
         return;
     }
 
     gchar *fontname = gtk_font_selection_dialog_get_font_name(fontdlg);
+    
+    // printf( "font %s\n", fontname );
 
-    // extract the relevant bits from it
-    wxString xregistry, xencoding;
-    char *dash = strrchr(fontname, '-');    // find the last dash
-    if ( dash )
-    {
-        xencoding = dash + 1;
-        *dash = '\0';
-        dash = strrchr(fontname, '-');      // the last before one
-        if ( dash )
-        {
-            xregistry = dash + 1;
-        }
-        else
-        {
-            wxFAIL_MSG( wxT("no registry in X font spec?") );
-        }
-
-        // restore the dash we changed to NUL above
-        *(fontname + strlen(fontname)) = '-';
-    }
-    else
-    {
-        wxFAIL_MSG( wxT("no encoding in X font spec?") );
-    }
-
-    // transfer the X registry/encoding to wxFontData - they are used by
-    // wxFontMapper after wxFontDialog returns
-    wxFontData& fontdata = dialog->m_fontData;
-
-    // we ignore the facename here - should be enough to choose an arbitrary
-    // one if the registry/encoding are specified
-    //  dialog->m_fontData.EncodingInfo().facename = xfamily;
-    fontdata.EncodingInfo().xregistry = xregistry;
-    fontdata.EncodingInfo().xencoding = xencoding;
-
-    // pass fontdata to wxFont ctor so that it can get the encoding from there
-    // if it is already known (otherwise it will try to deduce it itself)
-    dialog->m_fontData.SetChosenFont( wxFont(fontname, fontdata) );
+    dialog->SetChosenFont(fontname);
 
     g_free( fontname );
 
@@ -120,7 +85,6 @@ void gtk_fontdialog_ok_callback( GtkWidget *WXUNUSED(widget), wxFontDialog *dial
     event.SetEventObject( dialog );
     dialog->GetEventHandler()->ProcessEvent( event );
 }
-#endif // GTK+ 1.2 and later only
 
 //-----------------------------------------------------------------------------
 // "clicked" for Cancel-button
@@ -141,10 +105,9 @@ void gtk_fontdialog_cancel_callback( GtkWidget *WXUNUSED(w), wxFontDialog *dialo
 // wxFontDialog
 //-----------------------------------------------------------------------------
 
-IMPLEMENT_DYNAMIC_CLASS(wxFontDialog,wxDialog)
+IMPLEMENT_DYNAMIC_CLASS(wxFontDialog, wxDialog)
 
-wxFontDialog::wxFontDialog( wxWindow *parent, wxFontData *fontdata )
-            : m_fontData(*fontdata)
+bool wxFontDialog::DoCreate(wxWindow *parent)
 {
     m_needParent = FALSE;
 
@@ -152,12 +115,12 @@ wxFontDialog::wxFontDialog( wxWindow *parent, wxFontData *fontdata )
         !CreateBase( parent, -1, wxDefaultPosition, wxDefaultSize, wxDEFAULT_DIALOG_STYLE,
                      wxDefaultValidator, wxT("fontdialog") ))
     {
-        wxFAIL_MSG( wxT("wxXX creation failed") );
-        return;
+        wxFAIL_MSG( wxT("wxFontDialog creation failed") );
+        return FALSE;
     }
-    
+
     wxString m_message( _("Choose font") );
-    m_widget = gtk_font_selection_dialog_new( m_message.mbc_str() );
+    m_widget = gtk_font_selection_dialog_new( wxGTK_CONV( m_message ) );
 
     int x = (gdk_screen_width () - 400) / 2;
     int y = (gdk_screen_height () - 400) / 2;
@@ -168,20 +131,58 @@ wxFontDialog::wxFontDialog( wxWindow *parent, wxFontData *fontdata )
     gtk_signal_connect( GTK_OBJECT(sel->ok_button), "clicked",
       GTK_SIGNAL_FUNC(gtk_fontdialog_ok_callback), (gpointer*)this );
 
+#ifndef __WXGTK20__
     // strange way to internationalize
-    gtk_label_set( GTK_LABEL( GTK_BUTTON(sel->ok_button)->child ), wxConvCurrent->cWX2MB(_("OK")) );
+    gtk_label_set( GTK_LABEL( BUTTON_CHILD(sel->ok_button) ), _("OK") );
+#endif
 
     gtk_signal_connect( GTK_OBJECT(sel->cancel_button), "clicked",
       GTK_SIGNAL_FUNC(gtk_fontdialog_cancel_callback), (gpointer*)this );
 
+#ifndef __WXGTK20__
     // strange way to internationalize
-    gtk_label_set( GTK_LABEL( GTK_BUTTON(sel->cancel_button)->child ), wxConvCurrent->cWX2MB(_("Cancel")) );
+    gtk_label_set( GTK_LABEL( BUTTON_CHILD(sel->cancel_button) ), _("Cancel") );
+#endif
 
     gtk_signal_connect( GTK_OBJECT(m_widget), "delete_event",
         GTK_SIGNAL_FUNC(gtk_fontdialog_delete_callback), (gpointer)this );
+
+#ifndef __WXGTK20__
+    wxFont font = m_fontData.GetInitialFont();
+    if( font.Ok() )
+    {
+        wxNativeFontInfo *info = font.GetNativeFontInfo();
+
+        if ( info )
+        {
+            const wxString& fontname = info->GetXFontName();
+            if ( !fontname )
+                font.GetInternalFont();
+            gtk_font_selection_dialog_set_font_name
+            (
+                sel,
+                wxConvCurrent->cWX2MB(fontname)
+            );
+        }
+        else
+        {
+            // this is not supposed to happen!
+            wxFAIL_MSG(_T("font is ok but no native font info?"));
+        }
+    }
+#endif
+
+    return TRUE;
 }
 
 wxFontDialog::~wxFontDialog()
 {
 }
+
+void wxFontDialog::SetChosenFont(const char *fontname)
+{
+    m_fontData.SetChosenFont(wxFont(fontname));
+}
+
+#endif // wxUSE_FONTDLG
 

@@ -4,7 +4,7 @@
 // Author:      Vadim Zeitlin
 // Modified by:
 // Created:     03.04.198
-// RCS-ID:      $Id: registry.h,v 1.21.2.1 2001/04/21 01:34:56 VZ Exp $
+// RCS-ID:      $Id: registry.h,v 1.24 2002/01/21 15:52:03 VZ Exp $
 // Copyright:   (c) 1998 Vadim Zeitlin <zeitlin@dptmaths.ens-cachan.fr>
 // Licence:     wxWindows licence
 ///////////////////////////////////////////////////////////////////////////////
@@ -168,13 +168,22 @@ public:
   wxRegKey& operator=(long lValue)
     { SetValue(NULL, lValue); return *this; }
 
-    // conversion operators query the default value of the key
-  operator wxString() const;
+    // query the default value of the key: implicitly or explicitly
+  wxString QueryDefaultValue() const;
+  operator wxString() const { return QueryDefaultValue(); }
+
+    // named values
 
     // set the string value
   bool  SetValue(const wxChar *szValue, const wxString& strValue);
-    // return the string value
-  bool  QueryValue(const wxChar *szValue, wxString& strValue) const;
+    // retrieve the string value
+  bool  QueryValue(const wxChar *szValue, wxString& strValue) const
+    { return QueryValue(szValue, strValue, FALSE); }
+    // retrieve raw string value
+  bool  QueryRawValue(const wxChar *szValue, wxString& strValue) const
+    { return QueryValue(szValue, strValue, TRUE); }
+    // retrieve either raw or expanded string value
+  bool  QueryValue(const wxChar *szValue, wxString& strValue, bool raw) const;
 
 #ifdef  __WIN32__
     // set the numeric value

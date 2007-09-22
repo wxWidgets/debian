@@ -1,12 +1,12 @@
 /////////////////////////////////////////////////////////////////////////////
-// Name:        dcscreen.cpp
+// Name:        src/msw/dcscreen.cpp
 // Purpose:     wxScreenDC class
 // Author:      Julian Smart
 // Modified by:
 // Created:     01/02/97
-// RCS-ID:      $Id: dcscreen.cpp,v 1.6 1999/12/14 23:48:45 VS Exp $
+// RCS-ID:      $Id: dcscreen.cpp,v 1.8 2002/03/05 00:52:01 VZ Exp $
 // Copyright:   (c) Julian Smart and Markus Holzem
-// Licence:   	wxWindows licence
+// Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
 
 #ifdef __GNUG__
@@ -29,26 +29,22 @@
 
 #include "wx/dcscreen.h"
 
-
 IMPLEMENT_DYNAMIC_CLASS(wxScreenDC, wxWindowDC)
 
 // Create a DC representing the whole screen
-wxScreenDC::wxScreenDC(void)
+wxScreenDC::wxScreenDC()
 {
-  m_hDC = (WXHDC) ::GetDC((HWND) NULL);
-  m_hDCCount ++;
+    m_hDC = (WXHDC) ::GetDC((HWND) NULL);
 
-  // the background mode is only used for text background
-  // and is set in DrawText() to OPAQUE as required, other-
-  // wise always TRANSPARENT, RR
-  ::SetBkMode( GetHdc(), TRANSPARENT );
+    // the background mode is only used for text background and is set in
+    // DrawText() to OPAQUE as required, otherwise always TRANSPARENT
+    ::SetBkMode( GetHdc(), TRANSPARENT );
 }
 
-wxScreenDC::~wxScreenDC(void)
+void wxScreenDC::DoGetSize(int *width, int *height) const
 {
-  SelectOldObjects(m_hDC);
-  ::ReleaseDC((HWND) NULL, (HDC) m_hDC);
-  m_hDC = 0;
-  m_hDCCount --;
+    // skip wxWindowDC version because it doesn't work without a valid m_canvas
+    // (which we don't have)
+    wxDC::DoGetSize(width, height);
 }
 

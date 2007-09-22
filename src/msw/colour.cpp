@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     01/02/97
-// RCS-ID:      $Id: colour.cpp,v 1.4 1999/12/14 23:48:41 VS Exp $
+// RCS-ID:      $Id: colour.cpp,v 1.5 2001/07/02 13:22:16 JS Exp $
 // Copyright:   (c) Julian Smart and Markus Holzem
 // Licence:   	wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -21,6 +21,7 @@
 #endif
 
 #include "wx/gdicmn.h"
+#include "wx/msw/private.h"
 
 #include <string.h>
 #include <windows.h>

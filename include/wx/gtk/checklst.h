@@ -3,7 +3,7 @@
 // Purpose:     wxCheckListBox class
 // Author:      Robert Roebling
 // Modified by:
-// RCS-ID:      $Id: checklst.h,v 1.9 1999/10/11 10:05:33 RR Exp $
+// RCS-ID:      $Id: checklst.h,v 1.12 2002/09/07 12:28:46 GD Exp $
 // Copyright:   (c) 1998 Robert Roebling
 // Licence:     wxWindows licence
 ///////////////////////////////////////////////////////////////////////////////
@@ -11,28 +11,26 @@
 #ifndef __GTKCHECKLISTH__
 #define __GTKCHECKLISTH__
 
-#ifdef __GNUG__
+#if defined(__GNUG__) && !defined(__APPLE__)
 #pragma interface
 #endif
 
-#include "wx/defs.h"
+// ----------------------------------------------------------------------------
+// macros
+// ----------------------------------------------------------------------------
 
-#if wxUSE_CHECKLISTBOX
+// there is no "right" choice of the checkbox indicators, so allow the user to
+// define them himself if he wants
+#ifndef wxCHECKLBOX_CHECKED
+    #define wxCHECKLBOX_CHECKED   _T('x')
+    #define wxCHECKLBOX_UNCHECKED _T(' ')
 
-#include "wx/object.h"
-#include "wx/list.h"
-#include "wx/control.h"
-#include "wx/listbox.h"
-
-//-----------------------------------------------------------------------------
-// classes
-//-----------------------------------------------------------------------------
-
-class wxCheckListBox;
+    #define wxCHECKLBOX_STRING    _T("[ ] ")
+#endif
 
 //-----------------------------------------------------------------------------
 // wxCheckListBox
-//-----------------------------------------------------------------------------
+// ----------------------------------------------------------------------------
 
 class wxCheckListBox : public wxListBox
 {
@@ -55,7 +53,5 @@ public:
 private:
     DECLARE_DYNAMIC_CLASS(wxCheckListBox)
 };
-
-#endif
 
 #endif   //__GTKCHECKLISTH__

@@ -4,7 +4,7 @@
 // Author:      Karsten Ballüder
 // Modified by:
 // Created:     09.05.1999
-// RCS-ID:      $Id: progdlgg.cpp,v 1.41.2.2 2001/04/21 15:54:19 VZ Exp $
+// RCS-ID:      $Id: progdlgg.cpp,v 1.62 2002/09/01 17:02:36 JS Exp $
 // Copyright:   (c) Karsten Ballüder
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -65,18 +65,19 @@ static void SetTimeLabel(unsigned long val, wxStaticText *label);
 // ----------------------------------------------------------------------------
 
 BEGIN_EVENT_TABLE(wxProgressDialog, wxDialog)
-   EVT_BUTTON(wxID_CANCEL, wxProgressDialog::OnCancel)
-   EVT_CLOSE(wxProgressDialog::OnClose)
+    EVT_BUTTON(wxID_CANCEL, wxProgressDialog::OnCancel)
+
+    EVT_CLOSE(wxProgressDialog::OnClose)
 END_EVENT_TABLE()
 
 IMPLEMENT_CLASS(wxProgressDialog, wxDialog)
 
 // ============================================================================
-// implementation
+// wxProgressDialog implementation
 // ============================================================================
 
 // ----------------------------------------------------------------------------
-// wxProgressDialog
+// wxProgressDialog creation
 // ----------------------------------------------------------------------------
 
 wxProgressDialog::wxProgressDialog(wxString const &title,
@@ -86,11 +87,33 @@ wxProgressDialog::wxProgressDialog(wxString const &title,
                                    int style)
                 : wxDialog(parent, -1, title)
 {
+    // we may disappear at any moment, let the others know about it
+    SetExtraStyle(GetExtraStyle() | wxWS_EX_TRANSIENT);
+
     m_windowStyle |= style;
 
     bool hasAbortButton = (style & wxPD_CAN_ABORT) != 0;
+
+#if defined(__WXMSW__) && !defined(__WXUNIVERSAL__)
+    // we have to remove the "Close" button from the title bar then as it is
+    // confusing to have it - it doesn't work anyhow
+    //
+    // FIXME: should probably have a (extended?) window style for this
+    if ( !hasAbortButton )
+    {
+        EnableCloseButton(FALSE);
+    }
+#endif // wxMSW
+
     m_state = hasAbortButton ? Continue : Uncancelable;
     m_maximum = maximum;
+
+#if defined(__WXMSW__) || defined(__WXPM__)
+    // we can't have values > 65,536 in the progress control under Windows, so
+    // scale everything down
+    m_factor = m_maximum / 65536 + 1;
+    m_maximum /= m_factor;
+#endif // __WXMSW__
 
     m_parentTop = parent;
     while ( m_parentTop && m_parentTop->GetParent() )
@@ -101,7 +124,7 @@ wxProgressDialog::wxProgressDialog(wxString const &title,
     wxLayoutConstraints *c;
 
     wxClientDC dc(this);
-    dc.SetFont(GetFont());
+    dc.SetFont(wxSystemSettings::GetFont(wxSYS_DEFAULT_GUI_FONT));
     long widthText;
     dc.GetTextExtent(message, &widthText, NULL, NULL, NULL, NULL);
 
@@ -113,20 +136,21 @@ wxProgressDialog::wxProgressDialog(wxString const &title,
     c->height.AsIs();
     m_msg->SetConstraints(c);
 
-    wxSize sizeDlg, sizeLabel = m_msg->GetSize();
+    wxSize sizeDlg,
+           sizeLabel = m_msg->GetSize();
     sizeDlg.y = 2*LAYOUT_Y_MARGIN + sizeLabel.y;
 
     wxWindow *lastWindow = m_msg;
 
     if ( maximum > 0 )
     {
-        m_gauge = new wxGauge(this, -1, maximum,
-                wxDefaultPosition, wxDefaultSize,
-                wxGA_HORIZONTAL | wxRAISED_BORDER);
-// Sorry, but wxGA_SMOOTH happens to also mean wxDIALOG_MODAL and will
-// cause the dialog to be modal. Have an extra style argument to wxProgressDialog,
-// perhaps.
-//                wxGA_HORIZONTAL | wxRAISED_BORDER | (style & wxGA_SMOOTH));
+        // note that we can't use wxGA_SMOOTH because it happens to also mean
+        // wxDIALOG_MODAL and will cause the dialog to be modal. Have an extra
+        // style argument to wxProgressDialog, perhaps.
+        m_gauge = new wxGauge(this, -1, m_maximum,
+                              wxDefaultPosition, wxDefaultSize,
+                              wxGA_HORIZONTAL);
+
         c = new wxLayoutConstraints;
         c->left.SameAs(this, wxLeft, 2*LAYOUT_X_MARGIN);
         c->top.Below(m_msg, 2*LAYOUT_Y_MARGIN);
@@ -145,11 +169,17 @@ wxProgressDialog::wxProgressDialog(wxString const &title,
     // create the estimated/remaining/total time zones if requested
     m_elapsed = m_estimated = m_remaining = (wxStaticText*)NULL;
 
-    int nTimeLabels = 0;
+    // if we are going to have at least one label, remmeber it in this var
+    wxStaticText *label = NULL;
+
+    // also count how many labels we really have
+    size_t nTimeLabels = 0;
+
     if ( style & wxPD_ELAPSED_TIME )
     {
         nTimeLabels++;
 
+        label =
         m_elapsed = CreateLabel(_("Elapsed time : "), &lastWindow);
     }
 
@@ -157,6 +187,7 @@ wxProgressDialog::wxProgressDialog(wxString const &title,
     {
         nTimeLabels++;
 
+        label =
         m_estimated = CreateLabel(_("Estimated time : "), &lastWindow);
     }
 
@@ -164,6 +195,7 @@ wxProgressDialog::wxProgressDialog(wxString const &title,
     {
         nTimeLabels++;
 
+        label =
         m_remaining = CreateLabel(_("Remaining time : "), &lastWindow);
     }
 
@@ -171,7 +203,7 @@ wxProgressDialog::wxProgressDialog(wxString const &title,
     {
         // set it to the current time
         m_timeStart = wxGetCurrentTime();
-        sizeDlg.y += nTimeLabels * (sizeLabel.y + LAYOUT_Y_MARGIN);
+        sizeDlg.y += nTimeLabels * (label->GetSize().y + LAYOUT_Y_MARGIN);
     }
 
     if ( hasAbortButton )
@@ -180,23 +212,24 @@ wxProgressDialog::wxProgressDialog(wxString const &title,
         c = new wxLayoutConstraints;
 
         // Windows dialogs usually have buttons in the lower right corner
-#ifdef __WXMSW__
+#if defined(__WXMSW__) || defined(__WXPM__)
         c->right.SameAs(this, wxRight, 2*LAYOUT_X_MARGIN);
 #else // !MSW
         c->centreX.SameAs(this, wxCentreX);
 #endif // MSW/!MSW
         c->bottom.SameAs(this, wxBottom, 2*LAYOUT_Y_MARGIN);
 
-        wxSize sizeBtn = wxButton::GetDefaultSize();
-        c->width.Absolute(sizeBtn.x);
-        c->height.Absolute(sizeBtn.y);
+        c->width.AsIs();
+        c->height.AsIs();
 
         m_btnAbort->SetConstraints(c);
 
-        sizeDlg.y += 2*LAYOUT_Y_MARGIN + sizeBtn.y;
+        sizeDlg.y += 2*LAYOUT_Y_MARGIN + wxButton::GetDefaultSize().y;
     }
-    else
+    else // no "Cancel" button
+    {
         m_btnAbort = (wxButton *)NULL;
+    }
 
     SetAutoLayout(TRUE);
     Layout();
@@ -225,8 +258,16 @@ wxProgressDialog::wxProgressDialog(wxString const &title,
     Show(TRUE);
     Enable(TRUE); // enable this window
 
+    // this one can be initialized even if the others are unknown for now
+    //
+    // NB: do it after calling Layout() to keep the labels correctly aligned
+    if ( m_elapsed )
+    {
+        SetTimeLabel(0, m_elapsed);
+    }
+
     // Update the display (especially on X, GTK)
-    wxYieldIfNeeded();
+    wxYield();
 
 #ifdef __WXMAC__
     MacUpdateImmediately();
@@ -243,7 +284,7 @@ wxStaticText *wxProgressDialog::CreateLabel(const wxString& text,
 
     // VZ: I like the labels be centered - if the others don't mind, you may
     //     remove "#ifdef __WXMSW__" and use it for all ports
-#ifdef __WXMSW__
+#if defined(__WXMSW__) || defined(__WXPM__)
     c->left.SameAs(this, wxCentreX, LAYOUT_X_MARGIN);
 #else // !MSW
     c->right.SameAs(this, wxRight, 2*LAYOUT_X_MARGIN);
@@ -266,26 +307,31 @@ wxStaticText *wxProgressDialog::CreateLabel(const wxString& text,
     return label;
 }
 
+// ----------------------------------------------------------------------------
+// wxProgressDialog operations
+// ----------------------------------------------------------------------------
+
 bool
 wxProgressDialog::Update(int value, const wxString& newmsg)
 {
     wxASSERT_MSG( value == -1 || m_gauge, wxT("cannot update non existent dialog") );
+
+#ifdef __WXMSW__
+    value /= m_factor;
+#endif // __WXMSW__
+
     wxASSERT_MSG( value <= m_maximum, wxT("invalid progress value") );
 
     if ( m_gauge )
+    {
         m_gauge->SetValue(value + 1);
+    }
 
     if ( !newmsg.IsEmpty() )
     {
-#ifdef __WXMSW__
-        // this seems to be necessary or garbage is left when the new label is
-        // longer than the old one
-        m_msg->SetLabel(wxEmptyString);
-#endif // MSW
-
         m_msg->SetLabel(newmsg);
 
-        wxYieldIfNeeded();
+        wxYield();
     }
 
     if ( (m_elapsed || m_remaining || m_estimated) && (value != 0) )
@@ -299,32 +345,49 @@ wxProgressDialog::Update(int value, const wxString& newmsg)
         SetTimeLabel(remaining, m_remaining);
     }
 
-    if ( (value == m_maximum ) && !(GetWindowStyle() & wxPD_AUTO_HIDE) )
+    if ( value == m_maximum )
     {
-        if ( m_btnAbort )
-        {
-            // tell the user what he should do...
-            m_btnAbort->SetLabel(_("Close"));
-        }
-
-        if ( !newmsg )
-        {
-            // also provide the finishing message if the application didn't
-            m_msg->SetLabel(_("Done."));
-        }
-
         // so that we return TRUE below and that out [Cancel] handler knew what
         // to do
         m_state = Finished;
+        if( !(GetWindowStyle() & wxPD_AUTO_HIDE) )
+        {
+            if ( m_btnAbort )
+            {
+                // tell the user what he should do...
+                m_btnAbort->SetLabel(_("Close"));
+            }
+#if defined(__WXMSW__) && !defined(__WXUNIVERSAL__)
+            else // enable the button to give the user a way to close the dlg
+            {
+                EnableCloseButton(TRUE);
+            }
+#endif // __WXMSW__
 
-        wxYieldIfNeeded();
+            if ( !newmsg )
+            {
+                // also provide the finishing message if the application didn't
+                m_msg->SetLabel(_("Done."));
+            }
 
-        (void)ShowModal();
+            wxYield();
+
+            (void)ShowModal();
+        }
+        else // auto hide
+        {
+            // reenable other windows before hiding this one because otherwise
+            // Windows wouldn't give the focus back to the window which had
+            // been previously focused because it would still be disabled
+            ReenableOtherWindows();
+
+            Hide();
+        }
     }
     else
     {
         // update the display
-        wxYieldIfNeeded();
+        wxYield();
     }
 
 #ifdef __WXMAC__
@@ -332,6 +395,15 @@ wxProgressDialog::Update(int value, const wxString& newmsg)
 #endif
 
     return m_state != Canceled;
+}
+
+void wxProgressDialog::Resume()
+{
+    m_state = Continue;
+
+    // it may have been disabled by OnCancel(), so enable it back to let the
+    // user interrupt us again if needed
+    m_btnAbort->Enable();
 }
 
 // ----------------------------------------------------------------------------
@@ -383,9 +455,16 @@ void wxProgressDialog::OnClose(wxCloseEvent& event)
 
 wxProgressDialog::~wxProgressDialog()
 {
+    // normally this should have been already done, but just in case
+    ReenableOtherWindows();
+}
+
+void wxProgressDialog::ReenableOtherWindows()
+{
     if ( GetWindowStyle() & wxPD_APP_MODAL )
     {
         delete m_winDisabler;
+        m_winDisabler = (wxWindowDisabler *)NULL;
     }
     else
     {

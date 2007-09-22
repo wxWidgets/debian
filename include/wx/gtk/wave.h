@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     25/10/98
-// RCS-ID:      $Id: wave.h,v 1.3 1999/06/09 14:49:49 KB Exp $
+// RCS-ID:      $Id: wave.h,v 1.4 2002/09/07 12:28:46 GD Exp $
 // Copyright:   (c) Julian Smart
 // Licence:   	wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -14,7 +14,7 @@
 
 #if wxUSE_WAVE
 
-#ifdef __GNUG__
+#if defined(__GNUG__) && !defined(__APPLE__)
 #pragma interface "wave.h"
 #endif
 

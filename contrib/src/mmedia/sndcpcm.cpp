@@ -3,7 +3,7 @@
 // Purpose:
 // Date: 08/11/1999
 // Author: Guilhem Lavaux <lavaux@easynet.fr> (C) 1999, 2000
-// CVSID: $Id: sndcpcm.cpp,v 1.1 2000/03/05 19:03:18 GL Exp $
+// CVSID: $Id: sndcpcm.cpp,v 1.2 2000/06/04 08:38:36 GL Exp $
 // --------------------------------------------------------------------------
 #ifdef __GNUG__
 #pragma implementation "sndcpcm.cpp"
@@ -379,11 +379,15 @@ bool wxSoundStreamPcm::SetSoundFormat(const wxSoundFormatBase& format)
     // We try to minimize the need of dynamic memory allocation by preallocating a buffer. But
     // to be sure it will be efficient we minimize the best size.
     if (m_multiplier_in < m_multiplier_out) {
-        m_prebuffer_size = (wxUint32)(m_sndio->GetBestSize() * m_multiplier_out);
-        m_best_size = (wxUint32)(m_sndio->GetBestSize() * m_multiplier_in);
+        m_prebuffer_size = (wxUint32)(m_sndio->GetBestSize() *
+                                      m_multiplier_out);
+        m_best_size = (wxUint32)(m_sndio->GetBestSize() *
+                                 m_multiplier_in);
     } else {
-        m_prebuffer_size = (wxUint32)(m_sndio->GetBestSize() * m_multiplier_in);
-        m_best_size = (wxUint32)(m_sndio->GetBestSize() * m_multiplier_out);
+        m_prebuffer_size = (wxUint32)(m_sndio->GetBestSize() *
+                                      m_multiplier_in);
+        m_best_size = (wxUint32)(m_sndio->GetBestSize() *
+                                 m_multiplier_out);
     }
     
     m_prebuffer = new char[m_prebuffer_size];

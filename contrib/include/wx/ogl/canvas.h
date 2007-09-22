@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     12/07/98
-// RCS-ID:      $Id: canvas.h,v 1.1 2000/03/03 11:24:35 JS Exp $
+// RCS-ID:      $Id: canvas.h,v 1.3 2002/09/07 12:10:20 GD Exp $
 // Copyright:   (c) Julian Smart
 // Licence:   	wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -12,7 +12,7 @@
 #ifndef _OGL_CANVAS_H_
 #define _OGL_CANVAS_H_
 
-#ifdef __GNUG__
+#if defined(__GNUG__) && !defined(__APPLE__)
 #pragma interface "canvas.h"
 #endif
 
@@ -23,6 +23,8 @@
 #define StartDraggingRight     3
 #define ContinueDraggingRight  4
 
+extern wxChar* wxShapeCanvasNameStr;
+
 // When drag_count reaches 0, process drag message
 
 class wxDiagram;
@@ -31,8 +33,11 @@ class wxShapeCanvas: public wxScrolledWindow
 {
  DECLARE_DYNAMIC_CLASS(wxShapeCanvas)
  public:
-  wxShapeCanvas(wxWindow *parent = NULL, wxWindowID id = -1, const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxDefaultSize,
-               long style = wxBORDER | wxRETAINED);
+  wxShapeCanvas(wxWindow *parent = NULL, wxWindowID id = -1,
+                const wxPoint& pos = wxDefaultPosition,
+                const wxSize& size = wxDefaultSize,
+                long style = wxBORDER | wxRETAINED,
+                const wxString& name = wxShapeCanvasNameStr);
   ~wxShapeCanvas();
 
   inline void SetDiagram(wxDiagram *diag) { m_shapeDiagram = diag; }
@@ -54,7 +59,7 @@ class wxShapeCanvas: public wxScrolledWindow
   virtual wxShape *FindShape(double x, double y, int *attachment, wxClassInfo *info = NULL, wxShape *notImage = NULL);
   wxShape *FindFirstSensitiveShape(double x, double y, int *new_attachment, int op);
   wxShape *FindFirstSensitiveShape1(wxShape *image, int op);
-  
+
   // Redirect to wxDiagram object
   virtual void AddShape(wxShape *object, wxShape *addAfter = NULL);
   virtual void InsertShape(wxShape *object);

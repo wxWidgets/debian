@@ -4,7 +4,7 @@
 // Author:      Vadim Zeitlin
 // Modified by:
 // Created:     22.10.99
-// RCS-ID:      $Id: listbox.h,v 1.7 1999/10/22 18:00:30 VZ Exp $
+// RCS-ID:      $Id: listbox.h,v 1.13 2002/08/31 11:29:10 GD Exp $
 // Copyright:   (c) wxWindows team
 // Licence:     wxWindows licence
 ///////////////////////////////////////////////////////////////////////////////
@@ -16,7 +16,7 @@
 // headers
 // ----------------------------------------------------------------------------
 
-#ifdef __GNUG__
+#if defined(__GNUG__) && !defined(__APPLE__)
     #pragma interface "listboxbase.h"
 #endif
 
@@ -45,6 +45,7 @@ class WXDLLEXPORT wxListBoxBase : public wxControlWithItems
 public:
     // all generic methods are in wxControlWithItems, except for the following
     // ones which are not yet implemented by wxChoice/wxCombobox
+    virtual ~wxListBoxBase();
 
     void Insert(const wxString& item, int pos)
         { DoInsert(item, pos); }
@@ -66,6 +67,7 @@ public:
     virtual void SetSelection(int n, bool select = TRUE) = 0;
     virtual void Select(int n) { SetSelection(n, TRUE); }
     void Deselect(int n) { SetSelection(n, FALSE); }
+    void DeselectAll(int itemToLeaveSelected = -1);
 
     virtual bool SetStringSelection(const wxString& s, bool select = TRUE);
 
@@ -73,10 +75,28 @@ public:
     // GetSelection which only works for listboxes with single selection)
     virtual int GetSelections(wxArrayInt& aSelections) const = 0;
 
-    // Set the specified item at the first visible item or scroll to max
+    // set the specified item at the first visible item or scroll to max
     // range.
     void SetFirstItem(int n) { DoSetFirstItem(n); }
     void SetFirstItem(const wxString& s);
+
+    // ensures that the given item is visible scrolling the listbox if
+    // necessary
+    virtual void EnsureVisible(int n);
+
+    // a combination of Append() and EnsureVisible(): appends the item to the
+    // listbox and ensures that it is visible i.e. not scrolled out of view
+    void AppendAndEnsureVisible(const wxString& s);
+
+    // return TRUE if the listbox allows multiple selection
+    bool HasMultipleSelection() const
+    {
+        return (m_windowStyle & wxLB_MULTIPLE) ||
+               (m_windowStyle & wxLB_EXTENDED);
+    }
+
+    // return TRUE if this listbox is sorted
+    bool IsSorted() const { return (m_windowStyle & wxLB_SORT) != 0; }
 
     // emulate selecting or deselecting the item event.GetInt() (depending on
     // event.GetExtraLong())
@@ -103,14 +123,14 @@ protected:
 // include the platform-specific class declaration
 // ----------------------------------------------------------------------------
 
-#if defined(__WXMSW__)
+#if defined(__WXUNIVERSAL__)
+    #include "wx/univ/listbox.h"
+#elif defined(__WXMSW__)
     #include "wx/msw/listbox.h"
 #elif defined(__WXMOTIF__)
     #include "wx/motif/listbox.h"
 #elif defined(__WXGTK__)
     #include "wx/gtk/listbox.h"
-#elif defined(__WXQT__)
-    #include "wx/qt/listbox.h"
 #elif defined(__WXMAC__)
     #include "wx/mac/listbox.h"
 #elif defined(__WXPM__)

@@ -1,5 +1,8 @@
-// UniConversion.h - functions to handle UFT-8 and UCS-2 strings
-// Copyright 1998-2000 by Neil Hodgson <neilh@scintilla.org>
+// Scintilla source code edit control
+/** @file UniConversion.cxx
+ ** Functions to handle UFT-8 and UCS-2 strings.
+ **/
+// Copyright 1998-2001 by Neil Hodgson <neilh@scintilla.org>
 // The License.txt file describes the conditions under which this software may be distributed.
 
 #include <stdlib.h>
@@ -49,9 +52,6 @@ unsigned int UCS2Length(const char *s, unsigned int len) {
 }
 
 unsigned int UCS2FromUTF8(const char *s, unsigned int len, wchar_t *tbuf, unsigned int tlen) {
-#ifdef USE_API
-	return ::MultiByteToWideChar(CP_UTF8, 0, s, len, tbuf, tlen);
-#else 
 	unsigned int ui=0;
 	const unsigned char *us = reinterpret_cast<const unsigned char *>(s);
 	unsigned int i=0;
@@ -73,5 +73,4 @@ unsigned int UCS2FromUTF8(const char *s, unsigned int len, wchar_t *tbuf, unsign
 		ui++;
 	}
 	return ui;
-#endif
 }

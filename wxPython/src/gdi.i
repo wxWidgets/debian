@@ -1,11 +1,11 @@
 /////////////////////////////////////////////////////////////////////////////
 // Name:        gdi.i
-// Purpose:     SWIG interface file for wxDC, wxBrush, wxPen, wxFont, etc.
+// Purpose:     SWIG interface file for wxDC, wxBrush, wxPen, etc.
 //
 // Author:      Robin Dunn
 //
 // Created:     7/7/97
-// RCS-ID:      $Id: gdi.i,v 1.1.2.5 2001/01/30 20:53:43 robind Exp $
+// RCS-ID:      $Id: gdi.i,v 1.51 2002/09/05 19:39:27 RD Exp $
 // Copyright:   (c) 1998 by Total Control Software
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -15,11 +15,13 @@
 
 %{
 #include "helpers.h"
-#include <wx/metafile.h>
 #include <wx/imaglist.h>
-#ifndef __WXMSW__
-#include <wx/dcps.h>
-#endif
+#include <wx/fontmap.h>
+#include <wx/fontenc.h>
+#include <wx/fontmap.h>
+#include <wx/fontutil.h>
+#include <wx/dcbuffer.h>
+#include <wx/iconbndl.h>
 %}
 
 //----------------------------------------------------------------------
@@ -30,41 +32,40 @@
 // Import some definitions of other classes, etc.
 %import _defs.i
 %import misc.i
+%import fonts.i
 
 
+//---------------------------------------------------------------------------
 %{
-    static wxString wxPyEmptyStr("");
+    // Put some wx default wxChar* values into wxStrings.
+    static const wxString wxPyEmptyString(wxT(""));
 %}
+//---------------------------------------------------------------------------
+
+class wxGDIObject : public wxObject {
+public:
+    wxGDIObject();
+    ~wxGDIObject();
+
+    bool GetVisible();
+    void SetVisible( bool visible );
+
+    bool IsNull();
+
+};
 
 //---------------------------------------------------------------------------
 
-//  class wxGDIImage {
-//  public:
-//      long GetHandle();
-//      void SetHandle(long handle);
-//      bool Ok();
-//      int GetWidth();
-//      int GetHeight();
-//      int GetDepth();
-//      void SetWidth(int w);
-//      void SetHeight(int h);
-//      void SetDepth(int d);
-//      void SetSize(const wxSize& size);
-//  };
-
-//---------------------------------------------------------------------------
-
-class wxBitmap
-//: public wxGDIImage
+class wxBitmap : public wxGDIObject
 {
 public:
-    wxBitmap(const wxString& name, long type);
+    wxBitmap(const wxString& name, wxBitmapType type=wxBITMAP_TYPE_ANY);
     ~wxBitmap();
 
     wxPalette* GetPalette();
     wxMask* GetMask();
-    bool LoadFile(const wxString& name, long flags);
-    bool SaveFile(const wxString& name, int type, wxPalette* palette = NULL);
+    bool LoadFile(const wxString& name, wxBitmapType type=wxBITMAP_TYPE_ANY);
+    bool SaveFile(const wxString& name, wxBitmapType type, wxPalette* palette = NULL);
     void SetMask(wxMask* mask);
 #ifdef __WXMSW__
     void SetPalette(wxPalette& palette);
@@ -87,8 +88,8 @@ public:
 #endif
 
     wxBitmap GetSubBitmap( const wxRect& rect );
-#ifdef __WXMSW__
     bool CopyFromIcon(const wxIcon& icon);
+#ifdef __WXMSW__
     bool CopyFromCursor(const wxCursor& cursor);
     int GetQuality();
     void SetQuality(int q);
@@ -105,37 +106,90 @@ public:
 };
 
 
+// Declarations of some alternate "constructors"
 %new wxBitmap* wxEmptyBitmap(int width, int height, int depth=-1);
+%new wxBitmap* wxBitmapFromXPMData(PyObject* listOfStrings);
+%new wxBitmap* wxBitmapFromIcon(const wxIcon& icon);
+%new wxBitmap* wxBitmapFromBits(PyObject* bits, int width, int height, int depth = 1 );
 
-#ifdef __WXMSW__
-%new wxBitmap* wxBitmapFromData(PyObject* data, long type,
-                                int width, int height, int depth = 1);
-#endif
+//  #ifdef __WXMSW__
+//  %new wxBitmap* wxBitmapFromData(PyObject* data, long type,
+//                                  int width, int height, int depth = 1);
+//  #endif
 
-%{                              // Alternate 'constructor'
+
+
+%{ // Implementations of some alternate "constructors"
+
     wxBitmap* wxEmptyBitmap(int width, int height, int depth=-1) {
         return new wxBitmap(width, height, depth);
     }
 
-#ifdef __WXMSW__
-    wxBitmap* wxBitmapFromData(PyObject* data, long type,
-                               int width, int height, int depth = 1) {
-        if (! PyString_Check(data)) {
-            PyErr_SetString(PyExc_TypeError, "Expected string object");
+    static char** ConvertListOfStrings(PyObject* listOfStrings) {
+        char**    cArray = NULL;
+        int       count;
+
+        if (!PyList_Check(listOfStrings)) {
+            PyErr_SetString(PyExc_TypeError, "Expected a list of strings.");
             return NULL;
         }
+        count = PyList_Size(listOfStrings);
+        cArray = new char*[count];
 
-        return new wxBitmap((void*)PyString_AsString(data), type, width, height, depth);
+        for(int x=0; x<count; x++) {
+            // TODO: Need some validation and error checking here
+            cArray[x] = PyString_AsString(PyList_GET_ITEM(listOfStrings, x));
+        }
+        return cArray;
     }
-#endif
+
+
+    wxBitmap* wxBitmapFromXPMData(PyObject* listOfStrings) {
+        char**    cArray = NULL;
+        wxBitmap* bmp;
+
+        cArray = ConvertListOfStrings(listOfStrings);
+        if (! cArray)
+            return NULL;
+        bmp = new wxBitmap(cArray);
+        delete [] cArray;
+        return bmp;
+    }
+
+
+    wxBitmap* wxBitmapFromIcon(const wxIcon& icon) {
+        return new wxBitmap(icon);
+    }
+
+
+    wxBitmap* wxBitmapFromBits(PyObject* bits, int width, int height, int depth = 1 ) {
+        char* buf;
+        int   length;
+        PyString_AsStringAndSize(bits, &buf, &length);
+        return new wxBitmap(buf, width, height, depth);
+    }
+
+
+//  #ifdef __WXMSW__
+//      wxBitmap* wxBitmapFromData(PyObject* data, long type,
+//                                 int width, int height, int depth = 1) {
+//          if (! PyString_Check(data)) {
+//              PyErr_SetString(PyExc_TypeError, "Expected string object");
+//              return NULL;
+//          }
+//          return new wxBitmap((void*)PyString_AsString(data), type, width, height, depth);
+//      }
+//  #endif
 %}
 
 //---------------------------------------------------------------------------
 
-class wxMask {
+class wxMask : public wxObject {
 public:
     wxMask(const wxBitmap& bitmap);
     //~wxMask();
+
+    %addmethods { void Destroy() { delete self; } }
 };
 
 %new wxMask* wxMaskColour(const wxBitmap& bitmap, const wxColour& colour);
@@ -149,15 +203,16 @@ public:
 //---------------------------------------------------------------------------
 
 
-class wxIcon
-//: public wxGDIImage
+class wxIcon : public wxGDIObject
 {
 public:
     wxIcon(const wxString& name, long flags,
            int desiredWidth = -1, int desiredHeight = -1);
     ~wxIcon();
 
+#ifndef __WXMAC__
     bool LoadFile(const wxString& name, long flags);
+#endif
 
     // wxGDIImage methods
 #ifdef __WXMSW__
@@ -174,6 +229,8 @@ public:
 #ifdef __WXMSW__
     void SetSize(const wxSize& size);
 #endif
+    void CopyFromBitmap(const wxBitmap& bmp);
+
     %pragma(python) addtoclass = "
     def __del__(self,gdic=gdic):
         try:
@@ -182,14 +239,73 @@ public:
         except:
             pass
 "
-
 };
 
 
+// Declarations of some alternate "constructors"
+%new wxIcon* wxEmptyIcon();
+%new wxIcon* wxIconFromXPMData(PyObject* listOfStrings);
+%new wxIcon* wxIconFromBitmap(const wxBitmap& bmp);
+
+%{ // Implementations of some alternate "constructors"
+    wxIcon* wxEmptyIcon() {
+        return new wxIcon();
+    }
+
+    wxIcon* wxIconFromXPMData(PyObject* listOfStrings) {
+        char**  cArray = NULL;
+        wxIcon* icon;
+
+        cArray = ConvertListOfStrings(listOfStrings);
+        if (! cArray)
+            return NULL;
+        icon = new wxIcon(cArray);
+        delete [] cArray;
+        return icon;
+    }
+
+    wxIcon* wxIconFromBitmap(const wxBitmap& bmp) {
+        wxIcon* icon = new wxIcon();
+        icon->CopyFromBitmap(bmp);
+        return icon;
+    }
+%}
+
 //---------------------------------------------------------------------------
 
-class wxCursor
-//: public wxGDIImage
+class wxIconBundle
+{
+public:
+    // default constructor
+    wxIconBundle();
+
+    // initializes the bundle with the icon(s) found in the file
+    %name(wxIconBundleFromFile) wxIconBundle( const wxString& file, long type );
+
+    // initializes the bundle with a single icon
+    %name(wxIconBundleFromIcon)wxIconBundle( const wxIcon& icon );
+
+    ~wxIconBundle();
+
+    // adds the icon to the collection, if the collection already
+    // contains an icon with the same width and height, it is
+    // replaced
+    void AddIcon( const wxIcon& icon );
+
+    // adds all the icons contained in the file to the collection,
+    // if the collection already contains icons with the same
+    // width and height, they are replaced
+    %name(AddIconFromFile)void AddIcon( const wxString& file, long type );
+
+    // returns the icon with the given size; if no such icon exists,
+    // returns the icon with size wxSYS_ICON_[XY]; if no such icon exists,
+    // returns the first icon in the bundle
+    const wxIcon& GetIcon( const wxSize& size ) const;
+};
+
+//---------------------------------------------------------------------------
+
+class wxCursor : public wxGDIObject
 {
 public:
 #ifdef __WXMSW__
@@ -223,103 +339,7 @@ public:
 
 //----------------------------------------------------------------------
 
-
-enum wxFontEncoding
-{
-    wxFONTENCODING_SYSTEM = -1,     // system default
-    wxFONTENCODING_DEFAULT,         // current default encoding
-
-    // ISO8859 standard defines a number of single-byte charsets
-    wxFONTENCODING_ISO8859_1,       // West European (Latin1)
-    wxFONTENCODING_ISO8859_2,       // Central and East European (Latin2)
-    wxFONTENCODING_ISO8859_3,       // Esperanto (Latin3)
-    wxFONTENCODING_ISO8859_4,       // Baltic languages (Estonian) (Latin4)
-    wxFONTENCODING_ISO8859_5,       // Cyrillic
-    wxFONTENCODING_ISO8859_6,       // Arabic
-    wxFONTENCODING_ISO8859_7,       // Greek
-    wxFONTENCODING_ISO8859_8,       // Hebrew
-    wxFONTENCODING_ISO8859_9,       // Turkish (Latin5)
-    wxFONTENCODING_ISO8859_10,      // Variation of Latin4 (Latin6)
-    wxFONTENCODING_ISO8859_11,      // Thai
-    wxFONTENCODING_ISO8859_12,      // doesn't exist currently, but put it
-                                    // here anyhow to make all ISO8859
-                                    // consecutive numbers
-    wxFONTENCODING_ISO8859_13,      // Latin7
-    wxFONTENCODING_ISO8859_14,      // Latin8
-    wxFONTENCODING_ISO8859_15,      // Latin9 (a.k.a. Latin0, includes euro)
-
-    // Cyrillic charset soup (see http://czyborra.com/charsets/cyrillic.html)
-    wxFONTENCODING_KOI8,            // we don't support any of KOI8 variants
-    wxFONTENCODING_ALTERNATIVE,     // same as MS-DOS CP866
-    wxFONTENCODING_BULGARIAN,       // used under Linux in Bulgaria
-
-    // what would we do without Microsoft? They have their own encodings
-        // for DOS
-    wxFONTENCODING_CP437,           // original MS-DOS codepage
-    wxFONTENCODING_CP850,           // CP437 merged with Latin1
-    wxFONTENCODING_CP852,           // CP437 merged with Latin2
-    wxFONTENCODING_CP855,           // another cyrillic encoding
-    wxFONTENCODING_CP866,           // and another one
-        // and for Windows
-    wxFONTENCODING_CP1250,          // WinLatin2
-    wxFONTENCODING_CP1251,          // WinCyrillic
-    wxFONTENCODING_CP1252,          // WinLatin1
-
-    wxFONTENCODING_MAX
-};
-
-class wxFont {
-public:
-    // I'll do it this way to use long-lived objects and not have to
-    // worry about when python may delete the object.
-    %addmethods {
-        wxFont( int pointSize, int family, int style, int weight,
-                int underline=FALSE, char* faceName = "",
-                wxFontEncoding encoding=wxFONTENCODING_DEFAULT) {
-
-            return wxTheFontList->FindOrCreateFont(pointSize, family, style, weight,
-                                                   underline, faceName, encoding);
-        }
-        // NO Destructor.
-    }
-
-    bool Ok();
-
-    wxString GetFaceName();
-    int GetFamily();
-#ifdef __WXMSW__
-    int GetFontId();
-#endif
-    int GetPointSize();
-    int GetStyle();
-    bool GetUnderlined();
-    int GetWeight();
-    wxFontEncoding GetEncoding();
-    void SetFaceName(const wxString& faceName);
-    void SetFamily(int family);
-    void SetPointSize(int pointSize);
-    void SetStyle(int style);
-    void SetUnderlined(bool underlined);
-    void SetWeight(int weight);
-    void SetEncoding(wxFontEncoding encoding);
-    wxString GetFamilyString();
-    wxString GetStyleString();
-    wxString GetWeightString();
-};
-
-%inline %{
-    wxFontEncoding wxFont_GetDefaultEncoding() {
-        return wxFont::GetDefaultEncoding();
-    }
-
-    void wxFont_SetDefaultEncoding(wxFontEncoding encoding) {
-        wxFont::SetDefaultEncoding(encoding);
-    }
-%}
-
-//----------------------------------------------------------------------
-
-class wxColour {
+class wxColour : public wxObject {
 public:
     wxColour(unsigned char red=0, unsigned char green=0, unsigned char blue=0);
     ~wxColour();
@@ -352,22 +372,49 @@ public:
 %}
 
 
+
+class wxColourDatabase : public wxObject {
+public:
+
+    wxColour *FindColour(const wxString& colour);
+    wxString FindName(const wxColour& colour) const;
+
+    %addmethods {
+        void Append(const wxString& name, int red, int green, int blue) {
+            // first see if the name is already there
+            wxString cName = name;
+            cName.MakeUpper();
+            wxString cName2 = cName;
+            if ( !cName2.Replace(wxT("GRAY"), wxT("GREY")) )
+                cName2.clear();
+
+            wxNode *node = self->First();
+            while ( node ) {
+                const wxChar *key = node->GetKeyString();
+                if ( cName == key || cName2 == key ) {
+                    wxColour* c = (wxColour *)node->Data();
+                    c->Set(red, green, blue);
+                    return;
+                }
+                node = node->Next();
+            }
+
+            // otherwise append the new colour
+            self->Append(name.c_str(), new wxColour(red, green, blue));
+        }
+    }
+};
+
+
 //----------------------------------------------------------------------
 
-
-class wxPen {
+class wxPen : public wxGDIObject {
 public:
-    // I'll do it this way to use long-lived objects and not have to
-    // worry about when python may delete the object.
-    %addmethods {
-        wxPen(wxColour* colour, int width=1, int style=wxSOLID) {
-            return wxThePenList->FindOrCreatePen(*colour, width, style);
-        }
-        // NO Destructor.
-    }
+    wxPen(wxColour& colour, int width=1, int style=wxSOLID);
+    ~wxPen();
 
     int GetCap();
-    wxColour& GetColour();
+    wxColour GetColour();
 
     int GetJoin();
     int GetStyle();
@@ -379,9 +426,21 @@ public:
     void SetStyle(int style);
     void SetWidth(int width);
 
-            // **** This one needs to return a list of ints (wxDash)
-    int GetDashes(wxDash **dashes);
+
     void SetDashes(int LCOUNT, wxDash* choices);
+    //int GetDashes(wxDash **dashes);
+    %addmethods {
+        PyObject* GetDashes() {
+            wxDash* dashes;
+            int count = self->GetDashes(&dashes);
+            wxPyBeginBlockThreads();
+            PyObject* retval = PyList_New(0);
+            for (int x=0; x<count; x++)
+                PyList_Append(retval, PyInt_FromLong(dashes[x]));
+            wxPyEndBlockThreads();
+            return retval;
+        }
+    }
 
 #ifdef __WXMSW__
     wxBitmap* GetStipple();
@@ -389,22 +448,71 @@ public:
 #endif
 };
 
-//----------------------------------------------------------------------
 
-class wxBrush {
+
+
+// The list of ints for the dashes needs to exist for the life of the pen
+// so we make it part of the class to save it.  wxPyPen is aliased to wxPen
+// in _extras.py
+
+%{
+class wxPyPen : public wxPen {
 public:
-    // I'll do it this way to use long-lived objects and not have to
-    // worry about when python may delete the object.
-    %addmethods {
-        wxBrush(const wxColour* colour, int style=wxSOLID) {
-            return wxTheBrushList->FindOrCreateBrush(*colour, style);
-        }
-        // NO Destructor.
+    wxPyPen(wxColour& colour, int width=1, int style=wxSOLID)
+        : wxPen(colour, width, style)
+        { m_dash = NULL; }
+    ~wxPyPen() {
+        if (m_dash)
+            delete [] m_dash;
     }
 
-//      wxBrush(const wxColour& colour, int style=wxSOLID);
+    void SetDashes(int nb_dashes, const wxDash *dash) {
+        if (m_dash)
+            delete [] m_dash;
+        m_dash = new wxDash[nb_dashes];
+        for (int i=0; i<nb_dashes; i++) {
+            m_dash[i] = dash[i];
+        }
+        wxPen::SetDashes(nb_dashes, m_dash);
+    }
 
-    wxColour& GetColour();
+private:
+    wxDash* m_dash;
+};
+%}
+
+
+class wxPyPen : public wxPen {
+public:
+    wxPyPen(wxColour& colour, int width=1, int style=wxSOLID);
+    ~wxPyPen();
+
+    void SetDashes(int LCOUNT, wxDash* choices);
+};
+
+
+
+
+class wxPenList : public wxObject {
+public:
+
+    void AddPen(wxPen* pen);
+    wxPen* FindOrCreatePen(const wxColour& colour, int width, int style);
+    void RemovePen(wxPen* pen);
+
+    int GetCount();
+};
+
+
+
+//----------------------------------------------------------------------
+
+class wxBrush : public wxGDIObject {
+public:
+    wxBrush(const wxColour& colour, int style=wxSOLID);
+    ~wxBrush();
+
+    wxColour GetColour();
     wxBitmap * GetStipple();
     int GetStyle();
     bool Ok();
@@ -413,11 +521,22 @@ public:
     void SetStyle(int style);
 };
 
+
+class wxBrushList : public wxObject {
+public:
+
+    void AddBrush(wxBrush *brush);
+    wxBrush * FindOrCreateBrush(const wxColour& colour, int style);
+    void RemoveBrush(wxBrush *brush);
+
+    int GetCount();
+};
+
 //----------------------------------------------------------------------
 
 
 
-class wxDC {
+class wxDC : public wxObject {
 public:
 //    wxDC(); **** abstract base class, can't instantiate.
     ~wxDC();
@@ -444,12 +563,30 @@ public:
     void DrawEllipse(long x, long y, long width, long height);
     void DrawEllipticArc(long x, long y, long width, long height, long start, long end);
     void DrawIcon(const wxIcon& icon, long x, long y);
+
+    void DrawLabel(const wxString& text, const wxRect& rect,
+                   int alignment = wxALIGN_LEFT | wxALIGN_TOP,
+                   int indexAccel = -1);
+
+    %addmethods {
+        wxRect DrawImageLabel(const wxString& text,
+                              const wxBitmap& image,
+                              const wxRect& rect,
+                              int alignment = wxALIGN_LEFT | wxALIGN_TOP,
+                              int indexAccel = -1) {
+            wxRect rv;
+            self->DrawLabel(text, image, rect, alignment, indexAccel, &rv);
+            return rv;
+        }
+    }
+
     void DrawLine(long x1, long y1, long x2, long y2);
     void DrawLines(int PCOUNT, wxPoint* points, long xoffset=0, long yoffset=0);
     void DrawPolygon(int PCOUNT, wxPoint* points, long xoffset=0, long yoffset=0,
                      int fill_style=wxODDEVEN_RULE);
     void DrawPoint(long x, long y);
     void DrawRectangle(long x, long y, long width, long height);
+    %name(DrawRectangleRect)void DrawRectangle(const wxRect& rect);
     void DrawRotatedText(const wxString& text, wxCoord x, wxCoord y, double angle);
     void DrawRoundedRectangle(long x, long y, long width, long height, long radius=20);
     void DrawSpline(int PCOUNT, wxPoint* points);
@@ -457,19 +594,19 @@ public:
     void EndDoc();
     void EndDrawing();
     void EndPage();
-    void FloodFill(long x, long y, const wxColour& colour, int style=wxFLOOD_SURFACE);
-    wxBrush&  GetBackground();
-    wxBrush&  GetBrush();
+    bool FloodFill(long x, long y, const wxColour& colour, int style=wxFLOOD_SURFACE);
+    wxBrush  GetBackground();
+    wxBrush  GetBrush();
     long GetCharHeight();
     long GetCharWidth();
     void GetClippingBox(long *OUTPUT, long *OUTPUT,
                         long *OUTPUT, long *OUTPUT);
-    wxFont& GetFont();
+    wxFont GetFont();
     int GetLogicalFunction();
     void GetLogicalScale(double *OUTPUT, double *OUTPUT);
     int GetMapMode();
     bool GetOptimization();
-    wxPen& GetPen();
+    wxPen GetPen();
     %addmethods {
         %new wxColour* GetPixel(long x, long y) {
             wxColour* wc = new wxColour();
@@ -480,12 +617,12 @@ public:
     %name(GetSizeTuple)void GetSize(int* OUTPUT, int* OUTPUT);
     wxSize GetSize();
     wxSize GetSizeMM();
-    wxColour& GetTextBackground();
+    wxColour GetTextBackground();
     void GetTextExtent(const wxString& string, long *OUTPUT, long *OUTPUT);
     %name(GetFullTextExtent)void GetTextExtent(const wxString& string,
                        long *OUTPUT, long *OUTPUT, long *OUTPUT, long* OUTPUT,
                        const wxFont* font = NULL);
-    wxColour& GetTextForeground();
+    wxColour GetTextForeground();
     void GetUserScale(double *OUTPUT, double *OUTPUT);
     long LogicalToDeviceX(long x);
     long LogicalToDeviceXRel(long x);
@@ -500,6 +637,8 @@ public:
     void SetBackground(const wxBrush& brush);
     void SetBackgroundMode(int mode);
     void SetClippingRegion(long x, long y, long width, long height);
+    %name(SetClippingRegionAsRegion) void SetClippingRegion(const wxRegion& region);
+    %name(SetClippingRect) void SetClippingRegion(const wxRect& rect);
     void SetPalette(const wxPalette& colourMap);
     void SetBrush(const wxBrush& brush);
     void SetFont(const wxFont& font);
@@ -531,8 +670,236 @@ public:
 
     void CalcBoundingBox(int x, int y);
     void ResetBoundingBox();
+
+    %addmethods {
+        void GetBoundingBox(int* OUTPUT, int* OUTPUT, int* OUTPUT, int* OUTPUT);
+        // See below for implementation
+    }
+
+#ifdef __WXMSW__
+    long GetHDC();
+#endif
+
+
+    %addmethods {
+        // NOTE: These methods are VERY SIMILAR in implentation.  It would be
+        // nice to factor out common code and or turn them into a set of
+        // template-like macros.
+
+        // Draw a point for every set of coordinants in pyPoints, optionally
+        // setting a new pen for each
+        PyObject* _DrawPointList(PyObject* pyPoints, PyObject* pyPens) {
+            wxPyBeginBlockThreads();
+
+            bool      isFastSeq  = PyList_Check(pyPoints) || PyTuple_Check(pyPoints);
+            bool      isFastPens = PyList_Check(pyPens) || PyTuple_Check(pyPens);
+            int       numObjs = 0;
+            int       numPens = 0;
+            wxPen*    pen;
+            PyObject* obj;
+            int       x1, y1;
+            int       i = 0;
+            PyObject* retval;
+
+            if (!PySequence_Check(pyPoints)) {
+                goto err0;
+            }
+            if (!PySequence_Check(pyPens)) {
+                goto err1;
+            }
+            numObjs = PySequence_Length(pyPoints);
+            numPens = PySequence_Length(pyPens);
+
+            for (i = 0; i < numObjs; i++) {
+                // Use a new pen?
+                if (i < numPens) {
+                    if (isFastPens) {
+                        obj = PySequence_Fast_GET_ITEM(pyPens, i);
+                    }
+                    else {
+                        obj = PySequence_GetItem(pyPens, i);
+                    }
+                    if (SWIG_GetPtrObj(obj, (void **) &pen, "_wxPen_p")) {
+                        if (!isFastPens)
+                            Py_DECREF(obj);
+                        goto err1;
+                    }
+
+                    self->SetPen(*pen);
+                    if (!isFastPens)
+                        Py_DECREF(obj);
+                }
+
+                // Get the point coordinants
+                if (isFastSeq) {
+                    obj = PySequence_Fast_GET_ITEM(pyPoints, i);
+                }
+                else {
+                    obj = PySequence_GetItem(pyPoints, i);
+                }
+                if (! _2int_seq_helper(obj, &x1, &y1)) {
+                    if (!isFastPens)
+                        Py_DECREF(obj);
+                    goto err0;
+                }
+                if (PyErr_Occurred()) {
+                    retval = NULL;
+                    if (!isFastPens)
+                        Py_DECREF(obj);
+                    goto exit;
+                }
+
+
+                // Now draw the point
+                self->DrawPoint(x1, y1);
+
+                if (!isFastSeq)
+                    Py_DECREF(obj);
+            }
+
+            Py_INCREF(Py_None);
+            retval = Py_None;
+            goto exit;
+
+        err1:
+            PyErr_SetString(PyExc_TypeError, "Expected a sequence of wxPens");
+            retval = NULL;
+            goto exit;
+        err0:
+            PyErr_SetString(PyExc_TypeError, "Expected a sequence of (x,y) sequences.");
+            retval = NULL;
+            goto exit;
+
+        exit:
+            wxPyEndBlockThreads();
+            return retval;
+        }
+
+
+        // Draw a line for every set of coordinants in pyLines, optionally
+        // setting a new pen for each
+        PyObject* _DrawLineList(PyObject* pyLines, PyObject* pyPens) {
+            wxPyBeginBlockThreads();
+
+            bool      isFastSeq  = PyList_Check(pyLines) || PyTuple_Check(pyLines);
+            bool      isFastPens = PyList_Check(pyPens) || PyTuple_Check(pyPens);
+            int       numObjs = 0;
+            int       numPens = 0;
+            wxPen*    pen;
+            PyObject* obj;
+            int       x1, y1, x2, y2;
+            int       i = 0;
+            PyObject* retval;
+
+            if (!PySequence_Check(pyLines)) {
+                goto err0;
+            }
+            if (!PySequence_Check(pyPens)) {
+                goto err1;
+            }
+            numObjs = PySequence_Length(pyLines);
+            numPens = PySequence_Length(pyPens);
+
+            for (i = 0; i < numObjs; i++) {
+                // Use a new pen?
+                if (i < numPens) {
+                    if (isFastPens) {
+                        obj = PySequence_Fast_GET_ITEM(pyPens, i);
+                    }
+                    else {
+                        obj = PySequence_GetItem(pyPens, i);
+                    }
+                    if (SWIG_GetPtrObj(obj, (void **) &pen, "_wxPen_p")) {
+                        if (!isFastPens)
+                            Py_DECREF(obj);
+                        goto err1;
+                    }
+
+                    self->SetPen(*pen);
+                    if (!isFastPens)
+                        Py_DECREF(obj);
+                }
+
+                // Get the line coordinants
+                if (isFastSeq) {
+                    obj = PySequence_Fast_GET_ITEM(pyLines, i);
+                }
+                else {
+                    obj = PySequence_GetItem(pyLines, i);
+                }
+                if (! _4int_seq_helper(obj, &x1, &y1, &x2, &y2)) {
+                    if (!isFastPens)
+                        Py_DECREF(obj);
+                    goto err0;
+                }
+                if (PyErr_Occurred()) {
+                    retval = NULL;
+                    if (!isFastPens)
+                        Py_DECREF(obj);
+                    goto exit;
+                }
+
+                // Now draw the line
+                self->DrawLine(x1, y1, x2, y2);
+
+                if (!isFastSeq)
+                    Py_DECREF(obj);
+            }
+
+            Py_INCREF(Py_None);
+            retval = Py_None;
+            goto exit;
+
+        err1:
+            PyErr_SetString(PyExc_TypeError, "Expected a sequence of wxPens");
+            retval = NULL;
+            goto exit;
+
+        err0:
+            PyErr_SetString(PyExc_TypeError, "Expected a sequence of (x1,y1, x2,y2) sequences.");
+            retval = NULL;
+            goto exit;
+
+        exit:
+            wxPyEndBlockThreads();
+            return retval;
+        }
+    }
+
+
+    %pragma(python) addtoclass = "
+    def DrawPointList(self, points, pens=None):
+        if pens is None:
+           pens = []
+        elif isinstance(pens, wxPenPtr):
+           pens = [pens]
+        elif len(pens) != len(points):
+           raise ValueError('points and pens must have same length')
+        return self._DrawPointList(points, pens)
+
+    def DrawLineList(self, lines, pens=None):
+        if pens is None:
+           pens = []
+        elif isinstance(pens, wxPenPtr):
+           pens = [pens]
+        elif len(pens) != len(lines):
+           raise ValueError('lines and pens must have same length')
+        return self._DrawLineList(lines, pens)
+"
+
+
 };
 
+
+
+%{
+static void wxDC_GetBoundingBox(wxDC* dc, int* x1, int* y1, int* x2, int* y2) {
+    *x1 = dc->MinX();
+    *y1 = dc->MinY();
+    *x2 = dc->MaxX();
+    *y2 = dc->MaxY();
+}
+%}
 
 //----------------------------------------------------------------------
 
@@ -550,6 +917,39 @@ public:
     }
 %}
 
+
+//---------------------------------------------------------------------------
+
+class wxBufferedDC : public wxMemoryDC {
+public:
+        // Construct a wxBufferedDC using a user supplied buffer.
+    wxBufferedDC( wxDC *dc, const wxBitmap &buffer );
+
+        // Construct a wxBufferedDC with an internal buffer of 'area'
+        // (where area is usually something like the size of the window
+        // being buffered)
+    %name(wxBufferedDCInternalBuffer)wxBufferedDC( wxDC *dc, const wxSize &area );
+
+        // Blits the buffer to the dc, and detaches the dc from
+        // the buffer.  Usually called in the dtor or by the dtor
+        // of derived classes if the BufferedDC must blit before
+        // the derived class (which may own the dc it's blitting
+        // to) is destroyed.
+    void UnMask();
+
+
+    %pragma(python) addtomethod =
+        "__init__:self._dc = _args[0] # save a ref so the other dc won't be deleted before self"
+    %pragma(python) addtomethod =
+        "wxBufferedDCInternalBuffer:val._dc = _args[0] # save a ref so the other dc won't be deleted before self"
+};
+
+
+class wxBufferedPaintDC : public wxBufferedDC
+{
+public:
+    wxBufferedPaintDC( wxWindow *window, const wxBitmap &buffer = wxNullBitmap );
+};
 
 //---------------------------------------------------------------------------
 
@@ -585,32 +985,172 @@ public:
 
 //---------------------------------------------------------------------------
 
-#ifndef __WXMSW__
-class wxPostScriptDC : public wxDC {
-public:
-      wxPostScriptDC(const wxString& output, bool interactive = TRUE, wxWindow* win = NULL);
-};
-#endif
-
-//---------------------------------------------------------------------------
-
 
 #ifdef __WXMSW__
+
+%{
+#include <wx/metafile.h>
+%}
+
+class wxMetaFile : public wxObject {
+public:
+    wxMetaFile(const wxString& filename = wxPyEmptyString);
+    ~wxMetaFile();
+
+    bool Ok();
+    bool SetClipboard(int width = 0, int height = 0);
+
+    wxSize GetSize();
+    int GetWidth();
+    int GetHeight();
+
+    const wxString& GetFileName() const { return m_filename; }
+
+};
+
+// bool wxMakeMetaFilePlaceable(const wxString& filename,
+//                              int minX, int minY, int maxX, int maxY, float scale=1.0);
+
+
 class wxMetaFileDC : public wxDC {
 public:
-    wxMetaFileDC(const wxString& filename = wxPyEmptyStr);
+    wxMetaFileDC(const wxString& filename = wxPyEmptyString,
+                 int width = 0, int height = 0,
+                 const wxString& description = wxPyEmptyString);
     wxMetaFile* Close();
 };
+
 #endif
 
 //---------------------------------------------------------------------------
+
+class wxPalette : public wxGDIObject {
+public:
+    wxPalette(int LCOUNT, byte* choices, byte* choices, byte* choices);
+    ~wxPalette();
+
+    int GetPixel(byte red, byte green, byte blue);
+    bool GetRGB(int pixel, byte* OUTPUT, byte* OUTPUT, byte* OUTPUT);
+    bool Ok();
+};
+
 //---------------------------------------------------------------------------
 
+enum {
+    wxIMAGELIST_DRAW_NORMAL ,
+    wxIMAGELIST_DRAW_TRANSPARENT,
+    wxIMAGELIST_DRAW_SELECTED,
+    wxIMAGELIST_DRAW_FOCUSED,
+    wxIMAGE_LIST_NORMAL,
+    wxIMAGE_LIST_SMALL,
+    wxIMAGE_LIST_STATE
+};
+
+class wxImageList : public wxObject {
+public:
+    wxImageList(int width, int height, int mask=TRUE, int initialCount=1);
+    ~wxImageList();
+
+    int Add(const wxBitmap& bitmap, const wxBitmap& mask = wxNullBitmap);
+    %name(AddWithColourMask)int Add(const wxBitmap& bitmap, const wxColour& maskColour);
+    %name(AddIcon)int Add(const wxIcon& icon);
+#ifdef __WXMSW__
+    bool Replace(int index, const wxBitmap& bitmap, const wxBitmap& mask = wxNullBitmap);
+#else
+//      %name(ReplaceIcon)bool Replace(int index, const wxIcon& icon);
+//      int Add(const wxBitmap& bitmap);
+    bool Replace(int index, const wxBitmap& bitmap);
+#endif
+
+    bool Draw(int index, wxDC& dc, int x, int x, int flags = wxIMAGELIST_DRAW_NORMAL,
+              const bool solidBackground = FALSE);
+
+    int GetImageCount();
+    bool Remove(int index);
+    bool RemoveAll();
+    void GetSize(int index, int& OUTPUT, int& OUTPUT);
+};
+
+
+//---------------------------------------------------------------------------
+// Regions, etc.
+
+enum wxRegionContain {
+	wxOutRegion, wxPartRegion, wxInRegion
+};
+
+
+class wxRegion : public wxGDIObject {
+public:
+    wxRegion(long x=0, long y=0, long width=0, long height=0);
+#ifndef __WXMAC__
+    %name(wxRegionFromPoints)wxRegion(int PCOUNT, wxPoint* points, int fillStyle = wxWINDING_RULE);
+#endif
+    ~wxRegion();
+
+    void Clear();
+#ifndef __WXMAC__
+    bool Offset(wxCoord x, wxCoord y);
+#endif
+
+    wxRegionContain Contains(long x, long y);
+    %name(ContainsPoint)wxRegionContain Contains(const wxPoint& pt);
+    %name(ContainsRect)wxRegionContain Contains(const wxRect& rect);
+    %name(ContainsRectDim)wxRegionContain Contains(long x, long y, long w, long h);
+
+    wxRect GetBox();
+
+    bool Intersect(long x, long y, long width, long height);
+    %name(IntersectRect)bool Intersect(const wxRect& rect);
+    %name(IntersectRegion)bool Intersect(const wxRegion& region);
+
+    bool IsEmpty();
+
+    bool Union(long x, long y, long width, long height);
+    %name(UnionRect)bool Union(const wxRect& rect);
+    %name(UnionRegion)bool Union(const wxRegion& region);
+
+    bool Subtract(long x, long y, long width, long height);
+    %name(SubtractRect)bool Subtract(const wxRect& rect);
+    %name(SubtractRegion)bool Subtract(const wxRegion& region);
+
+    bool Xor(long x, long y, long width, long height);
+    %name(XorRect)bool Xor(const wxRect& rect);
+    %name(XorRegion)bool Xor(const wxRegion& region);
+};
+
+
+
+class wxRegionIterator : public wxObject {
+public:
+    wxRegionIterator(const wxRegion& region);
+    ~wxRegionIterator();
+
+    long GetX();
+    long GetY();
+    long GetW();
+    long GetWidth();
+    long GetH();
+    long GetHeight();
+    wxRect GetRect();
+    bool HaveRects();
+    void Reset();
+
+    %addmethods {
+        void Next() {
+            (*self) ++;
+        }
+    };
+};
+
+
+//---------------------------------------------------------------------------
 
 %readonly
 %{
 #if 0
 %}
+
 extern wxFont *wxNORMAL_FONT;
 extern wxFont *wxSMALL_FONT;
 extern wxFont *wxITALIC_FONT;
@@ -650,6 +1190,7 @@ extern wxCursor *wxSTANDARD_CURSOR;
 extern wxCursor *wxHOURGLASS_CURSOR;
 extern wxCursor *wxCROSS_CURSOR;
 
+
 extern wxBitmap wxNullBitmap;
 extern wxIcon   wxNullIcon;
 extern wxCursor wxNullCursor;
@@ -659,60 +1200,18 @@ extern wxPalette wxNullPalette;
 extern wxFont   wxNullFont;
 extern wxColour wxNullColour;
 
+
+extern wxFontList*       wxTheFontList;
+extern wxPenList*        wxThePenList;
+extern wxBrushList*      wxTheBrushList;
+extern wxColourDatabase* wxTheColourDatabase;
+
+
 %readwrite
 %{
 #endif
 %}
 
 //---------------------------------------------------------------------------
-
-class wxPalette {
-public:
-    wxPalette(int LCOUNT, byte* choices, byte* choices, byte* choices);
-    ~wxPalette();
-
-    int GetPixel(byte red, byte green, byte blue);
-    bool GetRGB(int pixel, byte* OUTPUT, byte* OUTPUT, byte* OUTPUT);
-    bool Ok();
-};
-
-//---------------------------------------------------------------------------
-
-enum {
-    wxIMAGELIST_DRAW_NORMAL ,
-    wxIMAGELIST_DRAW_TRANSPARENT,
-    wxIMAGELIST_DRAW_SELECTED,
-    wxIMAGELIST_DRAW_FOCUSED,
-    wxIMAGE_LIST_NORMAL,
-    wxIMAGE_LIST_SMALL,
-    wxIMAGE_LIST_STATE
-};
-
-class wxImageList {
-public:
-    wxImageList(int width, int height, int mask=TRUE, int initialCount=1);
-    ~wxImageList();
-
-    int Add(const wxBitmap& bitmap, const wxBitmap& mask = wxNullBitmap);
-    %name(AddWithColourMask)int Add(const wxBitmap& bitmap, const wxColour& maskColour);
-    %name(AddIcon)int Add(const wxIcon& icon);
-#ifdef __WXMSW__
-    bool Replace(int index, const wxBitmap& bitmap, const wxBitmap& mask = wxNullBitmap);
-#else
-//      %name(ReplaceIcon)bool Replace(int index, const wxIcon& icon);
-//      int Add(const wxBitmap& bitmap);
-    bool Replace(int index, const wxBitmap& bitmap);
-#endif
-
-    bool Draw(int index, wxDC& dc, int x, int x, int flags = wxIMAGELIST_DRAW_NORMAL,
-              const bool solidBackground = FALSE);
-
-    int GetImageCount();
-    bool Remove(int index);
-    bool RemoveAll();
-    void GetSize(int index, int& OUTPUT, int& OUTPUT);
-};
-
-
 //---------------------------------------------------------------------------
 

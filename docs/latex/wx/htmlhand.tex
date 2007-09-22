@@ -1,4 +1,4 @@
-\section{Tag Handlers}\label{handlers}
+\subsection{Tag Handlers}\label{handlers}
 
 The wxHTML library provides architecture of pluggable {\it tag handlers}.
 Tag handler is class that understands particular HTML tag (or tags) and is
@@ -43,7 +43,7 @@ Then you must define handlers and one module.
 The handler is derived from \helpref{wxHtmlWinTagHandler}{wxhtmlwintaghandler}
 (or directly from \helpref{wxHtmlTagHandler}{wxhtmltaghandler})
 
-You can use set of macros to define the handler (see src/mod\_*.cpp files
+You can use set of macros to define the handler (see src/html/m\_*.cpp files
 for details). Handler definition must start with {\bf TAG\_HANDLER\_BEGIN} macro
 and end with {\bf TAG\_HANDLER\_END} macro. I strongly recommend to have a look
 at {\it include/wxhtml/mod\_templ.h} file. Otherwise you won't understand
@@ -112,7 +112,6 @@ TAG_HANDLER_END(TITLE)
 {\bf TAG\_HANDLER\_END}({\it name})
 
 Ends definition of tag handler {\it name}. 
-
 
 \wxheading{Tags Modules}
 

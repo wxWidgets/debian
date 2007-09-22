@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     7.9.93
-// RCS-ID:      $Id: htmlutil.cpp,v 1.4.2.1 2001/04/25 11:08:43 JS Exp $
+// RCS-ID:      $Id: htmlutil.cpp,v 1.13 2002/06/03 19:30:15 JS Exp $
 // Copyright:   (c) Julian Smart
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -27,6 +27,10 @@
 #include "tex2any.h"
 #include "tex2rtf.h"
 #include "table.h"
+
+
+extern wxHashTable TexReferences;
+
 
 extern void DecToHex(int, char *);
 void GenerateHTMLIndexFile(char *fname);
@@ -79,6 +83,7 @@ extern char *BigBuffer;
 // DHS Two-column table dimensions.
 static int TwoColWidthA = -1;
 static int TwoColWidthB = -1;
+
 
 class HyperReference: public wxObject
 {
@@ -176,7 +181,7 @@ void ReopenFile(FILE **fd, char **fileName)
 {
   if (*fd)
   {
-    fprintf(*fd, "\n</BODY></HTML>\n");
+    fprintf(*fd, "\n</FONT></BODY></HTML>\n");
     fclose(*fd);
   }
   fileId ++;
@@ -578,6 +583,17 @@ char *ParseColourString(char *bkStr, bool *isPicture)
   else return NULL;
 }
 
+void OutputFont(void)
+{
+  // Output <FONT FACE=...>
+  TexOutput("<FONT FACE=\"");
+  if (htmlFaceName)
+	TexOutput(htmlFaceName);
+  else
+	TexOutput("Times New Roman");
+  TexOutput("\">\n");
+}
+
 // Output start of <BODY> block
 void OutputBodyStart(void)
 {
@@ -632,6 +648,26 @@ void OutputBodyStart(void)
     }
   }
   TexOutput(">\n");
+
+  OutputFont();
+}
+
+void HTMLHead()
+{
+  TexOutput("<head>");
+  if (htmlStylesheet) {
+    TexOutput("<link rel=stylesheet type=\"text/css\" href=\"");
+    TexOutput(htmlStylesheet);
+    TexOutput("\">");
+  }
+};
+
+void HTMLHeadTo(FILE* f)
+{
+  if (htmlStylesheet)
+    fprintf(f,"<head><link rel=stylesheet type=\"text/css\" href=\"%s\">",htmlStylesheet);
+  else
+    fprintf(f,"<head>");
 }
 
 // Called on start/end of macro examination
@@ -664,7 +700,8 @@ void HTMLOnMacro(int macroId, int no_args, bool start)
 
       SetCurrentOutput(Chapters);
 
-      TexOutput("<head><title>");
+      HTMLHead();
+      TexOutput("<title>");
       OutputCurrentSection(); // Repeat section header
       TexOutput("</title></head>\n");
       OutputBodyStart();
@@ -702,8 +739,8 @@ void HTMLOnMacro(int macroId, int no_args, bool start)
       // Add this section title to the list of keywords
       if (htmlIndex)
       {
-        OutputCurrentSectionToString(wxBuffer);
-        AddKeyWordForTopic(topicName, wxBuffer, ConvertCase(currentFileName));
+        OutputCurrentSectionToString(wxTex2RTFBuffer);
+        AddKeyWordForTopic(topicName, wxTex2RTFBuffer, ConvertCase(currentFileName));
       }
     }
     break;
@@ -733,7 +770,8 @@ void HTMLOnMacro(int macroId, int no_args, bool start)
       if (htmlWorkshopFiles) HTMLWorkshopAddToContents(1, topicName, SectionsName);
 
       SetCurrentOutput(Sections);
-      TexOutput("<head><title>");
+      HTMLHead();
+      TexOutput("<title>");
       OutputCurrentSection();
       TexOutput("</title></head>\n");
       OutputBodyStart();
@@ -764,8 +802,8 @@ void HTMLOnMacro(int macroId, int no_args, bool start)
       // Add this section title to the list of keywords
       if (htmlIndex)
       {
-        OutputCurrentSectionToString(wxBuffer);
-        AddKeyWordForTopic(topicName, wxBuffer, currentFileName);
+        OutputCurrentSectionToString(wxTex2RTFBuffer);
+        AddKeyWordForTopic(topicName, wxTex2RTFBuffer, currentFileName);
       }
     }
     break;
@@ -826,7 +864,8 @@ void HTMLOnMacro(int macroId, int no_args, bool start)
             if (htmlWorkshopFiles) HTMLWorkshopAddToContents(2, topicName, SubsectionsName);
             SetCurrentOutput(Subsections);
 
-            TexOutput("<head><title>");
+	    HTMLHead();
+            TexOutput("<title>");
             OutputCurrentSection();
             TexOutput("</title></head>\n");
             OutputBodyStart();
@@ -871,8 +910,8 @@ void HTMLOnMacro(int macroId, int no_args, bool start)
           // Add this section title to the list of keywords
           if (htmlIndex)
           {
-            OutputCurrentSectionToString(wxBuffer);
-            AddKeyWordForTopic(topicName, wxBuffer, currentFileName);
+            OutputCurrentSectionToString(wxTex2RTFBuffer);
+            AddKeyWordForTopic(topicName, wxTex2RTFBuffer, currentFileName);
           }
 
       }
@@ -906,7 +945,8 @@ void HTMLOnMacro(int macroId, int no_args, bool start)
             if (htmlWorkshopFiles) HTMLWorkshopAddToContents(3, topicName, SubsubsectionsName);
 
             SetCurrentOutput(Subsubsections);
-            TexOutput("<head><title>");
+	    HTMLHead();
+            TexOutput("<title>");
             OutputCurrentSection();
             TexOutput("</title></head>\n");
             OutputBodyStart();
@@ -949,8 +989,8 @@ void HTMLOnMacro(int macroId, int no_args, bool start)
         // Add this section title to the list of keywords
         if (htmlIndex)
         {
-          OutputCurrentSectionToString(wxBuffer);
-          AddKeyWordForTopic(topicName, wxBuffer, currentFileName);
+          OutputCurrentSectionToString(wxTex2RTFBuffer);
+          AddKeyWordForTopic(topicName, wxTex2RTFBuffer, currentFileName);
         }
       }
     }
@@ -1022,7 +1062,8 @@ void HTMLOnMacro(int macroId, int no_args, bool start)
       if (inTabular)
       {
         // End cell, start cell
-        TexOutput("</TD>");
+
+        TexOutput("</FONT></TD>");
 
         // Start new row and cell, setting alignment for the first cell.
         if (currentColumn < noColumns)
@@ -1046,6 +1087,7 @@ void HTMLOnMacro(int macroId, int no_args, bool start)
         else
           sprintf(buf, "\n<TD ALIGN=LEFT>");
         TexOutput(buf);
+		OutputFont();
       }
       else
         TexOutput("&amp;");
@@ -1094,12 +1136,13 @@ void HTMLOnMacro(int macroId, int no_args, bool start)
       else
         sprintf(buf, "<TR>\n<TD ALIGN=LEFT>");
       TexOutput(buf);
+	  OutputFont();
     }
     else
     {
       // End cell and row
       // Start new row and cell
-      TexOutput("</TD>\n</TR>\n");
+      TexOutput("</FONT></TD>\n</TR>\n");
     }
     break;
   }
@@ -1901,7 +1944,11 @@ bool HTMLOnArgument(int macroId, int arg_no, bool start)
           {
             if (helpRefText)
               TraverseChildrenFromChunk(helpRefText);
-            TexOutput(" (REF NOT FOUND)");
+            if (!ignoreBadRefs)
+              TexOutput(" (REF NOT FOUND)");
+            wxString errBuf;
+            errBuf.Printf("Warning: unresolved reference '%s'", refName);
+            OnInform((char *)errBuf.c_str());
           }
         }
         else TexOutput("??");
@@ -1979,7 +2026,7 @@ bool HTMLOnArgument(int macroId, int arg_no, bool start)
 	  {
             TexOutput("<img src=\"");
             TexOutput(ConvertCase(wxFileNameFromPath(inlineFilename)));
-            TexOutput("\""); TexOutput(alignment); TexOutput("></A>");
+            TexOutput("\""); TexOutput(alignment); TexOutput(">");
             delete[] inlineFilename;
 	  }
         }
@@ -2085,6 +2132,7 @@ bool HTMLOnArgument(int macroId, int arg_no, bool start)
       descriptionItemArg = GetArgChunk();
       return FALSE;
     }
+    return TRUE;
   }
   case ltTWOCOLITEM:
   case ltTWOCOLITEMRULED:
@@ -2105,8 +2153,9 @@ bool HTMLOnArgument(int macroId, int arg_no, bool start)
           TexOutput(buf);
         } else
           TexOutput("\n<TR><TD VALIGN=TOP>\n");
+		OutputFont();
       }  else
-            TexOutput("\n</TD>\n");
+            TexOutput("\n</FONT></TD>\n");
     }
     if (arg_no == 2)
     {
@@ -2118,8 +2167,9 @@ bool HTMLOnArgument(int macroId, int arg_no, bool start)
           TexOutput(buf);
         } else 
            TexOutput("\n<TD VALIGN=TOP>\n");
+		OutputFont();
       }  else
-           TexOutput("\n</TD></TR>\n");
+           TexOutput("\n</FONT></TD></TR>\n");
     }
     return TRUE;
     break;
@@ -2621,6 +2671,7 @@ bool HTMLOnArgument(int macroId, int arg_no, bool start)
         if (compatibilityMode)
         {
           TexOutput("<TR>\n<TD>");
+		  OutputFont();
 /*
           for (int i = 0; i < noColumns; i++)
           {
@@ -2661,7 +2712,8 @@ bool HTMLOnArgument(int macroId, int arg_no, bool start)
       else
         sprintf(titleBuf, "%s_contents.html", FileNameFromPath(FileRoot));
 
-      TexOutput("<head><title>");
+      HTMLHead();
+      TexOutput("<title>");
       TexOutput(ReferencesNameString);
       TexOutput("</title></head>\n");
       OutputBodyStart();
@@ -2900,25 +2952,25 @@ bool HTMLGo(void)
 
     if (Chapters)
     {
-      fprintf(Chapters, "\n</BODY></HTML>\n");
+      fprintf(Chapters, "\n</FONT></BODY></HTML>\n");
       fclose(Chapters);
       Chapters = NULL;
     }
     if (Sections)
     {
-      fprintf(Sections, "\n</BODY></HTML>\n");
+      fprintf(Sections, "\n</FONT></BODY></HTML>\n");
       fclose(Sections);
       Sections = NULL;
     }
     if (Subsections && !combineSubSections)
     {
-      fprintf(Subsections, "\n</BODY></HTML>\n");
+      fprintf(Subsections, "\n</FONT></BODY></HTML>\n");
       fclose(Subsections);
       Subsections = NULL;
     }
     if (Subsubsections && !combineSubSections)
     {
-      fprintf(Subsubsections, "\n</BODY></HTML>\n");
+      fprintf(Subsubsections, "\n</FONT></BODY></HTML>\n");
       fclose(Subsubsections);
       Subsubsections = NULL;
     }
@@ -2939,17 +2991,19 @@ bool HTMLGo(void)
       if (DocumentTitle)
       {
         SetCurrentOutput(tmpTitle);
-        TexOutput("\n<HTML>\n<HEAD><TITLE>");
+	HTMLHead();
+        TexOutput("\n<HEAD><TITLE>");
         TraverseChildrenFromChunk(DocumentTitle);
         TexOutput("</TITLE></HEAD>\n");
       }
       else
       {
         SetCurrentOutput(tmpTitle);
+	HTMLHeadTo(tmpTitle);
         if (contentsString)
-          fprintf(tmpTitle, "<HEAD><TITLE>%s</TITLE></HEAD>\n\n", contentsString);
+          fprintf(tmpTitle, "<TITLE>%s</TITLE></HEAD>\n\n", contentsString);
         else
-          fprintf(tmpTitle, "<HEAD><TITLE>%s</TITLE></HEAD>\n\n", FileNameFromPath(FileRoot));
+          fprintf(tmpTitle, "<TITLE>%s</TITLE></HEAD>\n\n", FileNameFromPath(FileRoot));
       }
 
       // Output frame information
@@ -2986,7 +3040,7 @@ bool HTMLGo(void)
         fclose(fd);
       }
 
-      fprintf(tmpTitle, "\n</BODY>\n");
+      fprintf(tmpTitle, "\n</FONT></BODY>\n");
 
       if (htmlFrameContents)
       {
@@ -3132,8 +3186,10 @@ void GenerateHTMLWorkshopFiles(char *fname)
 
   fprintf(f,
       "<!DOCTYPE HTML PUBLIC \"-//IETF//DTD HTML//EN\">\n"
-      "<HTML>\n"
-      "<HEAD>\n"
+      "<HTML>\n");
+  HTMLHeadTo(f);
+  fprintf(f,
+      "\n"
       "<meta name=\"GENERATOR\" content=\"tex2rtf\">\n"
       "<!-- Sitemap 1.0 -->\n"
       "</HEAD><BODY>\n"
@@ -3208,8 +3264,10 @@ void HTMLWorkshopStartContents()
 
   fprintf(HTMLWorkshopContents,
       "<!DOCTYPE HTML PUBLIC \"-//IETF//DTD HTML//EN\">\n"
-      "<HTML>\n"
-      "<HEAD>\n"
+      "<HTML>\n");
+  HTMLHeadTo(HTMLWorkshopContents);
+  fprintf(HTMLWorkshopContents,
+      "\n"
       "<meta name=\"GENERATOR\" content=\"tex2rtf\">\n"
       "<!-- Sitemap 1.0 -->\n"
       "</HEAD><BODY>\n"

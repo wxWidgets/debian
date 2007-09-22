@@ -2,7 +2,7 @@
 // Name:        imagpcx.h
 // Purpose:     wxImage PCX handler
 // Author:      Guillermo Rodriguez Garcia <guille@iies.es>
-// RCS-ID:      $Id: imagpcx.h,v 1.1 1999/12/15 22:37:50 VS Exp $
+// RCS-ID:      $Id: imagpcx.h,v 1.3 2002/08/31 11:29:10 GD Exp $
 // Copyright:   (c) 1999 Guillermo Rodriguez Garcia
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -10,7 +10,7 @@
 #ifndef _WX_IMAGPCX_H_
 #define _WX_IMAGPCX_H_
 
-#ifdef __GNUG__
+#if defined(__GNUG__) && !defined(__APPLE__)
 #pragma interface "imagpcx.h"
 #endif
 
@@ -37,7 +37,7 @@ public:
   };
 
 #if wxUSE_STREAMS
-  virtual bool LoadFile( wxImage *image, wxInputStream& stream, bool verbose=TRUE, int index=0 );
+  virtual bool LoadFile( wxImage *image, wxInputStream& stream, bool verbose=TRUE, int index=-1 );
   virtual bool SaveFile( wxImage *image, wxOutputStream& stream, bool verbose=TRUE );
   virtual bool DoCanRead( wxInputStream& stream );
 #endif // wxUSE_STREAMS

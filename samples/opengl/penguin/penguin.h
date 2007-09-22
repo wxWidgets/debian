@@ -4,9 +4,9 @@
 // Author:      Robert Roebling
 // Modified by:
 // Created:     04/01/98
-// RCS-ID:      $Id: penguin.h,v 1.2 2000/03/08 08:32:25 JS Exp $
+// RCS-ID:      $Id: penguin.h,v 1.3 2002/03/17 14:15:54 VZ Exp $
 // Copyright:   (c) Robert Roebling
-// Licence:   	wxWindows licence
+// Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
 
 #ifndef _WX_PENGUIN_H_

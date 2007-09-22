@@ -5,7 +5,7 @@
 // Author:      Robin Dunn
 //
 // Created:     7/3/97
-// RCS-ID:      $Id: misc.i,v 1.1.2.11 2001/01/30 20:53:43 robind Exp $
+// RCS-ID:      $Id: misc.i,v 1.25 2002/07/20 00:14:28 RD Exp $
 // Copyright:   (c) 1998 by Total Control Software
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -28,12 +28,29 @@
 %import _defs.i
 
 
+//---------------------------------------------------------------------------
 %{
-    static wxString wxPyEmptyStr("");
+    // Put some wx default wxChar* values into wxStrings.
+    static const wxString wxPyEmptyString(wxT(""));
 %}
-
 //---------------------------------------------------------------------------
 
+
+class wxObject {
+public:
+
+    %addmethods {
+        wxString GetClassName() {
+            return self->GetClassInfo()->GetClassName();
+        }
+
+        void Destroy() {
+            delete self;
+        }
+    }
+};
+
+//---------------------------------------------------------------------------
 
 class wxSize {
 public:
@@ -54,14 +71,31 @@ public:
 
     %addmethods {
         PyObject* asTuple() {
+            wxPyBeginBlockThreads();
             PyObject* tup = PyTuple_New(2);
             PyTuple_SET_ITEM(tup, 0, PyInt_FromLong(self->x));
             PyTuple_SET_ITEM(tup, 1, PyInt_FromLong(self->y));
+            wxPyEndBlockThreads();
             return tup;
         }
+
+        int __cmp__(const wxSize* sz) {
+            if (! sz) return 1;
+            if (*self == *sz) return 0;
+            return -1;
+        }
     }
-    %pragma(python) addtoclass = "def __str__(self): return str(self.asTuple())"
-    %pragma(python) addtoclass = "def __repr__(self): return str(self.asTuple())"
+
+    %pragma(python) addtoclass = "
+    def __str__(self):                   return str(self.asTuple())
+    def __repr__(self):                  return str(self.asTuple())
+    def __len__(self):                   return len(self.asTuple())
+    def __getitem__(self, index):        return self.asTuple()[index]
+    def __setitem__(self, index, val):
+        if index == 0: self.width = val
+        elif index == 1: self.height = val
+        else: raise IndexError
+"
 
 };
 
@@ -80,9 +114,11 @@ public:
             self->y = y;
         }
         PyObject* asTuple() {
+            wxPyBeginBlockThreads();
             PyObject* tup = PyTuple_New(2);
             PyTuple_SET_ITEM(tup, 0, PyFloat_FromDouble(self->x));
             PyTuple_SET_ITEM(tup, 1, PyFloat_FromDouble(self->y));
+            wxPyEndBlockThreads();
             return tup;
         }
 
@@ -97,12 +133,21 @@ public:
         }
 
         int __cmp__(const wxRealPoint* p) {
-            if (! p) return 0;
-            return *self == *p;
+            if (! p) return 1;
+            if (*self == *p) return 0;
+            return -1;
         }
     }
-    %pragma(python) addtoclass = "def __str__(self): return str(self.asTuple())"
-    %pragma(python) addtoclass = "def __repr__(self): return str(self.asTuple())"
+    %pragma(python) addtoclass = "
+    def __str__(self):                   return str(self.asTuple())
+    def __repr__(self):                  return str(self.asTuple())
+    def __len__(self):                   return len(self.asTuple())
+    def __getitem__(self, index):        return self.asTuple()[index]
+    def __setitem__(self, index, val):
+        if index == 0: self.width = val
+        elif index == 1: self.height = val
+        else: raise IndexError
+"
 };
 
 
@@ -119,9 +164,11 @@ public:
             self->y = y;
         }
         PyObject* asTuple() {
+            wxPyBeginBlockThreads();
             PyObject* tup = PyTuple_New(2);
             PyTuple_SET_ITEM(tup, 0, PyInt_FromLong(self->x));
             PyTuple_SET_ITEM(tup, 1, PyInt_FromLong(self->y));
+            wxPyEndBlockThreads();
             return tup;
         }
 
@@ -136,12 +183,21 @@ public:
         }
 
         int __cmp__(const wxPoint* p) {
-            if (! p) return 0;
-            return *self == *p;
+            if (! p) return 1;
+            if (*self == *p) return 0;
+            return -1;
         }
     }
-    %pragma(python) addtoclass = "def __str__(self): return str(self.asTuple())"
-    %pragma(python) addtoclass = "def __repr__(self): return str(self.asTuple())"
+    %pragma(python) addtoclass = "
+    def __str__(self):                   return str(self.asTuple())
+    def __repr__(self):                  return str(self.asTuple())
+    def __len__(self):                   return len(self.asTuple())
+    def __getitem__(self, index):        return self.asTuple()[index]
+    def __setitem__(self, index, val):
+        if index == 0: self.x = val
+        elif index == 1: self.y = val
+        else: raise IndexError
+"
 };
 
 //---------------------------------------------------------------------------
@@ -164,6 +220,8 @@ public:
 
     wxPoint GetPosition();
     wxSize GetSize();
+    void SetPosition( const wxPoint &p );
+    void SetSize( const wxSize &s );
 
     int  GetLeft();
     int  GetTop();
@@ -182,11 +240,13 @@ public:
 
     %addmethods {
         PyObject* asTuple() {
+            wxPyBeginBlockThreads();
             PyObject* tup = PyTuple_New(4);
             PyTuple_SET_ITEM(tup, 0, PyInt_FromLong(self->x));
             PyTuple_SET_ITEM(tup, 1, PyInt_FromLong(self->y));
             PyTuple_SET_ITEM(tup, 2, PyInt_FromLong(self->width));
             PyTuple_SET_ITEM(tup, 3, PyInt_FromLong(self->height));
+            wxPyEndBlockThreads();
             return tup;
         }
 
@@ -196,14 +256,24 @@ public:
         }
 
         int __cmp__(const wxRect* rect) {
-            if (! rect) return 0;
-            return *self == *rect;
+            if (! rect) return 1;
+            if (*self == *rect) return 0;
+            return -1;
         }
     }
 
-    %pragma(python) addtoclass = "def __str__(self): return str(self.asTuple())"
-    %pragma(python) addtoclass = "def __repr__(self): return str(self.asTuple())"
     %pragma(python) addtoclass = "
+    def __str__(self):                   return str(self.asTuple())
+    def __repr__(self):                  return str(self.asTuple())
+    def __len__(self):                   return len(self.asTuple())
+    def __getitem__(self, index):        return self.asTuple()[index]
+    def __setitem__(self, index, val):
+        if index == 0: self.x = val
+        elif index == 1: self.y = val
+        elif index == 2: self.width = val
+        elif index == 3: self.height = val
+        else: raise IndexError
+
     # override the __getattr__ made by SWIG
     def __getattr__(self, name):
         d = {
@@ -256,13 +326,13 @@ public:
         dest = reg1.GetBox();
 
         if (dest != wxRect(0,0,0,0)) {
-            bool doSave = wxPyRestoreThread();
+            wxPyBeginBlockThreads();
             wxRect* newRect = new wxRect(dest);
             obj = wxPyConstructObject((void*)newRect, "wxRect");
             PyObject* one = PyInt_FromLong(1);
             PyObject_SetAttrString(obj, "thisown", one);
             Py_DECREF(one);
-            wxPySaveThread(doSave);
+            wxPyEndBlockThreads();
             return obj;
         }
         Py_INCREF(Py_None);
@@ -278,9 +348,9 @@ long wxNewId();
 void wxRegisterId(long id);
 %name(NewId) long wxNewId();
 %name(RegisterId) void wxRegisterId(long id);
+long wxGetCurrentId();
 
 void wxBell();
-void wxDisplaySize(int *OUTPUT, int *OUTPUT);
 void wxEndBusyCursor();
 
 long wxGetElapsedTime(bool resetTimer = TRUE);
@@ -290,19 +360,31 @@ long wxGetFreeMemory();
 void wxGetMousePosition(int* OUTPUT, int* OUTPUT);
 bool wxIsBusy();
 wxString wxNow();
-bool wxShell(const wxString& command = wxPyEmptyStr);
+bool wxShell(const wxString& command = wxPyEmptyString);
 void wxStartTimer();
 int wxGetOsVersion(int *OUTPUT, int *OUTPUT);
 wxString wxGetOsDescription();
 
+enum wxShutdownFlags
+{
+    wxSHUTDOWN_POWEROFF,    // power off the computer
+    wxSHUTDOWN_REBOOT       // shutdown and reboot
+};
+
+// Shutdown or reboot the PC
+bool wxShutdown(wxShutdownFlags wFlags);
+
+
 void wxSleep(int secs);
 void wxUsleep(unsigned long milliseconds);
 bool wxYield();
+bool wxYieldIfNeeded();
 void wxEnableTopLevelWindows(bool enable);
 
 %inline %{
-    char* wxGetResource(char *section, char *entry, char *file = NULL) {
-        char * retval;
+    wxString wxGetResource(const wxString& section, const wxString& entry,
+                           const wxString& file = wxPyEmptyString) {
+        wxChar * retval;
         wxGetResource(section, entry, &retval, file);
         return retval;
     }
@@ -317,7 +399,12 @@ wxString wxGetFullHostName();
 wxString wxGetUserId();
 wxString wxGetUserName();
 wxString wxGetHomeDir();
+wxString wxGetUserHome(const wxString& user = wxPyEmptyString);
 
+unsigned long wxGetProcessId();
+
+// When wxApp gets the virtual method magic then enable this.
+// bool wxHandleFatalExceptions(bool doIt = TRUE);
 
 //----------------------------------------------------------------------
 
@@ -334,7 +421,7 @@ enum wxRelationship { wxUnconstrained = 0,
                       wxAbsolute };
 
 
-class wxIndividualLayoutConstraint {
+class wxIndividualLayoutConstraint : public wxObject {
 public:
 //    wxIndividualLayoutConstraint();
 //    ~wxIndividualLayoutConstraint();
@@ -352,7 +439,7 @@ public:
 };
 
 
-class wxLayoutConstraints {
+class wxLayoutConstraints : public wxObject {
 public:
     wxLayoutConstraints();
 
@@ -367,71 +454,6 @@ public:
     wxIndividualLayoutConstraint width;
 %readwrite
 }
-
-
-//---------------------------------------------------------------------------
-// Regions, etc.
-
-enum wxRegionContain {
-	wxOutRegion, wxPartRegion, wxInRegion
-};
-
-
-class wxRegion {
-public:
-    wxRegion(long x=0, long y=0, long width=0, long height=0);
-    ~wxRegion();
-
-    void Clear();
-    wxRegionContain Contains(long x, long y);
-    %name(ContainsPoint)wxRegionContain Contains(const wxPoint& pt);
-    %name(ContainsRect)wxRegionContain Contains(const wxRect& rect);
-    %name(ContainsRectDim)wxRegionContain Contains(long x, long y, long w, long h);
-
-    wxRect GetBox();
-
-    bool Intersect(long x, long y, long width, long height);
-    %name(IntersectRect)bool Intersect(const wxRect& rect);
-    %name(IntersectRegion)bool Intersect(const wxRegion& region);
-
-    bool IsEmpty();
-
-    bool Union(long x, long y, long width, long height);
-    %name(UnionRect)bool Union(const wxRect& rect);
-    %name(UnionRegion)bool Union(const wxRegion& region);
-
-    bool Subtract(long x, long y, long width, long height);
-    %name(SubtractRect)bool Subtract(const wxRect& rect);
-    %name(SubtractRegion)bool Subtract(const wxRegion& region);
-
-    bool Xor(long x, long y, long width, long height);
-    %name(XorRect)bool Xor(const wxRect& rect);
-    %name(XorRegion)bool Xor(const wxRegion& region);
-};
-
-
-
-class wxRegionIterator {
-public:
-    wxRegionIterator(const wxRegion& region);
-    ~wxRegionIterator();
-
-    long GetX();
-    long GetY();
-    long GetW();
-    long GetWidth();
-    long GetH();
-    long GetHeight();
-    wxRect GetRect();
-    bool HaveRects();
-    void Reset();
-
-    %addmethods {
-        void Next() {
-            (*self) ++;
-        }
-    };
-};
 
 
 
@@ -450,7 +472,7 @@ public:
 };
 
 
-class wxAcceleratorTable {
+class wxAcceleratorTable : public wxObject {
 public:
     // Can also accept a list of 3-tuples
     wxAcceleratorTable(int LCOUNT, wxAcceleratorEntry* choices);
@@ -473,11 +495,12 @@ extern wxAcceleratorTable wxNullAcceleratorTable;
 
 //---------------------------------------------------------------------------
 
-class wxBusyInfo {
+class wxBusyInfo : public wxObject {
 public:
     wxBusyInfo(const wxString& message);
     ~wxBusyInfo();
 };
+
 
 //---------------------------------------------------------------------------
 

@@ -5,19 +5,20 @@
 // Author:      Robin Dunn
 //
 // Created:     7/3/97
-// RCS-ID:      $Id: my_typemaps.i,v 1.1.2.2 2001/01/30 20:53:43 robind Exp $
+// RCS-ID:      $Id: my_typemaps.i,v 1.23 2002/08/21 21:46:53 RD Exp $
 // Copyright:   (c) 1998 by Total Control Software
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
 
 
 //---------------------------------------------------------------------------
-// Tell SWIG to wrap all the wrappers with Python's thread macros
+// Tell SWIG to wrap all the wrappers with our thread protection
 
 %except(python) {
-    wxPy_BEGIN_ALLOW_THREADS;
-    $function
-    wxPy_END_ALLOW_THREADS;
+    PyThreadState* __tstate = wxPyBeginAllowThreads();
+$function
+    wxPyEndAllowThreads(__tstate);
+    if (PyErr_Occurred()) return NULL;
 }
 
 //----------------------------------------------------------------------
@@ -131,24 +132,15 @@
     delete [] $source;
 }
 
-
-
-
-
 %typemap(python,build) int PCOUNT {
-    if (_in_points) {
-        $target = PyList_Size(_in_points);
-    }
-    else {
-        $target = 0;
-    }
+	$target = NPOINTS;
 }
 
-%typemap(python,in) wxPoint* points  {
-    $target = wxPoint_LIST_helper($source);
-    if ($target == NULL) {
-        return NULL;
-    }
+%typemap(python,in) wxPoint* points (int NPOINTS) {
+    $target = wxPoint_LIST_helper($source, &NPOINTS);
+	if ($target == NULL) {
+		return NULL;
+	}
 }
 %typemap(python,freearg) wxPoint* points {
     delete [] $source;
@@ -156,59 +148,15 @@
 
 
 
+
 //---------------------------------------------------------------------------
 
-%{
-static char* wxStringErrorMsg = "string type is required for parameter";
-%}
 
-// TODO:  Which works best???
-
-// Implementation #1
-//  %typemap(python, in) wxString& (PyObject* temp, int tmpDoDecRef) {
-//      temp = $source;
-//      tmpDoDecRef = 0;
-//  #if PYTHON_API_VERSION >= 1009
-//      if (PyUnicode_Check(temp) {
-//          temp = PyUnicode_AsUTF8String(temp);
-//          if (! temp) {
-//              PyErr_SetString(PyExc_TypeError, "Unicode encoding to UTF8 failed.");
-//              return NULL;
-//          }
-//          tmpDoDecRef = 1;
-//  #endif
-//      if (!PyString_Check(temp)) {
-//          PyErr_SetString(PyExc_TypeError, wxStringErrorMsg);
-//          return NULL;
-//      }
-//      $target = new wxString(PyString_AsString(temp), PyString_Size(temp));
-//  #if PYTHON_API_VERESION >= 1009
-//      if (tmpDoDecRef) Py_DECREF(temp);
-//  #endif
-//  }
-
-
-// Implementation #2
 %typemap(python, in) wxString& {
-#if PYTHON_API_VERSION >= 1009
-    char* tmpPtr; int tmpSize;
-    if (!PyString_Check($source) && !PyUnicode_Check($source)) {
-        PyErr_SetString(PyExc_TypeError, "String or Unicode type required");
+    $target = wxString_in_helper($source);
+    if ($target == NULL)
         return NULL;
-    }
-    if (PyString_AsStringAndSize($source, &tmpPtr, &tmpSize) == -1)
-        return NULL;
-    $target = new wxString(tmpPtr, tmpSize);
-#else
-    if (!PyString_Check($source)) {
-        PyErr_SetString(PyExc_TypeError, wxStringErrorMsg);
-        return NULL;
-    }
-    $target = new wxString(PyString_AS_STRING($source), PyString_GET_SIZE($source));
-#endif
 }
-
-
 
 
 %typemap(python, freearg) wxString& {
@@ -219,7 +167,11 @@ static char* wxStringErrorMsg = "string type is required for parameter";
 
 
 %typemap(python, out) wxString {
+#if wxUSE_UNICODE
+    $target = PyUnicode_FromUnicode($source->c_str(), $source->Len());
+#else
     $target = PyString_FromStringAndSize($source->c_str(), $source->Len());
+#endif
 }
 %typemap(python, ret) wxString {
     delete $source;
@@ -227,15 +179,45 @@ static char* wxStringErrorMsg = "string type is required for parameter";
 
 
 %typemap(python, out) wxString* {
+#if wxUSE_UNICODE
+    $target = PyUnicode_FromUnicode($source->c_str(), $source->Len());
+#else
     $target = PyString_FromStringAndSize($source->c_str(), $source->Len());
+#endif
 }
 
 
 
+//---------------------------------------------------------------------------
+
+
+%typemap(python, in) wxMemoryBuffer& {
+    if (!PyString_Check($source)) {
+        PyErr_SetString(PyExc_TypeError, "String buffer expected");
+        return NULL;
+    }
+    char* str = PyString_AS_STRING($source);
+    int   len = PyString_GET_SIZE($source);
+    $target = new wxMemoryBuffer(len);
+    memcpy($target->GetData(), str, len);
+}
+
+%typemap(python, freearg) wxMemoryBuffer& {
+    if ($target)
+        delete $source;
+}
+
+%typemap(python, out) wxMemoryBuffer {
+    $target = PyString_FromStringAndSize((char*)$source->GetData(), $source->GetDataLen());
+}
+
+%typemap(python, ret) wxMemoryBuffer {
+    delete $source;
+}
 
 
 //---------------------------------------------------------------------------
-// Typemaps to convert Python sequence objects (2-tuples, etc.) to
+// Typemaps to convert Python sequence objects (tuples, etc.) to
 // wxSize, wxPoint, wxRealPoint, and wxRect.
 
 %typemap(python,in) wxSize& (wxSize temp) {
@@ -272,6 +254,59 @@ static char* wxStringErrorMsg = "string type is required for parameter";
         return NULL;
 }
 
+//---------------------------------------------------------------------------
+// Typemap for wxArrayString from Python sequence objects
+
+%typemap(python,in) wxArrayString& {
+    if (! PySequence_Check($source)) {
+        PyErr_SetString(PyExc_TypeError, "Sequence of strings expected.");
+        return NULL;
+    }
+    $target = new wxArrayString;
+    int i, len=PySequence_Length($source);
+    for (i=0; i<len; i++) {
+        PyObject* item = PySequence_GetItem($source, i);
+#if wxUSE_UNICODE
+        PyObject* str  = PyObject_Unicode(item);
+        $target->Add(PyUnicode_AsUnicode(str));
+#else
+        PyObject* str  = PyObject_Str(item);
+        $target->Add(PyString_AsString(str));
+#endif
+        Py_DECREF(item);
+        Py_DECREF(str);
+    }
+}
+
+%typemap(python, freearg) wxArrayString& {
+    if ($target)
+        delete $source;
+}
+
+//---------------------------------------------------------------------------
+// Typemap for wxArrayInt from Python sequence objects
+
+%typemap(python,in) wxArrayInt& {
+    if (! PySequence_Check($source)) {
+        PyErr_SetString(PyExc_TypeError, "Sequence of integers expected.");
+        return NULL;
+    }
+    $target = new wxArrayInt;
+    int i, len=PySequence_Length($source);
+    for (i=0; i<len; i++) {
+        PyObject* item = PySequence_GetItem($source, i);
+        PyObject* number  = PyNumber_Int(item);
+        $target->Add(PyInt_AS_LONG(number));
+        Py_DECREF(item);
+        Py_DECREF(number);
+    }
+}
+
+%typemap(python, freearg) wxArrayInt& {
+    if ($target)
+        delete $source;
+}
+
 
 //---------------------------------------------------------------------------
 // Map T_OUTPUTs for floats to return ints.
@@ -292,6 +327,95 @@ static char* wxStringErrorMsg = "string type is required for parameter";
     $target = t_output_helper($target, o);
 }
 
+
+%typemap(python,ignore) bool *T_OUTPUT(int temp)
+{
+  $target = (bool*)&temp;
+}
+
+%typemap(python,argout) bool *T_OUTPUT
+{
+    PyObject *o;
+    o = PyInt_FromLong((long) (*$source));
+    $target = t_output_helper($target, o);
+}
+
+%typemap(python,ignore) bool  *OUTPUT = bool *T_OUTPUT;
+%typemap(python,argout) bool  *OUTPUT = bool *T_OUTPUT;
+
+
+
+%typemap(python,ignore) byte *T_OUTPUT(int temp)
+{
+  $target = (byte*)&temp;
+}
+
+%typemap(python,argout) byte *T_OUTPUT
+{
+    PyObject *o;
+    o = PyInt_FromLong((long) (*$source));
+    $target = t_output_helper($target, o);
+}
+
+%typemap(python,ignore) byte  *OUTPUT = byte *T_OUTPUT;
+%typemap(python,argout) byte  *OUTPUT = byte *T_OUTPUT;
+
+//---------------------------------------------------------------------------
+// Typemaps to convert return values that are base class pointers
+// to the real derived type, if possible.  See wxPyMake_wxObject in
+// helpers.cpp
+
+%typemap(python, out) wxEvtHandler*             { $target = wxPyMake_wxObject($source); }
+%typemap(python, out) wxMenu*                   { $target = wxPyMake_wxObject($source); }
+%typemap(python, out) wxValidator*              { $target = wxPyMake_wxObject($source); }
+
+%typemap(python, out) wxDC*                     { $target = wxPyMake_wxObject($source); }
+%typemap(python, out) wxFSFile*                 { $target = wxPyMake_wxObject($source); }
+%typemap(python, out) wxFileSystem*             { $target = wxPyMake_wxObject($source); }
+%typemap(python, out) wxGridTableBase*          { $target = wxPyMake_wxObject($source); }
+%typemap(python, out) wxImageList*              { $target = wxPyMake_wxObject($source); }
+%typemap(python, out) wxListItem*               { $target = wxPyMake_wxObject($source); }
+%typemap(python, out) wxMenuItem*               { $target = wxPyMake_wxObject($source); }
+%typemap(python, out) wxMouseEvent*             { $target = wxPyMake_wxObject($source); }
+%typemap(python, out) wxObject*                 { $target = wxPyMake_wxObject($source); }
+%typemap(python, out) wxPyPrintout*             { $target = wxPyMake_wxObject($source); }
+%typemap(python, out) wxToolBarToolBase*        { $target = wxPyMake_wxObject($source); }
+%typemap(python, out) wxToolTip*                { $target = wxPyMake_wxObject($source); }
+
+
+%typemap(python, out) wxBitmapButton*           { $target = wxPyMake_wxObject($source); }
+%typemap(python, out) wxButton*                 { $target = wxPyMake_wxObject($source); }
+%typemap(python, out) wxControl*                { $target = wxPyMake_wxObject($source); }
+%typemap(python, out) wxFrame*                  { $target = wxPyMake_wxObject($source); }
+%typemap(python, out) wxGrid*                   { $target = wxPyMake_wxObject($source); }
+%typemap(python, out) wxListCtrl*               { $target = wxPyMake_wxObject($source); }
+%typemap(python, out) wxMDIChildFrame*          { $target = wxPyMake_wxObject($source); }
+%typemap(python, out) wxMDIClientWindow*        { $target = wxPyMake_wxObject($source); }
+%typemap(python, out) wxMenuBar*                { $target = wxPyMake_wxObject($source); }
+%typemap(python, out) wxNotebook*               { $target = wxPyMake_wxObject($source); }
+%typemap(python, out) wxStaticBox*              { $target = wxPyMake_wxObject($source); }
+%typemap(python, out) wxStatusBar*              { $target = wxPyMake_wxObject($source); }
+%typemap(python, out) wxTextCtrl*               { $target = wxPyMake_wxObject($source); }
+%typemap(python, out) wxToolBar*                { $target = wxPyMake_wxObject($source); }
+%typemap(python, out) wxToolBarBase*            { $target = wxPyMake_wxObject($source); }
+%typemap(python, out) wxTreeCtrl*               { $target = wxPyMake_wxObject($source); }
+%typemap(python, out) wxWindow*                 { $target = wxPyMake_wxObject($source); }
+%typemap(python, out) wxHtmlWindow*             { $target = wxPyMake_wxObject($source); }
+%typemap(python, out) wxWizardPage*             { $target = wxPyMake_wxObject($source); }
+
+%typemap(python, out) wxSizer*                  { $target = wxPyMake_wxSizer($source); }
+
+
+//%typemap(python, out) wxHtmlCell*               { $target = wxPyMake_wxObject($source); }
+//%typemap(python, out) wxHtmlContainerCell*      { $target = wxPyMake_wxObject($source); }
+//%typemap(python, out) wxHtmlParser*             { $target = wxPyMake_wxObject($source); }
+//%typemap(python, out) wxHtmlWinParser*          { $target = wxPyMake_wxObject($source); }
+
 //---------------------------------------------------------------------------
 //---------------------------------------------------------------------------
+
+
+
+
+
 

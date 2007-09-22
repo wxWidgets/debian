@@ -21,16 +21,9 @@ event object, and is an abstract base class for other event classes (see below).
 
 \membersection{wxEvent::wxEvent}
 
-\func{}{wxEvent}{\param{int }{id = 0}}
+\func{}{wxEvent}{\param{int }{id = 0}, \param{wxEventType }{eventType = {\tt wxEVT\_NULL}}}
 
 Constructor. Should not need to be used directly by an application.
-
-\membersection{wxEvent::m\_eventHandle}
-
-\member{char*}{m\_eventHandle}
-
-Handle of an underlying windowing system event handle, such as
-XEvent. Not guaranteed to be instantiated.
 
 \membersection{wxEvent::m\_eventObject}
 
@@ -63,6 +56,26 @@ Set to TRUE by {\bf Skip} if this event should be skipped.
 
 Timestamp for this event.
 
+\membersection{wxEvent::Clone}\label{wxeventclone}
+
+\constfunc{virtual wxEvent*}{Clone}{\void}
+
+Returns a copy of the event.
+
+Any event that is posted to the wxWindows event system for later action (via
+\helpref{wxEvtHandler::AddPendingEvent}{wxevthandleraddpendingevent} or
+\helpref{wxPostEvent}{wxpostevent}) must implement this method. All wxWindows
+events fully implement this method, but any derived events implemented by the
+user should also implement this method just in case they (or some event
+derived from them) are ever posted.
+
+All wxWindows events implement a copy constructor, so the easiest way of
+implementing the Clone function is to implement a copy constructor for
+a new event (call it MyEvent) and then define the Clone function like this:
+\begin{verbatim}
+    wxEvent *Clone(void) const { return new MyEvent(*this); }
+\end{verbatim}
+
 \membersection{wxEvent::GetEventObject}
 
 \func{wxObject*}{GetEventObject}{\void}
@@ -82,13 +95,6 @@ such as wxEVENT\_TYPE\_BUTTON\_COMMAND.
 \func{int}{GetId}{\void}
 
 Returns the identifier associated with this event, such as a button command id.
-
-\membersection{wxEvent::GetObjectType}
-
-\func{WXTYPE}{GetObjectType}{\void}
-
-Returns the type of the object associated with the
-event, such as wxTYPE\_BUTTON.
 
 \membersection{wxEvent::GetSkipped}
 

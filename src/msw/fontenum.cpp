@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by: Vadim Zeitlin to add support for font encodings
 // Created:     04/01/98
-// RCS-ID:      $Id: fontenum.cpp,v 1.15.2.3 2000/08/22 10:03:54 VZ Exp $
+// RCS-ID:      $Id: fontenum.cpp,v 1.29 2002/08/30 20:34:25 JS Exp $
 // Copyright:   (c) Julian Smart
 // Licence:     wxWindows licence
 ///////////////////////////////////////////////////////////////////////////////
@@ -28,10 +28,13 @@
   #pragma hdrstop
 #endif
 
+#if wxUSE_FONTMAP
+
 #ifndef WX_PRECOMP
   #include "wx/font.h"
 #endif
 
+#include "wx/fontutil.h"
 #include "wx/fontenum.h"
 #include "wx/fontmap.h"
 
@@ -84,14 +87,19 @@ private:
 
     // the list of charsets we already found while enumerating charsets
     wxArrayInt m_charsets;
+
+    // the list of facenames we already found while enumerating facenames
+    wxArrayString m_facenames;
 };
 
 // ----------------------------------------------------------------------------
 // private functions
 // ----------------------------------------------------------------------------
 
+#ifndef __WXMICROWIN__
 int CALLBACK wxFontEnumeratorProc(LPLOGFONT lplf, LPTEXTMETRIC lptm,
                                   DWORD dwStyle, LONG lParam);
+#endif
 
 // ============================================================================
 // implementation
@@ -117,24 +125,32 @@ void wxFontEnumeratorHelper::SetFamily(const wxString& family)
 
 bool wxFontEnumeratorHelper::SetEncoding(wxFontEncoding encoding)
 {
-    wxNativeEncodingInfo info;
-    if ( !wxGetNativeFontEncoding(encoding, &info) )
+    if ( encoding != wxFONTENCODING_SYSTEM )
     {
-        if ( !wxTheFontMapper->GetAltForEncoding(encoding, &info) )
+        wxNativeEncodingInfo info;
+        if ( !wxGetNativeFontEncoding(encoding, &info) )
         {
-            // no such encodings at all
-            return FALSE;
+#if wxUSE_FONTMAP
+            if ( !wxFontMapper::Get()->GetAltForEncoding(encoding, &info) )
+#endif // wxUSE_FONTMAP
+            {
+                // no such encodings at all
+                return FALSE;
+            }
         }
+
+        m_charset = info.charset;
+        m_facename = info.facename;
     }
-    m_charset = info.charset;
-    m_facename = info.facename;
 
     return TRUE;
 }
 
-#if defined(__GNUWIN32__)
+#if defined(__WXWINE__)
+    #define wxFONTENUMPROC FONTENUMPROCEX
+#elif (defined(__GNUWIN32__) && !defined(__CYGWIN10__) && !wxCHECK_W32API_VERSION( 1, 1 ))
     #if wxUSE_NORLANDER_HEADERS
-        #define wxFONTENUMPROC int(*)(const LOGFONTA *, const TEXTMETRICA *, long unsigned int, LPARAM)
+        #define wxFONTENUMPROC int(*)(const LOGFONT *, const TEXTMETRIC *, long unsigned int, LPARAM)
     #else
         #define wxFONTENUMPROC int(*)(ENUMLOGFONTEX *, NEWTEXTMETRICEX*, int, LPARAM)
     #endif
@@ -144,6 +160,7 @@ bool wxFontEnumeratorHelper::SetEncoding(wxFontEncoding encoding)
 
 void wxFontEnumeratorHelper::DoEnumerate()
 {
+#ifndef __WXMICROWIN__
     HDC hDC = ::GetDC(NULL);
 
 #ifdef __WIN32__
@@ -164,6 +181,7 @@ void wxFontEnumeratorHelper::DoEnumerate()
 #endif // Win32/16
 
     ::ReleaseDC(NULL, hDC);
+#endif
 }
 
 bool wxFontEnumeratorHelper::OnFont(const LPLOGFONT lf,
@@ -199,13 +217,27 @@ bool wxFontEnumeratorHelper::OnFont(const LPLOGFONT lf,
         }
     }
 
-    if ( m_charset != -1 )
+    if ( m_charset != DEFAULT_CHARSET )
     {
         // check that we have the right encoding
         if ( lf->lfCharSet != m_charset )
         {
             return TRUE;
         }
+    }
+    else // enumerating fonts in all charsets
+    {
+        // we can get the same facename twice or more in this case because it
+        // may exist in several charsets but we only want to return one copy of
+        // it (note that this can't happen for m_charset != DEFAULT_CHARSET)
+        if ( m_facenames.Index(lf->lfFaceName) != wxNOT_FOUND )
+        {
+            // continue enumeration
+            return TRUE;
+        }
+
+        wxConstCast(this, wxFontEnumeratorHelper)->
+            m_facenames.Add(lf->lfFaceName);
     }
 
     return m_fontEnum->OnFacename(lf->lfFaceName);
@@ -243,18 +275,26 @@ bool wxFontEnumerator::EnumerateEncodings(const wxString& family)
 // Windows callbacks
 // ----------------------------------------------------------------------------
 
+#ifndef __WXMICROWIN__
 int CALLBACK wxFontEnumeratorProc(LPLOGFONT lplf, LPTEXTMETRIC lptm,
-                                  DWORD dwStyle, LONG lParam)
+                                  DWORD WXUNUSED(dwStyle), LONG lParam)
 {
+
+    // we used to process TrueType fonts only, but there doesn't seem to be any
+    // reasons to restrict ourselves to them here
+#if 0
     // Get rid of any fonts that we don't want...
     if ( dwStyle != TRUETYPE_FONTTYPE )
     {
         // continue enumeration
         return TRUE;
     }
+#endif // 0
 
     wxFontEnumeratorHelper *fontEnum = (wxFontEnumeratorHelper *)lParam;
 
     return fontEnum->OnFont(lplf, lptm);
 }
+#endif
 
+#endif // wxUSE_FONTMAP

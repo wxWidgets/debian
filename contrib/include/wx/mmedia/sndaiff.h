@@ -3,7 +3,7 @@
 // Purpose:
 // Date: 08/11/1999
 // Author: Guilhem Lavaux <lavaux@easynet.fr> (C) 1999
-// CVSID: $Id: sndaiff.h,v 1.1 2000/03/05 19:03:12 GL Exp $
+// CVSID: $Id: sndaiff.h,v 1.2 2000/06/04 08:38:36 GL Exp $
 // --------------------------------------------------------------------------
 #ifndef _WX_SNDAIFF_H
 #define _WX_SNDAIFF_H
@@ -22,7 +22,7 @@
 // AIFF codec
 //
 
-class wxSoundAiff: public wxSoundFileStream {
+class WXDLLEXPORT wxSoundAiff: public wxSoundFileStream {
 public:
     wxSoundAiff(wxInputStream& stream, wxSoundStream& io_sound);
     wxSoundAiff(wxOutputStream& stream, wxSoundStream& io_sound);

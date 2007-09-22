@@ -2,7 +2,7 @@
 // Name:        checkbox.cpp
 // Purpose:
 // Author:      Robert Roebling
-// Id:          $Id: checkbox.cpp,v 1.46 2000/01/06 17:32:48 RR Exp $
+// Id:          $Id: checkbox.cpp,v 1.52 2002/08/05 17:59:19 RR Exp $
 // Copyright:   (c) 1998 Robert Roebling
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -12,12 +12,13 @@
 #pragma implementation "checkbox.h"
 #endif
 
-#include "wx/checkbox.h"
+#include "wx/defs.h"
 
 #if wxUSE_CHECKBOX
 
-#include <gdk/gdk.h>
-#include <gtk/gtk.h>
+#include "wx/checkbox.h"
+
+#include "wx/gtk/private.h"
 
 //-----------------------------------------------------------------------------
 // idle system
@@ -30,8 +31,9 @@ extern bool g_isIdle;
 // data
 //-----------------------------------------------------------------------------
 
-extern bool       g_blockEventsOnDrag;
-extern wxCursor   g_globalCursor;
+extern bool           g_blockEventsOnDrag;
+extern wxCursor       g_globalCursor;
+extern wxWindowGTK   *g_delayedFocus;
 
 //-----------------------------------------------------------------------------
 // "clicked"
@@ -44,6 +46,8 @@ static void gtk_checkbox_clicked_callback( GtkWidget *WXUNUSED(widget), wxCheckB
     if (!cb->m_hasVMT) return;
 
     if (g_blockEventsOnDrag) return;
+    
+    if (cb->m_blockEvent) return;
 
     wxCommandEvent event(wxEVT_COMMAND_CHECKBOX_CLICKED, cb->GetId());
     event.SetInt( cb->GetValue() );
@@ -72,12 +76,13 @@ bool wxCheckBox::Create(wxWindow *parent,
 {
     m_needParent = TRUE;
     m_acceptsFocus = TRUE;
+    m_blockEvent = FALSE;
 
     if (!PreCreation( parent, pos, size ) ||
         !CreateBase( parent, id, pos, size, style, validator, name ))
     {
         wxFAIL_MSG( wxT("wxCheckBox creation failed") );
-	    return FALSE;
+        return FALSE;
     }
 
     wxControl::SetLabel( label );
@@ -89,7 +94,7 @@ bool wxCheckBox::Create(wxWindow *parent,
         //     left of it
         m_widgetCheckbox = gtk_check_button_new();
 
-        m_widgetLabel = gtk_label_new(m_label.mbc_str());
+        m_widgetLabel = gtk_label_new( wxGTK_CONV( m_label ) );
         gtk_misc_set_alignment(GTK_MISC(m_widgetLabel), 0.0, 0.5);
 
         m_widget = gtk_hbox_new(FALSE, 0);
@@ -101,8 +106,8 @@ bool wxCheckBox::Create(wxWindow *parent,
     }
     else
     {
-        m_widgetCheckbox = gtk_check_button_new_with_label( m_label.mbc_str() );
-        m_widgetLabel = GTK_BUTTON( m_widgetCheckbox )->child;
+        m_widgetCheckbox = gtk_check_button_new_with_label( wxGTK_CONV( m_label ) );
+        m_widgetLabel = BUTTON_CHILD( m_widgetCheckbox );
         m_widget = m_widgetCheckbox;
     }
 
@@ -141,16 +146,11 @@ void wxCheckBox::SetValue( bool state )
     if (state == GetValue())
         return;
 
-    gtk_signal_disconnect_by_func( GTK_OBJECT(m_widgetCheckbox),
-                        GTK_SIGNAL_FUNC(gtk_checkbox_clicked_callback),
-                        (gpointer *)this );
+    m_blockEvent = TRUE;
 
     gtk_toggle_button_set_state( GTK_TOGGLE_BUTTON(m_widgetCheckbox), state );
-    
-    gtk_signal_connect( GTK_OBJECT(m_widgetCheckbox),
-                        "clicked",
-                        GTK_SIGNAL_FUNC(gtk_checkbox_clicked_callback),
-                        (gpointer *)this );
+
+    m_blockEvent = FALSE;
 }
 
 bool wxCheckBox::GetValue() const
@@ -166,7 +166,7 @@ void wxCheckBox::SetLabel( const wxString& label )
 
     wxControl::SetLabel( label );
 
-    gtk_label_set( GTK_LABEL(m_widgetLabel), GetLabel().mbc_str() );
+    gtk_label_set( GTK_LABEL(m_widgetLabel), wxGTK_CONV( GetLabel() ) );
 }
 
 bool wxCheckBox::Enable( bool enable )
@@ -188,7 +188,7 @@ void wxCheckBox::ApplyWidgetStyle()
 
 bool wxCheckBox::IsOwnGtkWindow( GdkWindow *window )
 {
-    return (window == GTK_TOGGLE_BUTTON(m_widget)->event_window);
+    return window == TOGGLE_BUTTON_EVENT_WIN(m_widget);
 }
 
 void wxCheckBox::OnInternalIdle()
@@ -196,16 +196,26 @@ void wxCheckBox::OnInternalIdle()
     wxCursor cursor = m_cursor;
     if (g_globalCursor.Ok()) cursor = g_globalCursor;
 
-    if (GTK_TOGGLE_BUTTON(m_widgetCheckbox)->event_window && cursor.Ok())
+    GdkWindow *event_window = TOGGLE_BUTTON_EVENT_WIN(m_widgetCheckbox);
+    if ( event_window && cursor.Ok() )
     {
         /* I now set the cursor the anew in every OnInternalIdle call
-	       as setting the cursor in a parent window also effects the
-	       windows above so that checking for the current cursor is
-	       not possible. */
-	   
-	   gdk_window_set_cursor( GTK_TOGGLE_BUTTON(m_widgetCheckbox)->event_window, cursor.GetCursor() );
+           as setting the cursor in a parent window also effects the
+           windows above so that checking for the current cursor is
+           not possible. */
+
+       gdk_window_set_cursor( event_window, cursor.GetCursor() );
     }
 
+    if (g_delayedFocus == this)
+    {
+        if (GTK_WIDGET_REALIZED(m_widget))
+        {
+            gtk_widget_grab_focus( m_widget );
+            g_delayedFocus = NULL;
+        }
+    }
+    
     UpdateWindowUI();
 }
 

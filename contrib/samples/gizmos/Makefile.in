@@ -1,0 +1,10 @@
+# $Id: Makefile.in,v 1.3 2001/08/22 15:02:39 VZ Exp $
+
+CONTRIB_SAMPLES=multicell splittree editlbox dynsash dynsash_switch
+
+all:
+	@for d in $(CONTRIB_SAMPLES); do (cd $$d && $(MAKE)); done
+
+clean:
+	@for d in $(CONTRIB_SAMPLES); do (cd $$d && $(MAKE) clean); done
+

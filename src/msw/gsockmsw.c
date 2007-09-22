@@ -3,7 +3,7 @@
  * Name:    gsockmsw.c
  * Author:  Guillermo Rodriguez Garcia <guille@iies.es>
  * Purpose: GSocket GUI-specific MSW code
- * CVSID:   $Id: gsockmsw.c,v 1.4.2.2 2001/09/06 08:16:51 RL Exp $
+ * CVSID:   $Id: gsockmsw.c,v 1.12 2002/05/09 22:31:44 VZ Exp $
  * -------------------------------------------------------------------------
  */
 
@@ -20,6 +20,7 @@
 #endif
 
 #ifndef __GSOCKET_STANDALONE__
+#include "wx/defs.h"
 #include "wx/setup.h"
 #endif
 
@@ -38,7 +39,7 @@
 #include "gsocket.h"
 
 /* If not using wxWindows, a global var called hInst must
- * be available and it must containt the app's instance
+ * be available and it must contain the app's instance
  * handle.
  */
 #define INSTANCE hInst
@@ -58,14 +59,8 @@
 #  pragma warning(default:4115) /* named type definition in parentheses */
 #endif
 
-/* VZ: I don't know if _T() macro is always defined here? */
-#ifdef _UNICODE
-#define CLASSNAME  L"_GSocket_Internal_Window_Class"
-#define WINDOWNAME L"_GSocket_Internal_Window_Name"
-#else /* !Unicode */
-#define CLASSNAME  "_GSocket_Internal_Window_Class"
-#define WINDOWNAME "_GSocket_Internal_Window_Name"
-#endif /* Unicode/!Unicode */
+#define CLASSNAME  TEXT("_GSocket_Internal_Window_Class")
+#define WINDOWNAME TEXT("_GSocket_Internal_Window_Name")
 
 /* Maximum number of different GSocket objects at a given time.
  * This value can be modified at will, but it CANNOT be greater
@@ -142,7 +137,7 @@ void GSocket_Cleanup(void)
 
 /* Per-socket GUI initialization / cleanup */
 
-bool _GSocket_GUI_Init(GSocket *socket)
+int _GSocket_GUI_Init(GSocket *socket)
 {
   int i;
 
@@ -193,7 +188,7 @@ LRESULT CALLBACK _GSocket_Internal_WinProc(HWND hWnd,
   {
     EnterCriticalSection(&critical);
     socket = socketList[(uMsg - WM_USER)];
-    event = -1;
+    event = (GSocketEvent) -1;
     cback = NULL;
     data = NULL;
 
@@ -284,11 +279,10 @@ void _GSocket_Disable_Events(GSocket *socket)
 
 #else /* !wxUSE_SOCKETS */
 
-/* 
+/*
  * Translation unit shouldn't be empty, so include this typedef to make the
  * compiler (VC++ 6.0, for example) happy
  */
 typedef void (*wxDummy)();
 
 #endif  /* wxUSE_SOCKETS || defined(__GSOCKET_STANDALONE__) */
-

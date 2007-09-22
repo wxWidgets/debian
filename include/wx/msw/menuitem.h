@@ -4,7 +4,7 @@
 // Author:      Vadim Zeitlin
 // Modified by:
 // Created:     11.11.97
-// RCS-ID:      $Id: menuitem.h,v 1.9 2000/01/11 13:58:40 VZ Exp $
+// RCS-ID:      $Id: menuitem.h,v 1.15 2002/03/24 01:24:16 VZ Exp $
 // Copyright:   (c) 1998 Vadim Zeitlin <zeitlin@dptmaths.ens-cachan.fr>
 // Licence:     wxWindows license
 ///////////////////////////////////////////////////////////////////////////////
@@ -39,7 +39,7 @@ public:
                int id = wxID_SEPARATOR,
                const wxString& name = wxEmptyString,
                const wxString& help = wxEmptyString,
-               bool isCheckable = FALSE,
+               wxItemKind kind = wxITEM_NORMAL,
                wxMenu *subMenu = (wxMenu *)NULL);
     virtual ~wxMenuItem();
 
@@ -51,10 +51,6 @@ public:
     virtual void Check(bool bDoCheck = TRUE);
     virtual bool IsChecked() const;
 
-#if wxUSE_ACCEL
-    virtual wxAcceleratorEntry *GetAccel() const;
-#endif // wxUSE_ACCEL
-
     // unfortunately needed to resolve ambiguity between
     // wxMenuItemBase::IsCheckable() and wxOwnerDrawn::IsCheckable()
     bool IsCheckable() const { return wxMenuItemBase::IsCheckable(); }
@@ -64,7 +60,36 @@ public:
     // menu handle depending on what we're
     int GetRealId() const;
 
+    // mark item as belonging to the given radio group
+    void SetAsRadioGroupStart();
+    void SetRadioGroupStart(int start);
+    void SetRadioGroupEnd(int end);
+
+    // compatibility only, don't use in new code
+    wxMenuItem(wxMenu *parentMenu,
+               int id,
+               const wxString& text,
+               const wxString& help,
+               bool isCheckable,
+               wxMenu *subMenu = (wxMenu *)NULL);
+
 private:
+    // common part of all ctors
+    void Init();
+
+    // the positions of the first and last items of the radio group this item
+    // belongs to or -1: start is the radio group start and is valid for all
+    // but first radio group items (m_isRadioGroupStart == FALSE), end is valid
+    // only for the first one
+    union
+    {
+        int start;
+        int end;
+    } m_radioGroup;
+
+    // does this item start a radio group?
+    bool m_isRadioGroupStart;
+
     DECLARE_DYNAMIC_CLASS(wxMenuItem)
 };
 

@@ -4,9 +4,9 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     04/01/98
-// RCS-ID:      $Id: view.cpp,v 1.9 1999/10/30 15:08:31 RR Exp $
+// RCS-ID:      $Id: view.cpp,v 1.11 2002/08/20 09:09:53 JS Exp $
 // Copyright:   (c) Julian Smart and Markus Holzem
-// Licence:   	wxWindows license
+// Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
 
 #ifdef __GNUG__
@@ -189,7 +189,7 @@ BEGIN_EVENT_TABLE(MyCanvas, wxScrolledWindow)
 END_EVENT_TABLE()
 
 // Define a constructor for my canvas
-MyCanvas::MyCanvas(wxView *v, wxFrame *frame, const wxPoint& pos, const wxSize& size, long style):
+MyCanvas::MyCanvas(wxView *v, wxMDIChildFrame *frame, const wxPoint& pos, const wxSize& size, long style):
  wxScrolledWindow(frame, -1, pos, size, style)
 {
   view = v;
@@ -256,7 +256,7 @@ void MyCanvas::OnMouseEvent(wxMouseEvent& event)
 }
 
 // Define a constructor for my text subwindow
-MyTextWindow::MyTextWindow(wxView *v, wxFrame *frame, const wxPoint& pos, const wxSize& size, long style):
+MyTextWindow::MyTextWindow(wxView *v, wxMDIChildFrame *frame, const wxPoint& pos, const wxSize& size, long style):
  wxTextCtrl(frame, -1, "", pos, size, style)
 {
   view = v;

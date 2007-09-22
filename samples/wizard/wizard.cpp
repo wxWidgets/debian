@@ -4,7 +4,7 @@
 // Author:      Vadim Zeitlin
 // Modified by:
 // Created:     15.08.99
-// RCS-ID:      $Id: wizard.cpp,v 1.1.2.1 2000/04/28 14:06:32 VZ Exp $
+// RCS-ID:      $Id: wizard.cpp,v 1.7 2002/08/31 22:31:03 GD Exp $
 // Copyright:   (c) Vadim Zeitlin
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -17,7 +17,7 @@
 // headers
 // ----------------------------------------------------------------------------
 
-#ifdef __GNUG__
+#if defined(__GNUG__) && !defined(__APPLE__)
     #pragma implementation "wizard.cpp"
     #pragma interface "wizard.cpp"
 #endif
@@ -39,6 +39,7 @@
 
 #ifndef __WXMSW__
     #include "wiztest.xpm"
+    #include "wiztest2.xpm"
 #endif
 
 // ----------------------------------------------------------------------------
@@ -52,18 +53,6 @@ enum
     Wizard_Run,
     Wizard_About = 1000
 };
-
-// ----------------------------------------------------------------------------
-// ressources
-// ----------------------------------------------------------------------------
-
-#ifdef __WXMSW__
-    #define BMP_WIZARD_1 wxBitmap("wiztest.bmp", wxBITMAP_TYPE_BMP)
-    #define BMP_WIZARD_2 wxBitmap("wiztest2.bmp", wxBITMAP_TYPE_BMP)
-#else
-    #define BMP_WIZARD_1 wxBitmap(wizimage)
-    #define BMP_WIZARD_2 wxBitmap(wizimage)
-#endif
 
 // ----------------------------------------------------------------------------
 // private classes
@@ -109,7 +98,7 @@ class wxValidationPage : public wxWizardPageSimple
 public:
     wxValidationPage(wxWizard *parent) : wxWizardPageSimple(parent)
     {
-        m_bitmap = BMP_WIZARD_2;
+        m_bitmap = wxBITMAP(wiztest2);
 
         m_checkbox = new wxCheckBox(this, -1, "&Check me");
     }
@@ -313,9 +302,9 @@ void MyFrame::OnAbout(wxCommandEvent& WXUNUSED(event))
 
 void MyFrame::OnRunWizard(wxCommandEvent& WXUNUSED(event))
 {
-    wxWizard *wizard = wxWizard::Create(this, -1,
-                                        "Absolutely Useless Wizard",
-                                        BMP_WIZARD_1);
+    wxWizard *wizard = new wxWizard(this, -1,
+                    "Absolutely Useless Wizard",
+                    wxBITMAP(wiztest));
 
     // a wizard page may be either an object of predefined class
     wxWizardPageSimple *page1 = new wxWizardPageSimple(wizard);
@@ -352,5 +341,5 @@ void MyFrame::OnRunWizard(wxCommandEvent& WXUNUSED(event))
 
 void MyFrame::OnWizardCancel(wxWizardEvent& WXUNUSED(event))
 {
-    wxLogStatus(this, "The wizard was cancelled.");
+    wxLogStatus(this, wxT("The wizard was cancelled."));
 }

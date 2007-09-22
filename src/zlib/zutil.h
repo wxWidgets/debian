@@ -8,7 +8,7 @@
    subject to change. Applications should only use zlib.h.
  */
 
-/* @(#) $Id: zutil.h,v 1.7.2.1 2000/08/10 07:15:43 JS Exp $ */
+/* @(#) $Id: zutil.h,v 1.7 1999/10/24 19:09:50 RR Exp $ */
 
 #ifndef _Z_UTIL_H
 #define _Z_UTIL_H
@@ -73,15 +73,7 @@ extern const char *z_errmsg[10]; /* indexed by 2-zlib_error */
 
         /* target dependencies */
 
-#ifdef OS2
-#  define OS_CODE  0x06
-#endif
-
-#ifdef WIN32 /* Window 95 & Windows NT */
-#  define OS_CODE  0x0b
-#endif
-
-#if defined(MSDOS) && !defined(OS_CODE)
+#ifdef MSDOS
 #  define OS_CODE  0x00
 #  ifdef __TURBOC__
 #    if(__STDC__ == 1) && (defined(__LARGE__) || defined(__COMPACT__))
@@ -94,6 +86,14 @@ extern const char *z_errmsg[10]; /* indexed by 2-zlib_error */
 #  else /* MSC or DJGPP */
 #    include <malloc.h>
 #  endif
+#endif
+
+#ifdef OS2
+#  define OS_CODE  0x06
+#endif
+
+#ifdef WIN32 /* Window 95 & Windows NT */
+#  define OS_CODE  0x0b
 #endif
 
 #if defined(VAXC) || defined(VMS)

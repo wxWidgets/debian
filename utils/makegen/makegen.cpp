@@ -4,7 +4,7 @@
 // Author:      Vadim Zeitlin
 // Modified by:
 // Created:     03.01.00
-// RCS-ID:      $Id: makegen.cpp,v 1.3 2000/02/04 20:27:10 VZ Exp $
+// RCS-ID:      $Id: makegen.cpp,v 1.4 2001/11/22 22:03:26 GD Exp $
 // Copyright:   (c) 2000 Vadim Zeitlin <zeitlin@dptmaths.ens-cachan.fr>
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -28,15 +28,15 @@
 // headers
 // ----------------------------------------------------------------------------
 
-#include <wx/string.h>
-#include <wx/file.h>
-#include <wx/ffile.h>
-#include <wx/app.h>
-#include <wx/log.h>
-#include <wx/dir.h>
-#include <wx/textfile.h>
-#include <wx/datetime.h>
-#include <wx/cmdline.h>
+#include "wx/string.h"
+#include "wx/file.h"
+#include "wx/ffile.h"
+#include "wx/app.h"
+#include "wx/log.h"
+#include "wx/dir.h"
+#include "wx/textfile.h"
+#include "wx/datetime.h"
+#include "wx/cmdline.h"
 
 // ----------------------------------------------------------------------------
 // the application class

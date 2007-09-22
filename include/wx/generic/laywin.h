@@ -7,7 +7,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     04/01/98
-// RCS-ID:      $Id: laywin.h,v 1.9.2.2 2000/04/25 14:35:57 JS Exp $
+// RCS-ID:      $Id: laywin.h,v 1.16 2002/08/31 11:29:12 GD Exp $
 // Copyright:   (c) Julian Smart
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -15,7 +15,7 @@
 #ifndef _WX_LAYWIN_H_G_
 #define _WX_LAYWIN_H_G_
 
-#ifdef __GNUG__
+#if defined(__GNUG__) && !defined(__APPLE__)
 #pragma interface "laywin.h"
 #endif
 
@@ -23,8 +23,10 @@
     #include "wx/sashwin.h"
 #endif // wxUSE_SASH
 
-const wxEventType wxEVT_QUERY_LAYOUT_INFO =     wxEVT_FIRST + 1500;
-const wxEventType wxEVT_CALCULATE_LAYOUT =      wxEVT_FIRST + 1501;
+BEGIN_DECLARE_EVENT_TYPES()
+    DECLARE_EVENT_TYPE(wxEVT_QUERY_LAYOUT_INFO, 1500)
+    DECLARE_EVENT_TYPE(wxEVT_CALCULATE_LAYOUT, 1501)
+END_DECLARE_EVENT_TYPES()
 
 enum wxLayoutOrientation
 {
@@ -89,6 +91,8 @@ public:
     void SetAlignment(wxLayoutAlignment align) { m_alignment = align; }
     wxLayoutAlignment GetAlignment() const { return m_alignment; }
 
+    virtual wxEvent *Clone() const { return new wxQueryLayoutInfoEvent(*this); }
+
 protected:
     int                     m_flags;
     int                     m_requestedLength;
@@ -100,7 +104,8 @@ protected:
 
 typedef void (wxEvtHandler::*wxQueryLayoutInfoEventFunction)(wxQueryLayoutInfoEvent&);
 
-#define EVT_QUERY_LAYOUT_INFO(func)  { wxEVT_QUERY_LAYOUT_INFO, -1, -1, (wxObjectEventFunction) (wxEventFunction) (wxQueryLayoutInfoEventFunction) & func, NULL },
+#define EVT_QUERY_LAYOUT_INFO(func) \
+    DECLARE_EVENT_TABLE_ENTRY( wxEVT_QUERY_LAYOUT_INFO, -1, -1, (wxObjectEventFunction) (wxEventFunction) (wxQueryLayoutInfoEventFunction) & func, NULL ),
 
 /*
  * This event is used to take a bite out of the available client area.
@@ -116,13 +121,17 @@ public:
         m_flags = 0;
         m_id = id;
     }
-// Read by the app
-    inline void SetFlags(int flags) { m_flags = flags; }
-    inline int GetFlags() const { return m_flags; }
 
-// Set by the app
-    inline void SetRect(const wxRect& rect) { m_rect = rect; }
-    inline wxRect GetRect() const { return m_rect; }
+    // Read by the app
+    void SetFlags(int flags) { m_flags = flags; }
+    int GetFlags() const { return m_flags; }
+
+    // Set by the app
+    void SetRect(const wxRect& rect) { m_rect = rect; }
+    wxRect GetRect() const { return m_rect; }
+
+    virtual wxEvent *Clone() const { return new wxCalculateLayoutEvent(*this); }
+
 protected:
     int                     m_flags;
     wxRect                  m_rect;
@@ -130,7 +139,8 @@ protected:
 
 typedef void (wxEvtHandler::*wxCalculateLayoutEventFunction)(wxCalculateLayoutEvent&);
 
-#define EVT_CALCULATE_LAYOUT(func)  { wxEVT_CALCULATE_LAYOUT, -1, -1, (wxObjectEventFunction) (wxEventFunction) (wxCalculateLayoutEventFunction) & func, NULL },
+#define EVT_CALCULATE_LAYOUT(func) \
+    DECLARE_EVENT_TABLE_ENTRY( wxEVT_CALCULATE_LAYOUT, -1, -1, (wxObjectEventFunction) (wxEventFunction) (wxCalculateLayoutEventFunction) & func, NULL ),
 
 #if wxUSE_SASH
 
@@ -194,15 +204,14 @@ class WXDLLEXPORT wxLayoutAlgorithm: public wxObject
 public:
     wxLayoutAlgorithm() {}
 
+#if wxUSE_MDI_ARCHITECTURE
     // The MDI client window is sized to whatever's left over.
     bool LayoutMDIFrame(wxMDIParentFrame* frame, wxRect* rect = (wxRect*) NULL);
+#endif // wxUSE_MDI_ARCHITECTURE
 
     // mainWindow is sized to whatever's left over. This function for backward
     // compatibility; use LayoutWindow.
-    bool LayoutFrame(wxFrame* frame, wxWindow* mainWindow = (wxWindow*) NULL)
-    {
-        return LayoutWindow(frame, mainWindow);
-    }
+    bool LayoutFrame(wxFrame* frame, wxWindow* mainWindow = (wxWindow*) NULL);
 
     // mainWindow is sized to whatever's left over.
     bool LayoutWindow(wxWindow* frame, wxWindow* mainWindow = (wxWindow*) NULL);

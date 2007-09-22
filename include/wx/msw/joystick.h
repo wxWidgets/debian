@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     01/02/97
-// RCS-ID:      $Id: joystick.h,v 1.2 1998/08/07 23:51:25 JS Exp $
+// RCS-ID:      $Id: joystick.h,v 1.3 2002/08/20 17:16:04 JS Exp $
 // Copyright:   (c) Julian Smart
 // Licence:   	wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -26,7 +26,7 @@ class WXDLLEXPORT wxJoystick: public wxObject
    * Public interface
    */
 
-  wxJoystick(int joystick = wxJOYSTICK1) { m_joystick = joystick; };
+  wxJoystick(int joystick = wxJOYSTICK1);
 
   // Attributes
   ////////////////////////////////////////////////////////////////////////////
@@ -45,8 +45,9 @@ class WXDLLEXPORT wxJoystick: public wxObject
   // Capabilities
   ////////////////////////////////////////////////////////////////////////////
 
+  static int GetNumberJoysticks(void);
+
   bool IsOk(void) const; // Checks that the joystick is functioning
-  int GetNumberJoysticks(void) const ;
   int GetManufacturerId(void) const ;
   int GetProductId(void) const ;
   wxString GetProductName(void) const ;

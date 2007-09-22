@@ -1,4 +1,4 @@
-// RCS-ID:      $Id: std.h,v 1.2 2000/01/31 13:20:36 BJ Exp $
+// RCS-ID:      $Id: std.h,v 1.4 2001/05/18 18:43:30 GT Exp $
 
 //---------------------------------------------------------------------------
 //-- all #includes that the whole Project needs. ----------------------------
@@ -21,9 +21,11 @@
 #include <wx/textctrl.h>
 #include <wx/toolbar.h>
 #include <wx/treectrl.h>
+/*
 #ifdef __WXMSW__
- #include <wx/xpmhand.h>
+    #include <wx/xpmhand.h>
 #endif
+*/
 //---------------------------
 #include "tabpgwin.h"         // Original name : "controlarea.h"
 //---------------------------

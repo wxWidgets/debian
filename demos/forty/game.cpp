@@ -4,7 +4,7 @@
 // Author:      Chris Breeze
 // Modified by:
 // Created:     21/07/97
-// RCS-ID:      $Id: game.cpp,v 1.3 2000/01/14 00:17:40 VZ Exp $
+// RCS-ID:      $Id: game.cpp,v 1.5 2002/03/06 17:50:52 JS Exp $
 // Copyright:   (c) 1993-1998 Chris Breeze
 // Licence:   	wxWindows licence
 //---------------------------------------------------------------------------
@@ -71,6 +71,30 @@ Game::Game(int wins, int games, int score) :
     m_currentScore = 0;
 }
 
+
+void Game::Layout()
+{
+    int i;
+
+    m_pack->SetPos(2, 2 + 4 * (CardHeight + 2));
+
+    m_discard->SetPos(2, 2 + 5 * (CardHeight + 2));
+
+    for (i = 0; i < 8; i++)
+    {
+                m_foundations[i]->SetPos(2 + (i / 4) * (CardWidth + 2),
+                                         2 + (i % 4) * (CardHeight + 2));
+    }
+
+    for (i = 0; i < 10; i++)
+    {
+        m_bases[i]->SetPos(8 + (i + 2) * (CardWidth + 2), 2);
+    }
+    delete m_bmap;
+    delete m_bmapCard;
+    m_bmap = 0;
+    m_bmapCard = 0;
+}
 
 // Make sure we delete all objects created by the game object
 Game::~Game()
@@ -155,12 +179,42 @@ void Game::DoMove(wxDC& dc, Pile* src, Pile* dest)
 			   wxOK | wxICON_EXCLAMATION);
     }
 
-    if (!m_inPlay)
+	if (!m_inPlay)
 	{
 		m_inPlay = TRUE;
 		m_numGames++;
 	}
-    DisplayScore(dc);
+	DisplayScore(dc);
+
+	if (HaveYouWon())
+	{
+		wxWindow *frame = wxTheApp->GetTopWindow();
+		wxWindow *canvas = (wxWindow *) NULL;
+
+		if (frame)
+		{
+			wxNode *node = frame->GetChildren().First();
+			if (node) canvas = (wxWindow*)node->Data();
+		}
+
+		// This game is over
+		m_inPlay = FALSE;
+
+		// Redraw the score box to update games won
+		DisplayScore(dc);
+
+		if (wxMessageBox("Do you wish to play again?",
+			"Well Done, You have won!", wxYES_NO | wxICON_QUESTION) == wxYES)
+		{
+			Deal();
+			canvas->Refresh();
+		}
+		else
+		{
+			// user cancelled the dialog - exit the app
+			((wxFrame*)canvas->GetParent())->Close(TRUE);
+		}
+	}
 }
 
 

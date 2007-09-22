@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     04/01/98
-// RCS-ID:      $Id: wave.cpp,v 1.10 2000/02/14 18:21:21 VZ Exp $
+// RCS-ID:      $Id: wave.cpp,v 1.12 2001/06/26 20:59:17 VZ Exp $
 // Copyright:   (c) Julian Smart and Markus Holzem
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -20,6 +20,8 @@
 #pragma hdrstop
 #endif
 
+#if wxUSE_WAVE
+
 #ifndef WX_PRECOMP
 #include "wx/wx.h"
 #endif
@@ -31,7 +33,7 @@
 #include <windows.h>
 #include <windowsx.h>
 
-#ifdef __GNUWIN32_OLD__
+#if defined(__GNUWIN32_OLD__) && !defined(__CYGWIN10__)
     #include "wx/msw/gnuwin32/extra.h"
 #else
     #include <mmsystem.h>
@@ -165,4 +167,4 @@ bool wxWave::Free()
   return FALSE;
 }
 
-
+#endif // wxUSE_WAVE

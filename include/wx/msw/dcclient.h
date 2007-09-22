@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     01/02/97
-// RCS-ID:      $Id: dcclient.h,v 1.10 1999/10/12 23:57:37 VZ Exp $
+// RCS-ID:      $Id: dcclient.h,v 1.14 2002/02/23 21:32:35 VZ Exp $
 // Copyright:   (c) Julian Smart and Markus Holzem
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -38,34 +38,47 @@ WX_DECLARE_EXPORTED_OBJARRAY(wxPaintDCInfo, wxArrayDCInfo);
 
 class WXDLLEXPORT wxWindowDC : public wxDC
 {
-    DECLARE_DYNAMIC_CLASS(wxWindowDC)
-
 public:
+    // default ctor
     wxWindowDC();
 
     // Create a DC corresponding to the whole window
     wxWindowDC(wxWindow *win);
 
-    virtual ~wxWindowDC();
+protected:
+    // intiialize the newly created DC
+    void InitDC();
+
+    // override some base class virtuals
+    virtual void DoGetSize(int *width, int *height) const;
+
+private:
+    DECLARE_DYNAMIC_CLASS(wxWindowDC)
 };
 
 class WXDLLEXPORT wxClientDC : public wxWindowDC
 {
-    DECLARE_DYNAMIC_CLASS(wxClientDC)
-
 public:
+    // default ctor
     wxClientDC();
 
     // Create a DC corresponding to the client area of the window
     wxClientDC(wxWindow *win);
 
     virtual ~wxClientDC();
+
+protected:
+    void InitDC();
+
+    // override some base class virtuals
+    virtual void DoGetSize(int *width, int *height) const;
+
+private:
+    DECLARE_DYNAMIC_CLASS(wxClientDC)
 };
 
-class WXDLLEXPORT wxPaintDC : public wxWindowDC
+class WXDLLEXPORT wxPaintDC : public wxClientDC
 {
-    DECLARE_DYNAMIC_CLASS(wxPaintDC)
-
 public:
     wxPaintDC();
 
@@ -74,11 +87,17 @@ public:
 
     virtual ~wxPaintDC();
 
+    // find the entry for this DC in the cache (keyed by the window)
+    static WXHDC FindDCInCache(wxWindow* win);
+
 protected:
     static wxArrayDCInfo ms_cache;
 
     // find the entry for this DC in the cache (keyed by the window)
     wxPaintDCInfo *FindInCache(size_t *index = NULL) const;
+
+private:
+    DECLARE_DYNAMIC_CLASS(wxPaintDC)
 };
 
 #endif

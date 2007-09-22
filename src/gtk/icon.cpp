@@ -2,7 +2,7 @@
 // Name:        icon.cpp
 // Purpose:
 // Author:      Robert Roebling
-// Id:          $Id: icon.cpp,v 1.7 1998/12/09 17:29:48 VZ Exp $
+// Id:          $Id: icon.cpp,v 1.8 2000/08/15 21:44:18 VS Exp $
 // Copyright:   (c) 1998 Robert Roebling
 // Licence:   	wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -45,3 +45,8 @@ wxIcon& wxIcon::operator = ( const wxIcon& icon )
     return *this;
 }
 
+void wxIcon::CopyFromBitmap(const wxBitmap& bmp)
+{
+    wxIcon *icon = (wxIcon*)(&bmp);
+    *this = *icon;
+}

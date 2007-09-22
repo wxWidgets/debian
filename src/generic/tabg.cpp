@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     01/02/97
-// RCS-ID:      $Id: tabg.cpp,v 1.13 1999/11/02 20:47:02 JS Exp $
+// RCS-ID:      $Id: tabg.cpp,v 1.15 2002/01/08 23:52:54 VS Exp $
 // Copyright:   (c)
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -19,6 +19,8 @@
 #ifdef __BORLANDC__
 #pragma hdrstop
 #endif
+
+#if wxUSE_TAB_DIALOG
 
 #ifndef WX_PRECOMP
 #include "wx/wx.h"
@@ -526,8 +528,8 @@ wxTabView::wxTabView(long style)
   m_shadowPen = wxGREY_PEN;
   m_backgroundPen = wxLIGHT_GREY_PEN;
   m_backgroundBrush = wxLIGHT_GREY_BRUSH;
-  m_tabFont = wxSystemSettings::GetSystemFont(wxSYS_DEFAULT_GUI_FONT);
-  m_tabSelectedFont = wxSystemSettings::GetSystemFont(wxSYS_DEFAULT_GUI_FONT);
+  m_tabFont = wxSystemSettings::GetFont(wxSYS_DEFAULT_GUI_FONT);
+  m_tabSelectedFont = wxSystemSettings::GetFont(wxSYS_DEFAULT_GUI_FONT);
   m_window = (wxWindow *) NULL;
 }
 
@@ -1279,3 +1281,4 @@ void wxPanelTabView::ShowWindowForTab(int id)
   newWindow->Refresh();
 }
 
+#endif // wxUSE_TAB_DIALOG

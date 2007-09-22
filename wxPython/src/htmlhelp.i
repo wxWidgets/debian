@@ -4,8 +4,8 @@
 //
 // Author:      Robin Dunn
 //
-// Created:     25-nov-1998
-// RCS-ID:      $Id: htmlhelp.i,v 1.1.2.2 2001/01/30 20:53:43 robind Exp $
+// Created:     25-Nov-1998
+// RCS-ID:      $Id: htmlhelp.i,v 1.14 2002/05/02 02:46:12 RD Exp $
 // Copyright:   (c) 1998 by Total Control Software
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -14,7 +14,7 @@
 %module htmlhelp
 
 %{
-#include "export.h"
+#include "wxPython.h"
 #include <wx/html/htmlwin.h>
 #include <wx/html/helpctrl.h>
 #include <wx/image.h>
@@ -23,6 +23,11 @@
 #include <wx/wfstream.h>
 %}
 
+//---------------------------------------------------------------------------
+%{
+    // Put some wx default wxChar* values into wxStrings.
+    static const wxString wxPyEmptyString(wxT(""));
+%}
 //---------------------------------------------------------------------------
 
 %include typemaps.i
@@ -37,48 +42,17 @@
 %extern controls2.i
 
 %extern utils.i
-
 %extern html.i
 
-//---------------------------------------------------------------------------
-
-enum {
-    wxID_HTML_PANEL,
-    wxID_HTML_BACK,
-    wxID_HTML_FORWARD,
-    wxID_HTML_TREECTRL,
-    wxID_HTML_INDEXPAGE,
-    wxID_HTML_INDEXLIST,
-    wxID_HTML_NOTEBOOK,
-    wxID_HTML_SEARCHPAGE,
-    wxID_HTML_SEARCHTEXT,
-    wxID_HTML_SEARCHLIST,
-    wxID_HTML_SEARCHBUTTON,
-    wxID_HTML_SEARCHCHOICE,
-    wxID_HTML_HELPFRAME
-
-};
 
 //---------------------------------------------------------------------------
 
-class  wxHtmlHelpFrameCfg
-{
+class wxHtmlBookRecord {
 public:
-    wxHtmlHelpFrameCfg();
+    wxHtmlBookRecord(const wxString& bookfile, const wxString& basepath,
+                     const wxString& title, const wxString& start);
 
-    long x, y, w, h;
-    long sashpos;
-    bool navig_on;
-};
-
-
-//---------------------------------------------------------------------------
-
-class wxHtmlBookRecord  {
-public:
-    wxHtmlBookRecord(const wxString& basepath, const wxString& title,
-		     const wxString& start);
-
+    wxString GetBookFile();
     wxString GetTitle();
     wxString GetStart();
     wxString GetBasePath();
@@ -86,18 +60,26 @@ public:
     void SetContentsRange(int start, int end);
     int GetContentsStart();
     int GetContentsEnd();
+
+    void SetTitle(const wxString& title);
+    void SetBasePath(const wxString& path);
+    void SetStart(const wxString& start);
+
+    wxString GetFullPath(const wxString &page) const;
 };
 
 //---------------------------------------------------------------------------
 
-typedef struct
+struct wxHtmlContentsItem
 {
-    short int m_Level;
-    int m_ID;
-    char* m_Name;
-    char* m_Page;
-    wxHtmlBookRecord *m_Book;
-} wxHtmlContentsItem;
+    %addmethods {
+        int GetLevel() { return self->m_Level; }
+        int GetID() { return self->m_ID; }
+        wxString GetName() { return self->m_Name; }
+        wxString GetPage() { return self->m_Page; }
+        wxHtmlBookRecord* GetBook() { return self->m_Book; }
+    }
+};
 
 //---------------------------------------------------------------------------
 
@@ -105,7 +87,7 @@ class wxHtmlSearchStatus
 {
 public:
     //wxHtmlSearchStatus(wxHtmlHelpData* base, const wxString& keyword,
-    //                   const wxString& book = wxEmptyString);
+    //                   const wxString& book = wxPyEmptyString);
     bool Search();
     bool IsActive();
     int GetCurIndex();
@@ -124,14 +106,14 @@ public:
     void SetTempDir(const wxString& path);
     bool AddBook(const wxString& book);
 //      bool AddBookParam(const wxString& title, const wxString& contfile,
-//  		      const wxString& indexfile=wxEmptyString,
-//  		      const wxString& deftopic=wxEmptyString,
-//  		      const wxString& path=wxEmptyString);
+//  		      const wxString& indexfile=wxPyEmptyString,
+//  		      const wxString& deftopic=wxPyEmptyString,
+//  		      const wxString& path=wxPyEmptyString);
 
     wxString FindPageByName(const wxString& page);
     wxString FindPageById(int id);
 
-    // **** this one needs fixed...
+    // TODO: this one needs fixed...
     const wxHtmlBookRecArray& GetBookRecArray();
 
     wxHtmlContentsItem* GetContents();
@@ -145,8 +127,10 @@ public:
 class wxHtmlHelpFrame : public wxFrame {
 public:
     wxHtmlHelpFrame(wxWindow* parent, int wxWindowID,
-		    const wxString& title = wxEmptyString,
+		    const wxString& title = wxPyEmptyString,
 		    int style = wxHF_DEFAULTSTYLE, wxHtmlHelpData* data = NULL);
+
+    %pragma(python) addtomethod = "__init__:self._setOORInfo(self)"
 
     wxHtmlHelpData* GetData();
     void SetTitleFormat(const wxString& format);
@@ -155,18 +139,34 @@ public:
     void DisplayContents();
     void DisplayIndex();
     bool KeywordSearch(const wxString& keyword);
-    void UseConfig(wxConfigBase *config, const wxString& rootpath = wxEmptyString);
-    void ReadCustomization(wxConfigBase *cfg, wxString path = wxEmptyString);
-    void WriteCustomization(wxConfigBase *cfg, wxString path = wxEmptyString);
+    void UseConfig(wxConfigBase *config, const wxString& rootpath = wxPyEmptyString);
+    void ReadCustomization(wxConfigBase *cfg, wxString path = wxPyEmptyString);
+    void WriteCustomization(wxConfigBase *cfg, wxString path = wxPyEmptyString);
 };
 
 
 //---------------------------------------------------------------------------
 
+
+enum {
+    wxHF_TOOLBAR,
+    wxHF_FLATTOOLBAR,
+    wxHF_CONTENTS,
+    wxHF_INDEX,
+    wxHF_SEARCH,
+    wxHF_BOOKMARKS,
+    wxHF_OPENFILES,
+    wxHF_PRINT,
+    wxHF_DEFAULTSTYLE,
+};
+
+
 class wxHtmlHelpController : public wxEvtHandler {
 public:
-    wxHtmlHelpController();
+    wxHtmlHelpController(int style = wxHF_DEFAULTSTYLE);
     ~wxHtmlHelpController();
+
+    %pragma(python) addtomethod = "__init__:self._setOORInfo(self)"
 
     void SetTitleFormat(const wxString& format);
     void SetTempDir(const wxString& path);
@@ -176,9 +176,9 @@ public:
     void DisplayContents();
     void DisplayIndex();
     bool KeywordSearch(const wxString& keyword);
-    void UseConfig(wxConfigBase *config, const wxString& rootpath = wxEmptyString);
-    void ReadCustomization(wxConfigBase *cfg, wxString path = wxEmptyString);
-    void WriteCustomization(wxConfigBase *cfg, wxString path = wxEmptyString);
+    void UseConfig(wxConfigBase *config, const wxString& rootpath = wxPyEmptyString);
+    void ReadCustomization(wxConfigBase *cfg, wxString path = wxPyEmptyString);
+    void WriteCustomization(wxConfigBase *cfg, wxString path = wxPyEmptyString);
     wxHtmlHelpFrame* GetFrame();
 };
 

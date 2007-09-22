@@ -2,7 +2,7 @@
 // Name:        forcelnk.h
 // Purpose:     see bellow
 // Author:      Vaclav Slavik
-// RCS-ID:      $Id: forcelnk.h,v 1.1.2.1 2001/09/19 22:44:03 VS Exp $
+// RCS-ID:      $Id: forcelnk.h,v 1.4 2002/01/24 21:12:45 VS Exp $
 // Copyright:   (c) Vaclav Slavik
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -44,6 +44,7 @@ See mod_*.cpp and htmlwin.cpp for example :-)
 
 // This must be part of the module you want to force:
 #define FORCE_LINK_ME(module_name)                                    \
+                int _link_dummy_func_##module_name ();                \
                 int _link_dummy_func_##module_name ()                 \
                 {                                                     \
                     return 1;                                         \
@@ -66,6 +67,8 @@ See mod_*.cpp and htmlwin.cpp for example :-)
     FORCE_LINK(m_hline) \
     FORCE_LINK(m_links) \
     FORCE_LINK(m_tables) \
-    FORCE_LINK(m_meta)
+    FORCE_LINK(m_meta) \
+    FORCE_LINK(m_style)
+
 
 #endif // _WX_FORCELNK_H_

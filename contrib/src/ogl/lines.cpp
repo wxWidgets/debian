@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     12/07/98
-// RCS-ID:      $Id: lines.cpp,v 1.1 2000/03/03 11:25:04 JS Exp $
+// RCS-ID:      $Id: lines.cpp,v 1.6 2002/03/15 20:50:39 RD Exp $
 // Copyright:   (c) Julian Smart
 // Licence:   	wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -15,7 +15,7 @@
 #endif
 
 // For compilers that support precompilation, includes "wx.h".
-#include <wx/wxprec.h>
+#include "wx/wxprec.h"
 
 #ifdef __BORLANDC__
 #pragma hdrstop
@@ -26,6 +26,10 @@
 #endif
 
 #include <wx/wxexpr.h>
+
+#ifdef new
+#undef new
+#endif
 
 #if wxUSE_IOSTREAMH
 #include <iostream.h>
@@ -220,7 +224,7 @@ void wxLineShape::FormatText(wxDC& dc, const wxString& s, int i)
 
   region->GetSize(&w, &h);
   // Initialize the size if zero
-  if (((w == 0) || (h == 0)) && (strlen(s) > 0))
+  if (((w == 0) || (h == 0)) && (s.Length() > 0))
   {
     w = 100; h = 50;
     region->SetSize(w, h);
@@ -284,8 +288,8 @@ void wxLineShape::DrawRegion(wxDC& dc, wxShapeRegion *region, double x, double y
   // First, clear a rectangle for the text IF there is any
   if (region->GetFormattedText().Number() > 0)
   {
-      dc.SetPen(* g_oglWhiteBackgroundPen);
-      dc.SetBrush(* g_oglWhiteBackgroundBrush);
+      dc.SetPen(GetBackgroundPen());
+      dc.SetBrush(GetBackgroundBrush());
 
       // Now draw the text
       if (region->GetFont()) dc.SetFont(* region->GetFont());
@@ -296,7 +300,7 @@ void wxLineShape::DrawRegion(wxDC& dc, wxShapeRegion *region, double x, double y
       dc.SetTextForeground(* region->GetActualColourObject());
 
 #ifdef __WXMSW__
-      dc.SetTextBackground(g_oglWhiteBackgroundBrush->GetColour());
+      dc.SetTextBackground(GetBackgroundBrush().GetColour());
 #endif
 
       oglDrawFormattedText(dc, &(region->GetFormattedText()), xp, yp, w, h, region->GetFormatMode());
@@ -320,8 +324,8 @@ void wxLineShape::EraseRegion(wxDC& dc, wxShapeRegion *region, double x, double 
 
   if (region->GetFormattedText().Number() > 0)
   {
-      dc.SetPen(* g_oglWhiteBackgroundPen);
-      dc.SetBrush(* g_oglWhiteBackgroundBrush);
+      dc.SetPen(GetBackgroundPen());
+      dc.SetBrush(GetBackgroundBrush());
 
       dc.DrawRectangle((long)(xp - w/2.0), (long)(yp - h/2.0), (long)w, (long)h);
   }
@@ -816,7 +820,7 @@ void wxLineShape::DrawArrow(wxDC& dc, wxArrowHead *arrow, double xOffset, bool p
 
         else
         {
-          wxFatalError("Unknown arrowhead rotation case in lines.cc");
+          wxLogFatalError(wxT("Unknown arrowhead rotation case in lines.cc"));
         }
 
         // Rotate about the centre of the object, then place
@@ -849,8 +853,10 @@ void wxLineShape::OnErase(wxDC& dc)
 {
     wxPen *old_pen = m_pen;
     wxBrush *old_brush = m_brush;
-    SetPen(g_oglWhiteBackgroundPen);
-    SetBrush(g_oglWhiteBackgroundBrush);
+    wxPen bg_pen = GetBackgroundPen();
+    wxBrush bg_brush = GetBackgroundBrush();
+    SetPen(&bg_pen);
+    SetBrush(&bg_brush);
 
     double bound_x, bound_y;
     GetBoundingBoxMax(&bound_x, &bound_y);
@@ -870,8 +876,8 @@ void wxLineShape::OnErase(wxDC& dc)
     }
 
     // Undraw line
-    dc.SetPen(* g_oglWhiteBackgroundPen);
-    dc.SetBrush(* g_oglWhiteBackgroundBrush);
+    dc.SetPen(GetBackgroundPen());
+    dc.SetBrush(GetBackgroundBrush());
 
     // Drawing over the line only seems to work if the line has a thickness
     // of 1.
@@ -1443,15 +1449,15 @@ void wxLineShape::ReadAttributes(wxExpr *clause)
   wxShape::ReadAttributes(clause);
 
   int iVal = (int) m_isSpline;
-  clause->AssignAttributeValue("is_spline", &iVal);
+  clause->AssignAttributeValue(wxT("is_spline"), &iVal);
   m_isSpline = (iVal != 0);
 
   iVal = (int) m_maintainStraightLines;
-  clause->AssignAttributeValue("keep_lines_straight", &iVal);
+  clause->AssignAttributeValue(wxT("keep_lines_straight"), &iVal);
   m_maintainStraightLines = (iVal != 0);
 
-  clause->AssignAttributeValue("align_start", &m_alignmentStart);
-  clause->AssignAttributeValue("align_end", &m_alignmentEnd);
+  clause->AssignAttributeValue(wxT("align_start"), &m_alignmentStart);
+  clause->AssignAttributeValue(wxT("align_end"), &m_alignmentEnd);
 
   // Compatibility: check for no regions.
   if (m_regions.Number() == 0)
@@ -1475,12 +1481,12 @@ void wxLineShape::ReadAttributes(wxExpr *clause)
     }
 
     newRegion = new wxShapeRegion;
-    newRegion->SetName("Start");
+    newRegion->SetName(wxT("Start"));
     newRegion->SetSize(150, 50);
     m_regions.Append((wxObject *)newRegion);
 
     newRegion = new wxShapeRegion;
-    newRegion->SetName("End");
+    newRegion->SetName(wxT("End"));
     newRegion->SetSize(150, 50);
     m_regions.Append((wxObject *)newRegion);
   }
@@ -1488,14 +1494,14 @@ void wxLineShape::ReadAttributes(wxExpr *clause)
   m_attachmentTo = 0;
   m_attachmentFrom = 0;
 
-  clause->AssignAttributeValue("attachment_to", &m_attachmentTo);
-  clause->AssignAttributeValue("attachment_from", &m_attachmentFrom);
+  clause->AssignAttributeValue(wxT("attachment_to"), &m_attachmentTo);
+  clause->AssignAttributeValue(wxT("attachment_from"), &m_attachmentFrom);
 
   wxExpr *line_list = NULL;
 
   // When image is created, there are default control points. Override
   // them if there are some in the file.
-  clause->AssignAttributeValue("controls", &line_list);
+  clause->AssignAttributeValue(wxT("controls"), &line_list);
 
   if (line_list)
   {
@@ -1527,7 +1533,7 @@ void wxLineShape::ReadAttributes(wxExpr *clause)
   // Read arrow list, for new OGL code
   wxExpr *arrow_list = NULL;
 
-  clause->AssignAttributeValue("arrows", &arrow_list);
+  clause->AssignAttributeValue(wxT("arrows"), &arrow_list);
   if (arrow_list)
   {
     wxExpr *node = arrow_list->value.first;
@@ -1538,7 +1544,7 @@ void wxLineShape::ReadAttributes(wxExpr *clause)
       int arrowEnd = 0;
       double xOffset = 0.0;
       double arrowSize = 0.0;
-      wxString arrowName("");
+      wxString arrowName;
       long arrowId = -1;
 
       wxExpr *type_expr = node->Nth(0);
@@ -1570,7 +1576,7 @@ void wxLineShape::ReadAttributes(wxExpr *clause)
       else
         wxRegisterId(arrowId);
 
-      wxArrowHead *arrowHead = AddArrow(arrowType, arrowEnd, arrowSize, xOffset, (char*) (const char*) arrowName, NULL, arrowId);
+      wxArrowHead *arrowHead = AddArrow(arrowType, arrowEnd, arrowSize, xOffset, arrowName, NULL, arrowId);
       if (yOffsetExpr)
         arrowHead->SetYOffset(yOffsetExpr->RealValue());
       if (spacingExpr)
@@ -1813,7 +1819,7 @@ void wxLineShape::OnSizingBeginDragLeft(wxControlPoint* pt, double x, double y, 
 
   if (lpt->m_type == CONTROL_POINT_ENDPOINT_FROM || lpt->m_type == CONTROL_POINT_ENDPOINT_TO)
   {
-    m_canvas->SetCursor(* g_oglBullseyeCursor);
+    m_canvas->SetCursor(wxCursor(wxCURSOR_BULLSEYE));
     lpt->m_oldCursor = wxSTANDARD_CURSOR;
   }
 }
@@ -1929,7 +1935,7 @@ void wxLineControlPoint::OnBeginDragRight(double x, double y, int keys, int atta
       lineShape->GetTo()->GetEventHandler()->OnDraw(dc);
       lineShape->GetTo()->GetEventHandler()->OnDrawContents(dc);
     }
-    m_canvas->SetCursor(g_oglBullseyeCursor);
+    m_canvas->SetCursor(wxCursor(wxCURSOR_BULLSEYE));
     m_oldCursor = wxSTANDARD_CURSOR;
   }
 }

@@ -5,19 +5,21 @@ from   wxPython.wx         import *
 from   wxPython.html       import *
 import wxPython.lib.wxpTag
 
+from Main import opj
+
 #----------------------------------------------------------------------
 
 # This shows how to catch the OnLinkClicked non-event.  (It's a virtual
 # method in the C++ code...)
 class MyHtmlWindow(wxHtmlWindow):
     def __init__(self, parent, id, log):
-        wxHtmlWindow.__init__(self, parent, id)
+        wxHtmlWindow.__init__(self, parent, id, style=wxNO_FULL_REPAINT_ON_RESIZE)
         self.log = log
         EVT_SCROLLWIN( self, self.OnScroll )
 
     def OnScroll( self, event ):
-        print 'event.GetOrientation()',event.GetOrientation()
-        print 'event.GetPosition()',event.GetPosition()
+        #print 'event.GetOrientation()',event.GetOrientation()
+        #print 'event.GetPosition()',event.GetPosition()
         event.Skip()
 
 
@@ -32,13 +34,18 @@ class MyHtmlWindow(wxHtmlWindow):
         self.log.WriteText('OnSetTitle: %s\n' % title)
         self.base_OnSetTitle(title)
 
-##     def __del__(self):
-##         print 'MyHtmlWindow.__del__'
+    def OnCellMouseHover(self, cell, x, y):
+        self.log.WriteText('OnCellMouseHover: %s, (%d %d)\n' % (cell, x, y))
+        self.base_OnCellMouseHover(cell, x, y)
+
+    def OnCellClicked(self, cell, x, y, evt):
+        self.log.WriteText('OnCellClicked: %s, (%d %d)\n' % (cell, x, y))
+        self.base_OnCellClicked(cell, x, y, evt)
 
 
 class TestHtmlPanel(wxPanel):
     def __init__(self, parent, frame, log):
-        wxPanel.__init__(self, parent, -1)
+        wxPanel.__init__(self, parent, -1, style=wxNO_FULL_REPAINT_ON_RESIZE)
         self.log = log
         self.frame = frame
         self.cwd = os.path.split(sys.argv[0])[0]
@@ -55,32 +62,33 @@ class TestHtmlPanel(wxPanel):
         self.box.Add(self.html, 1, wxGROW)
 
         subbox = wxBoxSizer(wxHORIZONTAL)
-##         btn = wxButton(self, 1201, "Show Default")
-##         EVT_BUTTON(self, 1201, self.OnShowDefault)
-##         subbox.Add(btn, 1, wxGROW | wxALL, 2)
 
-        btn = wxButton(self, 1202, "Load File")
-        EVT_BUTTON(self, 1202, self.OnLoadFile)
+        btn = wxButton(self, -1, "Load File")
+        EVT_BUTTON(self, btn.GetId(), self.OnLoadFile)
         subbox.Add(btn, 1, wxGROW | wxALL, 2)
 
-        btn = wxButton(self, 1203, "With Widgets")
-        EVT_BUTTON(self, 1203, self.OnWithWidgets)
+        btn = wxButton(self, -1, "Load URL")
+        EVT_BUTTON(self, btn.GetId(), self.OnLoadURL)
         subbox.Add(btn, 1, wxGROW | wxALL, 2)
 
-        btn = wxButton(self, 1204, "Back")
-        EVT_BUTTON(self, 1204, self.OnBack)
+        btn = wxButton(self, -1, "With Widgets")
+        EVT_BUTTON(self, btn.GetId(), self.OnWithWidgets)
         subbox.Add(btn, 1, wxGROW | wxALL, 2)
 
-        btn = wxButton(self, 1205, "Forward")
-        EVT_BUTTON(self, 1205, self.OnForward)
+        btn = wxButton(self, -1, "Back")
+        EVT_BUTTON(self, btn.GetId(), self.OnBack)
         subbox.Add(btn, 1, wxGROW | wxALL, 2)
 
-        btn = wxButton(self, 1207, "Print")
-        EVT_BUTTON(self, 1207, self.OnPrint)
+        btn = wxButton(self, -1, "Forward")
+        EVT_BUTTON(self, btn.GetId(), self.OnForward)
         subbox.Add(btn, 1, wxGROW | wxALL, 2)
 
-        btn = wxButton(self, 1206, "View Source")
-        EVT_BUTTON(self, 1206, self.OnViewSource)
+        btn = wxButton(self, -1, "Print")
+        EVT_BUTTON(self, btn.GetId(), self.OnPrint)
+        subbox.Add(btn, 1, wxGROW | wxALL, 2)
+
+        btn = wxButton(self, -1, "View Source")
+        EVT_BUTTON(self, btn.GetId(), self.OnViewSource)
         subbox.Add(btn, 1, wxGROW | wxALL, 2)
 
         self.box.Add(subbox, 0, wxGROW)
@@ -93,13 +101,9 @@ class TestHtmlPanel(wxPanel):
         self.OnShowDefault(None)
 
 
-##     def __del__(self):
-##         print 'TestHtmlPanel.__del__'
-
-
 
     def OnShowDefault(self, event):
-        name = os.path.join(self.cwd, 'data/test.htm')
+        name = os.path.join(self.cwd, opj('data/test.htm'))
         self.html.LoadPage(name)
 
 
@@ -111,9 +115,17 @@ class TestHtmlPanel(wxPanel):
         dlg.Destroy()
 
 
+    def OnLoadURL(self, event):
+        dlg = wxTextEntryDialog(self, "Enter a URL")
+        if dlg.ShowModal():
+            url = dlg.GetValue()
+            self.html.LoadPage(url)
+        dlg.Destroy()
+
+
     def OnWithWidgets(self, event):
         os.chdir(self.cwd)
-        name = os.path.join(self.cwd, 'data/widgetTest.htm')
+        name = os.path.join(self.cwd, opj('data/widgetTest.htm'))
         self.html.LoadPage(name)
 
 
@@ -139,12 +151,14 @@ class TestHtmlPanel(wxPanel):
 
 
     def OnPrint(self, event):
+        ##self.printer.GetPageSetupData().SetMarginTopLeft((100,100))
         self.printer.PrintFile(self.html.GetOpenedPage())
 
 #----------------------------------------------------------------------
 
 def runTest(frame, nb, log):
     win = TestHtmlPanel(nb, frame, log)
+    print wxWindow_FindFocus()
     return win
 
 

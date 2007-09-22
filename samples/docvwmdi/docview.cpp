@@ -4,9 +4,9 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     04/01/98
-// RCS-ID:      $Id: docview.cpp,v 1.7.2.1 2000/03/31 00:20:42 VZ Exp $
+// RCS-ID:      $Id: docview.cpp,v 1.12 2002/08/20 09:09:53 JS Exp $
 // Copyright:   (c) Julian Smart and Markus Holzem
-// Licence:   	wxWindows license
+// Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
 
 #ifdef __GNUG__
@@ -64,7 +64,9 @@ bool MyApp::OnInit(void)
           CLASSINFO(TextEditDocument), CLASSINFO(TextEditView));
 
   //// Create the main frame window
-  frame = new MyFrame((wxDocManager *) m_docManager, (wxFrame *) NULL, (const wxString) "DocView Demo", wxPoint(0, 0), wxSize(500, 400), wxDEFAULT_FRAME_STYLE);
+  frame = new MyFrame((wxDocManager *) m_docManager, (wxFrame *) NULL,
+                      "DocView Demo", wxPoint(0, 0), wxSize(500, 400),
+                      wxDEFAULT_FRAME_STYLE | wxNO_FULL_REPAINT_ON_RESIZE);
 
   //// Give it an icon (this is ignored in MDI mode: uses resources)
 #ifdef __WXMSW__
@@ -121,8 +123,11 @@ int MyApp::OnExit(void)
 wxMDIChildFrame *MyApp::CreateChildFrame(wxDocument *doc, wxView *view, bool isCanvas)
 {
   //// Make a child frame
-  wxDocMDIChildFrame *subframe = new wxDocMDIChildFrame(doc, view, GetMainFrame(), -1, "Child Frame",
-        wxPoint(10, 10), wxSize(300, 300), wxDEFAULT_FRAME_STYLE);
+  wxDocMDIChildFrame *subframe =
+      new wxDocMDIChildFrame(doc, view, GetMainFrame(), -1, "Child Frame",
+                             wxPoint(10, 10), wxSize(300, 300),
+                             wxDEFAULT_FRAME_STYLE |
+                             wxNO_FULL_REPAINT_ON_RESIZE);
 
 #ifdef __WXMSW__
   subframe->SetIcon(wxString(isCanvas ? "chart" : "notepad"));
@@ -198,12 +203,12 @@ MyFrame::MyFrame(wxDocManager *manager, wxFrame *frame, const wxString& title,
 
 void MyFrame::OnAbout(wxCommandEvent& WXUNUSED(event) )
 {
-    (void)wxMessageBox("DocView Demo\nAuthor: Julian Smart julian.smart@ukonline.co.uk\nUsage: docview.exe", "About DocView");
+    (void)wxMessageBox("DocView Demo\nAuthor: Julian Smart\nUsage: docview.exe", "About DocView");
 }
 
 // Creates a canvas. Called from view.cpp when a new drawing
 // view is created.
-MyCanvas *MyFrame::CreateCanvas(wxView *view, wxFrame *parent)
+MyCanvas *MyFrame::CreateCanvas(wxView *view, wxMDIChildFrame *parent)
 {
   int width, height;
   parent->GetClientSize(&width, &height);

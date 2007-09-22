@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by: VZ at 11.12.99 (wxScrollableToolBar splitted off)
 // Created:     04/01/98
-// RCS-ID:      $Id: tbarbase.cpp,v 1.27 1999/12/17 13:10:05 VZ Exp $
+// RCS-ID:      $Id: tbarbase.cpp,v 1.46 2002/06/02 10:57:13 RR Exp $
 // Copyright:   (c) Julian Smart and Markus Holzem
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -28,18 +28,15 @@
     #pragma hdrstop
 #endif
 
+#if wxUSE_TOOLBAR
+
 #ifndef WX_PRECOMP
-    #include "wx/wx.h"
+    #include "wx/control.h"
 #endif
 
 #include "wx/frame.h"
-
-// For ::UpdateWindow
-#ifdef __WXMSW__
-#include <windows.h>
-#endif
-
-#if wxUSE_TOOLBAR
+#include "wx/image.h"
+#include "wx/settings.h"
 
 #include "wx/tbarbase.h"
 
@@ -47,11 +44,11 @@
 // wxWindows macros
 // ----------------------------------------------------------------------------
 
-#if !USE_SHARED_LIBRARY
-    BEGIN_EVENT_TABLE(wxToolBarBase, wxControl)
-        EVT_IDLE(wxToolBarBase::OnIdle)
-    END_EVENT_TABLE()
-#endif
+IMPLEMENT_CLASS(wxToolBarBase, wxControl)
+
+BEGIN_EVENT_TABLE(wxToolBarBase, wxControl)
+    EVT_IDLE(wxToolBarBase::OnIdle)
+END_EVENT_TABLE()
 
 #include "wx/listimpl.cpp"
 
@@ -77,7 +74,7 @@ bool wxToolBarToolBase::Enable(bool enable)
 
 bool wxToolBarToolBase::Toggle(bool toggle)
 {
-    wxASSERT_MSG( m_isToggle, _T("can't toggle this tool") );
+    wxASSERT_MSG( CanBeToggled(), _T("can't toggle this tool") );
 
     if ( m_toggled == toggle )
         return FALSE;
@@ -89,10 +86,11 @@ bool wxToolBarToolBase::Toggle(bool toggle)
 
 bool wxToolBarToolBase::SetToggle(bool toggle)
 {
-    if ( m_isToggle == toggle )
+    wxItemKind kind = toggle ? wxITEM_CHECK : wxITEM_NORMAL;
+    if ( m_kind == kind )
         return FALSE;
 
-    m_isToggle = toggle;
+    m_kind = kind;
 
     return TRUE;
 }
@@ -135,34 +133,36 @@ wxToolBarBase::wxToolBarBase()
     m_maxRows = m_maxCols = 0;
 }
 
-wxToolBarToolBase *wxToolBarBase::AddTool(int id,
-                                          const wxBitmap& bitmap,
-                                          const wxBitmap& pushedBitmap,
-                                          bool toggle,
-                                          wxCoord WXUNUSED(xPos),
-                                          wxCoord WXUNUSED(yPos),
-                                          wxObject *clientData,
-                                          const wxString& helpString1,
-                                          const wxString& helpString2)
+wxToolBarToolBase *wxToolBarBase::DoAddTool(int id,
+                                            const wxString& label,
+                                            const wxBitmap& bitmap,
+                                            const wxBitmap& bmpDisabled,
+                                            wxItemKind kind,
+                                            const wxString& shortHelp,
+                                            const wxString& longHelp,
+                                            wxObject *clientData,
+                                            wxCoord WXUNUSED(xPos),
+                                            wxCoord WXUNUSED(yPos))
 {
-    return InsertTool(GetToolsCount(), id, bitmap, pushedBitmap,
-                      toggle, clientData, helpString1, helpString2);
+    return InsertTool(GetToolsCount(), id, label, bitmap, bmpDisabled,
+                      kind, shortHelp, longHelp, clientData);
 }
 
 wxToolBarToolBase *wxToolBarBase::InsertTool(size_t pos,
                                              int id,
+                                             const wxString& label,
                                              const wxBitmap& bitmap,
-                                             const wxBitmap& pushedBitmap,
-                                             bool toggle,
-                                             wxObject *clientData,
-                                             const wxString& helpString1,
-                                             const wxString& helpString2)
+                                             const wxBitmap& bmpDisabled,
+                                             wxItemKind kind,
+                                             const wxString& shortHelp,
+                                             const wxString& longHelp,
+                                             wxObject *clientData)
 {
     wxCHECK_MSG( pos <= GetToolsCount(), (wxToolBarToolBase *)NULL,
                  _T("invalid position in wxToolBar::InsertTool()") );
 
-    wxToolBarToolBase *tool = CreateTool(id, bitmap, pushedBitmap, toggle,
-                                         clientData, helpString1, helpString2);
+    wxToolBarToolBase *tool = CreateTool(id, label, bitmap, bmpDisabled, kind,
+                                         clientData, shortHelp, longHelp);
 
     if ( !tool || !DoInsertTool(pos, tool) )
     {
@@ -206,6 +206,24 @@ wxToolBarToolBase *wxToolBarBase::InsertControl(size_t pos, wxControl *control)
     return tool;
 }
 
+wxControl *wxToolBarBase::FindControl( int id )
+{
+    for ( wxToolBarToolsList::Node* node = m_tools.GetFirst();
+          node;
+          node = node->GetNext() )
+    {
+        wxControl *control = node->GetData()->GetControl();
+        
+        if (control)
+        {
+            if (control->GetId() == id)
+                return control;
+        }
+    }
+
+   return NULL;
+}
+
 wxToolBarToolBase *wxToolBarBase::AddSeparator()
 {
     return InsertSeparator(GetToolsCount());
@@ -217,8 +235,9 @@ wxToolBarToolBase *wxToolBarBase::InsertSeparator(size_t pos)
                  _T("invalid position in wxToolBar::InsertSeparator()") );
 
     wxToolBarToolBase *tool = CreateTool(wxID_SEPARATOR,
+                                         wxEmptyString,
                                          wxNullBitmap, wxNullBitmap,
-                                         FALSE, (wxObject *)NULL,
+                                         wxITEM_SEPARATOR, (wxObject *)NULL,
                                          wxEmptyString, wxEmptyString);
 
     if ( !tool || !DoInsertTool(pos, tool) )
@@ -319,6 +338,8 @@ wxToolBarToolBase *wxToolBarBase::FindById(int id) const
             // found
             break;
         }
+
+        tool = NULL;
     }
 
     return tool;
@@ -468,7 +489,12 @@ bool wxToolBarBase::OnLeftClick(int id, bool toggleDown)
 {
     wxCommandEvent event(wxEVT_COMMAND_TOOL_CLICKED, id);
     event.SetEventObject(this);
-    event.SetExtraLong((long) toggleDown);
+
+    // we use SetInt() to make wxCommandEvent::IsChecked() return toggleDown
+    event.SetInt((int)toggleDown);
+
+    // and SetExtraLong() for backwards compatibility
+    event.SetExtraLong((long)toggleDown);
 
     // Send events to this toolbar instead (and thence up the window hierarchy)
     GetEventHandler()->ProcessEvent(event);
@@ -499,17 +525,15 @@ void wxToolBarBase::OnMouseEnter(int id)
     event.SetEventObject(this);
     event.SetInt(id);
 
-    (void)GetEventHandler()->ProcessEvent(event);
-
-    wxToolBarToolBase *tool = FindById(id);
-    if ( !tool || !tool->GetLongHelp() )
-        return;
-
     wxFrame *frame = wxDynamicCast(GetParent(), wxFrame);
-    if ( !frame )
-        return;
+    if( frame )
+    {
+        wxToolBarToolBase* tool = id == -1 ? (wxToolBarToolBase*)0 : FindById(id);
+        wxString help = tool ? tool->GetLongHelp() : wxString();
+        frame->DoGiveHelp( help, id != -1 );
+    }
 
-    frame->SetStatusText(tool->GetLongHelp());
+    (void)GetEventHandler()->ProcessEvent(event);
 }
 
 // ----------------------------------------------------------------------------
@@ -526,7 +550,21 @@ void wxToolBarBase::OnIdle(wxIdleEvent& event)
 // Do the toolbar button updates (check for EVT_UPDATE_UI handlers)
 void wxToolBarBase::DoToolbarUpdates()
 {
-    wxEvtHandler* evtHandler = GetEventHandler();
+    wxWindow* parent = this;
+    while (parent->GetParent())
+        parent = parent->GetParent();
+
+// This kind of #ifdef is a good way to annoy people. It breaks
+// apps, but only on one platform and due to a hack in officially
+// platform independent code. It took me hours to fix this. RR.
+//
+// #ifdef __WXMSW__
+//    wxWindow* focusWin = wxFindFocusDescendant(parent);
+// #else
+    wxWindow* focusWin = (wxWindow*) NULL;
+// #endif
+
+    wxEvtHandler* evtHandler = focusWin ? focusWin->GetEventHandler() : GetEventHandler() ;
 
     for ( wxToolBarToolsList::Node* node = m_tools.GetFirst();
           node;
@@ -549,6 +587,66 @@ void wxToolBarBase::DoToolbarUpdates()
 #endif // 0
         }
     }
+}
+
+// Helper function, used by wxCreateGreyedImage
+
+static void wxGreyOutImage( const wxImage& src,
+                            wxImage& dest,
+                            const wxColour& darkCol,
+                            const wxColour& lightCol,
+                            const wxColour& bgCol )
+{
+    // Second attempt, just making things monochrome
+    int width = src.GetWidth();
+    int height = src.GetHeight();
+
+    int redCur, greenCur, blueCur;
+    for ( int x = 0; x < width; x++ )
+    {
+        for ( int y = 1; y < height; y++ )
+        {
+            redCur = src.GetRed(x, y);
+            greenCur = src.GetGreen(x, y);
+            blueCur = src.GetBlue(x, y);
+
+            // Change light things to the background colour
+            if ( redCur >= (lightCol.Red() - 50) && greenCur >= (lightCol.Green() - 50) && blueCur >= (lightCol.Blue() - 50) )
+            {
+                dest.SetRGB(x,y, bgCol.Red(), bgCol.Green(), bgCol.Blue());
+            }
+            else if ( redCur == bgCol.Red() && greenCur == bgCol.Green() && blueCur == bgCol.Blue() )
+            {
+                // Leave the background colour as-is
+                // dest.SetRGB(x,y, bgCol.Red(), bgCol.Green(), bgCol.Blue());
+            }
+            else // if ( redCur <= darkCol.Red() && greenCur <= darkCol.Green() && blueCur <= darkCol.Blue() )
+            {
+                // Change dark things to really dark
+                dest.SetRGB(x,y, darkCol.Red(), darkCol.Green(), darkCol.Blue());
+            }
+        }
+    }
+}
+
+/*
+ * Make a greyed-out image suitable for disabled buttons.
+ * This code is adapted from wxNewBitmapButton in FL.
+ */
+
+bool wxCreateGreyedImage(const wxImage& in, wxImage& out)
+{
+    out = in.Copy();
+
+    // assuming the pixels along the edges are of the background color
+    wxColour bgCol(in.GetRed(0, 0), in.GetGreen(0, 0), in.GetBlue(0, 0));
+
+    wxColour darkCol = wxSystemSettings::GetColour(wxSYS_COLOUR_3DSHADOW) ;
+    wxColour lightCol = wxSystemSettings::GetColour(wxSYS_COLOUR_3DHIGHLIGHT) ;
+
+    wxGreyOutImage(in, out, darkCol, lightCol, bgCol);
+
+    return TRUE;
 }
 
 #endif // wxUSE_TOOLBAR

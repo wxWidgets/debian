@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     01/02/97
-// RCS-ID:      $Id: colrdlgg.h,v 1.9.2.1 2000/06/28 11:12:40 VZ Exp $
+// RCS-ID:      $Id: colrdlgg.h,v 1.11 2002/08/31 11:29:12 GD Exp $
 // Copyright:   (c)
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -12,7 +12,7 @@
 #ifndef __COLORDLGH_G__
 #define __COLORDLGH_G__
 
-#ifdef __GNUG__
+#if defined(__GNUG__) && !defined(__APPLE__)
 #pragma interface "colrdlgg.h"
 #endif
 

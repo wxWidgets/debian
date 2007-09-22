@@ -16,7 +16,14 @@
 #pragma hdrstop
 #endif
 
+#ifndef __WXWINE__
 #include <io.h>
+#endif
+
+#ifdef __WXWINE__
+#define NPSTR LPVOID
+#endif
+
 #include <windows.h>
 
 #if defined(__MWERKS__)
@@ -88,7 +95,7 @@ HICON CursorToIcon( wxChar *szFileName, HINSTANCE hInst, int *W, int *H)
 HANDLE ReadIcon( wxChar *szFileName, int *W, int *H)
 { ICONFILEHEADER iconFileHead;   // ICON file header structure
   ICONFILERES    iconFileRes;    // ICON file resource
-  WORD           cbHead,
+  UINT           cbHead,
                  cbRes,
                  cbBits;         // Used for reading in file
   int            hFile;          // File handle
@@ -111,7 +118,7 @@ HANDLE ReadIcon( wxChar *szFileName, int *W, int *H)
     return (HANDLE) NULL;
 
   // inserted by P.S.
-  while( ((unsigned)nDirEntries < iconFileHead.wResourceCount) &&
+  while( (nDirEntries < iconFileHead.wResourceCount) &&
          ((iconFileRes.bWidth != nWidth) || (iconFileRes.bHeight != nHeight)))
   {
     cbRes = _lread( hFile, (LPSTR )&iconFileRes, sizeof( ICONFILERES));
@@ -175,7 +182,7 @@ HANDLE ReadIcon( wxChar *szFileName, int *W, int *H)
 //*            bitmaps. So, no need to convert the AND bitmask.               *
 //*         7) Since a DIB is stored upside down, flip the monochrome AND bits*
 //*            by scanlines.                                                  *
-//*         8) Use the XOR and AND bits and create an icon with CreateIcon.   * 
+//*         8) Use the XOR and AND bits and create an icon with CreateIcon.   *
 //*****************************************************************************
 
 HICON MakeIcon( HANDLE hDIB, HINSTANCE hInst)
@@ -253,8 +260,8 @@ HICON MakeIcon( HANDLE hDIB, HINSTANCE hInst)
     szFlip[(k - 1) - j] = *(DWORD FAR *)lpANDbits;
 
   // 8) Use the XOR and AND bits and create an icon with CreateIcon.
-  hIcon = CreateIcon( hInst, bmpXor.bmWidth, bmpXor.bmHeight, bmpXor.bmPlanes,
-                      bmpXor.bmBitsPixel, (const BYTE *)szFlip, (const BYTE *)lpXorDDB);
+  hIcon = CreateIcon( hInst, bmpXor.bmWidth, bmpXor.bmHeight, (BYTE)bmpXor.bmPlanes,
+                      (BYTE)bmpXor.bmBitsPixel, (const BYTE *)szFlip, (const BYTE *)lpXorDDB);
 
   // Clean up before exiting.
   DeleteObject( hbmXor);
@@ -335,7 +342,7 @@ HCURSOR IconToCursor( wxChar *szFileName, HINSTANCE hInst, int XHot, int YHot,
 HANDLE ReadCur( wxChar *szFileName, LPPOINT lpptHotSpot, int *W, int *H)
 { CURFILEHEADER   curFileHead;  // CURSOR file header structure
   CURFILERES      curFileRes;   // CURSOR file resource
-  WORD            cbHead,
+  UINT            cbHead,
                   cbRes,
                   cbBits;       // Used for reading in file
   LPBITMAPINFO    lpDIB;        // Pointer to DIB memory
@@ -359,7 +366,7 @@ HANDLE ReadCur( wxChar *szFileName, LPPOINT lpptHotSpot, int *W, int *H)
     return (HANDLE) NULL;
 
   // following added by P.S.
-  while( ((unsigned)nDirEntries < curFileHead.wResourceCount) &&
+  while( (nDirEntries < curFileHead.wResourceCount) &&
          ((curFileRes.bWidth != nWidth) || (curFileRes.bHeight != nHeight)))
   {
     cbRes = _lread( hFile, (LPSTR )&curFileRes, sizeof( CURFILERES));
@@ -644,9 +651,9 @@ WORD PaletteSize( LPSTR pv)
   NumColors = DIBNumColors((LPSTR )lpbi);
 
   if(lpbi->biSize == sizeof( BITMAPCOREHEADER))  // OS/2 style DIBs
-    return NumColors * sizeof( RGBTRIPLE);
+    return (WORD)(NumColors * sizeof( RGBTRIPLE));
   else
-    return NumColors * sizeof( RGBQUAD);
+    return (WORD)(NumColors * sizeof( RGBQUAD));
 }
 
 //*****************************************************************************
@@ -672,7 +679,7 @@ WORD DIBNumColors ( LPSTR pv)
   // is in biClrUsed, whereas in the BITMAPCORE - style headers, it
   // is dependent on the bits per pixel ( = 2 raised to the power of
   // bits/pixel).
-    
+
   if(lpbi->biSize != sizeof( BITMAPCOREHEADER))
   {
     if(lpbi->biClrUsed != 0)
@@ -843,7 +850,7 @@ HCURSOR MakeCursorFromBitmap(HINSTANCE hInst, HBITMAP hBitmap, POINT *pPoint)
 /*
  * This doesn't work: just gives us a grey square. Ideas, anyone?
  */
- 
+
 HICON MakeIconFromBitmap(HINSTANCE hInst, HBITMAP hBitmap)
 {
   HDC hDCColor, hDCMono;

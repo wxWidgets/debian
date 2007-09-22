@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     04/01/98
-// RCS-ID:      $Id: imaglist.cpp,v 1.14.2.3 2000/08/06 10:12:08 VZ Exp $
+// RCS-ID:      $Id: imaglist.cpp,v 1.18 2002/01/13 23:04:10 VZ Exp $
 // Copyright:   (c) Julian Smart and Markus Holzem
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -46,7 +46,7 @@
 #include "wx/msw/imaglist.h"
 #include "wx/msw/private.h"
 
-#if !defined(__GNUWIN32_OLD__) && !defined(__TWIN32__)
+#if defined(__WIN95__) && !((defined(__GNUWIN32_OLD__) || defined(__TWIN32__)) && !defined(__CYGWIN10__))
     #include <commctrl.h>
 #endif
 
@@ -315,37 +315,41 @@ bool wxImageList::Draw(int index,
 static HBITMAP GetMaskForImage(const wxBitmap& bitmap, const wxBitmap& mask)
 {
     HBITMAP hbmpMask;
-    wxBitmap *bmpMask = NULL;
+    wxMask *pMask;
+    bool deleteMask = FALSE;
 
     if ( mask.Ok() )
     {
         hbmpMask = GetHbitmapOf(mask);
+        pMask = NULL;
     }
     else
     {
-        wxMask *pMask = bitmap.GetMask();
-        if ( pMask )
+        pMask = bitmap.GetMask();
+        if ( !pMask )
         {
-            hbmpMask = (HBITMAP)pMask->GetMaskBitmap();
-        }
-        else
-        {
-            // create a non transparent mask - apparently, this is needed under
-            // Win9x (it doesn't behave correctly if it's passed 0 mask)
-            bmpMask = new wxBitmap(bitmap.GetWidth(), bitmap.GetHeight(), 1);
+            // use the light grey count as transparent: the trouble here is
+            // that the light grey might have been changed by Windows behind
+            // our back, so use the standard colour map to get its real value
+            wxCOLORMAP *cmap = wxGetStdColourMap();
+            wxColour col;
+            wxRGBToColour(col, cmap[wxSTD_COL_BTNFACE].from);
 
-            wxMemoryDC dcMem;
-            dcMem.SelectObject(*bmpMask);
-            dcMem.Clear();
-            dcMem.SelectObject(wxNullBitmap);
+            pMask = new wxMask(bitmap, col);
 
-            hbmpMask = GetHbitmapOf(*bmpMask);
+            deleteMask = TRUE;
         }
+
+        hbmpMask = (HBITMAP)pMask->GetMaskBitmap();
     }
 
     // windows mask convention is opposite to the wxWindows one
     HBITMAP hbmpMaskInv = wxInvertMask(hbmpMask);
-    delete bmpMask;
+
+    if ( deleteMask )
+    {
+        delete pMask;
+    }
 
     return hbmpMaskInv;
 }

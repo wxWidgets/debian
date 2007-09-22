@@ -3,7 +3,7 @@
 // Purpose:
 // Date: 08/11/1999
 // Author: Guilhem Lavaux <lavaux@easynet.fr> (C) 1999
-// CVSID: $Id: sndcpcm.h,v 1.1 2000/03/05 19:03:12 GL Exp $
+// CVSID: $Id: sndcpcm.h,v 1.2 2000/06/04 08:38:36 GL Exp $
 // --------------------------------------------------------------------------
 #ifndef _WX_SNDCPCM_H
 #define _WX_SNDCPCM_H
@@ -20,7 +20,7 @@
 // PCM converter class
 //
 
-class wxSoundStreamPcm: public wxSoundStreamCodec {
+class WXDLLEXPORT wxSoundStreamPcm: public wxSoundStreamCodec {
 public:
     typedef void (*ConverterType)(const void *buf_in, void *buf_out,
                                   wxUint32 len);

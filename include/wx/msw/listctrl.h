@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     01/02/97
-// RCS-ID:      $Id: listctrl.h,v 1.23 2000/03/15 07:52:45 VZ Exp $
+// RCS-ID:      $Id: listctrl.h,v 1.34 2002/07/21 14:29:10 VZ Exp $
 // Copyright:   (c) Julian Smart
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -13,14 +13,17 @@
 #define _WX_LISTCTRL_H_
 
 #ifdef __GNUG__
-#pragma interface "listctrl.h"
+    #pragma interface "listctrl.h"
 #endif
+
+#if wxUSE_LISTCTRL
 
 #include "wx/control.h"
 #include "wx/event.h"
 #include "wx/hash.h"
+#include "wx/textctrl.h"
 
-class WXDLLEXPORT wxTextCtrl;
+
 class WXDLLEXPORT wxImageList;
 
 /*
@@ -188,6 +191,14 @@ public:
     // view, otherwise the large icon view.
     int GetItemSpacing(bool isSmall) const;
 
+    // Foreground colour of an item.
+    void SetItemTextColour( long item, const wxColour& col);
+    wxColour GetItemTextColour( long item ) const;
+
+    // Background colour of an item.
+    void SetItemBackgroundColour( long item, const wxColour &col);
+    wxColour GetItemBackgroundColour( long item ) const;
+
     // Gets the number of selected items in the list control
     int GetSelectedItemCount() const;
 
@@ -213,12 +224,6 @@ public:
     // Returns the item or -1 if unsuccessful.
     long GetNextItem(long item, int geometry = wxLIST_NEXT_ALL, int state = wxLIST_STATE_DONTCARE) const ;
 
-    // Implementation: converts wxWindows style to MSW style.
-    // Can be a single style flag or a bit list.
-    // oldStyle is 'normalised' so that it doesn't contain
-    // conflicting styles.
-    long ConvertToMSWStyle(long& oldStyle, long style) const;
-
     // Gets one of the three image lists
     wxImageList *GetImageList(int which) const ;
 
@@ -230,6 +235,14 @@ public:
     // So you have to set a NULL small-icon image list to be sure that
     // the wxLC_LIST mode works without icons. Of course, you may want icons...
     void SetImageList(wxImageList *imageList, int which) ;
+    void AssignImageList(wxImageList *imageList, int which) ;
+
+    // returns true if it is a virtual list control
+    bool IsVirtual() const { return (GetWindowStyle() & wxLC_VIRTUAL) != 0; }
+
+    // refresh items selectively (only useful for virtual list controls)
+    void RefreshItem(long item);
+    void RefreshItems(long itemFrom, long itemTo);
 
     // Operations
     ////////////////////////////////////////////////////////////////////////////
@@ -298,6 +311,9 @@ public:
                       int format = wxLIST_FORMAT_LEFT,
                       int width = -1);
 
+    // set the number of items in a virtual list control
+    void SetItemCount(long count);
+
     // Scrolls the list control. If in icon, small icon or report view mode,
     // x specifies the number of pixels to scroll. If in list view mode, x
     // specifies the number of columns to scroll.
@@ -325,38 +341,65 @@ public:
     // bring the control in sync with current m_windowStyle value
     void UpdateStyle();
 
-    // Add to pool: necessary because Windows needs to have a string
-    // still exist across 3 callbacks.
-    wxChar *AddPool(const wxString& str);
+    // Implementation: converts wxWindows style to MSW style.
+    // Can be a single style flag or a bit list.
+    // oldStyle is 'normalised' so that it doesn't contain
+    // conflicting styles.
+    long ConvertToMSWStyle(long& oldStyle, long style) const;
+
+    // Event handlers
+    ////////////////////////////////////////////////////////////////////////////
+    // Necessary for drawing hrules and vrules, if specified
+    void OnPaint(wxPaintEvent& event);
 
 protected:
     // common part of all ctors
     void Init();
 
-    // free memory taken by all attributes and recreate the hash table
-    void FreeAllAttrs(bool dontRecreate = FALSE);
+    // free memory taken by all internal data
+    void FreeAllInternalData();
 
     wxTextCtrl*       m_textCtrl;        // The control used for editing a label
     wxImageList *     m_imageListNormal; // The image list for normal icons
     wxImageList *     m_imageListSmall;  // The image list for small icons
     wxImageList *     m_imageListState;  // The image list state icons (not implemented yet)
+    bool              m_ownsImageListNormal,
+                      m_ownsImageListSmall,
+                      m_ownsImageListState;
 
     long              m_baseStyle;  // Basic Windows style flags, for recreation purposes
-    wxStringList      m_stringPool; // Pool of 3 strings to satisfy Windows callback requirements
     int               m_colCount;   // Windows doesn't have GetColumnCount so must
                                     // keep track of inserted/deleted columns
 
-    // the hash table we use for storing pointers to the items attributes
-    wxHashTable m_attrs;
+    // TRUE if we have any internal data (user data & attributes)
+    bool m_AnyInternalData;
 
     // TRUE if we have any items with custom attributes
     bool m_hasAnyAttr;
 
+    // these functions are only used for virtual list view controls, i.e. the
+    // ones with wxLC_VIRTUAL style
+
+    // return the text for the given column of the given item
+    virtual wxString OnGetItemText(long item, long column) const;
+
+    // return the icon for the given item
+    virtual int OnGetItemImage(long item) const;
+
+    // return the attribute for the item (may return NULL if none)
+    virtual wxListItemAttr *OnGetItemAttr(long item) const;
+
 private:
     bool DoCreateControl(int x, int y, int w, int h);
 
+    // process NM_CUSTOMDRAW notification message
+    WXLPARAM OnCustomDraw(WXLPARAM lParam);
+
     DECLARE_DYNAMIC_CLASS(wxListCtrl)
+    DECLARE_EVENT_TABLE()
 };
 
-#endif
-    // _WX_LISTCTRL_H_
+#endif // wxUSE_LISTCTRL
+
+#endif // _WX_LISTCTRL_H_
+

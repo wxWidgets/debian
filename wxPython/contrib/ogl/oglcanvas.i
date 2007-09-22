@@ -5,7 +5,7 @@
 // Author:      Robin Dunn
 //
 // Created:     7-Sept-1999
-// RCS-ID:      $Id: oglcanvas.i,v 1.1.2.4 2001/07/03 22:22:32 RD Exp $
+// RCS-ID:      $Id: oglcanvas.i,v 1.12 2002/07/06 04:14:52 RD Exp $
 // Copyright:   (c) 1998 by Total Control Software
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -14,7 +14,7 @@
 %module oglcanvas
 
 %{
-#include "export.h"
+#include "wxPython.h"
 #include "oglhelpers.h"
 %}
 
@@ -31,34 +31,30 @@
 
 %include _ogldefs.i
 
-%extern oglbasic.i
+%import oglbasic.i
 
 
 %pragma(python) code = "import wx"
 
 //---------------------------------------------------------------------------
+%{
+    // Put some wx default wxChar* values into wxStrings.
+    DECLARE_DEF_STRING(ShapeCanvasNameStr);
+%}
+
 //---------------------------------------------------------------------------
 //---------------------------------------------------------------------------
 
-class wxDiagram {
+class wxDiagram : public wxObject {
 public:
     wxDiagram();
-    ~wxDiagram();
+    //~wxDiagram();
 
-    void AddShape(wxPyShape*shape, wxPyShape *addAfter = NULL);
+    void AddShape(wxPyShape* shape, wxPyShape *addAfter = NULL);
     void Clear(wxDC& dc);
     void DeleteAllShapes();
     void DrawOutline(wxDC& dc, double x1, double y1, double x2, double y2);
-
     wxPyShape* FindShape(long id);
-    %pragma(python) addtoclass = "# replaces broken shadow methods
-    def FindShape(self, *_args, **_kwargs):
-        from oglbasic import wxPyShapePtr
-        val = apply(oglcanvasc.wxDiagram_FindShape,(self,) + _args, _kwargs)
-        if val: val = wxPyShapePtr(val)
-        return val
-    "
-
     wxPyShapeCanvas* GetCanvas();
     int GetCount();
     double GetGridSpacing();
@@ -68,7 +64,7 @@ public:
     %addmethods {
         PyObject* GetShapeList() {
             wxList* list = self->GetShapeList();
-            return wxPy_ConvertList(list, "wxPyShape");
+            return wxPy_ConvertShapeList(list, "wxPyShape");
         }
     }
 
@@ -100,7 +96,7 @@ public:
     void SetQuickEditMode(bool mode);
     void SetSnapToGrid(bool snap);
     void ShowAll(bool show);
-    void Snap(double *OUTPUT, double *OUTPUT);
+    void Snap(double *INOUT, double *INOUT);
 
 };
 
@@ -123,13 +119,12 @@ public:
     wxPyShapeCanvas(wxWindow* parent = NULL, wxWindowID id = -1,
                     const wxPoint& pos = wxDefaultPosition,
                     const wxSize& size = wxDefaultSize,
-                    long style = wxBORDER);
+                    long style = wxBORDER,
+                    const wxString& name = wxPyShapeCanvasNameStr);
 
-    void _setSelf(PyObject* self, PyObject* _class);
-    %pragma(python) addtomethod = "__init__:self._setSelf(self, wxPyShapeCanvas)"
-
-    %pragma(python) addtomethod = "__init__:#wx._StdWindowCallbacks(self)"
-    %pragma(python) addtomethod = "__init__:#wx._StdOnScrollCallbacks(self)"
+    void _setCallbackInfo(PyObject* self, PyObject* _class);
+    %pragma(python) addtomethod = "__init__:self._setCallbackInfo(self, wxPyShapeCanvas)"
+    %pragma(python) addtomethod = "__init__:self._setOORInfo(self)"
 
     void AddShape(wxPyShape *shape, wxPyShape *addAfter = NULL);
 
@@ -156,7 +151,13 @@ public:
     void Redraw(wxDC& dc);
     void RemoveShape(wxPyShape *shape);
     void SetDiagram(wxDiagram *diagram);
-    void Snap(double *OUTPUT, double *OUTPUT);
+    void Snap(double *INOUT, double *INOUT);
+
+
+    %pragma(python) addtoclass = "
+    def GetShapeList(self):
+        return self.GetDiagram().GetShapeList()
+    "
 
 };
 

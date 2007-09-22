@@ -1,8 +1,8 @@
 /////////////////////////////////////////////////////////////////////////////
 // Name:        gtk/timer.cpp
-// Purpose:
+// Purpose:     wxTimer implementation
 // Author:      Robert Roebling
-// Id:          $Id: timer.cpp,v 1.13 2000/02/05 01:57:37 VZ Exp $
+// Id:          $Id: timer.cpp,v 1.16 2002/01/09 12:49:11 VZ Exp $
 // Copyright:   (c) 1998 Robert Roebling
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -12,17 +12,21 @@
 #pragma implementation "timer.h"
 #endif
 
+#include "wx/defs.h"
+
+#if wxUSE_TIMER
+
 #include "wx/timer.h"
 
 #include "gtk/gtk.h"
 
-//-----------------------------------------------------------------------------
+// ----------------------------------------------------------------------------
 // wxTimer
-//-----------------------------------------------------------------------------
+// ----------------------------------------------------------------------------
 
-IMPLEMENT_ABSTRACT_CLASS(wxTimer,wxObject)
+IMPLEMENT_ABSTRACT_CLASS(wxTimer, wxObject)
 
-static gint timeout_callback( gpointer data )
+extern "C" gint timeout_callback( gpointer data )
 {
     wxTimer *timer = (wxTimer*)data;
 
@@ -57,6 +61,9 @@ bool wxTimer::Start( int millisecs, bool oneShot )
 {
     (void)wxTimerBase::Start(millisecs, oneShot);
 
+    if (m_tag != -1)
+        gtk_timeout_remove( m_tag );
+
     m_tag = gtk_timeout_add( m_milli, timeout_callback, this );
 
     return TRUE;
@@ -70,4 +77,6 @@ void wxTimer::Stop()
         m_tag = -1;
     }
 }
+
+#endif // wxUSE_TIMER
 

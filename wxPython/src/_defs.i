@@ -5,7 +5,7 @@
 // Author:      Robin Dunn
 //
 // Created:     6/24/97
-// RCS-ID:      $Id: _defs.i,v 1.1.2.5 2001/01/30 20:53:43 robind Exp $
+// RCS-ID:      $Id: _defs.i,v 1.50 2002/09/05 19:39:27 RD Exp $
 // Copyright:   (c) 1998 by Total Control Software
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -191,6 +191,7 @@ enum {
 //wxOVERRIDE_KEY_TRANSLATIONS,
     wxTAB_TRAVERSAL,
     wxWANTS_CHARS,
+    wxPOPUP_WINDOW,
     wxHORIZONTAL,
     wxVERTICAL,
     wxBOTH,
@@ -212,16 +213,15 @@ enum {
     wxRESIZE_BORDER,
     wxDIALOG_MODAL,
     wxDIALOG_MODELESS,
+    wxDIALOG_NO_PARENT,
     wxDEFAULT_FRAME_STYLE,
     wxDEFAULT_DIALOG_STYLE,
 
     wxFRAME_TOOL_WINDOW,
     wxFRAME_FLOAT_ON_PARENT,
     wxFRAME_NO_WINDOW_MENU,
-#ifdef FOR_2_3
     wxFRAME_NO_TASKBAR,
-    wxFRAME_EX_CONTEXTHELP,
-#endif
+
     wxED_CLIENT_MARGIN,
     wxED_BUTTONS_BOTTOM,
     wxED_BUTTONS_RIGHT,
@@ -229,14 +229,21 @@ enum {
     wxEXT_DIALOG_STYLE,
 
     wxCLIP_CHILDREN,
+    wxCLIP_SIBLINGS,
 
     wxRETAINED,
     wxBACKINGSTORE,
-    wxTB_3DBUTTONS,
+
     wxTB_HORIZONTAL,
     wxTB_VERTICAL,
+    wxTB_3DBUTTONS,
     wxTB_FLAT,
     wxTB_DOCKABLE,
+    wxTB_NOICONS,
+    wxTB_TEXT,
+    wxTB_NODIVIDER,
+    wxTB_NOALIGN,
+
     wxCOLOURED,
     wxFIXED_LENGTH,
     wxALIGN_LEFT,
@@ -250,6 +257,8 @@ enum {
     wxALIGN_CENTER,
     wxALIGN_CENTRE,
     wxSHAPED,
+    wxADJUST_MINSIZE,
+
     wxLB_NEEDED_SB,
     wxLB_ALWAYS_SB,
     wxLB_SORT,
@@ -260,14 +269,26 @@ enum {
     wxLB_HSCROLL,
     wxPROCESS_ENTER,
     wxPASSWORD,
-    wxTE_PROCESS_ENTER,
-    wxTE_PROCESS_TAB,
-    wxTE_PASSWORD,
+
     wxTE_READONLY,
-    wxTE_RICH,
     wxTE_MULTILINE,
-    wxTE_AUTO_SCROLL,
+    wxTE_PROCESS_TAB,
+    wxTE_RICH,
+    wxTE_RICH2,
     wxTE_NO_VSCROLL,
+    wxTE_AUTO_SCROLL,
+    wxTE_PROCESS_ENTER,
+    wxTE_PASSWORD,
+    wxTE_AUTO_URL,
+    wxTE_NOHIDESEL,
+    wxTE_DONTWRAP,
+    wxTE_LINEWRAP,
+    wxTE_WORDWRAP,
+    wxTE_LEFT,
+    wxTE_RIGHT,
+    wxTE_CENTER,
+    wxTE_CENTRE,
+
     wxCB_SIMPLE,
     wxCB_DROPDOWN,
     wxCB_SORT,
@@ -295,35 +316,15 @@ enum {
     wxSB_VERTICAL,
     wxST_SIZEGRIP,
     wxST_NO_AUTORESIZE,
-    wxBU_AUTODRAW,
+
     wxBU_NOAUTODRAW,
-    wxTR_HAS_BUTTONS,
-    wxTR_EDIT_LABELS,
-    wxTR_LINES_AT_ROOT,
-    wxTR_MULTIPLE,
-    wxTR_SINGLE,
-    wxTR_HAS_VARIABLE_ROW_HEIGHT,
-    wxLC_ICON,
-    wxLC_SMALL_ICON,
-    wxLC_LIST,
-    wxLC_REPORT,
-    wxLC_ALIGN_TOP,
-    wxLC_ALIGN_LEFT,
-    wxLC_AUTOARRANGE,
-    wxLC_USER_TEXT,
-    wxLC_EDIT_LABELS,
-    wxLC_NO_HEADER,
-    wxLC_NO_SORT_HEADER,
-    wxLC_SINGLE_SEL,
-    wxLC_SORT_ASCENDING,
-    wxLC_SORT_DESCENDING,
-    wxLC_MASK_TYPE,
-    wxLC_MASK_ALIGN,
-    wxLC_MASK_SORT,
-#ifdef FOR_2_3
-    wxLC_HRULES,
-    wxLC_VRULES,
-#endif
+    wxBU_AUTODRAW,
+    wxBU_LEFT,
+    wxBU_TOP,
+    wxBU_RIGHT,
+    wxBU_BOTTOM,
+    wxBU_EXACTFIT,
+
     wxSP_VERTICAL,
     wxSP_HORIZONTAL,
     wxSP_ARROW_KEYS,
@@ -368,6 +369,7 @@ enum {
     wxMORE,
     wxSETUP,
 
+
     wxCENTRE,
     wxCENTER,
     wxSIZE_AUTO_WIDTH,
@@ -381,6 +383,10 @@ enum {
     wxPRINT_QUALITY_MEDIUM,
     wxPRINT_QUALITY_LOW,
     wxPRINT_QUALITY_DRAFT,
+
+    wxID_ANY,
+    wxID_SEPARATOR,
+
     wxID_OPEN,
     wxID_CLOSE,
     wxID_NEW,
@@ -399,11 +405,16 @@ enum {
     wxID_HELP_COMMANDS,
     wxID_HELP_PROCEDURES,
     wxID_HELP_CONTEXT,
+    wxID_CLOSE_ALL,
+
     wxID_CUT,
     wxID_COPY,
     wxID_PASTE,
     wxID_CLEAR,
     wxID_FIND,
+    wxID_DUPLICATE,
+    wxID_SELECTALL,
+
     wxID_FILE1,
     wxID_FILE2,
     wxID_FILE3,
@@ -413,34 +424,25 @@ enum {
     wxID_FILE7,
     wxID_FILE8,
     wxID_FILE9,
+
     wxID_OK,
     wxID_CANCEL,
     wxID_APPLY,
     wxID_YES,
     wxID_NO,
     wxID_STATIC,
-    wxID_SEPARATOR,
-
-    wxBITMAP_TYPE_BMP,
-    wxBITMAP_TYPE_BMP_RESOURCE,
-    wxBITMAP_TYPE_ICO,
-    wxBITMAP_TYPE_ICO_RESOURCE,
-    wxBITMAP_TYPE_CUR,
-    wxBITMAP_TYPE_CUR_RESOURCE,
-    wxBITMAP_TYPE_XBM,
-    wxBITMAP_TYPE_XBM_DATA,
-    wxBITMAP_TYPE_XPM,
-    wxBITMAP_TYPE_XPM_DATA,
-    wxBITMAP_TYPE_TIF,
-    wxBITMAP_TYPE_TIF_RESOURCE,
-    wxBITMAP_TYPE_GIF,
-    wxBITMAP_TYPE_GIF_RESOURCE,
-    wxBITMAP_TYPE_PNG,
-    wxBITMAP_TYPE_PNG_RESOURCE,
-    wxBITMAP_TYPE_ANY,
-    wxBITMAP_TYPE_RESOURCE,
-    wxBITMAP_TYPE_JPEG,
-    wxBITMAP_TYPE_PCX,
+    wxID_FORWARD,
+    wxID_BACKWARD,
+    wxID_DEFAULT,
+    wxID_MORE,
+    wxID_SETUP,
+    wxID_RESET,
+    wxID_CONTEXT_HELP,
+    wxID_YESTOALL,
+    wxID_NOTOALL,
+    wxID_ABORT,
+    wxID_RETRY,
+    wxID_IGNORE,
 
     wxOPEN,
     wxSAVE,
@@ -448,6 +450,7 @@ enum {
     wxOVERWRITE_PROMPT,
     wxFILE_MUST_EXIST,
     wxMULTIPLE,
+    wxCHANGE_DIR,
 
     wxACCEL_ALT,
     wxACCEL_CTRL,
@@ -460,6 +463,9 @@ enum {
     wxPD_ELAPSED_TIME,
     wxPD_ESTIMATED_TIME,
     wxPD_REMAINING_TIME,
+
+    wxDD_NEW_DIR_BUTTON,
+    wxDD_DEFAULT_STYLE,
 
     wxMENU_TEAROFF,
     wxMB_DOCKABLE,
@@ -487,12 +493,10 @@ enum {
     wxNB_LEFT,
     wxNB_RIGHT,
     wxNB_BOTTOM,
+    wxNB_MULTILINE,
 
     wxLI_HORIZONTAL,
     wxLI_VERTICAL,
-
-    wxHW_SCROLLBAR_NEVER,
-    wxHW_SCROLLBAR_AUTO,
 
     wxJOYSTICK1,
     wxJOYSTICK2,
@@ -502,6 +506,45 @@ enum {
     wxJOY_BUTTON4,
     wxJOY_BUTTON_ANY,
 
+    wxWS_EX_VALIDATE_RECURSIVELY,
+    wxWS_EX_BLOCK_EVENTS,
+    wxWS_EX_TRANSIENT,
+
+    // Mapping modes (as per Windows)
+    wxMM_TEXT,
+    wxMM_LOMETRIC,
+    wxMM_HIMETRIC,
+    wxMM_LOENGLISH,
+    wxMM_HIENGLISH,
+    wxMM_TWIPS,
+    wxMM_ISOTROPIC,
+    wxMM_ANISOTROPIC,
+    wxMM_POINTS,
+    wxMM_METRIC,
+
+    wxTIMER_CONTINUOUS,
+    wxTIMER_ONE_SHOT,
+
+    // the symbolic names for the mouse buttons
+    wxMOUSE_BTN_ANY,
+    wxMOUSE_BTN_NONE,
+    wxMOUSE_BTN_LEFT,
+    wxMOUSE_BTN_MIDDLE,
+    wxMOUSE_BTN_RIGHT,
+
+};
+
+
+enum wxBorder
+{
+    wxBORDER_DEFAULT,
+    wxBORDER_NONE,
+    wxBORDER_STATIC,
+    wxBORDER_SIMPLE,
+    wxBORDER_RAISED,
+    wxBORDER_SUNKEN,
+    wxBORDER_DOUBLE,
+    wxBORDER_MASK,
 };
 
 
@@ -573,120 +616,191 @@ typedef enum {
 //  wxSRC_AND     // source _bitmap_ AND destination
 } form_ops_t;
 
-enum _Virtual_keycodes {
- WXK_BACK    =   8,
- WXK_TAB     =   9,
- WXK_RETURN  =	13,
- WXK_ESCAPE  =	27,
- WXK_SPACE   =	32,
- WXK_DELETE  = 127,
+enum wxKeyCode {
+  WXK_BACK    =    8,
+  WXK_TAB     =    9,
+  WXK_RETURN  =    13,
+  WXK_ESCAPE  =    27,
+  WXK_SPACE   =    32,
+  WXK_DELETE  =    127,
 
- WXK_START   = 300,
- WXK_LBUTTON,
- WXK_RBUTTON,
- WXK_CANCEL,
- WXK_MBUTTON,
- WXK_CLEAR,
- WXK_SHIFT,
- WXK_CONTROL,
- WXK_MENU,
- WXK_PAUSE,
- WXK_CAPITAL,
- WXK_PRIOR,  // Page up
- WXK_NEXT,   // Page down
- WXK_END,
- WXK_HOME,
- WXK_LEFT,
- WXK_UP,
- WXK_RIGHT,
- WXK_DOWN,
- WXK_SELECT,
- WXK_PRINT,
- WXK_EXECUTE,
- WXK_SNAPSHOT,
- WXK_INSERT,
- WXK_HELP,
- WXK_NUMPAD0,
- WXK_NUMPAD1,
- WXK_NUMPAD2,
- WXK_NUMPAD3,
- WXK_NUMPAD4,
- WXK_NUMPAD5,
- WXK_NUMPAD6,
- WXK_NUMPAD7,
- WXK_NUMPAD8,
- WXK_NUMPAD9,
- WXK_MULTIPLY,
- WXK_ADD,
- WXK_SEPARATOR,
- WXK_SUBTRACT,
- WXK_DECIMAL,
- WXK_DIVIDE,
- WXK_F1,
- WXK_F2,
- WXK_F3,
- WXK_F4,
- WXK_F5,
- WXK_F6,
- WXK_F7,
- WXK_F8,
- WXK_F9,
- WXK_F10,
- WXK_F11,
- WXK_F12,
- WXK_F13,
- WXK_F14,
- WXK_F15,
- WXK_F16,
- WXK_F17,
- WXK_F18,
- WXK_F19,
- WXK_F20,
- WXK_F21,
- WXK_F22,
- WXK_F23,
- WXK_F24,
- WXK_NUMLOCK,
- WXK_SCROLL,
- WXK_PAGEUP,
- WXK_PAGEDOWN
+  WXK_START   = 300,
+  WXK_LBUTTON,
+  WXK_RBUTTON,
+  WXK_CANCEL,
+  WXK_MBUTTON,
+  WXK_CLEAR,
+  WXK_SHIFT,
+  WXK_ALT,
+  WXK_CONTROL,
+  WXK_MENU,
+  WXK_PAUSE,
+  WXK_CAPITAL,
+  WXK_PRIOR,  /* Page up */
+  WXK_NEXT,   /* Page down */
+  WXK_END,
+  WXK_HOME,
+  WXK_LEFT,
+  WXK_UP,
+  WXK_RIGHT,
+  WXK_DOWN,
+  WXK_SELECT,
+  WXK_PRINT,
+  WXK_EXECUTE,
+  WXK_SNAPSHOT,
+  WXK_INSERT,
+  WXK_HELP,
+  WXK_NUMPAD0,
+  WXK_NUMPAD1,
+  WXK_NUMPAD2,
+  WXK_NUMPAD3,
+  WXK_NUMPAD4,
+  WXK_NUMPAD5,
+  WXK_NUMPAD6,
+  WXK_NUMPAD7,
+  WXK_NUMPAD8,
+  WXK_NUMPAD9,
+  WXK_MULTIPLY,
+  WXK_ADD,
+  WXK_SEPARATOR,
+  WXK_SUBTRACT,
+  WXK_DECIMAL,
+  WXK_DIVIDE,
+  WXK_F1,
+  WXK_F2,
+  WXK_F3,
+  WXK_F4,
+  WXK_F5,
+  WXK_F6,
+  WXK_F7,
+  WXK_F8,
+  WXK_F9,
+  WXK_F10,
+  WXK_F11,
+  WXK_F12,
+  WXK_F13,
+  WXK_F14,
+  WXK_F15,
+  WXK_F16,
+  WXK_F17,
+  WXK_F18,
+  WXK_F19,
+  WXK_F20,
+  WXK_F21,
+  WXK_F22,
+  WXK_F23,
+  WXK_F24,
+  WXK_NUMLOCK,
+  WXK_SCROLL,
+  WXK_PAGEUP,
+  WXK_PAGEDOWN,
+
+  WXK_NUMPAD_SPACE,
+  WXK_NUMPAD_TAB,
+  WXK_NUMPAD_ENTER,
+  WXK_NUMPAD_F1,
+  WXK_NUMPAD_F2,
+  WXK_NUMPAD_F3,
+  WXK_NUMPAD_F4,
+  WXK_NUMPAD_HOME,
+  WXK_NUMPAD_LEFT,
+  WXK_NUMPAD_UP,
+  WXK_NUMPAD_RIGHT,
+  WXK_NUMPAD_DOWN,
+  WXK_NUMPAD_PRIOR,
+  WXK_NUMPAD_PAGEUP,
+  WXK_NUMPAD_NEXT,
+  WXK_NUMPAD_PAGEDOWN,
+  WXK_NUMPAD_END,
+  WXK_NUMPAD_BEGIN,
+  WXK_NUMPAD_INSERT,
+  WXK_NUMPAD_DELETE,
+  WXK_NUMPAD_EQUAL,
+  WXK_NUMPAD_MULTIPLY,
+  WXK_NUMPAD_ADD,
+  WXK_NUMPAD_SEPARATOR,
+  WXK_NUMPAD_SUBTRACT,
+  WXK_NUMPAD_DECIMAL,
+  WXK_NUMPAD_DIVIDE
+
 };
 
-typedef enum {
- wxCURSOR_NONE = 0,
- wxCURSOR_ARROW =  1,
- wxCURSOR_BULLSEYE,
- wxCURSOR_CHAR,
- wxCURSOR_CROSS,
- wxCURSOR_HAND,
- wxCURSOR_IBEAM,
- wxCURSOR_LEFT_BUTTON,
- wxCURSOR_MAGNIFIER,
- wxCURSOR_MIDDLE_BUTTON,
- wxCURSOR_NO_ENTRY,
- wxCURSOR_PAINT_BRUSH,
- wxCURSOR_PENCIL,
- wxCURSOR_POINT_LEFT,
- wxCURSOR_POINT_RIGHT,
- wxCURSOR_QUESTION_ARROW,
- wxCURSOR_RIGHT_BUTTON,
- wxCURSOR_SIZENESW,
- wxCURSOR_SIZENS,
- wxCURSOR_SIZENWSE,
- wxCURSOR_SIZEWE,
- wxCURSOR_SIZING,
- wxCURSOR_SPRAYCAN,
- wxCURSOR_WAIT,
- wxCURSOR_WATCH,
- wxCURSOR_BLANK
-//  #ifndef __WXMSW__
-//    /* Not yet implemented for Windows */
-//    , wxCURSOR_CROSS_REVERSE,
-//    wxCURSOR_DOUBLE_ARROW,
-//    wxCURSOR_BASED_ARROW_UP,
-//    wxCURSOR_BASED_ARROW_DOWN
-//  #endif
-} _standard_cursors_t;
+
+// Bitmap flags
+enum wxBitmapType
+{
+    wxBITMAP_TYPE_INVALID,          // should be == 0 for compatibility!
+    wxBITMAP_TYPE_BMP,
+    wxBITMAP_TYPE_BMP_RESOURCE,
+    wxBITMAP_TYPE_RESOURCE = wxBITMAP_TYPE_BMP_RESOURCE,
+    wxBITMAP_TYPE_ICO,
+    wxBITMAP_TYPE_ICO_RESOURCE,
+    wxBITMAP_TYPE_CUR,
+    wxBITMAP_TYPE_CUR_RESOURCE,
+    wxBITMAP_TYPE_XBM,
+    wxBITMAP_TYPE_XBM_DATA,
+    wxBITMAP_TYPE_XPM,
+    wxBITMAP_TYPE_XPM_DATA,
+    wxBITMAP_TYPE_TIF,
+    wxBITMAP_TYPE_TIF_RESOURCE,
+    wxBITMAP_TYPE_GIF,
+    wxBITMAP_TYPE_GIF_RESOURCE,
+    wxBITMAP_TYPE_PNG,
+    wxBITMAP_TYPE_PNG_RESOURCE,
+    wxBITMAP_TYPE_JPEG,
+    wxBITMAP_TYPE_JPEG_RESOURCE,
+    wxBITMAP_TYPE_PNM,
+    wxBITMAP_TYPE_PNM_RESOURCE,
+    wxBITMAP_TYPE_PCX,
+    wxBITMAP_TYPE_PCX_RESOURCE,
+    wxBITMAP_TYPE_PICT,
+    wxBITMAP_TYPE_PICT_RESOURCE,
+    wxBITMAP_TYPE_ICON,
+    wxBITMAP_TYPE_ICON_RESOURCE,
+    wxBITMAP_TYPE_ANI,
+    wxBITMAP_TYPE_IFF,
+    wxBITMAP_TYPE_MACCURSOR,
+    wxBITMAP_TYPE_MACCURSOR_RESOURCE,
+    wxBITMAP_TYPE_ANY = 50
+};
+
+
+
+
+// Standard cursors
+enum wxStockCursor
+{
+    wxCURSOR_NONE,
+    wxCURSOR_ARROW,
+    wxCURSOR_RIGHT_ARROW,
+    wxCURSOR_BULLSEYE,
+    wxCURSOR_CHAR,
+    wxCURSOR_CROSS,
+    wxCURSOR_HAND,
+    wxCURSOR_IBEAM,
+    wxCURSOR_LEFT_BUTTON,
+    wxCURSOR_MAGNIFIER,
+    wxCURSOR_MIDDLE_BUTTON,
+    wxCURSOR_NO_ENTRY,
+    wxCURSOR_PAINT_BRUSH,
+    wxCURSOR_PENCIL,
+    wxCURSOR_POINT_LEFT,
+    wxCURSOR_POINT_RIGHT,
+    wxCURSOR_QUESTION_ARROW,
+    wxCURSOR_RIGHT_BUTTON,
+    wxCURSOR_SIZENESW,
+    wxCURSOR_SIZENS,
+    wxCURSOR_SIZENWSE,
+    wxCURSOR_SIZEWE,
+    wxCURSOR_SIZING,
+    wxCURSOR_SPRAYCAN,
+    wxCURSOR_WAIT,
+    wxCURSOR_WATCH,
+    wxCURSOR_BLANK,
+    wxCURSOR_DEFAULT,
+    wxCURSOR_ARROWWAIT,
+    wxCURSOR_MAX
+};
 
 
 
@@ -770,12 +884,48 @@ typedef enum {
 
 
 
+// menu and toolbar item kinds
+enum wxItemKind
+{
+    wxITEM_SEPARATOR = -1,
+    wxITEM_NORMAL,
+    wxITEM_CHECK,
+    wxITEM_RADIO,
+    wxITEM_MAX
+};
+
+enum wxHitTest
+{
+    wxHT_NOWHERE,
+
+    // scrollbar
+    wxHT_SCROLLBAR_FIRST = wxHT_NOWHERE,
+    wxHT_SCROLLBAR_ARROW_LINE_1,    // left or upper arrow to scroll by line
+    wxHT_SCROLLBAR_ARROW_LINE_2,    // right or down
+    wxHT_SCROLLBAR_ARROW_PAGE_1,    // left or upper arrow to scroll by page
+    wxHT_SCROLLBAR_ARROW_PAGE_2,    // right or down
+    wxHT_SCROLLBAR_THUMB,           // on the thumb
+    wxHT_SCROLLBAR_BAR_1,           // bar to the left/above the thumb
+    wxHT_SCROLLBAR_BAR_2,           // bar to the right/below the thumb
+    wxHT_SCROLLBAR_LAST,
+
+    // window
+    wxHT_WINDOW_OUTSIDE,            // not in this window at all
+    wxHT_WINDOW_INSIDE,             // in the client area
+    wxHT_WINDOW_VERT_SCROLLBAR,     // on the vertical scrollbar
+    wxHT_WINDOW_HORZ_SCROLLBAR,     // on the horizontal scrollbar
+    wxHT_WINDOW_CORNER,             // on the corner between 2 scrollbars
+
+    wxHT_MAX
+};
+
+
+
 #define FALSE 0
 #define false 0
 #define TRUE 1
 #define true 1
 
-const char* wxVERSION_STRING;
 
 //---------------------------------------------------------------------------
 //---------------------------------------------------------------------------
@@ -798,6 +948,8 @@ enum wxEventType {
  wxEVT_COMMAND_SPINCTRL_UPDATED,
  wxEVT_COMMAND_TEXT_UPDATED,
  wxEVT_COMMAND_TEXT_ENTER,
+ wxEVT_COMMAND_TEXT_URL,
+ wxEVT_COMMAND_TEXT_MAXLEN,
  wxEVT_COMMAND_MENU_SELECTED,
  wxEVT_COMMAND_SLIDER_UPDATED,
  wxEVT_COMMAND_RADIOBOX_SELECTED,
@@ -811,6 +963,8 @@ enum wxEventType {
  wxEVT_COMMAND_TOOL_ENTER,
  wxEVT_SET_FOCUS,
  wxEVT_KILL_FOCUS,
+ wxEVT_CHILD_FOCUS,
+ wxEVT_MOUSEWHEEL,
 
 /* Mouse event types */
  wxEVT_LEFT_DOWN,
@@ -826,8 +980,10 @@ enum wxEventType {
  wxEVT_MIDDLE_DCLICK,
  wxEVT_RIGHT_DCLICK,
 
+ wxEVT_MOUSE_CAPTURE_CHANGED,
+
  // Non-client mouse events
- wxEVT_NC_LEFT_DOWN = wxEVT_FIRST + 100,
+ wxEVT_NC_LEFT_DOWN,
  wxEVT_NC_LEFT_UP,
  wxEVT_NC_MIDDLE_DOWN,
  wxEVT_NC_MIDDLE_UP,
@@ -839,6 +995,8 @@ enum wxEventType {
  wxEVT_NC_LEFT_DCLICK,
  wxEVT_NC_MIDDLE_DCLICK,
  wxEVT_NC_RIGHT_DCLICK,
+
+ wxEVT_SET_CURSOR,
 
 /* Character input event type  */
  wxEVT_CHAR,
@@ -857,6 +1015,7 @@ enum wxEventType {
  wxEVT_SCROLL_PAGEDOWN,
  wxEVT_SCROLL_THUMBTRACK,
  wxEVT_SCROLL_THUMBRELEASE,
+ wxEVT_SCROLL_ENDSCROLL,
 
  /*
   * Scrolled Window
@@ -883,17 +1042,16 @@ enum wxEventType {
  wxEVT_SHOW,
  wxEVT_ICONIZE,
  wxEVT_MAXIMIZE,
- wxEVT_MOUSE_CAPTURE_CHANGED,
  wxEVT_PAINT,
  wxEVT_ERASE_BACKGROUND,
  wxEVT_NC_PAINT,
  wxEVT_PAINT_ICON,
- wxEVT_MENU_CHAR,
- wxEVT_MENU_INIT,
+ wxEVT_MENU_OPEN,
+ wxEVT_MENU_CLOSE,
  wxEVT_MENU_HIGHLIGHT,
- wxEVT_POPUP_MENU_INIT,
  wxEVT_CONTEXT_MENU,
  wxEVT_SYS_COLOUR_CHANGED,
+ wxEVT_DISPLAY_CHANGED,
  wxEVT_SETTING_CHANGED,
  wxEVT_QUERY_NEW_PALETTE,
  wxEVT_PALETTE_CHANGED,
@@ -921,61 +1079,9 @@ enum wxEventType {
  wxEVT_COMMAND_KILL_FOCUS,
  wxEVT_COMMAND_ENTER,
 
- /* Tree control event types */
- wxEVT_COMMAND_TREE_BEGIN_DRAG,
- wxEVT_COMMAND_TREE_BEGIN_RDRAG,
- wxEVT_COMMAND_TREE_BEGIN_LABEL_EDIT,
- wxEVT_COMMAND_TREE_END_LABEL_EDIT,
- wxEVT_COMMAND_TREE_DELETE_ITEM,
- wxEVT_COMMAND_TREE_GET_INFO,
- wxEVT_COMMAND_TREE_SET_INFO,
- wxEVT_COMMAND_TREE_ITEM_EXPANDED,
- wxEVT_COMMAND_TREE_ITEM_EXPANDING,
- wxEVT_COMMAND_TREE_ITEM_COLLAPSED,
- wxEVT_COMMAND_TREE_ITEM_COLLAPSING,
- wxEVT_COMMAND_TREE_SEL_CHANGED,
- wxEVT_COMMAND_TREE_SEL_CHANGING,
- wxEVT_COMMAND_TREE_KEY_DOWN,
- wxEVT_COMMAND_TREE_ITEM_ACTIVATED,
- wxEVT_COMMAND_TREE_ITEM_RIGHT_CLICK,
- wxEVT_COMMAND_TREE_ITEM_MIDDLE_CLICK,
-
- /* List control event types */
- wxEVT_COMMAND_LIST_BEGIN_DRAG,
- wxEVT_COMMAND_LIST_BEGIN_RDRAG,
- wxEVT_COMMAND_LIST_BEGIN_LABEL_EDIT,
- wxEVT_COMMAND_LIST_END_LABEL_EDIT,
- wxEVT_COMMAND_LIST_DELETE_ITEM,
- wxEVT_COMMAND_LIST_DELETE_ALL_ITEMS,
- wxEVT_COMMAND_LIST_GET_INFO,
- wxEVT_COMMAND_LIST_SET_INFO,
- wxEVT_COMMAND_LIST_ITEM_SELECTED,
- wxEVT_COMMAND_LIST_ITEM_DESELECTED,
- wxEVT_COMMAND_LIST_KEY_DOWN,
- wxEVT_COMMAND_LIST_INSERT_ITEM,
- wxEVT_COMMAND_LIST_COL_CLICK,
- wxEVT_COMMAND_LIST_ITEM_ACTIVATED,
- wxEVT_COMMAND_LIST_ITEM_RIGHT_CLICK,
- wxEVT_COMMAND_LIST_ITEM_MIDDLE_CLICK,
-
-
- /* Tab and notebook control event types */
- wxEVT_COMMAND_TAB_SEL_CHANGED,
- wxEVT_COMMAND_TAB_SEL_CHANGING,
- wxEVT_COMMAND_NOTEBOOK_PAGE_CHANGED,
- wxEVT_COMMAND_NOTEBOOK_PAGE_CHANGING,
-
- /* splitter window */
- wxEVT_COMMAND_SPLITTER_SASH_POS_CHANGING,
- wxEVT_COMMAND_SPLITTER_SASH_POS_CHANGED,
- wxEVT_COMMAND_SPLITTER_UNSPLIT,
- wxEVT_COMMAND_SPLITTER_DOUBLECLICKED,
-
  wxEVT_NAVIGATION_KEY,
 
  wxEVT_TIMER,
-
- wxEVT_END_PROCESS,
 
 };
 

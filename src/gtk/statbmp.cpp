@@ -2,7 +2,7 @@
 // Name:        statbmp.cpp
 // Purpose:
 // Author:      Robert Roebling
-// Id:          $Id: statbmp.cpp,v 1.22 1999/11/19 21:01:15 VZ Exp $
+// Id:          $Id: statbmp.cpp,v 1.24 2001/08/19 21:36:25 RR Exp $
 // Copyright:   (c) 1998 Robert Roebling
 // Licence:           wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -11,9 +11,11 @@
 #pragma implementation "statbmp.h"
 #endif
 
-#include "wx/statbmp.h"
+#include "wx/defs.h"
 
 #if wxUSE_STATBMP
+
+#include "wx/statbmp.h"
 
 #include "gdk/gdk.h"
 #include "gtk/gtk.h"
@@ -44,10 +46,12 @@ void wxStaticBitmap::CreatePixmapWidget()
         mask = m_bitmap.GetMask()->GetBitmap();
     m_widget = gtk_pixmap_new( m_bitmap.GetPixmap(), mask );
 
-    /* insert GTK representation */
+    // insert GTK representation
     (*m_parent->m_insertCallback)(m_parent, this);
 
     gtk_widget_show( m_widget );
+
+    m_focusWidget = m_widget;
 
     PostCreation();
 }
@@ -62,7 +66,7 @@ bool wxStaticBitmap::Create( wxWindow *parent, wxWindowID id, const wxBitmap &bi
         !CreateBase( parent, id, pos, size, style, wxDefaultValidator, name ))
     {
         wxFAIL_MSG( wxT("wxXX creation failed") );
-	return FALSE;
+    return FALSE;
     }
 
     m_bitmap = bitmap;
@@ -74,11 +78,13 @@ bool wxStaticBitmap::Create( wxWindow *parent, wxWindowID id, const wxBitmap &bi
             mask = m_bitmap.GetMask()->GetBitmap();
         m_widget = gtk_pixmap_new( m_bitmap.GetPixmap(), mask );
 
-        SetSizeOrDefault( size );
+        SetBestSize( size );
     }
     else
     {
         m_widget = gtk_label_new( "Bitmap" );
+        
+        m_focusWidget = m_widget;
 
         PostCreation();
     }
@@ -112,16 +118,9 @@ void wxStaticBitmap::SetBitmap( const wxBitmap &bitmap )
             gtk_pixmap_set( GTK_PIXMAP(m_widget), m_bitmap.GetPixmap(), mask );
         }
 
-        SetSizeOrDefault();
+        SetBestSize(wxSize(bitmap.GetWidth(), bitmap.GetHeight()));
     }
 }
 
-wxSize wxStaticBitmap::DoGetBestSize() const
-{
-    if ( m_bitmap.Ok() )
-        return wxSize(m_bitmap.GetWidth(), m_bitmap.GetHeight());
-    else
-        return wxSize(16, 16);  // completely arbitrary
-}
+#endif // wxUSE_STATBMP
 
-#endif

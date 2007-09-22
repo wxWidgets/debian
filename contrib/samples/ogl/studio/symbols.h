@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     12/07/98
-// RCS-ID:      $Id: symbols.h,v 1.2 2000/03/20 13:41:15 JS Exp $
+// RCS-ID:      $Id: symbols.h,v 1.3 2002/09/07 12:12:22 GD Exp $
 // Copyright:   (c) Julian Smart
 // Licence:
 /////////////////////////////////////////////////////////////////////////////
@@ -12,7 +12,7 @@
 #ifndef _STUDIO_SYMBOLS_H_
 #define _STUDIO_SYMBOLS_H_
 
-#ifdef __GNUG__
+#if defined(__GNUG__) && !defined(__APPLE__)
 // #pragma interface
 #endif
 

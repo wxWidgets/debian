@@ -4,7 +4,7 @@
 // Author:      Arthur Seaton, Julian Smart
 // Modified by:
 // Created:     29/01/98
-// RCS-ID:      $Id: memory.h,v 1.27 2000/02/24 15:04:18 JS Exp $
+// RCS-ID:      $Id: memory.h,v 1.35 2002/08/31 11:29:10 GD Exp $
 // Copyright:   (c) 1998 Julian Smart
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -12,7 +12,7 @@
 #ifndef _WX_MEMORYH__
 #define _WX_MEMORYH__
 
-#ifdef __GNUG__
+#if defined(__GNUG__) && !defined(__APPLE__)
 #pragma interface "memory.h"
 #endif
 
@@ -28,22 +28,37 @@
 
 #include <stddef.h>
 
+// Obsolete
+#if 0
 #if wxUSE_IOSTREAMH
     // N.B. BC++ doesn't have istream.h, ostream.h
 #   include <iostream.h>
 #else
-#   include <ostream>
+#   include <iostream>
 #   if defined(__VISUALC__) || defined(__MWERKS__)
-        using namespace std;
+//        using namespace std;
 #   endif
+#endif
 #endif
 
 #ifdef __WXDEBUG__
 
-void * wxDebugAlloc(size_t size, wxChar * fileName, int lineNum, bool isObject, bool isVect = FALSE);
-void wxDebugFree(void * buf, bool isVect = FALSE);
+// devik 2000-8-27: export these because new/delete operators are now inline
+WXDLLEXPORT void * wxDebugAlloc(size_t size, wxChar * fileName, int lineNum, bool isObject, bool isVect = FALSE);
+WXDLLEXPORT void wxDebugFree(void * buf, bool isVect = FALSE);
 
-// Global versions of the new and delete operators.
+//**********************************************************************************
+/*
+  The global operator new used for everything apart from getting
+  dynamic storage within this function itself.
+*/
+
+// We'll only do malloc and free for the moment: leave the interesting
+// stuff for the wxObject versions.
+// devik 2000-8-29: All new/delete ops are now inline because they can't
+// be marked as dllexport/dllimport. It then leads to weird bugs when
+// used on MSW as DLL
+
 #if wxUSE_GLOBAL_MEMORY_OPERATORS
 
 // Undefine temporarily (new is #defined in object.h) because we want to
@@ -61,35 +76,60 @@ void wxDebugFree(void * buf, bool isVect = FALSE);
     #ifndef __EDG_ABI_COMPATIBILITY_VERSION
         #define wxUSE_ARRAY_MEMORY_OPERATORS 0
     #endif
+#elif !( defined (__VISUALC__) && (__VISUALC__ <= 1020) ) || defined( __MWERKS__)
+    #define wxUSE_ARRAY_MEMORY_OPERATORS 1
 #else
     // ::operator new[] is a recent C++ feature, so assume it's not supported
     #define wxUSE_ARRAY_MEMORY_OPERATORS 0
 #endif
 
-// Added JACS 25/11/98: needed for some compilers
-void * operator new (size_t size);
-WXDLLEXPORT void * operator new (size_t size, wxChar * fileName, int lineNum);
+inline void * operator new (size_t size, wxChar * fileName, int lineNum)
+{
+  return wxDebugAlloc(size, fileName, lineNum, FALSE, FALSE);
+}
 
-#if !defined(__VISAGECPP__)
-void operator delete (void * buf);
-#endif
+inline void * operator new (size_t size)
+{
+  return wxDebugAlloc(size, NULL, 0, FALSE);
+}
+
+inline void operator delete (void * buf)
+{
+  wxDebugFree(buf, FALSE);
+}
 
 #if wxUSE_ARRAY_MEMORY_OPERATORS
-    WXDLLEXPORT void* operator new[] (size_t size);
-    WXDLLEXPORT void* operator new[] (size_t size, wxChar * fileName, int lineNum);
-    WXDLLEXPORT void operator delete[] (void * buf);
+inline void * operator new[] (size_t size)
+{
+  return wxDebugAlloc(size, NULL, 0, FALSE, TRUE);
+}
+
+inline void * operator new[] (size_t size, wxChar * fileName, int lineNum)
+{
+  return wxDebugAlloc(size, fileName, lineNum, FALSE, TRUE);
+}
+
+inline void operator delete[] (void * buf)
+{
+  wxDebugFree(buf, TRUE);
+}
 #endif
 
-// VC++ 6.0
-#if defined(__VISUALC__) && (__VISUALC__ >= 1200)
-    WXDLLEXPORT void operator delete(void *buf, wxChar*, int);
-    WXDLLEXPORT void operator delete[](void *buf, wxChar*, int);
-#endif
+// VC++ 6.0 and MWERKS
+#if ( defined(__VISUALC__) && (__VISUALC__ >= 1200) ) || defined(__MWERKS__)
+inline void operator delete(void* pData, wxChar* /* fileName */, int /* lineNum */)
+{
+  wxDebugFree(pData, FALSE);
+}
+inline void operator delete[](void* pData, wxChar* /* fileName */, int /* lineNum */)
+{
+  wxDebugFree(pData, TRUE);
+}
+#endif // __VISUALC__>=1200
+#endif // wxUSE_GLOBAL_MEMORY_OPERATORS
+#endif // __WXDEBUG__
 
-#endif
-  // wxUSE_GLOBAL_MEMORY_OPERATORS
-#endif
-  // __WXDEBUG__
+//**********************************************************************************
 
 typedef unsigned int wxMarkerType;
 
@@ -190,14 +230,17 @@ protected:
     // Traverse the list.
     static void TraverseList (PmSFV, wxMemStruct *from = NULL);
 
-    static streambuf *m_streamBuf;
-    static ostream *m_debugStream;
+    // Obsolete
+#if 0
+    static wxSTD streambuf *m_streamBuf;
+    static wxSTD ostream *m_debugStream;
+#endif
 
     static int debugLevel;
     static bool debugOn;
 
-	static int m_balign;			// byte alignment
-	static int m_balignmask;		// mask for performing byte alignment
+    static int m_balign;            // byte alignment
+    static int m_balignmask;        // mask for performing byte alignment
 public:
     // Set a checkpoint to dump only the memory from
     // a given point
@@ -206,12 +249,15 @@ public:
     wxDebugContext(void);
     ~wxDebugContext(void);
 
+    // Obsolete
+#if 0
     static bool HasStream(void) { return (m_debugStream != NULL); };
-    static ostream& GetStream(void) { return *m_debugStream; }
-    static streambuf *GetStreamBuf(void) { return m_streamBuf; }
-    static void SetStream(ostream *stream, streambuf *buf = NULL);
+    static wxSTD ostream& GetStream(void) { return *m_debugStream; }
+    static wxSTD streambuf *GetStreamBuf(void) { return m_streamBuf; }
+    static void SetStream(wxSTD ostream *stream, wxSTD streambuf *buf = NULL);
     static bool SetFile(const wxString& file);
     static bool SetStandardError(void);
+#endif
 
     static int GetLevel(void) { return debugLevel; }
     static void SetLevel(int level) { debugLevel = level; }
@@ -284,8 +330,8 @@ private:
 };
 
 // Output a debug message, in a system dependent fashion.
-void WXDLLEXPORT wxTrace(const wxChar *fmt ...);
-void WXDLLEXPORT wxTraceLevel(int level, const wxChar *fmt ...);
+void WXDLLEXPORT wxTrace(const wxChar *fmt ...) ATTRIBUTE_PRINTF_1;
+void WXDLLEXPORT wxTraceLevel(int level, const wxChar *fmt ...) ATTRIBUTE_PRINTF_2;
 
 #define WXTRACE wxTrace
 #define WXTRACELEVEL wxTraceLevel

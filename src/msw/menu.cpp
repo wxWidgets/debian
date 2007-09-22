@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by: Vadim Zeitlin
 // Created:     04/01/98
-// RCS-ID:      $Id: menu.cpp,v 1.58.2.5 2000/08/06 10:12:08 VZ Exp $
+// RCS-ID:      $Id: menu.cpp,v 1.71 2002/04/16 08:57:36 VZ Exp $
 // Copyright:   (c) Julian Smart and Markus Holzem
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -27,6 +27,8 @@
 #ifdef __BORLANDC__
     #pragma hdrstop
 #endif
+
+#if wxUSE_MENUS
 
 #ifndef WX_PRECOMP
     #include "wx/frame.h"
@@ -59,15 +61,30 @@ extern wxMenu *wxCurrentPopupMenu;
 static const int idMenuTitle = -2;
 
 // ----------------------------------------------------------------------------
-// macros
+// private functions
 // ----------------------------------------------------------------------------
 
-IMPLEMENT_DYNAMIC_CLASS(wxMenu, wxEvtHandler)
-IMPLEMENT_DYNAMIC_CLASS(wxMenuBar, wxWindow)
+// make the given menu item default
+static void SetDefaultMenuItem(HMENU hmenu, UINT id)
+{
+    MENUITEMINFO mii;
+    wxZeroMemory(mii);
+    mii.cbSize = sizeof(MENUITEMINFO);
+    mii.fMask = MIIM_STATE;
+    mii.fState = MFS_DEFAULT;
+
+    if ( !::SetMenuItemInfo(hmenu, id, FALSE, &mii) )
+    {
+        wxLogLastError(wxT("SetMenuItemInfo"));
+    }
+}
 
 // ============================================================================
 // implementation
 // ============================================================================
+
+IMPLEMENT_DYNAMIC_CLASS(wxMenu, wxEvtHandler)
+IMPLEMENT_DYNAMIC_CLASS(wxMenuBar, wxWindow)
 
 // ---------------------------------------------------------------------------
 // wxMenu construction, adding and removing menu items
@@ -77,6 +94,7 @@ IMPLEMENT_DYNAMIC_CLASS(wxMenuBar, wxWindow)
 void wxMenu::Init()
 {
     m_doBreak = FALSE;
+    m_startRadioGroup = -1;
 
     // create the menu
     m_hMenu = (WXHMENU)CreatePopupMenu();
@@ -117,6 +135,13 @@ void wxMenu::Break()
 {
     // this will take effect during the next call to Append()
     m_doBreak = TRUE;
+}
+
+void wxMenu::Attach(wxMenuBarBase *menubar)
+{
+    wxMenuBase::Attach(menubar);
+
+    EndRadioGroup();
 }
 
 #if wxUSE_ACCEL
@@ -170,7 +195,7 @@ void wxMenu::UpdateAccel(wxMenuItem *item)
             if ( accel )
                 m_accels[n] = accel;
             else
-                m_accels.Remove(n);
+                m_accels.RemoveAt(n);
         }
 
         if ( IsAttached() )
@@ -253,38 +278,86 @@ bool wxMenu::DoInsertOrAppend(wxMenuItem *pItem, size_t pos)
 
         return FALSE;
     }
-    else
-    {
-        // if we just appended the title, highlight it
-#ifdef __WIN32__
-        if ( (int)id == idMenuTitle )
-        {
-            // visually select the menu title
-            MENUITEMINFO mii;
-            mii.cbSize = sizeof(mii);
-            mii.fMask = MIIM_STATE;
-            mii.fState = MFS_DEFAULT;
 
-            if ( !SetMenuItemInfo(GetHmenu(), (unsigned)id, FALSE, &mii) )
-            {
-                wxLogLastError(wxT("SetMenuItemInfo"));
-            }
-        }
+    // if we just appended the title, highlight it
+#ifdef __WIN32__
+    if ( (int)id == idMenuTitle )
+    {
+        // visually select the menu title
+        SetDefaultMenuItem(GetHmenu(), id);
+    }
 #endif // __WIN32__
 
-        // if we're already attached to the menubar, we must update it
-        if ( IsAttached() )
-        {
-            m_menuBar->Refresh();
-        }
-
-        return TRUE;
+    // if we're already attached to the menubar, we must update it
+    if ( IsAttached() && m_menuBar->IsAttached() )
+    {
+        m_menuBar->Refresh();
     }
+
+    return TRUE;
+}
+
+void wxMenu::EndRadioGroup()
+{
+    // we're not inside a radio group any longer
+    m_startRadioGroup = -1;
 }
 
 bool wxMenu::DoAppend(wxMenuItem *item)
 {
-    return wxMenuBase::DoAppend(item) && DoInsertOrAppend(item);
+    wxCHECK_MSG( item, FALSE, _T("NULL item in wxMenu::DoAppend") );
+
+    bool check = FALSE;
+
+    if ( item->GetKind() == wxITEM_RADIO )
+    {
+        int count = GetMenuItemCount();
+
+        if ( m_startRadioGroup == -1 )
+        {
+            // start a new radio group
+            m_startRadioGroup = count;
+
+            // for now it has just one element
+            item->SetAsRadioGroupStart();
+            item->SetRadioGroupEnd(m_startRadioGroup);
+
+            // ensure that we have a checked item in the radio group
+            check = TRUE;
+        }
+        else // extend the current radio group
+        {
+            // we need to update its end item
+            item->SetRadioGroupStart(m_startRadioGroup);
+            wxMenuItemList::Node *node = GetMenuItems().Item(m_startRadioGroup);
+
+            if ( node )
+            {
+                node->GetData()->SetRadioGroupEnd(count);
+            }
+            else
+            {
+                wxFAIL_MSG( _T("where is the radio group start item?") );
+            }
+        }
+    }
+    else // not a radio item
+    {
+        EndRadioGroup();
+    }
+
+    if ( !wxMenuBase::DoAppend(item) || !DoInsertOrAppend(item) )
+    {
+        return FALSE;
+    }
+
+    if ( check )
+    {
+        // check the item initially
+        item->Check(TRUE);
+    }
+
+    return TRUE;
 }
 
 bool wxMenu::DoInsert(size_t pos, wxMenuItem *item)
@@ -315,7 +388,7 @@ wxMenuItem *wxMenu::DoRemove(wxMenuItem *item)
     {
         delete m_accels[n];
 
-        m_accels.Remove(n);
+        m_accels.RemoveAt(n);
     }
     //else: this item doesn't have an accel, nothing to do
 #endif // wxUSE_ACCEL
@@ -326,7 +399,7 @@ wxMenuItem *wxMenu::DoRemove(wxMenuItem *item)
         wxLogLastError(wxT("RemoveMenu"));
     }
 
-    if ( IsAttached() )
+    if ( IsAttached() && m_menuBar->IsAttached() )
     {
         // otherwise, the chane won't be visible
         m_menuBar->Refresh();
@@ -407,15 +480,7 @@ void wxMenu::SetTitle(const wxString& label)
     // put the title string in bold face
     if ( !m_title.IsEmpty() )
     {
-        MENUITEMINFO mii;
-        mii.cbSize = sizeof(mii);
-        mii.fMask = MIIM_STATE;
-        mii.fState = MFS_DEFAULT;
-
-        if ( !SetMenuItemInfo(hMenu, (unsigned)idMenuTitle, FALSE, &mii) )
-        {
-            wxLogLastError(wxT("SetMenuItemInfo"));
-        }
+        SetDefaultMenuItem(GetHmenu(), (UINT)idMenuTitle);
     }
 #endif // Win32
 }
@@ -431,69 +496,19 @@ bool wxMenu::MSWCommand(WXUINT WXUNUSED(param), WXWORD id)
     // NB: VC++ generates wrong assembler for `if ( id != idMenuTitle )'!!
     if ( id != (WXWORD)idMenuTitle )
     {
-        wxCommandEvent event(wxEVT_COMMAND_MENU_SELECTED);
-        event.SetEventObject( this );
-        event.SetId( id );
-
         // VZ: previosuly, the command int was set to id too which was quite
         //     useless anyhow (as it could be retrieved using GetId()) and
         //     uncompatible with wxGTK, so now we use the command int instead
         //     to pass the checked status
-        event.SetInt(::GetMenuState(GetHmenu(), id, MF_BYCOMMAND) & MF_CHECKED);
-
-        ProcessCommand(event);
+        SendEvent(id, ::GetMenuState(GetHmenu(), id, MF_BYCOMMAND) & MF_CHECKED);
     }
 
     return TRUE;
 }
 
-bool wxMenu::ProcessCommand(wxCommandEvent & event)
-{
-    bool processed = FALSE;
-
-#if wxUSE_MENU_CALLBACK
-    // Try a callback
-    if (m_callback)
-    {
-        (void)(*(m_callback))(*this, event);
-        processed = TRUE;
-    }
-#endif // wxUSE_MENU_CALLBACK
-
-    // Try the menu's event handler
-    if ( !processed && GetEventHandler())
-    {
-        processed = GetEventHandler()->ProcessEvent(event);
-    }
-
-    // Try the window the menu was popped up from (and up through the
-    // hierarchy)
-    wxWindow *win = GetInvokingWindow();
-    if ( !processed && win )
-        processed = win->GetEventHandler()->ProcessEvent(event);
-
-    return processed;
-}
-
 // ---------------------------------------------------------------------------
 // other
 // ---------------------------------------------------------------------------
-
-void wxMenu::Attach(wxMenuBar *menubar)
-{
-    // menu can be in at most one menubar because otherwise they would both
-    // delete the menu pointer
-    wxASSERT_MSG( !m_menuBar, wxT("menu belongs to 2 menubars, expect a crash") );
-
-    m_menuBar = menubar;
-}
-
-void wxMenu::Detach()
-{
-    wxASSERT_MSG( m_menuBar, wxT("can't detach menu if it's not attached") );
-
-    m_menuBar = NULL;
-}
 
 wxWindow *wxMenu::GetWindow() const
 {
@@ -512,7 +527,6 @@ wxWindow *wxMenu::GetWindow() const
 void wxMenuBar::Init()
 {
     m_eventHandler = this;
-    m_menuBarFrame = NULL;
     m_hMenu = 0;
 }
 
@@ -553,7 +567,7 @@ void wxMenuBar::Refresh()
 {
     wxCHECK_RET( IsAttached(), wxT("can't refresh unattached menubar") );
 
-    DrawMenuBar(GetHwndOf(m_menuBarFrame));
+    DrawMenuBar(GetHwndOf(GetFrame()));
 }
 
 WXHMENU wxMenuBar::Create()
@@ -659,7 +673,8 @@ wxMenu *wxMenuBar::Replace(size_t pos, wxMenu *menu, const wxString& title)
 {
     wxMenu *menuOld = wxMenuBarBase::Replace(pos, menu, title);
     if ( !menuOld )
-        return FALSE;
+        return NULL;
+
     m_titles[pos] = title;
 
     if ( IsAttached() )
@@ -698,8 +713,6 @@ bool wxMenuBar::Insert(size_t pos, wxMenu *menu, const wxString& title)
 
     m_titles.Insert(title, pos);
 
-    menu->Attach(this);
-
     if ( IsAttached() )
     {
         if ( !::InsertMenu(GetHmenu(), pos,
@@ -730,8 +743,6 @@ bool wxMenuBar::Append(wxMenu *menu, const wxString& title)
 
     if ( !wxMenuBarBase::Append(menu, title) )
         return FALSE;
-
-    menu->Attach(this);
 
     m_titles.Add(title);
 
@@ -769,8 +780,6 @@ wxMenu *wxMenuBar::Remove(size_t pos)
         {
             wxLogLastError(wxT("RemoveMenu"));
         }
-
-        menu->Detach();
 
 #if wxUSE_ACCEL
         if ( menu->HasAccels() )
@@ -820,9 +829,7 @@ void wxMenuBar::RebuildAccelTable()
 
 void wxMenuBar::Attach(wxFrame *frame)
 {
-//    wxASSERT_MSG( !IsAttached(), wxT("menubar already attached!") );
-
-    m_menuBarFrame = frame;
+    wxMenuBarBase::Attach(frame);
 
 #if wxUSE_ACCEL
     RebuildAccelTable();
@@ -831,44 +838,9 @@ void wxMenuBar::Attach(wxFrame *frame)
 
 void wxMenuBar::Detach()
 {
-//    ::DestroyMenu((HMENU)m_hMenu);
     m_hMenu = (WXHMENU)NULL;
-    m_menuBarFrame = NULL;
+
+    wxMenuBarBase::Detach();
 }
 
-
-// ---------------------------------------------------------------------------
-// wxMenuBar searching for menu items
-// ---------------------------------------------------------------------------
-
-// Find the itemString in menuString, and return the item id or wxNOT_FOUND
-int wxMenuBar::FindMenuItem(const wxString& menuString,
-                            const wxString& itemString) const
-{
-    wxString menuLabel = wxStripMenuCodes(menuString);
-    size_t count = GetMenuCount();
-    for ( size_t i = 0; i < count; i++ )
-    {
-        wxString title = wxStripMenuCodes(m_titles[i]);
-        if ( menuLabel == title )
-            return m_menus[i]->FindItem(itemString);
-    }
-
-    return wxNOT_FOUND;
-}
-
-wxMenuItem *wxMenuBar::FindItem(int id, wxMenu **itemMenu) const
-{
-    if ( itemMenu )
-        *itemMenu = NULL;
-
-    wxMenuItem *item = NULL;
-    size_t count = GetMenuCount();
-    for ( size_t i = 0; !item && (i < count); i++ )
-    {
-        item = m_menus[i]->FindItem(id, itemMenu);
-    }
-
-    return item;
-}
-
+#endif // wxUSE_MENUS

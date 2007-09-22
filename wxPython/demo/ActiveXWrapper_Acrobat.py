@@ -29,7 +29,7 @@ if wxPlatform == '__WXMSW__':
 #----------------------------------------------------------------------
 
 class TestPanel(wxPanel):
-    def __init__(self, parent):
+    def __init__(self, parent, log):
         wxPanel.__init__(self, parent, -1)
         self.pdf = None
 
@@ -64,7 +64,10 @@ class TestPanel(wxPanel):
         self.SetSizer(sizer)
         self.SetAutoLayout(true)
 
-    def __del__(self):
+        EVT_WINDOW_DESTROY(self, self.OnDestroy)
+
+
+    def OnDestroy(self, evt):
         if self.pdf:
             self.pdf.Cleanup()
             self.pdf = None
@@ -94,7 +97,7 @@ class TestPanel(wxPanel):
 
 def runTest(frame, nb, log):
     if wxPlatform == '__WXMSW__':
-        win = TestPanel(nb)
+        win = TestPanel(nb, log)
         return win
     else:
         dlg = wxMessageDialog(frame, 'This demo only works on MSW.',
@@ -114,11 +117,6 @@ if __name__ == '__main__':
             wxFrame.__init__(self, None, -1, "ActiveX test -- Acrobat", size=(640, 480),
                              style=wxDEFAULT_FRAME_STYLE|wxNO_FULL_REPAINT_ON_RESIZE)
             self.tp = TestPanel(self, sys.stdout)
-            EVT_CLOSE(self, self.OnCloseWindow)
-
-        def OnCloseWindow(self, event):
-            self.tp.pdf.Cleanup()
-            self.Destroy()
 
 
     app = wxPySimpleApp()

@@ -2,7 +2,7 @@
 // Name:        minifram.cpp
 // Purpose:
 // Author:      Robert Roebling
-// Id:          $Id: minifram.cpp,v 1.25 2000/03/18 21:46:18 VS Exp $
+// Id:          $Id: minifram.cpp,v 1.29 2002/08/05 17:59:19 RR Exp $
 // Copyright:   (c) 1998 Robert Roebling
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -19,6 +19,7 @@
 
 #include "gtk/gtk.h"
 #include "wx/gtk/win_gtk.h"
+#include "wx/gtk/private.h"
 
 #include <gdk/gdk.h>
 #include <gdk/gdkprivate.h>
@@ -37,7 +38,7 @@ extern bool g_isIdle;
 
 extern bool        g_blockEventsOnDrag;
 extern bool        g_blockEventsOnScroll;
-extern GtkWidget  *wxRootWindow;
+extern GtkWidget  *wxGetRootWindow();
 
 //-----------------------------------------------------------------------------
 // local functions
@@ -47,7 +48,7 @@ extern GtkWidget  *wxRootWindow;
 
 static void DrawFrame( GtkWidget *widget, int x, int y, int w, int h )
 {
-    int org_x = 0;    
+    int org_x = 0;
     int org_y = 0;
     gdk_window_get_origin( widget->window, &org_x, &org_y );
     x += org_x;
@@ -56,7 +57,7 @@ static void DrawFrame( GtkWidget *widget, int x, int y, int w, int h )
     GdkGC *gc = gdk_gc_new( GDK_ROOT_PARENT() );
     gdk_gc_set_subwindow( gc, GDK_INCLUDE_INFERIORS );
     gdk_gc_set_function( gc, GDK_INVERT );
-    
+
     gdk_draw_rectangle( GDK_ROOT_PARENT(), gc, FALSE, x, y, w, h );
     gdk_gc_unref( gc );
 }
@@ -71,10 +72,10 @@ static void gtk_window_own_expose_callback( GtkWidget *widget, GdkEventExpose *g
 
     if (!win->m_hasVMT) return;
     if (gdk_event->count > 0) return;
-    
+
     GtkPizza *pizza = GTK_PIZZA(widget);
-    
-    gtk_draw_shadow( widget->style, 
+
+    gtk_draw_shadow( widget->style,
                      pizza->bin_window,
                      GTK_STATE_NORMAL,
                      GTK_SHADOW_OUT,
@@ -82,26 +83,26 @@ static void gtk_window_own_expose_callback( GtkWidget *widget, GdkEventExpose *g
                      win->m_width, win->m_height );
 
     if (!win->m_title.IsEmpty() &&
-        ((win->GetWindowStyle() & wxCAPTION) || 
-         (win->GetWindowStyle() & wxTINY_CAPTION_HORIZ) || 
+        ((win->GetWindowStyle() & wxCAPTION) ||
+         (win->GetWindowStyle() & wxTINY_CAPTION_HORIZ) ||
          (win->GetWindowStyle() & wxTINY_CAPTION_VERT)))
     {
         GdkGC *gc = gdk_gc_new( pizza->bin_window );
         GdkFont *font = wxSMALL_FONT->GetInternalFont(1.0);
-        
+
         gdk_gc_set_foreground( gc, &widget->style->bg[GTK_STATE_SELECTED] );
-        gdk_draw_rectangle( pizza->bin_window, gc, TRUE, 
-                            3, 
-                            3, 
+        gdk_draw_rectangle( pizza->bin_window, gc, TRUE,
+                            3,
+                            3,
                             win->m_width - 7,
                             font->ascent + font->descent+1 );
-                            
+
         gdk_gc_set_foreground( gc, &widget->style->fg[GTK_STATE_SELECTED] );
-        gdk_draw_string( pizza->bin_window, font, gc, 
-                         6, 
-                         3+font->ascent, 
-                         win->m_title.mb_str() );
-        
+        gdk_draw_string( pizza->bin_window, font, gc,
+                         6,
+                         3+font->ascent,
+                         wxGTK_CONV( win->m_title ) );
+
         gdk_gc_unref( gc );
     }
 }
@@ -115,37 +116,37 @@ static void gtk_window_own_draw_callback( GtkWidget *widget, GdkRectangle *WXUNU
     if (g_isIdle) wxapp_install_idle_handler();
 
     if (!win->m_hasVMT) return;
-    
+
     GtkPizza *pizza = GTK_PIZZA(widget);
-    
-    gtk_draw_shadow( widget->style, 
+
+    gtk_draw_shadow( widget->style,
                      pizza->bin_window,
                      GTK_STATE_NORMAL,
                      GTK_SHADOW_OUT,
                      0, 0,
                      win->m_width, win->m_height );
-                     
+
     if (!win->m_title.IsEmpty() &&
-        ((win->GetWindowStyle() & wxCAPTION) || 
-         (win->GetWindowStyle() & wxTINY_CAPTION_HORIZ) || 
+        ((win->GetWindowStyle() & wxCAPTION) ||
+         (win->GetWindowStyle() & wxTINY_CAPTION_HORIZ) ||
          (win->GetWindowStyle() & wxTINY_CAPTION_VERT)))
     {
         GdkGC *gc = gdk_gc_new( pizza->bin_window );
         GdkFont *font = wxSMALL_FONT->GetInternalFont(1.0);
-        
+
         gdk_gc_set_foreground( gc, &widget->style->bg[GTK_STATE_SELECTED] );
-        gdk_draw_rectangle( pizza->bin_window, gc, TRUE, 
-                            3, 
+        gdk_draw_rectangle( pizza->bin_window, gc, TRUE,
+                            3,
                             3,
                             win->m_width - 7,
                             font->ascent + font->descent+1 );
-                            
+
         gdk_gc_set_foreground( gc, &widget->style->fg[GTK_STATE_SELECTED] );
-        gdk_draw_string( pizza->bin_window, font, gc, 
-                         6, 
-                         3+font->ascent, 
-                         win->m_title.mb_str() );
-        
+        gdk_draw_string( pizza->bin_window, font, gc,
+                         6,
+                         3+font->ascent,
+                         wxGTK_CONV( win->m_title ) );
+
         gdk_gc_unref( gc );
     }
 }
@@ -164,8 +165,15 @@ static gint gtk_window_button_press_callback( GtkWidget *widget, GdkEventButton 
 
     if (win->m_isDragging) return TRUE;
 
-    gdk_window_raise( win->m_widget->window );
+    GtkPizza *pizza = GTK_PIZZA(widget);
+    if (gdk_event->window != pizza->bin_window) return TRUE;
     
+    GdkFont *font = wxSMALL_FONT->GetInternalFont(1.0);
+    int height = font->ascent + font->descent+1;
+    if (gdk_event->y > height) return TRUE;
+        
+    gdk_window_raise( win->m_widget->window );
+
     gdk_pointer_grab( widget->window, FALSE,
                       (GdkEventMask)
                          (GDK_BUTTON_PRESS_MASK |
@@ -177,13 +185,13 @@ static gint gtk_window_button_press_callback( GtkWidget *widget, GdkEventButton 
                       (GdkWindow *) NULL,
                       (GdkCursor *) NULL,
                       (unsigned int) GDK_CURRENT_TIME );
-                     
+
     win->m_diffX = (int)gdk_event->x;
     win->m_diffY = (int)gdk_event->y;
     DrawFrame( widget, 0, 0, win->m_width, win->m_height );
     win->m_oldX = 0;
     win->m_oldY = 0;
-    
+
     win->m_isDragging = TRUE;
 
     return TRUE;
@@ -202,15 +210,15 @@ static gint gtk_window_button_release_callback( GtkWidget *widget, GdkEventButto
     if (g_blockEventsOnScroll) return TRUE;
 
     if (!win->m_isDragging) return TRUE;
-    
+
     win->m_isDragging = FALSE;
-     
+
     int x = (int)gdk_event->x;
     int y = (int)gdk_event->y;
-    
+
     DrawFrame( widget, win->m_oldX, win->m_oldY, win->m_width, win->m_height );
     gdk_pointer_ungrab ( (guint32)GDK_CURRENT_TIME );
-    int org_x = 0;    
+    int org_x = 0;
     int org_y = 0;
     gdk_window_get_origin( widget->window, &org_x, &org_y );
     x += org_x - win->m_diffX;
@@ -235,7 +243,7 @@ static gint gtk_window_motion_notify_callback( GtkWidget *widget, GdkEventMotion
     if (g_blockEventsOnScroll) return TRUE;
 
     if (!win->m_isDragging) return TRUE;
-    
+
     if (gdk_event->is_hint)
     {
        int x = 0;
@@ -251,7 +259,7 @@ static gint gtk_window_motion_notify_callback( GtkWidget *widget, GdkEventMotion
     win->m_oldX = (int)gdk_event->x - win->m_diffX;
     win->m_oldY = (int)gdk_event->y - win->m_diffY;
     DrawFrame( widget, win->m_oldX, win->m_oldY, win->m_width, win->m_height );
-    
+
     return TRUE;
 }
 
@@ -270,7 +278,7 @@ static void gtk_button_clicked_callback( GtkWidget *WXUNUSED(widget), wxMiniFram
 // wxMiniFrame
 //-----------------------------------------------------------------------------
 
-static char *cross_xpm[] = {
+static const char *cross_xpm[] = {
 /* columns rows colors chars-per-pixel */
 "5 5 16 1",
 "  c Gray0",
@@ -303,51 +311,62 @@ bool wxMiniFrame::Create( wxWindow *parent, wxWindowID id, const wxString &title
       const wxPoint &pos, const wxSize &size,
       long style, const wxString &name )
 {
-    style = style | wxCAPTION | wxFRAME_FLOAT_ON_PARENT;
+    style = style | wxCAPTION;
 
     if ((style & wxCAPTION) || (style & wxTINY_CAPTION_HORIZ) || (style & wxTINY_CAPTION_VERT))
         m_miniTitle = 13;
-        
+
     m_miniEdge = 3;
     m_isDragging = FALSE;
     m_oldX = -1;
     m_oldY = -1;
     m_diffX = 0;
     m_diffY = 0;
-    
+
     wxFrame::Create( parent, id, title, pos, size, style, name );
 
+    if (m_parent && (GTK_IS_WINDOW(m_parent->m_widget)))
+    {
+        gtk_window_set_transient_for( GTK_WINDOW(m_widget), GTK_WINDOW(m_parent->m_widget) );
+    }
+    
     if ((style & wxSYSTEM_MENU) &&
         ((style & wxCAPTION) || (style & wxTINY_CAPTION_HORIZ) || (style & wxTINY_CAPTION_VERT)))
     {
         GdkBitmap *mask = (GdkBitmap*) NULL;
-        GdkPixmap *pixmap = gdk_pixmap_create_from_xpm_d( wxRootWindow->window, &mask, NULL, cross_xpm );
-    
+        GdkPixmap *pixmap = gdk_pixmap_create_from_xpm_d
+                            (
+                                wxGetRootWindow()->window,
+                                &mask,
+                                NULL,
+                                (char **)cross_xpm
+                            );
+
         GtkWidget *pw = gtk_pixmap_new( pixmap, mask );
         gdk_bitmap_unref( mask );
         gdk_pixmap_unref( pixmap );
         gtk_widget_show( pw );
-    
+
         GtkWidget *close_button = gtk_button_new();
         gtk_container_add( GTK_CONTAINER(close_button), pw );
-    
-        gtk_pizza_put( GTK_PIZZA(m_mainWidget), 
-                         close_button, 
+
+        gtk_pizza_put( GTK_PIZZA(m_mainWidget),
+                         close_button,
                          size.x-16, 4, 11, 11 );
-    
+
         gtk_widget_show( close_button );
-    
+
         gtk_signal_connect( GTK_OBJECT(close_button), "clicked",
           GTK_SIGNAL_FUNC(gtk_button_clicked_callback), (gpointer*)this );
     }
-    
+
     /* these are called when the borders are drawn */
     gtk_signal_connect( GTK_OBJECT(m_mainWidget), "expose_event",
         GTK_SIGNAL_FUNC(gtk_window_own_expose_callback), (gpointer)this );
 
     gtk_signal_connect( GTK_OBJECT(m_mainWidget), "draw",
        GTK_SIGNAL_FUNC(gtk_window_own_draw_callback), (gpointer)this );
-       
+
     /* these are required for dragging the mini frame around */
     gtk_signal_connect( GTK_OBJECT(m_mainWidget), "button_press_event",
       GTK_SIGNAL_FUNC(gtk_window_button_press_callback), (gpointer)this );

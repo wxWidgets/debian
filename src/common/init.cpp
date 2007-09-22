@@ -4,7 +4,7 @@
 // Author:      Vadim Zeitlin
 // Modified by:
 // Created:     04.10.99
-// RCS-ID:      $Id: init.cpp,v 1.10.2.1 2000/03/24 01:55:57 VZ Exp $
+// RCS-ID:      $Id: init.cpp,v 1.18 2002/09/04 11:45:06 VZ Exp $
 // Copyright:   (c) Vadim Zeitlin
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -27,6 +27,7 @@
     #include "wx/app.h"
     #include "wx/debug.h"
     #include "wx/filefn.h"
+    #include "wx/log.h"
 #endif
 
 #include "wx/module.h"
@@ -74,13 +75,6 @@ static size_t gs_nInitCount = 0;
 void WXDLLEXPORT wxExit()
 {
     abort();
-}
-
-// Yield to other apps/messages
-bool WXDLLEXPORT wxYield()
-{
-    // do nothing
-    return TRUE;
 }
 
 // Yield to other apps/messages
@@ -158,7 +152,7 @@ int wxEntry(int argc, char **argv)
     int mb_argc = 0;
     while (mb_argc < argc)
     {
-        wxTheApp->argv[mb_argc] = wxStrdup(wxConvLibc.cMB2WX(argv[mb_argc]));
+        wxTheApp->argv[mb_argc] = wxStrdup(wxConvLocal.cMB2WX(argv[mb_argc]));
         mb_argc++;
     }
     wxTheApp->argv[mb_argc] = (wxChar *)NULL;
@@ -236,3 +230,5 @@ static void DoCleanUp()
     delete wxLog::SetActiveTarget(NULL);
 #endif // wxUSE_LOG
 }
+
+// vi:sts=4:sw=4:et

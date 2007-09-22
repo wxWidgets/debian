@@ -3,7 +3,7 @@
 // Purpose:     wxGIFDecoder, GIF reader for wxImage and wxAnimation
 // Author:      Guillermo Rodriguez Garcia <guille@iies.es>
 // Version:     3.02
-// CVS-ID:      $Id: gifdecod.h,v 1.7 2000/02/17 23:39:34 GRG Exp $
+// CVS-ID:      $Id: gifdecod.h,v 1.10 2002/08/31 11:29:10 GD Exp $
 // Copyright:   (c) 1999 Guillermo Rodriguez Garcia
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -11,7 +11,7 @@
 #ifndef _WX_GIFDECOD_H
 #define _WX_GIFDECOD_H
 
-#ifdef __GNUG__
+#if defined(__GNUG__) && !defined(__APPLE__)
 #pragma interface "gifdecod.h"
 #endif
 
@@ -64,6 +64,9 @@ enum
 class GIFImage
 {
 public:
+    // def ctor
+    GIFImage();
+
     unsigned int w;                 /* width */
     unsigned int h;                 /* height */
     unsigned int left;              /* x coord (in logical screen) */
@@ -108,7 +111,7 @@ private:
     int getcode(int bits, int abfin);
     int dgif(GIFImage *img, int interl, int bits);
 
-protected:
+public:
     // get data of current frame
     int GetFrameIndex() const;
     unsigned char* GetData() const;

@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by: Vadim Zeitlin to derive from wxChoiceBase
 // Created:     01/02/97
-// RCS-ID:      $Id: choice.h,v 1.12.2.1 2000/04/26 16:39:26 JS Exp $
+// RCS-ID:      $Id: choice.h,v 1.14 2001/05/19 01:01:21 VZ Exp $
 // Copyright:   (c) Julian Smart
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -70,6 +70,7 @@ public:
             WXUINT message, WXWPARAM wParam, WXLPARAM lParam);
 
 protected:
+    virtual void DoMoveWindow(int x, int y, int width, int height);
     virtual void DoSetItemClientData( int n, void* clientData );
     virtual void* DoGetItemClientData( int n ) const;
     virtual void DoSetItemClientObject( int n, wxClientData* clientData );

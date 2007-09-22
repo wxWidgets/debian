@@ -4,10 +4,18 @@
 // Author:      Guilhem Lavaux
 // Modified by: Vadim Zeitlin to check error codes, added Detach() method
 // Created:     24/06/98
-// RCS-ID:      $Id: process.cpp,v 1.7.2.2 2000/05/25 18:35:51 VZ Exp $
+// RCS-ID:      $Id: process.cpp,v 1.16 2002/08/21 19:44:47 VZ Exp $
 // Copyright:   (c) Guilhem Lavaux
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
+
+// ============================================================================
+// declarations
+// ============================================================================
+
+// ----------------------------------------------------------------------------
+// headers
+// ----------------------------------------------------------------------------
 
 #ifdef __GNUG__
     #pragma implementation "process.h"
@@ -20,22 +28,32 @@
     #pragma hdrstop
 #endif
 
-#ifndef WX_PRECOMP
-    #include "wx/defs.h"
-#endif
-
 #include "wx/process.h"
+
+// ----------------------------------------------------------------------------
+// event tables and such
+// ----------------------------------------------------------------------------
+
+DEFINE_EVENT_TYPE(wxEVT_END_PROCESS)
 
 IMPLEMENT_DYNAMIC_CLASS(wxProcess, wxEvtHandler)
 IMPLEMENT_DYNAMIC_CLASS(wxProcessEvent, wxEvent)
 
-void wxProcess::Init(wxEvtHandler *parent, int id, bool redirect)
+// ============================================================================
+// wxProcess implementation
+// ============================================================================
+
+// ----------------------------------------------------------------------------
+// wxProcess creation
+// ----------------------------------------------------------------------------
+
+void wxProcess::Init(wxEvtHandler *parent, int id, int flags)
 {
     if ( parent )
         SetNextHandler(parent);
 
     m_id         = id;
-    m_redirect   = redirect;
+    m_redirect   = (flags & wxPROCESS_REDIRECT) != 0;
 
 #if wxUSE_STREAMS
     m_inputStream  = NULL;
@@ -43,6 +61,25 @@ void wxProcess::Init(wxEvtHandler *parent, int id, bool redirect)
     m_outputStream = NULL;
 #endif // wxUSE_STREAMS
 }
+
+/* static */
+wxProcess *wxProcess::Open(const wxString& cmd, int flags)
+{
+    wxASSERT_MSG( !(flags & wxEXEC_SYNC), wxT("wxEXEC_SYNC should not be used." ));
+    wxProcess *process = new wxProcess(wxPROCESS_REDIRECT);
+    if ( !wxExecute(cmd, flags, process) )
+    {
+        // couldn't launch the process
+        delete process;
+        return NULL;
+    }
+
+    return process;
+}
+
+// ----------------------------------------------------------------------------
+// wxProcess termination
+// ----------------------------------------------------------------------------
 
 wxProcess::~wxProcess()
 {
@@ -68,6 +105,10 @@ void wxProcess::Detach()
     SetNextHandler(NULL);
 }
 
+// ----------------------------------------------------------------------------
+// process IO redirection
+// ----------------------------------------------------------------------------
+
 #if wxUSE_STREAMS
 
 void wxProcess::SetPipeStreams(wxInputStream *inputSstream,
@@ -79,4 +120,60 @@ void wxProcess::SetPipeStreams(wxInputStream *inputSstream,
     m_outputStream = outputStream;
 }
 
+// these are implemented in platform-dependent (and correct!) way under MSW and
+// Unix but we still have to provide these dummy versions for the other
+// platforms here
+#if !defined(__WIN32__) && !defined(__UNIX_LIKE__)
+
+bool wxProcess::IsInputOpened() const
+{
+    return m_inputStream != NULL;
+}
+
+bool wxProcess::IsInputAvailable() const
+{
+    return m_inputStream && !m_inputStream->Eof();
+}
+
+bool wxProcess::IsErrorAvailable() const
+{
+    return m_errorStream && !m_errorStream->Eof();
+}
+
+#endif // !Win32 && !Unix
+
 #endif // wxUSE_STREAMS
+
+// ----------------------------------------------------------------------------
+// process killing
+// ----------------------------------------------------------------------------
+
+/* static */
+wxKillError wxProcess::Kill(int pid, wxSignal sig)
+{
+    wxKillError rc;
+    (void)wxKill(pid, sig, &rc);
+
+    return rc;
+}
+
+/* static */
+bool wxProcess::Exists(int pid)
+{
+    switch ( Kill(pid, wxSIGNONE) )
+    {
+        case wxKILL_OK:
+        case wxKILL_ACCESS_DENIED:
+            return TRUE;
+
+        default:
+        case wxKILL_ERROR:
+        case wxKILL_BAD_SIGNAL:
+            wxFAIL_MSG( _T("unexpected wxProcess::Kill() return code") );
+            // fall through
+
+        case wxKILL_NO_PROCESS:
+            return FALSE;
+    }
+}
+

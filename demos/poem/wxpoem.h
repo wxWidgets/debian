@@ -9,12 +9,12 @@
 //              beware, inelegant code!
 // Author:      Julian Smart
 // Created:     12/12/98
-// RCS-ID:      $Id: wxpoem.h,v 1.1 2000/01/08 15:27:48 VZ Exp $
+// RCS-ID:      $Id: wxpoem.h,v 1.2 2002/09/07 12:20:41 GD Exp $
 // Copyright:   (c) 1998 Julian Smart
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
 
-#ifdef __GNUG__
+#if defined(__GNUG__) && !defined(__APPLE__)
 #pragma interface "wxpoem.h"
 #endif
 

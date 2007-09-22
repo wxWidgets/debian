@@ -5,8 +5,9 @@
 // Modified by: Guilhem Lavaux (big rewrite) May 1997, 1998
 //              Guillermo Rodriguez (updated for wxSocket v2) Jan 2000
 //                                  (callbacks deprecated)    Mar 2000
+//              Vadim Zeitlin (added support for Unix sockets) Apr 2002
 // Created:     1993
-// RCS-ID:      $Id: sckipc.cpp,v 1.24.2.4 2000/04/01 23:19:11 VZ Exp $
+// RCS-ID:      $Id: sckipc.cpp,v 1.34 2002/09/14 02:09:51 DW Exp $
 // Copyright:   (c) Julian Smart 1993
 //              (c) Guilhem Lavaux 1997, 1998
 //              (c) 2000 Guillermo Rodriguez <guille@iies.es>
@@ -33,23 +34,19 @@
 #endif
 
 #ifndef WX_PRECOMP
-#include "wx/defs.h"
+#include "wx/log.h"
 #endif
 
 #if wxUSE_SOCKETS && wxUSE_IPC && wxUSE_STREAMS
 
 #include <stdlib.h>
 #include <stdio.h>
+#include <errno.h>
 
 #include "wx/socket.h"
 #include "wx/sckipc.h"
 #include "wx/module.h"
 #include "wx/event.h"
-#include "wx/log.h"
-
-#ifdef __BORLANDC__
-#pragma hdrstop
-#endif
 
 // --------------------------------------------------------------------------
 // macros and constants
@@ -74,9 +71,46 @@ enum
 };
 #endif
 
-
 // All sockets will be created with the following flags
 #define SCKIPC_FLAGS (wxSOCKET_WAITALL)
+
+// headers needed for umask()
+#ifdef __UNIX_LIKE__
+    #include <sys/types.h>
+    #include <sys/stat.h>
+#endif // __UNIX_LIKE__
+
+// ----------------------------------------------------------------------------
+// private functions
+// ----------------------------------------------------------------------------
+
+// get the address object for the given server name, the caller must delete it
+static wxSockAddress *
+GetAddressFromName(const wxString& serverName, const wxString& host = _T(""))
+{
+    // we always use INET sockets under non-Unix systems
+#if defined(__UNIX__) && !defined(__WXMAC__)
+    // under Unix, if the server name looks like a path, create a AF_UNIX
+    // socket instead of AF_INET one
+    if ( serverName.Find(_T('/')) != wxNOT_FOUND )
+    {
+        wxUNIXaddress *addr = new wxUNIXaddress;
+        addr->Filename(serverName);
+
+        return addr;
+    }
+#endif // Unix/!Unix
+    {
+        wxIPV4address *addr = new wxIPV4address;
+        addr->Service(serverName);
+        if ( !host.empty() )
+        {
+            addr->Hostname(host);
+        }
+
+        return addr;
+    }
+}
 
 // --------------------------------------------------------------------------
 // wxTCPEventHandler stuff (private class)
@@ -129,7 +163,7 @@ bool wxTCPClient::ValidHost(const wxString& host)
 }
 
 wxConnectionBase *wxTCPClient::MakeConnection (const wxString& host,
-                                               const wxString& server_name,
+                                               const wxString& serverName,
                                                const wxString& topic)
 {
   wxSocketClient *client = new wxSocketClient(SCKIPC_FLAGS);
@@ -137,18 +171,21 @@ wxConnectionBase *wxTCPClient::MakeConnection (const wxString& host,
   wxDataInputStream *data_is = new wxDataInputStream(*stream);
   wxDataOutputStream *data_os = new wxDataOutputStream(*stream);
 
-  wxIPV4address addr;
-  addr.Service(server_name);
-  addr.Hostname(host);
+  wxSockAddress *addr = GetAddressFromName(serverName, host);
+  if ( !addr )
+      return NULL;
 
-  if (client->Connect(addr))
+  bool ok = client->Connect(*addr);
+  delete addr;
+
+  if ( ok )
   {
     unsigned char msg;
-  
+
     // Send topic name, and enquire whether this has succeeded
     data_os->Write8(IPC_CONNECT);
     data_os->WriteString(topic);
-  
+
     msg = data_is->Read8();
 
     // OK! Confirmation.
@@ -213,12 +250,49 @@ bool wxTCPServer::Create(const wxString& serverName)
     m_server = NULL;
   }
 
-  // wxIPV4address defaults to INADDR_ANY:0
-  wxIPV4address addr;
-  addr.Service(serverName);
+  wxSockAddress *addr = GetAddressFromName(serverName);
+  if ( !addr )
+      return FALSE;
+
+#ifdef __UNIX_LIKE__
+  mode_t umaskOld;
+  if ( addr->Type() == wxSockAddress::UNIX )
+  {
+      // ensure that the file doesn't exist as otherwise calling socket() would
+      // fail
+      int rc = remove(serverName.fn_str());
+      if ( rc < 0 && errno != ENOENT )
+      {
+          delete addr;
+
+          return FALSE;
+      }
+
+      // also set the umask to prevent the others from reading our file
+      umaskOld = umask(077);
+  }
+  else
+  {
+      // unused anyhow but shut down the compiler warnings
+      umaskOld = 0;
+  }
+#endif // __UNIX_LIKE__
 
   // Create a socket listening on the specified port
-  m_server = new wxSocketServer(addr, SCKIPC_FLAGS);
+  m_server = new wxSocketServer(*addr, SCKIPC_FLAGS);
+
+#ifdef __UNIX_LIKE__
+  if ( addr->Type() == wxSockAddress::UNIX )
+  {
+      // restore the umask
+      umask(umaskOld);
+
+      // save the file name to remove it later
+      m_filename = serverName;
+  }
+#endif // __UNIX_LIKE__
+
+  delete addr;
 
   if (!m_server->Ok())
   {
@@ -238,11 +312,21 @@ bool wxTCPServer::Create(const wxString& serverName)
 
 wxTCPServer::~wxTCPServer()
 {
-  if (m_server)
-  {
-    m_server->SetClientData(NULL);
-    m_server->Destroy();
-  }
+    if (m_server)
+    {
+        m_server->SetClientData(NULL);
+        m_server->Destroy();
+    }
+
+#ifdef __UNIX_LIKE__
+    if ( !m_filename.empty() )
+    {
+        if ( remove(m_filename.fn_str()) != 0 )
+        {
+            wxLogDebug(_T("Stale AF_UNIX file '%s' left."), m_filename.c_str());
+        }
+    }
+#endif // __UNIX_LIKE__
 }
 
 wxConnectionBase *wxTCPServer::OnAcceptConnection( const wxString& WXUNUSED(topic) )
@@ -262,12 +346,18 @@ wxTCPConnection::wxTCPConnection () : wxConnectionBase()
   m_codeco   = NULL;
 }
 
-wxTCPConnection::wxTCPConnection(char * WXUNUSED(buffer), int WXUNUSED(size))
+wxTCPConnection::wxTCPConnection(wxChar *buffer, int size)
+       : wxConnectionBase(buffer, size)
 {
+  m_sock     = NULL;
+  m_sockstrm = NULL;
+  m_codeci   = NULL;
+  m_codeco   = NULL;
 }
 
 wxTCPConnection::~wxTCPConnection ()
 {
+  Disconnect();
   wxDELETE(m_codeci);
   wxDELETE(m_codeco);
   wxDELETE(m_sockstrm);
@@ -287,10 +377,13 @@ void wxTCPConnection::Compress(bool WXUNUSED(on))
 // Calls that CLIENT can make.
 bool wxTCPConnection::Disconnect ()
 {
+  if ( !GetConnected() )
+      return TRUE;
   // Send the the disconnect message to the peer.
   m_codeco->Write8(IPC_DISCONNECT);
   m_sock->Notify(FALSE);
   m_sock->Close();
+  SetConnected(FALSE);
 
   return TRUE;
 }
@@ -313,7 +406,7 @@ bool wxTCPConnection::Execute(const wxChar *data, int size, wxIPCFormat format)
   return TRUE;
 }
 
-char *wxTCPConnection::Request (const wxString& item, int *size, wxIPCFormat format)
+wxChar *wxTCPConnection::Request (const wxString& item, int *size, wxIPCFormat format)
 {
   if (!m_sock->IsConnected())
     return NULL;
@@ -331,10 +424,11 @@ char *wxTCPConnection::Request (const wxString& item, int *size, wxIPCFormat for
   else
   {
     size_t s;
-    char *data = NULL;
 
     s = m_codeci->Read32();
-    data = new char[s];
+    wxChar *data = GetBufferAtLeast( s );
+    wxASSERT_MSG(data != NULL,
+                 _T("Buffer too small in wxTCPConnection::Request") );
     m_sockstrm->Read(data, s);
 
     if (size)
@@ -438,7 +532,7 @@ void wxTCPEventHandler::Client_OnRequest(wxSocketEvent &event)
 
   int msg = 0;
   wxDataInputStream *codeci;
-  wxDataOutputStream *codeco; 
+  wxDataOutputStream *codeco;
   wxSocketStream *sockstrm;
   wxString topic_name = connection->m_topic;
   wxString item;
@@ -462,35 +556,37 @@ void wxTCPEventHandler::Client_OnRequest(wxSocketEvent &event)
   {
   case IPC_EXECUTE:
   {
-    char *data;
-    size_t size; 
+    wxChar *data;
+    size_t size;
     wxIPCFormat format;
-    
+
     format = (wxIPCFormat)codeci->Read8();
     size = codeci->Read32();
-    data = new char[size];
+    data = connection->GetBufferAtLeast( size );
+    wxASSERT_MSG(data != NULL,
+                 _T("Buffer too small in wxTCPEventHandler::Client_OnRequest") );
     sockstrm->Read(data, size);
 
     connection->OnExecute (topic_name, data, size, format);
 
-    delete [] data;
     break;
   }
   case IPC_ADVISE:
   {
-    char *data;
+    wxChar *data;
     size_t size;
     wxIPCFormat format;
 
     item = codeci->ReadString();
     format = (wxIPCFormat)codeci->Read8();
     size = codeci->Read32();
-    data = new char[size];
+    data = connection->GetBufferAtLeast( size );
+    wxASSERT_MSG(data != NULL,
+                 _T("Buffer too small in wxTCPEventHandler::Client_OnRequest") );
     sockstrm->Read(data, size);
-    
+
     connection->OnAdvise (topic_name, item, data, size, format);
 
-    delete [] data;
     break;
   }
   case IPC_ADVISE_START:
@@ -526,12 +622,12 @@ void wxTCPEventHandler::Client_OnRequest(wxSocketEvent &event)
     item = codeci->ReadString();
     format = (wxIPCFormat)codeci->Read8();
     size = codeci->Read32();
-    data = new wxChar[size];
+    data = connection->GetBufferAtLeast( size );
+    wxASSERT_MSG(data != NULL,
+                 _T("Buffer too small in wxTCPEventHandler::Client_OnRequest") );
     sockstrm->Read(data, size);
-    
-    connection->OnPoke (topic_name, item, data, size, format);
 
-    delete [] data;
+    connection->OnPoke (topic_name, item, data, size, format);
 
     break;
   }
@@ -543,14 +639,14 @@ void wxTCPEventHandler::Client_OnRequest(wxSocketEvent &event)
     format = (wxIPCFormat)codeci->Read8();
 
     int user_size = -1;
-    char *user_data = connection->OnRequest (topic_name, item, &user_size, format);
+    wxChar *user_data = connection->OnRequest (topic_name, item, &user_size, format);
 
     if (user_data)
     {
       codeco->Write8(IPC_REQUEST_REPLY);
 
       if (user_size == -1)
-        user_size = strlen(user_data) + 1;      // includes final NUL
+        user_size = wxStrlen(user_data) + 1;      // includes final NUL
 
       codeco->Write32(user_size);
       sockstrm->Write(user_data, user_size);
@@ -564,6 +660,7 @@ void wxTCPEventHandler::Client_OnRequest(wxSocketEvent &event)
   {
     sock->Notify(FALSE);
     sock->Close();
+    connection->SetConnected(FALSE);
     connection->OnDisconnect();
     break;
   }
@@ -615,7 +712,7 @@ void wxTCPEventHandler::Server_OnRequest(wxSocketEvent &event)
         // Acknowledge success
         codeco->Write8(IPC_CONNECT);
         new_connection->m_topic = topic_name;
-        new_connection->m_sock = sock;      
+        new_connection->m_sock = sock;
         new_connection->m_sockstrm = stream;
         new_connection->m_codeci = codeci;
         new_connection->m_codeco = codeco;

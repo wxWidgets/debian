@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     04/01/98
-// RCS-ID:      $Id: clipbrd.cpp,v 1.32.2.3 2000/08/11 19:39:15 VZ Exp $
+// RCS-ID:      $Id: clipbrd.cpp,v 1.43 2002/04/17 11:48:04 JS Exp $
 // Copyright:   (c) Julian Smart and Markus Holzem
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -55,15 +55,20 @@
 #include <windows.h>
 
 #include "wx/msw/private.h"
+
+#ifndef __WXMICROWIN__
 #include "wx/msw/dib.h"
+#endif
 
 // wxDataObject is tied to OLE/drag and drop implementation, therefore so are
 // the functions using wxDataObject in wxClipboard
-#define wxUSE_DATAOBJ wxUSE_DRAG_AND_DROP
+//#define wxUSE_DATAOBJ wxUSE_DRAG_AND_DROP
 
 #if wxUSE_DATAOBJ
     #include "wx/dataobj.h"
+#endif
 
+#if wxUSE_OLE
     // use OLE clipboard
     #define wxUSE_OLE_CLIPBOARD 1
 #else // !wxUSE_DATAOBJ
@@ -219,7 +224,7 @@ bool wxSetClipboardData(wxDataFormat dataFormat,
                 wxBitmap *bitmap = (wxBitmap *)data;
                 HBITMAP hBitmap = (HBITMAP)bitmap->GetHBITMAP();
                 // NULL palette means to use the system one
-                HANDLE hDIB = wxBitmapToDIB(hBitmap, (HPALETTE)NULL); 
+                HANDLE hDIB = wxBitmapToDIB(hBitmap, (HPALETTE)NULL);
                 handle = SetClipboardData(CF_DIB, hDIB);
 #endif // wxUSE_IMAGE_LOADING_IN_MSW
                 break;
@@ -293,6 +298,80 @@ bool wxSetClipboardData(wxDataFormat dataFormat,
                 handle = SetClipboardData(dataFormat, hGlobalMemory);
                 break;
             }
+            // Only tested with non-Unicode, Visual C++ 6.0 so far
+#if defined(__VISUALC__) && !defined(UNICODE)
+        case wxDF_HTML:
+            {
+                char* html = (char *)data;
+                
+                // Create temporary buffer for HTML header...
+                char *buf = new char [400 + strlen(html)];
+                if(!buf) return FALSE;
+                
+                // Get clipboard id for HTML format...
+                static int cfid = 0;
+                if(!cfid) cfid = RegisterClipboardFormat(wxT("HTML Format"));
+                
+                // Create a template string for the HTML header...
+                strcpy(buf,
+                    "Version:0.9\r\n"
+                    "StartHTML:00000000\r\n"
+                    "EndHTML:00000000\r\n"
+                    "StartFragment:00000000\r\n"
+                    "EndFragment:00000000\r\n"
+                    "<html><body>\r\n"
+                    "<!--StartFragment -->\r\n");
+                
+                // Append the HTML...
+                strcat(buf, html);
+                strcat(buf, "\r\n");
+                // Finish up the HTML format...
+                strcat(buf,
+                    "<!--EndFragment-->\r\n"
+                    "</body>\r\n"
+                    "</html>");
+                
+                // Now go back, calculate all the lengths, and write out the
+                // necessary header information. Note, wsprintf() truncates the
+                // string when you overwrite it so you follow up with code to replace
+                // the 0 appended at the end with a '\r'...
+                char *ptr = strstr(buf, "StartHTML");
+                wsprintf(ptr+10, "%08u", strstr(buf, "<html>") - buf);
+                *(ptr+10+8) = '\r';
+                
+                ptr = strstr(buf, "EndHTML");
+                wsprintf(ptr+8, "%08u", strlen(buf));
+                *(ptr+8+8) = '\r';
+                
+                ptr = strstr(buf, "StartFragment");
+                wsprintf(ptr+14, "%08u", strstr(buf, "<!--StartFrag") - buf);
+                *(ptr+14+8) = '\r';
+                
+                ptr = strstr(buf, "EndFragment");
+                wsprintf(ptr+12, "%08u", strstr(buf, "<!--EndFrag") - buf);
+                *(ptr+12+8) = '\r';
+                
+                // Now you have everything in place ready to put on the
+                // clipboard.
+                
+                // Allocate global memory for transfer...
+                HGLOBAL hText = GlobalAlloc(GMEM_MOVEABLE |GMEM_DDESHARE, strlen(buf)+4);
+                
+                // Put your string in the global memory...
+                ptr = (char *)GlobalLock(hText);
+                strcpy(ptr, buf);
+                GlobalUnlock(hText);
+                
+                handle = ::SetClipboardData(cfid, hText);
+                
+                // Free memory...
+                GlobalFree(hText);
+                
+                // Clean up...
+                delete [] buf;
+                break;
+            }
+#endif
     }
 
     if ( handle == 0 )
@@ -365,10 +444,8 @@ void *wxGetClipboardData(wxDataFormat dataFormat, long *len)
         case CF_TIFF:
         case CF_PALETTE:
         case wxDF_DIB:
-            {
-                wxLogError(_("Unsupported clipboard format."));
-                return FALSE;
-            }
+            wxLogError(_("Unsupported clipboard format."));
+            return NULL;
 
         case wxDF_OEMTEXT:
             dataFormat = wxDF_TEXT;
@@ -433,7 +510,7 @@ void *wxGetClipboardData(wxDataFormat dataFormat, long *len)
 
 wxDataFormat wxEnumClipboardFormats(wxDataFormat dataFormat)
 {
-  return ::EnumClipboardFormats(dataFormat);
+  return (wxDataFormat::NativeFormat)::EnumClipboardFormats(dataFormat);
 }
 
 int wxRegisterClipboardFormat(wxChar *formatName)
@@ -560,7 +637,7 @@ bool wxClipboard::AddData( wxDataObject *data )
 #elif wxUSE_DATAOBJ
     wxCHECK_MSG( wxIsClipboardOpened(), FALSE, wxT("clipboard not open") );
 
-    wxDataFormat format = data->GetFormat();
+    wxDataFormat format = data->GetPreferredFormat();
 
     switch ( format )
     {
@@ -577,23 +654,35 @@ bool wxClipboard::AddData( wxDataObject *data )
         {
             wxBitmapDataObject* bitmapDataObject = (wxBitmapDataObject*) data;
             wxBitmap bitmap(bitmapDataObject->GetBitmap());
-            return wxSetClipboardData(data->GetFormat(), &bitmap);
+            return wxSetClipboardData(data->GetPreferredFormat(), &bitmap);
         }
 
 #if wxUSE_METAFILE
         case wxDF_METAFILE:
         {
-            wxMetafileDataObject* metaFileDataObject = 
+#if 1
+            // TODO
+            wxLogError("Not implemented because wxMetafileDataObject does not contain width and height values.");
+            return FALSE;
+#else
+            wxMetafileDataObject* metaFileDataObject =
                 (wxMetafileDataObject*) data;
             wxMetafile metaFile = metaFileDataObject->GetMetafile();
             return wxSetClipboardData(wxDF_METAFILE, &metaFile,
                                       metaFileDataObject->GetWidth(),
                                       metaFileDataObject->GetHeight());
+#endif
         }
 #endif // wxUSE_METAFILE
 
         default:
-            return wxSetClipboardData(data);
+        {
+// This didn't compile, of course
+//            return wxSetClipboardData(data);
+            // TODO
+            wxLogError("Not implemented.");
+            return FALSE;
+        }
     }
 #else // !wxUSE_DATAOBJ
     return FALSE;
@@ -627,7 +716,8 @@ bool wxClipboard::GetData( wxDataObject& data )
 
     // build the list of supported formats
     size_t nFormats = data.GetFormatCount(wxDataObject::Set);
-    wxDataFormat format, *formats;
+    wxDataFormat format;
+    wxDataFormat *formats;
     if ( nFormats == 1 )
     {
         // the most common case
@@ -770,7 +860,7 @@ bool wxClipboard::GetData( wxDataObject& data )
 #elif wxUSE_DATAOBJ
     wxCHECK_MSG( wxIsClipboardOpened(), FALSE, wxT("clipboard not open") );
 
-    wxDataFormat format = data.GetFormat();
+    wxDataFormat format = data.GetPreferredFormat();
     switch ( format )
     {
         case wxDF_TEXT:
@@ -791,7 +881,7 @@ bool wxClipboard::GetData( wxDataObject& data )
         case wxDF_DIB:
         {
             wxBitmapDataObject& bitmapDataObject = (wxBitmapDataObject &)data;
-            wxBitmap* bitmap = (wxBitmap *)wxGetClipboardData(data->GetFormat());
+            wxBitmap* bitmap = (wxBitmap *)wxGetClipboardData(data.GetPreferredFormat());
             if ( !bitmap )
                 return FALSE;
 
@@ -815,11 +905,9 @@ bool wxClipboard::GetData( wxDataObject& data )
         }
 #endif // wxUSE_METAFILE
     }
-
     return FALSE;
 #else // !wxUSE_DATAOBJ
     wxFAIL_MSG( wxT("no clipboard implementation") );
-
     return FALSE;
 #endif // wxUSE_OLE_CLIPBOARD/wxUSE_DATAOBJ
 }

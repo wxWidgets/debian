@@ -4,7 +4,7 @@
 // Author:      Vadim Zeitlin
 // Modified by:
 // Created:     26.07.99
-// RCS-ID:      $Id: control.h,v 1.14 2000/02/25 23:49:39 VZ Exp $
+// RCS-ID:      $Id: control.h,v 1.21 2002/08/31 11:29:09 GD Exp $
 // Copyright:   (c) wxWindows team
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -16,11 +16,15 @@
 // headers
 // ----------------------------------------------------------------------------
 
-#ifdef __GNUG__
+#if defined(__GNUG__) && !defined(__APPLE__)
     #pragma interface "controlbase.h"
 #endif
 
+#if wxUSE_CONTROLS
+
 #include "wx/window.h"      // base class
+
+WXDLLEXPORT_DATA(extern const wxChar*) wxControlNameStr;
 
 // ----------------------------------------------------------------------------
 // wxControl is the base class for all controls
@@ -29,9 +33,22 @@
 class WXDLLEXPORT wxControlBase : public wxWindow
 {
 public:
+    virtual ~wxControlBase();
+
+    // Create() function adds the validator parameter
+    bool Create(wxWindow *parent, wxWindowID id,
+                const wxPoint& pos = wxDefaultPosition,
+                const wxSize& size = wxDefaultSize,
+                long style = 0,
+                const wxValidator& validator = wxDefaultValidator,
+                const wxString& name = wxControlNameStr);
+
     // simulates the event of given type (i.e. wxButton::Command() is just as
     // if the button was clicked)
     virtual void Command(wxCommandEvent &event);
+
+    // get the control alignment (left/right/centre, top/bottom/centre)
+    int GetAlignment() const { return m_windowStyle & wxALIGN_MASK; }
 
 protected:
     // creates the control (calls wxWindowBase::CreateBase inside) and adds it
@@ -55,14 +72,14 @@ protected:
 // include platform-dependent wxControl declarations
 // ----------------------------------------------------------------------------
 
-#if defined(__WXMSW__)
+#if defined(__WXUNIVERSAL__)
+    #include "wx/univ/control.h"
+#elif defined(__WXMSW__)
     #include "wx/msw/control.h"
 #elif defined(__WXMOTIF__)
     #include "wx/motif/control.h"
 #elif defined(__WXGTK__)
     #include "wx/gtk/control.h"
-#elif defined(__WXQT__)
-    #include "wx/qt/control.h"
 #elif defined(__WXMAC__)
     #include "wx/mac/control.h"
 #elif defined(__WXPM__)
@@ -70,6 +87,8 @@ protected:
 #elif defined(__WXSTUBS__)
     #include "wx/stubs/control.h"
 #endif
+
+#endif // wxUSE_CONTROLS
 
 #endif
     // _WX_CONTROL_H_BASE_

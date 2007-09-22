@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     04/01/98
-// RCS-ID:      $Id: proplist.cpp,v 1.22.2.1 2000/04/27 18:03:34 VZ Exp $
+// RCS-ID:      $Id: proplist.cpp,v 1.30 2002/04/02 17:37:00 MBN Exp $
 // Copyright:   (c) Julian Smart
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -28,6 +28,8 @@
     #pragma hdrstop
 #endif
 
+#if wxUSE_PROPSHEET
+
 #ifndef WX_PRECOMP
     #include "wx/window.h"
     #include "wx/font.h"
@@ -43,6 +45,7 @@
 #include "wx/sizer.h"
 #include "wx/module.h"
 #include "wx/intl.h"
+#include "wx/artprov.h"
 
 #include "wx/colordlg.h"
 #include "wx/proplist.h"
@@ -51,22 +54,6 @@
 #include <stdlib.h>
 #include <math.h>
 #include <string.h>
-
-// ----------------------------------------------------------------------------
-// XPMs
-// ----------------------------------------------------------------------------
-
-#ifndef __WXMSW__
-    #include "wx/generic/cross.xpm"
-    #include "wx/generic/tick.xpm"
-#endif
-
-// ----------------------------------------------------------------------------
-// accessor functions for the bitmaps (may return NULL, check for it!)
-// ----------------------------------------------------------------------------
-
-static wxBitmap *GetTickBitmap();
-static wxBitmap *GetCrossBitmap();
 
 // ----------------------------------------------------------------------------
 // Property text edit control
@@ -162,7 +149,7 @@ bool wxPropertyListView::UpdatePropertyList(bool clearEditArea)
   if (clearEditArea)
   {
     m_valueList->Clear();
-    m_valueText->SetValue("");
+    m_valueText->SetValue(_T(""));
   }
   wxNode *node = m_propertySheet->GetProperties().First();
 
@@ -215,7 +202,7 @@ bool wxPropertyListView::UpdatePropertyDisplayInList(wxProperty *property)
 // Find the wxListBox index corresponding to this property
 int wxPropertyListView::FindListIndexForProperty(wxProperty *property)
 {
-  int n = m_propertyScrollingList->Number();
+  int n = m_propertyScrollingList->GetCount();
   for (int i = 0; i < n; i++)
   {
     if (property == (wxProperty *)m_propertyScrollingList->wxListBox::GetClientData(i))
@@ -254,7 +241,7 @@ bool wxPropertyListView::ShowProperty(wxProperty *property, bool select)
   }
 
   m_valueList->Clear();
-  m_valueText->SetValue("");
+  m_valueText->SetValue(_T(""));
 
   if (property)
   {
@@ -429,11 +416,12 @@ bool wxPropertyListView::CreateControls()
     if (!panel)
         return FALSE;
 
-    wxSystemSettings settings;
-    wxFont guiFont = settings.GetSystemFont(wxSYS_DEFAULT_GUI_FONT);
+    wxFont guiFont = wxSystemSettings::GetSystemFont(wxSYS_DEFAULT_GUI_FONT);
 
 #ifdef __WXMSW__
-    wxFont *boringFont = wxTheFontList->FindOrCreateFont(guiFont.GetPointSize(), wxMODERN, wxNORMAL, wxNORMAL, FALSE, "Courier New");
+    wxFont *boringFont =
+        wxTheFontList->FindOrCreateFont(guiFont.GetPointSize(), wxMODERN,
+                                        wxNORMAL, wxNORMAL, FALSE, _T("Courier New"));
 #else
     wxFont *boringFont = wxTheFontList->FindOrCreateFont(guiFont.GetPointSize(), wxTELETYPE, wxNORMAL, wxNORMAL);
 #endif
@@ -451,32 +439,32 @@ bool wxPropertyListView::CreateControls()
 
     if (m_buttonFlags & wxPROP_BUTTON_CHECK_CROSS)
     {
-        wxBitmap *tickBitmap = GetTickBitmap();
-        wxBitmap *crossBitmap = GetCrossBitmap();
+        wxBitmap tickBitmap = wxArtProvider::GetBitmap(wxART_TICK_MARK);
+        wxBitmap crossBitmap = wxArtProvider::GetBitmap(wxART_CROSS_MARK);
 
-        if ( tickBitmap && crossBitmap )
+        if ( tickBitmap.Ok() && crossBitmap.Ok() )
         {
-            m_confirmButton = new wxBitmapButton(panel, wxID_PROP_CHECK, *tickBitmap, wxPoint(-1, -1), smallButtonSize );
-            m_cancelButton = new wxBitmapButton(panel, wxID_PROP_CROSS, *crossBitmap, wxPoint(-1, -1), smallButtonSize );
+            m_confirmButton = new wxBitmapButton(panel, wxID_PROP_CHECK, tickBitmap, wxPoint(-1, -1), smallButtonSize );
+            m_cancelButton = new wxBitmapButton(panel, wxID_PROP_CROSS, crossBitmap, wxPoint(-1, -1), smallButtonSize );
         }
         else
         {
-            m_confirmButton = new wxButton(panel, wxID_PROP_CHECK, ":-)", wxPoint(-1, -1), smallButtonSize );
-            m_cancelButton = new wxButton(panel, wxID_PROP_CROSS, "X", wxPoint(-1, -1), smallButtonSize );
+            m_confirmButton = new wxButton(panel, wxID_PROP_CHECK, _T(":-)"), wxPoint(-1, -1), smallButtonSize );
+            m_cancelButton = new wxButton(panel, wxID_PROP_CROSS, _T("X"), wxPoint(-1, -1), smallButtonSize );
         }
 
         topsizer->Add( m_confirmButton, 0, wxLEFT|wxTOP|wxBOTTOM | wxEXPAND, buttonborder );
         topsizer->Add( m_cancelButton, 0, wxLEFT|wxTOP|wxBOTTOM | wxEXPAND, buttonborder );
     }
 
-    m_valueText = new wxPropertyTextEdit(this, panel, wxID_PROP_TEXT, "",
+    m_valueText = new wxPropertyTextEdit(this, panel, wxID_PROP_TEXT, _T(""),
        wxPoint(-1, -1), wxSize(-1, smallButtonSize.y), wxPROCESS_ENTER);
     m_valueText->Enable(FALSE);
     topsizer->Add( m_valueText, 1, wxALL | wxEXPAND, buttonborder );
 
     if (m_buttonFlags & wxPROP_PULLDOWN)
     {
-        m_editButton = new wxButton(panel, wxID_PROP_EDIT, "...",  wxPoint(-1, -1), smallButtonSize);
+        m_editButton = new wxButton(panel, wxID_PROP_EDIT, _T("..."),  wxPoint(-1, -1), smallButtonSize);
         m_editButton->Enable(FALSE);
         topsizer->Add( m_editButton, 0, wxRIGHT|wxTOP|wxBOTTOM | wxEXPAND, buttonborder );
     }
@@ -601,6 +589,7 @@ void wxPropertyListView::OnOk(wxCommandEvent& event)
   OnCheck(event);
 
   m_managedWindow->Close(TRUE);
+  sm_dialogCancelled = FALSE;
 }
 
 void wxPropertyListView::OnCancel(wxCommandEvent& WXUNUSED(event))
@@ -1170,7 +1159,7 @@ bool wxStringListValidator::OnDisplayValue(wxProperty *property, wxPropertyListV
     return FALSE;
   wxString str(property->GetValue().GetStringRepresentation());
   view->GetValueText()->SetValue(str);
-  if (m_strings && view->GetValueList() && view->GetValueList()->IsShown() && view->GetValueList()->Number() > 0)
+  if (m_strings && view->GetValueList() && view->GetValueList()->IsShown() && view->GetValueList()->GetCount() > 0)
   {
     view->GetValueList()->SetStringSelection(str);
   }
@@ -1759,14 +1748,14 @@ void wxPropertyStringListEditorDialog::OnDelete(wxCommandEvent& WXUNUSED(event))
   delete[] (wxChar *)node->Data();
   delete node;
   m_currentSelection = -1;
-  m_stringText->SetValue("");
+  m_stringText->SetValue(_T(""));
 }
 
 void wxPropertyStringListEditorDialog::OnAdd(wxCommandEvent& WXUNUSED(event))
 {
   SaveCurrentSelection();
 
-  wxChar *initialText = wxT("");
+  wxString initialText;
   wxNode *node = m_stringList->Add(initialText);
   m_listBox->Append(initialText, (void *)node);
   m_currentSelection = m_stringList->Number() - 1;
@@ -1828,7 +1817,7 @@ void wxPropertyStringListEditorDialog::ShowCurrentSelection()
 {
   if (m_currentSelection == -1)
   {
-    m_stringText->SetValue("");
+    m_stringText->SetValue(_T(""));
     return;
   }
   wxNode *node = (wxNode *)m_listBox->wxListBox::GetClientData(m_currentSelection);
@@ -1837,46 +1826,5 @@ void wxPropertyStringListEditorDialog::ShowCurrentSelection()
   m_stringText->Enable(TRUE);
 }
 
-// ----------------------------------------------------------------------------
-// global functions
-// ----------------------------------------------------------------------------
 
-// FIXME MT-UNSAFE
-static wxBitmap *GetTickBitmap()
-{
-    static wxBitmap* s_tickBitmap = (wxBitmap *) NULL;
-    static bool s_loaded = FALSE;
-
-    if ( !s_loaded )
-    {
-        s_loaded = TRUE; // set it to TRUE anyhow, we won't try again
-
-        #if defined(__WXMSW__) || defined(__WXPM__)
-            s_tickBitmap = new wxBitmap("tick_bmp", wxBITMAP_TYPE_RESOURCE);
-        #else
-            s_tickBitmap = new wxBitmap( tick_xpm );
-        #endif
-    }
-
-    return s_tickBitmap;
-}
-
-static wxBitmap *GetCrossBitmap()
-{
-    static wxBitmap* s_crossBitmap = (wxBitmap *) NULL;
-    static bool s_loaded = FALSE;
-
-    if ( !s_loaded )
-    {
-        s_loaded = TRUE; // set it to TRUE anyhow, we won't try again
-
-        #if defined(__WXMSW__) || defined(__WXPM__)
-            s_crossBitmap =  new wxBitmap("cross_bmp", wxBITMAP_TYPE_RESOURCE);
-        #else // XPMs
-            s_crossBitmap =  new wxBitmap( cross_xpm );
-        #endif // BMPs/XPMs
-    }
-
-    return s_crossBitmap;
-}
-
+#endif // wxUSE_PROPSHEET

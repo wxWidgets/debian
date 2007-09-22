@@ -1,10 +1,10 @@
 /////////////////////////////////////////////////////////////////////////////
-// Name:        dialog.h
+// Name:        wx/msw/dialog.h
 // Purpose:     wxDialog class
 // Author:      Julian Smart
 // Modified by:
 // Created:     01/02/97
-// RCS-ID:      $Id: dialog.h,v 1.23 2000/02/25 16:21:51 VZ Exp $
+// RCS-ID:      $Id: dialog.h,v 1.29.2.1 2002/09/21 16:16:57 MBN Exp $
 // Copyright:   (c) Julian Smart and Markus Holzem
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -20,13 +20,13 @@
 
 WXDLLEXPORT_DATA(extern const wxChar*) wxDialogNameStr;
 
+class WXDLLEXPORT wxWindowDisabler;
+
 // Dialog boxes
 class WXDLLEXPORT wxDialog : public wxDialogBase
 {
-    DECLARE_DYNAMIC_CLASS(wxDialog)
-
 public:
-    wxDialog();
+    wxDialog() { Init(); }
 
     // Constructor with a modal flag, but no window id - the old convention
     wxDialog(wxWindow *parent,
@@ -58,15 +58,7 @@ public:
                 long style = wxDEFAULT_DIALOG_STYLE,
                 const wxString& name = wxDialogNameStr);
 
-    ~wxDialog();
-
-    // override some base class virtuals
-    virtual bool Destroy();
-    virtual bool Show(bool show);
-    virtual void Iconize(bool iconize);
-    virtual bool IsIconized() const;
-
-    virtual bool IsTopLevel() const { return TRUE; }
+    virtual ~wxDialog();
 
     void SetModal(bool flag);
     virtual bool IsModal() const;
@@ -80,12 +72,11 @@ public:
     // returns TRUE if we're in a modal loop
     bool IsModalShowing() const;
 
-#if WXWIN_COMPATIBILITY
-    bool Iconized() const { return IsIconized(); };
-#endif
-
     // implementation only from now on
     // -------------------------------
+
+    // override some base class virtuals
+    virtual bool Show(bool show = TRUE);
 
     // event handlers
     bool OnClose();
@@ -109,16 +100,26 @@ public:
 #endif // wxUSE_CTL3D
 
 protected:
-    // override more base class virtuals
-    virtual void DoSetClientSize(int width, int height);
-    virtual void DoGetPosition(int *x, int *y) const;
+    // find the window to use as parent for this dialog if none has been
+    // specified explicitly by the user
+    //
+    // may return NULL
+    wxWindow *FindSuitableParent() const;
 
     // show modal dialog and enter modal loop
     void DoShowModal();
 
+    // common part of all ctors
+    void Init();
+
 private:
     wxWindow *m_oldFocus;
 
+    // while we are showing a modal dialog we disable the other windows using
+    // this object
+    wxWindowDisabler *m_windowDisabler;
+
+    DECLARE_DYNAMIC_CLASS(wxDialog)
     DECLARE_EVENT_TABLE()
 };
 

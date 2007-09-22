@@ -4,7 +4,7 @@
 // Author:      Vadim Zeitlin (original code by Robert Roebling)
 // Modified by:
 // Created:     25.05.99
-// RCS-ID:      $Id: caret.h,v 1.2.2.1 2000/06/20 11:35:39 VZ Exp $
+// RCS-ID:      $Id: caret.h,v 1.6 2002/08/31 11:29:12 GD Exp $
 // Copyright:   (c) wxWindows team
 // Licence:     wxWindows licence
 ///////////////////////////////////////////////////////////////////////////////
@@ -12,7 +12,7 @@
 #ifndef _WX_CARET_H_
 #define _WX_CARET_H_
 
-#ifdef __GNUG__
+#if defined(__GNUG__) && !defined(__APPLE__)
 #pragma interface "caret.h"
 #endif
 
@@ -20,7 +20,7 @@
 
 class wxCaret;
 
-class wxCaretTimer : public wxTimer
+class WXDLLEXPORT wxCaretTimer : public wxTimer
 {
 public:
     wxCaretTimer(wxCaret *caret);
@@ -72,6 +72,12 @@ protected:
 private:
     // GTK specific initialization
     void InitGeneric();
+
+    // the bitmap holding the part of window hidden by the caret when it was
+    // at (m_xOld, m_yOld)
+    wxBitmap      m_bmpUnderCaret;
+    int           m_xOld,
+                  m_yOld;
 
     wxCaretTimer  m_timer;
     bool          m_blinkedOut,     // TRUE => caret hidden right now

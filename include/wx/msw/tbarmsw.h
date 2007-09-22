@@ -4,9 +4,9 @@
 // Author:      Julian Smart
 // Modified by: 13.12.99 by VZ during toolbar classes reorganization
 // Created:     01/02/97
-// RCS-ID:      $Id: tbarmsw.h,v 1.13 1999/12/16 21:29:39 VZ Exp $
+// RCS-ID:      $Id: tbarmsw.h,v 1.15 2002/03/31 14:07:17 RR Exp $
 // Copyright:   (c) Julian Smart
-// Licence:   	wxWindows licence
+// Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
 
 #ifndef _WX_TBARMSW_H_
@@ -90,12 +90,13 @@ protected:
     virtual void DoSetToggle(wxToolBarToolBase *tool, bool toggle);
 
     virtual wxToolBarToolBase *CreateTool(int id,
-                                          const wxBitmap& bitmap1,
-                                          const wxBitmap& bitmap2,
-                                          bool toggle,
+                                          const wxString& label,
+                                          const wxBitmap& bmpNormal,
+                                          const wxBitmap& bmpDisabled,
+                                          wxItemKind kind,
                                           wxObject *clientData,
-                                          const wxString& shortHelpString,
-                                          const wxString& longHelpString);
+                                          const wxString& shortHelp,
+                                          const wxString& longHelp);
     virtual wxToolBarToolBase *CreateTool(wxControl *control);
 
     void DoRedrawTool(wxToolBarToolBase *tool);

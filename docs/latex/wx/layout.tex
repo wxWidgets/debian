@@ -1,5 +1,7 @@
 \section{\class{wxLayoutConstraints}}\label{wxlayoutconstraints}
 
+{\bf Note:} constraints are now deprecated and you should use \helpref{sizers}{sizeroverview} instead.
+
 Objects of this class can be associated with a window to define its
 layout constraints, with respect to siblings or its parent.
 
@@ -25,6 +27,14 @@ ensure that if the user does not specify a constraint, the existing
 width and height will be used, to be compatible with panel items which often
 have take a default size. If the constraint is wxAsIs, the dimension will
 not be changed.
+
+\perlnote{In wxPerl the constraints are accessed as
+\begin{verbatim}
+  constraint = Wx::LayoutConstraints->new();
+  constraint->centreX->AsIs();
+  constraint->centreY->Unconstrained();
+\end{verbatim}
+}
 
 \wxheading{Derived from}
 

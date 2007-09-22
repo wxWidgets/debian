@@ -3,7 +3,7 @@
  *                                                                  *
  * (C) 1998 by Karsten Ballüder (Ballueder@usa.net)                 *
  *                                                                  *
- * $Id: wxlparser.h,v 1.7.2.1 2000/05/10 20:00:53 KB Exp $
+ * $Id: wxlparser.h,v 1.7 1999/12/01 18:05:52 KB Exp $
  *******************************************************************/
 #ifndef WXLPARSER_H
 #   define   WXLPARSER_H

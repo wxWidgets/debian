@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     12/07/98
-// RCS-ID:      $Id: composit.cpp,v 1.1 2000/03/03 11:25:04 JS Exp $
+// RCS-ID:      $Id: composit.cpp,v 1.5 2002/03/15 20:50:39 RD Exp $
 // Copyright:   (c) Julian Smart
 // Licence:   	wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -14,7 +14,7 @@
 #endif
 
 // For compilers that support precompilation, includes "wx.h".
-#include <wx/wxprec.h>
+#include "wx/wxprec.h"
 
 #ifdef __BORLANDC__
 #pragma hdrstop
@@ -723,7 +723,7 @@ void wxCompositeShape::ReadConstraints(wxExpr *clause, wxExprDatabase *database)
     if (objExpr1 && objExpr1->GetClientData())
       m_constrainingObject = (wxShape *)objExpr1->GetClientData();
     else
-      wxFatalError("Couldn't find constraining image of composite.", "Object graphics error");
+      wxLogFatalError(wxT("Object graphics error: Couldn't find constraining image of composite."));
 
     int i = 0;
     wxExpr *currentIdExpr = constrainedExpr->Nth(i);
@@ -737,7 +737,7 @@ void wxCompositeShape::ReadConstraints(wxExpr *clause, wxExprDatabase *database)
       }
       else
       {
-        wxFatalError("Couldn't find constrained image of composite.", "Object graphics error");
+        wxLogFatalError(wxT("Object graphics error: Couldn't find constrained image of composite."));
       }
 
       i ++;
@@ -746,7 +746,7 @@ void wxCompositeShape::ReadConstraints(wxExpr *clause, wxExprDatabase *database)
     wxOGLConstraint *newConstraint = AddConstraint(cType, m_constrainingObject, m_constrainedObjects);
     newConstraint->SetSpacing(cXSpacing, cYSpacing);
     newConstraint->m_constraintId = cId;
-    newConstraint->m_constraintName = (const char*) cName;
+    newConstraint->m_constraintName = cName;
     constraintNo ++;
   }
 }
@@ -1747,7 +1747,7 @@ void wxDivisionShape::PopupMenu(double x, double y)
     oglPopupDivisionMenu->Enable(DIVISION_MENU_EDIT_TOP_EDGE, FALSE);
 
   int x1, y1;
-  m_canvas->ViewStart(&x1, &y1);
+  m_canvas->GetViewStart(&x1, &y1);
 
   int unit_x, unit_y;
   m_canvas->GetScrollPixelsPerUnit(&unit_x, &unit_y);

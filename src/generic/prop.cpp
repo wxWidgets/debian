@@ -4,9 +4,9 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     04/01/98
-// RCS-ID:      $Id: prop.cpp,v 1.23.2.1 2000/04/01 23:19:11 VZ Exp $
+// RCS-ID:      $Id: prop.cpp,v 1.28 2002/08/25 20:27:35 RR Exp $
 // Copyright:   (c) Julian Smart
-// Licence:   	wxWindows licence
+// Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
 
 #ifdef __GNUG__
@@ -20,8 +20,9 @@
 #pragma hdrstop
 #endif
 
+#if wxUSE_PROPSHEET
+
 #ifndef WX_PRECOMP
-#include "wx/wx.h"
 #endif
 
 #include "wx/debug.h"
@@ -46,6 +47,7 @@ wxPropertyValue::wxPropertyValue(void)
 }
 
 wxPropertyValue::wxPropertyValue(const wxPropertyValue& copyFrom)
+    : wxObject()
 {
   m_value.string = (wxChar*) NULL;
   m_modifiedFlag = FALSE;
@@ -564,7 +566,7 @@ void wxPropertyValue::WritePropertyType(wxString& stream)    // Write as any oth
           expr->WritePropertyType(stream);
           expr = expr->m_next;
           if (expr)
-	    stream.Append( wxT(", ") );
+        stream.Append( wxT(", ") );
         }
         stream.Append( wxT("]") );
       }
@@ -833,6 +835,7 @@ wxProperty::wxProperty(void)
 }
 
 wxProperty::wxProperty(wxProperty& copyFrom)
+    : wxObject()
 {
   m_value = copyFrom.GetValue();
   m_name = copyFrom.GetName();
@@ -1006,14 +1009,14 @@ void wxPropertySheet::RemoveProperty(const wxString& name)
   if(node)
   {
     wxProperty *prop = (wxProperty *)node->Data();
- 	delete prop;
+     delete prop;
     m_properties.DeleteNode(node);
   }
-}	
+}    
 
 bool wxPropertySheet::HasProperty(const wxString& name) const
 {
-	return (GetProperty(name)?TRUE:FALSE);
+    return (GetProperty(name)?TRUE:FALSE);
 }
 
 // Clear all properties
@@ -1095,10 +1098,10 @@ wxPropertyValidator::~wxPropertyValidator(void)
 {}
 
 bool wxPropertyValidator::StringToFloat (wxChar *s, float *number) {
-	double num;
-	bool ok = StringToDouble (s, &num);
-	*number = (float) num;
-	return ok;
+    double num;
+    bool ok = StringToDouble (s, &num);
+    *number = (float) num;
+    return ok;
 }
 
 bool wxPropertyValidator::StringToDouble (wxChar *s, double *number) {
@@ -1106,20 +1109,20 @@ bool wxPropertyValidator::StringToDouble (wxChar *s, double *number) {
     wxChar *value_ptr;
     *number = wxStrtod (s, &value_ptr);
     if (value_ptr) {
-		int len = wxStrlen (value_ptr);
-		for (int i = 0; i < len; i++) {
-			ok = (wxIsspace (value_ptr[i]) != 0);
-			if (!ok) return FALSE;
-		}
+        int len = wxStrlen (value_ptr);
+        for (int i = 0; i < len; i++) {
+            ok = (wxIsspace (value_ptr[i]) != 0);
+            if (!ok) return FALSE;
+        }
     }
     return ok;
 }
 
 bool wxPropertyValidator::StringToInt (wxChar *s, int *number) {
-	long num;
-	bool ok = StringToLong (s, &num);
-	*number = (int) num;
-	return ok;
+    long num;
+    bool ok = StringToLong (s, &num);
+    *number = (int) num;
+    return ok;
 }
 
 bool wxPropertyValidator::StringToLong (wxChar *s, long *number) {
@@ -1127,31 +1130,33 @@ bool wxPropertyValidator::StringToLong (wxChar *s, long *number) {
     wxChar *value_ptr;
     *number = wxStrtol (s, &value_ptr, 10);
     if (value_ptr) {
-		int len = wxStrlen (value_ptr);
-		for (int i = 0; i < len; i++) {
-			ok = (wxIsspace (value_ptr[i]) != 0);
-			if (!ok) return FALSE;
-		}
+        int len = wxStrlen (value_ptr);
+        for (int i = 0; i < len; i++) {
+            ok = (wxIsspace (value_ptr[i]) != 0);
+            if (!ok) return FALSE;
+        }
     }
     return ok;
 }
 
 wxChar *wxPropertyValidator::FloatToString (float number) {
-	static wxChar buf[20];
-	wxSprintf (buf, wxT("%.6g"), number);
-	return buf;
+    static wxChar buf[20];
+    wxSnprintf (buf, 20, wxT("%.6g"), number);
+    return buf;
 }
 
 wxChar *wxPropertyValidator::DoubleToString (double number) {
-	static wxChar buf[20];
-	wxSprintf (buf, wxT("%.6g"), number);
-	return buf;
+    static wxChar buf[20];
+    wxSnprintf (buf, 20, wxT("%.6g"), number);
+    return buf;
 }
 
 wxChar *wxPropertyValidator::IntToString (int number) {
-	return ::IntToString (number);
+    return ::IntToString (number);
 }
 
 wxChar *wxPropertyValidator::LongToString (long number) {
-	return ::LongToString (number);
+    return ::LongToString (number);
   }
+
+#endif // wxUSE_PROPSHEET

@@ -4,7 +4,7 @@
 // Author:      wxWindows team
 // Modified by:
 // Created:     13.01.00
-// RCS-ID:      $Id: metafile.h,v 1.6 2000/02/08 19:13:52 JS Exp $
+// RCS-ID:      $Id: metafile.h,v 1.7 2000/08/09 11:14:15 SC Exp $
 // Copyright:   (c) wxWindows team
 // Licence:     wxWindows license
 ///////////////////////////////////////////////////////////////////////////////
@@ -38,6 +38,8 @@
     #endif
 #elif defined(__WXPM__)
     #include "wx/os2/metafile.h"
+#elif defined(__WXMAC__)
+    #include "wx/mac/metafile.h"
 #endif
 
 #endif

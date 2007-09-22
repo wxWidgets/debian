@@ -1,10 +1,10 @@
 /////////////////////////////////////////////////////////////////////////////
-// Name:        menu.h
+// Name:        wx/msw/menu.h
 // Purpose:     wxMenu, wxMenuBar classes
 // Author:      Julian Smart
 // Modified by: Vadim Zeitlin (wxMenuItem is now in separate file)
 // Created:     01/02/97
-// RCS-ID:      $Id: menu.h,v 1.34 2000/02/22 09:53:55 VZ Exp $
+// RCS-ID:      $Id: menu.h,v 1.36 2002/03/21 02:35:08 VZ Exp $
 // Copyright:   (c) Julian Smart and Markus Holzem
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -60,11 +60,10 @@ public:
     }
 #endif // wxUSE_MENU_CALLBACK
 
-    // MSW-specific
-    bool ProcessCommand(wxCommandEvent& event);
-
     // implementation only from now on
     // -------------------------------
+
+    virtual void Attach(wxMenuBarBase *menubar);
 
     bool MSWCommand(WXUINT param, WXWORD id);
 
@@ -73,10 +72,6 @@ public:
     wxWindow *GetWindow() const;
         // get the menu handle
     WXHMENU GetHMenu() const { return m_hMenu; }
-
-    // attach/detach menu to/from wxMenuBar
-    void Attach(wxMenuBar *menubar);
-    void Detach();
 
 #if wxUSE_ACCEL
     // called by wxMenuBar to build its accel table from the accels of all menus
@@ -98,8 +93,14 @@ private:
     // common part of Append/Insert (behaves as Append is pos == (size_t)-1)
     bool DoInsertOrAppend(wxMenuItem *item, size_t pos = (size_t)-1);
 
+    // terminate the current radio group, if any
+    void EndRadioGroup();
+
     // if TRUE, insert a breal before appending the next item
     bool m_doBreak;
+
+    // the position of the first item in the current radio group or -1
+    int m_startRadioGroup;
 
     // the menu handle of this menu
     WXHMENU m_hMenu;
@@ -134,10 +135,6 @@ public:
     virtual wxMenu *Replace(size_t pos, wxMenu *menu, const wxString& title);
     virtual wxMenu *Remove(size_t pos);
 
-    virtual int FindMenuItem(const wxString& menuString,
-                             const wxString& itemString) const;
-    virtual wxMenuItem* FindItem( int id, wxMenu **menu = NULL ) const;
-
     virtual void EnableTop( size_t pos, bool flag );
     virtual void SetLabelTop( size_t pos, const wxString& label );
     virtual wxString GetLabelTop( size_t pos ) const;
@@ -153,14 +150,8 @@ public:
 
     // implementation from now on
     WXHMENU Create();
-    void Detach();
-
-        // returns TRUE if we're attached to a frame
-    bool IsAttached() const { return m_menuBarFrame != NULL; }
-        // get the frame we live in
-    wxFrame *GetFrame() const { return m_menuBarFrame; }
-        // attach to a frame
-    void Attach(wxFrame *frame);
+    virtual void Detach();
+    virtual void Attach(wxFrame *frame);
 
 #if wxUSE_ACCEL
     // get the accel table for all the menus
@@ -187,7 +178,6 @@ protected:
 
     wxArrayString m_titles;
 
-    wxFrame      *m_menuBarFrame;
     WXHMENU       m_hMenu;
 
 #if wxUSE_ACCEL

@@ -2,7 +2,7 @@
 // Name:        choice.h
 // Purpose:
 // Author:      Robert Roebling
-// Id:          $Id: choice.h,v 1.27 1999/11/22 19:44:20 RR Exp $
+// Id:          $Id: choice.h,v 1.28 2002/09/07 12:28:46 GD Exp $
 // Copyright:   (c) 1998 Robert Roebling
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -10,7 +10,7 @@
 #ifndef __GTKCHOICEH__
 #define __GTKCHOICEH__
 
-#ifdef __GNUG__
+#if defined(__GNUG__) && !defined(__APPLE__)
     #pragma interface "choice.h"
 #endif
 

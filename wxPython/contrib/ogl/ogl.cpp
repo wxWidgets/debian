@@ -55,7 +55,7 @@ extern PyObject *SWIG_newvarlink(void);
 
 #define SWIG_name    "oglc"
 
-#include "export.h"
+#include "wxPython.h"
 #include "oglhelpers.h"
 
 
@@ -85,24 +85,22 @@ static PyObject* t_output_helper(PyObject* target, PyObject* o) {
     return target;
 }
 
-static char* wxStringErrorMsg = "string type is required for parameter";
-
 //---------------------------------------------------------------------------
 // This one will work for any class for the VERY generic cases, but beyond that
 // the helper needs to know more about the type.
 
 wxList* wxPy_wxListHelper(PyObject* pyList, char* className) {
-    bool doSave = wxPyRestoreThread();
+    wxPyBeginBlockThreads();
     if (!PyList_Check(pyList)) {
         PyErr_SetString(PyExc_TypeError, "Expected a list object.");
-        wxPySaveThread(doSave);
+        wxPyEndBlockThreads();
         return NULL;
     }
     int count = PyList_Size(pyList);
     wxList* list = new wxList;
     if (! list) {
         PyErr_SetString(PyExc_MemoryError, "Unable to allocate wxList object");
-        wxPySaveThread(doSave);
+        wxPyEndBlockThreads();
         return NULL;
     }
     for (int x=0; x<count; x++) {
@@ -113,29 +111,29 @@ wxList* wxPy_wxListHelper(PyObject* pyList, char* className) {
             char errmsg[1024];
             sprintf(errmsg, "Type error, expected list of %s objects", className);
             PyErr_SetString(PyExc_TypeError, errmsg);
-            wxPySaveThread(doSave);
+            wxPyEndBlockThreads();
             return NULL;
         }
         list->Append(wxo);
     }
-    wxPySaveThread(doSave);
+    wxPyEndBlockThreads();
     return list;
 }
 
 //---------------------------------------------------------------------------
 
 wxList* wxPy_wxRealPoint_ListHelper(PyObject* pyList) {
-    bool doSave = wxPyRestoreThread();
+    wxPyBeginBlockThreads();
     if (!PyList_Check(pyList)) {
         PyErr_SetString(PyExc_TypeError, "Expected a list object.");
-        wxPySaveThread(doSave);
+        wxPyEndBlockThreads();
         return NULL;
     }
     int count = PyList_Size(pyList);
     wxList* list = new wxList;
     if (! list) {
         PyErr_SetString(PyExc_MemoryError, "Unable to allocate wxList object");
-        wxPySaveThread(doSave);
+        wxPyEndBlockThreads();
         return NULL;
     }
     for (int x=0; x<count; x++) {
@@ -154,19 +152,80 @@ wxList* wxPy_wxRealPoint_ListHelper(PyObject* pyList) {
             wxRealPoint* wxo = NULL;
             if (SWIG_GetPtrObj(pyo, (void **)&wxo, "_wxRealPoint_p")) {
                 PyErr_SetString(PyExc_TypeError, "Type error, expected list of wxRealPoint objects or 2-tuples");
-                wxPySaveThread(doSave);
+                wxPyEndBlockThreads();
                 return NULL;
             }
             list->Append((wxObject*) new wxRealPoint(*wxo));
         }
     }
-    wxPySaveThread(doSave);
+    wxPyEndBlockThreads();
     return list;
+}
+
+//---------------------------------------------------------------------------
+
+PyObject*  wxPyMake_wxShapeEvtHandler(wxShapeEvtHandler* source) {
+    PyObject* target = NULL;
+
+    if (source && wxIsKindOf(source, wxShapeEvtHandler)) {
+        // If it's derived from wxShapeEvtHandler then there may
+        // already be a pointer to a Python object that we can use
+        // in the OOR data.
+        wxShapeEvtHandler* seh = (wxShapeEvtHandler*)source;
+        wxPyOORClientData* data = (wxPyOORClientData*)seh->GetClientObject();
+        if (data) {
+            target = data->m_obj;
+            Py_INCREF(target);
+        }
+    }
+    if (! target) {
+        target = wxPyMake_wxObject2(source, FALSE);
+        if (target != Py_None)
+            ((wxShapeEvtHandler*)source)->SetClientObject(new wxPyOORClientData(target));
+    }
+    return target;
+}
+
+//---------------------------------------------------------------------------
+
+PyObject* wxPy_ConvertShapeList(wxListBase* list, const char* className) {
+    PyObject*   pyList;
+    PyObject*   pyObj;
+    wxObject*   wxObj;
+    wxNode*     node = list->First();
+
+    wxPyBeginBlockThreads();
+    pyList = PyList_New(0);
+    while (node) {
+        wxObj = node->Data();
+        pyObj = wxPyMake_wxShapeEvtHandler((wxShapeEvtHandler*)wxObj);
+        PyList_Append(pyList, pyObj);
+        node = node->Next();
+    }
+    wxPyEndBlockThreads();
+    return pyList;
 }
 
 
 //---------------------------------------------------------------------------
 
+IMPLEMENT_DYNAMIC_CLASS(wxPyShapeCanvas, wxShapeCanvas);
+IMPLEMENT_DYNAMIC_CLASS(wxPyShapeEvtHandler, wxShapeEvtHandler);
+IMPLEMENT_ABSTRACT_CLASS(wxPyShape, wxShape);
+IMPLEMENT_DYNAMIC_CLASS(wxPyRectangleShape, wxRectangleShape);
+IMPLEMENT_DYNAMIC_CLASS(wxPyControlPoint, wxControlPoint);
+IMPLEMENT_DYNAMIC_CLASS(wxPyBitmapShape, wxBitmapShape);
+IMPLEMENT_DYNAMIC_CLASS(wxPyDrawnShape, wxDrawnShape);
+IMPLEMENT_DYNAMIC_CLASS(wxPyCompositeShape, wxCompositeShape);
+IMPLEMENT_DYNAMIC_CLASS(wxPyDividedShape, wxDividedShape);
+IMPLEMENT_DYNAMIC_CLASS(wxPyDivisionShape, wxDivisionShape);
+IMPLEMENT_DYNAMIC_CLASS(wxPyEllipseShape, wxEllipseShape);
+IMPLEMENT_DYNAMIC_CLASS(wxPyCircleShape, wxCircleShape);
+IMPLEMENT_DYNAMIC_CLASS(wxPyLineShape, wxLineShape);
+IMPLEMENT_DYNAMIC_CLASS(wxPyPolygonShape, wxPolygonShape);
+IMPLEMENT_DYNAMIC_CLASS(wxPyTextShape, wxTextShape);
+
+//---------------------------------------------------------------------------
 
 extern "C" SWIGEXPORT(void) initoglbasicc();
 extern "C" SWIGEXPORT(void) initoglshapesc();
@@ -183,10 +242,11 @@ static PyObject *_wrap_wxOGLInitialize(PyObject *self, PyObject *args, PyObject 
     if(!PyArg_ParseTupleAndKeywords(args,kwargs,":wxOGLInitialize",_kwnames)) 
         return NULL;
 {
-    wxPy_BEGIN_ALLOW_THREADS;
-        wxOGLInitialize();
+    PyThreadState* __tstate = wxPyBeginAllowThreads();
+    wxOGLInitialize();
 
-    wxPy_END_ALLOW_THREADS;
+    wxPyEndAllowThreads(__tstate);
+    if (PyErr_Occurred()) return NULL;
 }    Py_INCREF(Py_None);
     _resultobj = Py_None;
     return _resultobj;
@@ -200,10 +260,11 @@ static PyObject *_wrap_wxOGLCleanUp(PyObject *self, PyObject *args, PyObject *kw
     if(!PyArg_ParseTupleAndKeywords(args,kwargs,":wxOGLCleanUp",_kwnames)) 
         return NULL;
 {
-    wxPy_BEGIN_ALLOW_THREADS;
-        wxOGLCleanUp();
+    PyThreadState* __tstate = wxPyBeginAllowThreads();
+    wxOGLCleanUp();
 
-    wxPy_END_ALLOW_THREADS;
+    wxPyEndAllowThreads(__tstate);
+    if (PyErr_Occurred()) return NULL;
 }    Py_INCREF(Py_None);
     _resultobj = Py_None;
     return _resultobj;
@@ -250,12 +311,14 @@ static struct { char *n1; char *n2; void *(*pcnv)(void *); } _swig_mapping[] = {
     { "_uint","_wxWindowID",0},
     { "_wxChar","_char",0},
     { "_char","_wxChar",0},
+    { "_struct_wxNativeFontInfo","_wxNativeFontInfo",0},
     { "_EBool","_wxCoord",0},
     { "_EBool","_wxPrintQuality",0},
     { "_EBool","_signed_int",0},
     { "_EBool","_int",0},
     { "_EBool","_wxWindowID",0},
     { "_unsigned_long","_long",0},
+    { "_wxNativeFontInfo","_struct_wxNativeFontInfo",0},
     { "_signed_int","_wxCoord",0},
     { "_signed_int","_wxPrintQuality",0},
     { "_signed_int","_EBool",0},
@@ -402,6 +465,21 @@ SWIGEXPORT(void) initoglc() {
 
     wxClassInfo::CleanUpClasses();
     wxClassInfo::InitializeClasses();
+
+    wxPyPtrTypeMap_Add("wxControlPoint", "wxPyControlPoint");
+    wxPyPtrTypeMap_Add("wxShapeCanvas", "wxPyShapeCanvas");
+    wxPyPtrTypeMap_Add("wxShapeEvtHandler", "wxPyShapeEvtHandler");
+    wxPyPtrTypeMap_Add("wxShape", "wxPyShape");
+    wxPyPtrTypeMap_Add("wxRectangleShape", "wxPyRectangleShape");
+    wxPyPtrTypeMap_Add("wxDrawnShape", "wxPyDrawnShape");
+    wxPyPtrTypeMap_Add("wxCompositeShape", "wxPyCompositeShape");
+    wxPyPtrTypeMap_Add("wxDividedShape", "wxPyDividedShape");
+    wxPyPtrTypeMap_Add("wxDivisionShape", "wxPyDivisionShape");
+    wxPyPtrTypeMap_Add("wxEllipseShape", "wxPyEllipseShape");
+    wxPyPtrTypeMap_Add("wxCircleShape", "wxPyCircleShape");
+    wxPyPtrTypeMap_Add("wxLineShape", "wxPyLineShape");
+    wxPyPtrTypeMap_Add("wxPolygonShape", "wxPyPolygonShape");
+    wxPyPtrTypeMap_Add("wxTextShape", "wxPyTextShape");
 
 {
    int i;

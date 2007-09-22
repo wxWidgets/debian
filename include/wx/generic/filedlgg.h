@@ -5,26 +5,18 @@
 // Modified by:
 // Created:     8/17/99
 // Copyright:   (c) Robert Roebling
-// RCS-ID:      $Id: filedlgg.h,v 1.15 2000/02/06 13:51:00 RR Exp $
+// RCS-ID:      $Id: filedlgg.h,v 1.19.2.1 2002/09/23 14:55:55 VZ Exp $
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
 
 #ifndef _WX_FILEDLGG_H_
 #define _WX_FILEDLGG_H_
 
-#ifdef __GNUG__
+#if defined(__GNUG__) && !defined(__APPLE__)
 #pragma interface "filedlgg.h"
 #endif
 
-#include "wx/defs.h"
-
 #include "wx/dialog.h"
-#include "wx/checkbox.h"
-#include "wx/listctrl.h"
-#include "wx/textctrl.h"
-#include "wx/choice.h"
-#include "wx/checkbox.h"
-#include "wx/stattext.h"
 
 //-----------------------------------------------------------------------------
 // data
@@ -37,91 +29,14 @@ WXDLLEXPORT_DATA(extern const wxChar *)wxFileSelectorDefaultWildcardStr;
 // classes
 //-----------------------------------------------------------------------------
 
+class wxCheckBox;
+class wxChoice;
 class wxFileData;
 class wxFileCtrl;
 class wxFileDialog;
-
-//-----------------------------------------------------------------------------
-//  wxFileData
-//-----------------------------------------------------------------------------
-
-class wxFileData : public wxObject
-{
-private:
-    wxString m_name;
-    wxString m_fileName;
-    long     m_size;
-    int      m_hour;
-    int      m_minute;
-    int      m_year;
-    int      m_month;
-    int      m_day;
-    wxString m_permissions;
-    bool     m_isDir;
-    bool     m_isLink;
-    bool     m_isExe;
-
-public:
-    wxFileData() { }
-    wxFileData( const wxString &name, const wxString &fname );
-    wxString GetName() const;
-    wxString GetFullName() const;
-    wxString GetHint() const;
-    wxString GetEntry( int num );
-    bool IsDir();
-    bool IsLink();
-    bool IsExe();
-    long GetSize();
-    void MakeItem( wxListItem &item );
-    void SetNewName( const wxString &name, const wxString &fname );
-
-private:
-    DECLARE_DYNAMIC_CLASS(wxFileData);
-};
-
-//-----------------------------------------------------------------------------
-//  wxFileCtrl
-//-----------------------------------------------------------------------------
-
-class wxFileCtrl : public wxListCtrl
-{
-private:
-    wxString      m_dirName;
-    bool          m_showHidden;
-    wxString      m_wild;
-
-public:
-    wxFileCtrl();
-    wxFileCtrl( wxWindow *win,
-                wxWindowID id,
-                const wxString &dirName,
-                const wxString &wild,
-                const wxPoint &pos = wxDefaultPosition,
-                const wxSize &size = wxDefaultSize,
-                long style = wxLC_LIST,
-                const wxValidator &validator = wxDefaultValidator,
-                const wxString &name = wxT("filelist") );
-    void ChangeToListMode();
-    void ChangeToReportMode();
-    void ChangeToIconMode();
-    void ShowHidden( bool show = TRUE );
-    long Add( wxFileData *fd, wxListItem &item );
-    void Update();
-    virtual void StatusbarText( wxChar *WXUNUSED(text) ) {};
-    void MakeDir();
-    void GoToParentDir();
-    void GoToHomeDir();
-    void GoToDir( const wxString &dir );
-    void SetWild( const wxString &wild );
-    void GetDir( wxString &dir );
-    void OnListDeleteItem( wxListEvent &event );
-    void OnListDeleteAllItems( wxListEvent &event );
-    void OnListEndLabelEdit( wxListEvent &event );
-
-private:
-    DECLARE_DYNAMIC_CLASS(wxFileCtrl);
-    DECLARE_EVENT_TABLE()
-};
+class wxListEvent;
+class wxStaticText;
+class wxTextCtrl;
 
 //-------------------------------------------------------------------------
 // File selector
@@ -134,20 +49,20 @@ public:
 
     wxFileDialog(wxWindow *parent,
                  const wxString& message = wxFileSelectorPromptStr,
-                 const wxString& defaultDir = "",
-                 const wxString& defaultFile = "",
+                 const wxString& defaultDir = _T(""),
+                 const wxString& defaultFile = _T(""),
                  const wxString& wildCard = wxFileSelectorDefaultWildcardStr,
                  long style = 0,
                  const wxPoint& pos = wxDefaultPosition);
-    ~wxFileDialog();
+    virtual ~wxFileDialog();
 
-    void SetMessage(const wxString& message) { m_message = message; }
+    void SetMessage(const wxString& message) { SetTitle(message); }
     void SetPath(const wxString& path);
     void SetDirectory(const wxString& dir) { m_dir = dir; }
     void SetFilename(const wxString& name) { m_fileName = name; }
     void SetWildcard(const wxString& wildCard) { m_wildCard = wildCard; }
     void SetStyle(long style) { m_dialogStyle = style; }
-    void SetFilterIndex(int filterIndex) { m_filterIndex = filterIndex; }
+    void SetFilterIndex(int filterIndex);
 
     wxString GetMessage() const { return m_message; }
     wxString GetPath() const { return m_path; }
@@ -161,6 +76,11 @@ public:
     void GetPaths(wxArrayString& paths) const;
     void GetFilenames(wxArrayString& files) const;
 
+    // implementation only from now on
+    // -------------------------------
+
+    virtual int ShowModal();
+
     void OnSelected( wxListEvent &event );
     void OnActivated( wxListEvent &event );
     void OnList( wxCommandEvent &event );
@@ -169,13 +89,16 @@ public:
     void OnHome( wxCommandEvent &event );
     void OnListOk( wxCommandEvent &event );
     void OnNew( wxCommandEvent &event );
-    void OnChoice( wxCommandEvent &event );
+    void OnChoiceFilter( wxCommandEvent &event );
     void OnTextEnter( wxCommandEvent &event );
     void OnCheck( wxCommandEvent &event );
 
     void HandleAction( const wxString &fn );
 
 protected:
+    // use the filter with the given index
+    void DoSetFilterIndex(int filterindex);
+
     wxString       m_message;
     long           m_dialogStyle;
     wxString       m_dir;
@@ -194,8 +117,9 @@ private:
     DECLARE_DYNAMIC_CLASS(wxFileDialog)
     DECLARE_EVENT_TABLE()
 
-    static long   s_lastViewStyle;  // list or report?
-    static bool   s_lastShowHidden; 
+    // these variables are preserved between wxFileDialog calls
+    static long ms_lastViewStyle;     // list or report?
+    static bool ms_lastShowHidden;    // did we show hidden files?
 };
 
 // File selector - backward compatibility
@@ -238,4 +162,5 @@ wxSaveFileSelector(const wxChar *what,
 
 #endif
     // _WX_DIRDLGG_H_
+
 

@@ -2,7 +2,7 @@
 // Name:        imaggif.cpp
 // Purpose:     wxGIFHandler
 // Author:      Vaclav Slavik & Guillermo Rodriguez Garcia
-// RCS-ID:      $Id: imaggif.cpp,v 1.32 2000/03/13 17:22:49 VS Exp $
+// RCS-ID:      $Id: imaggif.cpp,v 1.35 2002/05/22 23:14:47 VZ Exp $
 // Copyright:   (c) 1999 Vaclav Slavik & Guillermo Rodriguez Garcia
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -22,7 +22,7 @@
 #  include "wx/defs.h"
 #endif
 
-#if wxUSE_GIF
+#if wxUSE_IMAGE && wxUSE_GIF
 
 #include "wx/imaggif.h"
 #include "wx/gifdecod.h"
@@ -38,11 +38,12 @@ IMPLEMENT_DYNAMIC_CLASS(wxGIFHandler,wxImageHandler)
 
 #if wxUSE_STREAMS
 
-bool wxGIFHandler::LoadFile( wxImage *image, wxInputStream& stream, bool verbose, int WXUNUSED(index) )
+bool wxGIFHandler::LoadFile(wxImage *image, wxInputStream& stream,
+                            bool verbose, int index)
 {
     wxGIFDecoder *decod;
     int error;
-    bool ok;
+    bool ok = TRUE;
 
 //    image->Destroy();
     decod = new wxGIFDecoder(&stream, TRUE);
@@ -75,7 +76,30 @@ bool wxGIFHandler::LoadFile( wxImage *image, wxInputStream& stream, bool verbose
         /* go on; image data is OK */
     }
 
-    ok = decod->ConvertToImage(image);
+    if (index != -1)
+    {
+        // We're already on index = 0 by default. So no need
+        // to call GoFrame(0) then. On top of that GoFrame doesn't
+        // accept an index of 0. (Instead GoFirstFrame() should be used)
+        // Also if the gif image has only one frame, calling GoFrame(0)
+        // fails because GoFrame() only works with gif animations.
+        // (It fails if IsAnimation() returns FALSE)
+        // All valid reasons to NOT call GoFrame when index equals 0.
+        if (index != 0)
+        {
+            ok = decod->GoFrame(index);
+        }
+    }
+
+    if (ok)
+    {
+        ok = decod->ConvertToImage(image);
+    }
+    else
+    {
+        wxLogError(_("GIF: Invalid gif index."));
+    }
+
     delete decod;
 
     return ok;
@@ -92,14 +116,8 @@ bool wxGIFHandler::SaveFile( wxImage * WXUNUSED(image),
 
 bool wxGIFHandler::DoCanRead( wxInputStream& stream )
 {
-    wxGIFDecoder *decod;
-    bool ok;
-
-    decod = new wxGIFDecoder(&stream);
-    ok = decod->CanRead();
-    delete decod;
-
-    return ok;
+    wxGIFDecoder decod(&stream);
+    return decod.CanRead();
 }
 
 #endif  // wxUSE_STREAMS

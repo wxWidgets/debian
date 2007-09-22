@@ -4,7 +4,7 @@
 // Author:      Vadim Zeitlin
 // Modified by:
 // Created:     07.07.99
-// RCS-ID:      $Id: dialup.cpp,v 1.14.2.5 2000/08/29 17:32:46 VZ Exp $
+// RCS-ID:      $Id: dialup.cpp,v 1.34 2002/08/30 20:34:25 JS Exp $
 // Copyright:   (c) Vadim Zeitlin
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -42,18 +42,20 @@
 #include "wx/app.h"
 #include "wx/generic/choicdgg.h"
 
-#include "wx/msw/private.h"  // must be before #include "dynlib.h"
-
-#if !wxUSE_DYNLIB_CLASS
-    #error You need wxUSE_DYNLIB_CLASS to be 1 to compile dialup.cpp.
-#endif
-
 #include "wx/dynlib.h"
-
 #include "wx/dialup.h"
 
-// Doesn't yet compile under VC++ 4, BC++, mingw, Watcom C++: no wininet.h
-#if !defined(__BORLANDC__) && !defined(__GNUWIN32_OLD__) && !defined(__GNUWIN32__) && !defined(__WATCOMC__) && ! (defined(__VISUALC__) && (__VISUALC__ < 1020))
+DEFINE_EVENT_TYPE(wxEVT_DIALUP_CONNECTED)
+DEFINE_EVENT_TYPE(wxEVT_DIALUP_DISCONNECTED)
+
+// Doesn't yet compile under VC++ 4, BC++, Watcom C++,
+// Wine: no wininet.h
+#if !defined(__BORLANDC__) && \
+    (!defined(__GNUWIN32__) || wxCHECK_W32API_VERSION(0, 5)) && \
+    !defined(__GNUWIN32_OLD__) && \
+    !defined(__WATCOMC__) && \
+    !defined(__WXWINE__) && \
+    (!defined(__VISUALC__) || (__VISUALC__ >= 1020))
 
 #include <ras.h>
 #include <raserror.h>
@@ -222,17 +224,20 @@ private:
     // each other
     wxRasThreadData m_data;
 
+    // the handle of rasapi32.dll when it's loaded
+    wxPluginManager m_dllRas;
+
     // the hidden window we use for passing messages between threads
     static HWND ms_hwndRas;
 
     // the handle of the connection we initiated or 0 if none
     static HRASCONN ms_hRasConnection;
 
-    // the use count of rasapi32.dll
-    static int ms_nDllCount;
-
-    // the handle of rasapi32.dll when it's loaded
-    static wxDllType ms_dllRas;
+    // FIXME: There is probably no reason these really need to
+    //        be static anymore since the dll refcounting is
+    //        handled by wxPluginManager now.  Whether or not
+    //        we still _want_ them to be static is another
+    //        issue entirely..
 
     // the pointers to RAS functions
     static RASDIAL ms_pfnRasDial;
@@ -263,10 +268,6 @@ private:
     // this flag tells us if we're online
     static int ms_isConnected;
 
-    // this flag is the result of the call to IsAlwaysOnline() (-1 if not
-    // called yet)
-    static int ms_isAlwaysOnline;
-
     // this flag tells us whether a call to RasDial() is in progress
     static wxDialUpManagerMSW *ms_dialer;
 };
@@ -296,9 +297,6 @@ HRASCONN wxDialUpManagerMSW::ms_hRasConnection = 0;
 
 HWND wxDialUpManagerMSW::ms_hwndRas = 0;
 
-int wxDialUpManagerMSW::ms_nDllCount = 0;
-wxDllType wxDialUpManagerMSW::ms_dllRas = 0;
-
 RASDIAL wxDialUpManagerMSW::ms_pfnRasDial = 0;
 RASENUMCONNECTIONS wxDialUpManagerMSW::ms_pfnRasEnumConnections = 0;
 RASENUMENTRIES wxDialUpManagerMSW::ms_pfnRasEnumEntries = 0;
@@ -321,7 +319,6 @@ RASCONNECTIONNOTIFICATION wxDialUpManagerMSW::ms_pfnRasConnectionNotification = 
 
 int wxDialUpManagerMSW::ms_userSpecifiedOnlineStatus = -1;
 int wxDialUpManagerMSW::ms_isConnected = -1;
-int wxDialUpManagerMSW::ms_isAlwaysOnline = -1;
 wxDialUpManagerMSW *wxDialUpManagerMSW::ms_dialer = NULL;
 
 // ----------------------------------------------------------------------------
@@ -341,89 +338,80 @@ wxDialUpManager *wxDialUpManager::Create()
 
 wxDialUpManagerMSW::wxDialUpManagerMSW()
                   : m_timerStatusPolling(this)
+                  , m_dllRas(_T("RASAPI32"))
 {
     // initialize our data
     m_hThread = 0;
 
-    if ( !ms_nDllCount++ )
+    if ( !m_dllRas.IsLoaded() )
     {
-        // load the RAS library
-        ms_dllRas = wxDllLoader::LoadLibrary("RASAPI32");
-        if ( !ms_dllRas )
-        {
-            wxLogError(_("Dial up functions are unavailable because the remote access service (RAS) is not installed on this machine. Please install it."));
-        }
-        else
-        {
-            // resolve the functions we need
+        wxLogError(_("Dial up functions are unavailable because the remote access service (RAS) is not installed on this machine. Please install it."));
+    }
+    else if ( !ms_pfnRasDial )
+    {
+        // resolve the functions we need
 
-            // this will contain the name of the function we failed to resolve
-            // if any at the end
-            const char *funcName = NULL;
+        // this will contain the name of the function we failed to resolve
+        // if any at the end
+        const char *funcName = NULL;
 
-            // get the function from rasapi32.dll and abort if it's not found
-            #define RESOLVE_RAS_FUNCTION(type, name)                    \
-                ms_pfn##name = (type)wxDllLoader::GetSymbol(ms_dllRas,  \
-                               wxString(_T(#name)) + gs_funcSuffix);    \
-                if ( !ms_pfn##name )                                    \
-                {                                                       \
-                    funcName = #name;                                   \
-                    goto exit;                                          \
-                }
-
-            // a variant of above macro which doesn't abort if the function is
-            // not found in the DLL
-            #define RESOLVE_OPTIONAL_RAS_FUNCTION(type, name)           \
-                ms_pfn##name = (type)wxDllLoader::GetSymbol(ms_dllRas,  \
-                               wxString(_T(#name)) + gs_funcSuffix);
-
-            RESOLVE_RAS_FUNCTION(RASDIAL, RasDial);
-            RESOLVE_RAS_FUNCTION(RASENUMCONNECTIONS, RasEnumConnections);
-            RESOLVE_RAS_FUNCTION(RASENUMENTRIES, RasEnumEntries);
-            RESOLVE_RAS_FUNCTION(RASGETCONNECTSTATUS, RasGetConnectStatus);
-            RESOLVE_RAS_FUNCTION(RASGETERRORSTRING, RasGetErrorString);
-            RESOLVE_RAS_FUNCTION(RASHANGUP, RasHangUp);
-            RESOLVE_RAS_FUNCTION(RASGETENTRYDIALPARAMS, RasGetEntryDialParams);
-
-            // suppress wxDllLoader messages about missing (non essential)
-            // functions
-            {
-                wxLogNull noLog;
-
-                RESOLVE_OPTIONAL_RAS_FUNCTION(RASGETPROJECTIONINFO, RasGetProjectionInfo);
-                RESOLVE_OPTIONAL_RAS_FUNCTION(RASCREATEPHONEBOOKENTRY, RasCreatePhonebookEntry);
-                RESOLVE_OPTIONAL_RAS_FUNCTION(RASEDITPHONEBOOKENTRY, RasEditPhonebookEntry);
-                RESOLVE_OPTIONAL_RAS_FUNCTION(RASSETENTRYDIALPARAMS, RasSetEntryDialParams);
-                RESOLVE_OPTIONAL_RAS_FUNCTION(RASGETENTRYPROPERTIES, RasGetEntryProperties);
-                RESOLVE_OPTIONAL_RAS_FUNCTION(RASSETENTRYPROPERTIES, RasSetEntryProperties);
-                RESOLVE_OPTIONAL_RAS_FUNCTION(RASRENAMEENTRY, RasRenameEntry);
-                RESOLVE_OPTIONAL_RAS_FUNCTION(RASDELETEENTRY, RasDeleteEntry);
-                RESOLVE_OPTIONAL_RAS_FUNCTION(RASVALIDATEENTRYNAME, RasValidateEntryName);
-                RESOLVE_OPTIONAL_RAS_FUNCTION(RASGETCOUNTRYINFO, RasGetCountryInfo);
-                RESOLVE_OPTIONAL_RAS_FUNCTION(RASENUMDEVICES, RasEnumDevices);
-                RESOLVE_OPTIONAL_RAS_FUNCTION(RASCONNECTIONNOTIFICATION, RasConnectionNotification);
+        // get the function from rasapi32.dll and abort if it's not found
+        #define RESOLVE_RAS_FUNCTION(type, name)                          \
+            ms_pfn##name = (type)m_dllRas.GetSymbol( wxString(_T(#name))  \
+                                                     + gs_funcSuffix);    \
+            if ( !ms_pfn##name )                                          \
+            {                                                             \
+                funcName = #name;                                         \
+                goto exit;                                                \
             }
 
-            // keep your preprocessor name space clean
-            #undef RESOLVE_RAS_FUNCTION
-            #undef RESOLVE_OPTIONAL_RAS_FUNCTION
+        // a variant of above macro which doesn't abort if the function is
+        // not found in the DLL
+        #define RESOLVE_OPTIONAL_RAS_FUNCTION(type, name)                 \
+            ms_pfn##name = (type)m_dllRas.GetSymbol( wxString(_T(#name))  \
+                                                     + gs_funcSuffix);
+
+        RESOLVE_RAS_FUNCTION(RASDIAL, RasDial);
+        RESOLVE_RAS_FUNCTION(RASENUMCONNECTIONS, RasEnumConnections);
+        RESOLVE_RAS_FUNCTION(RASENUMENTRIES, RasEnumEntries);
+        RESOLVE_RAS_FUNCTION(RASGETCONNECTSTATUS, RasGetConnectStatus);
+        RESOLVE_RAS_FUNCTION(RASGETERRORSTRING, RasGetErrorString);
+        RESOLVE_RAS_FUNCTION(RASHANGUP, RasHangUp);
+        RESOLVE_RAS_FUNCTION(RASGETENTRYDIALPARAMS, RasGetEntryDialParams);
+
+        // suppress error messages about missing (non essential) functions
+        {
+            wxLogNull noLog;
+
+            RESOLVE_OPTIONAL_RAS_FUNCTION(RASGETPROJECTIONINFO, RasGetProjectionInfo);
+            RESOLVE_OPTIONAL_RAS_FUNCTION(RASCREATEPHONEBOOKENTRY, RasCreatePhonebookEntry);
+            RESOLVE_OPTIONAL_RAS_FUNCTION(RASEDITPHONEBOOKENTRY, RasEditPhonebookEntry);
+            RESOLVE_OPTIONAL_RAS_FUNCTION(RASSETENTRYDIALPARAMS, RasSetEntryDialParams);
+            RESOLVE_OPTIONAL_RAS_FUNCTION(RASGETENTRYPROPERTIES, RasGetEntryProperties);
+            RESOLVE_OPTIONAL_RAS_FUNCTION(RASSETENTRYPROPERTIES, RasSetEntryProperties);
+            RESOLVE_OPTIONAL_RAS_FUNCTION(RASRENAMEENTRY, RasRenameEntry);
+            RESOLVE_OPTIONAL_RAS_FUNCTION(RASDELETEENTRY, RasDeleteEntry);
+            RESOLVE_OPTIONAL_RAS_FUNCTION(RASVALIDATEENTRYNAME, RasValidateEntryName);
+            RESOLVE_OPTIONAL_RAS_FUNCTION(RASGETCOUNTRYINFO, RasGetCountryInfo);
+            RESOLVE_OPTIONAL_RAS_FUNCTION(RASENUMDEVICES, RasEnumDevices);
+            RESOLVE_OPTIONAL_RAS_FUNCTION(RASCONNECTIONNOTIFICATION, RasConnectionNotification);
+        }
+
+        // keep your preprocessor name space clean
+        #undef RESOLVE_RAS_FUNCTION
+        #undef RESOLVE_OPTIONAL_RAS_FUNCTION
 
 exit:
-            if ( funcName )
-            {
-                static const wxChar *msg = wxTRANSLATE(
+        if ( funcName )
+        {
+            static const wxChar *msg = wxTRANSLATE(
 "The version of remote access service (RAS) installed on this machine is too\
 old, please upgrade (the following required function is missing: %s)."
-                                                       );
+                                                   );
 
-                wxLogError(wxGetTranslation(msg), funcName);
-
-                wxDllLoader::UnloadLibrary(ms_dllRas);
-                ms_dllRas = 0;
-                ms_nDllCount = 0;
-
-                return;
-            }
+            wxLogError(wxGetTranslation(msg), funcName);
+            m_dllRas.Unload();
+            return;
         }
     }
 
@@ -434,13 +422,6 @@ old, please upgrade (the following required function is missing: %s)."
 wxDialUpManagerMSW::~wxDialUpManagerMSW()
 {
     CleanUpThreadData();
-
-    if ( !--ms_nDllCount )
-    {
-        // unload the RAS library
-        wxDllLoader::UnloadLibrary(ms_dllRas);
-        ms_dllRas = 0;
-    }
 }
 
 // ----------------------------------------------------------------------------
@@ -665,7 +646,7 @@ void wxDialUpManagerMSW::OnDialProgress(RASCONNSTATE rasconnstate,
 
 bool wxDialUpManagerMSW::IsOk() const
 {
-    return ms_dllRas != 0;
+    return m_dllRas.IsLoaded();
 }
 
 size_t wxDialUpManagerMSW::GetISPNames(wxArrayString& names) const
@@ -803,13 +784,13 @@ bool wxDialUpManagerMSW::Dial(const wxString& nameOfISP,
             return FALSE;
         }
     }
-	else
-	{
-		wxStrncpy(rasDialParams.szUserName, username, UNLEN);
-		wxStrncpy(rasDialParams.szPassword, password, PWLEN);
-	}
+    else
+    {
+        wxStrncpy(rasDialParams.szUserName, username, UNLEN);
+        wxStrncpy(rasDialParams.szPassword, password, PWLEN);
+    }
 
-	// default values for other fields
+    // default values for other fields
     rasDialParams.szPhoneNumber[0] = '\0';
     rasDialParams.szCallbackNumber[0] = '\0';
     rasDialParams.szCallbackNumber[0] = '\0';
@@ -846,19 +827,20 @@ bool wxDialUpManagerMSW::Dial(const wxString& nameOfISP,
 
     DWORD dwRet = ms_pfnRasDial
                   (
-                   (LPRASDIALEXTENSIONS)NULL,   // no extended features
-                   NULL,                  // default phone book file (NT only)
+                   NULL,                    // no extended features
+                   NULL,                    // default phone book file (NT only)
                    &rasDialParams,
-                   0,                     // use callback for notifications
-                   async ? wxRasDialFunc  // the callback
-                         : 0,             // no notifications - sync operation
+                   0,                       // use callback for notifications
+                   async ? (void *)wxRasDialFunc  // cast needed for gcc 3.1
+                         : 0,               // no notifications, sync operation
                    &ms_hRasConnection
                   );
 
     if ( dwRet != 0 )
     {
+        // can't pass a wxWCharBuffer through ( ... )
         wxLogError(_("Failed to %s dialup connection: %s"),
-                   async ? _("initiate") : _("establish"),
+                   wxString(async ? _("initiate") : _("establish")).c_str(),
                    GetErrorString(dwRet).c_str());
 
         // we should still call RasHangUp() if we got a non 0 connection
@@ -941,23 +923,23 @@ bool wxDialUpManagerMSW::HangUp()
 
 bool wxDialUpManagerMSW::IsAlwaysOnline() const
 {
-    // we cache the result (presumably this won't change while the program is
-    // running!)
-    if ( ms_isAlwaysOnline != -1 )
-    {
-        return ms_isAlwaysOnline != 0;
-    }
+    // assume no permanent connection by default
+    bool isAlwaysOnline = FALSE;
 
-    // try to use WinInet function first
-    bool ok;
-    wxDllType hDll = wxDllLoader::LoadLibrary(_T("WININET"), &ok);
-    if ( ok )
+    // try to use WinInet functions
+
+    // NB: we could probably use wxDynamicLibrary here just as well,
+    //     but we allow multiple instances of wxDialUpManagerMSW so
+    //     we might as well use the ref counted version here too.
+
+    wxPluginManager hDll(_T("WININET"));
+    if ( hDll.IsLoaded() )
     {
-        typedef BOOL (*INTERNETGETCONNECTEDSTATE)(LPDWORD, DWORD);
+        typedef BOOL (WINAPI *INTERNETGETCONNECTEDSTATE)(LPDWORD, DWORD);
         INTERNETGETCONNECTEDSTATE pfnInternetGetConnectedState;
 
         #define RESOLVE_FUNCTION(type, name) \
-            pfn##name = (type)wxDllLoader::GetSymbol(hDll, _T(#name))
+            pfn##name = (type)hDll.GetSymbol(_T(#name))
 
         RESOLVE_FUNCTION(INTERNETGETCONNECTEDSTATE, InternetGetConnectedState);
 
@@ -967,41 +949,14 @@ bool wxDialUpManagerMSW::IsAlwaysOnline() const
             if ( pfnInternetGetConnectedState(&flags, 0 /* reserved */) )
             {
                 // there is some connection to the net, see of which type
-                ms_isAlwaysOnline = (flags & INTERNET_CONNECTION_LAN != 0) ||
-                                    (flags & INTERNET_CONNECTION_PROXY != 0);
+                isAlwaysOnline = (flags & (INTERNET_CONNECTION_LAN |
+                                           INTERNET_CONNECTION_PROXY)) != 0;
             }
-            else
-            {
-                // no Internet connection at all
-                ms_isAlwaysOnline = FALSE;
-            }
-        }
-
-        wxDllLoader::UnloadLibrary(hDll);
-    }
-
-    // did we succeed with WinInet? if not, try something else
-    if ( ms_isAlwaysOnline == -1 )
-    {
-        if ( !IsOnline() )
-        {
-            // definitely no permanent connection because we are not connected
-            // now
-            ms_isAlwaysOnline = FALSE;
-        }
-        else
-        {
-            // of course, having a modem doesn't prevent us from having a
-            // permanent connection as well, but we have to guess somehow and
-            // it's probably more common that a system connected via a modem
-            // doesn't have any other net access, so:
-            ms_isAlwaysOnline = FALSE;
+            //else: no Internet connection at all
         }
     }
 
-    wxASSERT_MSG( ms_isAlwaysOnline != -1, wxT("logic error") );
-
-    return ms_isAlwaysOnline != 0;
+    return isAlwaysOnline;
 }
 
 bool wxDialUpManagerMSW::IsOnline() const
@@ -1099,8 +1054,8 @@ bool wxDialUpManagerMSW::EnableAutoCheckOnlineStatus(size_t nSeconds)
     {
         // create a hidden window to receive notification about connections
         // status change
-        extern const wxChar *wxPanelClassName;
-        ms_hwndRas = ::CreateWindow(wxPanelClassName, NULL,
+        extern const wxChar *wxCanvasClassName;
+        ms_hwndRas = ::CreateWindow(wxCanvasClassName, NULL,
                                     0, 0, 0, 0,
                                     0, NULL,
                                     (HMENU)NULL, wxGetInstance(), 0);
@@ -1263,16 +1218,25 @@ static DWORD wxRasMonitorThread(wxRasThreadData *data)
 static LRESULT APIENTRY wxRasStatusWindowProc(HWND hWnd, UINT message,
                                               WPARAM wParam, LPARAM lParam)
 {
-    if ( message == wxWM_RAS_STATUS_CHANGED )
+    switch ( message )
     {
-        wxRasThreadData *data = (wxRasThreadData *)lParam;
-        data->dialUpManager->OnConnectStatusChange();
-    }
-    else if ( message == wxWM_RAS_DIALING_PROGRESS )
-    {
-        wxDialUpManagerMSW *dialUpManager = wxDialUpManagerMSW::GetDialer();
+        case wxWM_RAS_STATUS_CHANGED:
+            {
+                wxRasThreadData *data = (wxRasThreadData *)lParam;
+                data->dialUpManager->OnConnectStatusChange();
+            }
+            break;
 
-        dialUpManager->OnDialProgress((RASCONNSTATE)wParam, lParam);
+        case wxWM_RAS_DIALING_PROGRESS:
+            {
+                wxDialUpManagerMSW *dialMan = wxDialUpManagerMSW::GetDialer();
+
+                dialMan->OnDialProgress((RASCONNSTATE)wParam, lParam);
+            }
+            break;
+
+        default:
+            return ::DefWindowProc(hWnd, message, wParam, lParam);
     }
 
     return 0;
@@ -1290,6 +1254,7 @@ static void WINAPI wxRasDialFunc(UINT unMsg,
                 rasconnstate, dwError);
 }
 
-#endif
-  // __BORLANDC__
+#endif // __BORLANDC__
+
 #endif // wxUSE_DIALUP_MANAGER
+

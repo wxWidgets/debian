@@ -4,7 +4,7 @@
 // Author:      Vadim Zeitlin, Robert Roebling
 // Modified by:
 // Created:     26.05.99
-// RCS-ID:      $Id: dataobj.h,v 1.31.2.1 2000/03/24 01:55:50 VZ Exp $
+// RCS-ID:      $Id: dataobj.h,v 1.41 2002/08/31 11:29:09 GD Exp $
 // Copyright:   (c) wxWindows Team
 // Licence:     wxWindows license
 ///////////////////////////////////////////////////////////////////////////////
@@ -12,7 +12,7 @@
 #ifndef _WX_DATAOBJ_H_BASE_
 #define _WX_DATAOBJ_H_BASE_
 
-#ifdef __GNUG__
+#if defined(__GNUG__) && !defined(__APPLE__)
     #pragma interface "dataobjbase.h"
 #endif
 
@@ -79,6 +79,8 @@ public:
     #include "wx/motif/dataform.h"
 #elif defined(__WXGTK__)
     #include "wx/gtk/dataform.h"
+#elif defined(__WXX11__)
+    #include "wx/x11/dataform.h"
 #elif defined(__WXMAC__)
     #include "wx/mac/dataform.h"
 #elif defined(__WXPM__)
@@ -159,10 +161,10 @@ public:
     #include "wx/msw/ole/dataobj.h"
 #elif defined(__WXMOTIF__)
     #include "wx/motif/dataobj.h"
+#elif defined(__WXX11__)
+    #include "wx/x11/dataobj.h"
 #elif defined(__WXGTK__)
     #include "wx/gtk/dataobj.h"
-#elif defined(__WXQT__)
-    #include "wx/qt/dnd.h"
 #elif defined(__WXMAC__)
     #include "wx/mac/dataobj.h"
 #elif defined(__WXPM__)
@@ -256,7 +258,7 @@ class WXDLLEXPORT wxDataObjectComposite : public wxDataObject
 {
 public:
     // ctor
-    wxDataObjectComposite() { m_preferred = 0; }
+    wxDataObjectComposite();
 
     // add data object (it will be deleted by wxDataObjectComposite, hence it
     // must be allocated on the heap) whose format will become the preferred
@@ -275,6 +277,13 @@ public:
 protected:
     // returns the pointer to the object which supports this format or NULL
     wxDataObjectSimple *GetObject(const wxDataFormat& format) const;
+#if defined(__WXMSW__)
+    virtual const void* GetSizeFromBuffer( const void* buffer, size_t* size,
+                                           const wxDataFormat& format );
+    virtual void* SetSizeInBuffer( void* buffer, size_t size,
+                                   const wxDataFormat& format );
+    virtual size_t GetBufferOffset( const wxDataFormat& format );
+#endif
 
 private:
     // the list of all (simple) data objects whose formats we support
@@ -303,7 +312,8 @@ public:
     // ctor: you can specify the text here or in SetText(), or override
     // GetText()
     wxTextDataObject(const wxString& text = wxEmptyString)
-        : wxDataObjectSimple(wxDF_TEXT), m_text(text)
+        : wxDataObjectSimple(wxUSE_UNICODE?wxDF_UNICODETEXT:wxDF_TEXT),
+          m_text(text)
         {
         }
 
@@ -445,14 +455,26 @@ private:
 
 #if defined(__WXMSW__)
     #include "wx/msw/ole/dataobj2.h"
-#elif defined(__WXMOTIF__)
-    // #include "wx/motif/dataobj2.h" -- not yet
-#elif defined(__WXGTK__)
-    #include "wx/gtk/dataobj2.h"
-#elif defined(__WXMAC__)
-    #include "wx/mac/dataobj2.h"
-#elif defined(__WXPM__)
-    #include "wx/os2/dataobj2.h"
-#endif
+
+    // wxURLDataObject defined in msw/ole/dataobj2.h
+#else // !__WXMSW__
+    #if defined(__WXGTK__)
+        #include "wx/gtk/dataobj2.h"
+    #elif defined(__WXX11__)
+        #include "wx/x11/dataobj2.h"
+    #elif defined(__WXMAC__)
+        #include "wx/mac/dataobj2.h"
+    #elif defined(__WXPM__)
+        #include "wx/os2/dataobj2.h"
+    #endif
+
+    // wxURLDataObject is simply wxTextDataObject with a different name
+    class WXDLLEXPORT wxURLDataObject : public wxTextDataObject
+    {
+    public:
+        wxString GetURL() const { return GetText(); }
+        void SetURL(const wxString& url) { SetText(url); }
+    };
+#endif // __WXMSW__/!__WXMSW__
 
 #endif // _WX_DATAOBJ_H_BASE_

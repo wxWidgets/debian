@@ -3,7 +3,7 @@
 // Purpose:     wxSpinButton
 // Author:      Robert
 // Modified by:
-// RCS-ID:      $Id: spinbutt.cpp,v 1.27 2000/02/16 11:53:16 JS Exp $
+// RCS-ID:      $Id: spinbutt.cpp,v 1.28 2002/03/12 19:24:30 VZ Exp $
 // Copyright:   (c) Robert Roebling
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -21,8 +21,7 @@
 
 #include <math.h>
 
-#include <gdk/gdk.h>
-#include <gtk/gtk.h>
+#include "wx/gtk/private.h"
 
 //-----------------------------------------------------------------------------
 // idle system

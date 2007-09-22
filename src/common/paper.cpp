@@ -4,7 +4,7 @@
 // Author:      Julian Smart 
 // Modified by:
 // Created:     04/01/98
-// RCS-ID:      $Id: paper.cpp,v 1.4.2.2 2000/06/28 18:26:46 VS Exp $
+// RCS-ID:      $Id: paper.cpp,v 1.5 2000/07/15 19:50:27 cvsuser Exp $
 // Copyright:   (c) Julian Smart
 // Licence:   	wxWindows licence
 /////////////////////////////////////////////////////////////////////////////

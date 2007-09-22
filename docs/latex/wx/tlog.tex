@@ -1,7 +1,15 @@
 \section{wxLog classes overview}\label{wxlogoverview}
 
-Classes: \helpref{wxLog}{wxlog}, wxLogStderr,
-wxLogOstream, wxLogTextCtrl, wxLogWindow, wxLogGui, wxLogNull
+Classes: \helpref{wxLog}{wxlog},\\
+\helpref{wxLogStderr}{wxlogstderr},\\
+\helpref{wxLogStream}{wxlogstream},\\
+\helpref{wxLogTextCtrl}{wxlogtextctrl},\\
+\helpref{wxLogWindow}{wxlogwindow},\\
+\helpref{wxLogGui}{wxloggui},\\
+\helpref{wxLogNull}{wxlognull},\\
+\helpref{wxLogChain}{wxlogchain},\\
+\helpref{wxLogPassThrough}{wxlogpassthrough},\\
+\helpref{wxStreamToTextRedirector}{wxstreamtotextredirector}
 
 This is a general overview of logging classes provided by wxWindows. The word
 logging here has a broad sense, including all of the program output, not only
@@ -12,13 +20,15 @@ functions to use with them.
 
 First of all, no knowledge of {\it wxLog} classes is needed to use them. For
 this, you should only know about {\it wxLogXXX()} functions. All of them have
-the same syntax as {\it printf()}, i.e. they take the format string as the
-first argument and a variable number of arguments. Here are all of them:
+the same syntax as {\it printf()} or {\it vprintf()} , i.e. they take the
+format string as the first argument and respectively a variable number of
+arguments or a variable argument list pointer. Here are all of them:
 
 \begin{itemize}\itemsep=0pt
 \item{\bf wxLogFatalError} which is like {\it wxLogError}, but also
-terminates the program with the exit code 3 (using {\it abort()} standard
-function also terminates the program with this exit code).
+terminates the program with the exit code $3$ (using {\it abort()} standard
+function). Unlike for all the other logging functions, this function can't be
+overridden by a log target.
 \item{\bf wxLogError} is the function to use for error messages, i.e. the
 messages that must be shown to the user. The default processing is to pop up a
 message box to inform the user about it.
@@ -38,9 +48,9 @@ bar of the active or specified (as the first argument) \helpref{wxFrame}{wxframe
 \item{\bf wxLogSysError} is mostly used by wxWindows itself, but might be
 handy for logging errors after system call (API function) failure. It logs the
 specified message text as well as the last system error
-code ({\it errno} or {\it ::GetLastError()} depending on the platform) and the corresponding error
-message. The second form of this function takes the error code explicitly as the
-first argument.
+code ({\it errno} or {\it ::GetLastError()} depending on the platform) and
+the corresponding error message. The second form of this function takes the
+error code explicitly as the first argument.
 \item{\bf wxLogDebug} is {\bf the} right function for debug output. It only
 does anything at all in the debug mode (when the preprocessor symbol
 \_\_WXDEBUG\_\_ is defined) and expands to nothing in release mode (otherwise).
@@ -62,32 +72,26 @@ generic mechanisms, but are not really adapted for wxWindows, while the log
 classes are. Some of advantages in using wxWindows log functions are:
 
 \begin{itemize}\itemsep=0pt
-\item{\bf Portability} It is a common practice to use {\it printf()} statements or
-cout/cerr C++ streams for writing out some (debug or otherwise) information.
+\item{\bf Portability} It is a common practice to use {\it printf()}
+statements or cout/cerr C++ streams for writing out some (debug or otherwise)
+information.
 Although it works just fine under Unix, these messages go strictly nowhere
 under Windows where the stdout of GUI programs is not assigned to anything.
 Thus, you might view {\it wxLogMessage()} as a simple substitute for {\it
 printf()}.
 
-Moreover {\it wxMSW} doesn't have a {\bf console} as you may have with {\it
-  wxGTK}. Under {\it wxMSW}, a call using {\it cout} just goes nowhere. To
-cope with this problem, {\it wxWindows} provides a way to redirect {\it cout}
-calls to \helpref{wxTextCtrl}{wxtextctrl}, {\it i.e.}:
-{\small
-\begin{verbatim}
-  wxLogWindow *logger=new wxLogWindow(your_frame,"Logger");
-  cout=*new ostream(logger->GetTextCtrl());
-  wxLog::SetActiveTarget(logger);
-\end{verbatim}
-}
-On the opposite, if you like your {\it wxLogXXX} calls to behave as a {\it cout} 
-call does, just write :
+You can also redirect the {\it wxLogXXX} calls to {\it cout} by just writing:
 {\small
 \begin{verbatim}
   wxLog *logger=new wxLogStream(&cout);
   wxLog::SetActiveTarget(logger);
 \end{verbatim}
 }
+
+Finally, there is also a possibility to redirect the output sent to {\it cout} 
+to a \helpref{wxTextCtrl}{wxtextctrl} by using the 
+\helpref{wxStreamToTextRedirector}{wxstreamtotextredirector} class.
+
 \item{\bf Flexibility} The output of wxLog functions can be redirected or
 suppressed entirely based on their importance, which is either impossible or
 difficult to do with traditional methods. For example, only error messages, or
@@ -163,4 +167,9 @@ reasons it is unwanted, just use this construction:
 \end{verbatim}
 }
 \end{itemize}
+
+The log targets can also be combined: for example you may wish to redirect the
+messages somewhere else (for example, to a log file) but also process them as
+normally. For this the \helpref{wxLogChain}{wxlogchain} and 
+\helpref{wxLogPassThrough}{wxlogpassthrough} can be used.
 

@@ -4,12 +4,16 @@
 // Author:      Guilhem Lavaux
 // Modified by:
 // Created:     August 1997
-// RCS-ID:      $Id: http.h,v 1.4 1999/07/28 17:29:58 GL Exp $
+// RCS-ID:      $Id: http.h,v 1.6 2002/01/03 17:18:38 VZ Exp $
 // Copyright:   (c) 1997, 1998 Guilhem Lavaux
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
 #ifndef _WX_HTTP_H
 #define _WX_HTTP_H
+
+#include "wx/defs.h"
+
+#if wxUSE_PROTOCOL_HTTP
 
 #include "wx/list.h"
 #include "wx/protocol/protocol.h"
@@ -46,6 +50,12 @@ protected:
   bool BuildRequest(const wxString& path, wxHTTP_Req req);
   void SendHeaders();
   bool ParseHeaders();
+
+  // deletes the header value strings
+  void ClearHeaders();
 };
 
-#endif
+#endif // wxUSE_PROTOCOL_HTTP
+
+#endif // _WX_HTTP_H
+

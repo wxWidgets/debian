@@ -5,7 +5,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     12/07/98
-// RCS-ID:      $Id: mfutils.h,v 1.1 2000/03/03 11:24:36 JS Exp $
+// RCS-ID:      $Id: mfutils.h,v 1.3 2002/09/07 12:10:20 GD Exp $
 // Copyright:   (c) Julian Smart
 // Licence:   	wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -13,7 +13,7 @@
 #ifndef _MFUTILS_H_
 #define _MFUTILS_H_
 
-#ifdef __GNUG__
+#if defined(__GNUG__) && !defined(__APPLE__)
 #pragma interface "mfutils.h"
 #endif
 
@@ -169,9 +169,9 @@ class wxMetaRecord: public wxObject
   long param6;
   long param7;
   long param8;
-  char *stringParam;
+  wxChar *stringParam;
   wxRealPoint *points;
-  
+
   wxMetaRecord(int fun)
   {
     metaFunction = fun; points = NULL; stringParam = NULL;
@@ -197,7 +197,7 @@ class wxXMetaFile: public wxObject
                      // referenced by position in list by SelectObject
   wxXMetaFile(char *file = NULL);
   ~wxXMetaFile(void);
-  
+
   // After this is called, the metafile cannot be used for anything
   // since it is now owned by the clipboard.
   bool SetClipboard(int width = 0, int height = 0);

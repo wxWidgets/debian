@@ -2,25 +2,20 @@
 // Name:        scrolbar.h
 // Purpose:
 // Author:      Robert Roebling
-// Id:          $Id: scrolbar.h,v 1.12 2000/01/20 14:16:13 RR Exp $
+// Id:          $Id: scrolbar.h,v 1.14 2002/09/07 12:28:46 GD Exp $
 // Copyright:   (c) 1998 Robert Roebling
-// Licence:   	wxWindows licence
+// Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
 
 
 #ifndef __GTKSCROLLBARH__
 #define __GTKSCROLLBARH__
 
-#ifdef __GNUG__
+#if defined(__GNUG__) && !defined(__APPLE__)
 #pragma interface
 #endif
 
 #include "wx/defs.h"
-
-#if wxUSE_SCROLLBAR
-
-#include "wx/object.h"
-#include "wx/control.h"
 
 //-----------------------------------------------------------------------------
 // classes
@@ -29,19 +24,13 @@
 class wxScrollBar;
 
 //-----------------------------------------------------------------------------
-// global data
-//-----------------------------------------------------------------------------
-
-extern const char *wxScrollBarNameStr;
-
-//-----------------------------------------------------------------------------
 // wxScrollBar
 //-----------------------------------------------------------------------------
 
-class wxScrollBar: public wxControl
+class wxScrollBar: public wxScrollBarBase
 {
 public:
-    wxScrollBar() 
+    wxScrollBar()
        { m_adjust = (GtkAdjustment *) NULL; m_oldPos = 0.0; }
     inline wxScrollBar( wxWindow *parent, wxWindowID id,
            const wxPoint& pos = wxDefaultPosition,
@@ -69,7 +58,7 @@ public:
 
     // Backward compatibility
     // ----------------------
-    
+
     int GetValue(void) const;
     void SetValue( int viewStart );
     void GetValues( int *viewStart, int *viewLength, int *objectLength, int *pageLength) const;
@@ -81,18 +70,16 @@ public:
 
     // implementation
     // --------------
-    
+
     bool IsOwnGtkWindow( GdkWindow *window );
     void ApplyWidgetStyle();
-  
+
     GtkAdjustment  *m_adjust;
     float           m_oldPos;
-    
+
 private:
     DECLARE_DYNAMIC_CLASS(wxScrollBar)
 };
-
-#endif
 
 #endif
     // __GTKSCROLLBARH__

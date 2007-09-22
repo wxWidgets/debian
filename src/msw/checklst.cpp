@@ -4,7 +4,7 @@
 // Author:      Vadim Zeitlin
 // Modified by:
 // Created:     16.11.97
-// RCS-ID:      $Id: checklst.cpp,v 1.27 2000/02/17 14:12:31 VZ Exp $
+// RCS-ID:      $Id: checklst.cpp,v 1.33.2.2 2002/09/22 21:02:00 VZ Exp $
 // Copyright:   (c) 1998 Vadim Zeitlin <zeitlin@dptmaths.ens-cachan.fr>
 // Licence:     wxWindows license
 ///////////////////////////////////////////////////////////////////////////////
@@ -30,22 +30,27 @@
 
 #if wxUSE_OWNER_DRAWN
 
-#include "wx/object.h"
-#include "wx/colour.h"
-#include "wx/font.h"
-#include "wx/bitmap.h"
-#include "wx/window.h"
-#include "wx/listbox.h"
+#ifndef WX_PRECOMP
+    #include "wx/object.h"
+    #include "wx/colour.h"
+    #include "wx/font.h"
+    #include "wx/bitmap.h"
+    #include "wx/window.h"
+    #include "wx/listbox.h"
+    #include "wx/dcmemory.h"
+
+    #include "wx/settings.h"
+
+    #include "wx/log.h"
+#endif
+
 #include "wx/ownerdrw.h"
-#include "wx/settings.h"
-#include "wx/dcmemory.h"
-#include "wx/msw/checklst.h"
-#include "wx/log.h"
+#include "wx/checklst.h"
 
 #include <windows.h>
 #include <windowsx.h>
 
-#ifdef __GNUWIN32_OLD__
+#if defined(__GNUWIN32_OLD__)
     #include "wx/msw/gnuwin32/extra.h"
 #endif
 
@@ -60,7 +65,7 @@
 // implementation
 // ============================================================================
 
-  IMPLEMENT_DYNAMIC_CLASS(wxCheckListBox, wxListBox)
+IMPLEMENT_DYNAMIC_CLASS(wxCheckListBox, wxListBox)
 
 // ----------------------------------------------------------------------------
 // declaration and implementation of wxCheckListBoxItem class
@@ -68,7 +73,7 @@
 
 class wxCheckListBoxItem : public wxOwnerDrawn
 {
-friend class wxCheckListBox;
+friend class WXDLLEXPORT wxCheckListBox;
 public:
   // ctor
   wxCheckListBoxItem(wxCheckListBox *pParent, size_t nIndex);
@@ -262,7 +267,7 @@ void wxCheckListBoxItem::Check(bool check)
 // define event table
 // ------------------
 BEGIN_EVENT_TABLE(wxCheckListBox, wxListBox)
-  EVT_CHAR(wxCheckListBox::OnChar)
+  EVT_KEY_DOWN(wxCheckListBox::OnKeyDown)
   EVT_LEFT_DOWN(wxCheckListBox::OnLeftClick)
 END_EVENT_TABLE()
 
@@ -270,7 +275,7 @@ END_EVENT_TABLE()
 // ----------------
 
 // def ctor: use Create() to really create the control
-wxCheckListBox::wxCheckListBox() : wxListBox()
+wxCheckListBox::wxCheckListBox()
 {
 }
 
@@ -280,11 +285,21 @@ wxCheckListBox::wxCheckListBox(wxWindow *parent, wxWindowID id,
                                int nStrings, const wxString choices[],
                                long style, const wxValidator& val,
                                const wxString& name)
-              : wxListBox()
 {
-    Create(parent, id, pos, size, nStrings, choices,
-           style | wxLB_OWNERDRAW, val, name);
+    Create(parent, id, pos, size, nStrings, choices, style, val, name);
 }
+
+bool wxCheckListBox::Create(wxWindow *parent, wxWindowID id,
+                            const wxPoint& pos, const wxSize& size,
+                            int n, const wxString choices[],
+                            long style,
+                            const wxValidator& validator, const wxString& name)
+{
+    return wxListBox::Create(parent, id, pos, size, n, choices,
+                             style | wxLB_OWNERDRAW, validator, name);
+}
+                            
+
 
 void wxCheckListBox::Delete(int N)
 {
@@ -296,28 +311,8 @@ void wxCheckListBox::Delete(int N)
     // free memory
     delete m_aItems[N];
 
-    m_aItems.Remove(N);
+    m_aItems.RemoveAt(N);
 }
-
-void wxCheckListBox::InsertItems(int nItems, const wxString items[], int pos)
-{
-    wxCHECK_RET( pos >= 0 && pos <= m_noItems,
-                 wxT("invalid index in wxCheckListBox::InsertItems") );
-
-    wxListBox::InsertItems(nItems, items, pos);
-
-    int i;
-    for ( i = 0; i < nItems; i++ ) {
-        wxOwnerDrawn *pNewItem = CreateItem((size_t)(pos + i));
-        pNewItem->SetName(items[i]);
-        pNewItem->SetFont(GetFont());
-
-        m_aItems.Insert(pNewItem, (size_t)(pos + i));
-
-        ListBox_SetItemData((HWND)GetHWND(), i + pos, pNewItem);
-    }
-}
-
 
 bool wxCheckListBox::SetFont( const wxFont &font )
 {
@@ -334,7 +329,7 @@ bool wxCheckListBox::SetFont( const wxFont &font )
 // --------------------
 
 // create a check list box item
-wxOwnerDrawn *wxCheckListBox::CreateItem(size_t nIndex)
+wxOwnerDrawn *wxCheckListBox::CreateLboxItem(size_t nIndex)
 {
   wxCheckListBoxItem *pItem = new wxCheckListBoxItem(this, nIndex);
   return pItem;
@@ -364,43 +359,104 @@ bool wxCheckListBox::MSWOnMeasure(WXMEASUREITEMSTRUCT *item)
 
 bool wxCheckListBox::IsChecked(size_t uiIndex) const
 {
-  return GetItem(uiIndex)->IsChecked();
+    wxCHECK_MSG( uiIndex < (size_t)GetCount(), FALSE, _T("bad wxCheckListBox index") );
+
+    return GetItem(uiIndex)->IsChecked();
 }
 
 void wxCheckListBox::Check(size_t uiIndex, bool bCheck)
 {
-  GetItem(uiIndex)->Check(bCheck);
+    wxCHECK_RET( uiIndex < (size_t)GetCount(), _T("bad wxCheckListBox index") );
+
+    GetItem(uiIndex)->Check(bCheck);
 }
 
 // process events
 // --------------
 
-void wxCheckListBox::OnChar(wxKeyEvent& event)
+void wxCheckListBox::OnKeyDown(wxKeyEvent& event)
 {
-  if ( event.KeyCode() == WXK_SPACE )
-    GetItem(GetSelection())->Toggle();
-  else
-    event.Skip();
+    // what do we do?
+    enum
+    {
+        None,
+        Toggle,
+        Set,
+        Clear
+    } oper;
+
+    switch ( event.KeyCode() )
+    {
+        case WXK_SPACE:
+            oper = Toggle;
+            break;
+
+        case WXK_NUMPAD_ADD:
+        case '+':
+            oper = Set;
+            break;
+
+        case WXK_NUMPAD_SUBTRACT:
+        case '-':
+            oper = Clear;
+            break;
+
+        default:
+            oper = None;
+    }
+
+    if ( oper != None )
+    {
+        wxArrayInt selections;
+        int count;
+        if ( HasMultipleSelection() )
+        {
+            count = GetSelections(selections);
+        }
+        else
+        {
+            count = 1;
+            selections.Add(GetSelection());
+        }
+
+        for ( int i = 0; i < count; i++ )
+        {
+            wxCheckListBoxItem *item = GetItem(selections[i]);
+            if ( !item )
+            {
+                wxFAIL_MSG( _T("no wxCheckListBoxItem?") );
+                continue;
+            }
+
+            switch ( oper )
+            {
+                case Toggle:
+                    item->Toggle();
+                    break;
+
+                case Set:
+                case Clear:
+                    item->Check( oper == Set );
+                    break;
+
+                default:
+                    wxFAIL_MSG( _T("what should this key do?") );
+            }
+        }
+    }
+    else // nothing to do
+    {
+        event.Skip();
+    }
 }
 
 void wxCheckListBox::OnLeftClick(wxMouseEvent& event)
 {
   // clicking on the item selects it, clicking on the checkmark toggles
   if ( event.GetX() <= wxOwnerDrawn::GetDefaultMarginWidth() ) {
-    #ifdef __WIN32__
-      size_t nItem = (size_t)::SendMessage
-                               (
-                                (HWND)GetHWND(),
-                                LB_ITEMFROMPOINT,
-                                0,
-                                MAKELPARAM(event.GetX(), event.GetY())
-                               );
-    #else // Win16
-        // FIXME this doesn't work when the listbox is scrolled!
-        size_t nItem = ((size_t)event.GetY()) / m_nItemHeight;
-    #endif // Win32/16
+    int nItem = HitTest(event.GetX(), event.GetY());
 
-    if ( nItem < (size_t)m_noItems )
+    if ( nItem != wxNOT_FOUND )
       GetItem(nItem)->Toggle();
     //else: it's not an error, just click outside of client zone
   }
@@ -408,6 +464,24 @@ void wxCheckListBox::OnLeftClick(wxMouseEvent& event)
     // implement default behaviour: clicking on the item selects it
     event.Skip();
   }
+}
+
+int wxCheckListBox::DoHitTestItem(wxCoord x, wxCoord y) const
+{
+  #ifdef __WIN32__
+    int nItem = (int)::SendMessage
+                             (
+                              (HWND)GetHWND(),
+                              LB_ITEMFROMPOINT,
+                              0,
+                              MAKELPARAM(x, y)
+                             );
+  #else // Win16
+    // FIXME this doesn't work when the listbox is scrolled!
+    int nItem = y / m_nItemHeight;
+  #endif // Win32/16
+
+  return nItem >= m_noItems ? wxNOT_FOUND : nItem;
 }
 
 #endif

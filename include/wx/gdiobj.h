@@ -7,8 +7,10 @@
 #include "wx/motif/gdiobj.h"
 #elif defined(__WXGTK__)
 #include "wx/gtk/gdiobj.h"
-#elif defined(__WXQT__)
-#include "wx/qt/gdiobj.h"
+#elif defined(__WXX11__)
+#include "wx/x11/gdiobj.h"
+#elif defined(__WXMGL__)
+#include "wx/mgl/gdiobj.h"
 #elif defined(__WXMAC__)
 #include "wx/mac/gdiobj.h"
 #elif defined(__WXPM__)

@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     12/07/98
-// RCS-ID:      $Id: composit.h,v 1.1 2000/03/03 11:24:35 JS Exp $
+// RCS-ID:      $Id: composit.h,v 1.2 2002/09/07 12:10:20 GD Exp $
 // Copyright:   (c) Julian Smart
 // Licence:   	wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -12,7 +12,7 @@
 #ifndef _OGL_COMPOSIT_H_
 #define _OGL_COMPOSIT_H_
 
-#ifdef __GNUG__
+#if defined(__GNUG__) && !defined(__APPLE__)
 #pragma interface "composit.h"
 #endif
 

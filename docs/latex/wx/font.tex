@@ -13,6 +13,68 @@ a window's text.
 
 <wx/font.h>
 
+\wxheading{Constants}
+
+\begin{verbatim}
+enum wxFontEncoding
+{
+    wxFONTENCODING_SYSTEM = -1,     // system default
+    wxFONTENCODING_DEFAULT,         // current default encoding
+
+    // ISO8859 standard defines a number of single-byte charsets
+    wxFONTENCODING_ISO8859_1,       // West European (Latin1)
+    wxFONTENCODING_ISO8859_2,       // Central and East European (Latin2)
+    wxFONTENCODING_ISO8859_3,       // Esperanto (Latin3)
+    wxFONTENCODING_ISO8859_4,       // Baltic (old) (Latin4)
+    wxFONTENCODING_ISO8859_5,       // Cyrillic
+    wxFONTENCODING_ISO8859_6,       // Arabic
+    wxFONTENCODING_ISO8859_7,       // Greek
+    wxFONTENCODING_ISO8859_8,       // Hebrew
+    wxFONTENCODING_ISO8859_9,       // Turkish (Latin5)
+    wxFONTENCODING_ISO8859_10,      // Variation of Latin4 (Latin6)
+    wxFONTENCODING_ISO8859_11,      // Thai
+    wxFONTENCODING_ISO8859_12,      // doesn't exist currently, but put it
+                                    // here anyhow to make all ISO8859
+                                    // consecutive numbers
+    wxFONTENCODING_ISO8859_13,      // Baltic (Latin7)
+    wxFONTENCODING_ISO8859_14,      // Latin8
+    wxFONTENCODING_ISO8859_15,      // Latin9 (a.k.a. Latin0, includes euro)
+    wxFONTENCODING_ISO8859_MAX,
+
+    // Cyrillic charset soup (see http://czyborra.com/charsets/cyrillic.html)
+    wxFONTENCODING_KOI8,            // we don't support any of KOI8 variants
+    wxFONTENCODING_ALTERNATIVE,     // same as MS-DOS CP866
+    wxFONTENCODING_BULGARIAN,       // used under Linux in Bulgaria
+
+    // what would we do without Microsoft? They have their own encodings
+        // for DOS
+    wxFONTENCODING_CP437,           // original MS-DOS codepage
+    wxFONTENCODING_CP850,           // CP437 merged with Latin1
+    wxFONTENCODING_CP852,           // CP437 merged with Latin2
+    wxFONTENCODING_CP855,           // another cyrillic encoding
+    wxFONTENCODING_CP866,           // and another one
+        // and for Windows
+    wxFONTENCODING_CP874,           // WinThai
+    wxFONTENCODING_CP1250,          // WinLatin2
+    wxFONTENCODING_CP1251,          // WinCyrillic
+    wxFONTENCODING_CP1252,          // WinLatin1
+    wxFONTENCODING_CP1253,          // WinGreek (8859-7)
+    wxFONTENCODING_CP1254,          // WinTurkish
+    wxFONTENCODING_CP1255,          // WinHebrew
+    wxFONTENCODING_CP1256,          // WinArabic
+    wxFONTENCODING_CP1257,          // WinBaltic (same as Latin 7)
+    wxFONTENCODING_CP12_MAX,
+
+    wxFONTENCODING_UTF7,            // UTF-7 Unicode encoding
+    wxFONTENCODING_UTF8,            // UTF-8 Unicode encoding
+
+    wxFONTENCODING_UNICODE,         // Unicode - currently used only by
+                                    // wxEncodingConverter class
+
+    wxFONTENCODING_MAX
+};
+\end{verbatim}
+
 \wxheading{Predefined objects}
 
 Objects:
@@ -82,7 +144,7 @@ is the encoding set by calls to
 say, KOI8 to create all fonts by default with KOI8 encoding. Initially, the
 default application encoding is the same as default system encoding.}
 \twocolitem{{\bf wxFONTENCODING\_ISO8859\_1...15}}{ISO8859 encodings.}
-\twocolitem{{\bf wxFONTENCODING\_KOI8}}{The standard russian encoding for Internet.}
+\twocolitem{{\bf wxFONTENCODING\_KOI8}}{The standard Russian encoding for Internet.}
 \twocolitem{{\bf wxFONTENCODING\_CP1250...1252}}{Windows encodings similar to ISO8859 (but not identical).}
 \end{twocollist}
 If the specified encoding isn't available, no font is created.
@@ -91,9 +153,7 @@ If the specified encoding isn't available, no font is created.
 \wxheading{Remarks}
 
 If the desired font does not exist, the closest match will be chosen.
-Under Windows, only scaleable TrueType fonts are used.
-
-Underlining only works under Windows at present.
+Under Windows, only scalable TrueType fonts are used.
 
 See also \helpref{wxDC::SetFont}{wxdcsetfont}, \helpref{wxDC::DrawText}{wxdcdrawtext}
 and \helpref{wxDC::GetTextExtent}{wxdcgettextextent}.
@@ -113,6 +173,13 @@ Although all remaining fonts are deleted when the application exits,
 the application should try to clean up all fonts itself. This is because
 wxWindows cannot know if a pointer to the font object is stored in an
 application data structure, and there is a risk of double deletion.
+
+\membersection{wxFont::IsFixedWidth}\label{wxfontisfixedwidth}
+
+\constfunc{bool}{IsFixedWidth}{\void}
+
+Returns {\tt TRUE} if the font is a fixed width (or monospaced) font, 
+{\tt FALSE} if it is a proportional one or font is invalid.
 
 \membersection{wxFont::GetDefaultEncoding}\label{wxfontgetdefaultencoding}
 
@@ -147,12 +214,16 @@ family identifiers.
 
 \helpref{wxFont::SetFamily}{wxfontsetfamily}
 
-\membersection{wxFont::GetFontId}\label{wxfontgetfontid}
+\membersection{wxFont::GetNativeFontInfoDesc}\label{wxfontgetnativefontinfodesc}
 
-\constfunc{int}{GetFontId}{\void}
+\constfunc{wxString}{GetNativeFontInfoDesc}{\void}
 
-Returns the font id, if the portable font system is in operation. See \helpref{Font overview}{wxfontoverview} for
-further details.
+Returns the platform-dependent string completely describing this font or an
+empty string if the font wasn't constructed using the native font description.
+
+\wxheading{See also}
+
+\helpref{wxFont::SetNativeFontInfo}{wxfontsetnativefontinfo}
 
 \membersection{wxFont::GetPointSize}\label{wxfontgetpointsize}
 
@@ -195,6 +266,12 @@ weight identifiers.
 \wxheading{See also}
 
 \helpref{wxFont::SetWeight}{wxfontsetweight}
+
+\membersection{wxFont::Ok}\label{wxfontok}
+
+\constfunc{bool}{Ok}{\void}
+
+Returns {\tt TRUE} if this object is a valid font, {\tt FALSE} otherwise.
 
 \membersection{wxFont::SetDefaultEncoding}\label{wxfontsetdefaultencoding}
 
@@ -251,6 +328,15 @@ Sets the font family.
 \wxheading{See also}
 
 \helpref{wxFont::GetFamily}{wxfontgetfamily}, \helpref{wxFont::SetFaceName}{wxfontsetfacename}
+
+\membersection{wxFont::SetNativeFontInfo}\label{wxfontsetnativefontinfo}
+
+\func{void}{SetNativeFontInfo}{\param{const wxString\& }{info}}
+
+Creates the font corresponding to the given native font description string
+which must have been previously returned by 
+\helpref{GetNativeFontInfoDesc}{wxfontgetnativefontinfodesc}. If the string is
+invalid, font is unchanged.
 
 \membersection{wxFont::SetPointSize}\label{wxfontsetpointsize}
 

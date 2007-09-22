@@ -30,12 +30,12 @@ and then pressing OK.
 
 Constructor, taking an array of wxString choices and optional client data.
 
-\func{}{wxSingleChoiceDialog}{\param{wxWindow* }{parent}, \param{const wxString\& }{message},\rtfsp
-\param{const wxString\& }{caption}, \param{const wxStringList\& }{choices},\rtfsp
-\param{void**}{ clientData = NULL}, \param{long }{style = wxOK \pipe wxCANCEL \pipe wxCENTRE},\rtfsp
-\param{const wxPoint\& }{pos = wxDefaultPosition}}
-
-Constructor, taking a string list and optional client data.
+%\func{}{wxSingleChoiceDialog}{\param{wxWindow* }{parent}, \param{const wxString\& }{message},\rtfsp
+%\param{const wxString\& }{caption}, \param{const wxStringList\& }{choices},\rtfsp
+%\param{void**}{ clientData = NULL}, \param{long }{style = wxOK \pipe wxCANCEL \pipe wxCENTRE},\rtfsp
+%\param{const wxPoint\& }{pos = wxDefaultPosition}}
+%
+%Constructor, taking a string list and optional client data.
 
 \wxheading{Parameters}
 
@@ -65,9 +65,13 @@ Constructor, taking a string list and optional client data.
 
 Use \helpref{wxSingleChoiceDialog::ShowModal}{wxsinglechoicedialogshowmodal} to show the dialog.
 
-\pythonnote{For Python the two parametes {\tt n} and {\tt choices} are collapsed
+\pythonnote{For Python the two parameters {\tt n} and {\tt choices} are collapsed
 into a single parameter {\tt choices} which is expected to be a Python
 list of strings.}
+
+\perlnote{In wxPerl there is just an array reference in place of {\tt n}
+and {\tt choices}, and the client data array, if present, must have the
+same length as the choices array.}
 
 \membersection{wxSingleChoiceDialog::\destruct{wxSingleChoiceDialog}}
 

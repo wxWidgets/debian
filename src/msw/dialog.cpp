@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     01/02/97
-// RCS-ID:      $Id: dialog.cpp,v 1.53.2.9 2001/04/21 15:54:19 VZ Exp $
+// RCS-ID:      $Id: dialog.cpp,v 1.81 2002/09/02 00:41:43 VZ Exp $
 // Copyright:   (c) Julian Smart and Markus Holzem
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -41,7 +41,7 @@
 #include "wx/msw/private.h"
 #include "wx/log.h"
 
-#if wxUSE_COMMON_DIALOGS
+#if wxUSE_COMMON_DIALOGS && !defined(__WXMICROWIN__)
     #include <commdlg.h>
 #endif
 
@@ -61,12 +61,6 @@
 // globals
 // ----------------------------------------------------------------------------
 
-// all objects to be deleted during next idle processing - from window.cpp
-extern wxList WXDLLEXPORT wxPendingDelete;
-
-// all frames and modeless dialogs - not static, used in frame.cpp, mdi.cpp &c
-wxWindowList wxModelessWindows;
-
 // all modal dialogs currently shown
 static wxWindowList wxModalDialogs;
 
@@ -74,9 +68,9 @@ static wxWindowList wxModalDialogs;
 // wxWin macros
 // ----------------------------------------------------------------------------
 
-IMPLEMENT_DYNAMIC_CLASS(wxDialog, wxPanel)
+IMPLEMENT_DYNAMIC_CLASS(wxDialog, wxTopLevelWindow)
 
-BEGIN_EVENT_TABLE(wxDialog, wxPanel)
+BEGIN_EVENT_TABLE(wxDialog, wxDialogBase)
     EVT_BUTTON(wxID_OK, wxDialog::OnOK)
     EVT_BUTTON(wxID_APPLY, wxDialog::OnApply)
     EVT_BUTTON(wxID_CANCEL, wxDialog::OnCancel)
@@ -96,89 +90,39 @@ END_EVENT_TABLE()
 // wxDialog construction
 // ----------------------------------------------------------------------------
 
-wxDialog::wxDialog()
+void wxDialog::Init()
 {
     m_oldFocus = (wxWindow *)NULL;
+
     m_isShown = FALSE;
 
-    SetBackgroundColour(wxSystemSettings::GetSystemColour(wxSYS_COLOUR_3DFACE));
+    m_windowDisabler = (wxWindowDisabler *)NULL;
+
+    SetBackgroundColour(wxSystemSettings::GetColour(wxSYS_COLOUR_3DFACE));
 }
 
-bool wxDialog::Create(wxWindow *parent, wxWindowID id,
+bool wxDialog::Create(wxWindow *parent,
+                      wxWindowID id,
                       const wxString& title,
                       const wxPoint& pos,
                       const wxSize& size,
                       long style,
                       const wxString& name)
 {
+    Init();
+
+    SetExtraStyle(GetExtraStyle() | wxTOPLEVEL_EX_DIALOG);
+
+    // save focus before doing anything which can potentially change it
     m_oldFocus = FindFocus();
 
-    SetBackgroundColour(wxSystemSettings::GetSystemColour(wxSYS_COLOUR_3DFACE));
-    SetName(name);
-
-    wxTopLevelWindows.Append(this);
-
-    if (parent) parent->AddChild(this);
-
-    if ( id == -1 )
-        m_windowId = (int)NewControlId();
-    else
-        m_windowId = id;
-
-    int x = pos.x;
-    int y = pos.y;
-    int width = size.x;
-    int height = size.y;
-
-    if (x < 0)
-        x = wxDIALOG_DEFAULT_X;
-    if (y < 0)
-        y = wxDIALOG_DEFAULT_Y;
-
-    m_windowStyle = style;
-
-    m_isShown = FALSE;
-
-    if (width < 0)
-        width = wxDIALOG_DEFAULT_WIDTH;
-    if (height < 0)
-        height = wxDIALOG_DEFAULT_HEIGHT;
-
     // All dialogs should really have this style
-    m_windowStyle |= wxTAB_TRAVERSAL;
+    style |= wxTAB_TRAVERSAL;
 
-    WXDWORD extendedStyle = MakeExtendedStyle(m_windowStyle);
-    if (m_windowStyle & wxSTAY_ON_TOP)
-        extendedStyle |= WS_EX_TOPMOST;
-
-    // Allows creation of dialogs with & without captions under MSWindows,
-    // resizeable or not (but a resizeable dialog always has caption -
-    // otherwise it would look too strange)
-    const wxChar *dlg;
-    if ( style & wxRESIZE_BORDER )
-        dlg = wxT("wxResizeableDialog");
-    else if ( style & wxCAPTION )
-        dlg = wxT("wxCaptionDialog");
-    else
-        dlg = wxT("wxNoCaptionDialog");
-    MSWCreate(m_windowId, parent, NULL, this, NULL,
-              x, y, width, height,
-              0, // style is not used if we have dlg template
-              dlg,
-              extendedStyle);
-
-    HWND hwnd = (HWND)GetHWND();
-
-    if ( !hwnd )
-    {
-        wxFAIL_MSG(_("Failed to create dialog. You probably forgot to include wx/msw/wx.rc in your resources."));
-
+    if ( !wxTopLevelWindow::Create(parent, id, title, pos, size, style, name) )
         return FALSE;
-    }
 
-    SubclassWin(GetHWND());
-
-    SetWindowText(hwnd, title);
+    SetFont(wxSystemSettings::GetFont(wxSYS_DEFAULT_GUI_FONT));
 
     return TRUE;
 }
@@ -203,25 +147,8 @@ wxDialog::~wxDialog()
 {
     m_isBeingDeleted = TRUE;
 
-    wxTopLevelWindows.DeleteObject(this);
-
-    // this will call BringWindowToTop() if necessary to bring back our parent
-    // window to top
+    // this will also reenable all the other windows for a modal dialog
     Show(FALSE);
-
-    if ( !IsModal() )
-        wxModelessWindows.DeleteObject(this);
-
-    // If this is the last top-level window, exit.
-    if ( wxTheApp && (wxTopLevelWindows.Number() == 0) )
-    {
-        wxTheApp->SetTopWindow(NULL);
-
-        if ( wxTheApp->GetExitOnFrameDelete() )
-        {
-            ::PostQuitMessage(0);
-        }
-    }
 }
 
 // ----------------------------------------------------------------------------
@@ -254,56 +181,6 @@ void wxDialog::OnCharHook(wxKeyEvent& event)
 }
 
 // ----------------------------------------------------------------------------
-// Windows dialog boxes can't be iconized
-// ----------------------------------------------------------------------------
-
-void wxDialog::Iconize(bool WXUNUSED(iconize))
-{
-}
-
-bool wxDialog::IsIconized() const
-{
-    return FALSE;
-}
-
-// ----------------------------------------------------------------------------
-// size/position handling
-// ----------------------------------------------------------------------------
-
-void wxDialog::DoSetClientSize(int width, int height)
-{
-    HWND hWnd = (HWND) GetHWND();
-    RECT rect;
-    ::GetClientRect(hWnd, &rect);
-
-    RECT rect2;
-    GetWindowRect(hWnd, &rect2);
-
-    // Find the difference between the entire window (title bar and all)
-    // and the client area; add this to the new client size to move the
-    // window
-    int actual_width = rect2.right - rect2.left - rect.right + width;
-    int actual_height = rect2.bottom - rect2.top - rect.bottom + height;
-
-    MoveWindow(hWnd, rect2.left, rect2.top, actual_width, actual_height, TRUE);
-
-    wxSizeEvent event(wxSize(actual_width, actual_height), m_windowId);
-    event.SetEventObject( this );
-    GetEventHandler()->ProcessEvent(event);
-}
-
-void wxDialog::DoGetPosition(int *x, int *y) const
-{
-    RECT rect;
-    GetWindowRect(GetHwnd(), &rect);
-
-    if ( x )
-        *x = rect.left;
-    if ( y )
-        *y = rect.top;
-}
-
-// ----------------------------------------------------------------------------
 // showing the dialogs
 // ----------------------------------------------------------------------------
 
@@ -315,6 +192,28 @@ bool wxDialog::IsModal() const
 bool wxDialog::IsModalShowing() const
 {
     return wxModalDialogs.Find((wxDialog *)this) != NULL; // const_cast
+}
+
+wxWindow *wxDialog::FindSuitableParent() const
+{
+    // first try to use the currently active window
+    HWND hwndFg = ::GetForegroundWindow();
+    wxWindow *parent = hwndFg ? wxFindWinFromHandle((WXHWND)hwndFg)
+                              : NULL;
+    if ( !parent )
+    {
+        // next try the main app window
+        parent = wxTheApp->GetTopWindow();
+    }
+
+    // finally, check if the parent we found is really suitable
+    if ( !parent || parent == (wxWindow *)this || !parent->IsShown() )
+    {
+        // don't use this one
+        parent = NULL;
+    }
+
+    return parent;
 }
 
 void wxDialog::DoShowModal()
@@ -335,37 +234,32 @@ void wxDialog::DoShowModal()
     if (oldFocus)
         hwndOldFocus = (HWND) oldFocus->GetHWND();
 
-    // inside this block, all app windows are disabled
+    // remember where the focus was
+    if ( !oldFocus )
     {
-        wxWindowDisabler wd(this);
-
-        // remember where the focus was
-        if ( !oldFocus )
-        {
-            oldFocus = parent;
-            if (parent)
-                hwndOldFocus = (HWND) parent->GetHWND();
-        }
-
-        // enter the modal loop
-        while ( IsModalShowing() )
-        {
-#if wxUSE_THREADS
-            wxMutexGuiLeaveOrEnter();
-#endif // wxUSE_THREADS
-
-            while ( !wxTheApp->Pending() && wxTheApp->ProcessIdle() )
-                ;
-
-            // a message came or no more idle processing to do
-            wxTheApp->DoMessage();
-        }
+        oldFocus = parent;
+        if ( parent )
+            hwndOldFocus = GetHwndOf(parent);
     }
 
-#ifdef __WIN32__
-    if ( parent )
-        ::SetActiveWindow(GetHwndOf(parent));
-#endif // __WIN32__
+    // disable all other app windows
+    wxASSERT_MSG( !m_windowDisabler, _T("disabling windows twice?") );
+
+    m_windowDisabler = new wxWindowDisabler(this);
+
+    // enter the modal loop
+    while ( IsModalShowing() )
+    {
+#if wxUSE_THREADS
+        wxMutexGuiLeaveOrEnter();
+#endif // wxUSE_THREADS
+
+        while ( !wxTheApp->Pending() && wxTheApp->ProcessIdle() )
+            ;
+
+        // a message came or no more idle processing to do
+        wxTheApp->DoMessage();
+    }
 
     // and restore focus
     // Note that this code MUST NOT access the dialog object's data
@@ -381,16 +275,15 @@ void wxDialog::DoShowModal()
 
 bool wxDialog::Show(bool show)
 {
-    // The following is required when the parent has been disabled, (modal
-    // dialogs, or modeless dialogs with disabling such as wxProgressDialog).
-    // Otherwise the parent disappears behind other windows when the dialog is
-    // hidden.
     if ( !show )
     {
-        wxWindow *parent = GetParent();
-        if ( parent )
+        // if we had disabled other app windows, reenable them back now because
+        // if they stay disabled Windows will activate another window (one
+        // which is enabled, anyhow) and we will lose activation
+        if ( m_windowDisabler )
         {
-            ::BringWindowToTop(GetHwndOf(parent));
+            delete m_windowDisabler;
+            m_windowDisabler = NULL;
         }
     }
 
@@ -414,12 +307,7 @@ bool wxDialog::Show(bool show)
             // modal dialog needs a parent window, so try to find one
             if ( !GetParent() )
             {
-                wxWindow *parent = wxTheApp->GetTopWindow();
-                if ( parent && parent != this && parent->IsShown() )
-                {
-                    // use it
-                    m_parent = parent;
-                }
+                m_parent = FindSuitableParent();
             }
 
             DoShowModal();
@@ -462,7 +350,7 @@ void wxDialog::EndModal(int retCode)
 // ----------------------------------------------------------------------------
 
 // Standard buttons
-void wxDialog::OnOK(wxCommandEvent& event)
+void wxDialog::OnOK(wxCommandEvent& WXUNUSED(event))
 {
   if ( Validate() && TransferDataFromWindow() )
   {
@@ -470,7 +358,7 @@ void wxDialog::OnOK(wxCommandEvent& event)
   }
 }
 
-void wxDialog::OnApply(wxCommandEvent& event)
+void wxDialog::OnApply(wxCommandEvent& WXUNUSED(event))
 {
     if ( Validate() )
         TransferDataFromWindow();
@@ -478,12 +366,12 @@ void wxDialog::OnApply(wxCommandEvent& event)
     // TODO probably need to disable the Apply button until things change again
 }
 
-void wxDialog::OnCancel(wxCommandEvent& event)
+void wxDialog::OnCancel(wxCommandEvent& WXUNUSED(event))
 {
     EndModal(wxID_CANCEL);
 }
 
-void wxDialog::OnCloseWindow(wxCloseEvent& event)
+void wxDialog::OnCloseWindow(wxCloseEvent& WXUNUSED(event))
 {
     // We'll send a Cancel message by default, which may close the dialog.
     // Check for looping if the Cancel event handler calls Close().
@@ -513,23 +401,12 @@ void wxDialog::OnCloseWindow(wxCloseEvent& event)
     closing.DeleteObject(this);
 }
 
-// Destroy the window (delayed, if a managed window)
-bool wxDialog::Destroy()
-{
-    wxCHECK_MSG( !wxPendingDelete.Member(this), FALSE,
-                 _T("wxDialog destroyed twice") );
-
-    wxPendingDelete.Append(this);
-
-    return TRUE;
-}
-
-void wxDialog::OnSysColourChanged(wxSysColourChangedEvent& event)
+void wxDialog::OnSysColourChanged(wxSysColourChangedEvent& WXUNUSED(event))
 {
 #if wxUSE_CTL3D
     Ctl3dColorChange();
 #else
-    SetBackgroundColour(wxSystemSettings::GetSystemColour(wxSYS_COLOUR_3DFACE));
+    SetBackgroundColour(wxSystemSettings::GetColour(wxSYS_COLOUR_3DFACE));
     Refresh();
 #endif
 }
@@ -545,39 +422,28 @@ long wxDialog::MSWWindowProc(WXUINT message, WXWPARAM wParam, WXLPARAM lParam)
 
     switch ( message )
     {
-        case WM_ACTIVATE:
-            switch ( LOWORD(wParam) )
-            {
-                case WA_ACTIVE:
-                case WA_CLICKACTIVE:
-                    if ( IsModalShowing() && GetParent() )
-                    {
-                        // bring the owner window to top as the standard dialog
-                        // boxes do
-                        if ( !::SetWindowPos
-                                (
-                                    GetHwndOf(GetParent()),
-                                    GetHwnd(),
-                                    0, 0,
-                                    0, 0,
-                                    SWP_NOACTIVATE |
-                                    SWP_NOMOVE |
-                                    SWP_NOSIZE
-                                ) )
-                        {
-                            wxLogLastError(wxT("SetWindowPos(SWP_NOACTIVATE)"));
-                        }
-                    }
-                    // fall through to process it normally as well
-            }
-            break;
-
         case WM_CLOSE:
             // if we can't close, tell the system that we processed the
             // message - otherwise it would close us
             processed = !Close();
             break;
 
+        case WM_SIZE:
+            // the Windows dialogs unfortunately are not meant to be resizeable
+            // at all and their standard class doesn't include CS_[VH]REDRAW
+            // styles which means that the window is not refreshed properly
+            // after the resize and no amount of WS_CLIPCHILDREN/SIBLINGS can
+            // help with it - so we have to refresh it manually which certainly
+            // creates flicker but at least doesn't show garbage on the screen
+            rc = wxWindow::MSWWindowProc(message, wParam, lParam);
+            processed = TRUE;
+            if ( !HasFlag(wxNO_FULL_REPAINT_ON_RESIZE) )
+            {
+                ::InvalidateRect(GetHwnd(), NULL, FALSE /* erase bg */);
+            }
+            break;
+
+#ifndef __WXMICROWIN__
         case WM_SETCURSOR:
             // we want to override the busy cursor for modal dialogs:
             // typically, wxBeginBusyCursor() is called and then a modal dialog
@@ -603,6 +469,7 @@ long wxDialog::MSWWindowProc(WXUINT message, WXWPARAM wParam, WXLPARAM lParam)
                 rc = FALSE;
             }
             break;
+#endif // __WXMICROWIN__
     }
 
     if ( !processed )

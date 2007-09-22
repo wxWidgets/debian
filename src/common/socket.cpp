@@ -5,7 +5,7 @@
 // Created:    April 1997
 // Copyright:  (C) 1999-1997, Guilhem Lavaux
 //             (C) 2000-1999, Guillermo Rodriguez Garcia
-// RCS_ID:     $Id: socket.cpp,v 1.99.2.2 2001/05/14 09:37:22 GRG Exp $
+// RCS_ID:     $Id: socket.cpp,v 1.105 2002/07/29 04:13:24 RL Exp $
 // License:    see wxWindows license
 /////////////////////////////////////////////////////////////////////////////
 
@@ -76,6 +76,8 @@
     #define PROCESS_EVENTS()
 #endif // wxUSE_GUI/!wxUSE_GUI
 
+#define wxTRACE_Socket _T("wxSocket")
+
 // --------------------------------------------------------------------------
 // wxWin macros
 // --------------------------------------------------------------------------
@@ -109,6 +111,44 @@ public:
 // ==========================================================================
 // wxSocketBase
 // ==========================================================================
+
+// --------------------------------------------------------------------------
+// Initialization and shutdown
+// --------------------------------------------------------------------------
+
+// FIXME-MT: all this is MT-unsafe, of course, we should protect all accesses
+//           to m_countInit with a crit section
+size_t wxSocketBase::m_countInit = 0;
+
+bool wxSocketBase::IsInitialized()
+{
+    return m_countInit > 0;
+}
+
+bool wxSocketBase::Initialize()
+{
+    if ( !m_countInit++ )
+    {
+        if ( !GSocket_Init() )
+        {
+            m_countInit--;
+
+            return FALSE;
+        }
+    }
+
+    return TRUE;
+}
+
+void wxSocketBase::Shutdown()
+{
+    // we should be initialized
+    wxASSERT_MSG( m_countInit, _T("extra call to Shutdown()") );
+    if ( !--m_countInit )
+    {
+        GSocket_Cleanup();
+    }
+}
 
 // --------------------------------------------------------------------------
 // Ctor and dtor
@@ -145,6 +185,13 @@ void wxSocketBase::Init()
   m_cbk          = NULL;
   m_cdata        = NULL;
 #endif // WXWIN_COMPATIBILITY
+
+  if ( !IsInitialized() )
+  {
+      // this Initialize() will be undone by wxSocketModule::OnExit(), all the
+      // other calls to it should be matched by a call to Shutdown()
+      Initialize();
+  }
 }
 
 wxSocketBase::wxSocketBase()
@@ -481,7 +528,7 @@ wxUint32 wxSocketBase::_Write(const void *buffer, wxUint32 nbytes)
   {
     bool more = TRUE;
 
-    while (more)            
+    while (more)
     {
       if ( !(m_flags & wxSOCKET_BLOCK) && !WaitForWrite() )
         break;
@@ -732,6 +779,12 @@ bool wxSocketBase::GetPeer(wxSockAddress& addr_man) const
     return FALSE;
 
   peer = GSocket_GetPeer(m_socket);
+
+    // copying a null address would just trigger an assert anyway
+
+  if (!peer)
+    return FALSE;
+
   addr_man.SetAddress(peer);
   GAddress_destroy(peer);
 
@@ -862,9 +915,10 @@ char *wxSocketBase::CallbackData(char *data)
 // decoupled from wx_socket_callback and thus they suffer from a variety
 // of problems. Avoid them where possible and use events instead.
 
-static void LINKAGEMODE wx_socket_callback(GSocket * WXUNUSED(socket),
-                                           GSocketEvent notification,
-                                           char *cdata)
+extern "C"
+void LINKAGEMODE wx_socket_callback(GSocket * WXUNUSED(socket),
+                                    GSocketEvent notification,
+                                    char *cdata)
 {
   wxSocketBase *sckobj = (wxSocketBase *)cdata;
 
@@ -1010,7 +1064,7 @@ wxUint32 wxSocketBase::GetPushback(void *buffer, wxUint32 size, bool peek)
 
 
 // ==========================================================================
-// wxSocketServer                             
+// wxSocketServer
 // ==========================================================================
 
 // --------------------------------------------------------------------------
@@ -1021,26 +1075,32 @@ wxSocketServer::wxSocketServer(wxSockAddress& addr_man,
                                wxSocketFlags flags)
               : wxSocketBase(flags, wxSOCKET_SERVER)
 {
-  // Create the socket
-  m_socket = GSocket_new();
+    wxLogTrace( wxTRACE_Socket, _T("Opening wxSocketServer") );
 
-  if (!m_socket)
-    return;
+    m_socket = GSocket_new();
 
-  // Setup the socket as server
-  GSocket_SetLocal(m_socket, addr_man.GetAddress());
-  if (GSocket_SetServer(m_socket) != GSOCK_NOERROR)
-  {
-    GSocket_destroy(m_socket);
-    m_socket = NULL;
-    return;
-  }
+    if (!m_socket)
+    {
+        wxLogTrace( wxTRACE_Socket, _T("*** GSocket_new failed") );
+        return;
+    }
 
-  GSocket_SetTimeout(m_socket, m_timeout * 1000);
-  GSocket_SetCallback(m_socket, GSOCK_INPUT_FLAG | GSOCK_OUTPUT_FLAG |
-                                GSOCK_LOST_FLAG | GSOCK_CONNECTION_FLAG,
-                                wx_socket_callback, (char *)this);
+        // Setup the socket as server
 
+    GSocket_SetLocal(m_socket, addr_man.GetAddress());
+    if (GSocket_SetServer(m_socket) != GSOCK_NOERROR)
+    {
+        GSocket_destroy(m_socket);
+        m_socket = NULL;
+
+        wxLogTrace( wxTRACE_Socket, _T("*** GSocket_SetServer failed") );
+        return;
+    }
+
+    GSocket_SetTimeout(m_socket, m_timeout * 1000);
+    GSocket_SetCallback(m_socket, GSOCK_INPUT_FLAG | GSOCK_OUTPUT_FLAG |
+                                  GSOCK_LOST_FLAG | GSOCK_CONNECTION_FLAG,
+                                  wx_socket_callback, (char *)this);
 }
 
 // --------------------------------------------------------------------------
@@ -1236,38 +1296,31 @@ wxDatagramSocket& wxDatagramSocket::SendTo( wxSockAddress& addr,
 }
 
 // ==========================================================================
-// wxSocketEvent
-// ==========================================================================
-
-wxSocketEvent::wxSocketEvent(int id) : wxEvent(id)
-{
-  SetEventType( (wxEventType)wxEVT_SOCKET );
-}
-
-void wxSocketEvent::CopyObject(wxObject& object_dest) const
-{
-  wxSocketEvent *event = (wxSocketEvent *)&object_dest;
-
-  wxEvent::CopyObject(object_dest);
-
-  event->m_event      = m_event;
-  event->m_clientData = m_clientData;
-}
-
-// ==========================================================================
 // wxSocketModule
 // ==========================================================================
 
 class WXDLLEXPORT wxSocketModule : public wxModule
 {
-  DECLARE_DYNAMIC_CLASS(wxSocketModule)
-
 public:
-  bool OnInit() { return GSocket_Init() != 0; }
-  void OnExit() { GSocket_Cleanup(); }
+    virtual bool OnInit()
+    {
+        // wxSocketBase will call GSocket_Init() itself when/if needed
+        return TRUE;
+    }
+
+    virtual void OnExit()
+    {
+        if ( wxSocketBase::IsInitialized() )
+            wxSocketBase::Shutdown();
+    }
+
+private:
+    DECLARE_DYNAMIC_CLASS(wxSocketModule)
 };
 
 IMPLEMENT_DYNAMIC_CLASS(wxSocketModule, wxModule)
 
 #endif
   // wxUSE_SOCKETS
+
+// vi:sts=4:sw=4:et

@@ -4,7 +4,7 @@
 // Author:      Wolfram Gloger/adapted by Guilhem Lavaux
 // Modified by:
 // Created:     04/11/98
-// RCS-ID:      $Id: module.cpp,v 1.5 1999/01/19 10:58:31 JS Exp $
+// RCS-ID:      $Id: module.cpp,v 1.6 2001/12/19 07:09:55 RL Exp $
 // Copyright:   (c) Wolfram Gloger and Guilhem Lavaux
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -40,6 +40,11 @@ wxModuleList wxModule::m_modules;
 void wxModule::RegisterModule(wxModule* module)
 {
     m_modules.Append(module);
+}
+
+void wxModule::UnregisterModule(wxModule* module)
+{
+    m_modules.DeleteObject(module);
 }
 
 // Collect up all module-derived classes, create an instance of each,

@@ -2,7 +2,7 @@
 // Name:        dcscreen.cpp
 // Purpose:
 // Author:      Robert Roebling
-// Id:          $Id: dcscreen.cpp,v 1.17 2000/03/04 16:23:26 RR Exp $
+// Id:          $Id: dcscreen.cpp,v 1.18 2000/10/30 16:43:37 vadz Exp $
 // Copyright:   (c) 1998 Robert Roebling
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -101,3 +101,7 @@ bool wxScreenDC::EndDrawingOnTop()
     return TRUE;
 }
 
+void wxScreenDC::DoGetSize(int *width, int *height) const
+{
+    wxDisplaySize(width, height);
+}

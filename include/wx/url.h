@@ -4,7 +4,7 @@
 // Author:      Guilhem Lavaux
 // Modified by:
 // Created:     20/07/1997
-// RCS-ID:      $Id: url.h,v 1.9.2.1 2000/04/08 11:19:50 GRG Exp $
+// RCS-ID:      $Id: url.h,v 1.13 2002/08/31 11:29:11 GD Exp $
 // Copyright:   (c) 1997, 1998 Guilhem Lavaux
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -12,17 +12,18 @@
 #ifndef _WX_URL_H
 #define _WX_URL_H
 
-#ifdef __GNUG__
-#pragma interface
+#if defined(__GNUG__) && !defined(__APPLE__)
+#pragma interface "url.h"
 #endif
 
-// wxWindows header
-#include "wx/object.h"
+#include "wx/defs.h"
 
-// wxSocket headers
+#if wxUSE_URL
+
+#include "wx/object.h"
 #include "wx/protocol/protocol.h"
 
-#if wxUSE_SOCKETS
+#if wxUSE_PROTOCOL_HTTP
   #include "wx/protocol/http.h"
 #endif
 
@@ -35,7 +36,7 @@ typedef enum {
   wxURL_CONNERR,
   wxURL_PROTOERR
 } wxURLError;
-  
+
 class WXDLLEXPORT wxURL : public wxObject
 {
 public:
@@ -92,9 +93,12 @@ protected:
 private:
     // VZ: can't use default copy ctor for this class, should write a correct
     //     one! (TODO)
-    DECLARE_NO_COPY_CLASS(wxURL);
+    DECLARE_NO_COPY_CLASS(wxURL)
 
     DECLARE_DYNAMIC_CLASS(wxURL)
 };
 
-#endif
+#endif // wxUSE_URL
+
+#endif // _WX_URL_H
+

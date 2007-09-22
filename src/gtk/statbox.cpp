@@ -1,8 +1,8 @@
 /////////////////////////////////////////////////////////////////////////////
-// Name:        statbox.cpp
+// Name:        gtk/statbox.cpp
 // Purpose:
 // Author:      Robert Roebling
-// Id:          $Id: statbox.cpp,v 1.22 2000/01/06 17:32:48 RR Exp $
+// Id:          $Id: statbox.cpp,v 1.28 2002/08/05 17:59:20 RR Exp $
 // Copyright:   (c) 1998 Robert Roebling
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -11,9 +11,12 @@
 #pragma implementation "statbox.h"
 #endif
 
-#include "wx/statbox.h"
+#include "wx/defs.h"
 
 #if wxUSE_STATBOX
+
+#include "wx/statbox.h"
+#include "wx/gtk/private.h"
 
 #include "gdk/gdk.h"
 #include "gtk/gtk.h"
@@ -22,22 +25,30 @@
 // wxStaticBox
 //-----------------------------------------------------------------------------
 
-IMPLEMENT_DYNAMIC_CLASS(wxStaticBox,wxControl)
+IMPLEMENT_DYNAMIC_CLASS(wxStaticBox, wxControl)
 
-wxStaticBox::wxStaticBox(void)
+wxStaticBox::wxStaticBox()
 {
 }
 
-wxStaticBox::wxStaticBox( wxWindow *parent, wxWindowID id, const wxString &label,
-      const wxPoint &pos, const wxSize &size,
-      long style, const wxString &name )
+wxStaticBox::wxStaticBox( wxWindow *parent,
+                          wxWindowID id,
+                          const wxString &label,
+                          const wxPoint& pos,
+                          const wxSize& size,
+                          long style,
+                          const wxString& name )
 {
     Create( parent, id, label, pos, size, style, name );
 }
 
-bool wxStaticBox::Create( wxWindow *parent, wxWindowID id, const wxString &label,
-      const wxPoint &pos, const wxSize &size,
-      long style, const wxString &name )
+bool wxStaticBox::Create( wxWindow *parent,
+                          wxWindowID id,
+                          const wxString& label,
+                          const wxPoint& pos,
+                          const wxSize& size,
+                          long style,
+                          const wxString& name )
 {
     m_needParent = TRUE;
 
@@ -45,26 +56,30 @@ bool wxStaticBox::Create( wxWindow *parent, wxWindowID id, const wxString &label
         !CreateBase( parent, id, pos, size, style, wxDefaultValidator, name ))
     {
         wxFAIL_MSG( wxT("wxStaticBox creation failed") );
-	    return FALSE;
+        return FALSE;
     }
 
-    m_isStaticBox = TRUE;
-    
-    if (label.IsEmpty())
-        m_widget = gtk_frame_new( (char*) NULL );
-    else
-        m_widget = gtk_frame_new( m_label.mbc_str() );
+    wxControl::SetLabel(label);
+
+    m_widget = gtk_frame_new(m_label.empty() ? (char *)NULL : (const char*) wxGTK_CONV( m_label ) );
 
     m_parent->DoAddChild( this );
-  
+
     PostCreation();
 
-    SetLabel(label);
-  
-    SetFont( parent->GetFont() );
+    InheritAttributes();
 
-    SetBackgroundColour( parent->GetBackgroundColour() );
-    SetForegroundColour( parent->GetForegroundColour() );
+    // need to set non default alignment?
+    gfloat xalign;
+    if ( style & wxALIGN_CENTER )
+        xalign = 0.5;
+    else if ( style & wxALIGN_RIGHT )
+        xalign = 1.0;
+    else // wxALIGN_LEFT
+        xalign = 0.0;
+
+    if ( xalign )
+        gtk_frame_set_label_align(GTK_FRAME( m_widget ), xalign, 0.0);
 
     Show( TRUE );
 
@@ -74,8 +89,9 @@ bool wxStaticBox::Create( wxWindow *parent, wxWindowID id, const wxString &label
 void wxStaticBox::SetLabel( const wxString &label )
 {
     wxControl::SetLabel( label );
-    GtkFrame *frame = GTK_FRAME( m_widget );
-    gtk_frame_set_label( frame, GetLabel().mbc_str() );
+
+    gtk_frame_set_label( GTK_FRAME( m_widget ),
+                         m_label.empty() ? (char *)NULL : (const char*) wxGTK_CONV( m_label ) );
 }
 
 void wxStaticBox::ApplyWidgetStyle()
@@ -84,4 +100,4 @@ void wxStaticBox::ApplyWidgetStyle()
     gtk_widget_set_style( m_widget, m_widgetStyle );
 }
 
-#endif
+#endif // wxUSE_STATBOX

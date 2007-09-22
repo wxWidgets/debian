@@ -36,8 +36,12 @@ select multiple items using the SHIFT key and the mouse or special key combinati
 \twocolitem{\windowstyle{wxLB\_HSCROLL}}{Create horizontal scrollbar if contents are too wide (Windows only).}
 \twocolitem{\windowstyle{wxLB\_ALWAYS\_SB}}{Always show a vertical scrollbar.}
 \twocolitem{\windowstyle{wxLB\_NEEDED\_SB}}{Only create a vertical scrollbar if needed.}
-\twocolitem{\windowstyle{wxLB\_SORT}}{The listbox contents are sorted in alphabetical order. No effect for GTK.}
+\twocolitem{\windowstyle{wxLB\_SORT}}{The listbox contents are sorted in alphabetical order.}
 \end{twocollist}
+
+Note that {\tt wxLB\_SINGLE}, {\tt wxLB\_MULTIPLE} and {\tt wxLB\_EXTENDED}
+styles are mutually exclusive and you can specify at most one of them (single
+selection is the default).
 
 See also \helpref{window styles overview}{windowstyles}.
 
@@ -48,7 +52,7 @@ See also \helpref{window styles overview}{windowstyles}.
 \twocolitem{{\bf EVT\_LISTBOX(id, func)}}{Process a wxEVT\_COMMAND\_LISTBOX\_SELECTED event,
 when an item on the list is selected.}
 \twocolitem{{\bf EVT\_LISTBOX\_DCLICK(id, func)}}{Process a wxEVT\_COMMAND\_LISTBOX\_DOUBLECLICKED event,
-when the listbox is doubleclicked.}
+when the listbox is double-clicked.}
 \end{twocollist}
 
 \wxheading{See also}
@@ -100,7 +104,8 @@ appropriately.}
 and {\tt choices} arguments are to a single argument, which is
 a list of strings.}
 
-
+\perlnote{In wxPerl there is just an array reference in place of {\tt n}
+and {\tt choices}.}
 
 \membersection{wxListBox::\destruct{wxListBox}}
 
@@ -193,6 +198,12 @@ Returns a pointer to the client data associated with the given item (if any).
 
 A pointer to the client data, or NULL if not present.
 
+\membersection{wxListBox::GetCount}\label{wxlistboxgetcount}
+
+\constfunc{int}{GetCount}{\void}
+
+Returns the number of items in the listbox.
+
 \membersection{wxListBox::GetSelection}\label{wxlistboxgetselection}
 
 \constfunc{int}{GetSelection}{\void}
@@ -240,6 +251,9 @@ Use this with a multiple selection listbox.
 \pythonnote{The wxPython version of this method takes no parameters
 and returns a tuple of the selected items.}
 
+\perlnote{In wxPerl this method takes no parameters and return the
+selected items as a list.}
+
 \membersection{wxListBox::GetString}\label{wxlistboxgetstring}
 
 \constfunc{wxString}{GetString}{\param{int}{ n}}
@@ -286,9 +300,18 @@ will be inserted in the beginning of the listbox}
 \pythonnote{The first two parameters are collapsed into a single
 parameter for wxPython, which is a list of strings.}
 
+\perlnote{In wxPerl there is just an array reference in place of {\tt nItems}
+and {\tt items}.}
+
 \membersection{wxListBox::Number}\label{wxlistboxnumber}
 
 \constfunc{int}{Number}{\void}
+
+{\bf Obsolescence note:} This method is obsolete and was replaced with 
+\helpref{GetCount}{wxlistboxgetcount}, please use the new method in the new
+code. This method is only available if wxWindows was compiled with 
+{\tt WXWIN\_COMPATIBILITY\_2\_2} defined and will disappear completely in
+future versions.
 
 Returns the number of items in the listbox.
 

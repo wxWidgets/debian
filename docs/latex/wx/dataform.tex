@@ -4,7 +4,7 @@
 %% Author:      Vadim Zeitlin
 %% Modified by:
 %% Created:     03.11.99
-%% RCS-ID:      $Id: dataform.tex,v 1.3.2.1 2000/03/21 19:18:07 GT Exp $
+%% RCS-ID:      $Id: dataform.tex,v 1.6 2002/04/17 11:47:58 JS Exp $
 %% Copyright:   (c) Vadim Zeitlin
 %% License:     wxWindows license
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -29,6 +29,8 @@ functions taking a wxDataFormat argument sometimes}
 \twocolitem{wxDF\_BITMAP}{A bitmap (wxBitmap)}
 \twocolitem{wxDF\_METAFILE}{A metafile (wxMetafile, Windows only)}
 \twocolitem{wxDF\_FILENAME}{A list of filenames}
+\twocolitem{wxDF\_HTML}{An HTML string. This is only valid when passed to wxSetClipboardData
+when compiled with Visual C++ in non-Unicode mode}
 \end{twocollist}
 
 As mentioned above, these standard formats may be passed to any function taking
@@ -70,12 +72,16 @@ Constructs a data format object for one of the standard data formats or an
 empty data object (use \helpref{SetType}{wxdataformatsettype} or 
 \helpref{SetId}{wxdataformatsetid} later in this case)
 
+\perlnote{In wxPerl this function is named {\tt newNative}.}
+
 \membersection{wxDataFormat::wxDataFormat}\label{wxdataformatwxdataformat}
 
 \func{}{wxDataFormat}{\param{const wxChar }{*format}}
 
 Constructs a data format object for a custom format identified by its name 
 {\it format}.
+
+\perlnote{In wxPerl this function is named {\tt newUser}.}
 
 \membersection{wxDataFormat::operator $==$}\label{wxdataformatoperatoreq}
 

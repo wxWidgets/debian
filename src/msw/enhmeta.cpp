@@ -4,7 +4,7 @@
 // Author:      Vadim Zeitlin
 // Modified by:
 // Created:     13.01.00
-// RCS-ID:      $Id: enhmeta.cpp,v 1.5 2000/03/20 16:32:55 JS Exp $
+// RCS-ID:      $Id: enhmeta.cpp,v 1.8 2002/08/30 20:34:25 JS Exp $
 // Copyright:   (c) 2000 Vadim Zeitlin <zeitlin@dptmaths.ens-cachan.fr>
 // Licence:     wxWindows license
 ///////////////////////////////////////////////////////////////////////////////
@@ -183,8 +183,8 @@ wxEnhMetaFileDC::wxEnhMetaFileDC(const wxString& filename,
                                  const wxString& description)
 {
     ScreenHDC hdcRef;
-
-    RECT rect, *pRect;
+    RECT rect;
+	RECT *pRect;
     if ( width && height )
     {
         rect.top =
@@ -193,8 +193,15 @@ wxEnhMetaFileDC::wxEnhMetaFileDC(const wxString& filename,
         rect.bottom = height;
 
         // CreateEnhMetaFile() wants them in HIMETRIC
+#ifdef __WXWINE__
+        LONG r, b;
+        PixelToHIMETRIC(&r, &b);
+        rect.right = r;
+        rect.bottom = b;
+#else
         PixelToHIMETRIC(&rect.right, &rect.bottom);
-
+#endif
+        
         pRect = &rect;
     }
     else
@@ -234,11 +241,11 @@ wxEnhMetaFileDC::~wxEnhMetaFileDC()
     m_hDC = 0;
 }
 
+#if wxUSE_DRAG_AND_DROP
+
 // ----------------------------------------------------------------------------
 // wxEnhMetaFileDataObject
 // ----------------------------------------------------------------------------
-
-#if wxUSE_DRAG_AND_DROP
 
 wxDataFormat
 wxEnhMetaFileDataObject::GetPreferredFormat(Direction WXUNUSED(dir)) const
@@ -294,6 +301,10 @@ bool wxEnhMetaFileDataObject::GetDataHere(const wxDataFormat& format, void *buf)
     }
     else
     {
+#ifdef __WXWINE__
+        wxFAIL_MSG( _T("unsupported format") );
+        return FALSE;
+#else
         wxASSERT_MSG( format == wxDF_METAFILE, _T("unsupported format") );
 
         // convert to WMF
@@ -335,6 +346,7 @@ bool wxEnhMetaFileDataObject::GetDataHere(const wxDataFormat& format, void *buf)
         mfpict->yExt = sizeMF.y;
 
         PixelToHIMETRIC(&mfpict->xExt, &mfpict->yExt);
+#endif
     }
 
     return TRUE;
@@ -391,6 +403,46 @@ bool wxEnhMetaFileDataObject::SetData(const wxDataFormat& format,
 
     return TRUE;
 }
+
+// ----------------------------------------------------------------------------
+// wxEnhMetaFileSimpleDataObject
+// ----------------------------------------------------------------------------
+
+size_t wxEnhMetaFileSimpleDataObject::GetDataSize() const
+{
+    // we pass data by handle and not HGLOBAL
+    return 0u;
+}
+
+bool wxEnhMetaFileSimpleDataObject::GetDataHere(void *buf) const
+{
+    wxCHECK_MSG( m_metafile.Ok(), FALSE, _T("copying invalid enh metafile") );
+
+    HENHMETAFILE hEMF = (HENHMETAFILE)m_metafile.GetHENHMETAFILE();
+
+    HENHMETAFILE hEMFCopy = ::CopyEnhMetaFile(hEMF, NULL);
+    if ( !hEMFCopy )
+    {
+        wxLogLastError(_T("CopyEnhMetaFile"));
+
+        return FALSE;
+    }
+
+    *(HENHMETAFILE *)buf = hEMFCopy;
+    return TRUE;
+}
+
+bool wxEnhMetaFileSimpleDataObject::SetData(size_t WXUNUSED(len),
+                                            const void *buf)
+{
+    HENHMETAFILE hEMF = *(HENHMETAFILE *)buf;
+
+    wxCHECK_MSG( hEMF, FALSE, _T("pasting invalid enh metafile") );
+    m_metafile.SetHENHMETAFILE((WXHANDLE)hEMF);
+
+    return TRUE;
+}
+
 #endif // wxUSE_DRAG_AND_DROP
 
 #endif // wxUSE_ENH_METAFILE

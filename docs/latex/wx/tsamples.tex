@@ -4,7 +4,7 @@
 %% Author:      Vadim Zeitlin
 %% Modified by:
 %% Created:     02.11.99
-%% RCS-ID:      $Id: tsamples.tex,v 1.22.2.7 2000/05/25 21:54:23 VZ Exp $
+%% RCS-ID:      $Id: tsamples.tex,v 1.33 2002/08/23 15:59:29 VZ Exp $
 %% Copyright:   (c) wxWindows team
 %% License:     wxWindows license
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -51,6 +51,13 @@ i.e. a minimal program that doesn't demonstrate anything apart from what is
 needed to write a program that will display a "hello" dialog. This is usually
 a good starting point for learning how to use wxWindows.
 
+\subsection{Art provider sample}\label{sampleartprovider}
+
+The {\tt artprov} sample shows how you can customize the look of standard
+wxWindows dialogs by replacing default bitmaps/icons with your own versions.
+It also shows how you can use wxArtProvider to
+get stock bitmaps for use in your application.
+
 \subsection{Calendar sample}\label{samplecalendar}
 
 This font shows the \helpref{calendar control}{wxcalendarctrl} in action. It
@@ -70,7 +77,7 @@ demonstrating a simple dynamic layout.
 \subsection{Config sample}\label{sampleconfig}
 
 This sample demonstrates the \helpref{wxConfig}{wxconfigbase} classes in a platform
-indenpedent way, i.e. it uses text based files to store a given configuration under
+independent way, i.e. it uses text based files to store a given configuration under
 Unix and uses the Registry under Windows.
 
 See \helpref{wxConfig overview}{wxconfigoverview} for the descriptions of all
@@ -111,10 +118,8 @@ The various controls tested are listed here:
 \subsection{Database sample}\label{sampledb}
 
 The database sample is a small test program showing how to use the ODBC
-classes written by Remstar Intl. These classes are documented in a separate
-manual available from the wxWindows homepage. Obviously, this sample
-requires a database with ODBC support to be correctly installed on your
-system.
+classes written by Remstar Intl.  Obviously, this sample requires a 
+database with ODBC support to be correctly installed on your system.
 
 \subsection{Dialogs sample}\label{sampledialogs}
 
@@ -124,63 +129,15 @@ dialogs are described in details in the \helpref{Common dialogs overview}{common
 \subsection{Dialup sample}\label{sampledialup}
 
 This sample shows \helpref{wxDialUpManager}{wxdialupmanager} 
-class. It displays in the status bar the information gathered through itsi
-nterface: in particular, the current connection status (online or offline) and
+class. It displays in the status bar the information gathered through its
+interface: in particular, the current connection status (online or offline) and
 whether the connection is permanent (in which case a string `LAN' appears in
-the thrid status bar field - but note that you may have be on a LAN not
+the third status bar field - but note that you may have be on a LAN not
 connected to the Internet, in which case you will not see this) or not.
 
 Using the menu entries, you may also dial or hang up the line if you have a
 modem attached and (this only makes sense for Windows) list the available
 connections.
-
-\subsection{Dynamic sample}\label{sampledynamic}
-
-This sample is a very small sample that demonstrates the use of the
-\helpref{wxEvtHandler::Connect}{wxevthandlerconnect} method. This method
-should be used whenever it is not known at compile time, which control
-will receive which event or which controls are actually going to be in
-a dialog or frame. This is most typically the case for any scripting
-language that would work as a wrapper for wxWindows or programs where
-forms or similar datagrams can be created by the uses.
-
-\subsection{Exec sample}\label{sampleexec}
-
-The exec sample demonstrates the \helpref{wxExecute}{wxexecute} and 
-\helpref{wxShell}{wxshell} functions. Both of them are used to execute the
-external programs and the sample shows how to do this synchronously (waiting
-until the program terminates) or asynchronously (notification will come later).
-
-It also shows how to capture the output of the child process in both
-synchronous and asynchronous cases.
-
-\subsection{Scroll subwindow sample}\label{samplescrollsub}
-
-This sample demonstrates the use of the \helpref{wxScrolledWindow}{wxscrolledwindow} 
-class including placing subwindows into it and drawing simple graphics. It uses the 
-\helpref{SetTargetWindow}{wxscrolledwindowsettargetwindow} method and thus the effect
-of scrolling does not show in the scrolled window itself, but in one of its subwindows.
-
-Additionally, this samples demonstrates how to optimize drawing operations in wxWindows,
-in particular using the \helpref{wxWindow::IsExposed}{wxwindowisexposed} method with 
-the aim to prevent unnecessary drawing in the window and thus reducing or removing 
-flicker on screen.
-
-\subsection{Rotate sample}\label{samplerotate}
-
-This is a simple example which demonstrates how to rotate an image with
-the \helpref{wxImage::Rotate}{wximagerotate} method. The rotation can
-be done without interpolation (left mouse button) which will be faster,
-or with interpolation (right mouse button) which is slower but gives
-better results.
-
-\subsection{Font sample}\label{samplefont}
-
-The font sample demonstrates \helpref{wxFont}{wxfont}, 
-\helpref{wxFontEnumerator}{wxfontenumerator} and 
-\helpref{wxFontMapper}{wxfontmapper} classes. It allows you to see the fonts
-available (to wxWindows) on the computer and shows all characters of the
-chosen font as well.
 
 \subsection{DnD sample}\label{samplednd}
 
@@ -219,6 +176,48 @@ programs as well - try Write/Wordpad, for example).
 
 Take a look at DnDShapeDataObject class to see how you may use 
 \helpref{wxDataObject}{wxdataobject} to achieve this.
+
+\subsection{Dynamic sample}\label{sampledynamic}
+
+This sample is a very small sample that demonstrates the use of the
+\helpref{wxEvtHandler::Connect}{wxevthandlerconnect} method. This method
+should be used whenever it is not known at compile time, which control
+will receive which event or which controls are actually going to be in
+a dialog or frame. This is most typically the case for any scripting
+language that would work as a wrapper for wxWindows or programs where
+forms or similar datagrams can be created by the uses.
+
+See also the \helpref{event sample}{sampleevent}
+
+\subsection{Event sample}\label{sampleevent}
+
+The event sample demonstrates various features of the wxWindows events. It
+shows using dynamic events and connecting/disconnecting the event handlers
+during the run time and also using 
+\helpref{PushEventHandler()}{wxwindowpusheventhandler} and
+\helpref{PopEventHandler()}{wxwindowpopeventhandler}.
+
+It replaces the old dynamic sample.
+
+\subsection{Exec sample}\label{sampleexec}
+
+The exec sample demonstrates the \helpref{wxExecute}{wxexecute} and 
+\helpref{wxShell}{wxshell} functions. Both of them are used to execute the
+external programs and the sample shows how to do this synchronously (waiting
+until the program terminates) or asynchronously (notification will come later).
+
+It also shows how to capture the output of the child process in both
+synchronous and asynchronous cases and how to kill the processes with 
+\helpref{wxProcess::Kill}{wxprocesskill} and test for their existence with 
+\helpref{wxProcess::Exists}{wxprocessexists}.
+
+\subsection{Font sample}\label{samplefont}
+
+The font sample demonstrates \helpref{wxFont}{wxfont}, 
+\helpref{wxFontEnumerator}{wxfontenumerator} and 
+\helpref{wxFontMapper}{wxfontmapper} classes. It allows you to see the fonts
+available (to wxWindows) on the computer and shows all characters of the
+chosen font as well.
 
 \subsection{Grid sample}\label{samplegrid}
 
@@ -273,6 +272,17 @@ specifying the foreground and background colours with
 bitmap is then converted to a wxImage and the foreground colour (black) is
 replaced with red using \helpref{wxImage::Replace}{wximagereplace}.
 
+\subsection{Internat(ionalization) sample}\label{sampleinternat}
+
+The not very clearly named internat sample demonstrates the wxWindows
+internatationalization (i18n for short from now on) features. To be more
+precise, it only shows localization support, i.e. support for translating the
+program messages in another language while true i18n would also involve
+changing the other aspects of the programs behaviour.
+
+More information about this sample can be found in the {\tt readme.txt} file in
+its directory. Please see also \helpref{i18n overview}{internationalization}.
+
 \subsection{Layout sample}\label{samplelayout}
 
 The layout sample demonstrates the two different layout systems offered
@@ -298,6 +308,26 @@ the menu.
 
 The sample also provides some timings for adding/deleting/sorting a lot of
 (several thousands) controls into the control.
+
+\subsection{Rotate sample}\label{samplerotate}
+
+This is a simple example which demonstrates how to rotate an image with
+the \helpref{wxImage::Rotate}{wximagerotate} method. The rotation can
+be done without interpolation (left mouse button) which will be faster,
+or with interpolation (right mouse button) which is slower but gives
+better results.
+
+\subsection{Scroll subwindow sample}\label{samplescrollsub}
+
+This sample demonstrates the use of the \helpref{wxScrolledWindow}{wxscrolledwindow} 
+class including placing subwindows into it and drawing simple graphics. It uses the 
+\helpref{SetTargetWindow}{wxscrolledwindowsettargetwindow} method and thus the effect
+of scrolling does not show in the scrolled window itself, but in one of its subwindows.
+
+Additionally, this samples demonstrates how to optimize drawing operations in wxWindows,
+in particular using the \helpref{wxWindow::IsExposed}{wxwindowisexposed} method with 
+the aim to prevent unnecessary drawing in the window and thus reducing or removing 
+flicker on screen.
 
 \subsection{Sockets sample}\label{samplesockets}
 
@@ -372,12 +402,12 @@ the raw form using the {\tt EVT\_KEY\_UP} and {\tt EVT\_KEY\_DOWN} macros and th
 higher level from using the {\tt EVT\_CHAR} macro. All characters will be logged
 in a log window at the bottom of the main window. By pressing some of the function
 keys, you can test some actions in the text ctrl as well as get statistics on the
-text ctrls, which is useful for testing if these stastitics actually are correct.
+text ctrls, which is useful for testing if these statistics actually are correct.
 
 Thirdly, on platforms which support it, the sample will offer to copy text to the 
 \helpref{wxClipboard}{wxclipboard} and to paste text from it. The GTK version will
 use the so called PRIMARY SELECTION, which is the pseudo clipboard under X and
-best known from pasting text to the XTerm program. 
+best known from pasting text to the XTerm program.
 
 Last not least: some of the text controls have tooltips and the sample also shows
 how tooltips can be centrally disabled and their latency controlled.
@@ -419,6 +449,16 @@ in MyFrame::OnUpdateCopyAndCut.
 \helpref{wxToolBar::InsertTool}{wxtoolbarinserttool} to dynamically update the
 toolbar.
 \end{itemize}
+
+Some buttons in the main toolbar are check buttons, i.e. they stay checked when
+pressed. On the platforms which support it, the sample also add a combobox
+to the toolbar showing how you can use arbitrary controls and not only buttons
+in it.
+
+If you toggle another toolbar in the sample (using {\tt Ctrl-A}) you will also
+see the radio toolbar buttons in action: the first three buttons form a radio
+group, that is checking any of them automatically unchecks the previously
+checked one.
 
 \subsection{Treectrl sample}\label{sampletreectrl}
 

@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     04/01/98
-// RCS-ID:      $Id: proplist.h,v 1.11.2.1 2000/04/27 18:03:32 VZ Exp $
+// RCS-ID:      $Id: proplist.h,v 1.15 2002/08/31 11:29:11 GD Exp $
 // Copyright:   (c) Julian Smart
 // Licence:   	wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -42,11 +42,14 @@
 #ifndef _WX_PROPLIST_H_
 #define _WX_PROPLIST_H_
 
-#ifdef __GNUG__
+#if defined(__GNUG__) && !defined(__APPLE__)
 #pragma interface "proplist.h"
 #endif
 
+#if wxUSE_PROPSHEET
+
 #include "wx/prop.h"
+#include "wx/panel.h"
 
 #define wxPROP_BUTTON_CLOSE       1
 #define wxPROP_BUTTON_OK          2
@@ -577,6 +580,9 @@ class WXDLLEXPORT wxListOfStringsListValidator: public wxPropertyListValidator
    // Called when the edit (...) button is pressed.
    void OnEdit(wxProperty *property, wxPropertyListView *view, wxWindow *parentWindow);
 };
+
+#endif
+  // wxUSE_PROPSHEET
 
 #endif
   // _WX_PROPLIST_H_

@@ -5,7 +5,7 @@
 // Author:      Vadim Zeitlin
 // Modified by:
 // Created:     21.10.99
-// RCS-ID:      $Id: dataobj2.h,v 1.2 1999/11/02 16:20:39 VZ Exp $
+// RCS-ID:      $Id: dataobj2.h,v 1.4 2001/10/26 02:11:22 RD Exp $
 // Copyright:   (c) 1999 Vadim Zeitlin <zeitlin@dptmaths.ens-cachan.fr>
 // Licence:     wxWindows license
 ///////////////////////////////////////////////////////////////////////////////
@@ -76,6 +76,31 @@ public:
     virtual size_t GetDataSize() const;
     virtual bool GetDataHere(void *pData) const;
     virtual void AddFile(const wxString& file);
+};
+
+// ----------------------------------------------------------------------------
+// wxURLDataObject: data object for URLs
+// ----------------------------------------------------------------------------
+
+class WXDLLEXPORT wxURLDataObject : public wxDataObjectComposite
+{
+public:
+    wxURLDataObject();
+
+    // return the URL as string
+    wxString GetURL() const;
+
+    // Set a string as the URL in the data object
+    void SetURL(const wxString& url);
+
+    // override to set m_textFormat
+    virtual bool SetData(const wxDataFormat& format,
+                         size_t len,
+                         const void *buf);
+
+private:
+    // last data object we got data in
+    wxDataObjectSimple *m_dataObjectLast;
 };
 
 #endif // _WX_MSW_OLE_DATAOBJ2_H

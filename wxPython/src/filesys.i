@@ -2,10 +2,10 @@
 // Name:        filesys.i
 // Purpose:     SWIG definitions of the wxFileSystem family of classes
 //
-// Author:      Joerg Baumann
+// Author:      Joerg Baumann and Robin Dunn
 //
 // Created:     25-Sept-2000
-// RCS-ID:      $Id: filesys.i,v 1.1.2.2 2001/01/30 20:53:43 robind Exp $
+// RCS-ID:      $Id: filesys.i,v 1.9 2002/03/18 22:11:22 RD Exp $
 // Copyright:   (c) 2000 by Joerg Baumann
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -14,6 +14,7 @@
 
 %{
 #include "helpers.h"
+#include "pyistream.h"
 #include <wx/filesys.h>
 #include <wx/fs_inet.h>
 #include <wx/fs_mem.h>
@@ -36,58 +37,8 @@
 
 //---------------------------------------------------------------------------
 
-//  // typemaps for wxInputStream: Note wxFSFile object has to do the delete
-//  // of wxInputStream *
-//  %typemap(python,in) wxInputStream *stream {
-//      if (PyInstance_Check($source)) {
-//          wxPyInputStream* ptr;
-//          if (SWIG_GetPtrObj($source, (void **) &ptr,"_wxPyInputStream_p")) {
-//              PyErr_SetString(PyExc_TypeError,"Expected _wxInputStream_p.");
-//              return NULL;
-//          }
-//          $target = ptr->wxi;
-//      } else {
-//          PyErr_SetString(PyExc_TypeError,"Expected _wxInputStream_p.");
-//          return NULL;
-//      }
-//  }
 
-
-//  // typemaps for wxInputStream: Note wxFSFile object has to do the delete
-//  // of wxInputStream *
-//  %typemap(python,out) wxInputStream* {
-//      wxPyInputStream * _ptr = NULL;
-
-//      if ($source) {
-//          _ptr = new wxPyInputStream($source);
-//      }
-//      if (_ptr) {
-//          char    swigptr[64];
-//          SWIG_MakePtr(swigptr, _ptr, "_wxPyInputStream_p");
-
-//          PyObject* classobj = PyDict_GetItemString(wxPython_dict, "wxInputStreamPtr");
-//          if (! classobj) {
-//              Py_INCREF(Py_None);
-//              $target = Py_None;
-//          } else {
-//              PyObject* arg = Py_BuildValue("(s)", swigptr);
-//              $target = PyInstance_New(classobj, arg, NULL);
-//              Py_DECREF(arg);
-
-//              // set ThisOwn
-//              PyObject* one = PyInt_FromLong(1);
-//              PyObject_SetAttrString($target, "thisown", one);
-//              Py_DECREF(one);
-//          }
-//      } else {
-//          Py_INCREF(Py_None);
-//          $target = Py_None;
-//      }
-//  }
-
-
-
-class wxFSFile {
+class wxFSFile : public wxObject {
 public:
     wxFSFile(wxInputStream *stream, const wxString& loc,
              const wxString& mimetype, const wxString& anchor,
@@ -136,7 +87,7 @@ public:
         return wxFileSystemHandler::GetRightLocation(location);
     }
 
-    wxString GetMimeTypeFromExt(const wxString& location){
+    wxString GetMimeTypeFromExt(const wxString& location) {
         return wxFileSystemHandler::GetMimeTypeFromExt(location);
     }
 
@@ -151,16 +102,16 @@ IMP_PYCALLBACK_STRING__pure(wxPyFileSystemHandler, wxFileSystemHandler, FindNext
 %}
 
 
-%name(wxCPPFileSystemHandler)class wxFileSystemHandler {
-      wxFileSystemHandler();
+%name(wxCPPFileSystemHandler)class wxFileSystemHandler : public wxObject {
+    wxFileSystemHandler();
 }
 
 %name(wxFileSystemHandler)class wxPyFileSystemHandler : public wxFileSystemHandler {
 public:
     wxPyFileSystemHandler();
 
-    void _setSelf(PyObject* self, PyObject* _class);
-    %pragma(python) addtomethod = "__init__:self._setSelf(self, wxFileSystemHandler)"
+    void _setCallbackInfo(PyObject* self, PyObject* _class);
+    %pragma(python) addtomethod = "__init__:self._setCallbackInfo(self, wxFileSystemHandler)"
 
     bool CanOpen(const wxString& location);
     wxFSFile* OpenFile(wxFileSystem& fs, const wxString& location);
@@ -176,7 +127,7 @@ public:
 
 //---------------------------------------------------------------------------
 
-class wxFileSystem {
+class wxFileSystem : public wxObject {
 public:
     wxFileSystem();
 
@@ -243,15 +194,11 @@ void __wxMemoryFSHandler_AddFile_wxBitmap(const wxString& filename,
     wxMemoryFSHandler::AddFile(filename, bitmap, type);
 }
 
-//  void __wxMemoryFSHandler_AddFile_wxString(const wxString& filename,
-//                                            const wxString& textdata) {
-//      wxMemoryFSHandler::AddFile(filename, textdata);
-//  }
-
 void __wxMemoryFSHandler_AddFile_Data(const wxString& filename,
                                       PyObject* data) {
 
     wxMemoryFSHandler::AddFile(filename,
+                               // TODO:  Verify data type
                                (void*)PyString_AsString(data),
                                (size_t)PyString_Size(data));
 }
@@ -272,5 +219,11 @@ def wxMemoryFSHandler_AddFile(filename, a, b=''):
     else: raise TypeError, 'wxImage, wxBitmap or string expected'
 "
 
+
+//---------------------------------------------------------------------------
+
+%init %{
+    wxPyPtrTypeMap_Add("wxFileSystemHandler", "wxPyFileSystemHandler");
+%}
 
 //---------------------------------------------------------------------------

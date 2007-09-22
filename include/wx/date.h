@@ -5,7 +5,7 @@
 //              Charles D. Price
 // Modified by: 18.12.99 by VZ to use the new wxDateTime class
 // Created:     01/02/97
-// RCS-ID:      $Id: date.h,v 1.17.2.1 2000/06/19 08:38:43 VZ Exp $
+// RCS-ID:      $Id: date.h,v 1.21 2002/08/31 11:29:09 GD Exp $
 // Copyright:(c)
 // Licence:     wxWindows licence
 ///////////////////////////////////////////////////////////////////////////////
@@ -13,7 +13,7 @@
 #ifndef _WX_DATE_H_
 #define _WX_DATE_H_
 
-#ifdef __GNUG__
+#if defined(__GNUG__) && !defined(__APPLE__)
     #pragma interface "date.h"
 #endif
 
@@ -55,7 +55,7 @@ public:
     wxDate(long j) : m_date((double)(j + 0.5)) { Init(); }
     wxDate(int m, int d, int y) : m_date(d, (wxDateTime::Month)m, y) { Init(); }
     wxDate(const wxString& dat) { Init(); (void)m_date.ParseDate(dat); }
-    wxDate(const wxDate &date) { *this = date; }
+    wxDate(const wxDate &date) : wxObject() { *this = date; }
 
     wxDate(const wxDateTime& dt) { Init(); m_date = dt; }
 
@@ -90,7 +90,7 @@ public:
     wxDate &operator--(int) { return *this -= 1; }
 
 #if wxUSE_STD_IOSTREAM
-    friend ostream WXDLLEXPORT & operator <<(ostream &os, const wxDate &dt)
+    friend wxSTD ostream WXDLLEXPORT & operator <<(wxSTD ostream &os, const wxDate &dt)
         { return os << dt.FormatDate().mb_str(); }
 #endif
 

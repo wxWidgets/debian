@@ -56,6 +56,7 @@ extern PyObject *SWIG_newvarlink(void);
 #define SWIG_name    "imagec"
 
 #include "helpers.h"
+#include "pyistream.h"
 #include <wx/image.h>
 
 
@@ -85,70 +86,76 @@ static PyObject* t_output_helper(PyObject* target, PyObject* o) {
     return target;
 }
 
-static char* wxStringErrorMsg = "string type is required for parameter";
-
-    wxImage* wxNullImage() {
-        return new wxImage;
+    wxImage* wxEmptyImage(int width=0, int height=0) {
+        if (width == 0 && height == 0)
+            return new wxImage;
+        else
+            return new wxImage(width, height);
     }
 
-    wxImage* wxEmptyImage(int width, int height) {
-        return new wxImage(width, height);
+
+    wxImage* wxImageFromMime(const wxString& name, const wxString& mimetype, int index) {
+        return new wxImage(name, mimetype, index);
     }
 
-    wxImage* wxImageFromMime(const wxString& name, const wxString& mimetype) {
-        return new wxImage(name, mimetype);
-    }
 
     wxImage* wxImageFromBitmap(const wxBitmap &bitmap) {
-        return new wxImage(bitmap);
+        return new wxImage(bitmap.ConvertToImage());
     }
 
-    void wxImage_AddHandler(wxImageHandler *handler) {
-        wxImage::AddHandler(handler);
+
+    wxImage* wxImageFromData(int width, int height, unsigned char* data) {
+        // Copy the source data so the wxImage can clean it up later
+        unsigned char* copy = (unsigned char*)malloc(width*height*3);
+        if (copy == NULL) {
+            PyErr_NoMemory();
+            return NULL;
+        }
+        memcpy(copy, data, width*height*3);
+        return new wxImage(width, height, copy, FALSE);
     }
+
+
+    wxImage* wxImageFromStream(wxInputStream& stream,
+                               long type = wxBITMAP_TYPE_ANY, int index = -1) {
+        return new wxImage(stream, type, index);
+    }
+
+
+    wxImage* wxImageFromStreamMime(wxInputStream& stream,
+                                   const wxString& mimetype, int index = -1 ) {
+        return new wxImage(stream, mimetype, index);
+    }
+
+#if 0
+extern wxImage  wxNullImage; 
+
+#endif
+
+    wxBitmap* wxBitmapFromImage(const wxImage& img, int depth=-1) {
+        return new wxBitmap(img, depth);
+    }
+
 #ifdef __cplusplus
 extern "C" {
 #endif
-static PyObject *_wrap_wxNullImage(PyObject *self, PyObject *args, PyObject *kwargs) {
-    PyObject * _resultobj;
-    wxImage * _result;
-    char *_kwnames[] = {  NULL };
-    char _ptemp[128];
-
-    self = self;
-    if(!PyArg_ParseTupleAndKeywords(args,kwargs,":wxNullImage",_kwnames)) 
-        return NULL;
-{
-    wxPy_BEGIN_ALLOW_THREADS;
-        _result = (wxImage *)wxNullImage();
-
-    wxPy_END_ALLOW_THREADS;
-}    if (_result) {
-        SWIG_MakePtr(_ptemp, (char *) _result,"_wxImage_p");
-        _resultobj = Py_BuildValue("s",_ptemp);
-    } else {
-        Py_INCREF(Py_None);
-        _resultobj = Py_None;
-    }
-    return _resultobj;
-}
-
 static PyObject *_wrap_wxEmptyImage(PyObject *self, PyObject *args, PyObject *kwargs) {
     PyObject * _resultobj;
     wxImage * _result;
-    int  _arg0;
-    int  _arg1;
+    int  _arg0 = (int ) 0;
+    int  _arg1 = (int ) 0;
     char *_kwnames[] = { "width","height", NULL };
     char _ptemp[128];
 
     self = self;
-    if(!PyArg_ParseTupleAndKeywords(args,kwargs,"ii:wxEmptyImage",_kwnames,&_arg0,&_arg1)) 
+    if(!PyArg_ParseTupleAndKeywords(args,kwargs,"|ii:wxEmptyImage",_kwnames,&_arg0,&_arg1)) 
         return NULL;
 {
-    wxPy_BEGIN_ALLOW_THREADS;
-        _result = (wxImage *)wxEmptyImage(_arg0,_arg1);
+    PyThreadState* __tstate = wxPyBeginAllowThreads();
+    _result = (wxImage *)wxEmptyImage(_arg0,_arg1);
 
-    wxPy_END_ALLOW_THREADS;
+    wxPyEndAllowThreads(__tstate);
+    if (PyErr_Occurred()) return NULL;
 }    if (_result) {
         SWIG_MakePtr(_ptemp, (char *) _result,"_wxImage_p");
         _resultobj = Py_BuildValue("s",_ptemp);
@@ -164,55 +171,31 @@ static PyObject *_wrap_wxImageFromMime(PyObject *self, PyObject *args, PyObject 
     wxImage * _result;
     wxString * _arg0;
     wxString * _arg1;
+    int  _arg2 = (int ) -1;
     PyObject * _obj0 = 0;
     PyObject * _obj1 = 0;
-    char *_kwnames[] = { "name","mimetype", NULL };
+    char *_kwnames[] = { "name","mimetype","index", NULL };
     char _ptemp[128];
 
     self = self;
-    if(!PyArg_ParseTupleAndKeywords(args,kwargs,"OO:wxImageFromMime",_kwnames,&_obj0,&_obj1)) 
+    if(!PyArg_ParseTupleAndKeywords(args,kwargs,"OO|i:wxImageFromMime",_kwnames,&_obj0,&_obj1,&_arg2)) 
         return NULL;
 {
-#if PYTHON_API_VERSION >= 1009
-    char* tmpPtr; int tmpSize;
-    if (!PyString_Check(_obj0) && !PyUnicode_Check(_obj0)) {
-        PyErr_SetString(PyExc_TypeError, "String or Unicode type required");
+    _arg0 = wxString_in_helper(_obj0);
+    if (_arg0 == NULL)
         return NULL;
-    }
-    if (PyString_AsStringAndSize(_obj0, &tmpPtr, &tmpSize) == -1)
-        return NULL;
-    _arg0 = new wxString(tmpPtr, tmpSize);
-#else
-    if (!PyString_Check(_obj0)) {
-        PyErr_SetString(PyExc_TypeError, wxStringErrorMsg);
-        return NULL;
-    }
-    _arg0 = new wxString(PyString_AS_STRING(_obj0), PyString_GET_SIZE(_obj0));
-#endif
 }
 {
-#if PYTHON_API_VERSION >= 1009
-    char* tmpPtr; int tmpSize;
-    if (!PyString_Check(_obj1) && !PyUnicode_Check(_obj1)) {
-        PyErr_SetString(PyExc_TypeError, "String or Unicode type required");
+    _arg1 = wxString_in_helper(_obj1);
+    if (_arg1 == NULL)
         return NULL;
-    }
-    if (PyString_AsStringAndSize(_obj1, &tmpPtr, &tmpSize) == -1)
-        return NULL;
-    _arg1 = new wxString(tmpPtr, tmpSize);
-#else
-    if (!PyString_Check(_obj1)) {
-        PyErr_SetString(PyExc_TypeError, wxStringErrorMsg);
-        return NULL;
-    }
-    _arg1 = new wxString(PyString_AS_STRING(_obj1), PyString_GET_SIZE(_obj1));
-#endif
 }
 {
-    wxPy_BEGIN_ALLOW_THREADS;
-        _result = (wxImage *)wxImageFromMime(*_arg0,*_arg1);
+    PyThreadState* __tstate = wxPyBeginAllowThreads();
+    _result = (wxImage *)wxImageFromMime(*_arg0,*_arg1,_arg2);
 
-    wxPy_END_ALLOW_THREADS;
+    wxPyEndAllowThreads(__tstate);
+    if (PyErr_Occurred()) return NULL;
 }    if (_result) {
         SWIG_MakePtr(_ptemp, (char *) _result,"_wxImage_p");
         _resultobj = Py_BuildValue("s",_ptemp);
@@ -250,10 +233,11 @@ static PyObject *_wrap_wxImageFromBitmap(PyObject *self, PyObject *args, PyObjec
         }
     }
 {
-    wxPy_BEGIN_ALLOW_THREADS;
-        _result = (wxImage *)wxImageFromBitmap(*_arg0);
+    PyThreadState* __tstate = wxPyBeginAllowThreads();
+    _result = (wxImage *)wxImageFromBitmap(*_arg0);
 
-    wxPy_END_ALLOW_THREADS;
+    wxPyEndAllowThreads(__tstate);
+    if (PyErr_Occurred()) return NULL;
 }    if (_result) {
         SWIG_MakePtr(_ptemp, (char *) _result,"_wxImage_p");
         _resultobj = Py_BuildValue("s",_ptemp);
@@ -264,29 +248,145 @@ static PyObject *_wrap_wxImageFromBitmap(PyObject *self, PyObject *args, PyObjec
     return _resultobj;
 }
 
-static PyObject *_wrap_wxImage_AddHandler(PyObject *self, PyObject *args, PyObject *kwargs) {
+static PyObject *_wrap_wxImageFromData(PyObject *self, PyObject *args, PyObject *kwargs) {
     PyObject * _resultobj;
-    wxImageHandler * _arg0;
-    PyObject * _argo0 = 0;
-    char *_kwnames[] = { "handler", NULL };
+    wxImage * _result;
+    int  _arg0;
+    int  _arg1;
+    unsigned char * _arg2;
+    PyObject * _argo2 = 0;
+    char *_kwnames[] = { "width","height","data", NULL };
+    char _ptemp[128];
 
     self = self;
-    if(!PyArg_ParseTupleAndKeywords(args,kwargs,"O:wxImage_AddHandler",_kwnames,&_argo0)) 
+    if(!PyArg_ParseTupleAndKeywords(args,kwargs,"iiO:wxImageFromData",_kwnames,&_arg0,&_arg1,&_argo2)) 
         return NULL;
-    if (_argo0) {
-        if (_argo0 == Py_None) { _arg0 = NULL; }
-        else if (SWIG_GetPtrObj(_argo0,(void **) &_arg0,"_wxImageHandler_p")) {
-            PyErr_SetString(PyExc_TypeError,"Type error in argument 1 of wxImage_AddHandler. Expected _wxImageHandler_p.");
+    if (_argo2) {
+        if (_argo2 == Py_None) { _arg2 = NULL; }
+        else if (SWIG_GetPtrObj(_argo2,(void **) &_arg2,"_unsigned_char_p")) {
+            PyErr_SetString(PyExc_TypeError,"Type error in argument 3 of wxImageFromData. Expected _unsigned_char_p.");
         return NULL;
         }
     }
 {
-    wxPy_BEGIN_ALLOW_THREADS;
-        wxImage_AddHandler(_arg0);
+    PyThreadState* __tstate = wxPyBeginAllowThreads();
+    _result = (wxImage *)wxImageFromData(_arg0,_arg1,_arg2);
 
-    wxPy_END_ALLOW_THREADS;
-}    Py_INCREF(Py_None);
-    _resultobj = Py_None;
+    wxPyEndAllowThreads(__tstate);
+    if (PyErr_Occurred()) return NULL;
+}    if (_result) {
+        SWIG_MakePtr(_ptemp, (char *) _result,"_wxImage_p");
+        _resultobj = Py_BuildValue("s",_ptemp);
+    } else {
+        Py_INCREF(Py_None);
+        _resultobj = Py_None;
+    }
+    return _resultobj;
+}
+
+static PyObject *_wrap_wxImageFromStream(PyObject *self, PyObject *args, PyObject *kwargs) {
+    PyObject * _resultobj;
+    wxImage * _result;
+    wxInputStream * _arg0;
+    long  _arg1 = (long ) wxBITMAP_TYPE_ANY;
+    int  _arg2 = (int ) -1;
+    wxPyInputStream * temp;
+    bool  created;
+    PyObject * _obj0 = 0;
+    char *_kwnames[] = { "stream","type","index", NULL };
+    char _ptemp[128];
+
+    self = self;
+    if(!PyArg_ParseTupleAndKeywords(args,kwargs,"O|li:wxImageFromStream",_kwnames,&_obj0,&_arg1,&_arg2)) 
+        return NULL;
+{
+    if (SWIG_GetPtrObj(_obj0, (void **) &temp, "_wxPyInputStream_p") == 0) {
+        _arg0 = temp->m_wxis;
+        created = FALSE;
+    } else {
+        _arg0 = wxPyCBInputStream_create(_obj0, FALSE);
+        if (_arg0 == NULL) {
+            PyErr_SetString(PyExc_TypeError,"Expected _wxInputStream_p or Python file-like object.");
+            return NULL;
+        }
+        created = TRUE;
+    }
+}
+{
+    PyThreadState* __tstate = wxPyBeginAllowThreads();
+    _result = (wxImage *)wxImageFromStream(*_arg0,_arg1,_arg2);
+
+    wxPyEndAllowThreads(__tstate);
+    if (PyErr_Occurred()) return NULL;
+}    if (_result) {
+        SWIG_MakePtr(_ptemp, (char *) _result,"_wxImage_p");
+        _resultobj = Py_BuildValue("s",_ptemp);
+    } else {
+        Py_INCREF(Py_None);
+        _resultobj = Py_None;
+    }
+{
+    if (created)
+        delete _arg0;
+}
+    return _resultobj;
+}
+
+static PyObject *_wrap_wxImageFromStreamMime(PyObject *self, PyObject *args, PyObject *kwargs) {
+    PyObject * _resultobj;
+    wxImage * _result;
+    wxInputStream * _arg0;
+    wxString * _arg1;
+    int  _arg2 = (int ) -1;
+    wxPyInputStream * temp;
+    bool  created;
+    PyObject * _obj0 = 0;
+    PyObject * _obj1 = 0;
+    char *_kwnames[] = { "stream","mimetype","index", NULL };
+    char _ptemp[128];
+
+    self = self;
+    if(!PyArg_ParseTupleAndKeywords(args,kwargs,"OO|i:wxImageFromStreamMime",_kwnames,&_obj0,&_obj1,&_arg2)) 
+        return NULL;
+{
+    if (SWIG_GetPtrObj(_obj0, (void **) &temp, "_wxPyInputStream_p") == 0) {
+        _arg0 = temp->m_wxis;
+        created = FALSE;
+    } else {
+        _arg0 = wxPyCBInputStream_create(_obj0, FALSE);
+        if (_arg0 == NULL) {
+            PyErr_SetString(PyExc_TypeError,"Expected _wxInputStream_p or Python file-like object.");
+            return NULL;
+        }
+        created = TRUE;
+    }
+}
+{
+    _arg1 = wxString_in_helper(_obj1);
+    if (_arg1 == NULL)
+        return NULL;
+}
+{
+    PyThreadState* __tstate = wxPyBeginAllowThreads();
+    _result = (wxImage *)wxImageFromStreamMime(*_arg0,*_arg1,_arg2);
+
+    wxPyEndAllowThreads(__tstate);
+    if (PyErr_Occurred()) return NULL;
+}    if (_result) {
+        SWIG_MakePtr(_ptemp, (char *) _result,"_wxImage_p");
+        _resultobj = Py_BuildValue("s",_ptemp);
+    } else {
+        Py_INCREF(Py_None);
+        _resultobj = Py_None;
+    }
+{
+    if (created)
+        delete _arg0;
+}
+{
+    if (_obj1)
+        delete _arg1;
+}
     return _resultobj;
 }
 
@@ -298,13 +398,72 @@ static PyObject *_wrap_wxInitAllImageHandlers(PyObject *self, PyObject *args, Py
     if(!PyArg_ParseTupleAndKeywords(args,kwargs,":wxInitAllImageHandlers",_kwnames)) 
         return NULL;
 {
-    wxPy_BEGIN_ALLOW_THREADS;
-        wxInitAllImageHandlers();
+    PyThreadState* __tstate = wxPyBeginAllowThreads();
+    wxInitAllImageHandlers();
 
-    wxPy_END_ALLOW_THREADS;
+    wxPyEndAllowThreads(__tstate);
+    if (PyErr_Occurred()) return NULL;
 }    Py_INCREF(Py_None);
     _resultobj = Py_None;
     return _resultobj;
+}
+
+static int _wrap_wxNullImage_set(PyObject *val) {
+
+    PyErr_SetString(PyExc_TypeError,"Variable wxNullImage is read-only.");
+    return 1;
+}
+
+static PyObject *_wrap_wxNullImage_get() {
+    PyObject * pyobj;
+    char ptemp[128];
+
+    SWIG_MakePtr(ptemp,(char *) &wxNullImage,"_wxImage_p");
+    pyobj = PyString_FromString(ptemp);
+    return pyobj;
+}
+
+static PyObject *_wrap_wxBitmapFromImage(PyObject *self, PyObject *args, PyObject *kwargs) {
+    PyObject * _resultobj;
+    wxBitmap * _result;
+    wxImage * _arg0;
+    int  _arg1 = (int ) -1;
+    PyObject * _argo0 = 0;
+    char *_kwnames[] = { "img","depth", NULL };
+    char _ptemp[128];
+
+    self = self;
+    if(!PyArg_ParseTupleAndKeywords(args,kwargs,"O|i:wxBitmapFromImage",_kwnames,&_argo0,&_arg1)) 
+        return NULL;
+    if (_argo0) {
+        if (_argo0 == Py_None) { _arg0 = NULL; }
+        else if (SWIG_GetPtrObj(_argo0,(void **) &_arg0,"_wxImage_p")) {
+            PyErr_SetString(PyExc_TypeError,"Type error in argument 1 of wxBitmapFromImage. Expected _wxImage_p.");
+        return NULL;
+        }
+    }
+{
+    PyThreadState* __tstate = wxPyBeginAllowThreads();
+    _result = (wxBitmap *)wxBitmapFromImage(*_arg0,_arg1);
+
+    wxPyEndAllowThreads(__tstate);
+    if (PyErr_Occurred()) return NULL;
+}    if (_result) {
+        SWIG_MakePtr(_ptemp, (char *) _result,"_wxBitmap_p");
+        _resultobj = Py_BuildValue("s",_ptemp);
+    } else {
+        Py_INCREF(Py_None);
+        _resultobj = Py_None;
+    }
+    return _resultobj;
+}
+
+static void *SwigwxImageHandlerTowxObject(void *ptr) {
+    wxImageHandler *src;
+    wxObject *dest;
+    src = (wxImageHandler *) ptr;
+    dest = (wxObject *) src;
+    return (void *) dest;
 }
 
 #define wxImageHandler_GetName(_swigobj)  (_swigobj->GetName())
@@ -326,12 +485,17 @@ static PyObject *_wrap_wxImageHandler_GetName(PyObject *self, PyObject *args, Py
         }
     }
 {
-    wxPy_BEGIN_ALLOW_THREADS;
-        _result = new wxString (wxImageHandler_GetName(_arg0));
+    PyThreadState* __tstate = wxPyBeginAllowThreads();
+    _result = new wxString (wxImageHandler_GetName(_arg0));
 
-    wxPy_END_ALLOW_THREADS;
+    wxPyEndAllowThreads(__tstate);
+    if (PyErr_Occurred()) return NULL;
 }{
+#if wxUSE_UNICODE
+    _resultobj = PyUnicode_FromUnicode(_result->c_str(), _result->Len());
+#else
     _resultobj = PyString_FromStringAndSize(_result->c_str(), _result->Len());
+#endif
 }
 {
     delete _result;
@@ -358,12 +522,17 @@ static PyObject *_wrap_wxImageHandler_GetExtension(PyObject *self, PyObject *arg
         }
     }
 {
-    wxPy_BEGIN_ALLOW_THREADS;
-        _result = new wxString (wxImageHandler_GetExtension(_arg0));
+    PyThreadState* __tstate = wxPyBeginAllowThreads();
+    _result = new wxString (wxImageHandler_GetExtension(_arg0));
 
-    wxPy_END_ALLOW_THREADS;
+    wxPyEndAllowThreads(__tstate);
+    if (PyErr_Occurred()) return NULL;
 }{
+#if wxUSE_UNICODE
+    _resultobj = PyUnicode_FromUnicode(_result->c_str(), _result->Len());
+#else
     _resultobj = PyString_FromStringAndSize(_result->c_str(), _result->Len());
+#endif
 }
 {
     delete _result;
@@ -390,10 +559,11 @@ static PyObject *_wrap_wxImageHandler_GetType(PyObject *self, PyObject *args, Py
         }
     }
 {
-    wxPy_BEGIN_ALLOW_THREADS;
-        _result = (long )wxImageHandler_GetType(_arg0);
+    PyThreadState* __tstate = wxPyBeginAllowThreads();
+    _result = (long )wxImageHandler_GetType(_arg0);
 
-    wxPy_END_ALLOW_THREADS;
+    wxPyEndAllowThreads(__tstate);
+    if (PyErr_Occurred()) return NULL;
 }    _resultobj = Py_BuildValue("l",_result);
     return _resultobj;
 }
@@ -417,15 +587,59 @@ static PyObject *_wrap_wxImageHandler_GetMimeType(PyObject *self, PyObject *args
         }
     }
 {
-    wxPy_BEGIN_ALLOW_THREADS;
-        _result = new wxString (wxImageHandler_GetMimeType(_arg0));
+    PyThreadState* __tstate = wxPyBeginAllowThreads();
+    _result = new wxString (wxImageHandler_GetMimeType(_arg0));
 
-    wxPy_END_ALLOW_THREADS;
+    wxPyEndAllowThreads(__tstate);
+    if (PyErr_Occurred()) return NULL;
 }{
+#if wxUSE_UNICODE
+    _resultobj = PyUnicode_FromUnicode(_result->c_str(), _result->Len());
+#else
     _resultobj = PyString_FromStringAndSize(_result->c_str(), _result->Len());
+#endif
 }
 {
     delete _result;
+}
+    return _resultobj;
+}
+
+#define wxImageHandler_CanRead(_swigobj,_swigarg0)  (_swigobj->CanRead(_swigarg0))
+static PyObject *_wrap_wxImageHandler_CanRead(PyObject *self, PyObject *args, PyObject *kwargs) {
+    PyObject * _resultobj;
+    bool  _result;
+    wxImageHandler * _arg0;
+    wxString * _arg1;
+    PyObject * _argo0 = 0;
+    PyObject * _obj1 = 0;
+    char *_kwnames[] = { "self","name", NULL };
+
+    self = self;
+    if(!PyArg_ParseTupleAndKeywords(args,kwargs,"OO:wxImageHandler_CanRead",_kwnames,&_argo0,&_obj1)) 
+        return NULL;
+    if (_argo0) {
+        if (_argo0 == Py_None) { _arg0 = NULL; }
+        else if (SWIG_GetPtrObj(_argo0,(void **) &_arg0,"_wxImageHandler_p")) {
+            PyErr_SetString(PyExc_TypeError,"Type error in argument 1 of wxImageHandler_CanRead. Expected _wxImageHandler_p.");
+        return NULL;
+        }
+    }
+{
+    _arg1 = wxString_in_helper(_obj1);
+    if (_arg1 == NULL)
+        return NULL;
+}
+{
+    PyThreadState* __tstate = wxPyBeginAllowThreads();
+    _result = (bool )wxImageHandler_CanRead(_arg0,*_arg1);
+
+    wxPyEndAllowThreads(__tstate);
+    if (PyErr_Occurred()) return NULL;
+}    _resultobj = Py_BuildValue("i",_result);
+{
+    if (_obj1)
+        delete _arg1;
 }
     return _resultobj;
 }
@@ -450,28 +664,16 @@ static PyObject *_wrap_wxImageHandler_SetName(PyObject *self, PyObject *args, Py
         }
     }
 {
-#if PYTHON_API_VERSION >= 1009
-    char* tmpPtr; int tmpSize;
-    if (!PyString_Check(_obj1) && !PyUnicode_Check(_obj1)) {
-        PyErr_SetString(PyExc_TypeError, "String or Unicode type required");
+    _arg1 = wxString_in_helper(_obj1);
+    if (_arg1 == NULL)
         return NULL;
-    }
-    if (PyString_AsStringAndSize(_obj1, &tmpPtr, &tmpSize) == -1)
-        return NULL;
-    _arg1 = new wxString(tmpPtr, tmpSize);
-#else
-    if (!PyString_Check(_obj1)) {
-        PyErr_SetString(PyExc_TypeError, wxStringErrorMsg);
-        return NULL;
-    }
-    _arg1 = new wxString(PyString_AS_STRING(_obj1), PyString_GET_SIZE(_obj1));
-#endif
 }
 {
-    wxPy_BEGIN_ALLOW_THREADS;
-        wxImageHandler_SetName(_arg0,*_arg1);
+    PyThreadState* __tstate = wxPyBeginAllowThreads();
+    wxImageHandler_SetName(_arg0,*_arg1);
 
-    wxPy_END_ALLOW_THREADS;
+    wxPyEndAllowThreads(__tstate);
+    if (PyErr_Occurred()) return NULL;
 }    Py_INCREF(Py_None);
     _resultobj = Py_None;
 {
@@ -501,28 +703,16 @@ static PyObject *_wrap_wxImageHandler_SetExtension(PyObject *self, PyObject *arg
         }
     }
 {
-#if PYTHON_API_VERSION >= 1009
-    char* tmpPtr; int tmpSize;
-    if (!PyString_Check(_obj1) && !PyUnicode_Check(_obj1)) {
-        PyErr_SetString(PyExc_TypeError, "String or Unicode type required");
+    _arg1 = wxString_in_helper(_obj1);
+    if (_arg1 == NULL)
         return NULL;
-    }
-    if (PyString_AsStringAndSize(_obj1, &tmpPtr, &tmpSize) == -1)
-        return NULL;
-    _arg1 = new wxString(tmpPtr, tmpSize);
-#else
-    if (!PyString_Check(_obj1)) {
-        PyErr_SetString(PyExc_TypeError, wxStringErrorMsg);
-        return NULL;
-    }
-    _arg1 = new wxString(PyString_AS_STRING(_obj1), PyString_GET_SIZE(_obj1));
-#endif
 }
 {
-    wxPy_BEGIN_ALLOW_THREADS;
-        wxImageHandler_SetExtension(_arg0,*_arg1);
+    PyThreadState* __tstate = wxPyBeginAllowThreads();
+    wxImageHandler_SetExtension(_arg0,*_arg1);
 
-    wxPy_END_ALLOW_THREADS;
+    wxPyEndAllowThreads(__tstate);
+    if (PyErr_Occurred()) return NULL;
 }    Py_INCREF(Py_None);
     _resultobj = Py_None;
 {
@@ -551,10 +741,11 @@ static PyObject *_wrap_wxImageHandler_SetType(PyObject *self, PyObject *args, Py
         }
     }
 {
-    wxPy_BEGIN_ALLOW_THREADS;
-        wxImageHandler_SetType(_arg0,_arg1);
+    PyThreadState* __tstate = wxPyBeginAllowThreads();
+    wxImageHandler_SetType(_arg0,_arg1);
 
-    wxPy_END_ALLOW_THREADS;
+    wxPyEndAllowThreads(__tstate);
+    if (PyErr_Occurred()) return NULL;
 }    Py_INCREF(Py_None);
     _resultobj = Py_None;
     return _resultobj;
@@ -580,28 +771,16 @@ static PyObject *_wrap_wxImageHandler_SetMimeType(PyObject *self, PyObject *args
         }
     }
 {
-#if PYTHON_API_VERSION >= 1009
-    char* tmpPtr; int tmpSize;
-    if (!PyString_Check(_obj1) && !PyUnicode_Check(_obj1)) {
-        PyErr_SetString(PyExc_TypeError, "String or Unicode type required");
+    _arg1 = wxString_in_helper(_obj1);
+    if (_arg1 == NULL)
         return NULL;
-    }
-    if (PyString_AsStringAndSize(_obj1, &tmpPtr, &tmpSize) == -1)
-        return NULL;
-    _arg1 = new wxString(tmpPtr, tmpSize);
-#else
-    if (!PyString_Check(_obj1)) {
-        PyErr_SetString(PyExc_TypeError, wxStringErrorMsg);
-        return NULL;
-    }
-    _arg1 = new wxString(PyString_AS_STRING(_obj1), PyString_GET_SIZE(_obj1));
-#endif
 }
 {
-    wxPy_BEGIN_ALLOW_THREADS;
-        wxImageHandler_SetMimeType(_arg0,*_arg1);
+    PyThreadState* __tstate = wxPyBeginAllowThreads();
+    wxImageHandler_SetMimeType(_arg0,*_arg1);
 
-    wxPy_END_ALLOW_THREADS;
+    wxPyEndAllowThreads(__tstate);
+    if (PyErr_Occurred()) return NULL;
 }    Py_INCREF(Py_None);
     _resultobj = Py_None;
 {
@@ -619,6 +798,14 @@ static void *SwigwxPNGHandlerTowxImageHandler(void *ptr) {
     return (void *) dest;
 }
 
+static void *SwigwxPNGHandlerTowxObject(void *ptr) {
+    wxPNGHandler *src;
+    wxObject *dest;
+    src = (wxPNGHandler *) ptr;
+    dest = (wxObject *) src;
+    return (void *) dest;
+}
+
 #define new_wxPNGHandler() (new wxPNGHandler())
 static PyObject *_wrap_new_wxPNGHandler(PyObject *self, PyObject *args, PyObject *kwargs) {
     PyObject * _resultobj;
@@ -630,10 +817,11 @@ static PyObject *_wrap_new_wxPNGHandler(PyObject *self, PyObject *args, PyObject
     if(!PyArg_ParseTupleAndKeywords(args,kwargs,":new_wxPNGHandler",_kwnames)) 
         return NULL;
 {
-    wxPy_BEGIN_ALLOW_THREADS;
-        _result = (wxPNGHandler *)new_wxPNGHandler();
+    PyThreadState* __tstate = wxPyBeginAllowThreads();
+    _result = (wxPNGHandler *)new_wxPNGHandler();
 
-    wxPy_END_ALLOW_THREADS;
+    wxPyEndAllowThreads(__tstate);
+    if (PyErr_Occurred()) return NULL;
 }    if (_result) {
         SWIG_MakePtr(_ptemp, (char *) _result,"_wxPNGHandler_p");
         _resultobj = Py_BuildValue("s",_ptemp);
@@ -652,6 +840,14 @@ static void *SwigwxJPEGHandlerTowxImageHandler(void *ptr) {
     return (void *) dest;
 }
 
+static void *SwigwxJPEGHandlerTowxObject(void *ptr) {
+    wxJPEGHandler *src;
+    wxObject *dest;
+    src = (wxJPEGHandler *) ptr;
+    dest = (wxObject *) src;
+    return (void *) dest;
+}
+
 #define new_wxJPEGHandler() (new wxJPEGHandler())
 static PyObject *_wrap_new_wxJPEGHandler(PyObject *self, PyObject *args, PyObject *kwargs) {
     PyObject * _resultobj;
@@ -663,10 +859,11 @@ static PyObject *_wrap_new_wxJPEGHandler(PyObject *self, PyObject *args, PyObjec
     if(!PyArg_ParseTupleAndKeywords(args,kwargs,":new_wxJPEGHandler",_kwnames)) 
         return NULL;
 {
-    wxPy_BEGIN_ALLOW_THREADS;
-        _result = (wxJPEGHandler *)new_wxJPEGHandler();
+    PyThreadState* __tstate = wxPyBeginAllowThreads();
+    _result = (wxJPEGHandler *)new_wxJPEGHandler();
 
-    wxPy_END_ALLOW_THREADS;
+    wxPyEndAllowThreads(__tstate);
+    if (PyErr_Occurred()) return NULL;
 }    if (_result) {
         SWIG_MakePtr(_ptemp, (char *) _result,"_wxJPEGHandler_p");
         _resultobj = Py_BuildValue("s",_ptemp);
@@ -685,6 +882,14 @@ static void *SwigwxBMPHandlerTowxImageHandler(void *ptr) {
     return (void *) dest;
 }
 
+static void *SwigwxBMPHandlerTowxObject(void *ptr) {
+    wxBMPHandler *src;
+    wxObject *dest;
+    src = (wxBMPHandler *) ptr;
+    dest = (wxObject *) src;
+    return (void *) dest;
+}
+
 #define new_wxBMPHandler() (new wxBMPHandler())
 static PyObject *_wrap_new_wxBMPHandler(PyObject *self, PyObject *args, PyObject *kwargs) {
     PyObject * _resultobj;
@@ -696,12 +901,187 @@ static PyObject *_wrap_new_wxBMPHandler(PyObject *self, PyObject *args, PyObject
     if(!PyArg_ParseTupleAndKeywords(args,kwargs,":new_wxBMPHandler",_kwnames)) 
         return NULL;
 {
-    wxPy_BEGIN_ALLOW_THREADS;
-        _result = (wxBMPHandler *)new_wxBMPHandler();
+    PyThreadState* __tstate = wxPyBeginAllowThreads();
+    _result = (wxBMPHandler *)new_wxBMPHandler();
 
-    wxPy_END_ALLOW_THREADS;
+    wxPyEndAllowThreads(__tstate);
+    if (PyErr_Occurred()) return NULL;
 }    if (_result) {
         SWIG_MakePtr(_ptemp, (char *) _result,"_wxBMPHandler_p");
+        _resultobj = Py_BuildValue("s",_ptemp);
+    } else {
+        Py_INCREF(Py_None);
+        _resultobj = Py_None;
+    }
+    return _resultobj;
+}
+
+static void *SwigwxICOHandlerTowxBMPHandler(void *ptr) {
+    wxICOHandler *src;
+    wxBMPHandler *dest;
+    src = (wxICOHandler *) ptr;
+    dest = (wxBMPHandler *) src;
+    return (void *) dest;
+}
+
+static void *SwigwxICOHandlerTowxImageHandler(void *ptr) {
+    wxICOHandler *src;
+    wxImageHandler *dest;
+    src = (wxICOHandler *) ptr;
+    dest = (wxImageHandler *) src;
+    return (void *) dest;
+}
+
+static void *SwigwxICOHandlerTowxObject(void *ptr) {
+    wxICOHandler *src;
+    wxObject *dest;
+    src = (wxICOHandler *) ptr;
+    dest = (wxObject *) src;
+    return (void *) dest;
+}
+
+#define new_wxICOHandler() (new wxICOHandler())
+static PyObject *_wrap_new_wxICOHandler(PyObject *self, PyObject *args, PyObject *kwargs) {
+    PyObject * _resultobj;
+    wxICOHandler * _result;
+    char *_kwnames[] = {  NULL };
+    char _ptemp[128];
+
+    self = self;
+    if(!PyArg_ParseTupleAndKeywords(args,kwargs,":new_wxICOHandler",_kwnames)) 
+        return NULL;
+{
+    PyThreadState* __tstate = wxPyBeginAllowThreads();
+    _result = (wxICOHandler *)new_wxICOHandler();
+
+    wxPyEndAllowThreads(__tstate);
+    if (PyErr_Occurred()) return NULL;
+}    if (_result) {
+        SWIG_MakePtr(_ptemp, (char *) _result,"_wxICOHandler_p");
+        _resultobj = Py_BuildValue("s",_ptemp);
+    } else {
+        Py_INCREF(Py_None);
+        _resultobj = Py_None;
+    }
+    return _resultobj;
+}
+
+static void *SwigwxCURHandlerTowxICOHandler(void *ptr) {
+    wxCURHandler *src;
+    wxICOHandler *dest;
+    src = (wxCURHandler *) ptr;
+    dest = (wxICOHandler *) src;
+    return (void *) dest;
+}
+
+static void *SwigwxCURHandlerTowxBMPHandler(void *ptr) {
+    wxCURHandler *src;
+    wxBMPHandler *dest;
+    src = (wxCURHandler *) ptr;
+    dest = (wxBMPHandler *) src;
+    return (void *) dest;
+}
+
+static void *SwigwxCURHandlerTowxImageHandler(void *ptr) {
+    wxCURHandler *src;
+    wxImageHandler *dest;
+    src = (wxCURHandler *) ptr;
+    dest = (wxImageHandler *) src;
+    return (void *) dest;
+}
+
+static void *SwigwxCURHandlerTowxObject(void *ptr) {
+    wxCURHandler *src;
+    wxObject *dest;
+    src = (wxCURHandler *) ptr;
+    dest = (wxObject *) src;
+    return (void *) dest;
+}
+
+#define new_wxCURHandler() (new wxCURHandler())
+static PyObject *_wrap_new_wxCURHandler(PyObject *self, PyObject *args, PyObject *kwargs) {
+    PyObject * _resultobj;
+    wxCURHandler * _result;
+    char *_kwnames[] = {  NULL };
+    char _ptemp[128];
+
+    self = self;
+    if(!PyArg_ParseTupleAndKeywords(args,kwargs,":new_wxCURHandler",_kwnames)) 
+        return NULL;
+{
+    PyThreadState* __tstate = wxPyBeginAllowThreads();
+    _result = (wxCURHandler *)new_wxCURHandler();
+
+    wxPyEndAllowThreads(__tstate);
+    if (PyErr_Occurred()) return NULL;
+}    if (_result) {
+        SWIG_MakePtr(_ptemp, (char *) _result,"_wxCURHandler_p");
+        _resultobj = Py_BuildValue("s",_ptemp);
+    } else {
+        Py_INCREF(Py_None);
+        _resultobj = Py_None;
+    }
+    return _resultobj;
+}
+
+static void *SwigwxANIHandlerTowxCURHandler(void *ptr) {
+    wxANIHandler *src;
+    wxCURHandler *dest;
+    src = (wxANIHandler *) ptr;
+    dest = (wxCURHandler *) src;
+    return (void *) dest;
+}
+
+static void *SwigwxANIHandlerTowxICOHandler(void *ptr) {
+    wxANIHandler *src;
+    wxICOHandler *dest;
+    src = (wxANIHandler *) ptr;
+    dest = (wxICOHandler *) src;
+    return (void *) dest;
+}
+
+static void *SwigwxANIHandlerTowxBMPHandler(void *ptr) {
+    wxANIHandler *src;
+    wxBMPHandler *dest;
+    src = (wxANIHandler *) ptr;
+    dest = (wxBMPHandler *) src;
+    return (void *) dest;
+}
+
+static void *SwigwxANIHandlerTowxImageHandler(void *ptr) {
+    wxANIHandler *src;
+    wxImageHandler *dest;
+    src = (wxANIHandler *) ptr;
+    dest = (wxImageHandler *) src;
+    return (void *) dest;
+}
+
+static void *SwigwxANIHandlerTowxObject(void *ptr) {
+    wxANIHandler *src;
+    wxObject *dest;
+    src = (wxANIHandler *) ptr;
+    dest = (wxObject *) src;
+    return (void *) dest;
+}
+
+#define new_wxANIHandler() (new wxANIHandler())
+static PyObject *_wrap_new_wxANIHandler(PyObject *self, PyObject *args, PyObject *kwargs) {
+    PyObject * _resultobj;
+    wxANIHandler * _result;
+    char *_kwnames[] = {  NULL };
+    char _ptemp[128];
+
+    self = self;
+    if(!PyArg_ParseTupleAndKeywords(args,kwargs,":new_wxANIHandler",_kwnames)) 
+        return NULL;
+{
+    PyThreadState* __tstate = wxPyBeginAllowThreads();
+    _result = (wxANIHandler *)new_wxANIHandler();
+
+    wxPyEndAllowThreads(__tstate);
+    if (PyErr_Occurred()) return NULL;
+}    if (_result) {
+        SWIG_MakePtr(_ptemp, (char *) _result,"_wxANIHandler_p");
         _resultobj = Py_BuildValue("s",_ptemp);
     } else {
         Py_INCREF(Py_None);
@@ -718,6 +1098,14 @@ static void *SwigwxGIFHandlerTowxImageHandler(void *ptr) {
     return (void *) dest;
 }
 
+static void *SwigwxGIFHandlerTowxObject(void *ptr) {
+    wxGIFHandler *src;
+    wxObject *dest;
+    src = (wxGIFHandler *) ptr;
+    dest = (wxObject *) src;
+    return (void *) dest;
+}
+
 #define new_wxGIFHandler() (new wxGIFHandler())
 static PyObject *_wrap_new_wxGIFHandler(PyObject *self, PyObject *args, PyObject *kwargs) {
     PyObject * _resultobj;
@@ -729,10 +1117,11 @@ static PyObject *_wrap_new_wxGIFHandler(PyObject *self, PyObject *args, PyObject
     if(!PyArg_ParseTupleAndKeywords(args,kwargs,":new_wxGIFHandler",_kwnames)) 
         return NULL;
 {
-    wxPy_BEGIN_ALLOW_THREADS;
-        _result = (wxGIFHandler *)new_wxGIFHandler();
+    PyThreadState* __tstate = wxPyBeginAllowThreads();
+    _result = (wxGIFHandler *)new_wxGIFHandler();
 
-    wxPy_END_ALLOW_THREADS;
+    wxPyEndAllowThreads(__tstate);
+    if (PyErr_Occurred()) return NULL;
 }    if (_result) {
         SWIG_MakePtr(_ptemp, (char *) _result,"_wxGIFHandler_p");
         _resultobj = Py_BuildValue("s",_ptemp);
@@ -751,6 +1140,14 @@ static void *SwigwxPNMHandlerTowxImageHandler(void *ptr) {
     return (void *) dest;
 }
 
+static void *SwigwxPNMHandlerTowxObject(void *ptr) {
+    wxPNMHandler *src;
+    wxObject *dest;
+    src = (wxPNMHandler *) ptr;
+    dest = (wxObject *) src;
+    return (void *) dest;
+}
+
 #define new_wxPNMHandler() (new wxPNMHandler())
 static PyObject *_wrap_new_wxPNMHandler(PyObject *self, PyObject *args, PyObject *kwargs) {
     PyObject * _resultobj;
@@ -762,10 +1159,11 @@ static PyObject *_wrap_new_wxPNMHandler(PyObject *self, PyObject *args, PyObject
     if(!PyArg_ParseTupleAndKeywords(args,kwargs,":new_wxPNMHandler",_kwnames)) 
         return NULL;
 {
-    wxPy_BEGIN_ALLOW_THREADS;
-        _result = (wxPNMHandler *)new_wxPNMHandler();
+    PyThreadState* __tstate = wxPyBeginAllowThreads();
+    _result = (wxPNMHandler *)new_wxPNMHandler();
 
-    wxPy_END_ALLOW_THREADS;
+    wxPyEndAllowThreads(__tstate);
+    if (PyErr_Occurred()) return NULL;
 }    if (_result) {
         SWIG_MakePtr(_ptemp, (char *) _result,"_wxPNMHandler_p");
         _resultobj = Py_BuildValue("s",_ptemp);
@@ -784,6 +1182,14 @@ static void *SwigwxPCXHandlerTowxImageHandler(void *ptr) {
     return (void *) dest;
 }
 
+static void *SwigwxPCXHandlerTowxObject(void *ptr) {
+    wxPCXHandler *src;
+    wxObject *dest;
+    src = (wxPCXHandler *) ptr;
+    dest = (wxObject *) src;
+    return (void *) dest;
+}
+
 #define new_wxPCXHandler() (new wxPCXHandler())
 static PyObject *_wrap_new_wxPCXHandler(PyObject *self, PyObject *args, PyObject *kwargs) {
     PyObject * _resultobj;
@@ -795,10 +1201,11 @@ static PyObject *_wrap_new_wxPCXHandler(PyObject *self, PyObject *args, PyObject
     if(!PyArg_ParseTupleAndKeywords(args,kwargs,":new_wxPCXHandler",_kwnames)) 
         return NULL;
 {
-    wxPy_BEGIN_ALLOW_THREADS;
-        _result = (wxPCXHandler *)new_wxPCXHandler();
+    PyThreadState* __tstate = wxPyBeginAllowThreads();
+    _result = (wxPCXHandler *)new_wxPCXHandler();
 
-    wxPy_END_ALLOW_THREADS;
+    wxPyEndAllowThreads(__tstate);
+    if (PyErr_Occurred()) return NULL;
 }    if (_result) {
         SWIG_MakePtr(_ptemp, (char *) _result,"_wxPCXHandler_p");
         _resultobj = Py_BuildValue("s",_ptemp);
@@ -817,6 +1224,14 @@ static void *SwigwxTIFFHandlerTowxImageHandler(void *ptr) {
     return (void *) dest;
 }
 
+static void *SwigwxTIFFHandlerTowxObject(void *ptr) {
+    wxTIFFHandler *src;
+    wxObject *dest;
+    src = (wxTIFFHandler *) ptr;
+    dest = (wxObject *) src;
+    return (void *) dest;
+}
+
 #define new_wxTIFFHandler() (new wxTIFFHandler())
 static PyObject *_wrap_new_wxTIFFHandler(PyObject *self, PyObject *args, PyObject *kwargs) {
     PyObject * _resultobj;
@@ -828,10 +1243,11 @@ static PyObject *_wrap_new_wxTIFFHandler(PyObject *self, PyObject *args, PyObjec
     if(!PyArg_ParseTupleAndKeywords(args,kwargs,":new_wxTIFFHandler",_kwnames)) 
         return NULL;
 {
-    wxPy_BEGIN_ALLOW_THREADS;
-        _result = (wxTIFFHandler *)new_wxTIFFHandler();
+    PyThreadState* __tstate = wxPyBeginAllowThreads();
+    _result = (wxTIFFHandler *)new_wxTIFFHandler();
 
-    wxPy_END_ALLOW_THREADS;
+    wxPyEndAllowThreads(__tstate);
+    if (PyErr_Occurred()) return NULL;
 }    if (_result) {
         SWIG_MakePtr(_ptemp, (char *) _result,"_wxTIFFHandler_p");
         _resultobj = Py_BuildValue("s",_ptemp);
@@ -842,42 +1258,39 @@ static PyObject *_wrap_new_wxTIFFHandler(PyObject *self, PyObject *args, PyObjec
     return _resultobj;
 }
 
-#define new_wxImage(_swigarg0,_swigarg1) (new wxImage(_swigarg0,_swigarg1))
+static void *SwigwxImageTowxObject(void *ptr) {
+    wxImage *src;
+    wxObject *dest;
+    src = (wxImage *) ptr;
+    dest = (wxObject *) src;
+    return (void *) dest;
+}
+
+#define new_wxImage(_swigarg0,_swigarg1,_swigarg2) (new wxImage(_swigarg0,_swigarg1,_swigarg2))
 static PyObject *_wrap_new_wxImage(PyObject *self, PyObject *args, PyObject *kwargs) {
     PyObject * _resultobj;
     wxImage * _result;
     wxString * _arg0;
     long  _arg1 = (long ) wxBITMAP_TYPE_ANY;
+    int  _arg2 = (int ) -1;
     PyObject * _obj0 = 0;
-    char *_kwnames[] = { "name","type", NULL };
+    char *_kwnames[] = { "name","type","index", NULL };
     char _ptemp[128];
 
     self = self;
-    if(!PyArg_ParseTupleAndKeywords(args,kwargs,"O|l:new_wxImage",_kwnames,&_obj0,&_arg1)) 
+    if(!PyArg_ParseTupleAndKeywords(args,kwargs,"O|li:new_wxImage",_kwnames,&_obj0,&_arg1,&_arg2)) 
         return NULL;
 {
-#if PYTHON_API_VERSION >= 1009
-    char* tmpPtr; int tmpSize;
-    if (!PyString_Check(_obj0) && !PyUnicode_Check(_obj0)) {
-        PyErr_SetString(PyExc_TypeError, "String or Unicode type required");
+    _arg0 = wxString_in_helper(_obj0);
+    if (_arg0 == NULL)
         return NULL;
-    }
-    if (PyString_AsStringAndSize(_obj0, &tmpPtr, &tmpSize) == -1)
-        return NULL;
-    _arg0 = new wxString(tmpPtr, tmpSize);
-#else
-    if (!PyString_Check(_obj0)) {
-        PyErr_SetString(PyExc_TypeError, wxStringErrorMsg);
-        return NULL;
-    }
-    _arg0 = new wxString(PyString_AS_STRING(_obj0), PyString_GET_SIZE(_obj0));
-#endif
 }
 {
-    wxPy_BEGIN_ALLOW_THREADS;
-        _result = (wxImage *)new_wxImage(*_arg0,_arg1);
+    PyThreadState* __tstate = wxPyBeginAllowThreads();
+    _result = (wxImage *)new_wxImage(*_arg0,_arg1,_arg2);
 
-    wxPy_END_ALLOW_THREADS;
+    wxPyEndAllowThreads(__tstate);
+    if (PyErr_Occurred()) return NULL;
 }    if (_result) {
         SWIG_MakePtr(_ptemp, (char *) _result,"_wxImage_p");
         _resultobj = Py_BuildValue("s",_ptemp);
@@ -910,41 +1323,13 @@ static PyObject *_wrap_delete_wxImage(PyObject *self, PyObject *args, PyObject *
         }
     }
 {
-    wxPy_BEGIN_ALLOW_THREADS;
-        delete_wxImage(_arg0);
+    PyThreadState* __tstate = wxPyBeginAllowThreads();
+    delete_wxImage(_arg0);
 
-    wxPy_END_ALLOW_THREADS;
+    wxPyEndAllowThreads(__tstate);
+    if (PyErr_Occurred()) return NULL;
 }    Py_INCREF(Py_None);
     _resultobj = Py_None;
-    return _resultobj;
-}
-
-#define wxImage_ConvertToBitmap(_swigobj)  (_swigobj->ConvertToBitmap())
-static PyObject *_wrap_wxImage_ConvertToBitmap(PyObject *self, PyObject *args, PyObject *kwargs) {
-    PyObject * _resultobj;
-    wxBitmap * _result;
-    wxImage * _arg0;
-    PyObject * _argo0 = 0;
-    char *_kwnames[] = { "self", NULL };
-    char _ptemp[128];
-
-    self = self;
-    if(!PyArg_ParseTupleAndKeywords(args,kwargs,"O:wxImage_ConvertToBitmap",_kwnames,&_argo0)) 
-        return NULL;
-    if (_argo0) {
-        if (_argo0 == Py_None) { _arg0 = NULL; }
-        else if (SWIG_GetPtrObj(_argo0,(void **) &_arg0,"_wxImage_p")) {
-            PyErr_SetString(PyExc_TypeError,"Type error in argument 1 of wxImage_ConvertToBitmap. Expected _wxImage_p.");
-        return NULL;
-        }
-    }
-{
-    wxPy_BEGIN_ALLOW_THREADS;
-        _result = new wxBitmap (wxImage_ConvertToBitmap(_arg0));
-
-    wxPy_END_ALLOW_THREADS;
-}    SWIG_MakePtr(_ptemp, (void *) _result,"_wxBitmap_p");
-    _resultobj = Py_BuildValue("s",_ptemp);
     return _resultobj;
 }
 
@@ -968,10 +1353,11 @@ static PyObject *_wrap_wxImage_Create(PyObject *self, PyObject *args, PyObject *
         }
     }
 {
-    wxPy_BEGIN_ALLOW_THREADS;
-        wxImage_Create(_arg0,_arg1,_arg2);
+    PyThreadState* __tstate = wxPyBeginAllowThreads();
+    wxImage_Create(_arg0,_arg1,_arg2);
 
-    wxPy_END_ALLOW_THREADS;
+    wxPyEndAllowThreads(__tstate);
+    if (PyErr_Occurred()) return NULL;
 }    Py_INCREF(Py_None);
     _resultobj = Py_None;
     return _resultobj;
@@ -995,10 +1381,11 @@ static PyObject *_wrap_wxImage_Destroy(PyObject *self, PyObject *args, PyObject 
         }
     }
 {
-    wxPy_BEGIN_ALLOW_THREADS;
-        wxImage_Destroy(_arg0);
+    PyThreadState* __tstate = wxPyBeginAllowThreads();
+    wxImage_Destroy(_arg0);
 
-    wxPy_END_ALLOW_THREADS;
+    wxPyEndAllowThreads(__tstate);
+    if (PyErr_Occurred()) return NULL;
 }    Py_INCREF(Py_None);
     _resultobj = Py_None;
     return _resultobj;
@@ -1026,10 +1413,11 @@ static PyObject *_wrap_wxImage_Scale(PyObject *self, PyObject *args, PyObject *k
         }
     }
 {
-    wxPy_BEGIN_ALLOW_THREADS;
-        _result = new wxImage (wxImage_Scale(_arg0,_arg1,_arg2));
+    PyThreadState* __tstate = wxPyBeginAllowThreads();
+    _result = new wxImage (wxImage_Scale(_arg0,_arg1,_arg2));
 
-    wxPy_END_ALLOW_THREADS;
+    wxPyEndAllowThreads(__tstate);
+    if (PyErr_Occurred()) return NULL;
 }    SWIG_MakePtr(_ptemp, (void *) _result,"_wxImage_p");
     _resultobj = Py_BuildValue("s",_ptemp);
     return _resultobj;
@@ -1057,11 +1445,12 @@ static PyObject *_wrap_wxImage_Rescale(PyObject *self, PyObject *args, PyObject 
         }
     }
 {
-    wxPy_BEGIN_ALLOW_THREADS;
-        wxImage & _result_ref = wxImage_Rescale(_arg0,_arg1,_arg2);
+    PyThreadState* __tstate = wxPyBeginAllowThreads();
+    wxImage & _result_ref = wxImage_Rescale(_arg0,_arg1,_arg2);
     _result = (wxImage *) &_result_ref;
 
-    wxPy_END_ALLOW_THREADS;
+    wxPyEndAllowThreads(__tstate);
+    if (PyErr_Occurred()) return NULL;
 }    if (_result) {
         SWIG_MakePtr(_ptemp, (char *) _result,"_wxImage_p");
         _resultobj = Py_BuildValue("s",_ptemp);
@@ -1095,10 +1484,11 @@ static PyObject *_wrap_wxImage_SetRGB(PyObject *self, PyObject *args, PyObject *
         }
     }
 {
-    wxPy_BEGIN_ALLOW_THREADS;
-        wxImage_SetRGB(_arg0,_arg1,_arg2,_arg3,_arg4,_arg5);
+    PyThreadState* __tstate = wxPyBeginAllowThreads();
+    wxImage_SetRGB(_arg0,_arg1,_arg2,_arg3,_arg4,_arg5);
 
-    wxPy_END_ALLOW_THREADS;
+    wxPyEndAllowThreads(__tstate);
+    if (PyErr_Occurred()) return NULL;
 }    Py_INCREF(Py_None);
     _resultobj = Py_None;
     return _resultobj;
@@ -1125,10 +1515,11 @@ static PyObject *_wrap_wxImage_GetRed(PyObject *self, PyObject *args, PyObject *
         }
     }
 {
-    wxPy_BEGIN_ALLOW_THREADS;
-        _result = (unsigned char )wxImage_GetRed(_arg0,_arg1,_arg2);
+    PyThreadState* __tstate = wxPyBeginAllowThreads();
+    _result = (unsigned char )wxImage_GetRed(_arg0,_arg1,_arg2);
 
-    wxPy_END_ALLOW_THREADS;
+    wxPyEndAllowThreads(__tstate);
+    if (PyErr_Occurred()) return NULL;
 }    _resultobj = Py_BuildValue("b",_result);
     return _resultobj;
 }
@@ -1154,10 +1545,11 @@ static PyObject *_wrap_wxImage_GetGreen(PyObject *self, PyObject *args, PyObject
         }
     }
 {
-    wxPy_BEGIN_ALLOW_THREADS;
-        _result = (unsigned char )wxImage_GetGreen(_arg0,_arg1,_arg2);
+    PyThreadState* __tstate = wxPyBeginAllowThreads();
+    _result = (unsigned char )wxImage_GetGreen(_arg0,_arg1,_arg2);
 
-    wxPy_END_ALLOW_THREADS;
+    wxPyEndAllowThreads(__tstate);
+    if (PyErr_Occurred()) return NULL;
 }    _resultobj = Py_BuildValue("b",_result);
     return _resultobj;
 }
@@ -1183,27 +1575,189 @@ static PyObject *_wrap_wxImage_GetBlue(PyObject *self, PyObject *args, PyObject 
         }
     }
 {
-    wxPy_BEGIN_ALLOW_THREADS;
-        _result = (unsigned char )wxImage_GetBlue(_arg0,_arg1,_arg2);
+    PyThreadState* __tstate = wxPyBeginAllowThreads();
+    _result = (unsigned char )wxImage_GetBlue(_arg0,_arg1,_arg2);
 
-    wxPy_END_ALLOW_THREADS;
+    wxPyEndAllowThreads(__tstate);
+    if (PyErr_Occurred()) return NULL;
 }    _resultobj = Py_BuildValue("b",_result);
     return _resultobj;
 }
 
-#define wxImage_LoadFile(_swigobj,_swigarg0,_swigarg1)  (_swigobj->LoadFile(_swigarg0,_swigarg1))
+#define wxImage_FindFirstUnusedColour(_swigobj,_swigarg0,_swigarg1,_swigarg2,_swigarg3,_swigarg4,_swigarg5)  (_swigobj->FindFirstUnusedColour(_swigarg0,_swigarg1,_swigarg2,_swigarg3,_swigarg4,_swigarg5))
+static PyObject *_wrap_wxImage_FindFirstUnusedColour(PyObject *self, PyObject *args, PyObject *kwargs) {
+    PyObject * _resultobj;
+    bool  _result;
+    wxImage * _arg0;
+    byte * _arg1;
+    int  temp;
+    byte * _arg2;
+    int  temp0;
+    byte * _arg3;
+    int  temp1;
+    byte  _arg4 = (byte ) 0;
+    byte  _arg5 = (byte ) 0;
+    byte  _arg6 = (byte ) 0;
+    PyObject * _argo0 = 0;
+    char *_kwnames[] = { "self","startR","startG","startB", NULL };
+
+    self = self;
+{
+  _arg1 = (byte*)&temp;
+}
+{
+  _arg2 = (byte*)&temp0;
+}
+{
+  _arg3 = (byte*)&temp1;
+}
+    if(!PyArg_ParseTupleAndKeywords(args,kwargs,"O|bbb:wxImage_FindFirstUnusedColour",_kwnames,&_argo0,&_arg4,&_arg5,&_arg6)) 
+        return NULL;
+    if (_argo0) {
+        if (_argo0 == Py_None) { _arg0 = NULL; }
+        else if (SWIG_GetPtrObj(_argo0,(void **) &_arg0,"_wxImage_p")) {
+            PyErr_SetString(PyExc_TypeError,"Type error in argument 1 of wxImage_FindFirstUnusedColour. Expected _wxImage_p.");
+        return NULL;
+        }
+    }
+{
+    PyThreadState* __tstate = wxPyBeginAllowThreads();
+    _result = (bool )wxImage_FindFirstUnusedColour(_arg0,_arg1,_arg2,_arg3,_arg4,_arg5,_arg6);
+
+    wxPyEndAllowThreads(__tstate);
+    if (PyErr_Occurred()) return NULL;
+}    _resultobj = Py_BuildValue("i",_result);
+{
+    PyObject *o;
+    o = PyInt_FromLong((long) (*_arg1));
+    _resultobj = t_output_helper(_resultobj, o);
+}
+{
+    PyObject *o;
+    o = PyInt_FromLong((long) (*_arg2));
+    _resultobj = t_output_helper(_resultobj, o);
+}
+{
+    PyObject *o;
+    o = PyInt_FromLong((long) (*_arg3));
+    _resultobj = t_output_helper(_resultobj, o);
+}
+    return _resultobj;
+}
+
+#define wxImage_SetMaskFromImage(_swigobj,_swigarg0,_swigarg1,_swigarg2,_swigarg3)  (_swigobj->SetMaskFromImage(_swigarg0,_swigarg1,_swigarg2,_swigarg3))
+static PyObject *_wrap_wxImage_SetMaskFromImage(PyObject *self, PyObject *args, PyObject *kwargs) {
+    PyObject * _resultobj;
+    bool  _result;
+    wxImage * _arg0;
+    wxImage * _arg1;
+    byte  _arg2;
+    byte  _arg3;
+    byte  _arg4;
+    PyObject * _argo0 = 0;
+    PyObject * _argo1 = 0;
+    char *_kwnames[] = { "self","mask","mr","mg","mb", NULL };
+
+    self = self;
+    if(!PyArg_ParseTupleAndKeywords(args,kwargs,"OObbb:wxImage_SetMaskFromImage",_kwnames,&_argo0,&_argo1,&_arg2,&_arg3,&_arg4)) 
+        return NULL;
+    if (_argo0) {
+        if (_argo0 == Py_None) { _arg0 = NULL; }
+        else if (SWIG_GetPtrObj(_argo0,(void **) &_arg0,"_wxImage_p")) {
+            PyErr_SetString(PyExc_TypeError,"Type error in argument 1 of wxImage_SetMaskFromImage. Expected _wxImage_p.");
+        return NULL;
+        }
+    }
+    if (_argo1) {
+        if (_argo1 == Py_None) { _arg1 = NULL; }
+        else if (SWIG_GetPtrObj(_argo1,(void **) &_arg1,"_wxImage_p")) {
+            PyErr_SetString(PyExc_TypeError,"Type error in argument 2 of wxImage_SetMaskFromImage. Expected _wxImage_p.");
+        return NULL;
+        }
+    }
+{
+    PyThreadState* __tstate = wxPyBeginAllowThreads();
+    _result = (bool )wxImage_SetMaskFromImage(_arg0,*_arg1,_arg2,_arg3,_arg4);
+
+    wxPyEndAllowThreads(__tstate);
+    if (PyErr_Occurred()) return NULL;
+}    _resultobj = Py_BuildValue("i",_result);
+    return _resultobj;
+}
+
+static PyObject *_wrap_wxImage_CanRead(PyObject *self, PyObject *args, PyObject *kwargs) {
+    PyObject * _resultobj;
+    bool  _result;
+    wxString * _arg0;
+    PyObject * _obj0 = 0;
+    char *_kwnames[] = { "name", NULL };
+
+    self = self;
+    if(!PyArg_ParseTupleAndKeywords(args,kwargs,"O:wxImage_CanRead",_kwnames,&_obj0)) 
+        return NULL;
+{
+    _arg0 = wxString_in_helper(_obj0);
+    if (_arg0 == NULL)
+        return NULL;
+}
+{
+    PyThreadState* __tstate = wxPyBeginAllowThreads();
+    _result = (bool )wxImage::CanRead(*_arg0);
+
+    wxPyEndAllowThreads(__tstate);
+    if (PyErr_Occurred()) return NULL;
+}    _resultobj = Py_BuildValue("i",_result);
+{
+    if (_obj0)
+        delete _arg0;
+}
+    return _resultobj;
+}
+
+static PyObject *_wrap_wxImage_GetImageCount(PyObject *self, PyObject *args, PyObject *kwargs) {
+    PyObject * _resultobj;
+    int  _result;
+    wxString * _arg0;
+    long  _arg1 = (long ) wxBITMAP_TYPE_ANY;
+    PyObject * _obj0 = 0;
+    char *_kwnames[] = { "name","type", NULL };
+
+    self = self;
+    if(!PyArg_ParseTupleAndKeywords(args,kwargs,"O|l:wxImage_GetImageCount",_kwnames,&_obj0,&_arg1)) 
+        return NULL;
+{
+    _arg0 = wxString_in_helper(_obj0);
+    if (_arg0 == NULL)
+        return NULL;
+}
+{
+    PyThreadState* __tstate = wxPyBeginAllowThreads();
+    _result = (int )wxImage::GetImageCount(*_arg0,_arg1);
+
+    wxPyEndAllowThreads(__tstate);
+    if (PyErr_Occurred()) return NULL;
+}    _resultobj = Py_BuildValue("i",_result);
+{
+    if (_obj0)
+        delete _arg0;
+}
+    return _resultobj;
+}
+
+#define wxImage_LoadFile(_swigobj,_swigarg0,_swigarg1,_swigarg2)  (_swigobj->LoadFile(_swigarg0,_swigarg1,_swigarg2))
 static PyObject *_wrap_wxImage_LoadFile(PyObject *self, PyObject *args, PyObject *kwargs) {
     PyObject * _resultobj;
     bool  _result;
     wxImage * _arg0;
     wxString * _arg1;
-    long  _arg2 = (long ) wxBITMAP_TYPE_PNG;
+    long  _arg2 = (long ) wxBITMAP_TYPE_ANY;
+    int  _arg3 = (int ) -1;
     PyObject * _argo0 = 0;
     PyObject * _obj1 = 0;
-    char *_kwnames[] = { "self","name","type", NULL };
+    char *_kwnames[] = { "self","name","type","index", NULL };
 
     self = self;
-    if(!PyArg_ParseTupleAndKeywords(args,kwargs,"OO|l:wxImage_LoadFile",_kwnames,&_argo0,&_obj1,&_arg2)) 
+    if(!PyArg_ParseTupleAndKeywords(args,kwargs,"OO|li:wxImage_LoadFile",_kwnames,&_argo0,&_obj1,&_arg2,&_arg3)) 
         return NULL;
     if (_argo0) {
         if (_argo0 == Py_None) { _arg0 = NULL; }
@@ -1213,28 +1767,16 @@ static PyObject *_wrap_wxImage_LoadFile(PyObject *self, PyObject *args, PyObject
         }
     }
 {
-#if PYTHON_API_VERSION >= 1009
-    char* tmpPtr; int tmpSize;
-    if (!PyString_Check(_obj1) && !PyUnicode_Check(_obj1)) {
-        PyErr_SetString(PyExc_TypeError, "String or Unicode type required");
+    _arg1 = wxString_in_helper(_obj1);
+    if (_arg1 == NULL)
         return NULL;
-    }
-    if (PyString_AsStringAndSize(_obj1, &tmpPtr, &tmpSize) == -1)
-        return NULL;
-    _arg1 = new wxString(tmpPtr, tmpSize);
-#else
-    if (!PyString_Check(_obj1)) {
-        PyErr_SetString(PyExc_TypeError, wxStringErrorMsg);
-        return NULL;
-    }
-    _arg1 = new wxString(PyString_AS_STRING(_obj1), PyString_GET_SIZE(_obj1));
-#endif
 }
 {
-    wxPy_BEGIN_ALLOW_THREADS;
-        _result = (bool )wxImage_LoadFile(_arg0,*_arg1,_arg2);
+    PyThreadState* __tstate = wxPyBeginAllowThreads();
+    _result = (bool )wxImage_LoadFile(_arg0,*_arg1,_arg2,_arg3);
 
-    wxPy_END_ALLOW_THREADS;
+    wxPyEndAllowThreads(__tstate);
+    if (PyErr_Occurred()) return NULL;
 }    _resultobj = Py_BuildValue("i",_result);
 {
     if (_obj1)
@@ -1243,20 +1785,21 @@ static PyObject *_wrap_wxImage_LoadFile(PyObject *self, PyObject *args, PyObject
     return _resultobj;
 }
 
-#define wxImage_LoadMimeFile(_swigobj,_swigarg0,_swigarg1)  (_swigobj->LoadFile(_swigarg0,_swigarg1))
+#define wxImage_LoadMimeFile(_swigobj,_swigarg0,_swigarg1,_swigarg2)  (_swigobj->LoadFile(_swigarg0,_swigarg1,_swigarg2))
 static PyObject *_wrap_wxImage_LoadMimeFile(PyObject *self, PyObject *args, PyObject *kwargs) {
     PyObject * _resultobj;
     bool  _result;
     wxImage * _arg0;
     wxString * _arg1;
     wxString * _arg2;
+    int  _arg3 = (int ) -1;
     PyObject * _argo0 = 0;
     PyObject * _obj1 = 0;
     PyObject * _obj2 = 0;
-    char *_kwnames[] = { "self","name","mimetype", NULL };
+    char *_kwnames[] = { "self","name","mimetype","index", NULL };
 
     self = self;
-    if(!PyArg_ParseTupleAndKeywords(args,kwargs,"OOO:wxImage_LoadMimeFile",_kwnames,&_argo0,&_obj1,&_obj2)) 
+    if(!PyArg_ParseTupleAndKeywords(args,kwargs,"OOO|i:wxImage_LoadMimeFile",_kwnames,&_argo0,&_obj1,&_obj2,&_arg3)) 
         return NULL;
     if (_argo0) {
         if (_argo0 == Py_None) { _arg0 = NULL; }
@@ -1266,46 +1809,21 @@ static PyObject *_wrap_wxImage_LoadMimeFile(PyObject *self, PyObject *args, PyOb
         }
     }
 {
-#if PYTHON_API_VERSION >= 1009
-    char* tmpPtr; int tmpSize;
-    if (!PyString_Check(_obj1) && !PyUnicode_Check(_obj1)) {
-        PyErr_SetString(PyExc_TypeError, "String or Unicode type required");
+    _arg1 = wxString_in_helper(_obj1);
+    if (_arg1 == NULL)
         return NULL;
-    }
-    if (PyString_AsStringAndSize(_obj1, &tmpPtr, &tmpSize) == -1)
-        return NULL;
-    _arg1 = new wxString(tmpPtr, tmpSize);
-#else
-    if (!PyString_Check(_obj1)) {
-        PyErr_SetString(PyExc_TypeError, wxStringErrorMsg);
-        return NULL;
-    }
-    _arg1 = new wxString(PyString_AS_STRING(_obj1), PyString_GET_SIZE(_obj1));
-#endif
 }
 {
-#if PYTHON_API_VERSION >= 1009
-    char* tmpPtr; int tmpSize;
-    if (!PyString_Check(_obj2) && !PyUnicode_Check(_obj2)) {
-        PyErr_SetString(PyExc_TypeError, "String or Unicode type required");
+    _arg2 = wxString_in_helper(_obj2);
+    if (_arg2 == NULL)
         return NULL;
-    }
-    if (PyString_AsStringAndSize(_obj2, &tmpPtr, &tmpSize) == -1)
-        return NULL;
-    _arg2 = new wxString(tmpPtr, tmpSize);
-#else
-    if (!PyString_Check(_obj2)) {
-        PyErr_SetString(PyExc_TypeError, wxStringErrorMsg);
-        return NULL;
-    }
-    _arg2 = new wxString(PyString_AS_STRING(_obj2), PyString_GET_SIZE(_obj2));
-#endif
 }
 {
-    wxPy_BEGIN_ALLOW_THREADS;
-        _result = (bool )wxImage_LoadMimeFile(_arg0,*_arg1,*_arg2);
+    PyThreadState* __tstate = wxPyBeginAllowThreads();
+    _result = (bool )wxImage_LoadMimeFile(_arg0,*_arg1,*_arg2,_arg3);
 
-    wxPy_END_ALLOW_THREADS;
+    wxPyEndAllowThreads(__tstate);
+    if (PyErr_Occurred()) return NULL;
 }    _resultobj = Py_BuildValue("i",_result);
 {
     if (_obj1)
@@ -1340,28 +1858,16 @@ static PyObject *_wrap_wxImage_SaveFile(PyObject *self, PyObject *args, PyObject
         }
     }
 {
-#if PYTHON_API_VERSION >= 1009
-    char* tmpPtr; int tmpSize;
-    if (!PyString_Check(_obj1) && !PyUnicode_Check(_obj1)) {
-        PyErr_SetString(PyExc_TypeError, "String or Unicode type required");
+    _arg1 = wxString_in_helper(_obj1);
+    if (_arg1 == NULL)
         return NULL;
-    }
-    if (PyString_AsStringAndSize(_obj1, &tmpPtr, &tmpSize) == -1)
-        return NULL;
-    _arg1 = new wxString(tmpPtr, tmpSize);
-#else
-    if (!PyString_Check(_obj1)) {
-        PyErr_SetString(PyExc_TypeError, wxStringErrorMsg);
-        return NULL;
-    }
-    _arg1 = new wxString(PyString_AS_STRING(_obj1), PyString_GET_SIZE(_obj1));
-#endif
 }
 {
-    wxPy_BEGIN_ALLOW_THREADS;
-        _result = (bool )wxImage_SaveFile(_arg0,*_arg1,_arg2);
+    PyThreadState* __tstate = wxPyBeginAllowThreads();
+    _result = (bool )wxImage_SaveFile(_arg0,*_arg1,_arg2);
 
-    wxPy_END_ALLOW_THREADS;
+    wxPyEndAllowThreads(__tstate);
+    if (PyErr_Occurred()) return NULL;
 }    _resultobj = Py_BuildValue("i",_result);
 {
     if (_obj1)
@@ -1393,49 +1899,175 @@ static PyObject *_wrap_wxImage_SaveMimeFile(PyObject *self, PyObject *args, PyOb
         }
     }
 {
-#if PYTHON_API_VERSION >= 1009
-    char* tmpPtr; int tmpSize;
-    if (!PyString_Check(_obj1) && !PyUnicode_Check(_obj1)) {
-        PyErr_SetString(PyExc_TypeError, "String or Unicode type required");
+    _arg1 = wxString_in_helper(_obj1);
+    if (_arg1 == NULL)
         return NULL;
-    }
-    if (PyString_AsStringAndSize(_obj1, &tmpPtr, &tmpSize) == -1)
-        return NULL;
-    _arg1 = new wxString(tmpPtr, tmpSize);
-#else
-    if (!PyString_Check(_obj1)) {
-        PyErr_SetString(PyExc_TypeError, wxStringErrorMsg);
-        return NULL;
-    }
-    _arg1 = new wxString(PyString_AS_STRING(_obj1), PyString_GET_SIZE(_obj1));
-#endif
 }
 {
-#if PYTHON_API_VERSION >= 1009
-    char* tmpPtr; int tmpSize;
-    if (!PyString_Check(_obj2) && !PyUnicode_Check(_obj2)) {
-        PyErr_SetString(PyExc_TypeError, "String or Unicode type required");
+    _arg2 = wxString_in_helper(_obj2);
+    if (_arg2 == NULL)
         return NULL;
-    }
-    if (PyString_AsStringAndSize(_obj2, &tmpPtr, &tmpSize) == -1)
-        return NULL;
-    _arg2 = new wxString(tmpPtr, tmpSize);
-#else
-    if (!PyString_Check(_obj2)) {
-        PyErr_SetString(PyExc_TypeError, wxStringErrorMsg);
-        return NULL;
-    }
-    _arg2 = new wxString(PyString_AS_STRING(_obj2), PyString_GET_SIZE(_obj2));
-#endif
 }
 {
-    wxPy_BEGIN_ALLOW_THREADS;
-        _result = (bool )wxImage_SaveMimeFile(_arg0,*_arg1,*_arg2);
+    PyThreadState* __tstate = wxPyBeginAllowThreads();
+    _result = (bool )wxImage_SaveMimeFile(_arg0,*_arg1,*_arg2);
 
-    wxPy_END_ALLOW_THREADS;
+    wxPyEndAllowThreads(__tstate);
+    if (PyErr_Occurred()) return NULL;
 }    _resultobj = Py_BuildValue("i",_result);
 {
     if (_obj1)
+        delete _arg1;
+}
+{
+    if (_obj2)
+        delete _arg2;
+}
+    return _resultobj;
+}
+
+static PyObject *_wrap_wxImage_CanReadStream(PyObject *self, PyObject *args, PyObject *kwargs) {
+    PyObject * _resultobj;
+    bool  _result;
+    wxInputStream * _arg0;
+    wxPyInputStream * temp;
+    bool  created;
+    PyObject * _obj0 = 0;
+    char *_kwnames[] = { "stream", NULL };
+
+    self = self;
+    if(!PyArg_ParseTupleAndKeywords(args,kwargs,"O:wxImage_CanReadStream",_kwnames,&_obj0)) 
+        return NULL;
+{
+    if (SWIG_GetPtrObj(_obj0, (void **) &temp, "_wxPyInputStream_p") == 0) {
+        _arg0 = temp->m_wxis;
+        created = FALSE;
+    } else {
+        _arg0 = wxPyCBInputStream_create(_obj0, FALSE);
+        if (_arg0 == NULL) {
+            PyErr_SetString(PyExc_TypeError,"Expected _wxInputStream_p or Python file-like object.");
+            return NULL;
+        }
+        created = TRUE;
+    }
+}
+{
+    PyThreadState* __tstate = wxPyBeginAllowThreads();
+    _result = (bool )wxImage::CanRead(*_arg0);
+
+    wxPyEndAllowThreads(__tstate);
+    if (PyErr_Occurred()) return NULL;
+}    _resultobj = Py_BuildValue("i",_result);
+{
+    if (created)
+        delete _arg0;
+}
+    return _resultobj;
+}
+
+#define wxImage_LoadStream(_swigobj,_swigarg0,_swigarg1,_swigarg2)  (_swigobj->LoadFile(_swigarg0,_swigarg1,_swigarg2))
+static PyObject *_wrap_wxImage_LoadStream(PyObject *self, PyObject *args, PyObject *kwargs) {
+    PyObject * _resultobj;
+    bool  _result;
+    wxImage * _arg0;
+    wxInputStream * _arg1;
+    long  _arg2 = (long ) wxBITMAP_TYPE_ANY;
+    int  _arg3 = (int ) -1;
+    PyObject * _argo0 = 0;
+    wxPyInputStream * temp;
+    bool  created;
+    PyObject * _obj1 = 0;
+    char *_kwnames[] = { "self","stream","type","index", NULL };
+
+    self = self;
+    if(!PyArg_ParseTupleAndKeywords(args,kwargs,"OO|li:wxImage_LoadStream",_kwnames,&_argo0,&_obj1,&_arg2,&_arg3)) 
+        return NULL;
+    if (_argo0) {
+        if (_argo0 == Py_None) { _arg0 = NULL; }
+        else if (SWIG_GetPtrObj(_argo0,(void **) &_arg0,"_wxImage_p")) {
+            PyErr_SetString(PyExc_TypeError,"Type error in argument 1 of wxImage_LoadStream. Expected _wxImage_p.");
+        return NULL;
+        }
+    }
+{
+    if (SWIG_GetPtrObj(_obj1, (void **) &temp, "_wxPyInputStream_p") == 0) {
+        _arg1 = temp->m_wxis;
+        created = FALSE;
+    } else {
+        _arg1 = wxPyCBInputStream_create(_obj1, FALSE);
+        if (_arg1 == NULL) {
+            PyErr_SetString(PyExc_TypeError,"Expected _wxInputStream_p or Python file-like object.");
+            return NULL;
+        }
+        created = TRUE;
+    }
+}
+{
+    PyThreadState* __tstate = wxPyBeginAllowThreads();
+    _result = (bool )wxImage_LoadStream(_arg0,*_arg1,_arg2,_arg3);
+
+    wxPyEndAllowThreads(__tstate);
+    if (PyErr_Occurred()) return NULL;
+}    _resultobj = Py_BuildValue("i",_result);
+{
+    if (created)
+        delete _arg1;
+}
+    return _resultobj;
+}
+
+#define wxImage_LoadMimeStream(_swigobj,_swigarg0,_swigarg1,_swigarg2)  (_swigobj->LoadFile(_swigarg0,_swigarg1,_swigarg2))
+static PyObject *_wrap_wxImage_LoadMimeStream(PyObject *self, PyObject *args, PyObject *kwargs) {
+    PyObject * _resultobj;
+    bool  _result;
+    wxImage * _arg0;
+    wxInputStream * _arg1;
+    wxString * _arg2;
+    int  _arg3 = (int ) -1;
+    PyObject * _argo0 = 0;
+    wxPyInputStream * temp;
+    bool  created;
+    PyObject * _obj1 = 0;
+    PyObject * _obj2 = 0;
+    char *_kwnames[] = { "self","stream","mimetype","index", NULL };
+
+    self = self;
+    if(!PyArg_ParseTupleAndKeywords(args,kwargs,"OOO|i:wxImage_LoadMimeStream",_kwnames,&_argo0,&_obj1,&_obj2,&_arg3)) 
+        return NULL;
+    if (_argo0) {
+        if (_argo0 == Py_None) { _arg0 = NULL; }
+        else if (SWIG_GetPtrObj(_argo0,(void **) &_arg0,"_wxImage_p")) {
+            PyErr_SetString(PyExc_TypeError,"Type error in argument 1 of wxImage_LoadMimeStream. Expected _wxImage_p.");
+        return NULL;
+        }
+    }
+{
+    if (SWIG_GetPtrObj(_obj1, (void **) &temp, "_wxPyInputStream_p") == 0) {
+        _arg1 = temp->m_wxis;
+        created = FALSE;
+    } else {
+        _arg1 = wxPyCBInputStream_create(_obj1, FALSE);
+        if (_arg1 == NULL) {
+            PyErr_SetString(PyExc_TypeError,"Expected _wxInputStream_p or Python file-like object.");
+            return NULL;
+        }
+        created = TRUE;
+    }
+}
+{
+    _arg2 = wxString_in_helper(_obj2);
+    if (_arg2 == NULL)
+        return NULL;
+}
+{
+    PyThreadState* __tstate = wxPyBeginAllowThreads();
+    _result = (bool )wxImage_LoadMimeStream(_arg0,*_arg1,*_arg2,_arg3);
+
+    wxPyEndAllowThreads(__tstate);
+    if (PyErr_Occurred()) return NULL;
+}    _resultobj = Py_BuildValue("i",_result);
+{
+    if (created)
         delete _arg1;
 }
 {
@@ -1464,10 +2096,11 @@ static PyObject *_wrap_wxImage_Ok(PyObject *self, PyObject *args, PyObject *kwar
         }
     }
 {
-    wxPy_BEGIN_ALLOW_THREADS;
-        _result = (bool )wxImage_Ok(_arg0);
+    PyThreadState* __tstate = wxPyBeginAllowThreads();
+    _result = (bool )wxImage_Ok(_arg0);
 
-    wxPy_END_ALLOW_THREADS;
+    wxPyEndAllowThreads(__tstate);
+    if (PyErr_Occurred()) return NULL;
 }    _resultobj = Py_BuildValue("i",_result);
     return _resultobj;
 }
@@ -1491,10 +2124,11 @@ static PyObject *_wrap_wxImage_GetWidth(PyObject *self, PyObject *args, PyObject
         }
     }
 {
-    wxPy_BEGIN_ALLOW_THREADS;
-        _result = (int )wxImage_GetWidth(_arg0);
+    PyThreadState* __tstate = wxPyBeginAllowThreads();
+    _result = (int )wxImage_GetWidth(_arg0);
 
-    wxPy_END_ALLOW_THREADS;
+    wxPyEndAllowThreads(__tstate);
+    if (PyErr_Occurred()) return NULL;
 }    _resultobj = Py_BuildValue("i",_result);
     return _resultobj;
 }
@@ -1518,10 +2152,11 @@ static PyObject *_wrap_wxImage_GetHeight(PyObject *self, PyObject *args, PyObjec
         }
     }
 {
-    wxPy_BEGIN_ALLOW_THREADS;
-        _result = (int )wxImage_GetHeight(_arg0);
+    PyThreadState* __tstate = wxPyBeginAllowThreads();
+    _result = (int )wxImage_GetHeight(_arg0);
 
-    wxPy_END_ALLOW_THREADS;
+    wxPyEndAllowThreads(__tstate);
+    if (PyErr_Occurred()) return NULL;
 }    _resultobj = Py_BuildValue("i",_result);
     return _resultobj;
 }
@@ -1554,10 +2189,11 @@ static PyObject *_wrap_wxImage_GetSubImage(PyObject *self, PyObject *args, PyObj
         return NULL;
 }
 {
-    wxPy_BEGIN_ALLOW_THREADS;
-        _result = new wxImage (wxImage_GetSubImage(_arg0,*_arg1));
+    PyThreadState* __tstate = wxPyBeginAllowThreads();
+    _result = new wxImage (wxImage_GetSubImage(_arg0,*_arg1));
 
-    wxPy_END_ALLOW_THREADS;
+    wxPyEndAllowThreads(__tstate);
+    if (PyErr_Occurred()) return NULL;
 }    SWIG_MakePtr(_ptemp, (void *) _result,"_wxImage_p");
     _resultobj = Py_BuildValue("s",_ptemp);
     return _resultobj;
@@ -1583,10 +2219,11 @@ static PyObject *_wrap_wxImage_Copy(PyObject *self, PyObject *args, PyObject *kw
         }
     }
 {
-    wxPy_BEGIN_ALLOW_THREADS;
-        _result = new wxImage (wxImage_Copy(_arg0));
+    PyThreadState* __tstate = wxPyBeginAllowThreads();
+    _result = new wxImage (wxImage_Copy(_arg0));
 
-    wxPy_END_ALLOW_THREADS;
+    wxPyEndAllowThreads(__tstate);
+    if (PyErr_Occurred()) return NULL;
 }    SWIG_MakePtr(_ptemp, (void *) _result,"_wxImage_p");
     _resultobj = Py_BuildValue("s",_ptemp);
     return _resultobj;
@@ -1621,12 +2258,47 @@ static PyObject *_wrap_wxImage_Paste(PyObject *self, PyObject *args, PyObject *k
         }
     }
 {
-    wxPy_BEGIN_ALLOW_THREADS;
-        wxImage_Paste(_arg0,*_arg1,_arg2,_arg3);
+    PyThreadState* __tstate = wxPyBeginAllowThreads();
+    wxImage_Paste(_arg0,*_arg1,_arg2,_arg3);
 
-    wxPy_END_ALLOW_THREADS;
+    wxPyEndAllowThreads(__tstate);
+    if (PyErr_Occurred()) return NULL;
 }    Py_INCREF(Py_None);
     _resultobj = Py_None;
+    return _resultobj;
+}
+
+static PyObject * wxImage_GetDataBuffer(wxImage *self) {
+            unsigned char* data = self->GetData();
+            int len = self->GetWidth() * self->GetHeight() * 3;
+            return PyBuffer_FromReadWriteMemory(data, len);
+        }
+static PyObject *_wrap_wxImage_GetDataBuffer(PyObject *self, PyObject *args, PyObject *kwargs) {
+    PyObject * _resultobj;
+    PyObject * _result;
+    wxImage * _arg0;
+    PyObject * _argo0 = 0;
+    char *_kwnames[] = { "self", NULL };
+
+    self = self;
+    if(!PyArg_ParseTupleAndKeywords(args,kwargs,"O:wxImage_GetDataBuffer",_kwnames,&_argo0)) 
+        return NULL;
+    if (_argo0) {
+        if (_argo0 == Py_None) { _arg0 = NULL; }
+        else if (SWIG_GetPtrObj(_argo0,(void **) &_arg0,"_wxImage_p")) {
+            PyErr_SetString(PyExc_TypeError,"Type error in argument 1 of wxImage_GetDataBuffer. Expected _wxImage_p.");
+        return NULL;
+        }
+    }
+{
+    PyThreadState* __tstate = wxPyBeginAllowThreads();
+    _result = (PyObject *)wxImage_GetDataBuffer(_arg0);
+
+    wxPyEndAllowThreads(__tstate);
+    if (PyErr_Occurred()) return NULL;
+}{
+  _resultobj = _result;
+}
     return _resultobj;
 }
 
@@ -1653,10 +2325,11 @@ static PyObject *_wrap_wxImage_GetData(PyObject *self, PyObject *args, PyObject 
         }
     }
 {
-    wxPy_BEGIN_ALLOW_THREADS;
-        _result = (PyObject *)wxImage_GetData(_arg0);
+    PyThreadState* __tstate = wxPyBeginAllowThreads();
+    _result = (PyObject *)wxImage_GetData(_arg0);
 
-    wxPy_END_ALLOW_THREADS;
+    wxPyEndAllowThreads(__tstate);
+    if (PyErr_Occurred()) return NULL;
 }{
   _resultobj = _result;
 }
@@ -1675,6 +2348,7 @@ static void  wxImage_SetData(wxImage *self,PyObject * data) {
             dataPtr = (unsigned char*) malloc(len);
             memcpy(dataPtr, PyString_AsString(data), len);
             self->SetData(dataPtr);
+            // wxImage takes ownership of dataPtr...
         }
 static PyObject *_wrap_wxImage_SetData(PyObject *self, PyObject *args, PyObject *kwargs) {
     PyObject * _resultobj;
@@ -1698,10 +2372,11 @@ static PyObject *_wrap_wxImage_SetData(PyObject *self, PyObject *args, PyObject 
   _arg1 = _obj1;
 }
 {
-    wxPy_BEGIN_ALLOW_THREADS;
-        wxImage_SetData(_arg0,_arg1);
+    PyThreadState* __tstate = wxPyBeginAllowThreads();
+    wxImage_SetData(_arg0,_arg1);
 
-    wxPy_END_ALLOW_THREADS;
+    wxPyEndAllowThreads(__tstate);
+    if (PyErr_Occurred()) return NULL;
 }    Py_INCREF(Py_None);
     _resultobj = Py_None;
     return _resultobj;
@@ -1728,10 +2403,11 @@ static PyObject *_wrap_wxImage_SetMaskColour(PyObject *self, PyObject *args, PyO
         }
     }
 {
-    wxPy_BEGIN_ALLOW_THREADS;
-        wxImage_SetMaskColour(_arg0,_arg1,_arg2,_arg3);
+    PyThreadState* __tstate = wxPyBeginAllowThreads();
+    wxImage_SetMaskColour(_arg0,_arg1,_arg2,_arg3);
 
-    wxPy_END_ALLOW_THREADS;
+    wxPyEndAllowThreads(__tstate);
+    if (PyErr_Occurred()) return NULL;
 }    Py_INCREF(Py_None);
     _resultobj = Py_None;
     return _resultobj;
@@ -1756,10 +2432,11 @@ static PyObject *_wrap_wxImage_GetMaskRed(PyObject *self, PyObject *args, PyObje
         }
     }
 {
-    wxPy_BEGIN_ALLOW_THREADS;
-        _result = (unsigned char )wxImage_GetMaskRed(_arg0);
+    PyThreadState* __tstate = wxPyBeginAllowThreads();
+    _result = (unsigned char )wxImage_GetMaskRed(_arg0);
 
-    wxPy_END_ALLOW_THREADS;
+    wxPyEndAllowThreads(__tstate);
+    if (PyErr_Occurred()) return NULL;
 }    _resultobj = Py_BuildValue("b",_result);
     return _resultobj;
 }
@@ -1783,10 +2460,11 @@ static PyObject *_wrap_wxImage_GetMaskGreen(PyObject *self, PyObject *args, PyOb
         }
     }
 {
-    wxPy_BEGIN_ALLOW_THREADS;
-        _result = (unsigned char )wxImage_GetMaskGreen(_arg0);
+    PyThreadState* __tstate = wxPyBeginAllowThreads();
+    _result = (unsigned char )wxImage_GetMaskGreen(_arg0);
 
-    wxPy_END_ALLOW_THREADS;
+    wxPyEndAllowThreads(__tstate);
+    if (PyErr_Occurred()) return NULL;
 }    _resultobj = Py_BuildValue("b",_result);
     return _resultobj;
 }
@@ -1810,10 +2488,11 @@ static PyObject *_wrap_wxImage_GetMaskBlue(PyObject *self, PyObject *args, PyObj
         }
     }
 {
-    wxPy_BEGIN_ALLOW_THREADS;
-        _result = (unsigned char )wxImage_GetMaskBlue(_arg0);
+    PyThreadState* __tstate = wxPyBeginAllowThreads();
+    _result = (unsigned char )wxImage_GetMaskBlue(_arg0);
 
-    wxPy_END_ALLOW_THREADS;
+    wxPyEndAllowThreads(__tstate);
+    if (PyErr_Occurred()) return NULL;
 }    _resultobj = Py_BuildValue("b",_result);
     return _resultobj;
 }
@@ -1839,10 +2518,11 @@ static PyObject *_wrap_wxImage_SetMask(PyObject *self, PyObject *args, PyObject 
     }
     _arg1 = (bool ) tempbool1;
 {
-    wxPy_BEGIN_ALLOW_THREADS;
-        wxImage_SetMask(_arg0,_arg1);
+    PyThreadState* __tstate = wxPyBeginAllowThreads();
+    wxImage_SetMask(_arg0,_arg1);
 
-    wxPy_END_ALLOW_THREADS;
+    wxPyEndAllowThreads(__tstate);
+    if (PyErr_Occurred()) return NULL;
 }    Py_INCREF(Py_None);
     _resultobj = Py_None;
     return _resultobj;
@@ -1867,10 +2547,11 @@ static PyObject *_wrap_wxImage_HasMask(PyObject *self, PyObject *args, PyObject 
         }
     }
 {
-    wxPy_BEGIN_ALLOW_THREADS;
-        _result = (bool )wxImage_HasMask(_arg0);
+    PyThreadState* __tstate = wxPyBeginAllowThreads();
+    _result = (bool )wxImage_HasMask(_arg0);
 
-    wxPy_END_ALLOW_THREADS;
+    wxPyEndAllowThreads(__tstate);
+    if (PyErr_Occurred()) return NULL;
 }    _resultobj = Py_BuildValue("i",_result);
     return _resultobj;
 }
@@ -1916,10 +2597,11 @@ static PyObject *_wrap_wxImage_Rotate(PyObject *self, PyObject *args, PyObject *
         return NULL;
 }
 {
-    wxPy_BEGIN_ALLOW_THREADS;
-        _result = new wxImage (wxImage_Rotate(_arg0,_arg1,*_arg2,_arg3,_arg4));
+    PyThreadState* __tstate = wxPyBeginAllowThreads();
+    _result = new wxImage (wxImage_Rotate(_arg0,_arg1,*_arg2,_arg3,_arg4));
 
-    wxPy_END_ALLOW_THREADS;
+    wxPyEndAllowThreads(__tstate);
+    if (PyErr_Occurred()) return NULL;
 }    SWIG_MakePtr(_ptemp, (void *) _result,"_wxImage_p");
     _resultobj = Py_BuildValue("s",_ptemp);
     return _resultobj;
@@ -1948,10 +2630,11 @@ static PyObject *_wrap_wxImage_Rotate90(PyObject *self, PyObject *args, PyObject
     }
     _arg1 = (bool ) tempbool1;
 {
-    wxPy_BEGIN_ALLOW_THREADS;
-        _result = new wxImage (wxImage_Rotate90(_arg0,_arg1));
+    PyThreadState* __tstate = wxPyBeginAllowThreads();
+    _result = new wxImage (wxImage_Rotate90(_arg0,_arg1));
 
-    wxPy_END_ALLOW_THREADS;
+    wxPyEndAllowThreads(__tstate);
+    if (PyErr_Occurred()) return NULL;
 }    SWIG_MakePtr(_ptemp, (void *) _result,"_wxImage_p");
     _resultobj = Py_BuildValue("s",_ptemp);
     return _resultobj;
@@ -1980,10 +2663,11 @@ static PyObject *_wrap_wxImage_Mirror(PyObject *self, PyObject *args, PyObject *
     }
     _arg1 = (bool ) tempbool1;
 {
-    wxPy_BEGIN_ALLOW_THREADS;
-        _result = new wxImage (wxImage_Mirror(_arg0,_arg1));
+    PyThreadState* __tstate = wxPyBeginAllowThreads();
+    _result = new wxImage (wxImage_Mirror(_arg0,_arg1));
 
-    wxPy_END_ALLOW_THREADS;
+    wxPyEndAllowThreads(__tstate);
+    if (PyErr_Occurred()) return NULL;
 }    SWIG_MakePtr(_ptemp, (void *) _result,"_wxImage_p");
     _resultobj = Py_BuildValue("s",_ptemp);
     return _resultobj;
@@ -2013,12 +2697,262 @@ static PyObject *_wrap_wxImage_Replace(PyObject *self, PyObject *args, PyObject 
         }
     }
 {
-    wxPy_BEGIN_ALLOW_THREADS;
-        wxImage_Replace(_arg0,_arg1,_arg2,_arg3,_arg4,_arg5,_arg6);
+    PyThreadState* __tstate = wxPyBeginAllowThreads();
+    wxImage_Replace(_arg0,_arg1,_arg2,_arg3,_arg4,_arg5,_arg6);
 
-    wxPy_END_ALLOW_THREADS;
+    wxPyEndAllowThreads(__tstate);
+    if (PyErr_Occurred()) return NULL;
 }    Py_INCREF(Py_None);
     _resultobj = Py_None;
+    return _resultobj;
+}
+
+#define wxImage_ConvertToMono(_swigobj,_swigarg0,_swigarg1,_swigarg2)  (_swigobj->ConvertToMono(_swigarg0,_swigarg1,_swigarg2))
+static PyObject *_wrap_wxImage_ConvertToMono(PyObject *self, PyObject *args, PyObject *kwargs) {
+    PyObject * _resultobj;
+    wxImage * _result;
+    wxImage * _arg0;
+    unsigned char  _arg1;
+    unsigned char  _arg2;
+    unsigned char  _arg3;
+    PyObject * _argo0 = 0;
+    char *_kwnames[] = { "self","r","g","b", NULL };
+    char _ptemp[128];
+
+    self = self;
+    if(!PyArg_ParseTupleAndKeywords(args,kwargs,"Obbb:wxImage_ConvertToMono",_kwnames,&_argo0,&_arg1,&_arg2,&_arg3)) 
+        return NULL;
+    if (_argo0) {
+        if (_argo0 == Py_None) { _arg0 = NULL; }
+        else if (SWIG_GetPtrObj(_argo0,(void **) &_arg0,"_wxImage_p")) {
+            PyErr_SetString(PyExc_TypeError,"Type error in argument 1 of wxImage_ConvertToMono. Expected _wxImage_p.");
+        return NULL;
+        }
+    }
+{
+    PyThreadState* __tstate = wxPyBeginAllowThreads();
+    _result = new wxImage (wxImage_ConvertToMono(_arg0,_arg1,_arg2,_arg3));
+
+    wxPyEndAllowThreads(__tstate);
+    if (PyErr_Occurred()) return NULL;
+}    SWIG_MakePtr(_ptemp, (void *) _result,"_wxImage_p");
+    _resultobj = Py_BuildValue("s",_ptemp);
+    return _resultobj;
+}
+
+#define wxImage_SetOption(_swigobj,_swigarg0,_swigarg1)  (_swigobj->SetOption(_swigarg0,_swigarg1))
+static PyObject *_wrap_wxImage_SetOption(PyObject *self, PyObject *args, PyObject *kwargs) {
+    PyObject * _resultobj;
+    wxImage * _arg0;
+    wxString * _arg1;
+    wxString * _arg2;
+    PyObject * _argo0 = 0;
+    PyObject * _obj1 = 0;
+    PyObject * _obj2 = 0;
+    char *_kwnames[] = { "self","name","value", NULL };
+
+    self = self;
+    if(!PyArg_ParseTupleAndKeywords(args,kwargs,"OOO:wxImage_SetOption",_kwnames,&_argo0,&_obj1,&_obj2)) 
+        return NULL;
+    if (_argo0) {
+        if (_argo0 == Py_None) { _arg0 = NULL; }
+        else if (SWIG_GetPtrObj(_argo0,(void **) &_arg0,"_wxImage_p")) {
+            PyErr_SetString(PyExc_TypeError,"Type error in argument 1 of wxImage_SetOption. Expected _wxImage_p.");
+        return NULL;
+        }
+    }
+{
+    _arg1 = wxString_in_helper(_obj1);
+    if (_arg1 == NULL)
+        return NULL;
+}
+{
+    _arg2 = wxString_in_helper(_obj2);
+    if (_arg2 == NULL)
+        return NULL;
+}
+{
+    PyThreadState* __tstate = wxPyBeginAllowThreads();
+    wxImage_SetOption(_arg0,*_arg1,*_arg2);
+
+    wxPyEndAllowThreads(__tstate);
+    if (PyErr_Occurred()) return NULL;
+}    Py_INCREF(Py_None);
+    _resultobj = Py_None;
+{
+    if (_obj1)
+        delete _arg1;
+}
+{
+    if (_obj2)
+        delete _arg2;
+}
+    return _resultobj;
+}
+
+#define wxImage_SetOptionInt(_swigobj,_swigarg0,_swigarg1)  (_swigobj->SetOption(_swigarg0,_swigarg1))
+static PyObject *_wrap_wxImage_SetOptionInt(PyObject *self, PyObject *args, PyObject *kwargs) {
+    PyObject * _resultobj;
+    wxImage * _arg0;
+    wxString * _arg1;
+    int  _arg2;
+    PyObject * _argo0 = 0;
+    PyObject * _obj1 = 0;
+    char *_kwnames[] = { "self","name","value", NULL };
+
+    self = self;
+    if(!PyArg_ParseTupleAndKeywords(args,kwargs,"OOi:wxImage_SetOptionInt",_kwnames,&_argo0,&_obj1,&_arg2)) 
+        return NULL;
+    if (_argo0) {
+        if (_argo0 == Py_None) { _arg0 = NULL; }
+        else if (SWIG_GetPtrObj(_argo0,(void **) &_arg0,"_wxImage_p")) {
+            PyErr_SetString(PyExc_TypeError,"Type error in argument 1 of wxImage_SetOptionInt. Expected _wxImage_p.");
+        return NULL;
+        }
+    }
+{
+    _arg1 = wxString_in_helper(_obj1);
+    if (_arg1 == NULL)
+        return NULL;
+}
+{
+    PyThreadState* __tstate = wxPyBeginAllowThreads();
+    wxImage_SetOptionInt(_arg0,*_arg1,_arg2);
+
+    wxPyEndAllowThreads(__tstate);
+    if (PyErr_Occurred()) return NULL;
+}    Py_INCREF(Py_None);
+    _resultobj = Py_None;
+{
+    if (_obj1)
+        delete _arg1;
+}
+    return _resultobj;
+}
+
+#define wxImage_GetOption(_swigobj,_swigarg0)  (_swigobj->GetOption(_swigarg0))
+static PyObject *_wrap_wxImage_GetOption(PyObject *self, PyObject *args, PyObject *kwargs) {
+    PyObject * _resultobj;
+    wxString * _result;
+    wxImage * _arg0;
+    wxString * _arg1;
+    PyObject * _argo0 = 0;
+    PyObject * _obj1 = 0;
+    char *_kwnames[] = { "self","name", NULL };
+
+    self = self;
+    if(!PyArg_ParseTupleAndKeywords(args,kwargs,"OO:wxImage_GetOption",_kwnames,&_argo0,&_obj1)) 
+        return NULL;
+    if (_argo0) {
+        if (_argo0 == Py_None) { _arg0 = NULL; }
+        else if (SWIG_GetPtrObj(_argo0,(void **) &_arg0,"_wxImage_p")) {
+            PyErr_SetString(PyExc_TypeError,"Type error in argument 1 of wxImage_GetOption. Expected _wxImage_p.");
+        return NULL;
+        }
+    }
+{
+    _arg1 = wxString_in_helper(_obj1);
+    if (_arg1 == NULL)
+        return NULL;
+}
+{
+    PyThreadState* __tstate = wxPyBeginAllowThreads();
+    _result = new wxString (wxImage_GetOption(_arg0,*_arg1));
+
+    wxPyEndAllowThreads(__tstate);
+    if (PyErr_Occurred()) return NULL;
+}{
+#if wxUSE_UNICODE
+    _resultobj = PyUnicode_FromUnicode(_result->c_str(), _result->Len());
+#else
+    _resultobj = PyString_FromStringAndSize(_result->c_str(), _result->Len());
+#endif
+}
+{
+    if (_obj1)
+        delete _arg1;
+}
+{
+    delete _result;
+}
+    return _resultobj;
+}
+
+#define wxImage_GetOptionInt(_swigobj,_swigarg0)  (_swigobj->GetOptionInt(_swigarg0))
+static PyObject *_wrap_wxImage_GetOptionInt(PyObject *self, PyObject *args, PyObject *kwargs) {
+    PyObject * _resultobj;
+    int  _result;
+    wxImage * _arg0;
+    wxString * _arg1;
+    PyObject * _argo0 = 0;
+    PyObject * _obj1 = 0;
+    char *_kwnames[] = { "self","name", NULL };
+
+    self = self;
+    if(!PyArg_ParseTupleAndKeywords(args,kwargs,"OO:wxImage_GetOptionInt",_kwnames,&_argo0,&_obj1)) 
+        return NULL;
+    if (_argo0) {
+        if (_argo0 == Py_None) { _arg0 = NULL; }
+        else if (SWIG_GetPtrObj(_argo0,(void **) &_arg0,"_wxImage_p")) {
+            PyErr_SetString(PyExc_TypeError,"Type error in argument 1 of wxImage_GetOptionInt. Expected _wxImage_p.");
+        return NULL;
+        }
+    }
+{
+    _arg1 = wxString_in_helper(_obj1);
+    if (_arg1 == NULL)
+        return NULL;
+}
+{
+    PyThreadState* __tstate = wxPyBeginAllowThreads();
+    _result = (int )wxImage_GetOptionInt(_arg0,*_arg1);
+
+    wxPyEndAllowThreads(__tstate);
+    if (PyErr_Occurred()) return NULL;
+}    _resultobj = Py_BuildValue("i",_result);
+{
+    if (_obj1)
+        delete _arg1;
+}
+    return _resultobj;
+}
+
+#define wxImage_HasOption(_swigobj,_swigarg0)  (_swigobj->HasOption(_swigarg0))
+static PyObject *_wrap_wxImage_HasOption(PyObject *self, PyObject *args, PyObject *kwargs) {
+    PyObject * _resultobj;
+    bool  _result;
+    wxImage * _arg0;
+    wxString * _arg1;
+    PyObject * _argo0 = 0;
+    PyObject * _obj1 = 0;
+    char *_kwnames[] = { "self","name", NULL };
+
+    self = self;
+    if(!PyArg_ParseTupleAndKeywords(args,kwargs,"OO:wxImage_HasOption",_kwnames,&_argo0,&_obj1)) 
+        return NULL;
+    if (_argo0) {
+        if (_argo0 == Py_None) { _arg0 = NULL; }
+        else if (SWIG_GetPtrObj(_argo0,(void **) &_arg0,"_wxImage_p")) {
+            PyErr_SetString(PyExc_TypeError,"Type error in argument 1 of wxImage_HasOption. Expected _wxImage_p.");
+        return NULL;
+        }
+    }
+{
+    _arg1 = wxString_in_helper(_obj1);
+    if (_arg1 == NULL)
+        return NULL;
+}
+{
+    PyThreadState* __tstate = wxPyBeginAllowThreads();
+    _result = (bool )wxImage_HasOption(_arg0,*_arg1);
+
+    wxPyEndAllowThreads(__tstate);
+    if (PyErr_Occurred()) return NULL;
+}    _resultobj = Py_BuildValue("i",_result);
+{
+    if (_obj1)
+        delete _arg1;
+}
     return _resultobj;
 }
 
@@ -2042,16 +2976,181 @@ static PyObject *_wrap_wxImage_CountColours(PyObject *self, PyObject *args, PyOb
         }
     }
 {
-    wxPy_BEGIN_ALLOW_THREADS;
-        _result = (unsigned long )wxImage_CountColours(_arg0,_arg1);
+    PyThreadState* __tstate = wxPyBeginAllowThreads();
+    _result = (unsigned long )wxImage_CountColours(_arg0,_arg1);
 
-    wxPy_END_ALLOW_THREADS;
+    wxPyEndAllowThreads(__tstate);
+    if (PyErr_Occurred()) return NULL;
 }    _resultobj = Py_BuildValue("l",_result);
     return _resultobj;
 }
 
+static PyObject *_wrap_wxImage_AddHandler(PyObject *self, PyObject *args, PyObject *kwargs) {
+    PyObject * _resultobj;
+    wxImageHandler * _arg0;
+    PyObject * _argo0 = 0;
+    char *_kwnames[] = { "handler", NULL };
+
+    self = self;
+    if(!PyArg_ParseTupleAndKeywords(args,kwargs,"O:wxImage_AddHandler",_kwnames,&_argo0)) 
+        return NULL;
+    if (_argo0) {
+        if (_argo0 == Py_None) { _arg0 = NULL; }
+        else if (SWIG_GetPtrObj(_argo0,(void **) &_arg0,"_wxImageHandler_p")) {
+            PyErr_SetString(PyExc_TypeError,"Type error in argument 1 of wxImage_AddHandler. Expected _wxImageHandler_p.");
+        return NULL;
+        }
+    }
+{
+    PyThreadState* __tstate = wxPyBeginAllowThreads();
+    wxImage::AddHandler(_arg0);
+
+    wxPyEndAllowThreads(__tstate);
+    if (PyErr_Occurred()) return NULL;
+}    Py_INCREF(Py_None);
+    _resultobj = Py_None;
+    return _resultobj;
+}
+
+static PyObject *_wrap_wxImage_InsertHandler(PyObject *self, PyObject *args, PyObject *kwargs) {
+    PyObject * _resultobj;
+    wxImageHandler * _arg0;
+    PyObject * _argo0 = 0;
+    char *_kwnames[] = { "handler", NULL };
+
+    self = self;
+    if(!PyArg_ParseTupleAndKeywords(args,kwargs,"O:wxImage_InsertHandler",_kwnames,&_argo0)) 
+        return NULL;
+    if (_argo0) {
+        if (_argo0 == Py_None) { _arg0 = NULL; }
+        else if (SWIG_GetPtrObj(_argo0,(void **) &_arg0,"_wxImageHandler_p")) {
+            PyErr_SetString(PyExc_TypeError,"Type error in argument 1 of wxImage_InsertHandler. Expected _wxImageHandler_p.");
+        return NULL;
+        }
+    }
+{
+    PyThreadState* __tstate = wxPyBeginAllowThreads();
+    wxImage::InsertHandler(_arg0);
+
+    wxPyEndAllowThreads(__tstate);
+    if (PyErr_Occurred()) return NULL;
+}    Py_INCREF(Py_None);
+    _resultobj = Py_None;
+    return _resultobj;
+}
+
+static PyObject *_wrap_wxImage_RemoveHandler(PyObject *self, PyObject *args, PyObject *kwargs) {
+    PyObject * _resultobj;
+    bool  _result;
+    wxString * _arg0;
+    PyObject * _obj0 = 0;
+    char *_kwnames[] = { "name", NULL };
+
+    self = self;
+    if(!PyArg_ParseTupleAndKeywords(args,kwargs,"O:wxImage_RemoveHandler",_kwnames,&_obj0)) 
+        return NULL;
+{
+    _arg0 = wxString_in_helper(_obj0);
+    if (_arg0 == NULL)
+        return NULL;
+}
+{
+    PyThreadState* __tstate = wxPyBeginAllowThreads();
+    _result = (bool )wxImage::RemoveHandler(*_arg0);
+
+    wxPyEndAllowThreads(__tstate);
+    if (PyErr_Occurred()) return NULL;
+}    _resultobj = Py_BuildValue("i",_result);
+{
+    if (_obj0)
+        delete _arg0;
+}
+    return _resultobj;
+}
+
+static wxBitmap  wxImage_ConvertToBitmap(wxImage *self) {
+            wxBitmap bitmap(*self);
+            return bitmap;
+        }
+static PyObject *_wrap_wxImage_ConvertToBitmap(PyObject *self, PyObject *args, PyObject *kwargs) {
+    PyObject * _resultobj;
+    wxBitmap * _result;
+    wxImage * _arg0;
+    PyObject * _argo0 = 0;
+    char *_kwnames[] = { "self", NULL };
+    char _ptemp[128];
+
+    self = self;
+    if(!PyArg_ParseTupleAndKeywords(args,kwargs,"O:wxImage_ConvertToBitmap",_kwnames,&_argo0)) 
+        return NULL;
+    if (_argo0) {
+        if (_argo0 == Py_None) { _arg0 = NULL; }
+        else if (SWIG_GetPtrObj(_argo0,(void **) &_arg0,"_wxImage_p")) {
+            PyErr_SetString(PyExc_TypeError,"Type error in argument 1 of wxImage_ConvertToBitmap. Expected _wxImage_p.");
+        return NULL;
+        }
+    }
+{
+    PyThreadState* __tstate = wxPyBeginAllowThreads();
+    _result = new wxBitmap (wxImage_ConvertToBitmap(_arg0));
+
+    wxPyEndAllowThreads(__tstate);
+    if (PyErr_Occurred()) return NULL;
+}    SWIG_MakePtr(_ptemp, (void *) _result,"_wxBitmap_p");
+    _resultobj = Py_BuildValue("s",_ptemp);
+    return _resultobj;
+}
+
+static wxBitmap  wxImage_ConvertToMonoBitmap(wxImage *self,unsigned char  red,unsigned char  green,unsigned char  blue) {
+            wxImage mono = self->ConvertToMono( red, green, blue );
+            wxBitmap bitmap( mono, 1 );
+            return bitmap;
+        }
+static PyObject *_wrap_wxImage_ConvertToMonoBitmap(PyObject *self, PyObject *args, PyObject *kwargs) {
+    PyObject * _resultobj;
+    wxBitmap * _result;
+    wxImage * _arg0;
+    unsigned char  _arg1;
+    unsigned char  _arg2;
+    unsigned char  _arg3;
+    PyObject * _argo0 = 0;
+    char *_kwnames[] = { "self","red","green","blue", NULL };
+    char _ptemp[128];
+
+    self = self;
+    if(!PyArg_ParseTupleAndKeywords(args,kwargs,"Obbb:wxImage_ConvertToMonoBitmap",_kwnames,&_argo0,&_arg1,&_arg2,&_arg3)) 
+        return NULL;
+    if (_argo0) {
+        if (_argo0 == Py_None) { _arg0 = NULL; }
+        else if (SWIG_GetPtrObj(_argo0,(void **) &_arg0,"_wxImage_p")) {
+            PyErr_SetString(PyExc_TypeError,"Type error in argument 1 of wxImage_ConvertToMonoBitmap. Expected _wxImage_p.");
+        return NULL;
+        }
+    }
+{
+    PyThreadState* __tstate = wxPyBeginAllowThreads();
+    _result = new wxBitmap (wxImage_ConvertToMonoBitmap(_arg0,_arg1,_arg2,_arg3));
+
+    wxPyEndAllowThreads(__tstate);
+    if (PyErr_Occurred()) return NULL;
+}    SWIG_MakePtr(_ptemp, (void *) _result,"_wxBitmap_p");
+    _resultobj = Py_BuildValue("s",_ptemp);
+    return _resultobj;
+}
+
 static PyMethodDef imagecMethods[] = {
+	 { "wxImage_ConvertToMonoBitmap", (PyCFunction) _wrap_wxImage_ConvertToMonoBitmap, METH_VARARGS | METH_KEYWORDS },
+	 { "wxImage_ConvertToBitmap", (PyCFunction) _wrap_wxImage_ConvertToBitmap, METH_VARARGS | METH_KEYWORDS },
+	 { "wxImage_RemoveHandler", (PyCFunction) _wrap_wxImage_RemoveHandler, METH_VARARGS | METH_KEYWORDS },
+	 { "wxImage_InsertHandler", (PyCFunction) _wrap_wxImage_InsertHandler, METH_VARARGS | METH_KEYWORDS },
+	 { "wxImage_AddHandler", (PyCFunction) _wrap_wxImage_AddHandler, METH_VARARGS | METH_KEYWORDS },
 	 { "wxImage_CountColours", (PyCFunction) _wrap_wxImage_CountColours, METH_VARARGS | METH_KEYWORDS },
+	 { "wxImage_HasOption", (PyCFunction) _wrap_wxImage_HasOption, METH_VARARGS | METH_KEYWORDS },
+	 { "wxImage_GetOptionInt", (PyCFunction) _wrap_wxImage_GetOptionInt, METH_VARARGS | METH_KEYWORDS },
+	 { "wxImage_GetOption", (PyCFunction) _wrap_wxImage_GetOption, METH_VARARGS | METH_KEYWORDS },
+	 { "wxImage_SetOptionInt", (PyCFunction) _wrap_wxImage_SetOptionInt, METH_VARARGS | METH_KEYWORDS },
+	 { "wxImage_SetOption", (PyCFunction) _wrap_wxImage_SetOption, METH_VARARGS | METH_KEYWORDS },
+	 { "wxImage_ConvertToMono", (PyCFunction) _wrap_wxImage_ConvertToMono, METH_VARARGS | METH_KEYWORDS },
 	 { "wxImage_Replace", (PyCFunction) _wrap_wxImage_Replace, METH_VARARGS | METH_KEYWORDS },
 	 { "wxImage_Mirror", (PyCFunction) _wrap_wxImage_Mirror, METH_VARARGS | METH_KEYWORDS },
 	 { "wxImage_Rotate90", (PyCFunction) _wrap_wxImage_Rotate90, METH_VARARGS | METH_KEYWORDS },
@@ -2064,16 +3163,24 @@ static PyMethodDef imagecMethods[] = {
 	 { "wxImage_SetMaskColour", (PyCFunction) _wrap_wxImage_SetMaskColour, METH_VARARGS | METH_KEYWORDS },
 	 { "wxImage_SetData", (PyCFunction) _wrap_wxImage_SetData, METH_VARARGS | METH_KEYWORDS },
 	 { "wxImage_GetData", (PyCFunction) _wrap_wxImage_GetData, METH_VARARGS | METH_KEYWORDS },
+	 { "wxImage_GetDataBuffer", (PyCFunction) _wrap_wxImage_GetDataBuffer, METH_VARARGS | METH_KEYWORDS },
 	 { "wxImage_Paste", (PyCFunction) _wrap_wxImage_Paste, METH_VARARGS | METH_KEYWORDS },
 	 { "wxImage_Copy", (PyCFunction) _wrap_wxImage_Copy, METH_VARARGS | METH_KEYWORDS },
 	 { "wxImage_GetSubImage", (PyCFunction) _wrap_wxImage_GetSubImage, METH_VARARGS | METH_KEYWORDS },
 	 { "wxImage_GetHeight", (PyCFunction) _wrap_wxImage_GetHeight, METH_VARARGS | METH_KEYWORDS },
 	 { "wxImage_GetWidth", (PyCFunction) _wrap_wxImage_GetWidth, METH_VARARGS | METH_KEYWORDS },
 	 { "wxImage_Ok", (PyCFunction) _wrap_wxImage_Ok, METH_VARARGS | METH_KEYWORDS },
+	 { "wxImage_LoadMimeStream", (PyCFunction) _wrap_wxImage_LoadMimeStream, METH_VARARGS | METH_KEYWORDS },
+	 { "wxImage_LoadStream", (PyCFunction) _wrap_wxImage_LoadStream, METH_VARARGS | METH_KEYWORDS },
+	 { "wxImage_CanReadStream", (PyCFunction) _wrap_wxImage_CanReadStream, METH_VARARGS | METH_KEYWORDS },
 	 { "wxImage_SaveMimeFile", (PyCFunction) _wrap_wxImage_SaveMimeFile, METH_VARARGS | METH_KEYWORDS },
 	 { "wxImage_SaveFile", (PyCFunction) _wrap_wxImage_SaveFile, METH_VARARGS | METH_KEYWORDS },
 	 { "wxImage_LoadMimeFile", (PyCFunction) _wrap_wxImage_LoadMimeFile, METH_VARARGS | METH_KEYWORDS },
 	 { "wxImage_LoadFile", (PyCFunction) _wrap_wxImage_LoadFile, METH_VARARGS | METH_KEYWORDS },
+	 { "wxImage_GetImageCount", (PyCFunction) _wrap_wxImage_GetImageCount, METH_VARARGS | METH_KEYWORDS },
+	 { "wxImage_CanRead", (PyCFunction) _wrap_wxImage_CanRead, METH_VARARGS | METH_KEYWORDS },
+	 { "wxImage_SetMaskFromImage", (PyCFunction) _wrap_wxImage_SetMaskFromImage, METH_VARARGS | METH_KEYWORDS },
+	 { "wxImage_FindFirstUnusedColour", (PyCFunction) _wrap_wxImage_FindFirstUnusedColour, METH_VARARGS | METH_KEYWORDS },
 	 { "wxImage_GetBlue", (PyCFunction) _wrap_wxImage_GetBlue, METH_VARARGS | METH_KEYWORDS },
 	 { "wxImage_GetGreen", (PyCFunction) _wrap_wxImage_GetGreen, METH_VARARGS | METH_KEYWORDS },
 	 { "wxImage_GetRed", (PyCFunction) _wrap_wxImage_GetRed, METH_VARARGS | METH_KEYWORDS },
@@ -2082,13 +3189,15 @@ static PyMethodDef imagecMethods[] = {
 	 { "wxImage_Scale", (PyCFunction) _wrap_wxImage_Scale, METH_VARARGS | METH_KEYWORDS },
 	 { "wxImage_Destroy", (PyCFunction) _wrap_wxImage_Destroy, METH_VARARGS | METH_KEYWORDS },
 	 { "wxImage_Create", (PyCFunction) _wrap_wxImage_Create, METH_VARARGS | METH_KEYWORDS },
-	 { "wxImage_ConvertToBitmap", (PyCFunction) _wrap_wxImage_ConvertToBitmap, METH_VARARGS | METH_KEYWORDS },
 	 { "delete_wxImage", (PyCFunction) _wrap_delete_wxImage, METH_VARARGS | METH_KEYWORDS },
 	 { "new_wxImage", (PyCFunction) _wrap_new_wxImage, METH_VARARGS | METH_KEYWORDS },
 	 { "new_wxTIFFHandler", (PyCFunction) _wrap_new_wxTIFFHandler, METH_VARARGS | METH_KEYWORDS },
 	 { "new_wxPCXHandler", (PyCFunction) _wrap_new_wxPCXHandler, METH_VARARGS | METH_KEYWORDS },
 	 { "new_wxPNMHandler", (PyCFunction) _wrap_new_wxPNMHandler, METH_VARARGS | METH_KEYWORDS },
 	 { "new_wxGIFHandler", (PyCFunction) _wrap_new_wxGIFHandler, METH_VARARGS | METH_KEYWORDS },
+	 { "new_wxANIHandler", (PyCFunction) _wrap_new_wxANIHandler, METH_VARARGS | METH_KEYWORDS },
+	 { "new_wxCURHandler", (PyCFunction) _wrap_new_wxCURHandler, METH_VARARGS | METH_KEYWORDS },
+	 { "new_wxICOHandler", (PyCFunction) _wrap_new_wxICOHandler, METH_VARARGS | METH_KEYWORDS },
 	 { "new_wxBMPHandler", (PyCFunction) _wrap_new_wxBMPHandler, METH_VARARGS | METH_KEYWORDS },
 	 { "new_wxJPEGHandler", (PyCFunction) _wrap_new_wxJPEGHandler, METH_VARARGS | METH_KEYWORDS },
 	 { "new_wxPNGHandler", (PyCFunction) _wrap_new_wxPNGHandler, METH_VARARGS | METH_KEYWORDS },
@@ -2096,16 +3205,19 @@ static PyMethodDef imagecMethods[] = {
 	 { "wxImageHandler_SetType", (PyCFunction) _wrap_wxImageHandler_SetType, METH_VARARGS | METH_KEYWORDS },
 	 { "wxImageHandler_SetExtension", (PyCFunction) _wrap_wxImageHandler_SetExtension, METH_VARARGS | METH_KEYWORDS },
 	 { "wxImageHandler_SetName", (PyCFunction) _wrap_wxImageHandler_SetName, METH_VARARGS | METH_KEYWORDS },
+	 { "wxImageHandler_CanRead", (PyCFunction) _wrap_wxImageHandler_CanRead, METH_VARARGS | METH_KEYWORDS },
 	 { "wxImageHandler_GetMimeType", (PyCFunction) _wrap_wxImageHandler_GetMimeType, METH_VARARGS | METH_KEYWORDS },
 	 { "wxImageHandler_GetType", (PyCFunction) _wrap_wxImageHandler_GetType, METH_VARARGS | METH_KEYWORDS },
 	 { "wxImageHandler_GetExtension", (PyCFunction) _wrap_wxImageHandler_GetExtension, METH_VARARGS | METH_KEYWORDS },
 	 { "wxImageHandler_GetName", (PyCFunction) _wrap_wxImageHandler_GetName, METH_VARARGS | METH_KEYWORDS },
+	 { "wxBitmapFromImage", (PyCFunction) _wrap_wxBitmapFromImage, METH_VARARGS | METH_KEYWORDS },
 	 { "wxInitAllImageHandlers", (PyCFunction) _wrap_wxInitAllImageHandlers, METH_VARARGS | METH_KEYWORDS },
-	 { "wxImage_AddHandler", (PyCFunction) _wrap_wxImage_AddHandler, METH_VARARGS | METH_KEYWORDS },
+	 { "wxImageFromStreamMime", (PyCFunction) _wrap_wxImageFromStreamMime, METH_VARARGS | METH_KEYWORDS },
+	 { "wxImageFromStream", (PyCFunction) _wrap_wxImageFromStream, METH_VARARGS | METH_KEYWORDS },
+	 { "wxImageFromData", (PyCFunction) _wrap_wxImageFromData, METH_VARARGS | METH_KEYWORDS },
 	 { "wxImageFromBitmap", (PyCFunction) _wrap_wxImageFromBitmap, METH_VARARGS | METH_KEYWORDS },
 	 { "wxImageFromMime", (PyCFunction) _wrap_wxImageFromMime, METH_VARARGS | METH_KEYWORDS },
 	 { "wxEmptyImage", (PyCFunction) _wrap_wxEmptyImage, METH_VARARGS | METH_KEYWORDS },
-	 { "wxNullImage", (PyCFunction) _wrap_wxNullImage, METH_VARARGS | METH_KEYWORDS },
 	 { NULL, NULL }
 };
 #ifdef __cplusplus
@@ -2116,6 +3228,11 @@ static PyMethodDef imagecMethods[] = {
  */
 static struct { char *n1; char *n2; void *(*pcnv)(void *); } _swig_mapping[] = {
     { "_signed_long","_long",0},
+    { "_wxBMPHandler","_wxANIHandler",SwigwxANIHandlerTowxBMPHandler},
+    { "_wxBMPHandler","_wxCURHandler",SwigwxCURHandlerTowxBMPHandler},
+    { "_wxBMPHandler","_wxICOHandler",SwigwxICOHandlerTowxBMPHandler},
+    { "_wxICOHandler","_wxANIHandler",SwigwxANIHandlerTowxICOHandler},
+    { "_wxICOHandler","_wxCURHandler",SwigwxCURHandlerTowxICOHandler},
     { "_wxPrintQuality","_wxCoord",0},
     { "_wxPrintQuality","_int",0},
     { "_wxPrintQuality","_signed_int",0},
@@ -2125,19 +3242,15 @@ static struct { char *n1; char *n2; void *(*pcnv)(void *); } _swig_mapping[] = {
     { "_wxPrintQuality","_EBool",0},
     { "_wxPrintQuality","_size_t",0},
     { "_wxPrintQuality","_time_t",0},
-    { "_wxImageHandler","_class_wxTIFFHandler",SwigwxTIFFHandlerTowxImageHandler},
     { "_wxImageHandler","_wxTIFFHandler",SwigwxTIFFHandlerTowxImageHandler},
-    { "_wxImageHandler","_class_wxPCXHandler",SwigwxPCXHandlerTowxImageHandler},
     { "_wxImageHandler","_wxPCXHandler",SwigwxPCXHandlerTowxImageHandler},
-    { "_wxImageHandler","_class_wxPNMHandler",SwigwxPNMHandlerTowxImageHandler},
     { "_wxImageHandler","_wxPNMHandler",SwigwxPNMHandlerTowxImageHandler},
-    { "_wxImageHandler","_class_wxGIFHandler",SwigwxGIFHandlerTowxImageHandler},
     { "_wxImageHandler","_wxGIFHandler",SwigwxGIFHandlerTowxImageHandler},
-    { "_wxImageHandler","_class_wxBMPHandler",SwigwxBMPHandlerTowxImageHandler},
+    { "_wxImageHandler","_wxANIHandler",SwigwxANIHandlerTowxImageHandler},
+    { "_wxImageHandler","_wxCURHandler",SwigwxCURHandlerTowxImageHandler},
+    { "_wxImageHandler","_wxICOHandler",SwigwxICOHandlerTowxImageHandler},
     { "_wxImageHandler","_wxBMPHandler",SwigwxBMPHandlerTowxImageHandler},
-    { "_wxImageHandler","_class_wxJPEGHandler",SwigwxJPEGHandlerTowxImageHandler},
     { "_wxImageHandler","_wxJPEGHandler",SwigwxJPEGHandlerTowxImageHandler},
-    { "_wxImageHandler","_class_wxPNGHandler",SwigwxPNGHandlerTowxImageHandler},
     { "_wxImageHandler","_wxPNGHandler",SwigwxPNGHandlerTowxImageHandler},
     { "_byte","_unsigned_char",0},
     { "_long","_unsigned_long",0},
@@ -2158,12 +3271,14 @@ static struct { char *n1; char *n2; void *(*pcnv)(void *); } _swig_mapping[] = {
     { "_uint","_wxWindowID",0},
     { "_wxChar","_char",0},
     { "_char","_wxChar",0},
+    { "_struct_wxNativeFontInfo","_wxNativeFontInfo",0},
     { "_EBool","_wxCoord",0},
     { "_EBool","_wxPrintQuality",0},
     { "_EBool","_signed_int",0},
     { "_EBool","_int",0},
     { "_EBool","_wxWindowID",0},
     { "_unsigned_long","_long",0},
+    { "_wxNativeFontInfo","_struct_wxNativeFontInfo",0},
     { "_signed_int","_wxCoord",0},
     { "_signed_int","_wxPrintQuality",0},
     { "_signed_int","_EBool",0},
@@ -2174,22 +3289,21 @@ static struct { char *n1; char *n2; void *(*pcnv)(void *); } _swig_mapping[] = {
     { "_WXTYPE","_unsigned_short",0},
     { "_unsigned_short","_WXTYPE",0},
     { "_unsigned_short","_short",0},
+    { "_wxObject","_wxImage",SwigwxImageTowxObject},
+    { "_wxObject","_wxTIFFHandler",SwigwxTIFFHandlerTowxObject},
+    { "_wxObject","_wxPCXHandler",SwigwxPCXHandlerTowxObject},
+    { "_wxObject","_wxPNMHandler",SwigwxPNMHandlerTowxObject},
+    { "_wxObject","_wxGIFHandler",SwigwxGIFHandlerTowxObject},
+    { "_wxObject","_wxANIHandler",SwigwxANIHandlerTowxObject},
+    { "_wxObject","_wxCURHandler",SwigwxCURHandlerTowxObject},
+    { "_wxObject","_wxICOHandler",SwigwxICOHandlerTowxObject},
+    { "_wxObject","_wxBMPHandler",SwigwxBMPHandlerTowxObject},
+    { "_wxObject","_wxJPEGHandler",SwigwxJPEGHandlerTowxObject},
+    { "_wxObject","_wxPNGHandler",SwigwxPNGHandlerTowxObject},
+    { "_wxObject","_wxImageHandler",SwigwxImageHandlerTowxObject},
     { "_signed_short","_WXTYPE",0},
     { "_signed_short","_short",0},
-    { "_class_wxImageHandler","_class_wxTIFFHandler",SwigwxTIFFHandlerTowxImageHandler},
-    { "_class_wxImageHandler","_wxTIFFHandler",SwigwxTIFFHandlerTowxImageHandler},
-    { "_class_wxImageHandler","_class_wxPCXHandler",SwigwxPCXHandlerTowxImageHandler},
-    { "_class_wxImageHandler","_wxPCXHandler",SwigwxPCXHandlerTowxImageHandler},
-    { "_class_wxImageHandler","_class_wxPNMHandler",SwigwxPNMHandlerTowxImageHandler},
-    { "_class_wxImageHandler","_wxPNMHandler",SwigwxPNMHandlerTowxImageHandler},
-    { "_class_wxImageHandler","_class_wxGIFHandler",SwigwxGIFHandlerTowxImageHandler},
-    { "_class_wxImageHandler","_wxGIFHandler",SwigwxGIFHandlerTowxImageHandler},
-    { "_class_wxImageHandler","_class_wxBMPHandler",SwigwxBMPHandlerTowxImageHandler},
-    { "_class_wxImageHandler","_wxBMPHandler",SwigwxBMPHandlerTowxImageHandler},
-    { "_class_wxImageHandler","_class_wxJPEGHandler",SwigwxJPEGHandlerTowxImageHandler},
-    { "_class_wxImageHandler","_wxJPEGHandler",SwigwxJPEGHandlerTowxImageHandler},
-    { "_class_wxImageHandler","_class_wxPNGHandler",SwigwxPNGHandlerTowxImageHandler},
-    { "_class_wxImageHandler","_wxPNGHandler",SwigwxPNGHandlerTowxImageHandler},
+    { "_wxCURHandler","_wxANIHandler",SwigwxANIHandlerTowxCURHandler},
     { "_unsigned_char","_byte",0},
     { "_unsigned_int","_wxCoord",0},
     { "_unsigned_int","_wxPrintQuality",0},
@@ -2246,6 +3360,8 @@ SWIGEXPORT(void) initimagec() {
 	 SWIG_globals = SWIG_newvarlink();
 	 m = Py_InitModule("imagec", imagecMethods);
 	 d = PyModule_GetDict(m);
+	 PyDict_SetItemString(d,"cvar", SWIG_globals);
+	 SWIG_addvarlink(SWIG_globals,"wxNullImage",_wrap_wxNullImage_get, _wrap_wxNullImage_set);
 {
    int i;
    for (i = 0; _swig_mapping[i].n1; i++)

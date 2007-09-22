@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by: 20.11.99 (VZ): don't derive from wxBitmap any more
 // Created:     04/01/98
-// RCS-ID:      $Id: icon.cpp,v 1.17.2.2 2000/12/17 01:38:51 vadz Exp $
+// RCS-ID:      $Id: icon.cpp,v 1.23 2002/02/06 01:42:02 VZ Exp $
 // Copyright:   (c) Julian Smart and Markus Holzem
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -35,6 +35,7 @@
     #include "wx/app.h"
     #include "wx/icon.h"
     #include "wx/bitmap.h"
+    #include "wx/log.h"
 #endif
 
 #include "wx/msw/private.h"
@@ -48,7 +49,7 @@
 // wxWin macros
 // ----------------------------------------------------------------------------
 
-IMPLEMENT_DYNAMIC_CLASS(wxIcon, wxIconBase)
+IMPLEMENT_DYNAMIC_CLASS(wxIcon, wxGDIObject)
 
 // ============================================================================
 // implementation
@@ -62,7 +63,9 @@ void wxIconRefData::Free()
 {
     if ( m_hIcon )
     {
+#ifndef __WXMICROWIN__
         ::DestroyIcon((HICON) m_hIcon);
+#endif
 
         m_hIcon = 0;
     }
@@ -93,6 +96,7 @@ wxIcon::~wxIcon()
 
 void wxIcon::CopyFromBitmap(const wxBitmap& bmp)
 {
+#ifndef __WXMICROWIN__
 #ifdef __WIN32__
     wxMask *mask = bmp.GetMask();
     if ( !mask )
@@ -107,29 +111,22 @@ void wxIcon::CopyFromBitmap(const wxBitmap& bmp)
     iconInfo.hbmMask = wxInvertMask((HBITMAP)mask->GetMaskBitmap());
     iconInfo.hbmColor = GetHbitmapOf(bmp);
 
-    /* GRG: black out the transparent area to preserve background
-     * colour, because Windows blits the original bitmap using
-     * SRCINVERT (XOR) after applying the mask to the dest rect.
-     */
-    HDC dcSrc = ::CreateCompatibleDC(NULL);
-    HDC dcDst = ::CreateCompatibleDC(NULL);
-    HGDIOBJ hSrcOld = SelectObject(dcSrc, (HBITMAP)mask->GetMaskBitmap()),
-            hDstOld = SelectObject(dcDst, iconInfo.hbmColor);
-
-    BitBlt(dcDst, 0, 0, bmp.GetWidth(), bmp.GetHeight(), dcSrc, 0, 0, SRCAND);
-
-    SelectObject(dcDst, hSrcOld);
-    SelectObject(dcSrc, hDstOld);
-    DeleteDC(dcDst);
-    DeleteDC(dcSrc);
-
-    HICON hicon = ::CreateIconIndirect(&iconInfo);
-
-    if ( !::DeleteObject(iconInfo.hbmMask) )
+    // black out the transparent area to preserve background colour, because
+    // Windows blits the original bitmap using SRCINVERT (XOR) after applying
+    // the mask to the dest rect.
     {
-        wxLogLastError(_T("DeleteObject"));
+        MemoryHDC dcSrc, dcDst;
+        SelectInHDC selectMask(dcSrc, (HBITMAP)mask->GetMaskBitmap()),
+                    selectBitmap(dcDst, iconInfo.hbmColor);
+
+        if ( !::BitBlt(dcDst, 0, 0, bmp.GetWidth(), bmp.GetHeight(),
+                       dcSrc, 0, 0, SRCAND) )
+        {
+            wxLogLastError(_T("BitBlt"));
+        }
     }
 
+    HICON hicon = ::CreateIconIndirect(&iconInfo);
     if ( !hicon )
     {
         wxLogLastError(wxT("CreateIconIndirect"));
@@ -145,6 +142,9 @@ void wxIcon::CopyFromBitmap(const wxBitmap& bmp)
         // we created the mask, now delete it
         delete mask;
     }
+
+    // delete the inverted mask bitmap we created as well
+    ::DeleteObject(iconInfo.hbmMask);
 #else // Win16
     // there are some functions in curico.cpp which probably could be used
     // here...
@@ -159,6 +159,7 @@ void wxIcon::CopyFromBitmap(const wxBitmap& bmp)
 
 //    wxFAIL_MSG("Bitmap to icon conversion (including use of XPMs for icons) not implemented");
 #endif // Win32/16
+#endif
 }
 
 void wxIcon::CreateIconFromXpm(const char **data)

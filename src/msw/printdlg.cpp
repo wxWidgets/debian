@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     04/01/98
-// RCS-ID:      $Id: printdlg.cpp,v 1.8.2.4 2000/05/19 14:03:38 VZ Exp $
+// RCS-ID:      $Id: printdlg.cpp,v 1.9 2000/07/15 19:50:37 cvsuser Exp $
 // Copyright:   (c) Julian Smart and Markus Holzem
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////

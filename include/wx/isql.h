@@ -1,7 +1,7 @@
 /*
  *  isql.h
  *
- *  $Id: isql.h,v 1.4 2000/02/10 18:32:08 DW Exp $
+ *  $Id: isql.h,v 1.5 2002/08/25 18:25:21 SN Exp $
  *
  *  iODBC defines
  *
@@ -55,7 +55,9 @@
 #define CALLBACK
 #define SQL_API				EXPORT CALLBACK
 
+#ifndef __EMX__
 typedef void *HWND;
+#endif
 #endif
 
 typedef void *SQLHWND;

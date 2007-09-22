@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     01/02/97
-// RCS-ID:      $Id: gauge95.cpp,v 1.19.2.2 2000/05/25 21:54:22 VZ Exp $
+// RCS-ID:      $Id: gauge95.cpp,v 1.24 2001/06/08 15:03:59 JS Exp $
 // Copyright:   (c) Julian Smart and Markus Holzem
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -37,7 +37,7 @@
 #include "wx/msw/gauge95.h"
 #include "wx/msw/private.h"
 
-#if defined(__WIN95__) && !(defined(__GNUWIN32_OLD__) || defined(__TWIN32__))
+#if defined(__WIN95__) && !((defined(__GNUWIN32_OLD__) || defined(__TWIN32__)) && !defined(__CYGWIN10__))
     #include <commctrl.h>
 #endif
 
@@ -89,9 +89,6 @@ bool wxGauge95::Create(wxWindow *parent, wxWindowID id,
   m_rangeMax = range;
   m_gaugePos = 0;
 
-  SetBackgroundColour(parent->GetBackgroundColour());
-  SetForegroundColour(parent->GetForegroundColour());
-
   m_windowStyle = style;
 
   if ( id == -1 )
@@ -106,6 +103,10 @@ bool wxGauge95::Create(wxWindow *parent, wxWindowID id,
 
   long msFlags = WS_CHILD | WS_VISIBLE /* | WS_CLIPSIBLINGS */;
 
+  if ( m_windowStyle & wxCLIP_SIBLINGS )
+    msFlags |= WS_CLIPSIBLINGS;
+
+
   if (m_windowStyle & wxGA_VERTICAL)
     msFlags |= PBS_VERTICAL;
 
@@ -118,6 +119,9 @@ bool wxGauge95::Create(wxWindow *parent, wxWindowID id,
                     wxGetInstance(), NULL);
 
   m_hWnd = (WXHWND)wx_button;
+
+  SetBackgroundColour(parent->GetBackgroundColour());
+  SetForegroundColour(parent->GetForegroundColour());
 
   // Subclass again for purposes of dialog editing mode
   SubclassWin((WXHWND) wx_button);
@@ -137,11 +141,11 @@ bool wxGauge95::Create(wxWindow *parent, wxWindowID id,
   return TRUE;
 }
 
-void wxGauge95::SetShadowWidth(int w)
+void wxGauge95::SetShadowWidth(int WXUNUSED(w))
 {
 }
 
-void wxGauge95::SetBezelFace(int w)
+void wxGauge95::SetBezelFace(int WXUNUSED(w))
 {
 }
 

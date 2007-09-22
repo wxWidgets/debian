@@ -26,23 +26,32 @@
 //  wxImageList
 //-----------------------------------------------------------------------------
 
-IMPLEMENT_DYNAMIC_CLASS(wxImageList, wxObject)
+IMPLEMENT_DYNAMIC_CLASS(wxGenericImageList, wxObject)
 
-wxImageList::wxImageList( int width, int height, bool mask, int initialCount )
+#if !defined(__WXMSW__) || defined(__WIN16__) || defined(__WXUNIVERSAL__)
+/*
+ * wxImageList has to be a real class or we have problems with
+ * the run-time information.
+ */
+
+IMPLEMENT_DYNAMIC_CLASS(wxImageList, wxGenericImageList)
+#endif
+
+wxGenericImageList::wxGenericImageList( int width, int height, bool mask, int initialCount )
 {
     (void)Create(width, height, mask, initialCount);
 }
 
-wxImageList::~wxImageList()
+wxGenericImageList::~wxGenericImageList()
 {
 }
 
-int wxImageList::GetImageCount() const
+int wxGenericImageList::GetImageCount() const
 {
     return m_images.Number();
 }
 
-bool wxImageList::Create( int width, int height, bool WXUNUSED(mask), int WXUNUSED(initialCount) )
+bool wxGenericImageList::Create( int width, int height, bool WXUNUSED(mask), int WXUNUSED(initialCount) )
 {
     m_width = width;
     m_height = height;
@@ -50,13 +59,13 @@ bool wxImageList::Create( int width, int height, bool WXUNUSED(mask), int WXUNUS
     return Create();
 }
 
-bool wxImageList::Create()
+bool wxGenericImageList::Create()
 {
     m_images.DeleteContents( TRUE );
     return TRUE;
 }
 
-int wxImageList::Add( const wxBitmap &bitmap )
+int wxGenericImageList::Add( const wxBitmap &bitmap )
 {
     if (bitmap.IsKindOf(CLASSINFO(wxIcon)))
         m_images.Append( new wxIcon( (const wxIcon&) bitmap ) );
@@ -65,7 +74,7 @@ int wxImageList::Add( const wxBitmap &bitmap )
     return m_images.Number()-1;
 }
 
-int wxImageList::Add( const wxBitmap& bitmap, const wxBitmap& mask )
+int wxGenericImageList::Add( const wxBitmap& bitmap, const wxBitmap& mask )
 {
     wxBitmap bmp(bitmap);
     if (mask.Ok())
@@ -73,14 +82,14 @@ int wxImageList::Add( const wxBitmap& bitmap, const wxBitmap& mask )
     return Add(bmp);
 }
 
-int wxImageList::Add( const wxBitmap& bitmap, const wxColour& maskColour )
+int wxGenericImageList::Add( const wxBitmap& bitmap, const wxColour& maskColour )
 {
-    wxImage img(bitmap);
+    wxImage img = bitmap.ConvertToImage();
     img.SetMaskColour(maskColour.Red(), maskColour.Green(), maskColour.Blue());
-    return Add(img.ConvertToBitmap());
+    return Add(wxBitmap(img));
 }
 
-const wxBitmap *wxImageList::GetBitmap( int index ) const
+const wxBitmap *wxGenericImageList::GetBitmap( int index ) const
 {
     wxNode *node = m_images.Nth( index );
 
@@ -89,7 +98,7 @@ const wxBitmap *wxImageList::GetBitmap( int index ) const
     return (wxBitmap*)node->Data();
 }
 
-bool wxImageList::Replace( int index, const wxBitmap &bitmap )
+bool wxGenericImageList::Replace( int index, const wxBitmap &bitmap )
 {
     wxNode *node = m_images.Nth( index );
 
@@ -122,7 +131,7 @@ bool wxImageList::Replace( int index, const wxBitmap &bitmap )
     return TRUE;
 }
 
-bool wxImageList::Remove( int index )
+bool wxGenericImageList::Remove( int index )
 {
     wxNode *node = m_images.Nth( index );
 
@@ -133,14 +142,14 @@ bool wxImageList::Remove( int index )
     return TRUE;
 }
 
-bool wxImageList::RemoveAll()
+bool wxGenericImageList::RemoveAll()
 {
     m_images.Clear();
 
     return TRUE;
 }
 
-bool wxImageList::GetSize( int index, int &width, int &height ) const
+bool wxGenericImageList::GetSize( int index, int &width, int &height ) const
 {
     width = 0;
     height = 0;
@@ -156,7 +165,7 @@ bool wxImageList::GetSize( int index, int &width, int &height ) const
     return TRUE;
 }
 
-bool wxImageList::Draw( int index, wxDC &dc, int x, int y,
+bool wxGenericImageList::Draw( int index, wxDC &dc, int x, int y,
                         int flags, bool WXUNUSED(solidBackground) )
 {
     wxNode *node = m_images.Nth( index );

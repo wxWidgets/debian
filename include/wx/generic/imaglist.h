@@ -11,7 +11,7 @@
 #ifndef __IMAGELISTH_G__
 #define __IMAGELISTH_G__
 
-#ifdef __GNUG__
+#if defined(__GNUG__) && !defined(__APPLE__)
 #pragma interface "imaglist.h"
 #endif
 
@@ -34,6 +34,8 @@
  * used.
  */
 
+#if !defined(wxIMAGELIST_DRAW_NORMAL)
+
 // Flags for Draw
 #define wxIMAGELIST_DRAW_NORMAL         0x0001
 #define wxIMAGELIST_DRAW_TRANSPARENT    0x0002
@@ -47,17 +49,19 @@ enum {
     wxIMAGE_LIST_STATE   // State icons: unimplemented (see WIN32 documentation)
 };
 
-class wxImageList: public wxObject
+#endif
+
+class WXDLLEXPORT wxGenericImageList: public wxObject
 {
 public:
-    wxImageList() { }
-    wxImageList( int width, int height, bool mask = TRUE, int initialCount = 1 );
-    ~wxImageList();
+    wxGenericImageList() { }
+    wxGenericImageList( int width, int height, bool mask = TRUE, int initialCount = 1 );
+    ~wxGenericImageList();
     bool Create( int width, int height, bool mask = TRUE, int initialCount = 1 );
     bool Create();
 
-    int GetImageCount() const;
-    bool GetSize( int index, int &width, int &height ) const;
+    virtual int GetImageCount() const;
+    virtual bool GetSize( int index, int &width, int &height ) const;
 
     int Add( const wxBitmap& bitmap );
     int Add( const wxBitmap& bitmap, const wxBitmap& mask );
@@ -67,7 +71,7 @@ public:
     bool Remove( int index );
     bool RemoveAll();
 
-    bool Draw(int index, wxDC& dc, int x, int y,
+    virtual bool Draw(int index, wxDC& dc, int x, int y,
               int flags = wxIMAGELIST_DRAW_NORMAL,
               bool solidBackground = FALSE);
 
@@ -77,8 +81,28 @@ private:
     int     m_width;
     int     m_height;
 
-    DECLARE_DYNAMIC_CLASS(wxImageList)
+    DECLARE_DYNAMIC_CLASS(wxGenericImageList)
 };
+
+#if !defined(__WXMSW__) || defined(__WIN16__) || defined(__WXUNIVERSAL__)
+/*
+ * wxImageList has to be a real class or we have problems with
+ * the run-time information.
+ */
+
+class WXDLLEXPORT wxImageList: public wxGenericImageList
+{
+    DECLARE_DYNAMIC_CLASS(wxImageList)
+
+public:
+    wxImageList() {}
+
+    wxImageList( int width, int height, bool mask = TRUE, int initialCount = 1 )
+        : wxGenericImageList(width, height, mask, initialCount)
+    {
+    }
+};
+#endif // !__WXMSW__ || __WIN16__ || __WXUNIVERSAL__
 
 #endif  // __IMAGELISTH_G__
 

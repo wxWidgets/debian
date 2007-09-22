@@ -4,7 +4,7 @@
 // Author:      Vadim Zeitlin
 // Modified by:
 // Created:     27.04.98
-// RCS-ID:      $Id: regconf.h,v 1.17.2.2 2001/09/17 02:54:22 RL Exp $
+// RCS-ID:      $Id: regconf.h,v 1.23 2002/03/05 00:32:46 VZ Exp $
 // Copyright:   (c) 1998 Vadim Zeitlin <zeitlin@dptmaths.ens-cachan.fr>
 // Licence:     wxWindows licence
 ///////////////////////////////////////////////////////////////////////////////
@@ -63,49 +63,14 @@ public:
   virtual size_t GetNumberOfEntries(bool bRecursive = FALSE) const;
   virtual size_t GetNumberOfGroups(bool bRecursive = FALSE) const;
 
-  // read/write
-  bool Read(const wxString& key, wxString *pStr) const;
-  bool Read(const wxString& key, wxString *pStr, const wxString& szDefault) const;
-  wxString Read(const wxString& key, const wxString& defVal) const
-      { return wxConfigBase::Read(key, defVal); }
-
-  bool Read(const wxString& key, long *plResult) const;
-  bool Read(const wxString& key, long *pl, long defVal) const
-      { return wxConfigBase::Read(key, pl, defVal); }
-  long Read(const wxString& key, long defVal) const
-      { return wxConfigBase::Read(key, defVal); }
-
-  // The following are necessary to satisfy the compiler
-  bool Read(const wxString& key, int *pi, int defVal) const
-      { return wxConfigBase::Read(key, pi, defVal); }
-  bool Read(const wxString& key, int *pi) const
-      { return wxConfigBase::Read(key, pi); }
-
-  bool Read(const wxString& key, double* val, double defVal) const
-      { return wxConfigBase::Read(key, val, defVal); }
-  bool Read(const wxString& key, double* val) const
-      { return wxConfigBase::Read(key, val); }
-
-  bool Read(const wxString& key, bool *pb, bool defVal) const
-      { return wxConfigBase::Read(key, pb, defVal); }
-  bool Read(const wxString& key, bool *pb) const
-      { return wxConfigBase::Read(key, pb); }
-
-  bool Write(const wxString& key, const wxString& szValue);
-  bool Write(const wxString& key, long lValue);
-  bool Write(const wxString& key, double dValue)
-      { return wxConfigBase::Write(key, dValue); }
-  bool Write(const wxString& key, bool bValue)
-      { return wxConfigBase::Write(key, bValue); }
-
-  virtual bool Flush(bool /* bCurrentOnly = FALSE */ ) { return TRUE; }
+  virtual bool Flush(bool WXUNUSED(bCurrentOnly) = FALSE) { return TRUE; }
 
   // rename
   virtual bool RenameEntry(const wxString& oldName, const wxString& newName);
   virtual bool RenameGroup(const wxString& oldName, const wxString& newName);
 
   // delete
-  virtual bool DeleteEntry(const wxString& key, bool bGroupIfEmptyAlso);
+  virtual bool DeleteEntry(const wxString& key, bool bGroupIfEmptyAlso = TRUE);
   virtual bool DeleteGroup(const wxString& key);
   virtual bool DeleteAll();
 
@@ -123,6 +88,13 @@ protected:
 
       return self->m_keyLocal;
   }
+
+  // implement read/write methods
+  virtual bool DoReadString(const wxString& key, wxString *pStr) const;
+  virtual bool DoReadLong(const wxString& key, long *plResult) const;
+
+  virtual bool DoWriteString(const wxString& key, const wxString& szValue);
+  virtual bool DoWriteLong(const wxString& key, long lValue);
 
 private:
   // no copy ctor/assignment operator

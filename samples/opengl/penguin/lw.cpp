@@ -16,6 +16,17 @@
  * Software Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
+// For compilers that support precompilation, includes "wx.h".
+#include "wx/wxprec.h"
+
+#ifdef __BORLANDC__
+#pragma hdrstop
+#endif
+
+#ifndef WX_PRECOMP
+#include "wx/wx.h"
+#endif
+
 #ifdef __WXMSW__
 #include <windows.h>
 #endif
@@ -25,21 +36,10 @@
 #include <stdio.h>
 #include <math.h>
 
-#define wxInt32 int
-#define wxUint32 unsigned int
-
-#ifndef FALSE
-#define FALSE 0
-#endif
-
-#ifndef TRUE
-#define TRUE 1
-#endif
-
 #define MK_ID(a,b,c,d) ((((wxUint32)(a))<<24)| \
-			(((wxUint32)(b))<<16)| \
-			(((wxUint32)(c))<< 8)| \
-			(((wxUint32)(d))    ))
+            (((wxUint32)(b))<<16)| \
+            (((wxUint32)(c))<< 8)| \
+            (((wxUint32)(d))    ))
 
 #define ID_FORM MK_ID('F','O','R','M')
 #define ID_LWOB MK_ID('L','W','O','B')
@@ -57,12 +57,23 @@ static wxInt32 read_char(FILE *f)
 
 static wxInt32 read_short(FILE *f)
 {
-  return (read_char(f)<<8) | read_char(f);
+    // the execution path was not always correct
+    // when using the direct evaluation in the return statement
+    wxInt32 first = read_char(f) ;
+    wxInt32 second = read_char(f) ;
+    
+  return (first<<8) | second ;
 }
 
 static wxInt32 read_long(FILE *f)
 {
-  return (read_char(f)<<24) | (read_char(f)<<16) | (read_char(f)<<8) | read_char(f);
+    // the execution path was not always correct
+    // when using the direct evaluation in the return statement
+    wxInt32 first = read_char(f) ;
+    wxInt32 second = read_char(f) ;
+    wxInt32 third = read_char(f) ;
+    wxInt32 fourth = read_char(f) ;
+  return (first<<24) | (second<<16) | (third<<8) | fourth ;
 }
 
 static GLfloat read_float(FILE *f)
@@ -109,9 +120,9 @@ static void read_srfs(FILE *f, int nbytes, lwObject *lwo)
     nbytes -= read_string(f,material->name);
 
     /* defaults */
-    material->r = 0.7;
-    material->g = 0.7;
-    material->b = 0.7;
+    material->r = 0.7f;
+    material->g = 0.7f;
+    material->b = 0.7f;
   }
   lwo->material = (lwMaterial*) realloc(lwo->material, sizeof(lwMaterial)*lwo->material_cnt);
 }
@@ -193,9 +204,9 @@ static void read_pols(FILE *f, int nbytes, lwObject *lwo)
       det_cnt = read_short(f);
       nbytes -= 2;
       while (det_cnt-- > 0) {
-	int cnt = read_short(f);
-	fseek(f, cnt*2+2, SEEK_CUR);
-	nbytes -= cnt*2+2;
+    int cnt = read_short(f);
+    fseek(f, cnt*2+2, SEEK_CUR);
+    nbytes -= cnt*2+2;
       }
     }
     face->material -= 1;
@@ -361,13 +372,13 @@ void lw_object_show(const lwObject *lw_object)
       prev_index_cnt = face->index_cnt;
       switch (face->index_cnt) {
       case 3:
-	glBegin(GL_TRIANGLES);
-	break;
+    glBegin(GL_TRIANGLES);
+    break;
       case 4:
-	glBegin(GL_QUADS);
-	break;
+    glBegin(GL_QUADS);
+    break;
       default:
-	glBegin(GL_POLYGON);
+    glBegin(GL_POLYGON);
       }
     }
 
@@ -375,8 +386,8 @@ void lw_object_show(const lwObject *lw_object)
     if (prev_material != face->material) {
       prev_material = face->material;
       glColor3f(lw_object->material[face->material].r,
-		lw_object->material[face->material].g,
-		lw_object->material[face->material].b);
+        lw_object->material[face->material].g,
+        lw_object->material[face->material].b);
     }
 
     /* update normal if necessary */

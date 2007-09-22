@@ -4,7 +4,7 @@
 // Author:      Vadim Zeitlin
 // Modified by:
 // Created:     23.07.99
-// RCS-ID:      $Id: numdlgg.cpp,v 1.17.2.2 2000/10/24 10:08:00 roebling Exp $
+// RCS-ID:      $Id: numdlgg.cpp,v 1.20 2001/06/26 20:59:13 VZ Exp $
 // Copyright:   (c) Vadim Zeitlin
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -27,6 +27,8 @@
 #ifdef __BORLANDC__
     #pragma hdrstop
 #endif
+
+#if wxUSE_NUMBERDLG
 
 #ifndef WX_PRECOMP
     #include <stdio.h>
@@ -205,3 +207,5 @@ long wxGetNumberFromUser(const wxString& msg,
 
     return dialog.GetValue();
 }
+
+#endif // wxUSE_NUMBERDLG

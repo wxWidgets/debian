@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     01/02/97
-// RCS-ID:      $Id: bitmap.h,v 1.20.2.1 2000/05/17 12:11:17 JS Exp $
+// RCS-ID:      $Id: bitmap.h,v 1.25 2001/09/30 22:06:38 VZ Exp $
 // Copyright:   (c) Julian Smart
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -28,6 +28,8 @@ class WXDLLEXPORT wxIcon;
 class WXDLLEXPORT wxMask;
 class WXDLLEXPORT wxCursor;
 class WXDLLEXPORT wxControl;
+class WXDLLEXPORT wxImage;
+class WXDLLEXPORT wxPalette;
 
 // ----------------------------------------------------------------------------
 // Bitmap data
@@ -46,7 +48,9 @@ public:
 
 public:
     int           m_numColors;
+#if wxUSE_PALETTE
     wxPalette     m_bitmapPalette;
+#endif // wxUSE_PALETTE
     int           m_quality;
 
     // MSW-specific
@@ -82,13 +86,19 @@ public:
     wxBitmap(char **data) { CreateFromXpm((const char **)data); }
 
     // Load a file or resource
-    wxBitmap(const wxString& name, long type = wxBITMAP_TYPE_BMP_RESOURCE);
+    wxBitmap(const wxString& name, wxBitmapType type = wxBITMAP_TYPE_BMP_RESOURCE);
 
     // New constructor for generalised creation from data
     wxBitmap(void *data, long type, int width, int height, int depth = 1);
 
     // If depth is omitted, will create a bitmap compatible with the display
     wxBitmap(int width, int height, int depth = -1);
+
+#if wxUSE_IMAGE
+    // Convert from wxImage:
+    wxBitmap(const wxImage& image, int depth = -1)
+        { (void)CreateFromImage(image, depth); }
+#endif // wxUSE_IMAGE
 
     // we must have this, otherwise icons are silently copied into bitmaps using
     // the copy ctor but the resulting bitmap is invalid!
@@ -117,9 +127,13 @@ public:
 
     virtual ~wxBitmap();
 
+#if wxUSE_IMAGE
+    wxImage ConvertToImage() const;
+#endif // wxUSE_IMAGE
+
     // get the given part of bitmap
     wxBitmap GetSubBitmap( const wxRect& rect ) const;
- 
+
     // copies the contents and mask of the given (colour) icon to the bitmap
     bool CopyFromIcon(const wxIcon& icon);
 
@@ -136,8 +150,10 @@ public:
     int GetQuality() const { return (GetBitmapData() ? GetBitmapData()->m_quality : 0); }
     void SetQuality(int q);
 
+#if wxUSE_PALETTE
     wxPalette* GetPalette() const { return (GetBitmapData() ? (& GetBitmapData()->m_bitmapPalette) : (wxPalette*) NULL); }
     void SetPalette(const wxPalette& palette);
+#endif // wxUSE_PALETTE
 
     wxMask *GetMask() const { return (GetBitmapData() ? GetBitmapData()->m_bitmapMask : (wxMask*) NULL); }
     void SetMask(wxMask *mask) ;
@@ -149,10 +165,12 @@ public:
     void SetOk(bool isOk);
 #endif // WXWIN_COMPATIBILITY_2
 
+#if wxUSE_PALETTE
 #if WXWIN_COMPATIBILITY
     wxPalette *GetColourMap() const { return GetPalette(); }
     void SetColourMap(wxPalette *cmap) { SetPalette(*cmap); };
 #endif // WXWIN_COMPATIBILITY
+#endif // wxUSE_PALETTE
 
     // Implementation
 public:
@@ -185,6 +203,11 @@ protected:
 
     // creates the bitmap from XPM data, supposed to be called from ctor
     bool CreateFromXpm(const char **bits);
+
+#if wxUSE_IMAGE
+    // creates the bitmap from wxImage, supposed to be called from ctor
+    bool CreateFromImage(const wxImage& image, int depth);
+#endif // wxUSE_IMAGE
 
 private:
 #ifdef __WIN32__

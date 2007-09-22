@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     04/01/98
-// RCS-ID:      $Id: helpbase.cpp,v 1.3 1999/12/14 23:42:34 VS Exp $
+// RCS-ID:      $Id: helpbase.cpp,v 1.10 2001/07/03 19:38:09 VZ Exp $
 // Copyright:   (c) Julian Smart and Markus Holzem
 // Licence:   	wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -24,9 +24,9 @@
 #include "wx/defs.h"
 #endif
 
-#include "wx/helpbase.h"
-
 #if wxUSE_HELP
+
+#include "wx/helpbase.h"
 
 IMPLEMENT_CLASS(wxHelpControllerBase, wxObject)
 

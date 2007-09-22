@@ -2,7 +2,7 @@
 // Name:        tooltip.h
 // Purpose:     wxToolTip class
 // Author:      Robert Roebling
-// Id:          $Id: tooltip.h,v 1.4 1999/02/01 14:39:58 VZ Exp $
+// Id:          $Id: tooltip.h,v 1.6 2002/09/07 12:28:46 GD Exp $
 // Copyright:   (c) 1998 Robert Roebling, Julian Smart and Markus Holzem
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -10,7 +10,7 @@
 #ifndef __GTKTOOLTIPH__
 #define __GTKTOOLTIPH__
 
-#ifdef __GNUG__
+#if defined(__GNUG__) && !defined(__APPLE__)
     #pragma interface
 #endif
 
@@ -51,6 +51,8 @@ public:
 private:
     wxString     m_text;
     wxWindow    *m_window;
+
+    DECLARE_ABSTRACT_CLASS(wxToolTip)
 };
 
 #endif // __GTKTOOLTIPH__

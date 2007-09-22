@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     25/01/99
-// RCS-ID:      $Id: server.cpp,v 1.4.2.2 2000/03/28 20:51:34 GRG Exp $
+// RCS-ID:      $Id: server.cpp,v 1.11 2002/09/01 14:48:16 JS Exp $
 // Copyright:   (c) Julian Smart
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -32,7 +32,7 @@
 // we're using TCP/IP or real DDE.
 #include "ddesetup.h"
 
-#if defined(__WXGTK__) || defined(__WXMOTIF__)
+#if defined(__WXGTK__) || defined(__WXX11__) || defined(__WXMOTIF__) || defined(__WXMAC__)
     #include "mondrian.xpm"
 #endif
 
@@ -57,7 +57,6 @@ END_EVENT_TABLE()
 // global variables
 // ----------------------------------------------------------------------------
 
-char ipc_buffer[4000];
 MyConnection *the_connection = NULL;
 
 // ============================================================================
@@ -74,7 +73,7 @@ bool MyApp::OnInit()
     (new MyFrame(NULL, "Server"))->Show(TRUE);
 
     // service name (DDE classes) or port number (TCP/IP based classes)
-    wxString service = "4242";
+    wxString service = IPC_SERVICE;
 
     if (argc > 1)
         service = argv[1];
@@ -99,10 +98,8 @@ int MyApp::OnExit()
 
 // Define my frame constructor
 MyFrame::MyFrame(wxFrame *frame, const wxString& title)
-       : wxFrame(frame, -1, title)
+       : wxFrame(frame, -1, title, wxDefaultPosition, wxSize(350, 250))
 {
-    panel = NULL;
-
     CreateStatusBar();
 
     // Give it an icon
@@ -111,7 +108,7 @@ MyFrame::MyFrame(wxFrame *frame, const wxString& title)
     // Make a menubar
     wxMenu *file_menu = new wxMenu;
 
-    file_menu->Append(SERVER_EXIT, "&Exit");
+    file_menu->Append(SERVER_EXIT, "&Quit\tCtrl-Q");
 
     wxMenuBar *menu_bar = new wxMenuBar;
 
@@ -120,29 +117,28 @@ MyFrame::MyFrame(wxFrame *frame, const wxString& title)
     // Associate the menu bar with the frame
     SetMenuBar(menu_bar);
 
-    // Make a panel
-    panel = new wxPanel(this);
-    wxListBox *list = new wxListBox(panel, SERVER_LISTBOX, wxPoint(5, 5));
+    // Make a listbox
+    wxListBox *list = new wxListBox(this, SERVER_LISTBOX, wxPoint(5, 5));
     list->Append("Apple");
     list->Append("Pear");
     list->Append("Orange");
     list->Append("Banana");
     list->Append("Fruit");
-
-    panel->Fit();
-    Fit();
 }
 
 // Set the client process's listbox to this item
 void MyFrame::OnListBoxClick(wxCommandEvent& WXUNUSED(event))
 {
-    wxListBox* listBox = (wxListBox*) panel->FindWindow(SERVER_LISTBOX);
+    wxListBox* listBox = (wxListBox*) FindWindow(SERVER_LISTBOX);
     if (listBox)
     {
         wxString value = listBox->GetStringSelection();
+
+        /* Because the_connection only holds one connection, in this sample only
+           one connection can receive advise messages */
         if (the_connection)
         {
-            the_connection->Advise("Item", (wxChar *)value.c_str());
+            the_connection->Advise(IPC_ADVISE_NAME, (wxChar *)value.c_str());
         }
     }
 }
@@ -167,6 +163,14 @@ IPCDialogBox::IPCDialogBox(wxWindow *parent, const wxString& title,
     Fit();
 }
 
+IPCDialogBox::~IPCDialogBox( )
+{
+    // wxWindows exit code destroys dialog before destroying the connection in
+    // OnExit, so make sure connection won't try to delete the dialog later.
+    if (m_connection)
+        m_connection->dialog = NULL;
+}
+
 void IPCDialogBox::OnQuit(wxCommandEvent& event)
 {
     m_connection->Disconnect();
@@ -179,18 +183,19 @@ void IPCDialogBox::OnQuit(wxCommandEvent& event)
 
 wxConnectionBase *MyServer::OnAcceptConnection(const wxString& topic)
 {
-    if (strcmp(topic, "STDIO") != 0 && strcmp(topic, "IPC TEST") == 0)
-        return new MyConnection(ipc_buffer, WXSIZEOF(ipc_buffer));
-    else
-        return NULL;
+    if ( topic == IPC_TOPIC )
+        return new MyConnection();
+
+    // unknown topic
+    return NULL;
 }
 
 // ----------------------------------------------------------------------------
 // MyConnection
 // ----------------------------------------------------------------------------
 
-MyConnection::MyConnection(char *buf, int size)
-            : wxConnection(buf, size)
+MyConnection::MyConnection()
+            : wxConnection()
 {
     dialog = new IPCDialogBox(wxTheApp->GetTopWindow(), "Connection",
                               wxPoint(100, 100), wxSize(500, 500), this);
@@ -202,7 +207,11 @@ MyConnection::~MyConnection()
 {
     if (the_connection)
     {
-        dialog->Destroy();
+        if (dialog)
+        {
+            dialog->m_connection = NULL;
+            dialog->Destroy();
+        }
         the_connection = NULL;
     }
 }
@@ -212,7 +221,7 @@ bool MyConnection::OnExecute(const wxString& WXUNUSED(topic),
                              int WXUNUSED(size),
                              wxIPCFormat WXUNUSED(format))
 {
-    wxLogStatus("Execute command: %s", data);
+    wxLogStatus(wxT("Execute command: %s"), data);
     return TRUE;
 }
 
@@ -222,7 +231,7 @@ bool MyConnection::OnPoke(const wxString& WXUNUSED(topic),
                           int WXUNUSED(size),
                           wxIPCFormat WXUNUSED(format))
 {
-    wxLogStatus("Poke command: %s = %s", item.c_str(), data);
+    wxLogStatus(wxT("Poke command: %s = %s"), item.c_str(), data);
     return TRUE;
 }
 

@@ -4,7 +4,7 @@
 // Author:      Vadim Zeitlin
 // Modified by:
 // Created:     19.10.99 (extracted from msw/ole/dataobj.h)
-// RCS-ID:      $Id: dataform.h,v 1.2 1999/10/21 02:06:27 VZ Exp $
+// RCS-ID:      $Id: dataform.h,v 1.3 2001/05/02 19:48:08 KLB Exp $
 // Copyright:   (c) 1998 Vadim Zeitlin <zeitlin@dptmaths.ens-cachan.fr>
 // Licence:     wxWindows licence
 ///////////////////////////////////////////////////////////////////////////////
@@ -19,7 +19,7 @@
 class WXDLLEXPORT wxDataFormat
 {
 public:
-    // the clipboard formats under Win32 are WORDs
+    // the clipboard formats under Win32 are WORD's
     typedef unsigned short NativeFormat;
 
     wxDataFormat(NativeFormat format = wxDF_INVALID) { m_format = format; }

@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     04/01/98
-// RCS-ID:      $Id: listtest.h,v 1.15.2.1 2000/06/21 09:03:53 VZ Exp $
+// RCS-ID:      $Id: listtest.h,v 1.31 2002/05/26 10:53:51 VZ Exp $
 // Copyright:   (c) Julian Smart and Markus Holzem
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -19,13 +19,24 @@ public:
 class MyListCtrl: public wxListCtrl
 {
 public:
-    MyListCtrl(wxWindow *parent, const wxWindowID id, const wxPoint& pos,
-            const wxSize& size, long style):
-        wxListCtrl(parent, id, pos, size, style)
+    MyListCtrl(wxWindow *parent,
+               const wxWindowID id,
+               const wxPoint& pos,
+               const wxSize& size,
+               long style)
+        : wxListCtrl(parent, id, pos, size, style),
+          m_attr(*wxBLUE, *wxLIGHT_GREY, wxNullFont)
         {
         }
 
+    // add one item to the listctrl in report mode
+    void InsertItemInReportView(int i);
+
     void OnColClick(wxListEvent& event);
+    void OnColRightClick(wxListEvent& event);
+    void OnColBeginDrag(wxListEvent& event);
+    void OnColDragging(wxListEvent& event);
+    void OnColEndDrag(wxListEvent& event);
     void OnBeginDrag(wxListEvent& event);
     void OnBeginRDrag(wxListEvent& event);
     void OnBeginLabelEdit(wxListEvent& event);
@@ -38,11 +49,21 @@ public:
     void OnDeselected(wxListEvent& event);
     void OnListKeyDown(wxListEvent& event);
     void OnActivated(wxListEvent& event);
+    void OnFocused(wxListEvent& event);
+    void OnCacheHint(wxListEvent& event);
 
     void OnChar(wxKeyEvent& event);
 
 private:
+    void SetColumnImage(int col, int image);
+
     void LogEvent(const wxListEvent& event, const wxChar *eventName);
+
+    virtual wxString OnGetItemText(long item, long column) const;
+    virtual int OnGetItemImage(long item) const;
+    virtual wxListItemAttr *OnGetItemAttr(long item) const;
+
+    wxListItemAttr m_attr;
 
     DECLARE_EVENT_TABLE()
 };
@@ -58,6 +79,8 @@ public:
     ~MyFrame();
 
 public:
+    void OnSize(wxSizeEvent& event);
+
     void OnQuit(wxCommandEvent& event);
     void OnAbout(wxCommandEvent& event);
     void OnListView(wxCommandEvent& event);
@@ -66,52 +89,76 @@ public:
     void OnIconTextView(wxCommandEvent& event);
     void OnSmallIconView(wxCommandEvent& event);
     void OnSmallIconTextView(wxCommandEvent& event);
+    void OnVirtualView(wxCommandEvent& event);
+
+    void OnFocusLast(wxCommandEvent& event);
     void OnToggleFirstSel(wxCommandEvent& event);
     void OnDeselectAll(wxCommandEvent& event);
     void OnSelectAll(wxCommandEvent& event);
+    void OnAdd(wxCommandEvent& event);
+    void OnEdit(wxCommandEvent& event);
+    void OnDelete(wxCommandEvent& event);
     void OnDeleteAll(wxCommandEvent& event);
     void OnSort(wxCommandEvent& event);
     void OnSetFgColour(wxCommandEvent& event);
     void OnSetBgColour(wxCommandEvent& event);
     void OnToggleMultiSel(wxCommandEvent& event);
     void OnShowColInfo(wxCommandEvent& event);
-    void OnUpdateShowColInfo(wxUpdateUIEvent& event);
+    void OnShowSelInfo(wxCommandEvent& event);
+    void OnFreeze(wxCommandEvent& event);
+    void OnThaw(wxCommandEvent& event);
 
-    void BusyOn(wxCommandEvent& event);
-    void BusyOff(wxCommandEvent& event);
+    void OnUpdateShowColInfo(wxUpdateUIEvent& event);
 
     wxImageList *m_imageListNormal;
     wxImageList *m_imageListSmall;
 
 private:
+    // recreate the list control with the new flags
+    void RecreateList(long flags, bool withText = TRUE);
+
+    // fill the control with items depending on the view
+    void InitWithListItems();
+    void InitWithReportItems();
+    void InitWithIconItems(bool withText, bool sameIcon = FALSE);
+    void InitWithVirtualItems();
+
     wxLog *m_logOld;
 
     DECLARE_EVENT_TABLE()
 };
 
 
-// ID for the menu quit command
+// IDs for the menu commands
 enum
 {
-    LIST_QUIT                   = 1,
-    LIST_LIST_VIEW              = 2,
-    LIST_ICON_VIEW              = 3,
-    LIST_ICON_TEXT_VIEW         = 4,
-    LIST_SMALL_ICON_VIEW        = 5,
-    LIST_SMALL_ICON_TEXT_VIEW   = 6,
-    LIST_REPORT_VIEW            = 7,
-    LIST_DESELECT_ALL           = 8,
-    LIST_SELECT_ALL             = 9,
-    LIST_ABOUT                  = 102,
-    BUSY_ON                     = 10,
-    BUSY_OFF                    = 11,
-    LIST_DELETE_ALL             = 12,
+    LIST_ABOUT,
+    LIST_QUIT,
+
+    LIST_LIST_VIEW,
+    LIST_ICON_VIEW,
+    LIST_ICON_TEXT_VIEW,
+    LIST_SMALL_ICON_VIEW,
+    LIST_SMALL_ICON_TEXT_VIEW,
+    LIST_REPORT_VIEW,
+    LIST_VIRTUAL_VIEW,
+
+    LIST_DESELECT_ALL,
+    LIST_SELECT_ALL,
+    LIST_DELETE_ALL,
+    LIST_DELETE,
+    LIST_ADD,
+    LIST_EDIT,
     LIST_SORT,
     LIST_SET_FG_COL,
     LIST_SET_BG_COL,
     LIST_TOGGLE_MULTI_SEL,
     LIST_TOGGLE_FIRST,
     LIST_SHOW_COL_INFO,
+    LIST_SHOW_SEL_INFO,
+    LIST_FOCUS_LAST,
+    LIST_FREEZE,
+    LIST_THAW,
 
     LIST_CTRL                   = 1000
 };

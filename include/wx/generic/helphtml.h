@@ -3,7 +3,7 @@
  *                                                                  *
  * (C) 1999 by Karsten Ballüder (Ballueder@usa.net)                 *
  *                                                                  *
- * $Id: helphtml.h,v 1.7.2.1 2000/04/18 11:13:16 JS Exp $
+ * $Id: helphtml.h,v 1.12 2002/08/31 11:29:12 GD Exp $
  *******************************************************************/
 
 #ifndef __WX_HELPHTML_H_
@@ -11,25 +11,21 @@
 
 #if wxUSE_HELP
 
-#ifdef __GNUG__
+#if defined(__GNUG__) && !defined(__APPLE__)
 #   pragma interface "helphtml.h"
 #endif
 
 #include "wx/helpbase.h"
 #include "wx/frame.h"
 
-/// Name for map file.
-#define WXEXTHELP_MAPFILE   "wxhelp.map"
 /// Path separator.
 #ifdef __WXMSW__
-#define WXEXTHELP_SEPARATOR '\\'
+#define WXEXTHELP_SEPARATOR _T('\\')
+#elif defined(__WXMAC__)
+#define WXEXTHELP_SEPARATOR _T(':')
 #else
-#define WXEXTHELP_SEPARATOR '/'
+#define WXEXTHELP_SEPARATOR _T('/')
 #endif
-/// Maximum line length in map file.
-#define WXEXTHELP_BUFLEN 512
-/// Character introducing comments/documentation field in map file.
-#define WXEXTHELP_COMMENTCHAR   ';'
 
 class WXDLLEXPORT wxExtHelpMapList;
 

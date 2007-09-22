@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     04/01/98
-// RCS-ID:      $Id: main.cpp,v 1.8 1999/12/16 21:29:53 VZ Exp $
+// RCS-ID:      $Id: main.cpp,v 1.12 2002/08/30 20:34:26 JS Exp $
 // Copyright:   (c) Julian Smart and Markus Holzem
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -32,6 +32,9 @@
 #include "wx/app.h"
 
 #include "wx/msw/private.h"
+
+// from src/msw/app.cpp
+extern void WXDLLEXPORT wxEntryCleanup();
 
 // ----------------------------------------------------------------------------
 // globals
@@ -63,7 +66,11 @@ HINSTANCE wxhInstance = 0;
 
 #if !defined(_WINDLL)
 
-#if defined(__TWIN32__) || defined(__WXWINE__)
+#if defined(__WXWINE__)
+    #define HINSTANCE HINSTANCE__*
+
+    extern "C"
+#elif defined(__TWIN32__) || defined(__WXMICROWIN__)
     #define HINSTANCE HANDLE
 
     extern "C"
@@ -95,22 +102,27 @@ BOOL WINAPI DllEntryPoint (HANDLE hModule, DWORD fdwReason, LPVOID lpReserved)
 BOOL WINAPI DllMain (HANDLE hModule, DWORD fdwReason, LPVOID lpReserved)
 #endif
 {
+#ifndef WXMAKINGDLL
     switch (fdwReason)
     {
         case DLL_PROCESS_ATTACH:
             // Only call wxEntry if the application itself is part of the DLL.
-            // If only the wxWindows library is in the DLL, then the initialisation
-            // will be called when the application implicitly calls WinMain.
-
-#if !defined(WXMAKINGDLL)
+            // If only the wxWindows library is in the DLL, then the
+            // initialisation will be called when the application implicitly
+            // calls WinMain.
             return wxEntry((WXHINSTANCE) hModule);
-#endif
-            break;
 
         case DLL_PROCESS_DETACH:
-        default:
-            break;
+           if ( wxTheApp )
+              wxTheApp->OnExit();
+           wxEntryCleanup();
+           break;
     }
+#else
+	(void)hModule;
+	(void)fdwReason;
+#endif // !WXMAKINGDLL
+	(void)lpReserved;
     return TRUE;
 }
 

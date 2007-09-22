@@ -2,7 +2,7 @@
 // Name:        htmlfilt.h
 // Purpose:     filters
 // Author:      Vaclav Slavik
-// RCS-ID:      $Id: htmlfilt.h,v 1.1 1999/10/02 18:13:41 VS Exp $
+// RCS-ID:      $Id: htmlfilt.h,v 1.4 2002/08/31 11:29:12 GD Exp $
 // Copyright:   (c) 1999 Vaclav Slavik
 // Licence:     wxWindows Licence
 /////////////////////////////////////////////////////////////////////////////
@@ -11,8 +11,8 @@
 #ifndef _WX_HTMLFILT_H_
 #define _WX_HTMLFILT_H_
 
-#ifdef __GNUG__
-#pragma interface 
+#if defined(__GNUG__) && !defined(__APPLE__)
+#pragma interface "htmlfilt.h"
 #endif
 
 #include "wx/defs.h"
@@ -34,15 +34,16 @@ class WXDLLEXPORT wxHtmlFilter : public wxObject
 {
     DECLARE_ABSTRACT_CLASS(wxHtmlFilter)
 
-    public:
-        wxHtmlFilter() : wxObject() {}
+public:
+    wxHtmlFilter() : wxObject() {}
+    virtual ~wxHtmlFilter() {}
 
-        virtual bool CanRead(const wxFSFile& file) const = 0;
-                // returns TRUE if this filter is able to open&read given file
+    // returns TRUE if this filter is able to open&read given file
+    virtual bool CanRead(const wxFSFile& file) const = 0;
 
-        virtual wxString ReadFile(const wxFSFile& file) const = 0;
-                // reads given file and returns HTML document.
-                // Returns empty string if opening failed
+    // Reads given file and returns HTML document.
+    // Returns empty string if opening failed
+    virtual wxString ReadFile(const wxFSFile& file) const = 0;
 };
 
 
@@ -59,13 +60,14 @@ class WXDLLEXPORT wxHtmlFilterPlainText : public wxHtmlFilter
 {
     DECLARE_DYNAMIC_CLASS(wxHtmlFilterPlainText)
 
-    public:
-        virtual bool CanRead(const wxFSFile& file) const;
-        virtual wxString ReadFile(const wxFSFile& file) const;
+public:
+    virtual bool CanRead(const wxFSFile& file) const;
+    virtual wxString ReadFile(const wxFSFile& file) const;
 };
 
 
 
-#endif
+#endif // wxUSE_HTML
+
 #endif // _WX_HTMLFILT_H_
 

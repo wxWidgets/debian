@@ -5,7 +5,7 @@
 // Author:      Robin Dunn
 //
 // Created:     28-Apr-1999
-// RCS-ID:      $Id: image.i,v 1.1.2.3 2001/01/30 20:53:43 robind Exp $
+// RCS-ID:      $Id: image.i,v 1.19 2002/07/20 00:14:28 RD Exp $
 // Copyright:   (c) 1998 by Total Control Software
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -15,6 +15,7 @@
 
 %{
 #include "helpers.h"
+#include "pyistream.h"
 #include <wx/image.h>
 %}
 
@@ -27,10 +28,11 @@
 %import _defs.i
 %import misc.i
 %import gdi.i
+%import streams.i
 
 //---------------------------------------------------------------------------
 
-class wxImageHandler {
+class wxImageHandler : public wxObject {
 public:
     // wxImageHandler();    Abstract Base Class
     wxString GetName();
@@ -40,6 +42,10 @@ public:
 
     //bool LoadFile(wxImage* image, wxInputStream& stream);
     //bool SaveFile(wxImage* image, wxOutputStream& stream);
+    //virtual int GetImageCount( wxInputStream& stream );
+    //bool CanRead( wxInputStream& stream );
+
+    bool CanRead( const wxString& name );
 
     void SetName(const wxString& name);
     void SetExtension(const wxString& extension);
@@ -66,6 +72,20 @@ public:
     wxBMPHandler();
 };
 
+class wxICOHandler : public wxBMPHandler {
+public:
+    wxICOHandler();
+};
+
+class wxCURHandler : public wxICOHandler {
+public:
+    wxCURHandler();
+};
+
+class wxANIHandler : public wxCURHandler {
+public:
+    wxANIHandler();
+};
 
 class wxGIFHandler : public wxImageHandler {
 public:
@@ -88,16 +108,17 @@ public:
 };
 
 
+
 //---------------------------------------------------------------------------
 
-class wxImage {
+class wxImage : public wxObject {
 public:
-    wxImage( const wxString& name, long type = wxBITMAP_TYPE_ANY );
+    wxImage( const wxString& name, long type = wxBITMAP_TYPE_ANY, int index = -1 );
     ~wxImage();
 
-    wxBitmap ConvertToBitmap();
     void Create( int width, int height );
     void Destroy();
+
     wxImage Scale( int width, int height );
     wxImage& Rescale(int width, int height);
 
@@ -106,11 +127,33 @@ public:
     unsigned char GetGreen( int x, int y );
     unsigned char GetBlue( int x, int y );
 
-    bool LoadFile( const wxString& name, long type = wxBITMAP_TYPE_PNG );
-    %name(LoadMimeFile)bool LoadFile( const wxString& name, const wxString& mimetype );
+        // find first colour that is not used in the image and has higher
+    // RGB values than <startR,startG,startB>
+    bool FindFirstUnusedColour( byte *OUTPUT, byte *OUTPUT, byte *OUTPUT,
+                                byte startR = 0, byte startG = 0, byte startB = 0 ) const;
+
+    // Set image's mask to the area of 'mask' that has <mr,mg,mb> colour
+    bool SetMaskFromImage(const wxImage & mask,
+                          byte mr, byte mg, byte mb);
+
+//      void DoFloodFill (wxCoord x, wxCoord y,
+//          const wxBrush & fillBrush,
+//          const wxColour& testColour,
+//          int style = wxFLOOD_SURFACE,
+//          int LogicalFunction = wxCOPY /* currently unused */ ) ;
+
+    static bool CanRead( const wxString& name );
+    static int GetImageCount( const wxString& name, long type = wxBITMAP_TYPE_ANY );
+
+    bool LoadFile( const wxString& name, long type = wxBITMAP_TYPE_ANY, int index = -1 );
+    %name(LoadMimeFile)bool LoadFile( const wxString& name, const wxString& mimetype, int index = -1 );
 
     bool SaveFile( const wxString& name, int type );
     %name(SaveMimeFile)bool SaveFile( const wxString& name, const wxString& mimetype );
+
+    %name(CanReadStream) static bool CanRead( wxInputStream& stream );
+    %name(LoadStream) bool LoadFile( wxInputStream& stream, long type = wxBITMAP_TYPE_ANY, int index = -1 );
+    %name(LoadMimeStream) bool LoadFile( wxInputStream& stream, const wxString& mimetype, int index = -1 );
 
     bool Ok();
     int GetWidth();
@@ -124,6 +167,12 @@ public:
     //void SetData( unsigned char *data );
 
     %addmethods {
+        PyObject* GetDataBuffer() {
+            unsigned char* data = self->GetData();
+            int len = self->GetWidth() * self->GetHeight() * 3;
+            return PyBuffer_FromReadWriteMemory(data, len);
+        }
+
         PyObject* GetData() {
             unsigned char* data = self->GetData();
             int len = self->GetWidth() * self->GetHeight() * 3;
@@ -142,6 +191,7 @@ public:
             dataPtr = (unsigned char*) malloc(len);
             memcpy(dataPtr, PyString_AsString(data), len);
             self->SetData(dataPtr);
+            // wxImage takes ownership of dataPtr...
         }
     }
 
@@ -160,43 +210,121 @@ public:
     void Replace( unsigned char r1, unsigned char g1, unsigned char b1,
                   unsigned char r2, unsigned char g2, unsigned char b2 );
 
+    // convert to monochrome image (<r,g,b> will be replaced by white, everything else by black)
+    wxImage ConvertToMono( unsigned char r, unsigned char g, unsigned char b ) const;
+
+    void SetOption(const wxString& name, const wxString& value);
+    %name(SetOptionInt)void SetOption(const wxString& name, int value);
+    wxString GetOption(const wxString& name) const;
+    int GetOptionInt(const wxString& name) const;
+    bool HasOption(const wxString& name) const;
+
     unsigned long CountColours( unsigned long stopafter = (unsigned long) -1 );
     // TODO: unsigned long ComputeHistogram( wxHashTable &h );
 
+    static void AddHandler( wxImageHandler *handler );
+    static void InsertHandler( wxImageHandler *handler );
+    static bool RemoveHandler( const wxString& name );
+
+
+    %addmethods {
+        wxBitmap ConvertToBitmap() {
+            wxBitmap bitmap(*self);
+            return bitmap;
+        }
+
+        wxBitmap ConvertToMonoBitmap( unsigned char red,
+                                      unsigned char green,
+                                      unsigned char blue ) {
+            wxImage mono = self->ConvertToMono( red, green, blue );
+            wxBitmap bitmap( mono, 1 );
+            return bitmap;
+        }
+    }
 };
 
+
 // Alternate constructors
-%new wxImage* wxNullImage();
-%new wxImage* wxEmptyImage(int width, int height);
-%new wxImage* wxImageFromMime(const wxString& name, const wxString& mimetype);
+%new wxImage* wxEmptyImage(int width=0, int height=0);
+%new wxImage* wxImageFromMime(const wxString& name, const wxString& mimetype, int index = -1);
 %new wxImage* wxImageFromBitmap(const wxBitmap &bitmap);
+%new wxImage* wxImageFromData(int width, int height, unsigned char* data);
+%new wxImage* wxImageFromStream(wxInputStream& stream, long type = wxBITMAP_TYPE_ANY, int index = -1);
+%new wxImage* wxImageFromStreamMime(wxInputStream& stream, const wxString& mimetype, int index = -1 );
+
 %{
-    wxImage* wxNullImage() {
-        return new wxImage;
+    wxImage* wxEmptyImage(int width=0, int height=0) {
+        if (width == 0 && height == 0)
+            return new wxImage;
+        else
+            return new wxImage(width, height);
     }
 
-    wxImage* wxEmptyImage(int width, int height) {
-        return new wxImage(width, height);
+
+    wxImage* wxImageFromMime(const wxString& name, const wxString& mimetype, int index) {
+        return new wxImage(name, mimetype, index);
     }
 
-    wxImage* wxImageFromMime(const wxString& name, const wxString& mimetype) {
-        return new wxImage(name, mimetype);
-    }
 
     wxImage* wxImageFromBitmap(const wxBitmap &bitmap) {
-        return new wxImage(bitmap);
+        return new wxImage(bitmap.ConvertToImage());
+    }
+
+
+    wxImage* wxImageFromData(int width, int height, unsigned char* data) {
+        // Copy the source data so the wxImage can clean it up later
+        unsigned char* copy = (unsigned char*)malloc(width*height*3);
+        if (copy == NULL) {
+            PyErr_NoMemory();
+            return NULL;
+        }
+        memcpy(copy, data, width*height*3);
+        return new wxImage(width, height, copy, FALSE);
+    }
+
+
+    wxImage* wxImageFromStream(wxInputStream& stream,
+                               long type = wxBITMAP_TYPE_ANY, int index = -1) {
+        return new wxImage(stream, type, index);
+    }
+
+
+    wxImage* wxImageFromStreamMime(wxInputStream& stream,
+                                   const wxString& mimetype, int index = -1 ) {
+        return new wxImage(stream, mimetype, index);
     }
 %}
 
-// Static Methods
-void wxImage_AddHandler(wxImageHandler *handler);
-%{
-    void wxImage_AddHandler(wxImageHandler *handler) {
-        wxImage::AddHandler(handler);
-    }
-%}
+
 
 void wxInitAllImageHandlers();
 
+
+%readonly
+%{
+#if 0
+%}
+
+extern wxImage    wxNullImage;
+
+%readwrite
+%{
+#endif
+%}
+
+
+
 //---------------------------------------------------------------------------
+// This one is here to avoid circular imports
+
+%new wxBitmap* wxBitmapFromImage(const wxImage& img, int depth=-1);
+
+%{
+    wxBitmap* wxBitmapFromImage(const wxImage& img, int depth=-1) {
+        return new wxBitmap(img, depth);
+    }
+
+%}
+
+
 //---------------------------------------------------------------------------

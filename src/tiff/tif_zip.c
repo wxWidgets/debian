@@ -1,4 +1,4 @@
-/* $Header: /home/karsten/CVSSERVER/wxcvs/wxWindows/src/tiff/tif_zip.c,v 1.1.2.2 2000/06/27 19:54:58 JS Exp $ */
+/* $Header: /home/karsten/CVSSERVER/wxcvs/wxWindows/src/tiff/tif_zip.c,v 1.2 2000/07/15 19:50:39 cvsuser Exp $ */
 
 /*
  * Copyright (c) 1995-1997 Sam Leffler

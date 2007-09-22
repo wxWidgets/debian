@@ -14,7 +14,7 @@ class CustomDataTable(wxPyGridTableBase):
         self.log = log
 
         self.colLabels = ['ID', 'Description', 'Severity', 'Priority', 'Platform',
-                          'Opened?', 'Fixed?', 'Tested?']
+                          'Opened?', 'Fixed?', 'Tested?', 'TestFloat']
 
         self.dataTypes = [wxGRID_VALUE_NUMBER,
                           wxGRID_VALUE_STRING,
@@ -23,12 +23,14 @@ class CustomDataTable(wxPyGridTableBase):
                           wxGRID_VALUE_CHOICE + ':all,MSW,GTK,other',
                           wxGRID_VALUE_BOOL,
                           wxGRID_VALUE_BOOL,
-                          wxGRID_VALUE_BOOL]
+                          wxGRID_VALUE_BOOL,
+                          wxGRID_VALUE_FLOAT + ':6,2',
+                          ]
 
         self.data = [
-            [1010, "The foo doesn't bar", "major", 1, 'MSW', 1, 1, 1],
-            [1011, "I've got a wicket in my wocket", "wish list", 2, 'other', 0, 0, 0],
-            [1012, "Rectangle() returns a triangle", "critical", 5, 'all', 0, 0, 0]
+            [1010, "The foo doesn't bar", "major", 1, 'MSW', 1, 1, 1, 1.12],
+            [1011, "I've got a wicket in my wocket", "wish list", 2, 'other', 0, 0, 0, 1.50],
+            [1012, "Rectangle() returns a triangle", "critical", 5, 'all', 0, 0, 0, 1.56]
 
             ]
 
@@ -43,7 +45,10 @@ class CustomDataTable(wxPyGridTableBase):
         return len(self.data[0])
 
     def IsEmptyCell(self, row, col):
-        return not self.data[row][col]
+        try:
+            return not self.data[row][col]
+        except IndexError:
+            return true
 
     # Get/Set values in the table.  The Python version of these
     # methods can handle any data-type, (as long as the Editor and
@@ -136,8 +141,22 @@ class CustTableGrid(wxGrid):
 class TestFrame(wxFrame):
     def __init__(self, parent, log):
         wxFrame.__init__(self, parent, -1, "Custom Table, data driven Grid  Demo", size=(640,480))
-        grid = CustTableGrid(self, log)
+        p = wxPanel(self, -1, style=0)
+        grid = CustTableGrid(p, log)
+        b = wxButton(p, -1, "Another Control...")
+        b.SetDefault()
+        EVT_BUTTON(self, b.GetId(), self.OnButton)
+        EVT_SET_FOCUS(b, self.OnButtonFocus)
+        bs = wxBoxSizer(wxVERTICAL)
+        bs.Add(grid, 1, wxGROW|wxALL, 5)
+        bs.Add(b)
+        p.SetSizer(bs)
 
+    def OnButton(self, evt):
+        print "button selected"
+
+    def OnButtonFocus(self, evt):
+        print "button focus"
 
 
 #---------------------------------------------------------------------------

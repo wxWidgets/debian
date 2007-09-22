@@ -4,9 +4,9 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     01/02/97
-// RCS-ID:      $Id: dde.h,v 1.8 2000/01/06 19:05:02 GRG Exp $
+// RCS-ID:      $Id: dde.h,v 1.10 2002/09/03 11:22:55 JS Exp $
 // Copyright:   (c) Julian Smart
-// Licence:   	wxWindows licence
+// Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
 
 #ifndef _WX_DDE_H_
@@ -49,13 +49,13 @@ class WXDLLEXPORT wxDDEConnection: public wxConnectionBase
 {
   DECLARE_DYNAMIC_CLASS(wxDDEConnection)
 public:
-  wxDDEConnection(char *buffer, int size);
-  wxDDEConnection(void);
+  wxDDEConnection(wxChar *buffer, int size); // use external buffer
+  wxDDEConnection(); // use internal buffer
   ~wxDDEConnection(void);
 
   // Calls that CLIENT can make
   virtual bool Execute(const wxChar *data, int size = -1, wxIPCFormat format = wxIPC_TEXT);
-  virtual char *Request(const wxString& item, int *size = NULL, wxIPCFormat format = wxIPC_TEXT);
+  virtual wxChar *Request(const wxString& item, int *size = NULL, wxIPCFormat format = wxIPC_TEXT);
   virtual bool Poke(const wxString& item, wxChar *data, int size = -1, wxIPCFormat format = wxIPC_TEXT);
   virtual bool StartAdvise(const wxString& item);
   virtual bool StopAdvise(const wxString& item);
@@ -70,9 +70,7 @@ public:
   virtual bool OnDisconnect(void);
 
  public:
-  char*         m_bufPtr;
   wxString      m_topicName;
-  int           m_bufSize;
   wxDDEServer*  m_server;
   wxDDEClient*  m_client;
 

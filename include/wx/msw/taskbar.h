@@ -1,13 +1,13 @@
 /////////////////////////////////////////////////////////////////////////
-// File:        taskbar.h
-// Purpose:	    Defines wxTaskBarIcon class for manipulating icons on the
+// File:        wx/msw/taskbar.h
+// Purpose:     Defines wxTaskBarIcon class for manipulating icons on the
 //              Windows task bar.
 // Author:      Julian Smart
 // Modified by:
 // Created:     24/3/98
-// RCS-ID:      $Id: taskbar.h,v 1.5 1999/01/08 16:31:09 UG Exp $
-// Copyright:   (c)
-// Licence:   	wxWindows licence
+// RCS-ID:      $Id: taskbar.h,v 1.9 2002/06/09 19:24:21 MBN Exp $
+// Copyright:   (c) Julian Smart
+// Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////
 
 #ifndef _TASKBAR_H_
@@ -76,23 +76,39 @@ protected:
 };
 
 
+// ----------------------------------------------------------------------------
+// wxTaskBarIcon events
+// ----------------------------------------------------------------------------
 
-const wxEventType wxEVT_TASKBAR_MOVE =                  wxEVT_FIRST + 1550;
-const wxEventType wxEVT_TASKBAR_LEFT_DOWN =             wxEVT_FIRST + 1551;
-const wxEventType wxEVT_TASKBAR_LEFT_UP =               wxEVT_FIRST + 1552;
-const wxEventType wxEVT_TASKBAR_RIGHT_DOWN =            wxEVT_FIRST + 1553;
-const wxEventType wxEVT_TASKBAR_RIGHT_UP =              wxEVT_FIRST + 1554;
-const wxEventType wxEVT_TASKBAR_LEFT_DCLICK =           wxEVT_FIRST + 1555;
-const wxEventType wxEVT_TASKBAR_RIGHT_DCLICK =          wxEVT_FIRST + 1556;
+class WXDLLEXPORT wxTaskBarIconEvent : public wxEvent
+{
+public:
+    wxTaskBarIconEvent(wxEventType evtType, wxTaskBarIcon *tbIcon)
+        : wxEvent(-1, evtType)
+        {
+            SetEventObject(tbIcon);
+        }
 
+    virtual wxEvent *Clone() const { return new wxTaskBarIconEvent(*this); }
+};
 
-#define EVT_TASKBAR_MOVE(fn)         { wxEVT_TASKBAR_MOVE, -1, -1, (wxObjectEventFunction) (wxEventFunction) &fn, NULL },
-#define EVT_TASKBAR_LEFT_DOWN(fn)    { wxEVT_TASKBAR_LEFT_DOWN, -1, -1, (wxObjectEventFunction) (wxEventFunction) &fn, NULL },
-#define EVT_TASKBAR_LEFT_UP(fn)      { wxEVT_TASKBAR_LEFT_UP, -1, -1, (wxObjectEventFunction) (wxEventFunction) &fn, NULL },
-#define EVT_TASKBAR_RIGHT_DOWN(fn)   { wxEVT_TASKBAR_RIGHT_DOWN, -1, -1, (wxObjectEventFunction) (wxEventFunction) &fn, NULL },
-#define EVT_TASKBAR_RIGHT_UP(fn)     { wxEVT_TASKBAR_RIGHT_UP, -1, -1, (wxObjectEventFunction) (wxEventFunction) &fn, NULL },
-#define EVT_TASKBAR_LEFT_DCLICK(fn)  { wxEVT_TASKBAR_LEFT_DCLICK, -1, -1, (wxObjectEventFunction) (wxEventFunction) &fn, NULL },
-#define EVT_TASKBAR_RIGHT_DCLICK(fn) { wxEVT_TASKBAR_RIGHT_DCLICK, -1, -1, (wxObjectEventFunction) (wxEventFunction) &fn, NULL },
+BEGIN_DECLARE_EVENT_TYPES()
+DECLARE_EVENT_TYPE( wxEVT_TASKBAR_MOVE, 1550 )
+DECLARE_EVENT_TYPE( wxEVT_TASKBAR_LEFT_DOWN, 1551 )
+DECLARE_EVENT_TYPE( wxEVT_TASKBAR_LEFT_UP, 1552 )
+DECLARE_EVENT_TYPE( wxEVT_TASKBAR_RIGHT_DOWN, 1553 )
+DECLARE_EVENT_TYPE( wxEVT_TASKBAR_RIGHT_UP, 1554 )
+DECLARE_EVENT_TYPE( wxEVT_TASKBAR_LEFT_DCLICK, 1555 )
+DECLARE_EVENT_TYPE( wxEVT_TASKBAR_RIGHT_DCLICK, 1556 )
+END_DECLARE_EVENT_TYPES()
+
+#define EVT_TASKBAR_MOVE(fn)         DECLARE_EVENT_TABLE_ENTRY(wxEVT_TASKBAR_MOVE, -1, -1, (wxObjectEventFunction) (wxEventFunction) &fn, NULL),
+#define EVT_TASKBAR_LEFT_DOWN(fn)    DECLARE_EVENT_TABLE_ENTRY(wxEVT_TASKBAR_LEFT_DOWN, -1, -1, (wxObjectEventFunction) (wxEventFunction) &fn, NULL),
+#define EVT_TASKBAR_LEFT_UP(fn)      DECLARE_EVENT_TABLE_ENTRY(wxEVT_TASKBAR_LEFT_UP, -1, -1, (wxObjectEventFunction) (wxEventFunction) &fn, NULL),
+#define EVT_TASKBAR_RIGHT_DOWN(fn)   DECLARE_EVENT_TABLE_ENTRY(wxEVT_TASKBAR_RIGHT_DOWN, -1, -1, (wxObjectEventFunction) (wxEventFunction) &fn, NULL),
+#define EVT_TASKBAR_RIGHT_UP(fn)     DECLARE_EVENT_TABLE_ENTRY(wxEVT_TASKBAR_RIGHT_UP, -1, -1, (wxObjectEventFunction) (wxEventFunction) &fn, NULL),
+#define EVT_TASKBAR_LEFT_DCLICK(fn)  DECLARE_EVENT_TABLE_ENTRY(wxEVT_TASKBAR_LEFT_DCLICK, -1, -1, (wxObjectEventFunction) (wxEventFunction) &fn, NULL),
+#define EVT_TASKBAR_RIGHT_DCLICK(fn) DECLARE_EVENT_TABLE_ENTRY(wxEVT_TASKBAR_RIGHT_DCLICK, -1, -1, (wxObjectEventFunction) (wxEventFunction) &fn, NULL),
 
 
 #endif

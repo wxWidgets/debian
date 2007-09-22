@@ -11,8 +11,73 @@ perfect because in this particular case it would be much better to just
 \helpref{Wait()}{wxthreadwait} for the worker thread, but if there are several
 worker threads it already makes much more sense).
 
-Once the thread(s) are signaled, the condition then resets to the not
-signaled state, ready to fire again.
+Note that a call to \helpref{Signal()}{wxconditionsignal} may happen before the
+other thread calls \helpref{Wait()}{wxconditionwait} and, just as with the
+pthread conditions, the signal is then lost and so if you want to be sure to
+get it you must use a mutex together with the condition variable.
+
+\wxheading{Example}
+
+This example shows how a main thread may launch a worker thread which starts
+running and then waits until the main thread signals it to continue:
+
+\begin{verbatim}
+class MySignallingThread : public wxThread
+{
+public:
+    MySignallingThread(wxMutex *mutex, wxCondition *condition)
+    {
+        m_mutex = mutex;
+        m_condition = condition;
+
+        Create();
+    }
+
+    virtual ExitCode Entry()
+    {
+        ... do our job ...
+
+        // tell the other(s) thread(s) that we're about to terminate: we must
+        // lock the mutex first or we might signal the condition before the
+        // waiting threads start waiting on it!
+        wxMutexLocker lock(m_mutex);
+        m_condition.Broadcast(); // same as Signal() here -- one waiter only
+
+        return 0;
+    }
+
+private:
+    wxCondition *m_condition;
+    wxMutex *m_mutex;
+};
+
+int main()
+{
+    wxMutex mutex;
+    wxCondition condition(mutex);
+
+    // the mutex should be initially locked
+    mutex.Lock();
+
+    // create and run the thread but notice that it won't be able to
+    // exit (and signal its exit) before we unlock the mutex below
+    MySignallingThread *thread = new MySignallingThread(&mutex, &condition);
+
+    thread->Run();
+
+    // wait for the thread termination: Wait() atomically unlocks the mutex
+    // which allows the thread to continue and starts waiting
+    condition.Wait();
+
+    // now we can exit
+    return 0;
+}
+\end{verbatim}
+
+Of course, here it would be much better to simply use a joinable thread and
+call \helpref{wxThread::Wait}{wxthreadwait} on it, but this example does
+illustrate the importance of properly locking the mutex when using
+wxCondition.
 
 \wxheading{Derived from}
 
@@ -30,37 +95,58 @@ None.
 
 \membersection{wxCondition::wxCondition}\label{wxconditionconstr}
 
-\func{}{wxCondition}{\void}
+\func{}{wxCondition}{\param{wxMutex\& }{mutex}}
 
-Default constructor.
+Default and only constructor. The {\it mutex} must be locked by the caller
+before calling \helpref{Wait}{wxconditionwait} function.
 
 \membersection{wxCondition::\destruct{wxCondition}}
 
 \func{}{\destruct{wxCondition}}{\void}
 
-Destroys the wxCondition object.
+Destroys the wxCondition object. The destructor is not virtual so this class
+should not be used polymorphically.
 
 \membersection{wxCondition::Broadcast}\label{wxconditionbroadcast}
 
 \func{void}{Broadcast}{\void}
 
-Broadcasts to all waiting objects.
+Broadcasts to all waiting threads, waking all of them up. Note that this method
+may be called whether the mutex associated with this condition is locked or
+not.
+
+\wxheading{See also}
+
+\helpref{wxCondition::Signal}{wxconditionsignal}
 
 \membersection{wxCondition::Signal}\label{wxconditionsignal}
 
 \func{void}{Signal}{\void}
 
-Signals the object.
+Signals the object waking up at most one thread. If several threads are waiting
+on the same condition, the exact thread which is woken up is undefined. If no
+threads are waiting, the signal is lost and the condition would have to be
+signalled again to wake up any thread which may start waiting on it later.
+
+Note that this method may be called whether the mutex associated with this
+condition is locked or not.
+
+\wxheading{See also}
+
+\helpref{wxCondition::Broadcast}{wxconditionbroadcast}
 
 \membersection{wxCondition::Wait}\label{wxconditionwait}
 
 \func{void}{Wait}{\void}
 
-Waits indefinitely.
+Waits until the condition is signalled.
 
 \func{bool}{Wait}{\param{unsigned long}{ sec}, \param{unsigned long}{ nsec}}
 
-Waits until a signal is raised or the timeout has elapsed.
+Waits until the condition is signalled or the timeout has elapsed.
+
+Note that the mutex associated with this condition {\bf must} be acquired by
+the thread before calling this method.
 
 \wxheading{Parameters}
 
@@ -70,5 +156,7 @@ Waits until a signal is raised or the timeout has elapsed.
 
 \wxheading{Return value}
 
-The second form returns if the signal was raised, or FALSE if there was a timeout.
+The second form returns {\tt TRUE} if the condition has been signalled, or
+{\tt FALSE} if it returned because the timeout has elapsed.
+
 

@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     28/2/2000
-// RCS-ID:      $Id: dragimag.h,v 1.1 2000/03/14 19:47:09 RL Exp $
+// RCS-ID:      $Id: dragimag.h,v 1.2 2001/07/11 10:06:54 JS Exp $
 // Copyright:   (c) Julian Smart
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -46,6 +46,7 @@ class MyApp: public wxApp
 public:
     MyApp();
     virtual bool OnInit();
+    virtual int OnExit();
 
 //// Operations
 

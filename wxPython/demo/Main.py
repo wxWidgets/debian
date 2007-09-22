@@ -6,67 +6,232 @@
 # Author:       Robin Dunn
 #
 # Created:      A long time ago, in a galaxy far, far away...
-# RCS-ID:       $Id: Main.py,v 1.1.2.17 2001/01/30 20:53:21 robind Exp $
+# RCS-ID:       $Id: Main.py,v 1.76.2.1 2002/09/19 05:13:00 RD Exp $
 # Copyright:    (c) 1999 by Total Control Software
 # Licence:      wxWindows license
 #----------------------------------------------------------------------------
 
-import sys, os
+import sys, os, time, string
 from   wxPython.wx import *
-from   wxPython.lib.splashscreen import SplashScreen
 from   wxPython.html import wxHtmlWindow
+
+##from wxPython.stc import *
+
+import images
 
 #---------------------------------------------------------------------------
 
 
 _treeList = [
-    ('New since last release', ['LayoutAnchors', "FancyText",
-                                ]),
+    # new stuff
+    ('New since last release', [
+        'RowColSizer',
+        'Unicode',
+        'wxFileHistory',
+        'wxGenericDirCtrl',
+        'wxImageFromStream',
+        'wxArtProvider',
+        'ScrolledPanel',
+        'wxMenu',
+        'wxIEHtmlWin',
+        'wxKeyEvents',
+        'wxWizard',
+        'wxXmlResourceHandler',
+        'wxTimeCtrl',
+        ]),
 
-    ('Managed Windows', ['wxFrame', 'wxDialog', 'wxMiniFrame']),
+    # managed windows == things with a caption you can close
+    ('Base Frames and Dialogs', [
+        'wxDialog',
+        'wxFrame',
+        'wxMDIWindows',
+        'wxMiniFrame',
+        'wxWizard',
+        ]),
 
-    ('Non-Managed Windows', ['wxGrid', 'wxSashWindow',
-                             'wxScrolledWindow', 'wxSplitterWindow',
-                             'wxStatusBar', 'wxNotebook',
-                             'wxHtmlWindow',
-                             'wxStyledTextCtrl_1', 'wxStyledTextCtrl_2',]),
+    # the common dialogs
+    ('Common Dialogs', [
+        'wxColourDialog',
+        'wxDirDialog',
+        'wxFileDialog',
+        'wxFindReplaceDialog',
+        'wxFontDialog',
+        'wxMessageDialog',
+        'wxPageSetupDialog',
+        'wxPrintDialog',
+        'wxProgressDialog',
+        'wxSingleChoiceDialog',
+        'wxTextEntryDialog',
+        ]),
 
-    ('Common Dialogs', ['wxColourDialog', 'wxDirDialog', 'wxFileDialog',
-                        'wxSingleChoiceDialog', 'wxTextEntryDialog',
-                        'wxFontDialog', 'wxPageSetupDialog', 'wxPrintDialog',
-                        'wxMessageDialog', 'wxProgressDialog']),
+    # dialogs from libraries
+    ('More Dialogs', [
+        'ErrorDialogs',
+        'ImageBrowser',
+        'wxMultipleChoiceDialog',
+        'wxScrolledMessageDialog',
+        ]),
 
-    ('Controls', ['wxButton', 'wxCheckBox', 'wxCheckListBox', 'wxChoice',
-                  'wxComboBox', 'wxGauge', 'wxListBox', 'wxListCtrl', 'wxTextCtrl',
-                  'wxTreeCtrl', 'wxSpinButton', 'wxSpinCtrl', 'wxStaticText',
-                  'wxStaticBitmap', 'wxRadioBox', 'wxSlider', 'wxToolBar',
-                  'wxCalendarCtrl',
-                  ]),
+    # core controls
+    ('Core Windows/Controls', [
+        'wxButton',
+        'wxCheckBox',
+        'wxCheckListBox',
+        'wxChoice',
+        'wxComboBox',
+        'wxGauge',
+        'wxGenericDirCtrl',
+        'wxGrid',
+        'wxListBox',
+        'wxListCtrl',
+        'wxListCtrl_virtual',
+        'wxMenu',
+        'wxNotebook',
+        'wxPopupWindow',
+        'wxRadioBox',
+        'wxSashWindow',
+        'wxSlider',
+        'wxScrolledWindow',
+        'wxSplitterWindow',
+        'wxSpinButton',
+        'wxSpinCtrl',
+        'wxStaticText',
+        'wxStaticBitmap',
+        'wxStatusBar',
+        'wxTextCtrl',
+        'wxToggleButton',
+        'wxToolBar',
+        'wxTreeCtrl',
+        'wxValidator',
+        ]),
 
-    ('Window Layout', ['wxLayoutConstraints', 'LayoutAnchors', 'Sizers', ]),
+    # controls coming from other librairies
+    ('More Windows/Controls', [
+        'ColourSelect',
+        'ContextHelp',
+        'FancyText',
+        'FileBrowseButton',
+        'GenericButtons',
+        'PyCrust',
+        'PyCrustWithFilling',
+        'SplitTree',
+        'TablePrint',
+        'wxCalendar',
+        'wxCalendarCtrl',
+        'wxDynamicSashWindow',
+        'wxEditableListBox',
+        'wxEditor',
+        #'wxFloatBar',          deprecated
+        'wxHtmlWindow',
+        'wxIEHtmlWin',
+        'wxLEDNumberCtrl',
+        'wxMimeTypesManager',
+        #'wxMVCTree',           deprecated
+        'wxRightTextCtrl',
+        'wxStyledTextCtrl_1',
+        'wxStyledTextCtrl_2',
+        'wxTimeCtrl',
+        ]),
 
-    ('Miscellaneous', [ 'DragAndDrop', 'CustomDragAndDrop', 'FontEnumerator',
-                        'wxTimer', 'wxValidator', 'wxGLCanvas', 'DialogUnits',
-                        'wxImage', 'wxMask', 'PrintFramework', 'wxOGL',
-                        'PythonEvents', 'Threads',
-                        'ActiveXWrapper_Acrobat', 'ActiveXWrapper_IE',
-                        'wxDragImage', "FancyText",
-                        ]),
+    # How to lay out the controls in a frame/dialog
+    ('Window Layout', [
+        'LayoutAnchors',
+        'Layoutf',
+        'RowColSizer',
+        'ScrolledPanel',
+        'Sizers',
+        'wxLayoutConstraints',
+        'wxXmlResource',
+        'wxXmlResourceHandler',
+        ]),
 
-    ('wxPython Library', ['Layoutf', 'wxScrolledMessageDialog',
-                          'wxMultipleChoiceDialog', 'wxPlotCanvas', 'wxFloatBar',
-                          'PyShell', 'wxCalendar', 'wxMVCTree', 'wxVTKRenderWindow',
-                          'FileBrowseButton', 'GenericButtons', 'wxEditor',
-                          'PyShellWindow',
-                          ]),
+    # ditto
+    ('Process and Events', [
+        'infoframe',
+        'OOR',
+        'PythonEvents',
+        'Threads',
+        'wxProcess',
+        'wxTimer',
+        'wxKeyEvents',
+        ]),
 
-    ('Cool Contribs', ['pyTree', 'hangman', 'SlashDot', 'XMLtreeview']),
+    # Clipboard and DnD
+    ('Clipboard and DnD', [
+        'CustomDragAndDrop',
+        'DragAndDrop',
+        'URLDragAndDrop',
+        ]),
 
-    ]
+    # Images
+    ('Images', [
+        'wxDragImage',
+        'wxImage',
+        'wxImageFromStream',
+        'wxMask',
+        'wxArtProvider',
+        ]),
+
+    # Other stuff
+    ('Miscellaneous', [
+        'ColourDB',
+        'DialogUnits',
+        'DrawXXXList',
+        'FontEnumerator',
+        'PrintFramework',
+        'Unicode',
+        'wxFileHistory',
+        'wxJoystick',
+        'wxOGL',
+        'wxWave',
+        ]),
+
+    # need libs not coming with the demo
+    ('Objects using an external library', [
+        'ActiveXWrapper_Acrobat',
+        'ActiveXWrapper_IE',
+        'wxGLCanvas',
+        'wxPlotCanvas',
+        ]),
+
+
+    ('Check out the samples dir too', [
+        ]),
+
+]
+
+
+
+#---------------------------------------------------------------------------
+
+class MyLog(wxPyLog):
+    def __init__(self, textCtrl, logTime=0):
+        wxPyLog.__init__(self)
+        self.tc = textCtrl
+        self.logTime = logTime
+
+    def DoLogString(self, message, timeStamp):
+        if self.logTime:
+            message = time.strftime("%X", time.localtime(timeStamp)) + \
+                      ": " + message
+        self.tc.AppendText(message + '\n')
+
+
+class MyTP(wxPyTipProvider):
+    def GetTip(self):
+        return "This is my tip"
+
+#---------------------------------------------------------------------------
+
+def opj(path):
+    """Convert paths to the platform-specific separator"""
+    return apply(os.path.join, tuple(string.split(path, '/')))
+
 
 #---------------------------------------------------------------------------
 
 class wxPythonDemo(wxFrame):
+    overviewText = "wxPython Overview"
 
     def __init__(self, parent, id, title):
         wxFrame.__init__(self, parent, -1, title, size = (800, 600),
@@ -75,10 +240,10 @@ class wxPythonDemo(wxFrame):
         self.cwd = os.getcwd()
         self.curOverview = ""
 
-        if wxPlatform == '__WXMSW__':
-            icon = wxIcon('bitmaps/mondrian.ico', wxBITMAP_TYPE_ICO)
-            self.SetIcon(icon)
+        icon = images.getMondrianIcon()
+        self.SetIcon(icon)
 
+        if wxPlatform == '__WXMSW__':
             # setup a taskbar icon, and catch some events from it
             self.tbicon = wxTaskBarIcon()
             self.tbicon.SetIcon(icon, "wxPython Demo")
@@ -89,8 +254,11 @@ class wxPythonDemo(wxFrame):
 
 
         self.otherWin = None
+        self.showTip = true
         EVT_IDLE(self, self.OnIdle)
         EVT_CLOSE(self, self.OnCloseWindow)
+        EVT_ICONIZE(self, self.OnIconfiy)
+        EVT_MAXIMIZE(self, self.OnMaximize)
 
         self.Centre(wxBOTH)
         self.CreateStatusBar(1, wxST_SIZEGRIP)
@@ -98,8 +266,11 @@ class wxPythonDemo(wxFrame):
         splitter = wxSplitterWindow(self, -1, style=wxNO_3D|wxSP_3D)
         splitter2 = wxSplitterWindow(splitter, -1, style=wxNO_3D|wxSP_3D)
 
+        def EmptyHandler(evt): pass
+        EVT_ERASE_BACKGROUND(splitter, EmptyHandler)
+        EVT_ERASE_BACKGROUND(splitter2, EmptyHandler)
 
-        # Prevent TreeCtrl from displaying all items after destruction
+        # Prevent TreeCtrl from displaying all items after destruction when true
         self.dying = false
 
         # Make a File menu
@@ -141,11 +312,11 @@ class wxPythonDemo(wxFrame):
         self.treeMap = {}
         self.tree = wxTreeCtrl(splitter, tID,
                                style=wxTR_HAS_BUTTONS |
-                               wxTR_EDIT_LABELS |
-                               wxTR_HAS_VARIABLE_ROW_HEIGHT |
-                               wxSUNKEN_BORDER)
+                               wxTR_HAS_VARIABLE_ROW_HEIGHT
+                               )
+
         #self.tree.SetBackgroundColour(wxNamedColour("Pink"))
-        root = self.tree.AddRoot("Overview")
+        root = self.tree.AddRoot("wxPython Overview")
         firstChild = None
         for item in _treeList:
             child = self.tree.AppendItem(root, item[0])
@@ -162,7 +333,7 @@ class wxPythonDemo(wxFrame):
         EVT_LEFT_DOWN            (self.tree,      self.OnTreeLeftDown)
 
         # Create a Notebook
-        self.nb = wxNotebook(splitter2, -1)
+        self.nb = wxNotebook(splitter2, -1, style=wxCLIP_CHILDREN)
 
         # Set up a wxHtmlWindow on the Overview Notebook page
         # we put it in a panel first because there seems to be a
@@ -170,46 +341,55 @@ class wxPythonDemo(wxFrame):
         # the notebook...
         if 0:  # the old way
             self.ovr = wxHtmlWindow(self.nb, -1, size=(400, 400))
-            self.nb.AddPage(self.ovr, "Overview")
+            self.nb.AddPage(self.ovr, self.overviewText)
 
-        else:  # hopefully I can remove this hacky code soon
-            panel = wxPanel(self.nb, -1)
+        else:  # hopefully I can remove this hacky code soon, see bug #216861
+            panel = wxPanel(self.nb, -1, style=wxCLIP_CHILDREN)
             self.ovr = wxHtmlWindow(panel, -1, size=(400, 400))
-            self.nb.AddPage(panel, "Overview")
+            self.nb.AddPage(panel, self.overviewText)
 
             def OnOvrSize(evt, ovr=self.ovr):
                 ovr.SetSize(evt.GetSize())
 
             EVT_SIZE(panel, OnOvrSize)
+            EVT_ERASE_BACKGROUND(panel, EmptyHandler)
 
-        self.SetOverview("Overview", overview)
+
+        self.SetOverview(self.overviewText, overview)
 
 
         # Set up a TextCtrl on the Demo Code Notebook page
         self.txt = wxTextCtrl(self.nb, -1,
                               style = wxTE_MULTILINE|wxTE_READONLY|wxHSCROLL)
-        self.txt.SetFont(wxFont(9, wxMODERN, wxNORMAL, wxNORMAL, false))
         self.nb.AddPage(self.txt, "Demo Code")
 
 
         # Set up a log on the View Log Notebook page
         self.log = wxTextCtrl(splitter2, -1,
                               style = wxTE_MULTILINE|wxTE_READONLY|wxHSCROLL)
+
         # Set the wxWindows log target to be this textctrl
-        wxLog_SetActiveTarget(wxLogTextCtrl(self.log))
+        #wxLog_SetActiveTarget(wxLogTextCtrl(self.log))
 
+        # But instead of the above we want to show how to use our own wxLog class
+        wxLog_SetActiveTarget(MyLog(self.log))
 
+        # for serious debugging
+        #wxLog_SetActiveTarget(wxLogStderr())
+        #wxLog_SetTraceMask(wxTraceMessages)
 
         self.Show(true)
 
+
         # add the windows to the splitter and split it.
         splitter2.SplitHorizontally(self.nb, self.log)
+        splitter.SplitVertically(self.tree, splitter2)
+
+        splitter.SetSashPosition(180, true)
+        splitter.SetMinimumPaneSize(20)
         splitter2.SetSashPosition(450, true)
         splitter2.SetMinimumPaneSize(20)
 
-        splitter.SplitVertically(self.tree, splitter2)
-        splitter.SetSashPosition(180, true)
-        splitter.SetMinimumPaneSize(20)
 
 
         # select initial items
@@ -256,7 +436,7 @@ class wxPythonDemo(wxFrame):
         pt = event.GetPosition();
         item, flags = self.tree.HitTest(pt)
         if item == self.tree.GetSelection():
-            self.SetOverview(self.tree.GetItemText(item), self.curOverview)
+            self.SetOverview(self.tree.GetItemText(item)+" Overview", self.curOverview)
         event.Skip()
 
     #---------------------------------------------
@@ -277,9 +457,9 @@ class wxPythonDemo(wxFrame):
                 self.nb.SetSelection(0)
             self.nb.DeletePage(2)
 
-        if itemText == 'Overview':
+        if itemText == self.overviewText:
             self.GetDemoFile('Main.py')
-            self.SetOverview('Overview', overview)
+            self.SetOverview(self.overviewText, overview)
             self.nb.Refresh();
             self.window = None
 
@@ -290,19 +470,20 @@ class wxPythonDemo(wxFrame):
                 try:
                     self.GetDemoFile(itemText + '.py')
                     module = __import__(itemText, globals())
-                    self.SetOverview(itemText, module.overview)
+                    self.SetOverview(itemText + " Overview", module.overview)
                 finally:
                     wxEndBusyCursor()
+                self.tree.Refresh()
 
                 # in case runTest is modal, make sure things look right...
                 self.nb.Refresh();
-                wxYield()
+                wxSafeYield()
 
                 self.window = module.runTest(self, self.nb, self) ###
                 if self.window:
                     self.nb.AddPage(self.window, 'Demo')
-                    wxYield()
                     self.nb.SetSelection(2)
+                    self.nb.Refresh()  # without this wxMac has troubles showing the just added page
 
             else:
                 self.ovr.SetPage("")
@@ -329,7 +510,6 @@ class wxPythonDemo(wxFrame):
         lead = text[:6]
         if lead != '<html>' and lead != '<HTML>':
             text = string.join(string.split(text, '\n'), '<br>')
-            #text = '<font size="-1"><pre>' + text + '</pre></font>'
         self.ovr.SetPage(text)
         self.nb.SetPageText(0, name)
 
@@ -362,6 +542,26 @@ class wxPythonDemo(wxFrame):
             self.otherWin.Raise()
             self.window = self.otherWin
             self.otherWin = None
+
+        if self.showTip:
+            self.ShowTip()
+            self.showTip = false
+
+
+    #---------------------------------------------
+    def ShowTip(self):
+        try:
+            showTipText = open(opj("data/showTips")).read()
+            showTip, index = eval(showTipText)
+        except IOError:
+            showTip, index = (1, 0)
+        if showTip:
+            tp = wxCreateFileTipProvider(opj("data/tips.txt"), index)
+            ##tp = MyTP(0)
+            showTip = wxShowTip(self, tp)
+            index = tp.GetCurrentTip()
+            open(opj("data/showTips"), "w").write(str( (showTip, index) ))
+
 
     #---------------------------------------------
     def OnDemoMenu(self, event):
@@ -403,51 +603,59 @@ class wxPythonDemo(wxFrame):
         wxGetApp().ProcessIdle()
 
 
+    #---------------------------------------------
+    def OnIconfiy(self, evt):
+        wxLogMessage("OnIconfiy")
+        evt.Skip()
+
+    #---------------------------------------------
+    def OnMaximize(self, evt):
+        wxLogMessage("OnMaximize")
+        evt.Skip()
+
+
+
+
 #---------------------------------------------------------------------------
 #---------------------------------------------------------------------------
+
+class MySplashScreen(wxSplashScreen):
+    def __init__(self):
+        bmp = wxImage(opj("bitmaps/splash.gif")).ConvertToBitmap()
+        wxSplashScreen.__init__(self, bmp,
+                                wxSPLASH_CENTRE_ON_SCREEN|wxSPLASH_TIMEOUT,
+                                4000, None, -1,
+                                style = wxSIMPLE_BORDER|wxFRAME_NO_TASKBAR|wxSTAY_ON_TOP)
+        EVT_CLOSE(self, self.OnClose)
+
+    def OnClose(self, evt):
+        frame = wxPythonDemo(None, -1, "wxPython: (A Demonstration)")
+        frame.Show(true)
+        evt.Skip()  # Make sure the default handler runs too...
+
 
 class MyApp(wxApp):
     def OnInit(self):
+        """
+        Create and show the splash screen.  It will then create and show
+        the main frame when it is time to do so.
+        """
         wxInitAllImageHandlers()
-
-        self.splash = SplashScreen(None, bitmapfile='bitmaps/splash.gif',
-                              duration=4000, callback=self.AfterSplash)
-        self.splash.Show(true)
-        wxYield()
+        splash = MySplashScreen()
+        splash.Show()
         return true
 
-
-    def AfterSplash(self):
-        self.splash.Close(true)
-        frame = wxPythonDemo(None, -1, "wxPython: (A Demonstration)")
-        frame.Show(true)
-        self.SetTopWindow(frame)
-        self.ShowTip(frame)
-
-
-    def ShowTip(self, frame):
-        try:
-            showTipText = open("data/showTips").read()
-            showTip, index = eval(showTipText)
-        except IOError:
-            showTip, index = (1, 0)
-        #print showTip, index
-        if showTip:
-            tp = wxCreateFileTipProvider("data/tips.txt", index)
-            showTip = wxShowTip(frame, tp)
-            index = tp.GetCurrentTip()
-            open("data/showTips", "w").write(str( (showTip, index) ))
 
 
 #---------------------------------------------------------------------------
 
 def main():
     try:
-        demoPath = os.path.split(__file__)[0]
+        demoPath = os.path.dirname(__file__)
         os.chdir(demoPath)
     except:
         pass
-    app = MyApp(0)
+    app = MyApp(wxPlatform == "__WXMAC__")
     app.MainLoop()
 
 

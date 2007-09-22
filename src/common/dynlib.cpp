@@ -4,7 +4,7 @@
 // Author:      Guilhem Lavaux
 // Modified by:
 // Created:     20/07/98
-// RCS-ID:      $Id: dynlib.cpp,v 1.41.2.3 2001/01/17 16:45:04 vadz Exp $
+// RCS-ID:      $Id: dynlib.cpp,v 1.67 2002/06/13 19:09:24 VZ Exp $
 // Copyright:   (c) Guilhem Lavaux
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -27,7 +27,7 @@
   #pragma hdrstop
 #endif
 
-#if wxUSE_DYNLIB_CLASS
+#if wxUSE_DYNLIB_CLASS && !wxUSE_DYNAMIC_LOADER
 
 #if defined(__WINDOWS__)
     #include "wx/msw/private.h"
@@ -37,7 +37,10 @@
 #include "wx/filefn.h"
 #include "wx/intl.h"
 #include "wx/log.h"
-#include "wx/tokenzr.h"
+
+#if defined(__WXMAC__)
+    #include "wx/mac/private.h"
+#endif
 
 // ----------------------------------------------------------------------------
 // conditional compilation
@@ -53,22 +56,45 @@
     // note about dlopen() flags: we use RTLD_NOW to have more Windows-like
     // behaviour (Win won't let you load a library with missing symbols) and
     // RTLD_GLOBAL because it is needed sometimes and probably doesn't hurt
-    // otherwise
-#   define wxDllOpen(lib)                dlopen(lib.fn_str(), RTLD_LAZY | RTLD_GLOBAL)
-#   define wxDllGetSymbol(handle, name)  dlsym(handle, name)
+    // otherwise. On True64-Unix RTLD_GLOBAL is not allowed and on VMS the
+    // second argument on dlopen is ignored.
+#ifdef __VMS
+# define wxDllOpen(lib)                dlopen(lib.fn_str(), 0 )
+#elif defined( __osf__ )
+# define wxDllOpen(lib)                dlopen(lib.fn_str(), RTLD_LAZY )
+#else
+# define wxDllOpen(lib)                dlopen(lib.fn_str(), RTLD_LAZY | RTLD_GLOBAL)
+#endif
+#define wxDllGetSymbol(handle, name)  dlsym(handle, name)
 #   define wxDllClose                    dlclose
 #elif defined(HAVE_SHL_LOAD)
 #   define wxDllOpen(lib)                shl_load(lib.fn_str(), BIND_DEFERRED, 0)
 #   define wxDllClose                    shl_unload
 
-    static inline void *wxDllGetSymbol(shl_t handle, const wxString& name)
-    {
-        void *sym;
-        if ( shl_findsym(&handle, name.mb_str(), TYPE_UNDEFINED, &sym) == 0 )
-            return sym;
-        else
-            return (void *)0;
-    }
+static inline void *wxDllGetSymbol(shl_t handle, const wxString& name)
+{
+    void *sym;
+    if ( shl_findsym(&handle, name.mb_str(), TYPE_UNDEFINED, &sym) == 0 )
+        return sym;
+    else
+        return 0;
+}
+
+#elif defined(__DARWIN__)
+/* Porting notes:
+ *   The dlopen port is a port from dl_next.xs by Anno Siegel.
+ *   dl_next.xs is itself a port from dl_dlopen.xs by Paul Marquess.
+ *   The method used here is just to supply the sun style dlopen etc.
+ *   functions in terms of Darwin NS*.
+ */
+void *dlopen(const char *path, int mode /* mode is ignored */);
+void *dlsym(void *handle, const char *symbol);
+int   dlclose(void *handle);
+const char *dlerror(void);
+
+#   define wxDllOpen(lib)                dlopen(lib.fn_str(), 0)
+#   define wxDllGetSymbol(handle, name)  dlsym(handle, name)
+#   define wxDllClose                    dlclose
 #elif defined(__WINDOWS__)
     // using LoadLibraryEx under Win32 to avoid name clash with LoadLibrary
 #   ifdef __WIN32__
@@ -82,6 +108,8 @@
 #   endif  // Win32/16
 #   define wxDllGetSymbol(handle, name)    ::GetProcAddress(handle, name)
 #   define wxDllClose                      ::FreeLibrary
+#elif defined(__WXMAC__)
+#   define wxDllClose(handle)               CloseConnection(&((CFragConnectionID)handle))
 #else
 #   error "Don't know how to load shared libraries on this platform."
 #endif // OS
@@ -150,7 +178,7 @@ void wxLibrary::PrepareClasses(wxClassInfo *first)
     {
         if (info->m_className)
             classTable.Put(info->m_className, (wxObject *)info);
-        info = info->GetNext();
+        info = info->m_next;
     }
 
     // Set base pointers for each wxClassInfo
@@ -174,34 +202,28 @@ void *wxLibrary::GetSymbol(const wxString& symbname)
 // wxDllLoader
 // ---------------------------------------------------------------------------
 
-/* static */
-wxString wxDllLoader::GetDllExt()
-{
-    wxString ext;
 
 #if defined(__WINDOWS__) || defined(__WXPM__) || defined(__EMX__)
-    ext = _T(".dll");
+const wxString wxDllLoader::ms_dllext( _T(".dll") );
 #elif defined(__UNIX__)
-#   if defined(__HPUX__)
-        ext = _T(".sl");
-#   else //__HPUX__
-        ext = _T(".so");
-#   endif //__HPUX__
+#if defined(__HPUX__)
+const wxString wxDllLoader::ms_dllext( _T(".sl") );
+#else
+const wxString wxDllLoader::ms_dllext( _T(".so") );
+#endif
+#elif defined(__WXMAC__)
+const wxString wxDllLoader::ms_dllext( _T("") );
 #endif
 
-    return ext;
-}
-
 /* static */
-wxDllType
-wxDllLoader::GetProgramHandle(void)
+wxDllType wxDllLoader::GetProgramHandle()
 {
 #if defined( HAVE_DLOPEN ) && !defined(__EMX__)
    // optain handle for main program
-   return dlopen(NULL, RTLD_NOW/*RTLD_LAZY*/); 
+   return dlopen(NULL, RTLD_NOW/*RTLD_LAZY*/);
 #elif defined (HAVE_SHL_LOAD)
    // shl_findsymbol with NULL handle looks up in main program
-   return 0; 
+   return 0;
 #else
    wxFAIL_MSG( wxT("This method is not implemented under Windows or OS/2"));
    return 0;
@@ -209,106 +231,127 @@ wxDllLoader::GetProgramHandle(void)
 }
 
 /* static */
-wxDllType
-wxDllLoader::LoadLibrary(const wxString & libname, bool *success)
+wxDllType wxDllLoader::LoadLibrary(const wxString & libname, bool *success)
 {
-    wxDllType handle;
+    wxDllType   handle;
+    bool        failed = FALSE;
 
-#if defined(__WXMAC__)
-    FSSpec myFSSpec ;
-    Ptr myMainAddr ;
-    Str255 myErrName ;
+#if defined(__WXMAC__) && !defined(__UNIX__)
+    FSSpec      myFSSpec;
+    Ptr         myMainAddr;
+    Str255      myErrName;
 
-    wxMacPathToFSSpec( libname , &myFSSpec ) ;
-    if (GetDiskFragment( &myFSSpec , 0 , kCFragGoesToEOF , "\p" , kPrivateCFragCopy , &handle , &myMainAddr ,
-                myErrName ) != noErr )
+    wxMacFilename2FSSpec( libname , &myFSSpec );
+
+    if( GetDiskFragment( &myFSSpec,
+                         0,
+                         kCFragGoesToEOF,
+                         "\p",
+                         kPrivateCFragCopy,
+                         &((CFragConnectionID)handle),
+                         &myMainAddr,
+                         myErrName ) != noErr )
     {
-        p2cstr( myErrName ) ;
-        wxASSERT_MSG( 1 , (char*)myErrName ) ;
-        return NULL ;
+        p2cstr( myErrName );
+        wxLogSysError( _("Failed to load shared library '%s' Error '%s'"),
+                       libname.c_str(),
+                       (char*)myErrName );
+        handle = 0;
+        failed = TRUE;
     }
+
 #elif defined(__WXPM__) || defined(__EMX__)
-    char zError[256] = "";
+    char        zError[256] = "";
     wxDllOpen(zError, libname, handle);
-#else // !Mac
+
+#else
     handle = wxDllOpen(libname);
-#endif // OS
+
+#endif
 
     if ( !handle )
     {
         wxString msg(_("Failed to load shared library '%s'"));
 
 #ifdef HAVE_DLERROR
-        const char *errmsg = dlerror();
-        if ( errmsg )
+        const wxChar *err = dlerror();
+        if( err )
         {
-            // the error string format is "libname: ...", but we already have
-            // libname, so cut it off
-            const char *p = strchr(errmsg, ':');
-            if ( p )
-            {
-                if ( *++p == ' ' )
-                    p++;
-            }
-            else
-            {
-                p = errmsg;
-            }
-
-            msg += _T(" (%s)");
-            wxLogError(msg, libname.c_str(), p);
+            failed = TRUE;
+            wxLogError( msg, err );
         }
-        else
-#endif // HAVE_DLERROR
-        {
-            wxLogSysError(msg, libname.c_str());
-        }
+#else
+        failed = TRUE;
+        wxLogSysError( msg, libname.c_str() );
+#endif
     }
 
     if ( success )
-    {
-        *success = handle != 0;
-    }
+        *success = !failed;
 
     return handle;
 }
 
 
 /* static */
-void
-wxDllLoader::UnloadLibrary(wxDllType handle)
+void wxDllLoader::UnloadLibrary(wxDllType handle)
 {
    wxDllClose(handle);
 }
 
 /* static */
-void *
-wxDllLoader::GetSymbol(wxDllType dllHandle, const wxString &name)
+void *wxDllLoader::GetSymbol(wxDllType dllHandle, const wxString &name, bool *success)
 {
-    void *symbol = NULL;    // return value
+    bool    failed = FALSE;
+    void    *symbol = 0;
 
-#if defined( __WXMAC__ )
-    Ptr symAddress ;
-    CFragSymbolClass symClass ;
-    Str255 symName ;
+#if defined(__WXMAC__) && !defined(__UNIX__)
+    Ptr                 symAddress;
+    CFragSymbolClass    symClass;
+    Str255              symName;
 
-    strcpy( (char*) symName , name ) ;
-    c2pstr( (char*) symName ) ;
-
-    if ( FindSymbol( dllHandle , symName , &symAddress , &symClass ) == noErr )
-        symbol = (void *)symAddress ;
-#elif defined( __WXPM__ ) || defined(__EMX__)
-    wxDllGetSymbol(dllHandle, symbol);
+#if TARGET_CARBON
+    c2pstrcpy( (StringPtr) symName, name );
 #else
-    // mb_str() is necessary in Unicode build
-    symbol = wxDllGetSymbol(dllHandle, name.mb_str());
+    strcpy( (char *) symName, name );
+    c2pstr( (char *) symName );
 #endif
+    if( FindSymbol( ((CFragConnectionID)dllHandle), symName, &symAddress, &symClass ) == noErr )
+        symbol = (void *)symAddress;
+
+#elif defined(__WXPM__) || defined(__EMX__)
+    wxDllGetSymbol(dllHandle, symbol);
+
+#else // Windows or Unix
+
+    // mb_str() is necessary in Unicode build
+    //
+    // "void *" cast is needed by gcc 3.1 + w32api 1.4, don't ask me why
+    symbol = (void *)wxDllGetSymbol(dllHandle, name.mb_str());
+
+#endif // OS
 
     if ( !symbol )
     {
+        wxString msg(_("wxDllLoader failed to GetSymbol '%s'"));
+
+#ifdef HAVE_DLERROR
+        const wxChar *err = dlerror();
+        if( err )
+        {
+            failed = TRUE;
+            wxLogError( msg, err );
+        }
+#else
+        failed = TRUE;
         wxLogSysError(_("Couldn't find symbol '%s' in a dynamic library"),
                       name.c_str());
+#endif
     }
+
+    if( success )
+        *success = !failed;
+
     return symbol;
 }
 
@@ -334,52 +377,18 @@ wxLibraries::~wxLibraries()
 
 wxLibrary *wxLibraries::LoadLibrary(const wxString& name)
 {
-    wxNode *node;
-    wxLibrary *lib;
+    wxLibrary   *lib;
     wxClassInfo *old_sm_first;
+    wxNode      *node = m_loaded.Find(name.GetData());
 
-#if defined(__VISAGECPP__)
-    node = m_loaded.Find(name.GetData());
     if (node != NULL)
         return ((wxLibrary *)node->Data());
-#else // !OS/2
-    if ( (node = m_loaded.Find(name.GetData())) )
-        return ((wxLibrary *)node->Data());
-#endif
+
     // If DLL shares data, this is necessary.
     old_sm_first = wxClassInfo::sm_first;
     wxClassInfo::sm_first = NULL;
 
     wxString libname = ConstructLibraryName(name);
-
-/*
-  Unix automatically builds that library name, at least for dlopen()
-*/
-#if 0
-#if defined(__UNIX__)
-    // found the first file in LD_LIBRARY_PATH with this name
-    wxString libPath("/lib:/usr/lib"); // system path first
-    const char *envLibPath = getenv("LD_LIBRARY_PATH");
-    if ( envLibPath )
-        libPath << wxT(':') << envLibPath;
-    wxStringTokenizer tokenizer(libPath, wxT(':'));
-    while ( tokenizer.HasMoreToken() )
-    {
-        wxString fullname(tokenizer.NextToken());
-
-        fullname << wxT('/') << libname;
-        if ( wxFileExists(fullname) )
-        {
-            libname = fullname;
-
-            // found the library
-            break;
-        }
-    }
-    //else: not found in the path, leave the name as is (secutiry risk?)
-
-#endif // __UNIX__
-#endif
 
     bool success = FALSE;
     wxDllType handle = wxDllLoader::LoadLibrary(libname, &success);
@@ -387,6 +396,7 @@ wxLibrary *wxLibraries::LoadLibrary(const wxString& name)
     {
        lib = new wxLibrary(handle);
        wxClassInfo::sm_first = old_sm_first;
+
        m_loaded.Append(name.GetData(), lib);
     }
     else
@@ -409,4 +419,85 @@ wxObject *wxLibraries::CreateObject(const wxString& path)
     return NULL;
 }
 
-#endif // wxUSE_DYNLIB_CLASS
+#endif // wxUSE_DYNLIB_CLASS && !wxUSE_DYNAMIC_LOADER
+
+#if defined(__DARWIN__) && (wxUSE_DYNLIB_CLASS || wxUSE_DYNAMIC_LOADER)
+// ---------------------------------------------------------------------------
+// For Darwin/Mac OS X
+//   supply the sun style dlopen functions in terms of Darwin NS*
+// ---------------------------------------------------------------------------
+
+#include <stdio.h>
+#include <mach-o/dyld.h>
+
+static char dl_last_error[1024];
+
+static
+void TranslateError(const char *path, int number)
+{
+    unsigned int index;
+    static char *OFIErrorStrings[] =
+    {
+	"%s(%d): Object Image Load Failure\n",
+	"%s(%d): Object Image Load Success\n",
+	"%s(%d): Not an recognisable object file\n",
+	"%s(%d): No valid architecture\n",
+	"%s(%d): Object image has an invalid format\n",
+	"%s(%d): Invalid access (permissions?)\n",
+	"%s(%d): Unknown error code from NSCreateObjectFileImageFromFile\n",
+    };
+#define NUM_OFI_ERRORS (sizeof(OFIErrorStrings) / sizeof(OFIErrorStrings[0]))
+
+    index = number;
+    if (index > NUM_OFI_ERRORS - 1) {
+        index = NUM_OFI_ERRORS - 1;
+    }
+    sprintf(dl_last_error, OFIErrorStrings[index], path, number);
+}
+
+const char *dlerror()
+{
+    return dl_last_error;
+}
+
+void *dlopen(const char *path, int WXUNUSED(mode) /* mode is ignored */)
+{
+    int dyld_result;
+    NSObjectFileImage ofile;
+    NSModule handle = NULL;
+
+    dyld_result = NSCreateObjectFileImageFromFile(path, &ofile);
+    if (dyld_result != NSObjectFileImageSuccess)
+    {
+	TranslateError(path, dyld_result);
+    }
+    else
+    {
+	// NSLinkModule will cause the run to abort on any link error's
+	// not very friendly but the error recovery functionality is limited.
+	handle = NSLinkModule(ofile, path, NSLINKMODULE_OPTION_BINDNOW);
+    }
+
+    return handle;
+}
+
+int dlclose(void *handle)
+{
+    NSUnLinkModule( handle, NSUNLINKMODULE_OPTION_NONE);
+    return 0;
+}
+
+void *dlsym(void *WXUNUSED(handle), const char *symbol)
+{
+    void *addr;
+
+    if (NSIsSymbolNameDefined(symbol)) {
+	addr = NSAddressOfSymbol(NSLookupAndBindSymbol(symbol));
+    }
+    else {
+	addr = NULL;
+    }
+    return addr;
+}
+
+#endif // defined(__DARWIN__) && (wxUSE_DYNLIB_CLASS || wxUSE_DYNAMIC_LOADER)

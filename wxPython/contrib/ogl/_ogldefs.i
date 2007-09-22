@@ -5,7 +5,7 @@
 // Author:      Robin Dunn
 //
 // Created:     27-Aug-1999
-// RCS-ID:      $Id: _ogldefs.i,v 1.1.2.2 2001/01/30 20:53:08 robind Exp $
+// RCS-ID:      $Id: _ogldefs.i,v 1.7 2001/11/27 02:56:52 RD Exp $
 // Copyright:   (c) 1998 by Total Control Software
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -54,6 +54,81 @@ class wxPyControlPoint;
 
 
 //---------------------------------------------------------------------------
+// Typemaps just for OGL
+
+
+// OOR Support
+%typemap(python, out) wxPyShape*                { $target = wxPyMake_wxShapeEvtHandler($source); }
+%typemap(python, out) wxPyShapeEvtHandler*      { $target = wxPyMake_wxShapeEvtHandler($source); }
+%typemap(python, out) wxPyDivisionShape*        { $target = wxPyMake_wxShapeEvtHandler($source); }
+
+%typemap(python, out) wxPyShapeCanvas*          { $target = wxPyMake_wxObject($source); }
+%typemap(python, out) wxDiagram*                { $target = wxPyMake_wxObject($source); }
+%typemap(python, out) wxOGLConstraint*          { $target = wxPyMake_wxObject($source); }
+%typemap(python, out) wxPseudoMetaFile*         { $target = wxPyMake_wxObject($source); }
+%typemap(python, out) wxArrowHead*              { $target = wxPyMake_wxObject($source); }
+
+
+
+
+// wxOGL doesn't use a ref-counted copy of pens and brushes, so we'll
+// use the pen and brush lists to simulate that...
+
+%typemap(python, in) wxPen* {
+    wxPen* temp;
+    if ($source) {
+        if ($source == Py_None) { temp = NULL; }
+        else if (SWIG_GetPtrObj($source, (void **) &temp,"_wxPen_p")) {
+            PyErr_SetString(PyExc_TypeError,"Type error, expected _wxPen_p.");
+        return NULL;
+        }
+    }
+    if (temp)
+        $target = wxThePenList->FindOrCreatePen(temp->GetColour(),
+                                                temp->GetWidth(),
+                                                temp->GetStyle());
+    else
+        $target = NULL;
+}
+
+%typemap(python, in) wxBrush* {
+    wxBrush* temp;
+    if ($source) {
+        if ($source == Py_None) { temp = NULL; }
+        else if (SWIG_GetPtrObj($source, (void **) &temp,"_wxBrush_p")) {
+            PyErr_SetString(PyExc_TypeError,"Type error, expected _wxBrush_p.");
+        return NULL;
+        }
+    }
+    if (temp)
+        $target = wxTheBrushList->FindOrCreateBrush(temp->GetColour(), temp->GetStyle());
+    else
+        $target = NULL;
+}
+
+
+%typemap(python, in) wxFont* {
+    wxFont* temp;
+    if ($source) {
+        if ($source == Py_None) { temp = NULL; }
+        else if (SWIG_GetPtrObj($source, (void **) &temp,"_wxFont_p")) {
+            PyErr_SetString(PyExc_TypeError,"Type error, expected _wxFont_p.");
+        return NULL;
+        }
+    }
+    if (temp)
+        $target = wxTheFontList->FindOrCreateFont(temp->GetPointSize(),
+                                                  temp->GetFamily(),
+                                                  temp->GetStyle(),
+                                                  temp->GetWeight(),
+                                                  temp->GetUnderlined(),
+                                                  temp->GetFaceName(),
+                                                  temp->GetEncoding());
+    else
+        $target = NULL;
+}
+
+
 //---------------------------------------------------------------------------
 //---------------------------------------------------------------------------
 

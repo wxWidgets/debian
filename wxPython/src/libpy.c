@@ -1,5 +1,5 @@
 /***********************************************************************
- * $Header: /home/wxcvs/wxWindows/wxPython/src/libpy.c,v 1.1.2.3 2001/07/27 19:28:08 RD Exp $
+ * $Header: /home/wxcvs/wxWindows/wxPython/src/libpy.c,v 1.9 2001/06/15 21:43:24 RD Exp $
  * swig_lib/python/python.cfg
  *
  * Contains variable linking and pointer type-checking code.
@@ -317,11 +317,11 @@ SWIG_GetPtr(char *c, void **ptr, char *t)
   if (*c != '_') {
     *ptr = (void *) 0;
     if (strcmp(c,"NULL") == 0) return (char *) 0;
-    else c;
+    else return c;
   }
   c++;
   /* Extract hex value from pointer */
-  while (d = *c) {
+  while ((d = *c) != 0) {
     if ((d >= '0') && (d <= '9'))
       p = (p << 4) + (d - '0');
     else if ((d >= 'a') && (d <= 'f'))
@@ -362,7 +362,7 @@ SWIG_GetPtr(char *c, void **ptr, char *t)
   sp = &SwigPtrTable[start];
 
   /* Try to find a match */
-  while (start <= end) {
+  while (start < end) {               /* was "<="     --robin */
     if (strncmp(t,sp->name,sp->len) == 0) {
       name = sp->name;
       len = sp->len;
@@ -409,6 +409,8 @@ SWIG_GetPtrObj(PyObject *obj, void **ptr, char *type) {
       Py_DECREF(sobj);
   }
   str = PyString_AsString(sobj);
+  if (str == NULL)
+      return "";
   return SWIG_GetPtr(str,ptr,type);
 }
 

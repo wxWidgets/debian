@@ -2,7 +2,7 @@
 // Name:        minifram.h
 // Purpose:     wxMiniFrame class
 // Author:      Robert Roebling
-// RCS-ID:      $Id: minifram.h,v 1.4 1999/06/14 23:03:53 RR Exp $
+// RCS-ID:      $Id: minifram.h,v 1.5 2002/09/07 12:28:46 GD Exp $
 // Copyright:   (c) Robert Roebling
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -10,7 +10,7 @@
 #ifndef __GTKMINIFRAMEH__
 #define __GTKMINIFRAMEH__
 
-#ifdef __GNUG__
+#if defined(__GNUG__) && !defined(__APPLE__)
 #pragma interface
 #endif
 

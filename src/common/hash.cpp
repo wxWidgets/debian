@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by: VZ at 25.02.00: type safe hashes with WX_DECLARE_HASH()
 // Created:     01/02/97
-// RCS-ID:      $Id: hash.cpp,v 1.15.2.3 2001/06/15 11:37:56 VZ Exp $
+// RCS-ID:      $Id: hash.cpp,v 1.24 2002/06/06 16:06:17 JS Exp $
 // Copyright:   (c) Julian Smart and Markus Holzem
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -143,6 +143,11 @@ void wxHashTableLong::Init(size_t size)
     m_count = 0;
 }
 
+void wxHashTableLong::Create(size_t size)
+{
+    Init(size);
+}
+
 void wxHashTableLong::Destroy()
 {
     for ( size_t n = 0; n < m_hashSize; n++ )
@@ -227,6 +232,109 @@ long wxHashTableLong::Delete(long key)
 }
 
 // ----------------------------------------------------------------------------
+// wxStringHashTable: more efficient than storing strings in a list
+// ----------------------------------------------------------------------------
+
+wxStringHashTable::wxStringHashTable(size_t sizeTable)
+{
+    m_keys = new wxArrayLong *[sizeTable];
+    m_values = new wxArrayString *[sizeTable];
+
+    m_hashSize = sizeTable;
+    for ( size_t n = 0; n < m_hashSize; n++ )
+    {
+        m_values[n] = (wxArrayString *)NULL;
+        m_keys[n] = (wxArrayLong *)NULL;
+    }
+}
+
+wxStringHashTable::~wxStringHashTable()
+{
+    Destroy();
+}
+
+void wxStringHashTable::Destroy()
+{
+    for ( size_t n = 0; n < m_hashSize; n++ )
+    {
+        delete m_values[n];
+        delete m_keys[n];
+    }
+
+    delete [] m_values;
+    delete [] m_keys;
+    m_hashSize = 0;
+}
+
+void wxStringHashTable::Put(long key, const wxString& value)
+{
+    wxCHECK_RET( m_hashSize, _T("must call Create() first") );
+
+    size_t slot = (size_t)abs((int)(key % (long)m_hashSize));
+
+    if ( !m_keys[slot] )
+    {
+        m_keys[slot] = new wxArrayLong;
+        m_values[slot] = new wxArrayString;
+    }
+
+    m_keys[slot]->Add(key);
+    m_values[slot]->Add(value);
+}
+
+wxString wxStringHashTable::Get(long key, bool *wasFound) const
+{
+    wxCHECK_MSG( m_hashSize, _T(""), _T("must call Create() first") );
+
+    size_t slot = (size_t)abs((int)(key % (long)m_hashSize));
+
+    wxArrayLong *keys = m_keys[slot];
+    if ( keys )
+    {
+        size_t count = keys->GetCount();
+        for ( size_t n = 0; n < count; n++ )
+        {
+            if ( keys->Item(n) == key )
+            {
+                if ( wasFound )
+                    *wasFound = TRUE;
+
+                return m_values[slot]->Item(n);
+            }
+        }
+    }
+
+    if ( wasFound )
+        *wasFound = FALSE;
+
+    return _T("");
+}
+
+bool wxStringHashTable::Delete(long key) const
+{
+    wxCHECK_MSG( m_hashSize, FALSE, _T("must call Create() first") );
+
+    size_t slot = (size_t)abs((int)(key % (long)m_hashSize));
+
+    wxArrayLong *keys = m_keys[slot];
+    if ( keys )
+    {
+        size_t count = keys->GetCount();
+        for ( size_t n = 0; n < count; n++ )
+        {
+            if ( keys->Item(n) == key )
+            {
+                keys->RemoveAt(n);
+                m_values[slot]->RemoveAt(n);
+                return TRUE;
+            }
+        }
+    }
+
+    return FALSE;
+}
+
+// ----------------------------------------------------------------------------
 // old not type safe wxHashTable
 // ----------------------------------------------------------------------------
 
@@ -286,6 +394,7 @@ bool wxHashTable::Create(int the_key_type, int size)
 void wxHashTable::DoCopy(const wxHashTable& table)
 {
   n = table.n;
+  m_count = table.m_count;
   current_position = table.current_position;
   current_node = NULL; // doesn't matter - Next() will reconstruct it
   key_type = table.key_type;
@@ -597,15 +706,15 @@ void wxHashTable::DeleteContents (bool flag)
 
 void wxHashTable::Clear ()
 {
-    if ( hash_table )
+    int i;
+    if (hash_table)
     {
-        for ( int i = 0; i < n; i++ )
+        for (i = 0; i < n; i++)
         {
-            if ( hash_table[i] )
-                hash_table[i]->Clear();
+            if (hash_table[i])
+                hash_table[i]->Clear ();
         }
     }
-
-    m_count = 0;
+  m_count = 0;
 }
 

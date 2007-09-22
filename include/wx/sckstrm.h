@@ -4,14 +4,14 @@
 // Author:      Guilhem Lavaux
 // Modified by:
 // Created:     17/07/97
-// RCS-ID:      $Id: sckstrm.h,v 1.9 1999/08/02 04:43:55 DW Exp $
+// RCS-ID:      $Id: sckstrm.h,v 1.10 2002/08/31 11:29:11 GD Exp $
 // Copyright:   (c)
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
 #ifndef __SCK_STREAM_H__
 #define __SCK_STREAM_H__
 
-#ifdef __GNUG__
+#if defined(__GNUG__) && !defined(__APPLE__)
 #pragma interface
 #endif
 

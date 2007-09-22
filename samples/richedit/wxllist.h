@@ -3,7 +3,7 @@
  *                                                                  *
  * (C) 1999-2000 by Karsten Ballüder (ballueder@gmx.net)            *
  *                                                                  *
- * $Id: wxllist.h,v 1.20.2.1 2000/05/10 20:00:53 KB Exp $
+ * $Id: wxllist.h,v 1.22 2002/03/27 18:44:50 VZ Exp $
  *******************************************************************/
 
 
@@ -292,7 +292,7 @@ public:
    virtual wxString DebugDump(void) const;
 #endif
 
-   virtual CoordType GetLength(void) const { return strlen(m_Text.c_str()); }
+   virtual CoordType GetLength(void) const { return wxStrlen(m_Text.c_str()); }
 
    // for editing:
    wxString & GetText(void) { return m_Text; }
@@ -1273,7 +1273,7 @@ class wxLayoutDataObject : public wxCustomDataObject
 public:
    wxLayoutDataObject()
       {
-         SetFormat("application/wxlayoutlist");
+         SetFormat(wxT("application/wxlayoutlist"));
       }
 
    // type safe wrappers

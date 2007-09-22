@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     04/01/98
-// RCS-ID:      $Id: prntbase.cpp,v 1.39.2.3 2000/07/03 20:22:02 VS Exp $
+// RCS-ID:      $Id: prntbase.cpp,v 1.46 2002/08/16 17:39:51 RR Exp $
 // Copyright:   (c) Julian Smart and Markus Holzem
 // Licence:       wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -36,6 +36,7 @@
 #include "wx/dcmemory.h"
 #include "wx/stattext.h"
 #include "wx/intl.h"
+#include "wx/textdlg.h"
 #endif
 
 #include "wx/prntbase.h"
@@ -46,6 +47,8 @@
 #include <stdlib.h>
 #include <string.h>
 
+#include <wx/sizer.h>
+                                         
 #ifdef __WXMSW__
     #include "wx/msw/private.h"
     #include <commdlg.h>
@@ -101,21 +104,24 @@ void wxPrintAbortDialog::OnCancel(wxCommandEvent& WXUNUSED(event))
     wxPrinterBase::sm_abortWindow = (wxWindow *) NULL;
 }
 
-wxWindow *wxPrinterBase::CreateAbortWindow(wxWindow *parent, wxPrintout *WXUNUSED(printout))
+wxWindow *wxPrinterBase::CreateAbortWindow(wxWindow *parent, wxPrintout * printout)
 {
-    wxPrintAbortDialog *dialog = new wxPrintAbortDialog(parent, _("Printing"), wxPoint(0, 0), wxSize(400, 400), wxDEFAULT_DIALOG_STYLE);
-    (void) new wxStaticText(dialog, -1, _("Please wait..."), wxPoint(5, 5));
+    wxPrintAbortDialog *dialog = new wxPrintAbortDialog(parent, _("Printing ") , wxDefaultPosition, wxDefaultSize, wxDEFAULT_DIALOG_STYLE);
 
-    wxButton *button = new wxButton(dialog, wxID_CANCEL, _("Cancel"), wxPoint(5, 30));
+    wxBoxSizer *button_sizer = new wxBoxSizer( wxVERTICAL );
+    button_sizer->Add( new wxStaticText(dialog, -1, _("Please wait while printing\n") + printout->GetTitle() ), 0, wxALL, 10 );
+    button_sizer->Add( new wxButton( dialog, wxID_CANCEL, wxT("Cancel") ), 0, wxALL | wxALIGN_CENTER, 10 );
 
-    dialog->Fit();
-    button->Centre(wxHORIZONTAL);
+    dialog->SetAutoLayout( TRUE );
+    dialog->SetSizer( button_sizer );
 
-    dialog->Centre();
+    button_sizer->Fit(dialog);
+    button_sizer->SetSizeHints (dialog) ;
+
     return dialog;
 }
 
-void wxPrinterBase::ReportError(wxWindow *parent, wxPrintout *WXUNUSED(printout), char *message)
+void wxPrinterBase::ReportError(wxWindow *parent, wxPrintout *WXUNUSED(printout), const wxString& message)
 {
     wxMessageBox(message, _("Printing Error"), wxOK, parent);
 }
@@ -145,7 +151,7 @@ wxPrintout::~wxPrintout()
 
 bool wxPrintout::OnBeginDocument(int WXUNUSED(startPage), int WXUNUSED(endPage))
 {
-    return GetDC()->StartDoc(_("Printing"));
+    return GetDC()->StartDoc(_("Printing ") + m_printoutTitle);
 }
 
 void wxPrintout::OnEndDocument()
@@ -183,7 +189,7 @@ wxPreviewCanvas::wxPreviewCanvas(wxPrintPreviewBase *preview, wxWindow *parent,
 wxScrolledWindow(parent, -1, pos, size, style, name)
 {
     m_printPreview = preview;
-    SetBackgroundColour(wxSystemSettings::GetSystemColour(wxSYS_COLOUR_APPWORKSPACE));
+    SetBackgroundColour(wxSystemSettings::GetColour(wxSYS_COLOUR_APPWORKSPACE));
 
     SetScrollbars(15, 18, 100, 100);
 }
@@ -213,7 +219,7 @@ void wxPreviewCanvas::OnPaint(wxPaintEvent& WXUNUSED(event))
 // Responds to colour changes, and passes event on to children.
 void wxPreviewCanvas::OnSysColourChanged(wxSysColourChangedEvent& event)
 {
-    SetBackgroundColour(wxSystemSettings::GetSystemColour(wxSYS_COLOUR_APPWORKSPACE));
+    SetBackgroundColour(wxSystemSettings::GetColour(wxSYS_COLOUR_APPWORKSPACE));
     Refresh();
 
     // Propagate the event to the non-top-level children
@@ -229,6 +235,9 @@ BEGIN_EVENT_TABLE(wxPreviewControlBar, wxPanel)
     EVT_BUTTON(wxID_PREVIEW_PRINT,    wxPreviewControlBar::OnPrint)
     EVT_BUTTON(wxID_PREVIEW_PREVIOUS, wxPreviewControlBar::OnPreviousButton)
     EVT_BUTTON(wxID_PREVIEW_NEXT,     wxPreviewControlBar::OnNextButton)
+    EVT_BUTTON(wxID_PREVIEW_FIRST,    wxPreviewControlBar::OnFirstButton)
+    EVT_BUTTON(wxID_PREVIEW_LAST,     wxPreviewControlBar::OnLastButton)
+    EVT_BUTTON(wxID_PREVIEW_GOTO,     wxPreviewControlBar::OnGotoButton)
     EVT_CHAR(wxPreviewControlBar::OnChar)
     EVT_CHOICE(wxID_PREVIEW_ZOOM,     wxPreviewControlBar::OnZoom)
     EVT_PAINT(wxPreviewControlBar::OnPaint)
@@ -283,6 +292,12 @@ void wxPreviewControlBar::OnChar(wxKeyEvent &event)
       OnNext(); break;
    case WXK_PRIOR:
       OnPrevious(); break;
+   case WXK_HOME:
+      OnFirst(); break;
+   case WXK_END:
+      OnLast(); break;
+   case WXK_TAB:
+      OnGoto(); break;
    default:
       event.Skip();
    }
@@ -318,6 +333,60 @@ void wxPreviewControlBar::OnPrevious(void)
     }
 }
 
+void wxPreviewControlBar::OnFirst(void)
+{
+    wxPrintPreviewBase *preview = GetPrintPreview();
+    if (preview)
+    {
+        int currentPage = preview->GetMinPage();
+        if (preview->GetPrintout()->HasPage(currentPage))
+        {
+            preview->SetCurrentPage(currentPage);
+        }
+    }
+}
+
+void wxPreviewControlBar::OnLast(void)
+{
+    wxPrintPreviewBase *preview = GetPrintPreview();
+    if (preview)
+    {
+        int currentPage = preview->GetMaxPage();
+        if (preview->GetPrintout()->HasPage(currentPage))
+        {
+            preview->SetCurrentPage(currentPage);
+        }
+    }
+}
+
+void wxPreviewControlBar::OnGoto(void)
+{
+    wxPrintPreviewBase *preview = GetPrintPreview();
+    if (preview)
+    {
+        long currentPage;
+
+        if (preview->GetMinPage() > 0)
+        {
+            wxString strPrompt;
+            wxString strPage;
+
+            strPrompt.Printf( _("%d...%d"),
+                preview->GetMinPage(), preview->GetMaxPage());
+            strPage.Printf( _("%d"), preview->GetCurrentPage() );
+
+            strPage =
+                wxGetTextFromUser( strPrompt, _("Goto Page"), strPage);
+
+            if ( strPage.ToLong( &currentPage ) )
+                if (preview->GetPrintout()->HasPage(currentPage))
+                {
+                    preview->SetCurrentPage(currentPage);
+                }
+        }
+    }
+}
+
 void wxPreviewControlBar::OnZoom(wxCommandEvent& WXUNUSED(event))
 {
     int zoom = GetZoomControl();
@@ -340,7 +409,8 @@ void wxPreviewControlBar::CreateButtons()
       SetFont(buttonFont);
     */
 
-    int buttonWidth = 65;
+    int buttonWidth = 60;
+    int buttonNavigation = 30;
 #ifdef __WXGTK__
     int buttonHeight = -1;
 #else
@@ -368,17 +438,38 @@ void wxPreviewControlBar::CreateButtons()
         x += gap + buttonWidth;
     }
 
+    if (m_buttonFlags & wxPREVIEW_FIRST)
+    {
+        m_firstPageButton = new wxButton(this, wxID_PREVIEW_FIRST, wxT("|<<"), wxPoint(x, y),
+            wxSize(buttonNavigation, buttonHeight));
+        x += gap + buttonNavigation;
+    }
+
     if (m_buttonFlags & wxPREVIEW_PREVIOUS)
     {
         m_previousPageButton = new wxButton(this, wxID_PREVIEW_PREVIOUS, wxT("<<"), wxPoint(x, y),
-            wxSize(buttonWidth, buttonHeight));
-        x += gap + buttonWidth;
+            wxSize(buttonNavigation, buttonHeight));
+        x += gap + buttonNavigation;
     }
 
     if (m_buttonFlags & wxPREVIEW_NEXT)
     {
         m_nextPageButton = new wxButton(this, wxID_PREVIEW_NEXT, wxT(">>"),
-            wxPoint(x, y), wxSize(buttonWidth, buttonHeight));
+            wxPoint(x, y), wxSize(buttonNavigation, buttonHeight));
+        x += gap + buttonNavigation;
+    }
+
+    if (m_buttonFlags & wxPREVIEW_LAST)
+    {
+        m_lastPageButton = new wxButton(this, wxID_PREVIEW_LAST, wxT(">>|"), wxPoint(x, y),
+            wxSize(buttonNavigation, buttonHeight));
+        x += gap + buttonNavigation;
+    }
+
+    if (m_buttonFlags & wxPREVIEW_GOTO)
+    {
+        m_gotoPageButton = new wxButton(this, wxID_PREVIEW_GOTO, wxT("Goto..."), wxPoint(x, y),
+            wxSize(buttonWidth, buttonHeight));
         x += gap + buttonWidth;
     }
 
@@ -612,7 +703,8 @@ bool wxPrintPreviewBase::SetCurrentPage(int pageNum)
 
     if (m_previewCanvas)
     {
-        RenderPage(pageNum);
+        if (!RenderPage(pageNum))
+            return FALSE;
         m_previewCanvas->Refresh();
     }
     return TRUE;
@@ -623,7 +715,8 @@ bool wxPrintPreviewBase::PaintPage(wxWindow *canvas, wxDC& dc)
     DrawBlankPage(canvas, dc);
 
     if (!m_previewBitmap)
-        RenderPage(m_currentPage);
+        if (!RenderPage(m_currentPage))
+            return FALSE;
 
     if (!m_previewBitmap)
         return FALSE;
@@ -682,8 +775,10 @@ bool wxPrintPreviewBase::RenderPage(int pageNum)
         m_previewBitmap = new wxBitmap((int)actualWidth, (int)actualHeight);
         if (!m_previewBitmap || !m_previewBitmap->Ok())
         {
-            if (m_previewBitmap)
+            if (m_previewBitmap) {
                 delete m_previewBitmap;
+                m_previewBitmap = NULL;
+            }
             wxMessageBox(_("Sorry, not enough memory to create a preview."), _("Print Preview Failure"), wxOK);
             return FALSE;
         }
@@ -713,6 +808,7 @@ bool wxPrintPreviewBase::RenderPage(int pageNum)
         memoryDC.SelectObject(wxNullBitmap);
 
         delete m_previewBitmap;
+        m_previewBitmap = NULL;
         return FALSE;
     }
 

@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     04/01/98
-// RCS-ID:      $Id: timer.cpp,v 1.15 2000/02/05 01:57:38 VZ Exp $
+// RCS-ID:      $Id: timer.cpp,v 1.18 2002/05/12 22:46:12 VZ Exp $
 // Copyright:   (c) Julian Smart and Markus Holzem
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -19,6 +19,8 @@
 #ifdef __BORLANDC__
     #pragma hdrstop
 #endif
+
+#if wxUSE_TIMER
 
 #ifndef WX_PRECOMP
     #include "wx/setup.h"
@@ -51,6 +53,11 @@ UINT WINAPI _EXPORT wxTimerProc(HWND hwnd, WORD, int idTimer, DWORD);
     #define _EXPORT _export
 #endif
 
+// should probably be in wx/msw/private.h
+#ifdef __WXMICROWIN__
+    #define MakeProcInstance(proc, hinst) proc
+#endif
+
 IMPLEMENT_ABSTRACT_CLASS(wxTimer, wxObject)
 
 // ============================================================================
@@ -79,12 +86,12 @@ bool wxTimer::Start(int milliseconds, bool oneShot)
 
     wxCHECK_MSG( m_milli > 0, FALSE, wxT("invalid value for timer timeour") );
 
-    wxTimerList.DeleteObject(this);
     TIMERPROC wxTimerProcInst = (TIMERPROC)
         MakeProcInstance((FARPROC)wxTimerProc, wxGetInstance());
 
-    m_id = SetTimer(NULL, (UINT)(m_id ? m_id : 1),
-                    (UINT)milliseconds, wxTimerProcInst);
+    m_id = ::SetTimer(NULL, (UINT)(m_id ? m_id : 1),
+                      (UINT)m_milli, wxTimerProcInst);
+
     if ( m_id > 0 )
     {
         wxTimerList.Append(m_id, this);
@@ -103,7 +110,8 @@ void wxTimer::Stop()
 {
     if ( m_id )
     {
-        KillTimer(NULL, (UINT)m_id);
+        ::KillTimer(NULL, (UINT)m_id);
+
         wxTimerList.DeleteObject(this);
     }
 
@@ -136,3 +144,5 @@ UINT WINAPI _EXPORT wxTimerProc(HWND WXUNUSED(hwnd), WORD, int idTimer, DWORD)
 
     return 0;
 }
+
+#endif // wxUSE_TIMER

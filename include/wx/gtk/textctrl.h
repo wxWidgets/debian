@@ -1,9 +1,9 @@
 /////////////////////////////////////////////////////////////////////////////
-// Name:        textctrl.h
+// Name:        wx/gtk/textctrl.h
 // Purpose:
 // Author:      Robert Roebling
 // Created:     01/02/97
-// Id:          $Id: textctrl.h,v 1.31 2000/02/02 17:59:11 RR Exp $
+// Id:          $Id: textctrl.h,v 1.42 2002/09/07 12:28:46 GD Exp $
 // Copyright:   (c) 1998 Robert Roebling, Julian Smart and Markus Holzem
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -11,15 +11,9 @@
 #ifndef __GTKTEXTCTRLH__
 #define __GTKTEXTCTRLH__
 
-#ifdef __GNUG__
+#if defined(__GNUG__) && !defined(__APPLE__)
     #pragma interface "textctrl.h"
 #endif
-
-//-----------------------------------------------------------------------------
-// classes
-//-----------------------------------------------------------------------------
-
-class wxTextCtrl;
 
 //-----------------------------------------------------------------------------
 // wxTextCtrl
@@ -28,7 +22,7 @@ class wxTextCtrl;
 class wxTextCtrl: public wxTextCtrlBase
 {
 public:
-    wxTextCtrl();
+    wxTextCtrl() { Init(); }
     wxTextCtrl(wxWindow *parent,
                wxWindowID id,
                const wxString &value = wxEmptyString,
@@ -74,10 +68,16 @@ public:
     // clears the dirty flag
     virtual void DiscardEdits();
 
+    virtual void SetMaxLength(unsigned long len);
+
     // writing text inserts it at the current position, appending always
     // inserts it at the end
     virtual void WriteText(const wxString& text);
     virtual void AppendText(const wxString& text);
+
+    // apply text attribute to the range of text (only works with richedit
+    // controls)
+    virtual bool SetStyle(long start, long end, const wxTextAttr& style);
 
     // translate between the position (which is just an index in the text ctrl
     // considering all its contents as a single strings) and (x, y) coordinates
@@ -91,10 +91,6 @@ public:
     virtual void Copy();
     virtual void Cut();
     virtual void Paste();
-
-    virtual bool CanCopy() const;
-    virtual bool CanCut() const;
-    virtual bool CanPaste() const;
 
     // Undo/redo
     virtual void Undo();
@@ -112,7 +108,7 @@ public:
     virtual void SetSelection(long from, long to);
     virtual void SetEditable(bool editable);
 
-    virtual bool Enable( bool enable );
+    virtual bool Enable( bool enable = TRUE );
 
     // Implementation from now on
     void OnDropFiles( wxDropFilesEvent &event );
@@ -130,26 +126,65 @@ public:
     void OnUpdateUndo(wxUpdateUIEvent& event);
     void OnUpdateRedo(wxUpdateUIEvent& event);
 
-    bool SetFont( const wxFont &font );
-    bool SetForegroundColour(const wxColour &colour);
-    bool SetBackgroundColour(const wxColour &colour);
+    bool SetFont(const wxFont& font);
+    bool SetForegroundColour(const wxColour& colour);
+    bool SetBackgroundColour(const wxColour& colour);
 
     GtkWidget* GetConnectWidget();
     bool IsOwnGtkWindow( GdkWindow *window );
     void ApplyWidgetStyle();
     void CalculateScrollbar();
     void OnInternalIdle();
+    void UpdateFontIfNeeded();
 
     void SetModified() { m_modified = TRUE; }
+
+    // GTK+ textctrl is so dumb that you need to freeze/thaw it manually to
+    // avoid horrible flicker/scrolling back and forth
+    virtual void Freeze();
+    virtual void Thaw();
+
+    // textctrl specific scrolling
+    virtual bool ScrollLines(int lines);
+    virtual bool ScrollPages(int pages);
+
+    // implementation only from now on
+
+    // wxGTK-specific: called recursively by Enable,
+    // to give widgets an oppprtunity to correct their colours after they
+    // have been changed by Enable
+    virtual void OnParentEnable( bool enable ) ;
+
+    // tell the control to ignore next text changed signal
+    void IgnoreNextTextUpdate();
+
+    // should we ignore the changed signal? always resets the flag
+    bool IgnoreTextUpdate();
 
 protected:
     virtual wxSize DoGetBestSize() const;
 
+    // common part of all ctors
+    void Init();
+
+    // get the vertical adjustment, if any, NULL otherwise
+    GtkAdjustment *GetVAdj() const;
+
+    // scroll the control by the given number of pixels, return true if the
+    // scroll position changed
+    bool DoScroll(GtkAdjustment *adj, int diff);
+
 private:
-    bool        m_modified;
+    // change the font for everything in this control
+    void ChangeFontGlobally();
+
     GtkWidget  *m_text;
     GtkWidget  *m_vScrollbar;
-    bool        m_vScrollbarVisible;
+
+    bool        m_modified:1;
+    bool        m_vScrollbarVisible:1;
+    bool        m_updateFont:1;
+    bool        m_ignoreNextUpdate:1;
 
     DECLARE_EVENT_TABLE()
     DECLARE_DYNAMIC_CLASS(wxTextCtrl);

@@ -3,7 +3,7 @@
 // Purpose:
 // Author:      Robert Roebling
 // Created:
-// Id:          $Id: dialog.h,v 1.24.2.1 2000/07/05 19:27:29 VZ Exp $
+// Id:          $Id: dialog.h,v 1.29 2002/09/07 12:28:46 GD Exp $
 // Copyright:   (c) 1998 Robert Roebling
 // Licence:           wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -11,13 +11,11 @@
 #ifndef __GTKDIALOGH__
 #define __GTKDIALOGH__
 
-#ifdef __GNUG__
+#if defined(__GNUG__) && !defined(__APPLE__)
 #pragma interface
 #endif
 
 #include "wx/defs.h"
-#include "wx/panel.h"
-#include "wx/icon.h"
 
 //-----------------------------------------------------------------------------
 // classes
@@ -51,64 +49,31 @@ public:
             const wxSize &size = wxDefaultSize,
             long style = wxDEFAULT_DIALOG_STYLE,
             const wxString &name = wxDialogNameStr );
-    ~wxDialog();
-
-    void SetTitle(const wxString& title);
-    wxString GetTitle() const;
+    ~wxDialog() {}
 
     void OnApply( wxCommandEvent &event );
     void OnCancel( wxCommandEvent &event );
     void OnOK( wxCommandEvent &event );
     void OnPaint( wxPaintEvent& event );
-    void OnSize( wxSizeEvent &event );
     void OnCloseWindow( wxCloseEvent& event );
     /*
        void OnCharHook( wxKeyEvent& event );
      */
 
-    bool Destroy();
-
-    virtual bool Show( bool show );
+    virtual bool Show( bool show = TRUE );
     virtual int ShowModal();
     virtual void EndModal( int retCode );
     virtual bool IsModal() const;
     void SetModal( bool modal );
 
-    virtual void InitDialog(void);
-
-    virtual void SetIcon( const wxIcon &icon );
-    virtual void Iconize( bool WXUNUSED(iconize)) { }
-    virtual bool IsIconized() const { return FALSE; }
-    bool Iconized() const { return IsIconized(); }
-    virtual void Maximize() { }
-    virtual void Restore() { }
-
-    virtual bool IsTopLevel() const { return TRUE; }
-    
     // implementation
     // --------------
 
-    // move the window to the specified location and resize it: this is called
-    // from both DoSetSize() and DoSetClientSize()
-    virtual void DoMoveWindow(int x, int y, int width, int height);
-    
-    virtual void GtkOnSize( int x, int y, int width, int height );
-    virtual void OnInternalIdle();
-
     bool       m_modalShowing;
-    wxString   m_title;
-    wxIcon     m_icon;
 
 protected:
     // common part of all ctors
     void Init();
-
-    // common part of Destroy() and ~wxDialog
-    void CleanUp();
-
-    virtual void DoSetSize(int x, int y,
-                           int width, int height,
-                           int sizeFlags = wxSIZE_AUTO);
 
 private:
     DECLARE_EVENT_TABLE()

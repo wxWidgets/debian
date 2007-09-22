@@ -7,7 +7,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     04/01/98
-// RCS-ID:      $Id: laywin.cpp,v 1.8.2.4 2000/11/29 00:09:37 vadz Exp $
+// RCS-ID:      $Id: laywin.cpp,v 1.16 2001/07/05 18:48:48 VZ Exp $
 // Copyright:   (c) Julian Smart
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -24,14 +24,17 @@
 #endif
 
 #ifndef WX_PRECOMP
-#include "wx/wx.h"
-#include "wx/mdi.h"
+    #include "wx/frame.h"
+    #include "wx/mdi.h"
 #endif
 
 #include "wx/laywin.h"
 
 IMPLEMENT_DYNAMIC_CLASS(wxQueryLayoutInfoEvent, wxEvent)
 IMPLEMENT_DYNAMIC_CLASS(wxCalculateLayoutEvent, wxEvent)
+
+DEFINE_EVENT_TYPE(wxEVT_QUERY_LAYOUT_INFO)
+DEFINE_EVENT_TYPE(wxEVT_CALCULATE_LAYOUT)
 
 #if wxUSE_SASH
 IMPLEMENT_CLASS(wxSashLayoutWindow, wxSashWindow)
@@ -217,6 +220,11 @@ bool wxLayoutAlgorithm::LayoutMDIFrame(wxMDIParentFrame* frame, wxRect* r)
 
 #endif // wxUSE_MDI_ARCHITECTURE
 
+bool wxLayoutAlgorithm::LayoutFrame(wxFrame* frame, wxWindow* mainWindow)
+{
+    return LayoutWindow(frame, mainWindow);
+}
+
 // Layout algorithm for any window. mainWindow gets what's left over.
 bool wxLayoutAlgorithm::LayoutWindow(wxWindow* parent, wxWindow* mainWindow)
 {
@@ -253,12 +261,60 @@ bool wxLayoutAlgorithm::LayoutWindow(wxWindow* parent, wxWindow* mainWindow)
     wxCalculateLayoutEvent event;
     event.SetRect(rect);
 
+    // Find the last layout-aware window, so we can make it fill all remaining
+    // space.
+    wxWindow* lastAwareWindow = NULL;
     wxNode* node = parent->GetChildren().First();
     while (node)
     {
         wxWindow* win = (wxWindow*) node->Data();
 
-        if (win != mainWindow)
+        if (win->IsShown())
+        {
+            wxCalculateLayoutEvent tempEvent(win->GetId());
+            tempEvent.SetEventObject(win);
+            tempEvent.SetFlags(wxLAYOUT_QUERY);
+            tempEvent.SetRect(event.GetRect());
+            if (win->GetEventHandler()->ProcessEvent(tempEvent))
+                lastAwareWindow = win;
+        }
+
+        node = node->Next();
+    }
+
+    // Now do a dummy run to see if we have any space left for the final window (fail if not)
+    node = parent->GetChildren().First();
+    while (node)
+    {
+        wxWindow* win = (wxWindow*) node->Data();
+
+        // If mainWindow is NULL and we're at the last window,
+        // skip this, because we'll simply make it fit the remaining space.
+        if (win->IsShown() && (win != mainWindow) && (mainWindow != NULL || win != lastAwareWindow))
+        {
+            event.SetId(win->GetId());
+            event.SetEventObject(win);
+            event.SetFlags(wxLAYOUT_QUERY);
+
+            win->GetEventHandler()->ProcessEvent(event);
+        }
+
+        node = node->Next();
+    }
+
+    if (event.GetRect().GetWidth() < 0 || event.GetRect().GetHeight() < 0)
+        return FALSE;
+
+    event.SetRect(rect);
+
+    node = parent->GetChildren().First();
+    while (node)
+    {
+        wxWindow* win = (wxWindow*) node->Data();
+
+        // If mainWindow is NULL and we're at the last window,
+        // skip this, because we'll simply make it fit the remaining space.
+        if (win->IsShown() && (win != mainWindow) && (mainWindow != NULL || win != lastAwareWindow))
         {
             event.SetId(win->GetId());
             event.SetEventObject(win);
@@ -273,7 +329,12 @@ bool wxLayoutAlgorithm::LayoutWindow(wxWindow* parent, wxWindow* mainWindow)
     rect = event.GetRect();
 
     if (mainWindow)
-        mainWindow->SetSize(rect.x, rect.y, rect.width, rect.height);
+        mainWindow->SetSize(rect.x, rect.y, wxMax(0, rect.width), wxMax(0, rect.height));
+    else if (lastAwareWindow)
+    {
+        // Fit the remaining space
+        lastAwareWindow->SetSize(rect.x, rect.y, wxMax(0, rect.width), wxMax(0, rect.height));
+    }
 
     return TRUE;
 }

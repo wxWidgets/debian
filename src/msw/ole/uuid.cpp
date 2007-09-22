@@ -4,7 +4,7 @@
 // Author:      Vadim Zeitlin
 // Modified by: 
 // Created:     12.09.96
-// RCS-ID:      $Id: uuid.cpp,v 1.7.2.1 2000/03/24 11:58:17 JS Exp $
+// RCS-ID:      $Id: uuid.cpp,v 1.12 2002/08/30 20:34:27 JS Exp $
 // Copyright:   (c) 1998 Vadim Zeitlin <zeitlin@dptmaths.ens-cachan.fr>
 // Licence:     wxWindows license
 ///////////////////////////////////////////////////////////////////////////////
@@ -26,9 +26,12 @@
 
 #include  "wx/setup.h"
 
-#if wxUSE_DRAG_AND_DROP
+#if wxUSE_OLE && wxUSE_DRAG_AND_DROP
 
 // standard headers
+#if wxCHECK_W32API_VERSION( 1, 0 )
+    #include <windows.h>
+#endif
 #include  <rpc.h>                       // UUID related functions
 
 #include  "wx/msw/ole/uuid.h"
@@ -133,6 +136,10 @@ void Uuid::Create()
 // set the value
 bool Uuid::Set(const wxChar *pc)
 {
+#ifdef __WXWINE__
+    wxFAIL_MSG(_T("UUid::Set not implemented"));
+    return FALSE;
+#else
   // get UUID from string
 #ifdef _UNICODE
   if ( UuidFromString((unsigned short *)pc, &m_uuid) != RPC_S_OK)
@@ -153,6 +160,7 @@ bool Uuid::Set(const wxChar *pc)
   UuidToCForm();
 
   return TRUE;
+#endif
 }
 
 // stores m_uuid in m_pszCForm in a format required by
@@ -167,8 +175,8 @@ void Uuid::UuidToCForm()
 
   wsprintf(m_pszCForm, wxT("0x%8.8X,0x%4.4X,0x%4.4X,0x%2.2X,0x2.2%X,0x2.2%X,0x2.2%X,0x2.2%X,0x2.2%X,0x2.2%X,0x2.2%X"),
            m_uuid.Data1, m_uuid.Data2, m_uuid.Data3,
-           m_uuid.Data4[1], m_uuid.Data4[2], m_uuid.Data4[3], m_uuid.Data4[4],
-           m_uuid.Data4[5], m_uuid.Data4[6], m_uuid.Data4[7], m_uuid.Data4[8]);
+           m_uuid.Data4[0], m_uuid.Data4[1], m_uuid.Data4[2], m_uuid.Data4[3],
+           m_uuid.Data4[4], m_uuid.Data4[5], m_uuid.Data4[6], m_uuid.Data4[7]);
 }
 
 #endif

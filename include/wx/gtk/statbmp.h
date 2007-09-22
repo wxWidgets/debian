@@ -1,8 +1,8 @@
 /////////////////////////////////////////////////////////////////////////////
-// Name:        statbmp.h
+// Name:        wx/gtk/statbmp.h
 // Purpose:
 // Author:      Robert Roebling
-// Id:          $Id: statbmp.h,v 1.12 1999/11/19 21:01:10 VZ Exp $
+// Id:          $Id: statbmp.h,v 1.14 2002/09/07 12:28:46 GD Exp $
 // Copyright:   (c) 1998 Robert Roebling
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -11,39 +11,18 @@
 #ifndef __GTKSTATICBITMAPH__
 #define __GTKSTATICBITMAPH__
 
-#ifdef __GNUG__
+#if defined(__GNUG__) && !defined(__APPLE__)
 #pragma interface
 #endif
 
-#include "wx/defs.h"
-
-#if wxUSE_STATBMP
-
-#include "wx/object.h"
-#include "wx/control.h"
-#include "wx/bitmap.h"
 #include "wx/icon.h"
-
-//-----------------------------------------------------------------------------
-// classes
-//-----------------------------------------------------------------------------
-
-class wxStaticBitmap;
-
-//-----------------------------------------------------------------------------
-// global data
-//-----------------------------------------------------------------------------
-
-extern const char* wxStaticBitmapNameStr;
 
 //-----------------------------------------------------------------------------
 // wxStaticBitmap
 //-----------------------------------------------------------------------------
 
-class wxStaticBitmap: public wxControl
+class wxStaticBitmap : public wxStaticBitmapBase
 {
-    DECLARE_DYNAMIC_CLASS(wxStaticBitmap)
-
 public:
     wxStaticBitmap();
     wxStaticBitmap( wxWindow *parent,
@@ -61,35 +40,25 @@ public:
                  long style = 0,
                  const wxString& name = wxStaticBitmapNameStr);
 
+    virtual void SetIcon(const wxIcon& icon) { SetBitmap( icon ); }
     virtual void SetBitmap( const wxBitmap& bitmap );
-
-    wxBitmap& GetBitmap() { return m_bitmap; }
-    const wxBitmap& GetBitmap() const { return m_bitmap; }
+    virtual wxBitmap GetBitmap() const { return m_bitmap; }
 
     // for compatibility with wxMSW
-    const wxIcon& GetIcon() const
+    wxIcon GetIcon() const
     {
         // don't use wxDynamicCast, icons and bitmaps are really the same thing
         // in wxGTK
         return (const wxIcon &)m_bitmap;
     }
 
-    // for compatibility with wxMSW
-    void  SetIcon(const wxIcon& icon)
-    {
-        SetBitmap( icon );
-    }
-
-protected:
-    virtual wxSize DoGetBestSize() const;
-
 private:
     // creates the new pixmap widget
     void CreatePixmapWidget();
 
     wxBitmap   m_bitmap;
-};
 
-#endif
+    DECLARE_DYNAMIC_CLASS(wxStaticBitmap)
+};
 
 #endif // __GTKSTATICBITMAPH__

@@ -4,7 +4,7 @@
 %% Author:      Vadim Zeitlin
 %% Modified by:
 %% Created:     03.01.00
-%% RCS-ID:      $Id: calctrl.tex,v 1.2.2.6 2000/05/29 07:37:24 JS Exp $
+%% RCS-ID:      $Id: calctrl.tex,v 1.8 2002/06/07 20:15:22 VZ Exp $
 %% Copyright:   (c) Vadim Zeitlin
 %% License:     wxWindows license
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -29,7 +29,7 @@ font and without border, but setting custom attributes with
 create a custom attribute object and set it for the day you want to be
 displayed specially (note that the control will take ownership of the pointer,
 i.e. it will delete it itself). A day may be marked as being a holiday, even
-if it is not reckognized as oen by \helpref{wxDateTime}{tdateholidays} using 
+if it is not recognized as one by \helpref{wxDateTime}{tdateholidays} using 
 \helpref{SetHoliday}{wxcalendardateattrsetholiday} method.
 
 As the attributes are specified for each day, they may change when the month
@@ -56,6 +56,8 @@ is changed, so you will often want to update them in
 \twocolitem{\windowstyle{wxCAL\_SHOW\_HOLIDAYS}}{Highlight holidays in the calendar}
 \twocolitem{\windowstyle{wxCAL\_NO\_YEAR\_CHANGE}}{Disable the year changing}
 \twocolitem{\windowstyle{wxCAL\_NO\_MONTH\_CHANGE}}{Disable the month (and, implicitly, the year) changing}
+\twocolitem{\windowstyle{wxCAL\_SHOW\_SURROUNDING\_WEEKS}}{Show the neighbouring weeks in the previous and next months}
+\twocolitem{\windowstyle{wxCAL\_SEQUENTIAL\_MONTH\_SELECTION}}{Use alternative, more compact, style for the month and year selection controls.}
 \end{twocollist}
 
 The default calendar style is {\tt wxCAL\_SHOW\_HOLIDAYS}.
@@ -68,7 +70,7 @@ direct input to member functions that take a
 
 \twocolwidtha{7cm}
 \begin{twocollist}\itemsep=7pt
-\twocolitem{{\bf EVT\_CALENDAR(id, func)}}{A day was double clickedi n the calendar.}
+\twocolitem{{\bf EVT\_CALENDAR(id, func)}}{A day was double clicked in the calendar.}
 \twocolitem{{\bf EVT\_CALENDAR\_SEL\_CHANGED(id, func)}}{The selected date changed.}
 \twocolitem{{\bf EVT\_CALENDAR\_DAY(id, func)}}{The selected day changed.}
 \twocolitem{{\bf EVT\_CALENDAR\_MONTH(id, func)}}{The selected month changed.}
@@ -84,14 +86,17 @@ Note that changing the selected date will result in either of
 
 The following are the possible return values for 
 \helpref{HitTest}{wxcalendarctrlhittest} method:
-{\small \begin{verbatim}
+
+{\small
+\begin{verbatim}
 enum wxCalendarHitTestResult
-\{
+{
     wxCAL_HITTEST_NOWHERE,      // outside of anything
     wxCAL_HITTEST_HEADER,       // on the header (weekdays)
     wxCAL_HITTEST_DAY           // on a day in the calendar
-\};
-\end{verbatim}}
+}
+\end{verbatim}
+}
 
 \wxheading{See also}
 
@@ -143,7 +148,7 @@ Gets the currently selected date.
 \func{void}{EnableYearChange}{\param{bool }{enable = TRUE}}
 
 This function should be used instead of changing {\tt wxCAL\_NO\_YEAR\_CHANGE}
-style bit directly. It allows or disallows the user to chaneg the year
+style bit directly. It allows or disallows the user to change the year
 interactively.
 
 \membersection{wxCalendarCtrl::EnableMonthChange}\label{wxcalendarctrlenablemonthchange}
@@ -226,7 +231,7 @@ window style includes {\tt wxCAL\_SHOW\_HOLIDAYS} flag).
 
 \constfunc{const wxColour\&}{GetHolidayColourFg}{\void}
 
-Return the foregound colour currently used for holiday highlighting.
+Return the foreground colour currently used for holiday highlighting.
 
 \wxheading{See also}
 
@@ -292,14 +297,14 @@ No base class
 
 Here are the possible kinds of borders which may be used to decorate a date:
 
-{\small \begin{verbatim}
+\begin{verbatim}
 enum wxCalendarDateBorder
 {
-    wxCAL\_BORDER\_NONE,          // no border (default)
-    wxCAL\_BORDER\_SQUARE,        // a rectangular border
-    wxCAL\_BORDER\_ROUND          // a round border
+    wxCAL_BORDER_NONE,          // no border (default)
+    wxCAL_BORDER_SQUARE,        // a rectangular border
+    wxCAL_BORDER_ROUND          // a round border
 }
-\end{verbatim}}
+\end{verbatim}
 
 \wxheading{See also}
 
@@ -433,7 +438,7 @@ The wxCalendarEvent class is used together with
 
 \membersection{wxCalendarEvent::GetDate}{wxcalendareventgetdate}
 
-\constfunc{const wxDateTime&}{GetDate}{\void}
+\constfunc{const wxDateTime\&}{GetDate}{\void}
 
 Returns the date. This function may be called for all event types except 
 {\tt EVT\_CALENDAR\_WEEKDAY\_CLICKED} one for which it doesn't make sense.

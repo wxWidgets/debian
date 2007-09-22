@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     04/01/98
-// RCS-ID:      $Id: reseditr.h,v 1.18.2.1 2000/04/22 14:41:06 JS Exp $
+// RCS-ID:      $Id: reseditr.h,v 1.21 2002/09/07 12:05:26 GD Exp $
 // Copyright:   (c) Julian Smart
 // Licence:   	wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -14,7 +14,7 @@
 
 #define wxDIALOG_EDITOR_VERSION 2.1
 
-#ifdef __GNUG__
+#if defined(__GNUG__) && !defined(__APPLE__)
 #pragma interface "reseditr.h"
 #endif
 
@@ -182,7 +182,7 @@ public:
     virtual wxResourceEditorScrolledWindow *OnCreateEditorPanel(wxFrame *parent);
     virtual wxToolBar *OnCreateToolBar(wxFrame *parent);
     
-    // Create a window information object for the give window
+    // Create a window information object for the given window
     wxWindowPropertyInfo* CreatePropertyInfoForWindow(wxWindow *win);
     // Edit the given window
     void EditWindow(wxWindow *win);
@@ -391,8 +391,9 @@ private:
     DECLARE_EVENT_TABLE()
 };
 
-#define OBJECT_MENU_EDIT      1
-#define OBJECT_MENU_DELETE    2
+#define OBJECT_MENU_TITLE     1
+#define OBJECT_MENU_EDIT      2
+#define OBJECT_MENU_DELETE    3
 
 /*
 * Main toolbar

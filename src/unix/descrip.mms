@@ -9,12 +9,24 @@
 	define wx [--.include.wx]
 
 .ifdef __WXMOTIF__
-CXX_DEFINE = /define=(__WXMOTIF__=1)
+CXX_DEFINE = /define=(__WXMOTIF__=1)/name=(as_is,short)\
+	   /assume=(nostdnew,noglobal_array_new)
+CC_DEFINE = /define=(__WXMOTIF__=1)/name=(as_is,short)
 .else
 .ifdef __WXGTK__
-CXX_DEFINE = /define=(__WXGTK__=1)
+.ifdef __WXUNIVERSAL__
+CXX_DEFINE = /define=(__WXGTK__=1,__WXUNIVERSAL__==1)/float=ieee\
+	/name=(as_is,short)/ieee=denorm/assume=(nostdnew,noglobal_array_new)
+CC_DEFINE = /define=(__WXGTK__=1,__WXUNIVERSAL__==1)/float=ieee\
+	/name=(as_is,short)/ieee=denorm
+.else
+CXX_DEFINE = /define=(__WXGTK__=1)/float=ieee/name=(as_is,short)/ieee=denorm\
+	   /assume=(nostdnew,noglobal_array_new)
+CC_DEFINE = /define=(__WXGTK__=1)/float=ieee/name=(as_is,short)/ieee=denorm
+.endif
 .else
 CXX_DEFINE =
+CC_DEFINE =
 .endif
 .endif
 
@@ -23,7 +35,7 @@ CXX_DEFINE =
 .cpp.obj :
 	cxx $(CXXFLAGS)$(CXX_DEFINE) $(MMS$TARGET_NAME).cpp
 .c.obj :
-	cc $(CFLAGS)$(CXX_DEFINE) $(MMS$TARGET_NAME).c
+	cc $(CFLAGS)$(CC_DEFINE) $(MMS$TARGET_NAME).c
 
 OBJECTS = \
 		dialup.obj,\
@@ -33,7 +45,8 @@ OBJECTS = \
 		gsocket.obj,\
 		mimetype.obj,\
 		threadpsx.obj,\
-		utilsunx.obj
+		utilsunx.obj,\
+		utilsx11.obj
 
 SOURCES = \
 		dialup.cpp,\
@@ -43,7 +56,8 @@ SOURCES = \
 		gsocket.c,\
 		mimetype.cpp,\
 		threadpsx.cpp,\
-		utilsunx.cpp
+		utilsunx.cpp,\
+		utilsx11.cpp
 
 all : $(SOURCES)
 	$(MMS)$(MMSQUALIFIERS) $(OBJECTS)
@@ -51,7 +65,11 @@ all : $(SOURCES)
 	library [--.lib]libwx_motif.olb $(OBJECTS)
 .else
 .ifdef __WXGTK__
+.ifdef __WXUNIVERSAL__
+	library [--.lib]libwx_gtk_univ.olb $(OBJECTS)
+.else
 	library [--.lib]libwx_gtk.olb $(OBJECTS)
+.endif
 .endif
 .endif
 
@@ -63,3 +81,4 @@ gsocket.obj : gsocket.c
 mimetype.obj : mimetype.cpp
 threadpsx.obj : threadpsx.cpp
 utilsunx.obj : utilsunx.cpp
+utilsx11.obj : utilsx11.cpp

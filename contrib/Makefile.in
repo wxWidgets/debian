@@ -8,6 +8,8 @@ all:
 clean:
 	cd src; $(MAKE) clean
 	cd samples; $(MAKE) clean
+	cd utils; $(MAKE) clean
+    
 
 samples:
 	cd samples; $(MAKE)

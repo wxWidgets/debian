@@ -111,12 +111,12 @@ Its meaning is determined by the {\it flags} parameter.}
 
 \twocolwidtha{5cm}
 \begin{twocollist}
-\twocolitem{{\bf \indexit{wxBITMAP\_TYPE\_ICO}}}{Load a Windows icon file.}
-\twocolitem{{\bf \indexit{wxBITMAP\_TYPE\_ICO\_RESOURCE}}}{Load a Windows icon from the resource database.}
-\twocolitem{{\bf \indexit{wxBITMAP\_TYPE\_GIF}}}{Load a GIF bitmap file.}
-\twocolitem{{\bf \indexit{wxBITMAP\_TYPE\_XBM}}}{Load an X bitmap file.}
-\twocolitem{{\bf \indexit{wxBITMAP\_TYPE\_XPM}}}{Load an XPM bitmap file.}
-%\twocolitem{{\bf \indexit{wxBITMAP\_TYPE\_RESOURCE}}}{Load a Windows resource name.}
+\twocolitem{\indexit{wxBITMAP\_TYPE\_ICO}}{Load a Windows icon file.}
+\twocolitem{\indexit{wxBITMAP\_TYPE\_ICO\_RESOURCE}}{Load a Windows icon from the resource database.}
+\twocolitem{\indexit{wxBITMAP\_TYPE\_GIF}}{Load a GIF bitmap file.}
+\twocolitem{\indexit{wxBITMAP\_TYPE\_XBM}}{Load an X bitmap file.}
+\twocolitem{\indexit{wxBITMAP\_TYPE\_XPM}}{Load an XPM bitmap file.}
+%\twocolitem{\indexit{wxBITMAP\_TYPE\_RESOURCE}}{Load a Windows resource name.}
 \end{twocollist}
 
 The validity of these flags depends on the platform and wxWindows configuration.
@@ -181,7 +181,25 @@ Under X, {\it type} defaults to wxBITMAP\_TYPE\_XPM.
 
 \wxheading{See also}
 
+
+\membersection{wxIcon::CopyFromBitmap}\label{wxiconcopyfrombitmap}
+
+\func{void}{CopyFromBitmap}{\param{const wxBitmap\&}{ bmp}}
+
+Copies {\it bmp} bitmap to this icon. Under MS Windows the bitmap
+must have mask colour set.
+
+
 \helpref{wxIcon::LoadFile}{wxiconloadfile}
+
+\perlnote{Constructors supported by wxPerl are:\par
+\begin{itemize}
+\item{Wx::Icon->new( width, height, depth = -1 )}
+\item{Wx::Icon->new( name, type, desiredWidth = -1, desiredHeight = -1 )}
+\item{Wx::Icon->newFromBits( bits, width, height, depth = 1 )}
+\item{Wx::Icon->newFromXPM( data )}
+\end{itemize}
+}
 
 \membersection{wxIcon::\destruct{wxIcon}}
 

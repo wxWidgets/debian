@@ -4,7 +4,7 @@
 // Author:      Chris Breeze
 // Modified by:
 // Created:     21/07/97
-// RCS-ID:      $Id: playerdg.cpp,v 1.3 2000/03/19 19:55:10 JS Exp $
+// RCS-ID:      $Id: playerdg.cpp,v 1.4 2002/06/12 13:19:08 JS Exp $
 // Copyright:   (c) 1993-1998 Chris Breeze
 // Licence:   	wxWindows licence
 //---------------------------------------------------------------------------
@@ -52,7 +52,7 @@ PlayerSelectionDialog::PlayerSelectionDialog(
 	// enable constraints
 	SetAutoLayout (TRUE);
 
-	wxStaticText* msg = new wxStaticText(this, -1, "Please select a name from the list");
+	wxStaticText* msg = new wxStaticText(this, -1, "Please select a name or type a new one:");
 
 	wxListBox* list = new wxListBox(
 						this, ID_LISTBOX,
@@ -121,6 +121,8 @@ PlayerSelectionDialog::PlayerSelectionDialog(
 		list->SetStringSelection(prevPlayer);
 		m_textField->SetValue(prevPlayer);
 	}
+
+    m_textField->SetFocus();
 
 	Layout();
     

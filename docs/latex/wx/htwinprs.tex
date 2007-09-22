@@ -32,10 +32,10 @@ The product of parsing is a wxHtmlCell (resp. wxHtmlContainer) object.
 
 \func{}{wxHtmlWinParser}{\void}
 
-\func{}{wxHtmlWinParser}{\param{wxWindow }{*wnd}}
+\func{}{wxHtmlWinParser}{\param{wxHtmlWindow }{*wnd}}
 
 Constructor. Don't use the default one, use constructor with
-{\it wnd} paremeter ({\it wnd} is pointer to associated \helpref{wxHtmlWindow}{wxhtmlwindow})
+{\it wnd} parameter ({\it wnd} is pointer to associated \helpref{wxHtmlWindow}{wxhtmlwindow})
 
 \membersection{wxHtmlWinParser::AddModule}\label{wxhtmlwinparseraddmodule}
 
@@ -98,7 +98,7 @@ know the height of the current font, call {\tt GetDC -> GetCharWidth()}
 
 \constfunc{wxHtmlContainerCell*}{GetContainer}{\void}
 
-Returns pointer to the currectly opened container (see \helpref{Overview}{cells}).
+Returns pointer to the currently opened container (see \helpref{Overview}{cells}).
 Common use:
 
 \begin{verbatim}
@@ -185,7 +185,7 @@ that is supported by operating system.
 
 \membersection{wxHtmlWinParser::GetWindow}\label{wxhtmlwinparsergetwindow}
 
-\func{wxWindow*}{GetWindow}{\void}
+\func{wxHtmlWindow*}{GetWindow}{\void}
 
 Returns associated window (wxHtmlWindow). This may be NULL! (You should always
 test if it is non-NULL. For example {\tt TITLE} handler sets window

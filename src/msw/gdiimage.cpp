@@ -4,7 +4,7 @@
 // Author:      Vadim Zeitlin
 // Modified by:
 // Created:     20.11.99
-// RCS-ID:      $Id: gdiimage.cpp,v 1.6.2.2 2001/07/17 16:47:10 JS Exp $
+// RCS-ID:      $Id: gdiimage.cpp,v 1.24.2.2 2002/09/21 23:01:25 VZ Exp $
 // Copyright:   (c) 1999 Vadim Zeitlin <zeitlin@dptmaths.ens-cachan.fr>
 // Licence:     wxWindows license
 ///////////////////////////////////////////////////////////////////////////////
@@ -30,20 +30,20 @@
 
 #ifndef WX_PRECOMP
     #include "wx/string.h"
+    #include "wx/log.h"
 #endif // WX_PRECOMP
 
 #include "wx/msw/private.h"
 
 #include "wx/app.h"
 
+#ifndef __WXMICROWIN__
 #include "wx/msw/dib.h"
+#endif
+
 #include "wx/msw/bitmap.h"
 #include "wx/msw/gdiimage.h"
 #include "wx/bitmap.h"
-
-#if wxUSE_XPM_IN_MSW
-#   include "wx/xpmhand.h"
-#endif // wxUSE_XPM_IN_MSW
 
 #ifdef __WIN16__
 #   include "wx/msw/curico.h"
@@ -52,6 +52,8 @@
 // ----------------------------------------------------------------------------
 // private classes
 // ----------------------------------------------------------------------------
+
+#ifndef __WXMICROWIN__
 
 // all image handlers are declared/defined in this file because the outside
 // world doesn't have to know about them (but only about wxBITMAP_TYPE_XXX ids)
@@ -173,16 +175,17 @@ private:
 // wxWin macros
 // ----------------------------------------------------------------------------
 
-    IMPLEMENT_DYNAMIC_CLASS(wxBMPFileHandler, wxBitmapHandler)
-    IMPLEMENT_DYNAMIC_CLASS(wxBMPResourceHandler, wxBitmapHandler)
-    IMPLEMENT_DYNAMIC_CLASS(wxICOFileHandler, wxGDIImageHandler)
-    IMPLEMENT_DYNAMIC_CLASS(wxICOResourceHandler, wxGDIImageHandler)
+IMPLEMENT_DYNAMIC_CLASS(wxBMPFileHandler, wxBitmapHandler)
+IMPLEMENT_DYNAMIC_CLASS(wxBMPResourceHandler, wxBitmapHandler)
+IMPLEMENT_DYNAMIC_CLASS(wxICOFileHandler, wxObject)
+IMPLEMENT_DYNAMIC_CLASS(wxICOResourceHandler, wxObject)
 
 // ----------------------------------------------------------------------------
 // private functions
 // ----------------------------------------------------------------------------
 
-static wxSize GetHiconSize(HICON hicon);
+#endif
+    // __MICROWIN__
 
 // ============================================================================
 // implementation
@@ -205,7 +208,7 @@ bool wxGDIImage::FreeResource(bool WXUNUSED(force))
     return TRUE;
 }
 
-WXHANDLE wxGDIImage::GetResourceHandle()
+WXHANDLE wxGDIImage::GetResourceHandle() const
 {
     return GetHandle();
 }
@@ -298,19 +301,15 @@ void wxGDIImage::CleanUpHandlers()
 
 void wxGDIImage::InitStandardHandlers()
 {
+#ifndef __WXMICROWIN__
     AddHandler(new wxBMPResourceHandler);
     AddHandler(new wxBMPFileHandler);
-
-    // GRG: Add these handlers by default if XPM support is enabled
-
-#if wxUSE_XPM_IN_MSW
-    AddHandler(new wxXPMFileHandler);
-    AddHandler(new wxXPMDataHandler);
-#endif // wxUSE_XPM_IN_MSW
-
     AddHandler(new wxICOResourceHandler);
     AddHandler(new wxICOFileHandler);
+#endif
 }
+
+#ifndef __WXMICROWIN__
 
 // ----------------------------------------------------------------------------
 // wxBitmap handlers
@@ -355,6 +354,8 @@ bool wxBMPFileHandler::LoadFile(wxBitmap *bitmap,
 #if wxUSE_IMAGE_LOADING_IN_MSW
     wxPalette *palette = NULL;
     bool success = wxLoadIntoBitmap(WXSTRINGCAST name, bitmap, &palette) != 0;
+
+#if wxUSE_PALETTE
     if ( success && palette )
     {
         bitmap->SetPalette(*palette);
@@ -362,6 +363,7 @@ bool wxBMPFileHandler::LoadFile(wxBitmap *bitmap,
 
     // it was copied by the bitmap if it was loaded successfully
     delete palette;
+#endif // wxUSE_PALETTE
 
     return success;
 #else
@@ -375,9 +377,15 @@ bool wxBMPFileHandler::SaveFile(wxBitmap *bitmap,
                                 const wxPalette *pal)
 {
 #if wxUSE_IMAGE_LOADING_IN_MSW
+
+#if wxUSE_PALETTE
     wxPalette *actualPalette = (wxPalette *)pal;
     if ( !actualPalette )
         actualPalette = bitmap->GetPalette();
+#else
+    wxPalette *actualPalette = NULL;
+#endif // wxUSE_PALETTE
+
     return wxSaveBitmap(WXSTRINGCAST name, bitmap, actualPalette) != 0;
 #else
     return FALSE;
@@ -390,7 +398,7 @@ bool wxBMPFileHandler::SaveFile(wxBitmap *bitmap,
 
 bool wxICOFileHandler::LoadIcon(wxIcon *icon,
                                 const wxString& name,
-                                long flags,
+                                long WXUNUSED(flags),
                                 int desiredWidth, int desiredHeight)
 {
 #if wxUSE_RESOURCE_LOADING_IN_MSW
@@ -402,24 +410,47 @@ bool wxICOFileHandler::LoadIcon(wxIcon *icon,
 #ifdef __WIN32__
     HICON hicon = NULL;
 
-    // Parse the filename: it may be of the form
-    // filename;n in order to specify the nth icon in the file.
-    // For the moment, ignore the issue of possible semicolons in the filename.
+    // Parse the filename: it may be of the form "filename;n" in order to
+    // specify the nth icon in the file.
+    //
+    // For the moment, ignore the issue of possible semicolons in the
+    // filename.
     int iconIndex = 0;
-    wxString name1(name);
+    wxString nameReal(name);
     wxString strIconIndex = name.AfterLast(wxT(';'));
     if (strIconIndex != name)
     {
         iconIndex = wxAtoi(strIconIndex);
-        name1 = name.BeforeLast(wxT(';'));
+        nameReal = name.BeforeLast(wxT(';'));
     }
 
+#if 0
+    // If we don't know what size icon we're looking for,
+    // try to find out what's there.
+    // Unfortunately this doesn't work, because ExtractIconEx
+    // will scale the icon to the 'desired' size, even if that
+    // size of icon isn't explicitly stored. So we would have
+    // to parse the icon file outselves.
+    if ( desiredWidth == -1 &&
+         desiredHeight == -1)
+    {
+        // Try loading a large icon first
+        if ( ::ExtractIconEx(nameReal, iconIndex, &hicon, NULL, 1) == 1)
+        {
+        }
+        // Then try loading a small icon
+        else if ( ::ExtractIconEx(nameReal, iconIndex, NULL, &hicon, 1) == 1)
+        {
+        }
+    }
+    else
+#endif
     // were we asked for a large icon?
     if ( desiredWidth == ::GetSystemMetrics(SM_CXICON) &&
          desiredHeight == ::GetSystemMetrics(SM_CYICON) )
     {
         // get the specified large icon from file
-        if ( !::ExtractIconEx(name1, iconIndex, &hicon, NULL, 1) )
+        if ( !::ExtractIconEx(nameReal, iconIndex, &hicon, NULL, 1) )
         {
             // it is not an error, but it might still be useful to be informed
             // about it optionally
@@ -432,7 +463,7 @@ bool wxICOFileHandler::LoadIcon(wxIcon *icon,
               desiredHeight == ::GetSystemMetrics(SM_CYSMICON) )
     {
         // get the specified small icon from file
-        if ( !::ExtractIconEx(name1, iconIndex, NULL, &hicon, 1) )
+        if ( !::ExtractIconEx(nameReal, iconIndex, NULL, &hicon, 1) )
         {
             wxLogTrace(_T("iconload"),
                        _T("No small icons found in the file '%s'."),
@@ -443,8 +474,8 @@ bool wxICOFileHandler::LoadIcon(wxIcon *icon,
 
     if ( !hicon )
     {
-        // take any (the first one) icon from the file by default
-        hicon = ::ExtractIcon(wxGetInstance(), name1, 0 /* first */);
+        // take any size icon from the file by index
+        hicon = ::ExtractIcon(wxGetInstance(), nameReal, iconIndex);
     }
 
     if ( !hicon )
@@ -455,7 +486,7 @@ bool wxICOFileHandler::LoadIcon(wxIcon *icon,
         return FALSE;
     }
 
-    size = GetHiconSize(hicon);
+    size = wxGetHiconSize(hicon);
 #else // Win16
     HICON hicon = ReadIconFile((wxChar *)name.c_str(),
                                wxGetInstance(),
@@ -486,32 +517,62 @@ bool wxICOFileHandler::LoadIcon(wxIcon *icon,
 
 bool wxICOResourceHandler::LoadIcon(wxIcon *icon,
                                     const wxString& name,
-                                    long flags,
+                                    long WXUNUSED(flags),
                                     int desiredWidth, int desiredHeight)
 {
     HICON hicon;
 
+    // do we need the icon of the specific size or would any icon do?
+    bool hasSize = desiredWidth != -1 || desiredHeight != -1;
+
+    wxASSERT_MSG( !hasSize || (desiredWidth != -1 && desiredHeight != -1),
+                  _T("width and height should be either both -1 or not") );
+
+    // try to load the icon from this program first to allow overriding the
+    // standard icons (although why one would want to do it considering that
+    // we already have wxApp::GetStdIcon() is unclear)
+
+    // note that we can't just always call LoadImage() because it seems to do
+    // some icon rescaling internally which results in very ugly 16x16 icons
 #if defined(__WIN32__) && !defined(__SC__)
-    if ( desiredWidth != -1 && desiredHeight != -1 )
+    if ( hasSize )
     {
         hicon = (HICON)::LoadImage(wxGetInstance(), name, IMAGE_ICON,
                                     desiredWidth, desiredHeight,
                                     LR_DEFAULTCOLOR);
     }
     else
-#endif // Win32
+#endif // Win32/!Win32
     {
         hicon = ::LoadIcon(wxGetInstance(), name);
     }
 
-    wxSize size = GetHiconSize(hicon);
-    icon->SetSize(size.x, size.y);
-
-    // Override the found values with desired values
-    if ( desiredWidth > -1 && desiredHeight > -1 )
+    // next check if it's not a standard icon
+    if ( !hicon && !hasSize )
     {
-        icon->SetSize(desiredWidth, desiredHeight);
+        static const struct
+        {
+            const wxChar *name;
+            LPTSTR id;
+        } stdIcons[] =
+        {
+            { wxT("wxICON_QUESTION"),   IDI_QUESTION    },
+            { wxT("wxICON_WARNING"),    IDI_EXCLAMATION },
+            { wxT("wxICON_ERROR"),      IDI_HAND        },
+            { wxT("wxICON_INFORMATION"),       IDI_ASTERISK    },
+        };
+
+        for ( size_t nIcon = 0; !hicon && nIcon < WXSIZEOF(stdIcons); nIcon++ )
+        {
+            if ( name == stdIcons[nIcon].name )
+            {
+                hicon = ::LoadIcon((HINSTANCE)NULL, stdIcons[nIcon].id);
+            }
+        }
     }
+
+    wxSize size = wxGetHiconSize(hicon);
+    icon->SetSize(size.x, size.y);
 
     icon->SetHICON((WXHICON)hicon);
 
@@ -522,7 +583,7 @@ bool wxICOResourceHandler::LoadIcon(wxIcon *icon,
 // private functions
 // ----------------------------------------------------------------------------
 
-static wxSize GetHiconSize(HICON hicon)
+wxSize wxGetHiconSize(HICON hicon)
 {
     wxSize size(32, 32);    // default
 
@@ -556,3 +617,5 @@ static wxSize GetHiconSize(HICON hicon)
 
     return size;
 }
+#endif
+    // __WXMICROWIN__

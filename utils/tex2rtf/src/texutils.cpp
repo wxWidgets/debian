@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     7.9.93
-// RCS-ID:      $Id: texutils.cpp,v 1.6.2.1 2000/08/17 07:17:19 JS Exp $
+// RCS-ID:      $Id: texutils.cpp,v 1.19 2002/07/14 13:21:23 GD Exp $
 // Copyright:   (c) Julian Smart
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -24,7 +24,11 @@
 #include "wx/wx.h"
 #endif
 
-#include <wx/hash.h>
+#include "wx/hash.h"
+
+#ifdef new
+#undef new
+#endif
 
 #if wxUSE_IOSTREAMH
 #include <iostream.h>
@@ -146,7 +150,7 @@ void ResetTopicCounter(void)
 
 static char *forceTopicName = NULL;
 
-void ForceTopicName(char *name)
+void ForceTopicName(const char *name)
 {
   if (forceTopicName)
     delete[] forceTopicName;
@@ -239,9 +243,9 @@ int ParseUnitArgument(char *unitArg)
       if (strcmp(units, "in") == 0)
         conversionFactor = 72.0;
       else if (strcmp(units, "cm") == 0)
-        conversionFactor = 72.0/2.51;
+        conversionFactor = (float)72.0/(float)2.51;
       else if (strcmp(units, "mm") == 0)
-        conversionFactor = 72.0/25.1;
+        conversionFactor = (float)72.0/(float)25.1;
       else if (strcmp(units, "pt") == 0)
         conversionFactor = 1;
     }
@@ -378,7 +382,7 @@ void AddTexRef(char *name, char *file, char *sectionName,
 
 void WriteTexReferences(char *filename)
 {
-  ofstream ostr(filename);
+  wxSTD ofstream ostr(filename);
   if (ostr.bad()) return;
   char buf[200];
   
@@ -405,7 +409,7 @@ void ReadTexReferences(char *filename)
   if (!wxFileExists(filename))
       return;
 
-  ifstream istr(filename, ios::in);
+  wxSTD ifstream istr(filename, wxSTD ios::in);
 
   if (istr.bad()) return;
 
@@ -432,7 +436,14 @@ void ReadTexReferences(char *filename)
         istr.get(ch);
       }
       section[i] = 0;
+
+      // gt - needed to trick the hash table "TexReferences" into deleting the key 
+      // strings it creates in the Put() function, but not the item that is
+      // created here, as that is destroyed elsewhere.  Without doing this, there
+      // were massive memory leaks
+      TexReferences.DeleteContents(TRUE);
       TexReferences.Put(label, new TexRef(label, file, section, sectionName));
+      TexReferences.DeleteContents(FALSE);
     }
   }
 }
@@ -443,7 +454,7 @@ void ReadTexReferences(char *filename)
  *
  */
 
-void BibEatWhiteSpace(istream& str)
+void BibEatWhiteSpace(wxSTD istream& str)
 {
   char ch = str.peek();
   
@@ -471,7 +482,7 @@ void BibEatWhiteSpace(istream& str)
 }
 
 // Read word up to { or , or space
-void BibReadWord(istream& istr, char *buffer)
+void BibReadWord(wxSTD istream& istr, char *buffer)
 {
   int i = 0;
   buffer[i] = 0;
@@ -488,7 +499,7 @@ void BibReadWord(istream& istr, char *buffer)
 }
 
 // Read string (double-quoted or not) to end quote or EOL
-void BibReadToEOL(istream& istr, char *buffer)
+void BibReadToEOL(wxSTD istream& istr, char *buffer)
 {
   int i = 0;
   buffer[i] = 0;
@@ -517,7 +528,7 @@ void BibReadToEOL(istream& istr, char *buffer)
 }
 
 // Read }-terminated value, taking nested braces into account.
-void BibReadValue(istream& istr, char *buffer, bool ignoreBraces = TRUE,
+void BibReadValue(wxSTD istream& istr, char *buffer, bool ignoreBraces = TRUE,
                   bool quotesMayTerminate = TRUE)
 {
   int braceCount = 1;
@@ -531,8 +542,9 @@ void BibReadValue(istream& istr, char *buffer, bool ignoreBraces = TRUE,
     if (i >= 4000)
     {
       char buf[100];
-      sprintf(buf, "Sorry, value > 4000 chars in bib file at line %ld, terminating.", BibLine);
-      wxFatalError(buf, "Tex2RTF Fatal Error");
+      sprintf(buf, "Sorry, value > 4000 chars in bib file at line %ld.", BibLine);
+      wxLogError(buf, "Tex2RTF Fatal Error");
+      return;
     }
     istr.get(ch);
     
@@ -573,7 +585,7 @@ bool ReadBib(char *filename)
       return FALSE;
 
   char buf[300];
-  ifstream istr(filename, ios::in);
+  wxSTD ifstream istr(filename, wxSTD ios::in);
   if (istr.bad()) return FALSE;
 
   BibLine = 1;
@@ -1170,8 +1182,20 @@ char *RegisterSetting(char *settingName, char *settingValue, bool interactive)
     htmlWorkshopFiles = StringTobool(settingValue);
   else if (StringMatch(settingName, "htmlFrameContents", FALSE, TRUE))
     htmlFrameContents = StringTobool(settingValue);
+  else if (StringMatch(settingName, "htmlStylesheet", FALSE, TRUE))
+    {
+      if (htmlStylesheet) delete[] htmlStylesheet;
+      htmlStylesheet = copystring(settingValue);
+    }
   else if (StringMatch(settingName, "upperCaseNames", FALSE, TRUE))
     upperCaseNames = StringTobool(settingValue);
+  else if (StringMatch(settingName, "ignoreBadRefs", FALSE, TRUE))
+    ignoreBadRefs = StringTobool(settingValue);
+  else if (StringMatch(settingName, "htmlFaceName", FALSE, TRUE))
+  {
+    delete[] htmlFaceName;
+    htmlFaceName = copystring(settingValue);
+  }
   else if (StringMatch(settingName, "winHelpTitle", FALSE, TRUE))
   {
     if (winHelpTitle)
@@ -1295,7 +1319,7 @@ bool ReadCustomMacros(char *filename)
   if (!wxFileExists(filename))
       return FALSE;
 
-  ifstream istr(filename, ios::in);
+  wxSTD ifstream istr(filename, wxSTD ios::in);
 
   if (istr.bad()) return FALSE;
 
@@ -1452,7 +1476,7 @@ char *ParseMultifieldString(char *allFields, int *pos)
  *
  */
  
-ColourTableEntry::ColourTableEntry(char *theName, unsigned int r,  unsigned int g,  unsigned int b)
+ColourTableEntry::ColourTableEntry(const char *theName, unsigned int r,  unsigned int g,  unsigned int b)
 {
   name = copystring(theName);
   red = r;
@@ -1465,7 +1489,7 @@ ColourTableEntry::~ColourTableEntry(void)
   delete[] name;
 }
 
-void AddColour(char *theName, unsigned int r,  unsigned int g,  unsigned int b)
+void AddColour(const char *theName, unsigned int r,  unsigned int g,  unsigned int b)
 {
   wxNode *node = ColourTable.Find(theName);
   if (node)
@@ -1556,24 +1580,24 @@ void InitialiseColourTable(void)
  * The purpose of this is to reduce the number of times wxYield is
  * called, since under Windows this can slow things down.
  */
- 
-static int yieldCount = 0;
 
 void Tex2RTFYield(bool force)
 {
 #ifdef __WXMSW__
-  if (isSync)
-    return;
+    static int yieldCount = 0;
     
-  if (force)
-    yieldCount = 0;
-  if (yieldCount == 0)
-  {
-    if (wxTheApp)
-        wxYield();
-    yieldCount = 10;
-  }
-  yieldCount --;
+    if (isSync)
+	return;
+    
+    if (force)
+	yieldCount = 0;
+    if (yieldCount == 0)
+    {
+	if (wxTheApp)
+	    wxYield();
+	yieldCount = 10;
+    }
+    yieldCount --;
 #endif
 }
 

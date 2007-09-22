@@ -5,7 +5,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     01/02/97
-// RCS-ID:      $Id: prntdlgg.h,v 1.10 1999/08/03 15:20:22 KB Exp $
+// RCS-ID:      $Id: prntdlgg.h,v 1.15 2002/09/13 22:00:45 RR Exp $
 // Copyright:   (c)
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -13,7 +13,7 @@
 #ifndef __PRINTDLGH_G_
 #define __PRINTDLGH_G_
 
-#ifdef __GNUG__
+#if defined(__GNUG__) && !defined(__APPLE__)
     #pragma interface "prntdlgg.h"
 #endif
 
@@ -22,7 +22,7 @@
 #if wxUSE_PRINTING_ARCHITECTURE
 
 #include "wx/dialog.h"
-#include "wx/dialog.h"
+#include "wx/cmndata.h"
 
 #if wxUSE_POSTSCRIPT
     #include "wx/dcps.h"
@@ -35,7 +35,7 @@ class WXDLLEXPORT wxComboBox;
 class WXDLLEXPORT wxStaticText;
 class WXDLLEXPORT wxRadioBox;
 class WXDLLEXPORT wxPrintSetupData;
-
+class WXDLLEXPORT wxPageSetupData;
 // ----------------------------------------------------------------------------
 // constants
 // ----------------------------------------------------------------------------
@@ -78,8 +78,6 @@ enum
 #if wxUSE_POSTSCRIPT
 class WXDLLEXPORT wxGenericPrintDialog : public wxDialog
 {
-    DECLARE_DYNAMIC_CLASS(wxGenericPrintDialog)
-
 public:
     wxGenericPrintDialog(wxWindow *parent,
                          wxPrintDialogData* data = (wxPrintDialogData*)NULL);
@@ -122,12 +120,11 @@ protected:
 
 private:
     DECLARE_EVENT_TABLE()
+    DECLARE_DYNAMIC_CLASS(wxGenericPrintDialog)
 };
 
 class WXDLLEXPORT wxGenericPrintSetupDialog : public wxDialog
 {
-    DECLARE_CLASS(wxGenericPrintSetupDialog)
-
 public:
     // There are no configuration options for the dialog, so we
     // just pass the wxPrintData object (no wxPrintSetupDialogData class needed)
@@ -153,14 +150,15 @@ public:
     wxPrintData         m_printData;
     wxPrintData&        GetPrintData() { return m_printData; }
 #endif // wxUSE_POSTSCRIPT
+
+private:
+    DECLARE_CLASS(wxGenericPrintSetupDialog)
 };
 #endif
     // wxUSE_POSTSCRIPT
 
 class WXDLLEXPORT wxGenericPageSetupDialog : public wxDialog
 {
-    DECLARE_CLASS(wxGenericPageSetupDialog)
-
 public:
     wxGenericPageSetupDialog(wxWindow *parent, wxPageSetupData* data = (wxPageSetupData*) NULL);
     virtual ~wxGenericPageSetupDialog();
@@ -188,6 +186,7 @@ public:
 
 private:
     DECLARE_EVENT_TABLE()
+    DECLARE_CLASS(wxGenericPageSetupDialog)
 };
 
 #endif

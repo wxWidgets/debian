@@ -30,6 +30,8 @@ wxstd.po:
 	touch $@
 	find ../include -name "*.h" | $(XARGS) $(XGETTEXT) $(XGETTEXT_ARGS) -o wxstd.po
 	find ../src -name "*.cpp" | $(XARGS) $(XGETTEXT) $(XGETTEXT_ARGS) -o wxstd.po
+	find ../contrib/include -name "*.h" | $(XARGS) $(XGETTEXT) $(XGETTEXT_ARGS) -o wxstd.po
+	find ../contrib/src -name "*.cpp" | $(XARGS) $(XGETTEXT) $(XGETTEXT_ARGS) -o wxstd.po
 
 allpo: force-update
 	@-for t in $(WX_LINGUAS); do $(MAKE) $$t.po; done
@@ -40,9 +42,21 @@ allmo:
 force-update:
 	$(RM) wxstd.po
 
-# targets depending on this one will be always remade
+# print out the percentage of the trsnalted strings
+stats: FORCE
+	@for i in $(WX_LINGUAS); do \
+		x=`$(MSGFMT) -o /dev/null "$$i.po" 2>&1 | sed -e 's/[,\.]//g' \
+			-e 's/\([0-9]\+\) translated messages\?/TR=\1/' \
+			-e 's/\([0-9]\+\) fuzzy translations\?/FZ=\1/' \
+			-e 's/\([0-9]\+\) untranslated messages\?/UT=\1/'`; \
+		TR=0 FZ=0 UT=0; \
+		eval $$x; \
+		TOTAL=`expr $$TR + $$FZ + $$UT`; \
+		echo "$$i.po `expr 100 "*" $$TR / $$TOTAL`% of $$TOTAL strings"; \
+	done
+
 FORCE:
 
-.PHONY: allpo allmo force-update
+.PHONY: allpo allmo force-update percentage FORCE
 
-# $Id: Makefile,v 1.2.2.5 2000/08/10 10:26:22 VZ Exp $
+# $Id: Makefile,v 1.10 2002/09/03 19:32:03 MBN Exp $

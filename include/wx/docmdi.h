@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     01/02/97
-// RCS-ID:      $Id: docmdi.h,v 1.6 1999/06/22 17:38:34 RD Exp $
+// RCS-ID:      $Id: docmdi.h,v 1.9 2002/08/31 11:29:10 GD Exp $
 // Copyright:   (c)
 // Licence:   	wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -12,7 +12,7 @@
 #ifndef _WX_DOCMDI_H_
 #define _WX_DOCMDI_H_
 
-#ifdef __GNUG__
+#if defined(__GNUG__) && !defined(__APPLE__)
 #pragma interface "docmdi.h"
 #endif
 
@@ -75,6 +75,7 @@ class WXDLLEXPORT wxDocMDIChildFrame: public wxMDIChildFrame
   inline wxView *GetView(void) const { return m_childView; }
   inline void SetDocument(wxDocument *doc) { m_childDocument = doc; }
   inline void SetView(wxView *view) { m_childView = view; }
+  bool Destroy() { m_childView = (wxView *)NULL; return wxMDIChildFrame::Destroy(); }
  protected:
   wxDocument*       m_childDocument;
   wxView*           m_childView;

@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     01/02/97
-// RCS-ID:      $Id: docview.h,v 1.32 2000/03/20 13:41:16 JS Exp $
+// RCS-ID:      $Id: docview.h,v 1.45 2002/08/31 11:29:10 GD Exp $
 // Copyright:   (c)
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -12,7 +12,7 @@
 #ifndef _WX_DOCH__
 #define _WX_DOCH__
 
-#ifdef __GNUG__
+#if defined(__GNUG__) && !defined(__APPLE__)
     #pragma interface "docview.h"
 #endif
 
@@ -20,6 +20,7 @@
 #include "wx/list.h"
 #include "wx/cmndata.h"
 #include "wx/string.h"
+#include "wx/frame.h"
 
 #if wxUSE_PRINTING_ARCHITECTURE
     #include "wx/print.h"
@@ -31,7 +32,6 @@ class WXDLLEXPORT wxView;
 class WXDLLEXPORT wxDocTemplate;
 class WXDLLEXPORT wxDocManager;
 class WXDLLEXPORT wxPrintInfo;
-class WXDLLEXPORT wxCommand;
 class WXDLLEXPORT wxCommandProcessor;
 class WXDLLEXPORT wxFileHistory;
 class WXDLLEXPORT wxConfigBase;
@@ -89,16 +89,11 @@ public:
     virtual bool Revert();
 
 #if wxUSE_STD_IOSTREAM
-    virtual ostream& SaveObject(ostream& stream);
-    virtual istream& LoadObject(istream& stream);
+    virtual wxSTD ostream& SaveObject(wxSTD ostream& stream);
+    virtual wxSTD istream& LoadObject(wxSTD istream& stream);
 #else
     virtual wxOutputStream& SaveObject(wxOutputStream& stream);
     virtual wxInputStream& LoadObject(wxInputStream& stream);
-#endif
-
-#if wxUSE_SERIAL
-    // need this to keep from hiding the virtual from wxObject
-    virtual void LoadObject(wxObjectInputStream& stream) { wxObject::LoadObject(stream); };
 #endif
 
     // Called by wxWindows
@@ -138,6 +133,7 @@ public:
     wxView *GetFirstView() const;
 
     virtual void UpdateAllViews(wxView *sender = (wxView *) NULL, wxObject *hint = (wxObject *) NULL);
+    virtual void NotifyClosing();
 
     // Remove all views (because we're closing the document)
     virtual bool DeleteAllViews();
@@ -176,18 +172,19 @@ public:
     ~wxView();
 
     wxDocument *GetDocument() const { return m_viewDocument; }
-    void SetDocument(wxDocument *doc);
+    virtual void SetDocument(wxDocument *doc);
 
     wxString GetViewName() const { return m_viewTypeName; }
     void SetViewName(const wxString& name) { m_viewTypeName = name; };
 
-    wxFrame *GetFrame() const { return m_viewFrame ; }
-    void SetFrame(wxFrame *frame) { m_viewFrame = frame; }
+    wxWindow *GetFrame() const { return m_viewFrame ; }
+    void SetFrame(wxWindow *frame) { m_viewFrame = frame; }
 
     virtual void OnActivateView(bool activate, wxView *activeView, wxView *deactiveView);
     virtual void OnDraw(wxDC *dc) = 0;
     virtual void OnPrint(wxDC *dc, wxObject *info);
     virtual void OnUpdate(wxView *sender, wxObject *hint = (wxObject *) NULL);
+    virtual void OnClosingDocument() {};
     virtual void OnChangeFilename();
 
     // Called by framework if created automatically by the default document
@@ -224,7 +221,7 @@ public:
 protected:
     wxDocument*       m_viewDocument;
     wxString          m_viewTypeName;
-    wxFrame*          m_viewFrame;
+    wxWindow*         m_viewFrame;
 };
 
 // Represents user interface (and other) properties of documents and views
@@ -305,6 +302,7 @@ public:
 
     // Handlers for common user commands
     void OnFileClose(wxCommandEvent& event);
+    void OnFileCloseAll(wxCommandEvent& event);
     void OnFileNew(wxCommandEvent& event);
     void OnFileOpen(wxCommandEvent& event);
     void OnFileRevert(wxCommandEvent& event);
@@ -348,9 +346,9 @@ public:
     virtual wxDocTemplate *SelectDocumentPath(wxDocTemplate **templates,
             int noTemplates, wxString& path, long flags, bool save = FALSE);
     virtual wxDocTemplate *SelectDocumentType(wxDocTemplate **templates,
-            int noTemplates);
+            int noTemplates, bool sort = FALSE);
     virtual wxDocTemplate *SelectViewType(wxDocTemplate **templates,
-            int noTemplates);
+            int noTemplates, bool sort = FALSE);
     virtual wxDocTemplate *FindTemplateForPath(const wxString& path);
 
     void AssociateTemplate(wxDocTemplate *temp);
@@ -365,6 +363,9 @@ public:
     void AddDocument(wxDocument *doc);
     void RemoveDocument(wxDocument *doc);
 
+    // closes all currently open documents
+    bool CloseDocuments(bool force = TRUE);
+
     // Clear remaining documents and templates
     bool Clear(bool force = TRUE);
 
@@ -373,7 +374,8 @@ public:
     virtual void ActivateView(wxView *view, bool activate = TRUE, bool deleting = FALSE);
     virtual wxView *GetCurrentView() const;
 
-    virtual wxList& GetDocuments() const { return (wxList&) m_docs; }
+    wxList& GetDocuments() { return m_docs; }
+    wxList& GetTemplates() { return m_templates; }
 
     // Make a default document name
     virtual bool MakeDefaultName(wxString& buf);
@@ -449,6 +451,7 @@ public:
     wxView *GetView() const { return m_childView; }
     void SetDocument(wxDocument *doc) { m_childDocument = doc; }
     void SetView(wxView *view) { m_childView = view; }
+    bool Destroy() { m_childView = (wxView *)NULL; return wxFrame::Destroy(); }
 
 protected:
     wxDocument*       m_childDocument;
@@ -514,65 +517,6 @@ protected:
 #endif // wxUSE_PRINTING_ARCHITECTURE
 
 // ----------------------------------------------------------------------------
-// Command processing framework
-// ----------------------------------------------------------------------------
-
-class WXDLLEXPORT wxCommand : public wxObject
-{
-    DECLARE_CLASS(wxCommand)
-
-public:
-    wxCommand(bool canUndoIt = FALSE, const wxString& name = "");
-    ~wxCommand();
-
-    // Override this to perform a command
-    virtual bool Do() = 0;
-
-    // Override this to undo a command
-    virtual bool Undo() = 0;
-
-    virtual bool CanUndo() const { return m_canUndo; }
-    virtual wxString GetName() const { return m_commandName; }
-
-protected:
-    bool     m_canUndo;
-    wxString m_commandName;
-};
-
-class WXDLLEXPORT wxCommandProcessor : public wxObject
-{
-    DECLARE_DYNAMIC_CLASS(wxCommandProcessor)
-
-public:
-    wxCommandProcessor(int maxCommands = 100);
-    ~wxCommandProcessor();
-
-    // Pass a command to the processor. The processor calls Do(); if
-    // successful, is appended to the command history unless storeIt is FALSE.
-    virtual bool Submit(wxCommand *command, bool storeIt = TRUE);
-    virtual bool Undo();
-    virtual bool Redo();
-    virtual bool CanUndo() const;
-    virtual bool CanRedo() const;
-
-    // Call this to manage an edit menu.
-    void SetEditMenu(wxMenu *menu) { m_commandEditMenu = menu; }
-    wxMenu *GetEditMenu() const { return m_commandEditMenu; }
-    virtual void SetMenuStrings();
-    virtual void Initialize();
-
-    wxList& GetCommands() const { return (wxList&) m_commands; }
-    int GetMaxCommands() const { return m_maxNoCommands; }
-    virtual void ClearCommands();
-
-protected:
-    int           m_maxNoCommands;
-    wxList        m_commands;
-    wxNode*       m_currentCommand;
-    wxMenu*       m_commandEditMenu;
-};
-
-// ----------------------------------------------------------------------------
 // File history management
 // ----------------------------------------------------------------------------
 
@@ -624,8 +568,8 @@ protected:
 #if wxUSE_STD_IOSTREAM
 // For compatibility with existing file formats:
 // converts from/to a stream to/from a temporary file.
-bool WXDLLEXPORT wxTransferFileToStream(const wxString& filename, ostream& stream);
-bool WXDLLEXPORT wxTransferStreamToFile(istream& stream, const wxString& filename);
+bool WXDLLEXPORT wxTransferFileToStream(const wxString& filename, wxSTD ostream& stream);
+bool WXDLLEXPORT wxTransferStreamToFile(wxSTD istream& stream, const wxString& filename);
 #else
 // For compatibility with existing file formats:
 // converts from/to a stream to/from a temporary file.

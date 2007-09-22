@@ -4,7 +4,7 @@
 // Author:      Vadim Zeitlin
 // Modified by:
 // Created:     31.01.99
-// RCS-ID:      $Id: tooltip.h,v 1.7 2000/01/23 23:23:45 VZ Exp $
+// RCS-ID:      $Id: tooltip.h,v 1.8 2001/07/14 03:23:29 RD Exp $
 // Copyright:   (c) 1999 Robert Roebling, Vadim Zeitlin
 // Licence:     wxWindows license
 ///////////////////////////////////////////////////////////////////////////////
@@ -53,5 +53,7 @@ private:
 
     wxString  m_text;           // tooltip text
     wxWindow *m_window;         // window we're associated with
+
+    DECLARE_ABSTRACT_CLASS(wxToolTip)
 };
 

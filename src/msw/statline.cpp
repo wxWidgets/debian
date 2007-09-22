@@ -3,7 +3,7 @@
 // Purpose:     MSW version of wxStaticLine class
 // Author:      Vadim Zeitlin
 // Created:     28.06.99
-// Version:     $Id: statline.cpp,v 1.9.2.2 2000/05/30 19:41:59 VZ Exp $
+// Version:     $Id: statline.cpp,v 1.13 2002/02/22 00:48:52 VZ Exp $
 // Copyright:   (c) 1998 Vadim Zeitlin
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -52,43 +52,31 @@ IMPLEMENT_DYNAMIC_CLASS(wxStaticLine, wxControl)
 // wxStaticLine
 // ----------------------------------------------------------------------------
 
-bool wxStaticLine::Create( wxWindow *parent,
-                           wxWindowID id,
-                           const wxPoint &pos,
-                           const wxSize &size,
-                           long style,
-                           const wxString &name)
+bool wxStaticLine::Create(wxWindow *parent,
+                          wxWindowID id,
+                          const wxPoint& pos,
+                          const wxSize& sizeOrig,
+                          long style,
+                          const wxString &name)
 {
-    if ( !CreateBase(parent, id, pos, size, style, wxDefaultValidator, name) )
+    wxSize size = AdjustSize(sizeOrig);
+
+    if ( !CreateControl(parent, id, pos, size, style, wxDefaultValidator, name) )
         return FALSE;
 
-    parent->AddChild(this);
+    return MSWCreateControl(_T("STATIC"), _T(""), pos, size, style);
+}
 
-    wxSize sizeReal = AdjustSize(size);
+WXDWORD wxStaticLine::MSWGetStyle(long style, WXDWORD *exstyle) const
+{
+    // we never have border
+    style &= ~wxBORDER_MASK;
+    style |= wxBORDER_NONE;
 
-    m_hWnd = (WXHWND)::CreateWindow
-                       (
-                        wxT("STATIC"),
-                        wxT(""),
-                        WS_VISIBLE | WS_CHILD /* | WS_CLIPSIBLINGS */ |
-                        SS_GRAYRECT | SS_SUNKEN | SS_NOTIFY,
-                        pos.x, pos.y, sizeReal.x, sizeReal.y,
-                        GetWinHwnd(parent),
-                        (HMENU)m_windowId,
-                        wxGetInstance(),
-                        NULL
-                       );
+    WXDWORD msStyle = wxControl::MSWGetStyle(style, exstyle);
 
-    if ( !m_hWnd )
-    {
-        wxLogDebug(wxT("Failed to create static control"));
-
-        return FALSE;
-    }
-
-    SubclassWin(m_hWnd);
-
-    return TRUE;
+    // add our default styles
+    return msStyle | SS_GRAYRECT | SS_SUNKEN | SS_NOTIFY | WS_CLIPSIBLINGS;
 }
 
 #endif // wxUSE_STATLINE

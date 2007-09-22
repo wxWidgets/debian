@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     01/02/97
-// RCS-ID:      $Id: mdi.h,v 1.15.2.1 2000/06/21 21:10:37 VZ Exp $
+// RCS-ID:      $Id: mdi.h,v 1.21 2002/01/13 01:26:04 VZ Exp $
 // Copyright:   (c) Julian Smart
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -30,8 +30,6 @@ class WXDLLEXPORT wxMDIChildFrame;
 
 class WXDLLEXPORT wxMDIParentFrame : public wxFrame
 {
-    DECLARE_DYNAMIC_CLASS(wxMDIParentFrame)
-
 public:
     wxMDIParentFrame();
     wxMDIParentFrame(wxWindow *parent,
@@ -68,7 +66,7 @@ public:
     // just return a new class)
     virtual wxMDIClientWindow *OnCreateClient(void);
 
-//    WXHMENU GetWindowHMENU() const { return m_windowMenu; }
+    // MDI windows menu
     wxMenu* GetWindowMenu() const { return m_windowMenu; };
     void SetWindowMenu(wxMenu* menu) ;
 
@@ -98,11 +96,14 @@ public:
     virtual bool MSWTranslateMessage(WXMSG* msg);
 
 protected:
+#if wxUSE_MENUS_NATIVE
     virtual void InternalSetMenuBar();
+#endif // wxUSE_MENUS_NATIVE
+
+    virtual WXHICON GetDefaultIcon() const;
 
     wxMDIClientWindow *             m_clientWindow;
     wxMDIChildFrame *               m_currentChild;
-//    WXHMENU                         m_windowMenu;
     wxMenu*                         m_windowMenu;
 
     // TRUE if MDI Frame is intercepting commands, not child
@@ -112,6 +113,7 @@ private:
     friend class WXDLLEXPORT wxMDIChildFrame;
 
     DECLARE_EVENT_TABLE()
+    DECLARE_DYNAMIC_CLASS(wxMDIParentFrame)
 };
 
 // ---------------------------------------------------------------------------
@@ -159,6 +161,7 @@ public:
     bool HandleMDIActivate(long bActivate, WXHWND, WXHWND);
     bool HandleWindowPosChanging(void *lpPos);
     bool HandleCommand(WXWORD id, WXWORD cmd, WXHWND control);
+    bool HandleGetMinMaxInfo(void *mmInfo);
 
     virtual long MSWWindowProc(WXUINT message, WXWPARAM wParam, WXLPARAM lParam);
     virtual long MSWDefWindowProc(WXUINT message, WXWPARAM wParam, WXLPARAM lParam);
@@ -174,6 +177,9 @@ protected:
     virtual void DoGetPosition(int *x, int *y) const;
     virtual void DoSetClientSize(int width, int height);
     virtual void InternalSetMenuBar();
+    virtual bool IsMDIChild() const { return TRUE; }
+
+    virtual WXHICON GetDefaultIcon() const;
 
     // common part of all ctors
     void Init();

@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     04/01/98
-// RCS-ID:      $Id: dialogs.h,v 1.14.2.1 2000/04/08 21:50:29 VZ Exp $
+// RCS-ID:      $Id: dialogs.h,v 1.23 2002/03/28 18:57:49 RR Exp $
 // Copyright:   (c) Julian Smart and Markus Holzem
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -28,6 +28,7 @@ class MyModelessDialog : public wxDialog
 public:
     MyModelessDialog(wxWindow *parent);
 
+    void OnButton(wxCommandEvent& event);
     void OnClose(wxCloseEvent& event);
 
 private:
@@ -61,17 +62,31 @@ public:
     void LogDialog(wxCommandEvent& event);
     void MessageBox(wxCommandEvent& event);
     void SingleChoice(wxCommandEvent& event);
+    void MultiChoice(wxCommandEvent& event);
     void TextEntry(wxCommandEvent& event);
     void PasswordEntry(wxCommandEvent& event);
     void NumericEntry(wxCommandEvent& event);
     void FileOpen(wxCommandEvent& event);
+    void FileOpen2(wxCommandEvent& event);
     void FilesOpen(wxCommandEvent& event);
     void FileSave(wxCommandEvent& event);
     void DirChoose(wxCommandEvent& event);
+    void GenericDirChoose(wxCommandEvent& event);
     void ShowTip(wxCommandEvent& event);
     void ModalDlg(wxCommandEvent& event);
     void ModelessDlg(wxCommandEvent& event);
+#if wxUSE_PROGRESSDLG
     void ShowProgress(wxCommandEvent& event);
+#endif // wxUSE_PROGRESSDLG
+#if wxUSE_BUSYINFO
+    void ShowBusyInfo(wxCommandEvent& event);
+#endif // wxUSE_BUSYINFO
+#if wxUSE_FINDREPLDLG
+    void ShowFindDialog(wxCommandEvent& event);
+    void ShowReplaceDialog(wxCommandEvent& event);
+
+    void OnFindDialog(wxFindDialogEvent& event);
+#endif // wxUSE_FINDREPLDLG
 
 #if !defined(__WXMSW__) || wxTEST_GENERIC_DIALOGS_IN_MSW
     void ChooseColourGeneric(wxCommandEvent& event);
@@ -80,10 +95,15 @@ public:
 
     void OnExit(wxCommandEvent& event);
 
-    void OnButton(wxCommandEvent& event);
-
 private:
     MyModelessDialog *m_dialog;
+
+#if wxUSE_FINDREPLDLG
+    wxFindReplaceData m_findData;
+
+    wxFindReplaceDialog *m_dlgFind,
+                        *m_dlgReplace;
+#endif // wxUSE_FINDREPLDLG
 
     DECLARE_EVENT_TABLE()
 };
@@ -91,7 +111,8 @@ private:
 class MyCanvas: public wxScrolledWindow
 {
 public:
-    MyCanvas(wxWindow *parent) : wxScrolledWindow(parent) { }
+    MyCanvas(wxWindow *parent) : 
+       wxScrolledWindow(parent,-1,wxDefaultPosition,wxDefaultSize,wxNO_FULL_REPAINT_ON_RESIZE) { }
 
     void OnPaint(wxPaintEvent& event);
 
@@ -108,19 +129,25 @@ enum
     DIALOGS_CHOOSE_FONT_GENERIC,
     DIALOGS_MESSAGE_BOX,
     DIALOGS_SINGLE_CHOICE,
+    DIALOGS_MULTI_CHOICE,
     DIALOGS_TEXT_ENTRY,
     DIALOGS_PASSWORD_ENTRY,
     DIALOGS_FILE_OPEN,
+    DIALOGS_FILE_OPEN2,
     DIALOGS_FILES_OPEN,
     DIALOGS_FILE_SAVE,
     DIALOGS_DIR_CHOOSE,
+    DIALOGS_GENERIC_DIR_CHOOSE,
     DIALOGS_TIP,
     DIALOGS_NUM_ENTRY,
     DIALOGS_LOG_DIALOG,
     DIALOGS_MODAL,
     DIALOGS_MODELESS,
     DIALOGS_MODELESS_BTN,
-    DIALOGS_PROGRESS
+    DIALOGS_PROGRESS,
+    DIALOGS_BUSYINFO,
+    DIALOGS_FIND,
+    DIALOGS_REPLACE
 };
 
 #endif

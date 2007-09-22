@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     12/07/98
-// RCS-ID:      $Id: doc.h,v 1.1 2000/03/03 11:24:37 JS Exp $
+// RCS-ID:      $Id: doc.h,v 1.4 2002/09/07 12:12:21 GD Exp $
 // Copyright:   (c) Julian Smart
 // Licence:   	wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -12,19 +12,19 @@
 #ifndef _OGLSAMPLE_DOC_H_
 #define _OGLSAMPLE_DOC_H_
 
-#ifdef __GNUG__
+#if defined(__GNUG__) && !defined(__APPLE__)
 // #pragma interface
 #endif
 
 #include <wx/docview.h>
+#include <wx/cmdproc.h>
 #include <wx/string.h>
 #include <wx/wxexpr.h>
 
 #include <wx/ogl/ogl.h>
 
 #if wxUSE_STD_IOSTREAM
-class ostream;
-class istream;
+ #include <iosfwd>
 #endif
 
 /*
@@ -98,8 +98,8 @@ class DiagramDocument: public wxDocument
   ~DiagramDocument(void);
 
 #if wxUSE_STD_IOSTREAM
-    virtual ostream& SaveObject(ostream& stream);
-    virtual istream& LoadObject(istream& stream);
+    virtual wxSTD ostream& SaveObject(wxSTD ostream& stream);
+    virtual wxSTD istream& LoadObject(wxSTD istream& stream);
 #else
     virtual wxOutputStream& SaveObject(wxOutputStream& stream);
     virtual wxInputStream& LoadObject(wxInputStream& stream);

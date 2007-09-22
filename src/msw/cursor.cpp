@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     01/02/97
-// RCS-ID:      $Id: cursor.cpp,v 1.26 2000/02/29 23:58:50 GT Exp $
+// RCS-ID:      $Id: cursor.cpp,v 1.39 2002/06/08 17:36:27 JS Exp $
 // Copyright:   (c) Julian Smart and Markus Holzem
 // Licence:       wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -38,8 +38,11 @@
 #endif
 
 #include "wx/module.h"
+#include "wx/image.h"
 #include "wx/msw/private.h"
+#ifndef __WXMICROWIN__
 #include "wx/msw/dib.h"
+#endif
 
 #if wxUSE_RESOURCE_LOADING_IN_MSW
     #include "wx/msw/curico.h"
@@ -50,7 +53,7 @@
 // wxWin macros
 // ----------------------------------------------------------------------------
 
-IMPLEMENT_DYNAMIC_CLASS(wxCursor, wxCursorBase)
+IMPLEMENT_DYNAMIC_CLASS(wxCursor, wxGDIObject)
 
 // ----------------------------------------------------------------------------
 // globals
@@ -94,15 +97,17 @@ wxCursorRefData::wxCursorRefData()
   m_width = 32;
   m_height = 32;
 
-  m_destroyCursor = FALSE;
+  m_destroyCursor = TRUE;
 }
 
 void wxCursorRefData::Free()
 {
     if ( m_hCursor )
     {
+#ifndef __WXMICROWIN__
         if ( m_destroyCursor )
             ::DestroyCursor((HCURSOR)m_hCursor);
+#endif
 
         m_hCursor = 0;
     }
@@ -114,6 +119,79 @@ void wxCursorRefData::Free()
 
 wxCursor::wxCursor()
 {
+}
+
+wxCursor::wxCursor( const wxImage & image )
+{
+    //image has to be 32x32
+    wxImage image32 = image.Scale(32,32);
+    unsigned char * rgbBits = image32.GetData();
+    int w = image32.GetWidth()  ;
+    int h = image32.GetHeight() ;
+    bool bHasMask = image32.HasMask() ;
+    int imagebitcount = (w*h)/8;
+
+    unsigned char r, g, b ;
+    unsigned char * bits = new unsigned char [imagebitcount];
+    unsigned char * maskBits = new unsigned char [imagebitcount];
+
+    int i,j, i8; unsigned char c, cMask;
+    for (i=0; i<imagebitcount; i++)
+        {
+        bits[i] = 0;
+        i8 = i * 8;
+//unlike gtk, the pixels go in the opposite order in the bytes
+        cMask = 128;
+        for (j=0; j<8; j++)
+           {
+           // possible overflow if we do the summation first ?
+           c = rgbBits[(i8+j)*3]/3 + rgbBits[(i8+j)*3+1]/3 + rgbBits[(i8+j)*3+2]/3 ;
+           //if average value is > mid grey
+           if (c>127)
+              bits[i] = bits[i] | cMask ;
+           cMask = cMask / 2 ;
+           }
+        }
+    if (bHasMask)
+        {
+        r = image32.GetMaskRed() ;
+        g = image32.GetMaskGreen() ;
+        b = image32.GetMaskBlue() ;
+
+        for (i=0; i<imagebitcount; i++)
+        {
+        maskBits[i] = 0x0;
+        i8 = i * 8;
+
+        cMask = 128;
+        for (j=0; j<8; j++)
+           {
+           if (rgbBits[(i8+j)*3] == r && rgbBits[(i8+j)*3+1] == g && rgbBits[(i8+j)*3+2] == b)
+              maskBits[i] = maskBits[i] | cMask ;
+           cMask = cMask / 2 ;
+           }
+        }
+        }
+      else
+        {
+        for (i=0; i<imagebitcount; i++)
+            maskBits[i]= 0x0 ;
+        }
+
+    int hotSpotX = image32.GetOptionInt(wxCUR_HOTSPOT_X);
+    int hotSpotY = image32.GetOptionInt(wxCUR_HOTSPOT_Y);
+    if (hotSpotX < 0 || hotSpotX >= w)
+            hotSpotX = 0;
+    if (hotSpotY < 0 || hotSpotY >= h)
+            hotSpotY = 0;
+
+    wxCursorRefData *refData = new wxCursorRefData;
+    m_refData = refData;
+    refData->m_hCursor = (WXHCURSOR) CreateCursor ( wxGetInstance(), hotSpotX, hotSpotY, w, h, /*AND*/ maskBits, /*XOR*/ bits   );
+
+    delete [] bits ;
+    delete [] maskBits;
+
 }
 
 wxCursor::wxCursor(const char WXUNUSED(bits)[],
@@ -128,10 +206,11 @@ wxCursor::wxCursor(const wxString& cursor_file,
                    long flags,
                    int hotSpotX, int hotSpotY)
 {
+#ifdef __WXMICROWIN__
+    m_refData = NULL;
+#else
     wxCursorRefData *refData = new wxCursorRefData;
     m_refData = refData;
-
-    refData->m_destroyCursor = FALSE;
 
     if (flags == wxBITMAP_TYPE_CUR_RESOURCE)
     {
@@ -148,7 +227,6 @@ wxCursor::wxCursor(const wxString& cursor_file,
 #else
 #if wxUSE_RESOURCE_LOADING_IN_MSW
         refData->m_hCursor = (WXHCURSOR) ReadCursorFile(WXSTRINGCAST cursor_file, wxGetInstance(), &refData->m_width, &refData->m_height);
-        refData->m_destroyCursor = TRUE;
 #endif
 #endif
     }
@@ -156,7 +234,6 @@ wxCursor::wxCursor(const wxString& cursor_file,
     {
 #if wxUSE_RESOURCE_LOADING_IN_MSW
         refData->m_hCursor = (WXHCURSOR) IconToCursor(WXSTRINGCAST cursor_file, wxGetInstance(), hotSpotX, hotSpotY, &refData->m_width, &refData->m_height);
-        refData->m_destroyCursor = TRUE;
 #endif
     }
     else if (flags == wxBITMAP_TYPE_BMP)
@@ -173,7 +250,6 @@ wxCursor::wxCursor(const wxString& cursor_file,
         pnt.x = hotSpotX;
         pnt.y = hotSpotY;
         refData->m_hCursor = (WXHCURSOR) MakeCursorFromBitmap(wxGetInstance(), hBitmap, &pnt);
-        refData->m_destroyCursor = TRUE;
         DeleteObject(hBitmap);
 #endif
     }
@@ -181,16 +257,26 @@ wxCursor::wxCursor(const wxString& cursor_file,
 #if WXWIN_COMPATIBILITY_2
     refData->SetOk();
 #endif // WXWIN_COMPATIBILITY_2
+
+#endif
 }
 
 // Cursors by stock number
 wxCursor::wxCursor(int cursor_type)
 {
+#ifdef __WXMICROWIN__
+    m_refData = NULL;
+#else
   wxCursorRefData *refData = new wxCursorRefData;
   m_refData = refData;
 
   switch (cursor_type)
   {
+    case wxCURSOR_ARROWWAIT:
+#ifndef __WIN16__
+      refData->m_hCursor = (WXHCURSOR) LoadCursor((HINSTANCE) NULL, IDC_APPSTARTING);
+      break;
+#endif
     case wxCURSOR_WAIT:
       refData->m_hCursor = (WXHCURSOR) LoadCursor((HINSTANCE) NULL, IDC_WAIT);
       break;
@@ -289,7 +375,9 @@ wxCursor::wxCursor(int cursor_type)
     }
     case wxCURSOR_QUESTION_ARROW:
     {
-      refData->m_hCursor = (WXHCURSOR) LoadCursor(wxGetInstance(), wxT("wxCURSOR_QARROW"));
+//      refData->m_hCursor = (WXHCURSOR) LoadImage(wxGetInstance(), wxT("wxCURSOR_QARROW"), IMAGE_CURSOR, 16, 16, LR_MONOCHROME);
+//      refData->m_hCursor = (WXHCURSOR) LoadCursor(wxGetInstance(), wxT("wxCURSOR_QARROW"));
+      refData->m_hCursor = (WXHCURSOR) LoadCursor((HINSTANCE) NULL, IDC_HELP);
       break;
     }
     case wxCURSOR_BLANK:
@@ -297,11 +385,21 @@ wxCursor::wxCursor(int cursor_type)
       refData->m_hCursor = (WXHCURSOR) LoadCursor(wxGetInstance(), wxT("wxCURSOR_BLANK"));
       break;
     }
+    case wxCURSOR_RIGHT_ARROW:
+    {
+        refData->m_hCursor = (WXHCURSOR) LoadCursor(wxGetInstance(), wxT("wxCURSOR_RIGHT_ARROW"));
+        break;
+    }
     default:
     case wxCURSOR_ARROW:
       refData->m_hCursor = (WXHCURSOR) LoadCursor((HINSTANCE) NULL, IDC_ARROW);
       break;
   }
+
+  // no need to destroy the stock cursors
+  // TODO: check this
+  //m_refData->m_destroyCursor = FALSE;
+#endif
 }
 
 wxCursor::~wxCursor()
@@ -321,7 +419,9 @@ void wxSetCursor(const wxCursor& cursor)
 {
     if ( cursor.Ok() )
     {
+#ifndef __WXMICROWIN__
         ::SetCursor(GetHcursorOf(cursor));
+#endif
 
         if ( gs_globalCursor )
             *gs_globalCursor = cursor;

@@ -3,15 +3,15 @@
 // Purpose:     Information window (when app is busy)
 // Author:      Vaclav Slavik
 // Copyright:   (c) 1999 Vaclav Slavik
-// RCS-ID:      $Id: busyinfo.h,v 1.4 1999/08/03 23:56:34 VS Exp $
+// RCS-ID:      $Id: busyinfo.h,v 1.6 2002/08/31 11:29:09 GD Exp $
 // Licence:     wxWindows Licence
 /////////////////////////////////////////////////////////////////////////////
 
 #ifndef __INFOWIN_H__
 #define __INFOWIN_H__
 
-#ifdef __GNUG__
-#pragma interface
+#if defined(__GNUG__) && !defined(__APPLE__)
+#pragma interface "busyinfo.h"
 #endif
 
 #include "wx/wxprec.h"
@@ -26,8 +26,8 @@
 
 class WXDLLEXPORT wxInfoFrame : public wxFrame
 {
-    public:
-        wxInfoFrame(wxWindow *parent, const wxString& message);
+public:
+    wxInfoFrame(wxWindow *parent, const wxString& message);
 };
 
 
@@ -39,12 +39,13 @@ class WXDLLEXPORT wxInfoFrame : public wxFrame
 
 class WXDLLEXPORT wxBusyInfo : public wxObject
 {
-    public:
-        wxBusyInfo(const wxString& message);
-        ~wxBusyInfo();
+public:
+    wxBusyInfo(const wxString& message, wxWindow *parent = NULL);
 
-    private:
-        wxInfoFrame *m_InfoFrame;
+    virtual ~wxBusyInfo();
+
+private:
+    wxInfoFrame *m_InfoFrame;
 };
 
 

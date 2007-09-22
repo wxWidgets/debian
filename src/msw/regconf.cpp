@@ -4,7 +4,7 @@
 // Author:      Vadim Zeitlin
 // Modified by:
 // Created:     27.04.98
-// RCS-ID:      $Id: regconf.cpp,v 1.29.2.9 2001/09/22 23:24:56 VZ Exp $
+// RCS-ID:      $Id: regconf.cpp,v 1.42 2002/03/22 19:15:13 VZ Exp $
 // Copyright:   (c) 1998 Vadim Zeitlin <zeitlin@dptmaths.ens-cachan.fr>
 // Licence:     wxWindows license
 ///////////////////////////////////////////////////////////////////////////////
@@ -16,18 +16,13 @@
 // For compilers that support precompilation, includes "wx.h".
 #include "wx/wxprec.h"
 
-#ifndef WX_PRECOMP
-  #include  "wx/defs.h"
-  #include  "wx/string.h"
-  #include  "wx/intl.h"
-#endif //WX_PRECOMP
-
 #ifdef __BORLANDC__
 #pragma hdrstop
 #endif
 
 #ifndef WX_PRECOMP
   #include  "wx/string.h"
+  #include  "wx/intl.h"
 #endif //WX_PRECOMP
 
 #include "wx/event.h"
@@ -154,6 +149,7 @@ wxRegConfig::wxRegConfig(const wxString& appName, const wxString& vendorName,
   {
     wxLogNull nolog;
     m_keyGlobalRoot.Open();
+    m_keyGlobal.Open();
   }
 }
 
@@ -225,7 +221,11 @@ void wxRegConfig::SetPath(const wxString& strPath)
         {
             strFullPath.reserve(2*m_strPath.length());
 
-            strFullPath << m_strPath << wxCONFIG_PATH_SEPARATOR << strPath;
+            strFullPath << m_strPath;
+            if ( strFullPath.Len() == 0 || 
+                 strFullPath.Last() != wxCONFIG_PATH_SEPARATOR )
+                strFullPath << wxCONFIG_PATH_SEPARATOR; 
+            strFullPath << strPath;
         }
 
         // simplify it: we need to handle ".." here
@@ -350,21 +350,24 @@ void wxRegConfig::SetPath(const wxString& strPath)
 
     // registry APIs want backslashes instead of slashes
     wxString strRegPath;
-    size_t len = m_strPath.length();
-
-    const wxChar *src = m_strPath.c_str();
-    wxChar *dst = strRegPath.GetWriteBuf(len);
-
-    const wxChar *end = src + len;
-    for ( ; src < end; src++, dst++ )
+    if ( !m_strPath.empty() )
     {
-        if ( *src == wxCONFIG_PATH_SEPARATOR )
-            *dst = _T('\\');
-        else
-            *dst = *src;
-    }
+        size_t len = m_strPath.length();
 
-    strRegPath.UngetWriteBuf(len);
+        const wxChar *src = m_strPath.c_str();
+        wxChar *dst = strRegPath.GetWriteBuf(len);
+
+        const wxChar *end = src + len;
+        for ( ; src < end; src++, dst++ )
+        {
+            if ( *src == wxCONFIG_PATH_SEPARATOR )
+                *dst = _T('\\');
+            else
+                *dst = *src;
+        }
+
+        strRegPath.UngetWriteBuf(len);
+    }
 
     // this is not needed any longer as we don't create keys unnecessarily any
     // more (now it is done on demand, i.e. only when they're going to contain
@@ -476,7 +479,7 @@ bool wxRegConfig::GetNextEntry(wxString& str, long& lIndex) const
   return bOk;
 }
 
-size_t wxRegConfig::GetNumberOfEntries(bool bRecursive) const
+size_t wxRegConfig::GetNumberOfEntries(bool WXUNUSED(bRecursive)) const
 {
   size_t nEntries = 0;
 
@@ -493,7 +496,7 @@ size_t wxRegConfig::GetNumberOfEntries(bool bRecursive) const
   return nEntries;
 }
 
-size_t wxRegConfig::GetNumberOfGroups(bool bRecursive) const
+size_t wxRegConfig::GetNumberOfGroups(bool WXUNUSED(bRecursive)) const
 {
   size_t nGroups = 0;
 
@@ -555,44 +558,10 @@ wxConfigBase::EntryType wxRegConfig::GetEntryType(const wxString& key) const
 // reading/writing
 // ----------------------------------------------------------------------------
 
-bool wxRegConfig::Read(const wxString& key, wxString *pStr) const
+bool wxRegConfig::DoReadString(const wxString& key, wxString *pStr) const
 {
-  wxConfigPathChanger path(this, key);
+    wxCHECK_MSG( pStr, FALSE, _T("wxRegConfig::Read(): NULL param") );
 
-  bool bQueryGlobal = TRUE;
-
-  // if immutable key exists in global key we must check that it's not
-  // overriden by the local key with the same name
-  if ( IsImmutable(path.Name()) ) {
-    if ( TryGetValue(m_keyGlobal, path.Name(), *pStr) ) {
-      if ( m_keyLocal.Exists() && LocalKey().HasValue(path.Name()) ) {
-        wxLogWarning(wxT("User value for immutable key '%s' ignored."),
-                   path.Name().c_str());
-      }
-     *pStr = wxConfigBase::ExpandEnvVars(*pStr);
-      return TRUE;
-    }
-    else {
-      // don't waste time - it's not there anyhow
-      bQueryGlobal = FALSE;
-    }
-  }
-
-  // first try local key
-  if ( (m_keyLocal.Exists() && TryGetValue(LocalKey(), path.Name(), *pStr)) ||
-       (bQueryGlobal && TryGetValue(m_keyGlobal, path.Name(), *pStr)) ) {
-    // nothing to do
-
-    *pStr = wxConfigBase::ExpandEnvVars(*pStr);
-    return TRUE;
-  }
-
-  return FALSE;
-}
-
-bool wxRegConfig::Read(const wxString& key, wxString *pStr,
-                       const wxString& szDefault) const
-{
   wxConfigPathChanger path(this, key);
 
   bool bQueryGlobal = TRUE;
@@ -617,25 +586,19 @@ bool wxRegConfig::Read(const wxString& key, wxString *pStr,
   // first try local key
   if ( (m_keyLocal.Exists() && TryGetValue(LocalKey(), path.Name(), *pStr)) ||
        (bQueryGlobal && TryGetValue(m_keyGlobal, path.Name(), *pStr)) ) {
-    *pStr = wxConfigBase::ExpandEnvVars(*pStr);
     return TRUE;
   }
-  else {
-    if ( IsRecordingDefaults() ) {
-      ((wxRegConfig*)this)->Write(key, szDefault);
-    }
-
-    // default value
-    *pStr = szDefault;
-  }
-
-  *pStr = wxConfigBase::ExpandEnvVars(*pStr);
 
   return FALSE;
 }
 
-bool wxRegConfig::Read(const wxString& key, long *plResult) const
+// this exactly reproduces the string version above except for ExpandEnvVars(),
+// we really should avoid this code duplication somehow...
+
+bool wxRegConfig::DoReadLong(const wxString& key, long *plResult) const
 {
+    wxCHECK_MSG( plResult, FALSE, _T("wxRegConfig::Read(): NULL param") );
+
   wxConfigPathChanger path(this, key);
 
   bool bQueryGlobal = TRUE;
@@ -662,10 +625,11 @@ bool wxRegConfig::Read(const wxString& key, long *plResult) const
        (bQueryGlobal && TryGetValue(m_keyGlobal, path.Name(), plResult)) ) {
     return TRUE;
   }
+
   return FALSE;
 }
 
-bool wxRegConfig::Write(const wxString& key, const wxString& szValue)
+bool wxRegConfig::DoWriteString(const wxString& key, const wxString& szValue)
 {
   wxConfigPathChanger path(this, key);
 
@@ -677,7 +641,7 @@ bool wxRegConfig::Write(const wxString& key, const wxString& szValue)
   return LocalKey().SetValue(path.Name(), szValue);
 }
 
-bool wxRegConfig::Write(const wxString& key, long lValue)
+bool wxRegConfig::DoWriteLong(const wxString& key, long lValue)
 {
   wxConfigPathChanger path(this, key);
 
@@ -722,7 +686,7 @@ bool wxRegConfig::RenameGroup(const wxString& oldName, const wxString& newName)
 // ----------------------------------------------------------------------------
 // deleting
 // ----------------------------------------------------------------------------
-bool wxRegConfig::DeleteEntry(const wxString& value, bool bGroupIfEmptyAlso)
+bool wxRegConfig::DeleteEntry(const wxString& value, bool WXUNUSED(bGroupIfEmptyAlso))
 {
   wxConfigPathChanger path(this, value);
 

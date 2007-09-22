@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     12/07/98
-// RCS-ID:      $Id: symbols.cpp,v 1.2 2000/03/20 13:41:15 JS Exp $
+// RCS-ID:      $Id: symbols.cpp,v 1.4 2002/01/08 23:27:53 VS Exp $
 // Copyright:   (c) Julian Smart
 // Licence:
 /////////////////////////////////////////////////////////////////////////////
@@ -14,7 +14,7 @@
 #endif
 
 // For compilers that support precompilation, includes "wx.h".
-#include <wx/wxprec.h>
+#include "wx/wxprec.h"
 
 #ifdef __BORLANDC__
 #pragma hdrstop
@@ -178,7 +178,7 @@ wxBitmap* csSymbolDatabase::CreateToolBitmap(csSymbol* symbol, const wxSize& too
     memDC.SelectObject(*newBitmap);
     memDC.SetPen(* wxBLACK_PEN);
     memDC.SetBrush(* wxWHITE_BRUSH);
-    memDC.SetBackground(wxBrush(wxSystemSettings::GetSystemColour(wxSYS_COLOUR_3DFACE), wxSOLID));
+    memDC.SetBackground(wxBrush(wxSystemSettings::GetColour(wxSYS_COLOUR_3DFACE), wxSOLID));
     memDC.SetLogicalFunction(wxCOPY);
     memDC.Clear();
 
@@ -208,7 +208,7 @@ wxBitmap* csSymbolDatabase::CreateToolBitmap(csSymbol* symbol, const wxSize& too
 
     memDC.SetUserScale(scaleFactor, scaleFactor);
 
-    memDC.SetBackground(wxBrush(wxSystemSettings::GetSystemColour(wxSYS_COLOUR_3DFACE), wxSOLID));
+    memDC.SetBackground(wxBrush(wxSystemSettings::GetColour(wxSYS_COLOUR_3DFACE), wxSOLID));
     memDC.Clear();
 
     symbol->GetShape()->Show(TRUE);

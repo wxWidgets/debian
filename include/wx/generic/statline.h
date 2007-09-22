@@ -3,7 +3,7 @@
 // Purpose:     a generic wxStaticLine class
 // Author:      Vadim Zeitlin
 // Created:     28.06.99
-// Version:     $Id: statline.h,v 1.3 1999/09/16 10:32:03 MB Exp $
+// Version:     $Id: statline.h,v 1.5 2002/08/31 11:29:12 GD Exp $
 // Copyright:   (c) 1998 Vadim Zeitlin
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -11,8 +11,8 @@
 #ifndef _WX_GENERIC_STATLINE_H_
 #define _WX_GENERIC_STATLINE_H_
 
-#ifdef __GNUG__
-    #pragma interface
+#if defined(__GNUG__) && !defined(__APPLE__)
+    #pragma interface "statline.h"
 #endif
 
 class wxStaticBox;
@@ -50,7 +50,11 @@ public:
     // will want to return the main widget for m_statbox
     //
     WXWidget GetMainWidget() const;
-        
+
+    // override wxWindow methods to make things work
+    virtual void DoSetSize(int x, int y, int width, int height,
+                           int sizeFlags = wxSIZE_AUTO);
+    virtual void DoMoveWindow(int x, int y, int width, int height);
 protected:
     // we implement the static line using a static box
     wxStaticBox *m_statbox;

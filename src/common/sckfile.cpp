@@ -4,7 +4,7 @@
 // Author:      Guilhem Lavaux
 // Modified by:
 // Created:     20/07/97
-// RCS-ID:      $Id: sckfile.cpp,v 1.11.2.2 2000/06/19 11:10:17 RR Exp $
+// RCS-ID:      $Id: sckfile.cpp,v 1.13 2001/12/31 23:30:38 VS Exp $
 // Copyright:   (c) 1997, 1998 Guilhem Lavaux
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -23,7 +23,7 @@
   #include "wx/defs.h"
 #endif
 
-#if wxUSE_STREAMS
+#if wxUSE_STREAMS && wxUSE_PROTOCOL_FILE
 
 #include <stdio.h>
 #include "wx/wfstream.h"
@@ -46,5 +46,5 @@ wxInputStream *wxFileProto::GetInputStream(const wxString& path)
   return new wxFileInputStream(path);
 }
 
-#endif
+#endif // wxUSE_STREAMS && wxUSE_PROTOCOL_FILE
 

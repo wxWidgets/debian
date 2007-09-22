@@ -26,7 +26,7 @@
 // DAMAGE, AND ON ANY THEORY OF LIABILITY, ARISING OUT OF OR IN CONNECTION WITH
 // THE USE OR PERFORMANCE OF THIS SOFTWARE.
 //
-// Version: $Id: wx.rc,v 1.15.2.2 2001/01/23 14:54:40 juliansmart Exp $
+// Version: $Id: wx.rc,v 1.26 2002/03/22 23:22:02 VS Exp $
 /////////////////////////////////////////////////////////////////////////////
 
 #if (defined( __GNUWIN32__ ) && !defined(__TWIN32__)) || defined(__MWERKS__)
@@ -34,40 +34,6 @@
 #else
 	#include <windows.h>
 #endif
-
-//////////////////////////////////////////////////////////////////////////////
-//
-// Dummy Dialog for all wxCAPTION Dialog boxes
-//
-
-wxResizeableDialog DIALOG DISCARDABLE  34, 22, 144, 75
-STYLE DS_MODALFRAME | WS_CAPTION | WS_POPUP | WS_SYSMENU | WS_THICKFRAME
-CAPTION ""
-BEGIN
-#ifdef __WATCOMC__
-	LTEXT "", -1,-2,-2,1,1
-#endif
-END
-
-wxCaptionDialog DIALOG DISCARDABLE  34, 22, 144, 75
-STYLE DS_MODALFRAME | WS_CAPTION | WS_POPUP | WS_SYSMENU
-CAPTION "Dummy dialog"
-BEGIN
-#ifdef __WATCOMC__
-	LTEXT "", -1,-2,-2,1,1
-#endif
-END
-
-//
-// Dummy dialog for dialog boxes without caption & with thin frame
-//
-wxNoCaptionDialog DIALOG 34, 22, 144, 75
-STYLE WS_POPUP
-BEGIN
-#ifdef __WATCOMC__
-	LTEXT "", -1,-2,-2,1,1
-#endif
-END
 
 //////////////////////////////////////////////////////////////////////////////
 //
@@ -105,6 +71,8 @@ WXCURSOR_PLEFT          CURSOR  DISCARDABLE     "wx/msw/pntleft.cur"
 WXCURSOR_PRIGHT         CURSOR  DISCARDABLE     "wx/msw/pntright.cur"
 WXCURSOR_QARROW         CURSOR  DISCARDABLE     "wx/msw/query.cur"
 WXCURSOR_BLANK          CURSOR  DISCARDABLE     "wx/msw/blank.cur"
+WXCURSOR_RIGHT_ARROW    CURSOR  DISCARDABLE     "wx/msw/rightarr.cur"
+
 
 //////////////////////////////////////////////////////////////////////////////
 //
@@ -115,12 +83,15 @@ WXCURSOR_BLANK          CURSOR  DISCARDABLE     "wx/msw/blank.cur"
 //wxDEFAULT_MDIPARENTFRAME      ICON "wx/msw/mdi.ico"
 //wxDEFAULT_MDICHILDFRAME       ICON "wx/msw/child.ico"
 
-// Standard icons
-wxICON_QUESTION		ICON "wx/msw/question.ico"
-wxICON_WARNING		ICON "wx/msw/warning.ico"
-wxICON_ERROR		ICON "wx/msw/error.ico"
-wxICON_INFO		ICON "wx/msw/info.ico"
-wxICON_TIP		ICON "wx/msw/tip.ico"
+// Standard small icons
+wxICON_SMALL_CLOSED_FOLDER      ICON "wx/msw/folder1.ico"
+wxICON_SMALL_OPEN_FOLDER        ICON "wx/msw/folder2.ico"
+wxICON_SMALL_FILE               ICON "wx/msw/file1.ico"
+wxICON_SMALL_COMPUTER           ICON "wx/msw/computer.ico"
+wxICON_SMALL_DRIVE              ICON "wx/msw/drive.ico"
+wxICON_SMALL_CDROM              ICON "wx/msw/cdrom.ico"
+wxICON_SMALL_FLOPPY             ICON "wx/msw/floppy.ico"
+wxICON_SMALL_REMOVEABLE         ICON "wx/msw/removble.ico"
 
 //////////////////////////////////////////////////////////////////////////////
 //
@@ -134,17 +105,8 @@ wxDISABLE_BUTTON_BITMAP         BITMAP  "wx/msw/disable.bmp"
 #endif
 
 
-// For src/generic/proplist.cpp
-tick_bmp                BITMAP  "wx/msw/tick.bmp"
-cross_bmp               BITMAP  "wx/msw/cross.bmp"
-
-// For src/generic/plot.cpp
-plot_up_bmp             BITMAP  "wx/msw/plot_up.bmp"
-plot_dwn_bmp            BITMAP  "wx/msw/plot_dwn.bmp"
-plot_enl_bmp            BITMAP  "wx/msw/plot_enl.bmp"
-plot_shr_bmp            BITMAP  "wx/msw/plot_shr.bmp"
-plot_zin_bmp            BITMAP  "wx/msw/plot_zin.bmp"
-plot_zot_bmp            BITMAP  "wx/msw/plot_zot.bmp"
+// For wxContextHelpButton
+csquery                 BITMAP "wx/msw/csquery.bmp"
 
 // For obtaining the RGB values of standard colours
 wxBITMAP_STD_COLOURS    BITMAP "wx/msw/colours.bmp"

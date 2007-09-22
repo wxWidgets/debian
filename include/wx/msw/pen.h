@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     01/02/97
-// RCS-ID:      $Id: pen.h,v 1.10.2.1 2000/05/17 12:11:17 JS Exp $
+// RCS-ID:      $Id: pen.h,v 1.12.2.1 2002/09/21 23:01:24 VZ Exp $
 // Copyright:   (c) Julian Smart
 // Licence:   	wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -38,7 +38,7 @@ protected:
   int           m_cap ;
   wxBitmap      m_stipple ;
   int           m_nbDash ;
-  wxMSWDash *   m_dash ;
+  wxDash *      m_dash ;
   wxColour      m_colour;
   WXHPEN        m_hPen;
 };
@@ -89,7 +89,7 @@ public:
   // Internal
   bool RealizeResource();
   bool FreeResource(bool force = FALSE);
-  WXHANDLE GetResourceHandle() ;
+  WXHANDLE GetResourceHandle() const;
   bool IsFree() const;
   void Unshare();
 };

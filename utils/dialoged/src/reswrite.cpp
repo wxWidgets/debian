@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     04/01/98
-// RCS-ID:      $Id: reswrite.cpp,v 1.15.2.1 2000/04/22 14:41:06 JS Exp $
+// RCS-ID:      $Id: reswrite.cpp,v 1.20 2002/04/30 07:34:15 JS Exp $
 // Copyright:   (c) Julian Smart
 // Licence:   	wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -35,6 +35,8 @@
 #include "wx/txtstrm.h"
 
 #include "reseditr.h"
+
+static char deBuffer[512];
 
 char *SafeString(char *s);
 char *SafeWord(const wxString& s);
@@ -569,10 +571,10 @@ char *SafeString(const wxString& s)
         return "NULL";
     else
     {
-        strcpy(wxBuffer, "\"");
-        strcat(wxBuffer, s);
-        strcat(wxBuffer, "\"");
-        return wxBuffer;
+        strcpy(deBuffer, "\"");
+        strcat(deBuffer, s);
+        strcat(deBuffer, "\"");
+        return deBuffer;
     }
 }
 
@@ -586,7 +588,7 @@ char *SafeWord(const wxString& s)
         return "''";
     else
     {
-        dp = wxBuffer;
+        dp = deBuffer;
         cp = s.c_str();
         *dp++ = '\'';
         while(*cp != 0) {
@@ -604,7 +606,7 @@ char *SafeWord(const wxString& s)
         *dp++ = '\'';
         *dp++ = 0;
         
-        return wxBuffer;
+        return deBuffer;
     }
 }
 

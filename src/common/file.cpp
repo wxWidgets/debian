@@ -5,7 +5,7 @@
 // Author:      Vadim Zeitlin
 // Modified by:
 // Created:     29/01/98
-// RCS-ID:      $Id: file.cpp,v 1.46.2.10 2001/04/12 22:05:36 VZ Exp $
+// RCS-ID:      $Id: file.cpp,v 1.66 2002/09/12 19:32:29 VZ Exp $
 // Copyright:   (c) 1998 Vadim Zeitlin <zeitlin@dptmaths.ens-cachan.fr>
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -28,7 +28,7 @@
 #if wxUSE_FILE
 
 // standard
-#if defined(__WXMSW__) && !defined(__GNUWIN32__) && !defined(__WXWINE__)
+#if defined(__WXMSW__) && !defined(__GNUWIN32__) && !defined(__WXWINE__) && !defined(__WXMICROWIN__)
   #include  <io.h>
 
 #ifndef __SALFORDC__
@@ -54,26 +54,35 @@
     #define   NOMCX
 #endif
 
-    #include  <windows.h>     // for GetTempFileName
 #elif (defined(__UNIX__) || defined(__GNUWIN32__))
     #include  <unistd.h>
     #ifdef __GNUWIN32__
         #include <windows.h>
     #endif
+#elif defined(__DOS__)
+    #if defined(__WATCOMC__)
+       #include <io.h>
+    #elif defined(__DJGPP__)
+       #include <io.h>
+       #include <unistd.h>
+       #include <stdio.h>
+    #else
+        #error  "Please specify the header with file functions declarations."
+    #endif
 #elif (defined(__WXPM__))
     #include <io.h>
-    #define   W_OK        2
-    #define   R_OK        4
 #elif (defined(__WXSTUBS__))
     // Have to ifdef this for different environments
     #include <io.h>
 #elif (defined(__WXMAC__))
+#if __MSL__ < 0x6000
     int access( const char *path, int mode ) { return 0 ; }
+#else
+    int _access( const char *path, int mode ) { return 0 ; }
+#endif
     char* mktemp( char * path ) { return path ;}
+    #include <stat.h>
     #include  <unistd.h>
-    #include  <unix.h>
-    #define   W_OK        2
-    #define   R_OK        4
 #else
     #error  "Please specify the header with file functions declarations."
 #endif  //Win/UNIX
@@ -81,15 +90,21 @@
 #include  <stdio.h>       // SEEK_xxx constants
 #include  <fcntl.h>       // O_RDONLY &c
 
-#ifndef __MWERKS__
+#if !defined(__MWERKS__) || defined(__WXMSW__)
     #include  <sys/types.h>   // needed for stat
     #include  <sys/stat.h>    // stat
 #endif
 
-#if defined(__BORLANDC__) || defined(_MSC_VER)
-    #define   W_OK        2
-    #define   R_OK        4
-#endif
+// Windows compilers don't have these constants
+#ifndef W_OK
+    enum
+    {
+        F_OK = 0,   // test for existence
+        X_OK = 1,   //          execute permission
+        W_OK = 2,   //          write
+        R_OK = 4    //          read
+    };
+#endif // W_OK
 
 // there is no distinction between text and binary files under Unix, so define
 // O_BINARY as 0 if the system headers don't do it already
@@ -114,10 +129,19 @@
 #endif // Salford C
 
 // wxWindows
-#include  "wx/string.h"
-#include  "wx/intl.h"
+#ifndef WX_PRECOMP
+    #include  "wx/string.h"
+    #include  "wx/intl.h"
+    #include  "wx/log.h"
+#endif // !WX_PRECOMP
+
+#include  "wx/filename.h"
 #include  "wx/file.h"
-#include  "wx/log.h"
+#include  "wx/filefn.h"
+
+#ifdef __WXMSW__
+    #include "wx/msw/mslu.h"
+#endif
 
 // ============================================================================
 // implementation of wxFile
@@ -126,35 +150,22 @@
 // ----------------------------------------------------------------------------
 // static functions
 // ----------------------------------------------------------------------------
+
 bool wxFile::Exists(const wxChar *name)
 {
-    wxStructStat st;
-#if wxUSE_UNICODE && wxMBFILES
-    wxCharBuffer fname = wxConvFile.cWC2MB(name);
-
-#ifdef __WXMAC__
-  return !access(wxUnix2MacFilename( name ) , 0) && !stat(wxUnix2MacFilename( name ), &st) && (st.st_mode & S_IFREG);
-#else
-    return !wxAccess(fname, 0) &&
-           !wxStat(wxMBSTRINGCAST fname, &st) &&
-           (st.st_mode & S_IFREG);
-#endif
-#else
-#ifdef __WXMAC__
-  return !access(wxUnix2MacFilename( name ) , 0) && !stat(wxUnix2MacFilename( name ), &st) && (st.st_mode & S_IFREG);
-#else
-    return !wxAccess(name, 0) &&
-           !wxStat(name, &st) &&
-           (st.st_mode & S_IFREG);
-#endif
-#endif
+    return wxFileExists(name);
 }
 
 bool wxFile::Access(const wxChar *name, OpenMode mode)
 {
-    int how = 0;
+    int how;
 
-    switch ( mode ) {
+    switch ( mode )
+    {
+        default:
+            wxFAIL_MSG(wxT("bad wxFile::Access mode parameter."));
+            // fall through
+
         case read:
             how = R_OK;
             break;
@@ -163,11 +174,12 @@ bool wxFile::Access(const wxChar *name, OpenMode mode)
             how = W_OK;
             break;
 
-        default:
-            wxFAIL_MSG(wxT("bad wxFile::Access mode parameter."));
+        case read_write:
+            how = R_OK | W_OK;
+            break;
     }
 
-    return wxAccess(wxFNCONV(name), how) == 0;
+    return wxAccess(name, how) == 0;
 }
 
 // ----------------------------------------------------------------------------
@@ -188,19 +200,23 @@ bool wxFile::Create(const wxChar *szFileName, bool bOverwrite, int accessMode)
 {
     // if bOverwrite we create a new file or truncate the existing one,
     // otherwise we only create the new file and fail if it already exists
-#ifdef __WXMAC__
-    int fd = open(wxUnix2MacFilename( szFileName ), O_CREAT | (bOverwrite ? O_TRUNC : O_EXCL), access);
+#if defined(__WXMAC__) && !defined(__UNIX__)
+    // Dominic Mazzoni [dmazzoni+@cs.cmu.edu] reports that open is still broken on the mac, so we replace
+    // int fd = open(wxUnix2MacFilename( szFileName ), O_CREAT | (bOverwrite ? O_TRUNC : O_EXCL), access);
+    int fd = creat( szFileName , accessMode);
 #else
-    int fd = wxOpen(wxFNCONV(szFileName),
-                    O_BINARY | O_WRONLY | O_CREAT |
-                    (bOverwrite ? O_TRUNC : O_EXCL)
-                    ACCESS(accessMode));
+    int fd = wxOpen( szFileName,
+                     O_BINARY | O_WRONLY | O_CREAT |
+                     (bOverwrite ? O_TRUNC : O_EXCL)
+                     ACCESS(accessMode) );
 #endif
-    if ( fd == -1 ) {
+    if ( fd == -1 )
+    {
         wxLogSysError(_("can't create file '%s'"), szFileName);
         return FALSE;
     }
-    else {
+    else
+    {
         Attach(fd);
         return TRUE;
     }
@@ -211,7 +227,8 @@ bool wxFile::Open(const wxChar *szFileName, OpenMode mode, int accessMode)
 {
     int flags = O_BINARY;
 
-    switch ( mode ) {
+    switch ( mode )
+    {
         case read:
             flags |= O_RDONLY;
             break;
@@ -229,17 +246,18 @@ bool wxFile::Open(const wxChar *szFileName, OpenMode mode, int accessMode)
             flags |= O_WRONLY | O_CREAT | O_TRUNC;
             break;
 
+        case write_excl:
+            flags |= O_WRONLY | O_CREAT | O_EXCL;
+            break;
+
         case read_write:
             flags |= O_RDWR;
             break;
     }
 
-#ifdef __WXMAC__
-    int fd = open(wxUnix2MacFilename( szFileName ), flags, access);
-#else
-    int fd = wxOpen(wxFNCONV(szFileName), flags ACCESS(accessMode));
-#endif
-    if ( fd == -1 ) {
+    int fd = wxOpen( szFileName, flags ACCESS(accessMode));
+    if ( fd == -1 )
+    {
         wxLogSysError(_("can't open file '%s'"), szFileName);
         return FALSE;
     }
@@ -253,7 +271,7 @@ bool wxFile::Open(const wxChar *szFileName, OpenMode mode, int accessMode)
 bool wxFile::Close()
 {
     if ( IsOpened() ) {
-        if ( wxClose(m_fd) == -1 ) {
+        if ( close(m_fd) == -1 ) {
             wxLogSysError(_("can't close file descriptor %d"), m_fd);
             m_fd = fd_invalid;
             return FALSE;
@@ -274,12 +292,10 @@ off_t wxFile::Read(void *pBuf, off_t nCount)
 {
     wxCHECK( (pBuf != NULL) && IsOpened(), 0 );
 
-    // note: we have to use scope resolution operator because there is also an
-    // enum value "read"
 #ifdef __MWERKS__
-    int iRc = ::read(m_fd, (char *) pBuf, nCount);
+    int iRc = ::read(m_fd, (char*) pBuf, nCount);
 #else
-    int iRc = ::wxRead(m_fd, pBuf, nCount);
+    int iRc = ::read(m_fd, pBuf, nCount);
 #endif
     if ( iRc == -1 ) {
         wxLogSysError(_("can't read from file descriptor %d"), m_fd);
@@ -294,11 +310,14 @@ size_t wxFile::Write(const void *pBuf, size_t nCount)
 {
     wxCHECK( (pBuf != NULL) && IsOpened(), 0 );
 
-    // have to use scope resolution for the same reason as above
 #ifdef __MWERKS__
-    int iRc = ::write(m_fd, (const char *) pBuf, nCount);
+#if __MSL__ >= 0x6000
+    int iRc = ::write(m_fd, (void*) pBuf, nCount);
 #else
-    int iRc = ::wxWrite(m_fd, pBuf, nCount);
+    int iRc = ::write(m_fd, (const char*) pBuf, nCount);
+#endif
+#else
+    int iRc = ::write(m_fd, pBuf, nCount);
 #endif
     if ( iRc == -1 ) {
         wxLogSysError(_("can't write to file descriptor %d"), m_fd);
@@ -354,7 +373,7 @@ off_t wxFile::Seek(off_t ofs, wxSeekMode mode)
             break;
     }
 
-    int iRc = wxLseek(m_fd, ofs, origin);
+    int iRc = lseek(m_fd, ofs, origin);
     if ( iRc == -1 ) {
         wxLogSysError(_("can't seek on file descriptor %d"), m_fd);
         return wxInvalidOffset;
@@ -387,7 +406,8 @@ off_t wxFile::Length() const
 #else // !VC++
     int iRc = wxTell(m_fd);
     if ( iRc != -1 ) {
-        int iLen = ((wxFile *)this)->SeekEnd(); // const_cast
+        // @ have to use const_cast :-(
+        int iLen = ((wxFile *)this)->SeekEnd();
         if ( iLen != -1 ) {
             // restore old position
             if ( ((wxFile *)this)->Seek(iRc) == -1 ) {
@@ -415,8 +435,8 @@ bool wxFile::Eof() const
 
     int iRc;
 
-#if defined(__UNIX__) || defined(__GNUWIN32__) || defined( __MWERKS__ ) || defined(__SALFORDC__)
-    // FIXME this doesn't work, of course, on unseekable file descriptors
+#if defined(__DOS__) || defined(__UNIX__) || defined(__GNUWIN32__) || defined( __MWERKS__ ) || defined(__SALFORDC__)
+    // @@ this doesn't work, of course, on unseekable file descriptors
     off_t ofsCur = Tell(),
     ofsMax = Length();
     if ( ofsCur == wxInvalidOffset || ofsMax == wxInvalidOffset )
@@ -424,7 +444,7 @@ bool wxFile::Eof() const
     else
         iRc = ofsCur == ofsMax;
 #else  // Windows and "native" compiler
-    iRc = wxEof(m_fd);
+    iRc = eof(m_fd);
 #endif // Windows/Unix
 
     switch ( iRc ) {
@@ -452,6 +472,7 @@ bool wxFile::Eof() const
 // ----------------------------------------------------------------------------
 // construction
 // ----------------------------------------------------------------------------
+
 wxTempFile::wxTempFile(const wxString& strName)
 {
     Open(strName);
@@ -459,78 +480,54 @@ wxTempFile::wxTempFile(const wxString& strName)
 
 bool wxTempFile::Open(const wxString& strName)
 {
-    m_strName = strName;
-
-    // we want to create the file in the same directory as strName because
-    // otherwise rename() in Commit() might not work (if the files are on
-    // different partitions for example). Unfortunately, the only standard
-    // (POSIX) temp file creation function tmpnam() can't do it.
-#if defined(__UNIX__) || defined(__WXSTUBS__)|| defined( __WXMAC__ )
-    static const wxChar *szMktempSuffix = wxT("XXXXXX");
-    m_strTemp << strName << szMktempSuffix;
-    // can use the cast because length doesn't change
-    mktemp(wxMBSTRINGCAST m_strTemp.mb_str());
-#elif  defined(__WXPM__)
-    // for now just create a file
-    // future enhancements can be to set some extended attributes for file systems
-    // OS/2 supports that have them (HPFS, FAT32) and security (HPFS386)
-    static const wxChar *szMktempSuffix = wxT("XXX");
-    m_strTemp << strName << szMktempSuffix;
-    ::DosCreateDir(m_strTemp.GetWriteBuf(MAX_PATH), NULL);
-#else // Windows
-    wxString strPath;
-    wxSplitPath(strName, &strPath, NULL, NULL);
-    if ( strPath.IsEmpty() )
-        strPath = wxT('.');  // GetTempFileName will fail if we give it empty string
-#ifdef __WIN32__
-    if ( !GetTempFileName(strPath, wxT("wx_"),0, m_strTemp.GetWriteBuf(MAX_PATH)) )
-#else
-        // Not sure why MSVC++ 1.5 header defines first param as BYTE - bug?
-        if ( !GetTempFileName((BYTE) (DWORD)(const wxChar*) strPath, wxT("wx_"),0, m_strTemp.GetWriteBuf(MAX_PATH)) )
-#endif
-            wxLogLastError(wxT("GetTempFileName"));
-    m_strTemp.UngetWriteBuf();
-#endif  // Windows/Unix
-
-    int access = wxS_DEFAULT;
-#ifdef __UNIX__
-    // create the file with the same mode as the original one under Unix
-    mode_t umaskOld = 0; // just to suppress compiler warning
-    bool changedUmask;
-
-    wxStructStat st;
-    if ( stat(strName.fn_str(), &st) == 0 )
+    // we must have an absolute filename because otherwise CreateTempFileName()
+    // would create the temp file in $TMP (i.e. the system standard location
+    // for the temp files) which might be on another volume/drive/mount and
+    // wxRename()ing it later to m_strName from Commit() would then fail
+    //
+    // with the absolute filename, the temp file is created in the same
+    // directory as this one which ensures that wxRename() may work later
+    wxFileName fn(strName);
+    if ( !fn.IsAbsolute() )
     {
-        // this assumes that only lower bits of st_mode contain the access
-        // rights, but it's true for at least all Unices which have S_IXXXX()
-        // macros, so should not be less portable than using (not POSIX)
-        // S_IFREG &c
-        access = st.st_mode & 0777;
+        fn.Normalize(wxPATH_NORM_ABSOLUTE);
+    }
 
-        // we want to create the file with exactly the same access rights as
-        // the original one, so disable the user's umask for the moment
-        umaskOld = umask(0);
-        changedUmask = TRUE;
+    m_strName = fn.GetFullPath();
+
+    m_strTemp = wxFileName::CreateTempFileName(m_strName, &m_file);
+
+    if ( m_strTemp.empty() )
+    {
+        // CreateTempFileName() failed
+        return FALSE;
+    }
+
+#ifdef __UNIX__
+    // the temp file should have the same permissions as the original one
+    mode_t mode;
+    
+    wxStructStat st;
+    if ( stat( (const char*) m_strName.fn_str(), &st) == 0 )
+    {
+        mode = st.st_mode;
     }
     else
     {
-        // file probably didn't exist, just create with default mode _using_
-        // user's umask (new files creation should respet umask)
-        changedUmask = FALSE;
+        // file probably didn't exist, just give it the default mode _using_
+        // user's umask (new files creation should respect umask)
+        mode_t mask = umask(0777);
+        mode = 0666 & ~mask;
+        umask(mask);
     }
-#endif // Unix
 
-    bool ok = m_file.Open(m_strTemp, wxFile::write, access);
-
-#ifdef __UNIX__
-    if ( changedUmask )
+    if ( chmod( (const char*) m_strTemp.fn_str(), mode) == -1 )
     {
-        // restore umask now that the file is created
-        (void)umask(umaskOld);
+        wxLogSysError(_("Failed to set temporary file permissions"));
     }
 #endif // Unix
 
-    return ok;
+    return TRUE;
 }
 
 // ----------------------------------------------------------------------------
@@ -547,7 +544,6 @@ bool wxTempFile::Commit()
 {
     m_file.Close();
 
-#ifndef __WXMAC__
     if ( wxFile::Exists(m_strName) && wxRemove(m_strName) != 0 ) {
         wxLogSysError(_("can't remove file '%s'"), m_strName.c_str());
         return FALSE;
@@ -557,17 +553,6 @@ bool wxTempFile::Commit()
         wxLogSysError(_("can't commit changes to file '%s'"), m_strName.c_str());
         return FALSE;
     }
-#else
-  if ( wxFile::Exists(m_strName) && remove(wxUnix2MacFilename( m_strName )) != 0 ) {
-    wxLogSysError(_("can't remove file '%s'"), m_strName.c_str());
-    return FALSE;
-  }
-
-  if ( rename(wxUnix2MacFilename( m_strTemp ), wxUnix2MacFilename( m_strName )) != 0 ) {
-    wxLogSysError(_("can't commit changes to file '%s'"), m_strName.c_str());
-    return FALSE;
-  }
-#endif
 
     return TRUE;
 }
@@ -575,14 +560,9 @@ bool wxTempFile::Commit()
 void wxTempFile::Discard()
 {
     m_file.Close();
-#ifndef __WXMAC__
     if ( wxRemove(m_strTemp) != 0 )
         wxLogSysError(_("can't remove temporary file '%s'"), m_strTemp.c_str());
-#else
-    if ( remove( wxUnix2MacFilename(m_strTemp.fn_str())) != 0 )
-        wxLogSysError(_("can't remove temporary file '%s'"), m_strTemp.c_str());
-#endif
 }
 
-#endif
+#endif // wxUSE_FILE
 

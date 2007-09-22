@@ -1,10 +1,10 @@
 /////////////////////////////////////////////////////////////////////////////
-// Name:        ffile.h
+// Name:        wx/ffile.h
 // Purpose:     wxFFile - encapsulates "FILE *" stream
 // Author:      Vadim Zeitlin
 // Modified by:
 // Created:     14.07.99
-// RCS-ID:      $Id: ffile.h,v 1.3.2.3 2000/04/05 00:13:47 VZ Exp $
+// RCS-ID:      $Id: ffile.h,v 1.7 2002/08/31 11:29:10 GD Exp $
 // Copyright:   (c) 1998 Vadim Zeitlin <zeitlin@dptmaths.ens-cachan.fr>
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -12,11 +12,13 @@
 #ifndef   _WX_FFILE_H_
 #define   _WX_FFILE_H_
 
-#ifdef __GNUG__
+#if defined(__GNUG__) && !defined(__APPLE__)
     #pragma interface "ffile.h"
 #endif
 
-#if wxUSE_FILE
+#include "wx/defs.h"        // for wxUSE_FFILE
+
+#if wxUSE_FFILE
 
 #ifndef WX_PRECOMP
   #include  "wx/string.h"
@@ -109,7 +111,7 @@ private:
   wxString m_name;  // the name of the file (for diagnostic messages)
 };
 
-#endif // wxUSE_FILE
+#endif // wxUSE_FFILE
 
 #endif // _WX_FFILE_H_
 

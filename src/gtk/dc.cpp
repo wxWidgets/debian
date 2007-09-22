@@ -2,7 +2,7 @@
 // Name:        dc.cpp
 // Purpose:
 // Author:      Robert Roebling
-// RCS-ID:      $Id: dc.cpp,v 1.28 1999/11/22 19:46:54 RR Exp $
+// RCS-ID:      $Id: dc.cpp,v 1.30 2001/01/31 15:57:09 vadz Exp $
 // Copyright:   (c) 1998 Robert Roebling, Markus Holzem
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -38,8 +38,10 @@ wxDC::wxDC()
 {
     m_ok = FALSE;
 
-    m_mm_to_pix_x = 1.0;
-    m_mm_to_pix_y = 1.0;
+    m_mm_to_pix_x = (double)wxGetDisplaySize().GetWidth() /
+                    (double)wxGetDisplaySizeMM().GetWidth();
+    m_mm_to_pix_y = (double)wxGetDisplaySize().GetHeight() /
+                    (double)wxGetDisplaySizeMM().GetHeight();
 
     m_needComputeScaleX = FALSE; /* not used yet */
     m_needComputeScaleY = FALSE; /* not used yet */
@@ -69,19 +71,13 @@ void wxDC::DestroyClippingRegion()
 // get DC capabilities
 // ---------------------------------------------------------------------------
 
-void wxDC::DoGetSize( int* width, int* height ) const
-{
-    if (width) *width = m_maxX-m_minX;
-    if (height) *height = m_maxY-m_minY;
-}
-
 void wxDC::DoGetSizeMM( int* width, int* height ) const
 {
     int w = 0;
     int h = 0;
     GetSize( &w, &h );
-    if (width) *width = int( double(w) / (m_scaleX*m_mm_to_pix_x) );
-    if (height) *height = int( double(h) / (m_scaleY*m_mm_to_pix_y) );
+    if (width) *width = int( double(w) / (m_userScaleX*m_mm_to_pix_x) );
+    if (height) *height = int( double(h) / (m_userScaleY*m_mm_to_pix_y) );
 }
 
 // Resolution in pixels per logical inch

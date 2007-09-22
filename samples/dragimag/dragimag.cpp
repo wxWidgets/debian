@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     28/2/2000
-// RCS-ID:      $Id: dragimag.cpp,v 1.1.2.2 2001/04/26 10:48:50 JS Exp $
+// RCS-ID:      $Id: dragimag.cpp,v 1.13 2002/03/24 00:20:51 VS Exp $
 // Copyright:   (c) Julian Smart
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -25,7 +25,7 @@
 // Under Windows, change this to 1
 // to use wxGenericDragImage
 
-#define wxUSE_GENERIC_DRAGIMAGE 0
+#define wxUSE_GENERIC_DRAGIMAGE 1
 
 #if wxUSE_GENERIC_DRAGIMAGE
 #include "wx/generic/dragimgg.h"
@@ -36,7 +36,7 @@
 
 #include "dragimag.h"
 
-#if defined(__WXGTK__) || defined(__WXMOTIF__)
+#if defined(__WXGTK__) || defined(__WXMOTIF__) || defined(__WXMAC__) || defined(__WXMGL__) || defined(__WXX11__)
 #include "mondrian.xpm"
 #include "dragicon.xpm"
 #endif
@@ -83,7 +83,6 @@ void MyCanvas::OnPaint( wxPaintEvent &WXUNUSED(event) )
     PrepareDC( dc );
 
     DrawShapes(dc);
-
 }
 
 void MyCanvas::OnEraseBackground(wxEraseEvent& event)
@@ -131,10 +130,8 @@ void MyCanvas::OnMouseEvent(wxMouseEvent& event)
         if (!m_draggedShape || !m_dragImage)
             return;
 
-        wxPoint newPos(m_draggedShape->GetPosition().x + (event.GetPosition().x - m_dragStartPos.x),
-                           m_draggedShape->GetPosition().y + (event.GetPosition().y - m_dragStartPos.y));
-
-        m_draggedShape->SetPosition(newPos);
+        m_draggedShape->SetPosition(m_draggedShape->GetPosition()
+                                    + event.GetPosition() - m_dragStartPos);
 
         m_dragImage->Hide();
         m_dragImage->EndDrag();
@@ -165,9 +162,6 @@ void MyCanvas::OnMouseEvent(wxMouseEvent& event)
             if (dx <= tolerance && dy <= tolerance)
                 return;
 
-            wxPoint newPos(m_draggedShape->GetPosition().x + (event.GetPosition().x - m_dragStartPos.x),
-                           m_draggedShape->GetPosition().y + (event.GetPosition().y - m_dragStartPos.y));
-
             // Start the drag.
             m_dragMode = TEST_DRAG_DRAGGING;
 
@@ -184,58 +178,51 @@ void MyCanvas::OnMouseEvent(wxMouseEvent& event)
             {
                 case SHAPE_DRAG_BITMAP:
                 {
-                    wxPoint hotSpot(event.GetPosition().x - newPos.x, event.GetPosition().y - newPos.y);
-                    m_dragImage = new wxDragImage(m_draggedShape->GetBitmap(), wxCursor(wxCURSOR_HAND), hotSpot);
+                    m_dragImage = new wxDragImage(m_draggedShape->GetBitmap(), wxCursor(wxCURSOR_HAND));
                     break;
                 }
                 case SHAPE_DRAG_TEXT:
                 {
-                    wxPoint hotSpot(event.GetPosition().x - newPos.x, event.GetPosition().y - newPos.y);
-                    m_dragImage = new wxDragImage("Dragging some test text", wxCursor(wxCURSOR_HAND), hotSpot);
+                    m_dragImage = new wxDragImage(wxString("Dragging some test text"), wxCursor(wxCURSOR_HAND));
                     break;
                 }
                 case SHAPE_DRAG_ICON:
                 {
-                    wxPoint hotSpot(event.GetPosition().x - newPos.x, event.GetPosition().y - newPos.y);
-
                     // Can anyone explain why this test is necessary,
                     // to prevent a gcc error?
-#ifdef __WXMOTIF__
-		    wxIcon icon(dragicon_xpm);
+#if defined(__WXMOTIF__) || defined(__WXX11__)
+                    wxIcon icon(dragicon_xpm);
 #else
-		    wxIcon icon(wxICON(dragicon));
+                    wxIcon icon(wxICON(dragicon));
 #endif
-
-                    m_dragImage = new wxDragImage(icon, wxCursor(wxCURSOR_HAND), hotSpot);
+                    
+                    m_dragImage = new wxDragImage(icon, wxCursor(wxCURSOR_HAND));
                     break;
                 }
             }
 
-            bool fullScreen = FALSE;
-            if (wxGetApp().GetUseScreen())
-            {
-                newPos = ClientToScreen(newPos);
-                fullScreen = TRUE;
-            }
+            bool fullScreen = wxGetApp().GetUseScreen();
 
-            bool retValue;
+            // The offset between the top-left of the shape image and the current shape position
+            wxPoint beginDragHotSpot = m_dragStartPos - m_draggedShape->GetPosition();
+            
+            // Now we do this inside the implementation: always assume
+            // coordinates relative to the capture window (client coordinates)
 
-            if (fullScreen)
-                // This line uses the whole screen...
-                retValue = m_dragImage->BeginDrag(wxPoint(0, 0), this, TRUE);
-                // while this line restricts dragging to the parent frame.
-                // retValue = m_dragImage->BeginDrag(wxPoint(0, 0), this, GetParent());
-            else
-                retValue = m_dragImage->BeginDrag(wxPoint(0, 0), this);
-
-            if (!retValue)
+            //if (fullScreen)
+            //    beginDragHotSpot -= ClientToScreen(wxPoint(0, 0));
+            
+            if (!m_dragImage->BeginDrag(beginDragHotSpot, this, fullScreen))
             {
                 delete m_dragImage;
                 m_dragImage = (wxDragImage*) NULL;
                 m_dragMode = TEST_DRAG_NONE;
+                
+            } else
+            {
+                m_dragImage->Move(event.GetPosition());
+                m_dragImage->Show();
             }
-            m_dragImage->Move(newPos);
-            m_dragImage->Show();
         }
         else if (m_dragMode == TEST_DRAG_DRAGGING)
         {
@@ -272,16 +259,8 @@ void MyCanvas::OnMouseEvent(wxMouseEvent& event)
                 m_currentlyHighlighted->Draw(clientDC, wxINVERT);
             }
 
-            wxPoint newPos(m_draggedShape->GetPosition().x + (event.GetPosition().x - m_dragStartPos.x),
-                           m_draggedShape->GetPosition().y + (event.GetPosition().y - m_dragStartPos.y));
-
-            if (wxGetApp().GetUseScreen())
-            {
-                newPos = ClientToScreen(newPos);
-            }
-
             // Move and show the image again
-            m_dragImage->Move(newPos);
+            m_dragImage->Move(event.GetPosition());
 
             if (mustUnhighlightOld || mustHighlightNew)
                  m_dragImage->Show();
@@ -340,7 +319,6 @@ DragShape* MyCanvas::FindShape(const wxPoint& pt) const
 }
 
 // MyFrame
-
 IMPLEMENT_DYNAMIC_CLASS( MyFrame, wxFrame )
 
 BEGIN_EVENT_TABLE(MyFrame,wxFrame)
@@ -404,9 +382,8 @@ bool MyApp::OnInit()
     wxImage image;
     if (image.LoadFile("backgrnd.png", wxBITMAP_TYPE_PNG))
     {
-        m_background = image.ConvertToBitmap();
+        m_background = wxBitmap(image);
     }
-
 
     MyFrame *frame = new MyFrame();
 
@@ -416,10 +393,13 @@ bool MyApp::OnInit()
     for (i = 1; i < 4; i++)
     {
         wxString filename;
-        filename.Printf("%s%d.png", (const char*) rootName, i);
+        filename.Printf(wxT("%s%d.png"), (const wxChar*)rootName, i);
+    /* For some reason under wxX11, the 2nd LoadFile in this loop fails, with
+       a BadMatch inside CreateFromImage (inside ConvertToBitmap). This happens even if you copy
+       the first file over the second file. */
         if (image.LoadFile(filename, wxBITMAP_TYPE_PNG))
         {
-            DragShape* newShape = new DragShape(image.ConvertToBitmap());
+            DragShape* newShape = new DragShape(wxBitmap(image));
             newShape->SetPosition(wxPoint(i*50, i*50));
 
             if (i == 2)
@@ -452,6 +432,11 @@ bool MyApp::OnInit()
     frame->Show( TRUE );
 
     return TRUE;
+}
+
+int MyApp::OnExit()
+{
+    return 0;
 }
 
 bool MyApp::TileBitmap(const wxRect& rect, wxDC& dc, wxBitmap& bitmap)

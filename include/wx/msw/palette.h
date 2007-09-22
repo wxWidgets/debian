@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     01/02/97
-// RCS-ID:      $Id: palette.h,v 1.4.4.1 2000/05/17 12:11:17 JS Exp $
+// RCS-ID:      $Id: palette.h,v 1.5 2000/07/15 19:50:00 cvsuser Exp $
 // Copyright:   (c) Julian Smart
 // Licence:   	wxWindows licence
 /////////////////////////////////////////////////////////////////////////////

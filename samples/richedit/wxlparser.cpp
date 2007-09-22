@@ -3,14 +3,14 @@
  *                                                                  *
  * (C) 1998,1999 by Karsten Ballüder (Ballueder@usa.net)            *
  *                                                                  *
- * $Id: wxlparser.cpp,v 1.10.2.1 2000/05/10 20:00:53 KB Exp $
+ * $Id: wxlparser.cpp,v 1.11 2001/10/30 13:32:30 GT Exp $
  *******************************************************************/
 
 #ifdef __GNUG__
 #   pragma implementation "wxlparser.h"
 #endif
 
-#include <wx/wxprec.h>
+#include "wx/wxprec.h"
 
 #ifdef __BORLANDC__
 #  pragma hdrstop

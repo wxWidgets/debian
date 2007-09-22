@@ -5,7 +5,7 @@
 // Author:      Robin Dunn
 //
 // Created:     25-Nov-1998
-// RCS-ID:      $Id: utils.i,v 1.1.2.7 2001/01/30 20:53:43 robind Exp $
+// RCS-ID:      $Id: utils.i,v 1.17 2002/08/21 20:15:04 RD Exp $
 // Copyright:   (c) 1998 by Total Control Software
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -14,12 +14,19 @@
 %module utils
 
 %{
-#include "export.h"
+#include "helpers.h"
 #include <wx/config.h>
 #include <wx/fileconf.h>
 #include <wx/datetime.h>
 %}
 
+//---------------------------------------------------------------------------
+%{
+    // Put some wx default wxChar* values into wxStrings.
+    DECLARE_DEF_STRING2(DateFormatStr, wxT("%c"));
+    static const wxString wxPyEmptyString(wxT(""));
+
+%}
 //---------------------------------------------------------------------------
 
 %include typemaps.i
@@ -34,13 +41,15 @@
 //---------------------------------------------------------------------------
 
 %{
-    static wxString wxPyEmptyStr("");
-
     static PyObject* __EnumerationHelper(bool flag, wxString& str, long index) {
         PyObject* ret = PyTuple_New(3);
         if (ret) {
             PyTuple_SET_ITEM(ret, 0, PyInt_FromLong(flag));
-            PyTuple_SET_ITEM(ret, 1, PyString_FromString(str));
+#if wxUSE_UNICODE
+	    PyTuple_SET_ITEM(ret, 1, PyUnicode_FromUnicode(str.c_str(), str.Len()));
+#else
+            PyTuple_SET_ITEM(ret, 1, PyString_FromStringAndSize(str.c_str(), str.Len()));
+#endif
             PyTuple_SET_ITEM(ret, 2, PyInt_FromLong(index));
         }
         return ret;
@@ -51,19 +60,20 @@
 
 enum
 {
-    wxCONFIG_USE_LOCAL_FILE = 1,
-    wxCONFIG_USE_GLOBAL_FILE = 2,
-    wxCONFIG_USE_RELATIVE_PATH = 4
+    wxCONFIG_USE_LOCAL_FILE,
+    wxCONFIG_USE_GLOBAL_FILE,
+    wxCONFIG_USE_RELATIVE_PATH,
+    wxCONFIG_USE_NO_ESCAPE_CHARACTERS
 };
 
 //---------------------------------------------------------------------------
 
 class wxConfigBase {
 public:
-//      wxConfigBase(const wxString& appName = wxPyEmptyStr,       **** An ABC
-//                   const wxString& vendorName = wxPyEmptyStr,
-//                   const wxString& localFilename = wxPyEmptyStr,
-//                   const wxString& globalFilename = wxPyEmptyStr,
+//      wxConfigBase(const wxString& appName = wxPyEmptyString,       **** An ABC
+//                   const wxString& vendorName = wxPyEmptyString,
+//                   const wxString& localFilename = wxPyEmptyString,
+//                   const wxString& globalFilename = wxPyEmptyString,
 //                   long style = 0);
     ~wxConfigBase();
 
@@ -148,9 +158,25 @@ public:
     bool IsExpandingEnvVars();
     bool IsRecordingDefaults();
 
-    wxString Read(const wxString& key, const wxString& defaultVal = wxPyEmptyStr);
-    %name(ReadInt)long Read(const wxString& key, long defaultVal = 0);
-    %name(ReadFloat)double Read(const wxString& key, double defaultVal = 0.0);
+    wxString Read(const wxString& key, const wxString& defaultVal = wxPyEmptyString);
+
+    %addmethods {
+        long ReadInt(const wxString& key, long defaultVal = 0) {
+            long rv;
+            self->Read(key, &rv, defaultVal);
+            return rv;
+        }
+        double ReadFloat(const wxString& key, double defaultVal = 0.0) {
+            double rv;
+            self->Read(key, &rv, defaultVal);
+            return rv;
+        }
+        bool ReadBool(const wxString& key, bool defaultVal = FALSE) {
+            bool rv;
+            self->Read(key, &rv, defaultVal);
+            return rv;
+        }
+    }
 
     void SetExpandEnvVars (bool bDoIt = TRUE);
     void SetPath(const wxString& strPath);
@@ -164,6 +190,7 @@ public:
     bool Write(const wxString& key, const wxString& value);
     %name(WriteInt)bool Write(const wxString& key, long value);
     %name(WriteFloat)bool Write(const wxString& key, double value);
+    %name(WriteBool)bool Write(const wxString& key, bool value);
 
     EntryType GetEntryType(const wxString& name);
     bool RenameEntry(const wxString& oldName,
@@ -175,24 +202,28 @@ public:
 
 };
 
+
 //---------------------------------------------------------------------------
 
+// This will be a wxRegConfig on Win32 and wxFileConfig otherwise.
 class wxConfig : public wxConfigBase {
 public:
-    wxConfig(const wxString& appName = wxPyEmptyStr,
-             const wxString& vendorName = wxPyEmptyStr,
-             const wxString& localFilename = wxPyEmptyStr,
-             const wxString& globalFilename = wxPyEmptyStr,
+    wxConfig(const wxString& appName = wxPyEmptyString,
+             const wxString& vendorName = wxPyEmptyString,
+             const wxString& localFilename = wxPyEmptyString,
+             const wxString& globalFilename = wxPyEmptyString,
              long style = 0);
     ~wxConfig();
 };
 
+
+// Sometimes it's nice to explicitly have a wxFileConfig too.
 class wxFileConfig : public wxConfigBase {
 public:
-    wxFileConfig(const wxString& appName = wxPyEmptyStr,
-                 const wxString& vendorName = wxPyEmptyStr,
-                 const wxString& localFilename = wxPyEmptyStr,
-                 const wxString& globalFilename = wxPyEmptyStr,
+    wxFileConfig(const wxString& appName = wxPyEmptyString,
+                 const wxString& vendorName = wxPyEmptyString,
+                 const wxString& localFilename = wxPyEmptyString,
+                 const wxString& globalFilename = wxPyEmptyString,
                  long style = 0);
     ~wxFileConfig();
 };
@@ -516,10 +547,10 @@ public:
                       int n = 1,
                       Month month = Inv_Month,
                       int year = Inv_Year);
-    wxDateTime GetWeekDay(WeekDay weekday,
-                          int n = 1,
-                          Month month = Inv_Month,
-                          int year = Inv_Year);
+//      wxDateTime GetWeekDay(WeekDay weekday,
+//                            int n = 1,
+//                            Month month = Inv_Month,
+//                            int year = Inv_Year);
 
         // sets to the last weekday in the given month, year
     bool SetToLastWeekDay(WeekDay weekday,
@@ -717,9 +748,10 @@ public:
         wxDateTime __sub__TS(const wxTimeSpan& other) { return *self - other; }
         wxDateTime __sub__DS(const wxDateSpan& other) { return *self - other; }
 
-        int __cmp__(const wxDateTime& other) {
-            if (*self <  other) return -1;
-            if (*self == other) return 0;
+        int __cmp__(const wxDateTime* other) {
+            if (! other) return -1;
+            if (*self <  *other) return -1;
+            if (*self == *other) return 0;
             return 1;
         }
     }
@@ -742,38 +774,74 @@ public:
 "
 
     // ------------------------------------------------------------------------
-    // conversion to/from text: all conversions from text return the pointer to
-    // the next character following the date specification (i.e. the one where
-    // the scan had to stop) or NULL on failure.
+    // conversion from text: all conversions from text return -1 on failure,
+    // or the index in the string where the next character following the date
+    // specification (i.e. the one where the scan had to stop) is located.
+
+    %addmethods {
 
         // parse a string in RFC 822 format (found e.g. in mail headers and
         // having the form "Wed, 10 Feb 1999 19:07:07 +0100")
-    const char *ParseRfc822Date(const char* date);
+        int ParseRfc822Date(const wxString& date) {
+            const wxChar* rv;
+            const wxChar* _date = date;
+            rv = self->ParseRfc822Date(_date);
+            if (rv == NULL) return -1;
+            return rv - _date;
+        }
+
 
         // parse a date/time in the given format (see strptime(3)), fill in
         // the missing (in the string) fields with the values of dateDef (by
         // default, they will not change if they had valid values or will
         // default to Today() otherwise)
-    const char *ParseFormat(const char *date,
-                              const char *format = "%c",
-                              const wxDateTime& dateDef = wxDefaultDateTime);
+        int ParseFormat(const wxString& date,
+                        const wxString& format = wxPyDateFormatStr,
+                        const wxDateTime& dateDef = wxDefaultDateTime) {
+            const wxChar* rv;
+            const wxChar* _date = date;
+            rv = self->ParseFormat(_date, format, dateDef);
+            if (rv == NULL) return -1;
+            return rv - _date;
+        }
 
         // parse a string containing the date/time in "free" format, this
         // function will try to make an educated guess at the string contents
-    const char *ParseDateTime(const char *datetime);
+        int ParseDateTime(const wxString& datetime) {
+            const wxChar* rv;
+            const wxChar* _datetime = datetime;
+            rv = self->ParseDateTime(_datetime);
+            if (rv == NULL) return -1;
+            return rv - _datetime;
+        }
+
 
         // parse a string containing the date only in "free" format (less
         // flexible than ParseDateTime)
-    const char *ParseDate(const char *date);
+        int ParseDate(const wxString& date) {
+            const wxChar* rv;
+            const wxChar* _date = date;
+            rv = self->ParseDate(_date);
+            if (rv == NULL) return -1;
+            return rv - _date;
+        }
 
         // parse a string containing the time only in "free" format
-    const char *ParseTime(const char *time);
+        int ParseTime(const wxString& time) {
+            const wxChar* rv;
+            const wxChar* _time = time;
+            rv = self->ParseTime(_time);
+            if (rv == NULL) return -1;
+            return rv - _time;
+        }
+    }
+
 
         // this function accepts strftime()-like format string (default
         // argument corresponds to the preferred date and time representation
         // for the current locale) and returns the string containing the
         // resulting text representation
-    wxString Format(const char *format = "%c",
+    wxString Format(const wxString& format = wxPyDateFormatStr,
                     const wxDateTime::TimeZone& tz = LOCAL) const;
 
         // preferred date representation for the current locale
@@ -864,9 +932,10 @@ public:
         wxTimeSpan __mul__(int n)                   { return *self * n; }
         wxTimeSpan __rmul__(int n)                  { return n * *self; }
         wxTimeSpan __neg__()                        { return self->Negate(); }
-        int __cmp__(const wxTimeSpan& other) {
-            if (*self <  other) return -1;
-            if (*self == other) return 0;
+        int __cmp__(const wxTimeSpan* other) {
+            if (! other) return -1;
+            if (*self <  *other) return -1;
+            if (*self == *other) return 0;
             return 1;
         }
     }
@@ -923,7 +992,7 @@ public:
         // resulting text representation. Notice that only some of format
         // specifiers valid for wxDateTime are valid for wxTimeSpan: hours,
         // minutes and seconds make sense, but not "PM/AM" string for example.
-    wxString Format(const char *format = "%c") const;
+    wxString Format(const wxString& format = wxPyDateFormatStr) const;
 
 //          // preferred date representation for the current locale
 //      wxString FormatDate() const;
@@ -1032,8 +1101,9 @@ wxLongLong wxGetLocalTimeMillis();
 //---------------------------------------------------------------------------
 
 %init %{
-    wxClassInfo::CleanUpClasses();
-    wxClassInfo::InitializeClasses();
+    // These are no longer needed since utils is back in the core
+//      wxClassInfo::CleanUpClasses();
+//      wxClassInfo::InitializeClasses();
 %}
 
 //---------------------------------------------------------------------------

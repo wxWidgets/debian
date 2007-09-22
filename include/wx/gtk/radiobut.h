@@ -1,39 +1,19 @@
 /////////////////////////////////////////////////////////////////////////////
-// Name:        radiobut.h
+// Name:        wx/gtk/radiobut.h
 // Purpose:
 // Author:      Robert Roebling
-// Id:          $Id: radiobut.h,v 1.14 2000/01/04 13:02:25 RR Exp $
+// Id:          $Id: radiobut.h,v 1.19 2002/09/07 12:28:46 GD Exp $
 // Copyright:   (c) 1998 Robert Roebling
-// Licence:   	wxWindows licence
+// Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
 
 
 #ifndef __GTKRADIOBUTTONH__
 #define __GTKRADIOBUTTONH__
 
-#ifdef __GNUG__
+#if defined(__GNUG__) && !defined(__APPLE__)
 #pragma interface
 #endif
-
-#include "wx/defs.h"
-
-#if wxUSE_RADIOBOX
-
-#include "wx/object.h"
-#include "wx/list.h"
-#include "wx/control.h"
-
-//-----------------------------------------------------------------------------
-// classes
-//-----------------------------------------------------------------------------
-
-class wxRadioButton;
-
-//-----------------------------------------------------------------------------
-// data
-//-----------------------------------------------------------------------------
-
-extern const char* wxRadioButtonNameStr;
 
 //-----------------------------------------------------------------------------
 // wxRadioButton
@@ -42,41 +22,49 @@ extern const char* wxRadioButtonNameStr;
 class wxRadioButton: public wxControl
 {
 public:
-    inline wxRadioButton() {}
-    inline wxRadioButton( wxWindow *parent, wxWindowID id,
-           const wxString& label,
-           const wxPoint& pos = wxDefaultPosition,
-           const wxSize& size = wxDefaultSize, long style = 0,
-           const wxValidator& validator = wxDefaultValidator,
-           const wxString& name = wxRadioButtonNameStr )
+    wxRadioButton() { }
+    wxRadioButton( wxWindow *parent,
+                   wxWindowID id,
+                   const wxString& label,
+                   const wxPoint& pos = wxDefaultPosition,
+                   const wxSize& size = wxDefaultSize,
+                   long style = 0,
+                   const wxValidator& validator = wxDefaultValidator,
+                   const wxString& name = wxRadioButtonNameStr )
     {
         Create( parent, id, label, pos, size, style, validator, name );
     }
-    bool Create(wxWindow *parent, wxWindowID id,
-           const wxString& label,
-           const wxPoint& pos = wxDefaultPosition,
-           const wxSize& size = wxDefaultSize, long style = 0,
-           const wxValidator& validator = wxDefaultValidator,
-           const wxString& name = wxRadioButtonNameStr );
+
+    bool Create( wxWindow *parent,
+                 wxWindowID id,
+                 const wxString& label,
+                 const wxPoint& pos = wxDefaultPosition,
+                 const wxSize& size = wxDefaultSize,
+                 long style = 0,
+                 const wxValidator& validator = wxDefaultValidator,
+                 const wxString& name = wxRadioButtonNameStr );
+
     virtual void SetLabel(const wxString& label);
     virtual void SetValue(bool val);
     virtual bool GetValue() const;
-    bool Enable( bool enable );
-    
-  // implementation
-    
+    virtual bool Enable( bool enable = TRUE );
+
+    // implementation
+
+    virtual bool IsRadioButton() const { return TRUE; }
+
     GSList *m_radioButtonGroup;
     void ApplyWidgetStyle();
     bool IsOwnGtkWindow( GdkWindow *window );
     void OnInternalIdle();
-    
+
+    bool m_blockEvent;
+
 protected:
     virtual wxSize DoGetBestSize() const;
 
 private:
     DECLARE_DYNAMIC_CLASS(wxRadioButton)
 };
-
-#endif
 
 #endif // __GTKRADIOBUTTONH__

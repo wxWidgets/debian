@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     01/02/97
-// RCS-ID:      $Id: msgdlg.h,v 1.4 1999/06/10 18:11:59 OK Exp $
+// RCS-ID:      $Id: msgdlg.h,v 1.5 2001/06/27 00:27:23 VZ Exp $
 // Copyright:   (c) Julian Smart
 // Licence:   	wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -40,10 +40,6 @@ public:
     int ShowModal(void);
 };
 
-
-int WXDLLEXPORT wxMessageBox(const wxString& message, const wxString& caption = wxMessageBoxCaptionStr,
-  long style = wxOK|wxCENTRE,
-  wxWindow *parent = NULL, int x = -1, int y = -1);
 
 #endif
     // _WX_MSGBOXDLG_H_

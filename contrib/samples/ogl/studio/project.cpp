@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     27/7/98
-// RCS-ID:      $Id: project.cpp,v 1.1 2000/03/03 11:24:43 JS Exp $
+// RCS-ID:      $Id: project.cpp,v 1.2 2002/01/08 23:27:53 VS Exp $
 // Copyright:   (c) Julian Smart
 // Licence:
 /////////////////////////////////////////////////////////////////////////////
@@ -57,7 +57,7 @@ bool csApp::CreateProjectWindow(wxFrame *parent)
     win->SetDefaultSize(wxSize(150, 10000));
     win->SetOrientation(wxLAYOUT_VERTICAL);
     win->SetAlignment(wxLAYOUT_LEFT);
-    win->SetBackgroundColour(wxSystemSettings::GetSystemColour(wxSYS_COLOUR_3DFACE));
+    win->SetBackgroundColour(wxSystemSettings::GetColour(wxSYS_COLOUR_3DFACE));
     win->SetSashVisible(wxSASH_RIGHT, TRUE);
     win->SetExtraBorderSize(5);
 

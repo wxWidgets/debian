@@ -3,7 +3,7 @@
  *                                                                  *
  * (C) 1998 by Karsten Ballüder (Ballueder@usa.net)                 *
  *                                                                  *
- * $Id: helpext.h,v 1.8.2.1 2000/04/18 11:13:16 JS Exp $
+ * $Id: helpext.h,v 1.11 2002/08/31 11:29:12 GD Exp $
  *******************************************************************/
 
 #ifndef __WX_HELPEXT_H_
@@ -11,7 +11,7 @@
 
 #if wxUSE_HELP
 
-#ifdef __GNUG__
+#if defined(__GNUG__) && !defined(__APPLE__)
 #   pragma interface "wxexthlp.h"
 #endif
 
@@ -19,14 +19,10 @@
 
 #ifndef WXEXTHELP_DEFAULTBROWSER
 /// Default browser name.
-#   define WXEXTHELP_DEFAULTBROWSER "netscape"
+#   define WXEXTHELP_DEFAULTBROWSER _T("netscape")
 /// Is default browse a variant of netscape?
 #   define WXEXTHELP_DEFAULTBROWSER_IS_NETSCAPE TRUE
 #endif
-/// Name of environment variable to set help browser.
-#define   WXEXTHELP_ENVVAR_BROWSER   "WX_HELPBROWSER"
-/// Is browser a netscape browser?
-#define   WXEXTHELP_ENVVAR_BROWSERISNETSCAPE "WX_HELPBROWSER_NS"
 
 /**
    This class implements help via an external browser.

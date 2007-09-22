@@ -16,7 +16,7 @@
 #ifndef __WXGRIDSEL_H__
 #define __WXGRIDSEL_H__
 
-#ifdef __GNUG__
+#if defined(__GNUG__) && !defined(__APPLE__)
 #pragma interface "gridsel.h"
 #endif
 
@@ -81,6 +81,8 @@ private:
 
     wxGrid                              *m_grid;
     wxGrid::wxGridSelectionModes        m_selectionMode;
+
+    friend class wxGrid;
 };
 
 #endif  // #ifdef __WXGRIDSEL_H__

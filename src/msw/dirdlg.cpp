@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     01/02/97
-// RCS-ID:      $Id: dirdlg.cpp,v 1.13.2.3 2001/01/28 08:26:16 juliansmart Exp $
+// RCS-ID:      $Id: dirdlg.cpp,v 1.24 2002/06/08 15:11:49 VZ Exp $
 // Copyright:   (c) Julian Smart and Markus Holzem
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -16,6 +16,7 @@
 // ----------------------------------------------------------------------------
 // headers
 // ----------------------------------------------------------------------------
+
 #ifdef __GNUG__
     #pragma implementation "dirdlg.h"
 #endif
@@ -27,18 +28,21 @@
     #pragma hdrstop
 #endif
 
-#if defined(__WIN95__) && !defined(__GNUWIN32_OLD__)
+#if wxUSE_DIRDLG
+
+#if defined(__WIN95__) && !defined(__GNUWIN32_OLD__) && wxUSE_OLE
 
 #ifndef WX_PRECOMP
     #include "wx/utils.h"
     #include "wx/dialog.h"
     #include "wx/dirdlg.h"
     #include "wx/log.h"
+    #include "wx/app.h"     // for GetComCtl32Version()
 #endif
 
 #include "wx/msw/private.h"
 
-#include "shlobj.h" // Win95 shell
+#include <shlobj.h> // Win95 shell
 
 // ----------------------------------------------------------------------------
 // constants
@@ -77,25 +81,62 @@ static int CALLBACK BrowseCallbackProc(HWND hwnd, UINT uMsg, LPARAM lp,
 wxDirDialog::wxDirDialog(wxWindow *parent,
                          const wxString& message,
                          const wxString& defaultPath,
-                         long WXUNUSED(style),
-                         const wxPoint& WXUNUSED(pos))
+                         long style,
+                         const wxPoint& WXUNUSED(pos),
+                         const wxSize& WXUNUSED(size),
+                         const wxString& WXUNUSED(name))
 {
     m_message = message;
     m_parent = parent;
-    m_path = defaultPath;
-    m_path.Replace(_T("/"), _T("\\")); // SHBrowseForFolder doesn't like '/'s
+
+    SetStyle(style);
+    SetPath(defaultPath);
 }
+
+void wxDirDialog::SetPath(const wxString& path)
+{
+    m_path = path;
+
+    // SHBrowseForFolder doesn't like '/'s nor the trailing backslashes
+    m_path.Replace(_T("/"), _T("\\"));
+    if ( !m_path.empty() )
+    {
+        while ( *(m_path.end() - 1) == _T('\\') )
+        {
+            m_path.erase(m_path.length() - 1);
+        }
+
+        // but the root drive should have a trailing slash (again, this is just
+        // the way the native dialog works)
+        if ( *(m_path.end() - 1) == _T(':') )
+        {
+            m_path += _T('\\');
+        }
+    }
+}
+
+#ifndef BIF_NEWDIALOGSTYLE
+#define BIF_NEWDIALOGSTYLE 0x0040
+#endif
 
 int wxDirDialog::ShowModal()
 {
+    wxWindow *parent = GetParent();
+
     BROWSEINFO bi;
-    bi.hwndOwner      = m_parent ? GetHwndOf(m_parent) : NULL;
+    bi.hwndOwner      = parent ? GetHwndOf(parent) : NULL;
     bi.pidlRoot       = NULL;
     bi.pszDisplayName = NULL;
     bi.lpszTitle      = m_message.c_str();
     bi.ulFlags        = BIF_RETURNONLYFSDIRS | BIF_STATUSTEXT;
     bi.lpfn           = BrowseCallbackProc;
     bi.lParam         = (LPARAM)m_path.c_str();    // param for the callback
+
+    if ((GetStyle() & wxDD_NEW_DIR_BUTTON) &&
+        (wxApp::GetComCtl32Version() >= 500))
+    {
+        bi.ulFlags |= BIF_NEWDIALOGSTYLE;
+    }
 
     LPITEMIDLIST pidl = SHBrowseForFolder(&bi);
 
@@ -189,3 +230,5 @@ static void ItemListFree(LPITEMIDLIST pidl)
 #else
     #include "../generic/dirdlgg.cpp"
 #endif // compiler/platform on which the code here compiles
+
+#endif // wxUSE_DIRDLG

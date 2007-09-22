@@ -2,7 +2,7 @@
 // Name:        font.h
 // Purpose:
 // Author:      Robert Roebling
-// Id:          $Id: font.h,v 1.16.2.1 2001/12/31 15:39:53 RL Exp $
+// Id:          $Id: font.h,v 1.22 2002/09/07 12:28:46 GD Exp $
 // Copyright:   (c) 1998 Robert Roebling, Julian Smart and Markus Holzem
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -10,7 +10,7 @@
 #ifndef __GTKFONTH__
 #define __GTKFONTH__
 
-#ifdef __GNUG__
+#if defined(__GNUG__) && !defined(__APPLE__)
     #pragma interface
 #endif
 
@@ -36,10 +36,16 @@ public:
     // ctors and such
     wxFont() { Init(); }
     wxFont(const wxFont& font) : wxFontBase() { Init(); Ref(font); }
-    wxFont(const wxString& fontname, const wxFontData& fontdata);
 
-    // assignment
-    wxFont& operator=(const wxFont& font);
+    // wxGTK-specific
+    wxFont(const wxString& fontname)
+    {
+        Init();
+
+        Create(fontname);
+    }
+
+    wxFont(const wxNativeFontInfo& info);
 
     wxFont(int size,
            int family,
@@ -62,7 +68,13 @@ public:
                 const wxString& face = wxEmptyString,
                 wxFontEncoding encoding = wxFONTENCODING_DEFAULT);
 
+    // wxGTK-specific
+    bool Create(const wxString& fontname);
+
     ~wxFont();
+
+    // assignment
+    wxFont& operator=(const wxFont& font);
 
     // implement base class pure virtuals
     virtual int GetPointSize() const;
@@ -72,6 +84,8 @@ public:
     virtual wxString GetFaceName() const;
     virtual bool GetUnderlined() const;
     virtual wxFontEncoding GetEncoding() const;
+    virtual wxNativeFontInfo *GetNativeFontInfo() const;
+    virtual bool IsFixedWidth() const;
 
     virtual void SetPointSize( int pointSize );
     virtual void SetFamily( int family );
@@ -80,6 +94,7 @@ public:
     virtual void SetFaceName( const wxString& faceName );
     virtual void SetUnderlined( bool underlined );
     virtual void SetEncoding(wxFontEncoding encoding);
+    virtual void SetNativeFontInfo( const wxNativeFontInfo& info );
 
     // implementation from now on
     void Unshare();

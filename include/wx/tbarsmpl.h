@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by: VZ on 14.12.99 during wxToolBar classes reorganization
 // Created:     01/02/97
-// RCS-ID:      $Id: tbarsmpl.h,v 1.10 2000/02/24 16:26:18 JS Exp $
+// RCS-ID:      $Id: tbarsmpl.h,v 1.12 2002/08/31 11:29:11 GD Exp $
 // Copyright:   (c) Julian Smart and Markus Holzem
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -12,7 +12,7 @@
 #ifndef _WX_TBARSMPLH__
 #define _WX_TBARSMPLH__
 
-#ifdef __GNUG__
+#if defined(__GNUG__) && !defined(__APPLE__)
     #pragma interface "tbarsmpl.h"
 #endif
 
@@ -54,19 +54,6 @@ public:
     virtual ~wxToolBarSimple();
 
     // override/implement base class virtuals
-    virtual wxToolBarToolBase *AddTool
-                               (
-                                   int id,
-                                   const wxBitmap& bitmap,
-                                   const wxBitmap& pushedBitmap,
-                                   bool toggle,
-                                   wxCoord xPos,
-                                   wxCoord yPos = -1,
-                                   wxObject *clientData = NULL,
-                                   const wxString& helpString1 = wxEmptyString,
-                                   const wxString& helpString2 = wxEmptyString
-                               );
-
     virtual wxToolBarToolBase *FindToolForPosition(wxCoord x, wxCoord y) const;
 
     virtual bool Realize();
@@ -119,6 +106,20 @@ protected:
     void Init();
 
     // implement base class pure virtuals
+    virtual wxToolBarToolBase *DoAddTool
+                               (
+                                   int id,
+                                   const wxString& label,
+                                   const wxBitmap& bitmap,
+                                   const wxBitmap& bmpDisabled,
+                                   wxItemKind kind,
+                                   const wxString& shortHelp = wxEmptyString,
+                                   const wxString& longHelp = wxEmptyString,
+                                   wxObject *clientData = NULL,
+                                   wxCoord xPos = -1,
+                                   wxCoord yPos = -1
+                               );
+
     virtual bool DoInsertTool(size_t pos, wxToolBarToolBase *tool);
     virtual bool DoDeleteTool(size_t pos, wxToolBarToolBase *tool);
 
@@ -127,12 +128,13 @@ protected:
     virtual void DoSetToggle(wxToolBarToolBase *tool, bool toggle);
 
     virtual wxToolBarToolBase *CreateTool(int id,
-                                          const wxBitmap& bitmap1,
-                                          const wxBitmap& bitmap2,
-                                          bool toggle,
+                                          const wxString& label,
+                                          const wxBitmap& bmpNormal,
+                                          const wxBitmap& bmpDisabled,
+                                          wxItemKind kind,
                                           wxObject *clientData,
-                                          const wxString& shortHelpString,
-                                          const wxString& longHelpString);
+                                          const wxString& shortHelp,
+                                          const wxString& longHelp);
     virtual wxToolBarToolBase *CreateTool(wxControl *control);
 
     // helpers

@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     01/02/97
-// RCS-ID:      $Id: colordlg.cpp,v 1.7.2.3 2001/02/12 20:29:34 robind Exp $
+// RCS-ID:      $Id: colordlg.cpp,v 1.12 2002/05/09 22:31:44 VZ Exp $
 // Copyright:   (c) Julian Smart and Markus Holzem
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -72,7 +72,7 @@ IMPLEMENT_DYNAMIC_CLASS(wxColourDialog, wxDialog)
 
 UINT CALLBACK wxColourDialogHookProc(HWND hwnd,
                                      UINT uiMsg,
-                                     WPARAM wParam,
+                                     WPARAM WXUNUSED(wParam),
                                      LPARAM lParam)
 {
     if ( uiMsg == WM_INITDIALOG )
@@ -81,6 +81,14 @@ UINT CALLBACK wxColourDialogHookProc(HWND hwnd,
         wxColourDialog *dialog = (wxColourDialog *)pCC->lCustData;
 
         ::SetWindowText(hwnd, dialog->GetTitle());
+
+        wxPoint pos = dialog->GetPosition();
+        if ( pos != wxDefaultPosition )
+        {
+            ::SetWindowPos(hwnd, NULL /* Z-order: ignored */,
+                           pos.x, pos.y, -1, -1,
+                           SWP_NOSIZE | SWP_NOZORDER);
+        }
     }
 
     return 0;
@@ -92,10 +100,13 @@ UINT CALLBACK wxColourDialogHookProc(HWND hwnd,
 
 wxColourDialog::wxColourDialog()
 {
+    m_pos = wxDefaultPosition;
 }
 
 wxColourDialog::wxColourDialog(wxWindow *parent, wxColourData *data)
 {
+    m_pos = wxDefaultPosition;
+
     Create(parent, data);
 }
 
@@ -164,7 +175,7 @@ void wxColourDialog::SetTitle(const wxString& title)
     m_title = title;
 }
 
-wxString wxColourDialog::GetTitle()
+wxString wxColourDialog::GetTitle() const
 {
     return m_title;
 }
@@ -173,11 +184,25 @@ wxString wxColourDialog::GetTitle()
 // position/size
 // ----------------------------------------------------------------------------
 
-void wxColourDialog::DoSetSize(int WXUNUSED(x), int WXUNUSED(y),
+void wxColourDialog::DoGetPosition(int *x, int *y) const
+{
+    if ( x )
+        *x = m_pos.x;
+    if ( y )
+        *y = m_pos.y;
+}
+
+void wxColourDialog::DoSetSize(int x, int y,
                                int WXUNUSED(width), int WXUNUSED(height),
                                int WXUNUSED(sizeFlags))
 {
-    // ignore - we can't change the size of this standard dialog
+    if ( x != -1 )
+        m_pos.x = x;
+
+    if ( y != -1 )
+        m_pos.y = y;
+
+    // ignore the size params - we can't change the size of a standard dialog
     return;
 }
 
@@ -200,3 +225,4 @@ void wxColourDialog::DoGetClientSize(int *width, int *height) const
     if ( height )
         *height = 299;
 }
+

@@ -13,23 +13,23 @@ few bits of background information on tools.
 
 I use a tool called SWIG (http://www.swig.org) to help generate the
 C++ sources used in the wxPython extension module.  However you don't
-need to have SWIG unless you want to modify the *.i files.  If you do
-you'll want to have version 1.1-883 of SWIG and you'll need to change
-a flag in the setup.py script as described below.
+need to have SWIG unless you want to modify the *.i files.  I've made
+several modifications to SWIG specific to wxPython's needs and so the
+modified sources are included in the wx CVS at .../wxPython/wxSWIG.
+If you need to modify the *.i files for wxPython then change to this
+directory and run:
+
+      configure
+      make
+
+(Do not run "make install" as wxswig is run in-place.)  You'll then
+need to change a flag in the setup.py script as described below so the
+wxPython build process will use SWIG if needed.
 
 I use the new Python Distutils tool to build wxPython.  It is included
 with Python 2.0, but if you want to use Python 1.5.2 or 1.6 then
 you'll need to download and install Distutils 1.0 from
 http://www.python.org/sigs/distutils-sig/
-
-I usually use RedHat Linux when working on the wxGTK version of
-wxPython, but I occasionally build and test on Solaris and I hope to
-be able to add some other platforms soon.  The compiler I use is
-whatever comes with the current version of RedHat I am using.  I find
-that there are less portability problems with the RPMs if I don't try
-using the latest and greatest compilers all the time.  On the other
-platforms I usually stick with as recent a version of GCC that I can
-find pre-built for that platform.
 
 Okay, now on the the fun stuff...
 
@@ -76,15 +76,14 @@ C. If all else fails, you can get the source code for glib and gtk+ at
 -------------------------------
 
 A. You can find the sources and RPMs for wxGTK at
-   ftp://wesley.informatik.uni-freiburg.de/pub/linux/wxxt/source/, or
-   just follow the download links from http://wxwindows.org/.  You can
-   also check out a current snapshot of the sources from the CVS
-   server.  (Some information about annonymous CVS access is at
-   http://wxwindows.org/cvs.htm.)  The advantage of using CVS is that
-   you can easily update as soon as the developers check in new
-   sources or fixes.  The advantage of using a released version is
-   that it usually has had more testing done.  You can decide which
-   method is best for you.
+   http://wxwindows.org/, just follow the download links from the
+   nevigation panel.  You can also check out a current snapshot of the
+   sources from the CVS server.  (Some information about annonymous
+   CVS access is at http://wxwindows.org/cvs.htm.)  The advantage of
+   using CVS is that you can easily update as soon as the developers
+   check in new sources or fixes.  The advantage of using a released
+   version is that it usually has had more thorough testing done.  You
+   can decide which method is best for you.
 
 B. You'll usually want to use a version of wxGTK that has the same
    version number as the wxPython sources you are using.  (Another
@@ -121,6 +120,30 @@ D. If using the sources (either from the tarball or from CVS) then
 
    To make a static library and not make a shared library, use the
    --disable-shared and --enable-static flags.
+
+   NOTE: There is a potential type mismatch between Python and wxGTK.
+   This happens if Python defines some flags that turn on 64-bit file
+   offset support and wxGTK does not.  This causes some basic types,
+   like off_t, to be typedef'd differently causing the C++ method
+   signatures to be incompatible and giving link errors at runtime.
+   If you get errors upon running a wxPython script that looks
+   something like this:
+
+     SeekI_13wxInputStream10wxSeekMode: referenced symbol not found
+
+   then that is probably the issue.  This can be fixed in the current
+   code by predefining these flags before wxGTK's configure is run,
+   for example:
+
+     export CFLAGS="-D_FILE_OFFSET_BITS=64 -D_LARGEFILE_SOURCE -DHAVE_LARGEFILE_SUPPORT"
+     export CXXFLAGS=$CFLAGS
+     ../configure --with-gtk --with-opengl --enable-debug
+
+   In the 2.3.3 final release there will be a real configure flag for
+   it, and it should be enabled by default.  You will be able to use
+   --enable-largefile or --disable-largefile to control it.  If you
+   still get this or a similar error with 2.3.3 then try disabling
+   largefile support in wxGTK.
 
 E. Now just compile and install.  You need to use GNU make, so if your
    system has something else get GNU make and build and install it and
@@ -160,7 +183,7 @@ B. As mentioned previouslly, wxPython is built with the standard
    it doesn't, there doesn't seem to be a way to override the values
    that Distutils uses without hacking either Distutils itself, or
    Python's Makefile.  (Complain to the distutils-sig about this
-   please.)  For example, on my Solaris system I had to edit
+   please.)  For example, on a Solaris system I had to edit
    /usr/local/lib/python1.5/config/Makefile and replace
 
          LDSHARED=ld -G
@@ -182,15 +205,22 @@ B. As mentioned previouslly, wxPython is built with the standard
 
    In my case on Solaris wxPython applications would core dump on
    exit.  The core file indicated that the fault happened after
-   _exit() was called and the run-time was trying to execute cleanup
-   code.  After relinking the Python executable the problem went away.
-   To build Python to link with the C++ linker do this:
+   _exit() was called and the run-time library was trying to execute
+   cleanup code.  After relinking the Python executable the problem
+   went away.  To build Python to link with the C++ linker do this:
 
          cd Python-2.0      # wherever the root of the source tree is
 	 rm python          # in case it's still there from an old build
          make LINKCC=g++    # or whatever your C++ command is
 	 make install
 
+   I recently built Python 2.1.3 and Python 2.2.1 on Solaris and did
+   not have to resort to this workaround so apparently thigns are
+   getting better there.  I will leave this note here though in case
+   there are similar issues elsewhere.  However I did run into a
+   Python build issue that affects the wxPython build when attempting
+   to use SunCC instead of GNU gcc.  See the note below titled
+   "Building with non-GNU compilers" if you are interested.
 
 C. Change to the root wxPython directory and look at the setup.py
    file.  This is the script that configures and defines all the
@@ -219,7 +249,9 @@ C. Change to the root wxPython directory and look at the setup.py
 		       and shadow python files.
 
 	   IN_CVS_TREE If you are using the CVS version of the
-		       wxWindows and wxPython sources then you will
+		       wxWindows and wxPython sources, or a combined
+		       source archive from the CVS snapshots or the
+		       distributed wxPythonSrc-*.tar.gz then you will
 		       need to set this flag to non-zero.  This is
 		       needed because some source files from the
 		       wxWindows tree are copied to be under the
@@ -227,9 +259,6 @@ C. Change to the root wxPython directory and look at the setup.py
 		       With this flag set then setup.py will
 		       automatically keep these copied sources up to
 		       date if the original version is ever updated.
-		       If you are using the tar.gz version of the
-		       Python sources then these copied sources are
-		       already present in your source tree.
 
 
 D. To build and install wxPython you simply need to execute the
@@ -264,8 +293,71 @@ F. If you would like to make a test build that doesn't overwrite the
 	 python demo.py
 
 
-That's all folks!
 
+4. Building with non-GNU compilers
+----------------------------------
+
+As mentioned above Python's distutils uses whatever compiler Python
+was compiled with to compile extension modules.  It also appears that
+distutils assumes that this compiler can compile C or C++ sources as
+distutils makes no differentiation between the two.  For builds using
+GNU gcc and a few other compilers this is not an issue as they will
+determine the type of source from the file extension.  For SunCC (and
+probably other compilers that came from cfront) it won't work as the C
+compiler (cc) is totally separate from the C++ compiler (CC).  This
+causes distutils to attempt to compile the wxPython sources with the C
+compiler, which won't work.
+
+There may be better ways to get around this, but here is the
+workaround I devised.  I created a script that will execute either cc
+or CC based on the file extension given to it.  If Python uses this
+script for its compiler then it will also be used by extensions built
+with distutils and everybody will be more or less happy.  Here is a
+copy of the script I used.  It was a fairly quick rush job so there
+are probably issues with it but it worked for me.
+
+    #!/bin/bash
+    #--------------------------------------------------------------
+    # Try to determine type of file being compiled and then
+    # launch cc for C sources or CC for C++.
+    #
+
+    args=$@
+    is_C=
+
+    for arg in $args; do
+
+        # is the arg a file that exists?
+        if [ -e $arg ]; then
+
+            # does it end in ".c"?
+            if [ "${arg:${#arg}-2}" == ".c" ]; then
+                is_C=yes
+            fi
+        fi
+    done
+
+    # if the flag wasn't set then assume C++ and execute CC,
+    # otherwise execute cc.
+    if [ -z $is_C ]; then
+        exec CC -w $@
+    else
+        exec cc -w $@
+    fi
+    #--------------------------------------------------------------
+
+I called it pycc, put it in ${prefix}/bin and set its execute
+permission bit.
+
+The next step is to configure and build Python such that it uses pycc
+as it's compiler.  You can do that by setting CC in your environment
+before running configure, like this in bash:
+
+    export CC=pycc
+    configure
+
+After making and installing Python with this configuration you should
+be able to build wxPython as described in the steps above.
 
 -----------------
 robin@alldunn.com

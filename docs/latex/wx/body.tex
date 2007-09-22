@@ -7,19 +7,17 @@
 
 wxWindows is a C++ framework providing GUI (Graphical User
 Interface) and other facilities on more than one platform.  Version 2 currently
-supports MS Windows (16-bit, Windows 95 and Windows NT), Unix with GTK+, Unix with Motif,
-and Mac. An OS/2 port is in progress.
+supports all desktop versions of MS Windows, Unix with GTK+, Unix with Motif,
+and MacOS. An OS/2 port is in progress.
 
 wxWindows was originally developed at the Artificial Intelligence
 Applications Institute, University of Edinburgh, for internal use,
-and was first made publicly available in 1993.
+and was first made publicly available in 1992.
 Version 2 is a vastly improved version written and maintained by
-Julian Smart, Robert Roebling, Vadim Zeitlin and many others.
+Julian Smart, Robert Roebling, Vadim Zeitlin, Vaclav Slavik and many others.
 
-This manual discusses wxWindows in the context of multi-platform
-development.\helpignore{For more detail on the wxWindows version 2.0 API
-(Application Programming Interface) please refer to the separate
-wxWindows reference manual.}
+This manual contains a class reference and topic overviews.
+For a selection of wxWindows tutorials, please see the documentation page on the \urlref{wxWindows web site}{http://www.wxwindows.org}.
 
 Please note that in the following, ``MS Windows" often refers to all
 platforms related to Microsoft Windows, including 16-bit and 32-bit
@@ -39,37 +37,41 @@ none met all of the following criteria:
 \item support for a wide range of compilers.
 \end{enumerate}
 
-Since wxWindows was started, several other free or almost-free GUI frameworks have
-emerged. However, none has the range of features, flexibility, documentation and the
-well-established development team that wxWindows has.
+Since wxWindows was started, several other free or almost-free
+GUI frameworks have emerged. However, none has the range of
+features, flexibility, documentation and the well-established
+development team that wxWindows has.
 
-As open source software, wxWindows has
-benefited from comments, ideas, bug fixes, enhancements and the sheer
-enthusiasm of users. This gives wxWindows a
-certain advantage over its commercial competitors (and over free libraries
-without an independent development team), plus a robustness against
-the transience of one individual or company. This openness and
-availability of source code is especially important when the future of
-thousands of lines of application code may depend upon the longevity of
-the underlying class library.
+As open source software, wxWindows has benefited from comments,
+ideas, bug fixes, enhancements and the sheer enthusiasm of
+users. This gives wxWindows a certain advantage over its
+commercial competitors (and over free libraries without an
+independent development team), plus a robustness against the
+transience of one individual or company. This openness and
+availability of source code is especially important when the
+future of thousands of lines of application code may depend upon
+the longevity of the underlying class library.
 
-Version 2 goes much further than previous versions in terms of generality and features,
-allowing applications to be produced
-that are often indistinguishable from those produced using single-platform
-toolkits such as Motif, GTK+ and MFC.
+Version 2 goes much further than previous versions in terms of
+generality and features, allowing applications to be produced
+that are often indistinguishable from those produced using
+single-platform toolkits such as Motif, GTK+ and MFC.
 
-The importance of using a platform-independent class library cannot be
-overstated, since GUI application development is very time-consuming,
-and sustained popularity of particular GUIs cannot be guaranteed.
-Code can very quickly become obsolete if it addresses the wrong
-platform or audience.  wxWindows helps to insulate the programmer from
-these winds of change. Although wxWindows may not be suitable for
-every application (such as an OLE-intensive program), it provides access to most of the functionality a
-GUI program normally requires, plus many extras such as network programming,
-PostScript output, and HTML rendering; and it can of course be extended as needs dictate.  As a bonus, it provides
-a far cleaner and easier programming interface than the native
-APIs. Programmers may find it worthwhile to use wxWindows even if they
-are developing on only one platform.
+The importance of using a platform-independent class library
+cannot be overstated, since GUI application development is very
+time-consuming, and sustained popularity of particular GUIs
+cannot be guaranteed. Code can very quickly become obsolete if
+it addresses the wrong platform or audience.  wxWindows helps to
+insulate the programmer from these winds of change. Although
+wxWindows may not be suitable for every application (such as an
+OLE-intensive program), it provides access to most of the
+functionality a GUI program normally requires, plus many extras
+such as network programming, PostScript output, and HTML
+rendering; and it can of course be extended as needs dictate.
+As a bonus, it provides a far cleaner and easier programming
+interface than the native APIs. Programmers may find it
+worthwhile to use wxWindows even if they are developing on only
+one platform.
 
 It is impossible to sum up the functionality of wxWindows in a few paragraphs, but
 here are some of the benefits:
@@ -103,70 +105,7 @@ them to the clipboard.
 \item Built-in support for many file formats (BMP, PNG, JPEG, GIF, XPM, PNM, PCX).
 \end{itemize}
 
-\section{Changes from version 1.xx}\label{versionchanges}
-
-These are a few of the major differences between versions 1.xx and 2.0.
-
-Removals:
-
-\begin{itemize}\itemsep=0pt
-\item XView is no longer supported;
-\item all controls (panel items) no longer have labels attached to them;
-\item wxForm has been removed;
-\item wxCanvasDC, wxPanelDC removed (replaced by wxClientDC, wxWindowDC, wxPaintDC which
-can be used for any window);
-\item wxMultiText, wxTextWindow, wxText removed and replaced by wxTextCtrl;
-\item classes no longer divided into generic and platform-specific parts, for efficiency.
-\end{itemize}
-
-Additions and changes:
-
-\begin{itemize}\itemsep=0pt
-\item class hierarchy changed, and restrictions about subwindow nesting lifted;
-\item header files reorganized to conform to normal C++ standards;
-\item classes less dependent on each another, to reduce executable size;
-\item wxString used instead of char* wherever possible;
-\item the number of separate but mandatory utilities reduced;
-\item the event system has been overhauled, with
-virtual functions and callbacks being replaced with MFC-like event tables;
-\item new controls, such as wxTreeCtrl, wxListCtrl, wxSpinButton;
-\item less inconsistency about what events can be handled, so for example
-mouse clicks or key presses on controls can now be intercepted;
-\item the status bar is now a separate class, wxStatusBar, and is
-implemented in generic wxWindows code;
-\item some renaming of controls for greater consistency;
-\item wxBitmap has the notion of bitmap handlers to allow for extension to new formats
-without ifdefing;
-\item new dialogs: wxPageSetupDialog, wxFileDialog, wxDirDialog,
-wxMessageDialog, wxSingleChoiceDialog, wxTextEntryDialog;
-\item GDI objects are reference-counted and are now passed to most functions
-by reference, making memory management far easier;
-\item wxSystemSettings class allows querying for various system-wide properties
-such as dialog font, colours, user interface element sizes, and so on;
-\item better platform look and feel conformance;
-\item toolbar functionality now separated out into a family of classes with the
-same API;
-\item device contexts are no longer accessed using wxWindow::GetDC - they are created
-temporarily with the window as an argument;
-\item events from sliders and scrollbars can be handled more flexibly;
-\item the handling of window close events has been changed in line with the new
-event system;
-\item the concept of {\it validator} has been added to allow much easier coding of
-the relationship between controls and application data;
-\item the documentation has been revised, with more cross-referencing.
-\end{itemize}
-
-Platform-specific changes:
-
-\begin{itemize}\itemsep=0pt
-\item The Windows header file (windows.h) is no longer included by wxWindows headers;
-\item wx.dll supported under Visual C++;
-\item the full range of Windows 95 window decorations are supported, such as modal frame
-borders;
-\item MDI classes brought out of wxFrame into separate classes, and made more flexible.
-\end{itemize}
-
-
+\begin{comment}
 \section{Changes from version 2.0}\label{versionchanges20}
 
 These are a few of the differences between versions 2.0 and 2.2.
@@ -194,14 +133,13 @@ Additions and changes:
 \item Improved support for ODBC databases.
 \item Improved tab traversal in dialogs.
 \end{itemize}
-
+\end{comment}
 
 \section{wxWindows requirements}\label{requirements}
 
-To make use of wxWindows, you currently need one or both of the
-following setups.
+To make use of wxWindows, you currently need one of the following setups.
 
-(a) PC:
+(a) MS-Windows:
 
 \begin{enumerate}\itemsep=0pt
 \item A 486 or higher PC running MS Windows.
@@ -215,28 +153,30 @@ Metrowerks CodeWarrior.
 
 \begin{enumerate}\itemsep=0pt
 \item Almost any C++ compiler, including GNU C++ (EGCS 1.1.1 or above).
-\item Almost any Unix workstation, and one of: GTK+ 1.2, Motif 1.2 or higher, Lesstif.
+\item Almost any Unix workstation, and one of: GTK+ 1.2, GTK+ 2.0, Motif 1.2 or higher, Lesstif.
+\item At least 60 MB of disk space.
+\end{enumerate}
+
+(c) Mac OS/Mac OS X:
+
+\begin{enumerate}\itemsep=0pt
+\item A PowerPC Mac running Mac OS 8.6/9.x (eg. Classic) or Mac OS X 10.x.
+\item CodeWarrior 5.3, 6 or 7 for Classic Mac OS.
+\item The Apple Developer Tools (eg. GNU C++) or CodeWarrior 7 for Mac OS X.
 \item At least 60 MB of disk space.
 \end{enumerate}
 
 \section{Availability and location of wxWindows}
 
 \winhelponly{wxWindows is available by anonymous FTP and World Wide Web
-from ftp://www.remstar.com/pub/wxwin and/or http://www.wxwindows.org.}
+from ftp://biolpc22.york.ac.uk/pub and/or http://www.wxwindows.org.}
 \winhelpignore{wxWindows is available by anonymous FTP and World Wide Web
-from \urlref{ftp://www.remstar.com/pub/wxwin}{ftp://www.remstar.com/pub/wxwin} 
+from \urlref{ftp://biolpc22.york.ac.uk/pub}{ftp://biolpc22.york.ac.uk/pub} 
 and/or \urlref{http://www.wxwindows.org}{http://www.wxwindows.org}.}
 
-You can also buy a CD-ROM using the form on the Web site, or by contacting:
+You can also buy a CD-ROM using the form on the Web site.
 
-Julian Smart\\
-12 North Street West\\
-Uppingham\\
-Rutland\\
-LE15 9SG\\
-julian.smart@btopenworld.com
-
-\section{Acknowledgments}
+\section{Acknowledgements}
 
 Thanks are due to AIAI for being willing to release the original version of
 wxWindows into the public domain, and to our patient partners.
@@ -464,7 +404,7 @@ which is either wxBIG\_ENDIAN or wxLITTLE\_ENDIAN (in the future maybe wxPDP\_EN
 as well).
 
 The macros handling bit-swapping with respect to the applications endianness
-are described in the \helpref{Macros}{macros} section.
+are described in the \helpref{Byte order macros}{byteordermacros} section.
 
 \section{Conditional compilation}
 
@@ -560,113 +500,96 @@ dos2unix).
 See also the File Functions section of the reference manual for
 descriptions of miscellaneous file handling functions.
 
-\begin{comment}
-\chapter{Utilities supplied with wxWindows}\label{utilities}
+\chapter{Utilities and libraries supplied with wxWindows}\label{utilities}
 \setheader{{\it CHAPTER \thechapter}}{}{}{}{}{{\it CHAPTER \thechapter}}%
 \setfooter{\thepage}{}{}{}{}{\thepage}%
 
-A number of `extras' are supplied with wxWindows, to complement
-the GUI functionality in the main class library. These are found
-below the utils directory and usually have their own source, library
-and documentation directories. For other user-contributed packages,
-see the directory ftp://www.remstar.com/pub/wxwin/contrib, which is
-more easily accessed via the Contributions page on the Web site.
+In addition to the core wxWindows library, a number of further
+libraries and utilities are supplied with each distribution.
 
-\section{wxHelp}\label{wxhelp}
+Some are under the 'contrib' hierarchy which mirrors the
+structure of the main wxWindows hierarchy. See also the 'utils'
+hierarchy. The first place to look for documentation about
+these tools and libraries is under the wxWindows 'docs' hierarchy,
+for example {\tt docs/htmlhelp/fl.chm}.
 
-wxHelp is a stand-alone program, written using wxWindows,
-for displaying hypertext help. It is necessary since not all target
-systems (notably X) supply an adequate
-standard for on-line help. wxHelp is modeled on the MS Windows help
-system, with contents, search and browse buttons, but does not reformat
-text to suit the size of window, as WinHelp does, and its input files
-are uncompressed ASCII with some embedded font commands and an .xlp
-extension. Most wxWindows documentation (user manuals and class
-references) is supplied in wxHelp format, and also in Windows Help
-format. The wxWindows 2.0 project will presently use an HTML widget
-in a new and improved wxHelp implementation, under X.
+For other user-contributed packages, please see the Contributions page
+on the \urlref{wxWindows Web site}{http://www.wxwindows.org}.
 
-Note that an application can be programmed to use Windows Help under
-MS Windows, and wxHelp under X. An alternative help viewer under X is
-Mosaic, a World Wide Web viewer that uses HTML as its native hypertext
-format. However, this is not currently integrated with wxWindows
-applications.
+\begin{description}\itemsep=0pt
+\item[{\bf Helpview}]
+Helpview is a program for displaying wxWindows HTML
+Help files. In many cases, you may wish to use the wxWindows HTML
+Help classes from within your application, but this provides a
+handy stand-alone viewer. See \helpref{wxHTML Notes}{wxhtml} for more details.
+You can find it in {\tt samples/html/helpview}.
 
-wxHelp works in two modes---edit and end-user. In edit mode, an ASCII
-file may be marked up with different fonts and colours, and divided into
-sections. In end-user mode, no editing is possible, and the user browses
-principally by clicking on highlighted blocks.
-
-When an application invokes wxHelp, subsequent sections, blocks or
-files may be viewed using the same instance of wxHelp since the two
-programs are linked using wxWindows interprocess communication
-facilities. When the application exits, that application's instance of
-wxHelp may be made to exit also.  See the {\bf wxHelpControllerBase} entry in the
-reference section for how an application controls wxHelp.
-
-\section{Tex2RTF}\label{textortf}
-
+\item[{\bf Tex2RTF}]
 Supplied with wxWindows is a utility called Tex2RTF for converting\rtfsp
-\LaTeX\ manuals to the following formats:
-
-\begin{description}
-\item[wxHelp]
-wxWindows help system format (XLP).
-\item[Linear RTF]
-Rich Text Format suitable for importing into a word processor.
-\item[Windows Help RTF]
-Rich Text Format suitable for compiling into a WinHelp HLP file with the
-help compiler.
-\item[HTML]
-HTML is the native format for Mosaic, the main hypertext viewer for
-the World Wide Web. Since it is freely available it is a good candidate
-for being the wxWindows help system under X, as an alternative to wxHelp.
-\end{description}
-
-Tex2RTF is used for the wxWindows manuals and can be used independently
+\LaTeX\ manuals HTML, MS HTML Help, wxHTML Help, RTF, and Windows
+Help RTF formats. Tex2RTF is used for the wxWindows manuals and can be used independently
 by authors wishing to create on-line and printed manuals from the same\rtfsp
-\LaTeX\ source.  Please see the separate documentation for Tex2RTF.
+\LaTeX\ source. Please see the separate documentation for Tex2RTF.
+You can find it under {\tt utils/tex2rtf}.
 
-\section{wxTreeLayout}
+\item[{\bf Helpgen}]
+Helpgen takes C++ header files and generates a Tex2RTF-compatible
+documentation file for each class it finds, using comments as appropriate.
+This is a good way to start a reference for a set of classes.
 
-This is a simple class library for drawing trees in a reasonably pretty
-fashion. It provides only minimal default drawing capabilities, since
-the algorithm is meant to be used for implementing custom tree-based
-tools.
+\item[{\bf Dialog Editor}]
+Dialog Editor allows interactive construction of dialogs using
+absolute positioning, producing WXR output files. This tool is generally deprecated
+in favour of sizer-based tools. You can find Dialog Editor
+in {\tt utils/dialoged}.
 
-Directed graphs may also be drawn using this library, if cycles are
-removed before the nodes and arcs are passed to the algorithm.
+\item[{\bf XRC resource system}]
+This is the sizer-aware replacement for the WXR resource system, and uses
+XML-based resource specifications that can be generated by tools
+such as \urlref{wxDesigner}{http://www.roebling.de} and XRC's own wxrcedit.
+You can find this in {\tt contrib/src/xrc}, {\tt contrib/include/wx/xrc}, {\tt contrib/samples/xrc}, and {\tt contrib/utils/wxrcedit}.
+For more information, see the \helpref{XML-based resource system overview}{xrcoverview}.
 
-Tree displays are used in many applications: directory browsers,
-hypertext systems, class browsers, and decision trees are a few
-possibilities.
+\item[{\bf Object Graphics Library}]
+OGL defines an API for applications that need to display objects connected by lines.
+The objects can be moved around and interacted with.
+You can find this in {\tt contrib/src/ogl}, {\tt contrib/include/wx/ogl}, and {\tt contrib/samples/ogl}.
 
-See the separate manual and the directory utils/wxtree.
+\item[{\bf Frame Layout library}]
+FL provides sophisticated pane dragging and docking facilities.
+You can find this in {\tt contrib/src/fl}, {\tt contrib/include/wx/fl}, and {\tt contrib/samples/fl}.
 
-\section{wxGraphLayout}
+\item[{\bf Gizmos library}]
+Gizmos is a collection of useful widgets and other classes. Classes include wxLEDNumberCtrl,
+wxEditableListBox, wxMultiCellCanvas.
+You can find this in {\tt contrib/src/fl}, {\tt contrib/include/wx/fl}, and {\tt contrib/samples/fl}.
 
-The wxGraphLayout class is based on a tool called `graphplace' by Dr.
-Jos T.J. van Eijndhoven of Eindhoven University of Technology. Given a
-(possibly cyclic) directed graph, it does its best to lay out the nodes
-in a sensible manner. There are many applications (such as diagramming)
-where it is required to display a graph with no human intervention. Even
-if manual repositioning is later required, this algorithm can make a good
-first attempt.
+\item[{\bf Net library}]
+Net is a collection of very simple mail and web related classes. Currently
+there is only wxEmail, which makes it easy to send email messages via MAPI on Windows or sendmail on Unix.
+You can find this in {\tt contrib/src/net} and {\tt contrib/include/wx/net}.
 
-See the separate manual and the directory utils/wxgraph. 
+\item[{\bf Animate library}]
+Animate allows you to load animated GIFs and play them on a window. The library can be extended
+to use other animation formats.
+You can find this in {\tt contrib/src/animate}, {\tt contrib/include/wx/animate}, and {\tt contrib/samples/animate}.
 
-\section{Colours}\label{coloursampler}
+\item[{\bf Canvas library}]
+Canvas supports high-level, double-buffered drawing operations with transformations.
+You can find this in {\tt contrib/src/canvas}, {\tt contrib/include/wx/canvas}, and {\tt contrib/samples/canvas}.
 
-A colour sampler for viewing colours and their names on each
-platform.
+\item[{\bf MMedia library}]
+Mmedia supports a variety of multimedia functionality. The status of this library is currently unclear.
+You can find this in {\tt contrib/src/mmedia}, {\tt contrib/include/wx/mmedia}, and {\tt contrib/samples/mmedia}.
 
-%
-\chapter{Tutorial}\label{tutorial}
-\setheader{{\it CHAPTER \thechapter}}{}{}{}{}{{\it CHAPTER \thechapter}}%
-\setfooter{\thepage}{}{}{}{}{\thepage}%
+\item[{\bf Styled Text Control library}]
+STC is a wrapper around Scintilla, a syntax-highlighting text editor.
+You can find this in {\tt contrib/src/stc}, {\tt contrib/include/wx/stc}, and {\tt contrib/samples/stc}.
 
-To be written.
-\end{comment}
+\item[{\bf Plot}]
+Plot is a simple curve plotting library.
+You can find this in {\tt contrib/src/plot}, {\tt contrib/include/wx/plot}, and {\tt contrib/samples/plot}.
+\end{description}
 
 \chapter{Programming strategies}\label{strategies}
 \setheader{{\it CHAPTER \thechapter}}{}{}{}{}{{\it CHAPTER \thechapter}}%

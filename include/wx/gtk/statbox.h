@@ -1,64 +1,53 @@
 /////////////////////////////////////////////////////////////////////////////
-// Name:        stabox.h
+// Name:        wx/gtk/stabox.h
 // Purpose:
 // Author:      Robert Roebling
-// Id:          $Id: statbox.h,v 1.5 1999/06/14 23:03:54 RR Exp $
+// Id:          $Id: statbox.h,v 1.8 2002/09/07 12:28:46 GD Exp $
 // Copyright:   (c) 1998 Robert Roebling
-// Licence:   	wxWindows licence
+// Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
 
 
 #ifndef __GTKSTATICBOXH__
 #define __GTKSTATICBOXH__
 
-#ifdef __GNUG__
+#if defined(__GNUG__) && !defined(__APPLE__)
 #pragma interface
 #endif
-
-#include "wx/defs.h"
-
-#if wxUSE_STATBOX
-
-#include "wx/object.h"
-#include "wx/list.h"
-#include "wx/control.h"
-
-//-----------------------------------------------------------------------------
-// classes
-//-----------------------------------------------------------------------------
-
-class wxStaticBox;
-
-//-----------------------------------------------------------------------------
-// global data
-//-----------------------------------------------------------------------------
-
-extern const char *wxStaticBoxNameStr;
 
 //-----------------------------------------------------------------------------
 // wxStaticBox
 //-----------------------------------------------------------------------------
 
-class wxStaticBox: public wxControl
+class wxStaticBox : public wxStaticBoxBase
 {
-  DECLARE_DYNAMIC_CLASS(wxStaticBox)
+public:
+    wxStaticBox();
+    wxStaticBox( wxWindow *parent,
+                 wxWindowID id,
+                 const wxString &label,
+                 const wxPoint &pos = wxDefaultPosition,
+                 const wxSize &size = wxDefaultSize,
+                 long style = 0,
+                 const wxString &name = wxStaticBoxNameStr );
+    bool Create( wxWindow *parent,
+                 wxWindowID id,
+                 const wxString &label,
+                 const wxPoint &pos = wxDefaultPosition,
+                 const wxSize &size = wxDefaultSize,
+                 long style = 0,
+                 const wxString &name = wxStaticBoxNameStr );
 
-  public:
+    virtual void SetLabel( const wxString &label );
 
-    wxStaticBox(void);
-    wxStaticBox( wxWindow *parent, wxWindowID id, const wxString &label, 
-      const wxPoint &pos = wxDefaultPosition, const wxSize &size = wxDefaultSize, 
-      long style = 0, const wxString &name = wxStaticBoxNameStr  );
-    bool Create( wxWindow *parent, wxWindowID id, const wxString &label,
-      const wxPoint &pos = wxDefaultPosition, const wxSize &size = wxDefaultSize, 
-      long style = 0, const wxString &name = wxStaticBoxNameStr  );
-    void SetLabel( const wxString &label );
+    // implementation
 
-  // implementation
-    
-    void ApplyWidgetStyle();
+    virtual void ApplyWidgetStyle();
+
+    virtual bool IsTransparentForMouse() const { return TRUE; }
+
+private:
+    DECLARE_DYNAMIC_CLASS(wxStaticBox)
 };
-
-#endif
 
 #endif // __GTKSTATICBOXH__

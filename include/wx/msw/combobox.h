@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     01/02/97
-// RCS-ID:      $Id: combobox.h,v 1.8.2.3 2000/04/26 16:39:26 JS Exp $
+// RCS-ID:      $Id: combobox.h,v 1.12 2001/06/26 20:59:07 VZ Exp $
 // Copyright:   (c) Julian Smart
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -20,7 +20,6 @@
 
 #if wxUSE_COMBOBOX
 
-WXDLLEXPORT_DATA(extern const wxChar*) wxComboBoxNameStr;
 WXDLLEXPORT_DATA(extern const wxChar*) wxEmptyString;
 
 // ----------------------------------------------------------------------------
@@ -84,10 +83,6 @@ public:
             WXUINT message, WXWPARAM wParam, WXLPARAM lParam);
 
     WXHWND GetEditHWND() const;
-
-protected:
-    virtual void DoMoveWindow(int x, int y, int width, int height);
-    virtual wxSize DoGetBestSize() const;
 };
 
 #endif // wxUSE_COMBOBOX

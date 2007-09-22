@@ -4,7 +4,7 @@
 // Author:      Vadim Zeitlin
 // Modified by:
 // Created:     16.05.99
-// RCS-ID:      $Id: winundef.h,v 1.14.2.1 2000/03/24 11:31:13 JS Exp $
+// RCS-ID:      $Id: winundef.h,v 1.21 2002/03/27 18:43:12 VZ Exp $
 // Copyright:   (c) wxWindows team
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -24,6 +24,39 @@
 // This looks quite ugly here but allows us to write clear (and correct!) code
 // elsewhere because the functions, unlike the macros, respect the scope.
 // ----------------------------------------------------------------------------
+
+// CreateDialog
+
+#ifdef CreateDialog
+    #undef CreateDialog
+
+    inline HWND CreateDialog(HINSTANCE hInstance,
+                             LPCTSTR pTemplate,
+                             HWND hwndParent,
+                             DLGPROC pDlgProc)
+    {
+        #ifdef _UNICODE
+            return CreateDialogW(hInstance, pTemplate, hwndParent, pDlgProc);
+        #else
+            return CreateDialogA(hInstance, pTemplate, hwndParent, pDlgProc);
+        #endif
+    }
+#endif
+
+// LoadMenu
+
+#ifdef LoadMenu
+    #undef LoadMenu
+
+    inline HMENU LoadMenu(HINSTANCE instance, LPCTSTR name)
+    {
+        #ifdef _UNICODE
+            return LoadMenuW(instance, name);
+        #else
+            return LoadMenuA(instance, name);
+        #endif
+    }
+#endif
 
 // GetCharWidth
 
@@ -52,6 +85,23 @@
    inline HWND FindWindow(LPCSTR classname, LPCSTR windowname)
    {
       return FindWindowA(classname, windowname);
+   }
+   #endif
+#endif
+
+// PlaySound
+
+#ifdef PlaySound
+   #undef PlaySound
+   #ifdef _UNICODE
+   inline BOOL PlaySound(LPCWSTR pszSound, HMODULE hMod, DWORD fdwSound)
+   {
+      return PlaySoundW(pszSound, hMod, fdwSound);
+   }
+   #else
+   inline BOOL PlaySound(LPCSTR pszSound, HMODULE hMod, DWORD fdwSound)
+   {
+      return PlaySoundA(pszSound, hMod, fdwSound);
    }
    #endif
 #endif
@@ -124,23 +174,36 @@
    #endif
 #endif
 
+
+/*
+  When this file is included, sometimes the wxCHECK_W32API_VERSION macro
+  is undefined. With for example CodeWarrior this gives problems with
+  the following code:
+  #if 0 && wxCHECK_W32API_VERSION( 0, 5 )
+  Because CodeWarrior does macro expansion before test evaluation.
+  We define wxCHECK_W32API_VERSION here if it's undefined.
+*/
+#if !defined(__GNUG__) && !defined(wxCHECK_W32API_VERSION)
+    #define wxCHECK_W32API_VERSION(maj, min) (0)
+#endif
+
 // StartDoc
 
 #ifdef StartDoc
    #undef StartDoc
-   #ifdef __GNUG__
+   #if defined( __GNUG__ ) && !wxCHECK_W32API_VERSION( 0, 5 )
       #define DOCINFOW DOCINFO
       #define DOCINFOA DOCINFO
    #endif
    #ifdef _UNICODE
    inline int StartDoc(HDC h, CONST DOCINFOW* info)
    {
-      return StartDocW(h, info);
+      return StartDocW(h, (DOCINFOW*) info);
    }
    #else
    inline int StartDoc(HDC h, CONST DOCINFOA* info)
    {
-      return StartDocA(h, info);
+      return StartDocA(h, (DOCINFOA*) info);
    }
    #endif
 #endif
@@ -271,6 +334,11 @@
    {
      return GetWindow(h, GW_HWNDNEXT);
    }
+#endif
+
+
+#ifdef Yield
+    #undef Yield
 #endif
 
 // GetWindowProc

@@ -2,6 +2,8 @@
 from wxPython.wx import *
 from wxPython.ogl import *
 
+import images
+
 #----------------------------------------------------------------------
 # This creates some pens and brushes that the OGL library uses.
 
@@ -49,7 +51,6 @@ class MyEvtHandler(wxShapeEvtHandler):
         self.log = log
         self.statbarFrame = frame
 
-
     def UpdateStatusBar(self, shape):
         x,y = shape.GetX(), shape.GetY()
         width, height = shape.GetBoundingBoxMax()
@@ -59,6 +60,7 @@ class MyEvtHandler(wxShapeEvtHandler):
 
     def OnLeftClick(self, x, y, keys = 0, attachment = 0):
         shape = self.GetShape()
+        print shape.__class__
         canvas = shape.GetCanvas()
         dc = wxClientDC(canvas)
         canvas.PrepareDC(dc)
@@ -121,11 +123,12 @@ class TestWindow(wxShapeCanvas):
 
         self.log = log
         self.frame = frame
-        self.SetBackgroundColour(wxWHITE)
+        self.SetBackgroundColour("LIGHT BLUE") #wxWHITE)
         self.diagram = wxDiagram()
         self.SetDiagram(self.diagram)
         self.diagram.SetCanvas(self)
         self.shapes = []
+        self.save_gdi = []
 
         rRectBrush = wxBrush(wxNamedColour("MEDIUM TURQUOISE"), wxSOLID)
 
@@ -133,6 +136,14 @@ class TestWindow(wxShapeCanvas):
         self.MyAddShape(wxRectangleShape(85, 50), 305, 60, wxBLACK_PEN, wxLIGHT_GREY_BRUSH, "Rectangle")
         self.MyAddShape(DiamondShape(90, 90), 345, 235, wxPen(wxBLUE, 3, wxDOT), wxRED_BRUSH, "Polygon")
         self.MyAddShape(RoundedRectangleShape(95,70), 140, 255, wxPen(wxRED, 1), rRectBrush, "Rounded Rect")
+
+        bmp = images.getTest2Bitmap()
+        mask = wxMaskColour(bmp, wxBLUE)
+        bmp.SetMask(mask)
+
+        s = wxBitmapShape()
+        s.SetBitmap(bmp)
+        self.MyAddShape(s, 225, 150, None, None, "Bitmap")
 
         dc = wxClientDC(self)
         self.PrepareDC(dc)
@@ -155,16 +166,17 @@ class TestWindow(wxShapeCanvas):
             # for some reason, the shapes have to be moved for the line to show up...
             fromShape.Move(dc, fromShape.GetX(), fromShape.GetY())
 
+            EVT_WINDOW_DESTROY(self, self.OnDestroy)
 
 
     def MyAddShape(self, shape, x, y, pen, brush, text):
-        shape.SetDraggable(true)
+        shape.SetDraggable(true, true)
         shape.SetCanvas(self)
         shape.SetX(x)
         shape.SetY(y)
-        shape.SetPen(pen)
-        shape.SetBrush(brush)
-        shape.AddText(text)
+        if pen:    shape.SetPen(pen)
+        if brush:  shape.SetBrush(brush)
+        if text:   shape.AddText(text)
         #shape.SetShadowMode(SHADOW_RIGHT)
         self.diagram.AddShape(shape)
         shape.Show(true)
@@ -177,11 +189,21 @@ class TestWindow(wxShapeCanvas):
         self.shapes.append(shape)
 
 
-    def __del__(self):
+
+    def OnDestroy(self, evt):
+        # Do some cleanup
         for shape in self.diagram.GetShapeList():
             if shape.GetParent() == None:
                 shape.SetCanvas(None)
                 shape.Destroy()
+        self.diagram.Destroy()
+
+
+    def OnBeginDragLeft(self, x, y, keys):
+        self.log.write("OnBeginDragLeft: %s, %s, %s\n" % (x, y, keys))
+
+    def OnEndDragLeft(self, x, y, keys):
+        self.log.write("OnEndDragLeft: %s, %s, %s\n" % (x, y, keys))
 
 
 #----------------------------------------------------------------------

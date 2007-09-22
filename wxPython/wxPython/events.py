@@ -4,7 +4,9 @@ import eventsc
 from misc import *
 
 from gdi import *
-class wxEventPtr :
+
+from fonts import *
+class wxEventPtr(wxObjectPtr):
     def __init__(self,this):
         self.this = this
         self.thisown = 0
@@ -41,12 +43,15 @@ class wxEventPtr :
     def Skip(self, *_args, **_kwargs):
         val = apply(eventsc.wxEvent_Skip,(self,) + _args, _kwargs)
         return val
+    def Clone(self, *_args, **_kwargs):
+        val = apply(eventsc.wxEvent_Clone,(self,) + _args, _kwargs)
+        if val: val = wxEventPtr(val) 
+        return val
     def __repr__(self):
         return "<C wxEvent instance at %s>" % (self.this,)
 class wxEvent(wxEventPtr):
-    def __init__(self,*_args,**_kwargs):
-        self.this = apply(eventsc.new_wxEvent,_args,_kwargs)
-        self.thisown = 1
+    def __init__(self,this):
+        self.this = this
 
 
 
@@ -134,6 +139,9 @@ class wxCommandEventPtr(wxEventPtr):
         return val
     def SetInt(self, *_args, **_kwargs):
         val = apply(eventsc.wxCommandEvent_SetInt,(self,) + _args, _kwargs)
+        return val
+    def GetClientData(self, *_args, **_kwargs):
+        val = apply(eventsc.wxCommandEvent_GetClientData,(self,) + _args, _kwargs)
         return val
     def __repr__(self):
         return "<C wxCommandEvent instance at %s>" % (self.this,)
@@ -298,6 +306,15 @@ class wxMouseEventPtr(wxEventPtr):
     def GetY(self, *_args, **_kwargs):
         val = apply(eventsc.wxMouseEvent_GetY,(self,) + _args, _kwargs)
         return val
+    def GetWheelRotation(self, *_args, **_kwargs):
+        val = apply(eventsc.wxMouseEvent_GetWheelRotation,(self,) + _args, _kwargs)
+        return val
+    def GetWheelDelta(self, *_args, **_kwargs):
+        val = apply(eventsc.wxMouseEvent_GetWheelDelta,(self,) + _args, _kwargs)
+        return val
+    def GetLinesPerAction(self, *_args, **_kwargs):
+        val = apply(eventsc.wxMouseEvent_GetLinesPerAction,(self,) + _args, _kwargs)
+        return val
     def __setattr__(self,name,value):
         if name == "m_x" :
             eventsc.wxMouseEvent_m_x_set(self,value)
@@ -326,6 +343,15 @@ class wxMouseEventPtr(wxEventPtr):
         if name == "m_metaDown" :
             eventsc.wxMouseEvent_m_metaDown_set(self,value)
             return
+        if name == "m_wheelRotation" :
+            eventsc.wxMouseEvent_m_wheelRotation_set(self,value)
+            return
+        if name == "m_wheelDelta" :
+            eventsc.wxMouseEvent_m_wheelDelta_set(self,value)
+            return
+        if name == "m_linesPerAction" :
+            eventsc.wxMouseEvent_m_linesPerAction_set(self,value)
+            return
         self.__dict__[name] = value
     def __getattr__(self,name):
         if name == "m_x" : 
@@ -346,12 +372,65 @@ class wxMouseEventPtr(wxEventPtr):
             return eventsc.wxMouseEvent_m_altDown_get(self)
         if name == "m_metaDown" : 
             return eventsc.wxMouseEvent_m_metaDown_get(self)
+        if name == "m_wheelRotation" : 
+            return eventsc.wxMouseEvent_m_wheelRotation_get(self)
+        if name == "m_wheelDelta" : 
+            return eventsc.wxMouseEvent_m_wheelDelta_get(self)
+        if name == "m_linesPerAction" : 
+            return eventsc.wxMouseEvent_m_linesPerAction_get(self)
         raise AttributeError,name
     def __repr__(self):
         return "<C wxMouseEvent instance at %s>" % (self.this,)
 class wxMouseEvent(wxMouseEventPtr):
     def __init__(self,*_args,**_kwargs):
         self.this = apply(eventsc.new_wxMouseEvent,_args,_kwargs)
+        self.thisown = 1
+
+
+
+
+class wxMouseCaptureChangedEventPtr(wxEventPtr):
+    def __init__(self,this):
+        self.this = this
+        self.thisown = 0
+    def GetCapturedWindow(self, *_args, **_kwargs):
+        val = apply(eventsc.wxMouseCaptureChangedEvent_GetCapturedWindow,(self,) + _args, _kwargs)
+        return val
+    def __repr__(self):
+        return "<C wxMouseCaptureChangedEvent instance at %s>" % (self.this,)
+class wxMouseCaptureChangedEvent(wxMouseCaptureChangedEventPtr):
+    def __init__(self,*_args,**_kwargs):
+        self.this = apply(eventsc.new_wxMouseCaptureChangedEvent,_args,_kwargs)
+        self.thisown = 1
+
+
+
+
+class wxSetCursorEventPtr(wxEventPtr):
+    def __init__(self,this):
+        self.this = this
+        self.thisown = 0
+    def GetX(self, *_args, **_kwargs):
+        val = apply(eventsc.wxSetCursorEvent_GetX,(self,) + _args, _kwargs)
+        return val
+    def GetY(self, *_args, **_kwargs):
+        val = apply(eventsc.wxSetCursorEvent_GetY,(self,) + _args, _kwargs)
+        return val
+    def SetCursor(self, *_args, **_kwargs):
+        val = apply(eventsc.wxSetCursorEvent_SetCursor,(self,) + _args, _kwargs)
+        return val
+    def GetCursor(self, *_args, **_kwargs):
+        val = apply(eventsc.wxSetCursorEvent_GetCursor,(self,) + _args, _kwargs)
+        if val: val = wxCursorPtr(val) 
+        return val
+    def HasCursor(self, *_args, **_kwargs):
+        val = apply(eventsc.wxSetCursorEvent_HasCursor,(self,) + _args, _kwargs)
+        return val
+    def __repr__(self):
+        return "<C wxSetCursorEvent instance at %s>" % (self.this,)
+class wxSetCursorEvent(wxSetCursorEventPtr):
+    def __init__(self,*_args,**_kwargs):
+        self.this = apply(eventsc.new_wxSetCursorEvent,_args,_kwargs)
         self.thisown = 1
 
 
@@ -381,6 +460,12 @@ class wxKeyEventPtr(wxEventPtr):
         return val
     def HasModifiers(self, *_args, **_kwargs):
         val = apply(eventsc.wxKeyEvent_HasModifiers,(self,) + _args, _kwargs)
+        return val
+    def GetRawKeyCode(self, *_args, **_kwargs):
+        val = apply(eventsc.wxKeyEvent_GetRawKeyCode,(self,) + _args, _kwargs)
+        return val
+    def GetRawKeyFlags(self, *_args, **_kwargs):
+        val = apply(eventsc.wxKeyEvent_GetRawKeyFlags,(self,) + _args, _kwargs)
         return val
     def GetX(self, *_args, **_kwargs):
         val = apply(eventsc.wxKeyEvent_GetX,(self,) + _args, _kwargs)
@@ -420,6 +505,12 @@ class wxKeyEventPtr(wxEventPtr):
         if name == "m_scanCode" :
             eventsc.wxKeyEvent_m_scanCode_set(self,value)
             return
+        if name == "m_rawCode" :
+            eventsc.wxKeyEvent_m_rawCode_set(self,value)
+            return
+        if name == "m_rawFlags" :
+            eventsc.wxKeyEvent_m_rawFlags_set(self,value)
+            return
         self.__dict__[name] = value
     def __getattr__(self,name):
         if name == "m_x" : 
@@ -438,6 +529,10 @@ class wxKeyEventPtr(wxEventPtr):
             return eventsc.wxKeyEvent_m_metaDown_get(self)
         if name == "m_scanCode" : 
             return eventsc.wxKeyEvent_m_scanCode_get(self)
+        if name == "m_rawCode" : 
+            return eventsc.wxKeyEvent_m_rawCode_get(self)
+        if name == "m_rawFlags" : 
+            return eventsc.wxKeyEvent_m_rawFlags_get(self)
         raise AttributeError,name
     def __repr__(self):
         return "<C wxKeyEvent instance at %s>" % (self.this,)
@@ -467,7 +562,6 @@ class wxNavigationKeyEventPtr(wxEventPtr):
         return val
     def GetCurrentFocus(self, *_args, **_kwargs):
         val = apply(eventsc.wxNavigationKeyEvent_GetCurrentFocus,(self,) + _args, _kwargs)
-        if val: val = wxWindowPtr(val) 
         return val
     def SetCurrentFocus(self, *_args, **_kwargs):
         val = apply(eventsc.wxNavigationKeyEvent_SetCurrentFocus,(self,) + _args, _kwargs)
@@ -520,7 +614,6 @@ class wxEraseEventPtr(wxEventPtr):
         self.thisown = 0
     def GetDC(self, *_args, **_kwargs):
         val = apply(eventsc.wxEraseEvent_GetDC,(self,) + _args, _kwargs)
-        if val: val = wxDCPtr(val) 
         return val
     def __repr__(self):
         return "<C wxEraseEvent instance at %s>" % (self.this,)
@@ -541,6 +634,23 @@ class wxFocusEventPtr(wxEventPtr):
 class wxFocusEvent(wxFocusEventPtr):
     def __init__(self,*_args,**_kwargs):
         self.this = apply(eventsc.new_wxFocusEvent,_args,_kwargs)
+        self.thisown = 1
+
+
+
+
+class wxChildFocusEventPtr(wxCommandEventPtr):
+    def __init__(self,this):
+        self.this = this
+        self.thisown = 0
+    def GetWindow(self, *_args, **_kwargs):
+        val = apply(eventsc.wxChildFocusEvent_GetWindow,(self,) + _args, _kwargs)
+        return val
+    def __repr__(self):
+        return "<C wxChildFocusEvent instance at %s>" % (self.this,)
+class wxChildFocusEvent(wxChildFocusEventPtr):
+    def __init__(self,*_args,**_kwargs):
+        self.this = apply(eventsc.new_wxChildFocusEvent,_args,_kwargs)
         self.thisown = 1
 
 
@@ -584,6 +694,9 @@ class wxMenuEventPtr(wxEventPtr):
     def GetMenuId(self, *_args, **_kwargs):
         val = apply(eventsc.wxMenuEvent_GetMenuId,(self,) + _args, _kwargs)
         return val
+    def IsPopup(self, *_args, **_kwargs):
+        val = apply(eventsc.wxMenuEvent_IsPopup,(self,) + _args, _kwargs)
+        return val
     def __repr__(self):
         return "<C wxMenuEvent instance at %s>" % (self.this,)
 class wxMenuEvent(wxMenuEventPtr):
@@ -618,6 +731,9 @@ class wxIconizeEventPtr(wxEventPtr):
     def __init__(self,this):
         self.this = this
         self.thisown = 0
+    def Iconized(self, *_args, **_kwargs):
+        val = apply(eventsc.wxIconizeEvent_Iconized,(self,) + _args, _kwargs)
+        return val
     def __repr__(self):
         return "<C wxIconizeEvent instance at %s>" % (self.this,)
 class wxIconizeEvent(wxIconizeEventPtr):
@@ -826,6 +942,20 @@ class wxNotifyEvent(wxNotifyEventPtr):
 
 
 
+class wxDisplayChangedEventPtr(wxEventPtr):
+    def __init__(self,this):
+        self.this = this
+        self.thisown = 0
+    def __repr__(self):
+        return "<C wxDisplayChangedEvent instance at %s>" % (self.this,)
+class wxDisplayChangedEvent(wxDisplayChangedEventPtr):
+    def __init__(self,*_args,**_kwargs):
+        self.this = apply(eventsc.new_wxDisplayChangedEvent,_args,_kwargs)
+        self.thisown = 1
+
+
+
+
 class wxPaletteChangedEventPtr(wxEventPtr):
     def __init__(self,this):
         self.this = this
@@ -835,7 +965,6 @@ class wxPaletteChangedEventPtr(wxEventPtr):
         return val
     def GetChangedWindow(self, *_args, **_kwargs):
         val = apply(eventsc.wxPaletteChangedEvent_GetChangedWindow,(self,) + _args, _kwargs)
-        if val: val = wxWindowPtr(val) 
         return val
     def __repr__(self):
         return "<C wxPaletteChangedEvent instance at %s>" % (self.this,)
@@ -873,7 +1002,6 @@ class wxWindowCreateEventPtr(wxCommandEventPtr):
         self.thisown = 0
     def GetWindow(self, *_args, **_kwargs):
         val = apply(eventsc.wxWindowCreateEvent_GetWindow,(self,) + _args, _kwargs)
-        if val: val = wxWindowPtr(val) 
         return val
     def __repr__(self):
         return "<C wxWindowCreateEvent instance at %s>" % (self.this,)
@@ -891,13 +1019,33 @@ class wxWindowDestroyEventPtr(wxCommandEventPtr):
         self.thisown = 0
     def GetWindow(self, *_args, **_kwargs):
         val = apply(eventsc.wxWindowDestroyEvent_GetWindow,(self,) + _args, _kwargs)
-        if val: val = wxWindowPtr(val) 
         return val
     def __repr__(self):
         return "<C wxWindowDestroyEvent instance at %s>" % (self.this,)
 class wxWindowDestroyEvent(wxWindowDestroyEventPtr):
     def __init__(self,*_args,**_kwargs):
         self.this = apply(eventsc.new_wxWindowDestroyEvent,_args,_kwargs)
+        self.thisown = 1
+
+
+
+
+class wxContextMenuEventPtr(wxCommandEventPtr):
+    def __init__(self,this):
+        self.this = this
+        self.thisown = 0
+    def GetPosition(self, *_args, **_kwargs):
+        val = apply(eventsc.wxContextMenuEvent_GetPosition,(self,) + _args, _kwargs)
+        if val: val = wxPointPtr(val) 
+        return val
+    def SetPosition(self, *_args, **_kwargs):
+        val = apply(eventsc.wxContextMenuEvent_SetPosition,(self,) + _args, _kwargs)
+        return val
+    def __repr__(self):
+        return "<C wxContextMenuEvent instance at %s>" % (self.this,)
+class wxContextMenuEvent(wxContextMenuEventPtr):
+    def __init__(self,*_args,**_kwargs):
+        self.this = apply(eventsc.new_wxContextMenuEvent,_args,_kwargs)
         self.thisown = 1
 
 
@@ -915,6 +1063,29 @@ class wxTimerEventPtr(wxEventPtr):
 class wxTimerEvent(wxTimerEventPtr):
     def __init__(self,*_args,**_kwargs):
         self.this = apply(eventsc.new_wxTimerEvent,_args,_kwargs)
+        self.thisown = 1
+
+
+
+
+class wxTextUrlEventPtr(wxCommandEventPtr):
+    def __init__(self,this):
+        self.this = this
+        self.thisown = 0
+    def GetMouseEvent(self, *_args, **_kwargs):
+        val = apply(eventsc.wxTextUrlEvent_GetMouseEvent,(self,) + _args, _kwargs)
+        return val
+    def GetURLStart(self, *_args, **_kwargs):
+        val = apply(eventsc.wxTextUrlEvent_GetURLStart,(self,) + _args, _kwargs)
+        return val
+    def GetURLEnd(self, *_args, **_kwargs):
+        val = apply(eventsc.wxTextUrlEvent_GetURLEnd,(self,) + _args, _kwargs)
+        return val
+    def __repr__(self):
+        return "<C wxTextUrlEvent instance at %s>" % (self.this,)
+class wxTextUrlEvent(wxTextUrlEventPtr):
+    def __init__(self,*_args,**_kwargs):
+        self.this = apply(eventsc.new_wxTextUrlEvent,_args,_kwargs)
         self.thisown = 1
 
 
@@ -971,6 +1142,8 @@ class wxPyCommandEvent(wxPyCommandEventPtr):
 
 
 #-------------- FUNCTION WRAPPERS ------------------
+
+wxNewEventType = eventsc.wxNewEventType
 
 
 

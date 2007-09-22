@@ -3,7 +3,7 @@
  *                                                                  *
  * (C) 1998-2000 by Karsten Ballüder (ballueder@gmx.net)            *
  *                                                                  *
- * $Id: wxlwindow.h,v 1.16.2.1 2000/05/10 20:00:53 KB Exp $
+ * $Id: wxlwindow.h,v 1.17 2000/07/15 19:50:21 cvsuser Exp $
  *******************************************************************/
 #ifndef WXLWINDOW_H
 #define WXLWINDOW_H

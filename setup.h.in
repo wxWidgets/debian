@@ -1,4 +1,4 @@
-/* This define (__WX_SETUP_H__) is used both to insure setup.h is included
+/* This define (__WX_SETUP_H__) is used both to ensure setup.h is included
  * only once and to indicate that we are building using configure. */
 #ifndef __WX_SETUP_H__
 #define __WX_SETUP_H__
@@ -21,14 +21,11 @@
 /* fill in with the string wxGetOsDescription() will return */
 #undef WXWIN_OS_DESCRIPTION
 
+/* the installation location prefix from configure */
+#undef wxINSTALL_PREFIX
+
 /* Define to `int' if <sys/types.h> doesn't define.  */
 #undef gid_t
-
-/* Define if you don't have vprintf but do have _doprnt.  */
-#undef HAVE_DOPRNT
-
-/* Define if you have the vprintf function.  */
-#undef HAVE_VPRINTF
 
 /* Define to `int' if <sys/types.h> doesn't define.  */
 #undef mode_t
@@ -45,18 +42,15 @@
 /* Define if you have the ANSI C header files.  */
 #undef STDC_HEADERS
 
+/* Define this to get extra features from GNU libc. */
+#undef _GNU_SOURCE
+
 /* Define to `int' if <sys/types.h> doesn't define.  */
 #undef uid_t
 
 /* Define if your processor stores words with the most significant
    byte first (like Motorola and SPARC, unlike Intel and VAX).  */
 #undef WORDS_BIGENDIAN
-
-/* Define if the X Window System is missing or not being used.  */
-#undef X_DISPLAY_MISSING
-
-/* Define if lex declares yytext as a char * by default, not a char[].  */
-#undef YYTEXT_POINTER
 
 /* Define this if your version of GTK+ is greater than 1.2 */
 #undef __WXGTK12__
@@ -65,7 +59,7 @@
 #undef __WXGTK127__
 
 /* Define this if your version of GTK+ is greater than 1.3 */
-#undef __WXGTK13__
+#undef __WXGTK20__
 
 /*
  * Define to 1 for Unix[-like] system
@@ -89,14 +83,20 @@
 #undef __FREEBSD__
 #undef __DARWIN__
 #undef __NETBSD__
+#undef __OPENBSD__
 #undef __VMS__
 #undef __ULTRIX__
 #undef __DATA_GENERAL__
 #undef __EMX__
-#undef _GNU_SOURCE
+
+/* NanoX (with wxX11) */
+#define wxUSE_NANOX 0
 
 /* PowerPC Darwin & Mac OS X */
 #undef __POWERPC__
+
+/* MS-DOS with DJGPP */
+#undef __DOS__
 
 /* Stupid hack; __WINDOWS__ clashes with wx/defs.h */
 #ifndef __WINDOWS__
@@ -112,8 +112,13 @@
 #undef WINVER
 
 /* enable native status bar under Win32 */
-#ifdef __WIN95__
+#if defined(__WIN95__) && !defined(__WXUNIVERSAL__)
 #define wxUSE_NATIVE_STATUSBAR 1
+#define wxUSE_OWNER_DRAWN 1
+#endif
+
+#if defined(__WXPM__)
+#define wxUSE_OWNER_DRAWN 1
 #endif
 
 /* enable rich edit under Win32 */
@@ -128,6 +133,15 @@
  */
 #undef HAVE_BOOL
 
+/*
+ * Define if your compiler supports the explicit keyword
+ */
+#undef HAVE_EXPLICIT
+
+/*
+ * Use regex support
+ */
+#define wxUSE_REGEX 0
 /*
  * Use zlib
  */
@@ -150,6 +164,10 @@
 #define wxUSE_ODBC 0
 #define wxODBC_FWD_ONLY_CURSORS 1
 #define wxODBC_BACKWARD_COMPATABILITY 0
+/*
+ * Use freetype
+ */
+#define wxUSE_FREETYPE 0
 /*
  * Use Threads
  */
@@ -183,6 +201,11 @@
 #define wxUSE_ON_FATAL_EXCEPTION 0
 
 /*
+ * Use wxSingleInstanceChecker class
+ */
+#define wxUSE_SNGLINST_CHECKER 0
+
+/*
  * Use constraints mechanism
  */
 #define wxUSE_CONSTRAINTS 0
@@ -193,9 +216,64 @@
 #define wxUSE_VALIDATORS 0
 
 /*
+ * Use wxControl
+ */
+#define wxUSE_CONTROLS 0
+
+/*
+   Use wxPopupWindow (useful in wxUniv only for now)
+*/
+#define wxUSE_POPUPWIN 0
+
+/*
+   Use wxTipWindow
+ */
+#define wxUSE_TIPWINDOW 0
+
+/*
  * Use accelerators
  */
 #define wxUSE_ACCEL 0
+
+/*
+ * Use wxCalendarCtrl
+ */
+#define wxUSE_CALENDARCTRL 0
+
+/*
+ * Use wxFileDialog
+ */
+#define wxUSE_FILEDLG 0
+
+/*
+ * Use wxFindReplaceDialog
+ */
+#define wxUSE_FINDREPLDLG 0
+
+/*
+ * Use wxFontDialog
+ */
+#define wxUSE_FONTDLG 0
+
+/*
+ * Use wxMimeTypesManager and related classes
+ */
+#define wxUSE_MIMETYPE 0
+
+/*
+ * Use wxSystemOptions
+ */
+#define wxUSE_SYSTEM_OPTIONS 0
+
+/*
+ * Use wxMessageDialog (and wxMessageBox)
+ */
+#define wxUSE_MSGDLG 0
+
+/*
+ * Use wxNumberEntryDialog
+ */
+#define wxUSE_NUMBERDLG 0
 
 /*
  * Use wxTextEntryDialog
@@ -213,15 +291,49 @@
 #define wxUSE_PROGRESSDLG 0
 
 /*
+ * Use chooser dialog
+ */
+#define wxUSE_CHOICEDLG 0
+
+/*
+ * Use colour picker dialog
+ */
+#define wxUSE_COLOURDLG 0
+
+/*
  * Use directory chooser dialog
  */
 #define wxUSE_DIRDLG 0
+
+/*
+ * Use wxDragImage class
+ */
+#define wxUSE_DRAGIMAGE 0
+
+/*
+ * Use property sheet classes
+ */
+#define wxUSE_PROPSHEET 0
+
+/*
+ * Use wxWizard
+ */
+#define wxUSE_WIZARDDLG 0
+
+/*
+ * Use splash screen
+ */
+#define wxUSE_SPLASH 0
 
 /*
  * Joystick support (Linux/GTK only)
  */
 #define wxUSE_JOYSTICK 0
 
+/*
+ * Use this control
+ */
+#define wxUSE_BUTTON 0
 /*
  * Use this control
  */
@@ -272,13 +384,13 @@
  */
 #define wxUSE_LISTCTRL 0
 /*
+ * Use wxMenuBar, wxMenuItem and wxMenu
+ */
+#define wxUSE_MENUS 0
+/*
  * Use this control
  */
 #define wxUSE_NOTEBOOK 0
-/*
- * Use wxPlot class
- */
-#define wxUSE_PLOT 0
 /*
  * Use this control
  */
@@ -326,13 +438,26 @@
 /*
  * Use this control
  */
+#define wxUSE_STATTEXT 0
+/*
+ * Use this control
+ */
 #define wxUSE_STATUSBAR 0
+/*
+ * Use this control
+ */
+#define wxUSE_TOGGLEBTN 0
 /*
  * Use Tab dialog class - obsolete, use wxNotebook instead
  */
 #define wxUSE_TAB_DIALOG 0
 /* compatibility */
 #define wxUSE_TABDIALOG wxUSE_TAB_DIALOG
+
+/*
+ * Use wxTextCtrl
+ */
+#define wxUSE_TEXTCTRL 0
 
 /*
  * Use wxToollBar
@@ -351,7 +476,6 @@
 #define wxUSE_TOOLBAR_SIMPLE 0
 
 #if defined(__WXWINE__) || defined(__GNUWIN32__) || defined(__WXPM__)
-#define wxUSE_OWNER_DRAWN 1 
   #if wxUSE_TOOLBAR
     #define wxUSE_BUTTONBAR 1
   #endif
@@ -373,17 +497,60 @@
 #define wxUSE_LONGLONG 0
 
 /*
+ * Use geometry classes
+ */
+#define wxUSE_GEOMETRY 0
+
+/*
+ * Use wxCmdLineParser class
+ */
+#define wxUSE_CMDLINE_PARSER 0
+/*
+ * Use wxDateTime
+ */
+#define wxUSE_DATETIME 0
+/*
  * Use wxFile class
  */
 #define wxUSE_FILE 0
 /*
+ * Use wxFFile class
+ */
+#define wxUSE_FFILE 0
+/*
+ * Use wxFSVolume class
+ */
+#define wxUSE_FSVOLUME 1
+
+/*
+ * Use wxTextBuffer class
+ */
+#define wxUSE_TEXTBUFFER 0
+/*
  * Use wxTextFile class
  */
 #define wxUSE_TEXTFILE 0
+
 /*
  * Use log classes and logging functions
  */
 #define wxUSE_LOG 0
+/*
+ * Use log window
+ */
+#define wxUSE_LOGWINDOW 0
+/*
+ * Use standard GUI logger
+ */
+#define wxUSE_LOGGUI 0
+/*
+ * Use old log dialog instead of new wxLogGui
+ */
+#define wxUSE_LOG_DIALOG 0
+/*
+ * Use wxStopWatch
+ */
+#define wxUSE_STOPWATCH 0
 /*
  * Use time and date classes
  */
@@ -397,17 +564,24 @@
  */
 #define wxUSE_CONFIG 0
 /*
+ * Use font mapping/conversion classes
+ */
+#define wxUSE_FONTMAP 0
+/*
  * Use intl system
  */
 #define wxUSE_INTL 0
 /*
+ * Use wxProtocol and related classes
+ */
+#define wxUSE_PROTOCOL 0
+#define wxUSE_PROTOCOL_FILE 0
+#define wxUSE_PROTOCOL_FTP 0
+#define wxUSE_PROTOCOL_HTTP 0
+/*
  * Use streams
  */
 #define wxUSE_STREAMS 0
-/*
- * Use class serialization
- */
-#define wxUSE_SERIAL 0
 /*
  * Use sockets
  */
@@ -425,6 +599,15 @@
  * wxLibrary class
  */
 #define wxUSE_DYNLIB_CLASS 0
+/*
+ * Use wxObjectLoader
+ */
+#define wxUSE_DYNAMIC_LOADER 0
+
+/*
+ * Use wxTimer
+ */
+#define wxUSE_TIMER 0
 
 /*
  * Use font metric files in GetTextExtent for wxPostScriptDC
@@ -450,6 +633,16 @@
  * Compile wxWindows in Unicode mode (Win32 only for now)?
  */
 #define wxUSE_UNICODE 0
+
+/*
+ * Use MS Layer for Unicode on Win9X (Win32 only)?
+ */
+#define wxUSE_UNICODE_MSLU 0
+
+/*
+ * Use wxURL class
+ */
+#define wxUSE_URL 0
 
 /*
  * Work around a bug in GNU libc 5.x wcstombs() implementation.
@@ -480,6 +673,10 @@
  */
 #define wxUSE_CLIPBOARD 0
 /*
+ * Use wxDataObject
+ */
+#define wxUSE_DATAOBJ 0
+/*
  * Use tooltips
  */
 #define wxUSE_TOOLTIPS 0
@@ -488,13 +685,13 @@
  */
 #define wxUSE_DRAG_AND_DROP 0
 /*
+ * Use OLE (MSW only)
+ */
+#define wxUSE_OLE 0
+/*
  * Use spline
  */
 #define wxUSE_SPLINES 0
-/*
- * Use wxLibrary class
- */
-#define wxUSE_DYNLIB_CLASS 0
 
 /*
  * Use the mdi architecture
@@ -522,9 +719,18 @@
 #define wxUSE_WX_RESOURCES wxUSE_RESOURCES
 
 /*
- * Use wxWindows help facility (needs wxUSE_IPC 1)
+ * Use wxWindows help facility
  */
 #define wxUSE_HELP 0
+/*
+ * Use built-in HTML-based help controller
+ */
+#define wxUSE_WXHTML_HELP 0
+/*
+ * Use MS HTML Help controller (win32)
+ */
+#define wxUSE_MS_HTML_HELP 0
+
 /*
  * Use iostream.h rather than iostream
  */
@@ -536,7 +742,11 @@
 /*
  * Compatibility with 2.0 API.
  */
-#define WXWIN_COMPATIBILITY_2 1
+#define WXWIN_COMPATIBILITY_2 0
+/*
+ * Compatibility with 2.2 API
+ */
+#define WXWIN_COMPATIBILITY_2_2 0
 /*
  * Enables debugging: memory tracing, assert, etc., contains debug level
  */
@@ -602,12 +812,22 @@
  * A class that shows info window when app is busy
  * (works exactly like wxBusyCursor)
  */
-#define wxUSE_BUSYINFO 0 
+#define wxUSE_BUSYINFO 0
 
 /*
  * Zip stream for accessing files stored inside .zip archives
  */
 #define wxUSE_ZIPSTREAM 0
+
+/*
+ * wxPalette class
+ */
+#define wxUSE_PALETTE 0
+
+/*
+ * wxImage support
+ */
+#define wxUSE_IMAGE 0
 
 /*
  * GIF image format support
@@ -620,10 +840,25 @@
 #define wxUSE_PCX 0
 
 /*
+ * IFF image format support
+ */
+#define wxUSE_IFF 0
+
+/*
  * PNM image format support
  */
 #define wxUSE_PNM 0
- 
+
+/*
+ * XPM image format support
+ */
+#define wxUSE_XPM 0
+
+/*
+ * MS ICO (and CUR,ANI derivatives) image format support (on any platform)
+ */
+#define wxUSE_ICO_CUR 0
+
 /*
  * Disable this if your compiler can't cope
  * with omission of prototype parameters.
@@ -668,6 +903,9 @@
 /* Define if you have ftime() */
 #undef HAVE_FTIME
 
+/* Define if you have support for large (64 bit size) files */
+#undef HAVE_LARGEFILE_SUPPORT
+
 /* Define if you have localtime() */
 #undef HAVE_LOCALTIME
 
@@ -676,6 +914,12 @@
 
 /* Define if you have sched_yield */
 #undef HAVE_SCHED_YIELD
+
+/* Define if you have pthread_mutexattr_t and functions to work with it */
+#undef HAVE_PTHREAD_MUTEXATTR_T
+
+/* Define if you have PTHREAD_RECURSIVE_MUTEX_INITIALIZER_NP */
+#undef HAVE_PTHREAD_RECURSIVE_MUTEX_INITIALIZER
 
 /* Define if you have pthread_cancel */
 #undef HAVE_PTHREAD_CANCEL
@@ -688,6 +932,12 @@
 
 /* Define if you have shl_load() */
 #undef HAVE_SHL_LOAD
+
+/* define if you have statfs function */
+#undef HAVE_STATFS
+
+/* define if you have statvfs function */
+#undef HAVE_STATVFS
 
 /* Define if you have strptime() */
 #undef HAVE_STRPTIME
@@ -716,6 +966,9 @@
 /* The number of bytes in a char.  */
 #undef SIZEOF_CHAR
 
+/* The number of bytes in a wchar_t.  */
+#undef SIZEOF_WCHAR_T
+
 /* The number of bytes in a int.  */
 #undef SIZEOF_INT
 
@@ -743,6 +996,12 @@
 /* Define if you have the dlerror function.  */
 #undef HAVE_DLERROR
 
+/* Define if you have Posix fnctl() function. */
+#undef HAVE_FCNTL
+
+/* Define if you have BSD flock() function. */
+#undef HAVE_FLOCK
+
 /* Define if you have the gethostname function.  */
 #undef HAVE_GETHOSTNAME
 
@@ -752,8 +1011,20 @@
 /* Define if you have the inet_aton function.  */
 #undef HAVE_INET_ATON
 
+/* Define if you have the mktemp function.  */
+#undef HAVE_MKTEMP
+
+/* Define if you have the mkstemp function.  */
+#undef HAVE_MKSTEMP
+
 /* Define if you have the nanosleep function.  */
 #undef HAVE_NANOSLEEP
+
+/* Define if you have the putenv function.  */
+#undef HAVE_PUTENV
+
+/* Define if you have the setenv function.  */
+#undef HAVE_SETENV
 
 /* Define if you have the shl_load function.  */
 #undef HAVE_SHL_LOAD
@@ -770,11 +1041,11 @@
 /* Define if you have the usleep function.  */
 #undef HAVE_USLEEP
 
-/* Define if you have the vfork function.  */
-#undef HAVE_VFORK
-
 /* Define if you have the <X11/XKBlib.h> header file.  */
 #undef HAVE_X11_XKBLIB_H
+
+/* Define if you have the fnmatch() function */
+#undef HAVE_FNMATCH
 
 /* Define if you have the <fnmatch.h> header file.  */
 #undef HAVE_FNMATCH_H
@@ -794,13 +1065,79 @@
 /* Define if you have the <unistd.h> header file.  */
 #undef HAVE_UNISTD_H
 
+/* Define if you have the <fcntl.h> header file.  */
+#undef HAVE_FCNTL_H
+
 /* Define if you have the <wchar.h> header file.  */
 #undef HAVE_WCHAR_H
 
 /* Define if you have the <wcstr.h> header file.  */
 #undef HAVE_WCSTR_H
 
+/* Define if you have the <wctype.h> header file.  */
+#undef HAVE_WCTYPE_H
+
+/* Define if you have the <iconv.h> header file and iconv() symbol.  */
+#undef HAVE_ICONV
+
+/* Define as "const" if the declaration of iconv() needs const.  */
+#undef ICONV_CONST
+
+/* Define if you have the <langinfo.h> header file.  */
+#undef HAVE_LANGINFO_H
+
+/* Define if you have the <w32api.h> header file (mingw,cygwin).  */
+#undef HAVE_W32API_H
+
+/* Define if you have wcsrtombs() function */
+#undef HAVE_WCSRTOMBS
+
+/* Define this if you have fputws() and putwc() */
+#undef HAVE_FPUTWC
+
+/* Define this if you have wprintf() and related functions */
+#undef HAVE_WPRINTF
+
+/* Define this if you have wprintf() and related functions */
+#undef HAVE_VSWPRINTF
+
+/* Define this if you have _vsnwprintf */
+#undef HAVE__VSNWPRINTF
+
 /* Define this if you are using gtk and gdk contains support for X11R6 XIM */
 #undef HAVE_XIM
 
+
+/* -------------------------------------------------------------------------
+   Win32 adjustments section
+   ------------------------------------------------------------------------- */
+
+#ifdef __WIN32__
+
+/* we need to define wxUSE_XPM_IN_MSW for MSW compilation for compatibility
+   with wx/msw/setup.h */
+#define wxUSE_XPM_IN_MSW wxUSE_XPM
+
+#endif /* __WIN32__ */
+
+/* --------------------------------------------------------*
+ *  This stuff is static, it doesn't get modified directly
+ *  by configure.
+*/
+
+#include "wx/chkconf.h"
+
+/*
+   define some constants identifying wxWindows version in more details than
+   just the version number
+ */
+
+/* wxLogChain class available */
+#define wxHAS_LOG_CHAIN
+
+/* define this when wxDC::Blit() respects SetDeviceOrigin() in wxGTK */
+#undef wxHAS_WORKING_GTK_DC_BLIT
+
+
 #endif /* __WX_SETUP_H__ */
+

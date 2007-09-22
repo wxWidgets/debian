@@ -18,10 +18,27 @@ static char yysccsid[] = "@(#)yaccpar     1.7 (Berkeley) 09/09/90";
 extern "C" {
 #endif
 #endif
+int yyparse(void);
+int PROIO_yyparse(void) {
+	return yyparse() ;
+}
 int yylex(void);
 int yylook(void);
 int yywrap(void);
 int yyback(int *, int);
+#if __MSL__ < 0x6000
+int read( int , char * , int ) ;
+#else
+int _read( int , void * , size_t ) ;
+#define read _read
+#endif
+#ifdef __WXMSW__
+//int fileno( FILE* ) ; This is defined in watcom
+#else
+#if __MSL__ < 0x6000
+int fileno( void* ) ;
+#endif
+#endif
 
 /* You may need to put /DLEX_SCANNER in your makefile
  * if you're using LEX!

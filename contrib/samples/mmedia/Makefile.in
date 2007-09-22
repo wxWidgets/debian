@@ -1,5 +1,5 @@
 # Makefile for mmedia sample.
-# $Id: Makefile.in,v 1.3.2.1 2000/03/29 15:32:41 RL Exp $
+# $Id: Makefile.in,v 1.4.4.1 2002/09/22 15:07:53 VS Exp $
 
 top_srcdir = @top_srcdir@/..
 top_builddir = ../../..
@@ -9,7 +9,7 @@ PROGRAM=mmboard
 
 OBJECTS=mmboard.o mmbman.o
 
-APPEXTRALIBS=$(top_builddir)/lib/libmmedia.@WX_TARGET_LIBRARY_TYPE@ @ESD_LINK@
+APPEXTRALIBS=$(top_builddir)/lib/lib@WX_LIBRARY_BASENAME@_mmedia-@WX_RELEASE@.@WX_TARGET_LIBRARY_TYPE@ @ESD_LINK@
 APPEXTRADEFS=-I$(top_srcdir)/contrib/include
 
 include $(top_builddir)/src/makeprog.env

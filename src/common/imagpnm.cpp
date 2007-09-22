@@ -2,7 +2,7 @@
 // Name:        imagpnm.cpp
 // Purpose:     wxImage PNM handler
 // Author:      Sylvain Bougnoux
-// RCS-ID:      $Id: imagpnm.cpp,v 1.17 1999/12/15 22:38:02 VS Exp $
+// RCS-ID:      $Id: imagpnm.cpp,v 1.19 2002/05/22 23:14:47 VZ Exp $
 // Copyright:   (c) Sylvain Bougnoux
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -22,7 +22,7 @@
 #  include "wx/setup.h"
 #endif
 
-#if wxUSE_PNM
+#if wxUSE_IMAGE && wxUSE_PNM
 
 #include "wx/imagpnm.h"
 #include "wx/log.h"
@@ -137,8 +137,6 @@ bool wxPNMHandler::SaveFile( wxImage *image, wxOutputStream& stream, bool WXUNUS
 
 bool wxPNMHandler::DoCanRead( wxInputStream& stream )
 {
-    off_t pos = stream.TellI();
-
     Skip_Comment(stream);
 
     if ( stream.GetC() == 'P' )
@@ -147,12 +145,10 @@ bool wxPNMHandler::DoCanRead( wxInputStream& stream )
         {
             case '3':
             case '6':
-                stream.SeekI(pos);
                 return TRUE;
         }
     }
 
-    stream.SeekI(pos);
     return FALSE;
 }
 

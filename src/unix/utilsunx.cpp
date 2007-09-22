@@ -1,8 +1,8 @@
 /////////////////////////////////////////////////////////////////////////////
-// Name:        utilsunx.cpp
+// Name:        unix/utilsunx.cpp
 // Purpose:     generic Unix implementation of many wx functions
 // Author:      Vadim Zeitlin
-// Id:          $Id: utilsunx.cpp,v 1.40.2.5 2000/12/18 21:10:36 vadz Exp $
+// Id:          $Id: utilsunx.cpp,v 1.86 2002/09/14 15:00:49 RR Exp $
 // Copyright:   (c) 1998 Robert Roebling, Vadim Zeitlin
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -26,7 +26,28 @@
 #include "wx/process.h"
 #include "wx/thread.h"
 
-#include "wx/stream.h"
+#include "wx/wfstream.h"
+
+#ifdef HAVE_STATFS
+#  ifdef __BSD__
+#    include <sys/param.h>
+#    include <sys/mount.h>
+#  else
+#    include <sys/vfs.h>
+#  endif
+#endif // HAVE_STATFS
+
+// not only the statfs syscall is called differently depending on platform, but
+// we also can't use "struct statvfs" under Solaris because it breaks down if
+// HAVE_LARGEFILE_SUPPORT == 1 and we must use statvfs_t instead
+#ifdef HAVE_STATVFS
+    #include <sys/statvfs.h>
+
+    #define statfs statvfs
+    #define wxStatFs statvfs_t
+#elif HAVE_STATFS
+    #define wxStatFs struct statfs
+#endif // HAVE_STAT[V]FS
 
 #if wxUSE_GUI
     #include "wx/unix/execute.h"
@@ -135,14 +156,44 @@ void wxUsleep(unsigned long milliseconds)
 // process management
 // ----------------------------------------------------------------------------
 
-int wxKill(long pid, wxSignal sig)
+int wxKill(long pid, wxSignal sig, wxKillError *rc)
 {
-    return kill((pid_t)pid, (int)sig);
+    int err = kill((pid_t)pid, (int)sig);
+    if ( rc )
+    {
+        switch ( errno )
+        {
+            case 0:
+                *rc = wxKILL_OK;
+                break;
+
+            case EINVAL:
+                *rc = wxKILL_BAD_SIGNAL;
+                break;
+
+            case EPERM:
+                *rc = wxKILL_ACCESS_DENIED;
+                break;
+
+            case ESRCH:
+                *rc = wxKILL_NO_PROCESS;
+                break;
+
+            default:
+                // this goes against Unix98 docs so log it
+                wxLogDebug(_T("unexpected kill(2) return value %d"), err);
+
+                // something else...
+                *rc = wxKILL_ERROR;
+        }
+    }
+
+    return err;
 }
 
 #define WXEXECUTE_NARGS   127
 
-long wxExecute( const wxString& command, bool sync, wxProcess *process )
+long wxExecute( const wxString& command, int flags, wxProcess *process )
 {
     wxCHECK_MSG( !command.IsEmpty(), 0, wxT("can't exec empty command") );
 
@@ -202,7 +253,7 @@ long wxExecute( const wxString& command, bool sync, wxProcess *process )
     argv[argc] = NULL;
 
     // do execute the command
-    long lRc = wxExecute(argv, sync, process);
+    long lRc = wxExecute(argv, flags, process);
 
     // clean up
     argc = 0;
@@ -235,7 +286,7 @@ static wxString wxMakeShellCommand(const wxString& command)
 
 bool wxShell(const wxString& command)
 {
-    return wxExecute(wxMakeShellCommand(command), TRUE /* sync */) == 0;
+    return wxExecute(wxMakeShellCommand(command), wxEXEC_SYNC) == 0;
 }
 
 bool wxShell(const wxString& command, wxArrayString& output)
@@ -245,55 +296,48 @@ bool wxShell(const wxString& command, wxArrayString& output)
     return wxExecute(wxMakeShellCommand(command), output);
 }
 
+// Shutdown or reboot the PC
+bool wxShutdown(wxShutdownFlags wFlags)
+{
+    wxChar level;
+    switch ( wFlags )
+    {
+        case wxSHUTDOWN_POWEROFF:
+            level = _T('0');
+            break;
+
+        case wxSHUTDOWN_REBOOT:
+            level = _T('6');
+            break;
+
+        default:
+            wxFAIL_MSG( _T("unknown wxShutdown() flag") );
+            return FALSE;
+    }
+
+    return system(wxString::Format(_T("init %c"), level).mb_str()) == 0;
+}
+
+
 #if wxUSE_GUI
 
 void wxHandleProcessTermination(wxEndProcessData *proc_data)
 {
-    int pid = (proc_data->pid > 0) ? proc_data->pid : -(proc_data->pid);
-
-    // waitpid is POSIX so should be available everywhere, however on older
-    // systems wait() might be used instead in a loop (until the right pid
-    // terminates)
-    int status = 0;
-    int rc;
-
-    // wait for child termination and if waitpid() was interrupted, try again
-    do
+    // notify user about termination if required
+    if ( proc_data->process )
     {
-       rc = waitpid(pid, &status, 0);
+        proc_data->process->OnTerminate(proc_data->pid, proc_data->exitcode);
     }
-    while ( rc == -1 && errno == EINTR );
 
-
-    if( rc == -1 || ! (WIFEXITED(status) || WIFSIGNALED(status)) )
+    // clean up
+    if ( proc_data->pid > 0 )
     {
-       wxLogSysError(_("Waiting for subprocess termination failed"));
-       /* AFAIK, this can only happen if something went wrong within
-          wxGTK, i.e. due to a race condition or some serious bug.
-          After having fixed the order of statements in
-          GTK_EndProcessDetector(). (KB)
-       */
+       delete proc_data;
     }
     else
     {
-        // notify user about termination if required
-        if (proc_data->process)
-        {
-            proc_data->process->OnTerminate(proc_data->pid,
-                                            WEXITSTATUS(status));
-        }
-        // clean up
-        if ( proc_data->pid > 0 )
-        {
-           delete proc_data;
-        }
-        else
-        {
-           // wxExecute() will know about it
-           proc_data->exitcode = status;
-
-           proc_data->pid = 0;
-        }
+       // let wxExecute() know that the process has terminated
+       proc_data->pid = 0;
     }
 }
 
@@ -303,104 +347,153 @@ void wxHandleProcessTermination(wxEndProcessData *proc_data)
 // wxStream classes to support IO redirection in wxExecute
 // ----------------------------------------------------------------------------
 
-class wxProcessFileInputStream : public wxInputStream
+#if wxUSE_STREAMS
+
+// ----------------------------------------------------------------------------
+// wxPipeInputStream: stream for reading from a pipe
+// ----------------------------------------------------------------------------
+
+class wxPipeInputStream : public wxFileInputStream
 {
 public:
-    wxProcessFileInputStream(int fd) { m_fd = fd; }
-    ~wxProcessFileInputStream() { close(m_fd); }
+    wxPipeInputStream(int fd) : wxFileInputStream(fd) { }
 
-    virtual bool Eof() const;
+    // return TRUE if the pipe is still opened
+    bool IsOpened() const { return !Eof(); }
 
-protected:
-    size_t OnSysRead(void *buffer, size_t bufsize);
-
-protected:
-    int m_fd;
+    // return TRUE if we have anything to read, don't block
+    bool IsAvailable() const;
 };
 
-class wxProcessFileOutputStream : public wxOutputStream
-{
-public:
-    wxProcessFileOutputStream(int fd) { m_fd = fd; }
-    ~wxProcessFileOutputStream() { close(m_fd); }
-
-protected:
-    size_t OnSysWrite(const void *buffer, size_t bufsize);
-
-protected:
-    int m_fd;
-};
-
-bool wxProcessFileInputStream::Eof() const
+bool wxPipeInputStream::IsAvailable() const
 {
     if ( m_lasterror == wxSTREAM_EOF )
-        return TRUE;
+        return FALSE;
 
     // check if there is any input available
     struct timeval tv;
     tv.tv_sec = 0;
     tv.tv_usec = 0;
 
+    const int fd = m_file->fd();
+
     fd_set readfds;
     FD_ZERO(&readfds);
-    FD_SET(m_fd, &readfds);
-    switch ( select(m_fd + 1, &readfds, NULL, NULL, &tv) )
+    FD_SET(fd, &readfds);
+    switch ( select(fd + 1, &readfds, NULL, NULL, &tv) )
     {
         case -1:
             wxLogSysError(_("Impossible to get child process input"));
             // fall through
 
         case 0:
-            return TRUE;
+            return FALSE;
 
         default:
             wxFAIL_MSG(_T("unexpected select() return value"));
             // still fall through
 
         case 1:
-            // input available: check if there is any
-            return wxInputStream::Eof();
+            // input available -- or maybe not, as select() returns 1 when a
+            // read() will complete without delay, but it could still not read
+            // anything
+            return !Eof();
     }
 }
 
-size_t wxProcessFileInputStream::OnSysRead(void *buffer, size_t bufsize)
+// define this to let wxexec.cpp know that we know what we're doing
+#define _WX_USED_BY_WXEXECUTE_
+#include "../common/execcmn.cpp"
+
+#endif // wxUSE_STREAMS
+
+// ----------------------------------------------------------------------------
+// wxPipe: this encapsulates pipe() system call
+// ----------------------------------------------------------------------------
+
+class wxPipe
 {
-    int ret = read(m_fd, buffer, bufsize);
-    if ( ret == 0 )
+public:
+    // the symbolic names for the pipe ends
+    enum Direction
     {
-        m_lasterror = wxSTREAM_EOF;
-    }
-    else if ( ret == -1 )
+        Read,
+        Write
+    };
+
+    enum
     {
-        m_lasterror = wxSTREAM_READ_ERROR;
-        ret = 0;
-    }
-    else
+        INVALID_FD = -1
+    };
+
+    // default ctor doesn't do anything
+    wxPipe() { m_fds[Read] = m_fds[Write] = INVALID_FD; }
+
+    // create the pipe, return TRUE if ok, FALSE on error
+    bool Create()
     {
-        m_lasterror = wxSTREAM_NOERROR;
+        if ( pipe(m_fds) == -1 )
+        {
+            wxLogSysError(_("Pipe creation failed"));
+
+            return FALSE;
+        }
+
+        return TRUE;
     }
 
-    return ret;
-}
+    // return TRUE if we were created successfully
+    bool IsOk() const { return m_fds[Read] != INVALID_FD; }
 
-size_t wxProcessFileOutputStream::OnSysWrite(const void *buffer, size_t bufsize)
-{
-    int ret = write(m_fd, buffer, bufsize);
-    if ( ret == -1 )
+    // return the descriptor for one of the pipe ends
+    int operator[](Direction which) const
     {
-        m_lasterror = wxSTREAM_WRITE_ERROR;
-        ret = 0;
-    }
-    else
-    {
-        m_lasterror = wxSTREAM_NOERROR;
+        wxASSERT_MSG( which >= 0 && (size_t)which < WXSIZEOF(m_fds),
+                      _T("invalid pipe index") );
+
+        return m_fds[which];
     }
 
-    return ret;
-}
+    // detach a descriptor, meaning that the pipe dtor won't close it, and
+    // return it
+    int Detach(Direction which)
+    {
+        wxASSERT_MSG( which >= 0 && (size_t)which < WXSIZEOF(m_fds),
+                      _T("invalid pipe index") );
+
+        int fd = m_fds[which];
+        m_fds[which] = INVALID_FD;
+
+        return fd;
+    }
+
+    // close the pipe descriptors
+    void Close()
+    {
+        for ( size_t n = 0; n < WXSIZEOF(m_fds); n++ )
+        {
+            if ( m_fds[n] != INVALID_FD )
+                close(m_fds[n]);
+        }
+    }
+
+    // dtor closes the pipe descriptors
+    ~wxPipe() { Close(); }
+
+private:
+    int m_fds[2];
+};
+
+// ----------------------------------------------------------------------------
+// wxExecute: the real worker function
+// ----------------------------------------------------------------------------
+
+#ifdef __VMS
+    #pragma message disable codeunreachable
+#endif
 
 long wxExecute(wxChar **argv,
-               bool sync,
+               int flags,
                wxProcess *process)
 {
     // for the sync execution, we return -1 to indicate failure, but for async
@@ -408,7 +501,7 @@ long wxExecute(wxChar **argv,
     //
     // we define this as a macro, not a variable, to avoid compiler warnings
     // about "ERROR_RETURN_CODE value may be clobbered by fork()"
-    #define ERROR_RETURN_CODE ((sync) ? -1 : 0)
+    #define ERROR_RETURN_CODE ((flags & wxEXEC_SYNC) ? -1 : 0)
 
     wxCHECK_MSG( *argv, ERROR_RETURN_CODE, wxT("can't exec empty command") );
 
@@ -437,10 +530,9 @@ long wxExecute(wxChar **argv,
 
 #if wxUSE_GUI
     // create pipes
-    int end_proc_detect[2];
-    if ( pipe(end_proc_detect) == -1 )
+    wxPipe pipeEndProcDetect;
+    if ( !pipeEndProcDetect.Create() )
     {
-        wxLogSysError( _("Pipe creation failed") );
         wxLogError( _("Failed to execute '%s'\n"), *argv );
 
         ARGS_CLEANUP;
@@ -450,25 +542,14 @@ long wxExecute(wxChar **argv,
 #endif // wxUSE_GUI
 
     // pipes for inter process communication
-    int pipeIn[2],      // stdin
-        pipeOut[2],     // stdout
-        pipeErr[2];     // stderr
-
-    pipeIn[0] = pipeIn[1] =
-    pipeOut[0] = pipeOut[1] =
-    pipeErr[0] = pipeErr[1] = -1;
+    wxPipe pipeIn,      // stdin
+           pipeOut,     // stdout
+           pipeErr;     // stderr
 
     if ( process && process->IsRedirected() )
     {
-        if ( pipe(pipeIn) == -1 || pipe(pipeOut) == -1 || pipe(pipeErr) == -1 )
+        if ( !pipeIn.Create() || !pipeOut.Create() || !pipeErr.Create() )
         {
-#if wxUSE_GUI
-            // free previously allocated resources
-            close(end_proc_detect[0]);
-            close(end_proc_detect[1]);
-#endif // wxUSE_GUI
-
-            wxLogSysError( _("Pipe creation failed") );
             wxLogError( _("Failed to execute '%s'\n"), *argv );
 
             ARGS_CLEANUP;
@@ -478,25 +559,18 @@ long wxExecute(wxChar **argv,
     }
 
     // fork the process
-#ifdef HAVE_VFORK
-    pid_t pid = vfork();
+    //
+    // NB: do *not* use vfork() here, it completely breaks this code for some
+    //     reason under Solaris (and maybe others, although not under Linux)
+    //     But on OpenVMS we do not have fork so we have to use vfork and
+    //     cross our fingers that it works.
+#ifdef __VMS
+   pid_t pid = vfork();
 #else
-    pid_t pid = fork();
+   pid_t pid = fork();
 #endif
-
-    if ( pid == -1 )     // error?
+   if ( pid == -1 )     // error?
     {
-#if wxUSE_GUI
-        close(end_proc_detect[0]);
-        close(end_proc_detect[1]);
-        close(pipeIn[0]);
-        close(pipeIn[1]);
-        close(pipeOut[0]);
-        close(pipeOut[1]);
-        close(pipeErr[0]);
-        close(pipeErr[1]);
-#endif // wxUSE_GUI
-
         wxLogSysError( _("Fork failed") );
 
         ARGS_CLEANUP;
@@ -505,21 +579,19 @@ long wxExecute(wxChar **argv,
     }
     else if ( pid == 0 )  // we're in child
     {
-#if wxUSE_GUI
-        close(end_proc_detect[0]); // close reading side
-#endif // wxUSE_GUI
-
         // These lines close the open file descriptors to to avoid any
         // input/output which might block the process or irritate the user. If
         // one wants proper IO for the subprocess, the right thing to do is to
         // start an xterm executing it.
-        if ( !sync )
+        if ( !(flags & wxEXEC_SYNC) )
         {
             for ( int fd = 0; fd < FD_SETSIZE; fd++ )
             {
-                if ( fd == pipeIn[0] || fd == pipeOut[1] || fd == pipeErr[1]
+                if ( fd == pipeIn[wxPipe::Read]
+                        || fd == pipeOut[wxPipe::Write]
+                        || fd == pipeErr[wxPipe::Write]
 #if wxUSE_GUI
-                     || fd == end_proc_detect[1]
+                        || fd == pipeEndProcDetect[wxPipe::Write]
 #endif // wxUSE_GUI
                    )
                 {
@@ -527,55 +599,109 @@ long wxExecute(wxChar **argv,
                     continue;
                 }
 
-                // leave stderr opened too, it won't do any hurm
+                // leave stderr opened too, it won't do any harm
                 if ( fd != STDERR_FILENO )
                     close(fd);
             }
         }
 
-        // redirect stdio, stdout and stderr
-        if ( pipeIn[0] != -1 )
+#if !defined(__VMS) && !defined(__EMX__)
+        if ( flags & wxEXEC_MAKE_GROUP_LEADER )
         {
-            if ( dup2(pipeIn[0], STDIN_FILENO) == -1 ||
-                 dup2(pipeOut[1], STDOUT_FILENO) == -1 ||
-                 dup2(pipeErr[1], STDERR_FILENO) == -1 )
+            // Set process group to child process' pid.  Then killing -pid
+            // of the parent will kill the process and all of its children.
+            setsid();
+        }
+#endif // !__VMS
+
+#if wxUSE_GUI
+        // reading side can be safely closed but we should keep the write one
+        // opened
+        pipeEndProcDetect.Detach(wxPipe::Write);
+        pipeEndProcDetect.Close();
+#endif // wxUSE_GUI
+
+        // redirect stdin, stdout and stderr
+        if ( pipeIn.IsOk() )
+        {
+            if ( dup2(pipeIn[wxPipe::Read], STDIN_FILENO) == -1 ||
+                 dup2(pipeOut[wxPipe::Write], STDOUT_FILENO) == -1 ||
+                 dup2(pipeErr[wxPipe::Write], STDERR_FILENO) == -1 )
             {
                 wxLogSysError(_("Failed to redirect child process input/output"));
             }
 
-            close(pipeIn[0]);
-            close(pipeOut[1]);
-            close(pipeErr[1]);
+            pipeIn.Close();
+            pipeOut.Close();
+            pipeErr.Close();
         }
 
         execvp (*mb_argv, mb_argv);
 
         // there is no return after successful exec()
         _exit(-1);
+
+        // some compilers complain about missing return - of course, they
+        // should know that exit() doesn't return but what else can we do if
+        // they don't?
+        //
+        // and, sure enough, other compilers complain about unreachable code
+        // after exit() call, so we can just always have return here...
+#if defined(__VMS) || defined(__INTEL_COMPILER)
+        return 0;
+#endif
     }
     else // we're in parent
     {
         ARGS_CLEANUP;
 
-        // pipe initialization: construction of the wxStreams
+        // prepare for IO redirection
+
+#if wxUSE_STREAMS
+        // the input buffer bufOut is connected to stdout, this is why it is
+        // called bufOut and not bufIn
+        wxStreamTempInputBuffer bufOut,
+                                bufErr;
+#endif // wxUSE_STREAMS
+
         if ( process && process->IsRedirected() )
         {
-            // These two streams are relative to this process.
-            wxOutputStream *outStream = new wxProcessFileOutputStream(pipeIn[1]);
-            wxInputStream *inStream = new wxProcessFileInputStream(pipeOut[0]);
-            wxInputStream *errStream = new wxProcessFileInputStream(pipeErr[0]);
+#if wxUSE_STREAMS
+            wxOutputStream *inStream =
+                new wxFileOutputStream(pipeIn.Detach(wxPipe::Write));
 
-            close(pipeIn[0]); // close reading side
-            close(pipeOut[1]); // close writing side
-            close(pipeErr[1]); // close writing side
+            wxPipeInputStream *outStream =
+                new wxPipeInputStream(pipeOut.Detach(wxPipe::Read));
 
-            process->SetPipeStreams(inStream, outStream, errStream);
+            wxPipeInputStream *errStream =
+                new wxPipeInputStream(pipeErr.Detach(wxPipe::Read));
+
+            process->SetPipeStreams(outStream, inStream, errStream);
+
+            bufOut.Init(outStream);
+            bufErr.Init(errStream);
+#endif // wxUSE_STREAMS
         }
 
-#if wxUSE_GUI
+        if ( pipeIn.IsOk() )
+        {
+            pipeIn.Close();
+            pipeOut.Close();
+            pipeErr.Close();
+        }
+
+#if wxUSE_GUI && !defined(__WXMICROWIN__)
         wxEndProcessData *data = new wxEndProcessData;
 
-        if ( sync )
+        data->tag = wxAddProcessCallback
+                    (
+                        data,
+                        pipeEndProcDetect.Detach(wxPipe::Read)
+                    );
+
+        pipeEndProcDetect.Close();
+
+        if ( flags & wxEXEC_SYNC )
         {
             // we may have process for capturing the program output, but it's
             // not used in wxEndProcessData in the case of sync execution
@@ -583,16 +709,23 @@ long wxExecute(wxChar **argv,
 
             // sync execution: indicate it by negating the pid
             data->pid = -pid;
-            data->tag = wxAddProcessCallback(data, end_proc_detect[0]);
-
-            close(end_proc_detect[1]); // close writing side
 
             wxBusyCursor bc;
             wxWindowDisabler wd;
 
-            // it will be set to 0 from GTK_EndProcessDetector
-            while (data->pid != 0)
+            // data->pid will be set to 0 from GTK_EndProcessDetector when the
+            // process terminates
+            while ( data->pid != 0 )
+            {
+#if wxUSE_STREAMS
+                bufOut.Update();
+                bufErr.Update();
+#endif // wxUSE_STREAMS
+
+                // give GTK+ a chance to call GTK_EndProcessDetector here and
+                // also repaint the GUI
                 wxYield();
+            }
 
             int exitcode = data->exitcode;
 
@@ -607,14 +740,13 @@ long wxExecute(wxChar **argv,
             // will be deleted in GTK_EndProcessDetector
             data->process  = process;
             data->pid      = pid;
-            data->tag      = wxAddProcessCallback(data, end_proc_detect[0]);
-
-            close(end_proc_detect[1]); // close writing side
 
             return pid;
         }
 #else // !wxUSE_GUI
-        wxASSERT_MSG( sync, wxT("async execution not supported yet") );
+
+        wxASSERT_MSG( flags & wxEXEC_SYNC,
+                      wxT("async execution not supported yet") );
 
         int exitcode = 0;
         if ( waitpid(pid, &exitcode, 0) == -1 || !WIFEXITED(exitcode) )
@@ -625,7 +757,13 @@ long wxExecute(wxChar **argv,
         return exitcode;
 #endif // wxUSE_GUI
     }
+
+    return ERROR_RETURN_CODE;
 }
+
+#ifdef __VMS
+    #pragma message enable codeunreachable
+#endif
 
 #undef ERROR_RETURN_CODE
 #undef ARGS_CLEANUP
@@ -637,9 +775,14 @@ long wxExecute(wxChar **argv,
 const wxChar* wxGetHomeDir( wxString *home  )
 {
     *home = wxGetUserHome( wxString() );
+    wxString tmp;
     if ( home->IsEmpty() )
         *home = wxT("/");
-
+#ifdef __VMS
+    tmp = *home;
+    if ( tmp.Last() != wxT(']'))
+        if ( tmp.Last() != wxT('/')) *home << wxT('/');
+#endif
     return home->c_str();
 }
 
@@ -798,6 +941,7 @@ bool wxGetUserName(wxChar *buf, int sz)
     return FALSE;
 }
 
+#ifndef __WXMAC__
 wxString wxGetOsDescription()
 {
 #ifndef WXWIN_OS_DESCRIPTION
@@ -806,6 +950,7 @@ wxString wxGetOsDescription()
     return WXWIN_OS_DESCRIPTION;
 #endif
 }
+#endif
 
 // this function returns the GUI toolkit version in GUI programs, but OS
 // version in non-GUI ones
@@ -831,6 +976,11 @@ int wxGetOsVersion(int *majorVsn, int *minorVsn)
 }
 
 #endif // !wxUSE_GUI
+
+unsigned long wxGetProcessId()
+{
+    return (unsigned long)getpid();
+}
 
 long wxGetFreeMemory()
 {
@@ -861,6 +1011,86 @@ long wxGetFreeMemory()
     return -1;
 }
 
+bool wxGetDiskSpace(const wxString& path, wxLongLong *pTotal, wxLongLong *pFree)
+{
+#if defined(HAVE_STATFS) || defined(HAVE_STATVFS)
+    // the case to "char *" is needed for AIX 4.3
+    wxStatFs fs;
+    if ( statfs((char *)(const char*)path.fn_str(), &fs) != 0 )
+    {
+        wxLogSysError( wxT("Failed to get file system statistics") );
+
+        return FALSE;
+    }
+
+    // under Solaris we also have to use f_frsize field instead of f_bsize
+    // which is in general a multiple of f_frsize
+#ifdef HAVE_STATVFS
+    wxLongLong blockSize = fs.f_frsize;
+#else // HAVE_STATFS
+    wxLongLong blockSize = fs.f_bsize;
+#endif // HAVE_STATVFS/HAVE_STATFS
+
+    if ( pTotal )
+    {
+        *pTotal = wxLongLong(fs.f_blocks) * blockSize;
+    }
+
+    if ( pFree )
+    {
+        *pFree = wxLongLong(fs.f_bavail) * blockSize;
+    }
+
+    return TRUE;
+#else // !HAVE_STATFS && !HAVE_STATVFS
+    return FALSE;
+#endif // HAVE_STATFS
+}
+
+// ----------------------------------------------------------------------------
+// env vars
+// ----------------------------------------------------------------------------
+
+bool wxGetEnv(const wxString& var, wxString *value)
+{
+    // wxGetenv is defined as getenv()
+    wxChar *p = wxGetenv(var);
+    if ( !p )
+        return FALSE;
+
+    if ( value )
+    {
+        *value = p;
+    }
+
+    return TRUE;
+}
+
+bool wxSetEnv(const wxString& variable, const wxChar *value)
+{
+#if defined(HAVE_SETENV)
+    return setenv(variable.mb_str(),
+                  value ? (const char *)wxString(value).mb_str()
+                        : NULL,
+                  1 /* overwrite */) == 0;
+#elif defined(HAVE_PUTENV)
+    wxString s = variable;
+    if ( value )
+        s << _T('=') << value;
+
+    // transform to ANSI
+    const char *p = s.mb_str();
+
+    // the string will be free()d by libc
+    char *buf = (char *)malloc(strlen(p) + 1);
+    strcpy(buf, p);
+
+    return putenv(buf) == 0;
+#else // no way to set an env var
+    return FALSE;
+#endif
+}
+
 // ----------------------------------------------------------------------------
 // signal handling
 // ----------------------------------------------------------------------------
@@ -869,7 +1099,7 @@ long wxGetFreeMemory()
 
 #include <signal.h>
 
-static void wxFatalSignalHandler(wxTYPE_SA_HANDLER)
+extern "C" void wxFatalSignalHandler(wxTYPE_SA_HANDLER)
 {
     if ( wxTheApp )
     {
@@ -938,6 +1168,8 @@ bool wxHandleFatalExceptions(bool doit)
 // error and debug output routines (deprecated, use wxLog)
 // ----------------------------------------------------------------------------
 
+#if WXWIN_COMPATIBILITY_2_2
+
 void wxDebugMsg( const char *format, ... )
 {
   va_list ap;
@@ -963,4 +1195,6 @@ void wxFatalError( const wxString &msg, const wxString &title )
   wxFprintf( stderr, wxT(".\n") );
   exit(3); // the same exit code as for abort()
 }
+
+#endif // WXWIN_COMPATIBILITY_2_2
 

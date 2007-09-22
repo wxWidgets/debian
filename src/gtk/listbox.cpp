@@ -2,7 +2,7 @@
 // Name:        listbox.cpp
 // Purpose:
 // Author:      Robert Roebling
-// Id:          $Id: listbox.cpp,v 1.96.2.8 2000/12/17 19:03:52 roebling Exp $
+// Id:          $Id: listbox.cpp,v 1.123 2002/09/04 13:45:39 VZ Exp $
 // Copyright:   (c) 1998 Robert Roebling
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -10,12 +10,6 @@
 
 #ifdef __GNUG__
 #pragma implementation "listbox.h"
-#endif
-
-#ifdef __VMS
-#define gtk_scrolled_window_add_with_viewport gtk_scrolled_window_add_with_vi
-#define gtk_container_set_focus_vadjustment gtk_container_set_focus_vadjust
-#define gtk_scrolled_window_get_vadjustment gtk_scrolled_window_get_vadjust
 #endif
 
 #include "wx/listbox.h"
@@ -27,12 +21,13 @@
 #include "wx/intl.h"
 #include "wx/checklst.h"
 #include "wx/settings.h"
+#include "wx/gtk/private.h"
 
 #if wxUSE_TOOLTIPS
 #include "wx/tooltip.h"
 #endif
 
-# include <gdk/gdk.h>
+#include <gdk/gdk.h>
 #include <gtk/gtk.h>
 #include <gdk/gdkkeysyms.h>
 
@@ -43,41 +38,14 @@
 extern void wxapp_install_idle_handler();
 extern bool g_isIdle;
 
-//-------------------------------------------------------------------------
-// conditional compilation
-//-------------------------------------------------------------------------
-
-#if (GTK_MINOR_VERSION > 0)
-    #define NEW_GTK_SCROLL_CODE
-#endif
-
-//-----------------------------------------------------------------------------
-// private functions
-//-----------------------------------------------------------------------------
-
-#if wxUSE_CHECKLISTBOX
-
-#define CHECKBOX_STRING "[-] "
-
-// checklistboxes have "[±] " prepended to their lables, this macro removes it
-// (NB: 4 below is the length of CHECKBOX_STRING above)
-//
-// the argument to it is a "const char *" pointer
-#define GET_REAL_LABEL(label) ((m_hasCheckBoxes)?(label)+4 : (label))
-
-#else // !wxUSE_CHECKLISTBOX
-
-#define GET_REAL_LABEL(label) (label)
-
-#endif // wxUSE_CHECKLISTBOX
-
 //-----------------------------------------------------------------------------
 // data
 //-----------------------------------------------------------------------------
 
-extern bool       g_blockEventsOnDrag;
-extern bool       g_blockEventsOnScroll;
-extern wxCursor   g_globalCursor;
+extern bool           g_blockEventsOnDrag;
+extern bool           g_blockEventsOnScroll;
+extern wxCursor       g_globalCursor;
+extern wxWindowGTK   *g_delayedFocus;
 
 static bool       g_hasDoubleClicked = FALSE;
 
@@ -92,17 +60,23 @@ struct wxlistbox_idle_struct
     gint         m_tag;
 };
 
-static gint wxlistbox_idle_callback( gpointer gdata )
+extern "C" gint wxlistbox_idle_callback( gpointer gdata )
 {
     wxlistbox_idle_struct* data = (wxlistbox_idle_struct*) gdata;
     gdk_threads_enter();
 
     gtk_idle_remove( data->m_tag );
-    
-    data->m_listbox->SetFirstItem( data->m_item );
-    
+
+    // check that the items haven't been deleted from the listbox since we had
+    // installed this callback
+    wxListBox *lbox = data->m_listbox;
+    if ( data->m_item < lbox->GetCount() )
+    {
+        lbox->SetFirstItem( data->m_item );
+    }
+
     delete data;
-    
+
     gdk_threads_leave();
 
     return TRUE;
@@ -173,18 +147,8 @@ gtk_listbox_button_press_callback( GtkWidget *widget,
     if (g_blockEventsOnScroll) return FALSE;
 
     if (!listbox->m_hasVMT) return FALSE;
-    
-    int sel = listbox->GtkGetIndex( widget );
 
-/*
-    GtkWidget *item = gtk_get_event_widget ((GdkEvent*) gdk_event);
-    while (item && !GTK_IS_LIST_ITEM (item))
-        item = item->parent;
-        
-    if (item)
-        listbox->m_list->last_focus_child = item;
-*/
-        
+    int sel = listbox->GtkGetIndex( widget );
 
 #if wxUSE_CHECKLISTBOX
     if ((listbox->m_hasCheckBoxes) && (gdk_event->x < 15) && (gdk_event->type != GDK_2BUTTON_PRESS))
@@ -213,10 +177,10 @@ gtk_listbox_button_press_callback( GtkWidget *widget,
 static gint
 gtk_listbox_key_press_callback( GtkWidget *widget, GdkEventKey *gdk_event, wxListBox *listbox )
 {
-    if (g_isIdle) 
+    if (g_isIdle)
         wxapp_install_idle_handler();
 
-    if (g_blockEventsOnDrag) 
+    if (g_blockEventsOnDrag)
         return FALSE;
 
     bool ret = FALSE;
@@ -231,13 +195,13 @@ gtk_listbox_key_press_callback( GtkWidget *widget, GdkEventKey *gdk_event, wxLis
         new_event.SetCurrentFocus( listbox );
         ret = listbox->GetEventHandler()->ProcessEvent( new_event );
     }
-    
+
     if ((gdk_event->keyval == GDK_Return) && (!ret))
     {
         // eat return in all modes
         ret = TRUE;
     }
-        
+
 #if wxUSE_CHECKLISTBOX
     if ((gdk_event->keyval == ' ') && (listbox->m_hasCheckBoxes) && (!ret))
     {
@@ -279,16 +243,31 @@ static void gtk_listitem_deselect_callback( GtkWidget *widget, wxListBox *listbo
     gtk_listitem_select_cb( widget, listbox, FALSE );
 }
 
-static void gtk_listitem_select_cb( GtkWidget *WXUNUSED(widget), wxListBox *listbox, bool is_selection )
+static void gtk_listitem_select_cb( GtkWidget *widget, wxListBox *listbox, bool is_selection )
 {
     if (g_isIdle) wxapp_install_idle_handler();
 
     if (!listbox->m_hasVMT) return;
     if (g_blockEventsOnDrag) return;
-    
+
+    if (listbox->m_blockEvent) return;
+
     wxCommandEvent event(wxEVT_COMMAND_LISTBOX_SELECTED, listbox->GetId() );
     event.SetEventObject( listbox );
-    event.SetExtraLong( (long) is_selection );
+
+//    MSW doesn't do that either
+//    event.SetExtraLong( (long) is_selection );
+
+
+    if ((listbox->GetWindowStyleFlag() & wxLB_SINGLE) != 0)
+    {
+        int sel = listbox->GtkGetIndex( widget );
+
+        if (listbox->m_prevSelection != sel)
+            gtk_list_unselect_item( listbox->m_list, listbox->m_prevSelection );
+
+        listbox->m_prevSelection = sel;
+    }
 
     wxArrayInt aSelections;
     int n, count = listbox->GetSelections(aSelections);
@@ -308,8 +287,9 @@ static void gtk_listitem_select_cb( GtkWidget *WXUNUSED(widget), wxListBox *list
 
     event.m_commandInt = n;
 
-    listbox->GetEventHandler()->AddPendingEvent( event );
-//    listbox->GetEventHandler()->ProcessEvent( event );
+//    No longer required with new code in wxLB_SINGLE
+//    listbox->GetEventHandler()->AddPendingEvent( event );
+    listbox->GetEventHandler()->ProcessEvent( event );
 }
 
 //-----------------------------------------------------------------------------
@@ -338,6 +318,8 @@ bool wxListBox::Create( wxWindow *parent, wxWindowID id,
 {
     m_needParent = TRUE;
     m_acceptsFocus = TRUE;
+    m_prevSelection = 0;  // or -1 ??
+    m_blockEvent = FALSE;
 
     if (!PreCreation( parent, pos, size ) ||
         !CreateBase( parent, id, pos, size, style, validator, name ))
@@ -373,16 +355,12 @@ bool wxListBox::Create( wxWindow *parent, wxWindowID id,
     {
         // if style was 0 set single mode
         m_windowStyle |= wxLB_SINGLE;
-        mode = GTK_SELECTION_BROWSE;
+        mode = GTK_SELECTION_MULTIPLE;
     }
 
     gtk_list_set_selection_mode( GTK_LIST(m_list), mode );
 
-#ifdef NEW_GTK_SCROLL_CODE
     gtk_scrolled_window_add_with_viewport( GTK_SCROLLED_WINDOW(m_widget), GTK_WIDGET(m_list) );
-#else
-    gtk_container_add( GTK_CONTAINER(m_widget), GTK_WIDGET(m_list) );
-#endif
 
     /* make list scroll when moving the focus down using cursor keys */
     gtk_container_set_focus_vadjustment(
@@ -391,8 +369,6 @@ bool wxListBox::Create( wxWindow *parent, wxWindowID id,
             GTK_SCROLLED_WINDOW(m_widget)));
 
     gtk_widget_show( GTK_WIDGET(m_list) );
-
-    SetSizeOrDefault( size );
 
     if ( style & wxLB_SORT )
     {
@@ -410,11 +386,15 @@ bool wxListBox::Create( wxWindow *parent, wxWindowID id,
         DoAppend(choices[i]);
     }
 
+    // call it after appending the strings to the listbox, otherwise it doesn't
+    // work correctly
+    SetBestSize( size );
+
     m_parent->DoAddChild( this );
 
     PostCreation();
 
-    SetBackgroundColour( wxSystemSettings::GetSystemColour( wxSYS_COLOUR_LISTBOX ) );
+    SetBackgroundColour( wxSystemSettings::GetColour( wxSYS_COLOUR_LISTBOX ) );
     SetForegroundColour( parent->GetForegroundColour() );
     SetFont( parent->GetFont() );
 
@@ -425,10 +405,17 @@ bool wxListBox::Create( wxWindow *parent, wxWindowID id,
 
 wxListBox::~wxListBox()
 {
-    m_hasVMT = FALSE;  // prevent deselect events upon destrcution
+    m_hasVMT = FALSE;
 
     Clear();
+
+    if (m_strings)
+      delete m_strings;
 }
+
+// ----------------------------------------------------------------------------
+// adding items
+// ----------------------------------------------------------------------------
 
 void wxListBox::DoInsertItems(const wxArrayString& items, int pos)
 {
@@ -445,7 +432,7 @@ void wxListBox::DoInsertItems(const wxArrayString& items, int pos)
 
     GList *children = m_list->children;
     int length = g_list_length(children);
-		  
+
     wxCHECK_RET( pos <= length, wxT("invalid index in wxListBox::InsertItems") );
 
     size_t nItems = items.GetCount();
@@ -456,7 +443,7 @@ void wxListBox::DoInsertItems(const wxArrayString& items, int pos)
         for (size_t n = 0; n < nItems; n++)
         {
             index = m_strings->Add( items[n] );
-            
+
             if (index != GetCount())
             {
                 GtkAddItem( items[n], index );
@@ -503,19 +490,19 @@ int wxListBox::DoAppend( const wxString& item )
     {
         // need to determine the index
         int index = m_strings->Add( item );
-	
-	// only if not at the end anyway
-	if (index != GetCount())
-	{
-	   GtkAddItem( item, index );
-	   
-	   wxNode *node = m_clientList.Nth( index );
+
+        // only if not at the end anyway
+        if (index != GetCount())
+        {
+           GtkAddItem( item, index );
+
+           wxNode *node = m_clientList.Nth( index );
            m_clientList.Insert( node, (wxObject *)NULL );
-	   
-	   return index;
-	}
+
+           return index;
+        }
     }
-    
+
     GtkAddItem(item);
 
     m_clientList.Append((wxObject *)NULL);
@@ -533,15 +520,15 @@ void wxListBox::GtkAddItem( const wxString &item, int pos )
 #if wxUSE_CHECKLISTBOX
     if (m_hasCheckBoxes)
     {
-        label.Prepend(CHECKBOX_STRING);
+        label.Prepend(wxCHECKLBOX_STRING);
     }
 #endif // wxUSE_CHECKLISTBOX
 
-    list_item = gtk_list_item_new_with_label( label.mbc_str() );
+    list_item = gtk_list_item_new_with_label( wxGTK_CONV( label ) );
 
     GList *gitem_list = g_list_alloc ();
     gitem_list->data = list_item;
-  
+
     if (pos == -1)
         gtk_list_append_items( GTK_LIST (m_list), gitem_list );
     else
@@ -550,7 +537,7 @@ void wxListBox::GtkAddItem( const wxString &item, int pos )
     gtk_signal_connect( GTK_OBJECT(list_item), "select",
       GTK_SIGNAL_FUNC(gtk_listitem_select_callback), (gpointer)this );
 
-    if (HasFlag(wxLB_MULTIPLE))
+    if (HasFlag(wxLB_MULTIPLE) || HasFlag(wxLB_EXTENDED))
         gtk_signal_connect( GTK_OBJECT(list_item), "deselect",
           GTK_SIGNAL_FUNC(gtk_listitem_deselect_callback), (gpointer)this );
 
@@ -579,8 +566,8 @@ void wxListBox::GtkAddItem( const wxString &item, int pos )
         gtk_widget_realize( GTK_BIN(list_item)->child );
 
         // Apply current widget style to the new list_item
-        if (m_widgetStyle) 
-	{
+        if (m_widgetStyle)
+        {
             gtk_widget_set_style( GTK_WIDGET( list_item ), m_widgetStyle );
             GtkBin *bin = GTK_BIN( list_item );
             GtkWidget *label = GTK_WIDGET( bin->child );
@@ -611,58 +598,20 @@ void wxListBox::DoSetItems( const wxArrayString& items,
 }
 
 // ----------------------------------------------------------------------------
-// client data
+// deleting items
 // ----------------------------------------------------------------------------
-
-void wxListBox::DoSetItemClientData( int n, void* clientData )
-{
-    wxCHECK_RET( m_widget != NULL, wxT("invalid listbox control") );
-
-    wxNode *node = m_clientList.Nth( n );
-    wxCHECK_RET( node, wxT("invalid index in wxListBox::DoSetItemClientData") );
-
-    node->SetData( (wxObject*) clientData );
-}
-
-void* wxListBox::DoGetItemClientData( int n ) const
-{
-    wxCHECK_MSG( m_widget != NULL, NULL, wxT("invalid listbox control") );
-
-    wxNode *node = m_clientList.Nth( n );
-    wxCHECK_MSG( node, NULL, wxT("invalid index in wxListBox::DoGetItemClientData") );
-
-    return node->Data();
-}
-
-void wxListBox::DoSetItemClientObject( int n, wxClientData* clientData )
-{
-    wxCHECK_RET( m_widget != NULL, wxT("invalid listbox control") );
-
-    wxNode *node = m_clientList.Nth( n );
-    wxCHECK_RET( node, wxT("invalid index in wxListBox::DoSetItemClientObject") );
-
-    wxClientData *cd = (wxClientData*) node->Data();
-    delete cd;
-
-    node->SetData( (wxObject*) clientData );
-}
-
-wxClientData* wxListBox::DoGetItemClientObject( int n ) const
-{
-    wxCHECK_MSG( m_widget != NULL, (wxClientData*) NULL, wxT("invalid listbox control") );
-
-    wxNode *node = m_clientList.Nth( n );
-    wxCHECK_MSG( node, (wxClientData *)NULL,
-                 wxT("invalid index in wxListBox::DoGetItemClientObject") );
-
-    return (wxClientData*) node->Data();
-}
 
 void wxListBox::Clear()
 {
     wxCHECK_RET( m_list != NULL, wxT("invalid listbox") );
 
-    gtk_list_clear_items( m_list, 0, Number() );
+    gtk_list_clear_items( m_list, 0, GetCount() );
+
+    if ( GTK_LIST(m_list)->last_focus_child != NULL  )
+    {
+        // This should be NULL, I think.
+        GTK_LIST(m_list)->last_focus_child = NULL;
+    }
 
     if ( HasClientObjectData() )
     {
@@ -697,7 +646,7 @@ void wxListBox::Delete( int n )
     wxNode *node = m_clientList.Nth( n );
     if ( node )
     {
-        if ( m_clientDataItemsType == ClientData_Object )
+        if ( m_clientDataItemsType == wxClientData_Object )
         {
             wxClientData *cd = (wxClientData*)node->Data();
             delete cd;
@@ -711,8 +660,79 @@ void wxListBox::Delete( int n )
 }
 
 // ----------------------------------------------------------------------------
+// client data
+// ----------------------------------------------------------------------------
+
+void wxListBox::DoSetItemClientData( int n, void* clientData )
+{
+    wxCHECK_RET( m_widget != NULL, wxT("invalid listbox control") );
+
+    wxNode *node = m_clientList.Nth( n );
+    wxCHECK_RET( node, wxT("invalid index in wxListBox::DoSetItemClientData") );
+
+    node->SetData( (wxObject*) clientData );
+}
+
+void* wxListBox::DoGetItemClientData( int n ) const
+{
+    wxCHECK_MSG( m_widget != NULL, NULL, wxT("invalid listbox control") );
+
+    wxNode *node = m_clientList.Nth( n );
+    wxCHECK_MSG( node, NULL, wxT("invalid index in wxListBox::DoGetItemClientData") );
+
+    return node->Data();
+}
+
+void wxListBox::DoSetItemClientObject( int n, wxClientData* clientData )
+{
+    wxCHECK_RET( m_widget != NULL, wxT("invalid listbox control") );
+
+    wxNode *node = m_clientList.Nth( n );
+    wxCHECK_RET( node, wxT("invalid index in wxListBox::DoSetItemClientObject") );
+
+    // wxItemContainer already deletes data for us
+
+    node->SetData( (wxObject*) clientData );
+}
+
+wxClientData* wxListBox::DoGetItemClientObject( int n ) const
+{
+    wxCHECK_MSG( m_widget != NULL, (wxClientData*) NULL, wxT("invalid listbox control") );
+
+    wxNode *node = m_clientList.Nth( n );
+    wxCHECK_MSG( node, (wxClientData *)NULL,
+                 wxT("invalid index in wxListBox::DoGetItemClientObject") );
+
+    return (wxClientData*) node->Data();
+}
+
+// ----------------------------------------------------------------------------
 // string list access
 // ----------------------------------------------------------------------------
+
+wxString wxListBox::GetRealLabel(GList *item) const
+{
+    GtkBin *bin = GTK_BIN( item->data );
+    GtkLabel *label = GTK_LABEL( bin->child );
+
+    wxString str;
+
+#ifdef __WXGTK20__
+    str = wxGTK_CONV_BACK( gtk_label_get_text( label ) );
+#else
+    str = wxString( label->label );
+#endif
+
+#if wxUSE_CHECKLISTBOX
+    // checklistboxes have "[±] " prepended to their lables, remove it
+    //
+    // NB: 4 below is the length of wxCHECKLBOX_STRING from wx/gtk/checklst.h
+    if ( m_hasCheckBoxes )
+        str.erase(0, 4);
+#endif // wxUSE_CHECKLISTBOX
+
+    return str;
+}
 
 void wxListBox::SetString( int n, const wxString &string )
 {
@@ -727,11 +747,11 @@ void wxListBox::SetString( int n, const wxString &string )
         wxString str;
 #if wxUSE_CHECKLISTBOX
         if (m_hasCheckBoxes)
-            str += CHECKBOX_STRING;
+            str += wxCHECKLBOX_STRING;
 #endif // wxUSE_CHECKLISTBOX
         str += string;
 
-        gtk_label_set( label, str.mbc_str() );
+        gtk_label_set( label, wxGTK_CONV( str ) );
     }
     else
     {
@@ -746,12 +766,7 @@ wxString wxListBox::GetString( int n ) const
     GList *child = g_list_nth( m_list->children, n );
     if (child)
     {
-        GtkBin *bin = GTK_BIN( child->data );
-        GtkLabel *label = GTK_LABEL( bin->child );
-
-        wxString str = wxString(GET_REAL_LABEL(label->label),*wxConvCurrent);
-
-        return str;
+        return GetRealLabel(child);
     }
 
     wxFAIL_MSG(wxT("wrong listbox index"));
@@ -775,12 +790,7 @@ int wxListBox::FindString( const wxString &item ) const
     int count = 0;
     while (child)
     {
-        GtkBin *bin = GTK_BIN( child->data );
-        GtkLabel *label = GTK_LABEL( bin->child );
-
-        wxString str = wxString(GET_REAL_LABEL(label->label),*wxConvCurrent);
-
-        if (str == item)
+        if ( GetRealLabel(child) == item )
             return count;
 
         count++;
@@ -846,9 +856,9 @@ bool wxListBox::IsSelected( int n ) const
     wxCHECK_MSG( m_list != NULL, FALSE, wxT("invalid listbox") );
 
     GList *target = g_list_nth( m_list->children, n );
-    
+
     wxCHECK_MSG( target, FALSE, wxT("invalid listbox index") );
-    
+
     return (GTK_WIDGET(target->data)->state == GTK_STATE_SELECTED) ;
 }
 
@@ -856,14 +866,19 @@ void wxListBox::SetSelection( int n, bool select )
 {
     wxCHECK_RET( m_list != NULL, wxT("invalid listbox") );
 
-    GtkDisableEvents();
+    m_blockEvent = TRUE;
 
     if (select)
+    {
+        if ((m_windowStyle & wxLB_SINGLE) != 0)
+            gtk_list_unselect_item( m_list, m_prevSelection );
         gtk_list_select_item( m_list, n );
+        m_prevSelection = n;
+    }
     else
         gtk_list_unselect_item( m_list, n );
 
-    GtkEnableEvents();
+    m_blockEvent = FALSE;
 }
 
 void wxListBox::DoSetFirstItem( int n )
@@ -872,18 +887,18 @@ void wxListBox::DoSetFirstItem( int n )
 
     if (gdk_pointer_is_grabbed () && GTK_WIDGET_HAS_GRAB (m_list))
         return;
-    
-    // terribly efficient    
+
+    // terribly efficient
     const gchar *vadjustment_key = "gtk-vadjustment";
     guint vadjustment_key_id = g_quark_from_static_string (vadjustment_key);
-    
-    GtkAdjustment *adjustment = 
+
+    GtkAdjustment *adjustment =
        (GtkAdjustment*) gtk_object_get_data_by_id (GTK_OBJECT (m_list), vadjustment_key_id);
     wxCHECK_RET( adjustment, wxT("invalid listbox code") );
 
     GList *target = g_list_nth( m_list->children, n );
     wxCHECK_RET( target, wxT("invalid listbox index") );
-    
+
     GtkWidget *item = GTK_WIDGET(target->data);
     wxCHECK_RET( item, wxT("invalid listbox code") );
 
@@ -893,14 +908,14 @@ void wxListBox::DoSetFirstItem( int n )
         data->m_listbox = this;
         data->m_item = n;
         data->m_tag = gtk_idle_add_priority( 800, wxlistbox_idle_callback, (gpointer) data );
-        
+
         return;
     }
 
     float y = item->allocation.y;
     if (y > adjustment->upper - adjustment->page_size)
         y = adjustment->upper - adjustment->page_size;
-	gtk_adjustment_set_value( adjustment, y );
+    gtk_adjustment_set_value( adjustment, y );
 }
 
 // ----------------------------------------------------------------------------
@@ -934,38 +949,6 @@ void wxListBox::ApplyToolTip( GtkTooltips *tips, const wxChar *tip )
     }
 }
 #endif // wxUSE_TOOLTIPS
-
-void wxListBox::GtkDisableEvents()
-{
-    GList *child = m_list->children;
-    while (child)
-    {
-        gtk_signal_disconnect_by_func( GTK_OBJECT(child->data),
-          GTK_SIGNAL_FUNC(gtk_listitem_select_callback), (gpointer)this );
-
-        if (HasFlag(wxLB_MULTIPLE))
-            gtk_signal_disconnect_by_func( GTK_OBJECT(child->data),
-              GTK_SIGNAL_FUNC(gtk_listitem_deselect_callback), (gpointer)this );
-
-        child = child->next;
-    }
-}
-
-void wxListBox::GtkEnableEvents()
-{
-    GList *child = m_list->children;
-    while (child)
-    {
-        gtk_signal_connect( GTK_OBJECT(child->data), "select",
-          GTK_SIGNAL_FUNC(gtk_listitem_select_callback), (gpointer)this );
-
-        if (HasFlag(wxLB_MULTIPLE))
-            gtk_signal_connect( GTK_OBJECT(child->data), "deselect",
-              GTK_SIGNAL_FUNC(gtk_listitem_deselect_callback), (gpointer)this );
-
-        child = child->next;
-    }
-}
 
 GtkWidget *wxListBox::GetConnectWidget()
 {
@@ -1026,7 +1009,7 @@ void wxListBox::OnInternalIdle()
            as setting the cursor in a parent window also effects the
            windows above so that checking for the current cursor is
            not possible. */
-           
+
         gdk_window_set_cursor( GTK_WIDGET(m_list)->window, cursor.GetCursor() );
 
         GList *child = m_list->children;
@@ -1034,7 +1017,7 @@ void wxListBox::OnInternalIdle()
         {
             GtkBin *bin = GTK_BIN( child->data );
             GtkWidget *label = GTK_WIDGET( bin->child );
-            
+
             if (!label->window)
                 break;
             else
@@ -1044,12 +1027,53 @@ void wxListBox::OnInternalIdle()
         }
     }
 
+    if (g_delayedFocus == this)
+    {
+        if (GTK_WIDGET_REALIZED(m_widget))
+        {
+            gtk_widget_grab_focus( m_widget );
+            g_delayedFocus = NULL;
+        }
+    }
+
     UpdateWindowUI();
 }
 
 wxSize wxListBox::DoGetBestSize() const
 {
-    return wxSize(100, 110);
+    int lbWidth = 100;  // some defaults
+    int lbHeight = 110;
+    int wLine;
+
+    // Find the widest line
+    for(int i = 0; i < GetCount(); i++) {
+        wxString str(GetString(i));
+        GetTextExtent(str, &wLine, NULL);
+        lbWidth = wxMax(lbWidth, wLine);
+    }
+
+    // Add room for the scrollbar
+    lbWidth += wxSystemSettings::GetMetric(wxSYS_VSCROLL_X);
+
+    // And just a bit more
+    int cx, cy;
+    GetTextExtent("X", &cx, &cy);
+    lbWidth += 3 * cx;
+
+    // don't make the listbox too tall (limit height to around 10 items) but don't
+    // make it too small neither
+    lbHeight = (cy+4) * wxMin(wxMax(GetCount(), 3), 10);
+
+    return wxSize(lbWidth, lbHeight);
 }
 
-#endif
+void wxListBox::FixUpMouseEvent(GtkWidget *widget, wxCoord& x, wxCoord& y)
+{
+    // the mouse event coords are relative to the listbox items, we need to
+    // translate them to the normal client coords
+    x += widget->allocation.x;
+    y += widget->allocation.y;
+}
+
+#endif // wxUSE_LISTBOX
+

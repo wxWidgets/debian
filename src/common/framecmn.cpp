@@ -3,7 +3,7 @@
 // Purpose:     common (for all platforms) wxFrame functions
 // Author:      Julian Smart, Vadim Zeitlin
 // Created:     01/02/97
-// Id:          $Id: framecmn.cpp,v 1.17.2.2 2000/07/18 19:44:32 VZ Exp $
+// Id:          $Id: framecmn.cpp,v 1.34 2002/05/02 20:07:10 MBN Exp $
 // Copyright:   (c) 1998 Robert Roebling, Julian Smart and Markus Holzem
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -27,10 +27,12 @@
     #pragma hdrstop
 #endif
 
-#include "wx/frame.h"
-#include "wx/menu.h"
-#include "wx/menuitem.h"
-#include "wx/dcclient.h"
+#ifndef WX_PRECOMP
+    #include "wx/frame.h"
+    #include "wx/menu.h"
+    #include "wx/menuitem.h"
+    #include "wx/dcclient.h"
+#endif // WX_PRECOMP
 
 #if wxUSE_TOOLBAR
     #include "wx/toolbar.h"
@@ -39,15 +41,18 @@
     #include "wx/statusbr.h"
 #endif
 
+// FIXME - temporary hack in absence of wxTLW in all ports!
+#ifndef wxTopLevelWindowNative
+    #define wxTopLevelWindow wxTopLevelWindowBase
+#endif
+
 // ----------------------------------------------------------------------------
 // event table
 // ----------------------------------------------------------------------------
 
-BEGIN_EVENT_TABLE(wxFrameBase, wxWindow)
+BEGIN_EVENT_TABLE(wxFrameBase, wxTopLevelWindow)
     EVT_IDLE(wxFrameBase::OnIdle)
-    EVT_CLOSE(wxFrameBase::OnCloseWindow)
     EVT_MENU_HIGHLIGHT_ALL(wxFrameBase::OnMenuHighlight)
-    EVT_SIZE(wxFrameBase::OnSize)
 END_EVENT_TABLE()
 
 // ============================================================================
@@ -60,7 +65,9 @@ END_EVENT_TABLE()
 
 wxFrameBase::wxFrameBase()
 {
+#if wxUSE_MENUS
     m_frameMenuBar = NULL;
+#endif // wxUSE_MENUS
 
 #if wxUSE_TOOLBAR
     m_frameToolBar = NULL;
@@ -69,16 +76,13 @@ wxFrameBase::wxFrameBase()
 #if wxUSE_STATUSBAR
     m_frameStatusBar = NULL;
 #endif // wxUSE_STATUSBAR
+
+    m_statusBarPane = 0;
 }
 
-bool wxFrameBase::Destroy()
+wxFrameBase::~wxFrameBase()
 {
-    // delayed destruction: the frame will be deleted during the next idle
-    // loop iteration
-    if ( !wxPendingDelete.Member(this) )
-        wxPendingDelete.Append(this);
-
-    return TRUE;
+    // this destructor is required for Darwin
 }
 
 wxFrame *wxFrameBase::New(wxWindow *parent,
@@ -94,11 +98,13 @@ wxFrame *wxFrameBase::New(wxWindow *parent,
 
 void wxFrameBase::DeleteAllBars()
 {
+#if wxUSE_MENUS
     if ( m_frameMenuBar )
     {
         delete m_frameMenuBar;
         m_frameMenuBar = (wxMenuBar *) NULL;
     }
+#endif // wxUSE_MENUS
 
 #if wxUSE_STATUSBAR
     if ( m_frameStatusBar )
@@ -117,6 +123,26 @@ void wxFrameBase::DeleteAllBars()
 #endif // wxUSE_TOOLBAR
 }
 
+bool wxFrameBase::IsOneOfBars(const wxWindow *win) const
+{
+#if wxUSE_MENUS
+    if ( win == GetMenuBar() )
+        return TRUE;
+#endif // wxUSE_MENUS
+
+#if wxUSE_STATUSBAR
+    if ( win == GetStatusBar() )
+        return TRUE;
+#endif // wxUSE_STATUSBAR
+
+#if wxUSE_TOOLBAR
+    if ( win == GetToolBar() )
+        return TRUE;
+#endif // wxUSE_TOOLBAR
+
+    return FALSE;
+}
+
 // ----------------------------------------------------------------------------
 // wxFrame size management: we exclude the areas taken by menu/status/toolbars
 // from the client area, so the client area is what's really available for the
@@ -126,15 +152,16 @@ void wxFrameBase::DeleteAllBars()
 // get the origin of the client area in the client coordinates
 wxPoint wxFrameBase::GetClientAreaOrigin() const
 {
-    wxPoint pt(0, 0);
+    wxPoint pt = wxTopLevelWindow::GetClientAreaOrigin();
 
-#if wxUSE_TOOLBAR
-    if ( GetToolBar() && GetToolBar()->IsShown() )
+#if wxUSE_TOOLBAR && !defined(__WXUNIVERSAL__)
+    wxToolBar *toolbar = GetToolBar();
+    if ( toolbar && toolbar->IsShown() )
     {
         int w, h;
-        GetToolBar()->GetSize(& w, & h);
+        toolbar->GetSize(&w, &h);
 
-        if ( GetToolBar()->GetWindowStyleFlag() & wxTB_VERTICAL )
+        if ( toolbar->GetWindowStyleFlag() & wxTB_VERTICAL )
         {
             pt.x += w;
         }
@@ -148,50 +175,13 @@ wxPoint wxFrameBase::GetClientAreaOrigin() const
     return pt;
 }
 
-void wxFrameBase::DoScreenToClient(int *x, int *y) const
-{
-    wxWindow::DoScreenToClient(x, y);
-
-    // We may be faking the client origin.
-    // So a window that's really at (0, 30) may appear
-    // (to wxWin apps) to be at (0, 0).
-    wxPoint pt(GetClientAreaOrigin());
-    *x -= pt.x;
-    *y -= pt.y;
-}
-
-void wxFrameBase::DoClientToScreen(int *x, int *y) const
-{
-    // We may be faking the client origin.
-    // So a window that's really at (0, 30) may appear
-    // (to wxWin apps) to be at (0, 0).
-    wxPoint pt1(GetClientAreaOrigin());
-    *x += pt1.x;
-    *y += pt1.y;
-
-    wxWindow::DoClientToScreen(x, y);
-}
-
 // ----------------------------------------------------------------------------
 // misc
 // ----------------------------------------------------------------------------
 
-// make the window modal (all other windows unresponsive)
-void wxFrameBase::MakeModal(bool modal)
-{
-    if ( modal )
-    {
-        wxEnableTopLevelWindows(FALSE);
-        Enable(TRUE);           // keep this window enabled
-    }
-    else
-    {
-        wxEnableTopLevelWindows(TRUE);
-    }
-}
-
 bool wxFrameBase::ProcessCommand(int id)
 {
+#if wxUSE_MENUS
     wxMenuBar *bar = GetMenuBar();
     if ( !bar )
         return FALSE;
@@ -200,94 +190,42 @@ bool wxFrameBase::ProcessCommand(int id)
     commandEvent.SetEventObject(this);
 
     wxMenuItem *item = bar->FindItem(id);
-    if ( item && item->IsCheckable() )
+    if (item)
     {
-        item->Toggle();
+        if (!item->IsEnabled())
+            return TRUE;
 
-        // use the new value
-        commandEvent.SetInt(item->IsChecked());
+        if (item->IsCheckable())
+        {
+            item->Toggle();
+
+            // use the new value
+            commandEvent.SetInt(item->IsChecked());
+        }
     }
 
     return GetEventHandler()->ProcessEvent(commandEvent);
+#else // !wxUSE_MENUS
+    return FALSE;
+#endif // wxUSE_MENUS/!wxUSE_MENUS
 }
 
 // ----------------------------------------------------------------------------
 // event handlers
 // ----------------------------------------------------------------------------
 
-// default resizing behaviour - if only ONE subwindow, resize to fill the
-// whole client area
-void wxFrameBase::OnSize(wxSizeEvent& WXUNUSED(event))
-{
-    // if we're using constraints - do use them
-#if wxUSE_CONSTRAINTS
-    if ( GetAutoLayout() )
-    {
-        Layout();
-    }
-    else
-#endif
-    {
-        // do we have _exactly_ one child?
-        wxWindow *child = (wxWindow *)NULL;
-        for ( wxWindowList::Node *node = GetChildren().GetFirst();
-              node;
-              node = node->GetNext() )
-        {
-            wxWindow *win = node->GetData();
-
-            // exclude top level and managed windows (status bar isn't
-            // currently in the children list except under wxMac anyhow, but
-            // it makes no harm to test for it)
-            if ( !win->IsTopLevel()
-#if wxUSE_STATUSBAR
-                    && (win != GetStatusBar())
-#endif // wxUSE_STATUSBAR
-#if wxUSE_TOOLBAR
-                    && (win != GetToolBar())
-#endif // wxUSE_TOOLBAR
-               )
-            {
-                if ( child )
-                {
-                    return;     // it's our second subwindow - nothing to do
-                }
-
-                child = win;
-            }
-        }
-
-        // do we have any children at all?
-        if ( child )
-        {
-            // exactly one child - set it's size to fill the whole frame
-            int clientW, clientH;
-            DoGetClientSize(&clientW, &clientH);
-
-            // for whatever reasons, wxGTK wants to have a small offset - it
-            // probably looks better with it?
-#ifdef __WXGTK__
-            static const int ofs = 1;
-#else
-            static const int ofs = 0;
-#endif
-
-            child->SetSize(ofs, ofs, clientW - 2*ofs, clientH - 2*ofs);
-        }
-    }
-}
-
-// The default implementation for the close window event.
-void wxFrameBase::OnCloseWindow(wxCloseEvent& WXUNUSED(event))
-{
-    Destroy();
-}
-
 void wxFrameBase::OnMenuHighlight(wxMenuEvent& event)
 {
 #if wxUSE_STATUSBAR
     (void)ShowMenuHelp(GetStatusBar(), event.GetMenuId());
 #endif // wxUSE_STATUSBAR
+}
+
+void wxFrameBase::OnIdle(wxIdleEvent& WXUNUSED(event) )
+{
+#if wxUSE_MENUS
+    DoMenuUpdates();
+#endif // wxUSE_MENUS
 }
 
 // ----------------------------------------------------------------------------
@@ -320,17 +258,6 @@ wxStatusBar *wxFrameBase::OnCreateStatusBar(int number,
 {
     wxStatusBar *statusBar = new wxStatusBar(this, id, style, name);
 
-    // Set the height according to the font and the border size
-    wxClientDC dc(statusBar);
-    dc.SetFont(statusBar->GetFont());
-
-    wxCoord y;
-    dc.GetTextExtent( "X", NULL, &y );
-
-    int height = (int)( (11*y)/10 + 2*statusBar->GetBorderY());
-
-    statusBar->SetSize( -1, -1, -1, height );
-
     statusBar->SetFieldsCount(number);
 
     return statusBar;
@@ -352,15 +279,40 @@ void wxFrameBase::SetStatusWidths(int n, const int widths_field[] )
     PositionStatusBar();
 }
 
-bool wxFrameBase::ShowMenuHelp(wxStatusBar *statbar, int menuId)
+void wxFrameBase::PushStatusText(const wxString& text, int number)
 {
-    if ( !statbar )
-        return FALSE;
+    wxCHECK_RET( m_frameStatusBar != NULL, wxT("no statusbar to set text for") );
 
+    m_frameStatusBar->PushStatusText(text, number);
+}
+
+void wxFrameBase::PopStatusText(int number)
+{
+    wxCHECK_RET( m_frameStatusBar != NULL, wxT("no statusbar to set text for") );
+
+    m_frameStatusBar->PopStatusText(number);
+}
+
+void wxFrameBase::DoGiveHelp(const wxString& text, bool show)
+{
+#if wxUSE_STATUSBAR
+    if ( m_statusBarPane < 0 ) return;
+    wxStatusBar* statbar = GetStatusBar();
+    if ( !statbar ) return;
+
+    wxString help = show ? text : wxString();
+    statbar->SetStatusText( help, m_statusBarPane );
+#endif // wxUSE_STATUSBAR
+}
+
+bool wxFrameBase::ShowMenuHelp(wxStatusBar *WXUNUSED(statbar), int menuId)
+{
+#if wxUSE_MENUS
     // if no help string found, we will clear the status bar text
     wxString helpString;
+    bool show = menuId != wxID_SEPARATOR && menuId != -2 /* wxID_TITLE */;
 
-    if ( menuId != wxID_SEPARATOR && menuId != -2 /* wxID_TITLE */ )
+    if ( show )
     {
         wxMenuBar *menuBar = GetMenuBar();
         if ( menuBar )
@@ -373,11 +325,12 @@ bool wxFrameBase::ShowMenuHelp(wxStatusBar *statbar, int menuId)
         }
     }
 
-    // set status text even if the string is empty - this will at least
-    // remove the string from the item which was previously selected
-    statbar->SetStatusText(helpString);
+    DoGiveHelp(helpString, show);
 
     return !helpString.IsEmpty();
+#else // !wxUSE_MENUS
+    return FALSE;
+#endif // wxUSE_MENUS/!wxUSE_MENUS
 }
 
 #endif // wxUSE_STATUSBAR
@@ -414,31 +367,33 @@ wxToolBar* wxFrameBase::OnCreateToolBar(long style,
 #endif // wxUSE_TOOLBAR
 
 // ----------------------------------------------------------------------------
-// Menu UI updating
+// menus
 // ----------------------------------------------------------------------------
 
-void wxFrameBase::OnIdle(wxIdleEvent& WXUNUSED(event) )
-{
-    DoMenuUpdates();
-}
+#if wxUSE_MENUS
 
 // update all menus
 void wxFrameBase::DoMenuUpdates()
 {
     wxMenuBar* bar = GetMenuBar();
 
+#ifdef __WXMSW__
+    wxWindow* focusWin = wxFindFocusDescendant((wxWindow*) this);
+#else
+    wxWindow* focusWin = (wxWindow*) NULL;
+#endif
     if ( bar != NULL )
     {
         int nCount = bar->GetMenuCount();
         for (int n = 0; n < nCount; n++)
-            DoMenuUpdates(bar->GetMenu(n), (wxWindow*) NULL);
+            DoMenuUpdates(bar->GetMenu(n), focusWin);
     }
 }
 
 // update a menu and all submenus recursively
-void wxFrameBase::DoMenuUpdates(wxMenu* menu, wxWindow* WXUNUSED(focusWin))
+void wxFrameBase::DoMenuUpdates(wxMenu* menu, wxWindow* focusWin)
 {
-    wxEvtHandler* evtHandler = GetEventHandler();
+    wxEvtHandler* evtHandler = focusWin ? focusWin->GetEventHandler() : GetEventHandler();
     wxMenuItemList::Node* node = menu->GetMenuItems().GetFirst();
     while (node)
     {
@@ -465,3 +420,36 @@ void wxFrameBase::DoMenuUpdates(wxMenu* menu, wxWindow* WXUNUSED(focusWin))
         node = node->GetNext();
     }
 }
+
+void wxFrameBase::DetachMenuBar()
+{
+    if ( m_frameMenuBar )
+    {
+        m_frameMenuBar->Detach();
+        m_frameMenuBar = NULL;
+    }
+}
+
+void wxFrameBase::AttachMenuBar(wxMenuBar *menubar)
+{
+    if ( menubar )
+    {
+        menubar->Attach((wxFrame *)this);
+        m_frameMenuBar = menubar;
+    }
+}
+
+void wxFrameBase::SetMenuBar(wxMenuBar *menubar)
+{
+    if ( menubar == GetMenuBar() )
+    {
+        // nothing to do
+        return;
+    }
+
+    DetachMenuBar();
+
+    AttachMenuBar(menubar);
+}
+
+#endif // wxUSE_MENUS

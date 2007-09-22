@@ -5,7 +5,7 @@
 // Author:      Robin Dunn
 //
 // Created:     08/24/1998
-// RCS-ID:      $Id: stattool.i,v 1.1.2.4 2001/01/30 20:53:43 robind Exp $
+// RCS-ID:      $Id: stattool.i,v 1.20 2002/06/05 16:45:04 RD Exp $
 // Copyright:   (c) 1998 by Total Control Software
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -31,23 +31,32 @@
 %import controls.i
 
 %pragma(python) code = "import wx"
+%pragma(python) code = "wxITEM_NORMAL = 0 # predeclare this since wx isn't fully imported yet"
 
+//----------------------------------------------------------------------
 
 %{
-    static wxString wxPyEmptyStr("");
+    // Put some wx default wxChar* values into wxStrings.
+    DECLARE_DEF_STRING(StatusLineNameStr);
+    DECLARE_DEF_STRING(ToolBarNameStr);
+    static const wxString wxPyEmptyString(wxT(""));
 %}
 
 //---------------------------------------------------------------------------
 
 class wxStatusBar : public wxWindow {
 public:
-    wxStatusBar(wxWindow* parent, wxWindowID id,
-                const wxPoint& pos = wxDefaultPosition,
-                const wxSize& size = wxDefaultSize,
+    wxStatusBar(wxWindow* parent, wxWindowID id = -1,
                 long style = wxST_SIZEGRIP,
-                char* name = "statusBar");
+                const wxString& name = wxPyStatusLineNameStr);
+    %name(wxPreStatusBar)wxStatusBar();
 
-    %pragma(python) addtomethod = "__init__:#wx._StdWindowCallbacks(self)"
+    bool Create(wxWindow* parent, wxWindowID id,
+                long style = wxST_SIZEGRIP,
+                const wxString& name = wxPyStatusLineNameStr);
+
+    %pragma(python) addtomethod = "__init__:self._setOORInfo(self)"
+    %pragma(python) addtomethod = "wxPreStatusBar:val._setOORInfo(val)"
 
     %addmethods {
         %new wxRect* GetFieldRect(long item) {
@@ -61,13 +70,12 @@ public:
     int GetBorderX();
     int GetBorderY();
 
-//      void DrawField(wxDC& dc, int i);
-//      void DrawFieldText(wxDC& dc, int i);
-//      void InitColours(void);
-
     void SetFieldsCount(int number = 1);
     void SetStatusText(const wxString& text, int i = 0);
     void SetStatusWidths(int LCOUNT, int* choices);
+    void PushStatusText(const wxString& text, int number = 0);
+    void PopStatusText(int number = 0);
+
     void SetMinHeight(int height);
 };
 
@@ -85,17 +93,17 @@ enum wxToolBarToolStyle
 
 
 
-class wxToolBarToolBase {
+class wxToolBarToolBase : public wxObject {
 public:
 //      wxToolBarToolBase(wxToolBarBase *tbar = (wxToolBarBase *)NULL,
 //                        int id = wxID_SEPARATOR,
-//                        const wxBitmap& bitmap1 = wxNullBitmap,
-//                        const wxBitmap& bitmap2 = wxNullBitmap,
-//                        bool toggle = FALSE,
+//                        const wxString& label = wxEmptyString,
+//                        const wxBitmap& bmpNormal = wxNullBitmap,
+//                        const wxBitmap& bmpDisabled = wxNullBitmap,
+//                        wxItemKind kind = wxITEM_NORMAL,
 //                        wxObject *clientData = (wxObject *) NULL,
 //                        const wxString& shortHelpString = wxEmptyString,
-//                        const wxString& longHelpString = wxEmptyString);
-//      wxToolBarToolBase(wxToolBarBase *tbar, wxControl *control);
+//                        const wxString& longHelpString = wxEmptyString)
 //      ~wxToolBarToolBase();
 
     %addmethods { void Destroy() { delete self; } }
@@ -107,21 +115,24 @@ public:
     int IsControl();
     int IsSeparator();
     int GetStyle();
+    wxItemKind GetKind();
     bool IsEnabled();
     bool IsToggled();
     bool CanBeToggled();
-    const wxBitmap& GetBitmap1();
-    const wxBitmap& GetBitmap2();
-    const wxBitmap& GetBitmap();
+    const wxBitmap& GetNormalBitmap();
+    const wxBitmap& GetDisabledBitmap();
+    wxBitmap GetBitmap();
+    wxString GetLabel();
     wxString GetShortHelp();
     wxString GetLongHelp();
     bool Enable(bool enable);
-    bool Toggle(bool toggle);
+    void Toggle();
     bool SetToggle(bool toggle);
     bool SetShortHelp(const wxString& help);
     bool SetLongHelp(const wxString& help);
-    void SetBitmap1(const wxBitmap& bmp);
-    void SetBitmap2(const wxBitmap& bmp);
+    void SetNormalBitmap(const wxBitmap& bmp);
+    void SetDisabledBitmap(const wxBitmap& bmp);
+    void SetLabel(const wxString& label);
     void Detach();
     void Attach(wxToolBarBase *tbar);
 
@@ -143,6 +154,13 @@ public:
             self->SetClientData(new wxPyUserData(clientData));
         }
     }
+
+    %pragma(python) addtoclass="
+    GetBitmap1 = GetNormalBitmap
+    GetBitmap2 = GetDisabledBitmap
+    SetBitmap1 = SetNormalBitmap
+    SetBitmap2 = SetDisabledBitmap
+    "
 };
 
 
@@ -153,63 +171,180 @@ public:
     // This is an Abstract Base Class
 
     %addmethods {
-        // wrap ClientData in a class that knows about PyObjects
-        wxToolBarToolBase *AddTool(int id,
-                                   const wxBitmap& bitmap,
-                                   const wxBitmap& pushedBitmap = wxNullBitmap,
-                                   int isToggle = FALSE,
-                                   PyObject *clientData = NULL,
-                                   const wxString& shortHelpString = wxPyEmptyStr,
-                                   const wxString& longHelpString = wxPyEmptyStr) {
+
+        // The full AddTool() function.  Call it DoAddTool in wxPython and
+        // implement the other Add methods by calling it.
+        //
+        // If bmpDisabled is wxNullBitmap, a shadowed version of the normal bitmap
+        // is created and used as the disabled image.
+        wxToolBarToolBase *DoAddTool(int id,
+                                     const wxString& label,
+                                     const wxBitmap& bitmap,
+                                     const wxBitmap& bmpDisabled = wxNullBitmap,
+                                     wxItemKind kind = wxITEM_NORMAL,
+                                     const wxString& shortHelp = wxPyEmptyString,
+                                     const wxString& longHelp = wxPyEmptyString,
+                                     PyObject *clientData = NULL)
+        {
             wxPyUserData* udata = NULL;
-            if (clientData)
+            if (clientData && clientData != Py_None)
                 udata = new wxPyUserData(clientData);
-            return self->AddTool(id, bitmap, pushedBitmap, (bool)isToggle,
-                                 udata, shortHelpString, longHelpString);
-        }
-
-        // This one is easier to use...
-        wxToolBarToolBase *AddSimpleTool(int id,
-                                         const wxBitmap& bitmap,
-                                         const wxString& shortHelpString = wxPyEmptyStr,
-                                         const wxString& longHelpString = wxPyEmptyStr,
-                                         int isToggle = FALSE) {
-            return self->AddTool(id, bitmap, wxNullBitmap, isToggle, NULL,
-                                 shortHelpString, longHelpString);
+            return self->AddTool(id, label, bitmap, bmpDisabled, kind,
+                                 shortHelp, longHelp, udata);
         }
 
 
-        // wrap ClientData in a class that knows about PyObjects
+        // Insert the new tool at the given position, if pos == GetToolsCount(), it
+        // is equivalent to DoAddTool()
         wxToolBarToolBase *InsertTool(size_t pos,
                                       int id,
+                                      const wxString& label,
                                       const wxBitmap& bitmap,
-                                      const wxBitmap& pushedBitmap = wxNullBitmap,
-                                      int isToggle = FALSE,
-                                      PyObject *clientData = NULL,
-                                      const wxString& shortHelpString = wxPyEmptyStr,
-                                      const wxString& longHelpString = wxPyEmptyStr) {
+                                      const wxBitmap& bmpDisabled = wxNullBitmap,
+                                      wxItemKind kind = wxITEM_NORMAL,
+                                      const wxString& shortHelp = wxPyEmptyString,
+                                      const wxString& longHelp = wxPyEmptyString,
+                                      PyObject *clientData = NULL)
+        {
             wxPyUserData* udata = NULL;
-            if (clientData)
+            if (clientData && clientData != Py_None)
                 udata = new wxPyUserData(clientData);
-            return self->InsertTool(pos, id, bitmap, pushedBitmap, (bool)isToggle,
-                                    udata, shortHelpString, longHelpString);
+            return self->InsertTool(pos, id, label, bitmap, bmpDisabled, kind,
+                                    shortHelp, longHelp, udata);
         }
 
-        // This one is easier to use...
-        wxToolBarToolBase *InsertSimpleTool(size_t pos,
-                                            int id,
-                                            const wxBitmap& bitmap,
-                                            const wxString& shortHelpString = wxPyEmptyStr,
-                                            const wxString& longHelpString = wxPyEmptyStr,
-                                            int isToggle = FALSE) {
-            return self->InsertTool(pos, id, bitmap, wxNullBitmap, isToggle, NULL,
-                                    shortHelpString, longHelpString);
-        }
     }
+
+
+    %pragma(python) addtoclass = "
+    # These match the original Add methods for this class, kept for
+    # backwards compatibility with versions < 2.3.3.
+
+
+    def AddTool(self, id, bitmap,
+                pushedBitmap = wxNullBitmap,
+                isToggle = 0,
+                clientData = None,
+                shortHelpString = '',
+                longHelpString = '') :
+        '''Old style method to add a tool to the toolbar.'''
+        kind = wx.wxITEM_NORMAL
+        if isToggle: kind = wx.wxITEM_CHECK
+        return self.DoAddTool(id, '', bitmap, pushedBitmap, kind,
+                              shortHelpString, longHelpString, clientData)
+
+    def AddSimpleTool(self, id, bitmap,
+                      shortHelpString = '',
+                      longHelpString = '',
+                      isToggle = 0):
+        '''Old style method to add a tool to the toolbar.'''
+        kind = wx.wxITEM_NORMAL
+        if isToggle: kind = wx.wxITEM_CHECK
+        return self.DoAddTool(id, '', bitmap, wxNullBitmap, kind,
+                              shortHelpString, longHelpString, None)
+
+    def InsertTool(self, pos, id, bitmap,
+                   pushedBitmap = wxNullBitmap,
+                   isToggle = 0,
+                   clientData = None,
+                   shortHelpString = '',
+                   longHelpString = ''):
+        '''Old style method to insert a tool in the toolbar.'''
+        kind = wx.wxITEM_NORMAL
+        if isToggle: kind = wx.wxITEM_CHECK
+        return self.DoInsertTool(pos, id, '', bitmap, pushedBitmap, kind,
+                                 shortHelpString, longHelpString, clientData)
+
+    def InsertSimpleTool(self, pos, id, bitmap,
+                         shortHelpString = '',
+                         longHelpString = '',
+                         isToggle = 0):
+        '''Old style method to insert a tool in the toolbar.'''
+        kind = wx.wxITEM_NORMAL
+        if isToggle: kind = wx.wxITEM_CHECK
+        return self.DoInsertTool(pos, id, '', bitmap, wxNullBitmap, kind,
+                                 shortHelpString, longHelpString, None)
+
+
+    # The following are the new toolbar Add methods starting with
+    # 2.3.3.  They are renamed to have 'Label' in the name so as to be
+    # able to keep backwards compatibility with using the above
+    # methods.  Eventually these should migrate to be the methods used
+    # primarily and loose the 'Label' in the name...
+
+    def AddLabelTool(self, id, label, bitmap,
+                     bmpDisabled = wxNullBitmap,
+                     kind = wxITEM_NORMAL,
+                     shortHelp = '', longHelp = '',
+                     clientData = None):
+        '''
+        The full AddTool() function.
+
+        If bmpDisabled is wxNullBitmap, a shadowed version of the normal bitmap
+        is created and used as the disabled image.
+        '''
+        return self.DoAddTool(id, label, bitmap, bmpDisabled, kind,
+                              shortHelp, longHelp, clientData)
+
+
+    def InsertLabelTool(self, pos, id, label, bitmap,
+                        bmpDisabled = wxNullBitmap,
+                        kind = wxITEM_NORMAL,
+                        shortHelp = '', longHelp = '',
+                        clientData = None):
+        '''
+        Insert the new tool at the given position, if pos == GetToolsCount(), it
+        is equivalent to AddTool()
+        '''
+        return self.DoInsertTool(pos, id, label, bitmap, bmpDisabled, kind,
+                                 shortHelp, longHelp, clientData)
+
+    def AddCheckLabelTool(self, id, label, bitmap,
+                        bmpDisabled = wxNullBitmap,
+                        shortHelp = '', longHelp = '',
+                        clientData = None):
+        '''Add a check tool, i.e. a tool which can be toggled'''
+        return self.DoAddTool(id, label, bitmap, bmpDisabled, wx.wxITEM_CHECK,
+                              shortHelp, longHelp, clientData)
+
+    def AddRadioLabelTool(self, id, label, bitmap,
+                          bmpDisabled = wxNullBitmap,
+                          shortHelp = '', longHelp = '',
+                          clientData = None):
+        '''
+        Add a radio tool, i.e. a tool which can be toggled and releases any
+        other toggled radio tools in the same group when it happens
+        '''
+        return self.DoAddTool(id, label, bitmap, bmpDisabled, wx.wxITEM_RADIO,
+                              shortHelp, longHelp, clientData)
+
+
+    # For consistency with the backwards compatible methods above, here are
+    # some non-'Label' versions of the Check and Radio methods
+    def AddCheckTool(self, id, bitmap,
+                     bmpDisabled = wxNullBitmap,
+                     shortHelp = '', longHelp = '',
+                     clientData = None):
+        '''Add a check tool, i.e. a tool which can be toggled'''
+        return self.DoAddTool(id, '', bitmap, bmpDisabled, wx.wxITEM_CHECK,
+                              shortHelp, longHelp, clientData)
+
+    def AddRadioTool(self, id, bitmap,
+                     bmpDisabled = wxNullBitmap,
+                     shortHelp = '', longHelp = '',
+                     clientData = None):
+        '''
+        Add a radio tool, i.e. a tool which can be toggled and releases any
+        other toggled radio tools in the same group when it happens
+        '''
+        return self.DoAddTool(id, '', bitmap, bmpDisabled, wx.wxITEM_RADIO,
+                              shortHelp, longHelp, clientData)
+    "
 
 
     wxToolBarToolBase *AddControl(wxControl *control);
     wxToolBarToolBase *InsertControl(size_t pos, wxControl *control);
+    wxControl *FindControl( int id );
 
     wxToolBarToolBase *AddSeparator();
     wxToolBarToolBase *InsertSeparator(size_t pos);
@@ -228,8 +363,8 @@ public:
 
     %addmethods {
         // convert the ClientData back to a PyObject
-        PyObject* GetToolClientData(int index) {
-            wxPyUserData* udata = (wxPyUserData*)self->GetToolClientData(index);
+        PyObject* GetToolClientData(int id) {
+            wxPyUserData* udata = (wxPyUserData*)self->GetToolClientData(id);
             if (udata) {
                 Py_INCREF(udata->m_obj);
                 return udata->m_obj;
@@ -239,8 +374,8 @@ public:
             }
         }
 
-        void SetToolClientData(int index, PyObject* clientData) {
-            self->SetToolClientData(index, new wxPyUserData(clientData));
+        void SetToolClientData(int id, PyObject* clientData) {
+            self->SetToolClientData(id, new wxPyUserData(clientData));
         }
     }
 
@@ -257,6 +392,7 @@ public:
     void SetToolPacking(int packing);
     void SetToolSeparation(int separation);
     wxSize GetToolMargins();
+    wxSize GetMargins();
     int GetToolPacking();
     int GetToolSeparation();
 
@@ -269,6 +405,12 @@ public:
     wxSize GetToolBitmapSize();
     wxSize GetToolSize();
 
+    // returns a (non separator) tool containing the point (x, y) or NULL if
+    // there is no tool at this point (corrdinates are client)
+    wxToolBarToolBase *FindToolForPosition(wxCoord x, wxCoord y);
+
+    // return TRUE if this is a vertical toolbar, otherwise FALSE
+    bool IsVertical();
 };
 
 
@@ -281,9 +423,18 @@ public:
               const wxPoint& pos = wxDefaultPosition,
               const wxSize& size = wxDefaultSize,
               long style = wxNO_BORDER | wxTB_HORIZONTAL,
-              const char* name = wxToolBarNameStr);
+              const wxString& name = wxPyToolBarNameStr);
+    %name(wxPreToolBar)wxToolBar();
 
-    %pragma(python) addtomethod = "__init__:#wx._StdWindowCallbacks(self)"
+    bool Create(wxWindow *parent,
+              wxWindowID id,
+              const wxPoint& pos = wxDefaultPosition,
+              const wxSize& size = wxDefaultSize,
+              long style = wxNO_BORDER | wxTB_HORIZONTAL,
+              const wxString& name = wxPyToolBarNameStr);
+
+    %pragma(python) addtomethod = "__init__:self._setOORInfo(self)"
+    %pragma(python) addtomethod = "wxPreToolBar:val._setOORInfo(val)"
 
     wxToolBarToolBase *FindToolForPosition(wxCoord x, wxCoord y);
 };
@@ -298,128 +449,22 @@ public:
                     const wxPoint& pos = wxDefaultPosition,
                     const wxSize& size = wxDefaultSize,
                     long style = wxNO_BORDER | wxTB_HORIZONTAL,
-                    const char* name = wxToolBarNameStr);
+                    const wxString& name = wxPyToolBarNameStr);
+    %name(wxPreToolBarSimple)wxToolBarSimple();
 
-    %pragma(python) addtomethod = "__init__:#wx._StdWindowCallbacks(self)"
+    bool Create(wxWindow *parent,
+                    wxWindowID id,
+                    const wxPoint& pos = wxDefaultPosition,
+                    const wxSize& size = wxDefaultSize,
+                    long style = wxNO_BORDER | wxTB_HORIZONTAL,
+                    const wxString& name = wxPyToolBarNameStr);
+
+    %pragma(python) addtomethod = "__init__:self._setOORInfo(self)"
+    %pragma(python) addtomethod = "wxPreToolBarSimple:val._setOORInfo(val)"
 
     wxToolBarToolBase *FindToolForPosition(wxCoord x, wxCoord y);
 };
 
 //---------------------------------------------------------------------------
-
-
-
-#ifdef THE_OLD_ONE
-
-class wxToolBarTool {
-public:
-    wxToolBarTool();
-    ~wxToolBarTool();
-    void SetSize( long w, long h )
-    long GetWidth ();
-    long GetHeight ();
-    wxControl *GetControl();
-
-public:
-    int                   m_toolStyle;
-    wxObject *            m_clientData;
-    int                   m_index;
-    long                  m_x;
-    long                  m_y;
-    long                  m_width;
-    long                  m_height;
-    bool                  m_toggleState;
-    bool                  m_isToggle;
-    bool                  m_deleteSecondBitmap;
-    bool                  m_enabled;
-    wxBitmap              m_bitmap1;
-    wxBitmap              m_bitmap2;
-    bool                  m_isMenuCommand;
-    wxString              m_shortHelpString;
-    wxString              m_longHelpString;
-};
-
-
-
-//  class wxToolBarBase : public wxControl {
-//  public:
-
-class wxToolBar : public wxControl {
-public:
-    wxToolBar(wxWindow* parent, wxWindowID id,
-              const wxPoint& pos = wxDefaultPosition,
-              const wxSize& size = wxDefaultSize,
-              long style = wxTB_HORIZONTAL | wxNO_BORDER,
-              char* name = "toolBar");
-
-    %pragma(python) addtomethod = "__init__:#wx._StdWindowCallbacks(self)"
-
-
-    bool AddControl(wxControl * control);
-    void AddSeparator();
-    void ClearTools();
-
-    // Ignoge the clientData for now...
-    %addmethods {
-        wxToolBarTool* AddTool(int toolIndex,
-                               const wxBitmap& bitmap1,
-                               const wxBitmap& bitmap2 = wxNullBitmap,
-                               int  isToggle = FALSE,
-                               long xPos = -1,
-                               long yPos = -1,
-                               //wxObject* clientData = NULL,
-                               const wxString& shortHelpString = wxPyEmptyStr,
-                               const wxString& longHelpString = wxPyEmptyStr) {
-            return self->AddTool(toolIndex, bitmap1, bitmap2,
-                                 isToggle, xPos, yPos, NULL,
-                                 shortHelpString, longHelpString);
-        }
-
-        wxToolBarTool* AddSimpleTool(int toolIndex,
-                               const wxBitmap& bitmap,
-                               const wxString& shortHelpString = wxPyEmptyStr,
-                               const wxString& longHelpString = wxPyEmptyStr) {
-            return self->AddTool(toolIndex, bitmap, wxNullBitmap,
-                                 FALSE, -1, -1, NULL,
-                                 shortHelpString, longHelpString);
-        }
-    }
-
-
-    void EnableTool(int toolIndex, bool enable);
-#ifdef __WXMSW__
-    wxToolBarTool* FindToolForPosition(long x, long y);
-    wxSize GetToolSize();
-    wxSize GetToolBitmapSize();
-    void SetToolBitmapSize(const wxSize& size);
-    wxSize GetMaxSize();
-#endif
-    wxSize GetToolMargins();
-//    wxObject* GetToolClientData(int toolIndex);
-    bool GetToolEnabled(int toolIndex);
-    wxString GetToolLongHelp(int toolIndex);
-    int GetToolPacking();
-    int GetToolSeparation();
-    wxString GetToolShortHelp(int toolIndex);
-    bool GetToolState(int toolIndex);
-
-
-    bool Realize();
-
-    void SetToolLongHelp(int toolIndex, const wxString& helpString);
-    void SetToolShortHelp(int toolIndex, const wxString& helpString);
-    void SetMargins(const wxSize& size);
-    void SetToolPacking(int packing);
-    void SetToolSeparation(int separation);
-    void ToggleTool(int toolIndex, const bool toggle);
-    void SetToggle(int toolIndex, bool toggle);
-    void SetMaxRowsCols(int rows, int cols);
-    int GetMaxRows();
-    int GetMaxCols();
-};
-
-
-#endif
-
 //---------------------------------------------------------------------------
 

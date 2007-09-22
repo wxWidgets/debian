@@ -4,7 +4,7 @@
 // Authors:     Guilhem Lavaux, Guillermo Rodriguez Garcia
 // Modified by:
 // Created:     April 1997
-// RCS-ID:      $Id: socket.h,v 1.39 2000/03/16 21:57:20 GRG Exp $
+// RCS-ID:      $Id: socket.h,v 1.46 2002/09/04 16:42:53 MBN Exp $
 // Copyright:   (c) Guilhem Lavaux
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -12,7 +12,7 @@
 #ifndef _WX_NETWORK_SOCKET_H
 #define _WX_NETWORK_SOCKET_H
 
-#ifdef __GNUG__
+#if defined(__GNUG__) && !defined(__APPLE__)
   #pragma interface "socket.h"
 #endif
 
@@ -33,6 +33,7 @@
 
 #include "wx/sckaddr.h"
 #include "wx/gsocket.h"
+#include "wx/list.h"
 
 // ------------------------------------------------------------------------
 // Types and constants
@@ -185,6 +186,11 @@ public:
   void SetNotify(wxSocketEventFlags flags);
   void Notify(bool notify);
 
+  // initialize/shutdown the sockets (usually called automatically)
+  static bool IsInitialized();
+  static bool Initialize();
+  static void Shutdown();
+
   // callbacks are deprecated, use events instead
 #if WXWIN_COMPATIBILITY
   wxSockCbk Callback(wxSockCbk cbk_);
@@ -247,6 +253,9 @@ private:
   bool          m_notify;           // notify events to users?
   wxSocketEventFlags  m_eventmask;  // which events to notify?
 
+  // the initialization count, GSocket is initialized if > 0
+  static size_t m_countInit;
+
   // callbacks are deprecated, use events instead
 #if WXWIN_COMPATIBILITY
   wxSockCbk     m_cbk;              // callback
@@ -297,7 +306,7 @@ public:
 
 // WARNING: still in alpha stage
 
-class wxDatagramSocket : public wxSocketBase
+class WXDLLEXPORT wxDatagramSocket : public wxSocketBase
 {
   DECLARE_CLASS(wxDatagramSocket)
 
@@ -323,10 +332,11 @@ public:
 
 class WXDLLEXPORT wxSocketEvent : public wxEvent
 {
-  DECLARE_DYNAMIC_CLASS(wxSocketEvent)
-
 public:
-  wxSocketEvent(int id = 0);
+  wxSocketEvent(int id = 0)
+      : wxEvent(id, wxEVT_SOCKET)
+      {
+      }
 
   wxSocketNotify  GetSocketEvent() const { return m_event; }
   wxSocketBase   *GetSocket() const      { return (wxSocketBase *) GetEventObject(); }
@@ -338,19 +348,24 @@ public:
   wxSocketBase   *Socket() const         { return (wxSocketBase *) GetEventObject(); }
 #endif // WXWIN_COMPATIBILITY_2
 
-  void CopyObject(wxObject& object_dest) const;
+  virtual wxEvent *Clone() const { return new wxSocketEvent(*this); }
 
 public:
   wxSocketNotify  m_event;
   void           *m_clientData;
+
+  DECLARE_DYNAMIC_CLASS(wxSocketEvent)
 };
 
 
 typedef void (wxEvtHandler::*wxSocketEventFunction)(wxSocketEvent&);
 
-#define EVT_SOCKET(id, func) { wxEVT_SOCKET, id, -1, \
-  (wxObjectEventFunction) (wxEventFunction) (wxSocketEventFunction) & func, \
-  (wxObject *) NULL },
+#define EVT_SOCKET(id, func) \
+    DECLARE_EVENT_TABLE_ENTRY( wxEVT_SOCKET, id, -1, \
+                              (wxObjectEventFunction) \
+                              (wxEventFunction) \
+                              (wxSocketEventFunction) & func, \
+                              (wxObject *) NULL ),
 
 
 #endif

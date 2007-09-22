@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     01/02/97
-// RCS-ID:      $Id: wxexpr.h,v 1.14 1999/10/08 14:34:18 KB Exp $
+// RCS-ID:      $Id: wxexpr.h,v 1.16 2002/08/31 11:29:11 GD Exp $
 // Copyright:   (c)
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -12,7 +12,7 @@
 #ifndef _WX_WXEXPRH__
 #define _WX_WXEXPRH__
 
-#ifdef __GNUG__
+#if defined(__GNUG__) && !defined(__APPLE__)
 #pragma interface "wxexpr.h"
 #endif
 
@@ -50,9 +50,6 @@ typedef bool (*wxExprErrorHandler) (int errorType, char *msg);
 
 WXDLLEXPORT_DATA(extern wxExprErrorHandler) currentwxExprErrorHandler;
 
-extern "C" WXDLLEXPORT_DATA(FILE*) yyin;
-
-extern "C" WXDLLEXPORT int yyparse(void);
 
 typedef enum {
     wxExprNull,

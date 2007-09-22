@@ -4,7 +4,7 @@
 // Author:      Vadim Zeitlin
 // Modified by:
 // Created:     16/11/98
-// RCS-ID:      $Id: listimpl.cpp,v 1.3.2.2 2000/03/25 18:10:06 JS Exp $
+// RCS-ID:      $Id: listimpl.cpp,v 1.4 2000/07/15 19:49:56 cvsuser Exp $
 // Copyright:   (c) 1998 Vadim Zeitlin
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////

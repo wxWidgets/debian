@@ -2,7 +2,7 @@
 // Name:        mdi.cpp
 // Purpose:
 // Author:      Robert Roebling
-// Id:          $Id: mdi.cpp,v 1.49.2.6 2000/09/16 11:05:04 RR Exp $
+// Id:          $Id: mdi.cpp,v 1.56 2002/08/05 17:59:19 RR Exp $
 // Copyright:   (c) 1998 Robert Roebling
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -18,6 +18,7 @@
 #include "wx/dialog.h"
 #include "wx/menu.h"
 #include "wx/intl.h"
+#include "wx/gtk/private.h"
 
 #include <glib.h>
 #include <gdk/gdk.h>
@@ -225,9 +226,9 @@ void wxMDIParentFrame::OnInternalIdle()
     }
 }
 
-void wxMDIParentFrame::GetClientSize(int *width, int *height ) const
+void wxMDIParentFrame::DoGetClientSize(int *width, int *height ) const
 {
-    wxFrame::GetClientSize( width, height );
+    wxFrame::DoGetClientSize( width, height );
 }
 
 wxMDIChildFrame *wxMDIParentFrame::GetActiveChild() const
@@ -237,11 +238,7 @@ wxMDIChildFrame *wxMDIParentFrame::GetActiveChild() const
     GtkNotebook *notebook = GTK_NOTEBOOK(m_clientWindow->m_widget);
     if (!notebook) return (wxMDIChildFrame*) NULL;
 
-#if (GTK_MINOR_VERSION > 0)
     gint i = gtk_notebook_get_current_page( notebook );
-#else
-    gint i = gtk_notebook_current_page( notebook );
-#endif
     if (i < 0) return (wxMDIChildFrame*) NULL;
 
     GtkNotebookPage* page = (GtkNotebookPage*) (g_list_nth(notebook->children,i)->data);
@@ -297,7 +294,6 @@ wxMDIChildFrame::wxMDIChildFrame()
 {
     m_menuBar = (wxMenuBar *) NULL;
     m_page = (GtkNotebookPage *) NULL;
-    m_isFrame = FALSE;
 }
 
 wxMDIChildFrame::wxMDIChildFrame( wxMDIParentFrame *parent,
@@ -307,7 +303,6 @@ wxMDIChildFrame::wxMDIChildFrame( wxMDIParentFrame *parent,
 {
     m_menuBar = (wxMenuBar *) NULL;
     m_page = (GtkNotebookPage *) NULL;
-    m_isFrame = FALSE;
     Create( parent, id, title, wxDefaultPosition, size, style, name );
 }
 
@@ -327,9 +322,19 @@ bool wxMDIChildFrame::Create( wxMDIParentFrame *parent,
     return wxWindow::Create( parent->GetClientWindow(), id, wxDefaultPosition, size, style, name );
 }
 
-void wxMDIChildFrame::GetClientSize( int *width, int *height ) const
+void wxMDIChildFrame::DoSetSize( int x, int y, int width, int height, int sizeFlags )
 {
-    wxWindow::GetClientSize( width, height );
+    wxWindow::DoSetSize( x, y, width, height, sizeFlags );
+}
+
+void wxMDIChildFrame::DoSetClientSize(int width, int height)
+{
+    wxWindow::DoSetClientSize( width, height );
+}
+
+void wxMDIChildFrame::DoGetClientSize( int *width, int *height ) const
+{
+    wxWindow::DoGetClientSize( width, height );
 }
 
 void wxMDIChildFrame::AddChild( wxWindowBase *child )
@@ -363,17 +368,10 @@ wxMenuBar *wxMDIChildFrame::GetMenuBar() const
 
 void wxMDIChildFrame::Activate()
 {
-#if (GTK_MINOR_VERSION > 0)
     wxMDIParentFrame* parent = (wxMDIParentFrame*) GetParent();
     GtkNotebook* notebook = GTK_NOTEBOOK(parent->m_widget);
-    gint pageno = gtk_notebook_page_num( notebook, m_page->child );
+    gint pageno = gtk_notebook_page_num( notebook, m_widget );
     gtk_notebook_set_page( notebook, pageno );
-#else
-    // the only way I can see to do this under gtk+ 1.0.X would
-    // be to keep track of page numbers, start at first and
-    // do "next" enough times to get to this page number - messy
-    // - J. Russell Smyth
-#endif
 }
 
 void wxMDIChildFrame::OnActivate( wxActivateEvent& WXUNUSED(event) )
@@ -402,7 +400,7 @@ void wxMDIChildFrame::SetTitle( const wxString &title )
 
     wxMDIParentFrame* parent = (wxMDIParentFrame*) GetParent();
     GtkNotebook* notebook = GTK_NOTEBOOK(parent->m_widget);
-    gtk_notebook_set_tab_label_text(notebook, m_page->child, title.mbc_str());
+    gtk_notebook_set_tab_label_text(notebook, m_widget, wxGTK_CONV( title ) );
 }
 
 //-----------------------------------------------------------------------------

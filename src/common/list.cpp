@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by: VZ at 16/11/98: WX_DECLARE_LIST() and typesafe lists added
 // Created:     04/01/98
-// RCS-ID:      $Id: list.cpp,v 1.33.2.4 2000/06/06 22:00:40 VZ Exp $
+// RCS-ID:      $Id: list.cpp,v 1.38 2002/02/06 01:38:08 VZ Exp $
 // Copyright:   (c) Julian Smart and Markus Holzem
 // Licence:     wxWindows license
 ////////////////////////////////////////////////////////////////////////////////
@@ -16,8 +16,9 @@
 // -----------------------------------------------------------------------------
 // headers
 // -----------------------------------------------------------------------------
+
 #ifdef __GNUG__
-#pragma implementation "list.h"
+    #pragma implementation "list.h"
 #endif
 
 // For compilers that support precompilation, includes "wx.h".
@@ -170,8 +171,8 @@ void wxListBase::DoCopy(const wxListBase& list)
     m_nodeFirst =
     m_nodeLast = (wxNodeBase *) NULL;
 
-    switch (m_keyType) {
-
+    switch (m_keyType)
+    {
         case wxKEY_INTEGER:
             {
                 long key;
@@ -242,7 +243,10 @@ wxNodeBase *wxListBase::Append(void *object)
     wxCHECK_MSG( m_keyType == wxKEY_NONE, (wxNodeBase *)NULL,
                  wxT("need a key for the object to append") );
 
-    wxNodeBase *node = CreateNode(m_nodeLast, (wxNodeBase *)NULL, object);
+    // we use wxDefaultListKey even though it is the default parameter value
+    // because gcc under Mac OS X seems to miscompile this call otherwise
+    wxNodeBase *node = CreateNode(m_nodeLast, (wxNodeBase *)NULL, object,
+                                  wxDefaultListKey);
 
     return AppendCommon(node);
 }
@@ -292,7 +296,8 @@ wxNodeBase *wxListBase::Insert(wxNodeBase *position, void *object)
         next = m_nodeFirst;
     }
 
-    wxNodeBase *node = CreateNode(prev, next, object);
+    // wxDefaultListKey: see comment in Append() above
+    wxNodeBase *node = CreateNode(prev, next, object, wxDefaultListKey);
     if ( !m_nodeFirst )
     {
         m_nodeLast = node;
@@ -527,9 +532,17 @@ void wxListBase::Sort(const wxSortCompareFunction compfunc)
     delete[] objArray;
 }
 
+// ============================================================================
+// compatibility section from now on
+// ============================================================================
+
+#ifdef wxLIST_COMPATIBILITY
+
 // -----------------------------------------------------------------------------
 // wxList (a.k.a. wxObjectList)
 // -----------------------------------------------------------------------------
+
+IMPLEMENT_DYNAMIC_CLASS(wxList, wxObject)
 
 void wxObjectListNode::DeleteData()
 {
@@ -539,6 +552,8 @@ void wxObjectListNode::DeleteData()
 // -----------------------------------------------------------------------------
 // wxStringList
 // -----------------------------------------------------------------------------
+
+IMPLEMENT_DYNAMIC_CLASS(wxStringList, wxObject)
 
 // instead of WX_DEFINE_LIST(wxStringListBase) we define this function
 // ourselves
@@ -635,7 +650,7 @@ bool wxStringList::Member(const wxChar *s) const
     return FALSE;
 }
 
-static int LINKAGEMODE
+extern "C" int LINKAGEMODE
 wx_comparestrings(const void *arg1, const void *arg2)
 {
   wxChar **s1 = (wxChar **) arg1;
@@ -665,3 +680,6 @@ void wxStringList::Sort()
 
     delete [] array;
 }
+
+#endif // wxLIST_COMPATIBILITY
+

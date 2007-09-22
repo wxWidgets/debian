@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     04/01/98
-// RCS-ID:      $Id: edlist.h,v 1.1.4.1 2000/04/22 14:41:06 JS Exp $
+// RCS-ID:      $Id: edlist.h,v 1.3 2001/11/22 22:02:13 GD Exp $
 // Copyright:   (c) Julian Smart
 // Licence:   	wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -12,8 +12,8 @@
 #ifndef _EDLIST_H_
 #define _EDLIST_H_
 
-#include <wx/listctrl.h>
-#include <wx/imaglist.h>
+#include "wx/listctrl.h"
+#include "wx/imaglist.h"
 
 class wxResourceEditorControlList: public wxListCtrl
 {

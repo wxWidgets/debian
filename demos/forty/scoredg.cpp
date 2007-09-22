@@ -4,14 +4,14 @@
 // Author:      Chris Breeze
 // Modified by:
 // Created:     21/07/97
-// RCS-ID:      $Id: scoredg.cpp,v 1.1 2000/01/08 15:27:41 VZ Exp $
+// RCS-ID:      $Id: scoredg.cpp,v 1.3 2002/09/07 12:25:02 GD Exp $
 // Copyright:   (c) 1993-1998 Chris Breeze
 // Licence:   	wxWindows licence
 //---------------------------------------------------------------------------
 // Last modified: 22nd July 1998 - ported to wxWindows 2.0
 /////////////////////////////////////////////////////////////////////////////
 
-#ifdef __GNUG__
+#if defined(__GNUG__) && !defined(__APPLE__)
 #pragma implementation
 #pragma interface
 #endif
@@ -35,7 +35,7 @@
 #endif
 #else
 #include <strstream>
-using namespace std;
+//using namespace std;
 #endif
 #include "scorefil.h"
 #include "scoredg.h"

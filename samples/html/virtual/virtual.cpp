@@ -4,13 +4,13 @@
 //              demonstrates virtual file systems feature
 /////////////////////////////////////////////////////////////////////////////
 
-#ifdef __GNUG__
+#if defined(__GNUG__) && !defined(__APPLE__)
     #pragma implementation "test.cpp"
     #pragma interface "test.cpp"
 #endif
 
 // For compilers that support precompilation, includes "wx/wx.h".
-#include <wx/wxprec.h>
+#include "wx/wxprec.h"
 
 #ifdef __BORLANDC__
     #pragma hdrstop
@@ -19,17 +19,17 @@
 // for all others, include the necessary headers (this file is usually all you
 // need because it includes almost all "standard" wxWindows headers
 #ifndef WX_PRECOMP
-    #include <wx/wx.h>
+    #include "wx/wx.h"
 #endif
 
 
-#include <wx/html/htmlwin.h>
+#include "wx/html/htmlwin.h"
 
 
 // new handler class:
 
-#include <wx/wfstream.h>
-#include <wx/mstream.h>
+#include "wx/wfstream.h"
+#include "wx/mstream.h"
 
 
 
@@ -54,7 +54,7 @@ wxFSFile* MyVFS::OpenFile(wxFileSystem& fs, const wxString& location)
 {
     wxFSFile *f;
     wxInputStream *str;
-    char *buf = (char*)malloc(1024);
+    static char buf[1024];
 
     sprintf(buf, "<html><body><h2><i>You're in Node <u>%s</u></i></h2><p>"
                  "Where do you want to go?<br><blockquote>"
@@ -64,10 +64,14 @@ wxFSFile* MyVFS::OpenFile(wxFileSystem& fs, const wxString& location)
                  "</blockquote></body></html>",
                  location.GetData(), location.GetData(), location.GetData(), location.GetData());
 
-    // WARNING: wxMemoryInputStream will not free buf.
-    // There is a memory leak here.
+    // NB: There's a terrible hack involved: we fill 'buf' with new data every
+    //     time this method is called and return new wxMemoryInputStream pointing to it.
+    //     This won't work as soon as there are 2+ myVFS files opened. Fortunately,
+    //     this won't happen because wxHTML keeps only one "page" file opened at the
+    //     time.
     str = new wxMemoryInputStream(buf, strlen(buf));
     f = new wxFSFile(str, location, "text/html", wxEmptyString, wxDateTime::Today());
+    
     return f;
 }
 
@@ -99,7 +103,6 @@ wxFSFile* MyVFS::OpenFile(wxFileSystem& fs, const wxString& location)
    
     // event handlers (these functions should _not_ be virtual)
       void OnQuit(wxCommandEvent& event);
-      void OnAbout(wxCommandEvent& event);
       void OnBack(wxCommandEvent& event);
       void OnForward(wxCommandEvent& event);
 
@@ -117,7 +120,6 @@ wxFSFile* MyVFS::OpenFile(wxFileSystem& fs, const wxString& location)
    {
     // menu items
    Minimal_Quit = 1,
-   Minimal_About,
    Minimal_Back,
    Minimal_Forward,
    
@@ -134,7 +136,6 @@ wxFSFile* MyVFS::OpenFile(wxFileSystem& fs, const wxString& location)
 // simple menu events like this the static method is much simpler.
    BEGIN_EVENT_TABLE(MyFrame, wxFrame)
    EVT_MENU(Minimal_Quit,  MyFrame::OnQuit)
-   EVT_MENU(Minimal_About, MyFrame::OnAbout)
    EVT_MENU(Minimal_Back, MyFrame::OnBack)
    EVT_MENU(Minimal_Forward, MyFrame::OnForward)
    END_EVENT_TABLE()
@@ -160,13 +161,13 @@ wxFSFile* MyVFS::OpenFile(wxFileSystem& fs, const wxString& location)
     // Create the main application window
       MyFrame *frame = new MyFrame("wxHtmlWindow testing application",
          wxPoint(50, 50), wxSize(640, 480));
-   
+
     // Show it and tell the application that it's our main window
     // @@@ what does it do exactly, in fact? is it necessary here?
       frame->Show(TRUE);
       SetTopWindow(frame);
       wxFileSystem::AddHandler(new MyVFS);
-   
+
     // success: wxApp::OnRun() will be called which will enter the main message
     // loop and the application will run. If we returned FALSE here, the
     // application would exit immediately.
@@ -199,7 +200,7 @@ wxHtmlWindow *html;
     // ... and attach this menu bar to the frame
       SetMenuBar(menuBar);
    
-      CreateStatusBar(1);
+      CreateStatusBar(2);
 
       html = new wxHtmlWindow(this);
       html -> SetRelatedFrame(this, "VFS Demo: '%s'");
@@ -215,12 +216,6 @@ wxHtmlWindow *html;
     // TRUE is to force the frame to close
       Close(TRUE);
    }
-
-   void MyFrame::OnAbout(wxCommandEvent& WXUNUSED(event))
-   {
-   }
-
-
 
    void MyFrame::OnBack(wxCommandEvent& WXUNUSED(event))
    {

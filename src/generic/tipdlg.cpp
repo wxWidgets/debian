@@ -4,7 +4,7 @@
 // Author:      Vadim Zeitlin
 // Modified by:
 // Created:     28.06.99
-// RCS-ID:      $Id: tipdlg.cpp,v 1.14 2000/02/25 02:19:21 VZ Exp $
+// RCS-ID:      $Id: tipdlg.cpp,v 1.21 2002/09/14 02:10:24 DW Exp $
 // Copyright:   (c) Vadim Zeitlin
 // Licence:     wxWindows licence
 ///////////////////////////////////////////////////////////////////////////////
@@ -45,6 +45,7 @@
 #endif // WX_PRECOMP
 
 #include "wx/statline.h"
+#include "wx/artprov.h"
 
 #include "wx/tipdlg.h"
 
@@ -135,17 +136,56 @@ wxString wxFileTipProvider::GetTip()
 {
     size_t count = m_textfile.GetLineCount();
     if ( !count )
-        return _("Tips not available, sorry!");
-
-    // notice that it may be greater, actually, if we remembered it from the
-    // last time and the number of tips changed
-    if ( m_currentTip == count )
     {
-        // wrap
-        m_currentTip = 0;
+        return _("Tips not available, sorry!");
     }
+    
+    wxString tip;
 
-    return m_textfile.GetLine(m_currentTip++);
+    // Comments start with a # symbol.
+    // Loop reading lines until get the first one that isn't a comment.
+    // The max number of loop executions is the number of lines in the 
+    // textfile so that can't go into an eternal loop in the [oddball] 
+    // case of a comment-only tips file, or the developer has vetoed 
+    // them all via PreprecessTip().
+    for ( size_t i=0; i < count; i++ )
+    {    
+        // The current tip may be at the last line of the textfile, (or 
+        // past it, if the number of lines in the textfile changed, such 
+        // as changing to a different textfile, with less tips). So check
+        // to see at last line of text file, (or past it)...
+        if ( m_currentTip >= count )
+        {
+            // .. and if so, wrap back to line 0.
+            m_currentTip = 0;
+        }  
+        
+        // Read the tip, and increment the current tip counter.
+        tip = m_textfile.GetLine(m_currentTip++);
+        
+        // Allow a derived class's overrided virtual to modify the tip 
+        // now if so desired.
+        tip = PreprocessTip(tip); 
+        
+        // Break if tip isn't a comment, and isn't an empty string
+        // (or only stray space characters).
+        if ( !tip.StartsWith(wxT("#")) && (tip.Trim() != wxEmptyString) )
+        {
+            break;
+        }
+    }
+        
+    // If tip starts with '_(', then it is a gettext string of format
+    // _("My \"global\" tip text") so first strip off the leading '_("'...
+    if ( tip.StartsWith(wxT("_(\"" ), &tip))
+    {
+        //...and strip off the trailing '")'...
+        tip = tip.BeforeLast(wxT('\"'));
+        // ...and replace escaped quotes     
+        tip.Replace(wxT("\\\""), wxT("\"")); 
+    } 
+    
+    return tip;    
 }
 
 // ----------------------------------------------------------------------------
@@ -175,33 +215,44 @@ wxTipDialog::wxTipDialog(wxWindow *parent,
     wxButton *btnNext = new wxButton(this, wxID_NEXT_TIP, _("&Next Tip"));
 
     wxStaticText *text = new wxStaticText(this, -1, _("Did you know..."), wxDefaultPosition, wxSize(-1,30) );
-#if defined(__WXMSW__)
+#if defined(__WXMSW__) || defined(__WXPM__)
     text->SetFont(wxFont(16, wxSWISS, wxNORMAL, wxBOLD));
 #else
     text->SetFont(wxFont(18, wxSWISS, wxNORMAL, wxBOLD));
 #endif
 //
-//    text->SetBackgroundColour(wxSystemSettings::GetSystemColour(wxSYS_COLOUR_BTNFACE));
+//    text->SetBackgroundColour(wxSystemSettings::GetColour(wxSYS_COLOUR_BTNFACE));
 
     m_text = new wxTextCtrl(this, -1, wxT(""),
                             wxDefaultPosition, wxSize(200, 160),
                             wxTE_MULTILINE |
                             wxTE_READONLY |
+                            wxTE_NO_VSCROLL |
                             wxTE_RICH | // a hack to get rid of vert scrollbar
                             wxSUNKEN_BORDER);
 #if defined(__WXMSW__)
-    m_text->SetFont(wxFont(12, wxROMAN, wxNORMAL, wxNORMAL));
+    m_text->SetFont(wxFont(12, wxSWISS, wxNORMAL, wxNORMAL));
 #else
-    m_text->SetFont(wxFont(14, wxROMAN, wxNORMAL, wxNORMAL));
+    m_text->SetFont(wxFont(14, wxSWISS, wxNORMAL, wxNORMAL));
 #endif
 
-#if defined(__WXMSW__) || defined(__WXPM__)
-    wxIcon icon("wxICON_TIP");
-#else
-    #include "wx/generic/tip.xpm"
-    wxIcon icon(tipIcon);
-#endif
+//#if defined(__WXPM__)
+    //
+    // The only way to get icons into an OS/2 static bitmap control
+    //
+//    wxBitmap                        vBitmap;
+
+//    vBitmap.SetId(wxICON_TIP); // OS/2 specific bitmap method--OS/2 wxBitmaps all have an ID.
+//                               // and for StatBmp's under OS/2 it MUST be a valid resource ID.
+//
+//    wxStaticBitmap*                 bmp = new wxStaticBitmap(this, -1, vBitmap);
+//
+//#else
+
+    wxIcon icon = wxArtProvider::GetIcon(wxART_TIP, wxART_CMN_DIALOG);
     wxStaticBitmap *bmp = new wxStaticBitmap(this, -1, icon);
+
+//#endif
 
     // 2) put them in boxes
 

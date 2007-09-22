@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     29/01/98
-// RCS-ID:      $Id: validate.h,v 1.11 2000/01/06 16:47:45 VZ Exp $
+// RCS-ID:      $Id: validate.h,v 1.13 2002/08/31 11:29:11 GD Exp $
 // Copyright:   (c) 1998 Julian Smart
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -12,7 +12,7 @@
 #ifndef _WX_VALIDATEH__
 #define _WX_VALIDATEH__
 
-#ifdef __GNUG__
+#if defined(__GNUG__) && !defined(__APPLE__)
     #pragma interface "validate.h"
 #endif
 
@@ -83,6 +83,7 @@ private:
     static bool ms_isSilent;
 
     DECLARE_DYNAMIC_CLASS(wxValidator)
+    DECLARE_NO_COPY_CLASS(wxValidator)
 };
 
 WXDLLEXPORT_DATA(extern const wxValidator) wxDefaultValidator;

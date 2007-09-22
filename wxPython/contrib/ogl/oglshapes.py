@@ -9,11 +9,15 @@ from windows import *
 
 from gdi import *
 
+from fonts import *
+
 from clip_dnd import *
 
 from events import *
 
 from streams import *
+
+from utils import *
 
 from mdi import *
 
@@ -39,11 +43,9 @@ from sizers import *
 
 from filesys import *
 
-from utils import *
-
 from oglbasic import *
 import wx
-class wxPseudoMetaFilePtr :
+class wxPseudoMetaFilePtr(wxObjectPtr):
     def __init__(self,this):
         self.this = this
         self.thisown = 0
@@ -189,8 +191,8 @@ class wxPyRectangleShapePtr(wxPyShapePtr):
     def __init__(self,this):
         self.this = this
         self.thisown = 0
-    def _setSelf(self, *_args, **_kwargs):
-        val = apply(oglshapesc.wxPyRectangleShape__setSelf,(self,) + _args, _kwargs)
+    def _setCallbackInfo(self, *_args, **_kwargs):
+        val = apply(oglshapesc.wxPyRectangleShape__setCallbackInfo,(self,) + _args, _kwargs)
         return val
     def SetCornerRadius(self, *_args, **_kwargs):
         val = apply(oglshapesc.wxPyRectangleShape_SetCornerRadius,(self,) + _args, _kwargs)
@@ -288,7 +290,8 @@ class wxPyRectangleShape(wxPyRectangleShapePtr):
     def __init__(self,*_args,**_kwargs):
         self.this = apply(oglshapesc.new_wxPyRectangleShape,_args,_kwargs)
         self.thisown = 1
-        self._setSelf(self, wxPyRectangleShape)
+        self._setCallbackInfo(self, wxPyRectangleShape)
+        self._setOORInfo(self)
 
 
 
@@ -297,8 +300,8 @@ class wxPyControlPointPtr(wxPyRectangleShapePtr):
     def __init__(self,this):
         self.this = this
         self.thisown = 0
-    def _setSelf(self, *_args, **_kwargs):
-        val = apply(oglshapesc.wxPyControlPoint__setSelf,(self,) + _args, _kwargs)
+    def _setCallbackInfo(self, *_args, **_kwargs):
+        val = apply(oglshapesc.wxPyControlPoint__setCallbackInfo,(self,) + _args, _kwargs)
         return val
     def SetCornerRadius(self, *_args, **_kwargs):
         val = apply(oglshapesc.wxPyControlPoint_SetCornerRadius,(self,) + _args, _kwargs)
@@ -396,7 +399,8 @@ class wxPyControlPoint(wxPyControlPointPtr):
     def __init__(self,*_args,**_kwargs):
         self.this = apply(oglshapesc.new_wxPyControlPoint,_args,_kwargs)
         self.thisown = 1
-        self._setSelf(self, wxPyControlPoint)
+        self._setCallbackInfo(self, wxPyControlPoint)
+        self._setOORInfo(self)
 
 
 
@@ -405,8 +409,8 @@ class wxPyBitmapShapePtr(wxPyRectangleShapePtr):
     def __init__(self,this):
         self.this = this
         self.thisown = 0
-    def _setSelf(self, *_args, **_kwargs):
-        val = apply(oglshapesc.wxPyBitmapShape__setSelf,(self,) + _args, _kwargs)
+    def _setCallbackInfo(self, *_args, **_kwargs):
+        val = apply(oglshapesc.wxPyBitmapShape__setCallbackInfo,(self,) + _args, _kwargs)
         return val
     def GetBitmap(self, *_args, **_kwargs):
         val = apply(oglshapesc.wxPyBitmapShape_GetBitmap,(self,) + _args, _kwargs)
@@ -514,7 +518,8 @@ class wxPyBitmapShape(wxPyBitmapShapePtr):
     def __init__(self,*_args,**_kwargs):
         self.this = apply(oglshapesc.new_wxPyBitmapShape,_args,_kwargs)
         self.thisown = 1
-        self._setSelf(self, wxPyBitmapShape)
+        self._setCallbackInfo(self, wxPyBitmapShape)
+        self._setOORInfo(self)
 
 
 
@@ -523,8 +528,8 @@ class wxPyDrawnShapePtr(wxPyRectangleShapePtr):
     def __init__(self,this):
         self.this = this
         self.thisown = 0
-    def _setSelf(self, *_args, **_kwargs):
-        val = apply(oglshapesc.wxPyDrawnShape__setSelf,(self,) + _args, _kwargs)
+    def _setCallbackInfo(self, *_args, **_kwargs):
+        val = apply(oglshapesc.wxPyDrawnShape__setCallbackInfo,(self,) + _args, _kwargs)
         return val
     def CalculateSize(self, *_args, **_kwargs):
         val = apply(oglshapesc.wxPyDrawnShape_CalculateSize,(self,) + _args, _kwargs)
@@ -570,7 +575,6 @@ class wxPyDrawnShapePtr(wxPyRectangleShapePtr):
         return val
     def GetMetaFile(self, *_args, **_kwargs):
         val = apply(oglshapesc.wxPyDrawnShape_GetMetaFile,(self,) + _args, _kwargs)
-        if val: val = wxPseudoMetaFilePtr(val) 
         return val
     def GetRotation(self, *_args, **_kwargs):
         val = apply(oglshapesc.wxPyDrawnShape_GetRotation,(self,) + _args, _kwargs)
@@ -704,18 +708,16 @@ class wxPyDrawnShape(wxPyDrawnShapePtr):
     def __init__(self,*_args,**_kwargs):
         self.this = apply(oglshapesc.new_wxPyDrawnShape,_args,_kwargs)
         self.thisown = 1
-        self._setSelf(self, wxPyDrawnShape)
+        self._setCallbackInfo(self, wxPyDrawnShape)
+        self._setOORInfo(self)
 
 
 
 
-class wxOGLConstraintPtr :
+class wxOGLConstraintPtr(wxObjectPtr):
     def __init__(self,this):
         self.this = this
         self.thisown = 0
-    def __del__(self,oglshapesc=oglshapesc):
-        if self.thisown == 1 :
-            oglshapesc.delete_wxOGLConstraint(self)
     def Evaluate(self, *_args, **_kwargs):
         val = apply(oglshapesc.wxOGLConstraint_Evaluate,(self,) + _args, _kwargs)
         return val
@@ -739,23 +741,20 @@ class wxPyCompositeShapePtr(wxPyRectangleShapePtr):
     def __init__(self,this):
         self.this = this
         self.thisown = 0
-    def _setSelf(self, *_args, **_kwargs):
-        val = apply(oglshapesc.wxPyCompositeShape__setSelf,(self,) + _args, _kwargs)
+    def _setCallbackInfo(self, *_args, **_kwargs):
+        val = apply(oglshapesc.wxPyCompositeShape__setCallbackInfo,(self,) + _args, _kwargs)
         return val
     def AddChild(self, *_args, **_kwargs):
         val = apply(oglshapesc.wxPyCompositeShape_AddChild,(self,) + _args, _kwargs)
         return val
     def AddConstraint(self, *_args, **_kwargs):
         val = apply(oglshapesc.wxPyCompositeShape_AddConstraint,(self,) + _args, _kwargs)
-        if val: val = wxOGLConstraintPtr(val) 
         return val
     def AddConstrainedShapes(self, *_args, **_kwargs):
         val = apply(oglshapesc.wxPyCompositeShape_AddConstrainedShapes,(self,) + _args, _kwargs)
-        if val: val = wxOGLConstraintPtr(val) 
         return val
     def AddSimpleConstraint(self, *_args, **_kwargs):
         val = apply(oglshapesc.wxPyCompositeShape_AddSimpleConstraint,(self,) + _args, _kwargs)
-        if val: val = wxOGLConstraintPtr(val) 
         return val
     def CalculateSize(self, *_args, **_kwargs):
         val = apply(oglshapesc.wxPyCompositeShape_CalculateSize,(self,) + _args, _kwargs)
@@ -771,7 +770,6 @@ class wxPyCompositeShapePtr(wxPyRectangleShapePtr):
         return val
     def FindContainerImage(self, *_args, **_kwargs):
         val = apply(oglshapesc.wxPyCompositeShape_FindContainerImage,(self,) + _args, _kwargs)
-        if val: val = wxPyShapePtr(val) 
         return val
     def GetConstraints(self, *_args, **_kwargs):
         val = apply(oglshapesc.wxPyCompositeShape_GetConstraints,(self,) + _args, _kwargs)
@@ -881,7 +879,8 @@ class wxPyCompositeShape(wxPyCompositeShapePtr):
     def __init__(self,*_args,**_kwargs):
         self.this = apply(oglshapesc.new_wxPyCompositeShape,_args,_kwargs)
         self.thisown = 1
-        self._setSelf(self, wxPyCompositeShape)
+        self._setCallbackInfo(self, wxPyCompositeShape)
+        self._setOORInfo(self)
 
 
 
@@ -890,8 +889,8 @@ class wxPyDividedShapePtr(wxPyRectangleShapePtr):
     def __init__(self,this):
         self.this = this
         self.thisown = 0
-    def _setSelf(self, *_args, **_kwargs):
-        val = apply(oglshapesc.wxPyDividedShape__setSelf,(self,) + _args, _kwargs)
+    def _setCallbackInfo(self, *_args, **_kwargs):
+        val = apply(oglshapesc.wxPyDividedShape__setCallbackInfo,(self,) + _args, _kwargs)
         return val
     def EditRegions(self, *_args, **_kwargs):
         val = apply(oglshapesc.wxPyDividedShape_EditRegions,(self,) + _args, _kwargs)
@@ -992,7 +991,8 @@ class wxPyDividedShape(wxPyDividedShapePtr):
     def __init__(self,*_args,**_kwargs):
         self.this = apply(oglshapesc.new_wxPyDividedShape,_args,_kwargs)
         self.thisown = 1
-        self._setSelf(self, wxPyDividedShape)
+        self._setCallbackInfo(self, wxPyDividedShape)
+        self._setOORInfo(self)
 
 
 
@@ -1001,8 +1001,8 @@ class wxPyDivisionShapePtr(wxPyCompositeShapePtr):
     def __init__(self,this):
         self.this = this
         self.thisown = 0
-    def _setSelf(self, *_args, **_kwargs):
-        val = apply(oglshapesc.wxPyDivisionShape__setSelf,(self,) + _args, _kwargs)
+    def _setCallbackInfo(self, *_args, **_kwargs):
+        val = apply(oglshapesc.wxPyDivisionShape__setCallbackInfo,(self,) + _args, _kwargs)
         return val
     def AdjustBottom(self, *_args, **_kwargs):
         val = apply(oglshapesc.wxPyDivisionShape_AdjustBottom,(self,) + _args, _kwargs)
@@ -1024,14 +1024,12 @@ class wxPyDivisionShapePtr(wxPyCompositeShapePtr):
         return val
     def GetBottomSide(self, *_args, **_kwargs):
         val = apply(oglshapesc.wxPyDivisionShape_GetBottomSide,(self,) + _args, _kwargs)
-        if val: val = wxPyDivisionShapePtr(val) 
         return val
     def GetHandleSide(self, *_args, **_kwargs):
         val = apply(oglshapesc.wxPyDivisionShape_GetHandleSide,(self,) + _args, _kwargs)
         return val
     def GetLeftSide(self, *_args, **_kwargs):
         val = apply(oglshapesc.wxPyDivisionShape_GetLeftSide,(self,) + _args, _kwargs)
-        if val: val = wxPyDivisionShapePtr(val) 
         return val
     def GetLeftSideColour(self, *_args, **_kwargs):
         val = apply(oglshapesc.wxPyDivisionShape_GetLeftSideColour,(self,) + _args, _kwargs)
@@ -1042,11 +1040,9 @@ class wxPyDivisionShapePtr(wxPyCompositeShapePtr):
         return val
     def GetRightSide(self, *_args, **_kwargs):
         val = apply(oglshapesc.wxPyDivisionShape_GetRightSide,(self,) + _args, _kwargs)
-        if val: val = wxPyDivisionShapePtr(val) 
         return val
     def GetTopSide(self, *_args, **_kwargs):
         val = apply(oglshapesc.wxPyDivisionShape_GetTopSide,(self,) + _args, _kwargs)
-        if val: val = wxPyDivisionShapePtr(val) 
         return val
     def GetTopSidePen(self, *_args, **_kwargs):
         val = apply(oglshapesc.wxPyDivisionShape_GetTopSidePen,(self,) + _args, _kwargs)
@@ -1178,7 +1174,8 @@ class wxPyDivisionShape(wxPyDivisionShapePtr):
     def __init__(self,*_args,**_kwargs):
         self.this = apply(oglshapesc.new_wxPyDivisionShape,_args,_kwargs)
         self.thisown = 1
-        self._setSelf(self, wxPyDivisionShape)
+        self._setCallbackInfo(self, wxPyDivisionShape)
+        self._setOORInfo(self)
 
 
 

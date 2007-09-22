@@ -4,7 +4,7 @@
 // Author:      Vadim Zeitlin
 // Modified by:
 // Created:     19.10.99
-// RCS-ID:      $Id: clipbrd.h,v 1.11 1999/10/21 14:00:30 VZ Exp $
+// RCS-ID:      $Id: clipbrd.h,v 1.15 2002/08/31 11:29:09 GD Exp $
 // Copyright:   (c) wxWindows Team
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -12,7 +12,7 @@
 #ifndef _WX_CLIPBRD_H_BASE_
 #define _WX_CLIPBRD_H_BASE_
 
-#ifdef __GNUG__
+#if defined(__GNUG__) && !defined(__APPLE__)
     #pragma interface "clipboardbase.h"
 #endif
 
@@ -88,8 +88,10 @@ public:
     #include "wx/motif/clipbrd.h"
 #elif defined(__WXGTK__)
     #include "wx/gtk/clipbrd.h"
-#elif defined(__WXQT__)
-    #include "wx/gtk/clipbrd.h"
+#elif defined(__WXX11__)
+    #include "wx/x11/clipbrd.h"
+#elif defined(__WXMGL__)
+    #include "wx/mgl/clipbrd.h"
 #elif defined(__WXMAC__)
     #include "wx/mac/clipbrd.h"
 #elif defined(__WXPM__)

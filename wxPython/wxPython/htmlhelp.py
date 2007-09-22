@@ -9,11 +9,15 @@ from windows import *
 
 from gdi import *
 
+from fonts import *
+
 from clip_dnd import *
 
 from events import *
 
 from streams import *
+
+from utils import *
 
 from mdi import *
 
@@ -38,60 +42,13 @@ from printfw import *
 from sizers import *
 
 from filesys import *
-
-from utils import *
-class wxHtmlHelpFrameCfgPtr :
-    def __init__(self,this):
-        self.this = this
-        self.thisown = 0
-    def __setattr__(self,name,value):
-        if name == "x" :
-            htmlhelpc.wxHtmlHelpFrameCfg_x_set(self,value)
-            return
-        if name == "y" :
-            htmlhelpc.wxHtmlHelpFrameCfg_y_set(self,value)
-            return
-        if name == "w" :
-            htmlhelpc.wxHtmlHelpFrameCfg_w_set(self,value)
-            return
-        if name == "h" :
-            htmlhelpc.wxHtmlHelpFrameCfg_h_set(self,value)
-            return
-        if name == "sashpos" :
-            htmlhelpc.wxHtmlHelpFrameCfg_sashpos_set(self,value)
-            return
-        if name == "navig_on" :
-            htmlhelpc.wxHtmlHelpFrameCfg_navig_on_set(self,value)
-            return
-        self.__dict__[name] = value
-    def __getattr__(self,name):
-        if name == "x" : 
-            return htmlhelpc.wxHtmlHelpFrameCfg_x_get(self)
-        if name == "y" : 
-            return htmlhelpc.wxHtmlHelpFrameCfg_y_get(self)
-        if name == "w" : 
-            return htmlhelpc.wxHtmlHelpFrameCfg_w_get(self)
-        if name == "h" : 
-            return htmlhelpc.wxHtmlHelpFrameCfg_h_get(self)
-        if name == "sashpos" : 
-            return htmlhelpc.wxHtmlHelpFrameCfg_sashpos_get(self)
-        if name == "navig_on" : 
-            return htmlhelpc.wxHtmlHelpFrameCfg_navig_on_get(self)
-        raise AttributeError,name
-    def __repr__(self):
-        return "<C wxHtmlHelpFrameCfg instance at %s>" % (self.this,)
-class wxHtmlHelpFrameCfg(wxHtmlHelpFrameCfgPtr):
-    def __init__(self,*_args,**_kwargs):
-        self.this = apply(htmlhelpc.new_wxHtmlHelpFrameCfg,_args,_kwargs)
-        self.thisown = 1
-
-
-
-
 class wxHtmlBookRecordPtr :
     def __init__(self,this):
         self.this = this
         self.thisown = 0
+    def GetBookFile(self, *_args, **_kwargs):
+        val = apply(htmlhelpc.wxHtmlBookRecord_GetBookFile,(self,) + _args, _kwargs)
+        return val
     def GetTitle(self, *_args, **_kwargs):
         val = apply(htmlhelpc.wxHtmlBookRecord_GetTitle,(self,) + _args, _kwargs)
         return val
@@ -110,6 +67,18 @@ class wxHtmlBookRecordPtr :
     def GetContentsEnd(self, *_args, **_kwargs):
         val = apply(htmlhelpc.wxHtmlBookRecord_GetContentsEnd,(self,) + _args, _kwargs)
         return val
+    def SetTitle(self, *_args, **_kwargs):
+        val = apply(htmlhelpc.wxHtmlBookRecord_SetTitle,(self,) + _args, _kwargs)
+        return val
+    def SetBasePath(self, *_args, **_kwargs):
+        val = apply(htmlhelpc.wxHtmlBookRecord_SetBasePath,(self,) + _args, _kwargs)
+        return val
+    def SetStart(self, *_args, **_kwargs):
+        val = apply(htmlhelpc.wxHtmlBookRecord_SetStart,(self,) + _args, _kwargs)
+        return val
+    def GetFullPath(self, *_args, **_kwargs):
+        val = apply(htmlhelpc.wxHtmlBookRecord_GetFullPath,(self,) + _args, _kwargs)
+        return val
     def __repr__(self):
         return "<C wxHtmlBookRecord instance at %s>" % (self.this,)
 class wxHtmlBookRecord(wxHtmlBookRecordPtr):
@@ -124,35 +93,22 @@ class wxHtmlContentsItemPtr :
     def __init__(self,this):
         self.this = this
         self.thisown = 0
-    def __setattr__(self,name,value):
-        if name == "m_Level" :
-            htmlhelpc.wxHtmlContentsItem_m_Level_set(self,value)
-            return
-        if name == "m_ID" :
-            htmlhelpc.wxHtmlContentsItem_m_ID_set(self,value)
-            return
-        if name == "m_Name" :
-            htmlhelpc.wxHtmlContentsItem_m_Name_set(self,value)
-            return
-        if name == "m_Page" :
-            htmlhelpc.wxHtmlContentsItem_m_Page_set(self,value)
-            return
-        if name == "m_Book" :
-            htmlhelpc.wxHtmlContentsItem_m_Book_set(self,value.this)
-            return
-        self.__dict__[name] = value
-    def __getattr__(self,name):
-        if name == "m_Level" : 
-            return htmlhelpc.wxHtmlContentsItem_m_Level_get(self)
-        if name == "m_ID" : 
-            return htmlhelpc.wxHtmlContentsItem_m_ID_get(self)
-        if name == "m_Name" : 
-            return htmlhelpc.wxHtmlContentsItem_m_Name_get(self)
-        if name == "m_Page" : 
-            return htmlhelpc.wxHtmlContentsItem_m_Page_get(self)
-        if name == "m_Book" : 
-            return wxHtmlBookRecordPtr(htmlhelpc.wxHtmlContentsItem_m_Book_get(self))
-        raise AttributeError,name
+    def GetLevel(self, *_args, **_kwargs):
+        val = apply(htmlhelpc.wxHtmlContentsItem_GetLevel,(self,) + _args, _kwargs)
+        return val
+    def GetID(self, *_args, **_kwargs):
+        val = apply(htmlhelpc.wxHtmlContentsItem_GetID,(self,) + _args, _kwargs)
+        return val
+    def GetName(self, *_args, **_kwargs):
+        val = apply(htmlhelpc.wxHtmlContentsItem_GetName,(self,) + _args, _kwargs)
+        return val
+    def GetPage(self, *_args, **_kwargs):
+        val = apply(htmlhelpc.wxHtmlContentsItem_GetPage,(self,) + _args, _kwargs)
+        return val
+    def GetBook(self, *_args, **_kwargs):
+        val = apply(htmlhelpc.wxHtmlContentsItem_GetBook,(self,) + _args, _kwargs)
+        if val: val = wxHtmlBookRecordPtr(val) 
+        return val
     def __repr__(self):
         return "<C wxHtmlContentsItem instance at %s>" % (self.this,)
 class wxHtmlContentsItem(wxHtmlContentsItemPtr):
@@ -281,6 +237,7 @@ class wxHtmlHelpFrame(wxHtmlHelpFramePtr):
     def __init__(self,*_args,**_kwargs):
         self.this = apply(htmlhelpc.new_wxHtmlHelpFrame,_args,_kwargs)
         self.thisown = 1
+        self._setOORInfo(self)
 
 
 
@@ -335,6 +292,7 @@ class wxHtmlHelpController(wxHtmlHelpControllerPtr):
     def __init__(self,*_args,**_kwargs):
         self.this = apply(htmlhelpc.new_wxHtmlHelpController,_args,_kwargs)
         self.thisown = 1
+        self._setOORInfo(self)
 
 
 
@@ -347,16 +305,12 @@ class wxHtmlHelpController(wxHtmlHelpControllerPtr):
 
 #-------------- VARIABLE WRAPPERS ------------------
 
-wxID_HTML_PANEL = htmlhelpc.wxID_HTML_PANEL
-wxID_HTML_BACK = htmlhelpc.wxID_HTML_BACK
-wxID_HTML_FORWARD = htmlhelpc.wxID_HTML_FORWARD
-wxID_HTML_TREECTRL = htmlhelpc.wxID_HTML_TREECTRL
-wxID_HTML_INDEXPAGE = htmlhelpc.wxID_HTML_INDEXPAGE
-wxID_HTML_INDEXLIST = htmlhelpc.wxID_HTML_INDEXLIST
-wxID_HTML_NOTEBOOK = htmlhelpc.wxID_HTML_NOTEBOOK
-wxID_HTML_SEARCHPAGE = htmlhelpc.wxID_HTML_SEARCHPAGE
-wxID_HTML_SEARCHTEXT = htmlhelpc.wxID_HTML_SEARCHTEXT
-wxID_HTML_SEARCHLIST = htmlhelpc.wxID_HTML_SEARCHLIST
-wxID_HTML_SEARCHBUTTON = htmlhelpc.wxID_HTML_SEARCHBUTTON
-wxID_HTML_SEARCHCHOICE = htmlhelpc.wxID_HTML_SEARCHCHOICE
-wxID_HTML_HELPFRAME = htmlhelpc.wxID_HTML_HELPFRAME
+wxHF_TOOLBAR = htmlhelpc.wxHF_TOOLBAR
+wxHF_FLATTOOLBAR = htmlhelpc.wxHF_FLATTOOLBAR
+wxHF_CONTENTS = htmlhelpc.wxHF_CONTENTS
+wxHF_INDEX = htmlhelpc.wxHF_INDEX
+wxHF_SEARCH = htmlhelpc.wxHF_SEARCH
+wxHF_BOOKMARKS = htmlhelpc.wxHF_BOOKMARKS
+wxHF_OPENFILES = htmlhelpc.wxHF_OPENFILES
+wxHF_PRINT = htmlhelpc.wxHF_PRINT
+wxHF_DEFAULTSTYLE = htmlhelpc.wxHF_DEFAULTSTYLE

@@ -4,7 +4,7 @@
 // Author:      Aleksandras Gluchovas
 // Modified by:
 // Created:     27/09/98
-// RCS-ID:      $Id: wxstllst.h,v 1.1 1999/09/13 14:29:41 JS Exp $
+// RCS-ID:      $Id: wxstllst.h,v 1.2 2001/11/18 12:25:12 GD Exp $
 // Copyright:   (c) Aleskandars Gluchovas
 // Licence:   	wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -17,7 +17,9 @@
 #endif
 
 #include <stddef.h>
-#include <sys/types.h>
+#if !defined(__WXMAC__) || defined(__DARWIN__)
+#  include <sys/types.h>
+#endif
 #include <memory.h>
 #include <limits.h>
 #include <new.h>

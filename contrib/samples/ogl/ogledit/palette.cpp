@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     12/07/98
-// RCS-ID:      $Id: palette.cpp,v 1.1 2000/03/03 11:24:39 JS Exp $
+// RCS-ID:      $Id: palette.cpp,v 1.4 2002/03/21 10:32:03 JS Exp $
 // Copyright:   (c) Julian Smart
 // Licence:   	wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -14,7 +14,7 @@
 #endif
 
 // For compilers that support precompilation, includes "wx.h".
-#include <wx/wxprec.h>
+#include "wx/wxprec.h"
 
 #ifdef __BORLANDC__
 #pragma hdrstop
@@ -36,7 +36,7 @@
 #include "palette.h"
 
 // Include pixmaps
-#if defined(__WXGTK__) || defined(__WXMOTIF__)
+#if defined(__WXGTK__) || defined(__WXX11__) || defined(__WXMOTIF__) || defined(__WXMAC__)
 #include "bitmaps/arrow.xpm"
 #include "bitmaps/tool1.xpm"
 #include "bitmaps/tool2.xpm"
@@ -93,7 +93,7 @@ EditorToolPalette *MyApp::CreatePalette(wxFrame *parent)
   wxBitmap PaletteTool3("TOOL3");
   wxBitmap PaletteTool4("TOOL4");
   wxBitmap PaletteArrow("ARROWTOOL");
-#elif defined(__WXGTK__) || defined(__WXMOTIF__)
+#elif defined(__WXGTK__) || defined(__WXX11__) || defined(__WXMOTIF__) || defined(__WXMAC__)
   wxBitmap PaletteTool1(tool1_xpm);
   wxBitmap PaletteTool2(tool2_xpm);
   wxBitmap PaletteTool3(tool3_xpm);

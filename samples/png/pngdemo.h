@@ -4,12 +4,12 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     01/02/97
-// RCS-ID:      $Id: pngdemo.h,v 1.3 1999/02/05 23:48:51 JS Exp $
+// RCS-ID:      $Id: pngdemo.h,v 1.5 2002/08/31 22:30:50 GD Exp $
 // Copyright:   (c) Julian Smart and Markus Holzem
-// Licence:   	wxWindows license
+// Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
 
-#ifdef __GNUG__
+#if defined( __GNUG__) && !defined(__APPLE__)
 #pragma interface
 #endif
 
@@ -31,6 +31,7 @@ class MyFrame: public wxFrame
   public:
     MyCanvas *canvas;
     MyFrame(wxFrame *parent, const wxString& title, const wxPoint& pos, const wxSize& size);
+    virtual ~MyFrame();
 
     void OnActivate(bool) {}
     void OnLoadFile(wxCommandEvent& event);

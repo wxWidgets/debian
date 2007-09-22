@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by: 
 // Created:     7/4/98
-// RCS-ID:      $Id: treelay.h,v 1.1 2000/03/14 19:55:34 RL Exp $
+// RCS-ID:      $Id: treelay.h,v 1.2 2002/03/17 14:16:00 VZ Exp $
 // Copyright:   (c) 1998 Julian Smart
 // Licence:     wxWindows licence
 ///////////////////////////////////////////////////////////////////////////////
@@ -12,8 +12,9 @@
 // Define a new application
 class MyApp: public wxApp
 {
-  public:
-    bool OnInit();
+public:
+    virtual bool OnInit();
+    virtual int OnExit();
     void TreeTest(wxTreeLayoutStored& tree, wxDC& dc);
 };
 

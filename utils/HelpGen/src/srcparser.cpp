@@ -4,14 +4,13 @@
 // Author:      Aleksandras Gluchovas
 // Modified by:
 // Created:     22/09/98
-// RCS-ID:      $Id: srcparser.cpp,v 1.3 1999/02/21 22:32:46 VZ Exp $
+// RCS-ID:      $Id: srcparser.cpp,v 1.6 2001/12/03 10:54:59 GT Exp $
 // Copyright:   (c) Aleskandars Gluchovas
 // Licence:       wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
 
 #ifdef __GNUG__
-#pragma implementation "srcparser.h"
-#pragma interface
+#  pragma implementation "srcparser.h"
 #endif
 
 // For compilers that support precompilation, includes "wx/wx.h".
@@ -25,7 +24,9 @@
 #include "wx/wx.h"
 #endif
 
-#include <malloc.h>
+#ifndef __DARWIN__
+#  include <malloc.h>
+#endif
 #include <stdio.h>
 
 #include "srcparser.h"
@@ -345,7 +346,7 @@ void spContext::RemoveThisContext()
         mpParent->RemoveChild( this );
     else
         // context should have a parent
-        wxASSERT(0);
+        wxFAIL_MSG("Context should have a parent");
 }
 
 spContext* spContext::GetOutterContext()

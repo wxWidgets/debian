@@ -7,13 +7,13 @@
 #
 # Author:      Mike Fletcher
 #
-# RCS-ID:      $Id: filebrowsebutton.py,v 1.1.2.5 2001/01/30 20:54:22 robind Exp $
+# RCS-ID:      $Id: filebrowsebutton.py,v 1.8 2002/03/08 23:06:21 RD Exp $
 # Copyright:   (c) 2000 by Total Control Software
 # Licence:     wxWindows license
 #----------------------------------------------------------------------
 
 from wxPython.wx import *
-import os
+import os, types
 
 #----------------------------------------------------------------------
 
@@ -64,6 +64,8 @@ class FileBrowseButton(wxPanel):
         self.fileMask = fileMask
         self.fileMode = fileMode
         self.changeCallback = changeCallback
+        self.callCallback = true
+
 
         # get background to match it
         try:
@@ -78,6 +80,7 @@ class FileBrowseButton(wxPanel):
         # constructor. Not good. So a default value on
         # SetValue is used to disable the callback
         self.SetValue( initialValue, 0)
+
 
     def createDialog( self, parent, id, pos, size, style ):
         """Setup the graphic representation of the dialog"""
@@ -106,8 +109,12 @@ class FileBrowseButton(wxPanel):
         self.SetAutoLayout(true)
         self.SetSizer( outsidebox )
         self.Layout()
-        if size.width != -1 or size.height != -1:
-            self.SetSize(size)
+        if type( size ) == types.TupleType:
+            size = apply( wxSize, size)
+        self.SetDimensions(-1, -1, size.width, size.height, wxSIZE_USE_EXISTING)
+
+#        if size.width != -1 or size.height != -1:
+#            self.SetSize(size)
 
     def SetBackgroundColour(self,color):
         wxPanel.SetBackgroundColour(self,color)
@@ -127,9 +134,13 @@ class FileBrowseButton(wxPanel):
         textControl = wxTextCtrl(self, ID)
         textControl.SetToolTipString( self.toolTip )
         if self.changeCallback:
-            EVT_TEXT(textControl, ID, self.changeCallback)
-            EVT_COMBOBOX(textControl, ID, self.changeCallback)
+            EVT_TEXT(textControl, ID, self.OnChanged)
+            EVT_COMBOBOX(textControl, ID, self.OnChanged)
         return textControl
+
+    def OnChanged(self, evt):
+        if self.callCallback and self.changeCallback:
+            self.changeCallback(evt)
 
     def createBrowseButton( self):
         """Create the browse-button control"""
@@ -155,19 +166,21 @@ class FileBrowseButton(wxPanel):
         dlg = wxFileDialog(self, self.dialogTitle, directory, current, self.fileMask, self.fileMode)
 
         if dlg.ShowModal() == wxID_OK:
-            self.SetValue (dlg.GetPath())
+            self.SetValue(dlg.GetPath())
         dlg.Destroy()
-
 
 
     def GetValue (self):
         """ Convenient access to text control value """
-        return self.textControl.GetValue ()
+        return self.textControl.GetValue()
 
     def SetValue (self, value, callBack=1):
         """ Convenient setting of text control value """
-        # Removed the return from here because SetValue doesn't return anything.
-        self.textControl.SetValue (value)
+        save = self.callCallback
+        self.callCallback = callBack
+        self.textControl.SetValue(value)
+        self.callCallback =  save
+
 
     def Enable (self, value):
         """ Convenient enabling/disabling of entire control """
@@ -184,6 +197,7 @@ class FileBrowseButton(wxPanel):
         rvalue = self.label.SetLabel( value )
         self.Refresh( true )
         return rvalue
+
 
 
 
@@ -221,6 +235,7 @@ class FileBrowseButtonWithHistory( FileBrowseButton ):
             self.history=None
         apply( FileBrowseButton.__init__, ( self,)+arguments, namedarguments)
 
+
     def createTextControl( self):
         """Create the text control"""
         ID = wxNewId()
@@ -236,6 +251,7 @@ class FileBrowseButtonWithHistory( FileBrowseButton ):
             self.SetHistory( history, control=textControl)
         return textControl
 
+
     def GetHistoryControl( self ):
         """Return a pointer to the control which provides (at least)
         the following methods for manipulating the history list.:
@@ -246,6 +262,7 @@ class FileBrowseButtonWithHistory( FileBrowseButton ):
         Semantics of the methods follow those for the wxComboBox control
         """
         return self.textControl
+
 
     def SetHistory( self, value=(), selectionIndex = None, control=None ):
         """Set the current history list"""
@@ -265,6 +282,7 @@ class FileBrowseButtonWithHistory( FileBrowseButton ):
         if selectionIndex is not None:
             control.SetSelection( selectionIndex )
 
+
     def GetHistory( self ):
         """Return the current history list"""
         if self.historyCallBack != None:
@@ -272,18 +290,23 @@ class FileBrowseButtonWithHistory( FileBrowseButton ):
         else:
             return list( self.history )
 
+
     def OnSetFocus(self, event):
         """When the history scroll is selected, update the history"""
         if self.historyCallBack != None:
             self.SetHistory( self.historyCallBack(), control=self.textControl)
         event.Skip()
 
+
     if wxPlatform == "__WXMSW__":
         def SetValue (self, value, callBack=1):
             """ Convenient setting of text control value, works
                 around limitation of wxComboBox """
-            # Removed the return from here because SetValue doesn't return anything.
-            self.textControl.SetValue (value)
+            save = self.callCallback
+            self.callCallback = callBack
+            self.textControl.SetValue(value)
+            self.callCallback =  save
+
             # Hack to call an event handler
             class LocalEvent:
                 def __init__(self, string):

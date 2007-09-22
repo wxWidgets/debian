@@ -2,13 +2,14 @@
  * Project: GSocket (Generic Socket) for WX
  * Name:    gsockgtk.c
  * Purpose: GSocket: GTK part
- * CVSID:   $Id: gsockgtk.c,v 1.12 2000/03/14 04:41:33 GRG Exp $
+ * CVSID:   $Id: gsockgtk.c,v 1.14 2002/07/29 04:13:24 RL Exp $
  * -------------------------------------------------------------------------
  */
 #include "wx/setup.h"
 
 #if wxUSE_SOCKETS
 
+#include <assert.h>
 #include <stdlib.h>
 #include <stdio.h>
 
@@ -31,7 +32,7 @@ void _GSocket_GDK_Input(gpointer data,
     _GSocket_Detected_Write(socket);
 }
 
-bool _GSocket_GUI_Init(GSocket *socket)
+int _GSocket_GUI_Init(GSocket *socket)
 {
   gint *m_id;
 
@@ -79,6 +80,8 @@ void _GSocket_Uninstall_Callback(GSocket *socket, GSocketEvent event)
 {
   gint *m_id = (gint *)(socket->m_gui_dependent);
   int c;
+
+  assert( m_id != NULL );
 
   switch (event)
   {

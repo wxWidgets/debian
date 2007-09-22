@@ -9,11 +9,15 @@ from windows import *
 
 from gdi import *
 
+from fonts import *
+
 from clip_dnd import *
 
 from events import *
 
 from streams import *
+
+from utils import *
 
 from mdi import *
 
@@ -39,15 +43,12 @@ from sizers import *
 
 from filesys import *
 
-from utils import *
+from oglbasic import *
 import wx
-class wxDiagramPtr :
+class wxDiagramPtr(wxObjectPtr):
     def __init__(self,this):
         self.this = this
         self.thisown = 0
-    def __del__(self,oglcanvasc=oglcanvasc):
-        if self.thisown == 1 :
-            oglcanvasc.delete_wxDiagram(self)
     def AddShape(self, *_args, **_kwargs):
         val = apply(oglcanvasc.wxDiagram_AddShape,(self,) + _args, _kwargs)
         return val
@@ -62,11 +63,9 @@ class wxDiagramPtr :
         return val
     def FindShape(self, *_args, **_kwargs):
         val = apply(oglcanvasc.wxDiagram_FindShape,(self,) + _args, _kwargs)
-        if val: val = wxPyShapePtr(val) 
         return val
     def GetCanvas(self, *_args, **_kwargs):
         val = apply(oglcanvasc.wxDiagram_GetCanvas,(self,) + _args, _kwargs)
-        if val: val = wxPyShapeCanvasPtr(val) 
         return val
     def GetCount(self, *_args, **_kwargs):
         val = apply(oglcanvasc.wxDiagram_GetCount,(self,) + _args, _kwargs)
@@ -139,13 +138,6 @@ class wxDiagramPtr :
         return val
     def __repr__(self):
         return "<C wxDiagram instance at %s>" % (self.this,)
-    # replaces broken shadow methods
-    def FindShape(self, *_args, **_kwargs):
-        from oglbasic import wxPyShapePtr
-        val = apply(oglcanvasc.wxDiagram_FindShape,(self,) + _args, _kwargs)
-        if val: val = wxPyShapePtr(val)
-        return val
-    
 class wxDiagram(wxDiagramPtr):
     def __init__(self,*_args,**_kwargs):
         self.this = apply(oglcanvasc.new_wxDiagram,_args,_kwargs)
@@ -158,8 +150,8 @@ class wxPyShapeCanvasPtr(wxScrolledWindowPtr):
     def __init__(self,this):
         self.this = this
         self.thisown = 0
-    def _setSelf(self, *_args, **_kwargs):
-        val = apply(oglcanvasc.wxPyShapeCanvas__setSelf,(self,) + _args, _kwargs)
+    def _setCallbackInfo(self, *_args, **_kwargs):
+        val = apply(oglcanvasc.wxPyShapeCanvas__setCallbackInfo,(self,) + _args, _kwargs)
         return val
     def AddShape(self, *_args, **_kwargs):
         val = apply(oglcanvasc.wxPyShapeCanvas_AddShape,(self,) + _args, _kwargs)
@@ -172,7 +164,6 @@ class wxPyShapeCanvasPtr(wxScrolledWindowPtr):
         return val
     def GetDiagram(self, *_args, **_kwargs):
         val = apply(oglcanvasc.wxPyShapeCanvas_GetDiagram,(self,) + _args, _kwargs)
-        if val: val = wxDiagramPtr(val) 
         return val
     def GetQuickEditMode(self, *_args, **_kwargs):
         val = apply(oglcanvasc.wxPyShapeCanvas_GetQuickEditMode,(self,) + _args, _kwargs)
@@ -218,13 +209,16 @@ class wxPyShapeCanvasPtr(wxScrolledWindowPtr):
         return val
     def __repr__(self):
         return "<C wxPyShapeCanvas instance at %s>" % (self.this,)
+    
+    def GetShapeList(self):
+        return self.GetDiagram().GetShapeList()
+    
 class wxPyShapeCanvas(wxPyShapeCanvasPtr):
     def __init__(self,*_args,**_kwargs):
         self.this = apply(oglcanvasc.new_wxPyShapeCanvas,_args,_kwargs)
         self.thisown = 1
-        self._setSelf(self, wxPyShapeCanvas)
-        #wx._StdWindowCallbacks(self)
-        #wx._StdOnScrollCallbacks(self)
+        self._setCallbackInfo(self, wxPyShapeCanvas)
+        self._setOORInfo(self)
 
 
 

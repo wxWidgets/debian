@@ -2,7 +2,7 @@
 // Name:        stattext.cpp
 // Purpose:
 // Author:      Robert Roebling
-// Id:          $Id: stattext.cpp,v 1.34 2000/01/06 18:40:33 RR Exp $
+// Id:          $Id: stattext.cpp,v 1.39 2002/08/17 17:35:36 RR Exp $
 // Copyright:   (c) 1998 Robert Roebling
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -12,7 +12,12 @@
     #pragma implementation "stattext.h"
 #endif
 
+#include "wx/defs.h"
+
+#if wxUSE_STATTEXT
+
 #include "wx/stattext.h"
+#include "wx/gtk/private.h"
 
 #include "gdk/gdk.h"
 #include "gtk/gtk.h"
@@ -60,7 +65,7 @@ bool wxStaticText::Create(wxWindow *parent,
     // because the label is not yet created and because SetLabel() has a side
     // effect of changing the control size which might not be desirable
     wxControl::SetLabel(label);
-    m_widget = gtk_label_new( m_label.mbc_str() );
+    m_widget = gtk_label_new( wxGTK_CONV( m_label ) );
     
     GtkJustification justify;
     if ( style & wxALIGN_CENTER )
@@ -104,8 +109,13 @@ bool wxStaticText::Create(wxWindow *parent,
 
 wxString wxStaticText::GetLabel() const
 {
-    char *str = (char *) NULL;
-    gtk_label_get( GTK_LABEL(m_widget), &str );
+    GtkLabel *label = GTK_LABEL(m_widget);
+
+#ifdef __WXGTK20__
+    wxString str = wxGTK_CONV_BACK( gtk_label_get_text( label ) );
+#else
+    wxString str = wxString( label->label );
+#endif
 
     return wxString(str);
 }
@@ -114,7 +124,7 @@ void wxStaticText::SetLabel( const wxString &label )
 {
     wxControl::SetLabel(label);
 
-    gtk_label_set( GTK_LABEL(m_widget), m_label.mbc_str() );
+    gtk_label_set( GTK_LABEL(m_widget), wxGTK_CONV( m_label ) );
 
     // adjust the label size to the new label unless disabled
     if (!HasFlag(wxST_NO_AUTORESIZE))
@@ -150,9 +160,10 @@ wxSize wxStaticText::DoGetBestSize() const
     GtkRequisition req;
     req.width = 2;
     req.height = 2;
-    (* GTK_WIDGET_CLASS( GTK_OBJECT(m_widget)->klass )->size_request )
+    (* GTK_WIDGET_CLASS( GTK_OBJECT_GET_CLASS(m_widget) )->size_request )
         (m_widget, &req );
 
     return wxSize(req.width, req.height);
 }
 
+#endif // wxUSE_STATTEXT

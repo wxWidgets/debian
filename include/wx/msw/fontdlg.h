@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     01/02/97
-// RCS-ID:      $Id: fontdlg.h,v 1.3 1999/11/06 00:43:27 VZ Exp $
+// RCS-ID:      $Id: fontdlg.h,v 1.5 2002/05/12 22:26:01 VZ Exp $
 // Copyright:   (c) Julian Smart
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -16,28 +16,26 @@
     #pragma interface "fontdlg.h"
 #endif
 
-#include "wx/dialog.h"
-#include "wx/cmndata.h"
-
 // ----------------------------------------------------------------------------
 // wxFontDialog
 // ----------------------------------------------------------------------------
 
-class WXDLLEXPORT wxFontDialog : public wxDialog
+class WXDLLEXPORT wxFontDialog : public wxFontDialogBase
 {
 public:
-    wxFontDialog();
-    wxFontDialog(wxWindow *parent, wxFontData *data = NULL);
-
-    bool Create(wxWindow *parent, wxFontData *data = NULL);
+    wxFontDialog() : wxFontDialogBase() { /* must be Create()d later */ }
+    wxFontDialog(wxWindow *parent)
+        : wxFontDialogBase(parent) { Create(parent); }
+    wxFontDialog(wxWindow *parent, const wxFontData& data)
+        : wxFontDialogBase(parent, data) { Create(parent, data); }
 
     virtual int ShowModal();
 
-    wxFontData& GetFontData() { return m_fontData; }
+    // deprecated interface, don't use
+    wxFontDialog(wxWindow *parent, const wxFontData *data)
+        : wxFontDialogBase(parent, data) { Create(parent, data); }
 
 protected:
-    wxFontData m_fontData;
-
     DECLARE_DYNAMIC_CLASS(wxFontDialog)
 };
 

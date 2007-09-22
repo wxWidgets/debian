@@ -4,7 +4,7 @@
 // Author:      Chris Breeze
 // Modified by:
 // Created:     21/07/97
-// RCS-ID:      $Id: game.h,v 1.1 2000/01/08 15:27:38 VZ Exp $
+// RCS-ID:      $Id: game.h,v 1.2 2002/03/06 17:50:52 JS Exp $
 // Copyright:   (c) 1993-1998 Chris Breeze
 // Licence:   	wxWindows licence
 //---------------------------------------------------------------------------
@@ -73,6 +73,7 @@ public:
 	Game(int wins, int games, int score);
 	virtual ~Game();
 
+        void Layout();
 	void NewPlayer(int wins, int games, int score);
 	void Deal();		// Shuffle and deal a new game
 	bool CanYouGo(int x, int y);	// can card under (x,y) go somewhere?

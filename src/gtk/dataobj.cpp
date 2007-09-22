@@ -2,7 +2,7 @@
 // Name:        dataobj.cpp
 // Purpose:     wxDataObject class
 // Author:      Robert Roebling
-// Id:          $Id: dataobj.cpp,v 1.32 1999/12/28 13:08:03 RR Exp $
+// Id:          $Id: dataobj.cpp,v 1.37 2002/08/30 21:10:28 VZ Exp $
 // Copyright:   (c) 1998 Robert Roebling
 // Licence:     wxWindows licence
 ///////////////////////////////////////////////////////////////////////////////
@@ -16,6 +16,7 @@
 #include "wx/debug.h"
 #include "wx/mstream.h"
 #include "wx/image.h"
+#include "wx/log.h"
 
 #include <gdk/gdk.h>
 
@@ -72,8 +73,12 @@ wxDataFormat::wxDataFormat( NativeFormat format )
 void wxDataFormat::SetType( wxDataFormatId type )
 {
     PrepareFormats();
-    m_type = type;
+    
+    if (type == wxDF_UNICODETEXT)
+       type = wxDF_TEXT;
 
+    m_type = type;
+    
     if (m_type == wxDF_TEXT)
         m_format = g_textAtom;
     else
@@ -95,7 +100,7 @@ wxDataFormatId wxDataFormat::GetType() const
 
 wxString wxDataFormat::GetId() const
 {
-    wxString ret( gdk_atom_name( m_format ) );  // this will convert from ascii to Unicode
+    wxString ret = wxString::FromAscii( gdk_atom_name( m_format ) );
     return ret;
 }
 
@@ -121,7 +126,7 @@ void wxDataFormat::SetId( const wxChar *id )
     PrepareFormats();
     m_type = wxDF_PRIVATE;
     wxString tmp( id );
-    m_format = gdk_atom_intern( wxMBSTRINGCAST tmp.mbc_str(), FALSE );  // what is the string cast for?
+    m_format = gdk_atom_intern( (const char*) tmp.ToAscii(), FALSE ); 
 }
 
 void wxDataFormat::PrepareFormats()
@@ -134,7 +139,11 @@ void wxDataFormat::PrepareFormats()
     //     text/uri-list for file dnd because compatibility is not important
     //     here (with whom?)
     if (!g_textAtom)
+#if wxUSE_UNICODE
+        g_textAtom = gdk_atom_intern( "UTF8_STRING", FALSE );
+#else
         g_textAtom = gdk_atom_intern( "STRING" /* "text/plain" */, FALSE );
+#endif
     if (!g_pngAtom)
         g_pngAtom = gdk_atom_intern( "image/png", FALSE );
     if (!g_fileAtom)
@@ -330,46 +339,44 @@ bool wxBitmapDataObject::SetData(size_t size, const void *buf)
 {
     Clear();
 
-#if wxUSE_LIBPNG
+    wxCHECK_MSG( wxImage::FindHandler(wxBITMAP_TYPE_PNG) != NULL,
+                 FALSE, wxT("You must call wxImage::AddHandler(new wxPNGHandler); to be able to use clipboard with bitmaps!") );
+
     m_pngSize = size;
     m_pngData = malloc(m_pngSize);
 
-    memcpy( m_pngData, buf, m_pngSize );
+    memcpy(m_pngData, buf, m_pngSize);
 
-    wxMemoryInputStream mstream( (char*) m_pngData, m_pngSize );
+    wxMemoryInputStream mstream((char*) m_pngData, m_pngSize);
     wxImage image;
-    wxPNGHandler handler;
-    if ( !handler.LoadFile( &image, mstream ) )
+    if ( !image.LoadFile( mstream, wxBITMAP_TYPE_PNG ) )
     {
         return FALSE;
     }
 
-    m_bitmap = image.ConvertToBitmap();
+    m_bitmap = wxBitmap(image);
 
     return m_bitmap.Ok();
-#else
-    return FALSE;
-#endif
 }
 
 void wxBitmapDataObject::DoConvertToPng()
 {
-#if wxUSE_LIBPNG
-    if (!m_bitmap.Ok())
+    if ( !m_bitmap.Ok() )
         return;
 
-    wxImage image( m_bitmap );
-    wxPNGHandler handler;
+    wxCHECK_RET( wxImage::FindHandler(wxBITMAP_TYPE_PNG) != NULL,
+                 wxT("You must call wxImage::AddHandler(new wxPNGHandler); to be able to use clipboard with bitmaps!") );
+
+    wxImage image = m_bitmap.ConvertToImage();
 
     wxCountingOutputStream count;
-    handler.SaveFile( &image, count );
+    image.SaveFile(count, wxBITMAP_TYPE_PNG);
 
     m_pngSize = count.GetSize() + 100; // sometimes the size seems to vary ???
     m_pngData = malloc(m_pngSize);
 
-    wxMemoryOutputStream mstream( (char*) m_pngData, m_pngSize );
-    handler.SaveFile( &image, mstream );
-#endif
+    wxMemoryOutputStream mstream((char*) m_pngData, m_pngSize);
+    image.SaveFile(mstream, wxBITMAP_TYPE_PNG);
 }
 
 

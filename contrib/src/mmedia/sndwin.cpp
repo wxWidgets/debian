@@ -3,7 +3,7 @@
 // Purpose:
 // Date: 08/11/1999
 // Author: Guilhem Lavaux <lavaux@easynet.fr> (C) 1999, 2000
-// CVSID: $Id: sndwin.cpp,v 1.2 2000/03/06 17:33:39 JS Exp $
+// CVSID: $Id: sndwin.cpp,v 1.3 2000/04/03 17:41:16 GL Exp $
 // --------------------------------------------------------------------------
 #ifdef __GNUG__
 #pragma implementation "sndwin.cpp"
@@ -98,8 +98,11 @@ wxSoundStreamWin::wxSoundStreamWin()
 
   m_waiting_for = FALSE;
 
-  if (!OpenDevice(wxSOUND_OUTPUT))
-    return;
+  if (!OpenDevice(wxSOUND_OUTPUT)) {
+    m_snderror = wxSOUND_NOERROR; //next call to OpenDevice won't do this
+    if (!OpenDevice(wxSOUND_INPUT))
+      return;
+  }
 
   CloseDevice();
 }

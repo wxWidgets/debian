@@ -3,7 +3,7 @@
 // Purpose:     wxSpinCtrl class
 // Author:      Robert Roebling
 // Modified by:
-// RCS-ID:      $Id: spinctrl.h,v 1.6 2000/01/02 16:25:27 RR Exp $
+// RCS-ID:      $Id: spinctrl.h,v 1.8 2002/09/07 12:28:46 GD Exp $
 // Copyright:   (c) Robert Roebling
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -11,7 +11,7 @@
 #ifndef __GTKSPINCTRLH__
 #define __GTKSPINCTRLH__
 
-#ifdef __GNUG__
+#if defined(__GNUG__) && !defined(__APPLE__)
 #pragma interface
 #endif
 
@@ -59,8 +59,6 @@ public:
     virtual int GetMax() const;
 
     // implementation
-    // --------------
-    
     void OnChar( wxKeyEvent &event );
     
     bool IsOwnGtkWindow( GdkWindow *window );

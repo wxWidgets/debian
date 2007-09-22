@@ -4,9 +4,9 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     04/01/98
-// RCS-ID:      $Id: pngdemo.cpp,v 1.15 2000/01/15 21:48:50 GRG Exp $
+// RCS-ID:      $Id: pngdemo.cpp,v 1.17 2002/03/17 14:15:54 VZ Exp $
 // Copyright:   (c) Julian Smart and Markus Holzem
-// Licence:   	wxWindows license
+// Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
 
 #ifdef __GNUG__
@@ -87,6 +87,16 @@ MyFrame::MyFrame(wxFrame *frame, const wxString& title, const wxPoint& pos, cons
   canvas = (MyCanvas *) NULL;
 }
 
+// frame destructor
+MyFrame::~MyFrame()
+{
+    if (g_TestBitmap)
+    {
+        delete g_TestBitmap;
+        g_TestBitmap = (wxBitmap *) NULL;
+    }
+}
+
 void MyFrame::OnQuit(wxCommandEvent& WXUNUSED(event))
 {
     Close(TRUE);
@@ -100,8 +110,9 @@ void MyFrame::OnAbout(wxCommandEvent& WXUNUSED(event))
 
 void MyFrame::OnSaveFile(wxCommandEvent& WXUNUSED(event))
 {
-  wxString f = wxFileSelector( "Save Image", (const char *)NULL, (const char *)NULL,
-                            "png", "PNG files (*.png)|*.png" );
+  wxString f = wxFileSelector( wxT("Save Image"), (const wxChar *)NULL,
+                               (const wxChar *)NULL,
+                               wxT("png"), wxT("PNG files (*.png)|*.png") );
 
   if (f == "")  return;
   
@@ -127,15 +138,17 @@ void MyFrame::OnSaveFile(wxCommandEvent& WXUNUSED(event))
 
 void MyFrame::OnLoadFile(wxCommandEvent& WXUNUSED(event))
 {
-	// Show file selector.
-	wxString f = wxFileSelector("Open Image", (const char *) NULL, (const char *) NULL,"png",
-		  "PNG files (*.png)|*.png");
+    // Show file selector.
+    wxString f = wxFileSelector(wxT("Open Image"), (const wxChar *) NULL,
+                                    (const wxChar *) NULL, wxT("png"),
+                                    wxT("PNG files (*.png)|*.png"));
 
-	if (f == "")
-	  return;
+    if (f == "")
+        return;
 
     if ( g_TestBitmap )
         delete g_TestBitmap;
+
     g_TestBitmap = new wxBitmap(f, wxBITMAP_TYPE_PNG);
     if (!g_TestBitmap->Ok())
     {

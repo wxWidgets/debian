@@ -4,7 +4,7 @@
 // Author:      Vadim Zeitlin
 // Modified by:
 // Created:     28.09.99
-// RCS-ID:      $Id: wizard.h,v 1.3.2.1 2000/04/28 14:06:33 VZ Exp $
+// RCS-ID:      $Id: wizard.h,v 1.11 2002/08/31 11:29:12 GD Exp $
 // Copyright:   (c) 1999 Vadim Zeitlin <zeitlin@dptmaths.ens-cachan.fr>
 // Licence:     wxWindows license
 ///////////////////////////////////////////////////////////////////////////////
@@ -13,24 +13,41 @@
 // wxWizard
 // ----------------------------------------------------------------------------
 
+#if defined(__GNUG__) && !defined(__APPLE__)
+    #pragma interface "wizardg.h"
+#endif
+
 class WXDLLEXPORT wxButton;
 class WXDLLEXPORT wxStaticBitmap;
+class WXDLLEXPORT wxWizardEvent;
 
 class WXDLLEXPORT wxWizard : public wxWizardBase
 {
 public:
     // ctor
-    wxWizard(wxWindow *parent = NULL,
+    wxWizard() { Init(); }
+    wxWizard(wxWindow *parent,
+             int id = -1,
+             const wxString& title = wxEmptyString,
+             const wxBitmap& bitmap = wxNullBitmap,
+             const wxPoint& pos = wxDefaultPosition)
+    {
+        Init();
+        Create(parent, id, title, bitmap, pos);
+    }
+    bool Create(wxWindow *parent,
              int id = -1,
              const wxString& title = wxEmptyString,
              const wxBitmap& bitmap = wxNullBitmap,
              const wxPoint& pos = wxDefaultPosition);
+    void Init();
 
     // implement base class pure virtuals
     virtual bool RunWizard(wxWizardPage *firstPage);
     virtual wxWizardPage *GetCurrentPage() const;
     virtual void SetPageSize(const wxSize& size);
     virtual wxSize GetPageSize() const;
+    virtual void FitToPage(const wxWizardPage *firstPage);
 
     // implementation only from now on
     // -------------------------------
@@ -43,16 +60,20 @@ public:
     // TransferDataFromWindow() returns FALSE - otherwise, returns TRUE
     bool ShowPage(wxWizardPage *page, bool goingForward = TRUE);
 
+    // do fill the dialog with controls
+    // this is app-overridable to, for example, set help and tooltip text
+    virtual void DoCreateControls();
+
 private:
     // was the dialog really created?
     bool WasCreated() const { return m_btnPrev != NULL; }
 
-    // do fill the dialog with controls
-    void DoCreateControls();
-
     // event handlers
     void OnCancel(wxCommandEvent& event);
     void OnBackOrNext(wxCommandEvent& event);
+    void OnHelp(wxCommandEvent& event);
+
+    void OnWizEvent(wxWizardEvent& event);
 
     // the page size requested by user
     wxSize m_sizePage;

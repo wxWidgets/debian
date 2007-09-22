@@ -4,7 +4,7 @@
 // Author:      Karsten Ballueder
 // Modified by:
 // Created:     04/01/98
-// RCS-ID:      $Id: helpext.cpp,v 1.19.2.3 2000/04/18 11:13:16 JS Exp $
+// RCS-ID:      $Id: helpext.cpp,v 1.23 2002/08/25 18:16:19 SN Exp $
 // Copyright:   (c) Karsten Ballueder
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -45,6 +45,11 @@
 #endif
 
 IMPLEMENT_CLASS(wxExtHelpController, wxHTMLHelpControllerBase)
+
+/// Name of environment variable to set help browser.
+#define   WXEXTHELP_ENVVAR_BROWSER   "WX_HELPBROWSER"
+/// Is browser a netscape browser?
+#define   WXEXTHELP_ENVVAR_BROWSERISNETSCAPE "WX_HELPBROWSER_NS"
 
 /**
    This class implements help via an external browser.
@@ -98,7 +103,9 @@ wxExtHelpController::DisplayHelp(const wxString &relativeURL)
    }
    else
       return true;
+
 #elif  defined(__WXPM__)
+
    wxString url;
    url << m_MapFile << '\\' << relativeURL.BeforeFirst('#');
 //   will have to fix for OS/2, later.....DW
@@ -111,10 +118,19 @@ wxExtHelpController::DisplayHelp(const wxString &relativeURL)
 //   }
 //   else
       return TRUE;
-#else
-   // assume UNIX
+
+#elif defined(__DOS__)
+
+   wxString command;
+   command = m_BrowserName;
+   command << wxT(" file://")
+           << m_MapFile << WXEXTHELP_SEPARATOR << relativeURL;
+   return wxExecute(command) != 0;
+
+#else // UNIX
    wxString command;
 
+#ifndef __EMX__
    if(m_BrowserIsNetscape) // try re-loading first
    {
       wxString lockfile;
@@ -130,7 +146,7 @@ wxExtHelpController::DisplayHelp(const wxString &relativeURL)
       // cannot use wxFileExists, because it's a link pointing to a
       // non-existing location      if(wxFileExists(lockfile))
 #endif
-	{
+      {
          long success;
          command << m_BrowserName << wxT(" -remote openURL(")
                  << wxT("file://") << m_MapFile
@@ -140,6 +156,7 @@ wxExtHelpController::DisplayHelp(const wxString &relativeURL)
             return TRUE;
       }
    }
+#endif
    command = m_BrowserName;
    command << wxT(" file://")
            << m_MapFile << WXEXTHELP_SEPARATOR << relativeURL;

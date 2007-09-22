@@ -3,7 +3,7 @@
 // Purpose:
 // Date: 08/11/1999
 // Author: Guilhem Lavaux <lavaux@easynet.fr> (C) 1999
-// CVSID: $Id: sndcodec.h,v 1.1 2000/03/05 19:03:12 GL Exp $
+// CVSID: $Id: sndcodec.h,v 1.2 2000/06/04 08:38:36 GL Exp $
 // --------------------------------------------------------------------------
 #ifndef _WX_SNDCODEC_H
 #define _WX_SNDCODEC_H
@@ -15,7 +15,7 @@
 #include "wx/defs.h"
 #include "wx/mmedia/sndbase.h"
 
-class wxSoundStreamCodec: public wxSoundStream {
+class WXDLLEXPORT wxSoundStreamCodec: public wxSoundStream {
  public:
   wxSoundStreamCodec(wxSoundStream& snd_io);
   ~wxSoundStreamCodec();

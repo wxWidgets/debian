@@ -2,7 +2,7 @@
 // Name:        imagepng.cpp
 // Purpose:     wxImage PNG handler
 // Author:      Robert Roebling
-// RCS-ID:      $Id: imagpng.cpp,v 1.18.2.1 2000/07/27 22:06:17 VZ Exp $
+// RCS-ID:      $Id: imagpng.cpp,v 1.27.2.1 2002/09/20 08:53:30 JS Exp $
 // Copyright:   (c) Robert Roebling
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -22,7 +22,7 @@
   #include "wx/defs.h"
 #endif
 
-#if wxUSE_LIBPNG
+#if wxUSE_IMAGE && wxUSE_LIBPNG
 
 #include "wx/imagpng.h"
 #include "wx/bitmap.h"
@@ -56,42 +56,84 @@ IMPLEMENT_DYNAMIC_CLASS(wxPNGHandler,wxImageHandler)
 
 #if wxUSE_LIBPNG
 
-#if defined(__VISAGECPP__)
-#define LINKAGEMODE _Optlink
-#else
-#define LINKAGEMODE
+#ifndef PNGLINKAGEMODE
+  #define PNGLINKAGEMODE LINKAGEMODE
 #endif
 
-static void LINKAGEMODE _PNG_stream_reader( png_structp png_ptr, png_bytep data, png_size_t length )
+
+// VS: wxPNGInfoStruct declared below is a hack that needs some explanation.
+//     First, let me describe what's the problem: libpng uses jmp_buf in 
+//     its png_struct structure. Unfortunately, this structure is 
+//     compiler-specific and may vary in size, so if you use libpng compiled 
+//     as DLL with another compiler than the main executable, it may not work
+//     (this is for example the case with wxMGL port and SciTech MGL library 
+//     that provides custom runtime-loadable libpng implementation with jmpbuf
+//     disabled altogether). Luckily, it is still possible to use setjmp() & 
+//     longjmp() as long as the structure is not part of png_struct.
+//
+//     Sadly, there's no clean way to attach user-defined data to png_struct.
+//     There is only one customizable place, png_struct.io_ptr, which is meant
+//     only for I/O routines and is set with png_set_read_fn or 
+//     png_set_write_fn. The hacky part is that we use io_ptr to store
+//     a pointer to wxPNGInfoStruct that holds I/O structures _and_ jmp_buf.
+
+struct wxPNGInfoStruct
 {
-    ((wxInputStream*) png_get_io_ptr( png_ptr )) -> Read(data, length);
+    jmp_buf jmpbuf;
+    bool verbose;
+    
+    union
+    {
+        wxInputStream  *in;
+        wxOutputStream *out;
+    } stream;
+};
+
+#define WX_PNG_INFO(png_ptr) ((wxPNGInfoStruct*)png_get_io_ptr(png_ptr))
+
+
+extern "C"
+{
+
+void PNGLINKAGEMODE _PNG_stream_reader( png_structp png_ptr, png_bytep data, png_size_t length )
+{
+    WX_PNG_INFO(png_ptr)->stream.in->Read(data, length);
 }
 
-static void LINKAGEMODE _PNG_stream_writer( png_structp png_ptr, png_bytep data, png_size_t length )
+void PNGLINKAGEMODE _PNG_stream_writer( png_structp png_ptr, png_bytep data, png_size_t length )
 {
-    ((wxOutputStream*) png_get_io_ptr( png_ptr )) -> Write(data, length);
+    WX_PNG_INFO(png_ptr)->stream.out->Write(data, length);
 }
 
 // from pngerror.c
 // so that the libpng doesn't send anything on stderr
 void
-LINKAGEMODE png_silent_error(png_structp png_ptr, png_const_charp WXUNUSED(message))
+PNGLINKAGEMODE wx_png_error(png_structp png_ptr, png_const_charp message)
 {
+    wxPNGInfoStruct *info = WX_PNG_INFO(png_ptr);
+    if ( info->verbose )
+        wxLogError(wxString(message));
+
 #ifdef USE_FAR_KEYWORD
-   {
-      jmp_buf jmpbuf;
-      png_memcpy(jmpbuf,png_ptr->jmpbuf,sizeof(jmp_buf));
-      longjmp(jmpbuf, 1);
-   }
+    {
+       jmp_buf jmpbuf;
+       png_memcpy(jmpbuf,info->jmpbuf,sizeof(jmp_buf));
+       longjmp(jmpbuf, 1);
+    }
 #else
-   longjmp(png_ptr->jmpbuf, 1);
+    longjmp(info->jmpbuf, 1);
 #endif
 }
 
 void
-LINKAGEMODE png_silent_warning(png_structp WXUNUSED(png_ptr), png_const_charp WXUNUSED(message))
+PNGLINKAGEMODE wx_png_warning(png_structp png_ptr, png_const_charp message)
 {
+    wxPNGInfoStruct *info = WX_PNG_INFO(png_ptr);
+    if ( info->verbose )
+        wxLogWarning(wxString(message));
 }
+
+} // extern "C"
 
 // temporarily disable the warning C4611 (interaction between '_setjmp' and
 // C++ object destruction is non-portable) - I don't see any dtors here
@@ -106,7 +148,11 @@ bool wxPNGHandler::LoadFile( wxImage *image, wxInputStream& stream, bool verbose
 
     unsigned char **lines;
     unsigned int i;
-    png_infop info_ptr = (png_infop) NULL;
+    png_infop info_ptr = (png_infop) NULL;   
+    wxPNGInfoStruct wxinfo;
+
+    wxinfo.verbose = verbose;
+    wxinfo.stream.in = &stream;
 
     image->Destroy();
 
@@ -117,20 +163,21 @@ bool wxPNGHandler::LoadFile( wxImage *image, wxInputStream& stream, bool verbose
     if (!png_ptr)
         goto error_nolines;
 
-    // the file example.c explain how to guess if the stream is a png image
-    if (!verbose) png_set_error_fn(png_ptr, (png_voidp)NULL, png_silent_error, png_silent_warning);
+    png_set_error_fn(png_ptr, (png_voidp)NULL, wx_png_error, wx_png_warning);
+
+    // NB: please see the comment near wxPNGInfoStruct declaration for
+    //     explanation why this line is mandatory
+    png_set_read_fn( png_ptr, &wxinfo, _PNG_stream_reader);
 
     info_ptr = png_create_info_struct( png_ptr );
     if (!info_ptr)
         goto error_nolines;
 
-    if (setjmp(png_ptr->jmpbuf))
+    if (setjmp(wxinfo.jmpbuf))
         goto error_nolines;
 
     if (info_ptr->color_type == PNG_COLOR_TYPE_RGB_ALPHA)
         goto error_nolines;
-
-    png_set_read_fn( png_ptr, &stream, _PNG_stream_reader);
 
     png_uint_32 width,height;
     int bit_depth,color_type,interlace_type;
@@ -139,6 +186,10 @@ bool wxPNGHandler::LoadFile( wxImage *image, wxInputStream& stream, bool verbose
     png_get_IHDR( png_ptr, info_ptr, &width, &height, &bit_depth, &color_type, &interlace_type, (int*) NULL, (int*) NULL );
 
     if (color_type == PNG_COLOR_TYPE_PALETTE)
+        png_set_expand( png_ptr );
+
+    // Fix for Bug [ 439207 ] Monochrome PNG images come up black
+    if (bit_depth < 8)
         png_set_expand( png_ptr );
 
     png_set_strip_16( png_ptr );
@@ -275,79 +326,91 @@ bool wxPNGHandler::LoadFile( wxImage *image, wxInputStream& stream, bool verbose
 
 bool wxPNGHandler::SaveFile( wxImage *image, wxOutputStream& stream, bool verbose )
 {
+    wxPNGInfoStruct wxinfo;
+
+    wxinfo.verbose = verbose;
+    wxinfo.stream.out = &stream;
+
+    png_structp png_ptr = png_create_write_struct( PNG_LIBPNG_VER_STRING, NULL, NULL, NULL);
+    if (!png_ptr)
     {
-        png_structp png_ptr = png_create_write_struct( PNG_LIBPNG_VER_STRING, NULL, NULL, NULL);
-        if (!png_ptr)
-        {
-            return FALSE;
-        }
-
-        if (!verbose) png_set_error_fn(png_ptr, (png_voidp)NULL, png_silent_error, png_silent_warning);
-
-        png_infop info_ptr = png_create_info_struct(png_ptr);
-        if (info_ptr == NULL)
-        {
-            png_destroy_write_struct( &png_ptr, (png_infopp)NULL );
-            return FALSE;
-        }
-
-        if (setjmp(png_ptr->jmpbuf))
-        {
-            png_destroy_write_struct( &png_ptr, (png_infopp)NULL );
-            return FALSE;
-        }
-
-        png_set_write_fn( png_ptr, &stream, _PNG_stream_writer, NULL);
-
-        png_set_IHDR( png_ptr, info_ptr, image->GetWidth(), image->GetHeight(), 8,
-            PNG_COLOR_TYPE_RGB_ALPHA, PNG_INTERLACE_NONE,
-            PNG_COMPRESSION_TYPE_BASE, PNG_FILTER_TYPE_BASE);
-
-        png_color_8 sig_bit;
-        sig_bit.red = 8;
-        sig_bit.green = 8;
-        sig_bit.blue = 8;
-        sig_bit.alpha = 8;
-        png_set_sBIT( png_ptr, info_ptr, &sig_bit );
-        png_write_info( png_ptr, info_ptr );
-        png_set_shift( png_ptr, &sig_bit );
-        png_set_packing( png_ptr );
-
-        unsigned char *data = (unsigned char *)malloc( image->GetWidth()*4 );
-        if (!data)
-        {
-            png_destroy_write_struct( &png_ptr, (png_infopp)NULL );
-            return FALSE;
-        }
-
-        for (int y = 0; y < image->GetHeight(); y++)
-        {
-            unsigned char *ptr = image->GetData() + (y * image->GetWidth() * 3);
-            for (int x = 0; x < image->GetWidth(); x++)
-            {
-                data[(x << 2) + 0] = *ptr++;
-                data[(x << 2) + 1] = *ptr++;
-                data[(x << 2) + 2] = *ptr++;
-                if (( !image->HasMask() ) || \
-                    (data[(x << 2) + 0] != image->GetMaskRed()) || \
-                    (data[(x << 2) + 1] != image->GetMaskGreen()) || \
-                    (data[(x << 2) + 2] != image->GetMaskBlue()))
-                {
-                    data[(x << 2) + 3] = 255;
-                }
-                else
-                {
-                    data[(x << 2) + 3] = 0;
-                }
-            }
-            png_bytep row_ptr = data;
-            png_write_rows( png_ptr, &row_ptr, 1 );
-        }
-
-        free(data);
-        png_write_end( png_ptr, info_ptr );
-        png_destroy_write_struct( &png_ptr, (png_infopp)&info_ptr );
+        if (verbose)
+           wxLogError(_("Couldn't save PNG image."));
+        return FALSE;
     }
+
+    png_set_error_fn(png_ptr, (png_voidp)NULL, wx_png_error, wx_png_warning);
+
+    png_infop info_ptr = png_create_info_struct(png_ptr);
+    if (info_ptr == NULL)
+    {
+        png_destroy_write_struct( &png_ptr, (png_infopp)NULL );
+        if (verbose)
+           wxLogError(_("Couldn't save PNG image."));
+        return FALSE;
+    }
+
+    if (setjmp(wxinfo.jmpbuf))
+    {
+        png_destroy_write_struct( &png_ptr, (png_infopp)NULL );
+        if (verbose)
+           wxLogError(_("Couldn't save PNG image."));
+        return FALSE;
+    }
+
+    // NB: please see the comment near wxPNGInfoStruct declaration for
+    //     explanation why this line is mandatory
+    png_set_write_fn( png_ptr, &wxinfo, _PNG_stream_writer, NULL);
+
+    png_set_IHDR( png_ptr, info_ptr, image->GetWidth(), image->GetHeight(), 8,
+        PNG_COLOR_TYPE_RGB_ALPHA, PNG_INTERLACE_NONE,
+        PNG_COMPRESSION_TYPE_BASE, PNG_FILTER_TYPE_BASE);
+
+    png_color_8 sig_bit;
+    sig_bit.red = 8;
+    sig_bit.green = 8;
+    sig_bit.blue = 8;
+    sig_bit.alpha = 8;
+    png_set_sBIT( png_ptr, info_ptr, &sig_bit );
+    png_write_info( png_ptr, info_ptr );
+    png_set_shift( png_ptr, &sig_bit );
+    png_set_packing( png_ptr );
+
+    unsigned char *data = (unsigned char *)malloc( image->GetWidth()*4 );
+    if (!data)
+    {
+        png_destroy_write_struct( &png_ptr, (png_infopp)NULL );
+        return FALSE;
+    }
+
+    for (int y = 0; y < image->GetHeight(); y++)
+    {
+        unsigned char *ptr = image->GetData() + (y * image->GetWidth() * 3);
+        for (int x = 0; x < image->GetWidth(); x++)
+        {
+            data[(x << 2) + 0] = *ptr++;
+            data[(x << 2) + 1] = *ptr++;
+            data[(x << 2) + 2] = *ptr++;
+            if (( !image->HasMask() ) || \
+                (data[(x << 2) + 0] != image->GetMaskRed()) || \
+                (data[(x << 2) + 1] != image->GetMaskGreen()) || \
+                (data[(x << 2) + 2] != image->GetMaskBlue()))
+            {
+                data[(x << 2) + 3] = 255;
+            }
+            else
+            {
+                data[(x << 2) + 3] = 0;
+            }
+        }
+        png_bytep row_ptr = data;
+        png_write_rows( png_ptr, &row_ptr, 1 );
+    }
+
+    free(data);
+    png_write_end( png_ptr, info_ptr );
+    png_destroy_write_struct( &png_ptr, (png_infopp)&info_ptr );
+
     return TRUE;
 }
 
@@ -359,9 +422,10 @@ bool wxPNGHandler::DoCanRead( wxInputStream& stream )
 {
     unsigned char hdr[4];
 
-    stream.Read(&hdr, 4);
-    stream.SeekI(-4, wxFromCurrent);
-    return (hdr[0] == 0x89 && hdr[1] == 'P' && hdr[2] == 'N' && hdr[3] == 'G');
+    if ( !stream.Read(hdr, WXSIZEOF(hdr)) )
+        return FALSE;
+
+    return memcmp(hdr, "\211PNG", WXSIZEOF(hdr)) == 0;
 }
 
 #endif  // wxUSE_STREAMS

@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     01/02/97
-// RCS-ID:      $Id: wave.h,v 1.7 1999/01/19 18:20:04 JS Exp $
+// RCS-ID:      $Id: wave.h,v 1.8 2001/07/14 03:25:40 RD Exp $
 // Copyright:   (c) Julian Smart
 // Licence:   	wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -15,6 +15,8 @@
 #ifdef __GNUG__
 #pragma interface "wave.h"
 #endif
+
+#if wxUSE_WAVE
 
 #include "wx/object.h"
 
@@ -43,6 +45,6 @@ private:
   int   m_waveLength;
   bool  m_isResource;
 };
-
+#endif
 #endif
 

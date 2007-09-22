@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     12/07/98
-// RCS-ID:      $Id: canvas.cpp,v 1.1 2000/03/03 11:25:04 JS Exp $
+// RCS-ID:      $Id: canvas.cpp,v 1.6 2002/07/06 04:14:27 RD Exp $
 // Copyright:   (c) Julian Smart
 // Licence:   	wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -14,7 +14,7 @@
 #endif
 
 // For compilers that support precompilation, includes "wx.h".
-#include <wx/wxprec.h>
+#include "wx/wxprec.h"
 
 #ifdef __BORLANDC__
 #pragma hdrstop
@@ -25,6 +25,10 @@
 #endif
 
 #include <wx/wxexpr.h>
+
+#ifdef new
+#undef new
+#endif
 
 #if wxUSE_IOSTREAMH
 #include <iostream.h>
@@ -57,8 +61,6 @@
 #define CONTROL_POINT_ENDPOINT_FROM 5
 #define CONTROL_POINT_LINE       6
 
-extern wxCursor *g_oglBullseyeCursor;
-
 IMPLEMENT_DYNAMIC_CLASS(wxShapeCanvas, wxScrolledWindow)
 
 BEGIN_EVENT_TABLE(wxShapeCanvas, wxScrolledWindow)
@@ -66,9 +68,15 @@ BEGIN_EVENT_TABLE(wxShapeCanvas, wxScrolledWindow)
     EVT_MOUSE_EVENTS(wxShapeCanvas::OnMouseEvent)
 END_EVENT_TABLE()
 
+wxChar* wxShapeCanvasNameStr = wxT("shapeCanvas");
+
 // Object canvas
-wxShapeCanvas::wxShapeCanvas(wxWindow *parent, wxWindowID id, const wxPoint& pos, const wxSize& size, long style):
-  wxScrolledWindow(parent, id, pos, size, style)
+wxShapeCanvas::wxShapeCanvas(wxWindow *parent, wxWindowID id,
+                             const wxPoint& pos,
+                             const wxSize& size,
+                             long style,
+                             const wxString& name):
+  wxScrolledWindow(parent, id, pos, size, style, name)
 {
   m_shapeDiagram = NULL;
   m_dragState = NoDragging;
@@ -90,10 +98,11 @@ void wxShapeCanvas::OnPaint(wxPaintEvent& event)
 
     PrepareDC(dc);
 
+    dc.SetBackground(wxBrush(GetBackgroundColour(), wxSOLID));
     dc.Clear();
 
-	if (GetDiagram())
-		GetDiagram()->Redraw(dc);
+    if (GetDiagram())
+        GetDiagram()->Redraw(dc);
 }
 
 void wxShapeCanvas::OnMouseEvent(wxMouseEvent& event)

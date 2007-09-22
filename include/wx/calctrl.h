@@ -4,7 +4,7 @@
 // Author:      Vadim Zeitlin
 // Modified by:
 // Created:     29.12.99
-// RCS-ID:      $Id: calctrl.h,v 1.6.2.1 2000/05/24 04:25:41 RD Exp $
+// RCS-ID:      $Id: calctrl.h,v 1.12 2001/11/02 15:40:06 VZ Exp $
 // Copyright:   (c) 1999 Vadim Zeitlin <zeitlin@dptmaths.ens-cachan.fr>
 // Licence:     wxWindows license
 ///////////////////////////////////////////////////////////////////////////////
@@ -16,10 +16,43 @@
    2. background bitmap for the calendar?
  */
 
-#ifndef _WX_CALCTRL_H
-#define _WX_CALCTRL_H
+#ifndef _WX_CALCTRL_H_
+#define _WX_CALCTRL_H_
+
+#include "wx/defs.h"
+
+#if wxUSE_CALENDARCTRL
 
 #include "wx/datetime.h"
+
+// ----------------------------------------------------------------------------
+// wxCalendarCtrl flags
+// ----------------------------------------------------------------------------
+
+enum
+{
+    // show Sunday as the first day of the week (default)
+    wxCAL_SUNDAY_FIRST               = 0x0000,
+
+    // show Monder as the first day of the week
+    wxCAL_MONDAY_FIRST               = 0x0001,
+
+    // highlight holidays
+    wxCAL_SHOW_HOLIDAYS              = 0x0002,
+
+    // disable the year change control, show only the month change one
+    wxCAL_NO_YEAR_CHANGE             = 0x0004,
+
+    // don't allow changing neither month nor year (implies
+    // wxCAL_NO_YEAR_CHANGE)
+    wxCAL_NO_MONTH_CHANGE            = 0x000c,
+
+    // use MS-style month-selection instead of combo-spin combination
+    wxCAL_SEQUENTIAL_MONTH_SELECTION = 0x0010,
+
+    // show the neighbouring weeks in the previous and next month
+    wxCAL_SHOW_SURROUNDING_WEEKS     = 0x0020
+};
 
 // ----------------------------------------------------------------------------
 // constants
@@ -30,7 +63,10 @@ enum wxCalendarHitTestResult
 {
     wxCAL_HITTEST_NOWHERE,      // outside of anything
     wxCAL_HITTEST_HEADER,       // on the header (weekdays)
-    wxCAL_HITTEST_DAY           // on a day in the calendar
+    wxCAL_HITTEST_DAY,          // on a day in the calendar
+    wxCAL_HITTEST_INCMONTH,
+    wxCAL_HITTEST_DECMONTH,
+    wxCAL_HITTEST_SURROUNDING_WEEK
 };
 
 // border types for a date
@@ -151,16 +187,28 @@ private:
 #include "wx/generic/calctrl.h"
 
 // ----------------------------------------------------------------------------
-// calendar events macros
+// calendar event types and macros for handling them
 // ----------------------------------------------------------------------------
+
+BEGIN_DECLARE_EVENT_TYPES()
+    DECLARE_EVENT_TYPE(wxEVT_CALENDAR_SEL_CHANGED, 950)
+    DECLARE_EVENT_TYPE(wxEVT_CALENDAR_DAY_CHANGED, 951)
+    DECLARE_EVENT_TYPE(wxEVT_CALENDAR_MONTH_CHANGED, 952)
+    DECLARE_EVENT_TYPE(wxEVT_CALENDAR_YEAR_CHANGED, 953)
+    DECLARE_EVENT_TYPE(wxEVT_CALENDAR_DOUBLECLICKED, 954)
+    DECLARE_EVENT_TYPE(wxEVT_CALENDAR_WEEKDAY_CLICKED, 955)
+END_DECLARE_EVENT_TYPES()
 
 typedef void (wxEvtHandler::*wxCalendarEventFunction)(wxCalendarEvent&);
 
-#define EVT_CALENDAR(id, fn) { wxEVT_CALENDAR_DOUBLECLICKED, id, -1, (wxObjectEventFunction) (wxEventFunction) (wxCommandEventFunction) (wxCalendarEventFunction) & fn, (wxObject *) NULL },
-#define EVT_CALENDAR_SEL_CHANGED(id, fn) { wxEVT_CALENDAR_SEL_CHANGED, id, -1, (wxObjectEventFunction) (wxEventFunction) (wxCommandEventFunction) (wxCalendarEventFunction) & fn, (wxObject *) NULL },
-#define EVT_CALENDAR_DAY(id, fn) { wxEVT_CALENDAR_DAY_CHANGED, id, -1, (wxObjectEventFunction) (wxEventFunction) (wxCommandEventFunction) (wxCalendarEventFunction) & fn, (wxObject *) NULL },
-#define EVT_CALENDAR_MONTH(id, fn) { wxEVT_CALENDAR_MONTH_CHANGED, id, -1, (wxObjectEventFunction) (wxEventFunction) (wxCommandEventFunction) (wxCalendarEventFunction) & fn, (wxObject *) NULL },
-#define EVT_CALENDAR_YEAR(id, fn) { wxEVT_CALENDAR_YEAR_CHANGED, id, -1, (wxObjectEventFunction) (wxEventFunction) (wxCommandEventFunction) (wxCalendarEventFunction) & fn, (wxObject *) NULL },
-#define EVT_CALENDAR_WEEKDAY_CLICKED(id, fn) { wxEVT_CALENDAR_WEEKDAY_CLICKED, id, -1, (wxObjectEventFunction) (wxEventFunction) (wxCommandEventFunction) (wxCalendarEventFunction) & fn, (wxObject *) NULL },
+#define EVT_CALENDAR(id, fn) DECLARE_EVENT_TABLE_ENTRY(wxEVT_CALENDAR_DOUBLECLICKED, id, -1, (wxObjectEventFunction) (wxEventFunction) (wxCommandEventFunction) (wxCalendarEventFunction) & fn, (wxObject *) NULL),
+#define EVT_CALENDAR_SEL_CHANGED(id, fn) DECLARE_EVENT_TABLE_ENTRY(wxEVT_CALENDAR_SEL_CHANGED, id, -1, (wxObjectEventFunction) (wxEventFunction) (wxCommandEventFunction) (wxCalendarEventFunction) & fn, (wxObject *) NULL),
+#define EVT_CALENDAR_DAY(id, fn) DECLARE_EVENT_TABLE_ENTRY(wxEVT_CALENDAR_DAY_CHANGED, id, -1, (wxObjectEventFunction) (wxEventFunction) (wxCommandEventFunction) (wxCalendarEventFunction) & fn, (wxObject *) NULL),
+#define EVT_CALENDAR_MONTH(id, fn) DECLARE_EVENT_TABLE_ENTRY(wxEVT_CALENDAR_MONTH_CHANGED, id, -1, (wxObjectEventFunction) (wxEventFunction) (wxCommandEventFunction) (wxCalendarEventFunction) & fn, (wxObject *) NULL),
+#define EVT_CALENDAR_YEAR(id, fn) DECLARE_EVENT_TABLE_ENTRY(wxEVT_CALENDAR_YEAR_CHANGED, id, -1, (wxObjectEventFunction) (wxEventFunction) (wxCommandEventFunction) (wxCalendarEventFunction) & fn, (wxObject *) NULL),
+#define EVT_CALENDAR_WEEKDAY_CLICKED(id, fn) DECLARE_EVENT_TABLE_ENTRY(wxEVT_CALENDAR_WEEKDAY_CLICKED, id, -1, (wxObjectEventFunction) (wxEventFunction) (wxCommandEventFunction) (wxCalendarEventFunction) & fn, (wxObject *) NULL),
 
-#endif // _WX_CALCTRL_H
+#endif // wxUSE_CALENDARCTRL
+
+#endif // _WX_CALCTRL_H_
+

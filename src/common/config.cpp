@@ -4,7 +4,7 @@
 // Author:      Vadim Zeitlin
 // Modified by:
 // Created:     07.04.98
-// RCS-ID:      $Id: config.cpp,v 1.43.2.4 2000/06/08 11:13:56 JS Exp $
+// RCS-ID:      $Id: config.cpp,v 1.54 2001/12/14 00:58:59 VZ Exp $
 // Copyright:   (c) 1997 Karsten Ballüder   Ballueder@usa.net
 //                       Vadim Zeitlin      <zeitlin@dptmaths.ens-cachan.fr>
 // Licence:     wxWindows license
@@ -27,22 +27,22 @@
     #define wxUSE_CONFIG_NATIVE 1
 #endif
 
+#include "wx/config.h"
+#include "wx/intl.h"
+#include "wx/log.h"
+
 #if wxUSE_CONFIG && ((wxUSE_FILE && wxUSE_TEXTFILE) || wxUSE_CONFIG_NATIVE)
 
 #include "wx/app.h"
 #include "wx/file.h"
-#include "wx/log.h"
 #include "wx/textfile.h"
 #include "wx/utils.h"
-#include "wx/log.h"
 #include "wx/utils.h"
-#include "wx/intl.h"
-
-#include "wx/config.h"
 
 #include <stdlib.h>
 #include <math.h>
 #include <ctype.h>
+#include <limits.h>     // for INT_MAX
 
 // ----------------------------------------------------------------------------
 // global and class static variables
@@ -100,118 +100,91 @@ wxConfigBase *wxConfigBase::Create()
   return ms_pConfig;
 }
 
-wxString wxConfigBase::Read(const wxString& key, const wxString& defVal) const
-{
-  wxString s;
-  Read(key, &s, defVal);
-  return s;
-}
+// ----------------------------------------------------------------------------
+// wxConfigBase reading entries
+// ----------------------------------------------------------------------------
 
-bool wxConfigBase::Read(const wxString& key, wxString *str, const wxString& defVal) const
-{
-    if (!Read(key, str))
-    {
-        *str = ExpandEnvVars(defVal);
-        return FALSE;
+// implement both Read() overloads for the given type in terms of DoRead()
+#define IMPLEMENT_READ_FOR_TYPE(name, type, deftype, extra)                 \
+    bool wxConfigBase::Read(const wxString& key, type *val) const           \
+    {                                                                       \
+        wxCHECK_MSG( val, FALSE, _T("wxConfig::Read(): NULL parameter") );  \
+                                                                            \
+        return DoRead##name(key, val);                                      \
+    }                                                                       \
+                                                                            \
+    bool wxConfigBase::Read(const wxString& key,                            \
+                            type *val,                                      \
+                            deftype defVal) const                           \
+    {                                                                       \
+        wxCHECK_MSG( val, FALSE, _T("wxConfig::Read(): NULL parameter") );  \
+                                                                            \
+        if ( DoRead##name(key, val) )                                       \
+            return TRUE;                                                    \
+                                                                            \
+        if ( IsRecordingDefaults() )                                        \
+        {                                                                   \
+            ((wxConfigBase *)this)->DoWrite##name(key, defVal);             \
+        }                                                                   \
+                                                                            \
+        *val = extra(defVal);                                               \
+                                                                            \
+        return FALSE;                                                       \
     }
-    else
-        return TRUE;
-}
 
-bool wxConfigBase::Read(const wxString& key, long *pl, long defVal) const
+
+IMPLEMENT_READ_FOR_TYPE(String, wxString, const wxString&, ExpandEnvVars)
+IMPLEMENT_READ_FOR_TYPE(Long, long, long, long)
+IMPLEMENT_READ_FOR_TYPE(Int, int, int, int)
+IMPLEMENT_READ_FOR_TYPE(Double, double, double, double)
+IMPLEMENT_READ_FOR_TYPE(Bool, bool, bool, bool)
+
+#undef IMPLEMENT_READ_FOR_TYPE
+
+// the DoReadXXX() for the other types have implementation in the base class
+// but can be overridden in the derived ones
+bool wxConfigBase::DoReadInt(const wxString& key, int *pi) const
 {
-    if (!Read(key, pl))
-    {
-        *pl = defVal;
+    wxCHECK_MSG( pi, FALSE, _T("wxConfig::Read(): NULL parameter") );
+
+    long l;
+    if ( !DoReadLong(key, &l) )
         return FALSE;
-    }
-    else
-        return TRUE;
+
+    wxASSERT_MSG( l < INT_MAX, _T("overflow in wxConfig::DoReadInt") );
+
+    *pi = (int)l;
+
+    return TRUE;
 }
 
-bool wxConfigBase::Read(const wxString& key, double* val) const
+bool wxConfigBase::DoReadBool(const wxString& key, bool* val) const
+{
+    wxCHECK_MSG( val, FALSE, _T("wxConfig::Read(): NULL parameter") );
+
+    long l;
+    if ( !DoReadLong(key, &l) )
+        return FALSE;
+
+    wxASSERT_MSG( l == 0 || l == 1, _T("bad bool value in wxConfig::DoReadInt") );
+
+    *val = l != 0;
+
+    return TRUE;
+}
+
+bool wxConfigBase::DoReadDouble(const wxString& key, double* val) const
 {
     wxString str;
-    if (Read(key, & str))
+    if ( Read(key, &str) )
     {
-        *val = wxAtof(str);
-        return TRUE;
+        return str.ToDouble(val);
     }
 
     return FALSE;
 }
 
-bool wxConfigBase::Read(const wxString& key, double* val, double defVal) const
-{
-    if (!Read(key, val))
-    {
-        *val = defVal;
-        return FALSE;
-    }
-    else
-        return TRUE;
-}
-
-bool wxConfigBase::Read(const wxString& key, bool* val) const
-{
-    long l;
-    if (Read(key, & l))
-    {
-        *val = (l != 0);
-        return TRUE;
-    }
-    else
-        return FALSE;
-}
-
-bool wxConfigBase::Read(const wxString& key, bool* val, bool defVal) const
-{
-    if (!Read(key, val))
-    {
-        *val = defVal;
-        return FALSE;
-    }
-    else
-        return TRUE;
-}
-
-// Convenience functions
-
-bool wxConfigBase::Read(const wxString& key, int *pi) const
-{
-    long l;
-    bool ret = Read(key, &l);
-    if (ret)
-        *pi = (int) l;
-    return ret;
-}
-
-bool wxConfigBase::Read(const wxString& key, int *pi, int defVal) const
-{
-    long l;
-    bool ret = Read(key, &l, (long) defVal);
-    *pi = (int) l;
-    return ret;
-}
-
-bool wxConfigBase::Write(const wxString& key, double val)
-{
-    wxString str;
-    str.Printf(wxT("%f"), val);
-    return Write(key, str);
-}
-
-bool wxConfigBase::Write(const wxString& key, bool value)
-{
-    long l = (value ? 1 : 0);
-    return Write(key, l);
-}
-
-bool wxConfigBase::Write( const wxString &key, const wxChar *text )
-{
-	wxString str( text ) ;
-	return Write( key, str ) ;
-}
+// string reading helper
 wxString wxConfigBase::ExpandEnvVars(const wxString& str) const
 {
     wxString tmp; // Required for BC++
@@ -220,6 +193,25 @@ wxString wxConfigBase::ExpandEnvVars(const wxString& str) const
     else
         tmp = str;
     return tmp;
+}
+
+// ----------------------------------------------------------------------------
+// wxConfigBase writing
+// ----------------------------------------------------------------------------
+
+bool wxConfigBase::DoWriteDouble(const wxString& key, double val)
+{
+    return DoWriteString(key, wxString::Format(_T("%g"), val));
+}
+
+bool wxConfigBase::DoWriteInt(const wxString& key, int value)
+{
+    return DoWriteLong(key, (long)value);
+}
+
+bool wxConfigBase::DoWriteBool(const wxString& key, bool value)
+{
+    return DoWriteLong(key, value ? 1l : 0l);
 }
 
 // ----------------------------------------------------------------------------
@@ -246,7 +238,9 @@ wxConfigPathChanger::wxConfigPathChanger(const wxConfigBase *pContainer,
     m_bChanged = TRUE;
     m_strName = strEntry.AfterLast(wxCONFIG_PATH_SEPARATOR);
     m_strOldPath = m_pContainer->GetPath();
-    m_strOldPath += wxCONFIG_PATH_SEPARATOR;
+    if ( m_strOldPath.Len() == 0 || 
+         m_strOldPath.Last() != wxCONFIG_PATH_SEPARATOR )
+        m_strOldPath += wxCONFIG_PATH_SEPARATOR;
     m_pContainer->SetPath(strPath);
   }
   else {
@@ -263,6 +257,8 @@ wxConfigPathChanger::~wxConfigPathChanger()
     m_pContainer->SetPath(m_strOldPath);
   }
 }
+
+#endif // wxUSE_CONFIG
 
 // ----------------------------------------------------------------------------
 // static & global functions
@@ -379,6 +375,8 @@ wxString wxExpandEnvVars(const wxString& str)
 }
 
 // this function is used to properly interpret '..' in path
+/// separates group and entry names (probably shouldn't be changed)
+
 void wxSplitPath(wxArrayString& aParts, const wxChar *sz)
 {
   aParts.Empty();
@@ -416,5 +414,4 @@ void wxSplitPath(wxArrayString& aParts, const wxChar *sz)
   }
 }
 
-#endif // wxUSE_CONFIG
 

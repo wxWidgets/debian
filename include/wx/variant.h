@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     10/09/98
-// RCS-ID:      $Id: variant.h,v 1.12 2000/02/06 19:11:06 JS Exp $
+// RCS-ID:      $Id: variant.h,v 1.17 2002/08/31 11:29:11 GD Exp $
 // Copyright:   (c)
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -12,7 +12,7 @@
 #ifndef _WX_VARIANT_H_
 #define _WX_VARIANT_H_
 
-#ifdef __GNUG__
+#if defined(__GNUG__) && !defined(__APPLE__)
 #pragma interface "variant.h"
 #endif
 
@@ -25,6 +25,12 @@
     #include "wx/time.h"
     #include "wx/date.h"
 #endif // time/date
+
+#include "wx/datetime.h"
+
+#if wxUSE_ODBC
+    #include "wx/db.h"  // will #include sqltypes.h
+#endif //ODBC
 
 #include "wx/ioswrap.h"
 
@@ -55,11 +61,11 @@ public:
     virtual void Copy(wxVariantData& data) = 0;
     virtual bool Eq(wxVariantData& data) const = 0;
 #if wxUSE_STD_IOSTREAM
-    virtual bool Write(ostream& str) const = 0;
+    virtual bool Write(wxSTD ostream& str) const = 0;
 #endif
     virtual bool Write(wxString& str) const = 0;
 #if wxUSE_STD_IOSTREAM
-    virtual bool Read(istream& str) = 0;
+    virtual bool Read(wxSTD istream& str) = 0;
 #endif
     virtual bool Read(wxString& str) = 0;
     // What type is it? Return a string name.
@@ -98,12 +104,37 @@ public:
 #endif
     wxVariant(void* ptr, const wxString& name = wxEmptyString); // void* (general purpose)
     wxVariant(wxVariantData* data, const wxString& name = wxEmptyString); // User-defined data
+//TODO: Need to document
+    wxVariant(const wxDateTime& val, const wxString& name = wxEmptyString); // Date
+    wxVariant(const wxArrayString& val, const wxString& name = wxEmptyString); // String array
+#if wxUSE_ODBC
+    wxVariant(const DATE_STRUCT* valptr, const wxString& name = wxEmptyString); // DateTime
+    wxVariant(const TIME_STRUCT* valptr, const wxString& name = wxEmptyString); // DateTime
+    wxVariant(const TIMESTAMP_STRUCT* valptr, const wxString& name = wxEmptyString); // DateTime
+#endif
+//TODO: End of Need to document
+    
     wxVariant(const wxVariant& variant);
     ~wxVariant();
 
 // Generic operators
     // Assignment
     void operator= (const wxVariant& variant);
+
+//TODO: Need to document
+    bool operator== (const wxDateTime& value) const;
+    bool operator!= (const wxDateTime& value) const;
+    void operator= (const wxDateTime& value) ;
+
+    bool operator== (const wxArrayString& value) const;
+    bool operator!= (const wxArrayString& value) const;
+    void operator= (const wxArrayString& value) ;
+#if wxUSE_ODBC
+    void operator= (const DATE_STRUCT* value) ;
+    void operator= (const TIME_STRUCT* value) ;
+    void operator= (const TIMESTAMP_STRUCT* value) ;
+#endif
+//TODO: End of Need to document
 
     // Assignment using data, e.g.
     // myVariant = new wxStringVariantData("hello");
@@ -168,6 +199,9 @@ public:
     inline operator wxDate () const {  return GetDate(); }
 #endif
     inline operator void* () const {  return GetVoidPtr(); }
+//TODO: Need to document
+    inline operator wxDateTime () const { return GetDateTime(); }
+//TODO: End of Need to document
 
 // Accessors
     // Sets/gets name
@@ -206,6 +240,10 @@ public:
     wxDate GetDate() const ;
 #endif
     void* GetVoidPtr() const ;
+//TODO: Need to document
+    wxDateTime GetDateTime() const ;
+    wxArrayString GetArrayString() const;
+//TODO: End of Need to document
 
 // Operations
     // Make NULL (i.e. delete the data)
@@ -230,7 +268,7 @@ public:
     void ClearList();
 
 // Implementation
-protected:
+public:
 // Type conversion
     bool Convert(long* value) const;
     bool Convert(bool* value) const;
@@ -242,6 +280,9 @@ protected:
     bool Convert(wxTime* value) const;
     bool Convert(wxDate* value) const;
 #endif
+//TODO: Need to document
+    bool Convert(wxDateTime* value) const;
+//TODO: End of Need to document
 
 // Attributes
 protected:

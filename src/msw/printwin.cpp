@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     04/01/98
-// RCS-ID:      $Id: printwin.cpp,v 1.21.2.3 2000/08/10 07:15:43 JS Exp $
+// RCS-ID:      $Id: printwin.cpp,v 1.24 2002/03/30 19:57:43 VZ Exp $
 // Copyright:   (c) Julian Smart and Markus Holzem
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -87,9 +87,9 @@ wxWindowsPrinter::wxWindowsPrinter(wxPrintDialogData *data)
 
 wxWindowsPrinter::~wxWindowsPrinter()
 {
-    // avoids mingw warning about statement with no effect (FreeProcInstance
-    // doesn't do anything under Win32)
-#if !defined(__GNUWIN32__) && !defined(__WATCOMC__)
+    // avoids warning about statement with no effect (FreeProcInstance
+	// doesn't do anything under Win32)
+#if !defined(WIN32) && !defined(_WIN32) && !defined(__WIN32__) && !defined(__NT__) && !defined(__GNUWIN32__)
     FreeProcInstance((FARPROC) m_lpAbortProc);
 #endif
 }
@@ -311,7 +311,7 @@ wxDC* wxWindowsPrinter::PrintDialog(wxWindow *parent)
     {
         dc = dialog.GetPrintDC();
         m_printDialogData = dialog.GetPrintDialogData();
-        if (dc == NULL) 
+        if (dc == NULL)
             sm_lastError = wxPRINTER_ERROR;
         else
             sm_lastError = wxPRINTER_NO_ERROR;
@@ -373,9 +373,7 @@ void wxWindowsPrintPreview::DetermineScaling()
 {
     HDC dc = ::GetDC(NULL);
     int screenWidth = ::GetDeviceCaps(dc, HORZSIZE);
-    //    int screenHeight = ::GetDeviceCaps(dc, VERTSIZE);
-    int screenXRes = ::GetDeviceCaps(dc, HORZRES);
-    //    int screenYRes = ::GetDeviceCaps(dc, VERTRES);
+    int screenYRes = ::GetDeviceCaps(dc, VERTRES);
     int logPPIScreenX = ::GetDeviceCaps(dc, LOGPIXELSX);
     int logPPIScreenY = ::GetDeviceCaps(dc, LOGPIXELSY);
     m_previewPrintout->SetPPIScreen(logPPIScreenX, logPPIScreenY);
@@ -390,15 +388,16 @@ void wxWindowsPrintPreview::DetermineScaling()
     int printerXRes = 1500;
     int printerYRes = 2500;
 
-    if (printerDC.GetHDC())
+    dc = GetHdcOf(printerDC);
+    if ( dc )
     {
-        printerWidth = ::GetDeviceCaps((HDC) printerDC.GetHDC(), HORZSIZE);
-        printerHeight = ::GetDeviceCaps((HDC) printerDC.GetHDC(), VERTSIZE);
-        printerXRes = ::GetDeviceCaps((HDC) printerDC.GetHDC(), HORZRES);
-        printerYRes = ::GetDeviceCaps((HDC) printerDC.GetHDC(), VERTRES);
+        printerWidth = ::GetDeviceCaps(dc, HORZSIZE);
+        printerHeight = ::GetDeviceCaps(dc, VERTSIZE);
+        printerXRes = ::GetDeviceCaps(dc, HORZRES);
+        printerYRes = ::GetDeviceCaps(dc, VERTRES);
 
-        int logPPIPrinterX = ::GetDeviceCaps((HDC) printerDC.GetHDC(), LOGPIXELSX);
-        int logPPIPrinterY = ::GetDeviceCaps((HDC) printerDC.GetHDC(), LOGPIXELSY);
+        int logPPIPrinterX = ::GetDeviceCaps(dc, LOGPIXELSX);
+        int logPPIPrinterY = ::GetDeviceCaps(dc, LOGPIXELSY);
 
         m_previewPrintout->SetPPIPrinter(logPPIPrinterX, logPPIPrinterY);
         m_previewPrintout->SetPageSizeMM(printerWidth, printerHeight);
@@ -414,7 +413,7 @@ void wxWindowsPrintPreview::DetermineScaling()
 
     // At 100%, the page should look about page-size on the screen.
     m_previewScale = (float)((float)screenWidth/(float)printerWidth);
-    m_previewScale = m_previewScale * (float)((float)screenXRes/(float)printerYRes);
+    m_previewScale = m_previewScale * (float)((float)screenYRes/(float)printerYRes);
 }
 
 /****************************************************************************

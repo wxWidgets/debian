@@ -4,16 +4,16 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     04/01/98
-// RCS-ID:      $Id: joytest.h,v 1.2.4.1 2001/09/15 13:53:13 GD Exp $
+// RCS-ID:      $Id: joytest.h,v 1.5 2002/08/01 19:12:24 MBN Exp $
 // Copyright:   (c) Julian Smart and Markus Holzem
-// Licence:   	wxWindows license
+// Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
 
 // Define a new application
 class MyApp: public wxApp
 {
-  public:
-    bool OnInit(void);
+public:
+    bool OnInit();
 
     // Joystick max values
     int     m_maxX;
@@ -28,9 +28,9 @@ DECLARE_APP(MyApp)
 
 class MyCanvas: public wxScrolledWindow
 {
-  public:
+public:
     MyCanvas(wxWindow *parent, const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxDefaultSize);
-    ~MyCanvas(void);
+    ~MyCanvas();
     void OnJoystickEvent(wxJoystickEvent& event);
 
     DECLARE_EVENT_TABLE()
@@ -38,10 +38,11 @@ class MyCanvas: public wxScrolledWindow
 
 class MyFrame: public wxFrame
 {
-  public:
+public:
     MyCanvas *canvas;
-    MyFrame(wxFrame *parent, const wxString& title, const wxPoint& pos, const wxSize& size, const long style);
-    ~MyFrame(void);
+    MyFrame(wxFrame *parent, const wxString& title,
+        const wxPoint& pos, const wxSize& size, const long style);
+    ~MyFrame();
     void OnActivate(wxActivateEvent& event);
     void OnQuit(wxCommandEvent& event);
 
@@ -49,4 +50,3 @@ DECLARE_EVENT_TABLE()
 };
 
 #define JOYTEST_QUIT        1
-#define JOYTEST_ABOUT       2

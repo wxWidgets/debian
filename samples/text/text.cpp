@@ -3,13 +3,12 @@
 // Purpose:     TextCtrl wxWindows sample
 // Author:      Robert Roebling
 // Modified by:
-// RCS-ID:      $Id: text.cpp,v 1.20.2.10 2000/11/08 22:38:54 vadz Exp $
+// RCS-ID:      $Id: text.cpp,v 1.49 2002/08/22 23:22:45 VZ Exp $
 // Copyright:   (c) Robert Roebling, Julian Smart, Vadim Zeitlin
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
 
 #ifdef __GNUG__
-    #pragma interface "text.cpp"
     #pragma implementation "text.cpp"
 #endif
 
@@ -37,6 +36,8 @@
     #include "wx/tooltip.h"
 #endif
 
+    #include "wx/progdlg.h"
+
 // We test for wxUSE_DRAG_AND_DROP also, because data objects may not be
 // implemented for compilers that can't cope with the OLE parts in
 // wxUSE_DRAG_AND_DROP.
@@ -62,19 +63,35 @@ class MyTextCtrl : public wxTextCtrl
 public:
     MyTextCtrl(wxWindow *parent, wxWindowID id, const wxString &value,
                const wxPoint &pos, const wxSize &size, int style = 0)
-        : wxTextCtrl(parent, id, value, pos, size, style) { m_hasCapture = FALSE; }
+        : wxTextCtrl(parent, id, value, pos, size, style)
+    {
+        m_hasCapture = FALSE;
+    }
 
     void OnKeyDown(wxKeyEvent& event);
     void OnKeyUp(wxKeyEvent& event);
     void OnChar(wxKeyEvent& event);
+
     void OnText(wxCommandEvent& event);
+    void OnTextURL(wxTextUrlEvent& event);
+    void OnTextMaxLen(wxCommandEvent& event);
+
     void OnMouseEvent(wxMouseEvent& event);
 
-    bool m_hasCapture;
+    void OnSetFocus(wxFocusEvent& event);
+    void OnKillFocus(wxFocusEvent& event);
+
+    static bool ms_logKey;
+    static bool ms_logChar;
+    static bool ms_logMouse;
+    static bool ms_logText;
+    static bool ms_logFocus;
 
 private:
     static inline wxChar GetChar(bool on, wxChar c) { return on ? c : _T('-'); }
-    void LogEvent(const wxChar *name, wxKeyEvent& event) const;
+    void LogKeyEvent(const wxChar *name, wxKeyEvent& event) const;
+
+    bool m_hasCapture;
 
     DECLARE_EVENT_TABLE()
 };
@@ -83,12 +100,14 @@ class MyPanel: public wxPanel
 {
 public:
     MyPanel(wxFrame *frame, int x, int y, int w, int h);
+    virtual ~MyPanel() { delete wxLog::SetActiveTarget(m_logOld); }
 
 #if wxUSE_CLIPBOARD
     void DoPasteFromClipboard();
     void DoCopyToClipboard();
 #endif // wxUSE_CLIPBOARD
 
+    void DoRemoveText();
     void DoMoveToEndOfText();
     void DoMoveToEndOfEntry();
 
@@ -99,6 +118,7 @@ public:
     MyTextCtrl    *m_enter;
     MyTextCtrl    *m_tab;
     MyTextCtrl    *m_readonly;
+    MyTextCtrl    *m_limited;
 
     MyTextCtrl    *m_multitext;
     MyTextCtrl    *m_horizontal;
@@ -107,7 +127,13 @@ public:
 
     wxTextCtrl    *m_log;
 
+    wxLog         *m_logOld;
+
 private:
+    // get the currently focused text control or return the default one is no
+    // text ctrl has focus
+    wxTextCtrl *GetFocusedText(wxTextCtrl *textDef);
+
     DECLARE_EVENT_TABLE()
 };
 
@@ -130,10 +156,41 @@ public:
         { m_panel->DoCopyToClipboard(); }
 #endif // wxUSE_CLIPBOARD
 
+    void OnAddTextFreeze( wxCommandEvent& event )
+        { DoAddText(true); }
+    void OnAddText( wxCommandEvent& event )
+        { DoAddText(false); }
+    void OnRemoveText( wxCommandEvent& event )
+        { m_panel->DoRemoveText(); }
+
     void OnMoveToEndOfText( wxCommandEvent &event )
         { m_panel->DoMoveToEndOfText(); }
     void OnMoveToEndOfEntry( wxCommandEvent &event )
         { m_panel->DoMoveToEndOfEntry(); }
+
+    void OnScrollLineDown(wxCommandEvent& event)
+    {
+        if ( !m_panel->m_textrich->LineDown() )
+            wxLogMessage(_T("Already at the bottom"));
+    }
+
+    void OnScrollLineUp(wxCommandEvent& event)
+    {
+        if ( !m_panel->m_textrich->LineUp() )
+            wxLogMessage(_T("Already at the top"));
+    }
+
+    void OnScrollPageDown(wxCommandEvent& event)
+    {
+        if ( !m_panel->m_textrich->PageDown() )
+            wxLogMessage(_T("Already at the bottom"));
+    }
+
+    void OnScrollPageUp(wxCommandEvent& event)
+    {
+        if ( !m_panel->m_textrich->PageUp() )
+            wxLogMessage(_T("Already at the top"));
+    }
 
     void OnLogClear(wxCommandEvent& event);
     void OnFileSave(wxCommandEvent& event);
@@ -141,11 +198,61 @@ public:
 
     void OnSetEditable(wxCommandEvent& event);
     void OnSetEnabled(wxCommandEvent& event);
-    void OnClear(wxCommandEvent& event);
+
+    void OnLogKey(wxCommandEvent& event)
+    {
+        MyTextCtrl::ms_logKey = event.IsChecked();
+    }
+
+    void OnLogChar(wxCommandEvent& event)
+    {
+        MyTextCtrl::ms_logChar = event.IsChecked();
+    }
+
+    void OnLogMouse(wxCommandEvent& event)
+    {
+        MyTextCtrl::ms_logMouse = event.IsChecked();
+    }
+
+    void OnLogText(wxCommandEvent& event)
+    {
+        MyTextCtrl::ms_logText = event.IsChecked();
+    }
+
+    void OnLogFocus(wxCommandEvent& event)
+    {
+        MyTextCtrl::ms_logFocus = event.IsChecked();
+    }
+
+    void OnSetText(wxCommandEvent& event)
+    {
+        m_panel->m_text->SetValue(_T("Hello, world (what else did you expect)?"));
+    }
 
     void OnIdle( wxIdleEvent& event );
 
 private:
+    void DoAddText(bool freeze)
+    {
+        wxTextCtrl *text = m_panel->m_textrich;
+        if ( freeze )
+            text->Freeze();
+
+        text->Clear();
+
+        wxProgressDialog dlg(_T("Wait..."), _T("Updating"), 100, this);
+        for ( int i = 0; i < 100; i++ )
+        {
+            dlg.Update(i);
+            text->AppendText(wxString::Format(wxT("Line %i\n"), i));
+        }
+
+        text->SetInsertionPoint(0);
+
+        if ( freeze )
+            text->Thaw();
+    }
+
     MyPanel *m_panel;
 
     DECLARE_EVENT_TABLE()
@@ -167,7 +274,7 @@ enum
     TEXT_ABOUT,
     TEXT_LOAD,
     TEXT_SAVE,
-    TEXT_CLEAR_LOG,
+    TEXT_CLEAR,
 
     // clipboard menu
     TEXT_CLIPBOARD_COPY = 200,
@@ -178,23 +285,37 @@ enum
     TEXT_TOOLTIPS_ENABLE,
 
     // text menu
-    TEXT_MOVE_ENDTEXT = 400,
+    TEXT_ADD_SOME = 400,
+    TEXT_ADD_FREEZE,
+    TEXT_MOVE_ENDTEXT,
     TEXT_MOVE_ENDENTRY,
     TEXT_SET_EDITABLE,
     TEXT_SET_ENABLED,
-    TEXT_CLEAR
+    TEXT_LINE_DOWN,
+    TEXT_LINE_UP,
+    TEXT_PAGE_DOWN,
+    TEXT_PAGE_UP,
+    TEXT_REMOVE,
+    TEXT_SET,
+
+    // log menu
+    TEXT_LOG_KEY,
+    TEXT_LOG_CHAR,
+    TEXT_LOG_MOUSE,
+    TEXT_LOG_TEXT,
+    TEXT_LOG_FOCUS,
+
+    TEXT_END
 };
 
 bool MyApp::OnInit()
 {
     // Create the main frame window
     MyFrame *frame = new MyFrame((wxFrame *) NULL,
-            "Text wxWindows sample", 50, 50, 660, 420);
+            "Text wxWindows sample", 50, 50, 700, 420);
     frame->SetSizeHints( 500, 400 );
 
     wxMenu *file_menu = new wxMenu;
-    file_menu->Append(TEXT_CLEAR_LOG, "&Clear the log\tCtrl-C",
-                      "Clear the log window contents");
     file_menu->Append(TEXT_SAVE, "&Save file\tCtrl-S",
                       "Save the text control contents to file");
     file_menu->Append(TEXT_LOAD, "&Load file\tCtrl-O",
@@ -227,14 +348,43 @@ bool MyApp::OnInit()
 #endif // wxUSE_CLIPBOARD
 
     wxMenu *menuText = new wxMenu;
+    menuText->Append(TEXT_ADD_SOME, "&Append some text\tCtrl-A");
+    menuText->Append(TEXT_ADD_FREEZE, "&Append text with freeze/thaw\tShift-Ctrl-A");
+    menuText->Append(TEXT_REMOVE, "&Remove first 10 characters\tCtrl-X");
+    menuText->Append(TEXT_SET, "&Set the first text zone value\tCtrl-E");
+    menuText->AppendSeparator();
     menuText->Append(TEXT_MOVE_ENDTEXT, "Move cursor to the end of &text");
     menuText->Append(TEXT_MOVE_ENDENTRY, "Move cursor to the end of &entry");
     menuText->Append(TEXT_SET_EDITABLE, "Toggle &editable state", "", TRUE);
     menuText->Append(TEXT_SET_ENABLED, "Toggle e&nabled state", "", TRUE);
-    menuText->Append(TEXT_CLEAR, "&Clear text");
     menuText->Check(TEXT_SET_EDITABLE, TRUE);
     menuText->Check(TEXT_SET_ENABLED, TRUE);
-    menu_bar->Append(menuText, "&Text");
+    menuText->AppendSeparator();
+    menuText->Append(TEXT_LINE_DOWN, "Scroll text one line down");
+    menuText->Append(TEXT_LINE_UP, "Scroll text one line up");
+    menuText->Append(TEXT_PAGE_DOWN, "Scroll text one page down");
+    menuText->Append(TEXT_PAGE_DOWN, "Scroll text one page up");
+    menu_bar->Append(menuText, "Te&xt");
+
+    wxMenu *menuLog = new wxMenu;
+    menuLog->Append(TEXT_LOG_KEY, "Log &key events", "", TRUE);
+    menuLog->Append(TEXT_LOG_CHAR, "Log &char events", "", TRUE);
+    menuLog->Append(TEXT_LOG_MOUSE, "Log &mouse events", "", TRUE);
+    menuLog->Append(TEXT_LOG_TEXT, "Log &text events", "", TRUE);
+    menuLog->Append(TEXT_LOG_FOCUS, "Log &focus events", "", TRUE);
+    menuLog->AppendSeparator();
+    menuLog->Append(TEXT_CLEAR, "&Clear the log\tCtrl-C",
+                    "Clear the log window contents");
+
+    // select only the interesting events by default
+    menuLog->Check(TEXT_LOG_KEY, TRUE);
+    menuLog->Check(TEXT_LOG_CHAR, TRUE);
+    menuLog->Check(TEXT_LOG_TEXT, TRUE);
+
+    MyTextCtrl::ms_logKey =
+    MyTextCtrl::ms_logChar =
+    MyTextCtrl::ms_logText = TRUE;
+    menu_bar->Append(menuLog, "&Log");
 
     frame->SetMenuBar(menu_bar);
 
@@ -254,11 +404,24 @@ BEGIN_EVENT_TABLE(MyTextCtrl, wxTextCtrl)
     EVT_KEY_DOWN(MyTextCtrl::OnKeyDown)
     EVT_KEY_UP(MyTextCtrl::OnKeyUp)
     EVT_CHAR(MyTextCtrl::OnChar)
+
     EVT_TEXT(-1, MyTextCtrl::OnText)
+    EVT_TEXT_URL(-1, MyTextCtrl::OnTextURL)
+    EVT_TEXT_MAXLEN(-1, MyTextCtrl::OnTextMaxLen)
+
     EVT_MOUSE_EVENTS(MyTextCtrl::OnMouseEvent)
+
+    EVT_SET_FOCUS(MyTextCtrl::OnSetFocus)
+    EVT_KILL_FOCUS(MyTextCtrl::OnKillFocus)
 END_EVENT_TABLE()
 
-void MyTextCtrl::LogEvent(const wxChar *name, wxKeyEvent& event) const
+bool MyTextCtrl::ms_logKey = FALSE;
+bool MyTextCtrl::ms_logChar = FALSE;
+bool MyTextCtrl::ms_logMouse = FALSE;
+bool MyTextCtrl::ms_logText = FALSE;
+bool MyTextCtrl::ms_logFocus = FALSE;
+
+void MyTextCtrl::LogKeyEvent(const wxChar *name, wxKeyEvent& event) const
 {
     wxString key;
     long keycode = event.KeyCode();
@@ -370,9 +533,11 @@ void MyTextCtrl::LogEvent(const wxChar *name, wxKeyEvent& event) const
             default:
             {
                if ( wxIsprint((int)keycode) )
-                   key.Printf( _T("'%c'") , (char)keycode);
+                   key.Printf(_T("'%c'"), (char)keycode);
+               else if ( keycode > 0 && keycode < 27 )
+                   key.Printf(_("Ctrl-%c"), _T('A') + keycode - 1);
                else
-                   key.Printf( _T("unknown (%ld)"), keycode);
+                   key.Printf(_T("unknown (%ld)"), keycode);
             }
         }
     }
@@ -386,8 +551,47 @@ void MyTextCtrl::LogEvent(const wxChar *name, wxKeyEvent& event) const
                   GetChar( event.MetaDown(), _T('M') ) );
 }
 
+static wxString GetMouseEventDesc(const wxMouseEvent& ev)
+{
+    // click event
+    wxString button;
+    bool dbl, up;
+    if ( ev.LeftDown() || ev.LeftUp() || ev.LeftDClick() )
+    {
+        button = _T("Left");
+        dbl = ev.LeftDClick();
+        up = ev.LeftUp();
+    }
+    else if ( ev.MiddleDown() || ev.MiddleUp() || ev.MiddleDClick() )
+    {
+        button = _T("Middle");
+        dbl = ev.MiddleDClick();
+        up = ev.MiddleUp();
+    }
+    else if ( ev.RightDown() || ev.RightUp() || ev.RightDClick() )
+    {
+        button = _T("Right");
+        dbl = ev.RightDClick();
+        up = ev.RightUp();
+    }
+    else
+    {
+        return _T("Unknown mouse event");
+    }
+
+    return wxString::Format(_T("%s mouse button %s"),
+                            button.c_str(),
+                            dbl ? _T("double clicked")
+                                : up ? _T("released") : _T("clicked"));
+}
+
 void MyTextCtrl::OnMouseEvent(wxMouseEvent& ev)
 {
+    ev.Skip();
+
+    if ( !ms_logMouse )
+        return;
+
     if ( !ev.Moving() )
     {
         wxString msg;
@@ -401,37 +605,7 @@ void MyTextCtrl::OnMouseEvent(wxMouseEvent& ev)
         }
         else
         {
-            // click event
-            wxString button;
-            bool dbl, up;
-            if ( ev.LeftDown() || ev.LeftUp() || ev.LeftDClick() )
-            {
-                button = _T("Left");
-                dbl = ev.LeftDClick();
-                up = ev.LeftUp();
-            }
-            else if ( ev.MiddleDown() || ev.MiddleUp() || ev.MiddleDClick() )
-            {
-                button = _T("Middle");
-                dbl = ev.MiddleDClick();
-                up = ev.MiddleUp();
-            }
-            else if ( ev.RightDown() || ev.RightUp() || ev.RightDClick() )
-            {
-                button = _T("Right");
-                dbl = ev.RightDClick();
-                up = ev.RightUp();
-            }
-            else
-            {
-                wxLogStatus(_T("Unknown mouse event"));
-                return;
-            }
-
-            msg.Printf(_T("%s mouse button %s"),
-                        button.c_str(),
-                        dbl ? _T("double clicked")
-                            : up ? _T("released") : _T("clicked"));
+            msg = GetMouseEventDesc(ev);
         }
 
         msg << _T(" at (") << ev.GetX() << _T(", ") << ev.GetY() << _T(") ")
@@ -447,12 +621,29 @@ void MyTextCtrl::OnMouseEvent(wxMouseEvent& ev)
         wxLogMessage(msg);
     }
     //else: we're not interested in mouse move events
+}
 
-    ev.Skip();
+void MyTextCtrl::OnSetFocus(wxFocusEvent& event)
+{
+    if ( ms_logFocus )
+        wxLogMessage( wxT("%p got focus."), this);
+
+    event.Skip();
+}
+
+void MyTextCtrl::OnKillFocus(wxFocusEvent& event)
+{
+    if ( ms_logFocus )
+        wxLogMessage( wxT("%p lost focus"), this);
+
+    event.Skip();
 }
 
 void MyTextCtrl::OnText(wxCommandEvent& event)
 {
+    if ( !ms_logText )
+        return;
+
     MyTextCtrl *win = (MyTextCtrl *)event.GetEventObject();
     const wxChar *data = (const wxChar *)(win->GetClientData());
     if ( data )
@@ -461,31 +652,44 @@ void MyTextCtrl::OnText(wxCommandEvent& event)
     }
     else
     {
+        // wxLogMessage( event.GetString() );
         wxLogMessage(_T("Text changed in some control"));
     }
 }
 
+void MyTextCtrl::OnTextMaxLen(wxCommandEvent& event)
+{
+    wxLogMessage(_T("You can't enter more characters into this control."));
+}
+
+void MyTextCtrl::OnTextURL(wxTextUrlEvent& event)
+{
+    const wxMouseEvent& ev = event.GetMouseEvent();
+
+    // filter out mouse moves, too many of them
+    if ( ev.Moving() )
+        return;
+
+    long start = event.GetURLStart(),
+         end = event.GetURLEnd();
+
+    wxLogMessage(_T("Mouse event over URL '%s': %s"),
+                 GetValue().Mid(start, end - start).c_str(),
+                 GetMouseEventDesc(ev).c_str());
+}
+
 void MyTextCtrl::OnChar(wxKeyEvent& event)
 {
-    LogEvent( _T("Char"), event);
+    if ( ms_logChar )
+        LogKeyEvent( _T("Char"), event);
 
-/*  How are we supposed to test wxTE_PROCESS_TAB with this code?
-
-    if ( event.KeyCode() == WXK_TAB )
-    {
-        WriteText("\t");
-    }
-    else
-    {
-        event.Skip();
-    }
-*/
     event.Skip();
 }
 
 void MyTextCtrl::OnKeyUp(wxKeyEvent& event)
 {
-    LogEvent( _T("Key up"), event);
+    if ( ms_logKey )
+        LogKeyEvent( _T("Key up"), event);
 
     event.Skip();
 }
@@ -500,15 +704,11 @@ void MyTextCtrl::OnKeyDown(wxKeyEvent& event)
                 long line, column, pos = GetInsertionPoint();
                 PositionToXY(pos, &column, &line);
 
-                wxLogMessage( _T("Current position: %ld\n"
-                        "Current line, column: (%ld, %ld)\n"
-                        "Number of lines: %ld\n"
-                        "Current line length: %ld\n"
-                        "Total text length: %u (%ld)"),
+                wxLogMessage( _T("Current position: %ld\nCurrent line, column: (%ld, %ld)\nNumber of lines: %ld\nCurrent line length: %ld\nTotal text length: %u (%ld)"),
                         pos,
                         line, column,
-                        GetNumberOfLines(),
-                        GetLineLength(line),
+                        (long) GetNumberOfLines(),
+                        (long) GetLineLength(line),
                         GetValue().length(),
                         GetLastPosition());
             }
@@ -534,7 +734,7 @@ void MyTextCtrl::OnKeyDown(wxKeyEvent& event)
             else
             {
                 wxLogDebug( wxT("Stopped capturing mouse and events.") );
-                m_hasCapture = TRUE;
+                m_hasCapture = FALSE;
                 ReleaseMouse();
             }
             break;
@@ -551,9 +751,26 @@ void MyTextCtrl::OnKeyDown(wxKeyEvent& event)
         case WXK_F7:
             ShowPosition(10);
             break;
+
+        case WXK_F8:
+            Clear();
+            break;
+
+        case WXK_F10:
+            {
+                long from, to;
+                GetSelection(&from, &to);
+
+                wxString sel = GetStringSelection();
+
+                wxLogMessage(_T("Selection: from %ld to %ld."), from, to);
+                wxLogMessage(_T("Selection = '%s' (len = %u)"),
+                             sel.c_str(), sel.length());
+            }
     }
 
-    LogEvent( wxT("Key down"), event);
+    if ( ms_logKey )
+        LogKeyEvent( wxT("Key down"), event);
 
     event.Skip();
 }
@@ -569,11 +786,11 @@ END_EVENT_TABLE()
 MyPanel::MyPanel( wxFrame *frame, int x, int y, int w, int h )
        : wxPanel( frame, -1, wxPoint(x, y), wxSize(w, h) )
 {
-    m_log = new wxTextCtrl( this, -1, "This is the log window.\n", wxPoint(5,260), wxSize(630,100), wxTE_MULTILINE );
+    m_log = new wxTextCtrl( this, -1, "This is the log window.\n",
+                            wxPoint(5,260), wxSize(630,100),
+                            wxTE_MULTILINE | wxTE_READONLY /* | wxTE_RICH */);
 
-    wxLog *old_log = wxLog::SetActiveTarget( new wxLogTextCtrl( m_log ) );
-
-    delete old_log;
+    m_logOld = wxLog::SetActiveTarget( new wxLogTextCtrl( m_log ) );
 
     // single line text controls
 
@@ -592,9 +809,13 @@ MyPanel::MyPanel( wxFrame *frame, int x, int y, int w, int h )
     m_readonly = new MyTextCtrl( this, -1, "Read only",
       wxPoint(10,90), wxSize(140,-1), wxTE_READONLY );
 
+    m_limited = new MyTextCtrl(this, -1, "Max 8 ch",
+                              wxPoint(10, 130), wxSize(140, -1));
+    m_limited->SetMaxLength(8);
+
     // multi line text controls
 
-    m_horizontal = new MyTextCtrl( this, -1, "",
+    m_horizontal = new MyTextCtrl( this, -1, "Multiline text control with a horizontal scrollbar.",
       wxPoint(10,170), wxSize(140,70), wxTE_MULTILINE | wxHSCROLL );
 
     // a little hack to use the command line argument for encoding testing
@@ -609,17 +830,27 @@ MyPanel::MyPanel( wxFrame *frame, int x, int y, int w, int h )
                 m_horizontal->SetValue("®lu»ouèký kùò zbìsile èe¹tina «»");
                 break;
 
-            default:
+            case '1':
                 m_horizontal->SetFont(wxFont(18, wxSWISS, wxNORMAL, wxNORMAL,
                                              FALSE, "",
-                                             wxFONTENCODING_KOI8));
+                                             wxFONTENCODING_CP1251));
+                m_horizontal->SetValue("Ïðèâåò!");
+                break;
+
+            case '8':
+                m_horizontal->SetFont(wxFont(18, wxSWISS, wxNORMAL, wxNORMAL,
+                                             FALSE, "",
+                                             wxFONTENCODING_CP1251));
+#if wxUSE_UNICODE
+                m_horizontal->SetValue(L"\x0412\x0430\x0434\x0438\x043c \x0426");
+#else
                 m_horizontal->SetValue("ËÁÖÅÔÓÑ ÕÄÁÞÎÙÍ");
+#endif
         }
     }
     else
     {
-        m_horizontal->SetValue("Text in default encoding:\n"
-                               "Multiline text control with a horizontal scrollbar.");
+        m_horizontal->SetValue("Text in default encoding");
     }
 
     m_multitext = new MyTextCtrl( this, -1, "Multi line.",
@@ -646,12 +877,28 @@ MyPanel::MyPanel( wxFrame *frame, int x, int y, int w, int h )
     m_textrich = new MyTextCtrl(this, -1, "Allows more than 30Kb of text\n"
                                 "(even under broken Win9x)\n"
                                 "and a very very very very very "
-                                "very very very long line to test"
+                                "very very very long line to test "
                                 "wxHSCROLL style",
-                                wxPoint(450, 10), wxSize(200, 230),
-                                wxTE_RICH | wxTE_MULTILINE | wxHSCROLL);
-    m_textrich->SetForegroundColour(wxColour(0, 255, 255));
-    m_textrich->SetBackgroundColour(*wxBLUE);
+                                wxPoint(450, 10), wxSize(230, 230),
+                                wxTE_RICH |
+                                wxTE_MULTILINE |
+                                // wxTE_AUTO_URL |
+                                wxHSCROLL);
+
+    m_textrich->SetStyle(0, 10, *wxRED);
+    m_textrich->SetStyle(10, 20, *wxBLUE);
+    m_textrich->SetStyle(30, 40,
+                         wxTextAttr(*wxGREEN, wxNullColour, *wxITALIC_FONT));
+    m_textrich->SetDefaultStyle(wxTextAttr());
+    m_textrich->AppendText(_T("\n\nFirst 10 characters should be in red\n"));
+    m_textrich->AppendText(_T("Next 10 characters should be in blue\n"));
+    m_textrich->AppendText(_T("Next 10 characters should be normal\n"));
+    m_textrich->AppendText(_T("And the next 10 characters should be green and italic\n"));
+    m_textrich->SetDefaultStyle(wxTextAttr(*wxCYAN, *wxBLUE));
+    m_textrich->AppendText(_T("This text should be cyan on blue\n"));
+    m_textrich->SetDefaultStyle(wxTextAttr(*wxBLUE, *wxWHITE));
+    m_textrich->AppendText(_T("And this should be in blue and the text you ")
+                           _T("type should be in blue as well"));
 }
 
 void MyPanel::OnSize( wxSizeEvent &event )
@@ -659,6 +906,14 @@ void MyPanel::OnSize( wxSizeEvent &event )
     wxSize client_area( GetClientSize() );
     m_log->SetSize( 0, 260, client_area.x, client_area.y - 260 );
     event.Skip();
+}
+
+wxTextCtrl *MyPanel::GetFocusedText(wxTextCtrl *textDef)
+{
+    wxWindow *win = FindFocus();
+
+    wxTextCtrl *text = win ? wxDynamicCast(win, wxTextCtrl) : NULL;
+    return text ? text : textDef;
 }
 
 #if wxUSE_CLIPBOARD
@@ -762,16 +1017,27 @@ void MyPanel::DoMoveToEndOfEntry()
     m_text->SetFocus();
 }
 
+void MyPanel::DoRemoveText()
+{
+    GetFocusedText(m_multitext)->Remove(0, 10);
+}
+
 //----------------------------------------------------------------------
 // MyFrame
 //----------------------------------------------------------------------
 
 BEGIN_EVENT_TABLE(MyFrame, wxFrame)
-    EVT_MENU(TEXT_QUIT,     MyFrame::OnQuit)
-    EVT_MENU(TEXT_ABOUT,    MyFrame::OnAbout)
-    EVT_MENU(TEXT_SAVE,     MyFrame::OnFileSave)
-    EVT_MENU(TEXT_LOAD,     MyFrame::OnFileLoad)
-    EVT_MENU(TEXT_CLEAR_LOG,MyFrame::OnLogClear)
+    EVT_MENU(TEXT_QUIT,   MyFrame::OnQuit)
+    EVT_MENU(TEXT_ABOUT,  MyFrame::OnAbout)
+    EVT_MENU(TEXT_SAVE,   MyFrame::OnFileSave)
+    EVT_MENU(TEXT_LOAD,   MyFrame::OnFileLoad)
+
+    EVT_MENU(TEXT_LOG_KEY,  MyFrame::OnLogKey)
+    EVT_MENU(TEXT_LOG_CHAR, MyFrame::OnLogChar)
+    EVT_MENU(TEXT_LOG_MOUSE,MyFrame::OnLogMouse)
+    EVT_MENU(TEXT_LOG_TEXT, MyFrame::OnLogText)
+    EVT_MENU(TEXT_LOG_FOCUS,MyFrame::OnLogFocus)
+    EVT_MENU(TEXT_CLEAR,    MyFrame::OnLogClear)
 
 #if wxUSE_TOOLTIPS
     EVT_MENU(TEXT_TOOLTIPS_SETDELAY,  MyFrame::OnSetTooltipDelay)
@@ -783,12 +1049,21 @@ BEGIN_EVENT_TABLE(MyFrame, wxFrame)
     EVT_MENU(TEXT_CLIPBOARD_COPY,     MyFrame::OnCopyToClipboard)
 #endif // wxUSE_CLIPBOARD
 
+    EVT_MENU(TEXT_REMOVE,             MyFrame::OnRemoveText)
+    EVT_MENU(TEXT_ADD_SOME,           MyFrame::OnAddText)
+    EVT_MENU(TEXT_ADD_FREEZE,         MyFrame::OnAddTextFreeze)
     EVT_MENU(TEXT_MOVE_ENDTEXT,       MyFrame::OnMoveToEndOfText)
     EVT_MENU(TEXT_MOVE_ENDENTRY,      MyFrame::OnMoveToEndOfEntry)
 
     EVT_MENU(TEXT_SET_EDITABLE,       MyFrame::OnSetEditable)
     EVT_MENU(TEXT_SET_ENABLED,        MyFrame::OnSetEnabled)
-    EVT_MENU(TEXT_CLEAR,              MyFrame::OnClear)
+
+    EVT_MENU(TEXT_LINE_DOWN,          MyFrame::OnScrollLineDown)
+    EVT_MENU(TEXT_LINE_UP,            MyFrame::OnScrollLineUp)
+    EVT_MENU(TEXT_PAGE_DOWN,          MyFrame::OnScrollPageDown)
+    EVT_MENU(TEXT_PAGE_UP,            MyFrame::OnScrollPageUp)
+
+    EVT_MENU(TEXT_SET,                MyFrame::OnSetText)
 
     EVT_IDLE(MyFrame::OnIdle)
 END_EVENT_TABLE()
@@ -883,16 +1158,8 @@ void MyFrame::OnSetEnabled(wxCommandEvent& WXUNUSED(event))
     m_panel->m_password->Enable(enabled);
     m_panel->m_multitext->Enable(enabled);
     m_panel->m_readonly->Enable(enabled);
+    m_panel->m_limited->Enable(enabled);
     m_panel->m_textrich->Enable(enabled);
-}
-
-void MyFrame::OnClear(wxCommandEvent& WXUNUSED(event))
-{
-    m_panel->m_text->Clear();
-    m_panel->m_password->Clear();
-    m_panel->m_multitext->Clear();
-    m_panel->m_readonly->Clear();
-    m_panel->m_textrich->Clear();
 }
 
 void MyFrame::OnFileSave(wxCommandEvent& event)
@@ -901,10 +1168,10 @@ void MyFrame::OnFileSave(wxCommandEvent& event)
     {
 #if wxUSE_FILE
         // verify that the fil length is correct (it wasn't under Win95)
-        wxFile file("dummy.txt");
-        wxLogStatus(this, _T("Successfully saved file "
-                             "(text len = %ld, file size = %ld)"),
-                    m_panel->m_textrich->GetValue().length(),
+        wxFile file(wxT("dummy.txt"));
+        wxLogStatus(this,
+                    _T("Successfully saved file (text len = %lu, file size = %ld)"),
+                    (unsigned long)m_panel->m_textrich->GetValue().length(),
                     file.Length());
 #endif
     }
@@ -938,7 +1205,7 @@ void MyFrame::OnIdle( wxIdleEvent& event )
 #endif
                 s_windowFocus
 #ifdef __WXMSW__
-                , s_windowFocus->GetHWND()
+                , (unsigned int) s_windowFocus->GetHWND()
 #endif
                   );
 

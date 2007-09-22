@@ -4,7 +4,7 @@
 // Author:      Vadim Zeitlin
 // Modified by:
 // Created:     27.07.98
-// RCS-ID:      $Id: iniconf.cpp,v 1.18.2.3 2000/04/23 12:39:45 JS Exp $
+// RCS-ID:      $Id: iniconf.cpp,v 1.21 2001/12/19 01:56:38 VZ Exp $
 // Copyright:   (c) 1998 Vadim Zeitlin <zeitlin@dptmaths.ens-cachan.fr>
 // Licence:     wxWindows license
 ///////////////////////////////////////////////////////////////////////////////
@@ -282,7 +282,7 @@ bool wxIniConfig::IsEmpty() const
 // read/write
 // ----------------------------------------------------------------------------
 
-bool wxIniConfig::Read(const wxString& szKey, wxString *pstr) const
+bool wxIniConfig::DoReadString(const wxString& szKey, wxString *pstr) const
 {
   wxConfigPathChanger path(this, szKey);
   wxString strKey = GetPrivateKeyName(path.Name());
@@ -300,45 +300,14 @@ bool wxIniConfig::Read(const wxString& szKey, wxString *pstr) const
     GetProfileString(m_strGroup, strKey, "", szBuf, WXSIZEOF(szBuf));
   }
 
-  if ( ::IsEmpty(szBuf) ) {
+  if ( ::IsEmpty(szBuf) )
     return FALSE;
-  }
-  else {
-    *pstr = szBuf ;
-    return TRUE;
-  }
+
+  *pstr = szBuf;
+  return TRUE;
 }
 
-bool wxIniConfig::Read(const wxString& szKey, wxString *pstr,
-                       const wxString& szDefault) const
-{
-  wxConfigPathChanger path(this, szKey);
-  wxString strKey = GetPrivateKeyName(path.Name());
-
-  char szBuf[1024]; // @@ should dynamically allocate memory...
-
-  // first look in the private INI file
-
-  // NB: the lpDefault param to GetPrivateProfileString can't be NULL
-  GetPrivateProfileString(m_strGroup, strKey, "",
-                          szBuf, WXSIZEOF(szBuf), m_strLocalFilename);
-  if ( ::IsEmpty(szBuf) ) {
-    // now look in win.ini
-    wxString strKey = GetKeyName(path.Name());
-    GetProfileString(m_strGroup, strKey, "", szBuf, WXSIZEOF(szBuf));
-  }
-
-  if ( ::IsEmpty(szBuf) ) {
-    *pstr = szDefault;
-    return FALSE;
-  }
-  else {
-    *pstr = szBuf ;
-    return TRUE;
-  }
-}
-
-bool wxIniConfig::Read(const wxString& szKey, long *pl) const
+bool wxIniConfig::DoReadLong(const wxString& szKey, long *pl) const
 {
   wxConfigPathChanger path(this, szKey);
   wxString strKey = GetPrivateKeyName(path.Name());
@@ -375,7 +344,7 @@ bool wxIniConfig::Read(const wxString& szKey, long *pl) const
   return FALSE ;
 }
 
-bool wxIniConfig::Write(const wxString& szKey, const wxString& szValue)
+bool wxIniConfig::DoWriteString(const wxString& szKey, const wxString& szValue)
 {
   wxConfigPathChanger path(this, szKey);
   wxString strKey = GetPrivateKeyName(path.Name());
@@ -389,7 +358,7 @@ bool wxIniConfig::Write(const wxString& szKey, const wxString& szValue)
   return bOk;
 }
 
-bool wxIniConfig::Write(const wxString& szKey, long lValue)
+bool wxIniConfig::DoWriteLong(const wxString& szKey, long lValue)
 {
   // ltoa() is not ANSI :-(
   char szBuf[40];   // should be good for sizeof(long) <= 16 (128 bits)

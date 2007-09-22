@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     04/01/98
-// RCS-ID:      $Id: slidrmsw.cpp,v 1.18.2.2 2000/06/12 11:53:09 RR Exp $
+// RCS-ID:      $Id: slidrmsw.cpp,v 1.22 2001/06/27 11:55:33 JS Exp $
 // Copyright:   (c) Julian Smart and Markus Holzem
 // Licence:       wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -41,7 +41,6 @@ wxSliderMSW::wxSliderMSW()
   m_lineSize = 1;
   m_rangeMax = 0;
   m_rangeMin = 0;
-  m_tickFreq = 0;
 }
 
 bool wxSliderMSW::Create(wxWindow *parent, wxWindowID id,
@@ -66,7 +65,6 @@ bool wxSliderMSW::Create(wxWindow *parent, wxWindowID id,
   m_pageSize = 1;
   m_lineSize = 1;
   m_windowStyle = style;
-  m_tickFreq = 0;
 
   if ( id == -1 )
       m_windowId = (int)NewControlId();
@@ -82,6 +80,9 @@ bool wxSliderMSW::Create(wxWindow *parent, wxWindowID id,
   
   long msStyle = WS_CHILD | WS_VISIBLE | WS_BORDER | SS_CENTER;
 
+   if ( m_windowStyle & wxCLIP_SIBLINGS )
+        msStyle |= WS_CLIPSIBLINGS;
+
   bool want3D;
   WXDWORD exStyle = Determine3DEffects(WS_EX_CLIENTEDGE, &want3D) ;
 
@@ -92,8 +93,11 @@ bool wxSliderMSW::Create(wxWindow *parent, wxWindowID id,
 
   // Now create min static control
   wxSprintf(wxBuffer, wxT("%d"), minValue);
+  DWORD wstyle = STATIC_FLAGS;
+  if ( m_windowStyle & wxCLIP_SIBLINGS )
+        wstyle |= WS_CLIPSIBLINGS;
   m_staticMin = (WXHWND) CreateWindowEx(0, wxT("STATIC"), wxBuffer,
-                         STATIC_FLAGS,
+                         wstyle,
                          0, 0, 0, 0, (HWND) parent->GetHWND(), (HMENU)NewControlId(),
                          wxGetInstance(), NULL);
 
@@ -123,8 +127,11 @@ bool wxSliderMSW::Create(wxWindow *parent, wxWindowID id,
 
   // Finally, create max value static item
   wxSprintf(wxBuffer, wxT("%d"), maxValue);
+  wstyle = STATIC_FLAGS;
+  if ( m_windowStyle & wxCLIP_SIBLINGS )
+        wstyle |= WS_CLIPSIBLINGS;
   m_staticMax = (WXHWND) CreateWindowEx(0, wxT("STATIC"), wxBuffer,
-                         STATIC_FLAGS,
+                         wstyle,
                          0, 0, 0, 0, (HWND) parent->GetHWND(), (HMENU)NewControlId(),
                          wxGetInstance(), NULL);
 
@@ -482,11 +489,6 @@ WXHBRUSH wxSliderMSW::OnCtlColor(WXHDC pDC, WXHWND pWnd, WXUINT nCtlColor,
   return wxControl::OnCtlColor(pDC, pWnd, nCtlColor, message, wParam, lParam);
 }
 
-// For trackbars only
-void wxSliderMSW::SetTickFreq(int n, int pos)
-{
-}
-
 void wxSliderMSW::SetPageSize(int pageSize)
 {
   m_pageSize = pageSize;
@@ -495,14 +497,6 @@ void wxSliderMSW::SetPageSize(int pageSize)
 int wxSliderMSW::GetPageSize() const
 {
   return m_pageSize;
-}
-
-void wxSliderMSW::ClearSel()
-{
-}
-
-void wxSliderMSW::ClearTicks()
-{
 }
 
 void wxSliderMSW::SetLineSize(int lineSize)
@@ -515,31 +509,15 @@ int wxSliderMSW::GetLineSize() const
   return m_lineSize;
 }
 
-int wxSliderMSW::GetSelEnd() const
-{
-  return 0;
-}
-
-int wxSliderMSW::GetSelStart() const
-{
-  return 0;
-}
-
-void wxSliderMSW::SetSelection(int minPos, int maxPos)
+// Not yet implemented
+void wxSliderMSW::SetThumbLength(int WXUNUSED(lenPixels))
 {
 }
 
-void wxSliderMSW::SetThumbLength(int len)
-{
-}
-
+// Not yet implemented
 int wxSliderMSW::GetThumbLength() const
 {
-  return 0;
-}
-
-void wxSliderMSW::SetTick(int tickPos)
-{
+    return 0;
 }
 
 bool wxSliderMSW::ContainsHWND(WXHWND hWnd) const

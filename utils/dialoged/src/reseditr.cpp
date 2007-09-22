@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     04/01/98
-// RCS-ID:      $Id: reseditr.cpp,v 1.48.2.5 2002/01/18 11:50:49 JS Exp $
+// RCS-ID:      $Id: reseditr.cpp,v 1.59 2002/08/24 10:01:47 JS Exp $
 // Copyright:   (c) Julian Smart
 // Licence:   	wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -58,7 +58,7 @@
 
 wxResourceManager *wxResourceManager::sm_currentResourceManager = NULL;
 
-#if defined(__WXGTK__) || defined(__WXMOTIF__)
+#if !defined(__WXMSW__)
 #include "bitmaps/load.xpm"
 #include "bitmaps/save.xpm"
 #include "bitmaps/new.xpm"
@@ -150,11 +150,9 @@ bool wxResourceManager::Initialize()
     windowsDir += "\\dialoged.ini" ;
     
     m_optionsResourceFilename = windowsDir;
-#elif defined(__WXGTK__) || defined(__WXMOTIF__)
+#else
     wxGetHomeDir( &m_optionsResourceFilename );
     m_optionsResourceFilename += "/.dialogedrc";
-#else
-#error "Unsupported platform."
 #endif
     
     LoadOptions();
@@ -165,6 +163,8 @@ bool wxResourceManager::Initialize()
 #endif
     
     m_popupMenu = new wxMenu;
+    m_popupMenu->Append(OBJECT_MENU_TITLE, "WIDGET TYPE");
+    m_popupMenu->AppendSeparator();
     m_popupMenu->Append(OBJECT_MENU_EDIT, "Edit properties");
     m_popupMenu->Append(OBJECT_MENU_DELETE, "Delete object");
     
@@ -172,8 +172,7 @@ bool wxResourceManager::Initialize()
     {
 #ifdef __WXMSW__
         m_bitmapImage = new wxBitmap("WXWINBMP", wxBITMAP_TYPE_BMP_RESOURCE);
-#endif
-#if defined(__WXGTK__) || defined(__WXMOTIF__)
+#else
         m_bitmapImage = new wxBitmap( wxwin_xpm );
 #endif
     }
@@ -766,8 +765,7 @@ wxToolBar *wxResourceManager::OnCreateToolBar(wxFrame *parent)
     wxBitmap ToolbarCopyHeightBitmap("COPYHEIGHTTOOL");
     wxBitmap ToolbarDistributeHorizBitmap("DISTHORIZTOOL");
     wxBitmap ToolbarDistributeVertBitmap("DISTVERTTOOL");
-#endif
-#if defined(__WXGTK__) || defined(__WXMOTIF__)
+#else
     wxBitmap ToolbarLoadBitmap( load_xpm );
     wxBitmap ToolbarSaveBitmap( save_xpm);
     wxBitmap ToolbarNewBitmap( new_xpm );
@@ -2280,7 +2278,7 @@ void wxResourceEditorFrame::OnExit(wxCommandEvent& WXUNUSED(event))
 void wxResourceEditorFrame::OnAbout(wxCommandEvent& WXUNUSED(event))
 {
     char buf[300];
-    sprintf(buf, "wxWindows Dialog Editor %.1f\nAuthor: Julian Smart <julian.smart@ukonline.co.uk>\nJulian Smart (c) 1996-1999", wxDIALOG_EDITOR_VERSION);
+    sprintf(buf, "wxWindows Dialog Editor %.1f\n(c) Julian Smart 1996-1999", wxDIALOG_EDITOR_VERSION);
     wxMessageBox(buf, "About Dialog Editor", wxOK|wxCENTRE);
 }
 
@@ -2380,7 +2378,7 @@ void wxResourceEditorScrolledWindow::DrawTitle(wxDC& dc)
         {
             wxString str(res->GetTitle());
             int x, y;
-            ViewStart(& x, & y);
+            GetViewStart(& x, & y);
             
             wxFont font(10, wxSWISS, wxNORMAL, wxBOLD);
             dc.SetFont(font);
@@ -2857,7 +2855,7 @@ bool wxResourceManager::InsertLabelResource(wxItemResource* parent, wxItemResour
         font = parent->GetFont();
 
     if (!font.Ok() || (parent->GetResourceStyle() & wxRESOURCE_USE_DEFAULTS))
-        font = wxSystemSettings::GetSystemFont(wxSYS_DEFAULT_GUI_FONT);
+        font = wxSystemSettings::GetFont(wxSYS_DEFAULT_GUI_FONT);
 
     int labelX, labelY;
     wxCoord labelWidth, labelHeight;

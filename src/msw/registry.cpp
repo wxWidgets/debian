@@ -4,7 +4,7 @@
 // Author:      Vadim Zeitlin
 // Modified by:
 // Created:     03.04.98
-// RCS-ID:      $Id: registry.cpp,v 1.39.2.8 2001/04/21 01:34:57 VZ Exp $
+// RCS-ID:      $Id: registry.cpp,v 1.45 2002/01/21 15:52:03 VZ Exp $
 // Copyright:   (c) 1998 Vadim Zeitlin <zeitlin@dptmaths.ens-cachan.fr>
 // Licence:     wxWindows license
 // TODO:        - parsing of registry key names
@@ -316,11 +316,14 @@ bool wxRegKey::GetKeyInfo(size_t *pnSubKeys,
 #if defined(__WIN32__) && !defined(__TWIN32__)
 
     // old gcc headers incorrectly prototype RegQueryInfoKey()
-#ifdef __GNUWIN32_OLD__
+#if defined(__GNUWIN32_OLD__) && !defined(__CYGWIN10__)
     #define REG_PARAM   (size_t *)
 #else
     #define REG_PARAM   (LPDWORD)
 #endif
+
+  // it might be unexpected to some that this function doesn't open the key
+  wxASSERT_MSG( IsOpened(), _T("key should be opened in GetKeyInfo") );
 
   m_dwLastError = ::RegQueryInfoKey
                   (
@@ -349,8 +352,8 @@ bool wxRegKey::GetKeyInfo(size_t *pnSubKeys,
                   GetName().c_str());
     return FALSE;
   }
-  else
-    return TRUE;
+
+  return TRUE;
 #else // Win16
   wxFAIL_MSG("GetKeyInfo() not implemented");
 
@@ -828,7 +831,9 @@ bool wxRegKey::QueryValue(const wxChar *szValue, long *plValue) const
 
 #endif  //Win32
 
-bool wxRegKey::QueryValue(const wxChar *szValue, wxString& strValue) const
+bool wxRegKey::QueryValue(const wxChar *szValue,
+                          wxString& strValue,
+                          bool raw) const
 {
   if ( CONST_CAST Open() ) {
     #ifdef  __WIN32__
@@ -852,8 +857,8 @@ bool wxRegKey::QueryValue(const wxChar *szValue, wxString& strValue) const
                                             &dwSize);
             strValue.UngetWriteBuf();
 
-            // always expand the var expansions in the string
-            if ( dwType == REG_EXPAND_SZ )
+            // expand the var expansions in the string unless disabled
+            if ( (dwType == REG_EXPAND_SZ) && !raw )
             {
                 DWORD dwExpSize = ::ExpandEnvironmentStrings(strValue, NULL, 0);
                 bool ok = dwExpSize != 0;
@@ -925,7 +930,7 @@ bool wxRegKey::SetValue(const wxChar *szValue, const wxString& strValue)
   return FALSE;
 }
 
-wxRegKey::operator wxString() const
+wxString wxRegKey::QueryDefaultValue() const
 {
   wxString str;
   QueryValue(NULL, str);

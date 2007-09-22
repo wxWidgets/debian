@@ -2,9 +2,9 @@
 // Name:        wx/tokenzr.h
 // Purpose:     String tokenizer - a C++ replacement for strtok(3)
 // Author:      Guilhem Lavaux
-// Modified by: Vadim Zeitlin
+// Modified by: (or rather rewritten by) Vadim Zeitlin
 // Created:     04/22/98
-// RCS-ID:      $Id: tokenzr.h,v 1.11 2000/02/09 17:51:14 VZ Exp $
+// RCS-ID:      $Id: tokenzr.h,v 1.13 2002/08/31 11:29:11 GD Exp $
 // Copyright:   (c) Guilhem Lavaux
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -12,7 +12,7 @@
 #ifndef _WX_TOKENZRH
 #define _WX_TOKENZRH
 
-#ifdef __GNUG__
+#if defined(__GNUG__) && !defined(__APPLE__)
     #pragma interface "tokenzr.h"
 #endif
 
@@ -116,5 +116,16 @@ protected:
 
     bool     m_hasMore;             // do we have more (possible empty) tokens?
 };
+
+// ----------------------------------------------------------------------------
+// convenience function which returns all tokens at once
+// ----------------------------------------------------------------------------
+
+// the function takes the same parameters as wxStringTokenizer ctor and returns
+// the array containing all tokens
+wxArrayString WXDLLEXPORT
+wxStringTokenize(const wxString& str,
+                 const wxString& delims = wxDEFAULT_DELIMITERS,
+                 wxStringTokenizerMode mode = wxTOKEN_DEFAULT);
 
 #endif // _WX_TOKENZRH

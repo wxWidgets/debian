@@ -4,7 +4,7 @@
 // Author:      Vadim Zeitlin
 // Modified by: 
 // Created:     27.07.98
-// RCS-ID:      $Id: iniconf.h,v 1.8 1999/01/20 19:54:02 VZ Exp $
+// RCS-ID:      $Id: iniconf.h,v 1.10 2002/03/05 00:32:46 VZ Exp $
 // Copyright:   (c) 1998 Vadim Zeitlin <zeitlin@dptmaths.ens-cachan.fr>
 // Licence:     wxWindows licence
 ///////////////////////////////////////////////////////////////////////////////
@@ -65,38 +65,22 @@ public:
   // return TRUE if the current group is empty
   bool IsEmpty() const;
 
-  // read/write
-  bool Read(const wxString& key, wxString *pStr) const;
-  bool Read(const wxString& key, wxString *pStr, const wxString& szDefault) const;
-  bool Read(const wxString& key, long *plResult) const;
-
-  // The following are necessary to satisfy the compiler
-  wxString Read(const wxString& key, const wxString& defVal) const
-  { return wxConfigBase::Read(key, defVal); }
-  bool Read(const wxString& key, long *pl, long defVal) const
-  { return wxConfigBase::Read(key, pl, defVal); }
-  long Read(const wxString& key, long defVal) const
-  { return wxConfigBase::Read(key, defVal); }
-  bool Read(const wxString& key, int *pi, int defVal) const
-    { return wxConfigBase::Read(key, pi, defVal); }
-  bool Read(const wxString& key, int *pi) const
-    { return wxConfigBase::Read(key, pi); }
-  bool Read(const wxString& key, double* val) const
-  { return wxConfigBase::Read(key, val); }
-  bool Read(const wxString& key, double* val, double defVal) const
-  { return wxConfigBase::Read(key, val, defVal); }
-
-  bool Write(const wxString& key, const wxString& szValue);
-  bool Write(const wxString& key, long lValue);
-
   virtual bool Flush(bool bCurrentOnly = FALSE);
 
   virtual bool RenameEntry(const wxString& oldName, const wxString& newName);
   virtual bool RenameGroup(const wxString& oldName, const wxString& newName);
 
-  virtual bool DeleteEntry(const wxString& Key, bool bGroupIfEmptyAlso);
+  virtual bool DeleteEntry(const wxString& Key, bool bGroupIfEmptyAlso = TRUE);
   virtual bool DeleteGroup(const wxString& szKey);
   virtual bool DeleteAll();
+
+protected:
+  // read/write
+  bool DoReadString(const wxString& key, wxString *pStr) const;
+  bool DoReadLong(const wxString& key, long *plResult) const;
+
+  bool DoWriteString(const wxString& key, const wxString& szValue);
+  bool DoWriteLong(const wxString& key, long lValue);
 
 private:
   // helpers

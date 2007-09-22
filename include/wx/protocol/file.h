@@ -4,16 +4,21 @@
 // Author:      Guilhem Lavaux
 // Modified by:
 // Created:     1997
-// RCS-ID:      $Id: file.h,v 1.1 1998/09/06 18:26:41 GL Exp $
+// RCS-ID:      $Id: file.h,v 1.3 2002/08/31 11:29:13 GD Exp $
 // Copyright:   (c) 1997, 1998 Guilhem Lavaux
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
+
 #ifndef __WX_PROTO_FILE_H__
 #define __WX_PROTO_FILE_H__
 
-#ifdef __GNUG__
+#if defined(__GNUG__) && !defined(__APPLE__)
 #pragma interface "sckfile.h"
 #endif
+
+#include "wx/defs.h"
+
+#if wxUSE_PROTOCOL_FILE
 
 #include "wx/protocol/protocol.h"
 #include "wx/url.h"
@@ -32,4 +37,6 @@ public:
   wxInputStream *GetInputStream(const wxString& path);
 };
 
-#endif
+#endif // wxUSE_PROTOCOL_FILE
+
+#endif // __WX_PROTO_FILE_H__

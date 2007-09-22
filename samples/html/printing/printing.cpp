@@ -5,7 +5,7 @@
 
 
 // For compilers that support precompilation, includes "wx/wx.h".
-#include <wx/wxprec.h>
+#include "wx/wxprec.h"
 
 #ifdef __BORLANDC__
 #pragma hdrstop
@@ -14,13 +14,12 @@
 // for all others, include the necessary headers (this file is usually all you
 // need because it includes almost all "standard" wxWindows headers
 #ifndef WX_PRECOMP
-#include <wx/wx.h>
+#include "wx/wx.h"
 #endif
 
-#include <wx/image.h>
-#include <wx/html/htmlwin.h>
-
-#include <wx/html/htmprint.h>
+#include "wx/image.h"
+#include "wx/html/htmlwin.h"
+#include "wx/html/htmprint.h"
 
 
 // ----------------------------------------------------------------------------
@@ -45,9 +44,10 @@ class MyApp : public wxApp
 class MyFrame : public wxFrame
 {
     public:
-        // ctor(s)
+        // ctor and dtor
 
         MyFrame(const wxString& title, const wxPoint& pos, const wxSize& size);
+        virtual ~MyFrame();
 
         // event handlers (these functions should _not_ be virtual)
         void OnQuit(wxCommandEvent& event);
@@ -77,7 +77,6 @@ enum
 {
     // menu items
     Minimal_Quit = 1,
-    Minimal_About,
     Minimal_Print,
     Minimal_Preview,
     Minimal_PageSetup,
@@ -95,7 +94,7 @@ enum
 // simple menu events like this the static method is much simpler.
 BEGIN_EVENT_TABLE(MyFrame, wxFrame)
     EVT_MENU(Minimal_Quit, MyFrame::OnQuit)
-    EVT_MENU(Minimal_About, MyFrame::OnAbout)
+    EVT_MENU(wxID_ABOUT, MyFrame::OnAbout)
     EVT_MENU(Minimal_Print, MyFrame::OnPrint)
     EVT_MENU(Minimal_Preview, MyFrame::OnPreview)
     EVT_MENU(Minimal_PageSetup, MyFrame::OnPageSetup)
@@ -156,8 +155,6 @@ MyFrame::MyFrame(const wxString& title, const wxPoint& pos, const wxSize& size)
 {
     // create a menu bar
     wxMenu *menuFile = new wxMenu;
-    wxMenu *menuNav = new wxMenu;
-
     menuFile->Append(Minimal_Open, "Open...\tCtrl-O");
     menuFile->AppendSeparator();
     menuFile->Append(Minimal_PageSetup, "Page Setup");
@@ -165,7 +162,7 @@ MyFrame::MyFrame(const wxString& title, const wxPoint& pos, const wxSize& size)
     menuFile->Append(Minimal_Print, "Print...");
     menuFile->Append(Minimal_Preview, "Preview...");
     menuFile->AppendSeparator();
-    menuFile->Append(Minimal_About, "&About");
+    menuFile->Append(wxID_ABOUT, "&About");
     menuFile->AppendSeparator();
     menuFile->Append(Minimal_Quit, "&Exit");
 
@@ -188,12 +185,18 @@ MyFrame::MyFrame(const wxString& title, const wxPoint& pos, const wxSize& size)
     m_Prn -> SetHeader(m_Name + "(@PAGENUM@/@PAGESCNT@)<hr>", wxPAGE_ALL);
 }
 
+// frame destructor
+MyFrame::~MyFrame()
+{
+    delete m_Prn;
+    m_Prn = (wxHtmlEasyPrinting *) NULL;
+}
+
 
 // event handlers
 
 void MyFrame::OnQuit(wxCommandEvent& WXUNUSED(event))
 {
-    delete m_Prn;    
     // TRUE is to force the frame to close
     Close(TRUE);
 }
@@ -237,7 +240,7 @@ void MyFrame::OnOpen(wxCommandEvent& WXUNUSED(event))
     {
         m_Name = dialog.GetPath();
         m_Html -> LoadPage(m_Name);
-	m_Prn -> SetHeader(m_Name + "(@PAGENUM@/@PAGESCNT@)<hr>", wxPAGE_ALL);
+        m_Prn -> SetHeader(m_Name + "(@PAGENUM@/@PAGESCNT@)<hr>", wxPAGE_ALL);
     } 
 }
 

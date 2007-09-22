@@ -4,9 +4,9 @@
 // Author:      Brian Paul (original gltk version), Wolfram Gloger
 // Modified by: Julian Smart
 // Created:     04/01/98
-// RCS-ID:      $Id: isosurf.cpp,v 1.3 2000/03/08 08:32:24 JS Exp $
+// RCS-ID:      $Id: isosurf.cpp,v 1.7 2002/03/17 14:15:53 VZ Exp $
 // Copyright:   (c) Julian Smart
-// Licence:   	wxWindows licence
+// Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
 
 #ifdef __GNUG__
@@ -32,8 +32,24 @@
 #include "wx/timer.h"
 #include "wx/glcanvas.h"
 
-#include <GL/gl.h>
-#include <GL/glu.h>
+#ifdef __WXMAC__
+#  ifdef __DARWIN__
+#    include <OpenGL/gl.h>
+#    include <OpenGL/glu.h>
+#  else
+#    include <gl.h>
+#    include <glu.h>
+#  endif
+#else
+#  include <GL/gl.h>
+#  include <GL/glu.h>
+#endif
+
+// disabled because this has apparently changed in OpenGL 1.2, so doesn't link
+// correctly if this is on...
+#ifdef GL_EXT_vertex_array
+#undef GL_EXT_vertex_array
+#endif
 
 #include "isosurf.h"
 
@@ -75,8 +91,8 @@ static void read_surface( char *filename )
    numverts = 0;
    while (!feof(f) && numverts<MAXVERTS) {
       fscanf( f, "%f %f %f  %f %f %f",
-	      &verts[numverts][0], &verts[numverts][1], &verts[numverts][2],
-	      &norms[numverts][0], &norms[numverts][1], &norms[numverts][2] );
+          &verts[numverts][0], &verts[numverts][1], &verts[numverts][2],
+          &norms[numverts][0], &norms[numverts][1], &norms[numverts][2] );
       numverts++;
    }
    numverts--;
@@ -187,13 +203,6 @@ static void Init(void)
 #endif
 }
 
-
-static void Reshape(int width, int height)
-{
-  glViewport(0, 0, (GLint)width, (GLint)height);
-}
-
-
 static GLenum Args(int argc, char **argv)
 {
    GLint i;
@@ -253,9 +262,14 @@ bool MyApp::OnInit(void)
 #ifdef __WXMSW__
   int *gl_attrib = NULL;
 #else
-  int gl_attrib[20] = { GLX_RGBA, GLX_RED_SIZE, 1, GLX_GREEN_SIZE, 1,
-			GLX_BLUE_SIZE, 1, GLX_DEPTH_SIZE, 1,
-			GLX_DOUBLEBUFFER, None };
+  int gl_attrib[20] = { WX_GL_RGBA, WX_GL_MIN_RED, 1, WX_GL_MIN_GREEN, 1,
+            WX_GL_MIN_BLUE, 1, WX_GL_DEPTH_SIZE, 1,
+            WX_GL_DOUBLEBUFFER,
+#  ifdef __WXMAC__
+            GL_NONE };
+#  else
+            None };
+#  endif
 #endif
 
   if(!doubleBuffer)
@@ -266,8 +280,9 @@ bool MyApp::OnInit(void)
 #endif
       doubleBuffer = GL_FALSE;
   }
-  frame->m_canvas = new TestGLCanvas(frame, -1, wxPoint(0, 0), wxSize(200, 200), 0, "TestGLCanvas",
-				   gl_attrib);
+ 
+  frame->m_canvas = new TestGLCanvas(frame, -1, wxDefaultPosition, wxDefaultSize,
+                                     0, "TestGLCanvas", gl_attrib );
 
   // Show the frame
   frame->Show(TRUE);
@@ -316,6 +331,7 @@ TestGLCanvas::TestGLCanvas(wxWindow *parent, wxWindowID id,
 {
    parent->Show(TRUE);
    SetCurrent();
+
    /* Make sure server supports the vertex array extension */
    char* extensions = (char *) glGetString( GL_EXTENSIONS );
    if (!extensions || !strstr( extensions, "GL_EXT_vertex_array" )) {
@@ -338,59 +354,66 @@ void TestGLCanvas::OnPaint( wxPaintEvent& event )
     if (!GetContext()) return;
 #endif
 
+    SetCurrent();
+
     draw1();
     SwapBuffers();
 }
 
 void TestGLCanvas::OnSize(wxSizeEvent& event)
 {
+    // this is also necessary to update the context on some platforms
+    wxGLCanvas::OnSize(event);
+    
+    // set GL viewport (not called by wxGLCanvas::OnSize on all platforms...)
+    int w, h;
+    GetClientSize(&w, &h);
 #ifndef __WXMOTIF__
-    if (!GetContext()) return;
+    if (GetContext())
 #endif
-
-    SetCurrent();
-    int width, height;
-    GetClientSize(& width, & height);
-    Reshape(width, height);
+    {
+        SetCurrent();
+        glViewport(0, 0, (GLint) w, (GLint) h);
+    }
 }
 
 void TestGLCanvas::OnChar(wxKeyEvent& event)
 {
     switch(event.KeyCode()) {
     case WXK_ESCAPE:
-	exit(0);
+    exit(0);
     case WXK_LEFT:
-	yrot -= 15.0;
-	break;
+    yrot -= 15.0;
+    break;
     case WXK_RIGHT:
-	yrot += 15.0;
-	break;
+    yrot += 15.0;
+    break;
     case WXK_UP:
-	xrot += 15.0;
-	break;
+    xrot += 15.0;
+    break;
     case WXK_DOWN:
-	xrot -= 15.0;
-	break;
+    xrot -= 15.0;
+    break;
     case 's': case 'S':
-	smooth = !smooth;
-	if (smooth) {
-	    glShadeModel(GL_SMOOTH);
-	} else {
-	    glShadeModel(GL_FLAT);
-	}
-	break;
+    smooth = !smooth;
+    if (smooth) {
+        glShadeModel(GL_SMOOTH);
+    } else {
+        glShadeModel(GL_FLAT);
+    }
+    break;
     case 'l': case 'L':
-	lighting = !lighting;
-	if (lighting) {
-	    glEnable(GL_LIGHTING);
-	} else {
-	    glDisable(GL_LIGHTING);
-	}
-	break;
+    lighting = !lighting;
+    if (lighting) {
+        glEnable(GL_LIGHTING);
+    } else {
+        glDisable(GL_LIGHTING);
+    }
+    break;
      default:
       {
         event.Skip();
-	return;
+    return;
       }
     }
 
@@ -404,17 +427,17 @@ void TestGLCanvas::OnMouseEvent(wxMouseEvent& event)
 
     //printf("%f %f %d\n", event.GetX(), event.GetY(), (int)event.LeftIsDown());
     if(event.LeftIsDown()) {
-	if(!dragging) {
-	    dragging = 1;
-	} else {
-	    yrot += (event.GetX() - last_x)*1.0;
-	    xrot += (event.GetY() - last_y)*1.0;
-	    Refresh(FALSE);
-	}
-	last_x = event.GetX();
-	last_y = event.GetY();
+    if(!dragging) {
+        dragging = 1;
+    } else {
+        yrot += (event.GetX() - last_x)*1.0;
+        xrot += (event.GetY() - last_y)*1.0;
+        Refresh(FALSE);
+    }
+    last_x = event.GetX();
+    last_y = event.GetY();
     } else
-	dragging = 0;
+    dragging = 0;
 }
 
 void TestGLCanvas::OnEraseBackground(wxEraseEvent& event)

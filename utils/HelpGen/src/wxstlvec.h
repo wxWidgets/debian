@@ -4,7 +4,7 @@
 // Author:      Aleksandras Gluchovas
 // Modified by:
 // Created:     27/09/98
-// RCS-ID:      $Id: wxstlvec.h,v 1.1 1999/09/13 14:29:41 JS Exp $
+// RCS-ID:      $Id: wxstlvec.h,v 1.2 2001/11/18 12:25:12 GD Exp $
 // Copyright:   (c) Aleskandars Gluchovas
 // Licence:   	wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -19,7 +19,9 @@
 #include <memory.h>
 #include <string.h>  // imports memmove()
 #include <stddef.h>
-#include <sys/types.h>
+#if !defined(__WXMAC__) || defined(__DARWIN__)
+#  include <sys/types.h>
+#endif
 #include <limits.h>
 #include <new>
 

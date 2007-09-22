@@ -3,9 +3,9 @@
 // Purpose:
 // Date: 08/11/1999
 // Author: Guilhem Lavaux <lavaux@easynet.fr> (C) 1999, 2000
-// CVSID: $Id: sndfile.cpp,v 1.1 2000/03/05 19:03:18 GL Exp $
+// CVSID: $Id: sndfile.cpp,v 1.3 2001/10/30 13:28:45 GT Exp $
 // --------------------------------------------------------------------------
-#include <wx/wxprec.h>
+#include "wx/wxprec.h"
 
 #ifndef WX_PRECOMP
 #include <wx/defs.h>
@@ -18,6 +18,7 @@
 #include "wx/mmedia/sndcpcm.h"
 #include "wx/mmedia/sndulaw.h"
 #include "wx/mmedia/sndg72x.h"
+#include "wx/mmedia/sndmsad.h"
 
 // --------------------------------------------------------------------------
 // Sound codec router
@@ -104,6 +105,10 @@ bool wxSoundRouterStream::SetSoundFormat(const wxSoundFormatBase& format)
             break;
         case wxSOUND_G72X:
             m_router = new wxSoundStreamG72X(*m_sndio);
+            m_router->SetSoundFormat(format);
+            break;
+        case wxSOUND_MSADPCM:
+            m_router = new  wxSoundStreamMSAdpcm(*m_sndio);
             m_router->SetSoundFormat(format);
             break;
         default:

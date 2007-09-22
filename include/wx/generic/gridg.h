@@ -6,7 +6,7 @@
 //                Added edit in place facility, 20 April 1999
 //                Added cursor key control, 29 Jun 1999
 // Created:     01/02/97
-// RCS-ID:      $Id: gridg.h,v 1.17 1999/10/09 07:10:26 RD Exp $
+// RCS-ID:      $Id: gridg.h,v 1.21 2002/08/31 11:29:12 GD Exp $
 // Copyright:   (c)
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -14,11 +14,14 @@
 #ifndef __GRIDH_G__
 #define __GRIDH_G__
 
-#ifdef __GNUG__
+#if defined(__GNUG__) && !defined(__APPLE__)
 #pragma interface "gridg.h"
 #endif
 
 #include "wx/defs.h"
+
+#if wxUSE_GRID
+
 #include "wx/panel.h"
 #include "wx/string.h"
 #include "wx/scrolbar.h"
@@ -410,15 +413,17 @@ const wxEventType wxEVT_GRID_LABEL_RCLICK     = wxEVT_FIRST + 1583;
 
 typedef void (wxEvtHandler::*wxGridEventFunction)(wxGridEvent&);
 
-#define EVT_GRID_SELECT_CELL(fn)      { wxEVT_GRID_SELECT_CELL,      -1, -1, (wxObjectEventFunction) (wxEventFunction) (wxGridEventFunction) &fn, NULL },
-#define EVT_GRID_CREATE_CELL(fn)      { wxEVT_GRID_CREATE_CELL,      -1, -1, (wxObjectEventFunction) (wxEventFunction) (wxGridEventFunction) &fn, NULL },
-#define EVT_GRID_CHANGE_LABELS(fn)    { wxEVT_GRID_CHANGE_LABELS,    -1, -1, (wxObjectEventFunction) (wxEventFunction) (wxGridEventFunction) &fn, NULL },
-#define EVT_GRID_CHANGE_SEL_LABEL(fn) { wxEVT_GRID_CHANGE_SEL_LABEL, -1, -1, (wxObjectEventFunction) (wxEventFunction) (wxGridEventFunction) &fn, NULL },
-#define EVT_GRID_CELL_CHANGE(fn)      { wxEVT_GRID_CELL_CHANGE,      -1, -1, (wxObjectEventFunction) (wxEventFunction) (wxGridEventFunction) &fn, NULL },
-#define EVT_GRID_CELL_LCLICK(fn)      { wxEVT_GRID_CELL_LCLICK,      -1, -1, (wxObjectEventFunction) (wxEventFunction) (wxGridEventFunction) &fn, NULL },
-#define EVT_GRID_CELL_RCLICK(fn)      { wxEVT_GRID_CELL_RCLICK,      -1, -1, (wxObjectEventFunction) (wxEventFunction) (wxGridEventFunction) &fn, NULL },
-#define EVT_GRID_LABEL_LCLICK(fn)     { wxEVT_GRID_LABEL_LCLICK,     -1, -1, (wxObjectEventFunction) (wxEventFunction) (wxGridEventFunction) &fn, NULL },
-#define EVT_GRID_LABEL_RCLICK(fn)     { wxEVT_GRID_LABEL_RCLICK,     -1, -1, (wxObjectEventFunction) (wxEventFunction) (wxGridEventFunction) &fn, NULL },
+#define EVT_GRID_SELECT_CELL(fn)      DECLARE_EVENT_TABLE_ENTRY(wxEVT_GRID_SELECT_CELL,      -1, -1, (wxObjectEventFunction) (wxEventFunction) (wxGridEventFunction) &fn, NULL),
+#define EVT_GRID_CREATE_CELL(fn)      DECLARE_EVENT_TABLE_ENTRY(wxEVT_GRID_CREATE_CELL,      -1, -1, (wxObjectEventFunction) (wxEventFunction) (wxGridEventFunction) &fn, NULL),
+#define EVT_GRID_CHANGE_LABELS(fn)    DECLARE_EVENT_TABLE_ENTRY(wxEVT_GRID_CHANGE_LABELS,    -1, -1, (wxObjectEventFunction) (wxEventFunction) (wxGridEventFunction) &fn, NULL),
+#define EVT_GRID_CHANGE_SEL_LABEL(fn) DECLARE_EVENT_TABLE_ENTRY(wxEVT_GRID_CHANGE_SEL_LABEL, -1, -1, (wxObjectEventFunction) (wxEventFunction) (wxGridEventFunction) &fn, NULL),
+#define EVT_GRID_CELL_CHANGE(fn)      DECLARE_EVENT_TABLE_ENTRY(wxEVT_GRID_CELL_CHANGE,      -1, -1, (wxObjectEventFunction) (wxEventFunction) (wxGridEventFunction) &fn, NULL),
+#define EVT_GRID_CELL_LCLICK(fn)      DECLARE_EVENT_TABLE_ENTRY(wxEVT_GRID_CELL_LCLICK,      -1, -1, (wxObjectEventFunction) (wxEventFunction) (wxGridEventFunction) &fn, NULL),
+#define EVT_GRID_CELL_RCLICK(fn)      DECLARE_EVENT_TABLE_ENTRY(wxEVT_GRID_CELL_RCLICK,      -1, -1, (wxObjectEventFunction) (wxEventFunction) (wxGridEventFunction) &fn, NULL),
+#define EVT_GRID_LABEL_LCLICK(fn)     DECLARE_EVENT_TABLE_ENTRY(wxEVT_GRID_LABEL_LCLICK,     -1, -1, (wxObjectEventFunction) (wxEventFunction) (wxGridEventFunction) &fn, NULL),
+#define EVT_GRID_LABEL_RCLICK(fn)     DECLARE_EVENT_TABLE_ENTRY(wxEVT_GRID_LABEL_RCLICK,     -1, -1, (wxObjectEventFunction) (wxEventFunction) (wxGridEventFunction) &fn, NULL),
+
+#endif // wxUSE_GRID
 
 #endif // __GRIDH_G__
 

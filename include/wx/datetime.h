@@ -5,7 +5,7 @@
 // Author:      Vadim Zeitlin
 // Modified by:
 // Created:     10.02.99
-// RCS-ID:      $Id: datetime.h,v 1.24.2.8 2001/05/21 18:55:53 RL Exp $
+// RCS-ID:      $Id: datetime.h,v 1.34 2002/08/31 11:29:09 GD Exp $
 // Copyright:   (c) 1998 Vadim Zeitlin <zeitlin@dptmaths.ens-cachan.fr>
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -13,9 +13,11 @@
 #ifndef _WX_DATETIME_H
 #define _WX_DATETIME_H
 
-#ifdef __GNUG__
+#if defined(__GNUG__) && !defined(__APPLE__)
     #pragma interface "datetime.h"
 #endif
+
+#if wxUSE_DATETIME
 
 #include <time.h>
 #include <limits.h>             // for INT_MIN
@@ -26,16 +28,35 @@ class WXDLLEXPORT wxDateTime;
 class WXDLLEXPORT wxTimeSpan;
 class WXDLLEXPORT wxDateSpan;
 
-// don't use inline functions in debug builds - we don't care about
+// a hack: don't use inline functions in debug builds - we don't care about
 // performances and this only leads to increased rebuild time (because every
 // time an inline method is changed, all files including the header must be
 // rebuilt)
-// For Mingw32, causes a link error.
+
+// For Mingw32, causes a link error. (VZ: why?)
 #if defined( __WXDEBUG__) && !defined(__MINGW32__)
+    #define wxDATETIME_DONT_INLINE
+
     #undef inline
     #define inline
+#else
+    // just in case
+    #undef wxDATETIME_DONT_INLINE
 #endif // Debug
 
+// not all c-runtimes are based on 1/1/1970 being (time_t) 0
+// set this to the corresponding value in seconds 1/1/1970 has on your
+// systems c-runtime
+
+#ifdef __WXMAC__
+#if __MSL__ < 0x6000
+    #define WX_TIME_BASE_OFFSET ( 2082844800L + 126144000L )
+#else
+    #define WX_TIME_BASE_OFFSET 0
+#endif
+#else
+    #define WX_TIME_BASE_OFFSET 0
+#endif
 /*
  * TODO
  *
@@ -100,7 +121,7 @@ class WXDLLEXPORT wxDateSpan;
 // wxInvalidDateTime)
 class WXDLLEXPORT wxDateTime;
 
-WXDLLEXPORT_DATA(extern wxDateTime&) wxDefaultDateTime;
+WXDLLEXPORT_DATA(extern const wxDateTime) wxDefaultDateTime;
 #define wxInvalidDateTime wxDefaultDateTime
 
 // ----------------------------------------------------------------------------
@@ -548,7 +569,7 @@ public:
                       wxDateTime_t millisec = 0);
         // from separate values for each component with explicit date
     inline wxDateTime(wxDateTime_t day,             // day of the month
-                      Month        month = Inv_Month,
+                      Month        month,
                       int          year = Inv_Year, // 1999, not 99 please!
                       wxDateTime_t hour = 0,
                       wxDateTime_t minute = 0,
@@ -591,7 +612,7 @@ public:
         // from separate values for each component with explicit date
         // (defaults for month and year are the current values)
     wxDateTime& Set(wxDateTime_t day,
-                    Month        month = Inv_Month,
+                    Month        month,
                     int          year = Inv_Year, // 1999, not 99 please!
                     wxDateTime_t hour = 0,
                     wxDateTime_t minute = 0,
@@ -1321,14 +1342,16 @@ protected:
 // else than datetime.cpp in debug builds: this minimizes rebuilds if we change
 // some inline function and the performance doesn't matter in the debug builds.
 
-#if !defined(__WXDEBUG__) || defined(wxDEFINE_TIME_CONSTANTS)
+#if !defined(wxDATETIME_DONT_INLINE) || defined(wxDEFINE_TIME_CONSTANTS)
     #define INCLUDED_FROM_WX_DATETIME_H
         #include "wx/datetime.inl"
     #undef INCLUDED_FROM_WX_DATETIME_H
 #endif
 
 // if we defined it to be empty above, restore it now
-#undef inline
+#ifdef wxDATETIME_DONT_INLINE
+    #undef inline
+#endif
 
 // ============================================================================
 // binary operators
@@ -1556,5 +1579,7 @@ inline WXDLLEXPORT void wxPrevWDay(wxDateTime::WeekDay& wd)
     wd = wd == wxDateTime::Sun ? wxDateTime::Inv_WeekDay
                                : (wxDateTime::WeekDay)(wd - 1);
 }
+
+#endif // wxUSE_DATETIME
 
 #endif // _WX_DATETIME_H

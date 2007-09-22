@@ -4,7 +4,7 @@
 // Author:      Robert Roebling, Ove Kaaven
 // Modified by:
 // Created:     29/01/98
-// RCS-ID:      $Id: strconv.h,v 1.4.2.3 2000/04/25 06:03:11 JS Exp $
+// RCS-ID:      $Id: strconv.h,v 1.11.2.1 2002/09/20 23:01:58 VZ Exp $
 // Copyright:   (c) 1998 Ove Kaaven, Robert Roebling, Vadim Zeitlin
 // Licence:     wxWindows license
 ///////////////////////////////////////////////////////////////////////////////
@@ -12,7 +12,7 @@
 #ifndef _WX_WXSTRCONVH__
 #define _WX_WXSTRCONVH__
 
-#ifdef __GNUG__
+#if defined(__GNUG__) && !defined(__APPLE__)
   #pragma interface "strconv.h"
 #endif
 
@@ -23,6 +23,7 @@
 #if defined(__VISAGECPP__) && __IBMCPP__ >= 400
 #  undef __BSEXCPT__
 #endif
+
 #include <stdlib.h>
 
 #if wxUSE_WCHAR_T
@@ -53,22 +54,12 @@ public:
     const wxCharBuffer cWC2WX(const wchar_t *psz) const { return cWC2MB(psz); }
     const wxWCharBuffer cWX2WC(const char *psz) const { return cMB2WC(psz); }
 #endif // Unicode/ANSI
+
+    // virtual dtor for any base class
+    virtual ~wxMBConv();
 };
 
 WXDLLEXPORT_DATA(extern wxMBConv) wxConvLibc;
-
-// ----------------------------------------------------------------------------
-// wxMBConvFile (for conversion to filenames)
-// ----------------------------------------------------------------------------
-
-class WXDLLEXPORT wxMBConvFile : public wxMBConv
-{
-public:
-    virtual size_t MB2WC(wchar_t *buf, const char *psz, size_t n) const;
-    virtual size_t WC2MB(char *buf, const wchar_t *psz, size_t n) const;
-};
-
-WXDLLEXPORT_DATA(extern wxMBConvFile) wxConvFile;
 
 // ----------------------------------------------------------------------------
 // wxMBConvUTF7 (for conversion using UTF7 encoding)
@@ -123,21 +114,29 @@ class WXDLLEXPORT wxCSConv : public wxMBConv
 {
 public:
     wxCSConv(const wxChar *charset);
+    wxCSConv(const wxCSConv& conv);
     virtual ~wxCSConv();
+
+    wxCSConv& operator=(const wxCSConv& conv);
 
     void LoadNow();
 
     virtual size_t MB2WC(wchar_t *buf, const char *psz, size_t n) const;
     virtual size_t WC2MB(char *buf, const wchar_t *psz, size_t n) const;
 
+    void Clear() ;
+
 private:
     void SetName(const wxChar *charset);
 
+    // note that we can't use wxString here because of compilation
+    // dependencies: we're included from wx/string.h
     wxChar *m_name;
     wxCharacterSet *m_cset;
     bool m_deferred;
 };
 
+#define wxConvFile wxConvLocal
 WXDLLEXPORT_DATA(extern wxCSConv) wxConvLocal;
 WXDLLEXPORT_DATA(extern wxMBConv *) wxConvCurrent;
 
@@ -174,7 +173,7 @@ public:
     const char* cWX2MB(const char *psz) const { return psz; }
 };
 
-WXDLLEXPORT_DATA(extern wxMBConv) wxConvLibc, wxConvFile;
+WXDLLEXPORT_DATA(extern wxMBConv) wxConvLibc, wxConvFile, wxConvLocal;
 WXDLLEXPORT_DATA(extern wxMBConv *) wxConvCurrent;
 
 #define wxFNCONV(name) name

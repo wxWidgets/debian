@@ -60,6 +60,7 @@ extern PyObject *SWIG_newvarlink(void);
 #include <wx/dirdlg.h>
 #include <wx/fontdlg.h>
 #include <wx/progdlg.h>
+#include <wx/fdrepdlg.h>
 
 
 static PyObject* t_output_helper(PyObject* target, PyObject* o) {
@@ -88,10 +89,26 @@ static PyObject* t_output_helper(PyObject* target, PyObject* o) {
     return target;
 }
 
-static char* wxStringErrorMsg = "string type is required for parameter";
+    // Put some wx default wxChar* values into wxStrings.
+    DECLARE_DEF_STRING(FileSelectorPromptStr);
+    DECLARE_DEF_STRING(DirSelectorPromptStr);
+    DECLARE_DEF_STRING(DirDialogNameStr);
+    DECLARE_DEF_STRING(FileSelectorDefaultWildcardStr);
+    DECLARE_DEF_STRING(GetTextFromUserPromptStr);
+    DECLARE_DEF_STRING(MessageBoxCaptionStr);
+    static const wxString wxPyEmptyString(wxT(""));
+
 #ifdef __cplusplus
 extern "C" {
 #endif
+static void *SwigwxColourDataTowxObject(void *ptr) {
+    wxColourData *src;
+    wxObject *dest;
+    src = (wxColourData *) ptr;
+    dest = (wxObject *) src;
+    return (void *) dest;
+}
+
 #define new_wxColourData() (new wxColourData())
 static PyObject *_wrap_new_wxColourData(PyObject *self, PyObject *args, PyObject *kwargs) {
     PyObject * _resultobj;
@@ -103,10 +120,11 @@ static PyObject *_wrap_new_wxColourData(PyObject *self, PyObject *args, PyObject
     if(!PyArg_ParseTupleAndKeywords(args,kwargs,":new_wxColourData",_kwnames)) 
         return NULL;
 {
-    wxPy_BEGIN_ALLOW_THREADS;
-        _result = (wxColourData *)new_wxColourData();
+    PyThreadState* __tstate = wxPyBeginAllowThreads();
+    _result = (wxColourData *)new_wxColourData();
 
-    wxPy_END_ALLOW_THREADS;
+    wxPyEndAllowThreads(__tstate);
+    if (PyErr_Occurred()) return NULL;
 }    if (_result) {
         SWIG_MakePtr(_ptemp, (char *) _result,"_wxColourData_p");
         _resultobj = Py_BuildValue("s",_ptemp);
@@ -135,10 +153,11 @@ static PyObject *_wrap_delete_wxColourData(PyObject *self, PyObject *args, PyObj
         }
     }
 {
-    wxPy_BEGIN_ALLOW_THREADS;
-        delete_wxColourData(_arg0);
+    PyThreadState* __tstate = wxPyBeginAllowThreads();
+    delete_wxColourData(_arg0);
 
-    wxPy_END_ALLOW_THREADS;
+    wxPyEndAllowThreads(__tstate);
+    if (PyErr_Occurred()) return NULL;
 }    Py_INCREF(Py_None);
     _resultobj = Py_None;
     return _resultobj;
@@ -163,10 +182,11 @@ static PyObject *_wrap_wxColourData_GetChooseFull(PyObject *self, PyObject *args
         }
     }
 {
-    wxPy_BEGIN_ALLOW_THREADS;
-        _result = (bool )wxColourData_GetChooseFull(_arg0);
+    PyThreadState* __tstate = wxPyBeginAllowThreads();
+    _result = (bool )wxColourData_GetChooseFull(_arg0);
 
-    wxPy_END_ALLOW_THREADS;
+    wxPyEndAllowThreads(__tstate);
+    if (PyErr_Occurred()) return NULL;
 }    _resultobj = Py_BuildValue("i",_result);
     return _resultobj;
 }
@@ -191,18 +211,13 @@ static PyObject *_wrap_wxColourData_GetColour(PyObject *self, PyObject *args, Py
         }
     }
 {
-    wxPy_BEGIN_ALLOW_THREADS;
-        wxColour & _result_ref = wxColourData_GetColour(_arg0);
-    _result = (wxColour *) &_result_ref;
+    PyThreadState* __tstate = wxPyBeginAllowThreads();
+    _result = new wxColour (wxColourData_GetColour(_arg0));
 
-    wxPy_END_ALLOW_THREADS;
-}    if (_result) {
-        SWIG_MakePtr(_ptemp, (char *) _result,"_wxColour_p");
-        _resultobj = Py_BuildValue("s",_ptemp);
-    } else {
-        Py_INCREF(Py_None);
-        _resultobj = Py_None;
-    }
+    wxPyEndAllowThreads(__tstate);
+    if (PyErr_Occurred()) return NULL;
+}    SWIG_MakePtr(_ptemp, (void *) _result,"_wxColour_p");
+    _resultobj = Py_BuildValue("s",_ptemp);
     return _resultobj;
 }
 
@@ -227,10 +242,11 @@ static PyObject *_wrap_wxColourData_GetCustomColour(PyObject *self, PyObject *ar
         }
     }
 {
-    wxPy_BEGIN_ALLOW_THREADS;
-        _result = new wxColour (wxColourData_GetCustomColour(_arg0,_arg1));
+    PyThreadState* __tstate = wxPyBeginAllowThreads();
+    _result = new wxColour (wxColourData_GetCustomColour(_arg0,_arg1));
 
-    wxPy_END_ALLOW_THREADS;
+    wxPyEndAllowThreads(__tstate);
+    if (PyErr_Occurred()) return NULL;
 }    SWIG_MakePtr(_ptemp, (void *) _result,"_wxColour_p");
     _resultobj = Py_BuildValue("s",_ptemp);
     return _resultobj;
@@ -255,10 +271,11 @@ static PyObject *_wrap_wxColourData_SetChooseFull(PyObject *self, PyObject *args
         }
     }
 {
-    wxPy_BEGIN_ALLOW_THREADS;
-        wxColourData_SetChooseFull(_arg0,_arg1);
+    PyThreadState* __tstate = wxPyBeginAllowThreads();
+    wxColourData_SetChooseFull(_arg0,_arg1);
 
-    wxPy_END_ALLOW_THREADS;
+    wxPyEndAllowThreads(__tstate);
+    if (PyErr_Occurred()) return NULL;
 }    Py_INCREF(Py_None);
     _resultobj = Py_None;
     return _resultobj;
@@ -290,10 +307,11 @@ static PyObject *_wrap_wxColourData_SetColour(PyObject *self, PyObject *args, Py
         return NULL;
 }
 {
-    wxPy_BEGIN_ALLOW_THREADS;
-        wxColourData_SetColour(_arg0,*_arg1);
+    PyThreadState* __tstate = wxPyBeginAllowThreads();
+    wxColourData_SetColour(_arg0,*_arg1);
 
-    wxPy_END_ALLOW_THREADS;
+    wxPyEndAllowThreads(__tstate);
+    if (PyErr_Occurred()) return NULL;
 }    Py_INCREF(Py_None);
     _resultobj = Py_None;
     return _resultobj;
@@ -326,10 +344,11 @@ static PyObject *_wrap_wxColourData_SetCustomColour(PyObject *self, PyObject *ar
         return NULL;
 }
 {
-    wxPy_BEGIN_ALLOW_THREADS;
-        wxColourData_SetCustomColour(_arg0,_arg1,*_arg2);
+    PyThreadState* __tstate = wxPyBeginAllowThreads();
+    wxColourData_SetCustomColour(_arg0,_arg1,*_arg2);
 
-    wxPy_END_ALLOW_THREADS;
+    wxPyEndAllowThreads(__tstate);
+    if (PyErr_Occurred()) return NULL;
 }    Py_INCREF(Py_None);
     _resultobj = Py_None;
     return _resultobj;
@@ -343,11 +362,11 @@ static void *SwigwxColourDialogTowxDialog(void *ptr) {
     return (void *) dest;
 }
 
-static void *SwigwxColourDialogTowxPanel(void *ptr) {
+static void *SwigwxColourDialogTowxTopLevelWindow(void *ptr) {
     wxColourDialog *src;
-    wxPanel *dest;
+    wxTopLevelWindow *dest;
     src = (wxColourDialog *) ptr;
-    dest = (wxPanel *) src;
+    dest = (wxTopLevelWindow *) src;
     return (void *) dest;
 }
 
@@ -364,6 +383,14 @@ static void *SwigwxColourDialogTowxEvtHandler(void *ptr) {
     wxEvtHandler *dest;
     src = (wxColourDialog *) ptr;
     dest = (wxEvtHandler *) src;
+    return (void *) dest;
+}
+
+static void *SwigwxColourDialogTowxObject(void *ptr) {
+    wxColourDialog *src;
+    wxObject *dest;
+    src = (wxColourDialog *) ptr;
+    dest = (wxObject *) src;
     return (void *) dest;
 }
 
@@ -396,10 +423,11 @@ static PyObject *_wrap_new_wxColourDialog(PyObject *self, PyObject *args, PyObje
         }
     }
 {
-    wxPy_BEGIN_ALLOW_THREADS;
-        _result = (wxColourDialog *)new_wxColourDialog(_arg0,_arg1);
+    PyThreadState* __tstate = wxPyBeginAllowThreads();
+    _result = (wxColourDialog *)new_wxColourDialog(_arg0,_arg1);
 
-    wxPy_END_ALLOW_THREADS;
+    wxPyEndAllowThreads(__tstate);
+    if (PyErr_Occurred()) return NULL;
 }    if (_result) {
         SWIG_MakePtr(_ptemp, (char *) _result,"_wxColourDialog_p");
         _resultobj = Py_BuildValue("s",_ptemp);
@@ -430,11 +458,12 @@ static PyObject *_wrap_wxColourDialog_GetColourData(PyObject *self, PyObject *ar
         }
     }
 {
-    wxPy_BEGIN_ALLOW_THREADS;
-        wxColourData & _result_ref = wxColourDialog_GetColourData(_arg0);
+    PyThreadState* __tstate = wxPyBeginAllowThreads();
+    wxColourData & _result_ref = wxColourDialog_GetColourData(_arg0);
     _result = (wxColourData *) &_result_ref;
 
-    wxPy_END_ALLOW_THREADS;
+    wxPyEndAllowThreads(__tstate);
+    if (PyErr_Occurred()) return NULL;
 }    if (_result) {
         SWIG_MakePtr(_ptemp, (char *) _result,"_wxColourData_p");
         _resultobj = Py_BuildValue("s",_ptemp);
@@ -464,10 +493,11 @@ static PyObject *_wrap_wxColourDialog_ShowModal(PyObject *self, PyObject *args, 
         }
     }
 {
-    wxPy_BEGIN_ALLOW_THREADS;
-        _result = (int )wxColourDialog_ShowModal(_arg0);
+    PyThreadState* __tstate = wxPyBeginAllowThreads();
+    _result = (int )wxColourDialog_ShowModal(_arg0);
 
-    wxPy_END_ALLOW_THREADS;
+    wxPyEndAllowThreads(__tstate);
+    if (PyErr_Occurred()) return NULL;
 }    _resultobj = Py_BuildValue("i",_result);
     return _resultobj;
 }
@@ -480,11 +510,11 @@ static void *SwigwxDirDialogTowxDialog(void *ptr) {
     return (void *) dest;
 }
 
-static void *SwigwxDirDialogTowxPanel(void *ptr) {
+static void *SwigwxDirDialogTowxTopLevelWindow(void *ptr) {
     wxDirDialog *src;
-    wxPanel *dest;
+    wxTopLevelWindow *dest;
     src = (wxDirDialog *) ptr;
-    dest = (wxPanel *) src;
+    dest = (wxTopLevelWindow *) src;
     return (void *) dest;
 }
 
@@ -504,23 +534,38 @@ static void *SwigwxDirDialogTowxEvtHandler(void *ptr) {
     return (void *) dest;
 }
 
-#define new_wxDirDialog(_swigarg0,_swigarg1,_swigarg2,_swigarg3,_swigarg4) (new wxDirDialog(_swigarg0,_swigarg1,_swigarg2,_swigarg3,_swigarg4))
+static void *SwigwxDirDialogTowxObject(void *ptr) {
+    wxDirDialog *src;
+    wxObject *dest;
+    src = (wxDirDialog *) ptr;
+    dest = (wxObject *) src;
+    return (void *) dest;
+}
+
+#define new_wxDirDialog(_swigarg0,_swigarg1,_swigarg2,_swigarg3,_swigarg4,_swigarg5,_swigarg6) (new wxDirDialog(_swigarg0,_swigarg1,_swigarg2,_swigarg3,_swigarg4,_swigarg5,_swigarg6))
 static PyObject *_wrap_new_wxDirDialog(PyObject *self, PyObject *args, PyObject *kwargs) {
     PyObject * _resultobj;
     wxDirDialog * _result;
     wxWindow * _arg0;
-    char * _arg1 = (char *) "Choose a directory";
-    char * _arg2 = (char *) "";
+    wxString * _arg1 = (wxString *) &wxPyDirSelectorPromptStr;
+    wxString * _arg2 = (wxString *) &wxPyEmptyString;
     long  _arg3 = (long ) 0;
     wxPoint * _arg4 = (wxPoint *) &wxDefaultPosition;
+    wxSize * _arg5 = (wxSize *) &wxDefaultSize;
+    wxString * _arg6 = (wxString *) &wxPyDirDialogNameStr;
     PyObject * _argo0 = 0;
+    PyObject * _obj1 = 0;
+    PyObject * _obj2 = 0;
     wxPoint  temp;
     PyObject * _obj4 = 0;
-    char *_kwnames[] = { "parent","message","defaultPath","style","pos", NULL };
+    wxSize  temp0;
+    PyObject * _obj5 = 0;
+    PyObject * _obj6 = 0;
+    char *_kwnames[] = { "parent","message","defaultPath","style","pos","size","name", NULL };
     char _ptemp[128];
 
     self = self;
-    if(!PyArg_ParseTupleAndKeywords(args,kwargs,"O|sslO:new_wxDirDialog",_kwnames,&_argo0,&_arg1,&_arg2,&_arg3,&_obj4)) 
+    if(!PyArg_ParseTupleAndKeywords(args,kwargs,"O|OOlOOO:new_wxDirDialog",_kwnames,&_argo0,&_obj1,&_obj2,&_arg3,&_obj4,&_obj5,&_obj6)) 
         return NULL;
     if (_argo0) {
         if (_argo0 == Py_None) { _arg0 = NULL; }
@@ -529,17 +574,42 @@ static PyObject *_wrap_new_wxDirDialog(PyObject *self, PyObject *args, PyObject 
         return NULL;
         }
     }
+    if (_obj1)
+{
+    _arg1 = wxString_in_helper(_obj1);
+    if (_arg1 == NULL)
+        return NULL;
+}
+    if (_obj2)
+{
+    _arg2 = wxString_in_helper(_obj2);
+    if (_arg2 == NULL)
+        return NULL;
+}
     if (_obj4)
 {
     _arg4 = &temp;
     if (! wxPoint_helper(_obj4, &_arg4))
         return NULL;
 }
+    if (_obj5)
 {
-    wxPy_BEGIN_ALLOW_THREADS;
-        _result = (wxDirDialog *)new_wxDirDialog(_arg0,_arg1,_arg2,_arg3,*_arg4);
+    _arg5 = &temp0;
+    if (! wxSize_helper(_obj5, &_arg5))
+        return NULL;
+}
+    if (_obj6)
+{
+    _arg6 = wxString_in_helper(_obj6);
+    if (_arg6 == NULL)
+        return NULL;
+}
+{
+    PyThreadState* __tstate = wxPyBeginAllowThreads();
+    _result = (wxDirDialog *)new_wxDirDialog(_arg0,*_arg1,*_arg2,_arg3,*_arg4,*_arg5,*_arg6);
 
-    wxPy_END_ALLOW_THREADS;
+    wxPyEndAllowThreads(__tstate);
+    if (PyErr_Occurred()) return NULL;
 }    if (_result) {
         SWIG_MakePtr(_ptemp, (char *) _result,"_wxDirDialog_p");
         _resultobj = Py_BuildValue("s",_ptemp);
@@ -547,6 +617,18 @@ static PyObject *_wrap_new_wxDirDialog(PyObject *self, PyObject *args, PyObject 
         Py_INCREF(Py_None);
         _resultobj = Py_None;
     }
+{
+    if (_obj1)
+        delete _arg1;
+}
+{
+    if (_obj2)
+        delete _arg2;
+}
+{
+    if (_obj6)
+        delete _arg6;
+}
     return _resultobj;
 }
 
@@ -569,12 +651,17 @@ static PyObject *_wrap_wxDirDialog_GetPath(PyObject *self, PyObject *args, PyObj
         }
     }
 {
-    wxPy_BEGIN_ALLOW_THREADS;
-        _result = new wxString (wxDirDialog_GetPath(_arg0));
+    PyThreadState* __tstate = wxPyBeginAllowThreads();
+    _result = new wxString (wxDirDialog_GetPath(_arg0));
 
-    wxPy_END_ALLOW_THREADS;
+    wxPyEndAllowThreads(__tstate);
+    if (PyErr_Occurred()) return NULL;
 }{
+#if wxUSE_UNICODE
+    _resultobj = PyUnicode_FromUnicode(_result->c_str(), _result->Len());
+#else
     _resultobj = PyString_FromStringAndSize(_result->c_str(), _result->Len());
+#endif
 }
 {
     delete _result;
@@ -601,12 +688,17 @@ static PyObject *_wrap_wxDirDialog_GetMessage(PyObject *self, PyObject *args, Py
         }
     }
 {
-    wxPy_BEGIN_ALLOW_THREADS;
-        _result = new wxString (wxDirDialog_GetMessage(_arg0));
+    PyThreadState* __tstate = wxPyBeginAllowThreads();
+    _result = new wxString (wxDirDialog_GetMessage(_arg0));
 
-    wxPy_END_ALLOW_THREADS;
+    wxPyEndAllowThreads(__tstate);
+    if (PyErr_Occurred()) return NULL;
 }{
+#if wxUSE_UNICODE
+    _resultobj = PyUnicode_FromUnicode(_result->c_str(), _result->Len());
+#else
     _resultobj = PyString_FromStringAndSize(_result->c_str(), _result->Len());
+#endif
 }
 {
     delete _result;
@@ -633,10 +725,11 @@ static PyObject *_wrap_wxDirDialog_GetStyle(PyObject *self, PyObject *args, PyOb
         }
     }
 {
-    wxPy_BEGIN_ALLOW_THREADS;
-        _result = (long )wxDirDialog_GetStyle(_arg0);
+    PyThreadState* __tstate = wxPyBeginAllowThreads();
+    _result = (long )wxDirDialog_GetStyle(_arg0);
 
-    wxPy_END_ALLOW_THREADS;
+    wxPyEndAllowThreads(__tstate);
+    if (PyErr_Occurred()) return NULL;
 }    _resultobj = Py_BuildValue("l",_result);
     return _resultobj;
 }
@@ -661,28 +754,16 @@ static PyObject *_wrap_wxDirDialog_SetMessage(PyObject *self, PyObject *args, Py
         }
     }
 {
-#if PYTHON_API_VERSION >= 1009
-    char* tmpPtr; int tmpSize;
-    if (!PyString_Check(_obj1) && !PyUnicode_Check(_obj1)) {
-        PyErr_SetString(PyExc_TypeError, "String or Unicode type required");
+    _arg1 = wxString_in_helper(_obj1);
+    if (_arg1 == NULL)
         return NULL;
-    }
-    if (PyString_AsStringAndSize(_obj1, &tmpPtr, &tmpSize) == -1)
-        return NULL;
-    _arg1 = new wxString(tmpPtr, tmpSize);
-#else
-    if (!PyString_Check(_obj1)) {
-        PyErr_SetString(PyExc_TypeError, wxStringErrorMsg);
-        return NULL;
-    }
-    _arg1 = new wxString(PyString_AS_STRING(_obj1), PyString_GET_SIZE(_obj1));
-#endif
 }
 {
-    wxPy_BEGIN_ALLOW_THREADS;
-        wxDirDialog_SetMessage(_arg0,*_arg1);
+    PyThreadState* __tstate = wxPyBeginAllowThreads();
+    wxDirDialog_SetMessage(_arg0,*_arg1);
 
-    wxPy_END_ALLOW_THREADS;
+    wxPyEndAllowThreads(__tstate);
+    if (PyErr_Occurred()) return NULL;
 }    Py_INCREF(Py_None);
     _resultobj = Py_None;
 {
@@ -712,28 +793,16 @@ static PyObject *_wrap_wxDirDialog_SetPath(PyObject *self, PyObject *args, PyObj
         }
     }
 {
-#if PYTHON_API_VERSION >= 1009
-    char* tmpPtr; int tmpSize;
-    if (!PyString_Check(_obj1) && !PyUnicode_Check(_obj1)) {
-        PyErr_SetString(PyExc_TypeError, "String or Unicode type required");
+    _arg1 = wxString_in_helper(_obj1);
+    if (_arg1 == NULL)
         return NULL;
-    }
-    if (PyString_AsStringAndSize(_obj1, &tmpPtr, &tmpSize) == -1)
-        return NULL;
-    _arg1 = new wxString(tmpPtr, tmpSize);
-#else
-    if (!PyString_Check(_obj1)) {
-        PyErr_SetString(PyExc_TypeError, wxStringErrorMsg);
-        return NULL;
-    }
-    _arg1 = new wxString(PyString_AS_STRING(_obj1), PyString_GET_SIZE(_obj1));
-#endif
 }
 {
-    wxPy_BEGIN_ALLOW_THREADS;
-        wxDirDialog_SetPath(_arg0,*_arg1);
+    PyThreadState* __tstate = wxPyBeginAllowThreads();
+    wxDirDialog_SetPath(_arg0,*_arg1);
 
-    wxPy_END_ALLOW_THREADS;
+    wxPyEndAllowThreads(__tstate);
+    if (PyErr_Occurred()) return NULL;
 }    Py_INCREF(Py_None);
     _resultobj = Py_None;
 {
@@ -762,10 +831,11 @@ static PyObject *_wrap_wxDirDialog_ShowModal(PyObject *self, PyObject *args, PyO
         }
     }
 {
-    wxPy_BEGIN_ALLOW_THREADS;
-        _result = (int )wxDirDialog_ShowModal(_arg0);
+    PyThreadState* __tstate = wxPyBeginAllowThreads();
+    _result = (int )wxDirDialog_ShowModal(_arg0);
 
-    wxPy_END_ALLOW_THREADS;
+    wxPyEndAllowThreads(__tstate);
+    if (PyErr_Occurred()) return NULL;
 }    _resultobj = Py_BuildValue("i",_result);
     return _resultobj;
 }
@@ -778,11 +848,11 @@ static void *SwigwxFileDialogTowxDialog(void *ptr) {
     return (void *) dest;
 }
 
-static void *SwigwxFileDialogTowxPanel(void *ptr) {
+static void *SwigwxFileDialogTowxTopLevelWindow(void *ptr) {
     wxFileDialog *src;
-    wxPanel *dest;
+    wxTopLevelWindow *dest;
     src = (wxFileDialog *) ptr;
-    dest = (wxPanel *) src;
+    dest = (wxTopLevelWindow *) src;
     return (void *) dest;
 }
 
@@ -802,25 +872,37 @@ static void *SwigwxFileDialogTowxEvtHandler(void *ptr) {
     return (void *) dest;
 }
 
+static void *SwigwxFileDialogTowxObject(void *ptr) {
+    wxFileDialog *src;
+    wxObject *dest;
+    src = (wxFileDialog *) ptr;
+    dest = (wxObject *) src;
+    return (void *) dest;
+}
+
 #define new_wxFileDialog(_swigarg0,_swigarg1,_swigarg2,_swigarg3,_swigarg4,_swigarg5,_swigarg6) (new wxFileDialog(_swigarg0,_swigarg1,_swigarg2,_swigarg3,_swigarg4,_swigarg5,_swigarg6))
 static PyObject *_wrap_new_wxFileDialog(PyObject *self, PyObject *args, PyObject *kwargs) {
     PyObject * _resultobj;
     wxFileDialog * _result;
     wxWindow * _arg0;
-    char * _arg1 = (char *) "Choose a file";
-    char * _arg2 = (char *) "";
-    char * _arg3 = (char *) "";
-    char * _arg4 = (char *) "*.*";
+    wxString * _arg1 = (wxString *) &wxPyFileSelectorPromptStr;
+    wxString * _arg2 = (wxString *) &wxPyEmptyString;
+    wxString * _arg3 = (wxString *) &wxPyEmptyString;
+    wxString * _arg4 = (wxString *) &wxPyFileSelectorDefaultWildcardStr;
     long  _arg5 = (long ) 0;
     wxPoint * _arg6 = (wxPoint *) &wxDefaultPosition;
     PyObject * _argo0 = 0;
+    PyObject * _obj1 = 0;
+    PyObject * _obj2 = 0;
+    PyObject * _obj3 = 0;
+    PyObject * _obj4 = 0;
     wxPoint  temp;
     PyObject * _obj6 = 0;
     char *_kwnames[] = { "parent","message","defaultDir","defaultFile","wildcard","style","pos", NULL };
     char _ptemp[128];
 
     self = self;
-    if(!PyArg_ParseTupleAndKeywords(args,kwargs,"O|sssslO:new_wxFileDialog",_kwnames,&_argo0,&_arg1,&_arg2,&_arg3,&_arg4,&_arg5,&_obj6)) 
+    if(!PyArg_ParseTupleAndKeywords(args,kwargs,"O|OOOOlO:new_wxFileDialog",_kwnames,&_argo0,&_obj1,&_obj2,&_obj3,&_obj4,&_arg5,&_obj6)) 
         return NULL;
     if (_argo0) {
         if (_argo0 == Py_None) { _arg0 = NULL; }
@@ -829,6 +911,30 @@ static PyObject *_wrap_new_wxFileDialog(PyObject *self, PyObject *args, PyObject
         return NULL;
         }
     }
+    if (_obj1)
+{
+    _arg1 = wxString_in_helper(_obj1);
+    if (_arg1 == NULL)
+        return NULL;
+}
+    if (_obj2)
+{
+    _arg2 = wxString_in_helper(_obj2);
+    if (_arg2 == NULL)
+        return NULL;
+}
+    if (_obj3)
+{
+    _arg3 = wxString_in_helper(_obj3);
+    if (_arg3 == NULL)
+        return NULL;
+}
+    if (_obj4)
+{
+    _arg4 = wxString_in_helper(_obj4);
+    if (_arg4 == NULL)
+        return NULL;
+}
     if (_obj6)
 {
     _arg6 = &temp;
@@ -836,10 +942,11 @@ static PyObject *_wrap_new_wxFileDialog(PyObject *self, PyObject *args, PyObject
         return NULL;
 }
 {
-    wxPy_BEGIN_ALLOW_THREADS;
-        _result = (wxFileDialog *)new_wxFileDialog(_arg0,_arg1,_arg2,_arg3,_arg4,_arg5,*_arg6);
+    PyThreadState* __tstate = wxPyBeginAllowThreads();
+    _result = (wxFileDialog *)new_wxFileDialog(_arg0,*_arg1,*_arg2,*_arg3,*_arg4,_arg5,*_arg6);
 
-    wxPy_END_ALLOW_THREADS;
+    wxPyEndAllowThreads(__tstate);
+    if (PyErr_Occurred()) return NULL;
 }    if (_result) {
         SWIG_MakePtr(_ptemp, (char *) _result,"_wxFileDialog_p");
         _resultobj = Py_BuildValue("s",_ptemp);
@@ -847,6 +954,22 @@ static PyObject *_wrap_new_wxFileDialog(PyObject *self, PyObject *args, PyObject
         Py_INCREF(Py_None);
         _resultobj = Py_None;
     }
+{
+    if (_obj1)
+        delete _arg1;
+}
+{
+    if (_obj2)
+        delete _arg2;
+}
+{
+    if (_obj3)
+        delete _arg3;
+}
+{
+    if (_obj4)
+        delete _arg4;
+}
     return _resultobj;
 }
 
@@ -869,12 +992,17 @@ static PyObject *_wrap_wxFileDialog_GetDirectory(PyObject *self, PyObject *args,
         }
     }
 {
-    wxPy_BEGIN_ALLOW_THREADS;
-        _result = new wxString (wxFileDialog_GetDirectory(_arg0));
+    PyThreadState* __tstate = wxPyBeginAllowThreads();
+    _result = new wxString (wxFileDialog_GetDirectory(_arg0));
 
-    wxPy_END_ALLOW_THREADS;
+    wxPyEndAllowThreads(__tstate);
+    if (PyErr_Occurred()) return NULL;
 }{
+#if wxUSE_UNICODE
+    _resultobj = PyUnicode_FromUnicode(_result->c_str(), _result->Len());
+#else
     _resultobj = PyString_FromStringAndSize(_result->c_str(), _result->Len());
+#endif
 }
 {
     delete _result;
@@ -901,12 +1029,17 @@ static PyObject *_wrap_wxFileDialog_GetFilename(PyObject *self, PyObject *args, 
         }
     }
 {
-    wxPy_BEGIN_ALLOW_THREADS;
-        _result = new wxString (wxFileDialog_GetFilename(_arg0));
+    PyThreadState* __tstate = wxPyBeginAllowThreads();
+    _result = new wxString (wxFileDialog_GetFilename(_arg0));
 
-    wxPy_END_ALLOW_THREADS;
+    wxPyEndAllowThreads(__tstate);
+    if (PyErr_Occurred()) return NULL;
 }{
+#if wxUSE_UNICODE
+    _resultobj = PyUnicode_FromUnicode(_result->c_str(), _result->Len());
+#else
     _resultobj = PyString_FromStringAndSize(_result->c_str(), _result->Len());
+#endif
 }
 {
     delete _result;
@@ -933,10 +1066,11 @@ static PyObject *_wrap_wxFileDialog_GetFilterIndex(PyObject *self, PyObject *arg
         }
     }
 {
-    wxPy_BEGIN_ALLOW_THREADS;
-        _result = (int )wxFileDialog_GetFilterIndex(_arg0);
+    PyThreadState* __tstate = wxPyBeginAllowThreads();
+    _result = (int )wxFileDialog_GetFilterIndex(_arg0);
 
-    wxPy_END_ALLOW_THREADS;
+    wxPyEndAllowThreads(__tstate);
+    if (PyErr_Occurred()) return NULL;
 }    _resultobj = Py_BuildValue("i",_result);
     return _resultobj;
 }
@@ -960,12 +1094,17 @@ static PyObject *_wrap_wxFileDialog_GetMessage(PyObject *self, PyObject *args, P
         }
     }
 {
-    wxPy_BEGIN_ALLOW_THREADS;
-        _result = new wxString (wxFileDialog_GetMessage(_arg0));
+    PyThreadState* __tstate = wxPyBeginAllowThreads();
+    _result = new wxString (wxFileDialog_GetMessage(_arg0));
 
-    wxPy_END_ALLOW_THREADS;
+    wxPyEndAllowThreads(__tstate);
+    if (PyErr_Occurred()) return NULL;
 }{
+#if wxUSE_UNICODE
+    _resultobj = PyUnicode_FromUnicode(_result->c_str(), _result->Len());
+#else
     _resultobj = PyString_FromStringAndSize(_result->c_str(), _result->Len());
+#endif
 }
 {
     delete _result;
@@ -992,12 +1131,17 @@ static PyObject *_wrap_wxFileDialog_GetPath(PyObject *self, PyObject *args, PyOb
         }
     }
 {
-    wxPy_BEGIN_ALLOW_THREADS;
-        _result = new wxString (wxFileDialog_GetPath(_arg0));
+    PyThreadState* __tstate = wxPyBeginAllowThreads();
+    _result = new wxString (wxFileDialog_GetPath(_arg0));
 
-    wxPy_END_ALLOW_THREADS;
+    wxPyEndAllowThreads(__tstate);
+    if (PyErr_Occurred()) return NULL;
 }{
+#if wxUSE_UNICODE
+    _resultobj = PyUnicode_FromUnicode(_result->c_str(), _result->Len());
+#else
     _resultobj = PyString_FromStringAndSize(_result->c_str(), _result->Len());
+#endif
 }
 {
     delete _result;
@@ -1024,10 +1168,11 @@ static PyObject *_wrap_wxFileDialog_GetStyle(PyObject *self, PyObject *args, PyO
         }
     }
 {
-    wxPy_BEGIN_ALLOW_THREADS;
-        _result = (long )wxFileDialog_GetStyle(_arg0);
+    PyThreadState* __tstate = wxPyBeginAllowThreads();
+    _result = (long )wxFileDialog_GetStyle(_arg0);
 
-    wxPy_END_ALLOW_THREADS;
+    wxPyEndAllowThreads(__tstate);
+    if (PyErr_Occurred()) return NULL;
 }    _resultobj = Py_BuildValue("l",_result);
     return _resultobj;
 }
@@ -1051,12 +1196,17 @@ static PyObject *_wrap_wxFileDialog_GetWildcard(PyObject *self, PyObject *args, 
         }
     }
 {
-    wxPy_BEGIN_ALLOW_THREADS;
-        _result = new wxString (wxFileDialog_GetWildcard(_arg0));
+    PyThreadState* __tstate = wxPyBeginAllowThreads();
+    _result = new wxString (wxFileDialog_GetWildcard(_arg0));
 
-    wxPy_END_ALLOW_THREADS;
+    wxPyEndAllowThreads(__tstate);
+    if (PyErr_Occurred()) return NULL;
 }{
+#if wxUSE_UNICODE
+    _resultobj = PyUnicode_FromUnicode(_result->c_str(), _result->Len());
+#else
     _resultobj = PyString_FromStringAndSize(_result->c_str(), _result->Len());
+#endif
 }
 {
     delete _result;
@@ -1084,28 +1234,16 @@ static PyObject *_wrap_wxFileDialog_SetDirectory(PyObject *self, PyObject *args,
         }
     }
 {
-#if PYTHON_API_VERSION >= 1009
-    char* tmpPtr; int tmpSize;
-    if (!PyString_Check(_obj1) && !PyUnicode_Check(_obj1)) {
-        PyErr_SetString(PyExc_TypeError, "String or Unicode type required");
+    _arg1 = wxString_in_helper(_obj1);
+    if (_arg1 == NULL)
         return NULL;
-    }
-    if (PyString_AsStringAndSize(_obj1, &tmpPtr, &tmpSize) == -1)
-        return NULL;
-    _arg1 = new wxString(tmpPtr, tmpSize);
-#else
-    if (!PyString_Check(_obj1)) {
-        PyErr_SetString(PyExc_TypeError, wxStringErrorMsg);
-        return NULL;
-    }
-    _arg1 = new wxString(PyString_AS_STRING(_obj1), PyString_GET_SIZE(_obj1));
-#endif
 }
 {
-    wxPy_BEGIN_ALLOW_THREADS;
-        wxFileDialog_SetDirectory(_arg0,*_arg1);
+    PyThreadState* __tstate = wxPyBeginAllowThreads();
+    wxFileDialog_SetDirectory(_arg0,*_arg1);
 
-    wxPy_END_ALLOW_THREADS;
+    wxPyEndAllowThreads(__tstate);
+    if (PyErr_Occurred()) return NULL;
 }    Py_INCREF(Py_None);
     _resultobj = Py_None;
 {
@@ -1135,28 +1273,16 @@ static PyObject *_wrap_wxFileDialog_SetFilename(PyObject *self, PyObject *args, 
         }
     }
 {
-#if PYTHON_API_VERSION >= 1009
-    char* tmpPtr; int tmpSize;
-    if (!PyString_Check(_obj1) && !PyUnicode_Check(_obj1)) {
-        PyErr_SetString(PyExc_TypeError, "String or Unicode type required");
+    _arg1 = wxString_in_helper(_obj1);
+    if (_arg1 == NULL)
         return NULL;
-    }
-    if (PyString_AsStringAndSize(_obj1, &tmpPtr, &tmpSize) == -1)
-        return NULL;
-    _arg1 = new wxString(tmpPtr, tmpSize);
-#else
-    if (!PyString_Check(_obj1)) {
-        PyErr_SetString(PyExc_TypeError, wxStringErrorMsg);
-        return NULL;
-    }
-    _arg1 = new wxString(PyString_AS_STRING(_obj1), PyString_GET_SIZE(_obj1));
-#endif
 }
 {
-    wxPy_BEGIN_ALLOW_THREADS;
-        wxFileDialog_SetFilename(_arg0,*_arg1);
+    PyThreadState* __tstate = wxPyBeginAllowThreads();
+    wxFileDialog_SetFilename(_arg0,*_arg1);
 
-    wxPy_END_ALLOW_THREADS;
+    wxPyEndAllowThreads(__tstate);
+    if (PyErr_Occurred()) return NULL;
 }    Py_INCREF(Py_None);
     _resultobj = Py_None;
 {
@@ -1185,10 +1311,11 @@ static PyObject *_wrap_wxFileDialog_SetFilterIndex(PyObject *self, PyObject *arg
         }
     }
 {
-    wxPy_BEGIN_ALLOW_THREADS;
-        wxFileDialog_SetFilterIndex(_arg0,_arg1);
+    PyThreadState* __tstate = wxPyBeginAllowThreads();
+    wxFileDialog_SetFilterIndex(_arg0,_arg1);
 
-    wxPy_END_ALLOW_THREADS;
+    wxPyEndAllowThreads(__tstate);
+    if (PyErr_Occurred()) return NULL;
 }    Py_INCREF(Py_None);
     _resultobj = Py_None;
     return _resultobj;
@@ -1214,28 +1341,16 @@ static PyObject *_wrap_wxFileDialog_SetMessage(PyObject *self, PyObject *args, P
         }
     }
 {
-#if PYTHON_API_VERSION >= 1009
-    char* tmpPtr; int tmpSize;
-    if (!PyString_Check(_obj1) && !PyUnicode_Check(_obj1)) {
-        PyErr_SetString(PyExc_TypeError, "String or Unicode type required");
+    _arg1 = wxString_in_helper(_obj1);
+    if (_arg1 == NULL)
         return NULL;
-    }
-    if (PyString_AsStringAndSize(_obj1, &tmpPtr, &tmpSize) == -1)
-        return NULL;
-    _arg1 = new wxString(tmpPtr, tmpSize);
-#else
-    if (!PyString_Check(_obj1)) {
-        PyErr_SetString(PyExc_TypeError, wxStringErrorMsg);
-        return NULL;
-    }
-    _arg1 = new wxString(PyString_AS_STRING(_obj1), PyString_GET_SIZE(_obj1));
-#endif
 }
 {
-    wxPy_BEGIN_ALLOW_THREADS;
-        wxFileDialog_SetMessage(_arg0,*_arg1);
+    PyThreadState* __tstate = wxPyBeginAllowThreads();
+    wxFileDialog_SetMessage(_arg0,*_arg1);
 
-    wxPy_END_ALLOW_THREADS;
+    wxPyEndAllowThreads(__tstate);
+    if (PyErr_Occurred()) return NULL;
 }    Py_INCREF(Py_None);
     _resultobj = Py_None;
 {
@@ -1265,28 +1380,16 @@ static PyObject *_wrap_wxFileDialog_SetPath(PyObject *self, PyObject *args, PyOb
         }
     }
 {
-#if PYTHON_API_VERSION >= 1009
-    char* tmpPtr; int tmpSize;
-    if (!PyString_Check(_obj1) && !PyUnicode_Check(_obj1)) {
-        PyErr_SetString(PyExc_TypeError, "String or Unicode type required");
+    _arg1 = wxString_in_helper(_obj1);
+    if (_arg1 == NULL)
         return NULL;
-    }
-    if (PyString_AsStringAndSize(_obj1, &tmpPtr, &tmpSize) == -1)
-        return NULL;
-    _arg1 = new wxString(tmpPtr, tmpSize);
-#else
-    if (!PyString_Check(_obj1)) {
-        PyErr_SetString(PyExc_TypeError, wxStringErrorMsg);
-        return NULL;
-    }
-    _arg1 = new wxString(PyString_AS_STRING(_obj1), PyString_GET_SIZE(_obj1));
-#endif
 }
 {
-    wxPy_BEGIN_ALLOW_THREADS;
-        wxFileDialog_SetPath(_arg0,*_arg1);
+    PyThreadState* __tstate = wxPyBeginAllowThreads();
+    wxFileDialog_SetPath(_arg0,*_arg1);
 
-    wxPy_END_ALLOW_THREADS;
+    wxPyEndAllowThreads(__tstate);
+    if (PyErr_Occurred()) return NULL;
 }    Py_INCREF(Py_None);
     _resultobj = Py_None;
 {
@@ -1315,10 +1418,11 @@ static PyObject *_wrap_wxFileDialog_SetStyle(PyObject *self, PyObject *args, PyO
         }
     }
 {
-    wxPy_BEGIN_ALLOW_THREADS;
-        wxFileDialog_SetStyle(_arg0,_arg1);
+    PyThreadState* __tstate = wxPyBeginAllowThreads();
+    wxFileDialog_SetStyle(_arg0,_arg1);
 
-    wxPy_END_ALLOW_THREADS;
+    wxPyEndAllowThreads(__tstate);
+    if (PyErr_Occurred()) return NULL;
 }    Py_INCREF(Py_None);
     _resultobj = Py_None;
     return _resultobj;
@@ -1344,28 +1448,16 @@ static PyObject *_wrap_wxFileDialog_SetWildcard(PyObject *self, PyObject *args, 
         }
     }
 {
-#if PYTHON_API_VERSION >= 1009
-    char* tmpPtr; int tmpSize;
-    if (!PyString_Check(_obj1) && !PyUnicode_Check(_obj1)) {
-        PyErr_SetString(PyExc_TypeError, "String or Unicode type required");
+    _arg1 = wxString_in_helper(_obj1);
+    if (_arg1 == NULL)
         return NULL;
-    }
-    if (PyString_AsStringAndSize(_obj1, &tmpPtr, &tmpSize) == -1)
-        return NULL;
-    _arg1 = new wxString(tmpPtr, tmpSize);
-#else
-    if (!PyString_Check(_obj1)) {
-        PyErr_SetString(PyExc_TypeError, wxStringErrorMsg);
-        return NULL;
-    }
-    _arg1 = new wxString(PyString_AS_STRING(_obj1), PyString_GET_SIZE(_obj1));
-#endif
 }
 {
-    wxPy_BEGIN_ALLOW_THREADS;
-        wxFileDialog_SetWildcard(_arg0,*_arg1);
+    PyThreadState* __tstate = wxPyBeginAllowThreads();
+    wxFileDialog_SetWildcard(_arg0,*_arg1);
 
-    wxPy_END_ALLOW_THREADS;
+    wxPyEndAllowThreads(__tstate);
+    if (PyErr_Occurred()) return NULL;
 }    Py_INCREF(Py_None);
     _resultobj = Py_None;
 {
@@ -1394,10 +1486,11 @@ static PyObject *_wrap_wxFileDialog_ShowModal(PyObject *self, PyObject *args, Py
         }
     }
 {
-    wxPy_BEGIN_ALLOW_THREADS;
-        _result = (int )wxFileDialog_ShowModal(_arg0);
+    PyThreadState* __tstate = wxPyBeginAllowThreads();
+    _result = (int )wxFileDialog_ShowModal(_arg0);
 
-    wxPy_END_ALLOW_THREADS;
+    wxPyEndAllowThreads(__tstate);
+    if (PyErr_Occurred()) return NULL;
 }    _resultobj = Py_BuildValue("i",_result);
     return _resultobj;
 }
@@ -1405,13 +1498,7 @@ static PyObject *_wrap_wxFileDialog_ShowModal(PyObject *self, PyObject *args, Py
 static PyObject * wxFileDialog_GetFilenames(wxFileDialog *self) {
             wxArrayString arr;
             self->GetFilenames(arr);
-            size_t count = arr.GetCount();
-            PyObject* listObj = PyList_New(0);
-            for(size_t x=0; x<count; x++) {
-                PyObject* name = PyString_FromString(arr[x]);
-                PyList_Append(listObj, name);
-            }
-            return listObj;
+            return wxArrayString2PyList_helper(arr);
         }
 static PyObject *_wrap_wxFileDialog_GetFilenames(PyObject *self, PyObject *args, PyObject *kwargs) {
     PyObject * _resultobj;
@@ -1431,10 +1518,11 @@ static PyObject *_wrap_wxFileDialog_GetFilenames(PyObject *self, PyObject *args,
         }
     }
 {
-    wxPy_BEGIN_ALLOW_THREADS;
-        _result = (PyObject *)wxFileDialog_GetFilenames(_arg0);
+    PyThreadState* __tstate = wxPyBeginAllowThreads();
+    _result = (PyObject *)wxFileDialog_GetFilenames(_arg0);
 
-    wxPy_END_ALLOW_THREADS;
+    wxPyEndAllowThreads(__tstate);
+    if (PyErr_Occurred()) return NULL;
 }{
   _resultobj = _result;
 }
@@ -1444,13 +1532,7 @@ static PyObject *_wrap_wxFileDialog_GetFilenames(PyObject *self, PyObject *args,
 static PyObject * wxFileDialog_GetPaths(wxFileDialog *self) {
             wxArrayString arr;
             self->GetPaths(arr);
-            size_t count = arr.GetCount();
-            PyObject* listObj = PyList_New(0);
-            for(size_t x=0; x<count; x++) {
-                PyObject* name = PyString_FromString(arr[x]);
-                PyList_Append(listObj, name);
-            }
-            return listObj;
+            return wxArrayString2PyList_helper(arr);
         }
 static PyObject *_wrap_wxFileDialog_GetPaths(PyObject *self, PyObject *args, PyObject *kwargs) {
     PyObject * _resultobj;
@@ -1470,62 +1552,67 @@ static PyObject *_wrap_wxFileDialog_GetPaths(PyObject *self, PyObject *args, PyO
         }
     }
 {
-    wxPy_BEGIN_ALLOW_THREADS;
-        _result = (PyObject *)wxFileDialog_GetPaths(_arg0);
+    PyThreadState* __tstate = wxPyBeginAllowThreads();
+    _result = (PyObject *)wxFileDialog_GetPaths(_arg0);
 
-    wxPy_END_ALLOW_THREADS;
+    wxPyEndAllowThreads(__tstate);
+    if (PyErr_Occurred()) return NULL;
 }{
   _resultobj = _result;
 }
     return _resultobj;
 }
 
-static void *SwigwxSingleChoiceDialogTowxDialog(void *ptr) {
-    wxSingleChoiceDialog *src;
+static void *SwigwxMultiChoiceDialogTowxDialog(void *ptr) {
+    wxMultiChoiceDialog *src;
     wxDialog *dest;
-    src = (wxSingleChoiceDialog *) ptr;
+    src = (wxMultiChoiceDialog *) ptr;
     dest = (wxDialog *) src;
     return (void *) dest;
 }
 
-static void *SwigwxSingleChoiceDialogTowxPanel(void *ptr) {
-    wxSingleChoiceDialog *src;
-    wxPanel *dest;
-    src = (wxSingleChoiceDialog *) ptr;
-    dest = (wxPanel *) src;
+static void *SwigwxMultiChoiceDialogTowxTopLevelWindow(void *ptr) {
+    wxMultiChoiceDialog *src;
+    wxTopLevelWindow *dest;
+    src = (wxMultiChoiceDialog *) ptr;
+    dest = (wxTopLevelWindow *) src;
     return (void *) dest;
 }
 
-static void *SwigwxSingleChoiceDialogTowxWindow(void *ptr) {
-    wxSingleChoiceDialog *src;
+static void *SwigwxMultiChoiceDialogTowxWindow(void *ptr) {
+    wxMultiChoiceDialog *src;
     wxWindow *dest;
-    src = (wxSingleChoiceDialog *) ptr;
+    src = (wxMultiChoiceDialog *) ptr;
     dest = (wxWindow *) src;
     return (void *) dest;
 }
 
-static void *SwigwxSingleChoiceDialogTowxEvtHandler(void *ptr) {
-    wxSingleChoiceDialog *src;
+static void *SwigwxMultiChoiceDialogTowxEvtHandler(void *ptr) {
+    wxMultiChoiceDialog *src;
     wxEvtHandler *dest;
-    src = (wxSingleChoiceDialog *) ptr;
+    src = (wxMultiChoiceDialog *) ptr;
     dest = (wxEvtHandler *) src;
     return (void *) dest;
 }
 
-static wxSingleChoiceDialog *new_wxSingleChoiceDialog(wxWindow *parent,wxString *message,wxString *caption,int LCOUNT,wxString *choices,long style,wxPoint *pos) {
-            return new wxSingleChoiceDialog(parent, *message, *caption,
-                                            LCOUNT, choices, NULL, style, *pos);
-        }
+static void *SwigwxMultiChoiceDialogTowxObject(void *ptr) {
+    wxMultiChoiceDialog *src;
+    wxObject *dest;
+    src = (wxMultiChoiceDialog *) ptr;
+    dest = (wxObject *) src;
+    return (void *) dest;
+}
 
-static PyObject *_wrap_new_wxSingleChoiceDialog(PyObject *self, PyObject *args, PyObject *kwargs) {
+#define new_wxMultiChoiceDialog(_swigarg0,_swigarg1,_swigarg2,_swigarg3,_swigarg4,_swigarg5,_swigarg6) (new wxMultiChoiceDialog(_swigarg0,_swigarg1,_swigarg2,_swigarg3,_swigarg4,_swigarg5,_swigarg6))
+static PyObject *_wrap_new_wxMultiChoiceDialog(PyObject *self, PyObject *args, PyObject *kwargs) {
     PyObject * _resultobj;
-    wxSingleChoiceDialog * _result;
+    wxMultiChoiceDialog * _result;
     wxWindow * _arg0;
     wxString * _arg1;
     wxString * _arg2;
     int  _arg3;
     wxString * _arg4;
-    long  _arg5 = (long ) wxOK|wxCANCEL|wxCENTRE;
+    long  _arg5 = (long ) (wxCHOICEDLG_STYLE);
     wxPoint * _arg6 = (wxPoint *) &wxDefaultPosition;
     PyObject * _argo0 = 0;
     PyObject * _obj1 = 0;
@@ -1537,50 +1624,24 @@ static PyObject *_wrap_new_wxSingleChoiceDialog(PyObject *self, PyObject *args, 
     char _ptemp[128];
 
     self = self;
-    if(!PyArg_ParseTupleAndKeywords(args,kwargs,"OOOO|lO:new_wxSingleChoiceDialog",_kwnames,&_argo0,&_obj1,&_obj2,&_obj4,&_arg5,&_obj6)) 
+    if(!PyArg_ParseTupleAndKeywords(args,kwargs,"OOOO|lO:new_wxMultiChoiceDialog",_kwnames,&_argo0,&_obj1,&_obj2,&_obj4,&_arg5,&_obj6)) 
         return NULL;
     if (_argo0) {
         if (_argo0 == Py_None) { _arg0 = NULL; }
         else if (SWIG_GetPtrObj(_argo0,(void **) &_arg0,"_wxWindow_p")) {
-            PyErr_SetString(PyExc_TypeError,"Type error in argument 1 of new_wxSingleChoiceDialog. Expected _wxWindow_p.");
+            PyErr_SetString(PyExc_TypeError,"Type error in argument 1 of new_wxMultiChoiceDialog. Expected _wxWindow_p.");
         return NULL;
         }
     }
 {
-#if PYTHON_API_VERSION >= 1009
-    char* tmpPtr; int tmpSize;
-    if (!PyString_Check(_obj1) && !PyUnicode_Check(_obj1)) {
-        PyErr_SetString(PyExc_TypeError, "String or Unicode type required");
+    _arg1 = wxString_in_helper(_obj1);
+    if (_arg1 == NULL)
         return NULL;
-    }
-    if (PyString_AsStringAndSize(_obj1, &tmpPtr, &tmpSize) == -1)
-        return NULL;
-    _arg1 = new wxString(tmpPtr, tmpSize);
-#else
-    if (!PyString_Check(_obj1)) {
-        PyErr_SetString(PyExc_TypeError, wxStringErrorMsg);
-        return NULL;
-    }
-    _arg1 = new wxString(PyString_AS_STRING(_obj1), PyString_GET_SIZE(_obj1));
-#endif
 }
 {
-#if PYTHON_API_VERSION >= 1009
-    char* tmpPtr; int tmpSize;
-    if (!PyString_Check(_obj2) && !PyUnicode_Check(_obj2)) {
-        PyErr_SetString(PyExc_TypeError, "String or Unicode type required");
+    _arg2 = wxString_in_helper(_obj2);
+    if (_arg2 == NULL)
         return NULL;
-    }
-    if (PyString_AsStringAndSize(_obj2, &tmpPtr, &tmpSize) == -1)
-        return NULL;
-    _arg2 = new wxString(tmpPtr, tmpSize);
-#else
-    if (!PyString_Check(_obj2)) {
-        PyErr_SetString(PyExc_TypeError, wxStringErrorMsg);
-        return NULL;
-    }
-    _arg2 = new wxString(PyString_AS_STRING(_obj2), PyString_GET_SIZE(_obj2));
-#endif
 }
     if (_obj4)
 {
@@ -1604,10 +1665,224 @@ static PyObject *_wrap_new_wxSingleChoiceDialog(PyObject *self, PyObject *args, 
     }
 }
 {
-    wxPy_BEGIN_ALLOW_THREADS;
-        _result = (wxSingleChoiceDialog *)new_wxSingleChoiceDialog(_arg0,_arg1,_arg2,_arg3,_arg4,_arg5,_arg6);
+    PyThreadState* __tstate = wxPyBeginAllowThreads();
+    _result = (wxMultiChoiceDialog *)new_wxMultiChoiceDialog(_arg0,*_arg1,*_arg2,_arg3,_arg4,_arg5,*_arg6);
 
-    wxPy_END_ALLOW_THREADS;
+    wxPyEndAllowThreads(__tstate);
+    if (PyErr_Occurred()) return NULL;
+}    if (_result) {
+        SWIG_MakePtr(_ptemp, (char *) _result,"_wxMultiChoiceDialog_p");
+        _resultobj = Py_BuildValue("s",_ptemp);
+    } else {
+        Py_INCREF(Py_None);
+        _resultobj = Py_None;
+    }
+{
+    if (_obj1)
+        delete _arg1;
+}
+{
+    if (_obj2)
+        delete _arg2;
+}
+{
+    delete [] _arg4;
+}
+    return _resultobj;
+}
+
+#define wxMultiChoiceDialog_SetSelections(_swigobj,_swigarg0)  (_swigobj->SetSelections(_swigarg0))
+static PyObject *_wrap_wxMultiChoiceDialog_SetSelections(PyObject *self, PyObject *args, PyObject *kwargs) {
+    PyObject * _resultobj;
+    wxMultiChoiceDialog * _arg0;
+    wxArrayInt * _arg1;
+    PyObject * _argo0 = 0;
+    PyObject * _obj1 = 0;
+    char *_kwnames[] = { "self","selections", NULL };
+
+    self = self;
+    if(!PyArg_ParseTupleAndKeywords(args,kwargs,"OO:wxMultiChoiceDialog_SetSelections",_kwnames,&_argo0,&_obj1)) 
+        return NULL;
+    if (_argo0) {
+        if (_argo0 == Py_None) { _arg0 = NULL; }
+        else if (SWIG_GetPtrObj(_argo0,(void **) &_arg0,"_wxMultiChoiceDialog_p")) {
+            PyErr_SetString(PyExc_TypeError,"Type error in argument 1 of wxMultiChoiceDialog_SetSelections. Expected _wxMultiChoiceDialog_p.");
+        return NULL;
+        }
+    }
+{
+    if (! PySequence_Check(_obj1)) {
+        PyErr_SetString(PyExc_TypeError, "Sequence of integers expected.");
+        return NULL;
+    }
+    _arg1 = new wxArrayInt;
+    int i, len=PySequence_Length(_obj1);
+    for (i=0; i<len; i++) {
+        PyObject* item = PySequence_GetItem(_obj1, i);
+        PyObject* number  = PyNumber_Int(item);
+        _arg1->Add(PyInt_AS_LONG(number));
+        Py_DECREF(item);
+        Py_DECREF(number);
+    }
+}
+{
+    PyThreadState* __tstate = wxPyBeginAllowThreads();
+    wxMultiChoiceDialog_SetSelections(_arg0,*_arg1);
+
+    wxPyEndAllowThreads(__tstate);
+    if (PyErr_Occurred()) return NULL;
+}    Py_INCREF(Py_None);
+    _resultobj = Py_None;
+{
+    if (_obj1)
+        delete _arg1;
+}
+    return _resultobj;
+}
+
+static PyObject * wxMultiChoiceDialog_GetSelections(wxMultiChoiceDialog *self) {
+            return wxArrayInt2PyList_helper(self->GetSelections());
+        }
+static PyObject *_wrap_wxMultiChoiceDialog_GetSelections(PyObject *self, PyObject *args, PyObject *kwargs) {
+    PyObject * _resultobj;
+    PyObject * _result;
+    wxMultiChoiceDialog * _arg0;
+    PyObject * _argo0 = 0;
+    char *_kwnames[] = { "self", NULL };
+
+    self = self;
+    if(!PyArg_ParseTupleAndKeywords(args,kwargs,"O:wxMultiChoiceDialog_GetSelections",_kwnames,&_argo0)) 
+        return NULL;
+    if (_argo0) {
+        if (_argo0 == Py_None) { _arg0 = NULL; }
+        else if (SWIG_GetPtrObj(_argo0,(void **) &_arg0,"_wxMultiChoiceDialog_p")) {
+            PyErr_SetString(PyExc_TypeError,"Type error in argument 1 of wxMultiChoiceDialog_GetSelections. Expected _wxMultiChoiceDialog_p.");
+        return NULL;
+        }
+    }
+{
+    PyThreadState* __tstate = wxPyBeginAllowThreads();
+    _result = (PyObject *)wxMultiChoiceDialog_GetSelections(_arg0);
+
+    wxPyEndAllowThreads(__tstate);
+    if (PyErr_Occurred()) return NULL;
+}{
+  _resultobj = _result;
+}
+    return _resultobj;
+}
+
+static void *SwigwxSingleChoiceDialogTowxDialog(void *ptr) {
+    wxSingleChoiceDialog *src;
+    wxDialog *dest;
+    src = (wxSingleChoiceDialog *) ptr;
+    dest = (wxDialog *) src;
+    return (void *) dest;
+}
+
+static void *SwigwxSingleChoiceDialogTowxTopLevelWindow(void *ptr) {
+    wxSingleChoiceDialog *src;
+    wxTopLevelWindow *dest;
+    src = (wxSingleChoiceDialog *) ptr;
+    dest = (wxTopLevelWindow *) src;
+    return (void *) dest;
+}
+
+static void *SwigwxSingleChoiceDialogTowxWindow(void *ptr) {
+    wxSingleChoiceDialog *src;
+    wxWindow *dest;
+    src = (wxSingleChoiceDialog *) ptr;
+    dest = (wxWindow *) src;
+    return (void *) dest;
+}
+
+static void *SwigwxSingleChoiceDialogTowxEvtHandler(void *ptr) {
+    wxSingleChoiceDialog *src;
+    wxEvtHandler *dest;
+    src = (wxSingleChoiceDialog *) ptr;
+    dest = (wxEvtHandler *) src;
+    return (void *) dest;
+}
+
+static void *SwigwxSingleChoiceDialogTowxObject(void *ptr) {
+    wxSingleChoiceDialog *src;
+    wxObject *dest;
+    src = (wxSingleChoiceDialog *) ptr;
+    dest = (wxObject *) src;
+    return (void *) dest;
+}
+
+static wxSingleChoiceDialog *new_wxSingleChoiceDialog(wxWindow *parent,wxString *message,wxString *caption,int LCOUNT,wxString *choices,long style,wxPoint *pos) {
+            return new wxSingleChoiceDialog(parent, *message, *caption,
+                                            LCOUNT, choices, NULL, style, *pos);
+        }
+
+static PyObject *_wrap_new_wxSingleChoiceDialog(PyObject *self, PyObject *args, PyObject *kwargs) {
+    PyObject * _resultobj;
+    wxSingleChoiceDialog * _result;
+    wxWindow * _arg0;
+    wxString * _arg1;
+    wxString * _arg2;
+    int  _arg3;
+    wxString * _arg4;
+    long  _arg5 = (long ) (wxCHOICEDLG_STYLE);
+    wxPoint * _arg6 = (wxPoint *) &wxDefaultPosition;
+    PyObject * _argo0 = 0;
+    PyObject * _obj1 = 0;
+    PyObject * _obj2 = 0;
+    PyObject * _obj4 = 0;
+    wxPoint  temp;
+    PyObject * _obj6 = 0;
+    char *_kwnames[] = { "parent","message","caption","choices","style","pos", NULL };
+    char _ptemp[128];
+
+    self = self;
+    if(!PyArg_ParseTupleAndKeywords(args,kwargs,"OOOO|lO:new_wxSingleChoiceDialog",_kwnames,&_argo0,&_obj1,&_obj2,&_obj4,&_arg5,&_obj6)) 
+        return NULL;
+    if (_argo0) {
+        if (_argo0 == Py_None) { _arg0 = NULL; }
+        else if (SWIG_GetPtrObj(_argo0,(void **) &_arg0,"_wxWindow_p")) {
+            PyErr_SetString(PyExc_TypeError,"Type error in argument 1 of new_wxSingleChoiceDialog. Expected _wxWindow_p.");
+        return NULL;
+        }
+    }
+{
+    _arg1 = wxString_in_helper(_obj1);
+    if (_arg1 == NULL)
+        return NULL;
+}
+{
+    _arg2 = wxString_in_helper(_obj2);
+    if (_arg2 == NULL)
+        return NULL;
+}
+    if (_obj4)
+{
+    _arg4 = wxString_LIST_helper(_obj4);
+    if (_arg4 == NULL) {
+        return NULL;
+    }
+}
+    if (_obj6)
+{
+    _arg6 = &temp;
+    if (! wxPoint_helper(_obj6, &_arg6))
+        return NULL;
+}
+{
+    if (_obj4) {
+        _arg3 = PyList_Size(_obj4);
+    }
+    else {
+        _arg3 = 0;
+    }
+}
+{
+    PyThreadState* __tstate = wxPyBeginAllowThreads();
+    _result = (wxSingleChoiceDialog *)new_wxSingleChoiceDialog(_arg0,_arg1,_arg2,_arg3,_arg4,_arg5,_arg6);
+
+    wxPyEndAllowThreads(__tstate);
+    if (PyErr_Occurred()) return NULL;
 }    if (_result) {
         SWIG_MakePtr(_ptemp, (char *) _result,"_wxSingleChoiceDialog_p");
         _resultobj = Py_BuildValue("s",_ptemp);
@@ -1648,10 +1923,11 @@ static PyObject *_wrap_wxSingleChoiceDialog_GetSelection(PyObject *self, PyObjec
         }
     }
 {
-    wxPy_BEGIN_ALLOW_THREADS;
-        _result = (int )wxSingleChoiceDialog_GetSelection(_arg0);
+    PyThreadState* __tstate = wxPyBeginAllowThreads();
+    _result = (int )wxSingleChoiceDialog_GetSelection(_arg0);
 
-    wxPy_END_ALLOW_THREADS;
+    wxPyEndAllowThreads(__tstate);
+    if (PyErr_Occurred()) return NULL;
 }    _resultobj = Py_BuildValue("i",_result);
     return _resultobj;
 }
@@ -1675,12 +1951,17 @@ static PyObject *_wrap_wxSingleChoiceDialog_GetStringSelection(PyObject *self, P
         }
     }
 {
-    wxPy_BEGIN_ALLOW_THREADS;
-        _result = new wxString (wxSingleChoiceDialog_GetStringSelection(_arg0));
+    PyThreadState* __tstate = wxPyBeginAllowThreads();
+    _result = new wxString (wxSingleChoiceDialog_GetStringSelection(_arg0));
 
-    wxPy_END_ALLOW_THREADS;
+    wxPyEndAllowThreads(__tstate);
+    if (PyErr_Occurred()) return NULL;
 }{
+#if wxUSE_UNICODE
+    _resultobj = PyUnicode_FromUnicode(_result->c_str(), _result->Len());
+#else
     _resultobj = PyString_FromStringAndSize(_result->c_str(), _result->Len());
+#endif
 }
 {
     delete _result;
@@ -1707,10 +1988,11 @@ static PyObject *_wrap_wxSingleChoiceDialog_SetSelection(PyObject *self, PyObjec
         }
     }
 {
-    wxPy_BEGIN_ALLOW_THREADS;
-        wxSingleChoiceDialog_SetSelection(_arg0,_arg1);
+    PyThreadState* __tstate = wxPyBeginAllowThreads();
+    wxSingleChoiceDialog_SetSelection(_arg0,_arg1);
 
-    wxPy_END_ALLOW_THREADS;
+    wxPyEndAllowThreads(__tstate);
+    if (PyErr_Occurred()) return NULL;
 }    Py_INCREF(Py_None);
     _resultobj = Py_None;
     return _resultobj;
@@ -1735,10 +2017,11 @@ static PyObject *_wrap_wxSingleChoiceDialog_ShowModal(PyObject *self, PyObject *
         }
     }
 {
-    wxPy_BEGIN_ALLOW_THREADS;
-        _result = (int )wxSingleChoiceDialog_ShowModal(_arg0);
+    PyThreadState* __tstate = wxPyBeginAllowThreads();
+    _result = (int )wxSingleChoiceDialog_ShowModal(_arg0);
 
-    wxPy_END_ALLOW_THREADS;
+    wxPyEndAllowThreads(__tstate);
+    if (PyErr_Occurred()) return NULL;
 }    _resultobj = Py_BuildValue("i",_result);
     return _resultobj;
 }
@@ -1751,11 +2034,11 @@ static void *SwigwxTextEntryDialogTowxDialog(void *ptr) {
     return (void *) dest;
 }
 
-static void *SwigwxTextEntryDialogTowxPanel(void *ptr) {
+static void *SwigwxTextEntryDialogTowxTopLevelWindow(void *ptr) {
     wxTextEntryDialog *src;
-    wxPanel *dest;
+    wxTopLevelWindow *dest;
     src = (wxTextEntryDialog *) ptr;
-    dest = (wxPanel *) src;
+    dest = (wxTopLevelWindow *) src;
     return (void *) dest;
 }
 
@@ -1775,24 +2058,35 @@ static void *SwigwxTextEntryDialogTowxEvtHandler(void *ptr) {
     return (void *) dest;
 }
 
+static void *SwigwxTextEntryDialogTowxObject(void *ptr) {
+    wxTextEntryDialog *src;
+    wxObject *dest;
+    src = (wxTextEntryDialog *) ptr;
+    dest = (wxObject *) src;
+    return (void *) dest;
+}
+
 #define new_wxTextEntryDialog(_swigarg0,_swigarg1,_swigarg2,_swigarg3,_swigarg4,_swigarg5) (new wxTextEntryDialog(_swigarg0,_swigarg1,_swigarg2,_swigarg3,_swigarg4,_swigarg5))
 static PyObject *_wrap_new_wxTextEntryDialog(PyObject *self, PyObject *args, PyObject *kwargs) {
     PyObject * _resultobj;
     wxTextEntryDialog * _result;
     wxWindow * _arg0;
-    char * _arg1;
-    char * _arg2 = (char *) "Input Text";
-    char * _arg3 = (char *) "";
+    wxString * _arg1;
+    wxString * _arg2 = (wxString *) &wxPyGetTextFromUserPromptStr;
+    wxString * _arg3 = (wxString *) &wxPyEmptyString;
     long  _arg4 = (long ) wxOK|wxCANCEL|wxCENTRE;
     wxPoint * _arg5 = (wxPoint *) &wxDefaultPosition;
     PyObject * _argo0 = 0;
+    PyObject * _obj1 = 0;
+    PyObject * _obj2 = 0;
+    PyObject * _obj3 = 0;
     wxPoint  temp;
     PyObject * _obj5 = 0;
     char *_kwnames[] = { "parent","message","caption","defaultValue","style","pos", NULL };
     char _ptemp[128];
 
     self = self;
-    if(!PyArg_ParseTupleAndKeywords(args,kwargs,"Os|sslO:new_wxTextEntryDialog",_kwnames,&_argo0,&_arg1,&_arg2,&_arg3,&_arg4,&_obj5)) 
+    if(!PyArg_ParseTupleAndKeywords(args,kwargs,"OO|OOlO:new_wxTextEntryDialog",_kwnames,&_argo0,&_obj1,&_obj2,&_obj3,&_arg4,&_obj5)) 
         return NULL;
     if (_argo0) {
         if (_argo0 == Py_None) { _arg0 = NULL; }
@@ -1801,6 +2095,23 @@ static PyObject *_wrap_new_wxTextEntryDialog(PyObject *self, PyObject *args, PyO
         return NULL;
         }
     }
+{
+    _arg1 = wxString_in_helper(_obj1);
+    if (_arg1 == NULL)
+        return NULL;
+}
+    if (_obj2)
+{
+    _arg2 = wxString_in_helper(_obj2);
+    if (_arg2 == NULL)
+        return NULL;
+}
+    if (_obj3)
+{
+    _arg3 = wxString_in_helper(_obj3);
+    if (_arg3 == NULL)
+        return NULL;
+}
     if (_obj5)
 {
     _arg5 = &temp;
@@ -1808,10 +2119,11 @@ static PyObject *_wrap_new_wxTextEntryDialog(PyObject *self, PyObject *args, PyO
         return NULL;
 }
 {
-    wxPy_BEGIN_ALLOW_THREADS;
-        _result = (wxTextEntryDialog *)new_wxTextEntryDialog(_arg0,_arg1,_arg2,_arg3,_arg4,*_arg5);
+    PyThreadState* __tstate = wxPyBeginAllowThreads();
+    _result = (wxTextEntryDialog *)new_wxTextEntryDialog(_arg0,*_arg1,*_arg2,*_arg3,_arg4,*_arg5);
 
-    wxPy_END_ALLOW_THREADS;
+    wxPyEndAllowThreads(__tstate);
+    if (PyErr_Occurred()) return NULL;
 }    if (_result) {
         SWIG_MakePtr(_ptemp, (char *) _result,"_wxTextEntryDialog_p");
         _resultobj = Py_BuildValue("s",_ptemp);
@@ -1819,6 +2131,18 @@ static PyObject *_wrap_new_wxTextEntryDialog(PyObject *self, PyObject *args, PyO
         Py_INCREF(Py_None);
         _resultobj = Py_None;
     }
+{
+    if (_obj1)
+        delete _arg1;
+}
+{
+    if (_obj2)
+        delete _arg2;
+}
+{
+    if (_obj3)
+        delete _arg3;
+}
     return _resultobj;
 }
 
@@ -1841,12 +2165,17 @@ static PyObject *_wrap_wxTextEntryDialog_GetValue(PyObject *self, PyObject *args
         }
     }
 {
-    wxPy_BEGIN_ALLOW_THREADS;
-        _result = new wxString (wxTextEntryDialog_GetValue(_arg0));
+    PyThreadState* __tstate = wxPyBeginAllowThreads();
+    _result = new wxString (wxTextEntryDialog_GetValue(_arg0));
 
-    wxPy_END_ALLOW_THREADS;
+    wxPyEndAllowThreads(__tstate);
+    if (PyErr_Occurred()) return NULL;
 }{
+#if wxUSE_UNICODE
+    _resultobj = PyUnicode_FromUnicode(_result->c_str(), _result->Len());
+#else
     _resultobj = PyString_FromStringAndSize(_result->c_str(), _result->Len());
+#endif
 }
 {
     delete _result;
@@ -1874,28 +2203,16 @@ static PyObject *_wrap_wxTextEntryDialog_SetValue(PyObject *self, PyObject *args
         }
     }
 {
-#if PYTHON_API_VERSION >= 1009
-    char* tmpPtr; int tmpSize;
-    if (!PyString_Check(_obj1) && !PyUnicode_Check(_obj1)) {
-        PyErr_SetString(PyExc_TypeError, "String or Unicode type required");
+    _arg1 = wxString_in_helper(_obj1);
+    if (_arg1 == NULL)
         return NULL;
-    }
-    if (PyString_AsStringAndSize(_obj1, &tmpPtr, &tmpSize) == -1)
-        return NULL;
-    _arg1 = new wxString(tmpPtr, tmpSize);
-#else
-    if (!PyString_Check(_obj1)) {
-        PyErr_SetString(PyExc_TypeError, wxStringErrorMsg);
-        return NULL;
-    }
-    _arg1 = new wxString(PyString_AS_STRING(_obj1), PyString_GET_SIZE(_obj1));
-#endif
 }
 {
-    wxPy_BEGIN_ALLOW_THREADS;
-        wxTextEntryDialog_SetValue(_arg0,*_arg1);
+    PyThreadState* __tstate = wxPyBeginAllowThreads();
+    wxTextEntryDialog_SetValue(_arg0,*_arg1);
 
-    wxPy_END_ALLOW_THREADS;
+    wxPyEndAllowThreads(__tstate);
+    if (PyErr_Occurred()) return NULL;
 }    Py_INCREF(Py_None);
     _resultobj = Py_None;
 {
@@ -1924,12 +2241,21 @@ static PyObject *_wrap_wxTextEntryDialog_ShowModal(PyObject *self, PyObject *arg
         }
     }
 {
-    wxPy_BEGIN_ALLOW_THREADS;
-        _result = (int )wxTextEntryDialog_ShowModal(_arg0);
+    PyThreadState* __tstate = wxPyBeginAllowThreads();
+    _result = (int )wxTextEntryDialog_ShowModal(_arg0);
 
-    wxPy_END_ALLOW_THREADS;
+    wxPyEndAllowThreads(__tstate);
+    if (PyErr_Occurred()) return NULL;
 }    _resultobj = Py_BuildValue("i",_result);
     return _resultobj;
+}
+
+static void *SwigwxFontDataTowxObject(void *ptr) {
+    wxFontData *src;
+    wxObject *dest;
+    src = (wxFontData *) ptr;
+    dest = (wxObject *) src;
+    return (void *) dest;
 }
 
 #define new_wxFontData() (new wxFontData())
@@ -1943,10 +2269,11 @@ static PyObject *_wrap_new_wxFontData(PyObject *self, PyObject *args, PyObject *
     if(!PyArg_ParseTupleAndKeywords(args,kwargs,":new_wxFontData",_kwnames)) 
         return NULL;
 {
-    wxPy_BEGIN_ALLOW_THREADS;
-        _result = (wxFontData *)new_wxFontData();
+    PyThreadState* __tstate = wxPyBeginAllowThreads();
+    _result = (wxFontData *)new_wxFontData();
 
-    wxPy_END_ALLOW_THREADS;
+    wxPyEndAllowThreads(__tstate);
+    if (PyErr_Occurred()) return NULL;
 }    if (_result) {
         SWIG_MakePtr(_ptemp, (char *) _result,"_wxFontData_p");
         _resultobj = Py_BuildValue("s",_ptemp);
@@ -1975,10 +2302,11 @@ static PyObject *_wrap_delete_wxFontData(PyObject *self, PyObject *args, PyObjec
         }
     }
 {
-    wxPy_BEGIN_ALLOW_THREADS;
-        delete_wxFontData(_arg0);
+    PyThreadState* __tstate = wxPyBeginAllowThreads();
+    delete_wxFontData(_arg0);
 
-    wxPy_END_ALLOW_THREADS;
+    wxPyEndAllowThreads(__tstate);
+    if (PyErr_Occurred()) return NULL;
 }    Py_INCREF(Py_None);
     _resultobj = Py_None;
     return _resultobj;
@@ -2005,10 +2333,11 @@ static PyObject *_wrap_wxFontData_EnableEffects(PyObject *self, PyObject *args, 
     }
     _arg1 = (bool ) tempbool1;
 {
-    wxPy_BEGIN_ALLOW_THREADS;
-        wxFontData_EnableEffects(_arg0,_arg1);
+    PyThreadState* __tstate = wxPyBeginAllowThreads();
+    wxFontData_EnableEffects(_arg0,_arg1);
 
-    wxPy_END_ALLOW_THREADS;
+    wxPyEndAllowThreads(__tstate);
+    if (PyErr_Occurred()) return NULL;
 }    Py_INCREF(Py_None);
     _resultobj = Py_None;
     return _resultobj;
@@ -2033,10 +2362,11 @@ static PyObject *_wrap_wxFontData_GetAllowSymbols(PyObject *self, PyObject *args
         }
     }
 {
-    wxPy_BEGIN_ALLOW_THREADS;
-        _result = (bool )wxFontData_GetAllowSymbols(_arg0);
+    PyThreadState* __tstate = wxPyBeginAllowThreads();
+    _result = (bool )wxFontData_GetAllowSymbols(_arg0);
 
-    wxPy_END_ALLOW_THREADS;
+    wxPyEndAllowThreads(__tstate);
+    if (PyErr_Occurred()) return NULL;
 }    _resultobj = Py_BuildValue("i",_result);
     return _resultobj;
 }
@@ -2061,18 +2391,13 @@ static PyObject *_wrap_wxFontData_GetColour(PyObject *self, PyObject *args, PyOb
         }
     }
 {
-    wxPy_BEGIN_ALLOW_THREADS;
-        wxColour & _result_ref = wxFontData_GetColour(_arg0);
-    _result = (wxColour *) &_result_ref;
+    PyThreadState* __tstate = wxPyBeginAllowThreads();
+    _result = new wxColour (wxFontData_GetColour(_arg0));
 
-    wxPy_END_ALLOW_THREADS;
-}    if (_result) {
-        SWIG_MakePtr(_ptemp, (char *) _result,"_wxColour_p");
-        _resultobj = Py_BuildValue("s",_ptemp);
-    } else {
-        Py_INCREF(Py_None);
-        _resultobj = Py_None;
-    }
+    wxPyEndAllowThreads(__tstate);
+    if (PyErr_Occurred()) return NULL;
+}    SWIG_MakePtr(_ptemp, (void *) _result,"_wxColour_p");
+    _resultobj = Py_BuildValue("s",_ptemp);
     return _resultobj;
 }
 
@@ -2096,10 +2421,11 @@ static PyObject *_wrap_wxFontData_GetChosenFont(PyObject *self, PyObject *args, 
         }
     }
 {
-    wxPy_BEGIN_ALLOW_THREADS;
-        _result = new wxFont (wxFontData_GetChosenFont(_arg0));
+    PyThreadState* __tstate = wxPyBeginAllowThreads();
+    _result = new wxFont (wxFontData_GetChosenFont(_arg0));
 
-    wxPy_END_ALLOW_THREADS;
+    wxPyEndAllowThreads(__tstate);
+    if (PyErr_Occurred()) return NULL;
 }    SWIG_MakePtr(_ptemp, (void *) _result,"_wxFont_p");
     _resultobj = Py_BuildValue("s",_ptemp);
     return _resultobj;
@@ -2124,10 +2450,11 @@ static PyObject *_wrap_wxFontData_GetEnableEffects(PyObject *self, PyObject *arg
         }
     }
 {
-    wxPy_BEGIN_ALLOW_THREADS;
-        _result = (bool )wxFontData_GetEnableEffects(_arg0);
+    PyThreadState* __tstate = wxPyBeginAllowThreads();
+    _result = (bool )wxFontData_GetEnableEffects(_arg0);
 
-    wxPy_END_ALLOW_THREADS;
+    wxPyEndAllowThreads(__tstate);
+    if (PyErr_Occurred()) return NULL;
 }    _resultobj = Py_BuildValue("i",_result);
     return _resultobj;
 }
@@ -2152,10 +2479,11 @@ static PyObject *_wrap_wxFontData_GetInitialFont(PyObject *self, PyObject *args,
         }
     }
 {
-    wxPy_BEGIN_ALLOW_THREADS;
-        _result = new wxFont (wxFontData_GetInitialFont(_arg0));
+    PyThreadState* __tstate = wxPyBeginAllowThreads();
+    _result = new wxFont (wxFontData_GetInitialFont(_arg0));
 
-    wxPy_END_ALLOW_THREADS;
+    wxPyEndAllowThreads(__tstate);
+    if (PyErr_Occurred()) return NULL;
 }    SWIG_MakePtr(_ptemp, (void *) _result,"_wxFont_p");
     _resultobj = Py_BuildValue("s",_ptemp);
     return _resultobj;
@@ -2180,10 +2508,11 @@ static PyObject *_wrap_wxFontData_GetShowHelp(PyObject *self, PyObject *args, Py
         }
     }
 {
-    wxPy_BEGIN_ALLOW_THREADS;
-        _result = (bool )wxFontData_GetShowHelp(_arg0);
+    PyThreadState* __tstate = wxPyBeginAllowThreads();
+    _result = (bool )wxFontData_GetShowHelp(_arg0);
 
-    wxPy_END_ALLOW_THREADS;
+    wxPyEndAllowThreads(__tstate);
+    if (PyErr_Occurred()) return NULL;
 }    _resultobj = Py_BuildValue("i",_result);
     return _resultobj;
 }
@@ -2209,10 +2538,11 @@ static PyObject *_wrap_wxFontData_SetAllowSymbols(PyObject *self, PyObject *args
     }
     _arg1 = (bool ) tempbool1;
 {
-    wxPy_BEGIN_ALLOW_THREADS;
-        wxFontData_SetAllowSymbols(_arg0,_arg1);
+    PyThreadState* __tstate = wxPyBeginAllowThreads();
+    wxFontData_SetAllowSymbols(_arg0,_arg1);
 
-    wxPy_END_ALLOW_THREADS;
+    wxPyEndAllowThreads(__tstate);
+    if (PyErr_Occurred()) return NULL;
 }    Py_INCREF(Py_None);
     _resultobj = Py_None;
     return _resultobj;
@@ -2245,10 +2575,11 @@ static PyObject *_wrap_wxFontData_SetChosenFont(PyObject *self, PyObject *args, 
         }
     }
 {
-    wxPy_BEGIN_ALLOW_THREADS;
-        wxFontData_SetChosenFont(_arg0,*_arg1);
+    PyThreadState* __tstate = wxPyBeginAllowThreads();
+    wxFontData_SetChosenFont(_arg0,*_arg1);
 
-    wxPy_END_ALLOW_THREADS;
+    wxPyEndAllowThreads(__tstate);
+    if (PyErr_Occurred()) return NULL;
 }    Py_INCREF(Py_None);
     _resultobj = Py_None;
     return _resultobj;
@@ -2280,10 +2611,11 @@ static PyObject *_wrap_wxFontData_SetColour(PyObject *self, PyObject *args, PyOb
         return NULL;
 }
 {
-    wxPy_BEGIN_ALLOW_THREADS;
-        wxFontData_SetColour(_arg0,*_arg1);
+    PyThreadState* __tstate = wxPyBeginAllowThreads();
+    wxFontData_SetColour(_arg0,*_arg1);
 
-    wxPy_END_ALLOW_THREADS;
+    wxPyEndAllowThreads(__tstate);
+    if (PyErr_Occurred()) return NULL;
 }    Py_INCREF(Py_None);
     _resultobj = Py_None;
     return _resultobj;
@@ -2316,10 +2648,11 @@ static PyObject *_wrap_wxFontData_SetInitialFont(PyObject *self, PyObject *args,
         }
     }
 {
-    wxPy_BEGIN_ALLOW_THREADS;
-        wxFontData_SetInitialFont(_arg0,*_arg1);
+    PyThreadState* __tstate = wxPyBeginAllowThreads();
+    wxFontData_SetInitialFont(_arg0,*_arg1);
 
-    wxPy_END_ALLOW_THREADS;
+    wxPyEndAllowThreads(__tstate);
+    if (PyErr_Occurred()) return NULL;
 }    Py_INCREF(Py_None);
     _resultobj = Py_None;
     return _resultobj;
@@ -2345,10 +2678,11 @@ static PyObject *_wrap_wxFontData_SetRange(PyObject *self, PyObject *args, PyObj
         }
     }
 {
-    wxPy_BEGIN_ALLOW_THREADS;
-        wxFontData_SetRange(_arg0,_arg1,_arg2);
+    PyThreadState* __tstate = wxPyBeginAllowThreads();
+    wxFontData_SetRange(_arg0,_arg1,_arg2);
 
-    wxPy_END_ALLOW_THREADS;
+    wxPyEndAllowThreads(__tstate);
+    if (PyErr_Occurred()) return NULL;
 }    Py_INCREF(Py_None);
     _resultobj = Py_None;
     return _resultobj;
@@ -2375,10 +2709,11 @@ static PyObject *_wrap_wxFontData_SetShowHelp(PyObject *self, PyObject *args, Py
     }
     _arg1 = (bool ) tempbool1;
 {
-    wxPy_BEGIN_ALLOW_THREADS;
-        wxFontData_SetShowHelp(_arg0,_arg1);
+    PyThreadState* __tstate = wxPyBeginAllowThreads();
+    wxFontData_SetShowHelp(_arg0,_arg1);
 
-    wxPy_END_ALLOW_THREADS;
+    wxPyEndAllowThreads(__tstate);
+    if (PyErr_Occurred()) return NULL;
 }    Py_INCREF(Py_None);
     _resultobj = Py_None;
     return _resultobj;
@@ -2392,11 +2727,11 @@ static void *SwigwxFontDialogTowxDialog(void *ptr) {
     return (void *) dest;
 }
 
-static void *SwigwxFontDialogTowxPanel(void *ptr) {
+static void *SwigwxFontDialogTowxTopLevelWindow(void *ptr) {
     wxFontDialog *src;
-    wxPanel *dest;
+    wxTopLevelWindow *dest;
     src = (wxFontDialog *) ptr;
-    dest = (wxPanel *) src;
+    dest = (wxTopLevelWindow *) src;
     return (void *) dest;
 }
 
@@ -2413,6 +2748,14 @@ static void *SwigwxFontDialogTowxEvtHandler(void *ptr) {
     wxEvtHandler *dest;
     src = (wxFontDialog *) ptr;
     dest = (wxEvtHandler *) src;
+    return (void *) dest;
+}
+
+static void *SwigwxFontDialogTowxObject(void *ptr) {
+    wxFontDialog *src;
+    wxObject *dest;
+    src = (wxFontDialog *) ptr;
+    dest = (wxObject *) src;
     return (void *) dest;
 }
 
@@ -2445,10 +2788,11 @@ static PyObject *_wrap_new_wxFontDialog(PyObject *self, PyObject *args, PyObject
         }
     }
 {
-    wxPy_BEGIN_ALLOW_THREADS;
-        _result = (wxFontDialog *)new_wxFontDialog(_arg0,_arg1);
+    PyThreadState* __tstate = wxPyBeginAllowThreads();
+    _result = (wxFontDialog *)new_wxFontDialog(_arg0,*_arg1);
 
-    wxPy_END_ALLOW_THREADS;
+    wxPyEndAllowThreads(__tstate);
+    if (PyErr_Occurred()) return NULL;
 }    if (_result) {
         SWIG_MakePtr(_ptemp, (char *) _result,"_wxFontDialog_p");
         _resultobj = Py_BuildValue("s",_ptemp);
@@ -2479,11 +2823,12 @@ static PyObject *_wrap_wxFontDialog_GetFontData(PyObject *self, PyObject *args, 
         }
     }
 {
-    wxPy_BEGIN_ALLOW_THREADS;
-        wxFontData & _result_ref = wxFontDialog_GetFontData(_arg0);
+    PyThreadState* __tstate = wxPyBeginAllowThreads();
+    wxFontData & _result_ref = wxFontDialog_GetFontData(_arg0);
     _result = (wxFontData *) &_result_ref;
 
-    wxPy_END_ALLOW_THREADS;
+    wxPyEndAllowThreads(__tstate);
+    if (PyErr_Occurred()) return NULL;
 }    if (_result) {
         SWIG_MakePtr(_ptemp, (char *) _result,"_wxFontData_p");
         _resultobj = Py_BuildValue("s",_ptemp);
@@ -2513,10 +2858,11 @@ static PyObject *_wrap_wxFontDialog_ShowModal(PyObject *self, PyObject *args, Py
         }
     }
 {
-    wxPy_BEGIN_ALLOW_THREADS;
-        _result = (int )wxFontDialog_ShowModal(_arg0);
+    PyThreadState* __tstate = wxPyBeginAllowThreads();
+    _result = (int )wxFontDialog_ShowModal(_arg0);
 
-    wxPy_END_ALLOW_THREADS;
+    wxPyEndAllowThreads(__tstate);
+    if (PyErr_Occurred()) return NULL;
 }    _resultobj = Py_BuildValue("i",_result);
     return _resultobj;
 }
@@ -2529,11 +2875,11 @@ static void *SwigwxMessageDialogTowxDialog(void *ptr) {
     return (void *) dest;
 }
 
-static void *SwigwxMessageDialogTowxPanel(void *ptr) {
+static void *SwigwxMessageDialogTowxTopLevelWindow(void *ptr) {
     wxMessageDialog *src;
-    wxPanel *dest;
+    wxTopLevelWindow *dest;
     src = (wxMessageDialog *) ptr;
-    dest = (wxPanel *) src;
+    dest = (wxTopLevelWindow *) src;
     return (void *) dest;
 }
 
@@ -2553,23 +2899,33 @@ static void *SwigwxMessageDialogTowxEvtHandler(void *ptr) {
     return (void *) dest;
 }
 
+static void *SwigwxMessageDialogTowxObject(void *ptr) {
+    wxMessageDialog *src;
+    wxObject *dest;
+    src = (wxMessageDialog *) ptr;
+    dest = (wxObject *) src;
+    return (void *) dest;
+}
+
 #define new_wxMessageDialog(_swigarg0,_swigarg1,_swigarg2,_swigarg3,_swigarg4) (new wxMessageDialog(_swigarg0,_swigarg1,_swigarg2,_swigarg3,_swigarg4))
 static PyObject *_wrap_new_wxMessageDialog(PyObject *self, PyObject *args, PyObject *kwargs) {
     PyObject * _resultobj;
     wxMessageDialog * _result;
     wxWindow * _arg0;
-    char * _arg1;
-    char * _arg2 = (char *) "Message box";
+    wxString * _arg1;
+    wxString * _arg2 = (wxString *) &wxPyMessageBoxCaptionStr;
     long  _arg3 = (long ) wxOK|wxCANCEL|wxCENTRE;
     wxPoint * _arg4 = (wxPoint *) &wxDefaultPosition;
     PyObject * _argo0 = 0;
+    PyObject * _obj1 = 0;
+    PyObject * _obj2 = 0;
     wxPoint  temp;
     PyObject * _obj4 = 0;
     char *_kwnames[] = { "parent","message","caption","style","pos", NULL };
     char _ptemp[128];
 
     self = self;
-    if(!PyArg_ParseTupleAndKeywords(args,kwargs,"Os|slO:new_wxMessageDialog",_kwnames,&_argo0,&_arg1,&_arg2,&_arg3,&_obj4)) 
+    if(!PyArg_ParseTupleAndKeywords(args,kwargs,"OO|OlO:new_wxMessageDialog",_kwnames,&_argo0,&_obj1,&_obj2,&_arg3,&_obj4)) 
         return NULL;
     if (_argo0) {
         if (_argo0 == Py_None) { _arg0 = NULL; }
@@ -2578,6 +2934,17 @@ static PyObject *_wrap_new_wxMessageDialog(PyObject *self, PyObject *args, PyObj
         return NULL;
         }
     }
+{
+    _arg1 = wxString_in_helper(_obj1);
+    if (_arg1 == NULL)
+        return NULL;
+}
+    if (_obj2)
+{
+    _arg2 = wxString_in_helper(_obj2);
+    if (_arg2 == NULL)
+        return NULL;
+}
     if (_obj4)
 {
     _arg4 = &temp;
@@ -2585,10 +2952,11 @@ static PyObject *_wrap_new_wxMessageDialog(PyObject *self, PyObject *args, PyObj
         return NULL;
 }
 {
-    wxPy_BEGIN_ALLOW_THREADS;
-        _result = (wxMessageDialog *)new_wxMessageDialog(_arg0,_arg1,_arg2,_arg3,*_arg4);
+    PyThreadState* __tstate = wxPyBeginAllowThreads();
+    _result = (wxMessageDialog *)new_wxMessageDialog(_arg0,*_arg1,*_arg2,_arg3,*_arg4);
 
-    wxPy_END_ALLOW_THREADS;
+    wxPyEndAllowThreads(__tstate);
+    if (PyErr_Occurred()) return NULL;
 }    if (_result) {
         SWIG_MakePtr(_ptemp, (char *) _result,"_wxMessageDialog_p");
         _resultobj = Py_BuildValue("s",_ptemp);
@@ -2596,6 +2964,14 @@ static PyObject *_wrap_new_wxMessageDialog(PyObject *self, PyObject *args, PyObj
         Py_INCREF(Py_None);
         _resultobj = Py_None;
     }
+{
+    if (_obj1)
+        delete _arg1;
+}
+{
+    if (_obj2)
+        delete _arg2;
+}
     return _resultobj;
 }
 
@@ -2618,10 +2994,11 @@ static PyObject *_wrap_wxMessageDialog_ShowModal(PyObject *self, PyObject *args,
         }
     }
 {
-    wxPy_BEGIN_ALLOW_THREADS;
-        _result = (int )wxMessageDialog_ShowModal(_arg0);
+    PyThreadState* __tstate = wxPyBeginAllowThreads();
+    _result = (int )wxMessageDialog_ShowModal(_arg0);
 
-    wxPy_END_ALLOW_THREADS;
+    wxPyEndAllowThreads(__tstate);
+    if (PyErr_Occurred()) return NULL;
 }    _resultobj = Py_BuildValue("i",_result);
     return _resultobj;
 }
@@ -2631,6 +3008,14 @@ static void *SwigwxProgressDialogTowxFrame(void *ptr) {
     wxFrame *dest;
     src = (wxProgressDialog *) ptr;
     dest = (wxFrame *) src;
+    return (void *) dest;
+}
+
+static void *SwigwxProgressDialogTowxTopLevelWindow(void *ptr) {
+    wxProgressDialog *src;
+    wxTopLevelWindow *dest;
+    src = (wxProgressDialog *) ptr;
+    dest = (wxTopLevelWindow *) src;
     return (void *) dest;
 }
 
@@ -2647,6 +3032,14 @@ static void *SwigwxProgressDialogTowxEvtHandler(void *ptr) {
     wxEvtHandler *dest;
     src = (wxProgressDialog *) ptr;
     dest = (wxEvtHandler *) src;
+    return (void *) dest;
+}
+
+static void *SwigwxProgressDialogTowxObject(void *ptr) {
+    wxProgressDialog *src;
+    wxObject *dest;
+    src = (wxProgressDialog *) ptr;
+    dest = (wxObject *) src;
     return (void *) dest;
 }
 
@@ -2669,40 +3062,14 @@ static PyObject *_wrap_new_wxProgressDialog(PyObject *self, PyObject *args, PyOb
     if(!PyArg_ParseTupleAndKeywords(args,kwargs,"OO|iOi:new_wxProgressDialog",_kwnames,&_obj0,&_obj1,&_arg2,&_argo3,&_arg4)) 
         return NULL;
 {
-#if PYTHON_API_VERSION >= 1009
-    char* tmpPtr; int tmpSize;
-    if (!PyString_Check(_obj0) && !PyUnicode_Check(_obj0)) {
-        PyErr_SetString(PyExc_TypeError, "String or Unicode type required");
+    _arg0 = wxString_in_helper(_obj0);
+    if (_arg0 == NULL)
         return NULL;
-    }
-    if (PyString_AsStringAndSize(_obj0, &tmpPtr, &tmpSize) == -1)
-        return NULL;
-    _arg0 = new wxString(tmpPtr, tmpSize);
-#else
-    if (!PyString_Check(_obj0)) {
-        PyErr_SetString(PyExc_TypeError, wxStringErrorMsg);
-        return NULL;
-    }
-    _arg0 = new wxString(PyString_AS_STRING(_obj0), PyString_GET_SIZE(_obj0));
-#endif
 }
 {
-#if PYTHON_API_VERSION >= 1009
-    char* tmpPtr; int tmpSize;
-    if (!PyString_Check(_obj1) && !PyUnicode_Check(_obj1)) {
-        PyErr_SetString(PyExc_TypeError, "String or Unicode type required");
+    _arg1 = wxString_in_helper(_obj1);
+    if (_arg1 == NULL)
         return NULL;
-    }
-    if (PyString_AsStringAndSize(_obj1, &tmpPtr, &tmpSize) == -1)
-        return NULL;
-    _arg1 = new wxString(tmpPtr, tmpSize);
-#else
-    if (!PyString_Check(_obj1)) {
-        PyErr_SetString(PyExc_TypeError, wxStringErrorMsg);
-        return NULL;
-    }
-    _arg1 = new wxString(PyString_AS_STRING(_obj1), PyString_GET_SIZE(_obj1));
-#endif
 }
     if (_argo3) {
         if (_argo3 == Py_None) { _arg3 = NULL; }
@@ -2712,10 +3079,11 @@ static PyObject *_wrap_new_wxProgressDialog(PyObject *self, PyObject *args, PyOb
         }
     }
 {
-    wxPy_BEGIN_ALLOW_THREADS;
-        _result = (wxProgressDialog *)new_wxProgressDialog(*_arg0,*_arg1,_arg2,_arg3,_arg4);
+    PyThreadState* __tstate = wxPyBeginAllowThreads();
+    _result = (wxProgressDialog *)new_wxProgressDialog(*_arg0,*_arg1,_arg2,_arg3,_arg4);
 
-    wxPy_END_ALLOW_THREADS;
+    wxPyEndAllowThreads(__tstate);
+    if (PyErr_Occurred()) return NULL;
 }    if (_result) {
         SWIG_MakePtr(_ptemp, (char *) _result,"_wxProgressDialog_p");
         _resultobj = Py_BuildValue("s",_ptemp);
@@ -2739,13 +3107,14 @@ static PyObject *_wrap_wxProgressDialog_Update(PyObject *self, PyObject *args, P
     PyObject * _resultobj;
     bool  _result;
     wxProgressDialog * _arg0;
-    int  _arg1 = (int ) -1;
-    char * _arg2 = (char *) NULL;
+    int  _arg1;
+    wxString * _arg2 = (wxString *) &wxPyEmptyString;
     PyObject * _argo0 = 0;
+    PyObject * _obj2 = 0;
     char *_kwnames[] = { "self","value","newmsg", NULL };
 
     self = self;
-    if(!PyArg_ParseTupleAndKeywords(args,kwargs,"O|is:wxProgressDialog_Update",_kwnames,&_argo0,&_arg1,&_arg2)) 
+    if(!PyArg_ParseTupleAndKeywords(args,kwargs,"Oi|O:wxProgressDialog_Update",_kwnames,&_argo0,&_arg1,&_obj2)) 
         return NULL;
     if (_argo0) {
         if (_argo0 == Py_None) { _arg0 = NULL; }
@@ -2754,12 +3123,23 @@ static PyObject *_wrap_wxProgressDialog_Update(PyObject *self, PyObject *args, P
         return NULL;
         }
     }
+    if (_obj2)
 {
-    wxPy_BEGIN_ALLOW_THREADS;
-        _result = (bool )wxProgressDialog_Update(_arg0,_arg1,_arg2);
+    _arg2 = wxString_in_helper(_obj2);
+    if (_arg2 == NULL)
+        return NULL;
+}
+{
+    PyThreadState* __tstate = wxPyBeginAllowThreads();
+    _result = (bool )wxProgressDialog_Update(_arg0,_arg1,*_arg2);
 
-    wxPy_END_ALLOW_THREADS;
+    wxPyEndAllowThreads(__tstate);
+    if (PyErr_Occurred()) return NULL;
 }    _resultobj = Py_BuildValue("i",_result);
+{
+    if (_obj2)
+        delete _arg2;
+}
     return _resultobj;
 }
 
@@ -2781,16 +3161,852 @@ static PyObject *_wrap_wxProgressDialog_Resume(PyObject *self, PyObject *args, P
         }
     }
 {
-    wxPy_BEGIN_ALLOW_THREADS;
-        wxProgressDialog_Resume(_arg0);
+    PyThreadState* __tstate = wxPyBeginAllowThreads();
+    wxProgressDialog_Resume(_arg0);
 
-    wxPy_END_ALLOW_THREADS;
+    wxPyEndAllowThreads(__tstate);
+    if (PyErr_Occurred()) return NULL;
+}    Py_INCREF(Py_None);
+    _resultobj = Py_None;
+    return _resultobj;
+}
+
+static void *SwigwxFindDialogEventTowxCommandEvent(void *ptr) {
+    wxFindDialogEvent *src;
+    wxCommandEvent *dest;
+    src = (wxFindDialogEvent *) ptr;
+    dest = (wxCommandEvent *) src;
+    return (void *) dest;
+}
+
+static void *SwigwxFindDialogEventTowxEvent(void *ptr) {
+    wxFindDialogEvent *src;
+    wxEvent *dest;
+    src = (wxFindDialogEvent *) ptr;
+    dest = (wxEvent *) src;
+    return (void *) dest;
+}
+
+static void *SwigwxFindDialogEventTowxObject(void *ptr) {
+    wxFindDialogEvent *src;
+    wxObject *dest;
+    src = (wxFindDialogEvent *) ptr;
+    dest = (wxObject *) src;
+    return (void *) dest;
+}
+
+#define new_wxFindDialogEvent(_swigarg0,_swigarg1) (new wxFindDialogEvent(_swigarg0,_swigarg1))
+static PyObject *_wrap_new_wxFindDialogEvent(PyObject *self, PyObject *args, PyObject *kwargs) {
+    PyObject * _resultobj;
+    wxFindDialogEvent * _result;
+    wxEventType  _arg0 = (wxEventType ) wxEVT_NULL;
+    int  _arg1 = (int ) 0;
+    char *_kwnames[] = { "commandType","id", NULL };
+    char _ptemp[128];
+
+    self = self;
+    if(!PyArg_ParseTupleAndKeywords(args,kwargs,"|ii:new_wxFindDialogEvent",_kwnames,&_arg0,&_arg1)) 
+        return NULL;
+{
+    PyThreadState* __tstate = wxPyBeginAllowThreads();
+    _result = (wxFindDialogEvent *)new_wxFindDialogEvent(_arg0,_arg1);
+
+    wxPyEndAllowThreads(__tstate);
+    if (PyErr_Occurred()) return NULL;
+}    if (_result) {
+        SWIG_MakePtr(_ptemp, (char *) _result,"_wxFindDialogEvent_p");
+        _resultobj = Py_BuildValue("s",_ptemp);
+    } else {
+        Py_INCREF(Py_None);
+        _resultobj = Py_None;
+    }
+    return _resultobj;
+}
+
+#define wxFindDialogEvent_GetFlags(_swigobj)  (_swigobj->GetFlags())
+static PyObject *_wrap_wxFindDialogEvent_GetFlags(PyObject *self, PyObject *args, PyObject *kwargs) {
+    PyObject * _resultobj;
+    int  _result;
+    wxFindDialogEvent * _arg0;
+    PyObject * _argo0 = 0;
+    char *_kwnames[] = { "self", NULL };
+
+    self = self;
+    if(!PyArg_ParseTupleAndKeywords(args,kwargs,"O:wxFindDialogEvent_GetFlags",_kwnames,&_argo0)) 
+        return NULL;
+    if (_argo0) {
+        if (_argo0 == Py_None) { _arg0 = NULL; }
+        else if (SWIG_GetPtrObj(_argo0,(void **) &_arg0,"_wxFindDialogEvent_p")) {
+            PyErr_SetString(PyExc_TypeError,"Type error in argument 1 of wxFindDialogEvent_GetFlags. Expected _wxFindDialogEvent_p.");
+        return NULL;
+        }
+    }
+{
+    PyThreadState* __tstate = wxPyBeginAllowThreads();
+    _result = (int )wxFindDialogEvent_GetFlags(_arg0);
+
+    wxPyEndAllowThreads(__tstate);
+    if (PyErr_Occurred()) return NULL;
+}    _resultobj = Py_BuildValue("i",_result);
+    return _resultobj;
+}
+
+#define wxFindDialogEvent_GetFindString(_swigobj)  (_swigobj->GetFindString())
+static PyObject *_wrap_wxFindDialogEvent_GetFindString(PyObject *self, PyObject *args, PyObject *kwargs) {
+    PyObject * _resultobj;
+    wxString * _result;
+    wxFindDialogEvent * _arg0;
+    PyObject * _argo0 = 0;
+    char *_kwnames[] = { "self", NULL };
+
+    self = self;
+    if(!PyArg_ParseTupleAndKeywords(args,kwargs,"O:wxFindDialogEvent_GetFindString",_kwnames,&_argo0)) 
+        return NULL;
+    if (_argo0) {
+        if (_argo0 == Py_None) { _arg0 = NULL; }
+        else if (SWIG_GetPtrObj(_argo0,(void **) &_arg0,"_wxFindDialogEvent_p")) {
+            PyErr_SetString(PyExc_TypeError,"Type error in argument 1 of wxFindDialogEvent_GetFindString. Expected _wxFindDialogEvent_p.");
+        return NULL;
+        }
+    }
+{
+    PyThreadState* __tstate = wxPyBeginAllowThreads();
+    _result = new wxString (wxFindDialogEvent_GetFindString(_arg0));
+
+    wxPyEndAllowThreads(__tstate);
+    if (PyErr_Occurred()) return NULL;
+}{
+#if wxUSE_UNICODE
+    _resultobj = PyUnicode_FromUnicode(_result->c_str(), _result->Len());
+#else
+    _resultobj = PyString_FromStringAndSize(_result->c_str(), _result->Len());
+#endif
+}
+{
+    delete _result;
+}
+    return _resultobj;
+}
+
+#define wxFindDialogEvent_GetReplaceString(_swigobj)  (_swigobj->GetReplaceString())
+static PyObject *_wrap_wxFindDialogEvent_GetReplaceString(PyObject *self, PyObject *args, PyObject *kwargs) {
+    PyObject * _resultobj;
+    wxString * _result;
+    wxFindDialogEvent * _arg0;
+    PyObject * _argo0 = 0;
+    char *_kwnames[] = { "self", NULL };
+
+    self = self;
+    if(!PyArg_ParseTupleAndKeywords(args,kwargs,"O:wxFindDialogEvent_GetReplaceString",_kwnames,&_argo0)) 
+        return NULL;
+    if (_argo0) {
+        if (_argo0 == Py_None) { _arg0 = NULL; }
+        else if (SWIG_GetPtrObj(_argo0,(void **) &_arg0,"_wxFindDialogEvent_p")) {
+            PyErr_SetString(PyExc_TypeError,"Type error in argument 1 of wxFindDialogEvent_GetReplaceString. Expected _wxFindDialogEvent_p.");
+        return NULL;
+        }
+    }
+{
+    PyThreadState* __tstate = wxPyBeginAllowThreads();
+    const wxString & _result_ref = wxFindDialogEvent_GetReplaceString(_arg0);
+    _result = (wxString *) &_result_ref;
+
+    wxPyEndAllowThreads(__tstate);
+    if (PyErr_Occurred()) return NULL;
+}{
+#if wxUSE_UNICODE
+    _resultobj = PyUnicode_FromUnicode(_result->c_str(), _result->Len());
+#else
+    _resultobj = PyString_FromStringAndSize(_result->c_str(), _result->Len());
+#endif
+}
+    return _resultobj;
+}
+
+#define wxFindDialogEvent_GetDialog(_swigobj)  (_swigobj->GetDialog())
+static PyObject *_wrap_wxFindDialogEvent_GetDialog(PyObject *self, PyObject *args, PyObject *kwargs) {
+    PyObject * _resultobj;
+    wxFindReplaceDialog * _result;
+    wxFindDialogEvent * _arg0;
+    PyObject * _argo0 = 0;
+    char *_kwnames[] = { "self", NULL };
+    char _ptemp[128];
+
+    self = self;
+    if(!PyArg_ParseTupleAndKeywords(args,kwargs,"O:wxFindDialogEvent_GetDialog",_kwnames,&_argo0)) 
+        return NULL;
+    if (_argo0) {
+        if (_argo0 == Py_None) { _arg0 = NULL; }
+        else if (SWIG_GetPtrObj(_argo0,(void **) &_arg0,"_wxFindDialogEvent_p")) {
+            PyErr_SetString(PyExc_TypeError,"Type error in argument 1 of wxFindDialogEvent_GetDialog. Expected _wxFindDialogEvent_p.");
+        return NULL;
+        }
+    }
+{
+    PyThreadState* __tstate = wxPyBeginAllowThreads();
+    _result = (wxFindReplaceDialog *)wxFindDialogEvent_GetDialog(_arg0);
+
+    wxPyEndAllowThreads(__tstate);
+    if (PyErr_Occurred()) return NULL;
+}    if (_result) {
+        SWIG_MakePtr(_ptemp, (char *) _result,"_wxFindReplaceDialog_p");
+        _resultobj = Py_BuildValue("s",_ptemp);
+    } else {
+        Py_INCREF(Py_None);
+        _resultobj = Py_None;
+    }
+    return _resultobj;
+}
+
+#define wxFindDialogEvent_SetFlags(_swigobj,_swigarg0)  (_swigobj->SetFlags(_swigarg0))
+static PyObject *_wrap_wxFindDialogEvent_SetFlags(PyObject *self, PyObject *args, PyObject *kwargs) {
+    PyObject * _resultobj;
+    wxFindDialogEvent * _arg0;
+    int  _arg1;
+    PyObject * _argo0 = 0;
+    char *_kwnames[] = { "self","flags", NULL };
+
+    self = self;
+    if(!PyArg_ParseTupleAndKeywords(args,kwargs,"Oi:wxFindDialogEvent_SetFlags",_kwnames,&_argo0,&_arg1)) 
+        return NULL;
+    if (_argo0) {
+        if (_argo0 == Py_None) { _arg0 = NULL; }
+        else if (SWIG_GetPtrObj(_argo0,(void **) &_arg0,"_wxFindDialogEvent_p")) {
+            PyErr_SetString(PyExc_TypeError,"Type error in argument 1 of wxFindDialogEvent_SetFlags. Expected _wxFindDialogEvent_p.");
+        return NULL;
+        }
+    }
+{
+    PyThreadState* __tstate = wxPyBeginAllowThreads();
+    wxFindDialogEvent_SetFlags(_arg0,_arg1);
+
+    wxPyEndAllowThreads(__tstate);
+    if (PyErr_Occurred()) return NULL;
+}    Py_INCREF(Py_None);
+    _resultobj = Py_None;
+    return _resultobj;
+}
+
+#define wxFindDialogEvent_SetFindString(_swigobj,_swigarg0)  (_swigobj->SetFindString(_swigarg0))
+static PyObject *_wrap_wxFindDialogEvent_SetFindString(PyObject *self, PyObject *args, PyObject *kwargs) {
+    PyObject * _resultobj;
+    wxFindDialogEvent * _arg0;
+    wxString * _arg1;
+    PyObject * _argo0 = 0;
+    PyObject * _obj1 = 0;
+    char *_kwnames[] = { "self","str", NULL };
+
+    self = self;
+    if(!PyArg_ParseTupleAndKeywords(args,kwargs,"OO:wxFindDialogEvent_SetFindString",_kwnames,&_argo0,&_obj1)) 
+        return NULL;
+    if (_argo0) {
+        if (_argo0 == Py_None) { _arg0 = NULL; }
+        else if (SWIG_GetPtrObj(_argo0,(void **) &_arg0,"_wxFindDialogEvent_p")) {
+            PyErr_SetString(PyExc_TypeError,"Type error in argument 1 of wxFindDialogEvent_SetFindString. Expected _wxFindDialogEvent_p.");
+        return NULL;
+        }
+    }
+{
+    _arg1 = wxString_in_helper(_obj1);
+    if (_arg1 == NULL)
+        return NULL;
+}
+{
+    PyThreadState* __tstate = wxPyBeginAllowThreads();
+    wxFindDialogEvent_SetFindString(_arg0,*_arg1);
+
+    wxPyEndAllowThreads(__tstate);
+    if (PyErr_Occurred()) return NULL;
+}    Py_INCREF(Py_None);
+    _resultobj = Py_None;
+{
+    if (_obj1)
+        delete _arg1;
+}
+    return _resultobj;
+}
+
+#define wxFindDialogEvent_SetReplaceString(_swigobj,_swigarg0)  (_swigobj->SetReplaceString(_swigarg0))
+static PyObject *_wrap_wxFindDialogEvent_SetReplaceString(PyObject *self, PyObject *args, PyObject *kwargs) {
+    PyObject * _resultobj;
+    wxFindDialogEvent * _arg0;
+    wxString * _arg1;
+    PyObject * _argo0 = 0;
+    PyObject * _obj1 = 0;
+    char *_kwnames[] = { "self","str", NULL };
+
+    self = self;
+    if(!PyArg_ParseTupleAndKeywords(args,kwargs,"OO:wxFindDialogEvent_SetReplaceString",_kwnames,&_argo0,&_obj1)) 
+        return NULL;
+    if (_argo0) {
+        if (_argo0 == Py_None) { _arg0 = NULL; }
+        else if (SWIG_GetPtrObj(_argo0,(void **) &_arg0,"_wxFindDialogEvent_p")) {
+            PyErr_SetString(PyExc_TypeError,"Type error in argument 1 of wxFindDialogEvent_SetReplaceString. Expected _wxFindDialogEvent_p.");
+        return NULL;
+        }
+    }
+{
+    _arg1 = wxString_in_helper(_obj1);
+    if (_arg1 == NULL)
+        return NULL;
+}
+{
+    PyThreadState* __tstate = wxPyBeginAllowThreads();
+    wxFindDialogEvent_SetReplaceString(_arg0,*_arg1);
+
+    wxPyEndAllowThreads(__tstate);
+    if (PyErr_Occurred()) return NULL;
+}    Py_INCREF(Py_None);
+    _resultobj = Py_None;
+{
+    if (_obj1)
+        delete _arg1;
+}
+    return _resultobj;
+}
+
+static void *SwigwxFindReplaceDataTowxObject(void *ptr) {
+    wxFindReplaceData *src;
+    wxObject *dest;
+    src = (wxFindReplaceData *) ptr;
+    dest = (wxObject *) src;
+    return (void *) dest;
+}
+
+#define new_wxFindReplaceData(_swigarg0) (new wxFindReplaceData(_swigarg0))
+static PyObject *_wrap_new_wxFindReplaceData(PyObject *self, PyObject *args, PyObject *kwargs) {
+    PyObject * _resultobj;
+    wxFindReplaceData * _result;
+    int  _arg0 = (int ) 0;
+    char *_kwnames[] = { "flags", NULL };
+    char _ptemp[128];
+
+    self = self;
+    if(!PyArg_ParseTupleAndKeywords(args,kwargs,"|i:new_wxFindReplaceData",_kwnames,&_arg0)) 
+        return NULL;
+{
+    PyThreadState* __tstate = wxPyBeginAllowThreads();
+    _result = (wxFindReplaceData *)new_wxFindReplaceData(_arg0);
+
+    wxPyEndAllowThreads(__tstate);
+    if (PyErr_Occurred()) return NULL;
+}    if (_result) {
+        SWIG_MakePtr(_ptemp, (char *) _result,"_wxFindReplaceData_p");
+        _resultobj = Py_BuildValue("s",_ptemp);
+    } else {
+        Py_INCREF(Py_None);
+        _resultobj = Py_None;
+    }
+    return _resultobj;
+}
+
+#define delete_wxFindReplaceData(_swigobj) (delete _swigobj)
+static PyObject *_wrap_delete_wxFindReplaceData(PyObject *self, PyObject *args, PyObject *kwargs) {
+    PyObject * _resultobj;
+    wxFindReplaceData * _arg0;
+    PyObject * _argo0 = 0;
+    char *_kwnames[] = { "self", NULL };
+
+    self = self;
+    if(!PyArg_ParseTupleAndKeywords(args,kwargs,"O:delete_wxFindReplaceData",_kwnames,&_argo0)) 
+        return NULL;
+    if (_argo0) {
+        if (_argo0 == Py_None) { _arg0 = NULL; }
+        else if (SWIG_GetPtrObj(_argo0,(void **) &_arg0,"_wxFindReplaceData_p")) {
+            PyErr_SetString(PyExc_TypeError,"Type error in argument 1 of delete_wxFindReplaceData. Expected _wxFindReplaceData_p.");
+        return NULL;
+        }
+    }
+{
+    PyThreadState* __tstate = wxPyBeginAllowThreads();
+    delete_wxFindReplaceData(_arg0);
+
+    wxPyEndAllowThreads(__tstate);
+    if (PyErr_Occurred()) return NULL;
+}    Py_INCREF(Py_None);
+    _resultobj = Py_None;
+    return _resultobj;
+}
+
+#define wxFindReplaceData_GetFindString(_swigobj)  (_swigobj->GetFindString())
+static PyObject *_wrap_wxFindReplaceData_GetFindString(PyObject *self, PyObject *args, PyObject *kwargs) {
+    PyObject * _resultobj;
+    wxString * _result;
+    wxFindReplaceData * _arg0;
+    PyObject * _argo0 = 0;
+    char *_kwnames[] = { "self", NULL };
+
+    self = self;
+    if(!PyArg_ParseTupleAndKeywords(args,kwargs,"O:wxFindReplaceData_GetFindString",_kwnames,&_argo0)) 
+        return NULL;
+    if (_argo0) {
+        if (_argo0 == Py_None) { _arg0 = NULL; }
+        else if (SWIG_GetPtrObj(_argo0,(void **) &_arg0,"_wxFindReplaceData_p")) {
+            PyErr_SetString(PyExc_TypeError,"Type error in argument 1 of wxFindReplaceData_GetFindString. Expected _wxFindReplaceData_p.");
+        return NULL;
+        }
+    }
+{
+    PyThreadState* __tstate = wxPyBeginAllowThreads();
+    const wxString & _result_ref = wxFindReplaceData_GetFindString(_arg0);
+    _result = (wxString *) &_result_ref;
+
+    wxPyEndAllowThreads(__tstate);
+    if (PyErr_Occurred()) return NULL;
+}{
+#if wxUSE_UNICODE
+    _resultobj = PyUnicode_FromUnicode(_result->c_str(), _result->Len());
+#else
+    _resultobj = PyString_FromStringAndSize(_result->c_str(), _result->Len());
+#endif
+}
+    return _resultobj;
+}
+
+#define wxFindReplaceData_GetReplaceString(_swigobj)  (_swigobj->GetReplaceString())
+static PyObject *_wrap_wxFindReplaceData_GetReplaceString(PyObject *self, PyObject *args, PyObject *kwargs) {
+    PyObject * _resultobj;
+    wxString * _result;
+    wxFindReplaceData * _arg0;
+    PyObject * _argo0 = 0;
+    char *_kwnames[] = { "self", NULL };
+
+    self = self;
+    if(!PyArg_ParseTupleAndKeywords(args,kwargs,"O:wxFindReplaceData_GetReplaceString",_kwnames,&_argo0)) 
+        return NULL;
+    if (_argo0) {
+        if (_argo0 == Py_None) { _arg0 = NULL; }
+        else if (SWIG_GetPtrObj(_argo0,(void **) &_arg0,"_wxFindReplaceData_p")) {
+            PyErr_SetString(PyExc_TypeError,"Type error in argument 1 of wxFindReplaceData_GetReplaceString. Expected _wxFindReplaceData_p.");
+        return NULL;
+        }
+    }
+{
+    PyThreadState* __tstate = wxPyBeginAllowThreads();
+    const wxString & _result_ref = wxFindReplaceData_GetReplaceString(_arg0);
+    _result = (wxString *) &_result_ref;
+
+    wxPyEndAllowThreads(__tstate);
+    if (PyErr_Occurred()) return NULL;
+}{
+#if wxUSE_UNICODE
+    _resultobj = PyUnicode_FromUnicode(_result->c_str(), _result->Len());
+#else
+    _resultobj = PyString_FromStringAndSize(_result->c_str(), _result->Len());
+#endif
+}
+    return _resultobj;
+}
+
+#define wxFindReplaceData_GetFlags(_swigobj)  (_swigobj->GetFlags())
+static PyObject *_wrap_wxFindReplaceData_GetFlags(PyObject *self, PyObject *args, PyObject *kwargs) {
+    PyObject * _resultobj;
+    int  _result;
+    wxFindReplaceData * _arg0;
+    PyObject * _argo0 = 0;
+    char *_kwnames[] = { "self", NULL };
+
+    self = self;
+    if(!PyArg_ParseTupleAndKeywords(args,kwargs,"O:wxFindReplaceData_GetFlags",_kwnames,&_argo0)) 
+        return NULL;
+    if (_argo0) {
+        if (_argo0 == Py_None) { _arg0 = NULL; }
+        else if (SWIG_GetPtrObj(_argo0,(void **) &_arg0,"_wxFindReplaceData_p")) {
+            PyErr_SetString(PyExc_TypeError,"Type error in argument 1 of wxFindReplaceData_GetFlags. Expected _wxFindReplaceData_p.");
+        return NULL;
+        }
+    }
+{
+    PyThreadState* __tstate = wxPyBeginAllowThreads();
+    _result = (int )wxFindReplaceData_GetFlags(_arg0);
+
+    wxPyEndAllowThreads(__tstate);
+    if (PyErr_Occurred()) return NULL;
+}    _resultobj = Py_BuildValue("i",_result);
+    return _resultobj;
+}
+
+#define wxFindReplaceData_SetFlags(_swigobj,_swigarg0)  (_swigobj->SetFlags(_swigarg0))
+static PyObject *_wrap_wxFindReplaceData_SetFlags(PyObject *self, PyObject *args, PyObject *kwargs) {
+    PyObject * _resultobj;
+    wxFindReplaceData * _arg0;
+    int  _arg1;
+    PyObject * _argo0 = 0;
+    char *_kwnames[] = { "self","flags", NULL };
+
+    self = self;
+    if(!PyArg_ParseTupleAndKeywords(args,kwargs,"Oi:wxFindReplaceData_SetFlags",_kwnames,&_argo0,&_arg1)) 
+        return NULL;
+    if (_argo0) {
+        if (_argo0 == Py_None) { _arg0 = NULL; }
+        else if (SWIG_GetPtrObj(_argo0,(void **) &_arg0,"_wxFindReplaceData_p")) {
+            PyErr_SetString(PyExc_TypeError,"Type error in argument 1 of wxFindReplaceData_SetFlags. Expected _wxFindReplaceData_p.");
+        return NULL;
+        }
+    }
+{
+    PyThreadState* __tstate = wxPyBeginAllowThreads();
+    wxFindReplaceData_SetFlags(_arg0,_arg1);
+
+    wxPyEndAllowThreads(__tstate);
+    if (PyErr_Occurred()) return NULL;
+}    Py_INCREF(Py_None);
+    _resultobj = Py_None;
+    return _resultobj;
+}
+
+#define wxFindReplaceData_SetFindString(_swigobj,_swigarg0)  (_swigobj->SetFindString(_swigarg0))
+static PyObject *_wrap_wxFindReplaceData_SetFindString(PyObject *self, PyObject *args, PyObject *kwargs) {
+    PyObject * _resultobj;
+    wxFindReplaceData * _arg0;
+    wxString * _arg1;
+    PyObject * _argo0 = 0;
+    PyObject * _obj1 = 0;
+    char *_kwnames[] = { "self","str", NULL };
+
+    self = self;
+    if(!PyArg_ParseTupleAndKeywords(args,kwargs,"OO:wxFindReplaceData_SetFindString",_kwnames,&_argo0,&_obj1)) 
+        return NULL;
+    if (_argo0) {
+        if (_argo0 == Py_None) { _arg0 = NULL; }
+        else if (SWIG_GetPtrObj(_argo0,(void **) &_arg0,"_wxFindReplaceData_p")) {
+            PyErr_SetString(PyExc_TypeError,"Type error in argument 1 of wxFindReplaceData_SetFindString. Expected _wxFindReplaceData_p.");
+        return NULL;
+        }
+    }
+{
+    _arg1 = wxString_in_helper(_obj1);
+    if (_arg1 == NULL)
+        return NULL;
+}
+{
+    PyThreadState* __tstate = wxPyBeginAllowThreads();
+    wxFindReplaceData_SetFindString(_arg0,*_arg1);
+
+    wxPyEndAllowThreads(__tstate);
+    if (PyErr_Occurred()) return NULL;
+}    Py_INCREF(Py_None);
+    _resultobj = Py_None;
+{
+    if (_obj1)
+        delete _arg1;
+}
+    return _resultobj;
+}
+
+#define wxFindReplaceData_SetReplaceString(_swigobj,_swigarg0)  (_swigobj->SetReplaceString(_swigarg0))
+static PyObject *_wrap_wxFindReplaceData_SetReplaceString(PyObject *self, PyObject *args, PyObject *kwargs) {
+    PyObject * _resultobj;
+    wxFindReplaceData * _arg0;
+    wxString * _arg1;
+    PyObject * _argo0 = 0;
+    PyObject * _obj1 = 0;
+    char *_kwnames[] = { "self","str", NULL };
+
+    self = self;
+    if(!PyArg_ParseTupleAndKeywords(args,kwargs,"OO:wxFindReplaceData_SetReplaceString",_kwnames,&_argo0,&_obj1)) 
+        return NULL;
+    if (_argo0) {
+        if (_argo0 == Py_None) { _arg0 = NULL; }
+        else if (SWIG_GetPtrObj(_argo0,(void **) &_arg0,"_wxFindReplaceData_p")) {
+            PyErr_SetString(PyExc_TypeError,"Type error in argument 1 of wxFindReplaceData_SetReplaceString. Expected _wxFindReplaceData_p.");
+        return NULL;
+        }
+    }
+{
+    _arg1 = wxString_in_helper(_obj1);
+    if (_arg1 == NULL)
+        return NULL;
+}
+{
+    PyThreadState* __tstate = wxPyBeginAllowThreads();
+    wxFindReplaceData_SetReplaceString(_arg0,*_arg1);
+
+    wxPyEndAllowThreads(__tstate);
+    if (PyErr_Occurred()) return NULL;
+}    Py_INCREF(Py_None);
+    _resultobj = Py_None;
+{
+    if (_obj1)
+        delete _arg1;
+}
+    return _resultobj;
+}
+
+static void *SwigwxFindReplaceDialogTowxDialog(void *ptr) {
+    wxFindReplaceDialog *src;
+    wxDialog *dest;
+    src = (wxFindReplaceDialog *) ptr;
+    dest = (wxDialog *) src;
+    return (void *) dest;
+}
+
+static void *SwigwxFindReplaceDialogTowxTopLevelWindow(void *ptr) {
+    wxFindReplaceDialog *src;
+    wxTopLevelWindow *dest;
+    src = (wxFindReplaceDialog *) ptr;
+    dest = (wxTopLevelWindow *) src;
+    return (void *) dest;
+}
+
+static void *SwigwxFindReplaceDialogTowxWindow(void *ptr) {
+    wxFindReplaceDialog *src;
+    wxWindow *dest;
+    src = (wxFindReplaceDialog *) ptr;
+    dest = (wxWindow *) src;
+    return (void *) dest;
+}
+
+static void *SwigwxFindReplaceDialogTowxEvtHandler(void *ptr) {
+    wxFindReplaceDialog *src;
+    wxEvtHandler *dest;
+    src = (wxFindReplaceDialog *) ptr;
+    dest = (wxEvtHandler *) src;
+    return (void *) dest;
+}
+
+static void *SwigwxFindReplaceDialogTowxObject(void *ptr) {
+    wxFindReplaceDialog *src;
+    wxObject *dest;
+    src = (wxFindReplaceDialog *) ptr;
+    dest = (wxObject *) src;
+    return (void *) dest;
+}
+
+#define new_wxFindReplaceDialog(_swigarg0,_swigarg1,_swigarg2,_swigarg3) (new wxFindReplaceDialog(_swigarg0,_swigarg1,_swigarg2,_swigarg3))
+static PyObject *_wrap_new_wxFindReplaceDialog(PyObject *self, PyObject *args, PyObject *kwargs) {
+    PyObject * _resultobj;
+    wxFindReplaceDialog * _result;
+    wxWindow * _arg0;
+    wxFindReplaceData * _arg1;
+    wxString * _arg2;
+    int  _arg3 = (int ) 0;
+    PyObject * _argo0 = 0;
+    PyObject * _argo1 = 0;
+    PyObject * _obj2 = 0;
+    char *_kwnames[] = { "parent","data","title","style", NULL };
+    char _ptemp[128];
+
+    self = self;
+    if(!PyArg_ParseTupleAndKeywords(args,kwargs,"OOO|i:new_wxFindReplaceDialog",_kwnames,&_argo0,&_argo1,&_obj2,&_arg3)) 
+        return NULL;
+    if (_argo0) {
+        if (_argo0 == Py_None) { _arg0 = NULL; }
+        else if (SWIG_GetPtrObj(_argo0,(void **) &_arg0,"_wxWindow_p")) {
+            PyErr_SetString(PyExc_TypeError,"Type error in argument 1 of new_wxFindReplaceDialog. Expected _wxWindow_p.");
+        return NULL;
+        }
+    }
+    if (_argo1) {
+        if (_argo1 == Py_None) { _arg1 = NULL; }
+        else if (SWIG_GetPtrObj(_argo1,(void **) &_arg1,"_wxFindReplaceData_p")) {
+            PyErr_SetString(PyExc_TypeError,"Type error in argument 2 of new_wxFindReplaceDialog. Expected _wxFindReplaceData_p.");
+        return NULL;
+        }
+    }
+{
+    _arg2 = wxString_in_helper(_obj2);
+    if (_arg2 == NULL)
+        return NULL;
+}
+{
+    PyThreadState* __tstate = wxPyBeginAllowThreads();
+    _result = (wxFindReplaceDialog *)new_wxFindReplaceDialog(_arg0,_arg1,*_arg2,_arg3);
+
+    wxPyEndAllowThreads(__tstate);
+    if (PyErr_Occurred()) return NULL;
+}    if (_result) {
+        SWIG_MakePtr(_ptemp, (char *) _result,"_wxFindReplaceDialog_p");
+        _resultobj = Py_BuildValue("s",_ptemp);
+    } else {
+        Py_INCREF(Py_None);
+        _resultobj = Py_None;
+    }
+{
+    if (_obj2)
+        delete _arg2;
+}
+    return _resultobj;
+}
+
+#define new_wxPreFindReplaceDialog() (new wxFindReplaceDialog())
+static PyObject *_wrap_new_wxPreFindReplaceDialog(PyObject *self, PyObject *args, PyObject *kwargs) {
+    PyObject * _resultobj;
+    wxFindReplaceDialog * _result;
+    char *_kwnames[] = {  NULL };
+    char _ptemp[128];
+
+    self = self;
+    if(!PyArg_ParseTupleAndKeywords(args,kwargs,":new_wxPreFindReplaceDialog",_kwnames)) 
+        return NULL;
+{
+    PyThreadState* __tstate = wxPyBeginAllowThreads();
+    _result = (wxFindReplaceDialog *)new_wxPreFindReplaceDialog();
+
+    wxPyEndAllowThreads(__tstate);
+    if (PyErr_Occurred()) return NULL;
+}    if (_result) {
+        SWIG_MakePtr(_ptemp, (char *) _result,"_wxFindReplaceDialog_p");
+        _resultobj = Py_BuildValue("s",_ptemp);
+    } else {
+        Py_INCREF(Py_None);
+        _resultobj = Py_None;
+    }
+    return _resultobj;
+}
+
+#define wxFindReplaceDialog_Create(_swigobj,_swigarg0,_swigarg1,_swigarg2,_swigarg3)  (_swigobj->Create(_swigarg0,_swigarg1,_swigarg2,_swigarg3))
+static PyObject *_wrap_wxFindReplaceDialog_Create(PyObject *self, PyObject *args, PyObject *kwargs) {
+    PyObject * _resultobj;
+    bool  _result;
+    wxFindReplaceDialog * _arg0;
+    wxWindow * _arg1;
+    wxFindReplaceData * _arg2;
+    wxString * _arg3;
+    int  _arg4 = (int ) 0;
+    PyObject * _argo0 = 0;
+    PyObject * _argo1 = 0;
+    PyObject * _argo2 = 0;
+    PyObject * _obj3 = 0;
+    char *_kwnames[] = { "self","parent","data","title","style", NULL };
+
+    self = self;
+    if(!PyArg_ParseTupleAndKeywords(args,kwargs,"OOOO|i:wxFindReplaceDialog_Create",_kwnames,&_argo0,&_argo1,&_argo2,&_obj3,&_arg4)) 
+        return NULL;
+    if (_argo0) {
+        if (_argo0 == Py_None) { _arg0 = NULL; }
+        else if (SWIG_GetPtrObj(_argo0,(void **) &_arg0,"_wxFindReplaceDialog_p")) {
+            PyErr_SetString(PyExc_TypeError,"Type error in argument 1 of wxFindReplaceDialog_Create. Expected _wxFindReplaceDialog_p.");
+        return NULL;
+        }
+    }
+    if (_argo1) {
+        if (_argo1 == Py_None) { _arg1 = NULL; }
+        else if (SWIG_GetPtrObj(_argo1,(void **) &_arg1,"_wxWindow_p")) {
+            PyErr_SetString(PyExc_TypeError,"Type error in argument 2 of wxFindReplaceDialog_Create. Expected _wxWindow_p.");
+        return NULL;
+        }
+    }
+    if (_argo2) {
+        if (_argo2 == Py_None) { _arg2 = NULL; }
+        else if (SWIG_GetPtrObj(_argo2,(void **) &_arg2,"_wxFindReplaceData_p")) {
+            PyErr_SetString(PyExc_TypeError,"Type error in argument 3 of wxFindReplaceDialog_Create. Expected _wxFindReplaceData_p.");
+        return NULL;
+        }
+    }
+{
+    _arg3 = wxString_in_helper(_obj3);
+    if (_arg3 == NULL)
+        return NULL;
+}
+{
+    PyThreadState* __tstate = wxPyBeginAllowThreads();
+    _result = (bool )wxFindReplaceDialog_Create(_arg0,_arg1,_arg2,*_arg3,_arg4);
+
+    wxPyEndAllowThreads(__tstate);
+    if (PyErr_Occurred()) return NULL;
+}    _resultobj = Py_BuildValue("i",_result);
+{
+    if (_obj3)
+        delete _arg3;
+}
+    return _resultobj;
+}
+
+#define wxFindReplaceDialog_GetData(_swigobj)  (_swigobj->GetData())
+static PyObject *_wrap_wxFindReplaceDialog_GetData(PyObject *self, PyObject *args, PyObject *kwargs) {
+    PyObject * _resultobj;
+    wxFindReplaceData * _result;
+    wxFindReplaceDialog * _arg0;
+    PyObject * _argo0 = 0;
+    char *_kwnames[] = { "self", NULL };
+    char _ptemp[128];
+
+    self = self;
+    if(!PyArg_ParseTupleAndKeywords(args,kwargs,"O:wxFindReplaceDialog_GetData",_kwnames,&_argo0)) 
+        return NULL;
+    if (_argo0) {
+        if (_argo0 == Py_None) { _arg0 = NULL; }
+        else if (SWIG_GetPtrObj(_argo0,(void **) &_arg0,"_wxFindReplaceDialog_p")) {
+            PyErr_SetString(PyExc_TypeError,"Type error in argument 1 of wxFindReplaceDialog_GetData. Expected _wxFindReplaceDialog_p.");
+        return NULL;
+        }
+    }
+{
+    PyThreadState* __tstate = wxPyBeginAllowThreads();
+    _result = (wxFindReplaceData *)wxFindReplaceDialog_GetData(_arg0);
+
+    wxPyEndAllowThreads(__tstate);
+    if (PyErr_Occurred()) return NULL;
+}    if (_result) {
+        SWIG_MakePtr(_ptemp, (char *) _result,"_wxFindReplaceData_p");
+        _resultobj = Py_BuildValue("s",_ptemp);
+    } else {
+        Py_INCREF(Py_None);
+        _resultobj = Py_None;
+    }
+    return _resultobj;
+}
+
+#define wxFindReplaceDialog_SetData(_swigobj,_swigarg0)  (_swigobj->SetData(_swigarg0))
+static PyObject *_wrap_wxFindReplaceDialog_SetData(PyObject *self, PyObject *args, PyObject *kwargs) {
+    PyObject * _resultobj;
+    wxFindReplaceDialog * _arg0;
+    wxFindReplaceData * _arg1;
+    PyObject * _argo0 = 0;
+    PyObject * _argo1 = 0;
+    char *_kwnames[] = { "self","data", NULL };
+
+    self = self;
+    if(!PyArg_ParseTupleAndKeywords(args,kwargs,"OO:wxFindReplaceDialog_SetData",_kwnames,&_argo0,&_argo1)) 
+        return NULL;
+    if (_argo0) {
+        if (_argo0 == Py_None) { _arg0 = NULL; }
+        else if (SWIG_GetPtrObj(_argo0,(void **) &_arg0,"_wxFindReplaceDialog_p")) {
+            PyErr_SetString(PyExc_TypeError,"Type error in argument 1 of wxFindReplaceDialog_SetData. Expected _wxFindReplaceDialog_p.");
+        return NULL;
+        }
+    }
+    if (_argo1) {
+        if (_argo1 == Py_None) { _arg1 = NULL; }
+        else if (SWIG_GetPtrObj(_argo1,(void **) &_arg1,"_wxFindReplaceData_p")) {
+            PyErr_SetString(PyExc_TypeError,"Type error in argument 2 of wxFindReplaceDialog_SetData. Expected _wxFindReplaceData_p.");
+        return NULL;
+        }
+    }
+{
+    PyThreadState* __tstate = wxPyBeginAllowThreads();
+    wxFindReplaceDialog_SetData(_arg0,_arg1);
+
+    wxPyEndAllowThreads(__tstate);
+    if (PyErr_Occurred()) return NULL;
 }    Py_INCREF(Py_None);
     _resultobj = Py_None;
     return _resultobj;
 }
 
 static PyMethodDef cmndlgscMethods[] = {
+	 { "wxFindReplaceDialog_SetData", (PyCFunction) _wrap_wxFindReplaceDialog_SetData, METH_VARARGS | METH_KEYWORDS },
+	 { "wxFindReplaceDialog_GetData", (PyCFunction) _wrap_wxFindReplaceDialog_GetData, METH_VARARGS | METH_KEYWORDS },
+	 { "wxFindReplaceDialog_Create", (PyCFunction) _wrap_wxFindReplaceDialog_Create, METH_VARARGS | METH_KEYWORDS },
+	 { "new_wxPreFindReplaceDialog", (PyCFunction) _wrap_new_wxPreFindReplaceDialog, METH_VARARGS | METH_KEYWORDS },
+	 { "new_wxFindReplaceDialog", (PyCFunction) _wrap_new_wxFindReplaceDialog, METH_VARARGS | METH_KEYWORDS },
+	 { "wxFindReplaceData_SetReplaceString", (PyCFunction) _wrap_wxFindReplaceData_SetReplaceString, METH_VARARGS | METH_KEYWORDS },
+	 { "wxFindReplaceData_SetFindString", (PyCFunction) _wrap_wxFindReplaceData_SetFindString, METH_VARARGS | METH_KEYWORDS },
+	 { "wxFindReplaceData_SetFlags", (PyCFunction) _wrap_wxFindReplaceData_SetFlags, METH_VARARGS | METH_KEYWORDS },
+	 { "wxFindReplaceData_GetFlags", (PyCFunction) _wrap_wxFindReplaceData_GetFlags, METH_VARARGS | METH_KEYWORDS },
+	 { "wxFindReplaceData_GetReplaceString", (PyCFunction) _wrap_wxFindReplaceData_GetReplaceString, METH_VARARGS | METH_KEYWORDS },
+	 { "wxFindReplaceData_GetFindString", (PyCFunction) _wrap_wxFindReplaceData_GetFindString, METH_VARARGS | METH_KEYWORDS },
+	 { "delete_wxFindReplaceData", (PyCFunction) _wrap_delete_wxFindReplaceData, METH_VARARGS | METH_KEYWORDS },
+	 { "new_wxFindReplaceData", (PyCFunction) _wrap_new_wxFindReplaceData, METH_VARARGS | METH_KEYWORDS },
+	 { "wxFindDialogEvent_SetReplaceString", (PyCFunction) _wrap_wxFindDialogEvent_SetReplaceString, METH_VARARGS | METH_KEYWORDS },
+	 { "wxFindDialogEvent_SetFindString", (PyCFunction) _wrap_wxFindDialogEvent_SetFindString, METH_VARARGS | METH_KEYWORDS },
+	 { "wxFindDialogEvent_SetFlags", (PyCFunction) _wrap_wxFindDialogEvent_SetFlags, METH_VARARGS | METH_KEYWORDS },
+	 { "wxFindDialogEvent_GetDialog", (PyCFunction) _wrap_wxFindDialogEvent_GetDialog, METH_VARARGS | METH_KEYWORDS },
+	 { "wxFindDialogEvent_GetReplaceString", (PyCFunction) _wrap_wxFindDialogEvent_GetReplaceString, METH_VARARGS | METH_KEYWORDS },
+	 { "wxFindDialogEvent_GetFindString", (PyCFunction) _wrap_wxFindDialogEvent_GetFindString, METH_VARARGS | METH_KEYWORDS },
+	 { "wxFindDialogEvent_GetFlags", (PyCFunction) _wrap_wxFindDialogEvent_GetFlags, METH_VARARGS | METH_KEYWORDS },
+	 { "new_wxFindDialogEvent", (PyCFunction) _wrap_new_wxFindDialogEvent, METH_VARARGS | METH_KEYWORDS },
 	 { "wxProgressDialog_Resume", (PyCFunction) _wrap_wxProgressDialog_Resume, METH_VARARGS | METH_KEYWORDS },
 	 { "wxProgressDialog_Update", (PyCFunction) _wrap_wxProgressDialog_Update, METH_VARARGS | METH_KEYWORDS },
 	 { "new_wxProgressDialog", (PyCFunction) _wrap_new_wxProgressDialog, METH_VARARGS | METH_KEYWORDS },
@@ -2823,6 +4039,9 @@ static PyMethodDef cmndlgscMethods[] = {
 	 { "wxSingleChoiceDialog_GetStringSelection", (PyCFunction) _wrap_wxSingleChoiceDialog_GetStringSelection, METH_VARARGS | METH_KEYWORDS },
 	 { "wxSingleChoiceDialog_GetSelection", (PyCFunction) _wrap_wxSingleChoiceDialog_GetSelection, METH_VARARGS | METH_KEYWORDS },
 	 { "new_wxSingleChoiceDialog", (PyCFunction) _wrap_new_wxSingleChoiceDialog, METH_VARARGS | METH_KEYWORDS },
+	 { "wxMultiChoiceDialog_GetSelections", (PyCFunction) _wrap_wxMultiChoiceDialog_GetSelections, METH_VARARGS | METH_KEYWORDS },
+	 { "wxMultiChoiceDialog_SetSelections", (PyCFunction) _wrap_wxMultiChoiceDialog_SetSelections, METH_VARARGS | METH_KEYWORDS },
+	 { "new_wxMultiChoiceDialog", (PyCFunction) _wrap_new_wxMultiChoiceDialog, METH_VARARGS | METH_KEYWORDS },
 	 { "wxFileDialog_GetPaths", (PyCFunction) _wrap_wxFileDialog_GetPaths, METH_VARARGS | METH_KEYWORDS },
 	 { "wxFileDialog_GetFilenames", (PyCFunction) _wrap_wxFileDialog_GetFilenames, METH_VARARGS | METH_KEYWORDS },
 	 { "wxFileDialog_ShowModal", (PyCFunction) _wrap_wxFileDialog_ShowModal, METH_VARARGS | METH_KEYWORDS },
@@ -2868,6 +4087,7 @@ static PyMethodDef cmndlgscMethods[] = {
  * This table is used by the pointer type-checker
  */
 static struct { char *n1; char *n2; void *(*pcnv)(void *); } _swig_mapping[] = {
+    { "_wxEvent","_wxFindDialogEvent",SwigwxFindDialogEventTowxEvent},
     { "_signed_long","_long",0},
     { "_wxPrintQuality","_wxCoord",0},
     { "_wxPrintQuality","_int",0},
@@ -2878,22 +4098,6 @@ static struct { char *n1; char *n2; void *(*pcnv)(void *); } _swig_mapping[] = {
     { "_wxPrintQuality","_EBool",0},
     { "_wxPrintQuality","_size_t",0},
     { "_wxPrintQuality","_time_t",0},
-    { "_class_wxEvtHandler","_class_wxProgressDialog",SwigwxProgressDialogTowxEvtHandler},
-    { "_class_wxEvtHandler","_wxProgressDialog",SwigwxProgressDialogTowxEvtHandler},
-    { "_class_wxEvtHandler","_class_wxMessageDialog",SwigwxMessageDialogTowxEvtHandler},
-    { "_class_wxEvtHandler","_wxMessageDialog",SwigwxMessageDialogTowxEvtHandler},
-    { "_class_wxEvtHandler","_class_wxFontDialog",SwigwxFontDialogTowxEvtHandler},
-    { "_class_wxEvtHandler","_wxFontDialog",SwigwxFontDialogTowxEvtHandler},
-    { "_class_wxEvtHandler","_class_wxTextEntryDialog",SwigwxTextEntryDialogTowxEvtHandler},
-    { "_class_wxEvtHandler","_wxTextEntryDialog",SwigwxTextEntryDialogTowxEvtHandler},
-    { "_class_wxEvtHandler","_class_wxSingleChoiceDialog",SwigwxSingleChoiceDialogTowxEvtHandler},
-    { "_class_wxEvtHandler","_wxSingleChoiceDialog",SwigwxSingleChoiceDialogTowxEvtHandler},
-    { "_class_wxEvtHandler","_class_wxFileDialog",SwigwxFileDialogTowxEvtHandler},
-    { "_class_wxEvtHandler","_wxFileDialog",SwigwxFileDialogTowxEvtHandler},
-    { "_class_wxEvtHandler","_class_wxDirDialog",SwigwxDirDialogTowxEvtHandler},
-    { "_class_wxEvtHandler","_wxDirDialog",SwigwxDirDialogTowxEvtHandler},
-    { "_class_wxEvtHandler","_class_wxColourDialog",SwigwxColourDialogTowxEvtHandler},
-    { "_class_wxEvtHandler","_wxColourDialog",SwigwxColourDialogTowxEvtHandler},
     { "_byte","_unsigned_char",0},
     { "_long","_unsigned_long",0},
     { "_long","_signed_long",0},
@@ -2904,34 +4108,16 @@ static struct { char *n1; char *n2; void *(*pcnv)(void *); } _swig_mapping[] = {
     { "_size_t","_int",0},
     { "_size_t","_wxWindowID",0},
     { "_size_t","_uint",0},
-    { "_wxPanel","_class_wxMessageDialog",SwigwxMessageDialogTowxPanel},
-    { "_wxPanel","_wxMessageDialog",SwigwxMessageDialogTowxPanel},
-    { "_wxPanel","_class_wxFontDialog",SwigwxFontDialogTowxPanel},
-    { "_wxPanel","_wxFontDialog",SwigwxFontDialogTowxPanel},
-    { "_wxPanel","_class_wxTextEntryDialog",SwigwxTextEntryDialogTowxPanel},
-    { "_wxPanel","_wxTextEntryDialog",SwigwxTextEntryDialogTowxPanel},
-    { "_wxPanel","_class_wxSingleChoiceDialog",SwigwxSingleChoiceDialogTowxPanel},
-    { "_wxPanel","_wxSingleChoiceDialog",SwigwxSingleChoiceDialogTowxPanel},
-    { "_wxPanel","_class_wxFileDialog",SwigwxFileDialogTowxPanel},
-    { "_wxPanel","_wxFileDialog",SwigwxFileDialogTowxPanel},
-    { "_wxPanel","_class_wxDirDialog",SwigwxDirDialogTowxPanel},
-    { "_wxPanel","_wxDirDialog",SwigwxDirDialogTowxPanel},
-    { "_wxPanel","_class_wxColourDialog",SwigwxColourDialogTowxPanel},
-    { "_wxPanel","_wxColourDialog",SwigwxColourDialogTowxPanel},
-    { "_class_wxDialog","_class_wxMessageDialog",SwigwxMessageDialogTowxDialog},
-    { "_class_wxDialog","_wxMessageDialog",SwigwxMessageDialogTowxDialog},
-    { "_class_wxDialog","_class_wxFontDialog",SwigwxFontDialogTowxDialog},
-    { "_class_wxDialog","_wxFontDialog",SwigwxFontDialogTowxDialog},
-    { "_class_wxDialog","_class_wxTextEntryDialog",SwigwxTextEntryDialogTowxDialog},
-    { "_class_wxDialog","_wxTextEntryDialog",SwigwxTextEntryDialogTowxDialog},
-    { "_class_wxDialog","_class_wxSingleChoiceDialog",SwigwxSingleChoiceDialogTowxDialog},
-    { "_class_wxDialog","_wxSingleChoiceDialog",SwigwxSingleChoiceDialogTowxDialog},
-    { "_class_wxDialog","_class_wxFileDialog",SwigwxFileDialogTowxDialog},
-    { "_class_wxDialog","_wxFileDialog",SwigwxFileDialogTowxDialog},
-    { "_class_wxDialog","_class_wxDirDialog",SwigwxDirDialogTowxDialog},
-    { "_class_wxDialog","_wxDirDialog",SwigwxDirDialogTowxDialog},
-    { "_class_wxDialog","_class_wxColourDialog",SwigwxColourDialogTowxDialog},
-    { "_class_wxDialog","_wxColourDialog",SwigwxColourDialogTowxDialog},
+    { "_wxTopLevelWindow","_wxFindReplaceDialog",SwigwxFindReplaceDialogTowxTopLevelWindow},
+    { "_wxTopLevelWindow","_wxProgressDialog",SwigwxProgressDialogTowxTopLevelWindow},
+    { "_wxTopLevelWindow","_wxMessageDialog",SwigwxMessageDialogTowxTopLevelWindow},
+    { "_wxTopLevelWindow","_wxFontDialog",SwigwxFontDialogTowxTopLevelWindow},
+    { "_wxTopLevelWindow","_wxTextEntryDialog",SwigwxTextEntryDialogTowxTopLevelWindow},
+    { "_wxTopLevelWindow","_wxSingleChoiceDialog",SwigwxSingleChoiceDialogTowxTopLevelWindow},
+    { "_wxTopLevelWindow","_wxMultiChoiceDialog",SwigwxMultiChoiceDialogTowxTopLevelWindow},
+    { "_wxTopLevelWindow","_wxFileDialog",SwigwxFileDialogTowxTopLevelWindow},
+    { "_wxTopLevelWindow","_wxDirDialog",SwigwxDirDialogTowxTopLevelWindow},
+    { "_wxTopLevelWindow","_wxColourDialog",SwigwxColourDialogTowxTopLevelWindow},
     { "_uint","_wxCoord",0},
     { "_uint","_wxPrintQuality",0},
     { "_uint","_time_t",0},
@@ -2940,27 +4126,16 @@ static struct { char *n1; char *n2; void *(*pcnv)(void *); } _swig_mapping[] = {
     { "_uint","_int",0},
     { "_uint","_wxWindowID",0},
     { "_wxChar","_char",0},
+    { "_wxCommandEvent","_wxFindDialogEvent",SwigwxFindDialogEventTowxCommandEvent},
     { "_char","_wxChar",0},
+    { "_struct_wxNativeFontInfo","_wxNativeFontInfo",0},
     { "_EBool","_wxCoord",0},
     { "_EBool","_wxPrintQuality",0},
     { "_EBool","_signed_int",0},
     { "_EBool","_int",0},
     { "_EBool","_wxWindowID",0},
     { "_unsigned_long","_long",0},
-    { "_class_wxPanel","_class_wxMessageDialog",SwigwxMessageDialogTowxPanel},
-    { "_class_wxPanel","_wxMessageDialog",SwigwxMessageDialogTowxPanel},
-    { "_class_wxPanel","_class_wxFontDialog",SwigwxFontDialogTowxPanel},
-    { "_class_wxPanel","_wxFontDialog",SwigwxFontDialogTowxPanel},
-    { "_class_wxPanel","_class_wxTextEntryDialog",SwigwxTextEntryDialogTowxPanel},
-    { "_class_wxPanel","_wxTextEntryDialog",SwigwxTextEntryDialogTowxPanel},
-    { "_class_wxPanel","_class_wxSingleChoiceDialog",SwigwxSingleChoiceDialogTowxPanel},
-    { "_class_wxPanel","_wxSingleChoiceDialog",SwigwxSingleChoiceDialogTowxPanel},
-    { "_class_wxPanel","_class_wxFileDialog",SwigwxFileDialogTowxPanel},
-    { "_class_wxPanel","_wxFileDialog",SwigwxFileDialogTowxPanel},
-    { "_class_wxPanel","_class_wxDirDialog",SwigwxDirDialogTowxPanel},
-    { "_class_wxPanel","_wxDirDialog",SwigwxDirDialogTowxPanel},
-    { "_class_wxPanel","_class_wxColourDialog",SwigwxColourDialogTowxPanel},
-    { "_class_wxPanel","_wxColourDialog",SwigwxColourDialogTowxPanel},
+    { "_wxNativeFontInfo","_struct_wxNativeFontInfo",0},
     { "_signed_int","_wxCoord",0},
     { "_signed_int","_wxPrintQuality",0},
     { "_signed_int","_EBool",0},
@@ -2971,22 +4146,20 @@ static struct { char *n1; char *n2; void *(*pcnv)(void *); } _swig_mapping[] = {
     { "_WXTYPE","_unsigned_short",0},
     { "_unsigned_short","_WXTYPE",0},
     { "_unsigned_short","_short",0},
-    { "_class_wxWindow","_class_wxProgressDialog",SwigwxProgressDialogTowxWindow},
-    { "_class_wxWindow","_wxProgressDialog",SwigwxProgressDialogTowxWindow},
-    { "_class_wxWindow","_class_wxMessageDialog",SwigwxMessageDialogTowxWindow},
-    { "_class_wxWindow","_wxMessageDialog",SwigwxMessageDialogTowxWindow},
-    { "_class_wxWindow","_class_wxFontDialog",SwigwxFontDialogTowxWindow},
-    { "_class_wxWindow","_wxFontDialog",SwigwxFontDialogTowxWindow},
-    { "_class_wxWindow","_class_wxTextEntryDialog",SwigwxTextEntryDialogTowxWindow},
-    { "_class_wxWindow","_wxTextEntryDialog",SwigwxTextEntryDialogTowxWindow},
-    { "_class_wxWindow","_class_wxSingleChoiceDialog",SwigwxSingleChoiceDialogTowxWindow},
-    { "_class_wxWindow","_wxSingleChoiceDialog",SwigwxSingleChoiceDialogTowxWindow},
-    { "_class_wxWindow","_class_wxFileDialog",SwigwxFileDialogTowxWindow},
-    { "_class_wxWindow","_wxFileDialog",SwigwxFileDialogTowxWindow},
-    { "_class_wxWindow","_class_wxDirDialog",SwigwxDirDialogTowxWindow},
-    { "_class_wxWindow","_wxDirDialog",SwigwxDirDialogTowxWindow},
-    { "_class_wxWindow","_class_wxColourDialog",SwigwxColourDialogTowxWindow},
-    { "_class_wxWindow","_wxColourDialog",SwigwxColourDialogTowxWindow},
+    { "_wxObject","_wxFindReplaceDialog",SwigwxFindReplaceDialogTowxObject},
+    { "_wxObject","_wxFindReplaceData",SwigwxFindReplaceDataTowxObject},
+    { "_wxObject","_wxFindDialogEvent",SwigwxFindDialogEventTowxObject},
+    { "_wxObject","_wxProgressDialog",SwigwxProgressDialogTowxObject},
+    { "_wxObject","_wxMessageDialog",SwigwxMessageDialogTowxObject},
+    { "_wxObject","_wxFontDialog",SwigwxFontDialogTowxObject},
+    { "_wxObject","_wxFontData",SwigwxFontDataTowxObject},
+    { "_wxObject","_wxTextEntryDialog",SwigwxTextEntryDialogTowxObject},
+    { "_wxObject","_wxSingleChoiceDialog",SwigwxSingleChoiceDialogTowxObject},
+    { "_wxObject","_wxMultiChoiceDialog",SwigwxMultiChoiceDialogTowxObject},
+    { "_wxObject","_wxFileDialog",SwigwxFileDialogTowxObject},
+    { "_wxObject","_wxDirDialog",SwigwxDirDialogTowxObject},
+    { "_wxObject","_wxColourDialog",SwigwxColourDialogTowxObject},
+    { "_wxObject","_wxColourData",SwigwxColourDataTowxObject},
     { "_signed_short","_WXTYPE",0},
     { "_signed_short","_short",0},
     { "_unsigned_char","_byte",0},
@@ -2997,24 +4170,18 @@ static struct { char *n1; char *n2; void *(*pcnv)(void *); } _swig_mapping[] = {
     { "_unsigned_int","_uint",0},
     { "_unsigned_int","_wxWindowID",0},
     { "_unsigned_int","_int",0},
-    { "_wxDialog","_class_wxMessageDialog",SwigwxMessageDialogTowxDialog},
+    { "_wxDialog","_wxFindReplaceDialog",SwigwxFindReplaceDialogTowxDialog},
     { "_wxDialog","_wxMessageDialog",SwigwxMessageDialogTowxDialog},
-    { "_wxDialog","_class_wxFontDialog",SwigwxFontDialogTowxDialog},
     { "_wxDialog","_wxFontDialog",SwigwxFontDialogTowxDialog},
-    { "_wxDialog","_class_wxTextEntryDialog",SwigwxTextEntryDialogTowxDialog},
     { "_wxDialog","_wxTextEntryDialog",SwigwxTextEntryDialogTowxDialog},
-    { "_wxDialog","_class_wxSingleChoiceDialog",SwigwxSingleChoiceDialogTowxDialog},
     { "_wxDialog","_wxSingleChoiceDialog",SwigwxSingleChoiceDialogTowxDialog},
-    { "_wxDialog","_class_wxFileDialog",SwigwxFileDialogTowxDialog},
+    { "_wxDialog","_wxMultiChoiceDialog",SwigwxMultiChoiceDialogTowxDialog},
     { "_wxDialog","_wxFileDialog",SwigwxFileDialogTowxDialog},
-    { "_wxDialog","_class_wxDirDialog",SwigwxDirDialogTowxDialog},
     { "_wxDialog","_wxDirDialog",SwigwxDirDialogTowxDialog},
-    { "_wxDialog","_class_wxColourDialog",SwigwxColourDialogTowxDialog},
     { "_wxDialog","_wxColourDialog",SwigwxColourDialogTowxDialog},
     { "_short","_WXTYPE",0},
     { "_short","_unsigned_short",0},
     { "_short","_signed_short",0},
-    { "_wxFrame","_class_wxProgressDialog",SwigwxProgressDialogTowxFrame},
     { "_wxFrame","_wxProgressDialog",SwigwxProgressDialogTowxFrame},
     { "_wxWindowID","_wxCoord",0},
     { "_wxWindowID","_wxPrintQuality",0},
@@ -3050,40 +4217,26 @@ static struct { char *n1; char *n2; void *(*pcnv)(void *); } _swig_mapping[] = {
     { "_wxCoord","_size_t",0},
     { "_wxCoord","_time_t",0},
     { "_wxCoord","_wxPrintQuality",0},
-    { "_wxEvtHandler","_class_wxProgressDialog",SwigwxProgressDialogTowxEvtHandler},
+    { "_wxEvtHandler","_wxFindReplaceDialog",SwigwxFindReplaceDialogTowxEvtHandler},
     { "_wxEvtHandler","_wxProgressDialog",SwigwxProgressDialogTowxEvtHandler},
-    { "_wxEvtHandler","_class_wxMessageDialog",SwigwxMessageDialogTowxEvtHandler},
     { "_wxEvtHandler","_wxMessageDialog",SwigwxMessageDialogTowxEvtHandler},
-    { "_wxEvtHandler","_class_wxFontDialog",SwigwxFontDialogTowxEvtHandler},
     { "_wxEvtHandler","_wxFontDialog",SwigwxFontDialogTowxEvtHandler},
-    { "_wxEvtHandler","_class_wxTextEntryDialog",SwigwxTextEntryDialogTowxEvtHandler},
     { "_wxEvtHandler","_wxTextEntryDialog",SwigwxTextEntryDialogTowxEvtHandler},
-    { "_wxEvtHandler","_class_wxSingleChoiceDialog",SwigwxSingleChoiceDialogTowxEvtHandler},
     { "_wxEvtHandler","_wxSingleChoiceDialog",SwigwxSingleChoiceDialogTowxEvtHandler},
-    { "_wxEvtHandler","_class_wxFileDialog",SwigwxFileDialogTowxEvtHandler},
+    { "_wxEvtHandler","_wxMultiChoiceDialog",SwigwxMultiChoiceDialogTowxEvtHandler},
     { "_wxEvtHandler","_wxFileDialog",SwigwxFileDialogTowxEvtHandler},
-    { "_wxEvtHandler","_class_wxDirDialog",SwigwxDirDialogTowxEvtHandler},
     { "_wxEvtHandler","_wxDirDialog",SwigwxDirDialogTowxEvtHandler},
-    { "_wxEvtHandler","_class_wxColourDialog",SwigwxColourDialogTowxEvtHandler},
     { "_wxEvtHandler","_wxColourDialog",SwigwxColourDialogTowxEvtHandler},
-    { "_wxWindow","_class_wxProgressDialog",SwigwxProgressDialogTowxWindow},
+    { "_wxWindow","_wxFindReplaceDialog",SwigwxFindReplaceDialogTowxWindow},
     { "_wxWindow","_wxProgressDialog",SwigwxProgressDialogTowxWindow},
-    { "_wxWindow","_class_wxMessageDialog",SwigwxMessageDialogTowxWindow},
     { "_wxWindow","_wxMessageDialog",SwigwxMessageDialogTowxWindow},
-    { "_wxWindow","_class_wxFontDialog",SwigwxFontDialogTowxWindow},
     { "_wxWindow","_wxFontDialog",SwigwxFontDialogTowxWindow},
-    { "_wxWindow","_class_wxTextEntryDialog",SwigwxTextEntryDialogTowxWindow},
     { "_wxWindow","_wxTextEntryDialog",SwigwxTextEntryDialogTowxWindow},
-    { "_wxWindow","_class_wxSingleChoiceDialog",SwigwxSingleChoiceDialogTowxWindow},
     { "_wxWindow","_wxSingleChoiceDialog",SwigwxSingleChoiceDialogTowxWindow},
-    { "_wxWindow","_class_wxFileDialog",SwigwxFileDialogTowxWindow},
+    { "_wxWindow","_wxMultiChoiceDialog",SwigwxMultiChoiceDialogTowxWindow},
     { "_wxWindow","_wxFileDialog",SwigwxFileDialogTowxWindow},
-    { "_wxWindow","_class_wxDirDialog",SwigwxDirDialogTowxWindow},
     { "_wxWindow","_wxDirDialog",SwigwxDirDialogTowxWindow},
-    { "_wxWindow","_class_wxColourDialog",SwigwxColourDialogTowxWindow},
     { "_wxWindow","_wxColourDialog",SwigwxColourDialogTowxWindow},
-    { "_class_wxFrame","_class_wxProgressDialog",SwigwxProgressDialogTowxFrame},
-    { "_class_wxFrame","_wxProgressDialog",SwigwxProgressDialogTowxFrame},
 {0,0,0}};
 
 static PyObject *SWIG_globals;
@@ -3095,6 +4248,19 @@ SWIGEXPORT(void) initcmndlgsc() {
 	 SWIG_globals = SWIG_newvarlink();
 	 m = Py_InitModule("cmndlgsc", cmndlgscMethods);
 	 d = PyModule_GetDict(m);
+	 PyDict_SetItemString(d,"wxCHOICEDLG_STYLE", PyInt_FromLong((long) wxCHOICEDLG_STYLE));
+	 PyDict_SetItemString(d,"wxFR_DOWN", PyInt_FromLong((long) wxFR_DOWN));
+	 PyDict_SetItemString(d,"wxFR_WHOLEWORD", PyInt_FromLong((long) wxFR_WHOLEWORD));
+	 PyDict_SetItemString(d,"wxFR_MATCHCASE", PyInt_FromLong((long) wxFR_MATCHCASE));
+	 PyDict_SetItemString(d,"wxFR_REPLACEDIALOG", PyInt_FromLong((long) wxFR_REPLACEDIALOG));
+	 PyDict_SetItemString(d,"wxFR_NOUPDOWN", PyInt_FromLong((long) wxFR_NOUPDOWN));
+	 PyDict_SetItemString(d,"wxFR_NOMATCHCASE", PyInt_FromLong((long) wxFR_NOMATCHCASE));
+	 PyDict_SetItemString(d,"wxFR_NOWHOLEWORD", PyInt_FromLong((long) wxFR_NOWHOLEWORD));
+	 PyDict_SetItemString(d,"wxEVT_COMMAND_FIND", PyInt_FromLong((long) wxEVT_COMMAND_FIND));
+	 PyDict_SetItemString(d,"wxEVT_COMMAND_FIND_NEXT", PyInt_FromLong((long) wxEVT_COMMAND_FIND_NEXT));
+	 PyDict_SetItemString(d,"wxEVT_COMMAND_FIND_REPLACE", PyInt_FromLong((long) wxEVT_COMMAND_FIND_REPLACE));
+	 PyDict_SetItemString(d,"wxEVT_COMMAND_FIND_REPLACE_ALL", PyInt_FromLong((long) wxEVT_COMMAND_FIND_REPLACE_ALL));
+	 PyDict_SetItemString(d,"wxEVT_COMMAND_FIND_CLOSE", PyInt_FromLong((long) wxEVT_COMMAND_FIND_CLOSE));
 {
    int i;
    for (i = 0; _swig_mapping[i].n1; i++)

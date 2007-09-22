@@ -3,13 +3,13 @@
 // Purpose:
 // Date: 08/26/1999
 // Author: Guilhem Lavaux <lavaux@easynet.fr> (C) 1999
-// CVSID: $Id: sndg72x.cpp,v 1.1 2000/03/05 19:03:18 GL Exp $
+// CVSID: $Id: sndg72x.cpp,v 1.2 2001/10/30 13:28:45 GT Exp $
 // --------------------------------------------------------------------------
 #ifdef __GNUG__
 #pragma implementation "sndg72x.cpp"
 #endif
 
-#include <wx/wxprec.h>
+#include "wx/wxprec.h"
 
 #ifndef WX_PRECOMP
     #include "wx/defs.h"

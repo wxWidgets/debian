@@ -4,7 +4,7 @@
 // Author:      Vadim Zeitlin
 // Modified by:
 // Created:     04/01/98
-// RCS-ID:      $Id: dnd.cpp,v 1.66.2.2 2000/04/28 12:45:14 VZ Exp $
+// RCS-ID:      $Id: dnd.cpp,v 1.81 2002/08/02 08:16:14 MBN Exp $
 // Copyright:
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -29,6 +29,12 @@
     #define USE_METAFILES
 #endif // Windows
 
+#define USE_RESOURCES 0
+#if !wxUSE_RESOURCES
+#undef USE_RESOURCES
+#define USE_RESOURCES 0
+#endif
+
 #include "wx/intl.h"
 #include "wx/log.h"
 
@@ -38,13 +44,17 @@
 #include "wx/image.h"
 #include "wx/clipbrd.h"
 #include "wx/colordlg.h"
-#include "wx/resource.h"
+#if USE_RESOURCES
+    #include "wx/resource.h"
+#else
+    #include "wx/sizer.h"
+#endif
 
 #ifdef USE_METAFILES
     #include "wx/metafile.h"
 #endif // Windows
 
-#if defined(__WXGTK__) || defined(__WXMOTIF__)
+#if defined(__WXGTK__) || defined(__WXX11__) || defined(__WXMOTIF__) || defined(__WXMAC__)
     #include "mondrian.xpm"
 
     #include "dnd_copy.xpm"
@@ -78,6 +88,42 @@ public:
 
 private:
     wxListBox *m_pOwner;
+};
+
+// ----------------------------------------------------------------------------
+// Define a custom dtop target accepting URLs
+// ----------------------------------------------------------------------------
+
+class URLDropTarget : public wxDropTarget
+{
+public:
+    URLDropTarget() { SetDataObject(new wxURLDataObject); }
+
+    void OnDropURL(wxCoord x, wxCoord y, const wxString& text)
+    {
+        // of course, a real program would do something more useful here...
+        wxMessageBox(text, _T("wxDnD sample: got URL"),
+                     wxICON_INFORMATION | wxOK);
+    }
+
+    // URLs can't be moved, only copied
+    virtual wxDragResult OnDragOver(wxCoord WXUNUSED(x), wxCoord WXUNUSED(y),
+                                    wxDragResult def)
+        {
+            return wxDragLink;  // At least IE 5.x needs wxDragLink, the
+                                // other browsers on MSW seem okay with it too.
+        }
+
+    // translate this to calls to OnDropURL() just for convenience
+    virtual wxDragResult OnData(wxCoord x, wxCoord y, wxDragResult def)
+    {
+        if ( !GetData() )
+            return wxDragNone;
+
+        OnDropURL(x, y, ((wxURLDataObject *)m_dataObject)->GetURL());
+
+        return def;
+    }
 };
 
 // ----------------------------------------------------------------------------
@@ -175,12 +221,15 @@ class DnDFrame : public wxFrame
 {
 public:
     DnDFrame(wxFrame *frame, char *title, int x, int y, int w, int h);
-    ~DnDFrame();
+    virtual ~DnDFrame();
 
     void OnPaint(wxPaintEvent& event);
-    void OnQuit (wxCommandEvent& event);
+    void OnSize(wxSizeEvent& event);
+    void OnQuit(wxCommandEvent& event);
     void OnAbout(wxCommandEvent& event);
-    void OnDrag (wxCommandEvent& event);
+    void OnDrag(wxCommandEvent& event);
+    void OnDragMoveByDefault(wxCommandEvent& event);
+    void OnDragMoveAllow(wxCommandEvent& event);
     void OnNewFrame(wxCommandEvent& event);
     void OnHelp (wxCommandEvent& event);
     void OnLogClear(wxCommandEvent& event);
@@ -200,12 +249,15 @@ public:
     void OnLeftDown(wxMouseEvent& event);
     void OnRightDown(wxMouseEvent& event);
 
+    void OnUpdateUIMoveByDefault(wxUpdateUIEvent& event);
+
     void OnUpdateUIPasteText(wxUpdateUIEvent& event);
     void OnUpdateUIPasteBitmap(wxUpdateUIEvent& event);
 
     DECLARE_EVENT_TABLE()
 
 private:
+    // GUI controls
     wxListBox  *m_ctrlFile,
                *m_ctrlText;
     wxTextCtrl *m_ctrlLog;
@@ -213,6 +265,13 @@ private:
     wxLog *m_pLog,
           *m_pLogPrev;
 
+    // move the text by default (or copy)?
+    bool m_moveByDefault;
+
+    // allow moving the text at all?
+    bool m_moveAllow;
+
+    // the text we drag
     wxString  m_strText;
 };
 
@@ -285,9 +344,10 @@ public:
     }
 
 protected:
+    //get a point 1 up and 1 left, otherwise the mid-point of a triangle is on the line
     wxPoint GetCentre() const
-        { return wxPoint(m_pos.x + m_size.x / 2, m_pos.y + m_size.y / 2); }
-
+         { return wxPoint(m_pos.x + m_size.x / 2 - 1, m_pos.y + m_size.y / 2 - 1); }
+         
     struct ShapeDump
     {
         int x, y,       // position
@@ -309,12 +369,12 @@ public:
                        const wxColour& col)
         : DnDShape(pos, size, col)
     {
-        wxLogMessage("DnDTriangularShape is being created");
+        wxLogMessage(wxT("DnDTriangularShape is being created"));
     }
 
     virtual ~DnDTriangularShape()
     {
-        wxLogMessage("DnDTriangularShape is being deleted");
+        wxLogMessage(wxT("DnDTriangularShape is being deleted"));
     }
 
     virtual Kind GetKind() const { return Triangle; }
@@ -332,9 +392,9 @@ public:
         dc.DrawLine(p2, p3);
         dc.DrawLine(p3, p1);
 
-#ifdef __WXMSW__
+        //works in multicolor modes; on GTK (at least) will fail in 16-bit color
+        dc.SetBrush(wxBrush(m_col, wxSOLID));       
         dc.FloodFill(GetCentre(), m_col, wxFLOOD_BORDER);
-#endif
     }
 };
 
@@ -346,12 +406,12 @@ public:
                         const wxColour& col)
         : DnDShape(pos, size, col)
     {
-        wxLogMessage("DnDRectangularShape is being created");
+        wxLogMessage(wxT("DnDRectangularShape is being created"));
     }
 
     virtual ~DnDRectangularShape()
     {
-        wxLogMessage("DnDRectangularShape is being deleted");
+        wxLogMessage(wxT("DnDRectangularShape is being deleted"));
     }
 
     virtual Kind GetKind() const { return Rectangle; }
@@ -369,9 +429,8 @@ public:
         dc.DrawLine(p3, p4);
         dc.DrawLine(p4, p1);
 
-#ifdef __WXMSW__
+        dc.SetBrush(wxBrush(m_col, wxSOLID));
         dc.FloodFill(GetCentre(), m_col, wxFLOOD_BORDER);
-#endif
     }
 };
 
@@ -383,12 +442,12 @@ public:
                      const wxColour& col)
         : DnDShape(pos, size, col)
     {
-        wxLogMessage("DnDEllipticShape is being created");
+        wxLogMessage(wxT("DnDEllipticShape is being created"));
     }
 
     virtual ~DnDEllipticShape()
     {
-        wxLogMessage("DnDEllipticShape is being deleted");
+        wxLogMessage(wxT("DnDEllipticShape is being deleted"));
     }
 
     virtual Kind GetKind() const { return Ellipse; }
@@ -398,9 +457,8 @@ public:
 
         dc.DrawEllipse(m_pos, m_size);
 
-#ifdef __WXMSW__
+        dc.SetBrush(wxBrush(m_col, wxSOLID));
         dc.FloodFill(GetCentre(), m_col, wxFLOOD_BORDER);
-#endif
     }
 };
 
@@ -408,7 +466,7 @@ public:
 // A wxDataObject specialisation for the application-specific data
 // ----------------------------------------------------------------------------
 
-static const char *shapeFormatId = "wxShape";
+static const wxChar *shapeFormatId = wxT("wxShape");
 
 class DnDShapeDataObject : public wxDataObject
 {
@@ -527,7 +585,7 @@ public:
         else
         {
             wxASSERT_MSG( m_dobjBitmap.IsSupported(format),
-                          "unexpected format" );
+                          wxT("unexpected format") );
 
             if ( !m_hasBitmap )
                 CreateBitmap();
@@ -556,7 +614,7 @@ public:
         else
         {
             wxASSERT_MSG( m_dobjBitmap.IsSupported(format),
-                          "unexpected format" );
+                          wxT("unexpected format") );
 
             if ( !m_hasBitmap )
                 CreateBitmap();
@@ -568,7 +626,8 @@ public:
     virtual bool SetData(const wxDataFormat& format,
                          size_t len, const void *buf)
     {
-        wxCHECK_MSG( format == m_formatShape, FALSE, "unsupported format" );
+        wxCHECK_MSG( format == m_formatShape, FALSE,
+                     wxT( "unsupported format") );
 
         delete m_shape;
         m_shape = DnDShape::New(buf);
@@ -696,7 +755,7 @@ public:
     {
         if ( !GetData() )
         {
-            wxLogError("Failed to get drag and drop data");
+            wxLogError(wxT("Failed to get drag and drop data"));
 
             return wxDragNone;
         }
@@ -729,6 +788,8 @@ enum
 {
     Menu_Quit = 1,
     Menu_Drag,
+    Menu_DragMoveDef,
+    Menu_DragMoveAllow,
     Menu_NewFrame,
     Menu_About = 101,
     Menu_Help,
@@ -751,6 +812,8 @@ BEGIN_EVENT_TABLE(DnDFrame, wxFrame)
     EVT_MENU(Menu_Quit,       DnDFrame::OnQuit)
     EVT_MENU(Menu_About,      DnDFrame::OnAbout)
     EVT_MENU(Menu_Drag,       DnDFrame::OnDrag)
+    EVT_MENU(Menu_DragMoveDef,  DnDFrame::OnDragMoveByDefault)
+    EVT_MENU(Menu_DragMoveAllow,DnDFrame::OnDragMoveAllow)
     EVT_MENU(Menu_NewFrame,   DnDFrame::OnNewFrame)
     EVT_MENU(Menu_Help,       DnDFrame::OnHelp)
     EVT_MENU(Menu_Clear,      DnDFrame::OnLogClear)
@@ -763,12 +826,15 @@ BEGIN_EVENT_TABLE(DnDFrame, wxFrame)
 #endif // USE_METAFILES
     EVT_MENU(Menu_CopyFiles,  DnDFrame::OnCopyFiles)
 
+    EVT_UPDATE_UI(Menu_DragMoveDef, DnDFrame::OnUpdateUIMoveByDefault)
+
     EVT_UPDATE_UI(Menu_Paste,       DnDFrame::OnUpdateUIPasteText)
     EVT_UPDATE_UI(Menu_PasteBitmap, DnDFrame::OnUpdateUIPasteBitmap)
 
     EVT_LEFT_DOWN(            DnDFrame::OnLeftDown)
     EVT_RIGHT_DOWN(           DnDFrame::OnRightDown)
     EVT_PAINT(                DnDFrame::OnPaint)
+    EVT_SIZE(                 DnDFrame::OnSize)
 END_EVENT_TABLE()
 
 BEGIN_EVENT_TABLE(DnDShapeFrame, wxFrame)
@@ -808,6 +874,7 @@ END_EVENT_TABLE()
 // `Main program' equivalent, creating windows and returning main app frame
 bool DnDApp::OnInit()
 {
+#if USE_RESOURCES
     // load our ressources
     wxPathList pathList;
     pathList.Add(".");
@@ -819,13 +886,14 @@ bool DnDApp::OnInit()
     wxString path = pathList.FindValidPath("dnd.wxr");
     if ( !path )
     {
-        wxLogError("Can't find the resource file dnd.wxr in the current "
-                   "directory, aborting.");
+        wxLogError(wxT("Can't find the resource file dnd.wxr in the current ")
+                   wxT("directory, aborting."));
 
         return FALSE;
     }
 
     wxDefaultResourceTable->ParseResourceFile(path);
+#endif
 
     // switch on trace messages
 #if defined(__WXGTK__)
@@ -868,10 +936,12 @@ DnDFrame::DnDFrame(wxFrame *frame, char *title, int x, int y, int w, int h)
     // construct menu
     wxMenu *file_menu = new wxMenu;
     file_menu->Append(Menu_Drag, "&Test drag...");
+    file_menu->AppendCheckItem(Menu_DragMoveDef, "&Move by default");
+    file_menu->AppendCheckItem(Menu_DragMoveAllow, "&Allow moving");
     file_menu->AppendSeparator();
     file_menu->Append(Menu_NewFrame, "&New frame\tCtrl-N");
     file_menu->AppendSeparator();
-    file_menu->Append(Menu_Quit, "E&xit");
+    file_menu->Append(Menu_Quit, "E&xit\tCtrl-Q");
 
     wxMenu *log_menu = new wxMenu;
     log_menu->Append(Menu_Clear, "Clear\tCtrl-L");
@@ -882,17 +952,17 @@ DnDFrame::DnDFrame(wxFrame *frame, char *title, int x, int y, int w, int h)
     help_menu->Append(Menu_About, "&About");
 
     wxMenu *clip_menu = new wxMenu;
-    clip_menu->Append(Menu_Copy, "&Copy text\tCtrl+C");
-    clip_menu->Append(Menu_Paste, "&Paste text\tCtrl+V");
+    clip_menu->Append(Menu_Copy, "&Copy text\tCtrl-C");
+    clip_menu->Append(Menu_Paste, "&Paste text\tCtrl-V");
     clip_menu->AppendSeparator();
-    clip_menu->Append(Menu_CopyBitmap, "Copy &bitmap\tAlt+C");
-    clip_menu->Append(Menu_PasteBitmap, "Paste b&itmap\tAlt+V");
+    clip_menu->Append(Menu_CopyBitmap, "Copy &bitmap\tCtrl-Shift-C");
+    clip_menu->Append(Menu_PasteBitmap, "Paste b&itmap\tCtrl-Shift-V");
 #ifdef USE_METAFILES
     clip_menu->AppendSeparator();
     clip_menu->Append(Menu_PasteMFile, "Paste &metafile\tCtrl-M");
 #endif // USE_METAFILES
     clip_menu->AppendSeparator();
-    clip_menu->Append(Menu_CopyFiles, "Copy &files\tCtrl+F");
+    clip_menu->Append(Menu_CopyFiles, "Copy &files\tCtrl-F");
 
     wxMenuBar *menu_bar = new wxMenuBar;
     menu_bar->Append(file_menu, "&File");
@@ -921,9 +991,10 @@ DnDFrame::DnDFrame(wxFrame *frame, char *title, int x, int y, int w, int h)
     m_pLog = new wxLogTextCtrl(m_ctrlLog);
     m_pLogPrev = wxLog::SetActiveTarget(m_pLog);
 
-    // associate drop targets with 2 text controls
+    // associate drop targets with the controls
     m_ctrlFile->SetDropTarget(new DnDFile(m_ctrlFile));
     m_ctrlText->SetDropTarget(new DnDText(m_ctrlText));
+    m_ctrlLog->SetDropTarget(new URLDropTarget);
 
     wxLayoutConstraints *c;
 
@@ -952,11 +1023,23 @@ DnDFrame::DnDFrame(wxFrame *frame, char *title, int x, int y, int w, int h)
     m_ctrlLog->SetConstraints(c);
 
     SetAutoLayout(TRUE);
+
+    // copy data by default but allow moving it as well
+    m_moveByDefault = FALSE;
+    m_moveAllow = TRUE;
+    menu_bar->Check(Menu_DragMoveAllow, TRUE);
 }
 
 void DnDFrame::OnQuit(wxCommandEvent& WXUNUSED(event))
 {
     Close(TRUE);
+}
+
+void DnDFrame::OnSize(wxSizeEvent& event)
+{
+    Refresh();
+
+    event.Skip();
 }
 
 void DnDFrame::OnPaint(wxPaintEvent& WXUNUSED(event))
@@ -966,8 +1049,15 @@ void DnDFrame::OnPaint(wxPaintEvent& WXUNUSED(event))
     GetClientSize( &w, &h );
 
     wxPaintDC dc(this);
+    // dc.Clear(); -- this kills wxGTK
     dc.SetFont( wxFont( 24, wxDECORATIVE, wxNORMAL, wxNORMAL, FALSE, "charter" ) );
     dc.DrawText( "Drag text from here!", 100, h-50 );
+}
+
+void DnDFrame::OnUpdateUIMoveByDefault(wxUpdateUIEvent& event)
+{
+    // only can move by default if moving is allowed at all
+    event.Enable(m_moveAllow);
 }
 
 void DnDFrame::OnUpdateUIPasteText(wxUpdateUIEvent& event)
@@ -996,7 +1086,7 @@ void DnDFrame::OnNewFrame(wxCommandEvent& WXUNUSED(event))
 {
     (new DnDShapeFrame(this))->Show(TRUE);
 
-    wxLogStatus(this, "Double click the new frame to select a shape for it");
+    wxLogStatus(this, wxT("Double click the new frame to select a shape for it"));
 }
 
 void DnDFrame::OnDrag(wxCommandEvent& WXUNUSED(event))
@@ -1011,6 +1101,16 @@ void DnDFrame::OnDrag(wxCommandEvent& WXUNUSED(event))
         );
 
     m_strText = strText;
+}
+
+void DnDFrame::OnDragMoveByDefault(wxCommandEvent& event)
+{
+    m_moveByDefault = event.IsChecked();
+}
+
+void DnDFrame::OnDragMoveAllow(wxCommandEvent& event)
+{
+    m_moveAllow = event.IsChecked();
 }
 
 void DnDFrame::OnAbout(wxCommandEvent& WXUNUSED(event))
@@ -1074,9 +1174,14 @@ void DnDFrame::OnLeftDown(wxMouseEvent &WXUNUSED(event) )
                             wxDROP_ICON(dnd_move),
                             wxDROP_ICON(dnd_none));
 
-        const char *pc;
+        int flags = 0;
+        if ( m_moveByDefault )
+            flags |= wxDrag_DefaultMove;
+        else if ( m_moveAllow )
+            flags |= wxDrag_AllowMove;
 
-        switch ( source.DoDragDrop(TRUE) )
+        const char *pc;
+        switch ( source.DoDragDrop(flags) )
         {
             case wxDragError:   pc = "Error!";    break;
             case wxDragNone:    pc = "Nothing";   break;
@@ -1157,7 +1262,7 @@ void DnDFrame::OnCopyBitmap(wxCommandEvent& WXUNUSED(event))
     wxLogStatus( _T("Decoding image file...") );
     wxYield();
 
-    wxBitmap bitmap( image.ConvertToBitmap() );
+    wxBitmap bitmap( image );
 
     if ( !wxTheClipboard->Open() )
     {
@@ -1282,27 +1387,27 @@ void DnDFrame::OnCopyFiles(wxCommandEvent& WXUNUSED(event))
         wxClipboardLocker locker;
         if ( !locker )
         {
-            wxLogError("Can't open clipboard");
+            wxLogError(wxT("Can't open clipboard"));
         }
         else
         {
             if ( !wxTheClipboard->AddData(dobj) )
             {
-                wxLogError("Can't copy file(s) to the clipboard");
+                wxLogError(wxT("Can't copy file(s) to the clipboard"));
             }
             else
             {
-                wxLogStatus(this, "%d file%s copied to the clipboard",
-                            count, count == 1 ? "" : "s");
+                wxLogStatus(this, wxT("%d file%s copied to the clipboard"),
+                            count, count == 1 ? wxT("") : wxT("s"));
             }
         }
     }
     else
     {
-        wxLogStatus(this, "Aborted");
+        wxLogStatus(this, wxT("Aborted"));
     }
 #else // !MSW
-    wxLogError("Sorry, not implemented");
+    wxLogError(wxT("Sorry, not implemented"));
 #endif // MSW/!MSW
 }
 
@@ -1391,9 +1496,14 @@ bool DnDFile::OnDropFiles(wxCoord, wxCoord, const wxArrayString& filenames)
 // ----------------------------------------------------------------------------
 
 DnDShapeDialog::DnDShapeDialog(wxFrame *parent, DnDShape *shape)
+#if !USE_RESOURCES
+  :wxDialog( parent, 6001, wxT("Choose Shape"), wxPoint( 10, 10 ),
+             wxSize( 40, 40 ),
+             wxRAISED_BORDER|wxCAPTION|wxTHICK_FRAME|wxSYSTEM_MENU )
+#endif
 {
     m_shape = shape;
-
+#if USE_RESOURCES
     LoadFromResource(parent, "dialogShape");
 
     m_textX = (wxTextCtrl *)wxFindWindowByName("textX", this);
@@ -1402,6 +1512,69 @@ DnDShapeDialog::DnDShapeDialog(wxFrame *parent, DnDShape *shape)
     m_textH = (wxTextCtrl *)wxFindWindowByName("textH", this);
 
     m_radio = (wxRadioBox *)wxFindWindowByName("radio", this);
+#else
+    wxBoxSizer* topSizer = new wxBoxSizer( wxVERTICAL );
+
+    // radio box
+    wxBoxSizer* shapesSizer = new wxBoxSizer( wxHORIZONTAL );
+    const wxString choices[] = { wxT("None"), wxT("Triangle"),
+                                 wxT("Rectangle"), wxT("Ellipse") };
+
+    m_radio = new wxRadioBox( this, -1, wxT("&Shape"),
+                              wxDefaultPosition, wxDefaultSize, 4, choices, 4,
+                              wxRA_SPECIFY_COLS );
+    shapesSizer->Add( m_radio, 0, wxGROW|wxALL, 5 );
+    topSizer->Add( shapesSizer, 0, wxALL, 2 );
+
+    // attributes
+    wxStaticBox* box = new wxStaticBox( this, -1, wxT("&Attributes") );
+    wxStaticBoxSizer* attrSizer = new wxStaticBoxSizer( box, wxHORIZONTAL );
+    wxFlexGridSizer* xywhSizer = new wxFlexGridSizer( 4, 2 );
+
+    wxStaticText* st;
+
+    st = new wxStaticText( this, -1, wxT("Position &X:") );
+    m_textX = new wxTextCtrl( this, -1, wxEmptyString, wxDefaultPosition,
+                              wxSize( 30, 20 ) );
+    xywhSizer->Add( st, 1, wxGROW|wxALL, 2 );
+    xywhSizer->Add( m_textX, 1, wxGROW|wxALL, 2 );
+
+    st = new wxStaticText( this, -1, wxT("Size &width:") );
+    m_textW = new wxTextCtrl( this, -1, wxEmptyString, wxDefaultPosition,
+                              wxSize( 30, 20 ) );
+    xywhSizer->Add( st, 1, wxGROW|wxALL, 2 );
+    xywhSizer->Add( m_textW, 1, wxGROW|wxALL, 2 );
+
+    st = new wxStaticText( this, -1, wxT("&Y:") );
+    m_textY = new wxTextCtrl( this, -1, wxEmptyString, wxDefaultPosition,
+                              wxSize( 30, 20 ) );
+    xywhSizer->Add( st, 1, wxALL|wxALIGN_RIGHT, 2 );
+    xywhSizer->Add( m_textY, 1, wxGROW|wxALL, 2 );
+
+    st = new wxStaticText( this, -1, wxT("&height:") );
+    m_textH = new wxTextCtrl( this, -1, wxEmptyString, wxDefaultPosition,
+                              wxSize( 30, 20 ) );
+    xywhSizer->Add( st, 1, wxALL|wxALIGN_RIGHT, 2 );
+    xywhSizer->Add( m_textH, 1, wxGROW|wxALL, 2 );
+
+    wxButton* col = new wxButton( this, Button_Colour, wxT("&Colour...") );
+    attrSizer->Add( xywhSizer, 1, wxGROW );
+    attrSizer->Add( col, 0, wxALL|wxALIGN_CENTRE_VERTICAL, 2 );
+    topSizer->Add( attrSizer, 0, wxGROW|wxALL, 5 );
+
+    // buttons
+    wxBoxSizer* buttonSizer = new wxBoxSizer( wxHORIZONTAL );
+    wxButton* bt;
+    bt = new wxButton( this, wxID_OK, wxT("Ok") );
+    buttonSizer->Add( bt, 0, wxALL, 2 );
+    bt = new wxButton( this, wxID_CANCEL, wxT("Cancel") );
+    buttonSizer->Add( bt, 0, wxALL, 2 );
+    topSizer->Add( buttonSizer, 0, wxALL|wxALIGN_RIGHT, 2 );
+
+    SetAutoLayout( TRUE );
+    SetSizer( topSizer );
+    topSizer->Fit( this );
+#endif
 }
 
 DnDShape *DnDShapeDialog::GetShape() const
@@ -1445,10 +1618,10 @@ bool DnDShapeDialog::TransferDataFromWindow()
 {
     m_shapeKind = (DnDShape::Kind)m_radio->GetSelection();
 
-    m_pos.x = atoi(m_textX->GetValue());
-    m_pos.y = atoi(m_textY->GetValue());
-    m_size.x = atoi(m_textW->GetValue());
-    m_size.y = atoi(m_textH->GetValue());
+    m_pos.x = wxAtoi(m_textX->GetValue());
+    m_pos.y = wxAtoi(m_textY->GetValue());
+    m_size.x = wxAtoi(m_textW->GetValue());
+    m_size.y = wxAtoi(m_textH->GetValue());
 
     if ( !m_pos.x || !m_pos.y || !m_size.x || !m_size.y )
     {
@@ -1548,7 +1721,7 @@ void DnDShapeFrame::OnDrag(wxMouseEvent& event)
     {
         default:
         case wxDragError:
-            wxLogError("An error occured during drag and drop operation");
+            wxLogError(wxT("An error occured during drag and drop operation"));
             break;
 
         case wxDragNone:
@@ -1587,7 +1760,7 @@ void DnDShapeFrame::OnDrop(wxCoord x, wxCoord y, DnDShape *shape)
     wxPoint pt(x, y);
 
     wxString s;
-    s.Printf("Shape dropped at (%ld, %ld)", pt.x, pt.y);
+    s.Printf(wxT("Shape dropped at (%d, %d)"), pt.x, pt.y);
     SetStatusText(s);
 
     shape->Move(pt);
@@ -1627,7 +1800,7 @@ void DnDShapeFrame::OnCopyShape(wxCommandEvent& event)
         wxClipboardLocker clipLocker;
         if ( !clipLocker )
         {
-            wxLogError("Can't open the clipboard");
+            wxLogError(wxT("Can't open the clipboard"));
 
             return;
         }
@@ -1641,7 +1814,7 @@ void DnDShapeFrame::OnPasteShape(wxCommandEvent& event)
     wxClipboardLocker clipLocker;
     if ( !clipLocker )
     {
-        wxLogError("Can't open the clipboard");
+        wxLogError(wxT("Can't open the clipboard"));
 
         return;
     }
@@ -1653,7 +1826,7 @@ void DnDShapeFrame::OnPasteShape(wxCommandEvent& event)
     }
     else
     {
-        wxLogStatus("No shape on the clipboard");
+        wxLogStatus(wxT("No shape on the clipboard"));
     }
 }
 
@@ -1706,7 +1879,7 @@ DnDShape *DnDShape::New(const void *buf)
                                         wxColour(dump.r, dump.g, dump.b));
 
         default:
-            wxFAIL_MSG("invalid shape!");
+            wxFAIL_MSG(wxT("invalid shape!"));
             return NULL;
     }
 }
@@ -1746,7 +1919,7 @@ void DnDShapeDataObject::CreateBitmap() const
     wxBitmap bitmap(x, y);
     wxMemoryDC dc;
     dc.SelectObject(bitmap);
-    dc.SetBrush(wxBrush("white", wxSOLID));
+    dc.SetBrush(wxBrush(wxT("white"), wxSOLID));
     dc.Clear();
     m_shape->Draw(dc);
     dc.SelectObject(wxNullBitmap);

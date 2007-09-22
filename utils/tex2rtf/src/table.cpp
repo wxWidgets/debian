@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     01/01/99
-// RCS-ID:      $Id: table.cpp,v 1.1 1999/01/02 00:45:05 JS Exp $
+// RCS-ID:      $Id: table.cpp,v 1.3 2001/11/22 21:55:24 GD Exp $
 // Copyright:   (c) Julian Smart
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -24,8 +24,11 @@
 #include "wx/wx.h"
 #endif
 
+#include "wx/hash.h"
 
-#include <wx/hash.h>
+#ifdef new
+#undef new
+#endif
 
 #if wxUSE_IOSTREAMH
 #include <iostream.h>

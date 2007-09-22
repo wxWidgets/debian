@@ -4,7 +4,7 @@
 // Author:      Vadim Zeitlin
 // Modified by:
 // Created:     22.07.99
-// RCS-ID:      $Id: spinctrl.h,v 1.6 2000/01/15 10:20:45 JS Exp $
+// RCS-ID:      $Id: spinctrl.h,v 1.13 2002/09/01 20:24:25 VZ Exp $
 // Copyright:   (c) Vadim Zeitlin
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -37,6 +37,9 @@ public:
     virtual void SetValue(int val) = 0;
     virtual void SetRange(int minVal, int maxVal) = 0;
 
+    // as the wxTextCtrl method
+    virtual void SetSelection(long from, long to) = 0;
+
 protected:
     // initialize m_min/max with the default values
     void Init() { m_min = 0; m_max = 100; }
@@ -50,18 +53,24 @@ protected:
 // include the platform-dependent class implementation
 // ----------------------------------------------------------------------------
 
-#if defined(__WXMSW__) && defined(__WIN32__)
+#if defined(__WXUNIVERSAL__)
+    #include "wx/generic/spinctlg.h"
+#elif defined(__WXMSW__) && defined(__WIN32__)
     #include "wx/msw/spinctrl.h"
 #elif defined(__WXPM__)
     #include "wx/os2/spinctrl.h"
 #elif defined(__WXGTK__)
     #include "wx/gtk/spinctrl.h"
+#elif defined(__WXMOTIF__)
+    #include "wx/generic/spinctlg.h"
+#elif defined(__WXMAC__)
+    #include "wx/mac/spinctrl.h"
 #else // Win16 || !Win
     #include "wx/generic/spinctlg.h"
 #endif // platform
 
-// Macro must be defined here, not event.h, since it must reference wxSpinEventFunction
-#define EVT_SPINCTRL(id, fn) { wxEVT_COMMAND_SPINCTRL_UPDATED, id, -1, (wxObjectEventFunction) (wxEventFunction) (wxSpinEventFunction) & fn, (wxObject *) NULL },
+#define EVT_SPINCTRL(id, fn) \
+    DECLARE_EVENT_TABLE_ENTRY( wxEVT_COMMAND_SPINCTRL_UPDATED, id, -1, (wxObjectEventFunction) (wxEventFunction) (wxSpinEventFunction) & fn, (wxObject *) NULL ),
 
 #endif // _WX_SPINCTRL_H_
 

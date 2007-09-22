@@ -2,7 +2,7 @@
 // Name:        imagjpeg.h
 // Purpose:     wxImage JPEG handler
 // Author:      Vaclav Slavik
-// RCS-ID:      $Id: imagjpeg.h,v 1.1 1999/12/15 22:37:50 VS Exp $
+// RCS-ID:      $Id: imagjpeg.h,v 1.3 2002/08/31 11:29:10 GD Exp $
 // Copyright:   (c) Vaclav Slavik
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -10,7 +10,7 @@
 #ifndef _WX_IMAGJPEG_H_
 #define _WX_IMAGJPEG_H_
 
-#ifdef __GNUG__
+#if defined(__GNUG__) && !defined(__APPLE__)
 #pragma interface "imagjpeg.h"
 #endif
 
@@ -36,7 +36,7 @@ public:
   };
 
 #if wxUSE_STREAMS
-  virtual bool LoadFile( wxImage *image, wxInputStream& stream, bool verbose=TRUE, int index=0 );
+  virtual bool LoadFile( wxImage *image, wxInputStream& stream, bool verbose=TRUE, int index=-1 );
   virtual bool SaveFile( wxImage *image, wxOutputStream& stream, bool verbose=TRUE );
   virtual bool DoCanRead( wxInputStream& stream );
 #endif

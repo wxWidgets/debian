@@ -13,7 +13,7 @@ libwxgtk-dbg		wxGTK libraries built with -g and __WXDEBUG__
 
 libwxgtk-python		Python binding to wxGTK  (from 2.2.3 onward, this
 			obsoletes the libwxgtk-python-contrib package as
-			all python modules are build into a single monolith)
+			all python modules are built into a single monolith)
 
 wxwin-contrib		wxWin contrib runtime shared libs (built with wxGTK)
 wxwin-contrib-dev	extra files and static contrib libs for building apps
@@ -34,13 +34,17 @@ wxwin-i18n		message catalogs for native language support
 	[ you can check the current state of affairs at:
 	  http://bugs.debian.org/cgi-bin/pkgreport.cgi?pkg=wxwindows2.2 ]
 
-	Oh and, please do *not* file bug reports for these three
-	to the Debian bts.  But do feel free to email be personally
+	Oh and, please do *not* file bug reports for these packages
+	to the Debian bts.  But do feel free to email me personally
 	if you find problems and/or have patches to fix them.
 
-libwxmsw2.2-dev_2.2.8_i386.deb		mingw32-cross wxMSW libs.
-libwxbase-msw2.2-dev_2.2.8_i386.deb	mingw32-cross wxBase libs.
-wxwin2.2-headers-msw_2.2.8_i386.deb	extra headers needed for wxMSW.
+libwxmsw-dev		mingw32-cross wxMSW libs.
+libwxmsw-dbg		mingw32-cross wxMSW (debug) libs.
+libwxbase-msw-dev	mingw32-cross wxBase libs.
+libwxbase-msw-dbg	mingw32-cross wxBase (debug) libs.
+wxwin-headers-msw	extra headers needed for wxMSW.
+
+libwxgtk-univ		wxUniversal for Gtk.
 
 
  -- Ron Lee <ron@debian.org>, Sun, 13 Feb 2000 18:40:00 +1030

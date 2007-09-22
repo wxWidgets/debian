@@ -2,7 +2,7 @@
 // Name:        checklst.cpp
 // Purpose:
 // Author:      Robert Roebling
-// Id:          $Id: checklst.cpp,v 1.16 1999/11/22 19:46:53 RR Exp $
+// Id:          $Id: checklst.cpp,v 1.19 2002/08/05 17:59:19 RR Exp $
 // Copyright:   (c) 1998 Robert Roebling
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -11,9 +11,12 @@
 #pragma implementation "checklst.h"
 #endif
 
-#include "wx/checklst.h"
+#include "wx/defs.h"
 
 #if wxUSE_CHECKLISTBOX
+
+#include "wx/checklst.h"
+#include "wx/gtk/private.h"
 
 #include <gdk/gdk.h>
 #include <gtk/gtk.h>
@@ -30,13 +33,13 @@ wxCheckListBox::wxCheckListBox() : wxListBox()
 }
 
 wxCheckListBox::wxCheckListBox(wxWindow *parent, wxWindowID id,
-                 const wxPoint& pos,
-                 const wxSize& size,
-                 int nStrings, 
-                 const wxString *choices,
-                 long style,
-                 const wxValidator& validator,
-                 const wxString& name )
+                               const wxPoint& pos,
+                               const wxSize& size,
+                               int nStrings, 
+                               const wxString *choices,
+                               long style,
+                               const wxValidator& validator,
+                               const wxString& name )
 {
     m_hasCheckBoxes = TRUE;
     wxListBox::Create( parent, id, pos, size, nStrings, choices, style, validator, name );
@@ -52,9 +55,9 @@ bool wxCheckListBox::IsChecked( int index ) const
         GtkBin *bin = GTK_BIN( child->data );
         GtkLabel *label = GTK_LABEL( bin->child );
 
-        wxString str = wxString(label->label,*wxConvCurrent);
+        wxString str( wxGTK_CONV_BACK( label->label ) );
 
-        return (str.GetChar(1) == wxT('X'));
+        return str.GetChar(1) == wxCHECKLBOX_CHECKED;
     }
 
     wxFAIL_MSG(wxT("wrong checklistbox index"));
@@ -71,16 +74,14 @@ void wxCheckListBox::Check( int index, bool check )
         GtkBin *bin = GTK_BIN( child->data );
         GtkLabel *label = GTK_LABEL( bin->child );
 
-        wxString str = wxString(label->label,*wxConvCurrent);
+        wxString str( wxGTK_CONV_BACK( label->label ) );
 
-        if (check == (str.GetChar(1) == wxT('X'))) return;
+        if (check == (str.GetChar(1) == wxCHECKLBOX_CHECKED))
+            return;
 
-        if (check)
-            str.SetChar( 1, wxT('X') );
-        else
-            str.SetChar( 1, wxT('-') );
+        str.SetChar( 1, check ? wxCHECKLBOX_CHECKED : wxCHECKLBOX_UNCHECKED );
 
-        gtk_label_set( label, str.mbc_str() );
+        gtk_label_set( label, wxGTK_CONV( str ) );
 
         return;
     }

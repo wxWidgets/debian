@@ -4,12 +4,12 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     04/01/98
-// RCS-ID:      $Id: dynamic.cpp,v 1.5 1999/02/05 23:46:03 JS Exp $
+// RCS-ID:      $Id: dynamic.cpp,v 1.9 2002/08/31 22:30:48 GD Exp $
 // Copyright:   (c) Julian Smart and Markus Holzem
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
 
-#ifdef __GNUG__
+#if defined(__GNUG__) && !defined(__APPLE__)
 #pragma implementation "dynamic.cpp"
 #pragma interface "dynamic.cpp"
 #endif
@@ -25,7 +25,7 @@
 #include "wx/wx.h"
 #endif
 
-#if defined(__WXGTK__) || defined(__WXMOTIF__)
+#if defined(__WXGTK__) || defined(__WXX11__) || defined(__WXMOTIF__) || defined(__WXMAC__) || defined(__WXMGL__)
 #include "mondrian.xpm"
 #endif
 

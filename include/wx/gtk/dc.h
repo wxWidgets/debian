@@ -2,7 +2,7 @@
 // Name:        dc.h
 // Purpose:
 // Author:      Robert Roebling
-// Id:          $Id: dc.h,v 1.19.2.1 2000/05/14 17:32:36 VS Exp $
+// Id:          $Id: dc.h,v 1.23 2002/09/07 12:28:46 GD Exp $
 // Copyright:   (c) 1998 Robert Roebling
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -11,7 +11,7 @@
 #ifndef __GTKDCH__
 #define __GTKDCH__
 
-#ifdef __GNUG__
+#if defined(__GNUG__) && !defined(__APPLE__)
 #pragma interface
 #endif
 
@@ -134,7 +134,6 @@ public:
 protected:
     // base class pure virtuals implemented here
     virtual void DoSetClippingRegion(wxCoord x, wxCoord y, wxCoord width, wxCoord height);
-    virtual void DoGetSize(int *width, int *height) const;
     virtual void DoGetSizeMM(int* width, int* height) const;
 
 public:
@@ -148,9 +147,16 @@ public:
     bool         m_needComputeScaleX,
                  m_needComputeScaleY; // not yet used
 
-    
+
 private:
     DECLARE_ABSTRACT_CLASS(wxDC)
 };
+
+// this must be defined when wxDC::Blit() honours the DC origian and needed to
+// allow wxUniv code in univ/winuniv.cpp to work with versions of wxGTK
+// 2.3.[23]
+#ifndef wxHAS_WORKING_GTK_DC_BLIT
+    #define wxHAS_WORKING_GTK_DC_BLIT
+#endif
 
 #endif // __GTKDCH__

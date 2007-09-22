@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by: VZ at 16/11/98: WX_DECLARE_LIST() and typesafe lists added
 // Created:     29/01/98
-// RCS-ID:      $Id: list.h,v 1.37.2.6 2001/12/31 15:39:53 RL Exp $
+// RCS-ID:      $Id: list.h,v 1.53.2.1 2002/09/21 16:16:57 MBN Exp $
 // Copyright:   (c) 1998 Julian Smart
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -20,13 +20,12 @@
   working with right types. This achieves the 2nd goal. As for the first one,
   we provide a special derivation of wxListBase called wxList which looks just
   like the old class.
-	Last change:  AC   27 Jan 101    4:38 pm
 */
 
 #ifndef _WX_LISTH__
 #define _WX_LISTH__
 
-#ifdef __GNUG__
+#if defined(__GNUG__) && !defined(__APPLE__)
 #pragma interface "list.h"
 #endif
 
@@ -65,7 +64,10 @@ enum wxKeyType
 // type of compare function for list sort operation (as in 'qsort'): it should
 // return a negative value, 0 or positive value if the first element is less
 // than, equal or greater than the second
+extern "C"
+{
 typedef int (* LINKAGEMODE wxSortCompareFunction)(const void *elem1, const void *elem2);
+}
 
 //
 typedef int (* LINKAGEMODE wxListIterateFunction)(void *current);
@@ -90,14 +92,14 @@ class WXDLLEXPORT wxListKey
 {
 public:
     // implicit ctors
-    wxListKey()
-        { m_keyType = wxKEY_NONE; }
-    wxListKey(long i)
-        { m_keyType = wxKEY_INTEGER; m_key.integer = i; }
-    wxListKey(const wxChar *s)
-        { m_keyType = wxKEY_STRING; m_key.string = wxStrdup(s); }
-    wxListKey(const wxString& s)
-        { m_keyType = wxKEY_STRING; m_key.string = wxStrdup(s.c_str()); }
+    wxListKey() : m_keyType(wxKEY_NONE)
+        { }
+    wxListKey(long i) : m_keyType(wxKEY_INTEGER)
+        { m_key.integer = i; }
+    wxListKey(const wxChar *s) : m_keyType(wxKEY_STRING)
+        { m_key.string = wxStrdup(s); }
+    wxListKey(const wxString& s) : m_keyType(wxKEY_STRING)
+        { m_key.string = wxStrdup(s.c_str()); }
 
     // accessors
     wxKeyType GetKeyType() const { return m_keyType; }
@@ -128,6 +130,8 @@ private:
 // -----------------------------------------------------------------------------
 
 WXDLLEXPORT_DATA(extern wxListKey) wxDefaultListKey;
+
+class WXDLLEXPORT wxListBase;
 
 class WXDLLEXPORT wxNodeBase
 {
@@ -179,23 +183,33 @@ private:
                 *m_previous;
 
     wxListBase  *m_list;        // list we belong to
+
+    DECLARE_NO_COPY_CLASS(wxNodeBase)
 };
 
 // -----------------------------------------------------------------------------
 // a double-linked list class
 // -----------------------------------------------------------------------------
+
 class WXDLLEXPORT wxListBase : public wxObject
 {
-friend class wxNodeBase;        // should be able to call DetachNode()
+friend class WXDLLEXPORT wxNodeBase; // should be able to call DetachNode()
 friend class wxHashTableBase;   // should be able to call untyped Find()
+private:
+        // common part of all ctors
+    void Init(wxKeyType keyType = wxKEY_NONE); // Must be declared before it's used (for VC++ 1.5)
 public:
     // default ctor & dtor
-    wxListBase(wxKeyType keyType = wxKEY_NONE) { Init(keyType); }
+    wxListBase(wxKeyType keyType = wxKEY_NONE)
+        { Init(keyType); }
     virtual ~wxListBase();
 
     // accessors
         // count of items in the list
     size_t GetCount() const { return m_count; }
+
+        // return TRUE if this list is empty
+    bool IsEmpty() const { return m_count == 0; }
 
     // operations
 
@@ -246,7 +260,9 @@ public:
     wxListBase(void *object, ... /* terminate with NULL */);
 
 protected:
-        // assignment operator
+        // copy ctor and assignment operator
+    wxListBase(const wxListBase& list) : wxObject()
+        { Init(); DoCopy(list); }
     wxListBase& operator=(const wxListBase& list)
         { Clear(); DoCopy(list); return *this; }
 
@@ -263,6 +279,9 @@ protected:
 
     // operations
         // append to end of list
+    wxNodeBase *Prepend(void *object)
+        { return (wxNodeBase *)wxListBase::Insert(object); }
+        // append to beginning of list
     wxNodeBase *Append(void *object);
         // insert a new item at the beginning of the list
     wxNodeBase *Insert(void *object) { return Insert( (wxNodeBase*)NULL, object); }
@@ -307,8 +326,6 @@ protected:
 
 private:
     // helpers
-        // common part of all ctors
-    void Init(wxKeyType keyType = wxKEY_NONE);
         // common part of copy ctor and assignment operator
     void DoCopy(const wxListBase& list);
         // common part of all Append()s
@@ -322,11 +339,6 @@ private:
                *m_nodeLast;
 
     wxKeyType m_keyType;        // type of our keys (may be wxKEY_NONE)
-
-protected:
-        // copy ctor. This has to go below Init, or VC++ 1.5 will complain.
-    wxListBase(const wxListBase& list) : wxObject()
-        { Init(); DoCopy(list); }
 };
 
 // -----------------------------------------------------------------------------
@@ -393,7 +405,7 @@ protected:
             : wxListBase(count, (void **)elements) { }                      \
                                                                             \
         name& operator=(const name& list)                                   \
-            { return (name&)wxListBase::operator=(list); }                  \
+            { (void) wxListBase::operator=(list); return *this; }           \
                                                                             \
         nodetype *GetFirst() const                                          \
             { return (nodetype *)wxListBase::GetFirst(); }                  \
@@ -443,7 +455,7 @@ protected:
             { wxListBase::Sort((wxSortCompareFunction)func); }              \
                                                                             \
     protected:                                                              \
-        wxNodeBase *CreateNode(wxNodeBase *prev, wxNodeBase *next,          \
+        virtual wxNodeBase *CreateNode(wxNodeBase *prev, wxNodeBase *next,  \
                                void *data,                                  \
                                const wxListKey& key = wxDefaultListKey)     \
             {                                                               \
@@ -464,9 +476,17 @@ protected:
     typedef elementtype _WX_LIST_ITEM_TYPE_##listname;                      \
     WX_DECLARE_LIST_2(elementtype, listname, wx##listname##Node, class WXDLLEXPORT)
 
+#define WX_DECLARE_USER_EXPORTED_LIST(elementtype, listname, usergoo)       \
+    typedef elementtype _WX_LIST_ITEM_TYPE_##listname;                      \
+    WX_DECLARE_LIST_2(elementtype, listname, wx##listname##Node, class usergoo)
+
 // this macro must be inserted in your program after
 //      #include <wx/listimpl.cpp>
 #define WX_DEFINE_LIST(name)    "don't forget to include listimpl.cpp!"
+
+#define WX_DEFINE_EXPORTED_LIST(name)      WX_DEFINE_LIST(name)
+#define WX_DEFINE_USER_EXPORTED_LIST(name) WX_DEFINE_LIST(name)
+
 
 // =============================================================================
 // now we can define classes 100% compatible with the old ones
@@ -488,14 +508,19 @@ class WXDLLEXPORT wxList : public wxObjectList
 {
 public:
     wxList(int key_type = wxKEY_NONE) : wxObjectList((wxKeyType)key_type) { }
+    // this destructor is required for Darwin
+   ~wxList() { }
 
     wxList& operator=(const wxList& list)
-        { return (wxList&)wxListBase::operator=(list); }
+        { (void) wxListBase::operator=(list); return *this; }
 
     // compatibility methods
     void Sort(wxSortCompareFunction compfunc) { wxListBase::Sort(compfunc); }
 
     wxNode *Member(wxObject *object) const { return (wxNode *)Find(object); }
+
+private:
+    DECLARE_DYNAMIC_CLASS(wxList)
 };
 
 // -----------------------------------------------------------------------------
@@ -514,8 +539,7 @@ public:
 
         // copying the string list: the strings are copied, too (extremely
         // inefficient!)
-    wxStringList(const wxStringList& other) : wxStringListBase()
-    	{ DeleteContents(TRUE); DoCopy(other); }
+    wxStringList(const wxStringList& other) : wxStringListBase() { DeleteContents(TRUE); DoCopy(other); }
     wxStringList& operator=(const wxStringList& other)
         { Clear(); DoCopy(other); return *this; }
 
@@ -523,6 +547,10 @@ public:
         // makes a copy of the string
     wxNode *Add(const wxChar *s)
         { return (wxNode *)wxStringListBase::Append(copystring(s)); }
+        
+        // Append to beginning of list
+    wxNode *Prepend(const wxChar *s)
+        { return (wxNode *)wxStringListBase::Insert(copystring(s)); }
 
     bool Delete(const wxChar *s);
 
@@ -534,6 +562,8 @@ public:
 
 private:
     void DoCopy(const wxStringList&); // common part of copy ctor and operator=
+
+    DECLARE_DYNAMIC_CLASS(wxStringList)
 };
 
 #endif // wxLIST_COMPATIBILITY

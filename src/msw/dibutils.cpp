@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     04/01/98
-// RCS-ID:      $Id: dibutils.cpp,v 1.16.2.1 2001/02/08 11:16:07 ronl Exp $
+// RCS-ID:      $Id: dibutils.cpp,v 1.21 2002/08/30 20:34:25 JS Exp $
 // Copyright:   (c) Microsoft, Julian Smart and Markus Holzem
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -33,7 +33,9 @@
 #include "wx/msw/dibutils.h"
 
 #ifdef __WXWINE__
-  #include <module.h>
+/* Why module.h? No longer finds this header.
+   #include <module.h>
+*/
 #endif
 
 #if defined(__WIN32__)
@@ -293,7 +295,7 @@ PDIB wxDibReadBitmapInfo(HFILE fh)
     off = _llseek(fh,0L,SEEK_CUR);
 
     if (sizeof(bf) != _lread(fh,(LPSTR)&bf,sizeof(bf)))
-        return FALSE;
+        return NULL;
 
     /*
      *  do we have a RC HEADER?
@@ -305,7 +307,7 @@ PDIB wxDibReadBitmapInfo(HFILE fh)
     }
 
     if (sizeof(bi) != _lread(fh,(LPSTR)&bi,sizeof(bi)))
-        return FALSE;
+        return NULL;
 
     /*
      *  what type of bitmap info is this?
@@ -321,8 +323,8 @@ PDIB wxDibReadBitmapInfo(HFILE fh)
             bi.biSize               = sizeof(BITMAPINFOHEADER);
             bi.biWidth              = (DWORD)bc.bcWidth;
             bi.biHeight             = (DWORD)bc.bcHeight;
-            bi.biPlanes             =  (UINT)bc.bcPlanes;
-            bi.biBitCount           =  (UINT)bc.bcBitCount;
+            bi.biPlanes             = (WORD)bc.bcPlanes;
+            bi.biBitCount           = (WORD)bc.bcBitCount;
             bi.biCompression        = BI_RGB;
             bi.biSizeImage          = 0;
             bi.biXPelsPerMeter      = 0;
@@ -549,7 +551,7 @@ static void xlatClut4(BYTE FAR *pb, DWORD dwSize, BYTE FAR *xlat)
 #define RLE_EOF     1
 #define RLE_JMP     2
 
-static void xlatRle8(BYTE FAR *pb, DWORD dwSize, BYTE FAR *xlat)
+static void xlatRle8(BYTE FAR *pb, DWORD WXUNUSED(dwSize), BYTE FAR *xlat)
 {
     BYTE    cnt;
     BYTE    b;
@@ -595,7 +597,7 @@ static void xlatRle8(BYTE FAR *pb, DWORD dwSize, BYTE FAR *xlat)
     }
 }
 
-static void xlatRle4(BYTE FAR *pb, DWORD dwSize, BYTE FAR *xlat)
+static void xlatRle4(BYTE FAR *WXUNUSED(pb), DWORD WXUNUSED(dwSize), BYTE FAR *WXUNUSED(xlat))
 {
 }
 
@@ -708,7 +710,7 @@ HPALETTE wxMakePalette(const BITMAPINFO FAR* Info, UINT flags)
   HPALETTE hPalette;
   const RGBQUAD FAR* rgb = Info->bmiColors;
 
-  WORD nColors = Info->bmiHeader.biClrUsed;
+  WORD nColors = (WORD)Info->bmiHeader.biClrUsed;
   if (nColors) {
    LOGPALETTE* logPal = (LOGPALETTE*)
      new BYTE[sizeof(LOGPALETTE) + (nColors-1)*sizeof(PALETTEENTRY)];

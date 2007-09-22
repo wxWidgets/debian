@@ -2,7 +2,7 @@
 // Name:        wx/gtk/timer.h
 // Purpose:
 // Author:      Robert Roebling
-// Id:          $Id: timer.h,v 1.7 2000/02/05 01:57:35 VZ Exp $
+// Id:          $Id: timer.h,v 1.8 2002/09/07 12:28:46 GD Exp $
 // Copyright:   (c) 1998 Robert Roebling
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -11,7 +11,7 @@
 #ifndef __GTKTIMERH__
 #define __GTKTIMERH__
 
-#ifdef __GNUG__
+#if defined(__GNUG__) && !defined(__APPLE__)
     #pragma interface "timer.h"
 #endif
 

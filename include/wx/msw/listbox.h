@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     01/02/97
-// RCS-ID:      $Id: listbox.h,v 1.22 1999/11/25 23:20:20 VZ Exp $
+// RCS-ID:      $Id: listbox.h,v 1.24.2.1 2002/09/22 21:01:59 VZ Exp $
 // Copyright:   (c) Julian Smart
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -16,6 +16,8 @@
     #pragma interface "listbox.h"
 #endif
 
+#if wxUSE_LISTBOX
+
 // ----------------------------------------------------------------------------
 // simple types
 // ----------------------------------------------------------------------------
@@ -24,7 +26,7 @@
   class WXDLLEXPORT wxOwnerDrawn;
 
   // define the array of list box items
-  #include  <wx/dynarray.h>
+  #include  "wx/dynarray.h"
 
   WX_DEFINE_EXPORTED_ARRAY(wxOwnerDrawn *, wxListBoxItemsArray);
 #endif // wxUSE_OWNER_DRAWN
@@ -93,7 +95,7 @@ public:
     bool MSWOnDraw(WXDRAWITEMSTRUCT *item);
 
     // plug-in for derived classes
-    virtual wxOwnerDrawn *CreateItem(size_t n);
+    virtual wxOwnerDrawn *CreateLboxItem(size_t n);
 
     // allows to get the item and use SetXXX functions to set it's appearance
     wxOwnerDrawn *GetItem(size_t n) const { return m_aItems[n]; }
@@ -113,9 +115,6 @@ public:
     virtual void SetupColours();
 
 protected:
-    // do we have multiple selections?
-    bool HasMultipleSelection() const;
-
     // free memory (common part of Clear() and dtor)
     void Free();
 
@@ -132,6 +131,8 @@ protected:
 private:
     DECLARE_DYNAMIC_CLASS(wxListBox)
 };
+
+#endif // wxUSE_LISTBOX
 
 #endif
     // _WX_LISTBOX_H_

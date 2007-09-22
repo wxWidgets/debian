@@ -6,7 +6,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     01/02/97
-// RCS-ID:      $Id: sashwin.cpp,v 1.25.2.3 2000/05/05 10:01:18 JS Exp $
+// RCS-ID:      $Id: sashwin.cpp,v 1.32.2.1 2002/09/21 14:16:24 JS Exp $
 // Copyright:   (c) Julian Smart
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -22,19 +22,22 @@
 #pragma hdrstop
 #endif
 
-#ifndef WX_PRECOMP
-#include "wx/wx.h"
-#endif
-
 #if wxUSE_SASH
+
+#ifndef WX_PRECOMP
+    #include "wx/dialog.h"
+    #include "wx/frame.h"
+    #include "wx/settings.h"
+#endif
 
 #include <math.h>
 #include <stdlib.h>
 
-#include "wx/string.h"
 #include "wx/dcscreen.h"
 #include "wx/sashwin.h"
 #include "wx/laywin.h"
+
+DEFINE_EVENT_TYPE(wxEVT_SASH_DRAGGED)
 
 IMPLEMENT_DYNAMIC_CLASS(wxSashWindow, wxWindow)
 IMPLEMENT_DYNAMIC_CLASS(wxSashEvent, wxCommandEvent)
@@ -43,6 +46,10 @@ BEGIN_EVENT_TABLE(wxSashWindow, wxWindow)
     EVT_PAINT(wxSashWindow::OnPaint)
     EVT_SIZE(wxSashWindow::OnSize)
     EVT_MOUSE_EVENTS(wxSashWindow::OnMouseEvent)
+#ifdef __WXMSW__
+    EVT_SET_CURSOR(wxSashWindow::OnSetCursor)
+#endif // wxMSW
+
 END_EVENT_TABLE()
 
 bool wxSashWindow::Create(wxWindow *parent, wxWindowID id, const wxPoint& pos,
@@ -73,6 +80,8 @@ void wxSashWindow::Init()
     m_maximumPaneSizeY = 10000;
     m_sashCursorWE = new wxCursor(wxCURSOR_SIZEWE);
     m_sashCursorNS = new wxCursor(wxCURSOR_SIZENS);
+    m_mouseCaptured = FALSE;
+    m_currentCursor = NULL;
 
     // Eventually, we'll respond to colour change messages
     InitColours();
@@ -82,9 +91,7 @@ void wxSashWindow::OnPaint(wxPaintEvent& WXUNUSED(event))
 {
     wxPaintDC dc(this);
 
-    //    if ( m_borderSize > 0 )
     DrawBorders(dc);
-
     DrawSashes(dc);
 }
 
@@ -95,17 +102,10 @@ void wxSashWindow::OnMouseEvent(wxMouseEvent& event)
 
     wxSashEdgePosition sashHit = SashHitTest(x, y);
 
-    // reset the cursor
-#if defined(__WXMOTIF__) || defined(__WXGTK__)
-    SetCursor(* wxSTANDARD_CURSOR);
-#endif
-#ifdef __WXMSW__
-    SetCursor(wxNullCursor);
-#endif
-
     if (event.LeftDown())
     {
         CaptureMouse();
+        m_mouseCaptured = TRUE;
 
         if ( sashHit != wxSASH_NONE )
         {
@@ -133,18 +133,29 @@ void wxSashWindow::OnMouseEvent(wxMouseEvent& event)
 
             if ( (sashHit == wxSASH_LEFT) || (sashHit == wxSASH_RIGHT) )
             {
-                SetCursor(*m_sashCursorWE);
+                if (m_currentCursor != m_sashCursorWE)
+                {
+                    SetCursor(*m_sashCursorWE);
+                }
+                m_currentCursor = m_sashCursorWE;
             }
             else
             {
-                SetCursor(*m_sashCursorNS);
+                if (m_currentCursor != m_sashCursorNS)
+                {
+                    SetCursor(*m_sashCursorNS);
+                }
+                m_currentCursor = m_sashCursorNS;
             }
         }
     }
     else if ( event.LeftUp() && m_dragMode == wxSASH_DRAG_LEFT_DOWN )
     {
         // Wasn't a proper drag
-        ReleaseMouse();
+        if (m_mouseCaptured)
+            ReleaseMouse();
+        m_mouseCaptured = FALSE;
+
         wxScreenDC::EndDrawingOnTop();
         m_dragMode = wxSASH_DRAG_NONE;
         m_draggingEdge = wxSASH_NONE;
@@ -153,7 +164,10 @@ void wxSashWindow::OnMouseEvent(wxMouseEvent& event)
     {
         // We can stop dragging now and see what we've got.
         m_dragMode = wxSASH_DRAG_NONE;
-        ReleaseMouse();
+        if (m_mouseCaptured)
+            ReleaseMouse();
+        m_mouseCaptured = FALSE;
+
         // Erase old tracker
         DrawSashTracker(m_draggingEdge, m_oldX, m_oldY);
 
@@ -273,7 +287,9 @@ void wxSashWindow::OnMouseEvent(wxMouseEvent& event)
     }
     else if ( event.LeftUp() )
     {
-        ReleaseMouse();
+        if (m_mouseCaptured)
+           ReleaseMouse();
+        m_mouseCaptured = FALSE;
     }
     else if (event.Moving() && !event.Dragging())
     {
@@ -282,16 +298,25 @@ void wxSashWindow::OnMouseEvent(wxMouseEvent& event)
         {
             if ( (sashHit == wxSASH_LEFT) || (sashHit == wxSASH_RIGHT) )
             {
-                SetCursor(*m_sashCursorWE);
+                if (m_currentCursor != m_sashCursorWE)
+                {
+                    SetCursor(*m_sashCursorWE);
+                }
+                m_currentCursor = m_sashCursorWE;
             }
             else
             {
-                SetCursor(*m_sashCursorNS);
+                if (m_currentCursor != m_sashCursorNS)
+                {
+                    SetCursor(*m_sashCursorNS);
+                }
+                m_currentCursor = m_sashCursorNS;
             }
         }
         else
         {
             SetCursor(wxNullCursor);
+            m_currentCursor = NULL;
         }
     }
     else if ( event.Dragging() &&
@@ -300,11 +325,19 @@ void wxSashWindow::OnMouseEvent(wxMouseEvent& event)
     {
         if ( (m_draggingEdge == wxSASH_LEFT) || (m_draggingEdge == wxSASH_RIGHT) )
         {
-            SetCursor(*m_sashCursorWE);
+            if (m_currentCursor != m_sashCursorWE)
+            {
+                SetCursor(*m_sashCursorWE);
+            }
+            m_currentCursor = m_sashCursorWE;
         }
         else
         {
-            SetCursor(*m_sashCursorNS);
+            if (m_currentCursor != m_sashCursorNS)
+            {
+                SetCursor(*m_sashCursorNS);
+            }
+            m_currentCursor = m_sashCursorNS;
         }
 
         if (m_dragMode == wxSASH_DRAG_LEFT_DOWN)
@@ -645,12 +678,12 @@ void wxSashWindow::SizeWindows()
 void wxSashWindow::InitColours()
 {
     // Shadow colours
-#if defined(__WIN95__)
-    m_faceColour = wxSystemSettings::GetSystemColour(wxSYS_COLOUR_3DFACE);
-    m_mediumShadowColour = wxSystemSettings::GetSystemColour(wxSYS_COLOUR_3DSHADOW);
-    m_darkShadowColour = wxSystemSettings::GetSystemColour(wxSYS_COLOUR_3DDKSHADOW);
-    m_lightShadowColour = wxSystemSettings::GetSystemColour(wxSYS_COLOUR_3DLIGHT);
-    m_hilightColour = wxSystemSettings::GetSystemColour(wxSYS_COLOUR_3DHILIGHT);
+#ifndef __WIN16__
+    m_faceColour = wxSystemSettings::GetColour(wxSYS_COLOUR_3DFACE);
+    m_mediumShadowColour = wxSystemSettings::GetColour(wxSYS_COLOUR_3DSHADOW);
+    m_darkShadowColour = wxSystemSettings::GetColour(wxSYS_COLOUR_3DDKSHADOW);
+    m_lightShadowColour = wxSystemSettings::GetColour(wxSYS_COLOUR_3DLIGHT);
+    m_hilightColour = wxSystemSettings::GetColour(wxSYS_COLOUR_3DHILIGHT);
 #else
     m_faceColour = *(wxTheColourDatabase->FindColour("LIGHT GREY"));
     m_mediumShadowColour = *(wxTheColourDatabase->FindColour("GREY"));
@@ -668,5 +701,24 @@ void wxSashWindow::SetSashVisible(wxSashEdgePosition edge, bool sash)
      else
         m_sashes[edge].m_margin = 0;
 }
+
+#ifdef __WXMSW__
+
+// this is currently called (and needed) under MSW only...
+void wxSashWindow::OnSetCursor(wxSetCursorEvent& event)
+{
+    // if we don't do it, the resizing cursor might be set for child window:
+    // and like this we explicitly say that our cursor should not be used for
+    // children windows which overlap us
+
+    if ( SashHitTest(event.GetX(), event.GetY()) != wxSASH_NONE)
+    {
+        // default processing is ok
+        event.Skip();
+    }
+    //else: do nothing, in particular, don't call Skip()
+}
+
+#endif // wxMSW
 
 #endif // wxUSE_SASH

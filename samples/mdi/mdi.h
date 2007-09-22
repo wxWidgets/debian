@@ -4,12 +4,12 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     04/01/98
-// RCS-ID:      $Id: mdi.h,v 1.9.2.3 2000/12/10 11:57:55 vadz Exp $
+// RCS-ID:      $Id: mdi.h,v 1.13 2002/01/19 14:47:57 GD Exp $
 // Copyright:   (c) Julian Smart and Markus Holzem
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
 
-#include <wx/toolbar.h>
+#include "wx/toolbar.h"
 
 // Define a new application
 class MyApp : public wxApp
@@ -64,6 +64,7 @@ public:
     void OnActivate(wxActivateEvent& event);
 
     void OnRefresh(wxCommandEvent& event);
+    void OnUpdateRefresh(wxUpdateUIEvent& event);
     void OnChangeTitle(wxCommandEvent& event);
     void OnChangePosition(wxCommandEvent& event);
     void OnChangeSize(wxCommandEvent& event);
@@ -71,8 +72,6 @@ public:
     void OnSize(wxSizeEvent& event);
     void OnMove(wxMoveEvent& event);
     void OnClose(wxCloseEvent& event);
-
-    void OnUpdateRefresh(wxUpdateUIEvent& event);
 
     DECLARE_EVENT_TABLE()
 };

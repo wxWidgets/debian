@@ -6,7 +6,7 @@
 # Author:       Robin Dunn
 #
 # Created:      6-March-2000
-# RCS-ID:       $Id: run.py,v 1.1.2.6 2001/01/30 20:53:21 robind Exp $
+# RCS-ID:       $Id: run.py,v 1.10 2002/08/16 19:44:51 RD Exp $
 # Copyright:    (c) 2000 by Total Control Software
 # Licence:      wxWindows license
 #----------------------------------------------------------------------------
@@ -18,7 +18,7 @@ on the command line.
 """
 
 
-import sys
+import sys, os
 from wxPython.wx import *
 
 #----------------------------------------------------------------------------
@@ -33,13 +33,20 @@ class RunDemoApp(wxApp):
     def __init__(self, name, module):
         self.name = name
         self.demoModule = module
-        wxApp.__init__(self, 0)
+        wxApp.__init__(self, 0) ##wxPlatform == "__WXMAC__")
+
 
     def OnInit(self):
         wxInitAllImageHandlers()
         frame = wxFrame(None, -1, "RunDemo: " + self.name, size=(0,0),
                         style=wxNO_FULL_REPAINT_ON_RESIZE|wxDEFAULT_FRAME_STYLE)
         frame.CreateStatusBar()
+        menuBar = wxMenuBar()
+        menu = wxMenu()
+        menu.Append(101, "E&xit\tAlt-X", "Exit demo")
+        EVT_MENU(self, 101, self.OnButton)
+        menuBar.Append(menu, "&File")
+        frame.SetMenuBar(menuBar)
         frame.Show(true)
         win = self.demoModule.runTest(frame, frame, Log())
 
@@ -54,9 +61,9 @@ class RunDemoApp(wxApp):
             # otherwise the demo made its own frame, so just put a
             # button in this one
             if hasattr(frame, 'otherWin'):
-                wxButton(frame, 1101, " Exit ")
+                b = wxButton(frame, -1, " Exit ")
                 frame.SetSize((200, 100))
-                EVT_BUTTON(frame, 1101, self.OnButton)
+                EVT_BUTTON(frame, b.GetId(), self.OnButton)
             else:
                 # It was probably a dialog or something that is already
                 # gone, so we're done.
@@ -65,6 +72,8 @@ class RunDemoApp(wxApp):
 
         self.SetTopWindow(frame)
         self.frame = frame
+        #wxLog_SetActiveTarget(wxLogStderr())
+        #wxLog_SetTraceMask(wxTraceMessages)
         return true
 
 
@@ -75,7 +84,7 @@ class RunDemoApp(wxApp):
 
 
 def main(argv):
-    if len(argv) != 2:
+    if len(argv) < 2:
         print "Please specify a demo module name on the command-line"
         raise SystemExit
 

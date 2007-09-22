@@ -4,7 +4,7 @@
 // Author:      Guillermo Rodriguez Garcia, <guille@iies.es>
 // Modified by:
 // Created:     Jan/2000
-// RCS-ID:      $Id: reader.h,v 1.1.2.1 2000/07/10 05:53:01 GRG Exp $
+// RCS-ID:      $Id: reader.h,v 1.3 2002/09/07 12:21:28 GD Exp $
 // Copyright:   (c) 2000, Guillermo Rodriguez Garcia
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -12,7 +12,7 @@
 #ifndef _LIFE_READER_H_
 #define _LIFE_READER_H_
 
-#ifdef __GNUG__
+#if defined(__GNUG__) && !defined(__APPLE__)
     #pragma interface "reader.h"
 #endif
 

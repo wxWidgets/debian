@@ -27,13 +27,14 @@ for intercepting scroll window events from the receiving window.
 \twocolitem{{\bf EVT\_SCROLLWIN\_PAGEUP(func)}}{Process wxEVT\_SCROLLWIN\_PAGEUP page up events.}
 \twocolitem{{\bf EVT\_SCROLLWIN\_PAGEDOWN(func)}}{Process wxEVT\_SCROLLWIN\_PAGEDOWN page down events.}
 \twocolitem{{\bf EVT\_SCROLLWIN\_THUMBTRACK(func)}}{Process wxEVT\_SCROLLWIN\_THUMBTRACK thumbtrack events (frequent events
-sent as the user drags the thumtrack).}
+sent as the user drags the thumbtrack).}
 \twocolitem{{\bf EVT\_SCROLLWIN\_THUMBRELEASE(func)}}{Process wxEVT\_SCROLLWIN\_THUMBRELEASE thumb release events.}
 \end{twocollist}%
 
 \wxheading{See also}
 
-\helpref{wxWindow::OnScroll}{wxwindowonscroll}, \helpref{wxScrollEvent}{wxscrollevent}, \helpref{Event handling overview}{eventhandlingoverview}
+%\helpref{wxWindow::OnScroll}{wxwindowonscroll},
+\helpref{wxScrollEvent}{wxscrollevent}, \helpref{Event handling overview}{eventhandlingoverview}
 
 \latexignore{\rtfignore{\wxheading{Members}}}
 
@@ -54,5 +55,8 @@ Returns wxHORIZONTAL or wxVERTICAL, depending on the orientation of the scrollba
 
 \constfunc{int}{GetPosition}{\void}
 
-Returns the position of the scrollbar.
+Returns the position of the scrollbar for the thumb track and release events.
+Note that this field can't be used for the other events, you need to query
+the window itself for the current position in that case.
+
 

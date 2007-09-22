@@ -5,7 +5,7 @@
 # Author:      Robin Dunn
 #
 # Created:     30-Dec-1999
-# RCS-ID:      $Id: __init__.py,v 1.1.2.2 2001/01/30 20:54:28 robind Exp $
+# RCS-ID:      $Id: __init__.py,v 1.5 2001/12/01 02:22:57 RD Exp $
 # Copyright:   (c) 1999 by Total Control Software
 # Licence:     wxWindows license
 #----------------------------------------------------------------------
@@ -15,4 +15,3 @@
 
 # import the main classes into the package namespace.
 from editor    import wxEditor
-from py_editor import wxPyEditor

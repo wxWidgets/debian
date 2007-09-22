@@ -4,7 +4,7 @@
 // Author:      Guilhem Lavaux
 // Modified by:
 // Created:     10/07/1997
-// RCS-ID:      $Id: protocol.h,v 1.8.2.1 2001/02/23 22:52:11 vaclavslavik Exp $
+// RCS-ID:      $Id: protocol.h,v 1.11 2002/08/31 11:29:13 GD Exp $
 // Copyright:   (c) 1997, 1998 Guilhem Lavaux
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -12,11 +12,13 @@
 #ifndef _WX_PROTOCOL_PROTOCOL_H
 #define _WX_PROTOCOL_PROTOCOL_H
 
-#ifdef __GNUG__
+#if defined(__GNUG__) && !defined(__APPLE__)
 #pragma interface
 #endif
 
 #include "wx/defs.h"
+
+#if wxUSE_PROTOCOL
 
 #include "wx/object.h"
 #include "wx/string.h"
@@ -126,5 +128,7 @@ protected:
 
     DECLARE_DYNAMIC_CLASS(wxProtoInfo)
 };
+
+#endif // wxUSE_PROTOCOL
 
 #endif // _WX_PROTOCOL_PROTOCOL_H

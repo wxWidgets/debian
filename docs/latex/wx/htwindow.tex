@@ -17,6 +17,13 @@ Once the window is created you can set its content by calling
 \helpref{SetPage(text)}{wxhtmlwindowsetpage} or 
 \helpref{LoadPage(filename)}{wxhtmlwindowloadpage}. 
 
+\wxheading{Note}
+
+wxHtmlWindow uses the \helpref{wxImage}{wximage} class for displaying images.
+Don't forget to initialize all image formats you need before loading any page!
+(See \helpref{wxInitAllImageHandlers}{wxinitallimagehandlers} and
+\helpref{wxImage::AddHandler}{wximageaddhandler}.)
+
 \wxheading{Derived from}
 
 \helpref{wxScrolledWindow}{wxscrolledwindow}
@@ -52,6 +59,20 @@ filters. These filters are present by default:
 \item {\tt image/*} MIME types
 \item Plain Text filter (this filter is used if no other filter matches)
 \end{itemize}
+
+\membersection{wxHtmlWindow::AppendToPage}\label{wxhtmlwindowappendtopage}
+
+\func{bool}{AppendToPage}{\param{const wxString\& }{source}}
+
+Appends HTML fragment to currently displayed text and refreshes the window. 
+
+\wxheading{Parameters}
+
+\docparam{source}{HTML code fragment}
+
+\wxheading{Return value}
+
+FALSE if an error occurred, TRUE otherwise.
 
 \membersection{wxHtmlWindow::GetInternalRepresentation}\label{wxhtmlwindowgetinternalrepresentation}
 
@@ -98,6 +119,21 @@ Returns the related frame.
 Moves back to the previous page. (each page displayed using 
 \helpref{LoadPage}{wxhtmlwindowloadpage} is stored in history list.)
 
+\membersection{wxHtmlWindow::HistoryCanBack}\label{wxhtmlwindowhistorycanback}
+
+\func{bool}{HistoryCanBack}{\void}
+
+Returns true if it is possible to go back in the history (i.e. HistoryBack()
+won't fail).
+
+\membersection{wxHtmlWindow::HistoryCanForward}\label{wxhtmlwindowhistorycanforward}
+
+\func{bool}{HistoryCanForward}{\void}
+
+Returns true if it is possible to go forward in the history (i.e. HistoryBack()
+won't fail).
+
+
 \membersection{wxHtmlWindow::HistoryClear}\label{wxhtmlwindowhistoryclear}
 
 \func{void}{HistoryClear}{\void}
@@ -112,7 +148,7 @@ Moves to next page in history.
 
 \membersection{wxHtmlWindow::LoadPage}\label{wxhtmlwindowloadpage}
 
-\func{bool}{LoadPage}{\param{const wxString\& }{location}}
+\func{virtual bool}{LoadPage}{\param{const wxString\& }{location}}
 
 Unlike SetPage this function first loads HTML page from {\it location} 
 and then displays it. See example:
@@ -129,6 +165,37 @@ htmlwin -> SetPage("help/myproject/index.htm");
 
 FALSE if an error occurred, TRUE otherwise
 
+\membersection{wxHtmlWindow::OnCellClicked}\label{wxhtmlwindowoncellclicked}
+
+\func{virtual void}{OnCellClicked}{\param{wxHtmlCell }{*cell}, \param{wxCoord }{x}, \param{wxCoord }{y}, \param{const wxMouseEvent\& }{event}}
+
+This method is called when a mouse button is clicked inside wxHtmlWindow.
+The default behaviour is to call 
+\helpref{OnLinkClicked}{wxhtmlwindowonlinkclicked} if the cell contains a
+hypertext link.
+
+\wxheading{Parameters}
+
+\docparam{cell}{The cell inside which the mouse was clicked, always a simple
+(i.e. non container) cell}
+
+\docparam{x, y}{The logical coordinates of the click point}
+
+\docparam{event}{The mouse event containing other information about the click}
+
+\membersection{wxHtmlWindow::OnCellMouseHover}\label{wxhtmlwindowoncellmousehover}
+
+\func{virtual void}{OnCellMouseHover}{\param{wxHtmlCell }{*cell}, \param{wxCoord }{x}, \param{wxCoord }{y}}
+
+This method is called when a mouse moves over an HTML cell.
+
+\wxheading{Parameters}
+
+\docparam{cell}{The cell inside which the mouse is currently, always a simple
+(i.e. non container) cell}
+
+\docparam{x, y}{The logical coordinates of the click point}
+
 \membersection{wxHtmlWindow::OnLinkClicked}\label{wxhtmlwindowonlinkclicked}
 
 \func{virtual void}{OnLinkClicked}{\param{const wxHtmlLinkInfo\& }{link}}
@@ -138,6 +205,41 @@ Called when user clicks on hypertext link. Default behaviour is to call
 
 Also see \helpref{wxHtmlLinkInfo}{wxhtmllinkinfo}.
 
+\membersection{wxHtmlWindow::OnOpeningURL}\label{wxhtmlwindowonopeningurl}
+
+\func{virtual wxHtmlOpeningStatus}{OnOpeningURL}{\param{wxHtmlURLType }{type},\param{const wxString\& }{url}, \param{wxString *}{redirect}}
+
+Called when an URL is being opened (either when the user clicks on a link or
+an image is loaded). The URL will be opened only if OnOpeningURL returns 
+{\tt wxHTML\_OPEN}. This method is called by
+\helpref{wxHtmlParser::OpenURL}{wxhtmlparseropenurl}.
+You can override OnOpeningURL to selectively block some
+URLs (e.g. for security reasons) or to redirect them elsewhere. Default
+behaviour is to always return {\tt wxHTML\_OPEN}.
+
+\wxheading{Parameters}
+
+\docparam{type}{Indicates type of the resource. Is one of
+\begin{twocollist}\itemsep=0pt
+\twocolitem{{\bf wxHTML\_URL\_PAGE}}{Opening a HTML page.}
+\twocolitem{{\bf wxHTML\_URL\_IMAGE}}{Opening an image.}
+\twocolitem{{\bf wxHTML\_URL\_OTHER}}{Opening a resource that doesn't fall into
+any other category.}
+\end{twocollist}}
+
+\docparam{url}{URL being opened.}
+
+\docparam{redirect}{Pointer to wxString variable that must be filled with an
+URL if OnOpeningURL returns {\tt wxHTML\_REDIRECT}.}
+
+\wxheading{Return value}
+\begin{twocollist}\itemsep=0pt
+\twocolitem{{\bf wxHTML\_OPEN}}{Open the URL.}
+\twocolitem{{\bf wxHTML\_BLOCK}}{Deny access to the URL, \helpref{wxHtmlParser::OpenURL}{wxhtmlparseropenurl} will return NULL.}
+\twocolitem{{\bf wxHTML\_REDIRECT}}{Don't open {\it url}, redirect to another
+URL. OnOpeningURL must fill {\it *redirect} with the new URL. OnOpeningURL will
+be called again on returned URL.}
+\end{twocollist}
 
 \membersection{wxHtmlWindow::OnSetTitle}\label{wxhtmlwindowonsettitle}
 
@@ -183,7 +285,7 @@ This function sets font sizes and faces.
 \wxheading{Parameters}
 
 \docparam{normal\_face}{This is face name for normal (i.e. non-fixed) font. 
-It can be either empty string (then the default face is choosen) or
+It can be either empty string (then the default face is chosen) or
 platform-specific face name. Examples are "helvetica" under Unix or
 "Times New Roman" under Windows.}
 
@@ -207,7 +309,7 @@ Under Windows:
     SetFonts("", "", {7, 8, 10, 12, 16, 22, 30});
 \end{verbatim}
 
-Athough it seems different the fact is that the fonts are of approximately
+Although it seems different the fact is that the fonts are of approximately
 same size under both platforms (due to wxMSW / wxGTK inconsistency)
 
 \membersection{wxHtmlWindow::SetPage}\label{wxhtmlwindowsetpage}

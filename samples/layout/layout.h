@@ -4,9 +4,9 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     04/01/98
-// RCS-ID:      $Id: layout.h,v 1.5 1999/12/11 15:07:13 RR Exp $
+// RCS-ID:      $Id: layout.h,v 1.6 2002/03/17 14:15:41 VZ Exp $
 // Copyright:   (c) Julian Smart and Markus Holzem
-// Licence:   	wxWindows license
+// Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
 
 // Define a new application

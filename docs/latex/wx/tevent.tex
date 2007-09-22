@@ -12,7 +12,7 @@ From wxWindows 2.0, {\it event tables} are used instead, with a few exceptions.
 
 An event table is placed in an implementation file to tell wxWindows how to map
 events to member functions. These member functions are not virtual functions, but
-they all similar in form: they take a single wxEvent-derived argument, and have a void return
+they are all similar in form: they take a single wxEvent-derived argument, and have a void return
 type.
 
 Here's an example of an event table.
@@ -70,8 +70,9 @@ protected:
 
 \subsection{How events are processed}\label{eventprocessing}
 
-When an event is received from the windowing system, wxWindows calls \helpref{wxEvtHandler::ProcessEvent}{wxevthandlerprocessevent} on
-the first event handler object belonging to the window generating the event.
+When an event is received from the windowing system, wxWindows calls 
+\helpref{wxEvtHandler::ProcessEvent}{wxevthandlerprocessevent} on the first
+event handler object belonging to the window generating the event.
 
 It may be noted that wxWindows' event processing system implements something
 very close to virtual methods in normal C++, i.e. it is possible to alter
@@ -139,6 +140,23 @@ indirectly from wxCommandEvent will travel up the containment
 hierarchy from child to parent until an event handler is found that
 doesn't call event.Skip().  Events not derived from wxCommandEvent are
 sent only to the window they occurred in and then stop.
+
+Finally, there is another additional complication (which, in fact, simplifies
+life of wxWindows programmers significantly): when propagating the command
+events upwards to the parent window, the event propagation stops when it
+reaches the parent dialog, if any. This means that you don't risk to get
+unexpected events from the dialog controls (which might be left unprocessed by
+the dialog itself because it doesn't care about them) when a modal dialog is
+popped up. The events do propagate beyond the frames, however. The rationale
+for this choice is that there are only a few frames in a typical application
+and their parent-child relation are well understood by the programmer while it
+may be very difficult, if not impossible, to track down all the dialogs which
+may be popped up in a complex program (remember that some are created
+automatically by wxWindows). If you need to specify a different behaviour for
+some reason, you can use 
+\helpref{SetExtraStyle(wxWS\_EX\_BLOCK\_EVENTS)}{wxwindowsetextrastyle} 
+explicitly to prevent the events from being propagated beyond the given window
+or unset this flag for the dialogs which have it on by default.
 
 Typically events that deal with a window as a window (size, motion,
 paint, mouse, keyboard, etc.) are sent only to the window.  Events
@@ -329,8 +347,8 @@ called via \helpref{wxWindow::Close}{wxwindowclose}.}
 file drop events.}
 \twocolitem{\helpref{wxEraseEvent}{wxeraseevent}}{The EVT\_ERASE\_BACKGROUND macro is used to handle window erase requests.}
 \twocolitem{\helpref{wxFocusEvent}{wxfocusevent}}{The EVT\_SET\_FOCUS and EVT\_KILL\_FOCUS macros are used to handle keyboard focus events.}
-\twocolitem{\helpref{wxKeyEvent}{wxkeyevent}}{EVT\_CHAR and EVT\_CHAR\_HOOK macros handle keyboard
-input for any window.}
+\twocolitem{\helpref{wxKeyEvent}{wxkeyevent}}{EVT\_CHAR, EVT\_KEY\_DOWN and
+EVT\_KEY\_UP macros handle keyboard input for any window.}
 \twocolitem{\helpref{wxIdleEvent}{wxidleevent}}{The EVT\_IDLE macro handle application idle events
 (to process background tasks, for example).}
 \twocolitem{\helpref{wxInitDialogEvent}{wxinitdialogevent}}{The EVT\_INIT\_DIALOG macro is used
@@ -345,7 +363,7 @@ mouse events or all mouse events.}
 \helpref{wxScrollBar}{wxscrollbar}, \helpref{wxSlider}{wxslider},and \helpref{wxSpinButton}{wxspinbutton}.}
 \twocolitem{\helpref{wxSizeEvent}{wxsizeevent}}{The EVT\_SIZE macro is used to handle a window resize.}
 \twocolitem{\helpref{wxSplitterEvent}{wxsplitterevent}}{The EVT\_SPLITTER\_SASH\_POS\_CHANGED, EVT\_SPLITTER\_UNSPLIT
-and EVT\_SPLITTER\_DOUBLECLICKED macros are used to handle the various splitter window events.}
+and EVT\_SPLITTER\_DCLICK macros are used to handle the various splitter window events.}
 \twocolitem{\helpref{wxSysColourChangedEvent}{wxsyscolourchangedevent}}{The EVT\_SYS\_COLOUR\_CHANGED macro is used to handle
 events informing the application that the user has changed the system colours (Windows only).}
 \twocolitem{\helpref{wxTreeEvent}{wxtreeevent}}{These macros handle \helpref{wxTreeCtrl}{wxtreectrl} events.}

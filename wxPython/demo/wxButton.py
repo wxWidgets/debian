@@ -1,11 +1,14 @@
 
 from wxPython.wx import *
 
+import images
+
 #----------------------------------------------------------------------
 
 class TestPanel(wxPanel):
     def __init__(self, parent, log):
-        wxPanel.__init__(self, parent, -1)
+        wxPanel.__init__(self, parent, -1,
+                         style=wxNO_FULL_REPAINT_ON_RESIZE)
         self.log = log
 
         b = wxButton(self, 10, "Hello", wxPoint(20, 20))
@@ -14,22 +17,18 @@ class TestPanel(wxPanel):
         b.SetForegroundColour(wxWHITE)
         b.SetDefault()
 
-        b = wxButton(self, 20, "HELLO AGAIN!", wxPoint(20, 60), wxSize(90, 45))
+        b = wxButton(self, 20, "HELLO AGAIN!", wxPoint(20, 60), wxSize(120, 45))
         EVT_BUTTON(self, 20, self.OnClick)
 
         b.SetToolTipString("This is a Hello button...")
 
-        bmp = wxBitmap('bitmaps/test2.bmp', wxBITMAP_TYPE_BMP)
-
+        bmp = images.getTest2Bitmap()
         mask = wxMaskColour(bmp, wxBLUE)
         bmp.SetMask(mask)
 
-        print bmp.GetWidth(), bmp.GetHeight()
-
-        wxBitmapButton(self, 30, bmp, wxPoint(140, 20),
+        wxBitmapButton(self, 30, bmp, wxPoint(160, 20),
                        wxSize(bmp.GetWidth()+10, bmp.GetHeight()+10))
         EVT_BUTTON(self, 30, self.OnClick)
-
 
     def OnClick(self, event):
         self.log.WriteText("Click! (%d)\n" % event.GetId())

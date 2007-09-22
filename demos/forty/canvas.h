@@ -4,7 +4,7 @@
 // Author:      Chris Breeze
 // Modified by:
 // Created:     21/07/97
-// RCS-ID:      $Id: canvas.h,v 1.1 2000/01/08 15:27:37 VZ Exp $
+// RCS-ID:      $Id: canvas.h,v 1.3 2002/03/21 13:10:16 JS Exp $
 // Copyright:   (c) 1993-1998 Chris Breeze
 // Licence:   	wxWindows licence
 //---------------------------------------------------------------------------
@@ -37,6 +37,8 @@ public:
 	void UpdateScores();
 	void EnableHelpingHand(bool enable)		{ m_helpingHand = enable; }
 	void EnableRightButtonUndo(bool enable)	{ m_rightBtnUndo = enable; }
+        void LayoutGame();
+        void ShowPlayerDialog();
 
 	DECLARE_EVENT_TABLE()
 

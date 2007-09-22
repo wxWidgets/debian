@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     29/01/98
-// RCS-ID:      $Id: layout.h,v 1.13 2000/01/21 21:38:47 VZ Exp $
+// RCS-ID:      $Id: layout.h,v 1.15 2002/09/02 18:10:39 VZ Exp $
 // Copyright:   (c) 1998 Julian Smart
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -16,11 +16,11 @@
 // headers
 // ----------------------------------------------------------------------------
 
-#ifdef __GNUG__
+#if defined(__GNUG__) && !defined(__APPLE__)
     #pragma interface "layout.h"
 #endif
 
-#include "wx/defs.h"
+#include "wx/object.h"
 
 // X stupidly defines these in X.h
 #ifdef Above

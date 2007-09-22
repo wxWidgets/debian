@@ -6,6 +6,8 @@
 #ifndef _WX_EXTRAH_
 #define _WX_EXTRAH_
 
+#ifndef __CYGWIN10__
+
 #define ENDSESSION_LOGOFF    0x80000000
 
 /* WM_NCHITTEST message */
@@ -653,5 +655,7 @@ BOOL WINAPI PlaySoundW(LPCWSTR pszSound, HMODULE hmod, DWORD fdwSound);
 #define TreeView_GetItemRect(hwnd, hitem, prc, code) \
   SendMessage((hwnd), TVM_GETITEMRECT, (WPARAM)(code), (LPARAM)(RECT *)(prc))
 
+#endif
+    /* __CYGWIN10__ */
 #endif
     /* _WX_EXTRAH_ */

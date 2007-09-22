@@ -2,7 +2,7 @@
 // Name:        tbargtk.h
 // Purpose:     GTK toolbar
 // Author:      Robert Roebling
-// RCS-ID:      $Id: tbargtk.h,v 1.24 1999/12/15 19:47:51 VZ Exp $
+// RCS-ID:      $Id: tbargtk.h,v 1.28 2002/09/07 12:28:46 GD Exp $
 // Copyright:   (c) Robert Roebling
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -10,7 +10,7 @@
 #ifndef _WX_GTK_TBARGTK_H_
 #define _WX_GTK_TBARGTK_H_
 
-#ifdef __GNUG__
+#if defined(__GNUG__) && !defined(__APPLE__)
     #pragma interface "tbargtk.h"
 #endif
 
@@ -52,6 +52,10 @@ public:
 
     virtual wxToolBarToolBase *FindToolForPosition(wxCoord x, wxCoord y) const;
 
+    virtual void SetToolShortHelp(int id, const wxString& helpString);
+
+    virtual void SetWindowStyleFlag( long style );
+
     // implementation from now on
     // --------------------------
 
@@ -60,13 +64,16 @@ public:
     GdkColor     *m_fg;
     GdkColor     *m_bg;
 
-    bool          m_blockNextEvent;
+    bool          m_blockEvent;
 
     void OnInternalIdle();
 
 protected:
     // common part of all ctors
     void Init();
+
+    // set the GTK toolbar style and orientation
+    void GtkSetStyle();
 
     // implement base class pure virtuals
     virtual bool DoInsertTool(size_t pos, wxToolBarToolBase *tool);
@@ -77,9 +84,10 @@ protected:
     virtual void DoSetToggle(wxToolBarToolBase *tool, bool toggle);
 
     virtual wxToolBarToolBase *CreateTool(int id,
+                                          const wxString& label,
                                           const wxBitmap& bitmap1,
                                           const wxBitmap& bitmap2,
-                                          bool toggle,
+                                          wxItemKind kind,
                                           wxObject *clientData,
                                           const wxString& shortHelpString,
                                           const wxString& longHelpString);

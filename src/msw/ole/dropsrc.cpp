@@ -4,7 +4,7 @@
 // Author:      Vadim Zeitlin
 // Modified by:
 // Created:     10.05.98
-// RCS-ID:      $Id: dropsrc.cpp,v 1.16.2.2 2001/02/08 11:16:07 ronl Exp $
+// RCS-ID:      $Id: dropsrc.cpp,v 1.21 2002/07/09 11:52:11 VZ Exp $
 // Copyright:   (c) 1998 Vadim Zeitlin <zeitlin@dptmaths.ens-cachan.fr>
 // Licence:     wxWindows license
 ///////////////////////////////////////////////////////////////////////////////
@@ -33,7 +33,7 @@
 
 #include "wx/setup.h"
 
-#if wxUSE_DRAG_AND_DROP
+#if wxUSE_OLE && wxUSE_DRAG_AND_DROP
 
 #include "wx/log.h"
 #include "wx/dnd.h"
@@ -93,7 +93,6 @@ wxIDropSource::wxIDropSource(wxDropSource *pDropSource)
 
   m_pDropSource = pDropSource;
   m_grfInitKeyState = 0;
-  m_cRef = 0;
 }
 
 // Name    : wxIDropSource::QueryContinueDrag
@@ -187,17 +186,18 @@ wxDropSource::~wxDropSource()
 // Name    : DoDragDrop
 // Purpose : start drag and drop operation
 // Returns : wxDragResult - the code of performed operation
-// Params  : [in] bool bAllowMove: if false, only copy is allowed
+// Params  : [in] int flags: specifies if moving is allowe (or only copying)
 // Notes   : you must call SetData() before if you had used def ctor
-wxDragResult wxDropSource::DoDragDrop(bool bAllowMove)
+wxDragResult wxDropSource::DoDragDrop(int flags)
 {
   wxCHECK_MSG( m_data != NULL, wxDragNone, wxT("No data in wxDropSource!") );
 
   DWORD dwEffect;
   HRESULT hr = ::DoDragDrop(m_data->GetInterface(),
                             m_pIDropSource,
-                            bAllowMove ? DROPEFFECT_COPY | DROPEFFECT_MOVE
-                                       : DROPEFFECT_COPY,
+                            (flags & wxDrag_AllowMove)
+                                ? DROPEFFECT_COPY | DROPEFFECT_MOVE
+                                : DROPEFFECT_COPY,
                             &dwEffect);
 
   if ( hr == DRAGDROP_S_CANCEL ) {
@@ -209,11 +209,8 @@ wxDragResult wxDropSource::DoDragDrop(bool bAllowMove)
     }
     else if ( dwEffect & DROPEFFECT_MOVE ) {
       // consistency check: normally, we shouldn't get "move" at all
-      // here if !bAllowMove, but in practice it does happen quite often
-      if ( bAllowMove )
-        return wxDragMove;
-      else
-        return wxDragCopy;
+      // here if we don't allow it, but in practice it does happen quite often
+      return (flags & wxDrag_AllowMove) ? wxDragMove : wxDragCopy;
     }
     else {
       // not copy or move
@@ -222,7 +219,8 @@ wxDragResult wxDropSource::DoDragDrop(bool bAllowMove)
   }
   else {
     if ( FAILED(hr) ) {
-      wxLogSysError(wxT("Drag & drop operation failed."));
+      wxLogApiError(wxT("DoDragDrop"), hr);
+      wxLogError(wxT("Drag & drop operation failed."));
     }
     else {
       wxLogDebug(wxT("Unexpected success return code %08lx from DoDragDrop."),

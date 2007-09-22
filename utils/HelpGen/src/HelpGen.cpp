@@ -4,7 +4,7 @@
 // Author:      Vadim Zeitlin <zeitlin@dptmaths.ens-cachan.fr>
 // Modified by:
 // Created:     06/01/99
-// RCS-ID:      $Id: HelpGen.cpp,v 1.10.2.2 2000/03/27 15:33:10 VZ Exp $
+// RCS-ID:      $Id: HelpGen.cpp,v 1.22 2002/01/21 21:18:50 JS Exp $
 // Copyright:   (c) 1999 VZ
 // Licence:     GPL
 /////////////////////////////////////////////////////////////////////////////
@@ -51,14 +51,20 @@
 // wxWindows
 #include "wx/wxprec.h"
 
+#if wxUSE_GUI
+    #error "This is a console program and can be only compiled using wxBase"
+#endif
+
 #ifndef WX_PRECOMP
-    #include <wx/string.h>
-    #include <wx/log.h>
-    #include <wx/dynarray.h>
-    #include <wx/wx.h>
+    #include "wx/string.h"
+    #include "wx/log.h"
+    #include "wx/dynarray.h"
+    #include "wx/wx.h"
 #endif // WX_PRECOMP
 
-#include <wx/file.h>
+#include "wx/file.h"
+#include "wx/regex.h"
+#include "wx/hash.h"
 
 // C++ parsing classes
 #include "cjparser.h"
@@ -67,26 +73,27 @@
 #include <stdio.h>
 #include <time.h>
 
+// argh, Windows defines this
+#ifdef GetCurrentTime
+#undef GetCurrentTime
+#endif
+
 // -----------------------------------------------------------------------------
 // global vars
 // -----------------------------------------------------------------------------
-
-// just a copy of argv
-static char **g_argv = NULL;
 
 class HelpGenApp: public wxApp
 {
 public:
     HelpGenApp() {};
 
-#if wxUSE_GUI
-    bool OnInit();
-#else
-    int OnRun();
-#endif
+    // don't let wxWin parse our cmd line, we do it ourselves
+    virtual bool OnInit() { return TRUE; }
+
+    virtual int OnRun();
 };
 
-IMPLEMENT_APP(HelpGenApp);
+// IMPLEMENT_APP(HelpGenApp);
 
 // -----------------------------------------------------------------------------
 // private functions
@@ -107,33 +114,122 @@ static wxString GetAllComments(const spContext& ctx);
 
 // get the string with current time (returns pointer to static buffer)
 // timeFormat is used for the call of strftime(3)
-#ifdef GetCurrentTime
-#undef GetCurrentTime
-#endif
-
 static const char *GetCurrentTime(const char *timeFormat);
+
+// get the string containing the program version
+static const wxString GetVersionString();
 
 // -----------------------------------------------------------------------------
 // private classes
 // -----------------------------------------------------------------------------
 
-// add a function which sanitazes the string before writing it to the file
+// a function documentation entry
+struct FunctionDocEntry
+{
+    FunctionDocEntry(const wxString& name_, const wxString& text_)
+        : name(name_), text(text_) { }
+
+    // the function name
+    wxString name;
+
+    // the function doc text
+    wxString text;
+
+    // sorting stuff
+    static int Compare(FunctionDocEntry **pp1, FunctionDocEntry **pp2)
+    {
+        // the methods should appear in the following order: ctors, dtor, all
+        // the rest in the alphabetical order
+        bool isCtor1 = (*pp1)->name == classname;
+        bool isCtor2 = (*pp2)->name == classname;
+
+        if ( isCtor1 ) {
+            if ( isCtor2 ) {
+                // we don't order the ctors because we don't know how to do it
+                return 0;
+            }
+
+            // ctor comes before non-ctor
+            return -1;
+        }
+        else {
+            if ( isCtor2 ) {
+                // non-ctor must come after ctor
+                return 1;
+            }
+
+            wxString dtorname = wxString('~') + classname;
+
+            // there is only one dtor, so the logic here is simpler
+            if ( (*pp1)->name == dtorname ) {
+                return -1;
+            }
+            else if ( (*pp2)->name == dtorname ) {
+                return 1;
+            }
+
+            // two normal methods
+            return strcmp((*pp1)->name, (*pp2)->name);
+        }
+    }
+
+    static wxString classname;
+};
+
+wxString FunctionDocEntry::classname;
+
+WX_DECLARE_OBJARRAY(FunctionDocEntry, FunctionDocEntries);
+
+#include "wx/arrimpl.cpp"
+
+WX_DEFINE_OBJARRAY(FunctionDocEntries);
+
+// add a function which sanitazes the string before writing it to the file and
+// also capable of delaying output and sorting it before really writing it to
+// the file (done from FlushAll())
 class wxTeXFile : public wxFile
 {
 public:
     wxTeXFile() { }
 
-    bool WriteTeX(const wxString& s)
+    // write a string to file verbatim (should only be used for the strings
+    // inside verbatim environment)
+    void WriteVerbatim(const wxString& s)
+    {
+        m_text += s;
+    }
+
+    // write a string quoting TeX specials in it
+    void WriteTeX(const wxString& s)
     {
         wxString t(s);
         TeXFilter(&t);
 
-        return wxFile::Write(t);
+        m_text += t;
+    }
+
+    // do write everything to file
+    bool FlushAll()
+    {
+        if ( m_text.empty() )
+            return TRUE;
+
+        if ( !Write(m_text) ) {
+            wxLogError("Failed to output generated documentation.");
+
+            return FALSE;
+        }
+
+        m_text.clear();
+
+        return TRUE;
     }
 
 private:
     wxTeXFile(const wxTeXFile&);
     wxTeXFile& operator=(const wxTeXFile&);
+
+    wxString m_text;
 };
 
 // helper class which manages the classes and function names to ignore for
@@ -234,6 +330,10 @@ protected:
     // terminate the function documentation if it was started
     void CloseFunction();
 
+    // write out all function docs when there are no more left in this class
+    // after sorting them in alphabetical order
+    void CloseClass();
+
     wxString  m_directoryOut,   // directory for the output
               m_fileHeader;     // name of the .h file we parse
     bool      m_overwrite;      // overwrite existing files?
@@ -243,13 +343,27 @@ protected:
     bool m_inClass,         // TRUE after file successfully opened
          m_inTypesSection,  // enums & typedefs go there
          m_inMethodSection, // functions go here
-         m_isFirstParam,    // first parameter of current function?
-         m_inFunction;      // we're parsing a function declaration
+         m_isFirstParam;    // first parameter of current function?
+
+    // non empty while parsing a class
+    wxString m_classname;
+
+    // these are only non-empty while parsing a method:
+    wxString m_funcName,    // the function name
+             m_textFunc;    // the function doc text
+
+    // the array containing the documentation entries for the functions in the
+    // class currently being parsed
+    FunctionDocEntries m_arrayFuncDocs;
 
     // holders for "saved" documentation
-    wxString m_textStoredEnums,
-             m_textStoredTypedefs,
+    wxString m_textStoredTypedefs,
              m_textStoredFunctionComment;
+
+    // for enums we have to use an array as we can't intermix the normal text
+    // and the text inside verbatim environment
+    wxArrayString m_storedEnums,
+                  m_storedEnumsVerb;
 
     // headers included by this file
     wxArrayString m_headers;
@@ -424,10 +538,6 @@ private:
     DocManager& operator=(const DocManager&);
 };
 
-// -----------------------------------------------------------------------------
-// private functions
-// -----------------------------------------------------------------------------
-
 // =============================================================================
 // implementation
 // =============================================================================
@@ -435,7 +545,7 @@ private:
 // this function never returns
 static void usage()
 {
-    wxString prog = g_argv[0];
+    wxString prog = wxTheApp->argv[0];
     wxString basename = prog.AfterLast('/');
 #ifdef __WXMSW__
     if ( !basename )
@@ -444,7 +554,7 @@ static void usage()
     if ( !basename )
         basename = prog;
 
-    wxLogError(
+    wxLogMessage(
 "usage: %s [global options] <mode> [mode options] <files...>\n"
 "\n"
 "   where global options are:\n"
@@ -471,16 +581,7 @@ static void usage()
     exit(1);
 }
 
-/*
-int main(int argc, char **argv)
-{
-*/
-
-#if wxUSE_GUI
-bool HelpGenApp::OnInit()
-#else
 int HelpGenApp::OnRun()
-#endif
 {
     enum
     {
@@ -488,8 +589,6 @@ int HelpGenApp::OnRun()
         Mode_Dump,
         Mode_Diff
     } mode = Mode_None;
-
-    g_argv = argv;
 
     if ( argc < 2 ) {
         usage();
@@ -519,6 +618,14 @@ int HelpGenApp::OnRun()
                     case 'H':
                         // help requested
                         usage();
+                        // doesn't return
+
+                    case 'V':
+                        // version requested
+                        wxLogMessage("HelpGen version %s\n"
+                                     "(c) 1999-2001 Vadim Zeitlin\n",
+                                     GetVersionString().c_str());
+                        return 0;
 
                     case 'i':
                         current++;
@@ -658,7 +765,7 @@ int HelpGenApp::OnRun()
             wxLogError("Can't complete diff.");
 
             // failure
-            return false;
+            return FALSE;
         }
 
         DocManager docman(paramNames);
@@ -678,7 +785,22 @@ int HelpGenApp::OnRun()
         docman.DumpDifferences(ctxTop);
     }
 
-    return false;
+    return 0;
+}
+
+int main(int argc, char **argv)
+{
+    wxInitializer initializer;
+    if ( !initializer )
+    {
+        fprintf(stderr, "Failed to initialize the wxWindows library, aborting.");
+
+        return -1;
+    }
+	HelpGenApp app;
+	app.argc = argc;
+	app.argv = argv;
+	return app.OnRun();
 }
 
 // -----------------------------------------------------------------------------
@@ -697,13 +819,19 @@ HelpGenVisitor::HelpGenVisitor(const wxString& directoryOut,
 void HelpGenVisitor::Reset()
 {
     m_inClass =
-    m_inFunction =
     m_inTypesSection =
     m_inMethodSection = FALSE;
 
+    m_classname =
+    m_funcName =
+    m_textFunc =
     m_textStoredTypedefs =
-    m_textStoredEnums =
     m_textStoredFunctionComment = "";
+
+    m_arrayFuncDocs.Empty();
+
+    m_storedEnums.Empty();
+    m_storedEnumsVerb.Empty();
     m_headers.Empty();
 }
 
@@ -715,8 +843,15 @@ void HelpGenVisitor::InsertTypedefDocs()
 
 void HelpGenVisitor::InsertEnumDocs()
 {
-    m_file.WriteTeX(m_textStoredEnums);
-    m_textStoredEnums.Empty();
+    size_t count = m_storedEnums.GetCount();
+    for ( size_t n = 0; n < count; n++ )
+    {
+        m_file.WriteTeX(m_storedEnums[n]);
+        m_file.WriteVerbatim(m_storedEnumsVerb[n] + '\n');
+    }
+
+    m_storedEnums.Empty();
+    m_storedEnumsVerb.Empty();
 }
 
 void HelpGenVisitor::InsertDataStructuresHeader()
@@ -724,7 +859,7 @@ void HelpGenVisitor::InsertDataStructuresHeader()
     if ( !m_inTypesSection ) {
         m_inTypesSection = TRUE;
 
-        m_file.WriteTeX("\\wxheading{Data structures}\n\n");
+        m_file.WriteVerbatim("\\wxheading{Data structures}\n\n");
     }
 }
 
@@ -733,35 +868,95 @@ void HelpGenVisitor::InsertMethodsHeader()
     if ( !m_inMethodSection ) {
         m_inMethodSection = TRUE;
 
-        m_file.WriteTeX( "\\latexignore{\\rtfignore{\\wxheading{Members}}}\n\n");
+        m_file.WriteVerbatim( "\\latexignore{\\rtfignore{\\wxheading{Members}}}\n\n");
     }
 }
 
 void HelpGenVisitor::CloseFunction()
 {
-    if ( m_inFunction ) {
-        m_inFunction = FALSE;
-
-        wxString totalText;
+    if ( !m_funcName.empty() ) {
         if ( m_isFirstParam ) {
             // no params found
-            totalText << "\\void";
+            m_textFunc << "\\void";
         }
 
-        totalText << "}\n\n";
+        m_textFunc << "}\n\n";
 
-        if ( !m_textStoredFunctionComment.IsEmpty() )
-            totalText << m_textStoredFunctionComment << '\n';
+        if ( !m_textStoredFunctionComment.IsEmpty() ) {
+            m_textFunc << m_textStoredFunctionComment << '\n';
+        }
 
-        m_file.WriteTeX(totalText);
+        m_arrayFuncDocs.Add(new FunctionDocEntry(m_funcName, m_textFunc));
+
+        m_funcName.clear();
     }
+}
+
+void HelpGenVisitor::CloseClass()
+{
+	CloseFunction();
+
+    if ( m_inClass ) {
+        size_t count = m_arrayFuncDocs.GetCount();
+        if ( count ) {
+			size_t n;
+            FunctionDocEntry::classname = m_classname;
+
+            m_arrayFuncDocs.Sort(FunctionDocEntry::Compare);
+
+			// Now examine each first line and if it's been seen, cut it
+			// off (it's a duplicate \membersection)
+			wxHashTable membersections(wxKEY_STRING);
+
+            for ( n = 0; n < count; n++ )
+			{
+                wxString section(m_arrayFuncDocs[n].text);
+
+				// Strip leading whitespace
+				int pos = section.Find("\\membersection");
+				if (pos > -1)
+				{
+					section = section.Mid(pos);
+				}
+
+				wxString ms(section.BeforeFirst(wxT('\n')));
+				if (membersections.Get(ms))
+				{
+					m_arrayFuncDocs[n].text = section.AfterFirst(wxT('\n'));
+				}
+				else
+				{
+					membersections.Put(ms, & membersections);
+				}
+            }
+
+            for ( n = 0; n < count; n++ ) {
+                m_file.WriteTeX(m_arrayFuncDocs[n].text);
+            }
+
+            m_arrayFuncDocs.Empty();
+        }
+
+        m_inClass = FALSE;
+        m_classname.clear();
+    }
+	m_file.FlushAll();
 }
 
 void HelpGenVisitor::EndVisit()
 {
     CloseFunction();
 
+    CloseClass();
+
     m_fileHeader.Empty();
+
+    m_file.FlushAll();
+	if (m_file.IsOpened())
+	{
+		m_file.Flush();
+		m_file.Close();
+	}
 
     wxLogVerbose("%s: finished generating for the current file.",
                  GetCurrentTime("%H:%M:%S"));
@@ -776,7 +971,13 @@ void HelpGenVisitor::VisitFile( spFile& file )
 
 void HelpGenVisitor::VisitClass( spClass& cl )
 {
-    m_inClass = FALSE; // will be left FALSE on error
+    CloseClass();
+
+	if (m_file.IsOpened())
+	{
+		m_file.Flush();
+		m_file.Close();
+	}
 
     wxString name = cl.GetName();
 
@@ -821,24 +1022,25 @@ void HelpGenVisitor::VisitClass( spClass& cl )
     wxLogInfo("Created new file '%s' for class '%s'.",
               filename.c_str(), name.c_str());
 
+    // write out the header
+    wxString header;
+    header.Printf("%%\n"
+                  "%% automatically generated by HelpGen %s from\n"
+                  "%% %s at %s\n"
+                  "%%\n"
+                  "\n"
+                  "\n"
+                  "\\section{\\class{%s}}\\label{%s}\n\n",
+                  GetVersionString().c_str(),
+                  m_fileHeader.c_str(),
+                  GetCurrentTime("%d/%b/%y %H:%M:%S"),
+                  name.c_str(),
+                  wxString(name).MakeLower().c_str());
+
+    m_file.WriteVerbatim(header);
+
     // the entire text we're writing to file
     wxString totalText;
-
-    // write out the header
-    {
-        wxString header;
-        header.Printf("%%\n"
-                      "%% automatically generated by HelpGen from\n"
-                      "%% %s at %s\n"
-                      "%%\n"
-                      "\n"
-                      "\n"
-                      "\\section{\\class{%s}}\\label{%s}\n",
-                      m_fileHeader.c_str(), GetCurrentTime("%d/%b/%y %H:%M:%S"),
-                      name.c_str(), wxString(name).MakeLower().c_str());
-
-        totalText << header << '\n';
-    }
 
     // if the header includes other headers they must be related to it... try to
     // automatically generate the "See also" clause
@@ -938,6 +1140,12 @@ void HelpGenVisitor::VisitClass( spClass& cl )
     }
     totalText << derived << "\n\n";
 
+    // include file section
+    wxString includeFile = "\\wxheading{Include files}\n\n";
+    includeFile << "<" << m_fileHeader << ">";
+
+    totalText << includeFile << "\n\n";
+
     // write all this to file
     m_file.WriteTeX(totalText);
 
@@ -945,6 +1153,8 @@ void HelpGenVisitor::VisitClass( spClass& cl )
     InsertDataStructuresHeader();
     InsertTypedefDocs();
     InsertEnumDocs();
+
+	//m_file.Flush();
 }
 
 void HelpGenVisitor::VisitEnumeration( spEnumeration& en )
@@ -961,25 +1171,25 @@ void HelpGenVisitor::VisitEnumeration( spEnumeration& en )
     }
 
     // simply copy the enum text in the docs
-    wxString enumeration = GetAllComments(en);
-    enumeration << "{\\small \\begin{verbatim}\n"
-                << en.mEnumContent
-                << "\n\\end{verbatim}}\n";
+    wxString enumeration = GetAllComments(en),
+             enumerationVerb;
+
+    enumerationVerb << "\\begin{verbatim}\n"
+                    << en.mEnumContent
+                    << "\n\\end{verbatim}\n";
 
     // remember for later use if we're not inside a class yet
     if ( !m_inClass ) {
-        if ( !m_textStoredEnums.IsEmpty() ) {
-            m_textStoredEnums << '\n';
-        }
-
-        m_textStoredEnums << enumeration;
+        m_storedEnums.Add(enumeration);
+        m_storedEnumsVerb.Add(enumerationVerb);
     }
     else {
         // write the header for this section if not done yet
         InsertDataStructuresHeader();
 
-        enumeration << '\n';
         m_file.WriteTeX(enumeration);
+        m_file.WriteVerbatim(enumerationVerb);
+        m_file.WriteVerbatim('\n');
     }
 }
 
@@ -1063,11 +1273,12 @@ void HelpGenVisitor::VisitOperation( spOperation& op )
         return;
     }
 
-    wxString funcname = op.GetName(),
-             classname = op.GetClass().GetName();
-    if ( m_ignoreNames.IgnoreMethod(classname, funcname) ) {
+    m_classname = op.GetClass().GetName();
+    wxString funcname = op.GetName();
+
+    if ( m_ignoreNames.IgnoreMethod(m_classname, funcname) ) {
         wxLogVerbose("Skipping ignored '%s::%s'.",
-                     classname.c_str(), funcname.c_str());
+                     m_classname.c_str(), funcname.c_str());
 
         return;
     }
@@ -1075,7 +1286,7 @@ void HelpGenVisitor::VisitOperation( spOperation& op )
     InsertMethodsHeader();
 
     // save state info
-    m_inFunction =
+    m_funcName = funcname;
     m_isFirstParam = TRUE;
 
     m_textStoredFunctionComment = GetAllComments(op);
@@ -1085,47 +1296,45 @@ void HelpGenVisitor::VisitOperation( spOperation& op )
 
     // check for the special case of dtor
     wxString dtor;
-    if ( (funcname[0] == '~') && (classname == funcname.c_str() + 1) ) {
-        dtor.Printf("\\destruct{%s}", classname.c_str());
+    if ( (funcname[0] == '~') && (m_classname == funcname.c_str() + 1) ) {
+        dtor.Printf("\\destruct{%s}", m_classname.c_str());
         funcname = dtor;
     }
 
-    totalText.Printf("\n"
-                     "\\membersection{%s::%s}\\label{%s}\n"
-                     "\n"
-                     "\\%sfunc{%s%s}{%s}{",
-                     classname.c_str(), funcname.c_str(),
-                     MakeLabel(classname, funcname).c_str(),
-                     op.mIsConstant ? "const" : "",
-                     op.mIsVirtual ? "virtual " : "",
-                     op.mRetType.c_str(),
-                     funcname.c_str());
+	m_textFunc.Printf("\n"
+		"\\membersection{%s::%s}\\label{%s}\n",
+		m_classname.c_str(), funcname.c_str(),
+		MakeLabel(m_classname, funcname).c_str());
 
-    m_file.WriteTeX(totalText);
+	wxString func;
+	func.Printf("\n"
+                      "\\%sfunc{%s%s}{%s}{",
+                      op.mIsConstant ? "const" : "",
+                      op.mIsVirtual ? "virtual " : "",
+                      op.mRetType.c_str(),
+                      funcname.c_str());
+	m_textFunc += func;
 }
 
 void HelpGenVisitor::VisitParameter( spParameter& param )
 {
-    if ( !m_inFunction )
+    if ( m_funcName.empty() )
         return;
 
-    wxString totalText;
     if ( m_isFirstParam ) {
         m_isFirstParam = FALSE;
     }
     else {
-        totalText << ", ";
+        m_textFunc << ", ";
     }
 
-    totalText << "\\param{" << param.mType << " }{" << param.GetName();
+    m_textFunc << "\\param{" << param.mType << " }{" << param.GetName();
     wxString defvalue = param.mInitVal;
     if ( !defvalue.IsEmpty() ) {
-        totalText << " = " << defvalue;
+        m_textFunc << " = " << defvalue;
     }
 
-    totalText << '}';
-
-    m_file.WriteTeX(totalText);
+    m_textFunc << '}';
 }
 
 // ---------------------------------------------------------------------------
@@ -1869,8 +2078,44 @@ static wxString MakeLabel(const char *classname, const char *funcname)
         }
     }
 
-    if ( funcname )
-        label << funcname;
+    if ( funcname ) {
+        // special treatment for operatorXXX() stuff because the C operators
+        // are not valid in LaTeX labels
+        wxString oper;
+        if ( wxString(funcname).StartsWith("operator", &oper) ) {
+            label << "operator";
+
+            static const struct
+            {
+                const char *oper;
+                const char *name;
+            } operatorNames[] =
+            {
+                { "=",  "assign" },
+                { "==", "equal" },
+            };
+
+            size_t n;
+            for ( n = 0; n < WXSIZEOF(operatorNames); n++ ) {
+                if ( oper == operatorNames[n].oper ) {
+                    label << operatorNames[n].name;
+
+                    break;
+                }
+            }
+
+            if ( n == WXSIZEOF(operatorNames) ) {
+                wxLogWarning("unknown operator '%s' - making dummy label.",
+                             oper.c_str());
+
+                label << "unknown";
+            }
+        }
+        else // simply use the func name
+        {
+            label << funcname;
+        }
+    }
 
     label.MakeLower();
 
@@ -1885,21 +2130,33 @@ static wxString MakeHelpref(const char *argument)
     return helpref;
 }
 
+static void TeXFilter(wxString* str)
+{
+    // TeX special which can be quoted (don't include backslash nor braces as
+    // we generate them 
+    static wxRegEx reNonSpecialSpecials("[#$%&_]"),
+                   reAccents("[~^]");
+
+    // just quote
+    reNonSpecialSpecials.ReplaceAll(str, "\\\\\\0");
+
+    // can't quote these ones as they produce accents when preceded by
+    // backslash, so put them inside verb
+    reAccents.ReplaceAll(str, "\\\\verb|\\0|");
+}
+
 static void TeXUnfilter(wxString* str)
 {
     // FIXME may be done much more quickly
     str->Trim(TRUE);
     str->Trim(FALSE);
 
-    str->Replace("\\&", "&");
-    str->Replace("\\_", "_");
-}
+    // undo TeXFilter
+    static wxRegEx reNonSpecialSpecials("\\\\([#$%&_{}])"),
+                   reAccents("\\\\verb|([~^])|");
 
-static void TeXFilter(wxString* str)
-{
-    // FIXME may be done much more quickly
-    str->Replace("&", "\\&");
-    str->Replace("_", "\\_");
+    reNonSpecialSpecials.ReplaceAll(str, "\\1");
+    reAccents.ReplaceAll(str, "\\1");
 }
 
 static wxString GetAllComments(const spContext& ctx)
@@ -1937,8 +2194,55 @@ static const char *GetCurrentTime(const char *timeFormat)
     return s_timeBuffer;
 }
 
+static const wxString GetVersionString()
+{
+    wxString version = "$Revision: 1.22 $";
+    wxRegEx("^\\$Revision: 1.22 $$").ReplaceFirst(&version, "\\1");
+    return version;
+}
+
 /*
    $Log: HelpGen.cpp,v $
+   Revision 1.22  2002/01/21 21:18:50  JS
+   Now adds 'include file' heading
+
+   Revision 1.21  2002/01/04 11:06:09  JS
+   Fixed missing membersections bug and also bug with functions not being written
+   in the right class
+
+   Revision 1.20  2002/01/03 14:23:33  JS
+   Added code to make it not duplicate membersections for overloaded functions
+
+   Revision 1.19  2002/01/03 13:34:12  JS
+   Added FlushAll to CloseClass, otherwise text was only flushed right at the end,
+   and appeared in one file.
+
+   Revision 1.18  2002/01/03 12:02:47  JS
+   Added main() and corrected VC++ project settings
+
+   Revision 1.17  2001/11/30 21:43:35  VZ
+   now the methods are sorted in the correct order in the generated docs
+
+   Revision 1.16  2001/11/28 19:27:33  VZ
+   HelpGen doesn't work in GUI mode
+
+   Revision 1.15  2001/11/22 21:59:58  GD
+   use "..." instead of <...> for wx headers
+
+   Revision 1.14  2001/07/19 13:51:29  VZ
+   fixes to version string
+
+   Revision 1.13  2001/07/19 13:44:57  VZ
+   1. compilation fixes
+   2. don't quote special characters inside verbatim environment
+
+   Revision 1.12  2000/10/09 13:53:33  juliansmart
+
+   Doc corrections; added HelpGen project files
+
+   Revision 1.11  2000/07/15 19:50:42  cvsuser
+   merged 2.2 branch
+
    Revision 1.10.2.2  2000/03/27 15:33:10  VZ
    don't trasnform output dir name to lower case
 

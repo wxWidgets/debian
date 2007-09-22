@@ -4,7 +4,7 @@
 // Author:      Vadim Zeitlin
 // Modified by:
 // Created:     13.01.00
-// RCS-ID:      $Id: enhmeta.h,v 1.2 2000/02/25 23:49:39 VZ Exp $
+// RCS-ID:      $Id: enhmeta.h,v 1.3 2001/04/09 01:22:45 VZ Exp $
 // Copyright:   (c) 2000 Vadim Zeitlin <zeitlin@dptmaths.ens-cachan.fr>
 // Licence:     wxWindows license
 ///////////////////////////////////////////////////////////////////////////////
@@ -94,11 +94,11 @@ private:
     DECLARE_DYNAMIC_CLASS(wxEnhMetaFileDC)
 };
 
+#if wxUSE_DRAG_AND_DROP
+
 // ----------------------------------------------------------------------------
 // wxEnhMetaFileDataObject is a specialization of wxDataObject for enh metafile
 // ----------------------------------------------------------------------------
-
-#if wxUSE_DRAG_AND_DROP
 
 // notice that we want to support both CF_METAFILEPICT and CF_ENHMETAFILE and
 // so we derive from wxDataObject and not from wxDataObjectSimple
@@ -125,6 +125,38 @@ public:
     virtual bool GetDataHere(const wxDataFormat& format, void *buf) const;
     virtual bool SetData(const wxDataFormat& format, size_t len,
                          const void *buf);
+
+protected:
+    wxEnhMetaFile m_metafile;
+};
+
+
+// ----------------------------------------------------------------------------
+// wxEnhMetaFileSimpleDataObject does derive from wxDataObjectSimple which
+// makes it more convenient to use (it can be used with wxDataObjectComposite)
+// at the price of not supoprting any more CF_METAFILEPICT but only
+// CF_ENHMETAFILE
+// ----------------------------------------------------------------------------
+
+class WXDLLEXPORT wxEnhMetaFileSimpleDataObject : public wxDataObjectSimple
+{
+public:
+    // ctors
+    wxEnhMetaFileSimpleDataObject() : wxDataObjectSimple(wxDF_ENHMETAFILE) { }
+    wxEnhMetaFileSimpleDataObject(const wxEnhMetaFile& metafile)
+        : wxDataObjectSimple(wxDF_ENHMETAFILE), m_metafile(metafile) { }
+
+    // virtual functions which you may override if you want to provide data on
+    // demand only - otherwise, the trivial default versions will be used
+    virtual void SetEnhMetafile(const wxEnhMetaFile& metafile)
+        { m_metafile = metafile; }
+    virtual wxEnhMetaFile GetEnhMetafile() const
+        { return m_metafile; }
+
+    // implement base class pure virtuals
+    virtual size_t GetDataSize() const;
+    virtual bool GetDataHere(void *buf) const;
+    virtual bool SetData(size_t len, const void *buf);
 
 protected:
     wxEnhMetaFile m_metafile;

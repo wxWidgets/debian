@@ -4,13 +4,15 @@
 // Author:      Vadim Zeitlin
 // Modified by:
 // Created:     25.10.99
-// RCS-ID:      $Id: menuitem.h,v 1.16 2000/01/20 22:34:48 VZ Exp $
+// RCS-ID:      $Id: menuitem.h,v 1.22 2002/04/12 13:15:43 JS Exp $
 // Copyright:   (c) 1999 Vadim Zeitlin <zeitlin@dptmaths.ens-cachan.fr>
 // Licence:     wxWindows license
 ///////////////////////////////////////////////////////////////////////////////
 
 #ifndef _WX_MENUITEM_H_BASE_
 #define _WX_MENUITEM_H_BASE_
+
+#if wxUSE_MENUS
 
 // ----------------------------------------------------------------------------
 // headers
@@ -39,7 +41,7 @@ public:
                            int id = wxID_SEPARATOR,
                            const wxString& text = wxEmptyString,
                            const wxString& help = wxEmptyString,
-                           bool isCheckable = FALSE,
+                           wxItemKind kind = wxITEM_NORMAL,
                            wxMenu *subMenu = (wxMenu *)NULL);
 
     // destruction: wxMenuItem will delete its submenu
@@ -67,8 +69,11 @@ public:
     static wxString GetLabelFromText(const wxString& text);
 
     // what kind of menu item we are
-    virtual void SetCheckable(bool checkable) { m_isCheckable = checkable; }
-    bool IsCheckable() const { return m_isCheckable; }
+    wxItemKind GetKind() const { return m_kind; }
+
+    virtual void SetCheckable(bool checkable) { m_kind = checkable ? wxITEM_CHECK : wxITEM_NORMAL; }
+    bool IsCheckable() const
+        { return m_kind == wxITEM_CHECK || m_kind == wxITEM_RADIO; }
 
     bool IsSubMenu() const { return m_subMenu != NULL; }
     void SetSubMenu(wxMenu *menu) { m_subMenu = menu; }
@@ -87,8 +92,12 @@ public:
     const wxString& GetHelp() const { return m_help; }
 
 #if wxUSE_ACCEL
+    // extract the accelerator from the given menu string, return NULL if none
+    // found
+    static wxAcceleratorEntry *GetAccelFromString(const wxString& label);
+
     // get our accelerator or NULL (caller must delete the pointer)
-    virtual wxAcceleratorEntry *GetAccel() const { return NULL; }
+    virtual wxAcceleratorEntry *GetAccel() const;
 
     // set the accel for this item - this may also be done indirectly with
     // SetText()
@@ -99,18 +108,34 @@ public:
     void SetName(const wxString& str) { SetText(str); }
     const wxString& GetName() const { return GetText(); }
 
+    static wxMenuItem *New(wxMenu *parentMenu,
+                           int id,
+                           const wxString& text,
+                           const wxString& help,
+                           bool isCheckable,
+                           wxMenu *subMenu = (wxMenu *)NULL)
+    {
+        return New(parentMenu, id, text, help,
+                   isCheckable ? wxITEM_CHECK : wxITEM_NORMAL, subMenu);
+    }
+
 protected:
     int           m_id;             // numeric id of the item >= 0 or -1
     wxMenu       *m_parentMenu,     // the menu we belong to
                  *m_subMenu;        // our sub menu or NULL
     wxString      m_text,           // label of the item
                   m_help;           // the help string for the item
-    bool          m_isCheckable;    // can be checked?
+    wxItemKind    m_kind;           // seperator/normal/check/radio item?
     bool          m_isChecked;      // is checked?
     bool          m_isEnabled;      // is enabled?
 
-    // some compilers need a default constructor here, do not remove
-    wxMenuItemBase() { }
+    // this ctor is for the derived classes only, we're never created directly
+    wxMenuItemBase(wxMenu *parentMenu = (wxMenu *)NULL,
+                   int id = wxID_SEPARATOR,
+                   const wxString& text = wxEmptyString,
+                   const wxString& help = wxEmptyString,
+                   wxItemKind kind = wxITEM_NORMAL,
+                   wxMenu *subMenu = (wxMenu *)NULL);
 
 private:
     // and, if we have one ctor, compiler won't generate a default copy one, so
@@ -126,14 +151,14 @@ private:
 #ifdef wxUSE_BASE_CLASSES_ONLY
     #define wxMenuItem wxMenuItemBase
 #else // !wxUSE_BASE_CLASSES_ONLY
-#if defined(__WXMSW__)
+#if defined(__WXUNIVERSAL__)
+    #include "wx/univ/menuitem.h"
+#elif defined(__WXMSW__)
     #include "wx/msw/menuitem.h"
 #elif defined(__WXMOTIF__)
     #include "wx/motif/menuitem.h"
 #elif defined(__WXGTK__)
     #include "wx/gtk/menuitem.h"
-#elif defined(__WXQT__)
-    #include "wx/qt/menuitem.h"
 #elif defined(__WXMAC__)
     #include "wx/mac/menuitem.h"
 #elif defined(__WXPM__)
@@ -142,6 +167,8 @@ private:
     #include "wx/stubs/menuitem.h"
 #endif
 #endif // wxUSE_BASE_CLASSES_ONLY/!wxUSE_BASE_CLASSES_ONLY
+
+#endif // wxUSE_MENUS
 
 #endif
     // _WX_MENUITEM_H_BASE_

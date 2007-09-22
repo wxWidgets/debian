@@ -4,7 +4,7 @@
 // Author:      Chris Breeze
 // Modified by:
 // Created:     21/07/97
-// RCS-ID:      $Id: pile.h,v 1.1 2000/01/08 15:27:40 VZ Exp $
+// RCS-ID:      $Id: pile.h,v 1.2 2002/03/06 17:50:52 JS Exp $
 // Copyright:   (c) 1993-1998 Chris Breeze
 // Licence:   	wxWindows licence
 //---------------------------------------------------------------------------
@@ -69,6 +69,7 @@ public:
 	virtual bool AcceptCard(Card*) { return FALSE; }
 	virtual void AddCard(Card* card);	// Add card to top of pile
 	virtual void AddCard(wxDC& pDC, Card* card);	// Add card + redraw it
+        void SetPos(int x,int y) {m_x = x;m_y = y;};
 
 protected:
 	int   m_x, m_y;				// Position of the pile on the screen

@@ -12,7 +12,7 @@
 #pragma implementation "vidxanm.h"
 #endif
 
-#include <wx/wxprec.h>
+#include "wx/wxprec.h"
 
 #ifndef WX_PRECOMP
 #include <wx/wx.h>
@@ -505,7 +505,8 @@ bool wxVideoXANIM::RestartXANIM()
     m_video_output->SetSize(vibrato_size);
     vibrato_size.SetWidth(vibrato_size.GetWidth()-1);
     m_video_output->SetSize(vibrato_size);
-    // Very useful ! Actually it sends a SETSIZE event to XAnim
+    // Very useful ! Actually it "should" sends a SETSIZE event to XAnim
+    // FIXME: This event is not sent !!
     
     m_paused = FALSE;
     

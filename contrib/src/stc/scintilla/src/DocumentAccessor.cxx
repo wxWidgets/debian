@@ -1,11 +1,13 @@
-// SciTE - Scintilla based Text Editor
-// Accessor.cxx - rapid easy access to contents of a Scintilla
-// Copyright 1998-2000 by Neil Hodgson <neilh@scintilla.org>
+// Scintilla source code edit control
+/** @file DocumentAccessor.cxx
+ ** Rapid easy access to contents of a Scintilla.
+ **/
+// Copyright 1998-2001 by Neil Hodgson <neilh@scintilla.org>
 // The License.txt file describes the conditions under which this software may be distributed.
 
 #include <stdlib.h>
 #include <string.h>
-#include <ctype.h> 
+#include <ctype.h>
 #include <stdio.h>
 
 #include "Platform.h"
@@ -21,22 +23,14 @@
 DocumentAccessor::~DocumentAccessor() {
 }
 
-#if PLAT_WIN 
 bool DocumentAccessor::InternalIsLeadByte(char ch) {
 	if (SC_CP_UTF8 == codePage)
 		// For lexing, all characters >= 0x80 are treated the
 		// same so none is considered a lead byte.
-		return false;	
+		return false;
 	else
-		return IsDBCSLeadByteEx(codePage, ch);
+		return Platform::IsDBCSLeadByte(codePage, ch);
 }
-#else
-// PLAT_GTK or PLAT_WX
-// TODO: support DBCS under GTK+ and WX
-bool DocumentAccessor::InternalIsLeadByte(char) {
-	return false;
-}
-#endif 
 
 void DocumentAccessor::Fill(int position) {
 	if (lenDoc == -1)
@@ -52,6 +46,15 @@ void DocumentAccessor::Fill(int position) {
 
 	pdoc->GetCharRange(buf, startPos, endPos-startPos);
 	buf[endPos-startPos] = '\0';
+}
+
+bool DocumentAccessor::Match(int pos, const char *s) {
+	for (int i=0; *s; i++) {
+		if (*s != SafeGetCharAt(pos+i))
+			return false;
+		s++;
+	}
+	return true;
 }
 
 char DocumentAccessor::StyleAt(int position) {
@@ -70,10 +73,10 @@ int DocumentAccessor::LevelAt(int line) {
 	return pdoc->GetLevel(line);
 }
 
-int DocumentAccessor::Length() { 
-	if (lenDoc == -1) 
+int DocumentAccessor::Length() {
+	if (lenDoc == -1)
 		lenDoc = pdoc->Length();
-	return lenDoc; 
+	return lenDoc;
 }
 
 int DocumentAccessor::GetLineState(int line) {
@@ -86,6 +89,7 @@ int DocumentAccessor::SetLineState(int line, int state) {
 
 void DocumentAccessor::StartAt(unsigned int start, char chMask) {
 	pdoc->StartStyling(start, chMask);
+	startPosStyling = start;
 }
 
 void DocumentAccessor::StartSegment(unsigned int pos) {
@@ -109,6 +113,7 @@ void DocumentAccessor::ColourTo(unsigned int pos, int chAttr) {
 				chFlags = 0;
 			chAttr |= chFlags;
 			for (unsigned int i = startSeg; i <= pos; i++) {
+				PLATFORM_ASSERT((startPosStyling + validLen) < Length());
 				styleBuf[validLen++] = static_cast<char>(chAttr);
 			}
 		}
@@ -126,18 +131,19 @@ void DocumentAccessor::Flush() {
 	if (validLen > 0) {
 		pdoc->SetStyles(validLen, styleBuf);
 		validLen = 0;
+		startPosStyling += validLen;
 	}
 }
 
 int DocumentAccessor::IndentAmount(int line, int *flags, PFNIsCommentLeader pfnIsCommentLeader) {
 	int end = Length();
 	int spaceFlags = 0;
-	
-	// Determines the indentation level of the current line and also checks for consistent 
+
+	// Determines the indentation level of the current line and also checks for consistent
 	// indentation compared to the previous line.
-	// Indentation is judged consistent when the indentation whitespace of each line lines 
+	// Indentation is judged consistent when the indentation whitespace of each line lines
 	// the same or the indentation of one line is a prefix of the other.
-	
+
 	int pos = LineStart(line);
 	char ch = (*this)[pos];
 	int indent = 0;
@@ -164,11 +170,12 @@ int DocumentAccessor::IndentAmount(int line, int *flags, PFNIsCommentLeader pfnI
 		}
 		ch = (*this)[++pos];
 	}
-	
+
 	*flags = spaceFlags;
 	indent += SC_FOLDLEVELBASE;
 	// if completely empty line or the start of a comment...
-	if (isspace(ch) || (pfnIsCommentLeader && (*pfnIsCommentLeader)(*this, pos, end-pos)) )
+	if ((ch == ' ' || ch == '\t' || ch == '\n' || ch == '\r') || 
+		(pfnIsCommentLeader && (*pfnIsCommentLeader)(*this, pos, end-pos)) )
 		return indent | SC_FOLDLEVELWHITEFLAG;
 	else
 		return indent;

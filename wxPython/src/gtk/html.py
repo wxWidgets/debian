@@ -9,11 +9,15 @@ from windows import *
 
 from gdi import *
 
+from fonts import *
+
 from clip_dnd import *
 
 from events import *
 
 from streams import *
+
+from utils import *
 
 from mdi import *
 
@@ -38,10 +42,8 @@ from printfw import *
 from sizers import *
 
 from filesys import *
-
-from utils import *
 import wx
-class wxHtmlLinkInfoPtr :
+class wxHtmlLinkInfoPtr(wxObjectPtr):
     def __init__(self,this):
         self.this = this
         self.thisown = 0
@@ -53,11 +55,16 @@ class wxHtmlLinkInfoPtr :
         return val
     def GetEvent(self, *_args, **_kwargs):
         val = apply(htmlc.wxHtmlLinkInfo_GetEvent,(self,) + _args, _kwargs)
-        if val: val = wxMouseEventPtr(val) 
         return val
     def GetHtmlCell(self, *_args, **_kwargs):
         val = apply(htmlc.wxHtmlLinkInfo_GetHtmlCell,(self,) + _args, _kwargs)
         if val: val = wxHtmlCellPtr(val) 
+        return val
+    def SetEvent(self, *_args, **_kwargs):
+        val = apply(htmlc.wxHtmlLinkInfo_SetEvent,(self,) + _args, _kwargs)
+        return val
+    def SetHtmlCell(self, *_args, **_kwargs):
+        val = apply(htmlc.wxHtmlLinkInfo_SetHtmlCell,(self,) + _args, _kwargs)
         return val
     def __repr__(self):
         return "<C wxHtmlLinkInfo instance at %s>" % (self.this,)
@@ -69,7 +76,7 @@ class wxHtmlLinkInfo(wxHtmlLinkInfoPtr):
 
 
 
-class wxHtmlTagPtr :
+class wxHtmlTagPtr(wxObjectPtr):
     def __init__(self,this):
         self.this = this
         self.thisown = 0
@@ -84,9 +91,6 @@ class wxHtmlTagPtr :
         return val
     def GetAllParams(self, *_args, **_kwargs):
         val = apply(htmlc.wxHtmlTag_GetAllParams,(self,) + _args, _kwargs)
-        return val
-    def IsEnding(self, *_args, **_kwargs):
-        val = apply(htmlc.wxHtmlTag_IsEnding,(self,) + _args, _kwargs)
         return val
     def HasEnding(self, *_args, **_kwargs):
         val = apply(htmlc.wxHtmlTag_HasEnding,(self,) + _args, _kwargs)
@@ -109,7 +113,7 @@ class wxHtmlTag(wxHtmlTagPtr):
 
 
 
-class wxHtmlParserPtr :
+class wxHtmlParserPtr(wxObjectPtr):
     def __init__(self,this):
         self.this = this
         self.thisown = 0
@@ -118,7 +122,6 @@ class wxHtmlParserPtr :
         return val
     def GetFS(self, *_args, **_kwargs):
         val = apply(htmlc.wxHtmlParser_GetFS,(self,) + _args, _kwargs)
-        if val: val = wxFileSystemPtr(val) 
         return val
     def Parse(self, *_args, **_kwargs):
         val = apply(htmlc.wxHtmlParser_Parse,(self,) + _args, _kwargs)
@@ -162,7 +165,6 @@ class wxHtmlWinParserPtr(wxHtmlParserPtr):
         return val
     def GetDC(self, *_args, **_kwargs):
         val = apply(htmlc.wxHtmlWinParser_GetDC,(self,) + _args, _kwargs)
-        if val: val = wxDCPtr(val) 
         return val
     def GetCharHeight(self, *_args, **_kwargs):
         val = apply(htmlc.wxHtmlWinParser_GetCharHeight,(self,) + _args, _kwargs)
@@ -172,7 +174,6 @@ class wxHtmlWinParserPtr(wxHtmlParserPtr):
         return val
     def GetWindow(self, *_args, **_kwargs):
         val = apply(htmlc.wxHtmlWinParser_GetWindow,(self,) + _args, _kwargs)
-        if val: val = wxWindowPtr(val) 
         return val
     def SetFonts(self, *_args, **_kwargs):
         val = apply(htmlc.wxHtmlWinParser_SetFonts,(self,) + _args, _kwargs)
@@ -231,14 +232,14 @@ class wxHtmlWinParserPtr(wxHtmlParserPtr):
         return val
     def GetLinkColor(self, *_args, **_kwargs):
         val = apply(htmlc.wxHtmlWinParser_GetLinkColor,(self,) + _args, _kwargs)
-        if val: val = wxColourPtr(val) 
+        if val: val = wxColourPtr(val) ; val.thisown = 1
         return val
     def SetLinkColor(self, *_args, **_kwargs):
         val = apply(htmlc.wxHtmlWinParser_SetLinkColor,(self,) + _args, _kwargs)
         return val
     def GetActualColor(self, *_args, **_kwargs):
         val = apply(htmlc.wxHtmlWinParser_GetActualColor,(self,) + _args, _kwargs)
-        if val: val = wxColourPtr(val) 
+        if val: val = wxColourPtr(val) ; val.thisown = 1
         return val
     def SetActualColor(self, *_args, **_kwargs):
         val = apply(htmlc.wxHtmlWinParser_SetActualColor,(self,) + _args, _kwargs)
@@ -264,12 +265,12 @@ class wxHtmlWinParser(wxHtmlWinParserPtr):
 
 
 
-class wxHtmlTagHandlerPtr :
+class wxHtmlTagHandlerPtr(wxObjectPtr):
     def __init__(self,this):
         self.this = this
         self.thisown = 0
-    def _setSelf(self, *_args, **_kwargs):
-        val = apply(htmlc.wxHtmlTagHandler__setSelf,(self,) + _args, _kwargs)
+    def _setCallbackInfo(self, *_args, **_kwargs):
+        val = apply(htmlc.wxHtmlTagHandler__setCallbackInfo,(self,) + _args, _kwargs)
         return val
     def SetParser(self, *_args, **_kwargs):
         val = apply(htmlc.wxHtmlTagHandler_SetParser,(self,) + _args, _kwargs)
@@ -287,7 +288,7 @@ class wxHtmlTagHandler(wxHtmlTagHandlerPtr):
     def __init__(self,*_args,**_kwargs):
         self.this = apply(htmlc.new_wxHtmlTagHandler,_args,_kwargs)
         self.thisown = 1
-        self._setSelf(self, wxHtmlTagHandler)
+        self._setCallbackInfo(self, wxHtmlTagHandler)
 
 
 
@@ -296,8 +297,8 @@ class wxHtmlWinTagHandlerPtr(wxHtmlTagHandlerPtr):
     def __init__(self,this):
         self.this = this
         self.thisown = 0
-    def _setSelf(self, *_args, **_kwargs):
-        val = apply(htmlc.wxHtmlWinTagHandler__setSelf,(self,) + _args, _kwargs)
+    def _setCallbackInfo(self, *_args, **_kwargs):
+        val = apply(htmlc.wxHtmlWinTagHandler__setCallbackInfo,(self,) + _args, _kwargs)
         return val
     def SetParser(self, *_args, **_kwargs):
         val = apply(htmlc.wxHtmlWinTagHandler_SetParser,(self,) + _args, _kwargs)
@@ -315,12 +316,12 @@ class wxHtmlWinTagHandler(wxHtmlWinTagHandlerPtr):
     def __init__(self,*_args,**_kwargs):
         self.this = apply(htmlc.new_wxHtmlWinTagHandler,_args,_kwargs)
         self.thisown = 1
-        self._setSelf(self, wxHtmlWinTagHandler)
+        self._setCallbackInfo(self, wxHtmlWinTagHandler)
 
 
 
 
-class wxHtmlCellPtr :
+class wxHtmlCellPtr(wxObjectPtr):
     def __init__(self,this):
         self.this = this
         self.thisown = 0
@@ -387,6 +388,20 @@ class wxHtmlCellPtr :
 class wxHtmlCell(wxHtmlCellPtr):
     def __init__(self,*_args,**_kwargs):
         self.this = apply(htmlc.new_wxHtmlCell,_args,_kwargs)
+        self.thisown = 1
+
+
+
+
+class wxHtmlWordCellPtr(wxHtmlCellPtr):
+    def __init__(self,this):
+        self.this = this
+        self.thisown = 0
+    def __repr__(self):
+        return "<C wxHtmlWordCell instance at %s>" % (self.this,)
+class wxHtmlWordCell(wxHtmlWordCellPtr):
+    def __init__(self,*_args,**_kwargs):
+        self.this = apply(htmlc.new_wxHtmlWordCell,_args,_kwargs)
         self.thisown = 1
 
 
@@ -466,6 +481,20 @@ class wxHtmlColourCell(wxHtmlColourCellPtr):
 
 
 
+class wxHtmlFontCellPtr(wxHtmlCellPtr):
+    def __init__(self,this):
+        self.this = this
+        self.thisown = 0
+    def __repr__(self):
+        return "<C wxHtmlFontCell instance at %s>" % (self.this,)
+class wxHtmlFontCell(wxHtmlFontCellPtr):
+    def __init__(self,*_args,**_kwargs):
+        self.this = apply(htmlc.new_wxHtmlFontCell,_args,_kwargs)
+        self.thisown = 1
+
+
+
+
 class wxHtmlWidgetCellPtr(wxHtmlCellPtr):
     def __init__(self,this):
         self.this = this
@@ -480,38 +509,15 @@ class wxHtmlWidgetCell(wxHtmlWidgetCellPtr):
 
 
 
-class HtmlHistoryItemPtr :
-    def __init__(self,this):
-        self.this = this
-        self.thisown = 0
-    def GetPos(self, *_args, **_kwargs):
-        val = apply(htmlc.HtmlHistoryItem_GetPos,(self,) + _args, _kwargs)
-        return val
-    def SetPos(self, *_args, **_kwargs):
-        val = apply(htmlc.HtmlHistoryItem_SetPos,(self,) + _args, _kwargs)
-        return val
-    def GetPage(self, *_args, **_kwargs):
-        val = apply(htmlc.HtmlHistoryItem_GetPage,(self,) + _args, _kwargs)
-        return val
-    def GetAnchor(self, *_args, **_kwargs):
-        val = apply(htmlc.HtmlHistoryItem_GetAnchor,(self,) + _args, _kwargs)
-        return val
-    def __repr__(self):
-        return "<C HtmlHistoryItem instance at %s>" % (self.this,)
-class HtmlHistoryItem(HtmlHistoryItemPtr):
-    def __init__(self,*_args,**_kwargs):
-        self.this = apply(htmlc.new_HtmlHistoryItem,_args,_kwargs)
-        self.thisown = 1
-
-
-
-
 class wxHtmlWindowPtr(wxScrolledWindowPtr):
     def __init__(self,this):
         self.this = this
         self.thisown = 0
-    def _setSelf(self, *_args, **_kwargs):
-        val = apply(htmlc.wxHtmlWindow__setSelf,(self,) + _args, _kwargs)
+    def Create(self, *_args, **_kwargs):
+        val = apply(htmlc.wxHtmlWindow_Create,(self,) + _args, _kwargs)
+        return val
+    def _setCallbackInfo(self, *_args, **_kwargs):
+        val = apply(htmlc.wxHtmlWindow__setCallbackInfo,(self,) + _args, _kwargs)
         return val
     def SetPage(self, *_args, **_kwargs):
         val = apply(htmlc.wxHtmlWindow_SetPage,(self,) + _args, _kwargs)
@@ -519,15 +525,23 @@ class wxHtmlWindowPtr(wxScrolledWindowPtr):
     def LoadPage(self, *_args, **_kwargs):
         val = apply(htmlc.wxHtmlWindow_LoadPage,(self,) + _args, _kwargs)
         return val
+    def AppendToPage(self, *_args, **_kwargs):
+        val = apply(htmlc.wxHtmlWindow_AppendToPage,(self,) + _args, _kwargs)
+        return val
     def GetOpenedPage(self, *_args, **_kwargs):
         val = apply(htmlc.wxHtmlWindow_GetOpenedPage,(self,) + _args, _kwargs)
+        return val
+    def GetOpenedAnchor(self, *_args, **_kwargs):
+        val = apply(htmlc.wxHtmlWindow_GetOpenedAnchor,(self,) + _args, _kwargs)
+        return val
+    def GetOpenedPageTitle(self, *_args, **_kwargs):
+        val = apply(htmlc.wxHtmlWindow_GetOpenedPageTitle,(self,) + _args, _kwargs)
         return val
     def SetRelatedFrame(self, *_args, **_kwargs):
         val = apply(htmlc.wxHtmlWindow_SetRelatedFrame,(self,) + _args, _kwargs)
         return val
     def GetRelatedFrame(self, *_args, **_kwargs):
         val = apply(htmlc.wxHtmlWindow_GetRelatedFrame,(self,) + _args, _kwargs)
-        if val: val = wxFramePtr(val) 
         return val
     def SetRelatedStatusBar(self, *_args, **_kwargs):
         val = apply(htmlc.wxHtmlWindow_SetRelatedStatusBar,(self,) + _args, _kwargs)
@@ -553,6 +567,12 @@ class wxHtmlWindowPtr(wxScrolledWindowPtr):
     def HistoryForward(self, *_args, **_kwargs):
         val = apply(htmlc.wxHtmlWindow_HistoryForward,(self,) + _args, _kwargs)
         return val
+    def HistoryCanBack(self, *_args, **_kwargs):
+        val = apply(htmlc.wxHtmlWindow_HistoryCanBack,(self,) + _args, _kwargs)
+        return val
+    def HistoryCanForward(self, *_args, **_kwargs):
+        val = apply(htmlc.wxHtmlWindow_HistoryCanForward,(self,) + _args, _kwargs)
+        return val
     def HistoryClear(self, *_args, **_kwargs):
         val = apply(htmlc.wxHtmlWindow_HistoryClear,(self,) + _args, _kwargs)
         return val
@@ -564,11 +584,23 @@ class wxHtmlWindowPtr(wxScrolledWindowPtr):
         val = apply(htmlc.wxHtmlWindow_GetParser,(self,) + _args, _kwargs)
         if val: val = wxHtmlWinParserPtr(val) 
         return val
+    def ScrollToAnchor(self, *_args, **_kwargs):
+        val = apply(htmlc.wxHtmlWindow_ScrollToAnchor,(self,) + _args, _kwargs)
+        return val
+    def HasAnchor(self, *_args, **_kwargs):
+        val = apply(htmlc.wxHtmlWindow_HasAnchor,(self,) + _args, _kwargs)
+        return val
     def base_OnLinkClicked(self, *_args, **_kwargs):
         val = apply(htmlc.wxHtmlWindow_base_OnLinkClicked,(self,) + _args, _kwargs)
         return val
     def base_OnSetTitle(self, *_args, **_kwargs):
         val = apply(htmlc.wxHtmlWindow_base_OnSetTitle,(self,) + _args, _kwargs)
+        return val
+    def base_OnCellMouseHover(self, *_args, **_kwargs):
+        val = apply(htmlc.wxHtmlWindow_base_OnCellMouseHover,(self,) + _args, _kwargs)
+        return val
+    def base_OnCellClicked(self, *_args, **_kwargs):
+        val = apply(htmlc.wxHtmlWindow_base_OnCellClicked,(self,) + _args, _kwargs)
         return val
     def __repr__(self):
         return "<C wxHtmlWindow instance at %s>" % (self.this,)
@@ -576,14 +608,19 @@ class wxHtmlWindow(wxHtmlWindowPtr):
     def __init__(self,*_args,**_kwargs):
         self.this = apply(htmlc.new_wxHtmlWindow,_args,_kwargs)
         self.thisown = 1
-        self._setSelf(self, wxHtmlWindow)
-        #wx._StdWindowCallbacks(self)
-        #wx._StdOnScrollCallbacks(self)
+        self._setCallbackInfo(self, wxHtmlWindow)
+        self._setOORInfo(self)
 
 
 
+def wxPreHtmlWindow(*_args,**_kwargs):
+    val = wxHtmlWindowPtr(apply(htmlc.new_wxPreHtmlWindow,_args,_kwargs))
+    val.thisown = 1
+    val._setOORInfo(val)
+    return val
 
-class wxHtmlDCRendererPtr :
+
+class wxHtmlDCRendererPtr(wxObjectPtr):
     def __init__(self,this):
         self.this = this
         self.thisown = 0
@@ -619,9 +656,6 @@ class wxHtmlPrintoutPtr(wxPrintoutPtr):
     def __init__(self,this):
         self.this = this
         self.thisown = 0
-    def __del__(self,htmlc=htmlc):
-        if self.thisown == 1 :
-            htmlc.delete_wxHtmlPrintout(self)
     def SetHtmlText(self, *_args, **_kwargs):
         val = apply(htmlc.wxHtmlPrintout_SetHtmlText,(self,) + _args, _kwargs)
         return val
@@ -647,7 +681,7 @@ class wxHtmlPrintout(wxHtmlPrintoutPtr):
 
 
 
-class wxHtmlEasyPrintingPtr :
+class wxHtmlEasyPrintingPtr(wxObjectPtr):
     def __init__(self,this):
         self.this = this
         self.thisown = 0
@@ -727,6 +761,14 @@ wxHTML_INDENT_ALL = htmlc.wxHTML_INDENT_ALL
 wxHTML_COND_ISANCHOR = htmlc.wxHTML_COND_ISANCHOR
 wxHTML_COND_ISIMAGEMAP = htmlc.wxHTML_COND_ISIMAGEMAP
 wxHTML_COND_USER = htmlc.wxHTML_COND_USER
+wxHW_SCROLLBAR_NEVER = htmlc.wxHW_SCROLLBAR_NEVER
+wxHW_SCROLLBAR_AUTO = htmlc.wxHW_SCROLLBAR_AUTO
+wxHTML_OPEN = htmlc.wxHTML_OPEN
+wxHTML_BLOCK = htmlc.wxHTML_BLOCK
+wxHTML_REDIRECT = htmlc.wxHTML_REDIRECT
+wxHTML_URL_PAGE = htmlc.wxHTML_URL_PAGE
+wxHTML_URL_IMAGE = htmlc.wxHTML_URL_IMAGE
+wxHTML_URL_OTHER = htmlc.wxHTML_URL_OTHER
 wxPAGE_ODD = htmlc.wxPAGE_ODD
 wxPAGE_EVEN = htmlc.wxPAGE_EVEN
 wxPAGE_ALL = htmlc.wxPAGE_ALL
@@ -745,6 +787,6 @@ wx.wxHtmlWinTagHandlerPtr   = wxHtmlWinTagHandlerPtr
 wx.wxHtmlCellPtr            = wxHtmlCellPtr
 wx.wxHtmlContainerCellPtr   = wxHtmlContainerCellPtr
 wx.wxHtmlWidgetCellPtr      = wxHtmlWidgetCellPtr
-wx.HtmlHistoryItemPtr       = HtmlHistoryItemPtr
 wx.wxHtmlWindowPtr          = wxHtmlWindowPtr
 wx.wxHtmlLinkInfoPtr        = wxHtmlLinkInfoPtr
+

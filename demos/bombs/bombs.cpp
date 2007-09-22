@@ -4,7 +4,7 @@
 // Author:      P. Foggia 1996
 // Modified by:
 // Created:     1996
-// RCS-ID:      $Id: bombs.cpp,v 1.1 2000/01/08 15:27:35 VZ Exp $
+// RCS-ID:      $Id: bombs.cpp,v 1.4 2002/03/21 10:32:03 JS Exp $
 // Copyright:   (c) 1996 P. Foggia
 // Licence:     wxWindows licence
 ///////////////////////////////////////////////////////////////////////////////
@@ -24,7 +24,7 @@
 #include <time.h>
 #include <stdlib.h>
 
-#if defined(__WXGTK__) || defined(__WXMOTIF__)
+#if defined(__WXGTK__) || defined(__WXX11__) || defined(__WXMOTIF__) || defined(__WXMAC__) || defined(__WXMGL__)
 #include "bombs.xpm"
 #endif
 

@@ -2,9 +2,9 @@
 // Name:        treelay.h
 // Purpose:     wxTreeLayout class
 // Author:      Julian Smart
-// Modified by: 
+// Modified by:
 // Created:     7/4/98
-// RCS-ID:      $Id: treelay.h,v 1.2.2.1 2000/06/22 07:57:43 VZ Exp $
+// RCS-ID:      $Id: treelay.h,v 1.9 2002/08/31 11:29:12 GD Exp $
 // Copyright:   (c) 1998 Julian Smart
 // Licence:     wxWindows licence
 ///////////////////////////////////////////////////////////////////////////////
@@ -12,11 +12,20 @@
 #ifndef _WX_TREELAY_H_
 #define _WX_TREELAY_H_
 
-#ifdef __GNUG__
+#if defined(__GNUG__) && !defined(__APPLE__)
 #pragma interface "wxtree.h"
 #endif
 
-#include <wx/string.h>
+#ifndef WX_PRECOMP
+#include "wx/object.h"
+class wxList;
+class wxDC;
+class wxMouseEvent;
+#endif
+
+#include "wx/string.h"
+
+#if wxUSE_TREELAYOUT
 
 class WXDLLEXPORT wxTreeLayout: public wxObject
 {
@@ -24,7 +33,8 @@ class WXDLLEXPORT wxTreeLayout: public wxObject
 
 public:
     wxTreeLayout();
-    
+    virtual ~wxTreeLayout() { }
+
     // Redefine these
     virtual void GetChildren(long id, wxList& list) = 0;
     virtual long GetNextNode(long id) = 0;
@@ -35,21 +45,21 @@ public:
     virtual void SetNodeY(long id, long y) = 0;
     virtual void ActivateNode(long id, bool active) = 0;
     virtual bool NodeActive(long id) = 0;
-    
+
     // Optional redefinition
     void Initialize(void);
-    inline virtual void SetNodeName(long id, const wxString& name) {}
-    inline virtual wxString GetNodeName(long id) { return wxString(""); }
+    inline virtual void SetNodeName(long WXUNUSED(id), const wxString& WXUNUSED(name)) {}
+    inline virtual wxString GetNodeName(long WXUNUSED(id)) { return wxString(""); }
     virtual void GetNodeSize(long id, long *x, long *y, wxDC& dc);
     virtual void Draw(wxDC& dc);
     virtual void DrawNodes(wxDC& dc);
     virtual void DrawBranches(wxDC& dc);
     virtual void DrawNode(long id, wxDC& dc);
     virtual void DrawBranch(long from, long to, wxDC& dc);
-    
+
     // Don't redefine
     virtual void DoLayout(wxDC& dc, long topNode = -1);
-    
+
     // Accessors -- don't redefine
     inline void SetTopNode(long id) { m_parentNode = id; }
     inline long GetTopNode(void) const { return m_parentNode; }
@@ -59,15 +69,15 @@ public:
     inline void SetMargins(long x, long y) { m_leftMargin = x; m_topMargin = y; }
     inline long GetTopMargin(void) const { return m_topMargin; }
     inline long GetLeftMargin(void) const { return m_leftMargin; }
-    
+
     inline bool GetOrientation(void) const { return m_orientation; }
     inline void SetOrientation(bool orient) { m_orientation = orient; }
-    
+
 private:
     void CalcLayout(long node_id, int level, wxDC& dc);
-    
+
     // Members
-    
+
 protected:
     long          m_parentNode;
     long          m_lastY;
@@ -98,14 +108,14 @@ class WXDLLEXPORT wxTreeLayoutStored: public wxTreeLayout
     DECLARE_DYNAMIC_CLASS(wxTreeLayoutStored)
 public:
     wxTreeLayoutStored(int noNodes = 200);
-    ~wxTreeLayoutStored(void);
+    virtual ~wxTreeLayoutStored(void);
     void Initialize(int n);
-    
+
     wxString HitTest(wxMouseEvent& event, wxDC& dc);
     wxStoredNode* GetNode(long id) const;
     inline int GetNumNodes() const { return m_maxNodes; };
     inline int GetNodeCount() const { return m_num; };
-    
+
     virtual void GetChildren(long id, wxList& list);
     virtual long GetNextNode(long id);
     virtual long GetNodeParent(long id);
@@ -119,10 +129,11 @@ public:
     virtual bool NodeActive(long id);
     virtual void SetClientData(long id, long clientData);
     virtual long GetClientData(long id) const;
-    
+
     virtual long AddChild(const wxString& name, const wxString& parent = "");
+    virtual long AddChild(const wxString& name, long parent);
     virtual long NameToId(const wxString& name);
-    
+
     // Data members
 private:
     wxStoredNode*     m_nodes;
@@ -134,5 +145,8 @@ private:
 #define wxStoredTree wxTreeLayoutStored
 
 #endif
+    // wxUSE_TREELAYOUT
+
+#endif
  // _WX_TREELAY_H_
-  
+

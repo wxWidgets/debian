@@ -49,22 +49,7 @@ to the size of the window and the size of the data.
 
 See also \helpref{window styles overview}{windowstyles}.
 
-\wxheading{Event handling}
-
-To process input from a scrollbar, use one of these event handler macros to direct input to member
-functions that take a \helpref{wxScrollEvent}{wxscrollevent} argument:
-
-\twocolwidtha{7cm}
-\begin{twocollist}
-\twocolitem{{\bf EVT\_COMMAND\_SCROLL(id, func)}}{Catch all scroll commands.}
-\twocolitem{{\bf EVT\_COMMAND\_SCROLL\_TOP(id, func)}}{Catch a command to put the scroll thumb at the maximum position.}
-\twocolitem{{\bf EVT\_COMMAND\_SCROLL\_BOTTOM(id, func)}}{Catch a command to put the scroll thumb at the maximum position.}
-\twocolitem{{\bf EVT\_COMMAND\_SCROLL\_LINEUP(id, func)}}{Catch a line up command.}
-\twocolitem{{\bf EVT\_COMMAND\_SCROLL\_LINEDOWN(id, func)}}{Catch a line down command.}
-\twocolitem{{\bf EVT\_COMMAND\_SCROLL\_PAGEUP(id, func)}}{Catch a page up command.}
-\twocolitem{{\bf EVT\_COMMAND\_SCROLL\_PAGEDOWN(id, func)}}{Catch a page down command.}
-\twocolitem{{\bf EVT\_COMMAND\_SCROLL\_THUMBTRACK(id, func)}}{Catch a thumbtrack command (continuous movement of the scroll thumb).}
-\end{twocollist}%
+\input scrolevt.inc
 
 \wxheading{See also}
 
@@ -274,7 +259,7 @@ When defining your own scrollbar behaviour, you will always need to recalculate
 the scrollbar settings when the window size changes. You could therefore put your
 scrollbar calculations and SetScrollbar
 call into a function named AdjustScrollbars, which can be called initially and also
-from a \helpref{wxWindow::OnSize}{wxwindowonsize} event handler function.
+from a \helpref{wxSizeEvent}{wxsizeevent} event handler function.
 
 \wxheading{See also}
 

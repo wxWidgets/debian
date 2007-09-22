@@ -4,7 +4,7 @@
 // Author:      Chris Breeze
 // Modified by:
 // Created:     21/07/97
-// RCS-ID:      $Id: card.h,v 1.1 2000/01/08 15:27:38 VZ Exp $
+// RCS-ID:      $Id: card.h,v 1.3 2002/04/07 21:12:44 JS Exp $
 // Copyright:   (c) 1993-1998 Chris Breeze
 // Licence:   	wxWindows licence
 //---------------------------------------------------------------------------
@@ -24,19 +24,24 @@
 
 	// Constants
 const int PackSize = 52;
-const int CardWidth = 50;
-const int CardHeight = 70;
+
+#define CardHeight Card::GetHeight()
+#define CardWidth  Card::GetWidth()
 
 	// Data types
 enum Suit { clubs = 0, diamonds = 1, hearts = 2, spades = 3 };
 enum SuitColour { red = 0, black = 1 };
 enum WayUp { faceup, facedown };
 
-
 //--------------------------------//
 // A class defining a single card //
 //--------------------------------//
 class Card {
+    friend class FortyApp;
+
+    static double m_scale;
+    static int m_width,m_height;
+
 public:
 	Card(int value, WayUp way_up = facedown);
 	virtual ~Card();
@@ -50,6 +55,10 @@ public:
 	int			GetPipValue() const { return m_pipValue; }
 	Suit		GetSuit() const { return m_suit; }
 	SuitColour	GetColour() const { return m_colour; }
+        static void     SetScale(double scale);
+        static int      GetHeight() { return m_height; };
+        static int      GetWidth() { return m_width; };
+        static double   GetScale() { return m_scale; };
 
 private:
 	Suit		m_suit;

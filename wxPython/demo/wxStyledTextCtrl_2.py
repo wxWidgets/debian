@@ -21,16 +21,16 @@ if wxPlatform == '__WXMSW__':
               'mono' : 'Courier New',
               'helv' : 'Arial',
               'other': 'Comic Sans MS',
-              'size' : 8,
-              'size2': 6,
+              'size' : 10,
+              'size2': 8,
              }
 else:
     faces = { 'times': 'Times',
               'mono' : 'Courier',
               'helv' : 'Helvetica',
               'other': 'new century schoolbook',
-              'size' : 11,
-              'size2': 9,
+              'size' : 12,
+              'size2': 10,
              }
 
 
@@ -38,7 +38,11 @@ else:
 
 class PythonSTC(wxStyledTextCtrl):
     def __init__(self, parent, ID):
-        wxStyledTextCtrl.__init__(self, parent, ID)
+        wxStyledTextCtrl.__init__(self, parent, ID,
+                                  style = wxNO_FULL_REPAINT_ON_RESIZE)
+
+        self.CmdKeyAssign(ord('B'), wxSTC_SCMOD_CTRL, wxSTC_CMD_ZOOMIN)
+        self.CmdKeyAssign(ord('N'), wxSTC_SCMOD_CTRL, wxSTC_CMD_ZOOMOUT)
 
         self.SetLexer(wxSTC_LEX_PYTHON)
         self.SetKeyWords(0, string.join(keyword.kwlist))
@@ -58,9 +62,25 @@ class PythonSTC(wxStyledTextCtrl):
         self.SetMarginType(2, wxSTC_MARGIN_SYMBOL)
         self.SetMarginMask(2, wxSTC_MASK_FOLDERS)
         self.SetMarginSensitive(2, true)
-        self.SetMarginWidth(2, 15)
-        self.MarkerDefine(wxSTC_MARKNUM_FOLDER, wxSTC_MARK_ARROW, "navy", "navy")
-        self.MarkerDefine(wxSTC_MARKNUM_FOLDEROPEN, wxSTC_MARK_ARROWDOWN, "navy", "navy")
+        self.SetMarginWidth(2, 12)
+
+        if 0: # simple folder marks, like the old version
+            self.MarkerDefine(wxSTC_MARKNUM_FOLDER, wxSTC_MARK_ARROW, "navy", "navy")
+            self.MarkerDefine(wxSTC_MARKNUM_FOLDEROPEN, wxSTC_MARK_ARROWDOWN, "navy", "navy")
+            # Set these to an invisible mark
+            self.MarkerDefine(wxSTC_MARKNUM_FOLDEROPENMID, wxSTC_MARK_BACKGROUND, "white", "black")
+            self.MarkerDefine(wxSTC_MARKNUM_FOLDERMIDTAIL, wxSTC_MARK_BACKGROUND, "white", "black")
+            self.MarkerDefine(wxSTC_MARKNUM_FOLDERSUB, wxSTC_MARK_BACKGROUND, "white", "black")
+            self.MarkerDefine(wxSTC_MARKNUM_FOLDERTAIL, wxSTC_MARK_BACKGROUND, "white", "black")
+
+        else: # more involved "outlining" folder marks
+            self.MarkerDefine(wxSTC_MARKNUM_FOLDEREND,     wxSTC_MARK_BOXPLUSCONNECTED,  "white", "black")
+            self.MarkerDefine(wxSTC_MARKNUM_FOLDEROPENMID, wxSTC_MARK_BOXMINUSCONNECTED, "white", "black")
+            self.MarkerDefine(wxSTC_MARKNUM_FOLDERMIDTAIL, wxSTC_MARK_TCORNER,  "white", "black")
+            self.MarkerDefine(wxSTC_MARKNUM_FOLDERTAIL,    wxSTC_MARK_LCORNER,  "white", "black")
+            self.MarkerDefine(wxSTC_MARKNUM_FOLDERSUB,     wxSTC_MARK_VLINE,    "white", "black")
+            self.MarkerDefine(wxSTC_MARKNUM_FOLDER,        wxSTC_MARK_BOXPLUS,  "white", "black")
+            self.MarkerDefine(wxSTC_MARKNUM_FOLDEROPEN,    wxSTC_MARK_BOXMINUS, "white", "black")
 
 
         EVT_STC_UPDATEUI(self,    ID, self.OnUpdateUI)
@@ -82,41 +102,43 @@ class PythonSTC(wxStyledTextCtrl):
 
         # Python styles
         # White space
-        self.StyleSetSpec(wxSTC_P_DEFAULT, "fore:#808080")
+        self.StyleSetSpec(wxSTC_P_DEFAULT, "fore:#808080,face:%(helv)s,size:%(size)d" % faces)
         # Comment
-        self.StyleSetSpec(wxSTC_P_COMMENTLINE, "fore:#007F00,face:%(other)s" % faces)
+        self.StyleSetSpec(wxSTC_P_COMMENTLINE, "fore:#007F00,face:%(other)s,size:%(size)d" % faces)
         # Number
-        self.StyleSetSpec(wxSTC_P_NUMBER, "fore:#007F7F")
+        self.StyleSetSpec(wxSTC_P_NUMBER, "fore:#007F7F,size:%(size)d" % faces)
         # String
-        self.StyleSetSpec(wxSTC_P_STRING, "fore:#7F007F,italic,face:%(times)s" % faces)
+        self.StyleSetSpec(wxSTC_P_STRING, "fore:#7F007F,italic,face:%(times)s,size:%(size)d" % faces)
         # Single quoted string
-        self.StyleSetSpec(wxSTC_P_CHARACTER, "fore:#7F007F,italic,face:%(times)s" % faces)
+        self.StyleSetSpec(wxSTC_P_CHARACTER, "fore:#7F007F,italic,face:%(times)s,size:%(size)d" % faces)
         # Keyword
-        self.StyleSetSpec(wxSTC_P_WORD, "fore:#00007F,bold")
+        self.StyleSetSpec(wxSTC_P_WORD, "fore:#00007F,bold,size:%(size)d" % faces)
         # Triple quotes
-        self.StyleSetSpec(wxSTC_P_TRIPLE, "fore:#7F0000")
+        self.StyleSetSpec(wxSTC_P_TRIPLE, "fore:#7F0000,size:%(size)d" % faces)
         # Triple double quotes
-        self.StyleSetSpec(wxSTC_P_TRIPLEDOUBLE, "fore:#7F0000")
+        self.StyleSetSpec(wxSTC_P_TRIPLEDOUBLE, "fore:#7F0000,size:%(size)d" % faces)
         # Class name definition
-        self.StyleSetSpec(wxSTC_P_CLASSNAME, "fore:#0000FF,bold,underline")
+        self.StyleSetSpec(wxSTC_P_CLASSNAME, "fore:#0000FF,bold,underline,size:%(size)d" % faces)
         # Function or method name definition
-        self.StyleSetSpec(wxSTC_P_DEFNAME, "fore:#007F7F,bold")
+        self.StyleSetSpec(wxSTC_P_DEFNAME, "fore:#007F7F,bold,size:%(size)d" % faces)
         # Operators
-        self.StyleSetSpec(wxSTC_P_OPERATOR, "bold")
+        self.StyleSetSpec(wxSTC_P_OPERATOR, "bold,size:%(size)d" % faces)
         # Identifiers
-        #self.StyleSetSpec(wxSTC_P_IDENTIFIER, "bold")#,fore:#FF00FF")
+        self.StyleSetSpec(wxSTC_P_IDENTIFIER, "fore:#808080,face:%(helv)s,size:%(size)d" % faces)
         # Comment-blocks
-        self.StyleSetSpec(wxSTC_P_COMMENTBLOCK, "fore:#7F7F7F")
+        self.StyleSetSpec(wxSTC_P_COMMENTBLOCK, "fore:#7F7F7F,size:%(size)d" % faces)
         # End of line where string is not closed
-        self.StyleSetSpec(wxSTC_P_STRINGEOL, "fore:#000000,face:%(mono)s,back:#E0C0E0,eolfilled" % faces)
+        self.StyleSetSpec(wxSTC_P_STRINGEOL, "fore:#000000,face:%(mono)s,back:#E0C0E0,eol,size:%(size)d" % faces)
 
 
         self.SetCaretForeground("BLUE")
 
-        EVT_KEY_UP(self, self.OnKeyPressed)
+        EVT_KEY_DOWN(self, self.OnKeyPressed)
 
 
     def OnKeyPressed(self, event):
+        if self.CallTipActive():
+            self.CallTipCancel()
         key = event.KeyCode()
         if key == 32 and event.ControlDown():
             pos = self.GetCurrentPos()
@@ -132,9 +154,20 @@ class PythonSTC(wxStyledTextCtrl):
                 #st = string.join(lst)
                 #print len(st)
                 #self.AutoCompShow(0, st)
-                self.AutoCompSetIgnoreCase(true)
-                self.AutoCompShow(0, string.join(keyword.kwlist))
-                self.AutoCompSelect('br')
+
+                kw = keyword.kwlist[:]
+                kw.append("zzzzzz")
+                kw.append("aaaaa")
+                kw.append("__init__")
+                kw.append("zzaaaaa")
+                kw.append("zzbaaaa")
+                kw.append("this_is_a_longer_value")
+                kw.append("this_is_a_much_much_much_much_much_much_much_longer_value")
+
+                kw.sort()  # Python sorts are case sensitive
+                self.AutoCompSetIgnoreCase(false)  # so this needs to match
+
+                self.AutoCompShow(0, string.join(kw))
         else:
             event.Skip()
 
@@ -262,18 +295,29 @@ class PythonSTC(wxStyledTextCtrl):
 
 #----------------------------------------------------------------------
 
+_USE_PANEL = 1
+
 def runTest(frame, nb, log):
-    ed = PythonSTC(nb, -1)
+    if not _USE_PANEL:
+        ed = p = PythonSTC(nb, -1)
+    else:
+        p = wxPanel(nb, -1, style = wxNO_FULL_REPAINT_ON_RESIZE)
+        ed = PythonSTC(p, -1)
+        s = wxBoxSizer(wxHORIZONTAL)
+        s.Add(ed, 1, wxEXPAND)
+        p.SetSizer(s)
+        p.SetAutoLayout(true)
+
 
     ed.SetText(demoText + open('Main.py').read())
     ed.EmptyUndoBuffer()
-
+    ed.Colourise(0, -1)
 
     # line numbers in the margin
     ed.SetMarginType(1, wxSTC_MARGIN_NUMBER)
     ed.SetMarginWidth(1, 25)
 
-    return ed
+    return p
 
 
 
@@ -282,7 +326,7 @@ def runTest(frame, nb, log):
 
 overview = """\
 <html><body>
-Once again, no docs yet.  <b>Sorry.</b>  But <a href="data/stc.h">this</a>
+Once again, no docs yet.  <b>Sorry.</b>  But <a href="data/stc.h.html">this</a>
 and <a href="http://www.scintilla.org/ScintillaDoc.html">this</a> should
 be helpful.
 </body><html>
@@ -290,13 +334,9 @@ be helpful.
 
 
 if __name__ == '__main__':
-    import sys
-    app = wxPySimpleApp()
-    frame = wxFrame(None, -1, "Tester...", size=(640, 480))
-    win = runTest(frame, frame, sys.stdout)
-    frame.Show(true)
-    app.MainLoop()
-
+    import sys,os
+    import run
+    run.main(['', os.path.basename(sys.argv[0])])
 
 
 

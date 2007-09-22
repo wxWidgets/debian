@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by: 13.12.99 by VZ during toolbar classes reorganization
 // Created:     04/01/98
-// RCS-ID:      $Id: tbarmsw.cpp,v 1.21 1999/12/20 19:04:44 JS Exp $
+// RCS-ID:      $Id: tbarmsw.cpp,v 1.23 2002/03/25 23:14:33 VZ Exp $
 // Copyright:   (c) Julian Smart and Markus Holzem
 // Licence:   	wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -83,14 +83,14 @@ class WXDLLEXPORT wxToolBarTool : public wxToolBarToolBase
 public:
     wxToolBarTool(wxToolBar *tbar,
                   int id,
-                  const wxBitmap& bitmap1,
-                  const wxBitmap& bitmap2,
+                  const wxBitmap& bmpNormal,
+                  const wxBitmap& bmpDisabled,
                   bool toggle,
                   wxObject *clientData,
-                  const wxString& shortHelpString,
-                  const wxString& longHelpString)
-        : wxToolBarToolBase(tbar, id, bitmap1, bitmap2, toggle,
-                            clientData, shortHelpString, longHelpString)
+                  const wxString& shortHelp,
+                  const wxString& longHelp)
+        : wxToolBarToolBase(tbar, id, bmpNormal, bmpDisabled, toggle,
+                            clientData, shortHelp, longHelp)
     {
     }
 
@@ -119,7 +119,7 @@ public:
 // ----------------------------------------------------------------------------
 
 #if !USE_SHARED_LIBRARY
-IMPLEMENT_DYNAMIC_CLASS(wxToolBar, wxControl)
+IMPLEMENT_DYNAMIC_CLASS(wxToolBar, wxToolBarBase)
 
 BEGIN_EVENT_TABLE(wxToolBar, wxToolBarBase)
 	EVT_PAINT(wxToolBar::OnPaint)
@@ -136,15 +136,16 @@ END_EVENT_TABLE()
 // ----------------------------------------------------------------------------
 
 wxToolBarToolBase *wxToolBar::CreateTool(int id,
-                                         const wxBitmap& bitmap1,
-                                         const wxBitmap& bitmap2,
-                                         bool toggle,
+                                         const wxString& label,
+                                         const wxBitmap& bmpNormal,
+                                         const wxBitmap& bmpDisabled,
+                                         wxItemKind kind,
                                          wxObject *clientData,
-                                         const wxString& shortHelpString,
-                                         const wxString& longHelpString)
+                                         const wxString& shortHelp,
+                                         const wxString& longHelp)
 {
-    return new wxToolBarTool(this, id, bitmap1, bitmap2, toggle,
-                             clientData, shortHelpString, longHelpString);
+    return new wxToolBarTool(this, id, label, bmpNormal, bmpDisabled, kind,
+                             clientData, shortHelp, longHelp);
 }
 
 wxToolBarToolBase *wxToolBar::CreateTool(wxControl *control)
@@ -490,7 +491,7 @@ bool wxToolBar::DoInsertTool(size_t pos, wxToolBarToolBase *toolBase)
 
     // TODO: use the mapping code from wxToolBar95 to get it right in this class
 #if !defined(__WIN32__) && !defined(__WIN386__)
-    wxBitmap bitmap2;
+    wxBitmap bmpDisabled;
     if (tool->CanBeToggled())
     {
         HBITMAP hbmp = CreateMappedBitmap((WXHINSTANCE)wxGetInstance(),
@@ -784,7 +785,7 @@ void wxToolBar::DrawButton(WXHDC hdc, int x, int y, int dx, int dy,
     dxFace -= 3;		
     dyFace -= 3;
 
-    // Using bitmap2 can cause problems (don't know why!)
+    // Using bmpDisabled can cause problems (don't know why!)
 #if !defined(__WIN32__) && !defined(__WIN386__)
     HBITMAP bitmapOld;
     if (tool->GetBitmap2().Ok())

@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     27/7/98
-// RCS-ID:      $Id: studio.cpp,v 1.5 2000/03/20 13:41:15 JS Exp $
+// RCS-ID:      $Id: studio.cpp,v 1.8 2002/03/21 10:32:03 JS Exp $
 // Copyright:   (c) Julian Smart
 // Licence:
 /////////////////////////////////////////////////////////////////////////////
@@ -33,7 +33,7 @@
 #include "project.h"
 #include "symbols.h"
 
-#if defined(__WXGTK__) || defined(__WXMOTIF__)
+#if defined(__WXGTK__) || defined(__WXX11__) || defined(__WXMOTIF__) || defined(__WXMAC__)
 #include "bitmaps/new.xpm"
 #include "bitmaps/open.xpm"
 #include "bitmaps/save.xpm"
@@ -322,7 +322,7 @@ void csApp::InitToolBar(wxToolBar* toolBar)
     bitmaps[7] = new wxBitmap("help", wxBITMAP_TYPE_RESOURCE);
     bitmaps[8] = new wxBitmap("undo", wxBITMAP_TYPE_RESOURCE);
     bitmaps[9] = new wxBitmap("redo", wxBITMAP_TYPE_RESOURCE);
-#elif defined(__WXGTK__) || defined(__WXMOTIF__)
+#elif defined(__WXGTK__) || defined(__WXX11__) || defined(__WXMOTIF__) || defined(__WXMAC__)
     bitmaps[0] = new wxBitmap( new_xpm );
     bitmaps[1] = new wxBitmap( open_xpm );
     bitmaps[2] = new wxBitmap( save_xpm );
@@ -373,7 +373,7 @@ void csApp::CreateDiagramToolBar(wxFrame* parent)
     win->SetDefaultSize(wxSize(10000, 30));
     win->SetOrientation(wxLAYOUT_HORIZONTAL);
     win->SetAlignment(wxLAYOUT_TOP);
-    win->SetBackgroundColour(wxSystemSettings::GetSystemColour(wxSYS_COLOUR_3DFACE));
+    win->SetBackgroundColour(wxSystemSettings::GetColour(wxSYS_COLOUR_3DFACE));
 
     m_diagramToolBarSashWindow = win;
     m_diagramToolBarSashWindow->Show(FALSE);
@@ -395,7 +395,7 @@ void csApp::CreateDiagramToolBar(wxFrame* parent)
     bitmaps[8] = new wxBitmap("newpoint", wxBITMAP_TYPE_RESOURCE);
     bitmaps[9] = new wxBitmap("cutpoint", wxBITMAP_TYPE_RESOURCE);
     bitmaps[10] = new wxBitmap("straighten", wxBITMAP_TYPE_RESOURCE);
-#elif defined(__WXGTK__) || defined(__WXMOTIF__)
+#elif defined(__WXGTK__) || defined(__WXX11__) || defined(__WXMOTIF__) || defined(__WXMAC__)
     bitmaps[0] = new wxBitmap( alignl_xpm );
     bitmaps[1] = new wxBitmap( alignr_xpm );
     bitmaps[2] = new wxBitmap( alignt_xpm );

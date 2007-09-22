@@ -3,7 +3,7 @@
 // Purpose:     wxSpinCtrl
 // Author:      Robert
 // Modified by:
-// RCS-ID:      $Id: spinctrl.cpp,v 1.18.2.4 2001/03/11 08:06:11 RR Exp $
+// RCS-ID:      $Id: spinctrl.cpp,v 1.26 2002/08/05 17:59:20 RR Exp $
 // Copyright:   (c) Robert Roebling
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -18,10 +18,11 @@
 
 #include "wx/utils.h"
 
+#include "wx/textctrl.h"    // for wxEVT_COMMAND_TEXT_UPDATED
+
 #include <math.h>
 
-#include <gdk/gdk.h>
-#include <gtk/gtk.h>
+#include "wx/gtk/private.h"
 
 //-----------------------------------------------------------------------------
 // idle system
@@ -52,7 +53,13 @@ static void gtk_spinctrl_callback( GtkWidget *WXUNUSED(widget), wxSpinCtrl *win 
     wxCommandEvent event( wxEVT_COMMAND_SPINCTRL_UPDATED, win->GetId());
     event.SetEventObject( win );
 
-    event.SetInt( win->GetValue() );
+    // note that we don't use wxSpinCtrl::GetValue() here because it would
+    // adjust the value to fit into the control range and this means that we
+    // would never be able to enter an "invalid" value in the control, even
+    // temporarily - and trying to enter 10 into the control which accepts the
+    // values in range 5..50 is then, ummm, quite challenging (hint: you can't
+    // enter 1!) (VZ)
+    event.SetInt( (int)ceil(win->m_adjust->value) );
     win->GetEventHandler()->ProcessEvent( event );
 }
 
@@ -70,15 +77,9 @@ gtk_spinctrl_text_changed_callback( GtkWidget *WXUNUSED(widget), wxSpinCtrl *win
 
     wxCommandEvent event( wxEVT_COMMAND_TEXT_UPDATED, win->GetId() );
     event.SetEventObject( win );
-
-    // note that we don't use wxSpinCtrl::GetValue() here because it would
-    // adjust the value to fit into the control range and this means that we
-    // would never be able to enter an "invalid" value in the control, even
-    // temporarily - and trying to enter 10 into the control which accepts the
-    // values in range 5..50 is then, ummm, quite challenging (hint: you can't
-    // enter 1!) (VZ)
+    
+    // see above
     event.SetInt( (int)ceil(win->m_adjust->value) );
-
     win->GetEventHandler()->ProcessEvent( event );
 }
 
@@ -207,7 +208,7 @@ void wxSpinCtrl::SetValue( const wxString& value )
     {
         // invalid number - set text as is (wxMSW compatible)
         GtkDisableEvents();
-        gtk_entry_set_text( GTK_ENTRY(m_widget), value.mbc_str() );
+        gtk_entry_set_text( GTK_ENTRY(m_widget), wxGTK_CONV( value ) );
         GtkEnableEvents();
     }
 }
@@ -259,12 +260,20 @@ void wxSpinCtrl::OnChar( wxKeyEvent &event )
         wxWindow *top_frame = m_parent;
         while (top_frame->GetParent() && !(top_frame->GetParent()->IsTopLevel()))
             top_frame = top_frame->GetParent();
-        GtkWindow *window = GTK_WINDOW(top_frame->m_widget);
 
-        if (window->default_widget)
+        if ( GTK_IS_WINDOW(top_frame->m_widget) )
         {
-            gtk_widget_activate (window->default_widget);
-            return;
+            GtkWindow *window = GTK_WINDOW(top_frame->m_widget);
+            if ( window )
+            {
+                GtkWidget *widgetDef = window->default_widget;
+
+                if ( widgetDef && GTK_IS_WINDOW(widgetDef) )
+                {
+                    gtk_widget_activate(widgetDef);
+                    return;
+                }
+            }
         }
     }
 

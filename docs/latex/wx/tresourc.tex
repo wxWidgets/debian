@@ -4,7 +4,10 @@ wxWindows has an optional {\it resource file} facility,
 which allows separation of dialog, menu, bitmap and icon specifications
 from the application code.
 
-It is similar in principle to the Windows resource file (whose ASCII form is
+{\bf NOTE:} this format is now deprecated in favour of the XML-based \helpref{XRC resource system}{xrcoverview}.
+However it is still available if wxUSE\_RESOURCES is enabled.
+
+The format is similar in principle to the Windows resource file (whose ASCII form is
 suffixed .RC and whose binary form is suffixed .RES). The wxWindows resource
 file is currently ASCII-only, suffixed .WXR. Note that under Windows,
 the .WXR file does not {\it replace} the native Windows resource file,
@@ -183,8 +186,8 @@ is a list consisting of point size, family, style, weight, underlined, optional 
 \twocolitem{style}{Optional dialog box or panel window style.}
 \twocolitem{title}{The title of the dialog box (unused if a panel).}.
 \twocolitem{modal}{Whether modal: 1 if modal, 0 if modeless, absent if a panel resource.}
-\twocolitem{use_dialog_units}{If 1, use dialog units (dependent on the dialog font size) for control sizes and positions.}
-\twocolitem{use_system_defaults}{If 1, override colours and fonts to use system settings instead.}
+\twocolitem{use\_dialog\_units}{If 1, use dialog units (dependent on the dialog font size) for control sizes and positions.}
+\twocolitem{use\_system\_defaults}{If 1, override colours and fonts to use system settings instead.}
 \twocolitem{button\_font}{The font used for control buttons: a list comprising point size (integer),
 family (string), font style (string), font weight (string) and underlining (0 or 1).}
 \twocolitem{label\_font}{The font used for control labels: a list comprising point size (integer),
@@ -255,11 +258,11 @@ it will be placed after the help string and before the optional pulldown menu sp
 
 Note that the menu item identifier must be an integer if the resource is being
 included as C++ code and then parsed on initialisation. Unfortunately,\rtfsp
-\verb$#$define substitution is not performed inside strings, and
+\#define substitution is not performed inside strings, and
 therefore the program cannot know the mapping. However, if the .WXR file
 is being loaded dynamically, wxWindows will attempt to replace string
-identifiers with \verb$#$defined integers, because it is able to parse
-the included \verb$#$defines.
+identifiers with \#defined integers, because it is able to parse
+the included \#defines.
 
 \subsection{Bitmap resource format}
 
@@ -323,7 +326,7 @@ Using a .RC resource table for some wxWindows resource data may be a partial sol
 although .RC strings are limited to 255 characters.
 \item Without a resource preprocessor, it is not possible to substitute integers
 for identifiers (so menu identifiers have to be written as integers in the resource
-object, in addition to providing \verb$#$defines for application code convenience).
+object, in addition to providing \#defines for application code convenience).
 \end{itemize}
 
 \subsection{Compiling the resource system}

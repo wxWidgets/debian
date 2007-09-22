@@ -10,11 +10,14 @@
 #ifndef _WX_ENCCONV_H_
 #define _WX_ENCCONV_H_
 
-#ifdef __GNUG__
+#if defined(__GNUG__) && !defined(__APPLE__)
 #pragma interface "encconv.h"
 #endif
 
 #include "wx/defs.h"
+
+#if wxUSE_FONTMAP
+
 #include "wx/object.h"
 #include "wx/fontenc.h"
 #include "wx/dynarray.h"
@@ -44,7 +47,7 @@ enum
 // types
 // ----------------------------------------------------------------------------
 
-WX_DEFINE_ARRAY(wxFontEncoding, wxFontEncodingArray);
+WX_DEFINE_ARRAY_INT(wxFontEncoding, wxFontEncodingArray);
 
 //--------------------------------------------------------------------------------
 // wxEncodingConverter
@@ -147,5 +150,6 @@ class WXDLLEXPORT wxEncodingConverter : public wxObject
 
 };
 
+#endif // wxUSE_FONTMAP
 
 #endif  // _WX_ENCCONV_H_

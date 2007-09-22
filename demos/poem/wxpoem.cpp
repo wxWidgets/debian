@@ -9,7 +9,7 @@
 //              beware, inelegant code!
 // Author:      Julian Smart
 // Created:     12/12/98
-// RCS-ID:      $Id: wxpoem.cpp,v 1.1.2.1 2001/04/26 10:48:49 JS Exp $
+// RCS-ID:      $Id: wxpoem.cpp,v 1.7 2002/05/14 13:53:48 JS Exp $
 // Copyright:   (c) 1998 Julian Smart
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -33,7 +33,7 @@
 
 #include "wxpoem.h"
 
-#if defined(__WXGTK__) || defined(__WXMOTIF__)
+#if defined(__WXGTK__) || defined(__WXMOTIF__) || defined(__WXMAC__) || defined(__WXX11__)
 #include "corner1.xpm"
 #include "corner2.xpm"
 #include "corner3.xpm"
@@ -236,7 +236,7 @@ void MainWindow::ScanBuffer(wxDC *dc, bool DrawIt, int *max_x, int *max_y)
     while (ch != 0 && !page_break)
     {
         j = 0;
-#ifdef __WXMSW__
+#if defined(__WXMSW__) || defined(__WXMAC__)
         while (((ch = poem_buffer[i]) != 13) && (ch != 0))
 #else
         while (((ch = poem_buffer[i]) != 10) && (ch != 0))
@@ -247,7 +247,7 @@ void MainWindow::ScanBuffer(wxDC *dc, bool DrawIt, int *max_x, int *max_y)
             i ++;
         }
 
-#ifdef __WXMSW__
+#if defined(__WXMSW__) || defined(__WXMAC__)
         if (ch == 13)
 #else
         if (ch == 10)
@@ -255,7 +255,7 @@ void MainWindow::ScanBuffer(wxDC *dc, bool DrawIt, int *max_x, int *max_y)
         {
             ch = -1;
             i ++;
-#ifdef __WXMSW__
+#if defined(__WXMSW__) || defined(__WXMAC__)
             // Add another to skip the linefeed
             i ++;
 #endif
@@ -510,9 +510,7 @@ void MainWindow::Search(bool ask)
     if (s != "")
     {
       if (search_string) delete[] search_string;
-
       search_string = copystring(s);
-
       search_ok = TRUE;
     } else search_ok = FALSE;
   }
@@ -652,7 +650,7 @@ bool MyApp::OnInit()
   Corner3 = new wxIcon("icon_3");
   Corner4 = new wxIcon("icon_4");
 #endif
-#if defined(__WXGTK__) || defined(__WXMOTIF__)
+#if defined(__WXGTK__) || defined(__WXMOTIF__) || defined(__WXMAC__) || defined(__WXX11__)
   Corner1 = new wxIcon( corner1_xpm );
   Corner2 = new wxIcon( corner2_xpm );
   Corner3 = new wxIcon( corner3_xpm );
@@ -682,12 +680,16 @@ int MyApp::OnExit()
   delete Corner3;
   delete Corner4;
 
+  // Causes crash since they're deleted by the global font list
+#if 0
   delete NormalFont;
   delete BoldFont;
   delete ItalicFont;
+#endif
+
   delete[] poem_buffer;
   if (search_string)
-      delete[] search_string;
+    delete[] search_string;
 
   return 0;
 }
@@ -725,9 +727,12 @@ void MyCanvas::OnPaint(wxPaintEvent& WXUNUSED(event))
         int xx, yy;
         TheMainWindow->GetClientSize(&xx, &yy);
 
+        dc.DrawBitmap(* backingBitmap, 0, 0);
+#if 0        
         wxMemoryDC memDC;
         memDC.SelectObject(* backingBitmap);
         dc.Blit(0, 0, backingBitmap->GetWidth(), backingBitmap->GetHeight(), &memDC, 0, 0);
+#endif
   }
 }
 
@@ -926,7 +931,7 @@ long MainWindow::DoSearch(void)
     FILE *file;
     long i = 0;
     int ch = 0;
-    char buf[512];
+    char buf[100];
     long find_start;
     long previous_poem_start;
 
@@ -1025,7 +1030,7 @@ bool Compile(void)
     long i = 0;
     int j;
     int ch = 0;
-    char buf[512];
+    char buf[100];
 
     if (data_filename)
       sprintf(buf, "%s.dat", data_filename);

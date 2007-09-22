@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     04/01/98
-// RCS-ID:      $Id: nativdlg.cpp,v 1.13.2.2 2000/08/06 10:12:08 VZ Exp $
+// RCS-ID:      $Id: nativdlg.cpp,v 1.18 2002/07/07 03:16:35 RL Exp $
 // Copyright:   (c) Julian Smart and Markus Holzem
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -43,7 +43,6 @@
 // global functions
 // ---------------------------------------------------------------------------
 
-extern wxWindow *wxWndHook;
 extern LONG APIENTRY _EXPORT wxDlgProc(HWND hWnd, UINT message,
                                        WPARAM wParam, LPARAM lParam);
 
@@ -54,12 +53,12 @@ extern LONG APIENTRY _EXPORT wxDlgProc(HWND hWnd, UINT message,
 bool wxWindow::LoadNativeDialog(wxWindow* parent, wxWindowID& id)
 {
     m_windowId = id;
-    wxWndHook = this;
+
+    wxWindowCreationHook hook(this);
     m_hWnd = (WXHWND)::CreateDialog((HINSTANCE)wxGetInstance(),
                                     MAKEINTRESOURCE(id),
                                     parent ? (HWND)parent->GetHWND() : 0,
                                     (DLGPROC) wxDlgProc);
-    wxWndHook = NULL;
 
     if ( !m_hWnd )
         return FALSE;
@@ -93,12 +92,11 @@ bool wxWindow::LoadNativeDialog(wxWindow* parent, const wxString& name)
 {
     SetName(name);
 
-    wxWndHook = this;
+    wxWindowCreationHook hook(this);
     m_hWnd = (WXHWND)::CreateDialog((HINSTANCE) wxGetInstance(),
                                     name.c_str(),
                                     parent ? (HWND)parent->GetHWND() : 0,
                                     (DLGPROC)wxDlgProc);
-    wxWndHook = NULL;
 
     if ( !m_hWnd )
         return FALSE;
@@ -213,7 +211,7 @@ wxWindow* wxWindow::CreateWindowFromHWND(wxWindow* parent, WXHWND hWnd)
         }
         else
         {
-            wxLogError(wxT("Don't know what kind of button this is: id = %d"),
+            wxLogError(wxT("Don't know what kind of button this is: id = %ld"),
                        id);
         }
     }
@@ -245,11 +243,13 @@ wxWindow* wxWindow::CreateWindowFromHWND(wxWindow* parent, WXHWND hWnd)
         win = new wxSpinButton;
     }
 #endif
+#if wxUSE_SLIDER
     else if (str == wxT("MSCTLS_TRACKBAR32"))
     {
         // Need to ascertain if it's horiz or vert
         win = new wxSlider;
     }
+#endif // wxUSE_SLIDER
     else if (str == wxT("STATIC"))
     {
         int style1 = (style & 0xFF);

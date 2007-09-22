@@ -4,7 +4,7 @@
 // Author:      Vadim Zeitlin
 // Modified by:
 // Created:     19.02.98
-// RCS-ID:      $Id: oleutils.cpp,v 1.12.2.3 2000/05/03 11:06:56 VZ Exp $
+// RCS-ID:      $Id: oleutils.cpp,v 1.16 2002/05/09 22:31:45 VZ Exp $
 // Copyright:   (c) 1998 Vadim Zeitlin <zeitlin@dptmaths.ens-cachan.fr>
 // Licence:     wxWindows license
 ///////////////////////////////////////////////////////////////////////////////
@@ -30,6 +30,10 @@
 
 #include  "wx/setup.h"
 #include  "wx/log.h"
+
+#if wxUSE_OLE
+
+#ifndef __CYGWIN10__
 
 #include <windows.h>
 
@@ -62,7 +66,7 @@ bool IsIidFromList(REFIID riid, const IID *aIids[], size_t nCount)
 // Debug support
 // ----------------------------------------------------------------------------
 
-#if defined(__WXDEBUG__) && defined(__VISUALC__) && (__VISUALC__ > 1000)
+#if defined(__WXDEBUG__) && ( ( defined(__VISUALC__) && (__VISUALC__ > 1000) ) || defined(__MWERKS__) )
 static wxString GetIidName(REFIID riid)
 {
   // an association between symbolic name and numeric value of an IID
@@ -79,7 +83,7 @@ static wxString GetIidName(REFIID riid)
     ADD_KNOWN_IID(AdviseSink2),
     ADD_KNOWN_IID(BindCtx),
     ADD_KNOWN_IID(ClassFactory),
-#if !defined( __VISUALC__) || (__VISUALC__!=1010) 
+#if ( !defined( __VISUALC__) || (__VISUALC__!=1010) ) && !defined(__MWERKS__)
     ADD_KNOWN_IID(ContinueCallback),
     ADD_KNOWN_IID(EnumOleDocumentViews),
     ADD_KNOWN_IID(OleCommandTarget),
@@ -172,18 +176,18 @@ static wxString GetIidName(REFIID riid)
 
 void wxLogQueryInterface(const wxChar *szInterface, REFIID riid)
 {
-  wxLogTrace(wxT("%s::QueryInterface (iid = %s)"),
+  wxLogTrace(wxTRACE_OleCalls, wxT("%s::QueryInterface (iid = %s)"),
              szInterface, GetIidName(riid).c_str());
 }
 
 void wxLogAddRef(const wxChar *szInterface, ULONG cRef)
 {
-  wxLogTrace(wxT("After %s::AddRef: m_cRef = %d"), szInterface, cRef + 1);
+  wxLogTrace(wxTRACE_OleCalls, wxT("After %s::AddRef: m_cRef = %d"), szInterface, cRef + 1);
 }
 
 void wxLogRelease(const wxChar *szInterface, ULONG cRef)
 {
-  wxLogTrace(wxT("After %s::Release: m_cRef = %d"), szInterface, cRef - 1);
+  wxLogTrace(wxTRACE_OleCalls, wxT("After %s::Release: m_cRef = %d"), szInterface, cRef - 1);
 }
 
 #elif defined(__WXDEBUG__) && defined(__VISUALC__) && (__VISUALC__ <= 1000)
@@ -208,3 +212,10 @@ void wxLogRelease(const char *szInterface, ULONG cRef)
 
 #endif
   // wxUSE_DRAG_AND_DROP
+
+#endif
+  // __CYGWIN10__
+
+#endif
+  // wxUSE_OLE
+

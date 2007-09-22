@@ -1,6 +1,8 @@
 
 from wxPython.wx import *
 
+import images
+
 #---------------------------------------------------------------------------
 
 class TestToolBar(wxFrame):
@@ -14,49 +16,50 @@ class TestToolBar(wxFrame):
         wxWindow(self, -1).SetBackgroundColour(wxNamedColour("WHITE"))
 
         tb = self.CreateToolBar(wxTB_HORIZONTAL|wxNO_BORDER|wxTB_FLAT)
+        # wxTB_VERTICAL
         #tb = wxToolBarSimple(self, -1, wxDefaultPosition, wxDefaultSize,
         #               wxTB_HORIZONTAL | wxNO_BORDER | wxTB_FLAT)
         #self.SetToolBar(tb)
 
         self.CreateStatusBar()
 
-        tb.AddSimpleTool(10, wxBitmap('bitmaps/new.bmp',   wxBITMAP_TYPE_BMP),
-                         "New", "Long help for 'New'")
+        tb.AddSimpleTool(10, images.getNewBitmap(), "New", "Long help for 'New'")
         EVT_TOOL(self, 10, self.OnToolClick)
+        EVT_TOOL_RCLICKED(self, 10, self.OnToolRClick)
 
-        tb.AddSimpleTool(20, wxBitmap('bitmaps/open.bmp',  wxBITMAP_TYPE_BMP),
-                         "Open", "Long help for 'Open'")
+        tb.AddSimpleTool(20, images.getOpenBitmap(), "Open", "Long help for 'Open'")
         EVT_TOOL(self, 20, self.OnToolClick)
+        EVT_TOOL_RCLICKED(self, 20, self.OnToolRClick)
 
         tb.AddSeparator()
-        tb.AddSimpleTool(30, wxBitmap('bitmaps/copy.bmp',  wxBITMAP_TYPE_BMP),
-                         "Copy", "Long help for 'Copy'")
+        tb.AddSimpleTool(30, images.getCopyBitmap(), "Copy", "Long help for 'Copy'")
         EVT_TOOL(self, 30, self.OnToolClick)
+        EVT_TOOL_RCLICKED(self, 30, self.OnToolRClick)
 
-        tb.AddSimpleTool(40, wxBitmap('bitmaps/paste.bmp', wxBITMAP_TYPE_BMP),
-                         "Paste", "Long help for 'Paste'")
+        tb.AddSimpleTool(40, images.getPasteBitmap(), "Paste", "Long help for 'Paste'")
         EVT_TOOL(self, 40, self.OnToolClick)
+        EVT_TOOL_RCLICKED(self, 40, self.OnToolRClick)
 
         tb.AddSeparator()
 
-        tool = tb.AddTool(50, wxBitmap('bitmaps/tog1.bmp', wxBITMAP_TYPE_BMP),
-                          shortHelpString="Toggle this", isToggle=true)
+        tool = tb.AddCheckTool(50, images.getTog1Bitmap(),
+                               shortHelp="Toggle this")
         EVT_TOOL(self, 50, self.OnToolClick)
 
-        tb.AddTool(60, wxBitmap('bitmaps/tog1.bmp', wxBITMAP_TYPE_BMP),
-                   wxBitmap('bitmaps/tog2.bmp', wxBITMAP_TYPE_BMP),
-                   shortHelpString="Toggle with 2 bitmaps", isToggle=true)
-        EVT_TOOL(self, 60, self.OnToolClick)
+        #tb.AddCheckTool(60, '', images.getTog1Bitmap(), images.getTog2Bitmap(),
+        #                shortHelp="Toggle with 2 bitmaps")
+        #EVT_TOOL(self, 60, self.OnToolClick)
 
         EVT_TOOL_ENTER(self, -1, self.OnToolEnter)
         EVT_TOOL_RCLICKED(self, -1, self.OnToolRClick)  # Match all
         EVT_TIMER(self, -1, self.OnClearSB)
 
-        tb.AddSeparator()
-        cbID = wxNewId()
-        tb.AddControl(wxComboBox(tb, cbID, "", choices=["", "This", "is a", "wxComboBox"],
-                                 size=(150,-1), style=wxCB_DROPDOWN))
-        EVT_COMBOBOX(self, cbID, self.OnCombo)
+        if wxPlatform != "__WXMAC__":
+            tb.AddSeparator()
+            cbID = wxNewId()
+            tb.AddControl(wxComboBox(tb, cbID, "", choices=["", "This", "is a", "wxComboBox"],
+                                     size=(150,-1), style=wxCB_DROPDOWN))
+            EVT_COMBOBOX(self, cbID, self.OnCombo)
 
         tb.Realize()
 
@@ -74,6 +77,8 @@ class TestToolBar(wxFrame):
         self.log.WriteText('OnToolEnter: %s, %s\n' % (event.GetId(), event.GetInt()))
         if self.timer is None:
             self.timer = wxTimer(self)
+        if self.timer.IsRunning():
+            self.timer.Stop()
         self.timer.Start(2000)
         event.Skip()
 

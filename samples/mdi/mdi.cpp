@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     04/01/98
-// RCS-ID:      $Id: mdi.cpp,v 1.29.2.6 2000/12/10 11:57:55 vadz Exp $
+// RCS-ID:      $Id: mdi.cpp,v 1.44 2002/08/22 15:44:34 JS Exp $
 // Copyright:   (c) Julian Smart and Markus Holzem
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -29,19 +29,21 @@
     #include "wx/mdi.h"
 #endif
 
-#include <wx/toolbar.h>
+#include "wx/toolbar.h"
 
-#if defined(__WXGTK__) || defined(__WXMOTIF__)
+#if defined(__WXGTK__) || defined(__WXX11__) || defined(__WXMOTIF__) || defined(__WXMAC__)
     #include "mondrian.xpm"
-    #include "bitmaps/new.xpm"
-    #include "bitmaps/open.xpm"
-    #include "bitmaps/save.xpm"
-    #include "bitmaps/copy.xpm"
-    #include "bitmaps/cut.xpm"
-    #include "bitmaps/paste.xpm"
-    #include "bitmaps/print.xpm"
-    #include "bitmaps/help.xpm"
 #endif
+
+#include "bitmaps/new.xpm"
+#include "bitmaps/open.xpm"
+#include "bitmaps/save.xpm"
+#include "bitmaps/copy.xpm"
+#include "bitmaps/cut.xpm"
+#include "bitmaps/paste.xpm"
+#include "bitmaps/print.xpm"
+#include "bitmaps/help.xpm"
+
 
 #include "mdi.h"
 
@@ -83,8 +85,6 @@ BEGIN_EVENT_TABLE(MyChild, wxMDIChildFrame)
     EVT_MENU(MDI_CHANGE_TITLE, MyChild::OnChangeTitle)
     EVT_MENU(MDI_CHANGE_POSITION, MyChild::OnChangePosition)
     EVT_MENU(MDI_CHANGE_SIZE, MyChild::OnChangeSize)
-
-    EVT_UPDATE_UI(MDI_REFRESH, MyChild::OnUpdateRefresh)
 
     EVT_SIZE(MyChild::OnSize)
     EVT_MOVE(MyChild::OnMove)
@@ -165,7 +165,8 @@ MyFrame::MyFrame(wxWindow *parent,
                  const wxPoint& pos,
                  const wxSize& size,
                  const long style)
-       : wxMDIParentFrame(parent, id, title, pos, size, style)
+       : wxMDIParentFrame(parent, id, title, pos, size,
+                          style | wxNO_FULL_REPAINT_ON_RESIZE)
 {
     textWindow = new wxTextCtrl(this, -1, "A help window",
                                 wxDefaultPosition, wxDefaultSize,
@@ -274,29 +275,26 @@ void MyFrame::OnNewWindow(wxCommandEvent& WXUNUSED(event) )
     subframe->Show(TRUE);
 }
 
-void MyFrame::OnSize(wxSizeEvent& WXUNUSED(event))
+void MyFrame::OnSize(wxSizeEvent& event)
 {
     int w, h;
     GetClientSize(&w, &h);
 
     textWindow->SetSize(0, 0, 200, h);
     GetClientWindow()->SetSize(200, 0, w - 200, h);
+
+    // FIXME: On wxX11, we need the MDI frame to process this
+    // event, but on other platforms this should not
+    // be done.
+#ifdef __WXX11__   
+    event.Skip();
+#endif
 }
 
 void MyFrame::InitToolBar(wxToolBar* toolBar)
 {
     wxBitmap* bitmaps[8];
 
-#ifdef __WXMSW__
-    bitmaps[0] = new wxBitmap("icon1", wxBITMAP_TYPE_RESOURCE);
-    bitmaps[1] = new wxBitmap("icon2", wxBITMAP_TYPE_RESOURCE);
-    bitmaps[2] = new wxBitmap("icon3", wxBITMAP_TYPE_RESOURCE);
-    bitmaps[3] = new wxBitmap("icon4", wxBITMAP_TYPE_RESOURCE);
-    bitmaps[4] = new wxBitmap("icon5", wxBITMAP_TYPE_RESOURCE);
-    bitmaps[5] = new wxBitmap("icon6", wxBITMAP_TYPE_RESOURCE);
-    bitmaps[6] = new wxBitmap("icon7", wxBITMAP_TYPE_RESOURCE);
-    bitmaps[7] = new wxBitmap("icon8", wxBITMAP_TYPE_RESOURCE);
-#else
     bitmaps[0] = new wxBitmap( new_xpm );
     bitmaps[1] = new wxBitmap( open_xpm );
     bitmaps[2] = new wxBitmap( save_xpm );
@@ -305,13 +303,8 @@ void MyFrame::InitToolBar(wxToolBar* toolBar)
     bitmaps[5] = new wxBitmap( paste_xpm );
     bitmaps[6] = new wxBitmap( print_xpm );
     bitmaps[7] = new wxBitmap( help_xpm );
-#endif
 
-#ifdef __WXMSW__
     int width = 24;
-#else
-    int width = 16;
-#endif
     int currentX = 5;
 
     toolBar->AddTool( MDI_NEW_WINDOW, *(bitmaps[0]), wxNullBitmap, FALSE, currentX, -1, (wxObject *) NULL, "New file");
@@ -347,7 +340,9 @@ void MyFrame::InitToolBar(wxToolBar* toolBar)
 // Define a constructor for my canvas
 MyCanvas::MyCanvas(wxWindow *parent, const wxPoint& pos, const wxSize& size)
         : wxScrolledWindow(parent, -1, pos, size,
-                           wxSUNKEN_BORDER|wxVSCROLL|wxHSCROLL)
+                           wxSUNKEN_BORDER |
+                           wxNO_FULL_REPAINT_ON_RESIZE |
+                           wxVSCROLL | wxHSCROLL)
 {
     SetBackgroundColour(wxColour("WHITE"));
 
@@ -410,10 +405,14 @@ void MyCanvas::OnEvent(wxMouseEvent& event)
 MyChild::MyChild(wxMDIParentFrame *parent, const wxString& title,
                  const wxPoint& pos, const wxSize& size,
                  const long style)
-       : wxMDIChildFrame(parent, -1, title, pos, size, style)
+       : wxMDIChildFrame(parent, -1, title, pos, size,
+                         style | wxNO_FULL_REPAINT_ON_RESIZE)
 {
     canvas = (MyCanvas *) NULL;
     my_children.Append(this);
+
+    // this should work for MDI frames as well as for normal ones
+    SetSizeHints(100, 100);
 }
 
 MyChild::~MyChild()
@@ -424,11 +423,6 @@ MyChild::~MyChild()
 void MyChild::OnQuit(wxCommandEvent& WXUNUSED(event))
 {
     Close(TRUE);
-}
-
-void MyChild::OnUpdateRefresh(wxUpdateUIEvent& event)
-{
-    event.Enable( canvas && canvas->IsDirty() );
 }
 
 void MyChild::OnRefresh(wxCommandEvent& WXUNUSED(event))
@@ -475,7 +469,7 @@ void MyChild::OnMove(wxMoveEvent& event)
     //     to be the width of the MDI canvas border)
     wxPoint pos1 = event.GetPosition(),
             pos2 = GetPosition();
-    wxLogStatus("position from event: (%d, %d), from frame (%d, %d)",
+    wxLogStatus(wxT("position from event: (%d, %d), from frame (%d, %d)"),
                 pos1.x, pos1.y, pos2.x, pos2.y);
 
     event.Skip();
@@ -489,7 +483,7 @@ void MyChild::OnSize(wxSizeEvent& event)
     wxSize size1 = event.GetSize(),
            size2 = GetSize(),
            size3 = GetClientSize();
-    wxLogStatus("size from event: %dx%d, from frame %dx%d, client %dx%d",
+    wxLogStatus(wxT("size from event: %dx%d, from frame %dx%d, client %dx%d"),
                 size1.x, size1.y, size2.x, size2.y, size3.x, size3.y);
 
     event.Skip();

@@ -2,9 +2,9 @@
 // Name:        gauge.cpp
 // Purpose:
 // Author:      Robert Roebling
-// Id:          $Id: gauge.cpp,v 1.17.2.1 2001/01/31 12:23:40 vadz Exp $
+// Id:          $Id: gauge.cpp,v 1.19 2001/12/14 00:28:47 VZ Exp $
 // Copyright:   (c) 1998 Robert Roebling
-// Licence:   	wxWindows licence
+// Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
 
 #ifdef __GNUG__
@@ -29,28 +29,28 @@ bool wxGauge::Create( wxWindow *parent, wxWindowID id,  int range,
     long style, const wxValidator& validator, const wxString& name )
 {
     m_needParent = TRUE;
-  
+
     if (!PreCreation( parent, pos, size ) ||
         !CreateBase( parent, id, pos, size, style, validator, name ))
     {
         wxFAIL_MSG( wxT("wxGauge creation failed") );
-	return FALSE;
+        return FALSE;
     }
 
     m_rangeMax = range;
     m_gaugePos = 0;
     m_useProgressBar = TRUE;
-  
+
     m_widget = gtk_progress_bar_new();
     if( style & wxGA_VERTICAL)
         gtk_progress_bar_set_orientation( GTK_PROGRESS_BAR(m_widget) , GTK_PROGRESS_BOTTOM_TO_TOP );
-  
+
     m_parent->DoAddChild( this );
-  
+
     PostCreation();
-  
+
     Show( TRUE );
-    
+
     return TRUE;
 }
 
@@ -58,7 +58,7 @@ void wxGauge::SetRange( int r )
 {
     m_rangeMax = r;
     if (m_gaugePos > m_rangeMax) m_gaugePos = m_rangeMax;
-  
+
     gtk_progress_bar_update( GTK_PROGRESS_BAR(m_widget), ((float)m_gaugePos)/m_rangeMax );
 }
 
@@ -66,7 +66,7 @@ void wxGauge::SetValue( int pos )
 {
     m_gaugePos = pos;
     if (m_gaugePos > m_rangeMax) m_gaugePos = m_rangeMax;
-  
+
     gtk_progress_bar_update( GTK_PROGRESS_BAR(m_widget), ((float)m_gaugePos)/m_rangeMax );
 }
 
@@ -86,4 +86,5 @@ void wxGauge::ApplyWidgetStyle()
     gtk_widget_set_style( m_widget, m_widgetStyle );
 }
 
-#endif
+#endif // wxUSE_GAUGE
+

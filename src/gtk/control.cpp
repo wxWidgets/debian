@@ -2,7 +2,7 @@
 // Name:        control.cpp
 // Purpose:
 // Author:      Robert Roebling
-// Id:          $Id: control.cpp,v 1.24 2000/01/06 16:47:47 VZ Exp $
+// Id:          $Id: control.cpp,v 1.26 2001/06/26 20:59:15 VZ Exp $
 // Copyright:   (c) 1998 Robert Roebling, Julian Smart and Vadim Zeitlin
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -10,6 +10,10 @@
 #ifdef __GNUG__
 #pragma implementation "control.h"
 #endif
+
+#include "wx/defs.h"
+
+#if wxUSE_CONTROLS
 
 #include "wx/control.h"
 
@@ -73,9 +77,11 @@ wxSize wxControl::DoGetBestSize() const
     GtkRequisition req;
     req.width = 2;
     req.height = 2;
-    (* GTK_WIDGET_CLASS( GTK_OBJECT(m_widget)->klass )->size_request )
+    (* GTK_WIDGET_CLASS( GTK_OBJECT_GET_CLASS(m_widget) )->size_request )
         (m_widget, &req );
 
     return wxSize(req.width, req.height);
 }
+
+#endif // wxUSE_CONTROLS
 

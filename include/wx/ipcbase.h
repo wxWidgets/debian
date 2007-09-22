@@ -4,15 +4,15 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     4/1/98
-// RCS-ID:      $Id: ipcbase.h,v 1.11.2.1 2000/03/21 20:34:06 GRG Exp $
+// RCS-ID:      $Id: ipcbase.h,v 1.15 2002/09/03 11:22:55 JS Exp $
 // Copyright:   (c) Julian Smart and Markus Holzem
-// Licence:   	wxWindows license
+// Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
 
 #ifndef _WX_IPCBASEH__
 #define _WX_IPCBASEH__
 
-#ifdef __GNUG__
+#if defined(__GNUG__) && !defined(__APPLE__)
 #pragma interface "ipcbase.h"
 #endif
 
@@ -50,13 +50,18 @@ class WXDLLEXPORT wxConnectionBase: public wxObject
   DECLARE_CLASS(wxConnectionBase)
 
 public:
-  inline wxConnectionBase(void) {}
-  inline ~wxConnectionBase(void) {}
+  wxConnectionBase(wxChar *buffer, int size); // use external buffer
+  wxConnectionBase(); // use internal, adaptive buffer
+  wxConnectionBase(wxConnectionBase& copy);
+  ~wxConnectionBase(void);
+
+  void SetConnected( bool c ) { m_connected = c; }
+  bool GetConnected() { return m_connected; }
 
   // Calls that CLIENT can make
   virtual bool Execute(const wxChar *data, int size = -1, wxIPCFormat format = wxIPC_TEXT ) = 0;
   virtual bool Execute(const wxString& str) { return Execute(str, -1, wxIPC_TEXT); }
-  virtual char *Request(const wxString& item, int *size = (int *) NULL, wxIPCFormat format = wxIPC_TEXT) = 0;
+  virtual wxChar *Request(const wxString& item, int *size = (int *) NULL, wxIPCFormat format = wxIPC_TEXT) = 0;
   virtual bool Poke(const wxString& item, wxChar *data, int size = -1, wxIPCFormat format = wxIPC_TEXT) = 0;
   virtual bool StartAdvise(const wxString& item) = 0;
   virtual bool StopAdvise(const wxString& item) = 0;
@@ -69,16 +74,16 @@ public:
 
   // Callbacks to SERVER - override at will
   virtual bool OnExecute     ( const wxString& WXUNUSED(topic),
-                               char *WXUNUSED(data),
+                               wxChar *WXUNUSED(data),
                                int WXUNUSED(size),
                                wxIPCFormat WXUNUSED(format) )
                              { return FALSE; };
 
-  virtual char *OnRequest    ( const wxString& WXUNUSED(topic),
+  virtual wxChar *OnRequest    ( const wxString& WXUNUSED(topic),
                                const wxString& WXUNUSED(item),
                                int *WXUNUSED(size),
                                wxIPCFormat WXUNUSED(format) )
-                             { return (char *) NULL; };
+                             { return (wxChar *) NULL; };
 
   virtual bool OnPoke        ( const wxString& WXUNUSED(topic),
                                const wxString& WXUNUSED(item),
@@ -98,7 +103,7 @@ public:
   // Callbacks to CLIENT - override at will
   virtual bool OnAdvise      ( const wxString& WXUNUSED(topic),
                                const wxString& WXUNUSED(item),
-                               char *WXUNUSED(data),
+                               wxChar *WXUNUSED(data),
                                int WXUNUSED(size),
                                wxIPCFormat WXUNUSED(format) )
                              { return FALSE; };
@@ -106,7 +111,19 @@ public:
   // Callbacks to BOTH - override at will
   // Default behaviour is to delete connection and return TRUE
   virtual bool OnDisconnect(void) = 0;
+
+  // return a buffer at least this size, reallocating buffer if needed
+  // returns NULL if using an inadequate user buffer - it can't be resized
+  wxChar *      GetBufferAtLeast( size_t bytes );
+
+protected:
+  bool          m_connected;
+private:
+  wxChar *      m_buffer;
+  size_t        m_buffersize;
+  bool          m_deletebufferwhendone;
 };
+
 
 class WXDLLEXPORT wxServerBase: public wxObject
 {

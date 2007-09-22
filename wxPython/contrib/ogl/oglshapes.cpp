@@ -55,7 +55,7 @@ extern PyObject *SWIG_newvarlink(void);
 
 #define SWIG_name    "oglshapesc"
 
-#include "export.h"
+#include "wxPython.h"
 #include "oglhelpers.h"
 
 
@@ -85,8 +85,6 @@ static PyObject* t_output_helper(PyObject* target, PyObject* o) {
     return target;
 }
 
-static char* wxStringErrorMsg = "string type is required for parameter";
-
     WXSHAPE_IMP_CALLBACKS(wxPyRectangleShape, wxRectangleShape);
 
     WXSHAPE_IMP_CALLBACKS(wxPyControlPoint, wxControlPoint);
@@ -103,6 +101,14 @@ static char* wxStringErrorMsg = "string type is required for parameter";
 #ifdef __cplusplus
 extern "C" {
 #endif
+static void *SwigwxPseudoMetaFileTowxObject(void *ptr) {
+    wxPseudoMetaFile *src;
+    wxObject *dest;
+    src = (wxPseudoMetaFile *) ptr;
+    dest = (wxObject *) src;
+    return (void *) dest;
+}
+
 #define new_wxPseudoMetaFile() (new wxPseudoMetaFile())
 static PyObject *_wrap_new_wxPseudoMetaFile(PyObject *self, PyObject *args, PyObject *kwargs) {
     PyObject * _resultobj;
@@ -114,10 +120,11 @@ static PyObject *_wrap_new_wxPseudoMetaFile(PyObject *self, PyObject *args, PyOb
     if(!PyArg_ParseTupleAndKeywords(args,kwargs,":new_wxPseudoMetaFile",_kwnames)) 
         return NULL;
 {
-    wxPy_BEGIN_ALLOW_THREADS;
-        _result = (wxPseudoMetaFile *)new_wxPseudoMetaFile();
+    PyThreadState* __tstate = wxPyBeginAllowThreads();
+    _result = (wxPseudoMetaFile *)new_wxPseudoMetaFile();
 
-    wxPy_END_ALLOW_THREADS;
+    wxPyEndAllowThreads(__tstate);
+    if (PyErr_Occurred()) return NULL;
 }    if (_result) {
         SWIG_MakePtr(_ptemp, (char *) _result,"_wxPseudoMetaFile_p");
         _resultobj = Py_BuildValue("s",_ptemp);
@@ -146,10 +153,11 @@ static PyObject *_wrap_delete_wxPseudoMetaFile(PyObject *self, PyObject *args, P
         }
     }
 {
-    wxPy_BEGIN_ALLOW_THREADS;
-        delete_wxPseudoMetaFile(_arg0);
+    PyThreadState* __tstate = wxPyBeginAllowThreads();
+    delete_wxPseudoMetaFile(_arg0);
 
-    wxPy_END_ALLOW_THREADS;
+    wxPyEndAllowThreads(__tstate);
+    if (PyErr_Occurred()) return NULL;
 }    Py_INCREF(Py_None);
     _resultobj = Py_None;
     return _resultobj;
@@ -184,10 +192,11 @@ static PyObject *_wrap_wxPseudoMetaFile_Draw(PyObject *self, PyObject *args, PyO
         }
     }
 {
-    wxPy_BEGIN_ALLOW_THREADS;
-        wxPseudoMetaFile_Draw(_arg0,*_arg1,_arg2,_arg3);
+    PyThreadState* __tstate = wxPyBeginAllowThreads();
+    wxPseudoMetaFile_Draw(_arg0,*_arg1,_arg2,_arg3);
 
-    wxPy_END_ALLOW_THREADS;
+    wxPyEndAllowThreads(__tstate);
+    if (PyErr_Occurred()) return NULL;
 }    Py_INCREF(Py_None);
     _resultobj = Py_None;
     return _resultobj;
@@ -221,10 +230,11 @@ static PyObject *_wrap_wxPseudoMetaFile_WriteAttributes(PyObject *self, PyObject
         }
     }
 {
-    wxPy_BEGIN_ALLOW_THREADS;
-        wxPseudoMetaFile_WriteAttributes(_arg0,_arg1,_arg2);
+    PyThreadState* __tstate = wxPyBeginAllowThreads();
+    wxPseudoMetaFile_WriteAttributes(_arg0,_arg1,_arg2);
 
-    wxPy_END_ALLOW_THREADS;
+    wxPyEndAllowThreads(__tstate);
+    if (PyErr_Occurred()) return NULL;
 }    Py_INCREF(Py_None);
     _resultobj = Py_None;
     return _resultobj;
@@ -258,10 +268,11 @@ static PyObject *_wrap_wxPseudoMetaFile_ReadAttributes(PyObject *self, PyObject 
         }
     }
 {
-    wxPy_BEGIN_ALLOW_THREADS;
-        wxPseudoMetaFile_ReadAttributes(_arg0,_arg1,_arg2);
+    PyThreadState* __tstate = wxPyBeginAllowThreads();
+    wxPseudoMetaFile_ReadAttributes(_arg0,_arg1,_arg2);
 
-    wxPy_END_ALLOW_THREADS;
+    wxPyEndAllowThreads(__tstate);
+    if (PyErr_Occurred()) return NULL;
 }    Py_INCREF(Py_None);
     _resultobj = Py_None;
     return _resultobj;
@@ -285,10 +296,11 @@ static PyObject *_wrap_wxPseudoMetaFile_Clear(PyObject *self, PyObject *args, Py
         }
     }
 {
-    wxPy_BEGIN_ALLOW_THREADS;
-        wxPseudoMetaFile_Clear(_arg0);
+    PyThreadState* __tstate = wxPyBeginAllowThreads();
+    wxPseudoMetaFile_Clear(_arg0);
 
-    wxPy_END_ALLOW_THREADS;
+    wxPyEndAllowThreads(__tstate);
+    if (PyErr_Occurred()) return NULL;
 }    Py_INCREF(Py_None);
     _resultobj = Py_None;
     return _resultobj;
@@ -321,10 +333,11 @@ static PyObject *_wrap_wxPseudoMetaFile_Copy(PyObject *self, PyObject *args, PyO
         }
     }
 {
-    wxPy_BEGIN_ALLOW_THREADS;
-        wxPseudoMetaFile_Copy(_arg0,*_arg1);
+    PyThreadState* __tstate = wxPyBeginAllowThreads();
+    wxPseudoMetaFile_Copy(_arg0,*_arg1);
 
-    wxPy_END_ALLOW_THREADS;
+    wxPyEndAllowThreads(__tstate);
+    if (PyErr_Occurred()) return NULL;
 }    Py_INCREF(Py_None);
     _resultobj = Py_None;
     return _resultobj;
@@ -350,10 +363,11 @@ static PyObject *_wrap_wxPseudoMetaFile_Scale(PyObject *self, PyObject *args, Py
         }
     }
 {
-    wxPy_BEGIN_ALLOW_THREADS;
-        wxPseudoMetaFile_Scale(_arg0,_arg1,_arg2);
+    PyThreadState* __tstate = wxPyBeginAllowThreads();
+    wxPseudoMetaFile_Scale(_arg0,_arg1,_arg2);
 
-    wxPy_END_ALLOW_THREADS;
+    wxPyEndAllowThreads(__tstate);
+    if (PyErr_Occurred()) return NULL;
 }    Py_INCREF(Py_None);
     _resultobj = Py_None;
     return _resultobj;
@@ -379,10 +393,11 @@ static PyObject *_wrap_wxPseudoMetaFile_ScaleTo(PyObject *self, PyObject *args, 
         }
     }
 {
-    wxPy_BEGIN_ALLOW_THREADS;
-        wxPseudoMetaFile_ScaleTo(_arg0,_arg1,_arg2);
+    PyThreadState* __tstate = wxPyBeginAllowThreads();
+    wxPseudoMetaFile_ScaleTo(_arg0,_arg1,_arg2);
 
-    wxPy_END_ALLOW_THREADS;
+    wxPyEndAllowThreads(__tstate);
+    if (PyErr_Occurred()) return NULL;
 }    Py_INCREF(Py_None);
     _resultobj = Py_None;
     return _resultobj;
@@ -408,10 +423,11 @@ static PyObject *_wrap_wxPseudoMetaFile_Translate(PyObject *self, PyObject *args
         }
     }
 {
-    wxPy_BEGIN_ALLOW_THREADS;
-        wxPseudoMetaFile_Translate(_arg0,_arg1,_arg2);
+    PyThreadState* __tstate = wxPyBeginAllowThreads();
+    wxPseudoMetaFile_Translate(_arg0,_arg1,_arg2);
 
-    wxPy_END_ALLOW_THREADS;
+    wxPyEndAllowThreads(__tstate);
+    if (PyErr_Occurred()) return NULL;
 }    Py_INCREF(Py_None);
     _resultobj = Py_None;
     return _resultobj;
@@ -438,10 +454,11 @@ static PyObject *_wrap_wxPseudoMetaFile_Rotate(PyObject *self, PyObject *args, P
         }
     }
 {
-    wxPy_BEGIN_ALLOW_THREADS;
-        wxPseudoMetaFile_Rotate(_arg0,_arg1,_arg2,_arg3);
+    PyThreadState* __tstate = wxPyBeginAllowThreads();
+    wxPseudoMetaFile_Rotate(_arg0,_arg1,_arg2,_arg3);
 
-    wxPy_END_ALLOW_THREADS;
+    wxPyEndAllowThreads(__tstate);
+    if (PyErr_Occurred()) return NULL;
 }    Py_INCREF(Py_None);
     _resultobj = Py_None;
     return _resultobj;
@@ -485,10 +502,11 @@ static PyObject *_wrap_wxPseudoMetaFile_LoadFromMetaFile(PyObject *self, PyObjec
         }
     }
 {
-    wxPy_BEGIN_ALLOW_THREADS;
-        _result = (bool )wxPseudoMetaFile_LoadFromMetaFile(_arg0,_arg1,_arg2,_arg3);
+    PyThreadState* __tstate = wxPyBeginAllowThreads();
+    _result = (bool )wxPseudoMetaFile_LoadFromMetaFile(_arg0,_arg1,_arg2,_arg3);
 
-    wxPy_END_ALLOW_THREADS;
+    wxPyEndAllowThreads(__tstate);
+    if (PyErr_Occurred()) return NULL;
 }    _resultobj = Py_BuildValue("i",_result);
     return _resultobj;
 }
@@ -547,10 +565,11 @@ static PyObject *_wrap_wxPseudoMetaFile_GetBounds(PyObject *self, PyObject *args
         }
     }
 {
-    wxPy_BEGIN_ALLOW_THREADS;
-        wxPseudoMetaFile_GetBounds(_arg0,_arg1,_arg2,_arg3,_arg4);
+    PyThreadState* __tstate = wxPyBeginAllowThreads();
+    wxPseudoMetaFile_GetBounds(_arg0,_arg1,_arg2,_arg3,_arg4);
 
-    wxPy_END_ALLOW_THREADS;
+    wxPyEndAllowThreads(__tstate);
+    if (PyErr_Occurred()) return NULL;
 }    Py_INCREF(Py_None);
     _resultobj = Py_None;
     return _resultobj;
@@ -560,7 +579,7 @@ static PyObject *_wrap_wxPseudoMetaFile_GetBounds(PyObject *self, PyObject *args
 static PyObject *_wrap_wxPseudoMetaFile_CalculateSize(PyObject *self, PyObject *args, PyObject *kwargs) {
     PyObject * _resultobj;
     wxPseudoMetaFile * _arg0;
-    wxDrawnShape * _arg1;
+    wxPyDrawnShape * _arg1;
     PyObject * _argo0 = 0;
     PyObject * _argo1 = 0;
     char *_kwnames[] = { "self","shape", NULL };
@@ -577,16 +596,17 @@ static PyObject *_wrap_wxPseudoMetaFile_CalculateSize(PyObject *self, PyObject *
     }
     if (_argo1) {
         if (_argo1 == Py_None) { _arg1 = NULL; }
-        else if (SWIG_GetPtrObj(_argo1,(void **) &_arg1,"_wxDrawnShape_p")) {
-            PyErr_SetString(PyExc_TypeError,"Type error in argument 2 of wxPseudoMetaFile_CalculateSize. Expected _wxDrawnShape_p.");
+        else if (SWIG_GetPtrObj(_argo1,(void **) &_arg1,"_wxPyDrawnShape_p")) {
+            PyErr_SetString(PyExc_TypeError,"Type error in argument 2 of wxPseudoMetaFile_CalculateSize. Expected _wxPyDrawnShape_p.");
         return NULL;
         }
     }
 {
-    wxPy_BEGIN_ALLOW_THREADS;
-        wxPseudoMetaFile_CalculateSize(_arg0,_arg1);
+    PyThreadState* __tstate = wxPyBeginAllowThreads();
+    wxPseudoMetaFile_CalculateSize(_arg0,_arg1);
 
-    wxPy_END_ALLOW_THREADS;
+    wxPyEndAllowThreads(__tstate);
+    if (PyErr_Occurred()) return NULL;
 }    Py_INCREF(Py_None);
     _resultobj = Py_None;
     return _resultobj;
@@ -613,10 +633,11 @@ static PyObject *_wrap_wxPseudoMetaFile_SetRotateable(PyObject *self, PyObject *
     }
     _arg1 = (bool ) tempbool1;
 {
-    wxPy_BEGIN_ALLOW_THREADS;
-        wxPseudoMetaFile_SetRotateable(_arg0,_arg1);
+    PyThreadState* __tstate = wxPyBeginAllowThreads();
+    wxPseudoMetaFile_SetRotateable(_arg0,_arg1);
 
-    wxPy_END_ALLOW_THREADS;
+    wxPyEndAllowThreads(__tstate);
+    if (PyErr_Occurred()) return NULL;
 }    Py_INCREF(Py_None);
     _resultobj = Py_None;
     return _resultobj;
@@ -641,10 +662,11 @@ static PyObject *_wrap_wxPseudoMetaFile_GetRotateable(PyObject *self, PyObject *
         }
     }
 {
-    wxPy_BEGIN_ALLOW_THREADS;
-        _result = (bool )wxPseudoMetaFile_GetRotateable(_arg0);
+    PyThreadState* __tstate = wxPyBeginAllowThreads();
+    _result = (bool )wxPseudoMetaFile_GetRotateable(_arg0);
 
-    wxPy_END_ALLOW_THREADS;
+    wxPyEndAllowThreads(__tstate);
+    if (PyErr_Occurred()) return NULL;
 }    _resultobj = Py_BuildValue("i",_result);
     return _resultobj;
 }
@@ -669,10 +691,11 @@ static PyObject *_wrap_wxPseudoMetaFile_SetSize(PyObject *self, PyObject *args, 
         }
     }
 {
-    wxPy_BEGIN_ALLOW_THREADS;
-        wxPseudoMetaFile_SetSize(_arg0,_arg1,_arg2);
+    PyThreadState* __tstate = wxPyBeginAllowThreads();
+    wxPseudoMetaFile_SetSize(_arg0,_arg1,_arg2);
 
-    wxPy_END_ALLOW_THREADS;
+    wxPyEndAllowThreads(__tstate);
+    if (PyErr_Occurred()) return NULL;
 }    Py_INCREF(Py_None);
     _resultobj = Py_None;
     return _resultobj;
@@ -684,11 +707,11 @@ static PyObject *_wrap_wxPseudoMetaFile_SetFillBrush(PyObject *self, PyObject *a
     wxPseudoMetaFile * _arg0;
     wxBrush * _arg1;
     PyObject * _argo0 = 0;
-    PyObject * _argo1 = 0;
+    PyObject * _obj1 = 0;
     char *_kwnames[] = { "self","brush", NULL };
 
     self = self;
-    if(!PyArg_ParseTupleAndKeywords(args,kwargs,"OO:wxPseudoMetaFile_SetFillBrush",_kwnames,&_argo0,&_argo1)) 
+    if(!PyArg_ParseTupleAndKeywords(args,kwargs,"OO:wxPseudoMetaFile_SetFillBrush",_kwnames,&_argo0,&_obj1)) 
         return NULL;
     if (_argo0) {
         if (_argo0 == Py_None) { _arg0 = NULL; }
@@ -697,18 +720,26 @@ static PyObject *_wrap_wxPseudoMetaFile_SetFillBrush(PyObject *self, PyObject *a
         return NULL;
         }
     }
-    if (_argo1) {
-        if (_argo1 == Py_None) { _arg1 = NULL; }
-        else if (SWIG_GetPtrObj(_argo1,(void **) &_arg1,"_wxBrush_p")) {
-            PyErr_SetString(PyExc_TypeError,"Type error in argument 2 of wxPseudoMetaFile_SetFillBrush. Expected _wxBrush_p.");
+{
+    wxBrush* temp;
+    if (_obj1) {
+        if (_obj1 == Py_None) { temp = NULL; }
+        else if (SWIG_GetPtrObj(_obj1, (void **) &temp,"_wxBrush_p")) {
+            PyErr_SetString(PyExc_TypeError,"Type error, expected _wxBrush_p.");
         return NULL;
         }
     }
+    if (temp)
+        _arg1 = wxTheBrushList->FindOrCreateBrush(temp->GetColour(), temp->GetStyle());
+    else
+        _arg1 = NULL;
+}
 {
-    wxPy_BEGIN_ALLOW_THREADS;
-        wxPseudoMetaFile_SetFillBrush(_arg0,_arg1);
+    PyThreadState* __tstate = wxPyBeginAllowThreads();
+    wxPseudoMetaFile_SetFillBrush(_arg0,_arg1);
 
-    wxPy_END_ALLOW_THREADS;
+    wxPyEndAllowThreads(__tstate);
+    if (PyErr_Occurred()) return NULL;
 }    Py_INCREF(Py_None);
     _resultobj = Py_None;
     return _resultobj;
@@ -734,10 +765,11 @@ static PyObject *_wrap_wxPseudoMetaFile_GetFillBrush(PyObject *self, PyObject *a
         }
     }
 {
-    wxPy_BEGIN_ALLOW_THREADS;
-        _result = (wxBrush *)wxPseudoMetaFile_GetFillBrush(_arg0);
+    PyThreadState* __tstate = wxPyBeginAllowThreads();
+    _result = (wxBrush *)wxPseudoMetaFile_GetFillBrush(_arg0);
 
-    wxPy_END_ALLOW_THREADS;
+    wxPyEndAllowThreads(__tstate);
+    if (PyErr_Occurred()) return NULL;
 }    if (_result) {
         SWIG_MakePtr(_ptemp, (char *) _result,"_wxBrush_p");
         _resultobj = Py_BuildValue("s",_ptemp);
@@ -754,11 +786,11 @@ static PyObject *_wrap_wxPseudoMetaFile_SetOutlinePen(PyObject *self, PyObject *
     wxPseudoMetaFile * _arg0;
     wxPen * _arg1;
     PyObject * _argo0 = 0;
-    PyObject * _argo1 = 0;
+    PyObject * _obj1 = 0;
     char *_kwnames[] = { "self","pen", NULL };
 
     self = self;
-    if(!PyArg_ParseTupleAndKeywords(args,kwargs,"OO:wxPseudoMetaFile_SetOutlinePen",_kwnames,&_argo0,&_argo1)) 
+    if(!PyArg_ParseTupleAndKeywords(args,kwargs,"OO:wxPseudoMetaFile_SetOutlinePen",_kwnames,&_argo0,&_obj1)) 
         return NULL;
     if (_argo0) {
         if (_argo0 == Py_None) { _arg0 = NULL; }
@@ -767,18 +799,28 @@ static PyObject *_wrap_wxPseudoMetaFile_SetOutlinePen(PyObject *self, PyObject *
         return NULL;
         }
     }
-    if (_argo1) {
-        if (_argo1 == Py_None) { _arg1 = NULL; }
-        else if (SWIG_GetPtrObj(_argo1,(void **) &_arg1,"_wxPen_p")) {
-            PyErr_SetString(PyExc_TypeError,"Type error in argument 2 of wxPseudoMetaFile_SetOutlinePen. Expected _wxPen_p.");
+{
+    wxPen* temp;
+    if (_obj1) {
+        if (_obj1 == Py_None) { temp = NULL; }
+        else if (SWIG_GetPtrObj(_obj1, (void **) &temp,"_wxPen_p")) {
+            PyErr_SetString(PyExc_TypeError,"Type error, expected _wxPen_p.");
         return NULL;
         }
     }
+    if (temp)
+        _arg1 = wxThePenList->FindOrCreatePen(temp->GetColour(),
+                                                temp->GetWidth(),
+                                                temp->GetStyle());
+    else
+        _arg1 = NULL;
+}
 {
-    wxPy_BEGIN_ALLOW_THREADS;
-        wxPseudoMetaFile_SetOutlinePen(_arg0,_arg1);
+    PyThreadState* __tstate = wxPyBeginAllowThreads();
+    wxPseudoMetaFile_SetOutlinePen(_arg0,_arg1);
 
-    wxPy_END_ALLOW_THREADS;
+    wxPyEndAllowThreads(__tstate);
+    if (PyErr_Occurred()) return NULL;
 }    Py_INCREF(Py_None);
     _resultobj = Py_None;
     return _resultobj;
@@ -804,10 +846,11 @@ static PyObject *_wrap_wxPseudoMetaFile_GetOutlinePen(PyObject *self, PyObject *
         }
     }
 {
-    wxPy_BEGIN_ALLOW_THREADS;
-        _result = (wxPen *)wxPseudoMetaFile_GetOutlinePen(_arg0);
+    PyThreadState* __tstate = wxPyBeginAllowThreads();
+    _result = (wxPen *)wxPseudoMetaFile_GetOutlinePen(_arg0);
 
-    wxPy_END_ALLOW_THREADS;
+    wxPyEndAllowThreads(__tstate);
+    if (PyErr_Occurred()) return NULL;
 }    if (_result) {
         SWIG_MakePtr(_ptemp, (char *) _result,"_wxPen_p");
         _resultobj = Py_BuildValue("s",_ptemp);
@@ -837,10 +880,11 @@ static PyObject *_wrap_wxPseudoMetaFile_SetOutlineOp(PyObject *self, PyObject *a
         }
     }
 {
-    wxPy_BEGIN_ALLOW_THREADS;
-        wxPseudoMetaFile_SetOutlineOp(_arg0,_arg1);
+    PyThreadState* __tstate = wxPyBeginAllowThreads();
+    wxPseudoMetaFile_SetOutlineOp(_arg0,_arg1);
 
-    wxPy_END_ALLOW_THREADS;
+    wxPyEndAllowThreads(__tstate);
+    if (PyErr_Occurred()) return NULL;
 }    Py_INCREF(Py_None);
     _resultobj = Py_None;
     return _resultobj;
@@ -865,10 +909,11 @@ static PyObject *_wrap_wxPseudoMetaFile_GetOutlineOp(PyObject *self, PyObject *a
         }
     }
 {
-    wxPy_BEGIN_ALLOW_THREADS;
-        _result = (int )wxPseudoMetaFile_GetOutlineOp(_arg0);
+    PyThreadState* __tstate = wxPyBeginAllowThreads();
+    _result = (int )wxPseudoMetaFile_GetOutlineOp(_arg0);
 
-    wxPy_END_ALLOW_THREADS;
+    wxPyEndAllowThreads(__tstate);
+    if (PyErr_Occurred()) return NULL;
 }    _resultobj = Py_BuildValue("i",_result);
     return _resultobj;
 }
@@ -892,10 +937,11 @@ static PyObject *_wrap_wxPseudoMetaFile_IsValid(PyObject *self, PyObject *args, 
         }
     }
 {
-    wxPy_BEGIN_ALLOW_THREADS;
-        _result = (bool )wxPseudoMetaFile_IsValid(_arg0);
+    PyThreadState* __tstate = wxPyBeginAllowThreads();
+    _result = (bool )wxPseudoMetaFile_IsValid(_arg0);
 
-    wxPy_END_ALLOW_THREADS;
+    wxPyEndAllowThreads(__tstate);
+    if (PyErr_Occurred()) return NULL;
 }    _resultobj = Py_BuildValue("i",_result);
     return _resultobj;
 }
@@ -934,10 +980,11 @@ static PyObject *_wrap_wxPseudoMetaFile_DrawLine(PyObject *self, PyObject *args,
         return NULL;
 }
 {
-    wxPy_BEGIN_ALLOW_THREADS;
-        wxPseudoMetaFile_DrawLine(_arg0,*_arg1,*_arg2);
+    PyThreadState* __tstate = wxPyBeginAllowThreads();
+    wxPseudoMetaFile_DrawLine(_arg0,*_arg1,*_arg2);
 
-    wxPy_END_ALLOW_THREADS;
+    wxPyEndAllowThreads(__tstate);
+    if (PyErr_Occurred()) return NULL;
 }    Py_INCREF(Py_None);
     _resultobj = Py_None;
     return _resultobj;
@@ -969,10 +1016,11 @@ static PyObject *_wrap_wxPseudoMetaFile_DrawRectangle(PyObject *self, PyObject *
         return NULL;
 }
 {
-    wxPy_BEGIN_ALLOW_THREADS;
-        wxPseudoMetaFile_DrawRectangle(_arg0,*_arg1);
+    PyThreadState* __tstate = wxPyBeginAllowThreads();
+    wxPseudoMetaFile_DrawRectangle(_arg0,*_arg1);
 
-    wxPy_END_ALLOW_THREADS;
+    wxPyEndAllowThreads(__tstate);
+    if (PyErr_Occurred()) return NULL;
 }    Py_INCREF(Py_None);
     _resultobj = Py_None;
     return _resultobj;
@@ -1005,10 +1053,11 @@ static PyObject *_wrap_wxPseudoMetaFile_DrawRoundedRectangle(PyObject *self, PyO
         return NULL;
 }
 {
-    wxPy_BEGIN_ALLOW_THREADS;
-        wxPseudoMetaFile_DrawRoundedRectangle(_arg0,*_arg1,_arg2);
+    PyThreadState* __tstate = wxPyBeginAllowThreads();
+    wxPseudoMetaFile_DrawRoundedRectangle(_arg0,*_arg1,_arg2);
 
-    wxPy_END_ALLOW_THREADS;
+    wxPyEndAllowThreads(__tstate);
+    if (PyErr_Occurred()) return NULL;
 }    Py_INCREF(Py_None);
     _resultobj = Py_None;
     return _resultobj;
@@ -1056,10 +1105,11 @@ static PyObject *_wrap_wxPseudoMetaFile_DrawArc(PyObject *self, PyObject *args, 
         return NULL;
 }
 {
-    wxPy_BEGIN_ALLOW_THREADS;
-        wxPseudoMetaFile_DrawArc(_arg0,*_arg1,*_arg2,*_arg3);
+    PyThreadState* __tstate = wxPyBeginAllowThreads();
+    wxPseudoMetaFile_DrawArc(_arg0,*_arg1,*_arg2,*_arg3);
 
-    wxPy_END_ALLOW_THREADS;
+    wxPyEndAllowThreads(__tstate);
+    if (PyErr_Occurred()) return NULL;
 }    Py_INCREF(Py_None);
     _resultobj = Py_None;
     return _resultobj;
@@ -1093,10 +1143,11 @@ static PyObject *_wrap_wxPseudoMetaFile_DrawEllipticArc(PyObject *self, PyObject
         return NULL;
 }
 {
-    wxPy_BEGIN_ALLOW_THREADS;
-        wxPseudoMetaFile_DrawEllipticArc(_arg0,*_arg1,_arg2,_arg3);
+    PyThreadState* __tstate = wxPyBeginAllowThreads();
+    wxPseudoMetaFile_DrawEllipticArc(_arg0,*_arg1,_arg2,_arg3);
 
-    wxPy_END_ALLOW_THREADS;
+    wxPyEndAllowThreads(__tstate);
+    if (PyErr_Occurred()) return NULL;
 }    Py_INCREF(Py_None);
     _resultobj = Py_None;
     return _resultobj;
@@ -1128,10 +1179,11 @@ static PyObject *_wrap_wxPseudoMetaFile_DrawEllipse(PyObject *self, PyObject *ar
         return NULL;
 }
 {
-    wxPy_BEGIN_ALLOW_THREADS;
-        wxPseudoMetaFile_DrawEllipse(_arg0,*_arg1);
+    PyThreadState* __tstate = wxPyBeginAllowThreads();
+    wxPseudoMetaFile_DrawEllipse(_arg0,*_arg1);
 
-    wxPy_END_ALLOW_THREADS;
+    wxPyEndAllowThreads(__tstate);
+    if (PyErr_Occurred()) return NULL;
 }    Py_INCREF(Py_None);
     _resultobj = Py_None;
     return _resultobj;
@@ -1163,10 +1215,11 @@ static PyObject *_wrap_wxPseudoMetaFile_DrawPoint(PyObject *self, PyObject *args
         return NULL;
 }
 {
-    wxPy_BEGIN_ALLOW_THREADS;
-        wxPseudoMetaFile_DrawPoint(_arg0,*_arg1);
+    PyThreadState* __tstate = wxPyBeginAllowThreads();
+    wxPseudoMetaFile_DrawPoint(_arg0,*_arg1);
 
-    wxPy_END_ALLOW_THREADS;
+    wxPyEndAllowThreads(__tstate);
+    if (PyErr_Occurred()) return NULL;
 }    Py_INCREF(Py_None);
     _resultobj = Py_None;
     return _resultobj;
@@ -1195,22 +1248,9 @@ static PyObject *_wrap_wxPseudoMetaFile_DrawText(PyObject *self, PyObject *args,
         }
     }
 {
-#if PYTHON_API_VERSION >= 1009
-    char* tmpPtr; int tmpSize;
-    if (!PyString_Check(_obj1) && !PyUnicode_Check(_obj1)) {
-        PyErr_SetString(PyExc_TypeError, "String or Unicode type required");
+    _arg1 = wxString_in_helper(_obj1);
+    if (_arg1 == NULL)
         return NULL;
-    }
-    if (PyString_AsStringAndSize(_obj1, &tmpPtr, &tmpSize) == -1)
-        return NULL;
-    _arg1 = new wxString(tmpPtr, tmpSize);
-#else
-    if (!PyString_Check(_obj1)) {
-        PyErr_SetString(PyExc_TypeError, wxStringErrorMsg);
-        return NULL;
-    }
-    _arg1 = new wxString(PyString_AS_STRING(_obj1), PyString_GET_SIZE(_obj1));
-#endif
 }
 {
     _arg2 = &temp;
@@ -1218,10 +1258,11 @@ static PyObject *_wrap_wxPseudoMetaFile_DrawText(PyObject *self, PyObject *args,
         return NULL;
 }
 {
-    wxPy_BEGIN_ALLOW_THREADS;
-        wxPseudoMetaFile_DrawText(_arg0,*_arg1,*_arg2);
+    PyThreadState* __tstate = wxPyBeginAllowThreads();
+    wxPseudoMetaFile_DrawText(_arg0,*_arg1,*_arg2);
 
-    wxPy_END_ALLOW_THREADS;
+    wxPyEndAllowThreads(__tstate);
+    if (PyErr_Occurred()) return NULL;
 }    Py_INCREF(Py_None);
     _resultobj = Py_None;
 {
@@ -1238,6 +1279,7 @@ static PyObject *_wrap_wxPseudoMetaFile_DrawLines(PyObject *self, PyObject *args
     int  _arg1;
     wxPoint * _arg2;
     PyObject * _argo0 = 0;
+    int  NPOINTS;
     PyObject * _obj2 = 0;
     char *_kwnames[] = { "self","points", NULL };
 
@@ -1253,24 +1295,20 @@ static PyObject *_wrap_wxPseudoMetaFile_DrawLines(PyObject *self, PyObject *args
     }
     if (_obj2)
 {
-    _arg2 = wxPoint_LIST_helper(_obj2);
-    if (_arg2 == NULL) {
-        return NULL;
-    }
+    _arg2 = wxPoint_LIST_helper(_obj2, &NPOINTS);
+	if (_arg2 == NULL) {
+		return NULL;
+	}
 }
 {
-    if (_obj2) {
-        _arg1 = PyList_Size(_obj2);
-    }
-    else {
-        _arg1 = 0;
-    }
+	_arg1 = NPOINTS;
 }
 {
-    wxPy_BEGIN_ALLOW_THREADS;
-        wxPseudoMetaFile_DrawLines(_arg0,_arg1,_arg2);
+    PyThreadState* __tstate = wxPyBeginAllowThreads();
+    wxPseudoMetaFile_DrawLines(_arg0,_arg1,_arg2);
 
-    wxPy_END_ALLOW_THREADS;
+    wxPyEndAllowThreads(__tstate);
+    if (PyErr_Occurred()) return NULL;
 }    Py_INCREF(Py_None);
     _resultobj = Py_None;
 {
@@ -1287,6 +1325,7 @@ static PyObject *_wrap_wxPseudoMetaFile_DrawPolygon(PyObject *self, PyObject *ar
     wxPoint * _arg2;
     int  _arg3 = (int ) 0;
     PyObject * _argo0 = 0;
+    int  NPOINTS;
     PyObject * _obj2 = 0;
     char *_kwnames[] = { "self","points","flags", NULL };
 
@@ -1302,24 +1341,20 @@ static PyObject *_wrap_wxPseudoMetaFile_DrawPolygon(PyObject *self, PyObject *ar
     }
     if (_obj2)
 {
-    _arg2 = wxPoint_LIST_helper(_obj2);
-    if (_arg2 == NULL) {
-        return NULL;
-    }
+    _arg2 = wxPoint_LIST_helper(_obj2, &NPOINTS);
+	if (_arg2 == NULL) {
+		return NULL;
+	}
 }
 {
-    if (_obj2) {
-        _arg1 = PyList_Size(_obj2);
-    }
-    else {
-        _arg1 = 0;
-    }
+	_arg1 = NPOINTS;
 }
 {
-    wxPy_BEGIN_ALLOW_THREADS;
-        wxPseudoMetaFile_DrawPolygon(_arg0,_arg1,_arg2,_arg3);
+    PyThreadState* __tstate = wxPyBeginAllowThreads();
+    wxPseudoMetaFile_DrawPolygon(_arg0,_arg1,_arg2,_arg3);
 
-    wxPy_END_ALLOW_THREADS;
+    wxPyEndAllowThreads(__tstate);
+    if (PyErr_Occurred()) return NULL;
 }    Py_INCREF(Py_None);
     _resultobj = Py_None;
 {
@@ -1335,6 +1370,7 @@ static PyObject *_wrap_wxPseudoMetaFile_DrawSpline(PyObject *self, PyObject *arg
     int  _arg1;
     wxPoint * _arg2;
     PyObject * _argo0 = 0;
+    int  NPOINTS;
     PyObject * _obj2 = 0;
     char *_kwnames[] = { "self","points", NULL };
 
@@ -1350,24 +1386,20 @@ static PyObject *_wrap_wxPseudoMetaFile_DrawSpline(PyObject *self, PyObject *arg
     }
     if (_obj2)
 {
-    _arg2 = wxPoint_LIST_helper(_obj2);
-    if (_arg2 == NULL) {
-        return NULL;
-    }
+    _arg2 = wxPoint_LIST_helper(_obj2, &NPOINTS);
+	if (_arg2 == NULL) {
+		return NULL;
+	}
 }
 {
-    if (_obj2) {
-        _arg1 = PyList_Size(_obj2);
-    }
-    else {
-        _arg1 = 0;
-    }
+	_arg1 = NPOINTS;
 }
 {
-    wxPy_BEGIN_ALLOW_THREADS;
-        wxPseudoMetaFile_DrawSpline(_arg0,_arg1,_arg2);
+    PyThreadState* __tstate = wxPyBeginAllowThreads();
+    wxPseudoMetaFile_DrawSpline(_arg0,_arg1,_arg2);
 
-    wxPy_END_ALLOW_THREADS;
+    wxPyEndAllowThreads(__tstate);
+    if (PyErr_Occurred()) return NULL;
 }    Py_INCREF(Py_None);
     _resultobj = Py_None;
 {
@@ -1402,10 +1434,11 @@ static PyObject *_wrap_wxPseudoMetaFile_SetClippingRect(PyObject *self, PyObject
         return NULL;
 }
 {
-    wxPy_BEGIN_ALLOW_THREADS;
-        wxPseudoMetaFile_SetClippingRect(_arg0,*_arg1);
+    PyThreadState* __tstate = wxPyBeginAllowThreads();
+    wxPseudoMetaFile_SetClippingRect(_arg0,*_arg1);
 
-    wxPy_END_ALLOW_THREADS;
+    wxPyEndAllowThreads(__tstate);
+    if (PyErr_Occurred()) return NULL;
 }    Py_INCREF(Py_None);
     _resultobj = Py_None;
     return _resultobj;
@@ -1429,10 +1462,11 @@ static PyObject *_wrap_wxPseudoMetaFile_DestroyClippingRect(PyObject *self, PyOb
         }
     }
 {
-    wxPy_BEGIN_ALLOW_THREADS;
-        wxPseudoMetaFile_DestroyClippingRect(_arg0);
+    PyThreadState* __tstate = wxPyBeginAllowThreads();
+    wxPseudoMetaFile_DestroyClippingRect(_arg0);
 
-    wxPy_END_ALLOW_THREADS;
+    wxPyEndAllowThreads(__tstate);
+    if (PyErr_Occurred()) return NULL;
 }    Py_INCREF(Py_None);
     _resultobj = Py_None;
     return _resultobj;
@@ -1445,12 +1479,12 @@ static PyObject *_wrap_wxPseudoMetaFile_SetPen(PyObject *self, PyObject *args, P
     wxPen * _arg1;
     bool  _arg2 = (bool ) FALSE;
     PyObject * _argo0 = 0;
-    PyObject * _argo1 = 0;
+    PyObject * _obj1 = 0;
     int tempbool2 = (int) FALSE;
     char *_kwnames[] = { "self","pen","isOutline", NULL };
 
     self = self;
-    if(!PyArg_ParseTupleAndKeywords(args,kwargs,"OO|i:wxPseudoMetaFile_SetPen",_kwnames,&_argo0,&_argo1,&tempbool2)) 
+    if(!PyArg_ParseTupleAndKeywords(args,kwargs,"OO|i:wxPseudoMetaFile_SetPen",_kwnames,&_argo0,&_obj1,&tempbool2)) 
         return NULL;
     if (_argo0) {
         if (_argo0 == Py_None) { _arg0 = NULL; }
@@ -1459,19 +1493,29 @@ static PyObject *_wrap_wxPseudoMetaFile_SetPen(PyObject *self, PyObject *args, P
         return NULL;
         }
     }
-    if (_argo1) {
-        if (_argo1 == Py_None) { _arg1 = NULL; }
-        else if (SWIG_GetPtrObj(_argo1,(void **) &_arg1,"_wxPen_p")) {
-            PyErr_SetString(PyExc_TypeError,"Type error in argument 2 of wxPseudoMetaFile_SetPen. Expected _wxPen_p.");
+{
+    wxPen* temp;
+    if (_obj1) {
+        if (_obj1 == Py_None) { temp = NULL; }
+        else if (SWIG_GetPtrObj(_obj1, (void **) &temp,"_wxPen_p")) {
+            PyErr_SetString(PyExc_TypeError,"Type error, expected _wxPen_p.");
         return NULL;
         }
     }
+    if (temp)
+        _arg1 = wxThePenList->FindOrCreatePen(temp->GetColour(),
+                                                temp->GetWidth(),
+                                                temp->GetStyle());
+    else
+        _arg1 = NULL;
+}
     _arg2 = (bool ) tempbool2;
 {
-    wxPy_BEGIN_ALLOW_THREADS;
-        wxPseudoMetaFile_SetPen(_arg0,_arg1,_arg2);
+    PyThreadState* __tstate = wxPyBeginAllowThreads();
+    wxPseudoMetaFile_SetPen(_arg0,_arg1,_arg2);
 
-    wxPy_END_ALLOW_THREADS;
+    wxPyEndAllowThreads(__tstate);
+    if (PyErr_Occurred()) return NULL;
 }    Py_INCREF(Py_None);
     _resultobj = Py_None;
     return _resultobj;
@@ -1484,12 +1528,12 @@ static PyObject *_wrap_wxPseudoMetaFile_SetBrush(PyObject *self, PyObject *args,
     wxBrush * _arg1;
     bool  _arg2 = (bool ) FALSE;
     PyObject * _argo0 = 0;
-    PyObject * _argo1 = 0;
+    PyObject * _obj1 = 0;
     int tempbool2 = (int) FALSE;
     char *_kwnames[] = { "self","brush","isFill", NULL };
 
     self = self;
-    if(!PyArg_ParseTupleAndKeywords(args,kwargs,"OO|i:wxPseudoMetaFile_SetBrush",_kwnames,&_argo0,&_argo1,&tempbool2)) 
+    if(!PyArg_ParseTupleAndKeywords(args,kwargs,"OO|i:wxPseudoMetaFile_SetBrush",_kwnames,&_argo0,&_obj1,&tempbool2)) 
         return NULL;
     if (_argo0) {
         if (_argo0 == Py_None) { _arg0 = NULL; }
@@ -1498,19 +1542,27 @@ static PyObject *_wrap_wxPseudoMetaFile_SetBrush(PyObject *self, PyObject *args,
         return NULL;
         }
     }
-    if (_argo1) {
-        if (_argo1 == Py_None) { _arg1 = NULL; }
-        else if (SWIG_GetPtrObj(_argo1,(void **) &_arg1,"_wxBrush_p")) {
-            PyErr_SetString(PyExc_TypeError,"Type error in argument 2 of wxPseudoMetaFile_SetBrush. Expected _wxBrush_p.");
+{
+    wxBrush* temp;
+    if (_obj1) {
+        if (_obj1 == Py_None) { temp = NULL; }
+        else if (SWIG_GetPtrObj(_obj1, (void **) &temp,"_wxBrush_p")) {
+            PyErr_SetString(PyExc_TypeError,"Type error, expected _wxBrush_p.");
         return NULL;
         }
     }
+    if (temp)
+        _arg1 = wxTheBrushList->FindOrCreateBrush(temp->GetColour(), temp->GetStyle());
+    else
+        _arg1 = NULL;
+}
     _arg2 = (bool ) tempbool2;
 {
-    wxPy_BEGIN_ALLOW_THREADS;
-        wxPseudoMetaFile_SetBrush(_arg0,_arg1,_arg2);
+    PyThreadState* __tstate = wxPyBeginAllowThreads();
+    wxPseudoMetaFile_SetBrush(_arg0,_arg1,_arg2);
 
-    wxPy_END_ALLOW_THREADS;
+    wxPyEndAllowThreads(__tstate);
+    if (PyErr_Occurred()) return NULL;
 }    Py_INCREF(Py_None);
     _resultobj = Py_None;
     return _resultobj;
@@ -1522,11 +1574,11 @@ static PyObject *_wrap_wxPseudoMetaFile_SetFont(PyObject *self, PyObject *args, 
     wxPseudoMetaFile * _arg0;
     wxFont * _arg1;
     PyObject * _argo0 = 0;
-    PyObject * _argo1 = 0;
+    PyObject * _obj1 = 0;
     char *_kwnames[] = { "self","font", NULL };
 
     self = self;
-    if(!PyArg_ParseTupleAndKeywords(args,kwargs,"OO:wxPseudoMetaFile_SetFont",_kwnames,&_argo0,&_argo1)) 
+    if(!PyArg_ParseTupleAndKeywords(args,kwargs,"OO:wxPseudoMetaFile_SetFont",_kwnames,&_argo0,&_obj1)) 
         return NULL;
     if (_argo0) {
         if (_argo0 == Py_None) { _arg0 = NULL; }
@@ -1535,18 +1587,32 @@ static PyObject *_wrap_wxPseudoMetaFile_SetFont(PyObject *self, PyObject *args, 
         return NULL;
         }
     }
-    if (_argo1) {
-        if (_argo1 == Py_None) { _arg1 = NULL; }
-        else if (SWIG_GetPtrObj(_argo1,(void **) &_arg1,"_wxFont_p")) {
-            PyErr_SetString(PyExc_TypeError,"Type error in argument 2 of wxPseudoMetaFile_SetFont. Expected _wxFont_p.");
+{
+    wxFont* temp;
+    if (_obj1) {
+        if (_obj1 == Py_None) { temp = NULL; }
+        else if (SWIG_GetPtrObj(_obj1, (void **) &temp,"_wxFont_p")) {
+            PyErr_SetString(PyExc_TypeError,"Type error, expected _wxFont_p.");
         return NULL;
         }
     }
+    if (temp)
+        _arg1 = wxTheFontList->FindOrCreateFont(temp->GetPointSize(),
+                                                  temp->GetFamily(),
+                                                  temp->GetStyle(),
+                                                  temp->GetWeight(),
+                                                  temp->GetUnderlined(),
+                                                  temp->GetFaceName(),
+                                                  temp->GetEncoding());
+    else
+        _arg1 = NULL;
+}
 {
-    wxPy_BEGIN_ALLOW_THREADS;
-        wxPseudoMetaFile_SetFont(_arg0,_arg1);
+    PyThreadState* __tstate = wxPyBeginAllowThreads();
+    wxPseudoMetaFile_SetFont(_arg0,_arg1);
 
-    wxPy_END_ALLOW_THREADS;
+    wxPyEndAllowThreads(__tstate);
+    if (PyErr_Occurred()) return NULL;
 }    Py_INCREF(Py_None);
     _resultobj = Py_None;
     return _resultobj;
@@ -1578,10 +1644,11 @@ static PyObject *_wrap_wxPseudoMetaFile_SetTextColour(PyObject *self, PyObject *
         return NULL;
 }
 {
-    wxPy_BEGIN_ALLOW_THREADS;
-        wxPseudoMetaFile_SetTextColour(_arg0,*_arg1);
+    PyThreadState* __tstate = wxPyBeginAllowThreads();
+    wxPseudoMetaFile_SetTextColour(_arg0,*_arg1);
 
-    wxPy_END_ALLOW_THREADS;
+    wxPyEndAllowThreads(__tstate);
+    if (PyErr_Occurred()) return NULL;
 }    Py_INCREF(Py_None);
     _resultobj = Py_None;
     return _resultobj;
@@ -1613,10 +1680,11 @@ static PyObject *_wrap_wxPseudoMetaFile_SetBackgroundColour(PyObject *self, PyOb
         return NULL;
 }
 {
-    wxPy_BEGIN_ALLOW_THREADS;
-        wxPseudoMetaFile_SetBackgroundColour(_arg0,*_arg1);
+    PyThreadState* __tstate = wxPyBeginAllowThreads();
+    wxPseudoMetaFile_SetBackgroundColour(_arg0,*_arg1);
 
-    wxPy_END_ALLOW_THREADS;
+    wxPyEndAllowThreads(__tstate);
+    if (PyErr_Occurred()) return NULL;
 }    Py_INCREF(Py_None);
     _resultobj = Py_None;
     return _resultobj;
@@ -1641,10 +1709,11 @@ static PyObject *_wrap_wxPseudoMetaFile_SetBackgroundMode(PyObject *self, PyObje
         }
     }
 {
-    wxPy_BEGIN_ALLOW_THREADS;
-        wxPseudoMetaFile_SetBackgroundMode(_arg0,_arg1);
+    PyThreadState* __tstate = wxPyBeginAllowThreads();
+    wxPseudoMetaFile_SetBackgroundMode(_arg0,_arg1);
 
-    wxPy_END_ALLOW_THREADS;
+    wxPyEndAllowThreads(__tstate);
+    if (PyErr_Occurred()) return NULL;
 }    Py_INCREF(Py_None);
     _resultobj = Py_None;
     return _resultobj;
@@ -1666,6 +1735,14 @@ static void *SwigwxPyRectangleShapeTowxPyShapeEvtHandler(void *ptr) {
     return (void *) dest;
 }
 
+static void *SwigwxPyRectangleShapeTowxObject(void *ptr) {
+    wxPyRectangleShape *src;
+    wxObject *dest;
+    src = (wxPyRectangleShape *) ptr;
+    dest = (wxObject *) src;
+    return (void *) dest;
+}
+
 #define new_wxPyRectangleShape(_swigarg0,_swigarg1) (new wxPyRectangleShape(_swigarg0,_swigarg1))
 static PyObject *_wrap_new_wxPyRectangleShape(PyObject *self, PyObject *args, PyObject *kwargs) {
     PyObject * _resultobj;
@@ -1679,10 +1756,11 @@ static PyObject *_wrap_new_wxPyRectangleShape(PyObject *self, PyObject *args, Py
     if(!PyArg_ParseTupleAndKeywords(args,kwargs,"|dd:new_wxPyRectangleShape",_kwnames,&_arg0,&_arg1)) 
         return NULL;
 {
-    wxPy_BEGIN_ALLOW_THREADS;
-        _result = (wxPyRectangleShape *)new_wxPyRectangleShape(_arg0,_arg1);
+    PyThreadState* __tstate = wxPyBeginAllowThreads();
+    _result = (wxPyRectangleShape *)new_wxPyRectangleShape(_arg0,_arg1);
 
-    wxPy_END_ALLOW_THREADS;
+    wxPyEndAllowThreads(__tstate);
+    if (PyErr_Occurred()) return NULL;
 }    if (_result) {
         SWIG_MakePtr(_ptemp, (char *) _result,"_wxPyRectangleShape_p");
         _resultobj = Py_BuildValue("s",_ptemp);
@@ -1693,8 +1771,8 @@ static PyObject *_wrap_new_wxPyRectangleShape(PyObject *self, PyObject *args, Py
     return _resultobj;
 }
 
-#define wxPyRectangleShape__setSelf(_swigobj,_swigarg0,_swigarg1)  (_swigobj->_setSelf(_swigarg0,_swigarg1))
-static PyObject *_wrap_wxPyRectangleShape__setSelf(PyObject *self, PyObject *args, PyObject *kwargs) {
+#define wxPyRectangleShape__setCallbackInfo(_swigobj,_swigarg0,_swigarg1)  (_swigobj->_setCallbackInfo(_swigarg0,_swigarg1))
+static PyObject *_wrap_wxPyRectangleShape__setCallbackInfo(PyObject *self, PyObject *args, PyObject *kwargs) {
     PyObject * _resultobj;
     wxPyRectangleShape * _arg0;
     PyObject * _arg1;
@@ -1705,12 +1783,12 @@ static PyObject *_wrap_wxPyRectangleShape__setSelf(PyObject *self, PyObject *arg
     char *_kwnames[] = { "self","self","_class", NULL };
 
     self = self;
-    if(!PyArg_ParseTupleAndKeywords(args,kwargs,"OOO:wxPyRectangleShape__setSelf",_kwnames,&_argo0,&_obj1,&_obj2)) 
+    if(!PyArg_ParseTupleAndKeywords(args,kwargs,"OOO:wxPyRectangleShape__setCallbackInfo",_kwnames,&_argo0,&_obj1,&_obj2)) 
         return NULL;
     if (_argo0) {
         if (_argo0 == Py_None) { _arg0 = NULL; }
         else if (SWIG_GetPtrObj(_argo0,(void **) &_arg0,"_wxPyRectangleShape_p")) {
-            PyErr_SetString(PyExc_TypeError,"Type error in argument 1 of wxPyRectangleShape__setSelf. Expected _wxPyRectangleShape_p.");
+            PyErr_SetString(PyExc_TypeError,"Type error in argument 1 of wxPyRectangleShape__setCallbackInfo. Expected _wxPyRectangleShape_p.");
         return NULL;
         }
     }
@@ -1721,10 +1799,11 @@ static PyObject *_wrap_wxPyRectangleShape__setSelf(PyObject *self, PyObject *arg
   _arg2 = _obj2;
 }
 {
-    wxPy_BEGIN_ALLOW_THREADS;
-        wxPyRectangleShape__setSelf(_arg0,_arg1,_arg2);
+    PyThreadState* __tstate = wxPyBeginAllowThreads();
+    wxPyRectangleShape__setCallbackInfo(_arg0,_arg1,_arg2);
 
-    wxPy_END_ALLOW_THREADS;
+    wxPyEndAllowThreads(__tstate);
+    if (PyErr_Occurred()) return NULL;
 }    Py_INCREF(Py_None);
     _resultobj = Py_None;
     return _resultobj;
@@ -1749,10 +1828,11 @@ static PyObject *_wrap_wxPyRectangleShape_SetCornerRadius(PyObject *self, PyObje
         }
     }
 {
-    wxPy_BEGIN_ALLOW_THREADS;
-        wxPyRectangleShape_SetCornerRadius(_arg0,_arg1);
+    PyThreadState* __tstate = wxPyBeginAllowThreads();
+    wxPyRectangleShape_SetCornerRadius(_arg0,_arg1);
 
-    wxPy_END_ALLOW_THREADS;
+    wxPyEndAllowThreads(__tstate);
+    if (PyErr_Occurred()) return NULL;
 }    Py_INCREF(Py_None);
     _resultobj = Py_None;
     return _resultobj;
@@ -1776,10 +1856,11 @@ static PyObject *_wrap_wxPyRectangleShape_base_OnDelete(PyObject *self, PyObject
         }
     }
 {
-    wxPy_BEGIN_ALLOW_THREADS;
-        wxPyRectangleShape_base_OnDelete(_arg0);
+    PyThreadState* __tstate = wxPyBeginAllowThreads();
+    wxPyRectangleShape_base_OnDelete(_arg0);
 
-    wxPy_END_ALLOW_THREADS;
+    wxPyEndAllowThreads(__tstate);
+    if (PyErr_Occurred()) return NULL;
 }    Py_INCREF(Py_None);
     _resultobj = Py_None;
     return _resultobj;
@@ -1812,10 +1893,11 @@ static PyObject *_wrap_wxPyRectangleShape_base_OnDraw(PyObject *self, PyObject *
         }
     }
 {
-    wxPy_BEGIN_ALLOW_THREADS;
-        wxPyRectangleShape_base_OnDraw(_arg0,*_arg1);
+    PyThreadState* __tstate = wxPyBeginAllowThreads();
+    wxPyRectangleShape_base_OnDraw(_arg0,*_arg1);
 
-    wxPy_END_ALLOW_THREADS;
+    wxPyEndAllowThreads(__tstate);
+    if (PyErr_Occurred()) return NULL;
 }    Py_INCREF(Py_None);
     _resultobj = Py_None;
     return _resultobj;
@@ -1848,10 +1930,11 @@ static PyObject *_wrap_wxPyRectangleShape_base_OnDrawContents(PyObject *self, Py
         }
     }
 {
-    wxPy_BEGIN_ALLOW_THREADS;
-        wxPyRectangleShape_base_OnDrawContents(_arg0,*_arg1);
+    PyThreadState* __tstate = wxPyBeginAllowThreads();
+    wxPyRectangleShape_base_OnDrawContents(_arg0,*_arg1);
 
-    wxPy_END_ALLOW_THREADS;
+    wxPyEndAllowThreads(__tstate);
+    if (PyErr_Occurred()) return NULL;
 }    Py_INCREF(Py_None);
     _resultobj = Py_None;
     return _resultobj;
@@ -1887,10 +1970,11 @@ static PyObject *_wrap_wxPyRectangleShape_base_OnDrawBranches(PyObject *self, Py
     }
     _arg2 = (bool ) tempbool2;
 {
-    wxPy_BEGIN_ALLOW_THREADS;
-        wxPyRectangleShape_base_OnDrawBranches(_arg0,*_arg1,_arg2);
+    PyThreadState* __tstate = wxPyBeginAllowThreads();
+    wxPyRectangleShape_base_OnDrawBranches(_arg0,*_arg1,_arg2);
 
-    wxPy_END_ALLOW_THREADS;
+    wxPyEndAllowThreads(__tstate);
+    if (PyErr_Occurred()) return NULL;
 }    Py_INCREF(Py_None);
     _resultobj = Py_None;
     return _resultobj;
@@ -1923,10 +2007,11 @@ static PyObject *_wrap_wxPyRectangleShape_base_OnMoveLinks(PyObject *self, PyObj
         }
     }
 {
-    wxPy_BEGIN_ALLOW_THREADS;
-        wxPyRectangleShape_base_OnMoveLinks(_arg0,*_arg1);
+    PyThreadState* __tstate = wxPyBeginAllowThreads();
+    wxPyRectangleShape_base_OnMoveLinks(_arg0,*_arg1);
 
-    wxPy_END_ALLOW_THREADS;
+    wxPyEndAllowThreads(__tstate);
+    if (PyErr_Occurred()) return NULL;
 }    Py_INCREF(Py_None);
     _resultobj = Py_None;
     return _resultobj;
@@ -1959,10 +2044,11 @@ static PyObject *_wrap_wxPyRectangleShape_base_OnErase(PyObject *self, PyObject 
         }
     }
 {
-    wxPy_BEGIN_ALLOW_THREADS;
-        wxPyRectangleShape_base_OnErase(_arg0,*_arg1);
+    PyThreadState* __tstate = wxPyBeginAllowThreads();
+    wxPyRectangleShape_base_OnErase(_arg0,*_arg1);
 
-    wxPy_END_ALLOW_THREADS;
+    wxPyEndAllowThreads(__tstate);
+    if (PyErr_Occurred()) return NULL;
 }    Py_INCREF(Py_None);
     _resultobj = Py_None;
     return _resultobj;
@@ -1995,10 +2081,11 @@ static PyObject *_wrap_wxPyRectangleShape_base_OnEraseContents(PyObject *self, P
         }
     }
 {
-    wxPy_BEGIN_ALLOW_THREADS;
-        wxPyRectangleShape_base_OnEraseContents(_arg0,*_arg1);
+    PyThreadState* __tstate = wxPyBeginAllowThreads();
+    wxPyRectangleShape_base_OnEraseContents(_arg0,*_arg1);
 
-    wxPy_END_ALLOW_THREADS;
+    wxPyEndAllowThreads(__tstate);
+    if (PyErr_Occurred()) return NULL;
 }    Py_INCREF(Py_None);
     _resultobj = Py_None;
     return _resultobj;
@@ -2031,10 +2118,11 @@ static PyObject *_wrap_wxPyRectangleShape_base_OnHighlight(PyObject *self, PyObj
         }
     }
 {
-    wxPy_BEGIN_ALLOW_THREADS;
-        wxPyRectangleShape_base_OnHighlight(_arg0,*_arg1);
+    PyThreadState* __tstate = wxPyBeginAllowThreads();
+    wxPyRectangleShape_base_OnHighlight(_arg0,*_arg1);
 
-    wxPy_END_ALLOW_THREADS;
+    wxPyEndAllowThreads(__tstate);
+    if (PyErr_Occurred()) return NULL;
 }    Py_INCREF(Py_None);
     _resultobj = Py_None;
     return _resultobj;
@@ -2062,10 +2150,11 @@ static PyObject *_wrap_wxPyRectangleShape_base_OnLeftClick(PyObject *self, PyObj
         }
     }
 {
-    wxPy_BEGIN_ALLOW_THREADS;
-        wxPyRectangleShape_base_OnLeftClick(_arg0,_arg1,_arg2,_arg3,_arg4);
+    PyThreadState* __tstate = wxPyBeginAllowThreads();
+    wxPyRectangleShape_base_OnLeftClick(_arg0,_arg1,_arg2,_arg3,_arg4);
 
-    wxPy_END_ALLOW_THREADS;
+    wxPyEndAllowThreads(__tstate);
+    if (PyErr_Occurred()) return NULL;
 }    Py_INCREF(Py_None);
     _resultobj = Py_None;
     return _resultobj;
@@ -2093,10 +2182,11 @@ static PyObject *_wrap_wxPyRectangleShape_base_OnLeftDoubleClick(PyObject *self,
         }
     }
 {
-    wxPy_BEGIN_ALLOW_THREADS;
-        wxPyRectangleShape_base_OnLeftDoubleClick(_arg0,_arg1,_arg2,_arg3,_arg4);
+    PyThreadState* __tstate = wxPyBeginAllowThreads();
+    wxPyRectangleShape_base_OnLeftDoubleClick(_arg0,_arg1,_arg2,_arg3,_arg4);
 
-    wxPy_END_ALLOW_THREADS;
+    wxPyEndAllowThreads(__tstate);
+    if (PyErr_Occurred()) return NULL;
 }    Py_INCREF(Py_None);
     _resultobj = Py_None;
     return _resultobj;
@@ -2124,10 +2214,11 @@ static PyObject *_wrap_wxPyRectangleShape_base_OnRightClick(PyObject *self, PyOb
         }
     }
 {
-    wxPy_BEGIN_ALLOW_THREADS;
-        wxPyRectangleShape_base_OnRightClick(_arg0,_arg1,_arg2,_arg3,_arg4);
+    PyThreadState* __tstate = wxPyBeginAllowThreads();
+    wxPyRectangleShape_base_OnRightClick(_arg0,_arg1,_arg2,_arg3,_arg4);
 
-    wxPy_END_ALLOW_THREADS;
+    wxPyEndAllowThreads(__tstate);
+    if (PyErr_Occurred()) return NULL;
 }    Py_INCREF(Py_None);
     _resultobj = Py_None;
     return _resultobj;
@@ -2153,10 +2244,11 @@ static PyObject *_wrap_wxPyRectangleShape_base_OnSize(PyObject *self, PyObject *
         }
     }
 {
-    wxPy_BEGIN_ALLOW_THREADS;
-        wxPyRectangleShape_base_OnSize(_arg0,_arg1,_arg2);
+    PyThreadState* __tstate = wxPyBeginAllowThreads();
+    wxPyRectangleShape_base_OnSize(_arg0,_arg1,_arg2);
 
-    wxPy_END_ALLOW_THREADS;
+    wxPyEndAllowThreads(__tstate);
+    if (PyErr_Occurred()) return NULL;
 }    Py_INCREF(Py_None);
     _resultobj = Py_None;
     return _resultobj;
@@ -2197,10 +2289,11 @@ static PyObject *_wrap_wxPyRectangleShape_base_OnMovePre(PyObject *self, PyObjec
     }
     _arg6 = (bool ) tempbool6;
 {
-    wxPy_BEGIN_ALLOW_THREADS;
-        _result = (bool )wxPyRectangleShape_base_OnMovePre(_arg0,*_arg1,_arg2,_arg3,_arg4,_arg5,_arg6);
+    PyThreadState* __tstate = wxPyBeginAllowThreads();
+    _result = (bool )wxPyRectangleShape_base_OnMovePre(_arg0,*_arg1,_arg2,_arg3,_arg4,_arg5,_arg6);
 
-    wxPy_END_ALLOW_THREADS;
+    wxPyEndAllowThreads(__tstate);
+    if (PyErr_Occurred()) return NULL;
 }    _resultobj = Py_BuildValue("i",_result);
     return _resultobj;
 }
@@ -2239,10 +2332,11 @@ static PyObject *_wrap_wxPyRectangleShape_base_OnMovePost(PyObject *self, PyObje
     }
     _arg6 = (bool ) tempbool6;
 {
-    wxPy_BEGIN_ALLOW_THREADS;
-        wxPyRectangleShape_base_OnMovePost(_arg0,*_arg1,_arg2,_arg3,_arg4,_arg5,_arg6);
+    PyThreadState* __tstate = wxPyBeginAllowThreads();
+    wxPyRectangleShape_base_OnMovePost(_arg0,*_arg1,_arg2,_arg3,_arg4,_arg5,_arg6);
 
-    wxPy_END_ALLOW_THREADS;
+    wxPyEndAllowThreads(__tstate);
+    if (PyErr_Occurred()) return NULL;
 }    Py_INCREF(Py_None);
     _resultobj = Py_None;
     return _resultobj;
@@ -2273,10 +2367,11 @@ static PyObject *_wrap_wxPyRectangleShape_base_OnDragLeft(PyObject *self, PyObje
     }
     _arg1 = (bool ) tempbool1;
 {
-    wxPy_BEGIN_ALLOW_THREADS;
-        wxPyRectangleShape_base_OnDragLeft(_arg0,_arg1,_arg2,_arg3,_arg4,_arg5);
+    PyThreadState* __tstate = wxPyBeginAllowThreads();
+    wxPyRectangleShape_base_OnDragLeft(_arg0,_arg1,_arg2,_arg3,_arg4,_arg5);
 
-    wxPy_END_ALLOW_THREADS;
+    wxPyEndAllowThreads(__tstate);
+    if (PyErr_Occurred()) return NULL;
 }    Py_INCREF(Py_None);
     _resultobj = Py_None;
     return _resultobj;
@@ -2304,10 +2399,11 @@ static PyObject *_wrap_wxPyRectangleShape_base_OnBeginDragLeft(PyObject *self, P
         }
     }
 {
-    wxPy_BEGIN_ALLOW_THREADS;
-        wxPyRectangleShape_base_OnBeginDragLeft(_arg0,_arg1,_arg2,_arg3,_arg4);
+    PyThreadState* __tstate = wxPyBeginAllowThreads();
+    wxPyRectangleShape_base_OnBeginDragLeft(_arg0,_arg1,_arg2,_arg3,_arg4);
 
-    wxPy_END_ALLOW_THREADS;
+    wxPyEndAllowThreads(__tstate);
+    if (PyErr_Occurred()) return NULL;
 }    Py_INCREF(Py_None);
     _resultobj = Py_None;
     return _resultobj;
@@ -2335,10 +2431,11 @@ static PyObject *_wrap_wxPyRectangleShape_base_OnEndDragLeft(PyObject *self, PyO
         }
     }
 {
-    wxPy_BEGIN_ALLOW_THREADS;
-        wxPyRectangleShape_base_OnEndDragLeft(_arg0,_arg1,_arg2,_arg3,_arg4);
+    PyThreadState* __tstate = wxPyBeginAllowThreads();
+    wxPyRectangleShape_base_OnEndDragLeft(_arg0,_arg1,_arg2,_arg3,_arg4);
 
-    wxPy_END_ALLOW_THREADS;
+    wxPyEndAllowThreads(__tstate);
+    if (PyErr_Occurred()) return NULL;
 }    Py_INCREF(Py_None);
     _resultobj = Py_None;
     return _resultobj;
@@ -2369,10 +2466,11 @@ static PyObject *_wrap_wxPyRectangleShape_base_OnDragRight(PyObject *self, PyObj
     }
     _arg1 = (bool ) tempbool1;
 {
-    wxPy_BEGIN_ALLOW_THREADS;
-        wxPyRectangleShape_base_OnDragRight(_arg0,_arg1,_arg2,_arg3,_arg4,_arg5);
+    PyThreadState* __tstate = wxPyBeginAllowThreads();
+    wxPyRectangleShape_base_OnDragRight(_arg0,_arg1,_arg2,_arg3,_arg4,_arg5);
 
-    wxPy_END_ALLOW_THREADS;
+    wxPyEndAllowThreads(__tstate);
+    if (PyErr_Occurred()) return NULL;
 }    Py_INCREF(Py_None);
     _resultobj = Py_None;
     return _resultobj;
@@ -2400,10 +2498,11 @@ static PyObject *_wrap_wxPyRectangleShape_base_OnBeginDragRight(PyObject *self, 
         }
     }
 {
-    wxPy_BEGIN_ALLOW_THREADS;
-        wxPyRectangleShape_base_OnBeginDragRight(_arg0,_arg1,_arg2,_arg3,_arg4);
+    PyThreadState* __tstate = wxPyBeginAllowThreads();
+    wxPyRectangleShape_base_OnBeginDragRight(_arg0,_arg1,_arg2,_arg3,_arg4);
 
-    wxPy_END_ALLOW_THREADS;
+    wxPyEndAllowThreads(__tstate);
+    if (PyErr_Occurred()) return NULL;
 }    Py_INCREF(Py_None);
     _resultobj = Py_None;
     return _resultobj;
@@ -2431,10 +2530,11 @@ static PyObject *_wrap_wxPyRectangleShape_base_OnEndDragRight(PyObject *self, Py
         }
     }
 {
-    wxPy_BEGIN_ALLOW_THREADS;
-        wxPyRectangleShape_base_OnEndDragRight(_arg0,_arg1,_arg2,_arg3,_arg4);
+    PyThreadState* __tstate = wxPyBeginAllowThreads();
+    wxPyRectangleShape_base_OnEndDragRight(_arg0,_arg1,_arg2,_arg3,_arg4);
 
-    wxPy_END_ALLOW_THREADS;
+    wxPyEndAllowThreads(__tstate);
+    if (PyErr_Occurred()) return NULL;
 }    Py_INCREF(Py_None);
     _resultobj = Py_None;
     return _resultobj;
@@ -2471,10 +2571,11 @@ static PyObject *_wrap_wxPyRectangleShape_base_OnDrawOutline(PyObject *self, PyO
         }
     }
 {
-    wxPy_BEGIN_ALLOW_THREADS;
-        wxPyRectangleShape_base_OnDrawOutline(_arg0,*_arg1,_arg2,_arg3,_arg4,_arg5);
+    PyThreadState* __tstate = wxPyBeginAllowThreads();
+    wxPyRectangleShape_base_OnDrawOutline(_arg0,*_arg1,_arg2,_arg3,_arg4,_arg5);
 
-    wxPy_END_ALLOW_THREADS;
+    wxPyEndAllowThreads(__tstate);
+    if (PyErr_Occurred()) return NULL;
 }    Py_INCREF(Py_None);
     _resultobj = Py_None;
     return _resultobj;
@@ -2507,10 +2608,11 @@ static PyObject *_wrap_wxPyRectangleShape_base_OnDrawControlPoints(PyObject *sel
         }
     }
 {
-    wxPy_BEGIN_ALLOW_THREADS;
-        wxPyRectangleShape_base_OnDrawControlPoints(_arg0,*_arg1);
+    PyThreadState* __tstate = wxPyBeginAllowThreads();
+    wxPyRectangleShape_base_OnDrawControlPoints(_arg0,*_arg1);
 
-    wxPy_END_ALLOW_THREADS;
+    wxPyEndAllowThreads(__tstate);
+    if (PyErr_Occurred()) return NULL;
 }    Py_INCREF(Py_None);
     _resultobj = Py_None;
     return _resultobj;
@@ -2543,10 +2645,11 @@ static PyObject *_wrap_wxPyRectangleShape_base_OnEraseControlPoints(PyObject *se
         }
     }
 {
-    wxPy_BEGIN_ALLOW_THREADS;
-        wxPyRectangleShape_base_OnEraseControlPoints(_arg0,*_arg1);
+    PyThreadState* __tstate = wxPyBeginAllowThreads();
+    wxPyRectangleShape_base_OnEraseControlPoints(_arg0,*_arg1);
 
-    wxPy_END_ALLOW_THREADS;
+    wxPyEndAllowThreads(__tstate);
+    if (PyErr_Occurred()) return NULL;
 }    Py_INCREF(Py_None);
     _resultobj = Py_None;
     return _resultobj;
@@ -2582,10 +2685,11 @@ static PyObject *_wrap_wxPyRectangleShape_base_OnMoveLink(PyObject *self, PyObje
     }
     _arg2 = (bool ) tempbool2;
 {
-    wxPy_BEGIN_ALLOW_THREADS;
-        wxPyRectangleShape_base_OnMoveLink(_arg0,*_arg1,_arg2);
+    PyThreadState* __tstate = wxPyBeginAllowThreads();
+    wxPyRectangleShape_base_OnMoveLink(_arg0,*_arg1,_arg2);
 
-    wxPy_END_ALLOW_THREADS;
+    wxPyEndAllowThreads(__tstate);
+    if (PyErr_Occurred()) return NULL;
 }    Py_INCREF(Py_None);
     _resultobj = Py_None;
     return _resultobj;
@@ -2625,10 +2729,11 @@ static PyObject *_wrap_wxPyRectangleShape_base_OnSizingDragLeft(PyObject *self, 
     }
     _arg2 = (bool ) tempbool2;
 {
-    wxPy_BEGIN_ALLOW_THREADS;
-        wxPyRectangleShape_base_OnSizingDragLeft(_arg0,_arg1,_arg2,_arg3,_arg4,_arg5,_arg6);
+    PyThreadState* __tstate = wxPyBeginAllowThreads();
+    wxPyRectangleShape_base_OnSizingDragLeft(_arg0,_arg1,_arg2,_arg3,_arg4,_arg5,_arg6);
 
-    wxPy_END_ALLOW_THREADS;
+    wxPyEndAllowThreads(__tstate);
+    if (PyErr_Occurred()) return NULL;
 }    Py_INCREF(Py_None);
     _resultobj = Py_None;
     return _resultobj;
@@ -2665,10 +2770,11 @@ static PyObject *_wrap_wxPyRectangleShape_base_OnSizingBeginDragLeft(PyObject *s
         }
     }
 {
-    wxPy_BEGIN_ALLOW_THREADS;
-        wxPyRectangleShape_base_OnSizingBeginDragLeft(_arg0,_arg1,_arg2,_arg3,_arg4,_arg5);
+    PyThreadState* __tstate = wxPyBeginAllowThreads();
+    wxPyRectangleShape_base_OnSizingBeginDragLeft(_arg0,_arg1,_arg2,_arg3,_arg4,_arg5);
 
-    wxPy_END_ALLOW_THREADS;
+    wxPyEndAllowThreads(__tstate);
+    if (PyErr_Occurred()) return NULL;
 }    Py_INCREF(Py_None);
     _resultobj = Py_None;
     return _resultobj;
@@ -2705,10 +2811,11 @@ static PyObject *_wrap_wxPyRectangleShape_base_OnSizingEndDragLeft(PyObject *sel
         }
     }
 {
-    wxPy_BEGIN_ALLOW_THREADS;
-        wxPyRectangleShape_base_OnSizingEndDragLeft(_arg0,_arg1,_arg2,_arg3,_arg4,_arg5);
+    PyThreadState* __tstate = wxPyBeginAllowThreads();
+    wxPyRectangleShape_base_OnSizingEndDragLeft(_arg0,_arg1,_arg2,_arg3,_arg4,_arg5);
 
-    wxPy_END_ALLOW_THREADS;
+    wxPyEndAllowThreads(__tstate);
+    if (PyErr_Occurred()) return NULL;
 }    Py_INCREF(Py_None);
     _resultobj = Py_None;
     return _resultobj;
@@ -2734,10 +2841,11 @@ static PyObject *_wrap_wxPyRectangleShape_base_OnBeginSize(PyObject *self, PyObj
         }
     }
 {
-    wxPy_BEGIN_ALLOW_THREADS;
-        wxPyRectangleShape_base_OnBeginSize(_arg0,_arg1,_arg2);
+    PyThreadState* __tstate = wxPyBeginAllowThreads();
+    wxPyRectangleShape_base_OnBeginSize(_arg0,_arg1,_arg2);
 
-    wxPy_END_ALLOW_THREADS;
+    wxPyEndAllowThreads(__tstate);
+    if (PyErr_Occurred()) return NULL;
 }    Py_INCREF(Py_None);
     _resultobj = Py_None;
     return _resultobj;
@@ -2763,10 +2871,11 @@ static PyObject *_wrap_wxPyRectangleShape_base_OnEndSize(PyObject *self, PyObjec
         }
     }
 {
-    wxPy_BEGIN_ALLOW_THREADS;
-        wxPyRectangleShape_base_OnEndSize(_arg0,_arg1,_arg2);
+    PyThreadState* __tstate = wxPyBeginAllowThreads();
+    wxPyRectangleShape_base_OnEndSize(_arg0,_arg1,_arg2);
 
-    wxPy_END_ALLOW_THREADS;
+    wxPyEndAllowThreads(__tstate);
+    if (PyErr_Occurred()) return NULL;
 }    Py_INCREF(Py_None);
     _resultobj = Py_None;
     return _resultobj;
@@ -2793,6 +2902,14 @@ static void *SwigwxPyControlPointTowxPyShapeEvtHandler(void *ptr) {
     wxPyShapeEvtHandler *dest;
     src = (wxPyControlPoint *) ptr;
     dest = (wxPyShapeEvtHandler *) src;
+    return (void *) dest;
+}
+
+static void *SwigwxPyControlPointTowxObject(void *ptr) {
+    wxPyControlPoint *src;
+    wxObject *dest;
+    src = (wxPyControlPoint *) ptr;
+    dest = (wxObject *) src;
     return (void *) dest;
 }
 
@@ -2829,10 +2946,11 @@ static PyObject *_wrap_new_wxPyControlPoint(PyObject *self, PyObject *args, PyOb
         }
     }
 {
-    wxPy_BEGIN_ALLOW_THREADS;
-        _result = (wxPyControlPoint *)new_wxPyControlPoint(_arg0,_arg1,_arg2,_arg3,_arg4,_arg5);
+    PyThreadState* __tstate = wxPyBeginAllowThreads();
+    _result = (wxPyControlPoint *)new_wxPyControlPoint(_arg0,_arg1,_arg2,_arg3,_arg4,_arg5);
 
-    wxPy_END_ALLOW_THREADS;
+    wxPyEndAllowThreads(__tstate);
+    if (PyErr_Occurred()) return NULL;
 }    if (_result) {
         SWIG_MakePtr(_ptemp, (char *) _result,"_wxPyControlPoint_p");
         _resultobj = Py_BuildValue("s",_ptemp);
@@ -2843,8 +2961,8 @@ static PyObject *_wrap_new_wxPyControlPoint(PyObject *self, PyObject *args, PyOb
     return _resultobj;
 }
 
-#define wxPyControlPoint__setSelf(_swigobj,_swigarg0,_swigarg1)  (_swigobj->_setSelf(_swigarg0,_swigarg1))
-static PyObject *_wrap_wxPyControlPoint__setSelf(PyObject *self, PyObject *args, PyObject *kwargs) {
+#define wxPyControlPoint__setCallbackInfo(_swigobj,_swigarg0,_swigarg1)  (_swigobj->_setCallbackInfo(_swigarg0,_swigarg1))
+static PyObject *_wrap_wxPyControlPoint__setCallbackInfo(PyObject *self, PyObject *args, PyObject *kwargs) {
     PyObject * _resultobj;
     wxPyControlPoint * _arg0;
     PyObject * _arg1;
@@ -2855,12 +2973,12 @@ static PyObject *_wrap_wxPyControlPoint__setSelf(PyObject *self, PyObject *args,
     char *_kwnames[] = { "self","self","_class", NULL };
 
     self = self;
-    if(!PyArg_ParseTupleAndKeywords(args,kwargs,"OOO:wxPyControlPoint__setSelf",_kwnames,&_argo0,&_obj1,&_obj2)) 
+    if(!PyArg_ParseTupleAndKeywords(args,kwargs,"OOO:wxPyControlPoint__setCallbackInfo",_kwnames,&_argo0,&_obj1,&_obj2)) 
         return NULL;
     if (_argo0) {
         if (_argo0 == Py_None) { _arg0 = NULL; }
         else if (SWIG_GetPtrObj(_argo0,(void **) &_arg0,"_wxPyControlPoint_p")) {
-            PyErr_SetString(PyExc_TypeError,"Type error in argument 1 of wxPyControlPoint__setSelf. Expected _wxPyControlPoint_p.");
+            PyErr_SetString(PyExc_TypeError,"Type error in argument 1 of wxPyControlPoint__setCallbackInfo. Expected _wxPyControlPoint_p.");
         return NULL;
         }
     }
@@ -2871,10 +2989,11 @@ static PyObject *_wrap_wxPyControlPoint__setSelf(PyObject *self, PyObject *args,
   _arg2 = _obj2;
 }
 {
-    wxPy_BEGIN_ALLOW_THREADS;
-        wxPyControlPoint__setSelf(_arg0,_arg1,_arg2);
+    PyThreadState* __tstate = wxPyBeginAllowThreads();
+    wxPyControlPoint__setCallbackInfo(_arg0,_arg1,_arg2);
 
-    wxPy_END_ALLOW_THREADS;
+    wxPyEndAllowThreads(__tstate);
+    if (PyErr_Occurred()) return NULL;
 }    Py_INCREF(Py_None);
     _resultobj = Py_None;
     return _resultobj;
@@ -2899,10 +3018,11 @@ static PyObject *_wrap_wxPyControlPoint_SetCornerRadius(PyObject *self, PyObject
         }
     }
 {
-    wxPy_BEGIN_ALLOW_THREADS;
-        wxPyControlPoint_SetCornerRadius(_arg0,_arg1);
+    PyThreadState* __tstate = wxPyBeginAllowThreads();
+    wxPyControlPoint_SetCornerRadius(_arg0,_arg1);
 
-    wxPy_END_ALLOW_THREADS;
+    wxPyEndAllowThreads(__tstate);
+    if (PyErr_Occurred()) return NULL;
 }    Py_INCREF(Py_None);
     _resultobj = Py_None;
     return _resultobj;
@@ -2926,10 +3046,11 @@ static PyObject *_wrap_wxPyControlPoint_base_OnDelete(PyObject *self, PyObject *
         }
     }
 {
-    wxPy_BEGIN_ALLOW_THREADS;
-        wxPyControlPoint_base_OnDelete(_arg0);
+    PyThreadState* __tstate = wxPyBeginAllowThreads();
+    wxPyControlPoint_base_OnDelete(_arg0);
 
-    wxPy_END_ALLOW_THREADS;
+    wxPyEndAllowThreads(__tstate);
+    if (PyErr_Occurred()) return NULL;
 }    Py_INCREF(Py_None);
     _resultobj = Py_None;
     return _resultobj;
@@ -2962,10 +3083,11 @@ static PyObject *_wrap_wxPyControlPoint_base_OnDraw(PyObject *self, PyObject *ar
         }
     }
 {
-    wxPy_BEGIN_ALLOW_THREADS;
-        wxPyControlPoint_base_OnDraw(_arg0,*_arg1);
+    PyThreadState* __tstate = wxPyBeginAllowThreads();
+    wxPyControlPoint_base_OnDraw(_arg0,*_arg1);
 
-    wxPy_END_ALLOW_THREADS;
+    wxPyEndAllowThreads(__tstate);
+    if (PyErr_Occurred()) return NULL;
 }    Py_INCREF(Py_None);
     _resultobj = Py_None;
     return _resultobj;
@@ -2998,10 +3120,11 @@ static PyObject *_wrap_wxPyControlPoint_base_OnDrawContents(PyObject *self, PyOb
         }
     }
 {
-    wxPy_BEGIN_ALLOW_THREADS;
-        wxPyControlPoint_base_OnDrawContents(_arg0,*_arg1);
+    PyThreadState* __tstate = wxPyBeginAllowThreads();
+    wxPyControlPoint_base_OnDrawContents(_arg0,*_arg1);
 
-    wxPy_END_ALLOW_THREADS;
+    wxPyEndAllowThreads(__tstate);
+    if (PyErr_Occurred()) return NULL;
 }    Py_INCREF(Py_None);
     _resultobj = Py_None;
     return _resultobj;
@@ -3037,10 +3160,11 @@ static PyObject *_wrap_wxPyControlPoint_base_OnDrawBranches(PyObject *self, PyOb
     }
     _arg2 = (bool ) tempbool2;
 {
-    wxPy_BEGIN_ALLOW_THREADS;
-        wxPyControlPoint_base_OnDrawBranches(_arg0,*_arg1,_arg2);
+    PyThreadState* __tstate = wxPyBeginAllowThreads();
+    wxPyControlPoint_base_OnDrawBranches(_arg0,*_arg1,_arg2);
 
-    wxPy_END_ALLOW_THREADS;
+    wxPyEndAllowThreads(__tstate);
+    if (PyErr_Occurred()) return NULL;
 }    Py_INCREF(Py_None);
     _resultobj = Py_None;
     return _resultobj;
@@ -3073,10 +3197,11 @@ static PyObject *_wrap_wxPyControlPoint_base_OnMoveLinks(PyObject *self, PyObjec
         }
     }
 {
-    wxPy_BEGIN_ALLOW_THREADS;
-        wxPyControlPoint_base_OnMoveLinks(_arg0,*_arg1);
+    PyThreadState* __tstate = wxPyBeginAllowThreads();
+    wxPyControlPoint_base_OnMoveLinks(_arg0,*_arg1);
 
-    wxPy_END_ALLOW_THREADS;
+    wxPyEndAllowThreads(__tstate);
+    if (PyErr_Occurred()) return NULL;
 }    Py_INCREF(Py_None);
     _resultobj = Py_None;
     return _resultobj;
@@ -3109,10 +3234,11 @@ static PyObject *_wrap_wxPyControlPoint_base_OnErase(PyObject *self, PyObject *a
         }
     }
 {
-    wxPy_BEGIN_ALLOW_THREADS;
-        wxPyControlPoint_base_OnErase(_arg0,*_arg1);
+    PyThreadState* __tstate = wxPyBeginAllowThreads();
+    wxPyControlPoint_base_OnErase(_arg0,*_arg1);
 
-    wxPy_END_ALLOW_THREADS;
+    wxPyEndAllowThreads(__tstate);
+    if (PyErr_Occurred()) return NULL;
 }    Py_INCREF(Py_None);
     _resultobj = Py_None;
     return _resultobj;
@@ -3145,10 +3271,11 @@ static PyObject *_wrap_wxPyControlPoint_base_OnEraseContents(PyObject *self, PyO
         }
     }
 {
-    wxPy_BEGIN_ALLOW_THREADS;
-        wxPyControlPoint_base_OnEraseContents(_arg0,*_arg1);
+    PyThreadState* __tstate = wxPyBeginAllowThreads();
+    wxPyControlPoint_base_OnEraseContents(_arg0,*_arg1);
 
-    wxPy_END_ALLOW_THREADS;
+    wxPyEndAllowThreads(__tstate);
+    if (PyErr_Occurred()) return NULL;
 }    Py_INCREF(Py_None);
     _resultobj = Py_None;
     return _resultobj;
@@ -3181,10 +3308,11 @@ static PyObject *_wrap_wxPyControlPoint_base_OnHighlight(PyObject *self, PyObjec
         }
     }
 {
-    wxPy_BEGIN_ALLOW_THREADS;
-        wxPyControlPoint_base_OnHighlight(_arg0,*_arg1);
+    PyThreadState* __tstate = wxPyBeginAllowThreads();
+    wxPyControlPoint_base_OnHighlight(_arg0,*_arg1);
 
-    wxPy_END_ALLOW_THREADS;
+    wxPyEndAllowThreads(__tstate);
+    if (PyErr_Occurred()) return NULL;
 }    Py_INCREF(Py_None);
     _resultobj = Py_None;
     return _resultobj;
@@ -3212,10 +3340,11 @@ static PyObject *_wrap_wxPyControlPoint_base_OnLeftClick(PyObject *self, PyObjec
         }
     }
 {
-    wxPy_BEGIN_ALLOW_THREADS;
-        wxPyControlPoint_base_OnLeftClick(_arg0,_arg1,_arg2,_arg3,_arg4);
+    PyThreadState* __tstate = wxPyBeginAllowThreads();
+    wxPyControlPoint_base_OnLeftClick(_arg0,_arg1,_arg2,_arg3,_arg4);
 
-    wxPy_END_ALLOW_THREADS;
+    wxPyEndAllowThreads(__tstate);
+    if (PyErr_Occurred()) return NULL;
 }    Py_INCREF(Py_None);
     _resultobj = Py_None;
     return _resultobj;
@@ -3243,10 +3372,11 @@ static PyObject *_wrap_wxPyControlPoint_base_OnLeftDoubleClick(PyObject *self, P
         }
     }
 {
-    wxPy_BEGIN_ALLOW_THREADS;
-        wxPyControlPoint_base_OnLeftDoubleClick(_arg0,_arg1,_arg2,_arg3,_arg4);
+    PyThreadState* __tstate = wxPyBeginAllowThreads();
+    wxPyControlPoint_base_OnLeftDoubleClick(_arg0,_arg1,_arg2,_arg3,_arg4);
 
-    wxPy_END_ALLOW_THREADS;
+    wxPyEndAllowThreads(__tstate);
+    if (PyErr_Occurred()) return NULL;
 }    Py_INCREF(Py_None);
     _resultobj = Py_None;
     return _resultobj;
@@ -3274,10 +3404,11 @@ static PyObject *_wrap_wxPyControlPoint_base_OnRightClick(PyObject *self, PyObje
         }
     }
 {
-    wxPy_BEGIN_ALLOW_THREADS;
-        wxPyControlPoint_base_OnRightClick(_arg0,_arg1,_arg2,_arg3,_arg4);
+    PyThreadState* __tstate = wxPyBeginAllowThreads();
+    wxPyControlPoint_base_OnRightClick(_arg0,_arg1,_arg2,_arg3,_arg4);
 
-    wxPy_END_ALLOW_THREADS;
+    wxPyEndAllowThreads(__tstate);
+    if (PyErr_Occurred()) return NULL;
 }    Py_INCREF(Py_None);
     _resultobj = Py_None;
     return _resultobj;
@@ -3303,10 +3434,11 @@ static PyObject *_wrap_wxPyControlPoint_base_OnSize(PyObject *self, PyObject *ar
         }
     }
 {
-    wxPy_BEGIN_ALLOW_THREADS;
-        wxPyControlPoint_base_OnSize(_arg0,_arg1,_arg2);
+    PyThreadState* __tstate = wxPyBeginAllowThreads();
+    wxPyControlPoint_base_OnSize(_arg0,_arg1,_arg2);
 
-    wxPy_END_ALLOW_THREADS;
+    wxPyEndAllowThreads(__tstate);
+    if (PyErr_Occurred()) return NULL;
 }    Py_INCREF(Py_None);
     _resultobj = Py_None;
     return _resultobj;
@@ -3347,10 +3479,11 @@ static PyObject *_wrap_wxPyControlPoint_base_OnMovePre(PyObject *self, PyObject 
     }
     _arg6 = (bool ) tempbool6;
 {
-    wxPy_BEGIN_ALLOW_THREADS;
-        _result = (bool )wxPyControlPoint_base_OnMovePre(_arg0,*_arg1,_arg2,_arg3,_arg4,_arg5,_arg6);
+    PyThreadState* __tstate = wxPyBeginAllowThreads();
+    _result = (bool )wxPyControlPoint_base_OnMovePre(_arg0,*_arg1,_arg2,_arg3,_arg4,_arg5,_arg6);
 
-    wxPy_END_ALLOW_THREADS;
+    wxPyEndAllowThreads(__tstate);
+    if (PyErr_Occurred()) return NULL;
 }    _resultobj = Py_BuildValue("i",_result);
     return _resultobj;
 }
@@ -3389,10 +3522,11 @@ static PyObject *_wrap_wxPyControlPoint_base_OnMovePost(PyObject *self, PyObject
     }
     _arg6 = (bool ) tempbool6;
 {
-    wxPy_BEGIN_ALLOW_THREADS;
-        wxPyControlPoint_base_OnMovePost(_arg0,*_arg1,_arg2,_arg3,_arg4,_arg5,_arg6);
+    PyThreadState* __tstate = wxPyBeginAllowThreads();
+    wxPyControlPoint_base_OnMovePost(_arg0,*_arg1,_arg2,_arg3,_arg4,_arg5,_arg6);
 
-    wxPy_END_ALLOW_THREADS;
+    wxPyEndAllowThreads(__tstate);
+    if (PyErr_Occurred()) return NULL;
 }    Py_INCREF(Py_None);
     _resultobj = Py_None;
     return _resultobj;
@@ -3423,10 +3557,11 @@ static PyObject *_wrap_wxPyControlPoint_base_OnDragLeft(PyObject *self, PyObject
     }
     _arg1 = (bool ) tempbool1;
 {
-    wxPy_BEGIN_ALLOW_THREADS;
-        wxPyControlPoint_base_OnDragLeft(_arg0,_arg1,_arg2,_arg3,_arg4,_arg5);
+    PyThreadState* __tstate = wxPyBeginAllowThreads();
+    wxPyControlPoint_base_OnDragLeft(_arg0,_arg1,_arg2,_arg3,_arg4,_arg5);
 
-    wxPy_END_ALLOW_THREADS;
+    wxPyEndAllowThreads(__tstate);
+    if (PyErr_Occurred()) return NULL;
 }    Py_INCREF(Py_None);
     _resultobj = Py_None;
     return _resultobj;
@@ -3454,10 +3589,11 @@ static PyObject *_wrap_wxPyControlPoint_base_OnBeginDragLeft(PyObject *self, PyO
         }
     }
 {
-    wxPy_BEGIN_ALLOW_THREADS;
-        wxPyControlPoint_base_OnBeginDragLeft(_arg0,_arg1,_arg2,_arg3,_arg4);
+    PyThreadState* __tstate = wxPyBeginAllowThreads();
+    wxPyControlPoint_base_OnBeginDragLeft(_arg0,_arg1,_arg2,_arg3,_arg4);
 
-    wxPy_END_ALLOW_THREADS;
+    wxPyEndAllowThreads(__tstate);
+    if (PyErr_Occurred()) return NULL;
 }    Py_INCREF(Py_None);
     _resultobj = Py_None;
     return _resultobj;
@@ -3485,10 +3621,11 @@ static PyObject *_wrap_wxPyControlPoint_base_OnEndDragLeft(PyObject *self, PyObj
         }
     }
 {
-    wxPy_BEGIN_ALLOW_THREADS;
-        wxPyControlPoint_base_OnEndDragLeft(_arg0,_arg1,_arg2,_arg3,_arg4);
+    PyThreadState* __tstate = wxPyBeginAllowThreads();
+    wxPyControlPoint_base_OnEndDragLeft(_arg0,_arg1,_arg2,_arg3,_arg4);
 
-    wxPy_END_ALLOW_THREADS;
+    wxPyEndAllowThreads(__tstate);
+    if (PyErr_Occurred()) return NULL;
 }    Py_INCREF(Py_None);
     _resultobj = Py_None;
     return _resultobj;
@@ -3519,10 +3656,11 @@ static PyObject *_wrap_wxPyControlPoint_base_OnDragRight(PyObject *self, PyObjec
     }
     _arg1 = (bool ) tempbool1;
 {
-    wxPy_BEGIN_ALLOW_THREADS;
-        wxPyControlPoint_base_OnDragRight(_arg0,_arg1,_arg2,_arg3,_arg4,_arg5);
+    PyThreadState* __tstate = wxPyBeginAllowThreads();
+    wxPyControlPoint_base_OnDragRight(_arg0,_arg1,_arg2,_arg3,_arg4,_arg5);
 
-    wxPy_END_ALLOW_THREADS;
+    wxPyEndAllowThreads(__tstate);
+    if (PyErr_Occurred()) return NULL;
 }    Py_INCREF(Py_None);
     _resultobj = Py_None;
     return _resultobj;
@@ -3550,10 +3688,11 @@ static PyObject *_wrap_wxPyControlPoint_base_OnBeginDragRight(PyObject *self, Py
         }
     }
 {
-    wxPy_BEGIN_ALLOW_THREADS;
-        wxPyControlPoint_base_OnBeginDragRight(_arg0,_arg1,_arg2,_arg3,_arg4);
+    PyThreadState* __tstate = wxPyBeginAllowThreads();
+    wxPyControlPoint_base_OnBeginDragRight(_arg0,_arg1,_arg2,_arg3,_arg4);
 
-    wxPy_END_ALLOW_THREADS;
+    wxPyEndAllowThreads(__tstate);
+    if (PyErr_Occurred()) return NULL;
 }    Py_INCREF(Py_None);
     _resultobj = Py_None;
     return _resultobj;
@@ -3581,10 +3720,11 @@ static PyObject *_wrap_wxPyControlPoint_base_OnEndDragRight(PyObject *self, PyOb
         }
     }
 {
-    wxPy_BEGIN_ALLOW_THREADS;
-        wxPyControlPoint_base_OnEndDragRight(_arg0,_arg1,_arg2,_arg3,_arg4);
+    PyThreadState* __tstate = wxPyBeginAllowThreads();
+    wxPyControlPoint_base_OnEndDragRight(_arg0,_arg1,_arg2,_arg3,_arg4);
 
-    wxPy_END_ALLOW_THREADS;
+    wxPyEndAllowThreads(__tstate);
+    if (PyErr_Occurred()) return NULL;
 }    Py_INCREF(Py_None);
     _resultobj = Py_None;
     return _resultobj;
@@ -3621,10 +3761,11 @@ static PyObject *_wrap_wxPyControlPoint_base_OnDrawOutline(PyObject *self, PyObj
         }
     }
 {
-    wxPy_BEGIN_ALLOW_THREADS;
-        wxPyControlPoint_base_OnDrawOutline(_arg0,*_arg1,_arg2,_arg3,_arg4,_arg5);
+    PyThreadState* __tstate = wxPyBeginAllowThreads();
+    wxPyControlPoint_base_OnDrawOutline(_arg0,*_arg1,_arg2,_arg3,_arg4,_arg5);
 
-    wxPy_END_ALLOW_THREADS;
+    wxPyEndAllowThreads(__tstate);
+    if (PyErr_Occurred()) return NULL;
 }    Py_INCREF(Py_None);
     _resultobj = Py_None;
     return _resultobj;
@@ -3657,10 +3798,11 @@ static PyObject *_wrap_wxPyControlPoint_base_OnDrawControlPoints(PyObject *self,
         }
     }
 {
-    wxPy_BEGIN_ALLOW_THREADS;
-        wxPyControlPoint_base_OnDrawControlPoints(_arg0,*_arg1);
+    PyThreadState* __tstate = wxPyBeginAllowThreads();
+    wxPyControlPoint_base_OnDrawControlPoints(_arg0,*_arg1);
 
-    wxPy_END_ALLOW_THREADS;
+    wxPyEndAllowThreads(__tstate);
+    if (PyErr_Occurred()) return NULL;
 }    Py_INCREF(Py_None);
     _resultobj = Py_None;
     return _resultobj;
@@ -3693,10 +3835,11 @@ static PyObject *_wrap_wxPyControlPoint_base_OnEraseControlPoints(PyObject *self
         }
     }
 {
-    wxPy_BEGIN_ALLOW_THREADS;
-        wxPyControlPoint_base_OnEraseControlPoints(_arg0,*_arg1);
+    PyThreadState* __tstate = wxPyBeginAllowThreads();
+    wxPyControlPoint_base_OnEraseControlPoints(_arg0,*_arg1);
 
-    wxPy_END_ALLOW_THREADS;
+    wxPyEndAllowThreads(__tstate);
+    if (PyErr_Occurred()) return NULL;
 }    Py_INCREF(Py_None);
     _resultobj = Py_None;
     return _resultobj;
@@ -3732,10 +3875,11 @@ static PyObject *_wrap_wxPyControlPoint_base_OnMoveLink(PyObject *self, PyObject
     }
     _arg2 = (bool ) tempbool2;
 {
-    wxPy_BEGIN_ALLOW_THREADS;
-        wxPyControlPoint_base_OnMoveLink(_arg0,*_arg1,_arg2);
+    PyThreadState* __tstate = wxPyBeginAllowThreads();
+    wxPyControlPoint_base_OnMoveLink(_arg0,*_arg1,_arg2);
 
-    wxPy_END_ALLOW_THREADS;
+    wxPyEndAllowThreads(__tstate);
+    if (PyErr_Occurred()) return NULL;
 }    Py_INCREF(Py_None);
     _resultobj = Py_None;
     return _resultobj;
@@ -3775,10 +3919,11 @@ static PyObject *_wrap_wxPyControlPoint_base_OnSizingDragLeft(PyObject *self, Py
     }
     _arg2 = (bool ) tempbool2;
 {
-    wxPy_BEGIN_ALLOW_THREADS;
-        wxPyControlPoint_base_OnSizingDragLeft(_arg0,_arg1,_arg2,_arg3,_arg4,_arg5,_arg6);
+    PyThreadState* __tstate = wxPyBeginAllowThreads();
+    wxPyControlPoint_base_OnSizingDragLeft(_arg0,_arg1,_arg2,_arg3,_arg4,_arg5,_arg6);
 
-    wxPy_END_ALLOW_THREADS;
+    wxPyEndAllowThreads(__tstate);
+    if (PyErr_Occurred()) return NULL;
 }    Py_INCREF(Py_None);
     _resultobj = Py_None;
     return _resultobj;
@@ -3815,10 +3960,11 @@ static PyObject *_wrap_wxPyControlPoint_base_OnSizingBeginDragLeft(PyObject *sel
         }
     }
 {
-    wxPy_BEGIN_ALLOW_THREADS;
-        wxPyControlPoint_base_OnSizingBeginDragLeft(_arg0,_arg1,_arg2,_arg3,_arg4,_arg5);
+    PyThreadState* __tstate = wxPyBeginAllowThreads();
+    wxPyControlPoint_base_OnSizingBeginDragLeft(_arg0,_arg1,_arg2,_arg3,_arg4,_arg5);
 
-    wxPy_END_ALLOW_THREADS;
+    wxPyEndAllowThreads(__tstate);
+    if (PyErr_Occurred()) return NULL;
 }    Py_INCREF(Py_None);
     _resultobj = Py_None;
     return _resultobj;
@@ -3855,10 +4001,11 @@ static PyObject *_wrap_wxPyControlPoint_base_OnSizingEndDragLeft(PyObject *self,
         }
     }
 {
-    wxPy_BEGIN_ALLOW_THREADS;
-        wxPyControlPoint_base_OnSizingEndDragLeft(_arg0,_arg1,_arg2,_arg3,_arg4,_arg5);
+    PyThreadState* __tstate = wxPyBeginAllowThreads();
+    wxPyControlPoint_base_OnSizingEndDragLeft(_arg0,_arg1,_arg2,_arg3,_arg4,_arg5);
 
-    wxPy_END_ALLOW_THREADS;
+    wxPyEndAllowThreads(__tstate);
+    if (PyErr_Occurred()) return NULL;
 }    Py_INCREF(Py_None);
     _resultobj = Py_None;
     return _resultobj;
@@ -3884,10 +4031,11 @@ static PyObject *_wrap_wxPyControlPoint_base_OnBeginSize(PyObject *self, PyObjec
         }
     }
 {
-    wxPy_BEGIN_ALLOW_THREADS;
-        wxPyControlPoint_base_OnBeginSize(_arg0,_arg1,_arg2);
+    PyThreadState* __tstate = wxPyBeginAllowThreads();
+    wxPyControlPoint_base_OnBeginSize(_arg0,_arg1,_arg2);
 
-    wxPy_END_ALLOW_THREADS;
+    wxPyEndAllowThreads(__tstate);
+    if (PyErr_Occurred()) return NULL;
 }    Py_INCREF(Py_None);
     _resultobj = Py_None;
     return _resultobj;
@@ -3913,10 +4061,11 @@ static PyObject *_wrap_wxPyControlPoint_base_OnEndSize(PyObject *self, PyObject 
         }
     }
 {
-    wxPy_BEGIN_ALLOW_THREADS;
-        wxPyControlPoint_base_OnEndSize(_arg0,_arg1,_arg2);
+    PyThreadState* __tstate = wxPyBeginAllowThreads();
+    wxPyControlPoint_base_OnEndSize(_arg0,_arg1,_arg2);
 
-    wxPy_END_ALLOW_THREADS;
+    wxPyEndAllowThreads(__tstate);
+    if (PyErr_Occurred()) return NULL;
 }    Py_INCREF(Py_None);
     _resultobj = Py_None;
     return _resultobj;
@@ -3946,6 +4095,14 @@ static void *SwigwxPyBitmapShapeTowxPyShapeEvtHandler(void *ptr) {
     return (void *) dest;
 }
 
+static void *SwigwxPyBitmapShapeTowxObject(void *ptr) {
+    wxPyBitmapShape *src;
+    wxObject *dest;
+    src = (wxPyBitmapShape *) ptr;
+    dest = (wxObject *) src;
+    return (void *) dest;
+}
+
 #define new_wxPyBitmapShape() (new wxPyBitmapShape())
 static PyObject *_wrap_new_wxPyBitmapShape(PyObject *self, PyObject *args, PyObject *kwargs) {
     PyObject * _resultobj;
@@ -3957,10 +4114,11 @@ static PyObject *_wrap_new_wxPyBitmapShape(PyObject *self, PyObject *args, PyObj
     if(!PyArg_ParseTupleAndKeywords(args,kwargs,":new_wxPyBitmapShape",_kwnames)) 
         return NULL;
 {
-    wxPy_BEGIN_ALLOW_THREADS;
-        _result = (wxPyBitmapShape *)new_wxPyBitmapShape();
+    PyThreadState* __tstate = wxPyBeginAllowThreads();
+    _result = (wxPyBitmapShape *)new_wxPyBitmapShape();
 
-    wxPy_END_ALLOW_THREADS;
+    wxPyEndAllowThreads(__tstate);
+    if (PyErr_Occurred()) return NULL;
 }    if (_result) {
         SWIG_MakePtr(_ptemp, (char *) _result,"_wxPyBitmapShape_p");
         _resultobj = Py_BuildValue("s",_ptemp);
@@ -3971,8 +4129,8 @@ static PyObject *_wrap_new_wxPyBitmapShape(PyObject *self, PyObject *args, PyObj
     return _resultobj;
 }
 
-#define wxPyBitmapShape__setSelf(_swigobj,_swigarg0,_swigarg1)  (_swigobj->_setSelf(_swigarg0,_swigarg1))
-static PyObject *_wrap_wxPyBitmapShape__setSelf(PyObject *self, PyObject *args, PyObject *kwargs) {
+#define wxPyBitmapShape__setCallbackInfo(_swigobj,_swigarg0,_swigarg1)  (_swigobj->_setCallbackInfo(_swigarg0,_swigarg1))
+static PyObject *_wrap_wxPyBitmapShape__setCallbackInfo(PyObject *self, PyObject *args, PyObject *kwargs) {
     PyObject * _resultobj;
     wxPyBitmapShape * _arg0;
     PyObject * _arg1;
@@ -3983,12 +4141,12 @@ static PyObject *_wrap_wxPyBitmapShape__setSelf(PyObject *self, PyObject *args, 
     char *_kwnames[] = { "self","self","_class", NULL };
 
     self = self;
-    if(!PyArg_ParseTupleAndKeywords(args,kwargs,"OOO:wxPyBitmapShape__setSelf",_kwnames,&_argo0,&_obj1,&_obj2)) 
+    if(!PyArg_ParseTupleAndKeywords(args,kwargs,"OOO:wxPyBitmapShape__setCallbackInfo",_kwnames,&_argo0,&_obj1,&_obj2)) 
         return NULL;
     if (_argo0) {
         if (_argo0 == Py_None) { _arg0 = NULL; }
         else if (SWIG_GetPtrObj(_argo0,(void **) &_arg0,"_wxPyBitmapShape_p")) {
-            PyErr_SetString(PyExc_TypeError,"Type error in argument 1 of wxPyBitmapShape__setSelf. Expected _wxPyBitmapShape_p.");
+            PyErr_SetString(PyExc_TypeError,"Type error in argument 1 of wxPyBitmapShape__setCallbackInfo. Expected _wxPyBitmapShape_p.");
         return NULL;
         }
     }
@@ -3999,10 +4157,11 @@ static PyObject *_wrap_wxPyBitmapShape__setSelf(PyObject *self, PyObject *args, 
   _arg2 = _obj2;
 }
 {
-    wxPy_BEGIN_ALLOW_THREADS;
-        wxPyBitmapShape__setSelf(_arg0,_arg1,_arg2);
+    PyThreadState* __tstate = wxPyBeginAllowThreads();
+    wxPyBitmapShape__setCallbackInfo(_arg0,_arg1,_arg2);
 
-    wxPy_END_ALLOW_THREADS;
+    wxPyEndAllowThreads(__tstate);
+    if (PyErr_Occurred()) return NULL;
 }    Py_INCREF(Py_None);
     _resultobj = Py_None;
     return _resultobj;
@@ -4028,11 +4187,12 @@ static PyObject *_wrap_wxPyBitmapShape_GetBitmap(PyObject *self, PyObject *args,
         }
     }
 {
-    wxPy_BEGIN_ALLOW_THREADS;
-        wxBitmap & _result_ref = wxPyBitmapShape_GetBitmap(_arg0);
+    PyThreadState* __tstate = wxPyBeginAllowThreads();
+    wxBitmap & _result_ref = wxPyBitmapShape_GetBitmap(_arg0);
     _result = (wxBitmap *) &_result_ref;
 
-    wxPy_END_ALLOW_THREADS;
+    wxPyEndAllowThreads(__tstate);
+    if (PyErr_Occurred()) return NULL;
 }    if (_result) {
         SWIG_MakePtr(_ptemp, (char *) _result,"_wxBitmap_p");
         _resultobj = Py_BuildValue("s",_ptemp);
@@ -4062,12 +4222,17 @@ static PyObject *_wrap_wxPyBitmapShape_GetFilename(PyObject *self, PyObject *arg
         }
     }
 {
-    wxPy_BEGIN_ALLOW_THREADS;
-        _result = new wxString (wxPyBitmapShape_GetFilename(_arg0));
+    PyThreadState* __tstate = wxPyBeginAllowThreads();
+    _result = new wxString (wxPyBitmapShape_GetFilename(_arg0));
 
-    wxPy_END_ALLOW_THREADS;
+    wxPyEndAllowThreads(__tstate);
+    if (PyErr_Occurred()) return NULL;
 }{
+#if wxUSE_UNICODE
+    _resultobj = PyUnicode_FromUnicode(_result->c_str(), _result->Len());
+#else
     _resultobj = PyString_FromStringAndSize(_result->c_str(), _result->Len());
+#endif
 }
 {
     delete _result;
@@ -4102,10 +4267,11 @@ static PyObject *_wrap_wxPyBitmapShape_SetBitmap(PyObject *self, PyObject *args,
         }
     }
 {
-    wxPy_BEGIN_ALLOW_THREADS;
-        wxPyBitmapShape_SetBitmap(_arg0,*_arg1);
+    PyThreadState* __tstate = wxPyBeginAllowThreads();
+    wxPyBitmapShape_SetBitmap(_arg0,*_arg1);
 
-    wxPy_END_ALLOW_THREADS;
+    wxPyEndAllowThreads(__tstate);
+    if (PyErr_Occurred()) return NULL;
 }    Py_INCREF(Py_None);
     _resultobj = Py_None;
     return _resultobj;
@@ -4131,28 +4297,16 @@ static PyObject *_wrap_wxPyBitmapShape_SetFilename(PyObject *self, PyObject *arg
         }
     }
 {
-#if PYTHON_API_VERSION >= 1009
-    char* tmpPtr; int tmpSize;
-    if (!PyString_Check(_obj1) && !PyUnicode_Check(_obj1)) {
-        PyErr_SetString(PyExc_TypeError, "String or Unicode type required");
+    _arg1 = wxString_in_helper(_obj1);
+    if (_arg1 == NULL)
         return NULL;
-    }
-    if (PyString_AsStringAndSize(_obj1, &tmpPtr, &tmpSize) == -1)
-        return NULL;
-    _arg1 = new wxString(tmpPtr, tmpSize);
-#else
-    if (!PyString_Check(_obj1)) {
-        PyErr_SetString(PyExc_TypeError, wxStringErrorMsg);
-        return NULL;
-    }
-    _arg1 = new wxString(PyString_AS_STRING(_obj1), PyString_GET_SIZE(_obj1));
-#endif
 }
 {
-    wxPy_BEGIN_ALLOW_THREADS;
-        wxPyBitmapShape_SetFilename(_arg0,*_arg1);
+    PyThreadState* __tstate = wxPyBeginAllowThreads();
+    wxPyBitmapShape_SetFilename(_arg0,*_arg1);
 
-    wxPy_END_ALLOW_THREADS;
+    wxPyEndAllowThreads(__tstate);
+    if (PyErr_Occurred()) return NULL;
 }    Py_INCREF(Py_None);
     _resultobj = Py_None;
 {
@@ -4180,10 +4334,11 @@ static PyObject *_wrap_wxPyBitmapShape_base_OnDelete(PyObject *self, PyObject *a
         }
     }
 {
-    wxPy_BEGIN_ALLOW_THREADS;
-        wxPyBitmapShape_base_OnDelete(_arg0);
+    PyThreadState* __tstate = wxPyBeginAllowThreads();
+    wxPyBitmapShape_base_OnDelete(_arg0);
 
-    wxPy_END_ALLOW_THREADS;
+    wxPyEndAllowThreads(__tstate);
+    if (PyErr_Occurred()) return NULL;
 }    Py_INCREF(Py_None);
     _resultobj = Py_None;
     return _resultobj;
@@ -4216,10 +4371,11 @@ static PyObject *_wrap_wxPyBitmapShape_base_OnDraw(PyObject *self, PyObject *arg
         }
     }
 {
-    wxPy_BEGIN_ALLOW_THREADS;
-        wxPyBitmapShape_base_OnDraw(_arg0,*_arg1);
+    PyThreadState* __tstate = wxPyBeginAllowThreads();
+    wxPyBitmapShape_base_OnDraw(_arg0,*_arg1);
 
-    wxPy_END_ALLOW_THREADS;
+    wxPyEndAllowThreads(__tstate);
+    if (PyErr_Occurred()) return NULL;
 }    Py_INCREF(Py_None);
     _resultobj = Py_None;
     return _resultobj;
@@ -4252,10 +4408,11 @@ static PyObject *_wrap_wxPyBitmapShape_base_OnDrawContents(PyObject *self, PyObj
         }
     }
 {
-    wxPy_BEGIN_ALLOW_THREADS;
-        wxPyBitmapShape_base_OnDrawContents(_arg0,*_arg1);
+    PyThreadState* __tstate = wxPyBeginAllowThreads();
+    wxPyBitmapShape_base_OnDrawContents(_arg0,*_arg1);
 
-    wxPy_END_ALLOW_THREADS;
+    wxPyEndAllowThreads(__tstate);
+    if (PyErr_Occurred()) return NULL;
 }    Py_INCREF(Py_None);
     _resultobj = Py_None;
     return _resultobj;
@@ -4291,10 +4448,11 @@ static PyObject *_wrap_wxPyBitmapShape_base_OnDrawBranches(PyObject *self, PyObj
     }
     _arg2 = (bool ) tempbool2;
 {
-    wxPy_BEGIN_ALLOW_THREADS;
-        wxPyBitmapShape_base_OnDrawBranches(_arg0,*_arg1,_arg2);
+    PyThreadState* __tstate = wxPyBeginAllowThreads();
+    wxPyBitmapShape_base_OnDrawBranches(_arg0,*_arg1,_arg2);
 
-    wxPy_END_ALLOW_THREADS;
+    wxPyEndAllowThreads(__tstate);
+    if (PyErr_Occurred()) return NULL;
 }    Py_INCREF(Py_None);
     _resultobj = Py_None;
     return _resultobj;
@@ -4327,10 +4485,11 @@ static PyObject *_wrap_wxPyBitmapShape_base_OnMoveLinks(PyObject *self, PyObject
         }
     }
 {
-    wxPy_BEGIN_ALLOW_THREADS;
-        wxPyBitmapShape_base_OnMoveLinks(_arg0,*_arg1);
+    PyThreadState* __tstate = wxPyBeginAllowThreads();
+    wxPyBitmapShape_base_OnMoveLinks(_arg0,*_arg1);
 
-    wxPy_END_ALLOW_THREADS;
+    wxPyEndAllowThreads(__tstate);
+    if (PyErr_Occurred()) return NULL;
 }    Py_INCREF(Py_None);
     _resultobj = Py_None;
     return _resultobj;
@@ -4363,10 +4522,11 @@ static PyObject *_wrap_wxPyBitmapShape_base_OnErase(PyObject *self, PyObject *ar
         }
     }
 {
-    wxPy_BEGIN_ALLOW_THREADS;
-        wxPyBitmapShape_base_OnErase(_arg0,*_arg1);
+    PyThreadState* __tstate = wxPyBeginAllowThreads();
+    wxPyBitmapShape_base_OnErase(_arg0,*_arg1);
 
-    wxPy_END_ALLOW_THREADS;
+    wxPyEndAllowThreads(__tstate);
+    if (PyErr_Occurred()) return NULL;
 }    Py_INCREF(Py_None);
     _resultobj = Py_None;
     return _resultobj;
@@ -4399,10 +4559,11 @@ static PyObject *_wrap_wxPyBitmapShape_base_OnEraseContents(PyObject *self, PyOb
         }
     }
 {
-    wxPy_BEGIN_ALLOW_THREADS;
-        wxPyBitmapShape_base_OnEraseContents(_arg0,*_arg1);
+    PyThreadState* __tstate = wxPyBeginAllowThreads();
+    wxPyBitmapShape_base_OnEraseContents(_arg0,*_arg1);
 
-    wxPy_END_ALLOW_THREADS;
+    wxPyEndAllowThreads(__tstate);
+    if (PyErr_Occurred()) return NULL;
 }    Py_INCREF(Py_None);
     _resultobj = Py_None;
     return _resultobj;
@@ -4435,10 +4596,11 @@ static PyObject *_wrap_wxPyBitmapShape_base_OnHighlight(PyObject *self, PyObject
         }
     }
 {
-    wxPy_BEGIN_ALLOW_THREADS;
-        wxPyBitmapShape_base_OnHighlight(_arg0,*_arg1);
+    PyThreadState* __tstate = wxPyBeginAllowThreads();
+    wxPyBitmapShape_base_OnHighlight(_arg0,*_arg1);
 
-    wxPy_END_ALLOW_THREADS;
+    wxPyEndAllowThreads(__tstate);
+    if (PyErr_Occurred()) return NULL;
 }    Py_INCREF(Py_None);
     _resultobj = Py_None;
     return _resultobj;
@@ -4466,10 +4628,11 @@ static PyObject *_wrap_wxPyBitmapShape_base_OnLeftClick(PyObject *self, PyObject
         }
     }
 {
-    wxPy_BEGIN_ALLOW_THREADS;
-        wxPyBitmapShape_base_OnLeftClick(_arg0,_arg1,_arg2,_arg3,_arg4);
+    PyThreadState* __tstate = wxPyBeginAllowThreads();
+    wxPyBitmapShape_base_OnLeftClick(_arg0,_arg1,_arg2,_arg3,_arg4);
 
-    wxPy_END_ALLOW_THREADS;
+    wxPyEndAllowThreads(__tstate);
+    if (PyErr_Occurred()) return NULL;
 }    Py_INCREF(Py_None);
     _resultobj = Py_None;
     return _resultobj;
@@ -4497,10 +4660,11 @@ static PyObject *_wrap_wxPyBitmapShape_base_OnLeftDoubleClick(PyObject *self, Py
         }
     }
 {
-    wxPy_BEGIN_ALLOW_THREADS;
-        wxPyBitmapShape_base_OnLeftDoubleClick(_arg0,_arg1,_arg2,_arg3,_arg4);
+    PyThreadState* __tstate = wxPyBeginAllowThreads();
+    wxPyBitmapShape_base_OnLeftDoubleClick(_arg0,_arg1,_arg2,_arg3,_arg4);
 
-    wxPy_END_ALLOW_THREADS;
+    wxPyEndAllowThreads(__tstate);
+    if (PyErr_Occurred()) return NULL;
 }    Py_INCREF(Py_None);
     _resultobj = Py_None;
     return _resultobj;
@@ -4528,10 +4692,11 @@ static PyObject *_wrap_wxPyBitmapShape_base_OnRightClick(PyObject *self, PyObjec
         }
     }
 {
-    wxPy_BEGIN_ALLOW_THREADS;
-        wxPyBitmapShape_base_OnRightClick(_arg0,_arg1,_arg2,_arg3,_arg4);
+    PyThreadState* __tstate = wxPyBeginAllowThreads();
+    wxPyBitmapShape_base_OnRightClick(_arg0,_arg1,_arg2,_arg3,_arg4);
 
-    wxPy_END_ALLOW_THREADS;
+    wxPyEndAllowThreads(__tstate);
+    if (PyErr_Occurred()) return NULL;
 }    Py_INCREF(Py_None);
     _resultobj = Py_None;
     return _resultobj;
@@ -4557,10 +4722,11 @@ static PyObject *_wrap_wxPyBitmapShape_base_OnSize(PyObject *self, PyObject *arg
         }
     }
 {
-    wxPy_BEGIN_ALLOW_THREADS;
-        wxPyBitmapShape_base_OnSize(_arg0,_arg1,_arg2);
+    PyThreadState* __tstate = wxPyBeginAllowThreads();
+    wxPyBitmapShape_base_OnSize(_arg0,_arg1,_arg2);
 
-    wxPy_END_ALLOW_THREADS;
+    wxPyEndAllowThreads(__tstate);
+    if (PyErr_Occurred()) return NULL;
 }    Py_INCREF(Py_None);
     _resultobj = Py_None;
     return _resultobj;
@@ -4601,10 +4767,11 @@ static PyObject *_wrap_wxPyBitmapShape_base_OnMovePre(PyObject *self, PyObject *
     }
     _arg6 = (bool ) tempbool6;
 {
-    wxPy_BEGIN_ALLOW_THREADS;
-        _result = (bool )wxPyBitmapShape_base_OnMovePre(_arg0,*_arg1,_arg2,_arg3,_arg4,_arg5,_arg6);
+    PyThreadState* __tstate = wxPyBeginAllowThreads();
+    _result = (bool )wxPyBitmapShape_base_OnMovePre(_arg0,*_arg1,_arg2,_arg3,_arg4,_arg5,_arg6);
 
-    wxPy_END_ALLOW_THREADS;
+    wxPyEndAllowThreads(__tstate);
+    if (PyErr_Occurred()) return NULL;
 }    _resultobj = Py_BuildValue("i",_result);
     return _resultobj;
 }
@@ -4643,10 +4810,11 @@ static PyObject *_wrap_wxPyBitmapShape_base_OnMovePost(PyObject *self, PyObject 
     }
     _arg6 = (bool ) tempbool6;
 {
-    wxPy_BEGIN_ALLOW_THREADS;
-        wxPyBitmapShape_base_OnMovePost(_arg0,*_arg1,_arg2,_arg3,_arg4,_arg5,_arg6);
+    PyThreadState* __tstate = wxPyBeginAllowThreads();
+    wxPyBitmapShape_base_OnMovePost(_arg0,*_arg1,_arg2,_arg3,_arg4,_arg5,_arg6);
 
-    wxPy_END_ALLOW_THREADS;
+    wxPyEndAllowThreads(__tstate);
+    if (PyErr_Occurred()) return NULL;
 }    Py_INCREF(Py_None);
     _resultobj = Py_None;
     return _resultobj;
@@ -4677,10 +4845,11 @@ static PyObject *_wrap_wxPyBitmapShape_base_OnDragLeft(PyObject *self, PyObject 
     }
     _arg1 = (bool ) tempbool1;
 {
-    wxPy_BEGIN_ALLOW_THREADS;
-        wxPyBitmapShape_base_OnDragLeft(_arg0,_arg1,_arg2,_arg3,_arg4,_arg5);
+    PyThreadState* __tstate = wxPyBeginAllowThreads();
+    wxPyBitmapShape_base_OnDragLeft(_arg0,_arg1,_arg2,_arg3,_arg4,_arg5);
 
-    wxPy_END_ALLOW_THREADS;
+    wxPyEndAllowThreads(__tstate);
+    if (PyErr_Occurred()) return NULL;
 }    Py_INCREF(Py_None);
     _resultobj = Py_None;
     return _resultobj;
@@ -4708,10 +4877,11 @@ static PyObject *_wrap_wxPyBitmapShape_base_OnBeginDragLeft(PyObject *self, PyOb
         }
     }
 {
-    wxPy_BEGIN_ALLOW_THREADS;
-        wxPyBitmapShape_base_OnBeginDragLeft(_arg0,_arg1,_arg2,_arg3,_arg4);
+    PyThreadState* __tstate = wxPyBeginAllowThreads();
+    wxPyBitmapShape_base_OnBeginDragLeft(_arg0,_arg1,_arg2,_arg3,_arg4);
 
-    wxPy_END_ALLOW_THREADS;
+    wxPyEndAllowThreads(__tstate);
+    if (PyErr_Occurred()) return NULL;
 }    Py_INCREF(Py_None);
     _resultobj = Py_None;
     return _resultobj;
@@ -4739,10 +4909,11 @@ static PyObject *_wrap_wxPyBitmapShape_base_OnEndDragLeft(PyObject *self, PyObje
         }
     }
 {
-    wxPy_BEGIN_ALLOW_THREADS;
-        wxPyBitmapShape_base_OnEndDragLeft(_arg0,_arg1,_arg2,_arg3,_arg4);
+    PyThreadState* __tstate = wxPyBeginAllowThreads();
+    wxPyBitmapShape_base_OnEndDragLeft(_arg0,_arg1,_arg2,_arg3,_arg4);
 
-    wxPy_END_ALLOW_THREADS;
+    wxPyEndAllowThreads(__tstate);
+    if (PyErr_Occurred()) return NULL;
 }    Py_INCREF(Py_None);
     _resultobj = Py_None;
     return _resultobj;
@@ -4773,10 +4944,11 @@ static PyObject *_wrap_wxPyBitmapShape_base_OnDragRight(PyObject *self, PyObject
     }
     _arg1 = (bool ) tempbool1;
 {
-    wxPy_BEGIN_ALLOW_THREADS;
-        wxPyBitmapShape_base_OnDragRight(_arg0,_arg1,_arg2,_arg3,_arg4,_arg5);
+    PyThreadState* __tstate = wxPyBeginAllowThreads();
+    wxPyBitmapShape_base_OnDragRight(_arg0,_arg1,_arg2,_arg3,_arg4,_arg5);
 
-    wxPy_END_ALLOW_THREADS;
+    wxPyEndAllowThreads(__tstate);
+    if (PyErr_Occurred()) return NULL;
 }    Py_INCREF(Py_None);
     _resultobj = Py_None;
     return _resultobj;
@@ -4804,10 +4976,11 @@ static PyObject *_wrap_wxPyBitmapShape_base_OnBeginDragRight(PyObject *self, PyO
         }
     }
 {
-    wxPy_BEGIN_ALLOW_THREADS;
-        wxPyBitmapShape_base_OnBeginDragRight(_arg0,_arg1,_arg2,_arg3,_arg4);
+    PyThreadState* __tstate = wxPyBeginAllowThreads();
+    wxPyBitmapShape_base_OnBeginDragRight(_arg0,_arg1,_arg2,_arg3,_arg4);
 
-    wxPy_END_ALLOW_THREADS;
+    wxPyEndAllowThreads(__tstate);
+    if (PyErr_Occurred()) return NULL;
 }    Py_INCREF(Py_None);
     _resultobj = Py_None;
     return _resultobj;
@@ -4835,10 +5008,11 @@ static PyObject *_wrap_wxPyBitmapShape_base_OnEndDragRight(PyObject *self, PyObj
         }
     }
 {
-    wxPy_BEGIN_ALLOW_THREADS;
-        wxPyBitmapShape_base_OnEndDragRight(_arg0,_arg1,_arg2,_arg3,_arg4);
+    PyThreadState* __tstate = wxPyBeginAllowThreads();
+    wxPyBitmapShape_base_OnEndDragRight(_arg0,_arg1,_arg2,_arg3,_arg4);
 
-    wxPy_END_ALLOW_THREADS;
+    wxPyEndAllowThreads(__tstate);
+    if (PyErr_Occurred()) return NULL;
 }    Py_INCREF(Py_None);
     _resultobj = Py_None;
     return _resultobj;
@@ -4875,10 +5049,11 @@ static PyObject *_wrap_wxPyBitmapShape_base_OnDrawOutline(PyObject *self, PyObje
         }
     }
 {
-    wxPy_BEGIN_ALLOW_THREADS;
-        wxPyBitmapShape_base_OnDrawOutline(_arg0,*_arg1,_arg2,_arg3,_arg4,_arg5);
+    PyThreadState* __tstate = wxPyBeginAllowThreads();
+    wxPyBitmapShape_base_OnDrawOutline(_arg0,*_arg1,_arg2,_arg3,_arg4,_arg5);
 
-    wxPy_END_ALLOW_THREADS;
+    wxPyEndAllowThreads(__tstate);
+    if (PyErr_Occurred()) return NULL;
 }    Py_INCREF(Py_None);
     _resultobj = Py_None;
     return _resultobj;
@@ -4911,10 +5086,11 @@ static PyObject *_wrap_wxPyBitmapShape_base_OnDrawControlPoints(PyObject *self, 
         }
     }
 {
-    wxPy_BEGIN_ALLOW_THREADS;
-        wxPyBitmapShape_base_OnDrawControlPoints(_arg0,*_arg1);
+    PyThreadState* __tstate = wxPyBeginAllowThreads();
+    wxPyBitmapShape_base_OnDrawControlPoints(_arg0,*_arg1);
 
-    wxPy_END_ALLOW_THREADS;
+    wxPyEndAllowThreads(__tstate);
+    if (PyErr_Occurred()) return NULL;
 }    Py_INCREF(Py_None);
     _resultobj = Py_None;
     return _resultobj;
@@ -4947,10 +5123,11 @@ static PyObject *_wrap_wxPyBitmapShape_base_OnEraseControlPoints(PyObject *self,
         }
     }
 {
-    wxPy_BEGIN_ALLOW_THREADS;
-        wxPyBitmapShape_base_OnEraseControlPoints(_arg0,*_arg1);
+    PyThreadState* __tstate = wxPyBeginAllowThreads();
+    wxPyBitmapShape_base_OnEraseControlPoints(_arg0,*_arg1);
 
-    wxPy_END_ALLOW_THREADS;
+    wxPyEndAllowThreads(__tstate);
+    if (PyErr_Occurred()) return NULL;
 }    Py_INCREF(Py_None);
     _resultobj = Py_None;
     return _resultobj;
@@ -4986,10 +5163,11 @@ static PyObject *_wrap_wxPyBitmapShape_base_OnMoveLink(PyObject *self, PyObject 
     }
     _arg2 = (bool ) tempbool2;
 {
-    wxPy_BEGIN_ALLOW_THREADS;
-        wxPyBitmapShape_base_OnMoveLink(_arg0,*_arg1,_arg2);
+    PyThreadState* __tstate = wxPyBeginAllowThreads();
+    wxPyBitmapShape_base_OnMoveLink(_arg0,*_arg1,_arg2);
 
-    wxPy_END_ALLOW_THREADS;
+    wxPyEndAllowThreads(__tstate);
+    if (PyErr_Occurred()) return NULL;
 }    Py_INCREF(Py_None);
     _resultobj = Py_None;
     return _resultobj;
@@ -5029,10 +5207,11 @@ static PyObject *_wrap_wxPyBitmapShape_base_OnSizingDragLeft(PyObject *self, PyO
     }
     _arg2 = (bool ) tempbool2;
 {
-    wxPy_BEGIN_ALLOW_THREADS;
-        wxPyBitmapShape_base_OnSizingDragLeft(_arg0,_arg1,_arg2,_arg3,_arg4,_arg5,_arg6);
+    PyThreadState* __tstate = wxPyBeginAllowThreads();
+    wxPyBitmapShape_base_OnSizingDragLeft(_arg0,_arg1,_arg2,_arg3,_arg4,_arg5,_arg6);
 
-    wxPy_END_ALLOW_THREADS;
+    wxPyEndAllowThreads(__tstate);
+    if (PyErr_Occurred()) return NULL;
 }    Py_INCREF(Py_None);
     _resultobj = Py_None;
     return _resultobj;
@@ -5069,10 +5248,11 @@ static PyObject *_wrap_wxPyBitmapShape_base_OnSizingBeginDragLeft(PyObject *self
         }
     }
 {
-    wxPy_BEGIN_ALLOW_THREADS;
-        wxPyBitmapShape_base_OnSizingBeginDragLeft(_arg0,_arg1,_arg2,_arg3,_arg4,_arg5);
+    PyThreadState* __tstate = wxPyBeginAllowThreads();
+    wxPyBitmapShape_base_OnSizingBeginDragLeft(_arg0,_arg1,_arg2,_arg3,_arg4,_arg5);
 
-    wxPy_END_ALLOW_THREADS;
+    wxPyEndAllowThreads(__tstate);
+    if (PyErr_Occurred()) return NULL;
 }    Py_INCREF(Py_None);
     _resultobj = Py_None;
     return _resultobj;
@@ -5109,10 +5289,11 @@ static PyObject *_wrap_wxPyBitmapShape_base_OnSizingEndDragLeft(PyObject *self, 
         }
     }
 {
-    wxPy_BEGIN_ALLOW_THREADS;
-        wxPyBitmapShape_base_OnSizingEndDragLeft(_arg0,_arg1,_arg2,_arg3,_arg4,_arg5);
+    PyThreadState* __tstate = wxPyBeginAllowThreads();
+    wxPyBitmapShape_base_OnSizingEndDragLeft(_arg0,_arg1,_arg2,_arg3,_arg4,_arg5);
 
-    wxPy_END_ALLOW_THREADS;
+    wxPyEndAllowThreads(__tstate);
+    if (PyErr_Occurred()) return NULL;
 }    Py_INCREF(Py_None);
     _resultobj = Py_None;
     return _resultobj;
@@ -5138,10 +5319,11 @@ static PyObject *_wrap_wxPyBitmapShape_base_OnBeginSize(PyObject *self, PyObject
         }
     }
 {
-    wxPy_BEGIN_ALLOW_THREADS;
-        wxPyBitmapShape_base_OnBeginSize(_arg0,_arg1,_arg2);
+    PyThreadState* __tstate = wxPyBeginAllowThreads();
+    wxPyBitmapShape_base_OnBeginSize(_arg0,_arg1,_arg2);
 
-    wxPy_END_ALLOW_THREADS;
+    wxPyEndAllowThreads(__tstate);
+    if (PyErr_Occurred()) return NULL;
 }    Py_INCREF(Py_None);
     _resultobj = Py_None;
     return _resultobj;
@@ -5167,10 +5349,11 @@ static PyObject *_wrap_wxPyBitmapShape_base_OnEndSize(PyObject *self, PyObject *
         }
     }
 {
-    wxPy_BEGIN_ALLOW_THREADS;
-        wxPyBitmapShape_base_OnEndSize(_arg0,_arg1,_arg2);
+    PyThreadState* __tstate = wxPyBeginAllowThreads();
+    wxPyBitmapShape_base_OnEndSize(_arg0,_arg1,_arg2);
 
-    wxPy_END_ALLOW_THREADS;
+    wxPyEndAllowThreads(__tstate);
+    if (PyErr_Occurred()) return NULL;
 }    Py_INCREF(Py_None);
     _resultobj = Py_None;
     return _resultobj;
@@ -5200,6 +5383,14 @@ static void *SwigwxPyDrawnShapeTowxPyShapeEvtHandler(void *ptr) {
     return (void *) dest;
 }
 
+static void *SwigwxPyDrawnShapeTowxObject(void *ptr) {
+    wxPyDrawnShape *src;
+    wxObject *dest;
+    src = (wxPyDrawnShape *) ptr;
+    dest = (wxObject *) src;
+    return (void *) dest;
+}
+
 #define new_wxPyDrawnShape() (new wxPyDrawnShape())
 static PyObject *_wrap_new_wxPyDrawnShape(PyObject *self, PyObject *args, PyObject *kwargs) {
     PyObject * _resultobj;
@@ -5211,10 +5402,11 @@ static PyObject *_wrap_new_wxPyDrawnShape(PyObject *self, PyObject *args, PyObje
     if(!PyArg_ParseTupleAndKeywords(args,kwargs,":new_wxPyDrawnShape",_kwnames)) 
         return NULL;
 {
-    wxPy_BEGIN_ALLOW_THREADS;
-        _result = (wxPyDrawnShape *)new_wxPyDrawnShape();
+    PyThreadState* __tstate = wxPyBeginAllowThreads();
+    _result = (wxPyDrawnShape *)new_wxPyDrawnShape();
 
-    wxPy_END_ALLOW_THREADS;
+    wxPyEndAllowThreads(__tstate);
+    if (PyErr_Occurred()) return NULL;
 }    if (_result) {
         SWIG_MakePtr(_ptemp, (char *) _result,"_wxPyDrawnShape_p");
         _resultobj = Py_BuildValue("s",_ptemp);
@@ -5225,8 +5417,8 @@ static PyObject *_wrap_new_wxPyDrawnShape(PyObject *self, PyObject *args, PyObje
     return _resultobj;
 }
 
-#define wxPyDrawnShape__setSelf(_swigobj,_swigarg0,_swigarg1)  (_swigobj->_setSelf(_swigarg0,_swigarg1))
-static PyObject *_wrap_wxPyDrawnShape__setSelf(PyObject *self, PyObject *args, PyObject *kwargs) {
+#define wxPyDrawnShape__setCallbackInfo(_swigobj,_swigarg0,_swigarg1)  (_swigobj->_setCallbackInfo(_swigarg0,_swigarg1))
+static PyObject *_wrap_wxPyDrawnShape__setCallbackInfo(PyObject *self, PyObject *args, PyObject *kwargs) {
     PyObject * _resultobj;
     wxPyDrawnShape * _arg0;
     PyObject * _arg1;
@@ -5237,12 +5429,12 @@ static PyObject *_wrap_wxPyDrawnShape__setSelf(PyObject *self, PyObject *args, P
     char *_kwnames[] = { "self","self","_class", NULL };
 
     self = self;
-    if(!PyArg_ParseTupleAndKeywords(args,kwargs,"OOO:wxPyDrawnShape__setSelf",_kwnames,&_argo0,&_obj1,&_obj2)) 
+    if(!PyArg_ParseTupleAndKeywords(args,kwargs,"OOO:wxPyDrawnShape__setCallbackInfo",_kwnames,&_argo0,&_obj1,&_obj2)) 
         return NULL;
     if (_argo0) {
         if (_argo0 == Py_None) { _arg0 = NULL; }
         else if (SWIG_GetPtrObj(_argo0,(void **) &_arg0,"_wxPyDrawnShape_p")) {
-            PyErr_SetString(PyExc_TypeError,"Type error in argument 1 of wxPyDrawnShape__setSelf. Expected _wxPyDrawnShape_p.");
+            PyErr_SetString(PyExc_TypeError,"Type error in argument 1 of wxPyDrawnShape__setCallbackInfo. Expected _wxPyDrawnShape_p.");
         return NULL;
         }
     }
@@ -5253,10 +5445,11 @@ static PyObject *_wrap_wxPyDrawnShape__setSelf(PyObject *self, PyObject *args, P
   _arg2 = _obj2;
 }
 {
-    wxPy_BEGIN_ALLOW_THREADS;
-        wxPyDrawnShape__setSelf(_arg0,_arg1,_arg2);
+    PyThreadState* __tstate = wxPyBeginAllowThreads();
+    wxPyDrawnShape__setCallbackInfo(_arg0,_arg1,_arg2);
 
-    wxPy_END_ALLOW_THREADS;
+    wxPyEndAllowThreads(__tstate);
+    if (PyErr_Occurred()) return NULL;
 }    Py_INCREF(Py_None);
     _resultobj = Py_None;
     return _resultobj;
@@ -5280,10 +5473,11 @@ static PyObject *_wrap_wxPyDrawnShape_CalculateSize(PyObject *self, PyObject *ar
         }
     }
 {
-    wxPy_BEGIN_ALLOW_THREADS;
-        wxPyDrawnShape_CalculateSize(_arg0);
+    PyThreadState* __tstate = wxPyBeginAllowThreads();
+    wxPyDrawnShape_CalculateSize(_arg0);
 
-    wxPy_END_ALLOW_THREADS;
+    wxPyEndAllowThreads(__tstate);
+    if (PyErr_Occurred()) return NULL;
 }    Py_INCREF(Py_None);
     _resultobj = Py_None;
     return _resultobj;
@@ -5307,10 +5501,11 @@ static PyObject *_wrap_wxPyDrawnShape_DestroyClippingRect(PyObject *self, PyObje
         }
     }
 {
-    wxPy_BEGIN_ALLOW_THREADS;
-        wxPyDrawnShape_DestroyClippingRect(_arg0);
+    PyThreadState* __tstate = wxPyBeginAllowThreads();
+    wxPyDrawnShape_DestroyClippingRect(_arg0);
 
-    wxPy_END_ALLOW_THREADS;
+    wxPyEndAllowThreads(__tstate);
+    if (PyErr_Occurred()) return NULL;
 }    Py_INCREF(Py_None);
     _resultobj = Py_None;
     return _resultobj;
@@ -5358,10 +5553,11 @@ static PyObject *_wrap_wxPyDrawnShape_DrawArc(PyObject *self, PyObject *args, Py
         return NULL;
 }
 {
-    wxPy_BEGIN_ALLOW_THREADS;
-        wxPyDrawnShape_DrawArc(_arg0,*_arg1,*_arg2,*_arg3);
+    PyThreadState* __tstate = wxPyBeginAllowThreads();
+    wxPyDrawnShape_DrawArc(_arg0,*_arg1,*_arg2,*_arg3);
 
-    wxPy_END_ALLOW_THREADS;
+    wxPyEndAllowThreads(__tstate);
+    if (PyErr_Occurred()) return NULL;
 }    Py_INCREF(Py_None);
     _resultobj = Py_None;
     return _resultobj;
@@ -5386,10 +5582,11 @@ static PyObject *_wrap_wxPyDrawnShape_DrawAtAngle(PyObject *self, PyObject *args
         }
     }
 {
-    wxPy_BEGIN_ALLOW_THREADS;
-        wxPyDrawnShape_DrawAtAngle(_arg0,_arg1);
+    PyThreadState* __tstate = wxPyBeginAllowThreads();
+    wxPyDrawnShape_DrawAtAngle(_arg0,_arg1);
 
-    wxPy_END_ALLOW_THREADS;
+    wxPyEndAllowThreads(__tstate);
+    if (PyErr_Occurred()) return NULL;
 }    Py_INCREF(Py_None);
     _resultobj = Py_None;
     return _resultobj;
@@ -5423,10 +5620,11 @@ static PyObject *_wrap_wxPyDrawnShape_DrawEllipticArc(PyObject *self, PyObject *
         return NULL;
 }
 {
-    wxPy_BEGIN_ALLOW_THREADS;
-        wxPyDrawnShape_DrawEllipticArc(_arg0,*_arg1,_arg2,_arg3);
+    PyThreadState* __tstate = wxPyBeginAllowThreads();
+    wxPyDrawnShape_DrawEllipticArc(_arg0,*_arg1,_arg2,_arg3);
 
-    wxPy_END_ALLOW_THREADS;
+    wxPyEndAllowThreads(__tstate);
+    if (PyErr_Occurred()) return NULL;
 }    Py_INCREF(Py_None);
     _resultobj = Py_None;
     return _resultobj;
@@ -5466,10 +5664,11 @@ static PyObject *_wrap_wxPyDrawnShape_DrawLine(PyObject *self, PyObject *args, P
         return NULL;
 }
 {
-    wxPy_BEGIN_ALLOW_THREADS;
-        wxPyDrawnShape_DrawLine(_arg0,*_arg1,*_arg2);
+    PyThreadState* __tstate = wxPyBeginAllowThreads();
+    wxPyDrawnShape_DrawLine(_arg0,*_arg1,*_arg2);
 
-    wxPy_END_ALLOW_THREADS;
+    wxPyEndAllowThreads(__tstate);
+    if (PyErr_Occurred()) return NULL;
 }    Py_INCREF(Py_None);
     _resultobj = Py_None;
     return _resultobj;
@@ -5482,6 +5681,7 @@ static PyObject *_wrap_wxPyDrawnShape_DrawLines(PyObject *self, PyObject *args, 
     int  _arg1;
     wxPoint * _arg2;
     PyObject * _argo0 = 0;
+    int  NPOINTS;
     PyObject * _obj2 = 0;
     char *_kwnames[] = { "self","points", NULL };
 
@@ -5497,24 +5697,20 @@ static PyObject *_wrap_wxPyDrawnShape_DrawLines(PyObject *self, PyObject *args, 
     }
     if (_obj2)
 {
-    _arg2 = wxPoint_LIST_helper(_obj2);
-    if (_arg2 == NULL) {
-        return NULL;
-    }
+    _arg2 = wxPoint_LIST_helper(_obj2, &NPOINTS);
+	if (_arg2 == NULL) {
+		return NULL;
+	}
 }
 {
-    if (_obj2) {
-        _arg1 = PyList_Size(_obj2);
-    }
-    else {
-        _arg1 = 0;
-    }
+	_arg1 = NPOINTS;
 }
 {
-    wxPy_BEGIN_ALLOW_THREADS;
-        wxPyDrawnShape_DrawLines(_arg0,_arg1,_arg2);
+    PyThreadState* __tstate = wxPyBeginAllowThreads();
+    wxPyDrawnShape_DrawLines(_arg0,_arg1,_arg2);
 
-    wxPy_END_ALLOW_THREADS;
+    wxPyEndAllowThreads(__tstate);
+    if (PyErr_Occurred()) return NULL;
 }    Py_INCREF(Py_None);
     _resultobj = Py_None;
 {
@@ -5549,10 +5745,11 @@ static PyObject *_wrap_wxPyDrawnShape_DrawPoint(PyObject *self, PyObject *args, 
         return NULL;
 }
 {
-    wxPy_BEGIN_ALLOW_THREADS;
-        wxPyDrawnShape_DrawPoint(_arg0,*_arg1);
+    PyThreadState* __tstate = wxPyBeginAllowThreads();
+    wxPyDrawnShape_DrawPoint(_arg0,*_arg1);
 
-    wxPy_END_ALLOW_THREADS;
+    wxPyEndAllowThreads(__tstate);
+    if (PyErr_Occurred()) return NULL;
 }    Py_INCREF(Py_None);
     _resultobj = Py_None;
     return _resultobj;
@@ -5566,6 +5763,7 @@ static PyObject *_wrap_wxPyDrawnShape_DrawPolygon(PyObject *self, PyObject *args
     wxPoint * _arg2;
     int  _arg3 = (int ) 0;
     PyObject * _argo0 = 0;
+    int  NPOINTS;
     PyObject * _obj2 = 0;
     char *_kwnames[] = { "self","points","flags", NULL };
 
@@ -5581,24 +5779,20 @@ static PyObject *_wrap_wxPyDrawnShape_DrawPolygon(PyObject *self, PyObject *args
     }
     if (_obj2)
 {
-    _arg2 = wxPoint_LIST_helper(_obj2);
-    if (_arg2 == NULL) {
-        return NULL;
-    }
+    _arg2 = wxPoint_LIST_helper(_obj2, &NPOINTS);
+	if (_arg2 == NULL) {
+		return NULL;
+	}
 }
 {
-    if (_obj2) {
-        _arg1 = PyList_Size(_obj2);
-    }
-    else {
-        _arg1 = 0;
-    }
+	_arg1 = NPOINTS;
 }
 {
-    wxPy_BEGIN_ALLOW_THREADS;
-        wxPyDrawnShape_DrawPolygon(_arg0,_arg1,_arg2,_arg3);
+    PyThreadState* __tstate = wxPyBeginAllowThreads();
+    wxPyDrawnShape_DrawPolygon(_arg0,_arg1,_arg2,_arg3);
 
-    wxPy_END_ALLOW_THREADS;
+    wxPyEndAllowThreads(__tstate);
+    if (PyErr_Occurred()) return NULL;
 }    Py_INCREF(Py_None);
     _resultobj = Py_None;
 {
@@ -5633,10 +5827,11 @@ static PyObject *_wrap_wxPyDrawnShape_DrawRectangle(PyObject *self, PyObject *ar
         return NULL;
 }
 {
-    wxPy_BEGIN_ALLOW_THREADS;
-        wxPyDrawnShape_DrawRectangle(_arg0,*_arg1);
+    PyThreadState* __tstate = wxPyBeginAllowThreads();
+    wxPyDrawnShape_DrawRectangle(_arg0,*_arg1);
 
-    wxPy_END_ALLOW_THREADS;
+    wxPyEndAllowThreads(__tstate);
+    if (PyErr_Occurred()) return NULL;
 }    Py_INCREF(Py_None);
     _resultobj = Py_None;
     return _resultobj;
@@ -5669,10 +5864,11 @@ static PyObject *_wrap_wxPyDrawnShape_DrawRoundedRectangle(PyObject *self, PyObj
         return NULL;
 }
 {
-    wxPy_BEGIN_ALLOW_THREADS;
-        wxPyDrawnShape_DrawRoundedRectangle(_arg0,*_arg1,_arg2);
+    PyThreadState* __tstate = wxPyBeginAllowThreads();
+    wxPyDrawnShape_DrawRoundedRectangle(_arg0,*_arg1,_arg2);
 
-    wxPy_END_ALLOW_THREADS;
+    wxPyEndAllowThreads(__tstate);
+    if (PyErr_Occurred()) return NULL;
 }    Py_INCREF(Py_None);
     _resultobj = Py_None;
     return _resultobj;
@@ -5685,6 +5881,7 @@ static PyObject *_wrap_wxPyDrawnShape_DrawSpline(PyObject *self, PyObject *args,
     int  _arg1;
     wxPoint * _arg2;
     PyObject * _argo0 = 0;
+    int  NPOINTS;
     PyObject * _obj2 = 0;
     char *_kwnames[] = { "self","points", NULL };
 
@@ -5700,24 +5897,20 @@ static PyObject *_wrap_wxPyDrawnShape_DrawSpline(PyObject *self, PyObject *args,
     }
     if (_obj2)
 {
-    _arg2 = wxPoint_LIST_helper(_obj2);
-    if (_arg2 == NULL) {
-        return NULL;
-    }
+    _arg2 = wxPoint_LIST_helper(_obj2, &NPOINTS);
+	if (_arg2 == NULL) {
+		return NULL;
+	}
 }
 {
-    if (_obj2) {
-        _arg1 = PyList_Size(_obj2);
-    }
-    else {
-        _arg1 = 0;
-    }
+	_arg1 = NPOINTS;
 }
 {
-    wxPy_BEGIN_ALLOW_THREADS;
-        wxPyDrawnShape_DrawSpline(_arg0,_arg1,_arg2);
+    PyThreadState* __tstate = wxPyBeginAllowThreads();
+    wxPyDrawnShape_DrawSpline(_arg0,_arg1,_arg2);
 
-    wxPy_END_ALLOW_THREADS;
+    wxPyEndAllowThreads(__tstate);
+    if (PyErr_Occurred()) return NULL;
 }    Py_INCREF(Py_None);
     _resultobj = Py_None;
 {
@@ -5749,22 +5942,9 @@ static PyObject *_wrap_wxPyDrawnShape_DrawText(PyObject *self, PyObject *args, P
         }
     }
 {
-#if PYTHON_API_VERSION >= 1009
-    char* tmpPtr; int tmpSize;
-    if (!PyString_Check(_obj1) && !PyUnicode_Check(_obj1)) {
-        PyErr_SetString(PyExc_TypeError, "String or Unicode type required");
+    _arg1 = wxString_in_helper(_obj1);
+    if (_arg1 == NULL)
         return NULL;
-    }
-    if (PyString_AsStringAndSize(_obj1, &tmpPtr, &tmpSize) == -1)
-        return NULL;
-    _arg1 = new wxString(tmpPtr, tmpSize);
-#else
-    if (!PyString_Check(_obj1)) {
-        PyErr_SetString(PyExc_TypeError, wxStringErrorMsg);
-        return NULL;
-    }
-    _arg1 = new wxString(PyString_AS_STRING(_obj1), PyString_GET_SIZE(_obj1));
-#endif
 }
 {
     _arg2 = &temp;
@@ -5772,10 +5952,11 @@ static PyObject *_wrap_wxPyDrawnShape_DrawText(PyObject *self, PyObject *args, P
         return NULL;
 }
 {
-    wxPy_BEGIN_ALLOW_THREADS;
-        wxPyDrawnShape_DrawText(_arg0,*_arg1,*_arg2);
+    PyThreadState* __tstate = wxPyBeginAllowThreads();
+    wxPyDrawnShape_DrawText(_arg0,*_arg1,*_arg2);
 
-    wxPy_END_ALLOW_THREADS;
+    wxPyEndAllowThreads(__tstate);
+    if (PyErr_Occurred()) return NULL;
 }    Py_INCREF(Py_None);
     _resultobj = Py_None;
 {
@@ -5804,10 +5985,11 @@ static PyObject *_wrap_wxPyDrawnShape_GetAngle(PyObject *self, PyObject *args, P
         }
     }
 {
-    wxPy_BEGIN_ALLOW_THREADS;
-        _result = (int )wxPyDrawnShape_GetAngle(_arg0);
+    PyThreadState* __tstate = wxPyBeginAllowThreads();
+    _result = (int )wxPyDrawnShape_GetAngle(_arg0);
 
-    wxPy_END_ALLOW_THREADS;
+    wxPyEndAllowThreads(__tstate);
+    if (PyErr_Occurred()) return NULL;
 }    _resultobj = Py_BuildValue("i",_result);
     return _resultobj;
 }
@@ -5819,7 +6001,6 @@ static PyObject *_wrap_wxPyDrawnShape_GetMetaFile(PyObject *self, PyObject *args
     wxPyDrawnShape * _arg0;
     PyObject * _argo0 = 0;
     char *_kwnames[] = { "self", NULL };
-    char _ptemp[128];
 
     self = self;
     if(!PyArg_ParseTupleAndKeywords(args,kwargs,"O:wxPyDrawnShape_GetMetaFile",_kwnames,&_argo0)) 
@@ -5832,18 +6013,13 @@ static PyObject *_wrap_wxPyDrawnShape_GetMetaFile(PyObject *self, PyObject *args
         }
     }
 {
-    wxPy_BEGIN_ALLOW_THREADS;
-        wxPseudoMetaFile & _result_ref = wxPyDrawnShape_GetMetaFile(_arg0);
+    PyThreadState* __tstate = wxPyBeginAllowThreads();
+    wxPseudoMetaFile & _result_ref = wxPyDrawnShape_GetMetaFile(_arg0);
     _result = (wxPseudoMetaFile *) &_result_ref;
 
-    wxPy_END_ALLOW_THREADS;
-}    if (_result) {
-        SWIG_MakePtr(_ptemp, (char *) _result,"_wxPseudoMetaFile_p");
-        _resultobj = Py_BuildValue("s",_ptemp);
-    } else {
-        Py_INCREF(Py_None);
-        _resultobj = Py_None;
-    }
+    wxPyEndAllowThreads(__tstate);
+    if (PyErr_Occurred()) return NULL;
+}{ _resultobj = wxPyMake_wxObject(_result); }
     return _resultobj;
 }
 
@@ -5866,10 +6042,11 @@ static PyObject *_wrap_wxPyDrawnShape_GetRotation(PyObject *self, PyObject *args
         }
     }
 {
-    wxPy_BEGIN_ALLOW_THREADS;
-        _result = (double )wxPyDrawnShape_GetRotation(_arg0);
+    PyThreadState* __tstate = wxPyBeginAllowThreads();
+    _result = (double )wxPyDrawnShape_GetRotation(_arg0);
 
-    wxPy_END_ALLOW_THREADS;
+    wxPyEndAllowThreads(__tstate);
+    if (PyErr_Occurred()) return NULL;
 }    _resultobj = Py_BuildValue("d",_result);
     return _resultobj;
 }
@@ -5894,10 +6071,11 @@ static PyObject *_wrap_wxPyDrawnShape_LoadFromMetaFile(PyObject *self, PyObject 
         }
     }
 {
-    wxPy_BEGIN_ALLOW_THREADS;
-        _result = (bool )wxPyDrawnShape_LoadFromMetaFile(_arg0,_arg1);
+    PyThreadState* __tstate = wxPyBeginAllowThreads();
+    _result = (bool )wxPyDrawnShape_LoadFromMetaFile(_arg0,_arg1);
 
-    wxPy_END_ALLOW_THREADS;
+    wxPyEndAllowThreads(__tstate);
+    if (PyErr_Occurred()) return NULL;
 }    _resultobj = Py_BuildValue("i",_result);
     return _resultobj;
 }
@@ -5923,10 +6101,11 @@ static PyObject *_wrap_wxPyDrawnShape_Rotate(PyObject *self, PyObject *args, PyO
         }
     }
 {
-    wxPy_BEGIN_ALLOW_THREADS;
-        wxPyDrawnShape_Rotate(_arg0,_arg1,_arg2,_arg3);
+    PyThreadState* __tstate = wxPyBeginAllowThreads();
+    wxPyDrawnShape_Rotate(_arg0,_arg1,_arg2,_arg3);
 
-    wxPy_END_ALLOW_THREADS;
+    wxPyEndAllowThreads(__tstate);
+    if (PyErr_Occurred()) return NULL;
 }    Py_INCREF(Py_None);
     _resultobj = Py_None;
     return _resultobj;
@@ -5958,10 +6137,11 @@ static PyObject *_wrap_wxPyDrawnShape_SetClippingRect(PyObject *self, PyObject *
         return NULL;
 }
 {
-    wxPy_BEGIN_ALLOW_THREADS;
-        wxPyDrawnShape_SetClippingRect(_arg0,*_arg1);
+    PyThreadState* __tstate = wxPyBeginAllowThreads();
+    wxPyDrawnShape_SetClippingRect(_arg0,*_arg1);
 
-    wxPy_END_ALLOW_THREADS;
+    wxPyEndAllowThreads(__tstate);
+    if (PyErr_Occurred()) return NULL;
 }    Py_INCREF(Py_None);
     _resultobj = Py_None;
     return _resultobj;
@@ -5993,10 +6173,11 @@ static PyObject *_wrap_wxPyDrawnShape_SetDrawnBackgroundColour(PyObject *self, P
         return NULL;
 }
 {
-    wxPy_BEGIN_ALLOW_THREADS;
-        wxPyDrawnShape_SetDrawnBackgroundColour(_arg0,*_arg1);
+    PyThreadState* __tstate = wxPyBeginAllowThreads();
+    wxPyDrawnShape_SetDrawnBackgroundColour(_arg0,*_arg1);
 
-    wxPy_END_ALLOW_THREADS;
+    wxPyEndAllowThreads(__tstate);
+    if (PyErr_Occurred()) return NULL;
 }    Py_INCREF(Py_None);
     _resultobj = Py_None;
     return _resultobj;
@@ -6021,10 +6202,11 @@ static PyObject *_wrap_wxPyDrawnShape_SetDrawnBackgroundMode(PyObject *self, PyO
         }
     }
 {
-    wxPy_BEGIN_ALLOW_THREADS;
-        wxPyDrawnShape_SetDrawnBackgroundMode(_arg0,_arg1);
+    PyThreadState* __tstate = wxPyBeginAllowThreads();
+    wxPyDrawnShape_SetDrawnBackgroundMode(_arg0,_arg1);
 
-    wxPy_END_ALLOW_THREADS;
+    wxPyEndAllowThreads(__tstate);
+    if (PyErr_Occurred()) return NULL;
 }    Py_INCREF(Py_None);
     _resultobj = Py_None;
     return _resultobj;
@@ -6037,12 +6219,12 @@ static PyObject *_wrap_wxPyDrawnShape_SetDrawnBrush(PyObject *self, PyObject *ar
     wxBrush * _arg1;
     bool  _arg2 = (bool ) FALSE;
     PyObject * _argo0 = 0;
-    PyObject * _argo1 = 0;
+    PyObject * _obj1 = 0;
     int tempbool2 = (int) FALSE;
     char *_kwnames[] = { "self","pen","isOutline", NULL };
 
     self = self;
-    if(!PyArg_ParseTupleAndKeywords(args,kwargs,"OO|i:wxPyDrawnShape_SetDrawnBrush",_kwnames,&_argo0,&_argo1,&tempbool2)) 
+    if(!PyArg_ParseTupleAndKeywords(args,kwargs,"OO|i:wxPyDrawnShape_SetDrawnBrush",_kwnames,&_argo0,&_obj1,&tempbool2)) 
         return NULL;
     if (_argo0) {
         if (_argo0 == Py_None) { _arg0 = NULL; }
@@ -6051,19 +6233,27 @@ static PyObject *_wrap_wxPyDrawnShape_SetDrawnBrush(PyObject *self, PyObject *ar
         return NULL;
         }
     }
-    if (_argo1) {
-        if (_argo1 == Py_None) { _arg1 = NULL; }
-        else if (SWIG_GetPtrObj(_argo1,(void **) &_arg1,"_wxBrush_p")) {
-            PyErr_SetString(PyExc_TypeError,"Type error in argument 2 of wxPyDrawnShape_SetDrawnBrush. Expected _wxBrush_p.");
+{
+    wxBrush* temp;
+    if (_obj1) {
+        if (_obj1 == Py_None) { temp = NULL; }
+        else if (SWIG_GetPtrObj(_obj1, (void **) &temp,"_wxBrush_p")) {
+            PyErr_SetString(PyExc_TypeError,"Type error, expected _wxBrush_p.");
         return NULL;
         }
     }
+    if (temp)
+        _arg1 = wxTheBrushList->FindOrCreateBrush(temp->GetColour(), temp->GetStyle());
+    else
+        _arg1 = NULL;
+}
     _arg2 = (bool ) tempbool2;
 {
-    wxPy_BEGIN_ALLOW_THREADS;
-        wxPyDrawnShape_SetDrawnBrush(_arg0,_arg1,_arg2);
+    PyThreadState* __tstate = wxPyBeginAllowThreads();
+    wxPyDrawnShape_SetDrawnBrush(_arg0,_arg1,_arg2);
 
-    wxPy_END_ALLOW_THREADS;
+    wxPyEndAllowThreads(__tstate);
+    if (PyErr_Occurred()) return NULL;
 }    Py_INCREF(Py_None);
     _resultobj = Py_None;
     return _resultobj;
@@ -6075,11 +6265,11 @@ static PyObject *_wrap_wxPyDrawnShape_SetDrawnFont(PyObject *self, PyObject *arg
     wxPyDrawnShape * _arg0;
     wxFont * _arg1;
     PyObject * _argo0 = 0;
-    PyObject * _argo1 = 0;
+    PyObject * _obj1 = 0;
     char *_kwnames[] = { "self","font", NULL };
 
     self = self;
-    if(!PyArg_ParseTupleAndKeywords(args,kwargs,"OO:wxPyDrawnShape_SetDrawnFont",_kwnames,&_argo0,&_argo1)) 
+    if(!PyArg_ParseTupleAndKeywords(args,kwargs,"OO:wxPyDrawnShape_SetDrawnFont",_kwnames,&_argo0,&_obj1)) 
         return NULL;
     if (_argo0) {
         if (_argo0 == Py_None) { _arg0 = NULL; }
@@ -6088,18 +6278,32 @@ static PyObject *_wrap_wxPyDrawnShape_SetDrawnFont(PyObject *self, PyObject *arg
         return NULL;
         }
     }
-    if (_argo1) {
-        if (_argo1 == Py_None) { _arg1 = NULL; }
-        else if (SWIG_GetPtrObj(_argo1,(void **) &_arg1,"_wxFont_p")) {
-            PyErr_SetString(PyExc_TypeError,"Type error in argument 2 of wxPyDrawnShape_SetDrawnFont. Expected _wxFont_p.");
+{
+    wxFont* temp;
+    if (_obj1) {
+        if (_obj1 == Py_None) { temp = NULL; }
+        else if (SWIG_GetPtrObj(_obj1, (void **) &temp,"_wxFont_p")) {
+            PyErr_SetString(PyExc_TypeError,"Type error, expected _wxFont_p.");
         return NULL;
         }
     }
+    if (temp)
+        _arg1 = wxTheFontList->FindOrCreateFont(temp->GetPointSize(),
+                                                  temp->GetFamily(),
+                                                  temp->GetStyle(),
+                                                  temp->GetWeight(),
+                                                  temp->GetUnderlined(),
+                                                  temp->GetFaceName(),
+                                                  temp->GetEncoding());
+    else
+        _arg1 = NULL;
+}
 {
-    wxPy_BEGIN_ALLOW_THREADS;
-        wxPyDrawnShape_SetDrawnFont(_arg0,_arg1);
+    PyThreadState* __tstate = wxPyBeginAllowThreads();
+    wxPyDrawnShape_SetDrawnFont(_arg0,_arg1);
 
-    wxPy_END_ALLOW_THREADS;
+    wxPyEndAllowThreads(__tstate);
+    if (PyErr_Occurred()) return NULL;
 }    Py_INCREF(Py_None);
     _resultobj = Py_None;
     return _resultobj;
@@ -6112,12 +6316,12 @@ static PyObject *_wrap_wxPyDrawnShape_SetDrawnPen(PyObject *self, PyObject *args
     wxPen * _arg1;
     bool  _arg2 = (bool ) FALSE;
     PyObject * _argo0 = 0;
-    PyObject * _argo1 = 0;
+    PyObject * _obj1 = 0;
     int tempbool2 = (int) FALSE;
     char *_kwnames[] = { "self","pen","isOutline", NULL };
 
     self = self;
-    if(!PyArg_ParseTupleAndKeywords(args,kwargs,"OO|i:wxPyDrawnShape_SetDrawnPen",_kwnames,&_argo0,&_argo1,&tempbool2)) 
+    if(!PyArg_ParseTupleAndKeywords(args,kwargs,"OO|i:wxPyDrawnShape_SetDrawnPen",_kwnames,&_argo0,&_obj1,&tempbool2)) 
         return NULL;
     if (_argo0) {
         if (_argo0 == Py_None) { _arg0 = NULL; }
@@ -6126,19 +6330,29 @@ static PyObject *_wrap_wxPyDrawnShape_SetDrawnPen(PyObject *self, PyObject *args
         return NULL;
         }
     }
-    if (_argo1) {
-        if (_argo1 == Py_None) { _arg1 = NULL; }
-        else if (SWIG_GetPtrObj(_argo1,(void **) &_arg1,"_wxPen_p")) {
-            PyErr_SetString(PyExc_TypeError,"Type error in argument 2 of wxPyDrawnShape_SetDrawnPen. Expected _wxPen_p.");
+{
+    wxPen* temp;
+    if (_obj1) {
+        if (_obj1 == Py_None) { temp = NULL; }
+        else if (SWIG_GetPtrObj(_obj1, (void **) &temp,"_wxPen_p")) {
+            PyErr_SetString(PyExc_TypeError,"Type error, expected _wxPen_p.");
         return NULL;
         }
     }
+    if (temp)
+        _arg1 = wxThePenList->FindOrCreatePen(temp->GetColour(),
+                                                temp->GetWidth(),
+                                                temp->GetStyle());
+    else
+        _arg1 = NULL;
+}
     _arg2 = (bool ) tempbool2;
 {
-    wxPy_BEGIN_ALLOW_THREADS;
-        wxPyDrawnShape_SetDrawnPen(_arg0,_arg1,_arg2);
+    PyThreadState* __tstate = wxPyBeginAllowThreads();
+    wxPyDrawnShape_SetDrawnPen(_arg0,_arg1,_arg2);
 
-    wxPy_END_ALLOW_THREADS;
+    wxPyEndAllowThreads(__tstate);
+    if (PyErr_Occurred()) return NULL;
 }    Py_INCREF(Py_None);
     _resultobj = Py_None;
     return _resultobj;
@@ -6170,10 +6384,11 @@ static PyObject *_wrap_wxPyDrawnShape_SetDrawnTextColour(PyObject *self, PyObjec
         return NULL;
 }
 {
-    wxPy_BEGIN_ALLOW_THREADS;
-        wxPyDrawnShape_SetDrawnTextColour(_arg0,*_arg1);
+    PyThreadState* __tstate = wxPyBeginAllowThreads();
+    wxPyDrawnShape_SetDrawnTextColour(_arg0,*_arg1);
 
-    wxPy_END_ALLOW_THREADS;
+    wxPyEndAllowThreads(__tstate);
+    if (PyErr_Occurred()) return NULL;
 }    Py_INCREF(Py_None);
     _resultobj = Py_None;
     return _resultobj;
@@ -6199,10 +6414,11 @@ static PyObject *_wrap_wxPyDrawnShape_Scale(PyObject *self, PyObject *args, PyOb
         }
     }
 {
-    wxPy_BEGIN_ALLOW_THREADS;
-        wxPyDrawnShape_Scale(_arg0,_arg1,_arg2);
+    PyThreadState* __tstate = wxPyBeginAllowThreads();
+    wxPyDrawnShape_Scale(_arg0,_arg1,_arg2);
 
-    wxPy_END_ALLOW_THREADS;
+    wxPyEndAllowThreads(__tstate);
+    if (PyErr_Occurred()) return NULL;
 }    Py_INCREF(Py_None);
     _resultobj = Py_None;
     return _resultobj;
@@ -6229,10 +6445,11 @@ static PyObject *_wrap_wxPyDrawnShape_SetSaveToFile(PyObject *self, PyObject *ar
     }
     _arg1 = (bool ) tempbool1;
 {
-    wxPy_BEGIN_ALLOW_THREADS;
-        wxPyDrawnShape_SetSaveToFile(_arg0,_arg1);
+    PyThreadState* __tstate = wxPyBeginAllowThreads();
+    wxPyDrawnShape_SetSaveToFile(_arg0,_arg1);
 
-    wxPy_END_ALLOW_THREADS;
+    wxPyEndAllowThreads(__tstate);
+    if (PyErr_Occurred()) return NULL;
 }    Py_INCREF(Py_None);
     _resultobj = Py_None;
     return _resultobj;
@@ -6258,10 +6475,11 @@ static PyObject *_wrap_wxPyDrawnShape_Translate(PyObject *self, PyObject *args, 
         }
     }
 {
-    wxPy_BEGIN_ALLOW_THREADS;
-        wxPyDrawnShape_Translate(_arg0,_arg1,_arg2);
+    PyThreadState* __tstate = wxPyBeginAllowThreads();
+    wxPyDrawnShape_Translate(_arg0,_arg1,_arg2);
 
-    wxPy_END_ALLOW_THREADS;
+    wxPyEndAllowThreads(__tstate);
+    if (PyErr_Occurred()) return NULL;
 }    Py_INCREF(Py_None);
     _resultobj = Py_None;
     return _resultobj;
@@ -6285,10 +6503,11 @@ static PyObject *_wrap_wxPyDrawnShape_base_OnDelete(PyObject *self, PyObject *ar
         }
     }
 {
-    wxPy_BEGIN_ALLOW_THREADS;
-        wxPyDrawnShape_base_OnDelete(_arg0);
+    PyThreadState* __tstate = wxPyBeginAllowThreads();
+    wxPyDrawnShape_base_OnDelete(_arg0);
 
-    wxPy_END_ALLOW_THREADS;
+    wxPyEndAllowThreads(__tstate);
+    if (PyErr_Occurred()) return NULL;
 }    Py_INCREF(Py_None);
     _resultobj = Py_None;
     return _resultobj;
@@ -6321,10 +6540,11 @@ static PyObject *_wrap_wxPyDrawnShape_base_OnDraw(PyObject *self, PyObject *args
         }
     }
 {
-    wxPy_BEGIN_ALLOW_THREADS;
-        wxPyDrawnShape_base_OnDraw(_arg0,*_arg1);
+    PyThreadState* __tstate = wxPyBeginAllowThreads();
+    wxPyDrawnShape_base_OnDraw(_arg0,*_arg1);
 
-    wxPy_END_ALLOW_THREADS;
+    wxPyEndAllowThreads(__tstate);
+    if (PyErr_Occurred()) return NULL;
 }    Py_INCREF(Py_None);
     _resultobj = Py_None;
     return _resultobj;
@@ -6357,10 +6577,11 @@ static PyObject *_wrap_wxPyDrawnShape_base_OnDrawContents(PyObject *self, PyObje
         }
     }
 {
-    wxPy_BEGIN_ALLOW_THREADS;
-        wxPyDrawnShape_base_OnDrawContents(_arg0,*_arg1);
+    PyThreadState* __tstate = wxPyBeginAllowThreads();
+    wxPyDrawnShape_base_OnDrawContents(_arg0,*_arg1);
 
-    wxPy_END_ALLOW_THREADS;
+    wxPyEndAllowThreads(__tstate);
+    if (PyErr_Occurred()) return NULL;
 }    Py_INCREF(Py_None);
     _resultobj = Py_None;
     return _resultobj;
@@ -6396,10 +6617,11 @@ static PyObject *_wrap_wxPyDrawnShape_base_OnDrawBranches(PyObject *self, PyObje
     }
     _arg2 = (bool ) tempbool2;
 {
-    wxPy_BEGIN_ALLOW_THREADS;
-        wxPyDrawnShape_base_OnDrawBranches(_arg0,*_arg1,_arg2);
+    PyThreadState* __tstate = wxPyBeginAllowThreads();
+    wxPyDrawnShape_base_OnDrawBranches(_arg0,*_arg1,_arg2);
 
-    wxPy_END_ALLOW_THREADS;
+    wxPyEndAllowThreads(__tstate);
+    if (PyErr_Occurred()) return NULL;
 }    Py_INCREF(Py_None);
     _resultobj = Py_None;
     return _resultobj;
@@ -6432,10 +6654,11 @@ static PyObject *_wrap_wxPyDrawnShape_base_OnMoveLinks(PyObject *self, PyObject 
         }
     }
 {
-    wxPy_BEGIN_ALLOW_THREADS;
-        wxPyDrawnShape_base_OnMoveLinks(_arg0,*_arg1);
+    PyThreadState* __tstate = wxPyBeginAllowThreads();
+    wxPyDrawnShape_base_OnMoveLinks(_arg0,*_arg1);
 
-    wxPy_END_ALLOW_THREADS;
+    wxPyEndAllowThreads(__tstate);
+    if (PyErr_Occurred()) return NULL;
 }    Py_INCREF(Py_None);
     _resultobj = Py_None;
     return _resultobj;
@@ -6468,10 +6691,11 @@ static PyObject *_wrap_wxPyDrawnShape_base_OnErase(PyObject *self, PyObject *arg
         }
     }
 {
-    wxPy_BEGIN_ALLOW_THREADS;
-        wxPyDrawnShape_base_OnErase(_arg0,*_arg1);
+    PyThreadState* __tstate = wxPyBeginAllowThreads();
+    wxPyDrawnShape_base_OnErase(_arg0,*_arg1);
 
-    wxPy_END_ALLOW_THREADS;
+    wxPyEndAllowThreads(__tstate);
+    if (PyErr_Occurred()) return NULL;
 }    Py_INCREF(Py_None);
     _resultobj = Py_None;
     return _resultobj;
@@ -6504,10 +6728,11 @@ static PyObject *_wrap_wxPyDrawnShape_base_OnEraseContents(PyObject *self, PyObj
         }
     }
 {
-    wxPy_BEGIN_ALLOW_THREADS;
-        wxPyDrawnShape_base_OnEraseContents(_arg0,*_arg1);
+    PyThreadState* __tstate = wxPyBeginAllowThreads();
+    wxPyDrawnShape_base_OnEraseContents(_arg0,*_arg1);
 
-    wxPy_END_ALLOW_THREADS;
+    wxPyEndAllowThreads(__tstate);
+    if (PyErr_Occurred()) return NULL;
 }    Py_INCREF(Py_None);
     _resultobj = Py_None;
     return _resultobj;
@@ -6540,10 +6765,11 @@ static PyObject *_wrap_wxPyDrawnShape_base_OnHighlight(PyObject *self, PyObject 
         }
     }
 {
-    wxPy_BEGIN_ALLOW_THREADS;
-        wxPyDrawnShape_base_OnHighlight(_arg0,*_arg1);
+    PyThreadState* __tstate = wxPyBeginAllowThreads();
+    wxPyDrawnShape_base_OnHighlight(_arg0,*_arg1);
 
-    wxPy_END_ALLOW_THREADS;
+    wxPyEndAllowThreads(__tstate);
+    if (PyErr_Occurred()) return NULL;
 }    Py_INCREF(Py_None);
     _resultobj = Py_None;
     return _resultobj;
@@ -6571,10 +6797,11 @@ static PyObject *_wrap_wxPyDrawnShape_base_OnLeftClick(PyObject *self, PyObject 
         }
     }
 {
-    wxPy_BEGIN_ALLOW_THREADS;
-        wxPyDrawnShape_base_OnLeftClick(_arg0,_arg1,_arg2,_arg3,_arg4);
+    PyThreadState* __tstate = wxPyBeginAllowThreads();
+    wxPyDrawnShape_base_OnLeftClick(_arg0,_arg1,_arg2,_arg3,_arg4);
 
-    wxPy_END_ALLOW_THREADS;
+    wxPyEndAllowThreads(__tstate);
+    if (PyErr_Occurred()) return NULL;
 }    Py_INCREF(Py_None);
     _resultobj = Py_None;
     return _resultobj;
@@ -6602,10 +6829,11 @@ static PyObject *_wrap_wxPyDrawnShape_base_OnLeftDoubleClick(PyObject *self, PyO
         }
     }
 {
-    wxPy_BEGIN_ALLOW_THREADS;
-        wxPyDrawnShape_base_OnLeftDoubleClick(_arg0,_arg1,_arg2,_arg3,_arg4);
+    PyThreadState* __tstate = wxPyBeginAllowThreads();
+    wxPyDrawnShape_base_OnLeftDoubleClick(_arg0,_arg1,_arg2,_arg3,_arg4);
 
-    wxPy_END_ALLOW_THREADS;
+    wxPyEndAllowThreads(__tstate);
+    if (PyErr_Occurred()) return NULL;
 }    Py_INCREF(Py_None);
     _resultobj = Py_None;
     return _resultobj;
@@ -6633,10 +6861,11 @@ static PyObject *_wrap_wxPyDrawnShape_base_OnRightClick(PyObject *self, PyObject
         }
     }
 {
-    wxPy_BEGIN_ALLOW_THREADS;
-        wxPyDrawnShape_base_OnRightClick(_arg0,_arg1,_arg2,_arg3,_arg4);
+    PyThreadState* __tstate = wxPyBeginAllowThreads();
+    wxPyDrawnShape_base_OnRightClick(_arg0,_arg1,_arg2,_arg3,_arg4);
 
-    wxPy_END_ALLOW_THREADS;
+    wxPyEndAllowThreads(__tstate);
+    if (PyErr_Occurred()) return NULL;
 }    Py_INCREF(Py_None);
     _resultobj = Py_None;
     return _resultobj;
@@ -6662,10 +6891,11 @@ static PyObject *_wrap_wxPyDrawnShape_base_OnSize(PyObject *self, PyObject *args
         }
     }
 {
-    wxPy_BEGIN_ALLOW_THREADS;
-        wxPyDrawnShape_base_OnSize(_arg0,_arg1,_arg2);
+    PyThreadState* __tstate = wxPyBeginAllowThreads();
+    wxPyDrawnShape_base_OnSize(_arg0,_arg1,_arg2);
 
-    wxPy_END_ALLOW_THREADS;
+    wxPyEndAllowThreads(__tstate);
+    if (PyErr_Occurred()) return NULL;
 }    Py_INCREF(Py_None);
     _resultobj = Py_None;
     return _resultobj;
@@ -6706,10 +6936,11 @@ static PyObject *_wrap_wxPyDrawnShape_base_OnMovePre(PyObject *self, PyObject *a
     }
     _arg6 = (bool ) tempbool6;
 {
-    wxPy_BEGIN_ALLOW_THREADS;
-        _result = (bool )wxPyDrawnShape_base_OnMovePre(_arg0,*_arg1,_arg2,_arg3,_arg4,_arg5,_arg6);
+    PyThreadState* __tstate = wxPyBeginAllowThreads();
+    _result = (bool )wxPyDrawnShape_base_OnMovePre(_arg0,*_arg1,_arg2,_arg3,_arg4,_arg5,_arg6);
 
-    wxPy_END_ALLOW_THREADS;
+    wxPyEndAllowThreads(__tstate);
+    if (PyErr_Occurred()) return NULL;
 }    _resultobj = Py_BuildValue("i",_result);
     return _resultobj;
 }
@@ -6748,10 +6979,11 @@ static PyObject *_wrap_wxPyDrawnShape_base_OnMovePost(PyObject *self, PyObject *
     }
     _arg6 = (bool ) tempbool6;
 {
-    wxPy_BEGIN_ALLOW_THREADS;
-        wxPyDrawnShape_base_OnMovePost(_arg0,*_arg1,_arg2,_arg3,_arg4,_arg5,_arg6);
+    PyThreadState* __tstate = wxPyBeginAllowThreads();
+    wxPyDrawnShape_base_OnMovePost(_arg0,*_arg1,_arg2,_arg3,_arg4,_arg5,_arg6);
 
-    wxPy_END_ALLOW_THREADS;
+    wxPyEndAllowThreads(__tstate);
+    if (PyErr_Occurred()) return NULL;
 }    Py_INCREF(Py_None);
     _resultobj = Py_None;
     return _resultobj;
@@ -6782,10 +7014,11 @@ static PyObject *_wrap_wxPyDrawnShape_base_OnDragLeft(PyObject *self, PyObject *
     }
     _arg1 = (bool ) tempbool1;
 {
-    wxPy_BEGIN_ALLOW_THREADS;
-        wxPyDrawnShape_base_OnDragLeft(_arg0,_arg1,_arg2,_arg3,_arg4,_arg5);
+    PyThreadState* __tstate = wxPyBeginAllowThreads();
+    wxPyDrawnShape_base_OnDragLeft(_arg0,_arg1,_arg2,_arg3,_arg4,_arg5);
 
-    wxPy_END_ALLOW_THREADS;
+    wxPyEndAllowThreads(__tstate);
+    if (PyErr_Occurred()) return NULL;
 }    Py_INCREF(Py_None);
     _resultobj = Py_None;
     return _resultobj;
@@ -6813,10 +7046,11 @@ static PyObject *_wrap_wxPyDrawnShape_base_OnBeginDragLeft(PyObject *self, PyObj
         }
     }
 {
-    wxPy_BEGIN_ALLOW_THREADS;
-        wxPyDrawnShape_base_OnBeginDragLeft(_arg0,_arg1,_arg2,_arg3,_arg4);
+    PyThreadState* __tstate = wxPyBeginAllowThreads();
+    wxPyDrawnShape_base_OnBeginDragLeft(_arg0,_arg1,_arg2,_arg3,_arg4);
 
-    wxPy_END_ALLOW_THREADS;
+    wxPyEndAllowThreads(__tstate);
+    if (PyErr_Occurred()) return NULL;
 }    Py_INCREF(Py_None);
     _resultobj = Py_None;
     return _resultobj;
@@ -6844,10 +7078,11 @@ static PyObject *_wrap_wxPyDrawnShape_base_OnEndDragLeft(PyObject *self, PyObjec
         }
     }
 {
-    wxPy_BEGIN_ALLOW_THREADS;
-        wxPyDrawnShape_base_OnEndDragLeft(_arg0,_arg1,_arg2,_arg3,_arg4);
+    PyThreadState* __tstate = wxPyBeginAllowThreads();
+    wxPyDrawnShape_base_OnEndDragLeft(_arg0,_arg1,_arg2,_arg3,_arg4);
 
-    wxPy_END_ALLOW_THREADS;
+    wxPyEndAllowThreads(__tstate);
+    if (PyErr_Occurred()) return NULL;
 }    Py_INCREF(Py_None);
     _resultobj = Py_None;
     return _resultobj;
@@ -6878,10 +7113,11 @@ static PyObject *_wrap_wxPyDrawnShape_base_OnDragRight(PyObject *self, PyObject 
     }
     _arg1 = (bool ) tempbool1;
 {
-    wxPy_BEGIN_ALLOW_THREADS;
-        wxPyDrawnShape_base_OnDragRight(_arg0,_arg1,_arg2,_arg3,_arg4,_arg5);
+    PyThreadState* __tstate = wxPyBeginAllowThreads();
+    wxPyDrawnShape_base_OnDragRight(_arg0,_arg1,_arg2,_arg3,_arg4,_arg5);
 
-    wxPy_END_ALLOW_THREADS;
+    wxPyEndAllowThreads(__tstate);
+    if (PyErr_Occurred()) return NULL;
 }    Py_INCREF(Py_None);
     _resultobj = Py_None;
     return _resultobj;
@@ -6909,10 +7145,11 @@ static PyObject *_wrap_wxPyDrawnShape_base_OnBeginDragRight(PyObject *self, PyOb
         }
     }
 {
-    wxPy_BEGIN_ALLOW_THREADS;
-        wxPyDrawnShape_base_OnBeginDragRight(_arg0,_arg1,_arg2,_arg3,_arg4);
+    PyThreadState* __tstate = wxPyBeginAllowThreads();
+    wxPyDrawnShape_base_OnBeginDragRight(_arg0,_arg1,_arg2,_arg3,_arg4);
 
-    wxPy_END_ALLOW_THREADS;
+    wxPyEndAllowThreads(__tstate);
+    if (PyErr_Occurred()) return NULL;
 }    Py_INCREF(Py_None);
     _resultobj = Py_None;
     return _resultobj;
@@ -6940,10 +7177,11 @@ static PyObject *_wrap_wxPyDrawnShape_base_OnEndDragRight(PyObject *self, PyObje
         }
     }
 {
-    wxPy_BEGIN_ALLOW_THREADS;
-        wxPyDrawnShape_base_OnEndDragRight(_arg0,_arg1,_arg2,_arg3,_arg4);
+    PyThreadState* __tstate = wxPyBeginAllowThreads();
+    wxPyDrawnShape_base_OnEndDragRight(_arg0,_arg1,_arg2,_arg3,_arg4);
 
-    wxPy_END_ALLOW_THREADS;
+    wxPyEndAllowThreads(__tstate);
+    if (PyErr_Occurred()) return NULL;
 }    Py_INCREF(Py_None);
     _resultobj = Py_None;
     return _resultobj;
@@ -6980,10 +7218,11 @@ static PyObject *_wrap_wxPyDrawnShape_base_OnDrawOutline(PyObject *self, PyObjec
         }
     }
 {
-    wxPy_BEGIN_ALLOW_THREADS;
-        wxPyDrawnShape_base_OnDrawOutline(_arg0,*_arg1,_arg2,_arg3,_arg4,_arg5);
+    PyThreadState* __tstate = wxPyBeginAllowThreads();
+    wxPyDrawnShape_base_OnDrawOutline(_arg0,*_arg1,_arg2,_arg3,_arg4,_arg5);
 
-    wxPy_END_ALLOW_THREADS;
+    wxPyEndAllowThreads(__tstate);
+    if (PyErr_Occurred()) return NULL;
 }    Py_INCREF(Py_None);
     _resultobj = Py_None;
     return _resultobj;
@@ -7016,10 +7255,11 @@ static PyObject *_wrap_wxPyDrawnShape_base_OnDrawControlPoints(PyObject *self, P
         }
     }
 {
-    wxPy_BEGIN_ALLOW_THREADS;
-        wxPyDrawnShape_base_OnDrawControlPoints(_arg0,*_arg1);
+    PyThreadState* __tstate = wxPyBeginAllowThreads();
+    wxPyDrawnShape_base_OnDrawControlPoints(_arg0,*_arg1);
 
-    wxPy_END_ALLOW_THREADS;
+    wxPyEndAllowThreads(__tstate);
+    if (PyErr_Occurred()) return NULL;
 }    Py_INCREF(Py_None);
     _resultobj = Py_None;
     return _resultobj;
@@ -7052,10 +7292,11 @@ static PyObject *_wrap_wxPyDrawnShape_base_OnEraseControlPoints(PyObject *self, 
         }
     }
 {
-    wxPy_BEGIN_ALLOW_THREADS;
-        wxPyDrawnShape_base_OnEraseControlPoints(_arg0,*_arg1);
+    PyThreadState* __tstate = wxPyBeginAllowThreads();
+    wxPyDrawnShape_base_OnEraseControlPoints(_arg0,*_arg1);
 
-    wxPy_END_ALLOW_THREADS;
+    wxPyEndAllowThreads(__tstate);
+    if (PyErr_Occurred()) return NULL;
 }    Py_INCREF(Py_None);
     _resultobj = Py_None;
     return _resultobj;
@@ -7091,10 +7332,11 @@ static PyObject *_wrap_wxPyDrawnShape_base_OnMoveLink(PyObject *self, PyObject *
     }
     _arg2 = (bool ) tempbool2;
 {
-    wxPy_BEGIN_ALLOW_THREADS;
-        wxPyDrawnShape_base_OnMoveLink(_arg0,*_arg1,_arg2);
+    PyThreadState* __tstate = wxPyBeginAllowThreads();
+    wxPyDrawnShape_base_OnMoveLink(_arg0,*_arg1,_arg2);
 
-    wxPy_END_ALLOW_THREADS;
+    wxPyEndAllowThreads(__tstate);
+    if (PyErr_Occurred()) return NULL;
 }    Py_INCREF(Py_None);
     _resultobj = Py_None;
     return _resultobj;
@@ -7134,10 +7376,11 @@ static PyObject *_wrap_wxPyDrawnShape_base_OnSizingDragLeft(PyObject *self, PyOb
     }
     _arg2 = (bool ) tempbool2;
 {
-    wxPy_BEGIN_ALLOW_THREADS;
-        wxPyDrawnShape_base_OnSizingDragLeft(_arg0,_arg1,_arg2,_arg3,_arg4,_arg5,_arg6);
+    PyThreadState* __tstate = wxPyBeginAllowThreads();
+    wxPyDrawnShape_base_OnSizingDragLeft(_arg0,_arg1,_arg2,_arg3,_arg4,_arg5,_arg6);
 
-    wxPy_END_ALLOW_THREADS;
+    wxPyEndAllowThreads(__tstate);
+    if (PyErr_Occurred()) return NULL;
 }    Py_INCREF(Py_None);
     _resultobj = Py_None;
     return _resultobj;
@@ -7174,10 +7417,11 @@ static PyObject *_wrap_wxPyDrawnShape_base_OnSizingBeginDragLeft(PyObject *self,
         }
     }
 {
-    wxPy_BEGIN_ALLOW_THREADS;
-        wxPyDrawnShape_base_OnSizingBeginDragLeft(_arg0,_arg1,_arg2,_arg3,_arg4,_arg5);
+    PyThreadState* __tstate = wxPyBeginAllowThreads();
+    wxPyDrawnShape_base_OnSizingBeginDragLeft(_arg0,_arg1,_arg2,_arg3,_arg4,_arg5);
 
-    wxPy_END_ALLOW_THREADS;
+    wxPyEndAllowThreads(__tstate);
+    if (PyErr_Occurred()) return NULL;
 }    Py_INCREF(Py_None);
     _resultobj = Py_None;
     return _resultobj;
@@ -7214,10 +7458,11 @@ static PyObject *_wrap_wxPyDrawnShape_base_OnSizingEndDragLeft(PyObject *self, P
         }
     }
 {
-    wxPy_BEGIN_ALLOW_THREADS;
-        wxPyDrawnShape_base_OnSizingEndDragLeft(_arg0,_arg1,_arg2,_arg3,_arg4,_arg5);
+    PyThreadState* __tstate = wxPyBeginAllowThreads();
+    wxPyDrawnShape_base_OnSizingEndDragLeft(_arg0,_arg1,_arg2,_arg3,_arg4,_arg5);
 
-    wxPy_END_ALLOW_THREADS;
+    wxPyEndAllowThreads(__tstate);
+    if (PyErr_Occurred()) return NULL;
 }    Py_INCREF(Py_None);
     _resultobj = Py_None;
     return _resultobj;
@@ -7243,10 +7488,11 @@ static PyObject *_wrap_wxPyDrawnShape_base_OnBeginSize(PyObject *self, PyObject 
         }
     }
 {
-    wxPy_BEGIN_ALLOW_THREADS;
-        wxPyDrawnShape_base_OnBeginSize(_arg0,_arg1,_arg2);
+    PyThreadState* __tstate = wxPyBeginAllowThreads();
+    wxPyDrawnShape_base_OnBeginSize(_arg0,_arg1,_arg2);
 
-    wxPy_END_ALLOW_THREADS;
+    wxPyEndAllowThreads(__tstate);
+    if (PyErr_Occurred()) return NULL;
 }    Py_INCREF(Py_None);
     _resultobj = Py_None;
     return _resultobj;
@@ -7272,13 +7518,22 @@ static PyObject *_wrap_wxPyDrawnShape_base_OnEndSize(PyObject *self, PyObject *a
         }
     }
 {
-    wxPy_BEGIN_ALLOW_THREADS;
-        wxPyDrawnShape_base_OnEndSize(_arg0,_arg1,_arg2);
+    PyThreadState* __tstate = wxPyBeginAllowThreads();
+    wxPyDrawnShape_base_OnEndSize(_arg0,_arg1,_arg2);
 
-    wxPy_END_ALLOW_THREADS;
+    wxPyEndAllowThreads(__tstate);
+    if (PyErr_Occurred()) return NULL;
 }    Py_INCREF(Py_None);
     _resultobj = Py_None;
     return _resultobj;
+}
+
+static void *SwigwxOGLConstraintTowxObject(void *ptr) {
+    wxOGLConstraint *src;
+    wxObject *dest;
+    src = (wxOGLConstraint *) ptr;
+    dest = (wxObject *) src;
+    return (void *) dest;
 }
 
 static wxOGLConstraint *new_wxOGLConstraint(int type,wxPyShape *constraining,PyObject *constrained) {
@@ -7313,10 +7568,11 @@ static PyObject *_wrap_new_wxOGLConstraint(PyObject *self, PyObject *args, PyObj
   _arg2 = _obj2;
 }
 {
-    wxPy_BEGIN_ALLOW_THREADS;
-        _result = (wxOGLConstraint *)new_wxOGLConstraint(_arg0,_arg1,_arg2);
+    PyThreadState* __tstate = wxPyBeginAllowThreads();
+    _result = (wxOGLConstraint *)new_wxOGLConstraint(_arg0,_arg1,_arg2);
 
-    wxPy_END_ALLOW_THREADS;
+    wxPyEndAllowThreads(__tstate);
+    if (PyErr_Occurred()) return NULL;
 }    if (_result) {
         SWIG_MakePtr(_ptemp, (char *) _result,"_wxOGLConstraint_p");
         _resultobj = Py_BuildValue("s",_ptemp);
@@ -7324,33 +7580,6 @@ static PyObject *_wrap_new_wxOGLConstraint(PyObject *self, PyObject *args, PyObj
         Py_INCREF(Py_None);
         _resultobj = Py_None;
     }
-    return _resultobj;
-}
-
-#define delete_wxOGLConstraint(_swigobj) (delete _swigobj)
-static PyObject *_wrap_delete_wxOGLConstraint(PyObject *self, PyObject *args, PyObject *kwargs) {
-    PyObject * _resultobj;
-    wxOGLConstraint * _arg0;
-    PyObject * _argo0 = 0;
-    char *_kwnames[] = { "self", NULL };
-
-    self = self;
-    if(!PyArg_ParseTupleAndKeywords(args,kwargs,"O:delete_wxOGLConstraint",_kwnames,&_argo0)) 
-        return NULL;
-    if (_argo0) {
-        if (_argo0 == Py_None) { _arg0 = NULL; }
-        else if (SWIG_GetPtrObj(_argo0,(void **) &_arg0,"_wxOGLConstraint_p")) {
-            PyErr_SetString(PyExc_TypeError,"Type error in argument 1 of delete_wxOGLConstraint. Expected _wxOGLConstraint_p.");
-        return NULL;
-        }
-    }
-{
-    wxPy_BEGIN_ALLOW_THREADS;
-        delete_wxOGLConstraint(_arg0);
-
-    wxPy_END_ALLOW_THREADS;
-}    Py_INCREF(Py_None);
-    _resultobj = Py_None;
     return _resultobj;
 }
 
@@ -7373,10 +7602,11 @@ static PyObject *_wrap_wxOGLConstraint_Evaluate(PyObject *self, PyObject *args, 
         }
     }
 {
-    wxPy_BEGIN_ALLOW_THREADS;
-        _result = (bool )wxOGLConstraint_Evaluate(_arg0);
+    PyThreadState* __tstate = wxPyBeginAllowThreads();
+    _result = (bool )wxOGLConstraint_Evaluate(_arg0);
 
-    wxPy_END_ALLOW_THREADS;
+    wxPyEndAllowThreads(__tstate);
+    if (PyErr_Occurred()) return NULL;
 }    _resultobj = Py_BuildValue("i",_result);
     return _resultobj;
 }
@@ -7401,10 +7631,11 @@ static PyObject *_wrap_wxOGLConstraint_SetSpacing(PyObject *self, PyObject *args
         }
     }
 {
-    wxPy_BEGIN_ALLOW_THREADS;
-        wxOGLConstraint_SetSpacing(_arg0,_arg1,_arg2);
+    PyThreadState* __tstate = wxPyBeginAllowThreads();
+    wxOGLConstraint_SetSpacing(_arg0,_arg1,_arg2);
 
-    wxPy_END_ALLOW_THREADS;
+    wxPyEndAllowThreads(__tstate);
+    if (PyErr_Occurred()) return NULL;
 }    Py_INCREF(Py_None);
     _resultobj = Py_None;
     return _resultobj;
@@ -7431,10 +7662,11 @@ static PyObject *_wrap_wxOGLConstraint_Equals(PyObject *self, PyObject *args, Py
         }
     }
 {
-    wxPy_BEGIN_ALLOW_THREADS;
-        _result = (bool )wxOGLConstraint_Equals(_arg0,_arg1,_arg2);
+    PyThreadState* __tstate = wxPyBeginAllowThreads();
+    _result = (bool )wxOGLConstraint_Equals(_arg0,_arg1,_arg2);
 
-    wxPy_END_ALLOW_THREADS;
+    wxPyEndAllowThreads(__tstate);
+    if (PyErr_Occurred()) return NULL;
 }    _resultobj = Py_BuildValue("i",_result);
     return _resultobj;
 }
@@ -7463,6 +7695,14 @@ static void *SwigwxPyCompositeShapeTowxPyShapeEvtHandler(void *ptr) {
     return (void *) dest;
 }
 
+static void *SwigwxPyCompositeShapeTowxObject(void *ptr) {
+    wxPyCompositeShape *src;
+    wxObject *dest;
+    src = (wxPyCompositeShape *) ptr;
+    dest = (wxObject *) src;
+    return (void *) dest;
+}
+
 #define new_wxPyCompositeShape() (new wxPyCompositeShape())
 static PyObject *_wrap_new_wxPyCompositeShape(PyObject *self, PyObject *args, PyObject *kwargs) {
     PyObject * _resultobj;
@@ -7474,10 +7714,11 @@ static PyObject *_wrap_new_wxPyCompositeShape(PyObject *self, PyObject *args, Py
     if(!PyArg_ParseTupleAndKeywords(args,kwargs,":new_wxPyCompositeShape",_kwnames)) 
         return NULL;
 {
-    wxPy_BEGIN_ALLOW_THREADS;
-        _result = (wxPyCompositeShape *)new_wxPyCompositeShape();
+    PyThreadState* __tstate = wxPyBeginAllowThreads();
+    _result = (wxPyCompositeShape *)new_wxPyCompositeShape();
 
-    wxPy_END_ALLOW_THREADS;
+    wxPyEndAllowThreads(__tstate);
+    if (PyErr_Occurred()) return NULL;
 }    if (_result) {
         SWIG_MakePtr(_ptemp, (char *) _result,"_wxPyCompositeShape_p");
         _resultobj = Py_BuildValue("s",_ptemp);
@@ -7488,8 +7729,8 @@ static PyObject *_wrap_new_wxPyCompositeShape(PyObject *self, PyObject *args, Py
     return _resultobj;
 }
 
-#define wxPyCompositeShape__setSelf(_swigobj,_swigarg0,_swigarg1)  (_swigobj->_setSelf(_swigarg0,_swigarg1))
-static PyObject *_wrap_wxPyCompositeShape__setSelf(PyObject *self, PyObject *args, PyObject *kwargs) {
+#define wxPyCompositeShape__setCallbackInfo(_swigobj,_swigarg0,_swigarg1)  (_swigobj->_setCallbackInfo(_swigarg0,_swigarg1))
+static PyObject *_wrap_wxPyCompositeShape__setCallbackInfo(PyObject *self, PyObject *args, PyObject *kwargs) {
     PyObject * _resultobj;
     wxPyCompositeShape * _arg0;
     PyObject * _arg1;
@@ -7500,12 +7741,12 @@ static PyObject *_wrap_wxPyCompositeShape__setSelf(PyObject *self, PyObject *arg
     char *_kwnames[] = { "self","self","_class", NULL };
 
     self = self;
-    if(!PyArg_ParseTupleAndKeywords(args,kwargs,"OOO:wxPyCompositeShape__setSelf",_kwnames,&_argo0,&_obj1,&_obj2)) 
+    if(!PyArg_ParseTupleAndKeywords(args,kwargs,"OOO:wxPyCompositeShape__setCallbackInfo",_kwnames,&_argo0,&_obj1,&_obj2)) 
         return NULL;
     if (_argo0) {
         if (_argo0 == Py_None) { _arg0 = NULL; }
         else if (SWIG_GetPtrObj(_argo0,(void **) &_arg0,"_wxPyCompositeShape_p")) {
-            PyErr_SetString(PyExc_TypeError,"Type error in argument 1 of wxPyCompositeShape__setSelf. Expected _wxPyCompositeShape_p.");
+            PyErr_SetString(PyExc_TypeError,"Type error in argument 1 of wxPyCompositeShape__setCallbackInfo. Expected _wxPyCompositeShape_p.");
         return NULL;
         }
     }
@@ -7516,10 +7757,11 @@ static PyObject *_wrap_wxPyCompositeShape__setSelf(PyObject *self, PyObject *arg
   _arg2 = _obj2;
 }
 {
-    wxPy_BEGIN_ALLOW_THREADS;
-        wxPyCompositeShape__setSelf(_arg0,_arg1,_arg2);
+    PyThreadState* __tstate = wxPyBeginAllowThreads();
+    wxPyCompositeShape__setCallbackInfo(_arg0,_arg1,_arg2);
 
-    wxPy_END_ALLOW_THREADS;
+    wxPyEndAllowThreads(__tstate);
+    if (PyErr_Occurred()) return NULL;
 }    Py_INCREF(Py_None);
     _resultobj = Py_None;
     return _resultobj;
@@ -7561,10 +7803,11 @@ static PyObject *_wrap_wxPyCompositeShape_AddChild(PyObject *self, PyObject *arg
         }
     }
 {
-    wxPy_BEGIN_ALLOW_THREADS;
-        wxPyCompositeShape_AddChild(_arg0,_arg1,_arg2);
+    PyThreadState* __tstate = wxPyBeginAllowThreads();
+    wxPyCompositeShape_AddChild(_arg0,_arg1,_arg2);
 
-    wxPy_END_ALLOW_THREADS;
+    wxPyEndAllowThreads(__tstate);
+    if (PyErr_Occurred()) return NULL;
 }    Py_INCREF(Py_None);
     _resultobj = Py_None;
     return _resultobj;
@@ -7579,7 +7822,6 @@ static PyObject *_wrap_wxPyCompositeShape_AddConstraint(PyObject *self, PyObject
     PyObject * _argo0 = 0;
     PyObject * _argo1 = 0;
     char *_kwnames[] = { "self","constraint", NULL };
-    char _ptemp[128];
 
     self = self;
     if(!PyArg_ParseTupleAndKeywords(args,kwargs,"OO:wxPyCompositeShape_AddConstraint",_kwnames,&_argo0,&_argo1)) 
@@ -7599,17 +7841,12 @@ static PyObject *_wrap_wxPyCompositeShape_AddConstraint(PyObject *self, PyObject
         }
     }
 {
-    wxPy_BEGIN_ALLOW_THREADS;
-        _result = (wxOGLConstraint *)wxPyCompositeShape_AddConstraint(_arg0,_arg1);
+    PyThreadState* __tstate = wxPyBeginAllowThreads();
+    _result = (wxOGLConstraint *)wxPyCompositeShape_AddConstraint(_arg0,_arg1);
 
-    wxPy_END_ALLOW_THREADS;
-}    if (_result) {
-        SWIG_MakePtr(_ptemp, (char *) _result,"_wxOGLConstraint_p");
-        _resultobj = Py_BuildValue("s",_ptemp);
-    } else {
-        Py_INCREF(Py_None);
-        _resultobj = Py_None;
-    }
+    wxPyEndAllowThreads(__tstate);
+    if (PyErr_Occurred()) return NULL;
+}{ _resultobj = wxPyMake_wxObject(_result); }
     return _resultobj;
 }
 
@@ -7630,7 +7867,6 @@ static PyObject *_wrap_wxPyCompositeShape_AddConstrainedShapes(PyObject *self, P
     PyObject * _argo2 = 0;
     PyObject * _obj3 = 0;
     char *_kwnames[] = { "self","type","constraining","constrained", NULL };
-    char _ptemp[128];
 
     self = self;
     if(!PyArg_ParseTupleAndKeywords(args,kwargs,"OiOO:wxPyCompositeShape_AddConstrainedShapes",_kwnames,&_argo0,&_arg1,&_argo2,&_obj3)) 
@@ -7653,17 +7889,12 @@ static PyObject *_wrap_wxPyCompositeShape_AddConstrainedShapes(PyObject *self, P
   _arg3 = _obj3;
 }
 {
-    wxPy_BEGIN_ALLOW_THREADS;
-        _result = (wxOGLConstraint *)wxPyCompositeShape_AddConstrainedShapes(_arg0,_arg1,_arg2,_arg3);
+    PyThreadState* __tstate = wxPyBeginAllowThreads();
+    _result = (wxOGLConstraint *)wxPyCompositeShape_AddConstrainedShapes(_arg0,_arg1,_arg2,_arg3);
 
-    wxPy_END_ALLOW_THREADS;
-}    if (_result) {
-        SWIG_MakePtr(_ptemp, (char *) _result,"_wxOGLConstraint_p");
-        _resultobj = Py_BuildValue("s",_ptemp);
-    } else {
-        Py_INCREF(Py_None);
-        _resultobj = Py_None;
-    }
+    wxPyEndAllowThreads(__tstate);
+    if (PyErr_Occurred()) return NULL;
+}{ _resultobj = wxPyMake_wxObject(_result); }
     return _resultobj;
 }
 
@@ -7679,7 +7910,6 @@ static PyObject *_wrap_wxPyCompositeShape_AddSimpleConstraint(PyObject *self, Py
     PyObject * _argo2 = 0;
     PyObject * _argo3 = 0;
     char *_kwnames[] = { "self","type","constraining","constrained", NULL };
-    char _ptemp[128];
 
     self = self;
     if(!PyArg_ParseTupleAndKeywords(args,kwargs,"OiOO:wxPyCompositeShape_AddSimpleConstraint",_kwnames,&_argo0,&_arg1,&_argo2,&_argo3)) 
@@ -7706,17 +7936,12 @@ static PyObject *_wrap_wxPyCompositeShape_AddSimpleConstraint(PyObject *self, Py
         }
     }
 {
-    wxPy_BEGIN_ALLOW_THREADS;
-        _result = (wxOGLConstraint *)wxPyCompositeShape_AddSimpleConstraint(_arg0,_arg1,_arg2,_arg3);
+    PyThreadState* __tstate = wxPyBeginAllowThreads();
+    _result = (wxOGLConstraint *)wxPyCompositeShape_AddSimpleConstraint(_arg0,_arg1,_arg2,_arg3);
 
-    wxPy_END_ALLOW_THREADS;
-}    if (_result) {
-        SWIG_MakePtr(_ptemp, (char *) _result,"_wxOGLConstraint_p");
-        _resultobj = Py_BuildValue("s",_ptemp);
-    } else {
-        Py_INCREF(Py_None);
-        _resultobj = Py_None;
-    }
+    wxPyEndAllowThreads(__tstate);
+    if (PyErr_Occurred()) return NULL;
+}{ _resultobj = wxPyMake_wxObject(_result); }
     return _resultobj;
 }
 
@@ -7738,10 +7963,11 @@ static PyObject *_wrap_wxPyCompositeShape_CalculateSize(PyObject *self, PyObject
         }
     }
 {
-    wxPy_BEGIN_ALLOW_THREADS;
-        wxPyCompositeShape_CalculateSize(_arg0);
+    PyThreadState* __tstate = wxPyBeginAllowThreads();
+    wxPyCompositeShape_CalculateSize(_arg0);
 
-    wxPy_END_ALLOW_THREADS;
+    wxPyEndAllowThreads(__tstate);
+    if (PyErr_Occurred()) return NULL;
 }    Py_INCREF(Py_None);
     _resultobj = Py_None;
     return _resultobj;
@@ -7775,10 +8001,11 @@ static PyObject *_wrap_wxPyCompositeShape_ContainsDivision(PyObject *self, PyObj
         }
     }
 {
-    wxPy_BEGIN_ALLOW_THREADS;
-        _result = (bool )wxPyCompositeShape_ContainsDivision(_arg0,_arg1);
+    PyThreadState* __tstate = wxPyBeginAllowThreads();
+    _result = (bool )wxPyCompositeShape_ContainsDivision(_arg0,_arg1);
 
-    wxPy_END_ALLOW_THREADS;
+    wxPyEndAllowThreads(__tstate);
+    if (PyErr_Occurred()) return NULL;
 }    _resultobj = Py_BuildValue("i",_result);
     return _resultobj;
 }
@@ -7810,10 +8037,11 @@ static PyObject *_wrap_wxPyCompositeShape_DeleteConstraint(PyObject *self, PyObj
         }
     }
 {
-    wxPy_BEGIN_ALLOW_THREADS;
-        wxPyCompositeShape_DeleteConstraint(_arg0,_arg1);
+    PyThreadState* __tstate = wxPyBeginAllowThreads();
+    wxPyCompositeShape_DeleteConstraint(_arg0,_arg1);
 
-    wxPy_END_ALLOW_THREADS;
+    wxPyEndAllowThreads(__tstate);
+    if (PyErr_Occurred()) return NULL;
 }    Py_INCREF(Py_None);
     _resultobj = Py_None;
     return _resultobj;
@@ -7846,10 +8074,11 @@ static PyObject *_wrap_wxPyCompositeShape_DeleteConstraintsInvolvingChild(PyObje
         }
     }
 {
-    wxPy_BEGIN_ALLOW_THREADS;
-        wxPyCompositeShape_DeleteConstraintsInvolvingChild(_arg0,_arg1);
+    PyThreadState* __tstate = wxPyBeginAllowThreads();
+    wxPyCompositeShape_DeleteConstraintsInvolvingChild(_arg0,_arg1);
 
-    wxPy_END_ALLOW_THREADS;
+    wxPyEndAllowThreads(__tstate);
+    if (PyErr_Occurred()) return NULL;
 }    Py_INCREF(Py_None);
     _resultobj = Py_None;
     return _resultobj;
@@ -7862,7 +8091,6 @@ static PyObject *_wrap_wxPyCompositeShape_FindContainerImage(PyObject *self, PyO
     wxPyCompositeShape * _arg0;
     PyObject * _argo0 = 0;
     char *_kwnames[] = { "self", NULL };
-    char _ptemp[128];
 
     self = self;
     if(!PyArg_ParseTupleAndKeywords(args,kwargs,"O:wxPyCompositeShape_FindContainerImage",_kwnames,&_argo0)) 
@@ -7875,17 +8103,12 @@ static PyObject *_wrap_wxPyCompositeShape_FindContainerImage(PyObject *self, PyO
         }
     }
 {
-    wxPy_BEGIN_ALLOW_THREADS;
-        _result = (wxPyShape *)wxPyCompositeShape_FindContainerImage(_arg0);
+    PyThreadState* __tstate = wxPyBeginAllowThreads();
+    _result = (wxPyShape *)wxPyCompositeShape_FindContainerImage(_arg0);
 
-    wxPy_END_ALLOW_THREADS;
-}    if (_result) {
-        SWIG_MakePtr(_ptemp, (char *) _result,"_wxPyShape_p");
-        _resultobj = Py_BuildValue("s",_ptemp);
-    } else {
-        Py_INCREF(Py_None);
-        _resultobj = Py_None;
-    }
+    wxPyEndAllowThreads(__tstate);
+    if (PyErr_Occurred()) return NULL;
+}{ _resultobj = wxPyMake_wxShapeEvtHandler(_result); }
     return _resultobj;
 }
 
@@ -7911,10 +8134,11 @@ static PyObject *_wrap_wxPyCompositeShape_GetConstraints(PyObject *self, PyObjec
         }
     }
 {
-    wxPy_BEGIN_ALLOW_THREADS;
-        _result = (PyObject *)wxPyCompositeShape_GetConstraints(_arg0);
+    PyThreadState* __tstate = wxPyBeginAllowThreads();
+    _result = (PyObject *)wxPyCompositeShape_GetConstraints(_arg0);
 
-    wxPy_END_ALLOW_THREADS;
+    wxPyEndAllowThreads(__tstate);
+    if (PyErr_Occurred()) return NULL;
 }{
   _resultobj = _result;
 }
@@ -7923,7 +8147,7 @@ static PyObject *_wrap_wxPyCompositeShape_GetConstraints(PyObject *self, PyObjec
 
 static PyObject * wxPyCompositeShape_GetDivisions(wxPyCompositeShape *self) {
             wxList& list = self->GetDivisions();
-            return wxPy_ConvertList(&list, "wxPyDivisionShape");
+            return wxPy_ConvertShapeList(&list, "wxPyDivisionShape");
         }
 static PyObject *_wrap_wxPyCompositeShape_GetDivisions(PyObject *self, PyObject *args, PyObject *kwargs) {
     PyObject * _resultobj;
@@ -7943,10 +8167,11 @@ static PyObject *_wrap_wxPyCompositeShape_GetDivisions(PyObject *self, PyObject 
         }
     }
 {
-    wxPy_BEGIN_ALLOW_THREADS;
-        _result = (PyObject *)wxPyCompositeShape_GetDivisions(_arg0);
+    PyThreadState* __tstate = wxPyBeginAllowThreads();
+    _result = (PyObject *)wxPyCompositeShape_GetDivisions(_arg0);
 
-    wxPy_END_ALLOW_THREADS;
+    wxPyEndAllowThreads(__tstate);
+    if (PyErr_Occurred()) return NULL;
 }{
   _resultobj = _result;
 }
@@ -7971,10 +8196,11 @@ static PyObject *_wrap_wxPyCompositeShape_MakeContainer(PyObject *self, PyObject
         }
     }
 {
-    wxPy_BEGIN_ALLOW_THREADS;
-        wxPyCompositeShape_MakeContainer(_arg0);
+    PyThreadState* __tstate = wxPyBeginAllowThreads();
+    wxPyCompositeShape_MakeContainer(_arg0);
 
-    wxPy_END_ALLOW_THREADS;
+    wxPyEndAllowThreads(__tstate);
+    if (PyErr_Occurred()) return NULL;
 }    Py_INCREF(Py_None);
     _resultobj = Py_None;
     return _resultobj;
@@ -7999,10 +8225,11 @@ static PyObject *_wrap_wxPyCompositeShape_Recompute(PyObject *self, PyObject *ar
         }
     }
 {
-    wxPy_BEGIN_ALLOW_THREADS;
-        _result = (bool )wxPyCompositeShape_Recompute(_arg0);
+    PyThreadState* __tstate = wxPyBeginAllowThreads();
+    _result = (bool )wxPyCompositeShape_Recompute(_arg0);
 
-    wxPy_END_ALLOW_THREADS;
+    wxPyEndAllowThreads(__tstate);
+    if (PyErr_Occurred()) return NULL;
 }    _resultobj = Py_BuildValue("i",_result);
     return _resultobj;
 }
@@ -8034,10 +8261,11 @@ static PyObject *_wrap_wxPyCompositeShape_RemoveChild(PyObject *self, PyObject *
         }
     }
 {
-    wxPy_BEGIN_ALLOW_THREADS;
-        wxPyCompositeShape_RemoveChild(_arg0,_arg1);
+    PyThreadState* __tstate = wxPyBeginAllowThreads();
+    wxPyCompositeShape_RemoveChild(_arg0,_arg1);
 
-    wxPy_END_ALLOW_THREADS;
+    wxPyEndAllowThreads(__tstate);
+    if (PyErr_Occurred()) return NULL;
 }    Py_INCREF(Py_None);
     _resultobj = Py_None;
     return _resultobj;
@@ -8061,10 +8289,11 @@ static PyObject *_wrap_wxPyCompositeShape_base_OnDelete(PyObject *self, PyObject
         }
     }
 {
-    wxPy_BEGIN_ALLOW_THREADS;
-        wxPyCompositeShape_base_OnDelete(_arg0);
+    PyThreadState* __tstate = wxPyBeginAllowThreads();
+    wxPyCompositeShape_base_OnDelete(_arg0);
 
-    wxPy_END_ALLOW_THREADS;
+    wxPyEndAllowThreads(__tstate);
+    if (PyErr_Occurred()) return NULL;
 }    Py_INCREF(Py_None);
     _resultobj = Py_None;
     return _resultobj;
@@ -8097,10 +8326,11 @@ static PyObject *_wrap_wxPyCompositeShape_base_OnDraw(PyObject *self, PyObject *
         }
     }
 {
-    wxPy_BEGIN_ALLOW_THREADS;
-        wxPyCompositeShape_base_OnDraw(_arg0,*_arg1);
+    PyThreadState* __tstate = wxPyBeginAllowThreads();
+    wxPyCompositeShape_base_OnDraw(_arg0,*_arg1);
 
-    wxPy_END_ALLOW_THREADS;
+    wxPyEndAllowThreads(__tstate);
+    if (PyErr_Occurred()) return NULL;
 }    Py_INCREF(Py_None);
     _resultobj = Py_None;
     return _resultobj;
@@ -8133,10 +8363,11 @@ static PyObject *_wrap_wxPyCompositeShape_base_OnDrawContents(PyObject *self, Py
         }
     }
 {
-    wxPy_BEGIN_ALLOW_THREADS;
-        wxPyCompositeShape_base_OnDrawContents(_arg0,*_arg1);
+    PyThreadState* __tstate = wxPyBeginAllowThreads();
+    wxPyCompositeShape_base_OnDrawContents(_arg0,*_arg1);
 
-    wxPy_END_ALLOW_THREADS;
+    wxPyEndAllowThreads(__tstate);
+    if (PyErr_Occurred()) return NULL;
 }    Py_INCREF(Py_None);
     _resultobj = Py_None;
     return _resultobj;
@@ -8172,10 +8403,11 @@ static PyObject *_wrap_wxPyCompositeShape_base_OnDrawBranches(PyObject *self, Py
     }
     _arg2 = (bool ) tempbool2;
 {
-    wxPy_BEGIN_ALLOW_THREADS;
-        wxPyCompositeShape_base_OnDrawBranches(_arg0,*_arg1,_arg2);
+    PyThreadState* __tstate = wxPyBeginAllowThreads();
+    wxPyCompositeShape_base_OnDrawBranches(_arg0,*_arg1,_arg2);
 
-    wxPy_END_ALLOW_THREADS;
+    wxPyEndAllowThreads(__tstate);
+    if (PyErr_Occurred()) return NULL;
 }    Py_INCREF(Py_None);
     _resultobj = Py_None;
     return _resultobj;
@@ -8208,10 +8440,11 @@ static PyObject *_wrap_wxPyCompositeShape_base_OnMoveLinks(PyObject *self, PyObj
         }
     }
 {
-    wxPy_BEGIN_ALLOW_THREADS;
-        wxPyCompositeShape_base_OnMoveLinks(_arg0,*_arg1);
+    PyThreadState* __tstate = wxPyBeginAllowThreads();
+    wxPyCompositeShape_base_OnMoveLinks(_arg0,*_arg1);
 
-    wxPy_END_ALLOW_THREADS;
+    wxPyEndAllowThreads(__tstate);
+    if (PyErr_Occurred()) return NULL;
 }    Py_INCREF(Py_None);
     _resultobj = Py_None;
     return _resultobj;
@@ -8244,10 +8477,11 @@ static PyObject *_wrap_wxPyCompositeShape_base_OnErase(PyObject *self, PyObject 
         }
     }
 {
-    wxPy_BEGIN_ALLOW_THREADS;
-        wxPyCompositeShape_base_OnErase(_arg0,*_arg1);
+    PyThreadState* __tstate = wxPyBeginAllowThreads();
+    wxPyCompositeShape_base_OnErase(_arg0,*_arg1);
 
-    wxPy_END_ALLOW_THREADS;
+    wxPyEndAllowThreads(__tstate);
+    if (PyErr_Occurred()) return NULL;
 }    Py_INCREF(Py_None);
     _resultobj = Py_None;
     return _resultobj;
@@ -8280,10 +8514,11 @@ static PyObject *_wrap_wxPyCompositeShape_base_OnEraseContents(PyObject *self, P
         }
     }
 {
-    wxPy_BEGIN_ALLOW_THREADS;
-        wxPyCompositeShape_base_OnEraseContents(_arg0,*_arg1);
+    PyThreadState* __tstate = wxPyBeginAllowThreads();
+    wxPyCompositeShape_base_OnEraseContents(_arg0,*_arg1);
 
-    wxPy_END_ALLOW_THREADS;
+    wxPyEndAllowThreads(__tstate);
+    if (PyErr_Occurred()) return NULL;
 }    Py_INCREF(Py_None);
     _resultobj = Py_None;
     return _resultobj;
@@ -8316,10 +8551,11 @@ static PyObject *_wrap_wxPyCompositeShape_base_OnHighlight(PyObject *self, PyObj
         }
     }
 {
-    wxPy_BEGIN_ALLOW_THREADS;
-        wxPyCompositeShape_base_OnHighlight(_arg0,*_arg1);
+    PyThreadState* __tstate = wxPyBeginAllowThreads();
+    wxPyCompositeShape_base_OnHighlight(_arg0,*_arg1);
 
-    wxPy_END_ALLOW_THREADS;
+    wxPyEndAllowThreads(__tstate);
+    if (PyErr_Occurred()) return NULL;
 }    Py_INCREF(Py_None);
     _resultobj = Py_None;
     return _resultobj;
@@ -8347,10 +8583,11 @@ static PyObject *_wrap_wxPyCompositeShape_base_OnLeftClick(PyObject *self, PyObj
         }
     }
 {
-    wxPy_BEGIN_ALLOW_THREADS;
-        wxPyCompositeShape_base_OnLeftClick(_arg0,_arg1,_arg2,_arg3,_arg4);
+    PyThreadState* __tstate = wxPyBeginAllowThreads();
+    wxPyCompositeShape_base_OnLeftClick(_arg0,_arg1,_arg2,_arg3,_arg4);
 
-    wxPy_END_ALLOW_THREADS;
+    wxPyEndAllowThreads(__tstate);
+    if (PyErr_Occurred()) return NULL;
 }    Py_INCREF(Py_None);
     _resultobj = Py_None;
     return _resultobj;
@@ -8378,10 +8615,11 @@ static PyObject *_wrap_wxPyCompositeShape_base_OnLeftDoubleClick(PyObject *self,
         }
     }
 {
-    wxPy_BEGIN_ALLOW_THREADS;
-        wxPyCompositeShape_base_OnLeftDoubleClick(_arg0,_arg1,_arg2,_arg3,_arg4);
+    PyThreadState* __tstate = wxPyBeginAllowThreads();
+    wxPyCompositeShape_base_OnLeftDoubleClick(_arg0,_arg1,_arg2,_arg3,_arg4);
 
-    wxPy_END_ALLOW_THREADS;
+    wxPyEndAllowThreads(__tstate);
+    if (PyErr_Occurred()) return NULL;
 }    Py_INCREF(Py_None);
     _resultobj = Py_None;
     return _resultobj;
@@ -8409,10 +8647,11 @@ static PyObject *_wrap_wxPyCompositeShape_base_OnRightClick(PyObject *self, PyOb
         }
     }
 {
-    wxPy_BEGIN_ALLOW_THREADS;
-        wxPyCompositeShape_base_OnRightClick(_arg0,_arg1,_arg2,_arg3,_arg4);
+    PyThreadState* __tstate = wxPyBeginAllowThreads();
+    wxPyCompositeShape_base_OnRightClick(_arg0,_arg1,_arg2,_arg3,_arg4);
 
-    wxPy_END_ALLOW_THREADS;
+    wxPyEndAllowThreads(__tstate);
+    if (PyErr_Occurred()) return NULL;
 }    Py_INCREF(Py_None);
     _resultobj = Py_None;
     return _resultobj;
@@ -8438,10 +8677,11 @@ static PyObject *_wrap_wxPyCompositeShape_base_OnSize(PyObject *self, PyObject *
         }
     }
 {
-    wxPy_BEGIN_ALLOW_THREADS;
-        wxPyCompositeShape_base_OnSize(_arg0,_arg1,_arg2);
+    PyThreadState* __tstate = wxPyBeginAllowThreads();
+    wxPyCompositeShape_base_OnSize(_arg0,_arg1,_arg2);
 
-    wxPy_END_ALLOW_THREADS;
+    wxPyEndAllowThreads(__tstate);
+    if (PyErr_Occurred()) return NULL;
 }    Py_INCREF(Py_None);
     _resultobj = Py_None;
     return _resultobj;
@@ -8482,10 +8722,11 @@ static PyObject *_wrap_wxPyCompositeShape_base_OnMovePre(PyObject *self, PyObjec
     }
     _arg6 = (bool ) tempbool6;
 {
-    wxPy_BEGIN_ALLOW_THREADS;
-        _result = (bool )wxPyCompositeShape_base_OnMovePre(_arg0,*_arg1,_arg2,_arg3,_arg4,_arg5,_arg6);
+    PyThreadState* __tstate = wxPyBeginAllowThreads();
+    _result = (bool )wxPyCompositeShape_base_OnMovePre(_arg0,*_arg1,_arg2,_arg3,_arg4,_arg5,_arg6);
 
-    wxPy_END_ALLOW_THREADS;
+    wxPyEndAllowThreads(__tstate);
+    if (PyErr_Occurred()) return NULL;
 }    _resultobj = Py_BuildValue("i",_result);
     return _resultobj;
 }
@@ -8524,10 +8765,11 @@ static PyObject *_wrap_wxPyCompositeShape_base_OnMovePost(PyObject *self, PyObje
     }
     _arg6 = (bool ) tempbool6;
 {
-    wxPy_BEGIN_ALLOW_THREADS;
-        wxPyCompositeShape_base_OnMovePost(_arg0,*_arg1,_arg2,_arg3,_arg4,_arg5,_arg6);
+    PyThreadState* __tstate = wxPyBeginAllowThreads();
+    wxPyCompositeShape_base_OnMovePost(_arg0,*_arg1,_arg2,_arg3,_arg4,_arg5,_arg6);
 
-    wxPy_END_ALLOW_THREADS;
+    wxPyEndAllowThreads(__tstate);
+    if (PyErr_Occurred()) return NULL;
 }    Py_INCREF(Py_None);
     _resultobj = Py_None;
     return _resultobj;
@@ -8558,10 +8800,11 @@ static PyObject *_wrap_wxPyCompositeShape_base_OnDragLeft(PyObject *self, PyObje
     }
     _arg1 = (bool ) tempbool1;
 {
-    wxPy_BEGIN_ALLOW_THREADS;
-        wxPyCompositeShape_base_OnDragLeft(_arg0,_arg1,_arg2,_arg3,_arg4,_arg5);
+    PyThreadState* __tstate = wxPyBeginAllowThreads();
+    wxPyCompositeShape_base_OnDragLeft(_arg0,_arg1,_arg2,_arg3,_arg4,_arg5);
 
-    wxPy_END_ALLOW_THREADS;
+    wxPyEndAllowThreads(__tstate);
+    if (PyErr_Occurred()) return NULL;
 }    Py_INCREF(Py_None);
     _resultobj = Py_None;
     return _resultobj;
@@ -8589,10 +8832,11 @@ static PyObject *_wrap_wxPyCompositeShape_base_OnBeginDragLeft(PyObject *self, P
         }
     }
 {
-    wxPy_BEGIN_ALLOW_THREADS;
-        wxPyCompositeShape_base_OnBeginDragLeft(_arg0,_arg1,_arg2,_arg3,_arg4);
+    PyThreadState* __tstate = wxPyBeginAllowThreads();
+    wxPyCompositeShape_base_OnBeginDragLeft(_arg0,_arg1,_arg2,_arg3,_arg4);
 
-    wxPy_END_ALLOW_THREADS;
+    wxPyEndAllowThreads(__tstate);
+    if (PyErr_Occurred()) return NULL;
 }    Py_INCREF(Py_None);
     _resultobj = Py_None;
     return _resultobj;
@@ -8620,10 +8864,11 @@ static PyObject *_wrap_wxPyCompositeShape_base_OnEndDragLeft(PyObject *self, PyO
         }
     }
 {
-    wxPy_BEGIN_ALLOW_THREADS;
-        wxPyCompositeShape_base_OnEndDragLeft(_arg0,_arg1,_arg2,_arg3,_arg4);
+    PyThreadState* __tstate = wxPyBeginAllowThreads();
+    wxPyCompositeShape_base_OnEndDragLeft(_arg0,_arg1,_arg2,_arg3,_arg4);
 
-    wxPy_END_ALLOW_THREADS;
+    wxPyEndAllowThreads(__tstate);
+    if (PyErr_Occurred()) return NULL;
 }    Py_INCREF(Py_None);
     _resultobj = Py_None;
     return _resultobj;
@@ -8654,10 +8899,11 @@ static PyObject *_wrap_wxPyCompositeShape_base_OnDragRight(PyObject *self, PyObj
     }
     _arg1 = (bool ) tempbool1;
 {
-    wxPy_BEGIN_ALLOW_THREADS;
-        wxPyCompositeShape_base_OnDragRight(_arg0,_arg1,_arg2,_arg3,_arg4,_arg5);
+    PyThreadState* __tstate = wxPyBeginAllowThreads();
+    wxPyCompositeShape_base_OnDragRight(_arg0,_arg1,_arg2,_arg3,_arg4,_arg5);
 
-    wxPy_END_ALLOW_THREADS;
+    wxPyEndAllowThreads(__tstate);
+    if (PyErr_Occurred()) return NULL;
 }    Py_INCREF(Py_None);
     _resultobj = Py_None;
     return _resultobj;
@@ -8685,10 +8931,11 @@ static PyObject *_wrap_wxPyCompositeShape_base_OnBeginDragRight(PyObject *self, 
         }
     }
 {
-    wxPy_BEGIN_ALLOW_THREADS;
-        wxPyCompositeShape_base_OnBeginDragRight(_arg0,_arg1,_arg2,_arg3,_arg4);
+    PyThreadState* __tstate = wxPyBeginAllowThreads();
+    wxPyCompositeShape_base_OnBeginDragRight(_arg0,_arg1,_arg2,_arg3,_arg4);
 
-    wxPy_END_ALLOW_THREADS;
+    wxPyEndAllowThreads(__tstate);
+    if (PyErr_Occurred()) return NULL;
 }    Py_INCREF(Py_None);
     _resultobj = Py_None;
     return _resultobj;
@@ -8716,10 +8963,11 @@ static PyObject *_wrap_wxPyCompositeShape_base_OnEndDragRight(PyObject *self, Py
         }
     }
 {
-    wxPy_BEGIN_ALLOW_THREADS;
-        wxPyCompositeShape_base_OnEndDragRight(_arg0,_arg1,_arg2,_arg3,_arg4);
+    PyThreadState* __tstate = wxPyBeginAllowThreads();
+    wxPyCompositeShape_base_OnEndDragRight(_arg0,_arg1,_arg2,_arg3,_arg4);
 
-    wxPy_END_ALLOW_THREADS;
+    wxPyEndAllowThreads(__tstate);
+    if (PyErr_Occurred()) return NULL;
 }    Py_INCREF(Py_None);
     _resultobj = Py_None;
     return _resultobj;
@@ -8756,10 +9004,11 @@ static PyObject *_wrap_wxPyCompositeShape_base_OnDrawOutline(PyObject *self, PyO
         }
     }
 {
-    wxPy_BEGIN_ALLOW_THREADS;
-        wxPyCompositeShape_base_OnDrawOutline(_arg0,*_arg1,_arg2,_arg3,_arg4,_arg5);
+    PyThreadState* __tstate = wxPyBeginAllowThreads();
+    wxPyCompositeShape_base_OnDrawOutline(_arg0,*_arg1,_arg2,_arg3,_arg4,_arg5);
 
-    wxPy_END_ALLOW_THREADS;
+    wxPyEndAllowThreads(__tstate);
+    if (PyErr_Occurred()) return NULL;
 }    Py_INCREF(Py_None);
     _resultobj = Py_None;
     return _resultobj;
@@ -8792,10 +9041,11 @@ static PyObject *_wrap_wxPyCompositeShape_base_OnDrawControlPoints(PyObject *sel
         }
     }
 {
-    wxPy_BEGIN_ALLOW_THREADS;
-        wxPyCompositeShape_base_OnDrawControlPoints(_arg0,*_arg1);
+    PyThreadState* __tstate = wxPyBeginAllowThreads();
+    wxPyCompositeShape_base_OnDrawControlPoints(_arg0,*_arg1);
 
-    wxPy_END_ALLOW_THREADS;
+    wxPyEndAllowThreads(__tstate);
+    if (PyErr_Occurred()) return NULL;
 }    Py_INCREF(Py_None);
     _resultobj = Py_None;
     return _resultobj;
@@ -8828,10 +9078,11 @@ static PyObject *_wrap_wxPyCompositeShape_base_OnEraseControlPoints(PyObject *se
         }
     }
 {
-    wxPy_BEGIN_ALLOW_THREADS;
-        wxPyCompositeShape_base_OnEraseControlPoints(_arg0,*_arg1);
+    PyThreadState* __tstate = wxPyBeginAllowThreads();
+    wxPyCompositeShape_base_OnEraseControlPoints(_arg0,*_arg1);
 
-    wxPy_END_ALLOW_THREADS;
+    wxPyEndAllowThreads(__tstate);
+    if (PyErr_Occurred()) return NULL;
 }    Py_INCREF(Py_None);
     _resultobj = Py_None;
     return _resultobj;
@@ -8867,10 +9118,11 @@ static PyObject *_wrap_wxPyCompositeShape_base_OnMoveLink(PyObject *self, PyObje
     }
     _arg2 = (bool ) tempbool2;
 {
-    wxPy_BEGIN_ALLOW_THREADS;
-        wxPyCompositeShape_base_OnMoveLink(_arg0,*_arg1,_arg2);
+    PyThreadState* __tstate = wxPyBeginAllowThreads();
+    wxPyCompositeShape_base_OnMoveLink(_arg0,*_arg1,_arg2);
 
-    wxPy_END_ALLOW_THREADS;
+    wxPyEndAllowThreads(__tstate);
+    if (PyErr_Occurred()) return NULL;
 }    Py_INCREF(Py_None);
     _resultobj = Py_None;
     return _resultobj;
@@ -8910,10 +9162,11 @@ static PyObject *_wrap_wxPyCompositeShape_base_OnSizingDragLeft(PyObject *self, 
     }
     _arg2 = (bool ) tempbool2;
 {
-    wxPy_BEGIN_ALLOW_THREADS;
-        wxPyCompositeShape_base_OnSizingDragLeft(_arg0,_arg1,_arg2,_arg3,_arg4,_arg5,_arg6);
+    PyThreadState* __tstate = wxPyBeginAllowThreads();
+    wxPyCompositeShape_base_OnSizingDragLeft(_arg0,_arg1,_arg2,_arg3,_arg4,_arg5,_arg6);
 
-    wxPy_END_ALLOW_THREADS;
+    wxPyEndAllowThreads(__tstate);
+    if (PyErr_Occurred()) return NULL;
 }    Py_INCREF(Py_None);
     _resultobj = Py_None;
     return _resultobj;
@@ -8950,10 +9203,11 @@ static PyObject *_wrap_wxPyCompositeShape_base_OnSizingBeginDragLeft(PyObject *s
         }
     }
 {
-    wxPy_BEGIN_ALLOW_THREADS;
-        wxPyCompositeShape_base_OnSizingBeginDragLeft(_arg0,_arg1,_arg2,_arg3,_arg4,_arg5);
+    PyThreadState* __tstate = wxPyBeginAllowThreads();
+    wxPyCompositeShape_base_OnSizingBeginDragLeft(_arg0,_arg1,_arg2,_arg3,_arg4,_arg5);
 
-    wxPy_END_ALLOW_THREADS;
+    wxPyEndAllowThreads(__tstate);
+    if (PyErr_Occurred()) return NULL;
 }    Py_INCREF(Py_None);
     _resultobj = Py_None;
     return _resultobj;
@@ -8990,10 +9244,11 @@ static PyObject *_wrap_wxPyCompositeShape_base_OnSizingEndDragLeft(PyObject *sel
         }
     }
 {
-    wxPy_BEGIN_ALLOW_THREADS;
-        wxPyCompositeShape_base_OnSizingEndDragLeft(_arg0,_arg1,_arg2,_arg3,_arg4,_arg5);
+    PyThreadState* __tstate = wxPyBeginAllowThreads();
+    wxPyCompositeShape_base_OnSizingEndDragLeft(_arg0,_arg1,_arg2,_arg3,_arg4,_arg5);
 
-    wxPy_END_ALLOW_THREADS;
+    wxPyEndAllowThreads(__tstate);
+    if (PyErr_Occurred()) return NULL;
 }    Py_INCREF(Py_None);
     _resultobj = Py_None;
     return _resultobj;
@@ -9019,10 +9274,11 @@ static PyObject *_wrap_wxPyCompositeShape_base_OnBeginSize(PyObject *self, PyObj
         }
     }
 {
-    wxPy_BEGIN_ALLOW_THREADS;
-        wxPyCompositeShape_base_OnBeginSize(_arg0,_arg1,_arg2);
+    PyThreadState* __tstate = wxPyBeginAllowThreads();
+    wxPyCompositeShape_base_OnBeginSize(_arg0,_arg1,_arg2);
 
-    wxPy_END_ALLOW_THREADS;
+    wxPyEndAllowThreads(__tstate);
+    if (PyErr_Occurred()) return NULL;
 }    Py_INCREF(Py_None);
     _resultobj = Py_None;
     return _resultobj;
@@ -9048,10 +9304,11 @@ static PyObject *_wrap_wxPyCompositeShape_base_OnEndSize(PyObject *self, PyObjec
         }
     }
 {
-    wxPy_BEGIN_ALLOW_THREADS;
-        wxPyCompositeShape_base_OnEndSize(_arg0,_arg1,_arg2);
+    PyThreadState* __tstate = wxPyBeginAllowThreads();
+    wxPyCompositeShape_base_OnEndSize(_arg0,_arg1,_arg2);
 
-    wxPy_END_ALLOW_THREADS;
+    wxPyEndAllowThreads(__tstate);
+    if (PyErr_Occurred()) return NULL;
 }    Py_INCREF(Py_None);
     _resultobj = Py_None;
     return _resultobj;
@@ -9081,6 +9338,14 @@ static void *SwigwxPyDividedShapeTowxPyShapeEvtHandler(void *ptr) {
     return (void *) dest;
 }
 
+static void *SwigwxPyDividedShapeTowxObject(void *ptr) {
+    wxPyDividedShape *src;
+    wxObject *dest;
+    src = (wxPyDividedShape *) ptr;
+    dest = (wxObject *) src;
+    return (void *) dest;
+}
+
 #define new_wxPyDividedShape(_swigarg0,_swigarg1) (new wxPyDividedShape(_swigarg0,_swigarg1))
 static PyObject *_wrap_new_wxPyDividedShape(PyObject *self, PyObject *args, PyObject *kwargs) {
     PyObject * _resultobj;
@@ -9094,10 +9359,11 @@ static PyObject *_wrap_new_wxPyDividedShape(PyObject *self, PyObject *args, PyOb
     if(!PyArg_ParseTupleAndKeywords(args,kwargs,"|dd:new_wxPyDividedShape",_kwnames,&_arg0,&_arg1)) 
         return NULL;
 {
-    wxPy_BEGIN_ALLOW_THREADS;
-        _result = (wxPyDividedShape *)new_wxPyDividedShape(_arg0,_arg1);
+    PyThreadState* __tstate = wxPyBeginAllowThreads();
+    _result = (wxPyDividedShape *)new_wxPyDividedShape(_arg0,_arg1);
 
-    wxPy_END_ALLOW_THREADS;
+    wxPyEndAllowThreads(__tstate);
+    if (PyErr_Occurred()) return NULL;
 }    if (_result) {
         SWIG_MakePtr(_ptemp, (char *) _result,"_wxPyDividedShape_p");
         _resultobj = Py_BuildValue("s",_ptemp);
@@ -9108,8 +9374,8 @@ static PyObject *_wrap_new_wxPyDividedShape(PyObject *self, PyObject *args, PyOb
     return _resultobj;
 }
 
-#define wxPyDividedShape__setSelf(_swigobj,_swigarg0,_swigarg1)  (_swigobj->_setSelf(_swigarg0,_swigarg1))
-static PyObject *_wrap_wxPyDividedShape__setSelf(PyObject *self, PyObject *args, PyObject *kwargs) {
+#define wxPyDividedShape__setCallbackInfo(_swigobj,_swigarg0,_swigarg1)  (_swigobj->_setCallbackInfo(_swigarg0,_swigarg1))
+static PyObject *_wrap_wxPyDividedShape__setCallbackInfo(PyObject *self, PyObject *args, PyObject *kwargs) {
     PyObject * _resultobj;
     wxPyDividedShape * _arg0;
     PyObject * _arg1;
@@ -9120,12 +9386,12 @@ static PyObject *_wrap_wxPyDividedShape__setSelf(PyObject *self, PyObject *args,
     char *_kwnames[] = { "self","self","_class", NULL };
 
     self = self;
-    if(!PyArg_ParseTupleAndKeywords(args,kwargs,"OOO:wxPyDividedShape__setSelf",_kwnames,&_argo0,&_obj1,&_obj2)) 
+    if(!PyArg_ParseTupleAndKeywords(args,kwargs,"OOO:wxPyDividedShape__setCallbackInfo",_kwnames,&_argo0,&_obj1,&_obj2)) 
         return NULL;
     if (_argo0) {
         if (_argo0 == Py_None) { _arg0 = NULL; }
         else if (SWIG_GetPtrObj(_argo0,(void **) &_arg0,"_wxPyDividedShape_p")) {
-            PyErr_SetString(PyExc_TypeError,"Type error in argument 1 of wxPyDividedShape__setSelf. Expected _wxPyDividedShape_p.");
+            PyErr_SetString(PyExc_TypeError,"Type error in argument 1 of wxPyDividedShape__setCallbackInfo. Expected _wxPyDividedShape_p.");
         return NULL;
         }
     }
@@ -9136,10 +9402,11 @@ static PyObject *_wrap_wxPyDividedShape__setSelf(PyObject *self, PyObject *args,
   _arg2 = _obj2;
 }
 {
-    wxPy_BEGIN_ALLOW_THREADS;
-        wxPyDividedShape__setSelf(_arg0,_arg1,_arg2);
+    PyThreadState* __tstate = wxPyBeginAllowThreads();
+    wxPyDividedShape__setCallbackInfo(_arg0,_arg1,_arg2);
 
-    wxPy_END_ALLOW_THREADS;
+    wxPyEndAllowThreads(__tstate);
+    if (PyErr_Occurred()) return NULL;
 }    Py_INCREF(Py_None);
     _resultobj = Py_None;
     return _resultobj;
@@ -9163,10 +9430,11 @@ static PyObject *_wrap_wxPyDividedShape_EditRegions(PyObject *self, PyObject *ar
         }
     }
 {
-    wxPy_BEGIN_ALLOW_THREADS;
-        wxPyDividedShape_EditRegions(_arg0);
+    PyThreadState* __tstate = wxPyBeginAllowThreads();
+    wxPyDividedShape_EditRegions(_arg0);
 
-    wxPy_END_ALLOW_THREADS;
+    wxPyEndAllowThreads(__tstate);
+    if (PyErr_Occurred()) return NULL;
 }    Py_INCREF(Py_None);
     _resultobj = Py_None;
     return _resultobj;
@@ -9190,10 +9458,11 @@ static PyObject *_wrap_wxPyDividedShape_SetRegionSizes(PyObject *self, PyObject 
         }
     }
 {
-    wxPy_BEGIN_ALLOW_THREADS;
-        wxPyDividedShape_SetRegionSizes(_arg0);
+    PyThreadState* __tstate = wxPyBeginAllowThreads();
+    wxPyDividedShape_SetRegionSizes(_arg0);
 
-    wxPy_END_ALLOW_THREADS;
+    wxPyEndAllowThreads(__tstate);
+    if (PyErr_Occurred()) return NULL;
 }    Py_INCREF(Py_None);
     _resultobj = Py_None;
     return _resultobj;
@@ -9217,10 +9486,11 @@ static PyObject *_wrap_wxPyDividedShape_base_OnDelete(PyObject *self, PyObject *
         }
     }
 {
-    wxPy_BEGIN_ALLOW_THREADS;
-        wxPyDividedShape_base_OnDelete(_arg0);
+    PyThreadState* __tstate = wxPyBeginAllowThreads();
+    wxPyDividedShape_base_OnDelete(_arg0);
 
-    wxPy_END_ALLOW_THREADS;
+    wxPyEndAllowThreads(__tstate);
+    if (PyErr_Occurred()) return NULL;
 }    Py_INCREF(Py_None);
     _resultobj = Py_None;
     return _resultobj;
@@ -9253,10 +9523,11 @@ static PyObject *_wrap_wxPyDividedShape_base_OnDraw(PyObject *self, PyObject *ar
         }
     }
 {
-    wxPy_BEGIN_ALLOW_THREADS;
-        wxPyDividedShape_base_OnDraw(_arg0,*_arg1);
+    PyThreadState* __tstate = wxPyBeginAllowThreads();
+    wxPyDividedShape_base_OnDraw(_arg0,*_arg1);
 
-    wxPy_END_ALLOW_THREADS;
+    wxPyEndAllowThreads(__tstate);
+    if (PyErr_Occurred()) return NULL;
 }    Py_INCREF(Py_None);
     _resultobj = Py_None;
     return _resultobj;
@@ -9289,10 +9560,11 @@ static PyObject *_wrap_wxPyDividedShape_base_OnDrawContents(PyObject *self, PyOb
         }
     }
 {
-    wxPy_BEGIN_ALLOW_THREADS;
-        wxPyDividedShape_base_OnDrawContents(_arg0,*_arg1);
+    PyThreadState* __tstate = wxPyBeginAllowThreads();
+    wxPyDividedShape_base_OnDrawContents(_arg0,*_arg1);
 
-    wxPy_END_ALLOW_THREADS;
+    wxPyEndAllowThreads(__tstate);
+    if (PyErr_Occurred()) return NULL;
 }    Py_INCREF(Py_None);
     _resultobj = Py_None;
     return _resultobj;
@@ -9328,10 +9600,11 @@ static PyObject *_wrap_wxPyDividedShape_base_OnDrawBranches(PyObject *self, PyOb
     }
     _arg2 = (bool ) tempbool2;
 {
-    wxPy_BEGIN_ALLOW_THREADS;
-        wxPyDividedShape_base_OnDrawBranches(_arg0,*_arg1,_arg2);
+    PyThreadState* __tstate = wxPyBeginAllowThreads();
+    wxPyDividedShape_base_OnDrawBranches(_arg0,*_arg1,_arg2);
 
-    wxPy_END_ALLOW_THREADS;
+    wxPyEndAllowThreads(__tstate);
+    if (PyErr_Occurred()) return NULL;
 }    Py_INCREF(Py_None);
     _resultobj = Py_None;
     return _resultobj;
@@ -9364,10 +9637,11 @@ static PyObject *_wrap_wxPyDividedShape_base_OnMoveLinks(PyObject *self, PyObjec
         }
     }
 {
-    wxPy_BEGIN_ALLOW_THREADS;
-        wxPyDividedShape_base_OnMoveLinks(_arg0,*_arg1);
+    PyThreadState* __tstate = wxPyBeginAllowThreads();
+    wxPyDividedShape_base_OnMoveLinks(_arg0,*_arg1);
 
-    wxPy_END_ALLOW_THREADS;
+    wxPyEndAllowThreads(__tstate);
+    if (PyErr_Occurred()) return NULL;
 }    Py_INCREF(Py_None);
     _resultobj = Py_None;
     return _resultobj;
@@ -9400,10 +9674,11 @@ static PyObject *_wrap_wxPyDividedShape_base_OnErase(PyObject *self, PyObject *a
         }
     }
 {
-    wxPy_BEGIN_ALLOW_THREADS;
-        wxPyDividedShape_base_OnErase(_arg0,*_arg1);
+    PyThreadState* __tstate = wxPyBeginAllowThreads();
+    wxPyDividedShape_base_OnErase(_arg0,*_arg1);
 
-    wxPy_END_ALLOW_THREADS;
+    wxPyEndAllowThreads(__tstate);
+    if (PyErr_Occurred()) return NULL;
 }    Py_INCREF(Py_None);
     _resultobj = Py_None;
     return _resultobj;
@@ -9436,10 +9711,11 @@ static PyObject *_wrap_wxPyDividedShape_base_OnEraseContents(PyObject *self, PyO
         }
     }
 {
-    wxPy_BEGIN_ALLOW_THREADS;
-        wxPyDividedShape_base_OnEraseContents(_arg0,*_arg1);
+    PyThreadState* __tstate = wxPyBeginAllowThreads();
+    wxPyDividedShape_base_OnEraseContents(_arg0,*_arg1);
 
-    wxPy_END_ALLOW_THREADS;
+    wxPyEndAllowThreads(__tstate);
+    if (PyErr_Occurred()) return NULL;
 }    Py_INCREF(Py_None);
     _resultobj = Py_None;
     return _resultobj;
@@ -9472,10 +9748,11 @@ static PyObject *_wrap_wxPyDividedShape_base_OnHighlight(PyObject *self, PyObjec
         }
     }
 {
-    wxPy_BEGIN_ALLOW_THREADS;
-        wxPyDividedShape_base_OnHighlight(_arg0,*_arg1);
+    PyThreadState* __tstate = wxPyBeginAllowThreads();
+    wxPyDividedShape_base_OnHighlight(_arg0,*_arg1);
 
-    wxPy_END_ALLOW_THREADS;
+    wxPyEndAllowThreads(__tstate);
+    if (PyErr_Occurred()) return NULL;
 }    Py_INCREF(Py_None);
     _resultobj = Py_None;
     return _resultobj;
@@ -9503,10 +9780,11 @@ static PyObject *_wrap_wxPyDividedShape_base_OnLeftClick(PyObject *self, PyObjec
         }
     }
 {
-    wxPy_BEGIN_ALLOW_THREADS;
-        wxPyDividedShape_base_OnLeftClick(_arg0,_arg1,_arg2,_arg3,_arg4);
+    PyThreadState* __tstate = wxPyBeginAllowThreads();
+    wxPyDividedShape_base_OnLeftClick(_arg0,_arg1,_arg2,_arg3,_arg4);
 
-    wxPy_END_ALLOW_THREADS;
+    wxPyEndAllowThreads(__tstate);
+    if (PyErr_Occurred()) return NULL;
 }    Py_INCREF(Py_None);
     _resultobj = Py_None;
     return _resultobj;
@@ -9534,10 +9812,11 @@ static PyObject *_wrap_wxPyDividedShape_base_OnLeftDoubleClick(PyObject *self, P
         }
     }
 {
-    wxPy_BEGIN_ALLOW_THREADS;
-        wxPyDividedShape_base_OnLeftDoubleClick(_arg0,_arg1,_arg2,_arg3,_arg4);
+    PyThreadState* __tstate = wxPyBeginAllowThreads();
+    wxPyDividedShape_base_OnLeftDoubleClick(_arg0,_arg1,_arg2,_arg3,_arg4);
 
-    wxPy_END_ALLOW_THREADS;
+    wxPyEndAllowThreads(__tstate);
+    if (PyErr_Occurred()) return NULL;
 }    Py_INCREF(Py_None);
     _resultobj = Py_None;
     return _resultobj;
@@ -9565,10 +9844,11 @@ static PyObject *_wrap_wxPyDividedShape_base_OnRightClick(PyObject *self, PyObje
         }
     }
 {
-    wxPy_BEGIN_ALLOW_THREADS;
-        wxPyDividedShape_base_OnRightClick(_arg0,_arg1,_arg2,_arg3,_arg4);
+    PyThreadState* __tstate = wxPyBeginAllowThreads();
+    wxPyDividedShape_base_OnRightClick(_arg0,_arg1,_arg2,_arg3,_arg4);
 
-    wxPy_END_ALLOW_THREADS;
+    wxPyEndAllowThreads(__tstate);
+    if (PyErr_Occurred()) return NULL;
 }    Py_INCREF(Py_None);
     _resultobj = Py_None;
     return _resultobj;
@@ -9594,10 +9874,11 @@ static PyObject *_wrap_wxPyDividedShape_base_OnSize(PyObject *self, PyObject *ar
         }
     }
 {
-    wxPy_BEGIN_ALLOW_THREADS;
-        wxPyDividedShape_base_OnSize(_arg0,_arg1,_arg2);
+    PyThreadState* __tstate = wxPyBeginAllowThreads();
+    wxPyDividedShape_base_OnSize(_arg0,_arg1,_arg2);
 
-    wxPy_END_ALLOW_THREADS;
+    wxPyEndAllowThreads(__tstate);
+    if (PyErr_Occurred()) return NULL;
 }    Py_INCREF(Py_None);
     _resultobj = Py_None;
     return _resultobj;
@@ -9638,10 +9919,11 @@ static PyObject *_wrap_wxPyDividedShape_base_OnMovePre(PyObject *self, PyObject 
     }
     _arg6 = (bool ) tempbool6;
 {
-    wxPy_BEGIN_ALLOW_THREADS;
-        _result = (bool )wxPyDividedShape_base_OnMovePre(_arg0,*_arg1,_arg2,_arg3,_arg4,_arg5,_arg6);
+    PyThreadState* __tstate = wxPyBeginAllowThreads();
+    _result = (bool )wxPyDividedShape_base_OnMovePre(_arg0,*_arg1,_arg2,_arg3,_arg4,_arg5,_arg6);
 
-    wxPy_END_ALLOW_THREADS;
+    wxPyEndAllowThreads(__tstate);
+    if (PyErr_Occurred()) return NULL;
 }    _resultobj = Py_BuildValue("i",_result);
     return _resultobj;
 }
@@ -9680,10 +9962,11 @@ static PyObject *_wrap_wxPyDividedShape_base_OnMovePost(PyObject *self, PyObject
     }
     _arg6 = (bool ) tempbool6;
 {
-    wxPy_BEGIN_ALLOW_THREADS;
-        wxPyDividedShape_base_OnMovePost(_arg0,*_arg1,_arg2,_arg3,_arg4,_arg5,_arg6);
+    PyThreadState* __tstate = wxPyBeginAllowThreads();
+    wxPyDividedShape_base_OnMovePost(_arg0,*_arg1,_arg2,_arg3,_arg4,_arg5,_arg6);
 
-    wxPy_END_ALLOW_THREADS;
+    wxPyEndAllowThreads(__tstate);
+    if (PyErr_Occurred()) return NULL;
 }    Py_INCREF(Py_None);
     _resultobj = Py_None;
     return _resultobj;
@@ -9714,10 +9997,11 @@ static PyObject *_wrap_wxPyDividedShape_base_OnDragLeft(PyObject *self, PyObject
     }
     _arg1 = (bool ) tempbool1;
 {
-    wxPy_BEGIN_ALLOW_THREADS;
-        wxPyDividedShape_base_OnDragLeft(_arg0,_arg1,_arg2,_arg3,_arg4,_arg5);
+    PyThreadState* __tstate = wxPyBeginAllowThreads();
+    wxPyDividedShape_base_OnDragLeft(_arg0,_arg1,_arg2,_arg3,_arg4,_arg5);
 
-    wxPy_END_ALLOW_THREADS;
+    wxPyEndAllowThreads(__tstate);
+    if (PyErr_Occurred()) return NULL;
 }    Py_INCREF(Py_None);
     _resultobj = Py_None;
     return _resultobj;
@@ -9745,10 +10029,11 @@ static PyObject *_wrap_wxPyDividedShape_base_OnBeginDragLeft(PyObject *self, PyO
         }
     }
 {
-    wxPy_BEGIN_ALLOW_THREADS;
-        wxPyDividedShape_base_OnBeginDragLeft(_arg0,_arg1,_arg2,_arg3,_arg4);
+    PyThreadState* __tstate = wxPyBeginAllowThreads();
+    wxPyDividedShape_base_OnBeginDragLeft(_arg0,_arg1,_arg2,_arg3,_arg4);
 
-    wxPy_END_ALLOW_THREADS;
+    wxPyEndAllowThreads(__tstate);
+    if (PyErr_Occurred()) return NULL;
 }    Py_INCREF(Py_None);
     _resultobj = Py_None;
     return _resultobj;
@@ -9776,10 +10061,11 @@ static PyObject *_wrap_wxPyDividedShape_base_OnEndDragLeft(PyObject *self, PyObj
         }
     }
 {
-    wxPy_BEGIN_ALLOW_THREADS;
-        wxPyDividedShape_base_OnEndDragLeft(_arg0,_arg1,_arg2,_arg3,_arg4);
+    PyThreadState* __tstate = wxPyBeginAllowThreads();
+    wxPyDividedShape_base_OnEndDragLeft(_arg0,_arg1,_arg2,_arg3,_arg4);
 
-    wxPy_END_ALLOW_THREADS;
+    wxPyEndAllowThreads(__tstate);
+    if (PyErr_Occurred()) return NULL;
 }    Py_INCREF(Py_None);
     _resultobj = Py_None;
     return _resultobj;
@@ -9810,10 +10096,11 @@ static PyObject *_wrap_wxPyDividedShape_base_OnDragRight(PyObject *self, PyObjec
     }
     _arg1 = (bool ) tempbool1;
 {
-    wxPy_BEGIN_ALLOW_THREADS;
-        wxPyDividedShape_base_OnDragRight(_arg0,_arg1,_arg2,_arg3,_arg4,_arg5);
+    PyThreadState* __tstate = wxPyBeginAllowThreads();
+    wxPyDividedShape_base_OnDragRight(_arg0,_arg1,_arg2,_arg3,_arg4,_arg5);
 
-    wxPy_END_ALLOW_THREADS;
+    wxPyEndAllowThreads(__tstate);
+    if (PyErr_Occurred()) return NULL;
 }    Py_INCREF(Py_None);
     _resultobj = Py_None;
     return _resultobj;
@@ -9841,10 +10128,11 @@ static PyObject *_wrap_wxPyDividedShape_base_OnBeginDragRight(PyObject *self, Py
         }
     }
 {
-    wxPy_BEGIN_ALLOW_THREADS;
-        wxPyDividedShape_base_OnBeginDragRight(_arg0,_arg1,_arg2,_arg3,_arg4);
+    PyThreadState* __tstate = wxPyBeginAllowThreads();
+    wxPyDividedShape_base_OnBeginDragRight(_arg0,_arg1,_arg2,_arg3,_arg4);
 
-    wxPy_END_ALLOW_THREADS;
+    wxPyEndAllowThreads(__tstate);
+    if (PyErr_Occurred()) return NULL;
 }    Py_INCREF(Py_None);
     _resultobj = Py_None;
     return _resultobj;
@@ -9872,10 +10160,11 @@ static PyObject *_wrap_wxPyDividedShape_base_OnEndDragRight(PyObject *self, PyOb
         }
     }
 {
-    wxPy_BEGIN_ALLOW_THREADS;
-        wxPyDividedShape_base_OnEndDragRight(_arg0,_arg1,_arg2,_arg3,_arg4);
+    PyThreadState* __tstate = wxPyBeginAllowThreads();
+    wxPyDividedShape_base_OnEndDragRight(_arg0,_arg1,_arg2,_arg3,_arg4);
 
-    wxPy_END_ALLOW_THREADS;
+    wxPyEndAllowThreads(__tstate);
+    if (PyErr_Occurred()) return NULL;
 }    Py_INCREF(Py_None);
     _resultobj = Py_None;
     return _resultobj;
@@ -9912,10 +10201,11 @@ static PyObject *_wrap_wxPyDividedShape_base_OnDrawOutline(PyObject *self, PyObj
         }
     }
 {
-    wxPy_BEGIN_ALLOW_THREADS;
-        wxPyDividedShape_base_OnDrawOutline(_arg0,*_arg1,_arg2,_arg3,_arg4,_arg5);
+    PyThreadState* __tstate = wxPyBeginAllowThreads();
+    wxPyDividedShape_base_OnDrawOutline(_arg0,*_arg1,_arg2,_arg3,_arg4,_arg5);
 
-    wxPy_END_ALLOW_THREADS;
+    wxPyEndAllowThreads(__tstate);
+    if (PyErr_Occurred()) return NULL;
 }    Py_INCREF(Py_None);
     _resultobj = Py_None;
     return _resultobj;
@@ -9948,10 +10238,11 @@ static PyObject *_wrap_wxPyDividedShape_base_OnDrawControlPoints(PyObject *self,
         }
     }
 {
-    wxPy_BEGIN_ALLOW_THREADS;
-        wxPyDividedShape_base_OnDrawControlPoints(_arg0,*_arg1);
+    PyThreadState* __tstate = wxPyBeginAllowThreads();
+    wxPyDividedShape_base_OnDrawControlPoints(_arg0,*_arg1);
 
-    wxPy_END_ALLOW_THREADS;
+    wxPyEndAllowThreads(__tstate);
+    if (PyErr_Occurred()) return NULL;
 }    Py_INCREF(Py_None);
     _resultobj = Py_None;
     return _resultobj;
@@ -9984,10 +10275,11 @@ static PyObject *_wrap_wxPyDividedShape_base_OnEraseControlPoints(PyObject *self
         }
     }
 {
-    wxPy_BEGIN_ALLOW_THREADS;
-        wxPyDividedShape_base_OnEraseControlPoints(_arg0,*_arg1);
+    PyThreadState* __tstate = wxPyBeginAllowThreads();
+    wxPyDividedShape_base_OnEraseControlPoints(_arg0,*_arg1);
 
-    wxPy_END_ALLOW_THREADS;
+    wxPyEndAllowThreads(__tstate);
+    if (PyErr_Occurred()) return NULL;
 }    Py_INCREF(Py_None);
     _resultobj = Py_None;
     return _resultobj;
@@ -10023,10 +10315,11 @@ static PyObject *_wrap_wxPyDividedShape_base_OnMoveLink(PyObject *self, PyObject
     }
     _arg2 = (bool ) tempbool2;
 {
-    wxPy_BEGIN_ALLOW_THREADS;
-        wxPyDividedShape_base_OnMoveLink(_arg0,*_arg1,_arg2);
+    PyThreadState* __tstate = wxPyBeginAllowThreads();
+    wxPyDividedShape_base_OnMoveLink(_arg0,*_arg1,_arg2);
 
-    wxPy_END_ALLOW_THREADS;
+    wxPyEndAllowThreads(__tstate);
+    if (PyErr_Occurred()) return NULL;
 }    Py_INCREF(Py_None);
     _resultobj = Py_None;
     return _resultobj;
@@ -10066,10 +10359,11 @@ static PyObject *_wrap_wxPyDividedShape_base_OnSizingDragLeft(PyObject *self, Py
     }
     _arg2 = (bool ) tempbool2;
 {
-    wxPy_BEGIN_ALLOW_THREADS;
-        wxPyDividedShape_base_OnSizingDragLeft(_arg0,_arg1,_arg2,_arg3,_arg4,_arg5,_arg6);
+    PyThreadState* __tstate = wxPyBeginAllowThreads();
+    wxPyDividedShape_base_OnSizingDragLeft(_arg0,_arg1,_arg2,_arg3,_arg4,_arg5,_arg6);
 
-    wxPy_END_ALLOW_THREADS;
+    wxPyEndAllowThreads(__tstate);
+    if (PyErr_Occurred()) return NULL;
 }    Py_INCREF(Py_None);
     _resultobj = Py_None;
     return _resultobj;
@@ -10106,10 +10400,11 @@ static PyObject *_wrap_wxPyDividedShape_base_OnSizingBeginDragLeft(PyObject *sel
         }
     }
 {
-    wxPy_BEGIN_ALLOW_THREADS;
-        wxPyDividedShape_base_OnSizingBeginDragLeft(_arg0,_arg1,_arg2,_arg3,_arg4,_arg5);
+    PyThreadState* __tstate = wxPyBeginAllowThreads();
+    wxPyDividedShape_base_OnSizingBeginDragLeft(_arg0,_arg1,_arg2,_arg3,_arg4,_arg5);
 
-    wxPy_END_ALLOW_THREADS;
+    wxPyEndAllowThreads(__tstate);
+    if (PyErr_Occurred()) return NULL;
 }    Py_INCREF(Py_None);
     _resultobj = Py_None;
     return _resultobj;
@@ -10146,10 +10441,11 @@ static PyObject *_wrap_wxPyDividedShape_base_OnSizingEndDragLeft(PyObject *self,
         }
     }
 {
-    wxPy_BEGIN_ALLOW_THREADS;
-        wxPyDividedShape_base_OnSizingEndDragLeft(_arg0,_arg1,_arg2,_arg3,_arg4,_arg5);
+    PyThreadState* __tstate = wxPyBeginAllowThreads();
+    wxPyDividedShape_base_OnSizingEndDragLeft(_arg0,_arg1,_arg2,_arg3,_arg4,_arg5);
 
-    wxPy_END_ALLOW_THREADS;
+    wxPyEndAllowThreads(__tstate);
+    if (PyErr_Occurred()) return NULL;
 }    Py_INCREF(Py_None);
     _resultobj = Py_None;
     return _resultobj;
@@ -10175,10 +10471,11 @@ static PyObject *_wrap_wxPyDividedShape_base_OnBeginSize(PyObject *self, PyObjec
         }
     }
 {
-    wxPy_BEGIN_ALLOW_THREADS;
-        wxPyDividedShape_base_OnBeginSize(_arg0,_arg1,_arg2);
+    PyThreadState* __tstate = wxPyBeginAllowThreads();
+    wxPyDividedShape_base_OnBeginSize(_arg0,_arg1,_arg2);
 
-    wxPy_END_ALLOW_THREADS;
+    wxPyEndAllowThreads(__tstate);
+    if (PyErr_Occurred()) return NULL;
 }    Py_INCREF(Py_None);
     _resultobj = Py_None;
     return _resultobj;
@@ -10204,10 +10501,11 @@ static PyObject *_wrap_wxPyDividedShape_base_OnEndSize(PyObject *self, PyObject 
         }
     }
 {
-    wxPy_BEGIN_ALLOW_THREADS;
-        wxPyDividedShape_base_OnEndSize(_arg0,_arg1,_arg2);
+    PyThreadState* __tstate = wxPyBeginAllowThreads();
+    wxPyDividedShape_base_OnEndSize(_arg0,_arg1,_arg2);
 
-    wxPy_END_ALLOW_THREADS;
+    wxPyEndAllowThreads(__tstate);
+    if (PyErr_Occurred()) return NULL;
 }    Py_INCREF(Py_None);
     _resultobj = Py_None;
     return _resultobj;
@@ -10245,6 +10543,14 @@ static void *SwigwxPyDivisionShapeTowxPyShapeEvtHandler(void *ptr) {
     return (void *) dest;
 }
 
+static void *SwigwxPyDivisionShapeTowxObject(void *ptr) {
+    wxPyDivisionShape *src;
+    wxObject *dest;
+    src = (wxPyDivisionShape *) ptr;
+    dest = (wxObject *) src;
+    return (void *) dest;
+}
+
 #define new_wxPyDivisionShape() (new wxPyDivisionShape())
 static PyObject *_wrap_new_wxPyDivisionShape(PyObject *self, PyObject *args, PyObject *kwargs) {
     PyObject * _resultobj;
@@ -10256,10 +10562,11 @@ static PyObject *_wrap_new_wxPyDivisionShape(PyObject *self, PyObject *args, PyO
     if(!PyArg_ParseTupleAndKeywords(args,kwargs,":new_wxPyDivisionShape",_kwnames)) 
         return NULL;
 {
-    wxPy_BEGIN_ALLOW_THREADS;
-        _result = (wxPyDivisionShape *)new_wxPyDivisionShape();
+    PyThreadState* __tstate = wxPyBeginAllowThreads();
+    _result = (wxPyDivisionShape *)new_wxPyDivisionShape();
 
-    wxPy_END_ALLOW_THREADS;
+    wxPyEndAllowThreads(__tstate);
+    if (PyErr_Occurred()) return NULL;
 }    if (_result) {
         SWIG_MakePtr(_ptemp, (char *) _result,"_wxPyDivisionShape_p");
         _resultobj = Py_BuildValue("s",_ptemp);
@@ -10270,8 +10577,8 @@ static PyObject *_wrap_new_wxPyDivisionShape(PyObject *self, PyObject *args, PyO
     return _resultobj;
 }
 
-#define wxPyDivisionShape__setSelf(_swigobj,_swigarg0,_swigarg1)  (_swigobj->_setSelf(_swigarg0,_swigarg1))
-static PyObject *_wrap_wxPyDivisionShape__setSelf(PyObject *self, PyObject *args, PyObject *kwargs) {
+#define wxPyDivisionShape__setCallbackInfo(_swigobj,_swigarg0,_swigarg1)  (_swigobj->_setCallbackInfo(_swigarg0,_swigarg1))
+static PyObject *_wrap_wxPyDivisionShape__setCallbackInfo(PyObject *self, PyObject *args, PyObject *kwargs) {
     PyObject * _resultobj;
     wxPyDivisionShape * _arg0;
     PyObject * _arg1;
@@ -10282,12 +10589,12 @@ static PyObject *_wrap_wxPyDivisionShape__setSelf(PyObject *self, PyObject *args
     char *_kwnames[] = { "self","self","_class", NULL };
 
     self = self;
-    if(!PyArg_ParseTupleAndKeywords(args,kwargs,"OOO:wxPyDivisionShape__setSelf",_kwnames,&_argo0,&_obj1,&_obj2)) 
+    if(!PyArg_ParseTupleAndKeywords(args,kwargs,"OOO:wxPyDivisionShape__setCallbackInfo",_kwnames,&_argo0,&_obj1,&_obj2)) 
         return NULL;
     if (_argo0) {
         if (_argo0 == Py_None) { _arg0 = NULL; }
         else if (SWIG_GetPtrObj(_argo0,(void **) &_arg0,"_wxPyDivisionShape_p")) {
-            PyErr_SetString(PyExc_TypeError,"Type error in argument 1 of wxPyDivisionShape__setSelf. Expected _wxPyDivisionShape_p.");
+            PyErr_SetString(PyExc_TypeError,"Type error in argument 1 of wxPyDivisionShape__setCallbackInfo. Expected _wxPyDivisionShape_p.");
         return NULL;
         }
     }
@@ -10298,10 +10605,11 @@ static PyObject *_wrap_wxPyDivisionShape__setSelf(PyObject *self, PyObject *args
   _arg2 = _obj2;
 }
 {
-    wxPy_BEGIN_ALLOW_THREADS;
-        wxPyDivisionShape__setSelf(_arg0,_arg1,_arg2);
+    PyThreadState* __tstate = wxPyBeginAllowThreads();
+    wxPyDivisionShape__setCallbackInfo(_arg0,_arg1,_arg2);
 
-    wxPy_END_ALLOW_THREADS;
+    wxPyEndAllowThreads(__tstate);
+    if (PyErr_Occurred()) return NULL;
 }    Py_INCREF(Py_None);
     _resultobj = Py_None;
     return _resultobj;
@@ -10329,10 +10637,11 @@ static PyObject *_wrap_wxPyDivisionShape_AdjustBottom(PyObject *self, PyObject *
     }
     _arg2 = (bool ) tempbool2;
 {
-    wxPy_BEGIN_ALLOW_THREADS;
-        wxPyDivisionShape_AdjustBottom(_arg0,_arg1,_arg2);
+    PyThreadState* __tstate = wxPyBeginAllowThreads();
+    wxPyDivisionShape_AdjustBottom(_arg0,_arg1,_arg2);
 
-    wxPy_END_ALLOW_THREADS;
+    wxPyEndAllowThreads(__tstate);
+    if (PyErr_Occurred()) return NULL;
 }    Py_INCREF(Py_None);
     _resultobj = Py_None;
     return _resultobj;
@@ -10360,10 +10669,11 @@ static PyObject *_wrap_wxPyDivisionShape_AdjustLeft(PyObject *self, PyObject *ar
     }
     _arg2 = (bool ) tempbool2;
 {
-    wxPy_BEGIN_ALLOW_THREADS;
-        wxPyDivisionShape_AdjustLeft(_arg0,_arg1,_arg2);
+    PyThreadState* __tstate = wxPyBeginAllowThreads();
+    wxPyDivisionShape_AdjustLeft(_arg0,_arg1,_arg2);
 
-    wxPy_END_ALLOW_THREADS;
+    wxPyEndAllowThreads(__tstate);
+    if (PyErr_Occurred()) return NULL;
 }    Py_INCREF(Py_None);
     _resultobj = Py_None;
     return _resultobj;
@@ -10391,10 +10701,11 @@ static PyObject *_wrap_wxPyDivisionShape_AdjustRight(PyObject *self, PyObject *a
     }
     _arg2 = (bool ) tempbool2;
 {
-    wxPy_BEGIN_ALLOW_THREADS;
-        wxPyDivisionShape_AdjustRight(_arg0,_arg1,_arg2);
+    PyThreadState* __tstate = wxPyBeginAllowThreads();
+    wxPyDivisionShape_AdjustRight(_arg0,_arg1,_arg2);
 
-    wxPy_END_ALLOW_THREADS;
+    wxPyEndAllowThreads(__tstate);
+    if (PyErr_Occurred()) return NULL;
 }    Py_INCREF(Py_None);
     _resultobj = Py_None;
     return _resultobj;
@@ -10422,10 +10733,11 @@ static PyObject *_wrap_wxPyDivisionShape_AdjustTop(PyObject *self, PyObject *arg
     }
     _arg2 = (bool ) tempbool2;
 {
-    wxPy_BEGIN_ALLOW_THREADS;
-        wxPyDivisionShape_AdjustTop(_arg0,_arg1,_arg2);
+    PyThreadState* __tstate = wxPyBeginAllowThreads();
+    wxPyDivisionShape_AdjustTop(_arg0,_arg1,_arg2);
 
-    wxPy_END_ALLOW_THREADS;
+    wxPyEndAllowThreads(__tstate);
+    if (PyErr_Occurred()) return NULL;
 }    Py_INCREF(Py_None);
     _resultobj = Py_None;
     return _resultobj;
@@ -10450,10 +10762,11 @@ static PyObject *_wrap_wxPyDivisionShape_Divide(PyObject *self, PyObject *args, 
         }
     }
 {
-    wxPy_BEGIN_ALLOW_THREADS;
-        wxPyDivisionShape_Divide(_arg0,_arg1);
+    PyThreadState* __tstate = wxPyBeginAllowThreads();
+    wxPyDivisionShape_Divide(_arg0,_arg1);
 
-    wxPy_END_ALLOW_THREADS;
+    wxPyEndAllowThreads(__tstate);
+    if (PyErr_Occurred()) return NULL;
 }    Py_INCREF(Py_None);
     _resultobj = Py_None;
     return _resultobj;
@@ -10478,10 +10791,11 @@ static PyObject *_wrap_wxPyDivisionShape_EditEdge(PyObject *self, PyObject *args
         }
     }
 {
-    wxPy_BEGIN_ALLOW_THREADS;
-        wxPyDivisionShape_EditEdge(_arg0,_arg1);
+    PyThreadState* __tstate = wxPyBeginAllowThreads();
+    wxPyDivisionShape_EditEdge(_arg0,_arg1);
 
-    wxPy_END_ALLOW_THREADS;
+    wxPyEndAllowThreads(__tstate);
+    if (PyErr_Occurred()) return NULL;
 }    Py_INCREF(Py_None);
     _resultobj = Py_None;
     return _resultobj;
@@ -10494,7 +10808,6 @@ static PyObject *_wrap_wxPyDivisionShape_GetBottomSide(PyObject *self, PyObject 
     wxPyDivisionShape * _arg0;
     PyObject * _argo0 = 0;
     char *_kwnames[] = { "self", NULL };
-    char _ptemp[128];
 
     self = self;
     if(!PyArg_ParseTupleAndKeywords(args,kwargs,"O:wxPyDivisionShape_GetBottomSide",_kwnames,&_argo0)) 
@@ -10507,17 +10820,12 @@ static PyObject *_wrap_wxPyDivisionShape_GetBottomSide(PyObject *self, PyObject 
         }
     }
 {
-    wxPy_BEGIN_ALLOW_THREADS;
-        _result = (wxPyDivisionShape *)wxPyDivisionShape_GetBottomSide(_arg0);
+    PyThreadState* __tstate = wxPyBeginAllowThreads();
+    _result = (wxPyDivisionShape *)wxPyDivisionShape_GetBottomSide(_arg0);
 
-    wxPy_END_ALLOW_THREADS;
-}    if (_result) {
-        SWIG_MakePtr(_ptemp, (char *) _result,"_wxPyDivisionShape_p");
-        _resultobj = Py_BuildValue("s",_ptemp);
-    } else {
-        Py_INCREF(Py_None);
-        _resultobj = Py_None;
-    }
+    wxPyEndAllowThreads(__tstate);
+    if (PyErr_Occurred()) return NULL;
+}{ _resultobj = wxPyMake_wxShapeEvtHandler(_result); }
     return _resultobj;
 }
 
@@ -10540,10 +10848,11 @@ static PyObject *_wrap_wxPyDivisionShape_GetHandleSide(PyObject *self, PyObject 
         }
     }
 {
-    wxPy_BEGIN_ALLOW_THREADS;
-        _result = (int )wxPyDivisionShape_GetHandleSide(_arg0);
+    PyThreadState* __tstate = wxPyBeginAllowThreads();
+    _result = (int )wxPyDivisionShape_GetHandleSide(_arg0);
 
-    wxPy_END_ALLOW_THREADS;
+    wxPyEndAllowThreads(__tstate);
+    if (PyErr_Occurred()) return NULL;
 }    _resultobj = Py_BuildValue("i",_result);
     return _resultobj;
 }
@@ -10555,7 +10864,6 @@ static PyObject *_wrap_wxPyDivisionShape_GetLeftSide(PyObject *self, PyObject *a
     wxPyDivisionShape * _arg0;
     PyObject * _argo0 = 0;
     char *_kwnames[] = { "self", NULL };
-    char _ptemp[128];
 
     self = self;
     if(!PyArg_ParseTupleAndKeywords(args,kwargs,"O:wxPyDivisionShape_GetLeftSide",_kwnames,&_argo0)) 
@@ -10568,17 +10876,12 @@ static PyObject *_wrap_wxPyDivisionShape_GetLeftSide(PyObject *self, PyObject *a
         }
     }
 {
-    wxPy_BEGIN_ALLOW_THREADS;
-        _result = (wxPyDivisionShape *)wxPyDivisionShape_GetLeftSide(_arg0);
+    PyThreadState* __tstate = wxPyBeginAllowThreads();
+    _result = (wxPyDivisionShape *)wxPyDivisionShape_GetLeftSide(_arg0);
 
-    wxPy_END_ALLOW_THREADS;
-}    if (_result) {
-        SWIG_MakePtr(_ptemp, (char *) _result,"_wxPyDivisionShape_p");
-        _resultobj = Py_BuildValue("s",_ptemp);
-    } else {
-        Py_INCREF(Py_None);
-        _resultobj = Py_None;
-    }
+    wxPyEndAllowThreads(__tstate);
+    if (PyErr_Occurred()) return NULL;
+}{ _resultobj = wxPyMake_wxShapeEvtHandler(_result); }
     return _resultobj;
 }
 
@@ -10601,12 +10904,17 @@ static PyObject *_wrap_wxPyDivisionShape_GetLeftSideColour(PyObject *self, PyObj
         }
     }
 {
-    wxPy_BEGIN_ALLOW_THREADS;
-        _result = new wxString (wxPyDivisionShape_GetLeftSideColour(_arg0));
+    PyThreadState* __tstate = wxPyBeginAllowThreads();
+    _result = new wxString (wxPyDivisionShape_GetLeftSideColour(_arg0));
 
-    wxPy_END_ALLOW_THREADS;
+    wxPyEndAllowThreads(__tstate);
+    if (PyErr_Occurred()) return NULL;
 }{
+#if wxUSE_UNICODE
+    _resultobj = PyUnicode_FromUnicode(_result->c_str(), _result->Len());
+#else
     _resultobj = PyString_FromStringAndSize(_result->c_str(), _result->Len());
+#endif
 }
 {
     delete _result;
@@ -10634,10 +10942,11 @@ static PyObject *_wrap_wxPyDivisionShape_GetLeftSidePen(PyObject *self, PyObject
         }
     }
 {
-    wxPy_BEGIN_ALLOW_THREADS;
-        _result = (wxPen *)wxPyDivisionShape_GetLeftSidePen(_arg0);
+    PyThreadState* __tstate = wxPyBeginAllowThreads();
+    _result = (wxPen *)wxPyDivisionShape_GetLeftSidePen(_arg0);
 
-    wxPy_END_ALLOW_THREADS;
+    wxPyEndAllowThreads(__tstate);
+    if (PyErr_Occurred()) return NULL;
 }    if (_result) {
         SWIG_MakePtr(_ptemp, (char *) _result,"_wxPen_p");
         _resultobj = Py_BuildValue("s",_ptemp);
@@ -10655,7 +10964,6 @@ static PyObject *_wrap_wxPyDivisionShape_GetRightSide(PyObject *self, PyObject *
     wxPyDivisionShape * _arg0;
     PyObject * _argo0 = 0;
     char *_kwnames[] = { "self", NULL };
-    char _ptemp[128];
 
     self = self;
     if(!PyArg_ParseTupleAndKeywords(args,kwargs,"O:wxPyDivisionShape_GetRightSide",_kwnames,&_argo0)) 
@@ -10668,17 +10976,12 @@ static PyObject *_wrap_wxPyDivisionShape_GetRightSide(PyObject *self, PyObject *
         }
     }
 {
-    wxPy_BEGIN_ALLOW_THREADS;
-        _result = (wxPyDivisionShape *)wxPyDivisionShape_GetRightSide(_arg0);
+    PyThreadState* __tstate = wxPyBeginAllowThreads();
+    _result = (wxPyDivisionShape *)wxPyDivisionShape_GetRightSide(_arg0);
 
-    wxPy_END_ALLOW_THREADS;
-}    if (_result) {
-        SWIG_MakePtr(_ptemp, (char *) _result,"_wxPyDivisionShape_p");
-        _resultobj = Py_BuildValue("s",_ptemp);
-    } else {
-        Py_INCREF(Py_None);
-        _resultobj = Py_None;
-    }
+    wxPyEndAllowThreads(__tstate);
+    if (PyErr_Occurred()) return NULL;
+}{ _resultobj = wxPyMake_wxShapeEvtHandler(_result); }
     return _resultobj;
 }
 
@@ -10689,7 +10992,6 @@ static PyObject *_wrap_wxPyDivisionShape_GetTopSide(PyObject *self, PyObject *ar
     wxPyDivisionShape * _arg0;
     PyObject * _argo0 = 0;
     char *_kwnames[] = { "self", NULL };
-    char _ptemp[128];
 
     self = self;
     if(!PyArg_ParseTupleAndKeywords(args,kwargs,"O:wxPyDivisionShape_GetTopSide",_kwnames,&_argo0)) 
@@ -10702,17 +11004,12 @@ static PyObject *_wrap_wxPyDivisionShape_GetTopSide(PyObject *self, PyObject *ar
         }
     }
 {
-    wxPy_BEGIN_ALLOW_THREADS;
-        _result = (wxPyDivisionShape *)wxPyDivisionShape_GetTopSide(_arg0);
+    PyThreadState* __tstate = wxPyBeginAllowThreads();
+    _result = (wxPyDivisionShape *)wxPyDivisionShape_GetTopSide(_arg0);
 
-    wxPy_END_ALLOW_THREADS;
-}    if (_result) {
-        SWIG_MakePtr(_ptemp, (char *) _result,"_wxPyDivisionShape_p");
-        _resultobj = Py_BuildValue("s",_ptemp);
-    } else {
-        Py_INCREF(Py_None);
-        _resultobj = Py_None;
-    }
+    wxPyEndAllowThreads(__tstate);
+    if (PyErr_Occurred()) return NULL;
+}{ _resultobj = wxPyMake_wxShapeEvtHandler(_result); }
     return _resultobj;
 }
 
@@ -10736,10 +11033,11 @@ static PyObject *_wrap_wxPyDivisionShape_GetTopSidePen(PyObject *self, PyObject 
         }
     }
 {
-    wxPy_BEGIN_ALLOW_THREADS;
-        _result = (wxPen *)wxPyDivisionShape_GetTopSidePen(_arg0);
+    PyThreadState* __tstate = wxPyBeginAllowThreads();
+    _result = (wxPen *)wxPyDivisionShape_GetTopSidePen(_arg0);
 
-    wxPy_END_ALLOW_THREADS;
+    wxPyEndAllowThreads(__tstate);
+    if (PyErr_Occurred()) return NULL;
 }    if (_result) {
         SWIG_MakePtr(_ptemp, (char *) _result,"_wxPen_p");
         _resultobj = Py_BuildValue("s",_ptemp);
@@ -10773,10 +11071,11 @@ static PyObject *_wrap_wxPyDivisionShape_ResizeAdjoining(PyObject *self, PyObjec
     }
     _arg3 = (bool ) tempbool3;
 {
-    wxPy_BEGIN_ALLOW_THREADS;
-        wxPyDivisionShape_ResizeAdjoining(_arg0,_arg1,_arg2,_arg3);
+    PyThreadState* __tstate = wxPyBeginAllowThreads();
+    wxPyDivisionShape_ResizeAdjoining(_arg0,_arg1,_arg2,_arg3);
 
-    wxPy_END_ALLOW_THREADS;
+    wxPyEndAllowThreads(__tstate);
+    if (PyErr_Occurred()) return NULL;
 }    Py_INCREF(Py_None);
     _resultobj = Py_None;
     return _resultobj;
@@ -10802,10 +11101,11 @@ static PyObject *_wrap_wxPyDivisionShape_PopupMenu(PyObject *self, PyObject *arg
         }
     }
 {
-    wxPy_BEGIN_ALLOW_THREADS;
-        wxPyDivisionShape_PopupMenu(_arg0,_arg1,_arg2);
+    PyThreadState* __tstate = wxPyBeginAllowThreads();
+    wxPyDivisionShape_PopupMenu(_arg0,_arg1,_arg2);
 
-    wxPy_END_ALLOW_THREADS;
+    wxPyEndAllowThreads(__tstate);
+    if (PyErr_Occurred()) return NULL;
 }    Py_INCREF(Py_None);
     _resultobj = Py_None;
     return _resultobj;
@@ -10838,10 +11138,11 @@ static PyObject *_wrap_wxPyDivisionShape_SetBottomSide(PyObject *self, PyObject 
         }
     }
 {
-    wxPy_BEGIN_ALLOW_THREADS;
-        wxPyDivisionShape_SetBottomSide(_arg0,_arg1);
+    PyThreadState* __tstate = wxPyBeginAllowThreads();
+    wxPyDivisionShape_SetBottomSide(_arg0,_arg1);
 
-    wxPy_END_ALLOW_THREADS;
+    wxPyEndAllowThreads(__tstate);
+    if (PyErr_Occurred()) return NULL;
 }    Py_INCREF(Py_None);
     _resultobj = Py_None;
     return _resultobj;
@@ -10866,10 +11167,11 @@ static PyObject *_wrap_wxPyDivisionShape_SetHandleSide(PyObject *self, PyObject 
         }
     }
 {
-    wxPy_BEGIN_ALLOW_THREADS;
-        wxPyDivisionShape_SetHandleSide(_arg0,_arg1);
+    PyThreadState* __tstate = wxPyBeginAllowThreads();
+    wxPyDivisionShape_SetHandleSide(_arg0,_arg1);
 
-    wxPy_END_ALLOW_THREADS;
+    wxPyEndAllowThreads(__tstate);
+    if (PyErr_Occurred()) return NULL;
 }    Py_INCREF(Py_None);
     _resultobj = Py_None;
     return _resultobj;
@@ -10902,10 +11204,11 @@ static PyObject *_wrap_wxPyDivisionShape_SetLeftSide(PyObject *self, PyObject *a
         }
     }
 {
-    wxPy_BEGIN_ALLOW_THREADS;
-        wxPyDivisionShape_SetLeftSide(_arg0,_arg1);
+    PyThreadState* __tstate = wxPyBeginAllowThreads();
+    wxPyDivisionShape_SetLeftSide(_arg0,_arg1);
 
-    wxPy_END_ALLOW_THREADS;
+    wxPyEndAllowThreads(__tstate);
+    if (PyErr_Occurred()) return NULL;
 }    Py_INCREF(Py_None);
     _resultobj = Py_None;
     return _resultobj;
@@ -10931,28 +11234,16 @@ static PyObject *_wrap_wxPyDivisionShape_SetLeftSideColour(PyObject *self, PyObj
         }
     }
 {
-#if PYTHON_API_VERSION >= 1009
-    char* tmpPtr; int tmpSize;
-    if (!PyString_Check(_obj1) && !PyUnicode_Check(_obj1)) {
-        PyErr_SetString(PyExc_TypeError, "String or Unicode type required");
+    _arg1 = wxString_in_helper(_obj1);
+    if (_arg1 == NULL)
         return NULL;
-    }
-    if (PyString_AsStringAndSize(_obj1, &tmpPtr, &tmpSize) == -1)
-        return NULL;
-    _arg1 = new wxString(tmpPtr, tmpSize);
-#else
-    if (!PyString_Check(_obj1)) {
-        PyErr_SetString(PyExc_TypeError, wxStringErrorMsg);
-        return NULL;
-    }
-    _arg1 = new wxString(PyString_AS_STRING(_obj1), PyString_GET_SIZE(_obj1));
-#endif
 }
 {
-    wxPy_BEGIN_ALLOW_THREADS;
-        wxPyDivisionShape_SetLeftSideColour(_arg0,*_arg1);
+    PyThreadState* __tstate = wxPyBeginAllowThreads();
+    wxPyDivisionShape_SetLeftSideColour(_arg0,*_arg1);
 
-    wxPy_END_ALLOW_THREADS;
+    wxPyEndAllowThreads(__tstate);
+    if (PyErr_Occurred()) return NULL;
 }    Py_INCREF(Py_None);
     _resultobj = Py_None;
 {
@@ -10968,11 +11259,11 @@ static PyObject *_wrap_wxPyDivisionShape_SetLeftSidePen(PyObject *self, PyObject
     wxPyDivisionShape * _arg0;
     wxPen * _arg1;
     PyObject * _argo0 = 0;
-    PyObject * _argo1 = 0;
+    PyObject * _obj1 = 0;
     char *_kwnames[] = { "self","pen", NULL };
 
     self = self;
-    if(!PyArg_ParseTupleAndKeywords(args,kwargs,"OO:wxPyDivisionShape_SetLeftSidePen",_kwnames,&_argo0,&_argo1)) 
+    if(!PyArg_ParseTupleAndKeywords(args,kwargs,"OO:wxPyDivisionShape_SetLeftSidePen",_kwnames,&_argo0,&_obj1)) 
         return NULL;
     if (_argo0) {
         if (_argo0 == Py_None) { _arg0 = NULL; }
@@ -10981,18 +11272,28 @@ static PyObject *_wrap_wxPyDivisionShape_SetLeftSidePen(PyObject *self, PyObject
         return NULL;
         }
     }
-    if (_argo1) {
-        if (_argo1 == Py_None) { _arg1 = NULL; }
-        else if (SWIG_GetPtrObj(_argo1,(void **) &_arg1,"_wxPen_p")) {
-            PyErr_SetString(PyExc_TypeError,"Type error in argument 2 of wxPyDivisionShape_SetLeftSidePen. Expected _wxPen_p.");
+{
+    wxPen* temp;
+    if (_obj1) {
+        if (_obj1 == Py_None) { temp = NULL; }
+        else if (SWIG_GetPtrObj(_obj1, (void **) &temp,"_wxPen_p")) {
+            PyErr_SetString(PyExc_TypeError,"Type error, expected _wxPen_p.");
         return NULL;
         }
     }
+    if (temp)
+        _arg1 = wxThePenList->FindOrCreatePen(temp->GetColour(),
+                                                temp->GetWidth(),
+                                                temp->GetStyle());
+    else
+        _arg1 = NULL;
+}
 {
-    wxPy_BEGIN_ALLOW_THREADS;
-        wxPyDivisionShape_SetLeftSidePen(_arg0,_arg1);
+    PyThreadState* __tstate = wxPyBeginAllowThreads();
+    wxPyDivisionShape_SetLeftSidePen(_arg0,_arg1);
 
-    wxPy_END_ALLOW_THREADS;
+    wxPyEndAllowThreads(__tstate);
+    if (PyErr_Occurred()) return NULL;
 }    Py_INCREF(Py_None);
     _resultobj = Py_None;
     return _resultobj;
@@ -11025,10 +11326,11 @@ static PyObject *_wrap_wxPyDivisionShape_SetRightSide(PyObject *self, PyObject *
         }
     }
 {
-    wxPy_BEGIN_ALLOW_THREADS;
-        wxPyDivisionShape_SetRightSide(_arg0,_arg1);
+    PyThreadState* __tstate = wxPyBeginAllowThreads();
+    wxPyDivisionShape_SetRightSide(_arg0,_arg1);
 
-    wxPy_END_ALLOW_THREADS;
+    wxPyEndAllowThreads(__tstate);
+    if (PyErr_Occurred()) return NULL;
 }    Py_INCREF(Py_None);
     _resultobj = Py_None;
     return _resultobj;
@@ -11061,10 +11363,11 @@ static PyObject *_wrap_wxPyDivisionShape_SetTopSide(PyObject *self, PyObject *ar
         }
     }
 {
-    wxPy_BEGIN_ALLOW_THREADS;
-        wxPyDivisionShape_SetTopSide(_arg0,_arg1);
+    PyThreadState* __tstate = wxPyBeginAllowThreads();
+    wxPyDivisionShape_SetTopSide(_arg0,_arg1);
 
-    wxPy_END_ALLOW_THREADS;
+    wxPyEndAllowThreads(__tstate);
+    if (PyErr_Occurred()) return NULL;
 }    Py_INCREF(Py_None);
     _resultobj = Py_None;
     return _resultobj;
@@ -11090,28 +11393,16 @@ static PyObject *_wrap_wxPyDivisionShape_SetTopSideColour(PyObject *self, PyObje
         }
     }
 {
-#if PYTHON_API_VERSION >= 1009
-    char* tmpPtr; int tmpSize;
-    if (!PyString_Check(_obj1) && !PyUnicode_Check(_obj1)) {
-        PyErr_SetString(PyExc_TypeError, "String or Unicode type required");
+    _arg1 = wxString_in_helper(_obj1);
+    if (_arg1 == NULL)
         return NULL;
-    }
-    if (PyString_AsStringAndSize(_obj1, &tmpPtr, &tmpSize) == -1)
-        return NULL;
-    _arg1 = new wxString(tmpPtr, tmpSize);
-#else
-    if (!PyString_Check(_obj1)) {
-        PyErr_SetString(PyExc_TypeError, wxStringErrorMsg);
-        return NULL;
-    }
-    _arg1 = new wxString(PyString_AS_STRING(_obj1), PyString_GET_SIZE(_obj1));
-#endif
 }
 {
-    wxPy_BEGIN_ALLOW_THREADS;
-        wxPyDivisionShape_SetTopSideColour(_arg0,*_arg1);
+    PyThreadState* __tstate = wxPyBeginAllowThreads();
+    wxPyDivisionShape_SetTopSideColour(_arg0,*_arg1);
 
-    wxPy_END_ALLOW_THREADS;
+    wxPyEndAllowThreads(__tstate);
+    if (PyErr_Occurred()) return NULL;
 }    Py_INCREF(Py_None);
     _resultobj = Py_None;
 {
@@ -11127,11 +11418,11 @@ static PyObject *_wrap_wxPyDivisionShape_SetTopSidePen(PyObject *self, PyObject 
     wxPyDivisionShape * _arg0;
     wxPen * _arg1;
     PyObject * _argo0 = 0;
-    PyObject * _argo1 = 0;
+    PyObject * _obj1 = 0;
     char *_kwnames[] = { "self","pen", NULL };
 
     self = self;
-    if(!PyArg_ParseTupleAndKeywords(args,kwargs,"OO:wxPyDivisionShape_SetTopSidePen",_kwnames,&_argo0,&_argo1)) 
+    if(!PyArg_ParseTupleAndKeywords(args,kwargs,"OO:wxPyDivisionShape_SetTopSidePen",_kwnames,&_argo0,&_obj1)) 
         return NULL;
     if (_argo0) {
         if (_argo0 == Py_None) { _arg0 = NULL; }
@@ -11140,18 +11431,28 @@ static PyObject *_wrap_wxPyDivisionShape_SetTopSidePen(PyObject *self, PyObject 
         return NULL;
         }
     }
-    if (_argo1) {
-        if (_argo1 == Py_None) { _arg1 = NULL; }
-        else if (SWIG_GetPtrObj(_argo1,(void **) &_arg1,"_wxPen_p")) {
-            PyErr_SetString(PyExc_TypeError,"Type error in argument 2 of wxPyDivisionShape_SetTopSidePen. Expected _wxPen_p.");
+{
+    wxPen* temp;
+    if (_obj1) {
+        if (_obj1 == Py_None) { temp = NULL; }
+        else if (SWIG_GetPtrObj(_obj1, (void **) &temp,"_wxPen_p")) {
+            PyErr_SetString(PyExc_TypeError,"Type error, expected _wxPen_p.");
         return NULL;
         }
     }
+    if (temp)
+        _arg1 = wxThePenList->FindOrCreatePen(temp->GetColour(),
+                                                temp->GetWidth(),
+                                                temp->GetStyle());
+    else
+        _arg1 = NULL;
+}
 {
-    wxPy_BEGIN_ALLOW_THREADS;
-        wxPyDivisionShape_SetTopSidePen(_arg0,_arg1);
+    PyThreadState* __tstate = wxPyBeginAllowThreads();
+    wxPyDivisionShape_SetTopSidePen(_arg0,_arg1);
 
-    wxPy_END_ALLOW_THREADS;
+    wxPyEndAllowThreads(__tstate);
+    if (PyErr_Occurred()) return NULL;
 }    Py_INCREF(Py_None);
     _resultobj = Py_None;
     return _resultobj;
@@ -11175,10 +11476,11 @@ static PyObject *_wrap_wxPyDivisionShape_base_OnDelete(PyObject *self, PyObject 
         }
     }
 {
-    wxPy_BEGIN_ALLOW_THREADS;
-        wxPyDivisionShape_base_OnDelete(_arg0);
+    PyThreadState* __tstate = wxPyBeginAllowThreads();
+    wxPyDivisionShape_base_OnDelete(_arg0);
 
-    wxPy_END_ALLOW_THREADS;
+    wxPyEndAllowThreads(__tstate);
+    if (PyErr_Occurred()) return NULL;
 }    Py_INCREF(Py_None);
     _resultobj = Py_None;
     return _resultobj;
@@ -11211,10 +11513,11 @@ static PyObject *_wrap_wxPyDivisionShape_base_OnDraw(PyObject *self, PyObject *a
         }
     }
 {
-    wxPy_BEGIN_ALLOW_THREADS;
-        wxPyDivisionShape_base_OnDraw(_arg0,*_arg1);
+    PyThreadState* __tstate = wxPyBeginAllowThreads();
+    wxPyDivisionShape_base_OnDraw(_arg0,*_arg1);
 
-    wxPy_END_ALLOW_THREADS;
+    wxPyEndAllowThreads(__tstate);
+    if (PyErr_Occurred()) return NULL;
 }    Py_INCREF(Py_None);
     _resultobj = Py_None;
     return _resultobj;
@@ -11247,10 +11550,11 @@ static PyObject *_wrap_wxPyDivisionShape_base_OnDrawContents(PyObject *self, PyO
         }
     }
 {
-    wxPy_BEGIN_ALLOW_THREADS;
-        wxPyDivisionShape_base_OnDrawContents(_arg0,*_arg1);
+    PyThreadState* __tstate = wxPyBeginAllowThreads();
+    wxPyDivisionShape_base_OnDrawContents(_arg0,*_arg1);
 
-    wxPy_END_ALLOW_THREADS;
+    wxPyEndAllowThreads(__tstate);
+    if (PyErr_Occurred()) return NULL;
 }    Py_INCREF(Py_None);
     _resultobj = Py_None;
     return _resultobj;
@@ -11286,10 +11590,11 @@ static PyObject *_wrap_wxPyDivisionShape_base_OnDrawBranches(PyObject *self, PyO
     }
     _arg2 = (bool ) tempbool2;
 {
-    wxPy_BEGIN_ALLOW_THREADS;
-        wxPyDivisionShape_base_OnDrawBranches(_arg0,*_arg1,_arg2);
+    PyThreadState* __tstate = wxPyBeginAllowThreads();
+    wxPyDivisionShape_base_OnDrawBranches(_arg0,*_arg1,_arg2);
 
-    wxPy_END_ALLOW_THREADS;
+    wxPyEndAllowThreads(__tstate);
+    if (PyErr_Occurred()) return NULL;
 }    Py_INCREF(Py_None);
     _resultobj = Py_None;
     return _resultobj;
@@ -11322,10 +11627,11 @@ static PyObject *_wrap_wxPyDivisionShape_base_OnMoveLinks(PyObject *self, PyObje
         }
     }
 {
-    wxPy_BEGIN_ALLOW_THREADS;
-        wxPyDivisionShape_base_OnMoveLinks(_arg0,*_arg1);
+    PyThreadState* __tstate = wxPyBeginAllowThreads();
+    wxPyDivisionShape_base_OnMoveLinks(_arg0,*_arg1);
 
-    wxPy_END_ALLOW_THREADS;
+    wxPyEndAllowThreads(__tstate);
+    if (PyErr_Occurred()) return NULL;
 }    Py_INCREF(Py_None);
     _resultobj = Py_None;
     return _resultobj;
@@ -11358,10 +11664,11 @@ static PyObject *_wrap_wxPyDivisionShape_base_OnErase(PyObject *self, PyObject *
         }
     }
 {
-    wxPy_BEGIN_ALLOW_THREADS;
-        wxPyDivisionShape_base_OnErase(_arg0,*_arg1);
+    PyThreadState* __tstate = wxPyBeginAllowThreads();
+    wxPyDivisionShape_base_OnErase(_arg0,*_arg1);
 
-    wxPy_END_ALLOW_THREADS;
+    wxPyEndAllowThreads(__tstate);
+    if (PyErr_Occurred()) return NULL;
 }    Py_INCREF(Py_None);
     _resultobj = Py_None;
     return _resultobj;
@@ -11394,10 +11701,11 @@ static PyObject *_wrap_wxPyDivisionShape_base_OnEraseContents(PyObject *self, Py
         }
     }
 {
-    wxPy_BEGIN_ALLOW_THREADS;
-        wxPyDivisionShape_base_OnEraseContents(_arg0,*_arg1);
+    PyThreadState* __tstate = wxPyBeginAllowThreads();
+    wxPyDivisionShape_base_OnEraseContents(_arg0,*_arg1);
 
-    wxPy_END_ALLOW_THREADS;
+    wxPyEndAllowThreads(__tstate);
+    if (PyErr_Occurred()) return NULL;
 }    Py_INCREF(Py_None);
     _resultobj = Py_None;
     return _resultobj;
@@ -11430,10 +11738,11 @@ static PyObject *_wrap_wxPyDivisionShape_base_OnHighlight(PyObject *self, PyObje
         }
     }
 {
-    wxPy_BEGIN_ALLOW_THREADS;
-        wxPyDivisionShape_base_OnHighlight(_arg0,*_arg1);
+    PyThreadState* __tstate = wxPyBeginAllowThreads();
+    wxPyDivisionShape_base_OnHighlight(_arg0,*_arg1);
 
-    wxPy_END_ALLOW_THREADS;
+    wxPyEndAllowThreads(__tstate);
+    if (PyErr_Occurred()) return NULL;
 }    Py_INCREF(Py_None);
     _resultobj = Py_None;
     return _resultobj;
@@ -11461,10 +11770,11 @@ static PyObject *_wrap_wxPyDivisionShape_base_OnLeftClick(PyObject *self, PyObje
         }
     }
 {
-    wxPy_BEGIN_ALLOW_THREADS;
-        wxPyDivisionShape_base_OnLeftClick(_arg0,_arg1,_arg2,_arg3,_arg4);
+    PyThreadState* __tstate = wxPyBeginAllowThreads();
+    wxPyDivisionShape_base_OnLeftClick(_arg0,_arg1,_arg2,_arg3,_arg4);
 
-    wxPy_END_ALLOW_THREADS;
+    wxPyEndAllowThreads(__tstate);
+    if (PyErr_Occurred()) return NULL;
 }    Py_INCREF(Py_None);
     _resultobj = Py_None;
     return _resultobj;
@@ -11492,10 +11802,11 @@ static PyObject *_wrap_wxPyDivisionShape_base_OnLeftDoubleClick(PyObject *self, 
         }
     }
 {
-    wxPy_BEGIN_ALLOW_THREADS;
-        wxPyDivisionShape_base_OnLeftDoubleClick(_arg0,_arg1,_arg2,_arg3,_arg4);
+    PyThreadState* __tstate = wxPyBeginAllowThreads();
+    wxPyDivisionShape_base_OnLeftDoubleClick(_arg0,_arg1,_arg2,_arg3,_arg4);
 
-    wxPy_END_ALLOW_THREADS;
+    wxPyEndAllowThreads(__tstate);
+    if (PyErr_Occurred()) return NULL;
 }    Py_INCREF(Py_None);
     _resultobj = Py_None;
     return _resultobj;
@@ -11523,10 +11834,11 @@ static PyObject *_wrap_wxPyDivisionShape_base_OnRightClick(PyObject *self, PyObj
         }
     }
 {
-    wxPy_BEGIN_ALLOW_THREADS;
-        wxPyDivisionShape_base_OnRightClick(_arg0,_arg1,_arg2,_arg3,_arg4);
+    PyThreadState* __tstate = wxPyBeginAllowThreads();
+    wxPyDivisionShape_base_OnRightClick(_arg0,_arg1,_arg2,_arg3,_arg4);
 
-    wxPy_END_ALLOW_THREADS;
+    wxPyEndAllowThreads(__tstate);
+    if (PyErr_Occurred()) return NULL;
 }    Py_INCREF(Py_None);
     _resultobj = Py_None;
     return _resultobj;
@@ -11552,10 +11864,11 @@ static PyObject *_wrap_wxPyDivisionShape_base_OnSize(PyObject *self, PyObject *a
         }
     }
 {
-    wxPy_BEGIN_ALLOW_THREADS;
-        wxPyDivisionShape_base_OnSize(_arg0,_arg1,_arg2);
+    PyThreadState* __tstate = wxPyBeginAllowThreads();
+    wxPyDivisionShape_base_OnSize(_arg0,_arg1,_arg2);
 
-    wxPy_END_ALLOW_THREADS;
+    wxPyEndAllowThreads(__tstate);
+    if (PyErr_Occurred()) return NULL;
 }    Py_INCREF(Py_None);
     _resultobj = Py_None;
     return _resultobj;
@@ -11596,10 +11909,11 @@ static PyObject *_wrap_wxPyDivisionShape_base_OnMovePre(PyObject *self, PyObject
     }
     _arg6 = (bool ) tempbool6;
 {
-    wxPy_BEGIN_ALLOW_THREADS;
-        _result = (bool )wxPyDivisionShape_base_OnMovePre(_arg0,*_arg1,_arg2,_arg3,_arg4,_arg5,_arg6);
+    PyThreadState* __tstate = wxPyBeginAllowThreads();
+    _result = (bool )wxPyDivisionShape_base_OnMovePre(_arg0,*_arg1,_arg2,_arg3,_arg4,_arg5,_arg6);
 
-    wxPy_END_ALLOW_THREADS;
+    wxPyEndAllowThreads(__tstate);
+    if (PyErr_Occurred()) return NULL;
 }    _resultobj = Py_BuildValue("i",_result);
     return _resultobj;
 }
@@ -11638,10 +11952,11 @@ static PyObject *_wrap_wxPyDivisionShape_base_OnMovePost(PyObject *self, PyObjec
     }
     _arg6 = (bool ) tempbool6;
 {
-    wxPy_BEGIN_ALLOW_THREADS;
-        wxPyDivisionShape_base_OnMovePost(_arg0,*_arg1,_arg2,_arg3,_arg4,_arg5,_arg6);
+    PyThreadState* __tstate = wxPyBeginAllowThreads();
+    wxPyDivisionShape_base_OnMovePost(_arg0,*_arg1,_arg2,_arg3,_arg4,_arg5,_arg6);
 
-    wxPy_END_ALLOW_THREADS;
+    wxPyEndAllowThreads(__tstate);
+    if (PyErr_Occurred()) return NULL;
 }    Py_INCREF(Py_None);
     _resultobj = Py_None;
     return _resultobj;
@@ -11672,10 +11987,11 @@ static PyObject *_wrap_wxPyDivisionShape_base_OnDragLeft(PyObject *self, PyObjec
     }
     _arg1 = (bool ) tempbool1;
 {
-    wxPy_BEGIN_ALLOW_THREADS;
-        wxPyDivisionShape_base_OnDragLeft(_arg0,_arg1,_arg2,_arg3,_arg4,_arg5);
+    PyThreadState* __tstate = wxPyBeginAllowThreads();
+    wxPyDivisionShape_base_OnDragLeft(_arg0,_arg1,_arg2,_arg3,_arg4,_arg5);
 
-    wxPy_END_ALLOW_THREADS;
+    wxPyEndAllowThreads(__tstate);
+    if (PyErr_Occurred()) return NULL;
 }    Py_INCREF(Py_None);
     _resultobj = Py_None;
     return _resultobj;
@@ -11703,10 +12019,11 @@ static PyObject *_wrap_wxPyDivisionShape_base_OnBeginDragLeft(PyObject *self, Py
         }
     }
 {
-    wxPy_BEGIN_ALLOW_THREADS;
-        wxPyDivisionShape_base_OnBeginDragLeft(_arg0,_arg1,_arg2,_arg3,_arg4);
+    PyThreadState* __tstate = wxPyBeginAllowThreads();
+    wxPyDivisionShape_base_OnBeginDragLeft(_arg0,_arg1,_arg2,_arg3,_arg4);
 
-    wxPy_END_ALLOW_THREADS;
+    wxPyEndAllowThreads(__tstate);
+    if (PyErr_Occurred()) return NULL;
 }    Py_INCREF(Py_None);
     _resultobj = Py_None;
     return _resultobj;
@@ -11734,10 +12051,11 @@ static PyObject *_wrap_wxPyDivisionShape_base_OnEndDragLeft(PyObject *self, PyOb
         }
     }
 {
-    wxPy_BEGIN_ALLOW_THREADS;
-        wxPyDivisionShape_base_OnEndDragLeft(_arg0,_arg1,_arg2,_arg3,_arg4);
+    PyThreadState* __tstate = wxPyBeginAllowThreads();
+    wxPyDivisionShape_base_OnEndDragLeft(_arg0,_arg1,_arg2,_arg3,_arg4);
 
-    wxPy_END_ALLOW_THREADS;
+    wxPyEndAllowThreads(__tstate);
+    if (PyErr_Occurred()) return NULL;
 }    Py_INCREF(Py_None);
     _resultobj = Py_None;
     return _resultobj;
@@ -11768,10 +12086,11 @@ static PyObject *_wrap_wxPyDivisionShape_base_OnDragRight(PyObject *self, PyObje
     }
     _arg1 = (bool ) tempbool1;
 {
-    wxPy_BEGIN_ALLOW_THREADS;
-        wxPyDivisionShape_base_OnDragRight(_arg0,_arg1,_arg2,_arg3,_arg4,_arg5);
+    PyThreadState* __tstate = wxPyBeginAllowThreads();
+    wxPyDivisionShape_base_OnDragRight(_arg0,_arg1,_arg2,_arg3,_arg4,_arg5);
 
-    wxPy_END_ALLOW_THREADS;
+    wxPyEndAllowThreads(__tstate);
+    if (PyErr_Occurred()) return NULL;
 }    Py_INCREF(Py_None);
     _resultobj = Py_None;
     return _resultobj;
@@ -11799,10 +12118,11 @@ static PyObject *_wrap_wxPyDivisionShape_base_OnBeginDragRight(PyObject *self, P
         }
     }
 {
-    wxPy_BEGIN_ALLOW_THREADS;
-        wxPyDivisionShape_base_OnBeginDragRight(_arg0,_arg1,_arg2,_arg3,_arg4);
+    PyThreadState* __tstate = wxPyBeginAllowThreads();
+    wxPyDivisionShape_base_OnBeginDragRight(_arg0,_arg1,_arg2,_arg3,_arg4);
 
-    wxPy_END_ALLOW_THREADS;
+    wxPyEndAllowThreads(__tstate);
+    if (PyErr_Occurred()) return NULL;
 }    Py_INCREF(Py_None);
     _resultobj = Py_None;
     return _resultobj;
@@ -11830,10 +12150,11 @@ static PyObject *_wrap_wxPyDivisionShape_base_OnEndDragRight(PyObject *self, PyO
         }
     }
 {
-    wxPy_BEGIN_ALLOW_THREADS;
-        wxPyDivisionShape_base_OnEndDragRight(_arg0,_arg1,_arg2,_arg3,_arg4);
+    PyThreadState* __tstate = wxPyBeginAllowThreads();
+    wxPyDivisionShape_base_OnEndDragRight(_arg0,_arg1,_arg2,_arg3,_arg4);
 
-    wxPy_END_ALLOW_THREADS;
+    wxPyEndAllowThreads(__tstate);
+    if (PyErr_Occurred()) return NULL;
 }    Py_INCREF(Py_None);
     _resultobj = Py_None;
     return _resultobj;
@@ -11870,10 +12191,11 @@ static PyObject *_wrap_wxPyDivisionShape_base_OnDrawOutline(PyObject *self, PyOb
         }
     }
 {
-    wxPy_BEGIN_ALLOW_THREADS;
-        wxPyDivisionShape_base_OnDrawOutline(_arg0,*_arg1,_arg2,_arg3,_arg4,_arg5);
+    PyThreadState* __tstate = wxPyBeginAllowThreads();
+    wxPyDivisionShape_base_OnDrawOutline(_arg0,*_arg1,_arg2,_arg3,_arg4,_arg5);
 
-    wxPy_END_ALLOW_THREADS;
+    wxPyEndAllowThreads(__tstate);
+    if (PyErr_Occurred()) return NULL;
 }    Py_INCREF(Py_None);
     _resultobj = Py_None;
     return _resultobj;
@@ -11906,10 +12228,11 @@ static PyObject *_wrap_wxPyDivisionShape_base_OnDrawControlPoints(PyObject *self
         }
     }
 {
-    wxPy_BEGIN_ALLOW_THREADS;
-        wxPyDivisionShape_base_OnDrawControlPoints(_arg0,*_arg1);
+    PyThreadState* __tstate = wxPyBeginAllowThreads();
+    wxPyDivisionShape_base_OnDrawControlPoints(_arg0,*_arg1);
 
-    wxPy_END_ALLOW_THREADS;
+    wxPyEndAllowThreads(__tstate);
+    if (PyErr_Occurred()) return NULL;
 }    Py_INCREF(Py_None);
     _resultobj = Py_None;
     return _resultobj;
@@ -11942,10 +12265,11 @@ static PyObject *_wrap_wxPyDivisionShape_base_OnEraseControlPoints(PyObject *sel
         }
     }
 {
-    wxPy_BEGIN_ALLOW_THREADS;
-        wxPyDivisionShape_base_OnEraseControlPoints(_arg0,*_arg1);
+    PyThreadState* __tstate = wxPyBeginAllowThreads();
+    wxPyDivisionShape_base_OnEraseControlPoints(_arg0,*_arg1);
 
-    wxPy_END_ALLOW_THREADS;
+    wxPyEndAllowThreads(__tstate);
+    if (PyErr_Occurred()) return NULL;
 }    Py_INCREF(Py_None);
     _resultobj = Py_None;
     return _resultobj;
@@ -11981,10 +12305,11 @@ static PyObject *_wrap_wxPyDivisionShape_base_OnMoveLink(PyObject *self, PyObjec
     }
     _arg2 = (bool ) tempbool2;
 {
-    wxPy_BEGIN_ALLOW_THREADS;
-        wxPyDivisionShape_base_OnMoveLink(_arg0,*_arg1,_arg2);
+    PyThreadState* __tstate = wxPyBeginAllowThreads();
+    wxPyDivisionShape_base_OnMoveLink(_arg0,*_arg1,_arg2);
 
-    wxPy_END_ALLOW_THREADS;
+    wxPyEndAllowThreads(__tstate);
+    if (PyErr_Occurred()) return NULL;
 }    Py_INCREF(Py_None);
     _resultobj = Py_None;
     return _resultobj;
@@ -12024,10 +12349,11 @@ static PyObject *_wrap_wxPyDivisionShape_base_OnSizingDragLeft(PyObject *self, P
     }
     _arg2 = (bool ) tempbool2;
 {
-    wxPy_BEGIN_ALLOW_THREADS;
-        wxPyDivisionShape_base_OnSizingDragLeft(_arg0,_arg1,_arg2,_arg3,_arg4,_arg5,_arg6);
+    PyThreadState* __tstate = wxPyBeginAllowThreads();
+    wxPyDivisionShape_base_OnSizingDragLeft(_arg0,_arg1,_arg2,_arg3,_arg4,_arg5,_arg6);
 
-    wxPy_END_ALLOW_THREADS;
+    wxPyEndAllowThreads(__tstate);
+    if (PyErr_Occurred()) return NULL;
 }    Py_INCREF(Py_None);
     _resultobj = Py_None;
     return _resultobj;
@@ -12064,10 +12390,11 @@ static PyObject *_wrap_wxPyDivisionShape_base_OnSizingBeginDragLeft(PyObject *se
         }
     }
 {
-    wxPy_BEGIN_ALLOW_THREADS;
-        wxPyDivisionShape_base_OnSizingBeginDragLeft(_arg0,_arg1,_arg2,_arg3,_arg4,_arg5);
+    PyThreadState* __tstate = wxPyBeginAllowThreads();
+    wxPyDivisionShape_base_OnSizingBeginDragLeft(_arg0,_arg1,_arg2,_arg3,_arg4,_arg5);
 
-    wxPy_END_ALLOW_THREADS;
+    wxPyEndAllowThreads(__tstate);
+    if (PyErr_Occurred()) return NULL;
 }    Py_INCREF(Py_None);
     _resultobj = Py_None;
     return _resultobj;
@@ -12104,10 +12431,11 @@ static PyObject *_wrap_wxPyDivisionShape_base_OnSizingEndDragLeft(PyObject *self
         }
     }
 {
-    wxPy_BEGIN_ALLOW_THREADS;
-        wxPyDivisionShape_base_OnSizingEndDragLeft(_arg0,_arg1,_arg2,_arg3,_arg4,_arg5);
+    PyThreadState* __tstate = wxPyBeginAllowThreads();
+    wxPyDivisionShape_base_OnSizingEndDragLeft(_arg0,_arg1,_arg2,_arg3,_arg4,_arg5);
 
-    wxPy_END_ALLOW_THREADS;
+    wxPyEndAllowThreads(__tstate);
+    if (PyErr_Occurred()) return NULL;
 }    Py_INCREF(Py_None);
     _resultobj = Py_None;
     return _resultobj;
@@ -12133,10 +12461,11 @@ static PyObject *_wrap_wxPyDivisionShape_base_OnBeginSize(PyObject *self, PyObje
         }
     }
 {
-    wxPy_BEGIN_ALLOW_THREADS;
-        wxPyDivisionShape_base_OnBeginSize(_arg0,_arg1,_arg2);
+    PyThreadState* __tstate = wxPyBeginAllowThreads();
+    wxPyDivisionShape_base_OnBeginSize(_arg0,_arg1,_arg2);
 
-    wxPy_END_ALLOW_THREADS;
+    wxPyEndAllowThreads(__tstate);
+    if (PyErr_Occurred()) return NULL;
 }    Py_INCREF(Py_None);
     _resultobj = Py_None;
     return _resultobj;
@@ -12162,10 +12491,11 @@ static PyObject *_wrap_wxPyDivisionShape_base_OnEndSize(PyObject *self, PyObject
         }
     }
 {
-    wxPy_BEGIN_ALLOW_THREADS;
-        wxPyDivisionShape_base_OnEndSize(_arg0,_arg1,_arg2);
+    PyThreadState* __tstate = wxPyBeginAllowThreads();
+    wxPyDivisionShape_base_OnEndSize(_arg0,_arg1,_arg2);
 
-    wxPy_END_ALLOW_THREADS;
+    wxPyEndAllowThreads(__tstate);
+    if (PyErr_Occurred()) return NULL;
 }    Py_INCREF(Py_None);
     _resultobj = Py_None;
     return _resultobj;
@@ -12226,7 +12556,7 @@ static PyMethodDef oglshapescMethods[] = {
 	 { "wxPyDivisionShape_AdjustRight", (PyCFunction) _wrap_wxPyDivisionShape_AdjustRight, METH_VARARGS | METH_KEYWORDS },
 	 { "wxPyDivisionShape_AdjustLeft", (PyCFunction) _wrap_wxPyDivisionShape_AdjustLeft, METH_VARARGS | METH_KEYWORDS },
 	 { "wxPyDivisionShape_AdjustBottom", (PyCFunction) _wrap_wxPyDivisionShape_AdjustBottom, METH_VARARGS | METH_KEYWORDS },
-	 { "wxPyDivisionShape__setSelf", (PyCFunction) _wrap_wxPyDivisionShape__setSelf, METH_VARARGS | METH_KEYWORDS },
+	 { "wxPyDivisionShape__setCallbackInfo", (PyCFunction) _wrap_wxPyDivisionShape__setCallbackInfo, METH_VARARGS | METH_KEYWORDS },
 	 { "new_wxPyDivisionShape", (PyCFunction) _wrap_new_wxPyDivisionShape, METH_VARARGS | METH_KEYWORDS },
 	 { "wxPyDividedShape_base_OnEndSize", (PyCFunction) _wrap_wxPyDividedShape_base_OnEndSize, METH_VARARGS | METH_KEYWORDS },
 	 { "wxPyDividedShape_base_OnBeginSize", (PyCFunction) _wrap_wxPyDividedShape_base_OnBeginSize, METH_VARARGS | METH_KEYWORDS },
@@ -12259,7 +12589,7 @@ static PyMethodDef oglshapescMethods[] = {
 	 { "wxPyDividedShape_base_OnDelete", (PyCFunction) _wrap_wxPyDividedShape_base_OnDelete, METH_VARARGS | METH_KEYWORDS },
 	 { "wxPyDividedShape_SetRegionSizes", (PyCFunction) _wrap_wxPyDividedShape_SetRegionSizes, METH_VARARGS | METH_KEYWORDS },
 	 { "wxPyDividedShape_EditRegions", (PyCFunction) _wrap_wxPyDividedShape_EditRegions, METH_VARARGS | METH_KEYWORDS },
-	 { "wxPyDividedShape__setSelf", (PyCFunction) _wrap_wxPyDividedShape__setSelf, METH_VARARGS | METH_KEYWORDS },
+	 { "wxPyDividedShape__setCallbackInfo", (PyCFunction) _wrap_wxPyDividedShape__setCallbackInfo, METH_VARARGS | METH_KEYWORDS },
 	 { "new_wxPyDividedShape", (PyCFunction) _wrap_new_wxPyDividedShape, METH_VARARGS | METH_KEYWORDS },
 	 { "wxPyCompositeShape_base_OnEndSize", (PyCFunction) _wrap_wxPyCompositeShape_base_OnEndSize, METH_VARARGS | METH_KEYWORDS },
 	 { "wxPyCompositeShape_base_OnBeginSize", (PyCFunction) _wrap_wxPyCompositeShape_base_OnBeginSize, METH_VARARGS | METH_KEYWORDS },
@@ -12304,12 +12634,11 @@ static PyMethodDef oglshapescMethods[] = {
 	 { "wxPyCompositeShape_AddConstrainedShapes", (PyCFunction) _wrap_wxPyCompositeShape_AddConstrainedShapes, METH_VARARGS | METH_KEYWORDS },
 	 { "wxPyCompositeShape_AddConstraint", (PyCFunction) _wrap_wxPyCompositeShape_AddConstraint, METH_VARARGS | METH_KEYWORDS },
 	 { "wxPyCompositeShape_AddChild", (PyCFunction) _wrap_wxPyCompositeShape_AddChild, METH_VARARGS | METH_KEYWORDS },
-	 { "wxPyCompositeShape__setSelf", (PyCFunction) _wrap_wxPyCompositeShape__setSelf, METH_VARARGS | METH_KEYWORDS },
+	 { "wxPyCompositeShape__setCallbackInfo", (PyCFunction) _wrap_wxPyCompositeShape__setCallbackInfo, METH_VARARGS | METH_KEYWORDS },
 	 { "new_wxPyCompositeShape", (PyCFunction) _wrap_new_wxPyCompositeShape, METH_VARARGS | METH_KEYWORDS },
 	 { "wxOGLConstraint_Equals", (PyCFunction) _wrap_wxOGLConstraint_Equals, METH_VARARGS | METH_KEYWORDS },
 	 { "wxOGLConstraint_SetSpacing", (PyCFunction) _wrap_wxOGLConstraint_SetSpacing, METH_VARARGS | METH_KEYWORDS },
 	 { "wxOGLConstraint_Evaluate", (PyCFunction) _wrap_wxOGLConstraint_Evaluate, METH_VARARGS | METH_KEYWORDS },
-	 { "delete_wxOGLConstraint", (PyCFunction) _wrap_delete_wxOGLConstraint, METH_VARARGS | METH_KEYWORDS },
 	 { "new_wxOGLConstraint", (PyCFunction) _wrap_new_wxOGLConstraint, METH_VARARGS | METH_KEYWORDS },
 	 { "wxPyDrawnShape_base_OnEndSize", (PyCFunction) _wrap_wxPyDrawnShape_base_OnEndSize, METH_VARARGS | METH_KEYWORDS },
 	 { "wxPyDrawnShape_base_OnBeginSize", (PyCFunction) _wrap_wxPyDrawnShape_base_OnBeginSize, METH_VARARGS | METH_KEYWORDS },
@@ -12368,7 +12697,7 @@ static PyMethodDef oglshapescMethods[] = {
 	 { "wxPyDrawnShape_DrawArc", (PyCFunction) _wrap_wxPyDrawnShape_DrawArc, METH_VARARGS | METH_KEYWORDS },
 	 { "wxPyDrawnShape_DestroyClippingRect", (PyCFunction) _wrap_wxPyDrawnShape_DestroyClippingRect, METH_VARARGS | METH_KEYWORDS },
 	 { "wxPyDrawnShape_CalculateSize", (PyCFunction) _wrap_wxPyDrawnShape_CalculateSize, METH_VARARGS | METH_KEYWORDS },
-	 { "wxPyDrawnShape__setSelf", (PyCFunction) _wrap_wxPyDrawnShape__setSelf, METH_VARARGS | METH_KEYWORDS },
+	 { "wxPyDrawnShape__setCallbackInfo", (PyCFunction) _wrap_wxPyDrawnShape__setCallbackInfo, METH_VARARGS | METH_KEYWORDS },
 	 { "new_wxPyDrawnShape", (PyCFunction) _wrap_new_wxPyDrawnShape, METH_VARARGS | METH_KEYWORDS },
 	 { "wxPyBitmapShape_base_OnEndSize", (PyCFunction) _wrap_wxPyBitmapShape_base_OnEndSize, METH_VARARGS | METH_KEYWORDS },
 	 { "wxPyBitmapShape_base_OnBeginSize", (PyCFunction) _wrap_wxPyBitmapShape_base_OnBeginSize, METH_VARARGS | METH_KEYWORDS },
@@ -12403,7 +12732,7 @@ static PyMethodDef oglshapescMethods[] = {
 	 { "wxPyBitmapShape_SetBitmap", (PyCFunction) _wrap_wxPyBitmapShape_SetBitmap, METH_VARARGS | METH_KEYWORDS },
 	 { "wxPyBitmapShape_GetFilename", (PyCFunction) _wrap_wxPyBitmapShape_GetFilename, METH_VARARGS | METH_KEYWORDS },
 	 { "wxPyBitmapShape_GetBitmap", (PyCFunction) _wrap_wxPyBitmapShape_GetBitmap, METH_VARARGS | METH_KEYWORDS },
-	 { "wxPyBitmapShape__setSelf", (PyCFunction) _wrap_wxPyBitmapShape__setSelf, METH_VARARGS | METH_KEYWORDS },
+	 { "wxPyBitmapShape__setCallbackInfo", (PyCFunction) _wrap_wxPyBitmapShape__setCallbackInfo, METH_VARARGS | METH_KEYWORDS },
 	 { "new_wxPyBitmapShape", (PyCFunction) _wrap_new_wxPyBitmapShape, METH_VARARGS | METH_KEYWORDS },
 	 { "wxPyControlPoint_base_OnEndSize", (PyCFunction) _wrap_wxPyControlPoint_base_OnEndSize, METH_VARARGS | METH_KEYWORDS },
 	 { "wxPyControlPoint_base_OnBeginSize", (PyCFunction) _wrap_wxPyControlPoint_base_OnBeginSize, METH_VARARGS | METH_KEYWORDS },
@@ -12435,7 +12764,7 @@ static PyMethodDef oglshapescMethods[] = {
 	 { "wxPyControlPoint_base_OnDraw", (PyCFunction) _wrap_wxPyControlPoint_base_OnDraw, METH_VARARGS | METH_KEYWORDS },
 	 { "wxPyControlPoint_base_OnDelete", (PyCFunction) _wrap_wxPyControlPoint_base_OnDelete, METH_VARARGS | METH_KEYWORDS },
 	 { "wxPyControlPoint_SetCornerRadius", (PyCFunction) _wrap_wxPyControlPoint_SetCornerRadius, METH_VARARGS | METH_KEYWORDS },
-	 { "wxPyControlPoint__setSelf", (PyCFunction) _wrap_wxPyControlPoint__setSelf, METH_VARARGS | METH_KEYWORDS },
+	 { "wxPyControlPoint__setCallbackInfo", (PyCFunction) _wrap_wxPyControlPoint__setCallbackInfo, METH_VARARGS | METH_KEYWORDS },
 	 { "new_wxPyControlPoint", (PyCFunction) _wrap_new_wxPyControlPoint, METH_VARARGS | METH_KEYWORDS },
 	 { "wxPyRectangleShape_base_OnEndSize", (PyCFunction) _wrap_wxPyRectangleShape_base_OnEndSize, METH_VARARGS | METH_KEYWORDS },
 	 { "wxPyRectangleShape_base_OnBeginSize", (PyCFunction) _wrap_wxPyRectangleShape_base_OnBeginSize, METH_VARARGS | METH_KEYWORDS },
@@ -12467,7 +12796,7 @@ static PyMethodDef oglshapescMethods[] = {
 	 { "wxPyRectangleShape_base_OnDraw", (PyCFunction) _wrap_wxPyRectangleShape_base_OnDraw, METH_VARARGS | METH_KEYWORDS },
 	 { "wxPyRectangleShape_base_OnDelete", (PyCFunction) _wrap_wxPyRectangleShape_base_OnDelete, METH_VARARGS | METH_KEYWORDS },
 	 { "wxPyRectangleShape_SetCornerRadius", (PyCFunction) _wrap_wxPyRectangleShape_SetCornerRadius, METH_VARARGS | METH_KEYWORDS },
-	 { "wxPyRectangleShape__setSelf", (PyCFunction) _wrap_wxPyRectangleShape__setSelf, METH_VARARGS | METH_KEYWORDS },
+	 { "wxPyRectangleShape__setCallbackInfo", (PyCFunction) _wrap_wxPyRectangleShape__setCallbackInfo, METH_VARARGS | METH_KEYWORDS },
 	 { "new_wxPyRectangleShape", (PyCFunction) _wrap_new_wxPyRectangleShape, METH_VARARGS | METH_KEYWORDS },
 	 { "wxPseudoMetaFile_SetBackgroundMode", (PyCFunction) _wrap_wxPseudoMetaFile_SetBackgroundMode, METH_VARARGS | METH_KEYWORDS },
 	 { "wxPseudoMetaFile_SetBackgroundColour", (PyCFunction) _wrap_wxPseudoMetaFile_SetBackgroundColour, METH_VARARGS | METH_KEYWORDS },
@@ -12531,20 +12860,7 @@ static struct { char *n1; char *n2; void *(*pcnv)(void *); } _swig_mapping[] = {
     { "_wxPrintQuality","_EBool",0},
     { "_wxPrintQuality","_size_t",0},
     { "_wxPrintQuality","_time_t",0},
-    { "_wxPyCompositeShape","_class_wxPyDivisionShape",SwigwxPyDivisionShapeTowxPyCompositeShape},
     { "_wxPyCompositeShape","_wxPyDivisionShape",SwigwxPyDivisionShapeTowxPyCompositeShape},
-    { "_class_wxPyRectangleShape","_class_wxPyDivisionShape",SwigwxPyDivisionShapeTowxPyRectangleShape},
-    { "_class_wxPyRectangleShape","_wxPyDivisionShape",SwigwxPyDivisionShapeTowxPyRectangleShape},
-    { "_class_wxPyRectangleShape","_class_wxPyDividedShape",SwigwxPyDividedShapeTowxPyRectangleShape},
-    { "_class_wxPyRectangleShape","_wxPyDividedShape",SwigwxPyDividedShapeTowxPyRectangleShape},
-    { "_class_wxPyRectangleShape","_class_wxPyCompositeShape",SwigwxPyCompositeShapeTowxPyRectangleShape},
-    { "_class_wxPyRectangleShape","_wxPyCompositeShape",SwigwxPyCompositeShapeTowxPyRectangleShape},
-    { "_class_wxPyRectangleShape","_class_wxPyDrawnShape",SwigwxPyDrawnShapeTowxPyRectangleShape},
-    { "_class_wxPyRectangleShape","_wxPyDrawnShape",SwigwxPyDrawnShapeTowxPyRectangleShape},
-    { "_class_wxPyRectangleShape","_class_wxPyBitmapShape",SwigwxPyBitmapShapeTowxPyRectangleShape},
-    { "_class_wxPyRectangleShape","_wxPyBitmapShape",SwigwxPyBitmapShapeTowxPyRectangleShape},
-    { "_class_wxPyRectangleShape","_class_wxPyControlPoint",SwigwxPyControlPointTowxPyRectangleShape},
-    { "_class_wxPyRectangleShape","_wxPyControlPoint",SwigwxPyControlPointTowxPyRectangleShape},
     { "_byte","_unsigned_char",0},
     { "_long","_unsigned_long",0},
     { "_long","_signed_long",0},
@@ -12555,22 +12871,6 @@ static struct { char *n1; char *n2; void *(*pcnv)(void *); } _swig_mapping[] = {
     { "_size_t","_int",0},
     { "_size_t","_wxWindowID",0},
     { "_size_t","_uint",0},
-    { "_class_wxPyShapeEvtHandler","_class_wxPyDivisionShape",SwigwxPyDivisionShapeTowxPyShapeEvtHandler},
-    { "_class_wxPyShapeEvtHandler","_wxPyDivisionShape",SwigwxPyDivisionShapeTowxPyShapeEvtHandler},
-    { "_class_wxPyShapeEvtHandler","_class_wxPyDividedShape",SwigwxPyDividedShapeTowxPyShapeEvtHandler},
-    { "_class_wxPyShapeEvtHandler","_wxPyDividedShape",SwigwxPyDividedShapeTowxPyShapeEvtHandler},
-    { "_class_wxPyShapeEvtHandler","_class_wxPyCompositeShape",SwigwxPyCompositeShapeTowxPyShapeEvtHandler},
-    { "_class_wxPyShapeEvtHandler","_wxPyCompositeShape",SwigwxPyCompositeShapeTowxPyShapeEvtHandler},
-    { "_class_wxPyShapeEvtHandler","_class_wxPyDrawnShape",SwigwxPyDrawnShapeTowxPyShapeEvtHandler},
-    { "_class_wxPyShapeEvtHandler","_wxPyDrawnShape",SwigwxPyDrawnShapeTowxPyShapeEvtHandler},
-    { "_class_wxPyShapeEvtHandler","_class_wxPyBitmapShape",SwigwxPyBitmapShapeTowxPyShapeEvtHandler},
-    { "_class_wxPyShapeEvtHandler","_wxPyBitmapShape",SwigwxPyBitmapShapeTowxPyShapeEvtHandler},
-    { "_class_wxPyShapeEvtHandler","_class_wxPyControlPoint",SwigwxPyControlPointTowxPyShapeEvtHandler},
-    { "_class_wxPyShapeEvtHandler","_wxPyControlPoint",SwigwxPyControlPointTowxPyShapeEvtHandler},
-    { "_class_wxPyShapeEvtHandler","_class_wxPyRectangleShape",SwigwxPyRectangleShapeTowxPyShapeEvtHandler},
-    { "_class_wxPyShapeEvtHandler","_wxPyRectangleShape",SwigwxPyRectangleShapeTowxPyShapeEvtHandler},
-    { "_class_wxPyCompositeShape","_class_wxPyDivisionShape",SwigwxPyDivisionShapeTowxPyCompositeShape},
-    { "_class_wxPyCompositeShape","_wxPyDivisionShape",SwigwxPyDivisionShapeTowxPyCompositeShape},
     { "_uint","_wxCoord",0},
     { "_uint","_wxPrintQuality",0},
     { "_uint","_time_t",0},
@@ -12580,12 +12880,14 @@ static struct { char *n1; char *n2; void *(*pcnv)(void *); } _swig_mapping[] = {
     { "_uint","_wxWindowID",0},
     { "_wxChar","_char",0},
     { "_char","_wxChar",0},
+    { "_struct_wxNativeFontInfo","_wxNativeFontInfo",0},
     { "_EBool","_wxCoord",0},
     { "_EBool","_wxPrintQuality",0},
     { "_EBool","_signed_int",0},
     { "_EBool","_int",0},
     { "_EBool","_wxWindowID",0},
     { "_unsigned_long","_long",0},
+    { "_wxNativeFontInfo","_struct_wxNativeFontInfo",0},
     { "_signed_int","_wxCoord",0},
     { "_signed_int","_wxPrintQuality",0},
     { "_signed_int","_EBool",0},
@@ -12598,21 +12900,23 @@ static struct { char *n1; char *n2; void *(*pcnv)(void *); } _swig_mapping[] = {
     { "_unsigned_short","_wxDateTime_t",0},
     { "_unsigned_short","_WXTYPE",0},
     { "_unsigned_short","_short",0},
+    { "_wxObject","_wxPyDivisionShape",SwigwxPyDivisionShapeTowxObject},
+    { "_wxObject","_wxPyDividedShape",SwigwxPyDividedShapeTowxObject},
+    { "_wxObject","_wxPyCompositeShape",SwigwxPyCompositeShapeTowxObject},
+    { "_wxObject","_wxOGLConstraint",SwigwxOGLConstraintTowxObject},
+    { "_wxObject","_wxPyDrawnShape",SwigwxPyDrawnShapeTowxObject},
+    { "_wxObject","_wxPyBitmapShape",SwigwxPyBitmapShapeTowxObject},
+    { "_wxObject","_wxPyControlPoint",SwigwxPyControlPointTowxObject},
+    { "_wxObject","_wxPyRectangleShape",SwigwxPyRectangleShapeTowxObject},
+    { "_wxObject","_wxPseudoMetaFile",SwigwxPseudoMetaFileTowxObject},
     { "_signed_short","_WXTYPE",0},
     { "_signed_short","_short",0},
-    { "_wxPyShape","_class_wxPyDivisionShape",SwigwxPyDivisionShapeTowxPyShape},
     { "_wxPyShape","_wxPyDivisionShape",SwigwxPyDivisionShapeTowxPyShape},
-    { "_wxPyShape","_class_wxPyDividedShape",SwigwxPyDividedShapeTowxPyShape},
     { "_wxPyShape","_wxPyDividedShape",SwigwxPyDividedShapeTowxPyShape},
-    { "_wxPyShape","_class_wxPyCompositeShape",SwigwxPyCompositeShapeTowxPyShape},
     { "_wxPyShape","_wxPyCompositeShape",SwigwxPyCompositeShapeTowxPyShape},
-    { "_wxPyShape","_class_wxPyDrawnShape",SwigwxPyDrawnShapeTowxPyShape},
     { "_wxPyShape","_wxPyDrawnShape",SwigwxPyDrawnShapeTowxPyShape},
-    { "_wxPyShape","_class_wxPyBitmapShape",SwigwxPyBitmapShapeTowxPyShape},
     { "_wxPyShape","_wxPyBitmapShape",SwigwxPyBitmapShapeTowxPyShape},
-    { "_wxPyShape","_class_wxPyControlPoint",SwigwxPyControlPointTowxPyShape},
     { "_wxPyShape","_wxPyControlPoint",SwigwxPyControlPointTowxPyShape},
-    { "_wxPyShape","_class_wxPyRectangleShape",SwigwxPyRectangleShapeTowxPyShape},
     { "_wxPyShape","_wxPyRectangleShape",SwigwxPyRectangleShapeTowxPyShape},
     { "_unsigned_char","_byte",0},
     { "_unsigned_int","_wxCoord",0},
@@ -12654,20 +12958,6 @@ static struct { char *n1; char *n2; void *(*pcnv)(void *); } _swig_mapping[] = {
     { "_time_t","_wxWindowID",0},
     { "_time_t","_uint",0},
     { "_time_t","_size_t",0},
-    { "_class_wxPyShape","_class_wxPyDivisionShape",SwigwxPyDivisionShapeTowxPyShape},
-    { "_class_wxPyShape","_wxPyDivisionShape",SwigwxPyDivisionShapeTowxPyShape},
-    { "_class_wxPyShape","_class_wxPyDividedShape",SwigwxPyDividedShapeTowxPyShape},
-    { "_class_wxPyShape","_wxPyDividedShape",SwigwxPyDividedShapeTowxPyShape},
-    { "_class_wxPyShape","_class_wxPyCompositeShape",SwigwxPyCompositeShapeTowxPyShape},
-    { "_class_wxPyShape","_wxPyCompositeShape",SwigwxPyCompositeShapeTowxPyShape},
-    { "_class_wxPyShape","_class_wxPyDrawnShape",SwigwxPyDrawnShapeTowxPyShape},
-    { "_class_wxPyShape","_wxPyDrawnShape",SwigwxPyDrawnShapeTowxPyShape},
-    { "_class_wxPyShape","_class_wxPyBitmapShape",SwigwxPyBitmapShapeTowxPyShape},
-    { "_class_wxPyShape","_wxPyBitmapShape",SwigwxPyBitmapShapeTowxPyShape},
-    { "_class_wxPyShape","_class_wxPyControlPoint",SwigwxPyControlPointTowxPyShape},
-    { "_class_wxPyShape","_wxPyControlPoint",SwigwxPyControlPointTowxPyShape},
-    { "_class_wxPyShape","_class_wxPyRectangleShape",SwigwxPyRectangleShapeTowxPyShape},
-    { "_class_wxPyShape","_wxPyRectangleShape",SwigwxPyRectangleShapeTowxPyShape},
     { "_wxCoord","_int",0},
     { "_wxCoord","_signed_int",0},
     { "_wxCoord","_unsigned_int",0},
@@ -12677,31 +12967,18 @@ static struct { char *n1; char *n2; void *(*pcnv)(void *); } _swig_mapping[] = {
     { "_wxCoord","_size_t",0},
     { "_wxCoord","_time_t",0},
     { "_wxCoord","_wxPrintQuality",0},
-    { "_wxPyShapeEvtHandler","_class_wxPyDivisionShape",SwigwxPyDivisionShapeTowxPyShapeEvtHandler},
     { "_wxPyShapeEvtHandler","_wxPyDivisionShape",SwigwxPyDivisionShapeTowxPyShapeEvtHandler},
-    { "_wxPyShapeEvtHandler","_class_wxPyDividedShape",SwigwxPyDividedShapeTowxPyShapeEvtHandler},
     { "_wxPyShapeEvtHandler","_wxPyDividedShape",SwigwxPyDividedShapeTowxPyShapeEvtHandler},
-    { "_wxPyShapeEvtHandler","_class_wxPyCompositeShape",SwigwxPyCompositeShapeTowxPyShapeEvtHandler},
     { "_wxPyShapeEvtHandler","_wxPyCompositeShape",SwigwxPyCompositeShapeTowxPyShapeEvtHandler},
-    { "_wxPyShapeEvtHandler","_class_wxPyDrawnShape",SwigwxPyDrawnShapeTowxPyShapeEvtHandler},
     { "_wxPyShapeEvtHandler","_wxPyDrawnShape",SwigwxPyDrawnShapeTowxPyShapeEvtHandler},
-    { "_wxPyShapeEvtHandler","_class_wxPyBitmapShape",SwigwxPyBitmapShapeTowxPyShapeEvtHandler},
     { "_wxPyShapeEvtHandler","_wxPyBitmapShape",SwigwxPyBitmapShapeTowxPyShapeEvtHandler},
-    { "_wxPyShapeEvtHandler","_class_wxPyControlPoint",SwigwxPyControlPointTowxPyShapeEvtHandler},
     { "_wxPyShapeEvtHandler","_wxPyControlPoint",SwigwxPyControlPointTowxPyShapeEvtHandler},
-    { "_wxPyShapeEvtHandler","_class_wxPyRectangleShape",SwigwxPyRectangleShapeTowxPyShapeEvtHandler},
     { "_wxPyShapeEvtHandler","_wxPyRectangleShape",SwigwxPyRectangleShapeTowxPyShapeEvtHandler},
-    { "_wxPyRectangleShape","_class_wxPyDivisionShape",SwigwxPyDivisionShapeTowxPyRectangleShape},
     { "_wxPyRectangleShape","_wxPyDivisionShape",SwigwxPyDivisionShapeTowxPyRectangleShape},
-    { "_wxPyRectangleShape","_class_wxPyDividedShape",SwigwxPyDividedShapeTowxPyRectangleShape},
     { "_wxPyRectangleShape","_wxPyDividedShape",SwigwxPyDividedShapeTowxPyRectangleShape},
-    { "_wxPyRectangleShape","_class_wxPyCompositeShape",SwigwxPyCompositeShapeTowxPyRectangleShape},
     { "_wxPyRectangleShape","_wxPyCompositeShape",SwigwxPyCompositeShapeTowxPyRectangleShape},
-    { "_wxPyRectangleShape","_class_wxPyDrawnShape",SwigwxPyDrawnShapeTowxPyRectangleShape},
     { "_wxPyRectangleShape","_wxPyDrawnShape",SwigwxPyDrawnShapeTowxPyRectangleShape},
-    { "_wxPyRectangleShape","_class_wxPyBitmapShape",SwigwxPyBitmapShapeTowxPyRectangleShape},
     { "_wxPyRectangleShape","_wxPyBitmapShape",SwigwxPyBitmapShapeTowxPyRectangleShape},
-    { "_wxPyRectangleShape","_class_wxPyControlPoint",SwigwxPyControlPointTowxPyRectangleShape},
     { "_wxPyRectangleShape","_wxPyControlPoint",SwigwxPyControlPointTowxPyRectangleShape},
 {0,0,0}};
 

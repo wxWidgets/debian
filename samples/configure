@@ -523,12 +523,20 @@ fi
 
 
 
+if test "x$wx_cv_path_samplesubdirs" = "x"; then
+    { echo "configure: error: Please run configure from the top level directory." 1>&2; exit 1; }
+fi
+
 SAMPLES_SUBDIRS=$wx_cv_path_samplesubdirs
 
 
+IF_GNU_MAKE=$wx_cv_if_gnu_make
 PATH_IFS=$wx_cv_path_ifs
 PROGRAM_EXT=$wx_cv_program_ext
 WX_TARGET_LIBRARY=$wx_cv_target_library
+WX_TARGET_LIBRARY_GL=$wx_cv_target_library_gl
+
+
 
 
 
@@ -648,6 +656,7 @@ ac_given_srcdir=$srcdir
 
 trap 'rm -fr `echo "
             Makefile
+            artprov/Makefile
             caret/Makefile
             calendar/Makefile
             checklst/Makefile
@@ -663,6 +672,8 @@ trap 'rm -fr `echo "
             dragimag/Makefile
             drawing/Makefile
             dynamic/Makefile
+            erase/Makefile
+            event/Makefile
             exec/Makefile
             font/Makefile
             grid/Makefile
@@ -671,26 +682,32 @@ trap 'rm -fr `echo "
             internat/Makefile
             ipc/Makefile
             joytest/Makefile
+            keyboard/Makefile
             layout/Makefile
             listctrl/Makefile
             mdi/Makefile
             menu/Makefile
+            memcheck/Makefile
             minifram/Makefile
             minimal/Makefile
+            mobile/Makefile
+            mobile/wxedit/Makefile
+            mobile/styles/Makefile
             newgrid/Makefile
             notebook/Makefile
             png/Makefile
             printing/Makefile
             proplist/Makefile
             propsize/Makefile
-            richedit/Makefile
             resource/Makefile
             rotate/Makefile
             sashtest/Makefile
             scroll/Makefile
             scrollsub/Makefile
+            sockets/Makefile
             splitter/Makefile
             statbar/Makefile
+            taskbar/Makefile
             text/Makefile
             thread/Makefile
             toolbar/Makefile
@@ -698,7 +715,7 @@ trap 'rm -fr `echo "
             treelay/Makefile
             typetest/Makefile
             validate/Makefile
-            sockets/Makefile
+            widgets/Makefile
             wizard/Makefile
             html/Makefile
             html/about/Makefile
@@ -746,9 +763,11 @@ s%@oldincludedir@%$oldincludedir%g
 s%@infodir@%$infodir%g
 s%@mandir@%$mandir%g
 s%@SAMPLES_SUBDIRS@%$SAMPLES_SUBDIRS%g
+s%@IF_GNU_MAKE@%$IF_GNU_MAKE%g
 s%@PATH_IFS@%$PATH_IFS%g
 s%@PROGRAM_EXT@%$PROGRAM_EXT%g
 s%@WX_TARGET_LIBRARY@%$WX_TARGET_LIBRARY%g
+s%@WX_TARGET_LIBRARY_GL@%$WX_TARGET_LIBRARY_GL%g
 
 CEOF
 EOF
@@ -791,6 +810,7 @@ EOF
 cat >> $CONFIG_STATUS <<EOF
 
 CONFIG_FILES=\${CONFIG_FILES-"Makefile
+            artprov/Makefile
             caret/Makefile
             calendar/Makefile
             checklst/Makefile
@@ -806,6 +826,8 @@ CONFIG_FILES=\${CONFIG_FILES-"Makefile
             dragimag/Makefile
             drawing/Makefile
             dynamic/Makefile
+            erase/Makefile
+            event/Makefile
             exec/Makefile
             font/Makefile
             grid/Makefile
@@ -814,26 +836,32 @@ CONFIG_FILES=\${CONFIG_FILES-"Makefile
             internat/Makefile
             ipc/Makefile
             joytest/Makefile
+            keyboard/Makefile
             layout/Makefile
             listctrl/Makefile
             mdi/Makefile
             menu/Makefile
+            memcheck/Makefile
             minifram/Makefile
             minimal/Makefile
+            mobile/Makefile
+            mobile/wxedit/Makefile
+            mobile/styles/Makefile
             newgrid/Makefile
             notebook/Makefile
             png/Makefile
             printing/Makefile
             proplist/Makefile
             propsize/Makefile
-            richedit/Makefile
             resource/Makefile
             rotate/Makefile
             sashtest/Makefile
             scroll/Makefile
             scrollsub/Makefile
+            sockets/Makefile
             splitter/Makefile
             statbar/Makefile
+            taskbar/Makefile
             text/Makefile
             thread/Makefile
             toolbar/Makefile
@@ -841,7 +869,7 @@ CONFIG_FILES=\${CONFIG_FILES-"Makefile
             treelay/Makefile
             typetest/Makefile
             validate/Makefile
-            sockets/Makefile
+            widgets/Makefile
             wizard/Makefile
             html/Makefile
             html/about/Makefile

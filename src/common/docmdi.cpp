@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     01/02/97
-// RCS-ID:      $Id: docmdi.cpp,v 1.13.2.2 2001/02/10 14:15:04 vadz Exp $
+// RCS-ID:      $Id: docmdi.cpp,v 1.16 2002/07/22 14:46:41 DW Exp $
 // Copyright:   (c) Julian Smart
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -50,8 +50,8 @@ void wxDocMDIParentFrame::OnExit(wxCommandEvent& WXUNUSED(event))
 
 void wxDocMDIParentFrame::OnMRUFile(wxCommandEvent& event)
 {
-    wxString f(m_docManager->GetHistoryFile(event.GetId() - wxID_FILE1));
-    if ( !f.empty() )
+      wxString f(m_docManager->GetHistoryFile(event.GetId() - wxID_FILE1));
+      if (f != wxT(""))
         (void)m_docManager->CreateDocument(f, wxDOC_SILENT);
 }
 
@@ -99,22 +99,34 @@ wxDocMDIChildFrame::wxDocMDIChildFrame(wxDocument *doc, wxView *view, wxMDIParen
 
 wxDocMDIChildFrame::~wxDocMDIChildFrame(void)
 {
-    m_childView = (wxView *) NULL;
+	m_childView = (wxView *) NULL;
 }
 
 // Extend event processing to search the view's event table
 bool wxDocMDIChildFrame::ProcessEvent(wxEvent& event)
 {
-    if ( !m_childView || ! m_childView->ProcessEvent(event) )
+    static wxEvent *ActiveEvent = NULL;
+
+    // Break recursion loops
+    if (ActiveEvent == &event)
+        return FALSE;
+
+    ActiveEvent = &event;
+
+    bool ret;
+	if ( !m_childView || ! m_childView->ProcessEvent(event) )
     {
         // Only hand up to the parent if it's a menu command
         if (!event.IsKindOf(CLASSINFO(wxCommandEvent)) || !GetParent() || !GetParent()->ProcessEvent(event))
-            return wxEvtHandler::ProcessEvent(event);
+            ret = wxEvtHandler::ProcessEvent(event);
         else
-            return TRUE;
+            ret = TRUE;
     }
-    else
-        return TRUE;
+	else
+        ret = TRUE;
+
+    ActiveEvent = NULL;
+    return ret;
 }
 
 void wxDocMDIChildFrame::OnActivate(wxActivateEvent& event)

@@ -4,9 +4,9 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     04/01/98
-// RCS-ID:      $Id: memcheck.cpp,v 1.11 1998/11/25 21:41:27 JS Exp $
+// RCS-ID:      $Id: memcheck.cpp,v 1.16 2002/03/21 10:32:16 JS Exp $
 // Copyright:   (c) Julian Smart and Markus Holzem
-// Licence:   	wxWindows license
+// Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
 
 #ifdef __GNUG__
@@ -25,9 +25,9 @@
 #include "wx/wx.h"
 #endif
 
-#include "wx/date.h"
+#include "wx/datetime.h"
 
-#if defined(__WXGTK__) || defined(__WXMOTIF__)
+#if defined(__WXGTK__) || defined(__WXX11__) || defined(__WXMOTIF__) || defined(__WXMAC__)
 #include "mondrian.xpm"
 #endif
 
@@ -86,16 +86,26 @@ bool MyApp::OnInit(void)
   wxDebugContext::SetCheckpoint();
 
   wxString *thing = new wxString;
-  wxDate* date = new wxDate;
+
+#if wxUSE_DATETIME
+  wxDateTime* date = new wxDateTime;
+#endif // wxUSE_DATETIME
 
   // non-object allocation
   char *ordinaryNonObject = new char[1000];
 
   const char *data = (const char*) thing ;
 
+  // On MSW, Dump() crashes if using wxLogGui,
+  // so use wxLogStderr instead.
+  wxLog* oldLog = wxLog::SetActiveTarget(new wxLogStderr);
+
   wxDebugContext::PrintClasses();
   wxDebugContext::Dump();
   wxDebugContext::PrintStatistics();
+
+  // Set back to wxLogGui
+  delete wxLog::SetActiveTarget(oldLog);
 
   // Don't delete these objects, to force wxApp to flag a memory leak.
 //  delete thing;

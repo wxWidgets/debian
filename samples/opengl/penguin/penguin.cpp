@@ -4,9 +4,9 @@
 // Author:      Robert Roebling
 // Modified by:
 // Created:     04/01/98
-// RCS-ID:      $Id: penguin.cpp,v 1.2 2000/03/08 08:32:25 JS Exp $
+// RCS-ID:      $Id: penguin.cpp,v 1.6 2002/03/17 14:15:54 VZ Exp $
 // Copyright:   (c) Robert Roebling
-// Licence:   	wxWindows licence
+// Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
 
 #ifdef __GNUG__
@@ -30,7 +30,15 @@
 #endif
 
 #include "penguin.h"
-#include <GL/glu.h>
+#ifdef __WXMAC__
+#  ifdef __DARWIN__
+#    include <OpenGL/glu.h>
+#  else
+#    include <glu.h>
+#  endif
+#else
+#  include <GL/glu.h>
+#endif
 
 #define VIEW_ASPECT 1.3
 
@@ -49,7 +57,7 @@ bool MyApp::OnInit(void)
   menuBar->Append(fileMenu, "&File");
   frame->SetMenuBar(menuBar);
 
-  frame->m_canvas = new TestGLCanvas(frame, -1, wxPoint(0, 0), wxSize(200, 200));
+  frame->m_canvas = new TestGLCanvas(frame, -1, wxPoint(0, 0), wxSize(200, 200), wxSUNKEN_BORDER);
 
   /* Load file wiht mesh data */
   frame->m_canvas->LoadLWO( "penguin.lwo" );
@@ -147,15 +155,18 @@ void TestGLCanvas::OnPaint( wxPaintEvent& event )
 
 void TestGLCanvas::OnSize(wxSizeEvent& event)
 {
-    int width, height;
-    GetClientSize(& width, & height);
+    // this is also necessary to update the context on some platforms
+    wxGLCanvas::OnSize(event);
     
+    // set GL viewport (not called by wxGLCanvas::OnSize on all platforms...)
+    int w, h;
+    GetClientSize(&w, &h);
 #ifndef __WXMOTIF__
     if (GetContext())
 #endif
     {
         SetCurrent();
-        glViewport(0, 0, width, height);
+        glViewport(0, 0, (GLint) w, (GLint) h);
     }
 }
 
@@ -192,17 +203,17 @@ void TestGLCanvas::OnMouse( wxMouseEvent& event )
         /* drag in progress, simulate trackball */
         float spin_quat[4];
         trackball(spin_quat,
-	      (2.0*info.beginx -       sz.x) / sz.x,
-	      (     sz.y - 2.0*info.beginy) / sz.y,
-	      (     2.0*event.GetX() - sz.x) / sz.x,
-	      (    sz.y - 2.0*event.GetY()) / sz.y);
-	      
+          (2.0*info.beginx -       sz.x) / sz.x,
+          (     sz.y - 2.0*info.beginy) / sz.y,
+          (     2.0*event.GetX() - sz.x) / sz.x,
+          (    sz.y - 2.0*event.GetY()) / sz.y);
+          
         add_quats( spin_quat, info.quat, info.quat );
-	
+
         /* orientation has changed, redraw mesh */
-  	Refresh(FALSE);
+    Refresh(FALSE);
     }
-    
+
     info.beginx = event.GetX();
     info.beginy = event.GetY();
 }

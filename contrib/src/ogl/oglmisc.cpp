@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     12/07/98
-// RCS-ID:      $Id: oglmisc.cpp,v 1.1 2000/03/03 11:25:05 JS Exp $
+// RCS-ID:      $Id: oglmisc.cpp,v 1.3 2001/10/30 13:32:00 GT Exp $
 // Copyright:   (c) Julian Smart
 // Licence:   	wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -14,7 +14,7 @@
 #endif
 
 // For compilers that support precompilation, includes "wx.h".
-#include <wx/wxprec.h>
+#include "wx/wxprec.h"
 
 #ifdef __BORLANDC__
 #pragma hdrstop
@@ -27,6 +27,10 @@
 #include <wx/wxexpr.h>
 
 #include <wx/types.h>
+
+#ifdef new
+#undef new
+#endif
 
 #if wxUSE_IOSTREAMH
 #include <iostream.h>

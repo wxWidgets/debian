@@ -97,7 +97,7 @@ class MyDirectory
 // now that we have MyDirectory declaration in scope we may finish the
 // definition of ArrayOfDirectories -- note that this expands into some C++
 // code and so should only be compiled once (i.e., don't put this in the
-// header, but into a source file or you will get linkin errors)
+// header, but into a source file or you will get linking errors)
 #include <wx/arrimpl.cpp> // this is a magic incantation which must be done!
 WX_DEFINE_OBJARRAY(ArrayOfDirectories);
 
@@ -142,10 +142,15 @@ WX\_DEFINE\_OBJARRAY macro.
 
 \helpref{WX\_DEFINE\_ARRAY}{wxdefinearray}\\
 \helpref{WX\_DEFINE\_EXPORTED\_ARRAY}{wxdefinearray}\\
+\helpref{WX\_DEFINE\_USER\_EXPORTED\_ARRAY}{wxdefinearray}\\
 \helpref{WX\_DEFINE\_SORTED\_ARRAY}{wxdefinesortedarray}\\
 \helpref{WX\_DEFINE\_SORTED\_EXPORTED\_ARRAY}{wxdefinesortedarray}\\
+\helpref{WX\_DEFINE\_SORTED\_USER\_EXPORTED\_ARRAY}{wxdefinesortedarray}\\
 \helpref{WX\_DECLARE\_EXPORTED\_OBJARRAY}{wxdeclareobjarray}\\
-\helpref{WX\_DEFINE\_OBJARRAY}{wxdefineobjarray}
+\helpref{WX\_DECLARE\_USER\_EXPORTED\_OBJARRAY}{wxdeclareobjarray}\\
+\helpref{WX\_DEFINE\_OBJARRAY}{wxdefineobjarray}\\
+\helpref{WX\_DEFINE\_EXPORTED\_OBJARRAY}{wxdefineobjarray}\\
+\helpref{WX\_DEFINE\_USER\_EXPORTED\_OBJARRAY}{wxdefineobjarray}
 
 \membersection{Constructors and destructors}
 
@@ -172,7 +177,7 @@ amount, but no more than some maximal number which is defined by
 ARRAY\_MAXSIZE\_INCREMENT constant. Of course, this may lead to some memory
 being wasted (ARRAY\_MAXSIZE\_INCREMENT in the worst case, i.e. 4Kb in the
 current implementation), so the \helpref{Shrink()}{wxarrayshrink} function is
-provided to unallocate the extra memory. The \helpref{Alloc()}{wxarrayalloc} 
+provided to deallocate the extra memory. The \helpref{Alloc()}{wxarrayalloc} 
 function can also be quite useful if you know in advance how many items you are
 going to put in the array and will prevent the array code from reallocating the
 memory more times than needed.
@@ -224,9 +229,13 @@ does exactly the same as \helpref{Item()}{wxarrayitem} method.
 
 \func{}{WX\_DEFINE\_EXPORTED\_ARRAY}{\param{}{T}, \param{}{name}}
 
+\func{}{WX\_DEFINE\_USER\_EXPORTED\_ARRAY}{\param{}{T}, \param{}{name}, \param{}{exportspec}}
+
 This macro defines a new array class named {\it name} and containing the
-elements of type {\it T}. The second form is used when compiling DLL
-under Windows and array needs to be visible outside the DLL.
+elements of type {\it T}. The second form is used when compiling wxWindows as
+a DLL under Windows and array needs to be visible outside the DLL.  The third is
+needed for exporting an array from a user DLL.
+
 Example:
 
 \begin{verbatim}
@@ -245,9 +254,12 @@ wxArrayLong and wxArrayPtrVoid.
 
 \func{}{WX\_DEFINE\_SORTED\_EXPORTED\_ARRAY}{\param{}{T}, \param{}{name}}
 
+\func{}{WX\_DEFINE\_SORTED\_USER\_EXPORTED\_ARRAY}{\param{}{T}, \param{}{name}}
+
 This macro defines a new sorted array class named {\it name} and containing
-the elements of type {\it T}. The second form is used when compiling DLL
-under Windows and array needs to be visible outside the DLL.
+the elements of type {\it T}. The second form is used when compiling wxWindows as
+a DLL under Windows and array needs to be visible outside the DLL.  The third is
+needed for exporting an array from a user DLL.
 
 Example:
 
@@ -284,9 +296,12 @@ wxArrayOfMyClass another(CompareMyClassObjects);
 
 \func{}{WX\_DECLARE\_EXPORTED\_OBJARRAY}{\param{}{T}, \param{}{name}}
 
+\func{}{WX\_DECLARE\_USER\_EXPORTED\_OBJARRAY}{\param{}{T}, \param{}{name}}
+
 This macro declares a new object array class named {\it name} and containing
-the elements of type {\it T}. The second form is used when compiling DLL
-under Windows and array needs to be visible outside the DLL.
+the elements of type {\it T}. The second form is used when compiling wxWindows as
+a DLL under Windows and array needs to be visible outside the DLL.  The third is
+needed for exporting an array from a user DLL.
 
 Example:
 
@@ -302,6 +317,10 @@ the array class - otherwise you would get link errors.
 
 \func{}{WX\_DEFINE\_OBJARRAY}{\param{}{name}}
 
+\func{}{WX\_DEFINE\_EXPORTED\_OBJARRAY}{\param{}{name}}
+
+\func{}{WX\_DEFINE\_USER\_EXPORTED\_OBJARRAY}{\param{}{name}}
+
 This macro defines the methods of the array class {\it name} not defined by the 
 \helpref{WX\_DECLARE\_OBJARRAY()}{wxdeclareobjarray} macro. You must include the
 file <wx/arrimpl.cpp> before using this macro and you must have the full
@@ -309,7 +328,8 @@ declaration of the class of array elements in scope! If you forget to do the
 first, the error will be caught by the compiler, but, unfortunately, many
 compilers will not give any warnings if you forget to do the second - but the
 objects of the class will not be copied correctly and their real destructor will
-not be called.
+not be called.  The latter two forms are merely aliases of the first to satisfy
+some people's sense of symmetry when using the exported declarations.
 
 Example of usage:
 
@@ -393,14 +413,14 @@ done by wxArray and wxSortedArray versions - you may use
 
 \membersection{wxArray::Add}\label{wxarrayadd}
 
-\func{void}{Add}{\param{T }{item}}
+\func{void}{Add}{\param{T }{item}, \param{size\_t}{ copies = $1$}}
 
 \func{void}{Add}{\param{T *}{item}}
 
-\func{void}{Add}{\param{T \&}{item}}
+\func{void}{Add}{\param{T \&}{item}, \param{size\_t}{ copies = $1$}}
 
-Appends a new element to the array (where {\it T} is the type of the array
-elements.)
+Appends the given number of {\it copies} of the {\it item} to the array
+consisting of the elements of type {\it T}.
 
 The first version is used with wxArray and wxSortedArray. The second and the
 third are used with wxObjArray. There is an important difference between
@@ -408,10 +428,14 @@ them: if you give a pointer to the array, it will take ownership of it, i.e.
 will delete it when the item is deleted from the array. If you give a reference
 to the array, however, the array will make a copy of the item and will not take
 ownership of the original item. Once again, it only makes sense for wxObjArrays
-because the other array types never take ownership of their elements.
+because the other array types never take ownership of their elements. Also note
+that you cannot append more than one pointer as reusing it would lead to
+deleting it twice (or more) and hence to a crash.
 
 You may also use \helpref{WX\_APPEND\_ARRAY}{wxappendarray} macro to append all
-elements of one array to another one.
+elements of one array to another one but it is more efficient to use 
+{\it copies} parameter and modify the elements in place later if you plan to
+append a lot of items.
 
 \membersection{wxArray::Alloc}\label{wxarrayalloc}
 
@@ -485,15 +509,15 @@ in the array.
 
 \membersection{wxArray::Insert}\label{wxarrayinsert}
 
-\func{void}{Insert}{\param{T }{item}, \param{size\_t }{n}}
+\func{void}{Insert}{\param{T }{item}, \param{size\_t }{n}, \param{size\_t }{copies = $1$}}
 
 \func{void}{Insert}{\param{T *}{item}, \param{size\_t }{n}}
 
-\func{void}{Insert}{\param{T \&}{item}, \param{size\_t }{n}}
+\func{void}{Insert}{\param{T \&}{item}, \param{size\_t }{n}, \param{size\_t }{copies = $1$}}
 
-Insert a new item into the array before the item {\it n} - thus, {\it Insert(something, 0u)} will
-insert an item in such way that it will become the
-first array element.
+Insert the given number of {\it copies} of the {\it item} into the array before
+the existing item {\it n} - thus, {\it Insert(something, 0u)} will insert an
+item in such way that it will become the first array element.
 
 Please see \helpref{Add()}{wxarrayadd} for explanation of the differences
 between the overloaded versions of this function.
@@ -549,13 +573,13 @@ elements of a wxArray (supposed to contain pointers).
 
 \membersection{wxArray::RemoveAt}\label{wxarrayremoveat}
 
-\func{\void}{RemoveAt}{\param{size\_t }{index}}
+\func{\void}{RemoveAt}{\param{size\_t }{index}, \param{size\_t }{count = $1$}}
 
-Removes an element from the array by index. When an element
-is removed from wxObjArray it is deleted by the array - use 
-\helpref{Detach()}{wxobjarraydetach} if you don't want this to happen. On the
-other hand, when an object is removed from a wxArray nothing happens - you
-should delete it manually if required:
+Removes {\it count} elements starting at {\it index} from the array. When an
+element is removed from wxObjArray it is deleted by the array - use
+\helpref{Detach()}{wxobjarraydetach} if you don't want this to happen. On
+the other hand, when an object is removed from a wxArray nothing happens -
+you should delete it manually if required:
 
 \begin{verbatim}
 T *item = array[n];

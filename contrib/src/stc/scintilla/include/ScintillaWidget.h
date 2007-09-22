@@ -1,7 +1,9 @@
 // Scintilla source code edit control
-// ScintillaWidget.h - definition of Scintilla widget for GTK+
-// Only needed by GTK+ code but is harmless on other platforms.
-// Copyright 1998-2000 by Neil Hodgson <neilh@scintilla.org>
+/** @file ScintillaWidget.h
+ ** Definition of Scintilla widget for GTK+.
+ ** Only needed by GTK+ code but is harmless on other platforms.
+ **/
+// Copyright 1998-2001 by Neil Hodgson <neilh@scintilla.org>
 // The License.txt file describes the conditions under which this software may be distributed.
 
 #ifndef SCINTILLAWIDGET_H
@@ -21,12 +23,12 @@ typedef struct _ScintillaObject ScintillaObject;
 typedef struct _ScintillaClass  ScintillaClass;
 
 struct _ScintillaObject {
-	GtkFixed vbox;
+	GtkContainer cont;
 	void *pscin;
 };
 
 struct _ScintillaClass {
-	GtkFixedClass parent_class;
+	GtkContainerClass parent_class;
 
 	void (* command) (ScintillaObject *ttt);
 	void (* notify) (ScintillaObject *ttt);
@@ -35,7 +37,13 @@ struct _ScintillaClass {
 guint		scintilla_get_type	(void);
 GtkWidget*	scintilla_new		(void);
 void		scintilla_set_id	(ScintillaObject *sci,int id);
-long 		scintilla_send_message	(ScintillaObject *sci,int iMessage,int wParam,int lParam);
+sptr_t	scintilla_send_message	(ScintillaObject *sci,unsigned int iMessage, uptr_t wParam, sptr_t lParam);
+
+#if GTK_MAJOR_VERSION < 2
+#define SCINTILLA_NOTIFY "notify"
+#else
+#define SCINTILLA_NOTIFY "sci-notify"
+#endif
 
 #ifdef __cplusplus
 }

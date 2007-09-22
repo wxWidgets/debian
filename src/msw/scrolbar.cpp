@@ -1,28 +1,29 @@
 /////////////////////////////////////////////////////////////////////////////
-// Name:        scrolbar.cpp
+// Name:        msw/scrolbar.cpp
 // Purpose:     wxScrollBar
 // Author:      Julian Smart
 // Modified by:
 // Created:     04/01/98
-// RCS-ID:      $Id: scrolbar.cpp,v 1.17 2000/02/11 17:55:12 GRG Exp $
+// RCS-ID:      $Id: scrolbar.cpp,v 1.22.2.2 2002/09/25 17:53:47 VZ Exp $
 // Copyright:   (c) Julian Smart and Markus Holzem
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
 
 #ifdef __GNUG__
-#pragma implementation "scrolbar.h"
+    #pragma implementation "scrolbar.h"
 #endif
 
 // For compilers that support precompilation, includes "wx.h".
 #include "wx/wxprec.h"
 
 #ifdef __BORLANDC__
-#pragma hdrstop
+    #pragma hdrstop
 #endif
 
+#if wxUSE_SCROLLBAR
+
 #ifndef WX_PRECOMP
-#include "wx/defs.h"
-#include "wx/utils.h"
+    #include "wx/utils.h"
 #endif
 
 #include "wx/scrolbar.h"
@@ -51,7 +52,7 @@ bool wxScrollBar::Create(wxWindow *parent, wxWindowID id,
 #if wxUSE_VALIDATORS
     SetValidator(validator);
 #endif // wxUSE_VALIDATORS
-    
+
     SetBackgroundColour(parent->GetBackgroundColour()) ;
     SetForegroundColour(parent->GetForegroundColour()) ;
     m_windowStyle = style;
@@ -81,11 +82,16 @@ bool wxScrollBar::Create(wxWindow *parent, wxWindowID id,
         height = 14;
     }
 
+    DWORD wstyle = WS_VISIBLE | WS_CHILD;
+
+    if ( m_windowStyle & wxCLIP_SIBLINGS )
+      wstyle |= WS_CLIPSIBLINGS;
+
     // Now create scrollbar
     DWORD _direction = (style & wxHORIZONTAL) ?
                         SBS_HORZ: SBS_VERT;
     HWND scroll_bar = CreateWindowEx(MakeExtendedStyle(style), wxT("SCROLLBAR"), wxT("scrollbar"),
-                         _direction | WS_CHILD | WS_VISIBLE,
+                         _direction | wstyle,
                          0, 0, 0, 0, (HWND) parent->GetHWND(), (HMENU)m_windowId,
                          wxGetInstance(), NULL);
 
@@ -116,9 +122,40 @@ wxScrollBar::~wxScrollBar(void)
 bool wxScrollBar::MSWOnScroll(int WXUNUSED(orientation), WXWORD wParam,
                               WXWORD pos, WXHWND control)
 {
-    int position = ::GetScrollPos((HWND) control, SB_CTL);
-    int minPos, maxPos;
-    ::GetScrollRange((HWND) control, SB_CTL, &minPos, &maxPos);
+    // current and max positions
+    int position,
+        maxPos, trackPos = pos;
+
+#ifdef __WIN32__
+    // when we're dragging the scrollbar we can't use pos parameter because it
+    // is limited to 16 bits
+    if ( wParam == SB_THUMBPOSITION || wParam == SB_THUMBTRACK )
+    {
+        SCROLLINFO scrollInfo;
+        wxZeroMemory(scrollInfo);
+        scrollInfo.cbSize = sizeof(SCROLLINFO);
+
+        // also get the range if we call GetScrollInfo() anyhow -- this is less
+        // expensive than call it once here and then call GetScrollRange()
+        // below
+        scrollInfo.fMask = SIF_RANGE | SIF_POS | SIF_TRACKPOS;
+
+        if ( !::GetScrollInfo(GetHwnd(), SB_CTL, &scrollInfo) )
+        {
+            wxLogLastError(_T("GetScrollInfo"));
+        }
+
+        trackPos = scrollInfo.nTrackPos;
+        position = scrollInfo.nPos;
+        maxPos = scrollInfo.nMax;
+    }
+    else
+#endif // Win32
+    {
+        position = ::GetScrollPos((HWND) control, SB_CTL);
+        int minPos;
+        ::GetScrollRange((HWND) control, SB_CTL, &minPos, &maxPos);
+    }
 
 #if defined(__WIN95__)
     // A page size greater than one has the effect of reducing the effective
@@ -133,13 +170,13 @@ bool wxScrollBar::MSWOnScroll(int WXUNUSED(orientation), WXWORD wParam,
     int nScrollInc;
     switch ( wParam )
     {
-        case SB_TOP:
+        case SB_BOTTOM:
             nScrollInc = maxPos - position;
             scrollEvent = wxEVT_SCROLL_TOP;
             break;
 
-        case SB_BOTTOM:
-            nScrollInc = - position;
+        case SB_TOP:
+            nScrollInc = -position;
             scrollEvent = wxEVT_SCROLL_BOTTOM;
             break;
 
@@ -164,36 +201,45 @@ bool wxScrollBar::MSWOnScroll(int WXUNUSED(orientation), WXWORD wParam,
             break;
 
         case SB_THUMBPOSITION:
-            nScrollInc = pos - position;
+            nScrollInc = trackPos - position;
             scrollEvent = wxEVT_SCROLL_THUMBRELEASE;
             break;
 
         case SB_THUMBTRACK:
-            nScrollInc = pos - position;
+            nScrollInc = trackPos - position;
             scrollEvent = wxEVT_SCROLL_THUMBTRACK;
+            break;
+
+        case SB_ENDSCROLL:
+            nScrollInc = 0;
+            scrollEvent = wxEVT_SCROLL_ENDSCROLL;
             break;
 
         default:
             nScrollInc = 0;
     }
 
-    // don't process the event if there is no displacement,
-    // unless this is a thumb release event.
-    if (( nScrollInc == 0 ) && ( scrollEvent != wxEVT_SCROLL_THUMBRELEASE ))
+    if ( nScrollInc )
     {
+        position += nScrollInc;
+
+        if ( position < 0 )
+            position = 0;
+        if ( position > maxPos )
+            position = maxPos;
+
+        SetThumbPosition(position);
+    }
+    else if ( scrollEvent != wxEVT_SCROLL_THUMBRELEASE &&
+                scrollEvent != wxEVT_SCROLL_ENDSCROLL )
+    {
+        // don't process the event if there is no displacement,
+        // unless this is a thumb release or end scroll event.
         return FALSE;
     }
 
-    int new_pos = position + nScrollInc;
-
-    if (new_pos < 0)
-        new_pos = 0;
-    if (new_pos > maxPos)
-        new_pos = maxPos;
-
-    SetThumbPosition(new_pos);
     wxScrollEvent event(scrollEvent, m_windowId);
-    event.SetPosition(new_pos);
+    event.SetPosition(position);
     event.SetEventObject( this );
 
     return GetEventHandler()->ProcessEvent(event);
@@ -202,16 +248,16 @@ bool wxScrollBar::MSWOnScroll(int WXUNUSED(orientation), WXWORD wParam,
 void wxScrollBar::SetThumbPosition(int viewStart)
 {
 #if defined(__WIN95__)
-  SCROLLINFO info;
-  info.cbSize = sizeof(SCROLLINFO);
-  info.nPage = 0;
-  info.nMin = 0;
-  info.nPos = viewStart;
-  info.fMask = SIF_POS ;
+    SCROLLINFO info;
+    info.cbSize = sizeof(SCROLLINFO);
+    info.nPage = 0;
+    info.nMin = 0;
+    info.nPos = viewStart;
+    info.fMask = SIF_POS ;
 
-  ::SetScrollInfo((HWND) GetHWND(), SB_CTL, &info, TRUE);
+    ::SetScrollInfo((HWND) GetHWND(), SB_CTL, &info, TRUE);
 #else
-  ::SetScrollPos((HWND) GetHWND(), SB_CTL, viewStart, TRUE);
+    ::SetScrollPos((HWND) GetHWND(), SB_CTL, viewStart, TRUE);
 #endif
 }
 
@@ -262,8 +308,8 @@ In version 4.0 or later, the maximum value that a scroll bar can report
 If the scroll bar has a page size greater than one, the maximum scrolling position
 is less than the maximum range value. You can use the following formula to calculate
 the maximum scrolling position:
-  
-MaxScrollPos = MaxRangeValue - (PageSize - 1) 
+
+MaxScrollPos = MaxRangeValue - (PageSize - 1)
 */
 
 #if WXWIN_COMPATIBILITY
@@ -326,8 +372,8 @@ void wxScrollBar::GetValues(int *viewStart, int *viewLength, int *objectLength,
 }
 #endif
 
-WXHBRUSH wxScrollBar::OnCtlColor(WXHDC pDC, WXHWND pWnd, WXUINT nCtlColor,
-            WXUINT message, WXWPARAM wParam, WXLPARAM lParam)
+WXHBRUSH wxScrollBar::OnCtlColor(WXHDC WXUNUSED(pDC), WXHWND WXUNUSED(pWnd), WXUINT WXUNUSED(nCtlColor),
+            WXUINT WXUNUSED(message), WXWPARAM WXUNUSED(wParam), WXLPARAM WXUNUSED(lParam))
 {
   return 0;
 }
@@ -352,3 +398,5 @@ void wxScrollBar::OnScroll(wxScrollEvent& event)
     }
 }
 #endif
+
+#endif // wxUSE_SCROLLBAR

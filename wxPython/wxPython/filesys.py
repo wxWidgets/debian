@@ -9,6 +9,8 @@ from misc import *
 
 from gdi import *
 
+from fonts import *
+
 from streams import *
 import wx
 import string
@@ -24,7 +26,7 @@ def wxMemoryFSHandler_AddFile(filename, a, b=''):
         __wxMemoryFSHandler_AddFile_Data(filename, a)
     else: raise TypeError, 'wxImage, wxBitmap or string expected'
 
-class wxFSFilePtr :
+class wxFSFilePtr(wxObjectPtr):
     def __init__(self,this):
         self.this = this
         self.thisown = 0
@@ -54,7 +56,7 @@ class wxFSFile(wxFSFilePtr):
 
 
 
-class wxCPPFileSystemHandlerPtr :
+class wxCPPFileSystemHandlerPtr(wxObjectPtr):
     def __init__(self,this):
         self.this = this
         self.thisown = 0
@@ -71,15 +73,14 @@ class wxFileSystemHandlerPtr(wxCPPFileSystemHandlerPtr):
     def __init__(self,this):
         self.this = this
         self.thisown = 0
-    def _setSelf(self, *_args, **_kwargs):
-        val = apply(filesysc.wxFileSystemHandler__setSelf,(self,) + _args, _kwargs)
+    def _setCallbackInfo(self, *_args, **_kwargs):
+        val = apply(filesysc.wxFileSystemHandler__setCallbackInfo,(self,) + _args, _kwargs)
         return val
     def CanOpen(self, *_args, **_kwargs):
         val = apply(filesysc.wxFileSystemHandler_CanOpen,(self,) + _args, _kwargs)
         return val
     def OpenFile(self, *_args, **_kwargs):
         val = apply(filesysc.wxFileSystemHandler_OpenFile,(self,) + _args, _kwargs)
-        if val: val = wxFSFilePtr(val) 
         return val
     def FindFirst(self, *_args, **_kwargs):
         val = apply(filesysc.wxFileSystemHandler_FindFirst,(self,) + _args, _kwargs)
@@ -108,12 +109,12 @@ class wxFileSystemHandler(wxFileSystemHandlerPtr):
     def __init__(self,*_args,**_kwargs):
         self.this = apply(filesysc.new_wxFileSystemHandler,_args,_kwargs)
         self.thisown = 1
-        self._setSelf(self, wxFileSystemHandler)
+        self._setCallbackInfo(self, wxFileSystemHandler)
 
 
 
 
-class wxFileSystemPtr :
+class wxFileSystemPtr(wxObjectPtr):
     def __init__(self,this):
         self.this = this
         self.thisown = 0
@@ -125,7 +126,6 @@ class wxFileSystemPtr :
         return val
     def OpenFile(self, *_args, **_kwargs):
         val = apply(filesysc.wxFileSystem_OpenFile,(self,) + _args, _kwargs)
-        if val: val = wxFSFilePtr(val) 
         return val
     def FindFirst(self, *_args, **_kwargs):
         val = apply(filesysc.wxFileSystem_FindFirst,(self,) + _args, _kwargs)
@@ -152,7 +152,6 @@ class wxInternetFSHandlerPtr(wxCPPFileSystemHandlerPtr):
         return val
     def OpenFile(self, *_args, **_kwargs):
         val = apply(filesysc.wxInternetFSHandler_OpenFile,(self,) + _args, _kwargs)
-        if val: val = wxFSFilePtr(val) 
         return val
     def __repr__(self):
         return "<C wxInternetFSHandler instance at %s>" % (self.this,)
@@ -173,7 +172,6 @@ class wxZipFSHandlerPtr(wxCPPFileSystemHandlerPtr):
         return val
     def OpenFile(self, *_args, **_kwargs):
         val = apply(filesysc.wxZipFSHandler_OpenFile,(self,) + _args, _kwargs)
-        if val: val = wxFSFilePtr(val) 
         return val
     def FindFirst(self, *_args, **_kwargs):
         val = apply(filesysc.wxZipFSHandler_FindFirst,(self,) + _args, _kwargs)
@@ -200,7 +198,6 @@ class wxMemoryFSHandlerPtr(wxCPPFileSystemHandlerPtr):
         return val
     def OpenFile(self, *_args, **_kwargs):
         val = apply(filesysc.wxMemoryFSHandler_OpenFile,(self,) + _args, _kwargs)
-        if val: val = wxFSFilePtr(val) 
         return val
     def FindFirst(self, *_args, **_kwargs):
         val = apply(filesysc.wxMemoryFSHandler_FindFirst,(self,) + _args, _kwargs)

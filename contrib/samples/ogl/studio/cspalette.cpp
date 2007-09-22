@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     12/07/98
-// RCS-ID:      $Id: cspalette.cpp,v 1.2 2000/03/20 13:41:15 JS Exp $
+// RCS-ID:      $Id: cspalette.cpp,v 1.6 2002/03/21 10:32:03 JS Exp $
 // Copyright:   (c) Julian Smart
 // Licence:   	wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -14,7 +14,7 @@
 #endif
 
 // For compilers that support precompilation, includes "wx.h".
-#include <wx/wxprec.h>
+#include "wx/wxprec.h"
 
 #ifdef __BORLANDC__
 #pragma hdrstop
@@ -36,7 +36,7 @@
 #include "cspalette.h"
 #include "symbols.h"
 
-#if defined(__WXGTK__) || defined(__WXMOTIF__)
+#if defined(__WXGTK__) || defined(__WXX11__) || defined(__WXMOTIF__) || defined(__WXMAC__)
 #include "bitmaps/arrow.xpm"
 #include "bitmaps/texttool.xpm"
 #endif
@@ -106,7 +106,7 @@ bool csApp::CreatePalette(wxFrame *parent)
     win->SetDefaultSize(wxSize(10000, 40));
     win->SetOrientation(wxLAYOUT_HORIZONTAL);
     win->SetAlignment(wxLAYOUT_TOP);
-    win->SetBackgroundColour(wxSystemSettings::GetSystemColour(wxSYS_COLOUR_3DFACE));
+    win->SetBackgroundColour(wxSystemSettings::GetColour(wxSYS_COLOUR_3DFACE));
     win->SetSashVisible(wxSASH_BOTTOM, TRUE);
 
     m_diagramPaletteSashWindow = win;
@@ -118,7 +118,7 @@ bool csApp::CreatePalette(wxFrame *parent)
     wxBitmap PaletteArrow("arrowtool");
     wxBitmap TextTool("texttool");
     wxSize toolBitmapSize(32, 32);
-#elif defined(__WXGTK__) || defined(__WXMOTIF__)
+#elif defined(__WXGTK__) || defined(__WXX11__) || defined(__WXMOTIF__) || defined(__WXMAC__)
     wxBitmap PaletteArrow(arrow_xpm);
     wxBitmap TextTool(texttool_xpm);
     wxSize toolBitmapSize(22, 22);

@@ -4,7 +4,7 @@
 // Author:      Guilhem Lavaux
 // Modified by:
 // Created:     20/07/1997
-// RCS-ID:      $Id: url.cpp,v 1.26.2.4 2001/08/17 23:11:50 VS Exp $
+// RCS-ID:      $Id: url.cpp,v 1.31 2002/06/04 11:00:50 JS Exp $
 // Copyright:   (c) 1997, 1998 Guilhem Lavaux
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -20,14 +20,16 @@
 #pragma hdrstop
 #endif
 
-#include <string.h>
-#include <ctype.h>
+#if wxUSE_URL
 
 #include "wx/string.h"
 #include "wx/list.h"
 #include "wx/utils.h"
 #include "wx/module.h"
 #include "wx/url.h"
+
+#include <string.h>
+#include <ctype.h>
 
 IMPLEMENT_CLASS(wxProtoInfo, wxObject)
 IMPLEMENT_CLASS(wxURL, wxObject)
@@ -385,7 +387,7 @@ void wxURL::SetProxy(const wxString& url_proxy)
             return;
 
         hostname = tmp_str(0, pos);
-        port = tmp_str(pos, tmp_str.Length()-pos);
+        port = tmp_str(pos+1, tmp_str.Length()-pos);
 
         addr.Hostname(hostname);
         addr.Service(port);
@@ -521,3 +523,6 @@ void wxURLModule::OnExit()
 }
 
 #endif // wxUSE_SOCKETS
+
+#endif // wxUSE_URL
+

@@ -84,7 +84,8 @@ static PyObject* t_output_helper(PyObject* target, PyObject* o) {
     return target;
 }
 
-static char* wxStringErrorMsg = "string type is required for parameter";
+    // Put some wx default wxChar* values into wxStrings.
+    DECLARE_DEF_STRING(FrameNameStr);
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -93,6 +94,14 @@ static void *SwigwxMDIParentFrameTowxFrame(void *ptr) {
     wxFrame *dest;
     src = (wxMDIParentFrame *) ptr;
     dest = (wxFrame *) src;
+    return (void *) dest;
+}
+
+static void *SwigwxMDIParentFrameTowxTopLevelWindow(void *ptr) {
+    wxMDIParentFrame *src;
+    wxTopLevelWindow *dest;
+    src = (wxMDIParentFrame *) ptr;
+    dest = (wxTopLevelWindow *) src;
     return (void *) dest;
 }
 
@@ -112,6 +121,14 @@ static void *SwigwxMDIParentFrameTowxEvtHandler(void *ptr) {
     return (void *) dest;
 }
 
+static void *SwigwxMDIParentFrameTowxObject(void *ptr) {
+    wxMDIParentFrame *src;
+    wxObject *dest;
+    src = (wxMDIParentFrame *) ptr;
+    dest = (wxObject *) src;
+    return (void *) dest;
+}
+
 #define new_wxMDIParentFrame(_swigarg0,_swigarg1,_swigarg2,_swigarg3,_swigarg4,_swigarg5,_swigarg6) (new wxMDIParentFrame(_swigarg0,_swigarg1,_swigarg2,_swigarg3,_swigarg4,_swigarg5,_swigarg6))
 static PyObject *_wrap_new_wxMDIParentFrame(PyObject *self, PyObject *args, PyObject *kwargs) {
     PyObject * _resultobj;
@@ -122,18 +139,19 @@ static PyObject *_wrap_new_wxMDIParentFrame(PyObject *self, PyObject *args, PyOb
     wxPoint * _arg3 = (wxPoint *) &wxDefaultPosition;
     wxSize * _arg4 = (wxSize *) &wxDefaultSize;
     long  _arg5 = (long ) wxDEFAULT_FRAME_STYLE|wxVSCROLL|wxHSCROLL;
-    char * _arg6 = (char *) "frame";
+    wxString * _arg6 = (wxString *) &wxPyFrameNameStr;
     PyObject * _argo0 = 0;
     PyObject * _obj2 = 0;
     wxPoint  temp;
     PyObject * _obj3 = 0;
     wxSize  temp0;
     PyObject * _obj4 = 0;
+    PyObject * _obj6 = 0;
     char *_kwnames[] = { "parent","id","title","pos","size","style","name", NULL };
     char _ptemp[128];
 
     self = self;
-    if(!PyArg_ParseTupleAndKeywords(args,kwargs,"OiO|OOls:new_wxMDIParentFrame",_kwnames,&_argo0,&_arg1,&_obj2,&_obj3,&_obj4,&_arg5,&_arg6)) 
+    if(!PyArg_ParseTupleAndKeywords(args,kwargs,"OiO|OOlO:new_wxMDIParentFrame",_kwnames,&_argo0,&_arg1,&_obj2,&_obj3,&_obj4,&_arg5,&_obj6)) 
         return NULL;
     if (_argo0) {
         if (_argo0 == Py_None) { _arg0 = NULL; }
@@ -143,22 +161,9 @@ static PyObject *_wrap_new_wxMDIParentFrame(PyObject *self, PyObject *args, PyOb
         }
     }
 {
-#if PYTHON_API_VERSION >= 1009
-    char* tmpPtr; int tmpSize;
-    if (!PyString_Check(_obj2) && !PyUnicode_Check(_obj2)) {
-        PyErr_SetString(PyExc_TypeError, "String or Unicode type required");
+    _arg2 = wxString_in_helper(_obj2);
+    if (_arg2 == NULL)
         return NULL;
-    }
-    if (PyString_AsStringAndSize(_obj2, &tmpPtr, &tmpSize) == -1)
-        return NULL;
-    _arg2 = new wxString(tmpPtr, tmpSize);
-#else
-    if (!PyString_Check(_obj2)) {
-        PyErr_SetString(PyExc_TypeError, wxStringErrorMsg);
-        return NULL;
-    }
-    _arg2 = new wxString(PyString_AS_STRING(_obj2), PyString_GET_SIZE(_obj2));
-#endif
 }
     if (_obj3)
 {
@@ -172,11 +177,18 @@ static PyObject *_wrap_new_wxMDIParentFrame(PyObject *self, PyObject *args, PyOb
     if (! wxSize_helper(_obj4, &_arg4))
         return NULL;
 }
+    if (_obj6)
 {
-    wxPy_BEGIN_ALLOW_THREADS;
-        _result = (wxMDIParentFrame *)new_wxMDIParentFrame(_arg0,_arg1,*_arg2,*_arg3,*_arg4,_arg5,_arg6);
+    _arg6 = wxString_in_helper(_obj6);
+    if (_arg6 == NULL)
+        return NULL;
+}
+{
+    PyThreadState* __tstate = wxPyBeginAllowThreads();
+    _result = (wxMDIParentFrame *)new_wxMDIParentFrame(_arg0,_arg1,*_arg2,*_arg3,*_arg4,_arg5,*_arg6);
 
-    wxPy_END_ALLOW_THREADS;
+    wxPyEndAllowThreads(__tstate);
+    if (PyErr_Occurred()) return NULL;
 }    if (_result) {
         SWIG_MakePtr(_ptemp, (char *) _result,"_wxMDIParentFrame_p");
         _resultobj = Py_BuildValue("s",_ptemp);
@@ -187,6 +199,116 @@ static PyObject *_wrap_new_wxMDIParentFrame(PyObject *self, PyObject *args, PyOb
 {
     if (_obj2)
         delete _arg2;
+}
+{
+    if (_obj6)
+        delete _arg6;
+}
+    return _resultobj;
+}
+
+#define new_wxPreMDIParentFrame() (new wxMDIParentFrame())
+static PyObject *_wrap_new_wxPreMDIParentFrame(PyObject *self, PyObject *args, PyObject *kwargs) {
+    PyObject * _resultobj;
+    wxMDIParentFrame * _result;
+    char *_kwnames[] = {  NULL };
+    char _ptemp[128];
+
+    self = self;
+    if(!PyArg_ParseTupleAndKeywords(args,kwargs,":new_wxPreMDIParentFrame",_kwnames)) 
+        return NULL;
+{
+    PyThreadState* __tstate = wxPyBeginAllowThreads();
+    _result = (wxMDIParentFrame *)new_wxPreMDIParentFrame();
+
+    wxPyEndAllowThreads(__tstate);
+    if (PyErr_Occurred()) return NULL;
+}    if (_result) {
+        SWIG_MakePtr(_ptemp, (char *) _result,"_wxMDIParentFrame_p");
+        _resultobj = Py_BuildValue("s",_ptemp);
+    } else {
+        Py_INCREF(Py_None);
+        _resultobj = Py_None;
+    }
+    return _resultobj;
+}
+
+#define wxMDIParentFrame_Create(_swigobj,_swigarg0,_swigarg1,_swigarg2,_swigarg3,_swigarg4,_swigarg5,_swigarg6)  (_swigobj->Create(_swigarg0,_swigarg1,_swigarg2,_swigarg3,_swigarg4,_swigarg5,_swigarg6))
+static PyObject *_wrap_wxMDIParentFrame_Create(PyObject *self, PyObject *args, PyObject *kwargs) {
+    PyObject * _resultobj;
+    bool  _result;
+    wxMDIParentFrame * _arg0;
+    wxWindow * _arg1;
+    wxWindowID  _arg2;
+    wxString * _arg3;
+    wxPoint * _arg4 = (wxPoint *) &wxDefaultPosition;
+    wxSize * _arg5 = (wxSize *) &wxDefaultSize;
+    long  _arg6 = (long ) wxDEFAULT_FRAME_STYLE|wxVSCROLL|wxHSCROLL;
+    wxString * _arg7 = (wxString *) &wxPyFrameNameStr;
+    PyObject * _argo0 = 0;
+    PyObject * _argo1 = 0;
+    PyObject * _obj3 = 0;
+    wxPoint  temp;
+    PyObject * _obj4 = 0;
+    wxSize  temp0;
+    PyObject * _obj5 = 0;
+    PyObject * _obj7 = 0;
+    char *_kwnames[] = { "self","parent","id","title","pos","size","style","name", NULL };
+
+    self = self;
+    if(!PyArg_ParseTupleAndKeywords(args,kwargs,"OOiO|OOlO:wxMDIParentFrame_Create",_kwnames,&_argo0,&_argo1,&_arg2,&_obj3,&_obj4,&_obj5,&_arg6,&_obj7)) 
+        return NULL;
+    if (_argo0) {
+        if (_argo0 == Py_None) { _arg0 = NULL; }
+        else if (SWIG_GetPtrObj(_argo0,(void **) &_arg0,"_wxMDIParentFrame_p")) {
+            PyErr_SetString(PyExc_TypeError,"Type error in argument 1 of wxMDIParentFrame_Create. Expected _wxMDIParentFrame_p.");
+        return NULL;
+        }
+    }
+    if (_argo1) {
+        if (_argo1 == Py_None) { _arg1 = NULL; }
+        else if (SWIG_GetPtrObj(_argo1,(void **) &_arg1,"_wxWindow_p")) {
+            PyErr_SetString(PyExc_TypeError,"Type error in argument 2 of wxMDIParentFrame_Create. Expected _wxWindow_p.");
+        return NULL;
+        }
+    }
+{
+    _arg3 = wxString_in_helper(_obj3);
+    if (_arg3 == NULL)
+        return NULL;
+}
+    if (_obj4)
+{
+    _arg4 = &temp;
+    if (! wxPoint_helper(_obj4, &_arg4))
+        return NULL;
+}
+    if (_obj5)
+{
+    _arg5 = &temp0;
+    if (! wxSize_helper(_obj5, &_arg5))
+        return NULL;
+}
+    if (_obj7)
+{
+    _arg7 = wxString_in_helper(_obj7);
+    if (_arg7 == NULL)
+        return NULL;
+}
+{
+    PyThreadState* __tstate = wxPyBeginAllowThreads();
+    _result = (bool )wxMDIParentFrame_Create(_arg0,_arg1,_arg2,*_arg3,*_arg4,*_arg5,_arg6,*_arg7);
+
+    wxPyEndAllowThreads(__tstate);
+    if (PyErr_Occurred()) return NULL;
+}    _resultobj = Py_BuildValue("i",_result);
+{
+    if (_obj3)
+        delete _arg3;
+}
+{
+    if (_obj7)
+        delete _arg7;
 }
     return _resultobj;
 }
@@ -209,10 +331,11 @@ static PyObject *_wrap_wxMDIParentFrame_ActivateNext(PyObject *self, PyObject *a
         }
     }
 {
-    wxPy_BEGIN_ALLOW_THREADS;
-        wxMDIParentFrame_ActivateNext(_arg0);
+    PyThreadState* __tstate = wxPyBeginAllowThreads();
+    wxMDIParentFrame_ActivateNext(_arg0);
 
-    wxPy_END_ALLOW_THREADS;
+    wxPyEndAllowThreads(__tstate);
+    if (PyErr_Occurred()) return NULL;
 }    Py_INCREF(Py_None);
     _resultobj = Py_None;
     return _resultobj;
@@ -236,10 +359,11 @@ static PyObject *_wrap_wxMDIParentFrame_ActivatePrevious(PyObject *self, PyObjec
         }
     }
 {
-    wxPy_BEGIN_ALLOW_THREADS;
-        wxMDIParentFrame_ActivatePrevious(_arg0);
+    PyThreadState* __tstate = wxPyBeginAllowThreads();
+    wxMDIParentFrame_ActivatePrevious(_arg0);
 
-    wxPy_END_ALLOW_THREADS;
+    wxPyEndAllowThreads(__tstate);
+    if (PyErr_Occurred()) return NULL;
 }    Py_INCREF(Py_None);
     _resultobj = Py_None;
     return _resultobj;
@@ -263,10 +387,11 @@ static PyObject *_wrap_wxMDIParentFrame_ArrangeIcons(PyObject *self, PyObject *a
         }
     }
 {
-    wxPy_BEGIN_ALLOW_THREADS;
-        wxMDIParentFrame_ArrangeIcons(_arg0);
+    PyThreadState* __tstate = wxPyBeginAllowThreads();
+    wxMDIParentFrame_ArrangeIcons(_arg0);
 
-    wxPy_END_ALLOW_THREADS;
+    wxPyEndAllowThreads(__tstate);
+    if (PyErr_Occurred()) return NULL;
 }    Py_INCREF(Py_None);
     _resultobj = Py_None;
     return _resultobj;
@@ -290,10 +415,11 @@ static PyObject *_wrap_wxMDIParentFrame_Cascade(PyObject *self, PyObject *args, 
         }
     }
 {
-    wxPy_BEGIN_ALLOW_THREADS;
-        wxMDIParentFrame_Cascade(_arg0);
+    PyThreadState* __tstate = wxPyBeginAllowThreads();
+    wxMDIParentFrame_Cascade(_arg0);
 
-    wxPy_END_ALLOW_THREADS;
+    wxPyEndAllowThreads(__tstate);
+    if (PyErr_Occurred()) return NULL;
 }    Py_INCREF(Py_None);
     _resultobj = Py_None;
     return _resultobj;
@@ -306,7 +432,6 @@ static PyObject *_wrap_wxMDIParentFrame_GetActiveChild(PyObject *self, PyObject 
     wxMDIParentFrame * _arg0;
     PyObject * _argo0 = 0;
     char *_kwnames[] = { "self", NULL };
-    char _ptemp[128];
 
     self = self;
     if(!PyArg_ParseTupleAndKeywords(args,kwargs,"O:wxMDIParentFrame_GetActiveChild",_kwnames,&_argo0)) 
@@ -319,17 +444,12 @@ static PyObject *_wrap_wxMDIParentFrame_GetActiveChild(PyObject *self, PyObject 
         }
     }
 {
-    wxPy_BEGIN_ALLOW_THREADS;
-        _result = (wxMDIChildFrame *)wxMDIParentFrame_GetActiveChild(_arg0);
+    PyThreadState* __tstate = wxPyBeginAllowThreads();
+    _result = (wxMDIChildFrame *)wxMDIParentFrame_GetActiveChild(_arg0);
 
-    wxPy_END_ALLOW_THREADS;
-}    if (_result) {
-        SWIG_MakePtr(_ptemp, (char *) _result,"_wxMDIChildFrame_p");
-        _resultobj = Py_BuildValue("s",_ptemp);
-    } else {
-        Py_INCREF(Py_None);
-        _resultobj = Py_None;
-    }
+    wxPyEndAllowThreads(__tstate);
+    if (PyErr_Occurred()) return NULL;
+}{ _resultobj = wxPyMake_wxObject(_result); }
     return _resultobj;
 }
 
@@ -340,7 +460,6 @@ static PyObject *_wrap_wxMDIParentFrame_GetClientWindow(PyObject *self, PyObject
     wxMDIParentFrame * _arg0;
     PyObject * _argo0 = 0;
     char *_kwnames[] = { "self", NULL };
-    char _ptemp[128];
 
     self = self;
     if(!PyArg_ParseTupleAndKeywords(args,kwargs,"O:wxMDIParentFrame_GetClientWindow",_kwnames,&_argo0)) 
@@ -353,17 +472,12 @@ static PyObject *_wrap_wxMDIParentFrame_GetClientWindow(PyObject *self, PyObject
         }
     }
 {
-    wxPy_BEGIN_ALLOW_THREADS;
-        _result = (wxMDIClientWindow *)wxMDIParentFrame_GetClientWindow(_arg0);
+    PyThreadState* __tstate = wxPyBeginAllowThreads();
+    _result = (wxMDIClientWindow *)wxMDIParentFrame_GetClientWindow(_arg0);
 
-    wxPy_END_ALLOW_THREADS;
-}    if (_result) {
-        SWIG_MakePtr(_ptemp, (char *) _result,"_wxMDIClientWindow_p");
-        _resultobj = Py_BuildValue("s",_ptemp);
-    } else {
-        Py_INCREF(Py_None);
-        _resultobj = Py_None;
-    }
+    wxPyEndAllowThreads(__tstate);
+    if (PyErr_Occurred()) return NULL;
+}{ _resultobj = wxPyMake_wxObject(_result); }
     return _resultobj;
 }
 
@@ -374,7 +488,6 @@ static PyObject *_wrap_wxMDIParentFrame_GetToolBar(PyObject *self, PyObject *arg
     wxMDIParentFrame * _arg0;
     PyObject * _argo0 = 0;
     char *_kwnames[] = { "self", NULL };
-    char _ptemp[128];
 
     self = self;
     if(!PyArg_ParseTupleAndKeywords(args,kwargs,"O:wxMDIParentFrame_GetToolBar",_kwnames,&_argo0)) 
@@ -387,17 +500,12 @@ static PyObject *_wrap_wxMDIParentFrame_GetToolBar(PyObject *self, PyObject *arg
         }
     }
 {
-    wxPy_BEGIN_ALLOW_THREADS;
-        _result = (wxWindow *)wxMDIParentFrame_GetToolBar(_arg0);
+    PyThreadState* __tstate = wxPyBeginAllowThreads();
+    _result = (wxWindow *)wxMDIParentFrame_GetToolBar(_arg0);
 
-    wxPy_END_ALLOW_THREADS;
-}    if (_result) {
-        SWIG_MakePtr(_ptemp, (char *) _result,"_wxWindow_p");
-        _resultobj = Py_BuildValue("s",_ptemp);
-    } else {
-        Py_INCREF(Py_None);
-        _resultobj = Py_None;
-    }
+    wxPyEndAllowThreads(__tstate);
+    if (PyErr_Occurred()) return NULL;
+}{ _resultobj = wxPyMake_wxObject(_result); }
     return _resultobj;
 }
 
@@ -419,10 +527,11 @@ static PyObject *_wrap_wxMDIParentFrame_Tile(PyObject *self, PyObject *args, PyO
         }
     }
 {
-    wxPy_BEGIN_ALLOW_THREADS;
-        wxMDIParentFrame_Tile(_arg0);
+    PyThreadState* __tstate = wxPyBeginAllowThreads();
+    wxMDIParentFrame_Tile(_arg0);
 
-    wxPy_END_ALLOW_THREADS;
+    wxPyEndAllowThreads(__tstate);
+    if (PyErr_Occurred()) return NULL;
 }    Py_INCREF(Py_None);
     _resultobj = Py_None;
     return _resultobj;
@@ -433,6 +542,14 @@ static void *SwigwxMDIChildFrameTowxFrame(void *ptr) {
     wxFrame *dest;
     src = (wxMDIChildFrame *) ptr;
     dest = (wxFrame *) src;
+    return (void *) dest;
+}
+
+static void *SwigwxMDIChildFrameTowxTopLevelWindow(void *ptr) {
+    wxMDIChildFrame *src;
+    wxTopLevelWindow *dest;
+    src = (wxMDIChildFrame *) ptr;
+    dest = (wxTopLevelWindow *) src;
     return (void *) dest;
 }
 
@@ -452,6 +569,14 @@ static void *SwigwxMDIChildFrameTowxEvtHandler(void *ptr) {
     return (void *) dest;
 }
 
+static void *SwigwxMDIChildFrameTowxObject(void *ptr) {
+    wxMDIChildFrame *src;
+    wxObject *dest;
+    src = (wxMDIChildFrame *) ptr;
+    dest = (wxObject *) src;
+    return (void *) dest;
+}
+
 #define new_wxMDIChildFrame(_swigarg0,_swigarg1,_swigarg2,_swigarg3,_swigarg4,_swigarg5,_swigarg6) (new wxMDIChildFrame(_swigarg0,_swigarg1,_swigarg2,_swigarg3,_swigarg4,_swigarg5,_swigarg6))
 static PyObject *_wrap_new_wxMDIChildFrame(PyObject *self, PyObject *args, PyObject *kwargs) {
     PyObject * _resultobj;
@@ -462,18 +587,19 @@ static PyObject *_wrap_new_wxMDIChildFrame(PyObject *self, PyObject *args, PyObj
     wxPoint * _arg3 = (wxPoint *) &wxDefaultPosition;
     wxSize * _arg4 = (wxSize *) &wxDefaultSize;
     long  _arg5 = (long ) wxDEFAULT_FRAME_STYLE;
-    char * _arg6 = (char *) "frame";
+    wxString * _arg6 = (wxString *) &wxPyFrameNameStr;
     PyObject * _argo0 = 0;
     PyObject * _obj2 = 0;
     wxPoint  temp;
     PyObject * _obj3 = 0;
     wxSize  temp0;
     PyObject * _obj4 = 0;
+    PyObject * _obj6 = 0;
     char *_kwnames[] = { "parent","id","title","pos","size","style","name", NULL };
     char _ptemp[128];
 
     self = self;
-    if(!PyArg_ParseTupleAndKeywords(args,kwargs,"OiO|OOls:new_wxMDIChildFrame",_kwnames,&_argo0,&_arg1,&_obj2,&_obj3,&_obj4,&_arg5,&_arg6)) 
+    if(!PyArg_ParseTupleAndKeywords(args,kwargs,"OiO|OOlO:new_wxMDIChildFrame",_kwnames,&_argo0,&_arg1,&_obj2,&_obj3,&_obj4,&_arg5,&_obj6)) 
         return NULL;
     if (_argo0) {
         if (_argo0 == Py_None) { _arg0 = NULL; }
@@ -483,22 +609,9 @@ static PyObject *_wrap_new_wxMDIChildFrame(PyObject *self, PyObject *args, PyObj
         }
     }
 {
-#if PYTHON_API_VERSION >= 1009
-    char* tmpPtr; int tmpSize;
-    if (!PyString_Check(_obj2) && !PyUnicode_Check(_obj2)) {
-        PyErr_SetString(PyExc_TypeError, "String or Unicode type required");
+    _arg2 = wxString_in_helper(_obj2);
+    if (_arg2 == NULL)
         return NULL;
-    }
-    if (PyString_AsStringAndSize(_obj2, &tmpPtr, &tmpSize) == -1)
-        return NULL;
-    _arg2 = new wxString(tmpPtr, tmpSize);
-#else
-    if (!PyString_Check(_obj2)) {
-        PyErr_SetString(PyExc_TypeError, wxStringErrorMsg);
-        return NULL;
-    }
-    _arg2 = new wxString(PyString_AS_STRING(_obj2), PyString_GET_SIZE(_obj2));
-#endif
 }
     if (_obj3)
 {
@@ -512,11 +625,18 @@ static PyObject *_wrap_new_wxMDIChildFrame(PyObject *self, PyObject *args, PyObj
     if (! wxSize_helper(_obj4, &_arg4))
         return NULL;
 }
+    if (_obj6)
 {
-    wxPy_BEGIN_ALLOW_THREADS;
-        _result = (wxMDIChildFrame *)new_wxMDIChildFrame(_arg0,_arg1,*_arg2,*_arg3,*_arg4,_arg5,_arg6);
+    _arg6 = wxString_in_helper(_obj6);
+    if (_arg6 == NULL)
+        return NULL;
+}
+{
+    PyThreadState* __tstate = wxPyBeginAllowThreads();
+    _result = (wxMDIChildFrame *)new_wxMDIChildFrame(_arg0,_arg1,*_arg2,*_arg3,*_arg4,_arg5,*_arg6);
 
-    wxPy_END_ALLOW_THREADS;
+    wxPyEndAllowThreads(__tstate);
+    if (PyErr_Occurred()) return NULL;
 }    if (_result) {
         SWIG_MakePtr(_ptemp, (char *) _result,"_wxMDIChildFrame_p");
         _resultobj = Py_BuildValue("s",_ptemp);
@@ -527,6 +647,116 @@ static PyObject *_wrap_new_wxMDIChildFrame(PyObject *self, PyObject *args, PyObj
 {
     if (_obj2)
         delete _arg2;
+}
+{
+    if (_obj6)
+        delete _arg6;
+}
+    return _resultobj;
+}
+
+#define new_wxPreMDIChildFrame() (new wxMDIChildFrame())
+static PyObject *_wrap_new_wxPreMDIChildFrame(PyObject *self, PyObject *args, PyObject *kwargs) {
+    PyObject * _resultobj;
+    wxMDIChildFrame * _result;
+    char *_kwnames[] = {  NULL };
+    char _ptemp[128];
+
+    self = self;
+    if(!PyArg_ParseTupleAndKeywords(args,kwargs,":new_wxPreMDIChildFrame",_kwnames)) 
+        return NULL;
+{
+    PyThreadState* __tstate = wxPyBeginAllowThreads();
+    _result = (wxMDIChildFrame *)new_wxPreMDIChildFrame();
+
+    wxPyEndAllowThreads(__tstate);
+    if (PyErr_Occurred()) return NULL;
+}    if (_result) {
+        SWIG_MakePtr(_ptemp, (char *) _result,"_wxMDIChildFrame_p");
+        _resultobj = Py_BuildValue("s",_ptemp);
+    } else {
+        Py_INCREF(Py_None);
+        _resultobj = Py_None;
+    }
+    return _resultobj;
+}
+
+#define wxMDIChildFrame_Create(_swigobj,_swigarg0,_swigarg1,_swigarg2,_swigarg3,_swigarg4,_swigarg5,_swigarg6)  (_swigobj->Create(_swigarg0,_swigarg1,_swigarg2,_swigarg3,_swigarg4,_swigarg5,_swigarg6))
+static PyObject *_wrap_wxMDIChildFrame_Create(PyObject *self, PyObject *args, PyObject *kwargs) {
+    PyObject * _resultobj;
+    bool  _result;
+    wxMDIChildFrame * _arg0;
+    wxMDIParentFrame * _arg1;
+    wxWindowID  _arg2;
+    wxString * _arg3;
+    wxPoint * _arg4 = (wxPoint *) &wxDefaultPosition;
+    wxSize * _arg5 = (wxSize *) &wxDefaultSize;
+    long  _arg6 = (long ) wxDEFAULT_FRAME_STYLE;
+    wxString * _arg7 = (wxString *) &wxPyFrameNameStr;
+    PyObject * _argo0 = 0;
+    PyObject * _argo1 = 0;
+    PyObject * _obj3 = 0;
+    wxPoint  temp;
+    PyObject * _obj4 = 0;
+    wxSize  temp0;
+    PyObject * _obj5 = 0;
+    PyObject * _obj7 = 0;
+    char *_kwnames[] = { "self","parent","id","title","pos","size","style","name", NULL };
+
+    self = self;
+    if(!PyArg_ParseTupleAndKeywords(args,kwargs,"OOiO|OOlO:wxMDIChildFrame_Create",_kwnames,&_argo0,&_argo1,&_arg2,&_obj3,&_obj4,&_obj5,&_arg6,&_obj7)) 
+        return NULL;
+    if (_argo0) {
+        if (_argo0 == Py_None) { _arg0 = NULL; }
+        else if (SWIG_GetPtrObj(_argo0,(void **) &_arg0,"_wxMDIChildFrame_p")) {
+            PyErr_SetString(PyExc_TypeError,"Type error in argument 1 of wxMDIChildFrame_Create. Expected _wxMDIChildFrame_p.");
+        return NULL;
+        }
+    }
+    if (_argo1) {
+        if (_argo1 == Py_None) { _arg1 = NULL; }
+        else if (SWIG_GetPtrObj(_argo1,(void **) &_arg1,"_wxMDIParentFrame_p")) {
+            PyErr_SetString(PyExc_TypeError,"Type error in argument 2 of wxMDIChildFrame_Create. Expected _wxMDIParentFrame_p.");
+        return NULL;
+        }
+    }
+{
+    _arg3 = wxString_in_helper(_obj3);
+    if (_arg3 == NULL)
+        return NULL;
+}
+    if (_obj4)
+{
+    _arg4 = &temp;
+    if (! wxPoint_helper(_obj4, &_arg4))
+        return NULL;
+}
+    if (_obj5)
+{
+    _arg5 = &temp0;
+    if (! wxSize_helper(_obj5, &_arg5))
+        return NULL;
+}
+    if (_obj7)
+{
+    _arg7 = wxString_in_helper(_obj7);
+    if (_arg7 == NULL)
+        return NULL;
+}
+{
+    PyThreadState* __tstate = wxPyBeginAllowThreads();
+    _result = (bool )wxMDIChildFrame_Create(_arg0,_arg1,_arg2,*_arg3,*_arg4,*_arg5,_arg6,*_arg7);
+
+    wxPyEndAllowThreads(__tstate);
+    if (PyErr_Occurred()) return NULL;
+}    _resultobj = Py_BuildValue("i",_result);
+{
+    if (_obj3)
+        delete _arg3;
+}
+{
+    if (_obj7)
+        delete _arg7;
 }
     return _resultobj;
 }
@@ -549,10 +779,11 @@ static PyObject *_wrap_wxMDIChildFrame_Activate(PyObject *self, PyObject *args, 
         }
     }
 {
-    wxPy_BEGIN_ALLOW_THREADS;
-        wxMDIChildFrame_Activate(_arg0);
+    PyThreadState* __tstate = wxPyBeginAllowThreads();
+    wxMDIChildFrame_Activate(_arg0);
 
-    wxPy_END_ALLOW_THREADS;
+    wxPyEndAllowThreads(__tstate);
+    if (PyErr_Occurred()) return NULL;
 }    Py_INCREF(Py_None);
     _resultobj = Py_None;
     return _resultobj;
@@ -579,10 +810,11 @@ static PyObject *_wrap_wxMDIChildFrame_Maximize(PyObject *self, PyObject *args, 
     }
     _arg1 = (bool ) tempbool1;
 {
-    wxPy_BEGIN_ALLOW_THREADS;
-        wxMDIChildFrame_Maximize(_arg0,_arg1);
+    PyThreadState* __tstate = wxPyBeginAllowThreads();
+    wxMDIChildFrame_Maximize(_arg0,_arg1);
 
-    wxPy_END_ALLOW_THREADS;
+    wxPyEndAllowThreads(__tstate);
+    if (PyErr_Occurred()) return NULL;
 }    Py_INCREF(Py_None);
     _resultobj = Py_None;
     return _resultobj;
@@ -606,10 +838,11 @@ static PyObject *_wrap_wxMDIChildFrame_Restore(PyObject *self, PyObject *args, P
         }
     }
 {
-    wxPy_BEGIN_ALLOW_THREADS;
-        wxMDIChildFrame_Restore(_arg0);
+    PyThreadState* __tstate = wxPyBeginAllowThreads();
+    wxMDIChildFrame_Restore(_arg0);
 
-    wxPy_END_ALLOW_THREADS;
+    wxPyEndAllowThreads(__tstate);
+    if (PyErr_Occurred()) return NULL;
 }    Py_INCREF(Py_None);
     _resultobj = Py_None;
     return _resultobj;
@@ -628,6 +861,14 @@ static void *SwigwxMDIClientWindowTowxEvtHandler(void *ptr) {
     wxEvtHandler *dest;
     src = (wxMDIClientWindow *) ptr;
     dest = (wxEvtHandler *) src;
+    return (void *) dest;
+}
+
+static void *SwigwxMDIClientWindowTowxObject(void *ptr) {
+    wxMDIClientWindow *src;
+    wxObject *dest;
+    src = (wxMDIClientWindow *) ptr;
+    dest = (wxObject *) src;
     return (void *) dest;
 }
 
@@ -652,10 +893,11 @@ static PyObject *_wrap_new_wxMDIClientWindow(PyObject *self, PyObject *args, PyO
         }
     }
 {
-    wxPy_BEGIN_ALLOW_THREADS;
-        _result = (wxMDIClientWindow *)new_wxMDIClientWindow(_arg0,_arg1);
+    PyThreadState* __tstate = wxPyBeginAllowThreads();
+    _result = (wxMDIClientWindow *)new_wxMDIClientWindow(_arg0,_arg1);
 
-    wxPy_END_ALLOW_THREADS;
+    wxPyEndAllowThreads(__tstate);
+    if (PyErr_Occurred()) return NULL;
 }    if (_result) {
         SWIG_MakePtr(_ptemp, (char *) _result,"_wxMDIClientWindow_p");
         _resultobj = Py_BuildValue("s",_ptemp);
@@ -666,11 +908,79 @@ static PyObject *_wrap_new_wxMDIClientWindow(PyObject *self, PyObject *args, PyO
     return _resultobj;
 }
 
+#define new_wxPreMDIClientWindow() (new wxMDIClientWindow())
+static PyObject *_wrap_new_wxPreMDIClientWindow(PyObject *self, PyObject *args, PyObject *kwargs) {
+    PyObject * _resultobj;
+    wxMDIClientWindow * _result;
+    char *_kwnames[] = {  NULL };
+    char _ptemp[128];
+
+    self = self;
+    if(!PyArg_ParseTupleAndKeywords(args,kwargs,":new_wxPreMDIClientWindow",_kwnames)) 
+        return NULL;
+{
+    PyThreadState* __tstate = wxPyBeginAllowThreads();
+    _result = (wxMDIClientWindow *)new_wxPreMDIClientWindow();
+
+    wxPyEndAllowThreads(__tstate);
+    if (PyErr_Occurred()) return NULL;
+}    if (_result) {
+        SWIG_MakePtr(_ptemp, (char *) _result,"_wxMDIClientWindow_p");
+        _resultobj = Py_BuildValue("s",_ptemp);
+    } else {
+        Py_INCREF(Py_None);
+        _resultobj = Py_None;
+    }
+    return _resultobj;
+}
+
+#define wxMDIClientWindow_Create(_swigobj,_swigarg0,_swigarg1)  (_swigobj->Create(_swigarg0,_swigarg1))
+static PyObject *_wrap_wxMDIClientWindow_Create(PyObject *self, PyObject *args, PyObject *kwargs) {
+    PyObject * _resultobj;
+    bool  _result;
+    wxMDIClientWindow * _arg0;
+    wxMDIParentFrame * _arg1;
+    long  _arg2 = (long ) 0;
+    PyObject * _argo0 = 0;
+    PyObject * _argo1 = 0;
+    char *_kwnames[] = { "self","parent","style", NULL };
+
+    self = self;
+    if(!PyArg_ParseTupleAndKeywords(args,kwargs,"OO|l:wxMDIClientWindow_Create",_kwnames,&_argo0,&_argo1,&_arg2)) 
+        return NULL;
+    if (_argo0) {
+        if (_argo0 == Py_None) { _arg0 = NULL; }
+        else if (SWIG_GetPtrObj(_argo0,(void **) &_arg0,"_wxMDIClientWindow_p")) {
+            PyErr_SetString(PyExc_TypeError,"Type error in argument 1 of wxMDIClientWindow_Create. Expected _wxMDIClientWindow_p.");
+        return NULL;
+        }
+    }
+    if (_argo1) {
+        if (_argo1 == Py_None) { _arg1 = NULL; }
+        else if (SWIG_GetPtrObj(_argo1,(void **) &_arg1,"_wxMDIParentFrame_p")) {
+            PyErr_SetString(PyExc_TypeError,"Type error in argument 2 of wxMDIClientWindow_Create. Expected _wxMDIParentFrame_p.");
+        return NULL;
+        }
+    }
+{
+    PyThreadState* __tstate = wxPyBeginAllowThreads();
+    _result = (bool )wxMDIClientWindow_Create(_arg0,_arg1,_arg2);
+
+    wxPyEndAllowThreads(__tstate);
+    if (PyErr_Occurred()) return NULL;
+}    _resultobj = Py_BuildValue("i",_result);
+    return _resultobj;
+}
+
 static PyMethodDef mdicMethods[] = {
+	 { "wxMDIClientWindow_Create", (PyCFunction) _wrap_wxMDIClientWindow_Create, METH_VARARGS | METH_KEYWORDS },
+	 { "new_wxPreMDIClientWindow", (PyCFunction) _wrap_new_wxPreMDIClientWindow, METH_VARARGS | METH_KEYWORDS },
 	 { "new_wxMDIClientWindow", (PyCFunction) _wrap_new_wxMDIClientWindow, METH_VARARGS | METH_KEYWORDS },
 	 { "wxMDIChildFrame_Restore", (PyCFunction) _wrap_wxMDIChildFrame_Restore, METH_VARARGS | METH_KEYWORDS },
 	 { "wxMDIChildFrame_Maximize", (PyCFunction) _wrap_wxMDIChildFrame_Maximize, METH_VARARGS | METH_KEYWORDS },
 	 { "wxMDIChildFrame_Activate", (PyCFunction) _wrap_wxMDIChildFrame_Activate, METH_VARARGS | METH_KEYWORDS },
+	 { "wxMDIChildFrame_Create", (PyCFunction) _wrap_wxMDIChildFrame_Create, METH_VARARGS | METH_KEYWORDS },
+	 { "new_wxPreMDIChildFrame", (PyCFunction) _wrap_new_wxPreMDIChildFrame, METH_VARARGS | METH_KEYWORDS },
 	 { "new_wxMDIChildFrame", (PyCFunction) _wrap_new_wxMDIChildFrame, METH_VARARGS | METH_KEYWORDS },
 	 { "wxMDIParentFrame_Tile", (PyCFunction) _wrap_wxMDIParentFrame_Tile, METH_VARARGS | METH_KEYWORDS },
 	 { "wxMDIParentFrame_GetToolBar", (PyCFunction) _wrap_wxMDIParentFrame_GetToolBar, METH_VARARGS | METH_KEYWORDS },
@@ -680,6 +990,8 @@ static PyMethodDef mdicMethods[] = {
 	 { "wxMDIParentFrame_ArrangeIcons", (PyCFunction) _wrap_wxMDIParentFrame_ArrangeIcons, METH_VARARGS | METH_KEYWORDS },
 	 { "wxMDIParentFrame_ActivatePrevious", (PyCFunction) _wrap_wxMDIParentFrame_ActivatePrevious, METH_VARARGS | METH_KEYWORDS },
 	 { "wxMDIParentFrame_ActivateNext", (PyCFunction) _wrap_wxMDIParentFrame_ActivateNext, METH_VARARGS | METH_KEYWORDS },
+	 { "wxMDIParentFrame_Create", (PyCFunction) _wrap_wxMDIParentFrame_Create, METH_VARARGS | METH_KEYWORDS },
+	 { "new_wxPreMDIParentFrame", (PyCFunction) _wrap_new_wxPreMDIParentFrame, METH_VARARGS | METH_KEYWORDS },
 	 { "new_wxMDIParentFrame", (PyCFunction) _wrap_new_wxMDIParentFrame, METH_VARARGS | METH_KEYWORDS },
 	 { NULL, NULL }
 };
@@ -700,12 +1012,6 @@ static struct { char *n1; char *n2; void *(*pcnv)(void *); } _swig_mapping[] = {
     { "_wxPrintQuality","_EBool",0},
     { "_wxPrintQuality","_size_t",0},
     { "_wxPrintQuality","_time_t",0},
-    { "_class_wxEvtHandler","_class_wxMDIClientWindow",SwigwxMDIClientWindowTowxEvtHandler},
-    { "_class_wxEvtHandler","_wxMDIClientWindow",SwigwxMDIClientWindowTowxEvtHandler},
-    { "_class_wxEvtHandler","_class_wxMDIChildFrame",SwigwxMDIChildFrameTowxEvtHandler},
-    { "_class_wxEvtHandler","_wxMDIChildFrame",SwigwxMDIChildFrameTowxEvtHandler},
-    { "_class_wxEvtHandler","_class_wxMDIParentFrame",SwigwxMDIParentFrameTowxEvtHandler},
-    { "_class_wxEvtHandler","_wxMDIParentFrame",SwigwxMDIParentFrameTowxEvtHandler},
     { "_byte","_unsigned_char",0},
     { "_long","_unsigned_long",0},
     { "_long","_signed_long",0},
@@ -716,6 +1022,8 @@ static struct { char *n1; char *n2; void *(*pcnv)(void *); } _swig_mapping[] = {
     { "_size_t","_int",0},
     { "_size_t","_wxWindowID",0},
     { "_size_t","_uint",0},
+    { "_wxTopLevelWindow","_wxMDIChildFrame",SwigwxMDIChildFrameTowxTopLevelWindow},
+    { "_wxTopLevelWindow","_wxMDIParentFrame",SwigwxMDIParentFrameTowxTopLevelWindow},
     { "_uint","_wxCoord",0},
     { "_uint","_wxPrintQuality",0},
     { "_uint","_time_t",0},
@@ -725,12 +1033,14 @@ static struct { char *n1; char *n2; void *(*pcnv)(void *); } _swig_mapping[] = {
     { "_uint","_wxWindowID",0},
     { "_wxChar","_char",0},
     { "_char","_wxChar",0},
+    { "_struct_wxNativeFontInfo","_wxNativeFontInfo",0},
     { "_EBool","_wxCoord",0},
     { "_EBool","_wxPrintQuality",0},
     { "_EBool","_signed_int",0},
     { "_EBool","_int",0},
     { "_EBool","_wxWindowID",0},
     { "_unsigned_long","_long",0},
+    { "_wxNativeFontInfo","_struct_wxNativeFontInfo",0},
     { "_signed_int","_wxCoord",0},
     { "_signed_int","_wxPrintQuality",0},
     { "_signed_int","_EBool",0},
@@ -741,12 +1051,9 @@ static struct { char *n1; char *n2; void *(*pcnv)(void *); } _swig_mapping[] = {
     { "_WXTYPE","_unsigned_short",0},
     { "_unsigned_short","_WXTYPE",0},
     { "_unsigned_short","_short",0},
-    { "_class_wxWindow","_class_wxMDIClientWindow",SwigwxMDIClientWindowTowxWindow},
-    { "_class_wxWindow","_wxMDIClientWindow",SwigwxMDIClientWindowTowxWindow},
-    { "_class_wxWindow","_class_wxMDIChildFrame",SwigwxMDIChildFrameTowxWindow},
-    { "_class_wxWindow","_wxMDIChildFrame",SwigwxMDIChildFrameTowxWindow},
-    { "_class_wxWindow","_class_wxMDIParentFrame",SwigwxMDIParentFrameTowxWindow},
-    { "_class_wxWindow","_wxMDIParentFrame",SwigwxMDIParentFrameTowxWindow},
+    { "_wxObject","_wxMDIClientWindow",SwigwxMDIClientWindowTowxObject},
+    { "_wxObject","_wxMDIChildFrame",SwigwxMDIChildFrameTowxObject},
+    { "_wxObject","_wxMDIParentFrame",SwigwxMDIParentFrameTowxObject},
     { "_signed_short","_WXTYPE",0},
     { "_signed_short","_short",0},
     { "_unsigned_char","_byte",0},
@@ -760,9 +1067,7 @@ static struct { char *n1; char *n2; void *(*pcnv)(void *); } _swig_mapping[] = {
     { "_short","_WXTYPE",0},
     { "_short","_unsigned_short",0},
     { "_short","_signed_short",0},
-    { "_wxFrame","_class_wxMDIChildFrame",SwigwxMDIChildFrameTowxFrame},
     { "_wxFrame","_wxMDIChildFrame",SwigwxMDIChildFrameTowxFrame},
-    { "_wxFrame","_class_wxMDIParentFrame",SwigwxMDIParentFrameTowxFrame},
     { "_wxFrame","_wxMDIParentFrame",SwigwxMDIParentFrameTowxFrame},
     { "_wxWindowID","_wxCoord",0},
     { "_wxWindowID","_wxPrintQuality",0},
@@ -798,22 +1103,12 @@ static struct { char *n1; char *n2; void *(*pcnv)(void *); } _swig_mapping[] = {
     { "_wxCoord","_size_t",0},
     { "_wxCoord","_time_t",0},
     { "_wxCoord","_wxPrintQuality",0},
-    { "_wxEvtHandler","_class_wxMDIClientWindow",SwigwxMDIClientWindowTowxEvtHandler},
     { "_wxEvtHandler","_wxMDIClientWindow",SwigwxMDIClientWindowTowxEvtHandler},
-    { "_wxEvtHandler","_class_wxMDIChildFrame",SwigwxMDIChildFrameTowxEvtHandler},
     { "_wxEvtHandler","_wxMDIChildFrame",SwigwxMDIChildFrameTowxEvtHandler},
-    { "_wxEvtHandler","_class_wxMDIParentFrame",SwigwxMDIParentFrameTowxEvtHandler},
     { "_wxEvtHandler","_wxMDIParentFrame",SwigwxMDIParentFrameTowxEvtHandler},
-    { "_wxWindow","_class_wxMDIClientWindow",SwigwxMDIClientWindowTowxWindow},
     { "_wxWindow","_wxMDIClientWindow",SwigwxMDIClientWindowTowxWindow},
-    { "_wxWindow","_class_wxMDIChildFrame",SwigwxMDIChildFrameTowxWindow},
     { "_wxWindow","_wxMDIChildFrame",SwigwxMDIChildFrameTowxWindow},
-    { "_wxWindow","_class_wxMDIParentFrame",SwigwxMDIParentFrameTowxWindow},
     { "_wxWindow","_wxMDIParentFrame",SwigwxMDIParentFrameTowxWindow},
-    { "_class_wxFrame","_class_wxMDIChildFrame",SwigwxMDIChildFrameTowxFrame},
-    { "_class_wxFrame","_wxMDIChildFrame",SwigwxMDIChildFrameTowxFrame},
-    { "_class_wxFrame","_class_wxMDIParentFrame",SwigwxMDIParentFrameTowxFrame},
-    { "_class_wxFrame","_wxMDIParentFrame",SwigwxMDIParentFrameTowxFrame},
 {0,0,0}};
 
 static PyObject *SWIG_globals;
@@ -825,6 +1120,14 @@ SWIGEXPORT(void) initmdic() {
 	 SWIG_globals = SWIG_newvarlink();
 	 m = Py_InitModule("mdic", mdicMethods);
 	 d = PyModule_GetDict(m);
+	 PyDict_SetItemString(d,"IDM_WINDOWTILE", PyInt_FromLong((long) 4001));
+	 PyDict_SetItemString(d,"IDM_WINDOWTILEHOR", PyInt_FromLong((long) 4001));
+	 PyDict_SetItemString(d,"IDM_WINDOWCASCADE", PyInt_FromLong((long) 4002));
+	 PyDict_SetItemString(d,"IDM_WINDOWICONS", PyInt_FromLong((long) 4003));
+	 PyDict_SetItemString(d,"IDM_WINDOWNEXT", PyInt_FromLong((long) 4004));
+	 PyDict_SetItemString(d,"IDM_WINDOWTILEVERT", PyInt_FromLong((long) 4005));
+	 PyDict_SetItemString(d,"wxFIRST_MDI_CHILD", PyInt_FromLong((long) 4100));
+	 PyDict_SetItemString(d,"wxLAST_MDI_CHILD", PyInt_FromLong((long) 4600));
 {
    int i;
    for (i = 0; _swig_mapping[i].n1; i++)

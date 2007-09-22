@@ -5,7 +5,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     01/02/97
-// RCS-ID:      $Id: printps.h,v 1.5 1999/06/15 20:21:48 RR Exp $
+// RCS-ID:      $Id: printps.h,v 1.8 2002/09/13 22:00:45 RR Exp $
 // Copyright:   (c)
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -13,13 +13,13 @@
 #ifndef __PRINTPSH__
 #define __PRINTPSH__
 
-#ifdef __GNUG__
+#if defined(__GNUG__) && !defined(__APPLE__)
     #pragma interface "printps.h"
 #endif
 
 #include "wx/prntbase.h"
 
-#if wxUSE_PRINTING_ARCHITECTURE
+#if wxUSE_PRINTING_ARCHITECTURE && wxUSE_POSTSCRIPT
 
 // ----------------------------------------------------------------------------
 // Represents the printer: manages printing a wxPrintout object
@@ -27,8 +27,6 @@
 
 class WXDLLEXPORT wxPostScriptPrinter : public wxPrinterBase
 {
-    DECLARE_DYNAMIC_CLASS(wxPostScriptPrinter)
-
 public:
     wxPostScriptPrinter(wxPrintDialogData *data = (wxPrintDialogData *) NULL);
     virtual ~wxPostScriptPrinter();
@@ -36,6 +34,9 @@ public:
     virtual bool Print(wxWindow *parent, wxPrintout *printout, bool prompt = TRUE);
     virtual wxDC* PrintDialog(wxWindow *parent);
     virtual bool Setup(wxWindow *parent);
+    
+private:
+    DECLARE_DYNAMIC_CLASS(wxPostScriptPrinter)
 };
 
 // ----------------------------------------------------------------------------
@@ -45,8 +46,6 @@ public:
 
 class WXDLLEXPORT wxPostScriptPrintPreview : public wxPrintPreviewBase
 {
-    DECLARE_CLASS(wxPostScriptPrintPreview)
-
 public:
     wxPostScriptPrintPreview(wxPrintout *printout,
                              wxPrintout *printoutForPrinting = (wxPrintout *) NULL,
@@ -62,6 +61,9 @@ public:
 
 private:
     void Init(wxPrintout *printout, wxPrintout *printoutForPrinting);
+
+private:
+    DECLARE_CLASS(wxPostScriptPrintPreview)
 };
 
 #endif

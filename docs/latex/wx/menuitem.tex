@@ -1,8 +1,11 @@
 \section{\class{wxMenuItem}}\label{wxmenuitem}
 
-A menu item represents an item in a popup menu. Note that the majority of this
-class is only implemented under Windows so far, but everything except fonts, colours and
-bitmaps can be achieved via wxMenu on all platforms.
+A menu item represents an item in a menu. Note that you usually don't have to
+deal with it directly as \helpref{wxMenu}{wxmenu} methods usually construct an
+object of this class for you.
+
+Also please note that the methods related to fonts and bitmaps are currently
+only implemented for Windows.
 
 \wxheading{Derived from}
 
@@ -23,7 +26,7 @@ wxOwnerDrawn (Windows only)\\
 
 \func{}{wxMenuItem}{\param{wxMenu*}{ parentMenu = NULL}, \param{int}{ id = ID\_SEPARATOR},
  \param{const wxString\& }{text = ""},  \param{const wxString\& }{helpString = ""},
- \param{bool }{checkable = FALSE}, \param{wxMenu*}{ subMenu = NULL}, }
+ \param{wxItemKind }{kind = wxItem\_Normal}, \param{wxMenu*}{ subMenu = NULL}, }
 
 Constructs a wxMenuItem object.
 
@@ -37,7 +40,8 @@ Constructs a wxMenuItem object.
 
 \docparam{helpString}{Optional help string that will be shown on the status bar.}
 
-\docparam{checkable}{TRUE if this menu item is checkable.}
+\docparam{kind}{May be {\tt wxItem\_Separator}, {\tt wxItem\_Normal}, 
+{\tt wxItem\_Check} or {\tt wxItem\_Radio}}
 
 \docparam{subMenu}{If non-NULL, indicates that the menu item is a submenu.}
 
@@ -95,12 +99,19 @@ Returns the help string associated with the menu item.
 
 Returns the menu item identifier.
 
+\membersection{wxMenuItem::GetKind}\label{wxmenuitemgetkind}
+
+\constfunc{wxItemKind}{GetKind}{\void}
+
+Returns the item kind, one of {\tt wxItem\_Separator}, {\tt wxItem\_Normal}, 
+{\tt wxItem\_Check} or {\tt wxItem\_Radio}.
+
 \membersection{wxMenuItem::GetLabel}\label{wxmenuitemgetlabel}
 
 \constfunc{wxString}{GetLabel}{\void}
 
 Returns the text associated with the menu item without any accelerator
-characaters it might contain.
+characters it might contain.
 
 \wxheading{See also}
 
@@ -111,7 +122,7 @@ characaters it might contain.
 
 \func{static wxString}{GetLabelFromText}{\param{const wxString\& }{text}}
 
-Strips all accelerator characeters and mnemonics from the given {\it text}.
+Strips all accelerator characters and mnemonics from the given {\it text}.
 For example,
 
 \begin{verbatim}
@@ -195,6 +206,13 @@ Returns TRUE if the item is a separator.
 
 Sets the background colour associated with the menu item (Windows only).
 
+\membersection{wxMenuItem::SetBitmap}\label{wxmenuitemsetbitmap}
+
+\constfunc{void}{SetBitmap}{\param{const wxBitmap\& }{bmp}}
+
+Sets the bitmap for the menu item (Windows and GTK+ only). It is
+equivalent to \helpref{SetBitmaps}{wxmenuitemsetbitmaps}(bmp, wxNullBitmap).
+
 \membersection{wxMenuItem::SetBitmaps}\label{wxmenuitemsetbitmaps}
 
 \constfunc{void}{SetBitmaps}{\param{const wxBitmap\& }{checked},
@@ -221,9 +239,9 @@ Sets the help string.
 
 Sets the width of the menu item checkmark bitmap (Windows only).
 
-\membersection{wxMenuItem::SetName}\label{wxmenuitemsetname}
+\membersection{wxMenuItem::SetText}\label{wxmenuitemsettext}
 
-\constfunc{void}{SetName}{\param{const wxString\& }{text}}
+\constfunc{void}{SetText}{\param{const wxString\& }{text}}
 
 Sets the text associated with the menu item.
 

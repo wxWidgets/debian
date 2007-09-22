@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     04/01/98
-// RCS-ID:      $Id: helpwin.h,v 1.4.4.1 2000/04/18 10:30:24 JS Exp $
+// RCS-ID:      $Id: helpwin.h,v 1.6 2000/09/12 14:53:38 JS Exp $
 // Copyright:   (c) Julian Smart
 // Licence:   	wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -38,6 +38,7 @@ public:
     virtual bool DisplayContents();
     virtual bool DisplaySection(int sectionNo);
     virtual bool DisplayBlock(long blockNo);
+    virtual bool DisplayContextPopup(int contextId);
     virtual bool KeywordSearch(const wxString& k);
     virtual bool Quit();
 

@@ -4,7 +4,7 @@
 // Author:      Vadim Zeitlin
 // Modified by:
 // Created:     05.11.99
-// RCS-ID:      $Id: fontutil.cpp,v 1.11.2.1 2000/10/12 23:39:05 vadz Exp $
+// RCS-ID:      $Id: fontutil.cpp,v 1.34 2002/09/02 15:19:04 VZ Exp $
 // Copyright:   (c) Vadim Zeitlin
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -31,25 +31,178 @@
 #ifndef WX_PRECOMP
 #endif // PCH
 
-#ifdef __X__
-#ifdef __VMS__
-#pragma message disable nosimpint
-#endif
-#include <X11/Xlib.h>
-#ifdef __VMS__
-#pragma message enable nosimpint
-#endif
-
-    #include "wx/utils.h"       // for wxGetDisplay()
-#elif defined(__WXGTK__)
-    #include "gdk/gdk.h"
-#endif
-
 #include "wx/fontutil.h"
 #include "wx/fontmap.h"
 #include "wx/tokenzr.h"
 #include "wx/hash.h"
 #include "wx/module.h"
+
+#ifdef __WXGTK20__
+
+#include "wx/gtk/private.h"
+
+// ----------------------------------------------------------------------------
+// wxNativeFontInfo
+// ----------------------------------------------------------------------------
+
+void wxNativeFontInfo::Init()
+{
+    description = NULL;
+}
+
+int wxNativeFontInfo::GetPointSize() const
+{
+    return pango_font_description_get_size( description ) / PANGO_SCALE;
+}
+
+wxFontStyle wxNativeFontInfo::GetStyle() const
+{
+    wxFontStyle m_style = wxFONTSTYLE_NORMAL;
+
+    switch (pango_font_description_get_style( description ))
+    {
+        case PANGO_STYLE_NORMAL:
+            m_style = wxFONTSTYLE_NORMAL;
+            break;
+        case PANGO_STYLE_ITALIC:
+            m_style = wxFONTSTYLE_ITALIC;
+            break;
+        case PANGO_STYLE_OBLIQUE:
+            m_style = wxFONTSTYLE_SLANT;
+            break;
+    }
+    
+    return m_style;
+}
+
+wxFontWeight wxNativeFontInfo::GetWeight() const
+{
+    wxFontWeight m_weight = wxFONTWEIGHT_NORMAL;
+
+    switch (pango_font_description_get_weight( description ))
+    {
+        case PANGO_WEIGHT_ULTRALIGHT:
+            m_weight = wxFONTWEIGHT_LIGHT;
+            break;
+        case PANGO_WEIGHT_LIGHT:
+            m_weight = wxFONTWEIGHT_LIGHT;
+            break;
+        case PANGO_WEIGHT_NORMAL:
+            m_weight = wxFONTWEIGHT_NORMAL;
+            break;
+        case PANGO_WEIGHT_BOLD:
+            m_weight = wxFONTWEIGHT_BOLD;
+            break;
+        case PANGO_WEIGHT_ULTRABOLD:
+            m_weight = wxFONTWEIGHT_BOLD;
+            break;
+        case PANGO_WEIGHT_HEAVY:
+            m_weight = wxFONTWEIGHT_BOLD;
+            break;
+    }
+    
+    return m_weight;
+}
+
+bool wxNativeFontInfo::GetUnderlined() const
+{
+    return FALSE;
+}
+
+wxString wxNativeFontInfo::GetFaceName() const
+{
+    wxString tmp = wxGTK_CONV_BACK( pango_font_description_get_family( description ) );
+    
+    return tmp;
+}
+
+wxFontFamily wxNativeFontInfo::GetFamily() const
+{
+    return wxFONTFAMILY_SWISS;
+}
+
+wxFontEncoding wxNativeFontInfo::GetEncoding() const
+{
+    return wxFONTENCODING_SYSTEM;
+}
+
+bool wxNativeFontInfo::FromString(const wxString& s)
+{
+    if (description)
+        pango_font_description_free( description );
+
+    description = pango_font_description_from_string( wxGTK_CONV( s ) );
+
+    return TRUE;
+}
+
+wxString wxNativeFontInfo::ToString() const
+{
+    wxString tmp = wxGTK_CONV_BACK( pango_font_description_to_string( description ) );
+
+    return tmp;
+}
+
+bool wxNativeFontInfo::FromUserString(const wxString& s)
+{
+    return FromString( s );
+}
+
+wxString wxNativeFontInfo::ToUserString() const
+{
+    return ToString();
+}
+
+// ----------------------------------------------------------------------------
+// wxNativeEncodingInfo
+// ----------------------------------------------------------------------------
+
+bool wxNativeEncodingInfo::FromString(const wxString& s)
+{
+    return FALSE;
+}
+
+wxString wxNativeEncodingInfo::ToString() const
+{
+    return wxEmptyString;
+}
+
+bool wxTestFontEncoding(const wxNativeEncodingInfo& info)
+{
+    return TRUE;
+}
+
+bool wxGetNativeFontEncoding(wxFontEncoding encoding,
+                             wxNativeEncodingInfo *info)
+{
+    return FALSE;
+}
+
+#else 
+   // __WXGTK20__
+
+#ifdef __X__
+    #ifdef __VMS__
+        #pragma message disable nosimpint
+    #endif
+
+    #include <X11/Xlib.h>
+
+    #ifdef __VMS__
+        #pragma message enable nosimpint
+    #endif
+
+    #include "wx/utils.h"       // for wxGetDisplay()
+#elif defined(__WXGTK__)
+    // we have to declare struct tm to avoid problems with first forward
+    // declaring it in C code (glib.h included from gdk.h does it) and then
+    // defining it when time.h is included from the headers below - this is
+    // known not to work at least with Sun CC 6.01
+    #include <time.h>
+
+    #include <gdk/gdk.h>
+#endif
+
 
 // ----------------------------------------------------------------------------
 // private data
@@ -63,22 +216,22 @@ static wxHashTable *g_fontHash = (wxHashTable*) NULL;
 
 // define the functions to create and destroy native fonts for this toolkit
 #ifdef __X__
-    static inline wxNativeFont wxLoadFont(const wxString& fontSpec)
+    wxNativeFont wxLoadFont(const wxString& fontSpec)
     {
         return XLoadQueryFont((Display *)wxGetDisplay(), fontSpec);
     }
 
-    static inline void wxFreeFont(wxNativeFont font)
+    inline void wxFreeFont(wxNativeFont font)
     {
         XFreeFont((Display *)wxGetDisplay(), (XFontStruct *)font);
     }
 #elif defined(__WXGTK__)
-    static inline wxNativeFont wxLoadFont(const wxString& fontSpec)
+    wxNativeFont wxLoadFont(const wxString& fontSpec)
     {
        return gdk_font_load( wxConvertWX2MB(fontSpec) );
     }
 
-    static inline void wxFreeFont(wxNativeFont font)
+    inline void wxFreeFont(wxNativeFont font)
     {
         gdk_font_unref(font);
     }
@@ -95,7 +248,8 @@ static wxNativeFont wxLoadQueryFont(int pointSize,
                                     bool underlined,
                                     const wxString& facename,
                                     const wxString& xregistry,
-                                    const wxString& xencoding);
+                                    const wxString& xencoding,
+                                    wxString* xFontName);
 
 // ============================================================================
 // implementation
@@ -109,8 +263,8 @@ static wxNativeFont wxLoadQueryFont(int pointSize,
 //      encodingid;registry;encoding[;facename]
 bool wxNativeEncodingInfo::FromString(const wxString& s)
 {
+    // use ";", not "-" because it may be part of encoding name
     wxStringTokenizer tokenizer(s, _T(";"));
-            // cannot use "-" because it may be part of encoding name
 
     wxString encid = tokenizer.GetNextToken();
     long enc;
@@ -142,6 +296,160 @@ wxString wxNativeEncodingInfo::ToString() const
     }
 
     return s;
+}
+
+// ----------------------------------------------------------------------------
+// wxNativeFontInfo
+// ----------------------------------------------------------------------------
+
+void wxNativeFontInfo::Init()
+{
+    m_isDefault = TRUE;
+}
+
+bool wxNativeFontInfo::FromString(const wxString& s)
+{
+    wxStringTokenizer tokenizer(s, _T(";"));
+
+    // check the version
+    wxString token = tokenizer.GetNextToken();
+    if ( token != _T('0') )
+        return FALSE;
+
+    xFontName = tokenizer.GetNextToken();
+
+    // this should be the end
+    if ( tokenizer.HasMoreTokens() )
+        return FALSE;
+
+    return FromXFontName(xFontName);
+}
+
+wxString wxNativeFontInfo::ToString() const
+{
+    // 0 is the version
+    return wxString::Format(_T("%d;%s"), 0, GetXFontName().c_str());
+}
+
+bool wxNativeFontInfo::FromUserString(const wxString& s)
+{
+    return FromXFontName(s);
+}
+
+wxString wxNativeFontInfo::ToUserString() const
+{
+    return GetXFontName();
+}
+
+bool wxNativeFontInfo::HasElements() const
+{
+    // we suppose that the foundry is never empty, so if it is it means that we
+    // had never parsed the XLFD
+    return !fontElements[0].empty();
+}
+
+wxString wxNativeFontInfo::GetXFontComponent(wxXLFDField field) const
+{
+    wxCHECK_MSG( field < wxXLFD_MAX, _T(""), _T("invalid XLFD field") );
+
+    if ( !HasElements() )
+    {
+        // const_cast
+        if ( !((wxNativeFontInfo *)this)->FromXFontName(xFontName) )
+            return _T("");
+    }
+
+    return fontElements[field];
+}
+
+bool wxNativeFontInfo::FromXFontName(const wxString& fontname)
+{
+    // TODO: we should be able to handle the font aliases here, but how?
+    wxStringTokenizer tokenizer(fontname, _T("-"));
+
+    // skip the leading, usually empty field (font name registry)
+    if ( !tokenizer.HasMoreTokens() )
+        return FALSE;
+
+    (void)tokenizer.GetNextToken();
+
+    for ( size_t n = 0; n < WXSIZEOF(fontElements); n++ )
+    {
+        if ( !tokenizer.HasMoreTokens() )
+        {
+            // not enough elements in the XLFD - or maybe an alias
+            return FALSE;
+        }
+
+        fontElements[n] = tokenizer.GetNextToken();
+    }
+
+    // this should be all
+    if ( tokenizer.HasMoreTokens() )
+        return FALSE;
+
+    // we're initialized now
+    m_isDefault = FALSE;
+
+    return TRUE;
+}
+
+wxString wxNativeFontInfo::GetXFontName() const
+{
+    if ( xFontName.empty() )
+    {
+        for ( size_t n = 0; n < WXSIZEOF(fontElements); n++ )
+        {
+            // replace the non specified elements with '*' except for the
+            // additional style which is usually just omitted
+            wxString elt = fontElements[n];
+            if ( elt.empty() && n != wxXLFD_ADDSTYLE )
+            {
+                elt = _T('*');
+            }
+
+            // const_cast
+            ((wxNativeFontInfo *)this)->xFontName << _T('-') << elt;
+        }
+    }
+
+    return xFontName;
+}
+
+void
+wxNativeFontInfo::SetXFontComponent(wxXLFDField field, const wxString& value)
+{
+    wxCHECK_RET( field < wxXLFD_MAX, _T("invalid XLFD field") );
+
+    // this class should be initialized with a valid font spec first and only
+    // then the fields may be modified!
+    wxASSERT_MSG( !IsDefault(), _T("can't modify an uninitialized XLFD") );
+
+    if ( !HasElements() )
+    {
+        // const_cast
+        if ( !((wxNativeFontInfo *)this)->FromXFontName(xFontName) )
+        {
+            wxFAIL_MSG( _T("can't set font element for invalid XLFD") );
+
+            return;
+        }
+    }
+
+    fontElements[field] = value;
+
+    // invalidate the XFLD, it doesn't correspond to the font elements any more
+    xFontName.clear();
+}
+
+void wxNativeFontInfo::SetXFontName(const wxString& xFontName_)
+{
+    // invalidate the font elements, GetXFontComponent() will reparse the XLFD
+    fontElements[0].clear();
+
+    xFontName = xFontName_;
+
+    m_isDefault = FALSE;
 }
 
 // ----------------------------------------------------------------------------
@@ -182,10 +490,15 @@ bool wxGetNativeFontEncoding(wxFontEncoding encoding,
             }
             break;
 
+        case wxFONTENCODING_UTF8:
+            info->xregistry = wxT("iso10646");
+            info->xencoding = wxT("*");
+            break;
+
         case wxFONTENCODING_KOI8:
             info->xregistry = wxT("koi8");
 
-            // we don't make distinction between koi8-r and koi8-u (so far)
+            // we don't make distinction between koi8-r, koi8-u and koi8-ru (so far)
             info->xencoding = wxT("*");
             break;
 
@@ -214,7 +527,7 @@ bool wxGetNativeFontEncoding(wxFontEncoding encoding,
             return FALSE;
     }
 
-   info->encoding = encoding;
+    info->encoding = encoding;
 
     return TRUE;
 }
@@ -240,7 +553,8 @@ wxNativeFont wxLoadQueryNearestFont(int pointSize,
                                     int weight,
                                     bool underlined,
                                     const wxString &facename,
-                                    wxFontEncoding encoding)
+                                    wxFontEncoding encoding,
+                                    wxString* xFontName)
 {
     if ( encoding == wxFONTENCODING_DEFAULT )
     {
@@ -261,7 +575,9 @@ wxNativeFont wxLoadQueryNearestFont(int pointSize,
         if ( !wxGetNativeFontEncoding(encoding, &info) ||
              !wxTestFontEncoding(info) )
         {
-            if ( !wxTheFontMapper->GetAltForEncoding(encoding, &info) )
+#if wxUSE_FONTMAP
+            if ( !wxFontMapper::Get()->GetAltForEncoding(encoding, &info) )
+#endif // wxUSE_FONTMAP
             {
                 // unspported encoding - replace it with the default
                 //
@@ -272,11 +588,43 @@ wxNativeFont wxLoadQueryNearestFont(int pointSize,
             }
         }
     }
-    
+
     // OK, we have the correct xregistry/xencoding in info structure
-    wxNativeFont font = wxLoadQueryFont( pointSize, family, style, weight,
-                                         underlined, facename,
-                                         info.xregistry, info.xencoding );
+    wxNativeFont font = 0;
+
+    // if we already have the X font name, try to use it
+    if( xFontName && !xFontName->IsEmpty() )
+    {
+        //
+        //  Make sure point size is correct for scale factor.
+        //
+        wxStringTokenizer tokenizer(*xFontName, _T("-"), wxTOKEN_RET_DELIMS);
+        wxString newFontName;
+
+        for(int i = 0; i < 8; i++)
+          newFontName += tokenizer.NextToken();
+
+        (void) tokenizer.NextToken();
+
+        newFontName += wxString::Format(wxT("%d-"), pointSize);
+
+        while(tokenizer.HasMoreTokens())
+          newFontName += tokenizer.GetNextToken();
+
+        font = wxLoadFont(newFontName);
+
+        if(font)
+          *xFontName = newFontName;
+    }
+
+    // try to load exactly the font requested first
+    if( !font )
+    {
+        font = wxLoadQueryFont( pointSize, family, style, weight,
+                                underlined, facename,
+                                info.xregistry, info.xencoding,
+                                xFontName );
+    }
 
     if ( !font )
     {
@@ -290,14 +638,16 @@ wxNativeFont wxLoadQueryNearestFont(int pointSize,
         for ( i = pointSize - 10; !font && i >= 10 && i >= min_size; i -= 10 )
         {
             font = wxLoadQueryFont(i, family, style, weight, underlined,
-                                   facename, info.xregistry, info.xencoding);
+                                   facename, info.xregistry, info.xencoding,
+                                   xFontName);
         }
 
         // Search for larger size (approx.)
         for ( i = pointSize + 10; !font && i <= max_size; i += 10 )
         {
             font = wxLoadQueryFont(i, family, style, weight, underlined,
-                                   facename, info.xregistry, info.xencoding);
+                                   facename, info.xregistry, info.xencoding,
+                                   xFontName);
         }
 
         // Try default family
@@ -305,23 +655,53 @@ wxNativeFont wxLoadQueryNearestFont(int pointSize,
         {
             font = wxLoadQueryFont(pointSize, wxDEFAULT, style, weight,
                                    underlined, facename,
-                                   info.xregistry, info.xencoding );
+                                   info.xregistry, info.xencoding,
+                                   xFontName );
         }
 
-        // Bogus font I
+        // ignore size, family, style and weight but try to find font with the
+        // given facename and encoding
         if ( !font )
         {
             font = wxLoadQueryFont(120, wxDEFAULT, wxNORMAL, wxNORMAL,
                                    underlined, facename,
-                                   info.xregistry, info.xencoding);
-        }
+                                   info.xregistry, info.xencoding,
+                                   xFontName);
 
-        // Bogus font II
-        if ( !font )
-        {
-            font = wxLoadQueryFont(120, wxDEFAULT, wxNORMAL, wxNORMAL,
-                                   underlined, wxEmptyString,
-                                   info.xregistry, info.xencoding);
+            // ignore family as well
+            if ( !font )
+            {
+                font = wxLoadQueryFont(120, wxDEFAULT, wxNORMAL, wxNORMAL,
+                                       underlined, wxEmptyString,
+                                       info.xregistry, info.xencoding,
+                                       xFontName);
+
+                // if it still failed, try to get the font of any size but
+                // with the requested encoding: this can happen if the
+                // encoding is only available in one size which happens to be
+                // different from 120
+                if ( !font )
+                {
+                    font = wxLoadQueryFont(-1, wxDEFAULT, wxNORMAL, wxNORMAL,
+                                           FALSE, wxEmptyString,
+                                           info.xregistry, info.xencoding,
+                                           xFontName);
+
+                    // this should never happen as we had tested for it in the
+                    // very beginning, but if it does, do return something non
+                    // NULL or we'd crash in wxFont code
+                    if ( !font )
+                    {
+                        wxFAIL_MSG( _T("this encoding should be available!") );
+
+                        font = wxLoadQueryFont(-1,
+                                               wxDEFAULT, wxNORMAL, wxNORMAL,
+                                               FALSE, wxEmptyString,
+                                               _T("*"), _T("*"),
+                                               xFontName);
+                    }
+                }
+            }
         }
     }
 
@@ -345,13 +725,12 @@ static bool wxTestFontSpec(const wxString& fontspec)
     wxNativeFont test = (wxNativeFont) g_fontHash->Get( fontspec );
     if (test)
     {
-//        printf( "speed up\n" );
         return TRUE;
     }
 
     test = wxLoadFont(fontspec);
     g_fontHash->Put( fontspec, (wxObject*) test );
-    
+
     if ( test )
     {
         wxFreeFont(test);
@@ -371,7 +750,8 @@ static wxNativeFont wxLoadQueryFont(int pointSize,
                                     bool WXUNUSED(underlined),
                                     const wxString& facename,
                                     const wxString& xregistry,
-                                    const wxString& xencoding)
+                                    const wxString& xencoding,
+                                    wxString* xFontName)
 {
     wxString xfamily;
     switch (family)
@@ -384,7 +764,77 @@ static wxNativeFont wxLoadQueryFont(int pointSize,
         case wxSCRIPT:     xfamily = wxT("utopia"); break;
         default:           xfamily = wxT("*");
     }
+#if wxUSE_NANOX
+    int xweight;
+    switch (weight)
+    {
+         case wxBOLD:
+             {
+                 xweight = MWLF_WEIGHT_BOLD;
+                 break;
+             }
+        case wxLIGHT:
+             {
+                 xweight = MWLF_WEIGHT_LIGHT;
+                 break;
+             }
+         case wxNORMAL:
+             {
+                 xweight = MWLF_WEIGHT_NORMAL;
+                 break;
+             }
 
+     default:
+             {
+                 xweight = MWLF_WEIGHT_DEFAULT;
+                 break;
+             }
+    }
+    GR_SCREEN_INFO screenInfo;
+    GrGetScreenInfo(& screenInfo);
+
+    int yPixelsPerCM = screenInfo.ydpcm;
+
+    // A point is 1/72 of an inch.
+    // An inch is 2.541 cm.
+    // So pixelHeight = (pointSize / 72) (inches) * 2.541 (for cm) * yPixelsPerCM (for pixels)
+    // In fact pointSize is 10 * the normal point size so
+    // divide by 10.
+
+    int pixelHeight = (int) ( (((float)pointSize) / 720.0) * 2.541 * (float) yPixelsPerCM) ;
+
+    // An alternative: assume that the screen is 72 dpi.
+    //int pixelHeight = (int) (((float)pointSize / 720.0) * 72.0) ;
+    //int pixelHeight = (int) ((float)pointSize / 10.0) ;
+    
+    GR_LOGFONT logFont;
+    logFont.lfHeight = pixelHeight;
+    logFont.lfWidth = 0;
+    logFont.lfEscapement = 0;
+    logFont.lfOrientation = 0;
+    logFont.lfWeight = xweight;
+    logFont.lfItalic = (style == wxNORMAL ? 0 : 1) ;
+    logFont.lfUnderline = 0;
+    logFont.lfStrikeOut = 0;
+    logFont.lfCharSet = MWLF_CHARSET_DEFAULT; // TODO: select appropriate one
+    logFont.lfOutPrecision = MWLF_TYPE_DEFAULT;
+    logFont.lfClipPrecision = 0; // Not used
+    logFont.lfRoman = (family == wxROMAN ? 1 : 0) ;
+    logFont.lfSerif = (family == wxSWISS ? 0 : 1) ;
+    logFont.lfSansSerif = !logFont.lfSerif ;
+    logFont.lfModern = (family == wxMODERN ? 1 : 0) ;
+    logFont.lfProportional = (family == wxTELETYPE ? 0 : 1) ;
+    logFont.lfOblique = 0;
+    logFont.lfSmallCaps = 0;
+    logFont.lfPitch = 0; // 0 = default
+    strcpy(logFont.lfFaceName, facename.c_str());
+
+    XFontStruct* fontInfo = (XFontStruct*) malloc(sizeof(XFontStruct));
+    fontInfo->fid = GrCreateFont((GR_CHAR*) facename.c_str(), pixelHeight, & logFont);
+    GrGetFontInfo(fontInfo->fid, & fontInfo->info);
+    return (wxNativeFont) fontInfo;
+    
+#else
     wxString fontSpec;
     if (!facename.IsEmpty())
     {
@@ -540,12 +990,28 @@ static wxNativeFont wxLoadQueryFont(int pointSize,
         default:           xweight = wxT("*"); break;
     }
 
+    // if pointSize is -1, don't specify any
+    wxString sizeSpec;
+    if ( pointSize == -1 )
+    {
+        sizeSpec = _T('*');
+    }
+    else
+    {
+        sizeSpec.Printf(_T("%d"), pointSize);
+    }
+
     // construct the X font spec from our data
-    fontSpec.Printf(wxT("-*-%s-%s-%s-normal-*-*-%d-*-*-*-*-%s-%s"),
+    fontSpec.Printf(wxT("-*-%s-%s-%s-normal-*-*-%s-*-*-*-*-%s-%s"),
                     xfamily.c_str(), xweight.c_str(), xstyle.c_str(),
-                    pointSize, xregistry.c_str(), xencoding.c_str());
+                    sizeSpec.c_str(), xregistry.c_str(), xencoding.c_str());
+
+    if( xFontName )
+        *xFontName = fontSpec;
 
     return wxLoadFont(fontSpec);
+#endif
+    // wxUSE_NANOX
 }
 
 // ----------------------------------------------------------------------------
@@ -577,3 +1043,6 @@ void wxFontModule::OnExit()
 
     g_fontHash = (wxHashTable *)NULL;
 }
+
+#endif
+  // not GTK 2.0

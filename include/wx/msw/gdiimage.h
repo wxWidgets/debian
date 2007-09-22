@@ -5,7 +5,7 @@
 // Author:      Vadim Zeitlin
 // Modified by:
 // Created:     20.11.99
-// RCS-ID:      $Id: gdiimage.h,v 1.2 1999/11/26 09:53:34 VZ Exp $
+// RCS-ID:      $Id: gdiimage.h,v 1.2.6.1 2002/09/21 23:01:24 VZ Exp $
 // Copyright:   (c) 1999 Vadim Zeitlin <zeitlin@dptmaths.ens-cachan.fr>
 // Licence:     wxWindows license
 ///////////////////////////////////////////////////////////////////////////////
@@ -180,7 +180,7 @@ public:
 
     // forward some of base class virtuals to wxGDIImageRefData
     bool FreeResource(bool force = FALSE);
-    virtual WXHANDLE GetResourceHandle();
+    virtual WXHANDLE GetResourceHandle() const;
 
 protected:
     // create the data for the derived class here

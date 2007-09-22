@@ -4,7 +4,7 @@
 // Author:      Vadim Zeitlin
 // Modified by:
 // Created:     08.12.99
-// RCS-ID:      $Id: dir.cpp,v 1.2 2000/03/20 18:41:55 VZ Exp $
+// RCS-ID:      $Id: dir.cpp,v 1.8 2002/08/10 11:54:51 RR Exp $
 // Copyright:   (c) 1999 Vadim Zeitlin <zeitlin@dptmaths.ens-cachan.fr>
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -37,6 +37,8 @@
 #include "wx/filefn.h"          // for wxMatchWild
 
 #include <sys/types.h>
+#include <sys/stat.h>
+#include <unistd.h>
 
 #include <dirent.h>
 
@@ -64,6 +66,8 @@ public:
 
     void Rewind() { rewinddir(m_dir); }
     bool Read(wxString *filename);
+
+    const wxString& GetName() const { return m_dirname; }
 
 private:
     DIR     *m_dir;
@@ -115,14 +119,27 @@ wxDirData::~wxDirData()
 
 bool wxDirData::Read(wxString *filename)
 {
-    dirent *de = (dirent *)NULL;    // just to silent compiler warnings
+    dirent *de = (dirent *)NULL;    // just to silence compiler warnings
     bool matches = FALSE;
+
+    // speed up string concatenation in the loop a bit
+    wxString path = m_dirname;
+    path += _T('/');
+    path.reserve(path.length() + 255);
+    
+    wxString de_d_name;
 
     while ( !matches )
     {
         de = readdir(m_dir);
         if ( !de )
             return FALSE;
+            
+#if wxUSE_UNICODE
+        de_d_name = wxConvLibc.cMB2WC( de->d_name );
+#else
+        de_d_name = de->d_name;
+#endif            
 
         // don't return "." and ".." unless asked for
         if ( de->d_name[0] == '.' &&
@@ -131,36 +148,41 @@ bool wxDirData::Read(wxString *filename)
         {
             if ( !(m_flags & wxDIR_DOTDOT) )
                 continue;
+
+            // we found a valid match
+            break;
         }
 
         // check the type now
-        if ( !(m_flags & wxDIR_FILES) &&
-             !wxDir::Exists(m_dirname + _T('/') + de->d_name) )
+        if ( !(m_flags & wxDIR_FILES) && !wxDir::Exists(path + de_d_name) )
         {
             // it's a file, but we don't want them
             continue;
         }
-        else if ( !(m_flags & wxDIR_DIRS) &&
-                  wxDir::Exists(m_dirname + _T('/') + de->d_name) )
+        else if ( !(m_flags & wxDIR_DIRS) && wxDir::Exists(path + de_d_name) )
         {
             // it's a dir, and we don't want it
             continue;
         }
 
         // finally, check the name
-        if ( !m_filespec )
+        if ( m_filespec.empty() )
         {
             matches = m_flags & wxDIR_HIDDEN ? TRUE : de->d_name[0] != '.';
         }
         else
         {
+#if wxUSE_UNICODE
+            matches = TRUE;  // FIXME
+#else
             // test against the pattern
-            matches = wxMatchWild(m_filespec, de->d_name,
+            matches = wxMatchWild(m_filespec, de_d_name,
                                   !(m_flags & wxDIR_HIDDEN));
+#endif
         }
     }
 
-    *filename = de->d_name;
+    *filename = de_d_name;
 
     return TRUE;
 }
@@ -228,6 +250,22 @@ bool wxDir::IsOpened() const
     return m_data != NULL;
 }
 
+wxString wxDir::GetName() const
+{
+    wxString name;
+    if ( m_data )
+    {
+        name = M_DIR->GetName();
+        if ( !name.empty() && (name.Last() == _T('/')) )
+        {
+            // chop off the last (back)slash
+            name.Truncate(name.length() - 1);
+        }
+    }
+
+    return name;
+}
+
 wxDir::~wxDir()
 {
     delete M_DIR;
@@ -259,3 +297,49 @@ bool wxDir::GetNext(wxString *filename) const
 
     return M_DIR->Read(filename);
 }
+
+bool wxDir::HasSubDirs(const wxString& spec)
+{
+    wxCHECK_MSG( IsOpened(), FALSE, _T("must wxDir::Open() first") );
+
+    if ( spec.empty() )
+    {
+        // faster check for presence of any subdirectory: normally each subdir
+        // has a hard link to the parent directory and so, knowing that there
+        // are at least "." and "..", we have a subdirectory if and only if
+        // links number is > 2 - this is just a guess but it works fairly well
+        // in practice
+        //
+        // note that we may guess wrongly in one direction only: i.e. we may
+        // return true when there are no subdirectories but this is ok as the
+        // caller will learn it soon enough when it calls GetFirst(wxDIR)
+        // anyhow
+        wxStructStat stBuf;
+        if ( wxStat(M_DIR->GetName().c_str(), &stBuf) == 0 )
+        {
+            switch ( stBuf.st_nlink )
+            {
+                case 2:
+                    // just "." and ".."
+                    return FALSE;
+
+                case 0:
+                case 1:
+                    // weird filesystem, don't try to guess for it, use dumb
+                    // method below
+                    break;
+
+                default:
+                    // assume we have subdirs - may turn out to be wrong if we
+                    // have other hard links to this directory but it's not
+                    // that bad as explained above
+                    return TRUE;
+            }
+        }
+    }
+
+    // just try to find first directory
+    wxString s;
+    return GetFirst(&s, spec, wxDIR_DIRS | wxDIR_HIDDEN);
+}
+

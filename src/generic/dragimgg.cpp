@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     29/2/2000
-// RCS-ID:      $Id: dragimgg.cpp,v 1.2.2.4 2000/06/29 20:28:53 JS Exp $
+// RCS-ID:      $Id: dragimgg.cpp,v 1.9 2002/04/12 20:26:42 JS Exp $
 // Copyright:   (c) Julian Smart
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -27,6 +27,8 @@
 #ifdef __BORLANDC__
 #pragma hdrstop
 #endif
+
+#if wxUSE_DRAGIMAGE
 
 #ifndef WX_PRECOMP
 #include <stdio.h>
@@ -94,44 +96,41 @@ void wxGenericDragImage::Init()
 ////////////////////////////////////////////////////////////////////////////
 
 // Create a drag image with a virtual image (need to override DoDrawImage, GetImageRect)
-bool wxGenericDragImage::Create(const wxCursor& cursor, const wxPoint& hotspot)
+bool wxGenericDragImage::Create(const wxCursor& cursor)
 {
     m_cursor = cursor;
-    m_hotspot = hotspot;
 
     return TRUE;
 }
 
 // Create a drag image from a bitmap and optional cursor
-bool wxGenericDragImage::Create(const wxBitmap& image, const wxCursor& cursor, const wxPoint& hotspot)
+bool wxGenericDragImage::Create(const wxBitmap& image, const wxCursor& cursor)
 {
     // We don't have to combine the cursor explicitly since we simply show the cursor
     // as we drag. This currently will only work within one window.
 
     m_cursor = cursor;
-    m_hotspot = hotspot;
     m_bitmap = image;
 
     return TRUE ;
 }
 
 // Create a drag image from an icon and optional cursor
-bool wxGenericDragImage::Create(const wxIcon& image, const wxCursor& cursor, const wxPoint& hotspot)
+bool wxGenericDragImage::Create(const wxIcon& image, const wxCursor& cursor)
 {
     // We don't have to combine the cursor explicitly since we simply show the cursor
     // as we drag. This currently will only work within one window.
 
     m_cursor = cursor;
-    m_hotspot = hotspot;
     m_icon = image;
 
     return TRUE ;
 }
 
 // Create a drag image from a string and optional cursor
-bool wxGenericDragImage::Create(const wxString& str, const wxCursor& cursor, const wxPoint& hotspot)
+bool wxGenericDragImage::Create(const wxString& str, const wxCursor& cursor)
 {
-    wxFont font(wxSystemSettings::GetSystemFont(wxSYS_DEFAULT_GUI_FONT));
+    wxFont font(wxSystemSettings::GetFont(wxSYS_DEFAULT_GUI_FONT));
 
     long w, h;
     wxScreenDC dc;
@@ -165,12 +164,12 @@ bool wxGenericDragImage::Create(const wxString& str, const wxCursor& cursor, con
 
 #if wxUSE_IMAGE_IN_DRAGIMAGE
     // Make the bitmap masked
-    wxImage image(bitmap);
+    wxImage image = bitmap.ConvertToImage();
     image.SetMaskColour(255, 255, 255);
-    bitmap = image.ConvertToBitmap();
+    bitmap = wxBitmap(image);
 #endif
 
-    return Create(bitmap, cursor, hotspot);
+    return Create(bitmap, cursor);
 }
 
 // Create a drag image for the given tree control item
@@ -251,7 +250,9 @@ bool wxGenericDragImage::BeginDrag(const wxPoint& hotspot,
         (*backing) = wxBitmap(clientSize.x, clientSize.y);
 
     if (!m_fullScreen)
+    {
         m_windowDC = new wxClientDC(window);
+    }
     else
     {
         m_windowDC = new wxScreenDC;
@@ -294,7 +295,13 @@ bool wxGenericDragImage::EndDrag()
 {
     if (m_window)
     {
-        m_window->ReleaseMouse();
+#ifdef __WXMSW__
+        // Under Windows we can be pretty sure this test will give
+        // the correct results
+        if (wxWindow::GetCapture() == m_window)
+#endif
+            m_window->ReleaseMouse();
+
         if (m_cursor.Ok() && m_oldCursor.Ok())
         {
             m_window->SetCursor(m_oldCursor);
@@ -319,15 +326,19 @@ bool wxGenericDragImage::Move(const wxPoint& pt)
 {
     wxASSERT_MSG( (m_windowDC != (wxDC*) NULL), wxT("No window DC in wxGenericDragImage::Move()") );
 
+    wxPoint pt2(pt);
+    if (m_fullScreen)
+        pt2 = m_window->ClientToScreen(pt);
+
     // Erase at old position, then show at the current position
     wxPoint oldPos = m_position;
 
     bool eraseOldImage = (m_isDirty && m_isShown);
     
     if (m_isShown)
-        RedrawImage(oldPos - m_offset, pt - m_offset, eraseOldImage, TRUE);
+        RedrawImage(oldPos - m_offset, pt2 - m_offset, eraseOldImage, TRUE);
 
-    m_position = pt;
+    m_position = pt2;
 
     if (m_isShown)
         m_isDirty = TRUE;
@@ -367,7 +378,8 @@ bool wxGenericDragImage::Show()
 bool wxGenericDragImage::UpdateBackingFromWindow(wxDC& windowDC, wxMemoryDC& destDC,
     const wxRect& sourceRect, const wxRect& destRect) const
 {
-    return destDC.Blit(destRect.x, destRect.y, destRect.width, destRect.height, & windowDC, sourceRect.x, sourceRect.y);
+    return destDC.Blit(destRect.x, destRect.y, destRect.width, destRect.height, & windowDC,
+        sourceRect.x, sourceRect.y);
 }
 
 bool wxGenericDragImage::Hide()
@@ -497,3 +509,4 @@ wxRect wxGenericDragImage::GetImageRect(const wxPoint& pos) const
     }
 }
 
+#endif // wxUSE_DRAGIMAGE

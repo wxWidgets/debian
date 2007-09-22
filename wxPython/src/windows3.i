@@ -5,7 +5,7 @@
 // Author:      Robin Dunn
 //
 // Created:     22-Dec-1998
-// RCS-ID:      $Id: windows3.i,v 1.1.2.3 2001/01/30 20:53:43 robind Exp $
+// RCS-ID:      $Id: windows3.i,v 1.16 2002/03/21 05:50:00 RD Exp $
 // Copyright:   (c) 1998 by Total Control Software
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -16,6 +16,10 @@
 #include "helpers.h"
 #include <wx/sashwin.h>
 #include <wx/laywin.h>
+#ifndef __WXMAC__
+#include <wx/popupwin.h>
+#include <wx/tipwin.h>
+#endif
 %}
 
 //----------------------------------------------------------------------
@@ -34,6 +38,15 @@
 
 %pragma(python) code = "import wx"
 
+//----------------------------------------------------------------------
+
+%{
+    // Put some wx default wxChar* values into wxStrings.
+    static const wxChar* wxSashNameStr = wxT("sashWindow");
+    DECLARE_DEF_STRING(SashNameStr);
+    static const wxChar* wxSashLayoutNameStr = wxT("layoutWindow");
+    DECLARE_DEF_STRING(SashLayoutNameStr);
+%}
 //---------------------------------------------------------------------------
 
 enum wxSashEdgePosition {
@@ -61,6 +74,8 @@ enum wxSashDragStatus
 
 class wxSashEvent : public wxCommandEvent {
 public:
+    wxSashEvent(int id = 0, wxSashEdgePosition edge = wxSASH_NONE);
+
     void SetEdge(wxSashEdgePosition edge);
     wxSashEdgePosition GetEdge();
     void SetDragRect(const wxRect& rect);
@@ -77,9 +92,17 @@ public:
                  const wxPoint& pos = wxDefaultPosition,
                  const wxSize& size = wxDefaultSize,
                  long style = wxCLIP_CHILDREN | wxSW_3D,
-                 const char* name = "sashWindow");
+                 const wxString& name = wxPySashNameStr);
+    %name(wxPreSashWindow)wxSashWindow();
 
-    %pragma(python) addtomethod = "__init__:#wx._StdWindowCallbacks(self)"
+    bool Create(wxWindow* parent, wxWindowID id,
+                 const wxPoint& pos = wxDefaultPosition,
+                 const wxSize& size = wxDefaultSize,
+                 long style = wxCLIP_CHILDREN | wxSW_3D,
+                 const wxString& name = wxPySashNameStr);
+
+    %pragma(python) addtomethod = "__init__:self._setOORInfo(self)"
+    %pragma(python) addtomethod = "wxPreSashWindow:val._setOORInfo(val)"
 
     bool GetSashVisible(wxSashEdgePosition edge);
     int GetDefaultBorderSize();
@@ -126,6 +149,7 @@ enum {
 
 class wxQueryLayoutInfoEvent: public wxEvent {
 public:
+    wxQueryLayoutInfoEvent(wxWindowID id = 0);
 
     void SetRequestedLength(int length);
     int GetRequestedLength();
@@ -143,6 +167,8 @@ public:
 
 class wxCalculateLayoutEvent: public wxEvent {
 public:
+    wxCalculateLayoutEvent(wxWindowID id = 0);
+
     void SetFlags(int flags);
     int GetFlags();
     void SetRect(const wxRect& rect);
@@ -156,12 +182,17 @@ public:
                        const wxPoint& pos = wxDefaultPosition,
                        const wxSize& size = wxDefaultSize,
                        long style = wxCLIP_CHILDREN | wxSW_3D,
-                       const char* name = "layoutWindow");
+                       const wxString& name = wxPySashLayoutNameStr);
+    %name(wxPreSashLayoutWindow)wxSashLayoutWindow();
 
-    %pragma(python) addtomethod = "__init__:#wx._StdWindowCallbacks(self)"
-    %pragma(python) addtomethod = "__init__:#wx._checkForCallback(self, 'OnCalculateLayout',    wxEVT_CALCULATE_LAYOUT)"
-    %pragma(python) addtomethod = "__init__:#wx._checkForCallback(self, 'OnQueryLayoutInfo',    wxEVT_QUERY_LAYOUT_INFO)"
+    bool Create(wxWindow* parent, wxWindowID id,
+                const wxPoint& pos = wxDefaultPosition,
+                const wxSize& size = wxDefaultSize,
+                long style = wxCLIP_CHILDREN | wxSW_3D,
+                const wxString& name = wxPySashLayoutNameStr);
 
+    %pragma(python) addtomethod = "__init__:self._setOORInfo(self)"
+    %pragma(python) addtomethod = "wxPreSashLayoutWindow:val._setOORInfo(val)"
 
     wxLayoutAlignment GetAlignment();
     wxLayoutOrientation GetOrientation();
@@ -172,7 +203,7 @@ public:
 
 //---------------------------------------------------------------------------
 
-class wxLayoutAlgorithm {
+class wxLayoutAlgorithm : public wxObject {
 public:
     wxLayoutAlgorithm();
     ~wxLayoutAlgorithm();
@@ -184,7 +215,96 @@ public:
 
 
 //---------------------------------------------------------------------------
+#ifndef __WXMAC__
 
+// wxPopupWindow: a special kind of top level window used for popup menus,
+// combobox popups and such.
+class wxPopupWindow : public wxWindow {
+public:
+    wxPopupWindow(wxWindow *parent, int flags = wxBORDER_NONE);
+    %name(wxPrePopupWindow)wxPopupWindow();
+
+    %pragma(python) addtomethod = "__init__:self._setOORInfo(self)"
+    %pragma(python) addtomethod = "wxPrePopupWindow:val._setOORInfo(val)"
+
+    bool Create(wxWindow *parent, int flags = wxBORDER_NONE);
+
+    // the point must be given in screen coordinates!
+    void Position(const wxPoint& ptOrigin,
+                  const wxSize& size);
+};
+
+
+%{
+class wxPyPopupTransientWindow : public wxPopupTransientWindow
+{
+public:
+    wxPyPopupTransientWindow() : wxPopupTransientWindow() {}
+    wxPyPopupTransientWindow(wxWindow* parent, int style = wxBORDER_NONE)
+        : wxPopupTransientWindow(parent, style) {}
+
+    DEC_PYCALLBACK_BOOL_ME(ProcessLeftDown);
+    DEC_PYCALLBACK__(OnDismiss);
+    DEC_PYCALLBACK_BOOL_(CanDismiss);
+    PYPRIVATE;
+};
+
+IMP_PYCALLBACK_BOOL_ME(wxPyPopupTransientWindow, wxPopupTransientWindow, ProcessLeftDown);
+IMP_PYCALLBACK__(wxPyPopupTransientWindow, wxPopupTransientWindow, OnDismiss);
+IMP_PYCALLBACK_BOOL_(wxPyPopupTransientWindow, wxPopupTransientWindow, CanDismiss);
+%}
+
+
+
+// wxPopupTransientWindow: a wxPopupWindow which disappears automatically
+// when the user clicks mouse outside it or if it loses focus in any other way
+%name(wxPopupTransientWindow) class wxPyPopupTransientWindow : public wxPopupWindow
+{
+public:
+    wxPyPopupTransientWindow(wxWindow *parent, int style = wxBORDER_NONE);
+    %name(wxPrePopupTransientWindow)wxPyPopupTransientWindow();
+
+    void _setCallbackInfo(PyObject* self, PyObject* _class);
+    %pragma(python) addtomethod = "__init__:self._setCallbackInfo(self, wxPopupTransientWindow)"
+
+    %pragma(python) addtomethod = "__init__:self._setOORInfo(self)"
+    %pragma(python) addtomethod = "wxPrePopupTransientWindow:val._setOORInfo(val)"
+
+    // popup the window (this will show it too) and keep focus at winFocus
+    // (or itself if it's NULL), dismiss the popup if we lose focus
+    virtual void Popup(wxWindow *focus = NULL);
+
+    // hide the window
+    virtual void Dismiss();
+};
+
+//---------------------------------------------------------------------------
+
+class wxTipWindow : public wxPyPopupTransientWindow
+{
+public:
+    %addmethods {
+        wxTipWindow(wxWindow *parent,
+                    const wxString* text,
+                    wxCoord maxLength = 100,
+                    wxRect* rectBound = NULL) {
+            wxString tmp = *text;
+            return new wxTipWindow(parent, tmp, maxLength, NULL, rectBound);
+        }
+    }
+
+    %pragma(python) addtomethod = "__init__:self._setOORInfo(self)"
+
+    // If rectBound is not NULL, the window will disappear automatically when
+    // the mouse leave the specified rect: note that rectBound should be in the
+    // screen coordinates!
+    void SetBoundingRect(const wxRect& rectBound);
+
+    // Hide and destroy the window
+    void Close();
+};
 
 
 //---------------------------------------------------------------------------
+
+#endif

@@ -4,7 +4,7 @@
 // Author:      Denis Pershin
 // Modified by:
 // Created:     08/08/98
-// RCS-ID:      $Id: treectrl.h,v 1.12 1999/07/24 00:14:52 VZ Exp $
+// RCS-ID:      $Id: treectrl.h,v 1.13 2002/09/07 12:28:46 GD Exp $
 // Copyright:   (c) Denis Pershin
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -12,7 +12,7 @@
 #ifndef _WX_TREECTRL_H_
 #define _WX_TREECTRL_H_
 
-#ifdef __GNUG__
+#if defined(__GNUG__) && !defined(__APPLE__)
 #pragma interface "treectrl.h"
 #endif
 

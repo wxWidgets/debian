@@ -2,7 +2,7 @@
 // Name:        data.cpp
 // Purpose:
 // Author:      Robert Roebling
-// Id:          $Id: data.cpp,v 1.39.2.1 2000/04/11 00:34:23 GRG Exp $
+// Id:          $Id: data.cpp,v 1.44 2002/02/22 18:18:35 VZ Exp $
 // Copyright:   (c) 1998 Robert Roebling
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -24,9 +24,6 @@
 #include "wx/icon.h"
 
 #define _MAXPATHLEN 500
-
-/* Useful buffer, initialized in wxCommonInit */
-wxChar *wxBuffer = (wxChar *) NULL;
 
 /* Windows List */
 wxWindowList wxTopLevelWindows;
@@ -160,8 +157,6 @@ const wxChar *wxGetTextFromUserPromptStr = wxT("Input Text");
 const wxChar *wxMessageBoxCaptionStr = wxT("Message");
 const wxChar *wxFileSelectorPromptStr = wxT("Select a file");
 const wxChar *wxFileSelectorDefaultWildcardStr = wxT("*");
-const wxChar *wxInternalErrorStr = wxT("wxWindows Internal Error");
-const wxChar *wxFatalErrorStr = wxT("wxWindows Fatal Error");
 const wxChar *wxDirDialogNameStr = wxT("wxDirCtrl");
 const wxChar *wxDirDialogDefaultFolderStr = wxT("/");
 const wxChar *wxTreeCtrlNameStr = wxT("wxTreeCtrl");

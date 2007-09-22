@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     04/01/98
-// RCS-ID:      $Id: tabctrl.cpp,v 1.18.2.1 2001/02/26 10:19:17 VZ Exp $
+// RCS-ID:      $Id: tabctrl.cpp,v 1.21 2001/06/08 15:04:00 JS Exp $
 // Copyright:   (c) Julian Smart
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -32,7 +32,7 @@
 
 #include <windows.h>
 
-#if !(defined(__GNUWIN32_OLD__) || defined(__TWIN32__))
+#if defined(__WIN95__) && !((defined(__GNUWIN32_OLD__) || defined(__TWIN32__)) && !defined(__CYGWIN10__))
     #include <commctrl.h>
 #else
     #include "wx/msw/gnuwin32/extra.h"
@@ -45,6 +45,9 @@
 #include "wx/msw/imaglist.h"
 
 IMPLEMENT_DYNAMIC_CLASS(wxTabCtrl, wxControl)
+
+DEFINE_EVENT_TYPE(wxEVT_COMMAND_TAB_SEL_CHANGED)
+DEFINE_EVENT_TYPE(wxEVT_COMMAND_TAB_SEL_CHANGING)
 
 BEGIN_EVENT_TABLE(wxTabCtrl, wxControl)
     EVT_SYS_COLOUR_CHANGED(wxTabCtrl::OnSysColourChanged)

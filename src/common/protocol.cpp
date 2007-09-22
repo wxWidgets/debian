@@ -4,7 +4,7 @@
 // Author:      Guilhem Lavaux
 // Modified by:
 // Created:     07/07/1997
-// RCS-ID:      $Id: protocol.cpp,v 1.13 2000/03/17 18:18:58 VZ Exp $
+// RCS-ID:      $Id: protocol.cpp,v 1.15 2002/07/14 20:26:07 MBN Exp $
 // Copyright:   (c) 1997, 1998 Guilhem Lavaux
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -19,6 +19,8 @@
 #ifdef __BORLANDC__
   #pragma hdrstop
 #endif
+
+#if wxUSE_PROTOCOL
 
 #include "wx/protocol/protocol.h"
 #include "wx/url.h"
@@ -166,4 +168,7 @@ wxProtocolError GetLine(wxSocketBase *sock, wxString& result) {
   return wxPROTO_NOERR;
 #undef PROTO_BSIZE
 }
-#endif
+#endif // wxUSE_SOCKETS
+
+#endif // wxUSE_PROTOCOL
+

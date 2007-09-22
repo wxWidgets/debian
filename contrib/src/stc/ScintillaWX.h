@@ -9,7 +9,7 @@
 // Author:      Robin Dunn
 //
 // Created:     13-Jan-2000
-// RCS-ID:      $Id: ScintillaWX.h,v 1.2.2.3 2000/10/09 20:38:25 robind Exp $
+// RCS-ID:      $Id: ScintillaWX.h,v 1.11 2002/07/19 21:09:39 RD Exp $
 // Copyright:   (c) 2000 by Total Control Software
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -18,6 +18,11 @@
 #define __ScintillaWX_h__
 
 //----------------------------------------------------------------------
+
+#include <ctype.h>
+#include <stdlib.h>
+#include <stdio.h>
+#include <string.h>
 
 #include "Platform.h"
 
@@ -56,6 +61,7 @@ class ScintillaWX;
 //----------------------------------------------------------------------
 // Helper classes
 
+#if wxUSE_DRAG_AND_DROP
 class wxSTCDropTarget : public wxTextDropTarget {
 public:
     void SetScintilla(ScintillaWX* swx) {
@@ -70,7 +76,7 @@ public:
 private:
     ScintillaWX* swx;
 };
-
+#endif
 
 //----------------------------------------------------------------------
 
@@ -119,14 +125,17 @@ public:
     void DoButtonDown(Point pt, unsigned int curTime, bool shift, bool ctrl, bool alt);
     void DoButtonUp(Point pt, unsigned int curTime, bool ctrl);
     void DoButtonMove(Point pt);
-    void DoAddChar(char ch);
-    int  DoKeyDown(int key, bool shift, bool ctrl, bool alt);
+    void DoMouseWheel(int rotation, int delta, int linesPerAction, int ctrlDown, bool isPageScroll);
+    void DoAddChar(int key);
+    int  DoKeyDown(int key, bool shift, bool ctrl, bool alt, bool* consumed);
     void DoTick() { Tick(); }
 
+#if wxUSE_DRAG_AND_DROP
     bool DoDropText(long x, long y, const wxString& data);
     wxDragResult DoDragEnter(wxCoord x, wxCoord y, wxDragResult def);
     wxDragResult DoDragOver(wxCoord x, wxCoord y, wxDragResult def);
     void DoDragLeave();
+#endif
 
     void DoCommand(int ID);
     void DoContextMenu(Point pt);
@@ -144,8 +153,11 @@ private:
     bool                capturedMouse;
     wxStyledTextCtrl*   stc;
 
+#if wxUSE_DRAG_AND_DROP
     wxSTCDropTarget*    dropTarget;
     wxDragResult        dragResult;
+#endif
+    int                 wheelRotation;
 };
 
 //----------------------------------------------------------------------

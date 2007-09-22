@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     01/02/97
-// RCS-ID:      $Id: colour.h,v 1.13 2000/02/17 20:36:51 JS Exp $
+// RCS-ID:      $Id: colour.h,v 1.15 2001/10/18 20:58:12 MBN Exp $
 // Copyright:   (c) Julian Smart
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -30,12 +30,11 @@ public:
 
     // implicit conversion from the colour name
   wxColour( const wxString &colourName ) { InitFromName(colourName); }
-  wxColour( const char *colourName ) { InitFromName(colourName); }
+  wxColour( const wxChar *colourName ) { InitFromName(colourName); }
 
 
     // copy ctors and assignment operators
   wxColour( const wxColour& col );
-/*  wxColour( const wxColour* col ); */
   wxColour& operator = ( const wxColour& col );
 
     // dtor
@@ -65,12 +64,14 @@ public:
   unsigned char Blue() const { return m_blue; }
 
   // comparison
-  bool operator == (const wxColour& colour) const
+  bool operator==(const wxColour& colour) const
   {
-    return (m_red == colour.m_red &&
-            m_green == colour.m_green &&
-            m_blue == colour.m_blue);
+    return m_isInit == colour.m_isInit &&
+           m_red == colour.m_red &&
+           m_green == colour.m_green &&
+           m_blue == colour.m_blue;
   }
+
   bool operator != (const wxColour& colour) const { return !(*this == colour); }
 
   WXCOLORREF GetPixel() const { return m_pixel; };

@@ -4,7 +4,7 @@
 // Author:      Guilhem Lavaux
 // Modified by:
 // Created:     28/06/1998
-// RCS-ID:      $Id: txtstrm.h,v 1.9.2.1 2000/04/01 23:19:10 VZ Exp $
+// RCS-ID:      $Id: txtstrm.h,v 1.11 2002/08/31 11:29:11 GD Exp $
 // Copyright:   (c) Guilhem Lavaux
 // Licence:   	wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -12,7 +12,7 @@
 #ifndef _WX_TXTSTREAM_H_
 #define _WX_TXTSTREAM_H_
 
-#ifdef __GNUG__
+#if defined(__GNUG__) && !defined(__APPLE__)
 #pragma interface "txtstrm.h"
 #endif
 

@@ -4,12 +4,12 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     04/01/98
-// RCS-ID:      $Id: cube.cpp,v 1.2.2.1 2000/06/28 07:37:27 JS Exp $
+// RCS-ID:      $Id: cube.cpp,v 1.9 2002/08/31 22:30:50 GD Exp $
 // Copyright:   (c) Julian Smart
-// Licence:   	wxWindows licence
+// Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
 
-#ifdef __GNUG__
+#if defined(__GNUG__) && !defined(__APPLE__)
 #pragma implementation
 #pragma interface
 #endif
@@ -33,9 +33,14 @@
 
 #include "cube.h"
 
-#ifndef __WXMSW__     // for wxStopWatch, see remark below 
-#include <sys/time.h>
-#include <sys/unistd.h>
+#ifndef __WXMSW__     // for wxStopWatch, see remark below
+  #if defined(__WXMAC__) && !defined(__DARWIN__)
+    #include <utime.h>
+    #include <unistd.h>
+  #else
+    #include <sys/time.h>
+    #include <sys/unistd.h>
+  #endif
 #else
 #include <sys/timeb.h>
 #endif
@@ -86,19 +91,19 @@ class ScanCodeDialog : public wxDialog
 public:
   ScanCodeDialog( wxWindow* parent, wxWindowID id, const int code,
                   const wxString &descr, const wxString& title );
-  int GetValue(); 
+  int GetValue();
 private:
   ScanCodeCtrl       *m_ScanCode;
   wxTextCtrl         *m_Description;
 };
 
-ScanCodeDialog::ScanCodeDialog( wxWindow* parent, wxWindowID id, 
+ScanCodeDialog::ScanCodeDialog( wxWindow* parent, wxWindowID id,
                const int code, const wxString &descr, const wxString& title )
           : wxDialog( parent, id, title, wxPoint(-1, -1), wxSize(96*2,76*2) )
 {
-  new wxStaticText( this, -1, "Scancode", wxPoint(4*2,3*2), 
+  new wxStaticText( this, -1, "Scancode", wxPoint(4*2,3*2),
                     wxSize(31*2,12*2) );
-  m_ScanCode = new ScanCodeCtrl( this, -1, code, wxPoint(37*2,6*2), 
+  m_ScanCode = new ScanCodeCtrl( this, -1, code, wxPoint(37*2,6*2),
                                  wxSize(53*2,14*2) );
 
   new wxStaticText( this, -1, "Description", wxPoint(4*2,24*2),
@@ -121,32 +126,33 @@ int ScanCodeDialog::GetValue()
 
 /*----------------------------------------------------------------------
   Utility function to get the elapsed time (in msec) since a given point
-  in time (in sec)  (because current version of wxGetElapsedTime doesn´t 
-  works right with glibc-2.1 and linux, at least for me) 
+  in time (in sec)  (because current version of wxGetElapsedTime doesn´t
+  works right with glibc-2.1 and linux, at least for me)
 -----------------------------------------------------------------------*/
 unsigned long wxStopWatch( unsigned long *sec_base )
 {
   unsigned long secs,msec;
 
-#ifndef __WXMSW__        // think every unice has gettimeofday
+#if defined(__WXMSW__)
+  struct timeb tb;
+  ftime( &tb );
+  secs = tb.time;
+  msec = tb.millitm;
+#elif defined(__WXMAC__) && !defined(__DARWIN__)
+  wxLongLong tl = wxGetLocalTimeMillis();
+  secs = (unsigned long) (tl.GetValue() / 1000);
+  msec = (unsigned long) (tl.GetValue() - secs*1000);
+#else
+  // think every unice has gettimeofday
   struct timeval tv;
   gettimeofday( &tv, (struct timezone *)NULL );
   secs = tv.tv_sec;
   msec = tv.tv_usec/1000;
-#else
-  struct timeb tb;
-
-  ftime( &tb );
-
-  secs = tb.time;
-
-  msec = tb.millitm;
-
 #endif
 
   if( *sec_base == 0 )
     *sec_base = secs;
-    
+
   return( (secs-*sec_base)*1000 + msec );
 }
 
@@ -178,7 +184,7 @@ TestGLCanvas::TestGLCanvas(wxWindow *parent, wxWindowID id,
     m_rright = WXK_RIGHT;
 }
 
-TestGLCanvas::TestGLCanvas(wxWindow *parent, const TestGLCanvas &other, 
+TestGLCanvas::TestGLCanvas(wxWindow *parent, const TestGLCanvas &other,
     wxWindowID id, const wxPoint& pos, const wxSize& size, long style,
     const wxString& name ) :
       wxGLCanvas(parent, other.GetContext(), id, pos, size, style, name  )
@@ -208,14 +214,19 @@ void TestGLCanvas::Render()
         InitGL();
         m_init = TRUE;
     }
-    
+
+    glMatrixMode(GL_PROJECTION);
+    glLoadIdentity();
+    glFrustum(-0.5F, 0.5F, -0.5F, 0.5F, 1.0F, 3.0F);
+    glMatrixMode(GL_MODELVIEW);
+
     /* clear color and depth buffers */
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
   if( m_gllist == 0 )
   {
     m_gllist = glGenLists( 1 );
-    glNewList( m_gllist, GL_COMPILE_AND_EXECUTE );        
+    glNewList( m_gllist, GL_COMPILE_AND_EXECUTE );
     /* draw six faces of a cube */
     glBegin(GL_QUADS);
     glNormal3f( 0.0F, 0.0F, 1.0F);
@@ -246,7 +257,7 @@ void TestGLCanvas::Render()
     glEndList();
   }
   else
-    glCallList( m_gllist );    
+    glCallList( m_gllist );
 
   glFlush();
   SwapBuffers();
@@ -264,15 +275,18 @@ void TestGLCanvas::OnPaint( wxPaintEvent& event )
 
 void TestGLCanvas::OnSize(wxSizeEvent& event)
 {
-    int width, height;
-    GetClientSize(& width, & height);
+    // this is also necessary to update the context on some platforms
+    wxGLCanvas::OnSize(event);
 
+    // set GL viewport (not called by wxGLCanvas::OnSize on all platforms...)
+    int w, h;
+    GetClientSize(&w, &h);
 #ifndef __WXMOTIF__
     if (GetContext())
 #endif
     {
         SetCurrent();
-        glViewport(0, 0, width, height);
+        glViewport(0, 0, (GLint) w, (GLint) h);
     }
 }
 
@@ -284,7 +298,7 @@ void TestGLCanvas::OnEraseBackground(wxEraseEvent& event)
 void TestGLCanvas::InitGL()
 {
     SetCurrent();
-    
+
     /* set viewing projection */
     glMatrixMode(GL_PROJECTION);
     glFrustum(-0.5F, 0.5F, -0.5F, 0.5F, 1.0F, 3.0F);
@@ -326,7 +340,7 @@ GLfloat TestGLCanvas::CalcRotateAngle( unsigned long lasttime,
     t = ((GLfloat)(acceltime - lasttime)) / 1000.0f;
     s1 = CalcRotateSpeed( lasttime );
     s2 = CalcRotateSpeed( acceltime );
-    
+
     return( t * (s1 + s2) * 135.0f );
 }
 
@@ -335,9 +349,9 @@ void TestGLCanvas::Action( long code, unsigned long lasttime,
 {
     GLfloat angle = CalcRotateAngle( lasttime, acceltime );
 
-    if (code == m_rleft) 
+    if (code == m_rleft)
         Rotate( angle );
-    else if (code == m_rright) 
+    else if (code == m_rright)
             Rotate( -angle );
 }
 
@@ -359,7 +373,7 @@ void TestGLCanvas::OnKeyDown( wxKeyEvent& event )
     }
 
     unsigned long currTime = event.m_timeStamp - m_xsynct;
-  
+
     if (evkey != m_Key)
     {
         m_Key = evkey;
@@ -369,11 +383,15 @@ void TestGLCanvas::OnKeyDown( wxKeyEvent& event )
     if (currTime >= m_LastRedraw)      // Redraw:
     {
         Action( m_Key, m_LastTime-m_StartTime, currTime-m_StartTime );
-                  
+
+#if defined(__WXMAC__) && !defined(__DARWIN__)
+        m_LastRedraw = currTime;    // wxStopWatch() doesn't work on Mac...
+#else
         m_LastRedraw = wxStopWatch(&m_secbase) - m_gsynct;
+#endif
         m_LastTime = currTime;
     }
-    
+
     event.Skip();
 }
 
@@ -383,7 +401,7 @@ void TestGLCanvas::OnKeyUp( wxKeyEvent& event )
     m_StartTime = 0;
     m_LastTime = 0;
     m_LastRedraw = 0;
-    
+
     event.Skip();
 }
 
@@ -410,7 +428,7 @@ END_EVENT_TABLE()
 
 // My frame constructor
 MyFrame::MyFrame(wxFrame *frame, const wxString& title, const wxPoint& pos,
-                 const wxSize& size, long style) 
+                 const wxSize& size, long style)
          : wxFrame(frame, -1, title, pos, size, style)
 {
     m_canvas = NULL;
@@ -422,7 +440,7 @@ void MyFrame::OnExit(wxCommandEvent& event)
     Destroy();
 }
 
-void MyFrame::OnNewWindow()
+void MyFrame::OnNewWindow(wxCommandEvent& event)
 {
   MyFrame *frame = new MyFrame(NULL, "Cube OpenGL Demo Clone",
                                wxPoint(50, 50), wxSize(400, 300));
@@ -446,24 +464,24 @@ void MyFrame::OnNewWindow()
 
   frame->SetMenuBar(menuBar);
 
-  frame->m_canvas = new TestGLCanvas( frame, *m_canvas, -1, 
-               wxPoint(0, 0), wxSize(200, 200) );
-  
+  frame->m_canvas = new TestGLCanvas( frame, *m_canvas, -1,
+               wxDefaultPosition, wxDefaultSize );
+
   // Show the frame
   frame->Show(TRUE);
 }
 
-void MyFrame::OnDefRotateLeftKey()
+void MyFrame::OnDefRotateLeftKey(wxCommandEvent& event)
 {
-  ScanCodeDialog dial( this, -1, m_canvas->m_rleft, 
+  ScanCodeDialog dial( this, -1, m_canvas->m_rleft,
                        wxString("Left"), "Define key" );
   int result = dial.ShowModal();
   if( result == wxID_OK )
     m_canvas->m_rleft = dial.GetValue();
 }
-void MyFrame::OnDefRotateRightKey()
+void MyFrame::OnDefRotateRightKey(wxCommandEvent& event)
 {
-  ScanCodeDialog dial( this, -1, m_canvas->m_rright, 
+  ScanCodeDialog dial( this, -1, m_canvas->m_rright,
                        wxString("Right"), "Define key" );
   int result = dial.ShowModal();
   if( result == wxID_OK )
@@ -503,10 +521,10 @@ bool MyApp::OnInit(void)
 
   frame->SetMenuBar(menuBar);
 
-  frame->m_canvas = new TestGLCanvas(frame, -1, wxPoint(0, 0), wxSize(200, 200));
+  frame->m_canvas = new TestGLCanvas(frame, -1, wxDefaultPosition, wxDefaultSize);
 
   // Show the frame
   frame->Show(TRUE);
-  
+
   return TRUE;
 }

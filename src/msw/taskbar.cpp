@@ -5,7 +5,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     24/3/98
-// RCS-ID:      $Id: taskbar.cpp,v 1.20.2.1 2000/04/21 19:15:49 JS Exp $
+// RCS-ID:      $Id: taskbar.cpp,v 1.25 2002/06/09 19:24:21 MBN Exp $
 // Copyright:   (c)
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////
@@ -52,12 +52,19 @@
 LRESULT APIENTRY _EXPORT wxTaskBarIconWindowProc( HWND hWnd, unsigned msg,
                                      UINT wParam, LONG lParam );
 
-wxChar *wxTaskBarWindowClass = wxT("wxTaskBarWindowClass");
+wxChar *wxTaskBarWindowClass = (wxChar*) wxT("wxTaskBarWindowClass");
 
 wxList wxTaskBarIcon::sm_taskBarIcons;
 bool   wxTaskBarIcon::sm_registeredClass = FALSE;
 UINT   wxTaskBarIcon::sm_taskbarMsg = 0;
 
+DEFINE_EVENT_TYPE( wxEVT_TASKBAR_MOVE )
+DEFINE_EVENT_TYPE( wxEVT_TASKBAR_LEFT_DOWN )
+DEFINE_EVENT_TYPE( wxEVT_TASKBAR_LEFT_UP )
+DEFINE_EVENT_TYPE( wxEVT_TASKBAR_RIGHT_DOWN )
+DEFINE_EVENT_TYPE( wxEVT_TASKBAR_RIGHT_UP )
+DEFINE_EVENT_TYPE( wxEVT_TASKBAR_LEFT_DCLICK )
+DEFINE_EVENT_TYPE( wxEVT_TASKBAR_RIGHT_DCLICK )
 
 BEGIN_EVENT_TABLE(wxTaskBarIcon, wxEvtHandler)
     EVT_TASKBAR_MOVE         (wxTaskBarIcon::_OnMouseMove)
@@ -113,10 +120,10 @@ bool wxTaskBarIcon::SetIcon(const wxIcon& icon, const wxString& tooltip)
         notifyData.hWnd = (HWND) m_hWnd;
         notifyData.uCallbackMessage = sm_taskbarMsg;
         notifyData.uFlags = NIF_MESSAGE ;
-        if (icon.Ok())
+    if (icon.Ok())
     {
-                notifyData.uFlags |= NIF_ICON;
-            notifyData.hIcon = (HICON) icon.GetHICON();
+        notifyData.uFlags |= NIF_ICON;
+        notifyData.hIcon = (HICON) icon.GetHICON();
     }
 
     if (((const wxChar*) tooltip != NULL) && (tooltip != wxT("")))
@@ -355,9 +362,7 @@ long wxTaskBarIcon::WindowProc( WXHWND hWnd, unsigned int msg, unsigned int wPar
         }
 
     if (eventType) {
-        wxEvent event;
-        event.SetEventType(eventType);
-        event.SetEventObject(this);
+        wxTaskBarIconEvent event(eventType, this);
 
         ProcessEvent(event);
     }

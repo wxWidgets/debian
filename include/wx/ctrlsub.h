@@ -4,7 +4,7 @@
 // Author:      Vadim Zeitlin
 // Modified by:
 // Created:     22.10.99
-// RCS-ID:      $Id: ctrlsub.h,v 1.1 1999/10/22 18:00:30 VZ Exp $
+// RCS-ID:      $Id: ctrlsub.h,v 1.9 2002/08/31 11:29:09 GD Exp $
 // Copyright:   (c) wxWindows team
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -12,33 +12,40 @@
 #ifndef _WX_CTRLSUB_H_BASE_
 #define _WX_CTRLSUB_H_BASE_
 
-#ifdef __GNUG__
+#if defined(__GNUG__) && !defined(__APPLE__)
     #pragma interface "controlwithitems.h"
 #endif
+
+#if wxUSE_CONTROLS
 
 #include "wx/control.h"      // base class
 
 // ----------------------------------------------------------------------------
-// wxControlWithItems defines an interface which is implemented by all controls
+// wxItemContainer defines an interface which is implemented by all controls
 // which have string subitems each of which may be selected.
 //
-// Examples: wxListBox, wxCheckListBox, wxChoice and wxComboBox
+// Examples: wxListBox, wxCheckListBox, wxChoice and wxComboBox (which
+// implements an extended interface deriving from this one)
 // ----------------------------------------------------------------------------
 
-class WXDLLEXPORT wxControlWithItems : public wxControl
+class WXDLLEXPORT wxItemContainer
 {
 public:
-    wxControlWithItems() { m_clientDataItemsType = ClientData_None; }
+    wxItemContainer() { m_clientDataItemsType = wxClientData_None; }
+    virtual ~wxItemContainer();
 
     // adding items
     // ------------
 
-    void Append(const wxString& item)
-        { DoAppend(item); }
-    void Append(const wxString& item, void *clientData)
-        { int n = DoAppend(item); SetClientData(n, clientData); }
-    void Append(const wxString& item, wxClientData *clientData)
-        { int n = DoAppend(item); SetClientObject(n, clientData); }
+    int Append(const wxString& item)
+        { return DoAppend(item); }
+    int Append(const wxString& item, void *clientData)
+        { int n = DoAppend(item); SetClientData(n, clientData); return n; }
+    int Append(const wxString& item, wxClientData *clientData)
+        { int n = DoAppend(item); SetClientObject(n, clientData); return n; }
+
+    // append several items at once to the control
+    void Append(const wxArrayString& strings);
 
     // deleting items
     // --------------
@@ -73,13 +80,15 @@ public:
     wxClientData* GetClientObject(int n) const;
 
     bool HasClientObjectData() const
-        { return m_clientDataItemsType == ClientData_Object; }
+        { return m_clientDataItemsType == wxClientData_Object; }
     bool HasClientUntypedData() const
-        { return m_clientDataItemsType == ClientData_Void; }
+        { return m_clientDataItemsType == wxClientData_Void; }
 
+#if WXWIN_COMPATIBILITY_2_2
     // compatibility - these functions are deprecated, use the new ones
     // instead
     int Number() const { return GetCount(); }
+#endif // WXWIN_COMPATIBILITY_2_2
 
 protected:
     virtual int DoAppend(const wxString& item) = 0;
@@ -93,6 +102,60 @@ protected:
     wxClientDataType m_clientDataItemsType;
 };
 
-#endif // _WX_CTRLSUB_H_BASE_
+class WXDLLEXPORT wxControlWithItems : public wxControl, public wxItemContainer
+{
+public:
+    wxControlWithItems() { }
+    virtual ~wxControlWithItems();
+    
+    // we have to redefine these functions here to avoid ambiguities in classes
+    // deriving from us which would arise otherwise because both base classses
+    // have the methods with the same names - hopefully, a smart compiler can
+    // optimize away these simple inline wrappers so we don't suffer much from
+    // this
 
+    void SetClientData(void *data)
+    {
+        wxControl::SetClientData(data);
+    }
+
+    void *GetClientData() const
+    {
+        return wxControl::GetClientData();
+    }
+
+    void SetClientObject(wxClientData *data)
+    {
+        wxControl::SetClientObject(data);
+    }
+
+    wxClientData *GetClientObject() const
+    {
+        return wxControl::GetClientObject();
+    }
+
+    void SetClientData(int n, void* clientData)
+    {
+        wxItemContainer::SetClientData(n, clientData);
+    }
+
+    void* GetClientData(int n) const
+    {
+        return wxItemContainer::GetClientData(n);
+    }
+
+    void SetClientObject(int n, wxClientData* clientData)
+    {
+        wxItemContainer::SetClientObject(n, clientData);
+    }
+
+    wxClientData* GetClientObject(int n) const
+    {
+        return wxItemContainer::GetClientObject(n);
+    }
+};
+
+#endif // wxUSE_CONTROLS
+
+#endif // _WX_CTRLSUB_H_BASE_
 

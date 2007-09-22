@@ -4,9 +4,9 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     04/01/98
-// RCS-ID:      $Id: doc.h,v 1.3.2.1 2000/06/24 08:05:21 JS Exp $
+// RCS-ID:      $Id: doc.h,v 1.7 2002/03/17 14:15:40 VZ Exp $
 // Copyright:   (c) Julian Smart and Markus Holzem
-// Licence:   	wxWindows license
+// Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
 
 #ifdef __GNUG__
@@ -17,6 +17,7 @@
 #define __DOCSAMPLEH__
 
 #include "wx/docview.h"
+#include "wx/cmdproc.h"
 
 // Plots a line from one point to the other
 class DoodleLine: public wxObject
@@ -40,8 +41,8 @@ public:
     
     void Draw(wxDC *dc);
 #if wxUSE_STD_IOSTREAM
-    ostream& SaveObject(ostream& text_stream);
-    istream& LoadObject(istream& text_stream);
+    wxSTD ostream& SaveObject(wxSTD ostream& text_stream);
+    wxSTD istream& LoadObject(wxSTD istream& text_stream);
 #else
     wxOutputStream& SaveObject(wxOutputStream& stream);
     wxInputStream& LoadObject(wxInputStream& stream);
@@ -60,8 +61,8 @@ public:
     ~DrawingDocument(void);
     
 #if wxUSE_STD_IOSTREAM
-    ostream& SaveObject(ostream& text_stream);
-    istream& LoadObject(istream& text_stream);
+    wxSTD ostream& SaveObject(wxSTD ostream& text_stream);
+    wxSTD istream& LoadObject(wxSTD istream& text_stream);
 #else
     wxOutputStream& SaveObject(wxOutputStream& stream);
     wxInputStream& LoadObject(wxInputStream& stream);
@@ -93,8 +94,8 @@ class TextEditDocument: public wxDocument
 private:
 public:
 /*
-ostream& SaveObject(ostream& stream);
-istream& LoadObject(istream& stream);
+wxSTD ostream& SaveObject(wxSTD ostream& stream);
+wxSTD istream& LoadObject(wxSTD istream& stream);
     */
     virtual bool OnSaveDocument(const wxString& filename);
     virtual bool OnOpenDocument(const wxString& filename);

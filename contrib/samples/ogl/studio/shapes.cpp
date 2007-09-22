@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     12/07/98
-// RCS-ID:      $Id: shapes.cpp,v 1.1 2000/03/03 11:24:44 JS Exp $
+// RCS-ID:      $Id: shapes.cpp,v 1.3 2001/11/19 16:07:18 JS Exp $
 // Copyright:   (c) Julian Smart
 // Licence:   	wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -14,7 +14,7 @@
 #endif
 
 // For compilers that support precompilation, includes "wx.h".
-#include <wx/wxprec.h>
+#include "wx/wxprec.h"
 
 #ifdef __BORLANDC__
 #pragma hdrstop
@@ -168,7 +168,7 @@ void csEvtHandler::OnRightClick(double x, double y, int keys, int attachment)
 
     int viewStartX, viewStartY;
     int unitX, unitY;
-    GetShape()->GetCanvas()->ViewStart(& viewStartX, & viewStartY);
+    GetShape()->GetCanvas()->GetViewStart(& viewStartX, & viewStartY);
     GetShape()->GetCanvas()->GetScrollPixelsPerUnit(& unitX, & unitY);
 
     int x1 = (int)(x * GetShape()->GetCanvas()->GetScaleX());

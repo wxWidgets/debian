@@ -2,7 +2,7 @@
 // Name:        dcclient.h
 // Purpose:
 // Author:      Robert Roebling
-// Id:          $Id: dcclient.h,v 1.23 2000/03/04 16:23:25 RR Exp $
+// Id:          $Id: dcclient.h,v 1.32 2002/09/07 12:28:46 GD Exp $
 // Copyright:   (c) 1998 Robert Roebling
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -10,7 +10,7 @@
 #ifndef __GTKDCCLIENTH__
 #define __GTKDCCLIENTH__
 
-#ifdef __GNUG__
+#if defined(__GNUG__) && !defined(__APPLE__)
 #pragma interface
 #endif
 
@@ -35,13 +35,14 @@ public:
     wxWindowDC();
     wxWindowDC( wxWindow *win );
 
-    ~wxWindowDC();
+    virtual ~wxWindowDC();
 
     virtual bool CanDrawBitmap() const { return TRUE; }
     virtual bool CanGetTextExtent() const { return TRUE; }
 
-//protected:
-    virtual void DoFloodFill( wxCoord x, wxCoord y, const wxColour& col, int style=wxFLOOD_SURFACE );
+protected:
+    virtual void DoGetSize(int *width, int *height) const;
+    virtual bool DoFloodFill( wxCoord x, wxCoord y, const wxColour& col, int style=wxFLOOD_SURFACE );
     virtual bool DoGetPixel( wxCoord x1, wxCoord y1, wxColour *col ) const;
 
     virtual void DoDrawLine( wxCoord x1, wxCoord y1, wxCoord x2, wxCoord y2 );
@@ -68,7 +69,7 @@ public:
 
     virtual bool DoBlit( wxCoord xdest, wxCoord ydest, wxCoord width, wxCoord height,
                          wxDC *source, wxCoord xsrc, wxCoord ysrc,
-                         int logical_func = wxCOPY, bool useMask = FALSE );
+                         int logical_func = wxCOPY, bool useMask = FALSE, wxCoord xsrcMask = -1, wxCoord ysrcMask = -1 );
 
     virtual void DoDrawText( const wxString &text, wxCoord x, wxCoord y );
     virtual void DoDrawRotatedText(const wxString& text, wxCoord x, wxCoord y,
@@ -78,6 +79,8 @@ public:
                                 wxCoord *descent = (wxCoord *) NULL,
                                 wxCoord *externalLeading = (wxCoord *) NULL,
                                 wxFont *theFont = (wxFont *) NULL) const;
+
+public:
     virtual wxCoord GetCharWidth() const;
     virtual wxCoord GetCharHeight() const;
 
@@ -97,10 +100,6 @@ public:
     virtual void DestroyClippingRegion();
     virtual void DoSetClippingRegionAsRegion( const wxRegion &region  );
 
-#if wxUSE_SPLINES
-    virtual void DoDrawSpline( wxList *points );
-#endif
-
     // Resolution in pixels per logical inch
     virtual wxSize GetPPI() const;
     virtual int GetDepth() const;
@@ -119,6 +118,10 @@ public:
     wxWindow     *m_owner;
     wxRegion      m_currentClippingRegion;
     wxRegion      m_paintClippingRegion;
+#ifdef __WXGTK20__
+    PangoContext *m_context;
+    PangoFontDescription *m_fontdesc;
+#endif
 
     void SetUpDC();
     void Destroy();
@@ -131,31 +134,34 @@ private:
 };
 
 //-----------------------------------------------------------------------------
-// wxPaintDC
-//-----------------------------------------------------------------------------
-
-class wxPaintDC : public wxWindowDC
-{
-public:
-    wxPaintDC();
-    wxPaintDC( wxWindow *win );
-
-private:
-    DECLARE_DYNAMIC_CLASS(wxPaintDC)
-};
-
-//-----------------------------------------------------------------------------
 // wxClientDC
 //-----------------------------------------------------------------------------
 
 class wxClientDC : public wxWindowDC
 {
 public:
-    wxClientDC();
+    wxClientDC() { }
     wxClientDC( wxWindow *win );
+
+protected:
+    virtual void DoGetSize(int *width, int *height) const;
 
 private:
     DECLARE_DYNAMIC_CLASS(wxClientDC)
+};
+
+//-----------------------------------------------------------------------------
+// wxPaintDC
+//-----------------------------------------------------------------------------
+
+class wxPaintDC : public wxClientDC
+{
+public:
+    wxPaintDC() { }
+    wxPaintDC( wxWindow *win );
+
+private:
+    DECLARE_DYNAMIC_CLASS(wxPaintDC)
 };
 
 #endif // __GTKDCCLIENTH__

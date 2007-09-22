@@ -4,9 +4,9 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     23/07/98
-// RCS-ID:      $Id: minifram.h,v 1.1 2000/03/14 19:17:40 RL Exp $
+// RCS-ID:      $Id: minifram.h,v 1.2 2002/03/17 14:15:44 VZ Exp $
 // Copyright:   (c) Julian Smart and Robert Roebling
-// Licence:   	wxWindows licence
+// Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
 
 #include "wx/minifram.h"

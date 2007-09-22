@@ -4,7 +4,7 @@
 // Author:    Carlos Moreno
 // Modified by:
 // Created:   6/2/2000
-// RCS-ID:    $Id: rotate.cpp,v 1.5.2.2 2000/06/17 22:39:47 VZ Exp $
+// RCS-ID:    $Id: rotate.cpp,v 1.8 2002/03/24 00:21:33 VS Exp $
 // Copyright: (c) 2000
 // Licence:   wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -96,8 +96,8 @@ bool MyApp::OnInit()
 
     if ( !m_image.Ok() )
     {
-        wxLogError("Can't load the test image, please copy it to the "
-                   "program directory");
+        wxLogError(wxT("Can't load the test image, please copy it to the ")
+                   wxT("program directory"));
         return FALSE;
     }
 
@@ -161,10 +161,10 @@ void MyCanvas::OnMouseLeftUp (wxMouseEvent & event)
     const wxImage& img = wxGetApp().GetImage();
     wxImage img2 = img.Rotate(frame->m_angle, wxPoint(img.GetWidth()/2, img.GetHeight()/2), TRUE, &offset);
 
-    wxBitmap bmp = img2.ConvertToBitmap ();
+    wxBitmap bmp(img2);
 
     wxClientDC dc (this);
-    dc.DrawBitmap (img2.ConvertToBitmap(), event.m_x + offset.x, event.m_y + offset.y, TRUE);
+    dc.DrawBitmap (bmp, event.m_x + offset.x, event.m_y + offset.y, TRUE);
 }
 
 // without interpolation, and without offset correction
@@ -175,7 +175,7 @@ void MyCanvas::OnMouseRightUp (wxMouseEvent & event)
     const wxImage& img = wxGetApp().GetImage();
     wxImage img2 = img.Rotate(frame->m_angle, wxPoint(img.GetWidth()/2, img.GetHeight()/2), FALSE);
 
-    wxBitmap bmp = img2.ConvertToBitmap ();
+    wxBitmap bmp(img2);
 
     wxClientDC dc (this);
     dc.DrawBitmap (bmp, event.m_x, event.m_y, TRUE);

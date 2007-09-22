@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     04/01/98
-// RCS-ID:      $Id: joystick.cpp,v 1.8 2000/02/14 18:21:19 VZ Exp $
+// RCS-ID:      $Id: joystick.cpp,v 1.12 2002/08/20 17:16:58 JS Exp $
 // Copyright:   (c) Julian Smart and Markus Holzem
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -24,7 +24,7 @@
 #include "wx/window.h"
 #include "wx/msw/private.h"
 
-#ifndef __GNUWIN32_OLD__
+#if !defined(__GNUWIN32_OLD__) || defined(__CYGWIN10__)
     #include <mmsystem.h>
 #endif
 
@@ -51,6 +51,37 @@ IMPLEMENT_DYNAMIC_CLASS(wxJoystick, wxObject)
 // Attributes
 ////////////////////////////////////////////////////////////////////////////
 
+/**
+	johan@linkdata.se 2002-08-20:
+	Now returns only valid, functioning
+	joysticks, counting from the first
+	available and upwards.
+*/
+wxJoystick::wxJoystick(int joystick)
+{
+    JOYINFO joyInfo;
+	int i, maxsticks;
+
+	maxsticks = joyGetNumDevs();
+	for( i=0; i<maxsticks; i++ )
+	{
+	    if( joyGetPos(i, & joyInfo) == JOYERR_NOERROR )
+	    {
+	    	if( !joystick )
+	    	{
+	    		/* Found the one we want, store actual OS id and return */
+	    		m_joystick = i;
+	    		return;
+	    	}
+	    	joystick --;
+	    }
+	}
+
+	/* No such joystick, return ID 0 */
+	m_joystick = 0;
+	return;
+};
+
 wxPoint wxJoystick::GetPosition() const
 {
     JOYINFO joyInfo;
@@ -71,12 +102,19 @@ int wxJoystick::GetZPosition() const
         return 0;
 }
 
+/**
+	johan@linkdata.se 2002-08-20:
+	Return a bitmap with all button states in it,
+	like the GTK version does and Win32 does.
+*/
 int wxJoystick::GetButtonState() const
 {
     JOYINFO joyInfo;
     MMRESULT res = joyGetPos(m_joystick, & joyInfo);
     if (res == JOYERR_NOERROR )
     {
+    	return joyInfo.wButtons;
+#if 0
         int buttons = 0;
 
         if (joyInfo.wButtons & JOY_BUTTON1)
@@ -87,43 +125,55 @@ int wxJoystick::GetButtonState() const
             buttons |= wxJOY_BUTTON3;
         if (joyInfo.wButtons & JOY_BUTTON4)
             buttons |= wxJOY_BUTTON4;
+
         return buttons;
+#endif
     }
     else
         return 0;
 }
 
+/**
+	JLI 2002-08-20:
+	Returns -1 to signify error.
+*/
 int wxJoystick::GetPOVPosition() const
 {
 #ifndef NO_JOYGETPOSEX
     JOYINFOEX joyInfo;
     joyInfo.dwFlags = JOY_RETURNPOV;
+    joyInfo.dwSize = sizeof(joyInfo);
     MMRESULT res = joyGetPosEx(m_joystick, & joyInfo);
     if (res == JOYERR_NOERROR )
     {
         return joyInfo.dwPOV;
     }
     else
-        return 0;
+        return -1;
 #else
-    return 0;
+    return -1;
 #endif
 }
 
+/**
+	johan@linkdata.se 2002-08-20:
+	Returns -1 to signify error.
+*/
 int wxJoystick::GetPOVCTSPosition() const
 {
 #ifndef NO_JOYGETPOSEX
     JOYINFOEX joyInfo;
     joyInfo.dwFlags = JOY_RETURNPOVCTS;
+    joyInfo.dwSize = sizeof(joyInfo);
     MMRESULT res = joyGetPosEx(m_joystick, & joyInfo);
     if (res == JOYERR_NOERROR )
     {
         return joyInfo.dwPOV;
     }
     else
-        return 0;
+        return -1;
 #else
-    return 0;
+    return -1;
 #endif
 }
 
@@ -132,6 +182,7 @@ int wxJoystick::GetRudderPosition() const
 #ifndef NO_JOYGETPOSEX
     JOYINFOEX joyInfo;
     joyInfo.dwFlags = JOY_RETURNR;
+    joyInfo.dwSize = sizeof(joyInfo);
     MMRESULT res = joyGetPosEx(m_joystick, & joyInfo);
     if (res == JOYERR_NOERROR )
     {
@@ -149,6 +200,7 @@ int wxJoystick::GetUPosition() const
 #ifndef NO_JOYGETPOSEX
     JOYINFOEX joyInfo;
     joyInfo.dwFlags = JOY_RETURNU;
+    joyInfo.dwSize = sizeof(joyInfo);
     MMRESULT res = joyGetPosEx(m_joystick, & joyInfo);
     if (res == JOYERR_NOERROR )
     {
@@ -166,6 +218,7 @@ int wxJoystick::GetVPosition() const
 #ifndef NO_JOYGETPOSEX
     JOYINFOEX joyInfo;
     joyInfo.dwFlags = JOY_RETURNV;
+    joyInfo.dwSize = sizeof(joyInfo);
     MMRESULT res = joyGetPosEx(m_joystick, & joyInfo);
     if (res == JOYERR_NOERROR )
     {
@@ -199,16 +252,36 @@ void wxJoystick::SetMovementThreshold(int threshold)
 // Capabilities
 ////////////////////////////////////////////////////////////////////////////
 
+/**
+	johan@linkdata.se 2002-08-20:
+	Now returns the number of connected, functioning
+	joysticks, as intended.
+*/
+int wxJoystick::GetNumberJoysticks()
+{
+    JOYINFO joyInfo;
+	int i, maxsticks, actualsticks;
+	maxsticks = joyGetNumDevs();
+	actualsticks = 0;
+	for( i=0; i<maxsticks; i++ )
+	{
+		if( joyGetPos( i, & joyInfo ) == JOYERR_NOERROR )
+		{
+			actualsticks ++;
+		}
+	}
+    return actualsticks;
+}
+
+/**
+	johan@linkdata.se 2002-08-20:
+	The old code returned true if there were any
+	joystick capable drivers loaded (=always).
+*/
 bool wxJoystick::IsOk() const
 {
     JOYINFO joyInfo;
-    MMRESULT res = joyGetPos(m_joystick, & joyInfo);
-    return ((joyGetNumDevs() > 0) || (res == JOYERR_NOERROR));
-}
-
-int wxJoystick::GetNumberJoysticks() const
-{
-    return joyGetNumDevs();
+    return (joyGetPos(m_joystick, & joyInfo) == JOYERR_NOERROR);
 }
 
 int wxJoystick::GetManufacturerId() const

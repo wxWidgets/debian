@@ -5,7 +5,7 @@
 // Author:      Robin Dunn
 //
 // Created:     23-May-2000
-// RCS-ID:      $Id: calendar.i,v 1.1.2.2 2001/01/30 20:53:43 robind Exp $
+// RCS-ID:      $Id: calendar.i,v 1.15 2002/05/02 02:46:12 RD Exp $
 // Copyright:   (c) 2000 by Total Control Software
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -14,7 +14,7 @@
 
 
 %{
-#include "export.h"
+#include "wxPython.h"
 #include <wx/calctrl.h>
 %}
 
@@ -41,6 +41,8 @@ enum {
     wxCAL_SHOW_HOLIDAYS,
     wxCAL_NO_YEAR_CHANGE,
     wxCAL_NO_MONTH_CHANGE,
+    wxCAL_SEQUENTIAL_MONTH_SELECTION,
+    wxCAL_SHOW_SURROUNDING_WEEKS,
 };
 
 
@@ -48,7 +50,10 @@ enum wxCalendarHitTestResult
 {
     wxCAL_HITTEST_NOWHERE,      // outside of anything
     wxCAL_HITTEST_HEADER,       // on the header (weekdays)
-    wxCAL_HITTEST_DAY           // on a day in the calendar
+    wxCAL_HITTEST_DAY,          // on a day in the calendar
+    wxCAL_HITTEST_INCMONTH,
+    wxCAL_HITTEST_DECMONTH,
+    wxCAL_HITTEST_SURROUNDING_WEEK
 };
 
 // border types for a date
@@ -93,10 +98,10 @@ public:
 
     bool IsHoliday() const;
 
-    const wxColour& GetTextColour() const;
-    const wxColour& GetBackgroundColour() const;
-    const wxColour& GetBorderColour() const;
-    const wxFont& GetFont() const;
+    wxColour GetTextColour() const;
+    wxColour GetBackgroundColour() const;
+    wxColour GetBorderColour() const;
+    wxFont GetFont() const;
     wxCalendarDateBorder GetBorder() const;
 };
 
@@ -146,6 +151,11 @@ def EVT_CALENDAR_WEEKDAY_CLICKED(win, id, fn):
 
 //---------------------------------------------------------------------------
 
+%{
+    // Put some wx default wxChar* values into wxStrings.
+    DECLARE_DEF_STRING(CalendarNameStr);
+%}
+
 class wxCalendarCtrl : public wxControl
 {
 public:
@@ -155,14 +165,38 @@ public:
                    const wxDateTime& date = wxDefaultDateTime,
                    const wxPoint& pos = wxDefaultPosition,
                    const wxSize& size = wxDefaultSize,
-                   long style = wxCAL_SHOW_HOLIDAYS,
-                   const char* name = "calendar");
+                   long style = wxCAL_SHOW_HOLIDAYS | wxWANTS_CHARS,
+                   const wxString& name = wxPyCalendarNameStr);
+    %name(wxPreCalendarCtrl)wxCalendarCtrl();
+
+    bool Create(wxWindow *parent,
+                wxWindowID id,
+                const wxDateTime& date = wxDefaultDateTime,
+                const wxPoint& pos = wxDefaultPosition,
+                const wxSize& size = wxDefaultSize,
+                long style = wxCAL_SHOW_HOLIDAYS | wxWANTS_CHARS,
+                const wxString& name = wxPyCalendarNameStr);
+
+    %pragma(python) addtomethod = "__init__:self._setOORInfo(self)"
+    %pragma(python) addtomethod = "wxPreCalendarCtrl:val._setOORInfo(val)"
 
     // set/get the current date
     // ------------------------
 
     void SetDate(const wxDateTime& date);
     const wxDateTime& GetDate() const;
+
+    // set/get the range in which selection can occur
+    // ---------------------------------------------
+
+    bool SetLowerDateLimit(const wxDateTime& date = wxDefaultDateTime);
+    const wxDateTime& GetLowerDateLimit() const;
+    bool SetUpperDateLimit(const wxDateTime& date = wxDefaultDateTime);
+    const wxDateTime& GetUpperDateLimit() const;
+
+    bool SetDateRange(const wxDateTime& lowerdate = wxDefaultDateTime,
+                      const wxDateTime& upperdate = wxDefaultDateTime);
+
 
     // calendar mode
     // -------------
@@ -185,18 +219,18 @@ public:
 
     // header colours are used for painting the weekdays at the top
     void SetHeaderColours(const wxColour& colFg, const wxColour& colBg);
-    const wxColour& GetHeaderColourFg() const;
-    const wxColour& GetHeaderColourBg() const;
+    wxColour GetHeaderColourFg() const;
+    wxColour GetHeaderColourBg() const;
 
     // highlight colour is used for the currently selected date
     void SetHighlightColours(const wxColour& colFg, const wxColour& colBg);
-    const wxColour& GetHighlightColourFg() const;
-    const wxColour& GetHighlightColourBg() const;
+    wxColour GetHighlightColourFg() const;
+    wxColour GetHighlightColourBg() const;
 
     // holiday colour is used for the holidays (if style & wxCAL_SHOW_HOLIDAYS)
     void SetHolidayColours(const wxColour& colFg, const wxColour& colBg);
-    const wxColour& GetHolidayColourFg() const;
-    const wxColour& GetHolidayColourBg() const;
+    wxColour GetHolidayColourFg() const;
+    wxColour GetHolidayColourBg() const;
 
     // an item without custom attributes is drawn with the default colours and
     // font and without border, setting custom attributes allows to modify this
@@ -218,6 +252,10 @@ public:
     wxCalendarHitTestResult HitTest(const wxPoint& pos,
                                     wxDateTime *date = NULL,
                                     wxDateTime::WeekDay *wd = NULL);
+
+
+    bool Enable(bool enable = TRUE);
+    bool Show(bool show = TRUE);
 
 };
 

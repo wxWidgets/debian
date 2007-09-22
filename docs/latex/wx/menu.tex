@@ -2,10 +2,30 @@
 
 A menu is a popup (or pull down) list of items, one of which may be
 selected before the menu goes away (clicking elsewhere dismisses the
-menu).  Menus may be used to construct either menu bars or popup menus.
+menu). Menus may be used to construct either menu bars or popup menus.
 
 A menu item has an integer ID associated with it which can be used to
-identify the selection, or to change the menu item in some way.
+identify the selection, or to change the menu item in some way. A menu item
+with a special identifier $-1$ is a separator item and doesn't have an
+associated command but just makes a separator line appear in the menu.
+
+Menu items may be either normal items, check items or radio items. Normal items
+don't have any special properties while the check items have a boolean flag
+associated to them and they show a checkmark in the menu when the flag is set.
+wxWindows automatically toggles the flag value when the item is clicked and its
+value may be retrieved using either \helpref{IsChecked}{wxmenuischecked} method
+of wxMenu or wxMenuBar itself or by using 
+\helpref{wxEvent::IsChecked}{wxcommandeventischecked} when you get the menu
+notification for the item in question.
+
+The radio items are similar to the check items except that all the other items
+in the same radio group are unchecked when a radio item is checked. The radio
+group is formed by a contiguous range of radio items, i.e. it starts at the
+first item of this kind and ends with the first item of a different kind (or
+the end of the menu). Notice that because the radio groups are defined in terms
+of the item positions inserting or removing the items in the menu containing
+the radio items risks to not work correctly. Finally note that the radio items
+are only supported under Windows and GTK+ currently.
 
 \wxheading{Derived from}
 
@@ -51,7 +71,7 @@ Constructs a wxMenu object.
 
 \docparam{title}{A title for the popup menu: the empty string denotes no title.}
 
-\docparam{style}{If set to {\tt wxMENU\_TEAROFF}, the menu will be detachable.}
+\docparam{style}{If set to {\tt wxMENU\_TEAROFF}, the menu will be detachable (wxGTK only).}
 
 \func{}{wxMenu}{\param{long}{ style}}
 
@@ -59,7 +79,7 @@ Constructs a wxMenu object.
 
 \wxheading{Parameters}
 
-\docparam{style}{If set to {\tt wxMENU\_TEAROFF}, the menu will be detachable.}
+\docparam{style}{If set to {\tt wxMENU\_TEAROFF}, the menu will be detachable (wxGTK only).}
 
 \membersection{wxMenu::\destruct{wxMenu}}
 
@@ -77,7 +97,7 @@ and recreation of internal data structures.
 \membersection{wxMenu::Append}\label{wxmenuappend}
 
 \func{void}{Append}{\param{int}{ id}, \param{const wxString\& }{ item}, \param{const wxString\& }{helpString = ""},\rtfsp
-\param{const bool}{ checkable = FALSE}}
+\param{wxItemKind}{ kind = wxITEM\_NORMAL}}
 
 Adds a string item to the end of the menu.
 
@@ -101,7 +121,8 @@ such as bitmaps and fonts.
 
 \docparam{menu}{Pull-right submenu.}
 
-\docparam{checkable}{If TRUE, this item is checkable.}
+\docparam{kind}{May be {\tt wxITEM\_SEPARATOR}, {\tt wxITEM\_NORMAL}, 
+{\tt wxITEM\_CHECK} or {\tt wxITEM\_RADIO}}
 
 \docparam{helpString}{An optional help string associated with the item.
 By default, \helpref{wxFrame::OnMenuHighlight}{wxframeonmenuhighlight} displays
@@ -118,6 +139,8 @@ creation of a menu or menubar.
 \wxheading{See also}
 
 \helpref{wxMenu::AppendSeparator}{wxmenuappendseparator},\rtfsp
+\helpref{wxMenu::AppendCheckItem}{wxmenuappendcheckitem},\rtfsp
+\helpref{wxMenu::AppendRadioItem}{wxmenuappendradioitem},\rtfsp
 \helpref{wxMenu::Insert}{wxmenuinsert},\rtfsp
 \helpref{wxMenu::SetLabel}{wxmenusetlabel}, \helpref{wxMenu::GetHelpString}{wxmenugethelpstring},\rtfsp
 \helpref{wxMenu::SetHelpString}{wxmenusethelpstring}, \helpref{wxMenuItem}{wxmenuitem}
@@ -131,6 +154,35 @@ implements the following methods:\par
 \end{twocollist}}
 }
 
+\membersection{wxMenu::AppendCheckItem}\label{wxmenuappendcheckitem}
+
+\func{void}{AppendCheckItem}{\param{int}{ id},\rtfsp
+\param{const wxString\& }{ item}, \param{const wxString\& }{helpString = ""}}
+
+Adds a checkable item to the end of the menu.
+
+\wxheading{See also}
+
+\helpref{wxMenu::Append}{wxmenuappend},\rtfsp
+\helpref{wxMenu::InsertCheckItem}{wxmenuinsertcheckitem}
+
+\membersection{wxMenu::AppendRadioItem}\label{wxmenuappendradioitem}
+
+\func{void}{AppendRadioItem}{\param{int}{ id},\rtfsp
+\param{const wxString\& }{ item}, \param{const wxString\& }{helpString = ""}}
+
+Adds a radio item to the end of the menu. All consequent radio items form a
+group and when an item in the group is checked, all the others are
+automatically unchecked.
+
+{\bf NB:} Currently only implemented under Windows and GTK, use
+{\tt\#if wxHAS\_RADIO\_MENU\_ITEMS} to test for availability of this feature.
+
+\wxheading{See also}
+
+\helpref{wxMenu::Append}{wxmenuappend},\rtfsp
+\helpref{wxMenu::InsertRadioItem}{wxmenuinsertradioitem}
+
 \membersection{wxMenu::AppendSeparator}\label{wxmenuappendseparator}
 
 \func{void}{AppendSeparator}{\void}
@@ -139,7 +191,8 @@ Adds a separator to the end of the menu.
 
 \wxheading{See also}
 
-\helpref{wxMenu::Append}{wxmenuappend}
+\helpref{wxMenu::Append}{wxmenuappend},\rtfsp
+\helpref{wxMenu::InsertSeparator}{wxmenuinsertseparator}
 
 \membersection{wxMenu::Break}\label{wxmenubreak}
 
@@ -234,6 +287,10 @@ Finds the menu item id for a menu item string.
 Finds the menu item object associated with the given menu item identifier and,
 optionally, the (sub)menu it belongs to.
 
+\perlnote{In wxPerl this method takes just the {\tt id} parameter;
+in scalar context it returns the associated {\tt Wx::MenuItem}, in list
+context it returns a 2-element list {\tt ( item, submenu )}}
+
 \wxheading{Parameters}
 
 \docparam{itemString}{Menu item string to find.}
@@ -315,7 +372,9 @@ Returns the title of the menu.
 
 \wxheading{Remarks}
 
-This is relevant only to popup menus.
+This is relevant only to popup menus, use 
+\helpref{wxMenuBar::GetLabelTop}{wxmenubargetlabeltop} for the menus in the
+menubar.
 
 \wxheading{See also}
 
@@ -325,13 +384,53 @@ This is relevant only to popup menus.
 
 \func{bool}{Insert}{\param{size\_t }{pos}, \param{wxMenuItem *}{item}}
 
+\func{void}{Insert}{\param{size\_t }{pos}, \param{int}{ id},\rtfsp
+\param{const wxString\& }{ item}, \param{const wxString\& }{helpString = ""},\rtfsp
+\param{wxItemKind}{ kind = wxITEM\_NORMAL}}
+
 Inserts the given {\it item} before the position {\it pos}. Inserting the item
 at the position \helpref{GetMenuItemCount}{wxmenugetmenuitemcount} is the same
 as appending it.
 
 \wxheading{See also}
 
-\helpref{wxMenu::Append}{wxmenuappend}
+\helpref{wxMenu::Append}{wxmenuappend},\rtfsp
+\helpref{wxMenu::Prepend}{wxmenuprepend}
+
+\membersection{wxMenu::InsertCheckItem}\label{wxmenuinsertcheckitem}
+
+\func{void}{InsertCheckItem}{\param{size\_t }{pos}, \param{int}{ id},\rtfsp
+\param{const wxString\& }{ item}, \param{const wxString\& }{helpString = ""}}
+
+Inserts a checkable item at the given position.
+
+\wxheading{See also}
+
+\helpref{wxMenu::Insert}{wxmenuinsert},\rtfsp
+\helpref{wxMenu::AppendCheckItem}{wxmenuappendcheckitem}
+
+\membersection{wxMenu::InsertRadioItem}\label{wxmenuinsertradioitem}
+
+\func{void}{InsertRadioItem}{\param{size\_t }{pos}, \param{int}{ id},\rtfsp
+\param{const wxString\& }{ item}, \param{const wxString\& }{helpString = ""}}
+
+Inserts a radio item at the given position.
+
+\wxheading{See also}
+
+\helpref{wxMenu::Insert}{wxmenuinsert},\rtfsp
+\helpref{wxMenu::AppendRadioItem}{wxmenuappendradioitem}
+
+\membersection{wxMenu::InsertSeparator}\label{wxmenuinsertseparator}
+
+\func{void}{InsertSeparator}{\param{size\_t }{pos}}
+
+Inserts a separator at the given position.
+
+\wxheading{See also}
+
+\helpref{wxMenu::Insert}{wxmenuinsert},\rtfsp
+\helpref{wxMenu::AppendSeparator}{wxmenuappendseparator}
 
 \membersection{wxMenu::IsChecked}\label{wxmenuischecked}
 
@@ -368,6 +467,56 @@ TRUE if the menu item is enabled, FALSE otherwise.
 \wxheading{See also}
 
 \helpref{wxMenu::Enable}{wxmenuenable}
+
+\membersection{wxMenu::Prepend}\label{wxmenuprepend}
+
+\func{bool}{Prepend}{\param{size\_t }{pos}, \param{wxMenuItem *}{item}}
+
+\func{void}{Prepend}{\param{int}{ id},\rtfsp
+\param{const wxString\& }{ item}, \param{const wxString\& }{helpString = ""},\rtfsp
+\param{wxItemKind}{ kind = wxITEM\_NORMAL}}
+
+Inserts the given {\it item} at the position $0$.
+
+\wxheading{See also}
+
+\helpref{wxMenu::Append}{wxmenuappend},\rtfsp
+\helpref{wxMenu::Inserts}{wxmenuinsert}
+
+\membersection{wxMenu::PrependCheckItem}\label{wxmenuprependcheckitem}
+
+\func{void}{PrependCheckItem}{\param{int}{ id},\rtfsp
+\param{const wxString\& }{ item}, \param{const wxString\& }{helpString = ""}}
+
+Inserts a checkable item at the position $0$.
+
+\wxheading{See also}
+
+\helpref{wxMenu::Prepend}{wxmenuprepend},\rtfsp
+\helpref{wxMenu::AppendCheckItem}{wxmenuappendcheckitem}
+
+\membersection{wxMenu::PrependRadioItem}\label{wxmenuprependradioitem}
+
+\func{void}{PrependRadioItem}{\param{int}{ id},\rtfsp
+\param{const wxString\& }{ item}, \param{const wxString\& }{helpString = ""}}
+
+Inserts a radio item at the position $0$.
+
+\wxheading{See also}
+
+\helpref{wxMenu::Prepend}{wxmenuprepend},\rtfsp
+\helpref{wxMenu::AppendRadioItem}{wxmenuappendradioitem}
+
+\membersection{wxMenu::PrependSeparator}\label{wxmenuprependseparator}
+
+\func{void}{PrependSeparator}{\param{size\_t }{pos}}
+
+Inserts a separator at the position $0$.
+
+\wxheading{See also}
+
+\helpref{wxMenu::Prepend}{wxmenuprepend},\rtfsp
+\helpref{wxMenu::AppendSeparator}{wxmenuappendseparator}
 
 \membersection{wxMenu::Remove}\label{wxmenuremove}
 
@@ -433,11 +582,13 @@ Sets the title of the menu.
 
 \wxheading{Remarks}
 
-This is relevant only to popup menus.
+This is relevant only to popup menus, use 
+\helpref{wxMenuBar::SetLabelTop}{wxmenubarsetlabeltop} for the menus in the
+menubar.
 
 \wxheading{See also}
 
-\helpref{wxMenu::SetTitle}{wxmenusettitle}
+\helpref{wxMenu::GetTitle}{wxmenugettitle}
 
 \membersection{wxMenu::UpdateUI}\label{wxmenuupdateui}
 
@@ -477,6 +628,11 @@ then the events are sent directly to the frame. This allows command and UI updat
 handling to be processed by specific windows and controls, and not necessarily
 by the application frame.
 
+{\bf Tip:} under Windows, if you discover that menu shortcuts (for example, Alt-F to show the file menu)
+are not working, check any EVT\_CHAR events you are handling in child windows.
+If you are not calling {\tt event.Skip()} for events that you don't process in these event handlers,
+menu shortcuts may cease to work.
+
 \wxheading{See also}
 
 \helpref{wxMenu}{wxmenu}, \helpref{Event handling overview}{eventhandlingoverview}
@@ -506,6 +662,9 @@ menu bar.}
 
 \pythonnote{Only the default constructor is supported in wxPython.
 Use wxMenuBar.Append instead.}
+
+\perlnote{wxPerl only supports the first constructor: 
+use {\tt Append} instead.}
 
 \membersection{wxMenuBar::\destruct{wxMenuBar}}
 
@@ -634,7 +793,7 @@ The found menu item object, or NULL if one was not found.
 
 \constfunc{wxString}{GetHelpString}{\param{int}{ id}}
 
-Gets the help string associated with the menu item identifer.
+Gets the help string associated with the menu item identifier.
 
 \wxheading{Parameters}
 
@@ -671,7 +830,9 @@ Use only after the menubar has been associated with a frame.
 
 \constfunc{wxString}{GetLabelTop}{\param{int}{ pos}}
 
-Returns the label of a top-level menu.
+Returns the label of a top-level menu. Note that the returned string does not
+include the accelerator characters which could have been specified in the menu
+title string during its construction.
 
 \wxheading{Parameters}
 
@@ -765,7 +926,7 @@ Redraw the menu bar
 \func{wxMenu *}{Remove}{\param{size\_t }{pos}}
 
 Removes the menu from the menu bar and returns the menu object - the caller is
-reposnbile for deleting it. This function may be used together with 
+responsible for deleting it. This function may be used together with 
 \helpref{wxMenuBar::Insert}{wxmenubarinsert} to change the menubar
 dynamically.
 

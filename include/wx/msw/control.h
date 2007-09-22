@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     01/02/97
-// RCS-ID:      $Id: control.h,v 1.21 2000/01/06 16:47:46 VZ Exp $
+// RCS-ID:      $Id: control.h,v 1.27 2002/08/22 16:00:45 VZ Exp $
 // Copyright:   (c) Julian Smart
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -17,8 +17,6 @@
 #endif
 
 #include "wx/dynarray.h"
-
-WXDLLEXPORT_DATA(extern const wxChar*) wxControlNameStr;
 
 // General item class
 class WXDLLEXPORT wxControl : public wxControlBase
@@ -94,24 +92,35 @@ protected:
 
     virtual wxSize DoGetBestSize() const;
 
-    // create the control of the given class with the given style, returns FALSE
-    // if creation failed
+    // create the control of the given Window class
+    bool MSWCreateControl(const wxChar *classname,
+                          const wxString& label,
+                          const wxPoint& pos,
+                          const wxSize& size,
+                          long style);
+
+    // NB: the method below is deprecated now, with MSWGetStyle() the method
+    //     above should be used instead! Once all the controls are updated to
+    //     implement MSWGetStyle() this version will disappear.
+    //
+    // create the control of the given class with the given style (combination
+    // of WS_XXX flags, i.e. Windows style, not wxWindows one), returns
+    // FALSE if creation failed
     //
     // All parameters except classname and style are optional, if the
-    // size/position are not given, they should be set later with SetSize() and,
-    // label (the title of the window), of course, is left empty. The extended
-    // style is determined from the style and the app 3D settings automatically
-    // if it's not specified explicitly.
+    // size/position are not given, they should be set later with SetSize()
+    // and, label (the title of the window), of course, is left empty. The
+    // extended style is determined from the style and the app 3D settings
+    // automatically if it's not specified explicitly.
     bool MSWCreateControl(const wxChar *classname,
-            WXDWORD style,
-            const wxPoint& pos = wxDefaultPosition,
-            const wxSize& size = wxDefaultSize,
-            const wxString& label = wxEmptyString,
-            WXDWORD exstyle = (WXDWORD)-1);
+                          WXDWORD style,
+                          const wxPoint& pos = wxDefaultPosition,
+                          const wxSize& size = wxDefaultSize,
+                          const wxString& label = wxEmptyString,
+                          WXDWORD exstyle = (WXDWORD)-1);
 
-    // determine the extended styles combination for this window (may slightly
-    // modify style parameter, this is why it's non const)
-    WXDWORD GetExStyle(WXDWORD& style, bool *want3D) const;
+    // default style for the control include WS_TABSTOP if it AcceptsFocus()
+    virtual WXDWORD MSWGetStyle(long style, WXDWORD *exstyle) const;
 
 private:
     DECLARE_EVENT_TABLE()
@@ -120,8 +129,8 @@ private:
 
 #if WXWIN_COMPATIBILITY
     inline void wxControl::Callback(const wxFunction f) { m_callback = f; };
-    inline wxFont& wxControl::GetLabelFont() const { return GetFont(); }
-    inline wxFont& wxControl::GetButtonFont() const { return GetFont(); }
+    inline wxFont& wxControl::GetLabelFont() const { return (wxFont &)GetFont(); }
+    inline wxFont& wxControl::GetButtonFont() const { return (wxFont &)GetFont(); }
     inline void wxControl::SetLabelFont(const wxFont& font) { SetFont(font); }
     inline void wxControl::SetButtonFont(const wxFont& font) { SetFont(font); }
 #endif // WXWIN_COMPATIBILITY

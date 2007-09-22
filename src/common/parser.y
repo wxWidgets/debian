@@ -1,3 +1,4 @@
+/* Version: $Id: parser.y,v 1.26 2002/04/19 22:12:37 RL Exp $ */
  %{
 #include "wx/setup.h"
 #include <string.h>
@@ -78,14 +79,12 @@ command	:       WORD PERIOD
 
 expr	:	WORD OPEN arglist CLOSE 
 			{$$ = proio_cons(wxmake_word($1), $3); free($1);}
-	|	OPEN_SQUARE CLOSE_SQUARE
-                        {$$ = proio_cons(NULL, NULL);}
 	|	OPEN_SQUARE arglist CLOSE_SQUARE
 			{$$ = $2; }
 	;
 
 arglist	:
-			{$$ = NULL;}
+			{$$ = proio_cons(NULL, NULL);}
 	|	arg
 			{$$ = proio_cons($1, NULL);}
 	|
@@ -98,6 +97,7 @@ arg	:	WORD EQUALS arg1
                          free($1); }
 	|	arg1
 			{$$ = $1; }
+	;
 
 arg1	:	WORD
 			{$$ = wxmake_word($1); free($1);}
@@ -125,12 +125,12 @@ arg1	:	WORD
  * for example, cross compilation. */
 #if (defined(__WXGTK__) || defined(__WXWINE__) || defined(__WXMOTIF__)) || defined(__WX_SETUP_H__) && !defined(NO_CONFIGURE)
 #include "lexer.c"
-#else
-#if (defined(__MWERKS__))
+#elif defined(__WXMAC__) && defined(__APPLE__)
+#include "lexer.c"
+#elif defined(__MWERKS__)
 #include "../common/cwlex_yy.c"
 #else
 #include "../common/lex_yy.c"
-#endif
 #endif
 
 /*

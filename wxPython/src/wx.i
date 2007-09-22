@@ -5,7 +5,7 @@
 // Author:      Robin Dunn
 //
 // Created:     5/22/98
-// RCS-ID:      $Id: wx.i,v 1.1.2.6 2001/01/30 20:53:43 robind Exp $
+// RCS-ID:      $Id: wx.i,v 1.37 2002/09/05 19:39:27 RD Exp $
 // Copyright:   (c) 1998 by Total Control Software
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -45,6 +45,9 @@
 %import sizers.i
 %import streams.i
 %import filesys.i
+%import utils.i
+%import fonts.i
+
 
 %native(_wxStart)           __wxStart;
 %native(_wxSetDictionary)   __wxSetDictionary;
@@ -90,6 +93,7 @@ public:
     int  MainLoop();
     bool Pending();
     bool ProcessIdle();
+    bool Yield(bool onlyIfNeeded = FALSE);
 
     void SetAppName(const wxString& name);
 #ifdef __WXMSW__
@@ -101,16 +105,15 @@ public:
     void SetTopWindow(wxWindow* window);
     void SetVendorName(const wxString& name);
     void SetUseBestVisual(bool flag);
-    wxIcon GetStdIcon(int which);
-
-
 };
 
 %inline %{
     wxPyApp* wxGetApp() {
-        return wxPythonApp;
+        //return wxPythonApp;
+        return (wxPyApp*)wxTheApp;
     }
 %}
+
 
 //----------------------------------------------------------------------
 // this is used to cleanup after wxWindows when Python shuts down.
@@ -147,6 +150,8 @@ extern "C" SWIGEXPORT(void) initsizersc();
 extern "C" SWIGEXPORT(void) initclip_dndc();
 extern "C" SWIGEXPORT(void) initstreamsc();
 extern "C" SWIGEXPORT(void) initfilesysc();
+extern "C" SWIGEXPORT(void) initutilsc();
+extern "C" SWIGEXPORT(void) initfontsc();
 
 
 
@@ -154,17 +159,24 @@ extern "C" SWIGEXPORT(void) initfilesysc();
 // the wxc module and will then have safe access to these functions, even if
 // in another shared library.
 static wxPyCoreAPI API = {
-    SWIG_MakePtr,
-    SWIG_GetPtr,
-    SWIG_GetPtrObj,
-    SWIG_RegisterMapping,
-    SWIG_addvarlink,
-    SWIG_newvarlink,
+    (p_SWIG_MakePtr_t)SWIG_MakePtr,
+    (p_SWIG_GetPtr_t)SWIG_GetPtr,
+    (p_SWIG_GetPtrObj_t)SWIG_GetPtrObj,
+    (p_SWIG_RegisterMapping_t)SWIG_RegisterMapping,
+    (p_SWIG_addvarlink_t)SWIG_addvarlink,
+    (p_SWIG_newvarlink_t)SWIG_newvarlink,
 
-    wxPySaveThread,
-    wxPyRestoreThread,
+    wxPyBeginAllowThreads,
+    wxPyEndAllowThreads,
+    wxPyBeginBlockThreads,
+    wxPyEndBlockThreads,
+
     wxPyConstructObject,
     wxPy_ConvertList,
+
+    wxString_in_helper,
+    Py2wxString,
+    wx2PyString,
 
     byte_LIST_helper,
     int_LIST_helper,
@@ -181,12 +193,26 @@ static wxPyCoreAPI API = {
     wxRect_helper,
     wxColour_helper,
 
-    wxPyCBH_setSelf,
+    wxPyCBH_setCallbackInfo,
     wxPyCBH_findCallback,
     wxPyCBH_callCallback,
     wxPyCBH_callCallbackObj,
     wxPyCBH_delete,
+
+    wxPyClassExists,
+    wxPyMake_wxObject,
+    wxPyMake_wxSizer,
+    wxPyPtrTypeMap_Add,
+    wxArrayString2PyList_helper,
+    wxArrayInt2PyList_helper,
+
+    wxPyClientData_dtor,
+    wxPyUserData_dtor,
+    wxPyOORClientData_dtor,
+
+    wxPyCBInputStream_create
 };
+
 
 %}
 
@@ -225,6 +251,21 @@ static wxPyCoreAPI API = {
     initclip_dndc();
     initstreamsc();
     initfilesysc();
+    initutilsc();
+    initfontsc();
+
+
+    PyDict_SetItemString(d,"wxMAJOR_VERSION", PyInt_FromLong((long)wxMAJOR_VERSION ));
+    PyDict_SetItemString(d,"wxMINOR_VERSION", PyInt_FromLong((long)wxMINOR_VERSION ));
+    PyDict_SetItemString(d,"wxRELEASE_NUMBER", PyInt_FromLong((long)wxRELEASE_NUMBER ));
+    PyDict_SetItemString(d,"wxVERSION_NUMBER", PyInt_FromLong((long)wxVERSION_NUMBER ));
+#if wxUSE_UNICODE
+    wxString tempStr(wxVERSION_STRING);
+    PyDict_SetItemString(d,"wxVERSION_STRING", PyUnicode_FromUnicode(tempStr.c_str(), tempStr.Len()));
+#else
+    PyDict_SetItemString(d,"wxVERSION_STRING", PyString_FromString(wxVERSION_STRING));
+#endif
+
 
 %}
 
@@ -233,5 +274,4 @@ static wxPyCoreAPI API = {
 //----------------------------------------------------------------------
 
 %pragma(python) include="_extras.py";
-
 

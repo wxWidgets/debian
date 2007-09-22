@@ -3,7 +3,7 @@
  * Name:    gsocket.c
  * Author:  Guillermo Rodriguez Garcia <guille@iies.es>
  * Purpose: GSocket main MSW file
- * CVSID:   $Id: gsocket.c,v 1.30.2.2 2001/09/06 08:16:50 RL Exp $
+ * CVSID:   $Id: gsocket.c,v 1.41 2002/09/09 13:36:57 VZ Exp $
  * -------------------------------------------------------------------------
  */
 
@@ -26,8 +26,8 @@
 #  pragma warning(disable:4100)
 #endif /* _MSC_VER */
 
-
 #ifndef __GSOCKET_STANDALONE__
+#  include "wx/defs.h"
 #  include "wx/setup.h"
 #endif
 
@@ -49,7 +49,6 @@
 #  define _GSocket_Disable_Events(socket)
 #endif /* wxUSE_GUI */
 
-
 #include <assert.h>
 #include <string.h>
 #include <stdio.h>
@@ -58,7 +57,6 @@
 #include <ctype.h>
 
 #include <winsock.h>
-
 
 /* if we use configure for MSW SOCKLEN_T will be already defined */
 #ifndef SOCKLEN_T
@@ -82,10 +80,10 @@ GSocket *GSocket_new(void)
     socket->m_cbacks[i]     = NULL;
   }
   socket->m_detected        = 0;
-  socket->m_local           = NULL;     
-  socket->m_peer            = NULL;     
+  socket->m_local           = NULL;
+  socket->m_peer            = NULL;
   socket->m_error           = GSOCK_NOERROR;
-  socket->m_server          = FALSE;            
+  socket->m_server          = FALSE;
   socket->m_stream          = TRUE;
   socket->m_non_blocking    = FALSE;
   socket->m_timeout.tv_sec  = 10 * 60;  /* 10 minutes */
@@ -101,6 +99,13 @@ GSocket *GSocket_new(void)
   }
 
   return socket;
+}
+
+void GSocket_close(GSocket *socket)
+{
+    _GSocket_Disable_Events(socket);
+    closesocket(socket->m_fd);
+    socket->m_fd = INVALID_SOCKET;
 }
 
 void GSocket_destroy(GSocket *socket)
@@ -139,8 +144,7 @@ void GSocket_Shutdown(GSocket *socket)
   if (socket->m_fd != INVALID_SOCKET)
   {
     shutdown(socket->m_fd, 2);
-    closesocket(socket->m_fd);
-    socket->m_fd = INVALID_SOCKET;
+    GSocket_close(socket);
   }
 
   /* Disable GUI callbacks */
@@ -148,7 +152,6 @@ void GSocket_Shutdown(GSocket *socket)
     socket->m_cbacks[evt] = NULL;
 
   socket->m_detected = GSOCK_LOST_FLAG;
-  _GSocket_Disable_Events(socket);
 }
 
 /* Address handling */
@@ -272,11 +275,11 @@ GAddress *GSocket_GetPeer(GSocket *socket)
  *  Sets up this socket as a server. The local address must have been
  *  set with GSocket_SetLocal() before GSocket_SetServer() is called.
  *  Returns GSOCK_NOERROR on success, one of the following otherwise:
- * 
+ *
  *  Error codes:
  *    GSOCK_INVSOCK - the socket is in use.
  *    GSOCK_INVADDR - the local address has not been set.
- *    GSOCK_IOERR   - low-level error. 
+ *    GSOCK_IOERR   - low-level error.
  */
 GSocketError GSocket_SetServer(GSocket *sck)
 {
@@ -325,8 +328,7 @@ GSocketError GSocket_SetServer(GSocket *sck)
                    (SOCKLEN_T *)&sck->m_local->m_len) != 0) ||
       (listen(sck->m_fd, 5) != 0))
   {
-    closesocket(sck->m_fd);
-    sck->m_fd = INVALID_SOCKET;
+    GSocket_close(sck);
     sck->m_error = GSOCK_IOERR;
     return GSOCK_IOERR;
   }
@@ -344,7 +346,7 @@ GSocketError GSocket_SetServer(GSocket *sck)
  *    GSOCK_TIMEDOUT   - timeout, no incoming connections.
  *    GSOCK_WOULDBLOCK - the call would block and the socket is nonblocking.
  *    GSOCK_MEMERR     - couldn't allocate memory.
- *    GSOCK_IOERR      - low-level error. 
+ *    GSOCK_IOERR      - low-level error.
  */
 GSocket *GSocket_WaitConnection(GSocket *sck)
 {
@@ -447,7 +449,7 @@ GSocket *GSocket_WaitConnection(GSocket *sck)
  *    GSOCK_TIMEDOUT   - timeout, the connection failed.
  *    GSOCK_WOULDBLOCK - connection in progress (nonblocking sockets only)
  *    GSOCK_MEMERR     - couldn't allocate memory.
- *    GSOCK_IOERR      - low-level error. 
+ *    GSOCK_IOERR      - low-level error.
  */
 GSocketError GSocket_Connect(GSocket *sck, GSocketStream stream)
 {
@@ -508,12 +510,11 @@ GSocketError GSocket_Connect(GSocket *sck, GSocketStream stream)
 
       if (err != GSOCK_NOERROR)
       {
-        closesocket(sck->m_fd);
-        sck->m_fd = INVALID_SOCKET;
+        GSocket_close(sck);
         /* sck->m_error is set in _GSocket_Connect_Timeout */
       }
 
-      return err;
+      return (GSocketError) err;
     }
 
     /* If connect failed with EWOULDBLOCK and the GSocket object
@@ -532,8 +533,7 @@ GSocketError GSocket_Connect(GSocket *sck, GSocketStream stream)
     /* If connect failed with an error other than EWOULDBLOCK,
      * then the call to GSocket_Connect() has failed.
      */
-    closesocket(sck->m_fd);
-    sck->m_fd = INVALID_SOCKET;
+    GSocket_close(sck);
     sck->m_error = GSOCK_IOERR;
     return GSOCK_IOERR;
   }
@@ -552,7 +552,7 @@ GSocketError GSocket_Connect(GSocket *sck, GSocketStream stream)
  *  Error codes:
  *    GSOCK_INVSOCK - the socket is in use.
  *    GSOCK_INVADDR - the local address has not been set.
- *    GSOCK_IOERR   - low-level error. 
+ *    GSOCK_IOERR   - low-level error.
  */
 GSocketError GSocket_SetNonOriented(GSocket *sck)
 {
@@ -597,8 +597,7 @@ GSocketError GSocket_SetNonOriented(GSocket *sck)
                    sck->m_local->m_addr,
                    (SOCKLEN_T *)&sck->m_local->m_len) != 0))
   {
-    closesocket(sck->m_fd);
-    sck->m_fd    = INVALID_SOCKET;
+    GSocket_close(sck);
     sck->m_error = GSOCK_IOERR;
     return GSOCK_IOERR;
   }
@@ -754,7 +753,7 @@ GSocketEventFlags GSocket_Select(GSocket *socket, GSocketEventFlags flags)
 
   return result;
 
-#else 
+#else
 
   assert(socket != NULL);
   return flags & socket->m_detected;
@@ -806,7 +805,7 @@ GSocketError GSocket_GetError(GSocket *socket)
  *   operation, there is still data available, the callback function will
  *   be called again.
  * GSOCK_OUTPUT:
- *   The socket is available for writing. That is, the next write call 
+ *   The socket is available for writing. That is, the next write call
  *   won't block. This event is generated only once, when the connection is
  *   first established, and then only if a call failed with GSOCK_WOULDBLOCK,
  *   when the output buffer empties again. This means that the app should
@@ -1373,7 +1372,7 @@ GSocketError GAddress_UNIX_GetPath(GAddress *address, char *path, size_t sbuf)
 
 #else /* !wxUSE_SOCKETS */
 
-/* 
+/*
  * Translation unit shouldn't be empty, so include this typedef to make the
  * compiler (VC++ 6.0, for example) happy
  */

@@ -2,7 +2,7 @@
 // Name:        pen.h
 // Purpose:
 // Author:      Robert Roebling
-// Id:          $Id: pen.h,v 1.10.2.2 2000/05/17 20:07:24 RR Exp $
+// Id:          $Id: pen.h,v 1.15 2002/09/07 12:28:46 GD Exp $
 // Copyright:   (c) 1998 Robert Roebling
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -11,7 +11,7 @@
 #ifndef __GTKPENH__
 #define __GTKPENH__
 
-#ifdef __GNUG__
+#if defined(__GNUG__) && !defined(__APPLE__)
 #pragma interface
 #endif
 
@@ -27,7 +27,7 @@
 
 class wxPen;
 
-#ifdef __WXGTK127__
+#if defined(__WXGTK127__) || defined(__WXGTK20__)
 typedef    gint8 wxGTKDash;
 #else
 typedef    gchar wxGTKDash;
@@ -40,13 +40,20 @@ typedef    gchar wxGTKDash;
 class wxPen: public wxGDIObject
 {
 public:
-    wxPen();
+    wxPen() { }
+    
     wxPen( const wxColour &colour, int width, int style );
-    wxPen( const wxPen& pen );
     ~wxPen();
-    wxPen& operator = ( const wxPen& pen );
+    
+    wxPen( const wxPen& pen )
+        : wxGDIObject()
+        { Ref(pen); }
+    wxPen& operator = ( const wxPen& pen ) { Ref(pen); return *this; }
+    
+    bool Ok() const { return m_refData != NULL; }
+    
     bool operator == ( const wxPen& pen ) const;
-    bool operator != ( const wxPen& pen ) const;
+    bool operator != (const wxPen& pen) const { return !(*this == pen); }
 
     void SetColour( const wxColour &colour );
     void SetColour( int red, int green, int blue );
@@ -64,12 +71,12 @@ public:
     int GetDashes(wxDash **ptr) const;
     int GetDashCount() const;
     wxDash* GetDash() const;
-    
-    bool Ok() const;
-
-    void Unshare();
 
 private:    
+    // ref counting code
+    virtual wxObjectRefData *CreateRefData() const;
+    virtual wxObjectRefData *CloneRefData(const wxObjectRefData *data) const;
+    
     DECLARE_DYNAMIC_CLASS(wxPen)
 };
 

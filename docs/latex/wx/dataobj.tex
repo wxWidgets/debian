@@ -4,7 +4,7 @@
 %% Author:      Vadim Zeitlin
 %% Modified by:
 %% Created:     18.10.99
-%% RCS-ID:      $Id: dataobj.tex,v 1.14.2.1 2000/03/21 19:18:07 GT Exp $
+%% RCS-ID:      $Id: dataobj.tex,v 1.18 2002/07/05 16:43:21 MBN Exp $
 %% Copyright:   (c) wxWindows team
 %% License:     wxWindows license
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -36,7 +36,7 @@ enum Direction
 which allows to distinguish between them. See 
 \helpref{wxDataFormat}{wxdataformat} documentation for more about formats.
 
-Not surprizingly, being 'smart' comes at a price of added complexity. This is
+Not surprisingly, being 'smart' comes at a price of added complexity. This is
 reasonable for the situations when you really need to support multiple formats,
 but may be annoying if you only want to do something simple like cut and paste
 text.
@@ -104,6 +104,9 @@ translation under Windows is not yet finished.
 Derive a class from \helpref{wxPyDataObjectSimple}{wxdataobjectsimple} 
 instead.}
 
+\perlnote{This class is not currently usable from wxPerl; you may
+use \helpref{Wx::PlDataObjectSimple}{wxdataobjectsimple} instead.}
+
 \wxheading{Virtual functions to override}
 
 Each class derived directly from wxDataObject must override and implement all
@@ -154,6 +157,10 @@ Destructor.
 
 Copy all supported formats in the given direction to the array pointed to by 
 {\it formats}. There is enough space for GetFormatCount(dir) formats in it.
+
+\perlnote{In wxPerl this method only takes the {\tt dir} parameter. 
+In scalar context it returns the first format,
+in list context it returns a list containing all the supported formats.}
 
 \membersection{wxDataObject::GetDataHere}\label{wxdataobjectgetdatahere}
 

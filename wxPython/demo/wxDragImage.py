@@ -1,6 +1,8 @@
 
 from wxPython.wx import *
 
+import images
+
 #----------------------------------------------------------------------
 
 class DragShape:
@@ -45,16 +47,15 @@ class DragCanvas(wxScrolledWindow):
         self.shapes = []
         self.dragImage = None
         self.dragShape = None
+        self.hiliteShape = None
 
         self.SetCursor(wxStockCursor(wxCURSOR_ARROW))
-        self.bg_bmp = wxBitmap('bitmaps/backgrnd.png', wxBITMAP_TYPE_PNG)
+        self.bg_bmp = images.getBackgroundBitmap()
 
 
         # Make a shape from an image and mask.  This one will demo
         # dragging outside the window
-        bmp = wxBitmap('bitmaps/test_image.png', wxBITMAP_TYPE_PNG)
-        mask = wxMaskColour(bmp, wxWHITE)
-        bmp.SetMask(mask)
+        bmp = images.getTestStarBitmap()
         shape = DragShape(bmp)
         shape.pos = wxPoint(5, 5)
         shape.fullscreen = true
@@ -63,18 +64,19 @@ class DragCanvas(wxScrolledWindow):
 
         # Make a shape from some text
         text = "Some Text"
+        bg_colour = wxColour(57, 115, 57)  # matches the bg image
         font = wxFont(15, wxROMAN, wxNORMAL, wxBOLD)
         textExtent = self.GetFullTextExtent(text, font)
         bmp = wxEmptyBitmap(textExtent[0], textExtent[1])
         dc = wxMemoryDC()
         dc.SelectObject(bmp)
+        dc.SetBackground(wxBrush(bg_colour, wxSOLID))
         dc.Clear()
         dc.SetTextForeground(wxRED)
         dc.SetFont(font)
         dc.DrawText(text, 0, 0)
         dc.SelectObject(wxNullBitmap)
-        del dc
-        mask = wxMaskColour(bmp, wxWHITE)
+        mask = wxMaskColour(bmp, bg_colour)
         bmp.SetMask(mask)
         shape = DragShape(bmp)
         shape.pos = wxPoint(5, 100)
@@ -84,8 +86,9 @@ class DragCanvas(wxScrolledWindow):
 
         # Make some shapes from some playing card images.
         x = 200
-        for card in ['01c.gif', '10s.gif', '12h.gif', '13d.gif']:
-            bmp = wxBitmap('bitmaps/'+card, wxBITMAP_TYPE_GIF)
+        for card in ['_01c_', '_12h_', '_13d_', '_10s_']:
+            bmpFunc = getattr(images, "get%sBitmap" % card)
+            bmp = bmpFunc()
             shape = DragShape(bmp)
             shape.pos = wxPoint(x, 5)
             self.shapes.append(shape)
@@ -97,7 +100,11 @@ class DragCanvas(wxScrolledWindow):
         EVT_LEFT_DOWN(self, self.OnLeftDown)
         EVT_LEFT_UP(self, self.OnLeftUp)
         EVT_MOTION(self, self.OnMotion)
+        EVT_LEAVE_WINDOW(self, self.OnLeaveWindow)
 
+
+    def OnLeaveWindow(self, evt):
+        pass
 
 
     def TileBackground(self, dc):
@@ -136,12 +143,12 @@ class DragCanvas(wxScrolledWindow):
         dc.DestroyClippingRegion()
 
 
-
-
     def OnEraseBackground(self, evt):
         dc = evt.GetDC()
         if not dc:
             dc = wxClientDC(self)
+            rect = self.GetUpdateRegion().GetBox()
+            dc.SetClippingRegion(rect.x, rect.y, rect.width, rect.height)
         self.TileBackground(dc)
 
 
@@ -171,13 +178,13 @@ class DragCanvas(wxScrolledWindow):
         self.dragImage.EndDrag()
         self.dragImage = None
 
-        # reposition and draw the shape
-        pt = evt.GetPosition()
-        newPos = wxPoint(self.dragShape.pos.x + (pt.x - self.dragStartPos.x),
-                         self.dragShape.pos.y + (pt.y - self.dragStartPos.y))
-
         dc = wxClientDC(self)
-        self.dragShape.pos = newPos
+        if self.hiliteShape:
+            self.hiliteShape.Draw(dc)
+            self.hiliteShape = None
+
+        # reposition and draw the shape
+        self.dragShape.pos = self.dragShape.pos + evt.GetPosition() - self.dragStartPos
         self.dragShape.shown = true
         self.dragShape.Draw(dc)
         self.dragShape = None
@@ -191,12 +198,18 @@ class DragCanvas(wxScrolledWindow):
         if self.dragShape and not self.dragImage:
 
             # only start the drag after having moved a couple pixels
-            tolerance = 4
+            tolerance = 2
             pt = evt.GetPosition()
             dx = abs(pt.x - self.dragStartPos.x)
             dy = abs(pt.y - self.dragStartPos.y)
             if dx <= tolerance and dy <= tolerance:
                 return
+
+            # erase the shape since it will be drawn independently now
+            dc = wxClientDC(self)
+            self.dragShape.shown = false
+            self.EraseShape(self.dragShape, dc)
+
 
             if self.dragShape.text:
                 self.dragImage = wxDragString(self.dragShape.text,
@@ -205,40 +218,54 @@ class DragCanvas(wxScrolledWindow):
                 self.dragImage = wxDragImage(self.dragShape.bmp,
                                              wxStockCursor(wxCURSOR_HAND))
 
-            newPos = wxPoint(self.dragShape.pos.x + (pt.x - self.dragStartPos.x),
-                             self.dragShape.pos.y + (pt.y - self.dragStartPos.y))
+            hotspot = self.dragStartPos - self.dragShape.pos
+            self.dragImage.BeginDrag(hotspot, self, self.dragShape.fullscreen)
 
-            if self.dragShape.fullscreen:
-                newPos = self.ClientToScreen(newPos)
-                self.dragImage.BeginDrag((0,0), self, true)
-            else:
-                self.dragImage.BeginDrag((0,0), self)
-
-
-            # erase the shape since it will be drawn independently now
-            dc = wxClientDC(self)
-            self.dragShape.shown = false
-            self.EraseShape(self.dragShape, dc)
-
-            self.dragImage.Move(newPos)
+            self.dragImage.Move(pt)
             self.dragImage.Show()
 
 
-        # if we have shape and image then move it.
+        # if we have shape and image then move it, posibly highlighting another shape.
         elif self.dragShape and self.dragImage:
-            pt = evt.GetPosition()
-            newPos = wxPoint(self.dragShape.pos.x + (pt.x - self.dragStartPos.x),
-                             self.dragShape.pos.y + (pt.y - self.dragStartPos.y))
-            if self.dragShape.fullscreen:
-                newPos = self.ClientToScreen(newPos)
+            onShape = self.FindShape(evt.GetPosition())
+            unhiliteOld = false
+            hiliteNew = false
 
-            self.dragImage.Move(newPos)
+            # figure out what to hilite and what to unhilite
+            if self.hiliteShape:
+                if onShape is None or self.hiliteShape is not onShape:
+                    unhiliteOld = true
+
+            if onShape and onShape is not self.hiliteShape and onShape.shown:
+                hiliteNew = TRUE
+
+            # if needed, hide the drag image so we can update the window
+            if unhiliteOld or hiliteNew:
+                self.dragImage.Hide()
+
+            if unhiliteOld:
+                dc = wxClientDC(self)
+                self.hiliteShape.Draw(dc)
+                self.hiliteShape = None
+
+            if hiliteNew:
+                dc = wxClientDC(self)
+                self.hiliteShape = onShape
+                self.hiliteShape.Draw(dc, wxINVERT)
+
+            # now move it and show it again if needed
+            self.dragImage.Move(evt.GetPosition())
+            if unhiliteOld or hiliteNew:
+                self.dragImage.Show()
 
 
 #----------------------------------------------------------------------
 
 def runTest(frame, nb, log):
-    win = DragCanvas(nb, -1)
+    win = wxPanel(nb, -1)
+    canvas = DragCanvas(win, -1)
+    def onSize(evt, panel=win, canvas=canvas): canvas.SetSize(panel.GetSize())
+    EVT_SIZE(win, onSize)
     return win
 
 #----------------------------------------------------------------------

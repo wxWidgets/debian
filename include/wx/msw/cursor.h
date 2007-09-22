@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     01/02/97
-// RCS-ID:      $Id: cursor.h,v 1.6 1999/11/24 12:30:52 VZ Exp $
+// RCS-ID:      $Id: cursor.h,v 1.9 2002/04/23 23:51:52 VZ Exp $
 // Copyright:   (c) Julian Smart
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -34,6 +34,8 @@
     #define wxCursorBase          wxGDIImage
 #endif
 
+class WXDLLEXPORT wxImage;
+
 class WXDLLEXPORT wxCursorRefData : public wxCursorRefDataBase
 {
 public:
@@ -55,7 +57,7 @@ public:
 
     // Copy constructors
     wxCursor(const wxCursor& cursor) { Ref(cursor); }
-
+    wxCursor(const wxImage & image) ;
     wxCursor(const char bits[], int width, int height,
              int hotSpotX = -1, int hotSpotY = -1,
              const char maskBits[] = NULL);

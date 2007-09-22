@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     01/02/97
-// RCS-ID:      $Id: wxprec.h,v 1.21.2.1 2000/04/01 23:19:10 VZ Exp $
+// RCS-ID:      $Id: wxprec.h,v 1.24 2002/05/09 22:31:44 VZ Exp $
 // Copyright:   (c)
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -14,7 +14,7 @@
 
 // check if to use precompiled headers: do it for most Windows compilers unless
 // explicitly disabled by defining NOPCH
-#if ((defined(__BORLANDC__) || defined(__VISUALC__) || defined(__WATCOMC__)) && defined(__WXMSW__)) || defined(__VISAGECPP__)
+#if ((defined(__BORLANDC__) || defined(__VISUALC__) || defined(__WATCOMC__)) && defined(__WXMSW__)) || defined(__VISAGECPP__) || defined(__MWERKS__)
     #if !defined(NOPCH)
         #define WX_PRECOMP
     #endif
@@ -33,6 +33,10 @@
 
 // include standard Windows headers
 #if defined(__WXMSW__) && !wxUSE_MFC
+    #ifndef STRICT
+        #define STRICT 1
+    #endif
+
     #include <windows.h>
     #include "wx/msw/winundef.h"
 #endif

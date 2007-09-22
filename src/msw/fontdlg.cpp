@@ -1,10 +1,10 @@
 /////////////////////////////////////////////////////////////////////////////
-// Name:        fontdlg.cpp
+// Name:        src/msw/fontdlg.cpp
 // Purpose:     wxFontDialog class
 // Author:      Julian Smart
 // Modified by:
 // Created:     01/02/97
-// RCS-ID:      $Id: fontdlg.cpp,v 1.10 1999/12/14 23:48:49 VS Exp $
+// RCS-ID:      $Id: fontdlg.cpp,v 1.15 2002/08/30 20:34:25 JS Exp $
 // Copyright:   (c) Julian Smart and Markus Holzem
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -28,6 +28,8 @@
     #pragma hdrstop
 #endif
 
+#if wxUSE_FONTDLG
+
 #ifndef WX_PRECOMP
     #include "wx/defs.h"
     #include "wx/utils.h"
@@ -37,7 +39,8 @@
 #include "wx/fontdlg.h"
 
 #if !defined(__WIN32__) || defined(__SALFORDC__) || defined(__WXWINE__)
-    #include <commdlg.h>
+#include <windows.h>
+#include <commdlg.h>
 #endif
 
 #include "wx/msw/private.h"
@@ -52,7 +55,7 @@
 // wxWin macros
 // ----------------------------------------------------------------------------
 
-    IMPLEMENT_DYNAMIC_CLASS(wxFontDialog, wxDialog)
+IMPLEMENT_DYNAMIC_CLASS(wxFontDialog, wxDialog)
 
 // ============================================================================
 // implementation
@@ -61,27 +64,6 @@
 // ----------------------------------------------------------------------------
 // wxFontDialog
 // ----------------------------------------------------------------------------
-
-wxFontDialog::wxFontDialog()
-{
-    m_parent = NULL;
-}
-
-wxFontDialog::wxFontDialog(wxWindow *parent, wxFontData *data)
-{
-    Create(parent, data);
-}
-
-bool wxFontDialog::Create(wxWindow *parent, wxFontData *data)
-{
-    m_parent = parent;
-
-    wxCHECK_MSG( data, FALSE, _T("no font data in wxFontDialog") );
-
-    m_fontData = *data;
-
-    return TRUE;
-}
 
 int wxFontDialog::ShowModal()
 {
@@ -103,7 +85,13 @@ int wxFontDialog::ShowModal()
         wxFillLogFont(&logFont, &m_fontData.initialFont);
     }
 
-    chooseFontStruct.rgbColors = wxColourToRGB(m_fontData.fontColour);
+    if ( m_fontData.fontColour.Ok() )
+    {
+        chooseFontStruct.rgbColors = wxColourToRGB(m_fontData.fontColour);
+
+        // need this for the colour to be taken into account
+        flags |= CF_EFFECTS;
+    }
 
     // CF_ANSIONLY flag is obsolete for Win32
     if ( !m_fontData.GetAllowSymbols() )
@@ -156,3 +144,5 @@ int wxFontDialog::ShowModal()
         return wxID_CANCEL;
     }
 }
+
+#endif // wxUSE_FONTDLG

@@ -2,7 +2,7 @@
 // Name:        m_pre.cpp
 // Purpose:     wxHtml module for <PRE> ... </PRE> tag (code citation)
 // Author:      Vaclav Slavik
-// RCS-ID:      $Id: m_pre.cpp,v 1.12.2.1 2000/03/23 21:16:21 JS Exp $
+// RCS-ID:      $Id: m_pre.cpp,v 1.21 2002/01/17 23:42:01 VS Exp $
 // Copyright:   (c) 1999 Vaclav Slavik
 // Licence:     wxWindows Licence
 /////////////////////////////////////////////////////////////////////////////
@@ -20,9 +20,7 @@
 #endif
 
 #ifndef WXPRECOMP
-#include "wx/wx.h"
 #endif
-
 
 #include "wx/html/forcelnk.h"
 #include "wx/html/m_templ.h"
@@ -33,79 +31,36 @@
 
 FORCE_LINK_ME(m_pre)
 
-
-//-----------------------------------------------------------------------------
-// wxHtmlCodeCell
-//-----------------------------------------------------------------------------
-
-class wxHtmlPRECell : public wxHtmlCell
+// replaces '\t', ' ' and '\n' with HTML markup:
+static wxString LINKAGEMODE HtmlizeWhitespaces(const wxString& str)
 {
-    private:
-        wxString** m_Text;
-                // list of wxString objects.
-        int m_LinesCnt;
-                // number of lines
-        int m_LineHeight;
-                // height of single line of text
-
-    public:
-        wxHtmlPRECell(const wxString& s, wxDC& dc);
-        ~wxHtmlPRECell();
-        void Draw(wxDC& dc, int x, int y, int view_y1, int view_y2);
-};
-
-
-wxHtmlPRECell::wxHtmlPRECell(const wxString& s, wxDC& dc) : wxHtmlCell()
-{
-    wxStringTokenizer tokenizer(s, "\n");
-    wxString tmp;
-    long int x, z;
-    int i;
-
-    m_LineHeight = dc.GetCharHeight();
-    m_LinesCnt = 0;
-    m_Text = NULL;
-    m_Width = m_Height = 0;
-
-    i = 0;
-    while (tokenizer.HasMoreTokens()) {
-        if (i % 10 == 0) m_Text = (wxString**) realloc(m_Text, sizeof(wxString*) * (i + 10));
-        tmp = tokenizer.NextToken();
-        tmp.Replace(wxT("&copy;"), wxT("(c)"), TRUE);
-        tmp.Replace(wxT("&nbsp;"), wxT(" "), TRUE);
-        tmp.Replace(wxT("&quot;"), wxT("\""), TRUE);
-        tmp.Replace(wxT("&lt;"), wxT("<"), TRUE);
-        tmp.Replace(wxT("&gt;"), wxT(">"), TRUE);
-        tmp.Replace(wxT("&amp;"), wxT("&"), TRUE);
-        tmp.Replace(wxT("\t"), wxT("        "), TRUE);
-        tmp.Replace(wxT("\r"), wxT(""), TRUE);
-        m_Text[i++] = new wxString(tmp);
-
-        dc.GetTextExtent(tmp, &x, &z, &z);
-        if (x > m_Width) m_Width = x;
-        m_Height += m_LineHeight;
-        m_LinesCnt++;
+    wxString out;
+    size_t i = 0, j = 0, len = str.Len();
+    for (i = 0; i < len; i++)
+    {
+        switch (str[i])
+        {
+            case wxT('<'):
+                while (i < len && str[i] != wxT('>'))
+                    out << str[i++];
+                out << wxT('>');
+                break;
+            case wxT(' '):
+                out << wxT("&nbsp;");
+                break;
+            case wxT('\n'):
+                out << wxT("<br>");
+                break;
+            case wxT('\t'):
+                for (j = 8 - i%8; j > 0; j--) out << wxT("&nbsp;");
+                break;
+            default:
+                out << str[i];
+                break;
+        }
     }
+    return out;
 }
-
-
-
-wxHtmlPRECell::~wxHtmlPRECell()
-{
-    for (int i = 0; i < m_LinesCnt; i++) delete m_Text[i];
-    free(m_Text);
-}
-
-
-void wxHtmlPRECell::Draw(wxDC& dc, int x, int y, int view_y1, int view_y2)
-{
-    for (int i = 0; i < m_LinesCnt; i++)
-        dc.DrawText(*(m_Text[i]), x + m_PosX, y + m_PosY + m_LineHeight * i);
-
-    wxHtmlCell::Draw(dc, x, y, view_y1, view_y2);
-}
-
-
 
 
 //-----------------------------------------------------------------------------
@@ -119,46 +74,44 @@ TAG_HANDLER_BEGIN(PRE, "PRE")
     {
         wxHtmlContainerCell *c;
 
-        int fixed = m_WParser -> GetFontFixed(),
-            italic = m_WParser -> GetFontItalic(),
-            underlined = m_WParser -> GetFontUnderlined(),
-            bold = m_WParser -> GetFontBold(),
-            fsize = m_WParser -> GetFontSize();
+        int fixed = m_WParser->GetFontFixed(),
+            italic = m_WParser->GetFontItalic(),
+            underlined = m_WParser->GetFontUnderlined(),
+            bold = m_WParser->GetFontBold(),
+            fsize = m_WParser->GetFontSize();
 
-        m_WParser -> CloseContainer();
-        c = m_WParser -> OpenContainer();
-        c -> SetAlignHor(wxHTML_ALIGN_LEFT);
-        c -> SetIndent(m_WParser -> GetCharHeight(), wxHTML_INDENT_VERTICAL);
+        c = m_WParser->GetContainer();
+        m_WParser->SetFontUnderlined(FALSE);
+        m_WParser->SetFontBold(FALSE);
+        m_WParser->SetFontItalic(FALSE);
+        m_WParser->SetFontFixed(TRUE);
+        m_WParser->SetFontSize(3);
+        c->InsertCell(new wxHtmlFontCell(m_WParser->CreateCurrentFont()));
 
-        m_WParser -> SetFontUnderlined(FALSE);
-        m_WParser -> SetFontBold(FALSE);
-        m_WParser -> SetFontItalic(FALSE);
-        m_WParser -> SetFontFixed(TRUE);
-        m_WParser -> SetFontSize(3);
-        c -> InsertCell(new wxHtmlFontCell(m_WParser -> CreateCurrentFont()));
+        m_WParser->CloseContainer();
+        c = m_WParser->OpenContainer();
+        c->SetAlignHor(wxHTML_ALIGN_LEFT);
+        c->SetIndent(m_WParser->GetCharHeight(), wxHTML_INDENT_TOP);
 
-        {
-            wxString cit;
-            wxEncodingConverter *encconv = m_WParser -> GetEncodingConverter();
-            cit = m_WParser -> GetSource() -> Mid(tag.GetBeginPos(), 
-                                       tag.GetEndPos1() - tag.GetBeginPos());
-            if (encconv)
-                c -> InsertCell(new wxHtmlPRECell(encconv -> Convert(cit), 
-                                                  *(m_WParser -> GetDC())));
-            else
-                c -> InsertCell(new wxHtmlPRECell(cit, 
-                                                  *(m_WParser -> GetDC())));
-        }
+        wxString srcMid =
+            m_WParser->GetSource()->Mid(tag.GetBeginPos(),
+                                        tag.GetEndPos1() - tag.GetBeginPos());
+        // It is safe to temporarily change the source being parsed,
+        // provided we restore the state back after parsing
+        m_Parser->SetSourceAndSaveState(HtmlizeWhitespaces(srcMid));
+        m_Parser->DoParsing();
+        m_Parser->RestoreState();
 
-        m_WParser -> SetFontUnderlined(underlined);
-        m_WParser -> SetFontBold(bold);
-        m_WParser -> SetFontItalic(italic);
-        m_WParser -> SetFontFixed(fixed);
-        m_WParser -> SetFontSize(fsize);
-        c -> InsertCell(new wxHtmlFontCell(m_WParser -> CreateCurrentFont()));
+        m_WParser->CloseContainer();
+        c = m_WParser->OpenContainer();
 
-        m_WParser -> CloseContainer();
-        m_WParser -> OpenContainer();
+        m_WParser->SetFontUnderlined(underlined);
+        m_WParser->SetFontBold(bold);
+        m_WParser->SetFontItalic(italic);
+        m_WParser->SetFontFixed(fixed);
+        m_WParser->SetFontSize(fsize);
+        c->InsertCell(new wxHtmlFontCell(m_WParser->CreateCurrentFont()));
+
         return TRUE;
     }
 

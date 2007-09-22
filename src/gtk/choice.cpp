@@ -2,7 +2,7 @@
 // Name:        choice.cpp
 // Purpose:
 // Author:      Robert Roebling
-// Id:          $Id: choice.cpp,v 1.47 2000/01/06 17:32:48 RR Exp $
+// Id:          $Id: choice.cpp,v 1.55 2002/08/27 20:28:48 MBN Exp $
 // Copyright:   (c) 1998 Robert Roebling
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -12,12 +12,13 @@
 #pragma implementation "choice.h"
 #endif
 
-#include "wx/choice.h"
+#include "wx/defs.h"
 
 #if wxUSE_CHOICE
 
-#include <gdk/gdk.h>
-#include <gtk/gtk.h>
+#include "wx/choice.h"
+
+#include "wx/gtk/private.h"
 
 //-----------------------------------------------------------------------------
 // idle system
@@ -112,14 +113,7 @@ bool wxChoice::Create( wxWindow *parent, wxWindowID id,
 
     SetFont( parent->GetFont() );
 
-    wxSize size_best( DoGetBestSize() );
-    wxSize new_size( size );
-    if (new_size.x == -1)
-        new_size.x = size_best.x;
-    if (new_size.y == -1)
-        new_size.y = size_best.y;
-    if ((new_size.x != size.x) || (new_size.y != size.y))
-        SetSize( new_size.x, new_size.y );
+    SetBestSize(size);
 
     SetBackgroundColour( parent->GetBackgroundColour() );
     SetForegroundColour( parent->GetForegroundColour() );
@@ -172,8 +166,7 @@ void wxChoice::DoSetItemClientObject( int n, wxClientData* clientData )
     wxNode *node = m_clientList.Nth( n );
     wxCHECK_RET( node, wxT("invalid index in wxChoice::DoSetItemClientObject") );
 
-    wxClientData *cd = (wxClientData*) node->Data();
-    delete cd;
+    // wxItemContainer already deletes data for us
 
     node->SetData( (wxObject*) clientData );
 }
@@ -215,9 +208,31 @@ void wxChoice::Clear()
         m_strings->Clear();
 }
 
-void wxChoice::Delete( int WXUNUSED(n) )
+void wxChoice::Delete( int n )
 {
-    wxFAIL_MSG( wxT("wxChoice:Delete not implemented") );
+    wxCHECK_RET( m_widget != NULL, wxT("invalid choice") );
+
+    // VZ: apparently GTK+ doesn't have a built-in function to do it (not even
+    //     in 2.0), hence this dump implementation - still better than nothing
+    int i,
+        count = GetCount();
+
+    wxCHECK_RET( n >= 0 && n < count, _T("invalid index in wxChoice::Delete") );
+
+    wxArrayString items;
+    items.Alloc(count);
+    for ( i = 0; i < count; i++ )
+    {
+        if ( i != n )
+            items.Add(GetString(i));
+    }
+
+    Clear();
+
+    for ( i = 0; i < count - 1; i++ )
+    {
+        Append(items[i]);
+    }
 }
 
 int wxChoice::FindString( const wxString &string ) const
@@ -234,16 +249,23 @@ int wxChoice::FindString( const wxString &string ) const
     {
         GtkBin *bin = GTK_BIN( child->data );
         GtkLabel *label = (GtkLabel *) NULL;
-        if (bin->child) label = GTK_LABEL(bin->child);
-        if (!label) label = GTK_LABEL( GTK_BUTTON(m_widget)->child );
+        if (bin->child)
+            label = GTK_LABEL(bin->child);
+        if (!label)
+            label = GTK_LABEL( BUTTON_CHILD(m_widget) );
 
         wxASSERT_MSG( label != NULL , wxT("wxChoice: invalid label") );
+        
+#ifdef __WXGTK20__
+         wxString tmp( wxGTK_CONV_BACK( gtk_label_get_text( label) ) );
+#else
+         wxString tmp( label->label );
+#endif
+        if (string == tmp)
+            return count;
 
-       if (string == wxString(label->label,*wxConvCurrent))
-           return count;
-
-       child = child->next;
-       count++;
+        child = child->next;
+        count++;
     }
 
     return -1;
@@ -252,9 +274,15 @@ int wxChoice::FindString( const wxString &string ) const
 int wxChoice::GetSelection() const
 {
     wxCHECK_MSG( m_widget != NULL, -1, wxT("invalid choice") );
+    
+#ifdef __WXGTK20__
 
+    return gtk_option_menu_get_history( GTK_OPTION_MENU(m_widget) );
+    
+#else
     GtkMenuShell *menu_shell = GTK_MENU_SHELL( gtk_option_menu_get_menu( GTK_OPTION_MENU(m_widget) ) );
     int count = 0;
+    
     GList *child = menu_shell->children;
     while (child)
     {
@@ -265,6 +293,7 @@ int wxChoice::GetSelection() const
     }
 
     return -1;
+#endif
 }
 
 void wxChoice::SetString( int WXUNUSED(n), const wxString& WXUNUSED(string) )
@@ -287,12 +316,18 @@ wxString wxChoice::GetString( int n ) const
         if (count == n)
         {
             GtkLabel *label = (GtkLabel *) NULL;
-            if (bin->child) label = GTK_LABEL(bin->child);
-            if (!label) label = GTK_LABEL( GTK_BUTTON(m_widget)->child );
+            if (bin->child)
+                label = GTK_LABEL(bin->child);
+            if (!label)
+                label = GTK_LABEL( BUTTON_CHILD(m_widget) );
 
             wxASSERT_MSG( label != NULL , wxT("wxChoice: invalid label") );
 
-            return wxString(label->label,*wxConvCurrent);
+#ifdef __WXGTK20__
+            return wxString( wxGTK_CONV_BACK( gtk_label_get_text( label) ) );
+#else
+            return wxString( label->label );
+#endif
         }
         child = child->next;
         count++;
@@ -342,8 +377,10 @@ void wxChoice::ApplyWidgetStyle()
 
         GtkBin *bin = GTK_BIN( child->data );
         GtkWidget *label = (GtkWidget *) NULL;
-        if (bin->child) label = bin->child;
-        if (!label) label = GTK_BUTTON(m_widget)->child;
+        if (bin->child)
+            label = bin->child;
+        if (!label)
+            label = BUTTON_CHILD(m_widget);
 
         gtk_widget_set_style( label, m_widgetStyle );
 
@@ -353,7 +390,7 @@ void wxChoice::ApplyWidgetStyle()
 
 size_t wxChoice::GtkAppendHelper(GtkWidget *menu, const wxString& item)
 {
-    GtkWidget *menu_item = gtk_menu_item_new_with_label( item.mbc_str() );
+    GtkWidget *menu_item = gtk_menu_item_new_with_label( wxGTK_CONV( item ) );
 
     size_t index;
     if ( m_strings )
@@ -405,9 +442,45 @@ size_t wxChoice::GtkAppendHelper(GtkWidget *menu, const wxString& item)
 wxSize wxChoice::DoGetBestSize() const
 {
     wxSize ret( wxControl::DoGetBestSize() );
-    if (ret.x < 80) ret.x = 80;
-    ret.y = 16 + gdk_char_height( m_widget->style->font, 'H' );
+
+    // we know better our horizontal extent: it depends on the longest string
+    // we have
+    ret.x = 0;
+    if ( m_widget )
+    {
+        GdkFont *font = m_font.GetInternalFont();
+
+        wxCoord width;
+        size_t count = GetCount();
+        for ( size_t n = 0; n < count; n++ )
+        {
+            // FIXME GTK 2.0
+            width = (wxCoord)gdk_string_width(font, wxGTK_CONV( GetString(n) ) );
+            if ( width > ret.x )
+                ret.x = width;
+        }
+
+        // add extra for the choice "=" button
+
+        // VZ: I don't know how to get the right value, it seems to be in
+        //     GtkOptionMenuProps struct from gtkoptionmenu.c but we can't get
+        //     to it - maybe we can use gtk_option_menu_size_request() for this
+        //     somehow?
+        //
+        //     This default value works only for the default GTK+ theme (i.e.
+        //     no theme at all) (FIXME)
+        static const int widthChoiceIndicator = 35;
+        ret.x += widthChoiceIndicator;
+    }
+
+    // but not less than the minimal width
+    if ( ret.x < 80 )
+        ret.x = 80;
+
+    ret.y = 16 + gdk_char_height(GET_STYLE_FONT( m_widget->style ), 'H' );
+
     return ret;
 }
 
-#endif
+#endif // wxUSE_CHOICE
+

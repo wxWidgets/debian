@@ -1,8 +1,8 @@
 /////////////////////////////////////////////////////////////////////////////
-// Name:        utils.cpp
+// Name:        src/gtk/utilsgtk.cpp
 // Purpose:
 // Author:      Robert Roebling
-// Id:          $Id: utilsgtk.cpp,v 1.44 2000/03/16 08:07:58 JJ Exp $
+// Id:          $Id: utilsgtk.cpp,v 1.52 2002/01/09 12:49:11 VZ Exp $
 // Copyright:   (c) 1998 Robert Roebling, Julian Smart and Markus Holzem
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -21,12 +21,15 @@
 #include <string.h>
 #include <sys/stat.h>
 #include <sys/types.h>
+#include <sys/wait.h>   // for WNOHANG
 #include <unistd.h>
 
 #include "glib.h"
 #include "gdk/gdk.h"
 #include "gtk/gtk.h"
+#ifndef __WXGTK20__
 #include "gtk/gtkfeatures.h"
+#endif
 #include "gdk/gdkx.h"
 
 #ifdef HAVE_X11_XKBLIB_H
@@ -34,9 +37,9 @@
      * field named "explicit" - which is, of course, an error for a C++
      * compiler. To be on the safe side, just redefine it everywhere. */
     #define explicit __wx_explicit
-  
+
     #include "X11/XKBlib.h"
-  
+
     #undef explicit
 #endif // HAVE_X11_XKBLIB_H
 
@@ -44,7 +47,7 @@
 // data
 //-----------------------------------------------------------------------------
 
-extern GtkWidget *wxRootWindow;
+extern GtkWidget *wxGetRootWindow();
 
 //----------------------------------------------------------------------------
 // misc.
@@ -86,6 +89,23 @@ void wxDisplaySize( int *width, int *height )
     if (height) *height = gdk_screen_height();
 }
 
+void wxDisplaySizeMM( int *width, int *height )
+{
+    if (width) *width = gdk_screen_width_mm();
+    if (height) *height = gdk_screen_height_mm();
+}
+
+void wxClientDisplayRect(int *x, int *y, int *width, int *height)
+{
+    // This is supposed to return desktop dimensions minus any window
+    // manager panels, menus, taskbars, etc.  If there is a way to do that
+    // for this platform please fix this function, otherwise it defaults
+    // to the entire desktop.
+    if (x) *x = 0;
+    if (y) *y = 0;
+    wxDisplaySize(width, height);
+}
+
 void wxGetMousePosition( int* x, int* y )
 {
     gdk_window_get_pointer( (GdkWindow*) NULL, x, y, (GdkModifierType*) NULL );
@@ -98,7 +118,7 @@ bool wxColourDisplay()
 
 int wxDisplayDepth()
 {
-    return gdk_window_get_visual( wxRootWindow->window )->depth;
+    return gdk_window_get_visual( wxGetRootWindow()->window )->depth;
 }
 
 int wxGetOsVersion(int *majorVsn, int *minorVsn)
@@ -109,20 +129,45 @@ int wxGetOsVersion(int *majorVsn, int *minorVsn)
   return wxGTK;
 }
 
+wxWindow* wxFindWindowAtPoint(const wxPoint& pt)
+{
+    return wxGenericFindWindowAtPoint(pt);
+}
+
+
 // ----------------------------------------------------------------------------
 // subprocess routines
 // ----------------------------------------------------------------------------
 
-static void GTK_EndProcessDetector(gpointer data, gint source,
-                                   GdkInputCondition WXUNUSED(condition) )
+extern "C"
+void GTK_EndProcessDetector(gpointer data, gint source,
+                            GdkInputCondition WXUNUSED(condition) )
 {
    wxEndProcessData *proc_data = (wxEndProcessData *)data;
+
+   // has the process really terminated? unfortunately GDK (or GLib) seem to
+   // generate G_IO_HUP notification even when it simply tries to read from a
+   // closed fd and hasn't terminated at all
+   int pid = (proc_data->pid > 0) ? proc_data->pid : -(proc_data->pid);
+   int status = 0;
+   int rc = waitpid(pid, &status, WNOHANG);
+
+   if ( rc == 0 )
+   {
+       // no, it didn't exit yet, continue waiting
+       return;
+   }
+
+   // set exit code to -1 if something bad happened
+   proc_data->exitcode = rc != -1 && WIFEXITED(status) ? WEXITSTATUS(status)
+                                                      : -1;
+
+   // child exited, end waiting
    close(source);
+
+   // don't call us again!
    gdk_input_remove(proc_data->tag);
 
-   // This has to come after gdk_input_remove() or we will
-   // occasionally receive multiple callbacks with corrupt data
-   // pointers. (KB) 
    wxHandleProcessTermination(proc_data);
 }
 

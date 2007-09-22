@@ -7,7 +7,7 @@ from   whrandom import random
 
 #----------------------------------------------------------------------
 
-wxEVT_UPDATE_BARGRAPH = 25015
+wxEVT_UPDATE_BARGRAPH = wxNewEventType()
 
 def EVT_UPDATE_BARGRAPH(win, func):
     win.Connect(-1, -1, wxEVT_UPDATE_BARGRAPH, func)
@@ -43,11 +43,10 @@ class CalcBarThread:
         while self.keepGoing:
             evt = UpdateBarEvent(self.barNum, int(self.val))
             wxPostEvent(self.win, evt)
-            del evt
+            #del evt
 
             sleeptime = (random() * 2) + 0.5
-            #print self.barNum, 'sleeping for', sleeptime
-            time.sleep(sleeptime)
+            time.sleep(sleeptime/4)
 
             sleeptime = sleeptime * 5
             if int(random() * 2):
@@ -71,11 +70,11 @@ class GraphWindow(wxWindow):
         for label in labels:
             self.values.append((label, 0))
 
-        self.font = wxFont(12, wxSWISS, wxNORMAL, wxBOLD)
-        self.SetFont(self.font)
+        font = wxFont(12, wxSWISS, wxNORMAL, wxBOLD)
+        self.SetFont(font)
 
         self.colors = [ wxRED, wxGREEN, wxBLUE, wxCYAN,
-                        wxNamedColour("Yellow"), wxNamedColor("Navy") ]
+                        "Yellow", "Navy" ]
 
         EVT_ERASE_BACKGROUND(self, self.OnEraseBackground)
         EVT_PAINT(self, self.OnPaint)
@@ -98,8 +97,12 @@ class GraphWindow(wxWindow):
         self.barHeight = hmax
 
 
+    def GetBestHeight(self):
+        return 2 * (self.barHeight + 1) * len(self.values)
+
+
     def Draw(self, dc, size):
-        dc.SetFont(self.font)
+        dc.SetFont(self.GetFont())
         dc.SetTextForeground(wxBLUE)
         dc.SetBackground(wxBrush(self.GetBackgroundColour()))
         dc.Clear()
@@ -156,11 +159,13 @@ class TestFrame(wxFrame):
         panel.SetFont(wxFont(10, wxSWISS, wxNORMAL, wxBOLD))
         wxStaticText(panel, -1,
                      "This demo shows multiple threads interacting with this\n"
-                     "window by sending events to it.", wxPoint(5,5))
+                     "window by sending events to it, one thread for each bar.",
+                     wxPoint(5,5))
         panel.Fit()
 
         self.graph = GraphWindow(self, ['Zero', 'One', 'Two', 'Three', 'Four',
                                         'Five', 'Six', 'Seven'])
+        self.graph.SetSize((450, self.graph.GetBestHeight()))
 
         sizer = wxBoxSizer(wxVERTICAL)
         sizer.Add(panel, 0, wxEXPAND)
@@ -168,11 +173,7 @@ class TestFrame(wxFrame):
 
         self.SetSizer(sizer)
         self.SetAutoLayout(true)
-
-        #self.graph.SetValue(0, 25)
-        #self.graph.SetValue(1, 50)
-        #self.graph.SetValue(2, 75)
-        #self.graph.SetValue(3, 100)
+        sizer.Fit(self)
 
         EVT_UPDATE_BARGRAPH(self, self.OnUpdate)
         self.threads = []
@@ -198,6 +199,7 @@ class TestFrame(wxFrame):
 
     def OnCloseWindow(self, evt):
         busy = wxBusyInfo("One moment please, waiting for threads to die...")
+        wxYield()
         for t in self.threads:
             t.Stop()
         running = 1

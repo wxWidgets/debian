@@ -1,6 +1,8 @@
-// SciTE - Scintilla based Text Editor
-// Accessor.cxx - rapid easy access to contents of a Scintilla
-// Copyright 1998-2000 by Neil Hodgson <neilh@scintilla.org>
+// Scintilla source code edit control
+/** @file WindowAccessor.cxx
+ ** Rapid easy access to contents of a Scintilla.
+ **/
+// Copyright 1998-2001 by Neil Hodgson <neilh@scintilla.org>
 // The License.txt file describes the conditions under which this software may be distributed.
 
 #include <stdlib.h>
@@ -18,22 +20,14 @@
 WindowAccessor::~WindowAccessor() {
 }
 
-#if PLAT_WIN 
 bool WindowAccessor::InternalIsLeadByte(char ch) {
 	if (SC_CP_UTF8 == codePage)
 		// For lexing, all characters >= 0x80 are treated the
 		// same so none is considered a lead byte.
 		return false;	
 	else
-		return IsDBCSLeadByteEx(codePage, ch);
+		return Platform::IsDBCSLeadByte(codePage, ch);
 }
-#else
-// PLAT_GTK or PLAT_WX
-// TODO: support DBCS under GTK+ and WX
-bool WindowAccessor::InternalIsLeadByte(char) {
-	return false;
-}
-#endif 
 
 void WindowAccessor::Fill(int position) {
 	if (lenDoc == -1)
@@ -48,7 +42,16 @@ void WindowAccessor::Fill(int position) {
 		endPos = lenDoc;
 
 	TextRange tr = {{startPos, endPos}, buf};
-	Platform::SendScintilla(id, SCI_GETTEXTRANGE, 0, reinterpret_cast<long>(&tr));
+	Platform::SendScintillaPointer(id, SCI_GETTEXTRANGE, 0, &tr);
+}
+
+bool WindowAccessor::Match(int pos, const char *s) {
+	for (int i=0; *s; i++) {
+		if (*s != SafeGetCharAt(pos+i))
+			return false;
+		s++;
+	}
+	return true;
 }
 
 char WindowAccessor::StyleAt(int position) {
@@ -122,8 +125,8 @@ void WindowAccessor::Flush() {
 	startPos = extremePosition;
 	lenDoc = -1;
 	if (validLen > 0) {
-		Platform::SendScintilla(id, SCI_SETSTYLINGEX, validLen, 
-			reinterpret_cast<long>(styleBuf));
+		Platform::SendScintillaPointer(id, SCI_SETSTYLINGEX, validLen, 
+			styleBuf);
 		validLen = 0;
 	}
 }

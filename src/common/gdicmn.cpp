@@ -4,13 +4,17 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     01/02/97
-// RCS-ID:      $Id: gdicmn.cpp,v 1.44.2.6 2000/09/04 06:57:06 JS Exp $
+// RCS-ID:      $Id: gdicmn.cpp,v 1.73 2002/08/24 18:34:24 SC Exp $
 // Copyright:   (c) Julian Smart and Markus Holzem
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
 
 #ifdef __GNUG__
 #pragma implementation "gdicmn.h"
+#endif
+
+#ifdef __VMS
+#define XtDisplay XTDISPLAY
 #endif
 
 // For compilers that support precompilation, includes "wx.h".
@@ -32,6 +36,7 @@
 #include "wx/app.h"
 #include "wx/dc.h"
 #include "wx/utils.h"
+#include "wx/settings.h"
 
 #include "wx/log.h"
 #include <string.h>
@@ -50,6 +55,14 @@
 #endif
 #endif
 
+#ifdef __WXX11__
+#include "X11/Xlib.h"
+#endif
+
+#ifdef __WXMAC__
+#include "wx/mac/private.h"
+#include "wx/mac/uma.h"
+#endif
 IMPLEMENT_CLASS(wxColourDatabase, wxList)
 IMPLEMENT_DYNAMIC_CLASS(wxFontList, wxList)
 IMPLEMENT_DYNAMIC_CLASS(wxPenList, wxList)
@@ -108,12 +121,69 @@ wxRect wxRect::operator + (const wxRect& rect) const
     return wxRect(x1, y1, x2-x1, y2-y1);
 }
 
+wxRect& wxRect::Inflate(wxCoord dx, wxCoord dy)
+{
+    x -= dx;
+    y -= dy;
+    width += 2*dx;
+    height += 2*dy;
+
+    // check that we didn't make the rectangle invalid by accident (you almost
+    // never want to have negative coords and never want negative size)
+    if ( x < 0 )
+        x = 0;
+    if ( y < 0 )
+        y = 0;
+
+    // what else can we do?
+    if ( width < 0 )
+        width = 0;
+    if ( height < 0 )
+        height = 0;
+
+    return *this;
+}
+
 bool wxRect::Inside(int cx, int cy) const
 {
     return ( (cx >= x) && (cy >= y)
           && ((cy - y) < height)
           && ((cx - x) < width)
           );
+}
+
+wxRect& wxRect::Intersect(const wxRect& rect)
+{
+    int x2 = GetRight(),
+        y2 = GetBottom();
+
+    if ( x < rect.x )
+        x = rect.x;
+    if ( y < rect.y )
+        y = rect.y;
+    if ( x2 > rect.GetRight() )
+        x2 = rect.GetRight();
+    if ( y2 > rect.GetBottom() )
+        y2 = rect.GetBottom();
+
+    width = x2 - x + 1;
+    height = y2 - y + 1;
+
+    if ( width <= 0 || height <= 0 )
+    {
+        width =
+        height = 0;
+    }
+
+    return *this;
+}
+
+bool wxRect::Intersects(const wxRect& rect) const
+{
+    wxRect r = Intersect(rect);
+
+    // if there is no intersection, both width and height are 0
+    return r.width != 0;
 }
 
 wxColourDatabase::wxColourDatabase (int type) : wxList (type)
@@ -131,6 +201,9 @@ wxColourDatabase::~wxColourDatabase ()
       delete col;
       node = next;
     }
+#ifdef __WXPM__
+    delete [] m_palTable;
+#endif
 }
 
 // Colour database stuff
@@ -220,11 +293,22 @@ void wxColourDatabase::Initialize ()
         {wxT("MEDIUM GREY"), 100, 100, 100},
     };
 
-    for ( size_t n = 0; n < WXSIZEOF(wxColourTable); n++ )
+    size_t      n;
+
+    for ( n = 0; n < WXSIZEOF(wxColourTable); n++ )
     {
         const wxColourDesc& cc = wxColourTable[n];
         Append(cc.name, new wxColour(cc.r,cc.g,cc.b));
     }
+#ifdef __WXPM__
+    m_palTable = new long[n];
+    for ( n = 0; n < WXSIZEOF(wxColourTable); n++ )
+    {
+        const wxColourDesc& cc = wxColourTable[n];
+        m_palTable[n] = OS2RGB(cc.r,cc.g,cc.b);
+    }
+    m_nSize = n;
+#endif
 }
 
 /*
@@ -264,6 +348,9 @@ wxColour *wxColourDatabase::FindColour(const wxString& colour)
 #ifdef __WXPM__
   return NULL;
 #endif
+#ifdef __WXMGL__
+  return NULL;
+#endif
 
 // TODO for other implementations. This should really go into
 // platform-specific directories.
@@ -291,19 +378,22 @@ wxColour *wxColourDatabase::FindColour(const wxString& colour)
 #ifdef __WXMOTIF__
     Display *display = XtDisplay((Widget) wxTheApp->GetTopLevelWidget()) ;
 #endif
-#ifdef __XVIEW__
-    Xv_Screen screen = xv_get(xview_server, SERVER_NTH_SCREEN, 0);
-    Xv_opaque root_window = xv_get(screen, XV_ROOT);
-    Display *display = (Display *)xv_get(root_window, XV_DISPLAY);
+#ifdef __WXX11__
+    Display* display = (Display*) wxGetDisplay();
 #endif
-
     /* MATTHEW: [4] Use wxGetMainColormap */
     if (!XParseColor(display, (Colormap) wxTheApp->GetMainColormap((WXDisplay*) display), colour,&xcolour))
       return NULL;
 
+#if wxUSE_NANOX
+    unsigned char r = (unsigned char)(xcolour.red);
+    unsigned char g = (unsigned char)(xcolour.green);
+    unsigned char b = (unsigned char)(xcolour.blue);
+#else
     unsigned char r = (unsigned char)(xcolour.red >> 8);
     unsigned char g = (unsigned char)(xcolour.green >> 8);
     unsigned char b = (unsigned char)(xcolour.blue >> 8);
+#endif
 
     wxColour *col = new wxColour(r, g, b);
     Append(colour, col);
@@ -339,7 +429,8 @@ wxString wxColourDatabase::FindName (const wxColour& colour) const
     return name;
 }
 
-void wxInitializeStockLists () {
+void wxInitializeStockLists()
+{
   wxTheBrushList = new wxBrushList;
   wxThePenList = new wxPenList;
   wxTheFontList = new wxFontList;
@@ -356,63 +447,80 @@ void wxInitializeStockObjects ()
 #endif
 
   // why under MSW fonts shouldn't have the standard system size?
+/*
 #ifdef __WXMSW__
   static const int sizeFont = 10;
 #else
+#endif
+*/
+#if defined(__WXMAC__)
+    int sizeFont = 12;
+
+    Str255 fontName ;
+    SInt16 fontSize ;
+    Style fontStyle ;
+
+	GetThemeFont(kThemeSystemFont , GetApplicationScript() , fontName , &fontSize , &fontStyle ) ;
+	sizeFont = fontSize ;
+    p2cstrcpy( (char*) fontName , fontName ) ;
+    wxSWISS_FONT = new wxFont (fontSize, wxSWISS, wxNORMAL, wxNORMAL , false , fontName );
+#elif defined(__WXPM__)
   static const int sizeFont = 12;
+#else
+  wxNORMAL_FONT = new wxFont(wxSystemSettings::GetFont(wxSYS_DEFAULT_GUI_FONT));
+  static const int sizeFont = wxNORMAL_FONT->GetPointSize();
 #endif
 
-  wxNORMAL_FONT = new wxFont (sizeFont, wxMODERN, wxNORMAL, wxNORMAL);
+#if defined(__WXPM__)
+  /*
+  // Basic OS/2 has a fairly limited number of fonts and these are as good
+  // as I can do to get something that looks halfway "wx" normal
+  */
+  wxNORMAL_FONT = new wxFont (sizeFont, wxMODERN, wxNORMAL, wxBOLD);
+  wxSMALL_FONT = new wxFont (sizeFont - 4, wxSWISS, wxNORMAL, wxNORMAL); /* Helv */
+  wxITALIC_FONT = new wxFont (sizeFont, wxROMAN, wxITALIC, wxNORMAL);
+  wxSWISS_FONT = new wxFont (sizeFont, wxSWISS, wxNORMAL, wxNORMAL); /* Helv */
+#elif defined(__WXMAC__)
+    wxNORMAL_FONT = new wxFont (sizeFont, wxMODERN, wxNORMAL, wxNORMAL);
+    wxITALIC_FONT = new wxFont (sizeFont, wxROMAN, wxITALIC, wxNORMAL);
+	GetThemeFont(kThemeSmallSystemFont , GetApplicationScript() , fontName , &fontSize , &fontStyle ) ;
+    p2cstrcpy( (char*) fontName , fontName ) ;
+    wxSMALL_FONT = new wxFont (fontSize, wxSWISS, wxNORMAL, wxNORMAL , false , fontName );
+#else
   wxSMALL_FONT = new wxFont (sizeFont - 2, wxSWISS, wxNORMAL, wxNORMAL);
   wxITALIC_FONT = new wxFont (sizeFont, wxROMAN, wxITALIC, wxNORMAL);
   wxSWISS_FONT = new wxFont (sizeFont, wxSWISS, wxNORMAL, wxNORMAL);
+#endif
 
-  wxRED_PEN = new wxPen ("RED", 1, wxSOLID);
-  wxCYAN_PEN = new wxPen ("CYAN", 1, wxSOLID);
-  wxGREEN_PEN = new wxPen ("GREEN", 1, wxSOLID);
-  wxBLACK_PEN = new wxPen ("BLACK", 1, wxSOLID);
-  wxWHITE_PEN = new wxPen ("WHITE", 1, wxSOLID);
-  wxTRANSPARENT_PEN = new wxPen ("BLACK", 1, wxTRANSPARENT);
-  wxBLACK_DASHED_PEN = new wxPen ("BLACK", 1, wxSHORT_DASH);
-  wxGREY_PEN = new wxPen ("GREY", 1, wxSOLID);
-  wxMEDIUM_GREY_PEN = new wxPen ("MEDIUM GREY", 1, wxSOLID);
-  wxLIGHT_GREY_PEN = new wxPen ("LIGHT GREY", 1, wxSOLID);
+  wxRED_PEN = new wxPen (wxT("RED"), 1, wxSOLID);
+  wxCYAN_PEN = new wxPen (wxT("CYAN"), 1, wxSOLID);
+  wxGREEN_PEN = new wxPen (wxT("GREEN"), 1, wxSOLID);
+  wxBLACK_PEN = new wxPen (wxT("BLACK"), 1, wxSOLID);
+  wxWHITE_PEN = new wxPen (wxT("WHITE"), 1, wxSOLID);
+  wxTRANSPARENT_PEN = new wxPen (wxT("BLACK"), 1, wxTRANSPARENT);
+  wxBLACK_DASHED_PEN = new wxPen (wxT("BLACK"), 1, wxSHORT_DASH);
+  wxGREY_PEN = new wxPen (wxT("GREY"), 1, wxSOLID);
+  wxMEDIUM_GREY_PEN = new wxPen (wxT("MEDIUM GREY"), 1, wxSOLID);
+  wxLIGHT_GREY_PEN = new wxPen (wxT("LIGHT GREY"), 1, wxSOLID);
 
-  wxBLUE_BRUSH = new wxBrush ("BLUE", wxSOLID);
-  wxGREEN_BRUSH = new wxBrush ("GREEN", wxSOLID);
-  wxWHITE_BRUSH = new wxBrush ("WHITE", wxSOLID);
-  wxBLACK_BRUSH = new wxBrush ("BLACK", wxSOLID);
-  wxTRANSPARENT_BRUSH = new wxBrush ("BLACK", wxTRANSPARENT);
-  wxCYAN_BRUSH = new wxBrush ("CYAN", wxSOLID);
-  wxRED_BRUSH = new wxBrush ("RED", wxSOLID);
-  wxGREY_BRUSH = new wxBrush ("GREY", wxSOLID);
-  wxMEDIUM_GREY_BRUSH = new wxBrush ("MEDIUM GREY", wxSOLID);
-  wxLIGHT_GREY_BRUSH = new wxBrush ("LIGHT GREY", wxSOLID);
+  wxBLUE_BRUSH = new wxBrush (wxT("BLUE"), wxSOLID);
+  wxGREEN_BRUSH = new wxBrush (wxT("GREEN"), wxSOLID);
+  wxWHITE_BRUSH = new wxBrush (wxT("WHITE"), wxSOLID);
+  wxBLACK_BRUSH = new wxBrush (wxT("BLACK"), wxSOLID);
+  wxTRANSPARENT_BRUSH = new wxBrush (wxT("BLACK"), wxTRANSPARENT);
+  wxCYAN_BRUSH = new wxBrush (wxT("CYAN"), wxSOLID);
+  wxRED_BRUSH = new wxBrush (wxT("RED"), wxSOLID);
+  wxGREY_BRUSH = new wxBrush (wxT("GREY"), wxSOLID);
+  wxMEDIUM_GREY_BRUSH = new wxBrush (wxT("MEDIUM GREY"), wxSOLID);
+  wxLIGHT_GREY_BRUSH = new wxBrush (wxT("LIGHT GREY"), wxSOLID);
 
-  wxBLACK = new wxColour ("BLACK");
-  wxWHITE = new wxColour ("WHITE");
-  wxRED = new wxColour ("RED");
-  wxBLUE = new wxColour ("BLUE");
-  wxGREEN = new wxColour ("GREEN");
-  wxCYAN = new wxColour ("CYAN");
-
-  // VZ: Here is why this colour is treated specially: normally, wxLIGHT_GREY
-  //     is the window background colour and it is also used as the
-  //     "transparent" colour in the bitmaps - for example, for the toolbar
-  //     bitmaps. In particular, the mask creation code in tbar95.cpp assumes
-  //     this - but it fails under Win2K where the system 3D colour is not
-  //     0xc0c0c0 (usual light grey) but 0xc6c3c6. To make everything work as
-  //     expected there we have to define wxLIGHT_GREY accordingly - another
-  //     solution would be to hack wxMask::Create()...
-#ifdef __WIN32__
-  int majOs, minOs;
-  if ( wxGetOsVersion(&majOs, &minOs) == wxWINDOWS_NT && (majOs == 5) )
-  {
-      wxLIGHT_GREY = new wxColour(0xc6c3c6);
-  }
-  else
-#endif // MSW
-  wxLIGHT_GREY = new wxColour ("LIGHT GREY");
+  wxBLACK = new wxColour (wxT("BLACK"));
+  wxWHITE = new wxColour (wxT("WHITE"));
+  wxRED = new wxColour (wxT("RED"));
+  wxBLUE = new wxColour (wxT("BLUE"));
+  wxGREEN = new wxColour (wxT("GREEN"));
+  wxCYAN = new wxColour (wxT("CYAN"));
+  wxLIGHT_GREY = new wxColour (wxT("LIGHT GREY"));
 
   wxSTANDARD_CURSOR = new wxCursor (wxCURSOR_ARROW);
   wxHOURGLASS_CURSOR = new wxCursor (wxCURSOR_WAIT);
@@ -461,14 +569,19 @@ void wxDeleteStockObjects ()
   wxDELETE(wxCROSS_CURSOR);
 }
 
-void wxDeleteStockLists() {
+void wxDeleteStockLists()
+{
   wxDELETE(wxTheBrushList);
   wxDELETE(wxThePenList);
   wxDELETE(wxTheFontList);
   wxDELETE(wxTheBitmapList);
 }
 
-wxBitmapList::wxBitmapList ()
+// ============================================================================
+// wxTheXXXList stuff (semi-obsolete)
+// ============================================================================
+
+wxBitmapList::wxBitmapList()
 {
 }
 
@@ -511,27 +624,34 @@ void wxPenList::RemovePen (wxPen * pen)
 
 wxPen *wxPenList::FindOrCreatePen (const wxColour& colour, int width, int style)
 {
-  for (wxNode * node = First (); node; node = node->Next ())
+    for (wxNode * node = First (); node; node = node->Next ())
     {
-      wxPen *each_pen = (wxPen *) node->Data ();
-      if (each_pen &&
-          each_pen->GetVisible() &&
-          each_pen->GetWidth () == width &&
-          each_pen->GetStyle () == style &&
-          each_pen->GetColour ().Red () == colour.Red () &&
-          each_pen->GetColour ().Green () == colour.Green () &&
-          each_pen->GetColour ().Blue () == colour.Blue ())
-        return each_pen;
+        wxPen *each_pen = (wxPen *) node->Data ();
+        if (each_pen &&
+                each_pen->GetVisible() &&
+                each_pen->GetWidth () == width &&
+                each_pen->GetStyle () == style &&
+                each_pen->GetColour ().Red () == colour.Red () &&
+                each_pen->GetColour ().Green () == colour.Green () &&
+                each_pen->GetColour ().Blue () == colour.Blue ())
+            return each_pen;
     }
-  wxPen *pen = new wxPen (colour, width, style);
 
-  // Yes, we can return a pointer to this in a later FindOrCreatePen call,
-  // because we created it within FindOrCreatePen. Safeguards against
-  // returning a pointer to an automatic variable and hanging on to it
-  // (dangling pointer).
-  pen->SetVisible(TRUE);
+    wxPen *pen = new wxPen (colour, width, style);
+    if ( !pen->Ok() )
+    {
+        // don't save the invalid pens in the list
+        delete pen;
 
-  return pen;
+        return NULL;
+    }
+
+    AddPen(pen);
+
+    // we'll delete it ourselves later
+    pen->SetVisible(TRUE);
+
+    return pen;
 }
 
 wxBrushList::~wxBrushList ()
@@ -541,7 +661,7 @@ wxBrushList::~wxBrushList ()
     {
       wxBrush *brush = (wxBrush *) node->Data ();
       wxNode *next = node->Next ();
-      if (brush->GetVisible())
+      if (brush && brush->GetVisible())
         delete brush;
       node = next;
     }
@@ -554,27 +674,34 @@ void wxBrushList::AddBrush (wxBrush * brush)
 
 wxBrush *wxBrushList::FindOrCreateBrush (const wxColour& colour, int style)
 {
-  for (wxNode * node = First (); node; node = node->Next ())
+    for (wxNode * node = First (); node; node = node->Next ())
     {
-      wxBrush *each_brush = (wxBrush *) node->Data ();
-      if (each_brush &&
-          each_brush->GetVisible() &&
-          each_brush->GetStyle () == style &&
-          each_brush->GetColour ().Red () == colour.Red () &&
-          each_brush->GetColour ().Green () == colour.Green () &&
-          each_brush->GetColour ().Blue () == colour.Blue ())
-        return each_brush;
+        wxBrush *each_brush = (wxBrush *) node->Data ();
+        if (each_brush &&
+                each_brush->GetVisible() &&
+                each_brush->GetStyle () == style &&
+                each_brush->GetColour ().Red () == colour.Red () &&
+                each_brush->GetColour ().Green () == colour.Green () &&
+                each_brush->GetColour ().Blue () == colour.Blue ())
+            return each_brush;
     }
 
-  // Yes, we can return a pointer to this in a later FindOrCreateBrush call,
-  // because we created it within FindOrCreateBrush. Safeguards against
-  // returning a pointer to an automatic variable and hanging on to it
-  // (dangling pointer).
-  wxBrush *brush = new wxBrush (colour, style);
+    wxBrush *brush = new wxBrush (colour, style);
 
-  brush->SetVisible(TRUE);
+    if ( !brush->Ok() )
+    {
+        // don't put the brushes we failed to create into the list
+        delete brush;
 
-  return brush;
+        return NULL;
+    }
+
+    AddBrush(brush);
+
+    // we'll delete it ourselves later
+    brush->SetVisible(TRUE);
+
+    return brush;
 }
 
 void wxBrushList::RemoveBrush (wxBrush * brush)
@@ -674,6 +801,8 @@ wxFont *wxFontList::FindOrCreateFont(int pointSize,
         font = new wxFont(pointSize, family, style, weight,
                           underline, facename, encoding);
 
+        AddFont(font);
+
         // and mark it as being cacheable
         font->SetVisible(TRUE);
     }
@@ -695,6 +824,20 @@ wxSize wxGetDisplaySize()
 {
     int x, y;
     wxDisplaySize(& x, & y);
+    return wxSize(x, y);
+}
+
+wxRect wxGetClientDisplayRect()
+{
+    int x, y, width, height;
+    wxClientDisplayRect(&x, &y, &width, &height);  // call plat-specific version
+    return wxRect(x, y, width, height);
+}
+
+wxSize wxGetDisplaySizeMM()
+{
+    int x, y;
+    wxDisplaySizeMM(& x, & y);
     return wxSize(x, y);
 }
 

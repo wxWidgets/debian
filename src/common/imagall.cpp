@@ -2,7 +2,7 @@
 // Name:        imagall.cpp
 // Purpose:     wxImage access all handler
 // Author:      Sylvain Bougnoux
-// RCS-ID:      $Id: imagall.cpp,v 1.3 1999/11/28 17:18:25 RR Exp $
+// RCS-ID:      $Id: imagall.cpp,v 1.8 2002/01/15 17:57:07 RR Exp $
 // Copyright:   (c) Sylvain Bougnoux
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -24,6 +24,8 @@
 #endif
 
 #include "wx/image.h"
+
+#if wxUSE_IMAGE
 
 //-----------------------------------------------------------------------------
 // This function allows dynamic access to all image handlers compile within
@@ -50,4 +52,17 @@ void wxInitAllImageHandlers()
 #if wxUSE_PCX
   wxImage::AddHandler( new wxPCXHandler );
 #endif
+#if wxUSE_IFF
+  wxImage::AddHandler( new wxIFFHandler );
+#endif
+#if wxUSE_XPM
+  wxImage::AddHandler( new wxXPMHandler );
+#endif
+#if wxUSE_ICO_CUR
+  wxImage::AddHandler( new wxICOHandler );
+  wxImage::AddHandler( new wxCURHandler );
+  wxImage::AddHandler( new wxANIHandler );
+#endif
 }
+
+#endif // wxUSE_IMAGE

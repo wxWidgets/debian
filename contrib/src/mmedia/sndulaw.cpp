@@ -3,7 +3,7 @@
 // Purpose:
 // Date: 08/11/1999
 // Author: Guilhem Lavaux <lavaux@easynet.fr> (C) 1999
-// CVSID: $Id: sndulaw.cpp,v 1.1 2000/03/05 19:03:19 GL Exp $
+// CVSID: $Id: sndulaw.cpp,v 1.2 2000/06/04 08:38:36 GL Exp $
 // --------------------------------------------------------------------------
 #ifdef __GNUG__
 #pragma implementation "sndulaw.cpp"
@@ -163,8 +163,9 @@ bool wxSoundStreamUlaw::SetSoundFormat(const wxSoundFormatBase& format)
         return FALSE;
     }
     
-    // As the codec only support 16 bits, Mono we must use a wxSoundRouter to filter the data and
-    // to translate them to a format supported by the sound card.
+    // As the codec only support 16 bits, Mono we must use a wxSoundRouter
+    // to filter the data and to translate them to a format supported
+    // by the sound card.
     
     wxSoundFormatPcm pcm;
     wxSoundFormatUlaw *ulaw;

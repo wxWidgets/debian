@@ -2,7 +2,7 @@
 // Name:        wx/gtk/frame.h
 // Purpose:
 // Author:      Robert Roebling
-// Id:          $Id: frame.h,v 1.57 2000/03/06 17:16:12 VZ Exp $
+// Id:          $Id: frame.h,v 1.67 2002/09/07 12:28:46 GD Exp $
 // Copyright:   (c) 1998 Robert Roebling, Julian Smart
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -11,7 +11,7 @@
 #ifndef __GTKFRAMEH__
 #define __GTKFRAMEH__
 
-#ifdef __GNUG__
+#if defined(__GNUG__) && !defined(__APPLE__)
     #pragma interface "frame.h"
 #endif
 
@@ -26,8 +26,6 @@ class wxMenuBar;
 class wxToolBar;
 class wxStatusBar;
 
-class wxFrame;
-
 //-----------------------------------------------------------------------------
 // wxFrame
 //-----------------------------------------------------------------------------
@@ -38,12 +36,12 @@ public:
     // construction
     wxFrame() { Init(); }
     wxFrame(wxWindow *parent,
-            wxWindowID id,
-            const wxString& title,
-            const wxPoint& pos = wxDefaultPosition,
-            const wxSize& size = wxDefaultSize,
-            long style = wxDEFAULT_FRAME_STYLE,
-            const wxString& name = wxFrameNameStr)
+               wxWindowID id,
+               const wxString& title,
+               const wxPoint& pos = wxDefaultPosition,
+               const wxSize& size = wxDefaultSize,
+               long style = wxDEFAULT_FRAME_STYLE,
+               const wxString& name = wxFrameNameStr)
     {
         Init();
 
@@ -60,17 +58,6 @@ public:
 
     virtual ~wxFrame();
 
-    // implement base class pure virtuals
-    virtual void Maximize(bool maximize = TRUE);
-    virtual bool IsMaximized() const;
-    virtual void Iconize(bool iconize = TRUE);
-    virtual bool IsIconized() const;
-    virtual void SetIcon(const wxIcon& icon);
-    virtual void MakeModal(bool modal = TRUE);
-    virtual void Restore();
-
-    virtual void SetMenuBar( wxMenuBar *menuBar );
-
 #if wxUSE_STATUSBAR
     virtual void PositionStatusBar();
 
@@ -86,44 +73,32 @@ public:
                                      const wxString& name = wxToolBarNameStr);
     void SetToolBar(wxToolBar *toolbar);
 #endif // wxUSE_TOOLBAR
-
-    virtual bool Show(bool show = TRUE);
-
-    virtual void SetTitle( const wxString &title );
-    virtual wxString GetTitle() const { return m_title; }
+    
+    wxPoint GetClientAreaOrigin() const { return wxPoint(0, 0); }
 
     // implementation from now on
     // --------------------------
 
-    // move the window to the specified location and resize it: this is called
-    // from both DoSetSize() and DoSetClientSize() 
-    virtual void DoMoveWindow(int x, int y, int width, int height);
-    
     // GTK callbacks
     virtual void GtkOnSize( int x, int y, int width, int height );
     virtual void OnInternalIdle();
 
-    wxString      m_title;
-    int           m_miniEdge,
-                  m_miniTitle;
-    GtkWidget    *m_mainWidget;
     bool          m_menuBarDetached;
     bool          m_toolBarDetached;
-    bool          m_insertInClientArea;  /* not from within OnCreateXXX */
 
 protected:
     // common part of all ctors
     void Init();
 
     // override wxWindow methods to take into account tool/menu/statusbars
-    virtual void DoSetSize(int x, int y,
-                           int width, int height,
-                           int sizeFlags = wxSIZE_AUTO);
-
     virtual void DoSetClientSize(int width, int height);
     virtual void DoGetClientSize( int *width, int *height ) const;
 
-private:
+#if wxUSE_MENUS_NATIVE
+    virtual void DetachMenuBar();
+    virtual void AttachMenuBar(wxMenuBar *menubar);
+#endif // wxUSE_MENUS_NATIVE
+
     DECLARE_DYNAMIC_CLASS(wxFrame)
 };
 

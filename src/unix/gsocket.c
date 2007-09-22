@@ -4,7 +4,7 @@
  * Authors: Guilhem Lavaux,
  *          Guillermo Rodriguez Garcia <guille@iies.es> (maintainer)
  * Purpose: GSocket main Unix file
- * CVSID:   $Id: gsocket.c,v 1.64.2.2 2001/05/19 23:36:26 VZ Exp $
+ * CVSID:   $Id: gsocket.c,v 1.71 2002/09/05 20:49:18 GRG Exp $
  * -------------------------------------------------------------------------
  */
 
@@ -172,6 +172,13 @@ GSocket *GSocket_new(void)
   return socket;
 }
 
+void GSocket_close(GSocket *socket)
+{
+    _GSocket_Disable_Events(socket);
+    close(socket->m_fd);
+    socket->m_fd = INVALID_SOCKET;
+}
+
 void GSocket_destroy(GSocket *socket)
 {
   assert(socket != NULL);
@@ -208,8 +215,7 @@ void GSocket_Shutdown(GSocket *socket)
   if (socket->m_fd != INVALID_SOCKET)
   {
     shutdown(socket->m_fd, 2);
-    close(socket->m_fd);
-    socket->m_fd = INVALID_SOCKET;
+    GSocket_close(socket);
   }
 
   /* Disable GUI callbacks */
@@ -217,7 +223,6 @@ void GSocket_Shutdown(GSocket *socket)
     socket->m_cbacks[evt] = NULL;
 
   socket->m_detected = GSOCK_LOST_FLAG;
-  _GSocket_Disable_Events(socket);
 }
 
 /* Address handling */
@@ -396,8 +401,7 @@ GSocketError GSocket_SetServer(GSocket *sck)
                    (SOCKLEN_T *) &sck->m_local->m_len) != 0) ||
       (listen(sck->m_fd, 5) != 0))
   {
-    close(sck->m_fd);
-    sck->m_fd = INVALID_SOCKET;
+    GSocket_close(sck);
     sck->m_error = GSOCK_IOERR;
     return GSOCK_IOERR;
   }
@@ -577,8 +581,7 @@ GSocketError GSocket_Connect(GSocket *sck, GSocketStream stream)
     {
       if (_GSocket_Output_Timeout(sck) == GSOCK_TIMEDOUT)
       {
-        close(sck->m_fd);
-        sck->m_fd = INVALID_SOCKET;
+        GSocket_close(sck);
         /* sck->m_error is set in _GSocket_Output_Timeout */
         return GSOCK_TIMEDOUT;
       }
@@ -610,8 +613,7 @@ GSocketError GSocket_Connect(GSocket *sck, GSocketStream stream)
     /* If connect failed with an error other than EINPROGRESS,
      * then the call to GSocket_Connect has failed.
      */
-    close(sck->m_fd);
-    sck->m_fd = INVALID_SOCKET;
+    GSocket_close(sck);
     sck->m_error = GSOCK_IOERR;
     return GSOCK_IOERR;
   }
@@ -675,8 +677,7 @@ GSocketError GSocket_SetNonOriented(GSocket *sck)
                    sck->m_local->m_addr,
                    (SOCKLEN_T *) &sck->m_local->m_len) != 0))
   {
-    close(sck->m_fd);
-    sck->m_fd    = INVALID_SOCKET;
+    GSocket_close(sck);
     sck->m_error = GSOCK_IOERR;
     return GSOCK_IOERR;
   }
@@ -810,13 +811,25 @@ GSocketEventFlags GSocket_Select(GSocket *socket, GSocketEventFlags flags)
   FD_SET(socket->m_fd, &writefds);
   FD_SET(socket->m_fd, &exceptfds);
 
-  /* Check known state first */
-  result |= (GSOCK_CONNECTION_FLAG & socket->m_detected & flags);
-  result |= (GSOCK_LOST_FLAG       & socket->m_detected & flags);
+  /* Check 'sticky' CONNECTION flag first */
+  result |= (GSOCK_CONNECTION_FLAG & socket->m_detected);
+
+  /* If we have already detected a LOST event, then don't try
+   * to do any further processing.
+   */
+  if ((socket->m_detected & GSOCK_LOST_FLAG) != 0)
+  {
+    socket->m_establishing = FALSE;
+
+    return (GSOCK_LOST_FLAG & flags);
+  }
 
   /* Try select now */
   if (select(socket->m_fd + 1, &readfds, &writefds, &exceptfds, &tv) <= 0)
-    return result;
+  {
+    /* What to do here? */
+    return (result & flags);
+  }
 
   /* Check for readability */
   if (FD_ISSET(socket->m_fd, &readfds))
@@ -825,19 +838,22 @@ GSocketEventFlags GSocket_Select(GSocket *socket, GSocketEventFlags flags)
 
     if (recv(socket->m_fd, &c, 1, MSG_PEEK) > 0)
     {
-      result |= (GSOCK_INPUT_FLAG & flags);
+      result |= GSOCK_INPUT_FLAG;
     }
     else
     {
       if (socket->m_server && socket->m_stream)
       {
-        result |= (GSOCK_CONNECTION_FLAG & flags);
+        result |= GSOCK_CONNECTION_FLAG;
         socket->m_detected |= GSOCK_CONNECTION_FLAG;
       }
       else
       {
-        result |= (GSOCK_LOST_FLAG & flags);
         socket->m_detected = GSOCK_LOST_FLAG;
+        socket->m_establishing = FALSE;
+    
+        /* LOST event: Abort any further processing */
+        return (GSOCK_LOST_FLAG & flags);
       }
     }
   }
@@ -856,30 +872,34 @@ GSocketEventFlags GSocket_Select(GSocket *socket, GSocketEventFlags flags)
 
       if (error)
       {
-        result |= (GSOCK_LOST_FLAG & flags);
         socket->m_detected = GSOCK_LOST_FLAG;
+
+        /* LOST event: Abort any further processing */
+        return (GSOCK_LOST_FLAG & flags);
       }
       else
       {
-        result |= (GSOCK_CONNECTION_FLAG & flags);
+        result |= GSOCK_CONNECTION_FLAG;
         socket->m_detected |= GSOCK_CONNECTION_FLAG;
       }
     }
     else
     {
-      result |= (GSOCK_OUTPUT_FLAG & flags);
+      result |= GSOCK_OUTPUT_FLAG;
     }
   }
 
   /* Check for exceptions and errors (is this useful in Unices?) */
   if (FD_ISSET(socket->m_fd, &exceptfds))
   {
-    result |= (GSOCK_LOST_FLAG & flags);
     socket->m_establishing = FALSE;
     socket->m_detected = GSOCK_LOST_FLAG;
+
+    /* LOST event: Abort any further processing */
+    return (GSOCK_LOST_FLAG & flags);
   }
 
-  return result;
+  return (result & flags);
 
 #else 
 
@@ -1042,10 +1062,10 @@ GSocketError _GSocket_Input_Timeout(GSocket *socket)
     if (ret == -1)
     {
       GSocket_Debug(( "GSocket_Input_Timeout, select returned -1\n" ));
-      if (errno == EBADF) GSocket_Debug(( "Invalid file descriptor\n" ));
-      if (errno == EINTR) GSocket_Debug(( "A non blocked signal was caught\n" ));
-      if (errno == EINVAL) GSocket_Debug(( "The highest number descriptor is negative\n" ));
-      if (errno == ENOMEM) GSocket_Debug(( "Not enough memory\n" ));
+      if (errno == EBADF) { GSocket_Debug(( "Invalid file descriptor\n" )); }
+      if (errno == EINTR) { GSocket_Debug(( "A non blocked signal was caught\n" )); }
+      if (errno == EINVAL) { GSocket_Debug(( "The highest number descriptor is negative\n" )); }
+      if (errno == ENOMEM) { GSocket_Debug(( "Not enough memory\n" )); }
       socket->m_error = GSOCK_TIMEDOUT;
       return GSOCK_TIMEDOUT;
     }
@@ -1083,17 +1103,19 @@ GSocketError _GSocket_Output_Timeout(GSocket *socket)
     if (ret == -1)
     {
       GSocket_Debug(( "GSocket_Output_Timeout, select returned -1\n" ));
-      if (errno == EBADF) GSocket_Debug(( "Invalid file descriptor\n" ));
-      if (errno == EINTR) GSocket_Debug(( "A non blocked signal was caught\n" ));
-      if (errno == EINVAL) GSocket_Debug(( "The highest number descriptor is negative\n" ));
-      if (errno == ENOMEM) GSocket_Debug(( "Not enough memory\n" ));
+      if (errno == EBADF) { GSocket_Debug(( "Invalid file descriptor\n" )); }
+      if (errno == EINTR) { GSocket_Debug(( "A non blocked signal was caught\n" )); }
+      if (errno == EINVAL) { GSocket_Debug(( "The highest number descriptor is negative\n" )); }
+      if (errno == ENOMEM) { GSocket_Debug(( "Not enough memory\n" )); }
       socket->m_error = GSOCK_TIMEDOUT;
       return GSOCK_TIMEDOUT;
     }
-    if ( ! FD_ISSET(socket->m_fd, &writefds) )
-      GSocket_Debug(( "GSocket_Output_Timeout is buggy!\n" ));
-    else
-      GSocket_Debug(( "GSocket_Output_Timeout seems correct\n" ));
+    if ( ! FD_ISSET(socket->m_fd, &writefds) ) {
+        GSocket_Debug(( "GSocket_Output_Timeout is buggy!\n" ));
+    }
+    else {
+        GSocket_Debug(( "GSocket_Output_Timeout seems correct\n" ));
+    }
   }
   else
   {
@@ -1188,6 +1210,18 @@ void _GSocket_Detected_Read(GSocket *socket)
 {
   char c;
 
+  /* If we have already detected a LOST event, then don't try
+   * to do any further processing.
+   */
+  if ((socket->m_detected & GSOCK_LOST_FLAG) != 0)
+  {
+    socket->m_establishing = FALSE;
+
+    CALL_CALLBACK(socket, GSOCK_LOST);
+    GSocket_Shutdown(socket);
+    return;
+  }
+
   if (recv(socket->m_fd, &c, 1, MSG_PEEK) > 0)
   {
     CALL_CALLBACK(socket, GSOCK_INPUT);
@@ -1201,12 +1235,25 @@ void _GSocket_Detected_Read(GSocket *socket)
     else
     {
       CALL_CALLBACK(socket, GSOCK_LOST);
+      GSocket_Shutdown(socket);
     }
   }
 }
 
 void _GSocket_Detected_Write(GSocket *socket)
 {
+  /* If we have already detected a LOST event, then don't try
+   * to do any further processing.
+   */
+  if ((socket->m_detected & GSOCK_LOST_FLAG) != 0)
+  {
+    socket->m_establishing = FALSE;
+
+    CALL_CALLBACK(socket, GSOCK_LOST);
+    GSocket_Shutdown(socket);
+    return;
+  }
+
   if (socket->m_establishing && !socket->m_server)
   {
     int error;
@@ -1219,6 +1266,7 @@ void _GSocket_Detected_Write(GSocket *socket)
     if (error)
     {
       CALL_CALLBACK(socket, GSOCK_LOST);
+      GSocket_Shutdown(socket);
     }
     else
     {
@@ -1299,7 +1347,7 @@ GAddress *GAddress_copy(GAddress *address)
 
   memcpy(addr2, address, sizeof(GAddress));
 
-  if (address->m_addr)
+  if (address->m_addr && address->m_len > 0)
   {
     addr2->m_addr = (struct sockaddr *)malloc(addr2->m_len);
     if (addr2->m_addr == NULL)
@@ -1605,6 +1653,8 @@ GSocketError _GAddress_Init_UNIX(GAddress *address)
   return GSOCK_NOERROR;
 }
 
+#define UNIX_SOCK_PATHLEN (sizeof(addr->sun_path)/sizeof(addr->sun_path[0]))
+
 GSocketError GAddress_UNIX_SetPath(GAddress *address, const char *path)
 {
   struct sockaddr_un *addr;
@@ -1614,7 +1664,8 @@ GSocketError GAddress_UNIX_SetPath(GAddress *address, const char *path)
   CHECK_ADDRESS(address, UNIX); 
 
   addr = ((struct sockaddr_un *)address->m_addr);
-  memcpy(addr->sun_path, path, strlen(path));
+  strncpy(addr->sun_path, path, UNIX_SOCK_PATHLEN);
+  addr->sun_path[UNIX_SOCK_PATHLEN - 1] = '\0';
 
   return GSOCK_NOERROR;
 }
@@ -1634,4 +1685,6 @@ GSocketError GAddress_UNIX_GetPath(GAddress *address, char *path, size_t sbuf)
 }
 
 #endif  /* wxUSE_SOCKETS || defined(__GSOCKET_STANDALONE__) */
+
+/* vi:sts=4:sw=4:et */
 

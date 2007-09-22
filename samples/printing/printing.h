@@ -4,12 +4,12 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     1995
-// RCS-ID:      $Id: printing.h,v 1.5 1999/11/08 14:53:35 JS Exp $
+// RCS-ID:      $Id: printing.h,v 1.6 2002/08/31 22:30:51 GD Exp $
 // Copyright:   (c) Julian Smart
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
 
-#ifdef __GNUG__
+#if defined(__GNUG__) && !defined(__APPLE__)
 #pragma interface
 #endif
 

@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     29/01/98
-// RCS-ID:      $Id: utils.h,v 1.50.2.5 2001/03/08 07:57:52 JS Exp $
+// RCS-ID:      $Id: utils.h,v 1.80 2002/08/31 11:29:11 GD Exp $
 // Copyright:   (c) 1998 Julian Smart
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -16,14 +16,17 @@
 // headers
 // ----------------------------------------------------------------------------
 
-#ifdef __GNUG__
+#if defined(__GNUG__) && !defined(__APPLE__)
     #pragma interface "utils.h"
 #endif
 
-#include "wx/setup.h"
 #include "wx/object.h"
 #include "wx/list.h"
 #include "wx/filefn.h"
+
+// need this for wxGetDiskSpace() as we can't, unfortunately, forward declare
+// wxLongLong
+#include "wx/longlong.h"
 
 #ifdef __X__
     #include <dirent.h>
@@ -40,12 +43,7 @@ class WXDLLEXPORT wxProcess;
 class WXDLLEXPORT wxFrame;
 class WXDLLEXPORT wxWindow;
 class WXDLLEXPORT wxWindowList;
-
-// FIXME should use wxStricmp() instead
-#if defined(__GNUWIN32__)
-    #define stricmp strcasecmp
-    #define strnicmp strncasecmp
-#endif
+class WXDLLEXPORT wxPoint;
 
 // ----------------------------------------------------------------------------
 // Macros
@@ -58,14 +56,17 @@ class WXDLLEXPORT wxWindowList;
 // String functions (deprecated, use wxString)
 // ----------------------------------------------------------------------------
 
-// Useful buffer (FIXME VZ: yeah, that is. To be removed!)
+// Useful buffer (FIXME VZ: To be removed!!!)
+// Now only needed in Mac and MSW ports
+#if !defined(__WXMOTIF__) && !defined(__WXGTK__) && !defined(__WXX11__) && !defined(__WXMGL__)
 WXDLLEXPORT_DATA(extern wxChar*) wxBuffer;
+#endif
 
 // Make a copy of this string using 'new'
 WXDLLEXPORT wxChar* copystring(const wxChar *s);
 
 // Matches string one within string two regardless of case
-WXDLLEXPORT bool StringMatch(wxChar *one, wxChar *two, bool subString = TRUE, bool exact = FALSE);
+WXDLLEXPORT bool StringMatch(const wxChar *one, const wxChar *two, bool subString = TRUE, bool exact = FALSE);
 
 // A shorter way of using strcmp
 #define wxStringEq(s1, s2) (s1 && s2 && (wxStrcmp(s1, s2) == 0))
@@ -86,6 +87,12 @@ WXDLLEXPORT int wxGetOsVersion(int *majorVsn = (int *) NULL,
 
 // Return a string with the current date/time
 WXDLLEXPORT wxString wxNow();
+
+// Return path where wxWindows is installed (mostly useful in Unices)
+WXDLLEXPORT const wxChar *wxGetInstallPrefix();
+// Return path to wxWin data (/usr/share/wx/%{version}) (Unices)
+WXDLLEXPORT wxString wxGetDataDir();
+
 
 #if wxUSE_GUI
 // Don't synthesize KeyUp events holding down a key and producing
@@ -121,12 +128,12 @@ WXDLLEXPORT long wxGetCurrentId();
 WXDLLEXPORT_DATA(extern const wxChar*) wxFloatToStringStr;
 WXDLLEXPORT_DATA(extern const wxChar*) wxDoubleToStringStr;
 
-WXDLLEXPORT void StringToFloat(wxChar *s, float *number);
+WXDLLEXPORT void StringToFloat(const wxChar *s, float *number);
 WXDLLEXPORT wxChar* FloatToString(float number, const wxChar *fmt = wxFloatToStringStr);
-WXDLLEXPORT void StringToDouble(wxChar *s, double *number);
+WXDLLEXPORT void StringToDouble(const wxChar *s, double *number);
 WXDLLEXPORT wxChar* DoubleToString(double number, const wxChar *fmt = wxDoubleToStringStr);
-WXDLLEXPORT void StringToInt(wxChar *s, int *number);
-WXDLLEXPORT void StringToLong(wxChar *s, long *number);
+WXDLLEXPORT void StringToInt(const wxChar *s, int *number);
+WXDLLEXPORT void StringToLong(const wxChar *s, long *number);
 WXDLLEXPORT wxChar* IntToString(int number);
 WXDLLEXPORT wxChar* LongToString(long number);
 
@@ -141,17 +148,42 @@ WXDLLEXPORT wxString wxDecToHex(int dec);
 // Process management
 // ----------------------------------------------------------------------------
 
-// Execute another program. Returns 0 if there was an error, a PID otherwise.
-WXDLLEXPORT long wxExecute(wxChar **argv, bool sync = FALSE,
+// NB: for backwars compatibility reasons the values of wxEXEC_[A]SYNC *must*
+//     be 0 and 1, don't change!
+
+enum
+{
+    // execute the process asynchronously
+    wxEXEC_ASYNC    = 0,
+
+    // execute it synchronously, i.e. wait until it finishes
+    wxEXEC_SYNC     = 1,
+
+    // under Windows, don't hide the child even if it's IO is redirected (this
+    // is done by default)
+    wxEXEC_NOHIDE   = 2,
+
+    // under Unix, if the process is the group leader then killing -pid kills
+    // all children as well as pid
+    wxEXEC_MAKE_GROUP_LEADER = 4
+};
+
+// Execute another program.
+//
+// If flags contain wxEXEC_SYNC, return -1 on failure and the exit code of the
+// process if everything was ok. Otherwise (i.e. if wxEXEC_ASYNC), return 0 on
+// failure and the PID of the launched process if ok.
+WXDLLEXPORT long wxExecute(wxChar **argv, int flags = wxEXEC_ASYNC,
                            wxProcess *process = (wxProcess *) NULL);
-WXDLLEXPORT long wxExecute(const wxString& command, bool sync = FALSE,
+WXDLLEXPORT long wxExecute(const wxString& command, int flags = wxEXEC_ASYNC,
                            wxProcess *process = (wxProcess *) NULL);
 
-// execute the command capturing its output into an array line by line
+// execute the command capturing its output into an array line by line, this is
+// always synchronous
 WXDLLEXPORT long wxExecute(const wxString& command,
                            wxArrayString& output);
 
-// also capture stderr
+// also capture stderr (also synchronous)
 WXDLLEXPORT long wxExecute(const wxString& command,
                            wxArrayString& output,
                            wxArrayString& error);
@@ -179,8 +211,31 @@ enum wxSignal
     // further signals are different in meaning between different Unix systems
 };
 
-// the argument is ignored under Windows - the process is always killed
-WXDLLEXPORT int wxKill(long pid, wxSignal sig = wxSIGTERM);
+enum wxKillError
+{
+    wxKILL_OK,              // no error
+    wxKILL_BAD_SIGNAL,      // no such signal
+    wxKILL_ACCESS_DENIED,   // permission denied
+    wxKILL_NO_PROCESS,      // no such process
+    wxKILL_ERROR            // another, unspecified error
+};
+
+enum wxShutdownFlags
+{
+    wxSHUTDOWN_POWEROFF,    // power off the computer
+    wxSHUTDOWN_REBOOT       // shutdown and reboot
+};
+
+// Shutdown or reboot the PC
+WXDLLEXPORT bool wxShutdown(wxShutdownFlags wFlags);
+
+// send the given signal to the process (only NONE and KILL are supported under
+// Windows, all others mean TERM), return 0 if ok and -1 on error
+//
+// return detailed error in rc if not NULL
+WXDLLEXPORT int wxKill(long pid,
+                       wxSignal sig = wxSIGTERM,
+                       wxKillError *rc = NULL);
 
 // Execute a command in an interactive shell window (always synchronously)
 // If no command then just the shell
@@ -196,11 +251,28 @@ WXDLLEXPORT void wxSleep(int nSecs);
 // Sleep for a given amount of milliseconds
 WXDLLEXPORT void wxUsleep(unsigned long milliseconds);
 
+// Get the process id of the current process
+WXDLLEXPORT unsigned long wxGetProcessId();
+
 // Get free memory in bytes, or -1 if cannot determine amount (e.g. on UNIX)
 WXDLLEXPORT long wxGetFreeMemory();
 
 // should wxApp::OnFatalException() be called?
 WXDLLEXPORT bool wxHandleFatalExceptions(bool doit = TRUE);
+
+// ----------------------------------------------------------------------------
+// Environment variables
+// ----------------------------------------------------------------------------
+
+// returns TRUE if variable exists (value may be NULL if you just want to check
+// for this)
+WXDLLEXPORT bool wxGetEnv(const wxString& var, wxString *value);
+
+// set the env var name to the given value, return TRUE on success
+WXDLLEXPORT bool wxSetEnv(const wxString& var, const wxChar *value);
+
+// remove the env var from environment
+inline bool wxUnsetEnv(const wxString& var) { return wxSetEnv(var, NULL); }
 
 // ----------------------------------------------------------------------------
 // Network and username functions.
@@ -240,13 +312,18 @@ WXDLLEXPORT const wxMB2WXbuf wxGetUserHome(const wxString& user = wxEmptyString)
 WXDLLEXPORT wxChar* wxGetUserHome(const wxString& user = wxEmptyString);
 #endif
 
+// get number of total/free bytes on the disk where path belongs
+WXDLLEXPORT bool wxGetDiskSpace(const wxString& path,
+                                wxLongLong *pTotal = NULL,
+                                wxLongLong *pFree = NULL);
+
 #if wxUSE_GUI // GUI only things from now on
 
 // ----------------------------------------------------------------------------
 // Menu accelerators related things
 // ----------------------------------------------------------------------------
 
-WXDLLEXPORT wxChar* wxStripMenuCodes(wxChar *in, wxChar *out = (wxChar *) NULL);
+WXDLLEXPORT wxChar* wxStripMenuCodes(const wxChar *in, wxChar *out = (wxChar *) NULL);
 WXDLLEXPORT wxString wxStripMenuCodes(const wxString& str);
 
 #if wxUSE_ACCEL
@@ -258,20 +335,31 @@ WXDLLEXPORT wxAcceleratorEntry *wxGetAccelFromString(const wxString& label);
 // Window search
 // ----------------------------------------------------------------------------
 
+// Returns menu item id or -1 if none.
+WXDLLEXPORT int wxFindMenuItemId(wxFrame *frame, const wxString& menuString, const wxString& itemString);
+
+// Find the wxWindow at the given point. wxGenericFindWindowAtPoint
+// is always present but may be less reliable than a native version.
+WXDLLEXPORT wxWindow* wxGenericFindWindowAtPoint(const wxPoint& pt);
+WXDLLEXPORT wxWindow* wxFindWindowAtPoint(const wxPoint& pt);
+
+// NB: this function is obsolete, use wxWindow::FindWindowByLabel() instead
+//
 // Find the window/widget with the given title or label.
 // Pass a parent to begin the search from, or NULL to look through
 // all windows.
 WXDLLEXPORT wxWindow* wxFindWindowByLabel(const wxString& title, wxWindow *parent = (wxWindow *) NULL);
 
+// NB: this function is obsolete, use wxWindow::FindWindowByName() instead
+//
 // Find window by name, and if that fails, by label.
 WXDLLEXPORT wxWindow* wxFindWindowByName(const wxString& name, wxWindow *parent = (wxWindow *) NULL);
-
-// Returns menu item id or -1 if none.
-WXDLLEXPORT int wxFindMenuItemId(wxFrame *frame, const wxString& menuString, const wxString& itemString);
 
 // ----------------------------------------------------------------------------
 // Message/event queue helpers
 // ----------------------------------------------------------------------------
+
+// NB: these functions are obsolete, please use wxApp methods instead!
 
 // Yield to other apps/messages
 WXDLLEXPORT bool wxYield();
@@ -303,10 +391,7 @@ public:
 private:
     wxWindowList *m_winDisabled;
 
-    // not used any more but left here for binary compatibility
-#ifdef __WXMSW__
-    wxWindow *m_winTop;
-#endif // MSW
+    DECLARE_NO_COPY_CLASS(wxWindowDisabler)
 };
 
 // ----------------------------------------------------------------------------
@@ -364,13 +449,8 @@ void WXDLLEXPORT wxGetMousePosition( int* x, int* y );
 // MSW only: get user-defined resource from the .res file.
 // Returns NULL or newly-allocated memory, so use delete[] to clean up.
 #ifdef __WXMSW__
-WXDLLEXPORT extern const wxChar* wxUserResourceStr;
-WXDLLEXPORT wxChar* wxLoadUserResource(const wxString& resourceName, const wxString& resourceType = wxUserResourceStr);
-
-// Implemented in utils.cpp: VC++, Win95 only. Sets up a console for standard
-// input/output
-WXDLLEXPORT void wxRedirectIOToConsole();
-
+    WXDLLEXPORT extern const wxChar* wxUserResourceStr;
+    WXDLLEXPORT wxChar* wxLoadUserResource(const wxString& resourceName, const wxString& resourceType = wxUserResourceStr);
 #endif // MSW
 
 // ----------------------------------------------------------------------------
@@ -393,29 +473,10 @@ WXDLLEXPORT void wxRedirectIOToConsole();
                // The resulting warnings are switched off here
 #pragma message disable nosimpint
 #endif
-#include <X11/Xlib.h>
+// #include <X11/Xlib.h>
 #ifdef __VMS__
 #pragma message enable nosimpint
 #endif
-
-#define wxMAX_RGB           0xff
-#define wxMAX_SV            1000
-#define wxSIGN(x)           ((x < 0) ? -x : x)
-#define wxH_WEIGHT          4
-#define wxS_WEIGHT          1
-#define wxV_WEIGHT          2
-
-typedef struct wx_hsv {
-                        int h,s,v;
-                      } wxHSV;
-
-#define wxMax3(x,y,z) ((x > y) ? ((x > z) ? x : z) : ((y > z) ? y : z))
-#define wxMin3(x,y,z) ((x < y) ? ((x < z) ? x : z) : ((y < z) ? y : z))
-
-void wxHSVToXColor(wxHSV *hsv,XColor *xcolor);
-void wxXColorToHSV(wxHSV *hsv,XColor *xcolor);
-void wxAllocNearestColor(Display *display,Colormap colormap,XColor *xcolor);
-void wxAllocColor(Display *display,Colormap colormap,XColor *xcolor);
 
 #endif //__X__
 
@@ -425,9 +486,11 @@ void wxAllocColor(Display *display,Colormap colormap,XColor *xcolor);
 // Error message functions used by wxWindows (deprecated, use wxLog)
 // ----------------------------------------------------------------------------
 
+#if WXWIN_COMPATIBILITY_2_2
+
 // Format a message on the standard error (UNIX) or the debugging
 // stream (Windows)
-WXDLLEXPORT void wxDebugMsg(const wxChar *fmt ...);
+WXDLLEXPORT void wxDebugMsg(const wxChar *fmt ...) ATTRIBUTE_PRINTF_1;
 
 // Non-fatal error (continues)
 WXDLLEXPORT_DATA(extern const wxChar*) wxInternalErrorStr;
@@ -437,6 +500,7 @@ WXDLLEXPORT void wxError(const wxString& msg, const wxString& title = wxInternal
 WXDLLEXPORT_DATA(extern const wxChar*) wxFatalErrorStr;
 WXDLLEXPORT void wxFatalError(const wxString& msg, const wxString& title = wxFatalErrorStr);
 
+#endif // WXWIN_COMPATIBILITY_2_2
 
 #endif
     // _WX_UTILSH__

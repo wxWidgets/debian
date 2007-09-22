@@ -4,7 +4,7 @@
 // Author:      Vadim Zeitlin
 // Modified by:
 // Created:     26.07.99
-// RCS-ID:      $Id: choiccmn.cpp,v 1.6 1999/10/22 18:00:33 VZ Exp $
+// RCS-ID:      $Id: choiccmn.cpp,v 1.8 2002/01/07 21:52:28 GD Exp $
 // Copyright:   (c) wxWindows team
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -28,6 +28,8 @@
     #pragma hdrstop
 #endif
 
+#if wxUSE_CHOICE
+
 #ifndef WX_PRECOMP
     #include "wx/choice.h"
 #endif
@@ -35,6 +37,11 @@
 // ============================================================================
 // implementation
 // ============================================================================
+
+wxChoiceBase::~wxChoiceBase()
+{
+    // this destructor is required for Darwin
+}
 
 // ----------------------------------------------------------------------------
 // selection
@@ -60,3 +67,6 @@ void wxChoiceBase::Command(wxCommandEvent& event)
     SetSelection(event.m_commandInt);
     (void)ProcessEvent(event);
 }
+
+#endif // wxUSE_CHOICE
+

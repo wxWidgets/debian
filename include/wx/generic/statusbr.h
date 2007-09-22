@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by: VZ at 05.02.00 to derive from wxStatusBarBase
 // Created:     01/02/97
-// RCS-ID:      $Id: statusbr.h,v 1.9 2000/02/05 18:18:28 GRG Exp $
+// RCS-ID:      $Id: statusbr.h,v 1.13 2002/09/04 13:16:42 VZ Exp $
 // Copyright:   (c) Julian Smart and Markus Holzem
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -12,7 +12,7 @@
 #ifndef _WX_GENERIC_STATUSBR_H_
 #define _WX_GENERIC_STATUSBR_H_
 
-#ifdef __GNUG__
+#if defined(__GNUG__) && !defined(__APPLE__)
 #pragma interface "statusbr.h"
 #endif
 
@@ -25,7 +25,7 @@ WXDLLEXPORT_DATA(extern const wxChar*) wxPanelNameStr;
 class WXDLLEXPORT wxStatusBarGeneric : public wxStatusBarBase
 {
 public:
-  wxStatusBarGeneric();
+  wxStatusBarGeneric() { Init(); }
   wxStatusBarGeneric(wxWindow *parent,
               wxWindowID id,
               const wxPoint& pos = wxDefaultPosition,
@@ -33,17 +33,21 @@ public:
               long style = 0,
               const wxString& name = wxPanelNameStr)
   {
+      Init();
+
       Create(parent, id, pos, size, style, name);
   }
   wxStatusBarGeneric(wxWindow *parent,
-              wxWindowID id,
-              long style,
-              const wxString& name = wxPanelNameStr)
+                     wxWindowID id,
+                     long style,
+                     const wxString& name = wxPanelNameStr)
   {
+      Init();
+
       Create(parent, id, style, name);
   }
 
-  ~wxStatusBarGeneric();
+  virtual ~wxStatusBarGeneric();
 
   bool Create(wxWindow *parent, wxWindowID id,
               const wxPoint& WXUNUSED(pos) = wxDefaultPosition,
@@ -55,13 +59,12 @@ public:
   }
 
   bool Create(wxWindow *parent, wxWindowID id,
-              long style = 0,
+              long style,
               const wxString& name = wxPanelNameStr);
 
   // Create status line
   virtual void SetFieldsCount(int number = 1,
                               const int *widths = (const int *) NULL);
-  int GetFieldsCount() const { return m_nFields; }
 
   // Set status line text
   virtual void SetStatusText(const wxString& text, int number = 0);
@@ -89,6 +92,7 @@ public:
   void SetBorderY(int y);
 
   void OnPaint(wxPaintEvent& event);
+  void OnSize(wxSizeEvent& event);
 
   virtual void InitColours();
 
@@ -96,7 +100,14 @@ public:
   void OnSysColourChanged(wxSysColourChangedEvent& event);
 
 protected:
-  wxString *        m_statusStrings;
+  // common part of all ctors
+  void Init();
+
+  wxArrayString     m_statusStrings;
+
+  // the widths of the status bar panes in pixels
+  wxArrayInt        m_widthsAbs;
+
   int               m_borderX;
   int               m_borderY;
   wxFont            m_defaultStatusBarFont;
@@ -110,3 +121,5 @@ private:
 
 #endif
     // _WX_GENERIC_STATUSBR_H_
+
+// vi:sts=4:sw=4:et

@@ -4,7 +4,7 @@
 // Author:      Julian Smart, Robert Roebling
 // Modified by:
 // Created:     04/01/98
-// RCS-ID:      $Id: msgdlgg.cpp,v 1.30.2.1 2000/11/23 21:36:40 roebling Exp $
+// RCS-ID:      $Id: msgdlgg.cpp,v 1.34.2.1 2002/09/19 20:22:13 RR Exp $
 // Copyright:   (c) Julian Smart, Markus Holzem, Robert Roebling
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -19,6 +19,8 @@
 #ifdef __BORLANDC__
 #pragma hdrstop
 #endif
+
+#if wxUSE_MSGDLG
 
 #ifndef WX_PRECOMP
     #include "wx/utils.h"
@@ -37,6 +39,8 @@
 #include <string.h>
 
 #include "wx/generic/msgdlgg.h"
+#include "wx/artprov.h"
+#include "wx/settings.h"
 
 #if wxUSE_STATLINE
   #include "wx/statline.h"
@@ -63,6 +67,8 @@ wxGenericMessageDialog::wxGenericMessageDialog( wxWindow *parent,
 {
     m_dialogStyle = style;
 
+    bool is_pda = (wxSystemSettings::GetScreenType() <= wxSYS_SCREEN_PDA);
+
     wxBoxSizer *topsizer = new wxBoxSizer( wxVERTICAL );
 
     wxBoxSizer *icon_text = new wxBoxSizer( wxHORIZONTAL );
@@ -70,15 +76,40 @@ wxGenericMessageDialog::wxGenericMessageDialog( wxWindow *parent,
     // 1) icon
     if (style & wxICON_MASK)
     {
-         wxStaticBitmap *icon = new wxStaticBitmap(
-            this, -1, wxTheApp->GetStdIcon((int)(style & wxICON_MASK)));
-         icon_text->Add( icon, 0, wxCENTER );
+        wxBitmap bitmap;
+        switch ( style & wxICON_MASK )
+        {
+            default:
+                wxFAIL_MSG(_T("incorrect log style"));
+                // fall through
+
+            case wxICON_ERROR:
+                bitmap = wxArtProvider::GetIcon(wxART_ERROR, wxART_MESSAGE_BOX);
+                break;
+
+            case wxICON_INFORMATION:
+                bitmap = wxArtProvider::GetIcon(wxART_INFORMATION, wxART_MESSAGE_BOX);
+                break;
+
+            case wxICON_WARNING:
+                bitmap = wxArtProvider::GetIcon(wxART_WARNING, wxART_MESSAGE_BOX);
+                break;
+
+            case wxICON_QUESTION:
+                bitmap = wxArtProvider::GetIcon(wxART_QUESTION, wxART_MESSAGE_BOX);
+                break;
+        }
+        wxStaticBitmap *icon = new wxStaticBitmap(this, -1, bitmap);
+        if (is_pda)
+            topsizer->Add( icon, 0, wxTOP|wxLEFT|wxRIGHT | wxALIGN_LEFT, 10 );
+        else
+            icon_text->Add( icon, 0, wxCENTER );
     }
 
     // 2) text
     icon_text->Add( CreateTextSizer( message ), 0, wxCENTER | wxLEFT, 10 );
 
-    topsizer->Add( icon_text, 0, wxCENTER | wxLEFT|wxRIGHT|wxTOP, 10 );
+    topsizer->Add( icon_text, 1, wxCENTER | wxLEFT|wxRIGHT|wxTOP, 10 );
 
 #if wxUSE_STATLINE
     // 3) static line
@@ -115,12 +146,13 @@ void wxGenericMessageDialog::OnNo(wxCommandEvent& WXUNUSED(event))
 
 void wxGenericMessageDialog::OnCancel(wxCommandEvent& WXUNUSED(event))
 {
-    /* Allow cancellation via ESC/Close button except if
-       only YES and NO are specified. */
+    // Allow cancellation via ESC/Close button except if
+    // only YES and NO are specified.
     if ( (m_dialogStyle & wxYES_NO) != wxYES_NO || (m_dialogStyle & wxCANCEL) )
     {
         EndModal( wxID_CANCEL );
     }
 }
 
+#endif // wxUSE_MSGDLG
 

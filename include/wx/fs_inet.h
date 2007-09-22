@@ -8,7 +8,7 @@
 
 /*
 
-REMARKS : 
+REMARKS :
 
 This FS creates local cache (in /tmp directory). The cache is freed
 on program exit.
@@ -18,25 +18,22 @@ limitation)
 
 
 */
+#ifndef _WX_FS_INET_H_
+#define _WX_FS_INET_H_
 
-#ifdef __GNUG__
+#if defined(__GNUG__) && !defined(__APPLE__)
 #pragma interface "fs_inet.h"
 #endif
 
-#include "wx/wxprec.h"
-
-#ifdef __BORDLANDC__
-#pragma hdrstop
-#endif
+#include "wx/defs.h"
 
 #if wxUSE_FILESYSTEM && wxUSE_FS_INET && wxUSE_STREAMS && wxUSE_SOCKETS
 
 #ifndef WXPRECOMP
-#include "wx/wx.h"
+    #include "wx/hash.h"
 #endif
 
 #include "wx/filesys.h"
-
 
 //--------------------------------------------------------------------------------
 // wxInternetFSHandler
@@ -55,4 +52,6 @@ class WXDLLEXPORT wxInternetFSHandler : public wxFileSystemHandler
 
 #endif
   // wxUSE_FILESYSTEM && wxUSE_FS_INET && wxUSE_STREAMS && wxUSE_SOCKETS
+
+#endif // _WX_FS_INET_H_
 

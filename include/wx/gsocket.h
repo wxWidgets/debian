@@ -1,10 +1,10 @@
 /* -------------------------------------------------------------------------
  * Project: GSocket (Generic Socket)
  * Name:    gsocket.h
- * Author:  Guilhem Lavaux  
+ * Author:  Guilhem Lavaux
  *          Guillermo Rodriguez Garcia <guille@iies.es> (maintainer)
  * Purpose: GSocket include file (system independent)
- * CVSID:   $Id: gsocket.h,v 1.19 2000/03/16 21:55:54 GRG Exp $
+ * CVSID:   $Id: gsocket.h,v 1.26 2002/09/12 13:48:55 VZ Exp $
  * -------------------------------------------------------------------------
  */
 
@@ -13,12 +13,28 @@
 
 #ifndef __GSOCKET_STANDALONE__
 #include "wx/setup.h"
+
+/* kludge for GTK..  gsockgtk.c craps out miserably if we include
+   defs.h ...  no idea how other files get away with it.. */
+
+#if !defined( __WXMSW__ ) && !defined(  WXDLLEXPORT )
+#define WXDLLEXPORT
+#endif
+
 #endif
 
 #if wxUSE_SOCKETS || defined(__GSOCKET_STANDALONE__)
 
 #include <stddef.h>
+
+/*
+   Including sys/types.h under cygwin results in the warnings about "fd_set
+   having been defined in sys/types.h" when winsock.h is included later and
+   doesn't seem to be necessary anyhow. It's not needed under Mac neither.
+ */
+#if !defined(__WXMAC__) && !defined(__CYGWIN__)
 #include <sys/types.h>
+#endif
 
 #ifdef __cplusplus
 extern "C" {
@@ -124,11 +140,11 @@ GAddress *GSocket_GetPeer(GSocket *socket);
  *  Sets up this socket as a server. The local address must have been
  *  set with GSocket_SetLocal() before GSocket_SetServer() is called.
  *  Returns GSOCK_NOERROR on success, one of the following otherwise:
- * 
+ *
  *  Error codes:
  *    GSOCK_INVSOCK - the socket is in use.
  *    GSOCK_INVADDR - the local address has not been set.
- *    GSOCK_IOERR   - low-level error. 
+ *    GSOCK_IOERR   - low-level error.
  */
 GSocketError GSocket_SetServer(GSocket *socket);
 
@@ -142,7 +158,7 @@ GSocketError GSocket_SetServer(GSocket *socket);
  *    GSOCK_TIMEDOUT   - timeout, no incoming connections.
  *    GSOCK_WOULDBLOCK - the call would block and the socket is nonblocking.
  *    GSOCK_MEMERR     - couldn't allocate memory.
- *    GSOCK_IOERR      - low-level error. 
+ *    GSOCK_IOERR      - low-level error.
  */
 GSocket *GSocket_WaitConnection(GSocket *socket);
 
@@ -170,7 +186,7 @@ GSocket *GSocket_WaitConnection(GSocket *socket);
  *    GSOCK_TIMEDOUT   - timeout, the connection failed.
  *    GSOCK_WOULDBLOCK - connection in progress (nonblocking sockets only)
  *    GSOCK_MEMERR     - couldn't allocate memory.
- *    GSOCK_IOERR      - low-level error. 
+ *    GSOCK_IOERR      - low-level error.
  */
 GSocketError GSocket_Connect(GSocket *socket, GSocketStream stream);
 
@@ -186,7 +202,7 @@ GSocketError GSocket_Connect(GSocket *socket, GSocketStream stream);
  *  Error codes:
  *    GSOCK_INVSOCK - the socket is in use.
  *    GSOCK_INVADDR - the local address has not been set.
- *    GSOCK_IOERR   - low-level error. 
+ *    GSOCK_IOERR   - low-level error.
  */
 GSocketError GSocket_SetNonOriented(GSocket *socket);
 
@@ -231,7 +247,7 @@ void GSocket_SetTimeout(GSocket *socket, unsigned long millisec);
  *  operations do not clear this back to GSOCK_NOERROR, so use it only
  *  after an error.
  */
-GSocketError GSocket_GetError(GSocket *socket);
+GSocketError WXDLLEXPORT GSocket_GetError(GSocket *socket);
 
 
 /* Callbacks */
@@ -241,7 +257,7 @@ GSocketError GSocket_GetError(GSocket *socket);
  *   operation, there is still data available, the callback function will
  *   be called again.
  * GSOCK_OUTPUT:
- *   The socket is available for writing. That is, the next write call 
+ *   The socket is available for writing. That is, the next write call
  *   won't block. This event is generated only once, when the connection is
  *   first established, and then only if a call failed with GSOCK_WOULDBLOCK,
  *   when the output buffer empties again. This means that the app should
@@ -307,7 +323,7 @@ GSocketError GAddress_UNIX_SetPath(GAddress *address, const char *path);
 GSocketError GAddress_UNIX_GetPath(GAddress *address, char *path, size_t sbuf);
 
 #ifdef __cplusplus
-};
+}
 #endif /* __cplusplus */
 
 

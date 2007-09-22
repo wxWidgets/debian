@@ -4,15 +4,15 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     04/01/98
-// RCS-ID:      $Id: cube.h,v 1.1 2000/02/28 08:22:48 JS Exp $
+// RCS-ID:      $Id: cube.h,v 1.4 2002/03/17 14:15:52 VZ Exp $
 // Copyright:   (c) Julian Smart
-// Licence:   	wxWindows licence
+// Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
 
 #ifndef _WX_CUBE_H_
 #define _WX_CUBE_H_
 
-#include <wx/glcanvas.h>
+#include "wx/glcanvas.h"
 
 // Define a new application type
 class MyApp: public wxApp
@@ -30,9 +30,9 @@ public:
             const wxSize& size, long style = wxDEFAULT_FRAME_STYLE);
 
     void OnExit(wxCommandEvent& event);
-    void OnNewWindow();
-    void OnDefRotateLeftKey();
-    void OnDefRotateRightKey();
+    void OnNewWindow(wxCommandEvent& event);
+    void OnDefRotateLeftKey(wxCommandEvent& event);
+    void OnDefRotateRightKey(wxCommandEvent& event);
     
 public:
     TestGLCanvas*    m_canvas;

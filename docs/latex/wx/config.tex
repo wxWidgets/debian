@@ -53,7 +53,7 @@ Here is how you would typically use this class:
 
   // another example: using default values and the full path instead of just
   // key name: if the key is not found , the value 17 is returned
-  long value = config->Read("/LastRun/CalculatedValues/MaxValue", -1);
+  long value = config->Read("/LastRun/CalculatedValues/MaxValue", 17);
   ...
   ...
   ...
@@ -86,10 +86,10 @@ instead of creating and deleting the local config objects each time you need
 one (especially because creating a wxFileConfig object might be a time
 consuming operation). In this case, you may create this global config object
 in the very start of the program and {\it Set()} it as the default. Then, from
-anywhere in your program, you may access it using the {\it Get()} function. Of
-course, you should delete it on the program termination (otherwise, not only a
-memory leak will result, but even more importantly the changes won't be
-written back!).
+anywhere in your program, you may access it using the {\it Get()} function.
+Note that wxWindows will delete this config object for you during the program
+shutdown (from \helpref{wxApp::OnExit}{wxapponexit} to be precise) but you can
+also do it yourself earlier if needed.
 
 As it happens, you may even further simplify the procedure described above:
 you may forget about calling {\it Set()}. When {\it Get()} is called and there
@@ -187,7 +187,7 @@ config file. All functions here return FALSE when there are no more items.
 
 You must pass the same index to GetNext and GetFirst (don't modify it).
 Please note that it is {\bf not} the index of the current item (you will have
-some great surprizes with wxRegConfig if you assume this) and you shouldn't
+some great surprises with wxRegConfig if you assume this) and you shouldn't
 even look at it: it is just a "cookie" which stores the state of the
 enumeration. It can't be stored inside the class because it would prevent you
 from running several enumerations simultaneously, that's why you must pass it
@@ -257,7 +257,7 @@ Currently, only two types of data are supported: string and long (but it might
 change in the near future). To work with other types: for {\it int} or {\it
 bool} you can work with function taking/returning {\it long} and just use the
 casts. Better yet, just use {\it long} for all variables which you're going to
-save in the config file: chances are that \verb$sizeof(bool) == sizeof(int) == sizeof(long)$ anyhow on your system. For {\it float}, {\it double} and, in
+save in the config file: chances are that {\tt sizeof(bool) == sizeof(int) == sizeof(long)} anyhow on your system. For {\it float}, {\it double} and, in
 general, any other type you'd have to translate them to/from string
 representation and use string functions.
 
@@ -308,9 +308,9 @@ config file:
   # the following syntax is valud only under Windows
   UserData = %windir%\\data.dat
 \end{verbatim}
-
-the call to \verb$config->Read("UserData")$ will return something like
-\verb$"/home/zeitlin/data"$ if you're lucky enough to run a Linux system ;-)
+% $ % help EMACS syntax highlighting...
+the call to {\tt config->Read("UserData")} will return something like
+{\tt "/home/zeitlin/data"} if you're lucky enough to run a Linux system ;-)
 
 Although this feature is very useful, it may be annoying if you read a value
 which containts '\$' or '\%' symbols (\% is used for environment variables
@@ -369,7 +369,23 @@ the parameter is empty, the parameter will be set to a default. If the
 parameter is present but the style flag not, the relevant flag will be added
 to the style. For wxFileConfig you can also add wxCONFIG\_USE\_RELATIVE\_PATH 
 by logicaly or'ing it to either of the \_FILE options to tell wxFileConfig to 
-use relative instead of absolute paths.  }
+use relative instead of absolute paths.  For wxFileConfig, you can also 
+add wxCONFIG\_USE\_NO\_ESCAPE\_CHARACTERS which will turn off character 
+escaping for the values of entries stored in the config file: for example 
+a {\it foo} key with some backslash characters will be stored as 
+\begin{verbatim}
+  foo=C:\mydir
+\end{verbatim}
+instead of the usual storage of 
+\begin{verbatim}
+  foo=C:\\mydir
+\end{verbatim}
+The wxCONFIG\_USE\_NO\_ESCAPE\_CHARACTERS style can be helpful if your config 
+file must be read or written to by a non-wxWindows program (which might not 
+understand the escape characters). Note, however, that if 
+wxCONFIG\_USE\_NO\_ESCAPE\_CHARACTERS style is used, it is is now 
+your application's responsibility to ensure that there is no newline or 
+other illegal characters in a value, before writing that value to the file.}
 
 \wxheading{Remarks}
 
@@ -434,7 +450,7 @@ destructor)
 
 \membersection{wxConfigBase::Get}\label{wxconfigbaseget}
 
-\func{wxConfigBase *}{Get}{\param{bool }{CreateOnDemand = TRUE}}
+\func{static wxConfigBase *}{Get}{\param{bool }{CreateOnDemand = TRUE}}
 
 Get the current config object. If there is no current object and
 {\it CreateOnDemand} is TRUE, creates one
@@ -479,6 +495,9 @@ Gets the first group.
 consisting of the continue flag, the value string, and the index for
 the next call.}
 
+\perlnote{In wxPerl this method takes no arguments and returns a 3-element
+list {\tt ( continue, str, index )}.}
+
 \membersection{wxConfigBase::GetFirstEntry}\label{wxconfigbasegetfirstentry}
 
 \constfunc{bool}{GetFirstEntry}{\param{wxString\& }{str}, \param{long\&}{ index}}
@@ -488,6 +507,9 @@ Gets the first entry.
 \pythonnote{The wxPython version of this method returns a 3-tuple
 consisting of the continue flag, the value string, and the index for
 the next call.}
+
+\perlnote{In wxPerl this method takes no arguments and returns a 3-element
+list {\tt ( continue, str, index )}.}
 
 \membersection{wxConfigBase::GetNextGroup}\label{wxconfigbasegetnextgroup}
 
@@ -499,6 +521,9 @@ Gets the next group.
 consisting of the continue flag, the value string, and the index for
 the next call.}
 
+\perlnote{In wxPerl this method only takes the {\tt index} parameter
+and returns a 3-element list {\tt ( continue, str, index )}.}
+
 \membersection{wxConfigBase::GetNextEntry}\label{wxconfigbasegetnextentry}
 
 \constfunc{bool}{GetNextEntry}{\param{wxString\& }{str}, \param{long\&}{ index}}
@@ -508,6 +533,9 @@ Gets the next entry.
 \pythonnote{The wxPython version of this method returns a 3-tuple
 consisting of the continue flag, the value string, and the index for
 the next call.}
+
+\perlnote{In wxPerl this method only takes the {\tt index} parameter
+and returns a 3-element list {\tt ( continue, str, index )}.}
 
 \membersection{wxConfigBase::GetNumberOfEntries}\label{wxconfigbasegetnumberofentries}
 
@@ -593,12 +621,20 @@ if the key is not found.
 
 NB: writing
 
-{\small \begin{verbatim} conf->Read("key", 0); \end{verbatim} }
+{\small
+\begin{verbatim}
+    conf->Read("key", 0);
+\end{verbatim}
+}
 
 won't work because the call is ambiguous: compiler can not choose between two
 {\it Read} functions. Instead, write:
 
-{\small \begin{verbatim} conf->Read("key", 0l); \end{verbatim} }
+{\small
+\begin{verbatim}
+    conf->Read("key", 0l);
+\end{verbatim}
+}
 
 \constfunc{bool}{Read}{\param{const wxString\& }{ key}, \param{double*}{ d}}
 
@@ -631,6 +667,15 @@ implements the following methods:\par
 \end{twocollist}}
 }
 
+\perlnote{In place of a single overloaded method, wxPerl uses:\par
+\indented{2cm}{\begin{twocollist}
+\twocolitem{{\bf Read(key, default="")}}{Returns a string}
+\twocolitem{{\bf ReadInt(key, default=0)}}{Returns an integer}
+\twocolitem{{\bf ReadFloat(key, default=0.0)}}{Returns a floating point number}
+\twocolitem{{\bf ReadBool(key, default=0)}}{Returns a boolean}
+\end{twocollist}
+}}
+
 \membersection{wxConfigBase::RenameEntry}\label{wxconfigbaserenameentry}
 
 \func{bool}{RenameEntry}{\param{const wxString\& }{ oldName}, \param{const wxString\& }{ newName}}
@@ -655,7 +700,7 @@ exists.
 
 \membersection{wxConfigBase::Set}\label{wxconfigbaseset}
 
-\func{wxConfigBase *}{Set}{\param{wxConfigBase *}{pConfig}}
+\func{static wxConfigBase *}{Set}{\param{wxConfigBase *}{pConfig}}
 
 Sets the config object as the current one, returns the pointer to the previous
 current object (both the parameter and returned value may be NULL)
@@ -678,11 +723,12 @@ exist it is created.
 
 \func{void}{SetRecordDefaults}{\param{bool }{bDoIt = TRUE}}
 
-Sets whether defaults are written back to the config file.
+Sets whether defaults are recorded to the config file whenever an attempt to
+read read the value which is not present in it is done.
 
-If on (default is off) all default values are written back to the config file.
-This allows the user to see what config options may be changed and is probably
-useful only for wxFileConfig.
+If on (default is off) all default values for the settings used by the program
+are written back to the config file. This allows the user to see what config
+options may be changed and is probably useful only for wxFileConfig.
 
 \membersection{wxConfigBase::SetUmask}\label{wxfileconfigsetumask}
 
@@ -720,3 +766,11 @@ implements the following methods:\par
 \end{twocollist}}
 }
 
+\perlnote{In place of a single overloaded method, wxPerl uses:\par
+\indented{2cm}{\begin{twocollist}
+\twocolitem{{\bf Write(key, value)}}{Writes a string}
+\twocolitem{{\bf WriteInt(key, value)}}{Writes an integer}
+\twocolitem{{\bf WriteFloat(key, value)}}{Writes a floating point number}
+\twocolitem{{\bf WriteBool(key, value)}}{Writes a boolean}
+\end{twocollist}
+}}

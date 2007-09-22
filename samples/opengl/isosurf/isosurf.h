@@ -4,9 +4,9 @@
 // Author:      Brian Paul (original gltk version), Wolfram Gloger
 // Modified by: Julian Smart
 // Created:     04/01/98
-// RCS-ID:      $Id: isosurf.h,v 1.1 2000/02/28 08:22:50 JS Exp $
+// RCS-ID:      $Id: isosurf.h,v 1.2 2002/03/17 14:15:53 VZ Exp $
 // Copyright:   (c) Julian Smart
-// Licence:   	wxWindows licence
+// Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
 
 #ifndef _WX_ISOSURF_H_

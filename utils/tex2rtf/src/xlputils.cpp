@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     7.9.93
-// RCS-ID:      $Id: xlputils.cpp,v 1.1 1999/01/02 00:45:39 JS Exp $
+// RCS-ID:      $Id: xlputils.cpp,v 1.2 2000/11/23 13:27:52 georgetasker Exp $
 // Copyright:   (c) Julian Smart
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -40,6 +40,10 @@ static int citeCount = 1;
 wxList hyperLinks(wxKEY_INTEGER);
 wxList hyperLabels(wxKEY_STRING);
 FILE *Index = NULL;
+
+
+extern wxHashTable TexReferences;
+
 
 void PadToTab(int tabPos)
 {

@@ -6,13 +6,17 @@
 # Author:      Robin Dunn
 #
 # Created:     21-Sept-1999
-# RCS-ID:      $Id: grids.py,v 1.1.2.2 2001/01/30 20:54:22 robind Exp $
+# RCS-ID:      $Id: grids.py,v 1.5 2002/02/28 19:01:19 RD Exp $
 # Copyright:   (c) 1999 by Total Control Software
 # Licence:     wxWindows license
 #----------------------------------------------------------------------
 
 """
-In this module you will find wxGridSizer and wxFlexGridSizer.
+In this module you will find wxGridSizer and wxFlexGridSizer.  Please
+note that these sizers have since been ported to C++ and those
+versions are now exposed in the regular wxPython wrappers.  However I
+am also leaving them here in the library so they can serve as an
+example of how to implement sizers in Python.
 
 wxGridSizer: Sizes and positions items such that all rows are the same
 height and all columns are the same width.  You can specify a gap in

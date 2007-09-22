@@ -3,13 +3,13 @@
 // Purpose:     wxHtml testing example
 /////////////////////////////////////////////////////////////////////////////
 
-#ifdef __GNUG__
+#if defined(__GNUG__) && !defined(__APPLE__)
     #pragma implementation "test.cpp"
     #pragma interface "test.cpp"
 #endif
 
 // For compilers that support precompilation, includes "wx/wx.h".
-#include <wx/wxprec.h>
+#include "wx/wxprec.h"
 
 #ifdef __BORLANDC__
     #pragma hdrstop
@@ -18,13 +18,13 @@
 // for all others, include the necessary headers (this file is usually all you
 // need because it includes almost all "standard" wxWindows headers
 #ifndef WX_PRECOMP
-    #include <wx/wx.h>
+    #include "wx/wx.h"
 #endif
 
-#include <wx/image.h>
-#include <wx/imagpng.h>
-#include <wx/wxhtml.h>
-#include <wx/statline.h>
+#include "wx/image.h"
+#include "wx/imagpng.h"
+#include "wx/wxhtml.h"
+#include "wx/statline.h"
 
 // ----------------------------------------------------------------------------
 // private classes

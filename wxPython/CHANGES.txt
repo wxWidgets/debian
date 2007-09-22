@@ -2,11 +2,451 @@ CHANGES.txt for wxPython
 
 ----------------------------------------------------------------------
 
-2.2.7
+2.3.3
 -----
+Added wxSplashScreen.
 
-No changes happened in the Python wrappers for this release, only
-changes and fixes in the wxWindows library.
+Added wxGenericDirCtrl.
+
+Added wxMultiChoiceDialog.
+
+The calltip window and autocomplete window in wxSTC will now use a
+wxPopupWindow if available on the platform (and functioning correctly)
+so they can extend beyond the client area of the STC if needed.
+
+Finished wrapping and providing typemaps for wxInputStream and also
+added the stream ctor and other methods for wxImage so images can now
+be loaded from any Python "file-like" object.
+
+Changed the img2py tool to use PNG instead of XPM for embedding image
+data in Python source code, and the generated code now uses streams to
+convert the image data to wxImage, wxBitmap, or wxIcon.
+
+Added the wxPython.lib.rcsizer module which contains RowColSizer.
+This sizer is based on code from Niki Spahiev and lets you specify a
+row and column for each item, as well as optional column or row
+spanning.  Cells with no item assigned to it are just left blank.
+Stretchable rows or columns are specified and work the same as in
+wxFlexGridSizer.
+
+Updated XRCed from Roman Rolinsky
+
+Added wxBufferedDC.
+
+Upgraded wxSTC from Scintilla 1.40 to Scintilla 1.45, and then again
+to version 1.47, and one more time to 1.48! <wink>
+
+UNICODE!
+    wxWindows/wxPython can be compiled with unicode support enabled or
+    disabled.  Previous to wxPython 2.3.3 non-unicode mode was always
+    used.  Starting with 2.3.3 either mode is supported, but only if
+    it is also available in wxWindows on the platform.  Currently
+    wxWindows only supports unicode on MS Windows platforms, but with
+    the recent release of GTK+ 2.0 it is only a matter of time until
+    it can be done on wxGTK (Linux and other unixes) as well.
+
+    Unicode works best on platforms in the NT branch of the Windows
+    family tree (NT, win2k, XP) but it is now also possible to use the
+    same unicode binaries on win95/98/ME platforms as well!  This is
+    done by using a special library and DLL with the application
+    called MSLU, (Microsoft Layer for Unicode).  It simply gets out of
+    the way if the app is run on an NT box, otherwise if run on a
+    win9x box it loads a special DLL that provides the unicode
+    versions of the windows API.  So far I have not been able to get
+    this to work perfectly on win9x.  Most things work fine but
+    wxTaskBarIcon for example will cause a crash if used with the
+    unicode build on win95.
+
+    So how do you use it?  It's very simple.  When unicode is enabled,
+    then all functions and methods in wxPython that return a wxString
+    from the C++ function will return a Python unicode object, and
+    parameters to C++ functions/methods that expect a wxString can
+    accept either a Python string or unicode object.  If a string
+    object is passed then it will be decoded into unicode using the
+    converter pointed to by wxConvCurrent, which will use the default
+    system encoding.  If you need to use a string in some other
+    encoding then you should convert it to unicode using the Python
+    codecs first and then pass the unicode string to the wxPython
+    method.
+
+Added wxListCtrlAutoWidthMixin from Erik Westra.
+
+Added wxIconBundle and wxTopLevelWindow.SetIcons.
+
+Added wxLocale and wxEncodingConverter.
+
+A little black magic...  When the C++ object (for a window or
+whatever) is deleted there is no way to force the Python shadow object
+to also be destroyed and clean up all references to it.  This leads to
+crashes if the shadow object tries to call a method with the old C++
+pointer.  The black magic I've done is to replace the __class__ in the
+Python instance object with a class that raises an exception whenever
+a method call (or other attribute access) is attempted.  This works
+for any class that is OOR aware.
+
+Added OOR support for wxGridCellRenderer, wxGridCellEditor,
+wxGridCellAttr, wxGridCellAttrProvider, wxGridTableBase and their
+derived classes.
+
+Added wxImage.GetDataBuffer which returns an in-place edit buffer of
+the image data.  (Patch #546009)
+
+Added a sample that shows how to embed wxPython in a wxWindows C++
+application.
+
+Added wxPyWindow, wxPyPanel and wxPyControl which are just like their
+wx counterparts except they allow some of the more common C++ virtual
+methods to be overridden in Python derived classes.  The methods
+supported are:
+
+    DoMoveWindow
+    DoSetSize
+    DoSetClientSize
+    DoSetVirtualSize
+    DoGetSize
+    DoGetClientSize
+    DoGetPosition
+    DoGetVirtualSize
+    DoGetBestSize
+    InitDialog
+    TransferDataFromWindow
+    TransferDataToWindow
+    Validate
+    AcceptsFocus
+    AcceptsFocusFromKeyboard
+    GetMaxSize
+    AddChild
+    RemoveChild
+
+    If there are other methods that you think should be supported
+    please let me know.
+
+Changed wxGenButton to derive from wxPyControl and overload
+DoGetBestSize and AcceptsFocus.
+
+Added wxArtProvider.
+
+Added wxCallAfter which is a helper function that registers a function
+(or any callable Python object) to be called once the next time there
+are no pending events.  This is useful for when you need to do
+something but it can't be done during the current event handler.  The
+implementation is very simple, see wxPython/wx.py.
+
+Fixed a boatload of reference leaks.
+
+Added a demo of using a sizer in a wxScrolledWindow, in effect
+creating a ScrolledPanel.
+
+Added a sample to the demo that shows how to use radio menu items, and
+other menu stuff.
+
+Added wxIEHtmlWin.  This is essentially the same as using IE with the
+ActiveXWrapper already in the library, but it is implemented all in
+C++ and therefore does not need any of the modules from win32all and
+so it is less fragile in the face of changes.
+
+Fixed the ActiveXWrapper problem.  Looks like when the win32com
+modules make a "callback" that they (incorrectly, IMHO) allocate a
+transient thread state structure.  Since wxPython is now saving
+tstates for it's own callbacks it ended up using garbage after
+win32com got rid of the temporary tstate...
+
+Added a generic static text control to wxPython.lib.stattext.  This is
+so things like Boa and PythonCard can have a static text that can
+respond to mouse events and etc.
+
+Changed the wxDateTime.Parse* methods to return an int that will be -1
+on failure, and the index where parsing stopped otherwise.
+
+Moved tools to be a Python package in wxPython.tools, added scripts to
+import and launch each tool.  This will let you import and use the
+tools in your own scripts or apps as needed.  On Linux and OS X the
+tool scripts are installed to {prefix}/bin so you should be able to
+easily launch them from the command line.  For example, PyCrust can be
+started with just the "pycrust" command.
+
+Added a sample to the demo that catches various key events and
+displays the details of the event.
+
+Added wxWizard, wxWizardPage, wxWizardPageSimple and wxPyWizardPage.
+
+Added wxXmlResourceHandler which allows you to create custom handlers
+for nonstandard class types in XRC resources.  See the demo for an
+example.
+
+Added wxPython.lib.mixins.rubberband module from Robb Shecter.
+
+Added wxTimeCtrl from Will Sadkin.
+
+
+
+2.3.2.1
+-------
+Changed (again) how the Python global interpreter lock is handled as
+well as the Python thread state.  This time it works on SMP machines
+without barfing and is also still compatible with Python debuggers.
+
+Added some patches from library contributors.
+
+
+
+2.3.2
+-----
+Added EVT_HELP, EVT_HELP_RANGE, EVT_DETAILED_HELP,
+EVT_DETAILED_HELP_RANGE, EVT_CONTEXT_MENU, wxHelpEvent,
+wxContextMenuEvent, wxContextHelp, wxContextHelpButton, wxTipWindow,
+and a demo to show them in action.
+
+Deprecated PyShell and PyShellWindow, added a snapshot of PyCrust (see
+http://sourceforge.net/projects/pycrust/. )
+
+Added the new virtual list capabilities to wxListCtrl.
+
+Added a wxSTC style editor from Riaan Booysen to the sample apps.
+
+Added XRCed to the wxPython Tools directory, contributed by Roman
+Rolinsky.
+
+Added a new "constructor" to most of the window classes that calls the
+default C++ contructor, (the one with no parameters) and also added the
+coresponding Create(...) method.  This allows you to do a 2-step
+creation of windows which is sometimes required for doing things such
+as setting extended style flags before the window is created, or for
+passing the object to the XRC resource system to be created from the
+resource.  The name of the new "constructor" is the original name of
+the class with a "Pre" in it.  For example, wxPreWindow, wxPreFrame,
+etc.
+
+Updated to version 1.40 of Scintilla and updated wxStyledTextCtrl
+accordingly.  While doing this update I dropped the wxLB_SORT style
+from the wxListBox created for the AutoComplete functionality.  This
+means that you will have to sort the keyword lists yourself, but you
+are free to do case sensitive or case insensitive sorts and set the
+wxSTC flag accordingly.
+
+Updated wxColumnSorterMixin to also be able to place sort icons on the
+column headers, and updated the wxListCtrl demo to show it off by
+using wxColumnSorterMixin.
+
+Added wxGenBitmapTextButton, TablePrint, etc. contribs from Lorne White.
+
+Added wxNativeFontInfo and wxFontMapper.
+
+Added pySketch to the samples.
+
+Significantly changed how the Python interpreter lock and thread state
+are managed, which should fix the problem of running on a
+multi-processor machine.
+
+Added wxPyLog so log targets can be created in Python to handle log
+messages however is wished.  See demo/Main.py for an example.
+
+Added wxFindReplaceDialog.
+
+The second phase of OOR is implemented for wxEvtHandler, wxSizer,
+wxShape and derived classes.  This means that functions and methods
+that return an object derived from wxEvtHandler that was originally
+created in Python, will return the original Python object (if it still
+exists) instead of letting SWIG wrap a new shadow object around the
+original C++ pointer.
+
+Added some optimization methods to wxDC: GetBoundingBox, DrawLineList,
+DrawPointList.
+
+Added a set of sophisticated Error Dialogs from Chris Fama.
+
+Added wxRightTextCtrl from Josu Oyanguren to wxPython.lib for aligning
+text in a wxTextCtrl to the right side.
+
+Added wxURLDataObject and an example showing drag and drop of URLs to
+and from web browsers.  It's still not 100% bullet-proof for all types
+of browsers, but it works for the majority of cases with the popular
+browsers on Windows.  On wxGTK it seems that only Netscape 4.x works,
+if anybody has any suggestions about this please bring it up on the
+wx-dev list.
+
+Added wxStopWatch.
+
+Added wxMimeTypesManager and wxFileType.
+
+Passing None for the handler parameter to one of the EVT_** functions
+will now Disconnect the event.
+
+Added wxPopupWindow and wxPopupTransientWindow.
+
+Added wxFileHistory.
+
+Added wxDynamicSashWindow, which allows you to endlessly split windows
+by dragging a little tab next to the scrollbars.  Added a demo to show
+this and also the ability of multiple wxStyledTextCtrls to share the
+same document.
+
+Added wxEditableListBox gizmo.
+
+Updated wxEditor with lots of enhancements from Steve Howell and Adam
+Feuer.
+
+Added the "SplitTree gizmos" which are a collection of classes that
+were designed to operate together and provide a tree control with
+additional columns for each item.  The classes are
+wxRemotelyScrolledTreeCtrl, wxTreeCompanionWindow,
+wxThinSplitterWindow, and wxSplitterScrolledWindow, some of which may
+also be useful by themselves.
+
+Added wxDllWidget from Vaclav Slavik which allows wx widgets derived
+from wxWindow to be loaded from a C++ .dll (or .so) and be used in a
+wxPython program, without the widget having to be SWIGged first.  The
+visible API of the widget is limited to wxWindow methods plus a
+SendCommand method, but it is still quite powerful.  See
+wxPython/contrib/dllwidget and wxPython/demo/dllwidget for more
+details.
+
+
+
+
+2.3.1
+-----
+Added EVT_GRID_EDITOR_CREATED and wxGridEditorCreatedEvent so the user
+code can get access to the edit control when it is created, (to push
+on a custom event handler for example.)
+
+Added wxTextAttr class and SetStyle, SetDefaultStyle and
+GetDefaultStyle methods to wxTextCtrl.
+
+Added ability to use xml resource files.  Still need to add ability to
+subclass wxXmlResourceHandler, etc...
+
+Added wxGridAutoEditMixin to the mixins library package.
+
+Made ColourSelect be derived from wxButton.
+
+Fixed img2py to work correctly with Python 2.1.
+
+Added enhanced wxVTKRenderWindow by Prabhu Ramachandran
+
+
+
+2.3.0
+-----
+Removed initial startup dependency on the OpenGL DLLs so only the
+glcanvasc.pyd depends on them, (on wxMSW.)
+
+Changed wxFont, wxPen, wxBrush to not implicitly use the
+wxThe[Font|Pen|Brush]List objects behind the scenes, but to use normal
+ctor and dtors.
+
+Exposed the wxThe[Font|Pen|Brush]List to wxPython.
+
+Also added wxTheColourDatabase and added a library module (in the
+wxPython.lib.colourdb module) to load LOTS more colour names into the
+colour database.
+
+Added wxWakeUpMainThread, wxMutexGuiEnter, wxMutexGuiLeave,
+wxMutexGuiLocker and wxThread_IsMain to assist with dealing with GUI
+access from non-GUI threads.
+
+wxPyOnDemandOutputWindow is now (more) thread safe if non-GUI threads
+use print, sys.stdout.write, etc.
+
+Added CreateTextSizer and CreateButtonSizer to wxDialog
+
+Added wxPython/lib/infoframe.py from Chris Fama.  It contains a class
+that can be used in place of wxPyOnDemandOutputWindow.
+
+Added colourselect.py, imagebrowser.py and an updated calendar.py to
+wxPython/lib from Lorne White.
+
+Added patch to wxPoint_LIST_helper from Tim Hochberg that should make
+it gobs faster in certain situations.
+
+Added tools that will take an image file in a wx supported format and
+convert it to data embedded in a Python source file.  The image is
+converted to XPM format which is essentially a list of strings
+containing info about each pixel.  The image's transparency mask is
+included, if there is one, or a mask can be added if a mask colour is
+specified on the command line.  It is then pickled and optionally
+compressed and written to a Python source file along with functions to
+convert it to either a wxBitmap or a wxImage.  See
+wxPython/demo/images.py for examples, and wxPython/Tools/img2py.py for
+the implementation.
+
+Fixed wxStyledTextCtrl to be much faster on wxGTK.  There was some
+experimental code that got left in place that ended up causing way too
+many refreshes.
+
+A couple more hacks in my_distutils.py so wxPython can be built with
+the distutils that comes with Python 2.1.
+
+Added a ton of missing methods for wxPrintData.
+
+Switched to InnoSetup for MSW distributions.
+
+Added wxToggleButton.
+
+Fixed bug that prevented wxTreeCtrl.OnCompareItems from being called.
+
+Added some methods to wxGrid:
+      GetCellHighlightPenWidth
+      GetCellHighlightROPenWidth
+      SetCellHighlightPenWidth
+      SetCellHighlightROPenWidth
+      GetGridWindow
+      GetGridRowLabelWindow
+      GetGridColLabelWindow
+      GetGridCornerLabelWindow
+
+Added wxGetClientDisplayRect which on wxMSW returns a wxRect
+representing the area on screen not occupied by the taskbar and such.
+On other platforms it is equivallent to wxGetDisplaySize.
+
+
+***---***---***---***---***---***---***---***---***---***---***---
+   Implemented the first phase of OOR (Original Object Return).  See
+   the text in the demo for more details of what this means, but in a
+   nutshell methods such as wxWindow.GetParent or FindWindowById will
+   now return a shadow object of the proper type if it can.  By
+   "proper type" I mean that if the wxWindow pointer returned from
+   FindWindowById really points to a wxButton then the Python object
+   constructed will be of a wxButtonPtr class instead of wxWindowPtr
+   as before.  This should reduce or eliminiate the need for
+   wxPyTypeCast.  (Woo Hoo!)  The objects returned are still not the
+   original Python object, but that is the next step.  (Although it
+   will probably only work on Python 2.1 and beyond because it will
+   use weak references.)
+
+   This first phase of the OOR plan is fairly significant and has
+   required a lot of changes all over wxPython, most of which should
+   be transparent to you, however I'm not 100% sure that it didn't
+   introduce any new bugs that are hiding somewhere and didn't get
+   stomped on during my testing.  So please be sure to test everything
+   thoroughly when you install this version and be sure to report any
+   object-type related oddities to me.
+***---***---***---***---***---***---***---***---***---***---***---
+
+There is now a wxObject class that most other classes derive from like
+in C++, but the methods provided don't really match but are wxPython
+specific.  It could have been added long ago but OOR required it so it
+finally got done.
+
+Finally added wxPyLineShape.GetLineControlPoints, which has been on my
+list for a while.  The above OOR modification made this easier.
+
+Fixed the __cmp__ methods for wxPoint and others.
+
+Added wxWave.
+
+Added the wxPython.lib.mixins package to the library, it is where
+useful mix-in classes can be placed.  Currently there is one to help
+make the columns in a wxListCtrl sortable, and the MagicIMageList from
+Mike Fletcher.  If you have any custom code that can be factored out
+of existing classes into a mix-in that would be useful to others
+please send it to me for inclusion in this package.
+
+Added a few little sample applications to help newbies to get started
+by having smaller functional apps to play with.  They can be found in
+wxPython/samples.
+
+
 
 
 2.2.6
@@ -14,6 +454,7 @@ changes and fixes in the wxWindows library.
 
 No changes happened in the Python wrappers for this release, only
 changes and fixes in the wxWindows library.
+
 
 
 2.2.5

@@ -4,7 +4,7 @@
 // Author:      Karsten Ballüder
 // Modified by:
 // Created:     09.05.1999
-// RCS-ID:      $Id: progdlgg.h,v 1.15 2000/03/12 00:25:20 VZ Exp $
+// RCS-ID:      $Id: progdlgg.h,v 1.23 2002/08/31 11:29:12 GD Exp $
 // Copyright:   (c) Karsten Ballüder
 // Licence:     wxWindows license
 ////////////////////////////////////////////////////
@@ -12,7 +12,7 @@
 #ifndef __PROGDLGH_G__
 #define __PROGDLGH_G__
 
-#ifdef __GNUG__
+#if defined(__GNUG__) && !defined(__APPLE__)
 #pragma interface "progdlgg.h"
 #endif
 
@@ -55,19 +55,24 @@ public:
        @param newmsg if used, new message to display
        @returns true if ABORT button has not been pressed
    */
-   bool Update(int value = -1, const wxString& newmsg = wxT(""));
+   bool Update(int value, const wxString& newmsg = wxT(""));
 
    /* Can be called to continue after the cancel button has been pressed, but
        the program decided to continue the operation (e.g., user didn't
        confirm it)
    */
-   void Resume() { m_state = Continue; }
+   void Resume();
 
-   // implementation from now on
-       // callback for optional abort button
+protected:
+   // callback for optional abort button
    void OnCancel(wxCommandEvent& event);
-       // callback to disable "hard" window closing
+
+   // callback to disable "hard" window closing
    void OnClose(wxCloseEvent& event);
+
+   // must be called to reenable the other windows temporarily disabled while
+   // the dialog was shown
+   void ReenableOtherWindows();
 
 private:
    // create the label with given text and another one to show the time nearby
@@ -104,10 +109,19 @@ private:
    // the maximum value
    int m_maximum;
 
+#if defined(__WXMSW__ ) || defined(__WXPM__)
+   // the factor we use to always keep the value in 16 bit range as the native
+   // control only supports ranges from 0 to 65,535
+   size_t m_factor;
+#endif // __WXMSW__
+
    // for wxPD_APP_MODAL case
    class WXDLLEXPORT wxWindowDisabler *m_winDisabler;
 
    DECLARE_EVENT_TABLE()
+private:
+    // Virtual function hiding supression
+    virtual void Update() { wxDialog::Update(); }
 };
 #endif
 

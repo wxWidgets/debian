@@ -5,7 +5,7 @@
 // Author:      Robin Dunn
 //
 // Created:     5/24/98
-// RCS-ID:      $Id: events.i,v 1.1.2.7 2001/01/30 20:53:43 robind Exp $
+// RCS-ID:      $Id: events.i,v 1.22 2002/07/06 00:48:25 RD Exp $
 // Copyright:   (c) 1998 by Total Control Software
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -30,9 +30,12 @@
 
 //---------------------------------------------------------------------------
 
-class wxEvent {
+
+int wxNewEventType();
+
+class wxEvent : public wxObject {
 public:
-    wxEvent(int id = 0);
+    // wxEvent(int id = 0);     // *** This class is now an ABC
     ~wxEvent();
 
     wxObject* GetEventObject();
@@ -45,6 +48,8 @@ public:
     void SetId(int id);
     void SetTimestamp(long timeStamp);
     void Skip(bool skip = TRUE);
+
+    wxEvent *Clone();
 };
 
 //---------------------------------------------------------------------------
@@ -86,6 +91,18 @@ public:
     void SetExtraLong(long extraLong);
     void SetInt(int i);
 
+    %addmethods {
+        PyObject* GetClientData() {
+            wxPyClientData* data = (wxPyClientData*)self->GetClientObject();
+            if (data) {
+                Py_INCREF(data->m_obj);
+                return data->m_obj;
+            } else {
+                Py_INCREF(Py_None);
+                return Py_None;
+            }
+        }
+    }
 };
 
 
@@ -157,6 +174,10 @@ public:
     long GetX();
     long GetY();
 
+    int GetWheelRotation() const { return m_wheelRotation; }
+    int GetWheelDelta() const { return m_wheelDelta; }
+    int GetLinesPerAction() const { return m_linesPerAction; }
+
     long          m_x, m_y;
     bool          m_leftDown;
     bool          m_middleDown;
@@ -165,6 +186,33 @@ public:
     bool          m_shiftDown;
     bool          m_altDown;
     bool          m_metaDown;
+    int           m_wheelRotation;
+    int           m_wheelDelta;
+    int           m_linesPerAction;
+};
+
+//---------------------------------------------------------------------------
+
+class wxMouseCaptureChangedEvent : public wxEvent
+{
+public:
+    wxMouseCaptureChangedEvent(wxWindowID id = 0, wxWindow* gainedCapture = NULL);
+    wxWindow* GetCapturedWindow() const;
+};
+
+//---------------------------------------------------------------------------
+
+class wxSetCursorEvent : public wxEvent
+{
+public:
+    wxSetCursorEvent(wxCoord x = 0, wxCoord y = 0);
+
+    wxCoord GetX() const;
+    wxCoord GetY() const;
+
+    void SetCursor(const wxCursor& cursor);
+    const wxCursor& GetCursor() const;
+    bool HasCursor() const;
 };
 
 //---------------------------------------------------------------------------
@@ -182,18 +230,26 @@ public:
     long GetKeyCode();
     bool HasModifiers();
 
+    // get the raw key code (platform-dependent)
+    long GetRawKeyCode() const;
+
+    // get the raw key flags (platform-dependent)
+    long GetRawKeyFlags() const;
+
     long GetX();
     long GetY();
     wxPoint GetPosition();
     %name(GetPositionTuple) void GetPosition(long* OUTPUT, long* OUTPUT);
 
-    long          m_x, m_y;
-    long          m_keyCode;
-    bool          m_controlDown;
-    bool          m_shiftDown;
-    bool          m_altDown;
-    bool          m_metaDown;
-    bool          m_scanCode;
+    long        m_x, m_y;
+    long        m_keyCode;
+    bool        m_controlDown;
+    bool        m_shiftDown;
+    bool        m_altDown;
+    bool        m_metaDown;
+    bool        m_scanCode;
+    long        m_rawCode;
+    long        m_rawFlags;
 
 };
 
@@ -247,6 +303,18 @@ public:
 
 //---------------------------------------------------------------------------
 
+// wxChildFocusEvent notifies the parent that a child has got the focus: unlike
+// wxFocusEvent it is propgated upwards the window chain
+class  wxChildFocusEvent : public wxCommandEvent
+{
+public:
+    wxChildFocusEvent(wxWindow *win = NULL);
+    wxWindow *GetWindow() const;
+};
+
+
+//---------------------------------------------------------------------------
+
 class wxActivateEvent: public wxEvent{
 public:
     wxActivateEvent(WXTYPE eventType = 0, int active = TRUE, int id = 0);
@@ -266,6 +334,7 @@ class wxMenuEvent: public wxEvent {
 public:
     wxMenuEvent(WXTYPE id = 0, int id = 0);
     int GetMenuId();
+    bool IsPopup();
 };
 
 //---------------------------------------------------------------------------
@@ -281,7 +350,8 @@ public:
 
 class wxIconizeEvent: public wxEvent {
 public:
-    wxIconizeEvent(int id = 0);
+    wxIconizeEvent(int id = 0, bool iconized = TRUE);
+    bool Iconized();
 };
 
 //---------------------------------------------------------------------------
@@ -336,7 +406,11 @@ public:
             }
 
             for (int i=0; i<count; i++) {
+#if wxUSE_UNICODE
+                PyList_SetItem(list, i, PyUnicode_FromUnicode(files[i], files[i].Len()));
+#else
                 PyList_SetItem(list, i, PyString_FromString((const char*)files[i]));
+#endif
             }
             return list;
         }
@@ -390,6 +464,15 @@ public:
 
 //---------------------------------------------------------------------------
 
+class wxDisplayChangedEvent : public wxEvent
+{
+public:
+    wxDisplayChangedEvent();
+};
+
+
+//---------------------------------------------------------------------------
+
 class  wxPaletteChangedEvent : public wxEvent {
 public:
     wxPaletteChangedEvent(wxWindowID id = 0);
@@ -428,6 +511,18 @@ public:
 
 //---------------------------------------------------------------------------
 
+class wxContextMenuEvent : public wxCommandEvent
+{
+public:
+    wxContextMenuEvent(wxEventType type = wxEVT_NULL,
+                       wxWindowID id = 0,
+                       const wxPoint& pt = wxDefaultPosition);
+    const wxPoint& GetPosition();
+    void SetPosition(const wxPoint& pos);
+};
+
+//----------------------------------------------------------------------
+
 class  wxTimerEvent : public wxEvent
 {
 public:
@@ -435,6 +530,17 @@ public:
     int GetInterval();
 };
 
+//---------------------------------------------------------------------------
+
+class wxTextUrlEvent : public wxCommandEvent
+{
+public:
+    wxTextUrlEvent(int id, const wxMouseEvent& evtMouse,
+                   long start, long end);
+    const wxMouseEvent& GetMouseEvent();
+    long GetURLStart();
+    long GetURLEnd();
+};
 
 //---------------------------------------------------------------------------
 //---------------------------------------------------------------------------

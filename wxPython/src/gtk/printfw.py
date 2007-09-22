@@ -7,19 +7,21 @@ from windows import *
 
 from gdi import *
 
+from fonts import *
+
 from clip_dnd import *
 
 from cmndlgs import *
+
+from events import *
 
 from frames import *
 
 from stattool import *
 
 from controls import *
-
-from events import *
 import wx
-class wxPrintDataPtr :
+class wxPrintDataPtr(wxObjectPtr):
     def __init__(self,this):
         self.this = this
         self.thisown = 0
@@ -34,6 +36,9 @@ class wxPrintDataPtr :
         return val
     def GetOrientation(self, *_args, **_kwargs):
         val = apply(printfwc.wxPrintData_GetOrientation,(self,) + _args, _kwargs)
+        return val
+    def Ok(self, *_args, **_kwargs):
+        val = apply(printfwc.wxPrintData_Ok,(self,) + _args, _kwargs)
         return val
     def GetPrinterName(self, *_args, **_kwargs):
         val = apply(printfwc.wxPrintData_GetPrinterName,(self,) + _args, _kwargs)
@@ -81,6 +86,72 @@ class wxPrintDataPtr :
     def SetQuality(self, *_args, **_kwargs):
         val = apply(printfwc.wxPrintData_SetQuality,(self,) + _args, _kwargs)
         return val
+    def GetPrinterCommand(self, *_args, **_kwargs):
+        val = apply(printfwc.wxPrintData_GetPrinterCommand,(self,) + _args, _kwargs)
+        return val
+    def GetPrinterOptions(self, *_args, **_kwargs):
+        val = apply(printfwc.wxPrintData_GetPrinterOptions,(self,) + _args, _kwargs)
+        return val
+    def GetPreviewCommand(self, *_args, **_kwargs):
+        val = apply(printfwc.wxPrintData_GetPreviewCommand,(self,) + _args, _kwargs)
+        return val
+    def GetFilename(self, *_args, **_kwargs):
+        val = apply(printfwc.wxPrintData_GetFilename,(self,) + _args, _kwargs)
+        return val
+    def GetFontMetricPath(self, *_args, **_kwargs):
+        val = apply(printfwc.wxPrintData_GetFontMetricPath,(self,) + _args, _kwargs)
+        return val
+    def GetPrinterScaleX(self, *_args, **_kwargs):
+        val = apply(printfwc.wxPrintData_GetPrinterScaleX,(self,) + _args, _kwargs)
+        return val
+    def GetPrinterScaleY(self, *_args, **_kwargs):
+        val = apply(printfwc.wxPrintData_GetPrinterScaleY,(self,) + _args, _kwargs)
+        return val
+    def GetPrinterTranslateX(self, *_args, **_kwargs):
+        val = apply(printfwc.wxPrintData_GetPrinterTranslateX,(self,) + _args, _kwargs)
+        return val
+    def GetPrinterTranslateY(self, *_args, **_kwargs):
+        val = apply(printfwc.wxPrintData_GetPrinterTranslateY,(self,) + _args, _kwargs)
+        return val
+    def GetPrintMode(self, *_args, **_kwargs):
+        val = apply(printfwc.wxPrintData_GetPrintMode,(self,) + _args, _kwargs)
+        return val
+    def SetPrinterCommand(self, *_args, **_kwargs):
+        val = apply(printfwc.wxPrintData_SetPrinterCommand,(self,) + _args, _kwargs)
+        return val
+    def SetPrinterOptions(self, *_args, **_kwargs):
+        val = apply(printfwc.wxPrintData_SetPrinterOptions,(self,) + _args, _kwargs)
+        return val
+    def SetPreviewCommand(self, *_args, **_kwargs):
+        val = apply(printfwc.wxPrintData_SetPreviewCommand,(self,) + _args, _kwargs)
+        return val
+    def SetFilename(self, *_args, **_kwargs):
+        val = apply(printfwc.wxPrintData_SetFilename,(self,) + _args, _kwargs)
+        return val
+    def SetFontMetricPath(self, *_args, **_kwargs):
+        val = apply(printfwc.wxPrintData_SetFontMetricPath,(self,) + _args, _kwargs)
+        return val
+    def SetPrinterScaleX(self, *_args, **_kwargs):
+        val = apply(printfwc.wxPrintData_SetPrinterScaleX,(self,) + _args, _kwargs)
+        return val
+    def SetPrinterScaleY(self, *_args, **_kwargs):
+        val = apply(printfwc.wxPrintData_SetPrinterScaleY,(self,) + _args, _kwargs)
+        return val
+    def SetPrinterScaling(self, *_args, **_kwargs):
+        val = apply(printfwc.wxPrintData_SetPrinterScaling,(self,) + _args, _kwargs)
+        return val
+    def SetPrinterTranslateX(self, *_args, **_kwargs):
+        val = apply(printfwc.wxPrintData_SetPrinterTranslateX,(self,) + _args, _kwargs)
+        return val
+    def SetPrinterTranslateY(self, *_args, **_kwargs):
+        val = apply(printfwc.wxPrintData_SetPrinterTranslateY,(self,) + _args, _kwargs)
+        return val
+    def SetPrinterTranslation(self, *_args, **_kwargs):
+        val = apply(printfwc.wxPrintData_SetPrinterTranslation,(self,) + _args, _kwargs)
+        return val
+    def SetPrintMode(self, *_args, **_kwargs):
+        val = apply(printfwc.wxPrintData_SetPrintMode,(self,) + _args, _kwargs)
+        return val
     def __repr__(self):
         return "<C wxPrintData instance at %s>" % (self.this,)
 class wxPrintData(wxPrintDataPtr):
@@ -91,7 +162,28 @@ class wxPrintData(wxPrintDataPtr):
 
 
 
-class wxPageSetupDialogDataPtr :
+class wxPostScriptDCPtr(wxDCPtr):
+    def __init__(self,this):
+        self.this = this
+        self.thisown = 0
+    def GetPrintData(self, *_args, **_kwargs):
+        val = apply(printfwc.wxPostScriptDC_GetPrintData,(self,) + _args, _kwargs)
+        if val: val = wxPrintDataPtr(val) 
+        return val
+    def SetPrintData(self, *_args, **_kwargs):
+        val = apply(printfwc.wxPostScriptDC_SetPrintData,(self,) + _args, _kwargs)
+        return val
+    def __repr__(self):
+        return "<C wxPostScriptDC instance at %s>" % (self.this,)
+class wxPostScriptDC(wxPostScriptDCPtr):
+    def __init__(self,*_args,**_kwargs):
+        self.this = apply(printfwc.new_wxPostScriptDC,_args,_kwargs)
+        self.thisown = 1
+
+
+
+
+class wxPageSetupDialogDataPtr(wxObjectPtr):
     def __init__(self,this):
         self.this = this
         self.thisown = 0
@@ -161,6 +253,9 @@ class wxPageSetupDialogDataPtr :
         val = apply(printfwc.wxPageSetupDialogData_GetPrintData,(self,) + _args, _kwargs)
         if val: val = wxPrintDataPtr(val) ; val.thisown = 1
         return val
+    def Ok(self, *_args, **_kwargs):
+        val = apply(printfwc.wxPageSetupDialogData_Ok,(self,) + _args, _kwargs)
+        return val
     def SetDefaultInfo(self, *_args, **_kwargs):
         val = apply(printfwc.wxPageSetupDialogData_SetDefaultInfo,(self,) + _args, _kwargs)
         return val
@@ -220,7 +315,7 @@ class wxPageSetupDialog(wxPageSetupDialogPtr):
 
 
 
-class wxPrintDialogDataPtr :
+class wxPrintDialogDataPtr(wxObjectPtr):
     def __init__(self,this):
         self.this = this
         self.thisown = 0
@@ -266,6 +361,9 @@ class wxPrintDialogDataPtr :
         return val
     def GetToPage(self, *_args, **_kwargs):
         val = apply(printfwc.wxPrintDialogData_GetToPage,(self,) + _args, _kwargs)
+        return val
+    def Ok(self, *_args, **_kwargs):
+        val = apply(printfwc.wxPrintDialogData_Ok,(self,) + _args, _kwargs)
         return val
     def SetCollate(self, *_args, **_kwargs):
         val = apply(printfwc.wxPrintDialogData_SetCollate,(self,) + _args, _kwargs)
@@ -314,7 +412,6 @@ class wxPrintDialogPtr(wxDialogPtr):
         return val
     def GetPrintDC(self, *_args, **_kwargs):
         val = apply(printfwc.wxPrintDialog_GetPrintDC,(self,) + _args, _kwargs)
-        if val: val = wxDCPtr(val) ; val.thisown = 1
         return val
     def ShowModal(self, *_args, **_kwargs):
         val = apply(printfwc.wxPrintDialog_ShowModal,(self,) + _args, _kwargs)
@@ -330,19 +427,18 @@ class wxPrintDialog(wxPrintDialogPtr):
 
 
 
-class wxPrintoutPtr :
+class wxPrintoutPtr(wxObjectPtr):
     def __init__(self,this):
         self.this = this
         self.thisown = 0
-    def _setSelf(self, *_args, **_kwargs):
-        val = apply(printfwc.wxPrintout__setSelf,(self,) + _args, _kwargs)
+    def _setCallbackInfo(self, *_args, **_kwargs):
+        val = apply(printfwc.wxPrintout__setCallbackInfo,(self,) + _args, _kwargs)
         return val
     def Destroy(self, *_args, **_kwargs):
         val = apply(printfwc.wxPrintout_Destroy,(self,) + _args, _kwargs)
         return val
     def GetDC(self, *_args, **_kwargs):
         val = apply(printfwc.wxPrintout_GetDC,(self,) + _args, _kwargs)
-        if val: val = wxDCPtr(val) 
         return val
     def GetPageSizeMM(self, *_args, **_kwargs):
         val = apply(printfwc.wxPrintout_GetPageSizeMM,(self,) + _args, _kwargs)
@@ -386,12 +482,12 @@ class wxPrintout(wxPrintoutPtr):
     def __init__(self,*_args,**_kwargs):
         self.this = apply(printfwc.new_wxPrintout,_args,_kwargs)
         self.thisown = 1
-        self._setSelf(self, wxPrintout)
+        self._setCallbackInfo(self, wxPrintout)
 
 
 
 
-class wxPrinterPtr :
+class wxPrinterPtr(wxObjectPtr):
     def __init__(self,this):
         self.this = this
         self.thisown = 0
@@ -410,7 +506,6 @@ class wxPrinterPtr :
         return val
     def PrintDialog(self, *_args, **_kwargs):
         val = apply(printfwc.wxPrinter_PrintDialog,(self,) + _args, _kwargs)
-        if val: val = wxDCPtr(val) 
         return val
     def ReportError(self, *_args, **_kwargs):
         val = apply(printfwc.wxPrinter_ReportError,(self,) + _args, _kwargs)
@@ -428,20 +523,18 @@ class wxPrinter(wxPrinterPtr):
 
 
 
-class wxPrintPreviewPtr :
+class wxPrintPreviewPtr(wxObjectPtr):
     def __init__(self,this):
         self.this = this
         self.thisown = 0
     def GetCanvas(self, *_args, **_kwargs):
         val = apply(printfwc.wxPrintPreview_GetCanvas,(self,) + _args, _kwargs)
-        if val: val = wxWindowPtr(val) 
         return val
     def GetCurrentPage(self, *_args, **_kwargs):
         val = apply(printfwc.wxPrintPreview_GetCurrentPage,(self,) + _args, _kwargs)
         return val
     def GetFrame(self, *_args, **_kwargs):
         val = apply(printfwc.wxPrintPreview_GetFrame,(self,) + _args, _kwargs)
-        if val: val = wxFramePtr(val) 
         return val
     def GetMaxPage(self, *_args, **_kwargs):
         val = apply(printfwc.wxPrintPreview_GetMaxPage,(self,) + _args, _kwargs)
@@ -455,11 +548,9 @@ class wxPrintPreviewPtr :
         return val
     def GetPrintout(self, *_args, **_kwargs):
         val = apply(printfwc.wxPrintPreview_GetPrintout,(self,) + _args, _kwargs)
-        if val: val = wxPrintoutPtr(val) 
         return val
     def GetPrintoutForPrinting(self, *_args, **_kwargs):
         val = apply(printfwc.wxPrintPreview_GetPrintoutForPrinting,(self,) + _args, _kwargs)
-        if val: val = wxPrintoutPtr(val) 
         return val
     def GetZoom(self, *_args, **_kwargs):
         val = apply(printfwc.wxPrintPreview_GetZoom,(self,) + _args, _kwargs)
@@ -508,7 +599,7 @@ class wxPreviewFrame(wxPreviewFramePtr):
     def __init__(self,*_args,**_kwargs):
         self.this = apply(printfwc.new_wxPreviewFrame,_args,_kwargs)
         self.thisown = 1
-        #wx._StdFrameCallbacks(self)
+        self._setOORInfo(self)
 
 
 
@@ -516,6 +607,10 @@ class wxPreviewFrame(wxPreviewFramePtr):
 
 
 #-------------- FUNCTION WRAPPERS ------------------
+
+wxPostScriptDC_SetResolution = printfwc.wxPostScriptDC_SetResolution
+
+wxPostScriptDC_GetResolution = printfwc.wxPostScriptDC_GetResolution
 
 
 

@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     04/01/98
-// RCS-ID:      $Id: edtree.h,v 1.1.4.1 2000/04/22 14:41:06 JS Exp $
+// RCS-ID:      $Id: edtree.h,v 1.3 2001/11/22 22:02:13 GD Exp $
 // Copyright:   (c) Julian Smart
 // Licence:   	wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -12,7 +12,7 @@
 #ifndef _EDTREE_H_
 #define _EDTREE_H_
 
-#include <wx/treectrl.h>
+#include "wx/treectrl.h"
 
 class wxResourceEditorProjectTree: public wxTreeCtrl
 {

@@ -20,7 +20,15 @@
 #ifndef LW_H
 #define LW_H
 
-#include <GL/gl.h>
+#ifdef __WXMAC__
+#  ifdef __DARWIN__
+#    include <OpenGL/glu.h>
+#  else
+#    include <glu.h>
+#  endif
+#else
+#  include <GL/glu.h>
+#endif
 
 #define LW_MAX_POINTS   200
 #define LW_MAX_NAME_LEN 500

@@ -4,7 +4,7 @@
 // Author:      P. Foggia 1996
 // Modified by:
 // Created:     1996
-// RCS-ID:      $Id: bombs.h,v 1.1 2000/01/08 15:27:35 VZ Exp $
+// RCS-ID:      $Id: bombs.h,v 1.2 2000/10/30 17:06:43 vadz Exp $
 // Copyright:   (c) 1996 P. Foggia
 // Licence:     wxWindows licence
 ///////////////////////////////////////////////////////////////////////////////
@@ -95,6 +95,7 @@ class BombsCanvasClass: public wxWindow
  void OnPaint(wxPaintEvent& event);
  void DrawField(wxDC *, int xc1, int yc1, int xc2, int yc2);
  void Refresh(int xc1, int yc1, int xc2, int yc2);
+ void Uncover(int x, int y);
  void OnEvent(wxMouseEvent& event);
  void UpdateFieldSize();
 

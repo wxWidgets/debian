@@ -2,7 +2,7 @@
 // Name:        imagpng.h
 // Purpose:     wxImage PNG handler
 // Author:      Robert Roebling
-// RCS-ID:      $Id: imagpng.h,v 1.1 1999/12/15 22:37:50 VS Exp $
+// RCS-ID:      $Id: imagpng.h,v 1.3 2002/08/31 11:29:10 GD Exp $
 // Copyright:   (c) Robert Roebling
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -10,7 +10,7 @@
 #ifndef _WX_IMAGPNG_H_
 #define _WX_IMAGPNG_H_
 
-#ifdef __GNUG__
+#if defined(__GNUG__) && !defined(__APPLE__)
 #pragma interface "imagpng.h"
 #endif
 
@@ -36,7 +36,7 @@ public:
   };
 
 #if wxUSE_STREAMS
-  virtual bool LoadFile( wxImage *image, wxInputStream& stream, bool verbose=TRUE, int index=0 );
+  virtual bool LoadFile( wxImage *image, wxInputStream& stream, bool verbose=TRUE, int index=-1 );
   virtual bool SaveFile( wxImage *image, wxOutputStream& stream, bool verbose=TRUE );
   virtual bool DoCanRead( wxInputStream& stream );
 #endif

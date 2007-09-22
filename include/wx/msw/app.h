@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     01/02/97
-// RCS-ID:      $Id: app.h,v 1.24.2.1 2001/06/10 12:49:02 RR Exp $
+// RCS-ID:      $Id: app.h,v 1.31 2002/08/01 19:54:54 JS Exp $
 // Copyright:   (c) Julian Smart
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -39,10 +39,10 @@ public:
     virtual int MainLoop();
     virtual void ExitMainLoop();
     virtual bool Initialized();
-    virtual bool Pending() ;
-    virtual void Dispatch() ;
-
-    virtual wxIcon GetStdIcon(int which) const;
+    virtual bool Pending();
+    virtual void Dispatch();
+    virtual bool Yield(bool onlyIfNeeded = FALSE);
+    virtual bool ProcessIdle();
 
     virtual void SetPrintMode(int mode) { m_printMode = mode; }
     virtual int GetPrintMode() const { return m_printMode; }
@@ -64,9 +64,9 @@ public:
     bool GetAuto3D() const { return m_auto3D; }
 
 protected:
-    bool              m_showOnInit;
-    int               m_printMode; // wxPRINT_WINDOWS, wxPRINT_POSTSCRIPT
-    bool              m_auto3D ;   // Always use 3D controls, except where overriden
+    bool   m_showOnInit;
+    int    m_printMode; // wxPRINT_WINDOWS, wxPRINT_POSTSCRIPT
+    bool   m_auto3D ;   // Always use 3D controls, except where overriden
 
     /* Windows-specific wxApp definitions */
 
@@ -77,15 +77,27 @@ public:
     static void CleanUp();
 
     static bool RegisterWindowClasses();
+    static bool UnregisterWindowClasses();
+
     // Convert Windows to argc, argv style
-    void ConvertToStandardCommandArgs(char* p);
-    
-    /*virtual*/ void DoMessage(WXMSG *pMsg);
+    void ConvertToStandardCommandArgs(const char* p);
+
+    // message processing
+    // ------------------
+
+    // process the given message
+    virtual void DoMessage(WXMSG *pMsg);
+
+    // retrieve the next message from the queue and process it
     virtual bool DoMessage();
-    
+
+    // preprocess the message
     virtual bool ProcessMessage(WXMSG* pMsg);
+
+    // idle processing
+    // ---------------
+
     void DeletePendingObjects();
-    bool ProcessIdle();
 
 #if wxUSE_RICHEDIT
     // initialize the richedit DLL of (at least) given version, return TRUE if
@@ -101,7 +113,7 @@ public:
     int               m_nCmdShow;
 
 protected:
-    bool              m_keepGoing ;
+    bool              m_keepGoing;
 
     DECLARE_EVENT_TABLE()
 };

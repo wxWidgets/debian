@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     12/07/98
-// RCS-ID:      $Id: ogldiag.cpp,v 1.1 2000/03/03 11:25:05 JS Exp $
+// RCS-ID:      $Id: ogldiag.cpp,v 1.5 2002/03/15 20:50:40 RD Exp $
 // Copyright:   (c) Julian Smart
 // Licence:   	wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -14,7 +14,7 @@
 #endif
 
 // For compilers that support precompilation, includes "wx.h".
-#include <wx/wxprec.h>
+#include "wx/wxprec.h"
 
 #ifdef __BORLANDC__
 #pragma hdrstop
@@ -26,6 +26,10 @@
 
 #include <wx/wxexpr.h>
 
+#ifdef new
+#undef new
+#endif
+
 #if wxUSE_IOSTREAMH
 #include <iostream.h>
 #include <fstream.h>
@@ -33,7 +37,7 @@
 #include <iostream>
 #include <fstream>
 #ifdef _MSC_VER
-using namespace std;
+//using namespace std;
 #endif
 #endif
 
@@ -253,9 +257,9 @@ bool wxDiagram::SaveFile(const wxString& filename)
   }
   OnDatabaseSave(*database);
 
-  char tempFile[400];
-  wxGetTempFileName("diag", tempFile);
-  FILE* file = fopen(tempFile, "w");
+  wxString tempFile;
+  wxGetTempFileName(wxT("diag"), tempFile);
+  FILE* file = fopen(tempFile.mb_str(wxConvFile), "w");
   if (! file)
   {
     wxEndBusyCursor();
@@ -346,11 +350,11 @@ void wxDiagram::ReadNodes(wxExprDatabase& database)
   wxExpr *clause = database.FindClauseByFunctor("shape");
   while (clause)
   {
-    char *type = NULL;
+    wxChar *type = NULL;
     long parentId = -1;
 
-    clause->AssignAttributeValue("type", &type);
-    clause->AssignAttributeValue("parent", &parentId);
+    clause->AssignAttributeValue(wxT("type"), &type);
+    clause->AssignAttributeValue(wxT("parent"), &parentId);
     wxClassInfo *classInfo = wxClassInfo::FindClass(type);
     if (classInfo)
     {
@@ -390,12 +394,12 @@ void wxDiagram::ReadLines(wxExprDatabase& database)
   wxExpr *clause = database.FindClauseByFunctor("line");
   while (clause)
   {
-    wxString type("");
+    wxString type;
     long parentId = -1;
 
     clause->GetAttributeValue("type", type);
     clause->GetAttributeValue("parent", parentId);
-    wxClassInfo *classInfo = wxClassInfo::FindClass((char*) (const char*) type);
+    wxClassInfo *classInfo = wxClassInfo::FindClass(type);
     if (classInfo)
     {
       wxLineShape *shape = (wxLineShape *)classInfo->CreateObject();

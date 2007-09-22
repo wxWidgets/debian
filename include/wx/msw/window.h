@@ -1,10 +1,11 @@
 /////////////////////////////////////////////////////////////////////////////
-// Name:        window.h
+// Name:        wx/msw/window.h
 // Purpose:     wxWindow class
 // Author:      Julian Smart
-// Modified by:
+// Modified by: Vadim Zeitlin on 13.05.99: complete refont of message handling,
+//              elimination of Default(), ...
 // Created:     01/02/97
-// RCS-ID:      $Id: window.h,v 1.60.2.1 2000/06/21 21:10:37 VZ Exp $
+// RCS-ID:      $Id: window.h,v 1.93 2002/08/30 00:33:16 VZ Exp $
 // Copyright:   (c) Julian Smart and Markus Holzem
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -20,20 +21,19 @@
     #pragma interface "window.h"
 #endif
 
-// #include "wx/msw/winundef.h"
-
-// VZ: apparently some version of Windows send extra mouse move messages after
-//     a mouse click. My tests under NT 4.0 and 95 didn't show it so I'm
-//     tempted to think that it was just an effect of a poor mouse and so the
-//     code to work around this is currently disabled - just define this as 1
-//     to reenable it
+// [at least] some version of Windows send extra mouse move messages after
+// a mouse click or a key press - to temporarily fix this problem, set the
+// define below to 1
+//
+// a better solution should be found later...
 #define wxUSE_MOUSEEVENT_HACK 0
 
-// ---------------------------------------------------------------------------
-// forward declarations
-// ---------------------------------------------------------------------------
+#include "wx/hash.h"
 
-class WXDLLEXPORT wxButton;
+// pseudo-template HWND <-> wxWindow hash table
+WX_DECLARE_HASH(wxWindow, wxWindowList, wxWinHashTable);
+
+extern wxWinHashTable *wxWinHandleHash;
 
 // ---------------------------------------------------------------------------
 // constants
@@ -50,23 +50,23 @@ enum
 // wxWindow declaration for MSW
 // ---------------------------------------------------------------------------
 
-class WXDLLEXPORT wxWindow : public wxWindowBase
+class WXDLLEXPORT wxWindowMSW : public wxWindowBase
 {
 public:
-    wxWindow() { Init(); }
+    wxWindowMSW() { Init(); }
 
-    wxWindow(wxWindow *parent,
-             wxWindowID id,
-             const wxPoint& pos = wxDefaultPosition,
-             const wxSize& size = wxDefaultSize,
-             long style = 0,
-             const wxString& name = wxPanelNameStr)
+    wxWindowMSW(wxWindow *parent,
+                wxWindowID id,
+                const wxPoint& pos = wxDefaultPosition,
+                const wxSize& size = wxDefaultSize,
+                long style = 0,
+                const wxString& name = wxPanelNameStr)
     {
         Init();
         Create(parent, id, pos, size, style, name);
     }
 
-    virtual ~wxWindow();
+    virtual ~wxWindowMSW();
 
     bool Create(wxWindow *parent,
                 wxWindowID id,
@@ -86,17 +86,20 @@ public:
     virtual bool Enable( bool enable = TRUE );
 
     virtual void SetFocus();
+    virtual void SetFocusFromKbd();
 
-    virtual bool Reparent( wxWindow *newParent );
+    virtual bool Reparent(wxWindowBase *newParent);
 
     virtual void WarpPointer(int x, int y);
-    virtual void CaptureMouse();
-    virtual void ReleaseMouse();
 
     virtual void Refresh( bool eraseBackground = TRUE,
                           const wxRect *rect = (const wxRect *) NULL );
+    virtual void Update();
     virtual void Clear();
+    virtual void Freeze();
+    virtual void Thaw();
 
+    virtual void SetWindowStyleFlag( long style );
     virtual bool SetCursor( const wxCursor &cursor );
     virtual bool SetFont( const wxFont &font );
 
@@ -109,7 +112,9 @@ public:
                                const wxFont *theFont = (const wxFont *) NULL)
                                const;
 
+#if wxUSE_MENUS_NATIVE
     virtual bool DoPopupMenu( wxMenu *menu, int x, int y );
+#endif // wxUSE_MENUS_NATIVE
 
     virtual void SetScrollbar( int orient, int pos, int thumbVisible,
                                int range, bool refresh = TRUE );
@@ -119,6 +124,9 @@ public:
     virtual int GetScrollRange( int orient ) const;
     virtual void ScrollWindow( int dx, int dy,
                                const wxRect* rect = (wxRect *) NULL );
+
+    virtual bool ScrollLines(int lines);
+    virtual bool ScrollPages(int pages);
 
 #if wxUSE_DRAG_AND_DROP
     virtual void SetDropTarget( wxDropTarget *dropTarget );
@@ -154,16 +162,14 @@ public:
     void GetCaretPos(int *x, int *y) const;
 #endif // wxUSE_CARET
 
+#ifndef __WXUNIVERSAL__
     // Native resource loading (implemented in src/msw/nativdlg.cpp)
     // FIXME: should they really be all virtual?
     virtual bool LoadNativeDialog(wxWindow* parent, wxWindowID& id);
     virtual bool LoadNativeDialog(wxWindow* parent, const wxString& name);
     wxWindow* GetWindowChild1(wxWindowID id);
     wxWindow* GetWindowChild(wxWindowID id);
-
-    // a MSW only function which sends a size event to the window using its
-    // current size - this has an effect of refreshing the window layout
-    void SendSizeEvent();
+#endif // __WXUNIVERSAL__
 
     // implementation from now on
     // --------------------------
@@ -182,18 +188,14 @@ public:
     // event handlers
     // --------------
 
-    void OnSetFocus(wxFocusEvent& event);
     void OnEraseBackground(wxEraseEvent& event);
     void OnIdle(wxIdleEvent& event);
+    void OnPaint(wxPaintEvent& event);
 
 public:
     // For implementation purposes - sometimes decorations make the client area
     // smaller
     virtual wxPoint GetClientAreaOrigin() const;
-
-    // Makes an adjustment to the window position (for example, a frame that has
-    // a toolbar that it manages itself).
-    virtual void AdjustForParentClientOrigin(int& x, int& y, int sizeFlags);
 
     // Windows subclassing
     void SubclassWin(WXHWND hWnd);
@@ -202,28 +204,61 @@ public:
     WXFARPROC MSWGetOldWndProc() const { return m_oldWndProc; }
     void MSWSetOldWndProc(WXFARPROC proc) { m_oldWndProc = proc; }
 
+    // return TRUE if the window is of a standard (i.e. not wxWindows') class
+    //
+    // to understand why does it work, look at SubclassWin() code and comments
+    bool IsOfStandardClass() const { return m_oldWndProc != NULL; }
+
     wxWindow *FindItem(long id) const;
     wxWindow *FindItemByHWND(WXHWND hWnd, bool controlOnly = FALSE) const;
 
     // Make a Windows extended style from the given wxWindows window style
     static WXDWORD MakeExtendedStyle(long style,
-                                     bool eliminateBorders = TRUE);
+                                     bool eliminateBorders = FALSE);
+
     // Determine whether 3D effects are wanted
     WXDWORD Determine3DEffects(WXDWORD defaultBorderStyle, bool *want3D) const;
 
     // MSW only: TRUE if this control is part of the main control
     virtual bool ContainsHWND(WXHWND WXUNUSED(hWnd)) const { return FALSE; };
 
-    // returns TRUE if the window has been created
-    bool MSWCreate(int id,
-                   wxWindow *parent,
-                   const wxChar *wclass,
-                   wxWindow *wx_win,
-                   const wxChar *title,
-                   int x, int y, int width, int height,
-                   WXDWORD style,
-                   const wxChar *dialog_template = NULL,
+    // translate wxWindows style flags for this control into the Windows style
+    // and optional extended style for the corresponding native control
+    //
+    // this is the function that should be overridden in the derived classes,
+    // but you will mostly use MSWGetCreateWindowFlags() below
+    virtual WXDWORD MSWGetStyle(long flags, WXDWORD *exstyle = NULL) const;
+
+    // get the MSW window flags corresponding to wxWindows ones
+    //
+    // the functions returns the flags (WS_XXX) directly and puts the ext
+    // (WS_EX_XXX) flags into the provided pointer if not NULL
+    WXDWORD MSWGetCreateWindowFlags(WXDWORD *exflags = NULL) const
+        { return MSWGetStyle(GetWindowStyle(), exflags); }
+
+    // translate wxWindows coords into Windows ones suitable to be passed to
+    // ::CreateWindow()
+    //
+    // returns TRUE if non default coords are returned, FALSE otherwise
+    bool MSWGetCreateWindowCoords(const wxPoint& pos,
+                                  const wxSize& size,
+                                  int& x, int& y,
+                                  int& w, int& h) const;
+
+    // get the HWND to be used as parent of this window with CreateWindow()
+    virtual WXHWND MSWGetParent() const;
+
+    // creates the window of specified Windows class with given style, extended
+    // style, title and geometry (default values
+    //
+    // returns TRUE if the window has been created, FALSE if creation failed
+    bool MSWCreate(const wxChar *wclass,
+                   const wxChar *title = NULL,
+                   const wxPoint& pos = wxDefaultPosition,
+                   const wxSize& size = wxDefaultSize,
+                   WXDWORD style = 0,
                    WXDWORD exendedStyle = 0);
+
     virtual bool MSWCommand(WXUINT param, WXWORD id);
 
 #if WXWIN_COMPATIBILITY
@@ -231,11 +266,13 @@ public:
     virtual void MSWDeviceToLogical(float *x, float *y) const;
 #endif // WXWIN_COMPATIBILITY
 
+#ifndef __WXUNIVERSAL__
     // Create an appropriate wxWindow from a HWND
     virtual wxWindow* CreateWindowFromHWND(wxWindow* parent, WXHWND hWnd);
 
     // Make sure the window style reflects the HWND style (roughly)
     virtual void AdoptAttributesFromHWND();
+#endif // __WXUNIVERSAL__
 
     // Setup background and foreground colours correctly
     virtual void SetupColours();
@@ -258,7 +295,7 @@ public:
                           WXWORD *item, WXWORD *flags, WXHMENU *hmenu);
 
     // ------------------------------------------------------------------------
-    // internal handlers for MSW messages: all handlers return a boolen value:
+    // internal handlers for MSW messages: all handlers return a boolean value:
     // TRUE means that the handler processed the event and FALSE that it didn't
     // ------------------------------------------------------------------------
 
@@ -312,6 +349,8 @@ public:
     bool HandlePaletteChanged(WXHWND hWndPalChange);
     bool HandleQueryNewPalette();
     bool HandleSysColorChange();
+    bool HandleDisplayChange();
+    bool HandleCaptureChanged(WXHWND gainedCapture);
 
     bool HandleQueryEndSession(long logOff, bool *mayEnd);
     bool HandleEndSession(bool endSession, long logOff);
@@ -323,10 +362,11 @@ public:
 
     bool HandleMouseEvent(WXUINT msg, int x, int y, WXUINT flags);
     bool HandleMouseMove(int x, int y, WXUINT flags);
+    bool HandleMouseWheel(WXWPARAM wParam, WXLPARAM lParam);
 
-    bool HandleChar(WXWORD wParam, WXLPARAM lParam, bool isASCII = FALSE);
-    bool HandleKeyDown(WXWORD wParam, WXLPARAM lParam);
-    bool HandleKeyUp(WXWORD wParam, WXLPARAM lParam);
+    bool HandleChar(WXWPARAM wParam, WXLPARAM lParam, bool isASCII = FALSE);
+    bool HandleKeyDown(WXWPARAM wParam, WXLPARAM lParam);
+    bool HandleKeyUp(WXWPARAM wParam, WXLPARAM lParam);
 
     bool HandleQueryDragIcon(WXHICON *hIcon);
 
@@ -337,12 +377,21 @@ public:
 
     // Calls an appropriate default window procedure
     virtual long MSWDefWindowProc(WXUINT nMsg, WXWPARAM wParam, WXLPARAM lParam);
-    virtual bool MSWProcessMessage(WXMSG* pMsg);
-    virtual bool MSWTranslateMessage(WXMSG* pMsg);
-    virtual void MSWDestroyWindow();
 
-    // Detach "Window" menu from menu bar so it doesn't get deleted
-    void MSWDetachWindowMenu();
+    // message processing helpers
+
+    // return FALSE if the message shouldn't be translated/preprocessed but
+    // dispatched normally
+    virtual bool MSWShouldPreProcessMessage(WXMSG* pMsg);
+
+    // return TRUE if the message was preprocessed and shouldn't be dispatched
+    virtual bool MSWProcessMessage(WXMSG* pMsg);
+
+    // return TRUE if the message was translated and shouldn't be dispatched
+    virtual bool MSWTranslateMessage(WXMSG* pMsg);
+
+    // called when the window is about to be destroyed
+    virtual void MSWDestroyWindow();
 
     // this function should return the brush to paint the window background
     // with or 0 for the default brush
@@ -364,6 +413,9 @@ public:
     // initialize various fields of wxMouseEvent (common part of MSWOnMouseXXX)
     void InitMouseEvent(wxMouseEvent& event, int x, int y, WXUINT flags);
 
+    // check if mouse is in the window
+    bool IsMouseInWindow() const;
+
 protected:
     // the window handle
     WXHWND                m_hWnd;
@@ -375,8 +427,7 @@ protected:
     bool                  m_useCtl3D:1; // Using CTL3D for this control
     bool                  m_backgroundTransparent:1;
     bool                  m_mouseInWindow:1;
-    bool                  m_doubleClickAllowed:1;
-    bool                  m_winCaptured:1;
+    bool                  m_lastKeydownProcessed:1;
 
     // the size of one page for scrolling
     int                   m_xThumbSize;
@@ -391,9 +442,6 @@ protected:
 
     WXHMENU               m_hMenu; // Menu, if any
 
-    // the return value of WM_GETDLGCODE handler
-    long m_lDlgCode;
-
     // implement the base class pure virtuals
     virtual void DoClientToScreen( int *x, int *y ) const;
     virtual void DoScreenToClient( int *x, int *y ) const;
@@ -405,6 +453,9 @@ protected:
                            int sizeFlags = wxSIZE_AUTO);
     virtual void DoSetClientSize(int width, int height);
 
+    virtual void DoCaptureMouse();
+    virtual void DoReleaseMouse();
+
     // move the window to the specified location and resize it: this is called
     // from both DoSetSize() and DoSetClientSize() and would usually just call
     // ::MoveWindow() except for composite controls which will want to arrange
@@ -413,7 +464,17 @@ protected:
 
 #if wxUSE_TOOLTIPS
     virtual void DoSetToolTip( wxToolTip *tip );
+
+    // process TTN_NEEDTEXT message properly (i.e. fixing the bugs in
+    // comctl32.dll in our code -- see the function body for more info)
+    bool HandleTooltipNotify(WXUINT code,
+                             WXLPARAM lParam,
+                             const wxString& ttip);
 #endif // wxUSE_TOOLTIPS
+
+    // the helper functions used by HandleChar/KeyXXX methods
+    wxKeyEvent CreateKeyEvent(wxEventType evType, int id,
+                              WXLPARAM lParam = 0, WXWPARAM wParam = 0) const;
 
 private:
     // common part of all ctors
@@ -427,11 +488,11 @@ private:
     bool HandleNotify(int idCtrl, WXLPARAM lParam, WXLPARAM *result);
 #endif // __WIN95__
 
-    // the helper functions used by HandleChar/KeyXXX methods
-    wxKeyEvent CreateKeyEvent(wxEventType evType, int id, WXLPARAM lp) const;
+    // list of disabled children before last call to our Disable()
+    wxWindowList *m_childrenDisabled;
 
-    DECLARE_DYNAMIC_CLASS(wxWindow);
-    DECLARE_NO_COPY_CLASS(wxWindow);
+    DECLARE_DYNAMIC_CLASS(wxWindowMSW)
+    DECLARE_NO_COPY_CLASS(wxWindowMSW)
     DECLARE_EVENT_TABLE()
 };
 
@@ -442,6 +503,16 @@ private:
 // kbd code translation
 WXDLLEXPORT int wxCharCodeMSWToWX(int keySym);
 WXDLLEXPORT int wxCharCodeWXToMSW(int id, bool *IsVirtual);
+
+// window creation helper class: before creating a new HWND, instantiate an
+// object of this class on stack - this allows to process the messages sent to
+// the window even before CreateWindow() returns
+class wxWindowCreationHook
+{
+public:
+    wxWindowCreationHook(wxWindowMSW *winBeingCreated);
+    ~wxWindowCreationHook();
+};
 
 #endif
     // _WX_WINDOW_H_

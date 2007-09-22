@@ -4,7 +4,7 @@
 // Author:      Vadim Zeitlin
 // Modified by:
 // Created:     04.11.99
-// RCS-ID:      $Id: fontmap.h,v 1.4.2.2 2000/03/31 18:12:31 VZ Exp $
+// RCS-ID:      $Id: fontmap.h,v 1.10 2002/08/31 11:29:10 GD Exp $
 // Copyright:   (c) Vadim Zeitlin
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -12,7 +12,7 @@
 #ifndef _WX_FONTMAPPER_H_
 #define _WX_FONTMAPPER_H_
 
-#ifdef __GNUG__
+#if defined(__GNUG__) && !defined(__APPLE__)
     #pragma interface "fontmap.h"
 #endif
 
@@ -20,7 +20,10 @@
 // headers
 // ----------------------------------------------------------------------------
 
+#if wxUSE_FONTMAP
+
 #include "wx/fontenc.h"         // for wxFontEncoding
+
 #if wxUSE_GUI
     #include "wx/fontutil.h"    // for wxNativeEncodingInfo
 #endif // wxUSE_GUI
@@ -55,6 +58,11 @@ public:
 
     // virtual dtor for a base class
     virtual ~wxFontMapper();
+
+    // return instance of the wxFontMapper singleton
+    static wxFontMapper *Get();
+    // set the sigleton to 'mapper' instance and return previous one
+    static wxFontMapper *Set(wxFontMapper *mapper);
 
 #if wxUSE_GUI
     // find an alternative for the given encoding (which is supposed to not be
@@ -163,6 +171,7 @@ protected:
 #if wxUSE_CONFIG
     // config object and path (in it) to use
     wxConfigBase *m_config;
+    bool m_configIsDummy;
 #endif
 
     wxString  m_configRootPath;
@@ -176,6 +185,9 @@ protected:
 #endif // wxUSE_GUI
 
     friend class wxFontMapperPathChanger;
+    
+private:
+    static wxFontMapper *sm_instance;
 };
 
 // ----------------------------------------------------------------------------
@@ -183,6 +195,9 @@ protected:
 // ----------------------------------------------------------------------------
 
 // the default font mapper for wxWindows programs
-WXDLLEXPORT_DATA(extern wxFontMapper *) wxTheFontMapper;
+// do NOT use! This is for backward compatibility, use wxFontMapper::Get() instead
+#define wxTheFontMapper (wxFontMapper::Get())
+
+#endif // wxUSE_FONTMAP
 
 #endif // _WX_FONTMAPPER_H_

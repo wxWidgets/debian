@@ -1,5 +1,5 @@
 /* minigzip.c -- simulate gzip using the zlib compression library
- * Copyright (C) 1995-1998 Jean-loup Gailly.
+ * Copyright (C) 1995-2002 Jean-loup Gailly.
  * For conditions of distribution and use, see copyright notice in zlib.h 
  */
 
@@ -13,7 +13,7 @@
  * or in pipe mode.
  */
 
-/* @(#) $Id: minigzip.c,v 1.2 1998/06/22 12:47:53 KB Exp $ */
+/* @(#) $Id: minigzip.c,v 1.3 2002/04/25 09:06:49 SC Exp $ */
 
 #include <stdio.h>
 #include "../zlib/zlib.h"
@@ -47,6 +47,9 @@
 #  define unlink remove
 #  define GZ_SUFFIX "-gz"
 #  define fileno(file) file->__file
+#endif
+#if defined(__MWERKS__) && __dest_os != __be_os && __dest_os != __win32_os
+#  include <unix.h> /* for fileno */
 #endif
 
 #ifndef WIN32 /* unlink already in stdio.h for WIN32 */

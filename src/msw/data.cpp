@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     01/02/97
-// RCS-ID:      $Id: data.cpp,v 1.34.2.2 2000/04/11 00:32:45 GRG Exp $
+// RCS-ID:      $Id: data.cpp,v 1.40 2002/02/22 18:18:36 VZ Exp $
 // Copyright:   (c) Julian Smart and Markus Holzem
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -87,13 +87,18 @@ wxCursor *wxHOURGLASS_CURSOR = NULL;
 wxCursor *wxCROSS_CURSOR = NULL;
 
 // 'Null' objects
+#if wxUSE_ACCEL
 wxAcceleratorTable wxNullAcceleratorTable;
+#endif // wxUSE_ACCEL
+
 wxBitmap  wxNullBitmap;
 wxIcon    wxNullIcon;
 wxCursor  wxNullCursor;
 wxPen     wxNullPen;
 wxBrush   wxNullBrush;
+#if wxUSE_PALETTE
 wxPalette wxNullPalette;
+#endif // wxUSE_PALETTE
 wxFont    wxNullFont;
 wxColour  wxNullColour;
 
@@ -130,8 +135,6 @@ const wxChar *wxGetTextFromUserPromptStr = wxT("Input Text");
 const wxChar *wxMessageBoxCaptionStr = wxT("Message");
 const wxChar *wxFileSelectorPromptStr = wxT("Select a file");
 const wxChar *wxFileSelectorDefaultWildcardStr = wxT("*.*");
-const wxChar *wxInternalErrorStr = wxT("wxWindows Internal Error");
-const wxChar *wxFatalErrorStr = wxT("wxWindows Fatal Error");
 const wxChar *wxTreeCtrlNameStr = wxT("treeCtrl");
 const wxChar *wxDirDialogNameStr = wxT("wxDirCtrl");
 const wxChar *wxDirDialogDefaultFolderStr = wxT("/");

@@ -4,7 +4,7 @@
 // Author:      Aleksandras Gluchovas
 // Modified by:
 // Created:     22/09/98
-// RCS-ID:      $Id: scriptbinder.cpp,v 1.3 2000/02/11 18:00:42 RR Exp $
+// RCS-ID:      $Id: scriptbinder.cpp,v 1.5 2001/11/18 12:32:15 GD Exp $
 // Copyright:   (c) Aleskandars Gluchovas
 // Licence:   	wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -20,7 +20,9 @@
 #include "wx/wx.h"
 #endif
 
-#include <malloc.h>
+#ifndef __DARWIN__
+#  include <malloc.h>
+#endif
 #include <string.h>
 #include <memory.h>
 

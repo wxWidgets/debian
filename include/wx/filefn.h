@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     29/01/98
-// RCS-ID:      $Id: filefn.h,v 1.35.2.6 2000/07/07 19:45:13 VZ Exp $
+// RCS-ID:      $Id: filefn.h,v 1.61 2002/08/31 11:29:10 GD Exp $
 // Copyright:   (c) 1998 Julian Smart
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -12,7 +12,7 @@
 #ifndef   _FILEFN_H_
 #define   _FILEFN_H_
 
-#ifdef __GNUG__
+#if defined(__GNUG__) && !defined(__APPLE__)
     #pragma interface "filefn.h"
 #endif
 
@@ -25,7 +25,7 @@
 // ----------------------------------------------------------------------------
 
 // define off_t
-#ifndef __WXMAC__
+#if !defined(__WXMAC__) || defined(__UNIX__)
     #include  <sys/types.h>
 #else
     typedef long off_t;
@@ -66,7 +66,9 @@ WXDLLEXPORT_DATA(extern const wxChar*) wxEmptyString;
 // ----------------------------------------------------------------------------
 
 // Microsoft compiler loves underscores, feed them to it
-#ifdef  __VISUALC__
+#if defined( __VISUALC__ ) \
+    || ( defined(__MINGW32__) && wxCHECK_W32API_VERSION( 0, 5 ) ) \
+    || ( defined(__MWERKS__) && defined(__WXMSW__) )
     // functions
     #define   wxClose      _close
     #define   wxRead       _read
@@ -78,20 +80,24 @@ WXDLLEXPORT_DATA(extern const wxChar*) wxEmptyString;
     #define   wxTell       _tell
 
     #if wxUSE_UNICODE
-        #define   wxOpen       _wopen
-        #define   wxAccess     _waccess
-
-        #define   wxMkDir      _wmkdir
-        #define   wxRmDir      _wrmdir
-
-        #define   wxStat       _wstat
+        #if wxUSE_UNICODE_MSLU
+            #define   wxOpen       wxMSLU__wopen
+            #define   wxAccess     wxMSLU__waccess
+            #define   wxMkDir      wxMSLU__wmkdir
+            #define   wxRmDir      wxMSLU__wrmdir
+            #define   wxStat       wxMSLU__wstat
+        #else
+            #define   wxOpen       _wopen
+            #define   wxAccess     _waccess
+            #define   wxMkDir      _wmkdir
+            #define   wxRmDir      _wrmdir
+            #define   wxStat       _wstat
+        #endif
     #else // !wxUSE_UNICODE
         #define   wxOpen       _open
         #define   wxAccess     _access
-
         #define   wxMkDir      _mkdir
         #define   wxRmDir      _rmdir
-
         #define   wxStat       _stat
     #endif
 
@@ -113,13 +119,11 @@ WXDLLEXPORT_DATA(extern const wxChar*) wxEmptyString;
     #endif // O_RDONLY
 #else
     // functions
-    #define   wxOpen       open
     #define   wxClose      close
     #define   wxRead       read
     #define   wxWrite      write
     #define   wxLseek      lseek
     #define   wxFsync      commit
-    #define   wxAccess     access
     #define   wxEof        eof
 
     #define   wxMkDir      mkdir
@@ -127,10 +131,18 @@ WXDLLEXPORT_DATA(extern const wxChar*) wxEmptyString;
 
     #define   wxTell(fd)   lseek(fd, 0, SEEK_CUR)
 
-    #define   wxStat       stat
-
-    // types
     #define   wxStructStat struct stat
+    
+#if wxUSE_UNICODE
+#   define wxNEED_WX_UNISTD_H
+WXDLLEXPORT int wxStat( const wxChar *file_name, wxStructStat *buf );
+WXDLLEXPORT int wxAccess( const wxChar *pathname, int mode );
+WXDLLEXPORT int wxOpen( const wxChar *pathname, int flags, mode_t mode );
+#else
+    #define   wxOpen       open
+    #define   wxStat       stat
+    #define   wxAccess     access
+#endif
 
 #endif  // VC++
 
@@ -167,20 +179,11 @@ WXDLLEXPORT void wxDos2UnixFilename(wxChar *s);
 WXDLLEXPORT void wxUnix2DosFilename(wxChar *s);
 #define Unix2DosFilename wxUnix2DosFilename
 
-#ifdef __WXMAC__
-  WXDLLEXPORT wxString wxMacFSSpec2MacFilename( const FSSpec *spec ) ;
-  WXDLLEXPORT wxString wxMacFSSpec2UnixFilename( const FSSpec *spec ) ;
-  WXDLLEXPORT void wxUnixFilename2FSSpec( const char *path , FSSpec *spec ) ;
-  WXDLLEXPORT void wxMacFilename2FSSpec( const char *path , FSSpec *spec ) ;
-  WXDLLEXPORT wxString wxMac2UnixFilename( const char *s) ;
-  WXDLLEXPORT wxString wxUnix2MacFilename( const char *s);
-#endif
-
 // Strip the extension, in situ
 WXDLLEXPORT void wxStripExtension(wxChar *buffer);
 WXDLLEXPORT void wxStripExtension(wxString& buffer);
 
-// Get a temporary filename, opening and closing the file.
+// Get a temporary filename
 WXDLLEXPORT wxChar* wxGetTempFileName(const wxString& prefix, wxChar *buf = (wxChar *) NULL);
 WXDLLEXPORT bool wxGetTempFileName(const wxString& prefix, wxString& buf);
 
@@ -192,8 +195,8 @@ WXDLLEXPORT bool wxExpandPath(wxString& dest, const wxChar *path);
 // and make (if under the home tree) relative to home
 // [caller must copy-- volatile]
 WXDLLEXPORT wxChar* wxContractPath(const wxString& filename,
-				   const wxString& envname = wxEmptyString,
-				   const wxString& user = wxEmptyString);
+                                   const wxString& envname = wxEmptyString,
+                                   const wxString& user = wxEmptyString);
 
 // Destructive removal of /./ and /../ stuff
 WXDLLEXPORT wxChar* wxRealPath(wxChar *path);
@@ -220,7 +223,8 @@ WXDLLEXPORT bool wxMatchWild(const wxString& pattern,  const wxString& text, boo
 WXDLLEXPORT bool wxConcatFiles(const wxString& file1, const wxString& file2, const wxString& file3);
 
 // Copy file1 to file2
-WXDLLEXPORT bool wxCopyFile(const wxString& file1, const wxString& file2);
+WXDLLEXPORT bool wxCopyFile(const wxString& file1, const wxString& file2,
+                            bool overwrite = TRUE);
 
 // Remove file
 WXDLLEXPORT bool wxRemoveFile(const wxString& file);
@@ -247,20 +251,39 @@ WXDLLEXPORT bool wxMkdir(const wxString& dir, int perm = 0777);
 // Remove directory. Flags reserved for future use.
 WXDLLEXPORT bool wxRmdir(const wxString& dir, int flags = 0);
 
+// ----------------------------------------------------------------------------
 // separators in file names
+// ----------------------------------------------------------------------------
+
+// between file name and extension
 #define wxFILE_SEP_EXT        wxT('.')
+
+// between drive/volume name and the path
 #define wxFILE_SEP_DSK        wxT(':')
+
+// between the path components
 #define wxFILE_SEP_PATH_DOS   wxT('\\')
 #define wxFILE_SEP_PATH_UNIX  wxT('/')
+#define wxFILE_SEP_PATH_MAC   wxT(':')
+#define wxFILE_SEP_PATH_VMS   wxT('.') // VMS also uses '[' and ']'
 
 // separator in the path list (as in PATH environment variable)
+// there is no PATH variable in Classic Mac OS so just use the
+// semicolon (it must be different from the file name separator)
 // NB: these are strings and not characters on purpose!
 #define wxPATH_SEP_DOS        wxT(";")
 #define wxPATH_SEP_UNIX       wxT(":")
+#define wxPATH_SEP_MAC        wxT(";")
 
 // platform independent versions
-#ifdef  __UNIX__
+#if defined(__UNIX__) && !defined(__CYGWIN__)
   #define wxFILE_SEP_PATH     wxFILE_SEP_PATH_UNIX
+  #define wxPATH_SEP          wxPATH_SEP_UNIX
+#elif defined(__MAC__)
+  #define wxFILE_SEP_PATH     wxFILE_SEP_PATH_MAC
+  #define wxPATH_SEP          wxPATH_SEP_MAC
+#elif defined(__CYGWIN__) // Cygwin
+  #define wxFILE_SEP_PATH     wxFILE_SEP_PATH_DOS
   #define wxPATH_SEP          wxPATH_SEP_UNIX
 #else   // Windows and OS/2
   #define wxFILE_SEP_PATH     wxFILE_SEP_PATH_DOS
@@ -269,15 +292,22 @@ WXDLLEXPORT bool wxRmdir(const wxString& dir, int flags = 0);
 
 // this is useful for wxString::IsSameAs(): to compare two file names use
 // filename1.IsSameAs(filename2, wxARE_FILENAMES_CASE_SENSITIVE)
-#ifdef  __UNIX__
+#if defined(__UNIX__) && !defined(__DARWIN__)
   #define wxARE_FILENAMES_CASE_SENSITIVE  TRUE
-#else   // Windows and OS/2
+#else   // Windows, Mac OS and OS/2
   #define wxARE_FILENAMES_CASE_SENSITIVE  FALSE
 #endif  // Unix/Windows
 
 // is the char a path separator?
 inline bool wxIsPathSeparator(wxChar c)
-  { return c == wxFILE_SEP_PATH_DOS || c == wxFILE_SEP_PATH_UNIX; }
+{
+    // under DOS/Windows we should understand both Unix and DOS file separators
+#if defined(__UNIX__) || defined(__MAC__)
+    return c == wxFILE_SEP_PATH;
+#else
+    return c == wxFILE_SEP_PATH_DOS || c == wxFILE_SEP_PATH_UNIX;
+#endif
+}
 
 // does the string ends with path separator?
 WXDLLEXPORT bool wxEndsWithPathSeparator(const wxChar *pszFileName);

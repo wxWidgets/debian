@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     12/07/98
-// RCS-ID:      $Id: cspalette.h,v 1.1 2000/03/03 11:24:42 JS Exp $
+// RCS-ID:      $Id: cspalette.h,v 1.2 2002/09/07 12:12:21 GD Exp $
 // Copyright:   (c) Julian Smart
 // Licence:   	wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -12,7 +12,7 @@
 #ifndef _STUDIO_CSPALETTE_H_
 #define _STUDIO_CSPALETTE_H_
 
-#ifdef __GNUG__
+#if defined(__GNUG__) && !defined(__APPLE__)
 // #pragma interface
 #endif
 

@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     13.07.99
-// RCS-ID:      $Id: textcmn.cpp,v 1.8.2.1 2001/06/06 11:17:30 JS Exp $
+// RCS-ID:      $Id: textcmn.cpp,v 1.22 2002/08/05 18:04:07 RR Exp $
 // Copyright:   (c) wxWindows team
 // Licence:     wxWindows license
 ///////////////////////////////////////////////////////////////////////////////
@@ -12,16 +12,19 @@
 // ============================================================================
 // declarations
 // ============================================================================
+
 #ifdef __GNUG__
     #pragma implementation "textctrlbase.h"
 #endif
-        
+
 // for compilers that support precompilation, includes "wx.h".
 #include "wx/wxprec.h"
 
 #ifdef __BORLANDC__
     #pragma hdrstop
 #endif
+
+#if wxUSE_TEXTCTRL
 
 #ifndef WX_PRECOMP
     #include "wx/intl.h"
@@ -43,30 +46,90 @@
 // implementation
 // ============================================================================
 
+IMPLEMENT_DYNAMIC_CLASS(wxTextUrlEvent, wxCommandEvent)
+
+DEFINE_EVENT_TYPE(wxEVT_COMMAND_TEXT_UPDATED)
+DEFINE_EVENT_TYPE(wxEVT_COMMAND_TEXT_ENTER)
+DEFINE_EVENT_TYPE(wxEVT_COMMAND_TEXT_URL)
+DEFINE_EVENT_TYPE(wxEVT_COMMAND_TEXT_MAXLEN)
+
 // ----------------------------------------------------------------------------
 // ctor
 // ----------------------------------------------------------------------------
 
 wxTextCtrlBase::wxTextCtrlBase()
 {
-#ifndef NO_TEXT_WINDOW_STREAM
-  #if wxUSE_IOSTREAMH
-  if (allocate())
-    setp(base(),ebuf());
-  #else
-  m_streambuf=new char[64];
-  setp(m_streambuf,m_streambuf+64);
-  #endif //wxUSE_IOSTREAMH
-#endif // NO_TEXT_WINDOW_STREAM
 }
 
 wxTextCtrlBase::~wxTextCtrlBase()
 {
-#ifndef NO_TEXT_WINDOW_STREAM
-#if !wxUSE_IOSTREAMH
-  delete[] m_streambuf;
-#endif
-#endif
+}
+
+// ----------------------------------------------------------------------------
+// style functions - not implemented here
+// ----------------------------------------------------------------------------
+
+/* static */
+wxTextAttr wxTextAttr::Combine(const wxTextAttr& attr,
+                               const wxTextAttr& attrDef,
+                               const wxTextCtrlBase *text)
+{
+    wxFont font = attr.GetFont();
+    if ( !font.Ok() )
+    {
+        font = attrDef.GetFont();
+
+        if ( text && !font.Ok() )
+            font = text->GetFont();
+    }
+
+    wxColour colFg = attr.GetTextColour();
+    if ( !colFg.Ok() )
+    {
+        colFg = attrDef.GetTextColour();
+
+        if ( text && !colFg.Ok() )
+            colFg = text->GetForegroundColour();
+    }
+
+    wxColour colBg = attr.GetBackgroundColour();
+    if ( !colBg.Ok() )
+    {
+        colBg = attrDef.GetBackgroundColour();
+
+        if ( text && !colBg.Ok() )
+            colBg = text->GetBackgroundColour();
+    }
+
+    return wxTextAttr(colFg, colBg, font);
+}
+
+// apply styling to text range
+bool wxTextCtrlBase::SetStyle(long WXUNUSED(start), long WXUNUSED(end),
+                              const wxTextAttr& WXUNUSED(style))
+{
+    // to be implemented in derived TextCtrl classes
+    return FALSE;
+}
+
+// change default text attributes
+bool wxTextCtrlBase::SetDefaultStyle(const wxTextAttr& style)
+{
+    // keep the old attributes if the new style doesn't specify them unless the
+    // new style is empty - then reset m_defaultStyle (as there is no other way
+    // to do it)
+    if ( style.IsDefault() )
+        m_defaultStyle = style;
+    else
+        m_defaultStyle = wxTextAttr::Combine(style, m_defaultStyle, this);
+
+    return TRUE;
+}
+
+// get default text attributes
+const wxTextAttr& wxTextCtrlBase::GetDefaultStyle() const
+{
+    return m_defaultStyle;
 }
 
 // ----------------------------------------------------------------------------
@@ -75,6 +138,7 @@ wxTextCtrlBase::~wxTextCtrlBase()
 
 bool wxTextCtrlBase::LoadFile(const wxString& filename)
 {
+#if wxUSE_FFILE
     wxFFile file(filename);
     if ( file.IsOpened() )
     {
@@ -92,6 +156,7 @@ bool wxTextCtrlBase::LoadFile(const wxString& filename)
     }
 
     wxLogError(_("File couldn't be loaded."));
+#endif // wxUSE_FFILE
 
     return FALSE;
 }
@@ -107,6 +172,7 @@ bool wxTextCtrlBase::SaveFile(const wxString& filename)
         return FALSE;
     }
 
+#if wxUSE_FFILE
     wxFFile file(filename, "w");
     if ( file.IsOpened() && file.Write(GetValue()) )
     {
@@ -119,6 +185,7 @@ bool wxTextCtrlBase::SaveFile(const wxString& filename)
     }
 
     wxLogError(_("The text couldn't be saved."));
+#endif // wxUSE_FFILE
 
     return FALSE;
 }
@@ -176,34 +243,153 @@ wxTextCtrl& wxTextCtrlBase::operator<<(const wxChar c)
 
 #ifndef NO_TEXT_WINDOW_STREAM
 
-int wxTextCtrlBase::overflow( int WXUNUSED(c) )
+int wxTextCtrlBase::overflow(int c)
 {
-    int len = pptr() - pbase();
-    char *txt = new char[len+1];
-    strncpy(txt, pbase(), len);
-    txt[len] = '\0';
-    (*this) << txt;
-    setp(pbase(), epptr());
-    delete[] txt;
-    return EOF;
-}
+    AppendText((wxChar)c);
 
-int wxTextCtrlBase::sync()
-{
-    int len = pptr() - pbase();
-    char *txt = new char[len+1];
-    strncpy(txt, pbase(), len);
-    txt[len] = '\0';
-    (*this) << txt;
-    setp(pbase(), epptr());
-    delete[] txt;
+    // return something different from EOF
     return 0;
 }
 
-int wxTextCtrlBase::underflow()
+#endif // NO_TEXT_WINDOW_STREAM
+
+// ----------------------------------------------------------------------------
+// clipboard stuff
+// ----------------------------------------------------------------------------
+
+bool wxTextCtrlBase::CanCopy() const
 {
-    return EOF;
+    // can copy if there's a selection
+    long from, to;
+    GetSelection(&from, &to);
+    return from != to;
 }
 
-#endif // NO_TEXT_WINDOW_STREAM
+bool wxTextCtrlBase::CanCut() const
+{
+    // can cut if there's a selection and if we're not read only
+    return CanCopy() && IsEditable();
+}
+
+bool wxTextCtrlBase::CanPaste() const
+{
+    // can paste if we are not read only
+    return IsEditable();
+}
+
+// ----------------------------------------------------------------------------
+// emulating key presses
+// ----------------------------------------------------------------------------
+
+bool wxTextCtrlBase::EmulateKeyPress(const wxKeyEvent& event)
+{
+    // the generic version is unused in wxMSW
+#ifndef __WIN32__
+    wxChar ch;
+    int keycode = event.GetKeyCode();
+    switch ( keycode )
+    {
+        case WXK_NUMPAD0:
+        case WXK_NUMPAD1:
+        case WXK_NUMPAD2:
+        case WXK_NUMPAD3:
+        case WXK_NUMPAD4:
+        case WXK_NUMPAD5:
+        case WXK_NUMPAD6:
+        case WXK_NUMPAD7:
+        case WXK_NUMPAD8:
+        case WXK_NUMPAD9:
+            ch = _T('0') + keycode - WXK_NUMPAD0;
+            break;
+
+        case WXK_MULTIPLY:
+        case WXK_NUMPAD_MULTIPLY:
+            ch = _T('*');
+            break;
+
+        case WXK_ADD:
+        case WXK_NUMPAD_ADD:
+            ch = _T('+');
+            break;
+
+        case WXK_SUBTRACT:
+        case WXK_NUMPAD_SUBTRACT:
+            ch = _T('-');
+            break;
+
+        case WXK_DECIMAL:
+        case WXK_NUMPAD_DECIMAL:
+            ch = _T('.');
+            break;
+
+        case WXK_DIVIDE:
+        case WXK_NUMPAD_DIVIDE:
+            ch = _T('/');
+            break;
+
+        default:
+            if ( keycode < 256 && keycode >= 0 && wxIsprint(keycode) )
+            {
+                // FIXME this is not going to work for non letters...
+                if ( !event.ShiftDown() )
+                {
+                    keycode = wxTolower(keycode);
+                }
+
+                ch = (wxChar)keycode;
+            }
+            else
+            {
+                ch = _T('\0');
+            }
+    }
+
+    if ( ch )
+    {
+        WriteText(ch);
+
+        return TRUE;
+    }
+#endif // !__WIN32__
+
+    return FALSE;
+}
+
+// ----------------------------------------------------------------------------
+// selection and ranges
+// ----------------------------------------------------------------------------
+
+void wxTextCtrlBase::SelectAll()
+{
+    SetSelection(0, GetLastPosition());
+}
+
+wxString wxTextCtrlBase::GetStringSelection() const
+{
+    long from, to;
+    GetSelection(&from, &to);
+
+    return GetRange(from, to);
+}
+
+wxString wxTextCtrlBase::GetRange(long from, long to) const
+{
+    wxString sel;
+    if ( from < to )
+    {
+        sel = GetValue().Mid(from, to - from);
+    }
+
+    return sel;
+}
+
+#else // !wxUSE_TEXTCTRL
+
+// define this one even if !wxUSE_TEXTCTRL because it is also used by other
+// controls (wxComboBox and wxSpinCtrl)
+#include "wx/event.h"
+
+DEFINE_EVENT_TYPE(wxEVT_COMMAND_TEXT_UPDATED)
+
+#endif // wxUSE_TEXTCTRL/!wxUSE_TEXTCTRL
 

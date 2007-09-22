@@ -5,7 +5,7 @@
 // Author:      Vadim Zeitlin
 // Modified by:
 // Created:     04.01.00
-// RCS-ID:      $Id: cmdline.h,v 1.2.2.3 2000/08/13 11:07:45 VZ Exp $
+// RCS-ID:      $Id: cmdline.h,v 1.13 2002/08/31 11:29:09 GD Exp $
 // Copyright:   (c) 2000 Vadim Zeitlin <zeitlin@dptmaths.ens-cachan.fr>
 // Licence:     wxWindows license
 ///////////////////////////////////////////////////////////////////////////////
@@ -13,11 +13,14 @@
 #ifndef _WX_CMDLINE_H_
 #define _WX_CMDLINE_H_
 
-#ifdef __GNUG__
+#if defined(__GNUG__) && !defined(__APPLE__)
     #pragma interface "cmdline.h"
 #endif
 
+#include "wx/defs.h"
 #include "wx/string.h"
+
+#if wxUSE_CMDLINE_PARSER
 
 class WXDLLEXPORT wxDateTime;
 
@@ -127,6 +130,8 @@ public:
     void EnableLongOptions(bool enable = TRUE);
     void DisableLongOptions() { EnableLongOptions(FALSE); }
 
+    bool AreLongOptionsEnabled();
+
     // extra text may be shown by Usage() method if set by this function
     void SetLogo(const wxString& logo);
 
@@ -158,7 +163,10 @@ public:
     // parse the command line, return 0 if ok, -1 if "-h" or "--help" option
     // was encountered and the help message was given or a positive value if a
     // syntax error occured
-    int Parse();
+    //
+    // if showUsage is true, Usage() is called in case of syntax error or if
+    // help was requested
+    int Parse(bool showUsage = TRUE);
 
     // give the usage message describing all program options
     void Usage();
@@ -187,11 +195,33 @@ public:
     // gets the value of Nth parameter (as string only for now)
     wxString GetParam(size_t n = 0u) const;
 
+    // Resets switches and options
+    void Reset();
+
+    // break down the command line in arguments
+    static wxArrayString ConvertStringToArgs(const wxChar *cmdline);
+
 private:
+    // get usage string
+    wxString GetUsageString();
+
     // common part of all ctors
     void Init();
 
     struct wxCmdLineParserData *m_data;
 };
 
+#else // !wxUSE_CMDLINE_PARSER
+
+// this function is always available (even if !wxUSE_CMDLINE_PARSER) because it
+// is used by wxWin itself under Windows
+class WXDLLEXPORT wxCmdLineParser
+{
+public:
+    static wxArrayString ConvertStringToArgs(const wxChar *cmdline);
+};
+
+#endif // wxUSE_CMDLINE_PARSER/!wxUSE_CMDLINE_PARSER
+
 #endif // _WX_CMDLINE_H_
+

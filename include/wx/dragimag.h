@@ -1,6 +1,12 @@
 #ifndef _WX_DRAGIMAG_H_BASE_
 #define _WX_DRAGIMAG_H_BASE_
 
+#if wxUSE_DRAGIMAGE
+
+class WXDLLEXPORT wxRect;
+class WXDLLEXPORT wxMemoryDC;
+class WXDLLEXPORT wxDC;
+
 #if defined(__WXMSW__)
 #ifdef __WIN16__
 #include "wx/generic/dragimgg.h"
@@ -20,7 +26,7 @@
 #define wxDragImage wxGenericDragImage
 #define sm_classwxDragImage sm_classwxGenericDragImage
 
-#elif defined(__WXQT__)
+#elif defined(__WXX11__)
 #include "wx/generic/dragimgg.h"
 #define wxDragImage wxGenericDragImage
 #define sm_classwxDragImage sm_classwxGenericDragImage
@@ -41,6 +47,8 @@
 #define sm_classwxDragImage sm_classwxGenericDragImage
 
 #endif
+
+#endif // wxUSE_DRAGIMAGE
 
 #endif
     // _WX_DRAGIMAG_H_BASE_

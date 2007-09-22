@@ -7,16 +7,22 @@ from windows import *
 
 from gdi import *
 
+from fonts import *
+
 from clip_dnd import *
 
 from controls import *
 
 from events import *
 import wx
+wxITEM_NORMAL = 0 # predeclare this since wx isn't fully imported yet
 class wxStatusBarPtr(wxWindowPtr):
     def __init__(self,this):
         self.this = this
         self.thisown = 0
+    def Create(self, *_args, **_kwargs):
+        val = apply(stattoolc.wxStatusBar_Create,(self,) + _args, _kwargs)
+        return val
     def GetFieldRect(self, *_args, **_kwargs):
         val = apply(stattoolc.wxStatusBar_GetFieldRect,(self,) + _args, _kwargs)
         if val: val = wxRectPtr(val) ; val.thisown = 1
@@ -42,6 +48,12 @@ class wxStatusBarPtr(wxWindowPtr):
     def SetStatusWidths(self, *_args, **_kwargs):
         val = apply(stattoolc.wxStatusBar_SetStatusWidths,(self,) + _args, _kwargs)
         return val
+    def PushStatusText(self, *_args, **_kwargs):
+        val = apply(stattoolc.wxStatusBar_PushStatusText,(self,) + _args, _kwargs)
+        return val
+    def PopStatusText(self, *_args, **_kwargs):
+        val = apply(stattoolc.wxStatusBar_PopStatusText,(self,) + _args, _kwargs)
+        return val
     def SetMinHeight(self, *_args, **_kwargs):
         val = apply(stattoolc.wxStatusBar_SetMinHeight,(self,) + _args, _kwargs)
         return val
@@ -51,12 +63,18 @@ class wxStatusBar(wxStatusBarPtr):
     def __init__(self,*_args,**_kwargs):
         self.this = apply(stattoolc.new_wxStatusBar,_args,_kwargs)
         self.thisown = 1
-        #wx._StdWindowCallbacks(self)
+        self._setOORInfo(self)
 
 
 
+def wxPreStatusBar(*_args,**_kwargs):
+    val = wxStatusBarPtr(apply(stattoolc.new_wxPreStatusBar,_args,_kwargs))
+    val.thisown = 1
+    val._setOORInfo(val)
+    return val
 
-class wxToolBarToolBasePtr :
+
+class wxToolBarToolBasePtr(wxObjectPtr):
     def __init__(self,this):
         self.this = this
         self.thisown = 0
@@ -68,11 +86,9 @@ class wxToolBarToolBasePtr :
         return val
     def GetControl(self, *_args, **_kwargs):
         val = apply(stattoolc.wxToolBarToolBase_GetControl,(self,) + _args, _kwargs)
-        if val: val = wxControlPtr(val) 
         return val
     def GetToolBar(self, *_args, **_kwargs):
         val = apply(stattoolc.wxToolBarToolBase_GetToolBar,(self,) + _args, _kwargs)
-        if val: val = wxToolBarBasePtr(val) 
         return val
     def IsButton(self, *_args, **_kwargs):
         val = apply(stattoolc.wxToolBarToolBase_IsButton,(self,) + _args, _kwargs)
@@ -86,6 +102,9 @@ class wxToolBarToolBasePtr :
     def GetStyle(self, *_args, **_kwargs):
         val = apply(stattoolc.wxToolBarToolBase_GetStyle,(self,) + _args, _kwargs)
         return val
+    def GetKind(self, *_args, **_kwargs):
+        val = apply(stattoolc.wxToolBarToolBase_GetKind,(self,) + _args, _kwargs)
+        return val
     def IsEnabled(self, *_args, **_kwargs):
         val = apply(stattoolc.wxToolBarToolBase_IsEnabled,(self,) + _args, _kwargs)
         return val
@@ -95,17 +114,20 @@ class wxToolBarToolBasePtr :
     def CanBeToggled(self, *_args, **_kwargs):
         val = apply(stattoolc.wxToolBarToolBase_CanBeToggled,(self,) + _args, _kwargs)
         return val
-    def GetBitmap1(self, *_args, **_kwargs):
-        val = apply(stattoolc.wxToolBarToolBase_GetBitmap1,(self,) + _args, _kwargs)
+    def GetNormalBitmap(self, *_args, **_kwargs):
+        val = apply(stattoolc.wxToolBarToolBase_GetNormalBitmap,(self,) + _args, _kwargs)
         if val: val = wxBitmapPtr(val) 
         return val
-    def GetBitmap2(self, *_args, **_kwargs):
-        val = apply(stattoolc.wxToolBarToolBase_GetBitmap2,(self,) + _args, _kwargs)
+    def GetDisabledBitmap(self, *_args, **_kwargs):
+        val = apply(stattoolc.wxToolBarToolBase_GetDisabledBitmap,(self,) + _args, _kwargs)
         if val: val = wxBitmapPtr(val) 
         return val
     def GetBitmap(self, *_args, **_kwargs):
         val = apply(stattoolc.wxToolBarToolBase_GetBitmap,(self,) + _args, _kwargs)
-        if val: val = wxBitmapPtr(val) 
+        if val: val = wxBitmapPtr(val) ; val.thisown = 1
+        return val
+    def GetLabel(self, *_args, **_kwargs):
+        val = apply(stattoolc.wxToolBarToolBase_GetLabel,(self,) + _args, _kwargs)
         return val
     def GetShortHelp(self, *_args, **_kwargs):
         val = apply(stattoolc.wxToolBarToolBase_GetShortHelp,(self,) + _args, _kwargs)
@@ -128,11 +150,14 @@ class wxToolBarToolBasePtr :
     def SetLongHelp(self, *_args, **_kwargs):
         val = apply(stattoolc.wxToolBarToolBase_SetLongHelp,(self,) + _args, _kwargs)
         return val
-    def SetBitmap1(self, *_args, **_kwargs):
-        val = apply(stattoolc.wxToolBarToolBase_SetBitmap1,(self,) + _args, _kwargs)
+    def SetNormalBitmap(self, *_args, **_kwargs):
+        val = apply(stattoolc.wxToolBarToolBase_SetNormalBitmap,(self,) + _args, _kwargs)
         return val
-    def SetBitmap2(self, *_args, **_kwargs):
-        val = apply(stattoolc.wxToolBarToolBase_SetBitmap2,(self,) + _args, _kwargs)
+    def SetDisabledBitmap(self, *_args, **_kwargs):
+        val = apply(stattoolc.wxToolBarToolBase_SetDisabledBitmap,(self,) + _args, _kwargs)
+        return val
+    def SetLabel(self, *_args, **_kwargs):
+        val = apply(stattoolc.wxToolBarToolBase_SetLabel,(self,) + _args, _kwargs)
         return val
     def Detach(self, *_args, **_kwargs):
         val = apply(stattoolc.wxToolBarToolBase_Detach,(self,) + _args, _kwargs)
@@ -148,6 +173,12 @@ class wxToolBarToolBasePtr :
         return val
     def __repr__(self):
         return "<C wxToolBarToolBase instance at %s>" % (self.this,)
+    
+    GetBitmap1 = GetNormalBitmap
+    GetBitmap2 = GetDisabledBitmap
+    SetBitmap1 = SetNormalBitmap
+    SetBitmap2 = SetDisabledBitmap
+    
 class wxToolBarToolBase(wxToolBarToolBasePtr):
     def __init__(self,this):
         self.this = this
@@ -159,41 +190,29 @@ class wxToolBarBasePtr(wxControlPtr):
     def __init__(self,this):
         self.this = this
         self.thisown = 0
-    def AddTool(self, *_args, **_kwargs):
-        val = apply(stattoolc.wxToolBarBase_AddTool,(self,) + _args, _kwargs)
-        if val: val = wxToolBarToolBasePtr(val) 
-        return val
-    def AddSimpleTool(self, *_args, **_kwargs):
-        val = apply(stattoolc.wxToolBarBase_AddSimpleTool,(self,) + _args, _kwargs)
-        if val: val = wxToolBarToolBasePtr(val) 
+    def DoAddTool(self, *_args, **_kwargs):
+        val = apply(stattoolc.wxToolBarBase_DoAddTool,(self,) + _args, _kwargs)
         return val
     def InsertTool(self, *_args, **_kwargs):
         val = apply(stattoolc.wxToolBarBase_InsertTool,(self,) + _args, _kwargs)
-        if val: val = wxToolBarToolBasePtr(val) 
-        return val
-    def InsertSimpleTool(self, *_args, **_kwargs):
-        val = apply(stattoolc.wxToolBarBase_InsertSimpleTool,(self,) + _args, _kwargs)
-        if val: val = wxToolBarToolBasePtr(val) 
         return val
     def AddControl(self, *_args, **_kwargs):
         val = apply(stattoolc.wxToolBarBase_AddControl,(self,) + _args, _kwargs)
-        if val: val = wxToolBarToolBasePtr(val) 
         return val
     def InsertControl(self, *_args, **_kwargs):
         val = apply(stattoolc.wxToolBarBase_InsertControl,(self,) + _args, _kwargs)
-        if val: val = wxToolBarToolBasePtr(val) 
+        return val
+    def FindControl(self, *_args, **_kwargs):
+        val = apply(stattoolc.wxToolBarBase_FindControl,(self,) + _args, _kwargs)
         return val
     def AddSeparator(self, *_args, **_kwargs):
         val = apply(stattoolc.wxToolBarBase_AddSeparator,(self,) + _args, _kwargs)
-        if val: val = wxToolBarToolBasePtr(val) 
         return val
     def InsertSeparator(self, *_args, **_kwargs):
         val = apply(stattoolc.wxToolBarBase_InsertSeparator,(self,) + _args, _kwargs)
-        if val: val = wxToolBarToolBasePtr(val) 
         return val
     def RemoveTool(self, *_args, **_kwargs):
         val = apply(stattoolc.wxToolBarBase_RemoveTool,(self,) + _args, _kwargs)
-        if val: val = wxToolBarToolBasePtr(val) 
         return val
     def DeleteToolByPos(self, *_args, **_kwargs):
         val = apply(stattoolc.wxToolBarBase_DeleteToolByPos,(self,) + _args, _kwargs)
@@ -256,6 +275,10 @@ class wxToolBarBasePtr(wxControlPtr):
         val = apply(stattoolc.wxToolBarBase_GetToolMargins,(self,) + _args, _kwargs)
         if val: val = wxSizePtr(val) ; val.thisown = 1
         return val
+    def GetMargins(self, *_args, **_kwargs):
+        val = apply(stattoolc.wxToolBarBase_GetMargins,(self,) + _args, _kwargs)
+        if val: val = wxSizePtr(val) ; val.thisown = 1
+        return val
     def GetToolPacking(self, *_args, **_kwargs):
         val = apply(stattoolc.wxToolBarBase_GetToolPacking,(self,) + _args, _kwargs)
         return val
@@ -285,8 +308,138 @@ class wxToolBarBasePtr(wxControlPtr):
         val = apply(stattoolc.wxToolBarBase_GetToolSize,(self,) + _args, _kwargs)
         if val: val = wxSizePtr(val) ; val.thisown = 1
         return val
+    def FindToolForPosition(self, *_args, **_kwargs):
+        val = apply(stattoolc.wxToolBarBase_FindToolForPosition,(self,) + _args, _kwargs)
+        return val
+    def IsVertical(self, *_args, **_kwargs):
+        val = apply(stattoolc.wxToolBarBase_IsVertical,(self,) + _args, _kwargs)
+        return val
     def __repr__(self):
         return "<C wxToolBarBase instance at %s>" % (self.this,)
+    
+    # These match the original Add methods for this class, kept for
+    # backwards compatibility with versions < 2.3.3.
+
+
+    def AddTool(self, id, bitmap,
+                pushedBitmap = wxNullBitmap,
+                isToggle = 0,
+                clientData = None,
+                shortHelpString = '',
+                longHelpString = '') :
+        '''Old style method to add a tool to the toolbar.'''
+        kind = wx.wxITEM_NORMAL
+        if isToggle: kind = wx.wxITEM_CHECK
+        return self.DoAddTool(id, '', bitmap, pushedBitmap, kind,
+                              shortHelpString, longHelpString, clientData)
+
+    def AddSimpleTool(self, id, bitmap,
+                      shortHelpString = '',
+                      longHelpString = '',
+                      isToggle = 0):
+        '''Old style method to add a tool to the toolbar.'''
+        kind = wx.wxITEM_NORMAL
+        if isToggle: kind = wx.wxITEM_CHECK
+        return self.DoAddTool(id, '', bitmap, wxNullBitmap, kind,
+                              shortHelpString, longHelpString, None)
+
+    def InsertTool(self, pos, id, bitmap,
+                   pushedBitmap = wxNullBitmap,
+                   isToggle = 0,
+                   clientData = None,
+                   shortHelpString = '',
+                   longHelpString = ''):
+        '''Old style method to insert a tool in the toolbar.'''
+        kind = wx.wxITEM_NORMAL
+        if isToggle: kind = wx.wxITEM_CHECK
+        return self.DoInsertTool(pos, id, '', bitmap, pushedBitmap, kind,
+                                 shortHelpString, longHelpString, clientData)
+
+    def InsertSimpleTool(self, pos, id, bitmap,
+                         shortHelpString = '',
+                         longHelpString = '',
+                         isToggle = 0):
+        '''Old style method to insert a tool in the toolbar.'''
+        kind = wx.wxITEM_NORMAL
+        if isToggle: kind = wx.wxITEM_CHECK
+        return self.DoInsertTool(pos, id, '', bitmap, wxNullBitmap, kind,
+                                 shortHelpString, longHelpString, None)
+
+
+    # The following are the new toolbar Add methods starting with
+    # 2.3.3.  They are renamed to have 'Label' in the name so as to be
+    # able to keep backwards compatibility with using the above
+    # methods.  Eventually these should migrate to be the methods used
+    # primarily and loose the 'Label' in the name...
+
+    def AddLabelTool(self, id, label, bitmap,
+                     bmpDisabled = wxNullBitmap,
+                     kind = wxITEM_NORMAL,
+                     shortHelp = '', longHelp = '',
+                     clientData = None):
+        '''
+        The full AddTool() function.
+
+        If bmpDisabled is wxNullBitmap, a shadowed version of the normal bitmap
+        is created and used as the disabled image.
+        '''
+        return self.DoAddTool(id, label, bitmap, bmpDisabled, kind,
+                              shortHelp, longHelp, clientData)
+
+
+    def InsertLabelTool(self, pos, id, label, bitmap,
+                        bmpDisabled = wxNullBitmap,
+                        kind = wxITEM_NORMAL,
+                        shortHelp = '', longHelp = '',
+                        clientData = None):
+        '''
+        Insert the new tool at the given position, if pos == GetToolsCount(), it
+        is equivalent to AddTool()
+        '''
+        return self.DoInsertTool(pos, id, label, bitmap, bmpDisabled, kind,
+                                 shortHelp, longHelp, clientData)
+
+    def AddCheckLabelTool(self, id, label, bitmap,
+                        bmpDisabled = wxNullBitmap,
+                        shortHelp = '', longHelp = '',
+                        clientData = None):
+        '''Add a check tool, i.e. a tool which can be toggled'''
+        return self.DoAddTool(id, label, bitmap, bmpDisabled, wx.wxITEM_CHECK,
+                              shortHelp, longHelp, clientData)
+
+    def AddRadioLabelTool(self, id, label, bitmap,
+                          bmpDisabled = wxNullBitmap,
+                          shortHelp = '', longHelp = '',
+                          clientData = None):
+        '''
+        Add a radio tool, i.e. a tool which can be toggled and releases any
+        other toggled radio tools in the same group when it happens
+        '''
+        return self.DoAddTool(id, label, bitmap, bmpDisabled, wx.wxITEM_RADIO,
+                              shortHelp, longHelp, clientData)
+
+
+    # For consistency with the backwards compatible methods above, here are
+    # some non-'Label' versions of the Check and Radio methods
+    def AddCheckTool(self, id, bitmap,
+                     bmpDisabled = wxNullBitmap,
+                     shortHelp = '', longHelp = '',
+                     clientData = None):
+        '''Add a check tool, i.e. a tool which can be toggled'''
+        return self.DoAddTool(id, '', bitmap, bmpDisabled, wx.wxITEM_CHECK,
+                              shortHelp, longHelp, clientData)
+
+    def AddRadioTool(self, id, bitmap,
+                     bmpDisabled = wxNullBitmap,
+                     shortHelp = '', longHelp = '',
+                     clientData = None):
+        '''
+        Add a radio tool, i.e. a tool which can be toggled and releases any
+        other toggled radio tools in the same group when it happens
+        '''
+        return self.DoAddTool(id, '', bitmap, bmpDisabled, wx.wxITEM_RADIO,
+                              shortHelp, longHelp, clientData)
+    
 class wxToolBarBase(wxToolBarBasePtr):
     def __init__(self,this):
         self.this = this
@@ -298,9 +451,11 @@ class wxToolBarPtr(wxToolBarBasePtr):
     def __init__(self,this):
         self.this = this
         self.thisown = 0
+    def Create(self, *_args, **_kwargs):
+        val = apply(stattoolc.wxToolBar_Create,(self,) + _args, _kwargs)
+        return val
     def FindToolForPosition(self, *_args, **_kwargs):
         val = apply(stattoolc.wxToolBar_FindToolForPosition,(self,) + _args, _kwargs)
-        if val: val = wxToolBarToolBasePtr(val) 
         return val
     def __repr__(self):
         return "<C wxToolBar instance at %s>" % (self.this,)
@@ -308,18 +463,26 @@ class wxToolBar(wxToolBarPtr):
     def __init__(self,*_args,**_kwargs):
         self.this = apply(stattoolc.new_wxToolBar,_args,_kwargs)
         self.thisown = 1
-        #wx._StdWindowCallbacks(self)
+        self._setOORInfo(self)
 
 
+
+def wxPreToolBar(*_args,**_kwargs):
+    val = wxToolBarPtr(apply(stattoolc.new_wxPreToolBar,_args,_kwargs))
+    val.thisown = 1
+    val._setOORInfo(val)
+    return val
 
 
 class wxToolBarSimplePtr(wxToolBarBasePtr):
     def __init__(self,this):
         self.this = this
         self.thisown = 0
+    def Create(self, *_args, **_kwargs):
+        val = apply(stattoolc.wxToolBarSimple_Create,(self,) + _args, _kwargs)
+        return val
     def FindToolForPosition(self, *_args, **_kwargs):
         val = apply(stattoolc.wxToolBarSimple_FindToolForPosition,(self,) + _args, _kwargs)
-        if val: val = wxToolBarToolBasePtr(val) 
         return val
     def __repr__(self):
         return "<C wxToolBarSimple instance at %s>" % (self.this,)
@@ -327,9 +490,15 @@ class wxToolBarSimple(wxToolBarSimplePtr):
     def __init__(self,*_args,**_kwargs):
         self.this = apply(stattoolc.new_wxToolBarSimple,_args,_kwargs)
         self.thisown = 1
-        #wx._StdWindowCallbacks(self)
+        self._setOORInfo(self)
 
 
+
+def wxPreToolBarSimple(*_args,**_kwargs):
+    val = wxToolBarSimplePtr(apply(stattoolc.new_wxPreToolBarSimple,_args,_kwargs))
+    val.thisown = 1
+    val._setOORInfo(val)
+    return val
 
 
 

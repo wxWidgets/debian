@@ -4,42 +4,87 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     16/04/2000
-// RCS-ID:      $Id: helpchm.cpp,v 1.1.2.3 2000/04/21 19:15:49 JS Exp $
+// RCS-ID:      $Id: helpchm.cpp,v 1.13 2002/04/23 16:18:26 VS Exp $
 // Copyright:   (c) Julian Smart
-// Licence:   	wxWindows licence
+// Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
 
 #ifdef __GNUG__
-#pragma implementation "helpchm.h"
+    #pragma implementation "helpchm.h"
 #endif
 
 // For compilers that support precompilation, includes "wx.h".
 #include "wx/wxprec.h"
 
 #ifdef __BORLANDC__
-#pragma hdrstop
+    #pragma hdrstop
 #endif
-
-#ifndef WX_PRECOMP
-#include "wx/defs.h"
-#endif
-
-#include "wx/filefn.h"
 
 #if wxUSE_HELP && wxUSE_MS_HTML_HELP && defined(__WIN95__)
+
+#include "wx/filefn.h"
 #include "wx/msw/helpchm.h"
 
-// This is found in the HTML Help Workshop installation,
-// along with htmlhelp.lib.
-#include <htmlhelp.h>
+#include "wx/dynlib.h"
 
-#include <time.h>
-
-#ifdef __WXMSW__
-#include "wx/msw/private.h"
+#ifndef WX_PRECOMP
+    #include "wx/intl.h"
+    #include "wx/app.h"
 #endif
 
-#include <string.h>
+#include "wx/msw/private.h"
+#include "wx/msw/missing.h"
+
+// ----------------------------------------------------------------------------
+// utility functions to manage the loading/unloading
+// of hhctrl.ocx
+// ----------------------------------------------------------------------------
+
+#ifndef UNICODE
+    typedef HWND ( WINAPI * HTMLHELP )( HWND, LPCSTR, UINT, DWORD );
+    #define HTMLHELP_NAME "HtmlHelpA"
+#else // ANSI
+    typedef HWND ( WINAPI * HTMLHELP )( HWND, LPCWSTR, UINT, DWORD );
+    #define HTMLHELP_NAME "HtmlHelpW"
+#endif
+
+// dll symbol handle
+static HTMLHELP gs_htmlHelp = 0;
+
+static bool LoadHtmlHelpLibrary()
+{
+    wxPluginLibrary *lib = wxPluginManager::LoadLibrary( _T("HHCTRL.OCX"), wxDL_DEFAULT | wxDL_VERBATIM );
+
+    if( !lib )
+    {
+        wxLogError(_("MS HTML Help functions are unavailable because the MS HTML Help library is not installed on this machine. Please install it."));
+        return FALSE;
+    }
+    else
+    {
+        gs_htmlHelp = (HTMLHELP)lib->GetSymbol( HTMLHELP_NAME );
+
+        if( !gs_htmlHelp )
+        {
+            wxLogError(_("Failed to initialize MS HTML Help."));
+
+            lib->UnrefLib();
+            return FALSE ;
+        }
+    }
+
+    return TRUE;
+}
+
+static void UnloadHtmlHelpLibrary()
+{
+    if ( gs_htmlHelp )
+    {
+        wxPluginManager::UnloadLibrary( _T("HHCTRL.OCX") );
+
+        gs_htmlHelp = 0;
+    }
+}
 
 static HWND GetSuitableHWND()
 {
@@ -53,6 +98,10 @@ IMPLEMENT_DYNAMIC_CLASS(wxCHMHelpController, wxHelpControllerBase)
 
 bool wxCHMHelpController::Initialize(const wxString& filename)
 {
+    // warn on failure
+    if( !LoadHtmlHelpLibrary() )
+        return FALSE;
+
     m_helpFile = filename;
     return TRUE;
 }
@@ -70,7 +119,7 @@ bool wxCHMHelpController::DisplayContents()
 
     wxString str = GetValidFilename(m_helpFile);
 
-    HtmlHelp(GetSuitableHWND(), (const wxChar*) str, HH_HELP_FINDER, 0L);
+    gs_htmlHelp(GetSuitableHWND(), (const wxChar*) str, HH_DISPLAY_TOPIC, 0L);
     return TRUE;
 }
 
@@ -85,7 +134,7 @@ bool wxCHMHelpController::DisplaySection(const wxString& section)
     bool isFilename = (section.Find(wxT(".htm")) != -1);
 
     if (isFilename)
-        HtmlHelp(GetSuitableHWND(), (const wxChar*) str, HH_DISPLAY_TOPIC, (DWORD) (const wxChar*) section);
+        gs_htmlHelp(GetSuitableHWND(), (const wxChar*) str, HH_DISPLAY_TOPIC, (DWORD) (const wxChar*) section);
     else
         KeywordSearch(section);
     return TRUE;
@@ -98,7 +147,49 @@ bool wxCHMHelpController::DisplaySection(int section)
 
     wxString str = GetValidFilename(m_helpFile);
 
-    HtmlHelp(GetSuitableHWND(), (const wxChar*) str, HH_HELP_CONTEXT, (DWORD)section);
+    gs_htmlHelp(GetSuitableHWND(), (const wxChar*) str, HH_HELP_CONTEXT, (DWORD)section);
+    return TRUE;
+}
+
+bool wxCHMHelpController::DisplayContextPopup(int contextId)
+{
+    if (m_helpFile.IsEmpty()) return FALSE;
+
+    wxString str = GetValidFilename(m_helpFile);
+
+    // We also have to specify the popups file (default is cshelp.txt).
+    // str += wxT("::/cshelp.txt");
+
+    HH_POPUP popup;
+    popup.cbStruct = sizeof(popup);
+    popup.hinst = (HINSTANCE) wxGetInstance();
+    popup.idString = contextId ;
+
+    GetCursorPos(& popup.pt);
+    popup.clrForeground = (COLORREF)-1;
+    popup.clrBackground = (COLORREF)-1;
+    popup.rcMargins.top = popup.rcMargins.left = popup.rcMargins.right = popup.rcMargins.bottom = -1;
+    popup.pszFont = NULL;
+    popup.pszText = NULL;
+
+    gs_htmlHelp(GetSuitableHWND(), (const wxChar*) str, HH_DISPLAY_TEXT_POPUP, (DWORD) & popup);
+    return TRUE;
+}
+
+bool wxCHMHelpController::DisplayTextPopup(const wxString& text, const wxPoint& pos)
+{
+    HH_POPUP popup;
+    popup.cbStruct = sizeof(popup);
+    popup.hinst = (HINSTANCE) wxGetInstance();
+    popup.idString = 0 ;
+    popup.pt.x = pos.x; popup.pt.y = pos.y;
+    popup.clrForeground = (COLORREF)-1;
+    popup.clrBackground = (COLORREF)-1;
+    popup.rcMargins.top = popup.rcMargins.left = popup.rcMargins.right = popup.rcMargins.bottom = -1;
+    popup.pszFont = NULL;
+    popup.pszText = (const wxChar*) text;
+
+    gs_htmlHelp(GetSuitableHWND(), NULL, HH_DISPLAY_TEXT_POPUP, (DWORD) & popup);
     return TRUE;
 }
 
@@ -123,13 +214,14 @@ bool wxCHMHelpController::KeywordSearch(const wxString& k)
     link.pszWindow =    NULL ;
     link.fIndexOnFail = TRUE ;
 
-    HtmlHelp(GetSuitableHWND(), (const wxChar*) str, HH_KEYWORD_LOOKUP, (DWORD)& link);
+    gs_htmlHelp(GetSuitableHWND(), (const wxChar*) str, HH_KEYWORD_LOOKUP, (DWORD)& link);
     return TRUE;
 }
 
 bool wxCHMHelpController::Quit()
 {
-    HtmlHelp(GetSuitableHWND(), 0, HH_CLOSE_ALL, 0L);
+    gs_htmlHelp(GetSuitableHWND(), 0, HH_CLOSE_ALL, 0L);
+
     return TRUE;
 }
 
@@ -149,4 +241,10 @@ wxString wxCHMHelpController::GetValidFilename(const wxString& file) const
     return fullName;
 }
 
+wxCHMHelpController::~wxCHMHelpController()
+{
+    UnloadHtmlHelpLibrary();
+}
+
 #endif // wxUSE_HELP
+

@@ -4,12 +4,12 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     04/01/98
-// RCS-ID:      $Id: sashtest.h,v 1.2 1999/02/05 23:49:34 JS Exp $
+// RCS-ID:      $Id: sashtest.h,v 1.4 2002/03/17 14:15:55 VZ Exp $
 // Copyright:   (c) Julian Smart
-// Licence:   	wxWindows license
+// Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
 
-#include <wx/toolbar.h>
+#include "wx/toolbar.h"
 
 // Define a new application
 class MyApp: public wxApp

@@ -2,7 +2,7 @@
 // Name:        listbox.h
 // Purpose:     wxListBox class declaration
 // Author:      Robert Roebling
-// Id:          $Id: listbox.h,v 1.35 1999/11/19 21:01:10 VZ Exp $
+// Id:          $Id: listbox.h,v 1.41 2002/09/07 12:28:46 GD Exp $
 // Copyright:   (c) 1998 Robert Roebling
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -11,8 +11,8 @@
 #ifndef __GTKLISTBOXH__
 #define __GTKLISTBOXH__
 
-#ifdef __GNUG__
-#pragma interface
+#if defined(__GNUG__) && !defined(__APPLE__)
+#pragma interface "listbox.h"
 #endif
 
 #include "wx/list.h"
@@ -76,8 +76,6 @@ public:
 
     // implementation from now on
 
-    void GtkDisableEvents();
-    void GtkEnableEvents();
     void GtkAddItem( const wxString &item, int pos=-1 );
     int GtkGetIndex( GtkWidget *item ) const;
     GtkWidget *GetConnectWidget();
@@ -96,8 +94,16 @@ public:
     bool       m_hasCheckBoxes;
 #endif // wxUSE_CHECKLISTBOX
 
+    int        m_prevSelection;
+    bool       m_blockEvent;
+
+    virtual void FixUpMouseEvent(GtkWidget *widget, wxCoord& x, wxCoord& y);
+
 protected:
     virtual wxSize DoGetBestSize() const;
+
+    // return the string label for the given item
+    wxString GetRealLabel(struct _GList *item) const;
 
 private:
     // this array is only used for controls with wxCB_SORT style, so only

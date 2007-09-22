@@ -3,7 +3,7 @@
 // Purpose:     a generic wxStaticLine class
 // Author:      Vadim Zeitlin
 // Created:     28.06.99
-// Version:     $Id: statline.cpp,v 1.5 1999/10/08 14:35:00 KB Exp $
+// Version:     $Id: statline.cpp,v 1.7 2002/07/29 21:05:43 MBN Exp $
 // Copyright:   (c) 1998 Vadim Zeitlin
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -64,4 +64,14 @@ bool wxStaticLine::Create( wxWindow *parent,
 WXWidget wxStaticLine::GetMainWidget() const
 {
     return m_statbox->GetMainWidget();
+}
+
+void wxStaticLine::DoSetSize(int x, int y, int width, int height, int sizeFlags)
+{
+    m_statbox->SetSize(x, y, width, height, sizeFlags);
+}
+
+void wxStaticLine::DoMoveWindow(int x, int y, int width, int height)
+{
+    m_statbox->SetSize(x, y, width, height);
 }

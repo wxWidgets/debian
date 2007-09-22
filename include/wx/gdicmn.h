@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     01/02/97
-// RCS-ID:      $Id: gdicmn.h,v 1.41.2.3 2000/07/13 16:27:59 RR Exp $
+// RCS-ID:      $Id: gdicmn.h,v 1.60 2002/08/31 11:29:10 GD Exp $
 // Copyright:   (c)
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -16,7 +16,7 @@
 // headers
 // ---------------------------------------------------------------------------
 
-#ifdef __GNUG__
+#if defined(__GNUG__) && !defined(__APPLE__)
     #pragma interface "gdicmn.h"
 #endif
 
@@ -48,7 +48,7 @@ class WXDLLEXPORT wxString;
 // ---------------------------------------------------------------------------
 
 // Bitmap flags
-enum
+enum wxBitmapType
 {
     wxBITMAP_TYPE_INVALID,          // should be == 0 for compatibility!
     wxBITMAP_TYPE_BMP,
@@ -78,6 +78,8 @@ enum
     wxBITMAP_TYPE_PICT_RESOURCE,
     wxBITMAP_TYPE_ICON,
     wxBITMAP_TYPE_ICON_RESOURCE,
+    wxBITMAP_TYPE_ANI,
+    wxBITMAP_TYPE_IFF,
     wxBITMAP_TYPE_MACCURSOR,
     wxBITMAP_TYPE_MACCURSOR_RESOURCE,
     wxBITMAP_TYPE_ANY = 50
@@ -88,6 +90,7 @@ enum wxStockCursor
 {
     wxCURSOR_NONE,          // should be 0
     wxCURSOR_ARROW,
+    wxCURSOR_RIGHT_ARROW,
     wxCURSOR_BULLSEYE,
     wxCURSOR_CHAR,
     wxCURSOR_CROSS,
@@ -123,6 +126,8 @@ enum wxStockCursor
     wxCURSOR_BASED_ARROW_DOWN,
 #endif // X11
 
+    wxCURSOR_ARROWWAIT,
+
     wxCURSOR_MAX
 };
 
@@ -150,10 +155,19 @@ enum wxStockCursor
 #elif defined(__WXPM__)
     // Load from a resource
     #define wxICON(X) wxIcon("" #X "")
+#elif defined(__WXMGL__)
+    // Initialize from an included XPM
+    #define wxICON(X) wxIcon( (const char**) X##_xpm )
 #elif defined(__WXGTK__)
     // Initialize from an included XPM
     #define wxICON(X) wxIcon( (const char**) X##_xpm )
+#elif defined(__WXMAC__)
+    // Initialize from an included XPM
+    #define wxICON(X) wxIcon( (const char**) X##_xpm )
 #elif defined(__WXMOTIF__)
+    // Initialize from an included XPM
+    #define wxICON(X) wxIcon( X##_xpm )
+#elif defined(__WXX11__)
     // Initialize from an included XPM
     #define wxICON(X) wxIcon( X##_xpm )
 #else
@@ -167,7 +181,7 @@ enum wxStockCursor
 
 #if defined(__WXMSW__) || defined(__WXPM__)
     #define wxBITMAP(name) wxBitmap(#name, wxBITMAP_TYPE_RESOURCE)
-#elif defined(__WXGTK__) || defined(__WXMOTIF__)
+#elif defined(__WXGTK__) || defined(__WXMOTIF__) || defined(__WXX11__) || defined(__WXMAC__) || defined(__WXMGL__)
     // Initialize from an included XPM
     #define wxBITMAP(name) wxBitmap( (const char**) name##_xpm )
 #else // other platforms
@@ -181,6 +195,7 @@ enum wxStockCursor
 // ---------------------------------------------------------------------------
 // wxSize
 // ---------------------------------------------------------------------------
+
 class WXDLLEXPORT wxSize
 {
 public:
@@ -190,11 +205,13 @@ public:
     int x, y;
 
     // constructors
-    wxSize() { x = y = 0; }
-    wxSize(int xx, int yy) { Set(xx, yy); }
+    wxSize() : x(0), y(0) { }
+    wxSize(int xx, int yy) : x(xx), y(yy) { }
 
     // no copy ctor or assignment operator - the defaults are ok
+
     bool operator==(const wxSize& sz) const { return x == sz.x && y == sz.y; }
+    bool operator!=(const wxSize& sz) const { return x != sz.x || y != sz.y; }
 
     // FIXME are these really useful? If they're, we should have += &c as well
     wxSize operator+(const wxSize& sz) { return wxSize(x + sz.x, y + sz.y); }
@@ -223,8 +240,8 @@ public:
     double x;
     double y;
 
-    wxRealPoint() { x = y = 0.0; };
-    wxRealPoint(double xx, double yy) { x = xx; y = yy; };
+    wxRealPoint() : x(0.0), y(0.0) { }
+    wxRealPoint(double xx, double yy) : x(xx), y(yy) { }
 
     wxRealPoint operator+(const wxRealPoint& pt) const { return wxRealPoint(x + pt.x, y + pt.y); }
     wxRealPoint operator-(const wxRealPoint& pt) const { return wxRealPoint(x - pt.x, y - pt.y); }
@@ -237,8 +254,8 @@ class WXDLLEXPORT wxPoint
 public:
     int x, y;
 
-    wxPoint() { x = y = 0; };
-    wxPoint(int xx, int yy) { x = xx; y = yy; };
+    wxPoint() : x(0), y(0) { }
+    wxPoint(int xx, int yy) : x(xx), y(yy) { }
 
     // no copy ctor or assignment operator - the defaults are ok
 
@@ -266,9 +283,12 @@ public:
 class WXDLLEXPORT wxRect
 {
 public:
-    wxRect() { x = y = width = height = 0; }
+    wxRect()
+        : x(0), y(0), width(0), height(0)
+        { }
     wxRect(int xx, int yy, int ww, int hh)
-        { x = xx; y = yy; width = ww; height = hh; }
+        : x(xx), y(yy), width(ww), height(hh)
+        { }
     wxRect(const wxPoint& topLeft, const wxPoint& bottomRight);
     wxRect(const wxPoint& pos, const wxSize& size);
 
@@ -287,7 +307,10 @@ public:
     void SetHeight(int h) { height = h; }
 
     wxPoint GetPosition() const { return wxPoint(x, y); }
+    void SetPosition( const wxPoint &p ) { x = p.x; y = p.y; }
+
     wxSize GetSize() const { return wxSize(width, height); }
+    void SetSize( const wxSize &s ) { width = s.GetWidth(); height = s.GetHeight(); }
 
     int GetLeft()   const { return x; }
     int GetTop()    const { return y; }
@@ -299,22 +322,49 @@ public:
     void SetTop(int top) { y = top; }
     void SetBottom(int bottom) { height = bottom - y + 1; }
 
-    void Inflate(wxCoord dx, wxCoord dy)
+    // operations with rect
+    wxRect& Inflate(wxCoord dx, wxCoord dy);
+    wxRect& Inflate(wxCoord d) { return Inflate(d, d); }
+    wxRect Inflate(wxCoord dx, wxCoord dy) const
     {
-        x -= dx;
-        y -= dy;
-        width += 2*dx;
-        height += 2*dy;
+        wxRect r = *this;
+        r.Inflate(dx, dy);
+        return r;
     }
 
-    void Inflate(wxCoord d) { Inflate(d, d); }
+    wxRect& Deflate(wxCoord dx, wxCoord dy) { return Inflate(-dx, -dy); }
+    wxRect& Deflate(wxCoord d) { return Inflate(-d); }
+    wxRect Deflate(wxCoord dx, wxCoord dy) const
+    {
+        wxRect r = *this;
+        r.Deflate(dx, dy);
+        return r;
+    }
 
+    void Offset(wxCoord dx, wxCoord dy) { x += dx; y += dy; }
+    void Offset(const wxPoint& pt) { Offset(pt.x, pt.y); }
+
+    wxRect& Intersect(const wxRect& rect);
+    wxRect Intersect(const wxRect& rect) const
+    {
+        wxRect r = *this;
+        r.Intersect(rect);
+        return r;
+    }
+
+    wxRect operator+(const wxRect& rect) const;
+    wxRect& operator+=(const wxRect& rect);
+
+    // compare rectangles
     bool operator==(const wxRect& rect) const;
     bool operator!=(const wxRect& rect) const { return !(*this == rect); }
 
-    bool Inside(int cx, int cy) const;
-    wxRect operator+(const wxRect& rect) const;
-    wxRect& operator+=(const wxRect& rect);
+    // return TRUE if the point is (not strcitly) inside the rect
+    bool Inside(int x, int y) const;
+    bool Inside(const wxPoint& pt) const { return Inside(pt.x, pt.y); }
+
+    // return TRUE if the rectangles have a non empty intersection
+    bool Intersects(const wxRect& rect) const;
 
 public:
     int x, y, width, height;
@@ -382,6 +432,11 @@ public:
     wxColour *FindColour(const wxString& colour) ;
     wxString FindName(const wxColour& colour) const;
     void Initialize();
+#ifdef __WXPM__
+    // PM keeps its own type of colour table
+    long*                           m_palTable;
+    size_t                          m_nSize;
+#endif
 };
 
 class WXDLLEXPORT wxBitmapList : public wxList
@@ -495,9 +550,15 @@ extern bool WXDLLEXPORT wxColourDisplay();
 extern int WXDLLEXPORT wxDisplayDepth();
 #define wxGetDisplayDepth wxDisplayDepth
 
-// get the diaplay size
+// get the display size
 extern void WXDLLEXPORT wxDisplaySize(int *width, int *height);
 extern wxSize WXDLLEXPORT wxGetDisplaySize();
+extern void WXDLLEXPORT wxDisplaySizeMM(int *width, int *height);
+extern wxSize WXDLLEXPORT wxGetDisplaySizeMM();
+
+// Get position and size of the display workarea
+extern void WXDLLEXPORT wxClientDisplayRect(int *x, int *y, int *width, int *height);
+extern wxRect WXDLLEXPORT wxGetClientDisplayRect();
 
 // set global cursor
 extern void WXDLLEXPORT wxSetCursor(const wxCursor& cursor);

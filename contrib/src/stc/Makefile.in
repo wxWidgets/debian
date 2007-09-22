@@ -2,7 +2,7 @@
 # Purpose: Makefile.in for STC contrib for Unix with autoconf
 # Created: 14.03.00
 # Author:  VZ
-# Version: $Id: Makefile.in,v 1.2.2.4 2000/10/09 20:38:25 robind Exp $
+# Version: $Id: Makefile.in,v 1.14.2.1 2002/09/22 15:08:11 VS Exp $
 ###############################################################################
 
 top_srcdir = @top_srcdir@/..
@@ -11,11 +11,11 @@ top_builddir = ../../..
 scintilla_dir = $(top_srcdir)/contrib/src/stc/scintilla
 libsrc_dir = contrib/src/stc@PATH_IFS@$(scintilla_dir)/src
 
-TARGET_LIBNAME=libstc
+TARGET_LIBNAME=lib@WX_LIBRARY_BASENAME@_stc-@WX_RELEASE@
 
-LIBVERSION_CURRENT=1
-LIBVERSION_REVISION=0
-LIBVERSION_AGE=0
+LIBVERSION_CURRENT=@WX_CURRENT@
+LIBVERSION_REVISION=@WX_REVISION@
+LIBVERSION_AGE=@WX_AGE@
 
 HEADER_PATH=$(top_srcdir)/contrib/include/wx
 HEADER_SUBDIR=stc
@@ -23,34 +23,49 @@ HEADER_SUBDIR=stc
 HEADERS=stc.h
 
 OBJECTS=PlatWX.o ScintillaWX.o stc.o \
-	DocumentAccessor.o	\
-	LexCPP.o		\
-	LexHTML.o		\
-	LexLua.o		\
-	LexOthers.o		\
-	LexPerl.o		\
-	LexPython.o		\
-	LexSQL.o		\
-	LexVB.o			\
-	UniConversion.o		\
-	WindowAccessor.o	\
         AutoComplete.o	    	\
         CallTip.o	        \
         CellBuffer.o	    	\
         ContractionState.o  	\
         Document.o	        \
+	DocumentAccessor.o	\
         Editor.o		\
         Indicator.o	        \
         KeyMap.o		\
         KeyWords.o	        \
+	LexAVE.o		\
+	LexBaan.o		\
+	LexBullant.o		\
+	LexMatlab.o		\
+	LexAda.o		\
+	LexCPP.o		\
+	LexConf.o		\
+	LexCrontab.o		\
+	LexEiffel.o		\
+	LexHTML.o		\
+	LexLisp.o		\
+	LexLua.o		\
+	LexOthers.o		\
+	LexPascal.o		\
+	LexPerl.o		\
+	LexPython.o		\
+	LexRuby.o		\
+	LexSQL.o		\
+	LexVB.o			\
         LineMarker.o	    	\
         PropSet.o	        \
+	RESearch.o		\
         ScintillaBase.o	    	\
         Style.o		        \
+	StyleContext.o		\
+	UniConversion.o		\
         ViewStyle.o		\
-	PosRegExp.o		\
+	WindowAccessor.o	\
 
+DEPFILES=$(OBJECTS:.o=.d)
 
-APPEXTRADEFS=-D__WX__ -DSCI_LEXER -I$(scintilla_dir)/src -I$(scintilla_dir)/include -I$(top_srcdir)/contrib/include
+APPEXTRADEFS=-D__WX__ -DSCI_LEXER -DLINK_LEXERS -I$(scintilla_dir)/src -I$(scintilla_dir)/include -I$(top_srcdir)/contrib/include
 
 include $(top_builddir)/src/makelib.env
+
+-include $(DEPFILES)

@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     04/01/98
-// RCS-ID:      $Id: layout.cpp,v 1.17.2.2 2000/11/28 11:05:45 vadz Exp $
+// RCS-ID:      $Id: layout.cpp,v 1.20 2002/01/22 18:30:54 RD Exp $
 // Copyright:   (c) Julian Smart and Markus Holzem
 // Licence:       wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -66,6 +66,14 @@ wxIndividualLayoutConstraint::~wxIndividualLayoutConstraint()
 
 void wxIndividualLayoutConstraint::Set(wxRelationship rel, wxWindowBase *otherW, wxEdge otherE, int val, int marg)
 {
+    if (rel == wxSameAs)
+    {
+        // If Set is called by the user with wxSameAs then call SameAs to do
+        // it since it will actually use wxPercent instead.
+        SameAs(otherW, otherE, marg);
+        return;
+    }
+
     relationship = rel;
     otherWin = otherW;
     otherEdge = otherE;
@@ -106,13 +114,13 @@ void wxIndividualLayoutConstraint::Below(wxWindowBase *sibling, int marg)
 // 'Same edge' alignment
 //
 void wxIndividualLayoutConstraint::SameAs(wxWindowBase *otherW, wxEdge edge, int marg)
-{ 
+{
     Set(wxPercentOf, otherW, edge, 100, marg);
 }
 
 // The edge is a percentage of the other window's edge
 void wxIndividualLayoutConstraint::PercentOf(wxWindowBase *otherW, wxEdge wh, int per)
-{ 
+{
     Set(wxPercentOf, otherW, wh, per);
 }
 
@@ -121,7 +129,8 @@ void wxIndividualLayoutConstraint::PercentOf(wxWindowBase *otherW, wxEdge wh, in
 //
 void wxIndividualLayoutConstraint::Absolute(int val)
 {
-    value = val; relationship = wxAbsolute;
+    value = val;
+    relationship = wxAbsolute;
 }
 
 // Reset constraint if it mentions otherWin
@@ -138,8 +147,8 @@ bool wxIndividualLayoutConstraint::ResetIfWin(wxWindowBase *otherW)
         otherWin = (wxWindowBase *) NULL;
         return TRUE;
     }
-    else
-        return FALSE;
+
+    return FALSE;
 }
 
 // Try to satisfy constraint
@@ -1037,7 +1046,7 @@ bool wxLayoutConstraints::SatisfyConstraints(wxWindowBase *win, int *nChanges)
     Set each calculated position and size
 
  */
- 
+
 #if WXWIN_COMPATIBILITY
 bool wxOldDoLayout(wxWindowBase *win)
 {

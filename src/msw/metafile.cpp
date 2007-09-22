@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by: VZ 07.01.00: implemented wxMetaFileDataObject
 // Created:     04/01/98
-// RCS-ID:      $Id: metafile.cpp,v 1.19.2.2 2000/04/25 06:03:12 JS Exp $
+// RCS-ID:      $Id: metafile.cpp,v 1.21 2002/08/30 20:34:26 JS Exp $
 // Copyright:   (c) Julian Smart and Markus Holzem
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -308,8 +308,6 @@ void wxMetafileDC::SetMapMode(int mode)
                 break;
             }
     }
-    m_windowExtX = 100;
-    m_windowExtY = 100;
 }
 
 // ----------------------------------------------------------------------------

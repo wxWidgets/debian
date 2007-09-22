@@ -2,7 +2,7 @@
 // Name:        gauge.h
 // Purpose:
 // Author:      Robert Roebling
-// Id:          $Id: gauge.h,v 1.8 1999/11/22 19:44:21 RR Exp $
+// Id:          $Id: gauge.h,v 1.10 2002/09/07 12:28:46 GD Exp $
 // Copyright:   (c) 1998 Robert Roebling
 // Licence:   	wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -11,7 +11,7 @@
 #ifndef __GTKGAUGEH__
 #define __GTKGAUGEH__
 
-#ifdef __GNUG__
+#if defined(__GNUG__) && !defined(__APPLE__)
 #pragma interface
 #endif
 
@@ -33,7 +33,7 @@ class wxGauge;
 // global data
 //-----------------------------------------------------------------------------
 
-extern const char* wxGaugeNameStr;
+extern const wxChar* wxGaugeNameStr;
 
 //-----------------------------------------------------------------------------
 // wxGaugeBox

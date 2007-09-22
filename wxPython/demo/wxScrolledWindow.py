@@ -1,6 +1,10 @@
 
 from wxPython.wx import *
 
+import images
+
+BUFFERED = 1
+
 #---------------------------------------------------------------------------
 
 class MyCanvas(wxScrolledWindow):
@@ -10,22 +14,33 @@ class MyCanvas(wxScrolledWindow):
         self.lines = []
         self.maxWidth  = 1000
         self.maxHeight = 1000
+        self.x = self.y = 0
+        self.curLine = []
+        self.drawing = false
 
-        self.SetBackgroundColour(wxNamedColor("WHITE"))
-        EVT_LEFT_DOWN(self, self.OnLeftButtonEvent)
-        EVT_LEFT_UP(self,   self.OnLeftButtonEvent)
-        EVT_MOTION(self,    self.OnLeftButtonEvent)
-
-        EVT_PAINT(self, self.OnPaint)
-
-
+        self.SetBackgroundColour("WHITE")
         self.SetCursor(wxStockCursor(wxCURSOR_PENCIL))
-        bmp = wxBitmap('bitmaps/test2.bmp', wxBITMAP_TYPE_BMP)
+        bmp = images.getTest2Bitmap()
         mask = wxMaskColour(bmp, wxBLUE)
         bmp.SetMask(mask)
         self.bmp = bmp
 
         self.SetScrollbars(20, 20, self.maxWidth/20, self.maxHeight/20)
+
+        if BUFFERED:
+            # Initialize the buffer bitmap.  No real DC is needed at this point.
+            self.buffer = wxEmptyBitmap(self.maxWidth, self.maxHeight)
+            dc = wxBufferedDC(None, self.buffer)
+            dc.SetBackground(wxBrush(self.GetBackgroundColour()))
+            dc.Clear()
+            self.DoDrawing(dc)
+
+        EVT_LEFT_DOWN(self, self.OnLeftButtonEvent)
+        EVT_LEFT_UP(self,   self.OnLeftButtonEvent)
+        EVT_MOTION(self,    self.OnLeftButtonEvent)
+        EVT_PAINT(self, self.OnPaint)
+        ##EVT_MOUSEWHEEL(self, self.OnWheel)
+
 
     def getWidth(self):
         return self.maxWidth
@@ -35,28 +50,35 @@ class MyCanvas(wxScrolledWindow):
 
 
     def OnPaint(self, event):
-        dc = wxPaintDC(self)
-        self.PrepareDC(dc)
-        self.DoDrawing(dc)
+        if BUFFERED:
+            # Create a buffered paint DC.  It will create the real
+            # wxPaintDC and then blit the bitmap to it when dc is
+            # deleted.  Since we don't need to draw anything else
+            # here that's all there is to it.
+            dc = wxBufferedPaintDC(self, self.buffer)
+        else:
+            dc = wxPaintDC(self)
+            self.PrepareDC(dc)
+            # since we're not buffering in this case, we have to
+            # paint the whole window, potentially very time consuming.
+            self.DoDrawing(dc)
 
 
     def DoDrawing(self, dc):
         dc.BeginDrawing()
-        pen1 = wxPen(wxNamedColour('RED'))
-        dc.SetPen(pen1)
+        dc.SetPen(wxPen('RED'))
         dc.DrawRectangle(5, 5, 50, 50)
 
         dc.SetBrush(wxLIGHT_GREY_BRUSH)
-        dc.SetPen(wxPen(wxNamedColour('BLUE'), 4))
+        dc.SetPen(wxPen('BLUE', 4))
         dc.DrawRectangle(15, 15, 50, 50)
 
-        font = wxFont(14, wxSWISS, wxNORMAL, wxNORMAL)
-        dc.SetFont(font)
+        dc.SetFont(wxFont(14, wxSWISS, wxNORMAL, wxNORMAL))
         dc.SetTextForeground(wxColour(0xFF, 0x20, 0xFF))
         te = dc.GetTextExtent("Hello World")
         dc.DrawText("Hello World", 60, 65)
 
-        dc.SetPen(wxPen(wxNamedColour('VIOLET'), 4))
+        dc.SetPen(wxPen('VIOLET', 4))
         dc.DrawLine(5, 65+te[1], 60+te[0], 65+te[1])
 
         lst = [(100,110), (150,110), (150,160), (100,160)]
@@ -81,19 +103,36 @@ class MyCanvas(wxScrolledWindow):
         dc.DrawRectangle(50,500,50,50)
         dc.DrawRectangle(100,500,50,50)
 
-        dc.SetPen(pen1)
+        dc.SetPen(wxPen('RED'))
         dc.DrawEllipticArc(200, 500, 50, 75, 0, 90)
 
-        #from wxPython import dch
-        #dch.FillRect(dc, wxRect(50, 400, 50, 50), wxBLACK)
+        y = 20
+        for style in [wxDOT, wxLONG_DASH, wxSHORT_DASH, wxDOT_DASH, wxUSER_DASH]:
+            pen = wxPen("DARK ORCHID", 1, style)
+            if style == wxUSER_DASH:
+                pen.SetCap(wxCAP_BUTT)
+                pen.SetDashes([1,2])
+                pen.SetColour("RED")
+            dc.SetPen(pen)
+            dc.DrawLine(300, y, 400, y)
+            y = y + 10
+
+        dc.SetBrush(wxTRANSPARENT_BRUSH)
+        dc.SetPen(wxPen(wxColour(0xFF, 0x20, 0xFF), 1, wxSOLID))
+        dc.DrawRectangle(450, 50, 100, 100)
+        old_pen = dc.GetPen()
+        new_pen = wxPen("BLACK", 5)
+        dc.SetPen(new_pen)
+        dc.DrawRectangle(470, 70, 60, 60)
+        dc.SetPen(old_pen)
+        dc.DrawRectangle(490, 90, 20, 20)
 
         self.DrawSavedLines(dc)
         dc.EndDrawing()
 
 
-
     def DrawSavedLines(self, dc):
-        dc.SetPen(wxPen(wxNamedColour('MEDIUM FOREST GREEN'), 4))
+        dc.SetPen(wxPen('MEDIUM FOREST GREEN', 4))
         for line in self.lines:
             for coords in line:
                 apply(dc.DrawLine, coords)
@@ -110,25 +149,59 @@ class MyCanvas(wxScrolledWindow):
 
     def OnLeftButtonEvent(self, event):
         if event.LeftDown():
+            self.SetFocus()
             self.SetXY(event)
             self.curLine = []
             self.CaptureMouse()
+            self.drawing = true
 
-        elif event.Dragging():
-            dc = wxClientDC(self)
-            self.PrepareDC(dc)
+        elif event.Dragging() and self.drawing:
+            if BUFFERED:
+                # If doing buffered drawing, create the buffered DC, giving it
+                # it a real DC to blit to when done.
+                cdc = wxClientDC(self)
+                self.PrepareDC(cdc)
+                dc = wxBufferedDC(cdc, self.buffer)
+            else:
+                dc = wxClientDC(self)
+                self.PrepareDC(dc)
+
             dc.BeginDrawing()
-            dc.SetPen(wxPen(wxNamedColour('MEDIUM FOREST GREEN'), 4))
+            dc.SetPen(wxPen('MEDIUM FOREST GREEN', 4))
             coords = (self.x, self.y) + self.ConvertEventCoords(event)
             self.curLine.append(coords)
             apply(dc.DrawLine, coords)
             self.SetXY(event)
             dc.EndDrawing()
 
-        elif event.LeftUp():
+
+        elif event.LeftUp() and self.drawing:
             self.lines.append(self.curLine)
             self.curLine = []
             self.ReleaseMouse()
+            self.drawing = false
+
+
+## This is an example of what to do for the EVT_MOUSEWHEEL event,
+## but since wxScrolledWindow does this already it's not
+## necessary to do it ourselves.
+
+##     wheelScroll = 0
+##     def OnWheel(self, evt):
+##         delta = evt.GetWheelDelta()
+##         rot = evt.GetWheelRotation()
+##         linesPer = evt.GetLinesPerAction()
+##         print delta, rot, linesPer
+##         ws = self.wheelScroll
+##         ws = ws + rot
+##         lines = ws / delta
+##         ws = ws - lines * delta
+##         self.wheelScroll = ws
+##         if lines != 0:
+##             lines = lines * linesPer
+##             vsx, vsy = self.GetViewStart()
+##             scrollTo = vsy - lines
+##             self.Scroll(-1, scrollTo)
 
 #---------------------------------------------------------------------------
 
@@ -142,13 +215,14 @@ def runTest(frame, nb, log):
 
 
 
-
-
-
-
-
-
-
-
 overview = """\
 """
+
+
+
+
+if __name__ == '__main__':
+    import sys,os
+    import run
+    run.main(['', os.path.basename(sys.argv[0])])
+

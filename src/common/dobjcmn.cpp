@@ -4,7 +4,7 @@
 // Author:      Vadim Zeitlin, Robert Roebling
 // Modified by:
 // Created:     19.10.99
-// RCS-ID:      $Id: dobjcmn.cpp,v 1.15 2000/03/08 15:08:17 VZ Exp $
+// RCS-ID:      $Id: dobjcmn.cpp,v 1.20 2002/08/15 20:47:04 RR Exp $
 // Copyright:   (c) wxWindows Team
 // Licence:     wxWindows license
 ///////////////////////////////////////////////////////////////////////////////
@@ -26,6 +26,8 @@
 #ifdef __BORLANDC__
     #pragma hdrstop
 #endif
+
+#if wxUSE_DATAOBJ
 
 #ifndef WX_PRECOMP
     #include "wx/app.h"
@@ -92,6 +94,13 @@ bool wxDataObjectBase::IsSupported(const wxDataFormat& format,
 // wxDataObjectComposite
 // ----------------------------------------------------------------------------
 
+wxDataObjectComposite::wxDataObjectComposite()
+{
+    m_preferred = 0;
+
+    m_dataObjects.DeleteContents(TRUE);
+}
+
 wxDataObjectSimple *
 wxDataObjectComposite::GetObject(const wxDataFormat& format) const
 {
@@ -130,6 +139,43 @@ wxDataObjectComposite::GetPreferredFormat(Direction WXUNUSED(dir)) const
 
     return dataObj->GetFormat();
 }
+
+#if defined(__WXMSW__)
+
+size_t wxDataObjectComposite::GetBufferOffset( const wxDataFormat& format )
+{
+    wxDataObjectSimple *dataObj = GetObject(format);
+
+    wxCHECK_MSG( dataObj, 0,
+                 wxT("unsupported format in wxDataObjectComposite"));
+
+    return dataObj->GetBufferOffset( format );
+}
+
+const void* wxDataObjectComposite::GetSizeFromBuffer( const void* buffer,
+                                                      size_t* size,
+                                                      const wxDataFormat& format )
+{
+    wxDataObjectSimple *dataObj = GetObject(format);
+
+    wxCHECK_MSG( dataObj, NULL,
+                 wxT("unsupported format in wxDataObjectComposite"));
+
+    return dataObj->GetSizeFromBuffer( buffer, size, format );
+}
+
+void* wxDataObjectComposite::SetSizeInBuffer( void* buffer, size_t size,
+                                              const wxDataFormat& format )
+{
+    wxDataObjectSimple *dataObj = GetObject(format);
+
+    wxCHECK_MSG( dataObj, NULL,
+                 wxT("unsupported format in wxDataObjectComposite"));
+
+    return dataObj->SetSizeInBuffer( buffer, size, format );
+}
+
+#endif
 
 size_t wxDataObjectComposite::GetFormatCount(Direction WXUNUSED(dir)) const
 {
@@ -188,19 +234,36 @@ bool wxDataObjectComposite::SetData(const wxDataFormat& format,
 
 size_t wxTextDataObject::GetDataSize() const
 {
-    return GetTextLength();
+#if defined(__WXGTK20__) && wxUSE_UNICODE
+    // Use UTF8 not UCS4
+    wxCharBuffer buffer = wxConvUTF8.cWX2MB( GetText().c_str() );
+    return strlen( (const char*) buffer ) + 1;
+#else
+    return GetTextLength() * sizeof(wxChar);
+#endif
 }
 
 bool wxTextDataObject::GetDataHere(void *buf) const
 {
-    strcpy((char *)buf, GetText().mb_str());
+#if defined(__WXGTK20__) && wxUSE_UNICODE
+    // Use UTF8 not UCS4
+    wxCharBuffer buffer = wxConvUTF8.cWX2MB( GetText().c_str() );
+    strcpy( (char*) buf, (const char*) buffer );
+#else
+    wxStrcpy((wxChar *)buf, GetText().c_str());
+#endif
 
     return TRUE;
 }
 
 bool wxTextDataObject::SetData(size_t WXUNUSED(len), const void *buf)
 {
-    SetText(wxString((const char *)buf));
+#if defined(__WXGTK20__) && wxUSE_UNICODE
+    // Use UTF8 not UCS4
+    SetText( wxConvUTF8.cMB2WX( (const char*) buf ) );
+#else
+    SetText(wxString((const wxChar *)buf));
+#endif
 
     return TRUE;
 }
@@ -364,5 +427,6 @@ wxDragResult wxFileDropTarget::OnData(wxCoord x, wxCoord y, wxDragResult def)
     return OnDropFiles(x, y, dobj->GetFilenames()) ? def : wxDragNone;
 }
 
-#endif
+#endif // wxUSE_DRAG_AND_DROP
 
+#endif // wxUSE_DATAOBJ

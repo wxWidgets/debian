@@ -4,7 +4,7 @@
 // Author:      Vadim Zeitlin
 // Modified by:
 // Created:     06.03.98
-// RCS-ID:      $Id: dropsrc.h,v 1.13.2.1 2000/04/28 12:45:15 VZ Exp $
+// RCS-ID:      $Id: dropsrc.h,v 1.15 2002/04/28 14:30:53 VZ Exp $
 // Copyright:   (c) 1998 Vadim Zeitlin <zeitlin@dptmaths.ens-cachan.fr>
 // Licence:     wxWindows licence
 ///////////////////////////////////////////////////////////////////////////////
@@ -64,7 +64,7 @@ public:
 
     // do it (call this in response to a mouse button press, for example)
     // params: if bAllowMove is false, data can be only copied
-    virtual wxDragResult DoDragDrop(bool bAllowMove = FALSE);
+    virtual wxDragResult DoDragDrop(int flags = wxDrag_CopyOnly);
 
     // overridable: you may give some custom UI feedback during d&d operation
     // in this function (it's called on each mouse move, so it shouldn't be

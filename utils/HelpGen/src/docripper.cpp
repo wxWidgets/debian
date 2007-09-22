@@ -4,7 +4,7 @@
 // Author:      Aleksandras Gluchovas
 // Modified by:
 // Created:     22/09/98
-// RCS-ID:      $Id: docripper.cpp,v 1.2 2000/02/11 18:00:42 RR Exp $
+// RCS-ID:      $Id: docripper.cpp,v 1.4 2002/09/14 09:35:50 GD Exp $
 // Copyright:   (c) Aleskandars Gluchovas
 // Licence:   	wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -22,7 +22,11 @@
 
 #include "docripper.h"
 
-#include <iostream.h>
+#if wxUSE_IOSTREAMH
+    #include <iostream.h>
+#else
+    #include <iostream>
+#endif
 
 // script templates
 
@@ -178,12 +182,14 @@ void RipperDocGen::AppendComments( spContext& fromContext, string& str )
 			if ( lst[i]->StartsParagraph() )
 			{
 				str += mTags[TAG_PARAGRAPH].start;
+
 			}
 	
 		str += lst[i]->mText;
 	}
 
 	// remove new lines, and insert paragraph breaks
+
 	// if empty lines found
 
 	size_t len = str.length();
@@ -192,21 +198,37 @@ void RipperDocGen::AppendComments( spContext& fromContext, string& str )
 	
 		if ( str[n] == 10 || 
 		     str[n] == 13  ) 
+
 		{
+
 			if ( n + 2 < len )
+
 			{
+
 				if ( ( str[n] == 13 && str[n+1] == 10 &&  // FIXME:: quick-hack
+
 					   str[n+2] == 13 ) ||
+
 					 ( str[n] == 10 && str[n+1] == 10 )
+
 			    )
+
 				{
+
 					str.insert( n + 1, "<p>" ); // FIXME:: quick-hack
+
 					len += 3;
+
 				}
+
 			}
 
+
+
 			str[n] = ' ';
+
 		}
+
 
 	str += mTags[TAG_PARAGRAPH].end;
 }
@@ -347,13 +369,13 @@ void RipperDocGen::LinkSuperClassRefs()
 
 void RipperDocGen::ProcessFile( const char* sourceFile )
 {
-	cout << "Processing file " << sourceFile << "..." << endl;
+	wxSTD cout << "Processing file " << sourceFile << "..." << wxSTD endl;
 
 	spFile* pCtx = mpParser->ParseFile( sourceFile );
 
 	if ( pCtx == NULL )
 	{
-		cout << "Cannot open file " << sourceFile << ", skipped..." << endl;
+		wxSTD cout << "Cannot open file " << sourceFile << ", skipped..." << wxSTD endl;
 
 		return;
 	}
@@ -423,8 +445,11 @@ void RipperDocGen::VisitTypeDef( spTypeDef& td )
 void RipperDocGen::VisitPreprocessorLine( spPreprocessorLine& pd )
 {
 	if ( pd.mDefType != SP_PREP_DEF_REDEFINE_SYMBOL )
+
 	
+
 		return;
+
 
 	if ( CheckIfUncommented( pd, *mpMacroIdx ) )
 		return;

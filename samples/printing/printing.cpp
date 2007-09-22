@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     1995
-// RCS-ID:      $Id: printing.cpp,v 1.25.2.3 2001/03/27 17:10:47 VZ Exp $
+// RCS-ID:      $Id: printing.cpp,v 1.29 2002/08/19 10:03:20 JS Exp $
 // Copyright:   (c) Julian Smart
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -78,14 +78,6 @@ bool MyApp::OnInit(void)
     
     g_printData = new wxPrintData;
     g_pageSetupData = new wxPageSetupDialogData;
-
-    // Compatibility with old system. In fact, we might keep wxThePrintSetupData
-    // just for useful default values which we can optionally assign to our
-    // own print data object.
-
-#if defined(__WXGTK__) || defined(__WXMOTIF__)
-    (*g_printData) = * wxThePrintSetupData;
-#endif
     
     // Create the main frame window
     frame = new MyFrame((wxFrame *) NULL, (char *) "wxWindows Printing Demo", wxPoint(0, 0), wxSize(400, 400));
@@ -291,7 +283,7 @@ void MyFrame::OnPageSetupPS(wxCommandEvent& WXUNUSED(event))
 
 void MyFrame::OnPrintAbout(wxCommandEvent& WXUNUSED(event))
 {
-    (void)wxMessageBox("wxWindows printing demo\nAuthor: Julian Smart julian.smart@ukonline.co.uk",
+    (void)wxMessageBox("wxWindows printing demo\nAuthor: Julian Smart",
         "About wxWindows printing demo", wxOK|wxCENTRE);
 }
 
@@ -307,11 +299,18 @@ void MyFrame::Draw(wxDC& dc)
     dc.SetPen(* wxRED_PEN);
     
     dc.DrawRectangle(0, 30, 200, 100);
-    dc.DrawText("Rectangle 200 by 100", 40, 40);
+    
+    dc.DrawText( wxT("Rectangle 200 by 100"), 40, 40);
     
     dc.DrawEllipse(50, 140, 100, 50);
     
-    dc.DrawText("Test message: this is in 10 point text", 10, 180);
+    dc.DrawText( wxT("Test message: this is in 10 point text"), 10, 180);
+    
+#if wxUSE_UNICODE
+    char *test = "Greek (Ελληνικά) Γειά σας -- Hebrew    שלום -- Japanese (日本語)";
+    wxString tmp = wxConvUTF8.cMB2WC( test );
+    dc.DrawText( tmp, 10, 200 ); 
+#endif
     
     dc.SetPen(* wxBLACK_PEN);
     dc.DrawLine(0, 0, 200, 200);
@@ -365,8 +364,8 @@ bool MyPrintout::OnPrintPage(int page)
         dc->SetDeviceOrigin(0, 0);
         dc->SetUserScale(1.0, 1.0);
         
-        char buf[200];
-        sprintf(buf, "PAGE %d", page);
+        wxChar buf[200];
+        wxSprintf(buf, wxT("PAGE %d"), page);
         dc->DrawText(buf, 10, 10);
         
         return TRUE;
@@ -486,16 +485,15 @@ void MyPrintout::DrawPageTwo(wxDC *dc)
     dc->SetFont(* wxGetApp().m_testFont);
     dc->SetBackgroundMode(wxTRANSPARENT);
     
-    dc->DrawText("Some test text", 200, 200 );
     
     { // GetTextExtent demo:
-        wxString words[8] = {"This ", "is ", "a very long string for testing:"," GetTextExtent", " testing", "string. ", "Enjoy ", "it!"};
+        wxString words[7] = {"This ", "is ", "GetTextExtent ", "testing ", "string. ", "Enjoy ", "it!"};
         long w, h;
         long x = 200, y= 250;
-        wxFont fnt(15, wxTELETYPE, wxNORMAL, wxBOLD);
+        wxFont fnt(15, wxSWISS, wxNORMAL, wxNORMAL);
         
         dc->SetFont(fnt);
-        for (int i = 0; i < 8; i++) {
+        for (int i = 0; i < 7; i++) {
             dc->GetTextExtent(words[i], &w, &h);
             dc->DrawRectangle(x, y, w, h);
             dc->DrawText(words[i], x, y);
@@ -504,6 +502,8 @@ void MyPrintout::DrawPageTwo(wxDC *dc)
         dc->SetFont(* wxGetApp().m_testFont);
     }
     
+    dc->DrawText("Some test text", 200, 300 );
+
     // TESTING
     
     int leftMargin = 20;

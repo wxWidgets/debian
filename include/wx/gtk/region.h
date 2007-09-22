@@ -2,7 +2,7 @@
 // Name:        wx/gtk/region.h
 // Purpose:
 // Author:      Robert Roebling
-// Id:          $Id: region.h,v 1.12 2000/03/04 16:23:25 RR Exp $
+// Id:          $Id: region.h,v 1.22.2.1 2002/09/21 10:38:36 VZ Exp $
 // Copyright:   (c) 1998 Robert Roebling
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -10,7 +10,7 @@
 #ifndef _WX_GTK_REGION_H_
 #define _WX_GTK_REGION_H_
 
-#ifdef __GNUG__
+#if defined(__GNUG__) && !defined(__APPLE__)
 #pragma interface
 #endif
 
@@ -30,13 +30,13 @@ class wxRegion;
 
 enum wxRegionContain
 {
-    wxOutRegion = 0, 
-    wxPartRegion = 1, 
+    wxOutRegion = 0,
+    wxPartRegion = 1,
     wxInRegion = 2
 };
 
 // So far, for internal use only
-enum wxRegionOp 
+enum wxRegionOp
 {
    wxRGN_AND,          // Creates the intersection of the two combined regions.
    wxRGN_COPY,         // Creates a copy of the region identified by hrgnSrc1.
@@ -45,28 +45,47 @@ enum wxRegionOp
    wxRGN_XOR           // Creates the union of two combined regions except for any overlapping areas.
 };
 
-//-----------------------------------------------------------------------------
+// ----------------------------------------------------------------------------
 // wxRegion
-//-----------------------------------------------------------------------------
+// ----------------------------------------------------------------------------
 
 class wxRegion : public wxGDIObject
 {
 public:
-    wxRegion( wxCoord x, wxCoord y, wxCoord w, wxCoord h );
-    wxRegion( const wxPoint& topLeft, const wxPoint& bottomRight );
-    wxRegion( const wxRect& rect );
-    wxRegion();
+    wxRegion() { }
+    
+    wxRegion( wxCoord x, wxCoord y, wxCoord w, wxCoord h )
+    {
+        InitRect(x, y, w, h);
+    }
+
+    wxRegion( const wxPoint& topLeft, const wxPoint& bottomRight )
+    {
+        InitRect(topLeft.x, topLeft.y,
+                 bottomRight.x - topLeft.x, bottomRight.y - topLeft.y);
+    }
+
+    wxRegion( const wxRect& rect )
+    {
+        InitRect(rect.x, rect.y, rect.width, rect.height);
+    }
+
+    wxRegion( size_t n, const wxPoint *points, int fillStyle = wxODDEVEN_RULE );
     ~wxRegion();
 
-    inline wxRegion( const wxRegion& r ): wxGDIObject()
-      { Ref(r); }
-    inline wxRegion& operator = ( const wxRegion& r )
-      { Ref(r); return (*this); }
+    wxRegion( const wxRegion& region )
+        : wxGDIObject()
+        { Ref(region); }
+    wxRegion& operator = ( const wxRegion& region ) { Ref(region); return *this; }
+
+    bool Ok() const { return m_refData != NULL; }
 
     bool operator == ( const wxRegion& region );
-    bool operator != ( const wxRegion& region );
+    bool operator != ( const wxRegion& region ) { return !(*this == region); }
 
     void Clear();
+
+    bool Offset( wxCoord x, wxCoord y );
 
     bool Union( wxCoord x, wxCoord y, wxCoord width, wxCoord height );
     bool Union( const wxRect& rect );
@@ -96,12 +115,27 @@ public:
     wxRegionContain Contains(const wxRect& rect) const;
 
 public:
-    wxList    *GetRectList() const;
-    GdkRegion *GetRegion() const;
+    // Init with GdkRegion, set ref count to 2 so that
+    // the C++ class will not destroy the region!
+    wxRegion( GdkRegion *region );
     
+    GdkRegion *GetRegion() const;
+
+protected:
+    // ref counting code
+    virtual wxObjectRefData *CreateRefData() const;
+    virtual wxObjectRefData *CloneRefData(const wxObjectRefData *data) const;
+    
+    // common part of ctors for a rectangle region
+    void InitRect(wxCoord x, wxCoord y, wxCoord w, wxCoord h);
+
 private:
-  DECLARE_DYNAMIC_CLASS(wxRegion);
+    DECLARE_DYNAMIC_CLASS(wxRegion);
 };
+
+// ----------------------------------------------------------------------------
+// wxRegionIterator: decomposes a region into rectangles
+// ----------------------------------------------------------------------------
 
 class wxRegionIterator: public wxObject
 {
@@ -112,11 +146,11 @@ public:
     void Reset() { m_current = 0u; }
     void Reset(const wxRegion& region);
 
-    operator bool () const;
     bool HaveRects() const;
+    operator bool () const { return HaveRects(); }
 
-    void operator ++ ();
-    void operator ++ (int);
+    wxRegionIterator& operator ++ ();
+    wxRegionIterator operator ++ (int);
 
     wxCoord GetX() const;
     wxCoord GetY() const;
@@ -124,7 +158,7 @@ public:
     wxCoord GetWidth() const { return GetW(); }
     wxCoord GetH() const;
     wxCoord GetHeight() const { return GetH(); }
-    wxRect GetRect() const { return wxRect(GetX(), GetY(), GetWidth(), GetHeight()); }
+    wxRect GetRect() const;
 
 private:
     size_t   m_current;

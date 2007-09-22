@@ -1,3 +1,75 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%% wxTextAttr %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\section{\class{wxTextAttr}}\label{wxtextattr}
+
+wxTextAttr represents the attributes, or style, for a range of text in a\rtfsp
+\helpref{wxTextCtrl}{wxtextctrl}.
+
+\wxheading{Derived from}
+
+No base class
+
+\wxheading{Include files}
+
+<wx/textctrl.h>
+
+\latexignore{\rtfignore{\wxheading{Members}}}
+
+\membersection{wxTextAttr::wxTextAttr}\label{wxtextattrctor}
+
+\func{}{wxTextAttr}{\void}
+
+\func{}{wxTextAttr}{\param{const wxColour\& }{colText}, \param{const wxColour\& }{colBack = wxNullColour}, \param{const wxFont\& }{font = wxNullFont}}
+
+The constructors initialize one or more of the text foreground and background
+colours and font. The values not initialized in the constructor can be set
+later, otherwise \helpref{wxTextCtrl::SetStyle}{wxtextctrlsetstyle} will use
+the default values for them.
+
+\membersection{wxTextAttr::GetBackgroundColour}
+
+\constfunc{const wxColour\&}{GetBackgroundColour}{\void}
+
+Return the background colour specified by this attribute.
+
+\membersection{wxTextAttr::GetFont}
+
+\constfunc{const wxFont\&}{GetFont}{\void}
+
+Return the text font specified by this attribute.
+
+\membersection{wxTextAttr::GetTextColour}
+
+\constfunc{const wxColour\&}{GetTextColour}{\void}
+
+Return the text colour specified by this attribute.
+
+\membersection{wxTextAttr::HasBackgroundColour}
+
+\constfunc{bool}{HasBackgroundColour}{\void}
+
+Returns {\tt TRUE} if this style specifies the background colour to use.
+
+\membersection{wxTextAttr::HasFont}
+
+\constfunc{bool}{HasFont}{\void}
+
+Returns {\tt TRUE} if this style specifies the font to use.
+
+\membersection{wxTextAttr::HasTextColour}
+
+\constfunc{bool}{HasTextColour}{\void}
+
+Returns {\tt TRUE} if this style specifies the foreground colour to use.
+
+\membersection{wxTextAttr::IsDefault}
+
+\constfunc{bool}{IsDefault}{\void}
+
+Returns {\tt TRUE} if this style specifies any non-default attributes.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%% wxTextCtrl %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
 \section{\class{wxTextCtrl}}\label{wxtextctrl}
 
 A text control allows text to be displayed and edited. It may be
@@ -23,24 +95,72 @@ streambuf\\
 the message wxEVENT\_TYPE\_TEXT\_ENTER\_COMMAND (otherwise pressing <Enter> is
 either processed internally by the control or used for navigation between
 dialog controls).}
-\twocolitem{\windowstyle{wxTE\_PROCESS\_TAB}}{The control will receieve
+\twocolitem{\windowstyle{wxTE\_PROCESS\_TAB}}{The control will receive
 EVT\_CHAR messages for TAB pressed - normally, TAB is used for passing to the
 next control in a dialog instead. For the control created with this style,
 you can still use Ctrl-Enter to pass to the next control from the keyboard.}
 \twocolitem{\windowstyle{wxTE\_MULTILINE}}{The text control allows multiple lines.}
 \twocolitem{\windowstyle{wxTE\_PASSWORD}}{The text will be echoed as asterisks.}
 \twocolitem{\windowstyle{wxTE\_READONLY}}{The text will not be user-editable.}
-\twocolitem{\windowstyle{wxTE\_RICH}}{create rich edit control instead of a normal one under Windows, does nothing elsewhere}
+\twocolitem{\windowstyle{wxTE\_RICH}}{Use rich text control under Win32, this
+allows to have more than 64Kb of text in the control even under Win9x. This
+style is ignored under other platforms.}
+\twocolitem{\windowstyle{wxTE\_RICH2}}{Use rich text control version 2.0 or 3.0
+under Win32, this style is ignored under other platforms}
+\twocolitem{\windowstyle{wxTE\_AUTO\_URL}}{Highlight the URLs and generate the
+wxTextUrlEvents when mouse events occur over them. This style is supported
+under Win32 only and requires wxTE\_RICH.}
+\twocolitem{\windowstyle{wxTE\_NOHIDESEL}}{By default, the Windows text control
+doesn't show the selection when it doesn't have focus - use this style to force
+it to always show it. It doesn't do anything under other platforms.}
 \twocolitem{\windowstyle{wxHSCROLL}}{A horizontal scrollbar will be created. No effect under GTK+.}
+\twocolitem{\windowstyle{wxTE\_LEFT}}{The text control will be left-justified (default).}
+\twocolitem{\windowstyle{wxTE\_CENTRE}}{The text control will be centre-justified.}
+\twocolitem{\windowstyle{wxTE\_RIGHT}}{The text control will be right-justified.}
+\twocolitem{\windowstyle{wxTE\_DONTWRAP}}{Same as {\tt wxHSCROLL} style.}
+\twocolitem{\windowstyle{wxTE\_LINEWRAP}}{Wrap the lines too long to be shown entirely at any position (wxUniv only currently).}
+\twocolitem{\windowstyle{wxTE\_WORDWRAP}}{Wrap the lines too long to be shown entirely at word boundaries only (wxUniv only currently).}
 \end{twocollist}
 
-See also \helpref{window styles overview}{windowstyles} and 
+See also \helpref{window styles overview}{windowstyles} and
 \helpref{wxTextCtrl::wxTextCtrl}{wxtextctrlconstr}.
 
-\wxheading{Remarks}
+\wxheading{wxTextCtrl styles}
 
-This class multiply-inherits from {\bf streambuf} where compilers allow, allowing code such as 
-the following:
+Multi-line text controls support the styles, i.e. provide a possibility to set
+colours and font for individual characters in it (note that under Windows {\tt
+wxTE\_RICH} style is required for style support). To use the styles you can
+either call \helpref{SetDefaultStyle}{wxtextctrlsetdefaultstyle} before
+inserting the text or call \helpref{SetStyle}{wxtextctrlsetstyle} later to
+change the style of the text already in the control (the first solution is
+much more efficient).
+
+In either case, if the style doesn't specify some of the attributes (for
+example you only want to set the text colour but without changing the font nor
+the text background), the values of the default style will be used for them.
+If there is no default style, the attributes of the text control itself are
+used.
+
+So the following code correctly describes what it does: the second call
+to \helpref{SetDefaultStyle}{wxtextctrlsetdefaultstyle} doesn't change the
+text foreground colour (which stays red) while the last one doesn't change the
+background colour (which stays grey):
+
+{\small%
+\begin{verbatim}
+    text->SetDefaultStyle(wxTextAttr(*wxRED));
+    text->AppendText("Red text\n");
+    text->SetDefaultStyle(wxTextAttr(wxNullColour, *wxLIGHT_GREY));
+    text->AppendText("Red on grey text\n");
+    text->SetDefaultStyle(wxTextAttr(*wxBLUE);
+    text->AppendText("Blue on grey text\n");
+\end{verbatim}
+}%
+
+\wxheading{wxTextCtrl and C++ streams}
+
+This class multiply-inherits from {\bf streambuf} where compilers allow,
+allowing code such as the following:
 
 {\small%
 \begin{verbatim}
@@ -53,11 +173,62 @@ the following:
 \end{verbatim}
 }%
 
-If your compiler does not support derivation from {\bf streambuf} and gives a compile error, define the symbol 
-{\bf NO\_TEXT\_WINDOW\_STREAM} in the wxTextCtrl header file.
+If your compiler does not support derivation from {\bf streambuf} and gives a
+compile error, define the symbol {\bf NO\_TEXT\_WINDOW\_STREAM} in the
+wxTextCtrl header file.
 
-Note that any use of C++ iostreams (including this one) deprecated and might get completely removed
-in the future.
+Note that independently of this setting you can always use wxTextCtrl itself
+in a stream-like manner:
+
+{\small%
+\begin{verbatim}
+  wxTextCtrl *control = new wxTextCtrl(...);
+
+  *control << 123.456 << " some text\n";
+\end{verbatim}
+}%
+
+always works. However the possibility to create an ostream associated with
+wxTextCtrl may be useful if you need to redirect the output of a function
+taking an ostream as parameter to a text control.
+
+Another commonly requested need is to redirect {\bf std::cout} to the text
+control. This could be done in the following way:
+
+{\small%
+\begin{verbatim}
+  #include <iostream>
+
+  wxTextCtrl *control = new wxTextCtrl(...);
+
+  std::streambuf *sbOld = std::cout.rdbuf();
+  std::cout.rdbuf(*control);
+
+  // use cout as usual, the output appears in the text control
+  ...
+
+  std::cout.rdbuf(sbOld);
+\end{verbatim}
+}%
+
+But wxWindows provides a convenient class to make it even simpler so instead
+you may just do
+
+{\small%
+\begin{verbatim}
+  #include <iostream>
+
+  wxTextCtrl *control = new wxTextCtrl(...);
+
+  wxStreamToTextRedirector redirect(control);
+
+  // all output to cout goes into the text control until the exit from current
+  // scope
+\end{verbatim}
+}%
+
+See \helpref{wxStreamToTextRedirector}{wxstreamtotextredirector} for more
+details.
 
 \wxheading{Event handling}
 
@@ -76,12 +247,13 @@ when the text controls contents changes - whether this is due to user input or
 comes from the program itself (for example, if SetValue() is called)}
 \twocolitem{{\bf EVT\_TEXT\_ENTER(id, func)}}{Respond to a wxEVT\_COMMAND\_TEXT\_ENTER event,
 generated when enter is pressed in a single-line text control.}
+\twocolitem{{\bf EVT\_TEXT\_URL(id, func)}}{A mouse event occured over an URL
+in the text control (Win32 only)}
+\twocolitem{{\bf EVT\_TEXT\_MAXLEN(id, func)}}{User tried to enter more text
+into the control than the limit set by
+\helpref{SetMaxLength}{wxtextctrlsetmaxlength}.}
 \end{twocollist}%
 
-%\wxheading{See also}
-%
-%\helpref{wxRichTextCtrl}{wxrichtextctrl}
-%
 \latexignore{\rtfignore{\wxheading{Members}}}
 
 \membersection{wxTextCtrl::wxTextCtrl}\label{wxtextctrlconstr}
@@ -116,17 +288,18 @@ Constructor, creating and showing a text control.
 
 \wxheading{Remarks}
 
-The horizontal scrollbar ({\bf wxTE\_HSCROLL} style flag) will only be created for multi-line text controls.
+The horizontal scrollbar ({\bf wxHSCROLL} style flag) will only be created
+for multi-line text controls.
 Without a horizontal scrollbar, text lines that don't fit in the control's
 size will be wrapped (but no newline character is inserted). Single line
 controls don't have a horizontal scrollbar, the text is automatically scrolled
 so that the \helpref{insertion point}{wxtextctrlgetinsertionpoint} is always
 visible.
 
-Under Windows, if the {\bf wxTE\_RICH} style is used, the window is implemented
-as a Windows rich text control with (practically) unlimited capacity.
-Otherwise, normal edit control limits apply (only about 32Kb of total data
-under Windows 9x).
+% VZ: this is no longer true
+%Under Windows, if the {\bf wxTE\_MULTILINE} style is used, the window is implemented
+%as a Windows rich text control with unlimited capacity. Otherwise, normal edit control limits
+%apply.
 
 \wxheading{See also}
 
@@ -161,34 +334,34 @@ the programmer should use \helpref{GetInsertionPoint}{wxtextctrlgetinsertionpoin
 
 \func{virtual bool}{CanCopy}{\void}
 
-Returns TRUE if the selection can be copied to the clipboard.
+Returns {\tt TRUE} if the selection can be copied to the clipboard.
 
 \membersection{wxTextCtrl::CanCut}\label{wxtextctrlcancut}
 
 \func{virtual bool}{CanCut}{\void}
 
-Returns TRUE if the selection can be cut to the clipboard.
+Returns {\tt TRUE} if the selection can be cut to the clipboard.
 
 \membersection{wxTextCtrl::CanPaste}\label{wxtextctrlcanpaste}
 
 \func{virtual bool}{CanPaste}{\void}
 
-Returns TRUE if the contents of the clipboard can be pasted into the
+Returns {\tt TRUE} if the contents of the clipboard can be pasted into the
 text control. On some platforms (Motif, GTK) this is an approximation
-and returns TRUE if the control is editable, FALSE otherwise.
+and returns {\tt TRUE} if the control is editable, {\tt FALSE} otherwise.
 
 \membersection{wxTextCtrl::CanRedo}\label{wxtextctrlcanredo}
 
 \func{virtual bool}{CanRedo}{\void}
 
-Returns TRUE if there is a redo facility available and the last operation
+Returns {\tt TRUE} if there is a redo facility available and the last operation
 can be redone.
 
 \membersection{wxTextCtrl::CanUndo}\label{wxtextctrlcanundo}
 
 \func{virtual bool}{CanUndo}{\void}
 
-Returns TRUE if there is an undo facility available and the last operation
+Returns {\tt TRUE} if there is an undo facility available and the last operation
 can be undone.
 
 \membersection{wxTextCtrl::Clear}\label{wxtextctrlclear}
@@ -196,6 +369,9 @@ can be undone.
 \func{virtual void}{Clear}{\void}
 
 Clears the text in the control.
+
+Note that this function will generate a {\tt wxEVT\_COMMAND\_TEXT\_UPDATED}
+event.
 
 \membersection{wxTextCtrl::Copy}\label{wxtextctrlcopy}
 
@@ -224,6 +400,30 @@ Copies the selected text to the clipboard and removes the selection.
 \func{void}{DiscardEdits}{\void}
 
 Resets the internal `modified' flag as if the current edits had been saved.
+
+\membersection{wxTextCtrl::EmulateKeyPress}
+
+\func{bool}{EmulateKeyPress}{\param{const wxKeyEvent\& }{event}}
+
+This functions inserts into the control the character which would have been
+inserted if the given key event had occured in the text control. The 
+{\it event} object should be the same as the one passed to {\tt EVT\_KEY\_DOWN}
+handler previously by wxWindows.
+
+\wxheading{Return value}
+
+{\tt TRUE} if the event resulted in a change to the control, {\tt FALSE}
+otherwise.
+
+\membersection{wxTextCtrl::GetDefaultStyle}\label{wxtextctrlgetdefaultstyle}
+
+\constfunc{const wxTextAttr\& }{GetDefaultStyle}{\void}
+
+Returns the style currently used for the new text.
+
+\wxheading{See also}
+
+\helpref{SetDefaultStyle}{wxtextctrlsetdefaultstyle}
 
 \membersection{wxTextCtrl::GetInsertionPoint}\label{wxtextctrlgetinsertionpoint}
 
@@ -301,12 +501,34 @@ calculated by actually counting newline characters in the buffer. You
 may wish to avoid using functions that work with line numbers if you are
 working with controls that contain large amounts of text.
 
+\membersection{wxTextCtrl::GetRange}\label{wxtextctrlgetrange}
+
+\constfunc{virtual wxString}{GetRange}{\param{long}{ from}, \param{long}{ to}}
+
+Returns the string containing the text staring in the positions {\it from} and
+up to {\it to} in the control. The positions must have been returned by another
+wxTextCtrl method.
+
+Please note that the positions in a multiline wxTextCtrl do {\bf not}
+correspond to the indices in the string returned by 
+\helpref{GetValue}{wxtextctrlgetvalue} because of the different new line
+representations ({\tt CR} or {\tt CR LF}) and so this method should be used to
+obtain the correct results instead of extracting parts of the entire value. It
+may also be more efficient, especially if the control contains a lot of data.
+
 \membersection{wxTextCtrl::GetSelection}\label{wxtextctrlgetselection}
 
-\func{virtual void}{GetSelection}{\param{long*}{ from}, \param{long*}{ to}}
+\constfunc{virtual void}{GetSelection}{\param{long*}{ from}, \param{long*}{ to}}
 
 Gets the current selection span. If the returned values are equal, there was
 no selection.
+
+Please note that the indices returned may be used with the other wxTextctrl
+methods but don't necessarily represent the correct indices into the string
+returned by \helpref{GetValue()}{wxtextctrlgetvalue} for multiline controls
+under Windows (at least,) you should use
+\helpref{GetStringSelection()}{wxtextctrlgetstringselection} to get the selected
+text.
 
 \wxheading{Parameters}
 
@@ -317,6 +539,16 @@ no selection.
 \pythonnote{The wxPython version of this method returns a tuple
 consisting of the from and to values.}
 
+\perlnote{In wxPerl this method takes no parameter and returns a
+2-element list {\tt ( from, to )}.}
+
+\membersection{wxTextCtrl::GetStringSelection}\label{wxtextctrlgetstringselection}
+
+\func{virtual wxString}{GetStringSelection}{\void}
+
+Gets the text currently selected in the control. If there is no selection, the
+returned string is empty.
+
 \membersection{wxTextCtrl::GetValue}\label{wxtextctrlgetvalue}
 
 \constfunc{wxString}{GetValue}{\void}
@@ -325,11 +557,43 @@ Gets the contents of the control. Notice that for a multiline text control,
 the lines will be separated by (Unix-style) $\backslash$n characters, even under
 Windows where they are separated by a $\backslash$r$\backslash$n sequence in the native control.
 
+\membersection{wxTextCtrl::IsEditable}\label{wxtextctrliseditable}
+
+\constfunc{bool}{IsEditable}{\void}
+
+Returns {\tt TRUE} if the controls contents may be edited by user (note that it
+always can be changed by the program), i.e. if the control hasn't been put in
+read-only mode by a previous call to 
+\helpref{SetEditable}{wxtextctrlseteditable}.
+
 \membersection{wxTextCtrl::IsModified}\label{wxtextctrlismodified}
 
 \constfunc{bool}{IsModified}{\void}
 
-Returns TRUE if the text has been modified.
+Returns {\tt TRUE} if the text has been modified by user. Note that calling 
+\helpref{SetValue}{wxtextctrlsetvalue} doesn't make the control modified.
+
+\membersection{wxTextCtrl::IsMultiLine}\label{wxtextctrlismultiline}
+
+\constfunc{bool}{IsMultiLine}{\void}
+
+Returns {\tt TRUE} if this is a multi line edit control and {\tt FALSE}
+otherwise.
+
+\wxheading{See also}
+
+\helpref{IsSingleLine}{wxtextctrlissingleline}
+
+\membersection{wxTextCtrl::IsSingleLine}\label{wxtextctrlissingleline}
+
+\constfunc{bool}{IsSingleLine}{\void}
+
+Returns {\tt TRUE} if this is a single line edit control and {\tt FALSE}
+otherwise.
+
+\wxheading{See also}
+
+\helpref{IsMultiLine}{wxtextctrlissingleline}
 
 \membersection{wxTextCtrl::LoadFile}\label{wxtextctrlloadfile}
 
@@ -343,35 +607,37 @@ Loads and displays the named file, if it exists.
 
 \wxheading{Return value}
 
-TRUE if successful, FALSE otherwise.
+{\tt TRUE} if successful, {\tt FALSE} otherwise.
 
-\membersection{wxTextCtrl::OnChar}\label{wxtextctrlonchar}
-
-\func{void}{OnChar}{\param{wxKeyEvent\& }{event}}
-
-Default handler for character input.
-
-\wxheading{Remarks}
-
-It is possible to intercept character
-input by overriding this member. Call this function
-to let the default behaviour take place; not calling
-it results in the character being ignored. You can
-replace the {\it keyCode} member of {\it event} to
-translate keystrokes.
-
-Note that Windows and Motif have different ways
-of implementing the default behaviour. In Windows,
-calling wxTextCtrl::OnChar immediately
-processes the character. In Motif,
-calling this function simply sets a flag
-to let default processing happen. This might affect
-the way in which you write your OnChar function
-on different platforms.
-
-\wxheading{See also}
-
-\helpref{wxKeyEvent}{wxkeyevent}
+% VZ: commenting this out as: (a) the docs are wrong (you can't replace
+%     anything), (b) wxTextCtrl doesn't have any OnChar() anyhow
+%% \membersection{wxTextCtrl::OnChar}\label{wxtextctrlonchar}
+%% 
+%% \func{void}{OnChar}{\param{wxKeyEvent\& }{event}}
+%% 
+%% Default handler for character input.
+%% 
+%% \wxheading{Remarks}
+%% 
+%% It is possible to intercept character
+%% input by overriding this member. Call this function
+%% to let the default behaviour take place; not calling
+%% it results in the character being ignored. You can
+%% replace the {\it keyCode} member of {\it event} to
+%% translate keystrokes.
+%% 
+%% Note that Windows and Motif have different ways
+%% of implementing the default behaviour. In Windows,
+%% calling wxTextCtrl::OnChar immediately
+%% processes the character. In Motif,
+%% calling this function simply sets a flag
+%% to let default processing happen. This might affect
+%% the way in which you write your OnChar function
+%% on different platforms.
+%% 
+%% \wxheading{See also}
+%% 
+%% \helpref{wxKeyEvent}{wxkeyevent}
 
 \membersection{wxTextCtrl::OnDropFiles}\label{wxtextctrlondropfiles}
 
@@ -414,7 +680,7 @@ Converts given position to a zero-based column, line number pair.
 
 \wxheading{Return value}
 
-TRUE on success, FALSE on failure (most likely due to a too large position
+{\tt TRUE} on success, {\tt FALSE} on failure (most likely due to a too large position
 parameter).
 
 \wxheading{See also}
@@ -424,6 +690,9 @@ parameter).
 \pythonnote{In Python, PositionToXY() returns a tuple containing the x and
 y values, so (x,y) = PositionToXY() is equivalent to the call described
 above.}
+
+\perlnote{In wxPerl this method only takes the {\tt pos} parameter, and
+returns a 2-element list {\tt ( x, y )}.}
 
 \membersection{wxTextCtrl::Redo}\label{wxtextctrlredo}
 
@@ -472,7 +741,37 @@ Saves the contents of the control in a text file.
 
 \wxheading{Return value}
 
-TRUE if the operation was successful, FALSE otherwise.
+{\tt TRUE} if the operation was successful, {\tt FALSE} otherwise.
+
+\membersection{wxTextCtrl::SetDefaultStyle}\label{wxtextctrlsetdefaultstyle}
+
+\func{bool}{SetDefaultStyle}{\param{const wxTextAttr\& }{style}}
+
+Changes the default style to use for the new text which is going to be added
+to the control using \helpref{WriteText}{wxtextctrlwritetext} or\rtfsp
+\helpref{AppendText}{wxtextctrlappendtext}.
+
+If either of the font, foreground, or background colour is not set in\rtfsp
+{\it style}, the values of the previous default style are used for them. If
+the previous default style didn't set them neither, the global font or colours
+of the text control itself are used as fall back.
+
+However if the {\it style} parameter is the default wxTextAttr, then the
+default style is just reset (instead of being combined with the new style which
+wouldn't change it at all).
+
+\wxheading{Parameters}
+
+\docparam{style}{The style for the new text.}
+
+\wxheading{Return value}
+
+{\tt TRUE} on success, {\tt FALSE} if an error occured - may also mean that
+the styles are not supported under this platform.
+
+\wxheading{See also}
+
+\helpref{GetDefaultStyle}{wxtextctrlgetdefaultstyle}
 
 \membersection{wxTextCtrl::SetEditable}\label{wxtextctrlseteditable}
 
@@ -482,7 +781,11 @@ Makes the text item editable or read-only, overriding the {\bf wxTE\_READONLY} f
 
 \wxheading{Parameters}
 
-\docparam{editable}{If TRUE, the control is editable. If FALSE, the control is read-only.}
+\docparam{editable}{If {\tt TRUE}, the control is editable. If {\tt FALSE}, the control is read-only.}
+
+\wxheading{See also}
+
+\helpref{IsEditable}{wxtextctrliseditable}
 
 \membersection{wxTextCtrl::SetInsertionPoint}\label{wxtextctrlsetinsertionpoint}
 
@@ -501,11 +804,37 @@ Sets the insertion point at the given position.
 Sets the insertion point at the end of the text control. This is equivalent
 to \helpref{SetInsertionPoint}{wxtextctrlsetinsertionpoint}(\helpref{GetLastPosition}{wxtextctrlgetlastposition}()).
 
+\membersection{wxTextCtrl::SetMaxLength}\label{wxtextctrlsetmaxlength}
+
+\func{virtual void}{SetMaxLength}{\param{unsigned long }{len}}
+
+This function sets the maximum number of characters the user can enter into the
+control. In other words, it allows to limit the text value length to {\it len}
+not counting the terminating {\tt NUL} character.
+
+If {\it len} is $0$, the previously set max length limit, if any, is discarded
+and the user may enter as much text as the underlying native text control
+widget supports (typically at least 32Kb).
+
+If the user tries to enter more characters into the text control when it
+already is filled up to the maximal length, a
+{\tt wxEVT\_COMMAND\_TEXT\_MAXLEN} event is sent to notify the program about it
+(giving it the possibility to show an explanatory message, for example) and the
+extra input is discarded.
+
+Note that this function may only be used with single line text controls.
+
+\wxheading{Compatibility}
+
+Only implemented in wxMSW/wxGTK starting with wxWindows 2.3.2.
+
 \membersection{wxTextCtrl::SetSelection}\label{wxtextctrlsetselection}
 
 \func{virtual void}{SetSelection}{\param{long}{ from}, \param{long}{ to}}
 
-Selects the text starting at the first position up to (but not including) the character at the last position.
+Selects the text starting at the first position up to (but not including) the
+character at the last position. If both parameters are equal to $-1$ all text
+in the control is selected.
 
 \wxheading{Parameters}
 
@@ -513,11 +842,37 @@ Selects the text starting at the first position up to (but not including) the ch
 
 \docparam{to}{The last position.}
 
+\membersection{wxTextCtrl::SetStyle}\label{wxtextctrlsetstyle}
+
+\func{bool}{SetStyle}{\param{long }{start}, \param{long }{end}, \param{const wxTextAttr\& }{style}}
+
+Changes the style of the selection. If either of the font, foreground, or
+background colour is not set in {\it style}, the values of\rtfsp
+\helpref{GetDefaultStyle()}{wxtextctrlgetdefaultstyle} are used.
+
+\wxheading{Parameters}
+
+\docparam{start}{The start of selection to change.}
+
+\docparam{end}{The end of selection to change.}
+
+\docparam{style}{The new style for the selection.}
+
+\wxheading{Return value}
+
+{\tt TRUE} on success, {\tt FALSE} if an error occured - may also mean that
+the styles are not supported under this platform.
+
 \membersection{wxTextCtrl::SetValue}\label{wxtextctrlsetvalue}
 
 \func{virtual void}{SetValue}{\param{const wxString\& }{ value}}
 
-Sets the text value and marks the control as not-modified.
+Sets the text value and marks the control as not-modified (which means that 
+\helpref{IsModified}{wxtextctrlismodified} would return {\tt FALSE} immediately
+after the call to SetValue).
+
+Note that this function will generate a {\tt wxEVT\_COMMAND\_TEXT\_UPDATED}
+event.
 
 \wxheading{Parameters}
 

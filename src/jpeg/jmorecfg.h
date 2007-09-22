@@ -155,36 +155,19 @@ typedef unsigned int UINT16;
 typedef short INT16;
 #endif
 
-#if defined( __GNUWIN32__ ) || defined( __MINGW32__ ) || defined( __CYGWIN__ )
-#include <wx/msw/gccpriv.h>
-#else
-#undef wxCHECK_W32API_VERSION
-#define wxCHECK_W32API_VERSION(maj, min) (0)
-#endif
-
 /* INT32 must hold at least signed 32-bit values. */
 
-/* you may define INT32_DEFINED if it is already defined somewhere */
-#ifndef INT32_DEFINED
-#ifdef XMD_H
-/* X11/xmd.h correctly defines INT32 */
-#define INT32_DEFINED
-#elif (_MSC_VER >= 1200) || (__BORLANDC__ >= 0x550) || \
-      wxCHECK_W32API_VERSION( 0, 5 ) || \
-      ((defined(__MINGW32__) || defined(__CYGWIN__)) \
-       && ((__GNUC__>2) || ((__GNUC__==2) && (__GNUC_MINOR__>95))))
-
-/* INT32 is defined in windows.h  for these compilers */
-#define INT32_DEFINED
-#include <windows.h>
-#endif
-#endif /* !INT32_DEFINED */
-
-#ifndef INT32_DEFINED
-typedef long INT32;
-#endif
-
-#undef INT32_DEFINED
+/*
+    VZ: due to the horrible mess resulting in INT32 being defined in windows.h
+        for some compilers but not for the other ones, I have globally replace
+        INT32 with JPEG_INT32 in libjpeg code to avoid the eight level ifdef
+        which used to be here. The problem is that, of course, now we'll have
+        conflicts when upgrading to the next libjpeg release -- however
+        considering their frequency (1 in the last 5 years) it seems that
+        it is not too high a price to pay for the clean compilation with all
+        versions of mingw32 and cygwin
+ */
+typedef long JPEG_INT32;
 
 /* Datatype used for image dimensions.  The JPEG standard only supports
  * images up to 64K*64K due to 16-bit fields in SOF markers.  Therefore
@@ -205,25 +188,29 @@ typedef unsigned int JDIMENSION;
  * or code profilers that require it.
  */
 
-#if defined(__VISAGECPP__) /* need this for /common/imagjpeg.obj but not loclly */
-/* a function called through method pointers: */
-#define METHODDEF(type)		static type _Optlink
-/* a function used only in its module: */
-#define LOCAL(type)		static type _Optlink
-/* a function referenced thru EXTERNs: */
-#define GLOBAL(type)		type
-/* a reference to a GLOBAL function: */
-#define EXTERN(type)		extern type _Optlink
-#else
-/* a function called through method pointers: */
-#define METHODDEF(type)		static type
-/* a function used only in its module: */
-#define LOCAL(type)		static type
-/* a function referenced thru EXTERNs: */
-#define GLOBAL(type)		type
-/* a reference to a GLOBAL function: */
-#define EXTERN(type)		extern type
+#if defined(__VISAGECPP__)
+#define JPEG_CALLING_CONV _Optlink
+#else /* !Visual Age C++ */
+#define JPEG_CALLING_CONV
 #endif
+
+/* We can't declare a static function as extern "C" as we need to do in C++
+ * programs, so suppress static in METHODDEF when using C++.
+ */
+#if defined(__cplusplus)
+#define JPEG_METHOD_LINKAGE
+#else /* !__cplusplus */
+#define JPEG_METHOD_LINKAGE static
+#endif
+
+/* a function called through method pointers: */
+#define METHODDEF(type)		JPEG_METHOD_LINKAGE type JPEG_CALLING_CONV
+/* a function used only in its module: */
+#define LOCAL(type)		static type JPEG_CALLING_CONV
+/* a function referenced thru EXTERNs: */
+#define GLOBAL(type)		type
+/* a reference to a GLOBAL function: */
+#define EXTERN(type)		extern type JPEG_CALLING_CONV
 
 /* This macro is used to declare a "method", that is, a function pointer.
  * We want to supply prototype parameters if the compiler can cope.

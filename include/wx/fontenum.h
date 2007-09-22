@@ -5,7 +5,7 @@
 // Modified by: extended to enumerate more than just font facenames and works
 //              not only on Windows now (VZ)
 // Created:     04/01/98
-// RCS-ID:      $Id: fontenum.h,v 1.8 1999/11/06 15:37:01 VS Exp $
+// RCS-ID:      $Id: fontenum.h,v 1.9 2002/08/31 11:29:10 GD Exp $
 // Copyright:   (c) Julian Smart, Vadim Zeitlin
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -13,7 +13,7 @@
 #ifndef _WX_FONTENUM_H_
 #define _WX_FONTENUM_H_
 
-#ifdef __GNUG__
+#if defined(__GNUG__) && !defined(__APPLE__)
     #pragma interface "fontenum.h"
 #endif
 

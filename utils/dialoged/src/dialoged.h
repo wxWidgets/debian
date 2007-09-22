@@ -4,12 +4,12 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     04/01/98
-// RCS-ID:      $Id: dialoged.h,v 1.5.2.2 2002/01/18 11:50:49 JS Exp $
+// RCS-ID:      $Id: dialoged.h,v 1.8 2002/09/07 12:05:25 GD Exp $
 // Copyright:   (c) Julian Smart
 // Licence:   	wxWindows license
 /////////////////////////////////////////////////////////////////////////////
 
-#ifdef __GNUG__
+#if defined(__GNUG__) && !defined(__APPLE__)
 #pragma interface "dialoged.h"
 #endif
 

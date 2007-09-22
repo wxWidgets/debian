@@ -1,10 +1,10 @@
 ///////////////////////////////////////////////////////////////////////////////
-// Name:        listimpl.cpp
+// Name:        wx/arrimpl.cpp
 // Purpose:     helper file for implementation of dynamic lists
 // Author:      Vadim Zeitlin
 // Modified by:
 // Created:     16.10.97
-// RCS-ID:      $Id: arrimpl.cpp,v 1.7.2.2 2000/05/25 18:34:05 VZ Exp $
+// RCS-ID:      $Id: arrimpl.cpp,v 1.13.2.1 2002/09/24 00:35:08 RD Exp $
 // Copyright:   (c) 1997 Vadim Zeitlin <zeitlin@dptmaths.ens-cachan.fr>
 // Licence:     wxWindows license
 ///////////////////////////////////////////////////////////////////////////////
@@ -52,7 +52,7 @@ name& name::operator=(const name& src)                                        \
   return *this;                                                               \
 }                                                                             \
                                                                               \
-name::name(const name& src)                                                   \
+name::name(const name& src) : wxArrayPtrVoid()                                \
 {                                                                             \
   DoCopy(src);                                                                \
 }                                                                             \
@@ -60,30 +60,40 @@ name::name(const name& src)                                                   \
 void name::DoEmpty()                                                          \
 {                                                                             \
   for ( size_t ui = 0; ui < Count(); ui++ )                                   \
-    delete (T*)wxBaseArray::Item(ui);                                         \
+    delete (T*)wxBaseArrayPtrVoid::Item(ui);                                  \
 }                                                                             \
                                                                               \
-void name::RemoveAt(size_t uiIndex)                                           \
+void name::RemoveAt(size_t uiIndex, size_t nRemove)                           \
 {                                                                             \
   wxCHECK_RET( uiIndex < Count(), _WX_ERROR_REMOVE2(name) );                  \
                                                                               \
-  delete (T*)wxBaseArray::Item(uiIndex);                                      \
+  for (size_t i = 0; i < nRemove; i++ )                                       \
+    delete (T*)wxBaseArrayPtrVoid::Item(uiIndex + i);                         \
                                                                               \
-  wxBaseArray::RemoveAt(uiIndex);                                             \
+  wxBaseArrayPtrVoid::RemoveAt(uiIndex, nRemove);                             \
 }                                                                             \
                                                                               \
-void name::Add(const T& item)                                                 \
+void name::Add(const T& item, size_t nInsert)                                 \
 {                                                                             \
+  if (nInsert == 0)                                                           \
+    return;                                                                   \
   T* pItem = new T(item);                                                     \
+  size_t nOldSize = GetCount();                                               \
   if ( pItem != NULL )                                                        \
-    Add(pItem);                                                               \
+    wxBaseArrayPtrVoid::Add(pItem, nInsert);                                  \
+  for (size_t i = 1; i < nInsert; i++)                                        \
+    wxBaseArrayPtrVoid::Item(nOldSize + i) = new T(item);                     \
 }                                                                             \
                                                                               \
-void name::Insert(const T& item, size_t uiIndex)                              \
+void name::Insert(const T& item, size_t uiIndex, size_t nInsert)              \
 {                                                                             \
+  if (nInsert == 0)                                                           \
+    return;                                                                   \
   T* pItem = new T(item);                                                     \
   if ( pItem != NULL )                                                        \
-    Insert(pItem, uiIndex);                                                   \
+    wxBaseArrayPtrVoid::Insert(pItem, uiIndex, nInsert);                      \
+  for (size_t i = 1; i < nInsert; i++)                                        \
+    wxBaseArrayPtrVoid::Item(uiIndex + i) = new T(item);                      \
 }                                                                             \
                                                                               \
 int name::Index(const T& Item, bool bFromEnd) const                           \
@@ -92,7 +102,7 @@ int name::Index(const T& Item, bool bFromEnd) const                           \
     if ( Count() > 0 ) {                                                      \
       size_t ui = Count() - 1;                                                \
       do {                                                                    \
-        if ( (T*)wxBaseArray::Item(ui) == &Item )                             \
+        if ( (T*)wxBaseArrayPtrVoid::Item(ui) == &Item )                      \
           return ui;                                                          \
         ui--;                                                                 \
       }                                                                       \
@@ -101,7 +111,7 @@ int name::Index(const T& Item, bool bFromEnd) const                           \
   }                                                                           \
   else {                                                                      \
     for( size_t ui = 0; ui < Count(); ui++ ) {                                \
-      if( (T*)wxBaseArray::Item(ui) == &Item )                                \
+      if( (T*)wxBaseArrayPtrVoid::Item(ui) == &Item )                         \
         return ui;                                                            \
     }                                                                         \
   }                                                                           \
@@ -112,4 +122,4 @@ int name::Index(const T& Item, bool bFromEnd) const                           \
 // redefine the macro so that now it will generate the class implementation
 // old value would provoke a compile-time error if this file is not included
 #undef  WX_DEFINE_OBJARRAY
-#define WX_DEFINE_OBJARRAY(name) _DEFINE_OBJARRAY(_L##name, name)
+#define WX_DEFINE_OBJARRAY(name) _DEFINE_OBJARRAY(_wxObjArray##name, name)

@@ -5,7 +5,7 @@
 // Modified by: Vadim Zeitlin (wxTimerBase)
 //              Guillermo Rodriguez (global clean up)
 // Created:     04/01/98
-// RCS-ID:      $Id: timer.h,v 1.15.2.1 2000/07/02 21:48:22 VZ Exp $
+// RCS-ID:      $Id: timer.h,v 1.31 2002/08/31 11:29:11 GD Exp $
 // Copyright:   (c) wxWindows team
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -13,7 +13,7 @@
 #ifndef _WX_TIMER_H_BASE_
 #define _WX_TIMER_H_BASE_
 
-#ifdef __GNUG__
+#if defined(__GNUG__) && !defined(__APPLE__)
     #pragma interface "timerbase.h"
 #endif
 
@@ -22,11 +22,19 @@
 #include "wx/longlong.h"
 #include "wx/event.h"
 
-#if wxUSE_GUI
+#if wxUSE_GUI && wxUSE_TIMER
 
 // ----------------------------------------------------------------------------
 // wxTimer
 // ----------------------------------------------------------------------------
+
+// more readable flags for Start():
+
+// generate notifications periodically until the timer is stopped (default)
+#define wxTIMER_CONTINUOUS FALSE
+
+// only send the notification once and then stop the timer
+#define wxTIMER_ONE_SHOT TRUE
 
 // the interface of wxTimer class
 class WXDLLEXPORT wxTimerBase : public wxObject
@@ -49,23 +57,17 @@ public:
     void SetOwner(wxEvtHandler *owner, int id = -1)
         { m_owner = owner; m_idTimer = id; }
 
+    virtual ~wxTimerBase();
+
     // working with the timer
     // ----------------------
 
     // start the timer: if milliseconds == -1, use the same value as for the
     // last Start()
-    virtual bool Start(int milliseconds = -1, bool oneShot = FALSE)
-    {
-        if ( milliseconds != -1 )
-        {
-            m_milli = milliseconds;
-        }
-
-        m_oneShot = oneShot;
-
-        return TRUE;
-    }
-
+    //
+    // it is now valid to call Start() multiple times: this just restarts the
+    // timer if it is already running
+    virtual bool Start(int milliseconds = -1, bool oneShot = FALSE);
 
     // stop the timer
     virtual void Stop() = 0;
@@ -113,8 +115,8 @@ protected:
     #include "wx/motif/timer.h"
 #elif defined(__WXGTK__)
     #include "wx/gtk/timer.h"
-#elif defined(__WXQT__)
-    #include "wx/qt/timer.h"
+#elif defined(__WXX11__) || defined(__WXMGL__)
+    #include "wx/generic/timer.h"
 #elif defined(__WXMAC__)
     #include "wx/mac/timer.h"
 #elif defined(__WXPM__)
@@ -171,6 +173,9 @@ public:
     // accessors
     int GetInterval() const { return m_interval; }
 
+    // implement the base class pure virtual
+    virtual wxEvent *Clone() const { return new wxTimerEvent(*this); }
+
 private:
     int m_interval;
 
@@ -179,24 +184,33 @@ private:
 
 typedef void (wxEvtHandler::*wxTimerEventFunction)(wxTimerEvent&);
 
-#define EVT_TIMER(id, func) { wxEVT_TIMER, id, -1, (wxObjectEventFunction) (wxEventFunction) (wxTimerEventFunction) & func, NULL},
+#define EVT_TIMER(id, func) \
+    DECLARE_EVENT_TABLE_ENTRY( wxEVT_TIMER, id, -1, (wxObjectEventFunction) (wxEventFunction) (wxTimerEventFunction) & func, NULL),
 
-#endif // wxUSE_GUI
+#endif // wxUSE_GUI && wxUSE_TIMER
 
 // ----------------------------------------------------------------------------
 // wxStopWatch: measure time intervals with up to 1ms resolution
 // ----------------------------------------------------------------------------
 
+#if wxUSE_STOPWATCH
+
 class WXDLLEXPORT wxStopWatch
 {
 public:
     // ctor starts the stop watch
-    wxStopWatch()        { Start(); }
-    void Start(long t = 0);
-    void Pause()  { m_pause = GetElapsedTime(); }
-    void Resume() { Start(m_pause); }
+    wxStopWatch() { m_pauseCount = 0; Start(); }
 
-    // get elapsed time since the last Start() or Pause() in milliseconds
+    // start the stop watch at the moment t0
+    void Start(long t0 = 0);
+
+    // pause the stop watch
+    void Pause() { if ( !m_pauseCount++) m_pause = GetElapsedTime(); }
+
+    // resume it
+    void Resume() { if ( !--m_pauseCount ) Start(m_pause); }
+
+    // get elapsed time since the last Start() in milliseconds
     long Time() const;
 
 protected:
@@ -204,10 +218,19 @@ protected:
     long GetElapsedTime() const;
 
 private:
-    wxLongLong m_t0;      // the time of the last Start()
-    long m_pause;         // the time of the last Pause() or 0
+    // the time of the last Start()
+    wxLongLong m_t0;
+
+    // the time of the last Pause() (only valid if m_pauseCount > 0)
+    long m_pause;
+
+    // if > 0, the stop watch is paused, otherwise it is running
+    int m_pauseCount;
 };
 
+#endif // wxUSE_STOPWATCH
+
+#if wxUSE_LONGLONG
 
 // Starts a global timer
 // -- DEPRECATED: use wxStopWatch instead
@@ -216,6 +239,8 @@ void WXDLLEXPORT wxStartTimer();
 // Gets elapsed milliseconds since last wxStartTimer or wxGetElapsedTime
 // -- DEPRECATED: use wxStopWatch instead
 long WXDLLEXPORT wxGetElapsedTime(bool resetTimer = TRUE);
+
+#endif // wxUSE_LONGLONG
 
 // ----------------------------------------------------------------------------
 // global time functions
@@ -227,8 +252,10 @@ extern long WXDLLEXPORT wxGetLocalTime();
 // Get number of seconds since GMT 00:00:00, Jan 1st 1970.
 extern long WXDLLEXPORT wxGetUTCTime();
 
+#if wxUSE_LONGLONG
 // Get number of milliseconds since local time 00:00:00 Jan 1st 1970
 extern wxLongLong WXDLLEXPORT wxGetLocalTimeMillis();
+#endif // wxUSE_LONGLONG
 
 #define wxGetCurrentTime() wxGetLocalTime()
 

@@ -8,29 +8,30 @@
 .first
 	define wx [--.include.wx]
 
-CXX_DEFINE = /define=(__WXGTK__=1)
+.ifdef __WXUNIVERSAL__
+CXX_DEFINE = /define=(__WXGTK__=1,__WXUNIVERSAL__==1)/float=ieee\
+	/name=(as_is,short)/ieee=denorm/assume=(nostdnew,noglobal_array_new)
+CC_DEFINE = /define=(__WXGTK__=1,__WXUNIVERSAL__==1)/float=ieee\
+	/name=(as_is,short)/ieee=denorm
+.else
+CXX_DEFINE = /define=(__WXGTK__=1)/float=ieee/name=(as_is,short)/iee=denorm\
+	   /assume=(nostdnew,noglobal_array_new)
+CC_DEFINE = /define=(__WXGTK__=1)/float=ieee/name=(as_is,short)/iee=denorm
+.endif
 
 .suffixes : .cpp
 
 .cpp.obj :
 	cxx $(CXXFLAGS)$(CXX_DEFINE) $(MMS$TARGET_NAME).cpp
 .c.obj :
-	cc $(CFLAGS)$(CXX_DEFINE) $(MMS$TARGET_NAME).c
+	cc $(CFLAGS)$(CC_DEFINE) $(MMS$TARGET_NAME).c
 
 OBJECTS = \
-	accel.obj,\
 	app.obj,\
 	bitmap.obj,\
-        bmpbuttn.obj,\
 	brush.obj,\
-	button.obj,\
-	checkbox.obj,\
-	checklst.obj,\
-	choice.obj,\
 	clipbrd.obj,\
 	colour.obj,\
-        combobox.obj,\
-	control.obj,\
 	cursor.obj,\
 	data.obj,\
 	dataobj.obj,\
@@ -38,29 +39,46 @@ OBJECTS = \
 	dcclient.obj,\
 	dcmemory.obj,\
 	dcscreen.obj,\
-	dialog.obj,\
         dnd.obj,\
 	font.obj,\
-	fontdlg.obj,\
-	frame.obj,\
-	gauge.obj,\
 	gdiobj.obj,\
         glcanvas.obj,\
 	gsockgtk.obj,\
         icon.obj,\
-	listbox.obj,\
 	main.obj,\
+	minifram.obj,\
+	pen.obj,\
+	popupwin.obj,\
+	region.obj,\
+	settings.obj,\
+	timer.obj,\
+	tooltip.obj,\
+	toplevel.obj,\
+	utilsgtk.obj,\
+	utilsres.obj,\
+        win_gtk.obj,\
+	window.obj
+
+OBJECTS0= \
+        bmpbuttn.obj,\
+	button.obj,\
+	checkbox.obj,\
+	checklst.obj,\
+	choice.obj,\
+        combobox.obj,\
+	control.obj,\
+	dialog.obj,\
+	fontdlg.obj,\
+	frame.obj,\
+	gauge.obj,\
+	listbox.obj,\
 	mdi.obj,\
 	menu.obj,\
-	minifram.obj,\
 	notebook.obj,\
-	palette.obj,\
-	pen.obj,\
 	radiobox.obj,\
 	radiobut.obj,\
-	region.obj,\
 	scrolbar.obj,\
-	settings.obj,\
+	scrolwin.obj,\
 	slider.obj,\
         spinbutt.obj,\
 	spinctrl.obj,\
@@ -70,16 +88,9 @@ OBJECTS = \
 	stattext.obj,\
 	tbargtk.obj,\
 	textctrl.obj,\
-	timer.obj,\
-	tooltip.obj,\
-	utilsgtk.obj,\
-	utilsres.obj,\
-	window.obj,\
-        win_gtk.obj,\
-	wx_gtk_vmsjackets.obj
+	tglbtn.obj
 
 SOURCES =\
-	accel.cpp,\
 	app.cpp,\
 	bitmap.cpp,\
         bmpbuttn.cpp,\
@@ -115,12 +126,13 @@ SOURCES =\
 	menu.cpp,\
 	minifram.cpp,\
 	notebook.cpp,\
-	palette.cpp,\
 	pen.cpp,\
+	popupwin.cpp,\
 	radiobox.cpp,\
 	radiobut.cpp,\
 	region.cpp,\
 	scrolbar.cpp,\
+	scrolwin.cpp,\
 	settings.cpp,\
 	slider.cpp,\
         spinbutt.cpp,\
@@ -131,19 +143,25 @@ SOURCES =\
 	stattext.cpp,\
 	tbargtk.cpp,\
 	textctrl.cpp,\
+	tglbtn.cpp,\
 	timer.cpp,\
 	tooltip.cpp,\
+	toplevel.cpp,\
 	utilsgtk.cpp,\
 	utilsres.cpp,\
-	window.cpp,\
         win_gtk.c,\
-	wx_gtk_vmsjackets.c
+	window.cpp
    
 all : $(SOURCES)
 	$(MMS)$(MMSQUALIFIERS) $(OBJECTS)
+.ifdef __WXUNIVERSAL__
+	library [--.lib]libwx_gtk_univ.olb $(OBJECTS)
+.else
 	library [--.lib]libwx_gtk.olb $(OBJECTS)
+	$(MMS)$(MMSQUALIFIERS) $(OBJECTS0)
+	library [--.lib]libwx_gtk.olb $(OBJECTS0)
+.endif
 
-accel.obj : accel.cpp
 app.obj : app.cpp
 bitmap.obj : bitmap.cpp
 bmpbuttn.obj : bmpbuttn.cpp
@@ -179,12 +197,13 @@ mdi.obj : mdi.cpp
 menu.obj : menu.cpp
 minifram.obj : minifram.cpp
 notebook.obj : notebook.cpp
-palette.obj : palette.cpp
 pen.obj : pen.cpp
+popupwin.obj : popupwin.cpp
 radiobox.obj : radiobox.cpp
 radiobut.obj : radiobut.cpp
 region.obj : region.cpp
 scrolbar.obj : scrolbar.cpp
+scrolwin.obj : scrolwin.cpp
 settings.obj : settings.cpp
 slider.obj : slider.cpp
 spinbutt.obj : spinbutt.cpp
@@ -195,11 +214,11 @@ statline.obj : statline.cpp
 stattext.obj : stattext.cpp
 tbargtk.obj : tbargtk.cpp
 textctrl.obj : textctrl.cpp
+tglbtn.obj : tglbtn.cpp
 timer.obj : timer.cpp
 tooltip.obj : tooltip.cpp
+toplevel.obj : toplevel.cpp
 utilsgtk.obj : utilsgtk.cpp
 utilsres.obj : utilsres.cpp
-window.obj : window.cpp
 win_gtk.obj : win_gtk.c
-wx_gtk_vmsjackets.obj : wx_gtk_vmsjackets.c
-	cc $(CFLAGS)$(CXX_DEFINE) wx_gtk_vmsjackets.c/name=(as_is,short)
+window.obj : window.cpp

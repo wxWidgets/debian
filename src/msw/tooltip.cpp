@@ -4,7 +4,7 @@
 // Author:      Vadim Zeitlin
 // Modified by:
 // Created:     31.01.99
-// RCS-ID:      $Id: tooltip.cpp,v 1.22.2.5 2000/10/12 00:32:09 vadz Exp $
+// RCS-ID:      $Id: tooltip.cpp,v 1.28 2002/07/04 17:25:36 VZ Exp $
 // Copyright:   (c) 1999 Vadim Zeitlin
 // Licence:     wxWindows license
 ///////////////////////////////////////////////////////////////////////////////
@@ -32,7 +32,7 @@
 #include "wx/tooltip.h"
 #include "wx/msw/private.h"
 
-#if defined(__WIN95__) && (!defined(__GNUWIN32_OLD__) || defined(__MINGW32__))
+#if defined(__WIN95__) && !((defined(__GNUWIN32_OLD__) || defined(__TWIN32__)) && !defined(__CYGWIN10__))
     #include <commctrl.h>
 #endif
 
@@ -239,6 +239,8 @@ void wxToolTip::RelayEvent(WXMSG *msg)
 // ----------------------------------------------------------------------------
 // ctor & dtor
 // ----------------------------------------------------------------------------
+
+IMPLEMENT_ABSTRACT_CLASS(wxToolTip, wxObject)
 
 wxToolTip::wxToolTip(const wxString &tip)
          : m_text(tip)

@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     01/02/97
-// RCS-ID:      $Id: dc.h,v 1.26 2000/03/06 04:40:00 RL Exp $
+// RCS-ID:      $Id: dc.h,v 1.38 2002/04/17 11:47:59 JS Exp $
 // Copyright:   (c) Julian Smart
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -23,58 +23,30 @@
 // macros
 // ---------------------------------------------------------------------------
 
-// Logical to device
-// Absolute
-#define XLOG2DEV(x) (x)
-#define YLOG2DEV(y) (y)
-
-// Relative
-#define XLOG2DEVREL(x) (x)
-#define YLOG2DEVREL(y) (y)
-
-// Device to logical
-// Absolute
-#define XDEV2LOG(x) (x)
-
-#define YDEV2LOG(y) (y)
-
-// Relative
-#define XDEV2LOGREL(x) (x)
-#define YDEV2LOGREL(y) (y)
-
+#if wxUSE_DC_CACHEING
 /*
- * Have the same macros as for XView but not for every operation:
- * just for calculating window/viewport extent (a better way of scaling).
+ * Cached blitting, maintaining a cache
+ * of bitmaps required for transparent blitting
+ * instead of constant creation/deletion
  */
 
-// Logical to device
-// Absolute
-#define MS_XLOG2DEV(x) LogicalToDevice(x)
+class wxDCCacheEntry: public wxObject
+{
+public:
+    wxDCCacheEntry(WXHBITMAP hBitmap, int w, int h, int depth);
+    wxDCCacheEntry(WXHDC hDC, int depth);
+    ~wxDCCacheEntry();
 
-#define MS_YLOG2DEV(y) LogicalToDevice(y)
-
-// Relative
-#define MS_XLOG2DEVREL(x) LogicalToDeviceXRel(x)
-#define MS_YLOG2DEVREL(y) LogicalToDeviceYRel(y)
-
-// Device to logical
-// Absolute
-#define MS_XDEV2LOG(x) DeviceToLogicalX(x)
-
-#define MS_YDEV2LOG(y) DeviceToLogicalY(y)
-
-// Relative
-#define MS_XDEV2LOGREL(x) DeviceToLogicalXRel(x)
-#define MS_YDEV2LOGREL(y) DeviceToLogicalYRel(y)
-
-#define YSCALE(y) (yorigin - (y))
-
-#define     wx_round(a)    (int)((a)+.5)
+    WXHBITMAP   m_bitmap;
+    WXHDC       m_dc;
+    int         m_width;
+    int         m_height;
+    int         m_depth;
+};
+#endif
 
 class WXDLLEXPORT wxDC : public wxDCBase
 {
-    DECLARE_DYNAMIC_CLASS(wxDC)
-
 public:
     wxDC();
     ~wxDC();
@@ -95,7 +67,9 @@ public:
     virtual void SetBrush(const wxBrush& brush);
     virtual void SetBackground(const wxBrush& brush);
     virtual void SetBackgroundMode(int mode);
+#if wxUSE_PALETTE
     virtual void SetPalette(const wxPalette& palette);
+#endif // wxUSE_PALETTE
 
     virtual void DestroyClippingRegion();
 
@@ -128,7 +102,15 @@ public:
     virtual void SelectOldObjects(WXHDC dc);
 
     wxWindow *GetWindow() const { return m_canvas; }
-    void SetWindow(wxWindow *win) { m_canvas = win; }
+    void SetWindow(wxWindow *win)
+    {
+        m_canvas = win;
+
+#if wxUSE_PALETTE
+        // if we have palettes use the correct one for this window
+        InitializePalette();
+#endif // wxUSE_PALETTE
+    }
 
     WXHDC GetHDC() const { return m_hDC; }
     void SetHDC(WXHDC dc, bool bOwnsDC = FALSE)
@@ -140,8 +122,20 @@ public:
     const wxBitmap& GetSelectedBitmap() const { return m_selectedBitmap; }
     wxBitmap& GetSelectedBitmap() { return m_selectedBitmap; }
 
+    // update the internal clip box variables
+    void UpdateClipBox();
+
+#if wxUSE_DC_CACHEING
+    static wxDCCacheEntry* FindBitmapInCache(WXHDC hDC, int w, int h);
+    static wxDCCacheEntry* FindDCInCache(wxDCCacheEntry* notThis, WXHDC hDC);
+
+    static void AddToBitmapCache(wxDCCacheEntry* entry);
+    static void AddToDCCache(wxDCCacheEntry* entry);
+    static void ClearCache();
+#endif
+
 protected:
-    virtual void DoFloodFill(wxCoord x, wxCoord y, const wxColour& col,
+    virtual bool DoFloodFill(wxCoord x, wxCoord y, const wxColour& col,
                              int style = wxFLOOD_SURFACE);
 
     virtual bool DoGetPixel(wxCoord x, wxCoord y, wxColour *col) const;
@@ -175,7 +169,7 @@ protected:
 
     virtual bool DoBlit(wxCoord xdest, wxCoord ydest, wxCoord width, wxCoord height,
                         wxDC *source, wxCoord xsrc, wxCoord ysrc,
-                        int rop = wxCOPY, bool useMask = FALSE);
+                        int rop = wxCOPY, bool useMask = FALSE, wxCoord xsrcMask = -1, wxCoord ysrcMask = -1);
 
     // this is gnarly - we can't even call this function DoSetClippingRegion()
     // because of virtual function hiding
@@ -197,16 +191,26 @@ protected:
                                wxCoord xoffset, wxCoord yoffset,
                                int fillStyle = wxODDEVEN_RULE);
 
-#if wxUSE_SPLINES
-    virtual void DoDrawSpline(wxList *points);
-#endif // wxUSE_SPLINES
+
+#if wxUSE_PALETTE
+    // MSW specific, select a logical palette into the HDC
+    // (tell windows to translate pixel from other palettes to our custom one
+    // and vice versa)
+    // Realize tells it to also reset the system palette to this one.
+    void DoSelectPalette(bool realize = FALSE);
+
+    // Find out what palette our parent window has, then select it into the dc
+    void InitializePalette();
+#endif // wxUSE_PALETTE
 
     // common part of DoDrawText() and DoDrawRotatedText()
     void DrawAnyText(const wxString& text, wxCoord x, wxCoord y);
 
+    // common part of DoSetClippingRegion() and DoSetClippingRegionAsRegion()
+    void SetClippingHrgn(WXHRGN hrgn);
+
     // MSW-specific member variables
-    int               m_windowExtX;
-    int               m_windowExtY;
+    // -----------------------------
 
     // the window associated with this DC (may be NULL)
     wxWindow         *m_canvas;
@@ -216,10 +220,8 @@ protected:
     // TRUE => DeleteDC() in dtor, FALSE => only ReleaseDC() it
     bool              m_bOwnsDC:1;
 
-    // our HDC and its usage count: we only free it when the usage count drops
-    // to 0
+    // our HDC
     WXHDC             m_hDC;
-    int               m_hDCCount;
 
     // Store all old GDI objects when do a SelectObject, so we can select them
     // back in (this unselecting user's objects) so we can safely delete the
@@ -228,7 +230,29 @@ protected:
     WXHPEN            m_oldPen;
     WXHBRUSH          m_oldBrush;
     WXHFONT           m_oldFont;
+
+#if wxUSE_PALETTE
     WXHPALETTE        m_oldPalette;
+#endif // wxUSE_PALETTE
+
+#if wxUSE_DC_CACHEING
+    static wxList     sm_bitmapCache;
+    static wxList     sm_dcCache;
+#endif
+
+    DECLARE_DYNAMIC_CLASS(wxDC)
+};
+
+// ----------------------------------------------------------------------------
+// wxDCTemp: a wxDC which doesn't free the given HDC (used by wxWindows
+// only/mainly)
+// ----------------------------------------------------------------------------
+
+class WXDLLEXPORT wxDCTemp : public wxDC
+{
+public:
+    wxDCTemp(WXHDC hdc) { SetHDC(hdc); }
+    virtual ~wxDCTemp() { SetHDC((WXHDC)NULL); }
 };
 
 #endif

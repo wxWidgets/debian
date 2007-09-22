@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     01/02/97
-// RCS-ID:      $Id: frame.h,v 1.40.2.2 2001/12/14 00:56:08 VZ Exp $
+// RCS-ID:      $Id: frame.h,v 1.58 2002/08/22 17:03:38 VZ Exp $
 // Copyright:   (c) Julian Smart and Markus Holzem
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -22,12 +22,12 @@ public:
     // construction
     wxFrame() { Init(); }
     wxFrame(wxWindow *parent,
-            wxWindowID id,
-            const wxString& title,
-            const wxPoint& pos = wxDefaultPosition,
-            const wxSize& size = wxDefaultSize,
-            long style = wxDEFAULT_FRAME_STYLE,
-            const wxString& name = wxFrameNameStr)
+               wxWindowID id,
+               const wxString& title,
+               const wxPoint& pos = wxDefaultPosition,
+               const wxSize& size = wxDefaultSize,
+               long style = wxDEFAULT_FRAME_STYLE,
+               const wxString& name = wxFrameNameStr)
     {
         Init();
 
@@ -45,24 +45,13 @@ public:
     virtual ~wxFrame();
 
     // implement base class pure virtuals
-    virtual void Maximize(bool maximize = TRUE);
-    virtual bool IsMaximized() const;
-    virtual void Iconize(bool iconize = TRUE);
-    virtual bool IsIconized() const;
-    virtual void Restore();
-    virtual void SetMenuBar(wxMenuBar *menubar);
-    virtual void SetIcon(const wxIcon& icon);
     virtual bool ShowFullScreen(bool show, long style = wxFULLSCREEN_ALL);
-    virtual bool IsFullScreen() const { return m_fsIsShowing; };
+    virtual void Raise();
 
     // implementation only from now on
     // -------------------------------
 
-    // override some more virtuals
-    virtual bool Show(bool show = TRUE);
-
     // event handlers
-    void OnActivate(wxActivateEvent& event);
     void OnSysColourChanged(wxSysColourChangedEvent& event);
 
     // Toolbar
@@ -96,17 +85,12 @@ public:
 
     WXHMENU GetWinMenu() const { return m_hMenu; }
 
-    virtual void RemoveChild(wxWindowBase *child);
-
     // event handlers
     bool HandlePaint();
     bool HandleSize(int x, int y, WXUINT flag);
     bool HandleCommand(WXWORD id, WXWORD cmd, WXHWND control);
     bool HandleMenuSelect(WXWORD nItem, WXWORD nFlags, WXHMENU hMenu);
-
-    bool MSWCreate(int id, wxWindow *parent, const wxChar *wclass,
-                   wxWindow *wx_win, const wxChar *title,
-                   int x, int y, int width, int height, long style);
+    bool HandleMenuLoop(const wxEventType& evtType, WXWORD isPopup);
 
     // tooltip management
 #if wxUSE_TOOLTIPS
@@ -114,26 +98,26 @@ public:
     void SetToolTipCtrl(WXHWND hwndTT) { m_hwndToolTip = hwndTT; }
 #endif // tooltips
 
+    // a MSW only function which sends a size event to the window using its
+    // current size - this has an effect of refreshing the window layout
+    virtual void SendSizeEvent();
+
 protected:
     // common part of all ctors
     void Init();
 
-    // common part of Iconize(), Maximize() and Restore()
-    void DoShowWindow(int nShowCmd);
-
     // override base class virtuals
     virtual void DoGetClientSize(int *width, int *height) const;
-    virtual void DoGetSize(int *width, int *height) const;
-    virtual void DoGetPosition(int *x, int *y) const;
-
     virtual void DoSetClientSize(int width, int height);
 
-    // helper
-    void DetachMenuBar();
+#if wxUSE_MENUS_NATIVE
+    // perform MSW-specific action when menubar is changed
+    virtual void AttachMenuBar(wxMenuBar *menubar);
 
     // a plug in for MDI frame classes which need to do something special when
     // the menubar is set
     virtual void InternalSetMenuBar();
+#endif // wxUSE_MENUS_NATIVE
 
     // propagate our state change to all child frames
     void IconizeChildFrames(bool bIconize);
@@ -144,31 +128,27 @@ protected:
     // window proc for the frames
     long MSWWindowProc(WXUINT message, WXWPARAM wParam, WXLPARAM lParam);
 
-    bool                  m_iconized;
-    WXHICON               m_defaultIcon;
+    virtual bool IsMDIChild() const { return FALSE; }
+
+    // get default (wxWindows) icon for the frame
+    virtual WXHICON GetDefaultIcon() const;
 
 #if wxUSE_STATUSBAR
     static bool           m_useNativeStatusBar;
 #endif // wxUSE_STATUSBAR
 
-    // the last focused child: we restore focus to it on activation
-    wxWindow             *m_winLastFocused;
-
     // Data to save/restore when calling ShowFullScreen
-    long                  m_fsStyle; // Passed to ShowFullScreen
-    wxRect                m_fsOldSize;
-    long                  m_fsOldWindowStyle;
     int                   m_fsStatusBarFields; // 0 for no status bar
     int                   m_fsStatusBarHeight;
     int                   m_fsToolBarHeight;
-//    WXHMENU               m_fsMenu;
-    bool                  m_fsIsMaximized;
-    bool                  m_fsIsShowing;
 
 private:
 #if wxUSE_TOOLTIPS
     WXHWND                m_hwndToolTip;
 #endif // tooltips
+
+    // used by IconizeChildFrames(), see comments there
+    bool m_wasMinimized;
 
     DECLARE_EVENT_TABLE()
     DECLARE_DYNAMIC_CLASS(wxFrame)

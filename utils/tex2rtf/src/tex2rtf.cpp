@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     7.9.93
-// RCS-ID:      $Id: tex2rtf.cpp,v 1.10.2.4 2001/11/04 17:48:23 GD Exp $
+// RCS-ID:      $Id: tex2rtf.cpp,v 1.26 2002/08/07 09:56:22 JS Exp $
 // Copyright:   (c) Julian Smart
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -25,8 +25,8 @@
 #endif
 
 #ifndef NO_GUI
-#include <wx/help.h>
-#include <wx/timer.h>
+#include "wx/help.h"
+#include "wx/timer.h"
 #endif
 
 #if defined(NO_GUI) || defined(__UNIX__)
@@ -44,12 +44,13 @@
 #include "tex2any.h"
 #include "tex2rtf.h"
 #include "rtfutils.h"
+#include "symbols.h"
 
-#if (defined(__WXGTK__) || defined(__WXMOTIF__)) && !defined(NO_GUI)
+#if (defined(__WXGTK__) || defined(__WXMOTIF__) || defined(__WXMAC__)) && !defined(NO_GUI)
 #include "tex2rtf.xpm"
 #endif
 
-const float versionNo = 2.0;
+const float versionNo = TEX2RTF_VERSION_NUMBER;
 
 TexChunk *currentMember = NULL;
 bool startedSections = FALSE;
@@ -57,8 +58,37 @@ char *contentsString = NULL;
 bool suppressNameDecoration = FALSE;
 bool OkToClose = TRUE;
 int passNumber = 1;
+int errorCount = 0;
 
 #ifndef NO_GUI
+
+extern char *BigBuffer;
+extern char *TexFileRoot;
+extern char *TexBibName;         // Bibliography output file name
+extern char *TexTmpBibName;      // Temporary bibliography output file name
+extern wxList ColourTable;
+extern TexChunk *TopLevel;
+extern char *PageStyle;
+extern char *BibliographyStyleString;
+extern char *DocumentStyleString;
+extern char *bitmapMethod;
+extern char *backgroundColourString;
+extern char *ContentsNameString;
+extern char *AbstractNameString;
+extern char *GlossaryNameString;
+extern char *ReferencesNameString;
+extern char *FiguresNameString;
+extern char *TablesNameString;
+extern char *FigureNameString;
+extern char *TableNameString;
+extern char *IndexNameString;
+extern char *ChapterNameString;
+extern char *SectionNameString;
+extern char *SubsectionNameString;
+extern char *SubsubsectionNameString;
+extern char *UpNameString;
+
+
 
 #if wxUSE_HELP
 wxHelpController *HelpInstance = NULL;
@@ -90,7 +120,7 @@ char *ContentsName = NULL;    // Contents page from last time around
 char *TmpContentsName = NULL; // Current contents page
 char *TmpFrameContentsName = NULL; // Current frame contents page
 char *WinHelpContentsFileName = NULL; // WinHelp .cnt file
-char *RefName = NULL;         // Reference file name
+char *RefFileName = NULL;         // Reference file name
 
 char *RTFCharset = copystring("ansi");
 
@@ -103,13 +133,9 @@ int BufSize = 500;
 bool Go(void);
 void ShowOptions(void);
 
-#ifdef NO_GUI
+char wxTex2RTFBuffer[1500];
 
-#if wxUSE_GUI || !defined(__UNIX__)
-// wxBase for Unix does not have wxBuffer
-extern 
-#endif
-char *wxBuffer; // we must init it, otherwise tex2rtf will crash
+#ifdef NO_GUI
 
 int main(int argc, char **argv)
 #else
@@ -132,7 +158,9 @@ bool MyApp::OnInit()
   TmpContentsName = new char[300];
   TmpFrameContentsName = new char[300];
   WinHelpContentsFileName = new char[300];
-  RefName = new char[300];
+  RefFileName = new char[300];
+
+  ColourTable.DeleteContents(TRUE);
 
   int n = 1;
 
@@ -156,12 +184,9 @@ bool MyApp::OnInit()
   }
 
 #ifdef NO_GUI
-  wxBuffer = new char[1500];
-  // this is done in wxApp, but NO_GUI version doesn't call it :-(
-
   if (!InputFile || !OutputFile)
   {
-    cout << "Tex2RTF: input or output file is missing.\n";
+    wxSTD cout << "Tex2RTF: input or output file is missing.\n";
     ShowOptions();
     exit(1);
   }
@@ -250,11 +275,21 @@ bool MyApp::OnInit()
         }
       }
     }
+    else if (strcmp(argv[i], "-checkcurleybraces") == 0)
+    {
+      i ++;
+      checkCurleyBraces = TRUE;
+    }
+    else if (strcmp(argv[i], "-checksyntax") == 0)
+    {
+      i ++;
+      checkSyntax = TRUE;
+    }
     else
     {
-      char buf[100];
-      sprintf(buf, "Invalid switch %s.\n", argv[i]);
-      OnError(buf);
+      wxString buf;
+      buf.Printf("Invalid switch %s.\n", argv[i]);
+      OnError((char *)buf.c_str());
       i++;
 #ifdef NO_GUI
       ShowOptions();
@@ -323,6 +358,14 @@ bool MyApp::OnInit()
     mode_menu->Append(TEX_MODE_HTML, "Output &HTML",        "HTML World Wide Web hypertext file");
     mode_menu->Append(TEX_MODE_XLP, "Output &XLP",          "wxHelp hypertext help file");
 
+    wxMenu *options_menu = new wxMenu;
+
+    options_menu->Append(TEX_OPTIONS_CURELY_BRACE, "Curley brace matching",   "Checks for mismatched curley braces",TRUE);
+    options_menu->Append(TEX_OPTIONS_SYNTAX_CHECKING, "Syntax checking", "Syntax checking for common errors",TRUE);
+
+    options_menu->Check(TEX_OPTIONS_CURELY_BRACE, checkCurleyBraces);
+    options_menu->Check(TEX_OPTIONS_SYNTAX_CHECKING, checkSyntax);
+
     wxMenu *help_menu = new wxMenu;
 
     help_menu->Append(TEX_HELP, "&Help", "Tex2RTF Contents Page");
@@ -332,12 +375,13 @@ bool MyApp::OnInit()
     menuBar->Append(file_menu, "&File");
     menuBar->Append(macro_menu, "&Macros");
     menuBar->Append(mode_menu, "&Conversion Mode");
+    menuBar->Append(options_menu, "&Options");
     menuBar->Append(help_menu, "&Help");
 
     frame->SetMenuBar(menuBar);
     frame->textWindow = new wxTextCtrl(frame, -1, "", wxPoint(-1, -1), wxSize(-1, -1), wxTE_READONLY|wxTE_MULTILINE);
 
-    (*frame->textWindow) << "Welcome to Julian Smart's LaTeX to RTF converter.\n";
+    (*frame->textWindow) << "Welcome to Tex2RTF.\n";
 //    ShowOptions();
 
 #if wxUSE_HELP
@@ -381,7 +425,10 @@ bool MyApp::OnInit()
       ReadCustomMacros((char*) (const char*) path);
 
     Go();
-    if (runTwice) Go();
+    if (runTwice) 
+    {
+        Go();
+    }
 #ifdef NO_GUI
     return 0;
 #else
@@ -393,7 +440,6 @@ bool MyApp::OnInit()
   // Return the main frame window
   return TRUE;
 #else
-  delete[] wxBuffer;
   return FALSE;
 #endif
 }
@@ -427,10 +473,105 @@ int MyApp::OnExit()
   delete HelpInstance;
 #endif // wxUSE_HELP
 
+    if (BigBuffer)
+    {
+      delete BigBuffer;
+      BigBuffer = NULL;
+    }
+    if (currentArgData)
+    {
+      delete currentArgData;
+      currentArgData = NULL;
+    }
+    if (TexFileRoot)
+    {
+      delete TexFileRoot;
+      TexFileRoot = NULL;
+    }
+    if (TexBibName)
+    {
+      delete TexBibName;
+      TexBibName = NULL;
+    }
+    if (TexTmpBibName)
+    {
+      delete TexTmpBibName;
+      TexTmpBibName = NULL;
+    }
+    if (FileRoot)
+    {
+      delete FileRoot;
+      FileRoot = NULL;
+    }
+    if (ContentsName)
+    {
+      delete ContentsName;
+      ContentsName = NULL;
+    }
+    if (TmpContentsName)
+    {
+      delete TmpContentsName;
+      TmpContentsName = NULL;
+    }
+    if (TmpFrameContentsName)
+    {
+      delete TmpFrameContentsName;
+      TmpFrameContentsName = NULL;
+    }
+    if (WinHelpContentsFileName)
+    {
+      delete WinHelpContentsFileName;
+      WinHelpContentsFileName = NULL;
+    }
+    if (RefFileName)
+    {
+      delete RefFileName;
+      RefFileName = NULL;
+    }
+    if (TopLevel)
+    {
+      delete TopLevel;
+      TopLevel = NULL;
+    }
+    if (MacroFile)
+    {
+      delete MacroFile;
+      MacroFile = NULL;
+    }
+    if (RTFCharset)
+    {
+      delete RTFCharset;
+      RTFCharset = NULL;
+    }
+
+    delete [] PageStyle;
+    delete [] BibliographyStyleString;
+    delete [] DocumentStyleString;
+    delete [] bitmapMethod;
+    delete [] backgroundColourString;
+    delete [] ContentsNameString;
+    delete [] AbstractNameString;
+    delete [] GlossaryNameString;
+    delete [] ReferencesNameString;
+    delete [] FiguresNameString;
+    delete [] TablesNameString;
+    delete [] FigureNameString;
+    delete [] TableNameString;
+    delete [] IndexNameString;
+    delete [] ChapterNameString;
+    delete [] SectionNameString;
+    delete [] SubsectionNameString;
+    delete [] SubsubsectionNameString;
+    delete [] UpNameString;
+    if (winHelpTitle)
+      delete[] winHelpTitle;
+
   // TODO: this simulates zero-memory leaks!
   // Otherwise there are just too many...
 #ifndef __WXGTK__
+#if (defined(__WXDEBUG__) && wxUSE_MEMORY_TRACING) || wxUSE_DEBUG_CONTEXT
   wxDebugContext::SetCheckpoint();
+#endif
 #endif
 
   return 0;
@@ -443,11 +584,15 @@ void ShowOptions(void)
     OnInform(buf);
     OnInform("Usage: tex2rtf [input] [output] [switches]\n");
     OnInform("where valid switches are");
+#ifndef NO_GUI
     OnInform("    -interactive");
+#endif
     OnInform("    -bufsize <size in K>");
     OnInform("    -charset <pc | pca | ansi | mac> (default ansi)");
     OnInform("    -twice");
     OnInform("    -sync");
+    OnInform("    -checkcurleybraces");
+    OnInform("    -checksyntax");
     OnInform("    -macros <filename>");
     OnInform("    -winhelp");
     OnInform("    -rtf");
@@ -472,6 +617,8 @@ BEGIN_EVENT_TABLE(MyFrame, wxFrame)
     EVT_MENU(TEX_MODE_WINHELP, MyFrame::OnModeWinHelp)
     EVT_MENU(TEX_MODE_HTML, MyFrame::OnModeHTML)
     EVT_MENU(TEX_MODE_XLP, MyFrame::OnModeXLP)
+    EVT_MENU(TEX_OPTIONS_CURELY_BRACE, MyFrame::OnOptionsCurleyBrace)
+    EVT_MENU(TEX_OPTIONS_SYNTAX_CHECKING, MyFrame::OnOptionsSyntaxChecking)
     EVT_MENU(TEX_HELP, MyFrame::OnHelp)
     EVT_MENU(TEX_ABOUT, MyFrame::OnAbout)
 END_EVENT_TABLE()
@@ -497,12 +644,14 @@ void MyFrame::OnCloseWindow(wxCloseEvent& event)
 
 void MyFrame::OnExit(wxCommandEvent& event)
 {
-    this->Destroy();
+  Close();
+//    this->Destroy();
 }
 
 void MyFrame::OnGo(wxCommandEvent& event)
 {
       passNumber = 1;
+      errorCount = 0;
       menuBar->EnableTop(0, FALSE);
       menuBar->EnableTop(1, FALSE);
       menuBar->EnableTop(2, FALSE);
@@ -511,7 +660,16 @@ void MyFrame::OnGo(wxCommandEvent& event)
       Tex2RTFYield(TRUE);
       Go();
 
-      if (runTwice)
+      if (stopRunning)
+      {
+        SetStatusText("Build aborted!");
+        wxString errBuf;
+        errBuf.Printf("\nErrors encountered during this pass: %lu\n", errorCount);
+        OnInform((char *)errBuf.c_str());
+      }
+
+
+      if (runTwice && !stopRunning)
       {
         Tex2RTFYield(TRUE);
         Go();
@@ -624,6 +782,34 @@ void MyFrame::OnModeXLP(wxCommandEvent& event)
       SetStatusText("In XLP mode.", 1);
 }
 
+void MyFrame::OnOptionsCurleyBrace(wxCommandEvent& event)
+{
+    checkCurleyBraces = !checkCurleyBraces;
+    if (checkCurleyBraces)
+    {
+        SetStatusText("Checking curley braces: YES", 1);
+    }
+    else
+    {
+        SetStatusText("Checking curley braces: NO", 1);
+    }
+}
+
+
+void MyFrame::OnOptionsSyntaxChecking(wxCommandEvent& event)
+{
+    checkSyntax = !checkSyntax;
+    if (checkSyntax)
+    {
+        SetStatusText("Checking syntax: YES", 1);
+    }
+    else
+    {
+        SetStatusText("Checking syntax: NO", 1);
+    }
+}
+
+
 void MyFrame::OnHelp(wxCommandEvent& event)
 {
 #if wxUSE_HELP
@@ -644,7 +830,7 @@ void MyFrame::OnAbout(wxCommandEvent& event)
       char *platform = "";
 #endif
 #endif
-      sprintf(buf, "Tex2RTF Version %.2f%s\nLaTeX to RTF, WinHelp, HTML and wxHelp Conversion\n\n(c) Julian Smart 1999", versionNo, platform);
+      sprintf(buf, "Tex2RTF Version %.2f%s\nLaTeX to RTF, WinHelp, and HTML Conversion\n\n(c) Julian Smart, George Tasker and others, 1999-2002", versionNo, platform);
       wxMessageBox(buf, "About Tex2RTF");
 }
 
@@ -659,11 +845,13 @@ void ChooseInputFile(bool force)
       ClearKeyWordTable();
       ResetContentsLevels(0);
       passNumber = 1;
-      char buf[300];
+      errorCount = 0;
+
       InputFile = copystring(s);
       wxString str = wxFileNameFromPath(InputFile);
-      sprintf(buf, "Tex2RTF [%s]", (const char*) str);
-      frame->SetTitle(buf);
+      wxString buf;
+      buf.Printf("Tex2RTF [%s]", str.c_str());
+      frame->SetTitle((char *)buf.c_str());
       OutputFile = NULL;
     }
   }
@@ -723,7 +911,7 @@ bool Go(void)
   ChooseOutputFile();
 #endif
 
-  if (!InputFile || !OutputFile)
+  if (!InputFile || !OutputFile || stopRunning)
     return FALSE;
 
 #ifndef NO_GUI
@@ -759,7 +947,7 @@ bool Go(void)
   sprintf(TmpContentsName, "%s.cn1", FileRoot);
   sprintf(TmpFrameContentsName, "%s.frc", FileRoot);
   sprintf(WinHelpContentsFileName, "%s.cnt", FileRoot);
-  sprintf(RefName, "%s.ref", FileRoot);
+  sprintf(RefFileName, "%s.ref", FileRoot);
 
   TexPathList.EnsureFileAccessible(InputFile);
   if (!bulletFile)
@@ -772,8 +960,8 @@ bool Go(void)
     }
   }
 
-  if (wxFileExists(RefName))
-    ReadTexReferences(RefName);
+  if (wxFileExists(RefFileName))
+    ReadTexReferences(RefFileName);
 
   bool success = FALSE;
 
@@ -788,14 +976,20 @@ bool Go(void)
 #ifndef NO_GUI
     if (isInteractive)
     {
-      char buf[50];
-      sprintf(buf, "Working, pass %d...", passNumber);
-      frame->SetStatusText(buf);
+      wxString buf;
+      buf.Printf("Working, pass %d...Click CLOSE to abort", passNumber);
+      frame->SetStatusText((char *)buf.c_str());
     }
 #endif
     OkToClose = FALSE;
     OnInform("Reading LaTeX file...");
     TexLoadFile(InputFile);
+
+    if (stopRunning)
+    {
+        OkToClose = TRUE;
+        return FALSE;
+    }
 
     switch (convertMode)
     {
@@ -821,29 +1015,43 @@ bool Go(void)
     OnInform("*** Aborted by user.");
     success = FALSE;
     stopRunning = FALSE;
+    OkToClose = TRUE;
   }
 
   if (success)
   {
-    WriteTexReferences(RefName);
+    WriteTexReferences(RefFileName);
     TexCleanUp();
     startedSections = FALSE;
 
-    char buf[100];
+    wxString buf;
 #ifndef NO_GUI
     long tim = wxGetElapsedTime();
-    sprintf(buf, "Finished PASS #%d in %ld seconds.\n", passNumber, (long)(tim/1000.0));
-    OnInform(buf);
+    buf.Printf("Finished PASS #%d in %ld seconds.\n", passNumber, (long)(tim/1000.0));
+    OnInform((char *)buf.c_str());
+
+    if (errorCount)
+    {
+        buf.Printf("Errors encountered during this pass: %lu\n", errorCount);
+        OnInform((char *)buf.c_str());
+    }
+
     if (isInteractive)
     {
-      sprintf(buf, "Done, %d %s.", passNumber, (passNumber > 1) ? "passes" : "pass");
-      frame->SetStatusText(buf);
+      buf.Printf("Done, %d %s.", passNumber, (passNumber > 1) ? "passes" : "pass");
+      frame->SetStatusText((char *)buf.c_str());
     }
 #else
-    sprintf(buf, "Done, %d %s.", passNumber, (passNumber > 1) ? "passes" : "pass");
-    OnInform(buf);
+    buf.Printf("Done, %d %s.", passNumber, (passNumber > 1) ? "passes" : "pass");
+    OnInform((char *)buf.c_str());
+    if (errorCount)
+    {
+        buf.Printf("Errors encountered during this pass: %lu\n", errorCount);
+        OnInform((char *)buf.c_str());
+    }
 #endif
     passNumber ++;
+    errorCount = 0;
     OkToClose = TRUE;
     return TRUE;
   }
@@ -851,51 +1059,64 @@ bool Go(void)
   TexCleanUp();
   startedSections = FALSE;
 
+#ifndef NO_GUI
+  frame->SetStatusText("Aborted by user.");
+#endif // GUI
+
   OnInform("Sorry, unsuccessful.");
   OkToClose = TRUE;
   return FALSE;
 }
 
-void OnError(char *msg)
+void OnError(const char *msg)
 {
+  errorCount++;
+
 #ifdef NO_GUI
-  cerr << "Error: " << msg << "\n";
-  cerr.flush();
+  wxSTD cerr << "Error: " << msg << "\n";
+  wxSTD cerr.flush();
 #else
   if (isInteractive && frame)
     (*frame->textWindow) << "Error: " << msg << "\n";
   else
 #ifdef __UNIX__
   {
-    cerr << "Error: " << msg << "\n";
-    cerr.flush();
+    wxSTD cerr << "Error: " << msg << "\n";
+    wxSTD cerr.flush();
   }
 #endif
+
 #ifdef __WXMSW__
-    wxError(msg);
+    wxLogError(msg);
 #endif
   Tex2RTFYield(TRUE);
 #endif // NO_GUI
 }
 
-void OnInform(char *msg)
+void OnInform(const char *msg)
 {
 #ifdef NO_GUI
-  cout << msg << "\n";
-  cout.flush();
+  wxSTD cout << msg << "\n";
+  wxSTD cout.flush();
 #else
   if (isInteractive && frame)
     (*frame->textWindow) << msg << "\n";
+/* This whole block of code is just wrong I think.  It would behave
+   completely wrong under anything other than MSW due to the ELSE
+	with no statement, and the cout calls would fail under MSW, as
+	the code in this block is compiled if !NO_GUI This code has been 
+	here since v1.1 of this file too. - gt
   else
 #ifdef __WXMSW__
   {
-    cout << msg << "\n";
-    cout.flush();
+    wxSTD cout << msg << "\n";
+    wxSTD cout.flush();
   }
 #endif
 #ifdef __WXMSW__
     {}
 #endif
+*/
   if (isInteractive)
   {
     Tex2RTFYield(TRUE);
@@ -1102,7 +1323,7 @@ char *Tex2RTFConnection::OnRequest(const wxString& topic, const wxString& item, 
 
 #ifndef NO_GUI
 #ifndef __WXGTK__
-//void wxObject::Dump(ostream& str)
+//void wxObject::Dump(wxSTD ostream& str)
 //{
 //  if (GetClassInfo() && GetClassInfo()->GetClassName())
 //    str << GetClassInfo()->GetClassName();

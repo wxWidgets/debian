@@ -4,7 +4,7 @@
 // Author:      Vadim Zeitlin
 // Modified by:
 // Created:     20.09.99
-// RCS-ID:      $Id: font.h,v 1.16.2.1 2000/03/31 18:12:31 VZ Exp $
+// RCS-ID:      $Id: font.h,v 1.32 2002/08/31 11:29:10 GD Exp $
 // Copyright:   (c) wxWindows team
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -12,7 +12,7 @@
 #ifndef _WX_FONT_H_BASE_
 #define _WX_FONT_H_BASE_
 
-#ifdef __GNUG__
+#if defined(__GNUG__) && !defined(__APPLE__)
     #pragma interface "fontbase.h"
 #endif
 
@@ -36,7 +36,10 @@ class WXDLLEXPORT wxFont;
 // font constants
 // ----------------------------------------------------------------------------
 
-// standard font families
+// standard font families: these may be used only for the font creation, it
+// doesn't make sense to query an existing font for its font family as,
+// especially if the font had been created from a native font description, it
+// may be unknown
 enum wxFontFamily
 {
     wxFONTFAMILY_DEFAULT = wxDEFAULT,
@@ -46,7 +49,8 @@ enum wxFontFamily
     wxFONTFAMILY_SWISS = wxSWISS,
     wxFONTFAMILY_MODERN = wxMODERN,
     wxFONTFAMILY_TELETYPE = wxTELETYPE,
-    wxFONTFAMILY_MAX
+    wxFONTFAMILY_MAX,
+    wxFONTFAMILY_UNKNOWN = wxFONTFAMILY_MAX
 };
 
 // font styles
@@ -72,11 +76,15 @@ enum wxFontWeight
 // ----------------------------------------------------------------------------
 
 class WXDLLEXPORT wxFontRefData;
+struct WXDLLEXPORT wxNativeFontInfo;
 
 class WXDLLEXPORT wxFontBase : public wxGDIObject
 {
 public:
     // creator function
+    virtual ~wxFontBase();
+
+    // from the font components
     static wxFont *New(
         int pointSize,              // size of the font in points
         int family,                 // see wxFontFamily enum
@@ -85,6 +93,12 @@ public:
         bool underlined = FALSE,    // not underlined by default
         const wxString& face = wxEmptyString,              // facename
         wxFontEncoding encoding = wxFONTENCODING_DEFAULT); // ISO8859-X, ...
+
+    // from the (opaque) native font description object
+    static wxFont *New(const wxNativeFontInfo& nativeFontDesc);
+
+    // from the string representation of wxNativeFontInfo
+    static wxFont *New(const wxString& strNativeFontDesc);
 
     // was the font successfully created?
     bool Ok() const { return m_refData != NULL; }
@@ -101,6 +115,12 @@ public:
     virtual bool GetUnderlined() const = 0;
     virtual wxString GetFaceName() const = 0;
     virtual wxFontEncoding GetEncoding() const = 0;
+    virtual wxNativeFontInfo *GetNativeFontInfo() const;
+
+    virtual bool IsFixedWidth() const;
+
+    wxString GetNativeFontInfoDesc() const;
+    wxString GetNativeFontInfoUserDesc() const;
 
     // change the font characteristics
     virtual void SetPointSize( int pointSize ) = 0;
@@ -110,6 +130,10 @@ public:
     virtual void SetFaceName( const wxString& faceName ) = 0;
     virtual void SetUnderlined( bool underlined ) = 0;
     virtual void SetEncoding(wxFontEncoding encoding) = 0;
+    virtual void SetNativeFontInfo(const wxNativeFontInfo& info);
+
+    void SetNativeFontInfo(const wxString& info);
+    void SetNativeFontInfoUserDesc(const wxString& info);
 
     // translate the fonts into human-readable string (i.e. GetStyleString()
     // will return "wxITALIC" for an italic font, ...)
@@ -119,10 +143,8 @@ public:
 
     // the default encoding is used for creating all fonts with default
     // encoding parameter
-    static wxFontEncoding GetDefaultEncoding()
-        { return ms_encodingDefault; }
-    static void SetDefaultEncoding(wxFontEncoding encoding)
-        { ms_encodingDefault = encoding; }
+    static wxFontEncoding GetDefaultEncoding() { return ms_encodingDefault; }
+    static void SetDefaultEncoding(wxFontEncoding encoding);
 
 protected:
     // get the internal data
@@ -144,8 +166,10 @@ private:
     #include "wx/motif/font.h"
 #elif defined(__WXGTK__)
     #include "wx/gtk/font.h"
-#elif defined(__WXQT__)
-    #include "wx/qt/font.h"
+#elif defined(__WXX11__)
+    #include "wx/x11/font.h"
+#elif defined(__WXMGL__)
+    #include "wx/mgl/font.h"
 #elif defined(__WXMAC__)
     #include "wx/mac/font.h"
 #elif defined(__WXPM__)

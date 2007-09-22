@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     04/01/98
-// RCS-ID:      $Id: propform.h,v 1.6.2.2 2000/06/19 14:23:14 JS Exp $
+// RCS-ID:      $Id: propform.h,v 1.9 2002/08/31 11:29:11 GD Exp $
 // Copyright:   (c) Julian Smart
 // Licence:   	wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -12,9 +12,11 @@
 #ifndef _WX_PROPFORM_H_
 #define _WX_PROPFORM_H_
 
-#ifdef __GNUG__
+#if defined(__GNUG__) && !defined(__APPLE__)
 #pragma interface "propform.h"
 #endif
+
+#if wxUSE_PROPSHEET
 
 #include "wx/prop.h"
 
@@ -323,6 +325,9 @@ private:
     DECLARE_EVENT_TABLE()
     DECLARE_CLASS(wxPropertyFormFrame)
 };
+
+#endif
+  // wxUSE_PROPSHEET
 
 #endif
   // _WX_PROPFORM_H_

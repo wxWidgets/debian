@@ -2,7 +2,7 @@
 // Name:        stattext.h
 // Purpose:
 // Author:      Robert Roebling
-// Id:          $Id: stattext.h,v 1.6 2000/01/03 11:42:48 RR Exp $
+// Id:          $Id: stattext.h,v 1.8 2002/09/07 12:28:46 GD Exp $
 // Copyright:   (c) 1998 Robert Roebling
 // Licence:   	wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -11,7 +11,7 @@
 #ifndef __GTKSTATICTEXTH__
 #define __GTKSTATICTEXTH__
 
-#ifdef __GNUG__
+#if defined(__GNUG__) && !defined(__APPLE__)
 #pragma interface
 #endif
 
@@ -29,8 +29,6 @@ class wxStaticText;
 //-----------------------------------------------------------------------------
 // global data
 //-----------------------------------------------------------------------------
-
-extern const wxChar *wxStaticTextNameStr;
 
 //-----------------------------------------------------------------------------
 // wxStaticText

@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     01/02/97
-// RCS-ID:      $Id: paper.h,v 1.1.2.1 2000/06/28 18:26:54 VS Exp $
+// RCS-ID:      $Id: paper.h,v 1.3 2002/08/31 11:29:11 GD Exp $
 // Copyright:   (c) Julian Smart
 // Licence:   	wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -12,7 +12,7 @@
 #ifndef _WX_PAPERH__
 #define _WX_PAPERH__
 
-#ifdef __GNUG__
+#if defined(__GNUG__) && !defined(__APPLE__)
 #pragma interface "paper.h"
 #endif
 

@@ -4,7 +4,7 @@
 // Author:      Robert Roebling
 // Modified by:
 // Created:     04/01/98
-// RCS-ID:      $Id: minifram.cpp,v 1.1 2000/03/14 19:17:40 RL Exp $
+// RCS-ID:      $Id: minifram.cpp,v 1.5 2002/08/22 17:04:06 VZ Exp $
 // Copyright:   (c) Julian Smart and Robert Roebling
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -23,8 +23,9 @@
 #include "wx/toolbar.h"
 #include "minifram.h"
 
-#if defined(__WXGTK__) || defined(__WXMOTIF__)
+#if !defined(__WXMSW__) 
 #include "mondrian.xpm"
+#endif
 #include "bitmaps/new.xpm"
 #include "bitmaps/open.xpm"
 #include "bitmaps/save.xpm"
@@ -34,7 +35,7 @@
 #include "bitmaps/print.xpm"
 #include "bitmaps/preview.xpm"
 #include "bitmaps/help.xpm"
-#endif
+
 
 // start wxWindows
 
@@ -68,13 +69,8 @@ bool MyApp::OnInit()
   mini_frame->CreateToolBar(wxNO_BORDER|wxTB_HORIZONTAL|wxTB_FLAT, ID_TOOLBAR);
   InitToolbar(mini_frame->GetToolBar());
 
-#ifdef __WXMSW__
-  main_frame->SetIcon(wxIcon("mondrian"));
-  mini_frame->SetIcon(wxIcon("mondrian"));
-#else
-  main_frame->SetIcon( wxIcon(mondrian_xpm) );
-  mini_frame->SetIcon( wxIcon(mondrian_xpm) );
-#endif
+  main_frame->SetIcon(wxICON(mondrian));
+  mini_frame->SetIcon(wxICON(mondrian));
 
   SetTopWindow(main_frame);
 
@@ -91,16 +87,6 @@ bool MyApp::InitToolbar(wxToolBar* toolBar)
   // Set up toolbar
   wxBitmap* toolBarBitmaps[8];
 
-#ifdef __WXMSW__
-  toolBarBitmaps[0] = new wxBitmap("icon1");
-  toolBarBitmaps[1] = new wxBitmap("icon2");
-  toolBarBitmaps[2] = new wxBitmap("icon3");
-  toolBarBitmaps[3] = new wxBitmap("icon4");
-  toolBarBitmaps[4] = new wxBitmap("icon5");
-  toolBarBitmaps[5] = new wxBitmap("icon6");
-  toolBarBitmaps[6] = new wxBitmap("icon7");
-  toolBarBitmaps[7] = new wxBitmap("icon8");
-#else
   toolBarBitmaps[0] = new wxBitmap( new_xpm );
   toolBarBitmaps[1] = new wxBitmap( open_xpm );
   toolBarBitmaps[2] = new wxBitmap( save_xpm );
@@ -110,13 +96,8 @@ bool MyApp::InitToolbar(wxToolBar* toolBar)
   toolBarBitmaps[5] = new wxBitmap( preview_xpm );
   toolBarBitmaps[6] = new wxBitmap( print_xpm );
   toolBarBitmaps[7] = new wxBitmap( help_xpm );
-#endif
 
-#ifdef __WXMSW__
-  int width = 24;
-#else
   int width = 16;
-#endif
   int currentX = 5;
 
   toolBar->AddTool(wxID_NEW, *(toolBarBitmaps[0]), wxNullBitmap, FALSE, currentX, -1, (wxObject *) NULL, "New file");
@@ -174,6 +155,9 @@ void MyMiniFrame::OnCloseWindow(wxCloseEvent& WXUNUSED(event))
 void MyMiniFrame::OnReparent(wxCommandEvent& WXUNUSED(event))
 {
   button->Reparent( main_frame );
+
+  // we need to force the frame to size its (new) child correctly
+  main_frame->SendSizeEvent();
 }
 
 // MyMainFrame
@@ -204,7 +188,12 @@ void MyMainFrame::OnReparent(wxCommandEvent& WXUNUSED(event))
                  "You don't want to make this button an orphan, do you?",
                  "You got to be kidding");
   else
+  {
     button->Reparent( mini_frame );
+
+    // same as above
+    mini_frame->SendSizeEvent();
+  }
 }
 
 

@@ -9,6 +9,13 @@ if the device context is used as a parameter.
 Derived types of wxDC have documentation for specific features
 only, so refer to this section for most device context information.
 
+% VZ: we should really document them instead of this lame excuse, but I don't
+%     have time for it now, when it is done please remove this
+Please note that in addition to the versions of the methods documented here,
+there are also versions which accept single {\tt wxPoint} parameter instead of
+two {\tt wxCoord} ones or {\tt wxPoint} and {\tt wxSize} instead of four of
+them.
+
 \wxheading{Derived from}
 
 \helpref{wxObject}{wxobject}
@@ -54,11 +61,11 @@ released for each drawing operation.
 
 \func{bool}{Blit}{\param{wxCoord}{ xdest}, \param{wxCoord}{ ydest}, \param{wxCoord}{ width}, \param{wxCoord}{ height},
   \param{wxDC* }{source}, \param{wxCoord}{ xsrc}, \param{wxCoord}{ ysrc}, \param{int}{ logicalFunc = wxCOPY},
-  \param{bool }{useMask = FALSE}}
+  \param{bool }{useMask = FALSE}, \param{wxCoord}{ xsrcMask = -1}, \param{wxCoord}{ ysrcMask = -1}}
 
 Copy from a source DC to this DC, specifying the destination
-coordinates, size of area to copy, source DC, source coordinates, and
-logical function.
+coordinates, size of area to copy, source DC, source coordinates,
+logical function, whether to use a bitmap mask, and mask source position.
 
 \wxheading{Parameters}
 
@@ -79,7 +86,7 @@ logical function.
 \docparam{logicalFunc}{Logical function to use: see \helpref{wxDC::SetLogicalFunction}{wxdcsetlogicalfunction}.}
 
 \docparam{useMask}{If TRUE, Blit does a transparent blit using the mask that is associated with the bitmap
-selected into the source device context. The Windows implementation does the following:
+selected into the source device context. The Windows implementation does the following if MaskBlt cannot be used:
 
 \begin{enumerate}
 \item Creates a temporary bitmap and copies the destination area into it.
@@ -96,7 +103,20 @@ and the background colour set to WHITE.
 
 This sequence of operations ensures that the source's transparent area need not be black,
 and logical functions are supported.
+
+{\bf Note:} on Windows, blitting with masks can be speeded up considerably by compiling
+wxWindows with the wxUSE\_DC\_CACHE option enabled. You can also influence whether MaskBlt
+or the explicit mask blitting code above is used, by using \helpref{wxSystemOptions}{wxsystemoptions} and
+setting the {\bf no-maskblt} option to 1.
+
 }
+
+\docparam{xsrcMask}{Source x position on the mask. If both xsrcMask and ysrcMask are -1, xsrc and ysrc
+will be assumed for the mask source position. Currently only implemented on Windows.}
+
+\docparam{ysrcMask}{Source y position on the mask. If both xsrcMask and ysrcMask are -1, xsrc and ysrc
+will be assumed for the mask source position. Currently only implemented on Windows.}
+
 
 \wxheading{Remarks}
 
@@ -107,6 +127,24 @@ See \helpref{wxMemoryDC}{wxmemorydc} for typical usage.
 \wxheading{See also}
 
 \helpref{wxMemoryDC}{wxmemorydc}, \helpref{wxBitmap}{wxbitmap}, \helpref{wxMask}{wxmask}
+
+\begin{comment}
+\membersection{wxDC::CacheEnabled}\label{wxdccacheenabled}
+
+\func{static bool}{CacheEnabled}{\void}
+
+On supported platforms (currently only Windows), returns TRUE
+if the DC cache is enabled. The DC cache
+can speed up the \helpref{Blit}{wxdcblit} operation when
+drawing a large number of masked bitmaps.
+
+If using the cache functions in your code, please test for the
+wxUSE\_DC\_CACHEING preprocessor symbol for portability.
+
+\wxheading{See also}
+
+\helpref{wxDC::EnableCache}{wxdcenablecache}, \helpref{wxDC::ClearCache}
+\end{comment}
 
 \membersection{wxDC::CalcBoundingBox}\label{wxdccalcboundingbox}
 
@@ -125,6 +163,26 @@ Adds the specified point to the bounding box which can be retrieved with
 \func{void}{Clear}{\void}
 
 Clears the device context using the current background brush.
+
+\begin{comment}
+\membersection{wxDC::ClearCache}\label{wxdcclearcache}
+
+\func{static void}{ClearCache}{\void}
+
+On supported platforms (currently only Windows), clears
+the contents of the DC cache (one bitmap and two Windows device contexts). The DC cache
+can speed up the \helpref{Blit}{wxdcblit} operation when
+drawing a large number of masked bitmaps. You should
+call ClearCache at the end of length DC operations if you wish to only use
+the cache transiently; you should also call it as your application exits.
+
+If using the cache functions in your code, please test for the
+wxUSE\_DC\_CACHEING preprocessor symbol for portability.
+
+\wxheading{See also}
+
+\helpref{wxDC::EnableCache}{wxdcenablecache}, \helpref{wxDC::CacheEnabled}
+\end{comment}
 
 \membersection{wxDC::CrossHair}\label{wxdccrosshair}
 
@@ -153,7 +211,8 @@ mapping mode.
 \func{wxCoord}{DeviceToLogicalXRel}{\param{wxCoord}{ x}}
 
 Convert device X coordinate to relative logical coordinate, using the current
-mapping mode. Use this function for converting a width, for example.
+mapping mode but ignoring the x axis orientation.
+Use this function for converting a width, for example.
 
 \membersection{wxDC::DeviceToLogicalY}\label{wxdcdevicetologicaly}
 
@@ -167,7 +226,8 @@ mapping mode.
 \func{wxCoord}{DeviceToLogicalYRel}{\param{wxCoord}{ y}}
 
 Convert device Y coordinate to relative logical coordinate, using the current
-mapping mode. Use this function for converting a height, for example.
+mapping mode but ignoring the y axis orientation.
+Use this function for converting a height, for example.
 
 \membersection{wxDC::DrawArc}\label{wxdcdrawarc}
 
@@ -199,13 +259,33 @@ of the bitmap (all bits set to 1), and the current text background colour to dra
 
 Draws a check mark inside the given rectangle.
 
+\membersection{wxDC::DrawCircle}\label{wxdcdrawcircle}
+
+\func{void}{DrawCircle}{\param{wxCoord}{ x}, \param{wxCoord}{ y}, \param{wxCoord}{ radius}}
+
+\func{void}{DrawCircle}{\param{const wxPoint\&}{ pt}, \param{wxCoord}{ radius}}
+
+Draws a circle with the given centre and radius.
+
+\wxheading{See also}
+
+\helpref{DrawEllipse}{wxdcdrawellipse}
+
 \membersection{wxDC::DrawEllipse}\label{wxdcdrawellipse}
 
 \func{void}{DrawEllipse}{\param{wxCoord}{ x}, \param{wxCoord}{ y}, \param{wxCoord}{ width}, \param{wxCoord}{ height}}
 
-Draws an ellipse contained in the rectangle with the given top left corner, and with the
-given size.  The current pen is used for the outline and the current brush for
-filling the shape.
+\func{void}{DrawEllipse}{\param{const wxPoint\&}{ pt}, \param{const wxSize\&}{ size}}
+
+\func{void}{DrawEllipse}{\param{const wxRect\&}{ rect}}
+
+Draws an ellipse contained in the rectangle specified either with the given top
+left corner and the given size or directly. The current pen is used for the
+outline and the current brush for filling the shape.
+
+\wxheading{See also}
+
+\helpref{DrawCircle}{wxdcdrawcircle}
 
 \membersection{wxDC::DrawEllipticArc}\label{wxdcdrawellipticarc}
 
@@ -255,6 +335,10 @@ deleting the list of points.
 \pythonnote{The wxPython version of this method accepts a Python list
 of wxPoint objects.}
 
+\perlnote{The wxPerl version of this method accepts 
+  as its first parameter a reference to an array
+  of wxPoint objects.}
+
 \membersection{wxDC::DrawPolygon}\label{wxdcdrawpolygon}
 
 \func{void}{DrawPolygon}{\param{int}{ n}, \param{wxPoint}{ points[]}, \param{wxCoord}{ xoffset = 0}, \param{wxCoord}{ yoffset = 0},\\
@@ -278,6 +362,10 @@ Note that wxWindows automatically closes the first and last points.
 \pythonnote{The wxPython version of this method accepts a Python list
 of wxPoint objects.}
 
+\perlnote{The wxPerl version of this method accepts 
+  as its first parameter a reference to an array
+  of wxPoint objects.}
+
 \membersection{wxDC::DrawPoint}\label{wxdcdrawpoint}
 
 \func{void}{DrawPoint}{\param{wxCoord}{ x}, \param{wxCoord}{ y}}
@@ -297,6 +385,11 @@ for filling the shape.
 \func{void}{DrawRotatedText}{\param{const wxString\& }{text}, \param{wxCoord}{ x}, \param{wxCoord}{ y}, \param{double}{ angle}}
 
 Draws the text rotated by {\it angle} degrees.
+
+{\bf NB:} Under Win9x only TrueType fonts can be drawn by this function. In
+particular, a font different from {\tt wxNORMAL\_FONT} should be used as the
+latter is not a TrueType font. {\tt wxSWISS\_FONT} is an example of a font
+which is.
 
 \wxheading{See also}
 
@@ -335,6 +428,9 @@ Draws a three-point spline using the current pen.
 \pythonnote{The wxPython version of this method accepts a Python list
 of wxPoint objects.}
 
+\perlnote{The wxPerl version of this method accepts a reference to an array
+  of wxPoint objects.}
+
 \membersection{wxDC::DrawText}\label{wxdcdrawtext}
 
 \func{void}{DrawText}{\param{const wxString\& }{text}, \param{wxCoord}{ x}, \param{wxCoord}{ y}}
@@ -351,6 +447,23 @@ text more precisely.
 \helpref{logical function}{wxdcgetlogicalfunction} is used by this function
 but it is ignored by wxMSW. Thus, you should avoid using logical functions
 with this function in portable programs.
+
+\begin{comment}
+\membersection{wxDC::EnableCache}\label{wxdcenablecache}
+
+\func{static void}{EnableCache}{\param{bool}{ enableCache}}
+
+On supported platforms (currently only Windows), enables the DC cache
+which can speed up the \helpref{Blit}{wxdcblit} operation when
+drawing a large number of masked bitmaps.
+
+If using the cache functions in your code, please test for the
+wxUSE\_DC\_CACHEING preprocessor symbol for portability.
+
+\wxheading{See also}
+
+\helpref{wxDC::CacheEnabled}{wxdccacheenabled}, \helpref{wxDC::ClearCache}
+\end{comment}
 
 \membersection{wxDC::EndDoc}\label{wxdcenddoc}
 
@@ -374,7 +487,7 @@ Ends a document page (only relevant when outputting to a printer).
 
 \membersection{wxDC::FloodFill}\label{wxdcfloodfill}
 
-\func{void}{FloodFill}{\param{wxCoord}{ x}, \param{wxCoord}{ y}, \param{const wxColour\&}{ colour}, \param{int}{ style=wxFLOOD\_SURFACE}}
+\func{bool}{FloodFill}{\param{wxCoord}{ x}, \param{wxCoord}{ y}, \param{const wxColour\&}{ colour}, \param{int}{ style=wxFLOOD\_SURFACE}}
 
 Flood fills the device context starting from the given point, using
 the {\it current brush colour}, and using a style:
@@ -384,7 +497,11 @@ the {\it current brush colour}, and using a style:
 \item wxFLOOD\_BORDER: the area to be flooded is bounded by the given colour.
 \end{itemize}
 
-{\it Note:} this function is available in MS Windows only.
+Returns FALSE if the operation failed.
+
+{\it Note:} The present implementation for non-Windows platforms may fail to find
+colour borders if the pixels do not match the colour exactly. However the
+function will still return TRUE.
 
 \membersection{wxDC::GetBackground}\label{wxdcgetbackground}
 
@@ -433,6 +550,9 @@ Gets the rectangle surrounding the current clipping region.
 \pythonnote{No arguments are required and the four values defining the
 rectangle are returned as a tuple.}
 
+\perlnote{This method takes no arguments and returns a four element list
+{\tt ( x, y, width, height )}}
+
 \membersection{wxDC::GetFont}\label{wxdcgetfont}
 
 \func{wxFont\&}{GetFont}{\void}
@@ -478,6 +598,9 @@ is being worked on. Not available for wxPostScriptDC or wxMetafileDC.
 \pythonnote{For wxPython the wxColour value is returned and is not
 required as a parameter.}
 
+\perlnote{This method only takes the parameters {\tt x} and {\tt y} and returns
+a Wx::Colour value}
+
 \membersection{wxDC::GetSize}\label{wxdcgetsize}
 
 \func{void}{GetSize}{\param{wxCoord *}{width}, \param{wxCoord *}{height}}
@@ -507,6 +630,14 @@ implements the following methods:\par
 \twocolitem{{\bf GetSizeTuple()}}{Returns a 2-tuple (width, height)}
 \end{twocollist}}
 }
+
+\perlnote{In place of a single overloaded method, wxPerl uses:\par
+\indented{2cm}{\begin{twocollist}
+\twocolitem{{\bf GetSize()}}{Returns a Wx::Size}
+\twocolitem{{\bf GetSizeWH()}}{Returns a 2-element list
+  {\tt ( width, height )}}
+\end{twocollist}
+}}
 
 \membersection{wxDC::GetTextBackground}\label{wxdcgettextbackground}
 
@@ -543,6 +674,11 @@ See also \helpref{wxFont}{wxfont}, \helpref{wxDC::SetFont}{wxdcsetfont}.
 \end{twocollist}}
 }
 
+\perlnote{In wxPerl this method is implemented as 
+  {\bf GetTextExtent( string, font = undef )} returning a four element
+  array {\tt ( width, height, descent, externalLeading )}
+}
+
 \membersection{wxDC::GetTextForeground}\label{wxdcgettextforeground}
 
 \func{wxColour\&}{GetTextForeground}{\void}
@@ -558,6 +694,8 @@ Gets the current text foreground colour (see \helpref{wxDC::SetTextForeground}{w
 
 Gets the current user scale factor (set by \helpref{SetUserScale}{wxdcsetuserscale}).
 
+\perlnote{In wxPerl this method takes no arguments and return a two element
+ array {\tt ( x, y )}}
 
 \membersection{wxDC::LogicalToDeviceX}\label{wxdclogicaltodevicex}
 
@@ -571,7 +709,8 @@ mapping mode.
 \func{wxCoord}{LogicalToDeviceXRel}{\param{wxCoord}{ x}}
 
 Converts logical X coordinate to relative device coordinate, using the current
-mapping mode. Use this for converting a width, for example.
+mapping mode but ignoring the x axis orientation.
+Use this for converting a width, for example.
 
 \membersection{wxDC::LogicalToDeviceY}\label{wxdclogicaltodevicey}
 
@@ -585,7 +724,8 @@ mapping mode.
 \func{wxCoord}{LogicalToDeviceYRel}{\param{wxCoord}{ y}}
 
 Converts logical Y coordinate to relative device coordinate, using the current
-mapping mode. Use this for converting a height, for example.
+mapping mode but ignoring the y axis orientation.
+Use this for converting a height, for example.
 
 \membersection{wxDC::MaxX}\label{wxdcmaxx}
 
@@ -628,6 +768,23 @@ doesn't contain anything.
 
 \helpref{CalcBoundingBox}{wxdccalcboundingbox}
 
+\membersection{wxDC::SetAxisOrientation}\label{wxdcsetaxisorientation}
+
+\func{void}{SetAxisOrientation}{\param{bool}{ xLeftRight},
+                                \param{bool}{ yBottomUp}}
+
+Sets the x and y axis orientation (i.e., the direction from lowest to
+highest values on the axis). The default orientation is the natural
+orientation, e.g. x axis from left to right and y axis from bottom up.
+
+\wxheading{Parameters}
+
+\docparam{xLeftRight}{True to set the x axis orientation to the natural
+left to right orientation, false to invert it.}
+
+\docparam{yBottomUp}{True to set the y axis orientation to the natural
+bottom up orientation, false to invert it.}
+
 \membersection{wxDC::SetDeviceOrigin}\label{wxdcsetdeviceorigin}
 
 \func{void}{SetDeviceOrigin}{\param{wxCoord}{ x}, \param{wxCoord}{ y}}
@@ -655,11 +812,21 @@ whether text will be drawn with a background colour or not.
 
 \func{void}{SetClippingRegion}{\param{wxCoord}{ x}, \param{wxCoord}{ y}, \param{wxCoord}{ width}, \param{wxCoord}{ height}}
 
+\func{void}{SetClippingRegion}{\param{const wxPoint\& }{pt}, \param{const wxSize\& }{sz}}
+
+\func{void}{SetClippingRegion}{\param{const wxRect\&}{ rect}}
+
 \func{void}{SetClippingRegion}{\param{const wxRegion\&}{ region}}
 
-Sets the clipping region for the DC. The clipping region is an area
-to which drawing is restricted. Possible uses for the clipping region are for clipping text
-or for speeding up window redraws when only a known area of the screen is damaged.
+Sets the clipping region for this device context to the intersection of the
+given region described by the parameters of this method and the previously set
+clipping region. You should call 
+\helpref{DestroyClippingRegion}{wxdcdestroyclippingregion} if you want to set
+the clipping region exactly to the region specified.
+
+The clipping region is an area to which drawing is restricted. Possible uses
+for the clipping region are for clipping text or for speeding up window redraws
+when only a known area of the screen is damaged.
 
 \wxheading{See also}
 
@@ -695,11 +862,8 @@ when drawing into a monochrome bitmap.
 
 \func{void}{SetFont}{\param{const wxFont\& }{font}}
 
-Sets the current font for the DC.
-
-If the argument is wxNullFont, the current font is selected out of the device
-context, and the original font restored, allowing the current font to
-be destroyed safely.
+Sets the current font for the DC. It must be a valid font, in particular you
+should not pass {\tt wxNullFont} to this method.
 
 See also \helpref{wxFont}{wxfont}.
 
@@ -749,7 +913,7 @@ measurement used to convert logical units to device units. Note that
 in X, text drawing isn't handled consistently with the mapping mode; a
 font is always specified in point size. However, setting the {\it
 user scale} (see \helpref{wxDC::SetUserScale}{wxdcsetuserscale}) scales the text appropriately. In
-Windows, scaleable TrueType fonts are always used; in X, results depend
+Windows, scalable TrueType fonts are always used; in X, results depend
 on availability of fonts, but usually a reasonable match is found.
 
 Note that the coordinate origin should ideally be selectable, but for
@@ -830,4 +994,39 @@ Message is a message to show whilst printing.
 \func{bool}{StartPage}{\void}
 
 Starts a document page (only relevant when outputting to a printer).
+
+\section{\class{wxDCClipper}}\label{wxdcclipper}
+
+This is a small helper class which sets the specified to its constructor
+clipping region and then automatically destroys it in its destructor. Using
+it ensures that unwanted clipping region is not left set on the DC.
+
+\wxheading{Derived from}
+
+No base class
+
+\wxheading{Include files}
+
+<wx/dc.h>
+
+\wxheading{See also}
+
+\helpref{wxDC}{wxdc}
+
+\latexignore{\rtfignore{\wxheading{Members}}}
+
+\membersection{wxDCClipper::wxDCClipper}
+
+\func{}{wxDCClipper}{\param{wxDC\& }{dc}, \param{wxCoord }{x},\param{wxCoord }{y},\param{wxCoord }{w},\param{wxCoord }{h},}
+
+\func{}{wxDCClipper}{\param{wxDC\& }{dc}, \param{const wxRect\&}{ rect}}
+
+Constructor: sets the the clipping region for the given device context to the
+specified rectangle.
+
+\membersection{wxDCClipper::\destruct{wxDCClipper}}
+
+\func{}{\destruct{wxDCClipper}}{\void}
+
+Destructor: destroys the clipping region set in the constructor.
 

@@ -24,22 +24,37 @@ application windows.
 
 \twocolwidtha{5cm}
 \begin{twocollist}\itemsep=0pt
-\twocolitem{\windowstyle{wxDEFAULT\_FRAME\_STYLE}}{Defined as {\bf wxMINIMIZE\_BOX \pipe wxMAXIMIZE\_BOX \pipe wxRESIZE\_BOX \pipe wxSYSTEM\_MENU \pipe wxCAPTION}.}
+\twocolitem{\windowstyle{wxDEFAULT\_FRAME\_STYLE}}{Defined as {\bf wxMINIMIZE\_BOX \pipe wxMAXIMIZE\_BOX \pipe wxRESIZE\_BORDER \pipe wxSYSTEM\_MENU \pipe wxCAPTION}.}
 \twocolitem{\windowstyle{wxICONIZE}}{Display the frame iconized (minimized). Windows only. }
 \twocolitem{\windowstyle{wxCAPTION}}{Puts a caption on the frame.}
 \twocolitem{\windowstyle{wxMINIMIZE}}{Identical to {\bf wxICONIZE}. Windows only.}
 \twocolitem{\windowstyle{wxMINIMIZE\_BOX}}{Displays a minimize box on the frame.}
 \twocolitem{\windowstyle{wxMAXIMIZE}}{Displays the frame maximized. Windows only.}
 \twocolitem{\windowstyle{wxMAXIMIZE\_BOX}}{Displays a maximize box on the frame.}
-\twocolitem{\windowstyle{wxSTAY\_ON\_TOP}}{Stay on top of other windows. Windows only.}
+\twocolitem{\windowstyle{wxSTAY\_ON\_TOP}}{Stay on top of all other windows,
+see also wxFRAME\_FLOAT\_ON\_PARENT. Windows only.}
 \twocolitem{\windowstyle{wxSYSTEM\_MENU}}{Displays a system menu.}
 \twocolitem{\windowstyle{wxSIMPLE\_BORDER}}{Displays no border or decorations. GTK and Windows only.}
-\twocolitem{\windowstyle{wxRESIZE\_BORDER}}{Displays a resizeable border around the window (Unix only).}
-\twocolitem{\windowstyle{wxFRAME\_FLOAT\_ON\_PARENT}}{Causes the frame to be above the parent window in the
-z-order and not shown in the taskbar. Without this style, frames are created as top-level windows that may be obscured by
-the parent window, and frame titles are shown in the taskbar. Windows and GTK.}
-\twocolitem{\windowstyle{wxFRAME\_TOOL\_WINDOW}}{Causes a frame with a small titlebar to be created;
-the frame title does not appear in the taskbar. Windows only.}
+\twocolitem{\windowstyle{wxRESIZE\_BORDER}}{Displays a resizeable border around the window.}
+\twocolitem{\windowstyle{wxFRAME\_TOOL\_WINDOW}}{Causes a frame with a small
+titlebar to be created; the frame does not appear in the taskbar under Windows.}
+\twocolitem{\windowstyle{wxFRAME\_NO\_TASKBAR}}{Creates an otherwise normal
+frame but it does not appear in the taskbar under Windows (note that it will
+minimize to the desktop window which may seem strange to the users and thus it
+might be better to use this style only without wxMINIMIZE\_BOX style).
+Has no effect under other platforms.}
+\twocolitem{\windowstyle{wxFRAME\_FLOAT\_ON\_PARENT}}{The frame will always be
+on top of its parent (unlike wxSTAY\_ON\_TOP). A frame created with this style
+must have a non-NULL parent.}
+\twocolitem{\windowstyle{wxFRAME\_EX\_CONTEXTHELP}}{Under Windows, puts a query button on the
+caption. When pressed, Windows will go into a context-sensitive help mode and wxWindows will send
+a wxEVT\_HELP event if the user clicked on an application window. {\it Note} that this is an extended
+style and must be set by calling \helpref{SetExtraStyle}{wxwindowsetextrastyle} before Create is called (two-step construction).
+You cannot use this style together with wxMAXIMIZE\_BOX or wxMINIMIZE\_BOX, so
+you should use 
+{\tt wxDEFAULT\_FRAME\_STYLE \& \~ (wxMINIMIZE\_BOX | wxMAXIMIZE\_BOX)} for the
+frames having this style (the dialogs don't have minimize nor maximize box by
+default)}
 \end{twocollist}
 
 The default frame style is for normal, resizeable frames. To create a frame
@@ -51,7 +66,7 @@ See also \helpref{window styles overview}{windowstyles}.
 
 \wxheading{Remarks}
 
-An application should normally define an \helpref{OnCloseWindow}{wxwindowonclosewindow} handler for the
+An application should normally define an \helpref{wxCloseEvent}{wxcloseevent} handler for the
 frame to respond to system close events, for example so that related data and subwindows can be cleaned up.
 
 \wxheading{See also}
@@ -247,6 +262,16 @@ Returns a pointer to the status bar currently associated with the frame (if any)
 
 \helpref{wxFrame::CreateStatusBar}{wxframecreatestatusbar}, \helpref{wxStatusBar}{wxstatusbar}
 
+\membersection{wxFrame::GetStatusBarPane}\label{wxframegetstatusbarpane}
+
+\func{int}{GetStatusBarPane}{\void}
+
+Returns the status bar pane used to display menu and toolbar help.
+
+\wxheading{See also}
+
+\helpref{wxFrame::SetStatusBarPane}{wxframesetstatusbarpane}
+
 \membersection{wxFrame::GetTitle}\label{wxframegettitle}
 
 \constfunc{wxString}{GetTitle}{\void}
@@ -268,21 +293,31 @@ Returns a pointer to the toolbar currently associated with the frame (if any).
 
 \func{void}{Iconize}{\param{bool}{ iconize}}
 
-Iconizes or restores the frame. Windows only.
+Iconizes or restores the frame.
 
 \wxheading{Parameters}
 
-\docparam{izonize}{If TRUE, iconizes the frame; if FALSE, shows and restores it.}
+\docparam{iconize}{If TRUE, iconizes the frame; if FALSE, shows and restores it.}
 
 \wxheading{See also}
 
 \helpref{wxFrame::IsIconized}{wxframeisiconized}, \helpref{wxFrame::Maximize}{wxframemaximize}.
 
+\membersection{wxFrame::IsFullScreen}\label{wxframeisfullscreen}
+
+\func{bool}{IsFullScreen}{\void}
+
+Returns TRUE if the frame is in fullscreen mode.
+
+\wxheading{See also}
+
+\helpref{wxFrame::ShowFullScreen}{wxframeshowfullscreen}
+
 \membersection{wxFrame::IsIconized}\label{wxframeisiconized}
 
 \constfunc{bool}{IsIconized}{\void}
 
-Returns TRUE if the frame is iconized. Windows only.
+Returns TRUE if the frame is iconized.
 
 \membersection{wxFrame::IsMaximized}\label{wxframeismaximized}
 
@@ -378,28 +413,38 @@ implementation returns an instance of \helpref{wxToolBar}{wxtoolbar}.
 
 \helpref{wxFrame::CreateToolBar}{wxframecreatetoolbar}, \helpref{wxToolBar}{wxtoolbar}.
 
-\membersection{wxFrame::OnMenuCommand}\label{wxframeonmenucommand}
-
-\func{void}{OnMenuCommand}{\param{wxCommandEvent\&}{ event}}
-
-See \helpref{wxWindow::OnMenuCommand}{wxwindowonmenucommand}.
-
 \membersection{wxFrame::OnMenuHighlight}\label{wxframeonmenuhighlight}
 
 \func{void}{OnMenuHighlight}{\param{wxMenuEvent\&}{ event}}
 
-See \helpref{wxWindow::OnMenuHighlight}{wxwindowonmenuhighlight}.
+The default implementation displays an appropriate help string
+in the status bar, if there is one.
+
+See \helpref{wxMenuEvent}{wxmenuevent}.
 
 \membersection{wxFrame::OnSize}\label{wxframeonsize}
 
 \func{void}{OnSize}{\param{wxSizeEvent\& }{event}}
 
-See \helpref{wxWindow::OnSize}{wxwindowonsize}.
-
 The default {\bf wxFrame::OnSize} implementation looks for a single subwindow,
 and if one is found, resizes it to fit
 inside the frame. Override this member if more complex behaviour
 is required (for example, if there are several subwindows).
+
+See \helpref{wxSizeEvent}{wxsizeevent}.
+
+\membersection{wxFrame::SendSizeEvent}\label{wxframesendsizeevent}
+
+\func{void}{SendSizeEvent}{\void}
+
+This function sends a dummy \helpref{size event}{wxsizeevent} to the frame
+forcing it to reevaluate its children positions. It is sometimes useful to call
+this function after adding or deleting a children after the frame creation or
+if a child size changes.
+
+Note that if the frame is using either sizers or constraints for the children
+layout, it is enough to call \helpref{Layout()}{wxwindowlayout} directly and
+this function should not be used in this case.
 
 \membersection{wxFrame::SetIcon}\label{wxframeseticon}
 
@@ -417,38 +462,46 @@ The frame takes a `copy' of {\it icon}, but since it uses reference
 counting, the copy is very quick. It is safe to delete {\it icon} after
 calling this function.
 
-Under Windows, instead of using {\bf SetIcon}, you can add the
-following lines to your MS Windows resource file:
-
-\begin{verbatim}
-wxSTD_MDIPARENTFRAME ICON icon1.ico
-wxSTD_MDICHILDFRAME  ICON icon2.ico
-wxSTD_FRAME          ICON icon3.ico
-\end{verbatim}
-
-where icon1.ico will be used for the MDI parent frame, icon2.ico
-will be used for MDI child frames, and icon3.ico will be used for
-non-MDI frames.
-
-If these icons are not supplied, and {\bf SetIcon} is not called either,
-then the following defaults apply if you have included wx.rc.
-
-\begin{verbatim}
-wxDEFAULT_FRAME               ICON std.ico
-wxDEFAULT_MDIPARENTFRAME      ICON mdi.ico
-wxDEFAULT_MDICHILDFRAME       ICON child.ico
-\end{verbatim}
-
-You can replace std.ico, mdi.ico and child.ico with your own defaults
-for all your wxWindows application. Currently they show the same icon.
-
-{\it Note:} a wxWindows application linked with subsystem equal to 4.0
-(i.e. marked as a Windows 95 application) doesn't respond properly
-to wxFrame::SetIcon. To work around this until a solution is found,
-mark your program as a 3.5 application. This will also ensure
-that Windows provides small icons for the application automatically.
-
 See also \helpref{wxIcon}{wxicon}.
+
+\membersection{wxFrame::SetIcons}\label{wxframeseticons}
+
+\func{void}{SetIcons}{\param{const wxIconBundle\& }{icons}}
+
+Sets the icons for this frame.
+
+\wxheading{Parameters}
+
+\docparam{icons}{The icons to associate with this frame.}
+
+See also \helpref{wxIconBundle}{wxiconbundle}.
+
+% VZ: we don't have all this any more (18.08.00) 
+%
+%Under Windows, instead of using {\bf SetIcon}, you can add the
+%following lines to your MS Windows resource file:
+%
+%\begin{verbatim}
+%wxSTD_MDIPARENTFRAME ICON icon1.ico
+%wxSTD_MDICHILDFRAME  ICON icon2.ico
+%wxSTD_FRAME          ICON icon3.ico
+%\end{verbatim}
+%
+%where icon1.ico will be used for the MDI parent frame, icon2.ico
+%will be used for MDI child frames, and icon3.ico will be used for
+%non-MDI frames.
+%
+%If these icons are not supplied, and {\bf SetIcon} is not called either,
+%then the following defaults apply if you have included wx.rc.
+%
+%\begin{verbatim}
+%wxDEFAULT_FRAME               ICON std.ico
+%wxDEFAULT_MDIPARENTFRAME      ICON mdi.ico
+%wxDEFAULT_MDICHILDFRAME       ICON child.ico
+%\end{verbatim}
+%
+%You can replace std.ico, mdi.ico and child.ico with your own defaults
+%for all your wxWindows application. Currently they show the same icon.
 
 \membersection{wxFrame::SetMenuBar}\label{wxframesetmenubar}
 
@@ -486,6 +539,13 @@ Associates a status bar with the frame.
 
 \helpref{wxFrame::CreateStatusBar}{wxframecreatestatusbar}, \helpref{wxStatusBar}{wxstatusbar},\rtfsp
 \helpref{wxFrame::GetStatusBar}{wxframegetstatusbar}
+
+\membersection{wxFrame::SetStatusBarPane}\label{wxframesetstatusbarpane}
+
+\func{void}{SetStatusBarPane}{\param{int}{ n}}
+
+Set the status bar pane used to display menu and toolbar help.
+Using -1 disables help display.
 
 \membersection{wxFrame::SetStatusText}\label{wxframesetstatustext}
 
@@ -531,6 +591,8 @@ variable fields.
 \pythonnote{Only a single parameter is required, a Python list of
 integers.}
 
+\perlnote{In wxPerl this method takes the field widths as parameters.}
+
 \membersection{wxFrame::SetToolBar}\label{wxframesettoolbar}
 
 \func{void}{SetToolBar}{\param{wxToolBar*}{ toolBar}}
@@ -573,5 +635,9 @@ indicate what elements of the frame to hide in full-screen mode:
 \item wxFULLSCREEN\_ALL (all of the above)
 \end{itemize}
 
-This function only works on Windows and has not been tested with MDI frames.
+This function has not been tested with MDI frames.
+
+\wxheading{See also}
+
+\helpref{wxFrame::IsFullScreen}{wxframeisfullscreen}
 

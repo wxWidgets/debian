@@ -4,7 +4,7 @@
 // Author:      Vadim Zeitlin
 // Modified by:
 // Created:     15.01.00
-// RCS-ID:      $Id: exec.cpp,v 1.8.2.5 2001/09/15 11:24:06 GD Exp $
+// RCS-ID:      $Id: exec.cpp,v 1.21 2002/08/31 22:30:49 GD Exp $
 // Copyright:   (c) Vadim Zeitlin
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -17,7 +17,7 @@
 // headers
 // ----------------------------------------------------------------------------
 
-#ifdef __GNUG__
+#if defined(__GNUG__) && !defined(__APPLE__)
     #pragma implementation "exec.cpp"
     #pragma interface "exec.cpp"
 #endif
@@ -33,24 +33,39 @@
 // need because it includes almost all "standard" wxWindows headers
 #ifndef WX_PRECOMP
     #include "wx/app.h"
+    #include "wx/log.h"
     #include "wx/frame.h"
+    #include "wx/panel.h"
+
+    #include "wx/timer.h"
+
     #include "wx/utils.h"
     #include "wx/menu.h"
+
     #include "wx/msgdlg.h"
     #include "wx/textdlg.h"
+    #include "wx/filedlg.h"
+    #include "wx/choicdlg.h"
+
+    #include "wx/button.h"
+    #include "wx/textctrl.h"
     #include "wx/listbox.h"
+
+    #include "wx/sizer.h"
 #endif
 
 #include "wx/txtstrm.h"
 
 #include "wx/process.h"
 
+#include "wx/mimetype.h"
+
 #ifdef __WINDOWS__
     #include "wx/dde.h"
 #endif // __WINDOWS__
 
 // ----------------------------------------------------------------------------
-// private classes
+// the usual application and main frame classes
 // ----------------------------------------------------------------------------
 
 // Define a new application type, each program should derive a class from wxApp
@@ -80,6 +95,8 @@ public:
     // event handlers (these functions should _not_ be virtual)
     void OnQuit(wxCommandEvent& event);
 
+    void OnKill(wxCommandEvent& event);
+
     void OnClear(wxCommandEvent& event);
 
     void OnSyncExec(wxCommandEvent& event);
@@ -88,9 +105,14 @@ public:
     void OnExecWithRedirect(wxCommandEvent& event);
     void OnExecWithPipe(wxCommandEvent& event);
 
+    void OnPOpen(wxCommandEvent& event);
+
+    void OnFileExec(wxCommandEvent& event);
+
     void OnAbout(wxCommandEvent& event);
 
     // polling output of async processes
+    void OnTimer(wxTimerEvent& event);
     void OnIdle(wxIdleEvent& event);
 
     // for MyPipedProcess
@@ -101,6 +123,36 @@ private:
     void ShowOutput(const wxString& cmd,
                     const wxArrayString& output,
                     const wxString& title);
+
+    void DoAsyncExec(const wxString& cmd);
+
+    void AddAsyncProcess(MyPipedProcess *process)
+    {
+        if ( m_running.IsEmpty() )
+        {
+            // we want to start getting the timer events to ensure that a
+            // steady stream of idle events comes in -- otherwise we
+            // wouldn't be able to poll the child process input
+            m_timerIdleWakeUp.Start(100);
+        }
+        //else: the timer is already running
+
+        m_running.Add(process);
+    }
+
+    void RemoveAsyncProcess(MyPipedProcess *process)
+    {
+        m_running.Remove(process);
+
+        if ( m_running.IsEmpty() )
+        {
+            // we don't need to get idle events all the time any more
+            m_timerIdleWakeUp.Stop();
+        }
+    }
+
+    // the PID of the last process we launched asynchronously
+    long m_pidLast;
 
     // last command we executed
     wxString m_cmdLast;
@@ -121,9 +173,58 @@ private:
 
     MyProcessesArray m_running;
 
+    // the idle event wake up timer
+    wxTimer m_timerIdleWakeUp;
+
     // any class wishing to process wxWindows events must use this macro
     DECLARE_EVENT_TABLE()
 };
+
+// ----------------------------------------------------------------------------
+// MyPipeFrame: allows the user to communicate with the child process
+// ----------------------------------------------------------------------------
+
+class MyPipeFrame : public wxFrame
+{
+public:
+    MyPipeFrame(wxFrame *parent,
+                const wxString& cmd,
+                wxProcess *process);
+
+protected:
+    void OnTextEnter(wxCommandEvent& event) { DoSend(); }
+    void OnBtnSend(wxCommandEvent& event) { DoSend(); }
+    void OnBtnGet(wxCommandEvent& event) { DoGet(); }
+
+    void OnClose(wxCloseEvent& event);
+
+    void OnProcessTerm(wxProcessEvent& event);
+
+    void DoSend()
+    {
+        m_out.WriteString(m_textIn->GetValue() + '\n');
+        m_textIn->Clear();
+
+        DoGet();
+    }
+
+    void DoGet();
+
+private:
+    wxProcess *m_process;
+
+    wxTextInputStream m_in;
+    wxTextOutputStream m_out;
+
+    wxTextCtrl *m_textIn,
+               *m_textOut;
+
+    DECLARE_EVENT_TABLE()
+};
+
+// ----------------------------------------------------------------------------
+// wxProcess-derived classes
+// ----------------------------------------------------------------------------
 
 // This is the handler for process termination events
 class MyProcess : public wxProcess
@@ -185,15 +286,22 @@ enum
 {
     // menu items
     Exec_Quit = 100,
+    Exec_Kill,
     Exec_ClearLog,
     Exec_SyncExec = 200,
     Exec_AsyncExec,
     Exec_Shell,
+    Exec_POpen,
+    Exec_OpenFile,
     Exec_DDEExec,
     Exec_DDERequest,
     Exec_Redirect,
     Exec_Pipe,
-    Exec_About = 300
+    Exec_About = 300,
+
+    // control ids
+    Exec_Btn_Send = 1000,
+    Exec_Btn_Get
 };
 
 static const wxChar *DIALOG_TITLE = _T("Exec sample");
@@ -207,6 +315,7 @@ static const wxChar *DIALOG_TITLE = _T("Exec sample");
 // simple menu events like this the static method is much simpler.
 BEGIN_EVENT_TABLE(MyFrame, wxFrame)
     EVT_MENU(Exec_Quit,  MyFrame::OnQuit)
+    EVT_MENU(Exec_Kill,  MyFrame::OnKill)
     EVT_MENU(Exec_ClearLog,  MyFrame::OnClear)
 
     EVT_MENU(Exec_SyncExec, MyFrame::OnSyncExec)
@@ -215,14 +324,31 @@ BEGIN_EVENT_TABLE(MyFrame, wxFrame)
     EVT_MENU(Exec_Redirect, MyFrame::OnExecWithRedirect)
     EVT_MENU(Exec_Pipe, MyFrame::OnExecWithPipe)
 
+    EVT_MENU(Exec_POpen, MyFrame::OnPOpen)
+
+    EVT_MENU(Exec_OpenFile, MyFrame::OnFileExec)
+
 #ifdef __WINDOWS__
     EVT_MENU(Exec_DDEExec, MyFrame::OnDDEExec)
     EVT_MENU(Exec_DDERequest, MyFrame::OnDDERequest)
 #endif // __WINDOWS__
-    
+
     EVT_MENU(Exec_About, MyFrame::OnAbout)
 
     EVT_IDLE(MyFrame::OnIdle)
+
+    EVT_TIMER(-1, MyFrame::OnTimer)
+END_EVENT_TABLE()
+
+BEGIN_EVENT_TABLE(MyPipeFrame, wxFrame)
+    EVT_BUTTON(Exec_Btn_Send, MyPipeFrame::OnBtnSend)
+    EVT_BUTTON(Exec_Btn_Get, MyPipeFrame::OnBtnGet)
+
+    EVT_TEXT_ENTER(-1, MyPipeFrame::OnTextEnter)
+
+    EVT_CLOSE(MyPipeFrame::OnClose)
+
+    EVT_END_PROCESS(-1, MyPipeFrame::OnProcessTerm)
 END_EVENT_TABLE()
 
 // Create a new application object: this macro will allow wxWindows to create
@@ -263,8 +389,11 @@ bool MyApp::OnInit()
 
 // frame constructor
 MyFrame::MyFrame(const wxString& title, const wxPoint& pos, const wxSize& size)
-       : wxFrame((wxFrame *)NULL, -1, title, pos, size)
+       : wxFrame((wxFrame *)NULL, -1, title, pos, size),
+         m_timerIdleWakeUp(this)
 {
+    m_pidLast = 0;
+
 #ifdef __WXMAC__
     // we need this in order to allow the about menu relocation, since ABOUT is
     // not the default id of the about menu
@@ -273,6 +402,9 @@ MyFrame::MyFrame(const wxString& title, const wxPoint& pos, const wxSize& size)
 
     // create a menu bar
     wxMenu *menuFile = new wxMenu(_T(""), wxMENU_TEAROFF);
+    menuFile->Append(Exec_Kill, _T("&Kill process...\tCtrl-K"),
+                     _T("Kill a process by PID"));
+    menuFile->AppendSeparator();
     menuFile->Append(Exec_ClearLog, _T("&Clear log\tCtrl-C"),
                      _T("Clear the log window"));
     menuFile->AppendSeparator();
@@ -288,9 +420,14 @@ MyFrame::MyFrame(const wxString& title, const wxPoint& pos, const wxSize& size)
     execMenu->AppendSeparator();
     execMenu->Append(Exec_Redirect, _T("Capture command &output...\tCtrl-O"),
                      _T("Launch a program and capture its output"));
-    execMenu->Append(Exec_Pipe, _T("&Pipe through command...\tCtrl-P"),
+    execMenu->Append(Exec_Pipe, _T("&Pipe through command..."),
                      _T("Pipe a string through a filter"));
+    execMenu->Append(Exec_POpen, _T("&Open a pipe to a command...\tCtrl-P"),
+                     _T("Open a pipe to and from another program"));
 
+    execMenu->AppendSeparator();
+    execMenu->Append(Exec_OpenFile, _T("Open &file...\tCtrl-F"),
+                     _T("Launch the command to open this kind of files"));
 #ifdef __WINDOWS__
     execMenu->AppendSeparator();
     execMenu->Append(Exec_DDEExec, _T("Execute command via &DDE...\tCtrl-D"));
@@ -311,6 +448,10 @@ MyFrame::MyFrame(const wxString& title, const wxPoint& pos, const wxSize& size)
 
     // create the listbox in which we will show misc messages as they come
     m_lbox = new wxListBox(this, -1);
+    wxFont font(12, wxFONTFAMILY_TELETYPE, wxFONTSTYLE_NORMAL,
+                wxFONTWEIGHT_NORMAL);
+    if ( font.Ok() )
+        m_lbox->SetFont(font);
 
 #if wxUSE_STATUSBAR
     // create a status bar just for fun (by default with 1 pane only)
@@ -319,8 +460,9 @@ MyFrame::MyFrame(const wxString& title, const wxPoint& pos, const wxSize& size)
 #endif // wxUSE_STATUSBAR
 }
 
-
-// event handlers
+// ----------------------------------------------------------------------------
+// event handlers: file and help menu
+// ----------------------------------------------------------------------------
 
 void MyFrame::OnQuit(wxCommandEvent& WXUNUSED(event))
 {
@@ -335,8 +477,130 @@ void MyFrame::OnClear(wxCommandEvent& WXUNUSED(event))
 
 void MyFrame::OnAbout(wxCommandEvent& WXUNUSED(event))
 {
-    wxMessageBox(_T("Exec sample\n© 2000 Vadim Zeitlin"),
+    wxMessageBox(_T("Exec wxWindows Sample\n© 2000-2002 Vadim Zeitlin"),
                  _T("About Exec"), wxOK | wxICON_INFORMATION, this);
+}
+
+void MyFrame::OnKill(wxCommandEvent& WXUNUSED(event))
+{
+    long pid = wxGetNumberFromUser(_T("Please specify the process to kill"),
+                                   _T("Enter PID:"),
+                                   _T("Exec question"),
+                                   m_pidLast,
+                                   // we need the full unsigned int range
+                                   -INT_MAX, INT_MAX,
+                                   this);
+    if ( pid == -1 )
+    {
+        // cancelled
+        return;
+    }
+
+    static const wxString signalNames[] =
+    {
+        _T("Just test (SIGNONE)"),
+        _T("Hangup (SIGHUP)"),
+        _T("Interrupt (SIGINT)"),
+        _T("Quit (SIGQUIT)"),
+        _T("Illegal instruction (SIGILL)"),
+        _T("Trap (SIGTRAP)"),
+        _T("Abort (SIGABRT)"),
+        _T("Emulated trap (SIGEMT)"),
+        _T("FP exception (SIGFPE)"),
+        _T("Kill (SIGKILL)"),
+        _T("Bus (SIGBUS)"),
+        _T("Segment violation (SIGSEGV)"),
+        _T("System (SIGSYS)"),
+        _T("Broken pipe (SIGPIPE)"),
+        _T("Alarm (SIGALRM)"),
+        _T("Terminate (SIGTERM)"),
+    };
+
+    int sig = wxGetSingleChoiceIndex(_T("How to kill the process?"),
+                                     _T("Exec question"),
+                                     WXSIZEOF(signalNames), signalNames,
+                                     this);
+    switch ( sig )
+    {
+        default:
+            wxFAIL_MSG( _T("unexpected return value") );
+            // fall through
+
+        case -1:
+            // cancelled
+            return;
+
+        case wxSIGNONE:
+        case wxSIGHUP:
+        case wxSIGINT:
+        case wxSIGQUIT:
+        case wxSIGILL:
+        case wxSIGTRAP:
+        case wxSIGABRT:
+        case wxSIGEMT:
+        case wxSIGFPE:
+        case wxSIGKILL:
+        case wxSIGBUS:
+        case wxSIGSEGV:
+        case wxSIGSYS:
+        case wxSIGPIPE:
+        case wxSIGALRM:
+        case wxSIGTERM:
+            break;
+    }
+
+    if ( sig == 0 )
+    {
+        if ( wxProcess::Exists(pid) )
+            wxLogStatus(_T("Process %ld is running."), pid);
+        else
+            wxLogStatus(_T("No process with pid = %ld."), pid);
+    }
+    else // not SIGNONE
+    {
+        wxKillError rc = wxProcess::Kill(pid, (wxSignal)sig);
+        if ( rc == wxKILL_OK )
+        {
+            wxLogStatus(_T("Process %ld killed with signal %d."), pid, sig);
+        }
+        else
+        {
+            static const wxChar *errorText[] =
+            {
+                _T(""), // no error
+                _T("signal not supported"),
+                _T("permission denied"),
+                _T("no such process"),
+                _T("unspecified error"),
+            };
+
+            wxLogStatus(_T("Failed to kill process %ld with signal %d: %s"),
+                        pid, sig, errorText[rc]);
+        }
+    }
+}
+
+// ----------------------------------------------------------------------------
+// event handlers: exec menu
+// ----------------------------------------------------------------------------
+
+void MyFrame::DoAsyncExec(const wxString& cmd)
+{
+    wxProcess *process = new MyProcess(this, cmd);
+    m_pidLast = wxExecute(cmd, wxEXEC_ASYNC, process);
+    if ( !m_pidLast )
+    {
+        wxLogError( _T("Execution of '%s' failed."), cmd.c_str() );
+
+        delete process;
+    }
+    else
+    {
+        wxLogStatus( _T("Process %ld (%s) launched."),
+            m_pidLast, cmd.c_str() );
+
+        m_cmdLast = cmd;
+    }
 }
 
 void MyFrame::OnSyncExec(wxCommandEvent& WXUNUSED(event))
@@ -348,12 +612,13 @@ void MyFrame::OnSyncExec(wxCommandEvent& WXUNUSED(event))
     if ( !cmd )
         return;
 
-    wxLogStatus(_T("'%s' is running please wait..."), cmd.c_str());
+    wxLogStatus( _T("'%s' is running please wait..."), cmd.c_str() );
 
-    int code = wxExecute(cmd, TRUE /* sync */);
+    int code = wxExecute(cmd, wxEXEC_SYNC);
 
     wxLogStatus(_T("Process '%s' terminated with exit code %d."),
-                cmd.c_str(), code);
+        cmd.c_str(), code);
+
     m_cmdLast = cmd;
 }
 
@@ -366,20 +631,7 @@ void MyFrame::OnAsyncExec(wxCommandEvent& WXUNUSED(event))
     if ( !cmd )
         return;
 
-    wxProcess *process = new MyProcess(this, cmd);
-    long pid = wxExecute(cmd, FALSE /* async */, process);
-    if ( !pid )
-    {
-        wxLogError(_T("Execution of '%s' failed."), cmd.c_str());
-
-        delete process;
-    }
-    else
-    {
-        wxLogStatus(_T("Process %ld (%s) launched."), pid, cmd.c_str());
-
-        m_cmdLast = cmd;
-    }
+    DoAsyncExec(cmd);
 }
 
 void MyFrame::OnShell(wxCommandEvent& WXUNUSED(event))
@@ -439,7 +691,7 @@ void MyFrame::OnExecWithRedirect(wxCommandEvent& WXUNUSED(event))
     else // async exec
     {
         MyPipedProcess *process = new MyPipedProcess(this, cmd);
-        if ( !wxExecute(cmd, FALSE /* async */, process) )
+        if ( !wxExecute(cmd, wxEXEC_ASYNC, process) )
         {
             wxLogError(_T("Execution of '%s' failed."), cmd.c_str());
 
@@ -447,7 +699,7 @@ void MyFrame::OnExecWithRedirect(wxCommandEvent& WXUNUSED(event))
         }
         else
         {
-            m_running.Add(process);
+            AddAsyncProcess(process);
         }
     }
 
@@ -473,12 +725,12 @@ void MyFrame::OnExecWithPipe(wxCommandEvent& WXUNUSED(event))
 
     // always execute the filter asynchronously
     MyPipedProcess2 *process = new MyPipedProcess2(this, cmd, input);
-    int pid = wxExecute(cmd, FALSE /* async */, process);
+    long pid = wxExecute(cmd, wxEXEC_ASYNC, process);
     if ( pid )
     {
-        wxLogStatus(_T("Process %ld (%s) launched."), pid, cmd.c_str());
+        wxLogStatus( _T("Process %ld (%s) launched."), pid, cmd.c_str() );
 
-        m_running.Add(process);
+        AddAsyncProcess(process);
     }
     else
     {
@@ -489,6 +741,75 @@ void MyFrame::OnExecWithPipe(wxCommandEvent& WXUNUSED(event))
 
     m_cmdLast = cmd;
 }
+
+void MyFrame::OnPOpen(wxCommandEvent& event)
+{
+    wxString cmd = wxGetTextFromUser(_T("Enter the command to launch: "),
+                                     DIALOG_TITLE,
+                                     m_cmdLast);
+    if ( cmd.empty() )
+        return;
+
+    wxProcess *process = wxProcess::Open(cmd);
+    if ( !process )
+    {
+        wxLogError(_T("Failed to launch the command."));
+        return;
+    }
+
+    wxOutputStream *out = process->GetOutputStream();
+    if ( !out )
+    {
+        wxLogError(_T("Failed to connect to child stdin"));
+        return;
+    }
+
+    wxInputStream *in = process->GetInputStream();
+    if ( !in )
+    {
+        wxLogError(_T("Failed to connect to child stdout"));
+        return;
+    }
+
+    new MyPipeFrame(this, cmd, process);
+}
+
+void MyFrame::OnFileExec(wxCommandEvent& event)
+{
+    static wxString s_filename;
+
+    wxString filename = wxLoadFileSelector(_T(""), _T(""), s_filename);
+    if ( !filename )
+        return;
+
+    s_filename = filename;
+
+    wxString ext = filename.AfterFirst(_T('.'));
+    wxFileType *ft = wxTheMimeTypesManager->GetFileTypeFromExtension(ext);
+    if ( !ft )
+    {
+        wxLogError(_T("Impossible to determine the file type for extension '%s'"),
+                   ext.c_str());
+        return;
+    }
+
+    wxString cmd;
+    bool ok = ft->GetOpenCommand(&cmd,
+                                 wxFileType::MessageParameters(filename, _T("")));
+    delete ft;
+    if ( !ok )
+    {
+        wxLogError(_T("Impossible to find out how to open files of extension '%s'"),
+                   ext.c_str());
+        return;
+    }
+
+    DoAsyncExec(cmd);
+}
+
+// ----------------------------------------------------------------------------
+// DDE stuff
+// ----------------------------------------------------------------------------
 
 #ifdef __WINDOWS__
 
@@ -570,6 +891,10 @@ void MyFrame::OnDDERequest(wxCommandEvent& WXUNUSED(event))
 
 #endif // __WINDOWS__
 
+// ----------------------------------------------------------------------------
+// various helpers
+// ----------------------------------------------------------------------------
+
 // input polling
 void MyFrame::OnIdle(wxIdleEvent& event)
 {
@@ -583,9 +908,14 @@ void MyFrame::OnIdle(wxIdleEvent& event)
     }
 }
 
+void MyFrame::OnTimer(wxTimerEvent& WXUNUSED(event))
+{
+    wxWakeUpIdle();
+}
+
 void MyFrame::OnProcessTerminated(MyPipedProcess *process)
 {
-    m_running.Remove(process);
+    RemoveAsyncProcess(process);
 }
 
 
@@ -605,7 +935,8 @@ void MyFrame::ShowOutput(const wxString& cmd,
         m_lbox->Append(output[n]);
     }
 
-    m_lbox->Append(_T("--- End of output ---"));
+    m_lbox->Append(wxString::Format(_T("--- End of %s ---"),
+                                    title.Lower().c_str()));
 }
 
 // ----------------------------------------------------------------------------
@@ -629,10 +960,9 @@ bool MyPipedProcess::HasInput()
 {
     bool hasInput = FALSE;
 
-    wxInputStream& is = *GetInputStream();
-    if ( !is.Eof() )
+    if ( IsInputAvailable() )
     {
-        wxTextInputStream tis(is);
+        wxTextInputStream tis(*GetInputStream());
 
         // this assumes that the output is always line buffered
         wxString msg;
@@ -643,10 +973,9 @@ bool MyPipedProcess::HasInput()
         hasInput = TRUE;
     }
 
-    wxInputStream& es = *GetErrorStream();
-    if ( !es.Eof() )
+    if ( IsErrorAvailable() )
     {
-        wxTextInputStream tis(es);
+        wxTextInputStream tis(*GetErrorStream());
 
         // this assumes that the output is always line buffered
         wxString msg;
@@ -690,4 +1019,85 @@ bool MyPipedProcess2::HasInput()
     }
 
     return MyPipedProcess::HasInput();
+}
+
+// ============================================================================
+// MyPipeFrame implementation
+// ============================================================================
+
+MyPipeFrame::MyPipeFrame(wxFrame *parent,
+                         const wxString& cmd,
+                         wxProcess *process)
+           : wxFrame(parent, -1, cmd),
+             m_process(process),
+             // in a real program we'd check that the streams are !NULL here
+             m_in(*process->GetInputStream()),
+             m_out(*process->GetOutputStream())
+{
+    m_process->SetNextHandler(this);
+
+    wxPanel *panel = new wxPanel(this, -1);
+
+    m_textIn = new wxTextCtrl(panel, -1, _T(""),
+                              wxDefaultPosition, wxDefaultSize,
+                              wxTE_PROCESS_ENTER);
+    m_textOut = new wxTextCtrl(panel, -1, _T(""));
+    m_textOut->SetEditable(FALSE);
+
+    wxSizer *sizerTop = new wxBoxSizer(wxVERTICAL);
+    sizerTop->Add(m_textIn, 0, wxGROW | wxALL, 5);
+
+    wxSizer *sizerBtns = new wxBoxSizer(wxHORIZONTAL);
+    sizerBtns->Add(new wxButton(panel, Exec_Btn_Send, _T("&Send")), 0,
+                   wxALL, 10);
+    sizerBtns->Add(new wxButton(panel, Exec_Btn_Get, _T("&Get")), 0,
+                   wxALL, 10);
+
+    sizerTop->Add(sizerBtns, 0, wxCENTRE | wxALL, 5);
+    sizerTop->Add(m_textOut, 0, wxGROW | wxALL, 5);
+
+    panel->SetSizer(sizerTop);
+    sizerTop->Fit(this);
+
+    Show();
+}
+
+void MyPipeFrame::DoGet()
+{
+    // we don't have any way to be notified when any input appears on the
+    // stream so we have to poll it :-(
+    //
+    // NB: this really must be done because otherwise the other program might
+    //     not have enough time to receive or process our data and we'd read
+    //     an empty string
+    while ( !m_process->IsInputAvailable() && m_process->IsInputOpened() )
+        ;
+
+    m_textOut->SetValue(m_in.ReadLine());
+}
+
+void MyPipeFrame::OnClose(wxCloseEvent& event)
+{
+    if ( m_process )
+    {
+        // we're not interested in getting the process termination notification
+        // if we are closing it ourselves
+        wxProcess *process = m_process;
+        m_process = NULL;
+        process->SetNextHandler(NULL);
+
+        process->CloseOutput();
+    }
+
+    event.Skip();
+}
+
+void MyPipeFrame::OnProcessTerm(wxProcessEvent& event)
+{
+    delete m_process;
+    m_process = NULL;
+
+    wxLogWarning(_T("The other process has terminated, closing"));
+
+    Close();
 }

@@ -1,36 +1,39 @@
 /////////////////////////////////////////////////////////////////////////////
-// Name:        control.cpp
+// Name:        msw/control.cpp
 // Purpose:     wxControl class
 // Author:      Julian Smart
 // Modified by:
 // Created:     01/02/97
-// RCS-ID:      $Id: control.cpp,v 1.31.2.5 2000/04/28 09:49:32 JS Exp $
+// RCS-ID:      $Id: control.cpp,v 1.47 2002/09/14 21:07:49 VZ Exp $
 // Copyright:   (c) Julian Smart and Markus Holzem
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
 
 #ifdef __GNUG__
-#pragma implementation "control.h"
+    #pragma implementation "control.h"
 #endif
 
 // For compilers that support precompilation, includes "wx.h".
 #include "wx/wxprec.h"
 
 #ifdef __BORLANDC__
-#pragma hdrstop
+    #pragma hdrstop
 #endif
 
+#if wxUSE_CONTROLS
+
 #ifndef WX_PRECOMP
-#include "wx/event.h"
-#include "wx/app.h"
-#include "wx/dcclient.h"
+    #include "wx/event.h"
+    #include "wx/app.h"
+    #include "wx/dcclient.h"
+    #include "wx/log.h"
 #endif
 
 #include "wx/control.h"
 
 #include "wx/msw/private.h"
 
-#if defined(__WIN95__) && !(defined(__GNUWIN32_OLD__) || defined(__TWIN32__))
+#if defined(__WIN95__) && !((defined(__GNUWIN32_OLD__) || defined(__TWIN32__)) && !defined(__CYGWIN10__))
     #include <commctrl.h>
 #endif
 
@@ -43,9 +46,6 @@ END_EVENT_TABLE()
 // Item members
 wxControl::wxControl()
 {
-    m_backgroundColour = *wxWHITE;
-    m_foregroundColour = *wxBLACK;
-
 #if WXWIN_COMPATIBILITY
     m_callback = 0;
 #endif // WXWIN_COMPATIBILITY
@@ -57,19 +57,34 @@ wxControl::~wxControl()
 }
 
 
-bool wxControl::Create(wxWindow *parent, wxWindowID id,
+bool wxControl::Create(wxWindow *parent,
+                       wxWindowID id,
                        const wxPoint& pos,
-                       const wxSize& size, long style,
+                       const wxSize& size,
+                       long style,
                        const wxValidator& validator,
                        const wxString& name)
 {
-    bool rval = wxWindow::Create(parent, id, pos, size, style, name);
-    if (rval) {
+    if ( !wxWindow::Create(parent, id, pos, size, style, name) )
+        return FALSE;
+
 #if wxUSE_VALIDATORS
-        SetValidator(validator);
+    SetValidator(validator);
 #endif
-    }
-    return rval;
+
+    return TRUE;
+}
+
+bool wxControl::MSWCreateControl(const wxChar *classname,
+                                 const wxString& label,
+                                 const wxPoint& pos,
+                                 const wxSize& size,
+                                 long style)
+{
+    WXDWORD exstyle;
+    WXDWORD msStyle = MSWGetStyle(style, &exstyle);
+
+    return MSWCreateControl(classname, msStyle, pos, size, label, exstyle);
 }
 
 bool wxControl::MSWCreateControl(const wxChar *classname,
@@ -88,12 +103,22 @@ bool wxControl::MSWCreateControl(const wxChar *classname,
     // if no extended style given, determine it ourselves
     if ( exstyle == (WXDWORD)-1 )
     {
-        exstyle = GetExStyle(style, &want3D);
+        exstyle = Determine3DEffects(WS_EX_CLIENTEDGE, &want3D);
     }
 
-    // all controls have these styles (wxWindows creates all controls visible
-    // by default)
-    style |= WS_CHILD | WS_VISIBLE;
+    // all controls should have this style
+    style |= WS_CHILD;
+
+    // create the control visible if it's currently shown for wxWindows
+    if ( m_isShown )
+    {
+        style |= WS_VISIBLE;
+    }
+
+    int x = pos.x == -1 ? 0 : pos.x,
+        y = pos.y == -1 ? 0 : pos.y,
+        w = size.x == -1 ? 0 : size.x,
+        h = size.y == -1 ? 0 : size.y;
 
     m_hWnd = (WXHWND)::CreateWindowEx
                        (
@@ -101,8 +126,7 @@ bool wxControl::MSWCreateControl(const wxChar *classname,
                         classname,          // the kind of control to create
                         label,              // the window name
                         style,              // the window style
-                        pos.x, pos.y,       // the window position
-                        size.x, size.y,     //            and size
+                        x, y, w, h,         // the window position and size
                         GetHwndOf(GetParent()),  // parent
                         (HMENU)GetId(),     // child id
                         wxGetInstance(),    // app instance
@@ -125,11 +149,17 @@ bool wxControl::MSWCreateControl(const wxChar *classname,
     }
 #endif // wxUSE_CTL3D
 
-    // subclass again for purposes of dialog editing mode
+    // install wxWindows window proc for this window
     SubclassWin(m_hWnd);
 
     // controls use the same font and colours as their parent dialog by default
     InheritAttributes();
+
+    // set the size now if no initial size specified
+    if ( w <= 0 || h <= 0 )
+    {
+        SetBestSize(size);
+    }
 
     return TRUE;
 }
@@ -144,7 +174,7 @@ bool wxControl::ProcessCommand(wxCommandEvent& event)
 #if WXWIN_COMPATIBILITY
     if ( m_callback )
     {
-        (void)(*m_callback)(this, event);
+        (void)(*m_callback)(*this, event);
 
         return TRUE;
     }
@@ -159,10 +189,10 @@ bool wxControl::MSWOnNotify(int idCtrl,
                             WXLPARAM lParam,
                             WXLPARAM* result)
 {
-    wxCommandEvent event(wxEVT_NULL, m_windowId);
     wxEventType eventType = wxEVT_NULL;
-    NMHDR *hdr1 = (NMHDR*) lParam;
-    switch ( hdr1->code )
+
+    NMHDR *hdr = (NMHDR*) lParam;
+    switch ( hdr->code )
     {
         case NM_CLICK:
             eventType = wxEVT_COMMAND_LEFT_CLICK;
@@ -196,6 +226,7 @@ bool wxControl::MSWOnNotify(int idCtrl,
             return wxWindow::MSWOnNotify(idCtrl, lParam, result);
     }
 
+    wxCommandEvent event(wxEVT_NULL, m_windowId);
     event.SetEventType(eventType);
     event.SetEventObject(this);
 
@@ -222,10 +253,17 @@ void wxControl::OnEraseBackground(wxEraseEvent& event)
     ::SetMapMode(hdc, mode);
 }
 
-WXHBRUSH wxControl::OnCtlColor(WXHDC pDC, WXHWND pWnd, WXUINT nCtlColor,
+WXHBRUSH wxControl::OnCtlColor(WXHDC pDC, WXHWND WXUNUSED(pWnd), WXUINT WXUNUSED(nCtlColor),
+#if wxUSE_CTL3D
                                WXUINT message,
                                WXWPARAM wParam,
-                               WXLPARAM lParam)
+                               WXLPARAM lParam
+#else
+                               WXUINT WXUNUSED(message),
+                               WXWPARAM WXUNUSED(wParam),
+                               WXLPARAM WXUNUSED(lParam)
+#endif
+    )
 {
 #if wxUSE_CTL3D
     if ( m_useCtl3D )
@@ -251,16 +289,16 @@ WXHBRUSH wxControl::OnCtlColor(WXHDC pDC, WXHWND pWnd, WXUINT nCtlColor,
     return (WXHBRUSH)brush->GetResourceHandle();
 }
 
-WXDWORD wxControl::GetExStyle(WXDWORD& style, bool *want3D) const
+WXDWORD wxControl::MSWGetStyle(long style, WXDWORD *exstyle) const
 {
-    WXDWORD exStyle = Determine3DEffects(WS_EX_CLIENTEDGE, want3D);
+    long msStyle = wxWindow::MSWGetStyle(style, exstyle);
 
-    // Even with extended styles, need to combine with WS_BORDER for them to
-    // look right.
-    if ( *want3D || wxStyleHasBorder(m_windowStyle) )
-        style |= WS_BORDER;
+    if ( AcceptsFocus() )
+    {
+        msStyle |= WS_TABSTOP;
+    }
 
-    return exStyle;
+    return msStyle;
 }
 
 // ---------------------------------------------------------------------------
@@ -297,3 +335,4 @@ void wxFindMaxSize(WXHWND wnd, RECT *rect)
         rect->bottom = bottom;
 }
 
+#endif // wxUSE_CONTROLS

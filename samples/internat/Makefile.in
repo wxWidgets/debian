@@ -13,16 +13,17 @@ top_srcdir = @top_srcdir@/..
 top_builddir = ../..
 program_dir = samples/internat
 
-DATAFILES=\
-    fr/internat.mo fr/wxstd.mo \
-	de/internat.mo de/wxstd.mo \
-	ru/internat.mo ru/wxstd.mo
+DATAFILES=fr/internat.po fr/internat.mo \
+	de/internat.po de/internat.mo \
+	ru/internat.po ru/internat.mo
 
 DATADIRS=fr de ru
 
 PROGRAM=internat
 
-OBJECTS=$(PROGRAM).o
+OBJECTS =$(PROGRAM).o
+DEPFILES=$(PROGRAM).d
 
 include ../../src/makeprog.env
 
+@IF_GNU_MAKE@-include $(DEPFILES)

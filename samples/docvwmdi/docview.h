@@ -4,9 +4,9 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     04/01/98
-// RCS-ID:      $Id: docview.h,v 1.3 1999/02/04 11:12:41 JS Exp $
+// RCS-ID:      $Id: docview.h,v 1.5 2002/08/20 09:09:53 JS Exp $
 // Copyright:   (c) Julian Smart and Markus Holzem
-// Licence:   	wxWindows license
+// Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
 
 #ifdef __GNUG__
@@ -16,6 +16,8 @@
 #ifndef __DOCVIEWSAMPLEH__
 #define __DOCVIEWSAMPLEH__
 
+#include "wx/mdi.h"
+#include "wx/docview.h"
 #include "wx/docmdi.h"
 
 class wxDocManager;
@@ -48,7 +50,7 @@ class MyFrame: public wxDocMDIParentFrame
     long type);
 
   void OnAbout(wxCommandEvent& event);
-  MyCanvas *CreateCanvas(wxView *view, wxFrame *parent);
+  MyCanvas *CreateCanvas(wxView *view, wxMDIChildFrame *parent);
 
 DECLARE_EVENT_TABLE()
 };

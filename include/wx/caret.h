@@ -4,7 +4,7 @@
 // Author:      Vadim Zeitlin
 // Modified by:
 // Created:     23.05.99
-// RCS-ID:      $Id: caret.h,v 1.8 2000/01/10 23:01:19 RD Exp $
+// RCS-ID:      $Id: caret.h,v 1.12 2002/08/31 11:29:09 GD Exp $
 // Copyright:   (c) wxWindows team
 // Licence:     wxWindows licence
 ///////////////////////////////////////////////////////////////////////////////
@@ -12,7 +12,11 @@
 #ifndef _WX_CARET_H_BASE_
 #define _WX_CARET_H_BASE_
 
-#ifdef __GNUG__
+#include "wx/defs.h"
+
+#if wxUSE_CARET
+
+#if defined(__GNUG__) && !defined(__APPLE__)
 #pragma interface "caret.h"
 #endif
 
@@ -183,7 +187,7 @@ protected:
     int m_countVisible;
 
 private:
-    DECLARE_NO_COPY_CLASS(wxCaretBase);
+    DECLARE_NO_COPY_CLASS(wxCaretBase)
 };
 
 // ---------------------------------------------------------------------------
@@ -195,6 +199,34 @@ private:
 #else
     #include "wx/generic/caret.h"
 #endif // platform
+
+// ----------------------------------------------------------------------------
+// wxCaretSuspend: a simple class which hides the caret in its ctor and
+// restores it in the dtor, this should be used when drawing on the screen to
+// avoid overdrawing the caret
+// ----------------------------------------------------------------------------
+
+class WXDLLEXPORT wxCaretSuspend
+{
+public:
+    wxCaretSuspend(wxWindow *win)
+    {
+        m_caret = win->GetCaret();
+        if ( m_caret )
+            m_caret->Hide();
+    }
+
+    ~wxCaretSuspend()
+    {
+        if ( m_caret )
+            m_caret->Show();
+    }
+
+private:
+    wxCaret *m_caret;
+};
+
+#endif // wxUSE_CARET
 
 #endif // _WX_CARET_H_BASE_
 

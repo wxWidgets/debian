@@ -6,29 +6,19 @@
 # Author:      Mike Fletcher, Robin Dunn
 #
 # Created:     19-Nov-1999
-# RCS-ID:      $Id: splashscreen.py,v 1.1.2.4 2001/01/30 20:54:22 robind Exp $
+# RCS-ID:      $Id: splashscreen.py,v 1.7 2002/01/05 23:45:33 RD Exp $
 # Copyright:   (c) 1999 by Total Control Software
 # Licence:     wxWindows license
 #----------------------------------------------------------------------
 
+"""
+A Splash Screen implemented in Python.
+
+NOTE: Now that wxWindows has a wxSplashScrren class and it is wrapped
+in wxPython this class is deprecated.  See the docs for more details.
+"""
+
 from wxPython.wx import *
-
-#----------------------------------------------------------------------
-
-def bitmapFromFile(filename):
-    '''Non-portable test for bitmap type...'''
-    import imghdr
-    BITMAPTYPEGUESSDICT = {
-        "bmp" :wxBITMAP_TYPE_BMP,
-        "png" :wxBITMAP_TYPE_PNG,
-        "jpeg":wxBITMAP_TYPE_JPEG,
-        "gif" :wxBITMAP_TYPE_GIF,
-        "xbm" :wxBITMAP_TYPE_XBM,
-    }
-    # following assumes bitmap type if we cannot resolve image type
-    typ = BITMAPTYPEGUESSDICT.get(imghdr.what(filename), wxBITMAP_TYPE_BMP)
-    bitmap = wxImage(filename, typ).ConvertToBitmap()
-    return bitmap
 
 #----------------------------------------------------------------------
 
@@ -40,13 +30,16 @@ class SplashScreen(wxFrame):
         '''
         parent, ID, title, style -- see wxFrame
         duration -- milliseconds to display the splash screen
-        bitmapfile -- absolute or relative pathname, extension used for type negotiation
-        callback -- if specified, is called when timer completes, callback is responsible for closing the splash screen
+        bitmapfile -- absolute or relative pathname to image file
+        callback -- if specified, is called when timer completes, callback is
+                    responsible for closing the splash screen
         '''
         ### Loading bitmap
-        self.bitmap = bmp = bitmapFromFile(bitmapfile)
+        self.bitmap = bmp = wxImage(bitmapfile, wxBITMAP_TYPE_ANY).ConvertToBitmap()
+
         ### Determine size of bitmap to size window...
         size = (bmp.GetWidth(), bmp.GetHeight())
+
         # size of screen
         width = wxSystemSettings_GetSystemMetric(wxSYS_SCREEN_X)
         height = wxSystemSettings_GetSystemMetric(wxSYS_SCREEN_Y)
@@ -65,8 +58,7 @@ class SplashScreen(wxFrame):
         EVT_ERASE_BACKGROUND(self, self.OnEraseBG)
 
         self.Show(true)
-        #dc = wxClientDC(self)
-        #dc.DrawBitmap(self.bitmap, 0,0, false)
+
 
         class SplashTimer(wxTimer):
             def __init__(self, targetFunction):

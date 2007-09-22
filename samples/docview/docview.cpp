@@ -4,9 +4,9 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     04/01/98
-// RCS-ID:      $Id: docview.cpp,v 1.12.2.1 2000/06/24 08:05:21 JS Exp $
+// RCS-ID:      $Id: docview.cpp,v 1.16 2002/08/19 10:03:20 JS Exp $
 // Copyright:   (c) Julian Smart and Markus Holzem
-// Licence:   	wxWindows license
+// Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
 
 #ifdef __GNUG__
@@ -70,7 +70,7 @@ bool MyApp::OnInit(void)
     
     //// Create a document manager
     m_docManager = new wxDocManager;
-    
+
     //// Create a template relating drawing documents to their views
     (void) new wxDocTemplate(m_docManager, "Drawing", "*.drw", "", "drw", "Drawing Doc", "Drawing View",
         CLASSINFO(DrawingDocument), CLASSINFO(DrawingView));
@@ -240,7 +240,7 @@ wxDocParentFrame(manager, frame, id, title, pos, size, type)
 
 void MyFrame::OnAbout(wxCommandEvent& WXUNUSED(event) )
 {
-    (void)wxMessageBox("DocView Demo\nAuthor: Julian Smart julian.smart@ukonline.co.uk\nUsage: docview.exe [-single]", "About DocView");
+    (void)wxMessageBox("DocView Demo\nAuthor: Julian Smart\nUsage: docview.exe [-single]", "About DocView");
 }
 
 // Creates a canvas. Called either from view.cc when a new drawing

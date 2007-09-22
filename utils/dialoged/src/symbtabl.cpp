@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     04/01/98
-// RCS-ID:      $Id: symbtabl.cpp,v 1.8.4.1 2000/04/22 14:41:06 JS Exp $
+// RCS-ID:      $Id: symbtabl.cpp,v 1.10 2001/11/22 22:02:13 GD Exp $
 // Copyright:   (c) Julian Smart
 // Licence:   	wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -24,7 +24,7 @@
 #include "wx/wx.h"
 #endif
 
-#include <wx/file.h>
+#include "wx/file.h"
 
 #include <string.h>
 #include <stdlib.h>

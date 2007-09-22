@@ -4,12 +4,12 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     04/01/98
-// RCS-ID:      $Id: typetest.h,v 1.9.2.1 2000/06/24 14:25:00 RR Exp $
+// RCS-ID:      $Id: typetest.h,v 1.13 2002/08/31 22:31:03 GD Exp $
 // Copyright:   (c) Julian Smart
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
 
-#ifdef __GNUG__
+#if defined(__GNUG__) && !defined(__APPLE__)
 #pragma interface "typetest.h"
 #endif
 
@@ -25,7 +25,9 @@ public:
     bool OnInit();
     int OnExit() { delete m_mimeDatabase; return wxApp::OnExit(); }
 
+#if wxUSE_TIMEDATE
     void DoDateDemo(wxCommandEvent& event);
+#endif // wxUSE_TIMEDATE
     void DoTimeDemo(wxCommandEvent& event);
     void DoVariantDemo(wxCommandEvent& event);
     void DoByteOrderDemo(wxCommandEvent& event);
@@ -34,9 +36,11 @@ public:
     void DoStreamDemo3(wxCommandEvent& event);
     void DoStreamDemo4(wxCommandEvent& event);
     void DoStreamDemo5(wxCommandEvent& event);
+    void DoStreamDemo6(wxCommandEvent& event);
+    void DoStreamDemo7(wxCommandEvent& event);
 #if wxUSE_UNICODE
     void DoUnicodeDemo(wxCommandEvent& event);
-#endif
+#endif // wxUSE_UNICODE
     void DoMIMEDemo(wxCommandEvent& event);
 
     wxTextCtrl* GetTextCtrl() const { return m_textCtrl; }
@@ -82,6 +86,8 @@ enum
     TYPES_STREAM3,
     TYPES_STREAM4,
     TYPES_STREAM5,
+    TYPES_STREAM6,
+    TYPES_STREAM7,
     TYPES_MIME
 };
 

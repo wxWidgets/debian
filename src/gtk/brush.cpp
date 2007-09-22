@@ -1,10 +1,10 @@
 /////////////////////////////////////////////////////////////////////////////
-// Name:        brush.cpp
+// Name:        src/gtk/brush.cpp
 // Purpose:
 // Author:      Robert Roebling
-// Id:          $Id: brush.cpp,v 1.16.2.1 2000/05/17 20:07:24 RR Exp $
+// Id:          $Id: brush.cpp,v 1.20 2002/05/07 21:58:26 GD Exp $
 // Copyright:   (c) 1998 Robert Roebling
-// Licence:   	wxWindows licence
+// Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
 
 #ifdef __GNUG__
@@ -22,25 +22,30 @@
 class wxBrushRefData: public wxObjectRefData
 {
 public:
-    wxBrushRefData();
-    wxBrushRefData( const wxBrushRefData& data );
-
-    int        m_style;
-    wxBitmap   m_stipple;
-    wxColour   m_colour;
+    wxBrushRefData()
+    {
+        m_style = 0;
+    }
+    
+    wxBrushRefData( const wxBrushRefData& data )
+        : wxObjectRefData()
+    {
+        m_style = data.m_style;
+        m_stipple = data.m_stipple;
+        m_colour = data.m_colour;
+    }
+    
+    bool operator == (const wxBrushRefData& data) const
+    {
+        return (m_style == data.m_style &&
+                m_stipple == data.m_stipple &&
+                m_colour == data.m_colour);
+    }
+    
+    int       m_style;
+    wxColour  m_colour;
+    wxBitmap  m_stipple;
 };
-
-wxBrushRefData::wxBrushRefData()
-{
-    m_style = 0;
-}
-
-wxBrushRefData::wxBrushRefData( const wxBrushRefData& data )
-{
-    m_style = data.m_style;
-    m_stipple = data.m_stipple;
-    m_colour = data.m_colour;
-}
 
 //-----------------------------------------------------------------------------
 
@@ -48,67 +53,48 @@ wxBrushRefData::wxBrushRefData( const wxBrushRefData& data )
 
 IMPLEMENT_DYNAMIC_CLASS(wxBrush,wxGDIObject)
 
-wxBrush::wxBrush()
-{
-    if (wxTheBrushList) wxTheBrushList->AddBrush( this );
-}
-
 wxBrush::wxBrush( const wxColour &colour, int style )
 {
     m_refData = new wxBrushRefData();
     M_BRUSHDATA->m_style = style;
     M_BRUSHDATA->m_colour = colour;
-
-    if (wxTheBrushList) wxTheBrushList->AddBrush( this );
 }
 
 wxBrush::wxBrush( const wxBitmap &stippleBitmap )
 {
     m_refData = new wxBrushRefData();
     M_BRUSHDATA->m_colour = *wxBLACK;
-    
+
     M_BRUSHDATA->m_stipple = stippleBitmap;
 
     if (M_BRUSHDATA->m_stipple.GetMask())
-		M_BRUSHDATA->m_style = wxSTIPPLE_MASK_OPAQUE;
-	else
-		M_BRUSHDATA->m_style = wxSTIPPLE;
-
-    if (wxTheBrushList) wxTheBrushList->AddBrush( this );
-}
-
-wxBrush::wxBrush( const wxBrush &brush )
-{
-    Ref( brush );
-
-    if (wxTheBrushList) wxTheBrushList->AddBrush( this );
+        M_BRUSHDATA->m_style = wxSTIPPLE_MASK_OPAQUE;
+    else
+        M_BRUSHDATA->m_style = wxSTIPPLE;
 }
 
 wxBrush::~wxBrush()
 {
-    if (wxTheBrushList) wxTheBrushList->RemoveBrush( this );
+    // m_refData unrefed in ~wxObject
 }
 
-wxBrush& wxBrush::operator = ( const wxBrush& brush )
+wxObjectRefData *wxBrush::CreateRefData() const
 {
-    if (*this == brush) return (*this);
-    Ref( brush );
-    return *this;
+    return new wxBrushRefData;
+}
+
+wxObjectRefData *wxBrush::CloneRefData(const wxObjectRefData *data) const
+{
+    return new wxBrushRefData(*(wxBrushRefData *)data);
 }
 
 bool wxBrush::operator == ( const wxBrush& brush ) const
 {
-    return m_refData == brush.m_refData;
-}
-
-bool wxBrush::operator != ( const wxBrush& brush ) const
-{
-    return m_refData != brush.m_refData;
-}
-
-bool wxBrush::Ok() const
-{
-    return ((m_refData) && M_BRUSHDATA->m_colour.Ok());
+    if (m_refData == brush.m_refData) return TRUE;
+    
+    if (!m_refData || !brush.m_refData) return FALSE;
+    
+    return ( *(wxBrushRefData*)m_refData == *(wxBrushRefData*)brush.m_refData );
 }
 
 int wxBrush::GetStyle() const
@@ -146,47 +132,37 @@ wxBitmap *wxBrush::GetStipple() const
 
 void wxBrush::SetColour( const wxColour& col )
 {
-    Unshare();
+    AllocExclusive();
+    
     M_BRUSHDATA->m_colour = col;
 }
 
 void wxBrush::SetColour( unsigned char r, unsigned char g, unsigned char b )
 {
-    Unshare();
+    AllocExclusive();
+    
     M_BRUSHDATA->m_colour.Set( r, g, b );
 }
 
 void wxBrush::SetStyle( int style )
 {
-    Unshare();
+    AllocExclusive();
+    
     M_BRUSHDATA->m_style = style;
 }
 
 void wxBrush::SetStipple( const wxBitmap& stipple )
 {
-    Unshare();
+    AllocExclusive();
+    
     M_BRUSHDATA->m_stipple = stipple;
     if (M_BRUSHDATA->m_stipple.GetMask())
     {
-		   M_BRUSHDATA->m_style = wxSTIPPLE_MASK_OPAQUE;
-	 }
-	 else
-	 {		
-		   M_BRUSHDATA->m_style = wxSTIPPLE;
-	 }		
-}
-
-void wxBrush::Unshare()
-{
-    if (!m_refData)
-    {
-        m_refData = new wxBrushRefData();
+        M_BRUSHDATA->m_style = wxSTIPPLE_MASK_OPAQUE;
     }
     else
     {
-        wxBrushRefData* ref = new wxBrushRefData( *(wxBrushRefData*)m_refData );
-        UnRef();
-        m_refData = ref;
+        M_BRUSHDATA->m_style = wxSTIPPLE;
     }
 }
 

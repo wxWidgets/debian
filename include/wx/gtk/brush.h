@@ -2,7 +2,7 @@
 // Name:        brush.h
 // Purpose:
 // Author:      Robert Roebling
-// Id:          $Id: brush.h,v 1.9.2.1 2000/05/17 20:07:24 RR Exp $
+// Id:          $Id: brush.h,v 1.13 2002/09/07 12:28:46 GD Exp $
 // Copyright:   (c) 1998 Robert Roebling
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -11,7 +11,7 @@
 #ifndef __GTKBRUSHH__
 #define __GTKBRUSHH__
 
-#ifdef __GNUG__
+#if defined(__GNUG__) && !defined(__APPLE__)
 #pragma interface
 #endif
 
@@ -34,15 +34,21 @@ class wxBrush;
 class wxBrush: public wxGDIObject
 {
 public:
-    wxBrush();
+    wxBrush() { }
+    
     wxBrush( const wxColour &colour, int style );
     wxBrush( const wxBitmap &stippleBitmap );
-    wxBrush( const wxBrush &brush );
     ~wxBrush();
-    wxBrush& operator = ( const wxBrush& brush );
+    
+    wxBrush( const wxBrush &brush )
+        : wxGDIObject()
+        { Ref(brush); }
+    wxBrush& operator = ( const wxBrush& brush ) { Ref(brush); return *this; }
+    
+    bool Ok() const { return m_refData != NULL; }
+    
     bool operator == ( const wxBrush& brush ) const;
-    bool operator != ( const wxBrush& brush ) const;
-    bool Ok() const;
+    bool operator != (const wxBrush& brush) const { return !(*this == brush); }
 
     int GetStyle() const;
     wxColour &GetColour() const;
@@ -53,9 +59,11 @@ public:
     void SetStyle( int style );
     void SetStipple( const wxBitmap& stipple );
 
-    void Unshare();
-
 private:
+    // ref counting code
+    virtual wxObjectRefData *CreateRefData() const;
+    virtual wxObjectRefData *CloneRefData(const wxObjectRefData *data) const;
+    
     DECLARE_DYNAMIC_CLASS(wxBrush)
 };
 

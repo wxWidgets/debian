@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     01/02/97
-// RCS-ID:      $Id: minifram.h,v 1.5.2.1 2000/07/27 22:52:58 VZ Exp $
+// RCS-ID:      $Id: minifram.h,v 1.7 2002/05/25 20:34:13 VZ Exp $
 // Copyright:   (c) Julian Smart
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -32,7 +32,10 @@ public:
               long style = wxCAPTION | wxCLIP_CHILDREN | wxRESIZE_BORDER,
               const wxString& name = wxFrameNameStr)
   {
-      Create(parent, id, title, pos, size, style | wxFRAME_TOOL_WINDOW | wxFRAME_FLOAT_ON_PARENT, name);
+      Create(parent, id, title, pos, size,
+             style |
+             wxFRAME_TOOL_WINDOW |
+             (parent ? wxFRAME_FLOAT_ON_PARENT : 0), name);
   }
 
 protected:

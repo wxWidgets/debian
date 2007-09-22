@@ -56,6 +56,7 @@ extern PyObject *SWIG_newvarlink(void);
 #define SWIG_name    "streamsc"
 
 #include "helpers.h"
+#include "pyistream.h"
 #include <wx/stream.h>
 #include <wx/list.h>
 
@@ -85,320 +86,13 @@ static PyObject* t_output_helper(PyObject* target, PyObject* o) {
     }
     return target;
 }
-
-static char* wxStringErrorMsg = "string type is required for parameter";
-  // C++
-// definitions of wxStringPtrList and wxPyInputStream
-#include <wx/listimpl.cpp>
-WX_DEFINE_LIST(wxStringPtrList);
-
-
-void wxPyInputStream::close() {
-    /* do nothing */
-}
-
-void wxPyInputStream::flush() {
-    /*do nothing*/
-}
-
-bool wxPyInputStream::eof() {
-    if (wxi)
-        return wxi->Eof();
-    else
-        return TRUE;
-}
-
-wxPyInputStream::~wxPyInputStream() {
-    /*do nothing*/
-}
-
-wxString* wxPyInputStream::read(int size) {
-    wxString* s = NULL;
-    const int BUFSIZE = 1024;
-
-    // check if we have a real wxInputStream to work with
-    if (!wxi) {
-        PyErr_SetString(PyExc_IOError,"no valid C-wxInputStream below");
-        return NULL;
-    }
-
-    if (size < 0) {
-        // init buffers
-        char * buf = new char[BUFSIZE];
-        if (!buf) {
-            PyErr_NoMemory();
-            return NULL;
-        }
-
-        s = new wxString();
-        if (!s) {
-            delete buf;
-            PyErr_NoMemory();
-            return NULL;
-        }
-
-        // read until EOF
-        wxPy_BEGIN_ALLOW_THREADS;
-        while (! wxi->Eof()) {
-            wxi->Read(buf, BUFSIZE);
-            //*s += wxString(buf, wxi->LastRead());
-            s->Append(buf, wxi->LastRead());
-        }
-        delete buf;
-        wxPy_END_ALLOW_THREADS;
-
-        // error check
-        if (wxi->LastError() == wxSTREAM_READ_ERROR) {
-            delete s;
-            PyErr_SetString(PyExc_IOError,"IOError in wxInputStream");
-            return NULL;
-        }
-
-    } else {  // Read only size number of characters
-        s = new wxString;
-        if (!s) {
-            PyErr_NoMemory();
-            return NULL;
-        }
-
-        // read size bytes
-        wxPy_BEGIN_ALLOW_THREADS;
-        wxi->Read(s->GetWriteBuf(size+1), size);
-        s->UngetWriteBuf(wxi->LastRead());
-        wxPy_END_ALLOW_THREADS;
-
-        // error check
-        if (wxi->LastError() == wxSTREAM_READ_ERROR) {
-            delete s;
-            PyErr_SetString(PyExc_IOError,"IOError in wxInputStream");
-            return NULL;
-        }
-    }
-    return s;
-}
-
-
-wxString* wxPyInputStream::readline (int size) {
-    // check if we have a real wxInputStream to work with
-    if (!wxi) {
-        PyErr_SetString(PyExc_IOError,"no valid C-wxInputStream below");
-        return NULL;
-    }
-
-    // init buffer
-    int i;
-    char ch;
-    wxString* s = new wxString;
-    if (!s) {
-        PyErr_NoMemory();
-        return NULL;
-    }
-
-    // read until \n or byte limit reached
-    wxPy_BEGIN_ALLOW_THREADS;
-    for (i=ch=0; (ch != '\n') && (!wxi->Eof()) && ((size < 0) || (i < size)); i++) {
-        *s += ch = wxi->GetC();
-    }
-    wxPy_END_ALLOW_THREADS;
-
-    // errorcheck
-    if (wxi->LastError() == wxSTREAM_READ_ERROR) {
-        delete s;
-        PyErr_SetString(PyExc_IOError,"IOError in wxInputStream");
-        return NULL;
-    }
-    return s;
-}
-
-
-wxStringPtrList* wxPyInputStream::readlines (int sizehint) {
-    // check if we have a real wxInputStream to work with
-    if (!wxi) {
-        PyErr_SetString(PyExc_IOError,"no valid C-wxInputStream below");
-        return NULL;
-    }
-
-    // init list
-    wxStringPtrList* l = new wxStringPtrList();
-    if (!l) {
-        PyErr_NoMemory();
-        return NULL;
-    }
-
-    // read sizehint bytes or until EOF
-    wxPy_BEGIN_ALLOW_THREADS;
-    int i;
-    for (i=0; (!wxi->Eof()) && ((sizehint < 0) || (i < sizehint));) {
-        wxString* s = readline();
-        if (s == NULL) {
-            l->DeleteContents(TRUE);
-            l->Clear();
-            return NULL;
-        }
-        l->Append(s);
-        i = i + s->Length();
-    }
-    wxPy_END_ALLOW_THREADS;
-
-    // error check
-    if (wxi->LastError() == wxSTREAM_READ_ERROR) {
-        l->DeleteContents(TRUE);
-        l->Clear();
-        PyErr_SetString(PyExc_IOError,"IOError in wxInputStream");
-        return NULL;
-    }
-    return l;
-}
-
-
-void wxPyInputStream::seek(int offset, int whence) {
-    if (wxi)
-        wxi->SeekI(offset, wxSeekMode(whence));
-}
-
-int wxPyInputStream::tell(){
-    if (wxi)
-        return wxi->TellI();
-}
-
-
-
-// wxInputStream which operates on a Python file-like object
-class wxPyCBInputStream : public wxInputStream {
-protected:
-    PyObject* read;
-    PyObject* seek;
-    PyObject* tell;
-    PyObject* py;
-
-    virtual size_t OnSysRead(void *buffer, size_t bufsize) {
-        if (bufsize == 0)
-            return 0;
-
-        bool doSave = wxPyRestoreThread();
-        PyObject* arglist = Py_BuildValue("(i)", bufsize);
-        PyObject* result = PyEval_CallObject(read, arglist);
-        Py_DECREF(arglist);
-
-        size_t o = 0;
-        if ((result != NULL) && PyString_Check(result)) {
-            o = PyString_Size(result);
-            if (o == 0)
-                m_lasterror = wxSTREAM_EOF;
-            if (o > bufsize)
-                o = bufsize;
-            strncpy((char*)buffer, PyString_AsString(result), o);
-            Py_DECREF(result);
-
-        }
-        else
-            m_lasterror = wxSTREAM_READ_ERROR;
-        wxPySaveThread(doSave);
-        m_lastcount = o;
-        return o;
-    }
-
-    virtual size_t OnSysWrite(const void *buffer, size_t bufsize){
-        m_lasterror = wxSTREAM_WRITE_ERROR;
-        return 0;
-    }
-
-    virtual off_t OnSysSeek(off_t off, wxSeekMode mode){
-        bool doSave = wxPyRestoreThread();
-        PyObject*arglist = Py_BuildValue("(ii)", off, mode);
-        PyObject*result = PyEval_CallObject(seek, arglist);
-        Py_DECREF(arglist);
-        Py_XDECREF(result);
-        wxPySaveThread(doSave);
-        return OnSysTell();
-    }
-
-    virtual off_t OnSysTell() const{
-        bool doSave = wxPyRestoreThread();
-        PyObject* arglist = Py_BuildValue("()");
-        PyObject* result = PyEval_CallObject(tell, arglist);
-        Py_DECREF(arglist);
-        off_t o = 0;
-        if (result != NULL) {
-            o = PyInt_AsLong(result);
-            Py_DECREF(result);
-        };
-        wxPySaveThread(doSave);
-        return o;
-    }
-
-    wxPyCBInputStream(PyObject *p, PyObject *r, PyObject *s, PyObject *t)
-        : py(p), read(r), seek(s), tell(t)
-        {}
-
-public:
-    ~wxPyCBInputStream() {
-        bool doSave = wxPyRestoreThread();
-        Py_XDECREF(py);
-        Py_XDECREF(read);
-        Py_XDECREF(seek);
-        Py_XDECREF(tell);
-        wxPySaveThread(doSave);
-    }
-
-    virtual size_t GetSize() {
-        if (seek && tell) {
-            off_t temp = OnSysTell();
-            off_t ret = OnSysSeek(0, wxFromEnd);
-            OnSysSeek(temp, wxFromStart);
-            return ret;
-        }
-        else
-            return 0;
-    }
-
-    static wxPyCBInputStream* create(PyObject *py) {
-        PyObject* read;
-        PyObject* seek;
-        PyObject* tell;
-
-        if (!PyInstance_Check(py) && !PyFile_Check(py)) {
-            PyErr_SetString(PyExc_TypeError, "Not a file-like object");
-            Py_XDECREF(py);
-            return NULL;
-        }
-        read = getMethod(py, "read");
-        seek = getMethod(py, "seek");
-        tell = getMethod(py, "tell");
-
-        if (!read) {
-            PyErr_SetString(PyExc_TypeError, "Not a file-like object");
-            Py_XDECREF(py);
-            Py_XDECREF(read);
-            Py_XDECREF(seek);
-            Py_XDECREF(tell);
-            return NULL;
-        }
-        return new wxPyCBInputStream(py, read, seek, tell);
-    }
-
-    static PyObject* getMethod(PyObject* py, char* name) {
-        if (!PyObject_HasAttrString(py, name))
-            return NULL;
-        PyObject* o = PyObject_GetAttrString(py, name);
-        if (!PyMethod_Check(o) && !PyCFunction_Check(o)) {
-            Py_DECREF(o);
-            return NULL;
-        }
-        return o;
-    }
-
-protected:
-
-};
-
 #ifdef __cplusplus
 extern "C" {
 #endif
 static wxPyInputStream *new_wxPyInputStream(PyObject *p) {
-            wxInputStream* wxi = wxPyCBInputStream::create(p);
-            if (wxi)
-                return new wxPyInputStream(wxi);
+            wxInputStream* wxis = wxPyCBInputStream::create(p);
+            if (wxis)
+                return new wxPyInputStream(wxis);
             else
                 return NULL;
         }
@@ -418,8 +112,11 @@ static PyObject *_wrap_new_wxInputStream(PyObject *self, PyObject *args, PyObjec
   _arg0 = _obj0;
 }
 {
-        _result = (wxPyInputStream *)new_wxPyInputStream(_arg0);
+    PyThreadState* __tstate = wxPyBeginAllowThreads();
+    _result = (wxPyInputStream *)new_wxPyInputStream(_arg0);
 
+    wxPyEndAllowThreads(__tstate);
+    if (PyErr_Occurred()) return NULL;
 }    if (_result) {
         SWIG_MakePtr(_ptemp, (char *) _result,"_wxPyInputStream_p");
         _resultobj = Py_BuildValue("s",_ptemp);
@@ -448,8 +145,11 @@ static PyObject *_wrap_wxInputStream_close(PyObject *self, PyObject *args, PyObj
         }
     }
 {
-        wxInputStream_close(_arg0);
+    PyThreadState* __tstate = wxPyBeginAllowThreads();
+    wxInputStream_close(_arg0);
 
+    wxPyEndAllowThreads(__tstate);
+    if (PyErr_Occurred()) return NULL;
 }    Py_INCREF(Py_None);
     _resultobj = Py_None;
     return _resultobj;
@@ -473,8 +173,11 @@ static PyObject *_wrap_wxInputStream_flush(PyObject *self, PyObject *args, PyObj
         }
     }
 {
-        wxInputStream_flush(_arg0);
+    PyThreadState* __tstate = wxPyBeginAllowThreads();
+    wxInputStream_flush(_arg0);
 
+    wxPyEndAllowThreads(__tstate);
+    if (PyErr_Occurred()) return NULL;
 }    Py_INCREF(Py_None);
     _resultobj = Py_None;
     return _resultobj;
@@ -499,8 +202,11 @@ static PyObject *_wrap_wxInputStream_eof(PyObject *self, PyObject *args, PyObjec
         }
     }
 {
-        _result = (bool )wxInputStream_eof(_arg0);
+    PyThreadState* __tstate = wxPyBeginAllowThreads();
+    _result = (bool )wxInputStream_eof(_arg0);
 
+    wxPyEndAllowThreads(__tstate);
+    if (PyErr_Occurred()) return NULL;
 }    _resultobj = Py_BuildValue("i",_result);
     return _resultobj;
 }
@@ -508,7 +214,7 @@ static PyObject *_wrap_wxInputStream_eof(PyObject *self, PyObject *args, PyObjec
 #define wxInputStream_read(_swigobj,_swigarg0)  (_swigobj->read(_swigarg0))
 static PyObject *_wrap_wxInputStream_read(PyObject *self, PyObject *args, PyObject *kwargs) {
     PyObject * _resultobj;
-    wxString * _result;
+    PyObject * _result;
     wxPyInputStream * _arg0;
     int  _arg1 = (int ) -1;
     PyObject * _argo0 = 0;
@@ -525,15 +231,13 @@ static PyObject *_wrap_wxInputStream_read(PyObject *self, PyObject *args, PyObje
         }
     }
 {
-        _result = (wxString *)wxInputStream_read(_arg0,_arg1);
+    PyThreadState* __tstate = wxPyBeginAllowThreads();
+    _result = (PyObject *)wxInputStream_read(_arg0,_arg1);
 
+    wxPyEndAllowThreads(__tstate);
+    if (PyErr_Occurred()) return NULL;
 }{
-    if (_result) {
-        _resultobj = PyString_FromStringAndSize(_result->c_str(), _result->Len());
-        delete _result;
-    }
-    else
-        _resultobj=0;
+  _resultobj = _result;
 }
     return _resultobj;
 }
@@ -541,7 +245,7 @@ static PyObject *_wrap_wxInputStream_read(PyObject *self, PyObject *args, PyObje
 #define wxInputStream_readline(_swigobj,_swigarg0)  (_swigobj->readline(_swigarg0))
 static PyObject *_wrap_wxInputStream_readline(PyObject *self, PyObject *args, PyObject *kwargs) {
     PyObject * _resultobj;
-    wxString * _result;
+    PyObject * _result;
     wxPyInputStream * _arg0;
     int  _arg1 = (int ) -1;
     PyObject * _argo0 = 0;
@@ -558,15 +262,13 @@ static PyObject *_wrap_wxInputStream_readline(PyObject *self, PyObject *args, Py
         }
     }
 {
-        _result = (wxString *)wxInputStream_readline(_arg0,_arg1);
+    PyThreadState* __tstate = wxPyBeginAllowThreads();
+    _result = (PyObject *)wxInputStream_readline(_arg0,_arg1);
 
+    wxPyEndAllowThreads(__tstate);
+    if (PyErr_Occurred()) return NULL;
 }{
-    if (_result) {
-        _resultobj = PyString_FromStringAndSize(_result->c_str(), _result->Len());
-        delete _result;
-    }
-    else
-        _resultobj=0;
+  _resultobj = _result;
 }
     return _resultobj;
 }
@@ -574,7 +276,7 @@ static PyObject *_wrap_wxInputStream_readline(PyObject *self, PyObject *args, Py
 #define wxInputStream_readlines(_swigobj,_swigarg0)  (_swigobj->readlines(_swigarg0))
 static PyObject *_wrap_wxInputStream_readlines(PyObject *self, PyObject *args, PyObject *kwargs) {
     PyObject * _resultobj;
-    wxStringPtrList * _result;
+    PyObject * _result;
     wxPyInputStream * _arg0;
     int  _arg1 = (int ) -1;
     PyObject * _argo0 = 0;
@@ -591,22 +293,13 @@ static PyObject *_wrap_wxInputStream_readlines(PyObject *self, PyObject *args, P
         }
     }
 {
-        _result = (wxStringPtrList *)wxInputStream_readlines(_arg0,_arg1);
+    PyThreadState* __tstate = wxPyBeginAllowThreads();
+    _result = (PyObject *)wxInputStream_readlines(_arg0,_arg1);
 
+    wxPyEndAllowThreads(__tstate);
+    if (PyErr_Occurred()) return NULL;
 }{
-    if (_result) {
-        _resultobj = PyList_New(_result->GetCount());
-        wxStringPtrList::Node *node = _result->GetFirst();
-        for (int i=0; node; i++) {
-            wxString *s = node->GetData();
-            PyList_SetItem(_resultobj, i, PyString_FromStringAndSize(s->c_str(), s->Len()));
-            node = node->GetNext();
-            delete s;
-        }
-        delete _result;
-    }
-    else
-        _resultobj=0;
+  _resultobj = _result;
 }
     return _resultobj;
 }
@@ -631,8 +324,11 @@ static PyObject *_wrap_wxInputStream_seek(PyObject *self, PyObject *args, PyObje
         }
     }
 {
-        wxInputStream_seek(_arg0,_arg1,_arg2);
+    PyThreadState* __tstate = wxPyBeginAllowThreads();
+    wxInputStream_seek(_arg0,_arg1,_arg2);
 
+    wxPyEndAllowThreads(__tstate);
+    if (PyErr_Occurred()) return NULL;
 }    Py_INCREF(Py_None);
     _resultobj = Py_None;
     return _resultobj;
@@ -657,22 +353,33 @@ static PyObject *_wrap_wxInputStream_tell(PyObject *self, PyObject *args, PyObje
         }
     }
 {
-        _result = (int )wxInputStream_tell(_arg0);
+    PyThreadState* __tstate = wxPyBeginAllowThreads();
+    _result = (int )wxInputStream_tell(_arg0);
 
+    wxPyEndAllowThreads(__tstate);
+    if (PyErr_Occurred()) return NULL;
 }    _resultobj = Py_BuildValue("i",_result);
     return _resultobj;
 }
 
-static void  wxOutputStream_write(wxOutputStream *self,const wxString & str) {
-            self->Write(str.c_str(), str.Length());
+static void  wxOutputStream_write(wxOutputStream *self,PyObject * obj) {
+            // We use only strings for the streams, not unicode
+            PyObject* str = PyObject_Str(obj);
+            if (! str) {
+                PyErr_SetString(PyExc_TypeError, "Unable to convert to string");
+                return;
+            }
+            self->Write(PyString_AS_STRING(str),
+                        PyString_GET_SIZE(str));
+            Py_DECREF(str);
         }
 static PyObject *_wrap_wxOutputStream_write(PyObject *self, PyObject *args, PyObject *kwargs) {
     PyObject * _resultobj;
     wxOutputStream * _arg0;
-    wxString * _arg1;
+    PyObject * _arg1;
     PyObject * _argo0 = 0;
     PyObject * _obj1 = 0;
-    char *_kwnames[] = { "self","str", NULL };
+    char *_kwnames[] = { "self","obj", NULL };
 
     self = self;
     if(!PyArg_ParseTupleAndKeywords(args,kwargs,"OO:wxOutputStream_write",_kwnames,&_argo0,&_obj1)) 
@@ -685,32 +392,16 @@ static PyObject *_wrap_wxOutputStream_write(PyObject *self, PyObject *args, PyOb
         }
     }
 {
-#if PYTHON_API_VERSION >= 1009
-    char* tmpPtr; int tmpSize;
-    if (!PyString_Check(_obj1) && !PyUnicode_Check(_obj1)) {
-        PyErr_SetString(PyExc_TypeError, "String or Unicode type required");
-        return NULL;
-    }
-    if (PyString_AsStringAndSize(_obj1, &tmpPtr, &tmpSize) == -1)
-        return NULL;
-    _arg1 = new wxString(tmpPtr, tmpSize);
-#else
-    if (!PyString_Check(_obj1)) {
-        PyErr_SetString(PyExc_TypeError, wxStringErrorMsg);
-        return NULL;
-    }
-    _arg1 = new wxString(PyString_AS_STRING(_obj1), PyString_GET_SIZE(_obj1));
-#endif
+  _arg1 = _obj1;
 }
 {
-        wxOutputStream_write(_arg0,*_arg1);
+    PyThreadState* __tstate = wxPyBeginAllowThreads();
+    wxOutputStream_write(_arg0,_arg1);
 
+    wxPyEndAllowThreads(__tstate);
+    if (PyErr_Occurred()) return NULL;
 }    Py_INCREF(Py_None);
     _resultobj = Py_None;
-{
-    if (_obj1)
-        delete _arg1;
-}
     return _resultobj;
 }
 
@@ -837,6 +528,8 @@ SWIGEXPORT(void) initstreamsc() {
 	 SWIG_globals = SWIG_newvarlink();
 	 m = Py_InitModule("streamsc", streamscMethods);
 	 d = PyModule_GetDict(m);
+
+    wxPyPtrTypeMap_Add("wxInputStream", "wxPyInputStream");
 {
    int i;
    for (i = 0; _swig_mapping[i].n1; i++)

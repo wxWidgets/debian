@@ -4,14 +4,13 @@
 // Author:      Aleksandras Gluchovas
 // Modified by:
 // Created:     27/12/98
-// RCS-ID:      $Id: ifcontext.cpp,v 1.1 1999/01/08 17:46:01 VZ Exp $
+// RCS-ID:      $Id: ifcontext.cpp,v 1.4 2001/12/03 10:54:59 GT Exp $
 // Copyright:   (c) Aleskandars Gluchovas
 // Licence:   	wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
 
 #ifdef __GNUG__
-#pragma implementation "ifcontext.h"
-#pragma interface
+#  pragma implementation "ifcontext.h"
 #endif
 
 // For compilers that support precompilation, includes "wx/wx.h".
@@ -25,7 +24,9 @@
 #include "wx/wx.h"
 #endif
 
-#include <malloc.h>
+#ifndef __DARWIN__
+#  include <malloc.h>
+#endif
 #include <stdio.h>
 
 #include "ifcontext.h"
@@ -34,11 +35,12 @@
 
 size_t spInterFileContext::GetFileNo( const string& fname )
 {
-	for( size_t i = 0; i != mFiles.size(); ++i )
+    size_t i;
+	for ( i = 0; i != mFiles.size(); ++i )
+		if ( fname == mFiles[i] )
+            return i;
 
-		if ( fname == mFiles[i] ) return i;
-
-	wxASSERT(0); // DBG::
+    wxFAIL_MSG("File not found in array in function spInterFileContext::GetFileNo()");
 	return 0;
 }
 
@@ -118,8 +120,8 @@ void spInterFileContext::DoAppendSourceFragment( string& source,
 
 		if ( cur >= pos + len ) // check if we've overstepped the current source-fragment
 		{
-			wxASSERT(0); // DBG:: with current imp. this should not happen
-			
+//			wxASSERT(0); // DBG:: with current imp. this should not happen
+            wxFAIL_MSG("Overstepped the current source fragment in function\nspInterFileContext::DoAppendSourceFragment()");			
 			cur = pos + len; break;
 		}
 	}

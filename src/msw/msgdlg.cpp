@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     04/01/98
-// RCS-ID:      $Id: msgdlg.cpp,v 1.7 2000/01/17 00:21:19 GRG Exp $
+// RCS-ID:      $Id: msgdlg.cpp,v 1.10 2002/09/02 00:41:43 VZ Exp $
 // Copyright:   (c) Julian Smart and Markus Holzem
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -56,8 +56,12 @@ int wxMessageDialog::ShowModal()
             wxTheApp->Dispatch();
     }
 
-    HWND hWnd = 0;
-    if (m_parent) hWnd = (HWND) m_parent->GetHWND();
+    // use the top level window as parent if none specified
+    if ( !m_parent )
+        m_parent = FindSuitableParent();
+    HWND hWnd = m_parent ? GetHwndOf(m_parent) : NULL;
+
+    // translate wx style in MSW
     unsigned int msStyle = MB_OK;
     if (m_dialogStyle & wxYES_NO)
     {
@@ -86,16 +90,23 @@ int wxMessageDialog::ShowModal()
     else if (m_dialogStyle & wxICON_QUESTION)
         msStyle |= MB_ICONQUESTION;
 
+    if ( m_dialogStyle & wxSTAY_ON_TOP )
+        msStyle |= MB_TOPMOST;
+
     if (hWnd)
         msStyle |= MB_APPLMODAL;
     else
         msStyle |= MB_TASKMODAL;
 
-    int msAns = MessageBox(hWnd, (LPCTSTR)m_message.c_str(),
-                           (LPCTSTR)m_caption.c_str(), msStyle);
-    int ans = wxOK;
+    // do show the dialog
+    int msAns = MessageBox(hWnd, m_message.c_str(), m_caption.c_str(), msStyle);
+    int ans;
     switch (msAns)
     {
+        default:
+            wxFAIL_MSG(_T("unexpected ::MessageBox() return code"));
+            // fall through
+
         case IDCANCEL:
             ans = wxID_CANCEL;
             break;

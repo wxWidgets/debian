@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     29/01/98
-// RCS-ID:      $Id: utilscmn.cpp,v 1.61.2.6 2000/08/06 10:12:08 VZ Exp $
+// RCS-ID:      $Id: utilscmn.cpp,v 1.93.2.1 2002/09/19 20:28:57 RR Exp $
 // Copyright:   (c) 1998 Julian Smart
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -36,11 +36,13 @@
     #include "wx/log.h"
 
     #if wxUSE_GUI
+        #include "wx/app.h"
         #include "wx/window.h"
-        #include "wx/menu.h"
         #include "wx/frame.h"
+        #include "wx/menu.h"
         #include "wx/msgdlg.h"
         #include "wx/textdlg.h"
+        #include "wx/textctrl.h"    // for wxTE_PASSWORD
         #if wxUSE_ACCEL
             #include "wx/menuitem.h"
             #include "wx/accel.h"
@@ -66,6 +68,10 @@
 
 #if wxUSE_GUI
     #include "wx/colordlg.h"
+    #include "wx/fontdlg.h"
+    #include "wx/notebook.h"
+    #include "wx/frame.h"
+    #include "wx/statusbr.h"
 #endif // wxUSE_GUI
 
 #include <time.h>
@@ -84,13 +90,17 @@
 #endif
 
 // ----------------------------------------------------------------------------
-// function protoypes
+// common data
 // ----------------------------------------------------------------------------
 
-#if wxUSE_GUI
-    static wxWindow *wxFindWindowByLabel1(const wxString& title, wxWindow *parent);
-    static wxWindow *wxFindWindowByName1 (const wxString& title, wxWindow *parent);
-#endif // wxUSE_GUI
+#if WXWIN_COMPATIBILITY_2_2
+    const wxChar *wxInternalErrorStr = wxT("wxWindows Internal Error");
+    const wxChar *wxFatalErrorStr = wxT("wxWindows Fatal Error");
+#endif // WXWIN_COMPATIBILITY_2_2
+
+// ----------------------------------------------------------------------------
+// function protoypes
+// ----------------------------------------------------------------------------
 
 // ============================================================================
 // implementation
@@ -100,7 +110,7 @@
 // string functions
 // ----------------------------------------------------------------------------
 
-#ifdef __WXMAC__
+#if defined(__WXMAC__) && !defined(__DARWIN__)
 int strcasecmp(const char *str_1, const char *str_2)
 {
   register char c1, c2;
@@ -129,7 +139,7 @@ int strncasecmp(const char *str_1, const char *str_2, size_t maxchar)
   return 0 ;
 
 }
-#endif // wxMAC
+#endif // __WXMAC__ && !__DARWIN__
 
 #if defined( __VMS__ ) && ( __VMS_VER < 70000000 )
 // we have no strI functions under VMS, therefore I have implemented
@@ -176,7 +186,7 @@ int strncasecmp(const char *str_1, const char *str_2, size_t maxchar)
 }
 #endif // __VMS__
 
-#ifdef __WINDOWS__
+#if defined(__WINDOWS__) && !defined(__WXMICROWIN__) && !defined(__WXWINE__)
 
 #ifndef __GNUWIN32__
 #ifndef __MWERKS__
@@ -197,7 +207,8 @@ int strncasecmp(const char *str_1, const char *str_2, size_t maxchar)
 
 // This declaration is missing in SunOS!
 // (Yes, I know it is NOT ANSI-C but its in BSD libc)
-#if defined(__xlC) || defined(__AIX__) || defined(__GNUG__)
+#if defined(__xlC) || defined(__AIX__) 
+// || defined(__GNUG__)
 extern "C"
 {
   int strcasecmp (const char *, const char *);
@@ -207,6 +218,11 @@ extern "C"
 #endif  /* __WXMSW__ */
 
 #ifdef __WXPM__
+#define strcasecmp stricmp
+#define strncasecmp strnicmp
+#endif
+
+#ifdef __WATCOMC__
 #define strcasecmp stricmp
 #define strncasecmp strnicmp
 #endif
@@ -243,14 +259,14 @@ wxRegisterId (long id)
 }
 
 void
-StringToFloat (wxChar *s, float *number)
+StringToFloat (const wxChar *s, float *number)
 {
   if (s && *s && number)
     *number = (float) wxStrtod (s, (wxChar **) NULL);
 }
 
 void
-StringToDouble (wxChar *s, double *number)
+StringToDouble (const wxChar *s, double *number)
 {
   if (s && *s && number)
     *number = wxStrtod (s, (wxChar **) NULL);
@@ -261,7 +277,6 @@ FloatToString (float number, const wxChar *fmt)
 {
   static wxChar buf[256];
 
-//  sprintf (buf, "%.2f", number);
   wxSprintf (buf, fmt, number);
   return buf;
 }
@@ -276,14 +291,14 @@ DoubleToString (double number, const wxChar *fmt)
 }
 
 void
-StringToInt (wxChar *s, int *number)
+StringToInt (const wxChar *s, int *number)
 {
   if (s && *s && number)
     *number = (int) wxStrtol (s, (wxChar **) NULL, 10);
 }
 
 void
-StringToLong (wxChar *s, long *number)
+StringToLong (const wxChar *s, long *number)
 {
   if (s && *s && number)
     *number = wxStrtol (s, (wxChar **) NULL, 10);
@@ -325,7 +340,7 @@ int wxHexToDec(const wxString& buf)
   else
     secondDigit = buf.GetChar(1) - wxT('0');
 
-  return firstDigit * 16 + secondDigit;
+  return (firstDigit & 0xF) * 16 + (secondDigit & 0xF );
 }
 
 // Convert decimal integer to 2-character hex string
@@ -348,7 +363,7 @@ wxString wxDecToHex(int dec)
 
 // Match a string INDEPENDENT OF CASE
 bool
-StringMatch (char *str1, char *str2, bool subString, bool exact)
+StringMatch (const char *str1, const char *str2, bool subString, bool exact)
 {
   if (str1 == NULL || str2 == NULL)
     return FALSE;
@@ -398,147 +413,66 @@ wxString wxNow()
 
 #if wxUSE_GUI
 
+#if wxUSE_MENUS
+
 // ----------------------------------------------------------------------------
 // Menu accelerators related functions
 // ----------------------------------------------------------------------------
 
-wxChar *wxStripMenuCodes (wxChar *in, wxChar *out)
+wxChar *wxStripMenuCodes(const wxChar *in, wxChar *out)
 {
-  if (!in)
-    return (wxChar *) NULL;
-
-  if (!out)
-    out = copystring(in);
-
-  wxChar *tmpOut = out;
-
-  while (*in)
+    wxString s = wxMenuItem::GetLabelFromText(in);
+    if ( out )
     {
-      if (*in == wxT('&'))
-        {
-          // Check && -> &, &x -> x
-          if (*++in == wxT('&'))
-            *out++ = *in++;
-        }
-      else if (*in == wxT('\t'))
-        {
-          // Remove all stuff after \t in X mode, and let the stuff as is
-          // in Windows mode.
-          // Accelerators are handled in wx_item.cc for Motif, and are not
-          // YET supported in XView
-          break;
-        }
-      else
-        *out++ = *in++;
-    }                                // while
-
-  *out = wxT('\0');
-
-  return tmpOut;
-}
-
-wxString wxStripMenuCodes(const wxString& str)
-{
-    wxChar *buf = new wxChar[str.Length() + 1];
-    wxStripMenuCodes(WXSTRINGCAST str, buf);
-    wxString str1(buf);
-    delete[] buf;
-    return str1;
-}
-
-#if wxUSE_ACCEL
-
-// return wxAcceleratorEntry for the given menu string or NULL if none
-// specified
-wxAcceleratorEntry *wxGetAccelFromString(const wxString& label)
-{
-    // check for accelerators: they are given after '\t'
-    int posTab = label.Find(wxT('\t'));
-    if ( posTab != wxNOT_FOUND ) {
-        // parse the accelerator string
-        int keyCode = 0;
-        int accelFlags = wxACCEL_NORMAL;
-        wxString current;
-        for ( size_t n = (size_t)posTab + 1; n < label.Len(); n++ ) {
-            if ( (label[n] == '+') || (label[n] == '-') ) {
-                if ( current == _("ctrl") )
-                    accelFlags |= wxACCEL_CTRL;
-                else if ( current == _("alt") )
-                    accelFlags |= wxACCEL_ALT;
-                else if ( current == _("shift") )
-                    accelFlags |= wxACCEL_SHIFT;
-                else {
-                    wxLogDebug(wxT("Unknown accel modifier: '%s'"),
-                               current.c_str());
-                }
-
-                current.Empty();
-            }
-            else {
-                current += wxTolower(label[n]);
-            }
-        }
-
-        if ( current.IsEmpty() ) {
-            wxLogDebug(wxT("No accel key found, accel string ignored."));
-        }
-        else {
-            if ( current.Len() == 1 ) {
-                // it's a letter
-                keyCode = wxToupper(current[0U]);
-            }
-            else {
-                // is it a function key?
-                if ( current[0U] == 'f' && isdigit(current[1U]) &&
-                     (current.Len() == 2 ||
-                     (current.Len() == 3 && isdigit(current[2U]))) ) {
-                    int n;
-                    wxSscanf(current.c_str() + 1, wxT("%d"), &n);
-
-                    keyCode = WXK_F1 + n - 1;
-                }
-                else {
-                    // several special cases
-                    current.MakeUpper();
-                    if ( current == wxT("DEL") ) {
-                        keyCode = WXK_DELETE;
-                    }
-                    else if ( current == wxT("DELETE") ) {
-                        keyCode = WXK_DELETE;
-                    }
-                    else if ( current == wxT("INS") ) {
-                        keyCode = WXK_INSERT;
-                    }
-                    else if ( current == wxT("INSERT") ) {
-                        keyCode = WXK_INSERT;
-                    }
-#if 0
-                    else if ( current == wxT("PGUP") ) {
-                        keyCode = VK_PRIOR;
-                    }
-                    else if ( current == wxT("PGDN") ) {
-                        keyCode = VK_NEXT;
-                    }
-#endif
-                    else
-                    {
-                        wxLogDebug(wxT("Unrecognized accel key '%s', accel string ignored."),
-                                   current.c_str());
-                    }
-                }
-            }
-        }
-
-        if ( keyCode ) {
-            // we do have something
-            return new wxAcceleratorEntry(accelFlags, keyCode);
-        }
+        // go smash their buffer if it's not big enough - I love char * params
+        memcpy(out, s.c_str(), s.length() * sizeof(wxChar));
+    }
+    else
+    {
+        out = copystring(s);
     }
 
-    return (wxAcceleratorEntry *)NULL;
+    return out;
 }
 
-#endif // wxUSE_ACCEL
+wxString wxStripMenuCodes(const wxString& in)
+{
+    wxString out;
+
+    size_t len = in.length();
+    out.reserve(len);
+
+    for ( size_t n = 0; n < len; n++ )
+    {
+        wxChar ch = in[n];
+        if ( ch == _T('&') )
+        {
+            // skip it, it is used to introduce the accel char (or to quote
+            // itself in which case it should still be skipped): note that it
+            // can't be the last character of the string
+            if ( ++n == len )
+            {
+                wxLogDebug(_T("Invalid menu string '%s'"), in.c_str());
+            }
+            else
+            {
+                // use the next char instead
+                ch = in[n];
+            }
+        }
+        else if ( ch == _T('\t') )
+        {
+            // everything after TAB is accel string, exit the loop
+            break;
+        }
+
+        out += ch;
+    }
+
+    return out;
+}
+
+#endif // wxUSE_MENUS
 
 // ----------------------------------------------------------------------------
 // Window search functions
@@ -553,52 +487,9 @@ wxAcceleratorEntry *wxGetAccelFromString(const wxString& label)
 wxWindow *
 wxFindWindowByLabel (const wxString& title, wxWindow * parent)
 {
-    if (parent)
-    {
-        return wxFindWindowByLabel1(title, parent);
-    }
-    else
-    {
-        for ( wxWindowList::Node * node = wxTopLevelWindows.GetFirst();
-              node;
-              node = node->GetNext() )
-        {
-            wxWindow *win = node->GetData();
-            wxWindow *retwin = wxFindWindowByLabel1 (title, win);
-            if (retwin)
-                return retwin;
-        }                        // for()
-
-    }
-    return (wxWindow *) NULL;
+    return wxWindow::FindWindowByLabel( title, parent );
 }
 
-// Recursive
-static wxWindow *
-wxFindWindowByLabel1 (const wxString& title, wxWindow * parent)
-{
-    if (parent)
-    {
-        if (parent->GetLabel() == title)
-            return parent;
-    }
-
-    if (parent)
-    {
-        for ( wxWindowList::Node * node = parent->GetChildren().GetFirst();
-              node;
-              node = node->GetNext() )
-        {
-            wxWindow *win = (wxWindow *)node->GetData();
-            wxWindow *retwin = wxFindWindowByLabel1 (title, win);
-            if (retwin)
-                return retwin;
-        }
-
-    }
-
-    return (wxWindow *) NULL;                        // Not found
-}
 
 /*
  * If parent is non-NULL, look through children for a name
@@ -607,64 +498,114 @@ wxFindWindowByLabel1 (const wxString& title, wxWindow * parent)
  */
 
 wxWindow *
-wxFindWindowByName (const wxString& title, wxWindow * parent)
+wxFindWindowByName (const wxString& name, wxWindow * parent)
 {
-    if (parent)
-    {
-        return wxFindWindowByName1 (title, parent);
-    }
-    else
-    {
-        for ( wxWindowList::Node * node = wxTopLevelWindows.GetFirst();
-              node;
-              node = node->GetNext() )
-        {
-            wxWindow *win = node->GetData();
-            wxWindow *retwin = wxFindWindowByName1 (title, win);
-            if (retwin)
-                return retwin;
-        }
-
-    }
-
-    // Failed? Try by label instead.
-    return wxFindWindowByLabel(title, parent);
-}
-
-// Recursive
-static wxWindow *
-wxFindWindowByName1 (const wxString& title, wxWindow * parent)
-{
-  if (parent)
-    {
-            if ( parent->GetName() == title )
-                        return parent;
-    }
-
-  if (parent)
-    {
-      for (wxNode * node = parent->GetChildren().First (); node; node = node->Next ())
-        {
-          wxWindow *win = (wxWindow *) node->Data ();
-          wxWindow *retwin = wxFindWindowByName1 (title, win);
-          if (retwin)
-            return retwin;
-        }                        // for()
-
-    }
-
-  return (wxWindow *) NULL;                        // Not found
-
+    return wxWindow::FindWindowByName( name, parent );
 }
 
 // Returns menu item id or -1 if none.
 int
 wxFindMenuItemId (wxFrame * frame, const wxString& menuString, const wxString& itemString)
 {
+#if wxUSE_MENUS
   wxMenuBar *menuBar = frame->GetMenuBar ();
-  if (!menuBar)
-    return -1;
-  return menuBar->FindMenuItem (menuString, itemString);
+  if ( menuBar )
+      return menuBar->FindMenuItem (menuString, itemString);
+#endif // wxUSE_MENUS
+
+  return -1;
+}
+
+// Try to find the deepest child that contains 'pt'.
+// We go backwards, to try to allow for controls that are spacially
+// within other controls, but are still siblings (e.g. buttons within
+// static boxes). Static boxes are likely to be created _before_ controls
+// that sit inside them.
+wxWindow* wxFindWindowAtPoint(wxWindow* win, const wxPoint& pt)
+{
+    if (!win->IsShown())
+        return NULL;
+
+    // Hack for wxNotebook case: at least in wxGTK, all pages
+    // claim to be shown, so we must only deal with the selected one.
+#if wxUSE_NOTEBOOK
+    if (win->IsKindOf(CLASSINFO(wxNotebook)))
+    {
+      wxNotebook* nb = (wxNotebook*) win;
+      int sel = nb->GetSelection();
+      if (sel >= 0)
+      {
+        wxWindow* child = nb->GetPage(sel);
+        wxWindow* foundWin = wxFindWindowAtPoint(child, pt);
+        if (foundWin)
+           return foundWin;
+      }
+    }
+#endif
+
+    /* Doesn't work
+    // Frame case
+    else if (win->IsKindOf(CLASSINFO(wxFrame)))
+    {
+      // Pseudo-children that may not be mentioned in the child list
+      wxWindowList extraChildren;
+      wxFrame* frame = (wxFrame*) win;
+      if (frame->GetStatusBar())
+        extraChildren.Append(frame->GetStatusBar());
+      if (frame->GetToolBar())
+        extraChildren.Append(frame->GetToolBar());
+
+      wxNode* node = extraChildren.First();
+      while (node)
+      {
+          wxWindow* child = (wxWindow*) node->Data();
+          wxWindow* foundWin = wxFindWindowAtPoint(child, pt);
+          if (foundWin)
+            return foundWin;
+          node = node->Next();
+      }
+    }
+    */
+
+    wxNode* node = win->GetChildren().Last();
+    while (node)
+    {
+        wxWindow* child = (wxWindow*) node->Data();
+        wxWindow* foundWin = wxFindWindowAtPoint(child, pt);
+        if (foundWin)
+          return foundWin;
+        node = node->Previous();
+    }
+
+    wxPoint pos = win->GetPosition();
+    wxSize sz = win->GetSize();
+    if (win->GetParent())
+    {
+        pos = win->GetParent()->ClientToScreen(pos);
+    }
+
+    wxRect rect(pos, sz);
+    if (rect.Inside(pt))
+        return win;
+    else
+        return NULL;
+}
+
+wxWindow* wxGenericFindWindowAtPoint(const wxPoint& pt)
+{
+    // Go backwards through the list since windows
+    // on top are likely to have been appended most
+    // recently.
+    wxNode* node = wxTopLevelWindows.Last();
+    while (node)
+    {
+        wxWindow* win = (wxWindow*) node->Data();
+        wxWindow* found = wxFindWindowAtPoint(win, pt);
+        if (found)
+            return found;
+        node = node->Previous();
+    }
+    return NULL;
 }
 
 #endif // wxUSE_GUI
@@ -723,7 +664,7 @@ whereami(name)
 
         t = imagedir;
         if (!absolute_pathname(name)) {
-#if defined(DOS) || defined(__WIN32__)
+#if defined(__DOS__) || defined(__WIN32__)
             int   drive;
             char *newrbuf;
 
@@ -873,6 +814,8 @@ whereami(name)
  * since otherwise the generic code may be pulled in unnecessarily.
  */
 
+#if wxUSE_MSGDLG
+
 int wxMessageBox(const wxString& message, const wxString& caption, long style,
                  wxWindow *parent, int WXUNUSED(x), int WXUNUSED(y) )
 {
@@ -896,7 +839,10 @@ int wxMessageBox(const wxString& message, const wxString& caption, long style,
     return wxCANCEL;
 }
 
+#endif // wxUSE_MSGDLG
+
 #if wxUSE_TEXTDLG
+
 wxString wxGetTextFromUser(const wxString& message, const wxString& caption,
                         const wxString& defaultValue, wxWindow *parent,
                         int x, int y, bool WXUNUSED(centre) )
@@ -929,36 +875,63 @@ wxString wxGetPasswordFromUser(const wxString& message,
 
 #endif // wxUSE_TEXTDLG
 
+#if wxUSE_COLOURDLG
+
 wxColour wxGetColourFromUser(wxWindow *parent, const wxColour& colInit)
 {
-      wxColourData data;
-      data.SetChooseFull(TRUE);
-      if ( colInit.Ok() )
-      {
-          data.SetColour((wxColour &)colInit); // const_cast
-      }
+    wxColourData data;
+    data.SetChooseFull(TRUE);
+    if ( colInit.Ok() )
+    {
+        data.SetColour((wxColour &)colInit); // const_cast
+    }
 
-      wxColour colRet;
-      wxColourDialog dialog(parent, &data);
-      if ( dialog.ShowModal() == wxID_OK )
-      {
-          colRet = dialog.GetColourData().GetColour();
-      }
-      //else: leave it invalid
+    wxColour colRet;
+    wxColourDialog dialog(parent, &data);
+    if ( dialog.ShowModal() == wxID_OK )
+    {
+        colRet = dialog.GetColourData().GetColour();
+    }
+    //else: leave it invalid
 
-      return colRet;
+    return colRet;
 }
 
+#endif // wxUSE_COLOURDLG
+
+#if wxUSE_FONTDLG
+
+wxFont wxGetFontFromUser(wxWindow *parent, const wxFont& fontInit)
+{
+    wxFontData data;
+    if ( fontInit.Ok() )
+    {
+        data.SetInitialFont(fontInit);
+    }
+
+    wxFont fontRet;
+    wxFontDialog dialog(parent, data);
+    if ( dialog.ShowModal() == wxID_OK )
+    {
+        fontRet = dialog.GetFontData().GetChosenFont();
+    }
+    //else: leave it invalid
+
+    return fontRet;
+}
+
+#endif // wxUSE_FONTDLG
 // ----------------------------------------------------------------------------
 // missing C RTL functions (FIXME shouldn't be here at all)
 // ----------------------------------------------------------------------------
 
 #ifdef __MWERKS__
+#if __MSL__ < 0x7000
 char *strdup(const char *s)
 {
         return strcpy( (char*) malloc( strlen( s ) + 1 ) , s ) ;
 }
-
+#endif
 int isascii( int c )
 {
         return ( c >= 0 && c < 128 ) ;
@@ -978,17 +951,6 @@ void wxEnableTopLevelWindows(bool enable)
 
 wxWindowDisabler::wxWindowDisabler(wxWindow *winToSkip)
 {
-#ifdef __WXMSW__
-#ifdef __WIN32__
-    // and the top level window too
-    HWND hwndFG = ::GetForegroundWindow();
-    m_winTop = hwndFG ? wxFindWinFromHandle((WXHWND)hwndFG) : (wxWindow *)NULL;
-#else
-    HWND hwndFG = ::GetTopWindow(0);
-    m_winTop = hwndFG ? wxFindWinFromHandle((WXHWND)hwndFG) : (wxWindow *)NULL;
-#endif
-#endif // MSW
-
     // remember the top level windows which were already disabled, so that we
     // don't reenable them later
     m_winDisabled = NULL;
@@ -1030,29 +992,6 @@ wxWindowDisabler::~wxWindowDisabler()
     }
 
     delete m_winDisabled;
-
-#ifdef __WXMSW__
-#ifdef __WIN32__
-    if ( m_winTop )
-    {
-        if ( !::SetForegroundWindow(GetHwndOf(m_winTop)) )
-        {
-            wxLogLastError(wxT("SetForegroundWindow"));
-        }
-    }
-#else
-    if ( m_winTop )
-    {
-        // 16-bit SetForegroundWindow() replacement
-        RECT reWin;
-        GetWindowRect((HWND) m_winTop, &reWin);
-        SetWindowPos ((HWND) m_winTop, HWND_TOP,
-                             reWin.left, reWin.top, 
-                             reWin.right - reWin.left, reWin.bottom, 
-                             SWP_SHOWWINDOW);
-    }
-#endif
-#endif // MSW
 }
 
 // Yield to other apps/messages and disable user input to all windows except
@@ -1081,6 +1020,33 @@ bool wxSetDetectableAutoRepeat( bool WXUNUSED(flag) )
 #endif // !wxGTK
 
 #endif // wxUSE_GUI
+
+const wxChar *wxGetInstallPrefix()
+{
+    wxString prefix;
+    
+    if ( wxGetEnv(wxT("WXPREFIX"), &prefix) )
+        return prefix.c_str();
+    
+#ifdef wxINSTALL_PREFIX
+    return wxT(wxINSTALL_PREFIX);
+#else 
+    return wxT("");
+#endif
+}
+
+wxString wxGetDataDir()
+{
+    wxString format = wxGetInstallPrefix();
+    format <<  wxFILE_SEP_PATH
+           << wxT("share") << wxFILE_SEP_PATH
+           << wxT("wx") << wxFILE_SEP_PATH
+           << wxT("%i.%i");
+    wxString dir;
+    dir.Printf(format.c_str(), wxMAJOR_VERSION, wxMINOR_VERSION);
+    return dir;
+}
+
 
 // ----------------------------------------------------------------------------
 // network and user id functions
@@ -1236,7 +1202,7 @@ static long wxDoExecuteWithCapture(const wxString& command,
     wxProcess *process = new wxProcess;
     process->Redirect();
 
-    long rc = wxExecute(command, TRUE /* sync */, process);
+    long rc = wxExecute(command, wxEXEC_SYNC, process);
 
 #if wxUSE_STREAMS
     if ( rc != -1 )
@@ -1306,3 +1272,26 @@ long wxExecute(const wxString& command,
 {
     return wxDoExecuteWithCapture(command, output, &error);
 }
+
+// ----------------------------------------------------------------------------
+// wxApp::Yield() wrappers for backwards compatibility
+// ----------------------------------------------------------------------------
+
+bool wxYield()
+{
+#if wxUSE_GUI
+    return wxTheApp && wxTheApp->Yield();
+#else
+    return FALSE;
+#endif
+}
+
+bool wxYieldIfNeeded()
+{
+#if wxUSE_GUI
+    return wxTheApp && wxTheApp->Yield(TRUE);
+#else
+    return FALSE;
+#endif
+}
+

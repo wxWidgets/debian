@@ -4,7 +4,7 @@
 // Author:      Guillermo Rodriguez Garcia, <guille@iies.es>
 // Modified by:
 // Created:     Jan/2000
-// RCS-ID:      $Id: dialogs.cpp,v 1.5.2.2 2000/07/10 06:08:05 GRG Exp $
+// RCS-ID:      $Id: dialogs.cpp,v 1.9 2002/02/15 12:32:49 JS Exp $
 // Copyright:   (c) 2000, Guillermo Rodriguez Garcia
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -40,7 +40,7 @@
 // resources
 // --------------------------------------------------------------------------
 
-#if defined(__WXGTK__) || defined(__WXMOTIF__)
+#if defined(__WXGTK__) || defined(__WXMOTIF__) || defined(__WXMAC__) || defined(__WXX11__)
     // logo for the about dialog
     #include "bitmaps/life.xpm"
 #endif
@@ -172,7 +172,7 @@ LifeAboutDialog::LifeAboutDialog(wxWindow *parent)
 {
     // logo
     wxBitmap bmp = wxBITMAP(life);
-#if !defined(__WXGTK__) && !defined(__WXMOTIF__)
+#if !defined(__WXGTK__) && !defined(__WXMOTIF__) && !defined(__WXMAC__)
     bmp.SetMask(new wxMask(bmp, *wxBLUE));
 #endif
     wxStaticBitmap *sbmp = new wxStaticBitmap(this, -1, bmp);

@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     25/01/99
-// RCS-ID:      $Id: client.cpp,v 1.4.2.1 2000/03/27 19:40:37 GRG Exp $
+// RCS-ID:      $Id: client.cpp,v 1.11 2002/09/01 14:48:16 JS Exp $
 // Copyright:   (c) Julian Smart
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -30,10 +30,9 @@
 
 // Settings common to both executables: determines whether
 // we're using TCP/IP or real DDE.
-
 #include "ddesetup.h"
 
-#if defined(__WXGTK__) || defined(__WXMOTIF__)
+#if defined(__WXGTK__) || defined(__WXX11__) || defined(__WXMOTIF__) || defined(__WXMAC__)
 #include "mondrian.xpm"
 #endif
 
@@ -56,11 +55,10 @@ END_EVENT_TABLE()
 // globals
 // ----------------------------------------------------------------------------
 
-char ipc_buffer[4000];
 wxListBox *the_list = NULL;
 
 MyConnection *the_connection = NULL;
-MyClient *my_client ;
+MyClient *my_client;
 
 // ============================================================================
 // implementation
@@ -75,7 +73,7 @@ MyClient *my_client ;
 bool MyApp::OnInit()
 {
     // service name (DDE classes) or port number (TCP/IP based classes)
-    wxString service = "4242";
+    wxString service = IPC_SERVICE;
 
     // ignored under DDE, host name in TCP/IP based classes
     wxString hostName = "localhost";
@@ -91,7 +89,8 @@ bool MyApp::OnInit()
     // suppress the log messages from MakeConnection()
     {
         wxLogNull nolog;
-        the_connection = (MyConnection *)my_client->MakeConnection(hostName, service, "IPC TEST");
+        the_connection = (MyConnection *)
+            my_client->MakeConnection(hostName, service, IPC_TOPIC);
 
         while ( !the_connection )
         {
@@ -107,7 +106,7 @@ bool MyApp::OnInit()
         }
     }
 
-    if (!the_connection->StartAdvise("Item"))
+    if (!the_connection->StartAdvise(IPC_ADVISE_NAME))
         wxMessageBox("StartAdvise failed", "Client Demo Error");
 
     // Create the main frame window
@@ -118,52 +117,47 @@ bool MyApp::OnInit()
 
 int MyApp::OnExit()
 {
-    if (the_connection)
-    {
-        the_connection->Disconnect();
-    }
-
     // will delete the connection too
+    // Update: Seems it didn't delete the_connection, because there's a leak.
+    // Deletion is now explicitly done a few lines up.
+    // another Update: in fact it's because OnDisconnect should delete it, but
+    // it wasn't
     delete my_client;
+
+
 
     return 0;
 }
 
 // Define my frame constructor
 MyFrame::MyFrame(wxFrame *frame, const wxString& title)
-        : wxFrame(frame, -1, title)
+        : wxFrame(frame, -1, title, wxDefaultPosition, wxSize(300, 200))
 {
-    panel = NULL;
-
     // Give it an icon
     SetIcon(wxICON(mondrian));
 
     // Make a menubar
     wxMenu *file_menu = new wxMenu;
 
-    file_menu->Append(CLIENT_EXECUTE, "Execute");
-    file_menu->Append(CLIENT_REQUEST, "Request");
-    file_menu->Append(CLIENT_POKE, "Poke");
-    file_menu->Append(CLIENT_QUIT, "Quit");
+    file_menu->Append(CLIENT_EXECUTE, "&Execute\tCtrl-E");
+    file_menu->Append(CLIENT_REQUEST, "&Request\tCtrl-R");
+    file_menu->Append(CLIENT_POKE, "&Poke\tCtrl-P");
+    file_menu->Append(CLIENT_QUIT, "&Quit\tCtrl-Q");
 
     wxMenuBar *menu_bar = new wxMenuBar;
 
-    menu_bar->Append(file_menu, "File");
+    menu_bar->Append(file_menu, "&File");
 
     // Associate the menu bar with the frame
     SetMenuBar(menu_bar);
 
-    // Make a panel
-    panel = new wxPanel(this);
-    the_list = new wxListBox(panel, CLIENT_LISTBOX, wxPoint(5, 5));
+    // Make a listbox which shows the choices made in the server
+    the_list = new wxListBox(this, CLIENT_LISTBOX, wxPoint(5, 5));
     the_list->Append("Apple");
     the_list->Append("Pear");
     the_list->Append("Orange");
     the_list->Append("Banana");
     the_list->Append("Fruit");
-
-    panel->Fit();
-    Fit();
 }
 
 void MyFrame::OnExecute(wxCommandEvent& event)
@@ -202,16 +196,6 @@ wxConnectionBase *MyClient::OnMakeConnection()
     return new MyConnection;
 }
 
-MyConnection::MyConnection()
-            : wxConnection(ipc_buffer, WXSIZEOF(ipc_buffer))
-{
-}
-
-MyConnection::~MyConnection()
-{
-    the_connection = NULL;
-}
-
 bool MyConnection::OnAdvise(const wxString& topic, const wxString& item, char *data, int size, wxIPCFormat format)
 {
     if (the_list)
@@ -225,10 +209,13 @@ bool MyConnection::OnAdvise(const wxString& topic, const wxString& item, char *d
 
 bool MyConnection::OnDisconnect()
 {
+    // when connection is terminated, quit whole program
     wxWindow *win = wxTheApp->GetTopWindow();
     if ( win )
         win->Destroy();
 
-    return TRUE;
+    // delete self
+    the_connection = NULL;
+    return wxConnection::OnDisconnect();
 }
 

@@ -4,7 +4,7 @@
 // Author:      Guillermo Rodriguez Garcia, <guille@iies.es>
 // Modified by:
 // Created:     Jan/2000
-// RCS-ID:      $Id: samples.inc,v 1.4.2.1 2000/07/10 05:53:01 GRG Exp $
+// RCS-ID:      $Id: samples.inc,v 1.5 2000/07/15 19:49:47 cvsuser Exp $
 // Copyright:   (c) 2000, Guillermo Rodriguez Garcia
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////

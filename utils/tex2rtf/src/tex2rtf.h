@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     7.9.93
-// RCS-ID:      $Id: tex2rtf.h,v 1.1 1999/01/02 00:45:25 JS Exp $
+// RCS-ID:      $Id: tex2rtf.h,v 1.2 2001/05/24 16:54:19 GT Exp $
 // Copyright:   (c) Julian Smart
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -38,6 +38,8 @@ class MyFrame: public wxFrame
     void OnModeWinHelp(wxCommandEvent& event);
     void OnModeHTML(wxCommandEvent& event);
     void OnModeXLP(wxCommandEvent& event);
+    void OnOptionsCurleyBrace(wxCommandEvent& event);
+    void OnOptionsSyntaxChecking(wxCommandEvent& event);
     void OnHelp(wxCommandEvent& event);
     void OnAbout(wxCommandEvent& event);
 
@@ -108,9 +110,12 @@ class ItemizeStruc: public wxObject
 #define TEX_MODE_HTML   11
 #define TEX_MODE_XLP    12
 
-#define TEX_HELP        13
-#define TEX_ABOUT       14
-#define TEX_SAVE_FILE   15
+#define TEX_OPTIONS_CURELY_BRACE 13
+#define TEX_OPTIONS_SYNTAX_CHECKING 14
+
+#define TEX_HELP        15
+#define TEX_ABOUT       16
+#define TEX_SAVE_FILE   17
 
 extern TexChunk *currentMember;
 extern bool startedSections;

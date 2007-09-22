@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     04/01/98
-// RCS-ID:      $Id: edlist.cpp,v 1.2.4.1 2000/04/22 14:41:06 JS Exp $
+// RCS-ID:      $Id: edlist.cpp,v 1.3 2000/07/15 19:50:51 cvsuser Exp $
 // Copyright:   (c) Julian Smart
 // Licence:   	wxWindows license
 /////////////////////////////////////////////////////////////////////////////

@@ -2,13 +2,14 @@
 // Name:        threadpsx.cpp
 // Purpose:     wxThread (Posix) Implementation
 // Author:      Original from Wolfram Gloger/Guilhem Lavaux
-// Modified by:
+// Modified by: K. S. Sreeram (2002): POSIXified wxCondition, added wxSemaphore
 // Created:     04/22/98
-// RCS-ID:      $Id: threadpsx.cpp,v 1.39 2000/03/20 17:39:18 VZ Exp $
+// RCS-ID:      $Id: threadpsx.cpp,v 1.58.2.1 2002/09/17 13:41:49 VZ Exp $
 // Copyright:   (c) Wolfram Gloger (1996, 1997)
 //                  Guilhem Lavaux (1998)
-//                  Vadim Zeitlin (1999)
+//                  Vadim Zeitlin (1999-2002)
 //                  Robert Roebling (1999)
+//                  K. S. Sreeram (2002)
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
 
@@ -34,13 +35,13 @@
 #include "wx/log.h"
 #include "wx/intl.h"
 #include "wx/dynarray.h"
+#include "wx/timer.h"
 
 #include <stdio.h>
 #include <unistd.h>
 #include <pthread.h>
 #include <errno.h>
 #include <time.h>
-
 #if HAVE_SCHED_H
     #include <sched.h>
 #endif
@@ -52,6 +53,9 @@
 // we use wxFFile under Linux in GetCPUCount()
 #ifdef __LINUX__
     #include "wx/ffile.h"
+    // For setpriority.
+    #include <sys/time.h>
+    #include <sys/resource.h>
 #endif
 
 // ----------------------------------------------------------------------------
@@ -70,8 +74,11 @@ enum wxThreadState
 // the exit value of a thread which has been cancelled
 static const wxThread::ExitCode EXITCODE_CANCELLED = (wxThread::ExitCode)-1;
 
-// our trace mask
+// trace mask for wxThread operations
 #define TRACE_THREADS   _T("thread")
+
+// you can get additional debugging messages for the semaphore operations
+#define TRACE_SEMA      _T("semaphore")
 
 // ----------------------------------------------------------------------------
 // private functions
@@ -84,36 +91,10 @@ static void DeleteThread(wxThread *This);
 // private classes
 // ----------------------------------------------------------------------------
 
-// same as wxMutexLocker but for "native" mutex
-class MutexLock
-{
-public:
-    MutexLock(pthread_mutex_t& mutex)
-    {
-        m_mutex = &mutex;
-        if ( pthread_mutex_lock(m_mutex) != 0 )
-        {
-            wxLogDebug(_T("pthread_mutex_lock() failed"));
-        }
-    }
-
-    ~MutexLock()
-    {
-        if ( pthread_mutex_unlock(m_mutex) != 0 )
-        {
-            wxLogDebug(_T("pthread_mutex_unlock() failed"));
-        }
-    }
-
-private:
-    pthread_mutex_t *m_mutex;
-};
-
-// ----------------------------------------------------------------------------
-// types
-// ----------------------------------------------------------------------------
-
+// an (non owning) array of pointers to threads
 WX_DEFINE_ARRAY(wxThread *, wxArrayThread);
+
+// an entry for a thread we can wait for
 
 // -----------------------------------------------------------------------------
 // global data
@@ -135,7 +116,7 @@ static pthread_key_t gs_keySelf;
 static size_t gs_nThreadsBeingDeleted = 0;
 
 // a mutex to protect gs_nThreadsBeingDeleted
-static pthread_mutex_t gs_mutexDeleteThread;
+static wxMutex *gs_mutexDeleteThread = (wxMutex *)NULL;
 
 // and a condition variable which will be signaled when all
 // gs_nThreadsBeingDeleted will have been deleted
@@ -146,331 +127,459 @@ static wxCondition *gs_condAllDeleted = (wxCondition *)NULL;
     static wxMutex *gs_mutexGui;
 #endif // wxUSE_GUI
 
+// when we wait for a thread to exit, we're blocking on a condition which the
+// thread signals in its SignalExit() method -- but this condition can't be a
+// member of the thread itself as a detached thread may delete itself at any
+// moment and accessing the condition member of the thread after this would
+// result in a disaster
+//
+// so instead we maintain a global list of the structs below for the threads
+// we're interested in waiting on
+
 // ============================================================================
-// implementation
+// wxMutex implementation
 // ============================================================================
 
-//--------------------------------------------------------------------
-// wxMutex (Posix implementation)
-//--------------------------------------------------------------------
+// ----------------------------------------------------------------------------
+// wxMutexInternal
+// ----------------------------------------------------------------------------
 
+// this is a simple wrapper around pthread_mutex_t which provides error
+// checking
 class wxMutexInternal
 {
 public:
+    wxMutexInternal(wxMutexType mutexType);
+    ~wxMutexInternal();
+
+    wxMutexError Lock();
+    wxMutexError TryLock();
+    wxMutexError Unlock();
+
+    bool IsOk() const { return m_isOk; }
+
+private:
     pthread_mutex_t m_mutex;
+    bool m_isOk;
+
+    // wxConditionInternal uses our m_mutex
+    friend class wxConditionInternal;
 };
 
-wxMutex::wxMutex()
+wxMutexInternal::wxMutexInternal(wxMutexType mutexType)
 {
-    m_internal = new wxMutexInternal;
-
-    pthread_mutex_init(&(m_internal->m_mutex),
-                       (pthread_mutexattr_t*) NULL );
-    m_locked = 0;
-}
-
-wxMutex::~wxMutex()
-{
-    if (m_locked > 0)
-        wxLogDebug(wxT("Freeing a locked mutex (%d locks)"), m_locked);
-
-    pthread_mutex_destroy( &(m_internal->m_mutex) );
-    delete m_internal;
-}
-
-wxMutexError wxMutex::Lock()
-{
-    int err = pthread_mutex_lock( &(m_internal->m_mutex) );
-    if (err == EDEADLK)
+    int err;
+    switch ( mutexType )
     {
-        wxLogDebug(wxT("Locking this mutex would lead to deadlock!"));
+        case wxMUTEX_RECURSIVE:
+            // support recursive locks like Win32, i.e. a thread can lock a
+            // mutex which it had itself already locked
+            //
+            // unfortunately initialization of recursive mutexes is non
+            // portable, so try several methods
+#ifdef HAVE_PTHREAD_MUTEXATTR_T
+            {
+                pthread_mutexattr_t attr;
+                pthread_mutexattr_init(&attr);
+                pthread_mutexattr_settype(&attr, PTHREAD_MUTEX_RECURSIVE);
 
-        return wxMUTEX_DEAD_LOCK;
+                err = pthread_mutex_init(&m_mutex, &attr);
+            }
+#elif defined(HAVE_PTHREAD_RECURSIVE_MUTEX_INITIALIZER)
+            // we can use this only as initializer so we have to assign it
+            // first to a temp var - assigning directly to m_mutex wouldn't
+            // even compile
+            {
+                pthread_mutex_t mutex = PTHREAD_RECURSIVE_MUTEX_INITIALIZER_NP;
+                m_mutex = mutex;
+            }
+#else // no recursive mutexes
+            err = EINVAL;
+#endif // HAVE_PTHREAD_MUTEXATTR_T/...
+            break;
+
+        default:
+            wxFAIL_MSG( _T("unknown mutex type") );
+            // fall through
+
+        case wxMUTEX_DEFAULT:
+            err = pthread_mutex_init(&m_mutex, NULL);
+            break;
     }
 
-    m_locked++;
-
-    return wxMUTEX_NO_ERROR;
+    m_isOk = err == 0;
+    if ( !m_isOk )
+    {
+        wxLogApiError( wxT("pthread_mutex_init()"), err);
+    }
 }
 
-wxMutexError wxMutex::TryLock()
+wxMutexInternal::~wxMutexInternal()
 {
-    if (m_locked)
+    if ( m_isOk )
     {
-        return wxMUTEX_BUSY;
+        int err = pthread_mutex_destroy(&m_mutex);
+        if ( err != 0 )
+        {
+            wxLogApiError( wxT("pthread_mutex_destroy()"), err);
+        }
     }
-
-    int err = pthread_mutex_trylock( &(m_internal->m_mutex) );
-    switch (err)
-    {
-        case EBUSY: return wxMUTEX_BUSY;
-    }
-
-    m_locked++;
-
-    return wxMUTEX_NO_ERROR;
 }
 
-wxMutexError wxMutex::Unlock()
+wxMutexError wxMutexInternal::Lock()
 {
-    if (m_locked > 0)
+    int err = pthread_mutex_lock(&m_mutex);
+    switch ( err )
     {
-        m_locked--;
+        case EDEADLK:
+            // only error checking mutexes return this value and so it's an
+            // unexpected situation -- hence use assert, not wxLogDebug
+            wxFAIL_MSG( _T("mutex deadlock prevented") );
+            return wxMUTEX_DEAD_LOCK;
+
+        case EINVAL:
+            wxLogDebug(_T("pthread_mutex_lock(): mutex not initialized."));
+            break;
+
+        case 0:
+            return wxMUTEX_NO_ERROR;
+
+        default:
+            wxLogApiError(_T("pthread_mutex_lock()"), err);
     }
-    else
-    {
-        wxLogDebug(wxT("Unlocking not locked mutex."));
 
-        return wxMUTEX_UNLOCKED;
-    }
-
-    pthread_mutex_unlock( &(m_internal->m_mutex) );
-
-    return wxMUTEX_NO_ERROR;
+    return wxMUTEX_MISC_ERROR;
 }
 
-//--------------------------------------------------------------------
-// wxCondition (Posix implementation)
-//--------------------------------------------------------------------
+wxMutexError wxMutexInternal::TryLock()
+{
+    int err = pthread_mutex_trylock(&m_mutex);
+    switch ( err )
+    {
+        case EBUSY:
+            // not an error: mutex is already locked, but we're prepared for
+            // this
+            return wxMUTEX_BUSY;
 
-// The native POSIX condition variables are dumb: if the condition is signaled
-// before another thread starts to wait on it, the signal is lost and so this
-// other thread will be never woken up. It's much more convenient to us to
-// remember that the condition was signaled and to return from Wait()
-// immediately in this case (this is more like Win32 automatic event objects)
+        case EINVAL:
+            wxLogDebug(_T("pthread_mutex_trylock(): mutex not initialized."));
+            break;
 
+        case 0:
+            return wxMUTEX_NO_ERROR;
+
+        default:
+            wxLogApiError(_T("pthread_mutex_trylock()"), err);
+    }
+
+    return wxMUTEX_MISC_ERROR;
+}
+
+wxMutexError wxMutexInternal::Unlock()
+{
+    int err = pthread_mutex_unlock(&m_mutex);
+    switch ( err )
+    {
+        case EPERM:
+            // we don't own the mutex
+            return wxMUTEX_UNLOCKED;
+
+        case EINVAL:
+            wxLogDebug(_T("pthread_mutex_unlock(): mutex not initialized."));
+            break;
+
+        case 0:
+            return wxMUTEX_NO_ERROR;
+
+        default:
+            wxLogApiError(_T("pthread_mutex_unlock()"), err);
+    }
+
+    return wxMUTEX_MISC_ERROR;
+}
+
+// ===========================================================================
+// wxCondition implementation
+// ===========================================================================
+
+// ---------------------------------------------------------------------------
+// wxConditionInternal
+// ---------------------------------------------------------------------------
+
+// this is a wrapper around pthread_cond_t associated with a wxMutex (and hence
+// with a pthread_mutex_t)
 class wxConditionInternal
 {
 public:
-    wxConditionInternal();
+    wxConditionInternal(wxMutex& mutex);
     ~wxConditionInternal();
 
-    void Wait();
-    bool WaitWithTimeout(const timespec* ts);
+    bool IsOk() const { return m_isOk && m_mutex.IsOk(); }
 
-    void Signal();
-    void Broadcast();
+    wxCondError Wait();
+    wxCondError WaitTimeout(unsigned long milliseconds);
 
-    void WaitDone();
-    bool ShouldWait();
-    bool HasWaiters();
+    wxCondError Signal();
+    wxCondError Broadcast();
 
 private:
-    bool m_wasSignaled;             // TRUE if condition was signaled while
-                                    // nobody waited for it
-    size_t m_nWaiters;              // TRUE if someone already waits for us
+    // get the POSIX mutex associated with us
+    pthread_mutex_t *GetPMutex() const { return &m_mutex.m_internal->m_mutex; }
 
-    pthread_mutex_t m_mutexProtect; // protects access to vars above
+    wxMutex& m_mutex;
+    pthread_cond_t m_cond;
 
-    pthread_mutex_t m_mutex;        // the mutex used with the condition
-    pthread_cond_t m_condition;     // the condition itself
+    bool m_isOk;
 };
 
-wxConditionInternal::wxConditionInternal()
+wxConditionInternal::wxConditionInternal(wxMutex& mutex)
+                   : m_mutex(mutex)
 {
-    m_wasSignaled = FALSE;
-    m_nWaiters = 0;
+    int err = pthread_cond_init(&m_cond, NULL /* default attributes */);
 
-    if ( pthread_cond_init(&m_condition, (pthread_condattr_t *)NULL) != 0 )
-    {
-        // this is supposed to never happen
-        wxFAIL_MSG( _T("pthread_cond_init() failed") );
-    }
+    m_isOk = err == 0;
 
-    if ( pthread_mutex_init(&m_mutex, (pthread_mutexattr_t *)NULL) != 0 ||
-         pthread_mutex_init(&m_mutexProtect, NULL) != 0 )
+    if ( !m_isOk )
     {
-        // neither this
-        wxFAIL_MSG( _T("wxCondition: pthread_mutex_init() failed") );
-    }
-
-    // initially the mutex is locked, so no thread can Signal() or Broadcast()
-    // until another thread starts to Wait()
-    if ( pthread_mutex_lock(&m_mutex) != 0 )
-    {
-        wxFAIL_MSG( _T("wxCondition: pthread_mutex_lock() failed") );
+        wxLogApiError(_T("pthread_cond_init()"), err);
     }
 }
 
 wxConditionInternal::~wxConditionInternal()
 {
-    if ( pthread_cond_destroy( &m_condition ) != 0 )
+    if ( m_isOk )
     {
-        wxLogDebug(_T("Failed to destroy condition variable (some "
-                      "threads are probably still waiting on it?)"));
-    }
-
-    if ( pthread_mutex_unlock( &m_mutex ) != 0 )
-    {
-        wxLogDebug(_T("wxCondition: failed to unlock the mutex"));
-    }
-
-    if ( pthread_mutex_destroy( &m_mutex ) != 0 ||
-         pthread_mutex_destroy( &m_mutexProtect ) != 0 )
-    {
-        wxLogDebug(_T("Failed to destroy mutex (it is probably locked)"));
-    }
-}
-
-void wxConditionInternal::WaitDone()
-{
-    MutexLock lock(m_mutexProtect);
-
-    m_wasSignaled = FALSE;
-    m_nWaiters--;
-}
-
-bool wxConditionInternal::ShouldWait()
-{
-    MutexLock lock(m_mutexProtect);
-
-    if ( m_wasSignaled )
-    {
-        // the condition was signaled before we started to wait, reset the
-        // flag and return
-        m_wasSignaled = FALSE;
-
-        return FALSE;
-    }
-
-    // we start to wait for it
-    m_nWaiters++;
-
-    return TRUE;
-}
-
-bool wxConditionInternal::HasWaiters()
-{
-    MutexLock lock(m_mutexProtect);
-
-    if ( m_nWaiters )
-    {
-        // someone waits for us, signal the condition normally
-        return TRUE;
-    }
-
-    // nobody waits for us and may be never will - so just remember that the
-    // condition was signaled and don't do anything else
-    m_wasSignaled = TRUE;
-
-    return FALSE;
-}
-
-void wxConditionInternal::Wait()
-{
-    if ( ShouldWait() )
-    {
-        if ( pthread_cond_wait( &m_condition, &m_mutex ) != 0 )
+        int err = pthread_cond_destroy(&m_cond);
+        if ( err != 0 )
         {
-            // not supposed to ever happen
-            wxFAIL_MSG( _T("pthread_cond_wait() failed") );
+            wxLogApiError(_T("pthread_cond_destroy()"), err);
         }
     }
-
-    WaitDone();
 }
 
-bool wxConditionInternal::WaitWithTimeout(const timespec* ts)
+wxCondError wxConditionInternal::Wait()
 {
-    bool ok;
-
-    if ( ShouldWait() )
+    int err = pthread_cond_wait(&m_cond, GetPMutex());
+    if ( err != 0 )
     {
-        switch ( pthread_cond_timedwait( &m_condition, &m_mutex, ts ) )
-        {
-            case 0:
-                // condition signaled
-                ok = TRUE;
-                break;
+        wxLogApiError(_T("pthread_cond_wait()"), err);
 
-            default:
-                wxLogDebug(_T("pthread_cond_timedwait() failed"));
+        return wxCOND_MISC_ERROR;
+    }
 
-                // fall through
+    return wxCOND_NO_ERROR;
+}
 
-            case ETIMEDOUT:
-            case EINTR:
-                // wait interrupted or timeout elapsed
-                ok = FALSE;
-        }
+wxCondError wxConditionInternal::WaitTimeout(unsigned long milliseconds)
+{
+    wxLongLong curtime = wxGetLocalTimeMillis();
+    curtime += milliseconds;
+    wxLongLong temp = curtime / 1000;
+    int sec = temp.GetLo();
+    temp *= 1000;
+    temp = curtime - temp;
+    int millis = temp.GetLo();
+
+    timespec tspec;
+
+    tspec.tv_sec = sec;
+    tspec.tv_nsec = millis * 1000L * 1000L;
+
+    int err = pthread_cond_timedwait( &m_cond, GetPMutex(), &tspec );
+    switch ( err )
+    {
+        case ETIMEDOUT:
+            return wxCOND_TIMEOUT;
+
+        case 0:
+            return wxCOND_NO_ERROR;
+
+        default:
+            wxLogApiError(_T("pthread_cond_timedwait()"), err);
+    }
+
+    return wxCOND_MISC_ERROR;
+}
+
+wxCondError wxConditionInternal::Signal()
+{
+    int err = pthread_cond_signal(&m_cond);
+    if ( err != 0 )
+    {
+        wxLogApiError(_T("pthread_cond_signal()"), err);
+
+        return wxCOND_MISC_ERROR;
+    }
+
+    return wxCOND_NO_ERROR;
+}
+
+wxCondError wxConditionInternal::Broadcast()
+{
+    int err = pthread_cond_broadcast(&m_cond);
+    if ( err != 0 )
+    {
+        wxLogApiError(_T("pthread_cond_broadcast()"), err);
+
+        return wxCOND_MISC_ERROR;
+    }
+
+    return wxCOND_NO_ERROR;
+}
+
+// ===========================================================================
+// wxSemaphore implementation
+// ===========================================================================
+
+// ---------------------------------------------------------------------------
+// wxSemaphoreInternal
+// ---------------------------------------------------------------------------
+
+// we implement the semaphores using mutexes and conditions instead of using
+// the sem_xxx() POSIX functions because they're not widely available and also
+// because it's impossible to implement WaitTimeout() using them
+class wxSemaphoreInternal
+{
+public:
+    wxSemaphoreInternal(int initialcount, int maxcount);
+
+    bool IsOk() const { return m_isOk; }
+
+    wxSemaError Wait();
+    wxSemaError TryWait();
+    wxSemaError WaitTimeout(unsigned long milliseconds);
+
+    wxSemaError Post();
+
+private:
+    wxMutex m_mutex;
+    wxCondition m_cond;
+
+    size_t m_count,
+           m_maxcount;
+
+    bool m_isOk;
+};
+
+wxSemaphoreInternal::wxSemaphoreInternal(int initialcount, int maxcount)
+                   : m_cond(m_mutex)
+{
+
+    if ( (initialcount < 0 || maxcount < 0) ||
+            ((maxcount > 0) && (initialcount > maxcount)) )
+    {
+        wxFAIL_MSG( _T("wxSemaphore: invalid initial or maximal count") );
+
+        m_isOk = FALSE;
     }
     else
     {
-        // the condition had already been signaled before
-        ok = TRUE;
+        m_maxcount = (size_t)maxcount;
+        m_count = (size_t)initialcount;
     }
 
-    WaitDone();
-
-    return ok;
+    m_isOk = m_mutex.IsOk() && m_cond.IsOk();
 }
 
-void wxConditionInternal::Signal()
+wxSemaError wxSemaphoreInternal::Wait()
 {
-    if ( HasWaiters() )
+    wxMutexLocker locker(m_mutex);
+
+    while ( m_count == 0 )
     {
-        MutexLock lock(m_mutex);
+        wxLogTrace(TRACE_SEMA,
+                   "Thread %ld waiting for semaphore to become signalled",
+                   wxThread::GetCurrentId());
 
-        if ( pthread_cond_signal( &m_condition ) != 0 )
-        {
-            // shouldn't ever happen
-            wxFAIL_MSG(_T("pthread_cond_signal() failed"));
-        }
+        if ( m_cond.Wait() != wxCOND_NO_ERROR )
+            return wxSEMA_MISC_ERROR;
+
+        wxLogTrace(TRACE_SEMA,
+                   "Thread %ld finished waiting for semaphore, count = %lu",
+                   wxThread::GetCurrentId(), (unsigned long)m_count);
     }
+
+    m_count--;
+
+    return wxSEMA_NO_ERROR;
 }
 
-void wxConditionInternal::Broadcast()
+wxSemaError wxSemaphoreInternal::TryWait()
 {
-    if ( HasWaiters() )
+    wxMutexLocker locker(m_mutex);
+
+    if ( m_count == 0 )
+        return wxSEMA_BUSY;
+
+    m_count--;
+
+    return wxSEMA_NO_ERROR;
+}
+
+wxSemaError wxSemaphoreInternal::WaitTimeout(unsigned long milliseconds)
+{
+    wxMutexLocker locker(m_mutex);
+
+    wxLongLong startTime = wxGetLocalTimeMillis();
+
+    while ( m_count == 0 )
     {
-        MutexLock lock(m_mutex);
-
-        if ( pthread_cond_broadcast( &m_condition ) != 0 )
+        wxLongLong elapsed = wxGetLocalTimeMillis() - startTime;
+        long remainingTime = (long)milliseconds - (long)elapsed.GetLo();
+        if ( remainingTime <= 0 )
         {
-            // shouldn't ever happen
-            wxFAIL_MSG(_T("pthread_cond_broadcast() failed"));
+            // timeout
+            return wxSEMA_TIMEOUT;
         }
+
+        if ( m_cond.Wait(remainingTime) != wxCOND_NO_ERROR )
+            return wxSEMA_MISC_ERROR;
     }
+
+    m_count--;
+
+    return wxSEMA_NO_ERROR;
 }
 
-wxCondition::wxCondition()
+wxSemaError wxSemaphoreInternal::Post()
 {
-    m_internal = new wxConditionInternal;
+    wxMutexLocker locker(m_mutex);
+
+    if ( m_maxcount > 0 && m_count == m_maxcount )
+    {
+        return wxSEMA_OVERFLOW;
+    }
+
+    m_count++;
+
+    wxLogTrace(TRACE_SEMA,
+               "Thread %ld about to signal semaphore, count = %lu",
+               wxThread::GetCurrentId(), (unsigned long)m_count);
+
+    return m_cond.Signal() == wxCOND_NO_ERROR ? wxSEMA_NO_ERROR
+                                              : wxSEMA_MISC_ERROR;
 }
 
-wxCondition::~wxCondition()
+// ===========================================================================
+// wxThread implementation
+// ===========================================================================
+
+// the thread callback functions must have the C linkage
+extern "C"
 {
-    delete m_internal;
-}
 
-void wxCondition::Wait()
-{
-    m_internal->Wait();
-}
+#if HAVE_THREAD_CLEANUP_FUNCTIONS
+    // thread exit function
+    void wxPthreadCleanup(void *ptr);
+#endif // HAVE_THREAD_CLEANUP_FUNCTIONS
 
-bool wxCondition::Wait(unsigned long sec, unsigned long nsec)
-{
-    timespec tspec;
+void *wxPthreadStart(void *ptr);
 
-    tspec.tv_sec = time(0L) + sec;  // FIXME is time(0) correct here?
-    tspec.tv_nsec = nsec;
+} // extern "C"
 
-    return m_internal->WaitWithTimeout(&tspec);
-}
-
-void wxCondition::Signal()
-{
-    m_internal->Signal();
-}
-
-void wxCondition::Broadcast()
-{
-    m_internal->Broadcast();
-}
-
-//--------------------------------------------------------------------
-// wxThread (Posix implementation)
-//--------------------------------------------------------------------
+// ----------------------------------------------------------------------------
+// wxThreadInternal
+// ----------------------------------------------------------------------------
 
 class wxThreadInternal
 {
@@ -479,22 +588,15 @@ public:
     ~wxThreadInternal();
 
     // thread entry function
-    static void *PthreadStart(void *ptr);
-
-#if HAVE_THREAD_CLEANUP_FUNCTIONS
-    // thread exit function
-    static void PthreadCleanup(void *ptr);
-#endif
+    static void *PthreadStart(wxThread *thread);
 
     // thread actions
         // start the thread
     wxThreadError Run();
+        // unblock the thread allowing it to run
+    void SignalRun() { m_semRun.Post(); }
         // ask the thread to terminate
     void Wait();
-        // wake up threads waiting for our termination
-    void SignalExit();
-        // wake up threads waiting for our start
-    void SignalRun() { m_condRun.Signal(); }
         // go to sleep until Resume() is called
     void Pause();
         // resume the thread
@@ -506,7 +608,23 @@ public:
     void SetPriority(int prio) { m_prio = prio; }
         // state
     wxThreadState GetState() const { return m_state; }
-    void SetState(wxThreadState state) { m_state = state; }
+    void SetState(wxThreadState state)
+    {
+#ifdef __WXDEBUG__
+        static const wxChar *stateNames[] =
+        {
+            _T("NEW"),
+            _T("RUNNING"),
+            _T("PAUSED"),
+            _T("EXITED"),
+        };
+
+        wxLogTrace(TRACE_THREADS, _T("Thread %ld: %s => %s."),
+                   (long)GetId(), stateNames[m_state], stateNames[state]);
+#endif // __WXDEBUG__
+
+        m_state = state;
+    }
         // id
     pthread_t GetId() const { return m_threadId; }
     pthread_t *GetIdPtr() { return &m_threadId; }
@@ -524,12 +642,16 @@ public:
         // tell the thread that it is a detached one
     void Detach()
     {
-        m_shouldBeJoined = m_shouldBroadcast = FALSE;
+        wxCriticalSectionLocker lock(m_csJoinFlag);
+
+        m_shouldBeJoined = FALSE;
         m_isDetached = TRUE;
     }
-        // but even detached threads need to notifyus about their termination
-        // sometimes - tell the thread that it should do it
-    void Notify() { m_shouldBroadcast = TRUE; }
+
+#if HAVE_THREAD_CLEANUP_FUNCTIONS
+    // this is used by wxPthreadCleanup() only
+    static void Cleanup(wxThread *thread);
+#endif // HAVE_THREAD_CLEANUP_FUNCTIONS
 
 private:
     pthread_t     m_threadId;   // id of the thread
@@ -539,7 +661,7 @@ private:
     // this flag is set when the thread should terminate
     bool m_cancelled;
 
-    // this flag is set when the thread is blocking on m_condSuspend
+    // this flag is set when the thread is blocking on m_semSuspend
     bool m_isPaused;
 
     // the thread exit code - only used for joinable (!detached) threads and
@@ -550,35 +672,31 @@ private:
     // pthread_join(), so we have to keep track of this
     wxCriticalSection m_csJoinFlag;
     bool m_shouldBeJoined;
-    bool m_shouldBroadcast;
     bool m_isDetached;
 
-    // VZ: it's possible that we might do with less than three different
-    //     condition objects - for example, m_condRun and m_condEnd a priori
-    //     won't be used in the same time. But for now I prefer this may be a
-    //     bit less efficient but safer solution of having distinct condition
-    //     variables for each purpose.
-
-    // this condition is signaled by Run() and the threads Entry() is not
+    // this semaphore is posted by Run() and the threads Entry() is not
     // called before it is done
-    wxCondition m_condRun;
+    wxSemaphore m_semRun;
 
     // this one is signaled when the thread should resume after having been
     // Pause()d
-    wxCondition m_condSuspend;
-
-    // finally this one is signalled when the thread exits
-    wxCondition m_condEnd;
+    wxSemaphore m_semSuspend;
 };
 
 // ----------------------------------------------------------------------------
 // thread startup and exit functions
 // ----------------------------------------------------------------------------
 
-void *wxThreadInternal::PthreadStart(void *ptr)
+void *wxPthreadStart(void *ptr)
 {
-    wxThread *thread = (wxThread *)ptr;
+    return wxThreadInternal::PthreadStart((wxThread *)ptr);
+}
+
+void *wxThreadInternal::PthreadStart(wxThread *thread)
+{
     wxThreadInternal *pthread = thread->m_internal;
+
+    wxLogTrace(TRACE_THREADS, _T("Thread %ld started."), (long)pthread->GetId());
 
     // associate the thread pointer with the newly created thread so that
     // wxThread::This() will work
@@ -597,11 +715,11 @@ void *wxThreadInternal::PthreadStart(void *ptr)
 #if HAVE_THREAD_CLEANUP_FUNCTIONS
     // install the cleanup handler which will be called if the thread is
     // cancelled
-    pthread_cleanup_push(wxThreadInternal::PthreadCleanup, ptr);
+    pthread_cleanup_push(wxPthreadCleanup, thread);
 #endif // HAVE_THREAD_CLEANUP_FUNCTIONS
 
-    // wait for the condition to be signaled from Run()
-    pthread->m_condRun.Wait();
+    // wait for the semaphore to be posted from Run()
+    pthread->m_semRun.Wait();
 
     // test whether we should run the run at all - may be it was deleted
     // before it started to Run()?
@@ -615,19 +733,19 @@ void *wxThreadInternal::PthreadStart(void *ptr)
     if ( !dontRunAtAll )
     {
         // call the main entry
+        wxLogTrace(TRACE_THREADS, _T("Thread %ld about to enter its Entry()."),
+                   (long)pthread->GetId());
+
         pthread->m_exitcode = thread->Entry();
 
-        wxLogTrace(TRACE_THREADS, _T("Thread %ld left its Entry()."),
-                   pthread->GetId());
+        wxLogTrace(TRACE_THREADS, _T("Thread %ld Entry() returned %lu."),
+                   (long)pthread->GetId(), (unsigned long)pthread->m_exitcode);
 
         {
             wxCriticalSectionLocker lock(thread->m_critsect);
 
-            wxLogTrace(TRACE_THREADS, _T("Thread %ld changes state to EXITED."),
-                       pthread->GetId());
-
             // change the state of the thread to "exited" so that
-            // PthreadCleanup handler won't do anything from now (if it's
+            // wxPthreadCleanup handler won't do anything from now (if it's
             // called before we do pthread_cleanup_pop below)
             pthread->SetState(STATE_EXITED);
         }
@@ -643,6 +761,7 @@ void *wxThreadInternal::PthreadStart(void *ptr)
 
     if ( dontRunAtAll )
     {
+        // FIXME: deleting a possibly joinable thread here???
         delete thread;
 
         return EXITCODE_CANCELLED;
@@ -661,10 +780,13 @@ void *wxThreadInternal::PthreadStart(void *ptr)
 #if HAVE_THREAD_CLEANUP_FUNCTIONS
 
 // this handler is called when the thread is cancelled
-void wxThreadInternal::PthreadCleanup(void *ptr)
+extern "C" void wxPthreadCleanup(void *ptr)
 {
-    wxThread *thread = (wxThread *) ptr;
+    wxThreadInternal::Cleanup((wxThread *)ptr);
+}
 
+void wxThreadInternal::Cleanup(wxThread *thread)
+{
     {
         wxCriticalSectionLocker lock(thread->m_critsect);
         if ( thread->m_internal->GetState() == STATE_EXITED )
@@ -692,12 +814,11 @@ wxThreadInternal::wxThreadInternal()
     m_threadId = 0;
     m_exitcode = 0;
 
-    // set to TRUE only when the thread starts waiting on m_condSuspend
+    // set to TRUE only when the thread starts waiting on m_semSuspend
     m_isPaused = FALSE;
 
     // defaults for joinable threads
     m_shouldBeJoined = TRUE;
-    m_shouldBroadcast = TRUE;
     m_isDetached = FALSE;
 }
 
@@ -710,37 +831,29 @@ wxThreadError wxThreadInternal::Run()
     wxCHECK_MSG( GetState() == STATE_NEW, wxTHREAD_RUNNING,
                  wxT("thread may only be started once after Create()") );
 
-    SignalRun();
-
     SetState(STATE_RUNNING);
+
+    // wake up threads waiting for our start
+    SignalRun();
 
     return wxTHREAD_NO_ERROR;
 }
 
 void wxThreadInternal::Wait()
 {
+    wxCHECK_RET( !m_isDetached, _T("can't wait for a detached thread") );
+
     // if the thread we're waiting for is waiting for the GUI mutex, we will
     // deadlock so make sure we release it temporarily
     if ( wxThread::IsMain() )
         wxMutexGuiLeave();
 
-    bool isDetached = m_isDetached;
-    long id = (long)GetId();
-    wxLogTrace(TRACE_THREADS, _T("Starting to wait for thread %ld to exit."),
-               id);
+    wxLogTrace(TRACE_THREADS,
+               _T("Starting to wait for thread %ld to exit."), (long)GetId());
 
-    // wait until the thread terminates (we're blocking in _another_ thread,
-    // of course)
-    m_condEnd.Wait();
-
-    wxLogTrace(TRACE_THREADS, _T("Finished waiting for thread %ld."), id);
-
-    // we can't use any member variables any more if the thread is detached
-    // because it could be already deleted
-    if ( !isDetached )
+    // to avoid memory leaks we should call pthread_join(), but it must only be
+    // done once so use a critical section to serialize the code below
     {
-        // to avoid memory leaks we should call pthread_join(), but it must
-        // only be done once
         wxCriticalSectionLocker lock(m_csJoinFlag);
 
         if ( m_shouldBeJoined )
@@ -749,8 +862,12 @@ void wxThreadInternal::Wait()
             //       we're cancelled inside pthread_join(), things will almost
             //       certainly break - but if we disable the cancellation, we
             //       might deadlock
-            if ( pthread_join((pthread_t)id, &m_exitcode) != 0 )
+            if ( pthread_join(GetId(), &m_exitcode) != 0 )
             {
+                // this is a serious problem, so use wxLogError and not
+                // wxLogDebug: it is possible to bring the system to its knees
+                // by creating too many threads and not joining them quite
+                // easily
                 wxLogError(_("Failed to join a thread, potential memory leak "
                              "detected - please restart the program"));
             }
@@ -764,22 +881,6 @@ void wxThreadInternal::Wait()
         wxMutexGuiEnter();
 }
 
-void wxThreadInternal::SignalExit()
-{
-    wxLogTrace(TRACE_THREADS, _T("Thread %ld about to exit."), GetId());
-
-    SetState(STATE_EXITED);
-
-    // wake up all the threads waiting for our termination - if there are any
-    if ( m_shouldBroadcast )
-    {
-        wxLogTrace(TRACE_THREADS, _T("Thread %ld signals end condition."),
-                   GetId());
-
-        m_condEnd.Broadcast();
-    }
-}
-
 void wxThreadInternal::Pause()
 {
     // the state is set from the thread which pauses us first, this function
@@ -787,10 +888,10 @@ void wxThreadInternal::Pause()
     wxCHECK_RET( m_state == STATE_PAUSED,
                  wxT("thread must first be paused with wxThread::Pause().") );
 
-    wxLogTrace(TRACE_THREADS, _T("Thread %ld goes to sleep."), GetId());
+    wxLogTrace(TRACE_THREADS, _T("Thread %ld goes to sleep."), (long)GetId());
 
-    // wait until the condition is signaled from Resume()
-    m_condSuspend.Wait();
+    // wait until the semaphore is Post()ed from Resume()
+    m_semSuspend.Wait();
 }
 
 void wxThreadInternal::Resume()
@@ -802,10 +903,10 @@ void wxThreadInternal::Resume()
     // TestDestroy() since the last call to Pause() for example
     if ( IsReallyPaused() )
     {
-        wxLogTrace(TRACE_THREADS, _T("Waking up thread %ld"), GetId());
+        wxLogTrace(TRACE_THREADS, _T("Waking up thread %ld"), (long)GetId());
 
         // wake up Pause()
-        m_condSuspend.Signal();
+        m_semSuspend.Post();
 
         // reset the flag
         SetReallyPaused(FALSE);
@@ -813,7 +914,7 @@ void wxThreadInternal::Resume()
     else
     {
         wxLogTrace(TRACE_THREADS, _T("Thread %ld is not yet really paused"),
-                   GetId());
+                   (long)GetId());
     }
 
     SetState(STATE_RUNNING);
@@ -847,7 +948,7 @@ void wxThread::Sleep(unsigned long milliseconds)
 
 int wxThread::GetCPUCount()
 {
-#if defined(__LINUX__)
+#if defined(__LINUX__) && wxUSE_FFILE
     // read from proc (can't use wxTextFile here because it's a special file:
     // it has 0 size but still can be read from)
     wxLogNull nolog;
@@ -886,6 +987,19 @@ int wxThread::GetCPUCount()
     return -1;
 }
 
+#ifdef __VMS
+  // VMS is a 64 bit system and threads have 64 bit pointers.
+  // ??? also needed for other systems????
+unsigned long long wxThread::GetCurrentId()
+{
+    return (unsigned long long)pthread_self();
+#else
+unsigned long wxThread::GetCurrentId()
+{
+    return (unsigned long)pthread_self();
+#endif
+}
+
 bool wxThread::SetConcurrency(size_t level)
 {
 #ifdef HAVE_THR_SETCONCURRENCY
@@ -916,7 +1030,7 @@ wxThread::wxThread(wxThreadKind kind)
     m_isDetached = kind == wxTHREAD_DETACHED;
 }
 
-wxThreadError wxThread::Create()
+wxThreadError wxThread::Create(unsigned int WXUNUSED(stackSize))
 {
     if ( m_internal->GetState() != STATE_NEW )
     {
@@ -944,7 +1058,7 @@ wxThreadError wxThread::Create()
 #define sched_get_priority_min(_pol_) \
      (_pol_ == SCHED_OTHER ? PRI_FG_MIN_NP : PRI_FIFO_MIN)
 #endif
-   
+
     int max_prio = sched_get_priority_max(policy),
         min_prio = sched_get_priority_min(policy),
         prio = m_internal->GetPriority();
@@ -1010,7 +1124,7 @@ wxThreadError wxThread::Create()
              (
                 m_internal->GetIdPtr(),
                 &attr,
-                wxThreadInternal::PthreadStart,
+                wxPthreadStart,
                 (void *)this
              );
 
@@ -1061,6 +1175,45 @@ void wxThread::SetPriority(unsigned int prio)
         case STATE_RUNNING:
         case STATE_PAUSED:
 #ifdef HAVE_THREAD_PRIORITY_FUNCTIONS
+#if defined(__LINUX__)
+// On Linux, pthread_setschedparam with SCHED_OTHER does not allow
+// a priority other than 0.  Instead, we use the BSD setpriority
+// which alllows us to set a 'nice' value between 20 to -20.  Only
+// super user can set a value less than zero (more negative yields
+// higher priority).  setpriority set the static priority of a process,
+// but this is OK since Linux is configured as a thread per process.
+            {
+                float   fPrio;
+                float	pSpan;
+                int		iPrio;
+
+                // Map Wx priorites (WXTHREAD_MIN_PRIORITY -
+                // WXTHREAD_MAX_PRIORITY) into BSD priorities (20 - -20).
+                // Do calculation of values instead of hard coding them
+                // to make maintenance easier.
+
+                pSpan = ((float)(WXTHREAD_MAX_PRIORITY - WXTHREAD_MIN_PRIORITY)) / 2.0;
+
+                // prio starts as ...................  // value =>  (0) >=  p  <=  (n)
+
+                fPrio = ((float)prio) -  pSpan;        // value =>  (-n) >=  p  <=  (+n)
+
+                fPrio = 0.0 - fPrio;                   // value =>  (+n) <=  p  >=  (-n)
+
+                fPrio = fPrio * (20. / pSpan) + .5;    // value =>  (20) <=  p  >=  (-20)
+
+                iPrio = (int)fPrio;
+
+                // Clamp prio from 20 - -20;
+                iPrio = (iPrio > 20)  ?  20 : iPrio;
+                iPrio = (iPrio < -20) ? -20 : iPrio;
+
+                if (setpriority(PRIO_PROCESS, 0, iPrio) == -1)
+                {
+                    wxLogError(_("Failed to set thread priority %d."), prio);
+                }
+            }
+#else // __LINUX__
             {
                 struct sched_param sparam;
                 sparam.sched_priority = prio;
@@ -1071,6 +1224,7 @@ void wxThread::SetPriority(unsigned int prio)
                     wxLogError(_("Failed to set thread priority %d."), prio);
                 }
             }
+#endif // __LINUX__
 #endif // HAVE_THREAD_PRIORITY_FUNCTIONS
             break;
 
@@ -1087,9 +1241,9 @@ unsigned int wxThread::GetPriority() const
     return m_internal->GetPriority();
 }
 
-unsigned long wxThread::GetId() const
+wxThreadIdType wxThread::GetId() const
 {
-    return (unsigned long)m_internal->GetId();
+    return (wxThreadIdType) m_internal->GetId();
 }
 
 // -----------------------------------------------------------------------------
@@ -1109,9 +1263,6 @@ wxThreadError wxThread::Pause()
 
         return wxTHREAD_NOT_RUNNING;
     }
-
-    wxLogTrace(TRACE_THREADS, _T("Asking thread %ld to pause."),
-               GetId());
 
     // just set a flag, the thread will be really paused only during the next
     // call to TestDestroy()
@@ -1173,19 +1324,13 @@ wxThreadError wxThread::Delete(ExitCode *rc)
     wxCHECK_MSG( This() != this, wxTHREAD_MISC_ERROR,
                  _T("a thread can't delete itself") );
 
+    bool isDetached = m_isDetached;
+
     m_critsect.Enter();
     wxThreadState state = m_internal->GetState();
 
     // ask the thread to stop
     m_internal->SetCancelFlag();
-
-    if ( m_isDetached )
-    {
-        // detached threads won't broadcast about their termination by default
-        // because usually nobody waits for them - but here we do, so ask the
-        // thread to notify us
-        m_internal->Notify();
-    }
 
     m_critsect.Leave();
 
@@ -1193,7 +1338,8 @@ wxThreadError wxThread::Delete(ExitCode *rc)
     {
         case STATE_NEW:
             // we need to wake up the thread so that PthreadStart() will
-            // terminate - right now it's blocking on m_condRun
+            // terminate - right now it's blocking on run semaphore in
+            // PthreadStart()
             m_internal->SignalRun();
 
             // fall through
@@ -1203,24 +1349,24 @@ wxThreadError wxThread::Delete(ExitCode *rc)
             break;
 
         case STATE_PAUSED:
-            // resume the thread first (don't call our Resume() because this
-            // would dead lock when it tries to enter m_critsect)
+            // resume the thread first
             m_internal->Resume();
 
             // fall through
 
         default:
-            // wait until the thread stops
-            m_internal->Wait();
-
-            if ( rc )
+            if ( !isDetached )
             {
-                wxASSERT_MSG( !m_isDetached,
-                              _T("no return code for detached threads") );
+                // wait until the thread stops
+                m_internal->Wait();
 
-                // if it's a joinable thread, it's not deleted yet
-                *rc = m_internal->GetExitCode();
+                if ( rc )
+                {
+                    // return the exit code of the thread
+                    *rc = m_internal->GetExitCode();
+                }
             }
+            //else: can't wait for detached threads
     }
 
     return wxTHREAD_NO_ERROR;
@@ -1256,7 +1402,7 @@ wxThreadError wxThread::Kill()
             if ( m_isDetached )
             {
                 // if we use cleanup function, this will be done from
-                // PthreadCleanup()
+                // wxPthreadCleanup()
 #if !HAVE_THREAD_CLEANUP_FUNCTIONS
                 ScheduleThreadForDeletion();
 
@@ -1281,27 +1427,19 @@ void wxThread::Exit(ExitCode status)
                   _T("wxThread::Exit() can only be called in the "
                      "context of the same thread") );
 
-    // from the moment we call OnExit(), the main program may terminate at any
-    // moment, so mark this thread as being already in process of being
-    // deleted or wxThreadModule::OnExit() will try to delete it again
-    ScheduleThreadForDeletion();
+    if ( m_isDetached )
+    {
+        // from the moment we call OnExit(), the main program may terminate at
+        // any moment, so mark this thread as being already in process of being
+        // deleted or wxThreadModule::OnExit() will try to delete it again
+        ScheduleThreadForDeletion();
+    }
 
     // don't enter m_critsect before calling OnExit() because the user code
     // might deadlock if, for example, it signals a condition in OnExit() (a
     // common case) while the main thread calls any of functions entering
     // m_critsect on us (almost all of them do)
     OnExit();
-
-    // now do enter it because SignalExit() will change our state
-    m_critsect.Enter();
-
-    // next wake up the threads waiting for us (OTOH, this function won't return
-    // until someone waited for us!)
-    m_internal->SignalExit();
-
-    // leave the critical section before entering the dtor which tries to
-    // enter it
-    m_critsect.Leave();
 
     // delete C++ thread object if this is a detached thread - user is
     // responsible for doing this for joinable ones
@@ -1371,17 +1509,6 @@ wxThread::~wxThread()
 
     // remove this thread from the global array
     gs_allThreads.Remove(this);
-
-    // detached thread will decrement this counter in DeleteThread(), but it
-    // is not called for the joinable threads, so do it here
-    if ( !m_isDetached )
-    {
-        MutexLock lock(gs_mutexDeleteThread);
-        gs_nThreadsBeingDeleted--;
-
-        wxLogTrace(TRACE_THREADS, _T("%u scheduled for deletion threads left."),
-                   gs_nThreadsBeingDeleted - 1);
-    }
 }
 
 // -----------------------------------------------------------------------------
@@ -1452,9 +1579,8 @@ bool wxThreadModule::OnInit()
     gs_mutexGui->Lock();
 #endif // wxUSE_GUI
 
-    // under Solaris we get a warning from CC when using
-    // PTHREAD_MUTEX_INITIALIZER, so do it dynamically
-    pthread_mutex_init(&gs_mutexDeleteThread, NULL);
+    gs_mutexDeleteThread = new wxMutex();
+    gs_condAllDeleted = new wxCondition( *gs_mutexDeleteThread );
 
     return TRUE;
 }
@@ -1465,26 +1591,28 @@ void wxThreadModule::OnExit()
 
     // are there any threads left which are being deleted right now?
     size_t nThreadsBeingDeleted;
+
     {
-        MutexLock lock(gs_mutexDeleteThread);
+        wxMutexLocker lock( *gs_mutexDeleteThread );
         nThreadsBeingDeleted = gs_nThreadsBeingDeleted;
-    }
 
-    if ( nThreadsBeingDeleted > 0 )
-    {
-        wxLogTrace(TRACE_THREADS, _T("Waiting for %u threads to disappear"),
-                   nThreadsBeingDeleted);
+        if ( nThreadsBeingDeleted > 0 )
+        {
+            wxLogTrace(TRACE_THREADS,
+                       _T("Waiting for %lu threads to disappear"),
+                       (unsigned long)nThreadsBeingDeleted);
 
-        // have to wait until all of them disappear
-        gs_condAllDeleted->Wait();
+            // have to wait until all of them disappear
+            gs_condAllDeleted->Wait();
+        }
     }
 
     // terminate any threads left
     size_t count = gs_allThreads.GetCount();
     if ( count != 0u )
     {
-        wxLogDebug(wxT("%u threads were not terminated by the application."),
-                   count);
+        wxLogDebug(wxT("%lu threads were not terminated by the application."),
+                   (unsigned long)count);
     }
 
     for ( size_t n = 0u; n < count; n++ )
@@ -1503,6 +1631,9 @@ void wxThreadModule::OnExit()
 
     // and free TLD slot
     (void)pthread_key_delete(gs_keySelf);
+
+    delete gs_condAllDeleted;
+    delete gs_mutexDeleteThread;
 }
 
 // ----------------------------------------------------------------------------
@@ -1511,17 +1642,12 @@ void wxThreadModule::OnExit()
 
 static void ScheduleThreadForDeletion()
 {
-    MutexLock lock(gs_mutexDeleteThread);
-
-    if ( gs_nThreadsBeingDeleted == 0 )
-    {
-        gs_condAllDeleted = new wxCondition;
-    }
+    wxMutexLocker lock( *gs_mutexDeleteThread );
 
     gs_nThreadsBeingDeleted++;
 
-    wxLogTrace(TRACE_THREADS, _T("%u thread%s waiting to be deleted"),
-               gs_nThreadsBeingDeleted,
+    wxLogTrace(TRACE_THREADS, _T("%lu thread%s waiting to be deleted"),
+               (unsigned long)gs_nThreadsBeingDeleted,
                gs_nThreadsBeingDeleted == 1 ? "" : "s");
 }
 
@@ -1529,28 +1655,22 @@ static void DeleteThread(wxThread *This)
 {
     // gs_mutexDeleteThread should be unlocked before signalling the condition
     // or wxThreadModule::OnExit() would deadlock
-    {
-        MutexLock lock(gs_mutexDeleteThread);
+    wxMutexLocker locker( *gs_mutexDeleteThread );
 
-        wxLogTrace(TRACE_THREADS, _T("Thread %ld auto deletes."), This->GetId());
+    wxLogTrace(TRACE_THREADS, _T("Thread %ld auto deletes."), This->GetId());
 
-        delete This;
+    delete This;
 
-        wxCHECK_RET( gs_nThreadsBeingDeleted > 0,
-                     _T("no threads scheduled for deletion, yet we delete "
-                        "one?") );
-    }
+    wxCHECK_RET( gs_nThreadsBeingDeleted > 0,
+                 _T("no threads scheduled for deletion, yet we delete one?") );
 
-    wxLogTrace(TRACE_THREADS, _T("%u scheduled for deletion threads left."),
-               gs_nThreadsBeingDeleted - 1);
+    wxLogTrace(TRACE_THREADS, _T("%lu scheduled for deletion threads left."),
+               (unsigned long)gs_nThreadsBeingDeleted - 1);
 
     if ( !--gs_nThreadsBeingDeleted )
     {
         // no more threads left, signal it
         gs_condAllDeleted->Signal();
-
-        delete gs_condAllDeleted;
-        gs_condAllDeleted = (wxCondition *)NULL;
     }
 }
 
@@ -1568,5 +1688,11 @@ void wxMutexGuiLeave()
 #endif // wxUSE_GUI
 }
 
-#endif
-  // wxUSE_THREADS
+// ----------------------------------------------------------------------------
+// include common implementation code
+// ----------------------------------------------------------------------------
+
+#include "wx/thrimpl.cpp"
+
+#endif // wxUSE_THREADS
+

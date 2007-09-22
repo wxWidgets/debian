@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     01/02/97
-// RCS-ID:      $Id: resource.h,v 1.13.2.1 2000/04/18 10:30:24 JS Exp $
+// RCS-ID:      $Id: resource.h,v 1.17 2002/08/31 11:29:11 GD Exp $
 // Copyright:   (c) Julian Smart and Markus Holzem
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -12,7 +12,7 @@
 #ifndef _WX_RESOURCEH__
 #define _WX_RESOURCEH__
 
-#ifdef __GNUG__
+#if defined(__GNUG__) && !defined(__APPLE__)
 #pragma interface "resource.h"
 #endif
 
@@ -51,6 +51,8 @@
 #ifdef FindResource
 #undef FindResource
 #endif
+
+class WXDLLEXPORT wxInputStream;
 
 /*
  * Internal format for control/panel item
@@ -153,7 +155,7 @@ class WXDLLEXPORT wxResourceTable: public wxHashTable
     virtual bool DeleteResource(const wxString& name);
 
     virtual bool ParseResourceFile(const wxString& filename);
-	virtual bool ParseResourceFile( wxInputStream *is ) ;
+    virtual bool ParseResourceFile(wxInputStream *is);
     virtual bool ParseResourceData(const wxString& data);
     virtual bool SaveResource(const wxString& filename);
 
@@ -196,6 +198,9 @@ WXDLLEXPORT extern bool wxResourceRegisterBitmapData(const wxString& name, char 
 WXDLLEXPORT extern bool wxResourceAddIdentifier(const wxString& name, int value, wxResourceTable *table = (wxResourceTable *) NULL);
 WXDLLEXPORT extern int wxResourceGetIdentifier(const wxString& name, wxResourceTable *table = (wxResourceTable *) NULL);
 
+#if defined(__WXPM__)
+#include "wx/os2/wxrsc.h"
+#endif
 #endif
 #endif
     // _WX_RESOURCEH__

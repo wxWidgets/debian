@@ -4,19 +4,27 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     29/01/98
-// RCS-ID:      $Id: version.h,v 1.25.2.15 2001/12/17 17:05:34 JS Exp $
+// RCS-ID:      $Id: version.h,v 1.31 2001/12/19 21:43:09 GT Exp $
 // Copyright:   (c) 1998 Julian Smart
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
 
-#ifndef _WX_VERSIONH__
-#define _WX_VERSIONH__
+#ifndef _WX_VERSION_H_
+#define _WX_VERSION_H_
 
 // Bump-up with each new version
 #define wxMAJOR_VERSION    2
-#define wxMINOR_VERSION    2
-#define wxRELEASE_NUMBER   9
-#define wxVERSION_STRING   _T("wxWindows 2.2.9")
+#define wxMINOR_VERSION    3
+#define wxRELEASE_NUMBER   3
+#define wxVERSION_STRING   _T("wxWindows 2.3.3")
+
+// These are used by src/msw/version.rc and should always be ASCII, not Unicode
+// and must be updated manually as well each time the version above changes
+#define wxVERSION_NUM_DOT_STRING   "2.3.3"
+#define wxVERSION_NUM_STRING       "233"
+
+// nothing should be updated below this line when updating the version
+
 #define wxVERSION_NUMBER (wxMAJOR_VERSION * 1000) + (wxMINOR_VERSION * 100) + wxRELEASE_NUMBER
 #define wxBETA_NUMBER      0
 #define wxVERSION_FLOAT wxMAJOR_VERSION + (wxMINOR_VERSION/10.0) + (wxRELEASE_NUMBER/100.0) + (wxBETA_NUMBER/10000.0)
@@ -27,5 +35,5 @@
     (wxMAJOR_VERSION == (major) && wxMINOR_VERSION > (minor)) || \
     (wxMAJOR_VERSION == (major) && wxMINOR_VERSION == (minor) && wxRELEASE_NUMBER >= (release)))
 
-#endif
-// _WX_VERSIONH__
+#endif // _WX_VERSION_H_
+

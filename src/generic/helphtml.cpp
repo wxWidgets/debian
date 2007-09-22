@@ -4,7 +4,7 @@
 // Author:      Karsten Ballueder
 // Modified by:
 // Created:     04/01/98
-// RCS-ID:      $Id: helphtml.cpp,v 1.18.2.3 2000/07/19 08:30:51 OK Exp $
+// RCS-ID:      $Id: helphtml.cpp,v 1.23 2002/01/28 21:50:22 SC Exp $
 // Copyright:   (c) Karsten Ballueder
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -43,6 +43,17 @@
 #if !defined(__WINDOWS__) && !defined(__OS2__)
     #include   <unistd.h>
 #endif
+
+// ----------------------------------------------------------------------------
+// constants
+// ----------------------------------------------------------------------------
+
+/// Name for map file.
+#define WXEXTHELP_MAPFILE   _T("wxhelp.map")
+/// Maximum line length in map file.
+#define WXEXTHELP_BUFLEN 512
+/// Character introducing comments/documentation field in map file.
+#define WXEXTHELP_COMMENTCHAR   ';'
 
 #define CONTENTS_ID   0
 
@@ -122,7 +133,11 @@ wxHTMLHelpControllerBase::LoadFile(const wxString& ifile)
          wxChar* f = wxGetWorkingDirectory();
          file = f;
          delete[] f; // wxGetWorkingDirectory returns new memory
+#ifdef __WXMAC__
+         file << ifile;
+#else
          file << WXEXTHELP_SEPARATOR << ifile;
+#endif
       }
       else
          file = ifile;

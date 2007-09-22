@@ -6,8 +6,10 @@
 // Licence:     wxWindows Licence
 /////////////////////////////////////////////////////////////////////////////
 
+#ifndef _WX_FS_MEM_H_
+#define _WX_FS_MEM_H_
 
-#ifdef __GNUG__
+#if defined(__GNUG__) && !defined(__APPLE__)
 #pragma interface "fs_mem.h"
 #endif
 
@@ -19,14 +21,11 @@
 
 #if wxUSE_FILESYSTEM
 
-#ifndef WXPRECOMP
-#include "wx/wx.h"
-#endif
-
 #include "wx/filesys.h"
+
 #if wxUSE_GUI
-#include "wx/image.h"
-#include "wx/bitmap.h"
+    #include "wx/image.h"
+    #include "wx/bitmap.h"
 #endif
 
 //--------------------------------------------------------------------------------
@@ -45,24 +44,26 @@ class WXDLLEXPORT wxMemoryFSHandler : public wxFileSystemHandler
         static void AddFile(const wxString& filename, wxImage& image, long type);
         static void AddFile(const wxString& filename, const wxBitmap& bitmap, long type);
 #endif
-        static void AddFile(const wxString& filename, const wxString& textdata);        
+        static void AddFile(const wxString& filename, const wxString& textdata);
         static void AddFile(const wxString& filename, const void *binarydata, size_t size);
-        
+
         // Remove file from memory FS and free occupied memory
         static void RemoveFile(const wxString& filename);
-        
+
         virtual bool CanOpen(const wxString& location);
         virtual wxFSFile* OpenFile(wxFileSystem& fs, const wxString& location);
         virtual wxString FindFirst(const wxString& spec, int flags = 0);
         virtual wxString FindNext();
-        
+
     private:
         static wxHashTable *m_Hash;
-        
+
         static bool CheckHash(const wxString& filename);
 };
 
-#endif 
+#endif
   // wxUSE_FILESYSTEM
 
+
+#endif // _WX_FS_MEM_H_
 

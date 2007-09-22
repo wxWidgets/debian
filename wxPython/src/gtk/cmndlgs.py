@@ -5,19 +5,39 @@ from misc import *
 
 from gdi import *
 
+from fonts import *
+
 from windows import *
 
 from clip_dnd import *
+
+from events import *
 
 from frames import *
 
 from stattool import *
 
 from controls import *
-
-from events import *
 import wx
-class wxColourDataPtr :
+
+
+def EVT_COMMAND_FIND(win, id, func):
+    win.Connect(id, -1, wxEVT_COMMAND_FIND, func)
+
+def EVT_COMMAND_FIND_NEXT(win, id, func):
+    win.Connect(id, -1, wxEVT_COMMAND_FIND_NEXT, func)
+
+def EVT_COMMAND_FIND_REPLACE(win, id, func):
+    win.Connect(id, -1, wxEVT_COMMAND_FIND_REPLACE, func)
+
+def EVT_COMMAND_FIND_REPLACE_ALL(win, id, func):
+    win.Connect(id, -1, wxEVT_COMMAND_FIND_REPLACE_ALL, func)
+
+def EVT_COMMAND_FIND_CLOSE(win, id, func):
+    win.Connect(id, -1, wxEVT_COMMAND_FIND_CLOSE, func)
+
+
+class wxColourDataPtr(wxObjectPtr):
     def __init__(self,this):
         self.this = this
         self.thisown = 0
@@ -29,7 +49,7 @@ class wxColourDataPtr :
         return val
     def GetColour(self, *_args, **_kwargs):
         val = apply(cmndlgsc.wxColourData_GetColour,(self,) + _args, _kwargs)
-        if val: val = wxColourPtr(val) 
+        if val: val = wxColourPtr(val) ; val.thisown = 1
         return val
     def GetCustomColour(self, *_args, **_kwargs):
         val = apply(cmndlgsc.wxColourData_GetCustomColour,(self,) + _args, _kwargs)
@@ -71,7 +91,7 @@ class wxColourDialog(wxColourDialogPtr):
     def __init__(self,*_args,**_kwargs):
         self.this = apply(cmndlgsc.new_wxColourDialog,_args,_kwargs)
         self.thisown = 1
-        #wx._StdDialogCallbacks(self)
+        self._setOORInfo(self)
 
 
 
@@ -104,7 +124,7 @@ class wxDirDialog(wxDirDialogPtr):
     def __init__(self,*_args,**_kwargs):
         self.this = apply(cmndlgsc.new_wxDirDialog,_args,_kwargs)
         self.thisown = 1
-        #wx._StdDialogCallbacks(self)
+        self._setOORInfo(self)
 
 
 
@@ -170,7 +190,28 @@ class wxFileDialog(wxFileDialogPtr):
     def __init__(self,*_args,**_kwargs):
         self.this = apply(cmndlgsc.new_wxFileDialog,_args,_kwargs)
         self.thisown = 1
-        #wx._StdDialogCallbacks(self)
+        self._setOORInfo(self)
+
+
+
+
+class wxMultiChoiceDialogPtr(wxDialogPtr):
+    def __init__(self,this):
+        self.this = this
+        self.thisown = 0
+    def SetSelections(self, *_args, **_kwargs):
+        val = apply(cmndlgsc.wxMultiChoiceDialog_SetSelections,(self,) + _args, _kwargs)
+        return val
+    def GetSelections(self, *_args, **_kwargs):
+        val = apply(cmndlgsc.wxMultiChoiceDialog_GetSelections,(self,) + _args, _kwargs)
+        return val
+    def __repr__(self):
+        return "<C wxMultiChoiceDialog instance at %s>" % (self.this,)
+class wxMultiChoiceDialog(wxMultiChoiceDialogPtr):
+    def __init__(self,*_args,**_kwargs):
+        self.this = apply(cmndlgsc.new_wxMultiChoiceDialog,_args,_kwargs)
+        self.thisown = 1
+        self._setOORInfo(self)
 
 
 
@@ -197,7 +238,7 @@ class wxSingleChoiceDialog(wxSingleChoiceDialogPtr):
     def __init__(self,*_args,**_kwargs):
         self.this = apply(cmndlgsc.new_wxSingleChoiceDialog,_args,_kwargs)
         self.thisown = 1
-        #wx._StdDialogCallbacks(self)
+        self._setOORInfo(self)
 
 
 
@@ -221,12 +262,12 @@ class wxTextEntryDialog(wxTextEntryDialogPtr):
     def __init__(self,*_args,**_kwargs):
         self.this = apply(cmndlgsc.new_wxTextEntryDialog,_args,_kwargs)
         self.thisown = 1
-        #wx._StdDialogCallbacks(self)
+        self._setOORInfo(self)
 
 
 
 
-class wxFontDataPtr :
+class wxFontDataPtr(wxObjectPtr):
     def __init__(self,this):
         self.this = this
         self.thisown = 0
@@ -241,7 +282,7 @@ class wxFontDataPtr :
         return val
     def GetColour(self, *_args, **_kwargs):
         val = apply(cmndlgsc.wxFontData_GetColour,(self,) + _args, _kwargs)
-        if val: val = wxColourPtr(val) 
+        if val: val = wxColourPtr(val) ; val.thisown = 1
         return val
     def GetChosenFont(self, *_args, **_kwargs):
         val = apply(cmndlgsc.wxFontData_GetChosenFont,(self,) + _args, _kwargs)
@@ -302,7 +343,7 @@ class wxFontDialog(wxFontDialogPtr):
     def __init__(self,*_args,**_kwargs):
         self.this = apply(cmndlgsc.new_wxFontDialog,_args,_kwargs)
         self.thisown = 1
-        #wx._StdDialogCallbacks(self)
+        self._setOORInfo(self)
 
 
 
@@ -320,7 +361,7 @@ class wxMessageDialog(wxMessageDialogPtr):
     def __init__(self,*_args,**_kwargs):
         self.this = apply(cmndlgsc.new_wxMessageDialog,_args,_kwargs)
         self.thisown = 1
-        #wx._StdDialogCallbacks(self)
+        self._setOORInfo(self)
 
 
 
@@ -341,8 +382,111 @@ class wxProgressDialog(wxProgressDialogPtr):
     def __init__(self,*_args,**_kwargs):
         self.this = apply(cmndlgsc.new_wxProgressDialog,_args,_kwargs)
         self.thisown = 1
+        self._setOORInfo(self)
 
 
+
+
+class wxFindDialogEventPtr(wxCommandEventPtr):
+    def __init__(self,this):
+        self.this = this
+        self.thisown = 0
+    def GetFlags(self, *_args, **_kwargs):
+        val = apply(cmndlgsc.wxFindDialogEvent_GetFlags,(self,) + _args, _kwargs)
+        return val
+    def GetFindString(self, *_args, **_kwargs):
+        val = apply(cmndlgsc.wxFindDialogEvent_GetFindString,(self,) + _args, _kwargs)
+        return val
+    def GetReplaceString(self, *_args, **_kwargs):
+        val = apply(cmndlgsc.wxFindDialogEvent_GetReplaceString,(self,) + _args, _kwargs)
+        return val
+    def GetDialog(self, *_args, **_kwargs):
+        val = apply(cmndlgsc.wxFindDialogEvent_GetDialog,(self,) + _args, _kwargs)
+        if val: val = wxFindReplaceDialogPtr(val) 
+        return val
+    def SetFlags(self, *_args, **_kwargs):
+        val = apply(cmndlgsc.wxFindDialogEvent_SetFlags,(self,) + _args, _kwargs)
+        return val
+    def SetFindString(self, *_args, **_kwargs):
+        val = apply(cmndlgsc.wxFindDialogEvent_SetFindString,(self,) + _args, _kwargs)
+        return val
+    def SetReplaceString(self, *_args, **_kwargs):
+        val = apply(cmndlgsc.wxFindDialogEvent_SetReplaceString,(self,) + _args, _kwargs)
+        return val
+    def __repr__(self):
+        return "<C wxFindDialogEvent instance at %s>" % (self.this,)
+class wxFindDialogEvent(wxFindDialogEventPtr):
+    def __init__(self,*_args,**_kwargs):
+        self.this = apply(cmndlgsc.new_wxFindDialogEvent,_args,_kwargs)
+        self.thisown = 1
+
+
+
+
+class wxFindReplaceDataPtr(wxObjectPtr):
+    def __init__(self,this):
+        self.this = this
+        self.thisown = 0
+    def __del__(self,cmndlgsc=cmndlgsc):
+        if self.thisown == 1 :
+            cmndlgsc.delete_wxFindReplaceData(self)
+    def GetFindString(self, *_args, **_kwargs):
+        val = apply(cmndlgsc.wxFindReplaceData_GetFindString,(self,) + _args, _kwargs)
+        return val
+    def GetReplaceString(self, *_args, **_kwargs):
+        val = apply(cmndlgsc.wxFindReplaceData_GetReplaceString,(self,) + _args, _kwargs)
+        return val
+    def GetFlags(self, *_args, **_kwargs):
+        val = apply(cmndlgsc.wxFindReplaceData_GetFlags,(self,) + _args, _kwargs)
+        return val
+    def SetFlags(self, *_args, **_kwargs):
+        val = apply(cmndlgsc.wxFindReplaceData_SetFlags,(self,) + _args, _kwargs)
+        return val
+    def SetFindString(self, *_args, **_kwargs):
+        val = apply(cmndlgsc.wxFindReplaceData_SetFindString,(self,) + _args, _kwargs)
+        return val
+    def SetReplaceString(self, *_args, **_kwargs):
+        val = apply(cmndlgsc.wxFindReplaceData_SetReplaceString,(self,) + _args, _kwargs)
+        return val
+    def __repr__(self):
+        return "<C wxFindReplaceData instance at %s>" % (self.this,)
+class wxFindReplaceData(wxFindReplaceDataPtr):
+    def __init__(self,*_args,**_kwargs):
+        self.this = apply(cmndlgsc.new_wxFindReplaceData,_args,_kwargs)
+        self.thisown = 1
+
+
+
+
+class wxFindReplaceDialogPtr(wxDialogPtr):
+    def __init__(self,this):
+        self.this = this
+        self.thisown = 0
+    def Create(self, *_args, **_kwargs):
+        val = apply(cmndlgsc.wxFindReplaceDialog_Create,(self,) + _args, _kwargs)
+        return val
+    def GetData(self, *_args, **_kwargs):
+        val = apply(cmndlgsc.wxFindReplaceDialog_GetData,(self,) + _args, _kwargs)
+        if val: val = wxFindReplaceDataPtr(val) 
+        return val
+    def SetData(self, *_args, **_kwargs):
+        val = apply(cmndlgsc.wxFindReplaceDialog_SetData,(self,) + _args, _kwargs)
+        return val
+    def __repr__(self):
+        return "<C wxFindReplaceDialog instance at %s>" % (self.this,)
+class wxFindReplaceDialog(wxFindReplaceDialogPtr):
+    def __init__(self,*_args,**_kwargs):
+        self.this = apply(cmndlgsc.new_wxFindReplaceDialog,_args,_kwargs)
+        self.thisown = 1
+        self._setOORInfo(self)
+
+
+
+def wxPreFindReplaceDialog(*_args,**_kwargs):
+    val = wxFindReplaceDialogPtr(apply(cmndlgsc.new_wxPreFindReplaceDialog,_args,_kwargs))
+    val.thisown = 1
+    val._setOORInfo(val)
+    return val
 
 
 
@@ -353,3 +497,16 @@ class wxProgressDialog(wxProgressDialogPtr):
 
 #-------------- VARIABLE WRAPPERS ------------------
 
+wxCHOICEDLG_STYLE = cmndlgsc.wxCHOICEDLG_STYLE
+wxFR_DOWN = cmndlgsc.wxFR_DOWN
+wxFR_WHOLEWORD = cmndlgsc.wxFR_WHOLEWORD
+wxFR_MATCHCASE = cmndlgsc.wxFR_MATCHCASE
+wxFR_REPLACEDIALOG = cmndlgsc.wxFR_REPLACEDIALOG
+wxFR_NOUPDOWN = cmndlgsc.wxFR_NOUPDOWN
+wxFR_NOMATCHCASE = cmndlgsc.wxFR_NOMATCHCASE
+wxFR_NOWHOLEWORD = cmndlgsc.wxFR_NOWHOLEWORD
+wxEVT_COMMAND_FIND = cmndlgsc.wxEVT_COMMAND_FIND
+wxEVT_COMMAND_FIND_NEXT = cmndlgsc.wxEVT_COMMAND_FIND_NEXT
+wxEVT_COMMAND_FIND_REPLACE = cmndlgsc.wxEVT_COMMAND_FIND_REPLACE
+wxEVT_COMMAND_FIND_REPLACE_ALL = cmndlgsc.wxEVT_COMMAND_FIND_REPLACE_ALL
+wxEVT_COMMAND_FIND_CLOSE = cmndlgsc.wxEVT_COMMAND_FIND_CLOSE

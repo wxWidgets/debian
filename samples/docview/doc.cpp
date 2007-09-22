@@ -4,9 +4,9 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     04/01/98
-// RCS-ID:      $Id: doc.cpp,v 1.8.2.1 2000/06/24 08:05:21 JS Exp $
+// RCS-ID:      $Id: doc.cpp,v 1.11 2002/03/17 14:15:40 VZ Exp $
 // Copyright:   (c) Julian Smart and Markus Holzem
-// Licence:   	wxWindows license
+// Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
 
 #ifdef __GNUG__
@@ -44,7 +44,7 @@ DrawingDocument::~DrawingDocument(void)
 }
 
 #if wxUSE_STD_IOSTREAM
-ostream& DrawingDocument::SaveObject(ostream& stream)
+wxSTD ostream& DrawingDocument::SaveObject(wxSTD ostream& stream)
 {
     wxDocument::SaveObject(stream);
     
@@ -88,7 +88,7 @@ wxOutputStream& DrawingDocument::SaveObject(wxOutputStream& stream)
 #endif
 
 #if wxUSE_STD_IOSTREAM
-istream& DrawingDocument::LoadObject(istream& stream)
+wxSTD istream& DrawingDocument::LoadObject(wxSTD istream& stream)
 {
     wxDocument::LoadObject(stream);
     
@@ -153,7 +153,7 @@ DoodleSegment::~DoodleSegment(void)
 }
 
 #if wxUSE_STD_IOSTREAM
-ostream& DoodleSegment::SaveObject(ostream& stream)
+wxSTD ostream& DoodleSegment::SaveObject(wxSTD ostream& stream)
 {
     wxInt32 n = lines.Number();
     stream << n << '\n';
@@ -195,7 +195,7 @@ wxOutputStream &DoodleSegment::SaveObject(wxOutputStream& stream)
 #endif
 
 #if wxUSE_STD_IOSTREAM
-istream& DoodleSegment::LoadObject(istream& stream)
+wxSTD istream& DoodleSegment::LoadObject(wxSTD istream& stream)
 {
     wxInt32 n = 0;
     stream >> n;

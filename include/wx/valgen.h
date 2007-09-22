@@ -12,7 +12,7 @@
 #ifndef _WX_VALGENH__
 #define _WX_VALGENH__
 
-#ifdef __GNUG__
+#if defined(__GNUG__) && !defined(__APPLE__)
 #pragma interface "valgen.h"
 #endif
 
@@ -22,6 +22,7 @@
 
 class WXDLLEXPORT wxGenericValidator: public wxValidator
 {
+DECLARE_CLASS(wxGenericValidator)
 public:
   wxGenericValidator(bool* val);
   wxGenericValidator(int* val);

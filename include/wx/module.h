@@ -4,7 +4,7 @@
 // Author:      Wolfram Gloger/adapted by Guilhem Lavaux
 // Modified by:
 // Created:     04/11/98
-// RCS-ID:      $Id: module.h,v 1.3.4.1 2000/03/24 01:55:52 VZ Exp $
+// RCS-ID:      $Id: module.h,v 1.6 2002/08/31 11:29:11 GD Exp $
 // Copyright:   (c) Wolfram Gloger and Guilhem Lavaux
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -12,7 +12,7 @@
 #ifndef _WX_MODULEH__
 #define _WX_MODULEH__
 
-#ifdef __GNUG__
+#if defined(__GNUG__) && !defined(__APPLE__)
     #pragma interface "module.h"
 #endif
 
@@ -32,21 +32,30 @@ public:
     wxModule() {}
     virtual ~wxModule() {}
 
-    // if module init routine returns FALSE application will fail to startup
+    	// if module init routine returns FALSE application
+	// will fail to startup
+
     bool Init() { return OnInit(); }
     void Exit() { OnExit(); }
 
-    // Override both of these
+	// Override both of these
         // called on program startup
+
     virtual bool OnInit() = 0;
-        // called just before program termination, but only if OnInit()
+
+    	// called just before program termination, but only if OnInit()
         // succeeded
+    
     virtual void OnExit() = 0;
 
     static void RegisterModule(wxModule* module);
     static void RegisterModules();
     static bool InitializeModules();
     static void CleanUpModules();
+
+    	// used by wxObjectLoader when unloading shared libs's
+
+    static void UnregisterModule(wxModule* module);
 
 protected:
     static wxModuleList m_modules;

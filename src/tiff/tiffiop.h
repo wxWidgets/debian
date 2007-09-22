@@ -1,4 +1,4 @@
-/* $Header: /home/karsten/CVSSERVER/wxcvs/wxWindows/src/tiff/tiffiop.h,v 1.2 2000/02/16 06:26:12 DW Exp $ */
+/* $Header: /home/wxcvs/wxWindows/src/tiff/tiffiop.h,v 1.3 2001/12/15 23:18:18 VS Exp $ */
 
 /*
  * Copyright (c) 1988-1997 Sam Leffler
@@ -34,7 +34,7 @@
  * a port.h file that reflects the system capabilities.
  * Doing this obviates all the dreck done in tiffcomp.h.
  */
-#if defined(unix) || defined(__unix)
+#if (defined(unix) || defined(__unix)) && !defined(__DJGPP__)
 #include "port.h"
 #include "tiffconf.h"
 #else

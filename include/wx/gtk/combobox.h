@@ -3,7 +3,7 @@
 // Purpose:
 // Author:      Robert Roebling
 // Created:     01/02/97
-// Id:          $Id: combobox.h,v 1.26 1999/11/19 21:01:09 VZ Exp $
+// Id:          $Id: combobox.h,v 1.30 2002/09/07 12:28:46 GD Exp $
 // Copyright:   (c) 1998 Robert Roebling
 // Licence:   	wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -12,7 +12,7 @@
 #ifndef __GTKCOMBOBOXH__
 #define __GTKCOMBOBOXH__
 
-#ifdef __GNUG__
+#if defined(__GNUG__) && !defined(__APPLE__)
 #pragma interface "combobox.h"
 #endif
 
@@ -33,7 +33,7 @@ class wxComboBox;
 // global data
 //-----------------------------------------------------------------------------
 
-extern const char* wxComboBoxNameStr;
+extern const wxChar* wxComboBoxNameStr;
 extern const wxChar* wxEmptyString;
 
 //-----------------------------------------------------------------------------
@@ -86,6 +86,7 @@ public:
     int GetSelection() const;
     wxString GetString( int n ) const;
     wxString GetStringSelection() const;
+    int GetCount() const { return Number(); }
     int Number() const;
     void SetSelection( int n );
     void SetStringSelection( const wxString &string );
@@ -113,6 +114,7 @@ public:
     bool     m_alreadySent;
     wxList   m_clientDataList;
     wxList   m_clientObjectList;
+    int      m_prevSelection;
 
     void DisableEvents();
     void EnableEvents();

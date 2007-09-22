@@ -9,11 +9,15 @@ from windows import *
 
 from gdi import *
 
+from fonts import *
+
 from clip_dnd import *
 
 from events import *
 
 from streams import *
+
+from utils import *
 
 from mdi import *
 
@@ -38,11 +42,9 @@ from printfw import *
 from sizers import *
 
 from filesys import *
-
-from utils import *
 import wx
 from oglcanvas import wxPyShapeCanvasPtr
-class wxShapeRegionPtr :
+class wxShapeRegionPtr(wxObjectPtr):
     def __init__(self,this):
         self.this = this
         self.thisown = 0
@@ -143,33 +145,33 @@ class wxShapeRegion(wxShapeRegionPtr):
 
 
 
-class wxPyShapeEvtHandlerPtr :
+class wxPyShapeEvtHandlerPtr(wxObjectPtr):
     def __init__(self,this):
         self.this = this
         self.thisown = 0
-    def _setSelf(self, *_args, **_kwargs):
-        val = apply(oglbasicc.wxPyShapeEvtHandler__setSelf,(self,) + _args, _kwargs)
+    def _setCallbackInfo(self, *_args, **_kwargs):
+        val = apply(oglbasicc.wxPyShapeEvtHandler__setCallbackInfo,(self,) + _args, _kwargs)
         return val
     def Destroy(self, *_args, **_kwargs):
         val = apply(oglbasicc.wxPyShapeEvtHandler_Destroy,(self,) + _args, _kwargs)
+        return val
+    def _setOORInfo(self, *_args, **_kwargs):
+        val = apply(oglbasicc.wxPyShapeEvtHandler__setOORInfo,(self,) + _args, _kwargs)
         return val
     def SetShape(self, *_args, **_kwargs):
         val = apply(oglbasicc.wxPyShapeEvtHandler_SetShape,(self,) + _args, _kwargs)
         return val
     def GetShape(self, *_args, **_kwargs):
         val = apply(oglbasicc.wxPyShapeEvtHandler_GetShape,(self,) + _args, _kwargs)
-        if val: val = wxPyShapePtr(val) 
         return val
     def SetPreviousHandler(self, *_args, **_kwargs):
         val = apply(oglbasicc.wxPyShapeEvtHandler_SetPreviousHandler,(self,) + _args, _kwargs)
         return val
     def GetPreviousHandler(self, *_args, **_kwargs):
         val = apply(oglbasicc.wxPyShapeEvtHandler_GetPreviousHandler,(self,) + _args, _kwargs)
-        if val: val = wxPyShapeEvtHandlerPtr(val) 
         return val
     def CreateNewCopy(self, *_args, **_kwargs):
         val = apply(oglbasicc.wxPyShapeEvtHandler_CreateNewCopy,(self,) + _args, _kwargs)
-        if val: val = wxPyShapeEvtHandlerPtr(val) 
         return val
     def base_OnDelete(self, *_args, **_kwargs):
         val = apply(oglbasicc.wxPyShapeEvtHandler_base_OnDelete,(self,) + _args, _kwargs)
@@ -264,7 +266,8 @@ class wxPyShapeEvtHandler(wxPyShapeEvtHandlerPtr):
     def __init__(self,*_args,**_kwargs):
         self.this = apply(oglbasicc.new_wxPyShapeEvtHandler,_args,_kwargs)
         self.thisown = 1
-        self._setSelf(self, wxPyShapeEvtHandler)
+        self._setCallbackInfo(self, wxPyShapeEvtHandler)
+        self._setOORInfo(self)
 
 
 
@@ -273,11 +276,8 @@ class wxPyShapePtr(wxPyShapeEvtHandlerPtr):
     def __init__(self,this):
         self.this = this
         self.thisown = 0
-    def _setSelf(self, *_args, **_kwargs):
-        val = apply(oglbasicc.wxPyShape__setSelf,(self,) + _args, _kwargs)
-        return val
-    def Destroy(self, *_args, **_kwargs):
-        val = apply(oglbasicc.wxPyShape_Destroy,(self,) + _args, _kwargs)
+    def _setCallbackInfo(self, *_args, **_kwargs):
+        val = apply(oglbasicc.wxPyShape__setCallbackInfo,(self,) + _args, _kwargs)
         return val
     def GetBoundingBoxMax(self, *_args, **_kwargs):
         val = apply(oglbasicc.wxPyShape_GetBoundingBoxMax,(self,) + _args, _kwargs)
@@ -290,7 +290,6 @@ class wxPyShapePtr(wxPyShapeEvtHandlerPtr):
         return val
     def GetCanvas(self, *_args, **_kwargs):
         val = apply(oglbasicc.wxPyShape_GetCanvas,(self,) + _args, _kwargs)
-        if val: val = wxPyShapeCanvasPtr(val) 
         return val
     def SetCanvas(self, *_args, **_kwargs):
         val = apply(oglbasicc.wxPyShape_SetCanvas,(self,) + _args, _kwargs)
@@ -318,14 +317,12 @@ class wxPyShapePtr(wxPyShapeEvtHandlerPtr):
         return val
     def GetParent(self, *_args, **_kwargs):
         val = apply(oglbasicc.wxPyShape_GetParent,(self,) + _args, _kwargs)
-        if val: val = wxPyShapePtr(val) 
         return val
     def SetParent(self, *_args, **_kwargs):
         val = apply(oglbasicc.wxPyShape_SetParent,(self,) + _args, _kwargs)
         return val
     def GetTopAncestor(self, *_args, **_kwargs):
         val = apply(oglbasicc.wxPyShape_GetTopAncestor,(self,) + _args, _kwargs)
-        if val: val = wxPyShapePtr(val) 
         return val
     def GetChildren(self, *_args, **_kwargs):
         val = apply(oglbasicc.wxPyShape_GetChildren,(self,) + _args, _kwargs)
@@ -350,7 +347,6 @@ class wxPyShapePtr(wxPyShapeEvtHandlerPtr):
         return val
     def GetEventHandler(self, *_args, **_kwargs):
         val = apply(oglbasicc.wxPyShape_GetEventHandler,(self,) + _args, _kwargs)
-        if val: val = wxPyShapeEvtHandlerPtr(val) 
         return val
     def SetEventHandler(self, *_args, **_kwargs):
         val = apply(oglbasicc.wxPyShape_SetEventHandler,(self,) + _args, _kwargs)
@@ -456,12 +452,6 @@ class wxPyShapePtr(wxPyShapeEvtHandlerPtr):
         return val
     def SetBrush(self, *_args, **_kwargs):
         val = apply(oglbasicc.wxPyShape_SetBrush,(self,) + _args, _kwargs)
-        return val
-    def SetClientData(self, *_args, **_kwargs):
-        val = apply(oglbasicc.wxPyShape_SetClientData,(self,) + _args, _kwargs)
-        return val
-    def GetClientData(self, *_args, **_kwargs):
-        val = apply(oglbasicc.wxPyShape_GetClientData,(self,) + _args, _kwargs)
         return val
     def Show(self, *_args, **_kwargs):
         val = apply(oglbasicc.wxPyShape_Show,(self,) + _args, _kwargs)
@@ -668,7 +658,6 @@ class wxPyShapePtr(wxPyShapeEvtHandlerPtr):
         return val
     def CreateNewCopy(self, *_args, **_kwargs):
         val = apply(oglbasicc.wxPyShape_CreateNewCopy,(self,) + _args, _kwargs)
-        if val: val = wxPyShapePtr(val) 
         return val
     def Copy(self, *_args, **_kwargs):
         val = apply(oglbasicc.wxPyShape_Copy,(self,) + _args, _kwargs)
@@ -690,6 +679,14 @@ class wxPyShapePtr(wxPyShapeEvtHandlerPtr):
         return val
     def ClearPointList(self, *_args, **_kwargs):
         val = apply(oglbasicc.wxPyShape_ClearPointList,(self,) + _args, _kwargs)
+        return val
+    def GetBackgroundPen(self, *_args, **_kwargs):
+        val = apply(oglbasicc.wxPyShape_GetBackgroundPen,(self,) + _args, _kwargs)
+        if val: val = wxPenPtr(val) ; val.thisown = 1
+        return val
+    def GetBackgroundBrush(self, *_args, **_kwargs):
+        val = apply(oglbasicc.wxPyShape_GetBackgroundBrush,(self,) + _args, _kwargs)
+        if val: val = wxBrushPtr(val) ; val.thisown = 1
         return val
     def base_OnDelete(self, *_args, **_kwargs):
         val = apply(oglbasicc.wxPyShape_base_OnDelete,(self,) + _args, _kwargs)
@@ -780,6 +777,15 @@ class wxPyShapePtr(wxPyShapeEvtHandlerPtr):
         return val
     def __repr__(self):
         return "<C wxPyShape instance at %s>" % (self.this,)
+    
+    def SetClientData(self, data):
+        self.clientData = data
+    def GetClientData(self):
+        if hasattr(self, 'clientData'):
+            return self.clientData
+        else:
+            return None
+
 class wxPyShape(wxPyShapePtr):
     def __init__(self,this):
         self.this = this

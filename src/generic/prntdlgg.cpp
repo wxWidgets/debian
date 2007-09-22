@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     04/01/98
-// RCS-ID:      $Id: prntdlgg.cpp,v 1.36 1999/12/14 23:44:01 VS Exp $
+// RCS-ID:      $Id: prntdlgg.cpp,v 1.43 2002/08/17 20:50:34 RR Exp $
 // Copyright:   (c) Julian Smart and Markus Holzem
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -28,8 +28,6 @@
     #pragma hdrstop
 #endif
 
-#include "wx/defs.h"
-
 #if wxUSE_PRINTING_ARCHITECTURE
 
 #ifndef WX_PRECOMP
@@ -48,6 +46,7 @@
     #include "wx/combobox.h"
     #include "wx/intl.h"
     #include "wx/sizer.h"
+    #include "wx/cmndata.h"
 #endif
 
 #if wxUSE_STATLINE
@@ -62,6 +61,7 @@
 
 #include "wx/printdlg.h"
 #include "wx/paper.h"
+#include "wx/filename.h"
 
 // For print paper things
 #include "wx/prntbase.h"
@@ -76,21 +76,22 @@
 
 #if wxUSE_POSTSCRIPT
 
-    IMPLEMENT_CLASS(wxGenericPrintDialog, wxDialog)
-    IMPLEMENT_CLASS(wxGenericPrintSetupDialog, wxDialog)
+IMPLEMENT_CLASS(wxGenericPrintDialog, wxDialog)
+IMPLEMENT_CLASS(wxGenericPrintSetupDialog, wxDialog)
 
-    BEGIN_EVENT_TABLE(wxGenericPrintDialog, wxDialog)
-        EVT_BUTTON(wxID_OK, wxGenericPrintDialog::OnOK)
-        EVT_BUTTON(wxPRINTID_SETUP, wxGenericPrintDialog::OnSetup)
-        EVT_RADIOBOX(wxPRINTID_RANGE, wxGenericPrintDialog::OnRange)
-    END_EVENT_TABLE()
-#endif
+BEGIN_EVENT_TABLE(wxGenericPrintDialog, wxDialog)
+    EVT_BUTTON(wxID_OK, wxGenericPrintDialog::OnOK)
+    EVT_BUTTON(wxPRINTID_SETUP, wxGenericPrintDialog::OnSetup)
+    EVT_RADIOBOX(wxPRINTID_RANGE, wxGenericPrintDialog::OnRange)
+END_EVENT_TABLE()
 
-    IMPLEMENT_CLASS(wxGenericPageSetupDialog, wxDialog)
+#endif // wxUSE_POSTSCRIPT
 
-    BEGIN_EVENT_TABLE(wxGenericPageSetupDialog, wxDialog)
-        EVT_BUTTON(wxPRINTID_SETUP, wxGenericPageSetupDialog::OnPrinter)
-    END_EVENT_TABLE()
+IMPLEMENT_CLASS(wxGenericPageSetupDialog, wxDialog)
+
+BEGIN_EVENT_TABLE(wxGenericPageSetupDialog, wxDialog)
+    EVT_BUTTON(wxPRINTID_SETUP, wxGenericPageSetupDialog::OnPrinter)
+END_EVENT_TABLE()
 
 // ----------------------------------------------------------------------------
 // global vars
@@ -99,10 +100,6 @@
 extern wxPrintPaperDatabase *wxThePrintPaperDatabase;
 
 #if wxUSE_POSTSCRIPT
-
-// ============================================================================
-// implementation
-// ============================================================================
 
 // ----------------------------------------------------------------------------
 // Generic print dialog for non-Windows printing use.
@@ -175,7 +172,7 @@ void wxGenericPrintDialog::Init(wxWindow * WXUNUSED(parent))
                                          1, wxRA_VERTICAL);
         m_rangeRadioBox->SetSelection(1);
 	
-	mainsizer->Add( m_rangeRadioBox, 0, wxLEFT|wxTOP|wxRIGHT, 10 );
+        mainsizer->Add( m_rangeRadioBox, 0, wxLEFT|wxTOP|wxRIGHT, 10 );
     }
 
     // 3) bottom row
@@ -186,11 +183,11 @@ void wxGenericPrintDialog::Init(wxWindow * WXUNUSED(parent))
     {
         bottomsizer->Add( new wxStaticText(this, wxPRINTID_STATIC, _("From:") ), 0, wxCENTER|wxALL, 5 );
         m_fromText = new wxTextCtrl(this, wxPRINTID_FROM, "", wxDefaultPosition, wxSize(40, -1));
-	bottomsizer->Add( m_fromText, 1, wxCENTER|wxRIGHT, 10 );
+        bottomsizer->Add( m_fromText, 1, wxCENTER|wxRIGHT, 10 );
 
         bottomsizer->Add( new wxStaticText(this, wxPRINTID_STATIC, _("To:") ), 0, wxCENTER|wxALL, 5);
         m_toText = new wxTextCtrl(this, wxPRINTID_TO, "", wxDefaultPosition, wxSize(40, -1));
-	bottomsizer->Add( m_toText, 1, wxCENTER|wxRIGHT, 10 );
+        bottomsizer->Add( m_toText, 1, wxCENTER|wxRIGHT, 10 );
     }
 
     bottomsizer->Add( new wxStaticText(this, wxPRINTID_STATIC, _("Copies:") ), 0, wxCENTER|wxALL, 5 );
@@ -233,9 +230,7 @@ int wxGenericPrintDialog::ShowModal()
         int ret = genericPrintSetupDialog->ShowModal();
         if ( ret != wxID_CANCEL )
         {
-            // Transfer settings to the global object (for compatibility) and to
-            // the print dialog's print data.
-            *wxThePrintSetupData = genericPrintSetupDialog->GetPrintData();
+            // Transfer settings to  the print dialog's print data.
             m_printDialogData.GetPrintData() = genericPrintSetupDialog->GetPrintData();
         }
         genericPrintSetupDialog->Destroy();
@@ -267,22 +262,18 @@ void wxGenericPrintDialog::OnOK(wxCommandEvent& WXUNUSED(event))
     if (m_printDialogData.GetPrintToFile())
     {
         m_printDialogData.GetPrintData().SetPrintMode(wxPRINT_MODE_FILE);
-        wxThePrintSetupData->SetPrinterMode(wxPRINT_MODE_FILE);
+        
+        wxFileName fname( m_printDialogData.GetPrintData().GetFilename() );
+        
+        wxFileDialog dialog( this, _("PostScript file"),
+            fname.GetPath(), fname.GetFullName(), wxT("*.ps"), wxOPEN | wxOVERWRITE_PROMPT );
+        if (dialog.ShowModal() != wxID_OK) return;
 
-        wxString f = wxFileSelector(_("PostScript file"),
-            wxPathOnly(wxThePrintSetupData->GetPrinterFile()),
-            wxFileNameFromPath(wxThePrintSetupData->GetPrinterFile()),
-            wxT("ps"), wxT("*.ps"), 0, this);
-        if ( f.IsEmpty() )
-            return;
-
-        m_printDialogData.GetPrintData().SetFilename(f);
-        wxThePrintSetupData->SetPrinterFile(f);
+        m_printDialogData.GetPrintData().SetFilename( dialog.GetPath() );
     }
     else
     {
         m_printDialogData.GetPrintData().SetPrintMode(wxPRINT_MODE_PRINTER);
-        wxThePrintSetupData->SetPrinterMode(wxPRINT_MODE_PRINTER);
     }
 
     EndModal(wxID_OK);
@@ -306,23 +297,15 @@ void wxGenericPrintDialog::OnRange(wxCommandEvent& event)
 
 void wxGenericPrintDialog::OnSetup(wxCommandEvent& WXUNUSED(event))
 {
-   *wxThePrintSetupData = m_printDialogData.GetPrintData();
-    wxGenericPrintSetupDialog *genericPrintSetupDialog =
-        new wxGenericPrintSetupDialog(this, wxThePrintSetupData);
-    int ret = genericPrintSetupDialog->ShowModal();
-    if ( ret != wxID_CANCEL )
+    wxGenericPrintSetupDialog dialog( this, &m_printDialogData.GetPrintData() );
+    if (dialog.ShowModal() != wxID_CANCEL)
     {
-        *wxThePrintSetupData = genericPrintSetupDialog->GetPrintData();
-        m_printDialogData = genericPrintSetupDialog->GetPrintData();
+        m_printDialogData = dialog.GetPrintData();
     }
-
-    genericPrintSetupDialog->Close(TRUE);
 }
 
 bool wxGenericPrintDialog::TransferDataToWindow()
 {
-    char buf[10];
-
     if(m_printDialogData.GetFromPage() != 0)
     {
        if(m_fromText)
@@ -331,10 +314,10 @@ bool wxGenericPrintDialog::TransferDataToWindow()
           {
              m_fromText->Enable(TRUE);
              m_toText->Enable(TRUE);
-             sprintf(buf, "%d", m_printDialogData.GetFromPage());
-             m_fromText->SetValue(buf);
-             sprintf(buf, "%d", m_printDialogData.GetToPage());
-             m_toText->SetValue(buf);
+             m_fromText->SetValue(
+                 wxString::Format(_T("%d"), m_printDialogData.GetFromPage()));
+             m_toText->SetValue(
+                wxString::Format(_T("%d"), m_printDialogData.GetToPage()));
              if(m_rangeRadioBox)
                 if (m_printDialogData.GetAllPages())
                    m_rangeRadioBox->SetSelection(0);
@@ -353,8 +336,8 @@ bool wxGenericPrintDialog::TransferDataToWindow()
           }
        }
     }
-    sprintf(buf, "%d", m_printDialogData.GetNoCopies());
-    m_noCopiesText->SetValue(buf);
+    m_noCopiesText->SetValue(
+        wxString::Format(_T("%d"), m_printDialogData.GetNoCopies()));
 
     m_printToFileCheckBox->SetValue(m_printDialogData.GetPrintToFile());
     m_printToFileCheckBox->Enable(m_printDialogData.GetEnablePrintToFile());
@@ -363,12 +346,23 @@ bool wxGenericPrintDialog::TransferDataToWindow()
 
 bool wxGenericPrintDialog::TransferDataFromWindow()
 {
+    long res = 0;
     if(m_printDialogData.GetFromPage() != -1)
     {
         if (m_printDialogData.GetEnablePageNumbers())
         {
-           if(m_fromText) m_printDialogData.SetFromPage(wxAtoi(m_fromText->GetValue()));
-           if(m_toText)   m_printDialogData.SetToPage(wxAtoi(m_toText->GetValue()));
+            if(m_fromText)
+            {
+                wxString value = m_fromText->GetValue();
+                if (value.ToLong( &res ))
+                    m_printDialogData.SetFromPage( res );
+            }
+            if(m_toText)
+            {   
+                wxString value = m_toText->GetValue();
+                if (value.ToLong( &res ))
+                    m_printDialogData.SetToPage( res );
+            }
         }
         if(m_rangeRadioBox)
         {
@@ -383,7 +377,11 @@ bool wxGenericPrintDialog::TransferDataFromWindow()
         m_printDialogData.SetFromPage(1);
         m_printDialogData.SetToPage(32000);
     }
-    m_printDialogData.SetNoCopies(wxAtoi(m_noCopiesText->GetValue()));
+    
+    wxString value = m_noCopiesText->GetValue();
+    if (value.ToLong( &res ))
+        m_printDialogData.SetNoCopies( res );
+        
     m_printDialogData.SetPrintToFile(m_printToFileCheckBox->GetValue());
 
     return TRUE;
@@ -408,19 +406,6 @@ wxGenericPrintSetupDialog::wxGenericPrintSetupDialog(wxWindow *parent, wxPrintDa
 wxDialog(parent, -1, _("Print Setup"), wxPoint(0, 0), wxSize(600, 600), wxDEFAULT_DIALOG_STYLE|wxDIALOG_MODAL|wxTAB_TRAVERSAL)
 {
     Init(data);
-}
-
-// Convert wxPrintSetupData to standard wxPrintData object
-wxGenericPrintSetupDialog::wxGenericPrintSetupDialog(wxWindow *parent, wxPrintSetupData* data):
-wxDialog(parent, -1, _("Print Setup"), wxPoint(0, 0), wxSize(600, 600), wxDEFAULT_DIALOG_STYLE|wxDIALOG_MODAL|wxTAB_TRAVERSAL)
-{
-    wxPrintData printData;
-    if (data)
-        printData = * data;
-    else
-        printData = * wxThePrintSetupData;
-
-    Init(& printData);
 }
 
 void wxGenericPrintSetupDialog::Init(wxPrintData* data)
@@ -469,7 +454,7 @@ void wxGenericPrintSetupDialog::Init(wxPrintData* data)
 
     okButton->SetDefault();
     okButton->SetFocus();
-
+    
     Fit();
     Centre(wxBOTH);
 
@@ -523,8 +508,6 @@ bool wxGenericPrintSetupDialog::TransferDataFromWindow()
             m_printData.SetPaperId(wxThePrintPaperDatabase->ConvertNameToId(val));
     }
 
-    // This is for backward compatibility only
-    *wxThePrintSetupData = GetPrintData();
     return TRUE;
 }
 
@@ -743,32 +726,35 @@ bool wxGenericPageSetupDialog::TransferDataToWindow()
 bool wxGenericPageSetupDialog::TransferDataFromWindow()
 {
     if (m_marginLeftText && m_marginTopText)
-        m_pageData.SetMarginTopLeft(wxPoint(wxAtoi((const wxChar *)m_marginLeftText->GetValue()),wxAtoi((const wxChar *)m_marginTopText->GetValue())));
+    {
+        int left = wxAtoi( m_marginLeftText->GetValue().c_str() );
+        int top = wxAtoi( m_marginTopText->GetValue().c_str() );
+        m_pageData.SetMarginTopLeft( wxPoint(left,top) );
+    }
     if (m_marginRightText && m_marginBottomText)
-        m_pageData.SetMarginBottomRight(wxPoint(wxAtoi((const wxChar *)m_marginRightText->GetValue()),wxAtoi((const wxChar *)m_marginBottomText->GetValue())));
+    {
+        int right = wxAtoi( m_marginRightText->GetValue().c_str() );
+        int bottom = wxAtoi( m_marginBottomText->GetValue().c_str() );
+        m_pageData.SetMarginBottomRight( wxPoint(right,bottom) );
+    }
 
     if (m_orientationRadioBox)
     {
         int sel = m_orientationRadioBox->GetSelection();
         if (sel == 0)
         {
-#if wxUSE_POSTSCRIPT
-            wxThePrintSetupData->SetPrinterOrientation(wxPORTRAIT);
-#endif
             m_pageData.GetPrintData().SetOrientation(wxPORTRAIT);
         }
         else
         {
-#if wxUSE_POSTSCRIPT
-            wxThePrintSetupData->SetPrinterOrientation(wxLANDSCAPE);
-#endif
             m_pageData.GetPrintData().SetOrientation(wxLANDSCAPE);
         }
     }
+    
     if (m_paperTypeChoice)
     {
         wxString val(m_paperTypeChoice->GetStringSelection());
-        if (!val.IsNull() && val != "")
+        if (!val.IsEmpty())
         {
             wxPrintPaperType* paper = wxThePrintPaperDatabase->FindPaperType(val);
             if ( paper )
@@ -816,3 +802,4 @@ wxComboBox *wxGenericPageSetupDialog::CreatePaperTypeChoice(int *x, int *y)
 }
 
 #endif
+

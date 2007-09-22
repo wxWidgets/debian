@@ -2,7 +2,7 @@
 // Name:        wx/gtk/menu.h
 // Purpose:
 // Author:      Robert Roebling
-// Id:          $Id: menu.h,v 1.43 2000/01/25 15:35:53 VZ Exp $
+// Id:          $Id: menu.h,v 1.46 2002/09/07 12:28:46 GD Exp $
 // Copyright:   (c) 1998 Robert Roebling, Julian Smart
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -10,7 +10,7 @@
 #ifndef __GTKMENUH__
 #define __GTKMENUH__
 
-#ifdef __GNUG__
+#if defined(__GNUG__) && !defined(__APPLE__)
     #pragma interface "menu.h"
 #endif
 
@@ -80,6 +80,8 @@ public:
 
     // TODO: virtual void SetTitle(const wxString& title);
 
+    // compatibility only
+#if wxUSE_MENU_CALLBACK
     wxMenu(const wxString& title, const wxFunction func)
         : wxMenuBase(title)
     {
@@ -87,6 +89,7 @@ public:
 
         Callback(func);
     }
+#endif // WXWIN_COMPATIBILITY_2
 
     // implementation
     int FindMenuIdByMenuItem( GtkWidget *menuItem ) const;
@@ -103,6 +106,10 @@ private:
 
     // common part of Append and Insert
     bool GtkAppend(wxMenuItem *item);
+
+    // if the last menu item was a radio one, this field contains its path,
+    // otherwise it is empty
+    wxString m_pathLastRadio;
 
     DECLARE_DYNAMIC_CLASS(wxMenu)
 };

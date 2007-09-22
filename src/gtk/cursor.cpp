@@ -2,7 +2,7 @@
 // Name:        cursor.cpp
 // Purpose:
 // Author:      Robert Roebling
-// Id:          $Id: cursor.cpp,v 1.24.2.2 2000/11/03 22:08:00 roebling Exp $
+// Id:          $Id: cursor.cpp,v 1.36 2002/06/12 14:12:19 VZ Exp $
 // Copyright:   (c) 1998 Robert Roebling
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -17,6 +17,7 @@
 #include "wx/app.h"
 
 #include <gdk/gdk.h>
+#include <gtk/gtk.h>
 
 //-----------------------------------------------------------------------------
 // idle system
@@ -57,6 +58,7 @@ IMPLEMENT_DYNAMIC_CLASS(wxCursor,wxObject)
 
 wxCursor::wxCursor()
 {
+
 }
 
 wxCursor::wxCursor( int cursorId )
@@ -66,11 +68,14 @@ wxCursor::wxCursor( int cursorId )
     GdkCursorType gdk_cur = GDK_LEFT_PTR;
     switch (cursorId)
     {
+        case wxCURSOR_ARROW:            // fall through to default
         case wxCURSOR_DEFAULT:          gdk_cur = GDK_LEFT_PTR; break;
+        case wxCURSOR_RIGHT_ARROW:      gdk_cur = GDK_RIGHT_PTR; break;
         case wxCURSOR_HAND:             gdk_cur = GDK_HAND1; break;
         case wxCURSOR_CROSS:            gdk_cur = GDK_CROSSHAIR; break;
         case wxCURSOR_SIZEWE:           gdk_cur = GDK_SB_H_DOUBLE_ARROW; break;
         case wxCURSOR_SIZENS:           gdk_cur = GDK_SB_V_DOUBLE_ARROW; break;
+        case wxCURSOR_ARROWWAIT:
         case wxCURSOR_WAIT:
         case wxCURSOR_WATCH:            gdk_cur = GDK_WATCH; break;
         case wxCURSOR_SIZING:           gdk_cur = GDK_SIZING; break;
@@ -100,18 +105,192 @@ wxCursor::wxCursor( int cursorId )
         default:
             wxFAIL_MSG(wxT("unsupported cursor type"));
             // will use the standard one
-
-        case wxCURSOR_ARROW:
             break;
     }
 
     M_CURSORDATA->m_cursor = gdk_cursor_new( gdk_cur );
 }
 
+extern GtkWidget *wxGetRootWindow();
+
+wxCursor::wxCursor(const char bits[], int width, int  height,
+                   int hotSpotX, int hotSpotY,
+                   const char maskBits[], wxColour *fg, wxColour *bg)
+{
+    if (!maskBits)
+        maskBits = bits;
+    if (!fg)
+        fg = wxBLACK;
+    if (!bg)
+        bg = wxWHITE;
+    if (hotSpotX < 0 || hotSpotX >= width)
+        hotSpotX = 0;
+    if (hotSpotY < 0 || hotSpotY >= height)
+        hotSpotY = 0;
+
+    GdkBitmap *data = gdk_bitmap_create_from_data( wxGetRootWindow()->window, (gchar *) bits, width, height );
+    GdkBitmap *mask = gdk_bitmap_create_from_data( wxGetRootWindow()->window, (gchar *) maskBits, width, height);
+
+    m_refData = new wxCursorRefData;
+    M_CURSORDATA->m_cursor = gdk_cursor_new_from_pixmap(
+                 data, mask, fg->GetColor(), bg->GetColor(),
+                 hotSpotX, hotSpotY );
+
+    gdk_bitmap_unref( data );
+    gdk_bitmap_unref( mask );
+}
+
+
 wxCursor::wxCursor( const wxCursor &cursor )
+    : wxObject()
 {
     Ref( cursor );
 }
+
+#if wxUSE_IMAGE
+
+wxCursor::wxCursor( const wxImage & image )
+{
+    unsigned char * rgbBits = image.GetData();
+    int w = image.GetWidth() ;
+    int h = image.GetHeight();
+    bool bHasMask = image.HasMask();
+    int imagebitcount = (w*h)/8;
+
+    unsigned char * bits = new unsigned char [imagebitcount];
+    unsigned char * maskBits = new unsigned char [imagebitcount];
+
+    int i, j, i8; unsigned char c, cMask;
+    for (i=0; i<imagebitcount; i++)
+    {
+        bits[i] = 0;
+        i8 = i * 8;
+
+        cMask = 1;
+        for (j=0; j<8; j++)
+        {
+            // possible overflow if we do the summation first ?
+            c = rgbBits[(i8+j)*3]/3 + rgbBits[(i8+j)*3+1]/3 + rgbBits[(i8+j)*3+2]/3;
+            //if average value is > mid grey
+            if (c>127)
+                bits[i] = bits[i] | cMask;
+            cMask = cMask * 2;
+        }
+    }
+
+    unsigned long keyMaskColor;
+    if (bHasMask)
+    {
+        unsigned char
+            r = image.GetMaskRed(),
+            g = image.GetMaskGreen(),
+            b = image.GetMaskBlue();
+
+        for (i=0; i<imagebitcount; i++)
+        {
+            maskBits[i] = 0x0;
+            i8 = i * 8;
+
+            cMask = 1;
+            for (j=0; j<8; j++)
+            {
+                if (rgbBits[(i8+j)*3] != r || rgbBits[(i8+j)*3+1] != g || rgbBits[(i8+j)*3+2] != b)
+                    maskBits[i] = maskBits[i] | cMask;
+                cMask = cMask * 2;
+            }
+        }
+
+        keyMaskColor = (r << 16) | (g << 8) | b;
+    }
+    else // no mask
+    {
+        for (i=0; i<imagebitcount; i++)
+            maskBits[i] = 0xFF;
+
+        // init it to avoid compiler warnings
+        keyMaskColor = 0;
+    }
+
+    // find the most frequent color(s)
+    wxImageHistogram histogram;
+    image.ComputeHistogram(histogram);
+
+    // colors as rrggbb
+    unsigned long key;
+    unsigned long value;
+
+    long colMostFreq = 0;
+    unsigned long nMost = 0;
+    long colNextMostFreq = 0;
+    unsigned long nNext = 0;
+    for ( wxImageHistogram::iterator entry = histogram.begin();
+          entry != histogram.end();
+          ++entry )
+    {
+        value = entry->second.value;
+        key = entry->first;
+        if ( !bHasMask || (key != keyMaskColor) )
+        {
+            if (value > nMost)
+            {
+                nMost = value;
+                colMostFreq = key;
+            }
+            else if (value > nNext)
+            {
+                nNext = value;
+                colNextMostFreq = key;
+            }
+        }
+    }
+
+    wxColour fg = wxColour ( (unsigned char)(colMostFreq >> 16),
+                             (unsigned char)(colMostFreq >> 8),
+                             (unsigned char)(colMostFreq) );
+
+    wxColour bg = wxColour ( (unsigned char)(colNextMostFreq >> 16),
+                             (unsigned char)(colNextMostFreq >> 8),
+                             (unsigned char)(colNextMostFreq) );
+
+    int hotSpotX;
+    int hotSpotY;
+
+    if (image.HasOption(wxCUR_HOTSPOT_X))
+        hotSpotX = image.GetOptionInt(wxCUR_HOTSPOT_X);
+    else
+        hotSpotX = 0;
+
+    if (image.HasOption(wxCUR_HOTSPOT_Y))
+        hotSpotY = image.GetOptionInt(wxCUR_HOTSPOT_Y);
+    else
+        hotSpotY = 0;
+
+    if (hotSpotX < 0 || hotSpotX >= w)
+        hotSpotX = 0;
+    if (hotSpotY < 0 || hotSpotY >= h)
+        hotSpotY = 0;
+
+    GdkBitmap *data = gdk_bitmap_create_from_data(wxGetRootWindow()->window,
+                                                  (gchar *) bits, w, h);
+    GdkBitmap *mask = gdk_bitmap_create_from_data(wxGetRootWindow()->window,
+                                                  (gchar *) maskBits, w, h);
+
+    m_refData = new wxCursorRefData;
+    M_CURSORDATA->m_cursor = gdk_cursor_new_from_pixmap
+                             (
+                                data,
+                                mask,
+                                fg.GetColor(), bg.GetColor(),
+                                hotSpotX, hotSpotY
+                             );
+
+    gdk_bitmap_unref( data );
+    gdk_bitmap_unref( mask );
+    delete [] bits;
+    delete [] maskBits;
+}
+
+#endif // wxUSE_IMAGE
 
 wxCursor::~wxCursor()
 {
@@ -192,6 +371,8 @@ void wxBeginBusyCursor( wxCursor *WXUNUSED(cursor) )
 
     if (wxTheApp)
         wxTheApp->SendIdleEvents();
+
+    gdk_flush();
 }
 
 bool wxIsBusy()

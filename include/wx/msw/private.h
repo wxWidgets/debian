@@ -6,7 +6,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     01/02/97
-// RCS-ID:      $Id: private.h,v 1.54.2.7 2001/09/06 08:16:50 RL Exp $
+// RCS-ID:      $Id: private.h,v 1.77 2002/09/02 00:32:30 VZ Exp $
 // Copyright:   (c) Julian Smart
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -14,10 +14,24 @@
 #ifndef _WX_PRIVATE_H_
 #define _WX_PRIVATE_H_
 
+#ifndef STRICT
+    #define STRICT 1
+#endif
+
 #include <windows.h>
+
+#ifdef __WXMICROWIN__
+    // Extra prototypes and symbols not defined by MicroWindows
+    #include "wx/msw/microwin.h"
+#endif
 
 // undefine conflicting symbols which were defined in windows.h
 #include "wx/msw/winundef.h"
+
+// Include fixes for MSLU:
+#include "wx/msw/mslu.h"
+
+#include "wx/log.h"
 
 class WXDLLEXPORT wxFont;
 class WXDLLEXPORT wxWindow;
@@ -67,17 +81,13 @@ WXDLLEXPORT_DATA(extern HFONT) wxSTATUS_LINE_FONT;
 
 // this defines a CASTWNDPROC macro which casts a pointer to the type of a
 // window proc
-
-#ifdef __GNUWIN32_OLD__
-    #define CASTWNDPROC (long unsigned)
+#if defined(STRICT) || defined(__GNUC__)
+    typedef WNDPROC WndProcCast;
 #else
-    #if defined(STRICT) || defined(__GNUC__)
-        typedef WNDPROC WndProcCast;
-    #else
-        typedef FARPROC WndProcCast;
-    #endif
-    #define CASTWNDPROC (WndProcCast)
-#endif // __GNUWIN32_OLD__
+    typedef FARPROC WndProcCast;
+#endif
+
+#define CASTWNDPROC (WndProcCast)
 
 // ---------------------------------------------------------------------------
 // some stuff for old Windows versions (FIXME: what does it do here??)
@@ -158,14 +168,10 @@ WXDLLEXPORT_DATA(extern HFONT) wxSTATUS_LINE_FONT;
 //#define EDIT_HEIGHT_FROM_CHAR_HEIGHT(cy)    (3*(cy)/2)
 #define EDIT_HEIGHT_FROM_CHAR_HEIGHT(cy)    (cy+8)
 
-#if wxUSE_GUI
-
 // Generic subclass proc, for panel item moving/sizing and intercept
 // EDIT control VK_RETURN messages
 extern LONG APIENTRY _EXPORT
   wxSubclassedGenericControlProc(WXHWND hWnd, WXUINT message, WXWPARAM wParam, WXLPARAM lParam);
-
-#endif // wxUSE_GUI
 
 // ---------------------------------------------------------------------------
 // constants which might miss from some compilers' headers
@@ -188,7 +194,7 @@ extern LONG APIENTRY _EXPORT
 // ---------------------------------------------------------------------------
 
 // a wrapper macro for ZeroMemory()
-#ifdef __WIN32__
+#if defined(__WIN32__) && !defined(__WXMICROWIN__)
 #define wxZeroMemory(obj)   ::ZeroMemory(&obj, sizeof(obj))
 #else
 #define wxZeroMemory(obj)   memset((void*) & obj, 0, sizeof(obj))
@@ -204,10 +210,45 @@ inline COLORREF wxColourToRGB(const wxColour& c)
     return RGB(c.Red(), c.Green(), c.Blue());
 }
 
+inline COLORREF wxColourToPalRGB(const wxColour& c)
+{
+    return PALETTERGB(c.Red(), c.Green(), c.Blue());
+}
+
+inline wxColour wxRGBToColour(COLORREF rgb)
+{
+    return wxColour(GetRValue(rgb), GetGValue(rgb), GetBValue(rgb));
+}
+
 inline void wxRGBToColour(wxColour& c, COLORREF rgb)
 {
     c.Set(GetRValue(rgb), GetGValue(rgb), GetBValue(rgb));
 }
+
+// get the standard colour map for some standard colours - see comment in this
+// function to understand why is it needed and when should it be used
+//
+// it returns a wxCOLORMAP (can't use COLORMAP itself here as comctl32.dll
+// might be not included/available) array of size wxSTD_COLOUR_MAX
+//
+// NB: if you change these colours, update wxBITMAP_STD_COLOURS in the
+//     resources as well: it must have the same number of pixels!
+enum wxSTD_COLOUR
+{
+    wxSTD_COL_BTNTEXT,
+    wxSTD_COL_BTNSHADOW,
+    wxSTD_COL_BTNFACE,
+    wxSTD_COL_BTNHIGHLIGHT,
+    wxSTD_COL_MAX,
+};
+
+struct WXDLLEXPORT wxCOLORMAP
+{
+    COLORREF from, to;
+};
+
+// this function is implemented in src/msw/window.cpp
+extern wxCOLORMAP *wxGetStdColourMap();
 
 // copy Windows RECT to our wxRect
 inline void wxCopyRECTToRect(const RECT& r, wxRect& rect)
@@ -247,6 +288,38 @@ inline bool wxIsCtrlDown()
     return (::GetKeyState(VK_CONTROL) & 0x100) != 0;
 }
 
+// wrapper around GetWindowRect() and GetClientRect() APIs doing error checking
+// for Win32
+inline RECT wxGetWindowRect(HWND hwnd)
+{
+    RECT rect;
+#ifdef __WIN16__
+    ::GetWindowRect(hwnd, &rect);
+#else // Win32
+    if ( !::GetWindowRect(hwnd, &rect) )
+    {
+        wxLogLastError(_T("GetWindowRect"));
+    }
+#endif // Win16/32
+
+    return rect;
+}
+
+inline RECT wxGetClientRect(HWND hwnd)
+{
+    RECT rect;
+#ifdef __WIN16__
+    ::GetClientRect(hwnd, &rect);
+#else // Win32
+    if ( !::GetClientRect(hwnd, &rect) )
+    {
+        wxLogLastError(_T("GetClientRect"));
+    }
+#endif // Win16/32
+
+    return rect;
+}
+
 // ---------------------------------------------------------------------------
 // small helper classes
 // ---------------------------------------------------------------------------
@@ -256,12 +329,45 @@ inline bool wxIsCtrlDown()
 class ScreenHDC
 {
 public:
-    ScreenHDC() { m_hdc = GetDC(NULL);    }
-   ~ScreenHDC() { ReleaseDC(NULL, m_hdc); }
-    operator HDC() const { return m_hdc;  }
+    ScreenHDC() { m_hdc = ::GetDC(NULL);    }
+   ~ScreenHDC() { ::ReleaseDC(NULL, m_hdc); }
+
+    operator HDC() const { return m_hdc; }
 
 private:
     HDC m_hdc;
+};
+
+// the same as ScreenHDC but for memory DCs: creates the HDC in ctor and
+// destroys it in dtor
+class MemoryHDC
+{
+public:
+    MemoryHDC() { m_hdc = ::CreateCompatibleDC(NULL); }
+   ~MemoryHDC() { ::DeleteObject(m_hdc);              }
+
+    operator HDC() const { return m_hdc; }
+
+private:
+    HDC m_hdc;
+};
+
+// a class which selects a GDI object into a DC in its ctor and deselects in
+// dtor
+class SelectInHDC
+{
+public:
+    SelectInHDC(HDC hdc, HGDIOBJ hgdiobj) : m_hdc(hdc)
+        { m_hgdiobj = ::SelectObject(hdc, hgdiobj); }
+
+   ~SelectInHDC() { ::SelectObject(m_hdc, m_hgdiobj); }
+
+   // return true if the object was successfully selected
+   operator bool() const { return m_hgdiobj != 0; }
+
+private:
+   HDC m_hdc;
+   HGDIOBJ m_hgdiobj;
 };
 
 // ---------------------------------------------------------------------------
@@ -297,6 +403,12 @@ private:
 #define GetHfont()              ((HFONT)GetHFONT())
 #define GetHfontOf(font)        ((HFONT)(font).GetHFONT())
 
+#define GetHpalette()           ((HPALETTE)GetHPALETTE())
+#define GetHpaletteOf(pal)      ((HPALETTE)(pal).GetHPALETTE())
+
+#define GetHrgn()               ((HRGN)GetHRGN())
+#define GetHrgnOf(rgn)          ((HRGN)(rgn).GetHRGN())
+
 #endif // wxUSE_GUI
 
 // ---------------------------------------------------------------------------
@@ -324,8 +436,6 @@ WXDLLEXPORT void wxSetInstance(HINSTANCE hInst);
 extern HCURSOR wxGetCurrentBusyCursor();    // from msw/utils.cpp
 extern const wxCursor *wxGetGlobalCursor(); // from msw/cursor.cpp
 
-WXDLLEXPORT wxWindow* wxFindWinFromHandle(WXHWND hWnd);
-
 WXDLLEXPORT void wxGetCharSize(WXHWND wnd, int *x, int *y, const wxFont *the_font);
 WXDLLEXPORT void wxFillLogFont(LOGFONT *logFont, const wxFont *font);
 WXDLLEXPORT wxFont wxCreateFontFromLogFont(const LOGFONT *logFont);
@@ -337,9 +447,6 @@ WXDLLEXPORT void wxScrollBarEvent(WXHWND hbar, WXWORD wParam, WXWORD pos);
 // Find maximum size of window/rectangle
 WXDLLEXPORT extern void wxFindMaxSize(WXHWND hwnd, RECT *rect);
 
-WXDLLEXPORT wxWindow* wxFindControlFromHandle(WXHWND hWnd);
-WXDLLEXPORT void wxAddControlHandle(WXHWND hWnd, wxWindow *item);
-
 // Safely get the window text (i.e. without using fixed size buffer)
 WXDLLEXPORT extern wxString wxGetWindowText(WXHWND hWnd);
 
@@ -350,18 +457,35 @@ WXDLLEXPORT extern wxString wxGetWindowClass(WXHWND hWnd);
 // is, for mainly historical reasons, signed)
 WXDLLEXPORT extern WXWORD wxGetWindowId(WXHWND hWnd);
 
+// check if hWnd's WNDPROC is wndProc. Return true if yes, false if they are
+// different
+WXDLLEXPORT extern bool wxCheckWindowWndProc(WXHWND hWnd, WXFARPROC wndProc);
+
 // Does this window style specify any border?
 inline bool wxStyleHasBorder(long style)
 {
-  return (style & (wxSIMPLE_BORDER | wxRAISED_BORDER |
-                   wxSUNKEN_BORDER | wxDOUBLE_BORDER)) != 0;
+    return (style & (wxSIMPLE_BORDER | wxRAISED_BORDER |
+                     wxSUNKEN_BORDER | wxDOUBLE_BORDER)) != 0;
 }
 
-// find the window for HWND which is part of some wxWindow, returns just the
-// corresponding wxWindow for HWND which just is one
+// ----------------------------------------------------------------------------
+// functions mapping HWND to wxWindow
+// ----------------------------------------------------------------------------
+
+// this function simply checks whether the given hWnd corresponds to a wxWindow
+// and returns either that window if it does or NULL otherwise
+WXDLLEXPORT extern wxWindow* wxFindWinFromHandle(WXHWND hWnd);
+
+// find the window for HWND which is part of some wxWindow, i.e. unlike
+// wxFindWinFromHandle() above it will also work for "sub controls" of a
+// wxWindow.
 //
-// may return NULL
-extern wxWindow *wxGetWindowFromHWND(WXHWND hwnd);
+// returns the wxWindow corresponding to the given HWND or NULL.
+WXDLLEXPORT extern wxWindow *wxGetWindowFromHWND(WXHWND hwnd);
+
+
+// Get the size of an icon
+WXDLLEXPORT extern wxSize wxGetHiconSize(HICON hicon);
 
 #endif // wxUSE_GUI
 

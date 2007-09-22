@@ -76,6 +76,9 @@ class wxConfigBasePtr :
     def ReadFloat(self, *_args, **_kwargs):
         val = apply(utilsc.wxConfigBase_ReadFloat,(self,) + _args, _kwargs)
         return val
+    def ReadBool(self, *_args, **_kwargs):
+        val = apply(utilsc.wxConfigBase_ReadBool,(self,) + _args, _kwargs)
+        return val
     def SetExpandEnvVars(self, *_args, **_kwargs):
         val = apply(utilsc.wxConfigBase_SetExpandEnvVars,(self,) + _args, _kwargs)
         return val
@@ -105,6 +108,9 @@ class wxConfigBasePtr :
         return val
     def WriteFloat(self, *_args, **_kwargs):
         val = apply(utilsc.wxConfigBase_WriteFloat,(self,) + _args, _kwargs)
+        return val
+    def WriteBool(self, *_args, **_kwargs):
+        val = apply(utilsc.wxConfigBase_WriteBool,(self,) + _args, _kwargs)
         return val
     def GetEntryType(self, *_args, **_kwargs):
         val = apply(utilsc.wxConfigBase_GetEntryType,(self,) + _args, _kwargs)
@@ -338,10 +344,6 @@ class wxDateTimePtr :
     def SetToWeekDay(self, *_args, **_kwargs):
         val = apply(utilsc.wxDateTime_SetToWeekDay,(self,) + _args, _kwargs)
         return val
-    def GetWeekDay(self, *_args, **_kwargs):
-        val = apply(utilsc.wxDateTime_GetWeekDay,(self,) + _args, _kwargs)
-        if val: val = wxDateTimePtr(val) ; val.thisown = 1
-        return val
     def SetToLastWeekDay(self, *_args, **_kwargs):
         val = apply(utilsc.wxDateTime_SetToLastWeekDay,(self,) + _args, _kwargs)
         return val
@@ -420,6 +422,9 @@ class wxDateTimePtr :
         return val
     def GetDay(self, *_args, **_kwargs):
         val = apply(utilsc.wxDateTime_GetDay,(self,) + _args, _kwargs)
+        return val
+    def GetWeekDay(self, *_args, **_kwargs):
+        val = apply(utilsc.wxDateTime_GetWeekDay,(self,) + _args, _kwargs)
         return val
     def GetHour(self, *_args, **_kwargs):
         val = apply(utilsc.wxDateTime_GetHour,(self,) + _args, _kwargs)
@@ -951,3 +956,4 @@ def wxDateSpan_Year(*_args, **_kwargs):
 wxCONFIG_USE_LOCAL_FILE = utilsc.wxCONFIG_USE_LOCAL_FILE
 wxCONFIG_USE_GLOBAL_FILE = utilsc.wxCONFIG_USE_GLOBAL_FILE
 wxCONFIG_USE_RELATIVE_PATH = utilsc.wxCONFIG_USE_RELATIVE_PATH
+wxCONFIG_USE_NO_ESCAPE_CHARACTERS = utilsc.wxCONFIG_USE_NO_ESCAPE_CHARACTERS

@@ -18,6 +18,12 @@ almost every aspect of it is pluggable:
         on. The 'model' part of MVC.
 
 Author/Maintainer - Bryn Keller <xoltar@starship.python.net>
+
+
+NOTE: This module is *not* supported in any way.  Use it however you
+      wish, but be warned that dealing with any consequences is
+      entirly up to you.
+      --Robin
 """
 
 #------------------------------------------------------------------------
@@ -31,13 +37,15 @@ class MVCTreeNode:
     screen placement, the actual data associated with it, and more. These are
     the nodes passed to all the other helper parts to do their work with.
     """
-    def __init__(self, data=None, parent = None, kids = [], x = 0, y = 0):
+    def __init__(self, data=None, parent = None, kids = None, x = 0, y = 0):
         self.x = 0
         self.y = 0
         self.projx = 0
         self.projy = 0
         self.parent = parent
         self.kids = kids
+        if self.kids is None:
+            self.kids = []
         self.data = data
         self.expanded = false
         self.selected = false
@@ -731,7 +739,7 @@ class wxMVCTreeEvent(wxPyCommandEvent):
 
 class wxMVCTreeNotifyEvent(wxMVCTreeEvent):
     def __init__(self, type, id, node = None, nodes = None, **kwargs):
-        apply(wxMVCTreeEvent.__init__, (self, type, id), kwargs)
+        apply(wxMVCTreeEvent.__init__, (self, type, id, node, nodes), kwargs)
         self.notify = wxNotifyEvent(type, id)
     def getNotifyEvent(self):
         return self.notify

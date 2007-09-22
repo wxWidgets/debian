@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     04/01/98
-// RCS-ID:      $Id: resourc2.cpp,v 1.6 1999/11/11 16:11:11 SC Exp $
+// RCS-ID:      $Id: resourc2.cpp,v 1.8 2002/01/08 23:52:53 VS Exp $
 // Copyright:   (c) Julian Smart and Markus Holzem
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -817,7 +817,6 @@ wxBitmap wxResourceCreateBitmap(const wxString& resource, wxResourceTable *table
       }
       case wxBITMAP_TYPE_XPM_DATA:
       {
-#if (defined(__WXGTK__)) || (defined(__WXMSW__) && wxUSE_XPM_IN_MSW)
         wxItemResource *item = table->FindResource(name);
         if (!item)
         {
@@ -826,9 +825,6 @@ wxBitmap wxResourceCreateBitmap(const wxString& resource, wxResourceTable *table
           return wxNullBitmap;
         }
         return wxBitmap(item->GetValue1());
-#else
-        wxLogWarning(_("No XPM facility available!"));
-#endif
         break;
       }
       default:
@@ -974,7 +970,6 @@ wxIcon wxResourceCreateIcon(const wxString& resource, wxResourceTable *table)
       {
       // *** XPM ICON NOT YET IMPLEMENTED IN WXWINDOWS ***
 /*
-#if (defined(__WXGTK__)) || (defined(__WXMSW__) && wxUSE_XPM_IN_MSW)
         wxItemResource *item = table->FindResource(name);
         if (!item)
         {
@@ -984,9 +979,6 @@ wxIcon wxResourceCreateIcon(const wxString& resource, wxResourceTable *table)
           return NULL;
         }
         return wxIcon((char **)item->GetValue1());
-#else
-        wxLogWarning(_("No XPM facility available!"));
-#endif
 */
         wxLogWarning(_("No XPM icon facility available!"));
         break;
@@ -1521,7 +1513,7 @@ bool wxWindow::LoadFromResource(wxWindow *parent, const wxString& resourceName, 
   if ((resource->GetResourceStyle() & wxRESOURCE_USE_DEFAULTS) != 0)
   {
     // No need to do this since it's done in wxPanel or wxDialog constructor.
-    // SetFont(wxSystemSettings::GetSystemFont(wxSYS_DEFAULT_GUI_FONT));
+    // SetFont(wxSystemSettings::GetFont(wxSYS_DEFAULT_GUI_FONT));
   }
   else
   {
@@ -1533,9 +1525,9 @@ bool wxWindow::LoadFromResource(wxWindow *parent, const wxString& resourceName, 
 
   // Should have some kind of font at this point
   if (!GetFont().Ok())
-      SetFont(wxSystemSettings::GetSystemFont(wxSYS_DEFAULT_GUI_FONT));
+      SetFont(wxSystemSettings::GetFont(wxSYS_DEFAULT_GUI_FONT));
   if (!GetBackgroundColour().Ok())
-      SetBackgroundColour(wxSystemSettings::GetSystemColour(wxSYS_COLOUR_3DFACE));
+      SetBackgroundColour(wxSystemSettings::GetColour(wxSYS_COLOUR_3DFACE));
 
   // Only when we've created the window and set the font can we set the correct size,
   // if based on dialog units.

@@ -4,7 +4,7 @@
 // Author:      Vadim Zeitlin
 // Modified by:
 // Created:     11.11.97
-// RCS-ID:      $Id: menuitem.cpp,v 1.29.2.1 2000/03/24 12:05:06 JS Exp $
+// RCS-ID:      $Id: menuitem.cpp,v 1.42 2002/05/16 19:26:26 VZ Exp $
 // Copyright:   (c) 1998 Vadim Zeitlin <zeitlin@dptmaths.ens-cachan.fr>
 // Licence:     wxWindows license
 ///////////////////////////////////////////////////////////////////////////////
@@ -27,6 +27,8 @@
 #ifdef __BORLANDC__
     #pragma hdrstop
 #endif
+
+#if wxUSE_MENUS
 
 #ifndef WX_PRECOMP
     #include "wx/font.h"
@@ -70,11 +72,7 @@
 // dynamic classes implementation
 // ----------------------------------------------------------------------------
 
-    #if wxUSE_OWNER_DRAWN
-        IMPLEMENT_DYNAMIC_CLASS2(wxMenuItem, wxMenuItemBase, wxOwnerDrawn)
-    #else   //!USE_OWNER_DRAWN
-        IMPLEMENT_DYNAMIC_CLASS(wxMenuItem, wxMenuItemBase)
-    #endif  //USE_OWNER_DRAWN
+IMPLEMENT_DYNAMIC_CLASS(wxMenuItem, wxObject)
 
 // ----------------------------------------------------------------------------
 // wxMenuItem
@@ -87,35 +85,51 @@ wxMenuItem::wxMenuItem(wxMenu *pParentMenu,
                        int id,
                        const wxString& text,
                        const wxString& strHelp,
-                       bool bCheckable,
+                       wxItemKind kind,
                        wxMenu *pSubMenu)
+          : wxMenuItemBase(pParentMenu, id, text, strHelp, kind, pSubMenu)
 #if wxUSE_OWNER_DRAWN
-                       : wxOwnerDrawn(text, bCheckable)
+            , wxOwnerDrawn(text, kind == wxITEM_CHECK)
 #endif // owner drawn
 {
-    wxASSERT_MSG( pParentMenu != NULL, wxT("a menu item should have a parent") );
+    Init();
+}
+
+wxMenuItem::wxMenuItem(wxMenu *parentMenu,
+                       int id,
+                       const wxString& text,
+                       const wxString& help,
+                       bool isCheckable,
+                       wxMenu *subMenu)
+          : wxMenuItemBase(parentMenu, id, text, help,
+                           isCheckable ? wxITEM_CHECK : wxITEM_NORMAL, subMenu)
+#if wxUSE_OWNER_DRAWN
+            , wxOwnerDrawn(text, isCheckable)
+#endif // owner drawn
+{
+    Init();
+}
+
+void wxMenuItem::Init()
+{
+    m_radioGroup.start = -1;
+    m_isRadioGroupStart = FALSE;
 
 #if  wxUSE_OWNER_DRAWN
     // set default menu colors
-    #define SYS_COLOR(c) (wxSystemSettings::GetSystemColour(wxSYS_COLOUR_##c))
+    #define SYS_COLOR(c) (wxSystemSettings::GetColour(wxSYS_COLOUR_##c))
 
     SetTextColour(SYS_COLOR(MENUTEXT));
     SetBackgroundColour(SYS_COLOR(MENU));
 
+    #undef  SYS_COLOR
+
     // we don't want normal items be owner-drawn
     ResetOwnerDrawn();
 
-    #undef  SYS_COLOR
+    // tell the owner drawing code to to show the accel string as well
+    SetAccelString(m_text.AfterFirst(_T('\t')));
 #endif // wxUSE_OWNER_DRAWN
-
-    m_parentMenu  = pParentMenu;
-    m_subMenu     = pSubMenu;
-    m_isEnabled   = TRUE;
-    m_isChecked   = FALSE;
-    m_id          = id;
-    m_text        = text;
-    m_isCheckable = bCheckable;
-    m_help        = strHelp;
 }
 
 wxMenuItem::~wxMenuItem()
@@ -147,17 +161,29 @@ wxString wxMenuItemBase::GetLabelFromText(const wxString& text)
     return wxStripMenuCodes(text);
 }
 
-// accelerators
-// ------------
+// radio group stuff
+// -----------------
 
-#if wxUSE_ACCEL
-
-wxAcceleratorEntry *wxMenuItem::GetAccel() const
+void wxMenuItem::SetAsRadioGroupStart()
 {
-    return wxGetAccelFromString(GetText());
+    m_isRadioGroupStart = TRUE;
 }
 
-#endif // wxUSE_ACCEL
+void wxMenuItem::SetRadioGroupStart(int start)
+{
+    wxASSERT_MSG( !m_isRadioGroupStart,
+                  _T("should only be called for the next radio items") );
+
+    m_radioGroup.start = start;
+}
+
+void wxMenuItem::SetRadioGroupEnd(int end)
+{
+    wxASSERT_MSG( m_isRadioGroupStart,
+                  _T("should only be called for the first radio item") );
+
+    m_radioGroup.end = end;
+}
 
 // change item state
 // -----------------
@@ -181,18 +207,86 @@ void wxMenuItem::Enable(bool enable)
 
 void wxMenuItem::Check(bool check)
 {
-    wxCHECK_RET( m_isCheckable, wxT("only checkable items may be checked") );
+    wxCHECK_RET( IsCheckable(), wxT("only checkable items may be checked") );
 
     if ( m_isChecked == check )
         return;
 
-    long rc = CheckMenuItem(GetHMenuOf(m_parentMenu),
-                            GetRealId(),
-                            MF_BYCOMMAND |
-                            (check ? MF_CHECKED : MF_UNCHECKED));
+    int flags = check ? MF_CHECKED : MF_UNCHECKED;
+    HMENU hmenu = GetHMenuOf(m_parentMenu);
 
-    if ( rc == -1 ) {
-        wxLogLastError(wxT("CheckMenuItem"));
+    if ( GetKind() == wxITEM_RADIO )
+    {
+        // it doesn't make sense to uncheck a radio item - what would this do?
+        if ( !check )
+            return;
+
+        // get the index of this item in the menu
+        const wxMenuItemList& items = m_parentMenu->GetMenuItems();
+        int pos = items.IndexOf(this);
+        wxCHECK_RET( pos != wxNOT_FOUND,
+                     _T("menuitem not found in the menu items list?") );
+
+        // get the radio group range
+        int start,
+            end;
+
+        if ( m_isRadioGroupStart )
+        {
+            // we already have all information we need
+            start = pos;
+            end = m_radioGroup.end;
+        }
+        else // next radio group item
+        {
+            // get the radio group end from the start item
+            start = m_radioGroup.start;
+            end = items.Item(start)->GetData()->m_radioGroup.end;
+        }
+
+#ifdef __WIN32__
+        // calling CheckMenuRadioItem() with such parameters hangs my system
+        // (NT4 SP6) and I suspect this could happen to the others as well - so
+        // don't do it!
+        wxCHECK_RET( start != -1 && end != -1,
+                     _T("invalid ::CheckMenuRadioItem() parameter(s)") );
+
+        if ( !::CheckMenuRadioItem(hmenu,
+                                   start,   // the first radio group item
+                                   end,     // the last one
+                                   pos,     // the one to check
+                                   MF_BYPOSITION) )
+        {
+            wxLogLastError(_T("CheckMenuRadioItem"));
+        }
+#endif // __WIN32__
+
+        // also uncheck all the other items in this radio group
+        wxMenuItemList::Node *node = items.Item(start);
+        for ( int n = start; n <= end && node; n++ )
+        {
+            if ( n != pos )
+            {
+                node->GetData()->m_isChecked = FALSE;
+            }
+
+            // we also have to do it in the menu for Win16 (under Win32
+            // CheckMenuRadioItem() does it for us)
+#ifndef __WIN32__
+            ::CheckMenuItem(hmenu, n, n == pos ? MF_CHECKED : MF_UNCHECKED);
+#endif // Win16
+
+            node = node->GetNext();
+        }
+    }
+    else // check item
+    {
+        if ( ::CheckMenuItem(hmenu,
+                             GetRealId(),
+                             MF_BYCOMMAND | flags) == (DWORD)-1 )
+        {
+            wxLogLastError(wxT("CheckMenuItem"));
+        }
     }
 
     wxMenuItemBase::Check(check);
@@ -267,8 +361,10 @@ wxMenuItem *wxMenuItemBase::New(wxMenu *parentMenu,
                                 int id,
                                 const wxString& name,
                                 const wxString& help,
-                                bool isCheckable,
+                                wxItemKind kind,
                                 wxMenu *subMenu)
 {
-    return new wxMenuItem(parentMenu, id, name, help, isCheckable, subMenu);
+    return new wxMenuItem(parentMenu, id, name, help, kind, subMenu);
 }
+
+#endif // wxUSE_MENUS

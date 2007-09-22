@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     12/07/98
-// RCS-ID:      $Id: basic.h,v 1.1 2000/03/03 11:24:34 JS Exp $
+// RCS-ID:      $Id: basic.h,v 1.5 2002/09/07 12:10:20 GD Exp $
 // Copyright:   (c) Julian Smart
 // Licence:   	wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -12,7 +12,7 @@
 #ifndef _OGL_BASIC_H_
 #define _OGL_BASIC_H_
 
-#ifdef __GNUG__
+#if defined(__GNUG__) && !defined(__APPLE__)
 #pragma interface "basic.h"
 #endif
 
@@ -124,7 +124,7 @@ class WXDLLEXPORT wxExprDatabase;
 
 
 
-class wxShapeEvtHandler: public wxObject
+class wxShapeEvtHandler: public wxObject, public wxClientDataContainer
 {
  DECLARE_DYNAMIC_CLASS(wxShapeEvtHandler)
 
@@ -299,8 +299,6 @@ class wxShape: public wxShapeEvtHandler
 
   void SetPen(wxPen *pen);
   void SetBrush(wxBrush *brush);
-  inline void SetClientData(wxObject *client_data) { m_clientData = client_data; };
-  inline wxObject *GetClientData() const { return m_clientData; };
 
   virtual void Show(bool show);
   virtual bool IsShown() const { return m_visible; }
@@ -515,8 +513,10 @@ class wxShape: public wxShapeEvtHandler
   // Clears points from a list of wxRealPoints
   void ClearPointList(wxList& list);
 
- private:
-  wxObject*             m_clientData;
+  // Return pen or brush of the right colour for the background
+  wxPen GetBackgroundPen();
+  wxBrush GetBackgroundBrush();
+
 
  protected:
   wxShapeEvtHandler*    m_eventHandler;

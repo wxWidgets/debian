@@ -4,12 +4,12 @@
 // Author:      Vadim Zeitlin
 // Modified by:
 // Created:     29.12.99
-// RCS-ID:      $Id: calctrl.h,v 1.10 2000/03/14 15:10:14 VZ Exp $
+// RCS-ID:      $Id: calctrl.h,v 1.16 2002/08/31 11:29:12 GD Exp $
 // Copyright:   (c) 1999 Vadim Zeitlin <zeitlin@dptmaths.ens-cachan.fr>
 // Licence:     wxWindows license
 ///////////////////////////////////////////////////////////////////////////////
 
-#ifdef __GNUG__
+#if defined(__GNUG__) && !defined(__APPLE__)
     #pragma interface "calctrl.h"
 #endif
 
@@ -17,11 +17,11 @@
 #define _WX_GENERIC_CALCTRL_H
 
 #include "wx/control.h"         // the base class
-
-#include "wx/spinctrl.h"        // for wxSpinEvent
+#include "wx/dcclient.h"        // for wxPaintDC
 
 class WXDLLEXPORT wxComboBox;
 class WXDLLEXPORT wxStaticText;
+class WXDLLEXPORT wxSpinCtrl;
 
 #define wxCalendarNameStr _T("CalendarCtrl")
 
@@ -42,10 +42,8 @@ public:
                    const wxDateTime& date = wxDefaultDateTime,
                    const wxPoint& pos = wxDefaultPosition,
                    const wxSize& size = wxDefaultSize,
-                   long style = wxCAL_SHOW_HOLIDAYS,
+                   long style = wxCAL_SHOW_HOLIDAYS | wxWANTS_CHARS,
                    const wxString& name = wxCalendarNameStr)
-        : wxControl(parent, id, pos, size,
-                    style | wxWANTS_CHARS, wxDefaultValidator, name)
     {
         Init();
 
@@ -57,16 +55,28 @@ public:
                 const wxDateTime& date = wxDefaultDateTime,
                 const wxPoint& pos = wxDefaultPosition,
                 const wxSize& size = wxDefaultSize,
-                long style = wxCAL_SHOW_HOLIDAYS,
+                long style = wxCAL_SHOW_HOLIDAYS | wxWANTS_CHARS,
                 const wxString& name = wxCalendarNameStr);
 
     virtual ~wxCalendarCtrl();
 
+    virtual bool Destroy();
+
     // set/get the current date
     // ------------------------
 
-    void SetDate(const wxDateTime& date);
+    bool SetDate(const wxDateTime& date); // we need to be able to control if the event should be sent in SetDateAndNotify(...)
     const wxDateTime& GetDate() const { return m_date; }
+
+    // set/get the range in which selection can occur
+    // ---------------------------------------------
+
+    bool SetLowerDateLimit(const wxDateTime& date = wxDefaultDateTime);
+    const wxDateTime& GetLowerDateLimit() const { return m_lowdate; }
+    bool SetUpperDateLimit(const wxDateTime& date = wxDefaultDateTime);
+    const wxDateTime& GetUpperDateLimit() const { return m_highdate; }
+
+    bool SetDateRange(const wxDateTime& lowerdate = wxDefaultDateTime, const wxDateTime& upperdate = wxDefaultDateTime);
 
     // calendar mode
     // -------------
@@ -167,7 +177,7 @@ private:
     void OnDClick(wxMouseEvent& event);
     void OnChar(wxKeyEvent& event);
     void OnMonthChange(wxCommandEvent& event);
-    void OnYearChange(wxSpinEvent& event);
+    void OnYearChange(wxCommandEvent& event);
 
     // override some base class virtuals
     virtual wxSize DoGetBestSize() const;
@@ -190,6 +200,13 @@ private:
 
     // is this date shown?
     bool IsDateShown(const wxDateTime& date) const;
+
+    // is this date in the given range?
+    bool IsDateInRange(const wxDateTime& date) const;
+
+    // range helpers
+    bool ChangeYear(wxDateTime* target) const;
+    bool ChangeMonth(wxDateTime* target) const;
 
     // redraw the given date
     void RefreshDate(const wxDateTime& date);
@@ -234,6 +251,16 @@ private:
     wxControl *GetMonthControl() const;
     wxControl *GetYearControl() const;
 
+    // OnPaint helper-methods
+
+    // Highlight the [fromdate : todate] range using pen and brush
+    void HighlightRange(wxPaintDC* dc, const wxDateTime& fromdate, const wxDateTime& todate, wxPen* pen, wxBrush* brush);
+
+    // Get the "coordinates" for the date relative to the month currently displayed.
+    // using (day, week): upper left coord is (1, 1), lower right coord is (7, 6)
+    // if the date isn't visible (-1, -1) is put in (day, week) and false is returned
+    bool GetDateCoord(const wxDateTime& date, int *day, int *week) const;
+
     // the subcontrols
     wxStaticText *m_staticMonth;
     wxComboBox *m_comboMonth;
@@ -243,6 +270,10 @@ private:
 
     // the current selection
     wxDateTime m_date;
+
+    // the date-range
+    wxDateTime m_lowdate;
+    wxDateTime m_highdate;
 
     // default attributes
     wxColour m_colHighlightFg,
@@ -257,10 +288,18 @@ private:
 
     // the width and height of one column/row in the calendar
     wxCoord m_widthCol,
-            m_heightRow;
+            m_heightRow,
+            m_rowOffset;
+
+    wxRect m_leftArrowRect,
+           m_rightArrowRect;
 
     // the week day names
     wxString m_weekdays[7];
+
+    // TRUE if SetDate() is being called as the result of changing the year in
+    // the year control
+    bool m_userChangedYear;
 
     DECLARE_DYNAMIC_CLASS(wxCalendarCtrl)
     DECLARE_EVENT_TABLE()

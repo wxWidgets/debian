@@ -4,7 +4,7 @@
 // Author:      Vadim Zeitlin
 // Modified by:
 // Created:     11.11.97
-// RCS-ID:      $Id: ownerdrw.h,v 1.12 1999/12/02 14:47:49 VZ Exp $
+// RCS-ID:      $Id: ownerdrw.h,v 1.17 2002/09/02 19:15:40 GD Exp $
 // Copyright:   (c) 1998 Vadim Zeitlin <zeitlin@dptmaths.ens-cachan.fr>
 // Licence:     wxWindows license
 ///////////////////////////////////////////////////////////////////////////////
@@ -14,7 +14,7 @@
 
 #if wxUSE_OWNER_DRAWN
 
-#ifdef    __GNUG__
+#if defined(__GNUG__) && !defined(__APPLE__)
     #pragma interface "ownerdrw.h"
 #endif
 
@@ -63,6 +63,10 @@ public:
         m_bmpUnchecked = bmpUnchecked;
         m_bOwnerDrawn = TRUE; }
 
+  void SetBitmap(const wxBitmap& bmpChecked)
+      { m_bmpChecked = bmpChecked;
+        m_bOwnerDrawn = TRUE; }
+
   const wxBitmap& GetBitmap(bool bChecked = TRUE) const
       { return (bChecked ? m_bmpChecked : m_bmpUnchecked); }
 
@@ -87,6 +91,10 @@ public:
   const wxString& GetName() const { return m_strName;    }
   void SetCheckable(bool checkable) { m_bCheckable = checkable; }
   bool IsCheckable() const { return m_bCheckable; }
+
+  // this is for menu items only: accel string is drawn right aligned after the
+  // menu item if not empty
+  void SetAccelString(const wxString& strAccel) { m_strAccel = strAccel; }
 
   // this function might seem strange, but if it returns FALSE it means that
   // no non-standard attribute are set, so there is no need for this control
@@ -121,7 +129,8 @@ public:
   virtual bool OnDrawItem(wxDC& dc, const wxRect& rc, wxODAction act, wxODStatus stat);
 
 protected:
-  wxString  m_strName;      // label for a manu item
+  wxString  m_strName,      // label for a manu item
+            m_strAccel;     // the accel string ("Ctrl-F17") if any
 
 private:
   static size_t ms_nDefaultMarginWidth; // menu check mark width
@@ -137,6 +146,7 @@ private:
             m_bmpUnchecked; // (checked is used also for 'uncheckable' items)
 
   size_t    m_nHeight,      // font height
+            m_nMinHeight,   // minimum height, as determined by user's system settings
             m_nMarginWidth; // space occupied by bitmap to the left of the item
 };
 

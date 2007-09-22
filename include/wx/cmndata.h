@@ -4,7 +4,7 @@
 // Author:      Julian Smart and others
 // Modified by:
 // Created:     01/02/97
-// RCS-ID:      $Id: cmndata.h,v 1.15 2000/01/25 13:35:42 JS Exp $
+// RCS-ID:      $Id: cmndata.h,v 1.31 2002/08/31 11:29:09 GD Exp $
 // Copyright:   (c)
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -12,23 +12,17 @@
 #ifndef _WX_CMNDATA_H_BASE_
 #define _WX_CMNDATA_H_BASE_
 
-#ifdef __GNUG__
+#if defined(__GNUG__) && !defined(__APPLE__)
 #pragma interface "cmndata.h"
 #endif
 
 #include "wx/window.h"
 #include "wx/font.h"
-#include "wx/fontutil.h"
 #include "wx/colour.h"
 #include "wx/gdicmn.h"
 
-#if (defined(__WXMOTIF__) || defined(__WXGTK__) || defined(__WXPM__)) && wxUSE_POSTSCRIPT
-class WXDLLEXPORT wxPrintSetupData;
-#endif
-
 class WXDLLEXPORT wxColourData: public wxObject
 {
-    DECLARE_DYNAMIC_CLASS(wxColourData)
 public:
     wxColourData();
     wxColourData(const wxColourData& data);
@@ -36,11 +30,12 @@ public:
 
     void SetChooseFull(bool flag) { chooseFull = flag; }
     bool GetChooseFull() const { return chooseFull; }
-    void SetColour(wxColour& colour) { dataColour = colour; }
-    wxColour &GetColour() { return dataColour; }
+    void SetColour(const wxColour& colour) { dataColour = colour; }
+    const wxColour& GetColour() const { return dataColour; }
+    wxColour& GetColour() { return dataColour; }
 
     // Array of 16 custom colours
-    void SetCustomColour(int i, wxColour& colour);
+    void SetCustomColour(int i, const wxColour& colour);
     wxColour GetCustomColour(int i);
 
     void operator=(const wxColourData& data);
@@ -49,15 +44,48 @@ public:
     wxColour        dataColour;
     wxColour        custColours[16];
     bool            chooseFull;
+    
+private:
+    DECLARE_DYNAMIC_CLASS(wxColourData)
 };
 
 class WXDLLEXPORT wxFontData: public wxObject
 {
-    DECLARE_DYNAMIC_CLASS(wxFontData)
 public:
     wxFontData();
     ~wxFontData();
 
+    wxFontData(const wxFontData& data)
+        : wxObject()
+        , fontColour(data.fontColour)
+        , showHelp(data.showHelp)
+        , allowSymbols(data.allowSymbols)
+        , enableEffects(data.enableEffects)
+        , initialFont(data.initialFont)
+        , chosenFont(data.chosenFont)
+        , minSize(data.minSize)
+        , maxSize(data.maxSize)
+        , m_encoding(data.m_encoding)
+        , m_encodingInfo(data.m_encodingInfo)
+    {
+    }
+
+    wxFontData& operator=(const wxFontData& data)
+    {
+        wxObject::operator=(data);
+        fontColour     = data.fontColour;
+        showHelp       = data.showHelp;
+        allowSymbols   = data.allowSymbols;
+        enableEffects  = data.enableEffects;
+        initialFont    = data.initialFont;
+        chosenFont     = data.chosenFont;
+        minSize        = data.minSize;
+        maxSize        = data.maxSize;
+        m_encoding     = data.m_encoding;
+        m_encodingInfo = data.m_encodingInfo;
+        return *this;
+    }
+                          
     void SetAllowSymbols(bool flag) { allowSymbols = flag; }
     bool GetAllowSymbols() const { return allowSymbols; }
 
@@ -99,6 +127,9 @@ public:
 private:
     wxFontEncoding       m_encoding;
     wxNativeEncodingInfo m_encodingInfo;
+    
+private:
+    DECLARE_DYNAMIC_CLASS(wxFontData)
 };
 
 #if wxUSE_PRINTING_ARCHITECTURE
@@ -109,8 +140,7 @@ private:
 
 class WXDLLEXPORT wxPrintData: public wxObject
 {
-    DECLARE_DYNAMIC_CLASS(wxPrintData)
-
+public:
     wxPrintData();
     wxPrintData(const wxPrintData& printData);
     ~wxPrintData();
@@ -118,6 +148,9 @@ class WXDLLEXPORT wxPrintData: public wxObject
     int GetNoCopies() const { return m_printNoCopies; };
     bool GetCollate() const { return m_printCollate; };
     int  GetOrientation() const { return m_printOrientation; };
+
+    // Is this data OK for showing the print dialog?
+    bool Ok() const ;
 
     const wxString& GetPrinterName() const { return m_printerName; }
     bool GetColour() const { return m_colour; }
@@ -165,11 +198,6 @@ class WXDLLEXPORT wxPrintData: public wxObject
 
     void operator=(const wxPrintData& data);
 
-    // For compatibility
-#if (defined(__WXMOTIF__) || defined(__WXGTK__) || defined(__WXPM__)) && wxUSE_POSTSCRIPT
-    void operator=(const wxPrintSetupData& setupData);
-#endif
-
 #if defined(__WXMSW__)
     // Convert to/from the DEVMODE structure
     void ConvertToNative();
@@ -178,21 +206,21 @@ class WXDLLEXPORT wxPrintData: public wxObject
     void SetNativeData(void* data) { m_devMode = data; }
     void* GetNativeDataDevNames() const { return m_devNames; }
     void SetNativeDataDevNames(void* data) { m_devNames = data; }
-#elif defined( __WXMAC__)
+#elif defined(__WXMAC__)
   void ConvertToNative();
   void ConvertFromNative();
 #endif
 
 public:
-#ifdef __WXMSW__
+#if defined(__WXMSW__)
     void*           m_devMode;
     void*           m_devNames;
-#elif defined( __WXMAC__  )
-	THPrint 		m_macPrintInfo ;
+#elif defined(__WXMAC__)
+    void*           m_macPageFormat ;
+    void*           m_macPrintSettings ;
 #endif
 
 private:
-
     int             m_printNoCopies;
     int             m_printOrientation;
     bool            m_printCollate;
@@ -216,6 +244,9 @@ private:
     long            m_printerTranslateX;
     long            m_printerTranslateY;
     wxPrintMode     m_printMode;
+    
+private:
+    DECLARE_DYNAMIC_CLASS(wxPrintData)
 };
 
 /*
@@ -227,8 +258,7 @@ private:
 
 class WXDLLEXPORT wxPrintDialogData: public wxObject
 {
-    DECLARE_DYNAMIC_CLASS(wxPrintDialogData)
-
+public:
     wxPrintDialogData();
     wxPrintDialogData(const wxPrintDialogData& dialogData);
     wxPrintDialogData(const wxPrintData& printData);
@@ -266,6 +296,9 @@ class WXDLLEXPORT wxPrintDialogData: public wxObject
     bool GetEnablePageNumbers() const { return m_printEnablePageNumbers; };
     bool GetEnableHelp() const { return m_printEnableHelp; };
 
+    // Is this data OK for showing the print dialog?
+    bool Ok() const { return m_printData.Ok() ; }
+
     wxPrintData& GetPrintData() { return m_printData; }
     void SetPrintData(const wxPrintData& printData) { m_printData = printData; }
 
@@ -278,19 +311,16 @@ class WXDLLEXPORT wxPrintDialogData: public wxObject
     void ConvertFromNative();
     void SetOwnerWindow(wxWindow* win);
     void* GetNativeData() const { return m_printDlgData; }
-#elif defined( __WXMAC__)
-  void ConvertToNative();
-  void ConvertFromNative();
+#elif defined(__WXMAC__)
+    void ConvertToNative();
+    void ConvertFromNative();
 #endif
 
 #ifdef __WXMSW__
     void*           m_printDlgData;
-#elif defined( __WXMAC__  )
-	THPrint 		m_macPrintInfo ;
 #endif
 
 private:
-
     int             m_printFromPage;
     int             m_printToPage;
     int             m_printMinPage;
@@ -305,8 +335,10 @@ private:
     bool            m_printEnableHelp;
     bool            m_printEnablePrintToFile;
     bool            m_printSetupDialog;
-
     wxPrintData     m_printData;
+
+private:    
+    DECLARE_DYNAMIC_CLASS(wxPrintDialogData)
 };
 
 /*
@@ -318,8 +350,6 @@ private:
 
 class WXDLLEXPORT wxPageSetupDialogData: public wxObject
 {
-    DECLARE_DYNAMIC_CLASS(wxPageSetupDialogData)
-
 public:
     wxPageSetupDialogData();
     wxPageSetupDialogData(const wxPageSetupDialogData& dialogData);
@@ -341,11 +371,14 @@ public:
     bool GetDefaultInfo() const { return m_getDefaultInfo; };
     bool GetEnableHelp() const { return m_enableHelp; };
 
+    // Is this data OK for showing the page setup dialog?
+    bool Ok() const { return m_printData.Ok() ; }
+
     // If a corresponding paper type is found in the paper database, will set the m_printData
     // paper size id member as well.
     void SetPaperSize(const wxSize& sz);
 
-    void SetPaperId(wxPaperSize& id) { m_printData.SetPaperId(id); };
+    void SetPaperId(wxPaperSize id) { m_printData.SetPaperId(id); };
 
     // Sets the wxPrintData id, plus the paper width/height if found in the paper database.
     void SetPaperSize(wxPaperSize id);
@@ -369,9 +402,9 @@ public:
     void ConvertFromNative();
     void SetOwnerWindow(wxWindow* win);
     void* GetNativeData() const { return m_pageSetupData; }
-#elif defined( __WXMAC__)
-  void ConvertToNative();
-  void ConvertFromNative();
+#elif defined(__WXMAC__)
+    void ConvertToNative();
+    void ConvertFromNative();
 #endif
 
     // Use paper size defined in this object to set the wxPrintData
@@ -381,27 +414,22 @@ public:
     // Use paper id in wxPrintData to set this object's paper size
     void CalculatePaperSizeFromId();
 
-    void operator=(const wxPageSetupData& data);
-    void operator=(const wxPrintData& data);
+    wxPageSetupDialogData& operator=(const wxPageSetupData& data);
+    wxPageSetupDialogData& operator=(const wxPrintData& data);
 
     wxPrintData& GetPrintData() { return m_printData; }
     void SetPrintData(const wxPrintData& printData) { m_printData = printData; }
 
 #if defined(__WIN95__)
     void*           m_pageSetupData;
-#elif defined( __WXMAC__  )
-	THPrint 	m_macPageSetupInfo ;
 #endif
 
 private:
-
     wxSize          m_paperSize; // The dimensions selected by the user (on return, same as in wxPrintData?)
     wxPoint         m_minMarginTopLeft;
     wxPoint         m_minMarginBottomRight;
     wxPoint         m_marginTopLeft;
     wxPoint         m_marginBottomRight;
-
-    // Flags
     bool            m_defaultMinMargins;
     bool            m_enableMargins;
     bool            m_enableOrientation;
@@ -409,8 +437,10 @@ private:
     bool            m_enablePrinter;
     bool            m_getDefaultInfo; // Equiv. to PSD_RETURNDEFAULT
     bool            m_enableHelp;
-
     wxPrintData     m_printData;
+    
+private:
+    DECLARE_DYNAMIC_CLASS(wxPageSetupDialogData)
 };
 
 #endif // wxUSE_PRINTING_ARCHITECTURE

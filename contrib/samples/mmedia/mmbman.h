@@ -4,7 +4,7 @@
 // Author:      Guilhem Lavaux, <guilhem.lavaux@libertysurf.fr>
 // Modified by:
 // Created:     13/02/2000
-// RCS-ID:      $Id: mmbman.h,v 1.1 2000/03/05 19:03:15 GL Exp $
+// RCS-ID:      $Id: mmbman.h,v 1.2 2002/09/07 12:12:21 GD Exp $
 // Copyright:   (c) 2000, Guilhem Lavaux
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -12,7 +12,7 @@
 #ifndef _MMBMAN_APP_H_
 #define _MMBMAN_APP_H_
 
-#ifdef __GNUG__
+#if defined(__GNUG__) && !defined(__APPLE__)
   #pragma interface "mmbman.cpp"
 #endif
 

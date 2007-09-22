@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     01/02/97
-// RCS-ID:      $Id: colordlg.h,v 1.2.4.2 2000/06/18 21:31:32 VZ Exp $
+// RCS-ID:      $Id: colordlg.h,v 1.5 2002/05/09 22:31:44 VZ Exp $
 // Copyright:   (c) Julian Smart
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -36,9 +36,11 @@ public:
 
     // override some base class virtuals
     virtual void SetTitle(const wxString& title);
-    virtual wxString GetTitle();
+    virtual wxString GetTitle() const;
 
     virtual int ShowModal();
+
+    virtual void DoGetPosition( int *x, int *y ) const;
 
 protected:
     virtual void DoGetSize(int *width, int *height) const;
@@ -49,6 +51,8 @@ protected:
 
     wxColourData        m_colourData;
     wxString            m_title;
+
+    wxPoint             m_pos;
 
     DECLARE_DYNAMIC_CLASS(wxColourDialog)
 };

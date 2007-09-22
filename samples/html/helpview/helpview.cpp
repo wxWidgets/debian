@@ -2,15 +2,17 @@
 /////////////////////////////////////////////////////////////////////////////
 // Name:        helpview.cpp
 // Purpose:     wxHtml help browser
+// Please note: see utils/helpview for a more fully-featured
+// standalone help browser.
 /////////////////////////////////////////////////////////////////////////////
 
-#ifdef __GNUG__
+#if defined(__GNUG__) && !defined(__APPLE__)
 #pragma implementation "help.cpp"
 #pragma interface "help.cpp"
 #endif
 
 // For compilers that support precompilation, includes "wx/wx.h".
-#include <wx/wxprec.h>
+#include "wx/wxprec.h"
 
 #ifdef __BORLANDC__
 #pragma hdrstop
@@ -19,13 +21,14 @@
 // for all others, include the necessary headers (this file is usually all you
 // need because it includes almost all "standard" wxWindows headers
 #ifndef WX_PRECOMP
-#include <wx/wx.h>
+#include "wx/wx.h"
 #endif
 
-#include <wx/image.h>
-#include <wx/wxhtml.h>
-#include <wx/fs_zip.h>
-#include <wx/log.h>
+#include "wx/image.h"
+#include "wx/wxhtml.h"
+#include "wx/fs_zip.h"
+#include "wx/log.h"
+#include "wx/filedlg.h"
 
 // ----------------------------------------------------------------------------
 // private classes
@@ -68,10 +71,10 @@ bool MyApp::OnInit()
     wxConfig::Get(); // create an instance
 
     help = new wxHtmlHelpController;
-    
+
     if (argc < 2) {
-        wxLogError("Usage : helpview <helpfile> [<more helpfiles>]");
-        wxLogError("  helpfile may be .hhp, .zip or .htb");
+        wxLogError(wxT("Usage : helpview <helpfile> [<more helpfiles>]"));
+        wxLogError(wxT("  helpfile may be .hhp, .zip or .htb"));
         return FALSE;
     }
 

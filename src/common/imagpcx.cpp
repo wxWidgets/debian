@@ -3,7 +3,7 @@
 // Purpose:     wxImage PCX handler
 // Author:      Guillermo Rodriguez Garcia <guille@iies.es>
 // Version:     1.1
-// CVS-ID:      $Id: imagpcx.cpp,v 1.25 2000/03/13 17:22:49 VS Exp $
+// CVS-ID:      $Id: imagpcx.cpp,v 1.32 2002/05/22 23:14:47 VZ Exp $
 // Copyright:   (c) 1999 Guillermo Rodriguez Garcia
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -23,7 +23,7 @@
 #  include "wx/defs.h"
 #endif
 
-#if wxUSE_STREAMS && wxUSE_PCX
+#if wxUSE_IMAGE && wxUSE_STREAMS && wxUSE_PCX
 
 #include "wx/imagpcx.h"
 #include "wx/wfstream.h"
@@ -102,7 +102,7 @@ void RLEdecode(unsigned char *p, unsigned int size, wxInputStream& s)
 		  //
         if ((data & 0xC0) != 0xC0)
         {
-            *(p++) = data;
+            *(p++) = (unsigned char)data;
             size--;
         }
         else
@@ -110,7 +110,7 @@ void RLEdecode(unsigned char *p, unsigned int size, wxInputStream& s)
             cont = data & 0x3F;
             data = (unsigned char)s.GetC();
             for (i = 1; i <= cont; i++)
-                *(p++) = data;
+                *(p++) = (unsigned char)data;
             size -= cont;
         }
     }
@@ -276,6 +276,19 @@ int ReadPCX(wxImage *image, wxInputStream& stream)
             *(p++) = pal[3 * index + 1];
             *(p++) = pal[3 * index + 2];
         }
+
+#if wxUSE_PALETTE
+        unsigned char r[256];
+        unsigned char g[256];
+        unsigned char b[256];
+        for (i = 0; i < 256; i++)
+        {
+            r[i] = pal[3*i + 0];
+            g[i] = pal[3*i + 1];
+            b[i] = pal[3*i + 2];
+        }
+        image->SetPalette(wxPalette(256, r, g, b));
+#endif // wxUSE_PALETTE
     }
 
     return wxPCX_OK;
@@ -298,7 +311,7 @@ int SavePCX(wxImage *image, wxOutputStream& stream)
     unsigned int bytesperline;      // bytes per line (each plane)
     int nplanes = 3;                // number of planes
     int format = wxPCX_24BIT;       // image format (8 bit, 24 bit)
-    wxHashTable h(wxKEY_INTEGER);   // image histogram
+    wxImageHistogram histogram;     // image histogram
     unsigned long key;              // key in the hashtable
     unsigned int i;
 
@@ -306,7 +319,7 @@ int SavePCX(wxImage *image, wxOutputStream& stream)
 
     if (image->CountColours(256) <= 256)
     {
-        image->ComputeHistogram(h);
+        image->ComputeHistogram(histogram);
         format = wxPCX_8BIT;
         nplanes = 1;
     }
@@ -337,12 +350,12 @@ int SavePCX(wxImage *image, wxOutputStream& stream)
     hdr[HDR_ENCODING]         = 1;
     hdr[HDR_NPLANES]          = nplanes;
     hdr[HDR_BITSPERPIXEL]     = 8;
-    hdr[HDR_BYTESPERLINE]     = bytesperline % 256;
-    hdr[HDR_BYTESPERLINE + 1] = bytesperline / 256;
-    hdr[HDR_XMAX]             = (width - 1)  % 256;
-    hdr[HDR_XMAX + 1]         = (width - 1)  / 256;
-    hdr[HDR_YMAX]             = (height - 1) % 256;
-    hdr[HDR_YMAX + 1]         = (height - 1) / 256;
+    hdr[HDR_BYTESPERLINE]     = (unsigned char)(bytesperline % 256);
+    hdr[HDR_BYTESPERLINE + 1] = (unsigned char)(bytesperline / 256);
+    hdr[HDR_XMAX]             = (unsigned char)((width - 1)  % 256);
+    hdr[HDR_XMAX + 1]         = (unsigned char)((width - 1)  / 256);
+    hdr[HDR_YMAX]             = (unsigned char)((height - 1) % 256);
+    hdr[HDR_YMAX + 1]         = (unsigned char)((height - 1) / 256);
     hdr[HDR_PALETTEINFO]      = 1;
 
     stream.Write(hdr, 128);
@@ -358,7 +371,6 @@ int SavePCX(wxImage *image, wxOutputStream& stream)
             case wxPCX_8BIT:
             {
                 unsigned char r, g, b;
-                wxHNode *hnode;
 
                 for (i = 0; i < width; i++)
                 {
@@ -367,8 +379,7 @@ int SavePCX(wxImage *image, wxOutputStream& stream)
                     b = *(src++);
                     key = (r << 16) | (g << 8) | b;
 
-                    hnode = (wxHNode *) h.Get(key);
-                    p[i] = (unsigned char)hnode->index;
+                    p[i] = (unsigned char)histogram[key].index;
                 }
                 break;
             }
@@ -389,26 +400,22 @@ int SavePCX(wxImage *image, wxOutputStream& stream)
 
     free(p);
 
-    // For 8 bit images, build the palette and write it to the stream
-
+    // For 8 bit images, build the palette and write it to the stream:
     if (format == wxPCX_8BIT)
     {
-        wxNode *node;
-        wxHNode *hnode;
-
         // zero unused colours
         memset(pal, 0, sizeof(pal));
 
-        h.BeginFind();
-        while ((node = h.Next()) != NULL)
+        unsigned long index;
+        
+        for (wxImageHistogram::iterator entry = histogram.begin();
+             entry != histogram.end(); entry++ )
         {
-            key = node->GetKeyInteger();
-            hnode = (wxHNode *) node->GetData();
-
-            pal[3 * hnode->index]     = (unsigned char)(key >> 16);
-            pal[3 * hnode->index + 1] = (unsigned char)(key >> 8);
-            pal[3 * hnode->index + 2] = (unsigned char)(key);
-            delete hnode;
+            key = entry->first;
+            index = entry->second.index;
+            pal[3 * index]     = (unsigned char)(key >> 16);
+            pal[3 * index + 1] = (unsigned char)(key >> 8);
+            pal[3 * index + 2] = (unsigned char)(key);
         }
 
         stream.PutC(12);
@@ -479,13 +486,12 @@ bool wxPCXHandler::SaveFile( wxImage *image, wxOutputStream& stream, bool verbos
 
 bool wxPCXHandler::DoCanRead( wxInputStream& stream )
 {
-    unsigned char c;
-
-    c = stream.GetC();
-    stream.SeekI(-1, wxFromCurrent);
+    unsigned char c = stream.GetC();
+    if ( !stream )
+        return FALSE;
 
     // not very safe, but this is all we can get from PCX header :-(
-    return (c == 10);
+    return c == 10;
 }
 
 #endif // wxUSE_STREAMS && wxUSE_PCX

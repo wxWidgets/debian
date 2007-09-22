@@ -4,9 +4,9 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     04/01/98
-// RCS-ID:      $Id: sashtest.cpp,v 1.6.2.2 2000/05/23 12:16:31 JS Exp $
+// RCS-ID:      $Id: sashtest.cpp,v 1.11 2002/03/17 14:15:55 VZ Exp $
 // Copyright:   (c) Julian Smart and Markus Holzem
-// Licence:   	wxWindows license
+// Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
 
 // For compilers that support precompilation, includes "wx/wx.h".
@@ -21,8 +21,8 @@
 #include "wx/mdi.h"
 #endif
 
-#include <wx/toolbar.h>
-#include <wx/laywin.h>
+#include "wx/toolbar.h"
+#include "wx/laywin.h"
 
 #include "sashtest.h"
 
@@ -43,7 +43,9 @@ bool MyApp::OnInit(void)
   // Create the main frame window
 
   frame = new MyFrame(NULL, -1, "Sash Demo", wxPoint(0, 0), wxSize(500, 400),
-      wxDEFAULT_FRAME_STYLE | wxHSCROLL | wxVSCROLL);
+                      wxDEFAULT_FRAME_STYLE |
+                      wxNO_FULL_REPAINT_ON_RESIZE |
+                      wxHSCROLL | wxVSCROLL);
 
   // Give it an icon (this is ignored in MDI mode: uses resources)
 #ifdef __WXMSW__
@@ -92,13 +94,17 @@ END_EVENT_TABLE()
 
 // Define my frame constructor
 MyFrame::MyFrame(wxWindow *parent, const wxWindowID id, const wxString& title, const wxPoint& pos, const wxSize& size,
-	const long style):
+    const long style):
   wxMDIParentFrame(parent, id, title, pos, size, style)
 {
   // Create some dummy layout windows
 
   // A window like a toolbar
-  wxSashLayoutWindow* win = new wxSashLayoutWindow(this, ID_WINDOW_TOP, wxDefaultPosition, wxSize(200, 30), wxNO_BORDER|wxSW_3D);
+  wxSashLayoutWindow* win =
+      new wxSashLayoutWindow(this, ID_WINDOW_TOP,
+                             wxDefaultPosition, wxSize(200, 30),
+                             wxNO_BORDER | wxSW_3D | wxCLIP_CHILDREN);
+
   win->SetDefaultSize(wxSize(1000, 30));
   win->SetOrientation(wxLAYOUT_HORIZONTAL);
   win->SetAlignment(wxLAYOUT_TOP);
@@ -108,7 +114,9 @@ MyFrame::MyFrame(wxWindow *parent, const wxWindowID id, const wxString& title, c
   m_topWindow = win;
 
   // A window like a statusbar
-  win = new wxSashLayoutWindow(this, ID_WINDOW_BOTTOM, wxDefaultPosition, wxSize(200, 30), wxNO_BORDER|wxSW_3D);
+  win = new wxSashLayoutWindow(this, ID_WINDOW_BOTTOM,
+                               wxDefaultPosition, wxSize(200, 30),
+                               wxNO_BORDER | wxSW_3D | wxCLIP_CHILDREN);
   win->SetDefaultSize(wxSize(1000, 30));
   win->SetOrientation(wxLAYOUT_HORIZONTAL);
   win->SetAlignment(wxLAYOUT_BOTTOM);
@@ -118,7 +126,9 @@ MyFrame::MyFrame(wxWindow *parent, const wxWindowID id, const wxString& title, c
   m_bottomWindow = win;
 
   // A window to the left of the client window
-  win = new wxSashLayoutWindow(this, ID_WINDOW_LEFT1, wxDefaultPosition, wxSize(200, 30), wxNO_BORDER|wxSW_3D);
+  win = new wxSashLayoutWindow(this, ID_WINDOW_LEFT1,
+                               wxDefaultPosition, wxSize(200, 30),
+                               wxNO_BORDER | wxSW_3D | wxCLIP_CHILDREN);
   win->SetDefaultSize(wxSize(120, 1000));
   win->SetOrientation(wxLAYOUT_VERTICAL);
   win->SetAlignment(wxLAYOUT_LEFT);
@@ -134,7 +144,9 @@ MyFrame::MyFrame(wxWindow *parent, const wxWindowID id, const wxString& title, c
   m_leftWindow1 = win;
 
   // Another window to the left of the client window
-  win = new wxSashLayoutWindow(this, ID_WINDOW_LEFT2, wxDefaultPosition, wxSize(200, 30), wxNO_BORDER|wxSW_3D);
+  win = new wxSashLayoutWindow(this, ID_WINDOW_LEFT2,
+                               wxDefaultPosition, wxSize(200, 30),
+                               wxNO_BORDER | wxSW_3D | wxCLIP_CHILDREN);
   win->SetDefaultSize(wxSize(120, 1000));
   win->SetOrientation(wxLAYOUT_VERTICAL);
   win->SetAlignment(wxLAYOUT_LEFT);
@@ -206,8 +218,10 @@ void MyFrame::OnSashDrag(wxSashEvent& event)
 void MyFrame::OnNewWindow(wxCommandEvent& WXUNUSED(event))
 {
       // Make another frame, containing a canvas
-      MyChild *subframe = new MyChild(frame, "Canvas Frame", wxPoint(10, 10), wxSize(300, 300),
-                             wxDEFAULT_FRAME_STYLE);
+      MyChild *subframe = new MyChild(frame, "Canvas Frame",
+                                      wxPoint(10, 10), wxSize(300, 300),
+                                      wxDEFAULT_FRAME_STYLE |
+                                      wxNO_FULL_REPAINT_ON_RESIZE);
 
       char titleBuf[100];
       sprintf(titleBuf, "Canvas Frame %d", winNumber);
@@ -259,12 +273,13 @@ void MyFrame::OnNewWindow(wxCommandEvent& WXUNUSED(event))
 }
 
 BEGIN_EVENT_TABLE(MyCanvas, wxScrolledWindow)
-	EVT_MOUSE_EVENTS(MyCanvas::OnEvent)
+    EVT_MOUSE_EVENTS(MyCanvas::OnEvent)
 END_EVENT_TABLE()
 
 // Define a constructor for my canvas
-MyCanvas::MyCanvas(wxWindow *parent, const wxPoint& pos, const wxSize& size):
- wxScrolledWindow(parent, -1, pos, size, wxSUNKEN_BORDER)
+MyCanvas::MyCanvas(wxWindow *parent, const wxPoint& pos, const wxSize& size)
+        : wxScrolledWindow(parent, -1, pos, size,
+                           wxSUNKEN_BORDER | wxNO_FULL_REPAINT_ON_RESIZE)
 {
     SetBackgroundColour(* wxWHITE);
 }

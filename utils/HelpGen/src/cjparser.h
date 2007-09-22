@@ -5,7 +5,7 @@
 // Author:      Aleksandras Gluchovas
 // Modified by:
 // Created:     22/09/98
-// RCS-ID:      $Id: cjparser.h,v 1.1 1999/09/13 14:29:40 JS Exp $
+// RCS-ID:      $Id: cjparser.h,v 1.4 2001/07/19 13:44:57 VZ Exp $
 // Copyright:   (c) Aleskandars Gluchovas
 // Licence:       wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -15,10 +15,15 @@
 
 #include "srcparser.h"
 
-#include <iostream.h>
 #include <memory.h>
 #include <stdlib.h>
 #include <stdio.h>
+
+#if wxUSE_IOSTREAMH
+    #include <iostream.h>
+#else
+    #include <iostream>
+#endif
 
 // class parses given "memory-resident" Java or C++ source code
 // and captures information about classes/attrubutes/methods/
@@ -70,9 +75,9 @@ protected:
     void AddEnumNode( char*& cur );
     void AddTypeDefNode( char*& cur );
 
-    void DumpOperationInfo( spOperation& info, const string& tab, ostream& os );
-    void DumpClassHeader( spClass& info, ostream& os );
-    void DumpClassBody( spClass& info, ostream& os );
+    void DumpOperationInfo( spOperation& info, const string& tab, wxSTD ostream& os );
+    void DumpClassHeader( spClass& info, wxSTD ostream& os );
+    void DumpClassBody( spClass& info, wxSTD ostream& os );
 
 public:
 

@@ -2,7 +2,7 @@
  * Project: GSocket (Generic Socket) for WX
  * Name:    gsockunx.h
  * Purpose: GSocket Unix header
- * CVSID:   $Id: gsockunx.h,v 1.6 2000/03/16 21:57:20 GRG Exp $
+ * CVSID:   $Id: gsockunx.h,v 1.7 2001/05/10 06:31:39 GRG Exp $
  * -------------------------------------------------------------------------
  */
 
@@ -26,10 +26,6 @@
 extern "C" {
 #endif /* __cplusplus */
 
-#if !defined(__cplusplus)
-typedef int bool;
-#endif
-
 #ifndef TRUE
 #define TRUE 1
 #endif
@@ -47,11 +43,11 @@ struct _GSocket
   GAddress *m_peer;
   GSocketError m_error;
 
-  bool m_non_blocking;
-  bool m_server;
-  bool m_stream;
-  bool m_oriented;
-  bool m_establishing;
+  int m_non_blocking;
+  int m_server;
+  int m_stream;
+  int m_oriented;
+  int m_establishing;
   unsigned long m_timeout;
 
   /* Callbacks */
@@ -85,7 +81,7 @@ int _GSocket_Send_Dgram(GSocket *socket, const char *buffer, int size);
 
 /* Callbacks */
 
-bool _GSocket_GUI_Init(GSocket *socket);
+int  _GSocket_GUI_Init(GSocket *socket);
 void _GSocket_GUI_Destroy(GSocket *socket);
 
 void _GSocket_Enable_Events(GSocket *socket);

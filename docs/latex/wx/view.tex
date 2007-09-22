@@ -126,16 +126,25 @@ all share the same window, you need to disassociate the window from the view
 and perhaps clear the window. If {\it deleteWindow} is TRUE, delete the
 frame associated with the view.
 
+\membersection{wxView::OnClosingDocument}\label{wxviewonclosingdocument}
+
+\func{virtual void}{OnClosingDoocument}{\void}
+
+Override this to clean up the view when the document is being
+closed.
+
 \membersection{wxView::OnCreate}
 
 \func{virtual bool}{OnCreate}{\param{wxDocument* }{doc}, \param{long}{ flags}}
 
-Called just after view construction to give the view a chance to initialize
-itself based on the passed document and flags (unused). By default, simply
-returns TRUE. If the function returns FALSE, the view will be deleted.
+wxDocManager or wxDocument creates a wxView via a wxDocTemplate.
+Just after the wxDocTemplate creates the wxView, it calls
+wxView::OnCreate. In its OnCreate member function, the wxView can create a wxDocChildFrame
+or a derived class. This wxDocChildFrame provides user interface
+elements to view and/or edit the contents of the wxDocument.
 
-The predefined document child frame, wxDocChildFrame, calls this function
-automatically.
+By default, simply returns TRUE. If the function returns FALSE, the
+view will be deleted.
 
 \membersection{wxView::OnCreatePrintout}
 
@@ -143,7 +152,7 @@ automatically.
 
 If the printing framework is enabled in the library, this function returns a
 \rtfsp\helpref{wxPrintout}{wxprintout} object for the purposes of printing. It should create a new object
-everytime it is called; the framework will delete objects it creates.
+every time it is called; the framework will delete objects it creates.
 
 By default, this function returns an instance of wxDocPrintout, which prints
 and previews one page by calling wxView::OnDraw.

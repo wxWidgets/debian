@@ -5,7 +5,7 @@
 // Author:      Vadim Zeitlin
 // Modified by:
 // Created:     29/01/98
-// RCS-ID:      $Id: file.h,v 1.19.2.1 2000/04/02 20:45:18 OK Exp $
+// RCS-ID:      $Id: file.h,v 1.25 2002/09/04 22:17:09 VS Exp $
 // Copyright:   (c) 1998 Vadim Zeitlin <zeitlin@dptmaths.ens-cachan.fr>
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -13,13 +13,14 @@
 #ifndef _WX_FILEH__
 #define _WX_FILEH__
 
-#ifdef __GNUG__
+#if defined(__GNUG__) && !defined(__APPLE__)
 #pragma interface "file.h"
 #endif
 
 #ifndef WX_PRECOMP
   #include  "wx/string.h"
   #include  "wx/filefn.h"
+  #include  "wx/strconv.h"
 #endif
 
 #if wxUSE_FILE
@@ -58,7 +59,7 @@ public:
   // more file constants
   // -------------------
     // opening mode
-  enum OpenMode { read, write, read_write, write_append };
+  enum OpenMode { read, write, read_write, write_append, write_excl };
     // standard values for file descriptor
   enum { fd_invalid = -1, fd_stdin, fd_stdout, fd_stderr };
 
@@ -99,7 +100,7 @@ public:
     // returns the number of bytes written
   size_t Write(const void *pBuf, size_t nCount);
     // returns true on success
-  bool Write(const wxString& s, wxMBConv& conv = wxConvLibc)
+  bool Write(const wxString& s, wxMBConv& conv = wxConvLocal)
   {
       const wxWX2MBbuf buf = s.mb_str(conv);
       size_t size = strlen(buf);
@@ -164,7 +165,7 @@ public:
 
   // I/O (both functions return true on success, false on failure)
   bool Write(const void *p, size_t n) { return m_file.Write(p, n) != 0; }
-  bool Write(const wxString& str)   { return m_file.Write(str); }
+  bool Write(const wxString& str, wxMBConv& conv = wxConvLibc) { return m_file.Write(str, conv); }
 
   // different ways to close the file
     // validate changes and delete the old file of name m_strName

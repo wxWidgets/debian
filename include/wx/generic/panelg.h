@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     01/02/97
-// RCS-ID:      $Id: panelg.h,v 1.19.2.1 2000/06/17 22:44:44 VZ Exp $
+// RCS-ID:      $Id: panelg.h,v 1.31.2.2 2002/09/21 20:38:05 VZ Exp $
 // Copyright:   (c)
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -12,7 +12,7 @@
 #ifndef _WX_GENERIC_PANEL_H_
 #define _WX_GENERIC_PANEL_H_
 
-#ifdef __GNUG__
+#if defined(__GNUG__) && !defined(__APPLE__)
     #pragma interface "panelg.h"
 #endif
 
@@ -21,8 +21,9 @@
 // ----------------------------------------------------------------------------
 
 #include "wx/window.h"
+#include "wx/containr.h"
 
-class WXDLLEXPORT wxButton;
+class WXDLLEXPORT wxControlContainer;
 
 WXDLLEXPORT_DATA(extern const wxChar*) wxPanelNameStr;
 
@@ -67,13 +68,7 @@ public:
                 long style = wxTAB_TRAVERSAL | wxNO_BORDER,
                 const wxString& name = wxPanelNameStr);
 
-    // Sends an OnInitDialog event, which in turns transfers data to
-    // to the dialog via validators.
-    virtual void InitDialog();
-
-    // a default button is activated when Enter is pressed
-    wxButton *GetDefaultItem() const { return m_btnDefault; }
-    void SetDefaultItem(wxButton *btn) { m_btnDefault = btn; }
+    virtual ~wxPanel();
 
     // implementation from now on
     // --------------------------
@@ -81,42 +76,26 @@ public:
         // responds to colour changes
     void OnSysColourChanged(wxSysColourChangedEvent& event);
 
-        // process a keyboard navigation message (Tab traversal)
-    void OnNavigationKey(wxNavigationKeyEvent& event);
-
-        // set the focus to the first child if we get it
-    void OnFocus(wxFocusEvent& event);
-
         // calls layout for layout constraints and sizers
     void OnSize(wxSizeEvent& event);
 
-        // overridden to tab move focus into first focusable child
-    virtual void SetFocus();
+    virtual void InitDialog();
 
-        // called by wxWindow whenever it gets focus
-    void SetLastFocus(wxWindow *win) { m_winLastFocused = win; }
-    wxWindow *GetLastFocus() const { return m_winLastFocused; }
+#ifdef __WXUNIVERSAL__
+    virtual bool IsCanvasWindow() const { return TRUE; }
+    virtual bool ProvidesBackground() const { return TRUE; }
+#endif
+
+    WX_DECLARE_CONTROL_CONTAINER();
 
 protected:
     // common part of all ctors
     void Init();
 
-    // set the focus to the child which had it the last time
-    bool SetFocusToChild();
-
-    // the child which had the focus last time this panel was activated
-    wxWindow *m_winLastFocused;
-
-    // a default button or NULL
-    wxButton *m_btnDefault;
-
 private:
     DECLARE_DYNAMIC_CLASS(wxPanel)
     DECLARE_EVENT_TABLE()
 };
-
-// this function is for wxWindows use only
-extern bool wxSetFocusToChild(wxWindow *win, wxWindow **child);
 
 #endif
     // _WX_GENERIC_PANEL_H_

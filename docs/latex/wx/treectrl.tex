@@ -1,10 +1,7 @@
 \section{\class{wxTreeCtrl}}\label{wxtreectrl}
 
-A tree control presents information as a hierarchy, with items that may be
-expanded to show further items. Items in a tree control are referenced by
-wxTreeItemId handles. The only method of wxTreeItemId class which can be used
-is {\it IsOk()} which returns {\tt TRUE} if the handle is valid and 
-{\tt FALSE} otherwise.
+A tree control presents information as a hierarchy, with items that may be expanded
+to show further items. Items in a tree control are referenced by wxTreeItemId handles.
 
 To intercept events from a tree control, use the event table macros described in \helpref{wxTreeEvent}{wxtreeevent}.
 
@@ -23,13 +20,47 @@ To intercept events from a tree control, use the event table macros described in
 
 \twocolwidtha{5cm}
 \begin{twocollist}\itemsep=0pt
-\twocolitem{\windowstyle{wxTR\_HAS\_BUTTONS}}{Use this style to show + and - buttons to the
-left of parent items. Win32 only. }
-\twocolitem{\windowstyle{wxTR\_EDIT\_LABELS}}{Use this style if you wish the user to be
-able to edit labels in the tree control.}
-\twocolitem{\windowstyle{wxTR\_MULTIPLE}}{Use this style to allow the user to
-select more than one item in the control - by default, only one item may be
-selected.}
+\twocolitem{\windowstyle{wxTR\_EDIT\_LABELS}}{Use this style
+if you wish the user to be able to edit labels in the tree control.}
+\twocolitem{\windowstyle{wxTR\_NO\_BUTTONS}}{For convenience
+to document that no buttons are to be drawn.}
+\twocolitem{\windowstyle{wxTR\_HAS\_BUTTONS}}{Use this style
+to show + and - buttons to the left of parent items.}
+\twocolitem{\windowstyle{wxTR\_TWIST\_BUTTONS}}{Use this style
+to show Mac-style twister buttons to the left of parent items.
+If both wxTR\_HAS\_BUTTONS and wxTR\_TWIST\_BUTTONS are given,
+twister buttons are generated.  Generic only.}
+\twocolitem{\windowstyle{wxTR\_NO\_LINES}}{Use this style
+to hide vertical level connectors.}
+\twocolitem{\windowstyle{wxTR\_FULL\_ROW\_HIGHLIGHT}}{Use this style to have the background
+colour and the selection highlight extend over the entire horizontal
+row of the tree control window. (This flag is ignored under Windows unless you 
+specify wxTR\_NO\_LINES as well.) }
+\twocolitem{\windowstyle{wxTR\_LINES\_AT\_ROOT}}{Use this style
+to show lines between root nodes.
+Only applicable if wxTR\_HIDE\_ROOT is set and wxTR\_NO\_LINES is not set.}
+\twocolitem{\windowstyle{wxTR\_HIDE\_ROOT}}{Use this style
+to suppress the display of the root node,
+effectively causing the first-level nodes
+to appear as a series of root nodes.}
+\twocolitem{\windowstyle{wxTR\_ROW\_LINES}}{Use this style
+to draw a contrasting border between displayed rows.}
+\twocolitem{\windowstyle{wxTR\_HAS\_VARIABLE\_ROW\_HEIGHT}}{Use this style
+to cause row heights to be just big enough to fit the content.
+If not set, all rows use the largest row height.
+The default is that this flag is unset.
+Generic only.}
+\twocolitem{\windowstyle{wxTR\_SINGLE}}{For convenience
+to document that only one item may be selected at a time.
+Selecting another item causes the current selection, if any,
+to be deselected.  This is the default.}
+\twocolitem{\windowstyle{wxTR\_MULTIPLE}}{Use this style
+to allow a range of items to be selected.
+If a second range is selected, the current range, if any, is deselected.}
+\twocolitem{\windowstyle{wxTR\_EXTENDED}}{Use this style
+to allow disjoint items to be selected.  (Only partially implemented; may not work in all cases.)}
+\twocolitem{\windowstyle{wxTR\_DEFAULT\_STYLE}}{The set of flags that are
+closest to the defaults for the native control for a particular toolkit.}
 \end{twocollist}
 
 See also \helpref{window styles overview}{windowstyles}.
@@ -43,27 +74,20 @@ functions that take a \helpref{wxTreeEvent}{wxtreeevent} argument.
 \begin{twocollist}\itemsep=0pt
 \twocolitem{{\bf EVT\_TREE\_BEGIN\_DRAG(id, func)}}{Begin dragging with the left mouse button.}
 \twocolitem{{\bf EVT\_TREE\_BEGIN\_RDRAG(id, func)}}{Begin dragging with the right mouse button.}
-\twocolitem{{\bf EVT\_TREE\_END\_DRAG(id, func)}}{Drag ended (drop).}
 \twocolitem{{\bf EVT\_TREE\_BEGIN\_LABEL\_EDIT(id, func)}}{Begin editing a label. This can be prevented by calling \helpref{Veto()}{wxnotifyeventveto}.}
 \twocolitem{{\bf EVT\_TREE\_END\_LABEL\_EDIT(id, func)}}{Finish editing a label. This can be prevented by calling \helpref{Veto()}{wxnotifyeventveto}.}
 \twocolitem{{\bf EVT\_TREE\_DELETE\_ITEM(id, func)}}{Delete an item.}
 \twocolitem{{\bf EVT\_TREE\_GET\_INFO(id, func)}}{Request information from the application.}
 \twocolitem{{\bf EVT\_TREE\_SET\_INFO(id, func)}}{Information is being supplied.}
 \twocolitem{{\bf EVT\_TREE\_ITEM\_ACTIVATED(id, func)}}{The item has been activated, i.e. chosen by double clicking it with mouse or from keyboard}
-\twocolitem{{\bf EVT\_TREE\_ITEM\_COLLAPSED(id, func)}}{Parent has been collapsed.}
-\twocolitem{{\bf EVT\_TREE\_ITEM\_COLLAPSING(id, func)}}{Parent is being collapsed. This can be prevented by calling \helpref{Veto()}{wxnotifyeventveto}.}
-\twocolitem{{\bf EVT\_TREE\_ITEM\_EXPANDED(id, func)}}{Parent has been expanded.}
-\twocolitem{{\bf EVT\_TREE\_ITEM\_EXPANDING(id, func)}}{Parent is being expanded. This can be prevented by calling \helpref{Veto()}{wxnotifyeventveto}.}
+\twocolitem{{\bf EVT\_TREE\_ITEM\_COLLAPSED(id, func)}}{The item has been collapsed.}
+\twocolitem{{\bf EVT\_TREE\_ITEM\_COLLAPSING(id, func)}}{The item is being collapsed. This can be prevented by calling \helpref{Veto()}{wxnotifyeventveto}.}
+\twocolitem{{\bf EVT\_TREE\_ITEM\_EXPANDED(id, func)}}{The item has been expanded.}
+\twocolitem{{\bf EVT\_TREE\_ITEM\_EXPANDING(id, func)}}{The item is being expanded. This can be prevented by calling \helpref{Veto()}{wxnotifyeventveto}.}
 \twocolitem{{\bf EVT\_TREE\_SEL\_CHANGED(id, func)}}{Selection has changed.}
 \twocolitem{{\bf EVT\_TREE\_SEL\_CHANGING(id, func)}}{Selection is changing. This can be prevented by calling \helpref{Veto()}{wxnotifyeventveto}.}
 \twocolitem{{\bf EVT\_TREE\_KEY\_DOWN(id, func)}}{A key has been pressed.}
-\end{twocollist}%
-
-Note that to allow drag and drop in the tree control you must explicitly call 
-\helpref{Allow()}{wxnotifyeventallow} in the event handler, by default
-dragging is disabled. On the other hand, label editing is allowed by default
-for the controls with \windowstyle{wxTR\_EDIT\_LABELS} style but you can call 
-\helpref{Veto()}{wxnotifyeventveto} to prevent it from happening.
+\end{twocollist}
 
 \wxheading{See also}
 
@@ -129,6 +153,9 @@ Destructor, destroying the list control.
 
 Adds the root node to the tree, returning the new item.
 
+The {\it image} and {\it selImage} parameters are an index within
+the normal image list specifying the image to use for unselected and
+selected items, respectively.
 If {\it image} > -1 and {\it selImage} is -1, the same image is used for
 both selected and unselected items.
 
@@ -139,8 +166,48 @@ both selected and unselected items.
 
 Appends an item to the end of the branch identified by {\it parent}, return a new item id.
 
+The {\it image} and {\it selImage} parameters are an index within
+the normal image list specifying the image to use for unselected and
+selected items, respectively.
 If {\it image} > -1 and {\it selImage} is -1, the same image is used for
 both selected and unselected items.
+
+\membersection{wxTreeCtrl::AssignButtonsImageList}\label{wxtreectrlassignbuttonsimagelist}
+
+\func{void}{AssignButtonsImageList}{\param{wxImageList*}{ imageList}}
+
+Sets the buttons image list. The button images assigned with this method will
+be automatically deleted by wxTreeCtrl as appropriate
+(i.e. it takes ownership of the list).
+
+Setting or assigning the button image list enables the display of image buttons.
+Once enabled, the only way to disable the display of button images is to set
+the button image list to NULL.
+
+This function is only available in the generic version.
+
+See also \helpref{SetButtonsImageList}{wxtreectrlsetbuttonsimagelist}.
+
+\membersection{wxTreeCtrl::AssignImageList}\label{wxtreectrlassignimagelist}
+
+\func{void}{AssignImageList}{\param{wxImageList*}{ imageList}}
+
+Sets the normal image list. Image list assigned with this method will
+be automatically deleted by wxTreeCtrl as appropriate
+(i.e. it takes ownership of the list).
+
+See also \helpref{SetImageList}{wxtreectrlsetimagelist}.
+
+\membersection{wxTreeCtrl::AssignStateImageList}\label{wxtreectrlassignstateimagelist}
+
+\func{void}{AssignStateImageList}{\param{wxImageList*}{ imageList}}
+
+Sets the state image list. Image list assigned with this method will
+be automatically deleted by wxTreeCtrl as appropriate
+(i.e. it takes ownership of the list).
+
+See also \helpref{SetStateImageList}{wxtreectrlsetstateimagelist}.
+
 
 \membersection{wxTreeCtrl::Collapse}\label{wxtreectrlcollapse}
 
@@ -220,8 +287,8 @@ Expands the given item.
 \constfunc{bool}{GetBoundingRect}{\param{const wxTreeItemId\&}{ item}, \param{wxRect\& }{rect}, \param{bool }{textOnly = FALSE}}
 
 Retrieves the rectangle bounding the {\it item}. If {\it textOnly} is TRUE,
-only the rectangle around the items label will be returned, otherwise the
-items image is also taken into account.
+only the rectangle around the item's label will be returned, otherwise the
+item's image is also taken into account.
 
 The return value is TRUE if the rectangle was successfully retrieved or FALSE
 if it was not (in this case {\it rect} is not changed) - for example, if the
@@ -230,6 +297,17 @@ item is currently invisible.
 \pythonnote{The wxPython version of this method requires only the
 {\tt item} and {\tt textOnly} parameters.  The return value is either a
 {\tt wxRect} object or {\tt None}.}
+
+\perlnote{In wxPerl this method only takes the parameters {\tt item} and 
+  {\tt textOnly}, and returns a Wx::Rect ( or undef ).}
+
+\membersection{wxTreeCtrl::GetButtonsImageList}\label{wxtreectrlgetbuttonsimagelist}
+
+\constfunc{wxImageList*}{GetButtonsImageList}{\void}
+
+Returns the buttons image list (from which application-defined button images are taken).
+
+This function is only available in the generic version.
 
 \membersection{wxTreeCtrl::GetChildrenCount}\label{wxtreectrlgetchildrencount}
 
@@ -271,6 +349,9 @@ Returns an invalid tree item if there are no further children.
 \pythonnote{In wxPython the returned wxTreeItemId and the new cookie
 value are both returned as a tuple containing the two values.}
 
+\perlnote{In wxPerl this method only takes the {\tt item} parameter, and
+  returns a 2-element list {\tt ( item, cookie )}.}
+
 \membersection{wxTreeCtrl::GetFirstVisibleItem}\label{wxtreectrlgetfirstvisibleitem}
 
 \constfunc{wxTreeItemId}{GetFirstVisibleItem}{\void}
@@ -304,6 +385,15 @@ Returns the tree item data associated with the item.
 \indented{2cm}{\begin{twocollist}\itemsep=0pt
 \twocolitem{{\bf GetPyData(item)}}{Returns the Python Object
 associated with the wxTreeItemData for the given item Id.}
+\end{twocollist}}
+}
+
+\perlnote{wxPerl provides the following shortcut method:
+\indented{2cm}{
+\begin{twocollist}\itemsep=0pt
+\twocolitem{{\bf GetPlData( item )}}{Returns the Perl data
+associated with the Wx::TreeItemData ( it is just the same as
+tree->GetItemData( item )->GetData(); ).}
 \end{twocollist}}
 }
 
@@ -362,6 +452,9 @@ Returns an invalid tree item if there are no further children.
 
 \pythonnote{In wxPython the returned wxTreeItemId and the new cookie
 value are both returned as a tuple containing the two values.}
+
+\perlnote{In wxPerl this method returns a 2-element list
+  {\tt ( item, cookie )}, instead of modifying its parameters.}
 
 \membersection{wxTreeCtrl::GetNextSibling}\label{wxtreectrlgetnextsibling}
 
@@ -442,6 +535,9 @@ Returns the number of selected items.
 \pythonnote{The wxPython version of this method accepts no parameters
 and returns a Python list of {\tt wxTreeItemId}s.}
 
+\perlnote{In wxPerl this method takes no parameters and returns a list of
+ {\tt Wx::TreeItemId}s.}
+
 \membersection{wxTreeCtrl::GetStateImageList}\label{wxtreectrlgetstateimagelist}
 
 \constfunc{wxImageList*}{GetStateImageList}{\void}
@@ -473,6 +569,9 @@ id at this point plus extra information {\it flags}. {\it flags} is a bitlist of
 \pythonnote{in wxPython both the wxTreeItemId and the flags are
 returned as a tuple.}
 
+\perlnote{In wxPerl this method only takes the {\tt point} parameter
+  and returns a 2-element list {\tt ( item, flags )}.}
+
 \membersection{wxTreeCtrl::InsertItem}\label{wxtreectrlinsertitem}
 
 \func{wxTreeItemId}{InsertItem}{\param{const wxTreeItemId\& }{parent}, \param{const wxTreeItemId\& }{previous}, \param{const wxString\&}{ text},
@@ -483,11 +582,14 @@ returned as a tuple.}
 
 Inserts an item after a given one ({\it previous}) or before one identified by its position ({\it before}).
 
+The {\it image} and {\it selImage} parameters are an index within
+the normal image list specifying the image to use for unselected and
+selected items, respectively.
 If {\it image} > -1 and {\it selImage} is -1, the same image is used for
 both selected and unselected items.
 
 \pythonnote{The second form of this method is called
-\tt{InsertItemBefore} in wxPython.}
+{\tt InsertItemBefore} in wxPython.}
 
 \membersection{wxTreeCtrl::IsBold}\label{wxtreectrlisbold}
 
@@ -541,6 +643,9 @@ See also: \helpref{SortChildren}{wxtreectrlsortchildren}
 
 Appends an item as the first child of {\it parent}, return a new item id.
 
+The {\it image} and {\it selImage} parameters are an index within
+the normal image list specifying the image to use for unselected and
+selected items, respectively.
 If {\it image} > -1 and {\it selImage} is -1, the same image is used for
 both selected and unselected items.
 
@@ -556,6 +661,22 @@ Scrolls the specified item into view.
 
 Selects the given item.
 
+\membersection{wxTreeCtrl::SetButtonsImageList}\label{wxtreectrlsetbuttonsimagelist}
+
+\func{void}{SetButtonsImageList}{\param{wxImageList*}{ imageList}}
+
+Sets the buttons image list (from which application-defined button images are taken).
+The button images assigned with this method will
+{\bf not} be deleted by wxTreeCtrl's destructor, you must delete it yourself.
+
+Setting or assigning the button image list enables the display of image buttons.
+Once enabled, the only way to disable the display of button images is to set
+the button image list to NULL.
+
+This function is only available in the generic version.
+
+See also \helpref{AssignButtonsImageList}{wxtreectrlassignbuttonsimagelist}.
+
 \membersection{wxTreeCtrl::SetIndent}\label{wxtreectrlsetindent}
 
 \func{void}{SetIndent}{\param{int }{indent}}
@@ -566,13 +687,17 @@ Sets the indentation for the tree control.
 
 \func{void}{SetImageList}{\param{wxImageList*}{ imageList}}
 
-Sets the normal image list.
+Sets the normal image list. Image list assigned with this method will
+{\bf not} be deleted by wxTreeCtrl's destructor, you must delete it yourself.
+
+See also \helpref{AssignImageList}{wxtreectrlassignimagelist}.
+
 
 \membersection{wxTreeCtrl::SetItemBackgroundColour}\label{wxtreectrlsetitembackgroundcolour}
 
 \func{void}{SetItemBackgroundColour}{\param{const wxTreeItemId\&}{ item}, \param{const wxColour\& }{col}}
 
-Sets the colour of the items background.
+Sets the colour of the item's background.
 
 \membersection{wxTreeCtrl::SetItemBold}\label{wxtreectrlsetitembold}
 
@@ -596,11 +721,20 @@ Object with the wxTreeItemData for the given item Id.}
 \end{twocollist}}
 }
 
+\perlnote{wxPerl provides the following shortcut method:
+\indented{2cm}{
+\begin{twocollist}\itemsep=0pt
+\twocolitem{{\bf SetPlData( item, data )}}{Sets the Perl data
+associated with the Wx::TreeItemData ( it is just the same as
+tree->GetItemData( item )->SetData( data ); ).}
+\end{twocollist}}
+}
+
 \membersection{wxTreeCtrl::SetItemFont}\label{wxtreectrlsetitemfont}
 
 \func{void}{SetItemFont}{\param{const wxTreeItemId\&}{ item}, \param{const wxFont\& }{font}}
 
-Sets the items font. All items in the tree should have the same height to avoid
+Sets the item's font. All items in the tree should have the same height to avoid
 text clipping, so the fonts height should be the same for all of them,
 although font attributes may vary.
 
@@ -641,13 +775,23 @@ Sets the item label.
 
 \func{void}{SetItemTextColour}{\param{const wxTreeItemId\&}{ item}, \param{const wxColour\& }{col}}
 
-Sets the colour of the items text.
+Sets the colour of the item's text.
 
 \membersection{wxTreeCtrl::SetStateImageList}\label{wxtreectrlsetstateimagelist}
 
 \func{void}{SetStateImageList}{\param{wxImageList*}{ imageList}}
 
 Sets the state image list (from which application-defined state images are taken).
+Image list assigned with this method will
+{\bf not} be deleted by wxTreeCtrl's destructor, you must delete it yourself.
+
+See also \helpref{AssignStateImageList}{wxtreectrlassignstateimagelist}.
+
+\func{void}{SetWindowStyle}{\param{long}{styles}}
+
+Sets the mode flags associated with the display of the tree control.
+The new mode takes effect immediately.
+(Generic only; MSW ignores changes.)
 
 \membersection{wxTreeCtrl::SortChildren}\label{wxtreectrlsortchildren}
 
@@ -681,72 +825,4 @@ Removes the selection from the currently selected item (if any).
 This function either behaves the same as \helpref{Unselect}{wxtreectrlunselect}
 if the control doesn't have wxTR\_MULTIPLE style, or removes the selection from
 all items if it does have this style.
-
-\section{\class{wxTreeItemData}}\label{wxtreeitemdata}
-
-wxTreeItemData is some (arbitrary) user class associated with some item. The
-main advantage of having this class (compared to the old untyped interface) is
-that wxTreeItemData's are destroyed automatically by the tree and, as this
-class has virtual dtor, it means that the memory will be automatically
-freed. We don't just use wxObject instead of wxTreeItemData because
-the size of this class is critical: in any real application, each tree leaf
-will have wxTreeItemData associated with it and number of leaves may be
-quite big.
-
-Because the objects of this class are deleted by the tree, they should
-always be allocated on the heap.
-
-\wxheading{Derived from}
-
-wxTreeItemId
-
-\wxheading{Include files}
-
-<wx/treectrl.h>
-
-\wxheading{See also}
-
-\helpref{wxTreeCtrl}{wxtreectrl}
-
-\latexignore{\rtfignore{\wxheading{Members}}}
-
-\membersection{wxTreeItemData::wxTreeItemData}\label{wxtreeitemdataconstr}
-
-\func{}{wxTreeItemData}{\void}
-
-Default constructor.
-
-\pythonnote{The wxPython version of this constructor optionally
-accepts any Python object as a parameter.  This object is then
-associated with the tree item using the wxTreeItemData as a
-container.
-
-In addition, the following methods are added in wxPython for accessing
-the object:
-
-\indented{2cm}{\begin{twocollist}\itemsep=0pt
-\twocolitem{{\bf GetData()}}{Returns a reference to the Python Object}
-\twocolitem{{\bf SetData(obj)}}{Associates a new Python Object with the
-wxTreeItemData}
-\end{twocollist}}
-}
-
-
-\membersection{wxTreeItemData::\destruct{wxTreeItemData}}
-
-\func{void}{\destruct{wxTreeItemData}}{\void}
-
-Virtual destructor.
-
-\membersection{wxTreeItemData::GetId}\label{wxtreeitemdatagetid}
-
-\func{const wxTreeItem\&}{GetId}{\void}
-
-Returns the item associated with this node.
-
-\membersection{wxTreeItemData::SetId}\label{wxtreeitemdatasetid}
-
-\func{void}{SetId}{\param{const wxTreeItemId\&}{ id}}
-
-Sets the item associated with this node.
 

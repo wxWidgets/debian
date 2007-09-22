@@ -5,7 +5,7 @@
 // Author:      Robin Dunn
 //
 // Created:     3-Sept-1999
-// RCS-ID:      $Id: oglshapes2.i,v 1.1.2.2 2001/01/30 20:53:07 robind Exp $
+// RCS-ID:      $Id: oglshapes2.i,v 1.12 2002/05/02 02:46:13 RD Exp $
 // Copyright:   (c) 1998 by Total Control Software
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -14,7 +14,7 @@
 %module oglshapes2
 
 %{
-#include "export.h"
+#include "wxPython.h"
 #include "oglhelpers.h"
 %}
 
@@ -38,7 +38,14 @@
 %pragma(python) code = "import wx"
 
 //---------------------------------------------------------------------------
+
+%{
+    // Put some wx default wxChar* values into wxStrings.
+    static const wxString wxPyEmptyString(wxT(""));
+%}
+
 //---------------------------------------------------------------------------
+
 %{
     WXSHAPE_IMP_CALLBACKS(wxPyEllipseShape, wxEllipseShape);
 %}
@@ -47,8 +54,9 @@ class wxPyEllipseShape : public wxPyShape {
 public:
     wxPyEllipseShape(double width = 0.0, double height = 0.0);
 
-    void _setSelf(PyObject* self, PyObject* _class);
-    %pragma(python) addtomethod = "__init__:self._setSelf(self, wxPyEllipseShape)"
+    void _setCallbackInfo(PyObject* self, PyObject* _class);
+    %pragma(python) addtomethod = "__init__:self._setCallbackInfo(self, wxPyEllipseShape)"
+    %pragma(python) addtomethod = "__init__:self._setOORInfo(self)"
 
     void base_OnDraw(wxDC& dc);
     void base_OnDrawContents(wxDC& dc);
@@ -90,8 +98,9 @@ class wxPyCircleShape : public wxPyEllipseShape {
 public:
     wxPyCircleShape(double width = 0.0);
 
-    void _setSelf(PyObject* self, PyObject* _class);
-    %pragma(python) addtomethod = "__init__:self._setSelf(self, wxPyCircleShape)"
+    void _setCallbackInfo(PyObject* self, PyObject* _class);
+    %pragma(python) addtomethod = "__init__:self._setCallbackInfo(self, wxPyCircleShape)"
+    %pragma(python) addtomethod = "__init__:self._setOORInfo(self)"
 
     void base_OnDraw(wxDC& dc);
     void base_OnDrawContents(wxDC& dc);
@@ -125,13 +134,13 @@ public:
 };
 //---------------------------------------------------------------------------
 //---------------------------------------------------------------------------
-class wxArrowHead {
+class wxArrowHead : public wxObject {
 public:
     wxArrowHead(int type = 0,
                 int end = 0,
                 double size = 0.0,
                 double dist = 0.0,
-                const char * name = "",
+                const wxString& name = wxPyEmptyString,
                 wxPseudoMetaFile *mf = NULL,
                 long arrowId = -1);
     ~wxArrowHead();
@@ -162,12 +171,13 @@ class wxPyLineShape : public wxPyShape {
 public:
     wxPyLineShape();
 
-    void _setSelf(PyObject* self, PyObject* _class);
-    %pragma(python) addtomethod = "__init__:self._setSelf(self, wxPyLineShape)"
+    void _setCallbackInfo(PyObject* self, PyObject* _class);
+    %pragma(python) addtomethod = "__init__:self._setCallbackInfo(self, wxPyLineShape)"
+    %pragma(python) addtomethod = "__init__:self._setOORInfo(self)"
 
     void AddArrow(int type, int end = ARROW_POSITION_END,
                   double arrowSize = 10.0, double xOffset = 0.0,
-                  char* name = "", wxPseudoMetaFile *mf = NULL,
+                  const wxString& name = wxPyEmptyString, wxPseudoMetaFile *mf = NULL,
                   long arrowId = -1);
 
     //void AddArrowOrdered(wxArrowHead *arrow, wxList& referenceList, int end);
@@ -206,6 +216,14 @@ public:
     bool IsEnd(wxPyShape *shape);
     bool IsSpline();
     void MakeLineControlPoints(int n);
+
+    //   inline wxList *GetLineControlPoints() { return m_lineControlPoints; }
+    %addmethods {
+        PyObject* GetLineControlPoints() {
+            wxList* list = self->GetLineControlPoints();
+            return wxPy_ConvertShapeList(list, "wxPyControlPoint");
+        }
+    }
 
     void SetAttachmentFrom(int fromAttach);
     void SetAttachments(int fromAttach, int toAttach);
@@ -259,8 +277,9 @@ class wxPyPolygonShape : public wxPyShape {
 public:
     wxPyPolygonShape();
 
-    void _setSelf(PyObject* self, PyObject* _class);
-    %pragma(python) addtomethod = "__init__:self._setSelf(self, wxPyPolygonShape)"
+    void _setCallbackInfo(PyObject* self, PyObject* _class);
+    %pragma(python) addtomethod = "__init__:self._setCallbackInfo(self, wxPyPolygonShape)"
+    %pragma(python) addtomethod = "__init__:self._setOORInfo(self)"
 
 
     // void Create(wxList* points);
@@ -330,8 +349,9 @@ class wxPyTextShape : public wxPyRectangleShape {
 public:
     wxPyTextShape(double width = 0.0, double height = 0.0);
 
-    void _setSelf(PyObject* self, PyObject* _class);
-    %pragma(python) addtomethod = "__init__:self._setSelf(self, wxPyTextShape)"
+    void _setCallbackInfo(PyObject* self, PyObject* _class);
+    %pragma(python) addtomethod = "__init__:self._setCallbackInfo(self, wxPyTextShape)"
+    %pragma(python) addtomethod = "__init__:self._setOORInfo(self)"
 
 
     void base_OnDelete();

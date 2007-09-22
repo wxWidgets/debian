@@ -2,7 +2,7 @@
 // Name:        tooltip.cpp
 // Purpose:     wxToolTip implementation
 // Author:      Robert Roebling
-// Id:          $Id: tooltip.cpp,v 1.11.2.1 2000/05/01 19:04:30 RR Exp $
+// Id:          $Id: tooltip.cpp,v 1.14 2002/03/12 19:24:30 VZ Exp $
 // Copyright:   (c) 1998 Robert Roebling
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -18,8 +18,7 @@
 #include "wx/window.h"
 #include "wx/tooltip.h"
 
-#include "gtk/gtk.h"
-#include "gdk/gdk.h"
+#include "wx/gtk/private.h"
 
 extern GdkFont *GtkGetDefaultGuiFont();
 
@@ -34,6 +33,8 @@ static GdkColor     ss_fg;
 //-----------------------------------------------------------------------------
 // wxToolTip
 //-----------------------------------------------------------------------------
+
+IMPLEMENT_ABSTRACT_CLASS(wxToolTip, wxObject)
 
 wxToolTip::wxToolTip( const wxString &tip )
 {
@@ -65,20 +66,20 @@ void wxToolTip::Apply( wxWindow *win )
         ss_bg.blue = 50000;
         gdk_color_alloc( gtk_widget_get_default_colormap(), &ss_bg );
 
-#if (GTK_MINOR_VERSION > 0)
+#if GTK_CHECK_VERSION(1, 2, 0)
         gtk_tooltips_force_window( ss_tooltips );
-	
-        GtkStyle *g_style = 
+
+        GtkStyle *g_style =
           gtk_style_copy(
             gtk_widget_get_style( ss_tooltips->tip_window ) );
-	    
+
         g_style->fg[GTK_STATE_NORMAL] = ss_fg;
         g_style->bg[GTK_STATE_NORMAL] = ss_bg;
-        gdk_font_unref( g_style->font );
-	    g_style->font = gdk_font_ref( GtkGetDefaultGuiFont() );
-    
+
+        SET_STYLE_FONT( g_style, GtkGetDefaultGuiFont() );
+
         gtk_widget_set_style( ss_tooltips->tip_window, g_style );
-#else
+#else // GTK+ 1.0
         gtk_tooltips_set_colors( ss_tooltips, &ss_bg, &ss_fg );
 #endif
     }

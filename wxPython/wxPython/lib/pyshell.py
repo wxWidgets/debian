@@ -6,7 +6,7 @@
 # Author:      Robin Dunn
 #
 # Created:     7-July-2000
-# RCS-ID:      $Id: pyshell.py,v 1.1.2.9 2001/01/30 20:54:22 robind Exp $
+# RCS-ID:      $Id: pyshell.py,v 1.6 2001/08/14 19:19:48 RD Exp $
 # Copyright:   (c) 2000 by Total Control Software
 # Licence:     wxWindows license
 #----------------------------------------------------------------------
@@ -19,6 +19,10 @@ IDLE and PythonWin.
 There is still much to be done to improve this class, such as line
 buffering/recall, autoindent, calltips, autocomplete, fixing the colourizer,
 etc...  But it's a good start.
+
+
+8-10-2001         THIS MODULE IS NOW DEPRECATED.  Please see the most excellent
+                  PyCrust package instead.
 
 """
 

@@ -5,7 +5,7 @@
 // Author:      Robin Dunn
 //
 // Created:     3-Sept-1999
-// RCS-ID:      $Id: oglbasic.i,v 1.1.2.2 2001/01/30 20:53:08 robind Exp $
+// RCS-ID:      $Id: oglbasic.i,v 1.13 2002/05/02 02:46:13 RD Exp $
 // Copyright:   (c) 1998 by Total Control Software
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -14,7 +14,7 @@
 %module oglbasic
 
 %{
-#include "export.h"
+#include "wxPython.h"
 #include "oglhelpers.h"
 %}
 
@@ -42,7 +42,7 @@
 //---------------------------------------------------------------------------
 
 
-class wxShapeRegion {
+class wxShapeRegion : public wxObject {
 public:
     wxShapeRegion();
     //~wxShapeRegion();
@@ -87,17 +87,22 @@ public:
 %}
 
 
-class wxPyShapeEvtHandler {
+class wxPyShapeEvtHandler : public wxObject {
 public:
     wxPyShapeEvtHandler(wxPyShapeEvtHandler *prev = NULL,
                         wxPyShape *shape = NULL);
 
-    void _setSelf(PyObject* self, PyObject* _class);
-    %pragma(python) addtomethod = "__init__:self._setSelf(self, wxPyShapeEvtHandler)"
+    void _setCallbackInfo(PyObject* self, PyObject* _class);
+    %pragma(python) addtomethod = "__init__:self._setCallbackInfo(self, wxPyShapeEvtHandler)"
+    %pragma(python) addtomethod = "__init__:self._setOORInfo(self)"
 
+    %addmethods { void Destroy() { delete self; } }
     %addmethods {
-        void Destroy() { delete self; }
+        void _setOORInfo(PyObject* _self) {
+            self->SetClientObject(new wxPyOORClientData(_self));
+        }
     }
+
 
     void SetShape(wxPyShape *sh);
     wxPyShape *GetShape();
@@ -147,12 +152,9 @@ class wxPyShape : public wxPyShapeEvtHandler {
 public:
     // wxPyShape(wxPyShapeCanvas *can = NULL);     abstract base class...
 
-    void _setSelf(PyObject* self, PyObject* _class);
-    %pragma(python) addtomethod = "__init__:self._setSelf(self, wxPyShape)"
-
-    %addmethods {
-        void Destroy() { delete self; }
-    }
+    void _setCallbackInfo(PyObject* self, PyObject* _class);
+    %pragma(python) addtomethod = "__init__:self._setCallbackInfo(self, wxPyShape)"
+    %pragma(python) addtomethod = "__init__:self._setOORInfo(self)"
 
     void GetBoundingBoxMax(double *OUTPUT, double *OUTPUT);
     void GetBoundingBoxMin(double *OUTPUT, double *OUTPUT);
@@ -177,7 +179,7 @@ public:
     %addmethods {
         PyObject* GetChildren() {
             wxList& list = self->GetChildren();
-            return wxPy_ConvertList(&list, "wxPyShape");
+            return wxPy_ConvertShapeList(&list, "wxPyShape");
         }
     }
 
@@ -221,7 +223,7 @@ public:
     %addmethods {
         PyObject* GetLines() {
             wxList& list = self->GetLines();
-            return wxPy_ConvertList(&list, "wxPyLineShape");
+            return wxPy_ConvertShapeList(&list, "wxPyLineShape");
         }
     }
 
@@ -231,30 +233,24 @@ public:
     int GetAttachmentMode();
     void SetId(long i);
     long GetId();
+
     void SetPen(wxPen *pen);
     void SetBrush(wxBrush *brush);
 
+
     // void SetClientData(wxObject *client_data);
     // wxObject *GetClientData();
-    %addmethods {
-        void SetClientData(PyObject* userData) {
-            wxPyUserData* data = NULL;
-            if (userData)
-                data = new wxPyUserData(userData);
-            self->SetClientData(data);
-        }
 
-        PyObject* GetClientData() {
-            wxPyUserData* data = (wxPyUserData*)self->GetClientData();
-            if (data) {
-                Py_INCREF(data->m_obj);
-                return data->m_obj;
-            } else {
-                Py_INCREF(Py_None);
-                return Py_None;
-            }
-        }
-    }
+    // The real client data methods are being used for OOR, so just fake it.
+    %pragma(python) addtoclass = "
+    def SetClientData(self, data):
+        self.clientData = data
+    def GetClientData(self):
+        if hasattr(self, 'clientData'):
+            return self.clientData
+        else:
+            return None
+"
 
     void Show(bool show);
     bool IsShown();
@@ -364,6 +360,8 @@ public:
     void ClearAttachments();
     void Recentre(wxDC& dc);
     void ClearPointList(wxList& list);
+    wxPen GetBackgroundPen();
+    wxBrush GetBackgroundBrush();
 
     void base_OnDelete();
     void base_OnDraw(wxDC& dc);

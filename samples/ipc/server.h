@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     25/01/99
-// RCS-ID:      $Id: server.h,v 1.2.2.1 2000/03/28 20:51:34 GRG Exp $
+// RCS-ID:      $Id: server.h,v 1.4 2002/09/01 14:48:16 JS Exp $
 // Copyright:   (c) Julian Smart
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -42,7 +42,7 @@ class IPCDialogBox;
 class MyConnection : public wxConnection
 {
 public:
-    MyConnection(char *buf, int size);
+    MyConnection();
     ~MyConnection();
 
     bool OnExecute(const wxString& topic, char *data, int size, wxIPCFormat format);
@@ -50,7 +50,6 @@ public:
     bool OnPoke(const wxString& topic, const wxString& item, char *data, int size, wxIPCFormat format);
     bool OnStartAdvise(const wxString& topic, const wxString& item);
 
-private:
     IPCDialogBox *dialog;
 };
 
@@ -68,10 +67,10 @@ public:
                  const wxPoint& pos,
                  const wxSize& size,
                  MyConnection *the_connection);
+    ~IPCDialogBox( );
 
     void OnQuit(wxCommandEvent& event);
 
-private:
     MyConnection *m_connection;
 
     DECLARE_EVENT_TABLE()

@@ -4,7 +4,7 @@
 // Author:      Guilhem Lavaux
 // Modified by:
 // Created:     28/06/98
-// RCS-ID:      $Id: datstrm.cpp,v 1.33 2000/03/04 20:37:16 VS Exp $
+// RCS-ID:      $Id: datstrm.cpp,v 1.36 2002/07/21 22:28:57 VS Exp $
 // Copyright:   (c) Guilhem Lavaux
 // Licence:   	wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -28,13 +28,30 @@
 // wxDataInputStream
 // ---------------------------------------------------------------------------
 
+#if wxUSE_UNICODE
+wxDataInputStream::wxDataInputStream(wxInputStream& s, wxMBConv& conv)
+  : m_input(&s), m_be_order(FALSE), m_conv(conv)
+#else
 wxDataInputStream::wxDataInputStream(wxInputStream& s)
   : m_input(&s), m_be_order(FALSE)
+#endif
 {
 }
 
 wxDataInputStream::~wxDataInputStream()
 {
+}
+
+wxUint64 wxDataInputStream::Read64()
+{
+  wxUint64 i64;
+
+  m_input->Read(&i64, 8);
+
+  if (m_be_order)
+    return wxUINT64_SWAP_ON_LE(i64);
+  else
+    return wxUINT64_SWAP_ON_BE(i64);
 }
 
 wxUint32 wxDataInputStream::Read32()
@@ -96,7 +113,7 @@ wxString wxDataInputStream::ReadString()
     char *tmp = new char[len + 1];
     m_input->Read(tmp, len);
     tmp[len] = 0;
-    wxString s(tmp);
+    wxString s(tmp, m_conv);
     delete[] tmp;
 #else
     wxString s;
@@ -105,7 +122,7 @@ wxString wxDataInputStream::ReadString()
 #endif
     return s;
   }
-  else 
+  else
     return wxEmptyString;
 }
 
@@ -151,6 +168,12 @@ wxDataInputStream& wxDataInputStream::operator>>(wxUint32& i)
   return *this;
 }
 
+wxDataInputStream& wxDataInputStream::operator>>(wxUint64& i)
+{
+  i = Read64();
+  return *this;
+}
+
 wxDataInputStream& wxDataInputStream::operator>>(double& i)
 {
   i = ReadDouble();
@@ -167,13 +190,29 @@ wxDataInputStream& wxDataInputStream::operator>>(float& f)
 // wxDataOutputStream
 // ---------------------------------------------------------------------------
 
+#if wxUSE_UNICODE
+wxDataOutputStream::wxDataOutputStream(wxOutputStream& s, wxMBConv& conv)
+  : m_output(&s), m_be_order(FALSE), m_conv(conv)
+#else
 wxDataOutputStream::wxDataOutputStream(wxOutputStream& s)
   : m_output(&s), m_be_order(FALSE)
+#endif
 {
 }
 
 wxDataOutputStream::~wxDataOutputStream()
 {
+}
+
+void wxDataOutputStream::Write64(wxUint64 i)
+{
+  wxUint64 i64;
+
+  if (m_be_order)
+    i64 = wxUINT64_SWAP_ON_LE(i);
+  else
+    i64 = wxUINT64_SWAP_ON_BE(i);
+  m_output->Write(&i64, 8);
 }
 
 void wxDataOutputStream::Write32(wxUint32 i)
@@ -206,10 +245,15 @@ void wxDataOutputStream::Write8(wxUint8 i)
 
 void wxDataOutputStream::WriteString(const wxString& string)
 {
+#if wxUSE_UNICODE
+  const wxWX2MBbuf buf = string.mb_str(m_conv);
+#else
   const wxWX2MBbuf buf = string.mb_str();
-  Write32(string.Len());
-  if (string.Len() > 0)
-      m_output->Write(buf, string.Len());
+#endif
+  size_t len = strlen(buf);
+  Write32(len);
+  if (len > 0)
+      m_output->Write(buf, len);
 }
 
 // Must be at global scope for VC++ 5
@@ -237,7 +281,7 @@ wxDataOutputStream& wxDataOutputStream::operator<<(const wxChar *string)
   return *this;
 }
 
-wxDataOutputStream& wxDataOutputStream::operator<<(wxString& string)
+wxDataOutputStream& wxDataOutputStream::operator<<(const wxString& string)
 {
   WriteString(string);
   return *this;
@@ -276,6 +320,12 @@ wxDataOutputStream& wxDataOutputStream::operator<<(wxUint16 i)
 wxDataOutputStream& wxDataOutputStream::operator<<(wxUint32 i)
 {
   Write32(i);
+  return *this;
+}
+
+wxDataOutputStream& wxDataOutputStream::operator<<(wxUint64 i)
+{
+  Write64(i);
   return *this;
 }
 

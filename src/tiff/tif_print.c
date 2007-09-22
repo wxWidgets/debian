@@ -1,4 +1,4 @@
-/* $Header: /home/karsten/CVSSERVER/wxcvs/wxWindows/src/tiff/tif_print.c,v 1.1 1999/11/30 18:42:33 RR Exp $ */
+/* $Header: /home/wxcvs/wxWindows/src/tiff/tif_print.c,v 1.2 2002/05/14 11:28:26 VZ Exp $ */
 
 /*
  * Copyright (c) 1988-1997 Sam Leffler
@@ -460,7 +460,7 @@ _TIFFprintAscii(FILE* fd, const char* cp)
 	for (; *cp != '\0'; cp++) {
 		const char* tp;
 
-		if (isprint(*cp)) {
+		if (isprint((int)*cp)) {
 			fputc(*cp, fd);
 			continue;
 		}

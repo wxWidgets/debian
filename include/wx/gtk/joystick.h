@@ -4,7 +4,7 @@
 // Author:      Guilhem Lavaux
 // Modified by:
 // Created:     01/02/97
-// RCS-ID:      $Id: joystick.h,v 1.1 1998/06/13 10:11:58 JS Exp $
+// RCS-ID:      $Id: joystick.h,v 1.2 2002/09/07 12:28:46 GD Exp $
 // Copyright:
 // Licence:   	wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -12,7 +12,7 @@
 #ifndef __JOYSTICKH__
 #define __JOYSTICKH__
 
-#ifdef __GNUG__
+#if defined(__GNUG__) && !defined(__APPLE__)
 #pragma interface "joystick.h"
 #endif
 

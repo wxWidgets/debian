@@ -2,7 +2,7 @@
 // Name:        control.h
 // Purpose:
 // Author:      Robert Roebling
-// Id:          $Id: control.h,v 1.14 2000/01/06 16:47:45 VZ Exp $
+// Id:          $Id: control.h,v 1.16 2002/09/07 12:28:46 GD Exp $
 // Copyright:   (c) 1998 Robert Roebling, Julian Smart
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -10,7 +10,7 @@
 #ifndef __GTKCONTROLH__
 #define __GTKCONTROLH__
 
-#ifdef __GNUG__
+#if defined(__GNUG__) && !defined(__APPLE__)
 #pragma interface
 #endif
 
@@ -28,8 +28,6 @@ class wxControl;
 //-----------------------------------------------------------------------------
 // wxControl
 //-----------------------------------------------------------------------------
-
-extern const wxChar* wxControlNameStr;
 
 class wxControl : public wxControlBase
 {

@@ -3,7 +3,7 @@
 // Purpose:     Grid control wxWindows sample
 // Author:      Michael Bedward
 // Modified by:
-// RCS-ID:      $Id: griddemo.h,v 1.19.2.2 2000/05/16 03:25:16 MB Exp $
+// RCS-ID:      $Id: griddemo.h,v 1.29 2002/09/07 13:46:57 SN Exp $
 // Copyright:   (c) Michael Bedward, Julian Smart
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -42,8 +42,11 @@ class GridFrame : public wxFrame
     void ToggleGridSizing( wxCommandEvent& );
     void ToggleGridLines( wxCommandEvent& );
     void AutoSizeCols( wxCommandEvent& );
+    void CellOverflow( wxCommandEvent& );
+    void ResizeCell( wxCommandEvent& );
     void SetLabelColour( wxCommandEvent& );
     void SetLabelTextColour( wxCommandEvent& );
+    void SetLabelFont(wxCommandEvent &);
     void SetRowLabelHorizAlignment( wxCommandEvent& );
     void SetRowLabelVertAlignment( wxCommandEvent& );
     void SetColLabelHorizAlignment( wxCommandEvent& );
@@ -62,6 +65,16 @@ class GridFrame : public wxFrame
     void SelectRows( wxCommandEvent& );
     void SelectCols( wxCommandEvent& );
 
+    void DeselectCell(wxCommandEvent& event);
+    void DeselectCol(wxCommandEvent& event);
+    void DeselectRow(wxCommandEvent& event);
+    void DeselectAll(wxCommandEvent& event);
+    void SelectCell(wxCommandEvent& event);
+    void SelectCol(wxCommandEvent& event);
+    void SelectRow(wxCommandEvent& event);
+    void SelectAll(wxCommandEvent& event);
+    void OnAddToSelectToggle(wxCommandEvent& event);
+
     void OnLabelLeftClick( wxGridEvent& );
     void OnCellLeftClick( wxGridEvent& );
     void OnRowSize( wxGridSizeEvent& );
@@ -73,6 +86,9 @@ class GridFrame : public wxFrame
     void OnEditorShown(wxGridEvent&);
     void OnEditorHidden(wxGridEvent&);
 
+    void OnSetHighlightWidth(wxCommandEvent&);
+    void OnSetROHighlightWidth(wxCommandEvent&);
+
 public:
     GridFrame();
     ~GridFrame();
@@ -81,6 +97,7 @@ public:
     void About( wxCommandEvent& );
     void OnVTable( wxCommandEvent& );
     void OnBugsTable( wxCommandEvent& );
+    void OnSmallGrid( wxCommandEvent& );
 
     enum
     {
@@ -92,8 +109,11 @@ public:
         ID_TOGGLEGRIDSIZING,
         ID_TOGGLEGRIDLINES,
         ID_AUTOSIZECOLS,
+        ID_CELLOVERFLOW,
+        ID_RESIZECELL,
         ID_SETLABELCOLOUR,
         ID_SETLABELTEXTCOLOUR,
+        ID_SETLABEL_FONT,
         ID_ROWLABELALIGN,
         ID_ROWLABELHORIZALIGN,
         ID_ROWLABELVERTALIGN,
@@ -106,20 +126,36 @@ public:
         ID_DELETEROW,
         ID_DELETECOL,
         ID_CLEARGRID,
-	ID_CHANGESEL,
-	ID_SELCELLS,
-	ID_SELROWS,
-	ID_SELCOLS,
+        ID_CHANGESEL,
+        ID_SELCELLS,
+        ID_SELROWS,
+        ID_SELCOLS,
         ID_SET_CELL_FG_COLOUR,
         ID_SET_CELL_BG_COLOUR,
         ID_ABOUT,
         ID_VTABLE,
         ID_BUGS_TABLE,
+        ID_SMALL_GRID,
+        ID_SELECT_UNSELECT,
+        ID_SELECT_ALL,
+        ID_SELECT_ROW,
+        ID_SELECT_COL,
+        ID_SELECT_CELL,
+        ID_DESELECT_ALL,
+        ID_DESELECT_ROW,
+        ID_DESELECT_COL,
+        ID_DESELECT_CELL,
+
+        ID_SET_HIGHLIGHT_WIDTH,
+        ID_SET_RO_HIGHLIGHT_WIDTH,
 
         ID_TESTFUNC
     };
 
     wxLog *m_logOld;
+
+    // add the cells to selection when using commands from select menu?
+    bool m_addToSel;
 
     DECLARE_EVENT_TABLE()
 };
@@ -149,7 +185,7 @@ public:
     int GetNumberCols() { return m_sizeGrid; }
     wxString GetValue( int row, int col )
     {
-        return wxString::Format("(%d, %d)", row, col);
+        return wxString::Format(wxT("(%d, %d)"), row, col);
     }
 
     void SetValue( int , int , const wxString&  ) { /* ignore */ }
@@ -179,7 +215,8 @@ public:
     MyGridCellAttrProvider();
     virtual ~MyGridCellAttrProvider();
 
-    virtual wxGridCellAttr *GetAttr(int row, int col) const;
+    virtual wxGridCellAttr *GetAttr(int row, int col,
+                                    wxGridCellAttr::wxAttrKind  kind) const;
 
 private:
     wxGridCellAttr *m_attrForOddRows;
@@ -218,6 +255,7 @@ class BugsGridFrame : public wxFrame
 public:
     BugsGridFrame();
 };
+
 
 #endif // griddemo_h
 

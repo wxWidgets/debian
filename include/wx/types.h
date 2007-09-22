@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     01/02/97
-// RCS-ID:      $Id: types.h,v 1.2 1998/08/15 00:16:40 JS Exp $
+// RCS-ID:      $Id: types.h,v 1.3 2002/08/31 11:29:11 GD Exp $
 // Copyright:   (c) Julian Smart and Markus Holzem
 // Licence:   	wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -12,7 +12,7 @@
 #ifndef _WX_TYPESH__
 #define _WX_TYPESH__
 
-#ifdef __GNUG__
+#if defined(__GNUG__) && !defined(__APPLE__)
 // #pragma interface "types.h"
 #endif
 

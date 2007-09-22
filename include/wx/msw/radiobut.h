@@ -4,91 +4,70 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     01/02/97
-// RCS-ID:      $Id: radiobut.h,v 1.6.2.1 2000/04/26 16:39:26 JS Exp $
+// RCS-ID:      $Id: radiobut.h,v 1.10 2002/07/05 14:09:30 JS Exp $
 // Copyright:   (c) Julian Smart
-// Licence:   	wxWindows licence
+// Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
 
 #ifndef _WX_RADIOBUT_H_
 #define _WX_RADIOBUT_H_
 
 #ifdef __GNUG__
-#pragma interface "radiobut.h"
+    #pragma interface "radiobut.h"
 #endif
-
-#include "wx/control.h"
-
-WXDLLEXPORT_DATA(extern const wxChar*) wxRadioButtonNameStr;
 
 class WXDLLEXPORT wxRadioButton: public wxControl
 {
-  DECLARE_DYNAMIC_CLASS(wxRadioButton)
- protected:
- public:
-  inline wxRadioButton(void) {}
-  inline wxRadioButton(wxWindow *parent, wxWindowID id,
-           const wxString& label,
-           const wxPoint& pos = wxDefaultPosition,
-           const wxSize& size = wxDefaultSize, long style = 0,
-           const wxValidator& validator = wxDefaultValidator,
-           const wxString& name = wxRadioButtonNameStr)
-  {
-      Create(parent, id, label, pos, size, style, validator, name);
-  }
+public:
+    // ctors and creation functions
+    wxRadioButton() { Init(); }
 
-  bool Create(wxWindow *parent, wxWindowID id,
-           const wxString& label,
-           const wxPoint& pos = wxDefaultPosition,
-           const wxSize& size = wxDefaultSize, long style = 0,
-           const wxValidator& validator = wxDefaultValidator,
-           const wxString& name = wxRadioButtonNameStr);
+    wxRadioButton(wxWindow *parent,
+                  wxWindowID id,
+                  const wxString& label,
+                  const wxPoint& pos = wxDefaultPosition,
+                  const wxSize& size = wxDefaultSize,
+                  long style = 0,
+                  const wxValidator& validator = wxDefaultValidator,
+                  const wxString& name = wxRadioButtonNameStr)
+    {
+        Init();
 
-  virtual void SetLabel(const wxString& label);
-  virtual void SetValue(bool val);
-  virtual bool GetValue(void) const ;
+        Create(parent, id, label, pos, size, style, validator, name);
+    }
 
-  bool MSWCommand(WXUINT param, WXWORD id);
-  virtual WXHBRUSH OnCtlColor(WXHDC pDC, WXHWND pWnd, WXUINT nCtlColor,
-            WXUINT message, WXWPARAM wParam, WXLPARAM lParam);
+    bool Create(wxWindow *parent,
+                wxWindowID id,
+                const wxString& label,
+                const wxPoint& pos = wxDefaultPosition,
+                const wxSize& size = wxDefaultSize,
+                long style = 0,
+                const wxValidator& validator = wxDefaultValidator,
+                const wxString& name = wxRadioButtonNameStr);
 
-  void Command(wxCommandEvent& event);
+    // implement the radio button interface
+    virtual void SetValue(bool value);
+    virtual bool GetValue() const;
+
+    // implementation only from now on
+    virtual bool MSWCommand(WXUINT param, WXWORD id);
+    virtual void Command(wxCommandEvent& event);
+    virtual long MSWWindowProc(WXUINT nMsg, WXWPARAM wParam, WXLPARAM lParam);
+
+    virtual void SetFocus();
+
+protected:
+    virtual wxSize DoGetBestSize() const;
+
+private:
+    // common part of all ctors
+    void Init();
+
+    // see the comments in SetFocus()
+    bool m_focusJustSet;
+
+    DECLARE_DYNAMIC_CLASS(wxRadioButton)
 };
-
-// Not implemented
-#if 0
-class WXDLLEXPORT wxBitmap ;
-
-WXDLLEXPORT_DATA(extern const char*) wxBitmapRadioButtonNameStr;
-
-class WXDLLEXPORT wxBitmapRadioButton: public wxRadioButton
-{
-  DECLARE_DYNAMIC_CLASS(wxBitmapRadioButton)
- protected:
-  wxBitmap *theButtonBitmap;
- public:
-  inline wxBitmapRadioButton(void) { theButtonBitmap = NULL; }
-  inline wxBitmapRadioButton(wxWindow *parent, wxWindowID id,
-           const wxBitmap *label,
-           const wxPoint& pos = wxDefaultPosition,
-           const wxSize& size = wxDefaultSize, long style = 0,
-           const wxValidator& validator = wxDefaultValidator,
-           const wxString& name = wxBitmapRadioButtonNameStr)
-  {
-      Create(parent, id, label, pos, size, style, validator, name);
-  }
-
-  bool Create(wxWindow *parent, wxWindowID id,
-           const wxBitmap *label,
-           const wxPoint& pos = wxDefaultPosition,
-           const wxSize& size = wxDefaultSize, long style = 0,
-           const wxValidator& validator = wxDefaultValidator,
-           const wxString& name = wxBitmapRadioButtonNameStr);
-
-  virtual void SetLabel(const wxBitmap *label);
-  virtual void SetValue(bool val) ;
-  virtual bool GetValue(void) const ;
-};
-#endif
 
 #endif
     // _WX_RADIOBUT_H_

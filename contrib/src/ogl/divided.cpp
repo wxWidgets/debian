@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     12/07/98
-// RCS-ID:      $Id: divided.cpp,v 1.1 2000/03/03 11:25:04 JS Exp $
+// RCS-ID:      $Id: divided.cpp,v 1.3 2002/03/15 20:50:39 RD Exp $
 // Copyright:   (c) Julian Smart
 // Licence:   	wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -14,7 +14,7 @@
 #endif
 
 // For compilers that support precompilation, includes "wx.h".
-#include <wx/wxprec.h>
+#include "wx/wxprec.h"
 
 #ifdef __BORLANDC__
 #pragma hdrstop
@@ -706,7 +706,7 @@ void wxDividedShapeControlPoint::OnEndDragLeft(double x, double y, int keys, int
         wxShapeRegion *region = (wxShapeRegion *)node->Data();
         if (region->GetText())
         {
-        char *s = copystring(region->GetText());
+        wxChar *s = copystring(region->GetText());
         dividedObject->FormatText(dc, s, i);
         delete[] s;
         }

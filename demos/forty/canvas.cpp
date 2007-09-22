@@ -4,7 +4,7 @@
 // Author:      Chris Breeze
 // Modified by:
 // Created:     21/07/97
-// RCS-ID:      $Id: canvas.cpp,v 1.1 2000/01/08 15:27:37 VZ Exp $
+// RCS-ID:      $Id: canvas.cpp,v 1.5 2002/04/07 21:12:44 JS Exp $
 // Copyright:   (c) 1993-1998 Chris Breeze
 // Licence:   	wxWindows licence
 //---------------------------------------------------------------------------
@@ -68,6 +68,8 @@ FortyCanvas::~FortyCanvas()
 	UpdateScores();
 	delete m_game;
 	delete m_scoreFile;
+    delete m_handCursor;
+    delete m_arrowCursor;
 }
 
 
@@ -92,7 +94,7 @@ void FortyCanvas::OnDraw(wxDC& dc)
 {
 	dc.SetFont(* m_font);
 	m_game->Redraw(dc);
-
+#if 0
 	// if player name not set (and selection dialog is not displayed)
 	// then ask the player for their name
 	if (m_player.Length() == 0 && !m_playerDialog)
@@ -109,7 +111,7 @@ void FortyCanvas::OnDraw(wxDC& dc)
 			m_game->DisplayScore(dc);
 			m_playerDialog->Destroy();
 			m_playerDialog = 0;
-			Refresh();
+                        Refresh(false);
 		}
 		else
 		{
@@ -117,8 +119,40 @@ void FortyCanvas::OnDraw(wxDC& dc)
 			((wxFrame*)GetParent())->Close(TRUE);
 		}
 	}
+#endif
 }
 
+void FortyCanvas::ShowPlayerDialog()
+{
+	// if player name not set (and selection dialog is not displayed)
+	// then ask the player for their name
+	if (m_player.Length() == 0 && !m_playerDialog)
+	{
+ 		m_playerDialog = new PlayerSelectionDialog(this, m_scoreFile);
+		m_playerDialog->ShowModal();
+		m_player = m_playerDialog->GetPlayersName();
+		if (m_player.Length() > 0)
+		{
+			// user entered a name - lookup their score
+			int wins, games, score;
+			m_scoreFile->ReadPlayersScore(m_player, wins, games, score);
+			m_game->NewPlayer(wins, games, score);
+                        
+                        wxClientDC dc(this);
+                        dc.SetFont(* m_font);
+			m_game->DisplayScore(dc);
+			m_playerDialog->Destroy();
+			m_playerDialog = 0;
+                        Refresh(false);
+		}
+		else
+		{
+			// user cancelled the dialog - exit the app
+			((wxFrame*)GetParent())->Close(TRUE);
+		}
+        }
+}
+        
 /*
 Called when the main frame is closed
 */
@@ -198,25 +232,6 @@ void FortyCanvas::OnMouseEvent(wxMouseEvent& event)
 
 void FortyCanvas::SetCursorStyle(int x, int y)
 {
-	if (m_game->HaveYouWon())
-	{
-		if (wxMessageBox("Do you wish to play again?",
-			"Well Done, You have won!", wxYES_NO | wxICON_QUESTION) == wxYES)
-		{
-			m_game->Deal();
-
-			wxClientDC dc(this); 
-			PrepareDC(dc);
-			dc.SetFont(* m_font);
-			m_game->Redraw(dc);
-		}
-		else
-		{
-			// user cancelled the dialog - exit the app
-			((wxFrame*)GetParent())->Close(TRUE);
-		}
-	}
-
 	// Only set cursor to a hand if 'helping hand' is enabled and
 	// the card under the cursor can go somewhere 
 	if (m_game->CanYouGo(x, y) && m_helpingHand)
@@ -250,4 +265,9 @@ void FortyCanvas::Redo()
 	PrepareDC(dc);
 	dc.SetFont(* m_font);
 	m_game->Redo(dc);
+}
+
+void FortyCanvas::LayoutGame()
+{
+       m_game->Layout();
 }

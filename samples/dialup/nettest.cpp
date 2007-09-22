@@ -4,7 +4,7 @@
 // Author:      Vadim Zeitlin
 // Modified by:
 // Created:     07.07.99
-// RCS-ID:      $Id: nettest.cpp,v 1.2 2000/01/14 17:55:46 JS Exp $
+// RCS-ID:      $Id: nettest.cpp,v 1.6 2002/08/01 19:12:23 MBN Exp $
 // Copyright:   (c) Vadim Zeitlin
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -33,6 +33,10 @@
 // need because it includes almost all "standard" wxWindows headers
 #ifndef WX_PRECOMP
     #include "wx/wx.h"
+#endif
+
+#if !wxUSE_DIALUP_MANAGER
+#error You must set wxUSE_DIALUP_MANAGER to 1 in setup.h!
 #endif
 
 #include "wx/dialup.h"
@@ -164,7 +168,7 @@ bool MyApp::OnInit()
 
     if ( !m_dial->IsOk() )
     {
-        wxLogError("The sample can't run on this system.");
+        wxLogError(wxT("The sample can't run on this system."));
 
         wxLog::GetActiveTarget()->Flush();
 
@@ -189,18 +193,18 @@ int MyApp::OnExit()
 
 void MyApp::OnConnected(wxDialUpEvent& event)
 {
-    const char *msg;
+    const wxChar *msg;
     if ( event.IsOwnEvent() )
     {
-        msg = event.IsConnectedEvent() ? "Successfully connected"
-                                       : "Dialing failed";
+        msg = event.IsConnectedEvent() ? wxT("Successfully connected")
+                                       : wxT("Dialing failed");
 
-        wxLogStatus("");
+        wxLogStatus(wxEmptyString);
     }
     else
     {
-        msg = event.IsConnectedEvent() ? "Just connected!"
-                                       : "Disconnected";
+        msg = event.IsConnectedEvent() ? wxT("Just connected!")
+                                       : wxT("Disconnected");
     }
 
     wxLogMessage(msg);
@@ -252,37 +256,37 @@ void MyFrame::OnQuit(wxCommandEvent& WXUNUSED(event))
 void MyFrame::OnAbout(wxCommandEvent& WXUNUSED(event))
 {
     wxString msg;
-    msg.Printf(_T("This is the network functions test sample.\n"
-                  "© 1999 Vadim Zeitlin"));
+    msg.Printf( wxT("This is the network functions test sample.\n")
+                wxT("© 1999 Vadim Zeitlin") );
 
-    wxMessageBox(msg, _T("About NetTest"), wxOK | wxICON_INFORMATION, this);
+    wxMessageBox(msg, wxT("About NetTest"), wxOK | wxICON_INFORMATION, this);
 }
 
 void MyFrame::OnHangUp(wxCommandEvent& WXUNUSED(event))
 {
     if ( wxGetApp().GetDialer()->HangUp() )
     {
-        wxLogStatus(this, "Connection was succesfully terminated.");
+        wxLogStatus(this, wxT("Connection was succesfully terminated."));
     }
     else
     {
-        wxLogStatus(this, "Failed to hang up.");
+        wxLogStatus(this, wxT("Failed to hang up."));
     }
 }
 
 void MyFrame::OnDial(wxCommandEvent& WXUNUSED(event))
 {
-    wxLogStatus(this, "Preparing to dial...");
+    wxLogStatus(this, wxT("Preparing to dial..."));
     wxYield();
     wxBeginBusyCursor();
 
     if ( wxGetApp().GetDialer()->Dial() )
     {
-        wxLogStatus(this, "Dialing...");
+        wxLogStatus(this, wxT("Dialing..."));
     }
     else
     {
-        wxLogStatus(this, "Dialing attempt failed.");
+        wxLogStatus(this, wxT("Dialing attempt failed."));
     }
 
     wxEndBusyCursor();
@@ -291,9 +295,9 @@ void MyFrame::OnDial(wxCommandEvent& WXUNUSED(event))
 void MyFrame::OnCheck(wxCommandEvent& WXUNUSED(event))
 {
    if(wxGetApp().GetDialer()->IsOnline())
-      wxLogMessage("Network is online.");
+      wxLogMessage(wxT("Network is online."));
    else
-      wxLogMessage("Network is offline.");
+      wxLogMessage(wxT("Network is offline."));
 }
 
 void MyFrame::OnEnumISPs(wxCommandEvent& WXUNUSED(event))
@@ -302,7 +306,7 @@ void MyFrame::OnEnumISPs(wxCommandEvent& WXUNUSED(event))
     size_t nCount = wxGetApp().GetDialer()->GetISPNames(names);
     if ( nCount == 0 )
     {
-        wxLogWarning("No ISPs found.");
+        wxLogWarning(wxT("No ISPs found."));
     }
     else
     {

@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     04/01/98
-// RCS-ID:      $Id: button.cpp,v 1.41.2.6 2000/05/09 21:18:19 VZ Exp $
+// RCS-ID:      $Id: button.cpp,v 1.56 2002/08/23 16:00:32 VZ Exp $
 // Copyright:   (c) Julian Smart and Markus Holzem
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -28,7 +28,10 @@
     #pragma hdrstop
 #endif
 
+#if wxUSE_BUTTON
+
 #ifndef WX_PRECOMP
+    #include "wx/app.h"
     #include "wx/button.h"
     #include "wx/brush.h"
     #include "wx/panel.h"
@@ -66,72 +69,64 @@ bool wxButton::Create(wxWindow *parent,
                       const wxValidator& validator,
                       const wxString& name)
 {
-    if ( !CreateBase(parent, id, pos, size, style, validator, name) )
+    if ( !CreateControl(parent, id, pos, size, style, validator, name) )
         return FALSE;
 
-    parent->AddChild((wxButton *)this);
-
-    m_backgroundColour = parent->GetBackgroundColour();
-    m_foregroundColour = parent->GetForegroundColour();
-
-    long msStyle = WS_VISIBLE | WS_TABSTOP | WS_CHILD /* | WS_CLIPSIBLINGS */ ;
+    WXDWORD exstyle;
+    WXDWORD msStyle = MSWGetStyle(style, &exstyle);
 
 #ifdef __WIN32__
-    if(m_windowStyle & wxBU_LEFT)
-        msStyle |= BS_LEFT;
-    if(m_windowStyle & wxBU_RIGHT)
-        msStyle |= BS_RIGHT;
-    if(m_windowStyle & wxBU_TOP)
-        msStyle |= BS_TOP;
-    if(m_windowStyle & wxBU_BOTTOM)
-        msStyle |= BS_BOTTOM;
-#endif
-
-    m_hWnd = (WXHWND)CreateWindowEx
-                     (
-                      MakeExtendedStyle(m_windowStyle),
-                      wxT("BUTTON"),
-                      label,
-                      msStyle,
-                      0, 0, 0, 0,
-                      GetWinHwnd(parent),
-                      (HMENU)m_windowId,
-                      wxGetInstance(),
-                      NULL
-                     );
-
-    if (m_hWnd == 0)
+    // if the label contains several lines we must explicitly tell the button
+    // about it or it wouldn't draw it correctly ("\n"s would just appear as
+    // black boxes)
+    //
+    // NB: we do it here and not in MSWGetStyle() because we need the label
+    //     value and m_label is not set yet when MSWGetStyle() is called;
+    //     besides changing BS_MULTILINE during run-time is pointless anyhow
+    if ( label.find(_T('\n')) != wxString::npos )
     {
-        wxString msg;
-#ifdef __WIN16__
-        msg.Printf(wxT("CreateWindowEx failed"));
-#else
-        msg.Printf(wxT("CreateWindowEx failed with error number %ld"), (long) GetLastError());
-#endif
-        wxFAIL_MSG(msg);
+        msStyle |= BS_MULTILINE;
     }
+#endif // __WIN32__
 
-    // Subclass again for purposes of dialog editing mode
-    SubclassWin(m_hWnd);
-
-    SetFont(parent->GetFont());
-
-    SetSize(pos.x, pos.y, size.x, size.y);
-
-    return TRUE;
+    return MSWCreateControl(_T("BUTTON"), msStyle, pos, size, label, exstyle);
 }
 
 wxButton::~wxButton()
 {
-    wxPanel *panel = wxDynamicCast(GetParent(), wxPanel);
-    if ( panel )
-    {
-        if ( panel->GetDefaultItem() == this )
-        {
-            // don't leave the panel with invalid default item
-            panel->SetDefaultItem(NULL);
-        }
-    }
+}
+
+// ----------------------------------------------------------------------------
+// flags
+// ----------------------------------------------------------------------------
+
+WXDWORD wxButton::MSWGetStyle(long style, WXDWORD *exstyle) const
+{
+    // buttons never have an external border, they draw their own one
+    WXDWORD msStyle = wxControl::MSWGetStyle
+                      (
+                        (style & ~wxBORDER_MASK) | wxBORDER_NONE, exstyle
+                      );
+
+    // we must use WS_CLIPSIBLINGS with the buttons or they would draw over
+    // each other in any resizeable dialog which has more than one button in
+    // the bottom
+    msStyle |= WS_CLIPSIBLINGS;
+
+#ifdef __WIN32__
+    // don't use "else if" here: weird as it is, but you may combine wxBU_LEFT
+    // and wxBU_RIGHT to get BS_CENTER!
+    if ( style & wxBU_LEFT )
+        msStyle |= BS_LEFT;
+    if ( style & wxBU_RIGHT )
+        msStyle |= BS_RIGHT;
+    if ( style & wxBU_TOP )
+        msStyle |= BS_TOP;
+    if ( style & wxBU_BOTTOM )
+        msStyle |= BS_BOTTOM;
+#endif // __WIN32__
+
+    return msStyle;
 }
 
 // ----------------------------------------------------------------------------
@@ -140,35 +135,44 @@ wxButton::~wxButton()
 
 wxSize wxButton::DoGetBestSize() const
 {
-    wxString label = wxGetWindowText(GetHWND());
     int wBtn;
-    GetTextExtent(label, &wBtn, NULL);
+    GetTextExtent(wxGetWindowText(GetHWND()), &wBtn, NULL);
 
     int wChar, hChar;
     wxGetCharSize(GetHWND(), &wChar, &hChar, &GetFont());
 
-    // add a margin - the button is wider than just its label
+    // add a margin -- the button is wider than just its label
     wBtn += 3*wChar;
 
     // the button height is proportional to the height of the font used
     int hBtn = BUTTON_HEIGHT_FROM_CHAR_HEIGHT(hChar);
 
-    wxSize sz = GetDefaultSize();
-    if (wBtn > sz.x) sz.x = wBtn;
-    if (hBtn > sz.y) sz.y = hBtn;
+    // all buttons have at least the standard size unless the user explicitly
+    // wants them to be of smaller size and used wxBU_EXACTFIT style when
+    // creating the button
+    if ( !HasFlag(wxBU_EXACTFIT) )
+    {
+        wxSize sz = GetDefaultSize();
+        if (wBtn > sz.x)
+            sz.x = wBtn;
+        if (hBtn > sz.y)
+            sz.y = hBtn;
 
-    return sz;
+        return sz;
+    }
+
+    return wxSize(wBtn, hBtn);
 }
 
 /* static */
-wxSize wxButton::GetDefaultSize()
+wxSize wxButtonBase::GetDefaultSize()
 {
     static wxSize s_sizeBtn;
 
     if ( s_sizeBtn.x == 0 )
     {
         wxScreenDC dc;
-        dc.SetFont(wxSystemSettings::GetSystemFont(wxSYS_DEFAULT_GUI_FONT));
+        dc.SetFont(wxSystemSettings::GetFont(wxSYS_DEFAULT_GUI_FONT));
 
         // the size of a standard button in the dialog units is 50x14,
         // translate this to pixels
@@ -186,52 +190,140 @@ wxSize wxButton::GetDefaultSize()
 }
 
 // ----------------------------------------------------------------------------
-// set this button as the default one in its panel
+// default button handling
 // ----------------------------------------------------------------------------
 
+/*
+   "Everything you ever wanted to know about the default buttons" or "Why do we
+   have to do all this?"
+
+   In MSW the default button should be activated when the user presses Enter
+   and the current control doesn't process Enter itself somehow. This is
+   handled by ::DefWindowProc() (or maybe ::DefDialogProc()) using DM_SETDEFID
+   Another aspect of "defaultness" is that the default button has different
+   appearance: this is due to BS_DEFPUSHBUTTON style which is completely
+   separate from DM_SETDEFID stuff (!). Also note that BS_DEFPUSHBUTTON should
+   be unset if our parent window is not active so it should be unset whenever
+   we lose activation and set back when we regain it.
+
+   Final complication is that when a button is active, it should be the default
+   one, i.e. pressing Enter on a button always activates it and not another
+   one.
+
+   We handle this by maintaining a permanent and a temporary default items in
+   wxControlContainer (both may be NULL). When a button becomes the current
+   control (i.e. gets focus) it sets itself as the temporary default which
+   ensures that it has the right appearance and that Enter will be redirected
+   to it. When the button loses focus, it unsets the temporary default and so
+   the default item will be the permanent default -- that is the default button
+   if any had been set or none otherwise, which is just what we want.
+
+   NB: all this is quite complicated by now and the worst is that normally
+       it shouldn't be necessary at all as for the normal Windows programs
+       DefWindowProc() and IsDialogMessage() take care of all this
+       automatically -- however in wxWindows programs this doesn't work for
+       nested hierarchies (i.e. a notebook inside a notebook) for unknown
+       reason and so we have to reproduce all this code ourselves. It would be
+       very nice if we could avoid doing it.
+ */
+
+// set this button as the (permanently) default one in its panel
 void wxButton::SetDefault()
 {
     wxWindow *parent = GetParent();
-    wxButton *btnOldDefault = NULL;
-    wxPanel *panel = wxDynamicCast(parent, wxPanel);
-    if ( panel )
+
+    wxCHECK_RET( parent, _T("button without parent?") );
+
+    // set this one as the default button both for wxWindows ...
+    wxWindow *winOldDefault = parent->SetDefaultItem(this);
+
+    // ... and Windows
+    SetDefaultStyle(wxDynamicCast(winOldDefault, wxButton), FALSE);
+    SetDefaultStyle(this, TRUE);
+}
+
+// set this button as being currently default
+void wxButton::SetTmpDefault()
+{
+    wxWindow *parent = GetParent();
+
+    wxCHECK_RET( parent, _T("button without parent?") );
+
+    wxWindow *winOldDefault = parent->GetDefaultItem();
+    parent->SetTmpDefaultItem(this);
+
+    SetDefaultStyle(wxDynamicCast(winOldDefault, wxButton), FALSE);
+    SetDefaultStyle(this, TRUE);
+}
+
+// unset this button as currently default, it may still stay permanent default
+void wxButton::UnsetTmpDefault()
+{
+    wxWindow *parent = GetParent();
+
+    wxCHECK_RET( parent, _T("button without parent?") );
+
+    parent->SetTmpDefaultItem(NULL);
+
+    wxWindow *winOldDefault = parent->GetDefaultItem();
+
+    SetDefaultStyle(this, FALSE);
+    SetDefaultStyle(wxDynamicCast(winOldDefault, wxButton), TRUE);
+}
+
+/* static */
+void
+wxButton::SetDefaultStyle(wxButton *btn, bool on)
+{
+    // we may be called with NULL pointer -- simpler to do the check here than
+    // in the caller which does wxDynamicCast()
+    if ( !btn )
+        return;
+
+    // first, let DefDlgProc() know about the new default button
+    if ( on )
     {
-        btnOldDefault = panel->GetDefaultItem();
-        panel->SetDefaultItem(this);
+        // we shouldn't set BS_DEFPUSHBUTTON for any button if we don't have
+        // focus at all any more
+        if ( !wxTheApp->IsActive() )
+            return;
+
+        // look for a panel-like window
+        wxWindow *win = btn->GetParent();
+        while ( win && !win->HasFlag(wxTAB_TRAVERSAL) )
+            win = win->GetParent();
+
+        if ( win )
+        {
+            ::SendMessage(GetHwndOf(win), DM_SETDEFID, btn->GetId(), 0L);
+
+            // sending DM_SETDEFID also changes the button style to
+            // BS_DEFPUSHBUTTON so there is nothing more to do
+        }
     }
 
-    if ( parent )
+    // then also change the style as needed
+    long style = ::GetWindowLong(GetHwndOf(btn), GWL_STYLE);
+    if ( !(style & BS_DEFPUSHBUTTON) == on )
     {
-        SendMessage(GetWinHwnd(parent), DM_SETDEFID, m_windowId, 0L);
-    }
-
-    if ( btnOldDefault )
-    {
-        // remove the BS_DEFPUSHBUTTON style from the other button
-        long style = GetWindowLong(GetHwndOf(btnOldDefault), GWL_STYLE);
-
-        // don't do it with the owner drawn buttons because it will reset
-        // BS_OWNERDRAW style bit too (BS_OWNERDRAW & BS_DEFPUSHBUTTON != 0)!
+        // don't do it with the owner drawn buttons because it will
+        // reset BS_OWNERDRAW style bit too (as BS_OWNERDRAW &
+        // BS_DEFPUSHBUTTON != 0)!
         if ( (style & BS_OWNERDRAW) != BS_OWNERDRAW )
         {
-            style &= ~BS_DEFPUSHBUTTON;
-            SendMessage(GetHwndOf(btnOldDefault), BM_SETSTYLE, style, 1L);
+            ::SendMessage(GetHwndOf(btn), BM_SETSTYLE,
+                          on ? style | BS_DEFPUSHBUTTON
+                             : style & ~BS_DEFPUSHBUTTON,
+                          1L /* redraw */);
         }
-        else
+        else // owner drawn
         {
-            // redraw the button - it will notice itself that it's not the
-            // default one any longer
-            btnOldDefault->Refresh();
+            // redraw the button - it will notice itself that it's
+            // [not] the default one [any longer]
+            btn->Refresh();
         }
     }
-
-    // set this button as the default
-    long style = GetWindowLong(GetHwnd(), GWL_STYLE);
-    if ( (style & BS_OWNERDRAW) != BS_OWNERDRAW )
-    {
-        style |= BS_DEFPUSHBUTTON;
-        SendMessage(GetHwnd(), BM_SETSTYLE, style, 1L);
-    }
+    //else: already has correct style
 }
 
 // ----------------------------------------------------------------------------
@@ -255,7 +347,7 @@ void wxButton::Command(wxCommandEvent & event)
 // event/message handlers
 // ----------------------------------------------------------------------------
 
-bool wxButton::MSWCommand(WXUINT param, WXWORD id)
+bool wxButton::MSWCommand(WXUINT param, WXWORD WXUNUSED(id))
 {
     bool processed = FALSE;
     switch ( param )
@@ -272,13 +364,18 @@ bool wxButton::MSWCommand(WXUINT param, WXWORD id)
 
 long wxButton::MSWWindowProc(WXUINT nMsg, WXWPARAM wParam, WXLPARAM lParam)
 {
-    // when we receive focus, we want to become the default button in our
-    // parent panel
+    // when we receive focus, we want to temporary become the default button in
+    // our parent panel so that pressing "Enter" would activate us -- and when
+    // losing it we should restore the previous default button as well
     if ( nMsg == WM_SETFOCUS )
     {
-        SetDefault();
+        SetTmpDefault();
 
-        // let the default processign take place too
+        // let the default processing take place too
+    }
+    else if ( nMsg == WM_KILLFOCUS )
+    {
+        UnsetTmpDefault();
     }
     else if ( nMsg == WM_LBUTTONDBLCLK )
     {
@@ -286,7 +383,7 @@ long wxButton::MSWWindowProc(WXUINT nMsg, WXWPARAM wParam, WXLPARAM lParam)
         // appearance - without this, it won't do it
         (void)wxControl::MSWWindowProc(WM_LBUTTONDOWN, wParam, lParam);
 
-        // and conitnue with processing the message normally as well
+        // and continue with processing the message normally as well
     }
 
     // let the base class do all real processing
@@ -524,3 +621,6 @@ bool wxButton::MSWOnDraw(WXDRAWITEMSTRUCT *wxdis)
 }
 
 #endif // __WIN32__
+
+#endif // wxUSE_BUTTON
+

@@ -4,7 +4,7 @@
 %% Author:      Vadim Zeitlin
 %% Modified by:
 %% Created:     27.03.00
-%% RCS-ID:      $Id: cmdlpars.tex,v 1.1.2.4 2000/07/02 21:48:21 VZ Exp $
+%% RCS-ID:      $Id: cmdlpars.tex,v 1.10 2002/07/19 19:53:01 JS Exp $
 %% Copyright:   (c) Vadim Zeitlin
 %% License:     wxWindows license
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -14,7 +14,8 @@
 wxCmdLineParser is a class for parsing command line.
 
 It has the following features:
-\begin{enumerate}
+
+\begin{enumerate}\itemsep=0pt
 \item distinguishes options, switches and parameters; allows option grouping
 \item allows both short and long options
 \item automatically generates the usage message from the command line description
@@ -22,7 +23,8 @@ It has the following features:
 \end{enumerate}
 
 To use it you should follow these steps:
-\begin{enumerate}
+
+\begin{enumerate}\itemsep=0pt
 \item \helpref{construct}{wxcmdlineparserconstruction} an object of this class
 giving it the command line to parse and optionally its description or use 
 {\tt AddXXX()} functions later
@@ -73,15 +75,18 @@ struct wxCmdLineEntryDesc
 
 The type of a command line entity is in the {\tt kind} field and may be one of
 the following constants:
-{\small \begin{verbatim}
+
+{\small%
+\begin{verbatim}
 enum wxCmdLineEntryType
 {
-    wxCMD\_LINE\_SWITCH,
-    wxCMD\_LINE\_OPTION,
-    wxCMD\_LINE\_PARAM,
-    wxCMD\_LINE\_NONE         // use this to terminate the list
+    wxCMD_LINE_SWITCH,
+    wxCMD_LINE_OPTION,
+    wxCMD_LINE_PARAM,
+    wxCMD_LINE_NONE         // use this to terminate the list
 }
-\end{verbatim}}
+\end{verbatim}
+}
 
 The field {\tt shortName} is the usual, short, name of the switch or the option.
 {\tt longName} is the corresponding long name or NULL if the option has no long
@@ -93,27 +98,33 @@ to construct a help message explaining the syntax of the program.
 
 The possible values of {\tt type} which specifies the type of the value accepted
 by an option or parameter are:
-{\small \begin{verbatim}
+
+{\small%
+\begin{verbatim}
 enum wxCmdLineParamType
 {
-    wxCMD\_LINE\_VAL\_STRING,  // default
-    wxCMD\_LINE\_VAL\_NUMBER,
-    wxCMD\_LINE\_VAL\_DATE,
-    wxCMD\_LINE\_VAL\_NONE
+    wxCMD_LINE_VAL_STRING,  // default
+    wxCMD_LINE_VAL_NUMBER,
+    wxCMD_LINE_VAL_DATE,
+    wxCMD_LINE_VAL_NONE
 }
-\end{verbatim}}
+\end{verbatim}
+}
 
 Finally, the {\tt flags} field is a combination of the following bit masks:
-{\small \begin{verbatim}
+
+{\small%
+\begin{verbatim}
 enum
 {
-    wxCMD\_LINE\_OPTION\_MANDATORY = 0x01, // this option must be given
-    wxCMD\_LINE\_PARAM\_OPTIONAL   = 0x02, // the parameter may be omitted
-    wxCMD\_LINE\_PARAM\_MULTIPLE   = 0x04, // the parameter may be repeated
-    wxCMD\_LINE\_OPTION\_HELP      = 0x08, // this option is a help request
-    wxCMD\_LINE\_NEEDS\_SEPARATOR  = 0x10, // must have sep before the value
+    wxCMD_LINE_OPTION_MANDATORY = 0x01, // this option must be given
+    wxCMD_LINE_PARAM_OPTIONAL   = 0x02, // the parameter may be omitted
+    wxCMD_LINE_PARAM_MULTIPLE   = 0x04, // the parameter may be repeated
+    wxCMD_LINE_OPTION_HELP      = 0x08, // this option is a help request
+    wxCMD_LINE_NEEDS_SEPARATOR  = 0x10, // must have sep before the value
 }
-\end{verbatim}}
+\end{verbatim}
+}
 
 Notice that by default (i.e. if flags are just $0$), options are optional (sic)
 and each call to \helpref{AddParam()}{wxcmdlineparseraddparam} allows one more
@@ -167,7 +178,7 @@ combination of \helpref{AddSwitch}{wxcmdlineparseraddswitch},
 
 Using constructors or \helpref{SetDesc}{wxcmdlineparsersetdesc} uses a (usually 
 {\tt const static}) table containing the command line description. If you want
-to decide which options to acccept during the run-time, using one of the 
+to decide which options to accept during the run-time, using one of the 
 {\tt AddXXX()} functions above might be preferable.
 
 \membersection{Customization}\label{wxcmdlineparsercustomization}
@@ -196,7 +207,7 @@ application-specific text before the explanation given by
 
 \membersection{Parsing command line}\label{wxcmdlineparserparsing}
 
-After the command line description was constructed and the desiredoptions were
+After the command line description was constructed and the desired options were
 set, you can finally call \helpref{Parse}{wxcmdlineparserparse} method.
 It returns $0$ if the command line was correct and was parsed, $-1$ if the help
 option was specified (this is a separate case as, normally, the program will
@@ -231,8 +242,7 @@ command line or FALSE if they were not specified.
 \func{}{wxCmdLineParser}{\void}
 
 Default constructor. You must use 
-\helpref{SetCmdLine}{wxcmdlineparsersetcmdlineargc} or 
-\helpref{SetCmdLinelater.}{wxcmdlineparsersetcmdlinestr} later.
+\helpref{SetCmdLine}{wxcmdlineparsersetcmdlineargc} later.
 
 \membersection{wxCmdLineParser::wxCmdLineParser}\label{wxcmdlineparserwxcmdlineparserargc}
 
@@ -270,6 +280,14 @@ specifies the \helpref{command line description}{wxcmdlineparsersetdesc}.
 
 Same as \helpref{wxCmdLineParser}{wxcmdlineparserwxcmdlineparserstr}, but also
 specifies the \helpref{command line description}{wxcmdlineparsersetdesc}.
+
+\membersection{wxCmdLineParser::ConvertStringToArgs}\label{wxcmdlineparserconvertstringtoargs}
+
+\func{static wxArrayString}{ConvertStringToArgs}{\param{const wxChar }{*cmdline}}
+
+Breaks down the string containing the full command line in words. The words are
+separated by whitespace. The quotes can be used in the input string to quote
+the white space and the back slashes can be used to quote the quotes.
 
 \membersection{wxCmdLineParser::SetCmdLine}\label{wxcmdlineparsersetcmdlineargc}
 
@@ -317,13 +335,23 @@ them.
 
 \wxheading{See also}
 
-\helpref{Customization}{wxcmdlineparsercustomization}
+\helpref{Customization}{wxcmdlineparsercustomization} and \helpref{AreLongOptionsEnabled}{wxcmdlineparserarelongoptionsenabled}
 
 \membersection{wxCmdLineParser::DisableLongOptions}\label{wxcmdlineparserdisablelongoptions}
 
 \func{void}{DisableLongOptions}{\void}
 
-Ientical to \helpref{EnableLongOptions(FALSE)}{wxcmdlineparserenablelongoptions}.
+Identical to \helpref{EnableLongOptions(FALSE)}{wxcmdlineparserenablelongoptions}.
+
+\membersection{wxCmdLineParser::AreLongOptionsEnabled}\label{wxcmdlineparserarelongoptionsenabled}
+
+\func{bool}{AreLongOptionsEnabled}{\void}
+
+Returns TRUE if long options are enabled, otherwise FALSE.
+
+\wxheading{See also}
+
+\helpref{EnableLongOptions}{wxcmdlineparserenablelongoptions}
 
 \membersection{wxCmdLineParser::SetLogo}\label{wxcmdlineparsersetlogo}
 
@@ -387,11 +415,19 @@ Add a parameter of the given {\it type} to the command line description.
 
 \membersection{wxCmdLineParser::Parse}\label{wxcmdlineparserparse}
 
-\func{int}{Parse}{\void}
+\func{int}{Parse}{\param{bool }{giveUsage = {\tt TRUE}}}
 
 Parse the command line, return $0$ if ok, $-1$ if {\tt "-h"} or {\tt "--help"} 
 option was encountered and the help message was given or a positive value if a
 syntax error occured.
+
+\wxheading{Parameters}
+
+\docparam{giveUsage}{If {\tt TRUE} (default), the usage message is given if a
+syntax error was encountered while parsing the command line or if help was
+requested. If {\tt FALSE}, only error messages about possible syntax errors
+are given, use \helpref{Usage}{wxcmdlineparserusage} to show the usage message
+from the caller if needed.}
 
 \membersection{wxCmdLineParser::Usage}\label{wxcmdlineparserusage}
 

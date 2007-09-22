@@ -1,4 +1,4 @@
-/* $Header: /home/karsten/CVSSERVER/wxcvs/wxWindows/src/tiff/tiffcomp.h,v 1.5 2000/01/09 13:09:28 GRG Exp $ */
+/* $Header: /home/wxcvs/wxWindows/src/tiff/tiffcomp.h,v 1.6 2001/12/15 23:18:18 VS Exp $ */
 
 /*
  * Copyright (c) 1990-1997 Sam Leffler
@@ -84,6 +84,8 @@
 #define	BSDTYPES
 #define	HAVE_UNISTD_H	0
 #elif defined(_WINDOWS) || defined(__WIN32__) || defined(_Windows)
+#define BSDTYPES
+#elif defined(__DJGPP__)
 #define BSDTYPES
 #elif defined(OS2_16) || defined(OS2_32)
 #define	BSDTYPES

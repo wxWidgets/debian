@@ -2,7 +2,7 @@
 // Name:        icon.h
 // Purpose:
 // Author:      Robert Roebling
-// Id:          $Id: icon.h,v 1.14 1999/11/22 19:44:21 RR Exp $
+// Id:          $Id: icon.h,v 1.17 2002/09/07 12:28:46 GD Exp $
 // Copyright:   (c) 1998 Robert Roebling
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -11,7 +11,7 @@
 #ifndef __GTKICONH__
 #define __GTKICONH__
 
-#ifdef __GNUG__
+#if defined(__GNUG__) && !defined(__APPLE__)
 #pragma interface
 #endif
 
@@ -38,17 +38,22 @@ public:
 
     // For compatibility with wxMSW where desired size is sometimes required to
     // distinguish between multiple icons in a resource.
-    wxIcon( const wxString& filename, int type = wxBITMAP_TYPE_XPM, 
+    wxIcon( const wxString& filename, int type = wxBITMAP_TYPE_XPM,
             int WXUNUSED(desiredWidth)=-1, int WXUNUSED(desiredHeight)=-1 ) :
         wxBitmap(filename, type)
     {
     }
     wxIcon( char **bits, int width=-1, int height=-1 );
 
-    wxIcon& operator = (const wxIcon& icon);
-    inline bool operator == (const wxIcon& icon) { return m_refData == icon.m_refData; }
-    inline bool operator != (const wxIcon& icon) { return m_refData != icon.m_refData; }
-  
+    wxIcon& operator=(const wxIcon& icon);
+    bool operator==(const wxIcon& icon) const { return m_refData == icon.m_refData; }
+    bool operator!=(const wxIcon& icon) const { return !(*this == icon); }
+
+    // create from bitmap (which should have a mask unless it's monochrome):
+    // there shouldn't be any implicit bitmap -> icon conversion (i.e. no
+    // ctors, assignment operators...), but it's ok to have such function
+    void CopyFromBitmap(const wxBitmap& bmp);
+
 private:
     DECLARE_DYNAMIC_CLASS(wxIcon)
 };

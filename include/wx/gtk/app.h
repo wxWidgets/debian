@@ -1,8 +1,8 @@
 /////////////////////////////////////////////////////////////////////////////
-// Name:        app.h
+// Name:        wx/gtk/app.h
 // Purpose:
 // Author:      Robert Roebling
-// Id:          $Id: app.h,v 1.26.2.1 2001/01/24 15:00:59 vadz Exp $
+// Id:          $Id: app.h,v 1.38 2002/09/07 12:28:46 GD Exp $
 // Copyright:   (c) 1998 Robert Roebling, Julian Smart
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -10,7 +10,7 @@
 #ifndef __GTKAPPH__
 #define __GTKAPPH__
 
-#ifdef __GNUG__
+#if defined(__GNUG__) && !defined(__APPLE__)
 #pragma interface
 #endif
 
@@ -32,7 +32,7 @@ class wxApp: public wxAppBase
 {
 public:
     wxApp();
-    ~wxApp();
+    virtual ~wxApp();
 
     /* override for altering the way wxGTK intializes the GUI
      * (palette/visual/colorcube). under wxMSW, OnInitGui() does nothing by
@@ -46,8 +46,8 @@ public:
     virtual bool Initialized();
     virtual bool Pending();
     virtual void Dispatch();
-
-    virtual wxIcon GetStdIcon(int which) const;
+    virtual bool Yield(bool onlyIfNeeded = FALSE);
+    virtual bool ProcessIdle();
 
     // implementation only from now on
     void OnIdle( wxIdleEvent &event );
@@ -58,12 +58,13 @@ public:
     static bool InitialzeVisual();
     static void CleanUp();
 
-    bool ProcessIdle();
     void DeletePendingObjects();
 
-    // This can be used to suppress the generation of Idle events.
-    void SuppressIdleEvents(bool arg = TRUE) { m_suppressIdleEvents = arg; }
-    bool GetSuppressIdleEvents() const { return m_suppressIdleEvents; }
+#ifdef __WXDEBUG__
+    virtual void OnAssert(const wxChar *file, int line, const wxChar *cond, const wxChar *msg);
+
+    bool IsInAssert() const { return m_isInAssert; }
+#endif // __WXDEBUG__
 
     bool            m_initialized;
 
@@ -73,24 +74,24 @@ public:
 #endif
     unsigned char  *m_colorCube;
 
-private:
-    /// Set to TRUE while we are in wxYield().
-    bool m_suppressIdleEvents;
+    // Used by the the wxGLApp and wxGLCanvas class for GL-based X visual
+    // selection; this is actually an XVisualInfo*
+    void           *m_glVisualInfo;
+    // This returns the current visual: either that used by wxRootWindow
+    // or the XVisualInfo* for SGI.
+    GdkVisual      *GetGdkVisual();
 
 private:
+    // true if we're inside an assert modal dialog
+#ifdef __WXDEBUG__
+    bool m_isInAssert;
+#endif // __WXDEBUG__
+
+    bool CallInternalIdle( wxWindow* win );
+
     DECLARE_DYNAMIC_CLASS(wxApp)
     DECLARE_EVENT_TABLE()
 };
-
-#ifdef __VMS
-
-extern "C"
-  {
-     extern guint vms_gtk_major_version(void);
-     extern guint vms_gtk_minor_version(void);
-     extern guint vms_gtk_micro_version(void);
-  }
-#endif
 
 int WXDLLEXPORT wxEntry( int argc, char *argv[] );
 

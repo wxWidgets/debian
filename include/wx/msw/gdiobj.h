@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     01/02/97
-// RCS-ID:      $Id: gdiobj.h,v 1.4 1999/11/24 12:30:53 VZ Exp $
+// RCS-ID:      $Id: gdiobj.h,v 1.4.6.1 2002/09/21 23:01:24 VZ Exp $
 // Copyright:   (c) Julian Smart
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -49,7 +49,7 @@ public:
     bool IsNull() const { return (m_refData == 0); }
 
     // Returns handle.
-    virtual WXHANDLE GetResourceHandle() { return 0; }
+    virtual WXHANDLE GetResourceHandle() const { return 0; }
 
     virtual bool GetVisible() { return m_visible; }
     virtual void SetVisible(bool v) { m_visible = v; }

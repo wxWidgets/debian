@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     04/01/98
-// RCS-ID:      $Id: prop.h,v 1.8 1999/08/16 20:17:40 RR Exp $
+// RCS-ID:      $Id: prop.h,v 1.10 2002/08/31 11:29:11 GD Exp $
 // Copyright:   (c) Julian Smart
 // Licence:   	wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -12,9 +12,11 @@
 #ifndef _WX_PROP_H_
 #define _WX_PROP_H_
 
-#ifdef __GNUG__
+#if defined(__GNUG__) && !defined(__APPLE__)
 #pragma interface "prop.h"
 #endif
+
+#if wxUSE_PROPSHEET
 
 #include "wx/defs.h"
 #include "wx/string.h"
@@ -333,6 +335,9 @@ class WXDLLEXPORT wxProperty: public wxObject
   inline void Enable(bool en) { m_enabled = en; }
   inline bool IsEnabled(void) const { return m_enabled; }
 };
+
+#endif
+  // wxUSE_PROPSHEET
 
 #endif
   // _WX_PROP_H_

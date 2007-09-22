@@ -4,6 +4,8 @@ import clip_dndc
 from misc import *
 
 from gdi import *
+
+from fonts import *
 import wx
 class wxDataFormatPtr :
     def __init__(self,this):
@@ -100,8 +102,8 @@ class wxPyDataObjectSimplePtr(wxDataObjectSimplePtr):
     def __init__(self,this):
         self.this = this
         self.thisown = 0
-    def _setSelf(self, *_args, **_kwargs):
-        val = apply(clip_dndc.wxPyDataObjectSimple__setSelf,(self,) + _args, _kwargs)
+    def _setCallbackInfo(self, *_args, **_kwargs):
+        val = apply(clip_dndc.wxPyDataObjectSimple__setCallbackInfo,(self,) + _args, _kwargs)
         return val
     def __repr__(self):
         return "<C wxPyDataObjectSimple instance at %s>" % (self.this,)
@@ -109,7 +111,7 @@ class wxPyDataObjectSimple(wxPyDataObjectSimplePtr):
     def __init__(self,*_args,**_kwargs):
         self.this = apply(clip_dndc.new_wxPyDataObjectSimple,_args,_kwargs)
         self.thisown = 1
-        self._setSelf(self, wxPyDataObjectSimple)
+        self._setCallbackInfo(self, wxPyDataObjectSimple)
 
 
 
@@ -159,8 +161,8 @@ class wxPyTextDataObjectPtr(wxTextDataObjectPtr):
     def __init__(self,this):
         self.this = this
         self.thisown = 0
-    def _setSelf(self, *_args, **_kwargs):
-        val = apply(clip_dndc.wxPyTextDataObject__setSelf,(self,) + _args, _kwargs)
+    def _setCallbackInfo(self, *_args, **_kwargs):
+        val = apply(clip_dndc.wxPyTextDataObject__setCallbackInfo,(self,) + _args, _kwargs)
         return val
     def __repr__(self):
         return "<C wxPyTextDataObject instance at %s>" % (self.this,)
@@ -168,7 +170,7 @@ class wxPyTextDataObject(wxPyTextDataObjectPtr):
     def __init__(self,*_args,**_kwargs):
         self.this = apply(clip_dndc.new_wxPyTextDataObject,_args,_kwargs)
         self.thisown = 1
-        self._setSelf(self, wxPyTextDataObject)
+        self._setCallbackInfo(self, wxPyTextDataObject)
 
 
 
@@ -198,8 +200,8 @@ class wxPyBitmapDataObjectPtr(wxBitmapDataObjectPtr):
     def __init__(self,this):
         self.this = this
         self.thisown = 0
-    def _setSelf(self, *_args, **_kwargs):
-        val = apply(clip_dndc.wxPyBitmapDataObject__setSelf,(self,) + _args, _kwargs)
+    def _setCallbackInfo(self, *_args, **_kwargs):
+        val = apply(clip_dndc.wxPyBitmapDataObject__setCallbackInfo,(self,) + _args, _kwargs)
         return val
     def __repr__(self):
         return "<C wxPyBitmapDataObject instance at %s>" % (self.this,)
@@ -207,7 +209,7 @@ class wxPyBitmapDataObject(wxPyBitmapDataObjectPtr):
     def __init__(self,*_args,**_kwargs):
         self.this = apply(clip_dndc.new_wxPyBitmapDataObject,_args,_kwargs)
         self.thisown = 1
-        self._setSelf(self, wxPyBitmapDataObject)
+        self._setCallbackInfo(self, wxPyBitmapDataObject)
 
 
 
@@ -255,7 +257,27 @@ class wxCustomDataObject(wxCustomDataObjectPtr):
 
 
 
-class wxClipboardPtr :
+class wxURLDataObjectPtr(wxDataObjectCompositePtr):
+    def __init__(self,this):
+        self.this = this
+        self.thisown = 0
+    def GetURL(self, *_args, **_kwargs):
+        val = apply(clip_dndc.wxURLDataObject_GetURL,(self,) + _args, _kwargs)
+        return val
+    def SetURL(self, *_args, **_kwargs):
+        val = apply(clip_dndc.wxURLDataObject_SetURL,(self,) + _args, _kwargs)
+        return val
+    def __repr__(self):
+        return "<C wxURLDataObject instance at %s>" % (self.this,)
+class wxURLDataObject(wxURLDataObjectPtr):
+    def __init__(self,*_args,**_kwargs):
+        self.this = apply(clip_dndc.new_wxURLDataObject,_args,_kwargs)
+        self.thisown = 1
+
+
+
+
+class wxClipboardPtr(wxObjectPtr):
     def __init__(self,this):
         self.this = this
         self.thisown = 0
@@ -305,8 +327,8 @@ class wxDropSourcePtr :
     def __init__(self,this):
         self.this = this
         self.thisown = 0
-    def _setSelf(self, *_args, **_kwargs):
-        val = apply(clip_dndc.wxDropSource__setSelf,(self,) + _args, _kwargs)
+    def _setCallbackInfo(self, *_args, **_kwargs):
+        val = apply(clip_dndc.wxDropSource__setCallbackInfo,(self,) + _args, _kwargs)
         return val
     def __del__(self,clip_dndc=clip_dndc):
         if self.thisown == 1 :
@@ -333,7 +355,7 @@ class wxDropSource(wxDropSourcePtr):
     def __init__(self,*_args,**_kwargs):
         self.this = apply(clip_dndc.new_wxDropSource,_args,_kwargs)
         self.thisown = 1
-        self._setSelf(self, wxDropSource, 0)
+        self._setCallbackInfo(self, wxDropSource, 0)
 
 
 
@@ -355,8 +377,8 @@ class wxPyDropTargetPtr(wxDropTargetPtr):
     def __init__(self,this):
         self.this = this
         self.thisown = 0
-    def _setSelf(self, *_args, **_kwargs):
-        val = apply(clip_dndc.wxPyDropTarget__setSelf,(self,) + _args, _kwargs)
+    def _setCallbackInfo(self, *_args, **_kwargs):
+        val = apply(clip_dndc.wxPyDropTarget__setCallbackInfo,(self,) + _args, _kwargs)
         return val
     def __del__(self,clip_dndc=clip_dndc):
         if self.thisown == 1 :
@@ -391,7 +413,7 @@ class wxPyDropTarget(wxPyDropTargetPtr):
         self.this = apply(clip_dndc.new_wxPyDropTarget,_args,_kwargs)
         self.thisown = 1
         if _args:_args[0].thisown = 0
-        self._setSelf(self, wxPyDropTarget)
+        self._setCallbackInfo(self, wxPyDropTarget)
 
 
 
@@ -400,8 +422,8 @@ class wxTextDropTargetPtr(wxPyDropTargetPtr):
     def __init__(self,this):
         self.this = this
         self.thisown = 0
-    def _setSelf(self, *_args, **_kwargs):
-        val = apply(clip_dndc.wxTextDropTarget__setSelf,(self,) + _args, _kwargs)
+    def _setCallbackInfo(self, *_args, **_kwargs):
+        val = apply(clip_dndc.wxTextDropTarget__setCallbackInfo,(self,) + _args, _kwargs)
         return val
     def base_OnEnter(self, *_args, **_kwargs):
         val = apply(clip_dndc.wxTextDropTarget_base_OnEnter,(self,) + _args, _kwargs)
@@ -424,7 +446,7 @@ class wxTextDropTarget(wxTextDropTargetPtr):
     def __init__(self,*_args,**_kwargs):
         self.this = apply(clip_dndc.new_wxTextDropTarget,_args,_kwargs)
         self.thisown = 1
-        self._setSelf(self, wxTextDropTarget)
+        self._setCallbackInfo(self, wxTextDropTarget)
 
 
 
@@ -433,8 +455,8 @@ class wxFileDropTargetPtr(wxPyDropTargetPtr):
     def __init__(self,this):
         self.this = this
         self.thisown = 0
-    def _setSelf(self, *_args, **_kwargs):
-        val = apply(clip_dndc.wxFileDropTarget__setSelf,(self,) + _args, _kwargs)
+    def _setCallbackInfo(self, *_args, **_kwargs):
+        val = apply(clip_dndc.wxFileDropTarget__setCallbackInfo,(self,) + _args, _kwargs)
         return val
     def base_OnEnter(self, *_args, **_kwargs):
         val = apply(clip_dndc.wxFileDropTarget_base_OnEnter,(self,) + _args, _kwargs)
@@ -457,7 +479,7 @@ class wxFileDropTarget(wxFileDropTargetPtr):
     def __init__(self,*_args,**_kwargs):
         self.this = apply(clip_dndc.new_wxFileDropTarget,_args,_kwargs)
         self.thisown = 1
-        self._setSelf(self, wxFileDropTarget)
+        self._setCallbackInfo(self, wxFileDropTarget)
 
 
 
@@ -495,12 +517,17 @@ wxDF_ENHMETAFILE = clip_dndc.wxDF_ENHMETAFILE
 wxDF_FILENAME = clip_dndc.wxDF_FILENAME
 wxDF_LOCALE = clip_dndc.wxDF_LOCALE
 wxDF_PRIVATE = clip_dndc.wxDF_PRIVATE
+wxDF_HTML = clip_dndc.wxDF_HTML
 wxDF_MAX = clip_dndc.wxDF_MAX
 cvar = clip_dndc.cvar
 wxFormatInvalid = wxDataFormatPtr(clip_dndc.cvar.wxFormatInvalid)
 wxTheClipboard = wxClipboardPtr(clip_dndc.cvar.wxTheClipboard)
+wxDrag_CopyOnly = clip_dndc.wxDrag_CopyOnly
+wxDrag_AllowMove = clip_dndc.wxDrag_AllowMove
+wxDrag_DefaultMove = clip_dndc.wxDrag_DefaultMove
 wxDragError = clip_dndc.wxDragError
 wxDragNone = clip_dndc.wxDragNone
 wxDragCopy = clip_dndc.wxDragCopy
 wxDragMove = clip_dndc.wxDragMove
+wxDragLink = clip_dndc.wxDragLink
 wxDragCancel = clip_dndc.wxDragCancel

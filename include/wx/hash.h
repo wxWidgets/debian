@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by: VZ at 25.02.00: type safe hashes with WX_DECLARE_HASH()
 // Created:     01/02/97
-// RCS-ID:      $Id: hash.h,v 1.11.2.3 2001/12/31 15:39:53 RL Exp $
+// RCS-ID:      $Id: hash.h,v 1.20 2002/08/31 11:29:10 GD Exp $
 // Copyright:   (c)
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -12,7 +12,7 @@
 #ifndef _WX_HASH_H__
 #define _WX_HASH_H__
 
-#ifdef __GNUG__
+#if defined(__GNUG__) && !defined(__APPLE__)
 #pragma interface "hash.h"
 #endif
 
@@ -69,7 +69,7 @@ protected:
 
 private:
     // no copy ctor/assignment operator (yet)
-    DECLARE_NO_COPY_CLASS(wxHashTableBase);
+    DECLARE_NO_COPY_CLASS(wxHashTableBase)
 };
 
 // ----------------------------------------------------------------------------
@@ -79,7 +79,8 @@ private:
 class WXDLLEXPORT wxHashTableLong : public wxObject
 {
 public:
-    wxHashTableLong(size_t size = wxHASH_SIZE_DEFAULT) { Init(size); }
+    wxHashTableLong(size_t size = wxHASH_SIZE_DEFAULT)
+        { Init(size); }
     virtual ~wxHashTableLong();
 
     void Create(size_t size = wxHASH_SIZE_DEFAULT);
@@ -106,7 +107,40 @@ private:
     size_t m_count;
 
     // not implemented yet
-    DECLARE_NO_COPY_CLASS(wxHashTableLong);
+    DECLARE_NO_COPY_CLASS(wxHashTableLong)
+};
+
+// ----------------------------------------------------------------------------
+// wxStringHashTable: a hash table which indexes strings with longs
+// ----------------------------------------------------------------------------
+
+class WXDLLEXPORT wxStringHashTable : public wxObject
+{
+public:
+    wxStringHashTable(size_t sizeTable = wxHASH_SIZE_DEFAULT);
+    virtual ~wxStringHashTable();
+
+    // add a string associated with this key to the table
+    void Put(long key, const wxString& value);
+
+    // get the string from the key: if not found, an empty string is returned
+    // and the wasFound is set to FALSE if not NULL
+    wxString Get(long key, bool *wasFound = NULL) const;
+
+    // remove the item, returning TRUE if the item was found and deleted
+    bool Delete(long key) const;
+
+    // clean up
+    void Destroy();
+
+private:
+    wxArrayLong **m_keys;
+    wxArrayString **m_values;
+
+    // the size of array above
+    size_t m_hashSize;
+
+    DECLARE_NO_COPY_CLASS(wxStringHashTable)
 };
 
 // ----------------------------------------------------------------------------
@@ -128,7 +162,8 @@ public:
     ~wxHashTable();
 
     // copy ctor and assignment operator
-    wxHashTable(const wxHashTable& table) : wxObject() { DoCopy(table); }
+    wxHashTable(const wxHashTable& table) : wxObject()
+        { DoCopy(table); }
     wxHashTable& operator=(const wxHashTable& table)
         { Clear(); DoCopy(table); return *this; }
 
@@ -266,6 +301,9 @@ private:
 // library
 #define WX_DECLARE_EXPORTED_HASH(el, list, hash)  \
     _WX_DECLARE_HASH(el, list, hash, class WXDLLEXPORT)
+
+#define WX_DECLARE_USER_EXPORTED_HASH(el, list, hash, usergoo)  \
+    _WX_DECLARE_HASH(el, list, hash, class usergoo)
 
 #endif
     // _WX_HASH_H__

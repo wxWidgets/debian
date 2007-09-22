@@ -1,17 +1,20 @@
 from wxPython.wx import *
 from wxPython.grid import *
+from wxPython.lib.mixins.grid import wxGridAutoEditMixin
 
 #---------------------------------------------------------------------------
 
-class SimpleGrid(wxGrid):
+class SimpleGrid(wxGrid): ##, wxGridAutoEditMixin):
     def __init__(self, parent, log):
         wxGrid.__init__(self, parent, -1)
+        ##wxGridAutoEditMixin.__init__(self)
         self.log = log
         self.moveTo = None
 
         EVT_IDLE(self, self.OnIdle)
 
         self.CreateGrid(25, 25)
+        ##self.EnableEditing(false)
 
         # simple cell formatting
         self.SetColSize(3, 200)
@@ -19,9 +22,20 @@ class SimpleGrid(wxGrid):
         self.SetCellValue(0, 0, "First cell")
         self.SetCellValue(1, 1, "Another cell")
         self.SetCellValue(2, 2, "Yet another cell")
+        self.SetCellValue(3, 3, "This cell is read-only")
         self.SetCellFont(0, 0, wxFont(12, wxROMAN, wxITALIC, wxNORMAL))
         self.SetCellTextColour(1, 1, wxRED)
         self.SetCellBackgroundColour(2, 2, wxCYAN)
+        self.SetReadOnly(3, 3, true)
+
+        self.SetCellEditor(5, 0, wxGridCellNumberEditor())
+        self.SetCellValue(5, 0, "123")
+        self.SetCellEditor(6, 0, wxGridCellFloatEditor())
+        self.SetCellValue(6, 0, "123.34")
+        self.SetCellEditor(7, 0, wxGridCellNumberEditor())
+
+        self.SetCellValue(6, 3, "You can veto editing this cell")
+
 
         # attribute objects let you keep a set of formatting values
         # in one spot, and reuse them if needed
@@ -36,6 +50,16 @@ class SimpleGrid(wxGrid):
         self.SetColLabelValue(0, "Custom")
         self.SetColLabelValue(1, "column")
         self.SetColLabelValue(2, "labels")
+
+        self.SetColLabelAlignment(wxALIGN_LEFT, wxALIGN_BOTTOM)
+
+        # overflow cells
+        self.SetCellValue( 9, 1, "This default cell will overflow into neighboring cells, but not if you turn overflow off.");
+        self.SetCellSize(11, 1, 3, 3);
+        self.SetCellAlignment(11, 1, wxALIGN_CENTRE, wxALIGN_CENTRE);
+        self.SetCellValue(11, 1, "This cell is set span 3 rows and 3 columns");
+
+
 
         # test all the events
         EVT_GRID_CELL_LEFT_CLICK(self, self.OnCellLeftClick)
@@ -57,6 +81,8 @@ class SimpleGrid(wxGrid):
 
         EVT_GRID_EDITOR_SHOWN(self, self.OnEditorShown)
         EVT_GRID_EDITOR_HIDDEN(self, self.OnEditorHidden)
+        EVT_GRID_EDITOR_CREATED(self, self.OnEditorCreated)
+
 
 
     def OnCellLeftClick(self, evt):
@@ -129,11 +155,12 @@ class SimpleGrid(wxGrid):
         if value == 'no good':
             self.moveTo = evt.GetRow(), evt.GetCol()
 
+
     def OnIdle(self, evt):
         if self.moveTo != None:
             self.SetGridCursor(self.moveTo[0], self.moveTo[1])
             self.moveTo = None
-
+        evt.Skip()
 
 
     def OnSelectCell(self, evt):
@@ -149,20 +176,37 @@ class SimpleGrid(wxGrid):
         value = self.GetCellValue(row, col)
         if value == 'no good 2':
             return  # cancels the cell selection
-        else:
-            evt.Skip()
-
+        evt.Skip()
 
 
     def OnEditorShown(self, evt):
+        if evt.GetRow() == 6 and evt.GetCol() == 3 and \
+           wxMessageBox("Are you sure you wish to edit this cell?",
+                        "Checking", wxYES_NO) == wxNO:
+            evt.Veto()
+            return
+
         self.log.write("OnEditorShown: (%d,%d) %s\n" %
                        (evt.GetRow(), evt.GetCol(), evt.GetPosition()))
         evt.Skip()
 
+
     def OnEditorHidden(self, evt):
+        if evt.GetRow() == 6 and evt.GetCol() == 3 and \
+           wxMessageBox("Are you sure you wish to  finish editing this cell?",
+                        "Checking", wxYES_NO) == wxNO:
+            evt.Veto()
+            return
+
         self.log.write("OnEditorHidden: (%d,%d) %s\n" %
                        (evt.GetRow(), evt.GetCol(), evt.GetPosition()))
         evt.Skip()
+
+
+    def OnEditorCreated(self, evt):
+        self.log.write("OnEditorCreated: (%d, %d) %s\n" %
+                       (evt.GetRow(), evt.GetCol(), evt.GetControl()))
+
 
 
 #---------------------------------------------------------------------------

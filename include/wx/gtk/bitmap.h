@@ -2,7 +2,7 @@
 // Name:        bitmap.h
 // Purpose:
 // Author:      Robert Roebling
-// RCS-ID:      $Id: bitmap.h,v 1.32.2.1 2000/05/17 20:07:24 RR Exp $
+// RCS-ID:      $Id: bitmap.h,v 1.36 2002/09/07 12:28:46 GD Exp $
 // Copyright:   (c) 1998 Robert Roebling
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -11,7 +11,7 @@
 #ifndef __GTKBITMAPH__
 #define __GTKBITMAPH__
 
-#ifdef __GNUG__
+#if defined(__GNUG__) && !defined(__APPLE__)
 #pragma interface
 #endif
 
@@ -27,6 +27,7 @@
 
 class wxMask;
 class wxBitmap;
+class wxImage;
 
 //-----------------------------------------------------------------------------
 // wxMask
@@ -68,6 +69,7 @@ public:
     wxBitmap( char **bits ) { (void)CreateFromXpm((const char **)bits); }
     wxBitmap( const wxBitmap& bmp );
     wxBitmap( const wxString &filename, int type = wxBITMAP_TYPE_XPM );
+    wxBitmap( const wxImage& image, int depth = -1 ) { (void)CreateFromImage(image, depth); }
     ~wxBitmap();
     wxBitmap& operator = ( const wxBitmap& bmp );
     bool operator == ( const wxBitmap& bmp ) const;
@@ -79,6 +81,11 @@ public:
     int GetHeight() const;
     int GetWidth() const;
     int GetDepth() const;
+    
+    wxImage ConvertToImage() const;
+
+    // copies the contents and mask of the given (colour) icon to the bitmap
+    virtual bool CopyFromIcon(const wxIcon& icon);
 
     wxMask *GetMask() const;
     void SetMask( wxMask *mask );
@@ -106,6 +113,7 @@ public:
     
 protected:
     bool CreateFromXpm(const char **bits);
+    bool CreateFromImage(const wxImage& image, int depth);
 
 private:
     DECLARE_DYNAMIC_CLASS(wxBitmap)

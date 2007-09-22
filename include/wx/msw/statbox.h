@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     01/02/97
-// RCS-ID:      $Id: statbox.h,v 1.13 1999/11/25 23:25:50 VZ Exp $
+// RCS-ID:      $Id: statbox.h,v 1.14 2001/06/26 20:59:07 VZ Exp $
 // Copyright:   (c) Julian Smart
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -16,15 +16,9 @@
     #pragma interface "statbox.h"
 #endif
 
-#include "wx/control.h"
-
-WXDLLEXPORT_DATA(extern const wxChar*) wxStaticBoxNameStr;
-
 // Group box
-class WXDLLEXPORT wxStaticBox : public wxControl
+class WXDLLEXPORT wxStaticBox : public wxStaticBoxBase
 {
-DECLARE_DYNAMIC_CLASS(wxStaticBox)
-
 public:
     wxStaticBox() { }
 
@@ -55,6 +49,9 @@ public:
 
 protected:
     virtual wxSize DoGetBestSize() const;
+
+private:
+    DECLARE_DYNAMIC_CLASS(wxStaticBox)
 };
 
 #endif

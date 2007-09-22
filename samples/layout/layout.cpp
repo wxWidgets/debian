@@ -4,9 +4,9 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     04/01/98
-// RCS-ID:      $Id: layout.cpp,v 1.23.2.1 2000/05/16 15:10:24 VZ Exp $
+// RCS-ID:      $Id: layout.cpp,v 1.26 2002/03/17 14:15:41 VZ Exp $
 // Copyright:   (c) Julian Smart and Markus Holzem
-// Licence:   	wxWindows license
+// Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
 
 // For compilers that support precompilation, includes "wx/wx.h".
@@ -75,7 +75,7 @@ bool MyApp::OnInit()
 
   // Make a panel
   frame->panel = new wxPanel(frame, 0, 0, 1000, 500, wxTAB_TRAVERSAL);
-  frame->panel->SetBackgroundColour(wxSystemSettings::GetSystemColour(wxSYS_COLOUR_3DFACE));
+  frame->panel->SetBackgroundColour(wxSystemSettings::GetColour(wxSYS_COLOUR_3DFACE));
 //  frame->panel->SetAutoLayout(TRUE);
 
   // Create some panel items

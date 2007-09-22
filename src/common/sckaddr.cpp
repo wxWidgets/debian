@@ -4,7 +4,7 @@
 // Author:      Guilhem Lavaux
 // Modified by:
 // Created:     26/04/97
-// RCS-ID:      $Id: sckaddr.cpp,v 1.25.2.1 2000/04/01 23:19:11 VZ Exp $
+// RCS-ID:      $Id: sckaddr.cpp,v 1.33 2002/05/08 13:19:14 GD Exp $
 // Copyright:   (c) 1997, 1998 Guilhem Lavaux
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -22,19 +22,23 @@
 
 #if wxUSE_SOCKETS
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <ctype.h>
+#ifndef WX_PRECOMP
+    #include "wx/defs.h"
+    #include "wx/object.h"
+    #include "wx/log.h"
+    #include "wx/intl.h"
 
-#if !defined(__MWERKS__) && !defined(__SALFORDC__)
-#include <memory.h>
-#endif
+    #include <stdio.h>
+    #include <stdlib.h>
+    #include <ctype.h>
 
-#include "wx/defs.h"
-#include "wx/object.h"
-#include "wx/log.h"
-#include "wx/intl.h"
+    #if !defined(__MWERKS__) && !defined(__SALFORDC__)
+        #include <memory.h>
+    #endif
+#endif // !WX_PRECOMP
+
 #include "wx/gsocket.h"
+#include "wx/socket.h"
 #include "wx/sckaddr.h"
 
 IMPLEMENT_ABSTRACT_CLASS(wxSockAddress, wxObject)
@@ -42,7 +46,7 @@ IMPLEMENT_DYNAMIC_CLASS(wxIPV4address, wxSockAddress)
 #ifdef ENABLE_IPV6
 IMPLEMENT_DYNAMIC_CLASS(wxIPV6address, wxSockAddress)
 #endif
-#ifdef __UNIX__
+#if defined(__UNIX__) && (!defined(__WXMAC__) || defined(__DARWIN__))
 IMPLEMENT_DYNAMIC_CLASS(wxUNIXaddress, wxSockAddress)
 #endif
 
@@ -50,9 +54,28 @@ IMPLEMENT_DYNAMIC_CLASS(wxUNIXaddress, wxSockAddress)
 // wxIPV4address
 // ---------------------------------------------------------------------------
 
+void wxSockAddress::Init()
+{
+    if ( !wxSocketBase::IsInitialized() )
+    {
+        // we must do it before using GAddress_XXX functions
+        (void)wxSocketBase::Initialize();
+    }
+}
+
 wxSockAddress::wxSockAddress()
 {
-  m_address = GAddress_new();
+    Init();
+
+    m_address = GAddress_new();
+}
+
+wxSockAddress::wxSockAddress(const wxSockAddress& other)
+    : wxObject()
+{
+    Init();
+
+    m_address = GAddress_copy(other.m_address);
 }
 
 wxSockAddress::~wxSockAddress()
@@ -66,22 +89,14 @@ void wxSockAddress::SetAddress(GAddress *address)
   m_address = GAddress_copy(address);
 }
 
-const wxSockAddress& wxSockAddress::operator=(const wxSockAddress& addr)
+wxSockAddress& wxSockAddress::operator=(const wxSockAddress& addr)
 {
   SetAddress(addr.GetAddress());
   return *this;
 }
 
-void wxSockAddress::CopyObject(wxObject& dest) const
-{
-  wxSockAddress *addr = (wxSockAddress *)&dest;
-
-  wxObject::CopyObject(dest);
-  addr->SetAddress(GetAddress());
-}
-
 void wxSockAddress::Clear()
-{ 
+{
   GAddress_destroy(m_address);
   m_address = GAddress_new();
 }
@@ -91,7 +106,11 @@ void wxSockAddress::Clear()
 // ---------------------------------------------------------------------------
 
 wxIPV4address::wxIPV4address()
-  : wxSockAddress()
+{
+}
+
+wxIPV4address::wxIPV4address(const wxIPV4address& other)
+             : wxSockAddress(other)
 {
 }
 
@@ -102,18 +121,23 @@ wxIPV4address::~wxIPV4address()
 bool wxIPV4address::Hostname(const wxString& name)
 {
   // Some people are sometimes fool.
-  if (name == wxT("")) 
+  if (name == wxT(""))
   {
     wxLogWarning( _("Trying to solve a NULL hostname: giving up") );
     return FALSE;
   }
-
+  m_origHostname = name;
   return (GAddress_INET_SetHostName(m_address, name.mb_str()) == GSOCK_NOERROR);
 }
 
 bool wxIPV4address::Hostname(unsigned long addr)
 {
-  return (GAddress_INET_SetHostAddress(m_address, addr) == GSOCK_NOERROR);
+  bool rv = (GAddress_INET_SetHostAddress(m_address, addr) == GSOCK_NOERROR);
+  if (rv)
+      m_origHostname = Hostname();
+  else
+      m_origHostname = "";
+  return rv;
 }
 
 bool wxIPV4address::Service(const wxString& name)
@@ -147,7 +171,14 @@ wxString wxIPV4address::Hostname()
 
 unsigned short wxIPV4address::Service()
 {
-  return GAddress_INET_GetPort(m_address); 
+  return GAddress_INET_GetPort(m_address);
+}
+
+wxSockAddress *wxIPV4address::Clone() const
+{
+    wxIPV4address *addr = new wxIPV4address(*this);
+    addr->m_origHostname = m_origHostname;
+    return addr;
 }
 
 #if 0
@@ -157,6 +188,11 @@ unsigned short wxIPV4address::Service()
 
 wxIPV6address::wxIPV6address()
   : wxSockAddress()
+{
+}
+
+wxIPV6address::wxIPV6address(const wxIPV6address& other)
+             : wxSockAddress(other)
 {
 }
 
@@ -196,18 +232,24 @@ const wxString& wxIPV6address::Hostname()
 
 unsigned short wxIPV6address::Service()
 {
-  return GAddress_INET_GetPort(m_address); 
+  return GAddress_INET_GetPort(m_address);
 }
 
-#endif
+#endif // 0
 
-#ifdef __UNIX__
+#if defined(__UNIX__) && (!defined(__WXMAC__) || defined(__DARWIN__))
+
 // ---------------------------------------------------------------------------
 // wxUNIXaddress
 // ---------------------------------------------------------------------------
 
 wxUNIXaddress::wxUNIXaddress()
-  : wxSockAddress()
+             : wxSockAddress()
+{
+}
+
+wxUNIXaddress::wxUNIXaddress(const wxUNIXaddress& other)
+             : wxSockAddress(other)
 {
 }
 
@@ -229,7 +271,7 @@ wxString wxUNIXaddress::Filename()
   return wxString(path);
 }
 
-#endif
+#endif // __UNIX__
 
-#endif 
+#endif
   // wxUSE_SOCKETS

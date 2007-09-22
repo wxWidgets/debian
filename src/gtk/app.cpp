@@ -2,13 +2,17 @@
 // Name:        app.cpp
 // Purpose:
 // Author:      Robert Roebling
-// Id:          $Id: app.cpp,v 1.124.2.11 2001/03/08 07:57:52 JS Exp $
+// Id:          $Id: app.cpp,v 1.172.2.1 2002/09/17 12:24:33 VZ Exp $
 // Copyright:   (c) 1998 Robert Roebling, Julian Smart
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
 
 #ifdef __GNUG__
     #pragma implementation "app.h"
+#endif
+
+#ifdef __VMS
+#include <vms_jackets.h>
 #endif
 
 #include "wx/app.h"
@@ -20,6 +24,8 @@
 #include "wx/font.h"
 #include "wx/settings.h"
 #include "wx/dialog.h"
+#include "wx/msgdlg.h"
+#include "wx/file.h"
 
 #if wxUSE_WX_RESOURCES
     #include "wx/resource.h"
@@ -28,17 +34,41 @@
 #include "wx/module.h"
 #include "wx/image.h"
 
+#ifdef __WXUNIVERSAL__
+    #include "wx/univ/theme.h"
+    #include "wx/univ/renderer.h"
+#endif
+
 #if wxUSE_THREADS
     #include "wx/thread.h"
 #endif
 
 #include <unistd.h>
 
-#include <glib.h>
-#include <gdk/gdk.h>
-#include <gtk/gtk.h>
+// TODO: use configure test to detect which of select()/poll() is available!
+#if defined(__DARWIN__)
+    #warning "FIXME: select must be used instead of poll (GD)"
+#elif defined(__VMS)
+    #include <poll.h>
+#else
+    // bug in the OpenBSD headers: at least in 3.1 there is no extern "C" in
+    // neither poll.h nor sys/poll.h which results in link errors later
+    #ifdef __OPENBSD__
+        extern "C"
+        {
+    #endif
+
+    #include <sys/poll.h>
+
+    #ifdef __OPENBSD__
+        };
+    #endif
+#endif // platform
 
 #include "wx/gtk/win_gtk.h"
+
+#include <gtk/gtk.h>
+
 
 //-----------------------------------------------------------------------------
 // global data
@@ -47,25 +77,18 @@
 wxApp *wxTheApp = (wxApp *)  NULL;
 wxAppInitializerFunction wxAppBase::m_appInitFn = (wxAppInitializerFunction) NULL;
 
-extern bool g_isIdle;
-
 bool   g_mainThreadLocked = FALSE;
 gint   g_pendingTag = 0;
 
-GtkWidget *wxRootWindow = (GtkWidget*) NULL;
+static GtkWidget *gs_RootWindow = (GtkWidget*) NULL;
 
 //-----------------------------------------------------------------------------
-// local functions
+// idle system
 //-----------------------------------------------------------------------------
 
-/* forward declaration */
-gint   wxapp_idle_callback( gpointer WXUNUSED(data) );
-gint   wxapp_pending_callback( gpointer WXUNUSED(data) );
-void   wxapp_install_idle_handler();
+extern bool g_isIdle;
 
-#if wxUSE_THREADS
-gint   wxapp_wakeup_timerout_callback( gpointer WXUNUSED(data) );
-#endif
+void wxapp_install_idle_handler();
 
 //-----------------------------------------------------------------------------
 // wxExit
@@ -80,57 +103,63 @@ void wxExit()
 // wxYield
 //-----------------------------------------------------------------------------
 
-static bool gs_inYield = FALSE;
+// not static because used by textctrl.cpp
+//
+// MT-FIXME
+bool wxIsInsideYield = FALSE;
 
-bool wxYield()
+bool wxApp::Yield(bool onlyIfNeeded)
 {
-#ifdef __WXDEBUG__
-    if (gs_inYield)
-        wxFAIL_MSG( wxT("wxYield called recursively" ) );
-#endif
-    
-    gs_inYield = TRUE;
+    if ( wxIsInsideYield )
+    {
+        if ( !onlyIfNeeded )
+        {
+            wxFAIL_MSG( wxT("wxYield called recursively" ) );
+        }
+
+        return FALSE;
+    }
+
+#if wxUSE_THREADS
+    if ( !wxThread::IsMain() )
+    {
+        // can't call gtk_main_iteration() from other threads like this
+        return TRUE;
+    }
+#endif // wxUSE_THREADS
+
+    wxIsInsideYield = TRUE;
 
     if (!g_isIdle)
     {
         // We need to remove idle callbacks or the loop will
         // never finish.
-        gtk_idle_remove( wxTheApp->m_idleTag );
-        wxTheApp->m_idleTag = 0;
+        gtk_idle_remove( m_idleTag );
+        m_idleTag = 0;
         g_isIdle = TRUE;
     }
-
-    while (gtk_events_pending())
-        gtk_main_iteration();
 
     // disable log flushing from here because a call to wxYield() shouldn't
     // normally result in message boxes popping up &c
     wxLog::Suspend();
 
-    /* it's necessary to call ProcessIdle() to update the frames sizes which
-       might have been changed (it also will update other things set from
-       OnUpdateUI() which is a nice (and desired) side effect) */
-    while (wxTheApp->ProcessIdle()) { }
+    while (gtk_events_pending())
+        gtk_main_iteration();
+
+    // It's necessary to call ProcessIdle() to update the frames sizes which
+    // might have been changed (it also will update other things set from
+    // OnUpdateUI() which is a nice (and desired) side effect). But we
+    // call ProcessIdle() only once since this is not meant for longish
+    // background jobs (controlled by wxIdleEvent::RequestMore() and the
+    // return value of Processidle().
+    ProcessIdle();
 
     // let the logs be flashed again
     wxLog::Resume();
 
-    gs_inYield = FALSE;
+    wxIsInsideYield = FALSE;
 
     return TRUE;
-}
-
-//-----------------------------------------------------------------------------
-// wxYieldIfNeeded
-// Like wxYield, but fails silently if the yield is recursive.
-//-----------------------------------------------------------------------------
-
-bool wxYieldIfNeeded()
-{
-    if (gs_inYield)
-        return FALSE;
-        
-    return wxYield();    
 }
 
 //-----------------------------------------------------------------------------
@@ -157,21 +186,25 @@ void wxWakeUpIdle()
 // local functions
 //-----------------------------------------------------------------------------
 
-gint wxapp_pending_callback( gpointer WXUNUSED(data) )
+// the callback functions must be extern "C" to comply with GTK+ declarations
+extern "C"
+{
+
+static gint wxapp_pending_callback( gpointer WXUNUSED(data) )
 {
     if (!wxTheApp) return TRUE;
-    
-    // when getting called from GDK's time-out handler
+
+    // When getting called from GDK's time-out handler
     // we are no longer within GDK's grab on the GUI
-    // thread so we must lock it here ourselves
+    // thread so we must lock it here ourselves.
     gdk_threads_enter();
 
-    // Sent idle event to all who request them
+    // Sent idle event to all who request them.
     wxTheApp->ProcessPendingEvents();
 
     g_pendingTag = 0;
 
-    // flush the logged messages if any
+    // Flush the logged messages if any.
 #if wxUSE_LOG
     wxLog::FlushActive();
 #endif // wxUSE_LOG
@@ -184,33 +217,81 @@ gint wxapp_pending_callback( gpointer WXUNUSED(data) )
     return FALSE;
 }
 
-gint wxapp_idle_callback( gpointer WXUNUSED(data) )
+static gint wxapp_idle_callback( gpointer WXUNUSED(data) )
 {
-    if (!wxTheApp) return TRUE;
-    
-    // when getting called from GDK's time-out handler
+    if (!wxTheApp)
+        return TRUE;
+
+#ifdef __WXDEBUG__
+    // don't generate the idle events while the assert modal dialog is shown,
+    // this completely confuses the apps which don't expect to be reentered
+    // from some safely-looking functions
+    if ( wxTheApp->IsInAssert() )
+    {
+        // But repaint the assertion message if necessary
+        if (wxTopLevelWindows.GetCount() > 0)
+        {
+            wxWindow* win = (wxWindow*) wxTopLevelWindows.Last()->Data();
+            if (win->IsKindOf(CLASSINFO(wxGenericMessageDialog)))
+                win->OnInternalIdle();
+        }
+        return TRUE;
+    }
+#endif // __WXDEBUG__
+
+    // When getting called from GDK's time-out handler
     // we are no longer within GDK's grab on the GUI
-    // thread so we must lock it here ourselves
+    // thread so we must lock it here ourselves.
     gdk_threads_enter();
 
-    /* Indicate that we are now in idle mode - even so deeply
-       in idle mode that we don't get any idle events anymore.
-       this is like wxMSW where an idle event is sent only
-       once each time after the event queue has been completely
-       emptied */
+    // Indicate that we are now in idle mode and event handlers
+    // will have to reinstall the idle handler again.
     g_isIdle = TRUE;
     wxTheApp->m_idleTag = 0;
 
-    // Sent idle event to all who request them
-    while (wxTheApp->ProcessIdle()) { }
+    // Send idle event to all who request them as long as
+    // no events have popped up in the event queue.
+    while (wxTheApp->ProcessIdle() && (gtk_events_pending() == 0))
+        ;
 
     // Release lock again
     gdk_threads_leave();
 
     // Return FALSE to indicate that no more idle events are
-    // to be sent (single shot instead of continuous stream)
+    // to be sent (single shot instead of continuous stream).
     return FALSE;
 }
+
+#if wxUSE_THREADS
+
+static gint wxapp_poll_func( GPollFD *ufds, guint nfds, gint timeout )
+{
+    gint res;
+    gdk_threads_enter();
+
+    wxMutexGuiLeave();
+    g_mainThreadLocked = TRUE;
+
+#ifdef __DARWIN__
+    // FIXME: poll is not available under Darwin/Mac OS X and this needs
+    //        to be implemented using select instead (GD)
+    //        what about other BSD derived systems?
+    res = -1;
+#else
+    res = poll( (struct pollfd*) ufds, nfds, timeout );
+#endif
+
+    wxMutexGuiEnter();
+    g_mainThreadLocked = FALSE;
+
+    gdk_threads_leave();
+
+    return res;
+}
+
+#endif // wxUSE_THREADS
+
+} // extern "C"
 
 void wxapp_install_idle_handler()
 {
@@ -220,74 +301,28 @@ void wxapp_install_idle_handler()
 
     if (g_pendingTag == 0)
         g_pendingTag = gtk_idle_add_priority( 900, wxapp_pending_callback, (gpointer) NULL );
-        
-    /* This routine gets called by all event handlers
-       indicating that the idle is over. It may also
-       get called from other thread for sending events
-       to the main thread (and processing these in
-       idle time). Very low priority. */
 
+    // This routine gets called by all event handlers
+    // indicating that the idle is over. It may also
+    // get called from other thread for sending events
+    // to the main thread (and processing these in
+    // idle time). Very low priority.
     wxTheApp->m_idleTag = gtk_idle_add_priority( 1000, wxapp_idle_callback, (gpointer) NULL );
 }
 
-#if wxUSE_THREADS
+//-----------------------------------------------------------------------------
+// Access to the root window global
+//-----------------------------------------------------------------------------
 
-static int g_threadUninstallLevel = 0;
-
-void wxapp_install_thread_wakeup()
+GtkWidget* wxGetRootWindow()
 {
-    g_threadUninstallLevel++;
-    
-    if (g_threadUninstallLevel != 1) return;
-
-    if (wxTheApp->m_wakeUpTimerTag) return;
-
-    wxTheApp->m_wakeUpTimerTag = gtk_timeout_add( 50, wxapp_wakeup_timerout_callback, (gpointer) NULL );
+    if (gs_RootWindow == NULL)
+    {
+        gs_RootWindow = gtk_window_new( GTK_WINDOW_TOPLEVEL );
+        gtk_widget_realize( gs_RootWindow );
+    }
+    return gs_RootWindow;
 }
-
-void wxapp_uninstall_thread_wakeup()
-{
-    g_threadUninstallLevel--;
-    
-    if (g_threadUninstallLevel != 0) return;
-
-    if (!wxTheApp->m_wakeUpTimerTag) return;
-
-    gtk_timeout_remove( wxTheApp->m_wakeUpTimerTag );
-    wxTheApp->m_wakeUpTimerTag = 0;
-}
-
-gint wxapp_wakeup_timerout_callback( gpointer WXUNUSED(data) )
-{
-    // when getting called from GDK's time-out handler
-    // we are no longer within GDK's grab on the GUI
-    // thread so we must lock it here ourselves
-    gdk_threads_enter();
-
-    wxapp_uninstall_thread_wakeup();
-
-    // unblock other threads wishing to do some GUI things
-    wxMutexGuiLeave();
-
-    g_mainThreadLocked = TRUE;
-
-    // wake up other threads
-    wxUsleep( 1 );
-
-    // block other thread again
-    wxMutexGuiEnter();
-
-    g_mainThreadLocked = FALSE;
-
-    wxapp_install_thread_wakeup();
-
-    // release lock again
-    gdk_threads_leave();
-
-    return TRUE;
-}
-
-#endif // wxUSE_THREADS
 
 //-----------------------------------------------------------------------------
 // wxApp
@@ -301,48 +336,50 @@ END_EVENT_TABLE()
 
 wxApp::wxApp()
 {
-    wxTheApp = this;
-
-    m_topWindow = (wxWindow *) NULL;
-    m_exitOnFrameDelete = TRUE;
+    m_initialized = FALSE;
+#ifdef __WXDEBUG__
+    m_isInAssert = FALSE;
+#endif // __WXDEBUG__
 
     m_idleTag = 0;
     wxapp_install_idle_handler();
 
 #if wxUSE_THREADS
-    m_wakeUpTimerTag = 0;
-    wxapp_install_thread_wakeup();
+    g_main_set_poll_func( wxapp_poll_func );
 #endif
 
     m_colorCube = (unsigned char*) NULL;
 
-    m_useBestVisual = FALSE;
+    // this is NULL for a "regular" wxApp, but is set (and freed) by a wxGLApp
+    m_glVisualInfo = (void *) NULL;
 }
 
 wxApp::~wxApp()
 {
     if (m_idleTag) gtk_idle_remove( m_idleTag );
 
-#if wxUSE_THREADS
-    wxapp_uninstall_thread_wakeup();
-#endif
-
     if (m_colorCube) free(m_colorCube);
 }
 
 bool wxApp::OnInitGui()
 {
+    if ( !wxAppBase::OnInitGui() )
+        return FALSE;
+
     GdkVisual *visual = gdk_visual_get_system();
 
-    /* on some machines, the default visual is just 256 colours, so
-       we make sure we get the best. this can sometimes be wasteful,
-       of course, but what do these guys pay $30.000 for? */
-
-    if ((gdk_visual_get_best() != gdk_visual_get_system()) &&
-        (m_useBestVisual))
+    // if this is a wxGLApp (derived from wxApp), and we've already
+    // chosen a specific visual, then derive the GdkVisual from that
+    if (m_glVisualInfo != NULL)
     {
-        GdkVisual* vis = gdk_visual_get_best();
+#ifdef __WXGTK20__
+        // seems gtk_widget_set_default_visual no longer exists?
+        GdkVisual* vis = gtk_widget_get_default_visual();
+#else
+        GdkVisual* vis = gdkx_visual_get(
+            ((XVisualInfo *) m_glVisualInfo) ->visualid );
         gtk_widget_set_default_visual( vis );
+#endif
 
         GdkColormap *colormap = gdk_colormap_new( vis, FALSE );
         gtk_widget_set_default_colormap( colormap );
@@ -350,10 +387,30 @@ bool wxApp::OnInitGui()
         visual = vis;
     }
 
-    /* Nothing to do for 15, 16, 24, 32 bit displays */
+    // On some machines, the default visual is just 256 colours, so
+    // we make sure we get the best. This can sometimes be wasteful.
+
+    else
+    if ((gdk_visual_get_best() != gdk_visual_get_system()) && (m_useBestVisual))
+    {
+#ifdef __WXGTK20__
+        /* seems gtk_widget_set_default_visual no longer exists? */
+        GdkVisual* vis = gtk_widget_get_default_visual();
+#else
+        GdkVisual* vis = gdk_visual_get_best();
+        gtk_widget_set_default_visual( vis );
+#endif
+
+        GdkColormap *colormap = gdk_colormap_new( vis, FALSE );
+        gtk_widget_set_default_colormap( colormap );
+
+        visual = vis;
+    }
+
+    // Nothing to do for 15, 16, 24, 32 bit displays
     if (visual->depth > 8) return TRUE;
 
-    /* initialize color cube for 8-bit color reduction dithering */
+    // initialize color cube for 8-bit color reduction dithering
 
     GdkColormap *cmap = gtk_widget_get_default_colormap();
 
@@ -390,16 +447,11 @@ bool wxApp::OnInitGui()
                 }
                 else
                 {
-#if (GTK_MINOR_VERSION > 0)
-                    /* assume 8-bit true or static colors. this really
-                       exists. */
+                    // assume 8-bit true or static colors. this really exists
                     GdkVisual* vis = gdk_colormap_get_visual( cmap );
                     index = (r >> (5 - vis->red_prec)) << vis->red_shift;
                     index |= (g >> (5 - vis->green_prec)) << vis->green_shift;
                     index |= (b >> (5 - vis->blue_prec)) << vis->blue_shift;
-#else
-                    wxFAIL_MSG( wxT("Unsupported graphics hardware") );
-#endif
                 }
                 m_colorCube[ (r*1024) + (g*32) + b ] = index;
             }
@@ -407,6 +459,20 @@ bool wxApp::OnInitGui()
     }
 
     return TRUE;
+}
+
+GdkVisual *wxApp::GetGdkVisual()
+{
+    GdkVisual *visual = NULL;
+
+    if (m_glVisualInfo)
+        visual = gdkx_visual_get( ((XVisualInfo *) m_glVisualInfo)->visualid );
+    else
+        visual = gdk_window_get_visual( wxGetRootWindow()->window );
+
+    wxASSERT( visual );
+
+    return visual;
 }
 
 bool wxApp::ProcessIdle()
@@ -432,7 +498,7 @@ void wxApp::OnIdle( wxIdleEvent &event )
     // threads
     ProcessPendingEvents();
 
-    // 'Garbage' collection of windows deleted with Close().
+    // 'Garbage' collection of windows deleted with Close()
     DeletePendingObjects();
 
     // Send OnIdle events to all windows
@@ -454,10 +520,35 @@ bool wxApp::SendIdleEvents()
         wxWindow* win = node->GetData();
         if (SendIdleEvents(win))
             needMore = TRUE;
+
         node = node->GetNext();
     }
 
+    node = wxTopLevelWindows.GetFirst();
+    while (node)
+    {
+        wxWindow* win = node->GetData();
+        CallInternalIdle( win );
+
+        node = node->GetNext();
+    }
     return needMore;
+}
+
+bool wxApp::CallInternalIdle( wxWindow* win )
+{
+    win->OnInternalIdle();
+
+    wxNode* node = win->GetChildren().First();
+    while (node)
+    {
+        wxWindow* win = (wxWindow*) node->Data();
+        CallInternalIdle( win );
+
+        node = node->Next();
+    }
+
+    return TRUE;
 }
 
 bool wxApp::SendIdleEvents( wxWindow* win )
@@ -468,8 +559,6 @@ bool wxApp::SendIdleEvents( wxWindow* win )
     event.SetEventObject(win);
 
     win->GetEventHandler()->ProcessEvent(event);
-
-    win->OnInternalIdle();
 
     if (event.MoreRequested())
         needMore = TRUE;
@@ -483,7 +572,8 @@ bool wxApp::SendIdleEvents( wxWindow* win )
 
         node = node->Next();
     }
-    return needMore ;
+
+    return needMore;
 }
 
 int wxApp::MainLoop()
@@ -531,11 +621,11 @@ void wxApp::DeletePendingObjects()
 
 bool wxApp::Initialize()
 {
-    wxBuffer = new wxChar[BUFSIZ + 512];
-
     wxClassInfo::InitializeClasses();
 
-    wxSystemSettings::Init();
+#if wxUSE_INTL
+    wxFont::SetDefaultEncoding(wxLocale::GetSystemEncoding());
+#endif
 
     // GL: I'm annoyed ... I don't know where to put this and I don't want to
     // create a module for that as it's part of the core.
@@ -568,9 +658,7 @@ void wxApp::CleanUp()
     wxCleanUpResourceSystem();
 #endif
 
-    if (wxTheColourDatabase)
-        delete wxTheColourDatabase;
-
+    delete wxTheColourDatabase;
     wxTheColourDatabase = (wxColourDatabase*) NULL;
 
     wxDeleteStockObjects();
@@ -580,22 +668,16 @@ void wxApp::CleanUp()
     delete wxTheApp;
     wxTheApp = (wxApp*) NULL;
 
-    // GL: I'm annoyed ... I don't know where to put this and I don't want to
-    // create a module for that as it's part of the core.
+    wxClassInfo::CleanUpClasses();
+
 #if wxUSE_THREADS
     delete wxPendingEvents;
     delete wxPendingEventsLocker;
 #endif
 
-    wxSystemSettings::Done();
-
-    delete[] wxBuffer;
-
-    wxClassInfo::CleanUpClasses();
-
     // check for memory leaks
 #if (defined(__WXDEBUG__) && wxUSE_MEMORY_TRACING) || wxUSE_DEBUG_CONTEXT
-    if (wxDebugContext::CountObjectsLeft() > 0)
+    if (wxDebugContext::CountObjectsLeft(TRUE) > 0)
     {
         wxLogDebug(wxT("There were memory leaks.\n"));
         wxDebugContext::Dump();
@@ -617,21 +699,15 @@ void wxApp::CleanUp()
 // wxEntry
 //-----------------------------------------------------------------------------
 
-
-int wxEntryStart( int argc, char *argv[] )
+// NB: argc and argv may be changed here, pass by reference!
+int wxEntryStart( int& argc, char *argv[] )
 {
 #if wxUSE_THREADS
-    /* GTK 1.2 up to version 1.2.3 has broken threads */
-#ifdef __VMS__
-   if ((vms_gtk_major_version() == 1) &&
-        (vms_gtk_minor_version() == 2) &&
-        (vms_gtk_micro_version() < 4))
-#else
-   if ((gtk_major_version == 1) &&
+    // GTK 1.2 up to version 1.2.3 has broken threads
+    if ((gtk_major_version == 1) &&
         (gtk_minor_version == 2) &&
         (gtk_micro_version < 4))
-#endif
-     {
+    {
         printf( "wxWindows warning: GUI threading disabled due to outdated GTK version\n" );
     }
     else
@@ -642,8 +718,14 @@ int wxEntryStart( int argc, char *argv[] )
 
     gtk_set_locale();
 
+    // We should have the wxUSE_WCHAR_T test on the _outside_
 #if wxUSE_WCHAR_T
+#if defined(__WXGTK20__)
+    // gtk+ 2.0 supports Unicode through UTF-8 strings
+    wxConvCurrent = &wxConvUTF8;
+#else
     if (!wxOKlibc()) wxConvCurrent = &wxConvLocal;
+#endif
 #else
     if (!wxOKlibc()) wxConvCurrent = (wxMBConv*) NULL;
 #endif
@@ -671,8 +753,7 @@ int wxEntryInitGui()
     if ( !wxTheApp->OnInitGui() )
         retValue = -1;
 
-    wxRootWindow = gtk_window_new( GTK_WINDOW_TOPLEVEL );
-    gtk_widget_realize( wxRootWindow );
+    wxGetRootWindow();
 
     return retValue;
 }
@@ -700,9 +781,17 @@ void wxEntryCleanup()
 }
 
 
-
 int wxEntry( int argc, char *argv[] )
 {
+#if (defined(__WXDEBUG__) && wxUSE_MEMORY_TRACING) || wxUSE_DEBUG_CONTEXT
+    // This seems to be necessary since there are 'rogue'
+    // objects present at this point (perhaps global objects?)
+    // Setting a checkpoint will ignore them as far as the
+    // memory checking facility is concerned.
+    // Of course you may argue that memory allocated in globals should be
+    // checked, but this is a reasonable compromise.
+    wxDebugContext::SetCheckpoint();
+#endif
     int err = wxEntryStart(argc, argv);
     if (err)
         return err;
@@ -752,33 +841,24 @@ int wxEntry( int argc, char *argv[] )
 
     if ( retValue == 0 )
     {
-        /* delete pending toplevel windows (typically a single
-           dialog) so that, if there isn't any left, we don't
-           call OnRun() */
+        // Delete pending toplevel windows
         wxTheApp->DeletePendingObjects();
 
-        wxTheApp->m_initialized = wxTopLevelWindows.GetCount() != 0;
+        // When is the app not initialized ?
+        wxTheApp->m_initialized = TRUE;
 
         if (wxTheApp->Initialized())
         {
             wxTheApp->OnRun();
 
             wxWindow *topWindow = wxTheApp->GetTopWindow();
+
+            // Delete all pending windows if any
+            wxTheApp->DeletePendingObjects();
+
+            // Reset top window
             if (topWindow)
-            {
-                /* Forcibly delete the window. */
-                if (topWindow->IsKindOf(CLASSINFO(wxFrame)) ||
-                    topWindow->IsKindOf(CLASSINFO(wxDialog)) )
-                {
-                    topWindow->Close( TRUE );
-                    wxTheApp->DeletePendingObjects();
-                }
-                else
-                {
-                    delete topWindow;
-                    wxTheApp->SetTopWindow( (wxWindow*) NULL );
-                }
-            }
+                wxTheApp->SetTopWindow( (wxWindow*) NULL );
 
             retValue = wxTheApp->OnExit();
         }
@@ -789,30 +869,16 @@ int wxEntry( int argc, char *argv[] )
     return retValue;
 }
 
-#include "wx/gtk/info.xpm"
-#include "wx/gtk/error.xpm"
-#include "wx/gtk/question.xpm"
-#include "wx/gtk/warning.xpm"
+#ifdef __WXDEBUG__
 
-wxIcon
-wxApp::GetStdIcon(int which) const
+void wxApp::OnAssert(const wxChar *file, int line, const wxChar* cond, const wxChar *msg)
 {
-    switch(which)
-    {
-        case wxICON_INFORMATION:
-            return wxIcon(info_xpm);
+    m_isInAssert = TRUE;
 
-        case wxICON_QUESTION:
-            return wxIcon(question_xpm);
+    wxAppBase::OnAssert(file, line, cond, msg);
 
-        case wxICON_EXCLAMATION:
-            return wxIcon(warning_xpm);
-
-        default:
-            wxFAIL_MSG(wxT("requested non existent standard icon"));
-            // still fall through
-
-        case wxICON_HAND:
-            return wxIcon(error_xpm);
-    }
+    m_isInAssert = FALSE;
 }
+
+#endif // __WXDEBUG__
+

@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     01/02/97
-// RCS-ID:      $Id: font.h,v 1.12.2.1 2000/06/27 10:22:06 VZ Exp $
+// RCS-ID:      $Id: font.h,v 1.19.2.1 2002/09/22 20:58:43 VZ Exp $
 // Copyright:   (c) Julian Smart
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -40,6 +40,15 @@ public:
         (void)Create(size, family, style, weight, underlined, face, encoding);
     }
 
+    wxFont(const wxNativeFontInfo& info, WXHFONT hFont = 0)
+    {
+        Init();
+
+        Create(info, hFont);
+    }
+
+    wxFont(const wxString& fontDesc);
+
     bool Create(int size,
                 int family,
                 int style,
@@ -47,6 +56,8 @@ public:
                 bool underlined = FALSE,
                 const wxString& face = wxEmptyString,
                 wxFontEncoding encoding = wxFONTENCODING_DEFAULT);
+
+    bool Create(const wxNativeFontInfo& info, WXHFONT hFont = 0);
 
     virtual ~wxFont();
 
@@ -61,6 +72,7 @@ public:
     virtual bool GetUnderlined() const;
     virtual wxString GetFaceName() const;
     virtual wxFontEncoding GetEncoding() const;
+    virtual wxNativeFontInfo* GetNativeFontInfo() const;
 
     virtual void SetPointSize(int pointSize);
     virtual void SetFamily(int family);
@@ -69,18 +81,19 @@ public:
     virtual void SetFaceName(const wxString& faceName);
     virtual void SetUnderlined(bool underlined);
     virtual void SetEncoding(wxFontEncoding encoding);
+    virtual void SetNativeFontInfo(const wxNativeFontInfo& info);
+
+    virtual bool IsFixedWidth() const;
 
     // implementation only from now on
     // -------------------------------
 
-    int GetFontId() const;
     virtual bool IsFree() const;
     virtual bool RealizeResource();
-    virtual WXHANDLE GetResourceHandle();
+    virtual WXHANDLE GetResourceHandle() const;
     virtual bool FreeResource(bool force = FALSE);
 
-    // for consistency with other wxMSW classes and to have a const
-    // GetResourceHandle()-like function we have a synonym for it
+    // for consistency with other wxMSW classes
     WXHFONT GetHFONT() const;
 
     /*
