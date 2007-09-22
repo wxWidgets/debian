@@ -4,7 +4,7 @@
 // Author:      Robert Roebling, Vadim Zeitlin
 // Modified by:
 // Created:     28.12.2000
-// RCS-ID:      $Id: filename.cpp,v 1.100.2.5 2003/03/01 21:17:34 SC Exp $
+// RCS-ID:      $Id: filename.cpp,v 1.100.2.6 2003/08/24 09:50:35 SN Exp $
 // Copyright:   (c) 2000 Robert Roebling
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -125,6 +125,7 @@
 #endif
 
 #ifdef __EMX__
+#include <os2.h>
 #define MAX_PATH _MAX_PATH
 #endif
 

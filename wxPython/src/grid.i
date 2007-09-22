@@ -5,7 +5,7 @@
 // Author:      Robin Dunn
 //
 // Created:     17-March-2000
-// RCS-ID:      $Id: grid.i,v 1.31.2.10 2003/05/23 16:46:59 RD Exp $
+// RCS-ID:      $Id: grid.i,v 1.31.2.11 2003/09/22 22:28:19 RD Exp $
 // Copyright:   (c) 2000 by Total Control Software
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -911,7 +911,7 @@ public:
     void base_SetSize(const wxRect& rect);
     void base_Show(bool show, wxGridCellAttr *attr = NULL);
     void base_PaintBackground(const wxRect& rectCell, wxGridCellAttr *attr);
-    void base_IsAcceptedKey(wxKeyEvent& event);
+    bool base_IsAcceptedKey(wxKeyEvent& event);
     void base_StartingKey(wxKeyEvent& event);
     void base_StartingClick();
     void base_HandleReturn(wxKeyEvent& event);

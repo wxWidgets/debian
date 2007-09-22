@@ -2,7 +2,7 @@
 // Name:        gtk/window.cpp
 // Purpose:
 // Author:      Robert Roebling
-// Id:          $Id: window.cpp,v 1.408.2.25 2003/06/19 19:00:23 RR Exp $
+// Id:          $Id: window.cpp,v 1.408.2.32 2003/09/19 22:32:24 RD Exp $
 // Copyright:   (c) 1998 Robert Roebling, Julian Smart
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -255,9 +255,9 @@ wxWindowGTK *g_delayedFocus = (wxWindowGTK*) NULL;
 // send any activate events at all
 static int        g_sendActivateEvent = -1;
 
-/* hack: we need something to pass to gtk_menu_popup, so we store the time of
-   the last click here */
-static guint32 gs_timeLastClick = 0;
+// hack: we need something to pass to gtk_menu_popup, so we store the time of
+// the last click here
+static guint32 gs_timeLastClick = 0; 
 
 extern bool g_mainThreadLocked;
 
@@ -851,6 +851,7 @@ static long wxTranslateKeySymToWXKey(KeySym keysym, bool isChar)
             break;
 
         case GDK_KP_Left:
+            // wxPrintf( wxT("Left\n") );
             key_code = isChar ? WXK_LEFT : WXK_NUMPAD_LEFT;
             break;
 
@@ -1469,7 +1470,7 @@ static gint gtk_window_button_press_callback( GtkWidget *widget,
 
     if (g_isIdle)
         wxapp_install_idle_handler();
-
+        
 /*
     wxPrintf( wxT("1) OnButtonPress from ") );
     if (win->GetClassInfo() && win->GetClassInfo()->GetClassName())
@@ -1501,7 +1502,8 @@ static gint gtk_window_button_press_callback( GtkWidget *widget,
         GdkEvent *peek_event = gdk_event_peek();
         if (peek_event)
         {
-            if (peek_event->type == GDK_2BUTTON_PRESS)
+            if ((peek_event->type == GDK_2BUTTON_PRESS) ||
+                (peek_event->type == GDK_3BUTTON_PRESS))
             {
                 gdk_event_free( peek_event );
                 return TRUE;
@@ -1521,6 +1523,7 @@ static gint gtk_window_button_press_callback( GtkWidget *widget,
         {
             case GDK_BUTTON_PRESS: event_type = wxEVT_LEFT_DOWN; break;
             case GDK_2BUTTON_PRESS: event_type = wxEVT_LEFT_DCLICK; break;
+            case GDK_3BUTTON_PRESS: return FALSE; break;
             default:  break;
         }
     }
@@ -1995,7 +1998,7 @@ static gint gtk_window_leave_callback( GtkWidget *widget, GdkEventCrossing *gdk_
 
     if (!win->m_hasVMT) return FALSE;
     if (g_blockEventsOnDrag) return FALSE;
-
+    
     // Event was emitted after an ungrab
     if (gdk_event->mode != GDK_CROSSING_NORMAL) return FALSE;
 
@@ -2210,10 +2213,10 @@ gtk_window_realized_callback( GtkWidget *m_widget, wxWindow *win )
     if (g_isIdle)
         wxapp_install_idle_handler();
 
-    if (win->m_delayedBackgroundColour)
+    if (win->m_delayedBackgroundColour && !win->GetThemeEnabled())
         win->GtkSetBackgroundColour( win->GetBackgroundColour() );
 
-    if (win->m_delayedForegroundColour)
+    if (win->m_delayedForegroundColour && !win->GetThemeEnabled())
         win->GtkSetForegroundColour( win->GetForegroundColour() );
 
 #ifdef __WXGTK20__
@@ -2482,6 +2485,9 @@ void wxWindowGTK::Init()
 
     m_delayedForegroundColour = FALSE;
     m_delayedBackgroundColour = FALSE;
+    
+    m_oldClientWidth = 0;
+    m_oldClientHeight = 0;
 
 #ifdef __WXGTK20__
     m_imContext = NULL;
@@ -2884,9 +2890,9 @@ void wxWindowGTK::DoSetSize( int x, int y, int width, int height, int sizeFlags 
 
     int currentX, currentY;
     GetPosition(&currentX, &currentY);
-    if (x == -1)
+    if (x == -1 && !(sizeFlags & wxSIZE_ALLOW_MINUS_ONE))
         x = currentX;
-    if (y == -1)
+    if (y == -1 && !(sizeFlags & wxSIZE_ALLOW_MINUS_ONE))
         y = currentY;
     AdjustForParentClientOrigin(x, y, sizeFlags);
 
@@ -4230,13 +4236,16 @@ bool wxWindowGTK::DoPopupMenu( wxMenu *menu, int x, int y )
                   wxPopupMenuPositionCallback,  // function to position it
                   NULL,                         // client data
                   0,                            // button used to activate it
+#ifdef __WXGTK20__
+                  gtk_get_current_event_time()
+#else
                   gs_timeLastClick              // the time of activation
+#endif
                 );
 
     while (is_waiting)
     {
-        while (gtk_events_pending())
-            gtk_main_iteration();
+        gtk_main_iteration();
     }
 
     return TRUE;

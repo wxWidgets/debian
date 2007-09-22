@@ -4,7 +4,7 @@
 // Author:      Julian Smart et al
 // Modified by:
 // Created:     01/02/97
-// RCS-ID:      $Id: treebase.h,v 1.20.2.1 2003/05/07 00:30:37 RD Exp $
+// RCS-ID:      $Id: treebase.h,v 1.20.2.2 2003/08/14 00:59:29 VZ Exp $
 // Copyright:   (c) 1997,1998 Robert Roebling
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -33,7 +33,7 @@
 // ----------------------------------------------------------------------------
 
 // Using this typedef removes an ambiguity when calling Remove()
-typedef unsigned long wxTreeItemIdValue;
+typedef long wxTreeItemIdValue;
 
 class WXDLLEXPORT wxTreeItemId
 {

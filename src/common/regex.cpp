@@ -4,7 +4,7 @@
 // Author:      Karsten Ballüder and Vadim Zeitlin
 // Modified by:
 // Created:     13.07.01
-// RCS-ID:      $Id: regex.cpp,v 1.8.2.3 2003/06/13 17:16:30 VZ Exp $
+// RCS-ID:      $Id: regex.cpp,v 1.8.2.4 2003/08/14 11:48:22 CE Exp $
 // Copyright:   (c) 2000 Karsten Ballüder <ballueder@gmx.net>
 //                  2001 Vadim Zeitlin <vadim@wxwindows.org>
 // Licence:     wxWindows licence
@@ -39,7 +39,7 @@
 #endif //WX_PRECOMP
 
 // FreeBSD & Watcom require this, it probably doesn't hurt for others
-#if defined(__UNIX__) || defined(__WATCOMC__)
+#if defined(__UNIX__) || defined(__WATCOMC__) || defined(__DIGITALMARS__)
     #include <sys/types.h>
 #endif
 

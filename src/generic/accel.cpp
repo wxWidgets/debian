@@ -3,7 +3,7 @@
 // Purpose:     generic implementation of wxAcceleratorTable class
 // Author:      Robert Roebling
 // Modified:    VZ pn 31.05.01: use typed lists, Unicode cleanup, Add/Remove
-// Id:          $Id: accel.cpp,v 1.5 2002/05/28 16:51:14 VZ Exp $
+// Id:          $Id: accel.cpp,v 1.5.2.1 2003/10/01 17:04:23 VS Exp $
 // Copyright:   (c) 1998 Robert Roebling
 // Licence:     wxWindows licence
 ///////////////////////////////////////////////////////////////////////////////
@@ -177,8 +177,7 @@ wxAcceleratorTable::GetEntry(const wxKeyEvent& event) const
             // now check flags
             if ( (((flags & wxACCEL_CTRL) != 0) == event.ControlDown()) &&
                  (((flags & wxACCEL_SHIFT) != 0) == event.ShiftDown()) &&
-                 (((flags & wxACCEL_ALT) != 0) ==
-                    (event.AltDown() || event.MetaDown())) )
+                 (((flags & wxACCEL_ALT) != 0) == event.AltDown()) )
             {
                 return entry;
             }

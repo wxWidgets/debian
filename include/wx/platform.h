@@ -4,7 +4,7 @@
  * Author:      Vadim Zeitlin
  * Modified by:
  * Created:     29.10.01 (extracted from wx/defs.h)
- * RCS-ID:      $Id: platform.h,v 1.8.4.2 2003/06/01 16:54:22 JS Exp $
+ * RCS-ID:      $Id: platform.h,v 1.8.4.4 2003/08/14 11:46:19 CE Exp $
  * Copyright:   (c) 1997-2001 wxWindows team
  * Licence:     wxWindows license
  */
@@ -86,6 +86,15 @@
 
 /* check the consistency of the settings in setup.h */
 #include "wx/chkconf.h"
+
+/*
+   some compilers don't support iostream.h any longer, so override the users
+   setting here in such case.
+ */
+#if defined(_MSC_VER) && (_MSC_VER >= 1310)
+    #undef wxUSE_IOSTREAMH
+    #define wxUSE_IOSTREAMH 0
+#endif /* compilers not supporting iostream.h */
 
 /*
    old C++ headers (like <iostream.h>) declare classes in the global namespace
@@ -267,6 +276,14 @@
     #define __X__
 #endif
 
+#ifdef __SC__
+    #ifdef __DMC__
+         #define __DIGITALMARS__
+    #else
+         #define __SYMANTEC__
+    #endif
+#endif
+
 /*
    This macro can be used to test the gcc version and can be used like this:
 
@@ -285,7 +302,7 @@
    This macro can be used to check that the version of mingw32 compiler is
    at least maj.min
  */
-#if defined( __GNUWIN32__ ) || defined( __MINGW32__ ) || defined( __CYGWIN__ )
+#if defined( __GNUWIN32__ ) || defined( __MINGW32__ ) || defined( __CYGWIN__ ) || defined(__DIGITALMARS__)
     #include "wx/msw/gccpriv.h"
 #else
     #undef wxCHECK_W32API_VERSION

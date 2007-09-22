@@ -2,7 +2,7 @@
 // Name:        image.cpp
 // Purpose:     wxImage
 // Author:      Robert Roebling
-// RCS-ID:      $Id: image.cpp,v 1.147.2.6 2003/03/04 12:06:05 SC Exp $
+// RCS-ID:      $Id: image.cpp,v 1.147.2.7 2003/08/04 17:47:40 VZ Exp $
 // Copyright:   (c) Robert Roebling
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -203,6 +203,11 @@ wxImage wxImage::Copy() const
     image.SetMask( M_IMGDATA->m_hasMask );
 
     memcpy( data, GetData(), M_IMGDATA->m_width*M_IMGDATA->m_height*3 );
+
+    // also copy the image options
+    wxImageRefData *imgData = (wxImageRefData *)image.m_refData;
+    imgData->m_optionNames = M_IMGDATA->m_optionNames;
+    imgData->m_optionValues = M_IMGDATA->m_optionValues;
 
     return image;
 }

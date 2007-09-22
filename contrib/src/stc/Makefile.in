@@ -2,7 +2,7 @@
 # Purpose: Makefile.in for STC contrib for Unix with autoconf
 # Created: 14.03.00
 # Author:  VZ
-# Version: $Id: Makefile.in,v 1.14.2.5 2003/04/19 19:56:50 RD Exp $
+# Version: $Id: Makefile.in,v 1.14.2.7 2003/09/18 18:14:27 RD Exp $
 ###############################################################################
 
 top_srcdir = @top_srcdir@/..
@@ -30,6 +30,7 @@ OBJECTS=PlatWX.o ScintillaWX.o stc.o \
         Document.o	        \
 	DocumentAccessor.o	\
         Editor.o		\
+	ExternalLexer.o		\
         Indicator.o	        \
         KeyMap.o		\
         KeyWords.o	        \
@@ -44,9 +45,11 @@ OBJECTS=PlatWX.o ScintillaWX.o stc.o \
 	LexCrontab.o		\
 	LexCSS.o		\
 	LexEiffel.o		\
+	LexEScript.o		\
 	LexFortran.o		\
 	LexHTML.o		\
 	LexLisp.o		\
+	LexLout.o		\
 	LexLua.o		\
 	LexOthers.o		\
 	LexPOV.o		\
@@ -56,6 +59,10 @@ OBJECTS=PlatWX.o ScintillaWX.o stc.o \
 	LexRuby.o		\
 	LexSQL.o		\
 	LexVB.o			\
+        LexMMIXAL.o		\
+        LexNsis.o		\
+        LexPS.o			\
+        LexScriptol.o		\
         LineMarker.o	    	\
         PropSet.o	        \
 	RESearch.o		\

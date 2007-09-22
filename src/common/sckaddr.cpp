@@ -4,7 +4,7 @@
 // Author:      Guilhem Lavaux
 // Modified by:
 // Created:     26/04/97
-// RCS-ID:      $Id: sckaddr.cpp,v 1.33.2.2 2002/11/09 10:53:27 RR Exp $
+// RCS-ID:      $Id: sckaddr.cpp,v 1.33.2.3 2003/09/20 23:50:04 VZ Exp $
 // Copyright:   (c) 1997, 1998 Guilhem Lavaux
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -172,6 +172,18 @@ wxString wxIPV4address::Hostname()
 unsigned short wxIPV4address::Service()
 {
   return GAddress_INET_GetPort(m_address);
+}
+
+wxString wxIPV4address::IPAddress() const
+{
+    unsigned long raw =  GAddress_INET_GetHostAddress(m_address);
+    return wxString::Format(
+        _T("%u.%u.%u.%u"),
+        (unsigned char)(raw & 0xff),
+        (unsigned char)((raw>>8) & 0xff),
+        (unsigned char)((raw>>16) & 0xff),
+        (unsigned char)((raw>>24) & 0xff)
+        );
 }
 
 wxSockAddress *wxIPV4address::Clone() const

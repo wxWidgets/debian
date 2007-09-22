@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     04/01/98
-// RCS-ID:      $Id: valtext.cpp,v 1.27.2.2 2003/04/30 12:41:14 JS Exp $
+// RCS-ID:      $Id: valtext.cpp,v 1.27.2.3 2003/07/10 08:21:49 JS Exp $
 // Copyright:   (c) Julian Smart and Markus Holzem
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -205,6 +205,9 @@ bool wxTextValidator::TransferToWindow(void)
 {
     if( !CheckValidator() )
         return FALSE;
+    
+    if (!m_stringValue)
+        return TRUE;
 
     wxTextCtrl *control = (wxTextCtrl *) m_validatorWindow ;
     control->SetValue(* m_stringValue) ;
@@ -217,6 +220,9 @@ bool wxTextValidator::TransferFromWindow(void)
 {
     if( !CheckValidator() )
         return FALSE;
+
+    if (!m_stringValue)
+        return TRUE;
 
     wxTextCtrl *control = (wxTextCtrl *) m_validatorWindow ;
     * m_stringValue = control->GetValue() ;

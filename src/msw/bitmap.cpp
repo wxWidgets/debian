@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     04/01/98
-// RCS-ID:      $Id: bitmap.cpp,v 1.78.2.1 2003/04/16 09:54:23 JS Exp $
+// RCS-ID:      $Id: bitmap.cpp,v 1.78.2.2 2003/09/12 16:08:47 JS Exp $
 // Copyright:   (c) Julian Smart and Markus Holzem
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -1463,8 +1463,8 @@ extern HBITMAP wxInvertMask(HBITMAP hbmpMask, int w, int h)
         wxLogLastError(wxT("CreateBitmap"));
     }
 
-    ::SelectObject(hdcSrc, hbmpMask);
-    ::SelectObject(hdcDst, hbmpInvMask);
+    HGDIOBJ srcTmp = ::SelectObject(hdcSrc, hbmpMask);
+    HGDIOBJ dstTmp = ::SelectObject(hdcDst, hbmpInvMask);
     if ( !::BitBlt(hdcDst, 0, 0, w, h,
                    hdcSrc, 0, 0,
                    NOTSRCCOPY) )
@@ -1472,6 +1472,10 @@ extern HBITMAP wxInvertMask(HBITMAP hbmpMask, int w, int h)
         wxLogLastError(wxT("BitBlt"));
     }
 
+    // Deselect objects
+    SelectObject(hdcSrc,srcTmp);
+    SelectObject(hdcDst,dstTmp);
+    
     ::DeleteDC(hdcSrc);
     ::DeleteDC(hdcDst);
 

@@ -3,7 +3,7 @@
 # Purpose:  Makefile for Unix wxWindows ports (both GUI and wxBase)
 # Author:   Julian Smart, Robert Roebling, Vadim Zeitlin, Ron Lee
 # Created:  1993
-# Version:  $Id: Makefile.in,v 1.211.2.23 2003/06/15 19:37:51 VZ Exp $
+# Version:  $Id: Makefile.in,v 1.211.2.25 2003/10/25 12:24:45 RL Exp $
 # Copyright:(c) 1993, AIAI, University of Edinburgh,
 # Copyright:(c) 1999, Vadim Zeitlin
 # Copyright:(c) 1999, Robert Roebling
@@ -1362,6 +1362,7 @@ UTILS_DIST: ALL_GUI_DIST
 	cp $(UTILSDIR)/emulator/src/*.in $(DISTDIR)/utils/emulator/src
 	cp $(UTILSDIR)/emulator/src/*.cpp $(DISTDIR)/utils/emulator/src
 	cp $(UTILSDIR)/emulator/src/*.jpg $(DISTDIR)/utils/emulator/src
+	cp $(UTILSDIR)/emulator/src/*.xpm $(DISTDIR)/utils/emulator/src
 	cp $(UTILSDIR)/emulator/src/*.wxe $(DISTDIR)/utils/emulator/src
 	cp $(UTILSDIR)/emulator/docs/*.txt $(DISTDIR)/utils/emulator/docs
 	cp $(UTILSDIR)/emulator/docs/*.jpg $(DISTDIR)/utils/emulator/docs
@@ -1491,7 +1492,7 @@ PYTHON_DIST:
 		wxPython/wxPython/py/wxd \
 		; do \
 			echo "Copying dir: $$dir..."; \
-			mkdir $(DISTDIR)/$$dir; \
+			mkdir -p $(DISTDIR)/$$dir; \
 			cp $(WXDIR)/$$dir/* $(DISTDIR)/$$dir > /dev/null 2>&1; \
 		done; \
 		\

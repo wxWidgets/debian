@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 #----------------------------------------------------------------------
 
-import sys, os, glob, fnmatch
+import sys, os, glob, fnmatch, commands
 from distutils.core      import setup, Extension
 from distutils.file_util import copy_file
 from distutils.dir_util  import mkpath
@@ -15,9 +15,9 @@ from distutils.command.install_data import install_data
 
 VER_MAJOR        = 2      # The first three must match wxWindows
 VER_MINOR        = 4
-VER_RELEASE      = 1
-VER_SUBREL       = 2      # wxPython release num for x.y.z release of wxWindows
-VER_FLAGS        = ""     # release flags, such as prerelease num, unicode, etc.
+VER_RELEASE      = 2
+VER_SUBREL       = 4       # wxPython release num for x.y.z release of wxWindows
+VER_FLAGS        = ""      # release flags, such as prerelease num, unicode, etc.
 
 DESCRIPTION      = "Cross platform GUI toolkit for Python"
 AUTHOR           = "Robin Dunn"
@@ -440,6 +440,8 @@ elif os.name == 'posix' and sys.platform[:6] == "darwin":
     if debug:
         cflags.append('-g')
         cflags.append('-O0')
+    else:
+        cflags.append('-O3')
 
     lflags = os.popen(WX_CONFIG + ' --libs', 'r').read()[:-1]
     lflags = lflags.split()
@@ -480,6 +482,13 @@ elif os.name == 'posix':
 
     libdirs = []
     libs = []
+
+    # If you get unresolved symbol errors on Solaris and are using gcc, then
+    # uncomment this block to add the right flags to the link step and build
+    # again.
+    ## if os.uname()[0] == 'SunOS':
+    ##     libs.append('gcc')
+    ##     libdirs.append(commands.getoutput("gcc -print-search-dirs | grep '^install' | awk '{print $2}'")[:-1])
 
     Verify_WX_CONFIG()
 
@@ -749,7 +758,7 @@ if BUILD_OGL:
                              '%s/composit.cpp' % OGLLOC,
                              '%s/divided.cpp' % OGLLOC,
                              '%s/lines.cpp' % OGLLOC,
-                             '%s/misc.cpp' % OGLLOC,
+                             '%s/oglmisc.cpp' % OGLLOC,
                              '%s/basic2.cpp' % OGLLOC,
                              '%s/canvas.cpp' % OGLLOC,
                              '%s/constrnt.cpp' % OGLLOC,
@@ -838,6 +847,7 @@ if BUILD_STC:
                      '%s/scintilla/src/Document.cxx' % STCLOC,
                      '%s/scintilla/src/DocumentAccessor.cxx' % STCLOC,
                      '%s/scintilla/src/Editor.cxx' % STCLOC,
+                     '%s/scintilla/src/ExternalLexer.cxx' % STCLOC,
                      '%s/scintilla/src/Indicator.cxx' % STCLOC,
                      '%s/scintilla/src/KeyMap.cxx' % STCLOC,
                      '%s/scintilla/src/KeyWords.cxx' % STCLOC,

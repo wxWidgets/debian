@@ -4,7 +4,7 @@
 // Author:      Vadim Zeitlin
 // Modified by:
 // Created:     24.09.01
-// RCS-ID:      $Id: toplevel.cpp,v 1.38.2.8 2003/05/07 15:00:05 JS Exp $
+// RCS-ID:      $Id: toplevel.cpp,v 1.38.2.11 2003/09/18 13:02:35 JS Exp $
 // Copyright:   (c) 2001 SciTech Software, Inc. (www.scitechsoft.com)
 // License:     wxWindows license
 ///////////////////////////////////////////////////////////////////////////////
@@ -156,6 +156,8 @@ WXDWORD wxTopLevelWindowMSW::MSWGetStyle(long style, WXDWORD *exflags) const
     // border and caption styles
     if ( style & wxRESIZE_BORDER )
         msflags |= WS_THICKFRAME;
+    else if ( exflags && ((style & wxBORDER_DOUBLE) || (style & wxBORDER_RAISED)) )
+        *exflags |= WS_EX_DLGMODALFRAME;
     else if ( !(style & wxBORDER_NONE) )
         msflags |= WS_BORDER;
     else
@@ -198,6 +200,9 @@ WXDWORD wxTopLevelWindowMSW::MSWGetStyle(long style, WXDWORD *exflags) const
             {
                 // create the palette-like window
                 *exflags |= WS_EX_TOOLWINDOW;
+
+                // tool windows shouldn't appear on the taskbar (as documented)
+                style |= wxFRAME_NO_TASKBAR;
             }
 
             // We have to solve 2 different problems here:
@@ -323,10 +328,12 @@ bool wxTopLevelWindowMSW::CreateDialog(const void *dlgTemplate,
     if ( exflags )
     {
         ::SetWindowLong(GetHwnd(), GWL_EXSTYLE, exflags);
-        ::SetWindowPos(GetHwnd(), NULL, 0, 0, 0, 0,
+        ::SetWindowPos(GetHwnd(),
+                       exflags & WS_EX_TOPMOST ? HWND_TOPMOST : 0,
+                       0, 0, 0, 0,
                        SWP_NOSIZE |
                        SWP_NOMOVE |
-                       SWP_NOZORDER |
+                       (exflags & WS_EX_TOPMOST ? 0 : SWP_NOZORDER) |
                        SWP_NOACTIVATE);
     }
 

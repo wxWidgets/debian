@@ -1,6 +1,6 @@
-# $Id: Makefile.in,v 1.13 2002/06/21 09:42:50 CE Exp $
+# $Id: Makefile.in,v 1.13.2.2 2003/10/25 12:14:18 RL Exp $
 
-CONTRIB_SUBDIRS=canvas fl gizmos mmedia net ogl plot stc svg xrc #applet
+CONTRIB_SUBDIRS=canvas fl gizmos mmedia net ogl plot stc svg xrc #animate applet
 
 all:
 	@for d in $(CONTRIB_SUBDIRS); do (cd $$d && $(MAKE)); done

@@ -16,7 +16,7 @@
 #
 #
 # Created:     15-Dec-1999
-# RCS-ID:      $Id: editor.py,v 1.10.2.2 2003/02/26 18:38:09 RD Exp $
+# RCS-ID:      $Id: editor.py,v 1.10.2.3 2003/09/29 17:43:30 RD Exp $
 # Copyright:   (c) 1999 by Dirk Holtwick, 1999
 # Licence:     wxWindows license
 #----------------------------------------------------------------------
@@ -79,6 +79,8 @@ class wxEditor(wxScrolledWindow):
                                   pos, size,
                                   style|wxWANTS_CHARS)
 
+        self.isDrawing = False
+        
         self.InitCoords()
         self.InitFonts()
         self.SetColors()
@@ -167,8 +169,12 @@ class wxEditor(wxScrolledWindow):
 
     def OnPaint(self, event):
         dc = wxPaintDC(self)
+        if self.isDrawing:
+            return
+        self.isDrawing = True
         self.UpdateView(dc)
-        self.AdjustScrollbars()
+        wxCallAfter(self.AdjustScrollbars)
+        self.isDrawing = False
 
     def OnEraseBackground(self, evt):
         pass

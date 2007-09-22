@@ -2,7 +2,7 @@
 // Name:        cursor.cpp
 // Purpose:
 // Author:      Robert Roebling
-// Id:          $Id: cursor.cpp,v 1.36.2.1 2003/03/02 21:33:08 RR Exp $
+// Id:          $Id: cursor.cpp,v 1.36.2.2 2003/09/22 09:42:28 CE Exp $
 // Copyright:   (c) 1998 Robert Roebling
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -252,6 +252,17 @@ wxCursor::wxCursor( const wxImage & image )
                              (unsigned char)(colNextMostFreq >> 8),
                              (unsigned char)(colNextMostFreq) );
 
+    int fg_intensity = fg.Red() + fg.Green() + fg.Blue();
+    int bg_intensity = bg.Red() + bg.Green() + bg.Blue();
+	
+	if (bg_intensity > fg_intensity)
+	{
+        //swap fg and bg
+        wxColour tmp = fg;
+        fg = bg;
+        bg = tmp;
+	}
+	
     int hotSpotX;
     int hotSpotY;
 

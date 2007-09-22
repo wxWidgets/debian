@@ -10,7 +10,7 @@
 // Author:      Robin Dunn
 //
 // Created:     13-Jan-2000
-// RCS-ID:      $Id: stc.cpp,v 1.50.2.8 2003/05/29 23:49:16 RD Exp $
+// RCS-ID:      $Id: stc.cpp,v 1.50.2.17 2003/09/24 22:37:38 RD Exp $
 // Copyright:   (c) 2000 by Total Control Software
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -1121,7 +1121,7 @@ wxString wxStyledTextCtrl::GetSelectedText() {
          int   len  = end - start;
          if (!len) return wxEmptyString;
 
-         wxMemoryBuffer mbuf(len+1);
+         wxMemoryBuffer mbuf(len+2);
          char* buf = (char*)mbuf.GetWriteBuf(len+1);
          SendMsg(2161, 0, (long)buf);
          mbuf.UngetWriteBuf(len);
@@ -1618,6 +1618,11 @@ void wxStyledTextCtrl::LineEndDisplayExtend() {
     SendMsg(2348, 0, 0);
 }
 
+// Copy the line containing the caret.
+void wxStyledTextCtrl::LineCopy() {
+    SendMsg(2455, 0, 0);
+}
+
 // Move the caret inside current view if it's not there already.
 void wxStyledTextCtrl::MoveCaretInsideView() {
     SendMsg(2401, 0, 0);
@@ -1797,12 +1802,12 @@ bool wxStyledTextCtrl::GetMouseDownCaptures() {
 }
 
 // Sets the cursor to one of the SC_CURSOR* values.
-void wxStyledTextCtrl::SetCursor(int cursorType) {
+void wxStyledTextCtrl::SetSTCCursor(int cursorType) {
     SendMsg(2386, cursorType, 0);
 }
 
 // Get cursor type.
-int wxStyledTextCtrl::GetCursor() {
+int wxStyledTextCtrl::GetSTCCursor() {
     return SendMsg(2387, 0, 0);
 }
 
@@ -1903,6 +1908,28 @@ void wxStyledTextCtrl::SetHotspotActiveBackground(bool useSetting, const wxColou
 // Enable / Disable underlining active hotspots.
 void wxStyledTextCtrl::SetHotspotActiveUnderline(bool underline) {
     SendMsg(2412, underline, 0);
+}
+
+// Given a valid document position, return the previous position taking code
+// page into account. Returns 0 if passed 0.
+int wxStyledTextCtrl::PositionBefore(int pos) {
+    return SendMsg(2417, pos, 0);
+}
+
+// Given a valid document position, return the next position taking code
+// page into account. Maximum value returned is the last position in the document.
+int wxStyledTextCtrl::PositionAfter(int pos) {
+    return SendMsg(2418, pos, 0);
+}
+
+// Copy a range of text to the clipboard. Positions are clipped into the document.
+void wxStyledTextCtrl::CopyRange(int start, int end) {
+    SendMsg(2419, start, end);
+}
+
+// Copy argument text to the clipboard.
+void wxStyledTextCtrl::CopyText(int length, const wxString& text) {
+    SendMsg(2420, length, (long)(const char*)wx2stc(text));
 }
 
 // Start notifying the container of all key presses and commands.
@@ -2010,6 +2037,11 @@ void wxStyledTextCtrl::StyleSetSpec(int styleNum, const wxString& spec) {
 // Set style size, face, bold, italic, and underline attributes from
 // a wxFont's attributes.
 void wxStyledTextCtrl::StyleSetFont(int styleNum, wxFont& font) {
+#ifdef __WXGTK__
+    // Ensure that the native font is initialized
+    int x, y;
+    GetTextExtent(wxT("X"), &x, &y, NULL, NULL, &font);
+#endif
     int      size     = font.GetPointSize();
     wxString faceName = font.GetFaceName();
     bool     bold     = font.GetWeight() == wxBOLD;
@@ -2083,7 +2115,7 @@ bool wxStyledTextCtrl::SaveFile(const wxString& filename)
     if (!file.IsOpened())
         return FALSE;
 
-    bool success = file.Write(GetText());
+    bool success = file.Write(GetText(), *wxConvCurrent);
 
     if (success)
         SetSavePoint();
@@ -2093,33 +2125,58 @@ bool wxStyledTextCtrl::SaveFile(const wxString& filename)
 
 bool wxStyledTextCtrl::LoadFile(const wxString& filename)
 {
+    bool success = false;
     wxFile file(filename, wxFile::read);
 
-    if (!file.IsOpened())
-        return FALSE;
-
-    wxString contents;
-    off_t len = file.Length();
-
-    wxChar *buf = contents.GetWriteBuf(len);
-    bool success = (file.Read(buf, len) == len);
-    contents.UngetWriteBuf();
-
-    if (success)
+    if (file.IsOpened())
     {
-        SetText(contents);
-        EmptyUndoBuffer();
-        SetSavePoint();
+        wxString contents;
+#if wxUSE_UNICODE
+        wxMemoryBuffer buffer;
+#else
+        wxString buffer;
+#endif
+        off_t len = file.Length();
+        if (len > 0)
+        {
+            void *bufptr = buffer.GetWriteBuf(len);
+            success = (file.Read(bufptr, len) == len);
+            buffer.UngetWriteBuf(len);
+#if wxUSE_UNICODE
+            contents = wxString(buffer, *wxConvCurrent);
+#else
+            contents = buffer;
+#endif
+        }
+        else
+            success = true;		// empty file is ok
+
+        if (success)
+        {
+            SetText(contents);
+            EmptyUndoBuffer();
+            SetSavePoint();
+        }
     }
 
     return success;
 }
 
+#if wxUSE_DRAG_AND_DROP
+wxDragResult wxStyledTextCtrl::DoDragOver(wxCoord x, wxCoord y, wxDragResult def) { 
+        return m_swx->DoDragOver(x, y, def); 
+} 
+ 
+
+bool wxStyledTextCtrl::DoDropText(long x, long y, const wxString& data) { 
+    return m_swx->DoDropText(x, y, data);
+}
+#endif
 
 //----------------------------------------------------------------------
 // Event handlers
 
-void wxStyledTextCtrl::OnPaint(wxPaintEvent& evt) {
+void wxStyledTextCtrl::OnPaint(wxPaintEvent& WXUNUSED(evt)) {
     wxPaintDC dc(this);
     m_swx->DoPaint(&dc, GetUpdateRegion().GetBox());
 }
@@ -2141,7 +2198,7 @@ void wxStyledTextCtrl::OnScroll(wxScrollEvent& evt) {
     }
 }
 
-void wxStyledTextCtrl::OnSize(wxSizeEvent& evt) {
+void wxStyledTextCtrl::OnSize(wxSizeEvent& WXUNUSED(evt)) {
     wxSize sz = GetClientSize();
     m_swx->DoSize(sz.x, sz.y);
 }
@@ -2219,9 +2276,10 @@ void wxStyledTextCtrl::OnKeyDown(wxKeyEvent& evt) {
     int key = evt.GetKeyCode();
     bool shift = evt.ShiftDown(),
          ctrl  = evt.ControlDown(),
-         alt   = evt.AltDown();
+         alt   = evt.AltDown(),
+         meta  = evt.MetaDown();
 
-    int processed = m_swx->DoKeyDown(key, shift, ctrl, alt, &m_lastKeyDownConsumed);
+    int processed = m_swx->DoKeyDown(key, shift, ctrl, alt, meta, &m_lastKeyDownConsumed);
 
 //     printf("KeyDn  key:%d  shift:%d  ctrl:%d  alt:%d  processed:%d  consumed:%d\n",
 //            key, shift, ctrl, alt, processed, m_lastKeyDownConsumed);
@@ -2231,22 +2289,22 @@ void wxStyledTextCtrl::OnKeyDown(wxKeyEvent& evt) {
 }
 
 
-void wxStyledTextCtrl::OnLoseFocus(wxFocusEvent& evt) {
+void wxStyledTextCtrl::OnLoseFocus(wxFocusEvent& WXUNUSED(evt)) {
     m_swx->DoLoseFocus();
 }
 
 
-void wxStyledTextCtrl::OnGainFocus(wxFocusEvent& evt) {
+void wxStyledTextCtrl::OnGainFocus(wxFocusEvent& WXUNUSED(evt)) {
     m_swx->DoGainFocus();
 }
 
 
-void wxStyledTextCtrl::OnSysColourChanged(wxSysColourChangedEvent& evt) {
+void wxStyledTextCtrl::OnSysColourChanged(wxSysColourChangedEvent& WXUNUSED(evt)) {
     m_swx->DoSysColourChange();
 }
 
 
-void wxStyledTextCtrl::OnEraseBackground(wxEraseEvent& evt) {
+void wxStyledTextCtrl::OnEraseBackground(wxEraseEvent& WXUNUSED(evt)) {
     // do nothing to help avoid flashing
 }
 
@@ -2257,7 +2315,7 @@ void wxStyledTextCtrl::OnMenu(wxCommandEvent& evt) {
 }
 
 
-void wxStyledTextCtrl::OnListBox(wxCommandEvent& evt) {
+void wxStyledTextCtrl::OnListBox(wxCommandEvent& WXUNUSED(evt)) {
     m_swx->DoOnListBox();
 }
 

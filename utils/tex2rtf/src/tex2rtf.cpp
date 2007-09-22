@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     7.9.93
-// RCS-ID:      $Id: tex2rtf.cpp,v 1.26.2.2 2002/11/05 14:53:23 JS Exp $
+// RCS-ID:      $Id: tex2rtf.cpp,v 1.26.2.3 2003/09/19 16:07:58 JS Exp $
 // Copyright:   (c) Julian Smart
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -58,7 +58,7 @@ char *contentsString = NULL;
 bool suppressNameDecoration = FALSE;
 bool OkToClose = TRUE;
 int passNumber = 1;
-int errorCount = 0;
+unsigned long errorCount = 0UL;
 
 #ifndef NO_GUI
 
@@ -432,7 +432,7 @@ bool MyApp::OnInit()
 #ifdef NO_GUI
     return 0;
 #else
-    return NULL;
+    return FALSE;
 #endif
   }
 
@@ -440,7 +440,7 @@ bool MyApp::OnInit()
   // Return the main frame window
   return TRUE;
 #else
-  return FALSE;
+  return 0;
 #endif
 }
 
@@ -1208,7 +1208,6 @@ bool SplitCommand(char *data, char *firstArg, char *secondArg)
   firstArg[0] = 0;
   secondArg[0] = 0;
   int i = 0;
-  int len = strlen(data);
   bool stop = FALSE;
   // Find first argument (command name)
   while (!stop)

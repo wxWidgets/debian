@@ -1,8 +1,8 @@
 """Base frame with menu."""
 
 __author__ = "Patrick K. O'Brien <pobrien@orbtech.com>"
-__cvsid__ = "$Id: frame.py,v 1.1.2.2 2003/05/03 16:01:40 PKO Exp $"
-__revision__ = "$Revision: 1.1.2.2 $"[11:-2]
+__cvsid__ = "$Id: frame.py,v 1.1.2.3 2003/09/25 13:19:28 PKO Exp $"
+__revision__ = "$Revision: 1.1.2.3 $"[11:-2]
 
 import wx
 from version import VERSION
@@ -300,17 +300,23 @@ class Frame(wx.Frame):
             elif id == ID_OPEN:
                 event.Enable(hasattr(self, 'bufferOpen'))
             elif id == ID_REVERT:
-                event.Enable(hasattr(self, 'bufferRevert') and self.hasBuffer())
+                event.Enable(hasattr(self, 'bufferRevert')
+                             and self.hasBuffer())
             elif id == ID_CLOSE:
-                event.Enable(hasattr(self, 'bufferClose') and self.hasBuffer())
+                event.Enable(hasattr(self, 'bufferClose')
+                             and self.hasBuffer())
             elif id == ID_SAVE:
-                event.Enable(hasattr(self, 'bufferSave') and self.bufferHasChanged())
+                event.Enable(hasattr(self, 'bufferSave')
+                             and self.bufferHasChanged())
             elif id == ID_SAVEAS:
-                event.Enable(hasattr(self, 'bufferSaveAs') and self.hasBuffer())
+                event.Enable(hasattr(self, 'bufferSaveAs')
+                             and self.hasBuffer())
             elif id == ID_NAMESPACE:
-                event.Enable(hasattr(self, 'updateNamespace') and self.hasBuffer())
+                event.Enable(hasattr(self, 'updateNamespace')
+                             and self.hasBuffer())
             elif id == ID_PRINT:
-                event.Enable(hasattr(self, 'bufferPrint') and self.hasBuffer())
+                event.Enable(hasattr(self, 'bufferPrint')
+                             and self.hasBuffer())
             elif id == ID_UNDO:
                 event.Enable(win.CanUndo())
             elif id == ID_REDO:

@@ -288,7 +288,7 @@ void SurfaceImpl::Init(SurfaceID hdc_, WindowID) {
     hdc = (wxDC*)hdc_;
 }
 
-void SurfaceImpl::InitPixMap(int width, int height, Surface *surface_, WindowID) {
+void SurfaceImpl::InitPixMap(int width, int height, Surface *WXUNUSED(surface_), WindowID) {
     Release();
     hdc = new wxMemoryDC();
     hdcOwned = true;
@@ -405,7 +405,7 @@ void SurfaceImpl::DrawTextNoClip(PRectangle rc, Font &font, int ybase,
     SetFont(font);
     hdc->SetTextForeground(wxColourFromCA(fore));
     hdc->SetTextBackground(wxColourFromCA(back));
-    //FillRectangle(rc, back);
+    FillRectangle(rc, back);
 
     // ybase is where the baseline should be, but wxWin uses the upper left
     // corner, so I need to calculate the real position for the text...
@@ -418,11 +418,12 @@ void SurfaceImpl::DrawTextClipped(PRectangle rc, Font &font, int ybase,
     SetFont(font);
     hdc->SetTextForeground(wxColourFromCA(fore));
     hdc->SetTextBackground(wxColourFromCA(back));
-    //FillRectangle(rc, back);
+    FillRectangle(rc, back);
     hdc->SetClippingRegion(wxRectFromPRectangle(rc));
 
     // see comments above
     hdc->DrawText(stc2wx(s, len), rc.left, ybase - font.ascent);
+    hdc->DestroyClippingRegion();
 }
 
 
@@ -450,7 +451,7 @@ void SurfaceImpl::MeasureWidths(Font &font, const char *s, int len, int *positio
 #ifndef __WXMAC__
     // Calculate the position of each character based on the widths of
     // the previous characters
-    int* tpos = new int[len];
+    int* tpos = new int[len+1];
     int totalWidth = 0;
     size_t i;
     for (i=0; i<str.Length(); i++) {
@@ -465,7 +466,7 @@ void SurfaceImpl::MeasureWidths(Font &font, const char *s, int len, int *positio
     // on OS X widths can be fractions of pixels wide when more than one
     // are drawn together, so the sum of all character widths is not necessarily
     // (and probably not) the same as the whole string width.
-    int* tpos = new int[len];
+    int* tpos = new int[len+1];
     size_t i;
     for (i=0; i<str.Length(); i++) {
         int w, h;
@@ -481,7 +482,7 @@ void SurfaceImpl::MeasureWidths(Font &font, const char *s, int len, int *positio
     // so figure it out and fix it!
     i = 0;
     size_t ui = 0;
-    while (i < len) {
+    while ((int)i < len) {
         unsigned char uch = (unsigned char)s[i];
         positions[i++] = tpos[ui];
         if (uch >= 0x80) {
@@ -541,7 +542,7 @@ int SurfaceImpl::Descent(Font &font) {
     return d;
 }
 
-int SurfaceImpl::InternalLeading(Font &font) {
+int SurfaceImpl::InternalLeading(Font &WXUNUSED(font)) {
     return 0;
 }
 
@@ -562,7 +563,7 @@ int SurfaceImpl::AverageCharWidth(Font &font) {
     return hdc->GetCharWidth();
 }
 
-int SurfaceImpl::SetPalette(Palette *pal, bool inBackGround) {
+int SurfaceImpl::SetPalette(Palette *WXUNUSED(pal), bool WXUNUSED(inBackGround)) {
     return 0;
 }
 
@@ -577,7 +578,7 @@ void SurfaceImpl::SetUnicodeMode(bool unicodeMode_) {
     unicodeMode=unicodeMode_;
 }
 
-void SurfaceImpl::SetDBCSMode(int codePage) {
+void SurfaceImpl::SetDBCSMode(int WXUNUSED(codePage)) {
     // dbcsMode = codePage == SC_CP_DBCS;
 }
 
@@ -674,6 +675,7 @@ void Window::SetCursor(Cursor curs) {
         break;
     case cursorHand:
         cursorId = wxCURSOR_HAND;
+        break;
     default:
         cursorId = wxCURSOR_ARROW;
         break;
@@ -696,7 +698,7 @@ void Window::SetTitle(const char *s) {
 // Helper classes for ListBox
 
 
-// This is a simple subclass of wxLIstView that just resets focus to the
+// This is a simple subclass of wxListView that just resets focus to the
 // parent when it gets it.
 class wxSTCListBox : public wxListView {
 public:
@@ -711,12 +713,17 @@ public:
         event.Skip();
     }
 
+    void OnKillFocus(wxFocusEvent& event) {
+        // Do nothing.  Prevents base class from resetting the colors...
+    }
+
 private:
     DECLARE_EVENT_TABLE()
 };
 
 BEGIN_EVENT_TABLE(wxSTCListBox, wxListView)
     EVT_SET_FOCUS( wxSTCListBox::OnFocus)
+    EVT_KILL_FOCUS(wxSTCListBox::OnKillFocus)
 END_EVENT_TABLE()
 
 
@@ -739,9 +746,26 @@ public:
         lv->SetCursor(wxCursor(wxCURSOR_ARROW));
         lv->InsertColumn(0, wxEmptyString);
         lv->InsertColumn(1, wxEmptyString);
+
+        // Eventhough we immediately reset the focus to the parent, this helps
+        // things to look right...
+        lv->SetFocus();
+
         Hide();
     }
 
+    
+    // On OSX and (possibly others) there can still be pending
+    // messages/events for the list control when Scintilla wants to
+    // close it, so do a pending delete of it instead of destroying
+    // immediately.
+    bool Destroy() {
+        if ( !wxPendingDelete.Member(this) )
+            wxPendingDelete.Append(this);
+        return TRUE;
+    }
+
+    
     int IconWidth() {
         wxImageList* il = lv->GetImageList(wxIMAGE_LIST_SMALL);
         if (il != NULL) {
@@ -887,7 +911,7 @@ PRectangle ListBoxImpl::GetDesiredRect() {
     // wxListCtrl doesn't have a DoGetBestSize, so instead we kept track of
     // the max size in Append and calculate it here...
     int maxw = maxStrWidth;
-    int maxh = 0;
+    int maxh ;
 
     // give it a default if there are no lines, and/or add a bit more
     if (maxw == 0) maxw = 100;
@@ -968,7 +992,7 @@ int ListBoxImpl::GetSelection() {
 }
 
 
-int ListBoxImpl::Find(const char *prefix) {
+int ListBoxImpl::Find(const char *WXUNUSED(prefix)) {
     // No longer used
     return -1;
 }
@@ -1002,7 +1026,7 @@ void ListBoxImpl::RegisterImage(int type, const char *xpm_data) {
 
     // do we need to extend the mapping array?
     wxArrayInt& itm = *imgTypeMap;
-    if ( itm.GetCount() < type+1)
+    if ( itm.GetCount() < (size_t)type+1)
         itm.Add(-1, type - itm.GetCount() + 1);
 
     // Add an item that maps type to the image index
@@ -1062,6 +1086,13 @@ void Menu::Show(Point pt, Window &w) {
 
 //----------------------------------------------------------------------
 
+DynamicLibrary *DynamicLibrary::Load(const char *WXUNUSED(modulePath)) {
+    wxFAIL_MSG(wxT("Dynamic lexer loading not implemented yet"));
+    return NULL;
+}
+
+//----------------------------------------------------------------------
+
 ColourDesired Platform::Chrome() {
     wxColour c;
     c = wxSystemSettings::GetColour(wxSYS_COLOUR_3DFACE);
@@ -1095,7 +1126,7 @@ void Platform::DebugDisplay(const char *s) {
     wxLogDebug(stc2wx(s));
 }
 
-bool Platform::IsKeyDown(int key) {
+bool Platform::IsKeyDown(int WXUNUSED(key)) {
     return false;  // I don't think we'll need this.
 }
 
@@ -1188,16 +1219,16 @@ int Platform::Clamp(int val, int minVal, int maxVal) {
 }
 
 
-bool Platform::IsDBCSLeadByte(int codePage, char ch) {
+bool Platform::IsDBCSLeadByte(int WXUNUSED(codePage), char WXUNUSED(ch)) {
     return false;
 }
 
-int Platform::DBCSCharLength(int codePage, const char *s) {
-    return 0;
+int Platform::DBCSCharLength(int WXUNUSED(codePage), const char *WXUNUSED(s)) {
+    return 1;
 }
 
 int Platform::DBCSCharMaxLength() {
-    return 0;
+    return 1;
 }
 
 
@@ -1215,6 +1246,22 @@ double ElapsedTime::Duration(bool reset) {
 
 
 //----------------------------------------------------------------------
+
+#if wxUSE_UNICODE
+wxString stc2wx(const char* str, size_t len)
+{
+    char *buffer=new char[len+1];
+    strncpy(buffer, str, len);
+    buffer[len]=0;
+
+    wxString cstr(buffer, wxConvUTF8);
+
+    delete[] buffer;
+    return cstr;
+}
+#endif
+
+
 
 
 

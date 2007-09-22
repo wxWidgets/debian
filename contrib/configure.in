@@ -1,5 +1,5 @@
 dnl Process this file with autoconf to produce a configure script.
-AC_REVISION($Id: configure.in,v 1.20.2.2 2002/10/29 14:41:30 VZ Exp $)dnl
+AC_REVISION($Id: configure.in,v 1.20.2.3 2003/10/25 12:14:15 RL Exp $)dnl
 
 AC_INIT(Makefile.in)
 
@@ -59,6 +59,7 @@ AC_OUTPUT([
             src/applet/Makefile
             src/fl/Makefile
             src/net/Makefile
+	    src/animate/Makefile
             samples/Makefile
             samples/mmedia/Makefile
             samples/ogl/Makefile

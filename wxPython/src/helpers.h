@@ -5,7 +5,7 @@
 // Author:      Robin Dunn
 //
 // Created:     7/1/97
-// RCS-ID:      $Id: helpers.h,v 1.43.2.12 2003/06/13 01:03:32 RD Exp $
+// RCS-ID:      $Id: helpers.h,v 1.43.2.14 2003/09/23 16:28:15 RD Exp $
 // Copyright:   (c) 1998 by Total Control Software
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -16,6 +16,10 @@
 #include <wx/wx.h>
 #include <wx/geometry.h>
 
+//---------------------------------------------------------------------------
+#ifdef __WXMAC__  // avoid a bug in Carbon headers
+#define scalb scalbn
+#endif
 //---------------------------------------------------------------------------
 
 typedef unsigned char byte;
@@ -181,6 +185,7 @@ public:
 
     void SetSelf(PyObject* self, bool clone=FALSE);
     PyObject* GetSelf() const;
+    bool GetCloned() const { return m_cloned; }
 
 protected:
     PyObject*   m_self;

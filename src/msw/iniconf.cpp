@@ -4,7 +4,7 @@
 // Author:      Vadim Zeitlin
 // Modified by:
 // Created:     27.07.98
-// RCS-ID:      $Id: iniconf.cpp,v 1.21 2001/12/19 01:56:38 VZ Exp $
+// RCS-ID:      $Id: iniconf.cpp,v 1.21.2.1 2003/09/22 20:36:47 VZ Exp $
 // Copyright:   (c) 1998 Vadim Zeitlin <zeitlin@dptmaths.ens-cachan.fr>
 // Licence:     wxWindows license
 ///////////////////////////////////////////////////////////////////////////////
@@ -380,12 +380,10 @@ bool wxIniConfig::Flush(bool /* bCurrentOnly */)
 bool wxIniConfig::DeleteEntry(const wxString& szKey, bool bGroupIfEmptyAlso)
 {
   // passing NULL as value to WritePrivateProfileString deletes the key
-//  if ( !Write(szKey, (const char *)NULL) )
-//    return FALSE;
   wxConfigPathChanger path(this, szKey);
   wxString strKey = GetPrivateKeyName(path.Name());
 
-  if (WritePrivateProfileString(m_strGroup, szKey,
+  if (WritePrivateProfileString(m_strGroup, strKey,
                                          (const char*) NULL, m_strLocalFilename) == 0)
     return FALSE;
 

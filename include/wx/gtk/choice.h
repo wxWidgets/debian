@@ -2,7 +2,7 @@
 // Name:        choice.h
 // Purpose:
 // Author:      Robert Roebling
-// Id:          $Id: choice.h,v 1.28 2002/09/07 12:28:46 GD Exp $
+// Id:          $Id: choice.h,v 1.28.2.1 2003/07/07 14:20:18 RR Exp $
 // Copyright:   (c) 1998 Robert Roebling
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -68,6 +68,7 @@ protected:
 
     virtual wxSize DoGetBestSize() const;
 
+    virtual bool IsOwnGtkWindow( GdkWindow *window );
 private:
     // common part of Create() and DoAppend()
     size_t GtkAppendHelper(GtkWidget *menu, const wxString& item);

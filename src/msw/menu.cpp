@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by: Vadim Zeitlin
 // Created:     04/01/98
-// RCS-ID:      $Id: menu.cpp,v 1.71.2.1 2002/12/09 09:29:00 JS Exp $
+// RCS-ID:      $Id: menu.cpp,v 1.71.2.2 2003/09/21 15:22:13 VZ Exp $
 // Copyright:   (c) Julian Smart and Markus Holzem
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -669,7 +669,7 @@ wxString wxMenuBar::GetLabelTop(size_t pos) const
     wxCHECK_MSG( pos < GetMenuCount(), wxEmptyString,
                  wxT("invalid menu index in wxMenuBar::GetLabelTop") );
 
-    return m_titles[pos];
+    return wxMenuItem::GetLabelFromText(m_titles[pos]);
 }
 
 // ---------------------------------------------------------------------------

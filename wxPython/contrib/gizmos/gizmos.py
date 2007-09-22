@@ -375,12 +375,15 @@ class wxTreeListCtrlPtr(wxControlPtr):
         return val
     def AssignImageList(self, *_args, **_kwargs):
         val = gizmosc.wxTreeListCtrl_AssignImageList(self, *_args, **_kwargs)
+        _args[0].thisown = 0
         return val
     def AssignStateImageList(self, *_args, **_kwargs):
         val = gizmosc.wxTreeListCtrl_AssignStateImageList(self, *_args, **_kwargs)
+        _args[0].thisown = 0
         return val
     def AssignButtonsImageList(self, *_args, **_kwargs):
         val = gizmosc.wxTreeListCtrl_AssignButtonsImageList(self, *_args, **_kwargs)
+        _args[0].thisown = 0
         return val
     def AddColumn(self, *_args, **_kwargs):
         val = gizmosc.wxTreeListCtrl_AddColumn(self, *_args, **_kwargs)
@@ -650,17 +653,17 @@ class wxTreeListCtrlPtr(wxControlPtr):
     
     # Redefine some methods that SWIG gets a bit confused on...
     def GetFirstChild(self, *_args, **_kwargs):
-        val1,val2 = controls2c.wxTreeCtrl_GetFirstChild(self, *_args, **_kwargs)
+        val1,val2 = gizmosc.wxTreeListCtrl_GetFirstChild(self, *_args, **_kwargs)
         val1 = wxTreeItemIdPtr(val1)
         val1.thisown = 1
         return (val1,val2)
     def GetNextChild(self, *_args, **_kwargs):
-        val1,val2 = controls2c.wxTreeCtrl_GetNextChild(self, *_args, **_kwargs)
+        val1,val2 = gizmosc.wxTreeListCtrl_GetNextChild(self, *_args, **_kwargs)
         val1 = wxTreeItemIdPtr(val1)
         val1.thisown = 1
         return (val1,val2)
     def HitTest(self, *_args, **_kwargs):
-        val1, val2, val3 = controls2c.wxTreeCtrl_HitTest(self, *_args, **_kwargs)
+        val1, val2, val3 = gizmosc.wxTreeListCtrl_HitTest(self, *_args, **_kwargs)
         val1 = wxTreeItemIdPtr(val1)
         val1.thisown = 1
         return (val1, val2, val3)

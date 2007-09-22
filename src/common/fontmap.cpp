@@ -4,7 +4,7 @@
 // Author:      Vadim Zeitlin
 // Modified by:
 // Created:     04.11.99
-// RCS-ID:      $Id: fontmap.cpp,v 1.46.2.5 2002/11/03 00:25:51 VZ Exp $
+// RCS-ID:      $Id: fontmap.cpp,v 1.46.2.6 2003/06/19 17:05:43 VZ Exp $
 // Copyright:   (c) Vadim Zeitlin
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -758,13 +758,15 @@ bool wxFontMapper::TestAltEncoding(const wxString& configEntry,
 class ReentrancyBlocker
 {
 public:
-    ReentrancyBlocker(bool& b) : m_b(b) { m_b = TRUE; }
-    ~ReentrancyBlocker() { m_b = FALSE; }
+    ReentrancyBlocker(bool& flag) : m_flagOld(flag), m_flag(flag)
+        { m_flag = TRUE; }
+    ~ReentrancyBlocker() { m_flag = m_flagOld; }
 
 private:
-    bool& m_b;
+    bool m_flagOld;
+    bool& m_flag;
 };
-#endif
+#endif // wxUSE_GUI
 
 bool wxFontMapper::GetAltForEncoding(wxFontEncoding encoding,
                                      wxNativeEncodingInfo *info,

@@ -4,7 +4,7 @@
 // Author:      Vadim Zeitlin
 // Modified by:
 // Created:     29.12.99
-// RCS-ID:      $Id: calctrl.cpp,v 1.33.2.3 2003/06/01 16:42:38 JS Exp $
+// RCS-ID:      $Id: calctrl.cpp,v 1.33.2.4 2003/06/24 08:20:05 JS Exp $
 // Copyright:   (c) 1999 Vadim Zeitlin <zeitlin@dptmaths.ens-cachan.fr>
 // Licence:     wxWindows license
 ///////////////////////////////////////////////////////////////////////////////
@@ -176,6 +176,8 @@ void wxCalendarCtrl::Init()
 {
     m_comboMonth = NULL;
     m_spinYear = NULL;
+    m_staticYear = NULL;
+    m_staticMonth = NULL;
 
     m_userChangedYear = FALSE;
 

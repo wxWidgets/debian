@@ -5,7 +5,7 @@
 # Author:      Robb Shecter
 #
 # Created:     7-Nov-2002
-# RCS-ID:      $Id: imageutils.py,v 1.1.2.2 2002/12/20 16:09:11 RD Exp $
+# RCS-ID:      $Id: imageutils.py,v 1.1.2.3 2003/09/22 22:30:35 RD Exp $
 # Copyright:   (c) 2002 by
 # Licence:     wxWindows license
 #----------------------------------------------------------------------
@@ -40,6 +40,6 @@ def makeGray((r,g,b), factor, maskColor):
     changed.
     """
     if (r,g,b) != maskColor:
-        return map(lambda x: ((230 - x) * factor) + x, (r,g,b))
+        return map(lambda x: int((230 - x) * factor) + x, (r,g,b))
     else:
         return (r,g,b)

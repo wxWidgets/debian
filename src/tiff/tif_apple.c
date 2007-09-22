@@ -1,4 +1,4 @@
-/* $Header: /pack/cvsroots/wxwindows/wxWindows/src/tiff/tif_apple.c,v 1.1.6.1 2002/11/10 13:13:54 JS Exp $ */
+/* $Header: /pack/cvsroots/wxwindows/wxWindows/src/tiff/tif_apple.c,v 1.1.6.2 2003/08/14 11:48:37 CE Exp $ */
 
 /*
  * Copyright (c) 1988-1997 Sam Leffler
@@ -46,7 +46,7 @@
 #include <Files.h>
 #include <Memory.h>
 
-#if defined(__PPCC__) || defined(__SC__) || defined(__MRC__) || defined(applec)
+#if defined(__PPCC__) || defined(__SYMANTEC__) || defined(__MRC__) || defined(applec)
 #define	CtoPstr	c2pstr
 #endif
 

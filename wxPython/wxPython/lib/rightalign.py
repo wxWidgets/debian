@@ -1,3 +1,4 @@
+# -*- coding: iso-8859-1 -*-
 #----------------------------------------------------------------------
 # Name:        wxPython.lib.rightalign
 # Purpose:     A class derived from wxTextCtrl that aligns the text
@@ -6,7 +7,7 @@
 # Author:      Josu Oyanguren
 #
 # Created:     19-October-2001
-# RCS-ID:      $Id: rightalign.py,v 1.1.2.2 2003/06/11 21:33:42 RD Exp $
+# RCS-ID:      $Id: rightalign.py,v 1.1.2.3 2003/09/17 20:22:15 RD Exp $
 # Copyright:   (c) 2001 by Total Control Software
 # Licence:     wxWindows license
 #----------------------------------------------------------------------

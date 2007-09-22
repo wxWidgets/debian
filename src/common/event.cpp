@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     01/02/97
-// RCS-ID:      $Id: event.cpp,v 1.110.2.2 2003/02/25 21:31:18 RD Exp $
+// RCS-ID:      $Id: event.cpp,v 1.110.2.3 2003/09/15 11:00:51 VZ Exp $
 // Copyright:   (c) Julian Smart and Markus Holzem
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -81,7 +81,7 @@ IMPLEMENT_ABSTRACT_CLASS(wxEvent, wxObject)
     IMPLEMENT_DYNAMIC_CLASS(wxSysColourChangedEvent, wxEvent)
     IMPLEMENT_DYNAMIC_CLASS(wxDisplayChangedEvent, wxEvent)
     IMPLEMENT_DYNAMIC_CLASS(wxUpdateUIEvent, wxCommandEvent)
-    IMPLEMENT_DYNAMIC_CLASS(wxNavigationKeyEvent, wxCommandEvent)
+    IMPLEMENT_DYNAMIC_CLASS(wxNavigationKeyEvent, wxEvent)
     IMPLEMENT_DYNAMIC_CLASS(wxPaletteChangedEvent, wxEvent)
     IMPLEMENT_DYNAMIC_CLASS(wxQueryNewPaletteEvent, wxEvent)
     IMPLEMENT_DYNAMIC_CLASS(wxWindowCreateEvent, wxEvent)

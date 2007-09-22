@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by: 03.11.00: VZ to add wxArrayString and multiple sel functions
 // Created:     04/01/98
-// RCS-ID:      $Id: choicdgg.cpp,v 1.39.2.3 2003/04/18 10:48:35 VZ Exp $
+// RCS-ID:      $Id: choicdgg.cpp,v 1.39.2.4 2003/09/17 11:39:26 VZ Exp $
 // Copyright:   (c) wxWindows team
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -397,7 +397,7 @@ bool wxSingleChoiceDialog::Create(wxWindow *parent,
     int i;
     for ( i = 0; i < choices.Number(); i++)
     {
-        strings[i] = (char *)choices.Nth(i)->Data();
+        strings[i] = (wxChar *)choices.Nth(i)->Data();
     }
     bool ans = Create(parent, message, caption, choices.Number(), strings, clientData, style, pos);
     delete[] strings;

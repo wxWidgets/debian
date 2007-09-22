@@ -3,7 +3,7 @@
 // Purpose:     XRC resource for wxListCtrl
 // Author:      Brian Gavin
 // Created:     2000/09/09
-// RCS-ID:      $Id: xh_listc.cpp,v 1.4 2001/12/29 16:14:04 VS Exp $
+// RCS-ID:      $Id: xh_listc.cpp,v 1.4.2.1 2003/07/05 20:39:01 VS Exp $
 // Copyright:   (c) 2000 Brian Gavin
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -40,6 +40,7 @@ wxListCtrlXmlHandler::wxListCtrlXmlHandler()
     XRC_ADD_STYLE(wxLC_SINGLE_SEL);
     XRC_ADD_STYLE(wxLC_SORT_ASCENDING);
     XRC_ADD_STYLE(wxLC_SORT_DESCENDING);
+    XRC_ADD_STYLE(wxLC_VIRTUAL);
     AddWindowStyles();
 }
 

@@ -1,14 +1,14 @@
 /***********************************************************************
- * $Header: /home/wxcvs/wxWindows/wxPython/src/libpy.c,v 1.9 2001/06/15 21:43:24 RD Exp $
+ * $Header: /pack/cvsroots/wxwindows/wxWindows/wxPython/src/libpy.c,v 1.9.2.1 2003/09/22 22:28:31 RD Exp $
  * swig_lib/python/python.cfg
  *
  * Contains variable linking and pointer type-checking code.
  ************************************************************************/
 
+#include "Python.h"
+
 #include <string.h>
 #include <stdlib.h>
-
-#include "Python.h"
 
 #ifdef __cplusplus
 extern "C" {

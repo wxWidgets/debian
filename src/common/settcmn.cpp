@@ -2,7 +2,7 @@
 // Name:        common/settcmn.cpp
 // Purpose:     common (to all ports) wxWindow functions
 // Author:      Robert Roebling
-// RCS-ID:      $Id: settcmn.cpp,v 1.2.2.1 2002/09/19 20:24:29 RR Exp $
+// RCS-ID:      $Id: settcmn.cpp,v 1.2.2.2 2003/07/25 18:55:01 RR Exp $
 // Copyright:   (c) wxWindows team
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -44,12 +44,6 @@ wxSystemScreenType wxSystemSettings::ms_screen = wxSYS_SCREEN_NONE;
 wxSystemScreenType wxSystemSettings::GetScreenType()
 {
     if (ms_screen == wxSYS_SCREEN_NONE)
-#ifndef __WXUNIVERSAL__
-    {
-        // As a start, all GUI are desktops.
-        ms_screen = wxSYS_SCREEN_DESKTOP;
-    }
-#else
     {
         // wxUniv will be used on small devices, too.
         int x = GetMetric( wxSYS_SCREEN_X );
@@ -65,7 +59,6 @@ wxSystemScreenType wxSystemSettings::GetScreenType()
         if (x < 200)
             ms_screen = wxSYS_SCREEN_TINY;
     }
-#endif
 
     return ms_screen;
 }

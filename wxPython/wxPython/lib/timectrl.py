@@ -3,7 +3,7 @@
 # Author:       Will Sadkin
 # Created:      09/19/2002
 # Copyright:    (c) 2002 by Will Sadkin, 2002
-# RCS-ID:       $Id: timectrl.py,v 1.1.2.14 2003/05/30 20:06:07 RD Exp $
+# RCS-ID:       $Id: timectrl.py,v 1.1.2.16 2003/09/25 18:29:28 RD Exp $
 # License:      wxWindows license
 #----------------------------------------------------------------------------
 # NOTE:
@@ -342,7 +342,7 @@ class wxTimeCtrl(wxMaskedTextCtrl):
             # require explicit field change, select entire field on entry,
             # and require a resultant valid entry to allow character entry:
             hourfield = Field(formatcodes='_0<rSV', validRegex='0[1-9]| [1-9]|1[012]', validRequired=True)
-            ampmfield = Field(formatcodes='S')
+            ampmfield = Field(formatcodes='S', emptyInvalid = True, validRequired = True)
 
         # Field 1 is always a zero-padded right-insert minute field,
         # similarly configured as above:
@@ -517,6 +517,9 @@ class wxTimeCtrl(wxMaskedTextCtrl):
             value = self.GetValue()
             dbg('value = "%s"' % value)
 
+        if type(value) == types.UnicodeType:
+            value = str(value)  # convert to regular string
+
         valid = True    # assume true
         if type(value) == types.StringType:
 
@@ -547,7 +550,7 @@ class wxTimeCtrl(wxMaskedTextCtrl):
                 hour, minute, second = value.hour, value.minute, value.second
             else:
                 # Not a valid function argument
-                if self.__accept_mx:
+                if accept_mx:
                     error = 'GetWxDateTime requires wxDateTime, mxDateTime or parsable time string, passed %s'% repr(value)
                 else:
                     error = 'GetWxDateTime requires wxDateTime or parsable time string, passed %s'% repr(value)

@@ -3,7 +3,7 @@
 // Purpose:     wxSpinCtrl
 // Author:      Robert
 // Modified by:
-// RCS-ID:      $Id: spinctrl.cpp,v 1.26 2002/08/05 17:59:20 RR Exp $
+// RCS-ID:      $Id: spinctrl.cpp,v 1.26.2.1 2003/07/07 14:21:56 RR Exp $
 // Copyright:   (c) Robert Roebling
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -282,7 +282,11 @@ void wxSpinCtrl::OnChar( wxKeyEvent &event )
 
 bool wxSpinCtrl::IsOwnGtkWindow( GdkWindow *window )
 {
-    return GTK_SPIN_BUTTON(m_widget)->panel == window;
+    if (GTK_SPIN_BUTTON(m_widget)->entry.text_area == window) return TRUE;
+    
+    if (GTK_SPIN_BUTTON(m_widget)->panel == window) return TRUE;
+
+    return FALSE;
 }
 
 void wxSpinCtrl::ApplyWidgetStyle()

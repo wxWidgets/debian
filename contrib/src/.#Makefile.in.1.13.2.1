@@ -1,0 +1,18 @@
+# $Id: Makefile.in,v 1.13.2.1 2003/07/28 08:23:09 VS Exp $
+
+CONTRIB_SUBDIRS=canvas fl gizmos mmedia net ogl plot stc svg xrc #animate applet
+
+all:
+	@for d in $(CONTRIB_SUBDIRS); do (cd $$d && $(MAKE)); done
+
+clean:
+	@for d in $(CONTRIB_SUBDIRS); do (cd $$d && $(MAKE) clean); done
+
+install:
+	@for d in $(CONTRIB_SUBDIRS); do (cd $$d && $(MAKE) install); done
+
+uninstall:
+	@for d in $(CONTRIB_SUBDIRS); do (cd $$d && $(MAKE) uninstall); done
+
+.PHONY: all clean install uninstall
+

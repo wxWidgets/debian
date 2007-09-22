@@ -4,7 +4,7 @@
 // Author:      Julian Smart and others
 // Modified by:
 // Created:     01/02/97
-// RCS-ID:      $Id: defs.h,v 1.320.2.9 2003/04/30 00:39:13 RD Exp $
+// RCS-ID:      $Id: defs.h,v 1.320.2.11 2003/08/26 20:53:48 CE Exp $
 // Copyright:   (c)
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -156,6 +156,9 @@
     #elif defined(__WATCOMC__) && (__WATCOMC__ >= 1100)
         // Watcom 11+ supports bool
         #define HAVE_BOOL
+    #elif defined(__DIGITALMARS__)
+        // DigitalMars supports bool
+        #define HAVE_BOOL
     #elif defined(__GNUWIN32__)
         // Cygwin supports bool
         #define HAVE_BOOL
@@ -242,6 +245,8 @@ typedef int wxWindowID;
     #elif defined(__MWERKS__) && (__MWERKS__ >= 0x2400)
         // Metrowerks CW6 or higher has explicit
         #define HAVE_EXPLICIT
+    #elif defined(__DIGITALMARS__)
+        #define HAVE_EXPLICIT
     #endif
 #endif // !HAVE_EXPLICIT
 
@@ -306,7 +311,7 @@ typedef int wxWindowID;
 #if defined(__WXMSW__)
     // __declspec works in BC++ 5 and later, Watcom C++ 11.0 and later as well
     // as VC++ and gcc
-    #if defined(__VISUALC__) || defined(__BORLANDC__) || defined(__GNUC__) || defined(__WATCOMC__)
+    #if defined(__VISUALC__) || defined(__BORLANDC__) || defined(__GNUC__) || defined(__WATCOMC__) || defined(__DIGITALMARS__)
         #define WXEXPORT __declspec(dllexport)
         #define WXIMPORT __declspec(dllimport)
     #else // compiler doesn't support __declspec()

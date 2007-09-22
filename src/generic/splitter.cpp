@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     01/02/97
-// RCS-ID:      $Id: splitter.cpp,v 1.73.2.8 2003/05/06 07:23:33 RR Exp $
+// RCS-ID:      $Id: splitter.cpp,v 1.73.2.10 2003/07/21 23:00:07 VZ Exp $
 // Copyright:   (c) Julian Smart and Markus Holzem
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -69,6 +69,10 @@ bool wxSplitterWindow::Create(wxWindow *parent, wxWindowID id,
 {
     // allow TABbing from one window to the other
     style |= wxTAB_TRAVERSAL;
+
+    // we don't need to be completely repainted after resize and doing it
+    // results in horrible flicker
+    style |= wxNO_FULL_REPAINT_ON_RESIZE;
 
     if (!wxWindow::Create(parent, id, pos, size, style, name))
         return FALSE;
@@ -276,10 +280,14 @@ void wxSplitterWindow::OnMouseEvent(wxMouseEvent& event)
     else if ((event.Moving() || event.Leaving() || event.Entering()) && (m_dragMode == wxSPLIT_DRAG_NONE))
     {
         // Just change the cursor as required
-        if ( SashHitTest(x, y) )
+        if ( !event.Leaving() && SashHitTest(x, y) )
+        {
             SetResizeCursor();
+        }
         else
+        {
             SetCursor(* wxSTANDARD_CURSOR);
+        }
     }
     else if (event.Dragging() && (m_dragMode == wxSPLIT_DRAG_DRAGGING))
     {

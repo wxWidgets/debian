@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by: Ron Lee
 // Created:     01/02/97
-// RCS-ID:      $Id: object.h,v 1.75.2.1 2002/09/21 16:16:57 MBN Exp $
+// RCS-ID:      $Id: object.h,v 1.75.2.2 2003/07/22 22:37:47 VZ Exp $
 // Copyright:   (c) 1997 Julian Smart and Markus Holzem
 //              (c) 2001 Ron Lee <ron@debian.org>
 // Licence:     wxWindows licence
@@ -152,6 +152,14 @@ WXDLLEXPORT wxObject *wxCreateDynamicObject(const wxChar *name);
 
 #define DECLARE_ABSTRACT_CLASS(name) DECLARE_DYNAMIC_CLASS(name)
 #define DECLARE_CLASS(name) DECLARE_DYNAMIC_CLASS(name)
+
+#define DECLARE_DYNAMIC_CLASS_NO_ASSIGN(name)   \
+    DECLARE_NO_ASSIGN_CLASS(name)               \
+    DECLARE_DYNAMIC_CLASS(name)
+
+#define DECLARE_DYNAMIC_CLASS_NO_COPY(name)   \
+    DECLARE_NO_COPY_CLASS(name)               \
+    DECLARE_DYNAMIC_CLASS(name)
 
 // -----------------------------------
 // for concrete classes

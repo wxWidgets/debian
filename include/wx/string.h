@@ -4,7 +4,7 @@
 // Author:      Vadim Zeitlin
 // Modified by:
 // Created:     29/01/98
-// RCS-ID:      $Id: string.h,v 1.146.4.5 2003/05/30 15:01:42 GD Exp $
+// RCS-ID:      $Id: string.h,v 1.146.4.6 2003/08/24 09:56:16 SN Exp $
 // Copyright:   (c) 1998 Vadim Zeitlin <zeitlin@dptmaths.ens-cachan.fr>
 // Licence:     wxWindows license
 ///////////////////////////////////////////////////////////////////////////////
@@ -37,10 +37,6 @@
 
 #if defined(__WXMAC__) || defined(__VISAGECPP__)
     #include <ctype.h>
-#endif
-
-#ifdef __EMX__
-    #include <std.h>
 #endif
 
 #if defined(__VISAGECPP__) && __IBMCPP__ >= 400

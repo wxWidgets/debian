@@ -6,7 +6,7 @@
 # Author:       Robin Dunn
 #
 # Created:      A long time ago, in a galaxy far, far away...
-# RCS-ID:       $Id: Main.py,v 1.76.2.31 2003/06/11 21:17:56 RD Exp $
+# RCS-ID:       $Id: Main.py,v 1.76.2.38 2003/10/01 19:31:42 RD Exp $
 # Copyright:    (c) 1999 by Total Control Software
 # Licence:      wxWindows license
 #----------------------------------------------------------------------------
@@ -25,14 +25,8 @@ import images
 _treeList = [
     # new stuff
     ('Recent Additions', [
-        'wxScrolledPanel',
-        'ShapedWindow',
-        'NewNamespace',
-        'PopupMenu',
-        'AnalogClockWindow',
-        'MaskedEditControls',
-        'wxTreeListCtrl',
-        'wxGrid_MegaExample',
+        'wxMaskedNumCtrl',
+        'FloatCanvas',
         ]),
 
     # managed windows == things with a (optional) caption you can close
@@ -49,6 +43,7 @@ _treeList = [
         'wxColourDialog',
         'wxDirDialog',
         'wxFileDialog',
+        'wxFileDialog_Save',
         'wxFindReplaceDialog',
         'wxFontDialog',
         'wxMessageDialog',
@@ -103,7 +98,7 @@ _treeList = [
         'wxValidator',
         ]),
 
-    # controls coming from other librairies
+    # controls coming from other libraries
     ('More Windows/Controls', [
         #'wxFloatBar',          deprecated
         #'wxMVCTree',           deprecated
@@ -112,6 +107,7 @@ _treeList = [
         'ColourSelect',
         'ContextHelp',
         'FancyText',
+        'FloatCanvas',
         'FileBrowseButton',
         'GenericButtons',
         'MaskedEditControls',
@@ -131,6 +127,7 @@ _treeList = [
         'wxIntCtrl',
         'wxLEDNumberCtrl',
         'wxMimeTypesManager',
+        'wxMaskedNumCtrl',
         'wxMultiSash',
         'wxPopupControl',
         'wxStyledTextCtrl_1',
@@ -212,6 +209,7 @@ _treeList = [
 
 
 #---------------------------------------------------------------------------
+# Show how to derive a custom wxLog class
 
 class MyLog(wx.PyLog):
     def __init__(self, textCtrl, logTime=0):
@@ -230,6 +228,60 @@ class MyLog(wx.PyLog):
 class MyTP(wx.PyTipProvider):
     def GetTip(self):
         return "This is my tip"
+
+#---------------------------------------------------------------------------
+# A class to be used to display source code in the demo.  Try using the
+# wxSTC in the wxStyledTextCtrl_2 sample first, fall back to wxTextCtrl
+# if there is an error, such as the stc module not being present.
+#
+
+try:
+    ##raise ImportError
+    from wx import stc
+    from wxStyledTextCtrl_2 import PythonSTC
+    class DemoCodeViewer(PythonSTC):
+        def __init__(self, parent, ID):
+            PythonSTC.__init__(self, parent, ID)
+            self.SetEdgeMode(stc.STC_EDGE_NONE)
+            self.SetSelBackground(True, wx.SystemSettings_GetColour(wx.SYS_COLOUR_HIGHLIGHT))
+            self.SetSelForeground(True, wx.SystemSettings_GetColour(wx.SYS_COLOUR_HIGHLIGHTTEXT))
+
+        # Some methods to make it compatible with how the wxTextCtrl is used
+        def SetValue(self, value):
+            self.SetReadOnly(False)
+            self.SetText(value)
+            self.SetReadOnly(True)
+
+        def Clear(self):
+            self.ClearAll()
+
+        def SetInsertionPoint(self, pos):
+            self.SetCurrentPos(pos)
+
+        def ShowPosition(self, pos):
+            self.GotoPos(pos)
+
+        def GetLastPosition(self):
+            return self.GetLength()
+
+        def GetRange(self, start, end):
+            return self.GetTextRange(start, end)
+
+        def GetSelection(self):
+            return self.GetAnchor(), self.GetCurrentPos()
+
+        def SetSelection(self, start, end):
+            self.SetSelectionStart(start)
+            self.SetSelectionEnd(end)
+
+
+except ImportError:
+    class DemoCodeViewer(wx.TextCtrl):
+        def __init__(self, parent, ID):
+            wx.TextCtrl.__init__(self, parent, ID, style =
+                                 wx.TE_MULTILINE | wx.TE_READONLY |
+                                 wx.HSCROLL | wx.TE_RICH2 | wx.TE_NOHIDESEL)
+
 
 #---------------------------------------------------------------------------
 
@@ -387,11 +439,10 @@ class wxPythonDemo(wx.Frame):
         self.SetOverview(self.overviewText, overview)
 
 
-        # Set up a TextCtrl on the Demo Code Notebook page
-        self.txt = wx.TextCtrl(self.nb, -1,
-                              style = wx.TE_MULTILINE|wx.TE_READONLY|
-                              wx.HSCROLL|wx.TE_RICH2|wx.TE_NOHIDESEL)
+        # Set up a notebook page for viewing the source code of each sample
+        self.txt = DemoCodeViewer(self.nb, -1)
         self.nb.AddPage(self.txt, "Demo Code")
+        self.GetDemoFile('Main.py')
 
 
         # Set up a log on the View Log Notebook page
@@ -412,7 +463,7 @@ class wxPythonDemo(wx.Frame):
 
 
         # add the windows to the splitter and split it.
-        splitter2.SplitHorizontally(self.nb, self.log, 450)
+        splitter2.SplitHorizontally(self.nb, self.log, 425)
         splitter.SplitVertically(self.tree, splitter2, 180)
 
         splitter.SetMinimumPaneSize(20)
@@ -532,7 +583,7 @@ class wxPythonDemo(wx.Frame):
         try:
             self.txt.SetValue(open(filename).read())
         except IOError:
-            self.txt.WriteText("Cannot open %s file." % filename)
+            self.txt.SetValue("Cannot open %s file." % filename)
 
         self.txt.SetInsertionPoint(0)
         self.txt.ShowPosition(0)
@@ -588,8 +639,8 @@ class wxPythonDemo(wx.Frame):
                 return
             else:
                 self.finddlg.Destroy()
-        self.txt.SetSelection(loc, loc + len(findstring))
         self.txt.ShowPosition(loc)
+        self.txt.SetSelection(loc, loc + len(findstring))
 
 
 
@@ -755,7 +806,7 @@ platform GUI library, which is written in C++.
 <p> Like Python and wxWindows, wxPython is <b>Open Source</b> which
 means that it is free for anyone to use and the source code is
 available for anyone to look at and modify.  Or anyone can contribute
-fixes or enhnacments to the project.
+fixes or enhancements to the project.
 
 <p> wxPython is a <b>cross-platform</b> toolkit.  This means that the
 same program will run on multiple platforms without modification.

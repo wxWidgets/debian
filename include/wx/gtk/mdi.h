@@ -2,7 +2,7 @@
 // Name:        gtk/mdi.h
 // Purpose:
 // Author:      Robert Roebling
-// Id:          $Id: mdi.h,v 1.33 2002/09/07 12:28:46 GD Exp $
+// Id:          $Id: mdi.h,v 1.33.2.1 2003/07/25 18:52:26 RR Exp $
 // Copyright:   (c) 1998 Robert Roebling
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -22,6 +22,8 @@
 #include "wx/panel.h"
 #include "wx/frame.h"
 #include "wx/toolbar.h"
+
+#if wxUSE_MDI_ARCHITECTURE
 
 //-----------------------------------------------------------------------------
 // classes
@@ -211,6 +213,8 @@ public:
 private:
     DECLARE_DYNAMIC_CLASS(wxMDIClientWindow)
 };
+
+#endif // if USE_MDI...
 
 #endif // __MDIH__
 

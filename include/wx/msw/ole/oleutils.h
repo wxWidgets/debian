@@ -4,7 +4,7 @@
 // Author:      Vadim Zeitlin
 // Modified by:
 // Created:     19.02.1998
-// RCS-ID:      $Id: oleutils.h,v 1.11 2002/07/23 21:59:06 VZ Exp $
+// RCS-ID:      $Id: oleutils.h,v 1.11.2.1 2003/08/14 11:46:24 CE Exp $
 // Copyright:   (c) 1998 Vadim Zeitlin <zeitlin@dptmaths.ens-cachan.fr>
 // Licence:     wxWindows licence
 ///////////////////////////////////////////////////////////////////////////////
@@ -135,7 +135,7 @@ private:
   {                                                                           \
     wxLogRelease(_T(#classname), m_cRef);                                     \
                                                                               \
-    if ( --m_cRef == 0 ) {                                                    \
+    if ( --m_cRef == wxAutoULong(0) ) {                                                    \
       delete this;                                                            \
       return 0;                                                               \
     }                                                                         \

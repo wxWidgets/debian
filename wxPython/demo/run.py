@@ -6,7 +6,7 @@
 # Author:       Robin Dunn
 #
 # Created:      6-March-2000
-# RCS-ID:       $Id: run.py,v 1.10.2.7 2003/06/11 21:17:56 RD Exp $
+# RCS-ID:       $Id: run.py,v 1.10.2.8 2003/07/31 17:13:42 RD Exp $
 # Copyright:    (c) 2000 by Total Control Software
 # Licence:      wxWindows license
 #----------------------------------------------------------------------------
@@ -18,6 +18,7 @@ on the command line.
 """
 
 import wx                  # This module uses the new wx namespace
+print "wx.VERSION_STRING = ", wx.VERSION_STRING
 
 import sys, os
 

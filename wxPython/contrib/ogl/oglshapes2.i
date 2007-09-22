@@ -5,7 +5,7 @@
 // Author:      Robin Dunn
 //
 // Created:     3-Sept-1999
-// RCS-ID:      $Id: oglshapes2.i,v 1.12.2.1 2003/02/20 19:16:31 RD Exp $
+// RCS-ID:      $Id: oglshapes2.i,v 1.12.2.2 2003/09/22 21:53:33 RD Exp $
 // Copyright:   (c) 1998 by Total Control Software
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -303,12 +303,25 @@ public:
     %addmethods {
         PyObject* GetPoints() {
             wxList* list = self->GetPoints();
-            return wxPy_ConvertList(list, "wxRealPoint");
+            PyObject*   pyList;
+            PyObject*   pyObj;
+            wxObject*   wxObj;
+            wxNode*     node = list->GetFirst();
+
+            wxPyBeginBlockThreads();
+            pyList = PyList_New(0);
+            while (node) {
+                wxObj = node->GetData();
+                pyObj = wxPyConstructObject(wxObj, wxT("wxRealPoint"), 0);
+                PyList_Append(pyList, pyObj);
+                node = node->GetNext();
+            }
+            wxPyEndBlockThreads();
+            return pyList;
         }
     }
 
     void UpdateOriginalPoints();
-
 
     void base_OnDraw(wxDC& dc);
     void base_OnDrawContents(wxDC& dc);

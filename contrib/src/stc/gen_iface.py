@@ -6,7 +6,7 @@
 # Author:       Robin Dunn
 #
 # Created:      5-Sept-2000
-# RCS-ID:       $Id: gen_iface.py,v 1.19.2.5 2003/04/19 19:56:49 RD Exp $
+# RCS-ID:       $Id: gen_iface.py,v 1.19.2.7 2003/09/18 18:14:26 RD Exp $
 # Copyright:    (c) 2000 by Total Control Software
 # Licence:      wxWindows license
 #----------------------------------------------------------------------------
@@ -395,7 +395,7 @@ methodOverrideMap = {
          int   len  = end - start;
          if (!len) return wxEmptyString;
 
-         wxMemoryBuffer mbuf(len+1);
+         wxMemoryBuffer mbuf(len+2);
          char* buf = (char*)mbuf.GetWriteBuf(len+1);
          SendMsg(%s, 0, (long)buf);
          mbuf.UngetWriteBuf(len);
@@ -547,9 +547,12 @@ methodOverrideMap = {
 
 
     'GrabFocus' : (None, 0, 0, 0),
+
+    # Rename some that woudl otherwise hid the wxWindow methods
     'SetFocus'  : ('SetSTCFocus', 0, 0, 0),
     'GetFocus'  : ('GetSTCFocus', 0, 0, 0),
-
+    'SetCursor' : ('SetSTCCursor', 0, 0, 0),
+    'GetCursor' : ('GetSTCCursor', 0, 0, 0),
 
     'LoadLexerLibrary' : (None, 0,0,0),
 

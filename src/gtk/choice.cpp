@@ -2,7 +2,7 @@
 // Name:        choice.cpp
 // Purpose:
 // Author:      Robert Roebling
-// Id:          $Id: choice.cpp,v 1.55.2.1 2003/02/11 11:35:11 RR Exp $
+// Id:          $Id: choice.cpp,v 1.55.2.2 2003/07/07 14:21:56 RR Exp $
 // Copyright:   (c) 1998 Robert Roebling
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -478,6 +478,16 @@ wxSize wxChoice::DoGetBestSize() const
 
     return ret;
 }
+
+bool wxChoice::IsOwnGtkWindow( GdkWindow *window )
+{
+#ifdef __WXGTK20__
+    return GTK_BUTTON(m_widget)->event_window;
+#else
+    return (window == m_widget->window);
+#endif
+}
+
 
 #endif // wxUSE_CHOICE
 

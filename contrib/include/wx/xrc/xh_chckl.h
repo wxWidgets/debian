@@ -3,7 +3,7 @@
 // Purpose:     XML resource handler for wxCheckListBox
 // Author:      Bob Mitchell
 // Created:     2000/03/21
-// RCS-ID:      $Id: xh_chckl.h,v 1.2 2002/09/07 12:10:21 GD Exp $
+// RCS-ID:      $Id: xh_chckl.h,v 1.2.2.1 2003/08/28 09:35:44 VS Exp $
 // Copyright:   (c) 2000 Bob Mitchell and Verant Interactive
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -17,10 +17,10 @@
 
 #include "wx/xrc/xmlres.h"
 
-class WXXMLDLLEXPORT wxCheckListXmlHandler : public wxXmlResourceHandler
+class WXXMLDLLEXPORT wxCheckListBoxXmlHandler : public wxXmlResourceHandler
 {
 public:
-    wxCheckListXmlHandler();
+    wxCheckListBoxXmlHandler();
     virtual wxObject *DoCreateResource();
     virtual bool CanHandle(wxXmlNode *node);
 private:

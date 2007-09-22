@@ -4,7 +4,7 @@
 // Author:      Guilhem Lavaux
 // Modified by:
 // Created:     26/04/1997
-// RCS-ID:      $Id: sckaddr.h,v 1.16 2002/08/31 11:29:11 GD Exp $
+// RCS-ID:      $Id: sckaddr.h,v 1.16.2.1 2003/09/20 23:49:59 VZ Exp $
 // Copyright:   (c) 1997, 1998 Guilhem Lavaux
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -69,6 +69,7 @@ public:
   wxString Hostname();
   wxString OrigHostname() { return m_origHostname; }
   unsigned short Service();
+  wxString IPAddress() const;
 
   virtual int Type() { return wxSockAddress::IPV4; }
   virtual wxSockAddress *Clone() const;

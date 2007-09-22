@@ -5,7 +5,7 @@
 // Author:      Robin Dunn
 //
 // Created:     7/3/97
-// RCS-ID:      $Id: misc.i,v 1.25.2.9 2003/03/19 22:09:55 RD Exp $
+// RCS-ID:      $Id: misc.i,v 1.25.2.10 2003/09/22 22:28:57 RD Exp $
 // Copyright:   (c) 1998 by Total Control Software
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -584,6 +584,8 @@ unsigned long wxGetProcessId();
 
 // When wxApp gets the virtual method magic then enable this.
 // bool wxHandleFatalExceptions(bool doIt = TRUE);
+
+void wxTrap();
 
 //----------------------------------------------------------------------
 

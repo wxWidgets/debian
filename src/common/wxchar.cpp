@@ -4,7 +4,7 @@
 // Author:      Ove Kåven
 // Modified by:
 // Created:     09/04/99
-// RCS-ID:      $Id: wxchar.cpp,v 1.49.2.1 2002/11/18 23:05:15 VS Exp $
+// RCS-ID:      $Id: wxchar.cpp,v 1.49.2.2 2003/07/25 18:55:02 RR Exp $
 // Copyright:   (c) wxWindows copyright
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -586,7 +586,7 @@ int vfwprintf(FILE *stream, const wxChar *format, va_list argptr)
     if ( rc != -1 )
     {
         // we can't do much better without Unicode support in libc...
-        if ( fprintf(stream, "%s", s.mb_str()) == -1 )
+        if ( fprintf(stream, "%s", (const char*)s.mb_str()) == -1 )
             return -1;
     }
 

@@ -5,7 +5,7 @@
 // Modified by:
 //  Chris Elliott (biol75@york.ac.uk) 5 Dec 00: write support for Win32
 // Created:     23.09.98
-// RCS-ID:      $Id: mimecmn.cpp,v 1.22.2.1 2002/11/09 00:25:27 VS Exp $
+// RCS-ID:      $Id: mimecmn.cpp,v 1.22.2.2 2003/07/17 12:50:04 VZ Exp $
 // Copyright:   (c) 1998 Vadim Zeitlin <zeitlin@dptmaths.ens-cachan.fr>
 // Licence:     wxWindows license (part of wxExtra library)
 /////////////////////////////////////////////////////////////////////////////
@@ -537,7 +537,7 @@ wxMimeTypesManager::GetFileTypeFromMimeType(const wxString& mimeType)
     EnsureImpl();
     wxFileType *ft = m_impl->GetFileTypeFromMimeType(mimeType);
 
-    if ( ft ) {
+    if ( !ft ) {
         // check the fallbacks
         //
         // TODO linear search is potentially slow, perhaps we should use a sorted

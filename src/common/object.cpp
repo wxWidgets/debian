@@ -4,8 +4,8 @@
 // Author:      Julian Smart
 // Modified by: Ron Lee
 // Created:     04/01/98
-// RCS-ID:      $Id: object.cpp,v 1.66 2002/08/13 22:37:41 VZ Exp $
-// Copyright:   (c) 1998 Julian Smart and Markus Holzem
+// RCS-ID:      $Id: object.cpp,v 1.66.2.2 2003/06/23 16:04:09 VZ Exp $
+// Copyright:   (c) 1998 Julian Smart
 //              (c) 2001 Ron Lee <ron@debian.org>
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -43,10 +43,21 @@
     #endif
 #endif // __WXDEBUG__ || wxUSE_DEBUG_CONTEXT
 
+// we must disable optimizations for VC.NET because otherwise its too eager
+// linker discards wxClassInfo objects in release build thus breaking many,
+// many things
+#if defined __VISUALC__ && __VISUALC__ >= 1300
+    #pragma optimize("", off)
+#endif
 
 wxClassInfo wxObject::sm_classwxObject( wxT("wxObject"), 0, 0,
                                         (int) sizeof(wxObject),
                                         (wxObjectConstructorFn) 0 );
+
+// restore optimizations
+#if defined __VISUALC__ && __VISUALC__ >= 1300
+    #pragma optimize("", on)
+#endif
 
 wxClassInfo* wxClassInfo::sm_first = NULL;
 wxHashTable* wxClassInfo::sm_classTable = NULL;

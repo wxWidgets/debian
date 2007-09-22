@@ -4,7 +4,7 @@
 // Author:      Vadim Zeitlin
 // Modified by:
 // Created:     16.05.99
-// RCS-ID:      $Id: winundef.h,v 1.21.2.1 2002/09/27 13:58:23 CE Exp $
+// RCS-ID:      $Id: winundef.h,v 1.21.2.2 2003/06/17 23:08:19 VZ Exp $
 // Copyright:   (c) wxWindows team
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -251,8 +251,33 @@
    }
 #endif
 
-// LoadLibrary
+// LoadIcon
+#ifdef LoadIcon
+    #undef LoadIcon
+    inline HICON LoadIcon(HINSTANCE hInstance, LPCTSTR lpIconName)
+    {
+        #ifdef _UNICODE
+            return LoadIconW(hInstance, lpIconName);
+        #else // ANSI
+            return LoadIconA(hInstance, lpIconName);
+        #endif // Unicode/ANSI
+    }
+#endif // LoadIcon
 
+// LoadBitmap
+#ifdef LoadBitmap
+    #undef LoadBitmap
+    inline HBITMAP LoadBitmap(HINSTANCE hInstance, LPCTSTR lpBitmapName)
+    {
+        #ifdef _UNICODE
+            return LoadBitmapW(hInstance, lpBitmapName);
+        #else // ANSI
+            return LoadBitmapA(hInstance, lpBitmapName);
+        #endif // Unicode/ANSI
+    }
+#endif // LoadBitmap
+
+// LoadLibrary
 #ifdef LoadLibrary
     #undef LoadLibrary
     #ifdef _UNICODE
@@ -326,7 +351,7 @@
 
 // For WINE
 
-#if defined(GetWindowStyle) || defined(__WXWINE__)
+#if defined(GetWindowStyle)
   #undef GetWindowStyle
 #endif
 

@@ -5,7 +5,7 @@
 // Author:      Vadim Zeitlin
 // Modified by:
 // Created:     10.02.99
-// RCS-ID:      $Id: datetime.h,v 1.34.4.4 2003/02/16 18:24:57 GD Exp $
+// RCS-ID:      $Id: datetime.h,v 1.34.4.5 2003/06/24 18:45:18 VZ Exp $
 // Copyright:   (c) 1998 Vadim Zeitlin <zeitlin@dptmaths.ens-cachan.fr>
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -1519,6 +1519,24 @@ inline bool WXDLLEXPORT operator!=(const wxTimeSpan &t1, const wxTimeSpan &t2)
 // ----------------------------------------------------------------------------
 // wxDateSpan
 // ----------------------------------------------------------------------------
+
+// comparison
+// ----------
+
+// ds1 == d2 if and only if for every wxDateTime t t + ds1 == t + ds2
+inline WXDLLEXPORT bool operator==(const wxDateSpan& ds1,
+                                   const wxDateSpan& ds2)
+{
+    return ds1.GetYears() == ds2.GetYears() &&
+           ds1.GetMonths() == ds2.GetMonths() &&
+           ds1.GetTotalDays() == ds2.GetTotalDays();
+}
+
+inline WXDLLEXPORT bool operator!=(const wxDateSpan& ds1,
+                                   const wxDateSpan& ds2)
+{
+  return !(ds1 == ds2);
+}
 
 // arithmetics
 // -----------

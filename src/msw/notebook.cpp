@@ -4,7 +4,7 @@
 // Author:      Vadim Zeitlin
 // Modified by:
 // Created:     11.06.98
-// RCS-ID:      $Id: notebook.cpp,v 1.64.2.5 2003/06/05 13:29:52 JS Exp $
+// RCS-ID:      $Id: notebook.cpp,v 1.64.2.6 2003/07/22 16:47:33 JS Exp $
 // Copyright:   (c) 1998 Vadim Zeitlin <zeitlin@dptmaths.ens-cachan.fr>
 // Licence:     wxWindows license
 ///////////////////////////////////////////////////////////////////////////////
@@ -386,7 +386,8 @@ wxNotebookPage *wxNotebook::DoRemovePage(int nPage)
             // for some unknown reason if the tab control shows the up-down
             // control (i.e. when there are too many pages) -- otherwise after
             // deleting a page nothing at all is shown
-            m_pages[m_nSelection]->Refresh();
+            if (m_nSelection >= 0)
+                m_pages[m_nSelection]->Refresh();
         }
 
         if ( selNew != -1 )

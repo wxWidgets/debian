@@ -5,7 +5,7 @@
 // Created:     01/02/97
 // Modified:    Alberto Griggio, 2002
 //              22/10/98 - almost total rewrite, simpler interface (VZ)
-// Id:          $Id: treelistctrl.cpp,v 1.1.2.6 2003/06/11 21:16:58 RD Exp $
+// Id:          $Id: treelistctrl.cpp,v 1.1.2.8 2003/09/23 16:15:43 RD Exp $
 // Copyright:   (c) 1998 Robert Roebling, Julian Smart and Markus Holzem
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -1646,11 +1646,16 @@ wxTreeListItem *wxTreeListItem::HitTest(const wxPoint& point,
                                         const wxTreeListMainWindow *theCtrl,
                                         int &flags, int& column, int level)
 {
-    column = -1;
+    column = theCtrl->GetMainColumn(); //-1;
     wxTreeListItem* res = HitTest(point, theCtrl, flags, level);
 
-    if(!res) return res;
-    if(flags & wxTREE_HITTEST_ONITEMINDENT) {
+    if(!res) {
+        column = -1;
+        return res;
+    }
+    if (point.x >= theCtrl->m_owner->GetHeaderWindow()->GetWidth())
+        column = -1;
+    else if(flags & wxTREE_HITTEST_ONITEMINDENT) {
         int x = 0;
         for(size_t i = 0; i < theCtrl->GetMainColumn(); ++i) {
             int w = theCtrl->m_owner->GetHeaderWindow()->GetColumnWidth(i);
@@ -3530,18 +3535,19 @@ void wxTreeListMainWindow::OnChar( wxKeyEvent &event )
                         event.ControlDown(),
                         is_multiple, extended_select, unselect_others);
 
-    // + : Expand
-    // - : Collaspe
+    // + : Expand (not on Win32)
+    // - : Collaspe (not on Win32)
     // * : Expand all/Collapse all
     // ' ' | return : activate
     // up    : go up (not last children!)
     // down  : go down
-    // left  : go to parent
-    // right : open if parent and go next
+    // left  : go to parent (or collapse on Win32)
+    // right : open if parent and go next (or expand on Win32)
     // home  : go to root
     // end   : go to last item without opening parents
     switch (event.KeyCode())
     {
+#ifndef __WXMSW__ // mimic the standard win32 tree ctrl
         case '+':
         case WXK_ADD:
             if (m_current->HasPlus() && !IsExpanded(m_current))
@@ -3549,6 +3555,7 @@ void wxTreeListMainWindow::OnChar( wxKeyEvent &event )
                 Expand(m_current);
             }
             break;
+#endif // __WXMSW__
 
         case '*':
         case WXK_MULTIPLY:
@@ -3560,6 +3567,7 @@ void wxTreeListMainWindow::OnChar( wxKeyEvent &event )
             }
             //else: fall through to Collapse() it
 
+#ifndef __WXMSW__ // mimic the standard wxTreeCtrl behaviour
         case '-':
         case WXK_SUBTRACT:
             if (IsExpanded(m_current))
@@ -3567,6 +3575,7 @@ void wxTreeListMainWindow::OnChar( wxKeyEvent &event )
                 Collapse(m_current);
             }
             break;
+#endif // __WXMSW__
 
         case ' ':
         case WXK_RETURN:
@@ -3626,6 +3635,13 @@ void wxTreeListMainWindow::OnChar( wxKeyEvent &event )
 
             // left arrow goes to the parent
         case WXK_LEFT:
+#if defined(__WXMSW__) // mimic the standard win32 tree ctrl
+            if (IsExpanded(m_current))
+            {
+                Collapse(m_current);
+            }
+            else
+#endif // __WXMSW__
             {
                 wxTreeItemId prev = GetParent( m_current );
                 if ((prev == GetRootItem()) && HasFlag(wxTR_HIDE_ROOT))
@@ -3642,6 +3658,14 @@ void wxTreeListMainWindow::OnChar( wxKeyEvent &event )
             break;
 
         case WXK_RIGHT:
+#if defined(__WXMSW__) // mimic the standard win32 tree ctrl
+            if (m_current->HasPlus() && !IsExpanded(m_current))
+            {
+                Expand(m_current);
+                break;
+            }
+#endif // __WXMSW__
+
             // this works the same as the down arrow except that we
             // also expand the item if it wasn't expanded yet
             Expand(m_current);
@@ -3735,6 +3759,7 @@ wxTreeItemId wxTreeListMainWindow::HitTest(const wxPoint& point, int& flags,
     int w, h;
     GetSize(&w, &h);
     flags=0;
+    column = -1;
     if (point.x<0) flags |= wxTREE_HITTEST_TOLEFT;
     if (point.x>w) flags |= wxTREE_HITTEST_TORIGHT;
     if (point.y<0) flags |= wxTREE_HITTEST_ABOVE;

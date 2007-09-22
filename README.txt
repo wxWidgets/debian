@@ -1,4 +1,4 @@
-wxWindows 2.4.1
+wxWindows 2.4.2
 ---------------
 
 Welcome to wxWindows, a sophisticated cross-platform C++
@@ -200,5 +200,5 @@ web site.
 
 Have fun!
 
-The wxWindows Team, June 2003
+The wxWindows Team, September 2003
 

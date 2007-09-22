@@ -2,7 +2,7 @@
 # Purpose:      XRC editor, XML_tree class
 # Author:       Roman Rolinsky <rolinsky@mema.ucl.ac.be>
 # Created:      02.12.2002
-# RCS-ID:       $Id: tree.py,v 1.1.2.7 2003/05/12 14:11:30 ROL Exp $
+# RCS-ID:       $Id: tree.py,v 1.1.2.8 2003/07/02 23:21:35 RD Exp $
 
 from xxx import *                       # xxx imports globals and params
 
@@ -458,7 +458,7 @@ class XML_Tree(wxTreeCtrl):
                 elif n.nodeType != minidom.Node.ELEMENT_NODE:
                     treeObj.element.removeChild(n)
                     n.unlink()
-                    
+
     # Insert new item at specific position
     def InsertNode(self, itemParent, parent, elem, nextItem):
         # Insert in XML tree and wxWin
@@ -641,7 +641,7 @@ class XML_Tree(wxTreeCtrl):
         testWin = g.testWin
         # Create a window with this resource
         xxx = self.GetPyData(item).treeObject()
-        
+
         # If frame
 #        if xxx.__class__ == xxxFrame:
             # Frame can't have many children,

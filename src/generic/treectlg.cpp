@@ -4,7 +4,7 @@
 // Author:      Robert Roebling
 // Created:     01/02/97
 // Modified:    22/10/98 - almost total rewrite, simpler interface (VZ)
-// Id:          $Id: treectlg.cpp,v 1.85.2.9 2003/06/03 23:20:21 RD Exp $
+// Id:          $Id: treectlg.cpp,v 1.85.2.10 2003/07/06 11:41:16 RR Exp $
 // Copyright:   (c) 1998 Robert Roebling, Julian Smart and Markus Holzem
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -485,16 +485,16 @@ void wxTreeTextCtrl::OnKeyUp( wxKeyEvent &event )
 
 void wxTreeTextCtrl::OnKillFocus( wxFocusEvent &event )
 {
-    if ( m_finished )
+    if ( !m_finished )
     {
-        event.Skip();
-        return;
-    }
-
-    if ( AcceptChanges() )
-    {
+        // We must finish regardless of success, otherwise we'll get focus problems
         Finish();
+    
+        if ( !AcceptChanges() )
+            m_owner->OnRenameCancelled( m_itemEdited );
     }
+        
+    event.Skip();
 }
 
 // -----------------------------------------------------------------------------
@@ -2900,13 +2900,10 @@ void wxGenericTreeCtrl::OnRenameCancelled(wxGenericTreeItem *item)
     le.m_item = (long) item;
     le.SetEventObject( this );
     le.m_label = wxEmptyString;
-    le.m_editCancelled = FALSE;
+    le.m_editCancelled = TRUE;
 
     GetEventHandler()->ProcessEvent( le );
 }
-
-
-
 
 void wxGenericTreeCtrl::OnRenameTimer()
 {

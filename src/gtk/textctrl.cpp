@@ -3,7 +3,7 @@
 // Name:        textctrl.cpp
 // Purpose:
 // Author:      Robert Roebling
-// Id:          $Id: textctrl.cpp,v 1.149.2.9 2003/06/01 13:42:21 JS Exp $
+// Id:          $Id: textctrl.cpp,v 1.149.2.11 2003/08/08 03:58:24 RD Exp $
 // Copyright:   (c) 1998 Robert Roebling, Vadim Zeitlin
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -516,7 +516,7 @@ wxString wxTextCtrl::GetValue() const
         GtkTextIter end;
         gtk_text_buffer_get_end_iter( text_buffer, &end );
         gchar *text = gtk_text_buffer_get_text( text_buffer, &start, &end, TRUE );
-        
+
 #if wxUSE_UNICODE
         wxWCharBuffer buffer( wxConvUTF8.cMB2WX( text ) );
 #else
@@ -593,7 +593,7 @@ void wxTextCtrl::WriteText( const wxString &text )
         wxCharBuffer buffer( wxConvUTF8.cWC2MB( wxConvLocal.cWX2WC( text ) ) );
 #endif
         GtkTextBuffer *text_buffer = gtk_text_view_get_buffer( GTK_TEXT_VIEW(m_text) );
-        
+
         // TODO: Call whatever is needed to delete the selection.
         wxGtkTextInsert( m_text, text_buffer, m_defaultStyle, buffer );
 
@@ -1088,7 +1088,7 @@ void wxTextCtrl::Remove( long from, long to )
     wxCHECK_RET( m_text != NULL, wxT("invalid text ctrl") );
 
 #ifdef __WXGTK20__
-    if ( m_windowStyle & wxTE_MULTILINE )
+    if (m_windowStyle & wxTE_MULTILINE)
     {
         GtkTextBuffer *
             text_buffer = gtk_text_view_get_buffer( GTK_TEXT_VIEW(m_text) );
@@ -1187,36 +1187,49 @@ void wxTextCtrl::GetSelection(long* fromOut, long* toOut) const
 {
     wxCHECK_RET( m_text != NULL, wxT("invalid text ctrl") );
 
-    gint from, to;
+    gint from = -1;
+    gint to = -1;
+    bool haveSelection = FALSE;
+
 #ifdef __WXGTK20__
-    GtkTextBuffer *buffer = gtk_text_view_get_buffer (GTK_TEXT_VIEW (m_text));
-    GtkTextIter ifrom, ito;
-    if (!gtk_text_buffer_get_selection_bounds(buffer, &ifrom, &ito))
-#else
-    if ( !(GTK_EDITABLE(m_text)->has_selection) )
-#endif
-    {
-        from =
-        to = GetInsertionPoint();
-    }
-    else // got selection
-    {
-#ifdef __WXGTK20__
-        from = gtk_text_iter_get_offset(&ifrom);
-        to = gtk_text_iter_get_offset(&ito);
-#else
-        from = (long) GTK_EDITABLE(m_text)->selection_start_pos;
-        to = (long) GTK_EDITABLE(m_text)->selection_end_pos;
+     if (m_windowStyle & wxTE_MULTILINE)
+     {
+         GtkTextBuffer *buffer = gtk_text_view_get_buffer (GTK_TEXT_VIEW (m_text));
+         GtkTextIter ifrom, ito;
+         if ( gtk_text_buffer_get_selection_bounds(buffer, &ifrom, &ito) )
+         {
+             haveSelection = TRUE;
+             from = gtk_text_iter_get_offset(&ifrom);
+             to = gtk_text_iter_get_offset(&ito);
+         }
+     }
+     else  // not multi-line
+     {
+         if ( gtk_editable_get_selection_bounds( GTK_EDITABLE(m_text),
+                                                 &from, &to) )
+         {
+             haveSelection = TRUE;
+         }
+     }
+#else //  not GTK2
+     if ( (GTK_EDITABLE(m_text)->has_selection) )
+     {
+         haveSelection = TRUE;
+         from = (long) GTK_EDITABLE(m_text)->selection_start_pos;
+         to = (long) GTK_EDITABLE(m_text)->selection_end_pos;
+     }
 #endif
 
-        if ( from > to )
-        {
-            // exchange them to be compatible with wxMSW
-            gint tmp = from;
-            from = to;
-            to = tmp;
-        }
-    }
+     if (! haveSelection )
+          from = to = GetInsertionPoint();
+
+     if ( from > to )
+     {
+         // exchange them to be compatible with wxMSW
+         gint tmp = from;
+         from = to;
+         to = tmp;
+     }
 
     if ( fromOut )
         *fromOut = from;
@@ -1224,12 +1237,20 @@ void wxTextCtrl::GetSelection(long* fromOut, long* toOut) const
         *toOut = to;
 }
 
+
 bool wxTextCtrl::IsEditable() const
 {
     wxCHECK_MSG( m_text != NULL, FALSE, wxT("invalid text ctrl") );
 
 #ifdef __WXGTK20__
-    return gtk_editable_get_editable(GTK_EDITABLE(m_text));
+    if (m_windowStyle & wxTE_MULTILINE)
+    {
+        return gtk_text_view_get_editable(GTK_TEXT_VIEW(m_text));
+    }
+    else
+    {
+        return gtk_editable_get_editable(GTK_EDITABLE(m_text));
+    }
 #else
     return GTK_EDITABLE(m_text)->editable;
 #endif
@@ -1444,7 +1465,7 @@ bool wxTextCtrl::SetStyle( long start, long end, const wxTextAttr& style )
 #else
         // VERY dirty way to do that - removes the required text and re-adds it
         // with styling (FIXME)
-         
+
         gint l = gtk_text_get_length( GTK_TEXT(m_text) );
 
         wxCHECK_MSG( start >= 0 && end <= l, FALSE,

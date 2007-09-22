@@ -2,7 +2,7 @@
 # Purpose:      XRC editor, global variables
 # Author:       Roman Rolinsky <rolinsky@mema.ucl.ac.be>
 # Created:      02.12.2002
-# RCS-ID:       $Id: globals.py,v 1.1.2.11 2003/05/12 14:11:39 ROL Exp $
+# RCS-ID:       $Id: globals.py,v 1.1.2.12 2003/09/12 09:45:35 ROL Exp $
 
 from wxPython.wx import *
 from wxPython.xrc import *
@@ -15,7 +15,7 @@ modernFont = wxFont(sysFont.GetPointSize(), wxMODERN, wxNORMAL, wxNORMAL)
 smallerFont = wxFont(sysFont.GetPointSize()-2, wxDEFAULT, wxNORMAL, wxNORMAL)
 
 progname = 'XRCed'
-version = '0.1.1-3'
+version = '0.1.1-4'
 
 try:
     True

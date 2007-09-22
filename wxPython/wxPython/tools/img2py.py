@@ -4,7 +4,7 @@
 #
 # Author:      Robin Dunn
 #
-# RCS-ID:      $Id: img2py.py,v 1.2.2.3 2003/01/21 00:04:33 RD Exp $
+# RCS-ID:      $Id: img2py.py,v 1.2.2.4 2003/09/22 23:02:36 RD Exp $
 # Copyright:   (c) 2002 by Total Control Software
 # Licence:     wxWindows license
 #----------------------------------------------------------------------
@@ -114,6 +114,10 @@ def main(args):
     if not args or ("-h" in args):
         print __doc__
         return
+
+    # some bitmap related things need to have a wxApp initialized...
+    if wx.wxGetApp() is None:
+        app = wx.wxPySimpleApp()
 
     append = 0
     compressed = 1

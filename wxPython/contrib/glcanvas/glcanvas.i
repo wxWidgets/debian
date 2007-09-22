@@ -5,7 +5,7 @@
 // Author:      Robin Dunn
 //
 // Created:     15-Mar-1999
-// RCS-ID:      $Id: glcanvas.i,v 1.16.2.1 2002/12/18 06:15:38 RD Exp $
+// RCS-ID:      $Id: glcanvas.i,v 1.16.2.3 2003/09/23 16:28:19 RD Exp $
 // Copyright:   (c) 1998 by Total Control Software
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -15,6 +15,7 @@
 
 %{
 #include "wxPython.h"
+
 #ifdef __WXMSW__
 #include "myglcanvas.h"
 #else

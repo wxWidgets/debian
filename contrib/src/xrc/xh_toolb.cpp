@@ -3,7 +3,7 @@
 // Purpose:     XRC resource for wxBoxSizer
 // Author:      Vaclav Slavik
 // Created:     2000/08/11
-// RCS-ID:      $Id: xh_toolb.cpp,v 1.6.2.1 2003/04/07 22:09:21 VS Exp $
+// RCS-ID:      $Id: xh_toolb.cpp,v 1.6.2.2 2003/06/18 16:25:36 VS Exp $
 // Copyright:   (c) 2000 Vaclav Slavik
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -146,8 +146,7 @@ wxObject *wxToolBarXmlHandler::DoCreateResource()
 
         toolbar->Realize();
 
-        // FIXME: how can I create a toolbar without immediately setting it to the frame?
-        if (m_parentAsWindow)
+        if (m_parentAsWindow && !GetBool(wxT("dontattachtoframe")))
         {
             wxFrame *parentFrame = wxDynamicCast(m_parent, wxFrame);
             if (parentFrame)

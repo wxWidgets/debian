@@ -5,7 +5,7 @@
 // Author:      Joerg Baumann and Robin Dunn
 //
 // Created:     25-Sept-2000
-// RCS-ID:      $Id: filesys.i,v 1.9.2.3 2003/01/15 00:23:32 RD Exp $
+// RCS-ID:      $Id: filesys.i,v 1.9.2.4 2003/07/14 19:17:35 RD Exp $
 // Copyright:   (c) 2000 by Joerg Baumann
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -141,12 +141,22 @@ public:
     static void AddHandler(wxFileSystemHandler *handler);
     static void CleanUpHandlers();
 
-//     // Returns the native path for a file URL
-//     static wxFileName URLToFileName(const wxString& url);
+    // Returns the file URL for a native path
+    static wxString FileNameToURL(const wxString& filename);
 
-//     // Returns the file URL for a native path
-//     static wxString FileNameToURL(const wxFileName& filename);
+    // Returns the native path for a file URL
+    //static wxFileName URLToFileName(const wxString& url);  *** See below
 };
+
+
+// Returns the native path for a file URL
+wxString wxFileSystem_URLToFileName(const wxString& url);
+%{
+    wxString wxFileSystem_URLToFileName(const wxString& url) {
+        wxFileName fname = wxFileSystem::URLToFileName(url);
+        return fname.GetFullPath();
+    }
+%}
 
 //---------------------------------------------------------------------------
 

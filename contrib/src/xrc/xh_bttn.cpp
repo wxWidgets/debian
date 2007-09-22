@@ -3,7 +3,7 @@
 // Purpose:     XRC resource for buttons
 // Author:      Vaclav Slavik
 // Created:     2000/03/05
-// RCS-ID:      $Id: xh_bttn.cpp,v 1.4 2001/12/29 16:14:04 VS Exp $
+// RCS-ID:      $Id: xh_bttn.cpp,v 1.4.2.1 2003/07/16 21:10:20 VS Exp $
 // Copyright:   (c) 2000 Vaclav Slavik
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -30,6 +30,7 @@ wxButtonXmlHandler::wxButtonXmlHandler()
     XRC_ADD_STYLE(wxBU_RIGHT);
     XRC_ADD_STYLE(wxBU_TOP);
     XRC_ADD_STYLE(wxBU_BOTTOM);
+    XRC_ADD_STYLE(wxBU_EXACTFIT);
     AddWindowStyles();
 }
 

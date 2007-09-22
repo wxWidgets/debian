@@ -2,7 +2,7 @@
 // Name:        listbox.cpp
 // Purpose:
 // Author:      Robert Roebling
-// Id:          $Id: listbox.cpp,v 1.123.2.1 2002/10/29 21:48:04 RR Exp $
+// Id:          $Id: listbox.cpp,v 1.123.2.2 2003/07/07 14:21:56 RR Exp $
 // Copyright:   (c) 1998 Robert Roebling
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -957,6 +957,8 @@ GtkWidget *wxListBox::GetConnectWidget()
 
 bool wxListBox::IsOwnGtkWindow( GdkWindow *window )
 {
+    if (m_widget->window == window) return TRUE;
+
     if (GTK_WIDGET(m_list)->window == window) return TRUE;
 
     GList *child = m_list->children;

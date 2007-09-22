@@ -5,7 +5,7 @@
 // Author:      Robin Dunn
 //
 // Created:     6/10/98
-// RCS-ID:      $Id: controls2.i,v 1.53.2.12 2003/05/07 00:56:16 RD Exp $
+// RCS-ID:      $Id: controls2.i,v 1.53.2.13 2003/07/01 19:16:17 RD Exp $
 // Copyright:   (c) 1998 by Total Control Software
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -456,7 +456,7 @@ public:
     } // The OOR typemaps don't know what to do with the %new, so fix it up.
     %pragma(python) addtoclass = "
     def GetColumn(self, *_args, **_kwargs):
-        val = ontrols2c.wxListCtrl_GetColumn(self, *_args, **_kwargs)
+        val = controls2c.wxListCtrl_GetColumn(self, *_args, **_kwargs)
         if val is not None: val.thisown = 1
         return val
     "

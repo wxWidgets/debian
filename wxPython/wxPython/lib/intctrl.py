@@ -3,7 +3,7 @@
 # Author:       Will Sadkin
 # Created:      01/16/2003
 # Copyright:   (c) 2003 by Will Sadkin
-# RCS-ID:      $Id: intctrl.py,v 1.1.2.5 2003/04/16 15:05:17 RD Exp $
+# RCS-ID:      $Id: intctrl.py,v 1.1.2.6 2003/08/06 15:12:54 RD Exp $
 # License:     wxWindows license
 #----------------------------------------------------------------------------
 # NOTE:
@@ -400,11 +400,11 @@ class wxIntCtrl(wxTextCtrl):
     """
 
     def __init__ (
-                self, parent, id=-1,
+                self, parent, id=-1, value = 0,
                 pos = wxDefaultPosition, size = wxDefaultSize,
                 style = 0, validator = wxDefaultValidator,
                 name = "integer",
-                value = 0, min=None, max=None,
+                min=None, max=None,
                 limited = 0, allow_none = 0, allow_long = 0,
                 default_color = wxBLACK, oob_color = wxRED,
         ):

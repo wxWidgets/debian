@@ -4,7 +4,7 @@
 // Author:      Vadim Zeitlin
 // Modified by:
 // Created:     05.11.99
-// RCS-ID:      $Id: fontutil.cpp,v 1.34.2.4 2003/02/11 11:35:15 RR Exp $
+// RCS-ID:      $Id: fontutil.cpp,v 1.34.2.6 2003/07/22 08:57:09 RR Exp $
 // Copyright:   (c) Vadim Zeitlin
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -376,6 +376,9 @@ bool wxNativeFontInfo::FromXFontName(const wxString& fontname)
     // TODO: we should be able to handle the font aliases here, but how?
     wxStringTokenizer tokenizer(fontname, _T("-"));
 
+    // we're not initialized yet.
+    m_isDefault = TRUE;
+
     // skip the leading, usually empty field (font name registry)
     if ( !tokenizer.HasMoreTokens() )
         return FALSE;
@@ -389,17 +392,20 @@ bool wxNativeFontInfo::FromXFontName(const wxString& fontname)
             // not enough elements in the XLFD - or maybe an alias
             return FALSE;
         }
+        
+        wxString field = tokenizer.GetNextToken();
+        if (!field.empty() && field != _T('*')) {
+            // we're really initialized now
+            m_isDefault = FALSE;
+        }
 
-        fontElements[n] = tokenizer.GetNextToken();
+        fontElements[n] = field;
     }
 
     // this should be all
     if ( tokenizer.HasMoreTokens() )
         return FALSE;
-
-    // we're initialized now
-    m_isDefault = FALSE;
-
+ 
     return TRUE;
 }
 
@@ -789,27 +795,49 @@ wxNativeFont wxLoadQueryNearestFont(int pointSize,
           *xFontName = newFontName;
     }
 
-    // try to load exactly the font requested first
-    if( !font )
-    {
-        font = wxLoadQueryFont( pointSize, family, style, weight,
-                                underlined, facename,
-                                info.xregistry, info.xencoding,
-                                xFontName );
-    }
-
     if ( !font )
     {
         // search up and down by stepsize 10
         int max_size = pointSize + 20 * (1 + (pointSize/180));
         int min_size = pointSize - 20 * (1 + (pointSize/180));
 
-        int i;
+        int i, round; // counters
 
-        // Search for smaller size (approx.)
-        for ( i = pointSize - 10; !font && i >= 10 && i >= min_size; i -= 10 )
+        // first round: search for equal, then for smaller and for larger size with the given weight and style
+        int testweight = weight;
+        int teststyle = style;
+
+        for ( round = 0; round < 3; round++ )
         {
-            font = wxLoadQueryFont(i, family, style, weight, underlined,
+            // second round: use normal weight
+            if ( round == 1 )
+        {
+                if ( testweight != wxNORMAL )
+                {
+                    testweight = wxNORMAL;
+                }
+                else
+                {
+                    ++round; // fall through to third round
+                }
+            }
+
+            // third round: ... and use normal style
+            if ( round == 2 )
+            {
+                if ( teststyle != wxNORMAL )
+                {
+                    teststyle = wxNORMAL;
+                }
+                else
+                {
+                    break;
+                }
+            }
+            // Search for equal or smaller size (approx.)
+            for ( i = pointSize; !font && i >= 10 && i >= min_size; i -= 10 )
+            {
+                font = wxLoadQueryFont(i, family, teststyle, testweight, underlined,
                                    facename, info.xregistry, info.xencoding,
                                    xFontName);
         }
@@ -817,9 +845,10 @@ wxNativeFont wxLoadQueryNearestFont(int pointSize,
         // Search for larger size (approx.)
         for ( i = pointSize + 10; !font && i <= max_size; i += 10 )
         {
-            font = wxLoadQueryFont(i, family, style, weight, underlined,
+                font = wxLoadQueryFont(i, family, teststyle, testweight, underlined,
                                    facename, info.xregistry, info.xencoding,
                                    xFontName);
+            }
         }
 
         // Try default family

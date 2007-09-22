@@ -4,7 +4,7 @@
 // Author:      Robin Dunn
 // Modified by:
 // Created:     28-Mar-2003
-// RCS-ID:      $Id: shaped.cpp,v 1.2.2.3 2003/06/05 18:07:55 MBN Exp $
+// RCS-ID:      $Id: shaped.cpp,v 1.2.2.4 2003/09/01 12:48:54 CE Exp $
 // Copyright:   (c) Robin Dunn
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -42,6 +42,7 @@
     #include "wx/image.h"
 #endif
 
+#include "wx/image.h"
 #include "wx/dcclient.h"
 
 // ----------------------------------------------------------------------------

@@ -4,7 +4,7 @@
 // Author:      Vadim Zeitlin
 // Modified by:
 // Created:     26.10.99
-// RCS-ID:      $Id: menucmn.cpp,v 1.18.2.6 2003/06/10 23:48:46 RD Exp $
+// RCS-ID:      $Id: menucmn.cpp,v 1.18.2.7 2003/07/10 08:57:32 JS Exp $
 // Copyright:   (c) wxWindows team
 // Licence:     wxWindows license
 ///////////////////////////////////////////////////////////////////////////////
@@ -531,6 +531,13 @@ wxMenuItem *wxMenuBase::FindChildItem(int id, size_t *ppos) const
     }
 
     return item;
+}
+
+// find by position
+wxMenuItem* wxMenuBase::FindItemByPosition(size_t position) const
+{
+    if ( position >= m_items.GetCount()) return NULL;
+    return m_items.Item( position )->GetData();
 }
 
 // ----------------------------------------------------------------------------

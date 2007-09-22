@@ -2,7 +2,7 @@
 # Purpose:      XRC editor, Panel class and related
 # Author:       Roman Rolinsky <rolinsky@mema.ucl.ac.be>
 # Created:      02.12.2002
-# RCS-ID:       $Id: panel.py,v 1.1.2.8 2003/03/20 20:01:51 ROL Exp $
+# RCS-ID:       $Id: panel.py,v 1.1.2.9 2003/09/12 09:45:35 ROL Exp $
 
 from xxx import *                       # xxx imports globals and params
 from undo import *
@@ -20,8 +20,11 @@ class Panel(wxNotebook):
         self.modified = False
 
         # Set common button size for parameter buttons
+        bTmp = wxButton(self, -1, '')
         import params
-        params.buttonSize = self.DLG_SZE(buttonSize)
+        params.buttonSize = (self.DLG_SZE(buttonSize)[0], bTmp.GetSize()[1])
+        bTmp.Destroy()
+        del bTmp
 
         # List of child windows
         self.pages = []

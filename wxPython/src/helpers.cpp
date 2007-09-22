@@ -5,7 +5,7 @@
 // Author:      Robin Dunn
 //
 // Created:     7/1/97
-// RCS-ID:      $Id: helpers.cpp,v 1.59.2.24 2003/05/30 00:24:00 RD Exp $
+// RCS-ID:      $Id: helpers.cpp,v 1.59.2.27 2003/07/31 18:28:07 RD Exp $
 // Copyright:   (c) 1998 by Total Control Software
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -386,10 +386,7 @@ void __wxPreStart(PyObject* moduleDict)
     wxPyTMutex = new wxMutex;
 #endif
 
-     // Restore default signal handlers, (prevents crash upon Ctrl-C in the
-     // console that launched a wxPython app...)
-    PyOS_FiniInterrupts();
-
+    // Ensure that the build options in the DLL (or whatever) match this build
     wxApp::CheckBuildOptions(wxBuildOptions());
 
     wxPyAssertionError = PyErr_NewException("wxPython.wxc.wxPyAssertionError",
@@ -1228,29 +1225,50 @@ void wxPyCallback::EventThunker(wxEvent& event) {
     PyObject*       result;
     PyObject*       arg;
     PyObject*       tuple;
-
+    bool            checkSkip = FALSE;
 
     wxPyBeginBlockThreads();
     wxString className = event.GetClassInfo()->GetClassName();
 
-    if (className == wxT("wxPyEvent"))
-        arg = ((wxPyEvent*)&event)->GetSelf();
-    else if (className == wxT("wxPyCommandEvent"))
-        arg = ((wxPyCommandEvent*)&event)->GetSelf();
+    // If the event is one of these types then pass the original
+    // event object instead of the one passed to us.
+    if ( className == wxT("wxPyEvent") ) {
+        arg =       ((wxPyEvent*)&event)->GetSelf();
+        checkSkip = ((wxPyEvent*)&event)->GetCloned();
+    }
+    else if ( className == wxT("wxPyCommandEvent") ) {
+        arg =       ((wxPyCommandEvent*)&event)->GetSelf();
+        checkSkip = ((wxPyCommandEvent*)&event)->GetCloned();
+    }
     else {
         arg = wxPyConstructObject((void*)&event, className);
     }
 
+    // Call the event handler, passing the event object
     tuple = PyTuple_New(1);
-    PyTuple_SET_ITEM(tuple, 0, arg);
+    PyTuple_SET_ITEM(tuple, 0, arg);  // steals ref to arg
     result = PyEval_CallObject(func, tuple);
-    Py_DECREF(tuple);
-    if (result) {
-        Py_DECREF(result);
+    if ( result ) {
+        Py_DECREF(result);   // result is ignored, but we still need to decref it
         PyErr_Clear();       // Just in case...
     } else {
         PyErr_Print();
     }
+
+    if ( checkSkip ) {
+        // if the event object was one of our special types and
+        // it had been cloned, then we need to extract the Skipped
+        // value from the original and set it in the clone.
+        result = PyObject_CallMethod(arg, "GetSkipped", "");
+        if ( result ) {
+            event.Skip(PyInt_AsLong(result));
+            Py_DECREF(result);
+        } else {
+            PyErr_Print();
+        }
+    }
+
+    Py_DECREF(tuple);
     wxPyEndBlockThreads();
 }
 

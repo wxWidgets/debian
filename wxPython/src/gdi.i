@@ -5,7 +5,7 @@
 // Author:      Robin Dunn
 //
 // Created:     7/7/97
-// RCS-ID:      $Id: gdi.i,v 1.51.2.21 2003/06/13 01:01:47 RD Exp $
+// RCS-ID:      $Id: gdi.i,v 1.51.2.23 2003/09/22 22:28:06 RD Exp $
 // Copyright:   (c) 1998 by Total Control Software
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -22,9 +22,6 @@
 #include <wx/fontutil.h>
 #include <wx/dcbuffer.h>
 #include <wx/iconbndl.h>
-#ifdef __WXMAC__
-#include <wx/mac/private.h>
-#endif
 %}
 
 //----------------------------------------------------------------------
@@ -409,7 +406,7 @@ public:
 
     %pragma(python) addtoclass = "asTuple = Get
     def __str__(self):                  return str(self.asTuple())
-    def __repr__(self):                 return 'wxColour:' + str(self.asTuple())
+    def __repr__(self):                 return 'wxColour' + str(self.asTuple())
     def __nonzero__(self):              return self.Ok()
     def __getinitargs__(self):          return ()
     def __getstate__(self):             return self.asTuple()
@@ -1150,6 +1147,10 @@ public:
     %addmethods {
         void Next() {
             (*self) ++;
+        }
+
+        bool __nonzero__() {
+            return self->operator bool();
         }
     };
 };

@@ -4,7 +4,7 @@
 #
 # Author:      Robin Dunn
 #
-# RCS-ID:      $Id: img2png.py,v 1.1.2.2 2002/12/10 22:06:33 RD Exp $
+# RCS-ID:      $Id: img2png.py,v 1.1.2.3 2003/09/22 23:02:36 RD Exp $
 # Copyright:   (c) 2002 by Total Control Software
 # Licence:     wxWindows license
 #----------------------------------------------------------------------
@@ -37,6 +37,9 @@ import img2img
 from wxPython import wx
 
 def main():
+    # some bitmap related things need to have a wxApp initialized...
+    if wx.wxGetApp() is None:
+        app = wx.wxPySimpleApp()
     img2img.main(sys.argv[1:], wx.wxBITMAP_TYPE_PNG, ".png", __doc__)
 
 if __name__ == '__main__':

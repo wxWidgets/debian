@@ -3,7 +3,7 @@
 // Purpose:     ZIP file system
 // Author:      Vaclav Slavik
 // Copyright:   (c) 1999 Vaclav Slavik
-// CVS-ID:      $Id: fs_zip.cpp,v 1.18.2.5 2002/12/16 00:16:05 VS Exp $
+// CVS-ID:      $Id: fs_zip.cpp,v 1.18.2.6 2003/09/19 21:51:44 VS Exp $
 // Licence:     wxWindows Licence
 /////////////////////////////////////////////////////////////////////////////
 
@@ -39,9 +39,9 @@
 #endif
 
 
-//--------------------------------------------------------------------------------
+//----------------------------------------------------------------------------
 // wxZipFSHandler
-//--------------------------------------------------------------------------------
+//----------------------------------------------------------------------------
 
 
 
@@ -87,6 +87,14 @@ wxFSFile* wxZipFSHandler::OpenFile(wxFileSystem& WXUNUSED(fs), const wxString& l
         return NULL;
     }
 
+    if (right.Contains(wxT("./")))
+    {
+        if (right.GetChar(0) != wxT('/')) right = wxT('/') + right;
+        wxFileName rightPart(right, wxPATH_UNIX);
+        rightPart.Normalize(wxPATH_NORM_DOTS, wxT("/"), wxPATH_UNIX);
+        right = rightPart.GetFullPath(wxPATH_UNIX);
+    }
+    
     if (right.GetChar(0) == wxT('/')) right = right.Mid(1);
 
     wxFileName leftFilename = wxFileSystem::URLToFileName(left);

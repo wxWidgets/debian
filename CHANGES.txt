@@ -68,6 +68,12 @@ All (GUI):
   generated at all, so you must call event.Skip() in your OnKeyDown() if
   you want to get OnChar() as well
 
+- the (command) events are not propagated beyond the first top level window
+  containing them because they now have wxWS_EX_BLOCK_EVENTS style by default,
+  you need to explicitly unset it if you want to have the old behaviour when
+  you could process the events from the controls in a dialog in its parent
+  frame.
+
 - in general, the key events sent for the various non ASCII key combinations
   have been changed to make them consistent over all supported platforms,
   please see the wxKeyEvent documentation for details
@@ -172,16 +178,33 @@ wxThread and related classes:
 OTHER CHANGES
 =============
 
+2.4.3
+-----
+
+wxMSW:
+
+- strip ampersands from strings returned by wxMenuBar::GetLabelTop()
+- fixed bug in wxIniConfig::DeleteEntry() (Parinya Thipchart)
+
+
 2.4.2
 -----
 
-wxBase:
-
-- always NUL-terminate the log messages
-
 All:
 
+- always NUL-terminate the log messages
 - wxRegEx::Compile() now calculates the number of groups correctly
+- wxHTTP::GetHeader() didn't find headers which were not all in upper case
+- wxHTTP input stream didn't detect EOF correctly
+- wxString::find_last_of() ignored "start" parameter (Robert Vazan)
+- a bug in wxArrayString::Shrink() fixed (Gunnar Roth)
+- added wxIPV4address::IPAddress()
+
+All (GUI):
+
+- rare crash in wxFontMapper fixed (Robert Vazan)
+- added wxMenu::FindItemByPosition.
+- copy wxImage options when copying the images
 
 Generic:
 
@@ -190,6 +213,34 @@ Generic:
 Unix:
 
 - fixed build problems with OpenGL when libGL(U) were in different directories
+- added --basename and --release flags to wx-config (Robert O'Connor)
+- added support for GNU/Hurd in configure
+- fixed wx-config --rezflags output on platforms different from Mac
+- changed wxNativeFontInfo::FromXFontName to treat names with all
+  components being empty or '*' as default font (since default font is
+  converted to such a string by GetXFontName).
+- wxLocale::Init now tries to set .utf8 locale in Unicode mode (Andreas Pflug)
+
+wxGTK
+
+- fixed compilation with --disable-compat-22
+- set the event object correctly for wxMenu events (Bob Balfour)
+- fixed memory leak in wxFileDialog (Christian Sturmlechner)
+
+wxMSW:
+
+- compilation fix for VC++ command line build (missing version.mak)
+- fixed release mode build with VC 7.x (Martin Ecker)
+- fix iostream.h problem with VC 7.1 (it doesn't support it any longer) 
+- compilation fix for XRC with mingw32
+
+wxMotif:
+
+- fixed "make install"
+
+wxXRC:
+
+- added wxNO_FULL_REPAINT_ON_RESIZE to "unknown" class handler (John Anderson)
 
 
 2.4.1
@@ -234,6 +285,7 @@ wxGTK:
 - implemented wxTextCtrl::Remove/Replace() for GTK2
 - improved X11 ShowFullScreen
 - added support for GTK2 label mnemonics
+- don't consume 100% CPU when showing a poup menu
 
 wxMSW:
 

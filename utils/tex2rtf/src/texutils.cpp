@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     7.9.93
-// RCS-ID:      $Id: texutils.cpp,v 1.19.2.2 2002/10/24 11:06:18 JS Exp $
+// RCS-ID:      $Id: texutils.cpp,v 1.19.2.3 2003/09/19 16:07:58 JS Exp $
 // Copyright:   (c) Julian Smart
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -1687,7 +1687,7 @@ bool StringMatch(const wxChar *str1, const wxChar *str2, bool subString,
           Sstr1.MakeUpper();
           Sstr2.MakeUpper();
       }
-      return Sstr2.Index(Sstr1) != wxNOT_FOUND;
+      return Sstr2.Index(Sstr1) != (size_t)wxNOT_FOUND;
    }
    else
       return exact ? wxString(str2).Cmp(str1) == 0 : 

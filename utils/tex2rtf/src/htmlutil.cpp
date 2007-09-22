@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     7.9.93
-// RCS-ID:      $Id: htmlutil.cpp,v 1.13.2.2 2002/10/20 22:17:49 VS Exp $
+// RCS-ID:      $Id: htmlutil.cpp,v 1.13.2.3 2003/09/19 16:07:56 JS Exp $
 // Copyright:   (c) Julian Smart
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -2523,7 +2523,7 @@ bool HTMLOnArgument(int macroId, int arg_no, bool start)
       if (val)
       {
         bool isPicture = FALSE;
-        char *s = ParseColourString(val, &isPicture);
+        ParseColourString(val, &isPicture);
         if (isPicture)
         {
           if (backgroundImageString)
@@ -2662,7 +2662,6 @@ bool HTMLOnArgument(int macroId, int arg_no, bool start)
         startRows = TRUE;
         tableVerticalLineLeft = FALSE;
         tableVerticalLineRight = FALSE;
-        int currentWidth = 0;
 
         char *alignString = copystring(GetArgData());
         ParseTableArgument(alignString);

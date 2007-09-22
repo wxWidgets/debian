@@ -2,7 +2,7 @@
 // Name:        gtk/filedlg.cpp
 // Purpose:
 // Author:      Robert Roebling
-// Id:          $Id: filedlg.cpp,v 1.38 2000/10/08 23:35:09 vadz Exp $
+// Id:          $Id: filedlg.cpp,v 1.38.2.1 2003/09/21 00:06:02 VZ Exp $
 // Copyright:   (c) 1998 Robert Roebling
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -89,7 +89,7 @@ void gtk_filedialog_ok_callback( GtkWidget *WXUNUSED(widget), wxFileDialog *dial
         wxString cwd;
         wxSplitPath(filename, &cwd, NULL, NULL);
 
-        if ( cwd != wxGetWorkingDirectory() )
+        if ( cwd != wxGetCwd() )
         {
             wxSetWorkingDirectory(cwd);
         }

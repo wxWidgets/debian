@@ -2,7 +2,7 @@
 // Name:        app.cpp
 // Purpose:
 // Author:      Robert Roebling
-// Id:          $Id: app.cpp,v 1.172.2.9 2003/05/21 18:53:12 JS Exp $
+// Id:          $Id: app.cpp,v 1.172.2.10 2003/09/10 14:32:25 RR Exp $
 // Copyright:   (c) 1998 Robert Roebling, Julian Smart
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -791,7 +791,8 @@ int wxEntryStart( int& argc, char *argv[] )
     }
     else
     {
-        g_thread_init(NULL);
+        if (!g_thread_supported())
+            g_thread_init(NULL);
     }
 #endif
 

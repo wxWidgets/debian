@@ -3,7 +3,7 @@
 // Purpose:     XML resource compiler
 // Author:      Vaclav Slavik
 // Created:     2000/03/05
-// RCS-ID:      $Id: wxrc.cpp,v 1.21.2.7 2003/04/06 17:09:23 JS Exp $
+// RCS-ID:      $Id: wxrc.cpp,v 1.21.2.9 2003/07/21 22:20:16 VS Exp $
 // Copyright:   (c) 2000 Vaclav Slavik
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -48,6 +48,8 @@ public:
 
 #if wxUSE_GUI
     bool OnInit();
+    int OnRun() { return 0; }
+    int OnExit() { return retCode; }
 #else
     virtual int OnRun();
 #endif
@@ -119,7 +121,7 @@ int XmlResApp::OnRun()
             else
                 CompileRes();
 #if wxUSE_GUI
-            return FALSE;
+            return TRUE;
 #else
             return retCode;
 #endif
@@ -169,7 +171,18 @@ void XmlResApp::ParseParams(const wxCmdLineParser& cmdline)
         parFuncname = _T("InitXmlResource");
 
     for (size_t i = 0; i < cmdline.GetParamCount(); i++)
+    {
+#ifdef __WINDOWS__
+        wxString fn=wxFindFirstFile(cmdline.GetParam(i), wxFILE);
+        while (!fn.IsEmpty())
+        {
+            parFiles.Add(fn);
+            fn=wxFindNextFile();
+        }
+#else
         parFiles.Add(cmdline.GetParam(i));
+#endif
+    }
 }
 
 

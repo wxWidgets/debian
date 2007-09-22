@@ -9,7 +9,6 @@
 
 #include <stdlib.h>
 #include <string.h>
-//#include <ctype.h>
 #include <stdio.h>
 
 #include "Platform.h"
@@ -70,16 +69,6 @@ int CompareNCaseInsensitive(const char *a, const char *b, size_t len) {
 
 bool EqualCaseInsensitive(const char *a, const char *b) {
 	return 0 == CompareCaseInsensitive(a, b);
-}
-
-inline unsigned int HashString(const char *s, size_t len) {
-	unsigned int ret = 0;
-	while (len--) {
-		ret <<= 4;
-		ret ^= *s;
-		s++;
-	}
-	return ret;
 }
 
 PropSet::PropSet() {
@@ -161,7 +150,7 @@ SString PropSet::Get(const char *key) {
 	}
 }
 
-static bool IncludesVar(const char *value, const char *key) {
+bool PropSet::IncludesVar(const char *value, const char *key) {
 	const char *var = strstr(value, "$(");
 	while (var) {
 		if (isprefix(var + 2, key) && (var[2 + strlen(key)] == ')')) {
@@ -182,25 +171,26 @@ SString PropSet::GetExpanded(const char *key) {
 	return Expand(val.c_str());
 }
 
-SString PropSet::Expand(const char *withVars) {
+SString PropSet::Expand(const char *withVars, int maxExpands) {
 	char *base = StringDup(withVars);
 	char *cpvar = strstr(base, "$(");
-	int maxExpands = 1000;	// Avoid infinite expansion of recursive definitions
 	while (cpvar && (maxExpands > 0)) {
 		char *cpendvar = strchr(cpvar, ')');
-		if (cpendvar) {
-			int lenvar = cpendvar - cpvar - 2;  	// Subtract the $()
-			char *var = StringDup(cpvar + 2, lenvar);
-			SString val = GetExpanded(var);
-			size_t newlenbase = strlen(base) + val.length() - lenvar;
-			char *newbase = new char[newlenbase];
-			strncpy(newbase, base, cpvar - base);
-			strcpy(newbase + (cpvar - base), val.c_str());
-			strcpy(newbase + (cpvar - base) + val.length(), cpendvar + 1);
-			delete []var;
-			delete []base;
-			base = newbase;
-		}
+		if (!cpendvar)
+			break;
+		int lenvar = cpendvar - cpvar - 2;  	// Subtract the $()
+		char *var = StringDup(cpvar + 2, lenvar);
+		SString val = Get(var);
+		if (IncludesVar(val.c_str(), var))
+			break;
+		size_t newlenbase = strlen(base) + val.length() - lenvar;
+		char *newbase = new char[newlenbase];
+		strncpy(newbase, base, cpvar - base);
+		strcpy(newbase + (cpvar - base), val.c_str());
+		strcpy(newbase + (cpvar - base) + val.length(), cpendvar + 1);
+		delete []var;
+		delete []base;
+		base = newbase;
 		cpvar = strstr(base, "$(");
 		maxExpands--;
 	}

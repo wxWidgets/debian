@@ -4,7 +4,7 @@
 // Author:      Vadim Zeitlin
 // Modified by:
 // Created:     16.11.97
-// RCS-ID:      $Id: checklst.cpp,v 1.33.2.5 2003/04/06 14:20:49 JS Exp $
+// RCS-ID:      $Id: checklst.cpp,v 1.33.2.6 2003/08/14 11:48:28 CE Exp $
 // Copyright:   (c) 1998 Vadim Zeitlin <zeitlin@dptmaths.ens-cachan.fr>
 // Licence:     wxWindows license
 ///////////////////////////////////////////////////////////////////////////////
@@ -152,7 +152,7 @@ bool wxCheckListBoxItem::OnDrawItem(wxDC& dc, const wxRect& rc,
       HBITMAP hbmpOld = (HBITMAP)SelectObject(hdcMem, hbmpCheck);
 
       // then draw a check mark into it
-#if defined(__WIN32__) && !defined(__SC__)
+#if defined(__WIN32__) && !defined(__SYMANTEC__)
       RECT rect;
       rect.left   = 0;
       rect.top    = 0;

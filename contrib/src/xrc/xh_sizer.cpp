@@ -3,7 +3,7 @@
 // Purpose:     XRC resource for wxBoxSizer
 // Author:      Vaclav Slavik
 // Created:     2000/03/21
-// RCS-ID:      $Id: xh_sizer.cpp,v 1.6.2.2 2003/05/25 13:20:24 JS Exp $
+// RCS-ID:      $Id: xh_sizer.cpp,v 1.6.2.3 2003/09/10 19:20:03 VS Exp $
 // Copyright:   (c) 2000 Vaclav Slavik
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -21,6 +21,7 @@
 
 #include "wx/xrc/xh_sizer.h"
 #include "wx/sizer.h"
+#include "wx/panel.h"
 #include "wx/log.h"
 #include "wx/statbox.h"
 #include "wx/notebook.h"
@@ -138,12 +139,12 @@ wxObject *wxSizerXmlHandler::DoCreateResource()
         wxXmlNode *parentNode = m_node->GetParent();
 
         wxCHECK_MSG(m_parentSizer != NULL ||
-                ((IsOfClass(parentNode, wxT("wxPanel")) ||
-                  IsOfClass(parentNode, wxT("wxWizardPage")) ||
-                  IsOfClass(parentNode, wxT("wxWizardPageSimple")) ||
-                  IsOfClass(parentNode, wxT("wxFrame")) ||
-                  IsOfClass(parentNode, wxT("wxDialog"))) &&
-                 parentNode->GetType() == wxXML_ELEMENT_NODE), NULL,
+                (parentNode->GetType() == wxXML_ELEMENT_NODE &&
+                    m_parentAsWindow != NULL &&
+                    (m_parentAsWindow->IsKindOf(CLASSINFO(wxPanel)) ||
+                     m_parentAsWindow->IsKindOf(CLASSINFO(wxFrame)) ||
+                     m_parentAsWindow->IsKindOf(CLASSINFO(wxDialog)))
+                ), NULL,
                 wxT("Incorrect use of sizer: parent is not 'wxDialog', 'wxFrame' or 'wxPanel'."));
 
         if (m_class == wxT("wxBoxSizer"))

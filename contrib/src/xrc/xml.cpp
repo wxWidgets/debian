@@ -3,7 +3,7 @@
 // Purpose:     wxXmlDocument - XML parser & data holder class
 // Author:      Vaclav Slavik
 // Created:     2000/03/05
-// RCS-ID:      $Id: xml.cpp,v 1.9.2.2 2003/04/16 22:33:54 VS Exp $
+// RCS-ID:      $Id: xml.cpp,v 1.9.2.3 2003/09/30 18:37:12 VS Exp $
 // Copyright:   (c) 2000 Vaclav Slavik
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -538,8 +538,10 @@ bool wxXmlDocument::Load(wxInputStream& stream, const wxString& encoding)
         done = (len < BUFSIZE);
         if (!XML_Parse(parser, buf, len, done))
         {
+            wxString error(XML_ErrorString(XML_GetErrorCode(parser)),
+                           *wxConvCurrent);
             wxLogError(_("XML parsing error: '%s' at line %d"),
-                       XML_ErrorString(XML_GetErrorCode(parser)),
+                       error.c_str(),
                        XML_GetCurrentLineNumber(parser));
             ok = FALSE;
             break;
@@ -548,9 +550,15 @@ bool wxXmlDocument::Load(wxInputStream& stream, const wxString& encoding)
 
     if (ok)
     {
-        SetVersion(ctx.version);
-        SetFileEncoding(ctx.encoding);
+        if (!ctx.version.IsEmpty())
+            SetVersion(ctx.version);
+        if (!ctx.encoding.IsEmpty())
+            SetFileEncoding(ctx.encoding);
         SetRoot(ctx.root);
+    }
+    else
+    {
+        delete ctx.root;
     }
 
     XML_ParserFree(parser);
@@ -575,7 +583,7 @@ inline static void OutputString(wxOutputStream& stream, const wxString& str,
 {
     if (str.IsEmpty()) return;
 #if wxUSE_UNICODE
-    const wxWX2MBbuf buf(str.mb_str(convFile ? *convFile : wxConvUTF8));
+    const wxWX2MBbuf buf(str.mb_str(*(convFile ? convFile : &wxConvUTF8)));
     stream.Write((const char*)buf, strlen((const char*)buf));
 #else
     if ( convFile == NULL )

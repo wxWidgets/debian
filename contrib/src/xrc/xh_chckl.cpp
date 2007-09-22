@@ -3,7 +3,7 @@
 // Purpose:     XRC resource for wxCheckList
 // Author:      Bob Mitchell
 // Created:     2000/03/21
-// RCS-ID:      $Id: xh_chckl.cpp,v 1.6.2.1 2003/04/02 14:26:58 JS Exp $
+// RCS-ID:      $Id: xh_chckl.cpp,v 1.6.2.2 2003/08/28 09:36:20 VS Exp $
 // Copyright:   (c) 2000 Bob Mitchell and Verant Interactive
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -24,18 +24,22 @@
 #include "wx/xrc/xh_chckl.h"
 #include "wx/checklst.h"
 #include "wx/intl.h"
+#include "wx/log.h"
 
-wxCheckListXmlHandler::wxCheckListXmlHandler() 
+wxCheckListBoxXmlHandler::wxCheckListBoxXmlHandler() 
 : wxXmlResourceHandler(), m_insideBox(FALSE)
 {
     // no styles
     AddWindowStyles();
 }
 
-wxObject *wxCheckListXmlHandler::DoCreateResource()
+wxObject *wxCheckListBoxXmlHandler::DoCreateResource()
 { 
-    if (m_class == wxT("wxCheckList"))
+    if (m_class == wxT("wxCheckListBox") || m_class == wxT("wxCheckList"))
     {
+        if (m_class == wxT("wxCheckList"))
+            wxLogDebug(wxT("'wxCheckList' name is deprecated, use 'wxCheckListBox' instead."));
+
         // need to build the list of strings from children
         m_insideBox = TRUE;
         CreateChildrenPrivately(NULL, GetParamNode(wxT("content")));
@@ -101,9 +105,10 @@ wxObject *wxCheckListXmlHandler::DoCreateResource()
     }
 }
 
-bool wxCheckListXmlHandler::CanHandle(wxXmlNode *node)
+bool wxCheckListBoxXmlHandler::CanHandle(wxXmlNode *node)
 {
-    return (IsOfClass(node, wxT("wxCheckList")) ||
+    return (IsOfClass(node, wxT("wxCheckListBox")) ||
+            IsOfClass(node, wxT("wxCheckList")) /*backward compatibility*/ ||
            (m_insideBox && node->GetName() == wxT("item")));
 }
 

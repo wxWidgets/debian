@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     04/01/98
-// RCS-ID:      $Id: textctrl.cpp,v 1.151.2.9 2003/05/23 18:54:32 JS Exp $
+// RCS-ID:      $Id: textctrl.cpp,v 1.151.2.10 2003/07/17 21:54:14 VZ Exp $
 // Copyright:   (c) Julian Smart
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -2073,6 +2073,7 @@ void wxRichEditModule::OnExit()
         if ( ms_hRichEdit[i] )
         {
             ::FreeLibrary(ms_hRichEdit[i]);
+            ms_hRichEdit[i] = NULL;
         }
     }
 }

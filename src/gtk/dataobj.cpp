@@ -2,7 +2,7 @@
 // Name:        dataobj.cpp
 // Purpose:     wxDataObject class
 // Author:      Robert Roebling
-// Id:          $Id: dataobj.cpp,v 1.37.2.1 2002/11/25 01:51:04 VZ Exp $
+// Id:          $Id: dataobj.cpp,v 1.37.2.2 2003/09/09 18:02:27 RR Exp $
 // Copyright:   (c) 1998 Robert Roebling
 // Licence:     wxWindows licence
 ///////////////////////////////////////////////////////////////////////////////
@@ -199,8 +199,9 @@ bool wxFileDataObject::GetDataHere(void *buf) const
 
     for (size_t i = 0; i < m_filenames.GetCount(); i++)
     {
+        filenames += wxT("file:");
         filenames += m_filenames[i];
-        filenames += (wxChar) 0;
+        filenames += wxT("\r\n");
     }
 
     memcpy( buf, filenames.mbc_str(), filenames.Len() + 1 );
@@ -214,8 +215,9 @@ size_t wxFileDataObject::GetDataSize() const
 
     for (size_t i = 0; i < m_filenames.GetCount(); i++)
     {
+        // This is junk in UTF-8
         res += m_filenames[i].Len();
-        res += 1;
+        res += 5 + 2; // "file:" (5) + "\r\n" (2)
     }
 
     return res + 1;

@@ -4,7 +4,7 @@
 #
 # Author:      Robin Dunn
 #
-# RCS-ID:      $Id: img2img.py,v 1.2.2.2 2003/01/21 00:04:33 RD Exp $
+# RCS-ID:      $Id: img2img.py,v 1.2.2.3 2003/09/22 23:02:36 RD Exp $
 # Copyright:   (c) 2002 by Total Control Software
 # Licence:     wxWindows license
 #----------------------------------------------------------------------
@@ -13,11 +13,6 @@
 import sys, os, glob, getopt
 from wxPython.wx import *
 
-if wxPlatform == "__WXGTK__":
-    # some bitmap related things need to have a wxApp initialized...
-    app = wxPySimpleApp()
-
-wxInitAllImageHandlers()
 
 def convert(file, maskClr, outputDir, outputName, outType, outExt):
     if os.path.splitext(file)[1].lower() == ".ico":

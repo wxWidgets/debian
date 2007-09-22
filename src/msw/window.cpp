@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by: VZ on 13.05.99: no more Default(), MSWOnXXX() reorganisation
 // Created:     04/01/98
-// RCS-ID:      $Id: window.cpp,v 1.349.2.25 2003/06/16 22:40:11 RD Exp $
+// RCS-ID:      $Id: window.cpp,v 1.349.2.26 2003/06/17 17:07:21 RD Exp $
 // Copyright:   (c) Julian Smart and Markus Holzem
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -576,9 +576,9 @@ bool wxWindowMSW::Show(bool show)
 
     if ( show && (IsTopLevel()
 #if wxUSE_POPUPWIN
-                  || IsKindOf(CLASSINFO(wxPopupWindow)))
+                  || IsKindOf(CLASSINFO(wxPopupWindow))
 #endif
-        )
+       ) )
     {
         wxBringWindowToTop(hWnd);
     }

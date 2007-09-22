@@ -3,7 +3,7 @@
 // Purpose:     XRC resource for unknown widget
 // Author:      Vaclav Slavik
 // Created:     2000/09/09
-// RCS-ID:      $Id: xh_unkwn.cpp,v 1.6.2.1 2003/03/31 22:03:28 VS Exp $
+// RCS-ID:      $Id: xh_unkwn.cpp,v 1.6.2.3 2003/09/13 11:05:52 VS Exp $
 // Copyright:   (c) 2000 Vaclav Slavik
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -33,8 +33,11 @@ public:
                               const wxString& controlName,
                               wxWindowID id = -1,
                               const wxPoint& pos = wxDefaultPosition,
-                              const wxSize& size = wxDefaultSize)
-        : wxPanel(parent, id, pos, size, wxTAB_TRAVERSAL | wxNO_BORDER,
+                              const wxSize& size = wxDefaultSize,
+                              long style = 0)
+        // Always add the wxTAB_TRAVERSAL and wxNO_BORDER styles to what comes
+        // from the XRC if anything.
+        : wxPanel(parent, id, pos, size, style | wxTAB_TRAVERSAL | wxNO_BORDER,
                   controlName + wxT("_container")),
           m_controlName(controlName), m_controlAdded(FALSE)
     {
@@ -79,6 +82,7 @@ void wxUnknownControlContainer::RemoveChild(wxWindowBase *child)
 wxUnknownWidgetXmlHandler::wxUnknownWidgetXmlHandler()
 : wxXmlResourceHandler()
 {
+    XRC_ADD_STYLE(wxNO_FULL_REPAINT_ON_RESIZE);
 }
 
 wxObject *wxUnknownWidgetXmlHandler::DoCreateResource()
@@ -86,7 +90,8 @@ wxObject *wxUnknownWidgetXmlHandler::DoCreateResource()
     wxPanel *panel =
         new wxUnknownControlContainer(m_parentAsWindow,
                                       GetName(), -1,
-                                      GetPosition(), GetSize());
+                                      GetPosition(), GetSize(),
+                                      GetStyle(wxT("style")));
     SetupWindow(panel);
     return panel;
 }

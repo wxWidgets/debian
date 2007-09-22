@@ -12,7 +12,7 @@
 // Author:      Robin Dunn
 //
 // Created:     13-Jan-2000
-// RCS-ID:      $Id: stc.h.in,v 1.22.2.6 2003/05/29 23:49:16 RD Exp $
+// RCS-ID:      $Id: stc.h.in,v 1.22.2.10 2003/09/24 22:37:38 RD Exp $
 // Copyright:   (c) 2000 by Total Control Software
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -48,6 +48,15 @@
 #endif // SWIG
 
 
+// SWIG can't handle "#if" type of conditionals, only "#ifdef"
+#ifdef SWIG
+#define STC_USE_DND 1
+#else
+#if wxUSE_DRAG_AND_DROP
+#define STC_USE_DND 1
+#endif
+#endif
+
 //----------------------------------------------------------------------
 
 // Should a wxPopupWindow be used for the call tips and autocomplete windows?
@@ -65,6 +74,7 @@
 
 //-----------------------------------------
 // Commands that can be bound to keystrokes
+
 %(CMDS)s
 
 
@@ -199,6 +209,13 @@ public:
     // Load the contents of filename into the editor
     bool LoadFile(const wxString& filename);
 
+#ifdef STC_USE_DND
+    // Allow for simulating a DnD DragOver
+    wxDragResult DoDragOver(wxCoord x, wxCoord y, wxDragResult def); 
+
+    // Allow for simulating a DnD DropText
+    bool DoDropText(long x, long y, const wxString& data);
+#endif
 
 //----------------------------------------------------------------------
 
@@ -249,15 +266,6 @@ protected:
 };
 
 //----------------------------------------------------------------------
-
-// SWIG can't handle "#if" type of conditionals, only "#ifdef"
-#ifdef SWIG
-#define STC_USE_DND 1
-#else
-#if wxUSE_DRAG_AND_DROP
-#define STC_USE_DND 1
-#endif
-#endif
 
 class wxStyledTextEvent : public wxCommandEvent {
 public:
@@ -463,13 +471,14 @@ inline wxString stc2wx(const char* str) {
 #endif
 }
 
-inline wxString stc2wx(const char* str, size_t len) {
 #if wxUSE_UNICODE
-    return wxString(str, wxConvUTF8, len);
+wxString stc2wx(const char* str, size_t len);
 #else
+inline wxString stc2wx(const char* str, size_t len) {
     return wxString(str, len);
-#endif
 }
+#endif
+
 
 #if wxUSE_UNICODE
 inline const wxWX2MBbuf wx2stc(const wxString& str) {

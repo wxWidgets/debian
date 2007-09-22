@@ -5,7 +5,7 @@
 // Modified by: Vadim Zeitlin on 31.08.00: wxScrollHelper allows to implement.
 //              Ron Lee on 10.4.02:  virtual size / auto scrollbars et al.
 // Created:     01/02/97
-// RCS-ID:      $Id: scrlwing.cpp,v 1.28.2.6 2003/04/06 12:03:04 JS Exp $
+// RCS-ID:      $Id: scrlwing.cpp,v 1.28.2.9 2003/08/13 23:55:52 VZ Exp $
 // Copyright:   (c) wxWindows team
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -347,7 +347,6 @@ void wxScrollHelper::SetScrollbars(int pixelsPerUnitX,
     int w = noUnitsX * pixelsPerUnitX;
     int h = noUnitsY * pixelsPerUnitY;
      
-    wxSize sz = m_targetWindow->GetClientSize();
     m_targetWindow->SetVirtualSizeHints( w, h );
 
     // The above should arguably be deprecated, this however we still need.
@@ -357,15 +356,24 @@ void wxScrollHelper::SetScrollbars(int pixelsPerUnitX,
     if (do_refresh && !noRefresh)
         m_targetWindow->Refresh(TRUE, GetRect());
 
-    // TODO: check if we can use AdjustScrollbars always.
-#ifdef __WXUNIVERSAL__
-    AdjustScrollbars();
-#else    
-    // This is also done by AdjustScrollbars, above
+#ifndef __WXUNIVERSAL__
+    // If the target is not the same as the window with the scrollbars,
+    // then we need to update the scrollbars here, since they won't have
+    // been updated by SetVirtualSize().
+    if ( m_targetWindow != m_win )
+#endif // !__WXUNIVERSAL__
+    {
+        AdjustScrollbars();
+    }
+#ifndef __WXUNIVERSAL__
+    else
+    {
+        // otherwise this has been done by AdjustScrollbars, above
 #ifdef __WXMAC__
-    m_targetWindow->MacUpdateImmediately() ;
+        m_targetWindow->MacUpdateImmediately() ;
 #endif
-#endif
+    }
+#endif // !__WXUNIVERSAL__
 }
 
 // ----------------------------------------------------------------------------
@@ -595,6 +603,20 @@ int wxScrollHelper::CalcScrollInc(wxScrollWinEvent& event)
 // Adjust the scrollbars - new version.
 void wxScrollHelper::AdjustScrollbars()
 {
+    static bool s_isInside = false;
+    if ( s_isInside )
+    {
+        // don't reenter AdjustScrollbars() while another call to
+        // AdjustScrollbars() is in progress because this may lead to calling
+        // ScrollWindow() twice and this can really happen under MSW if
+        // SetScrollbar() call below adds or removes the scrollbar which
+        // changes the window size and hence results in another
+        // AdjustScrollbars() call
+        return;
+    }
+
+    s_isInside = true;
+
 #ifdef __WXMAC__
     m_targetWindow->MacUpdateImmediately();
 #endif
@@ -670,7 +692,7 @@ void wxScrollHelper::AdjustScrollbars()
         oldh = h;
 
         GetTargetSize( &w, &h );
-    } while ( w != oldw && h != oldh );
+    } while ( w != oldw || h != oldh );
 
 #ifdef __WXMOTIF__
     // Sorry, some Motif-specific code to implement a backing pixmap
@@ -726,6 +748,8 @@ void wxScrollHelper::AdjustScrollbars()
 #ifdef __WXMAC__
     m_targetWindow->MacUpdateImmediately();
 #endif
+
+    s_isInside = false;
 }
 
 void wxScrollHelper::DoPrepareDC(wxDC& dc)

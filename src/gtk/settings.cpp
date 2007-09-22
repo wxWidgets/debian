@@ -2,7 +2,7 @@
 // Name:        gtk/settings.cpp
 // Purpose:
 // Author:      Robert Roebling
-// Id:          $Id: settings.cpp,v 1.38.2.3 2003/04/08 22:28:30 VS Exp $
+// Id:          $Id: settings.cpp,v 1.38.2.4 2003/06/20 20:20:16 VS Exp $
 // Copyright:   (c) 1998 Robert Roebling
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -330,9 +330,9 @@ wxFont wxSystemSettingsNative::GetFont( wxSystemFont index )
 #ifdef __WXGTK20__
                 GtkWidget *widget = gtk_button_new();
                 GtkStyle *def = gtk_rc_get_style( widget );
-                if (!def)  
+                if ( !def || !def->font_desc )
                     def = gtk_widget_get_default_style();  
-                if (def)  
+                if ( def && def->font_desc )
                 {  
                     wxNativeFontInfo info;  
                     info.description = def->font_desc;  

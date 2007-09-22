@@ -2,7 +2,7 @@
 # Purpose:      XML interface classes
 # Author:       Roman Rolinsky <rolinsky@mema.ucl.ac.be>
 # Created:      22.08.2001
-# RCS-ID:       $Id: xxx.py,v 1.1.2.12 2003/05/12 14:09:06 ROL Exp $
+# RCS-ID:       $Id: xxx.py,v 1.1.2.14 2003/09/12 09:45:35 ROL Exp $
 
 from xml.dom import minidom
 from globals import *
@@ -169,7 +169,7 @@ class xxxParamBitmap(xxxParam):
         self.stock_id = value[0]
         if self.stock_id:
             self.node.setAttribute('stock_id', self.stock_id)
-        else:
+        elif self.node.hasAttribute('stock_id'):
             self.node.removeAttribute('stock_id')
         xxxParam.update(self, value[1])
 
@@ -542,7 +542,7 @@ class xxxRadioBox(xxxObject):
     allParams = ['label', 'content', 'selection', 'dimension', 'pos', 'size', 'style']
     paramDict = {'dimension': ParamInt}
     required = ['label', 'content']
-    default = {'content': '[]'}    
+    default = {'content': '[]'}
     winStyles = ['wxRA_SPECIFY_ROWS', 'wxRA_SPECIFY_COLS']
 
 class xxxCheckBox(xxxObject):

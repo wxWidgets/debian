@@ -5,7 +5,7 @@
 # Author:       Robin Dunn & Gary Dumer
 #
 # Created:
-# RCS-ID:       $Id: wxListCtrl.py,v 1.26.2.11 2003/04/18 21:10:25 RD Exp $
+# RCS-ID:       $Id: wxListCtrl.py,v 1.26.2.12 2003/07/31 17:12:36 RD Exp $
 # Copyright:    (c) 1998 by Total Control Software
 # Licence:      wxWindows license
 #----------------------------------------------------------------------------
@@ -292,7 +292,7 @@ class TestListCtrlPanel(wxPanel, wxColumnSorterMixin):
         menu = wxMenu()
         # add some items
         menu.Append(self.popupID1, "FindItem tests")
-#        menu.Append(self.popupID2, "Two")
+        menu.Append(self.popupID2, "Iterate Selected")
         menu.Append(self.popupID3, "ClearAll and repopulate")
         menu.Append(self.popupID4, "DeleteAllItems")
         menu.Append(self.popupID5, "GetItem")
@@ -310,7 +310,11 @@ class TestListCtrlPanel(wxPanel, wxColumnSorterMixin):
         print "FindItemData:", self.list.FindItemData(-1, 11)
 
     def OnPopupTwo(self, event):
-        self.log.WriteText("Popup two\n")
+        self.log.WriteText("Selected items:\n")
+        index = self.list.GetFirstSelected()
+        while index != -1:
+            self.log.WriteText("      %s: %s\n" % (self.list.GetItemText(index), self.getColumnText(index, 1)))
+            index = self.list.GetNextSelected(index)
 
     def OnPopupThree(self, event):
         self.log.WriteText("Popup three\n")

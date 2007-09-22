@@ -4,7 +4,7 @@
 // Author:      Guilhem Lavaux
 // Modified by:
 // Created:     20/07/1997
-// RCS-ID:      $Id: url.h,v 1.13 2002/08/31 11:29:11 GD Exp $
+// RCS-ID:      $Id: url.h,v 1.13.2.1 2003/08/16 12:10:14 MBN Exp $
 // Copyright:   (c) 1997, 1998 Guilhem Lavaux
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -66,7 +66,7 @@ public:
 protected:
     static wxProtoInfo *ms_protocols;
 
-#if wxUSE_SOCKETS
+#if wxUSE_SOCKETS && wxUSE_PROTOCOL_HTTP
     static wxHTTP *ms_proxyDefault;
     static bool ms_useDefaultProxy;
     wxHTTP *m_proxy;

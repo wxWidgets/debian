@@ -4,7 +4,7 @@
 // Author:      Vadim Zeitlin
 // Modified by:
 // Created:     29/01/98
-// RCS-ID:      $Id: string.cpp,v 1.164.2.6 2003/06/06 00:43:51 RD Exp $
+// RCS-ID:      $Id: string.cpp,v 1.164.2.10 2003/09/18 14:10:16 JS Exp $
 // Copyright:   (c) 1998 Vadim Zeitlin <zeitlin@dptmaths.ens-cachan.fr>
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -263,10 +263,14 @@ wxString::wxString(const char *psz, wxMBConv& conv, size_t nLength)
             return;
         }
 
-        // MB2WC wants the buffer size, not the string length
-        if ( conv.MB2WC(m_pchData, psz, nLen + 1) != (size_t)-1 )
+        // MB2WC wants the buffer size, not the string length hence +1
+        nLen = conv.MB2WC(m_pchData, psz, nLen + 1);
+
+        if ( nLen != (size_t)-1 )
         {
-            // initialized ok
+            // initialized ok, set the real length as nLength specified by
+            // the caller could be greater than the real string length
+            GetStringData()->nDataLength = nLen;
             m_pchData[nLen] = 0;
             return;
         }
@@ -1285,7 +1289,7 @@ int wxString::PrintfV(const wxChar* pszFormat, va_list argptr)
 
         UngetWriteBuf();
 
-        if ( len >= 0 )
+        if ( (len >= 0) && (len <= size) )
         {
             // ok, there was enough space
             break;
@@ -1616,7 +1620,7 @@ size_t wxString::find_last_of(const wxChar* sz, size_t nStart) const
         wxASSERT( nStart <= Len() );
     }
 
-    for ( const wxChar *p = c_str() + length() - 1; p >= c_str(); p-- )
+    for ( const wxChar *p = c_str() + nStart - 1; p >= c_str(); p-- )
     {
         if ( wxStrchr(sz, *p) )
             return p - c_str();
@@ -1898,6 +1902,7 @@ void wxArrayString::Shrink()
     memcpy(pNew, m_pItems, m_nCount*sizeof(wxChar *));
     delete [] m_pItems;
     m_pItems = pNew;
+    m_nSize = m_nCount;
   }
 }
 

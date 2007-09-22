@@ -4,7 +4,7 @@
 // Author:      Robert Roebling
 // Modified by:
 // Created:     12/12/98
-// RCS-ID:      $Id: filedlgg.cpp,v 1.72.2.11 2003/04/06 15:36:12 JS Exp $
+// RCS-ID:      $Id: filedlgg.cpp,v 1.72.2.15 2003/09/21 00:05:55 VZ Exp $
 // Copyright:   (c) Robert Roebling
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -364,6 +364,7 @@ int wxFileIconsTable::GetIconID(const wxString& extension, const wxString& mime)
     {
         int newid = FI_UNKNOWN;
         m_HashTable.Put(extension, new wxFileIconEntry(newid));
+        if (ft) delete ft;
         return newid;
     }
 #ifdef __WIN32__
@@ -470,7 +471,7 @@ wxFileData::wxFileData( const wxString &name, const wxString &fname )
 #ifdef __VISUALC__
     m_isDir = ((buff.st_mode & _S_IFDIR ) == _S_IFDIR );
 #else
-	m_isDir = S_ISDIR( buff.st_mode );
+    m_isDir = S_ISDIR( buff.st_mode );
 #endif // VC++
     m_isExe = ((buff.st_mode & wxS_IXUSR ) == wxS_IXUSR );
 
@@ -1177,19 +1178,14 @@ wxFileDialog::wxFileDialog(wxWindow *parent,
         // PDAs have a different screen layout
         mainsizer->Add( m_list, 1, wxEXPAND | wxLEFT|wxRIGHT, 5 );
 
-        wxBoxSizer *choicesizer = new wxBoxSizer( wxHORIZONTAL );
-        m_choice = new wxChoice( this, ID_CHOICE );
-        choicesizer->Add( m_choice, 1, wxCENTER|wxALL, 5 );
-        mainsizer->Add( choicesizer, 0, wxEXPAND );
-
         wxBoxSizer *textsizer = new wxBoxSizer( wxHORIZONTAL );
         m_text = new wxTextCtrl( this, ID_TEXT, m_fileName, wxDefaultPosition, wxDefaultSize, wxPROCESS_ENTER );
         textsizer->Add( m_text, 1, wxCENTER | wxALL, 5 );
         mainsizer->Add( textsizer, 0, wxEXPAND );
 
-        m_check = new wxCheckBox( this, ID_CHECK, _("Show hidden files") );
-        m_check->SetValue( ms_lastShowHidden );
-        textsizer->Add( m_check, 0, wxCENTER|wxALL, 5 );
+        m_check = NULL;
+        m_choice = new wxChoice( this, ID_CHOICE );
+        textsizer->Add( m_choice, 1, wxCENTER|wxALL, 5 );
 
         buttonsizer = new wxBoxSizer( wxHORIZONTAL );
         buttonsizer->Add( new wxButton( this, wxID_OK, _("OK") ), 0, wxCENTER | wxALL, 5 );
@@ -1318,13 +1314,13 @@ void wxFileDialog::OnTextChange( wxCommandEvent &WXUNUSED(event) )
         // not get the file whose name they typed.
         if (m_list->GetSelectedItemCount() > 0)
         {
-    	    long item = m_list->GetNextItem(-1, wxLIST_NEXT_ALL,
+            long item = m_list->GetNextItem(-1, wxLIST_NEXT_ALL,
                 wxLIST_STATE_SELECTED);
             while ( item != -1 )
-    	    {
+            {
                 m_list->SetItemState(item,0, wxLIST_STATE_SELECTED);
                 item = m_list->GetNextItem(item, wxLIST_NEXT_ALL, wxLIST_STATE_SELECTED);
-    	    }
+            }
         }
     }
 }
@@ -1449,7 +1445,7 @@ void wxFileDialog::HandleAction( const wxString &fn )
         wxString cwd;
         wxSplitPath(filename, &cwd, NULL, NULL);
 
-        if ( cwd != wxGetWorkingDirectory() )
+        if ( cwd != wxGetCwd() )
         {
             wxSetWorkingDirectory(cwd);
         }

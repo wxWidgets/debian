@@ -9,7 +9,7 @@
 // Author:      Robin Dunn
 //
 // Created:     13-Jan-2000
-// RCS-ID:      $Id: ScintillaWX.h,v 1.11.2.5 2003/04/19 19:56:49 RD Exp $
+// RCS-ID:      $Id: ScintillaWX.h,v 1.11.2.8 2003/09/23 23:41:17 RD Exp $
 // Copyright:   (c) 2000 by Total Control Software
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -55,7 +55,15 @@
 
 //----------------------------------------------------------------------
 
-class wxStyledTextCtrl;           // forward
+#ifdef WXMAKINGDLL_STC
+    #define WXDLLIMPEXP_STC WXEXPORT
+#elif defined(WXUSINGDLL)
+    #define WXDLLIMPEXP_STC WXIMPORT
+#else // not making nor using DLL
+    #define WXDLLIMPEXP_STC
+#endif
+
+class WXDLLIMPEXP_STC wxStyledTextCtrl;           // forward
 class ScintillaWX;
 
 
@@ -100,6 +108,8 @@ public:
     virtual bool ModifyScrollBars(int nMax, int nPage);
     virtual void Copy();
     virtual void Paste();
+    virtual void CopyToClipboard(const SelectionText &selectedText);
+
     virtual void CreateCallTipWindow(PRectangle rc);
     virtual void AddToPopUp(const char *label, int cmd = 0, bool enabled = true);
     virtual void ClaimSelection();
@@ -114,6 +124,7 @@ public:
     virtual void NotifyChange();
     virtual void NotifyParent(SCNotification scn);
 
+    virtual void CancelModes();
 
     // Event delegates
     void DoPaint(wxDC* dc, wxRect rect);
@@ -129,7 +140,7 @@ public:
     void DoMiddleButtonUp(Point pt);
     void DoMouseWheel(int rotation, int delta, int linesPerAction, int ctrlDown, bool isPageScroll);
     void DoAddChar(int key);
-    int  DoKeyDown(int key, bool shift, bool ctrl, bool alt, bool* consumed);
+    int  DoKeyDown(int key, bool shift, bool ctrl, bool alt, bool meta, bool* consumed);
     void DoTick() { Tick(); }
 
 #if wxUSE_DRAG_AND_DROP
@@ -154,6 +165,7 @@ public:
 
 private:
     bool                capturedMouse;
+    bool                focusEvent;
     wxStyledTextCtrl*   stc;
 
 #if wxUSE_DRAG_AND_DROP

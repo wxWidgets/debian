@@ -4,7 +4,7 @@
 // Author:      Michael Bedward (based on code by Julian Smart, Robin Dunn)
 // Modified by: Robin Dunn, Vadim Zeitlin
 // Created:     1/08/1999
-// RCS-ID:      $Id: grid.cpp,v 1.231.2.20 2003/06/04 20:51:25 SN Exp $
+// RCS-ID:      $Id: grid.cpp,v 1.231.2.23 2003/09/22 22:07:55 RD Exp $
 // Copyright:   (c) Michael Bedward (mbedward@ozemail.com.au)
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -562,8 +562,7 @@ void wxGridCellTextEditor::Create(wxWindow* parent,
     m_control = new wxTextCtrl(parent, id, wxEmptyString,
                                wxDefaultPosition, wxDefaultSize
 #if defined(__WXMSW__)
-                               , wxTE_PROCESS_TAB | wxTE_MULTILINE |
-                                 wxTE_NO_VSCROLL | wxTE_AUTO_SCROLL
+                               , wxTE_PROCESS_TAB | wxTE_AUTO_SCROLL
 #endif
                               );
 
@@ -3091,24 +3090,26 @@ int wxGridStringTable::GetNumberCols()
 
 wxString wxGridStringTable::GetValue( int row, int col )
 {
-    wxASSERT_MSG( (row < GetNumberRows()) && (col < GetNumberCols()),
-                  _T("invalid row or column index in wxGridStringTable") );
+    wxCHECK_MSG( (row < GetNumberRows()) && (col < GetNumberCols()),
+                 wxEmptyString,
+                 _T("invalid row or column index in wxGridStringTable") );
 
     return m_data[row][col];
 }
 
 void wxGridStringTable::SetValue( int row, int col, const wxString& value )
 {
-    wxASSERT_MSG( (row < GetNumberRows()) && (col < GetNumberCols()),
-                  _T("invalid row or column index in wxGridStringTable") );
+    wxCHECK_RET( (row < GetNumberRows()) && (col < GetNumberCols()),
+                 _T("invalid row or column index in wxGridStringTable") );
 
     m_data[row][col] = value;
 }
 
 bool wxGridStringTable::IsEmptyCell( int row, int col )
 {
-    wxASSERT_MSG( (row < GetNumberRows()) && (col < GetNumberCols()),
-                  _T("invalid row or column index in wxGridStringTable") );
+    wxCHECK_MSG( (row < GetNumberRows()) && (col < GetNumberCols()),
+                 TRUE,
+                 _T("invalid row or column index in wxGridStringTable") );
 
     return (m_data[row][col] == wxEmptyString);
 }
@@ -5704,7 +5705,6 @@ bool wxGrid::InsertRows( int pos, int numRows, bool WXUNUSED(updateLabels) )
             DisableCellEditControl();
 
         bool done = m_table->InsertRows( pos, numRows );
-        m_numRows = m_table->GetNumberRows();
         return done;
 
         // the table will have sent the results of the insert row
@@ -5727,7 +5727,6 @@ bool wxGrid::AppendRows( int numRows, bool WXUNUSED(updateLabels) )
     if ( m_table )
     {
         bool done = m_table && m_table->AppendRows( numRows );
-        m_numRows = m_table->GetNumberRows();
         return done;
         // the table will have sent the results of the append row
         // operation to this view object as a grid table message
@@ -5752,7 +5751,6 @@ bool wxGrid::DeleteRows( int pos, int numRows, bool WXUNUSED(updateLabels) )
             DisableCellEditControl();
 
         bool done = m_table->DeleteRows( pos, numRows );
-        m_numRows = m_table->GetNumberRows();
         return done;
         // the table will have sent the results of the delete row
         // operation to this view object as a grid table message
@@ -5777,7 +5775,6 @@ bool wxGrid::InsertCols( int pos, int numCols, bool WXUNUSED(updateLabels) )
             DisableCellEditControl();
 
         bool done = m_table->InsertCols( pos, numCols );
-        m_numCols = m_table->GetNumberCols();
         return done;
         // the table will have sent the results of the insert col
         // operation to this view object as a grid table message
@@ -5799,7 +5796,6 @@ bool wxGrid::AppendCols( int numCols, bool WXUNUSED(updateLabels) )
     if ( m_table )
     {
         bool done = m_table->AppendCols( numCols );
-        m_numCols = m_table->GetNumberCols();
         return done;
         // the table will have sent the results of the append col
         // operation to this view object as a grid table message
@@ -5824,7 +5820,6 @@ bool wxGrid::DeleteCols( int pos, int numCols, bool WXUNUSED(updateLabels) )
             DisableCellEditControl();
 
         bool done = m_table->DeleteCols( pos, numCols );
-        m_numCols = m_table->GetNumberCols();
         return done;
         // the table will have sent the results of the delete col
         // operation to this view object as a grid table message

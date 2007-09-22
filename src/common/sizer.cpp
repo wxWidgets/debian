@@ -4,7 +4,7 @@
 // Author:      Robert Roebling and Robin Dunn
 // Modified by: Ron Lee
 // Created:
-// RCS-ID:      $Id: sizer.cpp,v 1.46.2.5 2003/02/02 14:58:56 JS Exp $
+// RCS-ID:      $Id: sizer.cpp,v 1.46.2.6 2003/09/19 20:27:11 RD Exp $
 // Copyright:   (c) Robin Dunn, Dirk Holtwick and Robert Roebling
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -731,6 +731,8 @@ wxGridSizer::wxGridSizer( int rows, int cols, int vgap, int hgap )
     m_cols = cols;
     m_vgap = vgap;
     m_hgap = hgap;
+    if (m_rows == 0 && m_cols == 0)
+        m_rows = 1;
 }
 
 wxGridSizer::wxGridSizer( int cols, int vgap, int hgap )
@@ -739,6 +741,8 @@ wxGridSizer::wxGridSizer( int cols, int vgap, int hgap )
     m_cols = cols;
     m_vgap = vgap;
     m_hgap = hgap;
+    if (m_rows == 0 && m_cols == 0)
+        m_rows = 1;
 }
 
 int wxGridSizer::CalcRowsCols(int& nrows, int& ncols) const

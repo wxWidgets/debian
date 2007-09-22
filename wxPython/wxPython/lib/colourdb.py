@@ -6,7 +6,7 @@
 # Author:      Robin Dunn
 #
 # Created:     13-March-2001
-# RCS-ID:      $Id: colourdb.py,v 1.2 2001/04/20 00:25:34 RD Exp $
+# RCS-ID:      $Id: colourdb.py,v 1.2.2.1 2003/09/25 20:34:25 RD Exp $
 # Copyright:   (c) 2001 by Total Control Software
 # Licence:     wxWindows license
 #----------------------------------------------------------------------
@@ -17,7 +17,7 @@ Load color names/values from the rgb.txt file on my system...
 
 
 def getColourList():
-    return map(lambda x: x[0], getColourInfoList())
+    return [ x[0] for x in getColourInfoList() ]
 
 
 
@@ -656,10 +656,14 @@ def getColourInfoList():
         ]
 
 
+_haveUpdated = False
+
 def updateColourDB():
-    from wxPython.wx import wxTheColourDatabase
-    cl = getColourInfoList()
-    for info in cl:
-        apply(wxTheColourDatabase.Append, info)
+    global _haveUpdated
+    if not _haveUpdated:
+        from wxPython.wx import wxTheColourDatabase
+        cl = getColourInfoList()
+        for info in cl:
+            wxTheColourDatabase.Append(*info)
 
 

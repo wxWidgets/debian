@@ -1,9 +1,9 @@
-"""Decorator classes for documentation and shell scripting.
+"""StyledTextCtrl decorator class module.
 """
 
 __author__ = "Patrick K. O'Brien <pobrien@orbtech.com>"
-__cvsid__ = "$Id: stc_.py,v 1.1.2.1 2003/04/09 17:43:16 RD Exp $"
-__revision__ = "$Revision: 1.1.2.1 $"[11:-2]
+__cvsid__ = "$Id: stc_.py,v 1.1.2.2 2003/09/25 21:51:59 PKO Exp $"
+__revision__ = "$Revision: 1.1.2.2 $"[11:-2]
 
 
 # These are not the real wxPython classes. These are Python versions

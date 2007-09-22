@@ -2,7 +2,7 @@
 // Name:        htmlpars.cpp
 // Purpose:     wxHtmlParser class (generic parser)
 // Author:      Vaclav Slavik
-// RCS-ID:      $Id: htmlpars.cpp,v 1.28.2.7 2003/06/10 21:20:21 VS Exp $
+// RCS-ID:      $Id: htmlpars.cpp,v 1.28.2.8 2003/08/29 09:59:00 VS Exp $
 // Copyright:   (c) 1999 Vaclav Slavik
 // Licence:     wxWindows Licence
 /////////////////////////////////////////////////////////////////////////////
@@ -875,7 +875,7 @@ bool wxMetaTagHandler::HandleTag(const wxHtmlTag& tag)
         tag.GetParam(_T("HTTP-EQUIV")).IsSameAs(_T("Content-Type"), FALSE) &&
         tag.HasParam(_T("CONTENT")))
     {
-        wxString content = tag.GetParam(_T("CONTENT"));
+        wxString content = tag.GetParam(_T("CONTENT")).Lower();
         if (content.Left(19) == _T("text/html; charset="))
         {
             *m_retval = content.Mid(19);

@@ -5,7 +5,7 @@
 // Author:      Robin Dunn
 //
 // Created:     3-Sept-1999
-// RCS-ID:      $Id: oglshapes.i,v 1.12.2.2 2002/12/18 06:15:31 RD Exp $
+// RCS-ID:      $Id: oglshapes.i,v 1.12.2.3 2003/09/22 21:51:16 RD Exp $
 // Copyright:   (c) 1998 by Total Control Software
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -37,6 +37,12 @@
 %pragma(python) code = "import wx"
 
 //---------------------------------------------------------------------------
+
+enum {
+    oglMETAFLAGS_OUTLINE,
+    oglMETAFLAGS_ATTACHMENTS
+};
+
 //---------------------------------------------------------------------------
 //---------------------------------------------------------------------------
 

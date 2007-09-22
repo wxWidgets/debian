@@ -4,7 +4,7 @@
 // Author:      Vadim Zeitlin
 // Modified by:
 // Created:     26.10.99
-// RCS-ID:      $Id: menu.h,v 1.24 2002/08/31 11:29:10 GD Exp $
+// RCS-ID:      $Id: menu.h,v 1.24.2.1 2003/07/10 08:57:31 JS Exp $
 // Copyright:   (c) wxWindows team
 // Licence:     wxWindows license
 ///////////////////////////////////////////////////////////////////////////////
@@ -241,6 +241,9 @@ public:
     // search
     virtual int FindItem(const wxString& item) const;
     wxMenuItem* FindItem(int id, wxMenu **menu = NULL) const;
+
+    // find by position
+    wxMenuItem* FindItemByPosition(size_t position) const;
 
     // get/set items attributes
     void Enable(int id, bool enable);

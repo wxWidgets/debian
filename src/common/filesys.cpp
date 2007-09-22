@@ -3,7 +3,7 @@
 // Purpose:     wxFileSystem class - interface for opening files
 // Author:      Vaclav Slavik
 // Copyright:   (c) 1999 Vaclav Slavik
-// CVS-ID:      $Id: filesys.cpp,v 1.36.2.5 2002/12/16 00:10:27 VS Exp $
+// CVS-ID:      $Id: filesys.cpp,v 1.36.2.6 2003/09/19 00:01:08 VZ Exp $
 // Licence:     wxWindows Licence
 /////////////////////////////////////////////////////////////////////////////
 
@@ -187,7 +187,16 @@ wxFSFile* wxLocalFSHandler::OpenFile(wxFileSystem& WXUNUSED(fs), const wxString&
     if (!wxFileExists(fullpath))
         return (wxFSFile*) NULL;
 
-    return new wxFSFile(new wxFFileInputStream(fullpath),
+    // we need to check whether we can really read from this file, otherwise
+    // wxFSFile is not going to work
+    wxFFileInputStream *is = new wxFFileInputStream(fullpath);
+    if ( !is->Ok() )
+    {
+        delete is;
+        return (wxFSFile*) NULL;
+    }
+
+    return new wxFSFile(is,
                         right,
                         GetMimeTypeFromExt(location),
                         GetAnchor(location),

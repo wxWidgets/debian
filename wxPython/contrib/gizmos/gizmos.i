@@ -5,7 +5,7 @@
 // Author:      Robin Dunn
 //
 // Created:     23-Nov-2001
-// RCS-ID:      $Id: gizmos.i,v 1.12.2.4 2003/06/05 20:33:55 RD Exp $
+// RCS-ID:      $Id: gizmos.i,v 1.12.2.7 2003/07/28 16:01:26 RD Exp $
 // Copyright:   (c) 2001 by Total Control Software
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -553,9 +553,15 @@ public:
     void SetImageList(wxImageList *imageList);
     void SetStateImageList(wxImageList *imageList);
     void SetButtonsImageList(wxImageList *imageList);
+
     void AssignImageList(wxImageList *imageList);
+    %pragma(python) addtomethod = "AssignImageList:_args[0].thisown = 0"
+
     void AssignStateImageList(wxImageList *imageList);
+    %pragma(python) addtomethod = "AssignStateImageList:_args[0].thisown = 0"
+
     void AssignButtonsImageList(wxImageList *imageList);
+    %pragma(python) addtomethod = "AssignButtonsImageList:_args[0].thisown = 0"
 
 
 
@@ -719,7 +725,24 @@ public:
     wxTreeItemId GetSelection() const;
 
     // get the items currently selected, return the number of such item
-    size_t GetSelections(wxArrayTreeItemIds&) const;
+    //size_t GetSelections(wxArrayTreeItemIds&) const;
+    %addmethods {
+        PyObject* GetSelections() {
+            wxPyBeginBlockThreads();
+            PyObject*           rval = PyList_New(0);
+            wxArrayTreeItemIds  array;
+            size_t              num, x;
+            num = self->GetSelections(array);
+            for (x=0; x < num; x++) {
+                wxTreeItemId *tii = new wxTreeItemId(array.Item(x));
+                PyObject* item = wxPyConstructObject((void*)tii, wxT("wxTreeItemId"), TRUE);
+                PyList_Append(rval, item);
+            }
+            wxPyEndBlockThreads();
+            return rval;
+        }
+    }
+
 
     // get the parent of this item (may return NULL if root)
     %name(GetItemParent)wxTreeItemId GetParent(const wxTreeItemId& item) const;
@@ -877,17 +900,17 @@ public:
 %pragma(python) addtoclass = "
     # Redefine some methods that SWIG gets a bit confused on...
     def GetFirstChild(self, *_args, **_kwargs):
-        val1,val2 = controls2c.wxTreeCtrl_GetFirstChild(self, *_args, **_kwargs)
+        val1,val2 = gizmosc.wxTreeListCtrl_GetFirstChild(self, *_args, **_kwargs)
         val1 = wxTreeItemIdPtr(val1)
         val1.thisown = 1
         return (val1,val2)
     def GetNextChild(self, *_args, **_kwargs):
-        val1,val2 = controls2c.wxTreeCtrl_GetNextChild(self, *_args, **_kwargs)
+        val1,val2 = gizmosc.wxTreeListCtrl_GetNextChild(self, *_args, **_kwargs)
         val1 = wxTreeItemIdPtr(val1)
         val1.thisown = 1
         return (val1,val2)
     def HitTest(self, *_args, **_kwargs):
-        val1, val2, val3 = controls2c.wxTreeCtrl_HitTest(self, *_args, **_kwargs)
+        val1, val2, val3 = gizmosc.wxTreeListCtrl_HitTest(self, *_args, **_kwargs)
         val1 = wxTreeItemIdPtr(val1)
         val1.thisown = 1
         return (val1, val2, val3)

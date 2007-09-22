@@ -3,7 +3,7 @@
 // Purpose:     generic implementation of wxListCtrl
 // Author:      Robert Roebling
 //              Vadim Zeitlin (virtual list control support)
-// Id:          $Id: listctrl.cpp,v 1.269.2.15 2003/06/03 10:46:08 VZ Exp $
+// Id:          $Id: listctrl.cpp,v 1.269.2.19 2003/09/23 23:48:17 RD Exp $
 // Copyright:   (c) 1998 Robert Roebling
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -652,6 +652,7 @@ public:
 
     void OnRenameTimer();
     bool OnRenameAccept(size_t itemEdit, const wxString& value);
+    void OnRenameCancelled(size_t itemEdit);
 
     void OnMouse( wxMouseEvent &event );
 
@@ -2302,6 +2303,7 @@ void wxListTextCtrl::OnChar( wxKeyEvent &event )
 
         case WXK_ESCAPE:
             Finish();
+            m_owner->OnRenameCancelled( m_itemEdited );
             break;
 
         default:
@@ -2336,11 +2338,13 @@ void wxListTextCtrl::OnKillFocus( wxFocusEvent &event )
 {
     if ( !m_finished )
     {
-        (void)AcceptChanges();
-
+        // We must finish regardless of success, otherwise we'll get focus problems
         Finish();
+    
+        if ( !AcceptChanges() )
+            m_owner->OnRenameCancelled( m_itemEdited );
     }
-
+        
     event.Skip();
 }
 
@@ -3072,6 +3076,11 @@ void wxListMainWindow::OnRenameTimer()
 bool wxListMainWindow::OnRenameAccept(size_t itemEdit, const wxString& value)
 {
     wxListEvent le( wxEVT_COMMAND_LIST_END_LABEL_EDIT, GetParent()->GetId() );
+    
+    // These only exist for wxTreeCtrl, which should probably be changed
+    // le.m_editCancelled = FALSE;
+    // le.m_label = value;
+    
     le.SetEventObject( GetParent() );
     le.m_itemIndex = itemEdit;
 
@@ -3080,8 +3089,33 @@ bool wxListMainWindow::OnRenameAccept(size_t itemEdit, const wxString& value)
 
     data->GetItem( 0, le.m_item );
     le.m_item.m_text = value;
+    
     return !GetParent()->GetEventHandler()->ProcessEvent( le ) ||
                 le.IsAllowed();
+}
+
+void wxListMainWindow::OnRenameCancelled(size_t itemEdit)
+{
+    // wxMSW seems not to notify the program about
+    // cancelled label edits.
+    return;
+
+    // let owner know that the edit was cancelled
+    wxListEvent le( wxEVT_COMMAND_LIST_END_LABEL_EDIT, GetParent()->GetId() );
+    
+    // These only exist for wxTreeCtrl, which should probably be changed
+    // le.m_editCancelled = TRUE;
+    // le.m_label = wxEmptyString;
+    
+    le.SetEventObject( GetParent() );
+    le.m_itemIndex = itemEdit;
+
+    wxListLineData *data = GetLine(itemEdit);
+    wxCHECK_RET( data, _T("invalid index in OnRenameCancelled()") );
+
+    data->GetItem( 0, le.m_item );
+
+    GetEventHandler()->ProcessEvent( le );
 }
 
 void wxListMainWindow::OnMouse( wxMouseEvent &event )
@@ -3543,6 +3577,14 @@ void wxListMainWindow::SetFocus()
 
 void wxListMainWindow::OnSetFocus( wxFocusEvent &WXUNUSED(event) )
 {
+    if ( GetParent() )
+    {
+        wxFocusEvent event( wxEVT_SET_FOCUS, GetParent()->GetId() );
+        event.SetEventObject( GetParent() );
+        if ( GetParent()->GetEventHandler()->ProcessEvent( event) )
+            return;
+    }
+
     // wxGTK sends us EVT_SET_FOCUS events even if we had never got
     // EVT_KILL_FOCUS before which means that we finish by redrawing the items
     // which are already drawn correctly resulting in horrible flicker - avoid
@@ -3553,19 +3595,18 @@ void wxListMainWindow::OnSetFocus( wxFocusEvent &WXUNUSED(event) )
 
         RefreshSelected();
     }
-
-    if ( !GetParent() )
-        return;
-
-    wxFocusEvent event( wxEVT_SET_FOCUS, GetParent()->GetId() );
-    event.SetEventObject( GetParent() );
-    GetParent()->GetEventHandler()->ProcessEvent( event );
 }
 
 void wxListMainWindow::OnKillFocus( wxFocusEvent &WXUNUSED(event) )
 {
+    if ( GetParent() )
+    {
+        wxFocusEvent event( wxEVT_KILL_FOCUS, GetParent()->GetId() );
+        event.SetEventObject( GetParent() );
+        if ( GetParent()->GetEventHandler()->ProcessEvent( event) )
+            return;
+    }
     m_hasFocus = FALSE;
-
     RefreshSelected();
 }
 
@@ -4467,6 +4508,14 @@ void wxListMainWindow::InsertItem( wxListItem &item )
     m_lines.Insert( line, id );
 
     m_dirty = TRUE;
+
+    // If an item is selected at or below the point of insertion, we need to
+    // increment the member variables because the current row's index has gone
+    // up by one
+    if ( HasCurrent() && m_current >= id )
+    {
+        m_current++;
+    }
 
     SendNotify(id, wxEVT_COMMAND_LIST_INSERT_ITEM);
 

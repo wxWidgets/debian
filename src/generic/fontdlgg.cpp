@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     04/01/98
-// RCS-ID:      $Id: fontdlgg.cpp,v 1.32.2.3 2002/11/14 20:54:22 JS Exp $
+// RCS-ID:      $Id: fontdlgg.cpp,v 1.32.2.5 2003/09/29 17:42:18 RD Exp $
 // Copyright:   (c) Julian Smart and Markus Holzem
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////

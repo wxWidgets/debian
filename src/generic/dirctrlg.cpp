@@ -4,7 +4,7 @@
 // Author:      Harm van der Heijden, Robert Roebling, Julian Smart
 // Modified by:
 // Created:     12/12/98
-// RCS-ID:      $Id: dirctrlg.cpp,v 1.48.2.3 2003/05/07 16:06:37 JS Exp $
+// RCS-ID:      $Id: dirctrlg.cpp,v 1.48.2.4 2003/08/14 11:48:25 CE Exp $
 // Copyright:   (c) Harm van der Heijden, Robert Roebling and Julian Smart
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -746,7 +746,7 @@ void wxGenericDirCtrl::OnExpandItem(wxTreeEvent &event)
 
     // VS: this is needed because the event handler is called from wxTreeCtrl
     //     ctor when wxTR_HIDE_ROOT was specified
-    if (m_rootId == 0)
+    if (!m_rootId.IsOk())
         m_rootId = m_treeCtrl->GetRootItem();
 
     ExpandDir(parentId);

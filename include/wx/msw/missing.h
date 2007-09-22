@@ -3,7 +3,7 @@
 // Purpose:     Declarations for parts of the Win32 SDK that are missing in
 //              the version that comes with some compilers
 // Created:     2002/04/23
-// RCS-ID:      $Id: missing.h,v 1.5.2.9 2003/05/27 09:16:22 CE Exp $
+// RCS-ID:      $Id: missing.h,v 1.5.2.11 2003/08/25 14:26:58 JS Exp $
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
 
@@ -163,7 +163,7 @@ typedef struct tagNMLVDISPINFOW {
 #endif
 #endif
 
-#if ((defined(__WATCOMC__) && __WATCOMC__ >= 1200) || defined(__GNUWIN32__) || defined (__MINGW32__) || defined (__BORLANDC__)) && !defined(HDN_GETDISPINFOW)
+#if ((defined(__WATCOMC__) && __WATCOMC__ >= 1200) || defined(__GNUWIN32__) || defined (__MINGW32__) || defined(__DIGITALMARS__) || defined (__BORLANDC__)) && !defined(HDN_GETDISPINFOW)
 #define HDN_GETDISPINFOW (HDN_FIRST-29)
 #if !wxCHECK_W32API_VERSION(2, 2)
 typedef struct {
@@ -178,6 +178,12 @@ typedef struct {
 #endif
 #endif
 
+// ----------------------------------------------------------------------------
+// Toolbar define value missing 
+// ----------------------------------------------------------------------------
+#if !defined(CCS_VERT)
+#define CCS_VERT                0x00000080L
+#endif
 
 // ----------------------------------------------------------------------------
 // MS HTML Help

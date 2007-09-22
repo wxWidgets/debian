@@ -1,5 +1,5 @@
 dnl Process this file with autoconf to produce a configure script.
-AC_REVISION($Id: configure.in,v 1.624.2.44 2003/05/24 11:07:22 JS Exp $)dnl
+AC_REVISION($Id: configure.in,v 1.624.2.52 2003/09/21 11:18:36 VZ Exp $)dnl
 
 dnl ---------------------------------------------------------------------------
 dnl
@@ -8,7 +8,7 @@ dnl Vadim Zeitlin and Ron Lee
 dnl
 dnl This script is under the wxWindows licence.
 dnl
-dnl Version: $Id: configure.in,v 1.624.2.44 2003/05/24 11:07:22 JS Exp $
+dnl Version: $Id: configure.in,v 1.624.2.52 2003/09/21 11:18:36 VZ Exp $
 dnl ---------------------------------------------------------------------------
 
 dnl ---------------------------------------------------------------------------
@@ -25,20 +25,12 @@ dnl When making releases do:
 dnl
 dnl WX_RELEASE_NUMBER += 1
 dnl
-dnl ..and update WX_CURRENT, WX_RELEASE and WX_AGE according to the
-dnl following rules:
-dnl
-dnl    If any changes have been made to the public interface, that is if any
-dnl    exported class, method, global or global type has been added, removed
-dnl    or changed in any way, then do:  WX_CURRENT += 1
-dnl
-dnl    If source changes have been made that *do not* alter the public
-dnl    interface then do:  WX_REVISION += 1
-dnl    If WX_CURRENT was incremented (as above) instead do:  WX_REVISION = 0
-dnl
-dnl    If any public interface was added, do:  WX_AGE += 1
-dnl    If any public interface was removed (or altered in a way effectively
-dnl    removing the previous definition), instead do:  WX_AGE = 0
+dnl In case of backwards incompatible change (shouldn't happen
+dnl but if it does, do change the soname here to avoid run-time
+dnl problems!), do WX_CURRENT++; WX_REVISION = WX_AGE = 0. Otherwise
+dnl (i.e. normal case), WX_CURRENT should be left unchanged, but you
+dnl should do WX_REVISION++ and, if any public methods were added to
+dnl the library, also WX_AGE++.
 dnl
 dnl When the major or minor version numbers are incremented, all the above
 dnl variables should be reset to 0.
@@ -48,7 +40,7 @@ dnl   libwx_$(TOOLKIT)-$(WX_RELEASE).so.$(WX_CURRENT).$(WX_REVISION).$(WX_AGE)
 
 WX_MAJOR_VERSION_NUMBER=2
 WX_MINOR_VERSION_NUMBER=4
-WX_RELEASE_NUMBER=1
+WX_RELEASE_NUMBER=2
 
 WX_VERSION=$WX_MAJOR_VERSION_NUMBER.$WX_MINOR_VERSION_NUMBER.$WX_RELEASE_NUMBER
 WX_RELEASE=$WX_MAJOR_VERSION_NUMBER.$WX_MINOR_VERSION_NUMBER
@@ -56,8 +48,8 @@ WX_RELEASE=$WX_MAJOR_VERSION_NUMBER.$WX_MINOR_VERSION_NUMBER
 WX_MSW_VERSION=$WX_MAJOR_VERSION_NUMBER$WX_MINOR_VERSION_NUMBER$WX_RELEASE_NUMBER
 
 WX_CURRENT=0
-WX_REVISION=0
-WX_AGE=0
+WX_REVISION=1
+WX_AGE=1
 
 
 dnl ------------------------------------------------------------------------
@@ -66,12 +58,14 @@ dnl ------------------------------------------------------------------------
 
 dnl assume Unix
 USE_UNIX=1
+USE_OS2=0
 USE_WIN32=0
 USE_DOS=0
 USE_BEOS=0
 USE_MAC=0
 
 USE_LINUX=
+USE_GNU=
 USE_SGI=
 USE_HPUX=
 USE_SYSV=
@@ -144,6 +138,16 @@ case "${host}" in
   *-*-linux* )
     USE_LINUX=1
     AC_DEFINE(__LINUX__)
+    TMP=`uname -m`
+    if test "x$TMP" = "xalpha"; then
+      USE_ALPHA=1
+      AC_DEFINE(__ALPHA__)
+    fi
+    DEFAULT_DEFAULT_wxUSE_GTK=1
+  ;;
+  *-*-gnu* )
+    USE_GNU=1
+    AC_DEFINE(__GNU__)
     TMP=`uname -m`
     if test "x$TMP" = "xalpha"; then
       USE_ALPHA=1
@@ -257,9 +261,14 @@ case "${host}" in
   ;;
 
   *-pc-os2_emx | *-pc-os2-emx )
+    USE_OS2=1
+    dnl Now both USE_OS2 and USE_UNIX should be set to 1 !!
     AC_DEFINE(__EMX__)
     PROGRAM_EXT=".exe"
     DEFAULT_DEFAULT_wxUSE_PM=1
+    dnl "c++" wrapper is not always available, so always use plain gcc.
+    CXX=gcc
+    LDFLAGS="$LDFLAGS -Zcrtdll -Zsysv-signals"
   ;;
 
   powerpc-*-darwin* )
@@ -474,6 +483,8 @@ if test $DEBUG_CONFIGURE = 1; then
   DEFAULT_wxUSE_IFF=no
   DEFAULT_wxUSE_XPM=no
   DEFAULT_wxUSE_ICO_CUR=no
+  DEFAULT_wxUSE_IMAGE_LOADING_IN_MSW=no
+  DEFAULT_wxUSE_RESOURCE_LOADING_IN_MSW=no
 else
   DEFAULT_wxUSE_UNIVERSAL=no
 
@@ -649,6 +660,8 @@ else
   DEFAULT_wxUSE_PNM=yes
   DEFAULT_wxUSE_XPM=yes
   DEFAULT_wxUSE_ICO_CUR=yes
+  DEFAULT_wxUSE_IMAGE_LOADING_IN_MSW=yes
+  DEFAULT_wxUSE_RESOURCE_LOADING_IN_MSW=yes
 fi
 
 dnl WX_ARG_WITH should be used to select whether an external package will be
@@ -1035,6 +1048,8 @@ WX_ARG_ENABLE(iff,         [  --enable-iff            use iff images (IFF file f
 WX_ARG_ENABLE(pnm,         [  --enable-pnm            use pnm images (PNM file format)], wxUSE_PNM)
 WX_ARG_ENABLE(xpm,         [  --enable-xpm            use xpm images (XPM file format)], wxUSE_XPM)
 WX_ARG_ENABLE(ico_cur,     [  --enable-icocur         use Windows ICO and CUR formats], wxUSE_ICO_CUR)
+WX_ARG_ENABLE(dynamic_dib, [  --disable-dynamic_dib   don't use dynamic DIB loading/saving code under MSW], wxUSE_IMAGE_LOADING_IN_MSW, disable)
+WX_ARG_ENABLE(dynamic_ico_cur, [  --disable-dynamic_ico_cur   don't use dynamic icon/cursor loading/saving code under MSW], wxUSE_RESOURCE_LOADING_IN_MSW, disable)
 
 fi
 
@@ -1345,6 +1360,8 @@ AC_PROG_LN_S
 dnl ---------------------------------------------------------------------------
 dnl When we are using gcc on OS/2, we want to be either using resources (PM)
 dnl or a more complete POSIX emulation for Motif/GTK+/X11
+dnl Moreover we need to link explicitly against either stdcpp.a or stdcxx.a
+dnl (depending on compiler version), since we are using "gcc", not "g++/c++".
 dnl ---------------------------------------------------------------------------
 dnl (OS/2-only piece)
 case "${host}" in
@@ -1358,6 +1375,26 @@ case "${host}" in
       else
           dnl Include resources for the "native" port (wxPM).
           RESPROGRAMOBJ="\${top_srcdir}/include/wx/os2/wx.res"
+      fi
+      AC_CACHE_CHECK([for gcc 3 or later], wx_cv_gcc3,[
+          AC_TRY_COMPILE([#include <features.h>],
+              [
+                  #if (__GNUC__ < 3)
+                      #error old gcc
+                  #endif
+              ],
+              [
+                  wx_cv_gcc3=yes
+              ],
+              [
+                  wx_cv_gcc3=no
+              ]
+          )
+      ])
+      if test "$wx_cv_gcc3" = "no"; then
+          LIBS="$LIBS -lstdcpp"
+      else
+          LIBS="$LIBS -lstdcxx"
       fi
   ;;
 esac
@@ -1410,7 +1447,7 @@ case "${host}" in
 esac
 
 if test "$wxUSE_GUI" = "yes"; then
-    if test "$wxUSE_UNIX" = "yes"; then
+    if test "$wxUSE_UNIX" = "yes" -a "$wxUSE_PM" != 1; then
         dnl defines HAVE_X11_XKBLIB_H
         AC_CHECK_HEADERS(X11/XKBlib.h)
     fi
@@ -1613,7 +1650,7 @@ dnl check for glibc version
 dnl
 dnl VZ: I have no idea why had this check been there originally, but now
 dnl     we could probably do without it by just always adding _GNU_SOURCE
-if test "$USE_LINUX" = 1; then
+if test "$USE_LINUX" = 1 || test "$USE_GNU" = 1 ; then
     AC_CACHE_CHECK([for glibc 2.1 or later], wx_cv_lib_glibc21,[
         AC_TRY_COMPILE([#include <features.h>],
             [
@@ -1928,11 +1965,13 @@ if test "$wxUSE_LIBTIFF" != "no" ; then
             TIFF_PREREQ_LINKS="$TIFF_PREREQ_LINKS $ZLIB_LINK"
         fi
         AC_CHECK_HEADER(tiffio.h,
-                        AC_CHECK_LIB(tiff, TIFFError,
-                                     TIFF_LINK=" -ltiff",
-                                     ,
-                                     $TIFF_PREREQ_LINKS)
-                       )
+            [
+                AC_CHECK_LIB(tiff, TIFFError,
+                             TIFF_LINK=" -ltiff",
+                             ,
+                             $TIFF_PREREQ_LINKS)
+            ]
+        )
 
         if test "x$TIFF_LINK" = "x" ; then
             if test "$wxUSE_LIBTIFF" = "sys" ; then
@@ -2337,7 +2376,7 @@ equivalent variable and GTK+ is version 1.2.3 or above.
 
         if test "$wxUSE_NANOX" = "yes"; then
             TOOLKIT_INCLUDE="-I\$(top_srcdir)/include/wx/x11/nanox -I\$(MICROWIN)/src/include $TOOLKIT_INCLUDE"
-            TOOLCHAIN_DEFS="${TOOLCHAIN_DEFS} -D__NANOX__ -DMWPIXEL_FORMAT=MWPF_TRUECOLOR0888 -DHAVE_FILEIO -DHAVE_BMP_SUPPORT=1 -DHAVE_GIF_SUPPORT=1 -DHAVE_PNM_SUPPORT=1 -DHAVE_XPM_SUPPORT=1 -DLINUX=1 -DUNIX=1 -DUSE_EXPOSURE -DSCREEN_HEIGHT=480 -DSCREEN_WIDTH=640 -DSCREEN_DEPTH=4 -DX11=1"
+            TOOLCHAIN_DEFS="${TOOLCHAIN_DEFS} -D__NANOX__ -DMWPIXEL_FORMAT=MWPF_TRUECOLOR0888 -DHAVE_FILEIO -DHAVE_BMP_SUPPORT=1 -DHAVE_GIF_SUPPORT=1 -DHAVE_PNM_SUPPORT=1 -DHAVE_XPM_SUPPORT=1 -DUNIX=1 -DUSE_EXPOSURE -DSCREEN_HEIGHT=480 -DSCREEN_WIDTH=640 -DSCREEN_DEPTH=4 -DX11=1"
             GUI_TK_LIBRARY="$GUI_TK_LIBRARY \$(MICROWIN)/src/lib/libnano-X.a"
         else
             GUI_TK_LIBRARY="$GUI_TK_LIBRARY -lX11$xpm_link"
@@ -2568,8 +2607,6 @@ equivalent variable and GTK+ is version 1.2.3 or above.
         AC_MSG_WARN([OS/2 PM requires old resource format, re-enabled])
         wxUSE_PROLOGIO="yes"
         wxUSE_RESOURCES="yes"
-        AC_MSG_WARN([OS/2 threads are not yet supported... disabled])
-        wxUSE_THREADS="no"
     fi
 
     dnl the name of the directory where the files for this toolkit live
@@ -2888,7 +2925,7 @@ if test "$wxUSE_SHARED" = "yes"; then
         fi
       ;;
 
-      *-*-linux* )
+      *-*-linux* | *-*-gnu* )
         if test "$GCC" != "yes"; then
             AC_CACHE_CHECK([for Intel compiler], wx_cv_prog_icc,
             [
@@ -3060,6 +3097,8 @@ if test "$wxUSE_MAC" = 1; then
 else
     if test "$wxUSE_PM" = 1; then
         LIBWXMACRESCOMP="emxbind -ep \$(BIN_PROGRAM)"
+    else
+        LIBWXMACRESCOMP="#"
     fi
 fi
 
@@ -3460,12 +3499,16 @@ AC_CHECK_FUNCS(inet_addr,
     [
         AC_CHECK_LIB(nsl, inet_addr,
             INET_LINK="nsl",
-            AC_CHECK_LIB(resolv, inet_addr,
-                INET_LINK="resolv",
-                AC_CHECK_LIB(socket, inet_addr,
-                    INET_LINK="socket"
+            [
+                AC_CHECK_LIB(resolv, inet_addr,
+                    INET_LINK="resolv",
+                    [
+                        AC_CHECK_LIB(socket, inet_addr,
+                            INET_LINK="socket"
+                        )
+                    ]
                 )
-            )
+            ]
         )
     ]
 )
@@ -3498,7 +3541,7 @@ dnl ---------------------------------------------------------------------------
 
 dnl under MSW (except mingw32) we always have thread support
 CPP_MT_FLAG=
-if test "$TOOLKIT" != "MSW"; then
+if test "$TOOLKIT" != "MSW" -a "$TOOLKIT" != "PM"; then
 
     dnl the code below:
     dnl
@@ -3793,6 +3836,11 @@ else
                 dnl it doesn't
                 CFLAGS="$CFLAGS_OLD"
             fi
+        ;;
+        *-pc-os2*emx )
+	    CFLAGS="$CFLAGS -Zmt -D__ST_MT_ERRNO__"	
+	    CXXFLAGS="$CXXFLAGS -Zmt -D__ST_MT_ERRNO__"	
+	    LDFLAGS="$LDFLAGS -Zmt"	
         ;;
       esac
     fi
@@ -4257,15 +4305,17 @@ if test "$wxUSE_SOCKETS" = "yes"; then
     if test "$TOOLKIT" != "MSW"; then
         dnl under Solaris and OS/2, socket functions live in -lsocket
         AC_CHECK_FUNC(socket,,
-            AC_CHECK_LIB(socket, socket,
-                if test "$INET_LINK" != " -lsocket"; then
-                    INET_LINK="$INET_LINK -lsocket"
-                fi,
-                [
-                    AC_MSG_WARN([socket library not found - sockets will be disabled])
-                    wxUSE_SOCKETS=no
-                ]
-            )
+            [
+                AC_CHECK_LIB(socket, socket,
+                    if test "$INET_LINK" != " -lsocket"; then
+                        INET_LINK="$INET_LINK -lsocket"
+                    fi,
+                    [
+                        AC_MSG_WARN([socket library not found - sockets will be disabled])
+                        wxUSE_SOCKETS=no
+                    ]
+                )
+            ]
         )
     fi
 fi
@@ -4375,8 +4425,9 @@ dnl ------------------------------------------------------------------------
 dnl DLL support
 dnl ------------------------------------------------------------------------
 
-dnl under MSW we always have LoadLibrary/GetProcAddress
-if test "$TOOLKIT" != "MSW"; then
+dnl under MSW we always have LoadLibrary/GetProcAddress and
+dnl under OS/2 we always have DosLoadModule/DosQueryProcAddr
+if test "$TOOLKIT" != "MSW" -a "$USE_OS2" != 1; then
 
     HAVE_DL_FUNCS=0
     HAVE_SHL_FUNCS=0
@@ -4419,8 +4470,11 @@ if test "$TOOLKIT" != "MSW"; then
         dnl check also for dlerror()
         if test "$HAVE_DL_FUNCS" = 1; then
             AC_CHECK_FUNCS(dlerror,
-                           AC_DEFINE(HAVE_DLERROR),
-                           AC_CHECK_LIB(dl, dlerror, AC_DEFINE(HAVE_DLERROR)))
+                AC_DEFINE(HAVE_DLERROR),
+                [
+                    AC_CHECK_LIB(dl, dlerror, AC_DEFINE(HAVE_DLERROR))
+                ]
+            )
         fi
         fi
 
@@ -5126,6 +5180,14 @@ fi
 
 if test "$wxUSE_ICO_CUR" = "yes" ; then
   AC_DEFINE(wxUSE_ICO_CUR)
+fi
+
+if test "$wxUSE_IMAGE_LOADING_IN_MSW" = "yes"; then
+  AC_DEFINE(wxUSE_IMAGE_LOADING_IN_MSW)
+fi
+
+if test "$wxUSE_RESOURCE_LOADING_IN_MSW" = "yes"; then
+  AC_DEFINE(wxUSE_RESOURCE_LOADING_IN_MSW)
 fi
 
 if test "$wxUSE_UNICODE" = "yes" -a "$wxUSE_UNICODE_MSLU" = "yes" ; then

@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     04/01/98
-// RCS-ID:      $Id: tbar95.cpp,v 1.97.2.2 2002/12/27 14:37:58 JS Exp $
+// RCS-ID:      $Id: tbar95.cpp,v 1.97.2.5 2003/08/25 14:27:05 JS Exp $
 // Copyright:   (c) Julian Smart and Markus Holzem
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -47,6 +47,13 @@
     #include "malloc.h"
 #endif
 
+// ----------------------------------------------------------------------------
+// Toolbar define value missing 
+// ----------------------------------------------------------------------------
+#if defined(__DIGITALMARS__) 
+#define CCS_VERT                0x00000080L
+#endif
+
 #include "wx/msw/private.h"
 
 #ifndef __TWIN32__
@@ -55,6 +62,10 @@
     #include <commctrl.h>
 #else
     #include "wx/msw/gnuwin32/extra.h"
+#endif
+
+#if !defined(CCS_VERT)
+#define CCS_VERT                0x00000080L
 #endif
 
 #endif // __TWIN32__
@@ -368,6 +379,9 @@ WXDWORD wxToolBar::MSWGetStyle(long style, WXDWORD *exstyle) const
     if ( style & wxTB_NOALIGN )
         msStyle |= CCS_NOPARENTALIGN;
 
+    if ( style & wxTB_VERTICAL )
+        msStyle |= CCS_VERT;
+
     return msStyle;
 }
 
@@ -659,8 +673,8 @@ bool wxToolBar::Realize()
         wxToolBarToolBase *tool = node->GetData();
 
         // don't add separators to the vertical toolbar - looks ugly
-        if ( isVertical && tool->IsSeparator() )
-            continue;
+        //if ( isVertical && tool->IsSeparator() )
+        //    continue;
 
         TBBUTTON& button = buttons[i];
 
