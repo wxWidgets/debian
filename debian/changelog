@@ -1,3 +1,21 @@
+wxwidgets2.6 (2.6.1.1.1) unstable; urgency=low
+
+  * Reshuffle the wxPython packages again, to comply better with
+    the python naming policy and improve support for concurrent
+    installations.  The runtime files are now in python-wxgtk2.6-0,
+    the version selector in python-wxversion and the ancillary
+    tools in the python-wxtools package.
+
+    Many thanks to Matthias Klose <doko@ubuntu.com> for patches
+    and patient prodding to get wxpython into better shape for
+    version transitions.
+
+  * Collapse the wx-common package into an 'unversioned' one also.
+
+  * On its way back into unstable by popular demand.
+
+ -- Ron Lee <ron@debian.org>  Sun, 14 Aug 2005 21:25:34 +0930
+
 wxwidgets2.6 (2.6.1.1) experimental; urgency=low
 
   * 2.6.2 prerelease test -- Pain for the Impatient.
