@@ -3,7 +3,7 @@
 // Purpose:
 // Date: 08/11/1999
 // Author: Guilhem Lavaux <lavaux@easynet.fr> (C) 1999, 2000
-// CVSID: $Id: sndoss.cpp,v 1.1.6.2 2005/06/20 17:34:43 MR Exp $
+// CVSID: $Id: sndoss.cpp,v 1.1.6.3 2006/04/13 07:40:18 RL Exp $
 // Licence: wxWindows licence
 // --------------------------------------------------------------------------
 
@@ -83,7 +83,8 @@ wxSoundStream& wxSoundStreamOSS::Read(void *buffer, wxUint32 len)
         return *this;
     }
     
-    m_lastcount = (wxUint32)ret = read(m_fd, buffer, len);
+    ret = read(m_fd, buffer, len);
+    m_lastcount = (wxUint32)ret;
     m_q_filled  = TRUE;
     
     if (ret < 0)

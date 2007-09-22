@@ -2,7 +2,7 @@
 // Name:        wx/gtk/window.h
 // Purpose:
 // Author:      Robert Roebling
-// Id:          $Id: window.h,v 1.111.2.3 2005/06/20 17:37:07 MR Exp $
+// Id:          $Id: window.h,v 1.111.2.4 2005/08/19 23:19:57 MR Exp $
 // Copyright:   (c) 1998 Robert Roebling
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -156,10 +156,11 @@ public:
 #ifdef __WXGTK20__
     // Returns the default context which usually is anti-aliased
     PangoContext   *GtkGetPangoDefaultContext();
-    
+
     // Returns the X11 context which renders on the X11 client
     // side (which can be remote) and which usually is not
     // anti-aliased and is thus faster
+    // MR: Deprecated and returning GtkGetPangoDefaultContext to avoid libpangox dependancy
     PangoContext   *GtkGetPangoX11Context();
     PangoContext   *m_x11Context;
 #endif

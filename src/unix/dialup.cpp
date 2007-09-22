@@ -4,7 +4,7 @@
 // Author:      Karsten Ballüder
 // Modified by:
 // Created:     03.10.99
-// RCS-ID:      $Id: dialup.cpp,v 1.35.2.3 2005/06/20 17:44:47 MR Exp $
+// RCS-ID:      $Id: dialup.cpp,v 1.35.2.4 2005/10/06 22:49:12 MW Exp $
 // Copyright:   (c) Karsten Ballüder
 // Licence:     wxWindows licence
 ///////////////////////////////////////////////////////////////////////////////
@@ -712,15 +712,15 @@ wxDialUpManagerImpl::CheckIfconfig()
 
 #if defined(__SOLARIS__) || defined (__SUNOS__)
                     // dialup device under SunOS/Solaris
-                    hasModem = strstr(output,"ipdptp") != (char *)NULL;
-                    hasLAN = strstr(output, "hme") != (char *)NULL;
+                    hasModem = strstr(output.fn_str(),"ipdptp") != (char *)NULL;
+                    hasLAN = strstr(output.fn_str(), "hme") != (char *)NULL;
 #elif defined(__LINUX__) || defined (__FREEBSD__)
                     hasModem = strstr(output.fn_str(),"ppp")    // ppp
                         || strstr(output.fn_str(),"sl")  // slip
                         || strstr(output.fn_str(),"pl"); // plip
                     hasLAN = strstr(output.fn_str(), "eth") != NULL;
 #elif defined(__SGI__)  // IRIX
-                    hasModem = strstr(output, "ppp") != NULL; // PPP
+                    hasModem = strstr(output.fn_str(), "ppp") != NULL; // PPP
 #elif defined(__HPUX__)
                     // if could run ifconfig on interface, then it exists
                     hasModem = TRUE;

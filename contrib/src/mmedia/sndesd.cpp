@@ -3,7 +3,7 @@
 // Purpose:
 // Date: 08/11/1999
 // Author: Guilhem Lavaux <lavaux@easynet.fr> (C) 1999
-// CVSID: $Id: sndesd.cpp,v 1.1.6.2 2005/06/20 17:34:43 MR Exp $
+// CVSID: $Id: sndesd.cpp,v 1.1.6.3 2006/04/13 07:40:18 RL Exp $
 // Licence: wxWindows licence
 // --------------------------------------------------------------------------
 
@@ -104,7 +104,8 @@ wxSoundStream& wxSoundStreamESD::Read(void *buffer, wxUint32 len)
         return *this;
     }
     
-    m_lastcount = (wxUint32)ret = read(m_fd_input, buffer, len);
+    ret = read(m_fd_input, buffer, len);
+    m_lastcount = (wxUint32)ret;
     
     if (ret < 0)
         m_snderror = wxSOUND_IOERROR;
@@ -127,7 +128,8 @@ wxSoundStream& wxSoundStreamESD::Write(const void *buffer, wxUint32 len)
         return *this;
     }
     
-    m_lastcount = (wxUint32)ret = write(m_fd_output, buffer, len);
+    ret = write(m_fd_output, buffer, len);
+    m_lastcount = (wxUint32)ret;
     
     if (ret < 0)
         m_snderror = wxSOUND_IOERROR;

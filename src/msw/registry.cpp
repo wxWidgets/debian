@@ -4,7 +4,7 @@
 // Author:      Vadim Zeitlin
 // Modified by:
 // Created:     03.04.98
-// RCS-ID:      $Id: registry.cpp,v 1.45.2.3 2005/06/20 17:44:07 MR Exp $
+// RCS-ID:      $Id: registry.cpp,v 1.45.2.4 2005/12/06 19:07:28 JS Exp $
 // Copyright:   (c) 1998 Vadim Zeitlin <zeitlin@dptmaths.ens-cachan.fr>
 // Licence:     wxWindows license
 // TODO:        - parsing of registry key names
@@ -834,7 +834,7 @@ bool wxRegKey::QueryValue(const wxChar *szValue,
   if ( CONST_CAST Open() ) {
     #ifdef  __WIN32__
       // first get the type and size of the data
-      DWORD dwType, dwSize;
+      DWORD dwType=REG_NONE, dwSize=0;
       m_dwLastError = RegQueryValueEx((HKEY) m_hKey, WXSTRINGCAST szValue, RESERVED,
                                       &dwType, NULL, &dwSize);
       if ( m_dwLastError == ERROR_SUCCESS ) {

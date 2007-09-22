@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     04/01/98
-// RCS-ID:      $Id: mdi.cpp,v 1.44.2.2 2002/12/15 10:22:40 MBN Exp $
+// RCS-ID:      $Id: mdi.cpp,v 1.44.2.3 2005/08/23 18:13:00 CE Exp $
 // Copyright:   (c) Julian Smart and Markus Holzem
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -324,7 +324,7 @@ void MyFrame::InitToolBar(wxToolBar* toolBar)
     toolBar->AddTool(6, *bitmaps[6], wxNullBitmap, FALSE, currentX, -1, (wxObject *) NULL, _T("Print"));
     currentX += width + 5;
     toolBar->AddSeparator();
-    toolBar->AddTool(7, *bitmaps[7], wxNullBitmap, TRUE, currentX, -1, (wxObject *) NULL, _T("Help"));
+    toolBar->AddTool(MDI_ABOUT, *bitmaps[7], wxNullBitmap, TRUE, currentX, -1, (wxObject *) NULL, _T("Help"));
 
     toolBar->Realize();
 

@@ -4,7 +4,7 @@
 // Author:      Original from Wolfram Gloger/Guilhem Lavaux
 // Modified by: K. S. Sreeram (2002): POSIXified wxCondition, added wxSemaphore
 // Created:     04/22/98
-// RCS-ID:      $Id: threadpsx.cpp,v 1.58.2.7 2005/06/20 17:44:50 MR Exp $
+// RCS-ID:      $Id: threadpsx.cpp,v 1.58.2.8 2005/08/19 10:46:48 VZ Exp $
 // Copyright:   (c) Wolfram Gloger (1996, 1997)
 //                  Guilhem Lavaux (1998)
 //                  Vadim Zeitlin (1999-2002)
@@ -528,7 +528,7 @@ wxSemaError wxSemaphoreInternal::WaitTimeout(unsigned long milliseconds)
             return wxSEMA_TIMEOUT;
         }
 
-        if ( m_cond.Wait(remainingTime) != wxCOND_NO_ERROR )
+        if ( m_cond.WaitTimeout(remainingTime) != wxCOND_NO_ERROR )
             return wxSEMA_MISC_ERROR;
     }
 
