@@ -213,7 +213,7 @@ debian/python-version:
 	echo python_ver := python$(shell python -c "import sys;print sys.version[:3]") > $@
 
 debian/control: $(addprefix debian/,control.in python-version)
-	sed -e 's/=V/$(release)/g;s/=SOV/$(sorelease)/g;s/=PY/$(python_ver)/g'\
+	sed -e 's/=V/$(release)/g;s/=SOV/$(sorelease)/g;s/=PY/python/g'\
 		< debian/control.in > debian/control
 
 control-files-stamp: debian/control
@@ -692,6 +692,9 @@ install-gtk-py-lib: build-gtk-py-stamp
 
 	find debian/$(package_gtk_py_lib)/$(pydir) -name '*.py?' -exec rm '{}' ';'
 
+	DH_PYCENTRAL=nomove dh_pycentral
+	dh_python
+
 	# This is rather bogus, its included in the main copyright file now though.
 	rm -f debian/$(package_gtk_py_lib)/$(wxpydir)/wx/tools/XRCed/license.txt
 
@@ -707,6 +710,8 @@ ifndef DEBIAN_WX_DEFAULT_VERSION
 else
 	rm debian/$(package_gtk_py_lib)/$(pydir)/wxversion.py
 endif
+	DH_PYCENTRAL=nomove dh_pycentral
+	dh_python
 
 install-gtk-py-tools: DH_OPTIONS=-p$(package_gtk_py_tools)
 install-gtk-py-tools: install-gtk-py-ver
@@ -735,6 +740,9 @@ ifndef DEBIAN_WX_DEFAULT_VERSION
 	cp debian/lintian-override debian/$(package_gtk_py_tools)/usr/share/lintian/overrides/$(package_gtk_py_tools)
 endif
 	rm -r debian/$(package_gtk_py_lib)/usr/bin
+
+	DH_PYCENTRAL=nomove dh_pycentral
+	dh_python
 
 install-gtk-py: install-gtk-py-tools
 
@@ -816,6 +824,9 @@ install-gtk-dbg-py: build-gtk-dbg-py-stamp
 
 	# This is rather bogus, its included in the main copyright file now though.
 	rm -f debian/$(package_gtk_dbg_py)/$(wxpydir)/wx/tools/XRCed/license.txt
+
+	DH_PYCENTRAL=nomove dh_pycentral
+	dh_python
 
 
 install-msw-dev: DH_OPTIONS=-p$(package_msw_dev)

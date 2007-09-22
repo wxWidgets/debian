@@ -933,7 +933,8 @@ msgstr "Impossível &Desfazer "
 #, c-format
 msgid "Can't check image format of file '%s': file does not exist."
 msgstr ""
-"Impossível verificar formato de imagem do arquivo '%s': arquivo does não existe."
+"Impossível verificar formato de imagem do arquivo '%s': arquivo does não "
+"existe."
 
 #: ../src/msw/registry.cpp:442
 #, c-format
@@ -1553,8 +1554,8 @@ msgid ""
 "Dial up functions are unavailable because the remote access service (RAS) is "
 "not installed on this machine. Please install it."
 msgstr ""
-"Funções de discagem estão indisponíveis porque o serviço de acesso remoto (RAS) "
-"não foi instalado nesta máquina. Por favor instale."
+"Funções de discagem estão indisponíveis porque o serviço de acesso remoto "
+"(RAS) não foi instalado nesta máquina. Por favor instale."
 
 #: ../src/generic/tipdlg.cpp:246
 msgid "Did you know..."
@@ -1588,8 +1589,8 @@ msgid ""
 "Display all index items that contain given substring. Search is case "
 "insensitive."
 msgstr ""
-"Mostra todos os itens que contem uma dada substring. Busca não importando "
-"se são maiúsculas ou minúsculas."
+"Mostra todos os itens que contem uma dada substring. Busca não importando se "
+"são maiúsculas ou minúsculas."
 
 #: ../src/html/helpfrm.cpp:685
 msgid "Display options dialog"
@@ -1767,7 +1768,8 @@ msgstr "'char' esperado enquanto analisa recurso."
 msgid ""
 "Exporting registry key: file \"%s\" already exists and won't be overwritten."
 msgstr ""
-"Exportando chave de registro: arquivo \"%s\" já existe e não pode ser reescrito."
+"Exportando chave de registro: arquivo \"%s\" já existe e não pode ser "
+"reescrito."
 
 #: ../src/common/fmapbase.cpp:143
 msgid "Extended Unix Codepage for Japanese (EUC-JP)"
@@ -2008,8 +2010,8 @@ msgid ""
 "Failed to join a thread, potential memory leak detected - please restart the "
 "program"
 msgstr ""
-"Falha ao unir a thread, falha de memória encontrada - por favor reinicialize o "
-"programa"
+"Falha ao unir a thread, falha de memória encontrada - por favor reinicialize "
+"o programa"
 
 #: ../src/msw/utils.cpp:703
 #, c-format
@@ -2220,8 +2222,7 @@ msgstr "impossível abrir arquivo de configurações do usuário."
 #: ../src/common/debugrpt.cpp:679
 #, fuzzy, c-format
 msgid "Failed to upload the debug report (error code %d)."
-msgstr ""
-"Falha ao carregar o relatório de depuração (código de erro %d)"
+msgstr "Falha ao carregar o relatório de depuração (código de erro %d)"
 
 #: ../src/unix/snglinst.cpp:173
 #, c-format
@@ -2530,8 +2531,8 @@ msgid ""
 "but be warned that it may hinder improving the program, so if\n"
 "at all possible please do continue with the report generation.\n"
 msgstr ""
-"Se você desejar suprimir completamente o relatório de depuração, por favor escolha o "
-"botão \"Cancela\",\n"
+"Se você desejar suprimir completamente o relatório de depuração, por favor "
+"escolha o botão \"Cancela\",\n"
 "mas será advertido que isto pode impedir a execução do programa, então se\n"
 "isto for possível por favor continue com a geração de relatório.\n"
 
@@ -2579,8 +2580,8 @@ msgid ""
 "Impossible to create a rich edit control, using simple text control instead. "
 "Please reinstall riched32.dll"
 msgstr ""
-"Impossível criar um rich edit control, usando controle de texto simples. "
-"Por favor reinstale riched32.dll"
+"Impossível criar um rich edit control, usando controle de texto simples. Por "
+"favor reinstale riched32.dll"
 
 #: ../src/unix/utilsunx.cpp:428
 msgid "Impossible to get child process input"
@@ -2843,8 +2844,8 @@ msgid ""
 "MS HTML Help functions are unavailable because the MS HTML Help library is "
 "not installed on this machine. Please install it."
 msgstr ""
-"A funções de auxílio MS HTML não estão disponíveis porque a biblioteca MS HTML Help não "
-"foi instalada nesta máquina. Por favor instale."
+"A funções de auxílio MS HTML não estão disponíveis porque a biblioteca MS "
+"HTML Help não foi instalada nesta máquina. Por favor instale."
 
 #: ../src/univ/themes/win32.cpp:4929
 msgid "Ma&ximize"
@@ -3448,7 +3449,8 @@ msgstr "Imprimindo..."
 msgid ""
 "Processing debug report has failed, leaving the files in \"%s\" directory."
 msgstr ""
-"Processamento do relatório de depuração falhou, abandonando os arquivos no diretório \"%s\"."
+"Processamento do relatório de depuração falhou, abandonando os arquivos no "
+"diretório \"%s\"."
 
 #: ../src/common/log.cpp:466
 msgid "Program aborted."
@@ -3595,8 +3597,8 @@ msgid ""
 "Search contents of help book(s) for all occurences of the text you typed "
 "above"
 msgstr ""
-"Busca conteúdo de livro(s) de auxílio para todas as ocorrencias do texo que você digitou "
-"acima"
+"Busca conteúdo de livro(s) de auxílio para todas as ocorrencias do texo que "
+"você digitou acima"
 
 #: ../src/generic/fdrepdlg.cpp:166
 msgid "Search direction"
@@ -3626,7 +3628,8 @@ msgstr "Erro de busca no arquivo '%s'"
 #: ../src/common/ffile.cpp:212
 #, c-format
 msgid "Seek error on file '%s' (large files not supported by stdio)"
-msgstr "Procura erro no arquivo '%s' (arquivos grandes não são suportados por stdio)"
+msgstr ""
+"Procura erro no arquivo '%s' (arquivos grandes não são suportados por stdio)"
 
 #: ../src/mac/carbon/textctrl.cpp:1078 ../src/msw/textctrl.cpp:2068
 msgid "Select &All"
@@ -3919,8 +3922,8 @@ msgid ""
 "private information,\n"
 "please uncheck them and they will be removed from the report.\n"
 msgstr ""
-"O relatório contém os arquivos listados abaixo. Se qualquer destes arquivos contiver "
-"informação privada,\n"
+"O relatório contém os arquivos listados abaixo. Se qualquer destes arquivos "
+"contiver informação privada,\n"
 "por favore desmarque ele e ele será removido do relatório.\n"
 
 #: ../src/common/cmdline.cpp:883
@@ -3938,27 +3941,28 @@ msgid "The value for the option '%s' must be specified."
 msgstr "O valor da opção '%s' precisa ser especificado."
 
 #: ../src/msw/dialup.cpp:455
-#, c-format
+#, fuzzy, c-format
 msgid ""
 "The version of remote access service (RAS) installed on this machine is "
-"too old, please upgrade (the following required function is missing: %s)."
+"tooold, please upgrade (the following required function is missing: %s)."
 msgstr ""
-"A versão do serviço de acesso remoto (RAS) instalado nets máquina é "
-"muito antigo, por favor atualize (a seguinte função desejada está faltando: %s)."
+"A versão do serviço de acesso remoto (RAS) instalado nets máquina é muito "
+"antigo, por favor atualize (a seguinte função desejada está faltando: %s)."
 
 #: ../src/html/htmprint.cpp:601
 msgid ""
 "There was a problem during page setup: you may need to set a default printer."
 msgstr ""
-"Existe um problema durante a configuração da página: você pode precisar configurar a impressora default"
+"Existe um problema durante a configuração da página: você pode precisar "
+"configurar a impressora default"
 
 #: ../src/msw/datectrl.cpp:109
 msgid ""
 "This system doesn't support date picker control, please upgrade your version "
 "of comctl32.dll"
 msgstr ""
-"Este sistema não suporta o controle de escolha de data, por favor atualize sua versão "
-"do comctl32.dll"
+"Este sistema não suporta o controle de escolha de data, por favor atualize "
+"sua versão do comctl32.dll"
 
 #: ../src/msw/thread.cpp:1206
 #, fuzzy
@@ -3996,7 +4000,9 @@ msgstr "Lado a lado &verticalmente"
 #: ../src/common/ftp.cpp:635
 #, fuzzy
 msgid "Timeout while waiting for FTP server to connect, try passive mode."
-msgstr "Timeout ocorreu enquanto esperava pelo servidor FTP para conectar, tente o modo passivo."
+msgstr ""
+"Timeout ocorreu enquanto esperava pelo servidor FTP para conectar, tente o "
+"modo passivo."
 
 #: ../src/msw/timer.cpp:116 ../src/os2/timer.cpp:141
 msgid "Timer creation failed."
@@ -4257,8 +4263,8 @@ msgid "Win32s on Windows 3.1"
 msgstr "Win32s em Windows 3.1"
 
 #: ../src/msw/utils.cpp:1112
-#, c-format
-msgid "Windows 2000 (build %lu)"
+#, fuzzy, c-format
+msgid "Windows 2000 (build %lu"
 msgstr "Windows 2000 (contrução %lu)"
 
 #: ../src/msw/utils.cpp:1077

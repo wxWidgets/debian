@@ -28,7 +28,8 @@ msgstr " "
 
 #: ../src/generic/dbgrptg.cpp:312
 msgid "              Thank you and we're sorry for the inconvenience!\n"
-msgstr "              Vielen Dank und entschuldigen Sie die Unannehmlichkeiten!\n"
+msgstr ""
+"              Vielen Dank und entschuldigen Sie die Unannehmlichkeiten!\n"
 
 #: ../src/common/log.cpp:321
 #, c-format
@@ -462,7 +463,8 @@ msgstr "*** Sie finden ihn in \"%s\"\n"
 msgid ""
 ", expected static, #include or #define\n"
 "while parsing resource."
-msgstr ", erwartete static, #include oder #define\n"
+msgstr ""
+", erwartete static, #include oder #define\n"
 "bei Abfrage einer Ressource."
 
 #: ../src/generic/dirctrlg.cpp:683 ../src/generic/filedlgg.cpp:740
@@ -1327,7 +1329,8 @@ msgid ""
 "Could not resolve control class or id '%s'. Use (non-zero) integer instead\n"
 " or provide #define (see manual for caveats)"
 msgstr ""
-"Konnte Kontroll-Klasse oder ID '%s' nicht auflösen. Benutzen Sie statt dessen\n"
+"Konnte Kontroll-Klasse oder ID '%s' nicht auflösen. Benutzen Sie statt "
+"dessen\n"
 "einen Integer (nicht Null) oder #define (siehe Handbuch für Widersprüche)"
 
 #: ../contrib/src/deprecated/resource.cpp:1278
@@ -1647,8 +1650,8 @@ msgstr "Umschlag Einladung, 220 x 220 mm"
 msgid ""
 "Environment variables expansion failed: missing '%c' at position %u in '%s'."
 msgstr ""
-"Einsetzen der Umgebungsvariablen schlug fehl. Es fehlt '%c' an Position %d in "
-"'%s'."
+"Einsetzen der Umgebungsvariablen schlug fehl. Es fehlt '%c' an Position %d "
+"in '%s'."
 
 #: ../src/generic/dirctrlg.cpp:689 ../src/generic/dirctrlg.cpp:707
 #: ../src/generic/dirctrlg.cpp:718 ../src/generic/dirdlgg.cpp:342
@@ -1737,8 +1740,8 @@ msgstr "Erwarte 'char' beim Einlesen einer Ressource."
 msgid ""
 "Exporting registry key: file \"%s\" already exists and won't be overwritten."
 msgstr ""
-"Exportieren von Registrierschlüssel: Datei '%s' besteht bereits und"
-"wird nicht überschrieben."
+"Exportieren von Registrierschlüssel: Datei '%s' besteht bereits undwird "
+"nicht überschrieben."
 
 #: ../src/common/fmapbase.cpp:143
 msgid "Extended Unix Codepage for Japanese (EUC-JP)"
@@ -2169,9 +2172,9 @@ msgstr "Versuch gescheitert, die 'advise Schleife' mit DDE-Server zu beenden."
 msgid "Failed to terminate the dialup connection: %s"
 msgstr "Versuch gescheitert, die DFÜ-Verbindung zu beenden: %s"
 
+# see man touch
 #: ../src/common/filename.cpp:1933
 #, c-format
-# see man touch
 msgid "Failed to touch the file '%s'"
 msgstr "Konnte die Datei '%s' nicht erzeugen"
 
@@ -2496,9 +2499,11 @@ msgid ""
 "but be warned that it may hinder improving the program, so if\n"
 "at all possible please do continue with the report generation.\n"
 msgstr ""
-"Wenn Sie den Fehlerbericht komplett verwerfen möchten, drücken Sie 'Cancel',\n"
+"Wenn Sie den Fehlerbericht komplett verwerfen möchten, drücken Sie "
+"'Cancel',\n"
 "aber seien Sie gewarnt: dies verhindert vielleicht die Verbesserung des\n"
-"Programms, also setzen Sie das Erstellen des Fehlerberichts nach Möglichkeit fort.\n"
+"Programms, also setzen Sie das Erstellen des Fehlerberichts nach Möglichkeit "
+"fort.\n"
 
 #: ../src/msw/registry.cpp:1304
 #, c-format
@@ -3373,8 +3378,8 @@ msgstr "Drucke ..."
 msgid ""
 "Processing debug report has failed, leaving the files in \"%s\" directory."
 msgstr ""
-"Verarbeitung des Fehlerberichts fehlgeschlagen, lasse die Dateien im "
-"'%s'-Verzeichnis."
+"Verarbeitung des Fehlerberichts fehlgeschlagen, lasse die Dateien im '%s'-"
+"Verzeichnis."
 
 #: ../src/common/log.cpp:466
 msgid "Program aborted."
@@ -3547,8 +3552,8 @@ msgstr "Suchfehler in Datei '%s'"
 #: ../src/common/ffile.cpp:212
 #, c-format
 msgid "Seek error on file '%s' (large files not supported by stdio)"
-msgstr "Suchfehler in Datei '%s' (grosse Dateien werden von stdio "
-"nicht unterstützt)"
+msgstr ""
+"Suchfehler in Datei '%s' (grosse Dateien werden von stdio nicht unterstützt)"
 
 #: ../src/mac/carbon/textctrl.cpp:1078 ../src/msw/textctrl.cpp:2068
 msgid "Select &All"
