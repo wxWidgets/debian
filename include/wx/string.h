@@ -4,7 +4,7 @@
 // Author:      Vadim Zeitlin
 // Modified by:
 // Created:     29/01/98
-// RCS-ID:      $Id: string.h,v 1.115.2.12 2001/11/24 06:07:41 RL Exp $
+// RCS-ID:      $Id: string.h,v 1.115.2.13 2001/11/27 14:12:03 RL Exp $
 // Copyright:   (c) 1998 Vadim Zeitlin <zeitlin@dptmaths.ens-cachan.fr>
 // Licence:     wxWindows license
 ///////////////////////////////////////////////////////////////////////////////
@@ -413,7 +413,7 @@ public:
     wxChar& operator[](size_t n)
       { ASSERT_VALID_INDEX( n ); CopyBeforeWrite(); return m_pchData[n]; }
 
-#ifdef wxSIZE_T_IS_UINT
+#ifndef wxSIZE_T_IS_UINT
     // operator version of GetChar
     wxChar  operator[](unsigned int n) const
       { ASSERT_VALID_INDEX( n ); return m_pchData[n]; }
