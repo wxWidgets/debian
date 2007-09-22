@@ -1,7 +1,7 @@
 Source: wxwindows2.4
 Section: libs
 Priority: optional
-Build-Depends: debhelper (>=4.0), flex, bison, gettext, libgtk1.2-dev, python2.3, python2.3-dev, zlib1g-dev, libjpeg62-dev, libpng12-dev, libtiff4-dev, libgl1-mesa-dev | libgl-dev, libglu1-mesa-dev | libglu-dev, libesd0-dev
+Build-Depends: debhelper (>=4.0), flex, bison, gettext, libgtk1.2-dev, python2.4, python2.4-dev, zlib1g-dev, libjpeg62-dev, libpng12-dev, libtiff4-dev, libgl1-mesa-dev | libgl-dev, libglu1-mesa-dev | libglu-dev, libesd0-dev
 Maintainer: Ron Lee <ron@debian.org>
 Standards-Version: 3.6.2.1
 
@@ -147,8 +147,8 @@ Description: wxWindows Cross-platform C++ GUI toolkit (development contrib libs)
 Package: python-wxgtk2.4
 Architecture: any
 Section: python
-Depends: python-wxversion, python2.3, ${shlibs:Depends}
-Suggests: wx2.4-doc, wx2.4-examples, python2.3-xml
+Depends: python-wxversion, python2.4, ${shlibs:Depends}
+Suggests: wx2.4-doc, wx2.4-examples, python2.4-xml
 Conflicts: libwxgtk-python, libwxgtk2.4-python, libwxgtk2.4-1-python
 Replaces: libwxgtk-python, libwxgtk2.4-python, libwxgtk2.4-1-python
 Description: wxWindows Cross-platform C++ GUI toolkit (wxPython binding)
@@ -157,13 +157,13 @@ Description: wxWindows Cross-platform C++ GUI toolkit (wxPython binding)
  currently supports subsets of GTK+, Motif, and MS Windows.
  .
  This package provides a Python binding to the wxGTK library and its
- contrib libs.  If you wish to use xrced you'll also need the python2.3-xml
+ contrib libs.  If you wish to use xrced you'll also need the python2.4-xml
  package installed.
 
 Package: python-wxgtk2.4-dbg
 Architecture: any
 Section: python
-Depends: python-wxversion, python2.3, ${shlibs:Depends}
+Depends: python-wxversion, python2.4, ${shlibs:Depends}
 Conflicts: python-wxgtk2.4
 Replaces: python-wxgtk2.4
 Provides: python-wxgtk2.4
@@ -179,7 +179,7 @@ Description: wxWindows Cross-platform C++ GUI toolkit (wxPython binding)
  wxPython.  You should _never_ upload packages to Debian that depend upon
  this package explicitly, use the python-wxgtk2.4 package instead.
  .
- If you wish to use xrc you'll also need the python2.3-xml package installed.
+ If you wish to use xrc you'll also need the python2.4-xml package installed.
 
 Package: python-wxversion
 Architecture: all
@@ -203,7 +203,7 @@ Description: wxWindows Cross-platform C++ GUI toolkit (wxPython common files)
  For more information see http://wxwidgets.org
  .
  This package provides support utilities and common files for wxPython2.4.
- If you wish to use xrced you'll also need the python2.3-xml package installed.
+ If you wish to use xrced you'll also need the python2.4-xml package installed.
 
 Package: wx-common
 Architecture: any
