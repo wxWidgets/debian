@@ -2,7 +2,7 @@
 // Name:        combobox.cpp
 // Purpose:
 // Author:      Robert Roebling
-// Id:          $Id: combobox.cpp,v 1.72.2.2 2000/07/17 17:07:07 RR Exp $
+// Id:          $Id: combobox.cpp,v 1.72.2.3 2001/11/13 15:16:31 RR Exp $
 // Copyright:   (c) 1998 Robert Roebling
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -161,7 +161,12 @@ bool wxComboBox::Create( wxWindow *parent, wxWindowID id, const wxString& value,
     if (new_size.y > size_best.y)
         new_size.y = size_best.y;
     if ((new_size.x != size.x) || (new_size.y != size.y))
+    {
         SetSize( new_size.x, new_size.y );
+        
+        // This is required for tool bar support
+        gtk_widget_set_usize( m_widget, new_size.x, new_size.y );
+    }
 
     SetBackgroundColour( wxSystemSettings::GetSystemColour( wxSYS_COLOUR_WINDOW ) );
     SetForegroundColour( parent->GetForegroundColour() );

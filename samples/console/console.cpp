@@ -4,7 +4,7 @@
 // Author:      Vadim Zeitlin
 // Modified by:
 // Created:     04.10.99
-// RCS-ID:      $Id: console.cpp,v 1.51.2.22 2001/01/29 15:26:02 vadz Exp $
+// RCS-ID:      $Id: console.cpp,v 1.51.2.23 2001/11/02 06:58:54 GD Exp $
 // Copyright:   (c) 1999 Vadim Zeitlin <zeitlin@dptmaths.ens-cachan.fr>
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -256,7 +256,7 @@ static void TestDllLoad()
     }
     else
     {
-        typedef int (*strlenType)(char *);
+        typedef int (*strlenType)(const char *);
         strlenType pfnStrlen = (strlenType)wxDllLoader::GetSymbol(dllHandle, FUNC_NAME);
         if ( !pfnStrlen )
         {

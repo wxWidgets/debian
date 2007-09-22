@@ -4,7 +4,7 @@
 // Author:      Aleksandras Gluchovas
 // Modified by:
 // Created:     22/09/98
-// RCS-ID:      $Id: markup.h,v 1.1 1999/09/13 14:29:40 JS Exp $
+// RCS-ID:      $Id: markup.h,v 1.1.2.1 2001/11/04 18:40:03 GD Exp $
 // Copyright:   (c) Aleskandars Gluchovas
 // Licence:   	wxWindows licence
 /////////////////////////////////////////////////////////////////////////////

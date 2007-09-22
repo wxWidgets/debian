@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     7.9.93
-// RCS-ID:      $Id: tex2rtf.cpp,v 1.10.2.2 2000/04/24 13:37:22 VS Exp $
+// RCS-ID:      $Id: tex2rtf.cpp,v 1.10.2.4 2001/11/04 17:48:23 GD Exp $
 // Copyright:   (c) Julian Smart
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
