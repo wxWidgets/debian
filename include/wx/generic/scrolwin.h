@@ -4,17 +4,13 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     01/02/97
-// RCS-ID:      $Id: scrolwin.h,v 1.24.2.1 2002/11/09 13:29:19 RL Exp $
+// RCS-ID:      $Id: scrolwin.h,v 1.24.2.2 2005/06/20 17:36:51 MR Exp $
 // Copyright:   (c) Julian Smart and Markus Holzem
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
 
 #ifndef _WX_GENERIC_SCROLLWIN_H_
 #define _WX_GENERIC_SCROLLWIN_H_
-
-#if defined(__GNUG__) && !defined(__APPLE__)
-    #pragma interface "genscrolwin.h"
-#endif
 
 // ----------------------------------------------------------------------------
 // headers and constants

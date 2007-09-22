@@ -4,17 +4,13 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     12/07/98
-// RCS-ID:      $Id: basic.h,v 1.5.2.2 2002/12/18 06:11:26 RD Exp $
+// RCS-ID:      $Id: basic.h,v 1.5.2.3 2005/06/20 17:33:39 MR Exp $
 // Copyright:   (c) Julian Smart
 // Licence:   	wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
 
 #ifndef _OGL_BASIC_H_
 #define _OGL_BASIC_H_
-
-#if defined(__GNUG__) && !defined(__APPLE__)
-#pragma interface "basic.h"
-#endif
 
 #define OGL_VERSION     2.0
 

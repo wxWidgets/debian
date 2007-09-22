@@ -4,17 +4,13 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     12/07/98
-// RCS-ID:      $Id: basicp.h,v 1.2.2.2 2002/12/18 06:11:26 RD Exp $
+// RCS-ID:      $Id: basicp.h,v 1.2.2.3 2005/06/20 17:33:40 MR Exp $
 // Copyright:   (c) Julian Smart
 // Licence:   	wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
 
 #ifndef _OGL_BASICP_H_
 #define _OGL_BASICP_H_
-
-#if defined(__GNUG__) && !defined(__APPLE__)
-#pragma interface "basicp.h"
-#endif
 
 #define CONTROL_POINT_SIZE       6
 

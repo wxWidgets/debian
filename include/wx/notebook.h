@@ -4,17 +4,13 @@
 // Author:      Vadim Zeitlin
 // Modified by:
 // Created:     01.02.01
-// RCS-ID:      $Id: notebook.h,v 1.22.2.2 2003/06/03 10:39:56 VZ Exp $
+// RCS-ID:      $Id: notebook.h,v 1.22.2.3 2005/06/20 17:36:23 MR Exp $
 // Copyright:   (c) 1996-2000 wxWindows team
 // Licence:     wxWindows licence
 ///////////////////////////////////////////////////////////////////////////////
 
 #ifndef _WX_NOTEBOOK_H_BASE_
 #define _WX_NOTEBOOK_H_BASE_
-
-#if defined(__GNUG__) && !defined(__APPLE__)
-    #pragma interface "notebookbase.h"
-#endif
 
 // ----------------------------------------------------------------------------
 // headers

@@ -4,7 +4,7 @@
 // Author:      Vadim Zeitlin
 // Modified by:
 // Created:     12.09.97
-// RCS-ID:      $Id: dynarray.cpp,v 1.27.2.6 2003/04/27 21:24:36 VZ Exp $
+// RCS-ID:      $Id: dynarray.cpp,v 1.27.2.7 2005/06/20 17:40:48 MR Exp $
 // Copyright:   (c) 1998 Vadim Zeitlin <zeitlin@dptmaths.ens-cachan.fr>
 // Licence:     wxWindows license
 ///////////////////////////////////////////////////////////////////////////////
@@ -12,10 +12,6 @@
 // ============================================================================
 // headers
 // ============================================================================
-
-#ifdef __GNUG__
-#pragma implementation "dynarray.h"
-#endif
 
 #include  "wx/wxprec.h"
 

@@ -2,14 +2,10 @@
 // Name:        imagtiff.cpp
 // Purpose:     wxImage TIFF handler
 // Author:      Robert Roebling
-// RCS-ID:      $Id: imagtiff.cpp,v 1.22 2002/05/22 23:14:47 VZ Exp $
+// RCS-ID:      $Id: imagtiff.cpp,v 1.22.2.1 2005/06/20 17:41:01 MR Exp $
 // Copyright:   (c) Robert Roebling
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
-
-#ifdef __GNUG__
-#pragma implementation "imagtiff.h"
-#endif
 
 // For compilers that support precompilation, includes "wx.h".
 #include "wx/wxprec.h"

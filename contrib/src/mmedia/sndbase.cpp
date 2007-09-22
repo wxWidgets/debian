@@ -3,12 +3,9 @@
 // Purpose:
 // Date: 08/11/1999
 // Author: Guilhem Lavaux <lavaux@easynet.fr> (C) 1999, 2000
-// CVSID: $Id: sndbase.cpp,v 1.3.2.1 2004/11/22 20:19:01 JS Exp $
+// CVSID: $Id: sndbase.cpp,v 1.3.2.2 2005/06/20 17:34:42 MR Exp $
 // Licence: wxWindows licence
 // --------------------------------------------------------------------------
-#ifdef __GNUG__
-#pragma implementation "sndbase.cpp"
-#endif
 
 #include "wx/wxprec.h"
 

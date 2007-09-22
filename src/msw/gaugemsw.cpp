@@ -4,14 +4,10 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     01/02/97
-// RCS-ID:      $Id: gaugemsw.cpp,v 1.23 2001/10/17 22:25:52 KLB Exp $
+// RCS-ID:      $Id: gaugemsw.cpp,v 1.23.2.1 2005/06/20 17:43:58 MR Exp $
 // Copyright:   (c) Julian Smart and Markus Holzem
 // Licence:       wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
-
-#ifdef __GNUG__
-#pragma implementation "gauge.h"
-#endif
 
 // For compilers that support precompilation, includes "wx.h".
 #include "wx/wxprec.h"

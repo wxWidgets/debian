@@ -4,7 +4,7 @@
 // Author:      Vadim Zeitlin
 // Modified by:
 // Created:     03.04.98
-// RCS-ID:      $Id: textfile.cpp,v 1.40 2002/02/02 23:14:45 VS Exp $
+// RCS-ID:      $Id: textfile.cpp,v 1.40.2.1 2005/06/20 17:41:19 MR Exp $
 // Copyright:   (c) 1998 Vadim Zeitlin <zeitlin@dptmaths.ens-cachan.fr>
 // Licence:     wxWindows license
 ///////////////////////////////////////////////////////////////////////////////
@@ -12,10 +12,6 @@
 // ============================================================================
 // headers
 // ============================================================================
-
-#ifdef __GNUG__
-    #pragma implementation "textfile.h"
-#endif
 
 #include  "wx/wxprec.h"
 

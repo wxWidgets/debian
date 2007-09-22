@@ -4,7 +4,7 @@
 // Author:      Vadim Zeitlin
 // Modified by:
 // Created:     15.08.99
-// RCS-ID:      $Id: wizard.cpp,v 1.7.2.2 2005/05/18 14:36:23 JS Exp $
+// RCS-ID:      $Id: wizard.cpp,v 1.7.2.3 2005/06/20 17:40:28 MR Exp $
 // Copyright:   (c) Vadim Zeitlin
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -16,11 +16,6 @@
 // ----------------------------------------------------------------------------
 // headers
 // ----------------------------------------------------------------------------
-
-#if defined(__GNUG__) && !defined(__APPLE__)
-    #pragma implementation "wizard.cpp"
-    #pragma interface "wizard.cpp"
-#endif
 
 // For compilers that support precompilation, includes "wx/wx.h".
 #include "wx/wxprec.h"

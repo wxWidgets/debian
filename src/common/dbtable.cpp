@@ -6,7 +6,7 @@
 //              Bart Jourquin
 //              Mark Johnson
 // Created:     9.96
-// RCS-ID:      $Id: dbtable.cpp,v 1.68.2.3 2004/05/12 16:14:00 GT Exp $
+// RCS-ID:      $Id: dbtable.cpp,v 1.68.2.4 2005/06/20 17:40:44 MR Exp $
 // Copyright:   (c) 1996 Remstar International, Inc.
 // Licence:     wxWindows licence, plus:
 // Notice:      This class library and its intellectual design are free of charge for use,
@@ -24,9 +24,6 @@
 // SYNOPSIS START
 // SYNOPSIS STOP
 */
-#ifdef __GNUG__
-    #pragma implementation "dbtable.h"
-#endif
 
 #include  "wx/wxprec.h"
 

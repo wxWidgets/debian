@@ -3,14 +3,10 @@
 // Purpose:     Controls wxWindows sample
 // Author:      Robert Roebling
 // Modified by:
-// RCS-ID:      $Id: controls.cpp,v 1.199.2.4 2003/06/07 09:58:17 JS Exp $
+// RCS-ID:      $Id: controls.cpp,v 1.199.2.5 2005/06/20 17:38:55 MR Exp $
 // Copyright:   (c) Robert Roebling, Julian Smart
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
-
-#ifdef __GNUG__
-    #pragma implementation "controls.h"
-#endif
 
 // For compilers that support precompilation, includes "wx/wx.h".
 #include "wx/wxprec.h"

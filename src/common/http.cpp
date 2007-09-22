@@ -4,14 +4,10 @@
 // Author:      Guilhem Lavaux
 // Modified by:
 // Created:     August 1997
-// RCS-ID:      $Id: http.cpp,v 1.49.2.4 2003/09/10 16:38:50 VZ Exp $
+// RCS-ID:      $Id: http.cpp,v 1.49.2.5 2005/06/20 17:40:58 MR Exp $
 // Copyright:   (c) 1997, 1998 Guilhem Lavaux
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
-
-#ifdef __GNUG__
-  #pragma implementation "http.h"
-#endif
 
 // For compilers that support precompilation, includes "wx.h".
 #include "wx/wxprec.h"

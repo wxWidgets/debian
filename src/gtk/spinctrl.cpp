@@ -3,14 +3,10 @@
 // Purpose:     wxSpinCtrl
 // Author:      Robert
 // Modified by:
-// RCS-ID:      $Id: spinctrl.cpp,v 1.26.2.1 2003/07/07 14:21:56 RR Exp $
+// RCS-ID:      $Id: spinctrl.cpp,v 1.26.2.2 2005/06/20 17:42:11 MR Exp $
 // Copyright:   (c) Robert Roebling
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
-
-#ifdef __GNUG__
-#pragma implementation "spinctrl.h"
-#endif
 
 #include "wx/spinctrl.h"
 

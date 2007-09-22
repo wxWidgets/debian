@@ -4,14 +4,10 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     01/01/99
-// RCS-ID:      $Id: tex2any.cpp,v 1.22.2.1 2002/10/20 13:46:38 VS Exp $
+// RCS-ID:      $Id: tex2any.cpp,v 1.22.2.2 2005/06/20 17:45:32 MR Exp $
 // Copyright:   (c) Julian Smart
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
-
-#ifdef __GNUG__
-#pragma implementation
-#endif
 
 // For compilers that support precompilation, includes "wx.h".
 #include "wx/wxprec.h"

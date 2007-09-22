@@ -4,7 +4,7 @@
 // Author:      Vadim Zeitlin
 // Modified by:
 // Created:     20.02.01
-// RCS-ID:      $Id: gaugecmn.cpp,v 1.3 2002/01/07 21:52:28 GD Exp $
+// RCS-ID:      $Id: gaugecmn.cpp,v 1.3.2.1 2005/06/20 17:40:55 MR Exp $
 // Copyright:   (c) 2001 Vadim Zeitlin <zeitlin@dptmaths.ens-cachan.fr>
 // License:     wxWindows license
 ///////////////////////////////////////////////////////////////////////////////
@@ -16,10 +16,6 @@
 // ----------------------------------------------------------------------------
 // headers
 // ----------------------------------------------------------------------------
-
-#ifdef __GNUG__
-    #pragma implementation "gaugebase.h"
-#endif
 
 // For compilers that support precompilation, includes "wx.h".
 #include "wx/wxprec.h"

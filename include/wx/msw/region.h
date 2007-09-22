@@ -4,17 +4,13 @@
 // Author:      Markus Holzem, Julian Smart
 // Modified by:
 // Created:     01/02/97
-// RCS-ID:      $Id: region.h,v 1.12.2.3 2003/05/03 17:56:24 RD Exp $
+// RCS-ID:      $Id: region.h,v 1.12.2.4 2005/06/20 17:38:04 MR Exp $
 // Copyright:   (c) 1997-2002 wxWindows team
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
 
 #ifndef _WX_REGION_H_
 #define _WX_REGION_H_
-
-#ifdef __GNUG__
-    #pragma interface "region.h"
-#endif
 
 #include "wx/gdiobj.h"
 #include "wx/gdicmn.h"

@@ -4,14 +4,10 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     01/02/97
-// RCS-ID:      $Id: splitter.cpp,v 1.73.2.11 2004/06/17 09:05:39 JS Exp $
+// RCS-ID:      $Id: splitter.cpp,v 1.73.2.12 2005/06/20 17:41:48 MR Exp $
 // Copyright:   (c) Julian Smart and Markus Holzem
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
-
-#ifdef __GNUG__
-    #pragma implementation "splitter.h"
-#endif
 
 // For compilers that support precompilation, includes "wx.h".
 #include "wx/wxprec.h"

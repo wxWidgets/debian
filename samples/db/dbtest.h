@@ -4,14 +4,10 @@
 // Author:      George Tasker
 // Modified by:
 // Created:     1998
-// RCS-ID:      $Id: dbtest.h,v 1.24 2002/08/31 22:36:13 GD Exp $
+// RCS-ID:      $Id: dbtest.h,v 1.24.2.1 2005/06/20 17:38:57 MR Exp $
 // Copyright:   (c) 1998 Remstar International, Inc.
 // Licence:     wxWindows licence
 ///////////////////////////////////////////////////////////////////////////////
-
-#ifdef __GNUG__
-#pragma interface "dbtest.h"
-#endif
 
 #include "wx/string.h"
 #include "wx/dbtable.h"

@@ -4,7 +4,7 @@
 // Author:      Michael Bedward (based on code by Julian Smart, Robin Dunn)
 // Modified by:
 // Created:     1/08/1999
-// RCS-ID:      $Id: grid.h,v 1.111.2.4 2004/06/13 23:29:32 JS Exp $
+// RCS-ID:      $Id: grid.h,v 1.111.2.5 2005/06/20 17:36:48 MR Exp $
 // Copyright:   (c) Michael Bedward
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -17,10 +17,6 @@
 
 #ifndef __WXGRID_H__
 #define __WXGRID_H__
-
-#if defined(__GNUG__) && !defined(__APPLE__)
-#pragma interface "grid.h"
-#endif
 
 #include "wx/hash.h"
 #include "wx/panel.h"

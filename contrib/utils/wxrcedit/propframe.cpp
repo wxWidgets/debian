@@ -1,14 +1,10 @@
 /////////////////////////////////////////////////////////////////////////////
 // Author:      Vaclav Slavik
 // Created:     2000/05/05
-// RCS-ID:      $Id: propframe.cpp,v 1.7 2002/01/27 23:42:16 VS Exp $
+// RCS-ID:      $Id: propframe.cpp,v 1.7.2.1 2005/06/20 17:35:33 MR Exp $
 // Copyright:   (c) 2000 Vaclav Slavik
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
-
-#ifdef __GNUG__
-    #pragma implementation "propframe.h"
-#endif
 
 // For compilers that support precompilation, includes "wx/wx.h".
 #include "wx/wxprec.h"

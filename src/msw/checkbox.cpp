@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     04/01/98
-// RCS-ID:      $Id: checkbox.cpp,v 1.35.2.1 2002/09/22 20:56:25 VZ Exp $
+// RCS-ID:      $Id: checkbox.cpp,v 1.35.2.2 2005/06/20 17:43:50 MR Exp $
 // Copyright:   (c) Julian Smart and Markus Holzem
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -16,10 +16,6 @@
 // ----------------------------------------------------------------------------
 // headers
 // ----------------------------------------------------------------------------
-
-#ifdef __GNUG__
-    #pragma implementation "checkbox.h"
-#endif
 
 // For compilers that support precompilation, includes "wx.h".
 #include "wx/wxprec.h"

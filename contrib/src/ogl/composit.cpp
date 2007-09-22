@@ -4,14 +4,10 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     12/07/98
-// RCS-ID:      $Id: composit.cpp,v 1.5.2.2 2002/12/18 06:12:59 RD Exp $
+// RCS-ID:      $Id: composit.cpp,v 1.5.2.3 2005/06/20 17:34:50 MR Exp $
 // Copyright:   (c) Julian Smart
 // Licence:   	wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
-
-#ifdef __GNUG__
-#pragma implementation "composit.h"
-#endif
 
 // For compilers that support precompilation, includes "wx.h".
 #include "wx/wxprec.h"

@@ -2,7 +2,7 @@
 // Name:        common/settcmn.cpp
 // Purpose:     common (to all ports) wxWindow functions
 // Author:      Robert Roebling
-// RCS-ID:      $Id: settcmn.cpp,v 1.2.2.2 2003/07/25 18:55:01 RR Exp $
+// RCS-ID:      $Id: settcmn.cpp,v 1.2.2.3 2005/06/20 17:41:14 MR Exp $
 // Copyright:   (c) wxWindows team
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -14,10 +14,6 @@
 // ----------------------------------------------------------------------------
 // headers
 // ----------------------------------------------------------------------------
-
-#ifdef __GNUG__
-    #pragma implementation "settings.h"
-#endif
 
 // For compilers that support precompilation, includes "wx.h".
 #include "wx/wxprec.h"

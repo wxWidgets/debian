@@ -4,14 +4,10 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     01/02/97
-// RCS-ID:      $Id: statusbr.cpp,v 1.47.2.4 2003/03/11 00:01:03 RD Exp $
+// RCS-ID:      $Id: statusbr.cpp,v 1.47.2.5 2005/06/20 17:41:49 MR Exp $
 // Copyright:   (c) Julian Smart and Markus Holzem
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
-
-#ifdef __GNUG__
-#pragma implementation "statusbr.h"
-#endif
 
 // For compilers that support precompilation, includes "wx.h".
 #include "wx/wxprec.h"

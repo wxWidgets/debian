@@ -4,7 +4,7 @@
 // Author:      Stefan Neis
 // Modified by:
 // Created:     20/02/1999
-// RCS-ID:      $Id: gridsel.cpp,v 1.11.4.2 2003/08/26 20:05:38 CE Exp $
+// RCS-ID:      $Id: gridsel.cpp,v 1.11.4.3 2005/06/20 17:41:40 MR Exp $
 // Copyright:   (c) Stefan Neis (Stefan.Neis@t-online.de)
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -16,10 +16,6 @@
 // ----------------------------------------------------------------------------
 // headers
 // ----------------------------------------------------------------------------
-
-#ifdef __GNUG__
-    #pragma implementation "gridsel.h"
-#endif
 
 // For compilers that support precompilation, includes "wx/wx.h".
 #include "wx/wxprec.h"

@@ -4,15 +4,11 @@
 // Author:      Aleksandras Gluchovas
 // Modified by:
 // Created:     09/09/98
-// RCS-ID:      $Id: rowlayoutpl.cpp,v 1.4.2.1 2003/06/04 12:51:52 JS Exp $
+// RCS-ID:      $Id: rowlayoutpl.cpp,v 1.4.2.2 2005/06/20 17:34:36 MR Exp $
 // Copyright:   (c) Aleksandras Gluchovas
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
  
-#ifdef __GNUG__
-    #pragma implementation "rowlayoutpl.h"
-#endif
-
 // For compilers that support precompilation, includes "wx.h".
 #include "wx/wxprec.h"
 

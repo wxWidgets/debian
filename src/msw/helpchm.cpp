@@ -4,14 +4,10 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     16/04/2000
-// RCS-ID:      $Id: helpchm.cpp,v 1.13.2.3 2005/05/14 16:58:35 JS Exp $
+// RCS-ID:      $Id: helpchm.cpp,v 1.13.2.6 2005/06/22 09:03:51 JS Exp $
 // Copyright:   (c) Julian Smart
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
-
-#ifdef __GNUG__
-    #pragma implementation "helpchm.h"
-#endif
 
 // For compilers that support precompilation, includes "wx.h".
 #include "wx/wxprec.h"

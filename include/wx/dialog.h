@@ -4,17 +4,13 @@
 // Author:      Vadim Zeitlin
 // Modified by:
 // Created:     29.06.99
-// RCS-ID:      $Id: dialog.h,v 1.20 2002/08/31 11:29:10 GD Exp $
+// RCS-ID:      $Id: dialog.h,v 1.20.2.1 2005/06/20 17:36:06 MR Exp $
 // Copyright:   (c) Vadim Zeitlin
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
 
 #ifndef _WX_DIALOG_H_BASE_
 #define _WX_DIALOG_H_BASE_
-
-#if defined(__GNUG__) && !defined(__APPLE__)
-    #pragma interface "dialogbase.h"
-#endif
 
 #include "wx/defs.h"
 #include "wx/containr.h"

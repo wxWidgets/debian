@@ -4,7 +4,7 @@
 // Author:      Vadim Zeitlin
 // Modified by:
 // Created:     26.07.99
-// RCS-ID:      $Id: ctrlcmn.cpp,v 1.13 2002/08/05 03:13:59 DW Exp $
+// RCS-ID:      $Id: ctrlcmn.cpp,v 1.13.2.1 2005/06/20 17:40:40 MR Exp $
 // Copyright:   (c) wxWindows team
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -16,11 +16,6 @@
 // ----------------------------------------------------------------------------
 // headers
 // ----------------------------------------------------------------------------
-
-#ifdef __GNUG__
-    #pragma implementation "controlbase.h"
-    #pragma implementation "statbmpbase.h"
-#endif
 
 // For compilers that support precompilation, includes "wx.h".
 #include "wx/wxprec.h"

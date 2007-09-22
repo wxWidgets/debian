@@ -4,14 +4,10 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     04/01/98
-// RCS-ID:      $Id: slider95.cpp,v 1.34.2.3 2003/05/26 22:59:24 JS Exp $
+// RCS-ID:      $Id: slider95.cpp,v 1.34.2.4 2005/06/20 17:44:07 MR Exp $
 // Copyright:   (c) Julian Smart and Markus Holzem
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
-
-#ifdef __GNUG__
-#pragma implementation "slider95.h"
-#endif
 
 // For compilers that support precompilation, includes "wx.h".
 #include "wx/wxprec.h"

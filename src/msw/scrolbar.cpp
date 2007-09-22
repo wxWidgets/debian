@@ -4,14 +4,10 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     04/01/98
-// RCS-ID:      $Id: scrolbar.cpp,v 1.22.2.5 2003/05/17 09:30:00 JS Exp $
+// RCS-ID:      $Id: scrolbar.cpp,v 1.22.2.6 2005/06/20 17:44:07 MR Exp $
 // Copyright:   (c) Julian Smart and Markus Holzem
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
-
-#ifdef __GNUG__
-    #pragma implementation "scrolbar.h"
-#endif
 
 // For compilers that support precompilation, includes "wx.h".
 #include "wx/wxprec.h"

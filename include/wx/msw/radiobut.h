@@ -4,17 +4,13 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     01/02/97
-// RCS-ID:      $Id: radiobut.h,v 1.10 2002/07/05 14:09:30 JS Exp $
+// RCS-ID:      $Id: radiobut.h,v 1.10.2.1 2005/06/20 17:38:03 MR Exp $
 // Copyright:   (c) Julian Smart
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
 
 #ifndef _WX_RADIOBUT_H_
 #define _WX_RADIOBUT_H_
-
-#ifdef __GNUG__
-    #pragma interface "radiobut.h"
-#endif
 
 class WXDLLEXPORT wxRadioButton: public wxControl
 {

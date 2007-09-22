@@ -1,14 +1,10 @@
 /////////////////////////////////////////////////////////////////////////////
 // Author:      Vaclav Slavik
 // Created:     2000/05/05
-// RCS-ID:      $Id: nodesdb.cpp,v 1.2 2001/05/18 18:34:34 VS Exp $
+// RCS-ID:      $Id: nodesdb.cpp,v 1.2.2.1 2005/06/20 17:35:29 MR Exp $
 // Copyright:   (c) 2000 Vaclav Slavik
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
-
-#ifdef __GNUG__
-    #pragma implementation "nodesdb.h"
-#endif
 
 // For compilers that support precompilation, includes _T("wx/wx.h").
 #include "wx/wxprec.h"

@@ -2,7 +2,7 @@
 // Name:        htmltag.h
 // Purpose:     wxHtmlTag class (represents single tag)
 // Author:      Vaclav Slavik
-// RCS-ID:      $Id: htmltag.h,v 1.12 2002/08/31 11:29:12 GD Exp $
+// RCS-ID:      $Id: htmltag.h,v 1.12.2.1 2005/06/20 17:37:13 MR Exp $
 // Copyright:   (c) 1999 Vaclav Slavik
 // Licence:     wxWindows Licence
 /////////////////////////////////////////////////////////////////////////////
@@ -10,10 +10,6 @@
 
 #ifndef _WX_HTMLTAG_H_
 #define _WX_HTMLTAG_H_
-
-#if defined(__GNUG__) && !defined(__APPLE__)
-#pragma interface "htmltag.h"
-#endif
 
 #include "wx/defs.h"
 

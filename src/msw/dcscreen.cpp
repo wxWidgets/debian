@@ -4,14 +4,10 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     01/02/97
-// RCS-ID:      $Id: dcscreen.cpp,v 1.8 2002/03/05 00:52:01 VZ Exp $
+// RCS-ID:      $Id: dcscreen.cpp,v 1.8.2.1 2005/06/20 17:43:54 MR Exp $
 // Copyright:   (c) Julian Smart and Markus Holzem
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
-
-#ifdef __GNUG__
-#pragma implementation "dcscreen.h"
-#endif
 
 // For compilers that support precompilation, includes "wx.h".
 #include "wx/wxprec.h"

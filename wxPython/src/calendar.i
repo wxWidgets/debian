@@ -5,7 +5,7 @@
 // Author:      Robin Dunn
 //
 // Created:     23-May-2000
-// RCS-ID:      $Id: calendar.i,v 1.15 2002/05/02 02:46:12 RD Exp $
+// RCS-ID:      $Id: calendar.i,v 1.15.2.1 2005/05/23 22:29:06 RD Exp $
 // Copyright:   (c) 2000 by Total Control Software
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -114,7 +114,7 @@ class wxCalendarEvent : public wxCommandEvent
 public:
     wxCalendarEvent(wxCalendarCtrl *cal, wxEventType type);
 
-    const wxDateTime& GetDate() const;
+    const wxDateTime GetDate() const;
     wxDateTime::WeekDay GetWeekDay() const;
 
 };

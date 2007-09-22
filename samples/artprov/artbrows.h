@@ -4,17 +4,13 @@
 // Author:      Vaclav Slavik
 // Modified by:
 // Created:     2002/04/05
-// RCS-ID:      $Id: artbrows.h,v 1.2 2002/08/31 22:30:48 GD Exp $
+// RCS-ID:      $Id: artbrows.h,v 1.2.2.1 2005/06/20 17:38:51 MR Exp $
 // Copyright:   (c) Vaclav Slavik
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
 
 #ifndef __ARTBROWS_H__
 #define __ARTBROWS_H__
-
-#if defined(__GNUG__) && !defined(__APPLE__)
-#pragma interface "artbrows.h"
-#endif
 
 #include "wx/dialog.h"
 #include "wx/artprov.h"

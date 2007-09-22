@@ -7,14 +7,10 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     04/01/98
-// RCS-ID:      $Id: laywin.cpp,v 1.16 2001/07/05 18:48:48 VZ Exp $
+// RCS-ID:      $Id: laywin.cpp,v 1.16.2.1 2005/06/20 17:41:41 MR Exp $
 // Copyright:   (c) Julian Smart
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
-
-#ifdef __GNUG__
-#pragma implementation "laywin.h"
-#endif
 
 // For compilers that support precompilation, includes "wx/wx.h".
 #include "wx/wxprec.h"

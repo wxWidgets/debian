@@ -5,7 +5,7 @@
 // Author:      Robin Dunn
 //
 // Created:     7/1/97
-// RCS-ID:      $Id: helpers.cpp,v 1.59.2.29 2004/02/25 21:43:19 RD Exp $
+// RCS-ID:      $Id: helpers.cpp,v 1.59.2.30 2005/05/23 22:29:05 RD Exp $
 // Copyright:   (c) 1998 by Total Control Software
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -1193,9 +1193,8 @@ off_t wxPyCBInputStream::OnSysTell() const {
         if (PyLong_Check(result))
             o = PyLong_AsLongLong(result);
         else
-#else
-        o = PyInt_AsLong(result);
 #endif
+            o = PyInt_AsLong(result);
         Py_DECREF(result);
     };
     wxPyEndBlockThreads();

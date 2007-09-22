@@ -4,17 +4,13 @@
 // Author:      Vadim Zeitlin
 // Modified by: Ron Lee
 // Created:     01/02/97
-// RCS-ID:      $Id: window.h,v 1.94.2.5 2005/05/04 18:23:32 JS Exp $
+// RCS-ID:      $Id: window.h,v 1.94.2.6 2005/06/20 17:36:36 MR Exp $
 // Copyright:   (c) Vadim Zeitlin
 // Licence:     wxWindows licence
 ///////////////////////////////////////////////////////////////////////////////
 
 #ifndef _WX_WINDOW_H_BASE_
 #define _WX_WINDOW_H_BASE_
-
-#if defined(__GNUG__) && !defined(__APPLE__)
-    #pragma interface "windowbase.h"
-#endif
 
 // ----------------------------------------------------------------------------
 // headers which we must include here

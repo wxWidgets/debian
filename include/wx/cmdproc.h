@@ -4,17 +4,13 @@
 // Author:      Julian Smart (extracted from docview.h by VZ)
 // Modified by:
 // Created:     05.11.00
-// RCS-ID:      $Id: cmdproc.h,v 1.4.2.2 2002/12/20 10:13:38 JS Exp $
+// RCS-ID:      $Id: cmdproc.h,v 1.4.2.3 2005/06/20 17:36:00 MR Exp $
 // Copyright:   (c) wxWindows team
 // Licence:     wxWindows licence
 ///////////////////////////////////////////////////////////////////////////////
 
 #ifndef _WX_CMDPROC_H_
 #define _WX_CMDPROC_H_
-
-#if defined(__GNUG__) && !defined(__APPLE__)
-    #pragma interface "cmdproc.h"
-#endif
 
 #include "wx/object.h"
 #include "wx/list.h"

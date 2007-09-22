@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     01/02/97
-// RCS-ID:      $Id: gdicmn.h,v 1.60.2.4 2005/05/04 18:23:27 JS Exp $
+// RCS-ID:      $Id: gdicmn.h,v 1.60.2.5 2005/06/20 17:36:15 MR Exp $
 // Copyright:   (c) Julian Smart
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -15,10 +15,6 @@
 // ---------------------------------------------------------------------------
 // headers
 // ---------------------------------------------------------------------------
-
-#if defined(__GNUG__) && !defined(__APPLE__)
-    #pragma interface "gdicmn.h"
-#endif
 
 #include "wx/object.h"
 #include "wx/list.h"

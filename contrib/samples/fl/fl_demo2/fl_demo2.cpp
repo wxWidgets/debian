@@ -4,14 +4,10 @@
 // Author:      Aleksandras Gluchovas
 // Modified by: Sebastian Haase (June 21, 2001)
 // Created:     04/11/98
-// RCS-ID:      $Id: fl_demo2.cpp,v 1.3 2002/03/29 09:35:33 VZ Exp $
+// RCS-ID:      $Id: fl_demo2.cpp,v 1.3.2.1 2005/06/20 17:34:07 MR Exp $
 // Copyright:   (c) Aleksandras Gluchovas
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
-
-#ifdef __GNUG__
-#pragma implementation "fl_demo2.h"
-#endif
 
 // For compilers that support precompilation, includes "wx/wx.h".
 #include "wx/wxprec.h"

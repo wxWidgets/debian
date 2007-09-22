@@ -5,7 +5,7 @@
 // Author:      Karsten Ballüder & Vadim Zeitlin
 // Modified by:
 // Created:     07.04.98 (adapted from appconf.h)
-// RCS-ID:      $Id: confbase.h,v 1.39.2.1 2003/06/01 19:00:41 JS Exp $
+// RCS-ID:      $Id: confbase.h,v 1.39.2.2 2005/06/20 17:36:01 MR Exp $
 // Copyright:   (c) 1997 Karsten Ballüder   Ballueder@usa.net
 //                       Vadim Zeitlin      <zeitlin@dptmaths.ens-cachan.fr>
 // Licence:     wxWindows license
@@ -13,10 +13,6 @@
 
 #ifndef   _WX_CONFBASE_H_
 #define   _WX_CONFBASE_H_
-
-#if defined(__GNUG__) && !defined(__APPLE__)
-#pragma interface "confbase.h"
-#endif
 
 #include "wx/defs.h"
 #include "wx/string.h"

@@ -2,14 +2,10 @@
 // Purpose:     XML resources editor
 // Author:      Vaclav Slavik
 // Created:     2000/05/05
-// RCS-ID:      $Id: preview.h,v 1.5.2.1 2002/09/25 11:10:18 VS Exp $
+// RCS-ID:      $Id: preview.h,v 1.5.2.2 2005/06/20 17:35:32 MR Exp $
 // Copyright:   (c) 2000 Vaclav Slavik
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
-
-#if defined(__GNUG__) && !defined(__APPLE__)
-    #pragma interface "preview.h"
-#endif
 
 #ifndef _PREVIEW_H_
 #define _PREVIEW_H_

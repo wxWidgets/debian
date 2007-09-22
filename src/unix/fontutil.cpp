@@ -4,7 +4,7 @@
 // Author:      Vadim Zeitlin
 // Modified by:
 // Created:     05.11.99
-// RCS-ID:      $Id: fontutil.cpp,v 1.34.2.7 2003/12/01 09:37:30 RR Exp $
+// RCS-ID:      $Id: fontutil.cpp,v 1.34.2.8 2005/06/20 17:44:48 MR Exp $
 // Copyright:   (c) Vadim Zeitlin
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -16,10 +16,6 @@
 // ----------------------------------------------------------------------------
 // headers
 // ----------------------------------------------------------------------------
-
-#ifdef __GNUG__
-    #pragma implementation "fontutil.h"
-#endif
 
 // For compilers that support precompilation, includes "wx.h".
 #include "wx/wxprec.h"

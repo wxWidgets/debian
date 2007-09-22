@@ -4,7 +4,7 @@
 // Author:      Vadim Zeitlin, Robert Roebling
 // Modified by:
 // Created:     19.10.99
-// RCS-ID:      $Id: dobjcmn.cpp,v 1.20 2002/08/15 20:47:04 RR Exp $
+// RCS-ID:      $Id: dobjcmn.cpp,v 1.20.2.1 2005/06/20 17:40:46 MR Exp $
 // Copyright:   (c) wxWindows Team
 // Licence:     wxWindows license
 ///////////////////////////////////////////////////////////////////////////////
@@ -16,10 +16,6 @@
 // ----------------------------------------------------------------------------
 // headers
 // ----------------------------------------------------------------------------
-
-#ifdef __GNUG__
-    #pragma implementation "dataobjbase.h"
-#endif
 
 #include "wx/wxprec.h"
 

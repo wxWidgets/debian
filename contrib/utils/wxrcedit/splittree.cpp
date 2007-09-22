@@ -6,7 +6,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     8/7/2000
-// RCS-ID:      $Id: splittree.cpp,v 1.6 2002/01/08 23:27:54 VS Exp $
+// RCS-ID:      $Id: splittree.cpp,v 1.6.2.1 2005/06/20 17:35:34 MR Exp $
 // Copyright:   (c) Julian Smart
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -18,9 +18,6 @@
 // ----------------------------------------------------------------------------
 // headers
 // ----------------------------------------------------------------------------
-#ifdef __GNUG__
-    #pragma implementation "splittree.h"
-#endif
 
 // For compilers that support precompilation, includes "wx/wx.h".
 #include "wx/wxprec.h"

@@ -4,7 +4,7 @@
 // Author:      Vadim Zeitlin
 // Modified by:
 // Created:     23.09.98
-// RCS-ID:      $Id: mimetype.cpp,v 1.27.2.11 2004/04/15 22:15:12 VZ Exp $
+// RCS-ID:      $Id: mimetype.cpp,v 1.27.2.12 2005/06/20 17:44:49 MR Exp $
 // Copyright:   (c) 1998 Vadim Zeitlin <zeitlin@dptmaths.ens-cachan.fr>
 // Licence:     wxWindows license (part of wxExtra library)
 /////////////////////////////////////////////////////////////////////////////
@@ -39,10 +39,6 @@
 // ----------------------------------------------------------------------------
 // headers
 // ----------------------------------------------------------------------------
-
-#ifdef __GNUG__
-    #pragma implementation "mimetype.h"
-#endif
 
 // for compilers that support precompilation, includes "wx.h".
 #include "wx/wxprec.h"

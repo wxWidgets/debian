@@ -4,17 +4,13 @@
 // Author:      Vaclav Slavik
 // Modified by:
 // Created:     18/03/2002
-// RCS-ID:      $Id: artprov.h,v 1.10.2.1 2002/11/03 17:18:18 VS Exp $
+// RCS-ID:      $Id: artprov.h,v 1.10.2.2 2005/06/20 17:35:58 MR Exp $
 // Copyright:   (c) Vaclav Slavik
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
 
 #ifndef _WX_ARTPROV_H_
 #define _WX_ARTPROV_H_
-
-#if defined(__GNUG__) && !defined(__APPLE__)
-#pragma interface "artprov.h"
-#endif
 
 #include "wx/string.h"
 #include "wx/bitmap.h"

@@ -2,17 +2,13 @@
 // Name:        menuitem.h
 // Purpose:     wxMenuItem class
 // Author:      Robert Roebling
-// RCS-ID:      $Id: menuitem.h,v 1.19 2002/09/07 12:28:46 GD Exp $
+// RCS-ID:      $Id: menuitem.h,v 1.19.2.1 2005/06/20 17:37:03 MR Exp $
 // Copyright:   (c) 1998 Robert Roebling
 // Licence:     wxWindows license
 ///////////////////////////////////////////////////////////////////////////////
 
 #ifndef __GTKMENUITEMH__
 #define __GTKMENUITEMH__
-
-#if defined(__GNUG__) && !defined(__APPLE__)
-#pragma interface
-#endif
 
 #include "wx/bitmap.h"
 

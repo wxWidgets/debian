@@ -4,14 +4,10 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     04/01/98
-// RCS-ID:      $Id: dlghndlr.cpp,v 1.20 2002/01/18 11:50:14 JS Exp $
+// RCS-ID:      $Id: dlghndlr.cpp,v 1.20.2.1 2005/06/20 17:45:15 MR Exp $
 // Copyright:   (c) Julian Smart
 // Licence:   	wxWindows license
 /////////////////////////////////////////////////////////////////////////////
-
-#ifdef __GNUG__
-#pragma implementation
-#endif
 
 // For compilers that support precompilation, includes "wx/wx.h".
 #include "wx/wxprec.h"

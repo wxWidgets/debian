@@ -4,7 +4,7 @@
 // Author:      Mattia Barbon
 // Modified by:
 // Created:     17.07.02
-// RCS-ID:      $Id: msgout.h,v 1.4 2002/08/31 11:29:11 GD Exp $
+// RCS-ID:      $Id: msgout.h,v 1.4.2.1 2005/06/20 17:36:22 MR Exp $
 // Copyright:   (c) wxWindows team
 // Licence:     wxWindows licence
 ///////////////////////////////////////////////////////////////////////////////
@@ -15,10 +15,6 @@
 // ----------------------------------------------------------------------------
 // headers
 // ----------------------------------------------------------------------------
-
-#if defined(__GNUG__) && !defined(__APPLE__)
-    #pragma interface "msgout.h"
-#endif
 
 #include "wx/defs.h"
 #include "wx/wxchar.h"

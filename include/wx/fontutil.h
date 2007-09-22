@@ -4,7 +4,7 @@
 // Author:      Vadim Zeitlin
 // Modified by:
 // Created:     05.11.99
-// RCS-ID:      $Id: fontutil.h,v 1.19.2.1 2002/11/09 15:20:31 RR Exp $
+// RCS-ID:      $Id: fontutil.h,v 1.19.2.2 2005/06/20 17:36:13 MR Exp $
 // Copyright:   (c) wxWindows team
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -15,10 +15,6 @@
 
 #ifndef _WX_FONTUTIL_H_
 #define _WX_FONTUTIL_H_
-
-#if defined(__GNUG__) && !defined(__APPLE__)
-    #pragma interface "fontutil.h"
-#endif
 
 // ----------------------------------------------------------------------------
 // headers

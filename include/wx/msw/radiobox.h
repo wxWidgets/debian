@@ -4,17 +4,13 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     01/02/97
-// RCS-ID:      $Id: radiobox.h,v 1.20 2002/06/04 18:09:19 VZ Exp $
+// RCS-ID:      $Id: radiobox.h,v 1.20.2.1 2005/06/20 17:38:03 MR Exp $
 // Copyright:   (c) Julian Smart
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
 
 #ifndef _WX_RADIOBOX_H_
 #define _WX_RADIOBOX_H_
-
-#ifdef __GNUG__
-    #pragma interface "radiobox.h"
-#endif
 
 class WXDLLEXPORT wxBitmap;
 

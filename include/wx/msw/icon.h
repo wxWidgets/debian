@@ -4,17 +4,13 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     01/02/97
-// RCS-ID:      $Id: icon.h,v 1.8 2000/02/02 00:52:05 VZ Exp $
+// RCS-ID:      $Id: icon.h,v 1.8.6.1 2005/06/20 17:37:59 MR Exp $
 // Copyright:   (c) Julian Smart
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
 
 #ifndef _WX_ICON_H_
 #define _WX_ICON_H_
-
-#ifdef __GNUG__
-    #pragma interface "icon.h"
-#endif
 
 // ----------------------------------------------------------------------------
 // headers

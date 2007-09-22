@@ -4,14 +4,10 @@
 // Author:      Harm van der Heijden, Robert Roebling, Julian Smart
 // Modified by:
 // Created:     12/12/98
-// RCS-ID:      $Id: dirctrlg.cpp,v 1.48.2.7 2005/05/28 16:06:35 JS Exp $
+// RCS-ID:      $Id: dirctrlg.cpp,v 1.48.2.8 2005/06/20 17:41:36 MR Exp $
 // Copyright:   (c) Harm van der Heijden, Robert Roebling and Julian Smart
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
-
-#ifdef __GNUG__
-#pragma implementation "dirctrlg.h"
-#endif
 
 // For compilers that support precompilation, includes "wx.h".
 #include "wx/wxprec.h"

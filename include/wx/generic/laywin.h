@@ -7,17 +7,13 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     04/01/98
-// RCS-ID:      $Id: laywin.h,v 1.16.2.1 2002/10/29 21:47:27 RR Exp $
+// RCS-ID:      $Id: laywin.h,v 1.16.2.2 2005/06/20 17:36:49 MR Exp $
 // Copyright:   (c) Julian Smart
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
 
 #ifndef _WX_LAYWIN_H_G_
 #define _WX_LAYWIN_H_G_
-
-#if defined(__GNUG__) && !defined(__APPLE__)
-#pragma interface "laywin.h"
-#endif
 
 #if wxUSE_SASH
     #include "wx/sashwin.h"

@@ -4,14 +4,10 @@
 // Author:      Ported to Linux by Guilhem Lavaux
 // Modified by:
 // Created:     05/23/98
-// RCS-ID:      $Id: joystick.cpp,v 1.10 2002/08/20 17:16:05 JS Exp $
+// RCS-ID:      $Id: joystick.cpp,v 1.10.2.1 2005/06/20 17:42:06 MR Exp $
 // Copyright:   (c) Guilhem Lavaux
 // Licence:   	wxWindows license
 /////////////////////////////////////////////////////////////////////////////
-
-#ifdef __GNUG__
-#pragma implementation "joystick.h"
-#endif
 
 #include "wx/defs.h"
 

@@ -4,14 +4,10 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     12/07/98
-// RCS-ID:      $Id: mfutils.cpp,v 1.4.2.1 2002/12/18 06:13:00 RD Exp $
+// RCS-ID:      $Id: mfutils.cpp,v 1.4.2.2 2005/06/20 17:34:52 MR Exp $
 // Copyright:   (c) Julian Smart
 // Licence:   	wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
-
-#ifdef __GNUG__
-#pragma implementation "mfutils.h"
-#endif
 
 // For compilers that support precompilation, includes "wx.h".
 #include "wx/wxprec.h"

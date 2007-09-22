@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by: 13.12.99 by VZ during toolbar classes reorganization
 // Created:     04/01/98
-// RCS-ID:      $Id: tbarmsw.cpp,v 1.23 2002/03/25 23:14:33 VZ Exp $
+// RCS-ID:      $Id: tbarmsw.cpp,v 1.23.2.1 2005/06/20 17:44:10 MR Exp $
 // Copyright:   (c) Julian Smart and Markus Holzem
 // Licence:   	wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -16,10 +16,6 @@
 // ----------------------------------------------------------------------------
 // headers
 // ----------------------------------------------------------------------------
-
-#ifdef __GNUG__
-    #pragma implementation "tbarmsw.h"
-#endif
 
 // For compilers that support precompilation, includes "wx.h".
 #include "wx/wxprec.h"

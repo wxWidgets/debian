@@ -4,17 +4,13 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     01/02/97
-// RCS-ID:      $Id: imaglist.h,v 1.4 2000/07/15 19:50:00 cvsuser Exp $
+// RCS-ID:      $Id: imaglist.h,v 1.4.4.1 2005/06/20 17:38:00 MR Exp $
 // Copyright:   (c) Julian Smart
 // Licence:   	wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
 
 #ifndef _WX_IMAGLIST_H_
 #define _WX_IMAGLIST_H_
-
-#ifdef __GNUG__
-#pragma interface "imaglist.h"
-#endif
 
 #include "wx/bitmap.h"
 

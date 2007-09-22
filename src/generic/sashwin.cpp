@@ -6,14 +6,10 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     01/02/97
-// RCS-ID:      $Id: sashwin.cpp,v 1.32.2.1 2002/09/21 14:16:24 JS Exp $
+// RCS-ID:      $Id: sashwin.cpp,v 1.32.2.2 2005/06/20 17:41:47 MR Exp $
 // Copyright:   (c) Julian Smart
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
-
-#ifdef __GNUG__
-#pragma implementation "sashwin.h"
-#endif
 
 // For compilers that support precompilation, includes "wx.h".
 #include "wx/wxprec.h"

@@ -4,15 +4,10 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     12/07/98
-// RCS-ID:      $Id: lines.cpp,v 1.6.2.6 2003/12/11 06:30:50 JS Exp $
+// RCS-ID:      $Id: lines.cpp,v 1.6.2.7 2005/06/20 17:34:52 MR Exp $
 // Copyright:   (c) Julian Smart
 // Licence:   	wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
-
-#ifdef __GNUG__
-#pragma implementation "lines.h"
-#pragma implementation "linesp.h"
-#endif
 
 // For compilers that support precompilation, includes "wx.h".
 #include "wx/wxprec.h"

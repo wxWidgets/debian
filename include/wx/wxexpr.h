@@ -4,17 +4,13 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     01/02/97
-// RCS-ID:      $Id: wxexpr.h,v 1.16.2.1 2002/11/04 23:22:44 VZ Exp $
+// RCS-ID:      $Id: wxexpr.h,v 1.16.2.2 2005/06/20 17:36:36 MR Exp $
 // Copyright:   (c)
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
 
 #ifndef _WX_WXEXPRH__
 #define _WX_WXEXPRH__
-
-#if defined(__GNUG__) && !defined(__APPLE__)
-#pragma interface "wxexpr.h"
-#endif
 
 #if wxUSE_PROLOGIO
 

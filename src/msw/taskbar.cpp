@@ -5,14 +5,10 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     24/3/98
-// RCS-ID:      $Id: taskbar.cpp,v 1.25.2.2 2005/04/23 19:06:13 JS Exp $
+// RCS-ID:      $Id: taskbar.cpp,v 1.25.2.3 2005/06/20 17:44:10 MR Exp $
 // Copyright:   (c)
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////
-
-#ifdef __GNUG__
-#pragma implementation "taskbar.h"
-#endif
 
 // For compilers that support precompilation, includes "wx.h".
 #include "wx/wxprec.h"

@@ -2,17 +2,13 @@
 // Name:        dcclient.h
 // Purpose:
 // Author:      Robert Roebling
-// Id:          $Id: dcclient.h,v 1.32.2.1 2002/10/28 00:20:52 RR Exp $
+// Id:          $Id: dcclient.h,v 1.32.2.2 2005/06/20 17:36:59 MR Exp $
 // Copyright:   (c) 1998 Robert Roebling
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
 
 #ifndef __GTKDCCLIENTH__
 #define __GTKDCCLIENTH__
-
-#if defined(__GNUG__) && !defined(__APPLE__)
-#pragma interface
-#endif
 
 #include "wx/dc.h"
 #include "wx/window.h"

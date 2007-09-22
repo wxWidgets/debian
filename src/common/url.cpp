@@ -4,14 +4,10 @@
 // Author:      Guilhem Lavaux
 // Modified by:
 // Created:     20/07/1997
-// RCS-ID:      $Id: url.cpp,v 1.31.2.2 2003/08/16 12:10:15 MBN Exp $
+// RCS-ID:      $Id: url.cpp,v 1.31.2.3 2005/06/20 17:41:21 MR Exp $
 // Copyright:   (c) 1997, 1998 Guilhem Lavaux
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
-
-#ifdef __GNUG__
-#pragma implementation "url.h"
-#endif
 
 // For compilers that support precompilation, includes "wx.h".
 #include "wx/wxprec.h"

@@ -2,14 +2,10 @@
 // Name:        dcmemory.cpp
 // Purpose:
 // Author:      Robert Roebling
-// RCS-ID:      $Id: dcmemory.cpp,v 1.19 2000/02/23 17:47:43 RR Exp $
+// RCS-ID:      $Id: dcmemory.cpp,v 1.19.6.1 2005/06/20 17:42:02 MR Exp $
 // Copyright:   (c) 1998 Robert Roebling
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
-
-#ifdef __GNUG__
-#pragma implementation "dcmemory.h"
-#endif
 
 #include "wx/dcmemory.h"
 

@@ -4,17 +4,13 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     12/07/98
-// RCS-ID:      $Id: misc.h,v 1.3 2002/09/07 12:10:20 GD Exp $
+// RCS-ID:      $Id: misc.h,v 1.3.2.1 2005/06/20 17:33:43 MR Exp $
 // Copyright:   (c) Julian Smart
 // Licence:   	wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
 
 #ifndef _OGL_MISC_H_
 #define _OGL_MISC_H_
-
-#if defined(__GNUG__) && !defined(__APPLE__)
-#pragma interface "misc.h"
-#endif
 
 // List to use when copying objects; may need to associate elements of new objects
 // with elements of old objects, e.g. when copying constraint.s

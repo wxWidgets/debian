@@ -2,14 +2,10 @@
 // Name:        control.cpp
 // Purpose:
 // Author:      Robert Roebling
-// Id:          $Id: control.cpp,v 1.26.2.1 2003/04/06 17:55:52 JS Exp $
+// Id:          $Id: control.cpp,v 1.26.2.2 2005/06/20 17:42:00 MR Exp $
 // Copyright:   (c) 1998 Robert Roebling, Julian Smart and Vadim Zeitlin
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
-
-#ifdef __GNUG__
-#pragma implementation "control.h"
-#endif
 
 #include "wx/defs.h"
 

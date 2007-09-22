@@ -4,7 +4,7 @@
 // Author:      Guilhem Lavaux
 // Modified by: Vadim Zeitlin to check error codes, added Detach() method
 // Created:     24/06/98
-// RCS-ID:      $Id: process.cpp,v 1.16.2.2 2002/11/04 21:33:20 VZ Exp $
+// RCS-ID:      $Id: process.cpp,v 1.16.2.3 2005/06/20 17:41:09 MR Exp $
 // Copyright:   (c) Guilhem Lavaux
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -16,10 +16,6 @@
 // ----------------------------------------------------------------------------
 // headers
 // ----------------------------------------------------------------------------
-
-#ifdef __GNUG__
-    #pragma implementation "process.h"
-#endif
 
 // For compilers that support precompilation, includes "wx.h".
 #include "wx/wxprec.h"

@@ -4,17 +4,13 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     01/02/97
-// RCS-ID:      $Id: control.h,v 1.27 2002/08/22 16:00:45 VZ Exp $
+// RCS-ID:      $Id: control.h,v 1.27.2.1 2005/06/20 17:37:55 MR Exp $
 // Copyright:   (c) Julian Smart
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
 
 #ifndef _WX_CONTROL_H_
 #define _WX_CONTROL_H_
-
-#ifdef __GNUG__
-    #pragma interface "control.h"
-#endif
 
 #include "wx/dynarray.h"
 

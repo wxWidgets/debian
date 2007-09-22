@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     13.07.99
-// RCS-ID:      $Id: textcmn.cpp,v 1.22 2002/08/05 18:04:07 RR Exp $
+// RCS-ID:      $Id: textcmn.cpp,v 1.22.2.1 2005/06/20 17:41:18 MR Exp $
 // Copyright:   (c) wxWindows team
 // Licence:     wxWindows license
 ///////////////////////////////////////////////////////////////////////////////
@@ -12,10 +12,6 @@
 // ============================================================================
 // declarations
 // ============================================================================
-
-#ifdef __GNUG__
-    #pragma implementation "textctrlbase.h"
-#endif
 
 // for compilers that support precompilation, includes "wx.h".
 #include "wx/wxprec.h"

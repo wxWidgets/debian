@@ -4,15 +4,10 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     04/01/98
-// RCS-ID:      $Id: listtest.cpp,v 1.60.2.4 2002/12/15 10:22:31 MBN Exp $
+// RCS-ID:      $Id: listtest.cpp,v 1.60.2.5 2005/06/20 17:39:39 MR Exp $
 // Copyright:   (c) Julian Smart and Markus Holzem
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
-
-#ifdef __GNUG__
-#pragma implementation
-#pragma interface
-#endif
 
 // For compilers that support precompilation, includes "wx/wx.h".
 #include "wx/wxprec.h"

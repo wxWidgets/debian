@@ -2,17 +2,13 @@
 // Name:        imaggif.h
 // Purpose:     wxImage XPM handler
 // Author:      Vaclav Slavik
-// RCS-ID:      $Id: imagxpm.h,v 1.4.2.1 2002/10/23 17:32:04 RR Exp $
+// RCS-ID:      $Id: imagxpm.h,v 1.4.2.2 2005/06/20 17:36:18 MR Exp $
 // Copyright:   (c) 2001 Vaclav Slavik
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
 
 #ifndef _WX_IMAGXPM_H_
 #define _WX_IMAGXPM_H_
-
-#if defined(__GNUG__) && !defined(__APPLE__)
-#pragma interface "imagxpm.h"
-#endif
 
 #include "wx/image.h"
 

@@ -4,7 +4,7 @@
 // Author:      John Platts, Vadim Zeitlin
 // Modified by:
 // Created:     2003
-// RCS-ID:      $Id: uxtheme.cpp,v 1.2.2.4 2005/05/05 15:55:48 JS Exp $
+// RCS-ID:      $Id: uxtheme.cpp,v 1.2.2.6 2005/06/29 15:53:08 CE Exp $
 // Copyright:   (c) 2003 John Platts, Vadim Zeitlin
 // License:     wxWindows licence
 ///////////////////////////////////////////////////////////////////////////////
@@ -15,10 +15,6 @@
  * Compiler must support Unicode, the __cdecl calling convention, and the
  * __stdcall calling convention
  */
-
-#ifdef __GNUG__
-#pragma implementation "uxtheme.h"
-#endif
 
 // For compilers that support precompilation, includes "wx.h".
 #include "wx/wxprec.h"
@@ -45,26 +41,27 @@
 #include "wx/msw/private.h"
 #include "wx/app.h"         // for GetComCtl32Version
 
+#if wxUSE_DYNLIB_CLASS
+#include "wx/dynlib.h"
+#endif
+
 wxUxThemeEngine* g_pThemeEngine = ((wxUxThemeEngine*)NULL) ;
 
 BOOL wxCanUseInitThemeEngine()
 {
-    OSVERSIONINFOEX wxuosex ;
-    memset((void*)&wxuosex, 0, sizeof(OSVERSIONINFOEX)) ;
-    wxuosex.dwOSVersionInfoSize = sizeof(OSVERSIONINFOEX) ;
-    if(!GetVersionEx((LPOSVERSIONINFO)&wxuosex))
+#if wxUSE_DYNLIB_CLASS
+    //suppress errors if we don't find it -- that's expected on nonXP systems
+    wxLogNull NullLog ;
+    wxDynamicLibrary uxthemelib ( wxT("uxtheme.dll") );
+
+    if (uxthemelib.IsLoaded())
     {
-        wxuosex.dwOSVersionInfoSize = sizeof(OSVERSIONINFO) ;
-        if(!GetVersionEx((LPOSVERSIONINFO)&wxuosex))
-        {
-            return FALSE ;
-        }
-    }
-    if ((wxuosex.dwMajorVersion == 5) && (wxuosex.dwMinorVersion > 0))
-    {
+        //just discard this for 2.4 branch - code is externsively rewritten in CVS HEAD
+        uxthemelib.Unload ();
         return (wxTheApp->GetComCtl32Version() >= 600) ;
     }
     else
+#endif //wxUSE_DYNLIB_CLASS
     {
         return FALSE ;
     }

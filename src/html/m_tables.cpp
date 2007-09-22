@@ -2,14 +2,10 @@
 // Name:        m_tables.cpp
 // Purpose:     wxHtml module for tables
 // Author:      Vaclav Slavik
-// RCS-ID:      $Id: m_tables.cpp,v 1.27.2.4 2003/08/21 14:47:05 VS Exp $
+// RCS-ID:      $Id: m_tables.cpp,v 1.27.2.5 2005/06/20 17:42:27 MR Exp $
 // Copyright:   (c) 1999 Vaclav Slavik
 // Licence:     wxWindows Licence
 /////////////////////////////////////////////////////////////////////////////
-
-#ifdef __GNUG__
-#pragma implementation
-#endif
 
 #include "wx/wxprec.h"
 

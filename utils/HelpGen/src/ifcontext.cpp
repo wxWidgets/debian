@@ -4,14 +4,10 @@
 // Author:      Aleksandras Gluchovas
 // Modified by:
 // Created:     27/12/98
-// RCS-ID:      $Id: ifcontext.cpp,v 1.4 2001/12/03 10:54:59 GT Exp $
+// RCS-ID:      $Id: ifcontext.cpp,v 1.4.2.1 2005/06/20 17:45:13 MR Exp $
 // Copyright:   (c) Aleskandars Gluchovas
 // Licence:   	wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
-
-#ifdef __GNUG__
-#  pragma implementation "ifcontext.h"
-#endif
 
 // For compilers that support precompilation, includes "wx/wx.h".
 #include "wx/wxprec.h"

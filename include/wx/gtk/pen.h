@@ -2,7 +2,7 @@
 // Name:        pen.h
 // Purpose:
 // Author:      Robert Roebling
-// Id:          $Id: pen.h,v 1.15 2002/09/07 12:28:46 GD Exp $
+// Id:          $Id: pen.h,v 1.15.2.1 2005/06/20 17:37:04 MR Exp $
 // Copyright:   (c) 1998 Robert Roebling
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -10,10 +10,6 @@
 
 #ifndef __GTKPENH__
 #define __GTKPENH__
-
-#if defined(__GNUG__) && !defined(__APPLE__)
-#pragma interface
-#endif
 
 #include "wx/defs.h"
 #include "wx/object.h"

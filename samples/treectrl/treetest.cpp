@@ -4,15 +4,10 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     04/01/98
-// RCS-ID:      $Id: treetest.cpp,v 1.70.2.3 2003/04/02 14:40:35 JS Exp $
+// RCS-ID:      $Id: treetest.cpp,v 1.70.2.4 2005/06/20 17:40:20 MR Exp $
 // Copyright:   (c) Julian Smart and Markus Holzem
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
-
-#ifdef __GNUG__
-  #pragma implementation
-  #pragma interface
-#endif
 
 // For compilers that support precompilation, includes "wx/wx.h".
 #include "wx/wxprec.h"

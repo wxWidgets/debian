@@ -4,17 +4,13 @@
 // Author:      Vadim Zeitlin
 // Modified by:
 // Created:     13.01.00
-// RCS-ID:      $Id: enhmeta.h,v 1.3 2001/04/09 01:22:45 VZ Exp $
+// RCS-ID:      $Id: enhmeta.h,v 1.3.2.1 2005/06/20 17:37:57 MR Exp $
 // Copyright:   (c) 2000 Vadim Zeitlin <zeitlin@dptmaths.ens-cachan.fr>
 // Licence:     wxWindows license
 ///////////////////////////////////////////////////////////////////////////////
 
 #ifndef _WX_MSW_ENHMETA_H_
 #define _WX_MSW_ENHMETA_H_
-
-#ifdef __GNUG__
-    #pragma interface "enhmeta.h"
-#endif
 
 #include "wx/dc.h"
 

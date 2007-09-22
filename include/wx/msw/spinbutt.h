@@ -4,17 +4,13 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     01/02/97
-// RCS-ID:      $Id: spinbutt.h,v 1.16 2001/07/20 11:59:46 VZ Exp $
+// RCS-ID:      $Id: spinbutt.h,v 1.16.2.1 2005/06/20 17:38:05 MR Exp $
 // Copyright:   (c) Julian Smart
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
 
 #ifndef _WX_SPINBUTT_H_
 #define _WX_SPINBUTT_H_
-
-#ifdef __GNUG__
-    #pragma interface "spinbutt.h"
-#endif
 
 #include "wx/control.h"
 #include "wx/event.h"

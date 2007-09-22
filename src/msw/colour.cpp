@@ -4,14 +4,10 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     01/02/97
-// RCS-ID:      $Id: colour.cpp,v 1.5 2001/07/02 13:22:16 JS Exp $
+// RCS-ID:      $Id: colour.cpp,v 1.5.2.1 2005/06/20 17:43:52 MR Exp $
 // Copyright:   (c) Julian Smart and Markus Holzem
 // Licence:   	wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
-
-#ifdef __GNUG__
-#pragma implementation "colour.h"
-#endif
 
 // For compilers that support precompilation, includes "wx.h".
 #include "wx/wxprec.h"

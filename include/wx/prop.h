@@ -4,17 +4,13 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     04/01/98
-// RCS-ID:      $Id: prop.h,v 1.10.2.1 2002/10/29 21:47:19 RR Exp $
+// RCS-ID:      $Id: prop.h,v 1.10.2.2 2005/06/20 17:36:25 MR Exp $
 // Copyright:   (c) Julian Smart
 // Licence:   	wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
 
 #ifndef _WX_PROP_H_
 #define _WX_PROP_H_
-
-#if defined(__GNUG__) && !defined(__APPLE__)
-#pragma interface "prop.h"
-#endif
 
 #if wxUSE_PROPSHEET
 

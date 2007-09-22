@@ -4,7 +4,7 @@
 // Author:      Vadim Zeitlin
 // Modified by:
 // Created:     22.10.99
-// RCS-ID:      $Id: ctrlsub.cpp,v 1.6 2002/05/11 17:14:46 GD Exp $
+// RCS-ID:      $Id: ctrlsub.cpp,v 1.6.2.1 2005/06/20 17:40:41 MR Exp $
 // Copyright:   (c) wxWindows team
 // Licence:     wxWindows licence
 ///////////////////////////////////////////////////////////////////////////////
@@ -16,10 +16,6 @@
 // ----------------------------------------------------------------------------
 // headers
 // ----------------------------------------------------------------------------
-
-#ifdef __GNUG__
-    #pragma implementation "controlwithitems.h"
-#endif
 
 // For compilers that support precompilation, includes "wx.h".
 #include "wx/wxprec.h"

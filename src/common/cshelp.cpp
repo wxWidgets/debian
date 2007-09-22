@@ -4,7 +4,7 @@
 // Author:      Julian Smart, Vadim Zeitlin
 // Modified by:
 // Created:     08/09/2000
-// RCS-ID:      $Id: cshelp.cpp,v 1.20.2.1 2003/05/09 10:00:38 JS Exp $
+// RCS-ID:      $Id: cshelp.cpp,v 1.20.2.2 2005/06/20 17:40:40 MR Exp $
 // Copyright:   (c) 2000 Julian Smart, Vadim Zeitlin
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -12,10 +12,6 @@
 // ============================================================================
 // declarations
 // ============================================================================
-
-#ifdef __GNUG__
-    #pragma implementation "cshelp.h"
-#endif
 
 // ----------------------------------------------------------------------------
 // headers

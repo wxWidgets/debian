@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     04/01/98
-// RCS-ID:      $Id: clipbrd.cpp,v 1.43 2002/04/17 11:48:04 JS Exp $
+// RCS-ID:      $Id: clipbrd.cpp,v 1.43.2.1 2005/06/20 17:43:51 MR Exp $
 // Copyright:   (c) Julian Smart and Markus Holzem
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -16,10 +16,6 @@
 // ---------------------------------------------------------------------------
 // headers
 // ---------------------------------------------------------------------------
-
-#ifdef __GNUG__
-    #pragma implementation "clipbrd.h"
-#endif
 
 // For compilers that support precompilation, includes "wx.h".
 #include "wx/wxprec.h"

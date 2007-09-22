@@ -4,17 +4,13 @@
 // Author:      Vadim Zeitlin
 // Modified by:
 // Created:     12.09.97
-// RCS-ID:      $Id: dynarray.h,v 1.48.2.1 2004/02/04 15:14:55 VZ Exp $
+// RCS-ID:      $Id: dynarray.h,v 1.48.2.2 2005/06/20 17:36:08 MR Exp $
 // Copyright:   (c) 1998 Vadim Zeitlin <zeitlin@dptmaths.ens-cachan.fr>
 // Licence:     wxWindows license
 ///////////////////////////////////////////////////////////////////////////////
 
 #ifndef   _DYNARRAY_H
 #define   _DYNARRAY_H
-
-#if defined(__GNUG__) && !defined(__APPLE__)
-#pragma interface "dynarray.h"
-#endif
 
 #include "wx/defs.h"
 

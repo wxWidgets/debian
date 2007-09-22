@@ -4,17 +4,13 @@
 // Author:      Ron Lee <ron@debian.org>
 // Modified by:
 // Created:     16/03/02
-// RCS-ID:      $Id: dcbuffer.h,v 1.3 2002/08/31 11:29:09 GD Exp $
+// RCS-ID:      $Id: dcbuffer.h,v 1.3.2.1 2005/06/20 17:36:05 MR Exp $
 // Copyright:   (c) Ron Lee
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
 
 #ifndef _WX_DCBUFFER_H_
 #define _WX_DCBUFFER_H_
-
-#if defined(__GNUG__) && !defined(__APPLE__)
-#pragma interface "dcbuffer.h"
-#endif
 
 #include "wx/dcmemory.h"
 

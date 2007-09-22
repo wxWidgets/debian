@@ -5,14 +5,10 @@
 // Author:      Matt Kimball
 // Modified by:
 // Created:     7/15/2001
-// RCS-ID:      $Id: dynamicsash.cpp,v 1.6.2.1 2002/12/18 06:10:24 RD Exp $
+// RCS-ID:      $Id: dynamicsash.cpp,v 1.6.2.2 2005/06/20 17:34:38 MR Exp $
 // Copyright:   (c) 2001 Matt Kimball
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
-
-#ifdef __GNUG__
-    #pragma implementation "splittree.h"
-#endif
 
 // For compilers that support precompilation, includes "wx/wx.h".
 #include "wx/wxprec.h"

@@ -4,14 +4,10 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     04/01/98
-// RCS-ID:      $Id: bmpbuttn.cpp,v 1.30.2.1 2003/06/02 13:47:12 JS Exp $
+// RCS-ID:      $Id: bmpbuttn.cpp,v 1.30.2.2 2005/06/20 17:43:48 MR Exp $
 // Copyright:   (c) Julian Smart and Markus Holzem
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
-
-#ifdef __GNUG__
-#pragma implementation "bmpbuttn.h"
-#endif
 
 // For compilers that support precompilation, includes "wx.h".
 #include "wx/wxprec.h"

@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by: Vadim Zeitlin to add support for font encodings
 // Created:     04/01/98
-// RCS-ID:      $Id: fontenum.cpp,v 1.29 2002/08/30 20:34:25 JS Exp $
+// RCS-ID:      $Id: fontenum.cpp,v 1.29.2.1 2005/06/20 17:43:57 MR Exp $
 // Copyright:   (c) Julian Smart
 // Licence:     wxWindows licence
 ///////////////////////////////////////////////////////////////////////////////
@@ -16,10 +16,6 @@
 // ----------------------------------------------------------------------------
 // headers
 // ----------------------------------------------------------------------------
-
-#ifdef __GNUG__
-    #pragma implementation "fontenum.h"
-#endif
 
 // For compilers that support precompilation, includes "wx.h".
 #include "wx/wxprec.h"

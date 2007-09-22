@@ -4,7 +4,7 @@
 // Author:      Vadim Zeitlin
 // Modified by:
 // Created:     11.11.97
-// RCS-ID:      $Id: menuitem.cpp,v 1.42.2.3 2004/01/17 17:05:35 JS Exp $
+// RCS-ID:      $Id: menuitem.cpp,v 1.42.2.4 2005/06/20 17:44:02 MR Exp $
 // Copyright:   (c) 1998 Vadim Zeitlin <zeitlin@dptmaths.ens-cachan.fr>
 // Licence:     wxWindows license
 ///////////////////////////////////////////////////////////////////////////////
@@ -16,10 +16,6 @@
 // ---------------------------------------------------------------------------
 // headers
 // ---------------------------------------------------------------------------
-
-#ifdef __GNUG__
-    #pragma implementation "menuitem.h"
-#endif
 
 // For compilers that support precompilation, includes "wx.h".
 #include "wx/wxprec.h"

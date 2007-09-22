@@ -4,17 +4,13 @@
 // Author:      Guilhem Lavaux, Vadim Zeitlin, Vaclav Slavik
 // Modified by:
 // Created:     20/07/98
-// RCS-ID:      $Id: dynlib.h,v 1.34 2002/08/31 11:29:10 GD Exp $
+// RCS-ID:      $Id: dynlib.h,v 1.34.2.1 2005/06/20 17:36:08 MR Exp $
 // Copyright:   (c) 1998 Guilhem Lavaux
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
 
 #ifndef _WX_DYNLIB_H__
 #define _WX_DYNLIB_H__
-
-#if defined(__GNUG__) && !defined(__APPLE__)
-#   pragma interface "dynlib.h"
-#endif
 
 #include "wx/setup.h"
 

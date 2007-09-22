@@ -2,14 +2,10 @@
 // Name:        gtk/dcclient.cpp
 // Purpose:
 // Author:      Robert Roebling
-// RCS-ID:      $Id: dcclient.cpp,v 1.160.2.17 2004/01/03 18:00:24 JS Exp $
+// RCS-ID:      $Id: dcclient.cpp,v 1.160.2.18 2005/06/20 17:42:02 MR Exp $
 // Copyright:   (c) 1998 Robert Roebling, Markus Holzem, Chris Breeze
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
-
-#ifdef __GNUG__
-#pragma implementation "dcclient.h"
-#endif
 
 #ifdef __VMS
 #define XCopyPlane XCOPYPLANE

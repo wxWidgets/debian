@@ -3,14 +3,10 @@
  *                                                                  *
  * (C) 1998 by Karsten Ballüder (Ballueder@usa.net)                 *
  *                                                                  *
- * $Id: wxlparser.h,v 1.7 1999/12/01 18:05:52 KB Exp $
+ * $Id: wxlparser.h,v 1.7.6.1 2005/06/20 17:40:12 MR Exp $
  *******************************************************************/
 #ifndef WXLPARSER_H
 #   define   WXLPARSER_H
-
-#ifdef __GNUG__
-#   pragma interface "wxlparser.h"
-#endif
 
 #ifndef   NULL
 #   define   NULL 0

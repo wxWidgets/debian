@@ -4,7 +4,7 @@
 // Author:      Karsten Ballüder and Vadim Zeitlin
 // Modified by:
 // Created:     13.07.01
-// RCS-ID:      $Id: regex.cpp,v 1.8.2.4 2003/08/14 11:48:22 CE Exp $
+// RCS-ID:      $Id: regex.cpp,v 1.8.2.5 2005/06/20 17:41:10 MR Exp $
 // Copyright:   (c) 2000 Karsten Ballüder <ballueder@gmx.net>
 //                  2001 Vadim Zeitlin <vadim@wxwindows.org>
 // Licence:     wxWindows licence
@@ -17,10 +17,6 @@
 // ----------------------------------------------------------------------------
 // headers
 // ----------------------------------------------------------------------------
-
-#ifdef __GNUG__
-    #pragma implementation "regex.h"
-#endif
 
 // For compilers that support precompilation, includes "wx.h".
 #include "wx/wxprec.h"

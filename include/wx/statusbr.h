@@ -4,17 +4,13 @@
 // Author:      Vadim Zeitlin
 // Modified by:
 // Created:     05.02.00
-// RCS-ID:      $Id: statusbr.h,v 1.13 2002/08/31 11:29:11 GD Exp $
+// RCS-ID:      $Id: statusbr.h,v 1.13.2.1 2005/06/20 17:36:29 MR Exp $
 // Copyright:   (c) wxWindows team
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
 
 #ifndef _WX_STATUSBR_H_BASE_
 #define _WX_STATUSBR_H_BASE_
-
-#if defined(__GNUG__) && !defined(__APPLE__)
-    #pragma interface "statbar.h"
-#endif
 
 #include "wx/window.h"
 

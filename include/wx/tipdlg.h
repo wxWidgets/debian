@@ -4,17 +4,13 @@
 // Author:      Vadim Zeitlin
 // Modified by:
 // Created:     28.06.99
-// RCS-ID:      $Id: tipdlg.h,v 1.3 2002/08/31 12:08:02 JS Exp $
+// RCS-ID:      $Id: tipdlg.h,v 1.3.2.1 2005/06/20 17:36:33 MR Exp $
 // Copyright:   (c) Vadim Zeitlin
 // Licence:     wxWindows licence
 ///////////////////////////////////////////////////////////////////////////////
 
 #ifndef _WX_TIPDLG_H_
 #define _WX_TIPDLG_H_
-
-#if defined(__GNUG__) && !defined(__APPLE__)
-    #pragma interface "tipdlg.h"
-#endif
 
 // ----------------------------------------------------------------------------
 // headers which we must include here

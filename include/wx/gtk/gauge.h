@@ -2,7 +2,7 @@
 // Name:        gauge.h
 // Purpose:
 // Author:      Robert Roebling
-// Id:          $Id: gauge.h,v 1.10.2.1 2002/10/15 13:25:41 VZ Exp $
+// Id:          $Id: gauge.h,v 1.10.2.2 2005/06/20 17:37:02 MR Exp $
 // Copyright:   (c) 1998 Robert Roebling
 // Licence:   	wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -10,10 +10,6 @@
 
 #ifndef __GTKGAUGEH__
 #define __GTKGAUGEH__
-
-#if defined(__GNUG__) && !defined(__APPLE__)
-#pragma interface
-#endif
 
 #include "wx/defs.h"
 

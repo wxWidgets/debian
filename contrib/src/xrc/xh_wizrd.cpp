@@ -3,15 +3,11 @@
 // Purpose:     XRC resource for wxWizard
 // Author:      Vaclav Slavik
 // Created:     2003/03/01
-// RCS-ID:      $Id: xh_wizrd.cpp,v 1.1.2.3 2004/01/09 08:41:55 JS Exp $
+// RCS-ID:      $Id: xh_wizrd.cpp,v 1.1.2.4 2005/06/20 17:35:19 MR Exp $
 // Copyright:   (c) 2000 Vaclav Slavik
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
  
-#ifdef __GNUG__
-#pragma implementation "xh_wizrd.h"
-#endif
-
 // For compilers that support precompilation, includes "wx.h".
 #include "wx/wxprec.h"
 

@@ -4,14 +4,10 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     1995
-// RCS-ID:      $Id: printing.h,v 1.6.2.1 2002/12/15 17:25:23 MBN Exp $
+// RCS-ID:      $Id: printing.h,v 1.6.2.2 2005/06/20 17:40:02 MR Exp $
 // Copyright:   (c) Julian Smart
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
-
-#if defined(__GNUG__) && !defined(__APPLE__)
-#pragma interface
-#endif
 
 // Define a new application
 class MyApp: public wxApp

@@ -2,14 +2,10 @@
 // Name:        statbmp.cpp
 // Purpose:
 // Author:      Robert Roebling
-// Id:          $Id: statbmp.cpp,v 1.24 2001/08/19 21:36:25 RR Exp $
+// Id:          $Id: statbmp.cpp,v 1.24.2.1 2005/06/20 17:42:11 MR Exp $
 // Copyright:   (c) 1998 Robert Roebling
 // Licence:           wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
-
-#ifdef __GNUG__
-#pragma implementation "statbmp.h"
-#endif
 
 #include "wx/defs.h"
 

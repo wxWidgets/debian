@@ -4,17 +4,13 @@
 // Author:      Julian Smart and others
 // Modified by:
 // Created:     01/02/97
-// RCS-ID:      $Id: cmndata.h,v 1.31.2.2 2003/05/22 21:14:56 SC Exp $
+// RCS-ID:      $Id: cmndata.h,v 1.31.2.3 2005/06/20 17:36:00 MR Exp $
 // Copyright:   (c)
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
 
 #ifndef _WX_CMNDATA_H_BASE_
 #define _WX_CMNDATA_H_BASE_
-
-#if defined(__GNUG__) && !defined(__APPLE__)
-#pragma interface "cmndata.h"
-#endif
 
 #include "wx/window.h"
 #include "wx/font.h"

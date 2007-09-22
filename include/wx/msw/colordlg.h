@@ -4,17 +4,13 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     01/02/97
-// RCS-ID:      $Id: colordlg.h,v 1.5 2002/05/09 22:31:44 VZ Exp $
+// RCS-ID:      $Id: colordlg.h,v 1.5.2.1 2005/06/20 17:37:54 MR Exp $
 // Copyright:   (c) Julian Smart
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
 
 #ifndef _WX_COLORDLG_H_
 #define _WX_COLORDLG_H_
-
-#ifdef __GNUG__
-#pragma interface "colordlg.h"
-#endif
 
 #include "wx/setup.h"
 #include "wx/dialog.h"

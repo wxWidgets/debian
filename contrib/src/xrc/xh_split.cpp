@@ -3,15 +3,11 @@
 // Purpose:     XRC resource for wxSplitterWindow
 // Author:      panga@freemail.hu, Vaclav Slavik
 // Created:     2003/01/26
-// RCS-ID:      $Id: xh_split.cpp,v 1.1.2.1 2003/05/25 13:20:24 JS Exp $
+// RCS-ID:      $Id: xh_split.cpp,v 1.1.2.2 2005/06/20 17:35:16 MR Exp $
 // Copyright:   (c) 2003 panga@freemail.hu, Vaclav Slavik
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
  
-#ifdef __GNUG__
-#pragma implementation "xh_split.h"
-#endif
-
 // For compilers that support precompilation, includes "wx.h".
 #include "wx/wxprec.h"
 

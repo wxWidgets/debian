@@ -4,17 +4,13 @@
 // Author:      Aleksandras Gluchovas
 // Modified by:
 // Created:     23/01/99
-// RCS-ID:      $Id: dyntbarhnd.h,v 1.3.2.1 2002/10/24 11:21:33 JS Exp $
+// RCS-ID:      $Id: dyntbarhnd.h,v 1.3.2.2 2005/06/20 17:33:24 MR Exp $
 // Copyright:   (c) Aleksandras Gluchovas
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
 
 #ifndef __DYNTBARHND_G__
 #define __DYNTBARHND_G__
-
-#if defined(__GNUG__) && !defined(__APPLE__)
-    #pragma interface "dyntbarhnd.h"
-#endif
 
 #include "wx/fl/controlbar.h"
 #include "wx/fl/dyntbar.h"

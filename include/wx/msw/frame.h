@@ -4,17 +4,13 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     01/02/97
-// RCS-ID:      $Id: frame.h,v 1.58 2002/08/22 17:03:38 VZ Exp $
+// RCS-ID:      $Id: frame.h,v 1.58.2.1 2005/06/20 17:37:58 MR Exp $
 // Copyright:   (c) Julian Smart and Markus Holzem
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
 
 #ifndef _WX_FRAME_H_
 #define _WX_FRAME_H_
-
-#ifdef __GNUG__
-    #pragma interface "frame.h"
-#endif
 
 class WXDLLEXPORT wxFrame : public wxFrameBase
 {

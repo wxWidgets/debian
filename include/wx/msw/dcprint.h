@@ -4,17 +4,13 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     01/02/97
-// RCS-ID:      $Id: dcprint.h,v 1.8 2001/07/11 10:06:50 JS Exp $
+// RCS-ID:      $Id: dcprint.h,v 1.8.2.1 2005/06/20 17:37:56 MR Exp $
 // Copyright:   (c) Julian Smart
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
 
 #ifndef _WX_DCPRINT_H_
 #define _WX_DCPRINT_H_
-
-#ifdef __GNUG__
-    #pragma interface "dcprint.h"
-#endif
 
 #if wxUSE_PRINTING_ARCHITECTURE
 

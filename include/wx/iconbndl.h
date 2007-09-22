@@ -4,17 +4,13 @@
 // Author:      Mattia barbon
 // Modified by:
 // Created:     23.03.02
-// RCS-ID:      $Id: iconbndl.h,v 1.4 2002/08/31 11:29:10 GD Exp $
+// RCS-ID:      $Id: iconbndl.h,v 1.4.2.1 2005/06/20 17:36:16 MR Exp $
 // Copyright:   (c) Mattia Barbon
 // Licence:     wxWindows licence
 ///////////////////////////////////////////////////////////////////////////////
 
 #ifndef _WX_ICONBNDL_H_
 #define _WX_ICONBNDL_H_
-
-#if defined(__GNUG__) && !defined(__APPLE__)
-#pragma interface "iconbndl.h"
-#endif
 
 #include "wx/dynarray.h"
 // for wxSize

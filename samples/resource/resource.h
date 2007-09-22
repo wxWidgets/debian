@@ -4,14 +4,10 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     04/01/98
-// RCS-ID:      $Id: resource.h,v 1.6 2002/03/17 14:15:55 VZ Exp $
+// RCS-ID:      $Id: resource.h,v 1.6.2.1 2005/06/20 17:40:08 MR Exp $
 // Copyright:   (c) Julian Smart and Markus Holzem
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
-
-#ifdef __GNUG__
-// #pragma interface
-#endif
 
 // Define a new application
 class MyApp: public wxApp

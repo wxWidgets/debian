@@ -5,7 +5,7 @@
 // Modified by:
 //  Chris Elliott (biol75@york.ac.uk) 5 Dec 00: write support for Win32
 // Created:     23.09.98
-// RCS-ID:      $Id: mimecmn.cpp,v 1.22.2.2 2003/07/17 12:50:04 VZ Exp $
+// RCS-ID:      $Id: mimecmn.cpp,v 1.22.2.3 2005/06/20 17:41:06 MR Exp $
 // Copyright:   (c) 1998 Vadim Zeitlin <zeitlin@dptmaths.ens-cachan.fr>
 // Licence:     wxWindows license (part of wxExtra library)
 /////////////////////////////////////////////////////////////////////////////
@@ -17,10 +17,6 @@
 // ----------------------------------------------------------------------------
 // headers
 // ----------------------------------------------------------------------------
-
-#ifdef    __GNUG__
-    #pragma implementation "mimetypebase.h"
-#endif
 
 // for compilers that support precompilation, includes "wx.h".
 #include "wx/wxprec.h"

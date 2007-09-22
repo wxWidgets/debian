@@ -4,14 +4,10 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     04/01/98
-// RCS-ID:      $Id: edlist.cpp,v 1.3 2000/07/15 19:50:51 cvsuser Exp $
+// RCS-ID:      $Id: edlist.cpp,v 1.3.4.1 2005/06/20 17:45:15 MR Exp $
 // Copyright:   (c) Julian Smart
 // Licence:   	wxWindows license
 /////////////////////////////////////////////////////////////////////////////
-
-#ifdef __GNUG__
-#pragma implementation "edlist.h"
-#endif
 
 // For compilers that support precompilation, includes "wx/wx.h".
 #include "wx/wxprec.h"

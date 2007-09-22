@@ -4,17 +4,13 @@
 // Author:      Vadim Zeitlin, Robert Roebling
 // Modified by:
 // Created:     26.05.99
-// RCS-ID:      $Id: dataobj.h,v 1.41 2002/08/31 11:29:09 GD Exp $
+// RCS-ID:      $Id: dataobj.h,v 1.41.2.1 2005/06/20 17:36:02 MR Exp $
 // Copyright:   (c) wxWindows Team
 // Licence:     wxWindows license
 ///////////////////////////////////////////////////////////////////////////////
 
 #ifndef _WX_DATAOBJ_H_BASE_
 #define _WX_DATAOBJ_H_BASE_
-
-#if defined(__GNUG__) && !defined(__APPLE__)
-    #pragma interface "dataobjbase.h"
-#endif
 
 // ----------------------------------------------------------------------------
 // headers

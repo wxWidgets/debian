@@ -4,15 +4,10 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     04/01/98
-// RCS-ID:      $Id: cube.cpp,v 1.9 2002/08/31 22:30:50 GD Exp $
+// RCS-ID:      $Id: cube.cpp,v 1.9.2.1 2005/06/20 17:39:55 MR Exp $
 // Copyright:   (c) Julian Smart
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
-
-#if defined(__GNUG__) && !defined(__APPLE__)
-#pragma implementation
-#pragma interface
-#endif
 
 // For compilers that support precompilation, includes "wx.h".
 #include "wx/wxprec.h"

@@ -2,7 +2,7 @@
 // Name:        gtk/font.cpp
 // Purpose:
 // Author:      Robert Roebling
-// Id:          $Id: font.cpp,v 1.67.2.7 2003/12/24 20:23:13 VS Exp $
+// Id:          $Id: font.cpp,v 1.67.2.8 2005/06/20 17:42:04 MR Exp $
 // Copyright:   (c) 1998 Robert Roebling, Julian Smart and Markus Holzem
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -14,10 +14,6 @@
 // ----------------------------------------------------------------------------
 // headers
 // ----------------------------------------------------------------------------
-
-#ifdef __GNUG__
-    #pragma implementation "font.h"
-#endif
 
 #include "wx/font.h"
 #include "wx/fontutil.h"

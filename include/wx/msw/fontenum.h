@@ -4,17 +4,13 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     04/01/98
-// RCS-ID:      $Id: fontenum.h,v 1.1 1999/09/06 09:36:06 JS Exp $
+// RCS-ID:      $Id: fontenum.h,v 1.1.6.1 2005/06/20 17:37:58 MR Exp $
 // Copyright:   (c) Julian Smart
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
 
 #ifndef _WX_FONTENUM_H_
 #define _WX_FONTENUM_H_
-
-#ifdef __GNUG__
-#pragma interface "fontenum.h"
-#endif
 
 /*
  * wxFontEnumerator: for gathering font information

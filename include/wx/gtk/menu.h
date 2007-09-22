@@ -2,17 +2,13 @@
 // Name:        wx/gtk/menu.h
 // Purpose:
 // Author:      Robert Roebling
-// Id:          $Id: menu.h,v 1.46 2002/09/07 12:28:46 GD Exp $
+// Id:          $Id: menu.h,v 1.46.2.1 2005/06/20 17:37:03 MR Exp $
 // Copyright:   (c) 1998 Robert Roebling, Julian Smart
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
 
 #ifndef __GTKMENUH__
 #define __GTKMENUH__
-
-#if defined(__GNUG__) && !defined(__APPLE__)
-    #pragma interface "menu.h"
-#endif
 
 //-----------------------------------------------------------------------------
 // wxMenuBar

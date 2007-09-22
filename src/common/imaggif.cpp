@@ -2,14 +2,10 @@
 // Name:        imaggif.cpp
 // Purpose:     wxGIFHandler
 // Author:      Vaclav Slavik & Guillermo Rodriguez Garcia
-// RCS-ID:      $Id: imaggif.cpp,v 1.35 2002/05/22 23:14:47 VZ Exp $
+// RCS-ID:      $Id: imaggif.cpp,v 1.35.2.1 2005/06/20 17:40:59 MR Exp $
 // Copyright:   (c) 1999 Vaclav Slavik & Guillermo Rodriguez Garcia
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
-
-#ifdef __GNUG__
-#pragma implementation "imaggif.h"
-#endif
 
 // For compilers that support precompilation, includes "wx.h".
 #include "wx/wxprec.h"

@@ -4,7 +4,7 @@
 // Author:      Robert Roebling
 // Created:     01/02/97
 // Modified:    22/10/98 - almost total rewrite, simpler interface (VZ)
-// Id:          $Id: treectlg.cpp,v 1.85.2.10 2003/07/06 11:41:16 RR Exp $
+// Id:          $Id: treectlg.cpp,v 1.85.2.11 2005/06/20 17:41:51 MR Exp $
 // Copyright:   (c) 1998 Robert Roebling, Julian Smart and Markus Holzem
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -16,10 +16,6 @@
 // -----------------------------------------------------------------------------
 // headers
 // -----------------------------------------------------------------------------
-
-#ifdef __GNUG__
-  #pragma implementation "treectlg.h"
-#endif
 
 // For compilers that support precompilation, includes "wx.h".
 #include "wx/wxprec.h"

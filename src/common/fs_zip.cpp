@@ -3,15 +3,10 @@
 // Purpose:     ZIP file system
 // Author:      Vaclav Slavik
 // Copyright:   (c) 1999 Vaclav Slavik
-// CVS-ID:      $Id: fs_zip.cpp,v 1.18.2.6 2003/09/19 21:51:44 VS Exp $
+// CVS-ID:      $Id: fs_zip.cpp,v 1.18.2.7 2005/06/20 17:40:54 MR Exp $
 // Licence:     wxWindows Licence
 /////////////////////////////////////////////////////////////////////////////
 
-
-
-#ifdef __GNUG__
-#pragma implementation "fs_zip.h"
-#endif
 
 #include "wx/wxprec.h"
 

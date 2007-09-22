@@ -1,14 +1,10 @@
 /////////////////////////////////////////////////////////////////////////////
 // Author:      Vaclav Slavik
 // Created:     2000/05/05
-// RCS-ID:      $Id: propedit.cpp,v 1.5 2001/06/09 22:16:41 VS Exp $
+// RCS-ID:      $Id: propedit.cpp,v 1.5.2.1 2005/06/20 17:35:32 MR Exp $
 // Copyright:   (c) 2000 Vaclav Slavik
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
-
-#ifdef __GNUG__
-    #pragma implementation "propedit.h"
-#endif
 
 // For compilers that support precompilation, includes "wx/wx.h".
 #include "wx/wxprec.h"

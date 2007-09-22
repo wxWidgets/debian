@@ -2,14 +2,10 @@
 // Purpose:     XML resources editor
 // Author:      Vaclav Slavik
 // Created:     2000/05/05
-// RCS-ID:      $Id: editor.h,v 1.10 2002/09/07 12:15:24 GD Exp $
+// RCS-ID:      $Id: editor.h,v 1.10.2.1 2005/06/20 17:35:28 MR Exp $
 // Copyright:   (c) 2000 Vaclav Slavik
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
-
-#if defined(__GNUG__) && !defined(__APPLE__)
-    #pragma interface "editor.h"
-#endif
 
 #ifndef _EDITOR_H_
 #define _EDITOR_H_

@@ -3,7 +3,7 @@
  *                                                                  *
  * (C) 1998-1999 by Karsten Ballüder (karsten@phy.hw.ac.uk)         *
  *                                                                  *
- * $Id: kbList.h,v 1.2 1999/07/21 16:13:27 KB Exp $
+ * $Id: kbList.h,v 1.2.6.1 2005/06/20 17:40:10 MR Exp $
  *
  *******************************************************************/
 
@@ -11,10 +11,6 @@
 
 #ifndef   KBLIST_H
 #   define   KBLIST_H
-
-#ifdef __GNUG__
-#   pragma interface "kbList.h"
-#endif
 
 #ifndef   NULL
 #   define   NULL   0

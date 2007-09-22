@@ -4,17 +4,13 @@
 // Author:      Vadim Zeitlin
 // Modified by:
 // Created:     04.12.99
-// RCS-ID:      $Id: listctrl.h,v 1.47.2.1 2002/10/29 21:47:17 RR Exp $
+// RCS-ID:      $Id: listctrl.h,v 1.47.2.2 2005/06/20 17:36:20 MR Exp $
 // Copyright:   (c) wxWindows team
 // Licence:     wxWindows licence
 ///////////////////////////////////////////////////////////////////////////////
 
 #ifndef _WX_LISTCTRL_H_BASE_
 #define _WX_LISTCTRL_H_BASE_
-
-#if defined(__GNUG__) && !defined(__APPLE__)
-    #pragma interface "listctrlbase.h"
-#endif
 
 #if wxUSE_LISTCTRL
 

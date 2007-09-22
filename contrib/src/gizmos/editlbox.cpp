@@ -2,14 +2,10 @@
 // Name:        editlbox.cpp
 // Purpose:     ListBox with editable items
 // Author:      Vaclav Slavik
-// RCS-ID:      $Id: editlbox.cpp,v 1.13.2.1 2002/11/12 23:28:35 VS Exp $
+// RCS-ID:      $Id: editlbox.cpp,v 1.13.2.2 2005/06/20 17:34:39 MR Exp $
 // Copyright:   (c) Vaclav Slavik
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
-
-#ifdef __GNUG__
-    #pragma implementation "editlbox.h"
-#endif
 
 // For compilers that support precompilation, includes "wx/wx.h".
 #include "wx/wxprec.h"

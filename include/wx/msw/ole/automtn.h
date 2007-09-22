@@ -4,14 +4,10 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     11/6/98
-// RCS-ID:      $Id: automtn.h,v 1.6 2002/06/26 07:33:02 JS Exp $
+// RCS-ID:      $Id: automtn.h,v 1.6.2.1 2005/06/20 17:38:12 MR Exp $
 // Copyright:   (c) 1998, Julian Smart
 // Licence:     wxWindows Licence
 /////////////////////////////////////////////////////////////////////////////
-
-#ifdef __GNUG__
-#pragma interface "automtn.h"
-#endif
 
 #ifndef _WX_AUTOMTN_H_
 #define _WX_AUTOMTN_H_

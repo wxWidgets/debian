@@ -4,7 +4,7 @@
 // Author:      Vadim Zeitlin
 // Modified by:
 // Created:     08.05.02
-// RCS-ID:      $Id: popupwin.cpp,v 1.4.2.1 2003/11/16 20:43:06 DS Exp $
+// RCS-ID:      $Id: popupwin.cpp,v 1.4.2.2 2005/06/20 17:44:05 MR Exp $
 // Copyright:   (c) 2002 Vadim Zeitlin <zeitlin@dptmaths.ens-cachan.fr>
 // License:     wxWindows license
 ///////////////////////////////////////////////////////////////////////////////
@@ -16,10 +16,6 @@
 // ----------------------------------------------------------------------------
 // headers
 // ----------------------------------------------------------------------------
-
-#ifdef __GNUG__
-    #pragma implementation "popup.h"
-#endif
 
 // For compilers that support precompilation, includes "wx.h".
 #include "wx/wxprec.h"

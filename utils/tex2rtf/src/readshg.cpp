@@ -8,14 +8,10 @@
 // Author:      Petr Smilauer
 // Modified by:
 // Created:     01/01/99
-// RCS-ID:      $Id: readshg.cpp,v 1.1 1999/01/02 00:44:56 JS Exp $
+// RCS-ID:      $Id: readshg.cpp,v 1.1.8.1 2005/06/20 17:45:30 MR Exp $
 // Copyright:   (c) Petr Smilauer
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
-
-#ifdef __GNUG__
-#pragma implementation
-#endif
 
 // For compilers that support precompilation, includes "wx.h".
 #include "wx/wxprec.h"

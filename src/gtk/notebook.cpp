@@ -2,14 +2,10 @@
 // Name:        notebook.cpp
 // Purpose:
 // Author:      Robert Roebling
-// Id:          $Id: notebook.cpp,v 1.88.2.4 2004/03/06 13:10:32 RR Exp $
+// Id:          $Id: notebook.cpp,v 1.88.2.5 2005/06/20 17:42:08 MR Exp $
 // Copyright:   (c) 1998 Robert Roebling, Vadim Zeitlin
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
-
-#ifdef __GNUG__
-#pragma implementation "notebook.h"
-#endif
 
 #include "wx/notebook.h"
 

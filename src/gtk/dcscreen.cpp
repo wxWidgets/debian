@@ -2,14 +2,10 @@
 // Name:        dcscreen.cpp
 // Purpose:
 // Author:      Robert Roebling
-// Id:          $Id: dcscreen.cpp,v 1.18 2000/10/30 16:43:37 vadz Exp $
+// Id:          $Id: dcscreen.cpp,v 1.18.2.1 2005/06/20 17:42:02 MR Exp $
 // Copyright:   (c) 1998 Robert Roebling
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
-
-#ifdef __GNUG__
-#pragma implementation "dcscreen.h"
-#endif
 
 #include "wx/dcscreen.h"
 #include "wx/window.h"

@@ -4,17 +4,13 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     01/02/97
-// RCS-ID:      $Id: types.h,v 1.3 2002/08/31 11:29:11 GD Exp $
+// RCS-ID:      $Id: types.h,v 1.3.2.1 2005/06/20 17:36:34 MR Exp $
 // Copyright:   (c) Julian Smart and Markus Holzem
 // Licence:   	wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
 
 #ifndef _WX_TYPESH__
 #define _WX_TYPESH__
-
-#if defined(__GNUG__) && !defined(__APPLE__)
-// #pragma interface "types.h"
-#endif
 
 // Types of objects
 #define wxTYPE_ANY             0

@@ -4,7 +4,7 @@
 // Author:      Ove Kaaven, Robert Roebling, Vadim Zeitlin, Vaclav Slavik
 // Modified by:
 // Created:     29/01/98
-// RCS-ID:      $Id: strconv.cpp,v 1.67.2.10 2003/10/24 19:25:48 VS Exp $
+// RCS-ID:      $Id: strconv.cpp,v 1.67.2.11 2005/06/20 17:41:16 MR Exp $
 // Copyright:   (c) 1999 Ove Kaaven, Robert Roebling, Vadim Zeitlin, Vaclav Slavik
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -16,10 +16,6 @@
 // ----------------------------------------------------------------------------
 // headers
 // ----------------------------------------------------------------------------
-
-#ifdef __GNUG__
-  #pragma implementation "strconv.h"
-#endif
 
 // For compilers that support precompilation, includes "wx.h".
 #include "wx/wxprec.h"

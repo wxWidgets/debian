@@ -3,15 +3,11 @@
 // Purpose:     XRC resource for wxBoxSizer
 // Author:      Vaclav Slavik
 // Created:     2000/03/21
-// RCS-ID:      $Id: xh_sizer.cpp,v 1.6.2.4 2003/12/12 22:03:43 VS Exp $
+// RCS-ID:      $Id: xh_sizer.cpp,v 1.6.2.5 2005/06/20 17:35:15 MR Exp $
 // Copyright:   (c) 2000 Vaclav Slavik
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
  
-#ifdef __GNUG__
-#pragma implementation "xh_sizer.h"
-#endif
-
 // For compilers that support precompilation, includes "wx.h".
 #include "wx/wxprec.h"
 

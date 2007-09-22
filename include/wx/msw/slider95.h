@@ -4,17 +4,13 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     01/02/97
-// RCS-ID:      $Id: slider95.h,v 1.11 2002/06/20 12:52:06 VZ Exp $
+// RCS-ID:      $Id: slider95.h,v 1.11.2.1 2005/06/20 17:38:04 MR Exp $
 // Copyright:   (c) Julian Smart
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
 
 #ifndef _SLIDER95_H_
 #define _SLIDER95_H_
-
-#ifdef __GNUG__
-#pragma interface "slider95.h"
-#endif
 
 // Slider
 class WXDLLEXPORT wxSlider95 : public wxSliderBase

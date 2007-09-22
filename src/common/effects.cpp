@@ -4,14 +4,10 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     25/4/2000
-// RCS-ID:      $Id: effects.cpp,v 1.5 2002/01/08 23:52:53 VS Exp $
+// RCS-ID:      $Id: effects.cpp,v 1.5.2.1 2005/06/20 17:40:49 MR Exp $
 // Copyright:   (c) Julian Smart
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
-
-#ifdef __GNUG__
-#pragma implementation "effects.h"
-#endif
 
 // For compilers that support precompilation, includes "wx.h".
 #include "wx/wxprec.h"

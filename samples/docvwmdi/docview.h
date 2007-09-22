@@ -4,14 +4,10 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     04/01/98
-// RCS-ID:      $Id: docview.h,v 1.5 2002/08/20 09:09:53 JS Exp $
+// RCS-ID:      $Id: docview.h,v 1.5.2.1 2005/06/20 17:39:16 MR Exp $
 // Copyright:   (c) Julian Smart and Markus Holzem
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
-
-#ifdef __GNUG__
-// #pragma interface "docview.h"
-#endif
 
 #ifndef __DOCVIEWSAMPLEH__
 #define __DOCVIEWSAMPLEH__

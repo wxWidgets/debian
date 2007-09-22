@@ -5,17 +5,13 @@
 // Author:      Vadim Zeitlin
 // Modified by:
 // Created:     10.02.99
-// RCS-ID:      $Id: datetime.h,v 1.34.4.5 2003/06/24 18:45:18 VZ Exp $
+// RCS-ID:      $Id: datetime.h,v 1.34.4.7 2005/06/22 07:55:19 RL Exp $
 // Copyright:   (c) 1998 Vadim Zeitlin <zeitlin@dptmaths.ens-cachan.fr>
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
 
 #ifndef _WX_DATETIME_H
 #define _WX_DATETIME_H
-
-#if defined(__GNUG__) && !defined(__APPLE__)
-    #pragma interface "datetime.h"
-#endif
 
 #include "wx/defs.h"
 
@@ -1300,6 +1296,9 @@ class WXDLLEXPORT wxDateTimeHolidayAuthority
 {
 friend class wxDateTimeHolidaysModule;
 public:
+    // virtual dtor for pure virtual base.
+    virtual ~wxDateTimeHolidayAuthority() {}
+
     // returns TRUE if the given date is a holiday
     static bool IsHoliday(const wxDateTime& dt);
 

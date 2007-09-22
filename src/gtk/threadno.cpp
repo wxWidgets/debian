@@ -4,14 +4,10 @@
 // Author:      Guilhem Lavaux
 // Modified by:
 // Created:     04/22/98
-// RCS-ID:      $Id: threadno.cpp,v 1.12 1999/03/06 00:10:29 VZ Exp $
+// RCS-ID:      $Id: threadno.cpp,v 1.12.6.1 2005/06/20 17:42:13 MR Exp $
 // Copyright:   (c) Wolfram Gloger (1996, 1997); Guilhem Lavaux (1998)
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
-
-#ifdef __GNUG__
-    #pragma implementation "thread.h"
-#endif
 
 #include "wx/wx.h"
 #include "wx/module.h"

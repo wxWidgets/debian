@@ -3,7 +3,7 @@
 // Purpose:     common (for all platforms) wxFrame functions
 // Author:      Julian Smart, Vadim Zeitlin
 // Created:     01/02/97
-// Id:          $Id: framecmn.cpp,v 1.34.2.2 2003/06/01 20:40:09 JS Exp $
+// Id:          $Id: framecmn.cpp,v 1.34.2.3 2005/06/20 17:40:54 MR Exp $
 // Copyright:   (c) 1998 Robert Roebling, Julian Smart and Markus Holzem
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -15,10 +15,6 @@
 // ----------------------------------------------------------------------------
 // headers
 // ----------------------------------------------------------------------------
-
-#ifdef __GNUG__
-    #pragma implementation "framebase.h"
-#endif
 
 // For compilers that support precompilation, includes "wx.h".
 #include "wx/wxprec.h"

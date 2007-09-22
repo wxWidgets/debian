@@ -4,13 +4,10 @@
 // Author:      Guilhem Lavaux
 // Modified by:
 // Created:     17/07/97
-// RCS-ID:      $Id: sckstrm.cpp,v 1.9.6.1 2002/11/04 19:31:57 VZ Exp $
+// RCS-ID:      $Id: sckstrm.cpp,v 1.9.6.2 2005/06/20 17:41:14 MR Exp $
 // Copyright:   (c)
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
-#ifdef __GNUG__
-#pragma implementation "sckstrm.h"
-#endif
 
 // For compilers that support precompilation, includes "wx.h".
 #include "wx/wxprec.h"

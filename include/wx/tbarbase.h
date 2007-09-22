@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     01/02/97
-// RCS-ID:      $Id: tbarbase.h,v 1.38.2.1 2003/12/25 11:55:43 JS Exp $
+// RCS-ID:      $Id: tbarbase.h,v 1.38.2.2 2005/06/20 17:36:31 MR Exp $
 // Copyright:   (c) Julian Smart and Markus Holzem
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -15,10 +15,6 @@
 // ----------------------------------------------------------------------------
 // headers
 // ----------------------------------------------------------------------------
-
-#if defined(__GNUG__) && !defined(__APPLE__)
-    #pragma interface "tbarbase.h"
-#endif
 
 #include "wx/defs.h"
 

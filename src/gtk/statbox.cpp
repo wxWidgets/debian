@@ -2,14 +2,10 @@
 // Name:        gtk/statbox.cpp
 // Purpose:
 // Author:      Robert Roebling
-// Id:          $Id: statbox.cpp,v 1.28 2002/08/05 17:59:20 RR Exp $
+// Id:          $Id: statbox.cpp,v 1.28.2.1 2005/06/20 17:42:12 MR Exp $
 // Copyright:   (c) 1998 Robert Roebling
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
-
-#ifdef __GNUG__
-#pragma implementation "statbox.h"
-#endif
 
 #include "wx/defs.h"
 

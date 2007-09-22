@@ -2,14 +2,10 @@
 // Name:        tooltip.cpp
 // Purpose:     wxToolTip implementation
 // Author:      Robert Roebling
-// Id:          $Id: tooltip.cpp,v 1.14.2.2 2004/07/03 12:16:33 VS Exp $
+// Id:          $Id: tooltip.cpp,v 1.14.2.3 2005/06/20 17:42:14 MR Exp $
 // Copyright:   (c) 1998 Robert Roebling
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
-
-#ifdef __GNUG__
-    #pragma implementation "tooltip.h"
-#endif
 
 #include "wx/setup.h"
 

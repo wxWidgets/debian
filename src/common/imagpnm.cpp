@@ -2,14 +2,10 @@
 // Name:        imagpnm.cpp
 // Purpose:     wxImage PNM handler
 // Author:      Sylvain Bougnoux
-// RCS-ID:      $Id: imagpnm.cpp,v 1.19.2.2 2002/11/04 19:31:55 VZ Exp $
+// RCS-ID:      $Id: imagpnm.cpp,v 1.19.2.3 2005/06/20 17:41:01 MR Exp $
 // Copyright:   (c) Sylvain Bougnoux
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
-
-#ifdef __GNUG__
-#pragma implementation "imagpnm.h"
-#endif
 
 // For compilers that support precompilation, includes "wx.h".
 #include "wx/wxprec.h"

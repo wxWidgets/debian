@@ -4,14 +4,10 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     12/07/98
-// RCS-ID:      $Id: bmpshape.cpp,v 1.2.2.4 2004/11/22 20:19:07 JS Exp $
+// RCS-ID:      $Id: bmpshape.cpp,v 1.2.2.5 2005/06/20 17:34:49 MR Exp $
 // Copyright:   (c) Julian Smart
 // Licence:   	wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
-
-#ifdef __GNUG__
-#pragma implementation "bmpshape.h"
-#endif
 
 // For compilers that support precompilation, includes "wx.h".
 #include "wx/wxprec.h"

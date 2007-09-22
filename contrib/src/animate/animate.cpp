@@ -4,14 +4,10 @@
 // Author:      Julian Smart and Guillermo Rodriguez Garcia
 // Modified by:
 // Created:     13/8/99
-// RCS-ID:      $Id: animate.cpp,v 1.2.2.2 2003/12/11 10:47:59 JS Exp $
+// RCS-ID:      $Id: animate.cpp,v 1.2.2.3 2005/06/20 17:34:28 MR Exp $
 // Copyright:   (c) Julian Smart and Guillermo Rodriguez Garcia
 // Licence:     wxWindows licence
 ///////////////////////////////////////////////////////////////////////////////
-
-#ifdef __GNUG__
-    #pragma implementation "animate.h"
-#endif
 
 #include "wx/wxprec.h"
 

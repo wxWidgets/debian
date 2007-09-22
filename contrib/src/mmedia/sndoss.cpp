@@ -3,12 +3,9 @@
 // Purpose:
 // Date: 08/11/1999
 // Author: Guilhem Lavaux <lavaux@easynet.fr> (C) 1999, 2000
-// CVSID: $Id: sndoss.cpp,v 1.1.6.1 2004/11/22 20:19:04 JS Exp $
+// CVSID: $Id: sndoss.cpp,v 1.1.6.2 2005/06/20 17:34:43 MR Exp $
 // Licence: wxWindows licence
 // --------------------------------------------------------------------------
-#ifdef __GNUG__
-#pragma implementation "sndoss.cpp"
-#endif
 
 // --------------------------------------------------------------------------
 // System dependent headers

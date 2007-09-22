@@ -4,17 +4,13 @@
 // Author:      Vaclav Slavik, Julian Smart
 // Modified by:
 // Created:     2002-07-09
-// RCS-ID:      $Id: helpview.h,v 1.3.2.4 2002/12/19 20:00:08 JS Exp $
+// RCS-ID:      $Id: helpview.h,v 1.3.2.5 2005/06/20 17:45:23 MR Exp $
 // Copyright:   (c) 2002 Vaclav Slavik, Julian Smart and others
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
 
 #ifndef _WX_HELPVIEW_H_
 #define _WX_HELPVIEW_H_
-
-#if defined(__GNUG__) && !defined(__APPLE__)
-#pragma interface "help.cpp"
-#endif
 
 #define hvVERSION 1.02
 

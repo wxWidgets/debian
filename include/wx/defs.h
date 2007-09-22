@@ -4,17 +4,13 @@
 // Author:      Julian Smart and others
 // Modified by:
 // Created:     01/02/97
-// RCS-ID:      $Id: defs.h,v 1.320.2.14 2005/05/04 18:23:25 JS Exp $
+// RCS-ID:      $Id: defs.h,v 1.320.2.15 2005/06/20 17:36:05 MR Exp $
 // Copyright:   (c) Julian Smart
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
 
 #ifndef _WX_DEFS_H_
 #define _WX_DEFS_H_
-
-#if defined(__GNUG__) && !defined(__APPLE__)
-#pragma interface "defs.h"
-#endif
 
 // ----------------------------------------------------------------------------
 // compiler and OS identification

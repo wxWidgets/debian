@@ -4,7 +4,7 @@
 // Author:      Vadim Zeitlin
 // Modified by:
 // Created:     02.01.00
-// RCS-ID:      $Id: calendar.cpp,v 1.17.2.3 2003/06/05 18:07:53 MBN Exp $
+// RCS-ID:      $Id: calendar.cpp,v 1.17.2.4 2005/06/20 17:38:52 MR Exp $
 // Copyright:   (c) Vadim Zeitlin
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -16,11 +16,6 @@
 // ----------------------------------------------------------------------------
 // headers
 // ----------------------------------------------------------------------------
-
-#if defined(__GNUG__) && !defined(__APPLE__)
-    #pragma implementation "calendar.cpp"
-    #pragma interface "calendar.cpp"
-#endif
 
 // For compilers that support precompilation, includes "wx/wx.h".
 #include "wx/wxprec.h"

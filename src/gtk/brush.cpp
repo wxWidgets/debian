@@ -2,14 +2,10 @@
 // Name:        src/gtk/brush.cpp
 // Purpose:
 // Author:      Robert Roebling
-// Id:          $Id: brush.cpp,v 1.20 2002/05/07 21:58:26 GD Exp $
+// Id:          $Id: brush.cpp,v 1.20.2.1 2005/06/20 17:41:57 MR Exp $
 // Copyright:   (c) 1998 Robert Roebling
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
-
-#ifdef __GNUG__
-#pragma implementation "brush.h"
-#endif
 
 #include "wx/brush.h"
 

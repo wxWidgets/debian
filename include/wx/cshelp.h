@@ -4,17 +4,13 @@
 // Author:      Julian Smart, Vadim Zeitlin
 // Modified by:
 // Created:     08/09/2000
-// RCS-ID:      $Id: cshelp.h,v 1.7 2002/08/31 11:29:09 GD Exp $
+// RCS-ID:      $Id: cshelp.h,v 1.7.2.1 2005/06/20 17:36:02 MR Exp $
 // Copyright:   (c) 2000 Julian Smart, Vadim Zeitlin
 // Licence:   	wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
 
 #ifndef _WX_CSHELPH__
 #define _WX_CSHELPH__
-
-#if defined(__GNUG__) && !defined(__APPLE__)
-    #pragma interface "cshelp.h"
-#endif
 
 #include "wx/defs.h"
 

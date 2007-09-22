@@ -4,17 +4,13 @@
 // Author:      Arthur Seaton, Julian Smart
 // Modified by:
 // Created:     29/01/98
-// RCS-ID:      $Id: memory.h,v 1.35 2002/08/31 11:29:10 GD Exp $
+// RCS-ID:      $Id: memory.h,v 1.35.2.1 2005/06/20 17:36:21 MR Exp $
 // Copyright:   (c) 1998 Julian Smart
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
 
 #ifndef _WX_MEMORYH__
 #define _WX_MEMORYH__
-
-#if defined(__GNUG__) && !defined(__APPLE__)
-#pragma interface "memory.h"
-#endif
 
 #include "wx/defs.h"
 #include "wx/string.h"

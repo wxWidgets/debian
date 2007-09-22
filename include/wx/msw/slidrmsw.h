@@ -4,17 +4,13 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     01/02/97
-// RCS-ID:      $Id: slidrmsw.h,v 1.11 2001/06/27 11:55:32 JS Exp $
+// RCS-ID:      $Id: slidrmsw.h,v 1.11.2.1 2005/06/20 17:38:05 MR Exp $
 // Copyright:   (c) Julian Smart
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
 
 #ifndef _SLIDRMSW_H_
 #define _SLIDRMSW_H_
-
-#ifdef __GNUG__
-#pragma interface "slidrmsw.h"
-#endif
 
 // Slider
 class WXDLLEXPORT wxSliderMSW : public wxSliderBase

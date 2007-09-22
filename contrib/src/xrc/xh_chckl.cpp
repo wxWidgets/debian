@@ -3,15 +3,11 @@
 // Purpose:     XRC resource for wxCheckList
 // Author:      Bob Mitchell
 // Created:     2000/03/21
-// RCS-ID:      $Id: xh_chckl.cpp,v 1.6.2.2 2003/08/28 09:36:20 VS Exp $
+// RCS-ID:      $Id: xh_chckl.cpp,v 1.6.2.3 2005/06/20 17:35:11 MR Exp $
 // Copyright:   (c) 2000 Bob Mitchell and Verant Interactive
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
  
-#ifdef __GNUG__
-#pragma implementation "xh_chckl.h"
-#endif
-
 // For compilers that support precompilation, includes "wx.h".
 #include "wx/wxprec.h"
 

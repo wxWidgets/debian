@@ -3,7 +3,7 @@
 // Purpose:     MSW version of wxStaticLine class
 // Author:      Vadim Zeitlin
 // Created:     28.06.99
-// Version:     $Id: statline.cpp,v 1.13 2002/02/22 00:48:52 VZ Exp $
+// Version:     $Id: statline.cpp,v 1.13.2.1 2005/06/20 17:44:09 MR Exp $
 // Copyright:   (c) 1998 Vadim Zeitlin
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -15,10 +15,6 @@
 // ----------------------------------------------------------------------------
 // headers
 // ----------------------------------------------------------------------------
-
-#ifdef __GNUG__
-    #pragma implementation "statline.h"
-#endif
 
 // For compilers that support precompilation, includes "wx.h".
 #include "wx/wxprec.h"

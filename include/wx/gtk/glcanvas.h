@@ -4,14 +4,10 @@
 // Author:      Robert Roebling
 // Modified by:
 // Created:     17/8/98
-// RCS-ID:      $Id: glcanvas.h,v 1.6.2.1 2002/12/02 21:21:23 VZ Exp $
+// RCS-ID:      $Id: glcanvas.h,v 1.6.2.2 2005/06/20 17:37:02 MR Exp $
 // Copyright:   (c) Robert Roebling
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
-
-#if defined(__GNUG__) && !defined(__APPLE__)
-#pragma interface "glcanvas.h"
-#endif
 
 #ifndef _WX_GLCANVAS_H_
 #define _WX_GLCANVAS_H_

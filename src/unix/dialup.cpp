@@ -4,16 +4,12 @@
 // Author:      Karsten Ballüder
 // Modified by:
 // Created:     03.10.99
-// RCS-ID:      $Id: dialup.cpp,v 1.35.2.2 2002/11/03 16:19:31 RR Exp $
+// RCS-ID:      $Id: dialup.cpp,v 1.35.2.3 2005/06/20 17:44:47 MR Exp $
 // Copyright:   (c) Karsten Ballüder
 // Licence:     wxWindows licence
 ///////////////////////////////////////////////////////////////////////////////
 
 #include "wx/setup.h"
-
-#ifdef __GNUG__
-#   pragma implementation "dialup.h"
-#endif
 
 #if wxUSE_DIALUP_MANAGER
 

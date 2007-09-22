@@ -4,17 +4,13 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     01/02/97
-// RCS-ID:      $Id: filedlg.h,v 1.10.6.1 2002/10/05 20:20:57 VZ Exp $
+// RCS-ID:      $Id: filedlg.h,v 1.10.6.2 2005/06/20 17:37:58 MR Exp $
 // Copyright:   (c) Julian Smart
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
 
 #ifndef _WX_FILEDLG_H_
 #define _WX_FILEDLG_H_
-
-#ifdef __GNUG__
-    #pragma interface "filedlg.h"
-#endif
 
 #include "wx/dialog.h"
 

@@ -4,17 +4,13 @@
 // Author:      Robin Dunn
 // Modified by:
 // Created:     9-Oct-2001
-// RCS-ID:      $Id: clntdata.h,v 1.6 2002/08/31 11:29:09 GD Exp $
+// RCS-ID:      $Id: clntdata.h,v 1.6.2.1 2005/06/20 17:35:59 MR Exp $
 // Copyright:   (c) wxWindows team
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
 
 #ifndef _WX_CLNTDATAH__
 #define _WX_CLNTDATAH__
-
-#if defined(__GNUG__) && !defined(__APPLE__)
-    #pragma interface "clntdata.h"
-#endif
 
 #include "wx/defs.h"
 #include "wx/string.h"

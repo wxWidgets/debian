@@ -2,14 +2,10 @@
 // Name:        statline.cpp
 // Purpose:
 // Author:      Robert Roebling
-// Id:          $Id: statline.cpp,v 1.9 2000/08/08 06:11:45 cvsuser Exp $
+// Id:          $Id: statline.cpp,v 1.9.4.1 2005/06/20 17:42:12 MR Exp $
 // Copyright:   (c) 1998 Robert Roebling
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
-
-#ifdef __GNUG__
-#pragma implementation "statline.h"
-#endif
 
 #include "wx/statline.h"
 

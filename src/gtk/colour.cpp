@@ -2,15 +2,10 @@
 // Name:        colour.cpp
 // Purpose:
 // Author:      Robert Roebling
-// Id:          $Id: colour.cpp,v 1.37.2.3 2002/10/13 13:22:12 RR Exp $
+// Id:          $Id: colour.cpp,v 1.37.2.4 2005/06/20 17:41:59 MR Exp $
 // Copyright:   (c) 1998 Robert Roebling
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
-
-
-#ifdef __GNUG__
-#pragma implementation "colour.h"
-#endif
 
 #include "wx/gdicmn.h"
 #include "wx/gtk/private.h"

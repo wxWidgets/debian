@@ -2,14 +2,10 @@
 // Name:        icon.cpp
 // Purpose:
 // Author:      Robert Roebling
-// Id:          $Id: icon.cpp,v 1.8 2000/08/15 21:44:18 VS Exp $
+// Id:          $Id: icon.cpp,v 1.8.2.1 2005/06/20 17:42:06 MR Exp $
 // Copyright:   (c) 1998 Robert Roebling
 // Licence:   	wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
-
-#ifdef __GNUG__
-#pragma implementation "icon.h"
-#endif
 
 #include "wx/icon.h"
 

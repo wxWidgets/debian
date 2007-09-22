@@ -3,17 +3,13 @@
 // Purpose:     wxNotebook class
 // Author:      Robert Roebling
 // Modified by:
-// RCS-ID:      $Id: notebook.h,v 1.42.2.1 2002/11/04 19:06:00 VZ Exp $
+// RCS-ID:      $Id: notebook.h,v 1.42.2.2 2005/06/20 17:37:03 MR Exp $
 // Copyright:   (c) Julian Smart and Robert Roebling
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
 
 #ifndef __GTKNOTEBOOKH__
 #define __GTKNOTEBOOKH__
-
-#if defined(__GNUG__) && !defined(__APPLE__)
-#pragma interface
-#endif
 
 //-----------------------------------------------------------------------------
 // internal class

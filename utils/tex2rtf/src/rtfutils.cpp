@@ -4,14 +4,10 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     7.9.93
-// RCS-ID:      $Id: rtfutils.cpp,v 1.11.2.2 2003/09/19 16:07:57 JS Exp $
+// RCS-ID:      $Id: rtfutils.cpp,v 1.11.2.3 2005/06/20 17:45:31 MR Exp $
 // Copyright:   (c) Julian Smart
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
-
-#ifdef __GNUG__
-#pragma implementation
-#endif
 
 // For compilers that support precompilation, includes "wx.h".
 #include "wx/wxprec.h"

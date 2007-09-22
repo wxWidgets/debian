@@ -4,14 +4,10 @@
 // Author:      Vadim Zeitlin
 // Modified by:
 // Created:     13.11.97
-// RCS-ID:      $Id: ownerdrw.cpp,v 1.32.2.8 2004/02/02 14:16:25 CE Exp $
+// RCS-ID:      $Id: ownerdrw.cpp,v 1.32.2.9 2005/06/20 17:44:04 MR Exp $
 // Copyright:   (c) 1998 Vadim Zeitlin <zeitlin@dptmaths.ens-cachan.fr>
 // Licence:     wxWindows license
 ///////////////////////////////////////////////////////////////////////////////
-
-#ifdef __GNUG__
-#pragma implementation
-#endif
 
 // For compilers that support precompilation, includes "wx.h".
 #include "wx/wxprec.h"

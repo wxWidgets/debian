@@ -4,14 +4,10 @@
 // Author:      Vadim Zeitlin
 // Modified by:
 // Created:     04.04.98
-// RCS-ID:      $Id: statbr95.cpp,v 1.44 2002/01/28 01:38:39 VZ Exp $
+// RCS-ID:      $Id: statbr95.cpp,v 1.44.2.1 2005/06/20 17:44:09 MR Exp $
 // Copyright:   (c) 1998 Vadim Zeitlin <zeitlin@dptmaths.ens-cachan.fr>
 // Licence:     wxWindows license
 ///////////////////////////////////////////////////////////////////////////////
-
-#ifdef __GNUG__
-#pragma implementation "statbr95.h"
-#endif
 
 // for compilers that support precompilation, includes "wx.h".
 #include "wx/wxprec.h"

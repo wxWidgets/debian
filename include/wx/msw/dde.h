@@ -4,17 +4,13 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     01/02/97
-// RCS-ID:      $Id: dde.h,v 1.10 2002/09/03 11:22:55 JS Exp $
+// RCS-ID:      $Id: dde.h,v 1.10.2.1 2005/06/20 17:37:56 MR Exp $
 // Copyright:   (c) Julian Smart
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
 
 #ifndef _WX_DDE_H_
 #define _WX_DDE_H_
-
-#ifdef __GNUG__
-#pragma interface "dde.h"
-#endif
 
 #include "wx/ipcbase.h"
 

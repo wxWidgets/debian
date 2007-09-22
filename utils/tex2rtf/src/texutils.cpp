@@ -4,14 +4,10 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     7.9.93
-// RCS-ID:      $Id: texutils.cpp,v 1.19.2.3 2003/09/19 16:07:58 JS Exp $
+// RCS-ID:      $Id: texutils.cpp,v 1.19.2.4 2005/06/20 17:45:33 MR Exp $
 // Copyright:   (c) Julian Smart
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
-
-#ifdef __GNUG__
-#pragma implementation
-#endif
 
 // For compilers that support precompilation, includes "wx.h".
 #include "wx/wxprec.h"

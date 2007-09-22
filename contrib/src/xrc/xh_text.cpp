@@ -3,15 +3,11 @@
 // Purpose:     XRC resource for wxTextCtrl
 // Author:      Aleksandras Gluchovas
 // Created:     2000/03/21
-// RCS-ID:      $Id: xh_text.cpp,v 1.5.2.1 2004/04/11 19:11:27 VS Exp $
+// RCS-ID:      $Id: xh_text.cpp,v 1.5.2.2 2005/06/20 17:35:18 MR Exp $
 // Copyright:   (c) 2000 Aleksandras Gluchovas
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
  
-#ifdef __GNUG__
-#pragma implementation "xh_text.h"
-#endif
-
 // For compilers that support precompilation, includes "wx.h".
 #include "wx/wxprec.h"
 

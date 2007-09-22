@@ -4,17 +4,13 @@
 // Author:      Vadim Zeitlin
 // Modified by:
 // Created:     22.07.99
-// RCS-ID:      $Id: spinctrl.h,v 1.14.2.1 2003/04/06 16:47:43 JS Exp $
+// RCS-ID:      $Id: spinctrl.h,v 1.14.2.2 2005/06/20 17:38:05 MR Exp $
 // Copyright:   (c) Vadim Zeitlin
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
 
 #ifndef _WX_MSW_SPINCTRL_H_
 #define _WX_MSW_SPINCTRL_H_
-
-#ifdef __GNUG__
-    #pragma interface "spinctrl.h"
-#endif
 
 #include "wx/spinbutt.h"    // the base class
 

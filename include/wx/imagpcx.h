@@ -2,17 +2,13 @@
 // Name:        imagpcx.h
 // Purpose:     wxImage PCX handler
 // Author:      Guillermo Rodriguez Garcia <guille@iies.es>
-// RCS-ID:      $Id: imagpcx.h,v 1.3.2.1 2002/10/23 17:32:03 RR Exp $
+// RCS-ID:      $Id: imagpcx.h,v 1.3.2.2 2005/06/20 17:36:17 MR Exp $
 // Copyright:   (c) 1999 Guillermo Rodriguez Garcia
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
 
 #ifndef _WX_IMAGPCX_H_
 #define _WX_IMAGPCX_H_
-
-#if defined(__GNUG__) && !defined(__APPLE__)
-#pragma interface "imagpcx.h"
-#endif
 
 #include "wx/image.h"
 

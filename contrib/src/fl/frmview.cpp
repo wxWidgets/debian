@@ -4,15 +4,11 @@
 // Author:      Aleksandras Gluchovas
 // Modified by:
 // Created:     02/01/99
-// RCS-ID:      $Id: frmview.cpp,v 1.3 2002/01/21 22:34:41 JS Exp $
+// RCS-ID:      $Id: frmview.cpp,v 1.3.2.1 2005/06/20 17:34:34 MR Exp $
 // Copyright:   (c) Aleksandras Gluchovas
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
  
-#ifdef __GNUG__
-    #pragma implementation "frmview.h"
-#endif
-
 // For compilers that support precompilation, includes "wx.h".
 #include "wx/wxprec.h"
 

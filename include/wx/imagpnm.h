@@ -2,17 +2,13 @@
 // Name:        imagpnm.h
 // Purpose:     wxImage PNM handler
 // Author:      Sylvain Bougnoux
-// RCS-ID:      $Id: imagpnm.h,v 1.3.2.1 2002/10/23 17:32:03 RR Exp $
+// RCS-ID:      $Id: imagpnm.h,v 1.3.2.2 2005/06/20 17:36:18 MR Exp $
 // Copyright:   (c) Sylvain Bougnoux
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
 
 #ifndef _WX_IMAGPNM_H_
 #define _WX_IMAGPNM_H_
-
-#if defined(__GNUG__) && !defined(__APPLE__)
-#pragma interface "imagpnm.h"
-#endif
 
 #include "wx/image.h"
 

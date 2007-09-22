@@ -4,17 +4,13 @@
  * (C) 1998 by Karsten Ballüder (Ballueder@usa.net)                 *
  * License: wxWindows licence                                       *
  *                                                                  *
- * $Id: helpext.h,v 1.11.2.1 2004/11/22 20:27:46 JS Exp $
+ * $Id: helpext.h,v 1.11.2.2 2005/06/20 17:36:49 MR Exp $
  *******************************************************************/
 
 #ifndef __WX_HELPEXT_H_
 #define __WX_HELPEXT_H_
 
 #if wxUSE_HELP
-
-#if defined(__GNUG__) && !defined(__APPLE__)
-#   pragma interface "wxexthlp.h"
-#endif
 
 #include "wx/generic/helphtml.h"
 

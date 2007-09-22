@@ -3,14 +3,10 @@
 // Purpose:     XRC resource for dialogs
 // Author:      Vaclav Slavik & Aleks.
 // Created:     2000/03/05
-// RCS-ID:      $Id: xh_frame.cpp,v 1.5 2002/08/24 02:26:13 RD Exp $
+// RCS-ID:      $Id: xh_frame.cpp,v 1.5.2.1 2005/06/20 17:35:12 MR Exp $
 // Copyright:   (c) 2000 Vaclav Slavik
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
-
-#ifdef __GNUG__
-#pragma implementation "xh_frame.h"
-#endif
 
 // For compilers that support precompilation, includes "wx.h".
 #include "wx/wxprec.h"

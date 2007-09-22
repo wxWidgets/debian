@@ -4,14 +4,10 @@
 // Author:      Aleksandras Gluchovas
 // Modified by:
 // Created:     ??/10/98
-// RCS-ID:      $Id: dyntbar.cpp,v 1.8 2002/03/29 09:39:18 VZ Exp $
+// RCS-ID:      $Id: dyntbar.cpp,v 1.8.2.1 2005/06/20 17:34:33 MR Exp $
 // Copyright:   (c) Aleksandras Gluchovas
 // Licence:       wxWindows license
 /////////////////////////////////////////////////////////////////////////////
-
-#ifdef __GNUG__
-    #pragma implementation "dyntbar.h"
-#endif
 
 // For compilers that support precompilation, includes "wx/wx.h".
 #include "wx/wxprec.h"

@@ -6,7 +6,7 @@
 //              Bart Jourquin
 //              Mark Johnson
 // Created:     9.96
-// RCS-ID:      $Id: dbtable.h,v 1.30.2.1 2005/05/04 18:23:24 JS Exp $
+// RCS-ID:      $Id: dbtable.h,v 1.30.2.2 2005/06/20 17:36:04 MR Exp $
 // Copyright:   (c) 1996 Remstar International, Inc.
 // Licence:     wxWindows licence
 ///////////////////////////////////////////////////////////////////////////////
@@ -20,10 +20,6 @@
 #define DBTABLE_DOT_H
 
 #include "wx/version.h"
-
-#if defined(__GNUG__) && !defined(__APPLE__)
-  #pragma interface "dbtable.h"
-#endif
 
 #include "wx/db.h"
 

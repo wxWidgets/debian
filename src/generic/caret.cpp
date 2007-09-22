@@ -4,7 +4,7 @@
 // Author:      Vadim Zeitlin (original code by Robert Roebling)
 // Modified by:
 // Created:     25.05.99
-// RCS-ID:      $Id: caret.cpp,v 1.9 2002/01/27 23:37:58 VS Exp $
+// RCS-ID:      $Id: caret.cpp,v 1.9.2.1 2005/06/20 17:41:35 MR Exp $
 // Copyright:   (c) wxWindows team
 // Licence:     wxWindows licence
 ///////////////////////////////////////////////////////////////////////////////
@@ -16,10 +16,6 @@
 // ----------------------------------------------------------------------------
 // headers
 // ----------------------------------------------------------------------------
-
-#ifdef __GNUG__
-    #pragma implementation "caret.h"
-#endif
 
 // For compilers that support precompilation, includes "wx.h".
 #include "wx/wxprec.h"

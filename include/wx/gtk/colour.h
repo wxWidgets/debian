@@ -2,7 +2,7 @@
 // Name:        colour.h
 // Purpose:
 // Author:      Robert Roebling
-// Id:          $Id: colour.h,v 1.15.2.1 2002/10/29 21:47:31 RR Exp $
+// Id:          $Id: colour.h,v 1.15.2.2 2005/06/20 17:36:58 MR Exp $
 // Copyright:   (c) 1998 Robert Roebling
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -10,10 +10,6 @@
 
 #ifndef __GTKCOLOURH__
 #define __GTKCOLOURH__
-
-#if defined(__GNUG__) && !defined(__APPLE__)
-#pragma interface
-#endif
 
 #include "wx/defs.h"
 #include "wx/object.h"

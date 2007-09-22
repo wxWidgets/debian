@@ -4,7 +4,7 @@
 // Author:      Vadim Zeitlin
 // Modified by:
 // Created:     29/01/98
-// RCS-ID:      $Id: string.h,v 1.146.4.6 2003/08/24 09:56:16 SN Exp $
+// RCS-ID:      $Id: string.h,v 1.146.4.7 2005/06/20 17:36:30 MR Exp $
 // Copyright:   (c) 1998 Vadim Zeitlin <zeitlin@dptmaths.ens-cachan.fr>
 // Licence:     wxWindows license
 ///////////////////////////////////////////////////////////////////////////////
@@ -17,10 +17,6 @@
 
 #ifndef _WX_WXSTRINGH__
 #define _WX_WXSTRINGH__
-
-#if defined(__GNUG__) && !defined(__APPLE__)
-    #pragma interface "string.h"
-#endif
 
 // ----------------------------------------------------------------------------
 // conditinal compilation

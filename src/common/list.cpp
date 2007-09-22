@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by: VZ at 16/11/98: WX_DECLARE_LIST() and typesafe lists added
 // Created:     04/01/98
-// RCS-ID:      $Id: list.cpp,v 1.38 2002/02/06 01:38:08 VZ Exp $
+// RCS-ID:      $Id: list.cpp,v 1.38.2.1 2005/06/20 17:41:04 MR Exp $
 // Copyright:   (c) Julian Smart and Markus Holzem
 // Licence:     wxWindows license
 ////////////////////////////////////////////////////////////////////////////////
@@ -16,10 +16,6 @@
 // -----------------------------------------------------------------------------
 // headers
 // -----------------------------------------------------------------------------
-
-#ifdef __GNUG__
-    #pragma implementation "list.h"
-#endif
 
 // For compilers that support precompilation, includes "wx.h".
 #include "wx/wxprec.h"

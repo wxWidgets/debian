@@ -2,7 +2,7 @@
 // Name:        gtk/mdi.h
 // Purpose:
 // Author:      Robert Roebling
-// Id:          $Id: mdi.h,v 1.33.2.1 2003/07/25 18:52:26 RR Exp $
+// Id:          $Id: mdi.h,v 1.33.2.2 2005/06/20 17:37:03 MR Exp $
 // Copyright:   (c) 1998 Robert Roebling
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -10,10 +10,6 @@
 
 #ifndef __MDIH__
 #define __MDIH__
-
-#if defined(__GNUG__) && !defined(__APPLE__)
-#pragma interface
-#endif
 
 #include "wx/defs.h"
 #include "wx/object.h"

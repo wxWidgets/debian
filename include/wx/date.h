@@ -5,17 +5,13 @@
 //              Charles D. Price
 // Modified by: 18.12.99 by VZ to use the new wxDateTime class
 // Created:     01/02/97
-// RCS-ID:      $Id: date.h,v 1.21 2002/08/31 11:29:09 GD Exp $
+// RCS-ID:      $Id: date.h,v 1.21.2.1 2005/06/20 17:36:03 MR Exp $
 // Copyright:(c)
 // Licence:     wxWindows licence
 ///////////////////////////////////////////////////////////////////////////////
 
 #ifndef _WX_DATE_H_
 #define _WX_DATE_H_
-
-#if defined(__GNUG__) && !defined(__APPLE__)
-    #pragma interface "date.h"
-#endif
 
 #include "wx/defs.h"
 

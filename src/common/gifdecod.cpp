@@ -3,14 +3,10 @@
 // Purpose:     wxGIFDecoder, GIF reader for wxImage and wxAnimation
 // Author:      Guillermo Rodriguez Garcia <guille@iies.es>
 // Version:     3.04
-// RCS-ID:      $Id: gifdecod.cpp,v 1.27.2.1 2003/04/05 18:59:50 JS Exp $
+// RCS-ID:      $Id: gifdecod.cpp,v 1.27.2.2 2005/06/20 17:40:56 MR Exp $
 // Copyright:   (c) Guillermo Rodriguez Garcia
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
-
-#ifdef __GNUG__
-#pragma implementation "gifdecod.h"
-#endif
 
 // For compilers that support precompilation, includes "wx.h".
 #include "wx/wxprec.h"

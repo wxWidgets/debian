@@ -4,7 +4,7 @@
 // Author:      Vadim Zeitlin
 // Modified by:
 // Created:     23.05.99
-// RCS-ID:      $Id: caret.h,v 1.12 2002/08/31 11:29:09 GD Exp $
+// RCS-ID:      $Id: caret.h,v 1.12.2.2 2005/06/22 07:55:19 RL Exp $
 // Copyright:   (c) wxWindows team
 // Licence:     wxWindows licence
 ///////////////////////////////////////////////////////////////////////////////
@@ -15,10 +15,6 @@
 #include "wx/defs.h"
 
 #if wxUSE_CARET
-
-#if defined(__GNUG__) && !defined(__APPLE__)
-#pragma interface "caret.h"
-#endif
 
 // ---------------------------------------------------------------------------
 // forward declarations
@@ -60,6 +56,9 @@ public:
 
         (void)Create(window, size);
     }
+
+    // virtual dtor for pure virtual base.
+    virtual ~wxCaretBase() {}
 
     // Create() functions - same as ctor but returns the success code
     // --------------------------------------------------------------

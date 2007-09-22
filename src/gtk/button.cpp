@@ -2,14 +2,10 @@
 // Name:        button.cpp
 // Purpose:
 // Author:      Robert Roebling
-// Id:          $Id: button.cpp,v 1.52.2.2 2003/04/06 17:55:52 JS Exp $
+// Id:          $Id: button.cpp,v 1.52.2.3 2005/06/20 17:41:57 MR Exp $
 // Copyright:   (c) 1998 Robert Roebling
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
-
-#ifdef __GNUG__
-#pragma implementation "button.h"
-#endif
 
 #include "wx/defs.h"
 

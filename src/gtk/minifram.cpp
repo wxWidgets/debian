@@ -2,14 +2,10 @@
 // Name:        minifram.cpp
 // Purpose:
 // Author:      Robert Roebling
-// Id:          $Id: minifram.cpp,v 1.29.2.1 2003/02/11 11:35:12 RR Exp $
+// Id:          $Id: minifram.cpp,v 1.29.2.2 2005/06/20 17:42:08 MR Exp $
 // Copyright:   (c) 1998 Robert Roebling
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
-
-#ifdef __GNUG__
-#pragma implementation "minifram.h"
-#endif
 
 #include "wx/minifram.h"
 

@@ -4,17 +4,13 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     01/02/97
-// RCS-ID:      $Id: minifram.h,v 1.7 2002/05/25 20:34:13 VZ Exp $
+// RCS-ID:      $Id: minifram.h,v 1.7.2.1 2005/06/20 17:38:02 MR Exp $
 // Copyright:   (c) Julian Smart
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
 
 #ifndef _WX_MINIFRAM_H_
 #define _WX_MINIFRAM_H_
-
-#ifdef __GNUG__
-#pragma interface "minifram.h"
-#endif
 
 #include "wx/frame.h"
 

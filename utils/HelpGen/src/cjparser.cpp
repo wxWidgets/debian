@@ -4,14 +4,10 @@
 // Author:      Aleksandras Gluchovas
 // Modified by:
 // Created:     22/09/98
-// RCS-ID:      $Id: cjparser.cpp,v 1.6 2001/11/18 12:25:11 GD Exp $
+// RCS-ID:      $Id: cjparser.cpp,v 1.6.2.1 2005/06/20 17:45:12 MR Exp $
 // Copyright:   (c) Aleskandars Gluchovas
 // Licence:       wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
-
-#ifdef __GNUG__
-#  pragma implementation "acell.h"
-#endif
 
 // For compilers that support precompilation, includes "wx/wx.h".
 #include "wx/wxprec.h"

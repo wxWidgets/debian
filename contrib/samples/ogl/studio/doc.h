@@ -4,17 +4,13 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     12/07/98
-// RCS-ID:      $Id: doc.h,v 1.3 2002/09/07 12:12:22 GD Exp $
+// RCS-ID:      $Id: doc.h,v 1.3.2.1 2005/06/20 17:34:20 MR Exp $
 // Copyright:   (c) Julian Smart
 // Licence:   	wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
 
 #ifndef _STUDIO_DOC_H_
 #define _STUDIO_DOC_H_
-
-#if defined(__GNUG__) && !defined(__APPLE__)
-// #pragma interface
-#endif
 
 #include <wx/docview.h>
 #include <wx/cmdproc.h>

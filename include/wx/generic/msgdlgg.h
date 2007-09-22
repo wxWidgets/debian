@@ -4,17 +4,13 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     01/02/97
-// RCS-ID:      $Id: msgdlgg.h,v 1.13.2.1 2005/05/04 18:23:53 JS Exp $
+// RCS-ID:      $Id: msgdlgg.h,v 1.13.2.2 2005/06/20 17:36:50 MR Exp $
 // Copyright:   (c) Julian Smart
 // Licence:   	wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
 
 #ifndef __MSGDLGH_G__
 #define __MSGDLGH_G__
-
-#if defined(__GNUG__) && !defined(__APPLE__)
-#pragma interface "msgdlgg.h"
-#endif
 
 #include "wx/setup.h"
 #include "wx/dialog.h"

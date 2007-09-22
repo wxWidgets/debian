@@ -3,17 +3,13 @@
 // Purpose:     MSW version of wxStaticLine class
 // Author:      Vadim Zeitlin
 // Created:     28.06.99
-// Version:     $Id: statline.h,v 1.3 2002/02/20 00:25:54 VZ Exp $
+// Version:     $Id: statline.h,v 1.3.2.1 2005/06/20 17:38:06 MR Exp $
 // Copyright:   (c) 1998 Vadim Zeitlin
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
 
 #ifndef _WX_MSW_STATLINE_H_
 #define _WX_MSW_STATLINE_H_
-
-#ifdef __GNUG__
-    #pragma interface
-#endif
 
 // ----------------------------------------------------------------------------
 // wxStaticLine

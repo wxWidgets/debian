@@ -4,14 +4,10 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     04/01/98
-// RCS-ID:      $Id: edtree.cpp,v 1.6 2000/12/21 00:31:01 georgetasker Exp $
+// RCS-ID:      $Id: edtree.cpp,v 1.6.2.1 2005/06/20 17:45:16 MR Exp $
 // Copyright:   (c) Julian Smart
 // Licence:   	wxWindows license
 /////////////////////////////////////////////////////////////////////////////
-
-#ifdef __GNUG__
-#pragma implementation "edtree.h"
-#endif
 
 // For compilers that support precompilation, includes "wx/wx.h".
 #include "wx/wxprec.h"

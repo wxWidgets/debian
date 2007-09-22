@@ -4,14 +4,10 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     01/01/99
-// RCS-ID:      $Id: table.cpp,v 1.3 2001/11/22 21:55:24 GD Exp $
+// RCS-ID:      $Id: table.cpp,v 1.3.2.1 2005/06/20 17:45:31 MR Exp $
 // Copyright:   (c) Julian Smart
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
-
-#ifdef __GNUG__
-#pragma implementation
-#endif
 
 // For compilers that support precompilation, includes "wx.h".
 #include "wx/wxprec.h"

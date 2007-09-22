@@ -2,14 +2,10 @@
 // Name:        imagepng.cpp
 // Purpose:     wxImage PNG handler
 // Author:      Robert Roebling
-// RCS-ID:      $Id: imagpng.cpp,v 1.27.2.4 2004/01/30 12:20:40 VS Exp $
+// RCS-ID:      $Id: imagpng.cpp,v 1.27.2.5 2005/06/20 17:41:01 MR Exp $
 // Copyright:   (c) Robert Roebling
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
-
-#ifdef __GNUG__
-#pragma implementation "imagpng.h"
-#endif
 
 // For compilers that support precompilation, includes "wx.h".
 #include "wx/wxprec.h"

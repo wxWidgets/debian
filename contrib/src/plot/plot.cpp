@@ -4,14 +4,10 @@
 // Author:      Robert Roebling
 // Modified by:
 // Created:     12/01/2000
-// RCS-ID:      $Id: plot.cpp,v 1.4 2002/01/31 21:27:53 JS Exp $
+// RCS-ID:      $Id: plot.cpp,v 1.4.2.1 2005/06/20 17:35:05 MR Exp $
 // Copyright:   (c) Robert Roebling
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
-
-#ifdef __GNUG__
-#pragma implementation "plot.h"
-#endif
 
 // For compilers that support precompilation, includes "wx.h".
 #include "wx/wxprec.h"

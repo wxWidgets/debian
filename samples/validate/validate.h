@@ -4,14 +4,10 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     04/01/98
-// RCS-ID:      $Id: validate.h,v 1.3.8.1 2002/12/14 14:23:10 MBN Exp $
+// RCS-ID:      $Id: validate.h,v 1.3.8.2 2005/06/20 17:40:26 MR Exp $
 // Copyright:   (c) Julian Smart and Markus Holzem
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
-
-#ifdef __GNUG__
-// #pragma interface
-#endif
 
 // Define a new application type
 class MyApp : public wxApp

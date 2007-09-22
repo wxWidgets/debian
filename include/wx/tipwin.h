@@ -5,17 +5,13 @@
 // Author:      Vadim Zeitlin
 // Modified by:
 // Created:     10.09.00
-// RCS-ID:      $Id: tipwin.h,v 1.8 2002/08/31 11:29:11 GD Exp $
+// RCS-ID:      $Id: tipwin.h,v 1.8.2.1 2005/06/20 17:36:33 MR Exp $
 // Copyright:   (c) 2000 Vadim Zeitlin <zeitlin@dptmaths.ens-cachan.fr>
 // Licence:     wxWindows license
 ///////////////////////////////////////////////////////////////////////////////
 
 #ifndef _WX_TIPWIN_H_
 #define _WX_TIPWIN_H_
-
-#if defined(__GNUG__) && !defined(__APPLE__)
-    #pragma interface "tipwin.h"
-#endif
 
 #if wxUSE_TIPWINDOW
 

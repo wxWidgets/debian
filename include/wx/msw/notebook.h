@@ -3,17 +3,13 @@
 // Purpose:     MSW/GTK compatible notebook (a.k.a. property sheet)
 // Author:      Robert Roebling
 // Modified by: Vadim Zeitlin for Windows version
-// RCS-ID:      $Id: notebook.h,v 1.30.2.4 2003/06/02 13:47:06 JS Exp $
+// RCS-ID:      $Id: notebook.h,v 1.30.2.5 2005/06/20 17:38:02 MR Exp $
 // Copyright:   (c) Julian Smart and Markus Holzem
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
 
 #ifndef _NOTEBOOK_H
 #define _NOTEBOOK_H
-
-#ifdef __GNUG__
-  #pragma interface "notebook.h"
-#endif
 
 #if wxUSE_NOTEBOOK
 

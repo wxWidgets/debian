@@ -4,7 +4,7 @@
 // Author:      George Tasker/Doug Card
 // Modified by:
 // Created:     1996
-// RCS-ID:      $Id: listdb.cpp,v 1.18 2002/08/31 22:36:13 GD Exp $
+// RCS-ID:      $Id: listdb.cpp,v 1.18.2.1 2005/06/20 17:38:59 MR Exp $
 // Copyright:   (c) 1996 Remstar International, Inc.
 // Licence:     wxWindows licence
 ///////////////////////////////////////////////////////////////////////////////
@@ -39,10 +39,6 @@
     
 // SYNOPSIS STOP
 */
-
-#ifdef __GNUG__
-#pragma implementation "listdb.h"
-#endif
 
 #include  "wx/wxprec.h"
 

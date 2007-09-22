@@ -2,7 +2,7 @@
 // Name:        clipboard.h
 // Purpose:
 // Author:      Robert Roebling
-// Id:          $Id: clipbrd.h,v 1.17 2002/09/07 12:28:46 GD Exp $
+// Id:          $Id: clipbrd.h,v 1.17.2.1 2005/06/20 17:36:57 MR Exp $
 // Copyright:   (c) 1998 Robert Roebling
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -10,10 +10,6 @@
 
 #ifndef __GTKCLIPBOARDH__
 #define __GTKCLIPBOARDH__
-
-#if defined(__GNUG__) && !defined(__APPLE__)
-#pragma interface
-#endif
 
 #if wxUSE_CLIPBOARD
 

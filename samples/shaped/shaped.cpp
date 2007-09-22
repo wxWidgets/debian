@@ -4,7 +4,7 @@
 // Author:      Robin Dunn
 // Modified by:
 // Created:     28-Mar-2003
-// RCS-ID:      $Id: shaped.cpp,v 1.2.2.4 2003/09/01 12:48:54 CE Exp $
+// RCS-ID:      $Id: shaped.cpp,v 1.2.2.5 2005/06/20 17:40:15 MR Exp $
 // Copyright:   (c) Robin Dunn
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -16,11 +16,6 @@
 // ----------------------------------------------------------------------------
 // headers
 // ----------------------------------------------------------------------------
-
-#if defined(__GNUG__) && !defined(__APPLE__)
-    #pragma implementation "shaped.cpp"
-    #pragma interface "shaped.cpp"
-#endif
 
 // For compilers that support precompilation, includes "wx/wx.h".
 #include "wx/wxprec.h"

@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     04/01/98
-// RCS-ID:      $Id: printdlg.cpp,v 1.9 2000/07/15 19:50:37 cvsuser Exp $
+// RCS-ID:      $Id: printdlg.cpp,v 1.9.4.1 2005/06/20 17:44:05 MR Exp $
 // Copyright:   (c) Julian Smart and Markus Holzem
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -16,10 +16,6 @@
 // ---------------------------------------------------------------------------
 // headers
 // ---------------------------------------------------------------------------
-
-#ifdef __GNUG__
-    #pragma implementation "printdlg.h"
-#endif
 
 // For compilers that support precompilation, includes "wx.h".
 #include "wx/wxprec.h"

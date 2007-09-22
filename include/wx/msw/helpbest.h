@@ -4,17 +4,13 @@
 // Author:      Mattia Barbon
 // Modified by:
 // Created:     02/04/2001
-// RCS-ID:      $Id: helpbest.h,v 1.2 2002/03/09 21:55:39 VZ Exp $
+// RCS-ID:      $Id: helpbest.h,v 1.2.2.1 2005/06/20 17:37:59 MR Exp $
 // Copyright:   (c) Mattia Barbon
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
 
 #ifndef _WX_HELPBEST_H_
 #define _WX_HELPBEST_H_
-
-#ifdef __GNUG__
-#pragma interface "helpbest.h"
-#endif
 
 #if wxUSE_HELP && wxUSE_MS_HTML_HELP && defined(__WIN95__) && wxUSE_WXHTML_HELP
 

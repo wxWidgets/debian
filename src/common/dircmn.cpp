@@ -4,7 +4,7 @@
 // Author:      Vadim Zeitlin
 // Modified by:
 // Created:     19.05.01
-// RCS-ID:      $Id: dircmn.cpp,v 1.6.2.1 2003/10/05 21:39:15 SN Exp $
+// RCS-ID:      $Id: dircmn.cpp,v 1.6.2.2 2005/06/20 17:40:45 MR Exp $
 // Copyright:   (c) 2001 Vadim Zeitlin <zeitlin@dptmaths.ens-cachan.fr>
 // License:     wxWindows license
 ///////////////////////////////////////////////////////////////////////////////
@@ -16,12 +16,6 @@
 // ----------------------------------------------------------------------------
 // headers
 // ----------------------------------------------------------------------------
-
-/* this is done in platform-specific files
-#ifdef __GNUG__
-    #pragma implementation "dir.h"
-#endif
-*/
 
 // For compilers that support precompilation, includes "wx.h".
 #include "wx/wxprec.h"

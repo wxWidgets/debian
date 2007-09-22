@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     29/01/98
-// RCS-ID:      $Id: utils.h,v 1.80.2.2 2002/12/16 22:05:34 RD Exp $
+// RCS-ID:      $Id: utils.h,v 1.80.2.3 2005/06/20 17:36:34 MR Exp $
 // Copyright:   (c) 1998 Julian Smart
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -15,10 +15,6 @@
 // ----------------------------------------------------------------------------
 // headers
 // ----------------------------------------------------------------------------
-
-#if defined(__GNUG__) && !defined(__APPLE__)
-    #pragma interface "utils.h"
-#endif
 
 #include "wx/object.h"
 #include "wx/list.h"

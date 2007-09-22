@@ -4,7 +4,7 @@
 // Author:      Mattia Barbon
 // Modified by:
 // Created:     17.07.02
-// RCS-ID:      $Id: msgout.cpp,v 1.11 2002/09/08 00:29:08 VZ Exp $
+// RCS-ID:      $Id: msgout.cpp,v 1.11.2.1 2005/06/20 17:41:06 MR Exp $
 // Copyright:   (c) the wxWindows team
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -16,10 +16,6 @@
 // ---------------------------------------------------------------------------
 // headers
 // ---------------------------------------------------------------------------
-
-#ifdef __GNUG__
-    #pragma implementation "msgout.h"
-#endif
 
 // For compilers that support precompilation, includes "wx.h".
 #include "wx/wxprec.h"

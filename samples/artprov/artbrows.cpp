@@ -4,14 +4,10 @@
 // Author:      Vaclav Slavik
 // Modified by:
 // Created:     2002/04/05
-// RCS-ID:      $Id: artbrows.cpp,v 1.3.2.1 2002/12/13 21:38:40 MBN Exp $
+// RCS-ID:      $Id: artbrows.cpp,v 1.3.2.2 2005/06/20 17:38:51 MR Exp $
 // Copyright:   (c) Vaclav Slavik
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
-
-#ifdef __GNUG__
-#pragma implementation "artbrows.h"
-#endif
 
 // For compilers that support precompilation, includes "wx/wx.h".
 #include "wx/wxprec.h"

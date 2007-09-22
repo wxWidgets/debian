@@ -4,17 +4,13 @@
 // Author:      Guilhem Lavaux
 // Modified by:
 // Created:     28/06/1998
-// RCS-ID:      $Id: datstrm.h,v 1.24 2002/08/31 11:29:09 GD Exp $
+// RCS-ID:      $Id: datstrm.h,v 1.24.2.1 2005/06/20 17:36:03 MR Exp $
 // Copyright:   (c) Guilhem Lavaux
 // Licence:   	wxWindows license
 /////////////////////////////////////////////////////////////////////////////
 
 #ifndef _WX_DATSTREAM_H_
 #define _WX_DATSTREAM_H_
-
-#if defined(__GNUG__) && !defined(__APPLE__)
-#pragma interface "datstrm.h"
-#endif
 
 #include "wx/stream.h"
 #include "wx/longlong.h"

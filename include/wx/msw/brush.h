@@ -4,17 +4,13 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     01/02/97
-// RCS-ID:      $Id: brush.h,v 1.9.2.1 2002/09/21 23:01:24 VZ Exp $
+// RCS-ID:      $Id: brush.h,v 1.9.2.2 2005/06/20 17:37:53 MR Exp $
 // Copyright:   (c) Julian Smart
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
 
 #ifndef _WX_BRUSH_H_
 #define _WX_BRUSH_H_
-
-#ifdef __GNUG__
-    #pragma interface "brush.h"
-#endif
 
 #include "wx/gdicmn.h"
 #include "wx/gdiobj.h"

@@ -4,14 +4,10 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     04/01/98
-// RCS-ID:      $Id: helpbase.cpp,v 1.10 2001/07/03 19:38:09 VZ Exp $
+// RCS-ID:      $Id: helpbase.cpp,v 1.10.2.1 2005/06/20 17:40:57 MR Exp $
 // Copyright:   (c) Julian Smart and Markus Holzem
 // Licence:   	wxWindows license
 /////////////////////////////////////////////////////////////////////////////
-
-#ifdef __GNUG__
-#pragma implementation "helpbase.h"
-#endif
 
 // For compilers that support precompilation, includes "wx.h".
 #include "wx/wxprec.h"

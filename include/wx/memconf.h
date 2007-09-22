@@ -6,7 +6,7 @@
 // Author:      Vadim Zeitlin
 // Modified by:
 // Created:     22.01.00
-// RCS-ID:      $Id: memconf.h,v 1.1 2000/01/22 23:15:51 VZ Exp $
+// RCS-ID:      $Id: memconf.h,v 1.1.6.1 2005/06/20 17:36:21 MR Exp $
 // Copyright:   (c) 2000 Vadim Zeitlin <zeitlin@dptmaths.ens-cachan.fr>
 // Licence:     wxWindows license
 ///////////////////////////////////////////////////////////////////////////////
@@ -21,8 +21,6 @@
 
 #ifndef _WX_MEMCONF_H_
 #define _WX_MEMCONF_H_
-
-// no #pragma interface because no implementation file
 
 #if wxUSE_CONFIG
 

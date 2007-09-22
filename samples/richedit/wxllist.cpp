@@ -3,7 +3,7 @@
  *                                                                  *
  * (C) 1998-2000 by Karsten Ballüder (Ballueder@gmx.net)            *
  *                                                                  *
- * $Id: wxllist.cpp,v 1.34 2002/03/27 18:44:50 VZ Exp $
+ * $Id: wxllist.cpp,v 1.34.2.1 2005/06/20 17:40:11 MR Exp $
  *******************************************************************/
 
 /*
@@ -20,10 +20,6 @@
   the right font.
 
  */
-
-#ifdef __GNUG__
-#   pragma implementation "wxllist.h"
-#endif
 
 #include "wx/wxprec.h"
 

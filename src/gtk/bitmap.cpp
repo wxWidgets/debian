@@ -2,14 +2,10 @@
 // Name:        bitmap.cpp
 // Purpose:
 // Author:      Robert Roebling
-// RCS-ID:      $Id: bitmap.cpp,v 1.64.2.9 2004/07/31 14:16:15 RL Exp $
+// RCS-ID:      $Id: bitmap.cpp,v 1.64.2.10 2005/06/20 17:41:56 MR Exp $
 // Copyright:   (c) 1998 Robert Roebling
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
-
-#ifdef __GNUG__
-#pragma implementation "bitmap.h"
-#endif
 
 #include "wx/defs.h"
 

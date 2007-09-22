@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     04/01/98
-// RCS-ID:      $Id: dibutils.h,v 1.5 1999/10/04 11:39:13 JL Exp $
+// RCS-ID:      $Id: dibutils.h,v 1.5.6.1 2005/06/20 17:37:57 MR Exp $
 // Copyright:   (c) Microsoft, Julian Smart
 // Licence:   	wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -28,10 +28,6 @@
 
 #ifndef SAMPLES_UTILS_H  
 #define SAMPLES_UTILS_H
-
-#ifdef __GNUG__
-#pragma interface "dibutils.h"
-#endif
 
 typedef     LPBITMAPINFOHEADER PDIB;
 typedef     HANDLE             HDIB;

@@ -4,14 +4,10 @@
 // Author:      Mattia Barbon
 // Modified by:
 // Created:     02/04/2001
-// RCS-ID:      $Id: helpbest.cpp,v 1.6.2.1 2002/11/09 00:20:15 VS Exp $
+// RCS-ID:      $Id: helpbest.cpp,v 1.6.2.2 2005/06/20 17:43:59 MR Exp $
 // Copyright:   (c) Mattia Barbon
 // Licence:   	wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
-
-#ifdef __GNUG__
-#pragma implementation "helpbest.h"
-#endif
 
 // For compilers that support precompilation, includes "wx.h".
 #include "wx/wxprec.h"

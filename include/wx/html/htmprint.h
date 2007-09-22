@@ -3,17 +3,13 @@
 // Purpose:     html printing classes
 // Author:      Vaclav Slavik
 // Created:     25/09/99
-// RCS-ID:      $Id: htmprint.h,v 1.10.2.4 2005/05/04 18:39:23 JS Exp $
+// RCS-ID:      $Id: htmprint.h,v 1.10.2.5 2005/06/20 17:37:14 MR Exp $
 // Copyright:   (c) Vaclav Slavik
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
 
 #ifndef _WX_HTMPRINT_H_
 #define _WX_HTMPRINT_H_
-
-#if defined(__GNUG__) && !defined(__APPLE__)
-#pragma interface "htmprint.h"
-#endif
 
 #include "wx/defs.h"
 

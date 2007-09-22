@@ -4,7 +4,7 @@
 // Author:      Vadim Zeitlin
 // Modified by:
 // Created:     18.10.99
-// RCS-ID:      $Id: appcmn.cpp,v 1.43.2.2 2003/04/10 06:13:48 GD Exp $
+// RCS-ID:      $Id: appcmn.cpp,v 1.43.2.3 2005/06/20 17:40:35 MR Exp $
 // Copyright:   (c) Vadim Zeitlin
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -16,10 +16,6 @@
 // ---------------------------------------------------------------------------
 // headers
 // ---------------------------------------------------------------------------
-
-#ifdef __GNUG__
-    #pragma implementation "appbase.h"
-#endif
 
 // For compilers that support precompilation, includes "wx.h".
 #include "wx/wxprec.h"

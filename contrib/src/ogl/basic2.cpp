@@ -4,14 +4,10 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     12/07/98
-// RCS-ID:      $Id: basic2.cpp,v 1.4.2.3 2002/12/28 18:32:07 JS Exp $
+// RCS-ID:      $Id: basic2.cpp,v 1.4.2.4 2005/06/20 17:34:49 MR Exp $
 // Copyright:   (c) Julian Smart
 // Licence:   	wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
-
-#ifdef __GNUG__
-#pragma implementation "basicp.h"
-#endif
 
 // For compilers that support precompilation, includes "wx.h".
 #include "wx/wxprec.h"

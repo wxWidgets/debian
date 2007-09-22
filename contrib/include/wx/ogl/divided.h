@@ -4,17 +4,13 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     12/07/98
-// RCS-ID:      $Id: divided.h,v 1.2.2.1 2002/11/19 02:13:32 RD Exp $
+// RCS-ID:      $Id: divided.h,v 1.2.2.2 2005/06/20 17:33:41 MR Exp $
 // Copyright:   (c) Julian Smart
 // Licence:   	wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
 
 #ifndef _OGL_DIVIDED_H_
 #define _OGL_DIVIDED_H_
-
-#if defined(__GNUG__) && !defined(__APPLE__)
-#pragma interface "basic.h"
-#endif
 
 /*
  * Definition of a region

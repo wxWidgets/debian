@@ -1,9 +1,9 @@
 Source: wxwindows=V
 Section: libs
 Priority: optional
-Build-Depends: debhelper (>=4.0), flex, bison, gettext, libgtk1.2-dev, =PY, =PY-dev, zlib1g-dev, libjpeg62-dev, libpng2-dev, libtiff4-dev, xlibmesa-gl-dev | libgl-dev, xlibmesa-glu-dev | libglu-dev, libesd0-dev
+Build-Depends: debhelper (>=4.0), flex, bison, gettext, libgtk1.2-dev, =PY, =PY-dev, zlib1g-dev, libjpeg62-dev, libpng12-dev, libtiff4-dev, xlibmesa-gl-dev | libgl-dev, xlibmesa-glu-dev | libglu-dev, libesd0-dev
 Maintainer: Ron Lee <ron@debian.org>
-Standards-Version: 3.6.1.1
+Standards-Version: 3.6.2.1
 
 Package: libwxbase=SOV
 Architecture: any
@@ -116,8 +116,7 @@ Description: wxWindows Cross-platform C++ GUI toolkit (GTK+ development)
 Package: libwxgtk=SOV-python
 Architecture: any
 Section: python
-Depends: =PY, ${shlibs:Depends}
-Suggests: wxwin=V-doc, wxwin=V-examples, =PY-xml
+Depends: wxpython, =PY, ${shlibs:Depends}
 Conflicts: libwxgtk-python, libwxgtk=SOV-dbg-python, python-wxwin, libwxgtk2.2-python-contrib, libwxgtk2.2-python, libwxgtk2.3-python
 Replaces: libwxgtk-python, libwxgtk=SOV-dbg-python, python-wxwin, libwxgtk2.2-python-contrib, libwxgtk2.2-python, libwxgtk2.3-python
 Provides: libwxgtk-python
@@ -129,6 +128,22 @@ Description: wxWindows Cross-platform C++ GUI toolkit (wxPython binding)
  This package provides a Python binding to the wxGTK library and its
  contrib libs.  If you wish to use xrced you'll also need the python-xml
  package installed.
+
+Package: wxpython=SOV
+Architecture: any
+Section: python
+Depends: libwxgtk=SOV-python, =PY, ${shlibs:Depends}
+Suggests: wxwin=V-doc, wxwin=V-examples, =PY-xml
+Conflicts: wxpython
+Replaces: wxpython, libwxgtk2.4-python
+Provides: wxpython
+Description: wxWidgets Cross-platform C++ GUI toolkit (wxPython common files)
+ wxWidgets (formerly known as wxWindows) is a class library for C++ providing
+ GUI components and other facilities on several popular platforms (and some
+ unpopular ones as well).  For more information see http://wxwidgets.org
+ .
+ This package provides support utilities and common files for wxPython=SOV.
+ If you wish to use xrced you'll also need the =PY-xml package installed.
 
 Package: libwxgtk=SOV-contrib
 Architecture: any

@@ -4,17 +4,13 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     12/07/98
-// RCS-ID:      $Id: doc.h,v 1.4.2.1 2003/06/05 17:26:31 JS Exp $
+// RCS-ID:      $Id: doc.h,v 1.4.2.2 2005/06/20 17:34:15 MR Exp $
 // Copyright:   (c) Julian Smart
 // Licence:   	wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
 
 #ifndef _OGLSAMPLE_DOC_H_
 #define _OGLSAMPLE_DOC_H_
-
-#if defined(__GNUG__) && !defined(__APPLE__)
-// #pragma interface
-#endif
 
 #include <wx/docview.h>
 #include <wx/cmdproc.h>

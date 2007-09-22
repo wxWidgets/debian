@@ -4,17 +4,13 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     01/02/97
-// RCS-ID:      $Id: colrdlgg.h,v 1.11.2.1 2005/05/04 18:23:52 JS Exp $
+// RCS-ID:      $Id: colrdlgg.h,v 1.11.2.2 2005/06/20 17:36:46 MR Exp $
 // Copyright:   (c) Julian Smart
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
 
 #ifndef __COLORDLGH_G__
 #define __COLORDLGH_G__
-
-#if defined(__GNUG__) && !defined(__APPLE__)
-#pragma interface "colrdlgg.h"
-#endif
 
 #include "wx/setup.h"
 #include "wx/gdicmn.h"

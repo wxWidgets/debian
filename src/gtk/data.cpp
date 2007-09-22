@@ -2,14 +2,10 @@
 // Name:        data.cpp
 // Purpose:
 // Author:      Robert Roebling
-// Id:          $Id: data.cpp,v 1.44 2002/02/22 18:18:35 VZ Exp $
+// Id:          $Id: data.cpp,v 1.44.2.1 2005/06/20 17:42:01 MR Exp $
 // Copyright:   (c) 1998 Robert Roebling
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
-
-#ifdef __GNUG__
-// #pragma implementation
-#endif
 
 #include "wx/defs.h"
 #include "wx/object.h"

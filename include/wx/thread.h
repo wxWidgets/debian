@@ -5,7 +5,7 @@
 // Modified by: Vadim Zeitlin (modifications partly inspired by omnithreads
 //              package from Olivetti & Oracle Research Laboratory)
 // Created:     04/13/98
-// RCS-ID:      $Id: thread.h,v 1.56.2.1 2003/08/17 22:57:26 SN Exp $
+// RCS-ID:      $Id: thread.h,v 1.56.2.2 2005/06/20 17:36:32 MR Exp $
 // Copyright:   (c) Guilhem Lavaux
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -21,11 +21,6 @@
 #include "wx/defs.h"
 
 #if wxUSE_THREADS
-
-// only for wxUSE_THREADS - otherwise we'd get undefined symbols
-#if defined(__GNUG__) && !defined(__APPLE__)
-    #pragma interface "thread.h"
-#endif
 
 // Windows headers define it
 #ifdef Yield

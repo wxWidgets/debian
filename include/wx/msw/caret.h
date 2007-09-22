@@ -4,17 +4,13 @@
 // Author:      Vadim Zeitlin
 // Modified by:
 // Created:     23.05.99
-// RCS-ID:      $Id: caret.h,v 1.3 2000/01/10 23:01:08 RD Exp $
+// RCS-ID:      $Id: caret.h,v 1.3.6.1 2005/06/20 17:37:53 MR Exp $
 // Copyright:   (c) wxWindows team
 // Licence:     wxWindows licence
 ///////////////////////////////////////////////////////////////////////////////
 
 #ifndef _WX_CARET_H_
 #define _WX_CARET_H_
-
-#ifdef __GNUG__
-    #pragma interface "caret.h"
-#endif
 
 class WXDLLEXPORT wxCaret : public wxCaretBase
 {

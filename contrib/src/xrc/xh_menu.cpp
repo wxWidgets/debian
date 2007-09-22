@@ -3,15 +3,11 @@
 // Purpose:     XRC resource for menus and menubars
 // Author:      Vaclav Slavik
 // Created:     2000/03/05
-// RCS-ID:      $Id: xh_menu.cpp,v 1.7.2.1 2003/04/02 14:26:58 JS Exp $
+// RCS-ID:      $Id: xh_menu.cpp,v 1.7.2.2 2005/06/20 17:35:14 MR Exp $
 // Copyright:   (c) 2000 Vaclav Slavik
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
  
-#ifdef __GNUG__
-#pragma implementation "xh_menu.h"
-#endif
-
 // For compilers that support precompilation, includes "wx.h".
 #include "wx/wxprec.h"
 

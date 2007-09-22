@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     04/01/98
-// RCS-ID:      $Id: utilsexc.cpp,v 1.53.2.4 2002/11/04 21:33:28 VZ Exp $
+// RCS-ID:      $Id: utilsexc.cpp,v 1.53.2.5 2005/06/20 17:44:13 MR Exp $
 // Copyright:   (c) 1998-2002 wxWindows dev team
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -16,10 +16,6 @@
 // ----------------------------------------------------------------------------
 // headers
 // ----------------------------------------------------------------------------
-
-#ifdef __GNUG__
-    #pragma implementation
-#endif
 
 // For compilers that support precompilation, includes "wx.h".
 #include "wx/wxprec.h"

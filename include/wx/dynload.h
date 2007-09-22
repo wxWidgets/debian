@@ -5,17 +5,13 @@
 //               (derived in part from dynlib.cpp (c) 1998 Guilhem Lavaux)
 // Modified by:
 // Created:      03/12/01
-// RCS-ID:       $Id: dynload.h,v 1.9.2.3 2004/06/06 14:59:00 VS Exp $
+// RCS-ID:       $Id: dynload.h,v 1.9.2.4 2005/06/20 17:36:08 MR Exp $
 // Copyright:    (c) 2001 Ron Lee <ron@debian.org>
 // Licence:      wxWindows license
 /////////////////////////////////////////////////////////////////////////////
 
 #ifndef _WX_DYNAMICLOADER_H__
 #define _WX_DYNAMICLOADER_H__
-
-#if defined(__GNUG__) && !defined(__APPLE__)
-#pragma interface "dynload.h"
-#endif
 
 // ----------------------------------------------------------------------------
 // headers

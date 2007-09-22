@@ -1,15 +1,10 @@
 /////////////////////////////////////////////////////////////////////////////
 // Author:      Vaclav Slavik
 // Created:     2000/05/05
-// RCS-ID:      $Id: editor.cpp,v 1.18.2.3 2002/12/29 07:48:09 RL Exp $
+// RCS-ID:      $Id: editor.cpp,v 1.18.2.4 2005/06/20 17:35:27 MR Exp $
 // Copyright:   (c) 2000 Vaclav Slavik
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
-
-#ifdef __GNUG__
-    #pragma implementation "editor.h"
-    #pragma implementation "treedt.h"
-#endif
 
 // For compilers that support precompilation, includes "wx/wx.h".
 #include "wx/wxprec.h"

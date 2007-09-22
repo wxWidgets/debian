@@ -4,14 +4,10 @@
 // Author:      Aleksandras Gluchovas
 // Modified by:
 // Created:     06/10/98
-// RCS-ID:      $Id: rowdragpl.cpp,v 1.3 2002/01/21 22:34:42 JS Exp $
+// RCS-ID:      $Id: rowdragpl.cpp,v 1.3.2.1 2005/06/20 17:34:35 MR Exp $
 // Copyright:   (c) Aleksandras Gluchovas
 // Licence:       wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
-
-#ifdef __GNUG__
-    #pragma implementation "rowdragpl.h"
-#endif
 
 // For compilers that support precompilation, includes "wx.h".
 #include "wx/wxprec.h"

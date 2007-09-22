@@ -4,14 +4,10 @@
 // Author:      Guilhem Lavaux
 // Modified by:
 // Created:     28/06/98
-// RCS-ID:      $Id: txtstrm.cpp,v 1.20.2.2 2002/11/03 15:48:13 RR Exp $
+// RCS-ID:      $Id: txtstrm.cpp,v 1.20.2.3 2005/06/20 17:41:20 MR Exp $
 // Copyright:   (c) Guilhem Lavaux
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
-
-#ifdef __GNUG__
-#pragma implementation "txtstrm.h"
-#endif
 
 // For compilers that support precompilation, includes "wx.h".
 #include "wx/wxprec.h"

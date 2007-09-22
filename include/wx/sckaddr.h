@@ -4,17 +4,13 @@
 // Author:      Guilhem Lavaux
 // Modified by:
 // Created:     26/04/1997
-// RCS-ID:      $Id: sckaddr.h,v 1.16.2.2 2004/01/11 15:47:52 JS Exp $
+// RCS-ID:      $Id: sckaddr.h,v 1.16.2.3 2005/06/20 17:36:27 MR Exp $
 // Copyright:   (c) 1997, 1998 Guilhem Lavaux
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
 
 #ifndef _WX_NETWORK_ADDRESS_H
 #define _WX_NETWORK_ADDRESS_H
-
-#if defined(__GNUG__) && !defined(__APPLE__)
-#pragma interface "sckaddr.h"
-#endif
 
 #include "wx/defs.h"
 

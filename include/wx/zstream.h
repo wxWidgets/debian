@@ -4,16 +4,12 @@
 // Author:      Guilhem Lavaux
 // Modified by:
 // Created:     11/07/98
-// RCS-ID:      $Id: zstream.h,v 1.18 2002/08/31 11:29:11 GD Exp $
+// RCS-ID:      $Id: zstream.h,v 1.18.2.1 2005/06/20 17:36:37 MR Exp $
 // Copyright:   (c) Guilhem Lavaux
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
 #ifndef _WX_WXZSTREAM_H__
 #define _WX_WXZSTREAM_H__
-
-#if defined(__GNUG__) && !defined(__APPLE__)
-#pragma interface "zstream.h"
-#endif
 
 #include "wx/defs.h"
 

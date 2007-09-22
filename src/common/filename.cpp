@@ -4,7 +4,7 @@
 // Author:      Robert Roebling, Vadim Zeitlin
 // Modified by:
 // Created:     28.12.2000
-// RCS-ID:      $Id: filename.cpp,v 1.100.2.7 2003/11/23 22:27:38 SN Exp $
+// RCS-ID:      $Id: filename.cpp,v 1.100.2.8 2005/06/20 17:40:52 MR Exp $
 // Copyright:   (c) 2000 Robert Roebling
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -59,10 +59,6 @@
 // ----------------------------------------------------------------------------
 // headers
 // ----------------------------------------------------------------------------
-
-#ifdef __GNUG__
-#pragma implementation "filename.h"
-#endif
 
 // For compilers that support precompilation, includes "wx.h".
 #include "wx/wxprec.h"

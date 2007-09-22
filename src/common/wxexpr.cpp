@@ -4,14 +4,10 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     04/01/98
-// RCS-ID:      $Id: wxexpr.cpp,v 1.25.2.1 2002/11/04 23:11:23 VZ Exp $
+// RCS-ID:      $Id: wxexpr.cpp,v 1.25.2.2 2005/06/20 17:41:24 MR Exp $
 // Copyright:   (c) Julian Smart and Markus Holzem
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
-
-#ifdef __GNUG__
-#pragma implementation "wxexpr.h"
-#endif
 
 // For compilers that support precompilation, includes "wx/wx.h".
 #include "wx/wxprec.h"

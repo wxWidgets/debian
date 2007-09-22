@@ -2,7 +2,7 @@
 // Name:        xpmdecod.cpp
 // Purpose:     wxXPMDecoder
 // Author:      John Cristy, Vaclav Slavik
-// RCS-ID:      $Id: xpmdecod.cpp,v 1.21.2.3 2003/03/29 10:19:32 VS Exp $
+// RCS-ID:      $Id: xpmdecod.cpp,v 1.21.2.4 2005/06/20 17:41:24 MR Exp $
 // Copyright:   (c) John Cristy, Vaclav Slavik
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -89,10 +89,6 @@ license is as follows:
  * used in advertising or otherwise to promote the sale, use or other dealings
  * in this Software without prior written authorization from GROUPE BULL.
  */
-
-#ifdef __GNUG__
-#pragma implementation "xpmdecod.h"
-#endif
 
 // For compilers that support precompilation, includes "wx.h".
 #include "wx/wxprec.h"

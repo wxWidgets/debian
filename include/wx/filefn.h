@@ -4,17 +4,13 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     29/01/98
-// RCS-ID:      $Id: filefn.h,v 1.61.2.3 2004/02/02 14:16:29 CE Exp $
+// RCS-ID:      $Id: filefn.h,v 1.61.2.4 2005/06/20 17:36:11 MR Exp $
 // Copyright:   (c) 1998 Julian Smart
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
 
 #ifndef   _FILEFN_H_
 #define   _FILEFN_H_
-
-#if defined(__GNUG__) && !defined(__APPLE__)
-    #pragma interface "filefn.h"
-#endif
 
 #include "wx/list.h"
 

@@ -2,14 +2,10 @@
 // Name:        htmlcell.cpp
 // Purpose:     wxHtmlCell - basic element of HTML output
 // Author:      Vaclav Slavik
-// RCS-ID:      $Id: htmlcell.cpp,v 1.50.2.11 2003/05/21 23:05:44 VS Exp $
+// RCS-ID:      $Id: htmlcell.cpp,v 1.50.2.12 2005/06/20 17:42:23 MR Exp $
 // Copyright:   (c) 1999 Vaclav Slavik
 // Licence:     wxWindows Licence
 /////////////////////////////////////////////////////////////////////////////
-
-#ifdef __GNUG__
-#pragma implementation "htmlcell.h"
-#endif
 
 #include "wx/wxprec.h"
 

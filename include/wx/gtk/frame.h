@@ -2,7 +2,7 @@
 // Name:        wx/gtk/frame.h
 // Purpose:
 // Author:      Robert Roebling
-// Id:          $Id: frame.h,v 1.67.2.2 2002/10/01 15:13:43 RL Exp $
+// Id:          $Id: frame.h,v 1.67.2.3 2005/06/20 17:37:01 MR Exp $
 // Copyright:   (c) 1998 Robert Roebling, Julian Smart
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -10,10 +10,6 @@
 
 #ifndef __GTKFRAMEH__
 #define __GTKFRAMEH__
-
-#if defined(__GNUG__) && !defined(__APPLE__)
-    #pragma interface "frame.h"
-#endif
 
 //-----------------------------------------------------------------------------
 // classes

@@ -4,7 +4,7 @@
 // Author:    Markus Holzem, Vadim Zeitlin
 // Modified by:
 // Created:   Fri Oct 24 10:46:34 MET 1997
-// RCS-ID:    $Id: region.cpp,v 1.21.2.2 2002/09/24 09:29:31 JS Exp $
+// RCS-ID:    $Id: region.cpp,v 1.21.2.3 2005/06/20 17:44:06 MR Exp $
 // Copyright: (c) 1997-2002 wxWindows team
 // Licence:   wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -16,10 +16,6 @@
 // ----------------------------------------------------------------------------
 // headers
 // ----------------------------------------------------------------------------
-
-#ifdef __GNUG__
-    #pragma implementation "region.h"
-#endif
 
 // For compilers that support precompilation, includes "wx.h".
 #include "wx/wxprec.h"

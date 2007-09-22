@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by: Vadim Zeitlin to be less MSW-specific on 10/10/98
 // Created:     01/02/97
-// RCS-ID:      $Id: treectrl.h,v 1.51.2.5 2002/12/29 15:42:10 RL Exp $
+// RCS-ID:      $Id: treectrl.h,v 1.51.2.6 2005/06/20 17:38:07 MR Exp $
 // Copyright:   (c) Julian Smart and Markus Holzem
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -15,10 +15,6 @@
 // ----------------------------------------------------------------------------
 // headers
 // ----------------------------------------------------------------------------
-
-#ifdef __GNUG__
-    #pragma interface "treectrl.h"
-#endif
 
 #if wxUSE_TREECTRL
 

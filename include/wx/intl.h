@@ -4,17 +4,13 @@
 // Author:      Vadim Zeitlin
 // Modified by:
 // Created:     29/01/98
-// RCS-ID:      $Id: intl.h,v 1.37.2.1 2003/05/25 11:18:28 VS Exp $
+// RCS-ID:      $Id: intl.h,v 1.37.2.2 2005/06/20 17:36:18 MR Exp $
 // Copyright:   (c) 1998 Vadim Zeitlin <zeitlin@dptmaths.ens-cachan.fr>
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
 
 #ifndef _WX_INTL_H_
 #define _WX_INTL_H_
-
-#if defined(__GNUG__) && !defined(__APPLE__)
-    #pragma interface "intl.h"
-#endif
 
 #include "wx/defs.h"
 #include "wx/string.h"

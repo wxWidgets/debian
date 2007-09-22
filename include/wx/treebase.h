@@ -4,17 +4,13 @@
 // Author:      Julian Smart et al
 // Modified by:
 // Created:     01/02/97
-// RCS-ID:      $Id: treebase.h,v 1.20.2.2 2003/08/14 00:59:29 VZ Exp $
+// RCS-ID:      $Id: treebase.h,v 1.20.2.3 2005/06/20 17:36:34 MR Exp $
 // Copyright:   (c) 1997,1998 Robert Roebling
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
 
 #ifndef _WX_TREEBASE_H_
 #define _WX_TREEBASE_H_
-
-#if defined(__GNUG__) && !defined(__APPLE__)
-    #pragma interface "treebase.h"
-#endif
 
 // ----------------------------------------------------------------------------
 // headers

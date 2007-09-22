@@ -4,17 +4,13 @@
 // Author:      Vadim Zeitlin
 // Modified by:
 // Created:     04.11.99
-// RCS-ID:      $Id: fontmap.h,v 1.10 2002/08/31 11:29:10 GD Exp $
+// RCS-ID:      $Id: fontmap.h,v 1.10.2.1 2005/06/20 17:36:13 MR Exp $
 // Copyright:   (c) Vadim Zeitlin
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
 
 #ifndef _WX_FONTMAPPER_H_
 #define _WX_FONTMAPPER_H_
-
-#if defined(__GNUG__) && !defined(__APPLE__)
-    #pragma interface "fontmap.h"
-#endif
 
 // ----------------------------------------------------------------------------
 // headers

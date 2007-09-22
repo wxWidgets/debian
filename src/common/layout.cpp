@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     04/01/98
-// RCS-ID:      $Id: layout.cpp,v 1.20 2002/01/22 18:30:54 RD Exp $
+// RCS-ID:      $Id: layout.cpp,v 1.20.2.1 2005/06/20 17:41:03 MR Exp $
 // Copyright:   (c) Julian Smart and Markus Holzem
 // Licence:       wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -16,10 +16,6 @@
 // ----------------------------------------------------------------------------
 // headers
 // ----------------------------------------------------------------------------
-
-#ifdef __GNUG__
-    #pragma implementation "layout.h"
-#endif
 
 // For compilers that support precompilation, includes "wx.h".
 #include "wx/wxprec.h"

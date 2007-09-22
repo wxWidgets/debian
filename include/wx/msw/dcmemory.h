@@ -4,17 +4,13 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     01/02/97
-// RCS-ID:      $Id: dcmemory.h,v 1.6 2001/04/09 01:22:45 VZ Exp $
+// RCS-ID:      $Id: dcmemory.h,v 1.6.2.1 2005/06/20 17:37:56 MR Exp $
 // Copyright:   (c) Julian Smart
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
 
 #ifndef _WX_DCMEMORY_H_
 #define _WX_DCMEMORY_H_
-
-#ifdef __GNUG__
-#pragma interface "dcmemory.h"
-#endif
 
 #include "wx/dcclient.h"
 

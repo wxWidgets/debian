@@ -4,14 +4,10 @@
 // Author:      Julian Smart, Robert Roebling
 // Modified by:
 // Created:     04/01/98
-// RCS-ID:      $Id: msgdlgg.cpp,v 1.34.2.1 2002/09/19 20:22:13 RR Exp $
+// RCS-ID:      $Id: msgdlgg.cpp,v 1.34.2.2 2005/06/20 17:41:44 MR Exp $
 // Copyright:   (c) Julian Smart, Markus Holzem, Robert Roebling
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
-
-#ifdef __GNUG__
-#pragma implementation "msgdlgg.h"
-#endif
 
 // For compilers that support precompilation, includes "wx.h".
 #include "wx/wxprec.h"

@@ -4,14 +4,10 @@
 // Author:      Aleksandras Gluchovas
 // Modified by:
 // Created:     06/09/98
-// RCS-ID:      $Id: toolwnd.cpp,v 1.9.2.1 2003/04/02 14:14:13 JS Exp $
+// RCS-ID:      $Id: toolwnd.cpp,v 1.9.2.2 2005/06/20 17:34:36 MR Exp $
 // Copyright:   (c) Aleksandras Gluchovas
 // Licence:   	wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
-
-#ifdef __GNUG__
-    #pragma implementation "toolwnd.h"
-#endif
 
 // For compilers that support precompilation, includes "wx.h".
 #include "wx/wxprec.h"

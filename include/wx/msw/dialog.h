@@ -4,17 +4,13 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     01/02/97
-// RCS-ID:      $Id: dialog.h,v 1.29.2.1 2002/09/21 16:16:57 MBN Exp $
+// RCS-ID:      $Id: dialog.h,v 1.29.2.2 2005/06/20 17:37:57 MR Exp $
 // Copyright:   (c) Julian Smart and Markus Holzem
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
 
 #ifndef _WX_DIALOG_H_
 #define _WX_DIALOG_H_
-
-#ifdef __GNUG__
-    #pragma interface "dialog.h"
-#endif
 
 #include "wx/panel.h"
 

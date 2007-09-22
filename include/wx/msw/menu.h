@@ -4,17 +4,13 @@
 // Author:      Julian Smart
 // Modified by: Vadim Zeitlin (wxMenuItem is now in separate file)
 // Created:     01/02/97
-// RCS-ID:      $Id: menu.h,v 1.36 2002/03/21 02:35:08 VZ Exp $
+// RCS-ID:      $Id: menu.h,v 1.36.2.1 2005/06/20 17:38:01 MR Exp $
 // Copyright:   (c) Julian Smart and Markus Holzem
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
 
 #ifndef _WX_MENU_H_
 #define _WX_MENU_H_
-
-#ifdef __GNUG__
-    #pragma interface "menu.h"
-#endif
 
 #if wxUSE_ACCEL
     #include "wx/accel.h"

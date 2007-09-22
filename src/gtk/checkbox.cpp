@@ -2,15 +2,10 @@
 // Name:        checkbox.cpp
 // Purpose:
 // Author:      Robert Roebling
-// Id:          $Id: checkbox.cpp,v 1.52.2.1 2003/04/06 17:55:52 JS Exp $
+// Id:          $Id: checkbox.cpp,v 1.52.2.2 2005/06/20 17:41:58 MR Exp $
 // Copyright:   (c) 1998 Robert Roebling
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
-
-
-#ifdef __GNUG__
-#pragma implementation "checkbox.h"
-#endif
 
 #include "wx/defs.h"
 

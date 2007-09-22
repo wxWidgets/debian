@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by: 03.11.00: VZ to add wxArrayString and multiple sel functions
 // Created:     04/01/98
-// RCS-ID:      $Id: choicdgg.cpp,v 1.39.2.4 2003/09/17 11:39:26 VZ Exp $
+// RCS-ID:      $Id: choicdgg.cpp,v 1.39.2.5 2005/06/20 17:41:35 MR Exp $
 // Copyright:   (c) wxWindows team
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -12,10 +12,6 @@
 // ============================================================================
 // declarations
 // ============================================================================
-
-#ifdef __GNUG__
-    #pragma implementation "choicdgg.h"
-#endif
 
 // ----------------------------------------------------------------------------
 // headers

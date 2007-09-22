@@ -4,7 +4,7 @@
 // Author:      Vaclav Slavik
 // Modified by:
 // Created:     22.04.01
-// RCS-ID:      $Id: bitmap.h,v 1.14 2002/08/31 11:29:09 GD Exp $
+// RCS-ID:      $Id: bitmap.h,v 1.14.2.1 2005/06/20 17:35:58 MR Exp $
 // Copyright:   (c) wxWindows team
 // Licence:     wxWindows licence
 ///////////////////////////////////////////////////////////////////////////////
@@ -15,10 +15,6 @@
 // ----------------------------------------------------------------------------
 // headers
 // ----------------------------------------------------------------------------
-
-#if defined(__GNUG__) && !defined(__APPLE__)
-    #pragma interface "bitmapbase.h"
-#endif
 
 #include "wx/defs.h"
 #include "wx/object.h"

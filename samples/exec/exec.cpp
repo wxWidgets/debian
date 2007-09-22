@@ -4,7 +4,7 @@
 // Author:      Vadim Zeitlin
 // Modified by:
 // Created:     15.01.00
-// RCS-ID:      $Id: exec.cpp,v 1.21.2.3 2003/01/12 20:47:49 MBN Exp $
+// RCS-ID:      $Id: exec.cpp,v 1.21.2.4 2005/06/20 17:39:24 MR Exp $
 // Copyright:   (c) Vadim Zeitlin
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -16,11 +16,6 @@
 // ----------------------------------------------------------------------------
 // headers
 // ----------------------------------------------------------------------------
-
-#if defined(__GNUG__) && !defined(__APPLE__)
-    #pragma implementation "exec.cpp"
-    #pragma interface "exec.cpp"
-#endif
 
 // For compilers that support precompilation, includes "wx/wx.h".
 #include "wx/wxprec.h"

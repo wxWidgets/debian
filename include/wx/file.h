@@ -5,17 +5,13 @@
 // Author:      Vadim Zeitlin
 // Modified by:
 // Created:     29/01/98
-// RCS-ID:      $Id: file.h,v 1.25.2.1 2003/12/11 10:57:49 JS Exp $
+// RCS-ID:      $Id: file.h,v 1.25.2.2 2005/06/20 17:36:11 MR Exp $
 // Copyright:   (c) 1998 Vadim Zeitlin <zeitlin@dptmaths.ens-cachan.fr>
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
 
 #ifndef _WX_FILEH__
 #define _WX_FILEH__
-
-#if defined(__GNUG__) && !defined(__APPLE__)
-#pragma interface "file.h"
-#endif
 
 #ifndef WX_PRECOMP
   #include  "wx/string.h"

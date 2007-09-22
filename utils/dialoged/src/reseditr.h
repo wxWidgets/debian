@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     04/01/98
-// RCS-ID:      $Id: reseditr.h,v 1.21 2002/09/07 12:05:26 GD Exp $
+// RCS-ID:      $Id: reseditr.h,v 1.21.2.1 2005/06/20 17:45:17 MR Exp $
 // Copyright:   (c) Julian Smart
 // Licence:   	wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -13,10 +13,6 @@
 #define _RESEDITR_H_
 
 #define wxDIALOG_EDITOR_VERSION 2.1
-
-#if defined(__GNUG__) && !defined(__APPLE__)
-#pragma interface "reseditr.h"
-#endif
 
 #include "wx/wx.h"
 #include "wx/string.h"

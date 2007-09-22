@@ -4,14 +4,10 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     12/07/98
-// RCS-ID:      $Id: view.cpp,v 1.2 2001/10/30 13:28:45 GT Exp $
+// RCS-ID:      $Id: view.cpp,v 1.2.2.1 2005/06/20 17:34:22 MR Exp $
 // Copyright:   (c) Julian Smart
 // Licence:
 /////////////////////////////////////////////////////////////////////////////
-
-#ifdef __GNUG__
-// #pragma implementation
-#endif
 
 // For compilers that support precompilation, includes "wx.h".
 #include "wx/wxprec.h"

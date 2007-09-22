@@ -4,17 +4,13 @@
 // Author:      Vadim Zeitlin
 // Modified by:
 // Created:     23.09.98
-// RCS-ID:      $Id: mimetype.h,v 1.7 2001/06/26 20:59:07 VZ Exp $
+// RCS-ID:      $Id: mimetype.h,v 1.7.2.1 2005/06/20 17:38:02 MR Exp $
 // Copyright:   (c) 1998 Vadim Zeitlin <zeitlin@dptmaths.ens-cachan.fr>
 // Licence:     wxWindows license (part of wxExtra library)
 /////////////////////////////////////////////////////////////////////////////
 
 #ifndef _MIMETYPE_IMPL_H
 #define _MIMETYPE_IMPL_H
-
-#ifdef    __GNUG__
-    #pragma interface "mimetype.h"
-#endif
 
 #include "wx/defs.h"
 

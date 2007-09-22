@@ -2,14 +2,10 @@
 // Name:        utilres.cpp
 // Purpose:
 // Author:      Robert Roebling
-// Id:          $Id: utilsres.cpp,v 1.24 2000/01/03 02:24:26 OK Exp $
+// Id:          $Id: utilsres.cpp,v 1.24.6.1 2005/06/20 17:42:15 MR Exp $
 // Copyright:   (c) 1998 Robert Roebling
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
-
-//#ifdef __GNUG__
-//#pragma implementation "utils.h"
-//#endif
 
 #include "wx/utils.h"
 #include "wx/string.h"

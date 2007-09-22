@@ -2,14 +2,10 @@
 // Name:        gtk/filedlg.cpp
 // Purpose:
 // Author:      Robert Roebling
-// Id:          $Id: filedlg.cpp,v 1.38.2.1 2003/09/21 00:06:02 VZ Exp $
+// Id:          $Id: filedlg.cpp,v 1.38.2.2 2005/06/20 17:42:04 MR Exp $
 // Copyright:   (c) 1998 Robert Roebling
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
-
-#ifdef __GNUG__
-#pragma implementation "filedlg.h"
-#endif
 
 #include "wx/filedlg.h"
 #include "wx/utils.h"

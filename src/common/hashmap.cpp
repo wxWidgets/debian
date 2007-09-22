@@ -4,14 +4,10 @@
 // Author:      Mattia Barbon
 // Modified by:
 // Created:     29/01/2002
-// RCS-ID:      $Id: hashmap.cpp,v 1.3 2002/02/01 14:58:55 VZ Exp $
+// RCS-ID:      $Id: hashmap.cpp,v 1.3.2.1 2005/06/20 17:40:57 MR Exp $
 // Copyright:   (c) Mattia Barbon
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
-
-#ifdef __GNUG__
-#pragma implementation "hashmap.h"
-#endif
 
 // For compilers that support precompilation, includes "wx.h".
 #include "wx/wxprec.h"

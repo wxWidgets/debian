@@ -5,17 +5,13 @@
 // Created:    April 1997
 // Copyright:  (C) 1999-1997, Guilhem Lavaux
 //             (C) 2000-1999, Guillermo Rodriguez Garcia
-// RCS_ID:     $Id: socket.cpp,v 1.105 2002/07/29 04:13:24 RL Exp $
+// RCS_ID:     $Id: socket.cpp,v 1.105.2.1 2005/06/20 17:41:15 MR Exp $
 // License:    see wxWindows license
 /////////////////////////////////////////////////////////////////////////////
 
 // ==========================================================================
 // Declarations
 // ==========================================================================
-
-#ifdef __GNUG__
-#pragma implementation "socket.h"
-#endif
 
 // For compilers that support precompilation, includes "wx.h".
 #include "wx/wxprec.h"

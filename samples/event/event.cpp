@@ -4,7 +4,7 @@
 // Author:      Vadim Zeitlin
 // Modified by:
 // Created:     31.01.01
-// RCS-ID:      $Id: event.cpp,v 1.6 2002/08/31 22:30:49 GD Exp $
+// RCS-ID:      $Id: event.cpp,v 1.6.2.1 2005/06/20 17:39:22 MR Exp $
 // Copyright:   (c) 2001 Vadim Zeitlin
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -16,13 +16,6 @@
 // ----------------------------------------------------------------------------
 // headers
 // ----------------------------------------------------------------------------
-
-#if defined(__GNUG__) && !defined(__APPLE__)
-    // DO NOT use event.cpp here, it breaks statics initialization in
-    // src/common/event.cpp and nothing works at all then!
-    #pragma implementation "eventsample.cpp"
-    #pragma interface "eventsample.cpp"
-#endif
 
 // For compilers that support precompilation, includes "wx/wx.h".
 #include "wx/wxprec.h"

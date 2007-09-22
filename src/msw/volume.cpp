@@ -4,7 +4,7 @@
 // Author:      George Policello
 // Modified by:
 // Created:     28 Jan 02
-// RCS-ID:      $Id: volume.cpp,v 1.12.2.2 2003/01/23 20:53:40 MBN Exp $
+// RCS-ID:      $Id: volume.cpp,v 1.12.2.3 2005/06/20 17:44:14 MR Exp $
 // Copyright:   (c) 2002 George Policello
 // Licence:     wxWindows license
 ///////////////////////////////////////////////////////////////////////////////
@@ -16,10 +16,6 @@
 // ----------------------------------------------------------------------------
 // headers
 // ----------------------------------------------------------------------------
-
-#ifdef __GNUG__
-    #pragma implementation "fsvolume.h"
-#endif
 
 #include "wx/wxprec.h"
 

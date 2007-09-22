@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     04/01/98
-// RCS-ID:      $Id: mdi.cpp,v 1.87.2.1 2003/06/13 18:54:28 JS Exp $
+// RCS-ID:      $Id: mdi.cpp,v 1.87.2.3 2005/07/04 15:50:29 CE Exp $
 // Copyright:   (c) Julian Smart and Markus Holzem
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -16,10 +16,6 @@
 // ---------------------------------------------------------------------------
 // headers
 // ---------------------------------------------------------------------------
-
-#ifdef __GNUG__
-    #pragma implementation "mdi.h"
-#endif
 
 // For compilers that support precompilation, includes "wx.h".
 #include "wx/wxprec.h"
@@ -1322,6 +1318,12 @@ static void InsertWindowMenu(wxWindow *win, WXHMENU menu, HMENU subMenu)
 
                 continue;
             }
+
+            if ( wxStripMenuCodes(wxString(buf)).IsSameAs(_("Window")) )
+            {
+               success = true;
+               break;
+            } 
 
             if ( wxStripMenuCodes(wxString(buf)).IsSameAs(_("Help")) )
             {

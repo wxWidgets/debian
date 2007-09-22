@@ -2,14 +2,10 @@
 // Name:        dialog.cpp
 // Purpose:
 // Author:      Robert Roebling
-// Id:          $Id: dialog.cpp,v 1.102.2.2 2002/10/13 21:03:45 RR Exp $
+// Id:          $Id: dialog.cpp,v 1.102.2.3 2005/06/20 17:42:03 MR Exp $
 // Copyright:   (c) 1998 Robert Roebling
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
-
-#ifdef __GNUG__
-#pragma implementation "dialog.h"
-#endif
 
 #include "wx/dialog.h"
 #include "wx/frame.h"

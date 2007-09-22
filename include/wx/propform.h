@@ -4,17 +4,13 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     04/01/98
-// RCS-ID:      $Id: propform.h,v 1.9 2002/08/31 11:29:11 GD Exp $
+// RCS-ID:      $Id: propform.h,v 1.9.2.1 2005/06/20 17:36:25 MR Exp $
 // Copyright:   (c) Julian Smart
 // Licence:   	wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
 
 #ifndef _WX_PROPFORM_H_
 #define _WX_PROPFORM_H_
-
-#if defined(__GNUG__) && !defined(__APPLE__)
-#pragma interface "propform.h"
-#endif
 
 #if wxUSE_PROPSHEET
 

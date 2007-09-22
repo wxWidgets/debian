@@ -4,17 +4,13 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     10/09/98
-// RCS-ID:      $Id: variant.h,v 1.17 2002/08/31 11:29:11 GD Exp $
+// RCS-ID:      $Id: variant.h,v 1.17.2.1 2005/06/20 17:36:35 MR Exp $
 // Copyright:   (c)
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
 
 #ifndef _WX_VARIANT_H_
 #define _WX_VARIANT_H_
-
-#if defined(__GNUG__) && !defined(__APPLE__)
-#pragma interface "variant.h"
-#endif
 
 #include "wx/defs.h"
 #include "wx/object.h"

@@ -2,15 +2,10 @@
 // Name:        cursor.cpp
 // Purpose:
 // Author:      Robert Roebling
-// Id:          $Id: cursor.cpp,v 1.36.2.2 2003/09/22 09:42:28 CE Exp $
+// Id:          $Id: cursor.cpp,v 1.36.2.3 2005/06/20 17:42:00 MR Exp $
 // Copyright:   (c) 1998 Robert Roebling
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
-
-
-#ifdef __GNUG__
-#pragma implementation "cursor.h"
-#endif
 
 #include "wx/cursor.h"
 #include "wx/utils.h"

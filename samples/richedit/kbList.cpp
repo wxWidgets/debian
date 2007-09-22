@@ -3,9 +3,12 @@
  *                                                                  *
  * (C) 1998 by Karsten Ballüder (Ballueder@usa.net)                 *
  *                                                                  *
- * $Id: kbList.cpp,v 1.2 2002/01/16 13:39:50 GT Exp $          *
+ * $Id: kbList.cpp,v 1.2.2.1 2005/06/20 17:40:10 MR Exp $          *
  *                                                                  *
  * $Log: kbList.cpp,v $
+ * Revision 1.2.2.1  2005/06/20 17:40:10  MR
+ * Remove #pragma implementation and #pragma interface lines from 2.4 branch to fix issues with gcc.
+ *
  * Revision 1.2  2002/01/16 13:39:50  GT
  * Added checks for wxUSE_IOSTREAMH to determine which iostream(.h) to use
  *
@@ -54,10 +57,6 @@
  * added kbList, adapted MimeTypes for it, more python, new icons
  *
  *******************************************************************/
-
-#ifdef __GNUG__
-#   pragma implementation "kbList.h"
-#endif
 
 #include   "kbList.h"
 

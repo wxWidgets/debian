@@ -4,17 +4,13 @@
 // Author:      Joel Farley, Ove Kåven
 // Modified by: Vadim Zeitlin, Robert Roebling
 // Created:     1998/06/12
-// RCS-ID:      $Id: wxchar.h,v 1.100.2.4 2002/11/17 10:06:08 MBN Exp $
+// RCS-ID:      $Id: wxchar.h,v 1.100.2.5 2005/06/20 17:36:36 MR Exp $
 // Copyright:   (c) 1998-2002 wxWindows dev team
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
 
 #ifndef _WX_WXCHAR_H_
 #define _WX_WXCHAR_H_
-
-#if defined(__GNUG__) && !defined(__APPLE__)
-    #pragma interface "wxchar.h"
-#endif
 
 // ----------------------------------------------------------------------------
 // first deal with Unicode setting: wxUSE_UNICODE should be defined as 0 or 1

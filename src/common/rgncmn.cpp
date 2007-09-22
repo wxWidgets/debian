@@ -4,15 +4,10 @@
 // Author:      Robin Dunn
 // Modified by:
 // Created:     27-Mar-2003
-// RCS-ID:      $Id: rgncmn.cpp,v 1.2.2.2 2003/05/03 17:56:22 RD Exp $
+// RCS-ID:      $Id: rgncmn.cpp,v 1.2.2.3 2005/06/20 17:41:12 MR Exp $
 // Copyright:   (c) Robin Dunn
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
-
-#ifdef __GNUG__
-#pragma implementation "rgncmn.h"
-#endif
-
 
 // For compilers that support precompilation, includes "wx.h".
 #include "wx/wxprec.h"

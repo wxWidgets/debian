@@ -4,17 +4,13 @@
 // Author:      Guilhem Lavaux
 // Modified by: (or rather rewritten by) Vadim Zeitlin
 // Created:     04/22/98
-// RCS-ID:      $Id: tokenzr.h,v 1.13 2002/08/31 11:29:11 GD Exp $
+// RCS-ID:      $Id: tokenzr.h,v 1.13.2.1 2005/06/20 17:36:33 MR Exp $
 // Copyright:   (c) Guilhem Lavaux
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
 
 #ifndef _WX_TOKENZRH
 #define _WX_TOKENZRH
-
-#if defined(__GNUG__) && !defined(__APPLE__)
-    #pragma interface "tokenzr.h"
-#endif
 
 #include "wx/object.h"
 #include "wx/string.h"

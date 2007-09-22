@@ -4,7 +4,7 @@
 // Author:      Robert Roebling
 // Modified by:
 // Created:     28.06.99
-// RCS-ID:      $Id: clipcmn.cpp,v 1.6 1999/12/13 16:16:52 VS Exp $
+// RCS-ID:      $Id: clipcmn.cpp,v 1.6.6.1 2005/06/20 17:40:37 MR Exp $
 // Copyright:   (c) Robert Roebling
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -16,10 +16,6 @@
 // ----------------------------------------------------------------------------
 // headers
 // ----------------------------------------------------------------------------
-
-#ifdef __GNUG__
-    #pragma implementation "clipboardbase.h"
-#endif
 
 // For compilers that support precompilation, includes "wx.h".
 #include "wx/wxprec.h"

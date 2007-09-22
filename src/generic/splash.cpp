@@ -4,14 +4,10 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     28/6/2000
-// RCS-ID:      $Id: splash.cpp,v 1.16.2.1 2003/03/04 05:14:50 RD Exp $
+// RCS-ID:      $Id: splash.cpp,v 1.16.2.2 2005/06/20 17:41:48 MR Exp $
 // Copyright:   (c) Julian Smart
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
-
-#ifdef __GNUG__
-#pragma implementation "splash.h"
-#endif
 
 // For compilers that support precompilation, includes "wx/wx.h".
 #include "wx/wxprec.h"

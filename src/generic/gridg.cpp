@@ -8,15 +8,10 @@
 //              Gerhard Gruber
 //                Added keyboard navigation, client data, other fixes
 // Created:     04/01/98
-// RCS-ID:      $Id: gridg.cpp,v 1.41 2002/09/06 14:42:47 JS Exp $
+// RCS-ID:      $Id: gridg.cpp,v 1.41.2.1 2005/06/20 17:41:40 MR Exp $
 // Copyright:   (c) Julian Smart and Markus Holzem
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
-
-#ifdef __GNUG__
-    #pragma implementation "gridg.h"
-    #pragma interface
-#endif
 
 // For compilers that support precompilation, includes "wx/wx.h".
 #include "wx/wxprec.h"

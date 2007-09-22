@@ -3,16 +3,12 @@
  *                                                                  *
  * (C) 1999-2000 by Karsten Ballüder (ballueder@gmx.net)            *
  *                                                                  *
- * $Id: wxllist.h,v 1.22 2002/03/27 18:44:50 VZ Exp $
+ * $Id: wxllist.h,v 1.22.2.1 2005/06/20 17:40:11 MR Exp $
  *******************************************************************/
 
 
 #ifndef WXLLIST_H
 #define WXLLIST_H
-
-#ifdef __GNUG__
-#   pragma interface "wxllist.h"
-#endif
 
 #include   "kbList.h"
 

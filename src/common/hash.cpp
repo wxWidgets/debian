@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by: VZ at 25.02.00: type safe hashes with WX_DECLARE_HASH()
 // Created:     01/02/97
-// RCS-ID:      $Id: hash.cpp,v 1.24 2002/06/06 16:06:17 JS Exp $
+// RCS-ID:      $Id: hash.cpp,v 1.24.2.1 2005/06/20 17:40:57 MR Exp $
 // Copyright:   (c) Julian Smart and Markus Holzem
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -16,10 +16,6 @@
 // ----------------------------------------------------------------------------
 // headers
 // ----------------------------------------------------------------------------
-
-#ifdef __GNUG__
-#pragma implementation "hash.h"
-#endif
 
 // For compilers that support precompilation, includes "wx.h".
 #include "wx/wxprec.h"

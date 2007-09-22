@@ -5,7 +5,7 @@
 // Author:      Robin Dunn
 //
 // Created:     17-March-2000
-// RCS-ID:      $Id: grid.i,v 1.31.2.11 2003/09/22 22:28:19 RD Exp $
+// RCS-ID:      $Id: grid.i,v 1.31.2.12 2005/05/23 22:29:05 RD Exp $
 // Copyright:   (c) 2000 by Total Control Software
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -941,7 +941,7 @@ public:
 class wxGridCellFloatEditor : public wxGridCellTextEditor
 {
 public:
-    wxGridCellFloatEditor();
+    wxGridCellFloatEditor(int width = -1, int precision = -1);
     %pragma(python) addtomethod = "__init__:self._setOORInfo(self)"
 };
 

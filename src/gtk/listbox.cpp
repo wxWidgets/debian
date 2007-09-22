@@ -2,15 +2,10 @@
 // Name:        listbox.cpp
 // Purpose:
 // Author:      Robert Roebling
-// Id:          $Id: listbox.cpp,v 1.123.2.2 2003/07/07 14:21:56 RR Exp $
+// Id:          $Id: listbox.cpp,v 1.123.2.3 2005/06/20 17:42:06 MR Exp $
 // Copyright:   (c) 1998 Robert Roebling
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
-
-
-#ifdef __GNUG__
-#pragma implementation "listbox.h"
-#endif
 
 #include "wx/listbox.h"
 

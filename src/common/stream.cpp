@@ -5,7 +5,7 @@
 // Modified by: VZ (23.11.00) to fix realloc()ing new[]ed memory,
 //                            general code review
 // Created:     11/07/98
-// RCS-ID:      $Id: stream.cpp,v 1.79.2.5 2002/11/27 03:12:24 RD Exp $
+// RCS-ID:      $Id: stream.cpp,v 1.79.2.6 2005/06/20 17:41:16 MR Exp $
 // Copyright:   (c) Guilhem Lavaux
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -17,10 +17,6 @@
 // ----------------------------------------------------------------------------
 // headers
 // ----------------------------------------------------------------------------
-
-#ifdef __GNUG__
-    #pragma implementation "stream.h"
-#endif
 
 // For compilers that support precompilation, includes "wx.h".
 #include "wx/wxprec.h"

@@ -4,17 +4,13 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     01/02/97
-// RCS-ID:      $Id: timer.h,v 1.11 2000/02/05 01:57:36 VZ Exp $
+// RCS-ID:      $Id: timer.h,v 1.11.6.1 2005/06/20 17:38:07 MR Exp $
 // Copyright:   (c) Julian Smart
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
 
 #ifndef _WX_TIMER_H_
 #define _WX_TIMER_H_
-
-#ifdef __GNUG__
-    #pragma interface "timer.h"
-#endif
 
 class WXDLLEXPORT wxTimer : public wxTimerBase
 {

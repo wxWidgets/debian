@@ -4,14 +4,10 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     12/07/98
-// RCS-ID:      $Id: ogledit.h,v 1.2 2002/09/07 12:12:21 GD Exp $
+// RCS-ID:      $Id: ogledit.h,v 1.2.2.1 2005/06/20 17:34:15 MR Exp $
 // Copyright:   (c) Julian Smart
 // Licence:   	wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
-
-#if defined(__GNUG__) && !defined(__APPLE__)
-// #pragma interface
-#endif
 
 #ifndef _OGLSAMPLE_OGLEDIT_H_
 #define _OGLSAMPLE_OGLEDIT_H_

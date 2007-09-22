@@ -3,14 +3,10 @@
 // Author:      Chris Breeze, Julian Smart
 // Modified by: Klaas Holwerda
 // Created:     01/02/97
-// RCS-ID:      $Id: matrix.cpp,v 1.7 2002/05/03 19:49:20 GD Exp $
+// RCS-ID:      $Id: matrix.cpp,v 1.7.2.1 2005/06/20 17:41:05 MR Exp $
 // Copyright:   (c) Julian Smart and Markus Holzem
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
-
-#ifdef __GNUG__
-#pragma implementation "matrix.h"
-#endif
 
 // Note: this is intended to be used in wxDC at some point to replace
 // the current system of scaling/translation. It is not yet used.

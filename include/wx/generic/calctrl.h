@@ -4,14 +4,10 @@
 // Author:      Vadim Zeitlin
 // Modified by:
 // Created:     29.12.99
-// RCS-ID:      $Id: calctrl.h,v 1.16.2.3 2003/12/11 09:50:37 JS Exp $
+// RCS-ID:      $Id: calctrl.h,v 1.16.2.4 2005/06/20 17:36:46 MR Exp $
 // Copyright:   (c) 1999 Vadim Zeitlin <zeitlin@dptmaths.ens-cachan.fr>
 // Licence:     wxWindows license
 ///////////////////////////////////////////////////////////////////////////////
-
-#if defined(__GNUG__) && !defined(__APPLE__)
-    #pragma interface "calctrl.h"
-#endif
 
 #ifndef _WX_GENERIC_CALCTRL_H
 #define _WX_GENERIC_CALCTRL_H

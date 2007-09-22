@@ -4,17 +4,13 @@
 // Author:      Vadim Zeitlin
 // Modified by:
 // Created:     06.03.98
-// RCS-ID:      $Id: droptgt.h,v 1.9 1999/10/23 23:40:48 VZ Exp $
+// RCS-ID:      $Id: droptgt.h,v 1.9.6.1 2005/06/20 17:38:13 MR Exp $
 // Copyright:   (c) 1998 Vadim Zeitlin <zeitlin@dptmaths.ens-cachan.fr>
 // Licence:     wxWindows licence
 ///////////////////////////////////////////////////////////////////////////////
 
 #ifndef   _WX_OLEDROPTGT_H
 #define   _WX_OLEDROPTGT_H
-
-#ifdef __GNUG__
-#pragma interface "droptgt.h"
-#endif
 
 #if !wxUSE_DRAG_AND_DROP
     #error  "You should #define wxUSE_DRAG_AND_DROP to 1 to compile this file!"

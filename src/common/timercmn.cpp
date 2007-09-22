@@ -8,7 +8,7 @@
 //    Guillermo Rodriguez <guille@iies.es> rewrote from scratch (Dic/99)
 // Modified by:
 // Created:     04/01/98
-// RCS-ID:      $Id: timercmn.cpp,v 1.62.2.5 2003/12/11 09:14:51 JS Exp $
+// RCS-ID:      $Id: timercmn.cpp,v 1.62.2.6 2005/06/20 17:41:19 MR Exp $
 // Copyright:   (c) Julian Smart and Markus Holzem
 //              (c) 1999 Guillermo Rodriguez <guille@iies.es>
 // Licence:     wxWindows license
@@ -21,10 +21,6 @@
 // ----------------------------------------------------------------------------
 // wxWin headers
 // ----------------------------------------------------------------------------
-
-#ifdef __GNUG__
-    #pragma implementation "timerbase.h"
-#endif
 
 // For compilers that support precompilation, includes "wx.h".
 #include "wx/wxprec.h"

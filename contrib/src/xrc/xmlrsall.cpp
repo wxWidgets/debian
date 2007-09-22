@@ -3,16 +3,11 @@
 // Purpose:     wxXmlResource::InitAllHandlers
 // Author:      Vaclav Slavik
 // Created:     2000/03/05
-// RCS-ID:      $Id: xmlrsall.cpp,v 1.4.2.5 2004/11/22 20:19:12 JS Exp $
+// RCS-ID:      $Id: xmlrsall.cpp,v 1.4.2.6 2005/06/20 17:35:20 MR Exp $
 // Copyright:   (c) 2000 Vaclav Slavik
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
  
-// -- Already done in xmlres.cpp
-//#ifdef __GNUG__
-//#pragma implementation "xmlres.h"
-//#endif
-
 // For compilers that support precompilation, includes "wx.h".
 #include "wx/wxprec.h"
 

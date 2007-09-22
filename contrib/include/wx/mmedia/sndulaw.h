@@ -3,15 +3,11 @@
 // Purpose:
 // Date: 08/11/1999
 // Author: Guilhem Lavaux <lavaux@easynet.fr> (C) 1999
-// CVSID: $Id: sndulaw.h,v 1.1.6.1 2004/11/22 20:04:47 JS Exp $
+// CVSID: $Id: sndulaw.h,v 1.1.6.2 2005/06/20 17:33:34 MR Exp $
 // License:    wxWindows license
 // --------------------------------------------------------------------------
 #ifndef _WX_SNDULAW_H
 #define _WX_SNDULAW_H
-
-#ifdef __GNUG__
-#pragma interface "sndulaw.h"
-#endif
 
 #include "wx/defs.h"
 #include "wx/mmedia/sndcodec.h"

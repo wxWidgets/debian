@@ -2,15 +2,10 @@
 // Name:        htmlpars.cpp
 // Purpose:     wxHtmlParser class (generic parser)
 // Author:      Vaclav Slavik
-// RCS-ID:      $Id: htmlpars.cpp,v 1.28.2.8 2003/08/29 09:59:00 VS Exp $
+// RCS-ID:      $Id: htmlpars.cpp,v 1.28.2.9 2005/06/20 17:42:23 MR Exp $
 // Copyright:   (c) 1999 Vaclav Slavik
 // Licence:     wxWindows Licence
 /////////////////////////////////////////////////////////////////////////////
-
-
-#ifdef __GNUG__
-#pragma implementation "htmlpars.h"
-#endif
 
 #include "wx/wxprec.h"
 

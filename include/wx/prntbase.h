@@ -4,17 +4,13 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     01/02/97
-// RCS-ID:      $Id: prntbase.h,v 1.22.2.1 2002/10/29 21:47:18 RR Exp $
+// RCS-ID:      $Id: prntbase.h,v 1.22.2.2 2005/06/20 17:36:24 MR Exp $
 // Copyright:   (c) Julian Smart and Markus Holzem
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
 
 #ifndef _WX_PRNTBASEH__
 #define _WX_PRNTBASEH__
-
-#if defined(__GNUG__) && !defined(__APPLE__)
-    #pragma interface "prntbase.h"
-#endif
 
 #include "wx/defs.h"
 

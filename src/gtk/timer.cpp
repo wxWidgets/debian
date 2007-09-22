@@ -2,15 +2,10 @@
 // Name:        gtk/timer.cpp
 // Purpose:     wxTimer implementation
 // Author:      Robert Roebling
-// Id:          $Id: timer.cpp,v 1.16.2.3 2003/06/19 19:03:47 RR Exp $
+// Id:          $Id: timer.cpp,v 1.16.2.4 2005/06/20 17:42:14 MR Exp $
 // Copyright:   (c) 1998 Robert Roebling
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
-
-
-#ifdef __GNUG__
-#pragma implementation "timer.h"
-#endif
 
 #include "wx/defs.h"
 

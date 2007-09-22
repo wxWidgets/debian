@@ -4,17 +4,13 @@
 // Author:      Guilhem Lavaux
 // Modified by: Vadim Zeitlin to check error codes, added Detach() method
 // Created:     24/06/98
-// RCS-ID:      $Id: process.h,v 1.21 2002/08/31 11:29:11 GD Exp $
+// RCS-ID:      $Id: process.h,v 1.21.2.1 2005/06/20 17:36:25 MR Exp $
 // Copyright:   (c) 1998 Guilhem Lavaux
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
 
 #ifndef _WX_PROCESSH__
 #define _WX_PROCESSH__
-
-#if defined(__GNUG__) && !defined(__APPLE__)
-    #pragma interface "process.h"
-#endif
 
 #include "wx/event.h"
 

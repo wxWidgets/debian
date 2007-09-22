@@ -3,17 +3,13 @@
 // Purpose:
 // Author:      Robert Roebling
 // Created:     01/02/97
-// Id:          $Id: textctrl.h,v 1.42 2002/09/07 12:28:46 GD Exp $
+// Id:          $Id: textctrl.h,v 1.42.2.1 2005/06/20 17:37:06 MR Exp $
 // Copyright:   (c) 1998 Robert Roebling, Julian Smart and Markus Holzem
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
 
 #ifndef __GTKTEXTCTRLH__
 #define __GTKTEXTCTRLH__
-
-#if defined(__GNUG__) && !defined(__APPLE__)
-    #pragma interface "textctrl.h"
-#endif
 
 //-----------------------------------------------------------------------------
 // wxTextCtrl

@@ -5,14 +5,10 @@
 // Author:      Vaclav Slavik, Julian Smart
 // Modified by:
 // Created:     2002-07-09
-// RCS-ID:      $Id: helpview.cpp,v 1.2.2.5 2002/12/09 18:37:20 JS Exp $
+// RCS-ID:      $Id: helpview.cpp,v 1.2.2.6 2005/06/20 17:45:23 MR Exp $
 // Copyright:   (c) 2002 Vaclav Slavik, Julian Smart and others
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
-
-#ifdef __GNUG__
-#pragma implementation "help.cpp"
-#endif
 
 // For compilers that support precompilation, includes "wx/wx.h".
 #include "wx/wxprec.h"

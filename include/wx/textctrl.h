@@ -4,7 +4,7 @@
 // Author:      Vadim Zeitlin
 // Modified by:
 // Created:     13.07.99
-// RCS-ID:      $Id: textctrl.h,v 1.36.2.1 2005/05/04 18:23:31 JS Exp $
+// RCS-ID:      $Id: textctrl.h,v 1.36.2.2 2005/06/20 17:36:32 MR Exp $
 // Copyright:   (c) Vadim Zeitlin
 // Licence:     wxWindows licence
 ///////////////////////////////////////////////////////////////////////////////
@@ -15,10 +15,6 @@
 // ----------------------------------------------------------------------------
 // headers
 // ----------------------------------------------------------------------------
-
-#if defined(__GNUG__) && !defined(__APPLE__)
-    #pragma interface "textctrlbase.h"
-#endif
 
 #include "wx/defs.h"
 

@@ -4,17 +4,13 @@
 // Author:      Julian Smart
 // Modified by: VZ at 25.02.00: type safe hashes with WX_DECLARE_HASH()
 // Created:     01/02/97
-// RCS-ID:      $Id: hash.h,v 1.20.2.1 2005/05/04 18:23:27 JS Exp $
+// RCS-ID:      $Id: hash.h,v 1.20.2.2 2005/06/20 17:36:15 MR Exp $
 // Copyright:   (c) Julian Smart
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
 
 #ifndef _WX_HASH_H__
 #define _WX_HASH_H__
-
-#if defined(__GNUG__) && !defined(__APPLE__)
-#pragma interface "hash.h"
-#endif
 
 #include "wx/list.h"
 #include "wx/dynarray.h"

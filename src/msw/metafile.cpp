@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by: VZ 07.01.00: implemented wxMetaFileDataObject
 // Created:     04/01/98
-// RCS-ID:      $Id: metafile.cpp,v 1.21.2.1 2003/10/22 20:29:22 MBN Exp $
+// RCS-ID:      $Id: metafile.cpp,v 1.21.2.2 2005/06/20 17:44:02 MR Exp $
 // Copyright:   (c) Julian Smart and Markus Holzem
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -16,10 +16,6 @@
 // ----------------------------------------------------------------------------
 // headers
 // ----------------------------------------------------------------------------
-
-#ifdef __GNUG__
-    #pragma implementation "metafile.h"
-#endif
 
 // For compilers that support precompilation, includes "wx.h".
 #include "wx/wxprec.h"

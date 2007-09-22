@@ -4,14 +4,10 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     04/01/98
-// RCS-ID:      $Id: view.h,v 1.5 2002/03/17 14:15:40 VZ Exp $
+// RCS-ID:      $Id: view.h,v 1.5.2.1 2005/06/20 17:39:13 MR Exp $
 // Copyright:   (c) Julian Smart and Markus Holzem
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
-
-#ifdef __GNUG__
-// #pragma interface
-#endif
 
 #ifndef __VIEWSAMPLEH__
 #define __VIEWSAMPLEH__

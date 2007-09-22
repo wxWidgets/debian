@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     08/04/99
-// RCS-ID:      $Id: dragimag.cpp,v 1.21.2.1 2002/09/22 14:32:23 JS Exp $
+// RCS-ID:      $Id: dragimag.cpp,v 1.21.2.2 2005/06/20 17:43:56 MR Exp $
 // Copyright:   (c) Julian Smart
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -16,10 +16,6 @@
 // ----------------------------------------------------------------------------
 // headers
 // ----------------------------------------------------------------------------
-
-#ifdef __GNUG__
-#pragma implementation "dragimag.h"
-#endif
 
 // For compilers that support precompilation, includes "wx.h".
 #include "wx/wxprec.h"

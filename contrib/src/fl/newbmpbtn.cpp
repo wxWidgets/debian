@@ -4,14 +4,10 @@
 // Author:      Aleksandras Gluchovas
 // Modified by:
 // Created:     ??/09/98
-// RCS-ID:      $Id: newbmpbtn.cpp,v 1.8.2.3 2003/04/02 14:14:13 JS Exp $
+// RCS-ID:      $Id: newbmpbtn.cpp,v 1.8.2.4 2005/06/20 17:34:35 MR Exp $
 // Copyright:   (c) Aleksandras Gluchovas
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
-
-#ifdef __GNUG__
-    #pragma implementation "newbmpbtn.h"
-#endif
 
 // For compilers that support precompilation, includes "wx/wx.h".
 #include "wx/wxprec.h"

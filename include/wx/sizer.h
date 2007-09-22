@@ -4,17 +4,13 @@
 // Author:      Robert Roebling and Robin Dunn
 // Modified by: Ron Lee
 // Created:
-// RCS-ID:      $Id: sizer.h,v 1.24.2.2 2002/12/14 09:27:40 JS Exp $
+// RCS-ID:      $Id: sizer.h,v 1.24.2.3 2005/06/20 17:36:28 MR Exp $
 // Copyright:   (c) Robin Dunn, Dirk Holtwick and Robert Roebling
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
 
 #ifndef __WXSIZER_H__
 #define __WXSIZER_H__
-
-#if defined(__GNUG__) && !defined(__APPLE__)
-#pragma interface "sizer.h"
-#endif
 
 #include "wx/defs.h"
 

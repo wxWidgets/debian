@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Created:     01/02/97
 // Modified:
-// Id:          $Id: treebase.cpp,v 1.8 2002/09/05 19:50:40 JS Exp $
+// Id:          $Id: treebase.cpp,v 1.8.2.1 2005/06/20 17:41:20 MR Exp $
 // Copyright:   (c) 1998 Robert Roebling, Julian Smart et al
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -16,10 +16,6 @@
 // -----------------------------------------------------------------------------
 // headers
 // -----------------------------------------------------------------------------
-
-#ifdef __GNUG__
-  #pragma implementation "treebase.h"
-#endif
 
 // For compilers that support precompilation, includes "wx.h".
 #include "wx/wxprec.h"

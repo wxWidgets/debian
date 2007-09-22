@@ -4,17 +4,13 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     04/01/98
-// RCS-ID:      $Id: helpbase.h,v 1.22.2.1 2002/10/29 21:47:16 RR Exp $
+// RCS-ID:      $Id: helpbase.h,v 1.22.2.2 2005/06/20 17:36:16 MR Exp $
 // Copyright:   (c) Julian Smart and Markus Holzem
 // Licence:   	wxWindows license
 /////////////////////////////////////////////////////////////////////////////
 
 #ifndef _WX_HELPBASEH__
 #define _WX_HELPBASEH__
-
-#if defined(__GNUG__) && !defined(__APPLE__)
-#pragma interface "helpbase.h"
-#endif
 
 #include "wx/defs.h"
 

@@ -4,7 +4,7 @@
 // Author:      Vadim Zeitlin
 // Modified by:
 // Created:     26.10.99
-// RCS-ID:      $Id: menucmn.cpp,v 1.18.2.10 2004/10/09 16:55:25 JS Exp $
+// RCS-ID:      $Id: menucmn.cpp,v 1.18.2.11 2005/06/20 17:41:05 MR Exp $
 // Copyright:   (c) wxWindows team
 // Licence:     wxWindows license
 ///////////////////////////////////////////////////////////////////////////////
@@ -16,10 +16,6 @@
 // ----------------------------------------------------------------------------
 // headers
 // ----------------------------------------------------------------------------
-
-#ifdef __GNUG__
-    #pragma implementation "menubase.h"
-#endif
 
 // For compilers that support precompilation, includes "wx.h".
 #include "wx/wxprec.h"

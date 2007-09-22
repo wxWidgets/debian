@@ -4,15 +4,10 @@
 // Author:      Vadim Zeitlin/Julian Smart
 // Modified by:
 // Created:     04/01/98
-// RCS-ID:      $Id: internat.cpp,v 1.24.2.3 2002/11/10 15:01:56 VS Exp $
+// RCS-ID:      $Id: internat.cpp,v 1.24.2.4 2005/06/20 17:39:36 MR Exp $
 // Copyright:   (c) Julian Smart and Markus Holzem
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
-
-#if defined(__GNUG__) && !defined(__APPLE__)
-#pragma implementation
-#pragma interface
-#endif
 
 // For compilers that support precompilation, includes "wx/wx.h".
 #include "wx/wxprec.h"

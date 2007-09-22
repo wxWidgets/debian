@@ -2,17 +2,13 @@
 // Name:        font.h
 // Purpose:
 // Author:      Robert Roebling
-// Id:          $Id: font.h,v 1.22.2.1 2002/10/28 01:51:44 RR Exp $
+// Id:          $Id: font.h,v 1.22.2.2 2005/06/20 17:37:01 MR Exp $
 // Copyright:   (c) 1998 Robert Roebling, Julian Smart and Markus Holzem
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
 
 #ifndef __GTKFONTH__
 #define __GTKFONTH__
-
-#if defined(__GNUG__) && !defined(__APPLE__)
-    #pragma interface
-#endif
 
 #include "wx/hash.h"
 

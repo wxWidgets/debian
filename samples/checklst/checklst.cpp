@@ -4,14 +4,10 @@
 // Author:      Vadim Zeitlin
 // Modified by:
 // Created:     13.11.97
-// RCS-ID:      $Id: checklst.cpp,v 1.19.2.2 2002/12/13 21:38:46 MBN Exp $
+// RCS-ID:      $Id: checklst.cpp,v 1.19.2.3 2005/06/20 17:38:54 MR Exp $
 // Copyright:   (c) 1998 Vadim Zeitlin <zeitlin@dptmaths.ens-cachan.fr>
 // Licence:     wxWindows license
 ///////////////////////////////////////////////////////////////////////////////
-
-#ifdef __GNUG__
-    //#pragma implementation
-#endif
 
 // For compilers that support precompilation, includes "wx.h".
 #include "wx/wxprec.h"

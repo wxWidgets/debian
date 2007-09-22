@@ -4,14 +4,10 @@
 // Author:      Vaclav Slavik
 // Modified by:
 // Created:     2002/02/17
-// RCS-ID:      $Id: mslu.cpp,v 1.3.2.2 2002/11/04 18:52:18 VZ Exp $
+// RCS-ID:      $Id: mslu.cpp,v 1.3.2.3 2005/06/20 17:44:03 MR Exp $
 // Copyright:   (c) 2002 Vaclav Slavik
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
-
-#ifdef __GNUG__
-#pragma implementation
-#endif
 
 // For compilers that support precompilation, includes "wx.h".
 #include "wx/wxprec.h"

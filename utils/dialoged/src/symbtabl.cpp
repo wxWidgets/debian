@@ -4,14 +4,10 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     04/01/98
-// RCS-ID:      $Id: symbtabl.cpp,v 1.10 2001/11/22 22:02:13 GD Exp $
+// RCS-ID:      $Id: symbtabl.cpp,v 1.10.2.1 2005/06/20 17:45:17 MR Exp $
 // Copyright:   (c) Julian Smart
 // Licence:   	wxWindows license
 /////////////////////////////////////////////////////////////////////////////
-
-#ifdef __GNUG__
-#pragma implementation "symbtabl.h"
-#endif
 
 // For compilers that support precompilation, includes "wx/wx.h".
 #include "wx/wxprec.h"

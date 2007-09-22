@@ -4,17 +4,13 @@
 // Author:      Vadim Zeitlin
 // Modified by:
 // Created:     06.03.98
-// RCS-ID:      $Id: dropsrc.h,v 1.15.2.1 2002/12/13 21:36:19 MBN Exp $
+// RCS-ID:      $Id: dropsrc.h,v 1.15.2.2 2005/06/20 17:38:13 MR Exp $
 // Copyright:   (c) 1998 Vadim Zeitlin <zeitlin@dptmaths.ens-cachan.fr>
 // Licence:     wxWindows licence
 ///////////////////////////////////////////////////////////////////////////////
 
 #ifndef   _WX_OLEDROPSRC_H
 #define   _WX_OLEDROPSRC_H
-
-#ifdef __GNUG__
-    #pragma interface
-#endif
 
 #if !wxUSE_DRAG_AND_DROP
   #error  "You should #define wxUSE_DRAG_AND_DROP to 1 to compile this file!"

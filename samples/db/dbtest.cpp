@@ -4,7 +4,7 @@
 // Author:      George Tasker
 // Modified by:
 // Created:     1998
-// RCS-ID:      $Id: dbtest.cpp,v 1.40 2002/08/31 22:36:12 GD Exp $
+// RCS-ID:      $Id: dbtest.cpp,v 1.40.2.1 2005/06/20 17:38:57 MR Exp $
 // Copyright:   (c) 1998 Remstar International, Inc.
 // Licence:     wxWindows licence
 ///////////////////////////////////////////////////////////////////////////////
@@ -20,10 +20,6 @@
 
  *  SYNOPSIS END
  */
-
-#ifdef __GNUG__
-#pragma implementation "dbtest.h"
-#endif
 
 #include  "wx/wxprec.h"
 

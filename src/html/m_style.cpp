@@ -2,17 +2,12 @@
 // Name:        m_style.cpp
 // Purpose:     wxHtml module for parsing <style> tag
 // Author:      Vaclav Slavik
-// RCS-ID:      $Id: m_style.cpp,v 1.2.2.3 2002/11/09 00:07:35 VS Exp $
+// RCS-ID:      $Id: m_style.cpp,v 1.2.2.4 2005/06/20 17:42:27 MR Exp $
 // Copyright:   (c) 2002 Vaclav Slavik
 // Licence:     wxWindows Licence
 /////////////////////////////////////////////////////////////////////////////
 
-#ifdef __GNUG__
-#pragma implementation
-#endif
-
 #include "wx/wxprec.h"
-
 
 #include "wx/defs.h"
 #if wxUSE_HTML && wxUSE_STREAMS

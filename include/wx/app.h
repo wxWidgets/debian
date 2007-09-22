@@ -5,17 +5,13 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     01/02/97
-// RCS-ID:      $Id: app.h,v 1.72.2.1 2003/02/14 17:25:45 SN Exp $
+// RCS-ID:      $Id: app.h,v 1.72.2.2 2005/06/20 17:35:57 MR Exp $
 // Copyright:   (c) Julian Smart and Markus Holzem
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
 
 #ifndef _WX_APP_H_BASE_
 #define _WX_APP_H_BASE_
-
-#if defined(__GNUG__) && !defined(__APPLE__)
-    #pragma interface "appbase.h"
-#endif
 
 // ----------------------------------------------------------------------------
 // headers we have to include here

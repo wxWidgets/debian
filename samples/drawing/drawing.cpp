@@ -4,7 +4,7 @@
 // Author:      Robert Roebling
 // Modified by:
 // Created:     04/01/98
-// RCS-ID:      $Id: drawing.cpp,v 1.65.2.1 2002/12/14 18:19:45 MBN Exp $
+// RCS-ID:      $Id: drawing.cpp,v 1.65.2.2 2005/06/20 17:39:18 MR Exp $
 // Copyright:   (c) Robert Roebling
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -16,11 +16,6 @@
 // ----------------------------------------------------------------------------
 // headers
 // ----------------------------------------------------------------------------
-
-#if defined(__GNUG__) && !defined(__APPLE__)
-    #pragma implementation "drawing.cpp"
-    #pragma interface "drawing.cpp"
-#endif
 
 // For compilers that support precompilation, includes "wx/wx.h".
 #include "wx/wxprec.h"

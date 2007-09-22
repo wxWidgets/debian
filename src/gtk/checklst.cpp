@@ -2,14 +2,10 @@
 // Name:        checklst.cpp
 // Purpose:
 // Author:      Robert Roebling
-// Id:          $Id: checklst.cpp,v 1.19 2002/08/05 17:59:19 RR Exp $
+// Id:          $Id: checklst.cpp,v 1.19.2.1 2005/06/20 17:41:58 MR Exp $
 // Copyright:   (c) 1998 Robert Roebling
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
-
-#ifdef __GNUG__
-#pragma implementation "checklst.h"
-#endif
 
 #include "wx/defs.h"
 

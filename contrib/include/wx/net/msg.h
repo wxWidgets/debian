@@ -4,14 +4,10 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     2001-08-21
-// RCS-ID:      $Id: msg.h,v 1.3 2002/09/07 12:10:20 GD Exp $
+// RCS-ID:      $Id: msg.h,v 1.3.2.1 2005/06/20 17:33:37 MR Exp $
 // Copyright:   (c) Julian Smart
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
-
-#if defined(__GNUG__) && !defined(__APPLE__)
-#pragma interface "msg.h"
-#endif
 
 #ifndef _WX_MSG_H_
 #define _WX_MSG_H_

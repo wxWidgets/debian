@@ -4,15 +4,10 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     12/07/98
-// RCS-ID:      $Id: drawn.cpp,v 1.3.2.3 2002/12/18 06:13:00 RD Exp $
+// RCS-ID:      $Id: drawn.cpp,v 1.3.2.4 2005/06/20 17:34:51 MR Exp $
 // Copyright:   (c) Julian Smart
 // Licence:   	wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
-
-#ifdef __GNUG__
-#pragma implementation "drawn.h"
-#pragma implementation "drawnp.h"
-#endif
 
 // For compilers that support precompilation, includes "wx.h".
 #include "wx/wxprec.h"

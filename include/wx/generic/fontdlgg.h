@@ -4,17 +4,13 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     01/02/97
-// RCS-ID:      $Id: fontdlgg.h,v 1.13.2.1 2005/05/04 18:23:52 JS Exp $
+// RCS-ID:      $Id: fontdlgg.h,v 1.13.2.2 2005/06/20 17:36:47 MR Exp $
 // Copyright:   (c) Julian Smart
 // Licence:   	wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
 
 #ifndef _WX_GENERIC_FONTDLGG_H
 #define _WX_GENERIC_FONTDLGG_H
-
-#if defined(__GNUG__) && !defined(__APPLE__)
-#pragma interface "fontdlgg.h"
-#endif
 
 #include "wx/setup.h"
 #include "wx/gdicmn.h"

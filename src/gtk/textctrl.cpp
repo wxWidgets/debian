@@ -3,14 +3,10 @@
 // Name:        textctrl.cpp
 // Purpose:
 // Author:      Robert Roebling
-// Id:          $Id: textctrl.cpp,v 1.149.2.13 2004/01/05 21:03:38 RR Exp $
+// Id:          $Id: textctrl.cpp,v 1.149.2.14 2005/06/20 17:42:13 MR Exp $
 // Copyright:   (c) 1998 Robert Roebling, Vadim Zeitlin
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
-
-#ifdef __GNUG__
-#pragma implementation "textctrl.h"
-#endif
 
 #include "wx/textctrl.h"
 #include "wx/utils.h"

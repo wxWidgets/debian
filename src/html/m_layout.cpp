@@ -2,16 +2,12 @@
 // Name:        m_layout.cpp
 // Purpose:     wxHtml module for basic paragraphs/layout handling
 // Author:      Vaclav Slavik
-// RCS-ID:      $Id: m_layout.cpp,v 1.16.2.7 2003/06/09 17:06:40 VS Exp $
+// RCS-ID:      $Id: m_layout.cpp,v 1.16.2.8 2005/06/20 17:42:26 MR Exp $
 // Copyright:   (c) 1999 Vaclav Slavik
 // Licence:     wxWindows Licence
 /////////////////////////////////////////////////////////////////////////////
-#ifdef __GNUG__
-#pragma implementation
-#endif
 
 #include "wx/wxprec.h"
-
 
 #include "wx/defs.h"
 #if wxUSE_HTML && wxUSE_STREAMS

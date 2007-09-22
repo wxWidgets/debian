@@ -4,17 +4,13 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     12/07/98
-// RCS-ID:      $Id: shapes.h,v 1.2.2.1 2003/06/05 17:26:32 JS Exp $
+// RCS-ID:      $Id: shapes.h,v 1.2.2.2 2005/06/20 17:34:21 MR Exp $
 // Copyright:   (c) Julian Smart
 // Licence:
 /////////////////////////////////////////////////////////////////////////////
 
 #ifndef _STUDIO_SHAPES_H_
 #define _STUDIO_SHAPES_H_
-
-#if defined(__GNUG__) && !defined(__APPLE__)
-// #pragma interface
-#endif
 
 #include <wx/docview.h>
 #include <wx/string.h>

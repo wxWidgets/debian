@@ -4,17 +4,13 @@
 // Author:      Vadim Zeitlin
 // Modified by:
 // Created:     03.04.98
-// RCS-ID:      $Id: registry.cpp,v 1.45.2.2 2003/01/14 09:02:38 VZ Exp $
+// RCS-ID:      $Id: registry.cpp,v 1.45.2.3 2005/06/20 17:44:07 MR Exp $
 // Copyright:   (c) 1998 Vadim Zeitlin <zeitlin@dptmaths.ens-cachan.fr>
 // Licence:     wxWindows license
 // TODO:        - parsing of registry key names
 //              - support of other (than REG_SZ/REG_DWORD) registry types
 //              - add high level functions (RegisterOleServer, ...)
 ///////////////////////////////////////////////////////////////////////////////
-
-#ifdef __GNUG__
-#pragma implementation "registry.h"
-#endif
 
 // for compilers that support precompilation, includes "wx.h".
 #include  "wx/wxprec.h"

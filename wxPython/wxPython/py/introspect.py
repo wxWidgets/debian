@@ -2,8 +2,8 @@
 things like call tips and command auto completion."""
 
 __author__ = "Patrick K. O'Brien <pobrien@orbtech.com>"
-__cvsid__ = "$Id: introspect.py,v 1.1.2.2 2003/05/19 21:41:24 PKO Exp $"
-__revision__ = "$Revision: 1.1.2.2 $"[11:-2]
+__cvsid__ = "$Id: introspect.py,v 1.1.2.3 2005/05/23 22:30:44 RD Exp $"
+__revision__ = "$Revision: 1.1.2.3 $"[11:-2]
 
 from __future__ import nested_scopes
 
@@ -61,6 +61,10 @@ def getAttributeNames(object, includeMagic=1, includeSingle=1,
     for item in attributes:
         dict[item] = None
     attributes = dict.keys()
+    # new-style swig wrappings can result in non-string attributes
+    # e.g. ITK http://www.itk.org/
+    attributes = [attribute for attribute in attributes \
+                  if type(attribute) == str]
     attributes.sort(lambda x, y: cmp(x.upper(), y.upper()))
     if not includeSingle:
         attributes = filter(lambda item: item[0]!='_' \

@@ -4,7 +4,7 @@
 // Author:      Vadim Zeitlin
 // Modified by:
 // Created:     15.11.99
-// RCS-ID:      $Id: frame.h,v 1.28.2.1 2002/10/02 23:33:01 VZ Exp $
+// RCS-ID:      $Id: frame.h,v 1.28.2.2 2005/06/20 17:36:13 MR Exp $
 // Copyright:   (c) wxWindows team
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -15,10 +15,6 @@
 // ----------------------------------------------------------------------------
 // headers
 // ----------------------------------------------------------------------------
-
-#if defined(__GNUG__) && !defined(__APPLE__)
-    #pragma interface "framebase.h"
-#endif
 
 #include "wx/toplevel.h"      // the base class
 

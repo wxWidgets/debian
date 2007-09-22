@@ -4,14 +4,10 @@
 // Author:      Guilhem Lavaux
 // Modified by:
 // Created:     07/07/1997
-// RCS-ID:      $Id: protocol.cpp,v 1.15.2.1 2002/11/03 13:07:41 RR Exp $
+// RCS-ID:      $Id: protocol.cpp,v 1.15.2.2 2005/06/20 17:41:09 MR Exp $
 // Copyright:   (c) 1997, 1998 Guilhem Lavaux
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
-
-#ifdef __GNUG__
-#pragma implementation "protocol.h"
-#endif
 
 // For compilers that support precompilation, includes "wx.h".
 #include "wx/wxprec.h"

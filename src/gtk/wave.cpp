@@ -4,14 +4,10 @@
 // Author:      Marcel Rasche
 // Modified by:
 // Created:     25/10/98
-// RCS-ID:      $Id: wave.cpp,v 1.7 1999/11/02 15:50:15 VZ Exp $
+// RCS-ID:      $Id: wave.cpp,v 1.7.6.1 2005/06/20 17:42:15 MR Exp $
 // Copyright:   (c) Julian Smart
 // Licence:   	wxWindows license
 /////////////////////////////////////////////////////////////////////////////
-
-#ifdef __GNUG__
-#pragma implementation "wave.h"
-#endif
 
 #include "wx/setup.h"
 

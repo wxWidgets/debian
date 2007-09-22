@@ -3,7 +3,7 @@
 // Purpose:     GTK toolbar
 // Author:      Robert Roebling
 // Modified:    13.12.99 by VZ to derive from wxToolBarBase
-// RCS-ID:      $Id: tbargtk.cpp,v 1.77.2.6 2004/07/03 12:17:07 VS Exp $
+// RCS-ID:      $Id: tbargtk.cpp,v 1.77.2.7 2005/06/20 17:42:13 MR Exp $
 // Copyright:   (c) Robert Roebling
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -15,10 +15,6 @@
 // ----------------------------------------------------------------------------
 // headers
 // ----------------------------------------------------------------------------
-
-#ifdef __GNUG__
-    #pragma implementation "tbargtk.h"
-#endif
 
 #include "wx/toolbar.h"
 

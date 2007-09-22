@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     22/6/2000
-// RCS-ID:      $Id: quantize.h,v 1.5 2002/08/31 11:29:11 GD Exp $
+// RCS-ID:      $Id: quantize.h,v 1.5.2.1 2005/06/20 17:36:26 MR Exp $
 // Copyright:   (c) Julian Smart
 // Licence:
 /////////////////////////////////////////////////////////////////////////////
@@ -16,10 +16,6 @@
  * This file is part of the Independent JPEG Group's software.
  * For conditions of distribution and use, see the accompanying README file.
  */
-
-#if defined(__GNUG__) && !defined(__APPLE__)
-#pragma interface "quantize.h"
-#endif
 
 #ifndef _WX_QUANTIZE_H_
 #define _WX_QUANTIZE_H_

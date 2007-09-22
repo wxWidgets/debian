@@ -3,17 +3,13 @@
 // Purpose:     wxXmlDocument - XML parser & data holder class
 // Author:      Vaclav Slavik
 // Created:     2000/03/05
-// RCS-ID:      $Id: xml.h,v 1.5.2.1 2002/12/21 13:35:48 VS Exp $
+// RCS-ID:      $Id: xml.h,v 1.5.2.2 2005/06/20 17:33:56 MR Exp $
 // Copyright:   (c) 2000 Vaclav Slavik
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
 
 #ifndef _WX_XML_H_
 #define _WX_XML_H_
-
-#if defined(__GNUG__) && !defined(__APPLE__)
-#pragma interface "xml.h"
-#endif
 
 #include "wx/defs.h"
 #include "wx/string.h"

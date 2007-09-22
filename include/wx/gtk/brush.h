@@ -2,7 +2,7 @@
 // Name:        brush.h
 // Purpose:
 // Author:      Robert Roebling
-// Id:          $Id: brush.h,v 1.13 2002/09/07 12:28:46 GD Exp $
+// Id:          $Id: brush.h,v 1.13.2.1 2005/06/20 17:36:56 MR Exp $
 // Copyright:   (c) 1998 Robert Roebling
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -10,10 +10,6 @@
 
 #ifndef __GTKBRUSHH__
 #define __GTKBRUSHH__
-
-#if defined(__GNUG__) && !defined(__APPLE__)
-#pragma interface
-#endif
 
 #include "wx/defs.h"
 #include "wx/object.h"

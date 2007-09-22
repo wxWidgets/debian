@@ -4,15 +4,10 @@
 // Author:      Aleksandras Gluchovas
 // Modified by:
 // Created:     18/10/98
-// RCS-ID:      $Id: garbagec.cpp,v 1.3 2002/01/29 21:27:08 GT Exp $
+// RCS-ID:      $Id: garbagec.cpp,v 1.3.2.1 2005/06/20 17:34:34 MR Exp $
 // Copyright:   (c) Aleksandras Gluchovas
 // Licence:       wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
-
-
-#ifdef __GNUG__
-    #pragma implementation "garbagec.h"
-#endif
 
 // For compilers that support precompilation, includes "wx/wx.h".
 #include "wx/wxprec.h"

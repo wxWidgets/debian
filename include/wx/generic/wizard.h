@@ -4,7 +4,7 @@
 // Author:      Vadim Zeitlin
 // Modified by:
 // Created:     28.09.99
-// RCS-ID:      $Id: wizard.h,v 1.11 2002/08/31 11:29:12 GD Exp $
+// RCS-ID:      $Id: wizard.h,v 1.11.2.1 2005/06/20 17:36:53 MR Exp $
 // Copyright:   (c) 1999 Vadim Zeitlin <zeitlin@dptmaths.ens-cachan.fr>
 // Licence:     wxWindows license
 ///////////////////////////////////////////////////////////////////////////////
@@ -12,10 +12,6 @@
 // ----------------------------------------------------------------------------
 // wxWizard
 // ----------------------------------------------------------------------------
-
-#if defined(__GNUG__) && !defined(__APPLE__)
-    #pragma interface "wizardg.h"
-#endif
 
 class WXDLLEXPORT wxButton;
 class WXDLLEXPORT wxStaticBitmap;

@@ -4,14 +4,10 @@
 // Author:      Vadim Zeitlin
 // Modified by:
 // Created:     29/01/98
-// RCS-ID:      $Id: string.cpp,v 1.164.2.10 2003/09/18 14:10:16 JS Exp $
+// RCS-ID:      $Id: string.cpp,v 1.164.2.11 2005/06/20 17:41:17 MR Exp $
 // Copyright:   (c) 1998 Vadim Zeitlin <zeitlin@dptmaths.ens-cachan.fr>
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
-
-#ifdef __GNUG__
-  #pragma implementation "string.h"
-#endif
 
 /*
  * About ref counting:

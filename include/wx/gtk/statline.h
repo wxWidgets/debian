@@ -2,7 +2,7 @@
 // Name:        statline.h
 // Purpose:
 // Author:      Robert Roebling
-// Id:          $Id: statline.h,v 1.6 2002/09/07 12:28:46 GD Exp $
+// Id:          $Id: statline.h,v 1.6.2.1 2005/06/20 17:37:05 MR Exp $
 // Copyright:   (c) 1998 Robert Roebling
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -10,10 +10,6 @@
 
 #ifndef __GTKSTATICLINEH__
 #define __GTKSTATICLINEH__
-
-#if defined(__GNUG__) && !defined(__APPLE__)
-#pragma interface
-#endif
 
 #include "wx/defs.h"
 

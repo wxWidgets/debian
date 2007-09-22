@@ -3,17 +3,13 @@
 // Purpose:
 // Author:      Robert Roebling
 // Created:
-// Id:          $Id: dialog.h,v 1.29 2002/09/07 12:28:46 GD Exp $
+// Id:          $Id: dialog.h,v 1.29.2.1 2005/06/20 17:37:00 MR Exp $
 // Copyright:   (c) 1998 Robert Roebling
 // Licence:           wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
 
 #ifndef __GTKDIALOGH__
 #define __GTKDIALOGH__
-
-#if defined(__GNUG__) && !defined(__APPLE__)
-#pragma interface
-#endif
 
 #include "wx/defs.h"
 

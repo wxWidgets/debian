@@ -4,17 +4,13 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     01/02/97
-// RCS-ID:      $Id: tabctrl.h,v 1.14.2.3 2002/11/23 00:00:16 JS Exp $
+// RCS-ID:      $Id: tabctrl.h,v 1.14.2.4 2005/06/20 17:38:06 MR Exp $
 // Copyright:   (c) Julian Smart
 // Licence:   	wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
 
 #ifndef _WX_TABCTRL_H_
 #define _WX_TABCTRL_H_
-
-#ifdef __GNUG__
-#pragma interface "tabctrl.h"
-#endif
 
 class wxImageList;
 

@@ -3,14 +3,10 @@
 // Purpose:     wxImage PCX handler
 // Author:      Guillermo Rodriguez Garcia <guille@iies.es>
 // Version:     1.1
-// CVS-ID:      $Id: imagpcx.cpp,v 1.32 2002/05/22 23:14:47 VZ Exp $
+// CVS-ID:      $Id: imagpcx.cpp,v 1.32.2.1 2005/06/20 17:41:01 MR Exp $
 // Copyright:   (c) 1999 Guillermo Rodriguez Garcia
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
-
-#ifdef __GNUG__
-#pragma implementation "imagpcx.h"
-#endif
 
 // For compilers that support precompilation, includes "wx.h".
 #include "wx/wxprec.h"

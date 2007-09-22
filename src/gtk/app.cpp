@@ -2,14 +2,10 @@
 // Name:        app.cpp
 // Purpose:
 // Author:      Robert Roebling
-// Id:          $Id: app.cpp,v 1.172.2.10 2003/09/10 14:32:25 RR Exp $
+// Id:          $Id: app.cpp,v 1.172.2.11 2005/06/20 17:41:56 MR Exp $
 // Copyright:   (c) 1998 Robert Roebling, Julian Smart
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
-
-#ifdef __GNUG__
-    #pragma implementation "app.h"
-#endif
 
 #ifdef __VMS
 #include <vms_jackets.h>

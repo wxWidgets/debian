@@ -2,15 +2,10 @@
 // Name:        menu.cpp
 // Purpose:
 // Author:      Robert Roebling
-// Id:          $Id: menu.cpp,v 1.125.2.23 2004/10/16 19:51:26 VZ Exp $
+// Id:          $Id: menu.cpp,v 1.125.2.24 2005/06/20 17:42:07 MR Exp $
 // Copyright:   (c) 1998 Robert Roebling
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
-
-#ifdef __GNUG__
-#pragma implementation "menu.h"
-#pragma implementation "menuitem.h"
-#endif
 
 #include "wx/log.h"
 #include "wx/intl.h"

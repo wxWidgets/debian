@@ -4,17 +4,13 @@
 // Author:      Aleksandras Gluchovas
 // Modified by:
 // Created:     23/09/98
-// RCS-ID:      $Id: bardragpl.h,v 1.4.2.1 2002/10/24 11:21:32 JS Exp $
+// RCS-ID:      $Id: bardragpl.h,v 1.4.2.2 2005/06/20 17:33:23 MR Exp $
 // Copyright:   (c) Aleksandras Gluchovas
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
 
 #ifndef __BARDRAGPL_G__
 #define __BARDRAGPL_G__
-
-#if defined(__GNUG__) && !defined(__APPLE__)
-    #pragma interface "bardragpl.h"
-#endif
 
 #include "wx/fl/controlbar.h"
 #include "wx/fl/toolwnd.h"

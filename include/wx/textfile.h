@@ -6,17 +6,13 @@
 // Author:      Vadim Zeitlin
 // Modified by:
 // Created:     03.04.98
-// RCS-ID:      $Id: textfile.h,v 1.25.2.1 2002/11/06 13:12:53 VS Exp $
+// RCS-ID:      $Id: textfile.h,v 1.25.2.2 2005/06/20 17:36:32 MR Exp $
 // Copyright:   (c) 1998 Vadim Zeitlin <zeitlin@dptmaths.ens-cachan.fr>
 // Licence:     wxWindows license
 ///////////////////////////////////////////////////////////////////////////////
 
 #ifndef _WX_TEXTFILE_H
 #define _WX_TEXTFILE_H
-
-#if defined(__GNUG__) && !defined(__APPLE__)
-    #pragma interface "textfile.h"
-#endif
 
 #include "wx/defs.h"
 

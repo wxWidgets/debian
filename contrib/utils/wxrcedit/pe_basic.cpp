@@ -1,14 +1,10 @@
 /////////////////////////////////////////////////////////////////////////////
 // Author:      Vaclav Slavik
 // Created:     2000/05/05
-// RCS-ID:      $Id: pe_basic.cpp,v 1.7.2.1 2002/12/29 07:48:09 RL Exp $
+// RCS-ID:      $Id: pe_basic.cpp,v 1.7.2.2 2005/06/20 17:35:30 MR Exp $
 // Copyright:   (c) 2000 Vaclav Slavik
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
-
-#ifdef __GNUG__
-    #pragma implementation "pe_basic.h"
-#endif
 
 // For compilers that support precompilation, includes "wx/wx.h".
 #include "wx/wxprec.h"

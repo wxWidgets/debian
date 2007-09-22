@@ -2,16 +2,10 @@
 // Name:        htmlwin.cpp
 // Purpose:     wxHtmlWindow class for parsing & displaying HTML (implementation)
 // Author:      Vaclav Slavik
-// RCS-ID:      $Id: htmlwin.cpp,v 1.62.2.3 2003/04/09 16:02:31 VS Exp $
+// RCS-ID:      $Id: htmlwin.cpp,v 1.62.2.4 2005/06/20 17:42:24 MR Exp $
 // Copyright:   (c) 1999 Vaclav Slavik
 // Licence:     wxWindows Licence
 /////////////////////////////////////////////////////////////////////////////
-
-
-#ifdef __GNUG__
-#pragma implementation "htmlwin.h"
-#pragma implementation "htmlproc.h"
-#endif
 
 #include "wx/wxprec.h"
 

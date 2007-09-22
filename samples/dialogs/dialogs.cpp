@@ -4,15 +4,10 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     04/01/98
-// RCS-ID:      $Id: dialogs.cpp,v 1.85.2.6 2004/01/21 13:39:00 JS Exp $
+// RCS-ID:      $Id: dialogs.cpp,v 1.85.2.7 2005/06/20 17:39:05 MR Exp $
 // Copyright:   (c) Julian Smart and Markus Holzem
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
-
-#ifdef __GNUG__
-#pragma implementation
-#pragma interface
-#endif
 
 // For compilers that support precompilation, includes "wx/wx.h".
 #include "wx/wxprec.h"

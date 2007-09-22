@@ -4,7 +4,7 @@
 // Author:      Vadim Zeitlin
 // Modified by:
 // Created:     26.07.99
-// RCS-ID:      $Id: choice.h,v 1.19 2002/08/31 11:29:09 GD Exp $
+// RCS-ID:      $Id: choice.h,v 1.19.2.1 2005/06/20 17:35:59 MR Exp $
 // Copyright:   (c) wxWindows team
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -15,10 +15,6 @@
 // ----------------------------------------------------------------------------
 // headers
 // ----------------------------------------------------------------------------
-
-#if defined(__GNUG__) && !defined(__APPLE__)
-    #pragma interface "choicebase.h"
-#endif
 
 #if wxUSE_CHOICE
 

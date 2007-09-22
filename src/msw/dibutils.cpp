@@ -4,14 +4,10 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     04/01/98
-// RCS-ID:      $Id: dibutils.cpp,v 1.21 2002/08/30 20:34:25 JS Exp $
+// RCS-ID:      $Id: dibutils.cpp,v 1.21.2.1 2005/06/20 17:43:55 MR Exp $
 // Copyright:   (c) Microsoft, Julian Smart and Markus Holzem
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
-
-#ifdef __GNUG__
-#pragma implementation "dibutils.h"
-#endif
 
 // For compilers that support precompilation, includes "wx.h".
 #include "wx/wxprec.h"

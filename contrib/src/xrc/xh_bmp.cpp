@@ -3,15 +3,11 @@
 // Purpose:     XRC resource for wxBitmap and wxIcon
 // Author:      Vaclav Slavik
 // Created:     2000/09/09
-// RCS-ID:      $Id: xh_bmp.cpp,v 1.3 2001/12/29 16:14:04 VS Exp $
+// RCS-ID:      $Id: xh_bmp.cpp,v 1.3.2.1 2005/06/20 17:35:10 MR Exp $
 // Copyright:   (c) 2000 Vaclav Slavik
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
  
-#ifdef __GNUG__
-#pragma implementation "xh_bmp.h"
-#endif
-
 // For compilers that support precompilation, includes "wx.h".
 #include "wx/wxprec.h"
 

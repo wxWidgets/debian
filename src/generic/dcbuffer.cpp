@@ -4,15 +4,11 @@
 // Author:      Ron Lee <ron@debian.org>
 // Modified by:
 // Created:     16/03/02
-// RCS-ID:      $Id: dcbuffer.cpp,v 1.2 2002/03/17 07:38:01 RL Exp $
+// RCS-ID:      $Id: dcbuffer.cpp,v 1.2.2.1 2005/06/20 17:41:36 MR Exp $
 // Copyright:   (c) Ron Lee
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
 
-
-#ifdef __GNUG__
-    #pragma implementation "dcbuffer.h"
-#endif
 
 #include "wx/wxprec.h"
 

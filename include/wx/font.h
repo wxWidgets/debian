@@ -4,17 +4,13 @@
 // Author:      Vadim Zeitlin
 // Modified by:
 // Created:     20.09.99
-// RCS-ID:      $Id: font.h,v 1.32.2.2 2002/10/28 01:51:41 RR Exp $
+// RCS-ID:      $Id: font.h,v 1.32.2.3 2005/06/20 17:36:12 MR Exp $
 // Copyright:   (c) wxWindows team
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
 
 #ifndef _WX_FONT_H_BASE_
 #define _WX_FONT_H_BASE_
-
-#if defined(__GNUG__) && !defined(__APPLE__)
-    #pragma interface "fontbase.h"
-#endif
 
 // ----------------------------------------------------------------------------
 // headers

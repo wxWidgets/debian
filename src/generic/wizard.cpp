@@ -7,7 +7,7 @@
 //              2) Added "Help" button handler stub
 //              3) Fixed ShowPage() bug on displaying bitmaps
 // Created:     15.08.99
-// RCS-ID:      $Id: wizard.cpp,v 1.34.2.5 2004/01/06 08:54:57 JS Exp $
+// RCS-ID:      $Id: wizard.cpp,v 1.34.2.6 2005/06/20 17:41:52 MR Exp $
 // Copyright:   (c) 1999 Vadim Zeitlin <zeitlin@dptmaths.ens-cachan.fr>
 // Licence:     wxWindows license
 ///////////////////////////////////////////////////////////////////////////////
@@ -19,10 +19,6 @@
 // ----------------------------------------------------------------------------
 // headers
 // ----------------------------------------------------------------------------
-
-#ifdef __GNUG__
-    #pragma implementation "wizardg.h"
-#endif
 
 // For compilers that support precompilation, includes "wx.h".
 #include "wx/wxprec.h"

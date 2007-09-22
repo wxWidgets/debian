@@ -4,17 +4,13 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     01/02/97
-// RCS-ID:      $Id: bitmap.h,v 1.25 2001/09/30 22:06:38 VZ Exp $
+// RCS-ID:      $Id: bitmap.h,v 1.25.2.1 2005/06/20 17:37:52 MR Exp $
 // Copyright:   (c) Julian Smart
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
 
 #ifndef _WX_BITMAP_H_
 #define _WX_BITMAP_H_
-
-#ifdef __GNUG__
-    #pragma interface "bitmap.h"
-#endif
 
 #include "wx/msw/gdiimage.h"
 #include "wx/gdicmn.h"

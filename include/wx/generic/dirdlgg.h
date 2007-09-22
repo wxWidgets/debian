@@ -7,17 +7,13 @@
 // Author:      Robert Roebling, Harm van der Heijden, Julian Smart et al
 // Modified by:
 // Created:     21/3/2000
-// RCS-ID:      $Id: dirdlgg.h,v 1.23 2002/08/31 11:29:12 GD Exp $
+// RCS-ID:      $Id: dirdlgg.h,v 1.23.2.1 2005/06/20 17:36:47 MR Exp $
 // Copyright:   (c) Robert Roebling, Harm van der Heijden, Julian Smart
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
 
 #ifndef _WX_DIRDLGG_H_
 #define _WX_DIRDLGG_H_
-
-#if defined(__GNUG__) && !defined(__APPLE__)
-#pragma interface "dirdlgg.h"
-#endif
 
 class WXDLLEXPORT wxGenericDirCtrl;
 class WXDLLEXPORT wxTextCtrl;

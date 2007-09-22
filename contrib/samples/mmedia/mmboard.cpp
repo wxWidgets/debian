@@ -4,7 +4,7 @@
 // Author:      Guilhem Lavaux (created from minimal by J. Smart)
 // Modified by:
 // Created:     13/02/2000
-// RCS-ID:      $Id: mmboard.cpp,v 1.6 2002/04/08 10:50:13 JS Exp $
+// RCS-ID:      $Id: mmboard.cpp,v 1.6.2.1 2005/06/20 17:34:12 MR Exp $
 // Copyright:   (c) Guilhem Lavaux
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -16,9 +16,6 @@
 // ----------------------------------------------------------------------------
 // headers
 // ----------------------------------------------------------------------------
-#ifdef __GNUG__
-    #pragma implementation "mmboard.cpp"
-#endif
 
 // For compilers that support precompilation, includes "wx/wx.h".
 #include "wx/wxprec.h"

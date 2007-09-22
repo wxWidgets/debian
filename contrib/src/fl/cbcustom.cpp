@@ -4,14 +4,10 @@
 // Author:      Aleksandras Gluchovas
 // Modified by:
 // Created:     06/09/98
-// RCS-ID:      $Id: cbcustom.cpp,v 1.3.2.1 2003/04/02 14:14:13 JS Exp $
+// RCS-ID:      $Id: cbcustom.cpp,v 1.3.2.2 2005/06/20 17:34:32 MR Exp $
 // Copyright:   (c) Aleksandras Gluchovas
 // Licence:   	wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
-
-#ifdef __GNUG__
-    #pragma implementation "cbcustom.h"
-#endif
 
 // For compilers that support precompilation, includes "wx.h".
 #include "wx/wxprec.h"

@@ -4,17 +4,13 @@
 // Author:      Vadim Zeitlin
 // Modified by:
 // Created:     19.10.99
-// RCS-ID:      $Id: clipbrd.h,v 1.15 2002/08/31 11:29:09 GD Exp $
+// RCS-ID:      $Id: clipbrd.h,v 1.15.2.1 2005/06/20 17:35:59 MR Exp $
 // Copyright:   (c) wxWindows Team
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
 
 #ifndef _WX_CLIPBRD_H_BASE_
 #define _WX_CLIPBRD_H_BASE_
-
-#if defined(__GNUG__) && !defined(__APPLE__)
-    #pragma interface "clipboardbase.h"
-#endif
 
 #include "wx/defs.h"
 

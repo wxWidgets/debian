@@ -5,7 +5,7 @@
 // Modified by: Vadim Zeitlin on 31.08.00: wxScrollHelper allows to implement.
 //              Ron Lee on 10.4.02:  virtual size / auto scrollbars et al.
 // Created:     01/02/97
-// RCS-ID:      $Id: scrlwing.cpp,v 1.28.2.9 2003/08/13 23:55:52 VZ Exp $
+// RCS-ID:      $Id: scrlwing.cpp,v 1.28.2.10 2005/06/20 17:41:47 MR Exp $
 // Copyright:   (c) wxWindows team
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -17,10 +17,6 @@
 // ----------------------------------------------------------------------------
 // headers
 // ----------------------------------------------------------------------------
-
-#ifdef __GNUG__
-    #pragma implementation "genscrolwin.h"
-#endif
 
 #ifdef __VMS
 #define XtDisplay XTDISPLAY

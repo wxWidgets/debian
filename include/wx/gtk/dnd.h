@@ -2,7 +2,7 @@
 // Name:        dnd.h
 // Purpose:     declaration of the wxDropTarget class
 // Author:      Robert Roebling
-// RCS-ID:      $Id: dnd.h,v 1.42 2002/09/07 12:28:46 GD Exp $
+// RCS-ID:      $Id: dnd.h,v 1.42.2.1 2005/06/20 17:37:00 MR Exp $
 // Copyright:   (c) 1998 Vadim Zeitlin, Robert Roebling
 // Licence:     wxWindows license
 ///////////////////////////////////////////////////////////////////////////////
@@ -10,10 +10,6 @@
 
 #ifndef __GTKDNDH__
 #define __GTKDNDH__
-
-#if defined(__GNUG__) && !defined(__APPLE__)
-#pragma interface
-#endif
 
 #if wxUSE_DRAG_AND_DROP
 

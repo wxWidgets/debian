@@ -4,17 +4,13 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     01/02/97
-// RCS-ID:      $Id: combobox.h,v 1.12 2001/06/26 20:59:07 VZ Exp $
+// RCS-ID:      $Id: combobox.h,v 1.12.2.1 2005/06/20 17:37:55 MR Exp $
 // Copyright:   (c) Julian Smart
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
 
 #ifndef _WX_COMBOBOX_H_
 #define _WX_COMBOBOX_H_
-
-#ifdef __GNUG__
-    #pragma interface "combobox.h"
-#endif
 
 #include "wx/choice.h"
 

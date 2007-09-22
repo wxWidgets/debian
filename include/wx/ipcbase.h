@@ -4,17 +4,13 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     4/1/98
-// RCS-ID:      $Id: ipcbase.h,v 1.15 2002/09/03 11:22:55 JS Exp $
+// RCS-ID:      $Id: ipcbase.h,v 1.15.2.1 2005/06/20 17:36:19 MR Exp $
 // Copyright:   (c) Julian Smart and Markus Holzem
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
 
 #ifndef _WX_IPCBASEH__
 #define _WX_IPCBASEH__
-
-#if defined(__GNUG__) && !defined(__APPLE__)
-#pragma interface "ipcbase.h"
-#endif
 
 #include "wx/defs.h"
 #include "wx/object.h"

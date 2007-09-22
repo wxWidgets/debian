@@ -4,14 +4,10 @@
 // Author:      Vadim Zeitlin
 // Modified by:
 // Created:     27.04.98
-// RCS-ID:      $Id: regconf.cpp,v 1.42.2.1 2002/11/09 00:22:19 VS Exp $
+// RCS-ID:      $Id: regconf.cpp,v 1.42.2.2 2005/06/20 17:44:06 MR Exp $
 // Copyright:   (c) 1998 Vadim Zeitlin <zeitlin@dptmaths.ens-cachan.fr>
 // Licence:     wxWindows license
 ///////////////////////////////////////////////////////////////////////////////
-
-#ifdef __GNUG__
-#pragma implementation "regconf.h"
-#endif
 
 // For compilers that support precompilation, includes "wx.h".
 #include "wx/wxprec.h"

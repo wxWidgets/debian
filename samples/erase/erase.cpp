@@ -4,7 +4,7 @@
 // Author:      Robert Roebling
 // Modified by:
 // Created:     04/01/98
-// RCS-ID:      $Id: erase.cpp,v 1.13.2.3 2002/12/14 18:19:47 MBN Exp $
+// RCS-ID:      $Id: erase.cpp,v 1.13.2.4 2005/06/20 17:39:21 MR Exp $
 // Copyright:   (c) Robert Roebling
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -16,11 +16,6 @@
 // ----------------------------------------------------------------------------
 // headers
 // ----------------------------------------------------------------------------
-
-#if defined(__GNUG__) && !defined(__APPLE__)
-    #pragma implementation "erase.cpp"
-    #pragma interface "erase.cpp"
-#endif
 
 // For compilers that support precompilation, includes "wx/wx.h".
 #include "wx/wxprec.h"

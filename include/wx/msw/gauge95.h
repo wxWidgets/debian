@@ -4,17 +4,13 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     01/02/97
-// RCS-ID:      $Id: gauge95.h,v 1.10 2001/06/26 20:59:07 VZ Exp $
+// RCS-ID:      $Id: gauge95.h,v 1.10.2.1 2005/06/20 17:37:58 MR Exp $
 // Copyright:   (c) Julian Smart
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
 
 #ifndef _GAUGE95_H_
 #define _GAUGE95_H_
-
-#ifdef __GNUG__
-#pragma interface "gauge95.h"
-#endif
 
 #if wxUSE_SLIDER
 

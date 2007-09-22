@@ -3,14 +3,10 @@
 // Purpose:     wxBitmapBase
 // Author:      VaclavSlavik
 // Created:     2001/04/11
-// RCS-ID:      $Id: bmpbase.cpp,v 1.5 2002/02/05 00:14:48 VZ Exp $
+// RCS-ID:      $Id: bmpbase.cpp,v 1.5.2.1 2005/06/20 17:40:36 MR Exp $
 // Copyright:   (c) 2001, Vaclav Slavik
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
-
-#ifdef __GNUG__
-#pragma implementation "bitmapbase.h"
-#endif
 
 // For compilers that support precompilation, includes "wx.h".
 #include "wx/wxprec.h"

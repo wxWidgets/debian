@@ -4,17 +4,13 @@
 // Author:      Denis Pershin
 // Modified by:
 // Created:     08/08/98
-// RCS-ID:      $Id: treectrl.h,v 1.13.2.1 2002/12/29 07:48:12 RL Exp $
+// RCS-ID:      $Id: treectrl.h,v 1.13.2.2 2005/06/20 17:37:06 MR Exp $
 // Copyright:   (c) Denis Pershin
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
 
 #ifndef _WX_TREECTRL_H_
 #define _WX_TREECTRL_H_
-
-#if defined(__GNUG__) && !defined(__APPLE__)
-#pragma interface "treectrl.h"
-#endif
 
 #include "wx/textctrl.h"
 #include "wx/imaglist.h"

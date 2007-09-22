@@ -4,17 +4,13 @@
 // Author:      Julian Smart
 // Modified by: VZ 07.01.00: implemented wxMetaFileDataObject
 // Created:     01/02/97
-// RCS-ID:      $Id: metafile.h,v 1.9 2000/01/13 23:39:44 VZ Exp $
+// RCS-ID:      $Id: metafile.h,v 1.9.6.1 2005/06/20 17:38:02 MR Exp $
 // Copyright:   (c) Julian Smart
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
 
 #ifndef _WX_METAFIILE_H_
 #define _WX_METAFIILE_H_
-
-#ifdef __GNUG__
-    #pragma interface "metafile.h"
-#endif
 
 #include "wx/setup.h"
 

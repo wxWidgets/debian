@@ -2,14 +2,10 @@
 // Purpose:     XML resources editor
 // Author:      Vaclav Slavik
 // Created:     2000/05/05
-// RCS-ID:      $Id: nodesdb.h,v 1.2 2002/09/07 12:15:24 GD Exp $
+// RCS-ID:      $Id: nodesdb.h,v 1.2.2.1 2005/06/20 17:35:29 MR Exp $
 // Copyright:   (c) 2000 Vaclav Slavik
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
-
-#if defined(__GNUG__) && !defined(__APPLE__)
-    #pragma interface "nodesdb.h"
-#endif
 
 #ifndef _NODESDB_H_
 #define _NODESDB_H_

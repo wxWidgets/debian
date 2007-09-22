@@ -3,7 +3,7 @@
 // Purpose:     generic implementation of wxAcceleratorTable class
 // Author:      Robert Roebling
 // Modified:    VZ pn 31.05.01: use typed lists, Unicode cleanup, Add/Remove
-// Id:          $Id: accel.cpp,v 1.5.2.1 2003/10/01 17:04:23 VS Exp $
+// Id:          $Id: accel.cpp,v 1.5.2.2 2005/06/20 17:41:34 MR Exp $
 // Copyright:   (c) 1998 Robert Roebling
 // Licence:     wxWindows licence
 ///////////////////////////////////////////////////////////////////////////////
@@ -15,10 +15,6 @@
 // ----------------------------------------------------------------------------
 // headers
 // ----------------------------------------------------------------------------
-
-#ifdef __GNUG__
-    #pragma implementation "accel.h"
-#endif
 
 // For compilers that support precompilation, includes "wx.h".
 #include "wx/wxprec.h"

@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     29/01/98
-// RCS-ID:      $Id: layout.h,v 1.15 2002/09/02 18:10:39 VZ Exp $
+// RCS-ID:      $Id: layout.h,v 1.15.2.1 2005/06/20 17:36:19 MR Exp $
 // Copyright:   (c) 1998 Julian Smart
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -15,10 +15,6 @@
 // ----------------------------------------------------------------------------
 // headers
 // ----------------------------------------------------------------------------
-
-#if defined(__GNUG__) && !defined(__APPLE__)
-    #pragma interface "layout.h"
-#endif
 
 #include "wx/object.h"
 

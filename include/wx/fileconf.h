@@ -4,7 +4,7 @@
 // Author:      Vadim Zeitlin
 // Modified by:
 // Created:     07.04.98 (adapted from appconf.cpp)
-// RCS-ID:      $Id: fileconf.h,v 1.38.2.1 2004/01/16 03:08:34 RN Exp $
+// RCS-ID:      $Id: fileconf.h,v 1.38.2.2 2005/06/20 17:36:11 MR Exp $
 // Copyright:   (c) 1997 Karsten Ballüder   &  Vadim Zeitlin
 //                       Ballueder@usa.net     <zeitlin@dptmaths.ens-cachan.fr>
 // Licence:     wxWindows license
@@ -12,10 +12,6 @@
 
 #ifndef   _FILECONF_H
 #define   _FILECONF_H
-
-#if defined(__GNUG__) && !defined(__APPLE__)
-#pragma interface "fileconf.h"
-#endif
 
 #include "wx/defs.h"
 

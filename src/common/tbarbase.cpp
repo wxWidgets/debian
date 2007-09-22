@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by: VZ at 11.12.99 (wxScrollableToolBar splitted off)
 // Created:     04/01/98
-// RCS-ID:      $Id: tbarbase.cpp,v 1.46.2.3 2004/01/11 17:32:09 JS Exp $
+// RCS-ID:      $Id: tbarbase.cpp,v 1.46.2.4 2005/06/20 17:41:18 MR Exp $
 // Copyright:   (c) Julian Smart and Markus Holzem
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -16,10 +16,6 @@
 // ----------------------------------------------------------------------------
 // headers
 // ----------------------------------------------------------------------------
-
-#ifdef __GNUG__
-    #pragma implementation "tbarbase.h"
-#endif
 
 // For compilers that support precompilation, includes "wx.h".
 #include "wx/wxprec.h"

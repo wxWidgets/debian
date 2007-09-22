@@ -4,14 +4,10 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     04/01/98
-// RCS-ID:      $Id: tabctrl.cpp,v 1.21.2.6 2005/04/23 19:06:13 JS Exp $
+// RCS-ID:      $Id: tabctrl.cpp,v 1.21.2.7 2005/06/20 17:44:09 MR Exp $
 // Copyright:   (c) Julian Smart
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
-
-#ifdef __GNUG__
-#pragma implementation "tabctrl.h"
-#endif
 
 // For compilers that support precompilation, includes "wx.h".
 #include "wx/wxprec.h"

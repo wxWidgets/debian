@@ -6,17 +6,13 @@
 //                Added edit in place facility, 20 April 1999
 //                Added cursor key control, 29 Jun 1999
 // Created:     01/02/97
-// RCS-ID:      $Id: gridg.h,v 1.21.2.1 2005/05/04 18:23:52 JS Exp $
+// RCS-ID:      $Id: gridg.h,v 1.21.2.2 2005/06/20 17:36:48 MR Exp $
 // Copyright:   (c) Julian Smart
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
 
 #ifndef __GRIDH_G__
 #define __GRIDH_G__
-
-#if defined(__GNUG__) && !defined(__APPLE__)
-#pragma interface "gridg.h"
-#endif
 
 #include "wx/defs.h"
 

@@ -4,17 +4,13 @@
 // Author:      Vadim Zeitlin
 // Modified by:
 // Created:     14.07.99
-// RCS-ID:      $Id: ffile.h,v 1.7 2002/08/31 11:29:10 GD Exp $
+// RCS-ID:      $Id: ffile.h,v 1.7.2.1 2005/06/20 17:36:10 MR Exp $
 // Copyright:   (c) 1998 Vadim Zeitlin <zeitlin@dptmaths.ens-cachan.fr>
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
 
 #ifndef   _WX_FFILE_H_
 #define   _WX_FFILE_H_
-
-#if defined(__GNUG__) && !defined(__APPLE__)
-    #pragma interface "ffile.h"
-#endif
 
 #include "wx/defs.h"        // for wxUSE_FFILE
 

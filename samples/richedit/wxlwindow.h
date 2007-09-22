@@ -3,14 +3,10 @@
  *                                                                  *
  * (C) 1998-2000 by Karsten Ballüder (ballueder@gmx.net)            *
  *                                                                  *
- * $Id: wxlwindow.h,v 1.17 2000/07/15 19:50:21 cvsuser Exp $
+ * $Id: wxlwindow.h,v 1.17.4.1 2005/06/20 17:40:13 MR Exp $
  *******************************************************************/
 #ifndef WXLWINDOW_H
 #define WXLWINDOW_H
-
-#ifdef __GNUG__
-#   pragma interface "wxlwindow.h"
-#endif
 
 #ifndef USE_PCH
 #  include   <wx/wx.h>

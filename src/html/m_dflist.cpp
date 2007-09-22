@@ -2,14 +2,10 @@
 // Name:        m_dflist.cpp
 // Purpose:     wxHtml module for definition lists (DL,DT,DD)
 // Author:      Vaclav Slavik
-// RCS-ID:      $Id: m_dflist.cpp,v 1.6.2.3 2002/11/09 00:07:31 VS Exp $
+// RCS-ID:      $Id: m_dflist.cpp,v 1.6.2.4 2005/06/20 17:42:25 MR Exp $
 // Copyright:   (c) 1999 Vaclav Slavik
 // Licence:     wxWindows Licence
 /////////////////////////////////////////////////////////////////////////////
-
-#ifdef __GNUG__
-#pragma implementation
-#endif
 
 #include "wx/wxprec.h"
 

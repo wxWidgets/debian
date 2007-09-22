@@ -4,17 +4,13 @@
 //! Author:      Chris Breeze, Julian Smart
 // Modified by:  Klaas Holwerda
 // Created:     01/02/97
-// RCS-ID:      $Id: matrix.h,v 1.7 2002/08/31 11:29:10 GD Exp $
+// RCS-ID:      $Id: matrix.h,v 1.7.2.1 2005/06/20 17:36:21 MR Exp $
 // Copyright:   (c) Julian Smart and Markus Holzem
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
 
 #ifndef _WX_MATRIXH__
 #define _WX_MATRIXH__
-
-#if defined(__GNUG__) && !defined(__APPLE__)
-#pragma interface "matrix.h"
-#endif
 
 //! headerfiles="matrix.h wx/object.h"
 #include "wx/object.h"

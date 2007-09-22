@@ -4,7 +4,7 @@
 // Author:      Vadim Zeitlin
 // Modified by:
 // Created:     23.07.99
-// RCS-ID:      $Id: numdlgg.cpp,v 1.20 2001/06/26 20:59:13 VZ Exp $
+// RCS-ID:      $Id: numdlgg.cpp,v 1.20.2.1 2005/06/20 17:41:44 MR Exp $
 // Copyright:   (c) Vadim Zeitlin
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -16,10 +16,6 @@
 // ----------------------------------------------------------------------------
 // headers
 // ----------------------------------------------------------------------------
-
-#ifdef __GNUG__
-    #pragma implementation "numdlgg.cpp"
-#endif
 
 // For compilers that support precompilation, includes "wx.h".
 #include "wx/wxprec.h"

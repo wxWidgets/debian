@@ -3,17 +3,13 @@
 // Purpose:     wxSpinCtrl class
 // Author:      Robert Roebling
 // Modified by:
-// RCS-ID:      $Id: spinctrl.h,v 1.8 2002/09/07 12:28:46 GD Exp $
+// RCS-ID:      $Id: spinctrl.h,v 1.8.2.1 2005/06/20 17:37:05 MR Exp $
 // Copyright:   (c) Robert Roebling
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
 
 #ifndef __GTKSPINCTRLH__
 #define __GTKSPINCTRLH__
-
-#if defined(__GNUG__) && !defined(__APPLE__)
-#pragma interface
-#endif
 
 #include "wx/defs.h"
 

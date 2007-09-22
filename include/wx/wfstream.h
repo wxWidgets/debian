@@ -4,17 +4,13 @@
 // Author:      Guilhem Lavaux
 // Modified by:
 // Created:     11/07/98
-// RCS-ID:      $Id: wfstream.h,v 1.11 2002/08/31 11:29:11 GD Exp $
+// RCS-ID:      $Id: wfstream.h,v 1.11.2.1 2005/06/20 17:36:35 MR Exp $
 // Copyright:   (c) Guilhem Lavaux
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
 
 #ifndef _WX_WXFSTREAM_H__
 #define _WX_WXFSTREAM_H__
-
-#if defined(__GNUG__) && !defined(__APPLE__)
-#pragma interface "wfstream.h"
-#endif
 
 #include "wx/defs.h"
 

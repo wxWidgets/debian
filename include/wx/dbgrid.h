@@ -4,7 +4,7 @@
 // Author:      Roger Gammans, Paul Gammans
 // Modified by:
 // Created:
-// RCS-ID:      $Id: dbgrid.h,v 1.7 2002/08/31 11:29:09 GD Exp $
+// RCS-ID:      $Id: dbgrid.h,v 1.7.2.1 2005/06/20 17:36:04 MR Exp $
 // Copyright:   (c) 1999 The Computer Surgery (roger@computer-surgery.co.uk)
 // Licence:     wxWindows licence
 ///////////////////////////////////////////////////////////////////////////////
@@ -13,10 +13,6 @@
 
 #ifndef _WX_GENERIC_DBGRID_H_
 #define _WX_GENERIC_DBGRID_H_
-
-#if defined(__GNUG__) && !defined(__APPLE__)
-    #pragma interface "dbgrid.h"
-#endif
 
 #if wxUSE_ODBC
 #if wxUSE_NEW_GRID

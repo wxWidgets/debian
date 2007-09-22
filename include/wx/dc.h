@@ -4,17 +4,13 @@
 // Author:      Vadim Zeitlin
 // Modified by:
 // Created:     05/25/99
-// RCS-ID:      $Id: dc.h,v 1.40 2002/08/31 11:29:09 GD Exp $
+// RCS-ID:      $Id: dc.h,v 1.40.2.1 2005/06/20 17:36:04 MR Exp $
 // Copyright:   (c) wxWindows team
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
 
 #ifndef _WX_DC_H_BASE_
 #define _WX_DC_H_BASE_
-
-#if defined(__GNUG__) && !defined(__APPLE__)
-    #pragma interface "dcbase.h"
-#endif
 
 // ----------------------------------------------------------------------------
 // headers which we must include here

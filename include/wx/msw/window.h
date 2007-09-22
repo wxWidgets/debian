@@ -5,7 +5,7 @@
 // Modified by: Vadim Zeitlin on 13.05.99: complete refont of message handling,
 //              elimination of Default(), ...
 // Created:     01/02/97
-// RCS-ID:      $Id: window.h,v 1.93.2.1 2003/05/07 08:36:40 JS Exp $
+// RCS-ID:      $Id: window.h,v 1.93.2.2 2005/06/20 17:38:08 MR Exp $
 // Copyright:   (c) Julian Smart and Markus Holzem
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -16,10 +16,6 @@
 // ---------------------------------------------------------------------------
 // headers
 // ---------------------------------------------------------------------------
-
-#ifdef __GNUG__
-    #pragma interface "window.h"
-#endif
 
 // [at least] some version of Windows send extra mouse move messages after
 // a mouse click or a key press - to temporarily fix this problem, set the

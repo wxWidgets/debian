@@ -3,15 +3,11 @@
 // Purpose:     XRC resource for wxScrollBar
 // Author:      Brian Gavin
 // Created:     2000/09/09
-// RCS-ID:      $Id: xh_scrol.cpp,v 1.4.2.1 2003/12/12 20:41:58 VS Exp $
+// RCS-ID:      $Id: xh_scrol.cpp,v 1.4.2.2 2005/06/20 17:35:15 MR Exp $
 // Copyright:   (c) 2000 Brian Gavin
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
  
-#ifdef __GNUG__
-#pragma implementation "xh_scrol.h"
-#endif
-
 // For compilers that support precompilation, includes "wx.h".
 #include "wx/wxprec.h"
 

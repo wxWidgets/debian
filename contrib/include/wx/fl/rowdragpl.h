@@ -4,17 +4,13 @@
 // Author:      Aleksandras Gluchovas
 // Modified by:
 // Created:     06/10/98
-// RCS-ID:      $Id: rowdragpl.h,v 1.3.2.1 2002/10/24 11:21:35 JS Exp $
+// RCS-ID:      $Id: rowdragpl.h,v 1.3.2.2 2005/06/20 17:33:26 MR Exp $
 // Copyright:   (c) Aleksandras Gluchovas
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
 
 #ifndef __ROWDRAGPL_G__
 #define __ROWDRAGPL_G__
-
-#if defined(__GNUG__) && !defined(__APPLE__)
-    #pragma interface "rowdragpl.h"
-#endif
 
 #include "wx/fl/controlbar.h"
 

@@ -4,7 +4,7 @@
 // Author:      Guilhem Lavaux
 // Modified by: Vadim Zeitlin (almost full rewrite)
 // Created:     04/22/98
-// RCS-ID:      $Id: tokenzr.cpp,v 1.14 2001/06/26 20:59:10 VZ Exp $
+// RCS-ID:      $Id: tokenzr.cpp,v 1.14.2.1 2005/06/20 17:41:20 MR Exp $
 // Copyright:   (c) Guilhem Lavaux
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -16,10 +16,6 @@
 // ----------------------------------------------------------------------------
 // headers
 // ----------------------------------------------------------------------------
-
-#ifdef __GNUG__
-    #pragma implementation "tokenzr.h"
-#endif
 
 // For compilers that support precompilation, includes "wx.h".
 #include "wx/wxprec.h"

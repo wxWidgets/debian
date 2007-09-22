@@ -4,14 +4,10 @@
 // Author:      Robin Dunn
 // Modified by:
 // Created:     9-Oct-2001
-// RCS-ID:      $Id: clntdata.cpp,v 1.3 2001/10/21 03:56:07 RD Exp $
+// RCS-ID:      $Id: clntdata.cpp,v 1.3.2.1 2005/06/20 17:40:37 MR Exp $
 // Copyright:   (c) wxWindows team
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
-
-#ifdef __GNUG__
-    #pragma implementation "clntdata.h"
-#endif
 
 // For compilers that support precompilation, includes "wx.h".
 #include "wx/wxprec.h"

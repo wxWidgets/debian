@@ -4,17 +4,13 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     01/02/97
-// RCS-ID:      $Id: dcscreen.h,v 1.7 2002/03/05 00:52:00 VZ Exp $
+// RCS-ID:      $Id: dcscreen.h,v 1.7.2.1 2005/06/20 17:37:56 MR Exp $
 // Copyright:   (c) Julian Smart
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
 
 #ifndef _WX_DCSCREEN_H_
 #define _WX_DCSCREEN_H_
-
-#ifdef __GNUG__
-#pragma interface "dcscreen.h"
-#endif
 
 #include "wx/dcclient.h"
 

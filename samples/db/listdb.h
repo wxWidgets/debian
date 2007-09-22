@@ -4,14 +4,10 @@
 // Author:      George Tasker
 // Modified by:
 // Created:     1996
-// RCS-ID:      $Id: listdb.h,v 1.12 2002/08/31 22:36:13 GD Exp $
+// RCS-ID:      $Id: listdb.h,v 1.12.2.1 2005/06/20 17:38:59 MR Exp $
 // Copyright:   (c) 1996 Remstar International, Inc.
 // Licence:     wxWindows licence
 ///////////////////////////////////////////////////////////////////////////////
-
-#ifdef __GNUG__
-#pragma interface "listdb.h"
-#endif
 
 /*
     Contains dialog class for creating a data table lookup listbox

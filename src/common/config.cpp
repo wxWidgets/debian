@@ -4,7 +4,7 @@
 // Author:      Vadim Zeitlin
 // Modified by:
 // Created:     07.04.98
-// RCS-ID:      $Id: config.cpp,v 1.54.2.3 2002/11/04 19:09:27 VZ Exp $
+// RCS-ID:      $Id: config.cpp,v 1.54.2.4 2005/06/20 17:40:39 MR Exp $
 // Copyright:   (c) 1997 Karsten Ballüder   Ballueder@usa.net
 //                       Vadim Zeitlin      <zeitlin@dptmaths.ens-cachan.fr>
 // Licence:     wxWindows license
@@ -13,9 +13,6 @@
 // ----------------------------------------------------------------------------
 // headers
 // ----------------------------------------------------------------------------
-#ifdef __GNUG__
-    #pragma implementation "confbase.h"
-#endif
 
 #include "wx/wxprec.h"
 

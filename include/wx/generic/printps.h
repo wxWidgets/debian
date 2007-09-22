@@ -5,17 +5,13 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     01/02/97
-// RCS-ID:      $Id: printps.h,v 1.8.2.1 2005/05/04 18:23:53 JS Exp $
+// RCS-ID:      $Id: printps.h,v 1.8.2.2 2005/06/20 17:36:50 MR Exp $
 // Copyright:   (c) Julian Smart
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
 
 #ifndef __PRINTPSH__
 #define __PRINTPSH__
-
-#if defined(__GNUG__) && !defined(__APPLE__)
-    #pragma interface "printps.h"
-#endif
 
 #include "wx/prntbase.h"
 

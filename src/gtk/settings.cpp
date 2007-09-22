@@ -2,15 +2,10 @@
 // Name:        gtk/settings.cpp
 // Purpose:
 // Author:      Robert Roebling
-// Id:          $Id: settings.cpp,v 1.38.2.5 2004/10/16 19:51:28 VZ Exp $
+// Id:          $Id: settings.cpp,v 1.38.2.6 2005/06/20 17:42:10 MR Exp $
 // Copyright:   (c) 1998 Robert Roebling
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
-
-
-#ifdef __GNUG__
-#pragma implementation "settings.h"
-#endif
 
 #include "wx/settings.h"
 #include "wx/debug.h"

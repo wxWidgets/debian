@@ -4,14 +4,10 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     12/07/98
-// RCS-ID:      $Id: symbols.cpp,v 1.4 2002/01/08 23:27:53 VS Exp $
+// RCS-ID:      $Id: symbols.cpp,v 1.4.2.1 2005/06/20 17:34:21 MR Exp $
 // Copyright:   (c) Julian Smart
 // Licence:
 /////////////////////////////////////////////////////////////////////////////
-
-#ifdef __GNUG__
-// #pragma implementation
-#endif
 
 // For compilers that support precompilation, includes "wx.h".
 #include "wx/wxprec.h"

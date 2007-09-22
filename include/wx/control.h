@@ -4,7 +4,7 @@
 // Author:      Vadim Zeitlin
 // Modified by:
 // Created:     26.07.99
-// RCS-ID:      $Id: control.h,v 1.21 2002/08/31 11:29:09 GD Exp $
+// RCS-ID:      $Id: control.h,v 1.21.2.1 2005/06/20 17:36:01 MR Exp $
 // Copyright:   (c) wxWindows team
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -15,10 +15,6 @@
 // ----------------------------------------------------------------------------
 // headers
 // ----------------------------------------------------------------------------
-
-#if defined(__GNUG__) && !defined(__APPLE__)
-    #pragma interface "controlbase.h"
-#endif
 
 #if wxUSE_CONTROLS
 

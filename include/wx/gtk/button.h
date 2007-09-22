@@ -2,17 +2,13 @@
 // Name:        wx/gtk/button.h
 // Purpose:
 // Author:      Robert Roebling
-// Id:          $Id: button.h,v 1.21.2.1 2002/11/04 20:13:21 RR Exp $
+// Id:          $Id: button.h,v 1.21.2.2 2005/06/20 17:36:56 MR Exp $
 // Copyright:   (c) 1998 Robert Roebling
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
 
 #ifndef __GTKBUTTONH__
 #define __GTKBUTTONH__
-
-#if defined(__GNUG__) && !defined(__APPLE__)
-#pragma interface
-#endif
 
 #include "wx/defs.h"
 #include "wx/object.h"

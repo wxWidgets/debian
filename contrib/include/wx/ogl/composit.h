@@ -4,17 +4,13 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     12/07/98
-// RCS-ID:      $Id: composit.h,v 1.2.2.1 2002/11/19 02:13:32 RD Exp $
+// RCS-ID:      $Id: composit.h,v 1.2.2.2 2005/06/20 17:33:40 MR Exp $
 // Copyright:   (c) Julian Smart
 // Licence:   	wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
 
 #ifndef _OGL_COMPOSIT_H_
 #define _OGL_COMPOSIT_H_
-
-#if defined(__GNUG__) && !defined(__APPLE__)
-#pragma interface "composit.h"
-#endif
 
 class wxDivisionShape;
 class wxOGLConstraint;

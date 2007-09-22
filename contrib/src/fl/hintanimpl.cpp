@@ -4,14 +4,10 @@
 // Author:      Aleksandras Gluchovas
 // Modified by:
 // Created:     9/11/98
-// RCS-ID:      $Id: hintanimpl.cpp,v 1.2 2002/01/21 22:34:42 JS Exp $
+// RCS-ID:      $Id: hintanimpl.cpp,v 1.2.2.1 2005/06/20 17:34:35 MR Exp $
 // Copyright:   (c) Aleksandras Gluchovas
 // Licence:       wxWindows license
 /////////////////////////////////////////////////////////////////////////////
-
-#ifdef __GNUG__
-    #pragma implementation "hintanimpl.h"
-#endif
 
 // For compilers that support precompilation, includes "wx.h".
 #include "wx/wxprec.h"

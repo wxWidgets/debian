@@ -4,14 +4,10 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     04/01/98
-// RCS-ID:      $Id: typetest.h,v 1.13 2002/08/31 22:31:03 GD Exp $
+// RCS-ID:      $Id: typetest.h,v 1.13.2.1 2005/06/20 17:40:24 MR Exp $
 // Copyright:   (c) Julian Smart
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
-
-#if defined(__GNUG__) && !defined(__APPLE__)
-#pragma interface "typetest.h"
-#endif
 
 #ifndef _WX_TYPETEST_H_
 #define _WX_TYPETEST_H_

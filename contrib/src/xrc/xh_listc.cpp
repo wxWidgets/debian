@@ -3,15 +3,11 @@
 // Purpose:     XRC resource for wxListCtrl
 // Author:      Brian Gavin
 // Created:     2000/09/09
-// RCS-ID:      $Id: xh_listc.cpp,v 1.4.2.1 2003/07/05 20:39:01 VS Exp $
+// RCS-ID:      $Id: xh_listc.cpp,v 1.4.2.2 2005/06/20 17:35:13 MR Exp $
 // Copyright:   (c) 2000 Brian Gavin
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
  
-#ifdef __GNUG__
-#pragma implementation "xh_listc.h"
-#endif
-
 // For compilers that support precompilation, includes "wx.h".
 #include "wx/wxprec.h"
 

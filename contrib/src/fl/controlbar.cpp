@@ -4,14 +4,10 @@
 // Author:      Aleksandras Gluchovas
 // Modified by:
 // Created:     06/09/98
-// RCS-ID:      $Id: controlbar.cpp,v 1.12.2.2 2003/04/02 14:14:13 JS Exp $
+// RCS-ID:      $Id: controlbar.cpp,v 1.12.2.3 2005/06/20 17:34:33 MR Exp $
 // Copyright:   (c) Aleksandras Gluchovas
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
-
-#ifdef __GNUG__
-    #pragma implementation "controlbar.h"
-#endif
 
 // For compilers that support precompilation, includes "wx.h".
 #include "wx/wxprec.h"

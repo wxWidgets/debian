@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     04/01/98
-// RCS-ID:      $Id: propsize.cpp,v 1.6.2.1 2002/12/15 17:25:27 MBN Exp $
+// RCS-ID:      $Id: propsize.cpp,v 1.6.2.2 2005/06/20 17:40:06 MR Exp $
 // Copyright:   (c) Julian Smart
 // License:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -16,10 +16,6 @@
 // ----------------------------------------------------------------------------
 // headers
 // ----------------------------------------------------------------------------
-#if defined(__GNUG__) && !defined(__APPLE__)
-    #pragma implementation "propsize.cpp"
-    #pragma interface "propsize.cpp"
-#endif
 
 // For compilers that support precompilation, includes "wx/wx.h".
 #include "wx/wxprec.h"

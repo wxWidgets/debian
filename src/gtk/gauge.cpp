@@ -2,14 +2,10 @@
 // Name:        gauge.cpp
 // Purpose:
 // Author:      Robert Roebling
-// Id:          $Id: gauge.cpp,v 1.19.2.1 2002/10/15 13:25:36 VZ Exp $
+// Id:          $Id: gauge.cpp,v 1.19.2.2 2005/06/20 17:42:05 MR Exp $
 // Copyright:   (c) 1998 Robert Roebling
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
-
-#ifdef __GNUG__
-#pragma implementation "gauge.h"
-#endif
 
 #include "wx/gauge.h"
 

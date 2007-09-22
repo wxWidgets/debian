@@ -2,14 +2,10 @@
 // Name:        dataobj.cpp
 // Purpose:     wxDataObject class
 // Author:      Robert Roebling
-// Id:          $Id: dataobj.cpp,v 1.37.2.2 2003/09/09 18:02:27 RR Exp $
+// Id:          $Id: dataobj.cpp,v 1.37.2.3 2005/06/20 17:42:01 MR Exp $
 // Copyright:   (c) 1998 Robert Roebling
 // Licence:     wxWindows licence
 ///////////////////////////////////////////////////////////////////////////////
-
-#ifdef __GNUG__
-    #pragma implementation "dataobj.h"
-#endif
 
 #include "wx/dataobj.h"
 #include "wx/app.h"

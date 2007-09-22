@@ -4,17 +4,13 @@
 // Author:      Robert Roebling
 // Modified by:
 // Created:     01/02/97
-// RCS-ID:      $Id: scrolwin.h,v 1.13 2002/09/07 12:28:46 GD Exp $
+// RCS-ID:      $Id: scrolwin.h,v 1.13.2.1 2005/06/20 17:37:05 MR Exp $
 // Copyright:   (c) Robert Roebling
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
 
 #ifndef _WX_GTK_SCROLLWIN_H_
 #define _WX_GTK_SCROLLWIN_H_
-
-#if defined(__GNUG__) && !defined(__APPLE__)
-    #pragma interface "scrolwin.h"
-#endif
 
 // ----------------------------------------------------------------------------
 // headers and constants

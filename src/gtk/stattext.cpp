@@ -2,15 +2,10 @@
 // Name:        stattext.cpp
 // Purpose:
 // Author:      Robert Roebling
-// Id:          $Id: stattext.cpp,v 1.39 2002/08/17 17:35:36 RR Exp $
+// Id:          $Id: stattext.cpp,v 1.39.2.1 2005/06/20 17:42:12 MR Exp $
 // Copyright:   (c) 1998 Robert Roebling
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
-
-
-#ifdef __GNUG__
-    #pragma implementation "stattext.h"
-#endif
 
 #include "wx/defs.h"
 

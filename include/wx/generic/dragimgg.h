@@ -5,17 +5,13 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     29/2/2000
-// RCS-ID:      $Id: dragimgg.h,v 1.5.2.1 2002/11/13 08:32:19 RL Exp $
+// RCS-ID:      $Id: dragimgg.h,v 1.5.2.2 2005/06/20 17:36:47 MR Exp $
 // Copyright:   (c) Julian Smart
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
 
 #ifndef _WX_DRAGIMGG_H_
 #define _WX_DRAGIMGG_H_
-
-#if defined(__GNUG__) && !defined(__APPLE__)
-#pragma interface "dragimgg.h"
-#endif
 
 #include "wx/bitmap.h"
 #include "wx/icon.h"

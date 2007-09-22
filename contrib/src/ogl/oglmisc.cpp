@@ -4,14 +4,10 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     12/07/98
-// RCS-ID:      $Id: oglmisc.cpp,v 1.3.2.2 2003/07/22 16:39:31 JS Exp $
+// RCS-ID:      $Id: oglmisc.cpp,v 1.3.2.3 2005/06/20 17:34:53 MR Exp $
 // Copyright:   (c) Julian Smart
 // Licence:   	wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
-
-#ifdef __GNUG__
-#pragma implementation "misc.h"
-#endif
 
 // For compilers that support precompilation, includes "wx.h".
 #include "wx/wxprec.h"

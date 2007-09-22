@@ -4,15 +4,10 @@
 // Author:      Brian Paul (original gltk version), Wolfram Gloger
 // Modified by: Julian Smart
 // Created:     04/01/98
-// RCS-ID:      $Id: isosurf.cpp,v 1.7 2002/03/17 14:15:53 VZ Exp $
+// RCS-ID:      $Id: isosurf.cpp,v 1.7.2.1 2005/06/20 17:39:56 MR Exp $
 // Copyright:   (c) Julian Smart
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
-
-#ifdef __GNUG__
-#pragma implementation
-#pragma interface
-#endif
 
 // For compilers that support precompilation, includes "wx.h".
 #include "wx/wxprec.h"

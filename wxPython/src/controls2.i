@@ -5,7 +5,7 @@
 // Author:      Robin Dunn
 //
 // Created:     6/10/98
-// RCS-ID:      $Id: controls2.i,v 1.53.2.15 2004/01/15 17:43:35 RD Exp $
+// RCS-ID:      $Id: controls2.i,v 1.53.2.16 2005/05/23 22:29:06 RD Exp $
 // Copyright:   (c) 1998 by Total Control Software
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -350,12 +350,12 @@ class wxListEvent: public wxNotifyEvent {
 public:
     wxListEvent(wxEventType commandType = wxEVT_NULL, int id = 0);
 
-%readonly
     int           m_code;
     long          m_oldItemIndex;
     long          m_itemIndex;
     int           m_col;
     wxPoint       m_pointDrag;
+%readonly
     wxListItem    m_item;
 %readwrite
 

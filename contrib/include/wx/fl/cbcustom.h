@@ -4,17 +4,13 @@
 // Author:      Aleksandras Gluchovas
 // Modified by:
 // Created:     28/10/98
-// RCS-ID:      $Id: cbcustom.h,v 1.4.2.1 2002/10/24 11:21:32 JS Exp $
+// RCS-ID:      $Id: cbcustom.h,v 1.4.2.2 2005/06/20 17:33:23 MR Exp $
 // Copyright:   (c) Aleksandras Gluchovas
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
 
 #ifndef __CBCUSTOM_G__
 #define __CBCUSTOM_G__
-
-#if defined(__GNUG__) && !defined(__APPLE__)
-    #pragma interface "cbcustom.h"
-#endif
 
 #include "wx/fl/controlbar.h"
 

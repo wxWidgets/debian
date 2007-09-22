@@ -4,17 +4,13 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     04/01/98
-// RCS-ID:      $Id: symbtabl.h,v 1.4 2002/09/07 12:05:26 GD Exp $
+// RCS-ID:      $Id: symbtabl.h,v 1.4.2.1 2005/06/20 17:45:18 MR Exp $
 // Copyright:   (c) Julian Smart
 // Licence:   	wxWindows license
 /////////////////////////////////////////////////////////////////////////////
 
 #ifndef _SYMBTABL_H_
 #define _SYMBTABL_H_
-
-#if defined(__GNUG__) && !defined(__APPLE__)
-#pragma interface "symbtabl.h"
-#endif
 
 class wxResourceSymbolTable: public wxObject
 {

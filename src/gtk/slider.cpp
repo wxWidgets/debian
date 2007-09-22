@@ -2,14 +2,10 @@
 // Name:        gtk/slider.cpp
 // Purpose:
 // Author:      Robert Roebling
-// Id:          $Id: slider.cpp,v 1.46.2.1 2002/11/20 17:45:14 RR Exp $
+// Id:          $Id: slider.cpp,v 1.46.2.2 2005/06/20 17:42:11 MR Exp $
 // Copyright:   (c) 1998 Robert Roebling
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
-
-#ifdef __GNUG__
-#pragma implementation "slider.h"
-#endif
 
 #include "wx/slider.h"
 

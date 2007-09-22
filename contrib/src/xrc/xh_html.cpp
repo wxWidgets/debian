@@ -3,15 +3,11 @@
 // Purpose:     XRC resource for wxHtmlWindow
 // Author:      Bob Mitchell
 // Created:     2000/03/21
-// RCS-ID:      $Id: xh_html.cpp,v 1.5 2001/12/29 16:14:04 VS Exp $
+// RCS-ID:      $Id: xh_html.cpp,v 1.5.2.1 2005/06/20 17:35:13 MR Exp $
 // Copyright:   (c) 2000 Bob Mitchell and Verant Interactive
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
  
-#ifdef __GNUG__
-#pragma implementation "xh_html.h"
-#endif
-
 // For compilers that support precompilation, includes "wx.h".
 #include "wx/wxprec.h"
 

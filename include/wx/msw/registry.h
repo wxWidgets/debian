@@ -4,17 +4,13 @@
 // Author:      Vadim Zeitlin
 // Modified by:
 // Created:     03.04.198
-// RCS-ID:      $Id: registry.h,v 1.24 2002/01/21 15:52:03 VZ Exp $
+// RCS-ID:      $Id: registry.h,v 1.24.2.1 2005/06/20 17:38:04 MR Exp $
 // Copyright:   (c) 1998 Vadim Zeitlin <zeitlin@dptmaths.ens-cachan.fr>
 // Licence:     wxWindows licence
 ///////////////////////////////////////////////////////////////////////////////
 
 #ifndef   _REGISTRY_H
 #define   _REGISTRY_H
-
-#ifdef __GNUG__
-#pragma interface "registry.h"
-#endif
 
 // ----------------------------------------------------------------------------
 // types used in this module

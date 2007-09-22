@@ -4,7 +4,7 @@
 // Author:      Karsten Ballüder
 // Modified by:
 // Created:     09.05.1999
-// RCS-ID:      $Id: progdlgg.cpp,v 1.62.2.4 2003/03/04 13:37:09 SC Exp $
+// RCS-ID:      $Id: progdlgg.cpp,v 1.62.2.5 2005/06/20 17:41:45 MR Exp $
 // Copyright:   (c) Karsten Ballüder
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -16,10 +16,6 @@
 // ----------------------------------------------------------------------------
 // headers
 // ----------------------------------------------------------------------------
-
-#ifdef __GNUG__
-    #pragma implementation "progdlgg.h"
-#endif
 
 // For compilers that support precompilation, includes "wx.h".
 #include "wx/wxprec.h"

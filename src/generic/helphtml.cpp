@@ -4,14 +4,10 @@
 // Author:      Karsten Ballueder
 // Modified by:
 // Created:     04/01/98
-// RCS-ID:      $Id: helphtml.cpp,v 1.23.2.1 2002/10/29 21:47:53 RR Exp $
+// RCS-ID:      $Id: helphtml.cpp,v 1.23.2.2 2005/06/20 17:41:41 MR Exp $
 // Copyright:   (c) Karsten Ballueder
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
-
-#ifdef __GNUG__
-#   pragma implementation "helphtml.h"
-#endif
 
 #include "wx/wxprec.h"
 

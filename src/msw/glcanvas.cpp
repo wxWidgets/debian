@@ -4,14 +4,10 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     04/01/98
-// RCS-ID:      $Id: glcanvas.cpp,v 1.16.2.2 2003/05/07 08:36:35 JS Exp $
+// RCS-ID:      $Id: glcanvas.cpp,v 1.16.2.3 2005/06/20 17:43:59 MR Exp $
 // Copyright:   (c) Julian Smart
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
-
-#ifdef __GNUG__
-#pragma implementation "glcanvas.h"
-#endif
 
 #include "wx/wxprec.h"
 

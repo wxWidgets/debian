@@ -2,14 +2,10 @@
 // Name:        combobox.cpp
 // Purpose:
 // Author:      Robert Roebling
-// Id:          $Id: combobox.cpp,v 1.86.2.10 2003/03/02 11:07:45 RR Exp $
+// Id:          $Id: combobox.cpp,v 1.86.2.11 2005/06/20 17:41:59 MR Exp $
 // Copyright:   (c) 1998 Robert Roebling
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
-
-#ifdef __GNUG__
-#pragma implementation "combobox.h"
-#endif
 
 #include "wx/combobox.h"
 

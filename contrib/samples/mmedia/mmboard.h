@@ -4,17 +4,13 @@
 // Author:      Guilhem Lavaux, <guilhem.lavaux@libertysurf.fr>
 // Modified by:
 // Created:     13/02/2000
-// RCS-ID:      $Id: mmboard.h,v 1.2 2002/09/07 12:12:21 GD Exp $
+// RCS-ID:      $Id: mmboard.h,v 1.2.2.1 2005/06/20 17:34:12 MR Exp $
 // Copyright:   (c) 2000, Guilhem Lavaux
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
 
 #ifndef _MMBOARD_APP_H_
 #define _MMBOARD_APP_H_
-
-#if defined(__GNUG__) && !defined(__APPLE__)
-    #pragma interface "mmboard.cpp"
-#endif
 
 // for compilers that support precompilation, includes "wx/wx.h"
 #include "wx/wxprec.h"

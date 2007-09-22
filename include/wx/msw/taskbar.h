@@ -5,17 +5,13 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     24/3/98
-// RCS-ID:      $Id: taskbar.h,v 1.9.2.1 2002/11/09 00:23:23 VS Exp $
+// RCS-ID:      $Id: taskbar.h,v 1.9.2.2 2005/06/20 17:38:06 MR Exp $
 // Copyright:   (c) Julian Smart
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////
 
 #ifndef _TASKBAR_H_
 #define _TASKBAR_H_
-
-#ifdef __GNUG__
-#pragma interface "taskbar.h"
-#endif
 
 #include <wx/event.h>
 #include <wx/list.h>

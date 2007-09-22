@@ -4,7 +4,7 @@
 // Author:      Guillermo Rodriguez Garcia <guille@iies.es>
 // Modified by:
 // Created:     1999/09/19
-// RCS-ID:      $Id: client.cpp,v 1.21.2.1 2002/11/11 19:07:23 RR Exp $
+// RCS-ID:      $Id: client.cpp,v 1.21.2.2 2005/06/20 17:40:16 MR Exp $
 // Copyright:   (c) 1999 Guillermo Rodriguez Garcia
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -16,11 +16,6 @@
 // --------------------------------------------------------------------------
 // headers
 // --------------------------------------------------------------------------
-
-#if defined(__GNUG__) && !defined(__APPLE__)
-#  pragma implementation "client.cpp"
-#  pragma interface "client.cpp"
-#endif
 
 // For compilers that support precompilation, includes "wx/wx.h".
 #include "wx/wxprec.h"

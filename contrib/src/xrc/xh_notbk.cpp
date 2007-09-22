@@ -3,15 +3,11 @@
 // Purpose:     XRC resource for wxNotebook
 // Author:      Vaclav Slavik
 // Created:     2000/03/21
-// RCS-ID:      $Id: xh_notbk.cpp,v 1.4.2.1 2003/06/12 16:15:26 VS Exp $
+// RCS-ID:      $Id: xh_notbk.cpp,v 1.4.2.2 2005/06/20 17:35:14 MR Exp $
 // Copyright:   (c) 2000 Vaclav Slavik
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
  
-#ifdef __GNUG__
-#pragma implementation "xh_notbk.h"
-#endif
-
 // For compilers that support precompilation, includes "wx.h".
 #include "wx/wxprec.h"
 

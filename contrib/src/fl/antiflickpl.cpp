@@ -4,15 +4,11 @@
 // Author:      Aleksandras Gluchovas (@Lithuania)
 // Modified by:
 // Created:     23/10/98
-// RCS-ID:      $Id: antiflickpl.cpp,v 1.2 2002/01/21 22:34:41 JS Exp $
+// RCS-ID:      $Id: antiflickpl.cpp,v 1.2.2.1 2005/06/20 17:34:31 MR Exp $
 // Copyright:   (c) Aleksandras Gluchovas
 // Licence:   	wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
  
-#ifdef __GNUG__
-    #pragma implementation "antiflickpl.h"
-#endif
-
 // For compilers that support precompilation, includes "wx.h".
 #include "wx/wxprec.h"
 

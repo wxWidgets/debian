@@ -4,7 +4,7 @@
 // Author:      Vadim Zeitlin
 // Modified by:
 // Created:     01.10.99
-// RCS-ID:      $Id: fontenum.cpp,v 1.17.2.3 2003/02/13 16:45:52 RR Exp $
+// RCS-ID:      $Id: fontenum.cpp,v 1.17.2.4 2005/06/20 17:44:48 MR Exp $
 // Copyright:   (c) Vadim Zeitlin
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -16,10 +16,6 @@
 // ----------------------------------------------------------------------------
 // headers
 // ----------------------------------------------------------------------------
-
-#ifdef __GNUG__
-    #pragma implementation "fontenum.h"
-#endif
 
 #include "wx/defs.h"
 #include "wx/dynarray.h"

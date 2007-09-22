@@ -4,7 +4,7 @@
 // Author:      Vadim Zeitlin
 // Modified by: 
 // Created:     12.09.96
-// RCS-ID:      $Id: uuid.cpp,v 1.12.2.2 2003/05/04 15:50:27 JS Exp $
+// RCS-ID:      $Id: uuid.cpp,v 1.12.2.3 2005/06/20 17:44:23 MR Exp $
 // Copyright:   (c) 1998 Vadim Zeitlin <zeitlin@dptmaths.ens-cachan.fr>
 // Licence:     wxWindows license
 ///////////////////////////////////////////////////////////////////////////////
@@ -12,10 +12,6 @@
 // ============================================================================
 // Declarations
 // ============================================================================
-
-#ifdef __GNUG__
-#pragma implementation "uuid.h"
-#endif
 
 // For compilers that support precompilation, includes "wx.h".
 #include "wx/wxprec.h"

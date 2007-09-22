@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     04/01/98
-// RCS-ID:      $Id: utils.cpp,v 1.100.2.4 2004/02/02 14:16:26 CE Exp $
+// RCS-ID:      $Id: utils.cpp,v 1.100.2.5 2005/06/20 17:44:13 MR Exp $
 // Copyright:   (c) Julian Smart and Markus Holzem
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -16,10 +16,6 @@
 // ----------------------------------------------------------------------------
 // headers
 // ----------------------------------------------------------------------------
-
-#ifdef __GNUG__
-// #pragma implementation "utils.h"   // Note: this is done in utilscmn.cpp now.
-#endif
 
 // For compilers that support precompilation, includes "wx.h".
 #include "wx/wxprec.h"

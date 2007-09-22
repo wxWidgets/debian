@@ -3,15 +3,11 @@
 // Purpose:     XRC resource for wxStaticBox
 // Author:      Brian Gavin
 // Created:     2000/09/09
-// RCS-ID:      $Id: xh_stbox.cpp,v 1.4 2001/12/29 16:14:04 VS Exp $
+// RCS-ID:      $Id: xh_stbox.cpp,v 1.4.2.1 2005/06/20 17:35:17 MR Exp $
 // Copyright:   (c) 2000 Brian Gavin
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
  
-#ifdef __GNUG__
-#pragma implementation "xh_stbox.h"
-#endif
-
 // For compilers that support precompilation, includes "wx.h".
 #include "wx/wxprec.h"
 

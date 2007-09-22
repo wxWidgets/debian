@@ -3,15 +3,11 @@
 // Purpose:     XRC resource for wxCalendarCtrl
 // Author:      Brian Gavin
 // Created:     2000/09/09
-// RCS-ID:      $Id: xh_cald.cpp,v 1.5 2002/04/09 19:34:59 MBN Exp $
+// RCS-ID:      $Id: xh_cald.cpp,v 1.5.2.1 2005/06/20 17:35:11 MR Exp $
 // Copyright:   (c) 2000 Brian Gavin
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
  
-#ifdef __GNUG__
-#pragma implementation "xh_cald.h"
-#endif
-
 // For compilers that support precompilation, includes "wx.h".
 #include "wx/wxprec.h"
 

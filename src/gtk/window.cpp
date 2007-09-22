@@ -2,15 +2,10 @@
 // Name:        gtk/window.cpp
 // Purpose:
 // Author:      Robert Roebling
-// Id:          $Id: window.cpp,v 1.408.2.33 2003/12/11 08:06:08 JS Exp $
+// Id:          $Id: window.cpp,v 1.408.2.34 2005/06/20 17:42:16 MR Exp $
 // Copyright:   (c) 1998 Robert Roebling, Julian Smart
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
-
-
-#ifdef __GNUG__
-    #pragma implementation "window.h"
-#endif
 
 #ifdef __VMS
 #define XWarpPointer XWARPPOINTER

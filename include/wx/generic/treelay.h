@@ -4,17 +4,13 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     7/4/98
-// RCS-ID:      $Id: treelay.h,v 1.9.2.1 2002/10/29 21:47:28 RR Exp $
+// RCS-ID:      $Id: treelay.h,v 1.9.2.2 2005/06/20 17:36:53 MR Exp $
 // Copyright:   (c) 1998 Julian Smart
 // Licence:     wxWindows licence
 ///////////////////////////////////////////////////////////////////////////////
 
 #ifndef _WX_TREELAY_H_
 #define _WX_TREELAY_H_
-
-#if defined(__GNUG__) && !defined(__APPLE__)
-#pragma interface "wxtree.h"
-#endif
 
 #ifndef WX_PRECOMP
 #include "wx/object.h"

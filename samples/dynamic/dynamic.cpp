@@ -4,15 +4,10 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     04/01/98
-// RCS-ID:      $Id: dynamic.cpp,v 1.9.2.1 2002/12/14 18:19:43 MBN Exp $
+// RCS-ID:      $Id: dynamic.cpp,v 1.9.2.2 2005/06/20 17:39:20 MR Exp $
 // Copyright:   (c) Julian Smart and Markus Holzem
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
-
-#if defined(__GNUG__) && !defined(__APPLE__)
-#pragma implementation "dynamic.cpp"
-#pragma interface "dynamic.cpp"
-#endif
 
 // For compilers that support precompilation, includes "wx/wx.h".
 #include "wx/wxprec.h"

@@ -3,7 +3,7 @@
 // Purpose:     Grid control wxWindows sample
 // Author:      Michael Bedward
 // Modified by:
-// RCS-ID:      $Id: griddemo.cpp,v 1.58.2.4 2002/12/15 17:25:16 MBN Exp $
+// RCS-ID:      $Id: griddemo.cpp,v 1.58.2.5 2005/06/20 17:39:51 MR Exp $
 // Copyright:   (c) Michael Bedward, Julian Smart
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -15,11 +15,6 @@
 // ----------------------------------------------------------------------------
 // headers
 // ----------------------------------------------------------------------------
-
-#ifdef __GNUG__
-    #pragma implementation
-    #pragma interface
-#endif
 
 // For compilers that support precompilation, includes "wx/wx.h".
 #include "wx/wxprec.h"

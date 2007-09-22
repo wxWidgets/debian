@@ -2,15 +2,10 @@
 // Name:        radiobut.cpp
 // Purpose:
 // Author:      Robert Roebling
-// Id:          $Id: radiobut.cpp,v 1.42.2.1 2003/04/06 17:55:52 JS Exp $
+// Id:          $Id: radiobut.cpp,v 1.42.2.2 2005/06/20 17:42:09 MR Exp $
 // Copyright:   (c) 1998 Robert Roebling
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
-
-
-#ifdef __GNUG__
-#pragma implementation "radiobut.h"
-#endif
 
 #include "wx/defs.h"
 

@@ -2,14 +2,10 @@
 // Name:        image.cpp
 // Purpose:     wxImage
 // Author:      Robert Roebling
-// RCS-ID:      $Id: image.cpp,v 1.147.2.7 2003/08/04 17:47:40 VZ Exp $
+// RCS-ID:      $Id: image.cpp,v 1.147.2.8 2005/06/20 17:40:59 MR Exp $
 // Copyright:   (c) Robert Roebling
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
-
-#ifdef __GNUG__
-#pragma implementation "image.h"
-#endif
 
 // For compilers that support precompilation, includes "wx.h".
 #include "wx/wxprec.h"

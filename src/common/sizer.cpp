@@ -4,14 +4,10 @@
 // Author:      Robert Roebling and Robin Dunn
 // Modified by: Ron Lee
 // Created:
-// RCS-ID:      $Id: sizer.cpp,v 1.46.2.8 2004/04/17 22:39:35 RD Exp $
+// RCS-ID:      $Id: sizer.cpp,v 1.46.2.9 2005/06/20 17:41:14 MR Exp $
 // Copyright:   (c) Robin Dunn, Dirk Holtwick and Robert Roebling
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
-
-#ifdef __GNUG__
-#pragma implementation "sizer.h"
-#endif
 
 // For compilers that support precompilation, includes "wx.h".
 #include "wx/wxprec.h"

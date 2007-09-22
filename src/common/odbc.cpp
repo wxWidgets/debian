@@ -5,14 +5,10 @@
 //              Patrick Halke (patrick@zaphod.ruhr.de)
 // Modified by:
 // Created:     04/01/98
-// RCS-ID:      $Id: odbc.cpp,v 1.11 1999/12/14 23:42:40 VS Exp $
+// RCS-ID:      $Id: odbc.cpp,v 1.11.6.1 2005/06/20 17:41:08 MR Exp $
 // Copyright:   (c) Julian Smart and Markus Holzem
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
-
-#ifdef __GNUG__
-#pragma implementation "odbc.h"
-#endif
 
 // For compilers that support precompilation, includes "wx.h".
 #include "wx/wxprec.h"

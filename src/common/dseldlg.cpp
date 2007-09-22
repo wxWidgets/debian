@@ -4,7 +4,7 @@
 // Author:      Paul Thiessen
 // Modified by:
 // Created:     20.02.01
-// RCS-ID:      $Id: dseldlg.cpp,v 1.2 2001/12/14 00:28:47 VZ Exp $
+// RCS-ID:      $Id: dseldlg.cpp,v 1.2.2.1 2005/06/20 17:40:47 MR Exp $
 // Copyright:   (c) 2001 wxWindows team
 // License:     wxWindows license
 ///////////////////////////////////////////////////////////////////////////////
@@ -16,10 +16,6 @@
 // ----------------------------------------------------------------------------
 // headers
 // ----------------------------------------------------------------------------
-
-#ifdef __GNUG__
-    #pragma implementation "dseldlg.h"
-#endif
 
 // For compilers that support precompilation, includes "wx.h".
 #include "wx/wxprec.h"

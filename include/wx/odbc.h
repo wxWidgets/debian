@@ -4,7 +4,7 @@
 // Author:      Olaf Klein, Patrick Halke, Julian Smart
 // Modified by:
 // Created:     01/02/97
-// RCS-ID:      $Id: odbc.h,v 1.14 2002/08/31 11:29:11 GD Exp $
+// RCS-ID:      $Id: odbc.h,v 1.14.2.1 2005/06/20 17:36:23 MR Exp $
 // Copyright:   (c) Julian Smart and Markus Holzem
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -12,10 +12,6 @@
 #include "wx/setup.h"
 
 #if wxUSE_ODBC
-
-#if defined(__GNUG__) && !defined(__APPLE__)
-#pragma interface "odbc.h"
-#endif
 
 #ifndef _WX_ODBCH__
 #define _WX_ODBCH__

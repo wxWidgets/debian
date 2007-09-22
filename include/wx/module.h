@@ -4,17 +4,13 @@
 // Author:      Wolfram Gloger/adapted by Guilhem Lavaux
 // Modified by:
 // Created:     04/11/98
-// RCS-ID:      $Id: module.h,v 1.6 2002/08/31 11:29:11 GD Exp $
+// RCS-ID:      $Id: module.h,v 1.6.2.1 2005/06/20 17:36:22 MR Exp $
 // Copyright:   (c) Wolfram Gloger and Guilhem Lavaux
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
 
 #ifndef _WX_MODULEH__
 #define _WX_MODULEH__
-
-#if defined(__GNUG__) && !defined(__APPLE__)
-    #pragma interface "module.h"
-#endif
 
 #include "wx/object.h"
 #include "wx/list.h"

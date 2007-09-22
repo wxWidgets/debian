@@ -4,14 +4,10 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     12/07/98
-// RCS-ID:      $Id: ogldiag.cpp,v 1.5.2.2 2002/12/28 18:32:09 JS Exp $
+// RCS-ID:      $Id: ogldiag.cpp,v 1.5.2.3 2005/06/20 17:34:53 MR Exp $
 // Copyright:   (c) Julian Smart
 // Licence:   	wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
-
-#ifdef __GNUG__
-#pragma implementation "ogldiag.h"
-#endif
 
 // For compilers that support precompilation, includes "wx.h".
 #include "wx/wxprec.h"

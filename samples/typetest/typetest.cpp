@@ -4,14 +4,10 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     04/01/98
-// RCS-ID:      $Id: typetest.cpp,v 1.34.2.2 2002/12/14 18:20:07 MBN Exp $
+// RCS-ID:      $Id: typetest.cpp,v 1.34.2.3 2005/06/20 17:40:23 MR Exp $
 // Copyright:   (c) Julian Smart and Markus Holzem
 // Licence:       wxWindows license
 /////////////////////////////////////////////////////////////////////////////
-
-#ifdef __GNUG__
-#pragma implementation "typetest.h"
-#endif
 
 // For compilers that support precompilation, includes "wx/wx.h".
 #include "wx/wxprec.h"

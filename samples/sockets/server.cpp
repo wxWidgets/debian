@@ -4,7 +4,7 @@
 // Author:      Guillermo Rodriguez Garcia <guille@iies.es>
 // Modified by:
 // Created:     1999/09/19
-// RCS-ID:      $Id: server.cpp,v 1.15 2002/08/31 22:30:58 GD Exp $
+// RCS-ID:      $Id: server.cpp,v 1.15.2.1 2005/06/20 17:40:17 MR Exp $
 // Copyright:   (c) 1999 Guillermo Rodriguez Garcia
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -16,11 +16,6 @@
 // --------------------------------------------------------------------------
 // headers
 // --------------------------------------------------------------------------
-
-#if defined(__GNUG__) && !defined(__APPLE__)
-#  pragma implementation "server.cpp"
-#  pragma interface "server.cpp"
-#endif
 
 // For compilers that support precompilation, includes "wx/wx.h".
 #include "wx/wxprec.h"

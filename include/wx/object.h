@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by: Ron Lee
 // Created:     01/02/97
-// RCS-ID:      $Id: object.h,v 1.75.2.2 2003/07/22 22:37:47 VZ Exp $
+// RCS-ID:      $Id: object.h,v 1.75.2.3 2005/06/20 17:36:23 MR Exp $
 // Copyright:   (c) 1997 Julian Smart and Markus Holzem
 //              (c) 2001 Ron Lee <ron@debian.org>
 // Licence:     wxWindows licence
@@ -12,10 +12,6 @@
 
 #ifndef _WX_OBJECTH__
 #define _WX_OBJECTH__
-
-#if defined(__GNUG__) && !defined(__APPLE__)
-#pragma interface "object.h"
-#endif
 
 // ----------------------------------------------------------------------------
 // headers

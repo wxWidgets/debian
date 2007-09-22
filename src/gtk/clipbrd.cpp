@@ -2,14 +2,10 @@
 // Name:        gtk/clipbrd.cpp
 // Purpose:
 // Author:      Robert Roebling
-// Id:          $Id: clipbrd.cpp,v 1.52 2002/08/19 17:02:10 RR Exp $
+// Id:          $Id: clipbrd.cpp,v 1.52.2.1 2005/06/20 17:41:59 MR Exp $
 // Copyright:   (c) 1998 Robert Roebling
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
-
-#ifdef __GNUG__
-#pragma implementation "clipbrd.h"
-#endif
 
 #include "wx/clipbrd.h"
 

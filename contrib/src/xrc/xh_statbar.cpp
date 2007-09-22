@@ -3,14 +3,10 @@
 // Purpose:     XRC resource for wxStatusBar
 // Author:      Brian Ravnsgaard Riis
 // Created:     2004/01/21
-// RCS-ID:      $Id: xh_statbar.cpp,v 1.1.2.4 2004/07/31 14:38:39 RL Exp $
+// RCS-ID:      $Id: xh_statbar.cpp,v 1.1.2.5 2005/06/20 17:35:16 MR Exp $
 // Copyright:   (c) 2004 Brian Ravnsgaard Riis
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
-
-#ifdef __GNUG__
-#pragma implementation "xh_statbar.h"
-#endif
 
 // For compilers that support precompilation, includes "wx.h".
 #include "wx/wxprec.h"

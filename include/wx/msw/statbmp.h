@@ -4,17 +4,13 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     01/02/97
-// RCS-ID:      $Id: statbmp.h,v 1.19 2001/11/06 21:16:02 MBN Exp $
+// RCS-ID:      $Id: statbmp.h,v 1.19.2.1 2005/06/20 17:38:05 MR Exp $
 // Copyright:   (c) Julian Smart
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
 
 #ifndef _WX_STATBMP_H_
 #define _WX_STATBMP_H_
-
-#ifdef __GNUG__
-    #pragma interface "statbmp.h"
-#endif
 
 #include "wx/control.h"
 #include "wx/icon.h"

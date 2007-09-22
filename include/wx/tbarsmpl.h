@@ -4,17 +4,13 @@
 // Author:      Julian Smart
 // Modified by: VZ on 14.12.99 during wxToolBar classes reorganization
 // Created:     01/02/97
-// RCS-ID:      $Id: tbarsmpl.h,v 1.12 2002/08/31 11:29:11 GD Exp $
+// RCS-ID:      $Id: tbarsmpl.h,v 1.12.2.1 2005/06/20 17:36:31 MR Exp $
 // Copyright:   (c) Julian Smart and Markus Holzem
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
 
 #ifndef _WX_TBARSMPLH__
 #define _WX_TBARSMPLH__
-
-#if defined(__GNUG__) && !defined(__APPLE__)
-    #pragma interface "tbarsmpl.h"
-#endif
 
 #include "wx/tbarbase.h"
 

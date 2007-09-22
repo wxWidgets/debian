@@ -3,7 +3,7 @@
 // Author:      Robert Roebling
 // Modified by:
 // Created:     19.10.99
-// RCS-ID:      $Id: dndcmn.cpp,v 1.1 2000/01/24 13:13:39 RR Exp $
+// RCS-ID:      $Id: dndcmn.cpp,v 1.1.6.1 2005/06/20 17:40:46 MR Exp $
 // Copyright:   (c) wxWindows Team
 // Licence:     wxWindows license
 ///////////////////////////////////////////////////////////////////////////////
@@ -11,10 +11,6 @@
 // ----------------------------------------------------------------------------
 // headers
 // ----------------------------------------------------------------------------
-
-#ifdef __GNUG__
-    #pragma implementation "dndbase.h"
-#endif
 
 #include "wx/wxprec.h"
 

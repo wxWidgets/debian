@@ -3,14 +3,10 @@
 // Purpose:     TextCtrl wxWindows sample
 // Author:      Robert Roebling
 // Modified by:
-// RCS-ID:      $Id: text.cpp,v 1.49.2.4 2002/12/14 18:19:58 MBN Exp $
+// RCS-ID:      $Id: text.cpp,v 1.49.2.5 2005/06/20 17:40:18 MR Exp $
 // Copyright:   (c) Robert Roebling, Julian Smart, Vadim Zeitlin
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
-
-#ifdef __GNUG__
-    #pragma implementation "text.cpp"
-#endif
 
 // For compilers that support precompilation, includes "wx/wx.h".
 #include "wx/wxprec.h"

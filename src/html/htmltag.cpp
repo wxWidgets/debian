@@ -2,15 +2,10 @@
 // Name:        htmltag.cpp
 // Purpose:     wxHtmlTag class (represents single tag)
 // Author:      Vaclav Slavik
-// RCS-ID:      $Id: htmltag.cpp,v 1.30.2.2 2003/04/07 22:11:53 VS Exp $
+// RCS-ID:      $Id: htmltag.cpp,v 1.30.2.3 2005/06/20 17:42:24 MR Exp $
 // Copyright:   (c) 1999 Vaclav Slavik
 // Licence:     wxWindows Licence
 /////////////////////////////////////////////////////////////////////////////
-
-
-#ifdef __GNUG__
-#pragma implementation "htmltag.h"
-#endif
 
 #include "wx/wxprec.h"
 

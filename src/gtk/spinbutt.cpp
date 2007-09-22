@@ -3,15 +3,10 @@
 // Purpose:     wxSpinButton
 // Author:      Robert
 // Modified by:
-// RCS-ID:      $Id: spinbutt.cpp,v 1.28 2002/03/12 19:24:30 VZ Exp $
+// RCS-ID:      $Id: spinbutt.cpp,v 1.28.2.1 2005/06/20 17:42:11 MR Exp $
 // Copyright:   (c) Robert Roebling
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
-
-#ifdef __GNUG__
-    #pragma implementation "spinbutt.h"
-    #pragma implementation "spinbutbase.h"
-#endif
 
 #include "wx/spinbutt.h"
 

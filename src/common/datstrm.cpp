@@ -4,14 +4,10 @@
 // Author:      Guilhem Lavaux
 // Modified by:
 // Created:     28/06/98
-// RCS-ID:      $Id: datstrm.cpp,v 1.36.2.2 2002/10/30 18:01:24 RR Exp $
+// RCS-ID:      $Id: datstrm.cpp,v 1.36.2.3 2005/06/20 17:40:42 MR Exp $
 // Copyright:   (c) Guilhem Lavaux
 // Licence:   	wxWindows license
 /////////////////////////////////////////////////////////////////////////////
-
-#ifdef __GNUG__
-#pragma implementation "datstrm.h"
-#endif
 
 // For compilers that support precompilation, includes "wx.h".
 #include "wx/wxprec.h"

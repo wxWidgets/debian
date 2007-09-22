@@ -4,14 +4,10 @@
 // Author:      Denis Pershin
 // Modified by:
 // Created:     07/05/98
-// RCS-ID:      $Id: treegtk.cpp,v 1.3.6.1 2002/12/29 07:48:20 RL Exp $
+// RCS-ID:      $Id: treegtk.cpp,v 1.3.6.2 2005/06/20 17:42:15 MR Exp $
 // Copyright:   (c) Denis Pershin
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
-
-#ifdef __GNUG__
-#pragma implementation "treectrl.h"
-#endif
 
 // For compilers that support precompilation, includes "wx.h".
 #include "wx/wxprec.h"

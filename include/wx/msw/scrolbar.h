@@ -4,17 +4,13 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     01/02/97
-// RCS-ID:      $Id: scrolbar.h,v 1.7 2001/06/26 20:59:07 VZ Exp $
+// RCS-ID:      $Id: scrolbar.h,v 1.7.2.1 2005/06/20 17:38:04 MR Exp $
 // Copyright:   (c) Julian Smart
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
 
 #ifndef _WX_SCROLBAR_H_
 #define _WX_SCROLBAR_H_
-
-#ifdef __GNUG__
-#pragma interface "scrolbar.h"
-#endif
 
 // Scrollbar item
 class WXDLLEXPORT wxScrollBar: public wxScrollBarBase

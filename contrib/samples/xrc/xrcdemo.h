@@ -2,7 +2,7 @@
 // Name:        xmldemo.cpp
 // Purpose:     XML resources sample: Main application file
 // Author:      Robert O'Connor (rob@medicalmnemonics.com), Vaclav Slavik
-// RCS-ID:      $Id: xrcdemo.h,v 1.2 2002/09/07 12:12:23 GD Exp $
+// RCS-ID:      $Id: xrcdemo.h,v 1.2.2.1 2005/06/20 17:34:26 MR Exp $
 // Copyright:   (c) Robert O'Connor and Vaclav Slavik
 // Licence:     wxWindows licence
 //-----------------------------------------------------------------------------
@@ -13,14 +13,6 @@
 
 #ifndef _XRCDEMO_H_
 #define _XRCDEMO_H_
-
-//-----------------------------------------------------------------------------
-// GCC interface
-//-----------------------------------------------------------------------------
-
-#if defined(__GNUG__) && !defined(__APPLE__)
-    #pragma interface "xrcdemo.h"
-#endif
 
 //-----------------------------------------------------------------------------
 // Headers

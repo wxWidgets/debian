@@ -5,7 +5,7 @@
 // Author:      Vadim Zeitlin
 // Modified by:
 // Created:     20.09.99 (extracted from src/common/log.cpp)
-// RCS-ID:      $Id: logg.cpp,v 1.55 2002/08/05 15:53:21 DW Exp $
+// RCS-ID:      $Id: logg.cpp,v 1.55.2.1 2005/06/20 17:41:43 MR Exp $
 // Copyright:   (c) 1998 Vadim Zeitlin <zeitlin@dptmaths.ens-cachan.fr>
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -17,8 +17,6 @@
 // ----------------------------------------------------------------------------
 // headers
 // ----------------------------------------------------------------------------
-
-// no #pragma implementation "log.h" because it's already in src/common/log.cpp
 
 // For compilers that support precompilation, includes "wx.h".
 #include "wx/wxprec.h"

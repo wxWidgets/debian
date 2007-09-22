@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     2001-07-10
-// RCS-ID:      $Id: sysopt.cpp,v 1.1.2.1 2002/12/13 21:35:15 MBN Exp $
+// RCS-ID:      $Id: sysopt.cpp,v 1.1.2.2 2005/06/20 17:41:17 MR Exp $
 // Copyright:   (c) Julian Smart
 // Licence:   	wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -16,10 +16,6 @@
 // ---------------------------------------------------------------------------
 // headers
 // ---------------------------------------------------------------------------
-
-#ifdef __GNUG__
-    #pragma implementation "sysopt.h"
-#endif
 
 // For compilers that support precompilation, includes "wx.h".
 #include "wx/wxprec.h"

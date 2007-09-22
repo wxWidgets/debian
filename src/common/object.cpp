@@ -4,15 +4,11 @@
 // Author:      Julian Smart
 // Modified by: Ron Lee
 // Created:     04/01/98
-// RCS-ID:      $Id: object.cpp,v 1.66.2.2 2003/06/23 16:04:09 VZ Exp $
+// RCS-ID:      $Id: object.cpp,v 1.66.2.3 2005/06/20 17:41:07 MR Exp $
 // Copyright:   (c) 1998 Julian Smart
 //              (c) 2001 Ron Lee <ron@debian.org>
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
-
-#ifdef __GNUG__
-#pragma implementation "object.h"
-#endif
 
 // For compilers that support precompilation, includes "wx.h".
 #include "wx/wxprec.h"

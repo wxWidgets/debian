@@ -4,7 +4,7 @@
 // Author:      Hans Van Leemputten
 // Modified by:
 // Created:     29/07/2002
-// RCS-ID:      $Id: mdig.cpp,v 1.1.2.5 2002/11/09 13:51:26 RR Exp $
+// RCS-ID:      $Id: mdig.cpp,v 1.1.2.6 2005/06/20 17:41:43 MR Exp $
 // Copyright:   (c) Hans Van Leemputten
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -16,10 +16,6 @@
 // ---------------------------------------------------------------------------
 // headers
 // ---------------------------------------------------------------------------
-
-#ifdef __GNUG__
-    #pragma implementation "mdig.h"
-#endif
 
 // For compilers that support precompilation, includes "wx.h".
 #include "wx/wxprec.h"

@@ -2,14 +2,10 @@
 // Name:        dnd.cpp
 // Purpose:     wxDropTarget class
 // Author:      Robert Roebling
-// Id:          $Id: dnd.cpp,v 1.86.2.1 2005/05/28 11:02:31 JS Exp $
+// Id:          $Id: dnd.cpp,v 1.86.2.2 2005/06/20 17:42:03 MR Exp $
 // Copyright:   (c) 1998 Robert Roebling
 // Licence:     wxWindows licence
 ///////////////////////////////////////////////////////////////////////////////
-
-#ifdef __GNUG__
-    #pragma implementation "dnd.h"
-#endif
 
 #include "wx/dnd.h"
 #include "wx/log.h"

@@ -3,14 +3,10 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     04/01/98
-// RCS-ID:      $Id: dialoged.cpp,v 1.9.2.2 2003/06/05 12:15:05 JS Exp $
+// RCS-ID:      $Id: dialoged.cpp,v 1.9.2.3 2005/06/20 17:45:15 MR Exp $
 // Copyright:   (c) Julian Smart
 // Licence:   	wxWindows license
 /////////////////////////////////////////////////////////////////////////////
-
-#ifdef __GNUG__
-#pragma implementation "dialoged.h"
-#endif
 
 // For compilers that support precompilation, includes "wx/wx.h".
 #include "wx/wxprec.h"

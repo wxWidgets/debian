@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     25/10/98
-// RCS-ID:      $Id: wave.h,v 1.4 2002/09/07 12:28:46 GD Exp $
+// RCS-ID:      $Id: wave.h,v 1.4.2.1 2005/06/20 17:37:07 MR Exp $
 // Copyright:   (c) Julian Smart
 // Licence:   	wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -13,10 +13,6 @@
 #define _WX_WAVE_H_
 
 #if wxUSE_WAVE
-
-#if defined(__GNUG__) && !defined(__APPLE__)
-#pragma interface "wave.h"
-#endif
 
 #include "wx/object.h"
 

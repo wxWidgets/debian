@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     04/01/98
-// RCS-ID:      $Id: listctrl.cpp,v 1.142.2.27 2005/04/23 19:06:12 JS Exp $
+// RCS-ID:      $Id: listctrl.cpp,v 1.142.2.29 2005/06/20 17:44:00 MR Exp $
 // Copyright:   (c) Julian Smart and Markus Holzem
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -16,11 +16,6 @@
 // ----------------------------------------------------------------------------
 // headers
 // ----------------------------------------------------------------------------
-
-#ifdef __GNUG__
-    #pragma implementation "listctrl.h"
-    #pragma implementation "listctrlbase.h"
-#endif
 
 // For compilers that support precompilation, includes "wx.h".
 #include "wx/wxprec.h"
@@ -1743,6 +1738,8 @@ bool wxListCtrl::MSWOnNotify(int idCtrl, WXLPARAM lParam, WXLPARAM *result)
 
             case HDN_GETDISPINFOW:
                 {
+/* CVS HEAD decided to fix this bug by always returning tue, so do the same
+   CE 31 may 05
                     LPNMHDDISPINFOW info = (LPNMHDDISPINFOW) lParam;
                     // This is a fix for a strange bug under XP.
                     // Normally, info->iItem is a valid index, but
@@ -1752,7 +1749,7 @@ bool wxListCtrl::MSWOnNotify(int idCtrl, WXLPARAM lParam, WXLPARAM *result)
                     // there's a GPF in Windows.
                     // By returning TRUE here, we avoid further processing
                     // of this strange message.
-                    if ( info->iItem >= GetColumnCount() )
+                    if ( info->iItem >= GetColumnCount() ) */
                         return TRUE;
                 }
                 // fall through

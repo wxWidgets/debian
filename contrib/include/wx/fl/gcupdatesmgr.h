@@ -4,17 +4,13 @@
 // Author:      Aleksandras Gluchovas
 // Modified by:
 // Created:     19/10/98
-// RCS-ID:      $Id: gcupdatesmgr.h,v 1.3.2.1 2002/10/24 11:21:35 JS Exp $
+// RCS-ID:      $Id: gcupdatesmgr.h,v 1.3.2.2 2005/06/20 17:33:25 MR Exp $
 // Copyright:   (c) Aleksandras Gluchovas
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
 
 #ifndef __GCUPDATESMGR_G__
 #define __GCUPDATESMGR_G__
-
-#if defined(__GNUG__) && !defined(__APPLE__)
-    #pragma interface "gcupdatesmgr.h"
-#endif
 
 #include "wx/fl/controlbar.h"
 #include "wx/fl/updatesmgr.h"

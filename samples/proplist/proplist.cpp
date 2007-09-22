@@ -4,14 +4,10 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     04/01/98
-// RCS-ID:      $Id: proplist.cpp,v 1.7.2.1 2002/12/15 17:25:24 MBN Exp $
+// RCS-ID:      $Id: proplist.cpp,v 1.7.2.2 2005/06/20 17:40:04 MR Exp $
 // Copyright:   (c) Julian Smart
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
-
-#ifdef __GNUG__
-#pragma implementation "proplist_sample.h"
-#endif
 
 // For compilers that support precompilation, includes "wx/wx.h".
 #include "wx/wxprec.h"

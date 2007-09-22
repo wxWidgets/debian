@@ -4,14 +4,10 @@
 // Author:      Julian Smart
 // Modified by: Vadim Zeitlin (owner drawn stuff)
 // Created:
-// RCS-ID:      $Id: listbox.cpp,v 1.68.2.10 2005/04/23 19:06:11 JS Exp $
+// RCS-ID:      $Id: listbox.cpp,v 1.68.2.11 2005/06/20 17:44:00 MR Exp $
 // Copyright:   (c) Julian Smart
 // Licence:     wxWindows license
 ///////////////////////////////////////////////////////////////////////////////
-
-#ifdef __GNUG__
-    #pragma implementation "listbox.h"
-#endif
 
 // For compilers that support precompilation, includes "wx.h".
 #include "wx/wxprec.h"

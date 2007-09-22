@@ -2,15 +2,10 @@
 // Purpose:     XML resources editor
 // Author:      Vaclav Slavik
 // Created:     2000/05/05
-// RCS-ID:      $Id: edapp.cpp,v 1.6 2002/09/07 12:17:00 GD Exp $
+// RCS-ID:      $Id: edapp.cpp,v 1.6.2.1 2005/06/20 17:35:27 MR Exp $
 // Copyright:   (c) 2000 Vaclav Slavik
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
-
-#if defined(__GNUG__) && !defined(__APPLE__)
-    #pragma implementation
-    #pragma interface
-#endif
 
 // For compilers that support precompilation, includes "wx/wx.h".
 #include "wx/wxprec.h"

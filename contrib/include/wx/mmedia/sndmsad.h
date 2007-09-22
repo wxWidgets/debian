@@ -3,15 +3,11 @@
 // Purpose: MS ADPCM codec
 // Date: 25/02/2000
 // Author: Guilhem Lavaux <lavaux@easynet.fr> (C) 2000
-// CVSID: $Id: sndmsad.h,v 1.3.2.1 2004/11/22 20:04:47 JS Exp $
+// CVSID: $Id: sndmsad.h,v 1.3.2.2 2005/06/20 17:33:34 MR Exp $
 // License:    wxWindows license
 // --------------------------------------------------------------------------
 #ifndef _WX_SNDMSAD_H
 #define _WX_SNDMSAD_H
-
-#ifdef __GNUG__
-#pragma interface "sndmsad.h"
-#endif
 
 #include "wx/defs.h"
 #include "wx/dynarray.h"

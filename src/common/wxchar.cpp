@@ -4,14 +4,10 @@
 // Author:      Ove Kåven
 // Modified by:
 // Created:     09/04/99
-// RCS-ID:      $Id: wxchar.cpp,v 1.49.2.2 2003/07/25 18:55:02 RR Exp $
+// RCS-ID:      $Id: wxchar.cpp,v 1.49.2.3 2005/06/20 17:41:24 MR Exp $
 // Copyright:   (c) wxWindows copyright
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
-
-#ifdef __GNUG__
-  #pragma implementation "wxchar.h"
-#endif
 
 // ===========================================================================
 // headers, declarations, constants

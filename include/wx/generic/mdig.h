@@ -4,17 +4,13 @@
 // Author:      Hans Van Leemputten
 // Modified by:
 // Created:     29/07/2002
-// RCS-ID:      $Id: mdig.h,v 1.2.2.3 2002/10/28 15:22:13 CE Exp $
+// RCS-ID:      $Id: mdig.h,v 1.2.2.4 2005/06/20 17:36:49 MR Exp $
 // Copyright:   (c) Hans Van Leemputten
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
 
 #ifndef _WX_MDIG_H_
 #define _WX_MDIG_H_
-
-#if defined(__GNUG__) && !defined(__APPLE__)
-    #pragma interface "mdig.h"
-#endif
 
 // ----------------------------------------------------------------------------
 // headers

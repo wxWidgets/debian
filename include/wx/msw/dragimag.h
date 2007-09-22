@@ -5,17 +5,13 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     08/04/99
-// RCS-ID:      $Id: dragimag.h,v 1.5 2001/04/10 21:01:39 JS Exp $
+// RCS-ID:      $Id: dragimag.h,v 1.5.2.1 2005/06/20 17:37:57 MR Exp $
 // Copyright:   (c) Julian Smart
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
 
 #ifndef _WX_DRAGIMAG_H_
 #define _WX_DRAGIMAG_H_
-
-#ifdef __GNUG__
-#pragma interface "dragimag.h"
-#endif
 
 #include "wx/bitmap.h"
 #include "wx/icon.h"

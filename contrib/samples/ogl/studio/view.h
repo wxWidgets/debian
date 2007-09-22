@@ -4,17 +4,13 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     12/07/98
-// RCS-ID:      $Id: view.h,v 1.2 2002/09/07 12:12:22 GD Exp $
+// RCS-ID:      $Id: view.h,v 1.2.2.1 2005/06/20 17:34:22 MR Exp $
 // Copyright:   (c) Julian Smart
 // Licence:   	wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
 
 #ifndef _STUDIO_VIEW_H_
 #define _STUDIO_VIEW_H_
-
-#if defined(__GNUG__) && !defined(__APPLE__)
-// #pragma interface "view.h"
-#endif
 
 #include "doc.h"
 #include <wx/ogl/ogl.h>

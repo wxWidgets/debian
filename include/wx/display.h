@@ -4,7 +4,7 @@
 // Author:      Royce Mitchell III
 // Modified by: 
 // Created:     06/21/02
-// RCS-ID:      $Id: display.h,v 1.2 2002/08/31 11:29:10 GD Exp $
+// RCS-ID:      $Id: display.h,v 1.2.2.1 2005/06/20 17:36:07 MR Exp $
 // Copyright:   (c) wxWindows team
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -13,10 +13,6 @@
 #define _WX_DISPLAY_H_BASE_
 
 #if wxUSE_DISPLAY
-
-#if defined(__GNUG__) && !defined(__APPLE__)
-    #pragma interface "display.h"
-#endif
 
 class wxPoint;
 class wxRect;

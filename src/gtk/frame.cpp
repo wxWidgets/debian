@@ -2,7 +2,7 @@
 // Name:        frame.cpp
 // Purpose:
 // Author:      Robert Roebling
-// Id:          $Id: frame.cpp,v 1.190.2.3 2002/10/28 00:20:58 RR Exp $
+// Id:          $Id: frame.cpp,v 1.190.2.4 2005/06/20 17:42:05 MR Exp $
 // Copyright:   (c) 1998 Robert Roebling
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -14,10 +14,6 @@
 // ----------------------------------------------------------------------------
 // headers
 // ----------------------------------------------------------------------------
-
-#ifdef __GNUG__
-    #pragma implementation "frame.h"
-#endif
 
 #include "wx/defs.h"
 

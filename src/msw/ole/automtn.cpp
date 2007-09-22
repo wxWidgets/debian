@@ -4,14 +4,10 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     11/6/98
-// RCS-ID:      $Id: automtn.cpp,v 1.24.2.3 2003/01/03 14:57:33 JS Exp $
+// RCS-ID:      $Id: automtn.cpp,v 1.24.2.4 2005/06/20 17:44:21 MR Exp $
 // Copyright:   (c) 1998, Julian Smart
 // Licence:     wxWindows Licence
 /////////////////////////////////////////////////////////////////////////////
-
-#ifdef __GNUG__
-#pragma implementation "automtn.h"
-#endif
 
 // For compilers that support precompilation, includes "wx.h".
 #include "wx/wxprec.h"

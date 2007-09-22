@@ -1,11 +1,11 @@
 Source: wxwindows2.4
 Section: libs
 Priority: optional
-Build-Depends: debhelper (>=4.0), flex, bison, gettext, libgtk1.2-dev, python2.3, python2.3-dev, zlib1g-dev, libjpeg62-dev, libpng2-dev, libtiff4-dev, xlibmesa-gl-dev | libgl-dev, xlibmesa-glu-dev | libglu-dev, libesd0-dev
+Build-Depends: debhelper (>=4.0), flex, bison, gettext, libgtk1.2-dev, python2.3, python2.3-dev, zlib1g-dev, libjpeg62-dev, libpng12-dev, libtiff4-dev, xlibmesa-gl-dev | libgl-dev, xlibmesa-glu-dev | libglu-dev, libesd0-dev
 Maintainer: Ron Lee <ron@debian.org>
-Standards-Version: 3.6.1.1
+Standards-Version: 3.6.2.1
 
-Package: libwxbase2.4
+Package: libwxbase2.4-1
 Architecture: any
 Section: libs
 Depends: ${shlibs:Depends}
@@ -25,7 +25,7 @@ Description: wxBase library (runtime) - non-GUI support classes of wxWindows too
 Package: libwxbase2.4-dev
 Architecture: any
 Section: libdevel
-Depends: wxwin2.4-headers (= ${Source-Version}), libwxbase2.4 (= ${Source-Version}), libc6-dev
+Depends: wxwin2.4-headers (= ${Source-Version}), libwxbase2.4-1 (= ${Source-Version}), libc6-dev
 Suggests: wxwin2.4-doc, gettext
 Conflicts: libwxbase-dev
 Replaces: libwxbase-dev
@@ -64,7 +64,7 @@ Description: wxBase library (debug) - non-GUI support classes of wxWindows toolk
  provides many internal checks by wxWindows itself that are not performed on
  apps compiled with the 'release version' libs in the -dev package.
 
-Package: libwxgtk2.4
+Package: libwxgtk2.4-1
 Architecture: any
 Section: libs
 Depends: ${shlibs:Depends}
@@ -81,7 +81,7 @@ Description: wxWindows Cross-platform C++ GUI toolkit (GTK+ runtime)
 Package: libwxgtk2.4-dev
 Architecture: any
 Section: libdevel
-Depends: wxwin2.4-headers (= ${Source-Version}), libwxgtk2.4 (= ${Source-Version}), libc6-dev
+Depends: wxwin2.4-headers (= ${Source-Version}), libwxgtk2.4-1 (= ${Source-Version}), libc6-dev
 Suggests: wxwin2.4-doc, libstdc++-dev, gettext, xlibmesa-gl-dev | libgl-dev, xlibmesa-glu-dev | libglu-dev
 Conflicts: libwxgtk-dev
 Replaces: libwxgtk-dev, wxgtk2.1-dev
@@ -113,13 +113,12 @@ Description: wxWindows Cross-platform C++ GUI toolkit (GTK+ development)
  provides many internal checks by wxWindows itself that are not performed on
  apps compiled with the 'release version' libs in the -dev package.
 
-Package: libwxgtk2.4-python
+Package: libwxgtk2.4-1-python
 Architecture: any
 Section: python
-Depends: python2.3, ${shlibs:Depends}
-Suggests: wxwin2.4-doc, wxwin2.4-examples, python2.3-xml
-Conflicts: libwxgtk-python, libwxgtk2.4-dbg-python, python-wxwin, libwxgtk2.2-python-contrib, libwxgtk2.2-python, libwxgtk2.3-python
-Replaces: libwxgtk-python, libwxgtk2.4-dbg-python, python-wxwin, libwxgtk2.2-python-contrib, libwxgtk2.2-python, libwxgtk2.3-python
+Depends: wxpython, python2.3, ${shlibs:Depends}
+Conflicts: libwxgtk-python, libwxgtk2.4-1-dbg-python, python-wxwin, libwxgtk2.2-python-contrib, libwxgtk2.2-python, libwxgtk2.3-python
+Replaces: libwxgtk-python, libwxgtk2.4-1-dbg-python, python-wxwin, libwxgtk2.2-python-contrib, libwxgtk2.2-python, libwxgtk2.3-python
 Provides: libwxgtk-python
 Description: wxWindows Cross-platform C++ GUI toolkit (wxPython binding)
  wxWindows is a class library for C++ providing GUI (Graphical User
@@ -130,10 +129,26 @@ Description: wxWindows Cross-platform C++ GUI toolkit (wxPython binding)
  contrib libs.  If you wish to use xrced you'll also need the python-xml
  package installed.
 
-Package: libwxgtk2.4-contrib
+Package: wxpython2.4-1
+Architecture: any
+Section: python
+Depends: libwxgtk2.4-1-python, python2.3, ${shlibs:Depends}
+Suggests: wxwin2.4-doc, wxwin2.4-examples, python2.3-xml
+Conflicts: wxpython
+Replaces: wxpython, libwxgtk2.4-python
+Provides: wxpython
+Description: wxWidgets Cross-platform C++ GUI toolkit (wxPython common files)
+ wxWidgets (formerly known as wxWindows) is a class library for C++ providing
+ GUI components and other facilities on several popular platforms (and some
+ unpopular ones as well).  For more information see http://wxwidgets.org
+ .
+ This package provides support utilities and common files for wxPython2.4-1.
+ If you wish to use xrced you'll also need the python2.3-xml package installed.
+
+Package: libwxgtk2.4-1-contrib
 Architecture: any
 Section: libs
-Depends: libwxgtk2.4 (= ${Source-Version}), ${shlibs:Depends}
+Depends: libwxgtk2.4-1 (= ${Source-Version}), ${shlibs:Depends}
 Description: wxWindows Cross-platform C++ GUI toolkit (runtime contrib libs)
  wxWindows is a class library for C++ providing GUI (Graphical User
  Interface) and other facilities on more than one platform.  Version 2.4
@@ -144,7 +159,7 @@ Description: wxWindows Cross-platform C++ GUI toolkit (runtime contrib libs)
 Package: libwxgtk2.4-contrib-dev
 Architecture: any
 Section: libdevel
-Depends: wxwin2.4-headers (= ${Source-Version}), libwxgtk2.4-dev (= ${Source-Version}), libwxgtk2.4-contrib (= ${Source-Version}), libc6-dev
+Depends: wxwin2.4-headers (= ${Source-Version}), libwxgtk2.4-dev (= ${Source-Version}), libwxgtk2.4-1-contrib (= ${Source-Version}), libc6-dev
 Conflicts: libwxgtk-contrib-dev
 Replaces: libwxgtk-contrib-dev
 Provides: libwxgtk-contrib-dev
@@ -209,14 +224,14 @@ Description: wxWindows Cross-platform C++ GUI toolkit (examples)
  This package contains examples of using the wxWindows toolkit in
  C++ and with the wxPython language binding.
 
-Package: libwxgtk2.4-dbg-python
+Package: libwxgtk2.4-1-dbg-python
 Architecture: any
 Section: python
 Depends: python2.3, ${shlibs:Depends}
 Suggests: wxwin2.4-doc, wxwin2.4-examples, python2.3-xml
-Conflicts: libwxgtk2.4-python
-Replaces: libwxgtk2.4-python
-Provides: libwxgtk2.4-python
+Conflicts: libwxgtk2.4-1-python
+Replaces: libwxgtk2.4-1-python
+Provides: libwxgtk2.4-1-python
 Description: wxWindows Cross-platform C++ GUI toolkit (wxPython binding)
  wxWindows is a class library for C++ providing GUI (Graphical User
  Interface) and other facilities on more than one platform.  Version 2.4
@@ -227,7 +242,7 @@ Description: wxWindows Cross-platform C++ GUI toolkit (wxPython binding)
  Unfortunately it cannot be installed at the same time as the release
  packages, but it will replace them for other applications that require
  wxPython.  You should _never_ upload packages to Debian that depend upon
- this package explicitly, use the libwxgtk2.4-python package instead.
+ this package explicitly, use the libwxgtk2.4-1-python package instead.
  .
  If you wish to use xrced you'll also need the python-xml package installed.
 

@@ -2,7 +2,7 @@
 // Name:        imagiff.h
 // Purpose:     wxImage handler for Amiga IFF images
 // Author:      Steffen Gutmann, Thomas Meyer
-// RCS-ID:      $Id: imagiff.cpp,v 1.6 2002/05/22 23:14:47 VZ Exp $
+// RCS-ID:      $Id: imagiff.cpp,v 1.6.2.1 2005/06/20 17:41:00 MR Exp $
 // Copyright:   (c) Steffen Gutmann, 2002
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -11,10 +11,6 @@
 // in xviff.c.  Permission by the original author, Thomas Meyer, and
 // by the author of xv, John Bradley for using the iff loading part
 // in wxWindows has been gratefully given.
-
-#ifdef __GNUG__
-#pragma implementation "imagiff.h"
-#endif
 
 // For compilers that support precompilation, includes "wx.h".
 #include "wx/wxprec.h"

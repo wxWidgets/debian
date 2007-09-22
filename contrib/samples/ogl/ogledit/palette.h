@@ -4,17 +4,13 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     12/07/98
-// RCS-ID:      $Id: palette.h,v 1.2 2002/09/07 12:12:21 GD Exp $
+// RCS-ID:      $Id: palette.h,v 1.2.2.1 2005/06/20 17:34:16 MR Exp $
 // Copyright:   (c) Julian Smart
 // Licence:   	wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
 
 #ifndef _OGLSAMPLE_PALETTE_H_
 #define _OGLSAMPLE_PALETTE_H_
-
-#if defined(__GNUG__) && !defined(__APPLE__)
-// #pragma interface
-#endif
 
 #include <wx/wx.h>
 #include <wx/string.h>

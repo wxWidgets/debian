@@ -7,17 +7,13 @@
 // Author:      Robert Roebling, Harm van der Heijden, Julian Smart et al
 // Modified by:
 // Created:     21/3/2000
-// RCS-ID:      $Id: dirctrlg.h,v 1.14.2.1 2002/10/02 13:57:29 JS Exp $
+// RCS-ID:      $Id: dirctrlg.h,v 1.14.2.2 2005/06/20 17:36:47 MR Exp $
 // Copyright:   (c) Robert Roebling, Harm van der Heijden, Julian Smart
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
 
 #ifndef _WX_DIRCTRL_H_
 #define _WX_DIRCTRL_H_
-
-#if defined(__GNUG__) && !defined(__APPLE__)
-#pragma interface "dirctrlg.h"
-#endif
 
 #if wxUSE_DIRDLG
 

@@ -4,17 +4,13 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     12/07/98
-// RCS-ID:      $Id: constrnt.h,v 1.2.2.1 2002/12/18 06:11:27 RD Exp $
+// RCS-ID:      $Id: constrnt.h,v 1.2.2.2 2005/06/20 17:33:40 MR Exp $
 // Copyright:   (c) Julian Smart
 // Licence:   	wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
 
 #ifndef _OGL_CONSTRNT_H_
 #define _OGL_CONSTRNT_H_
-
-#if defined(__GNUG__) && !defined(__APPLE__)
-#pragma interface "constrnt.h"
-#endif
 
 /*
  * OGL Constraints

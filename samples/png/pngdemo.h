@@ -4,14 +4,10 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     01/02/97
-// RCS-ID:      $Id: pngdemo.h,v 1.5 2002/08/31 22:30:50 GD Exp $
+// RCS-ID:      $Id: pngdemo.h,v 1.5.2.1 2005/06/20 17:39:59 MR Exp $
 // Copyright:   (c) Julian Smart and Markus Holzem
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
-
-#if defined( __GNUG__) && !defined(__APPLE__)
-#pragma interface
-#endif
 
 #include "wx/wx.h"
 

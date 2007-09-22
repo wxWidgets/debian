@@ -4,14 +4,10 @@
 // Author:      Wolfram Gloger/adapted by Guilhem Lavaux
 // Modified by:
 // Created:     04/11/98
-// RCS-ID:      $Id: module.cpp,v 1.6 2001/12/19 07:09:55 RL Exp $
+// RCS-ID:      $Id: module.cpp,v 1.6.2.1 2005/06/20 17:41:06 MR Exp $
 // Copyright:   (c) Wolfram Gloger and Guilhem Lavaux
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
-
-#ifdef __GNUG__
-#pragma implementation "module.h"
-#endif
 
 // For compilers that support precompilation, includes "wx.h".
 #include "wx/wxprec.h"

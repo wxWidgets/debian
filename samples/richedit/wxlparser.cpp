@@ -3,12 +3,8 @@
  *                                                                  *
  * (C) 1998,1999 by Karsten Ballüder (Ballueder@usa.net)            *
  *                                                                  *
- * $Id: wxlparser.cpp,v 1.11 2001/10/30 13:32:30 GT Exp $
+ * $Id: wxlparser.cpp,v 1.11.2.1 2005/06/20 17:40:12 MR Exp $
  *******************************************************************/
-
-#ifdef __GNUG__
-#   pragma implementation "wxlparser.h"
-#endif
 
 #include "wx/wxprec.h"
 

@@ -2,17 +2,13 @@
 // Name:        image.h
 // Purpose:     wxImage class
 // Author:      Robert Roebling
-// RCS-ID:      $Id: image.h,v 1.73.2.7 2003/06/01 19:00:41 JS Exp $
+// RCS-ID:      $Id: image.h,v 1.73.2.8 2005/06/20 17:36:17 MR Exp $
 // Copyright:   (c) Robert Roebling
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
 
 #ifndef _WX_IMAGE_H_
 #define _WX_IMAGE_H_
-
-#if defined(__GNUG__) && !defined(__APPLE__)
-#pragma interface "image.h"
-#endif
 
 #include "wx/setup.h"
 #include "wx/object.h"

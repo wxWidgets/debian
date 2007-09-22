@@ -4,17 +4,13 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     29/01/98
-// RCS-ID:      $Id: validate.h,v 1.13 2002/08/31 11:29:11 GD Exp $
+// RCS-ID:      $Id: validate.h,v 1.13.2.1 2005/06/20 17:36:35 MR Exp $
 // Copyright:   (c) 1998 Julian Smart
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
 
 #ifndef _WX_VALIDATEH__
 #define _WX_VALIDATEH__
-
-#if defined(__GNUG__) && !defined(__APPLE__)
-    #pragma interface "validate.h"
-#endif
 
 #if defined(wxUSE_VALIDATORS) && !wxUSE_VALIDATORS
     // wxWindows is compiled without support for wxValidator, but we still

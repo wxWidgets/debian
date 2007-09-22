@@ -4,17 +4,13 @@
 // Author:      Robert Roebling, Ove Kaaven
 // Modified by:
 // Created:     29/01/98
-// RCS-ID:      $Id: strconv.h,v 1.11.2.4 2003/08/14 11:46:19 CE Exp $
+// RCS-ID:      $Id: strconv.h,v 1.11.2.5 2005/06/20 17:36:29 MR Exp $
 // Copyright:   (c) 1998 Ove Kaaven, Robert Roebling, Vadim Zeitlin
 // Licence:     wxWindows license
 ///////////////////////////////////////////////////////////////////////////////
 
 #ifndef _WX_WXSTRCONVH__
 #define _WX_WXSTRCONVH__
-
-#if defined(__GNUG__) && !defined(__APPLE__)
-  #pragma interface "strconv.h"
-#endif
 
 #include "wx/defs.h"
 #include "wx/wxchar.h"

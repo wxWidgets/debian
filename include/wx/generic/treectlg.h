@@ -4,17 +4,13 @@
 // Author:      Robert Roebling
 // Modified by:
 // Created:     01/02/97
-// RCS-ID:      $Id: treectlg.h,v 1.20.2.3 2002/12/29 07:48:10 RL Exp $
+// RCS-ID:      $Id: treectlg.h,v 1.20.2.4 2005/06/20 17:36:52 MR Exp $
 // Copyright:   (c) 1997,1998 Robert Roebling
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
 
 #ifndef _GENERIC_TREECTRL_H_
 #define _GENERIC_TREECTRL_H_
-
-#if defined(__GNUG__) && !defined(__APPLE__)
-    #pragma interface "treectlg.h"
-#endif
 
 #if wxUSE_TREECTRL
 

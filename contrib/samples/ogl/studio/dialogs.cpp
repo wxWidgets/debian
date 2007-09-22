@@ -4,14 +4,10 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     12/07/98
-// RCS-ID:      $Id: dialogs.cpp,v 1.2.2.1 2003/06/05 17:26:32 JS Exp $
+// RCS-ID:      $Id: dialogs.cpp,v 1.2.2.2 2005/06/20 17:34:19 MR Exp $
 // Copyright:   (c) Julian Smart
 // Licence:
 /////////////////////////////////////////////////////////////////////////////
-
-#ifdef __GNUG__
-// #pragma implementation
-#endif
 
 // For compilers that support precompilation, includes "wx.h".
 #include "wx/wxprec.h"

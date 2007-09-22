@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by: VZ on 14.12.99 during wxToolBarSimple reorganization
 // Created:     04/01/98
-// RCS-ID:      $Id: tbarsmpl.cpp,v 1.19.2.2 2002/12/16 10:50:49 JS Exp $
+// RCS-ID:      $Id: tbarsmpl.cpp,v 1.19.2.3 2005/06/20 17:41:49 MR Exp $
 // Copyright:   (c) Julian Smart and Markus Holzem
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -16,10 +16,6 @@
 // ----------------------------------------------------------------------------
 // headers
 // ----------------------------------------------------------------------------
-
-#ifdef __GNUG__
-    #pragma implementation "tbarsmpl.h"
-#endif
 
 // For compilers that support precompilation, includes "wx.h".
 #include "wx/wxprec.h"

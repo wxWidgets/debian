@@ -2,7 +2,7 @@
 // Name:        dc.h
 // Purpose:
 // Author:      Robert Roebling
-// Id:          $Id: dc.h,v 1.23 2002/09/07 12:28:46 GD Exp $
+// Id:          $Id: dc.h,v 1.23.2.1 2005/06/20 17:36:59 MR Exp $
 // Copyright:   (c) 1998 Robert Roebling
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -10,10 +10,6 @@
 
 #ifndef __GTKDCH__
 #define __GTKDCH__
-
-#if defined(__GNUG__) && !defined(__APPLE__)
-#pragma interface
-#endif
 
 //-----------------------------------------------------------------------------
 // classes

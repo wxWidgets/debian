@@ -6,7 +6,7 @@
 //              not documented and is for private use only.
 // Modified by:
 // Created:     10.02.99
-// RCS-ID:      $Id: longlong.cpp,v 1.24.2.1 2003/12/11 09:14:51 JS Exp $
+// RCS-ID:      $Id: longlong.cpp,v 1.24.2.2 2005/06/20 17:41:04 MR Exp $
 // Copyright:   (c) 1998 Vadim Zeitlin <zeitlin@dptmaths.ens-cachan.fr>
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -14,10 +14,6 @@
 // ============================================================================
 // headers
 // ============================================================================
-
-#ifdef __GNUG__
-    #pragma implementation "longlong.h"
-#endif
 
 #include "wx/wxprec.h"
 

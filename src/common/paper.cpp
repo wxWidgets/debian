@@ -4,14 +4,10 @@
 // Author:      Julian Smart 
 // Modified by:
 // Created:     04/01/98
-// RCS-ID:      $Id: paper.cpp,v 1.5.4.1 2002/11/03 19:08:57 RR Exp $
+// RCS-ID:      $Id: paper.cpp,v 1.5.4.2 2005/06/20 17:41:08 MR Exp $
 // Copyright:   (c) Julian Smart
 // Licence:   	wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
-
-#ifdef __GNUG__
-#pragma implementation "paper.h"
-#endif
 
 // For compilers that support precompilation, includes "wx.h".
 #include "wx/wxprec.h"

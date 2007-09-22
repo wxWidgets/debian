@@ -4,7 +4,7 @@
 // Author:      Royce Mitchell III
 // Modified by:
 // Created:     06/21/02
-// RCS-ID:      $Id: display.cpp,v 1.1 2002/07/19 20:42:34 JS Exp $
+// RCS-ID:      $Id: display.cpp,v 1.1.2.1 2005/06/20 17:43:55 MR Exp $
 // Copyright:   (c) wxWindows team
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -16,10 +16,6 @@
 // ---------------------------------------------------------------------------
 // headers
 // ---------------------------------------------------------------------------
-
-#ifdef __GNUG__
-    #pragma implementation "display.h"
-#endif
 
 // For compilers that support precompilation, includes "wx.h".
 #include "wx/wxprec.h"

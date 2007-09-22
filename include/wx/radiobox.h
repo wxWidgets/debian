@@ -4,17 +4,13 @@
 // Author:      Vadim Zeitlin
 // Modified by:
 // Created:     10.09.00
-// RCS-ID:      $Id: radiobox.h,v 1.10.2.1 2003/06/01 19:00:41 JS Exp $
+// RCS-ID:      $Id: radiobox.h,v 1.10.2.3 2005/06/22 07:55:20 RL Exp $
 // Copyright:   (c) wxWindows team
 // Licence:     wxWindows license
 ///////////////////////////////////////////////////////////////////////////////
 
 #ifndef _WX_RADIOBOX_H_BASE_
 #define _WX_RADIOBOX_H_BASE_
-
-#if defined(__GNUG__) && !defined(__APPLE__)
-    #pragma interface "radioboxbase.h"
-#endif
 
 #if wxUSE_RADIOBOX
 
@@ -35,6 +31,9 @@ WXDLLEXPORT_DATA(extern const wxChar*) wxRadioBoxNameStr;
 class WXDLLEXPORT wxRadioBoxBase
 {
 public:
+    // virtual dtor for pure virtual base.
+    virtual ~wxRadioBoxBase() {}
+
     // selection
     virtual void SetSelection(int n) = 0;
     virtual int GetSelection() const = 0;

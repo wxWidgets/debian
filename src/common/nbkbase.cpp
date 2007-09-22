@@ -4,7 +4,7 @@
 // Author:      Vadim Zeitlin
 // Modified by:
 // Created:     02.07.01
-// RCS-ID:      $Id: nbkbase.cpp,v 1.8.2.3 2003/06/03 10:39:59 VZ Exp $
+// RCS-ID:      $Id: nbkbase.cpp,v 1.8.2.4 2005/06/20 17:41:07 MR Exp $
 // Copyright:   (c) 2001 Vadim Zeitlin
 // Licence:     wxWindows licence
 ///////////////////////////////////////////////////////////////////////////////
@@ -16,10 +16,6 @@
 // ----------------------------------------------------------------------------
 // headers
 // ----------------------------------------------------------------------------
-
-#ifdef __GNUG__
-    #pragma implementation "notebookbase.h"
-#endif
 
 // For compilers that support precompilation, includes "wx.h".
 #include "wx/wxprec.h"

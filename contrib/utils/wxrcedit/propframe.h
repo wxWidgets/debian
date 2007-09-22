@@ -2,14 +2,10 @@
 // Purpose:     XML resources editor
 // Author:      Vaclav Slavik
 // Created:     2000/05/05
-// RCS-ID:      $Id: propframe.h,v 1.3 2002/09/07 12:15:24 GD Exp $
+// RCS-ID:      $Id: propframe.h,v 1.3.2.1 2005/06/20 17:35:33 MR Exp $
 // Copyright:   (c) 2000 Vaclav Slavik
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
-
-#if defined(__GNUG__) && !defined(__APPLE__)
-    #pragma interface "propframe.h"
-#endif
 
 #ifndef _PROPFRAME_H_
 #define _PROPFRAME_H_

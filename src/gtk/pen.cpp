@@ -2,15 +2,10 @@
 // Name:        pen.cpp
 // Purpose:
 // Author:      Robert Roebling
-// Id:          $Id: pen.cpp,v 1.21 2002/05/07 21:58:26 GD Exp $
+// Id:          $Id: pen.cpp,v 1.21.2.1 2005/06/20 17:42:08 MR Exp $
 // Copyright:   (c) 1998 Robert Roebling
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
-
-
-#ifdef __GNUG__
-#pragma implementation "pen.h"
-#endif
 
 #include "wx/pen.h"
 

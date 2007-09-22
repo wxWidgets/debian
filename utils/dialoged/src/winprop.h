@@ -4,17 +4,13 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     04/01/98
-// RCS-ID:      $Id: winprop.h,v 1.11 2002/09/07 12:05:26 GD Exp $
+// RCS-ID:      $Id: winprop.h,v 1.11.2.1 2005/06/20 17:45:18 MR Exp $
 // Copyright:   (c) Julian Smart
 // Licence:   	wxWindows license
 /////////////////////////////////////////////////////////////////////////////
 
 #ifndef _WINPROP_H_
 #define _WINPROP_H_
-
-#if defined(__GNUG__) && !defined(__APPLE__)
-#pragma interface "winprop.h"
-#endif
 
 #include "reseditr.h"
 

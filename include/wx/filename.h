@@ -4,17 +4,13 @@
 // Author:      Robert Roebling, Vadim Zeitlin
 // Modified by:
 // Created:     28.12.00
-// RCS-ID:      $Id: filename.h,v 1.32.2.2 2003/04/13 17:08:31 VS Exp $
+// RCS-ID:      $Id: filename.h,v 1.32.2.3 2005/06/20 17:36:12 MR Exp $
 // Copyright:   (c) 2000 Robert Roebling
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
 
 #ifndef   _WX_FILENAME_H_
 #define   _WX_FILENAME_H_
-
-#if defined(__GNUG__) && !defined(__APPLE__)
-    #pragma interface "filename.h"
-#endif
 
 #ifndef WX_PRECOMP
     #include  "wx/string.h"

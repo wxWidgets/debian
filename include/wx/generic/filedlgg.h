@@ -5,16 +5,12 @@
 // Modified by:
 // Created:     8/17/99
 // Copyright:   (c) Robert Roebling
-// RCS-ID:      $Id: filedlgg.h,v 1.19.2.2 2002/12/09 10:42:25 JS Exp $
+// RCS-ID:      $Id: filedlgg.h,v 1.19.2.3 2005/06/20 17:36:47 MR Exp $
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
 
 #ifndef _WX_FILEDLGG_H_
 #define _WX_FILEDLGG_H_
-
-#if defined(__GNUG__) && !defined(__APPLE__)
-#pragma interface "filedlgg.h"
-#endif
 
 #include "wx/dialog.h"
 

@@ -4,14 +4,10 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     11/07/98
-// RCS-ID:      $Id: wfstream.cpp,v 1.15.2.2 2003/01/31 22:56:49 VZ Exp $
+// RCS-ID:      $Id: wfstream.cpp,v 1.15.2.3 2005/06/20 17:41:23 MR Exp $
 // Copyright:   (c) Guilhem Lavaux
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
-
-#ifdef __GNUG__
-#pragma implementation "wfstream.h"
-#endif
 
 // For compilers that support precompilation, includes "wx.h".
 #include "wx/wxprec.h"

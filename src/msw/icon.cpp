@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by: 20.11.99 (VZ): don't derive from wxBitmap any more
 // Created:     04/01/98
-// RCS-ID:      $Id: icon.cpp,v 1.23 2002/02/06 01:42:02 VZ Exp $
+// RCS-ID:      $Id: icon.cpp,v 1.23.2.1 2005/06/20 17:43:59 MR Exp $
 // Copyright:   (c) Julian Smart and Markus Holzem
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -16,10 +16,6 @@
 // ----------------------------------------------------------------------------
 // headers
 // ----------------------------------------------------------------------------
-
-#ifdef __GNUG__
-    #pragma implementation "icon.h"
-#endif
 
 // For compilers that support precompilation, includes "wx.h".
 #include "wx/wxprec.h"

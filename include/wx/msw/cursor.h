@@ -4,17 +4,13 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     01/02/97
-// RCS-ID:      $Id: cursor.h,v 1.9 2002/04/23 23:51:52 VZ Exp $
+// RCS-ID:      $Id: cursor.h,v 1.9.2.1 2005/06/20 17:37:55 MR Exp $
 // Copyright:   (c) Julian Smart
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
 
 #ifndef _WX_CURSOR_H_
 #define _WX_CURSOR_H_
-
-#ifdef __GNUG__
-    #pragma interface "cursor.h"
-#endif
 
 // compatible (even if incorrect) behaviour by default: derive wxCursor from
 // wxBitmap

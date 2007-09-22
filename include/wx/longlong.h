@@ -5,17 +5,13 @@
 // Author:      Jeffrey C. Ollie <jeff@ollie.clive.ia.us>, Vadim Zeitlin
 // Modified by:
 // Created:     10.02.99
-// RCS-ID:      $Id: longlong.h,v 1.43.4.5 2003/12/11 08:56:00 JS Exp $
+// RCS-ID:      $Id: longlong.h,v 1.43.4.6 2005/06/20 17:36:21 MR Exp $
 // Copyright:   (c) 1998 Vadim Zeitlin <zeitlin@dptmaths.ens-cachan.fr>
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
 
 #ifndef _WX_LONGLONG_H
 #define _WX_LONGLONG_H
-
-#if defined(__GNUG__) && !defined(__APPLE__)
-    #pragma interface "longlong.h"
-#endif
 
 #include "wx/defs.h"
 #include "wx/string.h"

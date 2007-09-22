@@ -4,7 +4,7 @@
 // Author:      Vadim Zeitlin
 // Modified by:
 // Created:     10.09.00
-// RCS-ID:      $Id: tipwin.cpp,v 1.19 2002/01/22 15:39:40 VZ Exp $
+// RCS-ID:      $Id: tipwin.cpp,v 1.19.2.1 2005/06/20 17:41:51 MR Exp $
 // Copyright:   (c) 2000 Vadim Zeitlin <zeitlin@dptmaths.ens-cachan.fr>
 // Licence:     wxWindows license
 ///////////////////////////////////////////////////////////////////////////////
@@ -16,10 +16,6 @@
 // ----------------------------------------------------------------------------
 // headers
 // ----------------------------------------------------------------------------
-
-#ifdef __GNUG__
-    #pragma implementation "tipwin.h"
-#endif
 
 // For compilers that support precompilatixon, includes "wx/wx.h".
 #include "wx/wxprec.h"

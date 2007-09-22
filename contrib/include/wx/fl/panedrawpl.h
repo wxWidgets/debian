@@ -4,17 +4,13 @@
 // Author:      Aleksandras Gluchovas <mailto:alex@soften.ktu.lt>
 // Modified by:
 // Created:     06/09/98
-// RCS-ID:      $Id: panedrawpl.h,v 1.3.2.1 2002/10/24 11:21:35 JS Exp $
+// RCS-ID:      $Id: panedrawpl.h,v 1.3.2.2 2005/06/20 17:33:26 MR Exp $
 // Copyright:   (c) Aleksandras Gluchovas
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
 
 #ifndef __PANEDRAWPL_G__
 #define __PANEDRAWPL_G__
-
-#if defined(__GNUG__) && !defined(__APPLE__)
-    #pragma interface "panedrawpl.h"
-#endif
 
 #include "wx/fl/controlbar.h"
 

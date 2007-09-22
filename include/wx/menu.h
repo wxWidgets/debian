@@ -4,17 +4,13 @@
 // Author:      Vadim Zeitlin
 // Modified by:
 // Created:     26.10.99
-// RCS-ID:      $Id: menu.h,v 1.24.2.1 2003/07/10 08:57:31 JS Exp $
+// RCS-ID:      $Id: menu.h,v 1.24.2.2 2005/06/20 17:36:22 MR Exp $
 // Copyright:   (c) wxWindows team
 // Licence:     wxWindows license
 ///////////////////////////////////////////////////////////////////////////////
 
 #ifndef _WX_MENU_H_BASE_
 #define _WX_MENU_H_BASE_
-
-#if defined(__GNUG__) && !defined(__APPLE__)
-    #pragma interface "menubase.h"
-#endif
 
 #if wxUSE_MENUS
 

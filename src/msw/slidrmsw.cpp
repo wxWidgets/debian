@@ -4,14 +4,10 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     04/01/98
-// RCS-ID:      $Id: slidrmsw.cpp,v 1.22.2.2 2003/05/07 08:36:36 JS Exp $
+// RCS-ID:      $Id: slidrmsw.cpp,v 1.22.2.3 2005/06/20 17:44:07 MR Exp $
 // Copyright:   (c) Julian Smart and Markus Holzem
 // Licence:       wxWindows license
 /////////////////////////////////////////////////////////////////////////////
-
-#ifdef __GNUG__
-#pragma implementation "slidrmsw.h"
-#endif
 
 // For compilers that support precompilation, includes "wx.h".
 #include "wx/wxprec.h"

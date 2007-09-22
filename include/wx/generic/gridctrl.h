@@ -4,17 +4,13 @@
 // Author:      Paul Gammans, Roger Gammans
 // Modified by:
 // Created:     11/04/2001
-// RCS-ID:      $Id: gridctrl.h,v 1.5 2002/08/31 11:29:12 GD Exp $
+// RCS-ID:      $Id: gridctrl.h,v 1.5.2.1 2005/06/20 17:36:48 MR Exp $
 // Copyright:   (c) The Computer Surgery (paul@compsurg.co.uk)
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
 
 #ifndef _WX_GENERIC_GRIDCTRL_H_
 #define _WX_GENERIC_GRIDCTRL_H_
-
-#if defined(__GNUG__) && !defined(__APPLE__)
-    #pragma interface "gridctrl.h"
-#endif
 
 #if wxUSE_GRID || wxUSE_NEW_GRID
 

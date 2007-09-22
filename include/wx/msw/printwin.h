@@ -4,17 +4,13 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     01/02/97
-// RCS-ID:      $Id: printwin.h,v 1.5 1999/04/02 22:30:55 VZ Exp $
+// RCS-ID:      $Id: printwin.h,v 1.5.6.1 2005/06/20 17:38:03 MR Exp $
 // Copyright:   (c) Julian Smart
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
 
 #ifndef _WX_PRINTWIN_H_
 #define _WX_PRINTWIN_H_
-
-#ifdef __GNUG__
-    #pragma interface "printwin.h"
-#endif
 
 #include "wx/prntbase.h"
 

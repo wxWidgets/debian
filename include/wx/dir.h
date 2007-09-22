@@ -4,17 +4,13 @@
 // Author:      Vadim Zeitlin
 // Modified by:
 // Created:     08.12.99
-// RCS-ID:      $Id: dir.h,v 1.6 2002/08/31 11:29:10 GD Exp $
+// RCS-ID:      $Id: dir.h,v 1.6.2.2 2005/06/22 07:55:19 RL Exp $
 // Copyright:   (c) 1999 Vadim Zeitlin <zeitlin@dptmaths.ens-cachan.fr>
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
 
 #ifndef _WX_DIR_H_
 #define _WX_DIR_H_
-
-#if defined(__GNUG__) && !defined(__APPLE__)
-    #pragma interface "dir.h"
-#endif
 
 #ifndef WX_PRECOMP
     #include  "wx/string.h"
@@ -52,6 +48,9 @@ enum wxDirTraverseResult
 class WXDLLEXPORT wxDirTraverser
 {
 public:
+    // virtual dtor for pure virtual base.
+    virtual ~wxDirTraverser() {}
+
     // called for each file found by wxDir::Traverse()
     //
     // return wxDIR_STOP or wxDIR_CONTINUE from here

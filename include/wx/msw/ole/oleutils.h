@@ -4,17 +4,13 @@
 // Author:      Vadim Zeitlin
 // Modified by:
 // Created:     19.02.1998
-// RCS-ID:      $Id: oleutils.h,v 1.11.2.1 2003/08/14 11:46:24 CE Exp $
+// RCS-ID:      $Id: oleutils.h,v 1.11.2.4 2005/06/20 17:38:14 MR Exp $
 // Copyright:   (c) 1998 Vadim Zeitlin <zeitlin@dptmaths.ens-cachan.fr>
 // Licence:     wxWindows licence
 ///////////////////////////////////////////////////////////////////////////////
 
 #ifndef   _WX_OLEUTILS_H
 #define   _WX_OLEUTILS_H
-
-#ifdef __GNUG__
-#pragma interface "oleutils.h"
-#endif
 
 #include "wx/defs.h"
 
@@ -73,7 +69,7 @@ public:
     wxAutoULong(ULONG value = 0) : m_Value(value) { }
 
     operator ULONG&() { return m_Value; }
-    ULONG& operator=(ULONG value) { return m_Value = value; }
+    ULONG& operator=(ULONG value) { m_Value = value; return m_Value;  }
     
     wxAutoULong& operator++() { ++m_Value; return *this; }
     const wxAutoULong operator++( int ) { wxAutoULong temp = *this; ++m_Value; return temp; }

@@ -4,17 +4,13 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     01/02/97
-// RCS-ID:      $Id: button.h,v 1.17 2002/08/22 20:34:29 VZ Exp $
+// RCS-ID:      $Id: button.h,v 1.17.2.1 2005/06/20 17:37:53 MR Exp $
 // Copyright:   (c) Julian Smart
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
 
 #ifndef _WX_BUTTON_H_
 #define _WX_BUTTON_H_
-
-#ifdef __GNUG__
-#pragma interface "button.h"
-#endif
 
 // ----------------------------------------------------------------------------
 // Pushbutton

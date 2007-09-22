@@ -2,7 +2,7 @@
 // Name:        wx/gtk/radiobox.h
 // Purpose:
 // Author:      Robert Roebling
-// Id:          $Id: radiobox.h,v 1.28 2002/09/07 12:28:46 GD Exp $
+// Id:          $Id: radiobox.h,v 1.28.2.1 2005/06/20 17:37:04 MR Exp $
 // Copyright:   (c) 1998 Robert Roebling
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -10,10 +10,6 @@
 
 #ifndef __GTKRADIOBOXH__
 #define __GTKRADIOBOXH__
-
-#if defined(__GNUG__) && !defined(__APPLE__)
-#pragma interface
-#endif
 
 #include "wx/bitmap.h"
 

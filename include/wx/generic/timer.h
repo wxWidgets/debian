@@ -2,7 +2,7 @@
 // Name:        timer.h
 // Purpose:     Generic implementation of wxTimer class
 // Author:      Vaclav Slavik
-// Id:          $Id: timer.h,v 1.2 2002/08/31 11:29:12 GD Exp $
+// Id:          $Id: timer.h,v 1.2.2.1 2005/06/20 17:36:52 MR Exp $
 // Copyright:   (c) 2001-2002 SciTech Software, Inc. (www.scitechsoft.com)
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -10,10 +10,6 @@
 
 #ifndef __WX_TIMER_H__
 #define __WX_TIMER_H__
-
-#if defined(__GNUG__) && !defined(__APPLE__)
-    #pragma interface "timer.h"
-#endif
 
 //-----------------------------------------------------------------------------
 // wxTimer

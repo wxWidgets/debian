@@ -4,7 +4,7 @@
 // Author:      Vadim Zeitlin
 // Modified by:
 // Created:     28.06.99
-// RCS-ID:      $Id: dlgcmn.cpp,v 1.19.2.2 2002/09/20 21:07:22 RR Exp $
+// RCS-ID:      $Id: dlgcmn.cpp,v 1.19.2.3 2005/06/20 17:40:46 MR Exp $
 // Copyright:   (c) Vadim Zeitlin
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -16,10 +16,6 @@
 // ----------------------------------------------------------------------------
 // headers
 // ----------------------------------------------------------------------------
-
-#ifdef __GNUG__
-    #pragma implementation "dialogbase.h"
-#endif
 
 // For compilers that support precompilation, includes "wx.h".
 #include "wx/wxprec.h"

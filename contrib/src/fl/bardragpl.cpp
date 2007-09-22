@@ -4,14 +4,10 @@
 // Author:      Aleksandras Gluchovas
 // Modified by:
 // Created:     23/09/98
-// RCS-ID:      $Id: bardragpl.cpp,v 1.5.2.1 2003/04/02 14:14:13 JS Exp $
+// RCS-ID:      $Id: bardragpl.cpp,v 1.5.2.2 2005/06/20 17:34:31 MR Exp $
 // Copyright:   (c) Aleksandras Gluchovas
 // Licence:   	wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
-
-#ifdef __GNUG__
-    #pragma implementation "bardragpl.h"
-#endif
 
 // For compilers that support precompilation, includes "wx.h".
 #include "wx/wxprec.h"

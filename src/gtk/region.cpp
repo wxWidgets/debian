@@ -3,7 +3,7 @@
 // Purpose:
 // Author:      Robert Roebling
 // Modified:    VZ at 05.10.00: use AllocExclusive(), comparison fixed
-// Id:          $Id: region.cpp,v 1.37.2.1 2002/09/21 10:38:36 VZ Exp $
+// Id:          $Id: region.cpp,v 1.37.2.2 2005/06/20 17:42:09 MR Exp $
 // Copyright:   (c) 1998 Robert Roebling
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -11,10 +11,6 @@
 // ============================================================================
 // declarations
 // ============================================================================
-
-#ifdef __GNUG__
-    #pragma implementation "region.h"
-#endif
 
 // ----------------------------------------------------------------------------
 // headers

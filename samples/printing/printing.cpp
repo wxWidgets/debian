@@ -4,14 +4,10 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     1995
-// RCS-ID:      $Id: printing.cpp,v 1.29.2.2 2002/12/15 17:25:22 MBN Exp $
+// RCS-ID:      $Id: printing.cpp,v 1.29.2.3 2005/06/20 17:40:02 MR Exp $
 // Copyright:   (c) Julian Smart
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
-
-#ifdef __GNUG__
-#pragma implementation
-#endif
 
 // For compilers that support precompilation, includes "wx/wx.h".
 #include "wx/wxprec.h"

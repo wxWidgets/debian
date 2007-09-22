@@ -4,17 +4,13 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     01/02/97
-// RCS-ID:      $Id: dc.h,v 1.38 2002/04/17 11:47:59 JS Exp $
+// RCS-ID:      $Id: dc.h,v 1.38.2.1 2005/06/20 17:37:56 MR Exp $
 // Copyright:   (c) Julian Smart
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
 
 #ifndef _WX_DC_H_
 #define _WX_DC_H_
-
-#ifdef __GNUG__
-    #pragma interface "dc.h"
-#endif
 
 #include "wx/defs.h"
 #include "wx/dc.h"

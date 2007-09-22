@@ -4,17 +4,13 @@
 // Author:      Vadim Zeitlin
 // Modified by:
 // Created:     01.06.01
-// RCS-ID:      $Id: evtloop.h,v 1.5 2002/08/31 11:29:10 GD Exp $
+// RCS-ID:      $Id: evtloop.h,v 1.5.2.1 2005/06/20 17:36:10 MR Exp $
 // Copyright:   (c) 2001 Vadim Zeitlin <zeitlin@dptmaths.ens-cachan.fr>
 // Licence:     wxWindows licence
 ///////////////////////////////////////////////////////////////////////////////
 
 #ifndef _WX_EVTLOOP_H_
 #define _WX_EVTLOOP_H_
-
-#if defined(__GNUG__) && !defined(__APPLE__)
-    #pragma interface "evtloop.h"
-#endif
 
 // ----------------------------------------------------------------------------
 // wxEventLoop: a GUI event loop

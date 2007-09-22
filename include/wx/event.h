@@ -4,17 +4,13 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     01/02/97
-// RCS-ID:      $Id: event.h,v 1.158.2.2 2003/06/01 19:00:41 JS Exp $
+// RCS-ID:      $Id: event.h,v 1.158.2.3 2005/06/20 17:36:09 MR Exp $
 // Copyright:   (c) wxWindows team
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
 
 #ifndef _WX_EVENTH__
 #define _WX_EVENTH__
-
-#if defined(__GNUG__) && !defined(__APPLE__)
-    #pragma interface "event.h"
-#endif
 
 #include "wx/defs.h"
 #include "wx/object.h"

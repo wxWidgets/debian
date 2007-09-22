@@ -4,17 +4,13 @@
 // Author:      Vadim Zeitlin
 // Modified by:
 // Created:     04.04.98
-// RCS-ID:      $Id: statbr95.h,v 1.11 2000/03/12 00:25:20 VZ Exp $
+// RCS-ID:      $Id: statbr95.h,v 1.11.6.1 2005/06/20 17:38:05 MR Exp $
 // Copyright:   (c) 1998 Vadim Zeitlin <zeitlin@dptmaths.ens-cachan.fr>
 // Licence:     wxWindows licence
 ///////////////////////////////////////////////////////////////////////////////
 
 #ifndef   _STATBR95_H
 #define   _STATBR95_H
-
-#ifdef __GNUG__
-#pragma interface "statbr95.h"
-#endif
 
 #if wxUSE_NATIVE_STATUSBAR
 

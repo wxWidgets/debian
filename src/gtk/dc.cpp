@@ -2,15 +2,10 @@
 // Name:        dc.cpp
 // Purpose:
 // Author:      Robert Roebling
-// RCS-ID:      $Id: dc.cpp,v 1.30 2001/01/31 15:57:09 vadz Exp $
+// RCS-ID:      $Id: dc.cpp,v 1.30.2.1 2005/06/20 17:42:01 MR Exp $
 // Copyright:   (c) 1998 Robert Roebling, Markus Holzem
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
-
-
-#ifdef __GNUG__
-    #pragma implementation "dc.h"
-#endif
 
 #include "wx/dc.h"
 

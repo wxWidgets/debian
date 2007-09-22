@@ -3,15 +3,10 @@
 // Purpose:     html printing classes
 // Author:      Vaclav Slavik
 // Created:     25/09/99
-// RCS-ID:      $Id: htmprint.cpp,v 1.27.2.4 2003/05/21 23:05:44 VS Exp $
+// RCS-ID:      $Id: htmprint.cpp,v 1.27.2.5 2005/06/20 17:42:24 MR Exp $
 // Copyright:   (c) Vaclav Slavik, 1999
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
-
-
-#ifdef __GNUG__
-#pragma implementation "htmprint.h"
-#endif
 
 // For compilers that support precompilation, includes "wx/wx.h".
 #include "wx/wxprec.h"

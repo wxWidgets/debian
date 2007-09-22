@@ -4,15 +4,10 @@
 // Author:      Robert Roebling
 // Modified by:
 // Created:     04/01/98
-// RCS-ID:      $Id: penguin.cpp,v 1.6.2.1 2003/05/06 07:02:16 RR Exp $
+// RCS-ID:      $Id: penguin.cpp,v 1.6.2.2 2005/06/20 17:39:58 MR Exp $
 // Copyright:   (c) Robert Roebling
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
-
-#ifdef __GNUG__
-#pragma implementation
-#pragma interface
-#endif
 
 // For compilers that support precompilation, includes "wx.h".
 #include "wx/wxprec.h"

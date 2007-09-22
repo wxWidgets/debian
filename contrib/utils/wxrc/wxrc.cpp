@@ -3,15 +3,10 @@
 // Purpose:     XML resource compiler
 // Author:      Vaclav Slavik
 // Created:     2000/03/05
-// RCS-ID:      $Id: wxrc.cpp,v 1.21.2.9 2003/07/21 22:20:16 VS Exp $
+// RCS-ID:      $Id: wxrc.cpp,v 1.21.2.10 2005/06/20 17:35:26 MR Exp $
 // Copyright:   (c) 2000 Vaclav Slavik
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
-
-#if defined(__GNUG__) && !defined(__APPLE__)
-    #pragma implementation
-    #pragma interface
-#endif
 
 // For compilers that support precompilation, includes "wx/wx.h".
 #include "wx/wxprec.h"

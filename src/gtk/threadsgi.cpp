@@ -4,13 +4,10 @@
 // Author:      Original from Wolfram Gloger/Guilhem Lavaux
 // Modified by:
 // Created:     04/22/98
-// RCS-ID:      $Id: threadsgi.cpp,v 1.12 1999/01/06 21:09:02 RR Exp $
+// RCS-ID:      $Id: threadsgi.cpp,v 1.12.8.1 2005/06/20 17:42:14 MR Exp $
 // Copyright:   (c) Wolfram Gloger (1996, 1997); Guilhem Lavaux (1998)
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
-#ifdef __GNUG__
-#pragma implementation "thread.h"
-#endif
 
 #include <stdio.h>
 #include <unistd.h>

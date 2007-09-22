@@ -2,14 +2,10 @@
 // Name:        mgl/timer.cpp
 // Purpose:     wxTimer implementation
 // Author:      Vaclav Slavik
-// Id:          $Id: timer.cpp,v 1.3.2.1 2002/11/09 15:20:36 RR Exp $
+// Id:          $Id: timer.cpp,v 1.3.2.2 2005/06/20 17:41:50 MR Exp $
 // Copyright:   (c) 2001-2002 SciTech Software, Inc. (www.scitechsoft.com)
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
-
-#ifdef __GNUG__
-#pragma implementation "timer.h"
-#endif
 
 // For compilers that support precompilation, includes "wx.h".
 #include "wx/wxprec.h"

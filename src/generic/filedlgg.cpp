@@ -4,7 +4,7 @@
 // Author:      Robert Roebling
 // Modified by:
 // Created:     12/12/98
-// RCS-ID:      $Id: filedlgg.cpp,v 1.72.2.16 2003/11/23 22:49:37 SN Exp $
+// RCS-ID:      $Id: filedlgg.cpp,v 1.72.2.17 2005/06/20 17:41:38 MR Exp $
 // Copyright:   (c) Robert Roebling
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -16,10 +16,6 @@
 // ----------------------------------------------------------------------------
 // headers
 // ----------------------------------------------------------------------------
-
-#ifdef __GNUG__
-#pragma implementation "filedlgg.h"
-#endif
 
 // For compilers that support precompilation, includes "wx.h".
 #include "wx/wxprec.h"

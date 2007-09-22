@@ -2,14 +2,10 @@
 // Name:        gtk/bmpbuttn.cpp
 // Purpose:
 // Author:      Robert Roebling
-// Id:          $Id: bmpbuttn.cpp,v 1.40 2002/05/04 11:57:39 VZ Exp $
+// Id:          $Id: bmpbuttn.cpp,v 1.40.2.1 2005/06/20 17:41:57 MR Exp $
 // Copyright:   (c) 1998 Robert Roebling
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
-
-#ifdef __GNUG__
-#pragma implementation "bmpbuttn.h"
-#endif
 
 #include "wx/defs.h"
 

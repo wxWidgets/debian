@@ -2,7 +2,7 @@
 // Name:        htmlwin.h
 // Purpose:     wxHtmlWindow class for parsing & displaying HTML
 // Author:      Vaclav Slavik
-// RCS-ID:      $Id: htmlwin.h,v 1.32.2.1 2003/04/07 22:18:36 VS Exp $
+// RCS-ID:      $Id: htmlwin.h,v 1.32.2.2 2005/06/20 17:37:14 MR Exp $
 // Copyright:   (c) 1999 Vaclav Slavik
 // Licence:     wxWindows Licence
 /////////////////////////////////////////////////////////////////////////////
@@ -10,10 +10,6 @@
 
 #ifndef _WX_HTMLWIN_H_
 #define _WX_HTMLWIN_H_
-
-#if defined(__GNUG__) && !defined(__APPLE__)
-#pragma interface "htmlwin.h"
-#endif
 
 #include "wx/defs.h"
 #if wxUSE_HTML

@@ -4,16 +4,10 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     10/09/98
-// RCS-ID:      $Id: variant.cpp,v 1.38 2002/08/01 20:00:55 JS Exp $
+// RCS-ID:      $Id: variant.cpp,v 1.38.2.1 2005/06/20 17:41:22 MR Exp $
 // Copyright:   (c)
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
-
-#ifdef __GNUG__
-#pragma implementation "variant.h"
-#pragma implementation "time.h"
-#pragma implementation "date.h"
-#endif
 
 // For compilers that support precompilation, includes "wx/wx.h".
 #include "wx/wxprec.h"

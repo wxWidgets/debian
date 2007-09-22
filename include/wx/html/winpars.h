@@ -2,7 +2,7 @@
 // Name:        winpars.h
 // Purpose:     wxHtmlWinParser class (parser to be used with wxHtmlWindow)
 // Author:      Vaclav Slavik
-// RCS-ID:      $Id: winpars.h,v 1.15.2.2 2003/04/07 22:18:35 VS Exp $
+// RCS-ID:      $Id: winpars.h,v 1.15.2.3 2005/06/20 17:37:14 MR Exp $
 // Copyright:   (c) 1999 Vaclav Slavik
 // Licence:     wxWindows Licence
 /////////////////////////////////////////////////////////////////////////////
@@ -10,10 +10,6 @@
 
 #ifndef _WX_WINPARS_H_
 #define _WX_WINPARS_H_
-
-#if defined(__GNUG__) && !defined(__APPLE__)
-#pragma interface "winpars.h"
-#endif
 
 #include "wx/defs.h"
 #if wxUSE_HTML

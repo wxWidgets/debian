@@ -3,13 +3,9 @@
 // Purpose:     wxFileSystem class - interface for opening files
 // Author:      Vaclav Slavik
 // Copyright:   (c) 1999 Vaclav Slavik
-// CVS-ID:      $Id: filesys.cpp,v 1.36.2.7 2003/10/31 19:51:03 VS Exp $
+// CVS-ID:      $Id: filesys.cpp,v 1.36.2.8 2005/06/20 17:40:52 MR Exp $
 // Licence:     wxWindows Licence
 /////////////////////////////////////////////////////////////////////////////
-
-#ifdef __GNUG__
-#pragma implementation "filesys.h"
-#endif
 
 #include "wx/wxprec.h"
 

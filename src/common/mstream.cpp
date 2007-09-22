@@ -4,7 +4,7 @@
 // Author:      Guilhem Lavaux
 // Modified by: VZ (23.11.00): general code review
 // Created:     04/01/98
-// RCS-ID:      $Id: mstream.cpp,v 1.24.2.1 2002/11/04 19:31:55 VZ Exp $
+// RCS-ID:      $Id: mstream.cpp,v 1.24.2.2 2005/06/20 17:41:07 MR Exp $
 // Copyright:   (c) Guilhem Lavaux
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -16,10 +16,6 @@
 // ----------------------------------------------------------------------------
 // headers
 // ----------------------------------------------------------------------------
-
-#ifdef __GNUG__
-#pragma implementation "mstream.h"
-#endif
 
 // For compilers that support precompilation, includes "wx.h".
 #include "wx/wxprec.h"

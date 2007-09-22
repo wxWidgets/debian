@@ -2,14 +2,10 @@
 // Name:        imagjpeg.cpp
 // Purpose:     wxImage JPEG handler
 // Author:      Vaclav Slavik
-// RCS-ID:      $Id: imagjpeg.cpp,v 1.30.2.3 2004/01/30 12:20:39 VS Exp $
+// RCS-ID:      $Id: imagjpeg.cpp,v 1.30.2.4 2005/06/20 17:41:00 MR Exp $
 // Copyright:   (c) Vaclav Slavik
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
-
-#ifdef __GNUG__
-#pragma implementation "imagjpeg.h"
-#endif
 
 // For compilers that support precompilation, includes "wx.h".
 #include "wx/wxprec.h"

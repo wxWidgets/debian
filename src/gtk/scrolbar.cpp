@@ -2,15 +2,11 @@
 // Name:        src/gtk/scrolbar.cpp
 // Purpose:
 // Author:      Robert Roebling
-// Id:          $Id: scrolbar.cpp,v 1.43.2.2 2003/03/01 20:29:30 VS Exp $
+// Id:          $Id: scrolbar.cpp,v 1.43.2.3 2005/06/20 17:42:10 MR Exp $
 // Copyright:   (c) 1998 Robert Roebling
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
 
-
-#ifdef __GNUG__
-#pragma implementation "scrolbar.h"
-#endif
 
 #include "wx/defs.h"
 

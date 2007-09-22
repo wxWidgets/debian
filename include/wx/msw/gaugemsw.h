@@ -4,17 +4,13 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     01/02/97
-// RCS-ID:      $Id: gaugemsw.h,v 1.12 2000/01/13 23:39:44 VZ Exp $
+// RCS-ID:      $Id: gaugemsw.h,v 1.12.6.1 2005/06/20 17:37:58 MR Exp $
 // Copyright:   (c) Julian Smart
 // Licence:   	wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
 
 #ifndef _GAUGEMSW_H_
 #define _GAUGEMSW_H_
-
-#ifdef __GNUG__
-#pragma interface "gaugemsw.h"
-#endif
 
 #include "wx/control.h"
 

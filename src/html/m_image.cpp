@@ -2,14 +2,10 @@
 // Name:        m_image.cpp
 // Purpose:     wxHtml module for displaying images
 // Author:      Vaclav Slavik
-// RCS-ID:      $Id: m_image.cpp,v 1.37.2.3 2002/11/09 00:07:32 VS Exp $
+// RCS-ID:      $Id: m_image.cpp,v 1.37.2.4 2005/06/20 17:42:26 MR Exp $
 // Copyright:   (c) 1999 Vaclav Slavik, Joel Lucsy
 // Licence:     wxWindows Licence
 /////////////////////////////////////////////////////////////////////////////
-
-#ifdef __GNUG__
-#pragma implementation
-#endif
 
 #include "wx/wxprec.h"
 

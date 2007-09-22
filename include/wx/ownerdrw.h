@@ -4,7 +4,7 @@
 // Author:      Vadim Zeitlin
 // Modified by:
 // Created:     11.11.97
-// RCS-ID:      $Id: ownerdrw.h,v 1.17 2002/09/02 19:15:40 GD Exp $
+// RCS-ID:      $Id: ownerdrw.h,v 1.17.2.1 2005/06/20 17:36:23 MR Exp $
 // Copyright:   (c) 1998 Vadim Zeitlin <zeitlin@dptmaths.ens-cachan.fr>
 // Licence:     wxWindows license
 ///////////////////////////////////////////////////////////////////////////////
@@ -13,10 +13,6 @@
 #define   _OWNERDRW_H
 
 #if wxUSE_OWNER_DRAWN
-
-#if defined(__GNUG__) && !defined(__APPLE__)
-    #pragma interface "ownerdrw.h"
-#endif
 
 #include "wx/bitmap.h"
 #include "wx/colour.h"

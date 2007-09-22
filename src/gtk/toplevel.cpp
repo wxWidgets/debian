@@ -2,7 +2,7 @@
 // Name:        toplevel.cpp
 // Purpose:
 // Author:      Robert Roebling
-// Id:          $Id: toplevel.cpp,v 1.33.2.8 2003/09/09 18:02:27 RR Exp $
+// Id:          $Id: toplevel.cpp,v 1.33.2.9 2005/06/20 17:42:15 MR Exp $
 // Copyright:   (c) 1998 Robert Roebling
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -14,10 +14,6 @@
 // ----------------------------------------------------------------------------
 // headers
 // ----------------------------------------------------------------------------
-
-#ifdef __GNUG__
-    #pragma implementation "toplevel.h"
-#endif
 
 #ifdef __VMS
 #define XIconifyWindow XICONIFYWINDOW

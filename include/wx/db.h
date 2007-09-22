@@ -17,7 +17,7 @@
 //                     databases operate the same in that respect
 //
 // Created:     9.96
-// RCS-ID:      $Id: db.h,v 1.61.2.6 2005/05/04 18:23:24 JS Exp $
+// RCS-ID:      $Id: db.h,v 1.61.2.7 2005/06/20 17:36:04 MR Exp $
 // Copyright:   (c) 1996 Remstar International, Inc.
 // Licence:     wxWindows licence
 //
@@ -33,10 +33,6 @@
 #define EXPERIMENTAL_WXDB_FUNCTIONS 1
 
 #include "wx/version.h"
-
-#if defined(__GNUG__) && !defined(__APPLE__)
-    #pragma interface "db.h"
-#endif
 
 #include "wx/setup.h"
 

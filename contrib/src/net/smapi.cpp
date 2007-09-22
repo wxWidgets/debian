@@ -4,14 +4,10 @@
 // Author:      PJ Naughter <pjna@naughter.com>
 // Modified by: Julian Smart
 // Created:     2001-08-21
-// RCS-ID:      $Id: smapi.cpp,v 1.2.2.4 2003/08/25 18:42:38 JS Exp $
+// RCS-ID:      $Id: smapi.cpp,v 1.2.2.5 2005/06/20 17:34:47 MR Exp $
 // Copyright:   (c) PJ Naughter
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
-
-#ifdef __GNUG__
-#pragma implementation "smapi.h"
-#endif
 
 // For compilers that support precompilation, includes "wx/wx.h".
 #include "wx/wxprec.h"

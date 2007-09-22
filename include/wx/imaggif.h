@@ -2,17 +2,13 @@
 // Name:        imaggif.h
 // Purpose:     wxImage GIF handler
 // Author:      Vaclav Slavik & Guillermo Rodriguez Garcia
-// RCS-ID:      $Id: imaggif.h,v 1.6.2.1 2002/10/23 17:32:01 RR Exp $
+// RCS-ID:      $Id: imaggif.h,v 1.6.2.2 2005/06/20 17:36:17 MR Exp $
 // Copyright:   (c) Guillermo Rodriguez Garcia
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
 
 #ifndef _WX_IMAGGIF_H_
 #define _WX_IMAGGIF_H_
-
-#if defined(__GNUG__) && !defined(__APPLE__)
-#pragma interface "imaggif.h"
-#endif
 
 #include "wx/image.h"
 

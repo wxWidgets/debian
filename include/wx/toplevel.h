@@ -5,7 +5,7 @@
 // Author:      Vadim Zeitlin, Vaclav Slavik
 // Modified by:
 // Created:     06.08.01
-// RCS-ID:      $Id: toplevel.h,v 1.21 2002/08/31 11:29:11 GD Exp $
+// RCS-ID:      $Id: toplevel.h,v 1.21.2.1 2005/06/20 17:36:34 MR Exp $
 // Copyright:   (c) 2001 Vadim Zeitlin <zeitlin@dptmaths.ens-cachan.fr>
 //                       Vaclav Slavik <vaclav@wxwindows.org>
 // Licence:     wxWindows licence
@@ -13,10 +13,6 @@
 
 #ifndef _WX_TOPLEVEL_BASE_H_
 #define _WX_TOPLEVEL_BASE_H_
-
-#if defined(__GNUG__) && !defined(__APPLE__)
-    #pragma interface "toplevelbase.h"
-#endif
 
 // ----------------------------------------------------------------------------
 // headers

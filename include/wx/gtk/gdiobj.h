@@ -2,7 +2,7 @@
 // Name:        gdiobj.h
 // Purpose:
 // Author:      Robert Roebling
-// Id:          $Id: gdiobj.h,v 1.6 2002/09/07 12:28:46 GD Exp $
+// Id:          $Id: gdiobj.h,v 1.6.2.1 2005/06/20 17:37:02 MR Exp $
 // Copyright:   (c) 1998 Robert Roebling, Julian Smart
 // Licence:   	wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -12,10 +12,6 @@
 #define __GDIOBJH__
 
 #include "wx/object.h"
-
-#if defined(__GNUG__) && !defined(__APPLE__)
-#pragma interface
-#endif
 
 class wxGDIObject : public wxObject
 {

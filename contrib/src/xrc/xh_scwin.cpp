@@ -3,15 +3,11 @@
 // Purpose:     XRC resource for wxScrolledWindow
 // Author:      Vaclav Slavik
 // Created:     2002/10/18
-// RCS-ID:      $Id: xh_scwin.cpp,v 1.1.2.2 2004/05/12 09:06:39 JS Exp $
+// RCS-ID:      $Id: xh_scwin.cpp,v 1.1.2.3 2005/06/20 17:35:15 MR Exp $
 // Copyright:   (c) 2002 Vaclav Slavik
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
  
-#ifdef __GNUG__
-#pragma implementation "xh_scwin.h"
-#endif
-
 // For compilers that support precompilation, includes "wx.h".
 #include "wx/wxprec.h"
 

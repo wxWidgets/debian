@@ -4,14 +4,10 @@
 // Author:      Aleksandras Gluchovas
 // Modified by:
 // Created:     06/09/98
-// RCS-ID:      $Id: panedrawpl.cpp,v 1.4.2.1 2003/02/21 21:38:11 JS Exp $
+// RCS-ID:      $Id: panedrawpl.cpp,v 1.4.2.2 2005/06/20 17:34:35 MR Exp $
 // Copyright:   (c) Aleksandras Gluchovas
 // Licence:       wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
-
-#ifdef __GNUG__
-    #pragma implementation "panedrawpl.h"
-#endif
 
 // For compilers that support precompilation, includes "wx.h".
 #include "wx/wxprec.h"

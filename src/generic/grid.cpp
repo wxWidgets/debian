@@ -4,7 +4,7 @@
 // Author:      Michael Bedward (based on code by Julian Smart, Robin Dunn)
 // Modified by: Robin Dunn, Vadim Zeitlin
 // Created:     1/08/1999
-// RCS-ID:      $Id: grid.cpp,v 1.231.2.27 2004/04/12 19:58:39 rgammans Exp $
+// RCS-ID:      $Id: grid.cpp,v 1.231.2.28 2005/06/20 17:41:38 MR Exp $
 // Copyright:   (c) Michael Bedward (mbedward@ozemail.com.au)
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -16,10 +16,6 @@
 // ----------------------------------------------------------------------------
 // headers
 // ----------------------------------------------------------------------------
-
-#ifdef __GNUG__
-    #pragma implementation "grid.h"
-#endif
 
 // For compilers that support precompilatixon, includes "wx/wx.h".
 #include "wx/wxprec.h"

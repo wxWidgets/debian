@@ -2,7 +2,7 @@
 // Name:        wx/gtk/window.h
 // Purpose:
 // Author:      Robert Roebling
-// Id:          $Id: window.h,v 1.111.2.2 2002/10/28 00:20:52 RR Exp $
+// Id:          $Id: window.h,v 1.111.2.3 2005/06/20 17:37:07 MR Exp $
 // Copyright:   (c) 1998 Robert Roebling
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -10,10 +10,6 @@
 
 #ifndef __GTKWINDOWH__
 #define __GTKWINDOWH__
-
-#if defined(__GNUG__) && !defined(__APPLE__)
-    #pragma interface
-#endif
 
 //-----------------------------------------------------------------------------
 // callback definition for inserting a window (internal)

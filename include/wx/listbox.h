@@ -4,7 +4,7 @@
 // Author:      Vadim Zeitlin
 // Modified by:
 // Created:     22.10.99
-// RCS-ID:      $Id: listbox.h,v 1.13 2002/08/31 11:29:10 GD Exp $
+// RCS-ID:      $Id: listbox.h,v 1.13.2.1 2005/06/20 17:36:20 MR Exp $
 // Copyright:   (c) wxWindows team
 // Licence:     wxWindows licence
 ///////////////////////////////////////////////////////////////////////////////
@@ -15,10 +15,6 @@
 // ----------------------------------------------------------------------------
 // headers
 // ----------------------------------------------------------------------------
-
-#if defined(__GNUG__) && !defined(__APPLE__)
-    #pragma interface "listboxbase.h"
-#endif
 
 #include "wx/defs.h"
 

@@ -4,13 +4,10 @@
 // Author:      Guilhem Lavaux
 // Modified by:
 // Created:     20/07/97
-// RCS-ID:      $Id: sckfile.cpp,v 1.13.2.1 2003/10/01 11:46:21 VS Exp $
+// RCS-ID:      $Id: sckfile.cpp,v 1.13.2.2 2005/06/20 17:41:12 MR Exp $
 // Copyright:   (c) 1997, 1998 Guilhem Lavaux
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
-#ifdef __GNUG__
-#pragma implementation "sckfile.h"
-#endif
 
 // For compilers that support precompilation, includes "wx.h".
 #include "wx/wxprec.h"

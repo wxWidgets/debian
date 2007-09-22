@@ -2,15 +2,10 @@
 // Name:        winpars.cpp
 // Purpose:     wxHtmlParser class (generic parser)
 // Author:      Vaclav Slavik
-// RCS-ID:      $Id: winpars.cpp,v 1.35.2.6 2003/04/07 22:17:52 VS Exp $
+// RCS-ID:      $Id: winpars.cpp,v 1.35.2.7 2005/06/20 17:42:28 MR Exp $
 // Copyright:   (c) 1999 Vaclav Slavik
 // Licence:     wxWindows Licence
 /////////////////////////////////////////////////////////////////////////////
-
-
-#ifdef __GNUG__
-#pragma implementation "winpars.h"
-#endif
 
 #include "wx/wxprec.h"
 
