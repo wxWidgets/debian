@@ -1,3 +1,10 @@
+wxwindows2.4 (2.4.5.1-1) unstable; urgency=low
+
+  * Split /debian into a diff.gz, ready for a shift to cvs-buildpackage
+    style maintainance of this one.
+
+ -- Ron Lee <ron@debian.org>  Sun, 25 Jun 2006 16:51:06 +0930
+
 wxwindows2.4 (2.4.5.1) unstable; urgency=low
 
   * Fix the wx.pth alternative path.  Closes: #364096
