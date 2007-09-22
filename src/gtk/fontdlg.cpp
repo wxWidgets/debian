@@ -2,7 +2,7 @@
 // Name:        gtk/fontdlg.cpp
 // Purpose:     wxFontDialog
 // Author:      Robert Roebling
-// Id:          $Id: fontdlg.cpp,v 1.29 2004/11/03 21:13:18 RR Exp $
+// Id:          $Id: fontdlg.cpp,v 1.30 2005/03/21 23:42:16 VZ Exp $
 // Copyright:   (c) 1998 Robert Roebling
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -40,6 +40,7 @@ extern bool g_isIdle;
 // "delete_event"
 //-----------------------------------------------------------------------------
 
+extern "C" {
 static
 bool gtk_fontdialog_delete_callback( GtkWidget *WXUNUSED(widget), GdkEvent *WXUNUSED(event), wxDialog *win )
 {
@@ -57,11 +58,13 @@ bool gtk_fontdialog_delete_callback( GtkWidget *WXUNUSED(widget), GdkEvent *WXUN
 
     return TRUE;
 }
+}
 
 //-----------------------------------------------------------------------------
 // "clicked" for OK-button
 //-----------------------------------------------------------------------------
 
+extern "C" {
 static
 void gtk_fontdialog_ok_callback( GtkWidget *WXUNUSED(widget), wxFontDialog *dialog )
 {
@@ -90,11 +93,13 @@ void gtk_fontdialog_ok_callback( GtkWidget *WXUNUSED(widget), wxFontDialog *dial
     event.SetEventObject( dialog );
     dialog->GetEventHandler()->ProcessEvent( event );
 }
+}
 
 //-----------------------------------------------------------------------------
 // "clicked" for Cancel-button
 //-----------------------------------------------------------------------------
 
+extern "C" {
 static
 void gtk_fontdialog_cancel_callback( GtkWidget *WXUNUSED(w), wxFontDialog *dialog )
 {
@@ -104,6 +109,7 @@ void gtk_fontdialog_cancel_callback( GtkWidget *WXUNUSED(w), wxFontDialog *dialo
     wxCommandEvent event(wxEVT_COMMAND_BUTTON_CLICKED, wxID_CANCEL);
     event.SetEventObject( dialog );
     dialog->GetEventHandler()->ProcessEvent( event );
+}
 }
 
 //-----------------------------------------------------------------------------

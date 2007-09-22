@@ -5,7 +5,7 @@
 // Modified by: VZ (resolutions enumeration/change support, DirectDraw, ...)
 //		    Ryan Norton (IsPrimary override)
 // Created:     06/21/02
-// RCS-ID:      $Id: display.cpp,v 1.14 2004/11/08 04:08:36 RN Exp $
+// RCS-ID:      $Id: display.cpp,v 1.16 2005/02/28 02:00:12 RN Exp $
 // Copyright:   (c) wxWidgets team
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -55,6 +55,10 @@
     // with VC++ 6 <sigh>
     #pragma warning(disable:4706)
 #endif
+
+// with mingw32, we must include windows.h first and it doesn't hurt with other
+// compilers
+#include <windows.h>
 
 #include <multimon.h>
 
@@ -378,10 +382,12 @@ size_t wxDisplayBase::GetCount()
 {
     InitDisplays();
 
-    // I'm not sure if they really always return the same thing and if this is
-    // not true I'd like to know in which situation does it happen
-    wxASSERT_MSG( gs_displays->GetCount() == (size_t)::GetSystemMetrics(SM_CMONITORS),
-                    _T("So how many displays does this system have?") );
+    //RN: FIXME:  This is wrong - the display info array should reload after every call
+    //to GetCount() - otherwise it will not be accurate.
+    //The user can change the number of displays in display properties/settings
+    //after GetCount or similar is called and really mess this up...  
+    //wxASSERT_MSG( gs_displays->GetCount() == (size_t)::GetSystemMetrics(SM_CMONITORS),
+    //                _T("So how many displays does this system have?") );
 
     return gs_displays->GetCount();
 }

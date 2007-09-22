@@ -4,9 +4,9 @@
 %% Author:      Vadim Zeitlin
 %% Modified by:
 %% Created:     06.08.03
-%% RCS-ID:      $Id: renderer.tex,v 1.5 2004/05/04 08:25:47 JS Exp $
+%% RCS-ID:      $Id: renderer.tex,v 1.11 2005/04/08 14:33:35 MW Exp $
 %% Copyright:   (c) 2003 Vadim Zeitlin <vadim@wxwindows.org>
-%% License:     wxWidgets license
+%% License:     wxWindows license
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \section{\class{wxRendererNative}}\label{wxrenderernative}
@@ -14,7 +14,7 @@
 First, a brief introduction to wxRenderer and why it is needed.
 
 Usually wxWidgets uses the underlying low level GUI system to draw all the
-controls -- this is what we mean when we say that it is a ``native'' framework.
+controls - this is what we mean when we say that it is a ``native'' framework.
 However not all controls exist under all (or even any) platforms and in this
 case wxWidgets provides a default, generic, implementation of them written in
 wxWidgets itself.
@@ -91,6 +91,28 @@ No base class
 Virtual destructor as for any base class.
 
 
+\membersection{wxRendererNative::DrawComboBoxDropButton}\label{wxrenderernativedrawcomboboxdropbutton}
+
+\func{void}{DrawComboBoxDropButton}{\param{wxWindow *}{win}, \param{wxDC\& }{dc}, \param{const wxRect\& }{rect}, \param{int }{flags}}
+
+Draw a button like the one used by \helpref{wxComboBox}{wxcombobox} to show a
+drop down window. The usual appearance is a downwards pointing arrow.
+
+\arg{flags} may have the \texttt{wxCONTROL\_PRESSED} or \texttt{wxCONTROL\_CURRENT} bit set.
+
+
+\membersection{wxRendererNative::DrawDropArrow}\label{wxrenderernativedrawdroparrow}
+
+\func{void}{DrawDropArrow}{\param{wxWindow *}{win}, \param{wxDC\& }{dc}, \param{const wxRect\& }{rect}, \param{int }{flags}}
+
+Draw a drop down arrow that is suitable for use outside a combo box. Arrow will have
+transparent background.
+
+\arg{rect} is not entirely filled by the arrow. Instead, you should use bounding
+rectangle of a drop down button which arrow matches the size you need.
+\arg{flags} may have the \texttt{wxCONTROL\_PRESSED} or \texttt{wxCONTROL\_CURRENT} bit set.
+
+
 \membersection{wxRendererNative::DrawHeaderButton}\label{wxrenderernativedrawheaderbutton}
 
 \func{void}{DrawHeaderButton}{\param{wxWindow* }{win}, \param{wxDC\& }{dc}, \param{const wxRect\& }{rect}, \param{int }{flags = 0}}
@@ -112,7 +134,7 @@ well.
 \func{void}{DrawSplitterSash}{\param{wxWindow* }{win}, \param{wxDC\& }{dc}, \param{const wxSize\& }{size}, \param{wxCoord }{position}, \param{wxOrientation }{orient}, \param{int }{flags = 0}}
 
 Draw a sash. The \arg{orient} parameter defines whether the sash should be
-vertical or horizontal and how should the \arg{position} be interpreted.
+vertical or horizontal and how the \arg{position} should be interpreted.
 
 
 \membersection{wxRendererNative::DrawTreeItemButton}\label{wxrenderernativedrawtreeitembutton}

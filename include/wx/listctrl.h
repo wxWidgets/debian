@@ -4,7 +4,7 @@
 // Author:      Vadim Zeitlin
 // Modified by:
 // Created:     04.12.99
-// RCS-ID:      $Id: listctrl.h,v 1.59 2004/09/17 17:57:39 ABX Exp $
+// RCS-ID:      $Id: listctrl.h,v 1.61 2005/01/21 18:48:20 ABX Exp $
 // Copyright:   (c) wxWidgets team
 // Licence:     wxWindows licence
 ///////////////////////////////////////////////////////////////////////////////
@@ -21,6 +21,12 @@
 #if wxUSE_LISTCTRL
 
 #include "wx/listbase.h"
+
+// ----------------------------------------------------------------------------
+// constants
+// ----------------------------------------------------------------------------
+
+extern WXDLLEXPORT_DATA(const wxChar*) wxListCtrlNameStr;
 
 // ----------------------------------------------------------------------------
 // include the wxListCtrl class declaration
@@ -46,7 +52,7 @@ public:
                 const wxSize& size = wxDefaultSize,
                 long style = wxLC_REPORT,
                 const wxValidator& validator = wxDefaultValidator,
-                const wxString &name = wxT("listctrl") )
+                const wxString &name = wxListCtrlNameStr)
     {
         Create(parent, winid, pos, size, style, validator, name);
     }

@@ -4,7 +4,7 @@
 // Author:      Vaclav Slavik
 // Modified by:
 // Created:     2002/04/05
-// RCS-ID:      $Id: artbrows.h,v 1.2 2002/08/31 22:30:48 GD Exp $
+// RCS-ID:      $Id: artbrows.h,v 1.3 2005/03/12 10:33:00 RR Exp $
 // Copyright:   (c) Vaclav Slavik
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -29,6 +29,7 @@ public:
     wxArtBrowserDialog(wxWindow *parent);
 
     void SetArtClient(const wxArtClient& client);
+    void SetArtBitmap(const wxArtID& id, const wxArtClient& client, const wxSize& size = wxDefaultSize);
 
 private:
     void OnSelectItem(wxListEvent &event);
@@ -36,6 +37,7 @@ private:
     
     wxListCtrl *m_list;
     wxStaticBitmap *m_canvas;
+    wxStaticText *m_text;
     wxString m_client;
 
     DECLARE_EVENT_TABLE()

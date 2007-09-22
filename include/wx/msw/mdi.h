@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     01/02/97
-// RCS-ID:      $Id: mdi.h,v 1.30 2004/09/29 21:07:39 VS Exp $
+// RCS-ID:      $Id: mdi.h,v 1.32 2005/03/21 12:27:41 VZ Exp $
 // Copyright:   (c) Julian Smart
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -18,8 +18,8 @@
 
 #include "wx/frame.h"
 
-WXDLLEXPORT_DATA(extern const wxChar*) wxFrameNameStr;
-WXDLLEXPORT_DATA(extern const wxChar*) wxStatusLineNameStr;
+extern WXDLLEXPORT_DATA(const wxChar*) wxFrameNameStr;
+extern WXDLLEXPORT_DATA(const wxChar*) wxStatusLineNameStr;
 
 class WXDLLEXPORT wxMDIClientWindow;
 class WXDLLEXPORT wxMDIChildFrame;
@@ -70,11 +70,11 @@ public:
     wxMenu* GetWindowMenu() const { return m_windowMenu; };
     void SetWindowMenu(wxMenu* menu) ;
     virtual void DoMenuUpdates(wxMenu* menu = NULL);
-    
+
     // MDI operations
     // --------------
     virtual void Cascade();
-    virtual void Tile();
+    virtual void Tile(wxOrientation orient = wxHORIZONTAL);
     virtual void ArrangeIcons();
     virtual void ActivateNext();
     virtual void ActivatePrevious();
@@ -174,7 +174,7 @@ public:
     bool ResetWindowStyle(void *vrect);
 
     void OnIdle(wxIdleEvent& event);
-    
+
     virtual bool Show(bool show = true);
 
 protected:

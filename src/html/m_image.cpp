@@ -2,7 +2,7 @@
 // Name:        m_image.cpp
 // Purpose:     wxHtml module for displaying images
 // Author:      Vaclav Slavik
-// RCS-ID:      $Id: m_image.cpp,v 1.49 2004/09/27 19:15:06 ABX Exp $
+// RCS-ID:      $Id: m_image.cpp,v 1.52 2004/12/14 20:41:58 ABX Exp $
 // Copyright:   (c) 1999 Vaclav Slavik, Joel Lucsy
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -36,8 +36,8 @@
 #include "wx/dynarray.h"
 #include "wx/log.h"
 #include "wx/artprov.h"
+#include "wx/math.h"
 
-#include <math.h>
 #include <float.h>
 
 FORCE_LINK_ME(m_image)
@@ -572,7 +572,7 @@ void wxHtmlImageCell::Draw(wxDC& dc, int x, int y,
 
 wxHtmlLinkInfo *wxHtmlImageCell::GetLink( int x, int y ) const
 {
-    if (m_mapName.IsEmpty())
+    if (m_mapName.empty())
         return wxHtmlCell::GetLink( x, y );
     if (!m_imageMap)
     {

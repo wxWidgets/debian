@@ -6,7 +6,7 @@
 //
 // Author:      Robin Dunn
 // Created:     03-Nov-2003
-// RCS-ID:      $Id: gbsizer.h,v 1.9 2004/11/09 18:32:56 ABX Exp $
+// RCS-ID:      $Id: gbsizer.h,v 1.10 2005/01/21 18:48:19 ABX Exp $
 // Copyright:   (c) Robin Dunn
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -76,7 +76,7 @@ private:
 };
 
 
-WXDLLEXPORT_DATA(extern const wxGBSpan) wxDefaultSpan;
+extern WXDLLEXPORT_DATA(const wxGBSpan) wxDefaultSpan;
 
 
 //---------------------------------------------------------------------------

@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     04/01/98
-// RCS-ID:      $Id: app.cpp,v 1.222 2004/09/18 12:34:45 VZ Exp $
+// RCS-ID:      $Id: app.cpp,v 1.234 2005/06/20 00:23:44 VZ Exp $
 // Copyright:   (c) Julian Smart
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -54,6 +54,7 @@
 #include "wx/dynlib.h"
 
 #include "wx/msw/private.h"
+#include "wx/msw/ole/oleutils.h"
 
 #if wxUSE_TOOLTIPS
     #include "wx/tooltip.h"
@@ -66,6 +67,11 @@
 
     #define  wxUSE_OLE 0
 #endif // broken compilers
+
+#if defined(__POCKETPC__) || defined(__SMARTPHONE__)
+    #include <ole2.h>
+    #include <aygshell.h>
+#endif
 
 #if wxUSE_OLE
     #include <ole2.h>
@@ -81,6 +87,7 @@
 #include "wx/msw/wince/missing.h"
 #endif
 
+// For DLLVER_PLATFORM_WINDOWS
 #if (!defined(__MINGW32__) || wxCHECK_W32API_VERSION( 2, 0 )) && \
     !defined(__CYGWIN__) && !defined(__DIGITALMARS__) && !defined(__WXWINCE__) && \
     (!defined(_MSC_VER) || (_MSC_VER > 1100))
@@ -100,16 +107,16 @@ extern void wxSetKeyboardHook(bool doIt);
 // NB: all "NoRedraw" classes must have the same names as the "normal" classes
 //     with NR suffix - wxWindow::MSWCreate() supposes this
 #ifdef __WXWINCE__
-      wxChar *wxCanvasClassName;
-      wxChar *wxCanvasClassNameNR;
+WXDLLIMPEXP_CORE       wxChar *wxCanvasClassName;
+WXDLLIMPEXP_CORE       wxChar *wxCanvasClassNameNR;
 #else
-const wxChar *wxCanvasClassName        = wxT("wxWindowClass");
-const wxChar *wxCanvasClassNameNR      = wxT("wxWindowClassNR");
+WXDLLIMPEXP_CORE const wxChar *wxCanvasClassName        = wxT("wxWindowClass");
+WXDLLIMPEXP_CORE const wxChar *wxCanvasClassNameNR      = wxT("wxWindowClassNR");
 #endif
-const wxChar *wxMDIFrameClassName      = wxT("wxMDIFrameClass");
-const wxChar *wxMDIFrameClassNameNoRedraw = wxT("wxMDIFrameClassNR");
-const wxChar *wxMDIChildFrameClassName = wxT("wxMDIChildFrameClass");
-const wxChar *wxMDIChildFrameClassNameNoRedraw = wxT("wxMDIChildFrameClassNR");
+WXDLLIMPEXP_CORE const wxChar *wxMDIFrameClassName      = wxT("wxMDIFrameClass");
+WXDLLIMPEXP_CORE const wxChar *wxMDIFrameClassNameNoRedraw = wxT("wxMDIFrameClassNR");
+WXDLLIMPEXP_CORE const wxChar *wxMDIChildFrameClassName = wxT("wxMDIChildFrameClass");
+WXDLLIMPEXP_CORE const wxChar *wxMDIChildFrameClassNameNoRedraw = wxT("wxMDIChildFrameClassNR");
 
 // ----------------------------------------------------------------------------
 // private functions
@@ -274,52 +281,15 @@ bool wxApp::Initialize(int& argc, wxChar **argv)
     }
 #endif
 
-    // the first thing to do is to check if we're trying to run an Unicode
-    // program under Win9x w/o MSLU emulation layer - if so, abort right now
-    // as it has no chance to work
-#if wxUSE_UNICODE && !wxUSE_UNICODE_MSLU
-    if ( wxGetOsVersion() != wxWINDOWS_NT && wxGetOsVersion() != wxWINDOWS_CE )
-    {
-        // note that we can use MessageBoxW() as it's implemented even under
-        // Win9x - OTOH, we can't use wxGetTranslation() because the file APIs
-        // used by wxLocale are not
-        ::MessageBox
-        (
-         NULL,
-         _T("This program uses Unicode and requires Windows NT/2000/XP/CE.\nProgram aborted."),
-         _T("wxWidgets Fatal Error"),
-         MB_ICONERROR | MB_OK
-        );
-
-        return false;
-    }
-#endif // wxUSE_UNICODE && !wxUSE_UNICODE_MSLU
-
 #if defined(__WIN95__) && !defined(__WXMICROWIN__)
     InitCommonControls();
 #endif // __WIN95__
 
-#if wxUSE_OLE || wxUSE_DRAG_AND_DROP
-
-#if wxUSE_OLE
-    // we need to initialize OLE library
-#ifdef __WXWINCE__
-    if ( FAILED(::CoInitializeEx(NULL, COINIT_MULTITHREADED)) )
-        wxLogError(_("Cannot initialize OLE"));
-#else
-    if ( FAILED(::OleInitialize(NULL)) )
-        wxLogError(_("Cannot initialize OLE"));
-#endif
+#if defined(__SMARTPHONE__) || defined(__POCKETPC__)
+    SHInitExtraControls();
 #endif
 
-#endif // wxUSE_OLE
-
-#if wxUSE_CTL3D
-    if (!Ctl3dRegister(wxhInstance))
-        wxLogError(wxT("Cannot register CTL3D"));
-
-    Ctl3dAutoSubclass(wxhInstance);
-#endif // wxUSE_CTL3D
+    wxOleInitialize();
 
     RegisterWindowClasses();
 
@@ -360,8 +330,8 @@ bool wxApp::RegisterWindowClasses()
     wndclass.hInstance     = wxhInstance;
     wndclass.hCursor       = ::LoadCursor((HINSTANCE)NULL, IDC_ARROW);
 
-    // Register the frame window class.
-    wndclass.hbrBackground = (HBRUSH)(COLOR_APPWORKSPACE + 1);
+    // register the class for all normal windows
+    wndclass.hbrBackground = (HBRUSH)(COLOR_BTNFACE + 1);
     wndclass.lpszClassName = wxCanvasClassName;
     wndclass.style         = styleNormal;
 
@@ -496,23 +466,13 @@ void wxApp::CleanUp()
     wxCleanUpPenWin();
 #endif
 
-#if wxUSE_OLE
-#ifdef __WXWINCE__
-    ::CoUninitialize();
-#else
-    ::OleUninitialize();
-#endif
-#endif
+    wxOleUninitialize();
 
     // for an EXE the classes are unregistered when it terminates but DLL may
     // be loaded several times (load/unload/load) into the same process in
     // which case the registration will fail after the first time if we don't
     // unregister the classes now
     UnregisterWindowClasses();
-
-#if wxUSE_CTL3D
-    Ctl3dUnregister(wxhInstance);
-#endif
 
     delete wxWinHandleHash;
     wxWinHandleHash = NULL;
@@ -632,7 +592,17 @@ int wxApp::GetComCtl32Version()
         // if so, then we can check for the version
         if ( dllComCtl32.IsLoaded() )
         {
-#ifdef DLLVER_PLATFORM_WINDOWS
+#ifndef DLLVER_PLATFORM_WINDOWS
+			typedef struct _DllVersionInfo
+			{
+				DWORD cbSize;
+				DWORD dwMajorVersion;                   // Major version
+				DWORD dwMinorVersion;                   // Minor version
+				DWORD dwBuildNumber;                    // Build number
+				DWORD dwPlatformID;                     // DLLVER_PLATFORM_*
+			} DLLVERSIONINFO;
+			typedef HRESULT (CALLBACK* DLLGETVERSIONPROC)(DLLVERSIONINFO *);
+#endif
             // try to use DllGetVersion() if available in _headers_
             wxDYNLIB_FUNCTION( DLLGETVERSIONPROC, DllGetVersion, dllComCtl32 );
             if ( pfnDllGetVersion )
@@ -654,7 +624,6 @@ int wxApp::GetComCtl32Version()
                                         dvi.dwMinorVersion;
                 }
             }
-#endif
 
             // if DllGetVersion() is unavailable either during compile or
             // run-time, try to guess the version otherwise

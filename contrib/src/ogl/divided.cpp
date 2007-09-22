@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     12/07/98
-// RCS-ID:      $Id: divided.cpp,v 1.16 2004/07/23 18:04:12 ABX Exp $
+// RCS-ID:      $Id: divided.cpp,v 1.17 2005/03/03 19:37:14 ABX Exp $
 // Copyright:   (c) Julian Smart
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -585,7 +585,7 @@ void wxDividedShapeControlPoint::OnDragLeft(bool WXUNUSED(draw), double WXUNUSED
     GetCanvas()->PrepareDC(dc);
 
     dc.SetLogicalFunction(OGLRBLF);
-    wxPen dottedPen(wxColour(0, 0, 0), 1, wxDOT);
+    wxPen dottedPen(*wxBLACK, 1, wxDOT);
     dc.SetPen(dottedPen);
     dc.SetBrush((* wxTRANSPARENT_BRUSH));
 
@@ -604,7 +604,7 @@ void wxDividedShapeControlPoint::OnBeginDragLeft(double WXUNUSED(x), double y, i
 
     wxDividedShape *dividedObject = (wxDividedShape *)m_shape;
     dc.SetLogicalFunction(OGLRBLF);
-    wxPen dottedPen(wxColour(0, 0, 0), 1, wxDOT);
+    wxPen dottedPen(*wxBLACK, 1, wxDOT);
     dc.SetPen(dottedPen);
     dc.SetBrush((* wxTRANSPARENT_BRUSH));
 

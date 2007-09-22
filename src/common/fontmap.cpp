@@ -4,7 +4,7 @@
 // Author:      Vadim Zeitlin
 // Modified by:
 // Created:     04.11.99
-// RCS-ID:      $Id: fontmap.cpp,v 1.66 2004/09/14 12:08:28 ABX Exp $
+// RCS-ID:      $Id: fontmap.cpp,v 1.71 2005/06/07 18:59:28 ABX Exp $
 // Copyright:   (c) 1999-2003 Vadim Zeitlin <vadim@wxwindows.org>
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -51,6 +51,7 @@
 #include "wx/msgdlg.h"
 #include "wx/fontdlg.h"
 #include "wx/choicdlg.h"
+#include "wx/encinfo.h"
 
 #include "wx/encconv.h"
 
@@ -162,6 +163,19 @@ wxFontMapper::~wxFontMapper()
 {
 }
 
+bool wxFontMapper::IsWxFontMapper()
+{   return true; }
+
+/* static */
+wxFontMapper *wxFontMapper::Get()
+{
+    wxFontMapperBase *fontmapper = wxFontMapperBase::Get();
+    wxASSERT_MSG(fontmapper->IsWxFontMapper(), wxT("GUI code requested a wxFontMapper but we only have a wxFontMapperBase."));
+    // Now return it anyway because there's a chance the GUI code might just
+    // only want to call wxFontMapperBase functions.
+    return (wxFontMapper*)fontmapper;
+}
+
 wxFontEncoding
 wxFontMapper::CharsetToEncoding(const wxString& charset, bool interactive)
 {
@@ -226,7 +240,7 @@ wxFontMapper::CharsetToEncoding(const wxString& charset, bool interactive)
 
             // remember the alt encoding for this charset -- or remember that
             // we don't know it
-            long value = n == -1 ? wxFONTENCODING_UNKNOWN : (long)encoding;
+            long value = n == -1 ? (long)wxFONTENCODING_UNKNOWN : (long)encoding;
             if ( !config->Write(charset, value) )
             {
                 wxLogError(_("Failed to remember the encoding for the charset '%s'."), charset.c_str());
@@ -316,7 +330,7 @@ bool wxFontMapper::GetAltForEncoding(wxFontEncoding encoding,
 
     wxString configEntry,
              encName = GetEncodingName(encoding);
-    if ( !facename.IsEmpty() )
+    if ( !facename.empty() )
     {
         configEntry = facename + _T("_");
     }
@@ -340,13 +354,13 @@ bool wxFontMapper::GetAltForEncoding(wxFontEncoding encoding,
     }
     else // use the info entered the last time
     {
-        if ( !fontinfo.IsEmpty() && !facename.IsEmpty() )
+        if ( !fontinfo.empty() && !facename.empty() )
         {
             // we tried to find a match with facename -- now try without it
             fontinfo = GetConfig()->Read(encName);
         }
 
-        if ( !fontinfo.IsEmpty() )
+        if ( !fontinfo.empty() )
         {
             if ( info->FromString(fontinfo) )
             {
@@ -429,7 +443,6 @@ bool wxFontMapper::GetAltForEncoding(wxFontEncoding encoding,
             if ( dialog.ShowModal() == wxID_OK )
             {
                 wxFontData retData = dialog.GetFontData();
-                wxFont font = retData.GetChosenFont();
 
                 *info = retData.EncodingInfo();
                 info->encoding = retData.GetEncoding();

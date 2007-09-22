@@ -3,11 +3,53 @@
 
 import _gdi_
 
+def _swig_setattr_nondynamic(self,class_type,name,value,static=1):
+    if (name == "this"):
+        if isinstance(value, class_type):
+            self.__dict__[name] = value.this
+            if hasattr(value,"thisown"): self.__dict__["thisown"] = value.thisown
+            del value.thisown
+            return
+    method = class_type.__swig_setmethods__.get(name,None)
+    if method: return method(self,value)
+    if (not static) or hasattr(self,name) or (name == "thisown"):
+        self.__dict__[name] = value
+    else:
+        raise AttributeError("You cannot add attributes to %s" % self)
+
+def _swig_setattr(self,class_type,name,value):
+    return _swig_setattr_nondynamic(self,class_type,name,value,0)
+
+def _swig_getattr(self,class_type,name):
+    method = class_type.__swig_getmethods__.get(name,None)
+    if method: return method(self)
+    raise AttributeError,name
+
+import types
+try:
+    _object = types.ObjectType
+    _newclass = 1
+except AttributeError:
+    class _object : pass
+    _newclass = 0
+del types
+
+
+def _swig_setattr_nondynamic_method(set):
+    def set_attr(self,name,value):
+        if hasattr(self,name) or (name in ("this", "thisown")):
+            set(self,name,value)
+        else:
+            raise AttributeError("You cannot add attributes to %s" % self)
+    return set_attr
+
+
 import _core
 wx = _core 
 #---------------------------------------------------------------------------
 
 class GDIObject(_core.Object):
+    """Proxy of C++ GDIObject class"""
     def __repr__(self):
         return "<%s.%s; proxy of C++ wxGDIObject instance at %s>" % (self.__class__.__module__, self.__class__.__name__, self.this,)
     def __init__(self, *args, **kwargs):
@@ -227,6 +269,7 @@ NamedColor = NamedColour
 ColorRGB = ColourRGB
 
 class Palette(GDIObject):
+    """Proxy of C++ Palette class"""
     def __repr__(self):
         return "<%s.%s; proxy of C++ wxPalette instance at %s>" % (self.__class__.__module__, self.__class__.__name__, self.this,)
     def __init__(self, *args, **kwargs):
@@ -249,6 +292,10 @@ class Palette(GDIObject):
         """GetRGB(self, int pixel) -> (R,G,B)"""
         return _gdi_.Palette_GetRGB(*args, **kwargs)
 
+    def GetColoursCount(*args, **kwargs):
+        """GetColoursCount(self) -> int"""
+        return _gdi_.Palette_GetColoursCount(*args, **kwargs)
+
     def Ok(*args, **kwargs):
         """Ok(self) -> bool"""
         return _gdi_.Palette_Ok(*args, **kwargs)
@@ -265,6 +312,7 @@ _gdi_.Palette_swigregister(PalettePtr)
 #---------------------------------------------------------------------------
 
 class Pen(GDIObject):
+    """Proxy of C++ Pen class"""
     def __repr__(self):
         return "<%s.%s; proxy of C++ wxPen instance at %s>" % (self.__class__.__module__, self.__class__.__name__, self.this,)
     def __init__(self, *args, **kwargs):
@@ -324,7 +372,7 @@ class Pen(GDIObject):
         return _gdi_.Pen_SetWidth(*args, **kwargs)
 
     def SetDashes(*args, **kwargs):
-        """SetDashes(self, int dashes, wxDash dashes_array)"""
+        """SetDashes(self, int dashes)"""
         return _gdi_.Pen_SetDashes(*args, **kwargs)
 
     def GetDashes(*args, **kwargs):
@@ -439,6 +487,14 @@ class Brush(GDIObject):
         """
         return _gdi_.Brush_GetStipple(*args, **kwargs)
 
+    def IsHatch(*args, **kwargs):
+        """
+        IsHatch(self) -> bool
+
+        Is the current style a hatch type?
+        """
+        return _gdi_.Brush_IsHatch(*args, **kwargs)
+
     def Ok(*args, **kwargs):
         """
         Ok(self) -> bool
@@ -455,6 +511,16 @@ class BrushPtr(Brush):
         if not hasattr(self,"thisown"): self.thisown = 0
         self.__class__ = Brush
 _gdi_.Brush_swigregister(BrushPtr)
+
+def BrushFromBitmap(*args, **kwargs):
+    """
+    BrushFromBitmap(Bitmap stippleBitmap) -> Brush
+
+    Constructs a stippled brush using a bitmap.
+    """
+    val = _gdi_.new_BrushFromBitmap(*args, **kwargs)
+    val.thisown = 1
+    return val
 
 class Bitmap(GDIObject):
     """
@@ -745,6 +811,7 @@ _gdi_.Mask_swigregister(MaskPtr)
 
 MaskColour = wx._deprecated(Mask, "wx.MaskColour is deprecated, use `wx.Mask` instead.") 
 class Icon(GDIObject):
+    """Proxy of C++ Icon class"""
     def __repr__(self):
         return "<%s.%s; proxy of C++ wxIcon instance at %s>" % (self.__class__.__module__, self.__class__.__name__, self.this,)
     def __init__(self, *args, **kwargs):
@@ -829,6 +896,7 @@ def IconFromXPMData(*args, **kwargs):
     return val
 
 class IconLocation(object):
+    """Proxy of C++ IconLocation class"""
     def __repr__(self):
         return "<%s.%s; proxy of C++ wxIconLocation instance at %s>" % (self.__class__.__module__, self.__class__.__name__, self.this,)
     def __init__(self, *args, **kwargs):
@@ -873,6 +941,7 @@ class IconLocationPtr(IconLocation):
 _gdi_.IconLocation_swigregister(IconLocationPtr)
 
 class IconBundle(object):
+    """Proxy of C++ IconBundle class"""
     def __repr__(self):
         return "<%s.%s; proxy of C++ wxIconBundle instance at %s>" % (self.__class__.__module__, self.__class__.__name__, self.this,)
     def __init__(self, *args, **kwargs):
@@ -938,11 +1007,8 @@ class Cursor(GDIObject):
         __init__(self, String cursorName, long type, int hotSpotX=0, int hotSpotY=0) -> Cursor
 
         Construct a Cursor from a file.  Specify the type of file using
-        wx.BITAMP_TYPE* constants, and specify the hotspot if not using a cur
+        wx.BITAMP_TYPE* constants, and specify the hotspot if not using a .cur
         file.
-
-        This constructor is not available on wxGTK, use ``wx.StockCursor``,
-        ``wx.CursorFromImage``, or ``wx.CursorFromBits`` instead.
         """
         newobj = _gdi_.new_Cursor(*args, **kwargs)
         self.this = newobj.this
@@ -972,7 +1038,7 @@ def StockCursor(*args, **kwargs):
     StockCursor(int id) -> Cursor
 
     Create a cursor using one of the stock cursors.  Note that not all
-    cursors are available on all platforms.
+    stock cursors are available on all platforms.
     """
     val = _gdi_.new_StockCursor(*args, **kwargs)
     val.thisown = 1
@@ -982,10 +1048,8 @@ def CursorFromImage(*args, **kwargs):
     """
     CursorFromImage(Image image) -> Cursor
 
-    Constructs a cursor from a wxImage. The cursor is monochrome, colors
-    with the RGB elements all greater than 127 will be foreground, colors
-    less than this background. The mask (if any) will be used as
-    transparent.
+    Constructs a cursor from a `wx.Image`. The mask (if any) will be used
+    for setting the transparent portions of the cursor.
     """
     val = _gdi_.new_CursorFromImage(*args, **kwargs)
     val.thisown = 1
@@ -997,6 +1061,7 @@ OutRegion = _gdi_.OutRegion
 PartRegion = _gdi_.PartRegion
 InRegion = _gdi_.InRegion
 class Region(GDIObject):
+    """Proxy of C++ Region class"""
     def __repr__(self):
         return "<%s.%s; proxy of C++ wxRegion instance at %s>" % (self.__class__.__module__, self.__class__.__name__, self.this,)
     def __init__(self, *args, **kwargs):
@@ -1124,12 +1189,13 @@ def RegionFromBitmapColour(*args, **kwargs):
     return val
 
 def RegionFromPoints(*args, **kwargs):
-    """RegionFromPoints(int points, Point points_array, int fillStyle=WINDING_RULE) -> Region"""
+    """RegionFromPoints(int points, int fillStyle=WINDING_RULE) -> Region"""
     val = _gdi_.new_RegionFromPoints(*args, **kwargs)
     val.thisown = 1
     return val
 
 class RegionIterator(_core.Object):
+    """Proxy of C++ RegionIterator class"""
     def __repr__(self):
         return "<%s.%s; proxy of C++ wxRegionIterator instance at %s>" % (self.__class__.__module__, self.__class__.__name__, self.this,)
     def __init__(self, *args, **kwargs):
@@ -1325,6 +1391,7 @@ FONTENCODING_SHIFT_JIS = _gdi_.FONTENCODING_SHIFT_JIS
 #---------------------------------------------------------------------------
 
 class NativeFontInfo(object):
+    """Proxy of C++ NativeFontInfo class"""
     def __repr__(self):
         return "<%s.%s; proxy of C++ wxNativeFontInfo instance at %s>" % (self.__class__.__module__, self.__class__.__name__, self.this,)
     def __init__(self, *args, **kwargs):
@@ -1432,6 +1499,7 @@ class NativeFontInfoPtr(NativeFontInfo):
 _gdi_.NativeFontInfo_swigregister(NativeFontInfoPtr)
 
 class NativeEncodingInfo(object):
+    """Proxy of C++ NativeEncodingInfo class"""
     def __repr__(self):
         return "<%s.%s; proxy of C++ wxNativeEncodingInfo instance at %s>" % (self.__class__.__module__, self.__class__.__name__, self.this,)
     facename = property(_gdi_.NativeEncodingInfo_facename_get, _gdi_.NativeEncodingInfo_facename_set)
@@ -1475,6 +1543,7 @@ def TestFontEncoding(*args, **kwargs):
 #---------------------------------------------------------------------------
 
 class FontMapper(object):
+    """Proxy of C++ FontMapper class"""
     def __repr__(self):
         return "<%s.%s; proxy of C++ wxFontMapper instance at %s>" % (self.__class__.__module__, self.__class__.__name__, self.this,)
     def __init__(self, *args, **kwargs):
@@ -1600,6 +1669,13 @@ def FontMapper_GetDefaultConfigPath(*args, **kwargs):
 #---------------------------------------------------------------------------
 
 class Font(GDIObject):
+    """
+    A font is an object which determines the appearance of text. Fonts are
+    used for drawing text to a device context, and setting the appearance
+    of a window's text.
+
+    You can retrieve the current system font settings with `wx.SystemSettings`.
+    """
     def __repr__(self):
         return "<%s.%s; proxy of C++ wxFont instance at %s>" % (self.__class__.__module__, self.__class__.__name__, self.this,)
     def __init__(self, *args, **kwargs):
@@ -1607,6 +1683,35 @@ class Font(GDIObject):
         __init__(self, int pointSize, int family, int style, int weight, bool underline=False, 
             String face=EmptyString, 
             int encoding=FONTENCODING_DEFAULT) -> Font
+
+        Creates a font object with the specified attributes.
+
+            :param pointSize:  The size of the font in points.
+
+            :param family: Font family.  A generic way of referring to fonts
+                without specifying actual facename.  It can be One of 
+                the ``wx.FONTFAMILY_xxx`` constants.
+
+            :param style: One of the ``wx.FONTSTYLE_xxx`` constants.
+
+            :param weight: Font weight, sometimes also referred to as font
+                boldness. One of the ``wx.FONTWEIGHT_xxx`` constants.
+
+            :param underline: The value can be ``True`` or ``False`` and
+                indicates whether the font will include an underline.  This
+                may not be supported on all platforms.
+
+            :param face: An optional string specifying the actual typeface to
+                be used. If it is an empty string, a default typeface will be
+                chosen based on the family.
+
+            :param encoding: An encoding which may be one of the
+                ``wx.FONTENCODING_xxx`` constants.  If the specified encoding isn't
+                available, no font is created.
+
+        :see: `wx.FFont`, `wx.FontFromPixelSize`, `wx.FFontFromPixelSize`,
+            `wx.FontFromNativeInfoString`, `wx.FontFromNativeInfo`
+
         """
         if kwargs.has_key('faceName'): kwargs['face'] = kwargs['faceName'];del kwargs['faceName']
         newobj = _gdi_.new_Font(*args, **kwargs)
@@ -1620,7 +1725,11 @@ class Font(GDIObject):
         except: pass
 
     def Ok(*args, **kwargs):
-        """Ok(self) -> bool"""
+        """
+        Ok(self) -> bool
+
+        Returns ``True`` if this font was successfully created.
+        """
         return _gdi_.Font_Ok(*args, **kwargs)
 
     def __nonzero__(self): return self.Ok() 
@@ -1633,111 +1742,234 @@ class Font(GDIObject):
         return _gdi_.Font___ne__(*args, **kwargs)
 
     def GetPointSize(*args, **kwargs):
-        """GetPointSize(self) -> int"""
+        """
+        GetPointSize(self) -> int
+
+        Gets the point size.
+        """
         return _gdi_.Font_GetPointSize(*args, **kwargs)
 
     def GetPixelSize(*args, **kwargs):
-        """GetPixelSize(self) -> Size"""
+        """
+        GetPixelSize(self) -> Size
+
+        Returns the size in pixels if the font was constructed with a pixel
+        size.
+        """
         return _gdi_.Font_GetPixelSize(*args, **kwargs)
 
     def IsUsingSizeInPixels(*args, **kwargs):
-        """IsUsingSizeInPixels(self) -> bool"""
+        """
+        IsUsingSizeInPixels(self) -> bool
+
+        Returns ``True`` if the font is using a pixelSize.
+        """
         return _gdi_.Font_IsUsingSizeInPixels(*args, **kwargs)
 
     def GetFamily(*args, **kwargs):
-        """GetFamily(self) -> int"""
+        """
+        GetFamily(self) -> int
+
+        Gets the font family. 
+        """
         return _gdi_.Font_GetFamily(*args, **kwargs)
 
     def GetStyle(*args, **kwargs):
-        """GetStyle(self) -> int"""
+        """
+        GetStyle(self) -> int
+
+        Gets the font style.
+        """
         return _gdi_.Font_GetStyle(*args, **kwargs)
 
     def GetWeight(*args, **kwargs):
-        """GetWeight(self) -> int"""
+        """
+        GetWeight(self) -> int
+
+        Gets the font weight. 
+        """
         return _gdi_.Font_GetWeight(*args, **kwargs)
 
     def GetUnderlined(*args, **kwargs):
-        """GetUnderlined(self) -> bool"""
+        """
+        GetUnderlined(self) -> bool
+
+        Returns ``True`` if the font is underlined, ``False`` otherwise.
+        """
         return _gdi_.Font_GetUnderlined(*args, **kwargs)
 
     def GetFaceName(*args, **kwargs):
-        """GetFaceName(self) -> String"""
+        """
+        GetFaceName(self) -> String
+
+        Returns the typeface name associated with the font, or the empty
+        string if there is no typeface information.
+        """
         return _gdi_.Font_GetFaceName(*args, **kwargs)
 
     def GetEncoding(*args, **kwargs):
-        """GetEncoding(self) -> int"""
+        """
+        GetEncoding(self) -> int
+
+        Get the font's encoding.
+        """
         return _gdi_.Font_GetEncoding(*args, **kwargs)
 
     def GetNativeFontInfo(*args, **kwargs):
-        """GetNativeFontInfo(self) -> NativeFontInfo"""
+        """
+        GetNativeFontInfo(self) -> NativeFontInfo
+
+        Constructs a `wx.NativeFontInfo` object from this font.
+        """
         return _gdi_.Font_GetNativeFontInfo(*args, **kwargs)
 
     def IsFixedWidth(*args, **kwargs):
-        """IsFixedWidth(self) -> bool"""
+        """
+        IsFixedWidth(self) -> bool
+
+        Returns true if the font is a fixed width (or monospaced) font, false
+        if it is a proportional one or font is invalid.
+        """
         return _gdi_.Font_IsFixedWidth(*args, **kwargs)
 
     def GetNativeFontInfoDesc(*args, **kwargs):
-        """GetNativeFontInfoDesc(self) -> String"""
+        """
+        GetNativeFontInfoDesc(self) -> String
+
+        Returns the platform-dependent string completely describing this font
+        or an empty string if the font isn't valid.
+        """
         return _gdi_.Font_GetNativeFontInfoDesc(*args, **kwargs)
 
     def GetNativeFontInfoUserDesc(*args, **kwargs):
-        """GetNativeFontInfoUserDesc(self) -> String"""
+        """
+        GetNativeFontInfoUserDesc(self) -> String
+
+        Returns a human readable version of `GetNativeFontInfoDesc`.
+        """
         return _gdi_.Font_GetNativeFontInfoUserDesc(*args, **kwargs)
 
     def SetPointSize(*args, **kwargs):
-        """SetPointSize(self, int pointSize)"""
+        """
+        SetPointSize(self, int pointSize)
+
+        Sets the point size.
+        """
         return _gdi_.Font_SetPointSize(*args, **kwargs)
 
     def SetPixelSize(*args, **kwargs):
-        """SetPixelSize(self, Size pixelSize)"""
+        """
+        SetPixelSize(self, Size pixelSize)
+
+        Sets the size in pixels rather than points.  If there is platform API
+        support for this then it is used, otherwise a font with the closest
+        size is found using a binary search.
+        """
         return _gdi_.Font_SetPixelSize(*args, **kwargs)
 
     def SetFamily(*args, **kwargs):
-        """SetFamily(self, int family)"""
+        """
+        SetFamily(self, int family)
+
+        Sets the font family.
+        """
         return _gdi_.Font_SetFamily(*args, **kwargs)
 
     def SetStyle(*args, **kwargs):
-        """SetStyle(self, int style)"""
+        """
+        SetStyle(self, int style)
+
+        Sets the font style.
+        """
         return _gdi_.Font_SetStyle(*args, **kwargs)
 
     def SetWeight(*args, **kwargs):
-        """SetWeight(self, int weight)"""
+        """
+        SetWeight(self, int weight)
+
+        Sets the font weight.
+        """
         return _gdi_.Font_SetWeight(*args, **kwargs)
 
     def SetFaceName(*args, **kwargs):
-        """SetFaceName(self, String faceName)"""
+        """
+        SetFaceName(self, String faceName)
+
+        Sets the facename for the font.  The facename, which should be a valid
+        font installed on the end-user's system.
+
+        To avoid portability problems, don't rely on a specific face, but
+        specify the font family instead or as well. A suitable font will be
+        found on the end-user's system. If both the family and the facename
+        are specified, wxWidgets will first search for the specific face, and
+        then for a font belonging to the same family.
+        """
         return _gdi_.Font_SetFaceName(*args, **kwargs)
 
     def SetUnderlined(*args, **kwargs):
-        """SetUnderlined(self, bool underlined)"""
+        """
+        SetUnderlined(self, bool underlined)
+
+        Sets underlining.
+        """
         return _gdi_.Font_SetUnderlined(*args, **kwargs)
 
     def SetEncoding(*args, **kwargs):
-        """SetEncoding(self, int encoding)"""
+        """
+        SetEncoding(self, int encoding)
+
+        Set the font encoding.
+        """
         return _gdi_.Font_SetEncoding(*args, **kwargs)
 
     def SetNativeFontInfo(*args, **kwargs):
-        """SetNativeFontInfo(self, NativeFontInfo info)"""
+        """
+        SetNativeFontInfo(self, NativeFontInfo info)
+
+        Set the font's attributes from a `wx.NativeFontInfo` object.
+        """
         return _gdi_.Font_SetNativeFontInfo(*args, **kwargs)
 
     def SetNativeFontInfoFromString(*args, **kwargs):
-        """SetNativeFontInfoFromString(self, String info)"""
+        """
+        SetNativeFontInfoFromString(self, String info)
+
+        Set the font's attributes from string representation of a
+        `wx.NativeFontInfo` object.
+        """
         return _gdi_.Font_SetNativeFontInfoFromString(*args, **kwargs)
 
     def SetNativeFontInfoUserDesc(*args, **kwargs):
-        """SetNativeFontInfoUserDesc(self, String info)"""
+        """
+        SetNativeFontInfoUserDesc(self, String info)
+
+        Set the font's attributes from a string formerly returned from
+        `GetNativeFontInfoDesc`.
+        """
         return _gdi_.Font_SetNativeFontInfoUserDesc(*args, **kwargs)
 
     def GetFamilyString(*args, **kwargs):
-        """GetFamilyString(self) -> String"""
+        """
+        GetFamilyString(self) -> String
+
+        Returns a string representation of the font family.
+        """
         return _gdi_.Font_GetFamilyString(*args, **kwargs)
 
     def GetStyleString(*args, **kwargs):
-        """GetStyleString(self) -> String"""
+        """
+        GetStyleString(self) -> String
+
+        Returns a string representation of the font style.
+        """
         return _gdi_.Font_GetStyleString(*args, **kwargs)
 
     def GetWeightString(*args, **kwargs):
-        """GetWeightString(self) -> String"""
+        """
+        GetWeightString(self) -> String
+
+        Return a string representation of the font weight.
+        """
         return _gdi_.Font_GetWeightString(*args, **kwargs)
 
     def SetNoAntiAliasing(*args, **kwargs):
@@ -1749,12 +1981,21 @@ class Font(GDIObject):
         return _gdi_.Font_GetNoAntiAliasing(*args, **kwargs)
 
     def GetDefaultEncoding(*args, **kwargs):
-        """GetDefaultEncoding() -> int"""
+        """
+        GetDefaultEncoding() -> int
+
+        Returns the encoding used for all fonts created with an encoding of
+        ``wx.FONTENCODING_DEFAULT``.
+        """
         return _gdi_.Font_GetDefaultEncoding(*args, **kwargs)
 
     GetDefaultEncoding = staticmethod(GetDefaultEncoding)
     def SetDefaultEncoding(*args, **kwargs):
-        """SetDefaultEncoding(int encoding)"""
+        """
+        SetDefaultEncoding(int encoding)
+
+        Sets the default font encoding.
+        """
         return _gdi_.Font_SetDefaultEncoding(*args, **kwargs)
 
     SetDefaultEncoding = staticmethod(SetDefaultEncoding)
@@ -1767,26 +2008,53 @@ class FontPtr(Font):
 _gdi_.Font_swigregister(FontPtr)
 
 def FontFromNativeInfo(*args, **kwargs):
-    """FontFromNativeInfo(NativeFontInfo info) -> Font"""
+    """
+    FontFromNativeInfo(NativeFontInfo info) -> Font
+
+    Construct a `wx.Font` from a `wx.NativeFontInfo` object.
+    """
     if kwargs.has_key('faceName'): kwargs['face'] = kwargs['faceName'];del kwargs['faceName']
     val = _gdi_.new_FontFromNativeInfo(*args, **kwargs)
     val.thisown = 1
     return val
 
 def FontFromNativeInfoString(*args, **kwargs):
-    """FontFromNativeInfoString(String info) -> Font"""
+    """
+    FontFromNativeInfoString(String info) -> Font
+
+    Construct a `wx.Font` from the string representation of a
+    `wx.NativeFontInfo` object.
+    """
     if kwargs.has_key('faceName'): kwargs['face'] = kwargs['faceName'];del kwargs['faceName']
     val = _gdi_.new_FontFromNativeInfoString(*args, **kwargs)
     val.thisown = 1
     return val
 
-def Font2(*args, **kwargs):
+def FFont(*args, **kwargs):
     """
-    Font2(int pointSize, int family, int flags=FONTFLAG_DEFAULT, 
+    FFont(int pointSize, int family, int flags=FONTFLAG_DEFAULT, 
         String face=EmptyString, int encoding=FONTENCODING_DEFAULT) -> Font
+
+    A bit of a simpler way to create a `wx.Font` using flags instead of
+    individual attribute settings.  The value of flags can be a
+    combination of the following:
+
+        ============================  ==
+        wx.FONTFLAG_DEFAULT
+        wx.FONTFLAG_ITALIC
+        wx.FONTFLAG_SLANT
+        wx.FONTFLAG_LIGHT
+        wx.FONTFLAG_BOLD
+        wx.FONTFLAG_ANTIALIASED
+        wx.FONTFLAG_NOT_ANTIALIASED
+        wx.FONTFLAG_UNDERLINED
+        wx.FONTFLAG_STRIKETHROUGH
+        ============================  ==
+
+    :see: `wx.Font.__init__`
     """
     if kwargs.has_key('faceName'): kwargs['face'] = kwargs['faceName'];del kwargs['faceName']
-    val = _gdi_.new_Font2(*args, **kwargs)
+    val = _gdi_.new_FFont(*args, **kwargs)
     val.thisown = 1
     return val
 
@@ -1795,23 +2063,56 @@ def FontFromPixelSize(*args, **kwargs):
     FontFromPixelSize(Size pixelSize, int family, int style, int weight, 
         bool underlined=False, String face=wxEmptyString, 
         int encoding=FONTENCODING_DEFAULT) -> Font
+
+    Creates a font using a size in pixels rather than points.  If there is
+    platform API support for this then it is used, otherwise a font with
+    the closest size is found using a binary search.
+
+    :see: `wx.Font.__init__`
     """
     if kwargs.has_key('faceName'): kwargs['face'] = kwargs['faceName'];del kwargs['faceName']
     val = _gdi_.new_FontFromPixelSize(*args, **kwargs)
     val.thisown = 1
     return val
 
+def FFontFromPixelSize(*args, **kwargs):
+    """
+    FFontFromPixelSize(Size pixelSize, int family, int flags=FONTFLAG_DEFAULT, 
+        String face=wxEmptyString, int encoding=FONTENCODING_DEFAULT) -> Font
+
+    Creates a font using a size in pixels rather than points.  If there is
+    platform API support for this then it is used, otherwise a font with
+    the closest size is found using a binary search.
+
+    :see: `wx.Font.__init__`, `wx.FFont`
+    """
+    if kwargs.has_key('faceName'): kwargs['face'] = kwargs['faceName'];del kwargs['faceName']
+    val = _gdi_.new_FFontFromPixelSize(*args, **kwargs)
+    val.thisown = 1
+    return val
+
 def Font_GetDefaultEncoding(*args, **kwargs):
-    """Font_GetDefaultEncoding() -> int"""
+    """
+    Font_GetDefaultEncoding() -> int
+
+    Returns the encoding used for all fonts created with an encoding of
+    ``wx.FONTENCODING_DEFAULT``.
+    """
     return _gdi_.Font_GetDefaultEncoding(*args, **kwargs)
 
 def Font_SetDefaultEncoding(*args, **kwargs):
-    """Font_SetDefaultEncoding(int encoding)"""
+    """
+    Font_SetDefaultEncoding(int encoding)
+
+    Sets the default font encoding.
+    """
     return _gdi_.Font_SetDefaultEncoding(*args, **kwargs)
 
+Font2 = wx._deprecated(FFont, "Use `wx.FFont` instead.") 
 #---------------------------------------------------------------------------
 
 class FontEnumerator(object):
+    """Proxy of C++ FontEnumerator class"""
     def __repr__(self):
         return "<%s.%s; proxy of C++ wxPyFontEnumerator instance at %s>" % (self.__class__.__module__, self.__class__.__name__, self.this,)
     def __init__(self, *args, **kwargs):
@@ -2090,6 +2391,7 @@ LANGUAGE_ZHUANG = _gdi_.LANGUAGE_ZHUANG
 LANGUAGE_ZULU = _gdi_.LANGUAGE_ZULU
 LANGUAGE_USER_DEFINED = _gdi_.LANGUAGE_USER_DEFINED
 class LanguageInfo(object):
+    """Proxy of C++ LanguageInfo class"""
     def __init__(self): raise RuntimeError, "No constructor defined"
     def __repr__(self):
         return "<%s.%s; proxy of C++ wxLanguageInfo instance at %s>" % (self.__class__.__module__, self.__class__.__name__, self.this,)
@@ -2113,6 +2415,7 @@ LOCALE_DECIMAL_POINT = _gdi_.LOCALE_DECIMAL_POINT
 LOCALE_LOAD_DEFAULT = _gdi_.LOCALE_LOAD_DEFAULT
 LOCALE_CONV_ENCODING = _gdi_.LOCALE_CONV_ENCODING
 class Locale(object):
+    """Proxy of C++ Locale class"""
     def __repr__(self):
         return "<%s.%s; proxy of C++ wxLocale instance at %s>" % (self.__class__.__module__, self.__class__.__name__, self.this,)
     def __init__(self, *args, **kwargs):
@@ -2277,6 +2580,7 @@ PLATFORM_WINDOWS = _gdi_.PLATFORM_WINDOWS
 PLATFORM_OS2 = _gdi_.PLATFORM_OS2
 PLATFORM_MAC = _gdi_.PLATFORM_MAC
 class EncodingConverter(_core.Object):
+    """Proxy of C++ EncodingConverter class"""
     def __repr__(self):
         return "<%s.%s; proxy of C++ wxEncodingConverter instance at %s>" % (self.__class__.__module__, self.__class__.__name__, self.this,)
     def __init__(self, *args, **kwargs):
@@ -2347,8 +2651,8 @@ def EncodingConverter_CanConvert(*args, **kwargs):
 # to the default catalog path.
 if wx.Platform == "__WXMSW__":
     import os
-    localedir = os.path.join(os.path.split(__file__)[0], "locale")
-    Locale_AddCatalogLookupPathPrefix(localedir)
+    _localedir = os.path.join(os.path.split(__file__)[0], "locale")
+    Locale.AddCatalogLookupPathPrefix(_localedir)
     del os
 
 #----------------------------------------------------------------------------
@@ -3155,7 +3459,7 @@ class DC(_core.Object):
         *text*. The generic version simply builds a running total of the widths
         of each character using GetTextExtent, however if the various
         platforms have a native API function that is faster or more accurate
-        than the generic implementaiton then it will be used instead.
+        than the generic implementation then it will be used instead.
         """
         return _gdi_.DC_GetPartialTextExtents(*args, **kwargs)
 
@@ -3535,31 +3839,24 @@ class DC(_core.Object):
         """
         return _gdi_.DC_SetLogicalFunction(*args, **kwargs)
 
-    def SetOptimization(*args, **kwargs):
+    def ComputeScaleAndOrigin(*args, **kwargs):
         """
-        SetOptimization(self, bool optimize)
+        ComputeScaleAndOrigin(self)
 
-        If *optimize* is true this function sets optimization mode on. This
-        currently means that under X, the device context will not try to set a
-        pen or brush property if it is known to be set already. This approach
-        can fall down if non-wxWidgets code is using the same device context
-        or window, for example when the window is a panel on which the
-        windowing system draws panel items. The wxWidgets device context
-        'memory' will now be out of step with reality.
+        Performs all necessary computations for given platform and context
+        type after each change of scale and origin parameters. Usually called
+        automatically internally after such changes.
 
-        Setting optimization off, drawing, then setting it back on again, is a
-        trick that must occasionally be employed.
         """
-        return _gdi_.DC_SetOptimization(*args, **kwargs)
+        return _gdi_.DC_ComputeScaleAndOrigin(*args, **kwargs)
 
-    def GetOptimization(*args, **kwargs):
-        """
-        GetOptimization(self) -> bool
+    def SetOptimization(self, optimize):
+        pass
+    def GetOptimization(self):
+        return False
 
-        Returns true if device context optimization is on. See
-        `SetOptimization` for .
-        """
-        return _gdi_.DC_GetOptimization(*args, **kwargs)
+    SetOptimization = wx._deprecated(SetOptimization)
+    GetOptimization = wx._deprecated(GetOptimization)
 
     def CalcBoundingBox(*args, **kwargs):
         """
@@ -3892,6 +4189,8 @@ def MemoryDCFromDC(*args, **kwargs):
 
 #---------------------------------------------------------------------------
 
+BUFFER_VIRTUAL_AREA = _gdi_.BUFFER_VIRTUAL_AREA
+BUFFER_CLIENT_AREA = _gdi_.BUFFER_CLIENT_AREA
 class BufferedDC(MemoryDC):
     """
     This simple class provides a simple way to avoid flicker: when drawing
@@ -3909,8 +4208,8 @@ class BufferedDC(MemoryDC):
         return "<%s.%s; proxy of C++ wxBufferedDC instance at %s>" % (self.__class__.__module__, self.__class__.__name__, self.this,)
     def __init__(self, *args):
         """
-        __init__(self, DC dc, Bitmap buffer) -> BufferedDC
-        __init__(self, DC dc, Size area) -> BufferedDC
+        __init__(self, DC dc, Bitmap buffer=NullBitmap, int style=BUFFER_CLIENT_AREA) -> BufferedDC
+        __init__(self, DC dc, Size area, int style=BUFFER_CLIENT_AREA) -> BufferedDC
 
         Constructs a buffered DC.
         """
@@ -3969,12 +4268,14 @@ class BufferedPaintDC(BufferedDC):
 
 
 
+
+
     """
     def __repr__(self):
         return "<%s.%s; proxy of C++ wxBufferedPaintDC instance at %s>" % (self.__class__.__module__, self.__class__.__name__, self.this,)
     def __init__(self, *args, **kwargs):
         """
-        __init__(self, Window window, Bitmap buffer=NullBitmap) -> BufferedPaintDC
+        __init__(self, Window window, Bitmap buffer=NullBitmap, int style=BUFFER_CLIENT_AREA) -> BufferedPaintDC
 
         Create a buffered paint DC.  As with `wx.BufferedDC`, you may either
         provide the bitmap to be used for buffering or let this object create
@@ -4277,6 +4578,7 @@ def PostScriptDC_GetResolution(*args, **kwargs):
 #---------------------------------------------------------------------------
 
 class MetaFile(_core.Object):
+    """Proxy of C++ MetaFile class"""
     def __repr__(self):
         return "<%s.%s; proxy of C++ wxMetaFile instance at %s>" % (self.__class__.__module__, self.__class__.__name__, self.this,)
     def __init__(self, *args, **kwargs):
@@ -4294,6 +4596,7 @@ class MetaFilePtr(MetaFile):
 _gdi_.MetaFile_swigregister(MetaFilePtr)
 
 class MetaFileDC(DC):
+    """Proxy of C++ MetaFileDC class"""
     def __repr__(self):
         return "<%s.%s; proxy of C++ wxMetaFileDC instance at %s>" % (self.__class__.__module__, self.__class__.__name__, self.this,)
     def __init__(self, *args, **kwargs):
@@ -4314,6 +4617,7 @@ class MetaFileDCPtr(MetaFileDC):
 _gdi_.MetaFileDC_swigregister(MetaFileDCPtr)
 
 class PrinterDC(DC):
+    """Proxy of C++ PrinterDC class"""
     def __repr__(self):
         return "<%s.%s; proxy of C++ wxPrinterDC instance at %s>" % (self.__class__.__module__, self.__class__.__name__, self.this,)
     def __init__(self, *args, **kwargs):
@@ -4340,6 +4644,7 @@ IMAGE_LIST_NORMAL = _gdi_.IMAGE_LIST_NORMAL
 IMAGE_LIST_SMALL = _gdi_.IMAGE_LIST_SMALL
 IMAGE_LIST_STATE = _gdi_.IMAGE_LIST_STATE
 class ImageList(_core.Object):
+    """Proxy of C++ ImageList class"""
     def __repr__(self):
         return "<%s.%s; proxy of C++ wxImageList instance at %s>" % (self.__class__.__module__, self.__class__.__name__, self.this,)
     def __init__(self, *args, **kwargs):
@@ -4365,6 +4670,14 @@ class ImageList(_core.Object):
     def AddIcon(*args, **kwargs):
         """AddIcon(self, Icon icon) -> int"""
         return _gdi_.ImageList_AddIcon(*args, **kwargs)
+
+    def GetBitmap(*args, **kwargs):
+        """GetBitmap(self, int index) -> Bitmap"""
+        return _gdi_.ImageList_GetBitmap(*args, **kwargs)
+
+    def GetIcon(*args, **kwargs):
+        """GetIcon(self, int index) -> Icon"""
+        return _gdi_.ImageList_GetIcon(*args, **kwargs)
 
     def Replace(*args, **kwargs):
         """Replace(self, int index, Bitmap bitmap) -> bool"""
@@ -4404,6 +4717,7 @@ _gdi_.ImageList_swigregister(ImageListPtr)
 #---------------------------------------------------------------------------
 
 class PenList(_core.Object):
+    """Proxy of C++ PenList class"""
     def __init__(self): raise RuntimeError, "No constructor defined"
     def __repr__(self):
         return "<%s.%s; proxy of C++ wxPenList instance at %s>" % (self.__class__.__module__, self.__class__.__name__, self.this,)
@@ -4475,6 +4789,7 @@ NullFont = cvar.NullFont
 NullColour = cvar.NullColour
 
 class BrushList(_core.Object):
+    """Proxy of C++ BrushList class"""
     def __init__(self): raise RuntimeError, "No constructor defined"
     def __repr__(self):
         return "<%s.%s; proxy of C++ wxBrushList instance at %s>" % (self.__class__.__module__, self.__class__.__name__, self.this,)
@@ -4483,7 +4798,7 @@ class BrushList(_core.Object):
         return _gdi_.BrushList_AddBrush(*args, **kwargs)
 
     def FindOrCreateBrush(*args, **kwargs):
-        """FindOrCreateBrush(self, Colour colour, int style) -> Brush"""
+        """FindOrCreateBrush(self, Colour colour, int style=SOLID) -> Brush"""
         return _gdi_.BrushList_FindOrCreateBrush(*args, **kwargs)
 
     def RemoveBrush(*args, **kwargs):
@@ -4503,6 +4818,7 @@ class BrushListPtr(BrushList):
 _gdi_.BrushList_swigregister(BrushListPtr)
 
 class ColourDatabase(_core.Object):
+    """Proxy of C++ ColourDatabase class"""
     def __repr__(self):
         return "<%s.%s; proxy of C++ wxColourDatabase instance at %s>" % (self.__class__.__module__, self.__class__.__name__, self.this,)
     def __init__(self, *args, **kwargs):
@@ -4543,6 +4859,7 @@ class ColourDatabasePtr(ColourDatabase):
 _gdi_.ColourDatabase_swigregister(ColourDatabasePtr)
 
 class FontList(_core.Object):
+    """Proxy of C++ FontList class"""
     def __init__(self): raise RuntimeError, "No constructor defined"
     def __repr__(self):
         return "<%s.%s; proxy of C++ wxFontList instance at %s>" % (self.__class__.__module__, self.__class__.__name__, self.this,)
@@ -4580,6 +4897,7 @@ NullColor = NullColour
 #---------------------------------------------------------------------------
 
 class Effects(_core.Object):
+    """Proxy of C++ Effects class"""
     def __repr__(self):
         return "<%s.%s; proxy of C++ wxEffects instance at %s>" % (self.__class__.__module__, self.__class__.__name__, self.this,)
     def __init__(self, *args, **kwargs):
@@ -4654,5 +4972,304 @@ TheFontList = cvar.TheFontList
 ThePenList = cvar.ThePenList
 TheBrushList = cvar.TheBrushList
 TheColourDatabase = cvar.TheColourDatabase
+
+#---------------------------------------------------------------------------
+
+CONTROL_DISABLED = _gdi_.CONTROL_DISABLED
+CONTROL_FOCUSED = _gdi_.CONTROL_FOCUSED
+CONTROL_PRESSED = _gdi_.CONTROL_PRESSED
+CONTROL_ISDEFAULT = _gdi_.CONTROL_ISDEFAULT
+CONTROL_ISSUBMENU = _gdi_.CONTROL_ISSUBMENU
+CONTROL_EXPANDED = _gdi_.CONTROL_EXPANDED
+CONTROL_CURRENT = _gdi_.CONTROL_CURRENT
+CONTROL_SELECTED = _gdi_.CONTROL_SELECTED
+CONTROL_CHECKED = _gdi_.CONTROL_CHECKED
+CONTROL_CHECKABLE = _gdi_.CONTROL_CHECKABLE
+CONTROL_UNDETERMINED = _gdi_.CONTROL_UNDETERMINED
+CONTROL_FLAGS_MASK = _gdi_.CONTROL_FLAGS_MASK
+CONTROL_DIRTY = _gdi_.CONTROL_DIRTY
+class SplitterRenderParams(object):
+    """
+    This is just a simple struct used as a return value of
+    `wx.RendererNative.GetSplitterParams` and contains some platform
+    specific metrics about splitters.
+
+        * widthSash: the width of the splitter sash.
+        * border: the width of the border of the splitter window.
+        * isHotSensitive: ``True`` if the splitter changes its
+          appearance when the mouse is over it.
+
+
+    """
+    def __repr__(self):
+        return "<%s.%s; proxy of C++ wxSplitterRenderParams instance at %s>" % (self.__class__.__module__, self.__class__.__name__, self.this,)
+    def __init__(self, *args, **kwargs):
+        """
+        __init__(self, int widthSash_, int border_, bool isSens_) -> SplitterRenderParams
+
+        This is just a simple struct used as a return value of
+        `wx.RendererNative.GetSplitterParams` and contains some platform
+        specific metrics about splitters.
+
+            * widthSash: the width of the splitter sash.
+            * border: the width of the border of the splitter window.
+            * isHotSensitive: ``True`` if the splitter changes its
+              appearance when the mouse is over it.
+
+
+        """
+        newobj = _gdi_.new_SplitterRenderParams(*args, **kwargs)
+        self.this = newobj.this
+        self.thisown = 1
+        del newobj.thisown
+    def __del__(self, destroy=_gdi_.delete_SplitterRenderParams):
+        """__del__(self)"""
+        try:
+            if self.thisown: destroy(self)
+        except: pass
+
+    widthSash = property(_gdi_.SplitterRenderParams_widthSash_get)
+    border = property(_gdi_.SplitterRenderParams_border_get)
+    isHotSensitive = property(_gdi_.SplitterRenderParams_isHotSensitive_get)
+
+class SplitterRenderParamsPtr(SplitterRenderParams):
+    def __init__(self, this):
+        self.this = this
+        if not hasattr(self,"thisown"): self.thisown = 0
+        self.__class__ = SplitterRenderParams
+_gdi_.SplitterRenderParams_swigregister(SplitterRenderParamsPtr)
+
+class RendererVersion(object):
+    """
+    This simple struct represents the `wx.RendererNative` interface
+    version and is only used as the return value of
+    `wx.RendererNative.GetVersion`.
+    """
+    def __repr__(self):
+        return "<%s.%s; proxy of C++ wxRendererVersion instance at %s>" % (self.__class__.__module__, self.__class__.__name__, self.this,)
+    def __init__(self, *args, **kwargs):
+        """
+        __init__(self, int version_, int age_) -> RendererVersion
+
+        This simple struct represents the `wx.RendererNative` interface
+        version and is only used as the return value of
+        `wx.RendererNative.GetVersion`.
+        """
+        newobj = _gdi_.new_RendererVersion(*args, **kwargs)
+        self.this = newobj.this
+        self.thisown = 1
+        del newobj.thisown
+    def __del__(self, destroy=_gdi_.delete_RendererVersion):
+        """__del__(self)"""
+        try:
+            if self.thisown: destroy(self)
+        except: pass
+
+    Current_Version = _gdi_.RendererVersion_Current_Version
+    Current_Age = _gdi_.RendererVersion_Current_Age
+    def IsCompatible(*args, **kwargs):
+        """IsCompatible(RendererVersion ver) -> bool"""
+        return _gdi_.RendererVersion_IsCompatible(*args, **kwargs)
+
+    IsCompatible = staticmethod(IsCompatible)
+    version = property(_gdi_.RendererVersion_version_get)
+    age = property(_gdi_.RendererVersion_age_get)
+
+class RendererVersionPtr(RendererVersion):
+    def __init__(self, this):
+        self.this = this
+        if not hasattr(self,"thisown"): self.thisown = 0
+        self.__class__ = RendererVersion
+_gdi_.RendererVersion_swigregister(RendererVersionPtr)
+
+def RendererVersion_IsCompatible(*args, **kwargs):
+    """RendererVersion_IsCompatible(RendererVersion ver) -> bool"""
+    return _gdi_.RendererVersion_IsCompatible(*args, **kwargs)
+
+class RendererNative(object):
+    """
+    One of the design principles of wxWidgets is to use the native widgets
+    on every platform in order to be as close to the native look and feel
+    on every platform.  However there are still cases when some generic
+    widgets are needed for various reasons, but it can sometimes take a
+    lot of messy work to make them conform to the native LnF.
+
+    The wx.RendererNative class is a collection of functions that have
+    platform-specific implementations for drawing certain parts of
+    genereic controls in ways that are as close to the native look as
+    possible.
+
+    """
+    def __init__(self): raise RuntimeError, "No constructor defined"
+    def __repr__(self):
+        return "<%s.%s; proxy of C++ wxRendererNative instance at %s>" % (self.__class__.__module__, self.__class__.__name__, self.this,)
+    def DrawHeaderButton(*args, **kwargs):
+        """
+        DrawHeaderButton(self, Window win, DC dc, Rect rect, int flags=0)
+
+        Draw the header control button (such as whar is used by `wx.ListCtrl`
+        in report mode.)
+        """
+        return _gdi_.RendererNative_DrawHeaderButton(*args, **kwargs)
+
+    def DrawTreeItemButton(*args, **kwargs):
+        """
+        DrawTreeItemButton(self, Window win, DC dc, Rect rect, int flags=0)
+
+        Draw the expanded/collapsed icon for a tree control item.
+        """
+        return _gdi_.RendererNative_DrawTreeItemButton(*args, **kwargs)
+
+    def DrawSplitterBorder(*args, **kwargs):
+        """
+        DrawSplitterBorder(self, Window win, DC dc, Rect rect, int flags=0)
+
+        Draw the border for a sash window: this border must be such that the
+        sash drawn by `DrawSplitterSash` blends into it well.
+        """
+        return _gdi_.RendererNative_DrawSplitterBorder(*args, **kwargs)
+
+    def DrawSplitterSash(*args, **kwargs):
+        """
+        DrawSplitterSash(self, Window win, DC dc, Size size, int position, int orient, 
+            int flags=0)
+
+        Draw a sash. The orient parameter defines whether the sash should be
+        vertical or horizontal and how the position should be interpreted.
+        """
+        return _gdi_.RendererNative_DrawSplitterSash(*args, **kwargs)
+
+    def DrawComboBoxDropButton(*args, **kwargs):
+        """
+        DrawComboBoxDropButton(self, Window win, DC dc, Rect rect, int flags=0)
+
+        Draw a button like the one used by `wx.ComboBox` to show a drop down
+        window. The usual appearance is a downwards pointing arrow.
+
+        The ``flags`` parameter may have the ``wx.CONTROL_PRESSED`` or
+        ``wx.CONTROL_CURRENT`` bits set.
+        """
+        return _gdi_.RendererNative_DrawComboBoxDropButton(*args, **kwargs)
+
+    def DrawDropArrow(*args, **kwargs):
+        """
+        DrawDropArrow(self, Window win, DC dc, Rect rect, int flags=0)
+
+        Draw a drop down arrow that is suitable for use outside a combo
+        box. Arrow will have a transparent background.
+
+        ``rect`` is not entirely filled by the arrow. Instead, you should use
+        bounding rectangle of a drop down button which arrow matches the size
+        you need. ``flags`` may have the ``wx.CONTROL_PRESSED`` or
+        ``wx.CONTROL_CURRENT`` bit set.
+        """
+        return _gdi_.RendererNative_DrawDropArrow(*args, **kwargs)
+
+    def GetSplitterParams(*args, **kwargs):
+        """
+        GetSplitterParams(self, Window win) -> SplitterRenderParams
+
+        Get the splitter parameters, see `wx.SplitterRenderParams`.
+        """
+        return _gdi_.RendererNative_GetSplitterParams(*args, **kwargs)
+
+    def Get(*args, **kwargs):
+        """
+        Get() -> RendererNative
+
+        Return the currently used renderer
+        """
+        return _gdi_.RendererNative_Get(*args, **kwargs)
+
+    Get = staticmethod(Get)
+    def GetGeneric(*args, **kwargs):
+        """
+        GetGeneric() -> RendererNative
+
+        Return the generic implementation of the renderer. Under some
+        platforms, this is the default renderer implementation, others have
+        platform-specific default renderer which can be retrieved by calling
+        `GetDefault`.
+        """
+        return _gdi_.RendererNative_GetGeneric(*args, **kwargs)
+
+    GetGeneric = staticmethod(GetGeneric)
+    def GetDefault(*args, **kwargs):
+        """
+        GetDefault() -> RendererNative
+
+        Return the default (native) implementation for this platform -- this
+        is also the one used by default but this may be changed by calling `Set`
+        in which case the return value of this method may be different from
+        the return value of `Get`.
+        """
+        return _gdi_.RendererNative_GetDefault(*args, **kwargs)
+
+    GetDefault = staticmethod(GetDefault)
+    def Set(*args, **kwargs):
+        """
+        Set(RendererNative renderer) -> RendererNative
+
+        Set the renderer to use, passing None reverts to using the default
+        renderer.  Returns the previous renderer used with Set or None.
+        """
+        return _gdi_.RendererNative_Set(*args, **kwargs)
+
+    Set = staticmethod(Set)
+    def GetVersion(*args, **kwargs):
+        """
+        GetVersion(self) -> RendererVersion
+
+        Returns the version of the renderer.  Will be used for ensuring
+        compatibility of dynamically loaded renderers.
+        """
+        return _gdi_.RendererNative_GetVersion(*args, **kwargs)
+
+
+class RendererNativePtr(RendererNative):
+    def __init__(self, this):
+        self.this = this
+        if not hasattr(self,"thisown"): self.thisown = 0
+        self.__class__ = RendererNative
+_gdi_.RendererNative_swigregister(RendererNativePtr)
+
+def RendererNative_Get(*args, **kwargs):
+    """
+    RendererNative_Get() -> RendererNative
+
+    Return the currently used renderer
+    """
+    return _gdi_.RendererNative_Get(*args, **kwargs)
+
+def RendererNative_GetGeneric(*args, **kwargs):
+    """
+    RendererNative_GetGeneric() -> RendererNative
+
+    Return the generic implementation of the renderer. Under some
+    platforms, this is the default renderer implementation, others have
+    platform-specific default renderer which can be retrieved by calling
+    `GetDefault`.
+    """
+    return _gdi_.RendererNative_GetGeneric(*args, **kwargs)
+
+def RendererNative_GetDefault(*args, **kwargs):
+    """
+    RendererNative_GetDefault() -> RendererNative
+
+    Return the default (native) implementation for this platform -- this
+    is also the one used by default but this may be changed by calling `Set`
+    in which case the return value of this method may be different from
+    the return value of `Get`.
+    """
+    return _gdi_.RendererNative_GetDefault(*args, **kwargs)
+
+def RendererNative_Set(*args, **kwargs):
+    """
+    RendererNative_Set(RendererNative renderer) -> RendererNative
+
+    Set the renderer to use, passing None reverts to using the default
+    renderer.  Returns the previous renderer used with Set or None.
+    """
+    return _gdi_.RendererNative_Set(*args, **kwargs)
 
 

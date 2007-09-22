@@ -3,12 +3,12 @@
 // Purpose:     XRC resource for wxWizard
 // Author:      Vaclav Slavik
 // Created:     2003/03/01
-// RCS-ID:      $Id: xh_wizrd.cpp,v 1.7 2004/09/23 09:18:13 VS Exp $
+// RCS-ID:      $Id: xh_wizrd.cpp,v 1.9 2005/01/17 19:15:49 JS Exp $
 // Copyright:   (c) 2000 Vaclav Slavik
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
 
-#ifdef __GNUG__
+#if defined(__GNUG__) && !defined(NO_GCC_PRAGMA)
 #pragma implementation "xh_wizrd.h"
 #endif
 
@@ -32,6 +32,7 @@ wxWizardXmlHandler::wxWizardXmlHandler() : wxXmlResourceHandler()
     m_wizard = NULL;
     m_lastSimplePage = NULL;
     XRC_ADD_STYLE(wxWIZARD_EX_HELPBUTTON);
+    AddWindowStyles();
 }
 
 wxObject *wxWizardXmlHandler::DoCreateResource()

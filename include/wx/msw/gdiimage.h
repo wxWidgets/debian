@@ -5,7 +5,7 @@
 // Author:      Vadim Zeitlin
 // Modified by:
 // Created:     20.11.99
-// RCS-ID:      $Id: gdiimage.h,v 1.13 2004/09/16 22:36:12 VZ Exp $
+// RCS-ID:      $Id: gdiimage.h,v 1.14 2005/03/08 20:16:44 VZ Exp $
 // Copyright:   (c) 1999 Vadim Zeitlin <zeitlin@dptmaths.ens-cachan.fr>
 // Licence:     wxWindows licence
 ///////////////////////////////////////////////////////////////////////////////
@@ -102,8 +102,8 @@ public:
     void SetExtension(const wxString& ext) { m_extension = ext; }
     void SetType(long type) { m_type = type; }
 
-    wxString GetName() const { return m_name; }
-    wxString GetExtension() const { return m_extension; }
+    const wxString& GetName() const { return m_name; }
+    const wxString& GetExtension() const { return m_extension; }
     long GetType() const { return m_type; }
 
     // real handler operations: to implement in derived classes

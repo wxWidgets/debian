@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by: ABX (2004) - adjustementd for conditional building
 // Created:     04/01/98
-// RCS-ID:      $Id: dialogs.h,v 1.42 2004/10/01 01:57:31 RN Exp $
+// RCS-ID:      $Id: dialogs.h,v 1.44 2005/06/10 17:53:10 ABX Exp $
 // Copyright:   (c) Julian Smart
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -78,10 +78,18 @@ of MSW, MAC and OS2
 
 // Turn USE_MODAL_PRESENTATION to 0 if there is any reason for not presenting difference
 // between modal and modeless dialogs (ie. not implemented it in your port yet)
-#if defined(__SMARTPHONE__)
+#if defined(__SMARTPHONE__) || !wxUSE_BOOKCTRL
     #define USE_MODAL_PRESENTATION 0
 #else
     #define USE_MODAL_PRESENTATION 1
+#endif
+
+
+// Turn USE_SETTINGS_DIALOG to 0 if supported
+#if wxUSE_BOOKCTRL
+    #define USE_SETTINGS_DIALOG 1
+#else
+    #define USE_SETTINGS_DIALOG 0
 #endif
 
 
@@ -127,6 +135,35 @@ private:
 };
 
 #endif // USE_MODAL_PRESENTATION
+
+#if USE_SETTINGS_DIALOG
+// Property sheet dialog
+class SettingsDialog: public wxPropertySheetDialog
+{
+DECLARE_CLASS(SettingsDialog)
+public:
+    SettingsDialog(wxWindow* parent);
+
+    wxPanel* CreateGeneralSettingsPage(wxWindow* parent);
+    wxPanel* CreateAestheticSettingsPage(wxWindow* parent);
+
+protected:
+
+    enum {
+        ID_SHOW_TOOLTIPS = 100,
+        ID_AUTO_SAVE,
+        ID_AUTO_SAVE_MINS,
+        ID_LOAD_LAST_PROJECT,
+
+        ID_APPLY_SETTINGS_TO,
+        ID_BACKGROUND_STYLE,
+        ID_FONT_SIZE
+    };
+
+DECLARE_EVENT_TABLE()
+};
+
+#endif // USE_SETTINGS_DIALOG
 
 // Define a new frame type
 class MyFrame: public wxFrame
@@ -215,6 +252,7 @@ public:
     void ChooseFontGeneric(wxCommandEvent& event);
 #endif // USE_FONTDLG_GENERIC
 
+    void OnPropertySheet(wxCommandEvent& event);
     void OnRequestUserAttention(wxCommandEvent& event);
     void OnExit(wxCommandEvent& event);
 
@@ -283,7 +321,8 @@ enum
     DIALOGS_BUSYINFO,
     DIALOGS_FIND,
     DIALOGS_REPLACE,
-    DIALOGS_REQUEST
+    DIALOGS_REQUEST,
+    DIALOGS_PROPERTY_SHEET
 };
 
 #endif

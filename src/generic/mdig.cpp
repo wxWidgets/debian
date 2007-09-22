@@ -4,7 +4,7 @@
 // Author:      Hans Van Leemputten
 // Modified by:
 // Created:     29/07/2002
-// RCS-ID:      $Id: mdig.cpp,v 1.16 2004/07/19 09:39:26 ABX Exp $
+// RCS-ID:      $Id: mdig.cpp,v 1.19 2005/06/06 16:46:50 ABX Exp $
 // Copyright:   (c) Hans Van Leemputten
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -344,6 +344,7 @@ void wxGenericMDIParentFrame::DoHandleMenu(wxCommandEvent &event)
                 {
 #if 1   // What's best? Delayed deleting or immediate deleting?
                     delete m_pActiveChild;
+                    m_pActiveChild = NULL;
 #else
                     ActivateNext();
 
@@ -699,7 +700,7 @@ bool wxGenericMDIClientWindow::CreateClient( wxGenericMDIParentFrame *parent, lo
 {
     SetWindowStyleFlag(style);
 
-    bool success = wxNotebook::Create(parent, wxID_NOTEBOOK_CLIENT_AREA, wxPoint(0, 0), wxSize(100, 100), 0);
+    bool success = wxNotebook::Create(parent, wxID_NOTEBOOK_CLIENT_AREA, wxPoint(0,0), wxSize(100, 100), 0);
     if (success)
     {
         /*

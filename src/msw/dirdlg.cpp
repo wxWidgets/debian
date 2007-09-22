@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     01/02/97
-// RCS-ID:      $Id: dirdlg.cpp,v 1.39 2004/10/19 16:43:53 VZ Exp $
+// RCS-ID:      $Id: dirdlg.cpp,v 1.40 2004/12/05 18:56:29 JS Exp $
 // Copyright:   (c) Julian Smart
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -28,7 +28,7 @@
     #pragma hdrstop
 #endif
 
-#if wxUSE_DIRDLG && !(defined(__SMARTPHONE__) && defined(__WXWINCE__))
+#if wxUSE_DIRDLG && (!defined(__WXWINCE__) || defined(__HANDHELDPC__))
 
 #if defined(__WIN95__) && !defined(__GNUWIN32_OLD__) && wxUSE_OLE
 

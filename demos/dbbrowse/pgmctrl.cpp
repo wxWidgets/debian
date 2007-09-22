@@ -4,7 +4,7 @@
 // Author:      Mark Johnson
 // Modified by: 19990806.mj10777
 // Created:     19991010
-// RCS-ID:      $Id: pgmctrl.cpp,v 1.17 2004/07/19 09:39:12 ABX Exp $
+// RCS-ID:      $Id: pgmctrl.cpp,v 1.19 2005/05/31 09:17:53 JS Exp $
 // Copyright:   (c) Mark Johnson, Berlin Germany
 // Licence:     wxWindows license
 //----------------------------------------------------------------------------------------
@@ -45,7 +45,7 @@
 //----------------------------------------------------------------------------------------
 static inline const wxChar *bool2String(bool b)
 {
-    return b ? _T("") : _T("not ");
+    return b ? wxEmptyString : _T("not ");
 }
 
 //----------------------------------------------------------------------------------------
@@ -88,7 +88,7 @@ PgmCtrl::PgmCtrl(wxWindow *parent, const wxWindowID id,const wxPoint& pos, const
 PgmCtrl::~PgmCtrl()
 {
     delete p_imageListNormal;
-    delete popupMenu1;  
+    delete popupMenu1;
 }
 
 //----------------------------------------------------------------------------------------
@@ -122,7 +122,7 @@ int  PgmCtrl::OnPopulate()
     }
     //---------------------------------------------------------------------------------------
     popupMenu1 = NULL;
-    popupMenu1 = new wxMenu(_T(""));
+    popupMenu1 = new wxMenu;
     popupMenu1->Append(PGMCTRL_ODBC_USER, _("Set Username and Password"));
     // popupMenu1->AppendSeparator();
     //---------------------------------------------------------------------------------------
@@ -166,9 +166,9 @@ void PgmCtrl::OnSelChanged(wxMouseEvent& WXUNUSED(event))
         if (Temp1 == _T("wxConfigBase Delete"))
         {
             if (p_ProgramCfg->DeleteAll()) // Default Diretory for wxFileSelector
-                Temp0 = _("-I-> wxConfigBase.p_ProgramCfg->DeleteAll() was succesfull.");
+                Temp0 = _("-I-> wxConfigBase.p_ProgramCfg->DeleteAll() was successful.");
             else
-                Temp0 = _("-E-> wxConfigBase.p_ProgramCfg->DeleteAll() was not succesfull !");
+                Temp0 = _("-E-> wxConfigBase.p_ProgramCfg->DeleteAll() was not successful !");
             wxBell();     // Ding_a_Ling
             Treffer++;
         }
@@ -262,7 +262,7 @@ void PgmCtrl::OnUserPassword(wxCommandEvent& WXUNUSED(event))
     // wxMessageBox(SaveDSN);
     int i;
     //--------------------------------------------
-    DlgUser *p_Dlg = new DlgUser(this,pDoc,_T(""));
+    DlgUser *p_Dlg = new DlgUser(this,pDoc,wxEmptyString);
     //-------------------------------------------
     for (i=0;i<pDoc->i_DSN;i++)
     {

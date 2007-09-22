@@ -4,7 +4,7 @@
 // Author:      Vadim Zeitlin
 // Modified by:
 // Created:     08.05.02
-// RCS-ID:      $Id: popupwin.cpp,v 1.15 2004/08/31 12:38:46 ABX Exp $
+// RCS-ID:      $Id: popupwin.cpp,v 1.17 2005/04/12 04:28:27 RD Exp $
 // Copyright:   (c) 2002 Vadim Zeitlin <zeitlin@dptmaths.ens-cachan.fr>
 // License:     wxWindows licence
 ///////////////////////////////////////////////////////////////////////////////
@@ -37,8 +37,6 @@
 #include "wx/popupwin.h"
 
 #include "wx/msw/private.h"     // for GetDesktopWindow()
-
-IMPLEMENT_DYNAMIC_CLASS(wxPopupWindow, wxWindow)
 
 // ============================================================================
 // implementation
@@ -109,6 +107,9 @@ bool wxPopupWindow::Show(bool show)
         {
             wxLogLastError(_T("SetWindowPos"));
         }
+
+        // and set it as the foreground window so the mouse can be captured
+        ::SetForegroundWindow(GetHwnd());
     }
 
     return true;

@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     01/02/97
-// RCS-ID:      $Id: frame.h,v 1.72 2004/08/25 12:17:51 ABX Exp $
+// RCS-ID:      $Id: frame.h,v 1.75 2005/03/18 14:26:48 JS Exp $
 // Copyright:   (c) Julian Smart
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -83,7 +83,9 @@ public:
         { return m_useNativeStatusBar; };
 #endif // wxUSE_STATUSBAR
 
+#if wxUSE_MENUS
     WXHMENU GetWinMenu() const { return m_hMenu; }
+#endif // wxUSE_MENUS
 
     // event handlers
     bool HandlePaint();
@@ -142,15 +144,18 @@ protected:
     static bool           m_useNativeStatusBar;
 #endif // wxUSE_STATUSBAR
 
-    // Data to save/restore when calling ShowFullScreen
-    int                   m_fsStatusBarFields; // 0 for no status bar
-    int                   m_fsStatusBarHeight;
-    int                   m_fsToolBarHeight;
+#if wxUSE_MENUS
+    // frame menu, NULL if none
+    WXHMENU m_hMenu;
+#endif // wxUSE_MENUS
 
 private:
 #if wxUSE_TOOLTIPS
     WXHWND                m_hwndToolTip;
 #endif // tooltips
+#if defined(__SMARTPHONE__) || defined(__POCKETPC__)
+    void* m_activateInfo;
+#endif
 
     // used by IconizeChildFrames(), see comments there
     bool m_wasMinimized;

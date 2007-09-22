@@ -4,7 +4,7 @@
 // Author:      Ported to Linux by Guilhem Lavaux
 // Modified by:
 // Created:     05/23/98
-// RCS-ID:      $Id: joystick.cpp,v 1.6 2004/09/16 22:10:34 VZ Exp $
+// RCS-ID:      $Id: joystick.cpp,v 1.7 2005/06/02 08:06:29 JS Exp $
 // Copyright:   (c) Guilhem Lavaux
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -183,9 +183,16 @@ wxJoystick::wxJoystick(int joystick)
 {
     wxString dev_name;
 
-     // Assume it's the same device name on all Linux systems ...
+     // old /dev structure
     dev_name.Printf( wxT("/dev/js%d"), (joystick == wxJOYSTICK1) ? 0 : 1);
     m_device = open(dev_name.fn_str(), O_RDONLY);
+
+    // new /dev structure with "input" subdirectory
+    if (m_device == -1)
+    {
+        dev_name.Printf( wxT("/dev/input/js%d"), (joystick == wxJOYSTICK1) ? 0 : 1);
+        m_device = open(dev_name.fn_str(), O_RDONLY);             
+    }
 
     if (m_device != -1)
     {

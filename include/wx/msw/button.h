@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     01/02/97
-// RCS-ID:      $Id: button.h,v 1.27 2004/08/30 14:38:59 VS Exp $
+// RCS-ID:      $Id: button.h,v 1.28 2005/04/10 15:22:56 VZ Exp $
 // Copyright:   (c) Julian Smart
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -54,13 +54,6 @@ public:
     virtual WXLRESULT MSWWindowProc(WXUINT nMsg, WXWPARAM wParam, WXLPARAM lParam);
     virtual bool MSWCommand(WXUINT param, WXWORD id);
 
-    virtual void ApplyParentThemeBackground(const wxColour& bg)
-    {
-        // avoide switching into owner-drawn mode
-        wxControl::SetBackgroundColour(bg);
-    }
-
-#ifdef __WIN32__
     // coloured buttons support
     virtual bool SetBackgroundColour(const wxColour &colour);
     virtual bool SetForegroundColour(const wxColour &colour);
@@ -69,7 +62,6 @@ public:
 
 private:
     void MakeOwnerDrawn();
-#endif // __WIN32__
 
 protected:
     // send a notification event, return true if processed

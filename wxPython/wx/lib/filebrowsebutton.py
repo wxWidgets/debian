@@ -7,7 +7,7 @@
 #
 # Author:      Mike Fletcher
 #
-# RCS-ID:      $Id: filebrowsebutton.py,v 1.7 2004/06/17 05:52:00 RD Exp $
+# RCS-ID:      $Id: filebrowsebutton.py,v 1.12 2005/05/18 18:02:15 RD Exp $
 # Copyright:   (c) 2000 by Total Control Software
 # Licence:     wxWindows license
 #----------------------------------------------------------------------
@@ -52,7 +52,7 @@ class FileBrowseButton(wx.Panel):
         :param startDirectory: Default directory for file dialog startup
         :param fileMask:       File mask (glob pattern, such as *.*) to use in file dialog
         :param fileMode:       wx.OPEN or wx.SAVE, indicates type of file dialog to use
-        :param changeCallback: callback receives all changes in value of control
+        :param changeCallback: Optional callback called for all changes in value of the control
         """
       
         # store variables
@@ -68,12 +68,6 @@ class FileBrowseButton(wx.Panel):
         self.callCallback = True
 
 
-        # get background to match it
-        try:
-            self._bc = parent.GetBackgroundColour()
-        except:
-            pass
-
         # create the dialog
         self.createDialog(parent, id, pos, size, style )
         # Setting a value causes the changeCallback to be called.
@@ -86,11 +80,8 @@ class FileBrowseButton(wx.Panel):
     def createDialog( self, parent, id, pos, size, style ):
         """Setup the graphic representation of the dialog"""
         wx.Panel.__init__ (self, parent, id, pos, size, style)
-        # try to set the background colour
-        try:
-            self.SetBackgroundColour(self._bc)
-        except:
-            pass
+        self.SetMinSize(size) # play nice with sizers
+
         box = wx.BoxSizer(wx.HORIZONTAL)
 
         self.label = self.createLabel( )
@@ -298,8 +289,10 @@ class FileBrowseButtonWithHistory( FileBrowseButton ):
         """Return the current history list"""
         if self.historyCallBack != None:
             return self.historyCallBack()
-        else:
+        elif self.history:
             return list( self.history )
+        else:
+            return []
 
 
     def OnSetFocus(self, event):
@@ -340,18 +333,27 @@ class DirBrowseButton(FileBrowseButton):
                  dialogTitle = '',
                  startDirectory = '.',
                  changeCallback = None,
-                 dialogClass = wx.DirDialog):
+                 dialogClass = wx.DirDialog,
+                 newDirectory = False):
         FileBrowseButton.__init__(self, parent, id, pos, size, style,
                                   labelText, buttonText, toolTip,
                                   dialogTitle, startDirectory,
                                   changeCallback = changeCallback)
         self.dialogClass = dialogClass
+        self.newDirectory = newDirectory
     #
 
     def OnBrowse(self, ev = None):
+        style=0
+
+        if self.newDirectory:
+          style|=wx.DD_NEW_DIR_BUTTON
+
         dialog = self.dialogClass(self,
                                   message = self.dialogTitle,
-                                  defaultPath = self.startDirectory)
+                                  defaultPath = self.startDirectory,
+                                  style = style)
+
         if dialog.ShowModal() == wx.ID_OK:
             self.SetValue(dialog.GetPath())
         dialog.Destroy()

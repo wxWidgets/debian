@@ -104,7 +104,7 @@ being inside the region.
 
 \membersection{wxRegion::GetBox}\label{wxregiongetbox}
 
-\constfunc{void}{GetBox}{\param{long\& }{x}, \param{long\& }{y}, \param{long\& }{width}, \param{long\& }{height}}
+\constfunc{void}{GetBox}{\param{wxCoord\& }{x}, \param{wxCoord\& }{y}, \param{wxCoord\& }{width}, \param{wxCoord\& }{height}}
 
 Returns the outer bounds of the region.
 
@@ -187,7 +187,7 @@ Finds the union of this region and another region.
 
 \func{bool}{Union}{\param{const wxBitmap\&}{ bmp}}
 
-Finds the union of this region and the the non-transparent pixels of a
+Finds the union of this region and the non-transparent pixels of a
 bitmap. Bitmap's mask is used to determine transparency. If the bitmap doesn't
 have a mask, solid rectangle of bitmap's dimensions is used.
 
@@ -195,7 +195,7 @@ have a mask, solid rectangle of bitmap's dimensions is used.
                   \param{const wxColour\&}{ transColour},
 		  \param{int}{ tolerance = 0}}
 
-Finds the union of this region and the the non-transparent pixels of a
+Finds the union of this region and the non-transparent pixels of a
 bitmap. Colour to be treated as transparent is specified in the
 \arg{transColour} argument, along with an
 optional colour tolerance value.
@@ -290,11 +290,11 @@ Returns the y value for the current region.
 
 An alias for GetWidth.
 
-\membersection{wxRegionIterator::GetWidth}\label{wxregioniteratorgetwidth}
+\membersection{wxRegionIterator::GetHeight}\label{wxregioniteratorgetheight}
 
-\constfunc{wxCoord}{GetWidth}{\void}
+\constfunc{wxCoord}{GetHeight}{\void}
 
-Returns the width value for the current region.
+Returns the height value for the current region.
 
 \membersection{wxRegionIterator::GetH}\label{wxregioniteratorgeth}
 
@@ -302,17 +302,17 @@ Returns the width value for the current region.
 
 An alias for GetHeight.
 
-\membersection{wxRegionIterator::GetHeight}\label{wxregioniteratorgetheight}
-
-\constfunc{wxCoord}{GetWidth}{\void}
-
-Returns the width value for the current region.
-
 \membersection{wxRegionIterator::GetRect}\label{wxregioniteratorgetrect}
 
 \constfunc{wxRect}{GetRect}{\void}
 
 Returns the current rectangle.
+
+\membersection{wxRegionIterator::GetWidth}\label{wxregioniteratorgetwidth}
+
+\constfunc{wxCoord}{GetWidth}{\void}
+
+Returns the width value for the current region.
 
 \membersection{wxRegionIterator::HaveRects}\label{wxregioniteratorhaverects}
 

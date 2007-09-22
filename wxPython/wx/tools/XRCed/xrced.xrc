@@ -1,4 +1,4 @@
-<?xml version="1.0" ?>
+<?xml version="1.0"?>
 <resource>
   <object class="wxDialog" name="DIALOG_TEXT">
     <title>Text Dialog</title>
@@ -360,13 +360,20 @@
                 <item>wxART_GO_TO_PARENT</item>
                 <item>wxART_GO_HOME</item>
                 <item>wxART_FILE_OPEN</item>
+                <item>wxART_FILE_SAVE</item>
+                <item>wxART_FILE_SAVE_AS</item>
                 <item>wxART_PRINT</item>
                 <item>wxART_HELP</item>
                 <item>wxART_TIP</item>
                 <item>wxART_REPORT_VIEW</item>
                 <item>wxART_LIST_VIEW</item>
                 <item>wxART_NEW_DIR</item>
+                <item>wxART_HARDDISK</item>
+                <item>wxART_FLOPPY</item>
+                <item>wxART_CDROM</item>
+                <item>wxART_REMOVABLE</item>
                 <item>wxART_FOLDER</item>
+                <item>wxART_FOLDER_OPEN</item>
                 <item>wxART_GO_DIR_UP</item>
                 <item>wxART_EXECUTABLE_FILE</item>
                 <item>wxART_NORMAL_FILE</item>
@@ -377,6 +384,16 @@
                 <item>wxART_WARNING</item>
                 <item>wxART_INFORMATION</item>
                 <item>wxART_MISSING_IMAGE</item>
+                <item>wxART_COPY</item>
+                <item>wxART_CUT</item>
+                <item>wxART_PASTE</item>
+                <item>wxART_DELETE</item>
+                <item>wxART_NEW</item>
+                <item>wxART_UNDO</item>
+                <item>wxART_REDO</item>
+                <item>wxART_QUIT</item>
+                <item>wxART_FIND</item>
+                <item>wxART_FIND_AND_REPLACE</item>
               </content>
             </object>
             <flag>wxRIGHT|wxEXPAND</flag>

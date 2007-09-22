@@ -1,10 +1,10 @@
 /////////////////////////////////////////////////////////////////////////////
 // Name:        wx/msw/wince/textctrlce.h
-// Purpose:     wxTextCtrl implementation for smart phones driven by WinCE 
+// Purpose:     wxTextCtrl implementation for smart phones driven by WinCE
 // Author:      Wlodzimierz ABX Skiba
 // Modified by:
 // Created:     30.08.2004
-// RCS-ID:      $Id: textctrlce.h,v 1.3 2004/09/29 08:03:26 ABX Exp $
+// RCS-ID:      $Id: textctrlce.h,v 1.5 2005/01/19 16:25:09 ABX Exp $
 // Copyright:   (c) Wlodzimierz Skiba
 // License:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -124,7 +124,7 @@ public:
     virtual void SetInsertionPoint(long pos);
     virtual void SetInsertionPointEnd();
     virtual long GetInsertionPoint() const;
-    virtual long GetLastPosition() const;
+    virtual wxTextPos GetLastPosition() const;
 
     virtual void SetSelection(long from, long to);
     virtual void SetEditable(bool editable);
@@ -139,8 +139,6 @@ public:
 
     virtual void Command(wxCommandEvent& event);
     virtual bool MSWCommand(WXUINT param, WXWORD id);
-    virtual WXHBRUSH OnCtlColor(WXHDC pDC, WXHWND pWnd, WXUINT nCtlColor,
-            WXUINT message, WXWPARAM wParam, WXLPARAM lParam);
 
     virtual void AdoptAttributesFromHWND();
 

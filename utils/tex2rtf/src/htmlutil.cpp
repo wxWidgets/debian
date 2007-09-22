@@ -5,7 +5,7 @@
 // Modified by: Wlodzimierz ABX Skiba 2003/2004 Unicode support
 //              Ron Lee
 // Created:     7.9.93
-// RCS-ID:      $Id: htmlutil.cpp,v 1.29 2004/11/09 19:17:04 ABX Exp $
+// RCS-ID:      $Id: htmlutil.cpp,v 1.31 2005/05/30 16:11:12 ABX Exp $
 // Copyright:   (c) Julian Smart
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -29,7 +29,7 @@
 #include "tex2any.h"
 #include "tex2rtf.h"
 #include "table.h"
-
+#include <stdio.h>
 #define HTML_FILENAME_PATTERN _T("%s_%s.html")
 
 #if !WXWIN_COMPATIBILITY_2_4
@@ -39,6 +39,7 @@ static inline wxChar* copystring(const wxChar* s)
 
 extern wxHashTable TexReferences;
 
+extern int passNumber;
 
 extern void DecToHex(int, wxChar *);
 void GenerateHTMLIndexFile(wxChar *fname);
@@ -662,7 +663,7 @@ void OutputBodyStart(void)
     if (s)
     {
       TexOutput(_T(" BACKGROUND=\""));
-      TexOutput(s); 
+      TexOutput(s);
       TexOutput(_T("\""));
     }
   }
@@ -905,7 +906,7 @@ void HTMLOnMacro(int macroId, int no_args, bool start)
           if ( combineSubSections && !subsectionStarted )
           {
             fflush(Sections);
-              
+
             // Read old .con file in at this point
             wxChar buf[256];
             wxStrcpy(buf, CurrentSectionFile);
@@ -1323,7 +1324,7 @@ void HTMLOnMacro(int macroId, int no_args, bool start)
         TexOutput(_T("\n<TABLE>\n"));
     else {
         TexOutput(_T("\n</TABLE>\n"));
-    // DHS 
+    // DHS
         TwoColWidthA = -1;
         TwoColWidthB = -1;
     }
@@ -1801,7 +1802,74 @@ void HTMLOnMacro(int macroId, int no_args, bool start)
     break;
   }
 }
+/*     CheckTypeRef()
 
+       should be called at of argument which usually is
+       type declaration which propably contains name of
+       documented class
+
+       examples:
+               HTMLOnArgument
+                       - ltFUNC,
+                       - ltPARAM
+                       - ltCPARAM
+
+       checks: GetArgData() if contains Type Declaration
+                               and can be referenced to some file
+       prints:
+               before<a href="xxx&yyy">type</a>after
+
+       returns:
+               false   - if no reference was found
+               true    - if reference was found and HREF printed
+*/
+static bool CheckTypeRef()
+{
+  wxString typeDecl = GetArgData();
+  if( !typeDecl.IsEmpty() ) {
+    typeDecl.Replace(wxT("\\"),wxT(""));
+    wxString label = typeDecl;
+    label.Replace(wxT("const"),wxT(""));
+    label.Replace(wxT("virtual"),wxT(""));
+    label.Replace(wxT("static"),wxT(""));
+    label.Replace(wxT("extern"),wxT(""));
+    label = label.BeforeFirst('&');
+    label = label.BeforeFirst(wxT('*'));
+    label = label.BeforeFirst(wxT('\\'));
+    label.Trim(true); label.Trim(false);
+    wxString typeName = label;
+    label.MakeLower();
+    TexRef *texRef = FindReference((wxChar*)label.c_str());
+
+    if (texRef && texRef->refFile && wxStrcmp(texRef->refFile, _T("??")) != 0) {
+      int a = typeDecl.Find(typeName);
+      wxString before = typeDecl.Mid( 0, a );
+      wxString after = typeDecl.Mid( a+typeName.Length() );
+      //wxFprintf(stderr,wxT("%s <%s> %s to ... %s#%s !!!!\n"),
+       //      before.c_str(),
+       //      typeName.c_str(),
+       //      after.c_str(),
+       //      texRef->refFile,label.c_str());
+      TexOutput(before);
+      TexOutput(_T("<A HREF=\""));
+      TexOutput(texRef->refFile);
+      TexOutput(_T("#"));
+      TexOutput(label);
+      TexOutput(wxT("\">"));
+      TexOutput(typeName);
+      TexOutput(wxT("</A>"));
+      TexOutput(after);
+      return true;
+    } else {
+      //wxFprintf(stderr,wxT("'%s' from (%s) -> label %s NOT FOUND\n"),
+       //      typeName.c_str(),
+       //      typeDecl.c_str(),
+       //      label.c_str());
+      return false;
+    }
+  }
+  return false;
+}
 // Called on start/end of argument examination
 bool HTMLOnArgument(int macroId, int arg_no, bool start)
 {
@@ -1827,8 +1895,13 @@ bool HTMLOnArgument(int macroId, int arg_no, bool start)
   }
   case ltFUNC:
   {
-    if (start && (arg_no == 1))
+    if (start && (arg_no == 1)) {
       TexOutput(_T("<B>"));
+      if( CheckTypeRef() ) {
+       TexOutput(_T("</B> "));
+       return false;
+      }
+    }
 
     if (!start && (arg_no == 1))
       TexOutput(_T("</B> "));
@@ -1889,27 +1962,21 @@ bool HTMLOnArgument(int macroId, int arg_no, bool start)
     break;
   }
   case ltPARAM:
-  {
-    if (start && (arg_no == 1))
-      TexOutput(_T("<B>"));
-    if (!start && (arg_no == 1))
-      TexOutput(_T("</B>"));
-    if (start && (arg_no == 2))
-    {
-      TexOutput(_T("<I>"));
-    }
-    if (!start && (arg_no == 2))
-    {
-      TexOutput(_T("</I>"));
-    }
-    break;
-  }
   case ltCPARAM:
   {
-    if (start && (arg_no == 1))
-      TexOutput(_T("<B>"));
-    if (!start && (arg_no == 1))
-      TexOutput(_T("</B> "));  // This is the difference from param - one space!
+    const wxChar* pend = macroId == ltCPARAM ?
+       _T("</B> ") : _T("</B>");
+    if( arg_no == 1) {
+      if( start ) {
+       TexOutput(_T("<B>"));
+       if( CheckTypeRef() ) {
+         TexOutput(pend);
+         return false;
+       }
+      } else {
+       TexOutput(pend);
+      }
+    }
     if (start && (arg_no == 2))
     {
       TexOutput(_T("<I>"));
@@ -1980,6 +2047,7 @@ bool HTMLOnArgument(int macroId, int arg_no, bool start)
     }
     break;
   }
+
   case ltHELPREF:
   case ltHELPREFN:
   case ltPOPREF:
@@ -2040,9 +2108,15 @@ bool HTMLOnArgument(int macroId, int arg_no, bool start)
               TraverseChildrenFromChunk(helpRefText);
             if (!ignoreBadRefs)
               TexOutput(_T(" (REF NOT FOUND)"));
-            wxString errBuf;
-            errBuf.Printf(_T("Warning: unresolved reference '%s'"), refName);
-            OnInform((wxChar *)errBuf.c_str());
+
+            // for launching twice do not warn in preparation pass
+            if ((passNumber == 1 && !runTwice) ||
+                (passNumber == 2 && runTwice))
+            {
+              wxString errBuf;
+              errBuf.Printf(_T("Warning: unresolved reference '%s'"), refName);
+              OnInform((wxChar *)errBuf.c_str());
+            }
           }
         }
         else TexOutput(_T("??"));
@@ -2114,7 +2188,7 @@ bool HTMLOnArgument(int macroId, int arg_no, bool start)
             TexOutput(_T("<img src=\""));
             TexOutput(ConvertCase(wxFileNameFromPath(inlineFilename)));
             TexOutput(_T("\""));
-            TexOutput(alignment); 
+            TexOutput(alignment);
             TexOutput(_T("></A>"));
           }
           else
@@ -2123,7 +2197,7 @@ bool HTMLOnArgument(int macroId, int arg_no, bool start)
             TexOutput(_T("<img src=\""));
             TexOutput(ConvertCase(wxFileNameFromPath(inlineFilename)));
             TexOutput(_T("\""));
-            TexOutput(alignment); 
+            TexOutput(alignment);
             TexOutput(_T(">"));
             delete[] inlineFilename;
           }
@@ -2268,7 +2342,7 @@ bool HTMLOnArgument(int macroId, int arg_no, bool start)
           wxSnprintf(buf, sizeof(buf), _T("\n<TD VALIGN=TOP WIDTH=%d>\n"),TwoColWidthB);
           TexOutput(buf);
         }
-        else 
+        else
         {
           TexOutput(_T("\n<TD VALIGN=TOP>\n"));
         }

@@ -2,7 +2,7 @@
 # Purpose:      XRC editor, main module
 # Author:       Roman Rolinsky <rolinsky@mema.ucl.ac.be>
 # Created:      20.08.2001
-# RCS-ID:       $Id: xrced.py,v 1.11 2004/10/11 00:00:31 ROL Exp $
+# RCS-ID:       $Id: xrced.py,v 1.23 2005/06/14 22:59:20 RD Exp $
 
 """
 
@@ -22,7 +22,7 @@ Options:
 
 
 from globals import *
-import os, sys, getopt, re, traceback
+import os, sys, getopt, re, traceback, tempfile, shutil
 
 # Local modules
 from tree import *                      # imports xxx which imports params
@@ -54,7 +54,8 @@ Consult README file for the details.</HTML>
 """
 
 defaultIDs = {xxxPanel:'PANEL', xxxDialog:'DIALOG', xxxFrame:'FRAME',
-              xxxMenuBar:'MENUBAR', xxxMenu:'MENU', xxxToolBar:'TOOLBAR'}
+              xxxMenuBar:'MENUBAR', xxxMenu:'MENU', xxxToolBar:'TOOLBAR',
+              xxxWizard:'WIZARD'}
 
 ################################################################################
 
@@ -72,12 +73,18 @@ class ScrolledMessageDialog(wxDialog):
         ok = wxButton(self, wxID_OK, "OK")
         text.SetConstraints(Layoutf('t=t5#1;b=t5#2;l=l5#1;r=r5#1', (self,ok)))
         text.SetSize((w * 80 + 30, h * 40))
+        text.ShowPosition(1)
         ok.SetConstraints(Layoutf('b=b5#1;x%w50#1;w!80;h!25', (self,)))
         self.SetAutoLayout(True)
         self.Fit()
         self.CenterOnScreen(wxBOTH)
 
 ################################################################################
+
+# Event handler for using during location
+class Locator(wxEvtHandler):
+    def ProcessEvent(self, evt):
+        print evt
 
 class Frame(wxFrame):
     def __init__(self, pos, size):
@@ -90,6 +97,14 @@ class Frame(wxFrame):
 
         # Idle flag
         self.inIdle = False
+
+        # Load our own resources
+        self.res = wxXmlResource('')
+        # !!! Blocking of assert failure occurring in older unicode builds
+        try:
+            self.res.Load(os.path.join(basePath, 'xrced.xrc'))
+        except wx._core.PyAssertionError:
+            print 'PyAssertionError was ignored'
 
         # Make menus
         menuBar = wxMenuBar()
@@ -118,9 +133,11 @@ class Frame(wxFrame):
         menu.Append(wxID_PASTE, '&Paste\tCtrl-V', 'Paste from the clipboard')
         self.ID_DELETE = wxNewId()
         menu.Append(self.ID_DELETE, '&Delete\tCtrl-D', 'Delete object')
-#        menu.AppendSeparator()
-        ID_SELECT = wxNewId()
-#        menu.Append(ID_SELECT, '&Select', 'Select object')
+        menu.AppendSeparator()
+        self.ID_LOCATE = wxNewId()
+        self.ID_TOOL_LOCATE = wxNewId()
+        self.ID_TOOL_PASTE = wxNewId()
+        menu.Append(self.ID_LOCATE, '&Locate\tCtrl-L', 'Locate control in test window and select it')
         menuBar.Append(menu, '&Edit')
 
         menu = wxMenu()
@@ -133,13 +150,15 @@ class Frame(wxFrame):
         menu.Check(self.ID_SHOW_TOOLS, conf.showTools)
         menu.AppendSeparator()
         self.ID_TEST = wxNewId()
-        menu.Append(self.ID_TEST, '&Test\tF5', 'Test window')
+        menu.Append(self.ID_TEST, '&Test\tF5', 'Show test window')
         self.ID_REFRESH = wxNewId()
         menu.Append(self.ID_REFRESH, '&Refresh\tCtrl-R', 'Refresh test window')
         self.ID_AUTO_REFRESH = wxNewId()
         menu.Append(self.ID_AUTO_REFRESH, '&Auto-refresh\tCtrl-A',
                     'Toggle auto-refresh mode', True)
         menu.Check(self.ID_AUTO_REFRESH, conf.autoRefresh)
+        self.ID_TEST_HIDE = wxNewId()
+        menu.Append(self.ID_TEST_HIDE, '&Hide\tCtrl-H', 'Close test window')
         menuBar.Append(menu, '&View')
 
         menu = wxMenu()
@@ -157,17 +176,30 @@ class Frame(wxFrame):
 
         # Create toolbar
         tb = self.CreateToolBar(wxTB_HORIZONTAL | wxNO_BORDER | wxTB_FLAT)
-        tb.SetToolBitmapSize((24, 23))
-        tb.AddSimpleTool(wxID_NEW, images.getNewBitmap(), 'New', 'New file')
-        tb.AddSimpleTool(wxID_OPEN, images.getOpenBitmap(), 'Open', 'Open file')
-        tb.AddSimpleTool(wxID_SAVE, images.getSaveBitmap(), 'Save', 'Save file')
+        tb.SetToolBitmapSize((24,24))
+        new_bmp  = wx.ArtProvider.GetBitmap(wx.ART_NEW, wx.ART_TOOLBAR)
+        open_bmp = wx.ArtProvider.GetBitmap(wx.ART_FILE_OPEN, wx.ART_TOOLBAR)
+        save_bmp = wx.ArtProvider.GetBitmap(wx.ART_FILE_SAVE, wx.ART_TOOLBAR)
+        undo_bmp = wx.ArtProvider.GetBitmap(wx.ART_UNDO, wx.ART_TOOLBAR)
+        redo_bmp = wx.ArtProvider.GetBitmap(wx.ART_REDO, wx.ART_TOOLBAR)
+        cut_bmp  = wx.ArtProvider.GetBitmap(wx.ART_CUT, wx.ART_TOOLBAR)
+        copy_bmp = wx.ArtProvider.GetBitmap(wx.ART_COPY, wx.ART_TOOLBAR)
+        paste_bmp= wx.ArtProvider.GetBitmap(wx.ART_PASTE, wx.ART_TOOLBAR)
+        
+        tb.AddSimpleTool(wxID_NEW, new_bmp, 'New', 'New file')
+        tb.AddSimpleTool(wxID_OPEN, open_bmp, 'Open', 'Open file')
+        tb.AddSimpleTool(wxID_SAVE, save_bmp, 'Save', 'Save file')
         tb.AddControl(wxStaticLine(tb, -1, size=(-1,23), style=wxLI_VERTICAL))
-        tb.AddSimpleTool(wxID_UNDO, images.getUndoBitmap(), 'Undo', 'Undo')
-        tb.AddSimpleTool(wxID_REDO, images.getRedoBitmap(), 'Redo', 'Redo')
+        tb.AddSimpleTool(wxID_UNDO, undo_bmp, 'Undo', 'Undo')
+        tb.AddSimpleTool(wxID_REDO, redo_bmp, 'Redo', 'Redo')
         tb.AddControl(wxStaticLine(tb, -1, size=(-1,23), style=wxLI_VERTICAL))
-        tb.AddSimpleTool(wxID_CUT, images.getCutBitmap(), 'Cut', 'Cut')
-        tb.AddSimpleTool(wxID_COPY, images.getCopyBitmap(), 'Copy', 'Copy')
-        tb.AddSimpleTool(wxID_PASTE, images.getPasteBitmap(), 'Paste', 'Paste')
+        tb.AddSimpleTool(wxID_CUT, cut_bmp, 'Cut', 'Cut')
+        tb.AddSimpleTool(wxID_COPY, copy_bmp, 'Copy', 'Copy')
+        tb.AddSimpleTool(self.ID_TOOL_PASTE, paste_bmp, 'Paste', 'Paste')
+        tb.AddControl(wxStaticLine(tb, -1, size=(-1,23), style=wxLI_VERTICAL))
+        tb.AddSimpleTool(self.ID_TOOL_LOCATE,
+                        images.getLocateBitmap(), #images.getLocateArmedBitmap(),
+                        'Locate', 'Locate control in test window and select it', True)
         tb.AddControl(wxStaticLine(tb, -1, size=(-1,23), style=wxLI_VERTICAL))
         tb.AddSimpleTool(self.ID_TEST, images.getTestBitmap(), 'Test', 'Test window')
         tb.AddSimpleTool(self.ID_REFRESH, images.getRefreshBitmap(),
@@ -178,6 +210,7 @@ class Frame(wxFrame):
             tb.AddSeparator()   # otherwise auto-refresh sticks in status line
         tb.ToggleTool(self.ID_AUTO_REFRESH, conf.autoRefresh)
         tb.Realize()
+ 
         self.tb = tb
         self.minWidth = tb.GetSize()[0] # minimal width is the size of toolbar
 
@@ -193,14 +226,17 @@ class Frame(wxFrame):
         EVT_MENU(self, wxID_CUT, self.OnCutDelete)
         EVT_MENU(self, wxID_COPY, self.OnCopy)
         EVT_MENU(self, wxID_PASTE, self.OnPaste)
+        EVT_MENU(self, self.ID_TOOL_PASTE, self.OnPaste)
         EVT_MENU(self, self.ID_DELETE, self.OnCutDelete)
-        EVT_MENU(self, ID_SELECT, self.OnSelect)
+        EVT_MENU(self, self.ID_LOCATE, self.OnLocate)
+        EVT_MENU(self, self.ID_TOOL_LOCATE, self.OnLocate)
         # View
         EVT_MENU(self, self.ID_EMBED_PANEL, self.OnEmbedPanel)
         EVT_MENU(self, self.ID_SHOW_TOOLS, self.OnShowTools)
         EVT_MENU(self, self.ID_TEST, self.OnTest)
         EVT_MENU(self, self.ID_REFRESH, self.OnRefresh)
         EVT_MENU(self, self.ID_AUTO_REFRESH, self.OnAutoRefresh)
+        EVT_MENU(self, self.ID_TEST_HIDE, self.OnTestHide)
         # Help
         EVT_MENU(self, wxID_ABOUT, self.OnAbout)
         EVT_MENU(self, self.ID_README, self.OnReadme)
@@ -209,6 +245,9 @@ class Frame(wxFrame):
         EVT_UPDATE_UI(self, wxID_CUT, self.OnUpdateUI)
         EVT_UPDATE_UI(self, wxID_COPY, self.OnUpdateUI)
         EVT_UPDATE_UI(self, wxID_PASTE, self.OnUpdateUI)
+        EVT_UPDATE_UI(self, self.ID_LOCATE, self.OnUpdateUI)
+        EVT_UPDATE_UI(self, self.ID_TOOL_LOCATE, self.OnUpdateUI)
+        EVT_UPDATE_UI(self, self.ID_TOOL_PASTE, self.OnUpdateUI)
         EVT_UPDATE_UI(self, wxID_UNDO, self.OnUpdateUI)
         EVT_UPDATE_UI(self, wxID_REDO, self.OnUpdateUI)
         EVT_UPDATE_UI(self, self.ID_DELETE, self.OnUpdateUI)
@@ -271,7 +310,6 @@ class Frame(wxFrame):
         # Other events
         EVT_IDLE(self, self.OnIdle)
         EVT_CLOSE(self, self.OnCloseWindow)
-        EVT_LEFT_DOWN(self, self.OnLeftDown)
         EVT_KEY_DOWN(self, tools.OnKeyDown)
         EVT_KEY_UP(self, tools.OnKeyUp)
     
@@ -309,20 +347,22 @@ class Frame(wxFrame):
             self.SetStatusText('Loading...')
             wxYield()
             wxBeginBusyCursor()
-            if self.Open(path):
-                self.SetStatusText('Data loaded')
-            else:
-                self.SetStatusText('Failed')
-            self.SaveRecent(path)
-            wxEndBusyCursor()
+            try:
+                if self.Open(path):
+                    self.SetStatusText('Data loaded')
+                else:
+                    self.SetStatusText('Failed')
+                self.SaveRecent(path)
+            finally:
+                wxEndBusyCursor()
         dlg.Destroy()
 
     def OnSaveOrSaveAs(self, evt):
         if evt.GetId() == wxID_SAVEAS or not self.dataFile:
             if self.dataFile: defaultName = ''
             else: defaultName = 'UNTITLED.xrc'
-            dlg = wxFileDialog(self, 'Save As', os.path.dirname(self.dataFile),
-                               defaultName, '*.xrc',
+            dirname = os.path.dirname(self.dataFile)
+            dlg = wxFileDialog(self, 'Save As', dirname, defaultName, '*.xrc',
                                wxSAVE | wxOVERWRITE_PROMPT | wxCHANGE_DIR)
             if dlg.ShowModal() == wxID_OK:
                 path = dlg.GetPath()
@@ -336,13 +376,18 @@ class Frame(wxFrame):
         wxYield()
         wxBeginBusyCursor()
         try:
-            self.Save(path)
-            self.dataFile = path
-            self.SetStatusText('Data saved')
-            self.SaveRecent(path)
-        except IOError:
-            self.SetStatusText('Failed')
-        wxEndBusyCursor()        
+            try:
+                tmpFile,tmpName = tempfile.mkstemp(prefix='xrced-')
+                os.close(tmpFile)
+                self.Save(tmpName) # save temporary file first
+                shutil.move(tmpName, path)
+                self.dataFile = path
+                self.SetStatusText('Data saved')
+                self.SaveRecent(path)
+            except IOError:
+                self.SetStatusText('Failed')
+        finally:
+            wxEndBusyCursor()        
 
     def SaveRecent(self,path):
         # append to recently used files
@@ -375,7 +420,11 @@ class Frame(wxFrame):
         selected = tree.selection
         if not selected: return         # key pressed event
         # For pasting with Ctrl pressed
+        appendChild = True
         if evt.GetId() == pullDownMenu.ID_PASTE_SIBLING: appendChild = False
+        elif evt.GetId() == self.ID_TOOL_PASTE:
+            if g.tree.ctrl: appendChild = False
+            else: appendChild = not tree.NeedInsert(selected)
         else: appendChild = not tree.NeedInsert(selected)
         xxx = tree.GetPyData(selected)
         if not appendChild:
@@ -402,7 +451,7 @@ class Frame(wxFrame):
         error = False
         # Top-level
         x = xxx.treeObject()
-        if x.__class__ in [xxxDialog, xxxFrame, xxxMenuBar]:
+        if x.__class__ in [xxxDialog, xxxFrame, xxxMenuBar, xxxWizard]:
             # Top-level classes
             if parent.__class__ != xxxMainNode: error = True
         elif x.__class__ == xxxToolBar:
@@ -529,17 +578,6 @@ class Frame(wxFrame):
             panel.pages[0].box.SetLabel(xxx.panelName())
         dlg.Destroy()
 
-    def OnSelect(self, evt):
-        print >> sys.stderr, 'Xperimental function!'
-        wxYield()
-        self.SetCursor(wxCROSS_CURSOR)
-        self.CaptureMouse()
-
-    def OnLeftDown(self, evt):
-        pos = evt.GetPosition()
-        self.SetCursor(wxNullCursor)
-        self.ReleaseMouse()
-
     def OnEmbedPanel(self, evt):
         conf.embedPanel = evt.IsChecked()
         if conf.embedPanel:
@@ -587,6 +625,60 @@ class Frame(wxFrame):
         if not tree.selection: return   # key pressed event
         tree.ShowTestWindow(tree.selection)
 
+    def OnTestHide(self, evt):
+        tree.CloseTestWindow()
+
+    # Find object by relative position
+    def FindObject(self, item, obj):
+        # We simply perform depth-first traversal, sinse it's too much
+        # hassle to deal with all sizer/window combinations
+        w = tree.FindNodeObject(item)
+        if w == obj:
+            return item
+        if tree.ItemHasChildren(item):
+            child = tree.GetFirstChild(item)[0]
+            while child:
+                found = self.FindObject(child, obj)
+                if found: return found
+                child = tree.GetNextSibling(child)
+        return None
+
+    def OnTestWinLeftDown(self, evt):
+        pos = evt.GetPosition()
+        self.SetHandler(g.testWin)
+        g.testWin.Disconnect(wxID_ANY, wxID_ANY, wxEVT_LEFT_DOWN)
+        item = self.FindObject(g.testWin.item, evt.GetEventObject())
+        if item:
+            tree.SelectItem(item)
+        self.tb.ToggleTool(self.ID_TOOL_LOCATE, False)
+        if item:
+            self.SetStatusText('Selected %s' % tree.GetItemText(item))
+        else:
+            self.SetStatusText('Locate failed!')
+
+    def SetHandler(self, w, h=None):
+        if h:
+            w.SetEventHandler(h)
+            w.SetCursor(wxCROSS_CURSOR)
+        else:
+            w.SetEventHandler(w)
+            w.SetCursor(wxNullCursor)
+        for ch in w.GetChildren():
+            self.SetHandler(ch, h)
+
+    def OnLocate(self, evt):
+        if g.testWin:
+            if evt.GetId() == self.ID_LOCATE or \
+               evt.GetId() == self.ID_TOOL_LOCATE and evt.IsChecked():
+                self.SetHandler(g.testWin, g.testWin)
+                g.testWin.Connect(wxID_ANY, wxID_ANY, wxEVT_LEFT_DOWN, self.OnTestWinLeftDown)
+                if evt.GetId() == self.ID_LOCATE:
+                    self.tb.ToggleTool(self.ID_TOOL_LOCATE, True)
+            elif evt.GetId() == self.ID_TOOL_LOCATE and not evt.IsChecked():
+                self.SetHandler(g.testWin, None)
+                g.testWin.Disconnect(wxID_ANY, wxID_ANY, wxEVT_LEFT_DOWN)
+            self.SetStatusText('Click somewhere in your test window now')
+
     def OnRefresh(self, evt):
         # If modified, apply first
         selection = tree.selection
@@ -624,7 +716,6 @@ Homepage: http://xrced.sourceforge.net\
 
     # Simple emulation of python command line
     def OnDebugCMD(self, evt):
-        import traceback
         while 1:
             try:
                 exec raw_input('C:\> ')
@@ -712,6 +803,7 @@ Homepage: http://xrced.sourceforge.net\
         nodes = elem.childNodes[:]
         tags = []
         for node in nodes:
+            if node.nodeType != minidom.Node.ELEMENT_NODE: continue
             remove = False
             tag = node.tagName
             if tag == 'object':
@@ -734,6 +826,8 @@ Homepage: http://xrced.sourceforge.net\
         dummy.unlink()
         # Change class name
         elem.setAttribute('class', className)        
+        if elem.hasAttribute('subclass'):
+            elem.removeAttribute('subclass') # clear subclassing
         # Re-create xxx element
         xxx = MakeXXXFromDOM(parentXXX, elem)
         # Update parent in child objects
@@ -799,10 +893,12 @@ Homepage: http://xrced.sourceforge.net\
     def OnUpdateUI(self, evt):
         if evt.GetId() in [wxID_CUT, wxID_COPY, self.ID_DELETE]:
             evt.Enable(tree.selection is not None and tree.selection != tree.root)
-        elif evt.GetId() == wxID_PASTE:
+        elif evt.GetId() in [wxID_PASTE, self.ID_TOOL_PASTE]:
             evt.Enable((self.clipboard and tree.selection) != None)
         elif evt.GetId() == self.ID_TEST:
             evt.Enable(tree.selection is not None and tree.selection != tree.root)
+        elif evt.GetId() in [self.ID_LOCATE, self.ID_TOOL_LOCATE]:
+            evt.Enable(g.testWin is not None)
         elif evt.GetId() == wxID_UNDO:  evt.Enable(undoMan.CanUndo())
         elif evt.GetId() == wxID_REDO:  evt.Enable(undoMan.CanRedo())
 
@@ -862,7 +958,8 @@ Homepage: http://xrced.sourceforge.net\
         # Numbers for new controls
         self.maxIDs = {}
         self.maxIDs[xxxPanel] = self.maxIDs[xxxDialog] = self.maxIDs[xxxFrame] = \
-        self.maxIDs[xxxMenuBar] = self.maxIDs[xxxMenu] = self.maxIDs[xxxToolBar] = 0
+        self.maxIDs[xxxMenuBar] = self.maxIDs[xxxMenu] = self.maxIDs[xxxToolBar] = \
+        self.maxIDs[xxxWizard] = 0
 
     def Open(self, path):
         if not os.path.exists(path):
@@ -872,32 +969,26 @@ Homepage: http://xrced.sourceforge.net\
         try:
             f = open(path)
             self.Clear()
-            # Parse first line to get encoding (!! hack, I don't know a better way)
-            line = f.readline()
-            mo = re.match(r'^<\?xml ([^<>]* )?encoding="(?P<encd>[^<>].*)"\?>', line)
-            # Build wx tree
-            f.seek(0)
             dom = minidom.parse(f)
-            # Set encoding global variable and document encoding property
-            if mo:
-                dom.encoding = g.currentEncoding = mo.group('encd')
-                if dom.encoding not in ['ascii', sys.getdefaultencoding()]:
-                    wxLogWarning('Encoding is different from system default')
-            else:
-                g.currentEncoding = 'ascii'
-                dom.encoding = ''
             f.close()
+            # Set encoding global variable and default encoding
+            if dom.encoding:
+                g.currentEncoding = dom.encoding
+                wx.SetDefaultPyEncoding(g.currentEncoding.encode())
+            else:
+                g.currentEncoding = ''
             # Change dir
+            self.dataFile = path = os.path.abspath(path)
             dir = os.path.dirname(path)
             if dir: os.chdir(dir)
             tree.SetData(dom)
-            self.dataFile = path
             self.SetTitle(progname + ': ' + os.path.basename(path))
         except:
             # Nice exception printing
             inf = sys.exc_info()
             wxLogError(traceback.format_exception(inf[0], inf[1], None)[-1])
             wxLogError('Error reading file: %s' % path)
+            if debug: raise
             return False
         return True
 
@@ -920,23 +1011,29 @@ Homepage: http://xrced.sourceforge.net\
 
     def Save(self, path):
         try:
+            import codecs
             # Apply changes
             if tree.selection and panel.IsModified():
                 self.OnRefresh(wxCommandEvent())
-            f = open(path, 'w')
+            if g.currentEncoding:
+                f = codecs.open(path, 'wt', g.currentEncoding)
+            else:
+                f = codecs.open(path, 'wt')
             # Make temporary copy for formatting it
             # !!! We can't clone dom node, it works only once
             #self.domCopy = tree.dom.cloneNode(True)
             self.domCopy = MyDocument()
             mainNode = self.domCopy.appendChild(tree.mainNode.cloneNode(True))
             self.Indent(mainNode)
-            self.domCopy.writexml(f, encoding=tree.rootObj.params['encoding'].value())
+            self.domCopy.writexml(f, encoding = g.currentEncoding)
             f.close()
             self.domCopy.unlink()
             self.domCopy = None
             self.modified = False
             panel.SetModified(False)
         except:
+            inf = sys.exc_info()
+            wxLogError(traceback.format_exception(inf[0], inf[1], None)[-1])
             wxLogError('Error writing file: %s' % path)
             raise
 
@@ -969,8 +1066,8 @@ class App(wxApp):
     def OnInit(self):
         global debug
         # Process comand-line
+        opts = args = None
         try:
-            opts = args = None
             opts, args = getopt.getopt(sys.argv[1:], 'dhiv')
             for o,a in opts:
                 if o == '-h':
@@ -1018,9 +1115,6 @@ class App(wxApp):
         # Create main frame
         frame = Frame(pos, size)
         frame.Show(True)
-        # Load resources from XRC file (!!! should be transformed to .py later?)
-        frame.res = wxXmlResource('')
-        frame.res.Load(os.path.join(basePath, 'xrced.xrc'))
 
         # Load file after showing
         if args:

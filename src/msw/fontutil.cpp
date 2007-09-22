@@ -4,7 +4,7 @@
 // Author:      Vadim Zeitlin
 // Modified by:
 // Created:     05.11.99
-// RCS-ID:      $Id: fontutil.cpp,v 1.33 2004/10/07 13:36:41 ABX Exp $
+// RCS-ID:      $Id: fontutil.cpp,v 1.34 2005/06/16 14:16:50 DS Exp $
 // Copyright:   (c) 1999 Vadim Zeitlin <zeitlin@dptmaths.ens-cachan.fr>
 // Licence:     wxWindows licence
 ///////////////////////////////////////////////////////////////////////////////
@@ -236,7 +236,7 @@ wxFontEncoding wxGetFontEncFromCharSet(int cs)
             break;
 
         case THAI_CHARSET:
-            fontEncoding = wxFONTENCODING_CP437;
+            fontEncoding = wxFONTENCODING_CP874;
             break;
 
         case SHIFTJIS_CHARSET:

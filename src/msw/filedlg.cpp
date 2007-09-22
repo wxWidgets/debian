@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     01/02/97
-// RCS-ID:      $Id: filedlg.cpp,v 1.73 2004/09/28 18:17:06 ABX Exp $
+// RCS-ID:      $Id: filedlg.cpp,v 1.77 2005/05/22 12:10:54 JS Exp $
 // Copyright:   (c) Julian Smart
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -40,18 +40,14 @@
     #include "wx/app.h"
 #endif
 
-#include "wx/msw/private.h"
+#include "wx/msw/wrapcdlg.h"
 
-#if !defined(__WIN32__) || defined(__WXWINCE__)
-    #include <commdlg.h>
-#endif
-
-#include <math.h>
 #include <stdlib.h>
 #include <string.h>
 
 #include "wx/filename.h"
 #include "wx/tokenzr.h"
+#include "wx/math.h"
 
 #include "wx/msw/missing.h"
 
@@ -86,7 +82,7 @@ IMPLEMENT_CLASS(wxFileDialog, wxFileDialogBase)
 // hook function for moving the dialog
 // ----------------------------------------------------------------------------
 
-UINT APIENTRY
+UINT_PTR APIENTRY
 wxFileDialogHookFunction(HWND      hDlg,
                          UINT      iMsg,
                          WPARAM    WXUNUSED(wParam),
@@ -394,8 +390,6 @@ int wxFileDialog::ShowModal()
             of.lpstrDefExt = defextBuffer.c_str();
         }
     }
-
-     //== Execute FileDialog >>=================================================
 
     //== Execute FileDialog >>=================================================
 

@@ -4,7 +4,7 @@
 // Author:      Chris Breeze
 // Modified by:
 // Created:     21/07/97
-// RCS-ID:      $Id: scoredg.cpp,v 1.13 2004/10/05 15:38:09 ABX Exp $
+// RCS-ID:      $Id: scoredg.cpp,v 1.14 2005/01/31 18:14:12 ABX Exp $
 // Copyright:   (c) 1993-1998 Chris Breeze
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -191,7 +191,7 @@ ScoreDialog::ScoreDialog(wxWindow* parent, ScoreFile* file) :
     // locate and resize with sizers
     wxBoxSizer *topsizer = new wxBoxSizer( wxVERTICAL );
     topsizer->Add( list, 1, wxALL|wxGROW, 10 );
-    wxButton *button = new wxButton(this, wxID_OK, _("OK"));
+    wxButton *button = new wxButton(this, wxID_OK);
     topsizer->Add( button, 0, wxALIGN_CENTER_HORIZONTAL|wxALL , 10 );
     button->SetFocus();
 

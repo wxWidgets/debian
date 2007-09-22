@@ -4,7 +4,7 @@
 // Author:      Vadim Zeitlin
 // Modified by:
 // Created:     2004-10-17
-// RCS-ID:      $Id: stdpaths.h,v 1.8 2004/11/06 22:14:00 SN Exp $
+// RCS-ID:      $Id: stdpaths.h,v 1.13 2005/04/22 14:53:55 MW Exp $
 // Copyright:   (c) 2004 Vadim Zeitlin <vadim@wxwindows.org>
 // Licence:     wxWindows licence
 ///////////////////////////////////////////////////////////////////////////////
@@ -12,14 +12,11 @@
 #ifndef _WX_STDPATHS_H_
 #define _WX_STDPATHS_H_
 
-#include "wx/string.h"
+#include "wx/defs.h"
 
-#if defined(__WXMAC__)
-class WXDLLIMPEXP_BASE wxStandardPathsCF;
-#define wxStandardPaths wxStandardPathsCF
-#else
-class WXDLLIMPEXP_BASE wxStandardPaths;
-#endif
+#if wxUSE_STDPATHS
+
+#include "wx/string.h"
 
 // ----------------------------------------------------------------------------
 // wxStandardPaths returns the standard locations in the file system
@@ -29,7 +26,7 @@ class WXDLLIMPEXP_BASE wxStandardPathsBase
 {
 public:
     // return the global standard paths object
-    static wxStandardPaths& Get();
+    static wxStandardPathsBase& Get();
 
 
     // return the directory with system config files:
@@ -89,13 +86,40 @@ protected:
 
 #if defined(__WXMSW__)
     #include "wx/msw/stdpaths.h"
-#elif defined(__WXMAC__) || defined(__WXCOCOA__)
+// We want CoreFoundation paths on both CarbonLib and Darwin (for all ports)
+#elif defined(__WXMAC__) || defined(__DARWIN__)
     #include "wx/mac/corefoundation/stdpaths.h"
 #elif defined(__OS2__)
     #include "wx/os2/stdpaths.h"
 #elif defined(__UNIX__)
     #include "wx/unix/stdpaths.h"
+#elif defined(__PALMOS__)
+    #include "wx/palmos/stdpaths.h"
+#else
+
+// ----------------------------------------------------------------------------
+// Minimal generic implementation
+// ----------------------------------------------------------------------------
+
+class WXDLLIMPEXP_BASE wxStandardPaths : public wxStandardPathsBase
+{
+public:
+    void SetInstallPrefix(const wxString& prefix) { m_prefix = prefix; }
+    wxString GetInstallPrefix() const { return m_prefix; }
+    virtual wxString GetConfigDir() const { return m_prefix; }
+    virtual wxString GetUserConfigDir() const { return m_prefix; }
+    virtual wxString GetDataDir() const { return m_prefix; }
+    virtual wxString GetLocalDataDir() const { return m_prefix; }
+    virtual wxString GetUserDataDir() const { return m_prefix; }
+    virtual wxString GetPluginsDir() const { return m_prefix; }
+
+private:
+    wxString m_prefix;
+};
+
 #endif
+
+#endif // wxUSE_STDPATHS
 
 #endif // _WX_STDPATHS_H_
 

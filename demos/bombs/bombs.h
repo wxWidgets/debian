@@ -2,9 +2,9 @@
 // Name:        bombs.h
 // Purpose:     Bombs game
 // Author:      P. Foggia 1996
-// Modified by: Wlodzimierz Skiba (ABX) 2003
+// Modified by: Wlodzimierz Skiba (ABX) since 2003
 // Created:     1996
-// RCS-ID:      $Id: bombs.h,v 1.5 2003/12/23 10:45:28 JS Exp $
+// RCS-ID:      $Id: bombs.h,v 1.7 2005/05/10 19:22:05 ABX Exp $
 // Copyright:   (c) 1996 P. Foggia
 // Licence:     wxWindows licence
 ///////////////////////////////////////////////////////////////////////////////
@@ -45,15 +45,20 @@ public:
 
 private:
 
-    void OnNewEasyGame(wxCommandEvent& event);
-    void OnNewMediumGame(wxCommandEvent& event);
-    void OnNewHardGame(wxCommandEvent& event);
+    void OnNewGame(wxCommandEvent& event);
+    void OnEasyGame(wxCommandEvent& event);
+    void OnMediumGame(wxCommandEvent& event);
+    void OnHardGame(wxCommandEvent& event);
+
+    void OnEasyCorner(wxCommandEvent& event);
 
     void OnExit(wxCommandEvent& event);
 
     void OnAbout(wxCommandEvent& event);
 
     BombsGame *m_game;
+    bool m_easyCorner;
+    int m_lastLevel;
 
     // Subwindows for reference within the program.
     BombsCanvas *m_canvas;
@@ -64,10 +69,11 @@ private:
 // App specific menu identifiers
 enum
 {
-    bombsID_NEWGAME = wxID_HIGHEST,
+    bombsID_LEVEL = wxID_HIGHEST,
     bombsID_EASY,
     bombsID_MEDIUM,
-    bombsID_HARD
+    bombsID_HARD,
+    bombsID_EASYCORNER
 };
 
 class BombsCanvas : public wxPanel

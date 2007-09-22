@@ -1,10 +1,10 @@
 /////////////////////////////////////////////////////////////////////////////
-// Name:        msgdlg.h
+// Name:        wx/msw/msgdlg.h
 // Purpose:     wxMessageDialog class
 // Author:      Julian Smart
 // Modified by:
 // Created:     01/02/97
-// RCS-ID:      $Id: msgdlg.h,v 1.10 2004/08/30 10:18:43 ABX Exp $
+// RCS-ID:      $Id: msgdlg.h,v 1.12 2005/03/11 15:33:45 ABX Exp $
 // Copyright:   (c) Julian Smart
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -23,15 +23,14 @@
  * Message box dialog
  */
 
-WXDLLEXPORT_DATA(extern const wxChar*) wxMessageBoxCaptionStr;
+extern WXDLLEXPORT_DATA(const wxChar*) wxMessageBoxCaptionStr;
 
-class WXDLLEXPORT wxMessageDialog: public wxDialog
+class WXDLLEXPORT wxMessageDialog: public wxDialog, public wxMessageDialogBase
 {
 DECLARE_DYNAMIC_CLASS(wxMessageDialog)
 protected:
     wxString    m_caption;
     wxString    m_message;
-    long        m_dialogStyle;
     wxWindow *  m_parent;
 public:
     wxMessageDialog(wxWindow *parent, const wxString& message, const wxString& caption = wxMessageBoxCaptionStr,

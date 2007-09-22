@@ -4,7 +4,7 @@
 // Purpose:     Part of the widgets sample showing wxListbox
 // Author:      Vadim Zeitlin
 // Created:     27.03.01
-// Id:          $Id: listbox.cpp,v 1.14 2004/07/30 19:14:42 ABX Exp $
+// Id:          $Id: listbox.cpp,v 1.17 2005/04/13 15:03:50 VZ Exp $
 // Copyright:   (c) 2001 Vadim Zeitlin
 // License:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -76,7 +76,9 @@ enum
 class ListboxWidgetsPage : public WidgetsPage
 {
 public:
-    ListboxWidgetsPage(wxNotebook *notebook, wxImageList *imaglist);
+    ListboxWidgetsPage(wxBookCtrl *book, wxImageList *imaglist);
+
+    virtual wxControl *GetWidget() const { return m_lbox; }
 
 protected:
     // event handlers
@@ -132,10 +134,11 @@ protected:
     wxRadioBox *m_radioSelMode;
 
     // the checkboxes
-    wxCheckBox *m_chkSort,
-               *m_chkCheck,
+    wxCheckBox *m_chkVScroll,
                *m_chkHScroll,
-               *m_chkVScroll;
+               *m_chkCheck,
+               *m_chkSort,
+               *m_chkOwnerDraw;
 
     // the listbox itself and the sizer it is in
     wxListBox *m_lbox;
@@ -191,9 +194,9 @@ END_EVENT_TABLE()
 
 IMPLEMENT_WIDGETS_PAGE(ListboxWidgetsPage, _T("Listbox"));
 
-ListboxWidgetsPage::ListboxWidgetsPage(wxNotebook *notebook,
+ListboxWidgetsPage::ListboxWidgetsPage(wxBookCtrl *book,
                                        wxImageList *imaglist)
-                  : WidgetsPage(notebook)
+                  : WidgetsPage(book)
 {
     imaglist->Add(wxBitmap(listbox_xpm));
 
@@ -203,7 +206,8 @@ ListboxWidgetsPage::ListboxWidgetsPage(wxNotebook *notebook,
     m_chkVScroll =
     m_chkHScroll =
     m_chkCheck =
-    m_chkSort = (wxCheckBox *)NULL;
+    m_chkSort =
+    m_chkOwnerDraw = (wxCheckBox *)NULL;
 
     m_lbox = (wxListBox *)NULL;
     m_sizerLbox = (wxSizer *)NULL;
@@ -245,6 +249,7 @@ ListboxWidgetsPage::ListboxWidgetsPage(wxNotebook *notebook,
                    );
     m_chkCheck = CreateCheckBoxAndAddToSizer(sizerLeft, _T("&Check list box"));
     m_chkSort = CreateCheckBoxAndAddToSizer(sizerLeft, _T("&Sort items"));
+    m_chkOwnerDraw = CreateCheckBoxAndAddToSizer(sizerLeft, _T("&Owner drawn"));
 
     sizerLeft->Add(5, 5, 0, wxGROW | wxALL, 5); // spacer
     sizerLeft->Add(m_radioSelMode, 0, wxGROW | wxALL, 5);
@@ -320,10 +325,11 @@ ListboxWidgetsPage::ListboxWidgetsPage(wxNotebook *notebook,
 void ListboxWidgetsPage::Reset()
 {
     m_radioSelMode->SetSelection(LboxSel_Single);
-    m_chkSort->SetValue(false);
-    m_chkCheck->SetValue(false);
-    m_chkHScroll->SetValue(true);
     m_chkVScroll->SetValue(false);
+    m_chkHScroll->SetValue(true);
+    m_chkCheck->SetValue(false);
+    m_chkSort->SetValue(false);
+    m_chkOwnerDraw->SetValue(false);
 }
 
 void ListboxWidgetsPage::CreateLbox()
@@ -345,6 +351,8 @@ void ListboxWidgetsPage::CreateLbox()
         flags |= wxLB_HSCROLL;
     if ( m_chkSort->GetValue() )
         flags |= wxLB_SORT;
+    if ( m_chkOwnerDraw->GetValue() )
+        flags |= wxLB_OWNERDRAW;
 
     wxArrayString items;
     if ( m_lbox )
@@ -466,6 +474,7 @@ void ListboxWidgetsPage::OnUpdateUIResetButton(wxUpdateUIEvent& event)
 {
     event.Enable( (m_radioSelMode->GetSelection() != LboxSel_Single) ||
                   m_chkSort->GetValue() ||
+                  m_chkOwnerDraw->GetValue() ||
                   !m_chkHScroll->GetValue() ||
                   m_chkVScroll->GetValue() );
 }

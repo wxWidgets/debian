@@ -4,7 +4,7 @@
 // Author:      Julian Smart (extracted from docview.h by VZ)
 // Modified by:
 // Created:     05.11.00
-// RCS-ID:      $Id: cmdproc.h,v 1.18 2004/10/12 20:48:21 ABX Exp $
+// RCS-ID:      $Id: cmdproc.h,v 1.19 2005/02/19 16:49:25 VZ Exp $
 // Copyright:   (c) wxWidgets team
 // Licence:     wxWindows licence
 ///////////////////////////////////////////////////////////////////////////////
@@ -99,6 +99,19 @@ public:
     int GetMaxCommands() const { return m_maxNoCommands; }
     virtual void ClearCommands();
 
+    // Has the current project been changed?
+    virtual bool IsDirty() const
+    {
+        return m_currentCommand && (m_lastSavedCommand != m_currentCommand);
+    }
+
+    // Mark the current command as the one where the last save took place
+    void MarkAsSaved()
+    {
+        m_lastSavedCommand = m_currentCommand;
+    }
+
+
     // By default, the accelerators are "\tCtrl+Z" and "\tCtrl+Y"
     const wxString& GetUndoAccelerator() const { return m_undoAccelerator; }
     const wxString& GetRedoAccelerator() const { return m_redoAccelerator; }
@@ -115,7 +128,8 @@ protected:
 
     int           m_maxNoCommands;
     wxList        m_commands;
-    wxList::compatibility_iterator m_currentCommand;
+    wxList::compatibility_iterator m_currentCommand,
+                                   m_lastSavedCommand;
 
 #if wxUSE_MENUS
     wxMenu*       m_commandEditMenu;
@@ -130,3 +144,4 @@ private:
 };
 
 #endif // _WX_CMDPROC_H_
+

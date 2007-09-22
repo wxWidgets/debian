@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by: Vadim Zeitlin (owner drawn stuff)
 // Created:
-// RCS-ID:      $Id: listbox.cpp,v 1.112 2004/11/10 19:53:59 ABX Exp $
+// RCS-ID:      $Id: listbox.cpp,v 1.123 2005/06/16 15:36:48 JS Exp $
 // Copyright:   (c) Julian Smart
 // Licence:     wxWindows licence
 ///////////////////////////////////////////////////////////////////////////////
@@ -41,10 +41,6 @@
 
 #if wxUSE_OWNER_DRAWN
     #include  "wx/ownerdrw.h"
-#endif
-
-#ifdef __GNUWIN32_OLD__
-    #include "wx/msw/gnuwin32/extra.h"
 #endif
 
 #if wxUSE_EXTENDED_RTTI
@@ -283,12 +279,12 @@ void wxListBox::Delete(int N)
     m_noItems--;
 
     SetHorizontalExtent(wxEmptyString);
+
+    InvalidateBestSize();
 }
 
 int wxListBox::DoAppend(const wxString& item)
 {
-    InvalidateBestSize();
-
     int index = ListBox_AddString(GetHwnd(), item);
     m_noItems++;
 
@@ -304,6 +300,7 @@ int wxListBox::DoAppend(const wxString& item)
 
     SetHorizontalExtent(item);
 
+    InvalidateBestSize();
     return index;
 }
 
@@ -351,6 +348,8 @@ void wxListBox::DoSetItems(const wxArrayString& choices, void** clientData)
         // show the listbox back if we hid it
         ShowWindow(GetHwnd(), SW_SHOW);
     }
+
+    InvalidateBestSize();
 }
 
 int wxListBox::FindString(const wxString& s) const
@@ -370,6 +369,8 @@ void wxListBox::Clear()
 
     m_noItems = 0;
     SetHorizontalExtent();
+
+    InvalidateBestSize();
 }
 
 void wxListBox::Free()
@@ -390,7 +391,7 @@ void wxListBox::Free()
     }
 }
 
-void wxListBox::SetSelection(int N, bool select)
+void wxListBox::DoSetSelection(int N, bool select)
 {
     wxCHECK_RET( N == wxNOT_FOUND ||
                     (N >= 0 && N < m_noItems),
@@ -507,7 +508,7 @@ int wxListBox::GetSelection() const
 wxString wxListBox::GetString(int N) const
 {
     wxCHECK_MSG( N >= 0 && N < m_noItems, wxEmptyString,
-                 wxT("invalid index in wxListBox::GetClientData") );
+                 wxT("invalid index in wxListBox::GetString") );
 
     int len = ListBox_GetTextLen(GetHwnd(), N);
 
@@ -523,8 +524,6 @@ wxListBox::DoInsertItems(const wxArrayString& items, int pos)
 {
     wxCHECK_RET( pos >= 0 && pos <= m_noItems,
                  wxT("invalid index in wxListBox::InsertItems") );
-
-    InvalidateBestSize();
 
     int nItems = items.GetCount();
     for ( int i = 0; i < nItems; i++ )
@@ -549,6 +548,8 @@ wxListBox::DoInsertItems(const wxArrayString& items, int pos)
     m_noItems += nItems;
 
     SetHorizontalExtent();
+
+    InvalidateBestSize();
 }
 
 void wxListBox::SetString(int N, const wxString& s)
@@ -595,6 +596,8 @@ void wxListBox::SetString(int N, const wxString& s)
     // we may have lost the selection
     if ( wasSelected )
         Select(N);
+
+    InvalidateBestSize();
 }
 
 int wxListBox::GetCount() const
@@ -621,12 +624,12 @@ void wxListBox::SetHorizontalExtent(const wxString& s)
         int existingExtent = (int)SendMessage(GetHwnd(), LB_GETHORIZONTALEXTENT, 0, 0L);
         HDC dc = GetWindowDC(GetHwnd());
         HFONT oldFont = 0;
-        if (GetFont().Ok() && GetFont().GetResourceHandle())
+        if (GetFont().Ok() && GetFont().GetResourceHandle() != 0)
             oldFont = (HFONT) ::SelectObject(dc, (HFONT) GetFont().GetResourceHandle());
 
         GetTextMetrics(dc, &lpTextMetric);
         SIZE extentXY;
-        ::GetTextExtentPoint(dc, (LPTSTR) (const wxChar *)s, s.Length(), &extentXY);
+        ::GetTextExtentPoint32(dc, (LPTSTR) (const wxChar *)s, s.Length(), &extentXY);
         int extentX = (int)(extentXY.cx + lpTextMetric.tmAveCharWidth);
 
         if (oldFont)
@@ -641,19 +644,16 @@ void wxListBox::SetHorizontalExtent(const wxString& s)
         int largestExtent = 0;
         HDC dc = GetWindowDC(GetHwnd());
         HFONT oldFont = 0;
-        if (GetFont().Ok() && GetFont().GetResourceHandle())
+        if (GetFont().Ok() && GetFont().GetResourceHandle() != 0)
             oldFont = (HFONT) ::SelectObject(dc, (HFONT) GetFont().GetResourceHandle());
 
         GetTextMetrics(dc, &lpTextMetric);
 
-        // FIXME: buffer overflow!!
-        wxChar buf[1024];
         for (int i = 0; i < m_noItems; i++)
         {
-            int len = (int)SendMessage(GetHwnd(), LB_GETTEXT, i, (LPARAM)buf);
-            buf[len] = 0;
+            wxString str = GetString(i);
             SIZE extentXY;
-            ::GetTextExtentPoint(dc, buf, len, &extentXY);
+            ::GetTextExtentPoint32(dc, str.c_str(), str.length(), &extentXY);
             int extentX = (int)(extentXY.cx + lpTextMetric.tmAveCharWidth);
             if (extentX > largestExtent)
                 largestExtent = extentX;
@@ -690,12 +690,17 @@ wxSize wxListBox::DoGetBestSize() const
 
     wListbox += 3*cx;
 
+    // Add room for the scrollbar
+    wListbox += wxSystemSettings::GetMetric(wxSYS_VSCROLL_X);
+
     // don't make the listbox too tall (limit height to 10 items) but don't
     // make it too small neither
     int hListbox = EDIT_HEIGHT_FROM_CHAR_HEIGHT(cy)*
                     wxMin(wxMax(m_noItems, 3), 10);
 
-    return wxSize(wListbox, hListbox);
+    wxSize best(wListbox, hListbox);
+    CacheBestSize(best);
+    return best;
 }
 
 // ----------------------------------------------------------------------------
@@ -735,7 +740,7 @@ bool wxListBox::MSWCommand(WXUINT param, WXWORD WXUNUSED(id))
         event.SetExtraLong( HasMultipleSelection() ? IsSelected(n) : true );
     }
 
-    event.m_commandInt = n;
+    event.SetInt(n);
 
     return GetEventHandler()->ProcessEvent(event);
 }

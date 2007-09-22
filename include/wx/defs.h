@@ -4,8 +4,8 @@
 *  Author:      Julian Smart and others
 *  Modified by: Ryan Norton (Converted to C)
 *  Created:     01/02/97
-*  RCS-ID:      $Id: defs.h,v 1.459 2004/11/12 03:06:40 RL Exp $
-*  Copyright:   (c)
+*  RCS-ID:      $Id: defs.h,v 1.502 2005/06/10 17:53:06 ABX Exp $
+*  Copyright:   (c) Julian Smart
 *  Licence:     wxWindows licence
 */
 
@@ -20,14 +20,15 @@
 
 #include "wx/platform.h"
 
-/*  RN - only double-check the environment when building in C++
-    Shouldn't configure pass the environment to all sub-libs too? */
 #ifdef __cplusplus
 /*  Make sure the environment is set correctly */
 #   if defined(__WXMSW__) && defined(__X__)
 #       error "Target can't be both X and Windows"
+#   elif defined(__WXMSW__) && defined(__PALMOS__)
+#       error "Target can't be both PalmOS and Windows"
 #   elif !defined(__WXMOTIF__) && \
          !defined(__WXMSW__)   && \
+         !defined(__WXPALMOS__)&& \
          !defined(__WXGTK__)   && \
          !defined(__WXPM__)    && \
          !defined(__WXMAC__)   && \
@@ -62,7 +63,7 @@
 
 /*  suppress some Visual C++ warnings */
 #ifdef __VISUALC__
-    /*  the only "real" warning here is 4244 but there arej ust too many of them */
+    /*  the only "real" warning here is 4244 but there are just too many of them */
     /*  in our code... one day someone should go and fix them but until then... */
 #   pragma warning(disable:4201)    /*  nonstandard extension used: nameless struct/union */
 #   pragma warning(disable:4244)    /*  conversion from double to float */
@@ -169,6 +170,7 @@
     #endif /*  compilers */
 #endif /*  HAVE_BOOL */
 
+#if !defined(__MWERKS__) || !defined(true)
 #if !defined(HAVE_BOOL) && !defined(bool) && !defined(VMS)
     /*  NB: of course, this doesn't replace the standard type, because, for */
     /*      example, overloading based on bool/int parameter doesn't work and */
@@ -183,6 +185,7 @@
 #ifndef HAVE_BOOL
     #define true ((bool)1)
     #define false ((bool)0)
+#endif
 #endif
 
 /*  for backwards compatibility, also define TRUE and FALSE */
@@ -265,6 +268,9 @@ typedef int wxWindowID;
     #endif
     #ifndef HAVE_STATIC_CAST
         #define HAVE_STATIC_CAST
+    #endif
+    #ifndef HAVE_DYNAMIC_CAST
+        #define HAVE_DYNAMIC_CAST
     #endif
 #endif /*  HAVE_CXX_CASTS */
 
@@ -354,7 +360,7 @@ typedef int wxWindowID;
             #define wxVaCopy(d, s) ((d) = (s))
         #endif
     #endif /* va_copy/!va_copy */
-#endif // wxVaCopy
+#endif /* wxVaCopy */
 
 
 /*  ---------------------------------------------------------------------------- */
@@ -598,7 +604,9 @@ enum
     wxWIN32S,                 /*  Windows 32S API */
     wxWIN95,                  /*  Windows 95 */
     wxWIN386,                 /*  Watcom 32-bit supervisor modus */
-    wxWINDOWS_CE,             /*  Windows CE */
+    wxWINDOWS_CE,             /*  Windows CE (generic) */
+    wxWINDOWS_POCKETPC,       /*  Windows CE PocketPC */
+    wxWINDOWS_SMARTPHONE,     /*  Windows CE Smartphone */
     wxMGL_UNIX,               /*  MGL with direct hardware access */
     wxMGL_X,                  /*  MGL on X */
     wxMGL_WIN32,              /*  MGL on Win32 */
@@ -606,7 +614,9 @@ enum
     wxMGL_DOS,                /*  MGL on MS-DOS */
     wxWINDOWS_OS2,            /*  Native OS/2 PM */
     wxUNIX,                   /*  wxBase under Unix */
-    wxX11                     /*  Plain X11 and Universal widgets */
+    wxX11,                    /*  Plain X11 and Universal widgets */
+    wxPALMOS,                 /*  PalmOS */
+    wxDOS                     /*  wxBase under MS-DOS */
 };
 
 /*  ---------------------------------------------------------------------------- */
@@ -678,14 +688,25 @@ typedef wxUint16 wxWord;
  */
 
 /*  32bit */
-#ifdef __WINDOWS__
+#ifdef __PALMOS__
+    typedef int wxInt32;
+    typedef unsigned int wxUint32;
+    #define SIZEOF_INT 4
+    #define SIZEOF_LONG 4
+    #define SIZEOF_WCHAR_T 2
+    #define SIZEOF_SIZE_T 4
+    #define wxSIZE_T_IS_UINT
+    #define SIZEOF_VOID_P 4
+    #define SIZEOF_SIZE_T 4
+#elif defined(__WINDOWS__)
     /*  Win64 uses LLP64 model and so ints and longs have the same size as in */
     /*  Win32 */
     #if defined(__WIN32__)
         typedef int wxInt32;
         typedef unsigned int wxUint32;
 
-        /*  conside that if SIZEOF_INT is defined, all the other ones are too */
+        /* Assume that if SIZEOF_INT is defined that all the other ones except
+           SIZEOF_SIZE_T, are too.  See next #if below.  */
         #ifndef SIZEOF_INT
             #define SIZEOF_INT 4
             #define SIZEOF_LONG 4
@@ -712,6 +733,19 @@ typedef wxUint16 wxWord;
                 #define SIZEOF_VOID_P 4
             #endif /*  Win64/32 */
         #endif /*  !defined(SIZEOF_INT) */
+
+        /*
+          If Python.h was included first, it defines all of the SIZEOF's above
+          except for SIZEOF_SIZE_T, so we need to do it here to avoid
+          triggering the #error in the ssize_t typedefs below...
+        */
+        #ifndef SIZEOF_SIZE_T
+            #ifdef __WIN64__
+                #define SIZEOF_SIZE_T 8
+            #else /* Win32 */
+                #define SIZEOF_SIZE_T 4
+            #endif
+        #endif
     #else
         #error "Unsupported Windows version"
     #endif
@@ -733,7 +767,7 @@ typedef wxUint16 wxWord;
 
             typedef long wxInt32;
             typedef unsigned long wxUint32;
-        #elif
+        #else
             /*  wxWidgets is not ready for 128bit systems yet... */
             #error "Unknown sizeof(int) value, what are you compiling for?"
         #endif
@@ -822,9 +856,10 @@ inline void *wxUIntToPtr(wxUIntPtr p)
 
 /*  64 bit */
 
-/*  NB: we #define and not typedef wxLongLong_t because we want to be able to */
-/*      use 'unsigned wxLongLong_t' as well and because we use "#ifdef */
+/*  NB: we #define and not typedef wxLongLong_t because we use "#ifdef */
 /*      wxLongLong_t" in wx/longlong.h */
+
+/*      wxULongLong_t is set later (usually to unsigned wxLongLong_t) */
 
 /*  to avoid compilation problems on 64bit machines with ambiguous method calls */
 /*  we will need to define this */
@@ -837,6 +872,10 @@ inline void *wxUIntToPtr(wxUIntPtr p)
     #define wxLongLongSuffix l
     #define wxLongLongFmtSpec _T("l")
     #define wxLongLongIsLong
+#elif defined(__WXPALMOS__)
+    #define wxLongLong_t int64_t
+    #define wxLongLongSuffix ll
+    #define wxLongLongFmtSpec _T("ll")
 #elif (defined(__VISUALC__) && defined(__WIN32__))
     #define wxLongLong_t __int64
     #define wxLongLongSuffix i64
@@ -844,17 +883,20 @@ inline void *wxUIntToPtr(wxUIntPtr p)
 #elif defined(__BORLANDC__) && defined(__WIN32__) && (__BORLANDC__ >= 0x520)
     #define wxLongLong_t __int64
     #define wxLongLongSuffix i64
-    #define wxLongLongFmtSpec _T("Ld")
+    #define wxLongLongFmtSpec _T("L")
 #elif (defined(__WATCOMC__) && (defined(__WIN32__) || defined(__DOS__)))
       #define wxLongLong_t __int64
       #define wxLongLongSuffix i64
-      #define wxLongLongFmtSpec _T("Ld")
+      #define wxLongLongFmtSpec _T("L")
 #elif defined(__DIGITALMARS__)
       #define wxLongLong_t __int64
       #define wxLongLongSuffix LL
       #define wxLongLongFmtSpec _T("ll")
+#elif defined(__MINGW32__)
+    #define wxLongLong_t long long
+    #define wxLongLongSuffix ll
+    #define wxLongLongFmtSpec _T("I64")
 #elif (defined(SIZEOF_LONG_LONG) && SIZEOF_LONG_LONG >= 8)  || \
-        defined(__MINGW32__) || \
         defined(__GNUC__) || \
         defined(__CYGWIN__) || \
         defined(__WXMICROWIN__) || \
@@ -877,22 +919,38 @@ inline void *wxUIntToPtr(wxUIntPtr p)
 
 
 #ifdef wxLongLong_t
+
+    #ifdef __WXPALMOS__
+        #define wxULongLong_t uint64_t
+    #else
+        #define wxULongLong_t unsigned wxLongLong_t
+    #endif
+
     /*  these macros allow to definea 64 bit constants in a portable way */
     #define wxLL(x) wxCONCAT(x, wxLongLongSuffix)
     #define wxULL(x) wxCONCAT(x, wxCONCAT(u, wxLongLongSuffix))
 
     typedef wxLongLong_t wxInt64;
-    typedef unsigned wxLongLong_t wxUint64;
+    typedef wxULongLong_t wxUint64;
 #endif
 
 
 /* Make sure ssize_t is defined (a signed type the same size as size_t) */
 /* HAVE_SSIZE_T should be defined for compiliers that already have it */
+#ifdef __MINGW32__
+    #include <sys/types.h>
+    #if defined(_SSIZE_T_) && !defined(HAVE_SSIZE_T)
+        #define HAVE_SSIZE_T
+    #endif
+#endif
+#if defined(__PALMOS__) && !defined(HAVE_SSIZE_T)
+    #define HAVE_SSIZE_T
+#endif
 #ifndef HAVE_SSIZE_T
     #if SIZEOF_SIZE_T == 4
         typedef wxInt32 ssize_t;
     #elif SIZEOF_SIZE_T == 8
-        typedef wxInt64 ssize_t
+        typedef wxInt64 ssize_t;
     #else
         #error "error defining ssize_t, size_t is not 4 or 8 bytes"
     #endif
@@ -1099,10 +1157,11 @@ enum wxGeometryCentre
 
 enum wxOrientation
 {
+    /* don't change the values of these elements, they are used elsewhere */
     wxHORIZONTAL              = 0x0004,
     wxVERTICAL                = 0x0008,
 
-    wxBOTH                    = (wxVERTICAL | wxHORIZONTAL)
+    wxBOTH                    = wxVERTICAL | wxHORIZONTAL
 };
 
 enum wxDirection
@@ -1177,6 +1236,13 @@ enum wxBorder
     /*  a mask to extract border style from the combination of flags */
     wxBORDER_MASK   = 0x1f200000
 };
+
+/* This makes it easier to specify a 'normal' border for a control */
+#if defined(__SMARTPHONE__) || defined(__POCKETPC__)
+#define wxDEFAULT_CONTROL_BORDER    wxBORDER_SIMPLE
+#else
+#define wxDEFAULT_CONTROL_BORDER    wxBORDER_SUNKEN
+#endif
 
 /*  ---------------------------------------------------------------------------- */
 /*  Window style flags */
@@ -1302,6 +1368,10 @@ enum wxBorder
 #define wxFRAME_EX_CONTEXTHELP  0x00000004
 #define wxDIALOG_EX_CONTEXTHELP 0x00000004
 
+/*  Draw the window in a metal theme on Mac */
+#define wxFRAME_EX_METAL                0x00000040
+#define wxDIALOG_EX_METAL               0x00000040
+
 /*  Create a window which is attachable to another top level window */
 #define wxFRAME_DRAWER          0x0020
 
@@ -1311,20 +1381,6 @@ enum wxBorder
  */
 
 #define wxFRAME_NO_WINDOW_MENU  0x0100
-
-/*
- * wxExtDialog style flags
- */
-#define wxED_CLIENT_MARGIN      0x0004
-#define wxED_BUTTONS_BOTTOM     0x0000  /*  has no effect */
-#define wxED_BUTTONS_RIGHT      0x0002
-#define wxED_STATIC_LINE        0x0001
-
-#if defined(__WXMSW__) || defined(__WXMAC__)
-#   define wxEXT_DIALOG_STYLE  (wxDEFAULT_DIALOG_STYLE|wxED_CLIENT_MARGIN)
-#else
-#   define wxEXT_DIALOG_STYLE  (wxDEFAULT_DIALOG_STYLE|wxED_CLIENT_MARGIN|wxED_STATIC_LINE)
-#endif
 
 /*
  * wxMenuBar style flags
@@ -1385,29 +1441,14 @@ enum wxBorder
 /*  Old names for compatibility */
 #define wxRA_HORIZONTAL     wxHORIZONTAL
 #define wxRA_VERTICAL       wxVERTICAL
+#define wxRA_USE_CHECKBOX   0x0010 /* alternative native subcontrols (wxPalmOS) */
 
 /*
  * wxRadioButton style flag
  */
 #define wxRB_GROUP          0x0004
 #define wxRB_SINGLE         0x0008
-
-/*
- * wxSlider flags
- */
-#define wxSL_HORIZONTAL      wxHORIZONTAL /*  4 */
-#define wxSL_VERTICAL        wxVERTICAL   /*  8 */
-/*  The next one is obsolete - use scroll events instead */
-#define wxSL_NOTIFY_DRAG     0x0000
-#define wxSL_TICKS           0x0010
-#define wxSL_AUTOTICKS       wxSL_TICKS /*  we don't support manual ticks */
-#define wxSL_LABELS          0x0020
-#define wxSL_LEFT            0x0040
-#define wxSL_TOP             0x0080
-#define wxSL_RIGHT           0x0100
-#define wxSL_BOTTOM          0x0200
-#define wxSL_BOTH            0x0400
-#define wxSL_SELRANGE        0x0800
+#define wxRB_USE_CHECKBOX   0x0010 /* alternative native control (wxPalmOS) */
 
 /*
  * wxScrollBar flags
@@ -1435,6 +1476,8 @@ enum wxBorder
 #define wxNB_RIGHT            0x0040
 #define wxNB_BOTTOM           0x0080
 #define wxNB_MULTILINE        0x0100
+#define wxNB_NOPAGETHEME      0x0200
+#define wxNB_FLAT             0x0400
 #define wxNB_DEFAULT          wxNB_TOP
 
 /*
@@ -1498,10 +1541,9 @@ enum wxBorder
 #define wxPD_AUTO_HIDE          0x0004
 #define wxPD_ELAPSED_TIME       0x0008
 #define wxPD_ESTIMATED_TIME     0x0010
-/*  wxGA_SMOOTH = 0x0020 may also be used with wxProgressDialog */
-/*  NO!!! This is wxDIALOG_MODAL and will cause the progress dialog to */
-/*  be modal. No progress will then be made at all. */
+#define wxPD_SMOOTH             0x0020
 #define wxPD_REMAINING_TIME     0x0040
+#define wxPD_CAN_SKIP           0x0080
 
 /*
  * wxDirDialog styles
@@ -1788,12 +1830,15 @@ enum
     wxSTIPPLE_MASK,        /* mask is used for masking areas in the stipple bitmap (TO DO) */
     /*  drawn with a Pen, and without any Brush -- and it can be stippled. */
     wxSTIPPLE =          110,
-    wxBDIAGONAL_HATCH,
-    wxCROSSDIAG_HATCH,
-    wxFDIAGONAL_HATCH,
-    wxCROSS_HATCH,
+
+    wxBDIAGONAL_HATCH,     /* In wxWidgets < 2.6 use WX_HATCH macro  */
+    wxCROSSDIAG_HATCH,     /* to verify these wx*_HATCH are in style */
+    wxFDIAGONAL_HATCH,     /* of wxBrush. In wxWidgets >= 2.6 use    */
+    wxCROSS_HATCH,         /* wxBrush::IsHatch() instead.            */
     wxHORIZONTAL_HATCH,
     wxVERTICAL_HATCH,
+    wxFIRST_HATCH = wxBDIAGONAL_HATCH,
+    wxLAST_HATCH = wxVERTICAL_HATCH,
 
     wxJOIN_BEVEL =     120,
     wxJOIN_MITER,
@@ -1804,28 +1849,31 @@ enum
     wxCAP_BUTT
 };
 
-/*  VZ: why doesn't it start with "wx"? FIXME */
-#define IS_HATCH(s)    ((s)>=wxBDIAGONAL_HATCH && (s)<=wxVERTICAL_HATCH)
+#if WXWIN_COMPATIBILITY_2_4
+    #define IS_HATCH(s)    ((s)>=wxFIRST_HATCH && (s)<=wxLAST_HATCH)
+#else
+    /* use wxBrush::IsHatch() instead thought wxMotif still uses it in src/motif/dcclient.cpp */
+#endif
 
 /*  Logical ops */
 typedef enum
 {
-  wxCLEAR,        wxROP_BLACK = wxCLEAR,             wxBLIT_BLACKNESS = wxCLEAR,        /*  0 */
-  wxXOR,          wxROP_XORPEN = wxXOR,              wxBLIT_SRCINVERT = wxXOR,          /*  src XOR dst */
-  wxINVERT,       wxROP_NOT = wxINVERT,              wxBLIT_DSTINVERT = wxINVERT,       /*  NOT dst */
-  wxOR_REVERSE,   wxROP_MERGEPENNOT = wxOR_REVERSE,  wxBLIT_00DD0228 = wxOR_REVERSE,    /*  src OR (NOT dst) */
-  wxAND_REVERSE,  wxROP_MASKPENNOT = wxAND_REVERSE,  wxBLIT_SRCERASE = wxAND_REVERSE,   /*  src AND (NOT dst) */
-  wxCOPY,         wxROP_COPYPEN = wxCOPY,            wxBLIT_SRCCOPY = wxCOPY,           /*  src */
-  wxAND,          wxROP_MASKPEN = wxAND,             wxBLIT_SRCAND = wxAND,             /*  src AND dst */
-  wxAND_INVERT,   wxROP_MASKNOTPEN = wxAND_INVERT,   wxBLIT_00220326 = wxAND_INVERT,    /*  (NOT src) AND dst */
-  wxNO_OP,        wxROP_NOP = wxNO_OP,               wxBLIT_00AA0029 = wxNO_OP,         /*  dst */
-  wxNOR,          wxROP_NOTMERGEPEN = wxNOR,         wxBLIT_NOTSRCERASE = wxNOR,        /*  (NOT src) AND (NOT dst) */
-  wxEQUIV,        wxROP_NOTXORPEN = wxEQUIV,         wxBLIT_00990066 = wxEQUIV,         /*  (NOT src) XOR dst */
-  wxSRC_INVERT,   wxROP_NOTCOPYPEN = wxSRC_INVERT,   wxBLIT_NOTSCRCOPY = wxSRC_INVERT,  /*  (NOT src) */
-  wxOR_INVERT,    wxROP_MERGENOTPEN = wxOR_INVERT,   wxBLIT_MERGEPAINT = wxOR_INVERT,   /*  (NOT src) OR dst */
-  wxNAND,         wxROP_NOTMASKPEN = wxNAND,         wxBLIT_007700E6 = wxNAND,          /*  (NOT src) OR (NOT dst) */
-  wxOR,           wxROP_MERGEPEN = wxOR,             wxBLIT_SRCPAINT = wxOR,            /*  src OR dst */
-  wxSET,          wxROP_WHITE = wxSET,               wxBLIT_WHITENESS = wxSET           /*  1 */
+    wxCLEAR,        wxROP_BLACK = wxCLEAR,             wxBLIT_BLACKNESS = wxCLEAR,        /*  0 */
+    wxXOR,          wxROP_XORPEN = wxXOR,              wxBLIT_SRCINVERT = wxXOR,          /*  src XOR dst */
+    wxINVERT,       wxROP_NOT = wxINVERT,              wxBLIT_DSTINVERT = wxINVERT,       /*  NOT dst */
+    wxOR_REVERSE,   wxROP_MERGEPENNOT = wxOR_REVERSE,  wxBLIT_00DD0228 = wxOR_REVERSE,    /*  src OR (NOT dst) */
+    wxAND_REVERSE,  wxROP_MASKPENNOT = wxAND_REVERSE,  wxBLIT_SRCERASE = wxAND_REVERSE,   /*  src AND (NOT dst) */
+    wxCOPY,         wxROP_COPYPEN = wxCOPY,            wxBLIT_SRCCOPY = wxCOPY,           /*  src */
+    wxAND,          wxROP_MASKPEN = wxAND,             wxBLIT_SRCAND = wxAND,             /*  src AND dst */
+    wxAND_INVERT,   wxROP_MASKNOTPEN = wxAND_INVERT,   wxBLIT_00220326 = wxAND_INVERT,    /*  (NOT src) AND dst */
+    wxNO_OP,        wxROP_NOP = wxNO_OP,               wxBLIT_00AA0029 = wxNO_OP,         /*  dst */
+    wxNOR,          wxROP_NOTMERGEPEN = wxNOR,         wxBLIT_NOTSRCERASE = wxNOR,        /*  (NOT src) AND (NOT dst) */
+    wxEQUIV,        wxROP_NOTXORPEN = wxEQUIV,         wxBLIT_00990066 = wxEQUIV,         /*  (NOT src) XOR dst */
+    wxSRC_INVERT,   wxROP_NOTCOPYPEN = wxSRC_INVERT,   wxBLIT_NOTSCRCOPY = wxSRC_INVERT,  /*  (NOT src) */
+    wxOR_INVERT,    wxROP_MERGENOTPEN = wxOR_INVERT,   wxBLIT_MERGEPAINT = wxOR_INVERT,   /*  (NOT src) OR dst */
+    wxNAND,         wxROP_NOTMASKPEN = wxNAND,         wxBLIT_007700E6 = wxNAND,          /*  (NOT src) OR (NOT dst) */
+    wxOR,           wxROP_MERGEPEN = wxOR,             wxBLIT_SRCPAINT = wxOR,            /*  src OR dst */
+    wxSET,          wxROP_WHITE = wxSET,               wxBLIT_WHITENESS = wxSET           /*  1 */
 } form_ops_t;
 
 /*  Flood styles */
@@ -1851,7 +1899,7 @@ enum
     wxTOOL_RIGHT
 };
 
-/*  the values of the format constants should be the same as correspondign */
+/*  the values of the format constants should be the same as corresponding */
 /*  CF_XXX constants in Windows API */
 enum wxDataFormatId
 {
@@ -1887,10 +1935,10 @@ enum wxKeyCode
     WXK_SPACE   =    32,
     WXK_DELETE  =    127,
 
-    /* There are by design not compatable with unicode characters.
+    /* These are, by design, not compatible with unicode characters.
        If you want to get a unicode character from a key event, use
        wxKeyEvent::GetUnicodeKey instead.                           */
-    WXK_START   = 300, 
+    WXK_START   = 300,
     WXK_LBUTTON,
     WXK_RBUTTON,
     WXK_CANCEL,
@@ -1992,7 +2040,29 @@ enum wxKeyCode
     WXK_WINDOWS_LEFT,
     WXK_WINDOWS_RIGHT,
     WXK_WINDOWS_MENU ,
-    WXK_COMMAND
+    WXK_COMMAND,
+
+    /* Hardware-specific buttons */
+    WXK_SPECIAL1 = 193,
+    WXK_SPECIAL2,
+    WXK_SPECIAL3,
+    WXK_SPECIAL4,
+    WXK_SPECIAL5,
+    WXK_SPECIAL6,
+    WXK_SPECIAL7,
+    WXK_SPECIAL8,
+    WXK_SPECIAL9,
+    WXK_SPECIAL10,
+    WXK_SPECIAL11,
+    WXK_SPECIAL12,
+    WXK_SPECIAL13,
+    WXK_SPECIAL14,
+    WXK_SPECIAL15,
+    WXK_SPECIAL16,
+    WXK_SPECIAL17,
+    WXK_SPECIAL18,
+    WXK_SPECIAL19,
+    WXK_SPECIAL20
 };
 
 #if wxUSE_HOTKEY
@@ -2094,8 +2164,58 @@ typedef enum
     wxPAPER_B5_EXTRA,           /*  B5 (ISO) Extra 201 x 276 mm */
     wxPAPER_A2,                 /*  A2 420 x 594 mm */
     wxPAPER_A3_TRANSVERSE,      /*  A3 Transverse 297 x 420 mm */
-    wxPAPER_A3_EXTRA_TRANSVERSE /*  A3 Extra Transverse 322 x 445 mm */
+    wxPAPER_A3_EXTRA_TRANSVERSE, /*  A3 Extra Transverse 322 x 445 mm */
 
+    wxPAPER_DBL_JAPANESE_POSTCARD,/* Japanese Double Postcard 200 x 148 mm */
+    wxPAPER_A6,                 /* A6 105 x 148 mm */
+    wxPAPER_JENV_KAKU2,         /* Japanese Envelope Kaku #2 */
+    wxPAPER_JENV_KAKU3,         /* Japanese Envelope Kaku #3 */
+    wxPAPER_JENV_CHOU3,         /* Japanese Envelope Chou #3 */
+    wxPAPER_JENV_CHOU4,         /* Japanese Envelope Chou #4 */
+    wxPAPER_LETTER_ROTATED,     /* Letter Rotated 11 x 8 1/2 in */
+    wxPAPER_A3_ROTATED,         /* A3 Rotated 420 x 297 mm */
+    wxPAPER_A4_ROTATED,         /* A4 Rotated 297 x 210 mm */
+    wxPAPER_A5_ROTATED,         /* A5 Rotated 210 x 148 mm */
+    wxPAPER_B4_JIS_ROTATED,     /* B4 (JIS) Rotated 364 x 257 mm */
+    wxPAPER_B5_JIS_ROTATED,     /* B5 (JIS) Rotated 257 x 182 mm */
+    wxPAPER_JAPANESE_POSTCARD_ROTATED,/* Japanese Postcard Rotated 148 x 100 mm */
+    wxPAPER_DBL_JAPANESE_POSTCARD_ROTATED,/* Double Japanese Postcard Rotated 148 x 200 mm */
+    wxPAPER_A6_ROTATED,         /* A6 Rotated 148 x 105 mm */
+    wxPAPER_JENV_KAKU2_ROTATED, /* Japanese Envelope Kaku #2 Rotated */
+    wxPAPER_JENV_KAKU3_ROTATED, /* Japanese Envelope Kaku #3 Rotated */
+    wxPAPER_JENV_CHOU3_ROTATED, /* Japanese Envelope Chou #3 Rotated */
+    wxPAPER_JENV_CHOU4_ROTATED, /* Japanese Envelope Chou #4 Rotated */
+    wxPAPER_B6_JIS,             /* B6 (JIS) 128 x 182 mm */
+    wxPAPER_B6_JIS_ROTATED,     /* B6 (JIS) Rotated 182 x 128 mm */
+    wxPAPER_12X11,              /* 12 x 11 in */
+    wxPAPER_JENV_YOU4,          /* Japanese Envelope You #4 */
+    wxPAPER_JENV_YOU4_ROTATED,  /* Japanese Envelope You #4 Rotated */
+    wxPAPER_P16K,               /* PRC 16K 146 x 215 mm */
+    wxPAPER_P32K,               /* PRC 32K 97 x 151 mm */
+    wxPAPER_P32KBIG,            /* PRC 32K(Big) 97 x 151 mm */
+    wxPAPER_PENV_1,             /* PRC Envelope #1 102 x 165 mm */
+    wxPAPER_PENV_2,             /* PRC Envelope #2 102 x 176 mm */
+    wxPAPER_PENV_3,             /* PRC Envelope #3 125 x 176 mm */
+    wxPAPER_PENV_4,             /* PRC Envelope #4 110 x 208 mm */
+    wxPAPER_PENV_5,             /* PRC Envelope #5 110 x 220 mm */
+    wxPAPER_PENV_6,             /* PRC Envelope #6 120 x 230 mm */
+    wxPAPER_PENV_7,             /* PRC Envelope #7 160 x 230 mm */
+    wxPAPER_PENV_8,             /* PRC Envelope #8 120 x 309 mm */
+    wxPAPER_PENV_9,             /* PRC Envelope #9 229 x 324 mm */
+    wxPAPER_PENV_10,            /* PRC Envelope #10 324 x 458 mm */
+    wxPAPER_P16K_ROTATED,       /* PRC 16K Rotated */
+    wxPAPER_P32K_ROTATED,       /* PRC 32K Rotated */
+    wxPAPER_P32KBIG_ROTATED,    /* PRC 32K(Big) Rotated */
+    wxPAPER_PENV_1_ROTATED,     /* PRC Envelope #1 Rotated 165 x 102 mm */
+    wxPAPER_PENV_2_ROTATED,     /* PRC Envelope #2 Rotated 176 x 102 mm */
+    wxPAPER_PENV_3_ROTATED,     /* PRC Envelope #3 Rotated 176 x 125 mm */
+    wxPAPER_PENV_4_ROTATED,     /* PRC Envelope #4 Rotated 208 x 110 mm */
+    wxPAPER_PENV_5_ROTATED,     /* PRC Envelope #5 Rotated 220 x 110 mm */
+    wxPAPER_PENV_6_ROTATED,     /* PRC Envelope #6 Rotated 230 x 120 mm */
+    wxPAPER_PENV_7_ROTATED,     /* PRC Envelope #7 Rotated 230 x 160 mm */
+    wxPAPER_PENV_8_ROTATED,     /* PRC Envelope #8 Rotated 309 x 120 mm */
+    wxPAPER_PENV_9_ROTATED,     /* PRC Envelope #9 Rotated 324 x 229 mm */
+    wxPAPER_PENV_10_ROTATED    /* PRC Envelope #10 Rotated 458 x 324 m */
 } wxPaperSize;
 
 /* Printing orientation */
@@ -2165,6 +2285,20 @@ enum wxUpdateUI
 #   define wxALL_FILES           gettext_noop("All files (*)|*")
 #endif
 
+#if defined(__CYGWIN__) && defined(__WXMSW__)
+#   if wxUSE_STL || defined(wxUSE_STD_STRING)
+         /*
+            NASTY HACK because the gethostname in sys/unistd.h which the gnu
+            stl includes and wx builds with by default clash with each other
+            (windows version 2nd param is int, sys/unistd.h version is unsigned
+            int).
+          */
+#        define gethostname gethostnameHACK
+#        include <unistd.h>
+#        undef gethostname
+#   endif
+#endif
+
 /*  --------------------------------------------------------------------------- */
 /*  macros that enable wxWidgets apps to be compiled in absence of the */
 /*  sytem headers, although some platform specific types are used in the */
@@ -2176,9 +2310,8 @@ enum wxUpdateUI
 #define WX_OPAQUE_TYPE( name ) struct wxOpaque##name
 
 typedef unsigned char WXCOLORREF[6];
+typedef void*       WXCGIMAGEREF;
 typedef void*       WXHBITMAP;
-typedef void*       WXHMETAFILE;
-typedef void*       WXHICON;
 typedef void*       WXHCURSOR;
 typedef void*       WXHRGN;
 typedef void*       WXRECTPTR;
@@ -2193,6 +2326,9 @@ typedef void*       WXHMENU;
 typedef unsigned int    WXUINT;
 typedef unsigned long   WXDWORD;
 typedef unsigned short  WXWORD;
+
+typedef WX_OPAQUE_TYPE(CIconHandle ) * WXHICON ;
+typedef WX_OPAQUE_TYPE(PicHandle ) * WXHMETAFILE ;
 
 
 /* typedef void*       WXWidget; */
@@ -2300,7 +2436,38 @@ DECLARE_WXCOCOA_OBJC_CLASS(NSView);
 typedef WX_NSView WXWidget; /*  wxWidgets BASE definition */
 #endif /*  __WXCOCOA__ */
 
-#ifdef __WXMSW__
+#if defined(__WXPALMOS__)
+
+typedef void *          WXHANDLE;
+typedef void *          WXHICON;
+typedef void *          WXHFONT;
+typedef void *          WXHMENU;
+typedef void *          WXHPEN;
+typedef void *          WXHBRUSH;
+typedef void *          WXHPALETTE;
+typedef void *          WXHCURSOR;
+typedef void *          WXHRGN;
+typedef void *          WXHACCEL;
+typedef void *          WXHINSTANCE;
+typedef void *          WXHBITMAP;
+typedef void *          WXHIMAGELIST;
+typedef void *          WXHGLOBAL;
+typedef void *          WXHDC;
+typedef unsigned int    WXUINT;
+typedef unsigned long   WXDWORD;
+typedef unsigned short  WXWORD;
+
+typedef unsigned long   WXCOLORREF;
+typedef struct tagMSG   WXMSG;
+
+typedef WinHandle       WXWINHANDLE;
+typedef WXWINHANDLE     WXWidget;
+
+#endif /* __WXPALMOS__ */
+
+
+/* ABX: check __WIN32__ instead of __WXMSW__ for the same MSWBase in any Win32 port */
+#if defined(__WIN32__)
 
 /*  the keywords needed for WinMain() declaration */
 #ifndef WXFAR
@@ -2318,6 +2485,7 @@ typedef void *          WXHBRUSH;
 typedef void *          WXHPALETTE;
 typedef void *          WXHCURSOR;
 typedef void *          WXHRGN;
+typedef void *          WXRECTPTR;
 typedef void *          WXHACCEL;
 typedef void WXFAR  *   WXHINSTANCE;
 typedef void *          WXHBITMAP;
@@ -2351,12 +2519,12 @@ typedef long            WXLPARAM;
 typedef long            WXLRESULT;
 #endif
 
-#if !defined(__WIN32__) || defined(__GNUWIN32__) || defined(__WXMICROWIN__)
+#if defined(__GNUWIN32__) || defined(__WXMICROWIN__)
 typedef int             (*WXFARPROC)();
 #else
 typedef int             (__stdcall *WXFARPROC)();
 #endif
-#endif /*  __WXMSW__ */
+#endif /*  __WIN32__ */
 
 
 #if defined(__WXPM__) || defined(__EMX__)
@@ -2543,6 +2711,7 @@ typedef struct _GtkNotebookPage   GtkNotebookPage;
 typedef struct _GtkAccelGroup     GtkAccelGroup;
 typedef struct _GtkItemFactory    GtkItemFactory;
 typedef struct _GtkSelectionData  GtkSelectionData;
+typedef struct _GtkTextBuffer     GtkTextBuffer;
 
 typedef GtkWidget *WXWidget;
 

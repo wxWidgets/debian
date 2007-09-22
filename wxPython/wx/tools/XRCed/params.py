@@ -2,7 +2,7 @@
 # Purpose:      Classes for parameter introduction
 # Author:       Roman Rolinsky <rolinsky@mema.ucl.ac.be>
 # Created:      22.08.2001
-# RCS-ID:       $Id: params.py,v 1.11 2004/10/11 00:00:31 ROL Exp $
+# RCS-ID:       $Id: params.py,v 1.16 2005/05/26 21:14:05 RD Exp $
 
 import string
 import os.path
@@ -11,19 +11,24 @@ from types import *
 from wxPython.xrc import *
 
 genericStyles = [
-    'wxCLIP_CHILDREN',
-    'wxSIMPLE_BORDER',
-    'wxSUNKEN_BORDER',
-    'wxDOUBLE_BORDER',
-    'wxRAISED_BORDER',
-    'wxSTATIC_BORDER',
-    'wxNO_BORDER',
-    'wxTRANSPARENT_WINDOW',
+    'wxSIMPLE_BORDER', 'wxDOUBLE_BORDER', 'wxSUNKEN_BORDER',
+    'wxRAISED_BORDER', 'wxSTATIC_BORDER', 'wxNO_BORDER',
+    'wxTRANSPARENT_WINDOW', 'wxTAB_TRAVERSAL', 
     'wxWANTS_CHARS',
     'wxNO_FULL_REPAINT_ON_RESIZE',
-    'wxFULL_REPAINT_ON_RESIZE',
+    'wxVSCROLL', 'wxHSCROLL', 'wxALWAYS_SHOW_SB',
+    'wxCLIP_CHILDREN',
+    'wxFULL_REPAINT_ON_RESIZE'
+    ]
+
+genericExStyles = [
+    'wxWS_EX_VALIDATE_RECURSIVELY',
     'wxWS_EX_BLOCK_EVENTS',
-]
+    'wxWS_EX_TRANSIENT',
+    'wxFRAME_EX_CONTEXTHELP',
+    'wxWS_EX_PROCESS_IDLE',
+    'wxWS_EX_PROCESS_UI_UPDATES'
+    ]
 
 buttonSize = (35,-1)    # in dialog units, transformed to pixels in panel ctor
 
@@ -31,8 +36,6 @@ buttonSize = (35,-1)    # in dialog units, transformed to pixels in panel ctor
 class PPanel(wxPanel):
     def __init__(self, parent, name):
         wxPanel.__init__(self, parent, -1, name=name)
-        self.SetBackgroundColour(parent.GetBackgroundColour())
-        self.SetForegroundColour(parent.GetForegroundColour())
         self.modified = self.freeze = False
     def Enable(self, value):
         # Something strange is going on with enable so we make sure...
@@ -127,7 +130,7 @@ class ParamNonGenericStyle(ParamBinaryOr):
 class ParamExStyle(ParamBinaryOr):
     def __init__(self, parent, name):
         if g.currentXXX:
-            self.values = g.currentXXX.exStyles # constant at the moment
+            self.values = g.currentXXX.exStyles + genericExStyles
         else:
             self.values = []
         ParamBinaryOr.__init__(self, parent, name)
@@ -245,20 +248,21 @@ class ParamFont(PPanel):
         error = False
         try:
             try: size = int(self.value[0])
-            except ValueError: error = True
+            except ValueError: error = True; wxLogError('Invalid size specification')
             try: family = fontFamiliesXml2wx[self.value[1]]
-            except KeyError: error = True
+            except KeyError: error = True; wxLogError('Invalid family specification')
             try: style = fontStylesXml2wx[self.value[2]]
-            except KeyError: error = True
+            except KeyError: error = True; wxLogError('Invalid style specification')
             try: weight = fontWeightsXml2wx[self.value[3]]
-            except KeyError: error = True
-            try: underlined = int(self.value[4])
-            except ValueError: error = True
+            except KeyError: error = True; wxLogError('Invalid weight specification')
+            try: underlined = bool(self.value[4])
+            except ValueError: error = True; wxLogError('Invalid underlined flag specification')
             face = self.value[5]
-            mapper = wxFontMapper()
-            if not self.value[6]: enc = mapper.CharsetToEncoding(self.value[6])
         except IndexError:
             error = True
+        mapper = wxFontMapper()
+        if not self.value[6]: enc = mapper.CharsetToEncoding(self.value[6])
+            
         if error: wxLogError('Invalid font specification')
         if enc == wxFONTENCODING_DEFAULT: enc = wxFONTENCODING_SYSTEM
         font = wxFont(size, family, style, weight, underlined, face, enc)
@@ -267,13 +271,18 @@ class ParamFont(PPanel):
         dlg = wxFontDialog(self, data)
         if dlg.ShowModal() == wxID_OK:
             font = dlg.GetFontData().GetChosenFont()
+            print font.GetEncoding()
+            if font.GetEncoding() == wxFONTENCODING_SYSTEM:
+                encName = ''
+            else:
+                encName = wxFontMapper_GetEncodingName(font.GetEncoding()).encode()
             value = [str(font.GetPointSize()),
                      fontFamiliesWx2Xml.get(font.GetFamily(), "default"),
                      fontStylesWx2Xml.get(font.GetStyle(), "normal"),
                      fontWeightsWx2Xml.get(font.GetWeight(), "normal"),
-                     str(font.GetUnderlined()),
+                     str(int(font.GetUnderlined())),
                      font.GetFaceName().encode(),
-                     wxFontMapper_GetEncodingName(font.GetEncoding()).encode()
+                     encName
                      ]
             # Add ignored flags
             self.SetValue(value)
@@ -416,10 +425,10 @@ class ParamEncoding(ParamText):
 class ContentDialog(wxDialog):
     def __init__(self, parent, value):
         # Load from resource
-	pre = wxPreDialog()
+        pre = wxPreDialog()
         g.frame.res.LoadOnDialog(pre, parent, 'DIALOG_CONTENT')
         self.this = pre.this
-	self._setOORInfo(self)
+        self._setOORInfo(self)
         self.list = XRCCTRL(self, 'LIST')
         # Set list items
         for v in value:
@@ -466,10 +475,10 @@ class ContentDialog(wxDialog):
 
 class ContentCheckListDialog(wxDialog):
     def __init__(self, parent, value):
-	pre = wxPreDialog()
+        pre = wxPreDialog()
         g.frame.res.LoadOnDialog(pre, parent, 'DIALOG_CONTENT_CHECK_LIST')
         self.this = pre.this
-	self._setOORInfo(self)
+        self._setOORInfo(self)
         self.list = XRCCTRL(self, 'CHECK_LIST')
         # Set list items
         i = 0
@@ -598,10 +607,10 @@ class ParamContentCheckList(ParamContent):
 
 class IntListDialog(wxDialog):
     def __init__(self, parent, value):
-	pre = wxPreDialog()
+        pre = wxPreDialog()
         g.frame.res.LoadOnDialog(pre, parent, 'DIALOG_INTLIST')
         self.this = pre.this
-	self._setOORInfo(self)
+        self._setOORInfo(self)
         self.list = XRCCTRL(self, 'LIST')
         # Set list items
         value.sort()
@@ -774,19 +783,13 @@ class ParamFile(PPanel):
 
 class ParamBitmap(PPanel):
     def __init__(self, parent, name):
-	pre = wxPrePanel()
+        pre = wxPrePanel()
         g.frame.res.LoadOnPanel(pre, parent, 'PANEL_BITMAP')
         self.this = pre.this
-	self._setOORInfo(self)
-        self.SetBackgroundColour(parent.GetBackgroundColour())
-        self.SetForegroundColour(parent.GetForegroundColour())
+        self._setOORInfo(self)
         self.modified = self.freeze = False
         self.radio_std = XRCCTRL(self, 'RADIO_STD')
-        self.radio_std.SetBackgroundColour(parent.GetBackgroundColour())
-        self.radio_std.SetForegroundColour(parent.GetForegroundColour())
         self.radio_file = XRCCTRL(self, 'RADIO_FILE')
-        self.radio_file.SetBackgroundColour(parent.GetBackgroundColour())
-        self.radio_file.SetForegroundColour(parent.GetForegroundColour())
         self.combo = XRCCTRL(self, 'COMBO_STD')
         self.text = XRCCTRL(self, 'TEXT_FILE')
         self.button = XRCCTRL(self, 'BUTTON_BROWSE')

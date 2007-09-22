@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     04/01/98
-// RCS-ID:      $Id: statbmp.cpp,v 1.55 2004/09/04 01:53:42 ABX Exp $
+// RCS-ID:      $Id: statbmp.cpp,v 1.59 2005/05/18 02:22:59 RD Exp $
 // Copyright:   (c) Julian Smart
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -37,6 +37,8 @@
     #include "wx/icon.h"
     #include "wx/statbmp.h"
 #endif
+
+#include "wx/sysopt.h"
 
 #include <stdio.h>
 
@@ -206,7 +208,11 @@ void wxStaticBitmap::Free()
 wxSize wxStaticBitmap::DoGetBestSize() const
 {
     if ( ImageIsOk() )
-        return wxSize(m_image->GetWidth(), m_image->GetHeight());
+    {
+        wxSize best(m_image->GetWidth(), m_image->GetHeight());
+        CacheBestSize(best);
+        return best;
+    }
 
     // this is completely arbitrary
     return wxSize(16, 16);
@@ -262,19 +268,28 @@ void wxStaticBitmap::SetImageNoCopy( wxGDIImage* image)
     ::InvalidateRect(GetHwndOf(GetParent()), &rect, TRUE);
 }
 
-// We need this or the control can never be moved e.g. in Dialog Editor.
 WXLRESULT wxStaticBitmap::MSWWindowProc(WXUINT nMsg,
                                    WXWPARAM wParam,
                                    WXLPARAM lParam)
 {
 #ifndef __WXWINCE__
-    // Ensure that static items get messages. Some controls don't like this
-    // message to be intercepted (e.g. RichEdit), hence the tests.
-    if ( nMsg == WM_NCHITTEST )
-        return (long)HTCLIENT;
+    static int s_useHTClient = -1;
+    if (s_useHTClient == -1)
+        s_useHTClient = wxSystemOptions::GetOptionInt(wxT("msw.staticbitmap.htclient"));
+    if (s_useHTClient == 1)
+    {
+        // Ensure that static items get messages. Some controls don't like this
+        // message to be intercepted (e.g. RichEdit), hence the tests.
+        // Also, this code breaks some other processing such as enter/leave tracking
+        // so it's off by default.
+        
+        if ( nMsg == WM_NCHITTEST )
+            return (long)HTCLIENT;
+    }
 #endif
 
     return wxWindow::MSWWindowProc(nMsg, wParam, lParam);
 }
 
 #endif // wxUSE_STATBMP
+

@@ -4,7 +4,7 @@
 // Author:      Vadim Zeitlin
 // Modified by:
 // Created:     22.07.99
-// RCS-ID:      $Id: spinctrl.h,v 1.22 2004/09/04 01:53:38 ABX Exp $
+// RCS-ID:      $Id: spinctrl.h,v 1.24 2005/02/28 01:23:01 VZ Exp $
 // Copyright:   (c) Vadim Zeitlin
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -17,6 +17,8 @@
 #endif
 
 #include "wx/spinbutt.h"    // the base class
+
+#if wxUSE_SPINCTRL
 
 #include "wx/dynarray.h"
 
@@ -94,6 +96,9 @@ protected:
     virtual void DoMoveWindow(int x, int y, int width, int height);
     virtual wxSize DoGetBestSize() const;
     virtual void DoGetSize(int *width, int *height) const;
+#if wxUSE_TOOLTIPS
+    virtual void DoSetToolTip( wxToolTip *tip );
+#endif // wxUSE_TOOLTIPS
 
     // the handler for wxSpinButton events
     void OnSpinChange(wxSpinEvent& event);
@@ -115,6 +120,8 @@ private:
     DECLARE_EVENT_TABLE()
     DECLARE_NO_COPY_CLASS(wxSpinCtrl)
 };
+
+#endif // wxUSE_SPINCTRL
 
 #endif // _WX_MSW_SPINCTRL_H_
 

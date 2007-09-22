@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     04/01/98
-// RCS-ID:      $Id: tbar95.cpp,v 1.137 2004/11/10 23:12:44 VZ Exp $
+// RCS-ID:      $Id: tbar95.cpp,v 1.156 2005/06/09 20:18:24 VZ Exp $
 // Copyright:   (c) Julian Smart
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -39,10 +39,11 @@
     #include "wx/control.h"
 #endif
 
-#if wxUSE_TOOLBAR && wxUSE_TOOLBAR_NATIVE && (!defined(_WIN32_WCE) || (_WIN32_WCE >= 400 && !defined(__POCKETPC__) && !defined(__SMARTPHONE__)))
+#if wxUSE_TOOLBAR && wxUSE_TOOLBAR_NATIVE && !defined(__SMARTPHONE__)
 
 #include "wx/toolbar.h"
 #include "wx/sysopt.h"
+#include "wx/image.h"
 
 #include "wx/msw/private.h"
 
@@ -92,9 +93,6 @@
 // these values correspond to those used by comctl32.dll
 #define DEFAULTBITMAPX   16
 #define DEFAULTBITMAPY   15
-#define DEFAULTBUTTONX   24
-#define DEFAULTBUTTONY   24
-#define DEFAULTBARHEIGHT 27
 
 // ----------------------------------------------------------------------------
 // wxWin macros
@@ -124,6 +122,7 @@ IMPLEMENT_DYNAMIC_CLASS(wxToolBar, wxControl)
 BEGIN_EVENT_TABLE(wxToolBar, wxToolBarBase)
     EVT_MOUSE_EVENTS(wxToolBar::OnMouseEvent)
     EVT_SYS_COLOUR_CHANGED(wxToolBar::OnSysColourChanged)
+    EVT_ERASE_BACKGROUND(wxToolBar::OnEraseBackground)
 END_EVENT_TABLE()
 
 // ----------------------------------------------------------------------------
@@ -212,6 +211,7 @@ wxToolBarToolBase *wxToolBar::CreateTool(wxControl *control)
 void wxToolBar::Init()
 {
     m_hBitmap = 0;
+    m_disabledImgList = NULL;
 
     m_nButtons = 0;
 
@@ -239,28 +239,23 @@ bool wxToolBar::Create(wxWindow *parent,
     wxSetCCUnicodeFormat(GetHwnd());
 
     // set up the colors and fonts
-    SetBackgroundColour(wxSystemSettings::GetColour(wxSYS_COLOUR_MENUBAR));
+    SetBackgroundColour(wxSystemSettings::GetColour(wxSYS_COLOUR_BTNFACE));
     SetFont(wxSystemSettings::GetFont(wxSYS_DEFAULT_GUI_FONT));
 
-    // workaround for flat toolbar on Windows XP classic style
+    // workaround for flat toolbar on Windows XP classic style: we have to set
+    // the style after creating the control, doing it at creation time doesn't
+    // work
 #if wxUSE_UXTHEME
     if ( style & wxTB_FLAT )
     {
-        wxUxThemeEngine *p = wxUxThemeEngine::Get();
-        if ( !p || !p->IsThemeActive() )
+        LRESULT style = ::SendMessage(GetHwnd(), TB_GETSTYLE, 0, 0L);
+
+        if ( !(style & TBSTYLE_FLAT) )
         {
-            DWORD dwToolbarStyle;
-
-            dwToolbarStyle = (DWORD)::SendMessage(GetHwnd(), TB_GETSTYLE, 0, 0L );
-
-            if ((dwToolbarStyle & TBSTYLE_FLAT) == 0)
-            {
-                dwToolbarStyle |= TBSTYLE_FLAT;
-                ::SendMessage(GetHwnd(), TB_SETSTYLE, 0, (LPARAM)dwToolbarStyle );
-            }
+            ::SendMessage(GetHwnd(), TB_SETSTYLE, 0, style | TBSTYLE_FLAT);
         }
     }
-#endif
+#endif // wxUSE_UXTHEME
 
     return true;
 }
@@ -320,6 +315,12 @@ void wxToolBar::Recreate()
         m_hBitmap = 0;
     }
 
+    if ( m_disabledImgList )
+    {
+        delete m_disabledImgList;
+        m_disabledImgList = NULL;
+    }
+
     Realize();
     UpdateSize();
 }
@@ -338,6 +339,8 @@ wxToolBar::~wxToolBar()
     {
         ::DeleteObject((HBITMAP) m_hBitmap);
     }
+
+    delete m_disabledImgList;
 }
 
 wxSize wxToolBar::DoGetBestSize() const
@@ -350,6 +353,7 @@ wxSize wxToolBar::DoGetBestSize() const
         // maybe an old (< 0x400) Windows version? try to approximate the
         // toolbar size ourselves
         sizeBest = GetToolSize();
+        sizeBest.y += 2 * ::GetSystemMetrics(SM_CYBORDER); // Add borders
         sizeBest.x *= GetToolsCount();
 
         // reverse horz and vertical components if necessary
@@ -366,6 +370,7 @@ wxSize wxToolBar::DoGetBestSize() const
         sizeBest.y = size.cy;
     }
 
+    CacheBestSize(sizeBest);
     return sizeBest;
 }
 
@@ -385,7 +390,7 @@ WXDWORD wxToolBar::MSWGetStyle(long style, WXDWORD *exstyle) const
     if ( style & (wxTB_FLAT | wxTB_HORZ_LAYOUT) )
     {
         // static as it doesn't change during the program lifetime
-        static int s_verComCtl = wxTheApp->GetComCtl32Version();
+        static int s_verComCtl = wxApp::GetComCtl32Version();
 
         // comctl32.dll 4.00 doesn't support the flat toolbars and using this
         // style with 6.00 (part of Windows XP) leads to the toolbar with
@@ -506,6 +511,37 @@ bool wxToolBar::DoDeleteTool(size_t pos, wxToolBarToolBase *tool)
     return true;
 }
 
+void wxToolBar::CreateDisabledImageList()
+{
+    // as we can't use disabled image list with older versions of comctl32.dll,
+    // don't even bother creating it
+    if ( wxTheApp->GetComCtl32Version() >= 470 )
+    {
+        // search for the first disabled button img in the toolbar, if any
+        for ( wxToolBarToolsList::compatibility_iterator
+                node = m_tools.GetFirst(); node; node = node->GetNext() )
+        {
+            wxToolBarToolBase *tool = node->GetData();
+            wxBitmap bmpDisabled = tool->GetDisabledBitmap();
+            if ( bmpDisabled.Ok() )
+            {
+                m_disabledImgList = new wxImageList
+                                        (
+                                            m_defaultWidth,
+                                            m_defaultHeight,
+                                            bmpDisabled.GetMask() != NULL,
+                                            GetToolsCount()
+                                        );
+                return;
+            }
+        }
+
+        // we don't have any disabled bitmaps
+    }
+
+    m_disabledImgList = NULL;
+}
+
 bool wxToolBar::Realize()
 {
     const size_t nTools = GetToolsCount();
@@ -518,6 +554,11 @@ bool wxToolBar::Realize()
     const bool isVertical = HasFlag(wxTB_VERTICAL);
 
     bool doRemap, doRemapBg, doTransparent;
+#ifdef __WXWINCE__
+    doRemapBg = false;
+    doRemap = false;
+    doTransparent = false;
+#else
     if (wxSystemOptions::GetOptionInt(wxT("msw.remap")) == 2)
     {
         doRemapBg = doRemap = false;
@@ -529,6 +570,7 @@ bool wxToolBar::Realize()
         doRemapBg = !doRemap;
         doTransparent = false;
     }
+#endif
 
     // delete all old buttons, if any
     for ( size_t pos = 0; pos < m_nButtons; pos++ )
@@ -568,15 +610,20 @@ bool wxToolBar::Realize()
         wxMemoryDC dcAllButtons;
         wxBitmap bitmap(totalBitmapWidth, totalBitmapHeight);
         dcAllButtons.SelectObject(bitmap);
+#ifdef __WXWINCE__
+        dcAllButtons.SetBackground(wxBrush(wxColour(192,192,192)));
+#else
         if (doTransparent)
             dcAllButtons.SetBackground(*wxTRANSPARENT_BRUSH);
         else
-        dcAllButtons.SetBackground(*wxLIGHT_GREY_BRUSH);
+            dcAllButtons.SetBackground(*wxLIGHT_GREY_BRUSH);
+#endif
         dcAllButtons.Clear();
 
         m_hBitmap = bitmap.GetHBITMAP();
         HBITMAP hBitmap = (HBITMAP)m_hBitmap;
 
+#ifndef __WXWINCE__
         if (doRemapBg)
         {
             dcAllButtons.SelectObject(wxNullBitmap);
@@ -587,7 +634,10 @@ bool wxToolBar::Realize()
                 totalBitmapWidth, totalBitmapHeight);
 
             dcAllButtons.SelectObject(bitmap);
+
+
         }
+#endif // !__WXWINCE__
 
         // the button position
         wxCoord x = 0;
@@ -595,22 +645,64 @@ bool wxToolBar::Realize()
         // the number of buttons (not separators)
         int nButtons = 0;
 
+        CreateDisabledImageList();
         for ( node = m_tools.GetFirst(); node; node = node->GetNext() )
         {
             wxToolBarToolBase *tool = node->GetData();
             if ( tool->IsButton() )
             {
                 const wxBitmap& bmp = tool->GetNormalBitmap();
+
+                const int w = bmp.GetWidth();
+                const int h = bmp.GetHeight();
+
                 if ( bmp.Ok() )
                 {
-                    int xOffset = wxMax(0, (m_defaultWidth - bmp.GetWidth())/2);
-                    int yOffset = wxMax(0, (m_defaultHeight - bmp.GetHeight())/2);
+                    int xOffset = wxMax(0, (m_defaultWidth - w)/2);
+                    int yOffset = wxMax(0, (m_defaultHeight - h)/2);
+
                     // notice the last parameter: do use mask
-                    dcAllButtons.DrawBitmap(bmp, x+xOffset, yOffset, true);
+                    dcAllButtons.DrawBitmap(bmp, x + xOffset, yOffset, true);
                 }
                 else
                 {
                     wxFAIL_MSG( _T("invalid tool button bitmap") );
+                }
+
+                // also deal with disabled bitmap if we want to use them
+                if ( m_disabledImgList )
+                {
+                    wxBitmap bmpDisabled = tool->GetDisabledBitmap();
+#if wxUSE_IMAGE
+                    if ( !bmpDisabled.Ok() )
+                    {
+                        // no disabled bitmap specified but we still need to
+                        // fill the space in the image list with something, so
+                        // we grey out the normal bitmap
+                        wxImage imgGreyed;
+                        wxCreateGreyedImage(bmp.ConvertToImage(), imgGreyed);
+
+                        // we need to have light grey background colour for
+                        // MapBitmap() to work correctly
+                        for ( int y = 0; y < h; y++ )
+                        {
+                            for ( int x = 0; x < w; x++ )
+                            {
+                                if ( imgGreyed.IsTransparent(x, y) )
+                                    imgGreyed.SetRGB(x, y,
+                                                     wxLIGHT_GREY->Red(),
+                                                     wxLIGHT_GREY->Green(),
+                                                     wxLIGHT_GREY->Blue());
+                            }
+                        }
+
+                        bmpDisabled = wxBitmap(imgGreyed);
+                    }
+#endif // wxUSE_IMAGE
+
+                    MapBitmap(bmpDisabled.GetHBITMAP(), w, h);
+
+                    m_disabledImgList->Add(bmpDisabled);
                 }
 
                 // still inc width and number of buttons because otherwise the
@@ -631,6 +723,8 @@ bool wxToolBar::Realize()
             // Map to system colours
             hBitmap = (HBITMAP)MapBitmap((WXHBITMAP) hBitmap,
                 totalBitmapWidth, totalBitmapHeight);
+
+
         }
 
         bool addBitmap = true;
@@ -638,7 +732,7 @@ bool wxToolBar::Realize()
         if ( oldToolBarBitmap )
         {
 #ifdef TB_REPLACEBITMAP
-            if ( wxTheApp->GetComCtl32Version() >= 400 )
+            if ( wxApp::GetComCtl32Version() >= 400 )
             {
                 TBREPLACEBITMAP replaceBitmap;
                 replaceBitmap.hInstOld = NULL;
@@ -680,6 +774,19 @@ bool wxToolBar::Realize()
                 wxFAIL_MSG(wxT("Could not add bitmap to toolbar"));
             }
         }
+
+        if ( m_disabledImgList )
+        {
+            HIMAGELIST oldImageList = (HIMAGELIST)
+                ::SendMessage(GetHwnd(),
+                              TB_SETDISABLEDIMAGELIST,
+                              0,
+                              (LPARAM)GetHimagelistOf(m_disabledImgList));
+
+            // delete previous image list if any
+            if ( oldImageList )
+                ::DeleteObject( oldImageList );
+        }
     }
 
     // don't call SetToolBitmapSize() as we don't want to change the values of
@@ -707,7 +814,7 @@ bool wxToolBar::Realize()
         // don't add separators to the vertical toolbar with old comctl32.dll
         // versions as they didn't handle this properly
         if ( isVertical && tool->IsSeparator() &&
-                wxTheApp->GetComCtl32Version() <= 472 )
+                wxApp::GetComCtl32Version() <= 472 )
         {
             continue;
         }
@@ -761,7 +868,30 @@ bool wxToolBar::Realize()
                             // radio items
                             button.fsState |= TBSTATE_CHECKED;
 
-                            tool->Toggle(true);
+                            if (tool->Toggle(true))
+                            {
+                                DoToggleTool(tool, true);
+                            }
+                        }
+                        else if (tool->IsToggled())
+                        {
+                            wxToolBarToolsList::compatibility_iterator nodePrev = node->GetPrevious();
+                            int prevIndex = i - 1;
+                            while ( nodePrev )
+                            {
+                                TBBUTTON& prevButton = buttons[prevIndex];
+                                wxToolBarToolBase *tool = nodePrev->GetData();
+                                if ( !tool->IsButton() || tool->GetKind() != wxITEM_RADIO )
+                                    break;
+
+                                if ( tool->Toggle(false) )
+                                {
+                                    DoToggleTool(tool, false);
+                                }
+                                prevButton.fsState = TBSTATE_ENABLED;
+                                nodePrev = nodePrev->GetPrevious();
+                                prevIndex--;
+                            }
                         }
 
                         isRadio = true;
@@ -840,7 +970,7 @@ bool wxToolBar::Realize()
 #ifdef TB_SETBUTTONINFO
         // available in headers, now check whether it is available now
         // (during run-time)
-        if ( wxTheApp->GetComCtl32Version() >= 471 )
+        if ( wxApp::GetComCtl32Version() >= 471 )
         {
             // set the (underlying) separators width to be that of the
             // control
@@ -961,8 +1091,8 @@ bool wxToolBar::MSWCommand(WXUINT WXUNUSED(cmd), WXWORD id)
         LRESULT state = ::SendMessage(GetHwnd(), TB_GETSTATE, id, 0);
         toggled = (state & TBSTATE_CHECKED) != 0;
 
-        // ignore the event when a radio button is released, as this doesn't seem to
-        // happen at all, and is handled otherwise
+        // ignore the event when a radio button is released, as this doesn't
+        // seem to happen at all, and is handled otherwise
         if ( tool->GetKind() == wxITEM_RADIO && !toggled )
             return true;
 
@@ -977,7 +1107,7 @@ bool wxToolBar::MSWCommand(WXUINT WXUNUSED(cmd), WXWORD id)
         // revert back
         tool->Toggle(!toggled);
 
-        ::SendMessage(GetHwnd(), TB_CHECKBUTTON, id, MAKELONG(toggled, 0));
+        ::SendMessage(GetHwnd(), TB_CHECKBUTTON, id, MAKELONG(!toggled, 0));
     }
 
     return true;
@@ -1010,6 +1140,8 @@ bool wxToolBar::MSWOnNotify(int WXUNUSED(idCtrl),
 
     return HandleTooltipNotify(code, lParam, tool->GetShortHelp());
 #else
+    wxUnusedVar(lParam);
+
     return false;
 #endif
 }
@@ -1052,7 +1184,7 @@ wxSize wxToolBar::GetToolSize() const
 #if defined(_WIN32_IE) && (_WIN32_IE >= 0x300 ) \
     && !( defined(__GNUWIN32__) && !wxCHECK_W32API_VERSION( 1, 0 ) ) \
     && !defined (__DIGITALMARS__)
-    if ( wxTheApp->GetComCtl32Version() >= 470 )
+    if ( wxApp::GetComCtl32Version() >= 470 )
     {
         DWORD dw = ::SendMessage(GetHwnd(), TB_GETBUTTONSIZE, 0, 0);
 
@@ -1072,7 +1204,7 @@ wxToolBarToolBase *GetItemSkippingDummySpacers(const wxToolBarToolsList& tools,
 {
     wxToolBarToolsList::compatibility_iterator current = tools.GetFirst();
 
-    for ( ; current != 0; current = current->GetNext() )
+    for ( ; current ; current = current->GetNext() )
     {
         if ( index == 0 )
             return current->GetData();
@@ -1103,14 +1235,15 @@ wxToolBarToolBase *wxToolBar::FindToolForPosition(wxCoord x, wxCoord y) const
         return (wxToolBarToolBase *)NULL;
     }
 
-    // if comctl32 version < 4.71 wxToolBar95 adds dummy spacers
-#if defined(_WIN32_IE) && (_WIN32_IE >= 0x400 )
-    if ( wxTheApp->GetComCtl32Version() >= 471 )
+    // when TB_SETBUTTONINFO is available (both during compile- and run-time),
+    // we don't use the dummy separators hack
+#ifdef TB_SETBUTTONINFO
+    if ( wxApp::GetComCtl32Version() >= 471 )
     {
         return m_tools.Item((size_t)index)->GetData();
     }
     else
-#endif
+#endif // TB_SETBUTTONINFO
     {
         return GetItemSkippingDummySpacers( m_tools, (size_t) index );
     }
@@ -1210,16 +1343,53 @@ void wxToolBar::OnMouseEvent(wxMouseEvent& event)
         return;
     }
 
-    if (event.RightDown())
+    if ( event.RightDown() )
     {
-        // For now, we don't have an id. Later we could
-        // try finding the tool.
-        OnRightClick((int)-1, event.GetX(), event.GetY());
+        // find the tool under the mouse
+        wxCoord x,y;
+        event.GetPosition(&x, &y);
+
+        wxToolBarToolBase *tool = FindToolForPosition(x, y);
+        OnRightClick(tool ? tool->GetId() : -1, x, y);
     }
     else
     {
         event.Skip();
     }
+}
+
+// This handler is required to allow the toolbar to be set to a non-default
+// colour: for example, when it must blend in with a notebook page.
+void wxToolBar::OnEraseBackground(wxEraseEvent& event)
+{
+    wxColour bgCol = GetBackgroundColour();
+    if (!bgCol.Ok())
+    {
+        event.Skip();
+        return;
+    }
+
+    // notice that this 'dumb' implementation may cause flicker for some of the
+    // controls in which case they should intercept wxEraseEvent and process it
+    // themselves somehow
+
+    RECT rect;
+    ::GetClientRect(GetHwnd(), &rect);
+
+    HBRUSH hBrush = ::CreateSolidBrush(wxColourToRGB(bgCol));
+
+    HDC hdc = GetHdcOf((*event.GetDC()));
+
+#ifndef __WXWINCE__
+    int mode = ::SetMapMode(hdc, MM_TEXT);
+#endif
+
+    ::FillRect(hdc, &rect, hBrush);
+    ::DeleteObject(hBrush);
+
+#ifndef __WXWINCE__
+    ::SetMapMode(hdc, mode);
+#endif
 }
 
 bool wxToolBar::HandleSize(WXWPARAM WXUNUSED(wParam), WXLPARAM lParam)
@@ -1393,20 +1563,22 @@ WXLRESULT wxToolBar::MSWWindowProc(WXUINT nMsg, WXWPARAM wParam, WXLPARAM lParam
 {
     switch ( nMsg )
     {
+        case WM_MOUSEMOVE:
+            // we don't handle mouse moves, so always pass the message to
+            // wxControl::MSWWindowProc (HandleMouseMove just calls OnMouseEnter)
+            HandleMouseMove(wParam, lParam);
+            break;
+
         case WM_SIZE:
             if ( HandleSize(wParam, lParam) )
                 return 0;
             break;
 
-        case WM_MOUSEMOVE:
-            // we don't handle mouse moves, so always pass the message to
-            // wxControl::MSWWindowProc
-            HandleMouseMove(wParam, lParam);
-            break;
-
+#ifndef __WXWINCE__
         case WM_PAINT:
             if ( HandlePaint(wParam, lParam) )
                 return 0;
+#endif
     }
 
     return wxControl::MSWWindowProc(nMsg, wParam, lParam);

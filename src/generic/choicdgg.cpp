@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by: 03.11.00: VZ to add wxArrayString and multiple sel functions
 // Created:     04/01/98
-// RCS-ID:      $Id: choicdgg.cpp,v 1.60 2004/10/27 19:23:59 VZ Exp $
+// RCS-ID:      $Id: choicdgg.cpp,v 1.62 2005/04/02 17:44:12 JS Exp $
 // Copyright:   (c) wxWidgets team
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -261,6 +261,12 @@ bool wxAnyChoiceDialog::Create(wxWindow *parent,
                                const wxPoint& pos,
                                long styleLbox)
 {
+#if defined(__SMARTPHONE__) || defined(__POCKETPC__)
+    styleDlg &= ~wxBORDER_MASK;
+    styleDlg &= ~wxRESIZE_BORDER;
+    styleDlg &= ~wxCAPTION;
+#endif
+
     if ( !wxDialog::Create(parent, wxID_ANY, caption, pos, wxDefaultSize, styleDlg) )
         return false;
 
@@ -277,7 +283,7 @@ bool wxAnyChoiceDialog::Create(wxWindow *parent,
     if ( n > 0 )
         m_listbox->SetSelection(0);
 
-    topsizer->Add( m_listbox, 1, wxEXPAND | wxLEFT|wxRIGHT, wxLARGESMALL(15,0) );
+    topsizer->Add( m_listbox, 1, wxEXPAND|wxLEFT|wxRIGHT, wxLARGESMALL(15,0) );
 
     // smart phones does not support or do not waste space for wxButtons
 #ifdef __SMARTPHONE__
@@ -292,18 +298,19 @@ bool wxAnyChoiceDialog::Create(wxWindow *parent,
 #endif
 
     // 4) buttons
-    topsizer->Add( CreateButtonSizer( styleDlg & (wxOK|wxCANCEL) ), 0, wxCENTRE | wxALL, 10 );
+    topsizer->Add( CreateButtonSizer( styleDlg & (wxOK|wxCANCEL) ), 0, wxEXPAND | wxALL, 10 );
 
 #endif // !__SMARTPHONE__
 
-    SetAutoLayout( true );
     SetSizer( topsizer );
 
+#if !defined(__SMARTPHONE__) && !defined(__POCKETPC__)
     topsizer->SetSizeHints( this );
     topsizer->Fit( this );
 
     if ( styleDlg & wxCENTRE )
         Centre(wxBOTH);
+#endif
 
     m_listbox->SetFocus();
 

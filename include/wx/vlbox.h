@@ -4,7 +4,7 @@
 // Author:      Vadim Zeitlin
 // Modified by:
 // Created:     31.05.03
-// RCS-ID:      $Id: vlbox.h,v 1.15 2004/09/24 14:32:16 ABX Exp $
+// RCS-ID:      $Id: vlbox.h,v 1.16 2005/04/10 15:22:53 VZ Exp $
 // Copyright:   (c) 2003 Vadim Zeitlin <vadim@wxwidgets.org>
 // Licence:     wxWindows licence
 ///////////////////////////////////////////////////////////////////////////////
@@ -187,10 +187,6 @@ public:
 
     // change the background colour of the selected cells
     void SetSelectionBackground(const wxColour& col);
-
-
-    virtual void ApplyParentThemeBackground(const wxColour& WXUNUSED(bg))
-        { /* do nothing */ }
 
 
     virtual wxVisualAttributes GetDefaultAttributes() const

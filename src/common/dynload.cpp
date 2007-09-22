@@ -5,7 +5,7 @@
 //               (derived in part from dynlib.cpp (c) 1998 Guilhem Lavaux)
 // Modified by:
 // Created:      03/12/01
-// RCS-ID:       $Id: dynload.cpp,v 1.41 2004/09/10 12:56:07 ABX Exp $
+// RCS-ID:       $Id: dynload.cpp,v 1.42 2005/01/04 19:28:30 ABX Exp $
 // Copyright:    (c) 2001 Ron Lee <ron@debian.org>
 // Licence:      wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -526,13 +526,13 @@ wxLibraries::wxLibraries():m_loaded(wxKEY_STRING)
 
 wxLibraries::~wxLibraries()
 {
-    wxNode *node = m_loaded.First();
+    wxNode *node = m_loaded.GetFirst();
 
     while (node) {
-        wxLibrary *lib = (wxLibrary *)node->Data();
+        wxLibrary *lib = (wxLibrary *)node->GetData();
         delete lib;
 
-        node = node->Next();
+        node = node->GetNext();
     }
 }
 
@@ -543,7 +543,7 @@ wxLibrary *wxLibraries::LoadLibrary(const wxString& name)
     wxNode      *node = m_loaded.Find(name.GetData());
 
     if (node != NULL)
-        return ((wxLibrary *)node->Data());
+        return ((wxLibrary *)node->GetData());
 
     // If DLL shares data, this is necessary.
     old_sm_first = wxClassInfo::sm_first;
@@ -567,15 +567,15 @@ wxLibrary *wxLibraries::LoadLibrary(const wxString& name)
 
 wxObject *wxLibraries::CreateObject(const wxString& path)
 {
-    wxNode *node = m_loaded.First();
+    wxNode *node = m_loaded.GetFirst();
     wxObject *obj;
 
     while (node) {
-        obj = ((wxLibrary *)node->Data())->CreateObject(path);
+        obj = ((wxLibrary *)node->GetData())->CreateObject(path);
         if (obj)
             return obj;
 
-        node = node->Next();
+        node = node->GetNext();
     }
     return NULL;
 }

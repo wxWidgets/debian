@@ -4,7 +4,7 @@
 // Author:      Vadim Zeitlin
 // Modified by:
 // Created:     04.08.03
-// RCS-ID:      $Id: renddll.cpp,v 1.5 2004/05/25 11:18:50 JS Exp $
+// RCS-ID:      $Id: renddll.cpp,v 1.7 2005/04/07 01:02:29 MW Exp $
 // Copyright:   (c) 2003 Vadim Zeitlin <vadim@wxwidgets.org>
 // Licence:     wxWindows licence
 ///////////////////////////////////////////////////////////////////////////////
@@ -60,6 +60,26 @@ public:
                                   wxCoord position,
                                   wxOrientation orient,
                                   int flags = 0)
+    {
+    }
+
+    // draw a combobox dropdown button
+    //
+    // flags may only use wxCONTROL_PRESSED
+    virtual void DrawComboBoxDropButton(wxWindow *win,
+                                        wxDC& dc,
+                                        const wxRect& rect,
+                                        int flags = 0)
+    {
+    }
+
+    // draw a dropdown arrow
+    //
+    // flags may use wxCONTROL_PRESSED and wxCONTROL_CURRENT
+    virtual void DrawDropArrow(wxWindow *win,
+                               wxDC& dc,
+                               const wxRect& rect,
+                               int flags = 0)
     {
     }
 

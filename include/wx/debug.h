@@ -4,7 +4,7 @@
 *  Author:      Vadim Zeitlin
 *  Modified by: Ryan Norton (Converted to C)
 *  Created:     29/01/98
-*  RCS-ID:      $Id: debug.h,v 1.42 2004/11/08 21:27:30 ABX Exp $
+*  RCS-ID:      $Id: debug.h,v 1.45 2005/06/10 17:53:06 ABX Exp $
 *  Copyright:   (c) 1998 Vadim Zeitlin <zeitlin@dptmaths.ens-cachan.fr>
 *  Licence:     wxWindows licence
 */
@@ -127,7 +127,7 @@
 #ifdef __cplusplus
     /*  Use of wxFalse instead of false suppresses compiler warnings about testing */
     /*  constant expression */
-    WXDLLIMPEXP_DATA_BASE(extern const bool) wxFalse;
+    extern WXDLLIMPEXP_DATA_BASE(const bool) wxFalse;
 #endif
 
 #define wxAssertFailure wxFalse
@@ -233,12 +233,15 @@
 /*  other miscellaneous debugger-related functions */
 /*  ---------------------------------------------------------------------------- */
 
-/*  return true if we're running under debugger */
-/*  */
-/*  currently this only really works under Mac in CodeWarrior builds, it always */
-/*  returns false otherwise */
+/*
+    Return true if we're running under debugger.
+
+    Currently this only really works under Win32 and Mac in CodeWarrior builds,
+    it always returns false in other cases.
+ */
 #ifdef __cplusplus
-    #ifdef __WXMAC__
+    /* ABX: check __WIN32__ instead of __WXMSW__ for the same MSWBase in any Win32 port */
+    #if defined(__WXMAC__) || defined(__WIN32__)
         extern bool WXDLLIMPEXP_BASE wxIsDebuggerRunning();
     #else /*  !Mac */
         inline bool wxIsDebuggerRunning() { return false; }

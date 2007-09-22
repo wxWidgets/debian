@@ -4,7 +4,7 @@
 // Author:      Vadim Zeitlin
 // Modified by:
 // Created:     19.05.01
-// RCS-ID:      $Id: frame.h,v 1.24 2004/08/10 13:08:33 ABX Exp $
+// RCS-ID:      $Id: frame.h,v 1.25 2005/02/20 00:11:58 VZ Exp $
 // Copyright:   (c) 2001 SciTech Software, Inc. (www.scitechsoft.com)
 // Licence:     wxWindows licence
 ///////////////////////////////////////////////////////////////////////////////
@@ -69,6 +69,7 @@ public:
 
 protected:
     void OnSize(wxSizeEvent& event);
+    void OnSysColourChanged(wxSysColourChangedEvent& event);
 
     virtual void DoGetClientSize(int *width, int *height) const;
     virtual void DoSetClientSize(int width, int height);

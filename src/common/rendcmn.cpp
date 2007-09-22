@@ -4,7 +4,7 @@
 // Author:      Vadim Zeitlin
 // Modified by:
 // Created:     28.07.03
-// RCS-ID:      $Id: rendcmn.cpp,v 1.7 2004/05/25 17:31:09 JS Exp $
+// RCS-ID:      $Id: rendcmn.cpp,v 1.9 2005/06/13 12:19:20 ABX Exp $
 // Copyright:   (c) 2003 Vadim Zeitlin <vadim@wxwindows.org>
 // License:     wxWindows license
 ///////////////////////////////////////////////////////////////////////////////
@@ -42,8 +42,8 @@
 // wxRendererPtr: auto pointer holding the global renderer
 // ----------------------------------------------------------------------------
 
-wxDECLARE_SCOPED_PTR(wxRendererNative, wxRendererPtrBase);
-wxDEFINE_SCOPED_PTR(wxRendererNative, wxRendererPtrBase);
+wxDECLARE_SCOPED_PTR(wxRendererNative, wxRendererPtrBase)
+wxDEFINE_SCOPED_PTR(wxRendererNative, wxRendererPtrBase)
 
 class wxRendererPtr : public wxRendererPtrBase
 {
@@ -63,12 +63,7 @@ public:
     }
 
     // return the global and unique wxRendererPtr
-    static wxRendererPtr& Get()
-    {
-        static wxRendererPtr s_renderer;
-
-        return s_renderer;
-    }
+    static wxRendererPtr& Get();
 
 private:
     wxRendererPtr() : wxRendererPtrBase(NULL) { m_initialized = false; }
@@ -90,6 +85,14 @@ private:
 
     DECLARE_NO_COPY_CLASS(wxRendererPtr)
 };
+
+// return the global and unique wxRendererPtr
+/*static*/ wxRendererPtr& wxRendererPtr::Get()
+{
+    static wxRendererPtr s_renderer;
+
+    return s_renderer;
+}
 
 #if wxUSE_DYNLIB_CLASS
 

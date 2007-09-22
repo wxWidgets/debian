@@ -7,7 +7,7 @@
 // Author:      Robin Dunn
 //
 // Created:     11-Oct-2003
-// RCS-ID:      $Id: pyclasses.h,v 1.10 2004/10/11 17:12:43 RD Exp $
+// RCS-ID:      $Id: pyclasses.h,v 1.12 2005/03/09 22:28:46 RD Exp $
 // Copyright:   (c) 2003 by Total Control Software
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -45,7 +45,7 @@ public:
         wxPyValidator* ptr = NULL;
         wxPyValidator* self = (wxPyValidator*)this;
 
-        bool blocked = wxPyBeginBlockThreads();
+        wxPyBlock_t blocked = wxPyBeginBlockThreads();
         if (wxPyCBH_findCallback(self->m_myInst, "Clone")) {
             PyObject* ro;
             ro = wxPyCBH_callCallbackObj(self->m_myInst, Py_BuildValue("()"));
@@ -79,11 +79,7 @@ public:
 class wxPyTimer : public wxTimer
 {
 public:
-    wxPyTimer(wxEvtHandler *owner=NULL, int id = -1)
-        : wxTimer(owner, id)
-    {
-        if (owner == NULL) SetOwner(this);
-    }
+    wxPyTimer(wxEvtHandler *owner=NULL, int id = -1);
 
     DEC_PYCALLBACK__(Notify);
     PYPRIVATE;

@@ -4,7 +4,7 @@
 // Author:      Vadim Zeitlin
 // Modified by:
 // Created:     31.01.99
-// RCS-ID:      $Id: tooltip.h,v 1.12 2004/05/23 20:51:29 JS Exp $
+// RCS-ID:      $Id: tooltip.h,v 1.13 2005/02/28 01:22:35 VZ Exp $
 // Copyright:   (c) 1999 Robert Roebling, Vadim Zeitlin
 // Licence:     wxWindows licence
 ///////////////////////////////////////////////////////////////////////////////
@@ -37,6 +37,9 @@ public:
     // should be called in responde to WM_MOUSEMOVE
     void RelayEvent(WXMSG *msg);
 
+    // add a window to the tooltip control
+    void Add(WXHWND hwnd);
+
 private:
     // the one and only one tooltip control we use - never access it directly
     // but use GetToolTipCtrl() which will create it when needed
@@ -47,9 +50,6 @@ private:
 
     // remove this tooltip from the tooltip control
     void Remove();
-
-    // add a window to the tooltip control
-    void Add(WXHWND hwnd);
 
     wxString  m_text;           // tooltip text
     wxWindow *m_window;         // window we're associated with

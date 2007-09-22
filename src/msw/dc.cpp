@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     01/02/97
-// RCS-ID:      $Id: dc.cpp,v 1.182 2004/10/06 20:18:41 ABX Exp $
+// RCS-ID:      $Id: dc.cpp,v 1.189 2005/05/17 16:03:24 DS Exp $
 // Copyright:   (c) Julian Smart
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -41,9 +41,6 @@
     #include "wx/icon.h"
 #endif
 
-#include "wx/msw/private.h" // needs to be before #include <commdlg.h>
-#include "wx/msw/missing.h" // needs to be before #include <commdlg.h>
-
 #include "wx/sysopt.h"
 #include "wx/dcprint.h"
 #include "wx/module.h"
@@ -54,12 +51,8 @@
 #endif
 
 #include <string.h>
-#include <math.h>
 
-#if wxUSE_COMMON_DIALOGS && !defined(__WXMICROWIN__)
-    #include <commdlg.h>
-#endif
-
+#include "wx/msw/wrapcdlg.h"
 #ifndef __WIN32__
     #include <print.h>
 #endif
@@ -94,11 +87,6 @@ static const int VIEWPORT_EXTENT = 1000;
 static const int MM_POINTS = 9;
 static const int MM_METRIC = 10;
 
-// usually this is defined in math.h
-#ifndef M_PI
-    static const double M_PI = 3.14159265358979323846;
-#endif // M_PI
-
 // ROPs which don't have standard names (see "Ternary Raster Operations" in the
 // MSDN docs for how this and other numbers in wxDC::Blit() are obtained)
 #define DSTCOPY 0x00AA0029      // a.k.a. NOP operation
@@ -115,10 +103,10 @@ static const int MM_METRIC = 10;
  */
 
 #ifdef __WXWINCE__
-    #define XLOG2DEV(x) ((x-m_logicalOriginX)*m_signX+m_deviceOriginX)
-    #define YLOG2DEV(y) ((y-m_logicalOriginY)*m_signY+m_deviceOriginY)
-    #define XDEV2LOG(x) ((x-m_deviceOriginX)*m_signX+m_logicalOriginX)
-    #define YDEV2LOG(y) ((y-m_deviceOriginY)*m_signY+m_logicalOriginY)
+    #define XLOG2DEV(x) ((x-m_logicalOriginX)*m_signX)
+    #define YLOG2DEV(y) ((y-m_logicalOriginY)*m_signY)
+    #define XDEV2LOG(x) ((x)*m_signX+m_logicalOriginX)
+    #define YDEV2LOG(y) ((y)*m_signY+m_logicalOriginY)
 #else
     #define XLOG2DEV(x) (x)
     #define YLOG2DEV(y) (y)
@@ -143,13 +131,13 @@ static inline double DegToRad(double deg) { return (deg * M_PI) / 180.0; }
 // otherwise
 static bool AlphaBlt(HDC hdcDst,
                      int x, int y, int w, int h,
-                     HDC hdcSrc,
+                     int srcX, int srcY, HDC hdcSrc,
                      const wxBitmap& bmpSrc);
 
 #ifdef wxHAVE_RAW_BITMAP
 // our (limited) AlphaBlend() replacement
 static void
-wxAlphaBlend(HDC hdcDst, int x, int y, int w, int h, const wxBitmap& bmp);
+wxAlphaBlend(HDC hdcDst, int x, int y, int w, int h, int srcX, int srcY, const wxBitmap& bmp);
 #endif
 
 // ----------------------------------------------------------------------------
@@ -418,6 +406,12 @@ void wxDC::SetClippingHrgn(WXHRGN hrgn)
     RECT rectClip;
     if ( !::GetClipBox(GetHdc(), &rectClip) )
         return;
+
+    // GetClipBox returns logical coordinates, so transform to device
+    rectClip.left = LogicalToDeviceX(rectClip.left);
+    rectClip.top = LogicalToDeviceY(rectClip.top);
+    rectClip.right = LogicalToDeviceX(rectClip.right);
+    rectClip.bottom = LogicalToDeviceY(rectClip.bottom);
 
     HRGN hrgnDest = ::CreateRectRgn(0, 0, 0, 0);
     HRGN hrgnClipOld = ::CreateRectRgn(rectClip.left, rectClip.top,
@@ -920,8 +914,11 @@ void wxDC::DoDrawRectangle(wxCoord x, wxCoord y, wxCoord width, wxCoord height)
         // I wonder if this shouldn´t be done after the LOG2DEV() conversions. RR.
         if ( m_pen.GetStyle() == wxTRANSPARENT )
         {
+            // Apparently not needed for WinCE (see e.g. Life! demo)
+#ifndef __WXWINCE__
             x2++;
             y2++;
+#endif
         }
 
         (void)Rectangle(GetHdc(), XLOG2DEV(x), YLOG2DEV(y), XLOG2DEV(x2), YLOG2DEV(y2));
@@ -1068,7 +1065,7 @@ void wxDC::DoDrawBitmap( const wxBitmap &bmp, wxCoord x, wxCoord y, bool useMask
         MemoryHDC hdcMem;
         SelectInHDC select(hdcMem, GetHbitmapOf(bmp));
 
-        if ( AlphaBlt(GetHdc(), x, y, width, height, hdcMem, bmp) )
+        if ( AlphaBlt(GetHdc(), x, y, width, height, 0, 0, hdcMem, bmp) )
             return;
     }
 
@@ -1638,7 +1635,7 @@ void wxDC::DoGetTextExtent(const wxString& string, wxCoord *x, wxCoord *y,
     SIZE sizeRect;
     TEXTMETRIC tm;
 
-    GetTextExtentPoint(GetHdc(), string, string.length(), &sizeRect);
+    ::GetTextExtentPoint32(GetHdc(), string, string.length(), &sizeRect);
     GetTextMetrics(GetHdc(), &tm);
 
     if (x)
@@ -1844,9 +1841,7 @@ void wxDC::SetDeviceOrigin(wxCoord x, wxCoord y)
     m_deviceOriginX = x;
     m_deviceOriginY = y;
 
-#ifndef __WXWINCE__
     ::SetViewportOrgEx(GetHdc(), (int)m_deviceOriginX, (int)m_deviceOriginY, NULL);
-#endif
 }
 
 // ---------------------------------------------------------------------------
@@ -1918,7 +1913,7 @@ bool wxDC::DoBlit(wxCoord xdest, wxCoord ydest,
             (m_selectedBitmap.Ok() && m_selectedBitmap.HasAlpha())) )
     {
         if ( AlphaBlt(GetHdc(), xdest, ydest, width, height,
-                      GetHdcOf(*source), bmpSrc) )
+                      xsrc, ysrc, GetHdcOf(*source), bmpSrc) )
             return true;
     }
 
@@ -2233,7 +2228,7 @@ void wxDC::DoGetSizeMM(int *w, int *h) const
 
 wxSize wxDC::GetPPI() const
 {
-    WXMICROWIN_CHECK_HDC_RET(wxSize())
+    WXMICROWIN_CHECK_HDC_RET(wxSize(0,0))
 
     int x = ::GetDeviceCaps(GetHdc(), LOGPIXELSX);
     int y = ::GetDeviceCaps(GetHdc(), LOGPIXELSY);
@@ -2393,7 +2388,7 @@ IMPLEMENT_DYNAMIC_CLASS(wxDCModule, wxModule)
 
 static bool AlphaBlt(HDC hdcDst,
                      int x, int y, int width, int height,
-                     HDC hdcSrc,
+                     int srcX, int srcY, HDC hdcSrc,
                      const wxBitmap& bmp)
 {
     wxASSERT_MSG( bmp.Ok() && bmp.HasAlpha(), _T("AlphaBlt(): invalid bitmap") );
@@ -2441,7 +2436,7 @@ static bool AlphaBlt(HDC hdcDst,
         bf.AlphaFormat = AC_SRC_ALPHA;
 
         if ( pfnAlphaBlend(hdcDst, x, y, width, height,
-                           hdcSrc, 0, 0, width, height,
+                           hdcSrc, srcX, srcY, width, height,
                            bf) )
         {
             // skip wxAlphaBlend() call below
@@ -2455,7 +2450,7 @@ static bool AlphaBlt(HDC hdcDst,
     // AlphaBlend() unavailable of failed: use our own (probably much slower)
     // implementation
 #ifdef wxHAVE_RAW_BITMAP
-    wxAlphaBlend(hdcDst, x, y, width, height, bmp);
+    wxAlphaBlend(hdcDst, x, y, width, height, srcX, srcY, bmp);
 
     return true;
 #else // !wxHAVE_RAW_BITMAP
@@ -2471,7 +2466,7 @@ static bool AlphaBlt(HDC hdcDst,
 #ifdef wxHAVE_RAW_BITMAP
 
 static void
-wxAlphaBlend(HDC hdcDst, int xDst, int yDst, int w, int h, const wxBitmap& bmpSrc)
+wxAlphaBlend(HDC hdcDst, int xDst, int yDst, int w, int h, int srcX, int srcY, const wxBitmap& bmpSrc)
 {
     // get the destination DC pixels
     wxBitmap bmpDst(w, h, 32 /* force creating RGBA DIB */);
@@ -2493,11 +2488,13 @@ wxAlphaBlend(HDC hdcDst, int xDst, int yDst, int w, int h, const wxBitmap& bmpSr
     wxAlphaPixelData::Iterator pDst(dataDst),
                                pSrc(dataSrc);
 
+    pSrc.Offset(dataSrc, srcX, srcY);
+
     for ( int y = 0; y < h; y++ )
     {
         wxAlphaPixelData::Iterator pDstRowStart = pDst,
                                    pSrcRowStart = pSrc;
-
+                                   
         for ( int x = 0; x < w; x++ )
         {
             // note that source bitmap uses premultiplied alpha (as required by

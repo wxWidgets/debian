@@ -4,7 +4,7 @@
 // Author:      Vadim Zeitlin
 // Modified by:
 // Created:     29/01/98
-// RCS-ID:      $Id: log.h,v 1.102 2004/10/13 14:03:57 ABX Exp $
+// RCS-ID:      $Id: log.h,v 1.105 2005/06/17 11:45:23 VZ Exp $
 // Copyright:   (c) 1998 Vadim Zeitlin <zeitlin@dptmaths.ens-cachan.fr>
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -288,11 +288,32 @@ private:
 // "trivial" derivations of wxLog
 // ----------------------------------------------------------------------------
 
+// log everything to a buffer
+class WXDLLIMPEXP_BASE wxLogBuffer : public wxLog
+{
+public:
+    wxLogBuffer() { }
+
+    // get the string contents with all messages logged
+    const wxString& GetBuffer() const { return m_str; }
+
+    // show the buffer contents to the user in the best possible way (this uses
+    // wxMessageOutputMessageBox) and clear it
+    virtual void Flush();
+
+protected:
+    virtual void DoLog(wxLogLevel level, const wxChar *szString, time_t t);
+    virtual void DoLogString(const wxChar *szString, time_t t);
+
+private:
+    wxString m_str;
+
+    DECLARE_NO_COPY_CLASS(wxLogBuffer)
+};
+
 // log everything to a "FILE *", stderr by default
 class WXDLLIMPEXP_BASE wxLogStderr : public wxLog
 {
-    DECLARE_NO_COPY_CLASS(wxLogStderr)
-
 public:
     // redirect log output to a FILE
     wxLogStderr(FILE *fp = (FILE *) NULL);
@@ -302,6 +323,8 @@ protected:
     virtual void DoLogString(const wxChar *szString, time_t t);
 
     FILE *m_fp;
+
+    DECLARE_NO_COPY_CLASS(wxLogStderr)
 };
 
 #if wxUSE_STD_IOSTREAM
@@ -441,25 +464,31 @@ WXDLLIMPEXP_BASE const wxChar* wxSysErrorMsg(unsigned long nErrCode = 0);
 
 #define DECLARE_LOG_FUNCTION(level)                                         \
 extern void WXDLLIMPEXP_BASE wxVLog##level(const wxChar *szFormat,          \
-                                      va_list argptr);                      \
+                                           va_list argptr);                 \
 extern void WXDLLIMPEXP_BASE wxLog##level(const wxChar *szFormat,           \
-                                     ...) ATTRIBUTE_PRINTF_1
-#define DECLARE_LOG_FUNCTION2_EXP(level, arg, expdecl)                      \
-extern void expdecl wxVLog##level(arg, const wxChar *szFormat,              \
-                                      va_list argptr);                      \
-extern void expdecl wxLog##level(arg, const wxChar *szFormat,               \
-                                     ...) ATTRIBUTE_PRINTF_2
+                                          ...) ATTRIBUTE_PRINTF_1
+#define DECLARE_LOG_FUNCTION2_EXP(level, argclass, arg, expdecl)            \
+extern void expdecl wxVLog##level(argclass arg,                             \
+                                  const wxChar *szFormat,                   \
+                                  va_list argptr);                          \
+extern void expdecl wxLog##level(argclass arg,                              \
+                                 const wxChar *szFormat,                    \
+                                 ...) ATTRIBUTE_PRINTF_2
 #else // !wxUSE_LOG
 
 // log functions do nothing at all
 #define DECLARE_LOG_FUNCTION(level)                                         \
-inline void wxVLog##level(const wxChar *szFormat,                           \
-                                     va_list argptr) { }                    \
-inline void wxLog##level(const wxChar *szFormat, ...) { }
-#define DECLARE_LOG_FUNCTION2_EXP(level, arg, expdecl)                      \
-inline void wxVLog##level(arg, const wxChar *szFormat,                      \
-                                     va_list argptr) {}                     \
-inline void wxLog##level(arg, const wxChar *szFormat, ...) { }
+inline void wxVLog##level(const wxChar *WXUNUSED(szFormat),                 \
+                          va_list WXUNUSED(argptr)) { }                     \
+inline void wxLog##level(const wxChar *WXUNUSED(szFormat),                  \
+                         ...) { }
+#define DECLARE_LOG_FUNCTION2_EXP(level, argclass, arg, expdecl)            \
+inline void wxVLog##level(argclass WXUNUSED(arg),                           \
+                          const wxChar *WXUNUSED(szFormat),                 \
+                          va_list WXUNUSED(argptr)) {}                      \
+inline void wxLog##level(argclass WXUNUSED(arg),                            \
+                         const wxChar *WXUNUSED(szFormat),                  \
+                         ...) { }
 
 // Empty Class to fake wxLogNull
 class WXDLLIMPEXP_BASE wxLogNull
@@ -476,12 +505,12 @@ public:
 #define wxTRACE_OleCalls wxEmptyString // OLE interface calls
 
 #endif // wxUSE_LOG/!wxUSE_LOG
-#define DECLARE_LOG_FUNCTION2(level, arg)                                   \
-    DECLARE_LOG_FUNCTION2_EXP(level, arg, WXDLLIMPEXP_BASE)
+#define DECLARE_LOG_FUNCTION2(level, argclass, arg)                         \
+    DECLARE_LOG_FUNCTION2_EXP(level, argclass, arg, WXDLLIMPEXP_BASE)
 
 
 // a generic function for all levels (level is passes as parameter)
-DECLARE_LOG_FUNCTION2(Generic, wxLogLevel level);
+DECLARE_LOG_FUNCTION2(Generic, wxLogLevel, level);
 
 // one function per each level
 DECLARE_LOG_FUNCTION(FatalError);
@@ -499,7 +528,7 @@ DECLARE_LOG_FUNCTION(Status);
     // this one is the same as previous except that it allows to explicitly
     class WXDLLEXPORT wxFrame;
     // specify the frame to which the output should go
-    DECLARE_LOG_FUNCTION2_EXP(Status, wxFrame *pFrame, WXDLLIMPEXP_CORE);
+    DECLARE_LOG_FUNCTION2_EXP(Status, wxFrame *, pFrame, WXDLLIMPEXP_CORE);
 #endif // wxUSE_GUI
 
 // additional one: as wxLogError, but also logs last system call error code
@@ -508,7 +537,7 @@ DECLARE_LOG_FUNCTION(SysError);
 
 // and another one which also takes the error code (for those broken APIs
 // that don't set the errno (like registry APIs in Win32))
-DECLARE_LOG_FUNCTION2(SysError, long lErrCode);
+DECLARE_LOG_FUNCTION2(SysError, long, lErrCode);
 
 // debug functions do nothing in release mode
 #if wxUSE_LOG_DEBUG
@@ -520,12 +549,12 @@ DECLARE_LOG_FUNCTION2(SysError, long lErrCode);
 
     // this version only logs the message if the mask had been added to the
     // list of masks with AddTraceMask()
-    DECLARE_LOG_FUNCTION2(Trace, const wxChar *mask);
+    DECLARE_LOG_FUNCTION2(Trace, const wxChar *, mask);
 
     // and this one does nothing if all of level bits are not set in
     // wxLog::GetActive()->GetTraceMask() -- it's deprecated in favour of
     // string identifiers
-    DECLARE_LOG_FUNCTION2(Trace, wxTraceMask mask);
+    DECLARE_LOG_FUNCTION2(Trace, wxTraceMask, mask);
 #else   //!debug
     // these functions do nothing in release builds
     inline void wxVLogDebug(const wxChar *, va_list) { }

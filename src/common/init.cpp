@@ -4,7 +4,7 @@
 // Author:      Vadim Zeitlin
 // Modified by:
 // Created:     04.10.99
-// RCS-ID:      $Id: init.cpp,v 1.49 2004/10/19 13:38:15 JS Exp $
+// RCS-ID:      $Id: init.cpp,v 1.58 2005/06/13 12:19:20 ABX Exp $
 // Copyright:   (c) Vadim Zeitlin
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -29,6 +29,7 @@
     #include "wx/filefn.h"
     #include "wx/log.h"
     #include "wx/thread.h"
+    #include "wx/intl.h"
 #endif
 
 #include "wx/init.h"
@@ -69,8 +70,8 @@ public:
 
 // we need a special kind of auto pointer to wxApp which not only deletes the
 // pointer it holds in its dtor but also resets the global application pointer
-wxDECLARE_SCOPED_PTR(wxAppConsole, wxAppPtrBase);
-wxDEFINE_SCOPED_PTR(wxAppConsole, wxAppPtrBase);
+wxDECLARE_SCOPED_PTR(wxAppConsole, wxAppPtrBase)
+wxDEFINE_SCOPED_PTR(wxAppConsole, wxAppPtrBase)
 
 class wxAppPtr : public wxAppPtrBase
 {
@@ -209,6 +210,15 @@ static void FreeConvertedArgs()
 // initialization which is always done (not customizable) before wxApp creation
 static bool DoCommonPreInit()
 {
+#if wxUSE_LOG
+    // install temporary log sink: we can't use wxLogGui before wxApp is
+    // constructed and if we use wxLogStderr, all messages during
+    // initialization simply disappear under Windows
+    //
+    // note that we will delete this log target below
+    wxLog::SetActiveTarget(new wxLogBuffer);
+#endif // wxUSE_LOG
+
     return true;
 }
 
@@ -217,7 +227,13 @@ static bool DoCommonPostInit()
 {
     wxModule::RegisterModules();
 
-    return wxModule::InitializeModules();
+    if ( !wxModule::InitializeModules() )
+    {
+        wxLogError(_("Initialization failed in post init, aborting."));
+        return false;
+    }
+
+    return true;
 }
 
 bool wxEntryStart(int& argc, wxChar **argv)
@@ -285,6 +301,14 @@ bool wxEntryStart(int& argc, wxChar **argv)
 
     // and the cleanup object from doing cleanup
     callAppCleanup.Dismiss();
+
+#if wxUSE_LOG
+    // now that we have a valid wxApp (wxLogGui would have crashed if we used
+    // it before now), we can delete the temporary sink we had created for the
+    // initialization messages -- the next time logging function is called, the
+    // sink will be recreated but this time wxAppTraits will be used
+    delete wxLog::SetActiveTarget(NULL);
+#endif // wxUSE_LOG
 
     return true;
 }
@@ -369,15 +393,20 @@ void wxEntryCleanup()
 // wxEntry
 // ----------------------------------------------------------------------------
 
-#if !defined(__WXMSW__) || !wxUSE_ON_FATAL_EXCEPTION
+// for MSW the real wxEntry is defined in msw/main.cpp
+#ifndef __WXMSW__
     #define wxEntryReal wxEntry
-#endif // !(__WXMSW__ && wxUSE_ON_FATAL_EXCEPTION)
+#endif // !__WXMSW__
 
 int wxEntryReal(int& argc, wxChar **argv)
 {
     // library initialization
     if ( !wxEntryStart(argc, argv) )
     {
+#if wxUSE_LOG
+        // flush any log messages explaining why we failed
+        delete wxLog::SetActiveTarget(NULL);
+#endif
         return -1;
     }
 
@@ -411,43 +440,6 @@ int wxEntryReal(int& argc, wxChar **argv)
     }
     wxCATCH_ALL( wxTheApp->OnUnhandledException(); return -1; )
 }
-
-// wrap real wxEntry in a try-except block to be able to call
-// OnFatalException() if necessary
-#if defined(__WXMSW__) && wxUSE_ON_FATAL_EXCEPTION
-
-#ifdef __WXWINCE__
-// For ExitThread
-#include "wx/msw/private.h"
-#endif
-
-extern unsigned long wxGlobalSEHandler(EXCEPTION_POINTERS *pExcPtrs);
-
-int wxEntry(int& argc, wxChar **argv)
-{
-    __try
-    {
-        return wxEntryReal(argc, argv);
-    }
-    __except ( wxGlobalSEHandler(GetExceptionInformation()) )
-    {
-#ifdef __WXWINCE__
-        ::ExitThread(3); // the same exit code as abort()
-#elif __PALMOS__
-        return -1;
-#else
-        ::ExitProcess(3); // the same exit code as abort()
-#endif
-
-#if !defined(_MSC_VER) || _MSC_VER < 1300
-        // this code is unreachable but put it here to suppress warnings
-        // from some compilers
-        return -1;
-#endif
-    }
-}
-
-#endif // __WXMSW__ && wxUSE_ON_FATAL_EXCEPTION
 
 #if wxUSE_UNICODE
 

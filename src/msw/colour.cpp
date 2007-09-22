@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     01/02/97
-// RCS-ID:      $Id: colour.cpp,v 1.20 2004/08/20 12:03:08 ABX Exp $
+// RCS-ID:      $Id: colour.cpp,v 1.21 2005/01/18 20:12:59 ABX Exp $
 // Copyright:   (c) Julian Smart
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -84,6 +84,7 @@ void wxColour::Init()
 }
 
 wxColour::wxColour(const wxColour& col)
+         :wxObject()
 {
     *this = col;
 }

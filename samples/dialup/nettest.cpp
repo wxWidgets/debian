@@ -4,7 +4,7 @@
 // Author:      Vadim Zeitlin
 // Modified by:
 // Created:     07.07.99
-// RCS-ID:      $Id: nettest.cpp,v 1.13 2004/10/02 12:35:50 VS Exp $
+// RCS-ID:      $Id: nettest.cpp,v 1.15 2005/05/31 09:19:17 JS Exp $
 // Copyright:   (c) Vadim Zeitlin
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -18,8 +18,8 @@
 // ----------------------------------------------------------------------------
 
 #if defined(__GNUG__) && !defined(NO_GCC_PRAGMA)
-    #pragma implementation "nettest.cpp"
-    #pragma interface "nettest.cpp"
+    #pragma implementation
+    #pragma interface
 #endif
 
 // For compilers that support precompilation, includes "wx/wx.h".
@@ -272,7 +272,7 @@ void MyFrame::OnHangUp(wxCommandEvent& WXUNUSED(event))
 {
     if ( wxGetApp().GetDialer()->HangUp() )
     {
-        wxLogStatus(this, wxT("Connection was succesfully terminated."));
+        wxLogStatus(this, wxT("Connection was successfully terminated."));
     }
     else
     {

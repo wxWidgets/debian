@@ -2,9 +2,10 @@
 // Name:        foldtestpanel.cpp
 // Purpose:
 // Author:      Jorgen Bodde
-// Modified by:
+// Modified by: ABX - 19/12/2004 : possibility of horizontal orientation
+//                               : wxWidgets coding standards
 // Created:     18/06/2004
-// RCS-ID:      $Id: foldtestpanel.cpp,v 1.2 2004/08/03 14:39:06 ABX Exp $
+// RCS-ID:      $Id: foldtestpanel.cpp,v 1.3 2004/12/10 12:00:59 ABX Exp $
 // Copyright:   (c) Jorgen Bodde
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -17,7 +18,7 @@
 #include "wx/wxprec.h"
 
 #ifdef __BORLANDC__
-#pragma hdrstop
+    #pragma hdrstop
 #endif
 
 #ifndef WX_PRECOMP
@@ -59,7 +60,7 @@ END_EVENT_TABLE()
 
 FoldTestPanel::FoldTestPanel( )
 {
-    delete _images;
+    delete m_images;
 }
 
 FoldTestPanel::FoldTestPanel( wxWindow* parent, wxWindowID id, const wxString& caption, const wxPoint& pos, const wxSize& size, long style )

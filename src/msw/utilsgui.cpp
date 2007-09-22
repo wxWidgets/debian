@@ -4,7 +4,7 @@
 // Author:      Vadim Zeitlin
 // Modified by:
 // Created:     21.06.2003 (extracted from msw/utils.cpp)
-// RCS-ID:      $Id: utilsgui.cpp,v 1.10 2004/09/07 11:11:05 ABX Exp $
+// RCS-ID:      $Id: utilsgui.cpp,v 1.11 2005/05/31 09:20:34 JS Exp $
 // Copyright:   (c) Julian Smart
 // License:     wxWindows licence
 ///////////////////////////////////////////////////////////////////////////////
@@ -267,7 +267,7 @@ bool wxColourDisplay()
     return true;
 #else
     // this function is called from wxDC ctor so it is called a *lot* of times
-    // hence we optimize it a bit but doign the check only once
+    // hence we optimize it a bit but doing the check only once
     //
     // this should be MT safe as only the GUI thread (holding the GUI mutex)
     // can call us

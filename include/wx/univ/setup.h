@@ -4,7 +4,7 @@
 // Author:      Vadim Zeitlin
 // Modified by:
 // Created:     14.08.00
-// RCS-ID:      $Id: setup0.h,v 1.36 2004/11/11 18:59:41 VZ Exp $
+// RCS-ID:      $Id: setup0.h,v 1.43 2005/05/31 09:18:51 JS Exp $
 // Copyright:   (c) 2000 SciTech Software, Inc. (www.scitechsoft.com)
 // Licence:     wxWindows licence
 ///////////////////////////////////////////////////////////////////////////////
@@ -292,6 +292,14 @@
 // Recommended setting: 1 (but may be safely disabled if you don't use it)
 #define wxUSE_FSVOLUME 1
 
+// Use wxStandardPaths class which allows to retrieve some standard locations
+// in the file system
+//
+// Default is 1
+//
+// Recommended setting: 1 (may be disabled to save space, but not much)
+#define wxUSE_STDPATHS      1
+
 // use wxTextBuffer class: required by wxTextFile
 #define wxUSE_TEXTBUFFER 1
 
@@ -411,6 +419,9 @@
 
 // Set to 1 to enable virtual ZIP filesystem (requires wxUSE_FILESYSTEM)
 #define wxUSE_FS_ZIP 1
+
+// wxArchive classes for accessing archives such as zip and tar
+#define wxUSE_ARCHIVE_STREAMS 1
 
 // Set to 1 to compile wxZipInput/OutputStream classes.
 #define wxUSE_ZIPSTREAM 1
@@ -567,6 +578,7 @@
 #define wxUSE_CHECKLISTBOX 1    // wxCheckListBox
 #define wxUSE_CHOICE       1    // wxChoice
 #define wxUSE_COMBOBOX     1    // wxComboBox
+#define wxUSE_DATEPICKCTRL 1    // wxDatePickerCtrl
 #define wxUSE_GAUGE        1    // wxGauge
 #define wxUSE_LISTBOX      1    // wxListBox
 #define wxUSE_LISTCTRL     1    // wxListCtrl
@@ -992,14 +1004,6 @@
 // Set to 1 to use font metric files in GetTextExtent
 #define wxUSE_AFM_FOR_POSTSCRIPT 1
 
-// Set to 0 to disable PostScript print/preview architecture code under Windows
-// (just use Windows printing).
-#if defined(__WIN32__)
-    #define wxUSE_POSTSCRIPT_ARCHITECTURE_IN_MSW 1
-#else
-    #define wxUSE_POSTSCRIPT_ARCHITECTURE_IN_MSW 0
-#endif
-
 // ----------------------------------------------------------------------------
 // database classes
 // ----------------------------------------------------------------------------
@@ -1017,7 +1021,7 @@
 #define wxODBC_FWD_ONLY_CURSORS 0
 
 // Default is 0.  Set to 1 to use the deprecated classes, enum types, function,
-// member variables.  With a setting of 1, full backward compatability with the
+// member variables.  With a setting of 1, full backward compatibility with the
 // 2.0.x release is possible. It is STRONGLY recommended that this be set to 0,
 // as future development will be done only on the non-deprecated
 // functions/classes/member variables/etc.
@@ -1114,13 +1118,13 @@
 // Recommended setting: 1 for WIN32
     #define wxUSE_OLE 1
 
-// Set this to 1 to use Microsoft CTL3D library for "3D-look" under Win16 or NT
-// 3.x. This setting is ignored under Win9x and NT 4.0+.
-//
-// Default is 0 for (most) Win32 (systems), 1 for Win16
-//
-// Recommended setting: 0
-#define wxUSE_CTL3D 0
+// Set to 0 to disable PostScript print/preview architecture code under Windows
+// (just use Windows printing).
+#if defined(__WIN32__)
+    #define wxUSE_POSTSCRIPT_ARCHITECTURE_IN_MSW 1
+#else
+    #define wxUSE_POSTSCRIPT_ARCHITECTURE_IN_MSW 0
+#endif
 
 // Define as 1 to use Microsoft's ItsyBitsy small title bar library, for
 // wxMiniFrame. This setting is only used for Win3.1; Win9x and NT use native
@@ -1156,6 +1160,14 @@
 //
 // Recommended setting: 1, set to 0 for a small library size reduction
 #define wxUSE_OWNER_DRAWN 0
+
+// Set this to 1 to be able to use wxCrashReport::Generate() to create mini
+// dumps of your program when it crashes (or at any other moment)
+//
+// Default is 1 if supported by the compiler (VC++ and recent BC++ only).
+//
+// Recommended setting: 1, set to 0 if your programs never crash
+#define wxUSE_CRASHREPORT 1
 
 #endif
 

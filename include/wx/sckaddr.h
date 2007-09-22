@@ -4,7 +4,7 @@
 // Author:      Guilhem Lavaux
 // Modified by:
 // Created:     26/04/1997
-// RCS-ID:      $Id: sckaddr.h,v 1.28 2004/09/22 14:38:28 ABX Exp $
+// RCS-ID:      $Id: sckaddr.h,v 1.30 2005/04/10 06:44:50 RN Exp $
 // Copyright:   (c) 1997, 1998 Guilhem Lavaux
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -160,7 +160,7 @@ public:
 
 #endif // wxUSE_IPV6
 
-#if defined(__UNIX__) && !defined(__WINE__) && (!defined(__WXMAC__) || defined(__DARWIN__))
+#if defined(__UNIX__) && !defined(__WINE__) && (!defined(__WXMAC__) || defined(__DARWIN__)) && !defined(__WXMSW__)
 #include <sys/socket.h>
 #ifndef __VMS__
 # include <sys/un.h>

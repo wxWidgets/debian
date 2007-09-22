@@ -2,7 +2,7 @@
 // Name:        checkbox.cpp
 // Purpose:
 // Author:      Robert Roebling
-// Id:          $Id: checkbox.cpp,v 1.67 2004/06/26 15:52:24 VS Exp $
+// Id:          $Id: checkbox.cpp,v 1.68 2005/03/21 23:42:15 VZ Exp $
 // Copyright:   (c) 1998 Robert Roebling
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -42,6 +42,7 @@ extern wxWindowGTK   *g_delayedFocus;
 // "clicked"
 //-----------------------------------------------------------------------------
 
+extern "C" {
 static void gtk_checkbox_toggled_callback(GtkWidget *widget, wxCheckBox *cb)
 {
     if (g_isIdle) wxapp_install_idle_handler();
@@ -108,6 +109,7 @@ static void gtk_checkbox_toggled_callback(GtkWidget *widget, wxCheckBox *cb)
 #endif
     event.SetEventObject(cb);
     cb->GetEventHandler()->ProcessEvent(event);
+}
 }
 
 //-----------------------------------------------------------------------------

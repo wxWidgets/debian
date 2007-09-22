@@ -7,7 +7,7 @@
 // Created:     19991127
 // Copyright:   (c) Mark Johnson
 // Licence:     wxWindows license
-// RCS-ID:      $Id: dbbrowse.cpp,v 1.18 2004/09/04 01:26:21 ABX Exp $
+// RCS-ID:      $Id: dbbrowse.cpp,v 1.21 2005/05/31 09:17:53 JS Exp $
 //----------------------------------------------------------------------------------------
 //-- all #ifdefs that the whole Project needs. -------------------------------------------
 //----------------------------------------------------------------------------------------
@@ -26,6 +26,8 @@
 #ifndef WX_PRECOMP
 #include "wx/wx.h"
 #endif
+
+#include "wx/stockitem.h"
 //----------------------------------------------------------------------------------------
 #ifndef __WXMSW__
 #include "bitmaps/logo.xpm"
@@ -39,9 +41,9 @@
 //-- Some Global Vars for this file ------------------------------------------------------
 //----------------------------------------------------------------------------------------
 BEGIN_EVENT_TABLE(MainFrame, wxFrame)
-    EVT_MENU(QUIT, MainFrame::OnQuit)                  // Program End
-    EVT_MENU(ABOUT, MainFrame::OnAbout)                // Program Discription
-    EVT_MENU(HELP, MainFrame::OnHelp)                  // Program Help
+    EVT_MENU(wxID_EXIT, MainFrame::OnQuit)                  // Program End
+    EVT_MENU(wxID_ABOUT, MainFrame::OnAbout)                // Program Discription
+    EVT_MENU(wxID_HELP, MainFrame::OnHelp)                  // Program Help
 END_EVENT_TABLE()
 
 //----------------------------------------------------------------------------------------
@@ -91,20 +93,21 @@ bool MainApp::OnInit(void)  // Does everything needed for a program start
         langid   = argv[1];         // cz, std, fr, de , pl
         break;
     case 1:
+    case 0:
         break;
     };
     //---------------------------------------------------------------------------------------
     // Win-Registry : Workplace\HKEY_CURRENT_USERS\Software\%GetVendorName()\%GetAppName()
     //---------------------------------------------------------------------------------------
     SetVendorName(_T("mj10777"));           // Needed to get Configuration Information
-    SetAppName(_T("DBBrowse"));            // "" , also needed for s_LangHelp
+    SetAppName(_T("DBBrowse"));             // "" , also needed for s_LangHelp
     //---------------------------------------------------------------------------------------
     // we're using wxConfig's "create-on-demand" feature: it will create the
     // config object when it's used for the first time. It has a number of
     // advantages compared with explicitly creating our wxConfig:
     //  1) we don't pay for it if we don't use it
     //  2) there is no danger to create it twice
-    
+
     // application and vendor name are used by wxConfig to construct the name
     // of the config file/registry key and must be set before the first call
     // to Get() if you want to override the default values (the application
@@ -120,7 +123,7 @@ bool MainApp::OnInit(void)  // Does everything needed for a program start
     {
         Temp0.Empty();
         p_ProgramCfg->Read(_T("/Local/langid"),&Temp0); // >const char *langid< can't be used here
-        if (Temp0 == _T(""))
+        if (Temp0.empty())
             langid = _T("std");  // Standard language is "std" = english
         else
             langid = Temp0;
@@ -206,12 +209,12 @@ bool MainApp::OnInit(void)  // Does everything needed for a program start
     // Make a menubar
     wxMenu *file_menu = new wxMenu;
     wxMenu *help_menu = new wxMenu;
-    
-    help_menu->Append(HELP, _("&Help"));
+
+    help_menu->Append(wxID_HELP, wxGetStockLabel(wxID_HELP));
     help_menu->AppendSeparator();
-    help_menu->Append(ABOUT, _("&About"));
-    file_menu->Append(QUIT, _("E&xit"));
-    
+    help_menu->Append(wxID_ABOUT, _("&About"));
+    file_menu->Append(wxID_EXIT, wxGetStockLabel(wxID_EXIT));
+
     wxMenuBar *menu_bar = new wxMenuBar;
     menu_bar->Append(file_menu, _("&File"));
     menu_bar->Append(help_menu, _("&Help"));
@@ -232,7 +235,7 @@ bool MainApp::OnInit(void)  // Does everything needed for a program start
     frame->pDoc->p_Splitter           = frame->p_Splitter;
     frame->pDoc->p_Splitter->pDoc     = frame->pDoc;       // ControlBase: saving the Sash
     //---------------------------------------------------------------------------------------
-    //-- Problem : GetClientSize(Width,Hight) are not the same as the values given in the ---
+    //-- Problem : GetClientSize(Width,Height) are not the same as the values given in the ---
     //--            construction of the Frame.                                            ---
     //-- Solved  : GetClientSize is called here and the difference is noted. When the     ---
     //--           Window is closed the diff. is added to the result of GetClientSize.    ---

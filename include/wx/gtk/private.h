@@ -4,7 +4,7 @@
 // Author:      Vadim Zeitlin
 // Modified by:
 // Created:     12.03.02
-// RCS-ID:      $Id: private.h,v 1.10 2004/06/27 13:41:43 VS Exp $
+// RCS-ID:      $Id: private.h,v 1.11 2005/06/10 12:04:12 MW Exp $
 // Copyright:   (c) 2002 Vadim Zeitlin <vadim@wxwidgets.org>
 // Licence:     wxWindows licence
 ///////////////////////////////////////////////////////////////////////////////
@@ -134,6 +134,15 @@ inline wxEventType GtkScrollWinTypeToWx(guint scrollType)
 #ifdef __WXGTK20__
 // Escapes string so that it is valid Pango markup XML string:
 wxString wxEscapeStringForPangoMarkup(const wxString& str);
+#endif
+
+// The declaration for gtk_icon_size_lookup was accidentally ifdefed out in
+// GTK+ 2.1.0 which Sun seem to have shipped with some versions of JDS
+// for Solaris 9 x86.
+#if NEED_GTK_ICON_SIZE_LOOKUP
+extern "C" gboolean gtk_icon_size_lookup  (GtkIconSize  size,
+                                           gint         *width,
+                                           gint         *height);
 #endif
 
 #endif // _WX_GTK_PRIVATE_H_

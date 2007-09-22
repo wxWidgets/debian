@@ -5,7 +5,7 @@
 // Author:      Julian Smart
 // Modified by: Vaclav Slavik
 // Created:     24/3/98
-// RCS-ID:      $Id: taskbar.cpp,v 1.44 2004/09/07 06:00:59 ABX Exp $
+// RCS-ID:      $Id: taskbar.cpp,v 1.46 2005/05/31 09:20:33 JS Exp $
 // Copyright:   (c)
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////
@@ -36,10 +36,6 @@
 
 #include <string.h>
 #include "wx/taskbar.h"
-
-#ifdef __GNUWIN32_OLD__
-    #include "wx/msw/gnuwin32/extra.h"
-#endif
 
 #ifdef __WXWINCE__
     #include <winreg.h>
@@ -147,8 +143,8 @@ wxTaskBarIcon::~wxTaskBarIcon()
 // Operations
 bool wxTaskBarIcon::SetIcon(const wxIcon& icon, const wxString& tooltip)
 {
-    // NB: we have to create the window lazily because of backward compatiblity,
-    //     old aplications may create wxTaskBarIcon instance before wxApp
+    // NB: we have to create the window lazily because of backward compatibility,
+    //     old applications may create a wxTaskBarIcon instance before wxApp
     //     is initialized (as samples/taskbar used to do)
     if (!m_win)
     {

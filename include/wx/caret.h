@@ -4,7 +4,7 @@
 // Author:      Vadim Zeitlin
 // Modified by:
 // Created:     23.05.99
-// RCS-ID:      $Id: caret.h,v 1.18 2004/09/10 12:55:45 ABX Exp $
+// RCS-ID:      $Id: caret.h,v 1.19 2005/02/24 14:33:28 VZ Exp $
 // Copyright:   (c) wxWidgets team
 // Licence:     wxWindows licence
 ///////////////////////////////////////////////////////////////////////////////
@@ -60,6 +60,9 @@ public:
 
         (void)Create(window, size);
     }
+
+    // a virtual dtor has been provided since this class has virtual members
+    virtual ~wxCaretBase() { }
 
     // Create() functions - same as ctor but returns the success code
     // --------------------------------------------------------------

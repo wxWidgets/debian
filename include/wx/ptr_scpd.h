@@ -4,7 +4,7 @@
 // Author:      Jesse Lovelace <jllovela@eos.ncsu.edu>
 // Modified by:
 // Created:     06/01/02
-// RCS-ID:      $Id: ptr_scpd.h,v 1.12 2004/10/08 18:48:56 ABX Exp $
+// RCS-ID:      $Id: ptr_scpd.h,v 1.13 2005/06/13 12:19:14 ABX Exp $
 // Copyright:   (c) Jesse Lovelace and original Boost authors (see below)
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -138,8 +138,8 @@ name::~name()                       \
 // this macro can be used for the most common case when you want to declare and
 // define the scoped pointer at the same time and want to use the standard
 // naming convention: auto pointer to Foo is called FooPtr
-#define wxDEFINE_SCOPED_PTR_TYPE(T)                                           \
-    wxDECLARE_SCOPED_PTR(T, T ## Ptr);                                        \
+#define wxDEFINE_SCOPED_PTR_TYPE(T)    \
+    wxDECLARE_SCOPED_PTR(T, T ## Ptr)  \
     wxDEFINE_SCOPED_PTR(T, T ## Ptr)
 
 // the same but for arrays instead of simple pointers

@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     04/01/98
-// RCS-ID:      $Id: typetest.cpp,v 1.45 2004/10/06 20:54:54 ABX Exp $
+// RCS-ID:      $Id: typetest.cpp,v 1.48 2005/04/17 18:57:46 RN Exp $
 // Copyright:   (c) Julian Smart
 // Licence:       wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -189,7 +189,7 @@ void MyApp::DoStreamDemo(wxCommandEvent& WXUNUSED(event))
 
     char std_buf[200];
     std_file_input >> std_buf;
-    str.FromAscii(std_buf);
+    str = wxString::FromAscii(std_buf);
     tmp.Printf( _T("String: %s\n"), str.c_str() );
     textCtrl.WriteText( tmp );
 
@@ -955,13 +955,13 @@ void MyApp::DoMIMEDemo(wxCommandEvent& WXUNUSED(event))
             wxFileType::MessageParameters params(filename, type);
             filetype->GetOpenCommand(&open, params);
 
-            textCtrl << _T("MIME information about extension '") << ext << _T("'\n")
+            textCtrl << _T("MIME information about extension '") << ext << _T('\n')
                      << _T("\tMIME type: ") << ( !type ? wxT("unknown")
-                                                   : type.c_str() ) << '\n'
+                                                   : type.c_str() ) << _T('\n')
                      << _T("\tDescription: ") << ( !desc ? wxEmptyString : desc.c_str() )
-                        << '\n'
+                        << _T('\n')
                      << _T("\tCommand to open: ") << ( !open ? wxT("no") : open.c_str() )
-                        << '\n';
+                        << _T('\n');
 
             delete filetype;
         }
@@ -1028,9 +1028,9 @@ void MyApp::DoVariantDemo(wxCommandEvent& WXUNUSED(event) )
     wxUnusedVar(l);
     wxUnusedVar(v);
 
-    wxStringList stringList;
-    stringList.Add(_T("one")); stringList.Add(_T("two")); stringList.Add(_T("three"));
-    var1 = stringList;
+    wxArrayString stringArray;
+    stringArray.Add(_T("one")); stringArray.Add(_T("two")); stringArray.Add(_T("three"));
+    var1 = stringArray;
     textCtrl << _T("var1 = ") << var1.MakeString() << _T("\n");
 
     var1.ClearList();

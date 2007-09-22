@@ -5,7 +5,7 @@
 // Author:      Robin Dunn
 //
 // Created:     3-Sept-1999
-// RCS-ID:      $Id: _oglshapes.i,v 1.8 2004/09/23 20:23:35 RD Exp $
+// RCS-ID:      $Id: _oglshapes.i,v 1.9 2004/12/23 20:44:04 RD Exp $
 // Copyright:   (c) 1998 by Total Control Software
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -412,9 +412,9 @@ public:
         }
     }
 
-    %name(AddSimpleConstraint)wxOGLConstraint* AddConstraint(int type,
+    %Rename(AddSimpleConstraint, wxOGLConstraint*,  AddConstraint(int type,
                                                              wxPyShape *constraining,
-                                                             wxPyShape *constrained);
+                                                             wxPyShape *constrained));
 
     void CalculateSize();
     bool ContainsDivision(wxPyDivisionShape *division);

@@ -1,4 +1,4 @@
-/* $Header: /pack/cvsroots/wxwindows/wxWindows/src/tiff/tif_flush.c,v 1.2 2002/12/04 14:10:18 VZ Exp $ */
+/* $Header: /pack/cvsroots/wxwindows/wxWindows/src/tiff/tif_flush.c,v 1.3 2004/11/19 22:29:44 VZ Exp $ */
 
 /*
  * Copyright (c) 1988-1997 Sam Leffler
@@ -45,6 +45,12 @@ TIFFFlush(TIFF* tif)
 
 /*
  * Flush buffered data to the file.
+ *
+ * Frank Warmerdam'2000: I modified this to return 1 if TIFF_BEENWRITING
+ * is not set, so that TIFFFlush() will proceed to write out the directory.
+ * The documentation says returning 1 is an error indicator, but not having
+ * been writing isn't exactly a an error.  Hopefully this doesn't cause
+ * problems for other people. 
  */
 int
 TIFFFlushData(TIFF* tif)
@@ -58,3 +64,4 @@ TIFFFlushData(TIFF* tif)
 	}
 	return (TIFFFlushData1(tif));
 }
+

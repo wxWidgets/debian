@@ -1,7 +1,18 @@
+/////////////////////////////////////////////////////////////////////////////
+// Name:        wx/pen.h
+// Purpose:     Base header for wxPen
+// Author:      Julian Smart
+// Modified by:
+// Created:
+// RCS-ID:      $Id: pen.h,v 1.15 2005/05/04 18:52:01 JS Exp $
+// Copyright:   (c) Julian Smart
+// Licence:     wxWindows Licence
+/////////////////////////////////////////////////////////////////////////////
+
 #ifndef _WX_PEN_H_BASE_
 #define _WX_PEN_H_BASE_
 
-#if defined(__PALMOS__)
+#if defined(__WXPALMOS__)
 #include "wx/palmos/pen.h"
 #elif defined(__WXMSW__)
 #include "wx/msw/pen.h"

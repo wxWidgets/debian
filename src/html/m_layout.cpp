@@ -2,7 +2,7 @@
 // Name:        m_layout.cpp
 // Purpose:     wxHtml module for basic paragraphs/layout handling
 // Author:      Vaclav Slavik
-// RCS-ID:      $Id: m_layout.cpp,v 1.35 2004/09/27 19:15:06 ABX Exp $
+// RCS-ID:      $Id: m_layout.cpp,v 1.37 2005/04/22 15:12:46 MW Exp $
 // Copyright:   (c) 1999 Vaclav Slavik
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -12,16 +12,18 @@
 
 #include "wx/wxprec.h"
 
-
 #include "wx/defs.h"
+
 #if wxUSE_HTML && wxUSE_STREAMS
+
 #ifdef __BORLANDC__
-#pragma hdrstop
+    #pragma hdrstop
 #endif
 
 #ifndef WXPRECOMP
 #endif
 
+#include "wx/image.h"
 
 #include "wx/html/forcelnk.h"
 #include "wx/html/m_templ.h"
@@ -298,7 +300,7 @@ TAG_HANDLER_BEGIN(TITLE, "TITLE")
                 wxString title = m_WParser->GetSource()->Mid(
                                         tag.GetBeginPos(),
                                         tag.GetEndPos1()-tag.GetBeginPos());
-#if !wxUSE_UNICODE
+#if !wxUSE_UNICODE && wxUSE_WCHAR_T
                 wxCSConv conv(m_WParser->GetInputEncoding());
                 title = wxString(title.wc_str(conv), wxConvLocal);
 #endif
@@ -330,6 +332,25 @@ TAG_HANDLER_BEGIN(BODY, "BODY")
         if (tag.GetParamAsColour(wxT("LINK"), &clr))
             m_WParser->SetLinkColor(clr);
 
+        if (tag.HasParam(wxT("BACKGROUND")))
+        {
+            wxFSFile *fileBgImage = m_WParser->OpenURL
+                                               (
+                                                wxHTML_URL_IMAGE,
+                                                tag.GetParam(wxT("BACKGROUND"))
+                                               );
+            if ( fileBgImage )
+            {
+                wxInputStream *is = fileBgImage->GetStream();
+                if ( is )
+                {
+                    wxImage image(*is);
+                    if ( image.Ok() )
+                        m_WParser->GetWindow()->SetBackgroundImage(image);
+                }
+            }
+        }
+
         if (tag.GetParamAsColour(wxT("BGCOLOR"), &clr))
         {
             m_WParser->GetContainer()->InsertCell(
@@ -337,6 +358,7 @@ TAG_HANDLER_BEGIN(BODY, "BODY")
             if (m_WParser->GetWindow() != NULL)
                 m_WParser->GetWindow()->SetBackgroundColour(clr);
         }
+
         return false;
     }
 

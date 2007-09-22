@@ -5,7 +5,7 @@
 // Author:      Robin Dunn
 //
 // Created:     4-June-2001
-// RCS-ID:      $Id: _xmlhandler.i,v 1.3 2004/11/11 02:24:18 RD Exp $
+// RCS-ID:      $Id: _xmlhandler.i,v 1.5 2005/01/05 21:52:41 RD Exp $
 // Copyright:   (c) 2003 by Total Control Software
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -40,7 +40,6 @@ public:
     wxObject* GetParent()               { return m_parent; }
     wxObject* GetInstance()             { return m_instance; }
     wxWindow* GetParentAsWindow()       { return m_parentAsWindow; }
-//    wxWindow* GetInstanceAsWindow()     { return m_instanceAsWindow; }
 
 
     // turn some protected methods into public via delegation
@@ -138,7 +137,8 @@ IMP_PYCALLBACK_BOOL_NODE_pure(wxPyXmlResourceHandler, wxXmlResourceHandler, CanH
 // Now the version that will be SWIGged.
 
 
-%name(XmlResourceHandler) class wxPyXmlResourceHandler : public wxObject {
+%rename(XmlResourceHandler) wxPyXmlResourceHandler;
+class wxPyXmlResourceHandler : public wxObject {
 public:
     %pythonAppend wxPyXmlResourceHandler "self._setCallbackInfo(self, XmlResourceHandler)"
     wxPyXmlResourceHandler() : wxXmlResourceHandler() {}

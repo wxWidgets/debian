@@ -4,7 +4,7 @@
 // Author:      David Elliott
 // Modified by:
 // Created:     2004/04/12
-// RCS-ID:      $Id: regiong.cpp,v 1.5 2004/06/17 16:22:35 ABX Exp $
+// RCS-ID:      $Id: regiong.cpp,v 1.6 2005/01/10 03:07:43 DE Exp $
 // Copyright:   (c) 2004 David Elliott
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -443,7 +443,7 @@ wxRegionIteratorGeneric wxRegionIteratorGeneric::operator++(int)
 
 wxRect wxRegionIteratorGeneric::GetRect() const
 {
-    wxASSERT(m_refData);
+    wxASSERT(m_region.m_refData);
     const Box *box = M_REGIONDATA_OF(m_region)->GetBox(m_current);
     wxASSERT(box);
     return wxRect
@@ -456,7 +456,7 @@ wxRect wxRegionIteratorGeneric::GetRect() const
 
 long wxRegionIteratorGeneric::GetX() const
 {
-    wxASSERT(m_refData);
+    wxASSERT(m_region.m_refData);
     const Box *box = M_REGIONDATA_OF(m_region)->GetBox(m_current);
     wxASSERT(box);
     return box->x1;
@@ -464,7 +464,7 @@ long wxRegionIteratorGeneric::GetX() const
 
 long wxRegionIteratorGeneric::GetY() const
 {
-    wxASSERT(m_refData);
+    wxASSERT(m_region.m_refData);
     const Box *box = M_REGIONDATA_OF(m_region)->GetBox(m_current);
     wxASSERT(box);
     return box->y1;
@@ -472,7 +472,7 @@ long wxRegionIteratorGeneric::GetY() const
 
 long wxRegionIteratorGeneric::GetW() const
 {
-    wxASSERT(m_refData);
+    wxASSERT(m_region.m_refData);
     const Box *box = M_REGIONDATA_OF(m_region)->GetBox(m_current);
     wxASSERT(box);
     return box->x2 - box->x1;
@@ -480,7 +480,7 @@ long wxRegionIteratorGeneric::GetW() const
 
 long wxRegionIteratorGeneric::GetH() const
 {
-    wxASSERT(m_refData);
+    wxASSERT(m_region.m_refData);
     const Box *box = M_REGIONDATA_OF(m_region)->GetBox(m_current);
     wxASSERT(box);
     return box->y2 - box->y1;

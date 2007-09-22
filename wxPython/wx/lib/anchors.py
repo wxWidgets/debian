@@ -6,7 +6,7 @@
 # Author:      Riaan Booysen
 #
 # Created:     15-Dec-2000
-# RCS-ID:      $Id: anchors.py,v 1.7 2004/06/17 05:52:00 RD Exp $
+# RCS-ID:      $Id: anchors.py,v 1.8 2005/05/12 22:46:52 RD Exp $
 # Copyright:   (c) 2000 by Total Control Software
 # Licence:     wxWindows license
 #----------------------------------------------------------------------
@@ -15,6 +15,10 @@
 # o Updated for wx namespace
 # o Tested with updated demo
 # 
+"""
+`LayoutAnchors` is a class that implements Delphi's Anchors using
+`wx.LayoutConstraints`.
+"""
 
 import  wx
 

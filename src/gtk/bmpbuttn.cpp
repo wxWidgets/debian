@@ -2,7 +2,7 @@
 // Name:        gtk/bmpbuttn.cpp
 // Purpose:
 // Author:      Robert Roebling
-// Id:          $Id: bmpbuttn.cpp,v 1.57 2004/10/18 13:13:39 VS Exp $
+// Id:          $Id: bmpbuttn.cpp,v 1.60 2005/06/06 16:46:53 ABX Exp $
 // Copyright:   (c) 1998 Robert Roebling
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -45,6 +45,7 @@ extern bool   g_blockEventsOnDrag;
 // "clicked"
 //-----------------------------------------------------------------------------
 
+extern "C" {
 static void gtk_bmpbutton_clicked_callback( GtkWidget *WXUNUSED(widget), wxBitmapButton *button )
 {
     if (g_isIdle)
@@ -57,11 +58,13 @@ static void gtk_bmpbutton_clicked_callback( GtkWidget *WXUNUSED(widget), wxBitma
     event.SetEventObject(button);
     button->GetEventHandler()->ProcessEvent(event);
 }
+}
 
 //-----------------------------------------------------------------------------
 // "enter"
 //-----------------------------------------------------------------------------
 
+extern "C" {
 static void gtk_bmpbutton_enter_callback( GtkWidget *WXUNUSED(widget), wxBitmapButton *button )
 {
     if (!button->m_hasVMT) return;
@@ -69,11 +72,13 @@ static void gtk_bmpbutton_enter_callback( GtkWidget *WXUNUSED(widget), wxBitmapB
 
     button->HasFocus();
 }
+}
 
 //-----------------------------------------------------------------------------
 // "leave"
 //-----------------------------------------------------------------------------
 
+extern "C" {
 static void gtk_bmpbutton_leave_callback( GtkWidget *WXUNUSED(widget), wxBitmapButton *button )
 {
     if (!button->m_hasVMT) return;
@@ -81,11 +86,13 @@ static void gtk_bmpbutton_leave_callback( GtkWidget *WXUNUSED(widget), wxBitmapB
 
     button->NotFocus();
 }
+}
 
 //-----------------------------------------------------------------------------
 // "pressed"
 //-----------------------------------------------------------------------------
 
+extern "C" {
 static void gtk_bmpbutton_press_callback( GtkWidget *WXUNUSED(widget), wxBitmapButton *button )
 {
     if (!button->m_hasVMT) return;
@@ -93,17 +100,20 @@ static void gtk_bmpbutton_press_callback( GtkWidget *WXUNUSED(widget), wxBitmapB
 
     button->StartSelect();
 }
+}
 
 //-----------------------------------------------------------------------------
 // "released"
 //-----------------------------------------------------------------------------
 
+extern "C" {
 static void gtk_bmpbutton_release_callback( GtkWidget *WXUNUSED(widget), wxBitmapButton *button )
 {
     if (!button->m_hasVMT) return;
     if (g_blockEventsOnDrag) return;
 
     button->EndSelect();
+}
 }
 
 //-----------------------------------------------------------------------------
@@ -115,7 +125,7 @@ IMPLEMENT_DYNAMIC_CLASS(wxBitmapButton,wxButton)
 void wxBitmapButton::Init()
 {
     m_hasFocus =
-    m_isSelected = FALSE;
+    m_isSelected = false;
 }
 
 bool wxBitmapButton::Create( wxWindow *parent,
@@ -127,14 +137,14 @@ bool wxBitmapButton::Create( wxWindow *parent,
                              const wxValidator& validator,
                              const wxString &name )
 {
-    m_needParent = TRUE;
-    m_acceptsFocus = TRUE;
+    m_needParent = true;
+    m_acceptsFocus = true;
 
     if (!PreCreation( parent, pos, size ) ||
         !CreateBase( parent, id, pos, size, style, validator, name ))
     {
         wxFAIL_MSG( wxT("wxBitmapButton creation failed") );
-        return FALSE;
+        return false;
     }
 
     m_bmpNormal = bitmap;
@@ -149,7 +159,7 @@ bool wxBitmapButton::Create( wxWindow *parent,
         OnSetBitmap();
     }
 
-    gtk_signal_connect( GTK_OBJECT(m_widget), "clicked",
+    gtk_signal_connect_after( GTK_OBJECT(m_widget), "clicked",
       GTK_SIGNAL_FUNC(gtk_bmpbutton_clicked_callback), (gpointer*)this );
 
     gtk_signal_connect( GTK_OBJECT(m_widget), "enter",
@@ -165,7 +175,7 @@ bool wxBitmapButton::Create( wxWindow *parent,
 
     PostCreation(size);
 
-    return TRUE;
+    return true;
 }
 
 void wxBitmapButton::SetDefault()
@@ -185,7 +195,7 @@ void wxBitmapButton::SetLabel( const wxString &label )
 
 wxString wxBitmapButton::GetLabel() const
 {
-    wxCHECK_MSG( m_widget != NULL, wxT(""), wxT("invalid button") );
+    wxCHECK_MSG( m_widget != NULL, wxEmptyString, wxT("invalid button") );
 
     return wxControl::GetLabel();
 }
@@ -203,7 +213,7 @@ void wxBitmapButton::OnSetBitmap()
     wxCHECK_RET( m_widget != NULL, wxT("invalid bitmap button") );
 
     InvalidateBestSize();
-    
+
     wxBitmap the_one;
     if (!m_isEnabled)
         the_one = m_bmpDisabled;
@@ -212,19 +222,7 @@ void wxBitmapButton::OnSetBitmap()
     else if (m_hasFocus)
         the_one = m_bmpFocus;
     else
-    {
-        if (m_isSelected)
-        {
-            the_one = m_bmpSelected;
-        }
-        else
-        {
-            if (m_hasFocus)
-                the_one = m_bmpFocus;
-            else
-                the_one = m_bmpNormal;
-        }
-    }
+        the_one = m_bmpNormal;
 
     if (!the_one.Ok()) the_one = m_bmpNormal;
     if (!the_one.Ok()) return;
@@ -271,34 +269,34 @@ wxSize wxBitmapButton::DoGetBestSize() const
 bool wxBitmapButton::Enable( bool enable )
 {
     if ( !wxWindow::Enable(enable) )
-        return FALSE;
+        return false;
 
     OnSetBitmap();
 
-    return TRUE;
+    return true;
 }
 
 void wxBitmapButton::HasFocus()
 {
-    m_hasFocus = TRUE;
+    m_hasFocus = true;
     OnSetBitmap();
 }
 
 void wxBitmapButton::NotFocus()
 {
-    m_hasFocus = FALSE;
+    m_hasFocus = false;
     OnSetBitmap();
 }
 
 void wxBitmapButton::StartSelect()
 {
-    m_isSelected = TRUE;
+    m_isSelected = true;
     OnSetBitmap();
 }
 
 void wxBitmapButton::EndSelect()
 {
-    m_isSelected = FALSE;
+    m_isSelected = false;
     OnSetBitmap();
 }
 

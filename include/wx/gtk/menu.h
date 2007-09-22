@@ -2,7 +2,7 @@
 // Name:        wx/gtk/menu.h
 // Purpose:
 // Author:      Robert Roebling
-// Id:          $Id: menu.h,v 1.53 2004/05/23 20:50:53 JS Exp $
+// Id:          $Id: menu.h,v 1.54 2005/03/17 23:44:45 VZ Exp $
 // Copyright:   (c) 1998 Robert Roebling, Julian Smart
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -24,7 +24,7 @@ public:
     // ctors
     wxMenuBar();
     wxMenuBar(long style);
-    wxMenuBar(int n, wxMenu *menus[], const wxString titles[]);
+    wxMenuBar(size_t n, wxMenu *menus[], const wxString titles[], long style = 0);
     virtual ~wxMenuBar();
 
     // implement base class (pure) virtuals
@@ -56,6 +56,8 @@ public:
     wxWindow        *m_invokingWindow;
 
 private:
+    void Init(size_t n, wxMenu *menus[], const wxString titles[], long style);
+
     DECLARE_DYNAMIC_CLASS(wxMenuBar)
 };
 

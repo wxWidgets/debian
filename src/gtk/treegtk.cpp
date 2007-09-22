@@ -4,7 +4,7 @@
 // Author:      Denis Pershin
 // Modified by:
 // Created:     07/05/98
-// RCS-ID:      $Id: treegtk.cpp,v 1.7 2004/05/23 20:52:21 JS Exp $
+// RCS-ID:      $Id: treegtk.cpp,v 1.8 2005/02/27 10:36:49 JS Exp $
 // Copyright:   (c) Denis Pershin
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -496,7 +496,7 @@ printf("begin insert\n");
   const wxBitmap *bmp;
   const wxImageList *list;
   if ((list = GetImageList(wxIMAGE_LIST_NORMAL)) != NULL)
-    if ((bmp = list->GetBitmap(image)) != NULL)
+    if ((bmp = list->GetBitmapPtr(image)) != NULL)
       if (bmp->Ok()) {
         GdkBitmap *mask = NULL;
         if (bmp->GetMask())

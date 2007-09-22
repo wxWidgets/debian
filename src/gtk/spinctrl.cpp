@@ -3,7 +3,7 @@
 // Purpose:     wxSpinCtrl
 // Author:      Robert
 // Modified by:
-// RCS-ID:      $Id: spinctrl.cpp,v 1.40 2004/06/24 20:04:01 RD Exp $
+// RCS-ID:      $Id: spinctrl.cpp,v 1.42 2005/03/21 23:42:19 VZ Exp $
 // Copyright:   (c) Robert Roebling
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -22,9 +22,7 @@
 #include "wx/utils.h"
 
 #include "wx/textctrl.h"    // for wxEVT_COMMAND_TEXT_UPDATED
-
-#include <math.h>
-
+#include "wx/math.h"
 #include "wx/gtk/private.h"
 
 //-----------------------------------------------------------------------------
@@ -46,6 +44,7 @@ extern bool   g_blockEventsOnDrag;
 // "value_changed"
 //-----------------------------------------------------------------------------
 
+extern "C" {
 static void gtk_spinctrl_callback( GtkWidget *WXUNUSED(widget), wxSpinCtrl *win )
 {
     if (g_isIdle) wxapp_install_idle_handler();
@@ -65,11 +64,13 @@ static void gtk_spinctrl_callback( GtkWidget *WXUNUSED(widget), wxSpinCtrl *win 
     event.SetInt( (int)ceil(win->m_adjust->value) );
     win->GetEventHandler()->ProcessEvent( event );
 }
+}
 
 //-----------------------------------------------------------------------------
 //  "changed"
 //-----------------------------------------------------------------------------
 
+extern "C" {
 static void
 gtk_spinctrl_text_changed_callback( GtkWidget *WXUNUSED(widget), wxSpinCtrl *win )
 {
@@ -84,6 +85,7 @@ gtk_spinctrl_text_changed_callback( GtkWidget *WXUNUSED(widget), wxSpinCtrl *win
     // see above
     event.SetInt( (int)ceil(win->m_adjust->value) );
     win->GetEventHandler()->ProcessEvent( event );
+}
 }
 
 //-----------------------------------------------------------------------------

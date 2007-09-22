@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     04/01/98
-// RCS-ID:      $Id: utils.cpp,v 1.150 2004/11/10 22:08:27 VZ Exp $
+// RCS-ID:      $Id: utils.cpp,v 1.178 2005/06/16 23:48:50 VZ Exp $
 // Copyright:   (c) Julian Smart
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -32,15 +32,23 @@
 #endif  //WX_PRECOMP
 
 #include "wx/apptrait.h"
+#include "wx/dynlib.h"
 #include "wx/dynload.h"
+#include "wx/scopeguard.h"
 
 #include "wx/confbase.h"        // for wxExpandEnvVars()
 
 #include "wx/msw/private.h"     // includes <windows.h>
 #include "wx/msw/missing.h"     // CHARSET_HANGUL
 
-#if defined(__GNUWIN32_OLD__) || defined(__WXWINCE__) \
-    || defined(__CYGWIN32__)
+#if defined(__CYGWIN__)
+    //CYGWIN gives annoying warning about runtime stuff if we don't do this
+#   define USE_SYS_TYPES_FD_SET
+#   include <sys/types.h>
+#endif
+
+// Doesn't work with Cygwin at present
+#if wxUSE_SOCKETS && (defined(__GNUWIN32_OLD__) || defined(__WXWINCE__) || defined(__CYGWIN32__))
     // apparently we need to include winsock.h to get WSADATA and other stuff
     // used in wxGetFullHostName() with the old mingw32 versions
     #include <winsock.h>
@@ -94,6 +102,9 @@
     #endif
 #endif
 
+// For wxKillAllChildren
+#include <tlhelp32.h>
+
 // ----------------------------------------------------------------------------
 // constants
 // ----------------------------------------------------------------------------
@@ -114,6 +125,9 @@ static const wxChar eUSERNAME[]  = wxT("UserName");
 bool wxGetHostName(wxChar *buf, int maxSize)
 {
 #if defined(__WXWINCE__)
+    // TODO-CE
+    wxUnusedVar(buf);
+    wxUnusedVar(maxSize);
     return false;
 #elif defined(__WIN32__) && !defined(__WXMICROWIN__)
     DWORD nSize = maxSize;
@@ -141,7 +155,7 @@ bool wxGetHostName(wxChar *buf, int maxSize)
 // get full hostname (with domain name if possible)
 bool wxGetFullHostName(wxChar *buf, int maxSize)
 {
-#if !defined( __WXMICROWIN__) && wxUSE_DYNAMIC_LOADER
+#if !defined( __WXMICROWIN__) && wxUSE_DYNAMIC_LOADER && wxUSE_SOCKETS
     // TODO should use GetComputerNameEx() when available
 
     // we don't want to always link with Winsock DLL as we might not use it at
@@ -226,6 +240,9 @@ bool wxGetFullHostName(wxChar *buf, int maxSize)
 bool wxGetUserId(wxChar *buf, int maxSize)
 {
 #if defined(__WXWINCE__)
+    // TODO-CE
+    wxUnusedVar(buf);
+    wxUnusedVar(maxSize);
     return false;
 #elif defined(__WIN32__) && !defined(__WXMICROWIN__)
     DWORD nSize = maxSize;
@@ -266,6 +283,9 @@ bool wxGetUserId(wxChar *buf, int maxSize)
 bool wxGetUserName(wxChar *buf, int maxSize)
 {
 #if defined(__WXWINCE__)
+    // TODO-CE
+    wxUnusedVar(buf);
+    wxUnusedVar(maxSize);
     return false;
 #elif defined(USE_NET_API)
     CHAR szUserName[256];
@@ -346,9 +366,9 @@ error:
     {
         wxStrncpy(buf, wxT("Unknown User"), maxSize);
     }
-#endif // Win32/16
 
     return true;
+#endif // Win32/16
 }
 
 const wxChar* wxGetHomeDir(wxString *pstr)
@@ -377,7 +397,7 @@ const wxChar* wxGetHomeDir(wxString *pstr)
         strDir = windowsPath;
     #endif
 #elif defined(__WXWINCE__)
-      // Nothing
+    strDir = wxT("\\");
 #else
     strDir.clear();
 
@@ -447,19 +467,13 @@ wxChar *wxGetUserHome(const wxString& WXUNUSED(user))
     return (wxChar *)wxGetHomeDir(&s_home);
 }
 
-bool wxDirExists(const wxString& dir)
-{
-#ifdef __WXMICROWIN__
-    return wxPathExist(dir);
-#elif defined(__WIN32__)
-    DWORD attribs = GetFileAttributes(dir);
-    return ((attribs != (DWORD)-1) && (attribs & FILE_ATTRIBUTE_DIRECTORY));
-#endif // Win32/__WXMICROWIN__
-}
-
 bool wxGetDiskSpace(const wxString& path, wxLongLong *pTotal, wxLongLong *pFree)
 {
 #ifdef __WXWINCE__
+    // TODO-CE
+    wxUnusedVar(path);
+    wxUnusedVar(pTotal);
+    wxUnusedVar(pFree);
     return false;
 #else
     if ( path.empty() )
@@ -572,6 +586,9 @@ bool wxGetDiskSpace(const wxString& path, wxLongLong *pTotal, wxLongLong *pFree)
 bool wxGetEnv(const wxString& var, wxString *value)
 {
 #ifdef __WXWINCE__
+    // no environment variables under CE
+    wxUnusedVar(var);
+    wxUnusedVar(value);
     return false;
 #else // Win32
     // first get the size of the buffer
@@ -606,6 +623,9 @@ bool wxSetEnv(const wxString& var, const wxChar *value)
 
     return true;
 #else // no way to set env vars
+    // no environment variables under CE
+    wxUnusedVar(var);
+    wxUnusedVar(value);
     return false;
 #endif
 }
@@ -649,8 +669,13 @@ BOOL CALLBACK wxEnumFindByPidProc(HWND hwnd, LPARAM lParam)
     return TRUE;
 }
 
-int wxKill(long pid, wxSignal sig, wxKillError *krc)
+int wxKillAllChildren(long pid, wxSignal sig, wxKillError *krc);
+
+int wxKill(long pid, wxSignal sig, wxKillError *krc, int flags)
 {
+    if (flags & wxKILL_CHILDREN)
+        wxKillAllChildren(pid, sig, krc);
+
     // get the process handle to operate on
     HANDLE hProcess = ::OpenProcess(SYNCHRONIZE |
                                     PROCESS_TERMINATE |
@@ -661,18 +686,18 @@ int wxKill(long pid, wxSignal sig, wxKillError *krc)
     {
         if ( krc )
         {
-            if ( ::GetLastError() == ERROR_ACCESS_DENIED )
-            {
-                *krc = wxKILL_ACCESS_DENIED;
-            }
-            else
-            {
-                *krc = wxKILL_NO_PROCESS;
-            }
+            // recognize wxKILL_ACCESS_DENIED as special because this doesn't
+            // mean that the process doesn't exist and this is important for
+            // wxProcess::Exists()
+            *krc = ::GetLastError() == ERROR_ACCESS_DENIED
+                        ? wxKILL_ACCESS_DENIED
+                        : wxKILL_NO_PROCESS;
         }
 
         return -1;
     }
+
+    wxON_BLOCK_EXIT1(::CloseHandle, hProcess);
 
     bool ok = true;
     switch ( sig )
@@ -696,7 +721,9 @@ int wxKill(long pid, wxSignal sig, wxKillError *krc)
 
         case wxSIGNONE:
             // do nothing, we just want to test for process existence
-            break;
+            if ( krc )
+                *krc = wxKILL_OK;
+            return 0;
 
         default:
             // any other signal means "terminate"
@@ -705,7 +732,7 @@ int wxKill(long pid, wxSignal sig, wxKillError *krc)
                 params.pid = (DWORD)pid;
 
                 // EnumWindows() has nice semantics: it returns 0 if it found
-                // something or if an error occured and non zero if it
+                // something or if an error occurred and non zero if it
                 // enumerated all the window
                 if ( !::EnumWindows(wxEnumFindByPidProc, (LPARAM)&params) )
                 {
@@ -714,7 +741,7 @@ int wxKill(long pid, wxSignal sig, wxKillError *krc)
                     {
                         // tell the app to close
                         //
-                        // NB: this is the harshest way, the app won't have
+                        // NB: this is the harshest way, the app won't have an
                         //     opportunity to save any files, for example, but
                         //     this is probably what we want here. If not we
                         //     can also use SendMesageTimeout(WM_CLOSE)
@@ -733,9 +760,7 @@ int wxKill(long pid, wxSignal sig, wxKillError *krc)
                 else // no windows for this PID
                 {
                     if ( krc )
-                    {
                         *krc = wxKILL_ERROR;
-                    }
 
                     ok = false;
                 }
@@ -743,8 +768,7 @@ int wxKill(long pid, wxSignal sig, wxKillError *krc)
     }
 
     // the return code
-    DWORD rc;
-
+    DWORD rc wxDUMMY_INITIALIZE(0);
     if ( ok )
     {
         // as we wait for a short time, we can use just WaitForSingleObject()
@@ -769,40 +793,129 @@ int wxKill(long pid, wxSignal sig, wxKillError *krc)
 
             case WAIT_TIMEOUT:
                 if ( krc )
-                {
                     *krc = wxKILL_ERROR;
-                }
 
                 rc = STILL_ACTIVE;
                 break;
         }
     }
-    else // !ok
-    {
-        // just to suppress the warnings about uninitialized variable
-        rc = 0;
-    }
 
-    ::CloseHandle(hProcess);
 
     // the return code is the same as from Unix kill(): 0 if killed
     // successfully or -1 on error
-    //
-    // be careful to interpret rc correctly: for wxSIGNONE we return success if
-    // the process exists, for all the other sig values -- if it doesn't
-    if ( ok &&
-            ((sig == wxSIGNONE) == (rc == STILL_ACTIVE)) )
-    {
-        if ( krc )
-        {
-            *krc = wxKILL_OK;
-        }
+    if ( !ok || rc == STILL_ACTIVE )
+        return -1;
 
+    if ( krc )
+        *krc = wxKILL_OK;
+
+    return 0;
+}
+
+HANDLE (WINAPI *lpfCreateToolhelp32Snapshot)(DWORD,DWORD) ;
+BOOL (WINAPI *lpfProcess32First)(HANDLE,LPPROCESSENTRY32) ;
+BOOL (WINAPI *lpfProcess32Next)(HANDLE,LPPROCESSENTRY32) ;
+
+static void InitToolHelp32()
+{
+    static bool s_initToolHelpDone = false;
+
+    if (s_initToolHelpDone)
+        return;
+
+    s_initToolHelpDone = true;
+
+    lpfCreateToolhelp32Snapshot = NULL;
+    lpfProcess32First = NULL;
+    lpfProcess32Next = NULL;
+
+    HINSTANCE hInstLib = LoadLibrary( wxT("Kernel32.DLL") ) ;
+    if( hInstLib == NULL )
+        return ;
+
+    // Get procedure addresses.
+    // We are linking to these functions of Kernel32
+    // explicitly, because otherwise a module using
+    // this code would fail to load under Windows NT,
+    // which does not have the Toolhelp32
+    // functions in the Kernel 32.
+    lpfCreateToolhelp32Snapshot=
+        (HANDLE(WINAPI *)(DWORD,DWORD))
+        GetProcAddress( hInstLib,
+#ifdef __WXWINCE__
+        wxT("CreateToolhelp32Snapshot")
+#else
+        "CreateToolhelp32Snapshot"
+#endif
+        ) ;
+
+    lpfProcess32First=
+        (BOOL(WINAPI *)(HANDLE,LPPROCESSENTRY32))
+        GetProcAddress( hInstLib,
+#ifdef __WXWINCE__
+        wxT("Process32First")
+#else
+        "Process32First"
+#endif
+        ) ;
+
+    lpfProcess32Next=
+        (BOOL(WINAPI *)(HANDLE,LPPROCESSENTRY32))
+        GetProcAddress( hInstLib,
+#ifdef __WXWINCE__
+        wxT("Process32Next")
+#else
+        "Process32Next"
+#endif
+        ) ;
+
+    FreeLibrary( hInstLib ) ;
+}
+
+// By John Skiff
+int wxKillAllChildren(long pid, wxSignal sig, wxKillError *krc)
+{
+    InitToolHelp32();
+
+    if (krc)
+        *krc = wxKILL_OK;
+
+    // If not implemented for this platform (e.g. NT 4.0), silently ignore
+    if (!lpfCreateToolhelp32Snapshot || !lpfProcess32First || !lpfProcess32Next)
         return 0;
+
+    // Take a snapshot of all processes in the system.
+    HANDLE hProcessSnap = lpfCreateToolhelp32Snapshot(TH32CS_SNAPPROCESS, 0);
+    if (hProcessSnap == INVALID_HANDLE_VALUE) {
+        if (krc)
+            *krc = wxKILL_ERROR;
+        return -1;
     }
 
-    // error
-    return -1;
+    //Fill in the size of the structure before using it.
+    PROCESSENTRY32 pe;
+    wxZeroMemory(pe);
+    pe.dwSize = sizeof(PROCESSENTRY32);
+
+    // Walk the snapshot of the processes, and for each process,
+    // kill it if its parent is pid.
+    if (!lpfProcess32First(hProcessSnap, &pe)) {
+        // Can't get first process.
+        if (krc)
+            *krc = wxKILL_ERROR;
+        CloseHandle (hProcessSnap);
+        return -1;
+    }
+
+    do {
+        if (pe.th32ParentProcessID == (DWORD) pid) {
+            if (wxKill(pe.th32ProcessID, sig, krc))
+                return -1;
+        }
+    } while (lpfProcess32Next (hProcessSnap, &pe));
+
+
+    return 0;
 }
 
 // Execute a program in an Interactive Shell
@@ -836,6 +949,8 @@ bool wxShell(const wxString& command)
 bool wxShutdown(wxShutdownFlags wFlags)
 {
 #ifdef __WXWINCE__
+    // TODO-CE
+    wxUnusedVar(wFlags);
     return false;
 #elif defined(__WIN32__)
     bool bOK = true;
@@ -892,20 +1007,35 @@ bool wxShutdown(wxShutdownFlags wFlags)
 #endif // Win32/16
 }
 
+wxPowerType wxGetPowerType()
+{
+    // TODO
+    return wxPOWER_UNKNOWN;
+}
+
+wxBatteryState wxGetBatteryState()
+{
+    // TODO
+    return wxBATTERY_UNKNOWN_STATE;
+}
+
 // ----------------------------------------------------------------------------
 // misc
 // ----------------------------------------------------------------------------
 
 // Get free memory in bytes, or -1 if cannot determine amount (e.g. on UNIX)
-long wxGetFreeMemory()
+wxMemorySize wxGetFreeMemory()
 {
-#if defined(__WIN32__) && !defined(__BORLANDC__)
+#if defined(__WIN64__)
+    MEMORYSTATUSEX memStatex;
+    memStatex.dwLength = sizeof (memStatex);
+    ::GlobalMemoryStatusEx (&memStatex);
+    return (wxMemorySize)memStatex.ullAvailPhys;
+#else /* if defined(__WIN32__) */
     MEMORYSTATUS memStatus;
     memStatus.dwLength = sizeof(MEMORYSTATUS);
-    GlobalMemoryStatus(&memStatus);
-    return memStatus.dwAvailPhys;
-#else
-    return (long)GetFreeSpace(0);
+    ::GlobalMemoryStatus(&memStatus);
+    return (wxMemorySize)memStatus.dwAvailPhys;
 #endif
 }
 
@@ -919,6 +1049,29 @@ void wxBell()
 {
     ::MessageBeep((UINT)-1);        // default sound
 }
+
+bool wxIsDebuggerRunning()
+{
+#if wxUSE_DYNLIB_CLASS
+    // IsDebuggerPresent() is not available under Win95, so load it dynamically
+    wxDynamicLibrary dll(_T("kernel32.dll"), wxDL_VERBATIM);
+
+    typedef BOOL (WINAPI *IsDebuggerPresent_t)();
+    if ( !dll.HasSymbol(_T("IsDebuggerPresent")) )
+    {
+        // no way to know, assume no
+        return false;
+    }
+
+    return (*(IsDebuggerPresent_t)dll.GetSymbol(_T("IsDebuggerPresent")))() != 0;
+#else
+    return false;
+#endif
+}
+
+// ----------------------------------------------------------------------------
+// OS version
+// ----------------------------------------------------------------------------
 
 wxString wxGetOsDescription()
 {
@@ -1040,6 +1193,11 @@ wxToolkitInfo& wxAppTraits::GetToolkitInfo()
             s_major = info.dwMajorVersion;
             s_minor = info.dwMinorVersion;
 
+#ifdef __SMARTPHONE__
+            s_ver = wxWINDOWS_SMARTPHONE;
+#elif defined(__POCKETPC__)
+            s_ver = wxWINDOWS_POCKETPC;
+#else
             switch ( info.dwPlatformId )
             {
                 case VER_PLATFORM_WIN32s:
@@ -1056,9 +1214,9 @@ wxToolkitInfo& wxAppTraits::GetToolkitInfo()
 #ifdef __WXWINCE__
                 case VER_PLATFORM_WIN32_CE:
                     s_ver = wxWINDOWS_CE;
-                    break;
 #endif
             }
+#endif
         }
     }
 
@@ -1068,6 +1226,62 @@ wxToolkitInfo& wxAppTraits::GetToolkitInfo()
     info.os = s_ver;
     info.name = _T("wxBase");
     return info;
+}
+
+wxWinVersion wxGetWinVersion()
+{
+    int verMaj,
+        verMin;
+    switch ( wxGetOsVersion(&verMaj, &verMin) )
+    {
+        case wxWIN95:
+            if ( verMaj == 4 )
+            {
+                switch ( verMin )
+                {
+                    case 0:
+                        return wxWinVersion_95;
+
+                    case 10:
+                        return wxWinVersion_98;
+
+                    case 90:
+                        return wxWinVersion_ME;
+                }
+            }
+            break;
+
+        case wxWINDOWS_NT:
+            switch ( verMaj )
+            {
+                case 3:
+                    return wxWinVersion_NT3;
+
+                case 4:
+                    return wxWinVersion_NT4;
+
+                case 5:
+                    switch ( verMin )
+                    {
+                        case 0:
+                            return wxWinVersion_2000;
+
+                        case 1:
+                            return wxWinVersion_XP;
+
+                        case 2:
+                            return wxWinVersion_2003;
+                    }
+                    break;
+
+                case 6:
+                    return wxWinVersion_NT6;
+            }
+            break;
+
+    }
+
+    return wxWinVersion_Unknown;
 }
 
 // ----------------------------------------------------------------------------
@@ -1115,8 +1329,10 @@ extern WXDLLIMPEXP_BASE long wxEncodingToCharset(wxFontEncoding encoding)
         case wxFONTENCODING_CP936:
             return GB2312_CHARSET;
 
+#ifndef __WXWINCE__
         case wxFONTENCODING_CP949:
             return HANGUL_CHARSET;
+#endif
 
         case wxFONTENCODING_CP950:
             return CHINESEBIG5_CHARSET;
@@ -1166,23 +1382,77 @@ extern WXDLLIMPEXP_BASE long wxEncodingToCharset(wxFontEncoding encoding)
 
 extern WXDLLIMPEXP_BASE long wxEncodingToCodepage(wxFontEncoding encoding)
 {
-    // translate encoding into the Windows CHARSET
-    long charset = wxEncodingToCharset(encoding);
-    if ( charset == -1 )
-        return -1;
+    // There don't seem to be symbolic names for
+    // these under Windows so I just copied the
+    // values from MSDN.
 
-    // translate CHARSET to code page
-    CHARSETINFO csetInfo;
-    if ( !::TranslateCharsetInfo((DWORD *)(DWORD)charset,
-                                 &csetInfo,
-                                 TCI_SRCCHARSET) )
+    unsigned int ret;
+
+    switch (encoding)
     {
-        wxLogLastError(_T("TranslateCharsetInfo(TCI_SRCCHARSET)"));
-
-        return -1;
+        case wxFONTENCODING_ISO8859_1:      ret = 28591; break;
+        case wxFONTENCODING_ISO8859_2:      ret = 28592; break;
+        case wxFONTENCODING_ISO8859_3:      ret = 28593; break;
+        case wxFONTENCODING_ISO8859_4:      ret = 28594; break;
+        case wxFONTENCODING_ISO8859_5:      ret = 28595; break;
+        case wxFONTENCODING_ISO8859_6:      ret = 28596; break;
+        case wxFONTENCODING_ISO8859_7:      ret = 28597; break;
+        case wxFONTENCODING_ISO8859_8:      ret = 28598; break;
+        case wxFONTENCODING_ISO8859_9:      ret = 28599; break;
+        case wxFONTENCODING_ISO8859_10:     ret = 28600; break;
+        case wxFONTENCODING_ISO8859_11:     ret = 28601; break;
+        // case wxFONTENCODING_ISO8859_12,      // doesn't exist currently, but put it
+        case wxFONTENCODING_ISO8859_13:     ret = 28603; break;
+        case wxFONTENCODING_ISO8859_14:     ret = 28604; break;
+        case wxFONTENCODING_ISO8859_15:     ret = 28605; break;
+        case wxFONTENCODING_KOI8:           ret = 20866; break;
+        case wxFONTENCODING_KOI8_U:         ret = 21866; break;
+        case wxFONTENCODING_CP437:          ret = 437; break;
+        case wxFONTENCODING_CP850:          ret = 850; break;
+        case wxFONTENCODING_CP852:          ret = 852; break;
+        case wxFONTENCODING_CP855:          ret = 855; break;
+        case wxFONTENCODING_CP866:          ret = 866; break;
+        case wxFONTENCODING_CP874:          ret = 874; break;
+        case wxFONTENCODING_CP932:          ret = 932; break;
+        case wxFONTENCODING_CP936:          ret = 936; break;
+        case wxFONTENCODING_CP949:          ret = 949; break;
+        case wxFONTENCODING_CP950:          ret = 950; break;
+        case wxFONTENCODING_CP1250:         ret = 1250; break;
+        case wxFONTENCODING_CP1251:         ret = 1251; break;
+        case wxFONTENCODING_CP1252:         ret = 1252; break;
+        case wxFONTENCODING_CP1253:         ret = 1253; break;
+        case wxFONTENCODING_CP1254:         ret = 1254; break;
+        case wxFONTENCODING_CP1255:         ret = 1255; break;
+        case wxFONTENCODING_CP1256:         ret = 1256; break;
+        case wxFONTENCODING_CP1257:         ret = 1257; break;
+        case wxFONTENCODING_EUC_JP:         ret = 20932; break;
+        case wxFONTENCODING_MACROMAN:       ret = 10000; break;
+        case wxFONTENCODING_MACJAPANESE:    ret = 10001; break;
+        case wxFONTENCODING_MACCHINESETRAD: ret = 10002; break;
+        case wxFONTENCODING_MACKOREAN:      ret = 10003; break;
+        case wxFONTENCODING_MACARABIC:      ret = 10004; break;
+        case wxFONTENCODING_MACHEBREW:      ret = 10005; break;
+        case wxFONTENCODING_MACGREEK:       ret = 10006; break;
+        case wxFONTENCODING_MACCYRILLIC:    ret = 10007; break;
+        case wxFONTENCODING_MACTHAI:        ret = 10021; break;
+        case wxFONTENCODING_MACCHINESESIMP: ret = 10008; break;
+        case wxFONTENCODING_MACCENTRALEUR:  ret = 10029; break;
+        case wxFONTENCODING_MACCROATIAN:    ret = 10082; break;
+        case wxFONTENCODING_MACICELANDIC:   ret = 10079; break;
+        case wxFONTENCODING_MACROMANIAN:    ret = 10009; break;
+        case wxFONTENCODING_UTF7:           ret = 65000; break;
+        case wxFONTENCODING_UTF8:           ret = 65001; break;
+        default:                            return -1;
     }
 
-    return csetInfo.ciACP;
+    if (::IsValidCodePage(ret) == 0)
+        return -1;
+
+    CPINFO info;
+    if (::GetCPInfo(ret, &info) == 0)
+        return -1;
+
+    return (long) ret;
 }
 
 extern long wxCharsetToCodepage(const wxChar *name)
@@ -1191,7 +1461,7 @@ extern long wxCharsetToCodepage(const wxChar *name)
     if ( !name )
         return -1;
 
-    wxFontEncoding enc = wxFontMapper::Get()->CharsetToEncoding(name, false);
+    wxFontEncoding enc = wxFontMapperBase::Get()->CharsetToEncoding(name, false);
     if ( enc == wxFONTENCODING_SYSTEM )
         return -1;
 
@@ -1251,7 +1521,7 @@ extern long wxCharsetToCodepage(const wxChar *name)
   Windows class unregistration).
 
   pclassname is a pointer to a caller stored classname, which must initially be
-  NULL. classname is the desired wndclass classname. If function succesfully
+  NULL. classname is the desired wndclass classname. If function successfully
   registers the class, pclassname will be set to classname.
  */
 extern "C" WXDLLIMPEXP_BASE HWND

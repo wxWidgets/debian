@@ -3,12 +3,12 @@
 // Purpose:     XRC resource for wxTreeCtrl
 // Author:      Brian Gavin
 // Created:     2000/09/09
-// RCS-ID:      $Id: xh_tree.cpp,v 1.12 2004/10/08 19:41:14 ABX Exp $
+// RCS-ID:      $Id: xh_tree.cpp,v 1.13 2005/01/07 21:33:15 VS Exp $
 // Copyright:   (c) 2000 Brian Gavin
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
 
-#ifdef __GNUG__
+#if defined(__GNUG__) && !defined(NO_GCC_PRAGMA)
 #pragma implementation "xh_tree.h"
 #endif
 

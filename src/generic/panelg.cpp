@@ -4,7 +4,7 @@
 // Author:      Julian Smart, Robert Roebling, Vadim Zeitlin
 // Modified by:
 // Created:     04/01/98
-// RCS-ID:      $Id: panelg.cpp,v 1.76 2004/06/23 16:41:04 VS Exp $
+// RCS-ID:      $Id: panelg.cpp,v 1.79 2005/04/02 17:41:08 JS Exp $
 // Copyright:   (c) Julian Smart
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -124,6 +124,11 @@ bool wxPanel::Create(wxWindow *parent, wxWindowID id,
 
     // so that non-solid background renders correctly under GTK+:
     SetThemeEnabled(true);
+
+#if defined(__WXWINCE__) && (defined(__POCKETPC__) || defined(__SMARTPHONE__))
+    // Required to get solid control backgrounds under WinCE
+    SetBackgroundColour(wxSystemSettings::GetColour(wxSYS_COLOUR_WINDOW));
+#endif
 
     return true;
 }

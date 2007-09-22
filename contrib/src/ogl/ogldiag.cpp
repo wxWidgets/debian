@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     12/07/98
-// RCS-ID:      $Id: ogldiag.cpp,v 1.15 2004/06/09 16:42:34 ABX Exp $
+// RCS-ID:      $Id: ogldiag.cpp,v 1.16 2005/03/03 19:37:15 ABX Exp $
 // Copyright:   (c) Julian Smart
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -175,7 +175,7 @@ void wxDiagram::ShowAll(bool show)
 
 void wxDiagram::DrawOutline(wxDC& dc, double x1, double y1, double x2, double y2)
 {
-  wxPen dottedPen(wxColour(0, 0, 0), 1, wxDOT);
+  wxPen dottedPen(*wxBLACK, 1, wxDOT);
   dc.SetPen(dottedPen);
   dc.SetBrush((* wxTRANSPARENT_BRUSH));
 

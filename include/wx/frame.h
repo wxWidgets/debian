@@ -4,7 +4,7 @@
 // Author:      Vadim Zeitlin
 // Modified by:
 // Created:     15.11.99
-// RCS-ID:      $Id: frame.h,v 1.51 2004/10/19 13:39:04 JS Exp $
+// RCS-ID:      $Id: frame.h,v 1.55 2005/01/21 18:48:19 ABX Exp $
 // Copyright:   (c) wxWidgets team
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -23,9 +23,9 @@
 #include "wx/toplevel.h"      // the base class
 
 // the default names for various classs
-WXDLLEXPORT_DATA(extern const wxChar*) wxFrameNameStr;
-WXDLLEXPORT_DATA(extern const wxChar*) wxStatusLineNameStr;
-WXDLLEXPORT_DATA(extern const wxChar*) wxToolBarNameStr;
+extern WXDLLEXPORT_DATA(const wxChar*) wxFrameNameStr;
+extern WXDLLEXPORT_DATA(const wxChar*) wxStatusLineNameStr;
+extern WXDLLEXPORT_DATA(const wxChar*) wxToolBarNameStr;
 
 class WXDLLEXPORT wxFrame;
 class WXDLLEXPORT wxMenuBar;
@@ -78,10 +78,7 @@ public:
 
     // sends a size event to the window using its current size -- this has an
     // effect of refreshing the window layout
-    //
-    // currently it is only implemented under MSW but is declared here to make
-    // it possible to call it in portable code without using #ifdef's
-    virtual void SendSizeEvent() { }
+    virtual void SendSizeEvent();
 
     // menu bar functions
     // ------------------
@@ -182,7 +179,7 @@ public:
 
 #if WXWIN_COMPATIBILITY_2_2
     // call this to simulate a menu command
-    bool Command(int winid) { return ProcessCommand(winid); }
+    wxDEPRECATED( bool Command(int winid) );
 #endif // WXWIN_COMPATIBILITY_2_2
 
 protected:
@@ -250,7 +247,7 @@ protected:
 #if defined(__WXUNIVERSAL__) // && !defined(__WXMICROWIN__)
     #include "wx/univ/frame.h"
 #else // !__WXUNIVERSAL__
-    #if defined(__PALMOS__)
+    #if defined(__WXPALMOS__)
         #include "wx/palmos/frame.h"
     #elif defined(__WXMSW__)
         #include "wx/msw/frame.h"

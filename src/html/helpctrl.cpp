@@ -4,7 +4,7 @@
 // Notes:       Based on htmlhelp.cpp, implementing a monolithic
 //              HTML Help controller class,  by Vaclav Slavik
 // Author:      Harm van der Heijden and Vaclav Slavik
-// RCS-ID:      $Id: helpctrl.cpp,v 1.38 2004/09/27 19:15:03 ABX Exp $
+// RCS-ID:      $Id: helpctrl.cpp,v 1.39 2005/03/24 17:49:56 ABX Exp $
 // Copyright:   (c) Harm van der Heijden and Vaclav Slavik
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -184,7 +184,7 @@ bool wxHtmlHelpController::Initialize(const wxString& file)
     wxString dir, filename, ext;
     wxSplitPath(file, & dir, & filename, & ext);
 
-    if (!dir.IsEmpty())
+    if (!dir.empty())
         dir = dir + wxFILE_SEP_PATH;
 
     // Try to find a suitable file
@@ -239,6 +239,8 @@ bool wxHtmlHelpController::DisplayTextPopup(const wxString& text, const wxPoint&
 
         return true;
     }
+#else
+    wxUnusedVar(text);
 #endif // wxUSE_TIPWINDOW
 
     return false;

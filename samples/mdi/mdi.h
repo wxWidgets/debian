@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     04/01/98
-// RCS-ID:      $Id: mdi.h,v 1.15 2004/06/01 16:09:27 ABX Exp $
+// RCS-ID:      $Id: mdi.h,v 1.16 2005/06/02 12:04:22 JS Exp $
 // Copyright:   (c) Julian Smart
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -79,12 +79,12 @@ public:
 // menu items ids
 enum
 {
-    MDI_QUIT = 100,
-    MDI_NEW_WINDOW,
+    MDI_QUIT = wxID_EXIT,
+    MDI_NEW_WINDOW = 101,
     MDI_REFRESH,
     MDI_CHANGE_TITLE,
     MDI_CHANGE_POSITION,
     MDI_CHANGE_SIZE,
     MDI_CHILD_QUIT,
-    MDI_ABOUT
+    MDI_ABOUT = wxID_ABOUT
 };

@@ -4,7 +4,7 @@
 // Author:      Vadim Zeitlin
 // Modified by:
 // Created:     12.05.02
-// RCS-ID:      $Id: fontdlg.h,v 1.27 2004/09/28 14:28:22 JS Exp $
+// RCS-ID:      $Id: fontdlg.h,v 1.28 2004/11/16 14:32:17 RN Exp $
 // Copyright:   (c) 1997-2002 wxWidgets team
 // Licence:     wxWindows licence
 ///////////////////////////////////////////////////////////////////////////////
@@ -65,7 +65,13 @@ protected:
 // platform-specific wxFontDialog implementation
 // ----------------------------------------------------------------------------
 
+#if defined( __WXMAC_OSX__ ) && ( MAC_OS_X_VERSION_MAX_ALLOWED >= MAC_OS_X_VERSION_10_2 )
+//set to 1 to use native mac font and color dialogs
 #define USE_NATIVE_FONT_DIALOG_FOR_MACOSX 0
+#else
+//not supported on these platforms, leave 0
+#define USE_NATIVE_FONT_DIALOG_FOR_MACOSX 0
+#endif
 
 #if defined(__WXUNIVERSAL__) || \
     defined(__WXMOTIF__)     || \

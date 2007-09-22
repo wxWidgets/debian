@@ -4,7 +4,7 @@
 // Author:      Julian Smart, Robert Roebling, Markus Holzhem
 // Modified by:
 // Created:     04/01/98
-// RCS-ID:      $Id: dcpsg.cpp,v 1.124 2004/11/05 21:11:12 ABX Exp $
+// RCS-ID:      $Id: dcpsg.cpp,v 1.129 2005/01/16 12:58:52 RR Exp $
 // Copyright:   (c) Julian Smart
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -39,8 +39,7 @@
 #include "wx/generic/prntdlgg.h"
 #include "wx/paper.h"
 #include "wx/filefn.h"
-
-#include <math.h>
+#include "wx/math.h"
 
 #ifdef __WXMSW__
 
@@ -745,7 +744,7 @@ void wxPostScriptDC::DoDrawRoundedRectangle (wxCoord x, wxCoord y, wxCoord width
         /* Draw rectangle anticlockwise */
         PsPrintf( wxT("newpath\n")
                   wxT("%d %d %d 90 180 arc\n")
-                  wxT("%d %d moveto\n")
+                  wxT("%d %d lineto\n")
                   wxT("%d %d %d 180 270 arc\n")
                   wxT("%d %d lineto\n")
                   wxT("%d %d %d 270 0 arc\n")
@@ -755,7 +754,7 @@ void wxPostScriptDC::DoDrawRoundedRectangle (wxCoord x, wxCoord y, wxCoord width
                   wxT("closepath\n")
                   wxT("fill\n"),
                 LogicalToDeviceX(x + rad), LogicalToDeviceY(y + rad), LogicalToDeviceXRel(rad),
-                LogicalToDeviceX(x), LogicalToDeviceY(y + rad),
+                LogicalToDeviceX(x), LogicalToDeviceY(y + height - rad),
                 LogicalToDeviceX(x + rad), LogicalToDeviceY(y + height - rad), LogicalToDeviceXRel(rad),
                 LogicalToDeviceX(x + width - rad), LogicalToDeviceY(y + height),
                 LogicalToDeviceX(x + width - rad), LogicalToDeviceY(y + height - rad), LogicalToDeviceXRel(rad),
@@ -774,7 +773,7 @@ void wxPostScriptDC::DoDrawRoundedRectangle (wxCoord x, wxCoord y, wxCoord width
         /* Draw rectangle anticlockwise */
         PsPrintf( wxT("newpath\n")
                   wxT("%d %d %d 90 180 arc\n")
-                  wxT("%d %d moveto\n")
+                  wxT("%d %d lineto\n")
                   wxT("%d %d %d 180 270 arc\n")
                   wxT("%d %d lineto\n")
                   wxT("%d %d %d 270 0 arc\n")
@@ -784,7 +783,7 @@ void wxPostScriptDC::DoDrawRoundedRectangle (wxCoord x, wxCoord y, wxCoord width
                   wxT("closepath\n")
                   wxT("stroke\n"),
                 LogicalToDeviceX(x + rad), LogicalToDeviceY(y + rad), LogicalToDeviceXRel(rad),
-                LogicalToDeviceX(x), LogicalToDeviceY(y + rad),
+                LogicalToDeviceX(x), LogicalToDeviceY(y + height - rad),
                 LogicalToDeviceX(x + rad), LogicalToDeviceY(y + height - rad), LogicalToDeviceXRel(rad),
                 LogicalToDeviceX(x + width - rad), LogicalToDeviceY(y + height),
                 LogicalToDeviceX(x + width - rad), LogicalToDeviceY(y + height - rad), LogicalToDeviceXRel(rad),
@@ -1474,10 +1473,7 @@ void wxPostScriptDC::SetAxisOrientation( bool xLeftRight, bool yBottomUp )
     m_signX = (xLeftRight ? 1 : -1);
     m_signY = (yBottomUp  ? 1 : -1);
 
-    // FIXME there is no such function in MSW nor in OS2/PM
-#if !defined(__WXMSW__) && !defined(__WXPM__)
     ComputeScaleAndOrigin();
-#endif
 }
 
 void wxPostScriptDC::SetDeviceOrigin( wxCoord x, wxCoord y )
@@ -1565,8 +1561,7 @@ bool wxPostScriptDC::StartDoc( const wxString& message )
             m_printData.SetFilename(filename);
         }
 
-        // FIXME: use fn_str() here under Unicode?
-        m_pstream = wxFopen( m_printData.GetFilename().c_str(), wxT("w+") );
+        m_pstream = wxFopen( m_printData.GetFilename(), wxT("w+") );
 
         if (!m_pstream)
         {

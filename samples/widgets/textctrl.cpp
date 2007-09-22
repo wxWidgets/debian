@@ -4,7 +4,7 @@
 // Purpose:     part of the widgets sample showing wxTextCtrl
 // Author:      Vadim Zeitlin
 // Created:     27.03.01
-// Id:          $Id: textctrl.cpp,v 1.16 2004/10/04 20:25:15 ABX Exp $
+// Id:          $Id: textctrl.cpp,v 1.23 2005/04/16 20:47:24 MW Exp $
 // Copyright:   (c) 2001 Vadim Zeitlin
 // License:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -36,9 +36,11 @@
     #include "wx/statbox.h"
     #include "wx/stattext.h"
     #include "wx/textctrl.h"
+    #include "wx/msgdlg.h"
 #endif
 
 #include "wx/sizer.h"
+#include "wx/ioswrap.h"
 
 #include "widgets.h"
 
@@ -59,6 +61,8 @@ enum
     TextPage_Clear,
     TextPage_Load,
 
+    TextPage_StreamRedirector,
+
     TextPage_Password,
     TextPage_WrapLines,
     TextPage_Textctrl
@@ -68,7 +72,18 @@ enum
 enum TextLines
 {
     TextLines_Single,
-    TextLines_Multi
+    TextLines_Multi,
+    TextLines_Max
+};
+
+// wrap style radio box
+enum WrapStyle
+{
+    WrapStyle_None,
+    WrapStyle_Word,
+    WrapStyle_Char,
+    WrapStyle_Best,
+    WrapStyle_Max
 };
 
 #ifdef __WXMSW__
@@ -78,7 +93,8 @@ enum TextKind
 {
     TextKind_Plain,
     TextKind_Rich,
-    TextKind_Rich2
+    TextKind_Rich2,
+    TextKind_Max
 };
 
 #endif // __WXMSW__
@@ -87,9 +103,12 @@ enum TextKind
 static const struct ControlValues
 {
     TextLines textLines;
+
     bool password;
-    bool wraplines;
     bool readonly;
+
+    WrapStyle wrapStyle;
+
 #ifdef __WXMSW__
     TextKind textKind;
 #endif // __WXMSW__
@@ -97,8 +116,8 @@ static const struct ControlValues
 {
     TextLines_Multi,    // multiline
     false,              // not password
-    true,               // do wrap lines
     false,              // not readonly
+    WrapStyle_Word,     // wrap on word boundaries
 #ifdef __WXMSW__
     TextKind_Plain      // plain EDIT control
 #endif // __WXMSW__
@@ -113,8 +132,10 @@ class TextWidgetsPage : public WidgetsPage
 {
 public:
     // ctor(s) and dtor
-    TextWidgetsPage(wxNotebook *notebook, wxImageList *imaglist);
+    TextWidgetsPage(wxBookCtrl *book, wxImageList *imaglist);
     virtual ~TextWidgetsPage(){};
+
+    virtual wxControl *GetWidget() const { return m_text; }
 
 protected:
     // create an info text contorl
@@ -136,6 +157,7 @@ protected:
     void OnButtonClear(wxCommandEvent& event);
     void OnButtonLoad(wxCommandEvent& event);
 
+    void OnStreamRedirector(wxCommandEvent& event);
     void OnButtonQuit(wxCommandEvent& event);
 
     void OnText(wxCommandEvent& event);
@@ -170,9 +192,11 @@ protected:
     // the radiobox to choose between single and multi line
     wxRadioBox *m_radioTextLines;
 
+    // and another one to choose the wrapping style
+    wxRadioBox *m_radioWrap;
+
     // the checkboxes controlling text ctrl styles
     wxCheckBox *m_chkPassword,
-               *m_chkWrapLines,
                *m_chkReadonly;
 
     // under MSW we test rich edit controls as well here
@@ -274,6 +298,8 @@ BEGIN_EVENT_TABLE(TextWidgetsPage, WidgetsPage)
 
     EVT_BUTTON(TextPage_Reset, TextWidgetsPage::OnButtonReset)
 
+    EVT_BUTTON(TextPage_StreamRedirector, TextWidgetsPage::OnStreamRedirector)
+
     EVT_BUTTON(TextPage_Clear, TextWidgetsPage::OnButtonClear)
     EVT_BUTTON(TextPage_Set, TextWidgetsPage::OnButtonSet)
     EVT_BUTTON(TextPage_Add, TextWidgetsPage::OnButtonAdd)
@@ -308,8 +334,8 @@ IMPLEMENT_WIDGETS_PAGE(TextWidgetsPage, _T("Text"));
 // TextWidgetsPage creation
 // ----------------------------------------------------------------------------
 
-TextWidgetsPage::TextWidgetsPage(wxNotebook *notebook, wxImageList *imaglist)
-               : WidgetsPage(notebook)
+TextWidgetsPage::TextWidgetsPage(wxBookCtrl *book, wxImageList *imaglist)
+               : WidgetsPage(book)
 {
     imaglist->Add(wxBitmap(text_xpm));
 
@@ -317,10 +343,10 @@ TextWidgetsPage::TextWidgetsPage(wxNotebook *notebook, wxImageList *imaglist)
 #ifdef __WXMSW__
     m_radioKind =
 #endif // __WXMSW__
+    m_radioWrap =
     m_radioTextLines = (wxRadioBox *)NULL;
 
     m_chkPassword =
-    m_chkWrapLines =
     m_chkReadonly = (wxCheckBox *)NULL;
 
     m_text =
@@ -356,17 +382,29 @@ TextWidgetsPage::TextWidgetsPage(wxNotebook *notebook, wxImageList *imaglist)
     wxSizer *sizerLeft = new wxStaticBoxSizer(box, wxVERTICAL);
 
     sizerLeft->Add(m_radioTextLines, 0, wxGROW | wxALL, 5);
-    sizerLeft->Add(5, 5, 0, wxGROW | wxALL, 5); // spacer
+    sizerLeft->AddSpacer(5);
 
     m_chkPassword = CreateCheckBoxAndAddToSizer(
                         sizerLeft, _T("&Password control"), TextPage_Password
                     );
-    m_chkWrapLines = CreateCheckBoxAndAddToSizer(
-                        sizerLeft, _T("Line &wrap"), TextPage_WrapLines
-                     );
     m_chkReadonly = CreateCheckBoxAndAddToSizer(
                         sizerLeft, _T("&Read-only mode")
                     );
+    sizerLeft->AddSpacer(5);
+
+    static const wxString wrap[] =
+    {
+        _T("no wrap"),
+        _T("word wrap"),
+        _T("char wrap"),
+        _T("best wrap"),
+    };
+
+    m_radioWrap = new wxRadioBox(this, wxID_ANY, _T("&Wrap style:"),
+                                 wxDefaultPosition, wxDefaultSize,
+                                 WXSIZEOF(wrap), wrap,
+                                 1, wxRA_SPECIFY_COLS);
+    sizerLeft->Add(m_radioWrap, 0, wxGROW | wxALL, 5);
 
 #ifdef __WXMSW__
     static const wxString kinds[] =
@@ -381,7 +419,7 @@ TextWidgetsPage::TextWidgetsPage(wxNotebook *notebook, wxImageList *imaglist)
                                  WXSIZEOF(kinds), kinds,
                                  1, wxRA_SPECIFY_COLS);
 
-    sizerLeft->Add(5, 5, 0, wxGROW | wxALL, 5); // spacer
+    sizerLeft->AddSpacer(5);
     sizerLeft->Add(m_radioKind, 0, wxGROW | wxALL, 5);
 #endif // __WXMSW__
 
@@ -406,6 +444,9 @@ TextWidgetsPage::TextWidgetsPage(wxNotebook *notebook, wxImageList *imaglist)
     sizerMiddleUp->Add(btn, 0, wxALL | wxGROW, 1);
 
     btn = new wxButton(this, TextPage_Clear, _T("&Clear"));
+    sizerMiddleUp->Add(btn, 0, wxALL | wxGROW, 1);
+
+    btn = new wxButton(this, TextPage_StreamRedirector, _T("St&ream redirection"));
     sizerMiddleUp->Add(btn, 0, wxALL | wxGROW, 1);
 
     wxStaticBox *box4 = new wxStaticBox(this, wxID_ANY, _T("&Info:"));
@@ -514,7 +555,7 @@ wxTextCtrl *TextWidgetsPage::CreateInfoText()
 
     wxTextCtrl *text = new wxTextCtrl(this, wxID_ANY, wxEmptyString,
                                       wxDefaultPosition,
-                                      wxSize(s_maxWidth, -1),
+                                      wxSize(s_maxWidth, wxDefaultCoord),
                                       wxTE_READONLY);
     return text;
 }
@@ -545,9 +586,12 @@ wxSizer *TextWidgetsPage::CreateTextWithLabelSizer(const wxString& label,
 void TextWidgetsPage::Reset()
 {
     m_radioTextLines->SetSelection(DEFAULTS.textLines);
+
     m_chkPassword->SetValue(DEFAULTS.password);
-    m_chkWrapLines->SetValue(DEFAULTS.wraplines);
     m_chkReadonly->SetValue(DEFAULTS.readonly);
+
+    m_radioWrap->SetSelection(DEFAULTS.wrapStyle);
+
 #ifdef __WXMSW__
     m_radioKind->SetSelection(DEFAULTS.textKind);
 #endif // __WXMSW__
@@ -574,8 +618,29 @@ void TextWidgetsPage::CreateText()
         flags |= wxTE_PASSWORD;
     if ( m_chkReadonly->GetValue() )
         flags |= wxTE_READONLY;
-    if ( !m_chkWrapLines->GetValue() )
-        flags |= wxHSCROLL;
+
+    switch ( m_radioWrap->GetSelection() )
+    {
+        default:
+            wxFAIL_MSG( _T("unexpected wrap style radio box selection") );
+
+        case WrapStyle_None:
+            flags |= wxTE_DONTWRAP; // same as wxHSCROLL
+            break;
+
+        case WrapStyle_Word:
+            flags |= wxTE_WORDWRAP;
+            break;
+
+        case WrapStyle_Char:
+            flags |= wxTE_LINEWRAP;
+            break;
+
+        case WrapStyle_Best:
+            // this is default but use symbolic file name for consistency
+            flags |= wxTE_BESTWRAP;
+            break;
+    }
 
 #ifdef __WXMSW__
     switch ( m_radioKind->GetSelection() )
@@ -792,7 +857,7 @@ void TextWidgetsPage::OnUpdateUIResetButton(wxUpdateUIEvent& event)
 #endif // __WXMSW__
                   (m_chkReadonly->GetValue() != DEFAULTS.readonly) ||
                   (m_chkPassword->GetValue() != DEFAULTS.password) ||
-                  (m_chkWrapLines->GetValue() != DEFAULTS.wraplines) );
+                  (m_radioWrap->GetSelection() != DEFAULTS.wrapStyle) );
 }
 
 void TextWidgetsPage::OnText(wxCommandEvent& WXUNUSED(event))
@@ -813,6 +878,7 @@ void TextWidgetsPage::OnText(wxCommandEvent& WXUNUSED(event))
 void TextWidgetsPage::OnTextEnter(wxCommandEvent& event)
 {
     wxLogMessage(_T("Text entered: '%s'"), event.GetString().c_str());
+    event.Skip();
 }
 
 void TextWidgetsPage::OnCheckOrRadioBox(wxCommandEvent& WXUNUSED(event))
@@ -820,3 +886,13 @@ void TextWidgetsPage::OnCheckOrRadioBox(wxCommandEvent& WXUNUSED(event))
     CreateText();
 }
 
+void TextWidgetsPage::OnStreamRedirector(wxCommandEvent& WXUNUSED(event))
+{
+#if wxHAS_TEXT_WINDOW_STREAM
+    wxStreamToTextRedirector redirect(m_text);
+    wxString str( _T("Outputed to cout, appears in wxTextCtrl!") );
+    wxSTD cout << str << wxSTD endl;
+#else
+    wxMessageBox(_T("This wxWidgets build does not support wxStreamToTextRedirector"));
+#endif
+}

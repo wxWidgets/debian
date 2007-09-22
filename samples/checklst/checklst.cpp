@@ -4,7 +4,7 @@
 // Author:      Vadim Zeitlin
 // Modified by:
 // Created:     13.11.97
-// RCS-ID:      $Id: checklst.cpp,v 1.31 2004/10/06 20:31:42 ABX Exp $
+// RCS-ID:      $Id: checklst.cpp,v 1.32 2005/05/20 21:28:06 MW Exp $
 // Copyright:   (c) 1998 Vadim Zeitlin <zeitlin@dptmaths.ens-cachan.fr>
 // Licence:     wxWindows license
 ///////////////////////////////////////////////////////////////////////////////
@@ -33,6 +33,10 @@
 #include  "wx/sizer.h"
 #include  "wx/menuitem.h"
 #include  "wx/checklst.h"
+
+#if !wxUSE_CHECKLISTBOX
+    #error "This sample can't be built without wxUSE_CHECKLISTBOX"
+#endif // wxUSE_CHECKLISTBOX
 
 // Define a new application type
 class CheckListBoxApp: public wxApp

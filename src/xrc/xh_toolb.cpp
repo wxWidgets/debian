@@ -3,12 +3,12 @@
 // Purpose:     XRC resource for wxBoxSizer
 // Author:      Vaclav Slavik
 // Created:     2000/08/11
-// RCS-ID:      $Id: xh_toolb.cpp,v 1.16 2004/10/19 18:54:59 VS Exp $
+// RCS-ID:      $Id: xh_toolb.cpp,v 1.17 2005/01/07 21:33:15 VS Exp $
 // Copyright:   (c) 2000 Vaclav Slavik
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
 
-#ifdef __GNUG__
+#if defined(__GNUG__) && !defined(NO_GCC_PRAGMA)
 #pragma implementation "xh_toolb.h"
 #endif
 

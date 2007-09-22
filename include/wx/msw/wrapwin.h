@@ -3,7 +3,7 @@
 // Purpose:     Wrapper around <windows.h>, to be included instead of it
 // Author:      Vaclav Slavik
 // Created:     2003/07/22
-// RCS-ID:      $Id: wrapwin.h,v 1.9 2004/05/23 20:51:30 JS Exp $
+// RCS-ID:      $Id: wrapwin.h,v 1.14 2005/06/08 20:13:27 VZ Exp $
 // Copyright:   (c) 2003 Vaclav Slavik
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -13,9 +13,36 @@
 
 #include "wx/platform.h"
 
+// strict type checking to detect conversion from HFOO to HBAR at compile-time
 #ifndef STRICT
     #define STRICT 1
 #endif
+
+// this macro tells windows.h to not define min() and max() as macros: we need
+// this as otherwise they conflict with standard C++ functions
+#ifndef NOMINMAX
+    #define NOMINMAX
+#endif // NOMINMAX
+
+
+// before including windows.h, define version macros at (currently) maximal
+// values because we do all our checks at run-time anyhow
+#ifndef WINVER
+    // the only exception to the above is MSVC 6 which has a time bomb in its
+    // headers: they warn against using them with WINVER >= 0x0500 as they
+    // contain only part of the declarations and they're not always correct, so
+    // don't define WINVER for it at all as this allows everything to work as
+    // expected both with standard VC6 headers (which define WINVER as 0x0400
+    // by default) and headers from a newer SDK (which may define it as 0x0500)
+    #if !defined(__VISUALC__) || (__VISUALC__ >= 1300)
+        #define WINVER 0x0600
+    #endif
+#endif
+
+#ifndef _WIN32_WINNT
+    #define _WIN32_WINNT 0x0600
+#endif
+
 
 #include <windows.h>
 
@@ -32,7 +59,10 @@
     #include <shellapi.h>
 #endif // __WXWINCE__
 
+
+// #undef the macros defined in winsows.h which conflict with code elsewhere
 #include "wx/msw/winundef.h"
+
 
 // types DWORD_PTR, ULONG_PTR and so on might be not defined in old headers but
 // unfortunately I don't know of any standard way to test for this (as they're
@@ -44,6 +74,7 @@
 // with newer SDK headers
 #if !defined(__WIN64__) && !defined(__WXWINCE__)
     #define UINT_PTR unsigned int
+    #define LONG_PTR long
     #define ULONG_PTR unsigned long
     #define DWORD_PTR unsigned long
 #endif // !__WIN64__

@@ -4,7 +4,7 @@
 // Author:      Guilhem Lavaux
 // Modified by:
 // Created:     28/06/98
-// RCS-ID:      $Id: txtstrm.cpp,v 1.31 2004/09/23 18:20:55 ABX Exp $
+// RCS-ID:      $Id: txtstrm.cpp,v 1.35 2004/11/21 18:26:33 RN Exp $
 // Copyright:   (c) Guilhem Lavaux
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -252,6 +252,17 @@ wxTextInputStream& wxTextInputStream::operator>>(char& c)
     return *this;
 }
 
+#if wxUSE_UNICODE && wxWCHAR_T_IS_REAL_TYPE
+
+wxTextInputStream& wxTextInputStream::operator>>(wchar_t& wc)
+{
+    wc = GetChar();
+
+    return *this;
+}
+
+#endif // wxUSE_UNICODE
+
 wxTextInputStream& wxTextInputStream::operator>>(wxInt16& i)
 {
     i = (wxInt16)Read16();
@@ -406,6 +417,16 @@ void wxTextOutputStream::WriteString(const wxString& string)
 #endif
 }
 
+wxTextOutputStream& wxTextOutputStream::PutChar(wxChar c)
+{
+#if wxUSE_UNICODE
+    WriteString( wxString(&c, m_conv, 1) );
+#else
+    WriteString( wxString(&c, wxConvLocal, 1) );
+#endif
+    return *this;
+}
+
 wxTextOutputStream& wxTextOutputStream::operator<<(const wxChar *string)
 {
     WriteString( wxString(string) );
@@ -486,7 +507,7 @@ wxTextOutputStream& wxTextOutputStream::operator<<(float f)
 
 wxTextOutputStream &endl( wxTextOutputStream &stream )
 {
-    return stream << wxT('\n');
+    return stream.PutChar(wxT('\n'));
 }
 
 #endif

@@ -5,7 +5,7 @@
 // Author:      Robin Dunn
 //
 // Created:     7-July-1997
-// RCS-ID:      $Id: gdi.i,v 1.67 2004/06/02 02:29:19 RD Exp $
+// RCS-ID:      $Id: gdi.i,v 1.68 2005/06/09 20:11:08 RD Exp $
 // Copyright:   (c) 2003 by Total Control Software
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -48,6 +48,7 @@ MAKE_CONST_WXSTRING_NOSWIG(EmptyString);
 %include _imaglist.i
 %include _stockobjs.i
 %include _effects.i
+%include _renderer.i
 
 
 //---------------------------------------------------------------------------

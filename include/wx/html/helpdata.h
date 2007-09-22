@@ -4,7 +4,7 @@
 // Notes:       Based on htmlhelp.cpp, implementing a monolithic
 //              HTML Help controller class,  by Vaclav Slavik
 // Author:      Harm van der Heijden and Vaclav Slavik
-// RCS-ID:      $Id: helpdata.h,v 1.34 2004/10/11 16:30:25 ABX Exp $
+// RCS-ID:      $Id: helpdata.h,v 1.35 2005/05/31 09:18:24 JS Exp $
 // Copyright:   (c) Harm van der Heijden and Vaclav Slavik
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -153,8 +153,8 @@ private:
 };
 
 
-// State information of a search action. I'd have prefered to make this a nested
-// class inside wxHtmlHelpData, but that's against coding standards :-(
+// State information of a search action. I'd have preferred to make this a
+// nested class inside wxHtmlHelpData, but that's against coding standards :-(
 // Never construct this class yourself, obtain a copy from
 // wxHtmlHelpData::PrepareKeywordSearch(const wxString& key)
 class WXDLLIMPEXP_HTML wxHtmlSearchStatus

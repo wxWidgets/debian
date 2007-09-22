@@ -1,12 +1,12 @@
 /////////////////////////////////////////////////////////////////////////////
-// Name:        msgdlg.h
+// Name:        wx/gtk/msgdlg.h
 // Purpose:     wxMessageDialog for GTK+2
 // Author:      Vaclav Slavik
 // Modified by:
 // Created:     2003/02/28
-// RCS-ID:      $Id: msgdlg.h,v 1.9 2004/10/16 19:41:18 VZ Exp $
+// RCS-ID:      $Id: msgdlg.h,v 1.11 2005/03/11 15:33:22 ABX Exp $
 // Copyright:   (c) Vaclav Slavik, 2003
-// Licence:   	wxWindows licence
+// Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
 
 #ifndef __MSGDLG_H__
@@ -24,13 +24,14 @@
 
 WXDLLEXPORT_DATA(extern const wxChar*) wxMessageBoxCaptionStr;
 
-class WXDLLEXPORT wxMessageDialog: public wxDialog
+class WXDLLEXPORT wxMessageDialog: public wxDialog, public wxMessageDialogBase
 {
 public:
     wxMessageDialog(wxWindow *parent, const wxString& message,
                     const wxString& caption = wxMessageBoxCaptionStr,
                     long style = wxOK|wxCENTRE,
                     const wxPoint& pos = wxDefaultPosition);
+    ~wxMessageDialog();
 
     int ShowModal();
     virtual bool Show( bool WXUNUSED(show) = true ) { return false; };
@@ -47,7 +48,6 @@ protected:
 private:
     wxString m_caption;
     wxString m_message;
-    long m_dialogStyle;
 
     DECLARE_DYNAMIC_CLASS(wxMessageDialog)
 };

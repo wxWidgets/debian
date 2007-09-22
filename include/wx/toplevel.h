@@ -5,7 +5,7 @@
 // Author:      Vadim Zeitlin, Vaclav Slavik
 // Modified by:
 // Created:     06.08.01
-// RCS-ID:      $Id: toplevel.h,v 1.44 2004/10/19 13:39:06 JS Exp $
+// RCS-ID:      $Id: toplevel.h,v 1.52 2005/06/24 16:44:18 RL Exp $
 // Copyright:   (c) 2001 Vadim Zeitlin <zeitlin@dptmaths.ens-cachan.fr>
 //                       Vaclav Slavik <vaclav@wxwidgets.org>
 // Licence:     wxWindows licence
@@ -26,7 +26,7 @@
 #include "wx/iconbndl.h"
 
 // the default names for various classs
-WXDLLEXPORT_DATA(extern const wxChar*) wxFrameNameStr;
+extern WXDLLEXPORT_DATA(const wxChar*) wxFrameNameStr;
 
 class WXDLLEXPORT wxTopLevelWindowBase;
 
@@ -71,7 +71,7 @@ class WXDLLEXPORT wxTopLevelWindowBase;
     #elif defined(__WINCE_STANDARDSDK__)
         #define wxDEFAULT_FRAME_STYLE (wxMAXIMIZE|wxCLOSE_BOX)
     #else
-        #define wxDEFAULT_FRAME_STYLE (0)
+        #define wxDEFAULT_FRAME_STYLE (wxNO_BORDER)
     #endif
 #else // !__WXWINCE__
     #define wxDEFAULT_FRAME_STYLE \
@@ -196,6 +196,9 @@ public:
     void OnCloseWindow(wxCloseEvent& event);
     void OnSize(wxSizeEvent& WXUNUSED(event)) { DoLayout(); }
 
+    // Get rect to be used to center top-level children
+    virtual void GetRectForTopLevelChildren(int *x, int *y, int *w, int *h);
+
     // this should go away, but for now it's called from docview.cpp,
     // so should be there for all platforms
     void OnActivate(wxActivateEvent &WXUNUSED(event)) { }
@@ -241,7 +244,7 @@ protected:
 
 
 // include the real class declaration
-#if defined(__PALMOS__)
+#if defined(__WXPALMOS__)
     #include "wx/palmos/toplevel.h"
     #define wxTopLevelWindowNative wxTopLevelWindowPalm
 #elif defined(__WXMSW__)

@@ -6,7 +6,7 @@
 # Author:       Robin Dunn
 #
 # Created:      5-Sept-2000
-# RCS-ID:       $Id: gen_iface.py,v 1.25 2004/03/06 00:09:04 RD Exp $
+# RCS-ID:       $Id: gen_iface.py,v 1.30 2005/05/26 18:07:43 RD Exp $
 # Copyright:    (c) 2000 by Total Control Software
 # Licence:      wxWindows license
 #----------------------------------------------------------------------------
@@ -21,6 +21,7 @@ H_TEMPLATE    = os.path.abspath('./stc.h.in')
 CPP_TEMPLATE  = os.path.abspath('./stc.cpp.in')
 H_DEST        = os.path.abspath('../../include/wx/stc/stc.h')
 CPP_DEST      = os.path.abspath('./stc.cpp')
+DOCSTR_DEST   = os.path.abspath('../../../wxPython/contrib/stc/_stc_gendocs.i')
 
 
 # Value prefixes to convert
@@ -92,6 +93,14 @@ methodOverrideMap = {
                        '''void %s(const wxMemoryBuffer& data) {
                           SendMsg(%s, data.GetDataLen(), (long)data.GetData());''',
                        0),
+
+    'AppendText' : (0,
+                 'void %s(const wxString& text);',
+
+                 '''void %s(const wxString& text) {
+                    wxWX2MBbuf buf = (wxWX2MBbuf)wx2stc(text);
+                    SendMsg(%s, strlen(buf), (long)(const char*)buf);''',
+                 0),
 
     'GetViewWS' : ( 'GetViewWhiteSpace', 0, 0, 0),
     'SetViewWS' : ( 'SetViewWhiteSpace', 0, 0, 0),
@@ -194,6 +203,8 @@ methodOverrideMap = {
         // convert bmp to a xpm in a string
         wxMemoryOutputStream strm;
         wxImage img = bmp.ConvertToImage();
+        if (img.HasAlpha())
+            img.ConvertAlphaToMask();
         img.SaveFile(strm, wxBITMAP_TYPE_XPM);
         size_t len = strm.GetSize();
         char* buff = new char[len+1];
@@ -220,7 +231,8 @@ methodOverrideMap = {
     'SetSelBack' : ('SetSelBackground', 0, 0, 0),
     'SetCaretFore' : ('SetCaretForeground', 0, 0, 0),
     'StyleSetFont' : ('StyleSetFaceName', 0, 0, 0),
-
+    'StyleSetCharacterSet' : (None, 0, 0, 0),
+    
     'AssignCmdKey' :
     ('CmdKeyAssign',
      'void %s(int key, int modifiers, int cmd);',
@@ -289,6 +301,8 @@ methodOverrideMap = {
         // convert bmp to a xpm in a string
         wxMemoryOutputStream strm;
         wxImage img = bmp.ConvertToImage();
+        if (img.HasAlpha())
+            img.ConvertAlphaToMask();
         img.SaveFile(strm, wxBITMAP_TYPE_XPM);
         size_t len = strm.GetSize();
         char* buff = new char[len+1];
@@ -501,6 +515,11 @@ methodOverrideMap = {
          return SendMsg(%s, strlen(buf), (long)(const char*)buf);''',
      0),
 
+    # not sure what to do about these yet
+    'TargetAsUTF8' :       ( None, 0, 0, 0),
+    'SetLengthForEncode' : ( None, 0, 0, 0),
+    'EncodedFromUTF8' :    ( None, 0, 0, 0),
+    
 
     'GetDocPointer' :
     (0,
@@ -569,7 +588,7 @@ methodOverrideMap = {
 
 #----------------------------------------------------------------------------
 
-def processIface(iface, h_tmplt, cpp_tmplt, h_dest, cpp_dest):
+def processIface(iface, h_tmplt, cpp_tmplt, h_dest, cpp_dest, docstr_dest):
     curDocStrings = []
     values = []
     methods = []
@@ -616,7 +635,7 @@ def processIface(iface, h_tmplt, cpp_tmplt, h_dest, cpp_dest):
     data = {}
     data['VALUES'] = processVals(values)
     data['CMDS']   = processVals(cmds)
-    defs, imps = processMethods(methods)
+    defs, imps, docstrings = processMethods(methods)
     data['METHOD_DEFS'] = defs
     data['METHOD_IMPS'] = imps
 
@@ -631,6 +650,7 @@ def processIface(iface, h_tmplt, cpp_tmplt, h_dest, cpp_dest):
     # write out destination files
     open(h_dest, 'w').write(h_text)
     open(cpp_dest, 'w').write(cpp_text)
+    open(docstr_dest, 'w').write(docstrings)
 
 
 
@@ -651,6 +671,7 @@ def processVals(values):
 def processMethods(methods):
     defs = []
     imps = []
+    dstr = []
 
     for retType, name, number, param1, param2, docs in methods:
         retType = retTypeMap.get(retType, retType)
@@ -661,6 +682,11 @@ def processMethods(methods):
         if name is None:
             continue
 
+        # Build docstrings
+        st = 'DocStr(wxStyledTextCtrl::%s,\n' \
+             '"%s", "");\n' % (name, '\n'.join(docs))
+        dstr.append(st)
+        
         # Build the method definition for the .h file
         if docs:
             defs.append('')
@@ -694,7 +720,7 @@ def processMethods(methods):
         imps.append(theImp)
 
 
-    return string.join(defs, '\n'), string.join(imps, '\n')
+    return '\n'.join(defs), '\n'.join(imps), '\n'.join(dstr)
 
 
 #----------------------------------------------------------------------------
@@ -814,7 +840,7 @@ def main(args):
     # TODO: parse command line args to replace default input/output files???
 
     # Now just do it
-    processIface(IFACE, H_TEMPLATE, CPP_TEMPLATE, H_DEST, CPP_DEST)
+    processIface(IFACE, H_TEMPLATE, CPP_TEMPLATE, H_DEST, CPP_DEST, DOCSTR_DEST)
 
 
 

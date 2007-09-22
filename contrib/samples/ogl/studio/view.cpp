@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     12/07/98
-// RCS-ID:      $Id: view.cpp,v 1.8 2004/07/23 18:04:07 ABX Exp $
+// RCS-ID:      $Id: view.cpp,v 1.11 2005/05/31 12:30:58 ABX Exp $
 // Copyright:   (c) Julian Smart
 // Licence:
 /////////////////////////////////////////////////////////////////////////////
@@ -309,8 +309,6 @@ void csDiagramView::OnCopyUpdate(wxUpdateUIEvent& event)
 
 void csDiagramView::OnPasteUpdate(wxUpdateUIEvent& event)
 {
-    /* csDiagramDocument *doc = */ (csDiagramDocument *)GetDocument();
-
     int n = wxGetApp().GetDiagramClipboard().GetCount();
 
     event.Enable( (n > 0) );
@@ -853,7 +851,7 @@ csCanvas::~csCanvas(void)
 
 void csCanvas::DrawOutline(wxDC& dc, double x1, double y1, double x2, double y2)
 {
-    wxPen dottedPen(wxColour(0, 0, 0), 1, wxDOT);
+    wxPen dottedPen(*wxBLACK, 1, wxDOT);
     dc.SetPen(dottedPen);
     dc.SetBrush(* wxTRANSPARENT_BRUSH);
 
@@ -877,6 +875,9 @@ void csCanvas::OnLeftClick(double x, double y, int WXUNUSED(keys))
 
     if (palette->GetSelection() == PALETTE_TEXT_TOOL)
     {
+        wxString newLabel;
+
+#if wxUSE_WX_RESOURCES
         // Ask for a label and create a new free-floating text region
         csLabelEditingDialog* dialog = new csLabelEditingDialog(GetParent());
 
@@ -888,8 +889,9 @@ void csCanvas::OnLeftClick(double x, double y, int WXUNUSED(keys))
             return;
         }
 
-        wxString newLabel = dialog->GetShapeLabel();
+        newLabel = dialog->GetShapeLabel();
         dialog->Destroy();
+#endif // wxUSE_WX_RESOURCES
 
         wxShape* shape = new csTextBoxShape;
         shape->AssignNewIds();

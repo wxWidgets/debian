@@ -3,7 +3,7 @@
 // Purpose:     STC test application
 // Maintainer:  Otto Wyss
 // Created:     2003-09-01
-// RCS-ID:      $Id: stctest.cpp,v 1.15 2004/09/28 15:13:24 ABX Exp $
+// RCS-ID:      $Id: stctest.cpp,v 1.16 2004/12/08 17:08:56 ABX Exp $
 // Copyright:   (c) wxGuide
 // Licence:     wxWindows licence
 //////////////////////////////////////////////////////////////////////////////
@@ -301,7 +301,7 @@ AppFrame::AppFrame (const wxString &title)
     SetBackgroundColour (_T("WHITE"));
 
     // about box shown for 1 seconds
-    AppAbout (this, 1000);
+    AppAbout dlg(this, 1000);
 
     // create menu
     m_menuBar = new wxMenuBar;
@@ -329,7 +329,7 @@ void AppFrame::OnClose (wxCloseEvent &event) {
 }
 
 void AppFrame::OnAbout (wxCommandEvent &WXUNUSED(event)) {
-    AppAbout (this);
+    AppAbout dlg(this);
 }
 
 void AppFrame::OnExit (wxCommandEvent &WXUNUSED(event)) {
@@ -387,7 +387,7 @@ void AppFrame::OnFileClose (wxCommandEvent &WXUNUSED(event)) {
 // properties event handlers
 void AppFrame::OnProperties (wxCommandEvent &WXUNUSED(event)) {
     if (!m_edit) return;
-    EditProperties (m_edit, 0);
+    EditProperties dlg(m_edit, 0);
 }
 
 // print event handlers

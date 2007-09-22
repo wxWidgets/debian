@@ -2,7 +2,7 @@
 // Name:        wx/gtk/app.h
 // Purpose:
 // Author:      Robert Roebling
-// Id:          $Id: app.h,v 1.52 2004/11/04 20:03:56 VS Exp $
+// Id:          $Id: app.h,v 1.55 2005/04/13 20:05:54 MW Exp $
 // Copyright:   (c) 1998 Robert Roebling, Julian Smart
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -16,6 +16,7 @@
 
 #include "wx/frame.h"
 #include "wx/icon.h"
+#include "wx/strconv.h"
 
 //-----------------------------------------------------------------------------
 // classes
@@ -61,12 +62,13 @@ public:
     unsigned char  *m_colorCube;
 
     // Used by the the wxGLApp and wxGLCanvas class for GL-based X visual
-    // selection; this is actually an XVisualInfo*
-    void           *m_glVisualInfo;
+    // selection.
+    void           *m_glVisualInfo; // this is actually an XVisualInfo*
+    void           *m_glFBCInfo; // this is actually an GLXFBConfig*
     // This returns the current visual: either that used by wxRootWindow
     // or the XVisualInfo* for SGI.
     GdkVisual      *GetGdkVisual();
-
+    
 private:
     // true if we're inside an assert modal dialog
 #ifdef __WXDEBUG__

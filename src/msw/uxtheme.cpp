@@ -1,11 +1,11 @@
 ///////////////////////////////////////////////////////////////////////////////
 // Name:        src/msw/uxtheme.cpp
 // Purpose:     implements wxUxThemeEngine class: support for XP themes
-// Author:
+// Author:      John Platts, Vadim Zeitlin
 // Modified by:
 // Created:     2003
-// RCS-ID:      $Id: uxtheme.cpp,v 1.12 2004/09/07 11:11:05 ABX Exp $
-// Copyright:   (c) 2003 wxWidgets Dev-Team
+// RCS-ID:      $Id: uxtheme.cpp,v 1.14 2005/05/05 15:03:07 JS Exp $
+// Copyright:   (c) 2003 John Platts, Vadim Zeitlin
 // License:     wxWindows licence
 ///////////////////////////////////////////////////////////////////////////////
 
@@ -108,7 +108,7 @@ wxUxThemeEngine* wxUxThemeEngine::Get()
 
 bool wxUxThemeEngine::Initialize()
 {
-    if ( wxTheApp->GetComCtl32Version() < 600 )
+    if ( wxApp::GetComCtl32Version() < 600 )
     {
         // not using theme-aware comctl32.dll anyhow, don't even try to use
         // themes

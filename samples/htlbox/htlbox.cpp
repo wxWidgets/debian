@@ -4,7 +4,7 @@
 // Author:      Vadim Zeitlin
 // Modified by:
 // Created:     31.05.03
-// RCS-ID:      $Id: htlbox.cpp,v 1.13 2004/10/01 11:20:46 VS Exp $
+// RCS-ID:      $Id: htlbox.cpp,v 1.16 2005/05/31 08:51:08 ABX Exp $
 // Copyright:   (c) 2003 Vadim Zeitlin <vadim@wxwidgets.org>
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -37,6 +37,7 @@
     #include "wx/textctrl.h"
 
     #include "wx/dc.h"
+    #include "wx/icon.h"
 #endif
 
 #include "wx/colordlg.h"
@@ -51,14 +52,7 @@
     #include "wx/textfile.h"
 #endif
 
-// ----------------------------------------------------------------------------
-// resources
-// ----------------------------------------------------------------------------
-
-// the application icon (under Windows and OS/2 it is in resources)
-#if defined(__WXGTK__) || defined(__WXMOTIF__) || defined(__WXMAC__) || defined(__WXMGL__) || defined(__WXX11__)
-    #include "mondrian.xpm"
-#endif
+#include "../sample.xpm"
 
 // ----------------------------------------------------------------------------
 // private classes
@@ -72,15 +66,26 @@ public:
     MyHtmlListBox(wxWindow *parent, bool multi = false);
 
     void SetChangeSelFg(bool change) { m_change = change; }
+    void UpdateFirstItem();
 
 protected:
+    // override this method to return data to be shown in the listbox (this is
+    // mandatory)
     virtual wxString OnGetItem(size_t n) const;
 
-    // change the appearance by overriding these functions
+    // change the appearance by overriding these functions (this is optional)
     virtual void OnDrawSeparator(wxDC& dc, wxRect& rect, size_t n) const;
     virtual wxColour GetSelectedTextColour(const wxColour& colFg) const;
 
+
+    // flag telling us whether we should use fg colour even for the selected
+    // item
     bool m_change;
+
+    // flag which we toggle to update the first items text in OnGetItem()
+    bool m_firstItemUpdated;
+
+
 
 #ifdef USE_HTML_FILE
     wxTextFile m_file;
@@ -103,6 +108,7 @@ public:
     void OnDrawSeparator(wxCommandEvent&) { m_hlbox->RefreshAll(); }
     void OnToggleMulti(wxCommandEvent& event);
     void OnSelectAll(wxCommandEvent& event);
+    void OnUpdateItem(wxCommandEvent& event);
 
     void OnSetBgCol(wxCommandEvent& event);
     void OnSetSelBgCol(wxCommandEvent& event);
@@ -144,6 +150,7 @@ enum
     HtmlLbox_DrawSeparator,
     HtmlLbox_ToggleMulti,
     HtmlLbox_SelectAll,
+    HtmlLbox_UpdateItem,
 
     HtmlLbox_SetBgCol,
     HtmlLbox_SetSelBgCol,
@@ -166,6 +173,7 @@ BEGIN_EVENT_TABLE(MyFrame, wxFrame)
     EVT_MENU(HtmlLbox_DrawSeparator, MyFrame::OnDrawSeparator)
     EVT_MENU(HtmlLbox_ToggleMulti, MyFrame::OnToggleMulti)
     EVT_MENU(HtmlLbox_SelectAll, MyFrame::OnSelectAll)
+    EVT_MENU(HtmlLbox_UpdateItem, MyFrame::OnUpdateItem)
 
     EVT_MENU(HtmlLbox_About, MyFrame::OnAbout)
 
@@ -196,7 +204,7 @@ MyFrame::MyFrame()
                  wxDefaultPosition, wxSize(400, 500))
 {
     // set the frame icon
-    SetIcon(wxICON(mondrian));
+    SetIcon(wxIcon(sample_xpm));
 
 #if wxUSE_MENUS
     // create a menu bar
@@ -217,6 +225,7 @@ MyFrame::MyFrame()
                                _T("Toggle multiple selection on/off"));
     menuHLbox->AppendSeparator();
     menuHLbox->Append(HtmlLbox_SelectAll, _T("Select &all items\tCtrl-A"));
+    menuHLbox->Append(HtmlLbox_UpdateItem, _T("Update &first item\tCtrl-U"));
     menuHLbox->AppendSeparator();
     menuHLbox->Append(HtmlLbox_SetBgCol, _T("Set &background...\tCtrl-B"));
     menuHLbox->Append(HtmlLbox_SetSelBgCol,
@@ -327,6 +336,11 @@ void MyFrame::OnUpdateUISelectAll(wxUpdateUIEvent& event)
     event.Enable( m_hlbox && m_hlbox->HasMultipleSelection() );
 }
 
+void MyFrame::OnUpdateItem(wxCommandEvent& WXUNUSED(event))
+{
+    m_hlbox->UpdateFirstItem();
+}
+
 void MyFrame::OnSetBgCol(wxCommandEvent& WXUNUSED(event))
 {
     wxColour col = wxGetColourFromUser(this, m_hlbox->GetBackgroundColour());
@@ -408,6 +422,8 @@ MyHtmlListBox::MyHtmlListBox(wxWindow *parent, bool multi)
                              multi ? wxLB_MULTIPLE : 0)
 {
     m_change = true;
+    m_firstItemUpdated = false;
+
 
     SetMargins(5, 5);
 
@@ -440,6 +456,11 @@ void MyHtmlListBox::OnDrawSeparator(wxDC& dc, wxRect& rect, size_t) const
 
 wxString MyHtmlListBox::OnGetItem(size_t n) const
 {
+    if ( !n && m_firstItemUpdated )
+    {
+        return wxString::Format(_T("<h1><b>Just updated</b></h1>"));
+    }
+
 #ifdef USE_HTML_FILE
     wxString s;
     if ( m_file.IsOpened() )
@@ -452,9 +473,9 @@ wxString MyHtmlListBox::OnGetItem(size_t n) const
                             _T("Item</font> <b>%lu</b>")
                             _T("</h%d>"),
                             level,
-                            abs(n - 192) % 256,
-                            abs(n - 256) % 256,
-                            abs(n - 128) % 256,
+                            abs((int)n - 192) % 256,
+                            abs((int)n - 256) % 256,
+                            abs((int)n - 128) % 256,
                             (unsigned long)n, level);
 #endif
 }
@@ -462,5 +483,12 @@ wxString MyHtmlListBox::OnGetItem(size_t n) const
 wxColour MyHtmlListBox::GetSelectedTextColour(const wxColour& colFg) const
 {
     return m_change ? wxHtmlListBox::GetSelectedTextColour(colFg) : colFg;
+}
+
+void MyHtmlListBox::UpdateFirstItem()
+{
+    m_firstItemUpdated = !m_firstItemUpdated;
+
+    RefreshLine(0);
 }
 

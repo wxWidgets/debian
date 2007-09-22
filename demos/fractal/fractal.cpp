@@ -4,7 +4,7 @@
 // Author:      Andrew Davison
 // Modified by:
 // Created:     05.04.94
-// RCS-ID:      $Id: fractal.cpp,v 1.6 2004/05/27 17:29:32 ABX Exp $
+// RCS-ID:      $Id: fractal.cpp,v 1.8 2005/01/31 18:15:37 ABX Exp $
 // Copyright:   (c) 1994 Andrew Davison
 // Licence:     wxWindows licence
 ///////////////////////////////////////////////////////////////////////////////
@@ -24,7 +24,7 @@ out and there is not as much snow or high mountains (maybe the
 random number generators fault). The viewing plane is not
 quite right as the original code used SetViewportOrg() which there
 doesn't seem to be an equivalent of under wxWidgets, and my quick
-hack doesn't fix. 
+hack doesn't fix.
 */
 
 #ifdef __GNUG__
@@ -42,8 +42,10 @@ hack doesn't fix.
   #include "wx/wx.h"
 #endif //precompiled headers
 
+#include "wx/math.h"
+#include "wx/stockitem.h"
+
 #include <stdlib.h>
-#include <math.h>
 #include <time.h>
 
 #define Random(x) (rand() % x)
@@ -51,7 +53,7 @@ hack doesn't fix.
 
 static int detail = 9; // CHANGE THIS... 7,8,9 etc
 
-static bool running = false;                                
+static bool running = false;
 static wxMenuBar *menuBar = NULL;
 
 // Define a new application type
@@ -100,7 +102,7 @@ bool MyApp::OnInit()
 
   // Make a menubar
   wxMenu *file_menu = new wxMenu;
-  file_menu->Append(wxID_EXIT, _T("E&xit"));
+  file_menu->Append(wxID_EXIT, wxGetStockLabel(wxID_EXIT));
   menuBar = new wxMenuBar;
   menuBar->Append(file_menu, _T("&File"));
   frame->SetMenuBar(menuBar);
@@ -175,7 +177,7 @@ void MyCanvas::OnPaint(wxPaintEvent& WXUNUSED(event))
 void MyCanvas::Draw(wxDC& dc)
 {
     if (running) return;
-        
+
     running = true;
     menuBar->EnableTop(0, false);
 

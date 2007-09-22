@@ -3,6 +3,47 @@
 
 import _controls_
 
+def _swig_setattr_nondynamic(self,class_type,name,value,static=1):
+    if (name == "this"):
+        if isinstance(value, class_type):
+            self.__dict__[name] = value.this
+            if hasattr(value,"thisown"): self.__dict__["thisown"] = value.thisown
+            del value.thisown
+            return
+    method = class_type.__swig_setmethods__.get(name,None)
+    if method: return method(self,value)
+    if (not static) or hasattr(self,name) or (name == "thisown"):
+        self.__dict__[name] = value
+    else:
+        raise AttributeError("You cannot add attributes to %s" % self)
+
+def _swig_setattr(self,class_type,name,value):
+    return _swig_setattr_nondynamic(self,class_type,name,value,0)
+
+def _swig_getattr(self,class_type,name):
+    method = class_type.__swig_getmethods__.get(name,None)
+    if method: return method(self)
+    raise AttributeError,name
+
+import types
+try:
+    _object = types.ObjectType
+    _newclass = 1
+except AttributeError:
+    class _object : pass
+    _newclass = 0
+del types
+
+
+def _swig_setattr_nondynamic_method(set):
+    def set_attr(self,name,value):
+        if hasattr(self,name) or (name in ("this", "thisown")):
+            set(self,name,value)
+        else:
+            raise AttributeError("You cannot add attributes to %s" % self)
+    return set_attr
+
+
 import _core
 wx = _core 
 #---------------------------------------------------------------------------
@@ -11,6 +52,7 @@ BU_LEFT = _controls_.BU_LEFT
 BU_TOP = _controls_.BU_TOP
 BU_RIGHT = _controls_.BU_RIGHT
 BU_BOTTOM = _controls_.BU_BOTTOM
+BU_ALIGN_MASK = _controls_.BU_ALIGN_MASK
 BU_EXACTFIT = _controls_.BU_EXACTFIT
 BU_AUTODRAW = _controls_.BU_AUTODRAW
 class Button(_core.Control):
@@ -439,7 +481,7 @@ class Choice(_core.ControlWithItems):
     def __init__(self, *args, **kwargs):
         """
         __init__(Window parent, int id, Point pos=DefaultPosition, Size size=DefaultSize,
-            List choices=[], long style=0, Validator validator=DefaultValidator,
+            List choices=EmptyList, long style=0, Validator validator=DefaultValidator,
             String name=ChoiceNameStr) -> Choice
 
         Create and show a Choice control
@@ -453,38 +495,13 @@ class Choice(_core.ControlWithItems):
     def Create(*args, **kwargs):
         """
         Create(Window parent, int id, Point pos=DefaultPosition, Size size=DefaultSize,
-            List choices=[], long style=0, Validator validator=DefaultValidator,
+            List choices=EmptyList, long style=0, Validator validator=DefaultValidator,
             String name=ChoiceNameStr) -> bool
 
         Actually create the GUI Choice control for 2-phase creation
         """
         return _controls_.Choice_Create(*args, **kwargs)
 
-    def SetSelection(*args, **kwargs):
-        """
-        SetSelection(self, int n)
-
-        Select the n'th item (zero based) in the list.
-        """
-        return _controls_.Choice_SetSelection(*args, **kwargs)
-
-    def SetStringSelection(*args, **kwargs):
-        """
-        SetStringSelection(self, String string) -> bool
-
-        Select the item with the specifed string
-        """
-        return _controls_.Choice_SetStringSelection(*args, **kwargs)
-
-    def SetString(*args, **kwargs):
-        """
-        SetString(self, int n, String string)
-
-        Set the label for the n'th item (zero based) in the list.
-        """
-        return _controls_.Choice_SetString(*args, **kwargs)
-
-    Select = SetSelection 
     def GetClassDefaultAttributes(*args, **kwargs):
         """
         GetClassDefaultAttributes(int variant=WINDOW_VARIANT_NORMAL) -> VisualAttributes
@@ -556,7 +573,7 @@ class ComboBox(_core.Control,_core.ItemContainer):
         """
         __init__(Window parent, int id, String value=EmptyString,
             Point pos=DefaultPosition, Size size=DefaultSize,
-            List choices=[], long style=0, Validator validator=DefaultValidator,
+            List choices=EmptyList, long style=0, Validator validator=DefaultValidator,
             String name=ComboBoxNameStr) -> ComboBox
 
         Constructor, creates and shows a ComboBox control.
@@ -571,7 +588,7 @@ class ComboBox(_core.Control,_core.ItemContainer):
         """
         Create(Window parent, int id, String value=EmptyString,
             Point pos=DefaultPosition, Size size=DefaultSize,
-            List choices=[], long style=0, Validator validator=DefaultValidator,
+            List choices=EmptyList, long style=0, Validator validator=DefaultValidator,
             String name=ChoiceNameStr) -> bool
 
         Actually create the GUI wxComboBox control for 2-phase creation
@@ -663,6 +680,15 @@ class ComboBox(_core.Control,_core.ItemContainer):
         """
         return _controls_.ComboBox_SetMark(*args, **kwargs)
 
+    def GetMark(*args, **kwargs):
+        """
+        GetMark(self) -> (from, to)
+
+        Gets the positions of the begining and ending of the selection mark in
+        the combobox text field.
+        """
+        return _controls_.ComboBox_GetMark(*args, **kwargs)
+
     def SetStringSelection(*args, **kwargs):
         """
         SetStringSelection(self, String string) -> bool
@@ -698,6 +724,84 @@ class ComboBox(_core.Control,_core.ItemContainer):
         Removes the text between the two positions in the combobox text field.
         """
         return _controls_.ComboBox_Remove(*args, **kwargs)
+
+    def IsEditable(*args, **kwargs):
+        """
+        IsEditable(self) -> bool
+
+        Returns True if the combo is ediatable (not read-only.)
+        """
+        return _controls_.ComboBox_IsEditable(*args, **kwargs)
+
+    def Undo(*args, **kwargs):
+        """
+        Undo(self)
+
+        Redoes the last undo in the text field. Windows only.
+        """
+        return _controls_.ComboBox_Undo(*args, **kwargs)
+
+    def Redo(*args, **kwargs):
+        """
+        Redo(self)
+
+        Undoes the last edit in the text field. Windows only.
+        """
+        return _controls_.ComboBox_Redo(*args, **kwargs)
+
+    def SelectAll(*args, **kwargs):
+        """
+        SelectAll(self)
+
+        Select all the text in the combo's text field.
+        """
+        return _controls_.ComboBox_SelectAll(*args, **kwargs)
+
+    def CanCopy(*args, **kwargs):
+        """
+        CanCopy(self) -> bool
+
+        Returns True if the combobox is editable and there is a text selection
+        to copy to the clipboard.  Only available on Windows.
+        """
+        return _controls_.ComboBox_CanCopy(*args, **kwargs)
+
+    def CanCut(*args, **kwargs):
+        """
+        CanCut(self) -> bool
+
+        Returns True if the combobox is editable and there is a text selection
+        to copy to the clipboard.  Only available on Windows.
+        """
+        return _controls_.ComboBox_CanCut(*args, **kwargs)
+
+    def CanPaste(*args, **kwargs):
+        """
+        CanPaste(self) -> bool
+
+        Returns True if the combobox is editable and there is text on the
+        clipboard that can be pasted into the text field. Only available on
+        Windows.
+        """
+        return _controls_.ComboBox_CanPaste(*args, **kwargs)
+
+    def CanUndo(*args, **kwargs):
+        """
+        CanUndo(self) -> bool
+
+        Returns True if the combobox is editable and the last edit can be
+        undone.  Only available on Windows.
+        """
+        return _controls_.ComboBox_CanUndo(*args, **kwargs)
+
+    def CanRedo(*args, **kwargs):
+        """
+        CanRedo(self) -> bool
+
+        Returns True if the combobox is editable and the last undo can be
+        redone.  Only available on Windows.
+        """
+        return _controls_.ComboBox_CanRedo(*args, **kwargs)
 
     def GetClassDefaultAttributes(*args, **kwargs):
         """
@@ -760,6 +864,7 @@ GA_VERTICAL = _controls_.GA_VERTICAL
 GA_SMOOTH = _controls_.GA_SMOOTH
 GA_PROGRESSBAR = _controls_.GA_PROGRESSBAR
 class Gauge(_core.Control):
+    """Proxy of C++ Gauge class"""
     def __repr__(self):
         return "<%s.%s; proxy of C++ wxGauge instance at %s>" % (self.__class__.__module__, self.__class__.__name__, self.this,)
     def __init__(self, *args, **kwargs):
@@ -873,6 +978,7 @@ def Gauge_GetClassDefaultAttributes(*args, **kwargs):
 #---------------------------------------------------------------------------
 
 class StaticBox(_core.Control):
+    """Proxy of C++ StaticBox class"""
     def __repr__(self):
         return "<%s.%s; proxy of C++ wxStaticBox instance at %s>" % (self.__class__.__module__, self.__class__.__name__, self.this,)
     def __init__(self, *args, **kwargs):
@@ -950,6 +1056,7 @@ def StaticBox_GetClassDefaultAttributes(*args, **kwargs):
 #---------------------------------------------------------------------------
 
 class StaticLine(_core.Control):
+    """Proxy of C++ StaticLine class"""
     def __repr__(self):
         return "<%s.%s; proxy of C++ wxStaticLine instance at %s>" % (self.__class__.__module__, self.__class__.__name__, self.this,)
     def __init__(self, *args, **kwargs):
@@ -1037,6 +1144,7 @@ def StaticLine_GetClassDefaultAttributes(*args, **kwargs):
 #---------------------------------------------------------------------------
 
 class StaticText(_core.Control):
+    """Proxy of C++ StaticText class"""
     def __repr__(self):
         return "<%s.%s; proxy of C++ wxStaticText instance at %s>" % (self.__class__.__module__, self.__class__.__name__, self.this,)
     def __init__(self, *args, **kwargs):
@@ -1111,6 +1219,7 @@ def StaticText_GetClassDefaultAttributes(*args, **kwargs):
 #---------------------------------------------------------------------------
 
 class StaticBitmap(_core.Control):
+    """Proxy of C++ StaticBitmap class"""
     def __repr__(self):
         return "<%s.%s; proxy of C++ wxStaticBitmap instance at %s>" % (self.__class__.__module__, self.__class__.__name__, self.this,)
     def __init__(self, *args, **kwargs):
@@ -1197,6 +1306,7 @@ def StaticBitmap_GetClassDefaultAttributes(*args, **kwargs):
 #---------------------------------------------------------------------------
 
 class ListBox(_core.ControlWithItems):
+    """Proxy of C++ ListBox class"""
     def __repr__(self):
         return "<%s.%s; proxy of C++ wxListBox instance at %s>" % (self.__class__.__module__, self.__class__.__name__, self.this,)
     def __init__(self, *args, **kwargs):
@@ -1250,7 +1360,8 @@ class ListBox(_core.ControlWithItems):
         """
         Select(self, int n)
 
-        Sets the item at index 'n' to be the selected item.
+        This is the same as `SetSelection` and exists only because it is
+        slightly more natural for controls which support multiple selection.
         """
         return _controls_.ListBox_Select(*args, **kwargs)
 
@@ -1355,6 +1466,7 @@ def ListBox_GetClassDefaultAttributes(*args, **kwargs):
 #---------------------------------------------------------------------------
 
 class CheckListBox(ListBox):
+    """Proxy of C++ CheckListBox class"""
     def __repr__(self):
         return "<%s.%s; proxy of C++ wxCheckListBox instance at %s>" % (self.__class__.__module__, self.__class__.__name__, self.this,)
     def __init__(self, *args, **kwargs):
@@ -1438,9 +1550,12 @@ TE_PASSWORD = _controls_.TE_PASSWORD
 TE_AUTO_URL = _controls_.TE_AUTO_URL
 TE_NOHIDESEL = _controls_.TE_NOHIDESEL
 TE_DONTWRAP = _controls_.TE_DONTWRAP
-TE_LINEWRAP = _controls_.TE_LINEWRAP
+TE_CHARWRAP = _controls_.TE_CHARWRAP
 TE_WORDWRAP = _controls_.TE_WORDWRAP
+TE_BESTWRAP = _controls_.TE_BESTWRAP
+TE_LINEWRAP = _controls_.TE_LINEWRAP
 TE_RICH2 = _controls_.TE_RICH2
+TE_CAPITALIZE = _controls_.TE_CAPITALIZE
 TEXT_ALIGNMENT_DEFAULT = _controls_.TEXT_ALIGNMENT_DEFAULT
 TEXT_ALIGNMENT_LEFT = _controls_.TEXT_ALIGNMENT_LEFT
 TEXT_ALIGNMENT_CENTRE = _controls_.TEXT_ALIGNMENT_CENTRE
@@ -1464,7 +1579,10 @@ TE_HT_BEFORE = _controls_.TE_HT_BEFORE
 TE_HT_ON_TEXT = _controls_.TE_HT_ON_TEXT
 TE_HT_BELOW = _controls_.TE_HT_BELOW
 TE_HT_BEYOND = _controls_.TE_HT_BEYOND
+OutOfRangeTextCoord = _controls_.OutOfRangeTextCoord
+InvalidTextCoord = _controls_.InvalidTextCoord
 class TextAttr(object):
+    """Proxy of C++ TextAttr class"""
     def __repr__(self):
         return "<%s.%s; proxy of C++ wxTextAttr instance at %s>" % (self.__class__.__module__, self.__class__.__name__, self.this,)
     def __init__(self, *args, **kwargs):
@@ -1609,6 +1727,7 @@ def TextAttr_Combine(*args, **kwargs):
     return _controls_.TextAttr_Combine(*args, **kwargs)
 
 class TextCtrl(_core.Control):
+    """Proxy of C++ TextCtrl class"""
     def __repr__(self):
         return "<%s.%s; proxy of C++ wxTextCtrl instance at %s>" % (self.__class__.__module__, self.__class__.__name__, self.this,)
     def __init__(self, *args, **kwargs):
@@ -1759,7 +1878,7 @@ class TextCtrl(_core.Control):
 
     def HitTest(*args, **kwargs):
         """
-        HitTest(Point pt) -> (result, row, col)
+        HitTest(Point pt) -> (result, col, row)
 
         Find the row, col coresponding to the character at the point given in
         pixels. NB: pt is in device coords but is not adjusted for the client
@@ -1907,6 +2026,7 @@ wxEVT_COMMAND_TEXT_ENTER = _controls_.wxEVT_COMMAND_TEXT_ENTER
 wxEVT_COMMAND_TEXT_URL = _controls_.wxEVT_COMMAND_TEXT_URL
 wxEVT_COMMAND_TEXT_MAXLEN = _controls_.wxEVT_COMMAND_TEXT_MAXLEN
 class TextUrlEvent(_core.CommandEvent):
+    """Proxy of C++ TextUrlEvent class"""
     def __repr__(self):
         return "<%s.%s; proxy of C++ wxTextUrlEvent instance at %s>" % (self.__class__.__module__, self.__class__.__name__, self.this,)
     def __init__(self, *args, **kwargs):
@@ -1943,6 +2063,7 @@ EVT_TEXT_MAXLEN = wx.PyEventBinder( wxEVT_COMMAND_TEXT_MAXLEN, 1)
 #---------------------------------------------------------------------------
 
 class ScrollBar(_core.Control):
+    """Proxy of C++ ScrollBar class"""
     def __repr__(self):
         return "<%s.%s; proxy of C++ wxScrollBar instance at %s>" % (self.__class__.__module__, self.__class__.__name__, self.this,)
     def __init__(self, *args, **kwargs):
@@ -1996,8 +2117,6 @@ class ScrollBar(_core.Control):
         """
         SetScrollbar(self, int position, int thumbSize, int range, int pageSize, 
             bool refresh=True)
-
-        Sets the scrollbar properties of a built-in scrollbar.
         """
         return _controls_.ScrollBar_SetScrollbar(*args, **kwargs)
 
@@ -2058,6 +2177,7 @@ SP_VERTICAL = _controls_.SP_VERTICAL
 SP_ARROW_KEYS = _controls_.SP_ARROW_KEYS
 SP_WRAP = _controls_.SP_WRAP
 class SpinButton(_core.Control):
+    """Proxy of C++ SpinButton class"""
     def __repr__(self):
         return "<%s.%s; proxy of C++ wxSpinButton instance at %s>" % (self.__class__.__module__, self.__class__.__name__, self.this,)
     def __init__(self, *args, **kwargs):
@@ -2164,6 +2284,7 @@ def SpinButton_GetClassDefaultAttributes(*args, **kwargs):
     return _controls_.SpinButton_GetClassDefaultAttributes(*args, **kwargs)
 
 class SpinCtrl(_core.Control):
+    """Proxy of C++ SpinCtrl class"""
     def __repr__(self):
         return "<%s.%s; proxy of C++ wxSpinCtrl instance at %s>" % (self.__class__.__module__, self.__class__.__name__, self.this,)
     def __init__(self, *args, **kwargs):
@@ -2266,6 +2387,7 @@ def SpinCtrl_GetClassDefaultAttributes(*args, **kwargs):
     return _controls_.SpinCtrl_GetClassDefaultAttributes(*args, **kwargs)
 
 class SpinEvent(_core.NotifyEvent):
+    """Proxy of C++ SpinEvent class"""
     def __repr__(self):
         return "<%s.%s; proxy of C++ wxSpinEvent instance at %s>" % (self.__class__.__module__, self.__class__.__name__, self.this,)
     def __init__(self, *args, **kwargs):
@@ -2299,6 +2421,7 @@ EVT_SPINCTRL  = wx.PyEventBinder( wxEVT_COMMAND_SPINCTRL_UPDATED, 1)
 #---------------------------------------------------------------------------
 
 class RadioBox(_core.Control):
+    """Proxy of C++ RadioBox class"""
     def __repr__(self):
         return "<%s.%s; proxy of C++ wxRadioBox instance at %s>" % (self.__class__.__module__, self.__class__.__name__, self.this,)
     def __init__(self, *args, **kwargs):
@@ -2436,6 +2559,7 @@ def RadioBox_GetClassDefaultAttributes(*args, **kwargs):
 #---------------------------------------------------------------------------
 
 class RadioButton(_core.Control):
+    """Proxy of C++ RadioButton class"""
     def __repr__(self):
         return "<%s.%s; proxy of C++ wxRadioButton instance at %s>" % (self.__class__.__module__, self.__class__.__name__, self.this,)
     def __init__(self, *args, **kwargs):
@@ -2519,7 +2643,20 @@ def RadioButton_GetClassDefaultAttributes(*args, **kwargs):
 
 #---------------------------------------------------------------------------
 
+SL_HORIZONTAL = _controls_.SL_HORIZONTAL
+SL_VERTICAL = _controls_.SL_VERTICAL
+SL_TICKS = _controls_.SL_TICKS
+SL_AUTOTICKS = _controls_.SL_AUTOTICKS
+SL_LABELS = _controls_.SL_LABELS
+SL_LEFT = _controls_.SL_LEFT
+SL_TOP = _controls_.SL_TOP
+SL_RIGHT = _controls_.SL_RIGHT
+SL_BOTTOM = _controls_.SL_BOTTOM
+SL_BOTH = _controls_.SL_BOTH
+SL_SELRANGE = _controls_.SL_SELRANGE
+SL_INVERSE = _controls_.SL_INVERSE
 class Slider(_core.Control):
+    """Proxy of C++ Slider class"""
     def __repr__(self):
         return "<%s.%s; proxy of C++ wxSlider instance at %s>" % (self.__class__.__module__, self.__class__.__name__, self.this,)
     def __init__(self, *args, **kwargs):
@@ -2687,6 +2824,7 @@ wxEVT_COMMAND_TOGGLEBUTTON_CLICKED = _controls_.wxEVT_COMMAND_TOGGLEBUTTON_CLICK
 EVT_TOGGLEBUTTON = wx.PyEventBinder( wxEVT_COMMAND_TOGGLEBUTTON_CLICKED, 1)
 
 class ToggleButton(_core.Control):
+    """Proxy of C++ ToggleButton class"""
     def __repr__(self):
         return "<%s.%s; proxy of C++ wxToggleButton instance at %s>" % (self.__class__.__module__, self.__class__.__name__, self.this,)
     def __init__(self, *args, **kwargs):
@@ -2779,88 +2917,93 @@ def ToggleButton_GetClassDefaultAttributes(*args, **kwargs):
 
 #---------------------------------------------------------------------------
 
-class BookCtrl(_core.Control):
+class BookCtrlBase(_core.Control):
+    """Proxy of C++ BookCtrlBase class"""
     def __init__(self): raise RuntimeError, "No constructor defined"
     def __repr__(self):
-        return "<%s.%s; proxy of C++ wxBookCtrl instance at %s>" % (self.__class__.__module__, self.__class__.__name__, self.this,)
+        return "<%s.%s; proxy of C++ wxBookCtrlBase instance at %s>" % (self.__class__.__module__, self.__class__.__name__, self.this,)
     def GetPageCount(*args, **kwargs):
         """GetPageCount(self) -> size_t"""
-        return _controls_.BookCtrl_GetPageCount(*args, **kwargs)
+        return _controls_.BookCtrlBase_GetPageCount(*args, **kwargs)
 
     def GetPage(*args, **kwargs):
         """GetPage(self, size_t n) -> Window"""
-        return _controls_.BookCtrl_GetPage(*args, **kwargs)
+        return _controls_.BookCtrlBase_GetPage(*args, **kwargs)
+
+    def GetCurrentPage(*args, **kwargs):
+        """GetCurrentPage(self) -> Window"""
+        return _controls_.BookCtrlBase_GetCurrentPage(*args, **kwargs)
 
     def GetSelection(*args, **kwargs):
         """GetSelection(self) -> int"""
-        return _controls_.BookCtrl_GetSelection(*args, **kwargs)
+        return _controls_.BookCtrlBase_GetSelection(*args, **kwargs)
 
     def SetPageText(*args, **kwargs):
         """SetPageText(self, size_t n, String strText) -> bool"""
-        return _controls_.BookCtrl_SetPageText(*args, **kwargs)
+        return _controls_.BookCtrlBase_SetPageText(*args, **kwargs)
 
     def GetPageText(*args, **kwargs):
         """GetPageText(self, size_t n) -> String"""
-        return _controls_.BookCtrl_GetPageText(*args, **kwargs)
+        return _controls_.BookCtrlBase_GetPageText(*args, **kwargs)
 
     def SetImageList(*args, **kwargs):
         """SetImageList(self, ImageList imageList)"""
-        return _controls_.BookCtrl_SetImageList(*args, **kwargs)
+        return _controls_.BookCtrlBase_SetImageList(*args, **kwargs)
 
     def AssignImageList(*args, **kwargs):
         """AssignImageList(self, ImageList imageList)"""
-        return _controls_.BookCtrl_AssignImageList(*args, **kwargs)
+        return _controls_.BookCtrlBase_AssignImageList(*args, **kwargs)
 
     def GetImageList(*args, **kwargs):
         """GetImageList(self) -> ImageList"""
-        return _controls_.BookCtrl_GetImageList(*args, **kwargs)
+        return _controls_.BookCtrlBase_GetImageList(*args, **kwargs)
 
     def GetPageImage(*args, **kwargs):
         """GetPageImage(self, size_t n) -> int"""
-        return _controls_.BookCtrl_GetPageImage(*args, **kwargs)
+        return _controls_.BookCtrlBase_GetPageImage(*args, **kwargs)
 
     def SetPageImage(*args, **kwargs):
         """SetPageImage(self, size_t n, int imageId) -> bool"""
-        return _controls_.BookCtrl_SetPageImage(*args, **kwargs)
+        return _controls_.BookCtrlBase_SetPageImage(*args, **kwargs)
 
     def SetPageSize(*args, **kwargs):
         """SetPageSize(self, Size size)"""
-        return _controls_.BookCtrl_SetPageSize(*args, **kwargs)
+        return _controls_.BookCtrlBase_SetPageSize(*args, **kwargs)
 
     def CalcSizeFromPage(*args, **kwargs):
         """CalcSizeFromPage(self, Size sizePage) -> Size"""
-        return _controls_.BookCtrl_CalcSizeFromPage(*args, **kwargs)
+        return _controls_.BookCtrlBase_CalcSizeFromPage(*args, **kwargs)
 
     def DeletePage(*args, **kwargs):
         """DeletePage(self, size_t n) -> bool"""
-        return _controls_.BookCtrl_DeletePage(*args, **kwargs)
+        return _controls_.BookCtrlBase_DeletePage(*args, **kwargs)
 
     def RemovePage(*args, **kwargs):
         """RemovePage(self, size_t n) -> bool"""
-        return _controls_.BookCtrl_RemovePage(*args, **kwargs)
+        return _controls_.BookCtrlBase_RemovePage(*args, **kwargs)
 
     def DeleteAllPages(*args, **kwargs):
         """DeleteAllPages(self) -> bool"""
-        return _controls_.BookCtrl_DeleteAllPages(*args, **kwargs)
+        return _controls_.BookCtrlBase_DeleteAllPages(*args, **kwargs)
 
     def AddPage(*args, **kwargs):
         """AddPage(self, Window page, String text, bool select=False, int imageId=-1) -> bool"""
-        return _controls_.BookCtrl_AddPage(*args, **kwargs)
+        return _controls_.BookCtrlBase_AddPage(*args, **kwargs)
 
     def InsertPage(*args, **kwargs):
         """
         InsertPage(self, size_t n, Window page, String text, bool select=False, 
             int imageId=-1) -> bool
         """
-        return _controls_.BookCtrl_InsertPage(*args, **kwargs)
+        return _controls_.BookCtrlBase_InsertPage(*args, **kwargs)
 
     def SetSelection(*args, **kwargs):
         """SetSelection(self, size_t n) -> int"""
-        return _controls_.BookCtrl_SetSelection(*args, **kwargs)
+        return _controls_.BookCtrlBase_SetSelection(*args, **kwargs)
 
     def AdvanceSelection(*args, **kwargs):
         """AdvanceSelection(self, bool forward=True)"""
-        return _controls_.BookCtrl_AdvanceSelection(*args, **kwargs)
+        return _controls_.BookCtrlBase_AdvanceSelection(*args, **kwargs)
 
     def GetClassDefaultAttributes(*args, **kwargs):
         """
@@ -2877,21 +3020,21 @@ class BookCtrl(_core.Control):
         the returned font. See `wx.Window.SetWindowVariant` for more about
         this.
         """
-        return _controls_.BookCtrl_GetClassDefaultAttributes(*args, **kwargs)
+        return _controls_.BookCtrlBase_GetClassDefaultAttributes(*args, **kwargs)
 
     GetClassDefaultAttributes = staticmethod(GetClassDefaultAttributes)
 
-class BookCtrlPtr(BookCtrl):
+class BookCtrlBasePtr(BookCtrlBase):
     def __init__(self, this):
         self.this = this
         if not hasattr(self,"thisown"): self.thisown = 0
-        self.__class__ = BookCtrl
-_controls_.BookCtrl_swigregister(BookCtrlPtr)
-NOTEBOOK_NAME = cvar.NOTEBOOK_NAME
+        self.__class__ = BookCtrlBase
+_controls_.BookCtrlBase_swigregister(BookCtrlBasePtr)
+NotebookNameStr = cvar.NotebookNameStr
 
-def BookCtrl_GetClassDefaultAttributes(*args, **kwargs):
+def BookCtrlBase_GetClassDefaultAttributes(*args, **kwargs):
     """
-    BookCtrl_GetClassDefaultAttributes(int variant=WINDOW_VARIANT_NORMAL) -> VisualAttributes
+    BookCtrlBase_GetClassDefaultAttributes(int variant=WINDOW_VARIANT_NORMAL) -> VisualAttributes
 
     Get the default attributes for this class.  This is useful if you want
     to use the same font or colour in your own control as in a standard
@@ -2904,43 +3047,49 @@ def BookCtrl_GetClassDefaultAttributes(*args, **kwargs):
     the returned font. See `wx.Window.SetWindowVariant` for more about
     this.
     """
-    return _controls_.BookCtrl_GetClassDefaultAttributes(*args, **kwargs)
+    return _controls_.BookCtrlBase_GetClassDefaultAttributes(*args, **kwargs)
 
-class BookCtrlEvent(_core.NotifyEvent):
+class BookCtrlBaseEvent(_core.NotifyEvent):
+    """Proxy of C++ BookCtrlBaseEvent class"""
     def __repr__(self):
-        return "<%s.%s; proxy of C++ wxBookCtrlEvent instance at %s>" % (self.__class__.__module__, self.__class__.__name__, self.this,)
+        return "<%s.%s; proxy of C++ wxBookCtrlBaseEvent instance at %s>" % (self.__class__.__module__, self.__class__.__name__, self.this,)
     def __init__(self, *args, **kwargs):
         """
         __init__(self, wxEventType commandType=wxEVT_NULL, int id=0, int nSel=-1, 
-            int nOldSel=-1) -> BookCtrlEvent
+            int nOldSel=-1) -> BookCtrlBaseEvent
         """
-        newobj = _controls_.new_BookCtrlEvent(*args, **kwargs)
+        newobj = _controls_.new_BookCtrlBaseEvent(*args, **kwargs)
         self.this = newobj.this
         self.thisown = 1
         del newobj.thisown
     def GetSelection(*args, **kwargs):
-        """GetSelection(self) -> int"""
-        return _controls_.BookCtrlEvent_GetSelection(*args, **kwargs)
+        """
+        GetSelection(self) -> int
+
+        Returns item index for a listbox or choice selection event (not valid
+        for a deselection).
+        """
+        return _controls_.BookCtrlBaseEvent_GetSelection(*args, **kwargs)
 
     def SetSelection(*args, **kwargs):
         """SetSelection(self, int nSel)"""
-        return _controls_.BookCtrlEvent_SetSelection(*args, **kwargs)
+        return _controls_.BookCtrlBaseEvent_SetSelection(*args, **kwargs)
 
     def GetOldSelection(*args, **kwargs):
         """GetOldSelection(self) -> int"""
-        return _controls_.BookCtrlEvent_GetOldSelection(*args, **kwargs)
+        return _controls_.BookCtrlBaseEvent_GetOldSelection(*args, **kwargs)
 
     def SetOldSelection(*args, **kwargs):
         """SetOldSelection(self, int nOldSel)"""
-        return _controls_.BookCtrlEvent_SetOldSelection(*args, **kwargs)
+        return _controls_.BookCtrlBaseEvent_SetOldSelection(*args, **kwargs)
 
 
-class BookCtrlEventPtr(BookCtrlEvent):
+class BookCtrlBaseEventPtr(BookCtrlBaseEvent):
     def __init__(self, this):
         self.this = this
         if not hasattr(self,"thisown"): self.thisown = 0
-        self.__class__ = BookCtrlEvent
-_controls_.BookCtrlEvent_swigregister(BookCtrlEventPtr)
+        self.__class__ = BookCtrlBaseEvent
+_controls_.BookCtrlBaseEvent_swigregister(BookCtrlBaseEventPtr)
 
 #---------------------------------------------------------------------------
 
@@ -2950,17 +3099,19 @@ NB_LEFT = _controls_.NB_LEFT
 NB_RIGHT = _controls_.NB_RIGHT
 NB_BOTTOM = _controls_.NB_BOTTOM
 NB_MULTILINE = _controls_.NB_MULTILINE
+NB_NOPAGETHEME = _controls_.NB_NOPAGETHEME
 NB_HITTEST_NOWHERE = _controls_.NB_HITTEST_NOWHERE
 NB_HITTEST_ONICON = _controls_.NB_HITTEST_ONICON
 NB_HITTEST_ONLABEL = _controls_.NB_HITTEST_ONLABEL
 NB_HITTEST_ONITEM = _controls_.NB_HITTEST_ONITEM
-class Notebook(BookCtrl):
+class Notebook(BookCtrlBase):
+    """Proxy of C++ Notebook class"""
     def __repr__(self):
         return "<%s.%s; proxy of C++ wxNotebook instance at %s>" % (self.__class__.__module__, self.__class__.__name__, self.this,)
     def __init__(self, *args, **kwargs):
         """
         __init__(self, Window parent, int id=-1, Point pos=DefaultPosition, 
-            Size size=DefaultSize, long style=0, String name=NOTEBOOK_NAME) -> Notebook
+            Size size=DefaultSize, long style=0, String name=NotebookNameStr) -> Notebook
         """
         newobj = _controls_.new_Notebook(*args, **kwargs)
         self.this = newobj.this
@@ -2971,7 +3122,7 @@ class Notebook(BookCtrl):
     def Create(*args, **kwargs):
         """
         Create(self, Window parent, int id=-1, Point pos=DefaultPosition, 
-            Size size=DefaultSize, long style=0, String name=NOTEBOOK_NAME) -> bool
+            Size size=DefaultSize, long style=0, String name=NotebookNameStr) -> bool
         """
         return _controls_.Notebook_Create(*args, **kwargs)
 
@@ -2999,6 +3150,10 @@ class Notebook(BookCtrl):
     def CalcSizeFromPage(*args, **kwargs):
         """CalcSizeFromPage(self, Size sizePage) -> Size"""
         return _controls_.Notebook_CalcSizeFromPage(*args, **kwargs)
+
+    def GetThemeBackgroundColour(*args, **kwargs):
+        """GetThemeBackgroundColour(self) -> Colour"""
+        return _controls_.Notebook_GetThemeBackgroundColour(*args, **kwargs)
 
     def GetClassDefaultAttributes(*args, **kwargs):
         """
@@ -3049,7 +3204,8 @@ def Notebook_GetClassDefaultAttributes(*args, **kwargs):
     """
     return _controls_.Notebook_GetClassDefaultAttributes(*args, **kwargs)
 
-class NotebookEvent(BookCtrlEvent):
+class NotebookEvent(BookCtrlBaseEvent):
+    """Proxy of C++ NotebookEvent class"""
     def __repr__(self):
         return "<%s.%s; proxy of C++ wxNotebookEvent instance at %s>" % (self.__class__.__module__, self.__class__.__name__, self.this,)
     def __init__(self, *args, **kwargs):
@@ -3080,8 +3236,8 @@ EVT_NOTEBOOK_PAGE_CHANGING = wx.PyEventBinder( wxEVT_COMMAND_NOTEBOOK_PAGE_CHANG
 class NotebookPage(wx.Panel):
     """
     There is an old (and apparently unsolvable) bug when placing a
-    window with a nonstandard background colour in a wxNotebook on
-    wxGTK, as the notbooks's background colour would always be used
+    window with a nonstandard background colour in a wx.Notebook on
+    wxGTK1, as the notbooks's background colour would always be used
     when the window is refreshed.  The solution is to place a panel in
     the notbook and the coloured window on the panel, sized to cover
     the panel.  This simple class does that for you, just put an
@@ -3093,7 +3249,7 @@ class NotebookPage(wx.Panel):
                  style=wx.TAB_TRAVERSAL, name="panel"):
         wx.Panel.__init__(self, parent, id, pos, size, style, name)
         self.child = None
-        EVT_SIZE(self, self.OnSize)
+        self.Bind(wx.EVT_SIZE, self.OnSize)
 
     def OnSize(self, evt):
         if self.child is None:
@@ -3113,7 +3269,8 @@ LB_BOTTOM = _controls_.LB_BOTTOM
 LB_LEFT = _controls_.LB_LEFT
 LB_RIGHT = _controls_.LB_RIGHT
 LB_ALIGN_MASK = _controls_.LB_ALIGN_MASK
-class Listbook(BookCtrl):
+class Listbook(BookCtrlBase):
+    """Proxy of C++ Listbook class"""
     def __repr__(self):
         return "<%s.%s; proxy of C++ wxListbook instance at %s>" % (self.__class__.__module__, self.__class__.__name__, self.this,)
     def __init__(self, *args, **kwargs):
@@ -3156,7 +3313,8 @@ def PreListbook(*args, **kwargs):
     val.thisown = 1
     return val
 
-class ListbookEvent(BookCtrlEvent):
+class ListbookEvent(BookCtrlBaseEvent):
+    """Proxy of C++ ListbookEvent class"""
     def __repr__(self):
         return "<%s.%s; proxy of C++ wxListbookEvent instance at %s>" % (self.__class__.__module__, self.__class__.__name__, self.this,)
     def __init__(self, *args, **kwargs):
@@ -3187,7 +3345,8 @@ CHB_BOTTOM = _controls_.CHB_BOTTOM
 CHB_LEFT = _controls_.CHB_LEFT
 CHB_RIGHT = _controls_.CHB_RIGHT
 CHB_ALIGN_MASK = _controls_.CHB_ALIGN_MASK
-class Choicebook(BookCtrl):
+class Choicebook(BookCtrlBase):
+    """Proxy of C++ Choicebook class"""
     def __repr__(self):
         return "<%s.%s; proxy of C++ wxChoicebook instance at %s>" % (self.__class__.__module__, self.__class__.__name__, self.this,)
     def __init__(self, *args, **kwargs):
@@ -3212,6 +3371,10 @@ class Choicebook(BookCtrl):
         """IsVertical(self) -> bool"""
         return _controls_.Choicebook_IsVertical(*args, **kwargs)
 
+    def GetChoiceCtrl(*args, **kwargs):
+        """GetChoiceCtrl(self) -> Choice"""
+        return _controls_.Choicebook_GetChoiceCtrl(*args, **kwargs)
+
     def DeleteAllPages(*args, **kwargs):
         """DeleteAllPages(self) -> bool"""
         return _controls_.Choicebook_DeleteAllPages(*args, **kwargs)
@@ -3230,7 +3393,8 @@ def PreChoicebook(*args, **kwargs):
     val.thisown = 1
     return val
 
-class ChoicebookEvent(BookCtrlEvent):
+class ChoicebookEvent(BookCtrlBaseEvent):
+    """Proxy of C++ ChoicebookEvent class"""
     def __repr__(self):
         return "<%s.%s; proxy of C++ wxChoicebookEvent instance at %s>" % (self.__class__.__module__, self.__class__.__name__, self.this,)
     def __init__(self, *args, **kwargs):
@@ -3258,10 +3422,11 @@ EVT_CHOICEBOOK_PAGE_CHANGING = wx.PyEventBinder( wxEVT_COMMAND_CHOICEBOOK_PAGE_C
 #---------------------------------------------------------------------------
 
 class BookCtrlSizer(_core.Sizer):
+    """Proxy of C++ BookCtrlSizer class"""
     def __repr__(self):
         return "<%s.%s; proxy of C++ wxBookCtrlSizer instance at %s>" % (self.__class__.__module__, self.__class__.__name__, self.this,)
     def __init__(self, *args, **kwargs):
-        """__init__(self, BookCtrl nb) -> BookCtrlSizer"""
+        """__init__(self, BookCtrlBase nb) -> BookCtrlSizer"""
         newobj = _controls_.new_BookCtrlSizer(*args, **kwargs)
         self.this = newobj.this
         self.thisown = 1
@@ -3289,7 +3454,7 @@ class BookCtrlSizer(_core.Sizer):
         return _controls_.BookCtrlSizer_CalcMin(*args, **kwargs)
 
     def GetControl(*args, **kwargs):
-        """GetControl(self) -> BookCtrl"""
+        """GetControl(self) -> BookCtrlBase"""
         return _controls_.BookCtrlSizer_GetControl(*args, **kwargs)
 
 
@@ -3301,6 +3466,7 @@ class BookCtrlSizerPtr(BookCtrlSizer):
 _controls_.BookCtrlSizer_swigregister(BookCtrlSizerPtr)
 
 class NotebookSizer(_core.Sizer):
+    """Proxy of C++ NotebookSizer class"""
     def __repr__(self):
         return "<%s.%s; proxy of C++ wxNotebookSizer instance at %s>" % (self.__class__.__module__, self.__class__.__name__, self.this,)
     def __init__(self, *args, **kwargs):
@@ -3343,6 +3509,8 @@ class NotebookSizerPtr(NotebookSizer):
         self.__class__ = NotebookSizer
 _controls_.NotebookSizer_swigregister(NotebookSizerPtr)
 
+NotebookSizer.__init__ = wx._deprecated(NotebookSizer.__init__, "NotebookSizer is no longer needed.") 
+BookCtrlSizer.__init__ = wx._deprecated(BookCtrlSizer.__init__, "BookCtrlSizer is no longer needed.") 
 #---------------------------------------------------------------------------
 
 TOOL_STYLE_BUTTON = _controls_.TOOL_STYLE_BUTTON
@@ -3360,6 +3528,7 @@ TB_NOALIGN = _controls_.TB_NOALIGN
 TB_HORZ_LAYOUT = _controls_.TB_HORZ_LAYOUT
 TB_HORZ_TEXT = _controls_.TB_HORZ_TEXT
 class ToolBarToolBase(_core.Object):
+    """Proxy of C++ ToolBarToolBase class"""
     def __init__(self): raise RuntimeError, "No constructor defined"
     def __repr__(self):
         return "<%s.%s; proxy of C++ wxToolBarToolBase instance at %s>" % (self.__class__.__module__, self.__class__.__name__, self.this,)
@@ -3493,6 +3662,7 @@ class ToolBarToolBasePtr(ToolBarToolBase):
 _controls_.ToolBarToolBase_swigregister(ToolBarToolBasePtr)
 
 class ToolBarBase(_core.Control):
+    """Proxy of C++ ToolBarBase class"""
     def __init__(self): raise RuntimeError, "No constructor defined"
     def __repr__(self):
         return "<%s.%s; proxy of C++ wxToolBarBase instance at %s>" % (self.__class__.__module__, self.__class__.__name__, self.this,)
@@ -3815,6 +3985,7 @@ class ToolBarBasePtr(ToolBarBase):
 _controls_.ToolBarBase_swigregister(ToolBarBasePtr)
 
 class ToolBar(ToolBarBase):
+    """Proxy of C++ ToolBar class"""
     def __repr__(self):
         return "<%s.%s; proxy of C++ wxToolBar instance at %s>" % (self.__class__.__module__, self.__class__.__name__, self.this,)
     def __init__(self, *args, **kwargs):
@@ -3963,6 +4134,7 @@ LIST_FIND_RIGHT = _controls_.LIST_FIND_RIGHT
 #---------------------------------------------------------------------------
 
 class ListItemAttr(object):
+    """Proxy of C++ ListItemAttr class"""
     def __repr__(self):
         return "<%s.%s; proxy of C++ wxListItemAttr instance at %s>" % (self.__class__.__module__, self.__class__.__name__, self.this,)
     def __init__(self, *args, **kwargs):
@@ -4026,6 +4198,7 @@ ListCtrlNameStr = cvar.ListCtrlNameStr
 #---------------------------------------------------------------------------
 
 class ListItem(_core.Object):
+    """Proxy of C++ ListItem class"""
     def __repr__(self):
         return "<%s.%s; proxy of C++ wxListItem instance at %s>" % (self.__class__.__module__, self.__class__.__name__, self.this,)
     def __init__(self, *args, **kwargs):
@@ -4177,6 +4350,7 @@ _controls_.ListItem_swigregister(ListItemPtr)
 #---------------------------------------------------------------------------
 
 class ListEvent(_core.NotifyEvent):
+    """Proxy of C++ ListEvent class"""
     def __repr__(self):
         return "<%s.%s; proxy of C++ wxListEvent instance at %s>" % (self.__class__.__module__, self.__class__.__name__, self.this,)
     def __init__(self, *args, **kwargs):
@@ -4263,8 +4437,6 @@ wxEVT_COMMAND_LIST_BEGIN_LABEL_EDIT = _controls_.wxEVT_COMMAND_LIST_BEGIN_LABEL_
 wxEVT_COMMAND_LIST_END_LABEL_EDIT = _controls_.wxEVT_COMMAND_LIST_END_LABEL_EDIT
 wxEVT_COMMAND_LIST_DELETE_ITEM = _controls_.wxEVT_COMMAND_LIST_DELETE_ITEM
 wxEVT_COMMAND_LIST_DELETE_ALL_ITEMS = _controls_.wxEVT_COMMAND_LIST_DELETE_ALL_ITEMS
-wxEVT_COMMAND_LIST_GET_INFO = _controls_.wxEVT_COMMAND_LIST_GET_INFO
-wxEVT_COMMAND_LIST_SET_INFO = _controls_.wxEVT_COMMAND_LIST_SET_INFO
 wxEVT_COMMAND_LIST_ITEM_SELECTED = _controls_.wxEVT_COMMAND_LIST_ITEM_SELECTED
 wxEVT_COMMAND_LIST_ITEM_DESELECTED = _controls_.wxEVT_COMMAND_LIST_ITEM_DESELECTED
 wxEVT_COMMAND_LIST_KEY_DOWN = _controls_.wxEVT_COMMAND_LIST_KEY_DOWN
@@ -4279,6 +4451,8 @@ wxEVT_COMMAND_LIST_COL_BEGIN_DRAG = _controls_.wxEVT_COMMAND_LIST_COL_BEGIN_DRAG
 wxEVT_COMMAND_LIST_COL_DRAGGING = _controls_.wxEVT_COMMAND_LIST_COL_DRAGGING
 wxEVT_COMMAND_LIST_COL_END_DRAG = _controls_.wxEVT_COMMAND_LIST_COL_END_DRAG
 wxEVT_COMMAND_LIST_ITEM_FOCUSED = _controls_.wxEVT_COMMAND_LIST_ITEM_FOCUSED
+wxEVT_COMMAND_LIST_GET_INFO = _controls_.wxEVT_COMMAND_LIST_GET_INFO
+wxEVT_COMMAND_LIST_SET_INFO = _controls_.wxEVT_COMMAND_LIST_SET_INFO
 EVT_LIST_BEGIN_DRAG        = wx.PyEventBinder(wxEVT_COMMAND_LIST_BEGIN_DRAG       , 1)
 EVT_LIST_BEGIN_RDRAG       = wx.PyEventBinder(wxEVT_COMMAND_LIST_BEGIN_RDRAG      , 1)
 EVT_LIST_BEGIN_LABEL_EDIT  = wx.PyEventBinder(wxEVT_COMMAND_LIST_BEGIN_LABEL_EDIT , 1)
@@ -4308,6 +4482,7 @@ EVT_LIST_SET_INFO = wx._deprecated(EVT_LIST_SET_INFO)
 #---------------------------------------------------------------------------
 
 class ListCtrl(_core.Control):
+    """Proxy of C++ ListCtrl class"""
     def __repr__(self):
         return "<%s.%s; proxy of C++ wxPyListCtrl instance at %s>" % (self.__class__.__module__, self.__class__.__name__, self.this,)
     def __init__(self, *args, **kwargs):
@@ -4337,11 +4512,35 @@ class ListCtrl(_core.Control):
         return _controls_.ListCtrl__setCallbackInfo(*args, **kwargs)
 
     def SetForegroundColour(*args, **kwargs):
-        """SetForegroundColour(self, Colour col) -> bool"""
+        """
+        SetForegroundColour(self, Colour col) -> bool
+
+        Sets the foreground colour of the window.  Returns True is the colour
+        was changed.  The interpretation of foreground colour is dependent on
+        the window class; it may be the text colour or other colour, or it may
+        not be used at all.
+        """
         return _controls_.ListCtrl_SetForegroundColour(*args, **kwargs)
 
     def SetBackgroundColour(*args, **kwargs):
-        """SetBackgroundColour(self, Colour col) -> bool"""
+        """
+        SetBackgroundColour(self, Colour col) -> bool
+
+        Sets the background colour of the window.  Returns True if the colour
+        was changed.  The background colour is usually painted by the default
+        EVT_ERASE_BACKGROUND event handler function under Windows and
+        automatically under GTK.  Using `wx.NullColour` will reset the window
+        to the default background colour.
+
+        Note that setting the background colour may not cause an immediate
+        refresh, so you may wish to call `ClearBackground` or `Refresh` after
+        calling this function.
+
+        Using this function will disable attempts to use themes for this
+        window, if the system supports them.  Use with care since usually the
+        themes represent the appearance chosen by the user to be used for all
+        applications on the system.
+        """
         return _controls_.ListCtrl_SetBackgroundColour(*args, **kwargs)
 
     def GetColumn(*args, **kwargs):
@@ -4552,7 +4751,7 @@ class ListCtrl(_core.Control):
         HitTest(Point point) -> (item, where)
 
         Determines which item (if any) is at the specified point, giving
-         in the second return value (see wxLIST_HITTEST_... flags.)
+         in the second return value (see wx.LIST_HITTEST flags.)
         """
         return _controls_.ListCtrl_HitTest(*args, **kwargs)
 
@@ -4572,10 +4771,11 @@ class ListCtrl(_core.Control):
         """InsertImageStringItem(self, long index, String label, int imageIndex) -> long"""
         return _controls_.ListCtrl_InsertImageStringItem(*args, **kwargs)
 
-    def InsertColumnInfo(*args, **kwargs):
-        """InsertColumnInfo(self, long col, ListItem info) -> long"""
-        return _controls_.ListCtrl_InsertColumnInfo(*args, **kwargs)
+    def InsertColumnItem(*args, **kwargs):
+        """InsertColumnItem(self, long col, ListItem info) -> long"""
+        return _controls_.ListCtrl_InsertColumnItem(*args, **kwargs)
 
+    InsertColumnInfo = InsertColumnItem 
     def InsertColumn(*args, **kwargs):
         """
         InsertColumn(self, long col, String heading, int format=LIST_FORMAT_LEFT, 
@@ -4634,7 +4834,7 @@ class ListCtrl(_core.Control):
 
     def IsSelected(self, idx):
         '''return True if the item is selected'''
-        return self.GetItemState(idx, wx.LIST_STATE_SELECTED) != 0
+        return (self.GetItemState(idx, wx.LIST_STATE_SELECTED) & wx.LIST_STATE_SELECTED) != 0
 
     def SetColumnImage(self, col, image):
         item = self.GetColumn(col)
@@ -4726,6 +4926,7 @@ def ListCtrl_GetClassDefaultAttributes(*args, **kwargs):
 #---------------------------------------------------------------------------
 
 class ListView(ListCtrl):
+    """Proxy of C++ ListView class"""
     def __repr__(self):
         return "<%s.%s; proxy of C++ wxListView instance at %s>" % (self.__class__.__module__, self.__class__.__name__, self.this,)
     def __init__(self, *args, **kwargs):
@@ -4836,6 +5037,7 @@ TREE_HITTEST_ONITEM = _controls_.TREE_HITTEST_ONITEM
 #---------------------------------------------------------------------------
 
 class TreeItemId(object):
+    """Proxy of C++ TreeItemId class"""
     def __repr__(self):
         return "<%s.%s; proxy of C++ wxTreeItemId instance at %s>" % (self.__class__.__module__, self.__class__.__name__, self.this,)
     def __init__(self, *args, **kwargs):
@@ -4875,6 +5077,7 @@ _controls_.TreeItemId_swigregister(TreeItemIdPtr)
 TreeCtrlNameStr = cvar.TreeCtrlNameStr
 
 class TreeItemData(object):
+    """Proxy of C++ TreeItemData class"""
     def __repr__(self):
         return "<%s.%s; proxy of C++ wxPyTreeItemData instance at %s>" % (self.__class__.__module__, self.__class__.__name__, self.this,)
     def __init__(self, *args, **kwargs):
@@ -4933,6 +5136,7 @@ wxEVT_COMMAND_TREE_ITEM_MIDDLE_CLICK = _controls_.wxEVT_COMMAND_TREE_ITEM_MIDDLE
 wxEVT_COMMAND_TREE_END_DRAG = _controls_.wxEVT_COMMAND_TREE_END_DRAG
 wxEVT_COMMAND_TREE_STATE_IMAGE_CLICK = _controls_.wxEVT_COMMAND_TREE_STATE_IMAGE_CLICK
 wxEVT_COMMAND_TREE_ITEM_GETTOOLTIP = _controls_.wxEVT_COMMAND_TREE_ITEM_GETTOOLTIP
+wxEVT_COMMAND_TREE_ITEM_MENU = _controls_.wxEVT_COMMAND_TREE_ITEM_MENU
 EVT_TREE_BEGIN_DRAG        = wx.PyEventBinder(wxEVT_COMMAND_TREE_BEGIN_DRAG       , 1)
 EVT_TREE_BEGIN_RDRAG       = wx.PyEventBinder(wxEVT_COMMAND_TREE_BEGIN_RDRAG      , 1)
 EVT_TREE_BEGIN_LABEL_EDIT  = wx.PyEventBinder(wxEVT_COMMAND_TREE_BEGIN_LABEL_EDIT , 1)
@@ -4953,8 +5157,10 @@ EVT_TREE_ITEM_MIDDLE_CLICK = wx.PyEventBinder(wxEVT_COMMAND_TREE_ITEM_MIDDLE_CLI
 EVT_TREE_END_DRAG          = wx.PyEventBinder(wxEVT_COMMAND_TREE_END_DRAG         , 1)
 EVT_TREE_STATE_IMAGE_CLICK = wx.PyEventBinder(wxEVT_COMMAND_TREE_STATE_IMAGE_CLICK, 1)
 EVT_TREE_ITEM_GETTOOLTIP   = wx.PyEventBinder(wxEVT_COMMAND_TREE_ITEM_GETTOOLTIP,   1)
+EVT_TREE_ITEM_MENU        = wx.PyEventBinder(wxEVT_COMMAND_TREE_ITEM_MENU,         1)
 
 class TreeEvent(_core.NotifyEvent):
+    """Proxy of C++ TreeEvent class"""
     def __repr__(self):
         return "<%s.%s; proxy of C++ wxTreeEvent instance at %s>" % (self.__class__.__module__, self.__class__.__name__, self.this,)
     def __init__(self, *args, **kwargs):
@@ -5019,6 +5225,10 @@ class TreeEvent(_core.NotifyEvent):
         """SetToolTip(self, String toolTip)"""
         return _controls_.TreeEvent_SetToolTip(*args, **kwargs)
 
+    def GetToolTip(*args, **kwargs):
+        """GetToolTip(self) -> String"""
+        return _controls_.TreeEvent_GetToolTip(*args, **kwargs)
+
 
 class TreeEventPtr(TreeEvent):
     def __init__(self, this):
@@ -5030,6 +5240,7 @@ _controls_.TreeEvent_swigregister(TreeEventPtr)
 #---------------------------------------------------------------------------
 
 class TreeCtrl(_core.Control):
+    """Proxy of C++ TreeCtrl class"""
     def __repr__(self):
         return "<%s.%s; proxy of C++ wxPyTreeCtrl instance at %s>" % (self.__class__.__module__, self.__class__.__name__, self.this,)
     def __init__(self, *args, **kwargs):
@@ -5157,6 +5368,10 @@ class TreeCtrl(_core.Control):
     def SetItemBold(*args, **kwargs):
         """SetItemBold(self, TreeItemId item, bool bold=True)"""
         return _controls_.TreeCtrl_SetItemBold(*args, **kwargs)
+
+    def SetItemDropHighlight(*args, **kwargs):
+        """SetItemDropHighlight(self, TreeItemId item, bool highlight=True)"""
+        return _controls_.TreeCtrl_SetItemDropHighlight(*args, **kwargs)
 
     def SetItemTextColour(*args, **kwargs):
         """SetItemTextColour(self, TreeItemId item, Colour col)"""
@@ -5414,6 +5629,7 @@ DIRCTRL_SHOW_FILTERS = _controls_.DIRCTRL_SHOW_FILTERS
 DIRCTRL_3D_INTERNAL = _controls_.DIRCTRL_3D_INTERNAL
 DIRCTRL_EDIT_LABELS = _controls_.DIRCTRL_EDIT_LABELS
 class GenericDirCtrl(_core.Control):
+    """Proxy of C++ GenericDirCtrl class"""
     def __repr__(self):
         return "<%s.%s; proxy of C++ wxGenericDirCtrl instance at %s>" % (self.__class__.__module__, self.__class__.__name__, self.this,)
     def __init__(self, *args, **kwargs):
@@ -5536,6 +5752,7 @@ def PreGenericDirCtrl(*args, **kwargs):
     return val
 
 class DirFilterListCtrl(Choice):
+    """Proxy of C++ DirFilterListCtrl class"""
     def __repr__(self):
         return "<%s.%s; proxy of C++ wxDirFilterListCtrl instance at %s>" % (self.__class__.__module__, self.__class__.__name__, self.this,)
     def __init__(self, *args, **kwargs):
@@ -5577,6 +5794,7 @@ def PreDirFilterListCtrl(*args, **kwargs):
 #---------------------------------------------------------------------------
 
 class PyControl(_core.Control):
+    """Proxy of C++ PyControl class"""
     def __repr__(self):
         return "<%s.%s; proxy of C++ wxPyControl instance at %s>" % (self.__class__.__module__, self.__class__.__name__, self.this,)
     def __init__(self, *args, **kwargs):
@@ -5598,6 +5816,10 @@ class PyControl(_core.Control):
     def SetBestSize(*args, **kwargs):
         """SetBestSize(self, Size size)"""
         return _controls_.PyControl_SetBestSize(*args, **kwargs)
+
+    def DoEraseBackground(*args, **kwargs):
+        """DoEraseBackground(self, DC dc) -> bool"""
+        return _controls_.PyControl_DoEraseBackground(*args, **kwargs)
 
     def base_DoMoveWindow(*args, **kwargs):
         """base_DoMoveWindow(self, int x, int y, int width, int height)"""
@@ -5675,13 +5897,13 @@ class PyControl(_core.Control):
         """base_ShouldInheritColours(self) -> bool"""
         return _controls_.PyControl_base_ShouldInheritColours(*args, **kwargs)
 
-    def base_ApplyParentThemeBackground(*args, **kwargs):
-        """base_ApplyParentThemeBackground(self, Colour c)"""
-        return _controls_.PyControl_base_ApplyParentThemeBackground(*args, **kwargs)
-
     def base_GetDefaultAttributes(*args, **kwargs):
         """base_GetDefaultAttributes(self) -> VisualAttributes"""
         return _controls_.PyControl_base_GetDefaultAttributes(*args, **kwargs)
+
+    def base_OnInternalIdle(*args, **kwargs):
+        """base_OnInternalIdle(self)"""
+        return _controls_.PyControl_base_OnInternalIdle(*args, **kwargs)
 
 
 class PyControlPtr(PyControl):
@@ -6048,6 +6270,7 @@ _controls_.SimpleHelpProvider_swigregister(SimpleHelpProviderPtr)
 #---------------------------------------------------------------------------
 
 class DragImage(_core.Object):
+    """Proxy of C++ DragImage class"""
     def __repr__(self):
         return "<%s.%s; proxy of C++ wxGenericDragImage instance at %s>" % (self.__class__.__module__, self.__class__.__name__, self.this,)
     def __init__(self, *args, **kwargs):
@@ -6138,6 +6361,126 @@ def DragTreeItem(*args, **kwargs):
 def DragListItem(*args, **kwargs):
     """DragListItem(ListCtrl listCtrl, long id) -> DragImage"""
     val = _controls_.new_DragListItem(*args, **kwargs)
+    val.thisown = 1
+    return val
+
+#---------------------------------------------------------------------------
+
+DP_DEFAULT = _controls_.DP_DEFAULT
+DP_SPIN = _controls_.DP_SPIN
+DP_DROPDOWN = _controls_.DP_DROPDOWN
+DP_SHOWCENTURY = _controls_.DP_SHOWCENTURY
+DP_ALLOWNONE = _controls_.DP_ALLOWNONE
+class DatePickerCtrl(_core.Control):
+    """
+    This control allows the user to select a date. Unlike
+    `wx.calendar.CalendarCtrl`, which is a relatively big control,
+    `wx.DatePickerCtrl` is implemented as a small window showing the
+    currently selected date. The control can be edited using the keyboard,
+    and can also display a popup window for more user-friendly date
+    selection, depending on the styles used and the platform.
+    """
+    def __repr__(self):
+        return "<%s.%s; proxy of C++ wxDatePickerCtrl instance at %s>" % (self.__class__.__module__, self.__class__.__name__, self.this,)
+    def __init__(self, *args, **kwargs):
+        """
+        __init__(self, Window parent, int id=-1, DateTime dt=wxDefaultDateTime, 
+            Point pos=DefaultPosition, Size size=DefaultSize, 
+            long style=wxDP_DEFAULT|wxDP_SHOWCENTURY, 
+            Validator validator=DefaultValidator, 
+            String name=DatePickerCtrlNameStr) -> DatePickerCtrl
+
+        Create a new DatePickerCtrl.
+        """
+        newobj = _controls_.new_DatePickerCtrl(*args, **kwargs)
+        self.this = newobj.this
+        self.thisown = 1
+        del newobj.thisown
+        self._setOORInfo(self)
+
+    def Create(*args, **kwargs):
+        """
+        Create(self, Window parent, int id=-1, DateTime dt=wxDefaultDateTime, 
+            Point pos=DefaultPosition, Size size=DefaultSize, 
+            long style=wxDP_DEFAULT|wxDP_SHOWCENTURY, 
+            Validator validator=DefaultValidator, 
+            String name=DatePickerCtrlNameStr) -> bool
+
+        Create the GUI parts of the DatePickerCtrl, for use in 2-phase
+        creation.
+        """
+        return _controls_.DatePickerCtrl_Create(*args, **kwargs)
+
+    def SetValue(*args, **kwargs):
+        """
+        SetValue(self, DateTime dt)
+
+        Changes the current value of the control. The date should be valid and
+        included in the currently selected range, if any.
+
+        Calling this method does not result in a date change event.
+        """
+        return _controls_.DatePickerCtrl_SetValue(*args, **kwargs)
+
+    def GetValue(*args, **kwargs):
+        """
+        GetValue(self) -> DateTime
+
+        Returns the currently selected date. If there is no selection or the
+        selection is outside of the current range, an invalid `wx.DateTime`
+        object is returned.
+        """
+        return _controls_.DatePickerCtrl_GetValue(*args, **kwargs)
+
+    def SetRange(*args, **kwargs):
+        """
+        SetRange(self, DateTime dt1, DateTime dt2)
+
+        Sets the valid range for the date selection. If dt1 is valid, it
+        becomes the earliest date (inclusive) accepted by the control. If dt2
+        is valid, it becomes the latest possible date.
+
+        If the current value of the control is outside of the newly set range
+        bounds, the behaviour is undefined.
+        """
+        return _controls_.DatePickerCtrl_SetRange(*args, **kwargs)
+
+    def GetLowerLimit(*args, **kwargs):
+        """
+        GetLowerLimit(self) -> DateTime
+
+        Get the lower limit of the valid range for the date selection, if any.
+        If there is no range or there is no lower limit, then the
+        `wx.DateTime` value returned will be invalid.
+        """
+        return _controls_.DatePickerCtrl_GetLowerLimit(*args, **kwargs)
+
+    def GetUpperLimit(*args, **kwargs):
+        """
+        GetUpperLimit(self) -> DateTime
+
+        Get the upper limit of the valid range for the date selection, if any.
+        If there is no range or there is no upper limit, then the
+        `wx.DateTime` value returned will be invalid.
+        """
+        return _controls_.DatePickerCtrl_GetUpperLimit(*args, **kwargs)
+
+
+class DatePickerCtrlPtr(DatePickerCtrl):
+    def __init__(self, this):
+        self.this = this
+        if not hasattr(self,"thisown"): self.thisown = 0
+        self.__class__ = DatePickerCtrl
+_controls_.DatePickerCtrl_swigregister(DatePickerCtrlPtr)
+DatePickerCtrlNameStr = cvar.DatePickerCtrlNameStr
+
+def PreDatePickerCtrl(*args, **kwargs):
+    """
+    PreDatePickerCtrl() -> DatePickerCtrl
+
+    Precreate a DatePickerCtrl for use in 2-phase creation.
+    """
+    val = _controls_.new_PreDatePickerCtrl(*args, **kwargs)
     val.thisown = 1
     return val
 

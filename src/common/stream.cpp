@@ -5,7 +5,7 @@
 // Modified by: VZ (23.11.00) to fix realloc()ing new[]ed memory,
 //                            general code review
 // Created:     11/07/98
-// RCS-ID:      $Id: stream.cpp,v 1.91 2004/11/10 21:10:20 VZ Exp $
+// RCS-ID:      $Id: stream.cpp,v 1.94 2005/03/03 19:12:18 ABX Exp $
 // Copyright:   (c) Guilhem Lavaux
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -580,7 +580,9 @@ wxFileOffset wxStreamBuffer::Seek(wxFileOffset pos, wxSeekMode mode)
         }
         if (diff < 0 || diff > last_access)
             return wxInvalidOffset;
-        SetIntPosition(diff);
+        size_t int_diff = (size_t)diff;
+        wxCHECK_MSG( (wxFileOffset)int_diff == diff, wxInvalidOffset, wxT("huge file not supported") );
+        SetIntPosition(int_diff);
         return diff;
     }
 
@@ -605,7 +607,9 @@ wxFileOffset wxStreamBuffer::Seek(wxFileOffset pos, wxSeekMode mode)
             }
             else
             {
-                SetIntPosition(diff);
+                size_t int_diff = (size_t)diff;
+                wxCHECK_MSG( (wxFileOffset)int_diff == diff, wxInvalidOffset, wxT("huge file not supported") );
+                SetIntPosition(int_diff);
                 return pos;
             }
 
@@ -672,6 +676,20 @@ wxFileOffset wxStreamBase::OnSysTell() const
 {
     return wxInvalidOffset;
 }
+
+#if WXWIN_COMPATIBILITY_2_2
+
+wxStreamError wxStreamBase::LastError() const
+{
+    return m_lasterror;
+}
+
+size_t wxStreamBase::StreamSize() const
+{
+    return GetSize();
+}
+
+#endif // WXWIN_COMPATIBILITY_2_2
 
 // ----------------------------------------------------------------------------
 // wxInputStream
@@ -980,24 +998,30 @@ size_t wxCountingOutputStream::OnSysWrite(const void *WXUNUSED(buffer),
 
 wxFileOffset wxCountingOutputStream::OnSysSeek(wxFileOffset pos, wxSeekMode mode)
 {
+    ssize_t new_pos = (ssize_t)pos;
+
     switch ( mode )
     {
         case wxFromStart:
-            m_currentPos = pos;
+            wxCHECK_MSG( (wxFileOffset)new_pos == pos, wxInvalidOffset, wxT("huge position not supported") );
             break;
 
         case wxFromEnd:
-            m_currentPos = m_lastcount + pos;
+            new_pos = m_lastcount + new_pos;
+            wxCHECK_MSG( (wxFileOffset)new_pos == (wxFileOffset)(m_lastcount + pos), wxInvalidOffset, wxT("huge position not supported") );
             break;
 
         case wxFromCurrent:
-            m_currentPos += pos;
+            new_pos = m_currentPos + new_pos;
+            wxCHECK_MSG( (wxFileOffset)new_pos == (wxFileOffset)(m_currentPos + pos), wxInvalidOffset, wxT("huge position not supported") );
             break;
 
         default:
             wxFAIL_MSG( _T("invalid seek mode") );
             return wxInvalidOffset;
     }
+
+    m_currentPos = new_pos;
 
     if (m_currentPos > m_lastcount)
         m_lastcount = m_currentPos;
@@ -1184,6 +1208,13 @@ wxBufferedOutputStream::~wxBufferedOutputStream()
     Sync();
     delete m_o_streambuf;
 }
+
+bool wxBufferedOutputStream::Close()
+{
+    Sync();
+    return IsOk();
+}
+
 
 wxOutputStream& wxBufferedOutputStream::Write(const void *buffer, size_t size)
 {

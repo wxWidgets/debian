@@ -4,7 +4,7 @@
 // Purpose:     Part of the widgets sample showing wxGauge
 // Author:      Vadim Zeitlin
 // Created:     27.03.01
-// Id:          $Id: gauge.cpp,v 1.12 2004/05/25 11:19:43 JS Exp $
+// Id:          $Id: gauge.cpp,v 1.14 2004/11/23 11:44:41 ABX Exp $
 // Copyright:   (c) 2001 Vadim Zeitlin
 // License:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -71,8 +71,10 @@ enum
 class GaugeWidgetsPage : public WidgetsPage
 {
 public:
-    GaugeWidgetsPage(wxNotebook *notebook, wxImageList *imaglist);
+    GaugeWidgetsPage(wxBookCtrl *book, wxImageList *imaglist);
     virtual ~GaugeWidgetsPage();
+
+    virtual wxControl *GetWidget() const { return m_gauge; }
 
 protected:
     // event handlers
@@ -156,9 +158,9 @@ END_EVENT_TABLE()
 
 IMPLEMENT_WIDGETS_PAGE(GaugeWidgetsPage, _T("Gauge"));
 
-GaugeWidgetsPage::GaugeWidgetsPage(wxNotebook *notebook,
-                                       wxImageList *imaglist)
-                  : WidgetsPage(notebook)
+GaugeWidgetsPage::GaugeWidgetsPage(wxBookCtrl *book,
+                                   wxImageList *imaglist)
+                 :WidgetsPage(book)
 {
     imaglist->Add(wxBitmap(gauge_xpm));
 

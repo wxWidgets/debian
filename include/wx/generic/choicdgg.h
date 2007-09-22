@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by: 03.11.00: VZ to add wxArrayString and multiple sel functions
 // Created:     01/02/97
-// RCS-ID:      $Id: choicdgg.h,v 1.33 2004/07/20 10:08:57 ABX Exp $
+// RCS-ID:      $Id: choicdgg.h,v 1.34 2005/04/02 21:39:53 JS Exp $
 // Copyright:   (c) wxWidgets team
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -28,8 +28,13 @@ class WXDLLEXPORT wxListBox;
 #define wxCHOICE_HEIGHT 150
 #define wxCHOICE_WIDTH 200
 
+#ifdef __WXWINCE__
+#define wxCHOICEDLG_STYLE \
+    (wxDEFAULT_DIALOG_STYLE | wxOK | wxCANCEL | wxCENTRE)
+#else
 #define wxCHOICEDLG_STYLE \
     (wxDEFAULT_DIALOG_STYLE | wxRESIZE_BORDER | wxOK | wxCANCEL | wxCENTRE)
+#endif
 
 // ----------------------------------------------------------------------------
 // wxAnyChoiceDialog: a base class for dialogs containing a listbox

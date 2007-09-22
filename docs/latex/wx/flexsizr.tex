@@ -29,6 +29,7 @@ serves this purpose.
 
 \helpref{wxSizer}{wxsizer}, \helpref{Sizer overview}{sizeroverview}
 
+\latexignore{\rtfignore{\wxheading{Members}}}
 
 \membersection{wxFlexGridSizer::wxFlexGridSizer}\label{wxflexgridsizerwxflexgridsizer}
 
@@ -105,7 +106,7 @@ One of the following values:
 In this case equal sizing applies to minimum sizes of columns or
 rows (this is the default value).}
 \twocolitem{wxFLEX\_GROWMODE\_ALL}{Sizer equally stretches all columns or rows
-in the non flexible direction, whether they are growable or not in the flexbile
+in the non flexible direction, whether they are growable or not in the flexible
 direction.}
 \end{twocollist}
 
@@ -144,7 +145,7 @@ Note that this method does not trigger relayout.
 
 \membersection{wxFlexGridSizer::SetNonFlexibleGrowMode}\label{wxflexgridsizersetnonflexiblegrowmode}
 
-\func{void}{SetNonFlexibleGrowMode}{\param{int }{mode}}
+\func{void}{SetNonFlexibleGrowMode}{\param{wxFlexSizerGrowMode }{mode}}
 
 Specifies how the sizer should grow in the non flexible direction if
 there is one (so

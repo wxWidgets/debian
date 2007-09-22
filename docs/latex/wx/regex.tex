@@ -4,9 +4,9 @@
 %% Author:      Vadim Zeitlin
 %% Modified by:
 %% Created:     14.07.01
-%% RCS-ID:      $Id: regex.tex,v 1.16 2004/09/23 23:38:05 RN Exp $
+%% RCS-ID:      $Id: regex.tex,v 1.19 2005/04/08 14:33:35 MW Exp $
 %% Copyright:   (c) 2001 Vadim Zeitlin
-%% License:     wxWidgets license
+%% License:     wxWindows license
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \section{\class{wxRegEx}}\label{wxregex}
@@ -114,6 +114,10 @@ size_t count = reEmail.ReplaceAll(text, wxT("HIDDEN@\\2\\3"));
 printf("text now contains %u hidden addresses", count);
 \end{verbatim}
 
+\wxheading{Include files}
+
+<wx/regex.h>
+
 \latexignore{\rtfignore{\wxheading{Members}}}
 
 \membersection{wxRegEx::wxRegEx}\label{wxregexwxregex}
@@ -159,7 +163,7 @@ May only be called after successful call to \helpref{Matches()}{wxregexmatches}
 and only if {\tt wxRE\_NOSUB} was {\bf not} used in 
 \helpref{Compile()}{wxregexcompile}.
 
-Returns {\tt false} if no match or if an error occured.
+Returns {\tt false} if no match or if an error occurred.
 
 \constfunc{wxString}{GetMatch}{\param{const wxString\& }{text}, \param{size\_t }{index = 0}}
 

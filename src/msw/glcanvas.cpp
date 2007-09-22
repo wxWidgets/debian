@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     04/01/98
-// RCS-ID:      $Id: glcanvas.cpp,v 1.31 2004/10/15 15:29:31 ABX Exp $
+// RCS-ID:      $Id: glcanvas.cpp,v 1.33 2005/05/31 15:01:31 VZ Exp $
 // Copyright:   (c) Julian Smart
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -243,11 +243,6 @@ void wxGLContext::SetCurrent()
   {
     wglMakeCurrent((HDC) m_hDC, m_glContext);
   }
-
-  /*
-  setupPixelFormat(hDC);
-  setupPalette(hDC);
-  */
 }
 
 void wxGLContext::SetColour(const wxChar *colour)
@@ -476,7 +471,7 @@ void wxGLCanvas::SetupPixelFormat(int *attribList) // (HDC hDC)
         PFD_DRAW_TO_WINDOW |
         PFD_DOUBLEBUFFER,        /* support double-buffering */
         PFD_TYPE_RGBA,            /* color type */
-        16,                /* prefered color depth */
+        16,                /* preferred color depth */
         0, 0, 0, 0, 0, 0,        /* color bits (ignored) */
         0,                /* no alpha buffer */
         0,                /* alpha bits (ignored) */
@@ -586,6 +581,12 @@ void wxGLCanvas::OnSize(wxSizeEvent& WXUNUSED(event))
 
 void wxGLCanvas::SetCurrent()
 {
+  // although on MSW it works even if the window is still hidden, it doesn't
+  // under wxGTK and documentation mentions that SetCurrent() can only be
+  // called for a shown window, so check it
+  wxASSERT_MSG( GetParent()->IsShown(),
+                    _T("can't make hidden GL canvas current") );
+
   if (m_glContext)
   {
     m_glContext->SetCurrent();
@@ -785,7 +786,7 @@ bool wxGLApp::InitGLVisual(int *attribList)
         PFD_DRAW_TO_WINDOW |
         PFD_DOUBLEBUFFER,        /* support double-buffering */
         PFD_TYPE_RGBA,            /* color type */
-        16,                /* prefered color depth */
+        16,                /* preferred color depth */
         0, 0, 0, 0, 0, 0,        /* color bits (ignored) */
         0,                /* no alpha buffer */
         0,                /* alpha bits (ignored) */

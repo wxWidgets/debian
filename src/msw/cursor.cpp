@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     01/02/97
-// RCS-ID:      $Id: cursor.cpp,v 1.58 2004/10/20 01:20:57 ABX Exp $
+// RCS-ID:      $Id: cursor.cpp,v 1.64 2005/06/01 13:38:03 DS Exp $
 // Copyright:   (c) 1997-2003 Julian Smart and Vadim Zeitlin
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -40,7 +40,9 @@
 
 #include "wx/module.h"
 #include "wx/image.h"
+
 #include "wx/msw/private.h"
+#include "wx/msw/missing.h" // IDC_HAND
 
 // define functions missing in MicroWin
 #ifdef __WXMICROWIN__
@@ -180,19 +182,37 @@ wxCursor::wxCursor(const wxImage& image)
     const int w = wxCursorRefData::GetStandardWidth();
     const int h = wxCursorRefData::GetStandardHeight();
 
-    const int hotSpotX = image.GetOptionInt(wxIMAGE_OPTION_CUR_HOTSPOT_X);
-    const int hotSpotY = image.GetOptionInt(wxIMAGE_OPTION_CUR_HOTSPOT_Y);
+    int hotSpotX = image.GetOptionInt(wxIMAGE_OPTION_CUR_HOTSPOT_X);
+    int hotSpotY = image.GetOptionInt(wxIMAGE_OPTION_CUR_HOTSPOT_Y);
+    int image_w = image.GetWidth();
+    int image_h = image.GetHeight();
 
-    wxASSERT_MSG( hotSpotX >= 0 && hotSpotX < w &&
-                    hotSpotY >= 0 && hotSpotY < h,
+    wxASSERT_MSG( hotSpotX >= 0 && hotSpotX < image_w &&
+                  hotSpotY >= 0 && hotSpotY < image_h,
                   _T("invalid cursor hot spot coordinates") );
 
-    HCURSOR hcursor = wxBitmapToHCURSOR
-                      (
-                        wxBitmap(image.Scale(w, h)),
-                        hotSpotX,
-                        hotSpotY
-                      );
+    wxImage imageSized(image); // final image of correct size
+
+    // if image is too small then place it in the center, resize it if too big
+    if ((w > image_w) && (h > image_h))
+    {
+        wxPoint offset((w - image_w)/2, (h - image_h)/2);
+        hotSpotX = hotSpotX + offset.x;
+        hotSpotY = hotSpotY + offset.y;
+
+        imageSized = image.Size(wxSize(w, h), offset);
+    }
+    else if ((w != image_w) || (h != image_h))
+    {
+        hotSpotX = int(hotSpotX * double(w) / double(image_w));
+        hotSpotY = int(hotSpotY * double(h) / double(image_h));
+
+        imageSized = image.Scale(w, h);
+    }
+
+    HCURSOR hcursor = wxBitmapToHCURSOR( wxBitmap(imageSized),
+                                         hotSpotX, hotSpotY );
+
     if ( !hcursor )
     {
         wxLogWarning(_("Failed to create cursor."));
@@ -293,8 +313,15 @@ wxCursor::wxCursor(int idCursor)
         { false, _T("WXCURSOR_RIGHT_ARROW")  }, // wxCURSOR_RIGHT_ARROW
         { false, _T("WXCURSOR_BULLSEYE")     }, // wxCURSOR_BULLSEYE
         {  true, IDC_ARROW                   }, // WXCURSOR_CHAR
-        {  true, IDC_CROSS                   }, // WXCURSOR_CROSS
-        { false, _T("WXCURSOR_HAND")         }, // wxCURSOR_HAND
+        
+        // Displays as an I-beam on XP, so use a cursor file
+//        {  true, IDC_CROSS                   }, // WXCURSOR_CROSS
+        {  false, _T("WXCURSOR_CROSS")       }, // WXCURSOR_CROSS
+
+        // See special handling below for wxCURSOR_HAND
+//        { false, _T("WXCURSOR_HAND")         }, // wxCURSOR_HAND
+        {  true, IDC_HAND                    }, // wxCURSOR_HAND
+        
         {  true, IDC_IBEAM                   }, // WXCURSOR_IBEAM
         {  true, IDC_ARROW                   }, // WXCURSOR_LEFT_BUTTON
         { false, _T("WXCURSOR_MAGNIFIER")    }, // wxCURSOR_MAGNIFIER
@@ -313,7 +340,7 @@ wxCursor::wxCursor(int idCursor)
         {  true, IDC_SIZEALL                 }, // WXCURSOR_SIZING
         { false, _T("WXCURSOR_PBRUSH")       }, // wxCURSOR_SPRAYCAN
         {  true, IDC_WAIT                    }, // WXCURSOR_WAIT
-        { false, _T("WXCURSOR_WATCH")        }, // WXCURSOR_WATCH
+        {  true, IDC_WAIT                    }, // WXCURSOR_WATCH
         { false, _T("WXCURSOR_BLANK")        }, // wxCURSOR_BLANK
         {  true, IDC_APPSTARTING             }, // wxCURSOR_ARROWWAIT
 
@@ -327,17 +354,25 @@ wxCursor::wxCursor(int idCursor)
                  _T("invalid cursor id in wxCursor() ctor") );
 
     const StdCursor& stdCursor = stdCursors[idCursor];
+    bool deleteLater = !stdCursor.isStd;
 
     HCURSOR hcursor = ::LoadCursor(stdCursor.isStd ? NULL : wxGetInstance(),
                                    stdCursor.name);
 
+    // IDC_HAND may not be available on some versions of Windows.
+    if ( !hcursor && idCursor == wxCURSOR_HAND)
+    {
+        hcursor = ::LoadCursor(wxGetInstance(), _T("WXCURSOR_HAND"));
+        deleteLater = true;
+    }
+    
     if ( !hcursor )
     {
         wxLogLastError(_T("LoadCursor"));
     }
     else
     {
-        m_refData = new wxCursorRefData(hcursor);
+        m_refData = new wxCursorRefData(hcursor, deleteLater);
     }
 }
 

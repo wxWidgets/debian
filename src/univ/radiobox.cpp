@@ -4,7 +4,7 @@
 // Author:      Vadim Zeitlin
 // Modified by:
 // Created:     11.09.00
-// RCS-ID:      $Id: radiobox.cpp,v 1.17 2004/08/10 13:08:39 ABX Exp $
+// RCS-ID:      $Id: radiobox.cpp,v 1.23 2005/02/23 16:52:31 ABX Exp $
 // Copyright:   (c) 2000 SciTech Software, Inc. (www.scitechsoft.com)
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -112,7 +112,7 @@ wxRadioBox::wxRadioBox(wxWindow *parent, wxWindowID id, const wxString& title,
 
     Init();
 
-    (void)Create(parent, id, title, pos, size, chs.GetCount(), 
+    (void)Create(parent, id, title, pos, size, chs.GetCount(),
                  chs.GetStrings(), majorDim, style, val, name);
 }
 
@@ -129,7 +129,7 @@ bool wxRadioBox::Create(wxWindow *parent,
 {
     wxCArrayString chs(choices);
 
-    return Create(parent, id, title, pos, size, chs.GetCount(), 
+    return Create(parent, id, title, pos, size, chs.GetCount(),
                   chs.GetStrings(), majorDim, style, val, name);
 }
 
@@ -142,7 +142,7 @@ bool wxRadioBox::Create(wxWindow *parent,
                         const wxString *choices,
                         int majorDim,
                         long style,
-                        const wxValidator& val,
+                        const wxValidator& wxVALIDATOR_PARAM(val),
                         const wxString& name)
 {
     // for compatibility with the other ports which don't handle (yet?)
@@ -309,7 +309,7 @@ void wxRadioBox::OnRadioButton(wxEvent& event)
 
 wxString wxRadioBox::GetString(int n) const
 {
-    wxCHECK_MSG( IsValid(n), _T(""),
+    wxCHECK_MSG( IsValid(n), wxEmptyString,
                  _T("invalid index in wxRadioBox::GetString") );
 
     return m_buttons[n]->GetLabel();
@@ -322,18 +322,18 @@ void wxRadioBox::SetString(int n, const wxString& label)
     m_buttons[n]->SetLabel(label);
 }
 
-void wxRadioBox::Enable(int n, bool enable)
+bool wxRadioBox::Enable(int n, bool enable)
 {
-    wxCHECK_RET( IsValid(n), _T("invalid index in wxRadioBox::Enable") );
+    wxCHECK_MSG( IsValid(n), false, _T("invalid index in wxRadioBox::Enable") );
 
-    m_buttons[n]->Enable(enable);
+    return m_buttons[n]->Enable(enable);
 }
 
-void wxRadioBox::Show(int n, bool show)
+bool wxRadioBox::Show(int n, bool show)
 {
-    wxCHECK_RET( IsValid(n), _T("invalid index in wxRadioBox::Show") );
+    wxCHECK_MSG( IsValid(n), false, _T("invalid index in wxRadioBox::Show") );
 
-    m_buttons[n]->Show(show);
+    return m_buttons[n]->Show(show);
 }
 
 // ----------------------------------------------------------------------------

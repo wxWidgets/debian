@@ -3,7 +3,8 @@
 // Purpose:
 // Date: 08/11/1999
 // Author: Guilhem Lavaux <lavaux@easynet.fr> (C) 1999, 2000
-// CVSID: $Id: sndfile.cpp,v 1.4 2004/06/16 15:22:59 ABX Exp $
+// CVSID: $Id: sndfile.cpp,v 1.5 2004/11/22 20:10:25 JS Exp $
+// wxWindows licence
 // --------------------------------------------------------------------------
 #include "wx/wxprec.h"
 

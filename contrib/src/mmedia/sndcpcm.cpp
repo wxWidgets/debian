@@ -3,7 +3,8 @@
 // Purpose:
 // Date: 08/11/1999
 // Author: Guilhem Lavaux <lavaux@easynet.fr> (C) 1999, 2000
-// CVSID: $Id: sndcpcm.cpp,v 1.5 2004/06/16 15:22:59 ABX Exp $
+// CVSID: $Id: sndcpcm.cpp,v 1.7 2005/05/31 09:17:38 JS Exp $
+// wxWindows licence
 // --------------------------------------------------------------------------
 #ifdef __GNUG__
 #pragma implementation "sndcpcm.cpp"
@@ -376,7 +377,7 @@ bool wxSoundStreamPcm::SetSoundFormat(const wxSoundFormatBase& format)
     if (m_prebuffer)
         delete[] m_prebuffer;
 
-    // We try to minimize the need of dynamic memory allocation by preallocating a buffer. But
+    // We try to minimize the need for dynamic memory allocation by preallocating a buffer. But
     // to be sure it will be efficient we minimize the best size.
     if (m_multiplier_in < m_multiplier_out) {
         m_prebuffer_size = (wxUint32)(m_sndio->GetBestSize() *

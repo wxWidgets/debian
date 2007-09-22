@@ -4,7 +4,7 @@
 // Author:      Vadim Zeitlin
 // Modified by:
 // Created:     23.06.2003
-// RCS-ID:      $Id: baseunix.cpp,v 1.11 2004/11/10 22:08:32 VZ Exp $
+// RCS-ID:      $Id: baseunix.cpp,v 1.13 2005/04/25 10:28:59 MW Exp $
 // Copyright:   (c) 2003 Vadim Zeitlin <vadim@wxwindows.org>
 // License:     wxWindows licence
 ///////////////////////////////////////////////////////////////////////////////
@@ -86,7 +86,7 @@ wxConsoleAppTraits::WaitForChild(wxExecuteData& execData)
 // ----------------------------------------------------------------------------
 
 // this is in mac/utils.cpp under Mac
-#ifndef __WXMAC__
+#if !defined(__WXMAC__)
 
 wxToolkitInfo& wxConsoleAppTraits::GetToolkitInfo()
 {

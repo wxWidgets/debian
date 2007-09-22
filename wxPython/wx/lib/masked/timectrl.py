@@ -3,7 +3,7 @@
 # Author:       Will Sadkin
 # Created:      09/19/2002
 # Copyright:    (c) 2002 by Will Sadkin, 2002
-# RCS-ID:       $Id: timectrl.py,v 1.3 2004/10/11 22:13:00 RD Exp $
+# RCS-ID:       $Id: timectrl.py,v 1.4 2005/02/28 18:45:13 RD Exp $
 # License:      wxWindows license
 #----------------------------------------------------------------------------
 # NOTE:
@@ -365,7 +365,13 @@ class TimeCtrl(BaseMaskedTextCtrl):
 
         self.__fmt24hr = False
         wxdt = wx.DateTimeFromDMY(1, 0, 1970)
-        if wxdt.Format('%p') != 'AM':
+        try:
+            if wxdt.Format('%p') != 'AM':
+                TimeCtrl.valid_ctrl_params['format'] = '24HHMMSS'
+                self.__fmt24hr = True
+                fmt24hr = True  # force/change default positional argument
+                                # (will countermand explicit set to False too.)
+        except:
             TimeCtrl.valid_ctrl_params['format'] = '24HHMMSS'
             self.__fmt24hr = True
             fmt24hr = True  # force/change default positional argument
@@ -498,10 +504,13 @@ class TimeCtrl(BaseMaskedTextCtrl):
 
             if key == 'format':
                 wxdt = wx.DateTimeFromDMY(1, 0, 1970)
-                if wxdt.Format('%p') != 'AM':
+                try:
+                    if wxdt.Format('%p') != 'AM':
+                        require24hr = True
+                    else:
+                        require24hr = False
+                except:
                     require24hr = True
-                else:
-                    require24hr = False
 
                 # handle both local or generic 'maskededit' autoformat codes:
                 if param_value == 'HHMMSS' or param_value == 'TIMEHHMMSS':
@@ -704,12 +713,15 @@ class TimeCtrl(BaseMaskedTextCtrl):
 
             if not valid:
                 # deal with bug/deficiency in wx.DateTime:
-                if wxdt.Format('%p') not in ('AM', 'PM') and checkTime in (5,8):
-                    # couldn't parse the AM/PM field
+                try:
+                    if wxdt.Format('%p') not in ('AM', 'PM') and checkTime in (5,8):
+                        # couldn't parse the AM/PM field
+                        raise ValueError('cannot convert string "%s" to valid time for the current locale; please use 24hr time instead' % value)
+                    else:
+    ##                dbg(indent=0, suspend=0)
+                        raise ValueError('cannot convert string "%s" to valid time' % value)
+                except:
                     raise ValueError('cannot convert string "%s" to valid time for the current locale; please use 24hr time instead' % value)
-                else:
-##                dbg(indent=0, suspend=0)
-                    raise ValueError('cannot convert string "%s" to valid time' % value)
 
         else:
             if isinstance(value, wx.DateTime):

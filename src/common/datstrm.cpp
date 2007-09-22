@@ -4,7 +4,7 @@
 // Author:      Guilhem Lavaux
 // Modified by: Mickael Gilabert
 // Created:     28/06/98
-// RCS-ID:      $Id: datstrm.cpp,v 1.45 2004/10/12 19:29:11 ABX Exp $
+// RCS-ID:      $Id: datstrm.cpp,v 1.46 2005/02/17 10:19:31 RN Exp $
 // Copyright:   (c) Guilhem Lavaux
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -335,7 +335,7 @@ void wxDataOutputStream::WriteDouble(double d)
 #if wxUSE_APPLE_IEEE
   ConvertToIeeeExtended(d, (unsigned char *)buf);
 #else
-#ifndef __VMS__
+#if !defined(__VMS__) && !defined(__GNUG__)
 # pragma warning "wxDataOutputStream::WriteDouble() not using IeeeExtended - will not work!"
 #endif
    buf[0] = '\0';

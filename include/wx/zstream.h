@@ -4,7 +4,7 @@
 // Author:      Guilhem Lavaux
 // Modified by: Mike Wetherell
 // Created:     11/07/98
-// RCS-ID:      $Id: zstream.h,v 1.30 2004/11/10 21:10:16 VZ Exp $
+// RCS-ID:      $Id: zstream.h,v 1.31 2004/11/23 14:25:57 RN Exp $
 // Copyright:   (c) Guilhem Lavaux
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -69,9 +69,10 @@ class WXDLLIMPEXP_BASE wxZlibInputStream: public wxFilterInputStream {
 class WXDLLIMPEXP_BASE wxZlibOutputStream: public wxFilterOutputStream {
  public:
   wxZlibOutputStream(wxOutputStream& stream, int level = -1, int flags = wxZLIB_ZLIB);
-  virtual ~wxZlibOutputStream();
+  virtual ~wxZlibOutputStream() { Close(); }
 
   void Sync() { DoFlush(false); }
+  bool Close();
   wxFileOffset GetLength() const { return m_pos; }
 
   static bool CanHandleGZip();

@@ -4,7 +4,7 @@
 // Author:      Julian Smart, Vadim Zeitlin
 // Modified by:
 // Created:     23.07.99
-// RCS-ID:      $Id: spinbutt.h,v 1.31 2004/09/22 14:38:29 ABX Exp $
+// RCS-ID:      $Id: spinbutt.h,v 1.34 2005/05/31 09:18:17 JS Exp $
 // Copyright:   (c) Julian Smart
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -39,7 +39,7 @@
 class WXDLLEXPORT wxSpinButtonBase : public wxControl
 {
 public:
-    // ctor intiializes the range with the default (0..100) values
+    // ctor initializes the range with the default (0..100) values
     wxSpinButtonBase() { m_min = 0; m_max = 100; }
 
     // accessors
@@ -110,13 +110,16 @@ private:
 
 typedef void (wxEvtHandler::*wxSpinEventFunction)(wxSpinEvent&);
 
+#define wxSpinEventHandler(func) \
+    (wxObjectEventFunction)(wxEventFunction)wxStaticCastEvent(wxSpinEventFunction, &func)
+
 // macros for handling spin events
 #define EVT_SPIN_UP(winid, func) \
-    DECLARE_EVENT_TABLE_ENTRY( wxEVT_SCROLL_LINEUP, winid, wxID_ANY, (wxObjectEventFunction) (wxEventFunction)  wxStaticCastEvent( wxSpinEventFunction, & func ), NULL ),
+    wx__DECLARE_EVT1(wxEVT_SCROLL_LINEUP, winid, wxSpinEventHandler(func))
 #define EVT_SPIN_DOWN(winid, func) \
-    DECLARE_EVENT_TABLE_ENTRY( wxEVT_SCROLL_LINEDOWN, winid, wxID_ANY, (wxObjectEventFunction) (wxEventFunction)  wxStaticCastEvent( wxSpinEventFunction, & func ), NULL ),
+    wx__DECLARE_EVT1(wxEVT_SCROLL_LINEDOWN, winid, wxSpinEventHandler(func))
 #define EVT_SPIN(winid, func) \
-    DECLARE_EVENT_TABLE_ENTRY( wxEVT_SCROLL_THUMBTRACK, winid, wxID_ANY, (wxObjectEventFunction) (wxEventFunction)  wxStaticCastEvent( wxSpinEventFunction, & func ), NULL ),
+    wx__DECLARE_EVT1(wxEVT_SCROLL_THUMBTRACK, winid, wxSpinEventHandler(func))
 
 #endif // wxUSE_SPINBTN
 

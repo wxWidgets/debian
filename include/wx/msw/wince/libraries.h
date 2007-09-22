@@ -4,7 +4,7 @@
 // Author:      Vaclav Slavik
 // Modified by:
 // Created:     2004-04-11
-// RCS-ID:      $Id: libraries.h,v 1.9 2004/09/29 08:03:26 ABX Exp $
+// RCS-ID:      $Id: libraries.h,v 1.10 2005/03/21 22:18:25 JS Exp $
 // Copyright:   (c) 2004 Vaclav Slavik
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -22,8 +22,7 @@
 //     including libraries in project files.
 
 #if defined(__VISUALC__) && defined(__WXWINCE__)
-
-#if _WIN32_WCE >= 400
+#if (_WIN32_WCE >= 400) || defined(__POCKETPC__)
     #pragma comment(lib,"commdlg.lib")
 #endif
 

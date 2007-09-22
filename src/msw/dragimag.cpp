@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     08/04/99
-// RCS-ID:      $Id: dragimag.cpp,v 1.33 2004/08/24 10:31:41 ABX Exp $
+// RCS-ID:      $Id: dragimag.cpp,v 1.34 2005/01/04 19:40:53 ABX Exp $
 // Copyright:   (c) Julian Smart
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -301,8 +301,8 @@ bool wxDragImage::BeginDrag(const wxPoint& hotspot, wxWindow* window, bool fullS
 #else
         if (!m_hCursorImageList)
         {
-            int cxCursor = GetSystemMetrics(SM_CXCURSOR);
-            int cyCursor = GetSystemMetrics(SM_CYCURSOR);
+            int cxCursor = ::GetSystemMetrics(SM_CXCURSOR);
+            int cyCursor = ::GetSystemMetrics(SM_CYCURSOR);
 
             m_hCursorImageList = (WXHIMAGELIST) ImageList_Create(cxCursor, cyCursor, ILC_MASK, 1, 1);
         }

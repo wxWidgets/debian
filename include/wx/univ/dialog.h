@@ -3,7 +3,7 @@
 // Purpose:     wxDialog class
 // Author:      Vaclav Slavik
 // Created:     2001/09/16
-// RCS-ID:      $Id: dialog.h,v 1.10 2004/08/10 13:08:33 ABX Exp $
+// RCS-ID:      $Id: dialog.h,v 1.12 2005/01/21 18:15:42 ABX Exp $
 // Copyright:   (c) 2001 SciTech Software, Inc. (www.scitechsoft.com)
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -15,7 +15,7 @@
     #pragma interface "univdialog.h"
 #endif
 
-WXDLLEXPORT_DATA(extern const wxChar*) wxDialogNameStr;
+extern WXDLLEXPORT_DATA(const wxChar*) wxDialogNameStr;
 class WXDLLEXPORT wxWindowDisabler;
 class WXDLLEXPORT wxEventLoop;
 
@@ -58,7 +58,7 @@ public:
     // returns true if we're in a modal loop
     bool IsModalShowing() const;
 
-    bool Show(bool show = true);
+    virtual bool Show(bool show = true);
 
     // implementation only from now on
     // -------------------------------

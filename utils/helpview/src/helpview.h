@@ -4,7 +4,7 @@
 // Author:      Vaclav Slavik, Julian Smart
 // Modified by:
 // Created:     2002-07-09
-// RCS-ID:      $Id: helpview.h,v 1.8 2003/03/19 19:20:44 JS Exp $
+// RCS-ID:      $Id: helpview.h,v 1.10 2005/05/30 09:24:08 ABX Exp $
 // Copyright:   (c) 2002 Vaclav Slavik, Julian Smart and others
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -16,20 +16,10 @@
 #pragma interface "help.cpp"
 #endif
 
-#define hvVERSION 1.03
+#define hvVERSION 1.04
 
-// If 1, start a server to allow this to be used
-// as an external help viewer.
-#if defined(__WXMAC__) && !defined(__UNIX__)
-#define hvUSE_IPC 0
-#else
-#define hvUSE_IPC 1
-#endif
-
-#if hvUSE_IPC
+#if wxUSE_IPC
 #include <wx/ipc.h>
-
-class hvConnection;
 class hvServer;
 #endif
 
@@ -59,22 +49,22 @@ public:
     /// Returns the help controller.
     wxHtmlHelpController* GetHelpController() { return m_helpController; }
 
-#if hvUSE_IPC
+#if wxUSE_IPC
     /// Returns the list of connections.
     wxList& GetConnections() { return m_connections; }
 #endif
 
 private:
     wxHtmlHelpController*   m_helpController;
-    
-#if hvUSE_IPC
+
+#if wxUSE_IPC
     wxList                  m_connections;
     hvServer*               m_server;
 #endif
-    
+
 };
 
-#if hvUSE_IPC
+#if wxUSE_IPC
 class hvConnection : public wxConnection
 {
 public:

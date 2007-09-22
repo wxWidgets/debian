@@ -5,7 +5,7 @@
 // Author:      Robin Dunn
 //
 // Created:     6/24/97
-// RCS-ID:      $Id: _defs.i,v 1.78 2004/10/05 20:52:20 RD Exp $
+// RCS-ID:      $Id: _defs.i,v 1.89 2005/05/24 20:54:44 RD Exp $
 // Copyright:   (c) 1998 by Total Control Software
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -82,14 +82,16 @@ typedef unsigned long   wxUIntPtr;
 %define MAKE_CONST_WXSTRING(strname)
     %{ static const wxString wxPy##strname(wx##strname); %}
     %immutable;
-    %name(strname) const wxString wxPy##strname;
+    %rename(strname) wxPy##strname;
+    const wxString wxPy##strname;
     %mutable;
 %enddef
 
 %define MAKE_CONST_WXSTRING2(strname, val)
     %{ static const wxString wxPy##strname(val); %}
     %immutable;
-    %name(strname) const wxString wxPy##strname;
+    %rename(strname) wxPy##strname;
+    const wxString wxPy##strname;
     %mutable;
 %enddef
 
@@ -163,12 +165,14 @@ typedef unsigned long   wxUIntPtr;
 #ifdef _DO_FULL_DOCS
     %define DocDeclStrName(type, decl, docstr, details, newname)
         %feature("docstring") decl docstr details;
-        %name(newname) type decl
+        %rename(newname) decl;
+        type decl
     %enddef
 #else
     %define DocDeclStrName(type, decl, docstr, details, newname)
         %feature("docstring") decl docstr;
-        %name(newname) type decl
+        %rename(newname) decl;
+        type decl
     %enddef
 #endif
         
@@ -183,7 +187,8 @@ typedef unsigned long   wxUIntPtr;
 // As above, but also give the decl a new %name    
 %define DocDeclAName(type, decl, astr, newname)
     %feature("autodoc") decl astr;
-    %name(newname) type decl
+    %rename(newname) decl;
+    type decl
 %enddef
 
 
@@ -210,13 +215,15 @@ typedef unsigned long   wxUIntPtr;
     %define DocDeclAStrName(type, decl, astr, docstr, details, newname)
         %feature("autodoc") decl astr;
         %feature("docstring") decl docstr details;
-        %name(newname) type decl
+        %rename(newname) decl;
+        type decl
     %enddef
 #else
     %define DocDeclAStrName(type, decl, astr, docstr, details, newname)
         %feature("autodoc") decl astr;
         %feature("docstring") decl docstr;
-        %name(newname) type decl
+        %rename(newname) decl;
+        type decl
     %enddef
 #endif
 
@@ -241,15 +248,16 @@ typedef unsigned long   wxUIntPtr;
 #ifdef _DO_FULL_DOCS
     %define DocCtorStrName(decl, docstr, details, newname)
         %feature("docstring") decl docstr details;
-        %name(newname) decl
+        %rename(newname) decl;
+        decl
     %enddef
 #else
     %define DocCtorStrName(decl, docstr, details, newname)
         %feature("docstring") decl docstr;
-        %name(newname) decl
+        %rename(newname) decl;
+        decl
     %enddef
 #endif
-
 
         
 // Set the autodoc string for a constructor decl and then define the decl too.
@@ -262,7 +270,8 @@ typedef unsigned long   wxUIntPtr;
 // As above, but also give the decl a new %name    
 %define DocCtorAName(decl, astr, newname)
     %feature("autodoc") decl astr;
-    %name(newname) decl
+    %rename(newname) decl;
+    decl
 %enddef
 
 
@@ -290,13 +299,15 @@ typedef unsigned long   wxUIntPtr;
     %define DocCtorAStrName(decl, astr, docstr, details, newname)
         %feature("autodoc") decl astr;
         %feature("docstring") decl docstr details;
-        %name(newname) decl
+        %rename(newname) decl;
+        decl
     %enddef
 #else
     %define DocCtorAStrName(decl, astr, docstr, details, newname)
         %feature("autodoc") decl astr;
         %feature("docstring") decl docstr;
-        %name(newname) decl
+        %rename(newname) decl;
+        decl
     %enddef
 #endif
 
@@ -307,6 +318,33 @@ typedef unsigned long   wxUIntPtr;
 %#---------------------------------------------------------------------------
 }
 %enddef
+
+
+// A set of macros to make using %rename easier, since %name has been
+// deprecated...
+%define %Rename(newname, type, decl)
+    %rename(newname) decl;
+    type decl
+%enddef
+
+%define %RenameCtor(newname, decl)
+    %rename(newname) decl;
+    decl
+%enddef
+
+#ifdef _DO_FULL_DOCS
+    %define %RenameDocCtor(newname, docstr, details, decl)
+        %feature("docstring") decl docstr details;
+        %rename(newname) decl;
+        decl
+    %enddef
+#else
+    %define %RenameDocCtor(newname, docstr, details, decl)
+        %feature("docstring") decl docstr;
+        %rename(newname) decl;
+        decl
+    %enddef
+#endif
 
 //---------------------------------------------------------------------------
 // Forward declarations and %renames for some classes, so the autodoc strings
@@ -344,6 +382,13 @@ FORWARD_DECLARE(wxStaticBox,      StaticBox);
 
 //---------------------------------------------------------------------------
 
+%{
+#if !WXWIN_COMPATIBILITY_2_4
+    #define wxHIDE_READONLY  0
+#endif
+%}    
+
+
 // General numeric #define's and etc.  Making them all enums makes SWIG use the
 // real macro when making the Python Int
 
@@ -365,19 +410,15 @@ enum {
     wxSTATIC_BORDER,
     wxTRANSPARENT_WINDOW,
     wxNO_BORDER,
-
+    wxDEFAULT_CONTROL_BORDER,
+    wxDEFAULT_STATUSBAR_STYLE,
+    
     wxTAB_TRAVERSAL,
     wxWANTS_CHARS,
     wxPOPUP_WINDOW,
     wxCENTER_FRAME,
     wxCENTRE_ON_SCREEN,
     wxCENTER_ON_SCREEN,
-
-    wxED_CLIENT_MARGIN,
-    wxED_BUTTONS_BOTTOM,
-    wxED_BUTTONS_RIGHT,
-    wxED_STATIC_LINE,
-    wxEXT_DIALOG_STYLE,
 
     wxCLIP_CHILDREN,
     wxCLIP_SIBLINGS,
@@ -409,20 +450,12 @@ enum {
     wxRA_VERTICAL,
     wxRA_SPECIFY_ROWS,
     wxRA_SPECIFY_COLS,
+    wxRA_USE_CHECKBOX,
     wxRB_GROUP,
     wxRB_SINGLE,
-    wxSL_HORIZONTAL,
-    wxSL_VERTICAL,
-    wxSL_AUTOTICKS,
-    wxSL_LABELS,
-    wxSL_LEFT,
-    wxSL_TOP,
-    wxSL_RIGHT,
-    wxSL_BOTTOM,
-    wxSL_BOTH,
-    wxSL_SELRANGE,
     wxSB_HORIZONTAL,
     wxSB_VERTICAL,
+    wxRB_USE_CHECKBOX,
     wxST_SIZEGRIP,
     wxST_NO_AUTORESIZE,
 
@@ -594,6 +627,8 @@ enum {
     wxPD_ELAPSED_TIME,
     wxPD_ESTIMATED_TIME,
     wxPD_REMAINING_TIME,
+    wxPD_SMOOTH,
+    wxPD_CAN_SKIP,
 
     wxDD_NEW_DIR_BUTTON,
     wxDD_DEFAULT_STYLE,
@@ -640,13 +675,6 @@ enum {
 //     wxTC_OWNERDRAW,
 
 };
-
-
-#ifdef __WXGTK__
-#define wxDEFAULT_STATUSBAR_STYLE wxST_SIZEGRIP|wxFULL_REPAINT_ON_RESIZE
-#else
-#define wxDEFAULT_STATUSBAR_STYLE wxST_SIZEGRIP
-#endif
 
 
 
@@ -757,6 +785,8 @@ enum {
   wxUSER_DASH,
   wxTRANSPARENT,
   wxSTIPPLE,
+  wxSTIPPLE_MASK,
+  wxSTIPPLE_MASK_OPAQUE,
   wxBDIAGONAL_HATCH,
   wxCROSSDIAG_HATCH,
   wxFDIAGONAL_HATCH,
@@ -793,116 +823,139 @@ typedef enum {
 } form_ops_t;
 
 enum wxKeyCode {
-  WXK_BACK    =    8,
-  WXK_TAB     =    9,
-  WXK_RETURN  =    13,
-  WXK_ESCAPE  =    27,
-  WXK_SPACE   =    32,
-  WXK_DELETE  =    127,
+    WXK_BACK    =    8,
+    WXK_TAB     =    9,
+    WXK_RETURN  =    13,
+    WXK_ESCAPE  =    27,
+    WXK_SPACE   =    32,
+    WXK_DELETE  =    127,
 
-  WXK_START   = 300,
-  WXK_LBUTTON,
-  WXK_RBUTTON,
-  WXK_CANCEL,
-  WXK_MBUTTON,
-  WXK_CLEAR,
-  WXK_SHIFT,
-  WXK_ALT,
-  WXK_CONTROL,
-  WXK_MENU,
-  WXK_PAUSE,
-  WXK_CAPITAL,
-  WXK_PRIOR,  /* Page up */
-  WXK_NEXT,   /* Page down */
-  WXK_END,
-  WXK_HOME,
-  WXK_LEFT,
-  WXK_UP,
-  WXK_RIGHT,
-  WXK_DOWN,
-  WXK_SELECT,
-  WXK_PRINT,
-  WXK_EXECUTE,
-  WXK_SNAPSHOT,
-  WXK_INSERT,
-  WXK_HELP,
-  WXK_NUMPAD0,
-  WXK_NUMPAD1,
-  WXK_NUMPAD2,
-  WXK_NUMPAD3,
-  WXK_NUMPAD4,
-  WXK_NUMPAD5,
-  WXK_NUMPAD6,
-  WXK_NUMPAD7,
-  WXK_NUMPAD8,
-  WXK_NUMPAD9,
-  WXK_MULTIPLY,
-  WXK_ADD,
-  WXK_SEPARATOR,
-  WXK_SUBTRACT,
-  WXK_DECIMAL,
-  WXK_DIVIDE,
-  WXK_F1,
-  WXK_F2,
-  WXK_F3,
-  WXK_F4,
-  WXK_F5,
-  WXK_F6,
-  WXK_F7,
-  WXK_F8,
-  WXK_F9,
-  WXK_F10,
-  WXK_F11,
-  WXK_F12,
-  WXK_F13,
-  WXK_F14,
-  WXK_F15,
-  WXK_F16,
-  WXK_F17,
-  WXK_F18,
-  WXK_F19,
-  WXK_F20,
-  WXK_F21,
-  WXK_F22,
-  WXK_F23,
-  WXK_F24,
-  WXK_NUMLOCK,
-  WXK_SCROLL,
-  WXK_PAGEUP,
-  WXK_PAGEDOWN,
+    WXK_START   = 300,
+    WXK_LBUTTON,
+    WXK_RBUTTON,
+    WXK_CANCEL,
+    WXK_MBUTTON,
+    WXK_CLEAR,
+    WXK_SHIFT,
+    WXK_ALT,
+    WXK_CONTROL,
+    WXK_MENU,
+    WXK_PAUSE,
+    WXK_CAPITAL,
+    WXK_PRIOR,  /* Page up */
+    WXK_NEXT,   /* Page down */
+    WXK_END,
+    WXK_HOME,
+    WXK_LEFT,
+    WXK_UP,
+    WXK_RIGHT,
+    WXK_DOWN,
+    WXK_SELECT,
+    WXK_PRINT,
+    WXK_EXECUTE,
+    WXK_SNAPSHOT,
+    WXK_INSERT,
+    WXK_HELP,
+    WXK_NUMPAD0,
+    WXK_NUMPAD1,
+    WXK_NUMPAD2,
+    WXK_NUMPAD3,
+    WXK_NUMPAD4,
+    WXK_NUMPAD5,
+    WXK_NUMPAD6,
+    WXK_NUMPAD7,
+    WXK_NUMPAD8,
+    WXK_NUMPAD9,
+    WXK_MULTIPLY,
+    WXK_ADD,
+    WXK_SEPARATOR,
+    WXK_SUBTRACT,
+    WXK_DECIMAL,
+    WXK_DIVIDE,
+    WXK_F1,
+    WXK_F2,
+    WXK_F3,
+    WXK_F4,
+    WXK_F5,
+    WXK_F6,
+    WXK_F7,
+    WXK_F8,
+    WXK_F9,
+    WXK_F10,
+    WXK_F11,
+    WXK_F12,
+    WXK_F13,
+    WXK_F14,
+    WXK_F15,
+    WXK_F16,
+    WXK_F17,
+    WXK_F18,
+    WXK_F19,
+    WXK_F20,
+    WXK_F21,
+    WXK_F22,
+    WXK_F23,
+    WXK_F24,
+    WXK_NUMLOCK,
+    WXK_SCROLL,
+    WXK_PAGEUP,
+    WXK_PAGEDOWN,
 
-  WXK_NUMPAD_SPACE,
-  WXK_NUMPAD_TAB,
-  WXK_NUMPAD_ENTER,
-  WXK_NUMPAD_F1,
-  WXK_NUMPAD_F2,
-  WXK_NUMPAD_F3,
-  WXK_NUMPAD_F4,
-  WXK_NUMPAD_HOME,
-  WXK_NUMPAD_LEFT,
-  WXK_NUMPAD_UP,
-  WXK_NUMPAD_RIGHT,
-  WXK_NUMPAD_DOWN,
-  WXK_NUMPAD_PRIOR,
-  WXK_NUMPAD_PAGEUP,
-  WXK_NUMPAD_NEXT,
-  WXK_NUMPAD_PAGEDOWN,
-  WXK_NUMPAD_END,
-  WXK_NUMPAD_BEGIN,
-  WXK_NUMPAD_INSERT,
-  WXK_NUMPAD_DELETE,
-  WXK_NUMPAD_EQUAL,
-  WXK_NUMPAD_MULTIPLY,
-  WXK_NUMPAD_ADD,
-  WXK_NUMPAD_SEPARATOR,
-  WXK_NUMPAD_SUBTRACT,
-  WXK_NUMPAD_DECIMAL,
-  WXK_NUMPAD_DIVIDE,
+    WXK_NUMPAD_SPACE,
+    WXK_NUMPAD_TAB,
+    WXK_NUMPAD_ENTER,
+    WXK_NUMPAD_F1,
+    WXK_NUMPAD_F2,
+    WXK_NUMPAD_F3,
+    WXK_NUMPAD_F4,
+    WXK_NUMPAD_HOME,
+    WXK_NUMPAD_LEFT,
+    WXK_NUMPAD_UP,
+    WXK_NUMPAD_RIGHT,
+    WXK_NUMPAD_DOWN,
+    WXK_NUMPAD_PRIOR,
+    WXK_NUMPAD_PAGEUP,
+    WXK_NUMPAD_NEXT,
+    WXK_NUMPAD_PAGEDOWN,
+    WXK_NUMPAD_END,
+    WXK_NUMPAD_BEGIN,
+    WXK_NUMPAD_INSERT,
+    WXK_NUMPAD_DELETE,
+    WXK_NUMPAD_EQUAL,
+    WXK_NUMPAD_MULTIPLY,
+    WXK_NUMPAD_ADD,
+    WXK_NUMPAD_SEPARATOR,
+    WXK_NUMPAD_SUBTRACT,
+    WXK_NUMPAD_DECIMAL,
+    WXK_NUMPAD_DIVIDE,
 
-  WXK_WINDOWS_LEFT,
-  WXK_WINDOWS_RIGHT,
-  WXK_WINDOWS_MENU
+    WXK_WINDOWS_LEFT,
+    WXK_WINDOWS_RIGHT,
+    WXK_WINDOWS_MENU,
 
+    WXK_COMMAND,
+
+    // Hardware-specific buttons
+    WXK_SPECIAL1 = 193,
+    WXK_SPECIAL2,
+    WXK_SPECIAL3,
+    WXK_SPECIAL4,
+    WXK_SPECIAL5,
+    WXK_SPECIAL6,
+    WXK_SPECIAL7,
+    WXK_SPECIAL8,
+    WXK_SPECIAL9,
+    WXK_SPECIAL10,
+    WXK_SPECIAL11,
+    WXK_SPECIAL12,
+    WXK_SPECIAL13,
+    WXK_SPECIAL14,
+    WXK_SPECIAL15,
+    WXK_SPECIAL16,
+    WXK_SPECIAL17,
+    WXK_SPECIAL18,
+    WXK_SPECIAL19,
+    WXK_SPECIAL20
 };
 
 
@@ -975,8 +1028,59 @@ typedef enum {
     wxPAPER_B5_EXTRA,           // B5 (ISO) Extra 201 x 276 mm
     wxPAPER_A2,                 // A2 420 x 594 mm
     wxPAPER_A3_TRANSVERSE,      // A3 Transverse 297 x 420 mm
-    wxPAPER_A3_EXTRA_TRANSVERSE // A3 Extra Transverse 322 x 445 mm
+    wxPAPER_A3_EXTRA_TRANSVERSE, // A3 Extra Transverse 322 x 445 mm
 
+    wxPAPER_DBL_JAPANESE_POSTCARD,/* Japanese Double Postcard 200 x 148 mm */
+    wxPAPER_A6,                 /* A6 105 x 148 mm */
+    wxPAPER_JENV_KAKU2,         /* Japanese Envelope Kaku #2 */
+    wxPAPER_JENV_KAKU3,         /* Japanese Envelope Kaku #3 */
+    wxPAPER_JENV_CHOU3,         /* Japanese Envelope Chou #3 */
+    wxPAPER_JENV_CHOU4,         /* Japanese Envelope Chou #4 */
+    wxPAPER_LETTER_ROTATED,     /* Letter Rotated 11 x 8 1/2 in */
+    wxPAPER_A3_ROTATED,         /* A3 Rotated 420 x 297 mm */
+    wxPAPER_A4_ROTATED,         /* A4 Rotated 297 x 210 mm */
+    wxPAPER_A5_ROTATED,         /* A5 Rotated 210 x 148 mm */
+    wxPAPER_B4_JIS_ROTATED,     /* B4 (JIS) Rotated 364 x 257 mm */
+    wxPAPER_B5_JIS_ROTATED,     /* B5 (JIS) Rotated 257 x 182 mm */
+    wxPAPER_JAPANESE_POSTCARD_ROTATED,/* Japanese Postcard Rotated 148 x 100 mm */
+    wxPAPER_DBL_JAPANESE_POSTCARD_ROTATED,/* Double Japanese Postcard Rotated 148 x 200 mm */
+    wxPAPER_A6_ROTATED,         /* A6 Rotated 148 x 105 mm */
+    wxPAPER_JENV_KAKU2_ROTATED, /* Japanese Envelope Kaku #2 Rotated */
+    wxPAPER_JENV_KAKU3_ROTATED, /* Japanese Envelope Kaku #3 Rotated */
+    wxPAPER_JENV_CHOU3_ROTATED, /* Japanese Envelope Chou #3 Rotated */
+    wxPAPER_JENV_CHOU4_ROTATED, /* Japanese Envelope Chou #4 Rotated */
+    wxPAPER_B6_JIS,             /* B6 (JIS) 128 x 182 mm */
+    wxPAPER_B6_JIS_ROTATED,     /* B6 (JIS) Rotated 182 x 128 mm */
+    wxPAPER_12X11,              /* 12 x 11 in */
+    wxPAPER_JENV_YOU4,          /* Japanese Envelope You #4 */
+    wxPAPER_JENV_YOU4_ROTATED,  /* Japanese Envelope You #4 Rotated */
+    wxPAPER_P16K,               /* PRC 16K 146 x 215 mm */
+    wxPAPER_P32K,               /* PRC 32K 97 x 151 mm */
+    wxPAPER_P32KBIG,            /* PRC 32K(Big) 97 x 151 mm */
+    wxPAPER_PENV_1,             /* PRC Envelope #1 102 x 165 mm */
+    wxPAPER_PENV_2,             /* PRC Envelope #2 102 x 176 mm */
+    wxPAPER_PENV_3,             /* PRC Envelope #3 125 x 176 mm */
+    wxPAPER_PENV_4,             /* PRC Envelope #4 110 x 208 mm */
+    wxPAPER_PENV_5,             /* PRC Envelope #5 110 x 220 mm */
+    wxPAPER_PENV_6,             /* PRC Envelope #6 120 x 230 mm */
+    wxPAPER_PENV_7,             /* PRC Envelope #7 160 x 230 mm */
+    wxPAPER_PENV_8,             /* PRC Envelope #8 120 x 309 mm */
+    wxPAPER_PENV_9,             /* PRC Envelope #9 229 x 324 mm */
+    wxPAPER_PENV_10,            /* PRC Envelope #10 324 x 458 mm */
+    wxPAPER_P16K_ROTATED,       /* PRC 16K Rotated */
+    wxPAPER_P32K_ROTATED,       /* PRC 32K Rotated */
+    wxPAPER_P32KBIG_ROTATED,    /* PRC 32K(Big) Rotated */
+    wxPAPER_PENV_1_ROTATED,     /* PRC Envelope #1 Rotated 165 x 102 mm */
+    wxPAPER_PENV_2_ROTATED,     /* PRC Envelope #2 Rotated 176 x 102 mm */
+    wxPAPER_PENV_3_ROTATED,     /* PRC Envelope #3 Rotated 176 x 125 mm */
+    wxPAPER_PENV_4_ROTATED,     /* PRC Envelope #4 Rotated 208 x 110 mm */
+    wxPAPER_PENV_5_ROTATED,     /* PRC Envelope #5 Rotated 220 x 110 mm */
+    wxPAPER_PENV_6_ROTATED,     /* PRC Envelope #6 Rotated 230 x 120 mm */
+    wxPAPER_PENV_7_ROTATED,     /* PRC Envelope #7 Rotated 230 x 160 mm */
+    wxPAPER_PENV_8_ROTATED,     /* PRC Envelope #8 Rotated 309 x 120 mm */
+    wxPAPER_PENV_9_ROTATED,     /* PRC Envelope #9 Rotated 324 x 229 mm */
+    wxPAPER_PENV_10_ROTATED    /* PRC Envelope #10 Rotated 458 x 324 m */
+   
 } wxPaperSize ;
 
 typedef enum {

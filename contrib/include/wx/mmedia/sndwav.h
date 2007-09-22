@@ -3,7 +3,8 @@
 // Purpose:
 // Date: 08/11/1999
 // Author: Guilhem Lavaux <lavaux@easynet.fr> (C) 1999
-// CVSID: $Id: sndwav.h,v 1.3 2003/08/03 17:10:09 VS Exp $
+// CVSID: $Id: sndwav.h,v 1.5 2005/05/30 12:39:25 MW Exp $
+// License:    wxWindows license
 // --------------------------------------------------------------------------
 #ifndef _WX_SNDWAV_H
 #define _WX_SNDWAV_H
@@ -25,7 +26,7 @@
 // WAVE codec
 //
 
-class wxSoundWave: public wxSoundFileStream {
+class WXDLLIMPEXP_MMEDIA wxSoundWave: public wxSoundFileStream {
 public:
     wxSoundWave(wxInputStream& stream, wxSoundStream& io_sound);
     wxSoundWave(wxOutputStream& stream, wxSoundStream& io_sound);

@@ -4,7 +4,7 @@
 // Author:      Chris Breeze
 // Modified by:
 // Created:     21/07/97
-// RCS-ID:      $Id: playerdg.cpp,v 1.10 2004/10/05 15:38:08 ABX Exp $
+// RCS-ID:      $Id: playerdg.cpp,v 1.11 2005/01/31 18:14:12 ABX Exp $
 // Copyright:   (c) 1993-1998 Chris Breeze
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -63,8 +63,8 @@ PlayerSelectionDialog::PlayerSelectionDialog(
 
     m_textField = new wxTextCtrl(this, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize);
 
-    m_OK = new wxButton(this, wxID_OK, _T("OK"));
-    m_cancel = new wxButton(this, wxID_CANCEL, _T("Cancel"));
+    m_OK = new wxButton(this, wxID_OK);
+    m_cancel = new wxButton(this, wxID_CANCEL);
 
     wxBoxSizer *button_sizer = new wxBoxSizer( wxHORIZONTAL );
     button_sizer->Add( m_OK, 0, wxALL, 10 );

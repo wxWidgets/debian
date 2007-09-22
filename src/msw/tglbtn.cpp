@@ -6,9 +6,9 @@
 // and William Gallafent.
 // Modified by:
 // Created:     08.02.01
-// RCS-ID:      $Id: tglbtn.cpp,v 1.11 2004/09/07 06:01:00 ABX Exp $
+// RCS-ID:      $Id: tglbtn.cpp,v 1.13 2005/05/18 02:22:58 RD Exp $
 // Copyright:   (c) 2000 Johnny C. Norris II
-// License:     Rocketeer license
+// License:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
 
 // ============================================================================
@@ -135,6 +135,7 @@ wxSize wxToggleButton::DoGetBestSize() const
    wxSize sz(wBtn, hBtn);
 #endif
 
+   CacheBestSize(sz);
    return sz;
 }
 

@@ -5,7 +5,7 @@
 // Author:      Robin Dunn
 //
 // Created:     23-May-2000
-// RCS-ID:      $Id: calendar.i,v 1.38 2004/09/23 20:23:12 RD Exp $
+// RCS-ID:      $Id: calendar.i,v 1.40 2005/03/09 22:28:40 RD Exp $
 // Copyright:   (c) 2000 by Total Control Software
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -109,13 +109,11 @@ public:
 
 class wxCalendarCtrl;
 
-class wxCalendarEvent : public wxCommandEvent
+class wxCalendarEvent : public wxDateEvent
 {
 public:
     wxCalendarEvent(wxCalendarCtrl *cal, wxEventType type);
 
-    const wxDateTime GetDate() const;
-    void SetDate(const wxDateTime &date);
     void SetWeekDay(const wxDateTime::WeekDay wd);
     wxDateTime::WeekDay GetWeekDay() const;
 
@@ -174,7 +172,7 @@ and font and without border, but setting custom attributes with
 SetAttr allows to modify its appearance. Just create a custom
 attribute object and set it for the day you want to be displayed
 specially A day may be marked as being a holiday, (even if it is not
-recognized as one by wx.DateTime) by using the SetHoliday method.
+recognized as one by `wx.DateTime`) by using the SetHoliday method.
 
 As the attributes are specified for each day, they may change when the
 month is changed, so you will often want to update them in an
@@ -398,7 +396,7 @@ The result codes are:
             wxDateTime* date = new wxDateTime;
             wxDateTime::WeekDay wd;
             wxCalendarHitTestResult result = self->HitTest(pos, date, &wd);
-            bool blocked = wxPyBeginBlockThreads();
+            wxPyBlock_t blocked = wxPyBeginBlockThreads();
             PyObject* tup = PyTuple_New(3);
             PyTuple_SET_ITEM(tup, 0, PyInt_FromLong(result));
             PyTuple_SET_ITEM(tup, 1, wxPyConstructObject(date, wxT("wxDateTime"), 1));

@@ -4,7 +4,7 @@
 // Author:      Vadim Zeitlin
 // Modified by:
 // Created:     2004-10-19
-// RCS-ID:      $Id: stdpbase.cpp,v 1.4 2004/10/29 21:38:20 DE Exp $
+// RCS-ID:      $Id: stdpbase.cpp,v 1.7 2005/05/31 09:19:52 JS Exp $
 // Copyright:   (c) 2004 Vadim Zeitlin <vadim@wxwindows.org>
 // License:     wxWindows license
 ///////////////////////////////////////////////////////////////////////////////
@@ -24,9 +24,12 @@
     #pragma hdrstop
 #endif
 
+#if wxUSE_STDPATHS
+
 #ifndef WX_PRECOMP
     #include "wx/app.h"
 #endif //WX_PRECOMP
+#include "wx/apptrait.h"
 
 #include "wx/filename.h"
 #include "wx/stdpaths.h"
@@ -42,7 +45,12 @@ static wxStandardPaths gs_stdPaths;
 // ============================================================================
 
 /* static */
-wxStandardPaths& wxStandardPathsBase::Get()
+wxStandardPathsBase& wxStandardPathsBase::Get()
+{
+    return wxTheApp->GetTraits()->GetStandardPaths();
+}
+
+wxStandardPathsBase& wxAppTraitsBase::GetStandardPaths()
 {
     return gs_stdPaths;
 }
@@ -67,7 +75,7 @@ wxString wxStandardPathsBase::AppendAppName(const wxString& dir)
 {
     wxString subdir(dir);
 
-    // empty string indicates that an error has occured, don't touch it then
+    // empty string indicates that an error has occurred, don't touch it then
     if ( !subdir.empty() )
     {
         const wxString appname = wxTheApp->GetAppName();
@@ -84,3 +92,4 @@ wxString wxStandardPathsBase::AppendAppName(const wxString& dir)
     return subdir;
 }
 
+#endif // wxUSE_STDPATHS

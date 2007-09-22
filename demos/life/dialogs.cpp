@@ -4,7 +4,7 @@
 // Author:      Guillermo Rodriguez Garcia, <guille@iies.es>
 // Modified by:
 // Created:     Jan/2000
-// RCS-ID:      $Id: dialogs.cpp,v 1.13 2004/07/23 08:51:53 ABX Exp $
+// RCS-ID:      $Id: dialogs.cpp,v 1.18 2005/04/02 17:26:08 JS Exp $
 // Copyright:   (c) 2000, Guillermo Rodriguez Garcia
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -30,6 +30,7 @@
 
 #include "wx/statline.h"
 #include "wx/minifram.h"
+#include "wx/settings.h"
 
 #include "dialogs.h"
 #include "life.h"
@@ -40,10 +41,7 @@
 // resources
 // --------------------------------------------------------------------------
 
-#if defined(__WXGTK__) || defined(__WXMOTIF__) || defined(__WXMAC__) || defined(__WXX11__)
-    // logo for the about dialog
-    #include "bitmaps/life.xpm"
-#endif
+#include "bitmaps/life.xpm"
 
 // sample configurations
 #include "samples.inc"
@@ -83,10 +81,23 @@ LifeSamplesDialog::LifeSamplesDialog(wxWindow *parent)
 {
     m_value = 0;
 
+    wxSize listSize = wxDefaultSize;
+    bool isPDA = wxSystemSettings::GetScreenType() <= wxSYS_SCREEN_PDA;
+
+    // Screens are generally horizontal in orientation,
+    // but PDAs are generally vertical.
+    bool screenIsHorizontal = true;
+    if (isPDA &&
+        wxSystemSettings::GetMetric(wxSYS_SCREEN_X) < wxSystemSettings::GetMetric(wxSYS_SCREEN_Y))
+    {
+        listSize = wxSize(-1, 50);
+        screenIsHorizontal = false;
+    }
+
     // create and populate the list of available samples
     m_list = new wxListBox( this, ID_LISTBOX,
         wxDefaultPosition,
-        wxDefaultSize,
+        listSize,
         0, NULL,
         wxLB_SINGLE | wxLB_NEEDED_SB | wxLB_HSCROLL );
 
@@ -105,30 +116,41 @@ LifeSamplesDialog::LifeSamplesDialog(wxWindow *parent)
         wxTE_MULTILINE | wxTE_READONLY);
 
     // layout components
+
     wxStaticBoxSizer *sizer1 = new wxStaticBoxSizer( statbox, wxVERTICAL );
     sizer1->Add( m_canvas, 2, wxGROW | wxALL, 5);
     sizer1->Add( m_text, 1, wxGROW | wxALL, 5 );
 
-    wxBoxSizer *sizer2 = new wxBoxSizer( wxHORIZONTAL );
+    wxBoxSizer *sizer2 = new wxBoxSizer( screenIsHorizontal ? wxHORIZONTAL : wxVERTICAL );
     sizer2->Add( m_list, 0, wxGROW | wxALL, 5 );
     sizer2->Add( sizer1, 1, wxGROW | wxALL, 5 );
 
     wxBoxSizer *sizer3 = new wxBoxSizer( wxVERTICAL );
-    sizer3->Add( CreateTextSizer(_("Select one configuration")), 0, wxALL, 10 );
+    sizer3->Add( CreateTextSizer(_("Select a configuration")), 0, wxALL|wxCENTRE, isPDA ? 2 : 10 );
 #if wxUSE_STATLINE
-    sizer3->Add( new wxStaticLine(this, wxID_ANY), 0, wxGROW | wxLEFT | wxRIGHT, 10 );
+    if (!isPDA)
+        sizer3->Add( new wxStaticLine(this, wxID_ANY), 0, wxGROW | wxLEFT | wxRIGHT, 10 );
 #endif // wxUSE_STATLINE
     sizer3->Add( sizer2, 1, wxGROW | wxALL, 5 );
 #if wxUSE_STATLINE
-    sizer3->Add( new wxStaticLine(this, wxID_ANY), 0, wxGROW | wxLEFT | wxRIGHT, 10 );
+    if (!isPDA)
+        sizer3->Add( new wxStaticLine(this, wxID_ANY), 0, wxGROW | wxLEFT | wxRIGHT, 10 );
 #endif // wxUSE_STATLINE
-    sizer3->Add( CreateButtonSizer(wxOK | wxCANCEL), 0, wxCENTRE | wxALL, 10 );
+
+#if defined(__SMARTPHONE__)
+    SetLeftMenu(wxID_CANCEL);
+    SetRightMenu(wxID_OK);
+#endif
 
     // activate
     SetSizer(sizer3);
+
+#if !defined(__POCKETPC__) && !defined(__SMARTPHONE__)
+    sizer3->Add( CreateButtonSizer(wxOK | wxCANCEL), 0, wxCENTRE | wxALL, isPDA ? 2 : 10 );
     sizer3->SetSizeHints(this);
     sizer3->Fit(this);
     Centre(wxBOTH | wxCENTRE_ON_SCREEN);
+#endif
 }
 
 LifeSamplesDialog::~LifeSamplesDialog()
@@ -168,11 +190,7 @@ LifeAboutDialog::LifeAboutDialog(wxWindow *parent)
                           wxDefaultPosition, wxDefaultSize)
 {
     // logo
-    wxBitmap bmp = wxBITMAP(life);
-#if !defined(__WXGTK__) && !defined(__WXMOTIF__) && !defined(__WXMAC__)
-    bmp.SetMask(new wxMask(bmp, *wxBLUE));
-#endif
-    wxStaticBitmap *sbmp = new wxStaticBitmap(this, wxID_ANY, bmp);
+    wxStaticBitmap *sbmp = new wxStaticBitmap(this, wxID_ANY, wxBitmap(life_xpm));
 
     // layout components
     wxBoxSizer *sizer = new wxBoxSizer( wxVERTICAL );
@@ -189,13 +207,19 @@ XLife is (c) 1989 by Jon Bennett et al.")),
 #if wxUSE_STATLINE
     sizer->Add( new wxStaticLine(this, wxID_ANY), 0, wxGROW | wxLEFT | wxRIGHT, 5 );
 #endif // wxUSE_STATLINE
+
+#if ! (defined(__SMARTPHONE__) || defined(__POCKETPC__))
     sizer->Add( CreateButtonSizer(wxOK), 0, wxCENTRE | wxALL, 10 );
+#endif
 
     // activate
     SetSizer(sizer);
+
+#if ! (defined(__SMARTPHONE__) || defined(__POCKETPC__))
     sizer->SetSizeHints(this);
     sizer->Fit(this);
     Centre(wxBOTH | wxCENTRE_ON_SCREEN);
+#endif
 }
 
 

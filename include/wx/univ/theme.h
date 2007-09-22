@@ -6,7 +6,7 @@
 // Author:      Vadim Zeitlin
 // Modified by:
 // Created:     06.08.00
-// RCS-ID:      $Id: theme.h,v 1.14 2004/08/10 13:08:34 ABX Exp $
+// RCS-ID:      $Id: theme.h,v 1.15 2005/01/21 18:15:42 ABX Exp $
 // Copyright:   (c) 2000 SciTech Software, Inc. (www.scitechsoft.com)
 // Licence:     wxWindows licence
 ///////////////////////////////////////////////////////////////////////////////
@@ -52,7 +52,7 @@ public:
     // get the renderer implementing all the control-drawing operations in
     // this theme
     virtual wxRenderer *GetRenderer() = 0;
-    
+
     // get the art provider to be used together with this theme
     virtual wxArtProvider *GetArtProvider() = 0;
 
@@ -105,7 +105,7 @@ struct WXDLLEXPORT wxThemeInfo
 // without it, an over optimizing linker may discard the object module
 // containing the theme implementation entirely
 #define WX_USE_THEME(themename)                                             \
-    WXDLLEXPORT_DATA(extern bool) wxThemeUse##themename;                    \
+    extern WXDLLEXPORT_DATA(bool) wxThemeUse##themename;                    \
     static struct wxThemeUserFor##themename                                 \
     {                                                                       \
         wxThemeUserFor##themename() { wxThemeUse##themename = true; }       \

@@ -4,7 +4,7 @@
 // Author:      Chris Breeze, Julian Smart
 // Modified by: Klaas Holwerda
 // Created:     01/02/97
-// RCS-ID:      $Id: matrix.cpp,v 1.13 2004/11/06 06:57:24 RN Exp $
+// RCS-ID:      $Id: matrix.cpp,v 1.15 2005/06/13 12:19:20 ABX Exp $
 // Copyright:   (c) Julian Smart
 // Licence:     wxWindows licence
 ///////////////////////////////////////////////////////////////////////////////
@@ -25,12 +25,12 @@
 
 #ifndef WX_PRECOMP
 #include "wx/defs.h"
+#include "wx/math.h"
 #endif
 
 #include "wx/matrix.h"
-#include <math.h>
 
-static const double pi = 3.1415926535;
+static const double pi = M_PI;
 
 wxTransformMatrix::wxTransformMatrix(void)
 {
@@ -77,7 +77,7 @@ void wxTransformMatrix::operator = (const wxTransformMatrix& mat)
 
 bool wxTransformMatrix::operator == (const wxTransformMatrix& mat)
 {
-    if (m_isIdentity==true && mat.m_isIdentity==true)
+    if (m_isIdentity && mat.m_isIdentity)
         return true;
 
     int i, j;

@@ -1,11 +1,13 @@
-/*
- * Program: image
- *
- * Author: Robert Roebling
- *
- * Copyright: (C) 1998, Robert Roebling
- *
- */
+///////////////////////////////////////////////////////////////////////////////
+// Name:        samples/image/image.cpp
+// Purpose:     sample showing operations with wxImage
+// Author:      Robert Roebling
+// Modified by:
+// Created:     1998
+// RCS-ID:      $Id: image.cpp,v 1.105 2005/06/13 12:19:18 ABX Exp $
+// Copyright:   (c) 1998-2005 Robert Roebling
+// License:     wxWindows licence
+///////////////////////////////////////////////////////////////////////////////
 
 // For compilers that support precompilation, includes "wx/wx.h".
 #include "wx/wxprec.h"
@@ -20,6 +22,7 @@
 
 #include "wx/image.h"
 #include "wx/file.h"
+#include "wx/filename.h"
 #include "wx/mstream.h"
 #include "wx/wfstream.h"
 #include "wx/quantize.h"
@@ -32,10 +35,15 @@
 #include "smile.xbm"
 #include "smile.xpm"
 
-#if defined(__WXMSW__) || defined(__WXMAC__)
+#if defined(__WXMSW__)
     #ifdef wxHAVE_RAW_BITMAP
     #include "wx/rawbmp.h"
     #endif
+#endif
+
+#if defined(__WXMAC__) || defined(__WXGTK__)
+    #define wxHAVE_RAW_BITMAP
+    #include "wx/rawbmp.h"
 #endif
 
 // derived classes
@@ -73,6 +81,9 @@ public:
     wxBitmap  *my_square;
     wxBitmap  *my_anti;
 
+    wxBitmap  *my_horse_asciigrey_pnm;
+    wxBitmap  *my_horse_rawgrey_pnm;
+
     int xH, yH ;
     int m_ani_images ;
 
@@ -85,31 +96,6 @@ private:
     DECLARE_EVENT_TABLE()
 };
 
-
-const int nChoices = 8 ;
-static const wxString bppchoices[nChoices] =
-{
-    _T("1 bpp color"),
-    _T("1 bpp B&W"),
-    _T("4 bpp color"),
-    _T("8 bpp color"),
-    _T("8 bpp greyscale"),
-    _T("8 bpp red"),
-    _T("8 bpp own palette"),
-    _T("24 bpp")
-};
-
-static const int bppvalues[nChoices] =
-{
-    wxBMP_1BPP,
-    wxBMP_1BPP_BW,
-    wxBMP_4BPP,
-    wxBMP_8BPP,
-    wxBMP_8BPP_GREY,
-    wxBMP_8BPP_RED,
-    wxBMP_8BPP_PALETTE,
-    wxBMP_24BPP
-};
 
 // MyFrame
 
@@ -165,73 +151,124 @@ public:
     {
         wxImage image = m_bitmap.ConvertToImage();
 
-        int bppselection = wxGetSingleChoiceIndex(_T("Set BMP BPP"),
-                                                  _T("Set BMP BPP"),
-                                                  nChoices,
-                                                  bppchoices,
-                                                  this);
-        if ( bppselection == -1 )
-        {
-            // cancelled
-            return;
-        }
-
-        image.SetOption(wxIMAGE_OPTION_BMP_FORMAT, bppvalues[bppselection]);
-
-        wxString deffilename = bppchoices[bppselection];
-        deffilename.Replace(wxT(" "), wxT("_"));
-        deffilename += wxT(".bmp");
         wxString savefilename = wxFileSelector( wxT("Save Image"),
                                                 wxT(""),
-                                                deffilename,
+                                                wxT(""),
                                                 (const wxChar *)NULL,
-                                            wxT("BMP files (*.bmp)|*.bmp|")
-                                            wxT("PNG files (*.png)|*.png|")
-                                            wxT("JPEG files (*.jpg)|*.jpg|")
-                                            wxT("GIF files (*.gif)|*.gif|")
-                                            wxT("TIFF files (*.tif)|*.tif|")
-                                            wxT("PCX files (*.pcx)|*.pcx|")
-                                            wxT("ICO files (*.ico)|*.ico|")
-                                            wxT("CUR files (*.cur)|*.cur"),
+                                                wxT("BMP files (*.bmp)|*.bmp|")
+                                                wxT("PNG files (*.png)|*.png|")
+                                                wxT("JPEG files (*.jpg)|*.jpg|")
+                                                wxT("GIF files (*.gif)|*.gif|")
+                                                wxT("TIFF files (*.tif)|*.tif|")
+                                                wxT("PCX files (*.pcx)|*.pcx|")
+                                                wxT("ICO files (*.ico)|*.ico|")
+                                                wxT("CUR files (*.cur)|*.cur"),
                                                 wxSAVE,
                                                 this);
 
         if ( savefilename.empty() )
             return;
 
-        if ( image.GetOptionInt(wxIMAGE_OPTION_BMP_FORMAT) == wxBMP_8BPP_PALETTE )
+        wxString extension;
+        wxFileName::SplitPath(savefilename, NULL, NULL, &extension);
+
+        bool saved = false;
+        if ( extension == _T("bpp") )
         {
-            unsigned char *cmap = new unsigned char [256];
-            for ( int i = 0; i < 256; i++ )
-                cmap[i] = (unsigned char)i;
-            image.SetPalette(wxPalette(256, cmap, cmap, cmap));
+            static const int bppvalues[] =
+            {
+                wxBMP_1BPP,
+                wxBMP_1BPP_BW,
+                wxBMP_4BPP,
+                wxBMP_8BPP,
+                wxBMP_8BPP_GREY,
+                wxBMP_8BPP_RED,
+                wxBMP_8BPP_PALETTE,
+                wxBMP_24BPP
+            };
 
-            delete cmap;
+            const wxString bppchoices[] =
+            {
+                _T("1 bpp color"),
+                _T("1 bpp B&W"),
+                _T("4 bpp color"),
+                _T("8 bpp color"),
+                _T("8 bpp greyscale"),
+                _T("8 bpp red"),
+                _T("8 bpp own palette"),
+                _T("24 bpp")
+            };
+
+            int bppselection = wxGetSingleChoiceIndex(_T("Set BMP BPP"),
+                                                      _T("Image sample: save file"),
+                                                      WXSIZEOF(bppchoices),
+                                                      bppchoices,
+                                                      this);
+            if ( bppselection != -1 )
+            {
+                int format = bppvalues[bppselection];
+                image.SetOption(wxIMAGE_OPTION_BMP_FORMAT, format);
+
+                if ( format == wxBMP_8BPP_PALETTE )
+                {
+                    unsigned char *cmap = new unsigned char [256];
+                    for ( int i = 0; i < 256; i++ )
+                        cmap[i] = (unsigned char)i;
+                    image.SetPalette(wxPalette(256, cmap, cmap, cmap));
+
+                    delete[] cmap;
+                }
+            }
         }
+        else if ( extension == _T("png") )
+        {
+            static const int pngvalues[] =
+            {
+                wxPNG_TYPE_COLOUR,
+                wxPNG_TYPE_COLOUR,
+                wxPNG_TYPE_GREY,
+                wxPNG_TYPE_GREY,
+                wxPNG_TYPE_GREY_RED,
+                wxPNG_TYPE_GREY_RED,
+            };
 
-        bool loaded;
-        wxString extension = savefilename.AfterLast('.').Lower();
+            const wxString pngchoices[] =
+            {
+                _T("Colour 8bpp"),
+                _T("Colour 16bpp"),
+                _T("Grey 8bpp"),
+                _T("Grey 16bpp"),
+                _T("Grey red 8bpp"),
+                _T("Grey red 16bpp"),
+            };
 
-        if (extension == _T("cur"))
+            int sel = wxGetSingleChoiceIndex(_T("Set PNG format"),
+                                             _T("Image sample: save file"),
+                                             WXSIZEOF(pngchoices),
+                                             pngchoices,
+                                             this);
+            if ( sel != -1 )
+            {
+                image.SetOption(wxIMAGE_OPTION_PNG_FORMAT, pngvalues[sel]);
+                image.SetOption(wxIMAGE_OPTION_PNG_BITDEPTH, sel % 2 ? 16 : 8);
+            }
+        }
+        else if ( extension == _T("cur") )
         {
             image.Rescale(32,32);
             image.SetOption(wxIMAGE_OPTION_CUR_HOTSPOT_X, 0);
             image.SetOption(wxIMAGE_OPTION_CUR_HOTSPOT_Y, 0);
             // This shows how you can save an image with explicitly
             // specified image format:
-            loaded = image.SaveFile(savefilename, wxBITMAP_TYPE_CUR);
+            saved = image.SaveFile(savefilename, wxBITMAP_TYPE_CUR);
         }
-        else
+
+        if ( !saved )
         {
             // This one guesses image format from filename extension
             // (it may fail if the extension is not recognized):
-            loaded = image.SaveFile(savefilename);
+            image.SaveFile(savefilename);
         }
-
-        if ( !loaded )
-            wxMessageBox(_T("No handler for this file type."),
-                         _T("File was not saved"),
-                         wxOK|wxCENTRE, this);
     }
 
 private:
@@ -285,10 +322,12 @@ public:
 
             for ( int x = 0; x < REAL_SIZE; ++x )
             {
-                p.Red() = r;
-                p.Green() = g;
-                p.Blue() = b;
-                p.Alpha() = (Data::Iterator::ChannelType)((x*255.)/REAL_SIZE);
+                // note that RGB must be premultiplied by alpha
+                unsigned a = (Data::Iterator::ChannelType)((x*255.)/REAL_SIZE);
+                p.Red() = r * a / 256;
+                p.Green() = g * a / 256;
+                p.Blue() = b * a / 256;
+                p.Alpha() = a;
 
                 ++p; // same as p.OffsetX(1)
             }
@@ -373,6 +412,9 @@ MyCanvas::MyCanvas( wxWindow *parent, wxWindowID id,
     my_smile_xbm = (wxBitmap*) NULL;
     my_square = (wxBitmap*) NULL;
     my_anti = (wxBitmap*) NULL;
+
+    my_horse_asciigrey_pnm = (wxBitmap*) NULL;
+    my_horse_rawgrey_pnm = (wxBitmap*) NULL;
 
     m_ani_images = 0 ;
 
@@ -470,6 +512,20 @@ MyCanvas::MyCanvas( wxWindow *parent, wxWindowID id,
         wxLogError(wxT("Can't load PNM image"));
     else
         my_horse_pnm = new wxBitmap( image );
+
+    image.Destroy();
+
+    if ( !image.LoadFile( dir + _T("horse_ag.pnm"), wxBITMAP_TYPE_PNM ) )
+        wxLogError(wxT("Can't load PNM image"));
+    else
+        my_horse_asciigrey_pnm = new wxBitmap( image );
+
+    image.Destroy();
+
+    if ( !image.LoadFile( dir + _T("horse_rg.pnm"), wxBITMAP_TYPE_PNM ) )
+        wxLogError(wxT("Can't load PNM image"));
+    else
+        my_horse_rawgrey_pnm = new wxBitmap( image );
 #endif
 
 #if wxUSE_LIBTIFF
@@ -549,13 +605,14 @@ MyCanvas::MyCanvas( wxWindow *parent, wxWindowID id,
     wxFile file(dir + _T("horse.bmp"));
     if ( file.IsOpened() )
     {
-        size_t len = (size_t)file.Length();
-        void *data = malloc(len);
-        if ( file.Read(data, len) != len )
+        wxFileOffset len = file.Length();
+        size_t dataSize = (size_t)len;
+        void *data = malloc(dataSize);
+        if ( file.Read(data, dataSize) != len )
             wxLogError(_T("Reading bitmap file failed"));
         else
         {
-            wxMemoryInputStream mis(data, len);
+            wxMemoryInputStream mis(data, dataSize);
             if ( !image.LoadFile(mis) )
                 wxLogError(wxT("Can't load BMP image from stream"));
             else
@@ -585,6 +642,8 @@ MyCanvas::~MyCanvas()
     delete my_smile_xbm;
     delete my_square;
     delete my_anti;
+    delete my_horse_asciigrey_pnm;
+    delete my_horse_rawgrey_pnm;
 }
 
 void MyCanvas::OnPaint( wxPaintEvent &WXUNUSED(event) )
@@ -638,6 +697,14 @@ void MyCanvas::OnPaint( wxPaintEvent &WXUNUSED(event) )
     dc.DrawText( _T("PNM handler"), 30, 1285 );
     if (my_horse_pnm && my_horse_pnm->Ok())
         dc.DrawBitmap( *my_horse_pnm, 30, 1300 );
+
+    dc.DrawText( _T("PNM handler (ascii grey)"), 280, 1285 );
+    if (my_horse_asciigrey_pnm && my_horse_asciigrey_pnm->Ok())
+        dc.DrawBitmap( *my_horse_asciigrey_pnm, 280, 1300 );
+
+    dc.DrawText( _T("PNM handler (raw grey)"), 530, 1285 );
+    if (my_horse_rawgrey_pnm && my_horse_rawgrey_pnm->Ok())
+        dc.DrawBitmap( *my_horse_rawgrey_pnm, 530, 1300 );
 
     dc.DrawText( _T("TIFF handler"), 30, 1515 );
     if (my_horse_tiff && my_horse_tiff->Ok())
@@ -831,10 +898,10 @@ void MyCanvas::CreateAntiAliasedBitmap()
 
 enum
 {
-    ID_QUIT  = 108,
-    ID_ABOUT,
-    ID_NEW,
-    ID_SHOWRAW
+    ID_QUIT  = wxID_EXIT,
+    ID_ABOUT = wxID_ABOUT,
+    ID_NEW = 100,
+    ID_SHOWRAW = 101
 };
 
 IMPLEMENT_DYNAMIC_CLASS( MyFrame, wxFrame )

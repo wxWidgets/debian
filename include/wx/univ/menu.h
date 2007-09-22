@@ -4,7 +4,7 @@
 // Author:      Vadim Zeitlin
 // Modified by:
 // Created:     05.05.01
-// RCS-ID:      $Id: menu.h,v 1.16 2004/08/10 13:08:33 ABX Exp $
+// RCS-ID:      $Id: menu.h,v 1.19 2005/05/06 13:42:32 MW Exp $
 // Copyright:   (c) 2001 SciTech Software, Inc. (www.scitechsoft.com)
 // Licence:     wxWindows licence
 ///////////////////////////////////////////////////////////////////////////////
@@ -147,6 +147,7 @@ class WXDLLEXPORT wxMenuBar : public wxMenuBarBase
 public:
     // ctors and dtor
     wxMenuBar(long WXUNUSED(style) = 0) { Init(); }
+    wxMenuBar(size_t n, wxMenu *menus[], const wxString titles[], long style = 0);
     virtual ~wxMenuBar();
 
     // implement base class virtuals
@@ -246,6 +247,9 @@ protected:
 
     // we don't want to have focus except while selecting from menu
     void GiveAwayFocus();
+
+    // Release the mouse capture if we have it
+    bool ReleaseMouseCapture();
 
     // the array containing extra menu info we need
     wxMenuInfoArray m_menuInfos;

@@ -1,10 +1,12 @@
 /* -------------------------------------------------------------------------
- * Project: GSocket (Generic Socket)
- * Name:    gsocket.h
- * Author:  Guilhem Lavaux
- *          Guillermo Rodriguez Garcia <guille@iies.es> (maintainer)
- * Purpose: GSocket include file (system independent)
- * CVSID:   $Id: gsocket.h,v 1.46 2004/08/20 10:05:47 DS Exp $
+ * Project:     GSocket (Generic Socket)
+ * Name:        gsocket.h
+ * Author:      Guilhem Lavaux
+ *              Guillermo Rodriguez Garcia <guille@iies.es> (maintainer)
+ * Copyright:   (c) Guilhem Lavaux
+ * Licence:     wxWindows Licence
+ * Purpose:     GSocket include file (system independent)
+ * CVSID:       $Id: gsocket.h,v 1.49 2005/05/04 18:51:58 JS Exp $
  * -------------------------------------------------------------------------
  */
 
@@ -12,8 +14,7 @@
 #define __GSOCKET_H
 
 #ifndef __GSOCKET_STANDALONE__
-#include "wx/setup.h"
-#include "wx/platform.h"
+#include "wx/defs.h"
 
 #include "wx/dlimpexp.h" /* for WXDLLIMPEXP_NET */
 
@@ -100,6 +101,8 @@ typedef void (*GSocketCallback)(GSocket *socket, GSocketEvent event,
 class GSocketGUIFunctionsTable
 {
 public:
+    // needed since this class declares virtual members
+    virtual ~GSocketGUIFunctionsTable() { }
     virtual bool OnInit() = 0;
     virtual void OnExit() = 0;
     virtual bool CanUseEventLoop() = 0;

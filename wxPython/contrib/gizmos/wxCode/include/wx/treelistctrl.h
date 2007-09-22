@@ -4,7 +4,7 @@
 // Author:      Robert Roebling
 // Modified by: Alberto Griggio, 2002
 // Created:     01/02/97
-// RCS-ID:      $Id: treelistctrl.h,v 1.4 2004/09/28 18:59:28 RD Exp $
+// RCS-ID:      $Id: treelistctrl.h,v 1.6 2005/03/02 18:32:28 RD Exp $
 // Copyright:   (c) Robert Roebling, Julian Smart, Alberto Griggio,
 //              Vadim Zeitlin, Otto Wyss
 // Licence:     wxWindows license
@@ -543,9 +543,10 @@ protected:
 //     // the common part of all ctors
 //     void Init();
 
+    void OnGetToolTip( wxTreeEvent &event );
     void OnSize(wxSizeEvent& event);
     void CalculateAndSetHeaderHeight();
-    
+    void DoHeaderLayout();
 
 private:
     size_t fill_column;

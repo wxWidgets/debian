@@ -4,13 +4,15 @@
 // Author:      Vadim Zeitlin
 // Modified by:
 // Created:     25.10.99
-// RCS-ID:      $Id: menuitem.h,v 1.32 2004/10/19 13:39:05 JS Exp $
+// RCS-ID:      $Id: menuitem.h,v 1.35 2005/05/31 09:18:16 JS Exp $
 // Copyright:   (c) 1999 Vadim Zeitlin <zeitlin@dptmaths.ens-cachan.fr>
 // Licence:     wxWindows licence
 ///////////////////////////////////////////////////////////////////////////////
 
 #ifndef _WX_MENUITEM_H_BASE_
 #define _WX_MENUITEM_H_BASE_
+
+#include "wx/defs.h"
 
 #if wxUSE_MENUS
 
@@ -127,7 +129,7 @@ protected:
                  *m_subMenu;        // our sub menu or NULL
     wxString      m_text,           // label of the item
                   m_help;           // the help string for the item
-    wxItemKind    m_kind;           // seperator/normal/check/radio item?
+    wxItemKind    m_kind;           // separator/normal/check/radio item?
     bool          m_isChecked;      // is checked?
     bool          m_isEnabled;      // is enabled?
 
@@ -155,7 +157,7 @@ private:
 #else // !wxUSE_BASE_CLASSES_ONLY
 #if defined(__WXUNIVERSAL__)
     #include "wx/univ/menuitem.h"
-#elif defined(__PALMOS__)
+#elif defined(__WXPALMOS__)
     #include "wx/palmos/menuitem.h"
 #elif defined(__WXMSW__)
     #include "wx/msw/menuitem.h"

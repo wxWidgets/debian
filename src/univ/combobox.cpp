@@ -4,7 +4,7 @@
 // Author:      Vadim Zeitlin
 // Modified by:
 // Created:     15.12.00
-// RCS-ID:      $Id: combobox.cpp,v 1.35 2004/08/10 13:08:39 ABX Exp $
+// RCS-ID:      $Id: combobox.cpp,v 1.42 2005/05/31 09:28:45 JS Exp $
 // Copyright:   (c) 2000 SciTech Software, Inc. (www.scitechsoft.com)
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -122,12 +122,14 @@ public:
     virtual ~wxComboListBox();
 
     // implement wxComboPopup methods
-    virtual bool SetSelection(const wxString& value);
-    virtual void SetSelection(int n, bool select)
-        { wxListBox::SetSelection( n, select); };
+    virtual bool SetSelection(const wxString& s);
     virtual wxControl *GetControl() { return this; }
     virtual void OnShow();
     virtual wxCoord GetBestWidth() const;
+
+    // fix virtual function hiding
+    virtual void SetSelection(int n) { DoSetSelection(n, true); }
+    void SetSelection(int n, bool select) { DoSetSelection(n, select); }
 
 protected:
     // we shouldn't return height too big from here
@@ -310,7 +312,7 @@ wxSize wxComboControl::DoGetBestClientSize() const
         widthPopup = m_popup->GetBestWidth();
     }
 
-    return wxSize(wxMax(sizeText.x + g_comboMargin + sizeBtn.x, widthPopup), 
+    return wxSize(wxMax(sizeText.x + g_comboMargin + sizeBtn.x, widthPopup),
                   wxMax(sizeBtn.y, sizeText.y));
 }
 
@@ -365,7 +367,7 @@ bool wxComboControl::Show(bool show)
 #if wxUSE_TOOLTIPS
 void wxComboControl::DoSetToolTip(wxToolTip *tooltip)
 {
-    wxControl::DoSetToolTip(tooltip);    
+    wxControl::DoSetToolTip(tooltip);
 
     // Set tool tip for button and text box
     if (m_text && m_btn)
@@ -574,7 +576,7 @@ void wxComboListBox::OnSelect(wxCommandEvent& event)
         event2.SetId(m_combo->GetId());
         m_combo->ProcessEvent(event2);
     }
-    //else: ignore the events resultign from just moving the mouse initially
+    //else: ignore the events resulting from just moving the mouse initially
 }
 
 void wxComboListBox::OnShow()
@@ -612,7 +614,7 @@ void wxComboListBox::OnMouseMove(wxMouseEvent& event)
     // while a wxComboListBox is shown, it always has capture, so if it doesn't
     // we're about to go away anyhow (normally this shouldn't happen at all,
     // but I don't put assert here as it just might do on other platforms and
-    // it doesn't break anythign anyhow)
+    // it doesn't break anything anyhow)
     if ( this == wxWindow::GetCapture() )
     {
         if ( HitTest(event.GetPosition()) == wxHT_WINDOW_INSIDE )
@@ -763,7 +765,7 @@ long wxComboBox::GetInsertionPoint() const
     return GetText()->GetInsertionPoint();
 }
 
-long wxComboBox::GetLastPosition() const
+wxTextPos wxComboBox::GetLastPosition() const
 {
     return GetText()->GetLastPosition();
 }
@@ -832,7 +834,7 @@ int wxComboBox::FindString(const wxString& s) const
     return GetLBox()->FindString(s);
 }
 
-void wxComboBox::Select(int n)
+void wxComboBox::SetSelection(int n)
 {
     wxCHECK_RET( (n >= 0) && (n < GetCount()), _T("invalid index in wxComboBox::Select") );
 
@@ -845,9 +847,9 @@ int wxComboBox::GetSelection() const
 #if 1 // FIXME:: What is the correct behavior?
     // if the current value isn't one of the listbox strings, return -1
     return GetLBox()->GetSelection();
-#else    
-    // Why oh why is this done this way? 
-    // It is not because the value displayed in the text can be found 
+#else
+    // Why oh why is this done this way?
+    // It is not because the value displayed in the text can be found
     // in the list that it is the item that is selected!
     return FindString(GetText()->GetValue());
 #endif
@@ -889,6 +891,69 @@ wxClientData* wxComboBox::DoGetItemClientObject(int n) const
 {
     return GetLBox()->GetClientObject(n);
 }
+
+bool wxComboBox::IsEditable() const
+{
+    return GetText() != NULL && (!HasFlag(wxCB_READONLY) || GetText()->IsEditable());
+}
+
+void wxComboBox::Undo()
+{
+    if (IsEditable())
+        GetText()->Undo();
+}
+
+void wxComboBox::Redo()
+{
+    if (IsEditable())
+        GetText()->Redo();
+}
+
+void wxComboBox::SelectAll()
+{
+    GetText()->SelectAll();
+}
+
+bool wxComboBox::CanCopy() const
+{
+    if (GetText() != NULL)
+        return GetText()->CanCopy();
+    else
+        return false;
+}
+
+bool wxComboBox::CanCut() const
+{
+    if (GetText() != NULL)
+        return GetText()->CanCut();
+    else
+        return false;
+}
+
+bool wxComboBox::CanPaste() const
+{
+    if (IsEditable())
+        return GetText()->CanPaste();
+    else
+        return false;
+}
+
+bool wxComboBox::CanUndo() const
+{
+    if (IsEditable())
+        return GetText()->CanUndo();
+    else
+        return false;
+}
+
+bool wxComboBox::CanRedo() const
+{
+    if (IsEditable())
+        return GetText()->CanRedo();
+    else
+        return false;
+}
+
 
 // ----------------------------------------------------------------------------
 // input handling

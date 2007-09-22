@@ -5,7 +5,7 @@
 // Author:      Robin Dunn
 //
 // Created:     24-Aug-1998
-// RCS-ID:      $Id: _statusbar.i,v 1.10 2004/07/31 20:24:29 RD Exp $
+// RCS-ID:      $Id: _statusbar.i,v 1.11 2004/12/23 20:43:50 RD Exp $
 // Copyright:   (c) 2003 by Total Control Software
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -43,7 +43,7 @@ public:
     wxStatusBar(wxWindow* parent, wxWindowID id = -1,
                 long style = wxDEFAULT_STATUSBAR_STYLE,
                 const wxString& name = wxPyStatusLineNameStr);
-    %name(PreStatusBar)wxStatusBar();
+    %RenameCtor(PreStatusBar, wxStatusBar());
 
     // Turn it back on again
     %typemap(out) wxStatusBar* { $result = wxPyMake_wxObject($1, $owner); }

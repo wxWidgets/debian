@@ -3,8 +3,8 @@
 // Purpose:     Grid control wxWidgets sample
 // Author:      Michael Bedward
 // Modified by:
-// RCS-ID:      $Id: griddemo.cpp,v 1.10 2004/10/06 20:53:19 ABX Exp $
-// Copyright:   (c) Michael Bedward, Julian Smart
+// RCS-ID:      $Id: griddemo.cpp,v 1.14 2005/06/16 17:13:54 JS Exp $
+// Copyright:   (c) Michael Bedward, Julian Smart, Vadim Zeitlin
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
 
@@ -99,7 +99,7 @@ BEGIN_EVENT_TABLE( GridFrame, wxFrame )
     EVT_MENU( ID_SET_CELL_FG_COLOUR, GridFrame::SetCellFgColour )
     EVT_MENU( ID_SET_CELL_BG_COLOUR, GridFrame::SetCellBgColour )
 
-    EVT_MENU( ID_ABOUT, GridFrame::About )
+    EVT_MENU( wxID_ABOUT, GridFrame::About )
     EVT_MENU( wxID_EXIT, GridFrame::OnQuit )
     EVT_MENU( ID_VTABLE, GridFrame::OnVTable)
     EVT_MENU( ID_BUGS_TABLE, GridFrame::OnBugsTable)
@@ -215,7 +215,7 @@ GridFrame::GridFrame()
 
 
     wxMenu *helpMenu = new wxMenu;
-    helpMenu->Append( ID_ABOUT, _T("&About wxGrid demo") );
+    helpMenu->Append( wxID_ABOUT, _T("&About wxGrid demo") );
 
     wxMenuBar *menuBar = new wxMenuBar;
     menuBar->Append( fileMenu, _T("&File") );
@@ -246,8 +246,8 @@ GridFrame::GridFrame()
                              wxTE_MULTILINE );
 
     logger = new wxLogTextCtrl( logWin );
-    m_logOld = logger->SetActiveTarget( logger );
-    logger->SetTimestamp( NULL );
+    m_logOld = wxLog::SetActiveTarget( logger );
+    wxLog::SetTimestamp( NULL );
 #endif // wxUSE_LOG
 
     // this will create a grid and, by default, an associated grid
@@ -935,8 +935,7 @@ void GridFrame::OnEditorHidden( wxGridEvent& ev )
 void GridFrame::About(  wxCommandEvent& WXUNUSED(ev) )
 {
     (void)wxMessageBox( _T("\n\nwxGrid demo \n\n")
-                        _T("Michael Bedward \n")
-                        _T("mbedward@ozemail.com.au \n\n"),
+                        _T("Michael Bedward, Julian Smart, Vadim Zeitlin"),
                         _T("About"),
                         wxOK );
 }
@@ -1197,10 +1196,13 @@ wxString BugsGridTable::GetValue( int row, int col )
     switch ( col )
     {
         case Col_Id:
+            return wxString::Format(_T("%d"), gd.id);
+
         case Col_Priority:
+            return wxString::Format(_T("%d"), gd.prio);
+
         case Col_Opened:
-            wxFAIL_MSG(_T("unexpected column"));
-            break;
+            return gd.opened ? _T("1") : _T("0");
 
         case Col_Severity:
             return severities[gd.severity];
@@ -1258,7 +1260,10 @@ void BugsGridTable::SetValue( int row, int col, const wxString& value )
     }
 }
 
-bool BugsGridTable::CanGetValueAs( int WXUNUSED(row), int col, const wxString& typeName )
+bool
+BugsGridTable::CanGetValueAs(int WXUNUSED(row),
+                             int col,
+                             const wxString& typeName)
 {
     if ( typeName == wxGRID_VALUE_STRING )
     {

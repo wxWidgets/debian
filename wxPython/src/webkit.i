@@ -5,7 +5,7 @@
 // Author:      Robin Dunn / Kevin Ollivier
 //
 // Created:     18-Oct-2004
-// RCS-ID:      $Id: webkit.i,v 1.4 2004/10/19 21:48:08 RD Exp $
+// RCS-ID:      $Id: webkit.i,v 1.8 2005/04/13 20:27:56 RD Exp $
 // Copyright:   (c) 2004 by Total Control Software
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -86,6 +86,8 @@ public:
     bool CanGetPageSource() { return false; }
     wxString GetPageSource() { return wxEmptyString; }
     void SetPageSource(wxString& source, const wxString& baseUrl = wxEmptyString) {}
+    wxString GetPageURL()   { return wxEmptyString; }
+    wxString GetPageTitle() { return wxEmptyString; }
 };
 
 
@@ -116,7 +118,7 @@ public:
 #endif
 %}
 
-// Now define it for SWIG, usign either the real class or the dummy above.
+// Now define it for SWIG, using either the real class or the dummy above.
 
 MustHaveApp(wxWebKitCtrl);
 
@@ -134,7 +136,7 @@ public:
                     const wxValidator& validator = wxDefaultValidator,
                     const wxString& name = wxPyWebKitNameStr);
 
-    %name(PreWebKitCtrl)wxWebKitCtrl();
+    %RenameCtor(PreWebKitCtrl, wxWebKitCtrl());
 
     
     bool Create(wxWindow *parent,
@@ -156,6 +158,8 @@ public:
     bool CanGetPageSource();
     wxString GetPageSource();
     void SetPageSource(wxString& source, const wxString& baseUrl = wxPyEmptyString);
+    wxString GetPageURL();
+    wxString GetPageTitle();
 };
 
 

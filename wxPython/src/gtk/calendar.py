@@ -7,6 +7,47 @@ Classes for an interactive Calendar control.
 
 import _calendar
 
+def _swig_setattr_nondynamic(self,class_type,name,value,static=1):
+    if (name == "this"):
+        if isinstance(value, class_type):
+            self.__dict__[name] = value.this
+            if hasattr(value,"thisown"): self.__dict__["thisown"] = value.thisown
+            del value.thisown
+            return
+    method = class_type.__swig_setmethods__.get(name,None)
+    if method: return method(self,value)
+    if (not static) or hasattr(self,name) or (name == "thisown"):
+        self.__dict__[name] = value
+    else:
+        raise AttributeError("You cannot add attributes to %s" % self)
+
+def _swig_setattr(self,class_type,name,value):
+    return _swig_setattr_nondynamic(self,class_type,name,value,0)
+
+def _swig_getattr(self,class_type,name):
+    method = class_type.__swig_getmethods__.get(name,None)
+    if method: return method(self)
+    raise AttributeError,name
+
+import types
+try:
+    _object = types.ObjectType
+    _newclass = 1
+except AttributeError:
+    class _object : pass
+    _newclass = 0
+del types
+
+
+def _swig_setattr_nondynamic_method(set):
+    def set_attr(self,name,value):
+        if hasattr(self,name) or (name in ("this", "thisown")):
+            set(self,name,value)
+        else:
+            raise AttributeError("You cannot add attributes to %s" % self)
+    return set_attr
+
+
 import _misc
 import _core
 wx = _core 
@@ -122,7 +163,8 @@ class CalendarDateAttrPtr(CalendarDateAttr):
         self.__class__ = CalendarDateAttr
 _calendar.CalendarDateAttr_swigregister(CalendarDateAttrPtr)
 
-class CalendarEvent(_core.CommandEvent):
+class CalendarEvent(_core.DateEvent):
+    """Proxy of C++ CalendarEvent class"""
     def __repr__(self):
         return "<%s.%s; proxy of C++ wxCalendarEvent instance at %s>" % (self.__class__.__module__, self.__class__.__name__, self.this,)
     def __init__(self, *args, **kwargs):
@@ -131,14 +173,6 @@ class CalendarEvent(_core.CommandEvent):
         self.this = newobj.this
         self.thisown = 1
         del newobj.thisown
-    def GetDate(*args, **kwargs):
-        """GetDate(self) -> DateTime"""
-        return _calendar.CalendarEvent_GetDate(*args, **kwargs)
-
-    def SetDate(*args, **kwargs):
-        """SetDate(self, DateTime date)"""
-        return _calendar.CalendarEvent_SetDate(*args, **kwargs)
-
     def SetWeekDay(*args, **kwargs):
         """SetWeekDay(self, int wd)"""
         return _calendar.CalendarEvent_SetWeekDay(*args, **kwargs)
@@ -197,7 +231,7 @@ class CalendarCtrl(_core.Control):
     SetAttr allows to modify its appearance. Just create a custom
     attribute object and set it for the day you want to be displayed
     specially A day may be marked as being a holiday, (even if it is not
-    recognized as one by wx.DateTime) by using the SetHoliday method.
+    recognized as one by `wx.DateTime`) by using the SetHoliday method.
 
     As the attributes are specified for each day, they may change when the
     month is changed, so you will often want to update them in an

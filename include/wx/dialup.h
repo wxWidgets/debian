@@ -4,7 +4,7 @@
 // Author:      Vadim Zeitlin
 // Modified by:
 // Created:     07.07.99
-// RCS-ID:      $Id: dialup.h,v 1.25 2004/09/10 12:55:49 ABX Exp $
+// RCS-ID:      $Id: dialup.h,v 1.27 2005/03/09 16:29:55 ABX Exp $
 // Copyright:   (c) Vadim Zeitlin
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -190,11 +190,14 @@ private:
 // the type of dialup event handler function
 typedef void (wxEvtHandler::*wxDialUpEventFunction)(wxDialUpEvent&);
 
+#define wxDialUpEventHandler(func) \
+    (wxObjectEventFunction)(wxEventFunction)wxStaticCastEvent(wxDialUpEventFunction, &func)
+
 // macros to catch dialup events
 #define EVT_DIALUP_CONNECTED(func) \
-   DECLARE_EVENT_TABLE_ENTRY( wxEVT_DIALUP_CONNECTED, wxID_ANY, wxID_ANY, (wxObjectEventFunction) (wxEventFunction)  wxStaticCastEvent( wxDialUpEventFunction, & func ), NULL),
+    wx__DECLARE_EVT0(wxEVT_DIALUP_CONNECTED, wxDialUpEventHandler(func))
 #define EVT_DIALUP_DISCONNECTED(func) \
-   DECLARE_EVENT_TABLE_ENTRY( wxEVT_DIALUP_DISCONNECTED, wxID_ANY, wxID_ANY, (wxObjectEventFunction) (wxEventFunction)  wxStaticCastEvent( wxDialUpEventFunction, & func ), NULL),
+    wx__DECLARE_EVT0(wxEVT_DIALUP_DISCONNECTED, wxDialUpEventHandler(func))
 
 
 #endif // wxUSE_DIALUP_MANAGER

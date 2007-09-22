@@ -1,4 +1,6 @@
-/* Version: $Id: parser.y,v 1.2 2003/03/30 21:55:34 JS Exp $ */
+/* Version: $Id: parser.y,v 1.3 2005/05/04 18:57:50 JS Exp $ */
+/* Copyright:    (c) Julian Smart */
+/* Licence:      wxWindows Licence */
  %{
 #include "wx/setup.h"
 #include <string.h>

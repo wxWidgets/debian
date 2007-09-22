@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     04/01/98
-// RCS-ID:      $Id: tree.cpp,v 1.12 2004/06/08 19:27:40 ABX Exp $
+// RCS-ID:      $Id: tree.cpp,v 1.13 2005/03/31 19:10:17 ABX Exp $
 // Copyright:   (c) Julian Smart
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -17,8 +17,7 @@
 // headers
 // ----------------------------------------------------------------------------
 #ifdef __GNUG__
-    #pragma implementation "tree.cpp"
-    #pragma interface "tree.cpp"
+    #pragma implementation "tree.h"
 #endif
 
 // For compilers that support precompilation, includes "wx/wx.h".

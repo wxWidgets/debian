@@ -5,7 +5,7 @@
 // Author:      Robin Dunn
 //
 // Created:     12-Oct-1999
-// RCS-ID:      $Id: stc.i,v 1.10 2004/06/02 02:29:36 RD Exp $
+// RCS-ID:      $Id: stc.i,v 1.12 2005/04/19 22:30:35 RD Exp $
 // Copyright:   (c) 2000 by Total Control Software
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -30,6 +30,8 @@ languages are built-in."
 
 %import core.i
 %import misc.i  // for DnD
+//%import gdi.i   // for wxFontEncoding
+
 %pythoncode { wx = _core }
 %pythoncode { __docfilter__ = wx.__DocFilter(globals()) }
 
@@ -37,6 +39,9 @@ MAKE_CONST_WXSTRING(STCNameStr);
 
 
 %include _stc_rename.i
+%include _stc_docstrings.i
+
+enum wxFontEncoding;  // forward declare
 
 MustHaveApp(wxStyledTextCtrl);
 

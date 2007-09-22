@@ -4,9 +4,9 @@
 %% Author:      Vadim Zeitlin
 %% Modified by:
 %% Created:     14.01.02 (extracted from file.tex)
-%% RCS-ID:      $Id: file.tex,v 1.26 2004/09/30 11:15:57 ABX Exp $
+%% RCS-ID:      $Id: file.tex,v 1.29 2005/02/22 15:09:49 ABX Exp $
 %% Copyright:   (c) Vadim Zeitlin
-%% License:     wxWidgets license
+%% License:     wxWindows license
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \section{\class{wxFile}}\label{wxfile}
@@ -199,6 +199,23 @@ Flushes the file descriptor.
 Note that wxFile::Flush is not implemented on some Windows compilers
 due to a missing fsync function, which reduces the usefulness of this function
 (it can still be called but it will do nothing on unsupported compilers).
+
+\membersection{wxFile::GetKind}\label{wxfilegetfilekind}
+
+\constfunc{wxFileKind}{GetKind}{\void}
+
+Returns the type of the file. Possible return values are:
+
+\begin{verbatim}
+enum wxFileKind
+{
+  wxFILE_KIND_UNKNOWN,
+  wxFILE_KIND_DISK,     // a file supporting seeking to arbitrary offsets
+  wxFILE_KIND_TERMINAL, // a tty
+  wxFILE_KIND_PIPE      // a pipe
+};
+
+\end{verbatim}
 
 \membersection{wxFile::IsOpened}\label{wxfileisopened}
 

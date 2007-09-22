@@ -47,7 +47,7 @@ Destructor.
 \constfunc{wxFileOffset}{GetLength}{\void}
 
 Returns the length of the stream in bytes. If the length cannot be determined
-(this is always the case for socket streams for example), returns
+(this is always the case for socket streams for example), returns 
 \texttt{wxInvalidOffset}.
 
 \newsince{2.5.4}
@@ -85,13 +85,20 @@ In that cases, GetSize returns $0$ so you should always test its return value.
 
 \membersection{wxStreamBase::IsOk}\label{wxstreambaseisok}
 
-\constfunc{wxStreamError}{IsOk}{\void}
+\constfunc{bool}{IsOk}{\void}
 
 Returns true if no error occurred on the stream.
 
 \wxheading{See also}
 
 \helpref{GetLastError}{wxstreambasegetlasterror}
+
+
+\membersection{wxStreamBase::IsSeekable}\label{wxstreambaseisseekable}
+
+\constfunc{bool}{IsSeekable}{\void}
+
+Returns true if the streams supports seeking to arbitrary offsets.
 
 
 \membersection{wxStreamBase::OnSysRead}\label{wxstreambaseonsysread}
@@ -123,5 +130,4 @@ real position.
 \func{size\_t}{OnSysWrite}{\param{void *}{buffer}, \param{size\_t}{ bufsize}}
 
 See \helpref{OnSysRead}{wxstreambaseonsysread}.
-
 

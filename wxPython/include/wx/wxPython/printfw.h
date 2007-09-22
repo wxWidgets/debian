@@ -6,7 +6,7 @@
 // Author:      Robin Dunn
 //
 // Created:     29-Oct-1999
-// RCS-ID:      $Id: printfw.h,v 1.2 2003/11/12 21:33:04 RD Exp $
+// RCS-ID:      $Id: printfw.h,v 1.3 2004/11/13 02:30:07 RD Exp $
 // Copyright:   (c) 1999 by Total Control Software
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -35,6 +35,7 @@ public:
     void base_GetPageInfo(int *minPage, int *maxPage, int *pageFrom, int *pageTo);
 
     PYPRIVATE;
+    DECLARE_ABSTRACT_CLASS(wxPyPrintout); 
 };
 
 #endif

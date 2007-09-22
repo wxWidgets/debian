@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     04/01/98
-// RCS-ID:      $Id: prntdlgg.cpp,v 1.72 2004/11/11 00:22:44 RD Exp $
+// RCS-ID:      $Id: prntdlgg.cpp,v 1.81 2005/03/26 12:44:49 RR Exp $
 // Copyright:   (c) Julian Smart
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -82,7 +82,7 @@ IMPLEMENT_CLASS(wxPostScriptPrintNativeData, wxPrintNativeDataBase)
 
 wxPostScriptPrintNativeData::wxPostScriptPrintNativeData()
 {
-    m_previewCommand = wxT("");
+    m_previewCommand = wxEmptyString;
 #ifdef __VMS__
     m_printerCommand = wxT("print");
     m_printerOptions = wxT("/nonotify/queue=psqueue");
@@ -91,14 +91,14 @@ wxPostScriptPrintNativeData::wxPostScriptPrintNativeData()
 
 #ifdef __WXMSW__
     m_printerCommand = wxT("print");
-    m_printerOptions = wxT("");
+    m_printerOptions = wxEmptyString;
     m_afmPath = wxT("c:\\windows\\system\\");
 #endif
 
 #if !defined(__VMS__) && !defined(__WXMSW__)
     m_printerCommand = wxT("lpr");
-    m_printerOptions = wxT("");
-    m_afmPath = wxT("");
+    m_printerOptions = wxEmptyString;
+    m_afmPath = wxEmptyString;
 #endif
 
     m_printerScaleX = 1.0;
@@ -136,7 +136,7 @@ END_EVENT_TABLE()
 wxGenericPrintDialog::wxGenericPrintDialog(wxWindow *parent,
                                            wxPrintDialogData* data)
                     : wxPrintDialogBase(parent, wxID_ANY, _("Print"),
-                               wxPoint(0, 0), wxSize(600, 600),
+                               wxPoint(0,0), wxSize(600, 600),
                                wxDEFAULT_DIALOG_STYLE |
                                wxTAB_TRAVERSAL)
 {
@@ -149,23 +149,23 @@ wxGenericPrintDialog::wxGenericPrintDialog(wxWindow *parent,
 wxGenericPrintDialog::wxGenericPrintDialog(wxWindow *parent,
                                            wxPrintData* data)
                     : wxPrintDialogBase(parent, wxID_ANY, _("Print"),
-                               wxPoint(0, 0), wxSize(600, 600),
+                               wxPoint(0,0), wxSize(600, 600),
                                wxDEFAULT_DIALOG_STYLE |
                                wxTAB_TRAVERSAL)
 {
     if ( data )
         m_printDialogData = *data;
-        
+
     Init(parent);
 }
 
 void wxGenericPrintDialog::Init(wxWindow * WXUNUSED(parent))
 {
-  //    wxDialog::Create(parent, wxID_ANY, _("Print"), wxPoint(0, 0), wxSize(600, 600),
+  //    wxDialog::Create(parent, wxID_ANY, _("Print"), wxPoint(0,0), wxSize(600, 600),
   //                     wxDEFAULT_DIALOG_STYLE | wxTAB_TRAVERSAL);
 
     wxBoxSizer *mainsizer = new wxBoxSizer( wxVERTICAL );
-    
+
     // 1) top row
 
     wxPrintFactory* factory = wxPrintFactory::GetFactory();
@@ -175,29 +175,29 @@ void wxGenericPrintDialog::Init(wxWindow * WXUNUSED(parent))
     wxFlexGridSizer *flex = new wxFlexGridSizer( 2 );
     flex->AddGrowableCol( 1 );
     topsizer->Add( flex, 1, wxGROW );
-        
+
     m_printToFileCheckBox = new wxCheckBox( this, wxPRINTID_PRINTTOFILE, _("Print to File") );
     flex->Add( m_printToFileCheckBox, 0, wxALIGN_CENTER_VERTICAL|wxALL, 5 );
-    
+
     m_setupButton = new wxButton(this, wxPRINTID_SETUP, _("Setup...") );
     flex->Add( m_setupButton, 0, wxALIGN_CENTER_VERTICAL|wxALIGN_RIGHT|wxALL, 5 );
-    
+
     if (!factory->HasPrintSetupDialog())
         m_setupButton->Enable( false );
-        
+
     if (factory->HasPrinterLine())
     {
-        flex->Add( new wxStaticText( this, -1, _("Printer:") ), 
+        flex->Add( new wxStaticText( this, wxID_ANY, _("Printer:") ),
             0, wxALIGN_CENTER_VERTICAL|wxALL, 5 );
-        flex->Add( new wxStaticText( this, -1, factory->CreatePrinterLine() ), 
+        flex->Add( new wxStaticText( this, wxID_ANY, factory->CreatePrinterLine() ),
             0, wxALIGN_CENTER_VERTICAL|wxALL, 5 );
     }
 
     if (factory->HasStatusLine())
     {
-        flex->Add( new wxStaticText( this, -1, _("Status:") ), 
+        flex->Add( new wxStaticText( this, wxID_ANY, _("Status:") ),
             0, wxALIGN_CENTER_VERTICAL|wxALL-wxTOP, 5 );
-        flex->Add( new wxStaticText( this, -1, factory->CreateStatusLine() ), 
+        flex->Add( new wxStaticText( this, wxID_ANY, factory->CreateStatusLine() ),
             0, wxALIGN_CENTER_VERTICAL|wxALL-wxTOP, 5 );
     }
 
@@ -252,7 +252,7 @@ void wxGenericPrintDialog::Init(wxWindow * WXUNUSED(parent))
 
     // 5) buttons
 
-    mainsizer->Add( CreateButtonSizer( wxOK|wxCANCEL), 0, wxCENTER|wxALL, 10 );
+    mainsizer->Add( CreateButtonSizer( wxOK|wxCANCEL), 0, wxEXPAND|wxALL, 10 );
 
     SetAutoLayout( true );
     SetSizer( mainsizer );
@@ -294,16 +294,16 @@ void wxGenericPrintDialog::OnOK(wxCommandEvent& WXUNUSED(event))
         wxFileName fname( m_printDialogData.GetPrintData().GetFilename() );
 
         wxFileDialog dialog( this, _("PostScript file"),
-            fname.GetPath(), fname.GetFullName(), wxT("*.ps"), wxOPEN | wxOVERWRITE_PROMPT );
+            fname.GetPath(), fname.GetFullName(), wxT("*.ps"), wxSAVE | wxOVERWRITE_PROMPT );
         if (dialog.ShowModal() != wxID_OK) return;
-        
+
         m_printDialogData.GetPrintData().SetFilename( dialog.GetPath() );
     }
     else
     {
         m_printDialogData.GetPrintData().SetPrintMode(wxPRINT_MODE_PRINTER);
     }
-    
+
     EndModal(wxID_OK);
 }
 
@@ -402,7 +402,7 @@ bool wxGenericPrintDialog::TransferDataFromWindow()
             if (m_rangeRadioBox->GetSelection() == 0)
             {
                 m_printDialogData.SetAllPages(true);
-                
+
                 // This means all pages, more or less
                 m_printDialogData.SetFromPage(1);
                 m_printDialogData.SetToPage(32000);
@@ -422,7 +422,7 @@ bool wxGenericPrintDialog::TransferDataFromWindow()
         m_printDialogData.SetNoCopies( res );
 
     m_printDialogData.SetPrintToFile(m_printToFileCheckBox->GetValue());
-    
+
     return true;
 }
 
@@ -442,7 +442,7 @@ BEGIN_EVENT_TABLE(wxGenericPrintSetupDialog, wxDialog)
 END_EVENT_TABLE()
 
 wxGenericPrintSetupDialog::wxGenericPrintSetupDialog(wxWindow *parent, wxPrintData* data):
-wxDialog(parent, wxID_ANY, _("Print Setup"), wxPoint(0, 0), wxSize(600, 600), wxDEFAULT_DIALOG_STYLE|wxTAB_TRAVERSAL)
+wxDialog(parent, wxID_ANY, _("Print Setup"), wxPoint(0,0), wxSize(600, 600), wxDEFAULT_DIALOG_STYLE|wxTAB_TRAVERSAL)
 {
     Init(data);
 }
@@ -485,16 +485,16 @@ void wxGenericPrintSetupDialog::Init(wxPrintData* data)
     wxBoxSizer *main_sizer = new wxBoxSizer( wxVERTICAL );
 
     // printer selection
-    
-    wxStaticBoxSizer *printer_sizer = new wxStaticBoxSizer( new wxStaticBox( this, -1, _("Printer") ), wxVERTICAL );
+
+    wxStaticBoxSizer *printer_sizer = new wxStaticBoxSizer( new wxStaticBox( this, wxID_ANY, _("Printer") ), wxVERTICAL );
     main_sizer->Add( printer_sizer, 0, wxALL|wxGROW, 10 );
-    
-    m_printerListCtrl = new wxListCtrl( this, wxPRINTID_PRINTER, 
-        wxDefaultPosition, wxSize(-1,100), wxLC_REPORT|wxLC_SINGLE_SEL|wxSUNKEN_BORDER );
+
+    m_printerListCtrl = new wxListCtrl( this, wxPRINTID_PRINTER,
+        wxDefaultPosition, wxSize(wxDefaultCoord,100), wxLC_REPORT|wxLC_SINGLE_SEL|wxSUNKEN_BORDER );
     wxImageList *image_list = new wxImageList;
     image_list->Add( wxBitmap(check_xpm) );
     m_printerListCtrl->AssignImageList( image_list, wxIMAGE_LIST_SMALL );
-        
+
     m_printerListCtrl->InsertColumn( 0, wxT(" "), wxLIST_FORMAT_LEFT, 20 );
     m_printerListCtrl->InsertColumn( 1, wxT("Printer"), wxLIST_FORMAT_LEFT, 150 );
     m_printerListCtrl->InsertColumn( 2, wxT("Device"), wxLIST_FORMAT_LEFT, 150 );
@@ -506,20 +506,22 @@ void wxGenericPrintSetupDialog::Init(wxPrintData* data)
     item.SetText( _("Default printer") );
     item.SetId( m_printerListCtrl->InsertItem( item ) );
 
-    if (data->GetPrinterName().IsEmpty())
+    if (data->GetPrinterName().empty())
     {
         wxListItem item2;
         item2.SetId( item.GetId() );
         item2.SetMask( wxLIST_MASK_IMAGE );
         item2.SetImage( 0 );
         m_printerListCtrl->SetItem( item2 );
+        // also select item
+        m_printerListCtrl->SetItemState( item.GetId(), wxLIST_STATE_SELECTED, wxLIST_STATE_SELECTED );
     }
 
     item.SetId( 1+ item.GetId() );
 
     wxArrayString errors;
     wxArrayString output;
-    long res = wxExecute( wxT("lpstat -v"), output, errors );
+    long res = wxExecute( wxT("lpstat -v"), output, errors, wxEXEC_NODISABLE );
     if (res >= 0 && errors.GetCount() == 0)
     {
         size_t i;
@@ -549,23 +551,25 @@ void wxGenericPrintSetupDialog::Init(wxPrintData* data)
                 item2.SetMask( wxLIST_MASK_IMAGE );
                 item2.SetImage( 0 );
                 m_printerListCtrl->SetItem( item2 );
+                // also select item
+                m_printerListCtrl->SetItemState( item.GetId(), wxLIST_STATE_SELECTED, wxLIST_STATE_SELECTED );
             }
-            
+
             wxString command = wxT("lpstat -p ");
             command += name;
             wxArrayString errors2;
             wxArrayString output2;
-            res = wxExecute( command, output2, errors2 );
+            res = wxExecute( command, output2, errors2, wxEXEC_NODISABLE );
             if (res >= 0 && errors2.GetCount() == 0 && output2.GetCount() > 0)
             {
                 tmp = output2[0]; // "printer hp_deskjet930c is idle. enable since ..."
                 int pos = tmp.Find( wxT('.') );
-                if (pos != -1)
+                if (pos != wxNOT_FOUND)
                     tmp.Remove( (size_t)pos, tmp.Len()-(size_t)pos );
                 wxStringTokenizer tok2( tmp, wxT(" ") );
                 tmp = tok2.GetNextToken();  // "printer"
                 tmp = tok2.GetNextToken();  // "hp_deskjet930c"
-                tmp = wxT("");
+                tmp = wxEmptyString;
                 while (tok2.HasMoreTokens())
                 {
                     tmp += tok2.GetNextToken();
@@ -575,13 +579,13 @@ void wxGenericPrintSetupDialog::Init(wxPrintData* data)
                 item.SetText( tmp );
                 m_printerListCtrl->SetItem( item );
             }
-            
+
             item.SetColumn( 1 );
             item.SetId( 1+ item.GetId() );
         }
     }
 
-    
+
     printer_sizer->Add( m_printerListCtrl, 0, wxALL|wxGROW, 5 );
 
     wxBoxSizer *item1 = new wxBoxSizer( wxHORIZONTAL );
@@ -599,15 +603,15 @@ void wxGenericPrintSetupDialog::Init(wxPrintData* data)
 
     item2->Add( item3, 0, wxALIGN_CENTER|wxALL, 5 );
 
-    wxString strs6[] = 
+    wxString strs6[] =
     {
-        _("Portrait"), 
+        _("Portrait"),
         _("Landscape")
     };
     m_orientationRadioBox= new wxRadioBox( this, wxPRINTID_ORIENTATION, _("Orientation"), wxDefaultPosition, wxDefaultSize, 2, strs6, 1, wxRA_SPECIFY_ROWS );
     item2->Add( m_orientationRadioBox, 0, wxGROW|wxALIGN_CENTER_VERTICAL|wxALL, 5 );
 
-    wxStaticBox *item8 = new wxStaticBox( this, -1, _("Options") );
+    wxStaticBox *item8 = new wxStaticBox( this, wxID_ANY, _("Options") );
     wxStaticBoxSizer *item7 = new wxStaticBoxSizer( item8, wxHORIZONTAL );
 
     m_colourCheckBox = new wxCheckBox( this, wxPRINTID_PRINTCOLOUR, _("Print in colour") );
@@ -619,29 +623,29 @@ void wxGenericPrintSetupDialog::Init(wxPrintData* data)
 
     // spooling options (on the right)
 
-    wxStaticBox *item11 = new wxStaticBox( this, -1, _("Print spooling") );
+    wxStaticBox *item11 = new wxStaticBox( this, wxID_ANY, _("Print spooling") );
     wxStaticBoxSizer *item10 = new wxStaticBoxSizer( item11, wxVERTICAL );
 
-    wxStaticText *item12 = new wxStaticText( this, -1, _("Printer command:") );
+    wxStaticText *item12 = new wxStaticText( this, wxID_ANY, _("Printer command:") );
     item10->Add( item12, 0, wxALIGN_CENTER_VERTICAL|wxALL, 5 );
 
     wxBoxSizer *item13 = new wxBoxSizer( wxHORIZONTAL );
 
     item13->Add( 20, 20, 0, wxALIGN_CENTER|wxALL, 5 );
 
-    m_printerCommandText = new wxTextCtrl( this, wxPRINTID_COMMAND, wxT(""), wxDefaultPosition, wxSize(160,-1) );
+    m_printerCommandText = new wxTextCtrl( this, wxPRINTID_COMMAND, wxEmptyString, wxDefaultPosition, wxSize(160,wxDefaultCoord) );
     item13->Add( m_printerCommandText, 0, wxALIGN_CENTER|wxALL, 5 );
 
     item10->Add( item13, 0, wxALIGN_CENTER|wxALL, 0 );
 
-    wxStaticText *item15 = new wxStaticText( this, -1, _("Printer options:") );
+    wxStaticText *item15 = new wxStaticText( this, wxID_ANY, _("Printer options:") );
     item10->Add( item15, 0, wxALIGN_CENTER_VERTICAL|wxALL, 5 );
 
     wxBoxSizer *item16 = new wxBoxSizer( wxHORIZONTAL );
 
     item16->Add( 20, 20, 0, wxALIGN_CENTER|wxALL, 5 );
 
-    m_printerOptionsText = new wxTextCtrl( this, wxPRINTID_OPTIONS, wxT(""), wxDefaultPosition, wxSize(160,-1) );
+    m_printerOptionsText = new wxTextCtrl( this, wxPRINTID_OPTIONS, wxEmptyString, wxDefaultPosition, wxSize(160,wxDefaultCoord) );
     item16->Add( m_printerOptionsText, 0, wxALIGN_CENTER|wxALL, 5 );
 
     item10->Add( item16, 0, wxALIGN_CENTER|wxALL, 0 );
@@ -651,12 +655,12 @@ void wxGenericPrintSetupDialog::Init(wxPrintData* data)
 
 #if wxUSE_STATLINE
     // static line
-    main_sizer->Add( new wxStaticLine( this, -1 ), 0, wxEXPAND | wxLEFT|wxRIGHT|wxTOP, 10 );
+    main_sizer->Add( new wxStaticLine( this, wxID_ANY ), 0, wxEXPAND | wxLEFT|wxRIGHT|wxTOP, 10 );
 #endif
 
     // buttons
 
-    main_sizer->Add( CreateButtonSizer( wxOK|wxCANCEL), 0, wxCENTER|wxALL, 10 );
+    main_sizer->Add( CreateButtonSizer( wxOK|wxCANCEL), 0, wxEXPAND|wxALL, 10 );
 
     SetAutoLayout( true );
     SetSizer( main_sizer );
@@ -681,9 +685,9 @@ void wxGenericPrintSetupDialog::OnPrinter(wxListEvent& event)
     long item;
     for (item = 0; item < m_printerListCtrl->GetItemCount(); item++)
         m_printerListCtrl->SetItemImage( item, -1 );
-    
+
     m_printerListCtrl->SetItemImage( event.GetIndex(), 0 );
-    
+
     if (event.GetIndex() == 0)
     {
         m_printerCommandText->SetValue( wxT("lpr") );
@@ -703,7 +707,7 @@ void wxGenericPrintSetupDialog::OnPrinter(wxListEvent& event)
 
 bool wxGenericPrintSetupDialog::TransferDataToWindow()
 {
-    wxPostScriptPrintNativeData *data = 
+    wxPostScriptPrintNativeData *data =
         (wxPostScriptPrintNativeData *) m_printData.GetNativeData();
 
     if (m_printerCommandText && data->GetPrinterCommand())
@@ -725,14 +729,14 @@ bool wxGenericPrintSetupDialog::TransferDataToWindow()
 
 bool wxGenericPrintSetupDialog::TransferDataFromWindow()
 {
-    wxPostScriptPrintNativeData *data = 
+    wxPostScriptPrintNativeData *data =
         (wxPostScriptPrintNativeData *) m_printData.GetNativeData();
 
     // find selected printer
     long id = m_printerListCtrl->GetNextItem( -1, wxLIST_NEXT_ALL, wxLIST_STATE_SELECTED );
     if (id == 0)
     {
-        m_printData.SetPrinterName( wxT("") );
+        m_printData.SetPrinterName( wxEmptyString );
     }
     else
     {
@@ -810,52 +814,18 @@ wxComboBox *wxGenericPrintSetupDialog::CreatePaperTypeChoice()
 // Generic page setup dialog
 // ----------------------------------------------------------------------------
 
-IMPLEMENT_CLASS(wxGenericPageSetupDialog, wxDialog)
+IMPLEMENT_CLASS(wxGenericPageSetupDialog, wxPageSetupDialogBase)
 
-BEGIN_EVENT_TABLE(wxGenericPageSetupDialog, wxDialog)
+BEGIN_EVENT_TABLE(wxGenericPageSetupDialog, wxPageSetupDialogBase)
     EVT_BUTTON(wxPRINTID_SETUP, wxGenericPageSetupDialog::OnPrinter)
 END_EVENT_TABLE()
 
-void wxGenericPageSetupDialog::OnPrinter(wxCommandEvent& WXUNUSED(event))
-{
-    // We no longer query GetPrintMode, so we can eliminate the need
-    // to call SetPrintMode.
-    // This has the limitation that we can't explicitly call the PostScript
-    // print setup dialog from the generic Page Setup dialog under Windows,
-    // but since this choice would only happen when trying to do PostScript
-    // printing under Windows (and only in 16-bit Windows which
-    // doesn't have a Windows-specific page setup dialog) it's worth it.
-
-    // First save the current settings, so the wxPrintData object is up to date.
-    TransferDataFromWindow();
-
-    // Transfer the current print settings from this dialog to the page setup dialog.
-    
-#if 0
-    // Use print factory later    
-    
-    wxPrintDialogData data;
-    data = GetPageSetupData().GetPrintData();
-    data.SetSetupDialog(true);
-    wxPrintDialog printDialog(this, & data);
-    printDialog.ShowModal();
-
-    // Transfer the page setup print settings from the page dialog to this dialog again, in case
-    // the page setup dialog changed something.
-    GetPageSetupData().GetPrintData() = printDialog.GetPrintDialogData().GetPrintData();
-    GetPageSetupData().CalculatePaperSizeFromId(); // Make sure page size reflects the id in wxPrintData
-
-    // Now update the dialog in case the page setup dialog changed some of our settings.
-    TransferDataToWindow();
-#endif
-}
-
 wxGenericPageSetupDialog::wxGenericPageSetupDialog( wxWindow *parent,
-                                                    wxPageSetupData* data)
-    : wxDialog( parent,
+                                                    wxPageSetupDialogData* data)
+    : wxPageSetupDialogBase( parent,
                 wxID_ANY,
                 _("Page Setup"),
-                wxPoint(0, 0),
+                wxPoint(0,0),
                 wxSize(600, 600),
                 wxDEFAULT_DIALOG_STYLE|wxTAB_TRAVERSAL )
 {
@@ -939,13 +909,22 @@ wxGenericPageSetupDialog::wxGenericPageSetupDialog( wxWindow *parent,
     // 6) buttons
 
     wxSizer* buttonsizer = CreateButtonSizer( wxOK|wxCANCEL);
-    m_printerButton = new wxButton(this, wxPRINTID_SETUP, _("Printer...") );
-    buttonsizer->Add( m_printerButton, 0, wxLEFT|wxRIGHT, 10 );
-    if ( !m_pageData.GetEnablePrinter() )
-        m_printerButton->Enable(false);
+
+    if (wxPrintFactory::GetFactory()->HasPrintSetupDialog())
+    {
+        m_printerButton = new wxButton(this, wxPRINTID_SETUP, _("Printer...") );
+        buttonsizer->Add( m_printerButton, 0, wxLEFT|wxRIGHT, 10 );
+        if ( !m_pageData.GetEnablePrinter() )
+            m_printerButton->Enable(false);
+    }
+    else
+    {
+        m_printerButton = NULL;
+    }
+
     //  if (m_printData.GetEnableHelp())
     //  wxButton *helpButton = new wxButton(this, (wxFunction)wxGenericPageSetupHelpProc, _("Help"), wxDefaultCoord, wxDefaultCoord, buttonWidth, buttonHeight);
-    mainsizer->Add( buttonsizer, 0, wxCENTER|wxALL, 10 );
+    mainsizer->Add( buttonsizer, 0, wxEXPAND|wxALL, 10 );
 
 
     SetAutoLayout( true );
@@ -962,6 +941,11 @@ wxGenericPageSetupDialog::wxGenericPageSetupDialog( wxWindow *parent,
 
 wxGenericPageSetupDialog::~wxGenericPageSetupDialog()
 {
+}
+
+wxPageSetupDialogData& wxGenericPageSetupDialog::GetPageSetupDialogData()
+{
+    return m_pageData;
 }
 
 bool wxGenericPageSetupDialog::TransferDataToWindow()
@@ -1078,6 +1062,40 @@ wxComboBox *wxGenericPageSetupDialog::CreatePaperTypeChoice(int *x, int *y)
 
 //    choice->SetSelection(sel);
     return choice;
+}
+
+void wxGenericPageSetupDialog::OnPrinter(wxCommandEvent& WXUNUSED(event))
+{
+    // We no longer query GetPrintMode, so we can eliminate the need
+    // to call SetPrintMode.
+    // This has the limitation that we can't explicitly call the PostScript
+    // print setup dialog from the generic Page Setup dialog under Windows,
+    // but since this choice would only happen when trying to do PostScript
+    // printing under Windows (and only in 16-bit Windows which
+    // doesn't have a Windows-specific page setup dialog) it's worth it.
+
+    // First save the current settings, so the wxPrintData object is up to date.
+    TransferDataFromWindow();
+
+    // Transfer the current print settings from this dialog to the page setup dialog.
+
+#if 0
+    // Use print factory later
+
+    wxPrintDialogData data;
+    data = GetPageSetupData().GetPrintData();
+    data.SetSetupDialog(true);
+    wxPrintDialog printDialog(this, & data);
+    printDialog.ShowModal();
+
+    // Transfer the page setup print settings from the page dialog to this dialog again, in case
+    // the page setup dialog changed something.
+    GetPageSetupData().GetPrintData() = printDialog.GetPrintDialogData().GetPrintData();
+    GetPageSetupData().CalculatePaperSizeFromId(); // Make sure page size reflects the id in wxPrintData
+
+    // Now update the dialog in case the page setup dialog changed some of our settings.
+    TransferDataToWindow();
+#endif
 }
 
 #endif

@@ -2,7 +2,7 @@
 // Name:        winpars.cpp
 // Purpose:     wxHtmlParser class (generic parser)
 // Author:      Vaclav Slavik
-// RCS-ID:      $Id: winpars.cpp,v 1.54 2004/09/27 19:15:07 ABX Exp $
+// RCS-ID:      $Id: winpars.cpp,v 1.58 2005/02/08 13:00:05 ABX Exp $
 // Copyright:   (c) 1999 Vaclav Slavik
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -32,6 +32,7 @@
 #include "wx/fontmap.h"
 #include "wx/log.h"
 #include "wx/settings.h"
+#include "wx/uri.h"
 
 
 //-----------------------------------------------------------------------------
@@ -192,7 +193,7 @@ void wxHtmlWinParser::InitParser(const wxString& source)
                  */
 
     m_UseLink = false;
-    m_Link = wxHtmlLinkInfo( wxT(""), wxT("") );
+    m_Link = wxHtmlLinkInfo( wxEmptyString );
     m_LinkColor.Set(0, 0, 0xFF);
     m_ActualColor.Set(0, 0, 0);
     m_Align = wxHTML_ALIGN_LEFT;
@@ -248,16 +249,45 @@ wxObject* wxHtmlWinParser::GetProduct()
 wxFSFile *wxHtmlWinParser::OpenURL(wxHtmlURLType type,
                                    const wxString& url) const
 {
-    // FIXME - normalize the URL to full path before passing to
-    //         OnOpeningURL!!
     if ( m_Window )
     {
         wxString myurl(url);
         wxHtmlOpeningStatus status;
         for (;;)
         {
+            wxString myfullurl(myurl);
+
+            // consider url as absolute path first
+            wxURI current(myurl);
+            myfullurl = current.BuildUnescapedURI();
+
+            // if not absolute then ...
+            if( current.IsReference() )
+            {
+                wxString basepath = GetFS()->GetPath();
+                wxURI base(basepath);
+
+                // ... try to apply base path if valid ...
+                if( !base.IsReference() )
+                {
+                    wxURI path(myfullurl);
+                    path.Resolve( base );
+                    myfullurl = path.BuildUnescapedURI();
+                }
+                else
+                {
+                    // ... or force such addition if not included already
+                    if( !current.GetPath().Contains(base.GetPath()) )
+                    {
+                        basepath += myurl;
+                        wxURI connected( basepath );
+                        myfullurl = connected.BuildUnescapedURI();
+                    }
+                }
+            }
+
             wxString redirect;
-            status = m_Window->OnOpeningURL(type, myurl, &redirect);
+            status = m_Window->OnOpeningURL(type, myfullurl, &redirect);
             if ( status != wxHTML_REDIRECT )
                 break;
 

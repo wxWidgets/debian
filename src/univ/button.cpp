@@ -4,7 +4,7 @@
 // Author:      Vadim Zeitlin
 // Modified by:
 // Created:     14.08.00
-// RCS-ID:      $Id: button.cpp,v 1.24 2004/08/30 14:36:23 VS Exp $
+// RCS-ID:      $Id: button.cpp,v 1.25 2004/11/15 06:23:57 ABX Exp $
 // Copyright:   (c) 2000 SciTech Software, Inc. (www.scitechsoft.com)
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -81,13 +81,26 @@ bool wxButton::Create(wxWindow *parent,
     if (label.empty() && wxIsStockID(id))
         label = wxGetStockLabel(id);
 
-    // center label by default
-    if ( !(style & wxALIGN_MASK) )
-    {
-        style |= wxALIGN_CENTRE_HORIZONTAL | wxALIGN_CENTRE_VERTICAL;
-    }
+    long ctrl_style = style & !wxBU_ALIGN_MASK;
 
-    if ( !wxControl::Create(parent, id, pos, size, style, validator, name) )
+    wxASSERT_MSG( (ctrl_style & wxALIGN_MASK) == 0,
+                  _T("Some style conflicts with align flags") );
+
+    if((style & wxBU_RIGHT) == wxBU_RIGHT)
+        ctrl_style |= wxALIGN_RIGHT;
+    else if((style & wxBU_LEFT) == wxBU_LEFT)
+        ctrl_style |= wxALIGN_LEFT;
+    else
+        ctrl_style |= wxALIGN_CENTRE_HORIZONTAL;
+
+    if((style & wxBU_TOP) == wxBU_TOP)
+        ctrl_style |= wxALIGN_TOP;
+    else if((style & wxBU_BOTTOM) == wxBU_BOTTOM)
+        ctrl_style |= wxALIGN_BOTTOM;
+    else
+        ctrl_style |= wxALIGN_CENTRE_VERTICAL;
+
+    if ( !wxControl::Create(parent, id, pos, size, ctrl_style, validator, name) )
         return false;
 
     SetLabel(label);
@@ -144,7 +157,7 @@ wxSize wxButton::DoGetBestClientSize() const
         width += m_bitmap.GetWidth() + 2*m_marginBmpX;
     }
 
-    // The default size should not be adjusted, so the code is moved into the 
+    // The default size should not be adjusted, so the code is moved into the
     // renderer. This is conceptual wrong but currently the only solution.
     // (Otto Wyss, Patch 664399)
 
@@ -184,7 +197,7 @@ bool wxButton::DoDrawBackground(wxDC& dc)
     wxSize size = GetSize();
     rect.width = size.x;
     rect.height = size.y;
-    
+
     if ( GetBackgroundBitmap().Ok() )
     {
         // get the bitmap and the flags
@@ -280,7 +293,7 @@ void wxButton::SetImageMargins(wxCoord x, wxCoord y)
 {
     m_marginBmpX = x + 2;
     m_marginBmpY = y + 2;
-    
+
     SetBestSize(wxDefaultSize);
 }
 

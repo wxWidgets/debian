@@ -5,9 +5,8 @@
  * Created: 2000
  * Updated:
  * Copyright:
+ * License: wxWindows licence
  */
-
-static const char sccsid[] = "%W% %G%";
 
 #if defined(__GNUG__) && !defined(__APPLE__)
     #pragma implementation

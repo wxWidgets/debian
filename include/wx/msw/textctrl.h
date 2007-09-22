@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     01/02/97
-// RCS-ID:      $Id: textctrl.h,v 1.60 2004/11/07 14:14:03 RN Exp $
+// RCS-ID:      $Id: textctrl.h,v 1.67 2005/04/10 21:55:11 VZ Exp $
 // Copyright:   (c) Julian Smart
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -131,7 +131,7 @@ public:
     virtual void SetInsertionPoint(long pos);
     virtual void SetInsertionPointEnd();
     virtual long GetInsertionPoint() const;
-    virtual long GetLastPosition() const;
+    virtual wxTextPos GetLastPosition() const;
 
     virtual void SetSelection(long from, long to);
     virtual void SetEditable(bool editable);
@@ -148,8 +148,7 @@ public:
 
     virtual void Command(wxCommandEvent& event);
     virtual bool MSWCommand(WXUINT param, WXWORD id);
-    virtual WXHBRUSH OnCtlColor(WXHDC pDC, WXHWND pWnd, WXUINT nCtlColor,
-            WXUINT message, WXWPARAM wParam, WXLPARAM lParam);
+    virtual WXHBRUSH MSWControlColor(WXHDC hDC, WXHWND hWnd);
 
 #if wxUSE_RICHEDIT
     virtual bool MSWOnNotify(int idCtrl, WXLPARAM lParam, WXLPARAM *result);
@@ -189,7 +188,7 @@ public:
 
     // Show a context menu for Rich Edit controls (the standard
     // EDIT control has one already)
-    void OnRightClick(wxMouseEvent& event);
+    void OnContextMenu(wxContextMenuEvent& event);
 
     // be sure the caret remains invisible if the user
     // called HideNativeCaret() before
@@ -248,9 +247,9 @@ protected:
     int m_verRichEdit;
 #endif // wxUSE_RICHEDIT
 
-    // if true, SendUpdateEvent() will eat the next event (see comments in the
-    // code as to why this is needed)
-    bool m_suppressNextUpdate;
+    // number of EN_UPDATE events sent by Windows when we change the controls
+    // text ourselves: we want this to be exactly 1
+    int m_updatesCount;
 
     virtual wxVisualAttributes GetDefaultAttributes() const;
 

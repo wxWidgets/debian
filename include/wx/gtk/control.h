@@ -2,7 +2,7 @@
 // Name:        control.h
 // Purpose:
 // Author:      Robert Roebling
-// Id:          $Id: control.h,v 1.27 2004/06/21 22:58:10 RD Exp $
+// Id:          $Id: control.h,v 1.28 2005/03/21 23:42:11 VZ Exp $
 // Copyright:   (c) 1998 Robert Roebling, Julian Smart
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -28,6 +28,13 @@ class wxControl;
 //-----------------------------------------------------------------------------
 // wxControl
 //-----------------------------------------------------------------------------
+
+// C-linkage function pointer types for GetDefaultAttributesFromGTKWidget
+extern "C" {
+    typedef GtkWidget* (*wxGtkWidgetNew_t)(void);
+    typedef GtkWidget* (*wxGtkWidgetNewFromStr_t)(const gchar*);
+    typedef GtkWidget* (*wxGtkWidgetNewFromAdj_t)(GtkAdjustment*);
+}
 
 class wxControl : public wxControlBase
 {
@@ -69,16 +76,16 @@ protected:
                                           bool useBase = false,
                                           int state = -1);
     static wxVisualAttributes
-        GetDefaultAttributesFromGTKWidget(GtkWidget* (*widget_new)(void),
+        GetDefaultAttributesFromGTKWidget(wxGtkWidgetNew_t,
                                           bool useBase = false,
                                           int state = -1);
     static wxVisualAttributes
-        GetDefaultAttributesFromGTKWidget(GtkWidget* (*widget_new)(const gchar*),
+        GetDefaultAttributesFromGTKWidget(wxGtkWidgetNewFromStr_t,
                                           bool useBase = false,
                                           int state = -1);
 
     static wxVisualAttributes
-        GetDefaultAttributesFromGTKWidget(GtkWidget* (*widget_new)(GtkAdjustment*),
+        GetDefaultAttributesFromGTKWidget(wxGtkWidgetNewFromAdj_t,
                                           bool useBase = false,
                                           int state = -1);
 

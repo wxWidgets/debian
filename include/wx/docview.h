@@ -4,8 +4,8 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     01/02/97
-// RCS-ID:      $Id: docview.h,v 1.67 2004/10/31 23:43:36 RR Exp $
-// Copyright:   (c)
+// RCS-ID:      $Id: docview.h,v 1.68 2005/05/04 18:51:57 JS Exp $
+// Copyright:   (c) Julian Smart
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
 

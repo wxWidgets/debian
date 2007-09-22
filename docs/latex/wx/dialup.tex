@@ -4,9 +4,9 @@
 %% Author:      Vadim Zeitlin
 %% Modified by:
 %% Created:     08.04.00
-%% RCS-ID:      $Id: dialup.tex,v 1.5 2004/05/04 08:25:43 JS Exp $
+%% RCS-ID:      $Id: dialup.tex,v 1.7 2005/02/22 15:09:48 ABX Exp $
 %% Copyright:   (c) Vadim Zeitlin
-%% License:     wxWidgets license
+%% License:     wxWindows license
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \section{\class{wxDialUpManager}}\label{wxdialupmanager}
@@ -203,7 +203,7 @@ is always safe to call. The default value is {\tt www.yahoo.com:80}.
 
 \membersection{wxDialUpManager::SetConnectCommand}\label{wxdialupmanagersetconnectcommand}
 
-\func{}{SetConnectCommand}{\param{const wxString\& }{commandDial = wxT("/usr/bin/pon")}, \param{const wxString\& }{commandHangup = wxT("/usr/bin/poff")}}
+\func{void}{SetConnectCommand}{\param{const wxString\& }{commandDial = wxT("/usr/bin/pon")}, \param{const wxString\& }{commandHangup = wxT("/usr/bin/poff")}}
 
 This method is for Unix only.
 

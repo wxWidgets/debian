@@ -4,7 +4,7 @@
 // Author:      Vadim Zeitlin
 // Modified by:
 // Created:     02.01.00
-// RCS-ID:      $Id: calendar.cpp,v 1.25 2004/10/02 12:35:45 VS Exp $
+// RCS-ID:      $Id: calendar.cpp,v 1.37 2005/05/30 11:53:54 ABX Exp $
 // Copyright:   (c) Vadim Zeitlin
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -16,11 +16,6 @@
 // ----------------------------------------------------------------------------
 // headers
 // ----------------------------------------------------------------------------
-
-#if defined(__GNUG__) && !defined(__APPLE__)
-    #pragma implementation "calendar.cpp"
-    #pragma interface "calendar.cpp"
-#endif
 
 // For compilers that support precompilation, includes "wx/wx.h".
 #include "wx/wxprec.h"
@@ -39,10 +34,22 @@
     #include "wx/menu.h"
     #include "wx/layout.h"
     #include "wx/msgdlg.h"
+    #include "wx/icon.h"
 #endif
 
 #include "wx/sizer.h"
+#include "wx/textctrl.h"
+
 #include "wx/calctrl.h"
+
+#if wxUSE_DATEPICKCTRL
+    #include "wx/datectrl.h"
+    #if wxUSE_DATEPICKCTRL_GENERIC
+        #include "wx/generic/datectrl.h"
+    #endif // wxUSE_DATEPICKCTRL_GENERIC
+#endif // wxUSE_DATEPICKCTRL
+
+#include "../sample.xpm"
 
 // ----------------------------------------------------------------------------
 // private classes
@@ -81,7 +88,7 @@ public:
 
     void SetDate();
     void Today();
-    
+
 private:
     wxCalendarCtrl *m_calendar;
     wxStaticText   *m_date;
@@ -99,6 +106,10 @@ public:
     // event handlers (these functions should _not_ be virtual)
     void OnQuit(wxCommandEvent& event);
     void OnAbout(wxCommandEvent& event);
+
+#if wxUSE_DATEPICKCTRL
+    void OnAskDate(wxCommandEvent& event);
+#endif // wxUSE_DATEPICKCTRL
 
     void OnCalMonday(wxCommandEvent& event);
     void OnCalHolidays(wxCommandEvent& event);
@@ -122,6 +133,29 @@ private:
     DECLARE_EVENT_TABLE()
 };
 
+#if wxUSE_DATEPICKCTRL
+
+// Define a simple modal dialog which asks the user for a date
+class MyDialog : public wxDialog
+{
+public:
+    MyDialog(wxWindow *parent, const wxDateTime& dt, int dtpStyle);
+
+    wxDateTime GetDate() const { return m_datePicker->GetValue(); }
+
+private:
+    void OnDateChange(wxDateEvent& event);
+
+
+    wxDatePickerCtrlBase *m_datePicker;
+    wxTextCtrl *m_text;
+
+
+    DECLARE_EVENT_TABLE()
+};
+
+#endif // wxUSE_DATEPICKCTRL
+
 // ----------------------------------------------------------------------------
 // constants
 // ----------------------------------------------------------------------------
@@ -130,8 +164,8 @@ private:
 enum
 {
     // menu items
-    Calendar_File_About = 100,
-    Calendar_File_Quit,
+    Calendar_File_About = wxID_ABOUT,
+    Calendar_File_Quit = wxID_EXIT,
     Calendar_Cal_Monday = 200,
     Calendar_Cal_Holidays,
     Calendar_Cal_Special,
@@ -141,6 +175,15 @@ enum
     Calendar_Cal_SurroundWeeks,
     Calendar_Cal_SetDate,
     Calendar_Cal_Today,
+#if wxUSE_DATEPICKCTRL
+    Calendar_DatePicker_AskDate = 300,
+    Calendar_DatePicker_ShowCentury,
+    Calendar_DatePicker_DropDown,
+    Calendar_DatePicker_AllowNone,
+#if wxUSE_DATEPICKCTRL_GENERIC
+    Calendar_DatePicker_Generic,
+#endif // wxUSE_DATEPICKCTRL_GENERIC
+#endif // wxUSE_DATEPICKCTRL
     Calendar_CalCtrl = 1000
 };
 
@@ -154,6 +197,10 @@ enum
 BEGIN_EVENT_TABLE(MyFrame, wxFrame)
     EVT_MENU(Calendar_File_Quit,  MyFrame::OnQuit)
     EVT_MENU(Calendar_File_About, MyFrame::OnAbout)
+
+#if wxUSE_DATEPICKCTRL
+    EVT_MENU(Calendar_DatePicker_AskDate, MyFrame::OnAskDate)
+#endif // wxUSE_DATEPICKCTRL
 
     EVT_MENU(Calendar_Cal_Monday, MyFrame::OnCalMonday)
     EVT_MENU(Calendar_Cal_Holidays, MyFrame::OnCalHolidays)
@@ -179,6 +226,14 @@ BEGIN_EVENT_TABLE(MyPanel, wxPanel)
     EVT_CALENDAR_SEL_CHANGED(Calendar_CalCtrl,   MyPanel::OnCalendarChange)
     EVT_CALENDAR_WEEKDAY_CLICKED(Calendar_CalCtrl, MyPanel::OnCalendarWeekDayClick)
 END_EVENT_TABLE()
+
+#if wxUSE_DATEPICKCTRL
+
+BEGIN_EVENT_TABLE(MyDialog, wxDialog)
+    EVT_DATE_CHANGED(wxID_ANY, MyDialog::OnDateChange)
+END_EVENT_TABLE()
+
+#endif // wxUSE_DATEPICKCTRL
 
 // Create a new application object: this macro will allow wxWidgets to create
 // the application object during program execution (it's better than using a
@@ -218,9 +273,11 @@ bool MyApp::OnInit()
 MyFrame::MyFrame(const wxString& title, const wxPoint& pos, const wxSize& size)
        : wxFrame((wxFrame *)NULL, wxID_ANY, title, pos, size)
 {
+    // set the frame icon
+    SetIcon(wxIcon(sample_xpm));
+
     // create a menu bar
     wxMenu *menuFile = new wxMenu;
-
     menuFile->Append(Calendar_File_About, _T("&About...\tCtrl-A"), _T("Show about dialog"));
     menuFile->AppendSeparator();
     menuFile->Append(Calendar_File_Quit, _T("E&xit\tAlt-X"), _T("Quit this program"));
@@ -255,15 +312,38 @@ MyFrame::MyFrame(const wxString& title, const wxPoint& pos, const wxSize& size)
     menuCal->Append(Calendar_Cal_SetDate, _T("SetDate()"), _T("Set date to 2005-12-24."));
     menuCal->Append(Calendar_Cal_Today, _T("Today()"), _T("Set the current date."));
 
+#if wxUSE_DATEPICKCTRL
+    wxMenu *menuDate = new wxMenu;
+    menuDate->AppendCheckItem(Calendar_DatePicker_ShowCentury,
+                              _T("Al&ways show century"));
+    menuDate->AppendCheckItem(Calendar_DatePicker_DropDown,
+                              _T("Use &drop down control"));
+    menuDate->AppendCheckItem(Calendar_DatePicker_AllowNone,
+                              _T("Allow &no date"));
+#if wxUSE_DATEPICKCTRL_GENERIC
+    menuDate->AppendCheckItem(Calendar_DatePicker_Generic,
+                              _T("Use &generic version of the control"));
+#endif // wxUSE_DATEPICKCTRL_GENERIC
+    menuDate->AppendSeparator();
+    menuDate->Append(Calendar_DatePicker_AskDate, _T("&Choose date...\tCtrl-D"), _T("Show dialog with wxDatePickerCtrl"));
+#endif // wxUSE_DATEPICKCTRL
+
     // now append the freshly created menu to the menu bar...
     wxMenuBar *menuBar = new wxMenuBar;
     menuBar->Append(menuFile, _T("&File"));
     menuBar->Append(menuCal, _T("&Calendar"));
+#if wxUSE_DATEPICKCTRL
+    menuBar->Append(menuDate, _T("&Date picker"));
+#endif // wxUSE_DATEPICKCTRL
 
     menuBar->Check(Calendar_Cal_Monday, true);
     menuBar->Check(Calendar_Cal_Holidays, true);
     menuBar->Check(Calendar_Cal_Month, true);
     menuBar->Check(Calendar_Cal_Year, true);
+
+#if wxUSE_DATEPICKCTRL
+    menuBar->Check(Calendar_DatePicker_ShowCentury, true);
+#endif // wxUSE_DATEPICKCTRL
 
     // ... and attach this menu bar to the frame
     SetMenuBar(menuBar);
@@ -350,6 +430,45 @@ void MyFrame::OnToday(wxCommandEvent &WXUNUSED(event))
 {
     m_panel->Today();
 }
+
+#if wxUSE_DATEPICKCTRL
+
+void MyFrame::OnAskDate(wxCommandEvent& WXUNUSED(event))
+{
+    int style = wxDP_DEFAULT;
+    if ( GetMenuBar()->IsChecked(Calendar_DatePicker_ShowCentury) )
+        style |= wxDP_SHOWCENTURY;
+    if ( GetMenuBar()->IsChecked(Calendar_DatePicker_DropDown) )
+        style |= wxDP_DROPDOWN;
+    if ( GetMenuBar()->IsChecked(Calendar_DatePicker_AllowNone) )
+        style |= wxDP_ALLOWNONE;
+
+    MyDialog dlg(this, m_panel->GetCal()->GetDate(), style);
+    if ( dlg.ShowModal() == wxID_OK )
+    {
+        const wxDateTime dt = dlg.GetDate();
+        if ( dt.IsValid() )
+        {
+            const wxDateTime today = wxDateTime::Today();
+
+            if ( dt.GetDay() == today.GetDay() &&
+                    dt.GetMonth() == today.GetMonth() )
+            {
+                wxMessageBox(_T("Happy birthday!"), _T("Calendar Sample"));
+            }
+
+            m_panel->GetCal()->SetDate(dt);
+
+            wxLogStatus(_T("Changed the date to your input"));
+        }
+        else
+        {
+            wxLogStatus(_T("No date entered"));
+        }
+    }
+}
+
+#endif // wxUSE_DATEPICKCTRL
 
 // ----------------------------------------------------------------------------
 // MyPanel
@@ -455,3 +574,69 @@ void MyPanel::Today()
 {
     m_calendar->SetDate(wxDateTime::Today());
 }
+
+// ----------------------------------------------------------------------------
+// MyDialog
+// ----------------------------------------------------------------------------
+
+#if wxUSE_DATEPICKCTRL
+
+MyDialog::MyDialog(wxWindow *parent, const wxDateTime& dt, int dtpStyle)
+        : wxDialog(parent, wxID_ANY, wxString(_T("Calendar: Choose a date")))
+{
+    wxStdDialogButtonSizer *sizerBtns = new wxStdDialogButtonSizer;
+    sizerBtns->AddButton(new wxButton(this, wxID_OK));
+    sizerBtns->AddButton(new wxButton(this, wxID_CANCEL));
+    sizerBtns->Realize();
+
+    wxSizer *sizerText = new wxBoxSizer(wxHORIZONTAL);
+    sizerText->Add(new wxStaticText(this, wxID_ANY, _T("Date in ISO format: ")),
+                    wxSizerFlags().Border().Align(wxALIGN_CENTRE_VERTICAL));
+    m_text = new wxTextCtrl(this, wxID_ANY);
+    sizerText->Add(m_text, wxSizerFlags().
+                        Expand().Border().Align(wxALIGN_CENTRE_VERTICAL));
+
+    wxSizer *sizerTop = new wxBoxSizer(wxVERTICAL);
+    sizerTop->Add(new wxStaticText
+                      (
+                        this, wxID_ANY,
+                        _T("Enter your birthday date (not before 20th century):")
+                      ),
+                    wxSizerFlags().Border());
+
+#if wxUSE_DATEPICKCTRL_GENERIC
+    wxFrame *frame = (wxFrame *)wxGetTopLevelParent(parent);
+    if ( frame && frame->GetMenuBar()->IsChecked(Calendar_DatePicker_Generic) )
+        m_datePicker = new wxDatePickerCtrlGeneric(this, wxID_ANY, dt,
+                                                   wxDefaultPosition,
+                                                   wxDefaultSize,
+                                                   dtpStyle);
+    else
+#endif // wxUSE_DATEPICKCTRL_GENERIC
+    m_datePicker = new wxDatePickerCtrl(this, wxID_ANY, dt,
+                                        wxDefaultPosition, wxDefaultSize,
+                                        dtpStyle);
+    m_datePicker->SetRange(wxDateTime(1, wxDateTime::Jan, 1900),
+                            wxDefaultDateTime);
+    sizerTop->Add(m_datePicker, wxSizerFlags().Expand().Border());
+
+    sizerTop->AddStretchSpacer(1);
+    sizerTop->Add(sizerText);
+
+    sizerTop->Add(sizerBtns, wxSizerFlags().Centre().Border());
+
+    SetSizerAndFit(sizerTop);
+    Layout();
+}
+
+void MyDialog::OnDateChange(wxDateEvent& event)
+{
+    const wxDateTime dt = event.GetDate();
+    if(dt.IsValid())
+        m_text->SetValue(dt.FormatISODate());
+    else
+        m_text->SetValue(wxEmptyString);
+}
+
+#endif // wxUSE_DATEPICKCTRL
+

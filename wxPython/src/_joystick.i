@@ -5,7 +5,7 @@
 // Author:      Robin Dunn
 //
 // Created:     18-June-1999
-// RCS-ID:      $Id: _joystick.i,v 1.8 2004/09/23 20:23:16 RD Exp $
+// RCS-ID:      $Id: _joystick.i,v 1.10 2005/03/09 22:28:41 RD Exp $
 // Copyright:   (c) 2003 by Total Control Software
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -48,7 +48,7 @@ enum
 class wxJoystick : public wxObject {
 public:
     wxJoystick(int joystick = wxJOYSTICK1) {
-        bool blocked = wxPyBeginBlockThreads();
+        wxPyBlock_t blocked = wxPyBeginBlockThreads();
         PyErr_SetString(PyExc_NotImplementedError,
                         "wxJoystick is not available on this platform.");
         wxPyEndBlockThreads(blocked);
@@ -172,12 +172,6 @@ public:
 class wxJoystickEvent : public wxEvent
 {
 public:
-    wxPoint   m_pos;
-    int       m_zPosition;
-    int       m_buttonChange;   // Which button changed?
-    int       m_buttonState;    // Which buttons are down?
-    int       m_joyStick;       // Which joystick?
-
     wxJoystickEvent(wxEventType type = wxEVT_NULL,
                     int state = 0,
                     int joystick = wxJOYSTICK1,
@@ -212,6 +206,14 @@ public:
 
     // Was the given button 1,2,3,4 or any in Down state?
     bool ButtonIsDown(int but =  wxJOY_BUTTON_ANY) const;
+
+    %pythoncode {
+        m_pos = property(GetPosition, SetPosition)
+        m_zPosition = property(GetZPosition, SetZPosition)
+        m_buttonChange = property(GetButtonChange, SetButtonChange)
+        m_buttonState = property(GetButtonState, SetButtonState)
+        m_joyStick = property(GetJoystick, SetJoystick)
+    }
 };
 
 

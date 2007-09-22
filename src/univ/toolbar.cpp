@@ -4,7 +4,7 @@
 // Author:      Robert Roebling, Vadim Zeitlin (universalization)
 // Modified by:
 // Created:     20.02.02
-// Id:          $Id: toolbar.cpp,v 1.33 2004/11/05 21:03:45 ABX Exp $
+// Id:          $Id: toolbar.cpp,v 1.34 2005/05/31 09:28:45 JS Exp $
 // Copyright:   (c) 2001 Robert Roebling,
 //              (c) 2002 SciTech Software, Inc. (www.scitechsoft.com)
 // Licence:     wxWindows licence
@@ -591,7 +591,7 @@ void wxToolBar::DoDraw(wxControlRenderer *renderer)
 
         if (tool->IsSeparator() && !HasFlag(wxTB_FLAT))
         {
-            // Draw seperators only in flat mode
+            // Draw separators only in flat mode
             continue;
         }
 

@@ -2,18 +2,24 @@
 # Purpose:      XRC editor, global variables
 # Author:       Roman Rolinsky <rolinsky@mema.ucl.ac.be>
 # Created:      02.12.2002
-# RCS-ID:       $Id: globals.py,v 1.7 2004/10/11 00:00:31 ROL Exp $
+# RCS-ID:       $Id: globals.py,v 1.12 2005/06/14 22:59:21 RD Exp $
 
 from wxPython.wx import *
 from wxPython.xrc import *
+try:
+    from wxPython.wizard import *
+except:
+    pass
 import sys
 
 # Global constants
 
 progname = 'XRCed'
-version = '0.1.3-1'
+version = '0.1.5-2'
 # Can be changed to set other default encoding different
-defaultEncoding = sys.getdefaultencoding()
+#defaultEncoding = ''
+# you comment above and can uncomment this:
+defaultEncoding = wxGetDefaultPyEncoding()
 
 try:
     True

@@ -4,7 +4,7 @@
 // Author:      Vadim Zeitlin
 // Modified by:
 // Created:     22.10.99
-// RCS-ID:      $Id: lboxcmn.cpp,v 1.13 2004/09/17 17:57:44 ABX Exp $
+// RCS-ID:      $Id: lboxcmn.cpp,v 1.14 2005/01/18 15:06:18 KH Exp $
 // Copyright:   (c) wxWidgets team
 // Licence:     wxWindows licence
 ///////////////////////////////////////////////////////////////////////////////
@@ -118,7 +118,7 @@ void wxListBoxBase::DeselectAll(int itemToLeaveSelected)
 
 void wxListBoxBase::Command(wxCommandEvent& event)
 {
-    SetSelection(event.m_commandInt, event.m_extraLong != 0);
+    SetSelection(event.GetInt(), event.GetExtraLong() != 0);
     (void)ProcessEvent(event);
 }
 

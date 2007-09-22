@@ -1,15 +1,15 @@
 """Interpreter executes Python commands."""
 
 __author__ = "Patrick K. O'Brien <pobrien@orbtech.com>"
-__cvsid__ = "$Id: interpreter.py,v 1.5 2004/02/13 02:47:58 PKO Exp $"
-__revision__ = "$Revision: 1.5 $"[11:-2]
+__cvsid__ = "$Id: interpreter.py,v 1.6 2005/03/25 20:34:52 RD Exp $"
+__revision__ = "$Revision: 1.6 $"[11:-2]
 
 import os
 import sys
 from code import InteractiveInterpreter
 import dispatcher
 import introspect
-
+import wx
 
 class Interpreter(InteractiveInterpreter):
     """Interpreter based on code.InteractiveInterpreter."""
@@ -53,7 +53,14 @@ class Interpreter(InteractiveInterpreter):
         command we keep appending the pieces to the last list in
         commandBuffer until we have a complete command. If not, we
         delete that last list."""
-        command = str(command)  # In case the command is unicode.
+
+        # In case the command is unicode try encoding it
+        if type(command) == unicode:
+            try:
+                command = command.encode(wx.GetDefaultPyEncoding())
+            except UnicodeEncodeError:
+                pass # otherwise leave it alone
+                
         if not self.more:
             try: del self.commandBuffer[-1]
             except IndexError: pass

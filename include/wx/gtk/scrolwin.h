@@ -4,7 +4,7 @@
 // Author:      Robert Roebling
 // Modified by:
 // Created:     01/02/97
-// RCS-ID:      $Id: scrolwin.h,v 1.20 2004/07/20 18:13:12 RD Exp $
+// RCS-ID:      $Id: scrolwin.h,v 1.22 2005/03/17 21:21:42 JS Exp $
 // Copyright:   (c) Robert Roebling
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -67,6 +67,14 @@ public:
 
     // Set the scrolled area of the window.
     virtual void DoSetVirtualSize( int x, int y );
+
+    // wxWindow's GetBestVirtualSize returns the actual window size,
+    // whereas we want to return the virtual size
+    virtual wxSize GetBestVirtualSize() const;
+
+    // Return the size best suited for the current window
+    // (this isn't a virtual size, this is a sensible size for the window)
+    virtual wxSize DoGetBestSize() const;
 
     // Set the x, y scrolling increments.
     void SetScrollRate( int xstep, int ystep );
@@ -185,7 +193,7 @@ protected:
 
 private:
     DECLARE_EVENT_TABLE()
-    DECLARE_ABSTRACT_CLASS(wxScrolledWindow)
+    DECLARE_DYNAMIC_CLASS(wxScrolledWindow)
 };
 
 #endif

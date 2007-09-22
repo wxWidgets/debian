@@ -4,7 +4,7 @@
 // Author:      Marcel Rasche, Vaclav Slavik
 // Modified by:
 // Created:     25/10/98
-// RCS-ID:      $Id: sound.cpp,v 1.9 2004/11/12 03:30:00 RL Exp $
+// RCS-ID:      $Id: sound.cpp,v 1.10 2005/06/08 14:37:40 ABX Exp $
 // Copyright:   (c) Julian Smart, Open Source Applications Foundation
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -413,7 +413,7 @@ bool wxSoundSyncOnlyAdaptor::IsPlaying() const
 #if wxUSE_THREADS
     return m_status.m_playing;
 #else
-    return FALSE;
+    return false;
 #endif
 }
 
@@ -620,7 +620,6 @@ typedef struct
     wxUint16      uiBitsPerSample;
 } WAVEFORMAT;
 
-#define MONO             1  // and stereo is 2 by wav format
 #define WAVE_FORMAT_PCM  1
 #define WAVE_INDEX       8
 #define FMT_INDEX       12

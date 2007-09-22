@@ -6,7 +6,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     01/02/97
-// RCS-ID:      $Id: sashwin.cpp,v 1.45 2004/10/11 16:30:32 ABX Exp $
+// RCS-ID:      $Id: sashwin.cpp,v 1.46 2004/12/14 20:41:53 ABX Exp $
 // Copyright:   (c) Julian Smart
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -30,7 +30,8 @@
     #include "wx/settings.h"
 #endif
 
-#include <math.h>
+#include "wx/math.h"
+
 #include <stdlib.h>
 
 #include "wx/dcscreen.h"

@@ -4,7 +4,7 @@
 // Author:      Vadim Zeitlin
 // Modified by:
 // Created:     03.08.2003
-// RCS-ID:      $Id: wrapcctl.h,v 1.8 2004/05/23 20:51:30 JS Exp $
+// RCS-ID:      $Id: wrapcctl.h,v 1.9 2005/04/23 18:59:28 JS Exp $
 // Copyright:   (c) 2003 Vadim Zeitlin <vadim@wxwidgets.org>
 // Licence:     wxWindows licence
 ///////////////////////////////////////////////////////////////////////////////
@@ -34,11 +34,7 @@
     #define _WIN32_IE 0x0600
 #endif // !defined(_WIN32_IE)
 
-#if defined(__GNUWIN32_OLD__) && !defined(__CYGWIN10__)
-    #include "wx/msw/gnuwin32/extra.h"
-#else
-    #include <commctrl.h>
-#endif
+#include <commctrl.h>
 
 // define things which might be missing from our commctrl.h
 #include "wx/msw/missing.h"

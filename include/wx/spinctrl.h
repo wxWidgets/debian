@@ -4,13 +4,17 @@
 // Author:      Vadim Zeitlin
 // Modified by:
 // Created:     22.07.99
-// RCS-ID:      $Id: spinctrl.h,v 1.21 2004/09/22 14:38:29 ABX Exp $
+// RCS-ID:      $Id: spinctrl.h,v 1.23 2005/03/16 16:18:20 ABX Exp $
 // Copyright:   (c) Vadim Zeitlin
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
 
 #ifndef _WX_SPINCTRL_H_
 #define _WX_SPINCTRL_H_
+
+#include "wx/defs.h"
+
+#if wxUSE_SPINCTRL
 
 #include "wx/spinbutt.h"        // should make wxSpinEvent visible to the app
 
@@ -70,7 +74,8 @@ protected:
 #endif // platform
 
 #define EVT_SPINCTRL(id, fn) \
-    DECLARE_EVENT_TABLE_ENTRY( wxEVT_COMMAND_SPINCTRL_UPDATED, id, wxID_ANY, (wxObjectEventFunction) (wxEventFunction)  wxStaticCastEvent( wxSpinEventFunction, & fn ), (wxObject *) NULL ),
+    wx__DECLARE_EVT1(wxEVT_COMMAND_SPINCTRL_UPDATED, id, wxSpinEventHandler(fn))
+
+#endif // wxUSE_SPINCTRL
 
 #endif // _WX_SPINCTRL_H_
-

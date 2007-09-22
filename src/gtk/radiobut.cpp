@@ -2,7 +2,7 @@
 // Name:        radiobut.cpp
 // Purpose:
 // Author:      Robert Roebling
-// Id:          $Id: radiobut.cpp,v 1.56 2004/08/15 20:36:04 VS Exp $
+// Id:          $Id: radiobut.cpp,v 1.57 2005/03/21 23:42:18 VZ Exp $
 // Copyright:   (c) 1998 Robert Roebling
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -40,6 +40,7 @@ extern wxWindowGTK   *g_delayedFocus;
 // "clicked"
 //-----------------------------------------------------------------------------
 
+extern "C" {
 static 
 void gtk_radiobutton_clicked_callback( GtkToggleButton *button, wxRadioButton *rb )
 {
@@ -57,6 +58,7 @@ void gtk_radiobutton_clicked_callback( GtkToggleButton *button, wxRadioButton *r
     event.SetInt( rb->GetValue() );
     event.SetEventObject( rb );
     rb->GetEventHandler()->ProcessEvent( event );
+}
 }
 
 //-----------------------------------------------------------------------------

@@ -4,7 +4,7 @@
 // Author:      Vadim Zeitlin
 // Modified by:
 // Created:     20.02.01
-// RCS-ID:      $Id: gauge.h,v 1.22 2004/09/15 13:20:10 ABX Exp $
+// RCS-ID:      $Id: gauge.h,v 1.23 2005/01/21 18:48:19 ABX Exp $
 // Copyright:   (c) 1996-2001 wxWidgets team
 // Licence:     wxWindows licence
 ///////////////////////////////////////////////////////////////////////////////
@@ -36,7 +36,7 @@
 #define wxGA_PROGRESSBAR     0
 
 
-WXDLLEXPORT_DATA(extern const wxChar*) wxGaugeNameStr;
+extern WXDLLEXPORT_DATA(const wxChar*) wxGaugeNameStr;
 
 // ----------------------------------------------------------------------------
 // wxGauge: a progress bar

@@ -4,7 +4,7 @@
 // Author:      Paul Gammans, Roger Gammans
 // Modified by:
 // Created:     11/04/2001
-// RCS-ID:      $Id: gridctrl.cpp,v 1.15 2004/06/17 16:22:34 ABX Exp $
+// RCS-ID:      $Id: gridctrl.cpp,v 1.16 2005/05/31 09:20:01 JS Exp $
 // Copyright:   (c) The Computer Surgery (paul@compsurg.co.uk)
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -352,7 +352,7 @@ wxGridCellAutoWrapStringRenderer::GetTextLines(wxGrid& grid,
     //FIXME: this causes us to print an extra unnecesary
     //       space at the end of the line. But it
     //       is invisible , simplifies the size calculation
-    //       and ensures tokens are seperated in the display
+    //       and ensures tokens are separated in the display
     tok += _T(" ");
 
         dc.GetTextExtent(tok, &x, &y);

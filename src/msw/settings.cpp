@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     04/01/98
-// RCS-ID:      $Id: settings.cpp,v 1.36 2004/09/29 21:55:37 RD Exp $
+// RCS-ID:      $Id: settings.cpp,v 1.41 2005/05/22 14:07:32 JS Exp $
 // Copyright:   (c) Julian Smart
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -225,6 +225,13 @@ wxFont wxCreateFontFromStockObject(int index)
         {
             wxNativeFontInfo info;
             info.lf = lf;
+#ifndef __WXWINCE__
+            // We want Windows 2000 or later to have new fonts even MS Shell Dlg
+            // is returned as default GUI font for compatibility
+            int verMaj;
+            if(index == DEFAULT_GUI_FONT && wxGetOsVersion(&verMaj) == wxWINDOWS_NT && verMaj >= 5)
+                wxStrcpy(info.lf.lfFaceName, wxT("MS Shell Dlg 2"));
+#endif
             // Under MicroWindows we pass the HFONT as well
             // because it's hard to convert HFONT -> LOGFONT -> HFONT
             // It's OK to delete stock objects, the delete will be ignored.
@@ -260,7 +267,7 @@ wxFont wxSystemSettingsNative::GetFont(wxSystemFont index)
 
     return *gs_fontDefault;
 #else // !__WXWINCE__
-    // wxWindow ctor calls GetSystemFont(wxSYS_DEFAULT_GUI_FONT) so we're
+    // wxWindow ctor calls GetFont(wxSYS_DEFAULT_GUI_FONT) so we're
     // called fairly often -- this is why we cache this particular font
     const bool isDefaultRequested = index == wxSYS_DEFAULT_GUI_FONT;
     if ( isDefaultRequested )
@@ -377,7 +384,7 @@ static const int gs_metricsMap[] =
 };
 
 // Get a system metric, e.g. scrollbar size
-int wxSystemSettingsNative::GetMetric(wxSystemMetric index)
+int wxSystemSettingsNative::GetMetric(wxSystemMetric index, wxWindow* WXUNUSED(win))
 {
 #ifdef __WXMICROWIN__
     // TODO: probably use wxUniv themes functionality
@@ -438,7 +445,7 @@ extern wxFont wxGetCCDefaultFont()
     {
         case wxWIN95:
             // 4.10 is Win98
-            useIconFont = verMin == 4 && verMin >= 10;
+            useIconFont = verMaj == 4 && verMin >= 10;
             break;
 
         case wxWINDOWS_NT:

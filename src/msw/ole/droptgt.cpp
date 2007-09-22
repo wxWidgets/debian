@@ -4,7 +4,7 @@
 // Author:      Vadim Zeitlin
 // Modified by:
 // Created:
-// RCS-ID:      $Id: droptgt.cpp,v 1.39 2004/08/16 12:45:46 ABX Exp $
+// RCS-ID:      $Id: droptgt.cpp,v 1.42 2005/05/31 09:28:31 JS Exp $
 // Copyright:   (c) 1998 Vadim Zeitlin <zeitlin@dptmaths.ens-cachan.fr>
 // Licence:     wxWindows licence
 ///////////////////////////////////////////////////////////////////////////////
@@ -85,7 +85,7 @@ protected:
     HWND          m_hwnd;         // window we're associated with
 
     // get default drop effect for given keyboard flags
-    static inline DWORD GetDropEffect(DWORD flags);
+    static inline DWORD GetDropEffect(DWORD flags, wxDragResult defaultAction);
 
     DECLARE_NO_COPY_CLASS(wxIDropTarget)
 };
@@ -109,8 +109,10 @@ static DWORD ConvertDragResultToEffect(wxDragResult result);
 // Notes   : We do "move" normally and "copy" if <Ctrl> is pressed,
 //           which is the standard behaviour (currently there is no
 //           way to redefine it)
-DWORD wxIDropTarget::GetDropEffect(DWORD flags)
+DWORD wxIDropTarget::GetDropEffect(DWORD flags, wxDragResult defaultAction)
 {
+  if (defaultAction == wxDragCopy)
+    return flags & MK_SHIFT ? DROPEFFECT_MOVE : DROPEFFECT_COPY;
   return flags & MK_CONTROL ? DROPEFFECT_COPY : DROPEFFECT_MOVE;
 }
 
@@ -189,8 +191,8 @@ STDMETHODIMP wxIDropTarget::DragEnter(IDataObject *pIDataSource,
 
     // give some visual feedback
     *pdwEffect = ConvertDragResultToEffect(
-                    m_pTarget->OnEnter(pt.x, pt.y,
-                        ConvertDragEffectToResult(GetDropEffect(grfKeyState))
+        m_pTarget->OnEnter(pt.x, pt.y, ConvertDragEffectToResult(
+            GetDropEffect(grfKeyState, m_pTarget->GetDefaultAction()))
                     )
                  );
 
@@ -214,7 +216,8 @@ STDMETHODIMP wxIDropTarget::DragOver(DWORD   grfKeyState,
 
     wxDragResult result;
     if ( m_pIDataObject ) {
-        result = ConvertDragEffectToResult(GetDropEffect(grfKeyState));
+        result = ConvertDragEffectToResult(
+            GetDropEffect(grfKeyState, m_pTarget->GetDefaultAction()));
     }
     else {
         // can't accept data anyhow normally
@@ -257,7 +260,7 @@ STDMETHODIMP wxIDropTarget::DragLeave()
 // Returns : S_OK
 // Params  : [in] IDataObject *pIDataSource     the data to paste
 //           [in] DWORD        grfKeyState      kbd & mouse state
-//           [in] POINTL       pt               where the drop occured?
+//           [in] POINTL       pt               where the drop occurred?
 //           [ouy]DWORD       *pdwEffect        operation effect
 // Notes   :
 STDMETHODIMP wxIDropTarget::Drop(IDataObject *pIDataSource,
@@ -286,7 +289,8 @@ STDMETHODIMP wxIDropTarget::Drop(IDataObject *pIDataSource,
         m_pTarget->SetDataSource(pIDataSource);
 
         // and now it has the data
-        wxDragResult rc = ConvertDragEffectToResult(GetDropEffect(grfKeyState));
+        wxDragResult rc = ConvertDragEffectToResult(
+            GetDropEffect(grfKeyState, m_pTarget->GetDefaultAction()));
         rc = m_pTarget->OnData(pt.x, pt.y, rc);
         if ( wxIsDragResultOk(rc) ) {
             // operation succeeded
@@ -335,6 +339,7 @@ bool wxDropTarget::Register(WXHWND hwnd)
     // Or maybe we can dynamically load them from ceshell.dll
     // or similar.
 #if defined(__WXWINCE__) && _WIN32_WCE >= 400
+    wxUnusedVar(hwnd);
     return false;
 #else
     HRESULT hr;
@@ -369,6 +374,7 @@ void wxDropTarget::Revoke(WXHWND hwnd)
 {
 #if defined(__WXWINCE__) && _WIN32_WCE >= 400
     // Not available, see note above
+    wxUnusedVar(hwnd);
 #else
     HRESULT hr = ::RevokeDragDrop((HWND) hwnd);
 

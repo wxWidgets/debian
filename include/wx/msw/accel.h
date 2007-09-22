@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     31/7/98
-// RCS-ID:      $Id: accel.h,v 1.11 2004/09/16 22:36:12 VZ Exp $
+// RCS-ID:      $Id: accel.h,v 1.14 2004/12/10 11:23:06 VZ Exp $
 // Copyright:   (c) Julian Smart
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -24,7 +24,7 @@ class WXDLLEXPORT wxAcceleratorTable : public wxObject
 {
 public:
     // default ctor
-    wxAcceleratorTable();
+    wxAcceleratorTable() : wxObject() { }
 
     // copy ctor
     wxAcceleratorTable(const wxAcceleratorTable& accel) : wxObject(accel) { Ref(accel); }
@@ -35,11 +35,14 @@ public:
     // initialize from array
     wxAcceleratorTable(int n, const wxAcceleratorEntry entries[]);
 
-    virtual ~wxAcceleratorTable();
+    wxAcceleratorTable& operator=(const wxAcceleratorTable& accel)
+    {
+        if ( *this != accel )
+            Ref(accel);
+        return *this;
+    }
 
-    wxAcceleratorTable& operator = (const wxAcceleratorTable& accel) { if ( *this != accel ) Ref(accel); return *this; }
-    bool operator==(const wxAcceleratorTable& accel) const
-        { return m_refData == accel.m_refData; } // FIXME: this is wrong (VZ)
+    bool operator==(const wxAcceleratorTable& accel) const;
     bool operator!=(const wxAcceleratorTable& accel) const
         { return !(*this == accel); }
 

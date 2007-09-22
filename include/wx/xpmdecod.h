@@ -2,7 +2,7 @@
 // Name:        xpmdecod.h
 // Purpose:     wxXPMDecoder, XPM reader for wxImage and wxBitmap
 // Author:      Vaclav Slavik
-// CVS-ID:      $Id: xpmdecod.h,v 1.7 2004/06/16 21:02:20 VS Exp $
+// CVS-ID:      $Id: xpmdecod.h,v 1.8 2005/03/16 16:18:21 ABX Exp $
 // Copyright:   (c) 2001 Vaclav Slavik
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -14,7 +14,7 @@
 #pragma interface "xpmdecod.h"
 #endif
 
-#include "wx/setup.h"
+#include "wx/defs.h"
 
 
 class WXDLLIMPEXP_CORE wxImage;

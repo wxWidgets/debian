@@ -3,7 +3,7 @@
 // Purpose:     wxNotebook class (a.k.a. property sheet, tabbed dialog)
 // Author:      Julian Smart
 // Modified by:
-// RCS-ID:      $Id: notebook.h,v 1.17 2004/06/17 16:22:27 ABX Exp $
+// RCS-ID:      $Id: notebook.h,v 1.18 2005/01/13 20:29:16 ABX Exp $
 // Copyright:   (c) Julian Smart
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -47,14 +47,14 @@ public:
              const wxPoint& pos = wxDefaultPosition,
              const wxSize& size = wxDefaultSize,
              long style = 0,
-             const wxString& name = wxT("notebook"));
+             const wxString& name = wxNotebookNameStr);
     // Create() function
   bool Create(wxWindow *parent,
               wxWindowID id,
               const wxPoint& pos = wxDefaultPosition,
               const wxSize& size = wxDefaultSize,
               long style = 0,
-              const wxString& name = wxT("notebook"));
+              const wxString& name = wxNotebookNameStr);
     // dtor
   ~wxNotebook();
 

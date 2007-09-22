@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     04/01/98
-// RCS-ID:      $Id: splitter.cpp,v 1.21 2004/10/06 20:54:37 ABX Exp $
+// RCS-ID:      $Id: splitter.cpp,v 1.24 2005/03/30 15:36:15 JS Exp $
 // Copyright:   (c) Julian Smart
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -46,13 +46,15 @@
 // ID for the menu commands
 enum
 {
-    SPLIT_QUIT,
+    SPLIT_QUIT = 1,
     SPLIT_HORIZONTAL,
     SPLIT_VERTICAL,
     SPLIT_UNSPLIT,
     SPLIT_LIVE,
     SPLIT_SETPOSITION,
-    SPLIT_SETMINSIZE
+    SPLIT_SETMINSIZE,
+    SPLIT_SETGRAVITY,
+    SPLIT_REPLACE
 };
 
 // ----------------------------------------------------------------------------
@@ -73,7 +75,7 @@ class MyFrame: public wxFrame
 {
 public:
     MyFrame();
-    virtual ~MyFrame(){};
+    virtual ~MyFrame();
 
     // Menu commands
     void SplitHorizontal(wxCommandEvent& event);
@@ -82,6 +84,8 @@ public:
     void ToggleLive(wxCommandEvent& event);
     void SetPosition(wxCommandEvent& event);
     void SetMinSize(wxCommandEvent& event);
+    void SetGravity(wxCommandEvent& event);
+    void Replace(wxCommandEvent &event);
 
     void Quit(wxCommandEvent& event);
 
@@ -94,6 +98,7 @@ private:
     wxScrolledWindow *m_left, *m_right;
 
     wxSplitterWindow* m_splitter;
+    wxWindow *m_replacewindow;
 
     DECLARE_EVENT_TABLE()
     DECLARE_NO_COPY_CLASS(MyFrame)
@@ -162,6 +167,8 @@ BEGIN_EVENT_TABLE(MyFrame, wxFrame)
     EVT_MENU(SPLIT_LIVE, MyFrame::ToggleLive)
     EVT_MENU(SPLIT_SETPOSITION, MyFrame::SetPosition)
     EVT_MENU(SPLIT_SETMINSIZE, MyFrame::SetMinSize)
+    EVT_MENU(SPLIT_SETGRAVITY, MyFrame::SetGravity)
+    EVT_MENU(SPLIT_REPLACE, MyFrame::Replace)
 
     EVT_MENU(SPLIT_QUIT, MyFrame::Quit)
 
@@ -202,6 +209,14 @@ MyFrame::MyFrame()
     splitMenu->Append(SPLIT_SETMINSIZE,
                       _T("Set &min size\tCtrl-M"),
                       _T("Set minimum pane size"));
+    splitMenu->Append(SPLIT_SETGRAVITY,
+                      _T("Set &gravity\tCtrl-G"),
+                      _T("Set gravity of sash"));
+    splitMenu->AppendSeparator();
+
+    splitMenu->Append(SPLIT_REPLACE,
+                      _T("&Replace right window"),
+                      _T("Replace right window"));
     splitMenu->AppendSeparator();
 
     splitMenu->Append(SPLIT_QUIT, _T("E&xit\tAlt-X"), _T("Exit"));
@@ -213,6 +228,8 @@ MyFrame::MyFrame()
 
     menuBar->Check(SPLIT_LIVE, true);
     m_splitter = new MySplitterWindow(this);
+    
+    m_splitter->SetSashGravity(1.0);
 
 #if 1
     m_left = new MyCanvas(m_splitter, true);
@@ -240,6 +257,16 @@ MyFrame::MyFrame()
 #if wxUSE_STATUSBAR
     SetStatusText(_T("Min pane size = 0"), 1);
 #endif // wxUSE_STATUSBAR
+
+    m_replacewindow = (wxWindow *)0;
+}
+
+MyFrame::~MyFrame()
+{
+    if (m_replacewindow) {
+        m_replacewindow->Destroy();
+        m_replacewindow = (wxWindow *)0;
+    }
 }
 
 // menu command handlers
@@ -329,6 +356,36 @@ void MyFrame::SetMinSize(wxCommandEvent& WXUNUSED(event) )
     str.Printf( wxT("Min pane size = %d"), minsize);
     SetStatusText(str, 1);
 #endif // wxUSE_STATUSBAR
+}
+void MyFrame::SetGravity(wxCommandEvent& WXUNUSED(event) )
+{
+    wxString str;
+    str.Printf( wxT("%g"), m_splitter->GetSashGravity());
+    str = wxGetTextFromUser(_T("Enter sash gravity (0,1):"), _T(""), str, this);
+    if ( str.empty() )
+        return;
+
+    double gravity = wxStrtod( str, (wxChar**)NULL);
+    m_splitter->SetSashGravity(gravity);
+#if wxUSE_STATUSBAR
+    str.Printf( wxT("Gravity = %g"), gravity);
+    SetStatusText(str, 1);
+#endif // wxUSE_STATUSBAR
+}
+
+void MyFrame::Replace(wxCommandEvent& WXUNUSED(event) )
+{
+    if (m_replacewindow == 0) {
+        m_replacewindow = m_splitter->GetWindow2();
+        m_splitter->ReplaceWindow(m_replacewindow, new wxPanel(m_splitter, wxID_ANY));
+        m_replacewindow->Hide();
+    } else {
+        wxWindow *empty = m_splitter->GetWindow2();
+        m_splitter->ReplaceWindow(empty, m_replacewindow);
+        m_replacewindow->Show();
+        m_replacewindow = 0;
+        empty->Destroy();
+    }
 }
 
 // Update UI handlers

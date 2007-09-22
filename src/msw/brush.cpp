@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     04/01/98
-// RCS-ID:      $Id: brush.cpp,v 1.20 2004/05/23 20:52:56 JS Exp $
+// RCS-ID:      $Id: brush.cpp,v 1.21 2005/01/18 20:12:58 ABX Exp $
 // Copyright:   (c) Julian Smart
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -103,7 +103,8 @@ wxBrushRefData::wxBrushRefData(const wxBitmap& stipple)
 }
 
 wxBrushRefData::wxBrushRefData(const wxBrushRefData& data)
-              : m_stipple(data.m_stipple),
+              : wxGDIRefData(),
+                m_stipple(data.m_stipple),
                 m_colour(data.m_colour)
 {
     m_style = data.m_style;

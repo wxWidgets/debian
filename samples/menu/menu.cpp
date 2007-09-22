@@ -4,7 +4,7 @@
 // Author:      Vadim Zeitlin
 // Modified by:
 // Created:     01.11.99
-// RCS-ID:      $Id: menu.cpp,v 1.45 2004/09/25 18:56:33 VS Exp $
+// RCS-ID:      $Id: menu.cpp,v 1.50 2005/06/10 17:53:11 ABX Exp $
 // Copyright:   (c) 1999 Vadim Zeitlin
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -41,7 +41,7 @@
 
 // not all ports have support for EVT_CONTEXT_MENU yet, don't define
 // USE_CONTEXT_MENU for those which don't
-#if defined(__WXMOTIF__) || defined(__WXPM__)
+#if defined(__WXMOTIF__) || defined(__WXPM__) || defined(__WXX11__) || defined(__WXMGL__)
     #define USE_CONTEXT_MENU 0
 #else
     #define USE_CONTEXT_MENU 1
@@ -125,8 +125,7 @@ protected:
     void OnUpdateSubMenuRadio(wxUpdateUIEvent& event);
 
 #if USE_CONTEXT_MENU
-    void OnContextMenu(wxContextMenuEvent& event)
-        { ShowContextMenu(ScreenToClient(event.GetPosition())); }
+    void OnContextMenu(wxContextMenuEvent& event);
 #else
     void OnRightUp(wxMouseEvent& event)
         { ShowContextMenu(event.GetPosition()); }
@@ -416,9 +415,9 @@ MyFrame::MyFrame()
     wxMenu* subMenu = new wxMenu;
     subMenu->Append(Menu_SubMenu_Normal, _T("&Normal submenu item"), _T("Disabled submenu item"));
     subMenu->AppendCheckItem(Menu_SubMenu_Check, _T("&Unchecked submenu item"), _T("Unchecked submenu item"));
-    subMenu->AppendRadioItem(Menu_SubMenu_Radio1, _T("&Radio item 1"), _T("Radio item"));
-    subMenu->AppendRadioItem(Menu_SubMenu_Radio2, _T("&Radio item 2"), _T("Radio item"));
-    subMenu->AppendRadioItem(Menu_SubMenu_Radio3, _T("&Radio item 3"), _T("Radio item"));
+    subMenu->AppendRadioItem(Menu_SubMenu_Radio1, _T("Radio item &1"), _T("Radio item"));
+    subMenu->AppendRadioItem(Menu_SubMenu_Radio2, _T("Radio item &2"), _T("Radio item"));
+    subMenu->AppendRadioItem(Menu_SubMenu_Radio3, _T("Radio item &3"), _T("Radio item"));
 
     menubarMenu->Append(Menu_SubMenu, _T("Submenu"), subMenu);
 
@@ -439,6 +438,10 @@ MyFrame::MyFrame()
     menuMenu->AppendSeparator();
     menuMenu->Append(Menu_Menu_GetInfo, _T("Get menu item in&fo\tAlt-F"),
                      _T("Show the state of the last menu item"));
+#if wxUSE_TEXTDLG
+    menuMenu->Append(Menu_Menu_SetLabel, _T("Set menu item label\tAlt-L"),
+                     _T("Set the label of a menu item"));
+#endif
 #if wxUSE_TEXTDLG
     menuMenu->AppendSeparator();
     menuMenu->Append(Menu_Menu_FindItem, _T("Find menu item from label"),
@@ -479,7 +482,7 @@ MyFrame::MyFrame()
 
 #if USE_LOG_WINDOW
     // create the log text window
-    m_textctrl = new wxTextCtrl(this, wxID_ANY, _T(""),
+    m_textctrl = new wxTextCtrl(this, wxID_ANY, wxEmptyString,
                                 wxDefaultPosition, wxDefaultSize,
                                 wxTE_MULTILINE);
     m_textctrl->SetEditable(false);
@@ -678,7 +681,7 @@ void MyFrame::OnFindMenu(wxCommandEvent& WXUNUSED(event))
                      (
                         _T("Enter label to search for: "),
                         _T("Find menu"),
-                        _T(""),
+                        wxEmptyString,
                         this
                      );
 
@@ -746,7 +749,7 @@ void MyFrame::OnInsertMenuItem(wxCommandEvent& WXUNUSED(event))
 
     menu->Insert(0, wxMenuItem::New(menu, Menu_Dummy_Fourth,
                                     _T("Fourth dummy item\tCtrl-F4")));
-    menu->Insert(1, wxMenuItem::New(menu, wxID_SEPARATOR, _T("")));
+    menu->Insert(1, wxMenuItem::New(menu, wxID_SEPARATOR));
 }
 
 void MyFrame::OnEnableMenuItem(wxCommandEvent& WXUNUSED(event))
@@ -800,6 +803,7 @@ void MyFrame::OnSetLabelMenuItem(wxCommandEvent& WXUNUSED(event))
                             item->GetLabel(),
                             this
                          );
+        label.Replace( _T("\\t"), _T("\t") );
 
         if ( !label.empty() )
         {
@@ -896,7 +900,7 @@ void MyFrame::OnFindMenuItem(wxCommandEvent& WXUNUSED(event))
                      (
                         _T("Enter label to search for: "),
                         _T("Find menu item"),
-                        _T(""),
+                        wxEmptyString,
                         this
                      );
 
@@ -999,6 +1003,22 @@ void MyFrame::OnUpdateSubMenuRadio(wxUpdateUIEvent& event)
     else
         event.Check(false);
 }
+
+#if USE_CONTEXT_MENU
+void MyFrame::OnContextMenu(wxContextMenuEvent& event)
+{
+    wxPoint point = event.GetPosition();
+    // If from keyboard
+    if (point.x == -1 && point.y == -1) {
+        wxSize size = GetSize();
+        point.x = size.x / 2;
+        point.y = size.y / 2;
+    } else {
+        point = ScreenToClient(point);
+    }
+    ShowContextMenu(point);
+}
+#endif
 
 void MyFrame::OnSize(wxSizeEvent& WXUNUSED(event))
 {

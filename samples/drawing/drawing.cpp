@@ -4,7 +4,7 @@
 // Author:      Robert Roebling
 // Modified by:
 // Created:     04/01/98
-// RCS-ID:      $Id: drawing.cpp,v 1.75 2004/10/06 20:53:10 ABX Exp $
+// RCS-ID:      $Id: drawing.cpp,v 1.78 2005/05/31 09:19:26 JS Exp $
 // Copyright:   (c) Robert Roebling
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -18,8 +18,8 @@
 // ----------------------------------------------------------------------------
 
 #if defined(__GNUG__) && !defined(__APPLE__)
-    #pragma implementation "drawing.cpp"
-    #pragma interface "drawing.cpp"
+    #pragma implementation
+    #pragma interface
 #endif
 
 // For compilers that support precompilation, includes "wx/wx.h".
@@ -513,11 +513,16 @@ void MyCanvas::DrawDefault(wxDC& dc)
     // mark the origin
     dc.DrawCircle(0, 0, 10);
 
+#if !wxMAC_USE_CORE_GRAPHICS
+    // GetPixel and FloodFill not supported by Mac OS X CoreGraphics
+    // (FloodFill uses Blit from a non-wxMemoryDC)
     //flood fill using brush, starting at 1,1 and replacing whatever colour we find there
     dc.SetBrush(wxBrush(wxColour(128,128,0), wxSOLID));
+
     wxColour tmpColour ;
     dc.GetPixel(1,1, &tmpColour);
     dc.FloodFill(1,1, tmpColour, wxFLOOD_SURFACE);
+#endif
 
     dc.DrawCheckMark(5, 80, 15, 15);
     dc.DrawCheckMark(25, 80, 30, 30);
@@ -664,7 +669,7 @@ void MyCanvas::DrawDefault(wxDC& dc)
 
     // Added by JACS to demonstrate bizarre behaviour.
     // With a size of 70, we get a missing red RHS,
-    // and the hight is too small, so we get yellow
+    // and the height is too small, so we get yellow
     // showing. With a size of 40, it draws as expected:
     // it just shows a white rectangle with red outline.
     int totalWidth = 70;

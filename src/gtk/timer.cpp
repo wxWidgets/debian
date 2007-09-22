@@ -2,7 +2,7 @@
 // Name:        gtk/timer.cpp
 // Purpose:     wxTimer implementation
 // Author:      Robert Roebling
-// Id:          $Id: timer.cpp,v 1.21 2004/05/23 20:52:21 JS Exp $
+// Id:          $Id: timer.cpp,v 1.22 2005/03/21 23:42:19 VZ Exp $
 // Copyright:   (c) 1998 Robert Roebling
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -27,7 +27,8 @@
 
 IMPLEMENT_ABSTRACT_CLASS(wxTimer, wxEvtHandler)
 
-extern "C" gint timeout_callback( gpointer data )
+extern "C" {
+static gint timeout_callback( gpointer data )
 {
     wxTimer *timer = (wxTimer*)data;
 
@@ -53,6 +54,7 @@ extern "C" gint timeout_callback( gpointer data )
         return FALSE;
 
     return TRUE;
+}
 }
 
 void wxTimer::Init()

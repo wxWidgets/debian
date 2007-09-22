@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by: Dimitri Schoolwerth
 // Created:     26/10/98
-// RCS-ID:      $Id: notebook.cpp,v 1.32 2004/10/06 20:11:24 ABX Exp $
+// RCS-ID:      $Id: notebook.cpp,v 1.38 2005/06/17 14:36:23 VZ Exp $
 // Copyright:   (c) 1998-2002 wxWidgets team
 // License:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -23,6 +23,10 @@
 #include "wx/imaglist.h"
 #include "wx/artprov.h"
 #include "notebook.h"
+
+#if !defined(__WXMSW__) && !defined(__WXPM__)
+    #include "../sample.xpm"
+#endif
 
 IMPLEMENT_APP(MyApp)
 
@@ -44,7 +48,7 @@ bool MyApp::OnInit()
     return true;
 }
 
-wxPanel *CreateUserCreatedPage(wxBookCtrl *parent)
+wxPanel *CreateUserCreatedPage(wxBookCtrlBase *parent)
 {
     wxPanel *panel = new wxPanel(parent);
 
@@ -54,7 +58,7 @@ wxPanel *CreateUserCreatedPage(wxBookCtrl *parent)
     return panel;
 }
 
-wxPanel *CreateRadioButtonsPage(wxBookCtrl *parent)
+wxPanel *CreateRadioButtonsPage(wxBookCtrlBase *parent)
 {
     wxPanel *panel = new wxPanel(parent);
 
@@ -79,7 +83,7 @@ wxPanel *CreateRadioButtonsPage(wxBookCtrl *parent)
     return panel;
 }
 
-wxPanel *CreateVetoPage(wxBookCtrl *parent)
+wxPanel *CreateVetoPage(wxBookCtrlBase *parent)
 {
     wxPanel *panel = new wxPanel(parent);
 
@@ -89,7 +93,7 @@ wxPanel *CreateVetoPage(wxBookCtrl *parent)
     return panel;
 }
 
-wxPanel *CreateBigButtonPage(wxBookCtrl *parent)
+wxPanel *CreateBigButtonPage(wxBookCtrlBase *parent)
 {
     wxPanel *panel = new wxPanel(parent);
 
@@ -103,7 +107,7 @@ wxPanel *CreateBigButtonPage(wxBookCtrl *parent)
 }
 
 
-wxPanel *CreateInsertPage(wxBookCtrl *parent)
+wxPanel *CreateInsertPage(wxBookCtrlBase *parent)
 {
     wxPanel *panel = new wxPanel(parent);
 
@@ -114,7 +118,7 @@ wxPanel *CreateInsertPage(wxBookCtrl *parent)
     return panel;
 }
 
-int GetIconIndex(wxBookCtrl* bookCtrl)
+int GetIconIndex(wxBookCtrlBase* bookCtrl)
 {
     if (bookCtrl && bookCtrl->GetImageList())
     {
@@ -128,7 +132,7 @@ int GetIconIndex(wxBookCtrl* bookCtrl)
     return -1;
 }
 
-void CreateInitialPages(wxBookCtrl *parent)
+void CreateInitialPages(wxBookCtrlBase *parent)
 {
     // Create and add some panels to the notebook
 
@@ -147,7 +151,7 @@ void CreateInitialPages(wxBookCtrl *parent)
     parent->SetSelection(1);
 }
 
-wxPanel *CreatePage(wxBookCtrl *parent, const wxString&pageName)
+wxPanel *CreatePage(wxBookCtrlBase *parent, const wxString&pageName)
 {
     if
     (
@@ -188,13 +192,23 @@ MyFrame::MyFrame(const wxString& title, const wxPoint& pos, const wxSize& size,
                  long style)
     : wxFrame((wxWindow *) NULL, wxID_ANY, title, pos, size, style)
 {
+#if wxUSE_NOTEBOOK
     m_type = ID_BOOK_NOTEBOOK;
+#elif wxUSE_CHOICEBOOK
+    m_type = ID_BOOK_CHOICEBOOK;
+#elif wxUSE_LISTBOOK
+    m_type = ID_BOOK_LISTBOOK;
+#elif
+    #error "Don't use Notebook sample without any book enabled in wxWidgets build!"
+#endif
+
     m_orient = ID_ORIENT_DEFAULT;
     m_chkShowImages = true;
     m_multi = false;
 
-    // menu of the sample
+    SetIcon(wxICON(sample));
 
+    // menu of the sample
     wxMenu *menuType = new wxMenu;
 #if wxUSE_NOTEBOOK
     menuType->AppendRadioItem(ID_BOOK_NOTEBOOK,   wxT("&Notebook\tCtrl-1"));
@@ -205,6 +219,7 @@ MyFrame::MyFrame(const wxString& title, const wxPoint& pos, const wxSize& size,
 #if wxUSE_CHOICEBOOK
     menuType->AppendRadioItem(ID_BOOK_CHOICEBOOK, wxT("&Choicebook\tCtrl-3"));
 #endif
+    menuType->Check(m_type, true);
 
     wxMenu *menuOrient = new wxMenu;
     menuOrient->AppendRadioItem(ID_ORIENT_DEFAULT, wxT("&Default\tCtrl-4"));
@@ -325,6 +340,12 @@ int MyFrame::SelectFlag(int id, int nb, int lb, int chb)
     return 0;
 }
 
+#ifdef __SMARTPHONE__
+    #define MARGIN 0
+#else
+    #define MARGIN 4
+#endif
+
 #define RECREATE( wxBookType , idBook, oldBook , newBook )                         \
 {                                                                                  \
     int flags;                                                                     \
@@ -390,22 +411,10 @@ int MyFrame::SelectFlag(int id, int nb, int lb, int chb)
     }                                                                              \
     else                                                                           \
     {                                                                              \
-        wxPanel *panel = CreateRadioButtonsPage(newBook);                          \
-        newBook->AddPage( panel, RADIOBUTTONS_PAGE_NAME, false, GetIconIndex(newBook) ); \
-                                                                                   \
-        panel = CreateVetoPage(newBook);                                           \
-        newBook->AddPage( panel, VETO_PAGE_NAME, false, GetIconIndex(newBook) );   \
-                                                                                   \
-        panel = CreateBigButtonPage(newBook);                                      \
-        newBook->AddPage( panel, MAXIMIZED_BUTTON_PAGE_NAME, false, GetIconIndex(newBook) ); \
-                                                                                   \
-        panel = CreateInsertPage(newBook);                                         \
-        newBook->InsertPage( 0, panel, I_WAS_INSERTED_PAGE_NAME, false, GetIconIndex(newBook) ); \
-                                                                                   \
-        newBook->SetSelection(1);                                                  \
+        CreateInitialPages(newBook);                                               \
     }                                                                              \
                                                                                    \
-    m_sizerFrame->Insert(0, newBook, 5, wxEXPAND | wxALL, 4);                      \
+    m_sizerFrame->Insert(0, newBook, 5, wxEXPAND | wxALL, MARGIN);                 \
                                                                                    \
     m_sizerFrame->Hide(newBook);                                                   \
 }
@@ -425,7 +434,7 @@ void MyFrame::RecreateBooks()
     ShowCurrentBook();
 }
 
-wxBookCtrl *MyFrame::GetCurrentBook()
+wxBookCtrlBase *MyFrame::GetCurrentBook()
 {
     switch (m_type)
     {
@@ -495,7 +504,7 @@ END_EVENT_TABLE()
 
 void MyFrame::OnType(wxCommandEvent& event)
 {
-    wxBookCtrl *currBook = GetCurrentBook();
+    wxBookCtrlBase *currBook = GetCurrentBook();
 
     m_type = event.GetId();
 
@@ -536,7 +545,7 @@ void MyFrame::OnAddPage(wxCommandEvent& WXUNUSED(event))
 {
     static unsigned s_pageAdded = 0;
 
-    wxBookCtrl *currBook = GetCurrentBook();
+    wxBookCtrlBase *currBook = GetCurrentBook();
 
     if ( currBook )
     {
@@ -555,7 +564,7 @@ void MyFrame::OnInsertPage(wxCommandEvent& WXUNUSED(event))
 {
     static unsigned s_pageIns = 0;
 
-    wxBookCtrl *currBook = GetCurrentBook();
+    wxBookCtrlBase *currBook = GetCurrentBook();
 
     if ( currBook )
     {
@@ -571,7 +580,7 @@ void MyFrame::OnInsertPage(wxCommandEvent& WXUNUSED(event))
 
 void MyFrame::OnDeleteCurPage(wxCommandEvent& WXUNUSED(event))
 {
-    wxBookCtrl *currBook = GetCurrentBook();
+    wxBookCtrlBase *currBook = GetCurrentBook();
 
     if ( currBook )
     {
@@ -586,7 +595,7 @@ void MyFrame::OnDeleteCurPage(wxCommandEvent& WXUNUSED(event))
 
 void MyFrame::OnDeleteLastPage(wxCommandEvent& WXUNUSED(event))
 {
-    wxBookCtrl *currBook = GetCurrentBook();
+    wxBookCtrlBase *currBook = GetCurrentBook();
 
     if ( currBook )
     {
@@ -601,7 +610,7 @@ void MyFrame::OnDeleteLastPage(wxCommandEvent& WXUNUSED(event))
 
 void MyFrame::OnNextPage(wxCommandEvent& WXUNUSED(event))
 {
-    wxBookCtrl *currBook = GetCurrentBook();
+    wxBookCtrlBase *currBook = GetCurrentBook();
 
     if ( currBook )
     {
@@ -613,9 +622,9 @@ void MyFrame::OnIdle( wxIdleEvent& WXUNUSED(event) )
 {
     static int s_nPages = wxNOT_FOUND;
     static int s_nSel = wxNOT_FOUND;
-    static wxBookCtrl *s_currBook = NULL;
+    static wxBookCtrlBase *s_currBook = NULL;
 
-    wxBookCtrl *currBook = GetCurrentBook();
+    wxBookCtrlBase *currBook = GetCurrentBook();
 
     int nPages = currBook ? currBook->GetPageCount() : 0;
     int nSel = currBook ? currBook->GetSelection() : wxNOT_FOUND;
@@ -639,6 +648,12 @@ void MyFrame::OnIdle( wxIdleEvent& WXUNUSED(event) )
     }
 }
 
+#if USE_LOG
+    #define BOOKEVENT_LOG m_text->SetInsertionPointEnd();
+#else
+    #define BOOKEVENT_LOG
+#endif
+
 #define BOOKEVENT(OnBook,wxBookEvent,bookStr,wxEVT_PAGE_CHANGED,wxEVT_PAGE_CHANGING,s_num) \
 void MyFrame::OnBook(wxBookEvent& event)                                                   \
 {                                                                                          \
@@ -655,7 +670,7 @@ void MyFrame::OnBook(wxBookEvent& event)                                        
     else if (eventType == wxEVT_PAGE_CHANGING)                                             \
     {                                                                                      \
         int idx = event.GetOldSelection();                                                 \
-        wxBookCtrl *book = (wxBookCtrl *)event.GetEventObject();                           \
+        wxBookCtrlBase *book = (wxBookCtrlBase *)event.GetEventObject();                   \
         if ( idx != wxNOT_FOUND && book && book->GetPageText(idx) == VETO_PAGE_NAME )      \
         {                                                                                  \
             if                                                                             \
@@ -683,7 +698,7 @@ void MyFrame::OnBook(wxBookEvent& event)                                        
                                                                                            \
     wxLogMessage(logMsg.c_str());                                                          \
                                                                                            \
-    m_text->SetInsertionPointEnd();                                                        \
+    BOOKEVENT_LOG                                                                          \
 }
 
 #if wxUSE_NOTEBOOK

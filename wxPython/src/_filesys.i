@@ -5,7 +5,7 @@
 // Author:      Robin Dunn
 //
 // Created:     25-Sept-2000
-// RCS-ID:      $Id: _filesys.i,v 1.7 2004/09/23 20:23:17 RD Exp $
+// RCS-ID:      $Id: _filesys.i,v 1.10 2005/03/09 22:28:41 RD Exp $
 // Copyright:   (c) 2003 by Total Control Software
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -27,8 +27,8 @@ class wxFSFile : public wxObject
 {
 public:
     %pythonAppend wxFSFile
-        "self.thisown = 0   # It will normally be deleted by the user of the wxFileSystem";
-    
+        "self.thisown = 0   # It will normally be deleted by the user of the wx.FileSystem";
+
     wxFSFile(wxInputStream *stream, const wxString& loc,
              const wxString& mimetype, const wxString& anchor,
              wxDateTime modif);
@@ -88,7 +88,8 @@ IMP_PYCALLBACK_STRING__pure(wxPyFileSystemHandler, wxFileSystemHandler, FindNext
 
 
 
-%name(CPPFileSystemHandler) class wxFileSystemHandler //: public wxObject
+%rename(CPPFileSystemHandler) wxFileSystemHandler;
+class wxFileSystemHandler //: public wxObject
 {
 public:
     //wxFileSystemHandler();
@@ -96,7 +97,8 @@ public:
 
 
 
-%name(FileSystemHandler) class wxPyFileSystemHandler : public wxFileSystemHandler
+%rename(FileSystemHandler) wxPyFileSystemHandler;
+class wxPyFileSystemHandler : public wxFileSystemHandler
 {
 public:
     %pythonAppend    wxPyFileSystemHandler "self._setCallbackInfo(self, FileSystemHandler)";
@@ -204,7 +206,7 @@ public:
             return;
         }
 
-        bool blocked = wxPyBeginBlockThreads();
+        wxPyBlock_t blocked = wxPyBeginBlockThreads();
         void*  ptr = (void*)PyString_AsString(data);
         size_t size = PyString_Size(data);
         wxPyEndBlockThreads(blocked);

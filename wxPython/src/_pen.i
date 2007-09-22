@@ -5,7 +5,7 @@
 // Author:      Robin Dunn
 //
 // Created:     7-July-1997
-// RCS-ID:      $Id: _pen.i,v 1.12 2004/09/23 20:23:15 RD Exp $
+// RCS-ID:      $Id: _pen.i,v 1.13 2005/03/09 22:28:40 RD Exp $
 // Copyright:   (c) 2003 by Total Control Software
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -56,7 +56,7 @@ public:
         PyObject* GetDashes() {
             wxDash* dashes;
             int count = self->GetDashes(&dashes);
-            bool blocked = wxPyBeginBlockThreads();
+            wxPyBlock_t blocked = wxPyBeginBlockThreads();
             PyObject* retval = PyList_New(0);
             for (int x=0; x<count; x++) {
                 PyObject* pyint = PyInt_FromLong(dashes[x]);
@@ -68,7 +68,7 @@ public:
         }
 
         void _SetDashes(PyObject* _self, PyObject* pyDashes) {
-            bool blocked = wxPyBeginBlockThreads();
+            wxPyBlock_t blocked = wxPyBeginBlockThreads();
             int size = PyList_Size(pyDashes);
             wxDash* dashes = (wxDash*)byte_LIST_helper(pyDashes);
 

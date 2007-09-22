@@ -4,7 +4,7 @@
 // Author:      Aleksandras Gluchovas
 // Modified by:
 // Created:     22/09/98
-// RCS-ID:      $Id: docripper.cpp,v 1.5 2004/06/17 19:00:22 ABX Exp $
+// RCS-ID:      $Id: docripper.cpp,v 1.14 2005/06/02 09:44:44 ABX Exp $
 // Copyright:   (c) Aleskandars Gluchovas
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -117,14 +117,14 @@ RipperDocGen::RipperDocGen()
       mpCurClassSect(0)
 {
     // topIndex is not referenced
-    mpTopIdx        = new ScriptSection( "Source Code Contents"       , "", &mTopTempl       , 0          );
-    mpClassIdx      = new ScriptSection( "Classes Reference"          , "", &mContentIdxTempl, &mRefTempl );
-    mpEnumIdx       = new ScriptSection( "Enumerations  Reference"    , "", &mContentIdxTempl,  &mRefTempl );
-    mpTypeDefIdx    = new ScriptSection( "Type Definitions Reference" , "", &mContentIdxTempl, &mRefTempl );
-    mpMacroIdx      = new ScriptSection( "Macros Reference"           , "", &mContentIdxTempl, &mRefTempl );
-    mpGlobalVarsIdx = new ScriptSection( "Global Variables Reference" , "", &mContentIdxTempl, &mRefTempl );
-    mpGlobalFuncIdx = new ScriptSection( "Global Functions  Reference", "", &mContentIdxTempl, &mRefTempl );
-    mpConstIdx      = new ScriptSection( "Constants  Reference"       , "", &mContentIdxTempl, &mRefTempl );
+    mpTopIdx        = new ScriptSection( "Source Code Contents"       , wxEmptyString, &mTopTempl       , 0          );
+    mpClassIdx      = new ScriptSection( "Classes Reference"          , wxEmptyString, &mContentIdxTempl, &mRefTempl );
+    mpEnumIdx       = new ScriptSection( "Enumerations  Reference"    , wxEmptyString, &mContentIdxTempl,  &mRefTempl );
+    mpTypeDefIdx    = new ScriptSection( "Type Definitions Reference" , wxEmptyString, &mContentIdxTempl, &mRefTempl );
+    mpMacroIdx      = new ScriptSection( "Macros Reference"           , wxEmptyString, &mContentIdxTempl, &mRefTempl );
+    mpGlobalVarsIdx = new ScriptSection( "Global Variables Reference" , wxEmptyString, &mContentIdxTempl, &mRefTempl );
+    mpGlobalFuncIdx = new ScriptSection( "Global Functions  Reference", wxEmptyString, &mContentIdxTempl, &mRefTempl );
+    mpConstIdx      = new ScriptSection( "Constants  Reference"       , wxEmptyString, &mContentIdxTempl, &mRefTempl );
 
     // assemble top index
     mpTopIdx->AddSection( mpClassIdx     , 1 );
@@ -149,7 +149,7 @@ RipperDocGen::RipperDocGen()
     mpFileBinderCtx = new spFile();
 
     // the default script is HTML
-    mTags = get_HTML_markup_tags();
+    m_Tags = get_HTML_markup_tags();
 
     mpParser = 0; // no default parser!
 }
@@ -164,14 +164,14 @@ RipperDocGen::~RipperDocGen()
     delete mpFileBinderCtx;
 }
 
-void RipperDocGen::AppendComments( spContext& fromContext, string& str )
+void RipperDocGen::AppendComments( spContext& fromContext, wxString& str )
 {
     if ( !fromContext.HasComments() ) return;
 
     size_t start = str.length();
 
-    str += mTags[TAG_BOLD].end;
-    str += mTags[TAG_PARAGRAPH].start;
+    str += m_Tags[TAG_BOLD].end;
+    str += m_Tags[TAG_PARAGRAPH].start;
 
     MCommentListT& lst = fromContext.GetCommentList();
 
@@ -182,10 +182,10 @@ void RipperDocGen::AppendComments( spContext& fromContext, string& str )
 
             if ( lst[i]->StartsParagraph() )
             {
-                str += mTags[TAG_PARAGRAPH].start;
+                str += m_Tags[TAG_PARAGRAPH].start;
             }
 
-        str += lst[i]->mText;
+        str += lst[i]->m_Text;
     }
 
     // remove new lines, and insert paragraph breaks
@@ -206,36 +206,36 @@ void RipperDocGen::AppendComments( spContext& fromContext, string& str )
                      ( str[n] == 10 && str[n+1] == 10 )
                    )
                 {
-                    str.insert( n + 1, "<p>" ); // FIXME:: quick-hack
+                    str.insert( n + 1, _T("<p>") ); // FIXME:: quick-hack
                     len += 3;
                 }
             }
-            str[n] = ' ';
+            str[n] = _T(' ');
         }
-    str += mTags[TAG_PARAGRAPH].end;
+    str += m_Tags[TAG_PARAGRAPH].end;
 }
 
-void RipperDocGen::AppendMulitilineStr( string& st, string& mlStr )
+void RipperDocGen::AppendMulitilineStr( wxString& st, wxString& mlStr )
 {
-    st = mTags[TAG_FIXED_FONT].start;
+    st = m_Tags[TAG_FIXED_FONT].start;
     st += mlStr;
-    st += mTags[TAG_FIXED_FONT].end;
+    st += m_Tags[TAG_FIXED_FONT].end;
 }
 
-void RipperDocGen::AppendHighlightedSource( string& st, string source )
+void RipperDocGen::AppendHighlightedSource( wxString& st, wxString source )
 {
     // FIXME:: below should not be fixed :)
-    char buf[1024*32];
+    wxChar buf[1024*32];
 
     // DBG:::
 //    ASSERT( source.length() + 1 < sizeof(buf) );
 
-    strcpy( buf, source.c_str() );
+    wxStrcpy( buf, source.c_str() );
 
     // highlight things
     mSrcPainter.Init();
     mSrcPainter.ProcessSource( buf, strlen(buf) );
-    mSrcPainter.GetResultString( st, mTags );
+    mSrcPainter.GetResultString( st, m_Tags );
 }
 
 bool RipperDocGen::CheckIfUncommented( spContext& ctx, ScriptSection& toSect )
@@ -243,7 +243,7 @@ bool RipperDocGen::CheckIfUncommented( spContext& ctx, ScriptSection& toSect )
     if ( ctx.HasComments() ) return 0;
 
     toSect.AddReference(
-        new ScriptSection( GetScopedName( ctx ), "", 0, &mDeadRefTempl )
+        new ScriptSection( GetScopedName( ctx ), wxEmptyString, 0, &mDeadRefTempl )
     );
 
     return 1;
@@ -257,19 +257,19 @@ ScriptTemplate* RipperDocGen::GetRefTemplFor( spContext& ctx )
         return &mDeadRefTempl;
 }
 
-string RipperDocGen::GetScopedName( spContext& ofCtx )
+wxString RipperDocGen::GetScopedName( spContext& ofCtx )
 {
     if ( ofCtx.IsInFile() )
         return ofCtx.GetName();
     else
         return ofCtx.GetOutterContext()->GetName() +
-               "::" + ofCtx.GetName();
+               _T("::") + ofCtx.GetName();
 }
 
 void RipperDocGen::AddToCurrentClass( ScriptSection* pSection, spContext& ctx,
                                       const char* subSectionName )
 {
-    string sName;
+    wxString sName;
 
     if ( ctx.mVisibility == SP_VIS_PROTECTED )
         sName = "Protected members/";
@@ -312,9 +312,9 @@ void RipperDocGen::LinkSuperClassRefs()
         ScriptSection* pClSect = (ScriptSection*)cl.GetUserData();
         ScriptSection* pSuperSect = pClSect->GetSubsection("Derived from");
 
-        for( size_t n = 0; n != cl.mSuperClassNames.size(); ++n )
+        for( size_t n = 0; n != cl.m_SuperClassNames.size(); ++n )
         {
-            string& superClName = cl.mSuperClassNames[n];
+            wxString& superClName = cl.m_SuperClassNames[n];
 
             spClass* pFound = NULL;
 
@@ -330,7 +330,7 @@ void RipperDocGen::LinkSuperClassRefs()
             if ( !pFound )
             {
                 ScriptSection* pNotFound =
-                    new ScriptSection( superClName, "", 0, &mDeadRefTempl );
+                    new ScriptSection( superClName, wxEmptyString, 0, &mDeadRefTempl );
 
                 pSuperSect->AddReference( pNotFound );
             }
@@ -366,19 +366,19 @@ void RipperDocGen::ProcessFile( const char* sourceFile )
 void RipperDocGen::VisitEnumeration( spEnumeration& en )
 {
     // FOR NOW:: do not reference "nameless" enums
-    if ( en.GetName() == "" ) return;
+    if ( en.GetName().empty() ) return;
 
     if ( CheckIfUncommented( en, *mpEnumIdx ) )
         return;
 
-    string body;
-    body += mTags[TAG_BOLD].start;
+    wxString body;
+    body += m_Tags[TAG_BOLD].start;
 
-    AppendMulitilineStr( body, en.mEnumContent );
+    AppendMulitilineStr( body, en.m_EnumContent );
 
-    body += mTags[TAG_BOLD].end;
+    body += m_Tags[TAG_BOLD].end;
 
-    string line;
+    wxString line;
     AppendHighlightedSource( line, body );
     AppendComments( en, line );
 
@@ -394,20 +394,20 @@ void RipperDocGen::VisitTypeDef( spTypeDef& td )
     if ( CheckIfUncommented( td, *mpTypeDefIdx ) )
         return;
 
-    string body;
-    body += mTags[TAG_BOLD].start;
+    wxString body;
+    body += m_Tags[TAG_BOLD].start;
     body += "typdef ";
-    body += mTags[TAG_BOLD].end;
+    body += m_Tags[TAG_BOLD].end;
 
-    AppendMulitilineStr( body, td.mOriginalType );
-    body += td.mOriginalType;
+    AppendMulitilineStr( body, td.m_OriginalType );
+    body += td.m_OriginalType;
     body += ' ';
 
-    body += mTags[TAG_BOLD].start;
+    body += m_Tags[TAG_BOLD].start;
     body += td.GetName();
-    body += mTags[TAG_BOLD].end;
+    body += m_Tags[TAG_BOLD].end;
 
-    string line;
+    wxString line;
     AppendHighlightedSource( line, body );
     AppendComments( td, line );
 
@@ -426,15 +426,15 @@ void RipperDocGen::VisitPreprocessorLine( spPreprocessorLine& pd )
     if ( CheckIfUncommented( pd, *mpMacroIdx ) )
         return;
 
-    string body;
-    body += mTags[TAG_FIXED_FONT].start;
+    wxString body;
+    body += m_Tags[TAG_FIXED_FONT].start;
 
-    string coloredLine = pd.mLine;
-    AppendHighlightedSource( coloredLine, pd.mLine );
+    wxString coloredLine = pd.m_Line;
+    AppendHighlightedSource( coloredLine, pd.m_Line );
 
     AppendMulitilineStr( body, coloredLine );
 
-    body += mTags[TAG_FIXED_FONT].end;
+    body += m_Tags[TAG_FIXED_FONT].end;
 
     AppendComments( pd, body );
 
@@ -456,7 +456,7 @@ void RipperDocGen::VisitClass( spClass& cl )
         return;
     }
 
-    string body;
+    wxString body;
     AppendComments( cl, body );
 
     mpCurClassSect =
@@ -466,20 +466,20 @@ void RipperDocGen::VisitClass( spClass& cl )
     // to the section where this class is represented
     cl.SetUserData( mpCurClassSect );
 
-    ScriptSection* pSuper    = new ScriptSection( "Derived from"    ,"", &mOutLine1Templ,0, 1 );
+    ScriptSection* pSuper    = new ScriptSection( "Derived from"       ,wxEmptyString, &mOutLine1Templ,0, 1 );
 
-    ScriptSection* pPublic    = new ScriptSection( "Public members"    ,"", &mOutLineTempl,0, 1 );
-    ScriptSection* pProtected = new ScriptSection( "Protected members" ,"", &mOutLineTempl,0, 1 );
-    ScriptSection* pPrivate   = new ScriptSection( "Private members"   ,"", &mOutLineTempl,0, 1 );
+    ScriptSection* pPublic    = new ScriptSection( "Public members"    ,wxEmptyString, &mOutLineTempl,0, 1 );
+    ScriptSection* pProtected = new ScriptSection( "Protected members" ,wxEmptyString, &mOutLineTempl,0, 1 );
+    ScriptSection* pPrivate   = new ScriptSection( "Private members"   ,wxEmptyString, &mOutLineTempl,0, 1 );
 
-    pPublic->AddSection( new ScriptSection( "Operations", "", &mOutLine1Templ, 0, 1 ) );
-    pPublic->AddSection( new ScriptSection( "Attributes", "", &mOutLine1Templ, 0, 1 ) );
+    pPublic->AddSection( new ScriptSection( "Operations", wxEmptyString, &mOutLine1Templ, 0, 1 ) );
+    pPublic->AddSection( new ScriptSection( "Attributes", wxEmptyString, &mOutLine1Templ, 0, 1 ) );
 
-    pProtected->AddSection( new ScriptSection( "Operations", "", &mOutLine1Templ, 0, 1 ) );
-    pProtected->AddSection( new ScriptSection( "Attributes", "", &mOutLine1Templ, 0, 1 ) );
+    pProtected->AddSection( new ScriptSection( "Operations", wxEmptyString, &mOutLine1Templ, 0, 1 ) );
+    pProtected->AddSection( new ScriptSection( "Attributes", wxEmptyString, &mOutLine1Templ, 0, 1 ) );
 
-    pPrivate->AddSection( new ScriptSection( "Operations", "", &mOutLine1Templ, 0, 1 ) );
-    pPrivate->AddSection( new ScriptSection( "Attributes", "", &mOutLine1Templ, 0, 1 ) );
+    pPrivate->AddSection( new ScriptSection( "Operations", wxEmptyString, &mOutLine1Templ, 0, 1 ) );
+    pPrivate->AddSection( new ScriptSection( "Attributes", wxEmptyString, &mOutLine1Templ, 0, 1 ) );
 
     mpCurClassSect->AddSection( pSuper    );
     mpCurClassSect->AddSection( pPublic    );
@@ -491,17 +491,17 @@ void RipperDocGen::VisitClass( spClass& cl )
 
 void RipperDocGen::VisitAttribute( spAttribute& attr )
 {
-    string body;
-    body += mTags[TAG_BOLD].start;
-    body += attr.mType;
-    body += mTags[TAG_BOLD].end;
+    wxString body;
+    body += m_Tags[TAG_BOLD].start;
+    body += attr.m_Type;
+    body += m_Tags[TAG_BOLD].end;
 
-    body += mTags[TAG_ITALIC].start;
+    body += m_Tags[TAG_ITALIC].start;
     body += ' ';
     body += attr.GetName();
-    body += mTags[TAG_ITALIC].end;
+    body += m_Tags[TAG_ITALIC].end;
 
-    string line;
+    wxString line;
     AppendHighlightedSource( line, body );
     AppendComments( attr, line );
 
@@ -525,9 +525,9 @@ void RipperDocGen::VisitAttribute( spAttribute& attr )
 
 void RipperDocGen::VisitOperation( spOperation& op )
 {
-    string body;
+    wxString body;
 
-    AppendHighlightedSource( body, op.GetFullName(mTags) );
+    AppendHighlightedSource( body, op.GetFullName(m_Tags) );
 
     AppendComments( op, body );
 

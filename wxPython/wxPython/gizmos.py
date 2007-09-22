@@ -22,10 +22,11 @@ del sys, _wx
 wxDynamicSashNameStr = wx.gizmos.DynamicSashNameStr
 wxEditableListBoxNameStr = wx.gizmos.EditableListBoxNameStr
 wxTreeListCtrlNameStr = wx.gizmos.TreeListCtrlNameStr
-wxEVT_DYNAMIC_SASH_SPLIT = wx.gizmos.wxEVT_DYNAMIC_SASH_SPLIT
-wxEVT_DYNAMIC_SASH_UNIFY = wx.gizmos.wxEVT_DYNAMIC_SASH_UNIFY
+wxStaticPictureNameStr = wx.gizmos.StaticPictureNameStr
 wxDS_MANAGE_SCROLLBARS = wx.gizmos.DS_MANAGE_SCROLLBARS
 wxDS_DRAG_CORNER = wx.gizmos.DS_DRAG_CORNER
+wxEVT_DYNAMIC_SASH_SPLIT = wx.gizmos.wxEVT_DYNAMIC_SASH_SPLIT
+wxEVT_DYNAMIC_SASH_UNIFY = wx.gizmos.wxEVT_DYNAMIC_SASH_UNIFY
 wxDynamicSashSplitEvent = wx.gizmos.DynamicSashSplitEvent
 wxDynamicSashSplitEventPtr = wx.gizmos.DynamicSashSplitEventPtr
 wxDynamicSashUnifyEvent = wx.gizmos.DynamicSashUnifyEvent
@@ -42,6 +43,7 @@ wxRemotelyScrolledTreeCtrl = wx.gizmos.RemotelyScrolledTreeCtrl
 wxRemotelyScrolledTreeCtrlPtr = wx.gizmos.RemotelyScrolledTreeCtrlPtr
 wxTreeCompanionWindow = wx.gizmos.TreeCompanionWindow
 wxTreeCompanionWindowPtr = wx.gizmos.TreeCompanionWindowPtr
+wxTreeCompanionWindow = wx.gizmos.TreeCompanionWindow
 wxThinSplitterWindow = wx.gizmos.ThinSplitterWindow
 wxThinSplitterWindowPtr = wx.gizmos.ThinSplitterWindowPtr
 wxSplitterScrolledWindow = wx.gizmos.SplitterScrolledWindow
@@ -68,7 +70,15 @@ wxTreeListColumnInfo = wx.gizmos.TreeListColumnInfo
 wxTreeListColumnInfoPtr = wx.gizmos.TreeListColumnInfoPtr
 wxTreeListCtrl = wx.gizmos.TreeListCtrl
 wxTreeListCtrlPtr = wx.gizmos.TreeListCtrlPtr
+wxTreeListCtrl = wx.gizmos.TreeListCtrl
 wxPreTreeListCtrl = wx.gizmos.PreTreeListCtrl
+wxSCALE_HORIZONTAL = wx.gizmos.SCALE_HORIZONTAL
+wxSCALE_VERTICAL = wx.gizmos.SCALE_VERTICAL
+wxSCALE_UNIFORM = wx.gizmos.SCALE_UNIFORM
+wxSCALE_CUSTOM = wx.gizmos.SCALE_CUSTOM
+wxStaticPicture = wx.gizmos.StaticPicture
+wxStaticPicturePtr = wx.gizmos.StaticPicturePtr
+wxPreStaticPicture = wx.gizmos.PreStaticPicture
 
 
 d = globals()

@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     01/02/97
-// RCS-ID:      $Id: cmndata.cpp,v 1.103 2004/11/12 06:52:17 RL Exp $
+// RCS-ID:      $Id: cmndata.cpp,v 1.117 2005/06/13 12:19:19 ABX Exp $
 // Copyright:   (c) Julian Smart
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -49,25 +49,16 @@
     #include "wx/paper.h"
 #endif // wxUSE_PRINTING_ARCHITECTURE
 
-#if defined(__WXMSW__) && !defined(__PALMOS__)
-    #include <windowsx.h>
-    #include "wx/msw/private.h"
-
-    #ifndef __SMARTPHONE__ /* of WinCE */
-        #include <commdlg.h>
-    #endif
-
-    #if defined(__WATCOMC__) || defined(__SYMANTEC__) || defined(__SALFORDC__)
-        #include <windowsx.h>
-        #include <commdlg.h>
-    #endif
+#if defined(__WXMSW__)
+    #include "wx/msw/wrapcdlg.h"
 #endif // MSW
 
-#ifdef __WXMAC__
+    #if wxUSE_PRINTING_ARCHITECTURE
+
+#if defined(__WXMAC__)
     #include "wx/mac/private/print.h"
 #endif
 
-    #if wxUSE_PRINTING_ARCHITECTURE
         IMPLEMENT_DYNAMIC_CLASS(wxPrintData, wxObject)
         IMPLEMENT_DYNAMIC_CLASS(wxPrintDialogData, wxObject)
         IMPLEMENT_DYNAMIC_CLASS(wxPageSetupDialogData, wxObject)
@@ -75,10 +66,6 @@
 
     IMPLEMENT_DYNAMIC_CLASS(wxFontData, wxObject)
     IMPLEMENT_DYNAMIC_CLASS(wxColourData, wxObject)
-
-#ifndef DMPAPER_USER
-     #define DMPAPER_USER                256
-#endif
 
 // ============================================================================
 // implementation
@@ -167,9 +154,6 @@ wxFontDialogBase::~wxFontDialogBase()
 
 wxPrintData::wxPrintData()
 {
-#ifdef __WXMAC__
-    m_nativePrintData = wxNativePrintData::Create() ;
-#endif
     m_bin = wxPRINTBIN_DEFAULT;
     m_printMode = wxPRINT_MODE_PRINTER;
     m_printOrientation = wxPORTRAIT;
@@ -177,12 +161,15 @@ wxPrintData::wxPrintData()
     m_printCollate = false;
 
     // New, 24/3/99
-    m_printerName = wxT("");
+    m_printerName = wxEmptyString;
     m_colour = true;
     m_duplexMode = wxDUPLEX_SIMPLEX;
     m_printQuality = wxPRINT_QUALITY_HIGH;
     m_paperId = wxPAPER_A4;
     m_paperSize = wxSize(210, 297);
+
+    m_privData = NULL;
+    m_privDataLen = 0;
 
     m_nativeData = wxPrintFactory::GetFactory()->CreatePrintNativeData();
 }
@@ -190,36 +177,44 @@ wxPrintData::wxPrintData()
 wxPrintData::wxPrintData(const wxPrintData& printData)
     : wxObject()
 {
+    m_nativeData = NULL;
+    m_privData = NULL;
     (*this) = printData;
+}
+
+void wxPrintData::SetPrivData( char *privData, int len )
+{
+    if (m_privData)
+    {
+        delete [] m_privData;
+        m_privData = NULL;
+    }
+    m_privDataLen = len;
+    if (m_privDataLen > 0)
+    {
+        m_privData = new char[m_privDataLen];
+        memcpy( m_privData, privData, m_privDataLen );
+    }
 }
 
 wxPrintData::~wxPrintData()
 {
     m_nativeData->m_ref--;
-    if (m_nativeData->m_ref == 0) 
+    if (m_nativeData->m_ref == 0)
         delete m_nativeData;
-        
-#ifdef __WXMAC__
-    delete m_nativePrintData ;
-#endif
+
+    if (m_privData)
+        delete [] m_privData;
 }
 
 void wxPrintData::ConvertToNative()
 {
-#ifdef __WXMAC__
-    m_nativePrintData->TransferFrom( this ) ;
-#else
     m_nativeData->TransferFrom( *this ) ;
-#endif
 }
 
 void wxPrintData::ConvertFromNative()
 {
-#ifdef __WXMAC__
-    m_nativePrintData->TransferTo( this ) ;
-#else
     m_nativeData->TransferTo( *this ) ;
-#endif
 }
 
 void wxPrintData::operator=(const wxPrintData& data)
@@ -235,19 +230,30 @@ void wxPrintData::operator=(const wxPrintData& data)
     m_paperSize = data.m_paperSize;
     m_bin = data.m_bin;
     m_printMode = data.m_printMode;
-    m_filename = data.m_filename;   
+    m_filename = data.m_filename;
 
-    // UnRef old m_nativeData    
-    m_nativeData->m_ref--;
-    if (m_nativeData->m_ref == 0) 
-        delete m_nativeData;
+    // UnRef old m_nativeData
+    if (m_nativeData)
+    {
+        m_nativeData->m_ref--;
+        if (m_nativeData->m_ref == 0)
+            delete m_nativeData;
+    }
     // Set Ref new one
     m_nativeData = data.GetNativeData();
     m_nativeData->m_ref++;
-    
-#ifdef __WXMAC__
-    m_nativePrintData->CopyFrom( data.m_nativePrintData ) ;
-#endif
+
+    if (m_privData)
+    {
+        delete [] m_privData;
+        m_privData = NULL;
+    }
+    m_privDataLen = data.GetPrivDataLen();
+    if (m_privDataLen > 0)
+    {
+        m_privData = new char[m_privDataLen];
+        memcpy( m_privData, data.GetPrivData(), m_privDataLen );
+    }
 }
 
 // Is this data OK for showing the print dialog?
@@ -276,7 +282,7 @@ wxString wxPrintData::GetPrinterCommand() const
     if (m_nativeData && wxIsKindOf(m_nativeData,wxPostScriptPrintNativeData))
         return ((wxPostScriptPrintNativeData*)m_nativeData)->GetPrinterCommand();
 #endif
-    return wxT("");
+    return wxEmptyString;
 }
 
 wxString wxPrintData::GetPrinterOptions() const
@@ -285,7 +291,7 @@ wxString wxPrintData::GetPrinterOptions() const
     if (m_nativeData && wxIsKindOf(m_nativeData,wxPostScriptPrintNativeData))
         return ((wxPostScriptPrintNativeData*)m_nativeData)->GetPrinterOptions();
 #endif
-    return wxT("");
+    return wxEmptyString;
 }
 
 wxString wxPrintData::GetPreviewCommand() const
@@ -294,7 +300,7 @@ wxString wxPrintData::GetPreviewCommand() const
     if (m_nativeData && wxIsKindOf(m_nativeData,wxPostScriptPrintNativeData))
         return ((wxPostScriptPrintNativeData*)m_nativeData)->GetPreviewCommand();
 #endif
-    return wxT("");
+    return wxEmptyString;
 }
 
 wxString wxPrintData::GetFontMetricPath() const
@@ -303,7 +309,7 @@ wxString wxPrintData::GetFontMetricPath() const
     if (m_nativeData && wxIsKindOf(m_nativeData,wxPostScriptPrintNativeData))
         return ((wxPostScriptPrintNativeData*)m_nativeData)->GetFontMetricPath();
 #endif
-    return wxT("");
+    return wxEmptyString;
 }
 
 double wxPrintData::GetPrinterScaleX() const
@@ -440,10 +446,10 @@ wxPrintDialogData::wxPrintDialogData()
     m_printSelection = false;
     m_printEnableSelection = false;
     m_printEnablePageNumbers = true;
-    
+
     wxPrintFactory* factory = wxPrintFactory::GetFactory();
     m_printEnablePrintToFile = ! factory->HasOwnPrintToFile();
-    
+
     m_printEnableHelp = false;
 #if WXWIN_COMPATIBILITY_2_4
     m_printSetupDialog = false;
@@ -481,23 +487,6 @@ wxPrintDialogData::~wxPrintDialogData()
 {
 }
 
-#ifdef __WXMAC__
-
-void wxPrintDialogData::ConvertToNative()
-{
-    m_printData.ConvertToNative();
-    m_printData.m_nativePrintData->TransferFrom( this ) ;
-}
-
-void wxPrintDialogData::ConvertFromNative()
-{
-    m_printData.ConvertFromNative();
-    m_printData.m_nativePrintData->TransferTo( this ) ;
-}
-
-#endif
-
-
 void wxPrintDialogData::operator=(const wxPrintDialogData& data)
 {
     m_printFromPage = data.m_printFromPage;
@@ -530,14 +519,14 @@ void wxPrintDialogData::operator=(const wxPrintData& data)
 
 wxPageSetupDialogData::wxPageSetupDialogData()
 {
-    m_paperSize = wxSize(0, 0);
+    m_paperSize = wxSize(0,0);
 
     CalculatePaperSizeFromId();
 
-    m_minMarginTopLeft = wxPoint(0, 0);
-    m_minMarginBottomRight = wxPoint(0, 0);
-    m_marginTopLeft = wxPoint(0, 0);
-    m_marginBottomRight = wxPoint(0, 0);
+    m_minMarginTopLeft =
+    m_minMarginBottomRight =
+    m_marginTopLeft =
+    m_marginBottomRight = wxPoint(0,0);
 
     // Flags
     m_defaultMinMargins = false;
@@ -557,11 +546,11 @@ wxPageSetupDialogData::wxPageSetupDialogData(const wxPageSetupDialogData& dialog
 
 wxPageSetupDialogData::wxPageSetupDialogData(const wxPrintData& printData)
 {
-    m_paperSize = wxSize(0, 0);
-    m_minMarginTopLeft = wxPoint(0, 0);
-    m_minMarginBottomRight = wxPoint(0, 0);
-    m_marginTopLeft = wxPoint(0, 0);
-    m_marginBottomRight = wxPoint(0, 0);
+    m_paperSize = wxSize(0,0);
+    m_minMarginTopLeft =
+    m_minMarginBottomRight =
+    m_marginTopLeft =
+    m_marginBottomRight = wxPoint(0,0);
 
     // Flags
     m_defaultMinMargins = false;
@@ -595,7 +584,7 @@ wxPageSetupDialogData& wxPageSetupDialogData::operator=(const wxPageSetupDialogD
     m_enableOrientation = data.m_enableOrientation;
     m_enablePaper = data.m_enablePaper;
     m_enablePrinter = data.m_enablePrinter;
-    m_getDefaultInfo = data.m_getDefaultInfo;;
+    m_getDefaultInfo = data.m_getDefaultInfo;
     m_enableHelp = data.m_enableHelp;
 
     m_printData = data.m_printData;
@@ -606,39 +595,10 @@ wxPageSetupDialogData& wxPageSetupDialogData::operator=(const wxPageSetupDialogD
 wxPageSetupDialogData& wxPageSetupDialogData::operator=(const wxPrintData& data)
 {
     m_printData = data;
+    CalculatePaperSizeFromId();
 
     return *this;
 }
-
-#ifdef __WXMAC__
-void wxPageSetupDialogData::ConvertToNative()
-{
-    m_printData.ConvertToNative();
-    m_printData.m_nativePrintData->TransferFrom( this ) ;
-}
-
-void wxPageSetupDialogData::ConvertFromNative()
-{
-    m_printData.ConvertFromNative ();
-    m_paperSize = m_printData.GetPaperSize() ;
-    CalculateIdFromPaperSize();
-    m_printData.m_nativePrintData->TransferTo( this ) ;
-    // adjust minimal values
-
-    if ( m_marginTopLeft.x < m_minMarginTopLeft.x )
-        m_marginTopLeft.x = m_minMarginTopLeft.x;
-
-    if ( m_marginBottomRight.x < m_minMarginBottomRight.x )
-        m_marginBottomRight.x = m_minMarginBottomRight.x;
-
-    if ( m_marginTopLeft.y < m_minMarginTopLeft.y )
-        m_marginTopLeft.y = m_minMarginTopLeft.y;
-
-    if ( m_marginBottomRight.y < m_minMarginBottomRight.y )
-        m_marginBottomRight.y = m_minMarginBottomRight.y;
-}
-#endif
-
 
 // If a corresponding paper type is found in the paper database, will set the m_printData
 // paper size id member as well.
@@ -654,6 +614,12 @@ void wxPageSetupDialogData::SetPaperSize(wxPaperSize id)
 {
     m_printData.SetPaperId(id);
 
+    CalculatePaperSizeFromId();
+}
+
+void wxPageSetupDialogData::SetPrintData(const wxPrintData& printData)
+{
+    m_printData = printData;
     CalculatePaperSizeFromId();
 }
 

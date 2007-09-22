@@ -5,7 +5,7 @@
 // Author:      Robin Dunn
 //
 // Created:     18-June-1999
-// RCS-ID:      $Id: _artprov.i,v 1.11 2004/09/01 19:29:13 RD Exp $
+// RCS-ID:      $Id: _artprov.i,v 1.19 2005/05/26 19:15:35 RD Exp $
 // Copyright:   (c) 2003 by Total Control Software
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -48,13 +48,20 @@ MAKE_CONST_WXSTRING(ART_GO_DOWN);
 MAKE_CONST_WXSTRING(ART_GO_TO_PARENT);
 MAKE_CONST_WXSTRING(ART_GO_HOME);
 MAKE_CONST_WXSTRING(ART_FILE_OPEN);
+MAKE_CONST_WXSTRING(ART_FILE_SAVE);
+MAKE_CONST_WXSTRING(ART_FILE_SAVE_AS);
 MAKE_CONST_WXSTRING(ART_PRINT);
 MAKE_CONST_WXSTRING(ART_HELP);
 MAKE_CONST_WXSTRING(ART_TIP);
 MAKE_CONST_WXSTRING(ART_REPORT_VIEW);
 MAKE_CONST_WXSTRING(ART_LIST_VIEW);
 MAKE_CONST_WXSTRING(ART_NEW_DIR);
+MAKE_CONST_WXSTRING(ART_HARDDISK);
+MAKE_CONST_WXSTRING(ART_FLOPPY);
+MAKE_CONST_WXSTRING(ART_CDROM);
+MAKE_CONST_WXSTRING(ART_REMOVABLE);
 MAKE_CONST_WXSTRING(ART_FOLDER);
+MAKE_CONST_WXSTRING(ART_FOLDER_OPEN);
 MAKE_CONST_WXSTRING(ART_GO_DIR_UP);
 MAKE_CONST_WXSTRING(ART_EXECUTABLE_FILE);
 MAKE_CONST_WXSTRING(ART_NORMAL_FILE);
@@ -65,6 +72,16 @@ MAKE_CONST_WXSTRING(ART_QUESTION);
 MAKE_CONST_WXSTRING(ART_WARNING);
 MAKE_CONST_WXSTRING(ART_INFORMATION);
 MAKE_CONST_WXSTRING(ART_MISSING_IMAGE);
+MAKE_CONST_WXSTRING(ART_COPY);
+MAKE_CONST_WXSTRING(ART_CUT);
+MAKE_CONST_WXSTRING(ART_PASTE);
+MAKE_CONST_WXSTRING(ART_DELETE);
+MAKE_CONST_WXSTRING(ART_NEW);
+MAKE_CONST_WXSTRING(ART_UNDO);
+MAKE_CONST_WXSTRING(ART_REDO);
+MAKE_CONST_WXSTRING(ART_QUIT);
+MAKE_CONST_WXSTRING(ART_FIND);
+MAKE_CONST_WXSTRING(ART_FIND_AND_REPLACE);
 
 //---------------------------------------------------------------------------
 
@@ -76,7 +93,7 @@ public:
                                   const wxArtClient& client,
                                   const wxSize& size) {
         wxBitmap rval = wxNullBitmap;
-        bool blocked = wxPyBeginBlockThreads();
+        wxPyBlock_t blocked = wxPyBeginBlockThreads();
         if ((wxPyCBH_findCallback(m_myInst, "CreateBitmap"))) {
             PyObject* so = wxPyConstructObject((void*)&size, wxT("wxSize"), 0);
             PyObject* ro;
@@ -144,7 +161,6 @@ follow the freedesktop.org Icon Themes specification.  Note that themes are
 not guaranteed to contain all icons, so wx.ArtProvider may return wx.NullBitmap
 or wx.NullIcon.  The default theme is typically installed in /usr/share/icons/hicolor.
 
-
     * wx.ART_ADD_BOOKMARK
     * wx.ART_DEL_BOOKMARK
     * wx.ART_HELP_SIDE_PANEL
@@ -159,13 +175,20 @@ or wx.NullIcon.  The default theme is typically installed in /usr/share/icons/hi
     * wx.ART_GO_TO_PARENT
     * wx.ART_GO_HOME
     * wx.ART_FILE_OPEN
+    * wx.ART_FILE_SAVE
+    * wx.ART_FILE_SAVE_AS
     * wx.ART_PRINT
     * wx.ART_HELP
     * wx.ART_TIP
     * wx.ART_REPORT_VIEW
     * wx.ART_LIST_VIEW
     * wx.ART_NEW_DIR
+    * wx.ART_HARDDISK
+    * wx.ART_FLOPPY
+    * wx.ART_CDROM
+    * wx.ART_REMOVABLE
     * wx.ART_FOLDER
+    * wx.ART_FOLDER_OPEN
     * wx.ART_GO_DIR_UP
     * wx.ART_EXECUTABLE_FILE
     * wx.ART_NORMAL_FILE
@@ -175,7 +198,17 @@ or wx.NullIcon.  The default theme is typically installed in /usr/share/icons/hi
     * wx.ART_QUESTION
     * wx.ART_WARNING
     * wx.ART_INFORMATION
-    * wx.ART_MISSING_IMAGE 
+    * wx.ART_MISSING_IMAGE
+    * wx.ART_COPY
+    * wx.ART_CUT
+    * wx.ART_PASTE
+    * wx.ART_DELETE
+    * wx.ART_NEW
+    * wx.ART_UNDO
+    * wx.ART_REDO
+    * wx.ART_QUIT
+    * wx.ART_FIND
+    * wx.ART_FIND_AND_REPLACE
 
 
 Clients
@@ -205,7 +238,8 @@ MustHaveApp(wxPyArtProvider);
 MustHaveApp(wxPyArtProvider::GetBitmap);
 MustHaveApp(wxPyArtProvider::GetIcon);
 
-%name(ArtProvider) class wxPyArtProvider /*: public wxObject*/
+%rename(ArtProvider) wxPyArtProvider;
+class wxPyArtProvider /*: public wxObject*/
 {
 public:
 
@@ -244,6 +278,12 @@ wx.NullBitmap if no provider provides it.", "");
                                 const wxSize& size = wxDefaultSize),
         "Query the providers for icon with given ID and return it.  Return
 wx.NullIcon if no provider provides it.", "");
+
+    DocDeclStr(
+        static wxSize , GetSizeHint(const wxString& client, bool platform_dependent = false),
+        "Get the size hint of an icon from a specific Art Client, queries the
+topmost provider if platform_dependent = false", "");
+    
     
 
     %extend { void Destroy() { delete self; }}

@@ -3,7 +3,7 @@
 // Purpose:     wxStaticLine class interface
 // Author:      Vadim Zeitlin
 // Created:     28.06.99
-// Version:     $Id: statline.h,v 1.12 2004/09/22 14:38:30 ABX Exp $
+// Version:     $Id: statline.h,v 1.14 2005/04/10 15:22:53 VZ Exp $
 // Copyright:   (c) 1999 Vadim Zeitlin
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -28,7 +28,7 @@
 // ----------------------------------------------------------------------------
 
 // the default name for objects of class wxStaticLine
-WXDLLEXPORT_DATA(extern const wxChar*) wxStaticTextNameStr;
+extern WXDLLEXPORT_DATA(const wxChar*) wxStaticTextNameStr;
 
 // ----------------------------------------------------------------------------
 // wxStaticLine - a line in a dialog
@@ -48,8 +48,6 @@ public:
 
     // overriden base class virtuals
     virtual bool AcceptsFocus() const { return false; }
-    virtual void ApplyParentThemeBackground(const wxColour& bg)
-        { SetBackgroundColour(bg); }
 
 protected:
     // set the right size for the right dimension

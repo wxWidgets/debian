@@ -4,7 +4,7 @@
 // Author:      Vadim Zeitlin
 // Modified by:
 // Created:     26.07.99
-// RCS-ID:      $Id: control.h,v 1.40 2004/10/19 13:39:03 JS Exp $
+// RCS-ID:      $Id: control.h,v 1.44 2005/06/24 16:44:18 RL Exp $
 // Copyright:   (c) wxWidgets team
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -26,7 +26,7 @@
 
 #include "wx/window.h"      // base class
 
-WXDLLEXPORT_DATA(extern const wxChar*) wxControlNameStr;
+extern WXDLLEXPORT_DATA(const wxChar*) wxControlNameStr;
 
 // ----------------------------------------------------------------------------
 // wxControl is the base class for all controls
@@ -100,7 +100,7 @@ protected:
 
 #if defined(__WXUNIVERSAL__)
     #include "wx/univ/control.h"
-#elif defined(__PALMOS__)
+#elif defined(__WXPALMOS__)
     #include "wx/palmos/control.h"
 #elif defined(__WXMSW__)
     #include "wx/msw/control.h"

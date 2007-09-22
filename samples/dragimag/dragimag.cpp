@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     28/2/2000
-// RCS-ID:      $Id: dragimag.cpp,v 1.23 2004/10/06 20:53:08 ABX Exp $
+// RCS-ID:      $Id: dragimag.cpp,v 1.24 2005/02/08 21:00:40 ABX Exp $
 // Copyright:   (c) Julian Smart
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -188,15 +188,7 @@ void MyCanvas::OnMouseEvent(wxMouseEvent& event)
                 }
                 case SHAPE_DRAG_ICON:
                 {
-                    // Can anyone explain why this test is necessary,
-                    // to prevent a gcc error?
-#if defined(__WXMOTIF__) || defined(__WXX11__)
-                    wxIcon icon(dragicon_xpm);
-#else
-                    wxIcon icon(wxICON(dragicon));
-#endif
-
-                    m_dragImage = new wxDragImage(icon, wxCursor(wxCURSOR_HAND));
+                    m_dragImage = new wxDragImage(wxICON(dragicon), wxCursor(wxCURSOR_HAND));
                     break;
                 }
             }

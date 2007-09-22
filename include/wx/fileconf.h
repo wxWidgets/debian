@@ -4,7 +4,7 @@
 // Author:      Vadim Zeitlin
 // Modified by:
 // Created:     07.04.98 (adapted from appconf.cpp)
-// RCS-ID:      $Id: fileconf.h,v 1.54 2004/10/04 08:28:14 VZ Exp $
+// RCS-ID:      $Id: fileconf.h,v 1.55 2005/04/08 14:33:55 MW Exp $
 // Copyright:   (c) 1997 Karsten Ballüder   &  Vadim Zeitlin
 //                       Ballueder@usa.net     <zeitlin@dptmaths.ens-cachan.fr>
 // Licence:     wxWindows licence
@@ -89,7 +89,7 @@
   in the entries it reads: for example, if you have an entry
     score_file = $HOME/.score
   a call to Read(&str, "score_file") will return a complete path to .score file
-  unless the expansion was previousle disabled with SetExpandEnvVars(false) call
+  unless the expansion was previously disabled with SetExpandEnvVars(false) call
   (it's on by default, the current status can be retrieved with
    IsExpandingEnvVars function).
 */
@@ -113,7 +113,7 @@ public:
   // Unix   /etc/file.ext           ~/.file
   // Win    %windir%\file.ext   %USERPROFILE%\file.ext
   //
-  // where file is the basename of szFile, ext is it's extension
+  // where file is the basename of szFile, ext is its extension
   // or .conf (Unix) or .ini (Win) if it has none
   static wxString GetGlobalFileName(const wxChar *szFile);
   static wxString GetLocalFileName(const wxChar *szFile);

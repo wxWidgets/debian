@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     12/07/98
-// RCS-ID:      $Id: dialogs.h,v 1.2 2002/09/07 12:12:22 GD Exp $
+// RCS-ID:      $Id: dialogs.h,v 1.3 2005/03/31 19:18:23 ABX Exp $
 // Copyright:   (c) Julian Smart
 // Licence:
 /////////////////////////////////////////////////////////////////////////////
@@ -18,6 +18,10 @@
 
 #include <wx/wx.h>
 #include <wx/notebook.h>
+
+#include <wx/ogl/ogl.h> // base header of OGL, includes and adjusts wx/deprecated/setup.h
+
+#if wxUSE_WX_RESOURCES
 
 /*
  * Label editing dialog (about to become obsolete)
@@ -103,7 +107,7 @@ public:
     // Set some suitable defaults in the attribute dialogs (in the first instance,
     // just set all wxChoices to the first element)
     void SetDefaults();
-    
+
 // Accessors
     csGeneralShapePropertiesDialog* GetGeneralPropertiesDialog() const { return m_generalPropertiesDialog; }
 
@@ -121,6 +125,8 @@ protected:
 
 DECLARE_EVENT_TABLE()
 };
+
+#endif // wxUSE_WX_RESOURCES
 
 #define ID_SHAPE_PROPERTY_NOTEBOOK    1000
 
@@ -242,7 +248,6 @@ public:
 
 DECLARE_EVENT_TABLE()
 };
-
 
 #endif
     // _STUDIO_DIALOGS_H_

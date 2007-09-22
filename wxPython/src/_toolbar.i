@@ -5,7 +5,7 @@
 // Author:      Robin Dunn
 //
 // Created:     24-Aug-1998
-// RCS-ID:      $Id: _toolbar.i,v 1.10 2004/07/17 22:50:56 RD Exp $
+// RCS-ID:      $Id: _toolbar.i,v 1.11 2004/12/23 20:43:49 RD Exp $
 // Copyright:   (c) 2003 by Total Control Software
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -303,8 +303,8 @@ public:
                               shortHelp, longHelp, clientData)
     }
 
-    %name(AddToolItem) wxToolBarToolBase *AddTool (wxToolBarToolBase *tool);
-    %name(InsertToolItem) wxToolBarToolBase *InsertTool (size_t pos, wxToolBarToolBase *tool);
+    %Rename(AddToolItem,  wxToolBarToolBase*, AddTool (wxToolBarToolBase *tool));
+    %Rename(InsertToolItem,  wxToolBarToolBase*, InsertTool (size_t pos, wxToolBarToolBase *tool));
 
     wxToolBarToolBase *AddControl(wxControl *control);
     wxToolBarToolBase *InsertControl(size_t pos, wxControl *control);
@@ -353,7 +353,7 @@ public:
     void SetToolLongHelp(int id, const wxString& helpString);
     wxString GetToolLongHelp(int id);
 
-    %name(SetMarginsXY) void SetMargins(int x, int y);
+    %Rename(SetMarginsXY,  void, SetMargins(int x, int y));
     void SetMargins(const wxSize& size);
     void SetToolPacking(int packing);
     void SetToolSeparation(int separation);
@@ -399,7 +399,7 @@ public:
               const wxSize& size = wxDefaultSize,
               long style = wxNO_BORDER | wxTB_HORIZONTAL,
               const wxString& name = wxPyToolBarNameStr);
-    %name(PreToolBar)wxToolBar();
+    %RenameCtor(PreToolBar, wxToolBar());
 
     // Turn it back on again
     %typemap(out) wxToolBar* { $result = wxPyMake_wxObject($1, $owner); }

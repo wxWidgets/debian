@@ -4,7 +4,7 @@
 // Author:      Vadim Zeitlin
 // Modified by:
 // Created:     25.08.00
-// RCS-ID:      $Id: bmpbuttn.h,v 1.20 2004/06/24 20:04:06 RD Exp $
+// RCS-ID:      $Id: bmpbuttn.h,v 1.23 2005/04/10 15:22:53 VZ Exp $
 // Copyright:   (c) 2000 Vadim Zeitlin
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -19,7 +19,7 @@
 #include "wx/bitmap.h"
 #include "wx/button.h"
 
-WXDLLEXPORT_DATA(extern const wxChar*) wxButtonNameStr;
+extern WXDLLEXPORT_DATA(const wxChar*) wxButtonNameStr;
 
 // ----------------------------------------------------------------------------
 // wxBitmapButton: a button which shows bitmaps instead of the usual string.
@@ -61,13 +61,9 @@ public:
     int GetMarginX() const { return m_marginX; }
     int GetMarginY() const { return m_marginY; }
 
-    virtual void ApplyParentThemeBackground(const wxColour& bg)
-        { SetBackgroundColour(bg); }
-
-
 protected:
     // function called when any of the bitmaps changes
-    virtual void OnSetBitmap() { InvalidateBestSize(); }
+    virtual void OnSetBitmap() { InvalidateBestSize(); Refresh(); }
 
     // the bitmaps for various states
     wxBitmap m_bmpNormal,

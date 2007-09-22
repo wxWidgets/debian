@@ -5,7 +5,7 @@
 // Author:      Vadim Zeitlin
 // Modified by:
 // Created:     29/01/98
-// RCS-ID:      $Id: file.cpp,v 1.93 2004/11/12 03:29:55 RL Exp $
+// RCS-ID:      $Id: file.cpp,v 1.94 2005/03/20 18:48:57 VZ Exp $
 // Copyright:   (c) 1998 Vadim Zeitlin <zeitlin@dptmaths.ens-cachan.fr>
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -356,7 +356,10 @@ bool wxFile::Flush()
 // seek
 wxFileOffset wxFile::Seek(wxFileOffset ofs, wxSeekMode mode)
 {
-    wxASSERT( IsOpened() );
+    wxASSERT_MSG( IsOpened(), _T("can't seek on closed file") );
+    wxCHECK_MSG( ofs != wxInvalidOffset || mode != wxFromStart,
+                 wxInvalidOffset,
+                 _T("invalid absolute file offset") );
 
     int origin;
     switch ( mode ) {
@@ -376,11 +379,6 @@ wxFileOffset wxFile::Seek(wxFileOffset ofs, wxSeekMode mode)
             break;
     }
 
-    if (ofs == wxInvalidOffset)
-    {
-        wxLogSysError(_("can't seek on file descriptor %d, large files support is not enabled."), m_fd);
-        return wxInvalidOffset;
-    }
     wxFileOffset iRc = wxSeek(m_fd, ofs, origin);
     if ( iRc == wxInvalidOffset )
     {

@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     29/01/98
-// RCS-ID:      $Id: validate.h,v 1.19 2004/09/24 14:32:15 ABX Exp $
+// RCS-ID:      $Id: validate.h,v 1.20 2005/01/21 18:48:22 ABX Exp $
 // Copyright:   (c) 1998 Julian Smart
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -81,7 +81,7 @@ private:
     DECLARE_NO_COPY_CLASS(wxValidator)
 };
 
-WXDLLEXPORT_DATA(extern const wxValidator) wxDefaultValidator;
+extern WXDLLEXPORT_DATA(const wxValidator) wxDefaultValidator;
 
 #define wxVALIDATOR_PARAM(val) val
 

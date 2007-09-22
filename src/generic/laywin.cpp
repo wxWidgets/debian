@@ -7,7 +7,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     04/01/98
-// RCS-ID:      $Id: laywin.cpp,v 1.22 2004/06/17 16:22:35 ABX Exp $
+// RCS-ID:      $Id: laywin.cpp,v 1.23 2005/03/31 05:11:34 SC Exp $
 // Copyright:   (c) Julian Smart
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -54,6 +54,9 @@ void wxSashLayoutWindow::Init()
 {
     m_orientation = wxLAYOUT_HORIZONTAL;
     m_alignment = wxLAYOUT_TOP;
+#ifdef __WXMAC__
+    MacSetClipChildren( true ) ;
+#endif
 }
 
 // This is the function that wxLayoutAlgorithm calls to ascertain the window

@@ -4,7 +4,7 @@
 // Author:    Vadim Zeitlin
 // Modified by:
 // Created:   Fri Oct 24 10:46:34 MET 1997
-// RCS-ID:    $Id: region.cpp,v 1.31 2004/09/03 18:32:56 ABX Exp $
+// RCS-ID:    $Id: region.cpp,v 1.32 2005/01/18 20:12:59 ABX Exp $
 // Copyright: (c) 1997-2002 wxWidgets team
 // Licence:   wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -48,7 +48,7 @@ public:
         m_region = 0;
     }
 
-    wxRegionRefData(const wxRegionRefData& data)
+    wxRegionRefData(const wxRegionRefData& data) : wxGDIRefData()
     {
 #if defined(__WIN32__) && !defined(__WXMICROWIN__) && !defined(__WXWINCE__)
         DWORD noBytes = ::GetRegionData(data.m_region, 0, NULL);

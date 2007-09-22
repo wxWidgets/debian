@@ -3,7 +3,8 @@
 // Purpose:
 // Date: 08/11/1999
 // Author: Guilhem Lavaux <lavaux@easynet.fr> (C) 1999
-// CVSID: $Id: sndfile.h,v 1.3 2004/06/16 15:22:54 ABX Exp $
+// CVSID: $Id: sndfile.h,v 1.5 2005/05/30 12:39:25 MW Exp $
+// License:    wxWindows license
 // --------------------------------------------------------------------------
 #ifndef _WX_SNDFILE_H
 #define _WX_SNDFILE_H
@@ -50,7 +51,7 @@ typedef enum {
 // Base class for file coders/decoders
 //
 
-class wxSoundFileStream: public wxSoundStream {
+class WXDLLIMPEXP_MMEDIA wxSoundFileStream: public wxSoundStream {
 public:
     wxSoundFileStream(wxInputStream& stream, wxSoundStream& io_sound);
     wxSoundFileStream(wxOutputStream& stream, wxSoundStream& io_sound);

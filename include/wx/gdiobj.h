@@ -1,7 +1,18 @@
+/////////////////////////////////////////////////////////////////////////////
+// Name:        wx/gdiobj.h
+// Purpose:     wxGDIObject base header
+// Author:      Julian Smart
+// Modified by:
+// Created:
+// Copyright:   (c) Julian Smart
+// RCS-ID:      $Id: gdiobj.h,v 1.13 2005/05/04 18:51:58 JS Exp $
+// Licence:     wxWindows Licence
+/////////////////////////////////////////////////////////////////////////////
+
 #ifndef _WX_GDIOBJ_H_BASE_
 #define _WX_GDIOBJ_H_BASE_
 
-#if defined(__PALMOS__)
+#if defined(__WXPALMOS__)
 #include "wx/palmos/gdiobj.h"
 #elif defined(__WXMSW__)
 #include "wx/msw/gdiobj.h"

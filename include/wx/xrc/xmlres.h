@@ -3,7 +3,7 @@
 // Purpose:     XML resources
 // Author:      Vaclav Slavik
 // Created:     2000/03/05
-// RCS-ID:      $Id: xmlres.h,v 1.38 2004/10/19 15:13:11 VS Exp $
+// RCS-ID:      $Id: xmlres.h,v 1.43 2005/05/31 09:18:59 JS Exp $
 // Copyright:   (c) 2000 Vaclav Slavik
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -11,7 +11,7 @@
 #ifndef _WX_XMLRES_H_
 #define _WX_XMLRES_H_
 
-#if defined(__GNUG__) && !defined(__APPLE__)
+#if defined(__GNUG__) && !defined(NO_GCC_PRAGMA)
 #pragma interface "xmlres.h"
 #endif
 
@@ -310,7 +310,7 @@ public:
     // Creates an object (menu, dialog, control, ...) from an XML node.
     // Should check for validity.
     // parent is a higher-level object (usually window, dialog or panel)
-    // that is often neccessary to create the resource.
+    // that is often necessary to create the resource.
     // If instance is non-NULL it should not create a new instance via 'new' but
     // should rather use this one, and call its Create method.
     wxObject *CreateResource(wxXmlNode *node, wxObject *parent,
@@ -369,7 +369,7 @@ protected:
     void AddWindowStyles();
 
     // Gets style flags from text in form "flag | flag2| flag3 |..."
-    // Only understads flags added with AddStyle
+    // Only understands flags added with AddStyle
     int GetStyle(const wxString& param = wxT("style"), int defaults = 0);
 
     // Gets text from param and does some conversions:
@@ -387,20 +387,25 @@ protected:
     // Gets a bool flag (1, t, yes, on, true are true, everything else is false).
     bool GetBool(const wxString& param, bool defaultv = false);
 
-    // Gets the integer value from the parameter.
-    long GetLong( const wxString& param, long defaultv = 0 );
+    // Gets an integer value from the parameter.
+    long GetLong(const wxString& param, long defaultv = 0);
+
+    // Gets a float value from the parameter.
+    float GetFloat(const wxString& param, float defaultv = 0);
 
     // Gets colour in HTML syntax (#RRGGBB).
     wxColour GetColour(const wxString& param);
 
     // Gets the size (may be in dialog units).
-    wxSize GetSize(const wxString& param = wxT("size"));
+    wxSize GetSize(const wxString& param = wxT("size"),
+                   wxWindow *windowToUse = NULL);
 
     // Gets the position (may be in dialog units).
     wxPoint GetPosition(const wxString& param = wxT("pos"));
 
     // Gets a dimension (may be in dialog units).
-    wxCoord GetDimension(const wxString& param, wxCoord defaultv = 0);
+    wxCoord GetDimension(const wxString& param, wxCoord defaultv = 0,
+                         wxWindow *windowToUse = NULL);
 
     // Gets a bitmap.
     wxBitmap GetBitmap(const wxString& param = wxT("bitmap"),

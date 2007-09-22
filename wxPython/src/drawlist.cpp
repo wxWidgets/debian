@@ -5,7 +5,7 @@
 // Author:      Robin Dunn,  Chris Barker
 //
 // Created:
-// RCS-ID:      $Id: drawlist.cpp,v 1.10 2004/09/24 00:11:19 RD Exp $
+// RCS-ID:      $Id: drawlist.cpp,v 1.12 2005/03/09 22:28:40 RD Exp $
 // Copyright:   (c) 2003 by Total Control Software
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -30,7 +30,7 @@ void wxPyDrawList_SetAPIPtr()
 PyObject* wxPyDrawXXXList(wxDC& dc, wxPyDrawListOp_t doDraw,
                           PyObject* pyCoords, PyObject* pyPens, PyObject* pyBrushes)
 {
-    bool blocked = wxPyBeginBlockThreads(); 
+    wxPyBlock_t blocked = wxPyBeginBlockThreads(); 
 
     bool      isFastSeq  = PyList_Check(pyCoords) || PyTuple_Check(pyCoords);
     bool      isFastPens = PyList_Check(pyPens) || PyTuple_Check(pyPens);
@@ -215,7 +215,7 @@ bool wxPyDrawXXXPolygon(wxDC& dc, PyObject* coords)
 
 PyObject* wxPyDrawTextList(wxDC& dc, PyObject* textList, PyObject* pyPoints, PyObject* foregroundList, PyObject* backgroundList)
 {
-    bool blocked = wxPyBeginBlockThreads();
+    wxPyBlock_t blocked = wxPyBeginBlockThreads();
 
     bool      isFastSeq  = PyList_Check(pyPoints) || PyTuple_Check(pyPoints);
     bool      isFastText = PyList_Check(textList) || PyTuple_Check(textList);
@@ -258,7 +258,7 @@ PyObject* wxPyDrawTextList(wxDC& dc, PyObject* textList, PyObject* pyPoints, PyO
             else {
                 obj = PySequence_GetItem(textList, i);
             }
-            if (! PyString_Check(obj) ) {
+            if (! PyString_Check(obj) && !PyUnicode_Check(obj) ) {
                 Py_DECREF(obj);
                 goto err1;
             }

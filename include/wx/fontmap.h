@@ -4,7 +4,7 @@
 // Author:      Vadim Zeitlin
 // Modified by:
 // Created:     04.11.99
-// RCS-ID:      $Id: fontmap.h,v 1.23 2004/05/23 20:50:22 JS Exp $
+// RCS-ID:      $Id: fontmap.h,v 1.26 2005/03/26 21:47:49 DE Exp $
 // Copyright:   (c) Vadim Zeitlin
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -28,7 +28,7 @@
     class WXDLLIMPEXP_BASE wxConfigBase;
 #endif // wxUSE_CONFIG
 
-class WXDLLIMPEXP_BASE wxFontMapper;
+class WXDLLIMPEXP_CORE wxFontMapper;
 
 #if wxUSE_GUI
     class WXDLLIMPEXP_CORE wxWindow;
@@ -49,6 +49,8 @@ class WXDLLIMPEXP_BASE wxFontMapper;
 
 class WXDLLIMPEXP_BASE wxFontMapperBase
 {
+    // For IsWxFontMapper()
+    friend class WXDLLIMPEXP_CORE wxFontMapper;
 public:
     // constructtor and such
     // ---------------------
@@ -60,7 +62,10 @@ public:
     virtual ~wxFontMapperBase();
 
     // return instance of the wxFontMapper singleton
-    static wxFontMapper *Get();
+    // wxBase code only cares that it's a wxFontMapperBase
+    // In wxBase, wxFontMapper is only forward declared
+    // so one cannot implicitly cast from it to wxFontMapperBase.
+    static wxFontMapperBase *Get();
 
     // set the singleton to 'mapper' instance and return previous one
     static wxFontMapper *Set(wxFontMapper *mapper);
@@ -155,6 +160,9 @@ protected:
     int NonInteractiveCharsetToEncoding(const wxString& charset);
 
 private:
+    // pseudo-RTTI since we aren't a wxObject.
+    virtual bool IsWxFontMapper();
+
     // the global fontmapper object or NULL
     static wxFontMapper *sm_instance;
 
@@ -228,6 +236,9 @@ public:
     // the title for the dialogs (note that default is quite reasonable)
     void SetDialogTitle(const wxString& title) { m_titleDialog = title; }
 
+    // GUI code needs to know it's a wxFontMapper because there
+    // are additional methods in the subclass.
+    static wxFontMapper *Get();
 
 protected:
     // GetAltForEncoding() helper: tests for the existence of the given
@@ -248,16 +259,13 @@ protected:
     wxWindow *m_windowParent;
 
 private:
+    // pseudo-RTTI since we aren't a wxObject.
+    virtual bool IsWxFontMapper();
+
     DECLARE_NO_COPY_CLASS(wxFontMapper)
 };
 
-#else // !wxUSE_GUI
-
-class WXDLLIMPEXP_BASE wxFontMapper : public wxFontMapperBase
-{
-};
-
-#endif // wxUSE_GUI/!wxUSE_GUI
+#endif // wxUSE_GUI
 
 // ----------------------------------------------------------------------------
 // global variables

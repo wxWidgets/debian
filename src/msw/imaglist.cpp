@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     04/01/98
-// RCS-ID:      $Id: imaglist.cpp,v 1.27 2004/08/27 18:59:37 ABX Exp $
+// RCS-ID:      $Id: imaglist.cpp,v 1.29 2005/05/31 09:20:31 JS Exp $
 // Copyright:   (c) Julian Smart
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -42,6 +42,7 @@
 
 #include "wx/log.h"
 #include "wx/intl.h"
+#include "wx/image.h"
 
 #include "wx/msw/imaglist.h"
 #include "wx/msw/private.h"
@@ -202,7 +203,7 @@ bool wxImageList::Replace(int index,
                                 GetHbitmapOf(bitmap), hbmpMask) != 0;
     if ( !ok )
     {
-        wxLogLastError(wxT("ImageList_Add()"));
+        wxLogLastError(wxT("ImageList_Replace()"));
     }
 
     ::DeleteObject(hbmpMask);
@@ -291,6 +292,62 @@ bool wxImageList::Draw(int index,
     }
 
     return ok;
+}
+
+// Get the bitmap
+wxBitmap wxImageList::GetBitmap(int index) const
+{
+    int bmp_width = 0, bmp_height = 0;
+    GetSize(index, bmp_width, bmp_height);
+
+    wxBitmap bitmap(bmp_width, bmp_height);
+    wxMemoryDC dc;
+    dc.SelectObject(bitmap);
+
+    // draw it the first time to find a suitable mask colour
+    ((wxImageList*)this)->Draw(index, dc, 0, 0, wxIMAGELIST_DRAW_TRANSPARENT);
+    dc.SelectObject(wxNullBitmap);
+
+    // find the suitable mask colour
+    wxImage image = bitmap.ConvertToImage();
+    unsigned char r = 0, g = 0, b = 0;
+    image.FindFirstUnusedColour(&r, &g, &b);
+
+    // redraw whole image and bitmap in the mask colour
+    image.Create(bmp_width, bmp_height);
+    image.Replace(0, 0, 0, r, g, b);
+    bitmap = wxBitmap(image);
+
+    // redraw icon over the mask colour to actually draw it
+    dc.SelectObject(bitmap);
+    ((wxImageList*)this)->Draw(index, dc, 0, 0, wxIMAGELIST_DRAW_TRANSPARENT);
+    dc.SelectObject(wxNullBitmap);
+
+    // get the image, set the mask colour and convert back to get transparent bitmap
+    image = bitmap.ConvertToImage();
+    image.SetMaskColour(r, g, b);
+    bitmap = wxBitmap(image);
+    
+    return bitmap;
+}
+
+// Get the icon
+wxIcon wxImageList::GetIcon(int index) const
+{
+    HICON hIcon = ImageList_ExtractIcon(0, GetHImageList(), index);
+    if (hIcon)
+    {
+        wxIcon icon;
+        icon.SetHICON((WXHICON)hIcon);
+        
+        int iconW, iconH;
+        GetSize(index, iconW, iconH);
+        icon.SetSize(iconW, iconH);
+        
+        return icon;
+    }
+    else               
+        return wxNullIcon;
 }
 
 // ----------------------------------------------------------------------------

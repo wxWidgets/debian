@@ -5,7 +5,7 @@
 // Author:      Robin Dunn
 //
 // Created:     10-June-1998
-// RCS-ID:      $Id: _choice.i,v 1.14 2004/06/01 21:37:14 RD Exp $
+// RCS-ID:      $Id: _choice.i,v 1.16 2005/05/27 00:53:05 RD Exp $
 // Copyright:   (c) 2003 by Total Control Software
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -51,7 +51,7 @@ public:
                  const wxValidator& validator = wxDefaultValidator,
                  const wxString& name = wxPyChoiceNameStr),
         "__init__(Window parent, int id, Point pos=DefaultPosition, Size size=DefaultSize,
-    List choices=[], long style=0, Validator validator=DefaultValidator,
+    List choices=EmptyList, long style=0, Validator validator=DefaultValidator,
     String name=ChoiceNameStr) -> Choice",
         "Create and show a Choice control", "");
 
@@ -70,30 +70,10 @@ public:
                      const wxValidator& validator = wxDefaultValidator,
                      const wxString& name = wxPyChoiceNameStr),
         "Create(Window parent, int id, Point pos=DefaultPosition, Size size=DefaultSize,
-    List choices=[], long style=0, Validator validator=DefaultValidator,
+    List choices=EmptyList, long style=0, Validator validator=DefaultValidator,
     String name=ChoiceNameStr) -> bool",
         "Actually create the GUI Choice control for 2-phase creation", "");
     
-
-//     // These are only meaningful on wxMotif...
-//     int GetColumns();
-//     void SetColumns(const int n = 1);
-
-
-    DocDeclStr(
-        void , SetSelection(const int n),
-        "Select the n'th item (zero based) in the list.", "");
-    
-    DocDeclStr(
-        bool , SetStringSelection(const wxString& string),
-        "Select the item with the specifed string", "");
-    
-    DocDeclStr(
-        void , SetString(int n, const wxString& string),
-        "Set the label for the n'th item (zero based) in the list.", "");
-    
-
-    %pythoncode { Select = SetSelection }
 
     static wxVisualAttributes
     GetClassDefaultAttributes(wxWindowVariant variant = wxWINDOW_VARIANT_NORMAL);

@@ -4,7 +4,7 @@
 // Author:      Mattia Barbon, Vaclav Slavik, Robert Roebling
 // Modified by:
 // Created:     25.03.02
-// RCS-ID:      $Id: utilsx11.cpp,v 1.23 2004/09/27 22:46:00 RN Exp $
+// RCS-ID:      $Id: utilsx11.cpp,v 1.26 2005/05/31 09:28:53 JS Exp $
 // Copyright:   (c) wxWidgets team
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -65,12 +65,15 @@ static bool IsMapped(Display *display, Window window)
 
 // Suspends X11 errors. Used when we expect errors but they are not fatal
 // for us.
+extern "C" {
+    static int wxX11ErrorsSuspender_handler(Display*, XErrorEvent*) { return 0; }
+}
 class wxX11ErrorsSuspender
 {
 public:
     wxX11ErrorsSuspender(Display *d) : m_display(d)
     {
-        m_old = XSetErrorHandler(handler);
+        m_old = XSetErrorHandler(wxX11ErrorsSuspender_handler);
     }
     ~wxX11ErrorsSuspender()
     {
@@ -81,7 +84,6 @@ public:
 private:
     Display *m_display;
     int (*m_old)(Display*, XErrorEvent *);
-    static int handler(Display *, XErrorEvent *) { return 0; }
 };
 
 
@@ -196,7 +198,7 @@ void wxSetIconsX11( WXDisplay* display, WXWindow window,
 //     implements, KDE will support it from version 3.2. At toolkits level,
 //     GTK+ >= 2.1.2 uses it as the only method of making windows fullscreen
 //     (that's why wxGTK will *not* switch to using gtk_window_fullscreen
-//     unless it has better compatiblity with older WMs).
+//     unless it has better compatibility with older WMs).
 //
 //     
 //     This is what wxWidgets does in wxSetFullScreenStateX11:
@@ -406,7 +408,7 @@ static void wxSetKDEFullscreen(Display *display, Window rootWnd,
         lng = 1;
     }
 
-    // it is neccessary to unmap the window, otherwise kwin will ignore us:
+    // it is necessary to unmap the window, otherwise kwin will ignore us:
     XSync(display, False);
     
     bool wasMapped = IsMapped(display, w);
@@ -433,12 +435,12 @@ static void wxSetKDEFullscreen(Display *display, Window rootWnd,
 
     if (!fullscreen)
     {
-        // NB: like many other WMs, kwin ignores first request for window
+        // NB: like many other WMs, kwin ignores the first request for a window
         //     position change after the window was mapped. This additional
         //     move+resize event will ensure that the window is restored in
-        //     exactly same position as before it was made fullscreen (because
-        //     wxTopLevelWindow::ShowFullScreen will call SetSize, thus
-        //     setting the position for second time).
+	//     exactly the same position as before it was made fullscreen
+	//     (because wxTopLevelWindow::ShowFullScreen will call SetSize, thus
+        //     setting the position for the second time).
         XMoveResizeWindow(display, w,
                           origRect->x, origRect->y,
                           origRect->width, origRect->height);
@@ -764,6 +766,9 @@ KeySym wxCharCodeWXToX(int id)
 
 bool wxGetKeyState(wxKeyCode key)
 {
+    wxASSERT_MSG(key != WXK_LBUTTON && key != WXK_RBUTTON && key !=
+        WXK_MBUTTON, wxT("can't use wxGetKeyState() for mouse buttons"));
+
 #if defined(__WXX11__)
     Display *pDisplay = (Display*) wxApp::GetDisplay();
 #elif defined(__WXGTK__)

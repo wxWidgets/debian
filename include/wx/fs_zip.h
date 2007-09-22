@@ -3,7 +3,7 @@
 // Purpose:     ZIP file system
 // Author:      Vaclav Slavik
 // Copyright:   (c) 1999 Vaclav Slavik
-// CVS-ID:      $Id: fs_zip.h,v 1.23 2004/11/10 23:58:02 VZ Exp $
+// CVS-ID:      $Id: fs_zip.h,v 1.25 2005/04/06 20:35:46 MW Exp $
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
 
@@ -20,6 +20,10 @@
 
 #include "wx/filesys.h"
 #include "wx/hashmap.h"
+
+
+WX_DECLARE_STRING_HASH_MAP(int, wxZipFilenameHashMap);
+
 
 //---------------------------------------------------------------------------
 // wxZipFSHandler
@@ -40,10 +44,9 @@ class WXDLLIMPEXP_BASE wxZipFSHandler : public wxFileSystemHandler
         class wxZipInputStream *m_Archive;
         wxString m_Pattern, m_BaseDir, m_ZipFile;
         bool m_AllowDirs, m_AllowFiles;
-        wxLongToLongHashMap *m_DirsFound;
+        wxZipFilenameHashMap *m_DirsFound;
 
         wxString DoFind();
-        void CloseArchive(class wxZipInputStream *archive);
 
     DECLARE_NO_COPY_CLASS(wxZipFSHandler)
 };

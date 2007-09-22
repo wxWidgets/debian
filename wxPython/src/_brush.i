@@ -5,7 +5,7 @@
 // Author:      Robin Dunn
 //
 // Created:     7-July-1997
-// RCS-ID:      $Id: _brush.i,v 1.7 2004/06/01 21:37:15 RD Exp $
+// RCS-ID:      $Id: _brush.i,v 1.9 2005/04/27 18:57:17 RD Exp $
 // Copyright:   (c) 2003 by Total Control Software
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -56,7 +56,13 @@ public:
     wx.VERTICAL_HATCH     Vertical hatch.
     ===================   =============================
 
+:see: `wx.BrushFromBitmap`
 ");
+
+    DocCtorStrName(
+        wxBrush(const wxBitmap& stippleBitmap),
+        "Constructs a stippled brush using a bitmap.", "",
+        BrushFromBitmap);
 
     ~wxBrush();
 
@@ -89,6 +95,11 @@ styles.", "");
 have a wx.STIPPLE style, then the return value may be non-None but an
 uninitialised bitmap (`wx.Bitmap.Ok` returns False).", "");
 
+    
+    DocDeclStr(
+        bool , IsHatch() const,
+        "Is the current style a hatch type?", "");
+    
 
     DocDeclStr(
         bool , Ok(),

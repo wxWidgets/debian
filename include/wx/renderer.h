@@ -4,7 +4,7 @@
 // Author:      Vadim Zeitlin
 // Modified by:
 // Created:     20.07.2003
-// RCS-ID:      $Id: renderer.h,v 1.14 2004/10/19 13:39:05 JS Exp $
+// RCS-ID:      $Id: renderer.h,v 1.19 2005/03/24 00:22:01 VZ Exp $
 // Copyright:   (c) 2003 Vadim Zeitlin <vadim@wxwidgets.org>
 // Licence:     wxWindows licence
 ///////////////////////////////////////////////////////////////////////////////
@@ -31,7 +31,7 @@ class WXDLLEXPORT wxWindow;
 #include "wx/gdicmn.h" // for wxPoint
 
 // some platforms have their own renderers, others use the generic one
-#if (defined(__WXMSW__) || defined(__WXMAC__) || defined(__WXGTK__)) && !defined(__PALMOS__)
+#if defined(__WXMSW__) || defined(__WXMAC__) || defined(__WXGTK__)
     #define wxHAS_NATIVE_RENDERER
 #else
     #undef wxHAS_NATIVE_RENDERER
@@ -54,6 +54,7 @@ enum
     wxCONTROL_SELECTED   = 0x00000020,  // selected item in e.g. listbox
     wxCONTROL_CHECKED    = 0x00000040,  // (check/radio button) is checked
     wxCONTROL_CHECKABLE  = 0x00000080,  // (menu) item can be checked
+    wxCONTROL_UNDETERMINED = wxCONTROL_CHECKABLE, // (check) undetermined state
 
     wxCONTROL_FLAGS_MASK = 0x000000ff,
 
@@ -153,6 +154,21 @@ public:
                                   wxOrientation orient,
                                   int flags = 0) = 0;
 
+    // draw a combobox dropdown button
+    //
+    // flags may use wxCONTROL_PRESSED and wxCONTROL_CURRENT
+    virtual void DrawComboBoxDropButton(wxWindow *win,
+                                        wxDC& dc,
+                                        const wxRect& rect,
+                                        int flags = 0) = 0;
+
+    // draw a dropdown arrow
+    //
+    // flags may use wxCONTROL_PRESSED and wxCONTROL_CURRENT
+    virtual void DrawDropArrow(wxWindow *win,
+                               wxDC& dc,
+                               const wxRect& rect,
+                               int flags = 0) = 0;
 
     // geometry functions
     // ------------------
@@ -244,6 +260,17 @@ public:
         { m_rendererNative.DrawSplitterSash(win, dc, size,
                                             position, orient, flags); }
 
+    virtual void DrawComboBoxDropButton(wxWindow *win,
+                                        wxDC& dc,
+                                        const wxRect& rect,
+                                        int flags = 0)
+        { m_rendererNative.DrawComboBoxDropButton(win, dc, rect, flags); }
+
+    virtual void DrawDropArrow(wxWindow *win,
+                               wxDC& dc,
+                               const wxRect& rect,
+                               int flags = 0)
+        { m_rendererNative.DrawDropArrow(win, dc, rect, flags); }
 
     virtual wxSplitterRenderParams GetSplitterParams(const wxWindow *win)
         { return m_rendererNative.GetSplitterParams(win); }

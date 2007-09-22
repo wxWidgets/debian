@@ -6,7 +6,7 @@
 // Author:      Robin Dunn
 //
 // Created:     10-June-1998
-// RCS-ID:      $Id: _statctrls.i,v 1.10 2004/07/17 22:50:56 RD Exp $
+// RCS-ID:      $Id: _statctrls.i,v 1.11 2004/12/23 20:43:50 RD Exp $
 // Copyright:   (c) 2003 by Total Control Software
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -37,7 +37,7 @@ public:
                 const wxSize& size = wxDefaultSize,
                 long style = 0,
                 const wxString& name = wxPyStaticBoxNameStr);
-    %name(PreStaticBox)wxStaticBox();
+    %RenameCtor(PreStaticBox, wxStaticBox());
 
     // Turn it back on again
     %typemap(out) wxStaticBox* { $result = wxPyMake_wxObject($1, $owner); }
@@ -70,7 +70,7 @@ public:
                   const wxSize &size = wxDefaultSize,
                   long style = wxLI_HORIZONTAL,
                   const wxString& name = wxPyStaticTextNameStr);
-    %name(PreStaticLine)wxStaticLine();
+    %RenameCtor(PreStaticLine, wxStaticLine());
 
     bool Create( wxWindow *parent, wxWindowID id=-1,
                   const wxPoint &pos = wxDefaultPosition,
@@ -105,7 +105,7 @@ public:
                  const wxSize& size = wxDefaultSize,
                  long style = 0,
                  const wxString& name = wxPyStaticTextNameStr);
-    %name(PreStaticText)wxStaticText();
+    %RenameCtor(PreStaticText, wxStaticText());
 
     bool Create(wxWindow* parent, wxWindowID id=-1,
                 const wxString& label = wxPyEmptyString,
@@ -134,7 +134,7 @@ public:
                    const wxSize& size = wxDefaultSize,
                    long style = 0,
                    const wxString& name = wxPyStaticBitmapNameStr);
-    %name(PreStaticBitmap)wxStaticBitmap();
+    %RenameCtor(PreStaticBitmap, wxStaticBitmap());
 
     bool Create(wxWindow* parent, wxWindowID id=-1,
                    const wxBitmap& bitmap = wxNullBitmap,

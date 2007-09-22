@@ -4,7 +4,7 @@
 // Notes:       Based on htmlhelp.cpp, implementing a monolithic
 //              HTML Help controller class,  by Vaclav Slavik
 // Author:      Harm van der Heijden and Vaclav Slavik
-// RCS-ID:      $Id: helpfrm.cpp,v 1.119 2004/10/11 16:30:36 ABX Exp $
+// RCS-ID:      $Id: helpfrm.cpp,v 1.124 2005/05/31 09:20:12 JS Exp $
 // Copyright:   (c) Harm van der Heijden and Vaclav Slavik
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -123,6 +123,22 @@ class wxHtmlHelpHtmlWindow : public wxHtmlWindow
             const wxMouseEvent *e = link.GetEvent();
             if (e == NULL || e->LeftUp())
                 m_Frame->NotifyPageChanged();
+        }
+
+        // Returns full location with anchor (helper)
+        static wxString GetOpenedPageWithAnchor(wxHtmlWindow *win)
+        {
+            if(!win)
+                return wxEmptyString;
+
+            wxString an = win->GetOpenedAnchor();
+            wxString pg = win->GetOpenedPage();
+            if(!an.empty())
+            {
+                pg << wxT("#");
+                pg << an;
+            }
+            return pg;
         }
 
     private:
@@ -265,7 +281,7 @@ void wxHtmlHelpFrame::Init(wxHtmlHelpData* data)
     m_Config = NULL;
     m_ConfigRoot = wxEmptyString;
 
-    m_Cfg.x = m_Cfg.y = 0;
+    m_Cfg.x = m_Cfg.y = -1;
     m_Cfg.w = 700;
     m_Cfg.h = 480;
     m_Cfg.sashpos = 240;
@@ -440,9 +456,16 @@ bool wxHtmlHelpFrame::Create(wxWindow* parent, wxWindowID id,
 
         m_ContentsBox = new wxTreeCtrl(dummy, wxID_HTML_TREECTRL,
                                        wxDefaultPosition, wxDefaultSize,
+#ifdef __WXGTK20__
                                        wxSUNKEN_BORDER |
                                        wxTR_HAS_BUTTONS | wxTR_HIDE_ROOT |
-                                       wxTR_LINES_AT_ROOT);
+                                       wxTR_NO_LINES
+#else
+                                       wxSUNKEN_BORDER |
+                                       wxTR_HAS_BUTTONS | wxTR_HIDE_ROOT |
+                                       wxTR_LINES_AT_ROOT
+#endif
+                                       );
 
         m_ContentsBox->AssignImageList(ContentsImageList);
 
@@ -507,7 +530,7 @@ bool wxHtmlHelpFrame::Create(wxWindow* parent, wxWindowID id,
                                       wxDefaultPosition, wxDefaultSize,
                                       wxTE_PROCESS_ENTER);
         m_SearchChoice = new wxChoice(dummy, wxID_HTML_SEARCHCHOICE,
-                                      wxDefaultPosition, wxDefaultSize);
+                                      wxDefaultPosition, wxSize(125,-1));
         m_SearchCaseSensitive = new wxCheckBox(dummy, wxID_ANY, _("Case sensitive"));
         m_SearchWholeWords = new wxCheckBox(dummy, wxID_ANY, _("Whole words only"));
         m_SearchButton = new wxButton(dummy, wxID_HTML_SEARCHBUTTON, _("Search"));
@@ -675,7 +698,7 @@ void wxHtmlHelpFrame::SetTitleFormat(const wxString& format)
 bool wxHtmlHelpFrame::Display(const wxString& x)
 {
     wxString url = m_Data->FindPageByName(x);
-    if (!url.IsEmpty())
+    if (!url.empty())
     {
         m_HtmlWin->LoadPage(url);
         NotifyPageChanged();
@@ -688,7 +711,7 @@ bool wxHtmlHelpFrame::Display(const wxString& x)
 bool wxHtmlHelpFrame::Display(const int id)
 {
     wxString url = m_Data->FindPageById(id);
-    if (!url.IsEmpty())
+    if (!url.empty())
     {
         m_HtmlWin->LoadPage(url);
         NotifyPageChanged();
@@ -718,7 +741,7 @@ bool wxHtmlHelpFrame::DisplayContents()
     if (m_Data->GetBookRecArray().GetCount() > 0)
     {
         wxHtmlBookRecord& book = m_Data->GetBookRecArray()[0];
-        if (!book.GetStart().IsEmpty())
+        if (!book.GetStart().empty())
             m_HtmlWin->LoadPage(book.GetFullPath(book.GetStart()));
     }
 
@@ -744,7 +767,7 @@ bool wxHtmlHelpFrame::DisplayIndex()
     if (m_Data->GetBookRecArray().GetCount() > 0)
     {
         wxHtmlBookRecord& book = m_Data->GetBookRecArray()[0];
-        if (!book.GetStart().IsEmpty())
+        if (!book.GetStart().empty())
             m_HtmlWin->LoadPage(book.GetFullPath(book.GetStart()));
     }
 
@@ -942,10 +965,10 @@ void wxHtmlHelpFrame::CreateContents()
     const int MAX_ROOTS = 64;
     wxTreeItemId roots[MAX_ROOTS];
     // VS: this array holds information about whether we've set item icon at
-    //     given level. This is neccessary because m_Data has flat structure
+    //     given level. This is necessary because m_Data has a flat structure
     //     and there's no way of recognizing if some item has subitems or not.
     //     We set the icon later: when we find an item with level=n, we know
-    //     that the last item with level=n-1 was folder with subitems, so we
+    //     that the last item with level=n-1 was afolder with subitems, so we
     //     set its icon accordingly
     bool imaged[MAX_ROOTS];
     m_ContentsBox->DeleteAllItems();
@@ -961,9 +984,9 @@ void wxHtmlHelpFrame::CreateContents()
         {
             if (m_hfStyle & wxHF_MERGE_BOOKS)
                 // VS: we don't want book nodes, books' content should
-                //    appear under tree's root. This line will create "fake"
+                //    appear under tree's root. This line will create a "fake"
                 //    record about book node so that the rest of this look
-                //    will believe there really _is_ book node and will
+                //    will believe there really _is_ a book node and will
                 //    behave correctly.
                 roots[1] = roots[0];
             else
@@ -987,7 +1010,7 @@ void wxHtmlHelpFrame::CreateContents()
         m_PagesHash->Put(it->GetFullPath(),
                          new wxHtmlHelpHashData(i, roots[it->level + 1]));
 
-        // Set the icon for the node one level up in the hiearachy,
+        // Set the icon for the node one level up in the hierarchy,
         // unless already done (see comment above imaged[] declaration)
         if (!imaged[it->level])
         {
@@ -1346,12 +1369,11 @@ void wxHtmlHelpFrame::NotifyPageChanged()
 {
     if (m_UpdateContents && m_PagesHash)
     {
-        wxString an = m_HtmlWin->GetOpenedAnchor();
-        wxHtmlHelpHashData *ha;
-        if (an.IsEmpty())
-            ha = (wxHtmlHelpHashData*) m_PagesHash->Get(m_HtmlWin->GetOpenedPage());
-        else
-            ha = (wxHtmlHelpHashData*) m_PagesHash->Get(m_HtmlWin->GetOpenedPage() + wxT("#") + an);
+        wxString page = wxHtmlHelpHtmlWindow::GetOpenedPageWithAnchor(m_HtmlWin);
+        wxHtmlHelpHashData *ha = NULL;
+        if (!page.empty())
+            ha = (wxHtmlHelpHashData*) m_PagesHash->Get(page);
+
         if (ha)
         {
             bool olduc = m_UpdateContents;
@@ -1401,12 +1423,10 @@ void wxHtmlHelpFrame::OnToolbar(wxCommandEvent& event)
         case wxID_HTML_UP :
             if (m_PagesHash)
             {
-                wxString an = m_HtmlWin->GetOpenedAnchor();
-                wxHtmlHelpHashData *ha;
-                if (an.IsEmpty())
-                    ha = (wxHtmlHelpHashData*) m_PagesHash->Get(m_HtmlWin->GetOpenedPage());
-                else
-                    ha = (wxHtmlHelpHashData*) m_PagesHash->Get(m_HtmlWin->GetOpenedPage() + wxT("#") + an);
+                wxString page = wxHtmlHelpHtmlWindow::GetOpenedPageWithAnchor(m_HtmlWin);
+                wxHtmlHelpHashData *ha = NULL;
+                if (!page.empty())
+                    ha = (wxHtmlHelpHashData*) m_PagesHash->Get(page);
                 if (ha && ha->m_Index > 0)
                 {
                     const wxHtmlHelpDataItem& it = m_Data->GetContentsArray()[ha->m_Index - 1];
@@ -1422,12 +1442,10 @@ void wxHtmlHelpFrame::OnToolbar(wxCommandEvent& event)
         case wxID_HTML_UPNODE :
             if (m_PagesHash)
             {
-                wxString an = m_HtmlWin->GetOpenedAnchor();
-                wxHtmlHelpHashData *ha;
-                if (an.IsEmpty())
-                    ha = (wxHtmlHelpHashData*) m_PagesHash->Get(m_HtmlWin->GetOpenedPage());
-                else
-                    ha = (wxHtmlHelpHashData*) m_PagesHash->Get(m_HtmlWin->GetOpenedPage() + wxT("#") + an);
+                wxString page = wxHtmlHelpHtmlWindow::GetOpenedPageWithAnchor(m_HtmlWin);
+                wxHtmlHelpHashData *ha = NULL;
+                if (!page.empty())
+                    ha = (wxHtmlHelpHashData*) m_PagesHash->Get(page);
                 if (ha && ha->m_Index > 0)
                 {
                     int level =
@@ -1456,21 +1474,17 @@ void wxHtmlHelpFrame::OnToolbar(wxCommandEvent& event)
         case wxID_HTML_DOWN :
             if (m_PagesHash)
             {
-                wxString an = m_HtmlWin->GetOpenedAnchor();
-                wxString adr;
-                wxHtmlHelpHashData *ha;
-
-                if (an.IsEmpty()) adr = m_HtmlWin->GetOpenedPage();
-                else adr = m_HtmlWin->GetOpenedPage() + wxT("#") + an;
-
-                ha = (wxHtmlHelpHashData*) m_PagesHash->Get(adr);
+                wxString page = wxHtmlHelpHtmlWindow::GetOpenedPageWithAnchor(m_HtmlWin);
+                wxHtmlHelpHashData *ha = NULL;
+                if (!page.empty())
+                    ha = (wxHtmlHelpHashData*) m_PagesHash->Get(page);
 
                 const wxHtmlHelpDataItems& contents = m_Data->GetContentsArray();
                 if (ha && ha->m_Index < (int)contents.size() - 1)
                 {
                     size_t idx = ha->m_Index + 1;
 
-                    while (contents[idx].GetFullPath() == adr) idx++;
+                    while (contents[idx].GetFullPath() == page) idx++;
 
                     if (!contents[idx].page.empty())
                     {
@@ -1569,7 +1583,7 @@ void wxHtmlHelpFrame::OnToolbar(wxCommandEvent& event)
                                             filemask,
                                             wxOPEN | wxFILE_MUST_EXIST,
                                             this);
-                if (!s.IsEmpty())
+                if (!s.empty())
                 {
                     wxString ext = s.Right(4).Lower();
                     if (ext == _T(".zip") || ext == _T(".htb") ||

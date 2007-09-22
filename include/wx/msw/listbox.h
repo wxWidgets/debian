@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     01/02/97
-// RCS-ID:      $Id: listbox.h,v 1.39 2004/08/30 10:18:43 ABX Exp $
+// RCS-ID:      $Id: listbox.h,v 1.43 2005/06/16 15:36:42 JS Exp $
 // Copyright:   (c) Julian Smart
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -91,7 +91,7 @@ public:
     virtual int FindString(const wxString& s) const;
 
     virtual bool IsSelected(int n) const;
-    virtual void SetSelection(int n, bool select = true);
+    virtual void DoSetSelection(int n, bool select);
     virtual int GetSelection() const;
     virtual int GetSelections(wxArrayInt& aSelections) const;
 
@@ -150,6 +150,13 @@ protected:
     int m_selected;
 
     virtual wxSize DoGetBestSize() const;
+
+    // under XP when using "transition effect for menus and tooltips" if we
+    // return true for WM_PRINTCLIENT here then it causes noticable slowdown
+    virtual bool MSWShouldPropagatePrintChild()
+    {
+        return false;
+    }
 
 #if wxUSE_OWNER_DRAWN
     // control items

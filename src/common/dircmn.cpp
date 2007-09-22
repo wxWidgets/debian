@@ -4,7 +4,7 @@
 // Author:      Vadim Zeitlin
 // Modified by:
 // Created:     19.05.01
-// RCS-ID:      $Id: dircmn.cpp,v 1.17 2004/08/13 21:56:11 VS Exp $
+// RCS-ID:      $Id: dircmn.cpp,v 1.19 2005/05/17 12:19:07 JS Exp $
 // Copyright:   (c) 2001 Vadim Zeitlin <zeitlin@dptmaths.ens-cachan.fr>
 // License:     wxWindows licence
 ///////////////////////////////////////////////////////////////////////////////
@@ -67,7 +67,7 @@ bool wxDir::HasFiles(const wxString& spec)
 }
 
 // we have a (much) faster version for Unix
-#if (defined(__CYGWIN__) && defined(__WINDOWS__)) || !defined(__UNIX_LIKE__) || defined(__WXMAC__) || defined(__EMX__)
+#if (defined(__CYGWIN__) && defined(__WINDOWS__)) || !defined(__UNIX_LIKE__) || defined(__WXMAC__) || defined(__EMX__) || defined(__WINE__)
 
 bool wxDir::HasSubDirs(const wxString& spec)
 {
@@ -99,7 +99,7 @@ size_t wxDir::Traverse(wxDirTraverser& sink,
     if ( flags & wxDIR_DIRS )
     {
         wxString dirname;
-        for ( bool cont = GetFirst(&dirname, _T(""), wxDIR_DIRS | (flags & wxDIR_HIDDEN) );
+        for ( bool cont = GetFirst(&dirname, wxEmptyString, wxDIR_DIRS | (flags & wxDIR_HIDDEN) );
               cont;
               cont = cont && GetNext(&dirname) )
         {

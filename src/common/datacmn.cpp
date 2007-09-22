@@ -4,7 +4,7 @@
 // Author:      Vadim Zeitlin
 // Modified by:
 // Created:     10.04.03 (from src/*/data.cpp files)
-// RCS-ID:      $Id: datacmn.cpp,v 1.7 2004/11/09 19:03:17 KH Exp $
+// RCS-ID:      $Id: datacmn.cpp,v 1.10 2005/01/21 03:56:16 KH Exp $
 // Copyright:   (c) 1997-2002 wxWidgets development team
 // License:     wxWindows license
 ///////////////////////////////////////////////////////////////////////////////
@@ -110,6 +110,7 @@ wxColour  wxNullColour;
 // Default window names
 WXDLLEXPORT_DATA(const wxChar *) wxControlNameStr = wxT("control");
 WXDLLEXPORT_DATA(const wxChar *) wxButtonNameStr = wxT("button");
+WXDLLEXPORT_DATA(const wxChar *) wxButtonBarNameStr = wxT("buttonbar");
 WXDLLEXPORT_DATA(const wxChar *) wxCanvasNameStr = wxT("canvas");
 WXDLLEXPORT_DATA(const wxChar *) wxCheckBoxNameStr = wxT("check");
 WXDLLEXPORT_DATA(const wxChar *) wxChoiceNameStr = wxT("choice");
@@ -119,9 +120,11 @@ WXDLLEXPORT_DATA(const wxChar *) wxFrameNameStr = wxT("frame");
 WXDLLEXPORT_DATA(const wxChar *) wxGaugeNameStr = wxT("gauge");
 WXDLLEXPORT_DATA(const wxChar *) wxStaticBoxNameStr = wxT("groupBox");
 WXDLLEXPORT_DATA(const wxChar *) wxListBoxNameStr = wxT("listBox");
-WXDLLEXPORT_DATA(const wxChar *) wxStaticTextNameStr = wxT("message");
-WXDLLEXPORT_DATA(const wxChar *) wxStaticBitmapNameStr = wxT("message");
+WXDLLEXPORT_DATA(const wxChar *) wxListCtrlNameStr = wxT("listCtrl");
+WXDLLEXPORT_DATA(const wxChar *) wxStaticTextNameStr = wxT("staticText");
+WXDLLEXPORT_DATA(const wxChar *) wxStaticBitmapNameStr = wxT("staticBitmap");
 WXDLLEXPORT_DATA(const wxChar *) wxMultiTextNameStr = wxT("multitext");
+WXDLLEXPORT_DATA(const wxChar *) wxNotebookNameStr = wxT("notebook");
 WXDLLEXPORT_DATA(const wxChar *) wxPanelNameStr = wxT("panel");
 WXDLLEXPORT_DATA(const wxChar *) wxRadioBoxNameStr = wxT("radioBox");
 WXDLLEXPORT_DATA(const wxChar *) wxRadioButtonNameStr = wxT("radioButton");
@@ -129,17 +132,21 @@ WXDLLEXPORT_DATA(const wxChar *) wxBitmapRadioButtonNameStr = wxT("radioButton")
 WXDLLEXPORT_DATA(const wxChar *) wxScrollBarNameStr = wxT("scrollBar");
 WXDLLEXPORT_DATA(const wxChar *) wxSliderNameStr = wxT("slider");
 WXDLLEXPORT_DATA(const wxChar *) wxStaticNameStr = wxT("static");
+WXDLLEXPORT_DATA(const wxChar *) wxStatusLineNameStr = wxT("status_line");
 WXDLLEXPORT_DATA(const wxChar *) wxTextCtrlWindowNameStr = wxT("textWindow");
 WXDLLEXPORT_DATA(const wxChar *) wxTextCtrlNameStr = wxT("text");
-WXDLLEXPORT_DATA(const wxChar *) wxVirtListBoxNameStr = wxT("virtListBox");
-WXDLLEXPORT_DATA(const wxChar *) wxButtonBarNameStr = wxT("buttonbar");
+WXDLLEXPORT_DATA(const wxChar *) wxTreeCtrlNameStr = wxT("treeCtrl");
 WXDLLEXPORT_DATA(const wxChar *) wxEnhDialogNameStr = wxT("Shell");
 WXDLLEXPORT_DATA(const wxChar *) wxToolBarNameStr = wxT("toolbar");
-WXDLLEXPORT_DATA(const wxChar *) wxStatusLineNameStr = wxT("status_line");
+WXDLLEXPORT_DATA(const wxChar *) wxVirtListBoxNameStr = wxT("virtListBox");
+
+// Default messages
 WXDLLEXPORT_DATA(const wxChar *) wxGetTextFromUserPromptStr = wxT("Input Text");
 WXDLLEXPORT_DATA(const wxChar *) wxGetPasswordFromUserPromptStr = wxT("Enter Password");
 WXDLLEXPORT_DATA(const wxChar *) wxMessageBoxCaptionStr = wxT("Message");
 WXDLLEXPORT_DATA(const wxChar *) wxFileSelectorPromptStr = wxT("Select a file");
+
+// Other default strings
 WXDLLEXPORT_DATA(const wxChar *) wxFileSelectorDefaultWildcardStr =
 #if defined(__WXMSW__) || defined(__WXOS2__)
     wxT("*.*")
@@ -147,7 +154,6 @@ WXDLLEXPORT_DATA(const wxChar *) wxFileSelectorDefaultWildcardStr =
     wxT("*")
 #endif
     ;
-WXDLLEXPORT_DATA(const wxChar *) wxTreeCtrlNameStr = wxT("treeCtrl");
 WXDLLEXPORT_DATA(const wxChar *) wxDirDialogNameStr = wxT("wxDirCtrl");
 WXDLLEXPORT_DATA(const wxChar *) wxDirDialogDefaultFolderStr = wxT("/");
 

@@ -5,7 +5,7 @@
 // Modified by: Mark Johnson, wxWindows@mj10777.de 
 //              20000917 : RmDir, GetLastResult, GetList
 // Created:     07/07/1997
-// RCS-ID:      $Id: ftp.h,v 1.20 2004/09/18 14:24:48 VZ Exp $
+// RCS-ID:      $Id: ftp.h,v 1.21 2005/05/31 09:18:48 JS Exp $
 // Copyright:   (c) 1997, 1998 Guilhem Lavaux
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -129,7 +129,7 @@ protected:
                          const wxString& arg = wxEmptyString);
 
     // get the server reply, return the first character of the reply code,
-    // '1'..'5' for normal FTP replies, 0 (*not* '0') if an error occured
+    // '1'..'5' for normal FTP replies, 0 (*not* '0') if an error occurred
     char GetResult();
 
     // check that the result is equal to expected value

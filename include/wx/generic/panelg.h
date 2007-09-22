@@ -4,8 +4,8 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     01/02/97
-// RCS-ID:      $Id: panelg.h,v 1.41 2004/06/23 16:41:40 VS Exp $
-// Copyright:   (c)
+// RCS-ID:      $Id: panelg.h,v 1.44 2005/05/04 18:52:32 JS Exp $
+// Copyright:   (c) Julian Smart
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
 
@@ -25,7 +25,7 @@
 
 class WXDLLEXPORT wxControlContainer;
 
-WXDLLEXPORT_DATA(extern const wxChar*) wxPanelNameStr;
+extern WXDLLEXPORT_DATA(const wxChar*) wxPanelNameStr;
 
 // ----------------------------------------------------------------------------
 // wxPanel contains other controls and implements TAB traversal between them
@@ -80,11 +80,7 @@ public:
 
 #ifdef __WXUNIVERSAL__
     virtual bool IsCanvasWindow() const { return true; }
-    virtual bool ProvidesBackground() const { return true; }
 #endif
-
-    virtual void ApplyParentThemeBackground(const wxColour& bg)
-        { SetBackgroundColour(bg); }
 
 
     WX_DECLARE_CONTROL_CONTAINER();

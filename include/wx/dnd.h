@@ -4,7 +4,7 @@
 // Author:      Vadim Zeitlin, Robert Roebling
 // Modified by:
 // Created:     26.05.99
-// RCS-ID:      $Id: dnd.h,v 1.32 2004/09/10 12:55:49 ABX Exp $
+// RCS-ID:      $Id: dnd.h,v 1.33 2005/03/08 22:50:40 RR Exp $
 // Copyright:   (c) wxWidgets Team
 // Licence:     wxWindows licence
 ///////////////////////////////////////////////////////////////////////////////
@@ -141,7 +141,7 @@ public:
     // by wxDropTarget and deleted by it automatically. If you don't give it
     // here, you can use SetDataObject() later.
     wxDropTargetBase(wxDataObject *dataObject = (wxDataObject*)NULL)
-        { m_dataObject = dataObject; }
+        { m_dataObject = dataObject; m_defaultAction = wxDragNone; }
     // dtor deletes our data object
     virtual ~wxDropTargetBase()
         { delete m_dataObject; }
@@ -192,8 +192,21 @@ public:
     // with the data from the drop source if it returns true
     virtual bool GetData() = 0;
 
+    // sets the default action for drag and drop:
+    // use wxDragMove or wxDragCopy to set deafult action to move or copy
+    // and use wxDragNone (default) to set default action specified by
+    // initialization of draging (see wxDropSourceBase::DoDragDrop())
+    void SetDefaultAction(wxDragResult action)
+        { m_defaultAction = action; }
+
+    // returns default action for drag and drop or
+    // wxDragNone if this not specified
+    wxDragResult GetDefaultAction()
+        { return m_defaultAction; }
+
 protected:
     wxDataObject *m_dataObject;
+    wxDragResult m_defaultAction;
 
     DECLARE_NO_COPY_CLASS(wxDropTargetBase)
 };

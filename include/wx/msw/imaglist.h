@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     01/02/97
-// RCS-ID:      $Id: imaglist.h,v 1.8 2004/08/27 18:59:33 ABX Exp $
+// RCS-ID:      $Id: imaglist.h,v 1.9 2005/02/27 10:36:44 JS Exp $
 // Copyright:   (c) Julian Smart
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -129,6 +129,12 @@ public:
   bool Draw(int index, wxDC& dc, int x, int y,
             int flags = wxIMAGELIST_DRAW_NORMAL,
             bool solidBackground = false);
+
+  // Get a bitmap
+  wxBitmap GetBitmap(int index) const;
+
+  // Get an icon
+  wxIcon GetIcon(int index) const;
 
   // TODO: miscellaneous functionality
 /*

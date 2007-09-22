@@ -3,7 +3,7 @@
 // Purpose:     wxXmlDocument - XML parser & data holder class
 // Author:      Vaclav Slavik
 // Created:     2000/03/05
-// RCS-ID:      $Id: xml.cpp,v 1.12 2004/10/11 16:30:43 ABX Exp $
+// RCS-ID:      $Id: xml.cpp,v 1.15 2005/03/29 17:28:58 ABX Exp $
 // Copyright:   (c) 2000 Vaclav Slavik
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -127,11 +127,11 @@ bool wxXmlNode::HasProp(const wxString& propName) const
 
     while (prop)
     {
-        if (prop->GetName() == propName) return TRUE;
+        if (prop->GetName() == propName) return true;
         prop = prop->GetNext();
     }
 
-    return FALSE;
+    return false;
 }
 
 bool wxXmlNode::GetPropVal(const wxString& propName, wxString *value) const
@@ -143,12 +143,12 @@ bool wxXmlNode::GetPropVal(const wxString& propName, wxString *value) const
         if (prop->GetName() == propName)
         {
             *value = prop->GetValue();
-            return TRUE;
+            return true;
         }
         prop = prop->GetNext();
     }
 
-    return FALSE;
+    return false;
 }
 
 wxString wxXmlNode::GetPropVal(const wxString& propName, const wxString& defaultVal) const
@@ -194,13 +194,13 @@ void wxXmlNode::InsertChild(wxXmlNode *child, wxXmlNode *before_node)
 bool wxXmlNode::RemoveChild(wxXmlNode *child)
 {
     if (m_children == NULL)
-        return FALSE;
+        return false;
     else if (m_children == child)
     {
         m_children = child->m_next;
         child->m_parent = NULL;
         child->m_next = NULL;
-        return TRUE;
+        return true;
     }
     else
     {
@@ -212,11 +212,11 @@ bool wxXmlNode::RemoveChild(wxXmlNode *child)
                 ch->m_next = child->m_next;
                 child->m_parent = NULL;
                 child->m_next = NULL;
-                return TRUE;
+                return true;
             }
             ch = ch->m_next;
         }
-        return FALSE;
+        return false;
     }
 }
 
@@ -242,7 +242,7 @@ bool wxXmlNode::DeleteProperty(const wxString& name)
     wxXmlProperty *prop;
 
     if (m_properties == NULL)
-        return FALSE;
+        return false;
 
     else if (m_properties->GetName() == name)
     {
@@ -250,7 +250,7 @@ bool wxXmlNode::DeleteProperty(const wxString& name)
         m_properties = prop->GetNext();
         prop->SetNext(NULL);
         delete prop;
-        return TRUE;
+        return true;
     }
 
     else
@@ -264,11 +264,11 @@ bool wxXmlNode::DeleteProperty(const wxString& name)
                 p->SetNext(prop->GetNext());
                 prop->SetNext(NULL);
                 delete prop;
-                return TRUE;
+                return true;
             }
             p = p->GetNext();
         }
-        return FALSE;
+        return false;
     }
 }
 
@@ -287,7 +287,7 @@ wxXmlDocument::wxXmlDocument()
 }
 
 wxXmlDocument::wxXmlDocument(const wxString& filename, const wxString& encoding)
-                          : wxObject(), m_root(NULL)
+              :wxObject(), m_root(NULL)
 {
     if ( !Load(filename, encoding) )
     {
@@ -296,7 +296,7 @@ wxXmlDocument::wxXmlDocument(const wxString& filename, const wxString& encoding)
 }
 
 wxXmlDocument::wxXmlDocument(wxInputStream& stream, const wxString& encoding)
-                          : wxObject(), m_root(NULL)
+              :wxObject(), m_root(NULL)
 {
     if ( !Load(stream, encoding) )
     {
@@ -305,6 +305,7 @@ wxXmlDocument::wxXmlDocument(wxInputStream& stream, const wxString& encoding)
 }
 
 wxXmlDocument::wxXmlDocument(const wxXmlDocument& doc)
+              :wxObject()
 {
     DoCopy(doc);
 }
@@ -384,6 +385,7 @@ struct wxXmlParsingContext
     wxString   version;
 };
 
+extern "C" {
 static void StartElementHnd(void *userData, const char *name, const char **atts)
 {
     wxXmlParsingContext *ctx = (wxXmlParsingContext*)userData;
@@ -401,7 +403,9 @@ static void StartElementHnd(void *userData, const char *name, const char **atts)
     ctx->node = node;
     ctx->lastAsText = NULL;
 }
+}
 
+extern "C" {
 static void EndElementHnd(void *userData, const char* WXUNUSED(name))
 {
     wxXmlParsingContext *ctx = (wxXmlParsingContext*)userData;
@@ -409,7 +413,9 @@ static void EndElementHnd(void *userData, const char* WXUNUSED(name))
     ctx->node = ctx->node->GetParent();
     ctx->lastAsText = NULL;
 }
+}
 
+extern "C" {
 static void TextHnd(void *userData, const char *s, int len)
 {
     wxXmlParsingContext *ctx = (wxXmlParsingContext*)userData;
@@ -425,11 +431,11 @@ static void TextHnd(void *userData, const char *s, int len)
     }
     else
     {
-        bool whiteOnly = TRUE;
+        bool whiteOnly = true;
         for (char *c = buf; *c != '\0'; c++)
             if (*c != ' ' && *c != '\t' && *c != '\n' && *c != '\r')
             {
-                whiteOnly = FALSE;
+                whiteOnly = false;
                 break;
             }
         if (!whiteOnly)
@@ -442,7 +448,9 @@ static void TextHnd(void *userData, const char *s, int len)
 
     delete[] buf;
 }
+}
 
+extern "C" {
 static void CommentHnd(void *userData, const char *data)
 {
     wxXmlParsingContext *ctx = (wxXmlParsingContext*)userData;
@@ -457,7 +465,9 @@ static void CommentHnd(void *userData, const char *data)
     }
     ctx->lastAsText = NULL;
 }
+}
 
+extern "C" {
 static void DefaultHnd(void *userData, const char *s, int len)
 {
     // XML header:
@@ -475,7 +485,9 @@ static void DefaultHnd(void *userData, const char *s, int len)
             ctx->version = buf.Mid(pos + 9).BeforeFirst(buf[(size_t)pos+8]);
     }
 }
+}
 
+extern "C" {
 static int UnknownEncodingHnd(void * WXUNUSED(encodingHandlerData),
                               const XML_Char *name, XML_Encoding *info)
 {
@@ -506,6 +518,7 @@ static int UnknownEncodingHnd(void * WXUNUSED(encodingHandlerData),
     info->release = NULL;
 
     return 1;
+}
 }
 
 bool wxXmlDocument::Load(wxInputStream& stream, const wxString& encoding)
@@ -556,9 +569,9 @@ bool wxXmlDocument::Load(wxInputStream& stream, const wxString& encoding)
 
     if (ok)
     {
-        if (!ctx.version.IsEmpty())
+        if (!ctx.version.empty())
             SetVersion(ctx.version);
-        if (!ctx.encoding.IsEmpty())
+        if (!ctx.encoding.empty())
             SetFileEncoding(ctx.encoding);
         SetRoot(ctx.root);
     }
@@ -592,7 +605,7 @@ inline static void OutputString(wxOutputStream& stream, const wxString& str,
 #endif
     wxMBConv *convFile)
 {
-    if (str.IsEmpty()) return;
+    if (str.empty()) return;
 #if wxUSE_UNICODE
     const wxWX2MBbuf buf(str.mb_str(*(convFile ? convFile : &wxConvUTF8)));
     stream.Write((const char*)buf, strlen((const char*)buf));
@@ -721,14 +734,16 @@ static void OutputNode(wxOutputStream& stream, wxXmlNode *node, int indent,
 bool wxXmlDocument::Save(wxOutputStream& stream) const
 {
     if ( !IsOk() )
-        return FALSE;
+        return false;
 
     wxString s;
 
-    wxMBConv *convMem = NULL, *convFile = NULL;
+    wxMBConv *convMem = NULL;
+
 #if wxUSE_UNICODE
-    convFile = new wxCSConv(GetFileEncoding());
+    wxMBConv *convFile = new wxCSConv(GetFileEncoding());
 #else
+    wxMBConv *convFile = NULL;
     if ( GetFileEncoding() != GetEncoding() )
     {
         convFile = new wxCSConv(GetFileEncoding());
@@ -748,7 +763,7 @@ bool wxXmlDocument::Save(wxOutputStream& stream) const
     if ( convMem )
         delete convMem;
 
-    return TRUE;
+    return true;
 }
 
 #endif // wxUSE_XML

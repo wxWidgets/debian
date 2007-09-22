@@ -78,7 +78,7 @@ MyFrame::MyFrame() :
 {
 #if wxUSE_STATUSBAR
    CreateStatusBar( 2 );
-   SetStatusText( _T("wxLayout by Karsten Ballüder.") );
+   SetStatusText( _T("wxLayout by Karsten Ballueder.") );
 #endif // wxUSE_STATUSBAR
 
    wxMenuBar *menu_bar = new wxMenuBar();
@@ -519,7 +519,7 @@ void MyFrame::OnPageSetup(wxCommandEvent& WXUNUSED(event))
 #else
    wxGetApp().SetPrintMode(wxPRINT_POSTSCRIPT);
 #endif
-   wxPageSetupData data;
+   wxPageSetupDialogData data;
 
 #if defined(__WXMSW__) || defined(__WXMAC__)
    wxPageSetupDialog pageSetupDialog(this, & data);
@@ -528,7 +528,7 @@ void MyFrame::OnPageSetup(wxCommandEvent& WXUNUSED(event))
 #endif
    pageSetupDialog.ShowModal();
 
-   data = pageSetupDialog.GetPageSetupData();
+   data = pageSetupDialog.GetPageSetupDialogData();
 }
 
 void MyFrame::OnPrintSetupPS(wxCommandEvent& WXUNUSED(event))

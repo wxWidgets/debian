@@ -4,7 +4,7 @@
 // Author:      Vadim Zeitlin
 // Modified by:
 // Created:     31.05.03
-// RCS-ID:      $Id: htmllbox.cpp,v 1.15 2004/10/01 11:27:43 VS Exp $
+// RCS-ID:      $Id: htmllbox.cpp,v 1.18 2005/02/16 20:34:20 ABX Exp $
 // Copyright:   (c) 2003 Vadim Zeitlin <vadim@wxwindows.org>
 // License:     wxWindows license
 ///////////////////////////////////////////////////////////////////////////////
@@ -51,6 +51,15 @@ FORCE_WXHTML_MODULES()
 // the items to avoid doing it anew each time an item must be drawn
 class wxHtmlListBoxCache
 {
+private:
+    // invalidate a single item, used by Clear() and InvalidateRange()
+    void InvalidateItem(size_t n)
+    {
+        m_items[n] = (size_t)-1;
+        delete m_cells[n];
+        m_cells[n] = NULL;
+    }
+
 public:
     wxHtmlListBoxCache()
     {
@@ -76,9 +85,7 @@ public:
     {
         for ( size_t n = 0; n < SIZE; n++ )
         {
-            m_items[n] = (size_t)-1;
-            delete m_cells[n];
-            m_cells[n] = NULL;
+            InvalidateItem(n);
         }
     }
 
@@ -107,6 +114,18 @@ public:
         // advance to the next item wrapping around if there are no more
         if ( ++m_next == SIZE )
             m_next = 0;
+    }
+
+    // forget the cached value of the item(s) between the given ones (inclusive)
+    void InvalidateRange(size_t from, size_t to)
+    {
+        for ( size_t n = 0; n < SIZE; n++ )
+        {
+            if ( m_items[n] >= from && m_items[n] <= to )
+            {
+                InvalidateItem(n);
+            }
+        }
     }
 
 private:
@@ -266,6 +285,20 @@ void wxHtmlListBox::OnSize(wxSizeEvent& event)
     event.Skip();
 }
 
+void wxHtmlListBox::RefreshLine(size_t line)
+{
+    m_cache->InvalidateRange(line, line);
+
+    wxVListBox::RefreshLine(line);
+}
+
+void wxHtmlListBox::RefreshLines(size_t from, size_t to)
+{
+    m_cache->InvalidateRange(from, to);
+
+    wxVListBox::RefreshLines(from, to);
+}
+
 void wxHtmlListBox::RefreshAll()
 {
     m_cache->Clear();
@@ -298,7 +331,7 @@ void wxHtmlListBox::OnDrawItem(wxDC& dc, const wxRect& rect, size_t n) const
     if ( IsSelected(n) )
     {
         wxHtmlSelection htmlSel;
-        htmlSel.Set(wxPoint(0, 0), cell, wxPoint(INT_MAX, INT_MAX), cell);
+        htmlSel.Set(wxPoint(0,0), cell, wxPoint(INT_MAX, INT_MAX), cell);
         htmlRendInfo.SetSelection(&htmlSel);
         if ( m_htmlRendStyle )
             htmlRendInfo.SetStyle(m_htmlRendStyle);
@@ -321,4 +354,5 @@ wxCoord wxHtmlListBox::OnMeasureItem(size_t n) const
     return cell->GetHeight() + cell->GetDescent() + 4;
 }
 
-#endif
+#endif // wxUSE_HTML
+

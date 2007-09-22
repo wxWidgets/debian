@@ -2,7 +2,7 @@
 // Name:        wx/gtk/toplevel.h
 // Purpose:
 // Author:      Robert Roebling
-// Id:          $Id: toplevel.h,v 1.15 2004/09/26 14:32:06 VZ Exp $
+// Id:          $Id: toplevel.h,v 1.16 2005/02/11 23:00:31 RR Exp $
 // Copyright:   (c) 1998 Robert Roebling, Julian Smart
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -63,6 +63,8 @@ public:
     virtual bool SetShape(const wxRegion& region);
 
     virtual bool Show(bool show = TRUE);
+
+    virtual void Raise();
 
     virtual bool IsActive();
 

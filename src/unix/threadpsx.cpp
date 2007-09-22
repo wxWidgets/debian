@@ -4,7 +4,7 @@
 // Author:      Original from Wolfram Gloger/Guilhem Lavaux
 // Modified by: K. S. Sreeram (2002): POSIXified wxCondition, added wxSemaphore
 // Created:     04/22/98
-// RCS-ID:      $Id: threadpsx.cpp,v 1.78 2004/07/08 19:02:01 VZ Exp $
+// RCS-ID:      $Id: threadpsx.cpp,v 1.80 2005/03/17 09:10:35 JS Exp $
 // Copyright:   (c) Wolfram Gloger (1996, 1997)
 //                  Guilhem Lavaux (1998)
 //                  Vadim Zeitlin (1999-2002)
@@ -37,6 +37,7 @@
 #include "wx/intl.h"
 #include "wx/dynarray.h"
 #include "wx/timer.h"
+#include "wx/stopwatch.h"
 
 #include <stdio.h>
 #include <unistd.h>
@@ -1482,6 +1483,12 @@ void wxThread::Exit(ExitCode status)
         //       we make it a global object, but this would mean that we can
         //       only call one thread function at a time :-(
         DeleteThread(this);
+    }
+    else
+    {
+        m_critsect.Enter();
+        m_internal->SetState(STATE_EXITED);
+        m_critsect.Leave();
     }
 
     // terminate the thread (pthread_exit() never returns)

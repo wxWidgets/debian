@@ -5,7 +5,7 @@
 // Author:      Robin Dunn
 //
 // Created:     4-June-2001
-// RCS-ID:      $Id: _xmlsub.i,v 1.1 2004/09/23 16:47:37 RD Exp $
+// RCS-ID:      $Id: _xmlsub.i,v 1.2 2004/12/23 20:43:48 RD Exp $
 // Copyright:   (c) 2003 by Total Control Software
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -32,7 +32,8 @@ IMP_PYCALLBACK_OBJECT_STRING_pure(wxPyXmlSubclassFactory, wxXmlSubclassFactory, 
 
 
 
-%name(XmlSubclassFactory)class wxPyXmlSubclassFactory {
+%rename(XmlSubclassFactory) wxPyXmlSubclassFactory;
+class wxPyXmlSubclassFactory {
 public:
     %pythonAppend wxPyXmlSubclassFactory "self._setCallbackInfo(self, XmlSubclassFactory)"
     wxPyXmlSubclassFactory();

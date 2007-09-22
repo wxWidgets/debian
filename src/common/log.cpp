@@ -4,7 +4,7 @@
 // Author:      Vadim Zeitlin
 // Modified by:
 // Created:     29/01/98
-// RCS-ID:      $Id: log.cpp,v 1.153 2004/10/12 19:29:12 ABX Exp $
+// RCS-ID:      $Id: log.cpp,v 1.159 2005/06/17 11:45:25 VZ Exp $
 // Copyright:   (c) 1998 Vadim Zeitlin <zeitlin@dptmaths.ens-cachan.fr>
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -209,8 +209,7 @@ void wxLogFatalError(const wxChar *szFormat, ...)
 void wxVLogVerbose(const wxChar *szFormat, va_list argptr)
 {
     if ( IsLoggingEnabled() ) {
-        wxLog *pLog = wxLog::GetActiveTarget();
-        if ( pLog != NULL && pLog->GetVerbose() ) {
+        if ( wxLog::GetActiveTarget() != NULL && wxLog::GetVerbose() ) {
             wxCRIT_SECT_LOCKER(locker, gs_csLogBuf);
 
             wxVsnprintf(s_szBuf, s_szBufSize, szFormat, argptr);
@@ -524,6 +523,49 @@ void wxLog::Flush()
 }
 
 // ----------------------------------------------------------------------------
+// wxLogBuffer implementation
+// ----------------------------------------------------------------------------
+
+void wxLogBuffer::Flush()
+{
+    if ( !m_str.empty() )
+    {
+        wxMessageOutputBest out;
+        out.Printf(_T("%s"), m_str.c_str());
+        m_str.clear();
+    }
+}
+
+void wxLogBuffer::DoLog(wxLogLevel level, const wxChar *szString, time_t t)
+{
+    switch ( level )
+    {
+        case wxLOG_Trace:
+        case wxLOG_Debug:
+#ifdef __WXDEBUG__
+            // don't put debug messages in the buffer, we don't want to show
+            // them to the user in a msg box, log them immediately
+            {
+                wxString str;
+                TimeStamp(&str);
+                str += szString;
+
+                wxMessageOutputDebug().Printf(_T("%s\n"), str.c_str());
+            }
+#endif // __WXDEBUG__
+            break;
+
+        default:
+            wxLog::DoLog(level, szString, t);
+    }
+}
+
+void wxLogBuffer::DoLogString(const wxChar *szString, time_t WXUNUSED(t))
+{
+    m_str << szString << _T("\n");
+}
+
+// ----------------------------------------------------------------------------
 // wxLogStderr class implementation
 // ----------------------------------------------------------------------------
 
@@ -555,7 +597,7 @@ void wxLogStderr::DoLogString(const wxChar *szString, time_t WXUNUSED(t))
         if ( traits && !traits->HasStderr() )
         {
             wxMessageOutputDebug dbgout;
-            dbgout.Printf(_T("%s"), str.c_str());
+            dbgout.Printf(_T("%s\n"), str.c_str());
         }
     }
 }
@@ -738,14 +780,26 @@ const wxChar *wxSysErrorMsg(unsigned long nErrCode)
 
     // get error message from system
     LPVOID lpMsgBuf;
-    FormatMessage(FORMAT_MESSAGE_ALLOCATE_BUFFER | FORMAT_MESSAGE_FROM_SYSTEM,
-            NULL, nErrCode,
+    if ( ::FormatMessage
+         (
+            FORMAT_MESSAGE_ALLOCATE_BUFFER | FORMAT_MESSAGE_FROM_SYSTEM,
+            NULL,
+            nErrCode,
             MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT),
             (LPTSTR)&lpMsgBuf,
-            0, NULL);
+            0,
+            NULL
+         ) == 0 )
+    {
+        // if this happens, something is seriously wrong, so don't use _() here
+        // for safety
+        wxSprintf(s_szBuf, _T("unknown error %lx"), nErrCode);
+		return s_szBuf;
+    }
+
 
     // copy it to our buffer and free memory
-    // Crashes on SmartPhone
+    // Crashes on SmartPhone (FIXME)
 #if !defined(__SMARTPHONE__) /* of WinCE */
      if( lpMsgBuf != 0 ) {
         wxStrncpy(s_szBuf, (const wxChar *)lpMsgBuf, WXSIZEOF(s_szBuf) - 1);

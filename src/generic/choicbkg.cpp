@@ -4,7 +4,7 @@
 // Author:      Vadim Zeitlin
 // Modified by: Wlodzimierz ABX Skiba from generic/listbkg.cpp
 // Created:     15.09.04
-// RCS-ID:      $Id: choicbkg.cpp,v 1.5 2004/10/11 16:30:31 ABX Exp $
+// RCS-ID:      $Id: choicbkg.cpp,v 1.7 2005/02/10 21:33:53 ABX Exp $
 // Copyright:   (c) Vadim Zeitlin, Wlodzimierz Skiba
 // Licence:     wxWindows licence
 ///////////////////////////////////////////////////////////////////////////////
@@ -64,7 +64,7 @@ const wxEventType wxEVT_COMMAND_CHOICEBOOK_PAGE_CHANGING = wxNewEventType();
 const wxEventType wxEVT_COMMAND_CHOICEBOOK_PAGE_CHANGED = wxNewEventType();
 const int wxID_CHOICEBOOKCHOICE = wxNewId();
 
-BEGIN_EVENT_TABLE(wxChoicebook, wxBookCtrl)
+BEGIN_EVENT_TABLE(wxChoicebook, wxBookCtrlBase)
     EVT_SIZE(wxChoicebook::OnSize)
     EVT_CHOICE(wxID_CHOICEBOOKCHOICE, wxChoicebook::OnChoiceSelected)
 END_EVENT_TABLE()
@@ -144,7 +144,7 @@ wxRect wxChoicebook::GetPageRect() const
 {
     const wxSize sizeChoice = m_choice->GetSize();
 
-    wxPoint pt(0, 0);
+    wxPoint pt;
     wxRect rectPage(pt, GetClientSize());
     switch ( GetWindowStyle() & wxCHB_ALIGN_MASK )
     {
@@ -276,7 +276,7 @@ void wxChoicebook::SetImageList(wxImageList *imageList)
 {
     // TODO: can be implemented in form of static bitmap near choice control
 
-    wxBookCtrl::SetImageList(imageList);
+    wxBookCtrlBase::SetImageList(imageList);
 }
 
 // ----------------------------------------------------------------------------
@@ -334,7 +334,7 @@ wxChoicebook::InsertPage(size_t n,
                          bool bSelect,
                          int imageId)
 {
-    if ( !wxBookCtrl::InsertPage(n, page, text, bSelect, imageId) )
+    if ( !wxBookCtrlBase::InsertPage(n, page, text, bSelect, imageId) )
         return false;
 
     m_choice->Insert(text, n);
@@ -369,7 +369,7 @@ wxChoicebook::InsertPage(size_t n,
 wxWindow *wxChoicebook::DoRemovePage(size_t page)
 {
     const int page_count = GetPageCount();
-    wxWindow *win = wxBookCtrl::DoRemovePage(page);
+    wxWindow *win = wxBookCtrlBase::DoRemovePage(page);
 
     if ( win )
     {
@@ -399,7 +399,7 @@ wxWindow *wxChoicebook::DoRemovePage(size_t page)
 bool wxChoicebook::DeleteAllPages()
 {
     m_choice->Clear();
-    return wxBookCtrl::DeleteAllPages();
+    return wxBookCtrlBase::DeleteAllPages();
 }
 
 // ----------------------------------------------------------------------------

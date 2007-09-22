@@ -4,7 +4,7 @@
 // Author:      Vadim Zeitlin
 // Modified by:
 // Created:     03.06.01
-// RCS-ID:      $Id: radiocmn.cpp,v 1.7 2004/09/21 18:15:58 ABX Exp $
+// RCS-ID:      $Id: radiocmn.cpp,v 1.11 2005/02/13 19:01:17 VZ Exp $
 // Copyright:   (c) 2001 Vadim Zeitlin <zeitlin@dptmaths.ens-cachan.fr>
 // License:     wxWindows licence
 ///////////////////////////////////////////////////////////////////////////////
@@ -37,6 +37,18 @@
 // ============================================================================
 // implementation
 // ============================================================================
+
+int wxRadioBoxBase::FindString(const wxString& s) const
+{
+    int count = GetCount();
+    for ( int n = 0; n < count; n++ )
+    {
+        if ( GetString(n) == s )
+            return n;
+    }
+
+    return wxNOT_FOUND;
+}
 
 int wxRadioBoxBase::GetNextItem(int item, wxDirection dir, long style) const
 {
@@ -133,6 +145,39 @@ int wxRadioBoxBase::GetNextItem(int item, wxDirection dir, long style) const
 
     return item;
 }
+
+#if WXWIN_COMPATIBILITY_2_4
+
+// these functions are deprecated and don't do anything
+int wxRadioBoxBase::GetNumberOfRowsOrCols() const
+{
+    return 1;
+}
+
+void wxRadioBoxBase::SetNumberOfRowsOrCols(int WXUNUSED(n))
+{
+}
+
+#endif // WXWIN_COMPATIBILITY_2_4
+
+#if WXWIN_COMPATIBILITY_2_2
+
+int wxRadioBoxBase::Number() const
+{
+    return GetCount();
+}
+
+wxString wxRadioBoxBase::GetLabel(int n) const
+{
+    return GetString(n);
+}
+
+void wxRadioBoxBase::SetLabel(int n, const wxString& label)
+{
+    SetString(n, label);
+}
+
+#endif // WXWIN_COMPATIBILITY_2_2
 
 #endif // wxUSE_RADIOBOX
 

@@ -4,7 +4,7 @@
 // Author:      Guilhem Lavaux
 // Modified by:
 // Created:     28/06/1998
-// RCS-ID:      $Id: txtstrm.h,v 1.26 2004/10/20 22:50:03 VZ Exp $
+// RCS-ID:      $Id: txtstrm.h,v 1.27 2004/11/21 18:26:36 RN Exp $
 // Copyright:   (c) Guilhem Lavaux
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -120,6 +120,8 @@ public:
     void Write8(wxUint8 i);
     virtual void WriteDouble(double d);
     virtual void WriteString(const wxString& string);
+
+    wxTextOutputStream& PutChar(wxChar c);
 
     wxTextOutputStream& operator<<(const wxChar *string);
     wxTextOutputStream& operator<<(const wxString& string);

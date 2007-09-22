@@ -4,7 +4,7 @@
 // Author:      Guilhem Lavaux, Vadim Zeitlin
 // Modified by:
 // Created:     06/16/98
-// RCS-ID:      $Id: thread.cpp,v 1.22 2004/10/06 20:54:45 ABX Exp $
+// RCS-ID:      $Id: thread.cpp,v 1.25 2005/06/02 12:04:41 JS Exp $
 // Copyright:   (c) 1998-2002 wxWidgets team
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -29,6 +29,8 @@
 #include "wx/numdlg.h"
 
 #include "wx/progdlg.h"
+
+#include "../sample.xpm"
 
 // define this to use wxExecute in the exec tests, otherwise just use system
 #define USE_EXECUTE
@@ -132,7 +134,8 @@ private:
 // ID for the menu commands
 enum
 {
-    THREAD_QUIT          = 1,
+    THREAD_QUIT  = wxID_EXIT,
+    THREAD_ABOUT = wxID_ABOUT,
     THREAD_TEXT          = 101,
     THREAD_CLEAR,
     THREAD_START_THREAD  = 201,
@@ -146,7 +149,6 @@ enum
     THREAD_EXEC_THREAD,
 
     THREAD_SHOWCPUS,
-    THREAD_ABOUT,
 
     WORKER_EVENT    // this one gets sent from the worker thread
 };
@@ -401,7 +403,7 @@ bool MyApp::OnInit()
     menuBar->Append(menuHelp, _T("&Help"));
 
     frame->SetMenuBar(menuBar);
-
+    
     // Show the frame
     frame->Show(true);
 
@@ -415,6 +417,8 @@ MyFrame::MyFrame(wxFrame *frame, const wxString& title,
                  int x, int y, int w, int h)
        : wxFrame(frame, wxID_ANY, title, wxPoint(x, y), wxSize(w, h))
 {
+    SetIcon(wxIcon(sample_xpm));
+    
     m_nRunning = m_nCount = 0;
 
     m_dlgProgress = (wxProgressDialog *)NULL;
@@ -726,6 +730,7 @@ void MyFrame::OnStartWorker(wxCommandEvent& WXUNUSED(event))
     if ( thread->Create() != wxTHREAD_NO_ERROR )
     {
         wxLogError(wxT("Can't create thread!"));
+        return;
     }
 
     m_dlgProgress = new wxProgressDialog

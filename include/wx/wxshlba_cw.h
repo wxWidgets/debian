@@ -4,7 +4,7 @@
 // Author:      Stefan Csomor
 // Modified by:
 // Created:     12/10/98
-// RCS-ID:      $Id: wxshlba_cw.h,v 1.4 2004/09/24 14:32:18 ABX Exp $
+// RCS-ID:      $Id: wxshlba_cw.h,v 1.5 2005/04/19 10:06:30 SC Exp $
 // Copyright:   (c) Stefan Csomor
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -19,45 +19,45 @@
 #if __option(profile)
 #ifdef __cplusplus
     #if __POWERPC__
-        #include <wxshlba_PPC++_prof.mch>
+        #include "wxshlba_PPC++_prof.mch"
     #elif __INTEL__
-        #include <wxshlba_x86++_prof.mch>
+        #include "wxshlba_x86++_prof.mch"
     #elif __CFM68K__
-        #include <wxshlba_cfm++_prof.mch>
+        #include "wxshlba_cfm++_prof.mch"
     #else
-        #include <wxshlba_68k++_prof.mch>
+        #include "wxshlba_68k++_prof.mch"
     #endif
 #else
     #if __POWERPC__
-        #include <wxshlba_PPC_prof.mch>
+        #include "wxshlba_PPC_prof.mch"
     #elif __INTEL__
-        #include <wxshlba_x86_prof.mch>
+        #include "wxshlba_x86_prof.mch"
     #elif __CFM68K__
-        #include <wxshlba_cfm_prof.mch>
+        #include "wxshlba_cfm_prof.mch"
     #else
-        #include <wxshlba_68k_prof.mch>
+        #include "wxshlba_68k_prof.mch"
     #endif
 #endif
 #else
 #ifdef __cplusplus
     #if __POWERPC__
-        #include <wxshlba_PPC++.mch>
+        #include "wxshlba_PPC++.mch"
     #elif __INTEL__
-        #include <wxshlba_x86++.mch>
+        #include "wxshlba_x86++.mch"
     #elif __CFM68K__
-        #include <wxshlba_cfm++.mch>
+        #include "wxshlba_cfm++.mch"
     #else
-        #include <wxshlba_68k++.mch>
+        #include "wxshlba_68k++.mch"
     #endif
 #else
     #if __POWERPC__
-        #include <wxshlba_PPC.mch>
+        #include "wxshlba_PPC.mch"
     #elif __INTEL__
-        #include <wxshlba_x86.mch>
+        #include "wxshlba_x86.mch"
     #elif __CFM68K__
-        #include <wxshlba_cfm.mch>
+        #include "wxshlba_cfm.mch"
     #else
-        #include <wxshlba_68k.mch>
+        #include "wxshlba_68k.mch"
     #endif
 #endif
 #endif

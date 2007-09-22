@@ -4,7 +4,7 @@
 // Author:      Vaclav Slavik
 // Modified by:
 // Created:     18/03/2002
-// RCS-ID:      $Id: artprov.cpp,v 1.17 2004/09/08 17:30:19 ABX Exp $
+// RCS-ID:      $Id: artprov.cpp,v 1.21 2005/06/10 12:04:14 MW Exp $
 // Copyright:   (c) Vaclav Slavik
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -201,6 +201,51 @@ wxArtProviderCache *wxArtProvider::sm_cache = NULL;
     wxIcon icon;
     icon.CopyFromBitmap(bmp);
     return icon;
+}
+
+#if defined(__WXGTK20__) && !defined(__WXUNIVERSAL__)
+    #include "wx/gtk/private.h"
+    extern GtkIconSize wxArtClientToIconSize(const wxArtClient& client);
+#endif // defined(__WXGTK20__) && !defined(__WXUNIVERSAL__)
+
+/*static*/ wxSize wxArtProvider::GetSizeHint(const wxArtClient& client,
+                                         bool platform_dependent)
+{
+    if (!platform_dependent)
+    {
+        wxArtProvidersList::compatibility_iterator node = sm_providers->GetFirst();
+        if (node)
+            return node->GetData()->DoGetSizeHint(client);
+    }
+
+        // else return platform dependent size
+
+#if defined(__WXGTK20__) && !defined(__WXUNIVERSAL__)
+    // Gtk has specific sizes for each client, see artgtk.cpp
+    GtkIconSize gtk_size = wxArtClientToIconSize(client);
+    // no size hints for this client
+    if (gtk_size == GTK_ICON_SIZE_INVALID)
+        return wxDefaultSize;
+    gint width, height;
+    gtk_icon_size_lookup( gtk_size, &width, &height);
+    return wxSize(width, height);
+#else // !GTK+ 2
+    // NB: These size hints may have to be adjusted per platform
+    if (client == wxART_TOOLBAR)
+        return wxSize(16, 15);
+    else if (client == wxART_MENU)
+        return wxSize(16, 15);
+    else if (client == wxART_FRAME_ICON)
+        return wxSize(16, 15);
+    else if (client == wxART_CMN_DIALOG || client == wxART_MESSAGE_BOX)
+        return wxSize(32, 32);
+    else if (client == wxART_HELP_BROWSER)
+        return wxSize(16, 15);
+    else if (client == wxART_BUTTON)
+        return wxSize(16, 15);
+    else // wxART_OTHER or perhaps a user's client, no specified size
+        return wxDefaultSize;      
+#endif // GTK+ 2/else
 }
 
 

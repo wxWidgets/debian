@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     04/01/98
-// RCS-ID:      $Id: tabctrl.cpp,v 1.35 2004/09/07 06:00:59 ABX Exp $
+// RCS-ID:      $Id: tabctrl.cpp,v 1.38 2005/04/23 18:59:32 JS Exp $
 // Copyright:   (c) Julian Smart
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -28,11 +28,7 @@
 
 #include "wx/msw/private.h"
 
-#if defined(__WIN95__) && !(defined(__GNUWIN32_OLD__) && !defined(__CYGWIN10__))
-    #include <commctrl.h>
-#else
-    #include "wx/msw/gnuwin32/extra.h"
-#endif
+#include <commctrl.h>
 
 #include "wx/tabctrl.h"
 #include "wx/app.h"
@@ -145,7 +141,7 @@ bool wxTabCtrl::MSWOnNotify(int idCtrl, WXLPARAM lParam, WXLPARAM *result)
         case TTN_NEEDTEXT:
         {
             // TODO
-//            if (tool->m_shortHelpString != "")
+//            if (!tool->m_shortHelpString.empty())
 //                ttText->lpszText = (char *) (const char *)tool->m_shortHelpString;
         }
 #endif
@@ -297,7 +293,7 @@ bool wxTabCtrl::InsertItem(int item, const wxString& text, int imageId, void* da
     TC_ITEM tcItem;
     tcItem.mask = TCIF_PARAM;
     tcItem.lParam = (long) data;
-    if (text != wxEmptyString)
+    if (!text.empty())
     {
         tcItem.mask |= TCIF_TEXT;
         wxStrcpy(buf, (const wxChar*) text);

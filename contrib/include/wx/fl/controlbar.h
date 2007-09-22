@@ -5,7 +5,7 @@
 // Author:      Aleksandras Gluchovas <mailto:alex@soften.ktu.lt>
 // Modified by:
 // Created:     06/09/98
-// RCS-ID:      $Id: controlbar.h,v 1.18 2004/06/07 16:02:14 ABX Exp $
+// RCS-ID:      $Id: controlbar.h,v 1.23 2005/06/15 02:08:12 MR Exp $
 // Copyright:   (c) Aleksandras Gluchovas
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -19,6 +19,7 @@
 
 #include "wx/defs.h"
 #include "wx/string.h"
+#include "wx/pen.h"
 #include "wx/window.h"
 #include "wx/dynarray.h"
 #include "wx/fl/fldefs.h"
@@ -888,7 +889,7 @@ class cbBarInfo : public wxObject
 {
     DECLARE_DYNAMIC_CLASS( cbBarInfo )
 public:
-    // textual name, by which this bar is refered in layout-customization dialogs
+    // textual name, by which this bar is referred in layout-customization dialogs
     wxString      mName;
 
     // stores bar's bounds in pane's coordinates
@@ -904,10 +905,10 @@ public:
     bool          mHasLeftHandle;
     bool          mHasRightHandle;
 
-    // determines if this bar can float. The layout's setting as priority. For 
+    // determines if this bar can float. The layout's setting as priority. For
     // example, if the layout's mFloatingOn is false, this setting is irrelevant
     // since nothing will float at all. If the layout's floating is on, use this
-    // setting to prevent specific bars from floating. In other words, all bars 
+    // setting to prevent specific bars from floating. In other words, all bars
     // float by default and floating can be turned off on individual bars.
     bool          mFloatingOn;    // default: ON (which is also the layout's mFloatingOn default setting)
 
@@ -1002,7 +1003,7 @@ which are usually the same for all panes in
 a frame layout.
 */
 
-class cbCommonPaneProperties : public wxObject
+class WXDLLIMPEXP_FL cbCommonPaneProperties : public wxObject
 {
     DECLARE_DYNAMIC_CLASS( cbCommonPaneProperties )
 
@@ -1036,11 +1037,11 @@ class cbCommonPaneProperties : public wxObject
     cbCommonPaneProperties(void);
 
         // Copy constructor
-    
+
     cbCommonPaneProperties(const cbCommonPaneProperties&);
 
         // Assignment operator
-    
+
     cbCommonPaneProperties& operator=(const cbCommonPaneProperties&);
 };
 
@@ -1461,7 +1462,7 @@ areas of frame layout that actually need to be updated. This should be extended 
 to implement a custom updating strategy.
 */
 
-class cbUpdatesManagerBase : public wxObject
+class WXDLLIMPEXP_FL cbUpdatesManagerBase : public wxObject
 {
     DECLARE_ABSTRACT_CLASS( cbUpdatesManagerBase )
 
@@ -1555,40 +1556,40 @@ public:
 
 // event types handled by plugins
 
-extern wxEventType cbEVT_PL_LEFT_DOWN;
-extern wxEventType cbEVT_PL_LEFT_UP;
-extern wxEventType cbEVT_PL_RIGHT_DOWN;
-extern wxEventType cbEVT_PL_RIGHT_UP;
-extern wxEventType cbEVT_PL_MOTION;
+extern WXDLLIMPEXP_FL wxEventType cbEVT_PL_LEFT_DOWN;
+extern WXDLLIMPEXP_FL wxEventType cbEVT_PL_LEFT_UP;
+extern WXDLLIMPEXP_FL wxEventType cbEVT_PL_RIGHT_DOWN;
+extern WXDLLIMPEXP_FL wxEventType cbEVT_PL_RIGHT_UP;
+extern WXDLLIMPEXP_FL wxEventType cbEVT_PL_MOTION;
 
-extern wxEventType cbEVT_PL_LEFT_DCLICK;
+extern WXDLLIMPEXP_FL wxEventType cbEVT_PL_LEFT_DCLICK;
 
-extern wxEventType cbEVT_PL_LAYOUT_ROW;
-extern wxEventType cbEVT_PL_RESIZE_ROW;
-extern wxEventType cbEVT_PL_LAYOUT_ROWS;
-extern wxEventType cbEVT_PL_INSERT_BAR;
-extern wxEventType cbEVT_PL_RESIZE_BAR;
-extern wxEventType cbEVT_PL_REMOVE_BAR;
-extern wxEventType cbEVT_PL_SIZE_BAR_WND;
+extern WXDLLIMPEXP_FL wxEventType cbEVT_PL_LAYOUT_ROW;
+extern WXDLLIMPEXP_FL wxEventType cbEVT_PL_RESIZE_ROW;
+extern WXDLLIMPEXP_FL wxEventType cbEVT_PL_LAYOUT_ROWS;
+extern WXDLLIMPEXP_FL wxEventType cbEVT_PL_INSERT_BAR;
+extern WXDLLIMPEXP_FL wxEventType cbEVT_PL_RESIZE_BAR;
+extern WXDLLIMPEXP_FL wxEventType cbEVT_PL_REMOVE_BAR;
+extern WXDLLIMPEXP_FL wxEventType cbEVT_PL_SIZE_BAR_WND;
 
-extern wxEventType cbEVT_PL_DRAW_BAR_DECOR;
-extern wxEventType cbEVT_PL_DRAW_ROW_DECOR;
-extern wxEventType cbEVT_PL_DRAW_PANE_DECOR;
-extern wxEventType cbEVT_PL_DRAW_BAR_HANDLES;
-extern wxEventType cbEVT_PL_DRAW_ROW_HANDLES;
-extern wxEventType cbEVT_PL_DRAW_ROW_BKGROUND;
-extern wxEventType cbEVT_PL_DRAW_PANE_BKGROUND;
+extern WXDLLIMPEXP_FL wxEventType cbEVT_PL_DRAW_BAR_DECOR;
+extern WXDLLIMPEXP_FL wxEventType cbEVT_PL_DRAW_ROW_DECOR;
+extern WXDLLIMPEXP_FL wxEventType cbEVT_PL_DRAW_PANE_DECOR;
+extern WXDLLIMPEXP_FL wxEventType cbEVT_PL_DRAW_BAR_HANDLES;
+extern WXDLLIMPEXP_FL wxEventType cbEVT_PL_DRAW_ROW_HANDLES;
+extern WXDLLIMPEXP_FL wxEventType cbEVT_PL_DRAW_ROW_BKGROUND;
+extern WXDLLIMPEXP_FL wxEventType cbEVT_PL_DRAW_PANE_BKGROUND;
 
-extern wxEventType cbEVT_PL_START_BAR_DRAGGING;
-extern wxEventType cbEVT_PL_DRAW_HINT_RECT;
+extern WXDLLIMPEXP_FL wxEventType cbEVT_PL_START_BAR_DRAGGING;
+extern WXDLLIMPEXP_FL wxEventType cbEVT_PL_DRAW_HINT_RECT;
 
-extern wxEventType cbEVT_PL_START_DRAW_IN_AREA;
-extern wxEventType cbEVT_PL_FINISH_DRAW_IN_AREA;
+extern WXDLLIMPEXP_FL wxEventType cbEVT_PL_START_DRAW_IN_AREA;
+extern WXDLLIMPEXP_FL wxEventType cbEVT_PL_FINISH_DRAW_IN_AREA;
 
-extern wxEventType cbEVT_PL_CUSTOMIZE_BAR;
-extern wxEventType cbEVT_PL_CUSTOMIZE_LAYOUT;
+extern WXDLLIMPEXP_FL wxEventType cbEVT_PL_CUSTOMIZE_BAR;
+extern WXDLLIMPEXP_FL wxEventType cbEVT_PL_CUSTOMIZE_LAYOUT;
 
-extern wxEventType wxCUSTOM_CB_PLUGIN_EVENTS_START_AT;
+extern WXDLLIMPEXP_FL wxEventType wxCUSTOM_CB_PLUGIN_EVENTS_START_AT;
 
 // Forward declarations, separated by categories.
 

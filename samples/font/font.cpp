@@ -4,7 +4,7 @@
 // Author:      Vadim Zeitlin
 // Modified by:
 // Created:     30.09.99
-// RCS-ID:      $Id: font.cpp,v 1.47 2004/10/06 20:53:15 ABX Exp $
+// RCS-ID:      $Id: font.cpp,v 1.49 2005/03/30 16:49:23 JS Exp $
 // Copyright:   (c) 1999 Vadim Zeitlin
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -31,6 +31,8 @@
 #include "wx/encconv.h"
 #include "wx/splitter.h"
 #include "wx/textfile.h"
+
+#include "../sample.xpm"
 
 #ifdef __WXMAC__
 #undef wxFontDialog
@@ -234,6 +236,8 @@ MyFrame::MyFrame(const wxString& title, const wxPoint& pos, const wxSize& size)
 {
     m_fontSize = 12;
 
+    SetIcon(wxIcon(sample_xpm));
+    
     // create a menu bar
     wxMenu *menuFile = new wxMenu;
 
@@ -737,7 +741,7 @@ void MyCanvas::OnPaint( wxPaintEvent &WXUNUSED(event) )
     fontInfo.Printf(wxT("Font size is %d points, family: %s, encoding: %s"),
                     m_font.GetPointSize(),
                     m_font.GetFamilyString().c_str(),
-                    wxFontMapper::Get()->
+                    wxFontMapper::
                         GetEncodingDescription(m_font.GetEncoding()).c_str());
 
     dc.DrawText(fontInfo, x, y);

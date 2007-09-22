@@ -4,7 +4,7 @@
 // Author:      Vadim Zeitlin
 // Modified by:
 // Created:     03.02.99
-// RCS-ID:      $Id: ioswrap.h,v 1.8 2004/05/23 20:50:23 JS Exp $
+// RCS-ID:      $Id: ioswrap.h,v 1.9 2005/04/12 21:06:03 ABX Exp $
 // Copyright:   (c) 1998 Vadim Zeitlin <zeitlin@dptmaths.ens-cachan.fr>
 // Licence:     wxWindows licence
 ///////////////////////////////////////////////////////////////////////////////
@@ -15,6 +15,10 @@
 #   include <iostream.h>
 #else
 #   include <iostream>
+#endif
+
+#ifdef __WXMSW__
+#   include "wx/msw/winundef.h"
 #endif
 
 #endif

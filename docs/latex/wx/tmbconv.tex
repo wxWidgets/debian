@@ -4,19 +4,19 @@
 %% Author:      Ove Kaaven
 %% Modified by:
 %% Created:     25.03.00
-%% RCS-ID:      $Id: tmbconv.tex,v 1.7 2004/09/20 11:21:04 ABX Exp $
+%% RCS-ID:      $Id: tmbconv.tex,v 1.11 2005/04/08 14:33:36 MW Exp $
 %% Copyright:   (c) 2000 Ove Kaaven
-%% Licence:     wxWidgets license
+%% Licence:     wxWindows licence
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \section{wxMBConv classes overview}\label{mbconvclasses}
 
 Classes: \helpref{wxMBConv}{wxmbconv}, wxMBConvLibc, 
 \helpref{wxMBConvUTF7}{wxmbconvutf7}, \helpref{wxMBConvUTF8}{wxmbconvutf8}, 
-\helpref{wxCSConv}{wxcsconv},
+\helpref{wxCSConv}{wxcsconv}, 
 \helpref{wxMBConvUTF16}{wxmbconvutf16}, \helpref{wxMBConvUTF32}{wxmbconvutf32}
 
-The wxMBConv classes in wxWidgets enables an Unicode-aware application to
+The wxMBConv classes in wxWidgets enable an Unicode-aware application to
 easily convert between Unicode and the variety of 8-bit encoding systems still
 in use.
 
@@ -52,7 +52,7 @@ literals).
 But often, your environment doesn't want Unicode strings. You could be sending
 data over a network, or processing a text file for some other application. You
 need a way to quickly convert your easily-handled Unicode data to and from a
-traditional 8-bit-encoding. And this is what the wxMBConv classes do.
+traditional 8-bit encoding. And this is what the wxMBConv classes do.
 
 \subsection{wxMBConv classes}\label{wxmbconvclasses}
 
@@ -66,7 +66,7 @@ is override the MB2WC and WC2MB methods.
 \subsection{wxMBConv objects}\label{wxmbconvobjects}
 
 Several of the wxWidgets-provided wxMBConv classes have predefined instances
-(wxConvLibc, wxConvFile, wxConvUTF7, wxConvUTF8, wxConvLocal). You can use
+(wxConvLibc, wxConvFileName, wxConvUTF7, wxConvUTF8, wxConvLocal). You can use
 these predefined objects directly, or you can instantiate your own objects.
 
 A variable, wxConvCurrent, points to the conversion object that the user

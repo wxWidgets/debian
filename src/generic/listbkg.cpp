@@ -4,7 +4,7 @@
 // Author:      Vadim Zeitlin
 // Modified by:
 // Created:     19.08.03
-// RCS-ID:      $Id: listbkg.cpp,v 1.23 2004/11/08 19:54:24 ABX Exp $
+// RCS-ID:      $Id: listbkg.cpp,v 1.26 2005/02/11 00:22:54 RD Exp $
 // Copyright:   (c) 2003 Vadim Zeitlin <vadim@wxwindows.org>
 // Licence:     wxWindows licence
 ///////////////////////////////////////////////////////////////////////////////
@@ -62,7 +62,7 @@ const wxEventType wxEVT_COMMAND_LISTBOOK_PAGE_CHANGING = wxNewEventType();
 const wxEventType wxEVT_COMMAND_LISTBOOK_PAGE_CHANGED = wxNewEventType();
 const int wxID_LISTBOOKLISTVIEW = wxNewId();
 
-BEGIN_EVENT_TABLE(wxListbook, wxBookCtrl)
+BEGIN_EVENT_TABLE(wxListbook, wxBookCtrlBase)
     EVT_SIZE(wxListbook::OnSize)
     EVT_LIST_ITEM_SELECTED(wxID_LISTBOOKLISTVIEW, wxListbook::OnListSelected)
 END_EVENT_TABLE()
@@ -134,7 +134,7 @@ wxListbook::Create(wxWindow *parent,
 #ifdef __WXMSW__
     // On XP with themes enabled the GetViewRect used in GetListSize to
     // determine the space needed for the list view will incorrectly return
-    // (0,0,0,0) the first time.  So send a pending event so OnSize wiull be
+    // (0,0,0,0) the first time.  So send a pending event so OnSize will be
     // called again after the window is ready to go.  Technically we don't
     // need to do this on non-XP windows, but if things are already sized
     // correctly then nothing changes and so there is no harm.
@@ -172,7 +172,7 @@ wxRect wxListbook::GetPageRect() const
 {
     const wxSize sizeList = m_list->GetSize();
 
-    wxPoint pt(0, 0);
+    wxPoint pt;
     wxRect rectPage(pt, GetClientSize());
     switch ( GetWindowStyle() & wxLB_ALIGN_MASK )
     {
@@ -334,7 +334,7 @@ void wxListbook::SetImageList(wxImageList *imageList)
 {
     m_list->SetImageList(imageList, wxIMAGE_LIST_NORMAL);
 
-    wxBookCtrl::SetImageList(imageList);
+    wxBookCtrlBase::SetImageList(imageList);
 }
 
 // ----------------------------------------------------------------------------
@@ -393,7 +393,7 @@ wxListbook::InsertPage(size_t n,
                        bool bSelect,
                        int imageId)
 {
-    if ( !wxBookCtrl::InsertPage(n, page, text, bSelect, imageId) )
+    if ( !wxBookCtrlBase::InsertPage(n, page, text, bSelect, imageId) )
         return false;
 
     m_list->InsertItem(n, text, imageId);
@@ -429,7 +429,7 @@ wxListbook::InsertPage(size_t n,
 wxWindow *wxListbook::DoRemovePage(size_t page)
 {
     const int page_count = GetPageCount();
-    wxWindow *win = wxBookCtrl::DoRemovePage(page);
+    wxWindow *win = wxBookCtrlBase::DoRemovePage(page);
 
     if ( win )
     {
@@ -459,7 +459,7 @@ wxWindow *wxListbook::DoRemovePage(size_t page)
 bool wxListbook::DeleteAllPages()
 {
     m_list->DeleteAllItems();
-    return wxBookCtrl::DeleteAllPages();
+    return wxBookCtrlBase::DeleteAllPages();
 }
 
 // ----------------------------------------------------------------------------

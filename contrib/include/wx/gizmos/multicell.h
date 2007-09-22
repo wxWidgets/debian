@@ -4,7 +4,7 @@
 // Author:      Jonathan Bayer
 // Modified by:
 // Created:
-// RCS-ID:      $Id: multicell.h,v 1.7 2004/06/08 19:27:28 ABX Exp $
+// RCS-ID:      $Id: multicell.h,v 1.9 2005/02/25 20:38:11 ABX Exp $
 // Copyright:   (c) Jonathan Bayer
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -49,7 +49,7 @@ enum wxResizable
 
 class WXDLLIMPEXP_GIZMOS wxMultiCellItemHandle: public wxObject
 {
-    DECLARE_CLASS(wxMultiCellItemHandle);
+    DECLARE_CLASS(wxMultiCellItemHandle)
 protected:
     int             m_column;
     int             m_row;
@@ -64,7 +64,6 @@ public:
     wxMultiCellItemHandle( int row, int column, int height = 1, int width = 1, wxSize size = wxDefaultSize, wxResizable style = wxNOT_RESIZABLE, wxSize weight = wxSize(1,1), int align = wxALIGN_NOT);
     wxMultiCellItemHandle( int row, int column, wxSize size, wxResizable style = wxNOT_RESIZABLE, wxSize weight = wxSize(1,1), int align = wxALIGN_NOT);
     wxMultiCellItemHandle( int row, int column, wxResizable style, wxSize weight = wxSize(1,1), int align = wxALIGN_NOT);
-    wxMultiCellItemHandle( int row, int column, int align);
     int             GetColumn();
     int             GetRow();
     int             GetWidth();
@@ -85,7 +84,7 @@ private:
 
 class WXDLLIMPEXP_GIZMOS wxMultiCellSizer : virtual public wxSizer
 {
-    DECLARE_CLASS(wxMultiCellSizer);
+    DECLARE_CLASS(wxMultiCellSizer)
 
 protected:
     wxSize m_cell_count;

@@ -5,7 +5,7 @@
 // Author:      Vadim Zeitlin
 // Modified by:
 // Created:     29/01/98
-// RCS-ID:      $Id: file.h,v 1.41 2004/11/12 03:29:48 RL Exp $
+// RCS-ID:      $Id: file.h,v 1.47 2005/06/08 15:17:42 ABX Exp $
 // Copyright:   (c) 1998 Vadim Zeitlin <zeitlin@dptmaths.ens-cachan.fr>
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -17,11 +17,13 @@
 #pragma interface "file.h"
 #endif
 
+#include  "wx/defs.h"
+
+#if wxUSE_FILE
+
 #include  "wx/string.h"
 #include  "wx/filefn.h"
 #include  "wx/strconv.h"
-
-#if wxUSE_FILE
 
 // ----------------------------------------------------------------------------
 // constants
@@ -77,7 +79,7 @@ public:
     // open specified file (may fail, use IsOpened())
   wxFile(const wxChar *szFileName, OpenMode mode = read);
     // attach to (already opened) file
-  wxFile(int fd) { m_fd = fd; m_error = false; }
+  wxFile(int lfd) { m_fd = lfd; m_error = false; }
 
   // open/close
     // create a new file (with the default value of bOverwrite, it will fail if
@@ -89,7 +91,7 @@ public:
   bool Close();  // Close is a NOP if not opened
 
   // assign an existing file descriptor and get it back from wxFile object
-  void Attach(int fd) { Close(); m_fd = fd; m_error = false; }
+  void Attach(int lfd) { Close(); m_fd = lfd; m_error = false; }
   void Detach()       { m_fd = fd_invalid;  }
   int  fd() const { return m_fd; }
 
@@ -123,8 +125,10 @@ public:
   bool IsOpened() const { return m_fd != fd_invalid; }
     // is end of file reached?
   bool Eof() const;
-    // has an error occured?
+    // has an error occurred?
   bool Error() const { return m_error; }
+    // type such as disk or pipe
+  wxFileKind GetKind() const { return wxGetFileKind(m_fd); }
 
   // dtor closes the file if opened
   ~wxFile() { Close(); }
@@ -162,6 +166,13 @@ public:
 
   // is the file opened?
   bool IsOpened() const { return m_file.IsOpened(); }
+    // get current file length
+  wxFileOffset Length() const { return m_file.Length(); }
+    // move ptr ofs bytes related to start/current offset/end of file
+  wxFileOffset Seek(wxFileOffset ofs, wxSeekMode mode = wxFromStart)
+    { return m_file.Seek(ofs, mode); }
+    // get current offset
+  wxFileOffset Tell() const { return m_file.Tell(); }
 
   // I/O (both functions return true on success, false on failure)
   bool Write(const void *p, size_t n) { return m_file.Write(p, n) == n; }

@@ -4,7 +4,7 @@
 // Author:      Guilhem Lavaux, Guillermo Rodriguez Garcia, Vadim Zeitlin
 // Modified by:
 // Created:     11/07/98
-// RCS-ID:      $Id: stream.h,v 1.64 2004/11/10 21:10:15 VZ Exp $
+// RCS-ID:      $Id: stream.h,v 1.70 2005/06/24 16:44:18 RL Exp $
 // Copyright:   (c) Guilhem Lavaux
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -85,10 +85,13 @@ public:
     virtual size_t GetSize() const;
     virtual wxFileOffset GetLength() const { return wxInvalidOffset; }
 
+    // returns true if the streams supports seeking to arbitrary offsets
+    virtual bool IsSeekable() const { return false; }
+
 #if WXWIN_COMPATIBILITY_2_2
     // deprecated, for compatibility only
-    wxStreamError LastError() const { return m_lasterror; }
-    size_t StreamSize() const { return GetSize(); }
+    wxDEPRECATED( wxStreamError LastError() const );
+    wxDEPRECATED( size_t StreamSize() const );
 #endif // WXWIN_COMPATIBILITY_2_2
 
 protected:
@@ -208,7 +211,7 @@ public:
 protected:
     // do read up to size bytes of data into the provided buffer
     //
-    // this method should return 0 if EOF has been reached or an error occured
+    // this method should return 0 if EOF has been reached or an error occurred
     // (m_lasterror should be set accordingly as well) or the number of bytes
     // read
     virtual size_t OnSysRead(void *buffer, size_t size) = 0;
@@ -257,6 +260,7 @@ public:
     virtual size_t LastWrite() const { return wxStreamBase::m_lastcount; }
 
     virtual void Sync();
+    virtual bool Close() { return true; }
 
     wxOutputStream& operator<<(wxInputStream& out) { return Write(out); }
     wxOutputStream& operator<<( __wxOutputManip func) { return func(*this); }
@@ -478,6 +482,7 @@ public:
     // Position functions
     wxFileOffset SeekI(wxFileOffset pos, wxSeekMode mode = wxFromStart);
     wxFileOffset TellI() const;
+    bool IsSeekable() const { return m_parent_i_stream->IsSeekable(); }
 
     // the buffer given to the stream will be deleted by it
     void SetInputStreamBuffer(wxStreamBuffer *buffer);
@@ -513,8 +518,10 @@ public:
     // Position functions
     wxFileOffset SeekO(wxFileOffset pos, wxSeekMode mode = wxFromStart);
     wxFileOffset TellO() const;
+    bool IsSeekable() const { return m_parent_o_stream->IsSeekable(); }
 
     void Sync();
+    bool Close();
 
     wxFileOffset GetLength() const;
 

@@ -2,7 +2,7 @@
 // Name:        gtk/clipbrd.cpp
 // Purpose:
 // Author:      Robert Roebling
-// Id:          $Id: clipbrd.cpp,v 1.58 2004/06/10 19:37:03 VS Exp $
+// Id:          $Id: clipbrd.cpp,v 1.59 2005/03/21 23:42:15 VZ Exp $
 // Copyright:   (c) 1998 Robert Roebling
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -78,6 +78,7 @@ struct _GtkSelectionData
 // "selection_received" for targets
 //-----------------------------------------------------------------------------
 
+extern "C" {
 static void
 targets_selection_received( GtkWidget *WXUNUSED(widget),
                             GtkSelectionData *selection_data,
@@ -133,11 +134,13 @@ targets_selection_received( GtkWidget *WXUNUSED(widget),
 
     clipboard->m_waiting = FALSE;
 }
+}
 
 //-----------------------------------------------------------------------------
 // "selection_received" for the actual data
 //-----------------------------------------------------------------------------
 
+extern "C" {
 static void
 selection_received( GtkWidget *WXUNUSED(widget),
                     GtkSelectionData *selection_data,
@@ -189,11 +192,13 @@ selection_received( GtkWidget *WXUNUSED(widget),
     wxTheClipboard->m_formatSupported = TRUE;
     clipboard->m_waiting = FALSE;
 }
+}
 
 //-----------------------------------------------------------------------------
 // "selection_clear"
 //-----------------------------------------------------------------------------
 
+extern "C" {
 static gint
 selection_clear_clip( GtkWidget *WXUNUSED(widget), GdkEventSelection *event )
 {
@@ -230,11 +235,13 @@ selection_clear_clip( GtkWidget *WXUNUSED(widget), GdkEventSelection *event )
     wxTheClipboard->m_waiting = FALSE;
     return TRUE;
 }
+}
 
 //-----------------------------------------------------------------------------
 // selection handler for supplying data
 //-----------------------------------------------------------------------------
 
+extern "C" {
 static void
 selection_handler( GtkWidget *WXUNUSED(widget),
                    GtkSelectionData *selection_data,
@@ -294,6 +301,7 @@ selection_handler( GtkWidget *WXUNUSED(widget),
     }
 
     free(d);
+}
 }
 
 //-----------------------------------------------------------------------------

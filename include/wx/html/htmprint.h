@@ -3,8 +3,8 @@
 // Purpose:     html printing classes
 // Author:      Vaclav Slavik
 // Created:     25/09/99
-// RCS-ID:      $Id: htmprint.h,v 1.26 2004/10/31 23:43:41 RR Exp $
-// Copyright:   (c)
+// RCS-ID:      $Id: htmprint.h,v 1.28 2005/05/04 18:52:47 JS Exp $
+// Copyright:   (c) Vaclav Slavik
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
 
@@ -81,7 +81,8 @@ public:
     // set the same pagebreak twice.
     //
     // CAUTION! Render() changes DC's user scale and does NOT restore it!
-    int Render(int x, int y, int from = 0, int dont_render = FALSE, int to = INT_MAX,
+    int Render(int x, int y, int from = 0, int dont_render = FALSE,
+               int maxHeight = INT_MAX,
                int *known_pagebreaks = NULL, int number_of_pages = 0);
 
     // returns total height of the html document

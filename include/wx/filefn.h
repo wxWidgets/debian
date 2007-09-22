@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     29/01/98
-// RCS-ID:      $Id: filefn.h,v 1.112 2004/11/10 21:01:59 VZ Exp $
+// RCS-ID:      $Id: filefn.h,v 1.125 2005/05/19 17:03:10 MW Exp $
 // Copyright:   (c) 1998 Julian Smart
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -59,7 +59,7 @@
 #endif
 
 #if defined(__WINDOWS__) && !defined(__WXMICROWIN__)
-#if !defined( __GNUWIN32__ ) && !defined( __MWERKS__ ) && !defined(__SALFORDC__) && !defined(__WXWINCE__)
+#if !defined( __GNUWIN32__ ) && !defined( __MWERKS__ ) && !defined(__SALFORDC__) && !defined(__WXWINCE__) && !defined(__CYGWIN__)
     #include <direct.h>
     #include <dos.h>
     #include <io.h>
@@ -122,6 +122,14 @@ enum wxSeekMode
   wxFromEnd
 };
 
+enum wxFileKind
+{
+  wxFILE_KIND_UNKNOWN,
+  wxFILE_KIND_DISK,     // a file supporting seeking to arbitrary offsets
+  wxFILE_KIND_TERMINAL, // a tty
+  wxFILE_KIND_PIPE      // a pipe
+};
+
 // ----------------------------------------------------------------------------
 // declare our versions of low level file functions: some compilers prepend
 // underscores to the usual names, some also have Unicode versions of them
@@ -143,25 +151,10 @@ enum wxSeekMode
     #define wxLSeek wxSeek
     wxFileOffset wxTell(int fd);
 
-    #if wxUSE_UNICODE
-        #if wxUSE_UNICODE_MSLU
-            #define   wxMkDir      wxMSLU__wmkdir
-            #define   wxRmDir      wxMSLU__wrmdir
-            #define   wxStat       wxMSLU__wstat
-        #else
-            #define   wxMkDir      _wmkdir
-            #define   wxRmDir      _wrmdir
-            #define   wxStat       _wstat
-        #endif
-    #else // !wxUSE_UNICODE
-        #define   wxMkDir      _mkdir
-        #ifdef __WATCOMC__
-            #define   wxRmDir      rmdir
-        #else
-            #define   wxRmDir      _rmdir
-        #endif
-        #define   wxStat       _stat
-    #endif
+    // always Unicode under WinCE
+    #define   wxMkDir      _wmkdir
+    #define   wxRmDir      _wrmdir
+    #define   wxStat       _wstat
     #define   wxStructStat struct _stat
 
 // Microsoft compiler loves underscores, feed them to it
@@ -173,7 +166,7 @@ enum wxSeekMode
 
     // detect compilers which have support for huge files (currently only
     // Digital Mars doesn't)
-    #ifndef __PALMOS__
+    #ifndef __WXPALMOS__
     #include "wx/msw/private.h"
     #endif
 
@@ -299,7 +292,7 @@ enum wxSeekMode
     #endif
 
     // constants (unless already defined by the user code)
-    #if !defined(__BORLANDC__) && !defined(__WATCOMC__) && !defined(__PALMOS__)
+    #if !defined(__BORLANDC__) && !defined(__WATCOMC__) && !defined(__WXPALMOS__)
         #ifndef O_RDONLY
             #define   O_RDONLY    _O_RDONLY
             #define   O_WRONLY    _O_WRONLY
@@ -374,7 +367,7 @@ const int wxInvalidOffset = -1;
 WXDLLIMPEXP_BASE bool wxFileExists(const wxString& filename);
 
 // does the path exist? (may have or not '/' or '\\' at the end)
-WXDLLIMPEXP_BASE bool wxPathExists(const wxChar *pszPathName);
+WXDLLIMPEXP_BASE bool wxDirExists(const wxChar *pszPathName);
 
 WXDLLIMPEXP_BASE bool wxIsAbsolutePath(const wxString& filename);
 
@@ -464,8 +457,19 @@ WXDLLIMPEXP_BASE bool wxMkdir(const wxString& dir, int perm = 0777);
 // Remove directory. Flags reserved for future use.
 WXDLLIMPEXP_BASE bool wxRmdir(const wxString& dir, int flags = 0);
 
+// Return the type of an open file
+WXDLLIMPEXP_BASE wxFileKind wxGetFileKind(int fd);
+WXDLLIMPEXP_BASE wxFileKind wxGetFileKind(FILE *fp);
+
 // compatibility defines, don't use in new code
-#define wxDirExists wxPathExists
+// consider removal droping 2.4 compatibility
+// #if WXWIN_COMPATIBILITY_2_4
+wxDEPRECATED( inline bool wxPathExists(const wxChar *pszPathName) );
+inline bool wxPathExists(const wxChar *pszPathName)
+{
+    return wxDirExists(pszPathName);
+}
+// #endif //WXWIN_COMPATIBILITY_2_4
 
 // ----------------------------------------------------------------------------
 // separators in file names

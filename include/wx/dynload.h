@@ -5,7 +5,7 @@
 //               (derived in part from dynlib.cpp (c) 1998 Guilhem Lavaux)
 // Modified by:
 // Created:      03/12/01
-// RCS-ID:       $Id: dynload.h,v 1.23 2004/10/13 14:03:57 ABX Exp $
+// RCS-ID:       $Id: dynload.h,v 1.24 2005/01/07 20:03:08 ABX Exp $
 // Copyright:    (c) 2001 Ron Lee <ron@debian.org>
 // Licence:      wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -116,7 +116,7 @@ public:
         // macro because it's of arguable use outside of that.
 
 #if WXWIN_COMPATIBILITY_2_2
-    static wxPluginLibrary *GetObjectFromHandle(wxDllType handle);
+    wxDEPRECATED( static wxPluginLibrary *GetObjectFromHandle(wxDllType handle) );
 #endif
 
         // Instance methods.

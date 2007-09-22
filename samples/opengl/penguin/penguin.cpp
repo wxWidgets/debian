@@ -4,7 +4,7 @@
 // Author:      Robert Roebling
 // Modified by:
 // Created:     04/01/98
-// RCS-ID:      $Id: penguin.cpp,v 1.11 2004/10/13 21:19:38 VZ Exp $
+// RCS-ID:      $Id: penguin.cpp,v 1.12 2005/02/26 20:03:27 JS Exp $
 // Copyright:   (c) Robert Roebling
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -40,12 +40,13 @@
 #  include <GL/glu.h>
 #endif
 
+#include "../../sample.xpm"
+
 #define VIEW_ASPECT 1.3
 
 // `Main program' equivalent, creating windows and returning main app frame
 bool MyApp::OnInit()
 {
-
     // Create the main frame window
     MyFrame *frame = new MyFrame(NULL, wxT("wxWidgets OpenGL Penguin Sample"),
         wxDefaultPosition, wxDefaultSize);
@@ -82,6 +83,7 @@ MyFrame::MyFrame(wxFrame *frame, const wxString& title, const wxPoint& pos,
     : wxFrame(frame, wxID_ANY, title, pos, size, style)
 {
     m_canvas = NULL;
+    SetIcon(wxIcon(sample_xpm));
 }
 
 /* Intercept menu commands */
@@ -100,7 +102,7 @@ END_EVENT_TABLE()
 
 TestGLCanvas::TestGLCanvas(wxWindow *parent, wxWindowID id,
     const wxPoint& pos, const wxSize& size, long style, const wxString& name)
-    : wxGLCanvas(parent, id, pos, size, style, name)
+    : wxGLCanvas(parent, id, pos, size, style|wxFULL_REPAINT_ON_RESIZE, name)
 {
     block = false;
 }

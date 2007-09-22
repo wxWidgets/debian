@@ -6,7 +6,7 @@
 /////////////////////////////////////////////////////////////////////////////
 
 #ifdef __GNUG__
-    #pragma implementation "wxedit.cpp"
+    #pragma implementation "wxedit.h"
 #endif
 
 // For compilers that support precompilation
@@ -229,6 +229,8 @@ void MyFrame::OnOpen( wxCommandEvent& WXUNUSED(event) )
         m_text->Clear();
 
 #ifdef __WXX11__
+        // requires wxUSE_UNIV_TEXTCTRL to be set to 0
+#if 0
         wxFileName fname( dialog.GetPath() );
         if ((fname.GetExt() == _T("cpp")) ||
             (fname.GetExt() == _T("c")) ||
@@ -253,6 +255,7 @@ void MyFrame::OnOpen( wxCommandEvent& WXUNUSED(event) )
         {
             m_text->SetLanguage( wxSOURCE_LANG_NONE );
         }
+#endif
 #endif
 
         m_filename = dialog.GetPath();

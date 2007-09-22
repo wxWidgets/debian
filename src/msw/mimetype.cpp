@@ -4,7 +4,7 @@
 // Author:      Vadim Zeitlin
 // Modified by:
 // Created:     23.09.98
-// RCS-ID:      $Id: mimetype.cpp,v 1.31 2004/11/04 20:12:04 ABX Exp $
+// RCS-ID:      $Id: mimetype.cpp,v 1.32 2005/06/07 19:16:15 ABX Exp $
 // Copyright:   (c) 1998 Vadim Zeitlin <zeitlin@dptmaths.ens-cachan.fr>
 // Licence:     wxWindows licence (part of wxExtra library)
 /////////////////////////////////////////////////////////////////////////////
@@ -787,7 +787,6 @@ bool wxFileTypeImpl::RemoveCommand(const wxString& verb)
     wxCHECK_MSG( !m_ext.empty() && !verb.empty(), false,
                  _T("RemoveCommand() needs an extension and a verb") );
 
-    wxString  sKey = m_strFileType;
     wxRegKey rkey(wxRegKey::HKCR, GetVerbPath(verb));
 
     // if the key already doesn't exist, it's a success

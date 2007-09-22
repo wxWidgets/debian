@@ -3,6 +3,47 @@
 
 import _misc_
 
+def _swig_setattr_nondynamic(self,class_type,name,value,static=1):
+    if (name == "this"):
+        if isinstance(value, class_type):
+            self.__dict__[name] = value.this
+            if hasattr(value,"thisown"): self.__dict__["thisown"] = value.thisown
+            del value.thisown
+            return
+    method = class_type.__swig_setmethods__.get(name,None)
+    if method: return method(self,value)
+    if (not static) or hasattr(self,name) or (name == "thisown"):
+        self.__dict__[name] = value
+    else:
+        raise AttributeError("You cannot add attributes to %s" % self)
+
+def _swig_setattr(self,class_type,name,value):
+    return _swig_setattr_nondynamic(self,class_type,name,value,0)
+
+def _swig_getattr(self,class_type,name):
+    method = class_type.__swig_getmethods__.get(name,None)
+    if method: return method(self)
+    raise AttributeError,name
+
+import types
+try:
+    _object = types.ObjectType
+    _newclass = 1
+except AttributeError:
+    class _object : pass
+    _newclass = 0
+del types
+
+
+def _swig_setattr_nondynamic_method(set):
+    def set_attr(self,name,value):
+        if hasattr(self,name) or (name in ("this", "thisown")):
+            set(self,name,value)
+        else:
+            raise AttributeError("You cannot add attributes to %s" % self)
+    return set_attr
+
+
 import _core
 wx = _core 
 #---------------------------------------------------------------------------
@@ -99,6 +140,7 @@ SYS_SCREEN_PDA = _misc_.SYS_SCREEN_PDA
 SYS_SCREEN_SMALL = _misc_.SYS_SCREEN_SMALL
 SYS_SCREEN_DESKTOP = _misc_.SYS_SCREEN_DESKTOP
 class SystemSettings(object):
+    """Proxy of C++ SystemSettings class"""
     def __init__(self): raise RuntimeError, "No constructor defined"
     def __repr__(self):
         return "<%s.%s; proxy of C++ wxSystemSettings instance at %s>" % (self.__class__.__module__, self.__class__.__name__, self.this,)
@@ -113,7 +155,7 @@ class SystemSettings(object):
 
     GetFont = staticmethod(GetFont)
     def GetMetric(*args, **kwargs):
-        """GetMetric(int index) -> int"""
+        """GetMetric(int index, Window win=None) -> int"""
         return _misc_.SystemSettings_GetMetric(*args, **kwargs)
 
     GetMetric = staticmethod(GetMetric)
@@ -149,7 +191,7 @@ def SystemSettings_GetFont(*args, **kwargs):
     return _misc_.SystemSettings_GetFont(*args, **kwargs)
 
 def SystemSettings_GetMetric(*args, **kwargs):
-    """SystemSettings_GetMetric(int index) -> int"""
+    """SystemSettings_GetMetric(int index, Window win=None) -> int"""
     return _misc_.SystemSettings_GetMetric(*args, **kwargs)
 
 def SystemSettings_HasFeature(*args, **kwargs):
@@ -165,6 +207,7 @@ def SystemSettings_SetScreenType(*args, **kwargs):
     return _misc_.SystemSettings_SetScreenType(*args, **kwargs)
 
 class SystemOptions(_core.Object):
+    """Proxy of C++ SystemOptions class"""
     def __repr__(self):
         return "<%s.%s; proxy of C++ wxSystemOptions instance at %s>" % (self.__class__.__module__, self.__class__.__name__, self.this,)
     def __init__(self, *args, **kwargs):
@@ -198,6 +241,11 @@ class SystemOptions(_core.Object):
         return _misc_.SystemOptions_HasOption(*args, **kwargs)
 
     HasOption = staticmethod(HasOption)
+    def IsFalse(*args, **kwargs):
+        """IsFalse(String name) -> bool"""
+        return _misc_.SystemOptions_IsFalse(*args, **kwargs)
+
+    IsFalse = staticmethod(IsFalse)
 
 class SystemOptionsPtr(SystemOptions):
     def __init__(self, this):
@@ -228,6 +276,10 @@ def SystemOptions_HasOption(*args, **kwargs):
     """SystemOptions_HasOption(String name) -> bool"""
     return _misc_.SystemOptions_HasOption(*args, **kwargs)
 
+def SystemOptions_IsFalse(*args, **kwargs):
+    """SystemOptions_IsFalse(String name) -> bool"""
+    return _misc_.SystemOptions_IsFalse(*args, **kwargs)
+
 #---------------------------------------------------------------------------
 
 
@@ -252,7 +304,7 @@ def IsStockLabel(*args, **kwargs):
     return _misc_.IsStockLabel(*args, **kwargs)
 
 def GetStockLabel(*args, **kwargs):
-    """GetStockLabel(int id) -> String"""
+    """GetStockLabel(int id, bool withCodes=True, String accelerator=EmptyString) -> String"""
     return _misc_.GetStockLabel(*args, **kwargs)
 
 def Bell(*args, **kwargs):
@@ -412,17 +464,17 @@ def GetPasswordFromUser(*args, **kwargs):
 
 def GetSingleChoice(*args, **kwargs):
     """
-    GetSingleChoice(String message, String caption, int choices, String choices_array, 
-        Window parent=None, int x=-1, 
-        int y=-1, bool centre=True, int width=150, int height=200) -> String
+    GetSingleChoice(String message, String caption, int choices, Window parent=None, 
+        int x=-1, int y=-1, bool centre=True, 
+        int width=150, int height=200) -> String
     """
     return _misc_.GetSingleChoice(*args, **kwargs)
 
 def GetSingleChoiceIndex(*args, **kwargs):
     """
-    GetSingleChoiceIndex(String message, String caption, int choices, String choices_array, 
-        Window parent=None, int x=-1, 
-        int y=-1, bool centre=True, int width=150, int height=200) -> int
+    GetSingleChoiceIndex(String message, String caption, int choices, Window parent=None, 
+        int x=-1, int y=-1, bool centre=True, 
+        int width=150, int height=200) -> int
     """
     return _misc_.GetSingleChoiceIndex(*args, **kwargs)
 
@@ -482,6 +534,15 @@ def SetCursor(*args, **kwargs):
     """SetCursor(Cursor cursor)"""
     return _misc_.SetCursor(*args, **kwargs)
 
+def GetXDisplay(*args, **kwargs):
+    """
+    GetXDisplay() -> void
+
+    Returns a swigified pointer to the X11 display.  Returns None on
+    other platforms.
+    """
+    return _misc_.GetXDisplay(*args, **kwargs)
+
 def BeginBusyCursor(*args, **kwargs):
     """BeginBusyCursor(Cursor cursor=wxHOURGLASS_CURSOR)"""
     return _misc_.BeginBusyCursor(*args, **kwargs)
@@ -501,6 +562,16 @@ def FindWindowAtPoint(*args, **kwargs):
 def GetTopLevelParent(*args, **kwargs):
     """GetTopLevelParent(Window win) -> Window"""
     return _misc_.GetTopLevelParent(*args, **kwargs)
+
+def LaunchDefaultBrowser(*args, **kwargs):
+    """
+    LaunchDefaultBrowser(String url) -> bool
+
+    Launches the user's default browser and tells it to open the location
+    at ``url``.  Returns ``True`` if the application was successfully
+    launched.
+    """
+    return _misc_.LaunchDefaultBrowser(*args, **kwargs)
 
 def GetKeyState(*args, **kwargs):
     """
@@ -525,6 +596,7 @@ def MutexGuiLeave(*args, **kwargs):
     """MutexGuiLeave()"""
     return _misc_.MutexGuiLeave(*args, **kwargs)
 class MutexGuiLocker(object):
+    """Proxy of C++ MutexGuiLocker class"""
     def __repr__(self):
         return "<%s.%s; proxy of C++ wxMutexGuiLocker instance at %s>" % (self.__class__.__module__, self.__class__.__name__, self.this,)
     def __init__(self, *args, **kwargs):
@@ -557,6 +629,7 @@ def Thread_IsMain(*args, **kwargs):
 #---------------------------------------------------------------------------
 
 class ToolTip(_core.Object):
+    """Proxy of C++ ToolTip class"""
     def __repr__(self):
         return "<%s.%s; proxy of C++ wxToolTip instance at %s>" % (self.__class__.__module__, self.__class__.__name__, self.this,)
     def __init__(self, *args, **kwargs):
@@ -604,6 +677,7 @@ def ToolTip_SetDelay(*args, **kwargs):
     return _misc_.ToolTip_SetDelay(*args, **kwargs)
 
 class Caret(object):
+    """Proxy of C++ Caret class"""
     def __repr__(self):
         return "<%s.%s; proxy of C++ wxCaret instance at %s>" % (self.__class__.__module__, self.__class__.__name__, self.this,)
     def __init__(self, *args, **kwargs):
@@ -612,11 +686,13 @@ class Caret(object):
         self.this = newobj.this
         self.thisown = 1
         del newobj.thisown
-    def __del__(self, destroy=_misc_.delete_Caret):
-        """__del__(self)"""
-        try:
-            if self.thisown: destroy(self)
-        except: pass
+    def Destroy(*args, **kwargs):
+        """
+        Destroy(self)
+
+        Deletes the C++ object this Python object is a proxy for.
+        """
+        return _misc_.Caret_Destroy(*args, **kwargs)
 
     def IsOk(*args, **kwargs):
         """IsOk(self) -> bool"""
@@ -671,6 +747,16 @@ class Caret(object):
         return _misc_.Caret_Hide(*args, **kwargs)
 
     def __nonzero__(self): return self.IsOk() 
+    def GetBlinkTime(*args, **kwargs):
+        """GetBlinkTime() -> int"""
+        return _misc_.Caret_GetBlinkTime(*args, **kwargs)
+
+    GetBlinkTime = staticmethod(GetBlinkTime)
+    def SetBlinkTime(*args, **kwargs):
+        """SetBlinkTime(int milliseconds)"""
+        return _misc_.Caret_SetBlinkTime(*args, **kwargs)
+
+    SetBlinkTime = staticmethod(SetBlinkTime)
 
 class CaretPtr(Caret):
     def __init__(self, this):
@@ -679,7 +765,6 @@ class CaretPtr(Caret):
         self.__class__ = Caret
 _misc_.Caret_swigregister(CaretPtr)
 
-
 def Caret_GetBlinkTime(*args, **kwargs):
     """Caret_GetBlinkTime() -> int"""
     return _misc_.Caret_GetBlinkTime(*args, **kwargs)
@@ -687,7 +772,9 @@ def Caret_GetBlinkTime(*args, **kwargs):
 def Caret_SetBlinkTime(*args, **kwargs):
     """Caret_SetBlinkTime(int milliseconds)"""
     return _misc_.Caret_SetBlinkTime(*args, **kwargs)
+
 class BusyCursor(object):
+    """Proxy of C++ BusyCursor class"""
     def __repr__(self):
         return "<%s.%s; proxy of C++ wxBusyCursor instance at %s>" % (self.__class__.__module__, self.__class__.__name__, self.this,)
     def __init__(self, *args, **kwargs):
@@ -711,6 +798,7 @@ class BusyCursorPtr(BusyCursor):
 _misc_.BusyCursor_swigregister(BusyCursorPtr)
 
 class WindowDisabler(object):
+    """Proxy of C++ WindowDisabler class"""
     def __repr__(self):
         return "<%s.%s; proxy of C++ wxWindowDisabler instance at %s>" % (self.__class__.__module__, self.__class__.__name__, self.this,)
     def __init__(self, *args, **kwargs):
@@ -734,6 +822,7 @@ class WindowDisablerPtr(WindowDisabler):
 _misc_.WindowDisabler_swigregister(WindowDisablerPtr)
 
 class BusyInfo(_core.Object):
+    """Proxy of C++ BusyInfo class"""
     def __repr__(self):
         return "<%s.%s; proxy of C++ wxBusyInfo instance at %s>" % (self.__class__.__module__, self.__class__.__name__, self.this,)
     def __init__(self, *args, **kwargs):
@@ -757,6 +846,7 @@ class BusyInfoPtr(BusyInfo):
 _misc_.BusyInfo_swigregister(BusyInfoPtr)
 
 class StopWatch(object):
+    """Proxy of C++ StopWatch class"""
     def __repr__(self):
         return "<%s.%s; proxy of C++ wxStopWatch instance at %s>" % (self.__class__.__module__, self.__class__.__name__, self.this,)
     def __init__(self, *args, **kwargs):
@@ -790,6 +880,7 @@ class StopWatchPtr(StopWatch):
 _misc_.StopWatch_swigregister(StopWatchPtr)
 
 class FileHistory(_core.Object):
+    """Proxy of C++ FileHistory class"""
     def __repr__(self):
         return "<%s.%s; proxy of C++ wxFileHistory instance at %s>" % (self.__class__.__module__, self.__class__.__name__, self.this,)
     def __init__(self, *args, **kwargs):
@@ -858,6 +949,7 @@ class FileHistoryPtr(FileHistory):
 _misc_.FileHistory_swigregister(FileHistoryPtr)
 
 class SingleInstanceChecker(object):
+    """Proxy of C++ SingleInstanceChecker class"""
     def __repr__(self):
         return "<%s.%s; proxy of C++ wxSingleInstanceChecker instance at %s>" % (self.__class__.__module__, self.__class__.__name__, self.this,)
     def __init__(self, *args, **kwargs):
@@ -896,11 +988,12 @@ def PreSingleInstanceChecker(*args, **kwargs):
 
 
 def DrawWindowOnDC(*args, **kwargs):
-    """DrawWindowOnDC(Window window, DC dc, int method)"""
+    """DrawWindowOnDC(Window window, DC dc) -> bool"""
     return _misc_.DrawWindowOnDC(*args, **kwargs)
 #---------------------------------------------------------------------------
 
 class TipProvider(object):
+    """Proxy of C++ TipProvider class"""
     def __init__(self): raise RuntimeError, "No constructor defined"
     def __repr__(self):
         return "<%s.%s; proxy of C++ wxTipProvider instance at %s>" % (self.__class__.__module__, self.__class__.__name__, self.this,)
@@ -931,6 +1024,7 @@ class TipProviderPtr(TipProvider):
 _misc_.TipProvider_swigregister(TipProviderPtr)
 
 class PyTipProvider(TipProvider):
+    """Proxy of C++ PyTipProvider class"""
     def __repr__(self):
         return "<%s.%s; proxy of C++ wxPyTipProvider instance at %s>" % (self.__class__.__module__, self.__class__.__name__, self.this,)
     def __init__(self, *args, **kwargs):
@@ -967,6 +1061,7 @@ TIMER_CONTINUOUS = _misc_.TIMER_CONTINUOUS
 TIMER_ONE_SHOT = _misc_.TIMER_ONE_SHOT
 wxEVT_TIMER = _misc_.wxEVT_TIMER
 class Timer(_core.EvtHandler):
+    """Proxy of C++ Timer class"""
     def __repr__(self):
         return "<%s.%s; proxy of C++ wxPyTimer instance at %s>" % (self.__class__.__module__, self.__class__.__name__, self.this,)
     def __init__(self, *args, **kwargs):
@@ -975,7 +1070,7 @@ class Timer(_core.EvtHandler):
         self.this = newobj.this
         self.thisown = 1
         del newobj.thisown
-        self._setCallbackInfo(self, Timer, 0); self._setOORInfo(self)
+        self._setCallbackInfo(self, Timer, 0); self._setOORInfo(self, 0)
 
     def __del__(self, destroy=_misc_.delete_Timer):
         """__del__(self)"""
@@ -1019,6 +1114,10 @@ class Timer(_core.EvtHandler):
         """GetId(self) -> int"""
         return _misc_.Timer_GetId(*args, **kwargs)
 
+    def Destroy(self):
+        """NO-OP: Timers must be destroyed by normal refrence counting"""
+        pass
+
 
 class TimerPtr(Timer):
     def __init__(self, this):
@@ -1042,6 +1141,7 @@ EVT_TIMER = wx.PyEventBinder( wxEVT_TIMER, 1 )
 
 
 class TimerEvent(_core.Event):
+    """Proxy of C++ TimerEvent class"""
     def __repr__(self):
         return "<%s.%s; proxy of C++ wxTimerEvent instance at %s>" % (self.__class__.__module__, self.__class__.__name__, self.this,)
     def __init__(self, *args, **kwargs):
@@ -1063,6 +1163,7 @@ class TimerEventPtr(TimerEvent):
 _misc_.TimerEvent_swigregister(TimerEventPtr)
 
 class TimerRunner(object):
+    """Proxy of C++ TimerRunner class"""
     def __repr__(self):
         return "<%s.%s; proxy of C++ wxTimerRunner instance at %s>" % (self.__class__.__module__, self.__class__.__name__, self.this,)
     def __init__(self, *args):
@@ -1116,6 +1217,7 @@ TraceResAlloc = _misc_.TraceResAlloc
 TraceRefCount = _misc_.TraceRefCount
 TraceOleCalls = _misc_.TraceOleCalls
 class Log(object):
+    """Proxy of C++ Log class"""
     def __repr__(self):
         return "<%s.%s; proxy of C++ wxLog instance at %s>" % (self.__class__.__module__, self.__class__.__name__, self.this,)
     def __init__(self, *args, **kwargs):
@@ -1348,6 +1450,7 @@ def Log_TimeStamp(*args, **kwargs):
     return _misc_.Log_TimeStamp(*args, **kwargs)
 
 class LogStderr(Log):
+    """Proxy of C++ LogStderr class"""
     def __repr__(self):
         return "<%s.%s; proxy of C++ wxLogStderr instance at %s>" % (self.__class__.__module__, self.__class__.__name__, self.this,)
     def __init__(self, *args, **kwargs):
@@ -1365,6 +1468,7 @@ class LogStderrPtr(LogStderr):
 _misc_.LogStderr_swigregister(LogStderrPtr)
 
 class LogTextCtrl(Log):
+    """Proxy of C++ LogTextCtrl class"""
     def __repr__(self):
         return "<%s.%s; proxy of C++ wxLogTextCtrl instance at %s>" % (self.__class__.__module__, self.__class__.__name__, self.this,)
     def __init__(self, *args, **kwargs):
@@ -1382,6 +1486,7 @@ class LogTextCtrlPtr(LogTextCtrl):
 _misc_.LogTextCtrl_swigregister(LogTextCtrlPtr)
 
 class LogGui(Log):
+    """Proxy of C++ LogGui class"""
     def __repr__(self):
         return "<%s.%s; proxy of C++ wxLogGui instance at %s>" % (self.__class__.__module__, self.__class__.__name__, self.this,)
     def __init__(self, *args, **kwargs):
@@ -1399,6 +1504,7 @@ class LogGuiPtr(LogGui):
 _misc_.LogGui_swigregister(LogGuiPtr)
 
 class LogWindow(Log):
+    """Proxy of C++ LogWindow class"""
     def __repr__(self):
         return "<%s.%s; proxy of C++ wxLogWindow instance at %s>" % (self.__class__.__module__, self.__class__.__name__, self.this,)
     def __init__(self, *args, **kwargs):
@@ -1436,6 +1542,7 @@ class LogWindowPtr(LogWindow):
 _misc_.LogWindow_swigregister(LogWindowPtr)
 
 class LogChain(Log):
+    """Proxy of C++ LogChain class"""
     def __repr__(self):
         return "<%s.%s; proxy of C++ wxLogChain instance at %s>" % (self.__class__.__module__, self.__class__.__name__, self.this,)
     def __init__(self, *args, **kwargs):
@@ -1467,6 +1574,32 @@ class LogChainPtr(LogChain):
         if not hasattr(self,"thisown"): self.thisown = 0
         self.__class__ = LogChain
 _misc_.LogChain_swigregister(LogChainPtr)
+
+class LogBuffer(Log):
+    """Proxy of C++ LogBuffer class"""
+    def __repr__(self):
+        return "<%s.%s; proxy of C++ wxLogBuffer instance at %s>" % (self.__class__.__module__, self.__class__.__name__, self.this,)
+    def __init__(self, *args, **kwargs):
+        """__init__(self) -> LogBuffer"""
+        newobj = _misc_.new_LogBuffer(*args, **kwargs)
+        self.this = newobj.this
+        self.thisown = 1
+        del newobj.thisown
+    def GetBuffer(*args, **kwargs):
+        """GetBuffer(self) -> String"""
+        return _misc_.LogBuffer_GetBuffer(*args, **kwargs)
+
+    def Flush(*args, **kwargs):
+        """Flush(self)"""
+        return _misc_.LogBuffer_Flush(*args, **kwargs)
+
+
+class LogBufferPtr(LogBuffer):
+    def __init__(self, this):
+        self.this = this
+        if not hasattr(self,"thisown"): self.thisown = 0
+        self.__class__ = LogBuffer
+_misc_.LogBuffer_swigregister(LogBufferPtr)
 
 
 def SysErrorCode(*args, **kwargs):
@@ -1525,6 +1658,7 @@ def SafeShowMessage(*args, **kwargs):
     """SafeShowMessage(String title, String text)"""
     return _misc_.SafeShowMessage(*args, **kwargs)
 class LogNull(object):
+    """Proxy of C++ LogNull class"""
     def __repr__(self):
         return "<%s.%s; proxy of C++ wxLogNull instance at %s>" % (self.__class__.__module__, self.__class__.__name__, self.this,)
     def __init__(self, *args, **kwargs):
@@ -1555,6 +1689,7 @@ def LogTrace(*args):
     return _misc_.LogTrace(*args)
 
 class PyLog(Log):
+    """Proxy of C++ PyLog class"""
     def __repr__(self):
         return "<%s.%s; proxy of C++ wxPyLog instance at %s>" % (self.__class__.__module__, self.__class__.__name__, self.this,)
     def __init__(self, *args, **kwargs):
@@ -1586,6 +1721,8 @@ KILL_BAD_SIGNAL = _misc_.KILL_BAD_SIGNAL
 KILL_ACCESS_DENIED = _misc_.KILL_ACCESS_DENIED
 KILL_NO_PROCESS = _misc_.KILL_NO_PROCESS
 KILL_ERROR = _misc_.KILL_ERROR
+KILL_NOCHILDREN = _misc_.KILL_NOCHILDREN
+KILL_CHILDREN = _misc_.KILL_CHILDREN
 SIGNONE = _misc_.SIGNONE
 SIGHUP = _misc_.SIGHUP
 SIGINT = _misc_.SIGINT
@@ -1604,10 +1741,11 @@ SIGPIPE = _misc_.SIGPIPE
 SIGALRM = _misc_.SIGALRM
 SIGTERM = _misc_.SIGTERM
 class Process(_core.EvtHandler):
+    """Proxy of C++ Process class"""
     def __repr__(self):
         return "<%s.%s; proxy of C++ wxPyProcess instance at %s>" % (self.__class__.__module__, self.__class__.__name__, self.this,)
     def Kill(*args, **kwargs):
-        """Kill(int pid, int sig=SIGTERM) -> int"""
+        """Kill(int pid, int sig=SIGTERM, int flags=KILL_NOCHILDREN) -> int"""
         return _misc_.Process_Kill(*args, **kwargs)
 
     Kill = staticmethod(Kill)
@@ -1686,7 +1824,7 @@ class ProcessPtr(Process):
 _misc_.Process_swigregister(ProcessPtr)
 
 def Process_Kill(*args, **kwargs):
-    """Process_Kill(int pid, int sig=SIGTERM) -> int"""
+    """Process_Kill(int pid, int sig=SIGTERM, int flags=KILL_NOCHILDREN) -> int"""
     return _misc_.Process_Kill(*args, **kwargs)
 
 def Process_Exists(*args, **kwargs):
@@ -1698,6 +1836,7 @@ def Process_Open(*args, **kwargs):
     return _misc_.Process_Open(*args, **kwargs)
 
 class ProcessEvent(_core.Event):
+    """Proxy of C++ ProcessEvent class"""
     def __repr__(self):
         return "<%s.%s; proxy of C++ wxProcessEvent instance at %s>" % (self.__class__.__module__, self.__class__.__name__, self.this,)
     def __init__(self, *args, **kwargs):
@@ -1731,10 +1870,15 @@ EXEC_ASYNC = _misc_.EXEC_ASYNC
 EXEC_SYNC = _misc_.EXEC_SYNC
 EXEC_NOHIDE = _misc_.EXEC_NOHIDE
 EXEC_MAKE_GROUP_LEADER = _misc_.EXEC_MAKE_GROUP_LEADER
+EXEC_NODISABLE = _misc_.EXEC_NODISABLE
 
 def Execute(*args, **kwargs):
     """Execute(String command, int flags=EXEC_ASYNC, Process process=None) -> long"""
     return _misc_.Execute(*args, **kwargs)
+
+def Kill(*args, **kwargs):
+    """Kill(long pid, int sig=SIGTERM, int rc, int flags=KILL_NOCHILDREN) -> int"""
+    return _misc_.Kill(*args, **kwargs)
 #---------------------------------------------------------------------------
 
 JOYSTICK1 = _misc_.JOYSTICK1
@@ -1745,6 +1889,7 @@ JOY_BUTTON2 = _misc_.JOY_BUTTON2
 JOY_BUTTON3 = _misc_.JOY_BUTTON3
 JOY_BUTTON4 = _misc_.JOY_BUTTON4
 class Joystick(object):
+    """Proxy of C++ Joystick class"""
     def __repr__(self):
         return "<%s.%s; proxy of C++ wxJoystick instance at %s>" % (self.__class__.__module__, self.__class__.__name__, self.this,)
     def __init__(self, *args, **kwargs):
@@ -1941,13 +2086,9 @@ wxEVT_JOY_BUTTON_UP = _misc_.wxEVT_JOY_BUTTON_UP
 wxEVT_JOY_MOVE = _misc_.wxEVT_JOY_MOVE
 wxEVT_JOY_ZMOVE = _misc_.wxEVT_JOY_ZMOVE
 class JoystickEvent(_core.Event):
+    """Proxy of C++ JoystickEvent class"""
     def __repr__(self):
         return "<%s.%s; proxy of C++ wxJoystickEvent instance at %s>" % (self.__class__.__module__, self.__class__.__name__, self.this,)
-    m_pos = property(_misc_.JoystickEvent_m_pos_get, _misc_.JoystickEvent_m_pos_set)
-    m_zPosition = property(_misc_.JoystickEvent_m_zPosition_get, _misc_.JoystickEvent_m_zPosition_set)
-    m_buttonChange = property(_misc_.JoystickEvent_m_buttonChange_get, _misc_.JoystickEvent_m_buttonChange_set)
-    m_buttonState = property(_misc_.JoystickEvent_m_buttonState_get, _misc_.JoystickEvent_m_buttonState_set)
-    m_joyStick = property(_misc_.JoystickEvent_m_joyStick_get, _misc_.JoystickEvent_m_joyStick_set)
     def __init__(self, *args, **kwargs):
         """
         __init__(self, wxEventType type=wxEVT_NULL, int state=0, int joystick=JOYSTICK1, 
@@ -2021,6 +2162,12 @@ class JoystickEvent(_core.Event):
         """ButtonIsDown(self, int but=JOY_BUTTON_ANY) -> bool"""
         return _misc_.JoystickEvent_ButtonIsDown(*args, **kwargs)
 
+    m_pos = property(GetPosition, SetPosition)
+    m_zPosition = property(GetZPosition, SetZPosition)
+    m_buttonChange = property(GetButtonChange, SetButtonChange)
+    m_buttonState = property(GetButtonState, SetButtonState)
+    m_joyStick = property(GetJoystick, SetJoystick)
+
 
 class JoystickEventPtr(JoystickEvent):
     def __init__(self, this):
@@ -2047,6 +2194,7 @@ SOUND_SYNC = _misc_.SOUND_SYNC
 SOUND_ASYNC = _misc_.SOUND_ASYNC
 SOUND_LOOP = _misc_.SOUND_LOOP
 class Sound(object):
+    """Proxy of C++ Sound class"""
     def __repr__(self):
         return "<%s.%s; proxy of C++ wxSound instance at %s>" % (self.__class__.__module__, self.__class__.__name__, self.this,)
     def __init__(self, *args, **kwargs):
@@ -2118,6 +2266,7 @@ MAILCAP_KDE = _misc_.MAILCAP_KDE
 MAILCAP_GNOME = _misc_.MAILCAP_GNOME
 MAILCAP_ALL = _misc_.MAILCAP_ALL
 class FileTypeInfo(object):
+    """Proxy of C++ FileTypeInfo class"""
     def __repr__(self):
         return "<%s.%s; proxy of C++ wxFileTypeInfo instance at %s>" % (self.__class__.__module__, self.__class__.__name__, self.this,)
     def __init__(self, *args, **kwargs):
@@ -2195,6 +2344,7 @@ def NullFileTypeInfo(*args, **kwargs):
     return val
 
 class FileType(object):
+    """Proxy of C++ FileType class"""
     def __repr__(self):
         return "<%s.%s; proxy of C++ wxFileType instance at %s>" % (self.__class__.__module__, self.__class__.__name__, self.this,)
     def __init__(self, *args, **kwargs):
@@ -2275,6 +2425,7 @@ def FileType_ExpandCommand(*args, **kwargs):
     return _misc_.FileType_ExpandCommand(*args, **kwargs)
 
 class MimeTypesManager(object):
+    """Proxy of C++ MimeTypesManager class"""
     def __repr__(self):
         return "<%s.%s; proxy of C++ wxMimeTypesManager instance at %s>" % (self.__class__.__module__, self.__class__.__name__, self.this,)
     def IsOfType(*args, **kwargs):
@@ -2451,6 +2602,16 @@ class ArtProvider(object):
         return _misc_.ArtProvider_GetIcon(*args, **kwargs)
 
     GetIcon = staticmethod(GetIcon)
+    def GetSizeHint(*args, **kwargs):
+        """
+        GetSizeHint(String client, bool platform_dependent=False) -> Size
+
+        Get the size hint of an icon from a specific Art Client, queries the
+        topmost provider if platform_dependent = false
+        """
+        return _misc_.ArtProvider_GetSizeHint(*args, **kwargs)
+
+    GetSizeHint = staticmethod(GetSizeHint)
     def Destroy(*args, **kwargs):
         """Destroy(self)"""
         return _misc_.ArtProvider_Destroy(*args, **kwargs)
@@ -2484,13 +2645,20 @@ ART_GO_DOWN = cvar.ART_GO_DOWN
 ART_GO_TO_PARENT = cvar.ART_GO_TO_PARENT
 ART_GO_HOME = cvar.ART_GO_HOME
 ART_FILE_OPEN = cvar.ART_FILE_OPEN
+ART_FILE_SAVE = cvar.ART_FILE_SAVE
+ART_FILE_SAVE_AS = cvar.ART_FILE_SAVE_AS
 ART_PRINT = cvar.ART_PRINT
 ART_HELP = cvar.ART_HELP
 ART_TIP = cvar.ART_TIP
 ART_REPORT_VIEW = cvar.ART_REPORT_VIEW
 ART_LIST_VIEW = cvar.ART_LIST_VIEW
 ART_NEW_DIR = cvar.ART_NEW_DIR
+ART_HARDDISK = cvar.ART_HARDDISK
+ART_FLOPPY = cvar.ART_FLOPPY
+ART_CDROM = cvar.ART_CDROM
+ART_REMOVABLE = cvar.ART_REMOVABLE
 ART_FOLDER = cvar.ART_FOLDER
+ART_FOLDER_OPEN = cvar.ART_FOLDER_OPEN
 ART_GO_DIR_UP = cvar.ART_GO_DIR_UP
 ART_EXECUTABLE_FILE = cvar.ART_EXECUTABLE_FILE
 ART_NORMAL_FILE = cvar.ART_NORMAL_FILE
@@ -2501,6 +2669,16 @@ ART_QUESTION = cvar.ART_QUESTION
 ART_WARNING = cvar.ART_WARNING
 ART_INFORMATION = cvar.ART_INFORMATION
 ART_MISSING_IMAGE = cvar.ART_MISSING_IMAGE
+ART_COPY = cvar.ART_COPY
+ART_CUT = cvar.ART_CUT
+ART_PASTE = cvar.ART_PASTE
+ART_DELETE = cvar.ART_DELETE
+ART_NEW = cvar.ART_NEW
+ART_UNDO = cvar.ART_UNDO
+ART_REDO = cvar.ART_REDO
+ART_QUIT = cvar.ART_QUIT
+ART_FIND = cvar.ART_FIND
+ART_FIND_AND_REPLACE = cvar.ART_FIND_AND_REPLACE
 
 def ArtProvider_PushProvider(*args, **kwargs):
     """
@@ -2544,6 +2722,15 @@ def ArtProvider_GetIcon(*args, **kwargs):
     wx.NullIcon if no provider provides it.
     """
     return _misc_.ArtProvider_GetIcon(*args, **kwargs)
+
+def ArtProvider_GetSizeHint(*args, **kwargs):
+    """
+    ArtProvider_GetSizeHint(String client, bool platform_dependent=False) -> Size
+
+    Get the size hint of an icon from a specific Art Client, queries the
+    topmost provider if platform_dependent = false
+    """
+    return _misc_.ArtProvider_GetSizeHint(*args, **kwargs)
 
 #---------------------------------------------------------------------------
 
@@ -3074,6 +3261,7 @@ def ExpandEnvVars(*args, **kwargs):
 #---------------------------------------------------------------------------
 
 class DateTime(object):
+    """Proxy of C++ DateTime class"""
     def __repr__(self):
         return "<%s.%s; proxy of C++ wxDateTime instance at %s>" % (self.__class__.__module__, self.__class__.__name__, self.this,)
     Local = _misc_.DateTime_Local
@@ -3644,36 +3832,36 @@ class DateTime(object):
         """
         return _misc_.DateTime___sub__(*args)
 
-    def __lt__(*args):
+    def __lt__(*args, **kwargs):
         """__lt__(self, DateTime other) -> bool"""
-        return _misc_.DateTime___lt__(*args)
+        return _misc_.DateTime___lt__(*args, **kwargs)
 
-    def __le__(*args):
+    def __le__(*args, **kwargs):
         """__le__(self, DateTime other) -> bool"""
-        return _misc_.DateTime___le__(*args)
+        return _misc_.DateTime___le__(*args, **kwargs)
 
-    def __gt__(*args):
+    def __gt__(*args, **kwargs):
         """__gt__(self, DateTime other) -> bool"""
-        return _misc_.DateTime___gt__(*args)
+        return _misc_.DateTime___gt__(*args, **kwargs)
 
-    def __ge__(*args):
+    def __ge__(*args, **kwargs):
         """__ge__(self, DateTime other) -> bool"""
-        return _misc_.DateTime___ge__(*args)
+        return _misc_.DateTime___ge__(*args, **kwargs)
 
-    def __eq__(*args):
+    def __eq__(*args, **kwargs):
         """__eq__(self, DateTime other) -> bool"""
-        return _misc_.DateTime___eq__(*args)
+        return _misc_.DateTime___eq__(*args, **kwargs)
 
-    def __ne__(*args):
+    def __ne__(*args, **kwargs):
         """__ne__(self, DateTime other) -> bool"""
-        return _misc_.DateTime___ne__(*args)
+        return _misc_.DateTime___ne__(*args, **kwargs)
 
     def ParseRfc822Date(*args, **kwargs):
         """ParseRfc822Date(self, String date) -> int"""
         return _misc_.DateTime_ParseRfc822Date(*args, **kwargs)
 
     def ParseFormat(*args, **kwargs):
-        """ParseFormat(self, String date, String format=DateFormatStr, DateTime dateDef=DefaultDateTime) -> int"""
+        """ParseFormat(self, String date, String format=DefaultDateTimeFormat, DateTime dateDef=DefaultDateTime) -> int"""
         return _misc_.DateTime_ParseFormat(*args, **kwargs)
 
     def ParseDateTime(*args, **kwargs):
@@ -3689,7 +3877,7 @@ class DateTime(object):
         return _misc_.DateTime_ParseTime(*args, **kwargs)
 
     def Format(*args, **kwargs):
-        """Format(self, String format=DateFormatStr, wxDateTime::TimeZone tz=LOCAL_TZ) -> String"""
+        """Format(self, String format=DefaultDateTimeFormat, wxDateTime::TimeZone tz=LOCAL_TZ) -> String"""
         return _misc_.DateTime_Format(*args, **kwargs)
 
     def FormatDate(*args, **kwargs):
@@ -3710,12 +3898,13 @@ class DateTime(object):
 
     def __repr__(self):
         if self.IsValid():
-            return '<wx.DateTime: \"%s\" at %s>' % ( self.Format(), self.this)
+            f = self.Format().encode(wx.GetDefaultPyEncoding())
+            return '<wx.DateTime: \"%s\" at %s>' % ( f, self.this)
         else:
             return '<wx.DateTime: \"INVALID\" at %s>' % self.this
     def __str__(self):
         if self.IsValid():
-            return self.Format()
+            return self.Format().encode(wx.GetDefaultPyEncoding())
         else:
             return "INVALID DateTime"
 
@@ -3726,8 +3915,8 @@ class DateTimePtr(DateTime):
         if not hasattr(self,"thisown"): self.thisown = 0
         self.__class__ = DateTime
 _misc_.DateTime_swigregister(DateTimePtr)
-DateFormatStr = cvar.DateFormatStr
-TimeSpanFormatStr = cvar.TimeSpanFormatStr
+DefaultDateTimeFormat = cvar.DefaultDateTimeFormat
+DefaultTimeSpanFormat = cvar.DefaultTimeSpanFormat
 
 def DateTime_SetCountry(*args, **kwargs):
     """DateTime_SetCountry(int country)"""
@@ -3841,6 +4030,7 @@ def DateTime_SetToWeekOfYear(*args, **kwargs):
     return _misc_.DateTime_SetToWeekOfYear(*args, **kwargs)
 
 class TimeSpan(object):
+    """Proxy of C++ TimeSpan class"""
     def __repr__(self):
         return "<%s.%s; proxy of C++ wxTimeSpan instance at %s>" % (self.__class__.__module__, self.__class__.__name__, self.this,)
     def Seconds(*args, **kwargs):
@@ -4030,13 +4220,14 @@ class TimeSpan(object):
         return _misc_.TimeSpan_GetMilliseconds(*args, **kwargs)
 
     def Format(*args, **kwargs):
-        """Format(self, String format=TimeSpanFormatStr) -> String"""
+        """Format(self, String format=DefaultTimeSpanFormat) -> String"""
         return _misc_.TimeSpan_Format(*args, **kwargs)
 
     def __repr__(self):
-        return '<wx.TimeSpan: \"%s\" at %s>' % ( self.Format(), self.this)
+        f = self.Format().encode(wx.GetDefaultPyEncoding())
+        return '<wx.TimeSpan: \"%s\" at %s>' % ( f, self.this)
     def __str__(self):
-        return self.Format()
+        return self.Format().encode(wx.GetDefaultPyEncoding())
 
 
 class TimeSpanPtr(TimeSpan):
@@ -4087,6 +4278,7 @@ def TimeSpan_Week(*args, **kwargs):
     return _misc_.TimeSpan_Week(*args, **kwargs)
 
 class DateSpan(object):
+    """Proxy of C++ DateSpan class"""
     def __repr__(self):
         return "<%s.%s; proxy of C++ wxDateSpan instance at %s>" % (self.__class__.__module__, self.__class__.__name__, self.this,)
     def __init__(self, *args, **kwargs):
@@ -4877,12 +5069,6 @@ class FileDataObject(DataObjectSimple):
     Explorer and other compatible programs under Windows or GNOME/KDE
     filemanager under Unix which makes it possible to receive files from
     them using this class.
-
-    :Warning: Under all non-Windows platforms this class is currently
-        "input-only", i.e. you can receive the files from another
-        application, but copying (or dragging) file(s) from a wxWidgets
-        application is not currently supported.
-
     """
     def __repr__(self):
         return "<%s.%s; proxy of C++ wxFileDataObject instance at %s>" % (self.__class__.__module__, self.__class__.__name__, self.this,)
@@ -4926,9 +5112,11 @@ class CustomDataObject(DataObjectSimple):
     """
     def __repr__(self):
         return "<%s.%s; proxy of C++ wxCustomDataObject instance at %s>" % (self.__class__.__module__, self.__class__.__name__, self.this,)
-    def __init__(self, *args, **kwargs):
+    def __init__(self, *args):
         """
-        __init__(self, DataFormat format=FormatInvalid) -> CustomDataObject
+        __init__(self, DataFormat format) -> CustomDataObject
+        __init__(self, String formatName) -> CustomDataObject
+        __init__(self) -> CustomDataObject
 
         wx.CustomDataObject is a specialization of `wx.DataObjectSimple` for
         some application-specific data in arbitrary format.  Python strings
@@ -4936,7 +5124,7 @@ class CustomDataObject(DataObjectSimple):
         easily be transfered via strings.  A copy of the data is stored in the
         data object.
         """
-        newobj = _misc_.new_CustomDataObject(*args, **kwargs)
+        newobj = _misc_.new_CustomDataObject(*args)
         self.this = newobj.this
         self.thisown = 1
         del newobj.thisown
@@ -5016,6 +5204,7 @@ class URLDataObjectPtr(URLDataObject):
 _misc_.URLDataObject_swigregister(URLDataObjectPtr)
 
 class MetafileDataObject(DataObjectSimple):
+    """Proxy of C++ MetafileDataObject class"""
     def __repr__(self):
         return "<%s.%s; proxy of C++ wxMetafileDataObject instance at %s>" % (self.__class__.__module__, self.__class__.__name__, self.this,)
     def __init__(self, *args, **kwargs):
@@ -5048,6 +5237,7 @@ def IsDragResultOk(*args, **kwargs):
     """IsDragResultOk(int res) -> bool"""
     return _misc_.IsDragResultOk(*args, **kwargs)
 class DropSource(object):
+    """Proxy of C++ DropSource class"""
     def __repr__(self):
         return "<%s.%s; proxy of C++ wxPyDropSource instance at %s>" % (self.__class__.__module__, self.__class__.__name__, self.this,)
     def __init__(self, *args, **kwargs):
@@ -5099,7 +5289,20 @@ class DropSourcePtr(DropSource):
         self.__class__ = DropSource
 _misc_.DropSource_swigregister(DropSourcePtr)
 
+def DROP_ICON(filename):
+    """
+    Returns either a `wx.Cursor` or `wx.Icon` created from the image file
+    ``filename``.  This function is useful with the `wx.DropSource` class
+    which, depending on platform accepts either a icon or a cursor.
+    """
+    img = wx.Image(filename)
+    if wx.Platform == '__WXGTK__':
+        return wx.IconFromBitmap(wx.BitmapFromImage(img))
+    else:
+        return wx.CursorFromImage(img)
+
 class DropTarget(object):
+    """Proxy of C++ DropTarget class"""
     def __repr__(self):
         return "<%s.%s; proxy of C++ wxPyDropTarget instance at %s>" % (self.__class__.__module__, self.__class__.__name__, self.this,)
     def __init__(self, *args, **kwargs):
@@ -5148,6 +5351,14 @@ class DropTarget(object):
         """GetData(self) -> bool"""
         return _misc_.DropTarget_GetData(*args, **kwargs)
 
+    def SetDefaultAction(*args, **kwargs):
+        """SetDefaultAction(self, int action)"""
+        return _misc_.DropTarget_SetDefaultAction(*args, **kwargs)
+
+    def GetDefaultAction(*args, **kwargs):
+        """GetDefaultAction(self) -> int"""
+        return _misc_.DropTarget_GetDefaultAction(*args, **kwargs)
+
 
 class DropTargetPtr(DropTarget):
     def __init__(self, this):
@@ -5158,6 +5369,7 @@ _misc_.DropTarget_swigregister(DropTargetPtr)
 
 PyDropTarget = DropTarget 
 class TextDropTarget(DropTarget):
+    """Proxy of C++ TextDropTarget class"""
     def __repr__(self):
         return "<%s.%s; proxy of C++ wxPyTextDropTarget instance at %s>" % (self.__class__.__module__, self.__class__.__name__, self.this,)
     def __init__(self, *args, **kwargs):
@@ -5201,6 +5413,7 @@ class TextDropTargetPtr(TextDropTarget):
 _misc_.TextDropTarget_swigregister(TextDropTargetPtr)
 
 class FileDropTarget(DropTarget):
+    """Proxy of C++ FileDropTarget class"""
     def __repr__(self):
         return "<%s.%s; proxy of C++ wxPyFileDropTarget instance at %s>" % (self.__class__.__module__, self.__class__.__name__, self.this,)
     def __init__(self, *args, **kwargs):
@@ -5756,7 +5969,7 @@ class StandardPaths(object):
         """
         Get() -> StandardPaths
 
-        Return the global standard paths object
+        Return the global standard paths singleton
         """
         return _misc_.StandardPaths_Get(*args, **kwargs)
 
@@ -5766,7 +5979,7 @@ class StandardPaths(object):
         GetConfigDir(self) -> String
 
         Return the directory with system config files: /etc under Unix,
-        c:\Documents and Settings\All Users\Application Data under Windows,
+        'c:\Documents and Settings\All Users\Application Data' under Windows,
         /Library/Preferences for Mac
         """
         return _misc_.StandardPaths_GetConfigDir(*args, **kwargs)
@@ -5776,7 +5989,7 @@ class StandardPaths(object):
         GetUserConfigDir(self) -> String
 
         Return the directory for the user config files: $HOME under Unix,
-        c:\Documents and Settings\username under Windows,
+        'c:\Documents and Settings\username' under Windows, and 
         ~/Library/Preferences under Mac
             
         Only use this if you have a single file to put there, otherwise
@@ -5790,7 +6003,7 @@ class StandardPaths(object):
 
         Return the location of the application's global, (i.e. not
         user-specific,) data files: prefix/share/appname under Unix,
-        c:\Program Filesppname under Windows,
+        'c:\Program Files\appname' under Windows,
         appname.app/Contents/SharedSupport app bundle directory under Mac.
         """
         return _misc_.StandardPaths_GetDataDir(*args, **kwargs)
@@ -5811,7 +6024,7 @@ class StandardPaths(object):
 
         Return the directory for the user-dependent application data files:
         $HOME/.appname under Unix, c:\Documents and
-        Settings\username\Application Datappname under Windows and
+        Settings\username\Application Data\appname under Windows and
         ~/Library/Application Support/appname under Mac
         """
         return _misc_.StandardPaths_GetUserDataDir(*args, **kwargs)
@@ -5824,7 +6037,7 @@ class StandardPaths(object):
         with the other machines
 
         Same as `GetUserDataDir` for all platforms except Windows where it is
-        the 'Local Settings\Application Datappname' directory.
+        the 'Local Settings\Application Data\appname' directory.
         """
         return _misc_.StandardPaths_GetUserLocalDataDir(*args, **kwargs)
 
@@ -5844,7 +6057,8 @@ class StandardPaths(object):
 
         Set the program installation directory which is /usr/local by default.
         This value will be used by other methods such as `GetDataDir` and
-        `GetPluginsDir` as the prefix for what they return. (Unix only.)
+        `GetPluginsDir` as the prefix for what they return. (This function
+        only has meaning on Unix systems.)
         """
         return _misc_.StandardPaths_SetInstallPrefix(*args, **kwargs)
 
@@ -5852,7 +6066,8 @@ class StandardPaths(object):
         """
         GetInstallPrefix(self) -> String
 
-        Get the program installation prefix.
+        Get the program installation prefix. The default is the prefix where
+        Python is installed. (This function only has meaning on Unix systems.)
         """
         return _misc_.StandardPaths_GetInstallPrefix(*args, **kwargs)
 
@@ -5868,7 +6083,7 @@ def StandardPaths_Get(*args, **kwargs):
     """
     StandardPaths_Get() -> StandardPaths
 
-    Return the global standard paths object
+    Return the global standard paths singleton
     """
     return _misc_.StandardPaths_Get(*args, **kwargs)
 

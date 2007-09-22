@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     12/07/98
-// RCS-ID:      $Id: misc.h,v 1.5 2004/06/09 16:42:21 ABX Exp $
+// RCS-ID:      $Id: misc.h,v 1.6 2005/04/26 10:47:00 JS Exp $
 // Copyright:   (c) Julian Smart
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -101,12 +101,12 @@ extern wxPen*           g_oglTransparentPen;
 extern wxBrush*         g_oglWhiteBackgroundBrush;
 extern wxPen*           g_oglBlackForegroundPen;
 
-extern wxFont*          oglMatchFont(int point_size);
+WXDLLIMPEXP_OGL wxFont*          oglMatchFont(int point_size);
 
-extern wxString         oglColourToHex(const wxColour& colour);
-extern wxColour         oglHexToColour(const wxString& hex);
-extern void             oglDecToHex(unsigned int dec, char *buf);
-extern unsigned int     oglHexToDec(char* buf);
+WXDLLIMPEXP_OGL wxString         oglColourToHex(const wxColour& colour);
+WXDLLIMPEXP_OGL wxColour         oglHexToColour(const wxString& hex);
+WXDLLIMPEXP_OGL void             oglDecToHex(unsigned int dec, char *buf);
+WXDLLIMPEXP_OGL unsigned int     oglHexToDec(char* buf);
 
 
 #endif

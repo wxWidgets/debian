@@ -4,7 +4,7 @@
 // Author:      Vadim Zeitlin/Julian Smart
 // Modified by:
 // Created:     04/01/98
-// RCS-ID:      $Id: internat.cpp,v 1.41 2004/10/06 20:53:24 ABX Exp $
+// RCS-ID:      $Id: internat.cpp,v 1.44 2005/06/16 17:57:21 JS Exp $
 // Copyright:   (c) Julian Smart
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -130,6 +130,7 @@ bool MyApp::OnInit()
         wxLANGUAGE_BULGARIAN,
         wxLANGUAGE_CZECH,
         wxLANGUAGE_POLISH,
+        wxLANGUAGE_SWEDISH,
 #if wxUSE_UNICODE
         wxLANGUAGE_JAPANESE,
         wxLANGUAGE_GEORGIAN,
@@ -151,6 +152,7 @@ bool MyApp::OnInit()
             _T("Bulgarian"),
             _T("Czech"),
             _T("Polish"),
+            _T("Swedish"),
 #if wxUSE_UNICODE
             _T("Japanese"),
             _T("Georgian"),
@@ -175,6 +177,13 @@ bool MyApp::OnInit()
     if ( lng != -1 )
         m_locale.Init(langIds[lng]);
 
+    // normally this wouldn't be necessary as the catalog files would be found
+    // in the default locations, but under Windows then the program is not
+    // installed the catalogs are in the parent directory (because the binary
+    // is in a subdirectory of samples/internat) where we wouldn't find them by
+    // default
+    wxLocale::AddCatalogLookupPathPrefix(wxT("."));
+    wxLocale::AddCatalogLookupPathPrefix(wxT(".."));
 
     // Initialize the catalogs we'll be using
     m_locale.AddCatalog(wxT("internat"));
@@ -347,7 +356,7 @@ void MyFrame::OnTest2(wxCommandEvent& WXUNUSED(event))
         for (int n = first; n <= last; ++n)
         {
             s << n << _T(" ") <<
-                wxGetTranslation(_T("file deleted"), _T("files deleted"), n) <<
+                wxPLURAL("file deleted", "files deleted", n) <<
                 _T("\n");
         }
         wxMessageBox(s);

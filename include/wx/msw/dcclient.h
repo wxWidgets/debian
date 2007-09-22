@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     01/02/97
-// RCS-ID:      $Id: dcclient.h,v 1.20 2004/05/23 20:51:27 JS Exp $
+// RCS-ID:      $Id: dcclient.h,v 1.21 2005/05/31 09:18:31 JS Exp $
 // Copyright:   (c) Julian Smart
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -46,7 +46,7 @@ public:
     wxWindowDC(wxWindow *win);
 
 protected:
-    // intiialize the newly created DC
+    // initialize the newly created DC
     void InitDC();
 
     // override some base class virtuals

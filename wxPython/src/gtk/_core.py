@@ -3,6 +3,47 @@
 
 import _core_
 
+def _swig_setattr_nondynamic(self,class_type,name,value,static=1):
+    if (name == "this"):
+        if isinstance(value, class_type):
+            self.__dict__[name] = value.this
+            if hasattr(value,"thisown"): self.__dict__["thisown"] = value.thisown
+            del value.thisown
+            return
+    method = class_type.__swig_setmethods__.get(name,None)
+    if method: return method(self,value)
+    if (not static) or hasattr(self,name) or (name == "thisown"):
+        self.__dict__[name] = value
+    else:
+        raise AttributeError("You cannot add attributes to %s" % self)
+
+def _swig_setattr(self,class_type,name,value):
+    return _swig_setattr_nondynamic(self,class_type,name,value,0)
+
+def _swig_getattr(self,class_type,name):
+    method = class_type.__swig_getmethods__.get(name,None)
+    if method: return method(self)
+    raise AttributeError,name
+
+import types
+try:
+    _object = types.ObjectType
+    _newclass = 1
+except AttributeError:
+    class _object : pass
+    _newclass = 0
+del types
+
+
+def _swig_setattr_nondynamic_method(set):
+    def set_attr(self,name,value):
+        if hasattr(self,name) or (name in ("this", "thisown")):
+            set(self,name,value)
+        else:
+            raise AttributeError("You cannot add attributes to %s" % self)
+    return set_attr
+
+
 #// Give a reference to the dictionary of this module to the C++ extension
 #// code.
 _core_._wxPySetDictionary(vars())
@@ -44,17 +85,14 @@ SIMPLE_BORDER = _core_.SIMPLE_BORDER
 STATIC_BORDER = _core_.STATIC_BORDER
 TRANSPARENT_WINDOW = _core_.TRANSPARENT_WINDOW
 NO_BORDER = _core_.NO_BORDER
+DEFAULT_CONTROL_BORDER = _core_.DEFAULT_CONTROL_BORDER
+DEFAULT_STATUSBAR_STYLE = _core_.DEFAULT_STATUSBAR_STYLE
 TAB_TRAVERSAL = _core_.TAB_TRAVERSAL
 WANTS_CHARS = _core_.WANTS_CHARS
 POPUP_WINDOW = _core_.POPUP_WINDOW
 CENTER_FRAME = _core_.CENTER_FRAME
 CENTRE_ON_SCREEN = _core_.CENTRE_ON_SCREEN
 CENTER_ON_SCREEN = _core_.CENTER_ON_SCREEN
-ED_CLIENT_MARGIN = _core_.ED_CLIENT_MARGIN
-ED_BUTTONS_BOTTOM = _core_.ED_BUTTONS_BOTTOM
-ED_BUTTONS_RIGHT = _core_.ED_BUTTONS_RIGHT
-ED_STATIC_LINE = _core_.ED_STATIC_LINE
-EXT_DIALOG_STYLE = _core_.EXT_DIALOG_STYLE
 CLIP_CHILDREN = _core_.CLIP_CHILDREN
 CLIP_SIBLINGS = _core_.CLIP_SIBLINGS
 ALWAYS_SHOW_SB = _core_.ALWAYS_SHOW_SB
@@ -80,20 +118,12 @@ RA_HORIZONTAL = _core_.RA_HORIZONTAL
 RA_VERTICAL = _core_.RA_VERTICAL
 RA_SPECIFY_ROWS = _core_.RA_SPECIFY_ROWS
 RA_SPECIFY_COLS = _core_.RA_SPECIFY_COLS
+RA_USE_CHECKBOX = _core_.RA_USE_CHECKBOX
 RB_GROUP = _core_.RB_GROUP
 RB_SINGLE = _core_.RB_SINGLE
-SL_HORIZONTAL = _core_.SL_HORIZONTAL
-SL_VERTICAL = _core_.SL_VERTICAL
-SL_AUTOTICKS = _core_.SL_AUTOTICKS
-SL_LABELS = _core_.SL_LABELS
-SL_LEFT = _core_.SL_LEFT
-SL_TOP = _core_.SL_TOP
-SL_RIGHT = _core_.SL_RIGHT
-SL_BOTTOM = _core_.SL_BOTTOM
-SL_BOTH = _core_.SL_BOTH
-SL_SELRANGE = _core_.SL_SELRANGE
 SB_HORIZONTAL = _core_.SB_HORIZONTAL
 SB_VERTICAL = _core_.SB_VERTICAL
+RB_USE_CHECKBOX = _core_.RB_USE_CHECKBOX
 ST_SIZEGRIP = _core_.ST_SIZEGRIP
 ST_NO_AUTORESIZE = _core_.ST_NO_AUTORESIZE
 FLOOD_SURFACE = _core_.FLOOD_SURFACE
@@ -247,6 +277,8 @@ PD_CAN_ABORT = _core_.PD_CAN_ABORT
 PD_ELAPSED_TIME = _core_.PD_ELAPSED_TIME
 PD_ESTIMATED_TIME = _core_.PD_ESTIMATED_TIME
 PD_REMAINING_TIME = _core_.PD_REMAINING_TIME
+PD_SMOOTH = _core_.PD_SMOOTH
+PD_CAN_SKIP = _core_.PD_CAN_SKIP
 DD_NEW_DIR_BUTTON = _core_.DD_NEW_DIR_BUTTON
 DD_DEFAULT_STYLE = _core_.DD_DEFAULT_STYLE
 MENU_TEAROFF = _core_.MENU_TEAROFF
@@ -340,6 +372,8 @@ DOT_DASH = _core_.DOT_DASH
 USER_DASH = _core_.USER_DASH
 TRANSPARENT = _core_.TRANSPARENT
 STIPPLE = _core_.STIPPLE
+STIPPLE_MASK = _core_.STIPPLE_MASK
+STIPPLE_MASK_OPAQUE = _core_.STIPPLE_MASK_OPAQUE
 BDIAGONAL_HATCH = _core_.BDIAGONAL_HATCH
 CROSSDIAG_HATCH = _core_.CROSSDIAG_HATCH
 FDIAGONAL_HATCH = _core_.FDIAGONAL_HATCH
@@ -474,6 +508,27 @@ WXK_NUMPAD_DIVIDE = _core_.WXK_NUMPAD_DIVIDE
 WXK_WINDOWS_LEFT = _core_.WXK_WINDOWS_LEFT
 WXK_WINDOWS_RIGHT = _core_.WXK_WINDOWS_RIGHT
 WXK_WINDOWS_MENU = _core_.WXK_WINDOWS_MENU
+WXK_COMMAND = _core_.WXK_COMMAND
+WXK_SPECIAL1 = _core_.WXK_SPECIAL1
+WXK_SPECIAL2 = _core_.WXK_SPECIAL2
+WXK_SPECIAL3 = _core_.WXK_SPECIAL3
+WXK_SPECIAL4 = _core_.WXK_SPECIAL4
+WXK_SPECIAL5 = _core_.WXK_SPECIAL5
+WXK_SPECIAL6 = _core_.WXK_SPECIAL6
+WXK_SPECIAL7 = _core_.WXK_SPECIAL7
+WXK_SPECIAL8 = _core_.WXK_SPECIAL8
+WXK_SPECIAL9 = _core_.WXK_SPECIAL9
+WXK_SPECIAL10 = _core_.WXK_SPECIAL10
+WXK_SPECIAL11 = _core_.WXK_SPECIAL11
+WXK_SPECIAL12 = _core_.WXK_SPECIAL12
+WXK_SPECIAL13 = _core_.WXK_SPECIAL13
+WXK_SPECIAL14 = _core_.WXK_SPECIAL14
+WXK_SPECIAL15 = _core_.WXK_SPECIAL15
+WXK_SPECIAL16 = _core_.WXK_SPECIAL16
+WXK_SPECIAL17 = _core_.WXK_SPECIAL17
+WXK_SPECIAL18 = _core_.WXK_SPECIAL18
+WXK_SPECIAL19 = _core_.WXK_SPECIAL19
+WXK_SPECIAL20 = _core_.WXK_SPECIAL20
 PAPER_NONE = _core_.PAPER_NONE
 PAPER_LETTER = _core_.PAPER_LETTER
 PAPER_LEGAL = _core_.PAPER_LEGAL
@@ -541,6 +596,56 @@ PAPER_B5_EXTRA = _core_.PAPER_B5_EXTRA
 PAPER_A2 = _core_.PAPER_A2
 PAPER_A3_TRANSVERSE = _core_.PAPER_A3_TRANSVERSE
 PAPER_A3_EXTRA_TRANSVERSE = _core_.PAPER_A3_EXTRA_TRANSVERSE
+PAPER_DBL_JAPANESE_POSTCARD = _core_.PAPER_DBL_JAPANESE_POSTCARD
+PAPER_A6 = _core_.PAPER_A6
+PAPER_JENV_KAKU2 = _core_.PAPER_JENV_KAKU2
+PAPER_JENV_KAKU3 = _core_.PAPER_JENV_KAKU3
+PAPER_JENV_CHOU3 = _core_.PAPER_JENV_CHOU3
+PAPER_JENV_CHOU4 = _core_.PAPER_JENV_CHOU4
+PAPER_LETTER_ROTATED = _core_.PAPER_LETTER_ROTATED
+PAPER_A3_ROTATED = _core_.PAPER_A3_ROTATED
+PAPER_A4_ROTATED = _core_.PAPER_A4_ROTATED
+PAPER_A5_ROTATED = _core_.PAPER_A5_ROTATED
+PAPER_B4_JIS_ROTATED = _core_.PAPER_B4_JIS_ROTATED
+PAPER_B5_JIS_ROTATED = _core_.PAPER_B5_JIS_ROTATED
+PAPER_JAPANESE_POSTCARD_ROTATED = _core_.PAPER_JAPANESE_POSTCARD_ROTATED
+PAPER_DBL_JAPANESE_POSTCARD_ROTATED = _core_.PAPER_DBL_JAPANESE_POSTCARD_ROTATED
+PAPER_A6_ROTATED = _core_.PAPER_A6_ROTATED
+PAPER_JENV_KAKU2_ROTATED = _core_.PAPER_JENV_KAKU2_ROTATED
+PAPER_JENV_KAKU3_ROTATED = _core_.PAPER_JENV_KAKU3_ROTATED
+PAPER_JENV_CHOU3_ROTATED = _core_.PAPER_JENV_CHOU3_ROTATED
+PAPER_JENV_CHOU4_ROTATED = _core_.PAPER_JENV_CHOU4_ROTATED
+PAPER_B6_JIS = _core_.PAPER_B6_JIS
+PAPER_B6_JIS_ROTATED = _core_.PAPER_B6_JIS_ROTATED
+PAPER_12X11 = _core_.PAPER_12X11
+PAPER_JENV_YOU4 = _core_.PAPER_JENV_YOU4
+PAPER_JENV_YOU4_ROTATED = _core_.PAPER_JENV_YOU4_ROTATED
+PAPER_P16K = _core_.PAPER_P16K
+PAPER_P32K = _core_.PAPER_P32K
+PAPER_P32KBIG = _core_.PAPER_P32KBIG
+PAPER_PENV_1 = _core_.PAPER_PENV_1
+PAPER_PENV_2 = _core_.PAPER_PENV_2
+PAPER_PENV_3 = _core_.PAPER_PENV_3
+PAPER_PENV_4 = _core_.PAPER_PENV_4
+PAPER_PENV_5 = _core_.PAPER_PENV_5
+PAPER_PENV_6 = _core_.PAPER_PENV_6
+PAPER_PENV_7 = _core_.PAPER_PENV_7
+PAPER_PENV_8 = _core_.PAPER_PENV_8
+PAPER_PENV_9 = _core_.PAPER_PENV_9
+PAPER_PENV_10 = _core_.PAPER_PENV_10
+PAPER_P16K_ROTATED = _core_.PAPER_P16K_ROTATED
+PAPER_P32K_ROTATED = _core_.PAPER_P32K_ROTATED
+PAPER_P32KBIG_ROTATED = _core_.PAPER_P32KBIG_ROTATED
+PAPER_PENV_1_ROTATED = _core_.PAPER_PENV_1_ROTATED
+PAPER_PENV_2_ROTATED = _core_.PAPER_PENV_2_ROTATED
+PAPER_PENV_3_ROTATED = _core_.PAPER_PENV_3_ROTATED
+PAPER_PENV_4_ROTATED = _core_.PAPER_PENV_4_ROTATED
+PAPER_PENV_5_ROTATED = _core_.PAPER_PENV_5_ROTATED
+PAPER_PENV_6_ROTATED = _core_.PAPER_PENV_6_ROTATED
+PAPER_PENV_7_ROTATED = _core_.PAPER_PENV_7_ROTATED
+PAPER_PENV_8_ROTATED = _core_.PAPER_PENV_8_ROTATED
+PAPER_PENV_9_ROTATED = _core_.PAPER_PENV_9_ROTATED
+PAPER_PENV_10_ROTATED = _core_.PAPER_PENV_10_ROTATED
 DUPLEX_SIMPLEX = _core_.DUPLEX_SIMPLEX
 DUPLEX_HORIZONTAL = _core_.DUPLEX_HORIZONTAL
 DUPLEX_VERTICAL = _core_.DUPLEX_VERTICAL
@@ -671,9 +776,9 @@ CURSOR_MAX = _core_.CURSOR_MAX
 class Size(object):
     """
     wx.Size is a useful data structure used to represent the size of
-    something.  It simply contians integer width and height proprtites.
-    In most places in wxPython where a wx.Size is expected a
-    (width,height) tuple can be used instead.
+    something.  It simply contians integer width and height
+    proprtites.  In most places in wxPython where a wx.Size is
+    expected a (width, height) tuple can be used instead.
     """
     def __repr__(self):
         return "<%s.%s; proxy of C++ wxSize instance at %s>" % (self.__class__.__module__, self.__class__.__name__, self.this,)
@@ -1100,6 +1205,10 @@ class Rect(object):
         """SetSize(self, Size s)"""
         return _core_.Rect_SetSize(*args, **kwargs)
 
+    def IsEmpty(*args, **kwargs):
+        """IsEmpty(self) -> bool"""
+        return _core_.Rect_IsEmpty(*args, **kwargs)
+
     def GetTopLeft(*args, **kwargs):
         """GetTopLeft(self) -> Point"""
         return _core_.Rect_GetTopLeft(*args, **kwargs)
@@ -1159,9 +1268,24 @@ class Rect(object):
         """
         Inflate(self, int dx, int dy) -> Rect
 
-        Increase the rectangle size by dx in x direction and dy in y
-        direction. Both or one of) parameters may be negative to decrease the
-        rectangle size.
+        Increases the size of the rectangle.
+
+        The left border is moved farther left and the right border is moved
+        farther right by ``dx``. The upper border is moved farther up and the
+        bottom border is moved farther down by ``dy``. (Note the the width and
+        height of the rectangle thus change by ``2*dx`` and ``2*dy``,
+        respectively.) If one or both of ``dx`` and ``dy`` are negative, the
+        opposite happens: the rectangle size decreases in the respective
+        direction.
+
+        The change is made to the rectangle inplace, if instead you need a
+        copy that is inflated, preserving the original then make the copy
+        first::
+
+            copy = wx.Rect(*original)
+            copy.Inflate(10,15)
+
+
         """
         return _core_.Rect_Inflate(*args, **kwargs)
 
@@ -1169,9 +1293,9 @@ class Rect(object):
         """
         Deflate(self, int dx, int dy) -> Rect
 
-        Decrease the rectangle size by dx in x direction and dy in y
-        direction. Both or one of) parameters may be negative to increase the
-        rectngle size. This method is the opposite of Inflate.
+        Decrease the rectangle size. This method is the opposite of `Inflate`
+        in that Deflate(a,b) is equivalent to Inflate(-a,-b).  Please refer to
+        `Inflate` for a full description.
         """
         return _core_.Rect_Deflate(*args, **kwargs)
 
@@ -1197,9 +1321,17 @@ class Rect(object):
         """
         Intersect(self, Rect rect) -> Rect
 
-        Return the intersectsion of this rectangle and rect.
+        Returns the intersectsion of this rectangle and rect.
         """
         return _core_.Rect_Intersect(*args, **kwargs)
+
+    def Union(*args, **kwargs):
+        """
+        Union(self, Rect rect) -> Rect
+
+        Returns the union of this rectangle and rect.
+        """
+        return _core_.Rect_Union(*args, **kwargs)
 
     def __add__(*args, **kwargs):
         """
@@ -1512,6 +1644,7 @@ FromStart = _core_.FromStart
 FromCurrent = _core_.FromCurrent
 FromEnd = _core_.FromEnd
 class InputStream(object):
+    """Proxy of C++ InputStream class"""
     def __repr__(self):
         return "<%s.%s; proxy of C++ wxPyInputStream instance at %s>" % (self.__class__.__module__, self.__class__.__name__, self.this,)
     def __init__(self, *args, **kwargs):
@@ -1520,6 +1653,12 @@ class InputStream(object):
         self.this = newobj.this
         self.thisown = 1
         del newobj.thisown
+    def __del__(self, destroy=_core_.delete_InputStream):
+        """__del__(self)"""
+        try:
+            if self.thisown: destroy(self)
+        except: pass
+
     def close(*args, **kwargs):
         """close(self)"""
         return _core_.InputStream_close(*args, **kwargs)
@@ -1595,6 +1734,7 @@ DefaultPosition = cvar.DefaultPosition
 DefaultSize = cvar.DefaultSize
 
 class OutputStream(object):
+    """Proxy of C++ OutputStream class"""
     def __init__(self): raise RuntimeError, "No constructor defined"
     def __repr__(self):
         return "<%s.%s; proxy of C++ wxOutputStream instance at %s>" % (self.__class__.__module__, self.__class__.__name__, self.this,)
@@ -1613,6 +1753,7 @@ _core_.OutputStream_swigregister(OutputStreamPtr)
 #---------------------------------------------------------------------------
 
 class FSFile(Object):
+    """Proxy of C++ FSFile class"""
     def __repr__(self):
         return "<%s.%s; proxy of C++ wxFSFile instance at %s>" % (self.__class__.__module__, self.__class__.__name__, self.this,)
     def __init__(self, *args, **kwargs):
@@ -1624,7 +1765,7 @@ class FSFile(Object):
         self.this = newobj.this
         self.thisown = 1
         del newobj.thisown
-        self.thisown = 0   # It will normally be deleted by the user of the wxFileSystem
+        self.thisown = 0   # It will normally be deleted by the user of the wx.FileSystem
 
     def __del__(self, destroy=_core_.delete_FSFile):
         """__del__(self)"""
@@ -1661,6 +1802,7 @@ class FSFilePtr(FSFile):
 _core_.FSFile_swigregister(FSFilePtr)
 
 class CPPFileSystemHandler(object):
+    """Proxy of C++ CPPFileSystemHandler class"""
     def __init__(self): raise RuntimeError, "No constructor defined"
     def __repr__(self):
         return "<%s.%s; proxy of C++ wxFileSystemHandler instance at %s>" % (self.__class__.__module__, self.__class__.__name__, self.this,)
@@ -1673,6 +1815,7 @@ class CPPFileSystemHandlerPtr(CPPFileSystemHandler):
 _core_.CPPFileSystemHandler_swigregister(CPPFileSystemHandlerPtr)
 
 class FileSystemHandler(CPPFileSystemHandler):
+    """Proxy of C++ FileSystemHandler class"""
     def __repr__(self):
         return "<%s.%s; proxy of C++ wxPyFileSystemHandler instance at %s>" % (self.__class__.__module__, self.__class__.__name__, self.this,)
     def __init__(self, *args, **kwargs):
@@ -1732,6 +1875,7 @@ class FileSystemHandlerPtr(FileSystemHandler):
 _core_.FileSystemHandler_swigregister(FileSystemHandlerPtr)
 
 class FileSystem(Object):
+    """Proxy of C++ FileSystem class"""
     def __repr__(self):
         return "<%s.%s; proxy of C++ wxFileSystem instance at %s>" % (self.__class__.__module__, self.__class__.__name__, self.this,)
     def __init__(self, *args, **kwargs):
@@ -1811,6 +1955,7 @@ def FileSystem_URLToFileName(*args, **kwargs):
     return _core_.FileSystem_URLToFileName(*args, **kwargs)
 
 class InternetFSHandler(CPPFileSystemHandler):
+    """Proxy of C++ InternetFSHandler class"""
     def __repr__(self):
         return "<%s.%s; proxy of C++ wxInternetFSHandler instance at %s>" % (self.__class__.__module__, self.__class__.__name__, self.this,)
     def __init__(self, *args, **kwargs):
@@ -1836,6 +1981,7 @@ class InternetFSHandlerPtr(InternetFSHandler):
 _core_.InternetFSHandler_swigregister(InternetFSHandlerPtr)
 
 class ZipFSHandler(CPPFileSystemHandler):
+    """Proxy of C++ ZipFSHandler class"""
     def __repr__(self):
         return "<%s.%s; proxy of C++ wxZipFSHandler instance at %s>" % (self.__class__.__module__, self.__class__.__name__, self.this,)
     def __init__(self, *args, **kwargs):
@@ -1898,6 +2044,7 @@ def MemoryFSHandler_AddFile(filename, dataItem, imgType=-1):
         raise TypeError, 'wx.Image, wx.Bitmap or string expected'
 
 class MemoryFSHandler(CPPFileSystemHandler):
+    """Proxy of C++ MemoryFSHandler class"""
     def __repr__(self):
         return "<%s.%s; proxy of C++ wxMemoryFSHandler instance at %s>" % (self.__class__.__module__, self.__class__.__name__, self.this,)
     def __init__(self, *args, **kwargs):
@@ -1940,9 +2087,17 @@ def MemoryFSHandler_RemoveFile(*args, **kwargs):
     """MemoryFSHandler_RemoveFile(String filename)"""
     return _core_.MemoryFSHandler_RemoveFile(*args, **kwargs)
 
+IMAGE_ALPHA_TRANSPARENT = _core_.IMAGE_ALPHA_TRANSPARENT
+IMAGE_ALPHA_THRESHOLD = _core_.IMAGE_ALPHA_THRESHOLD
+IMAGE_ALPHA_OPAQUE = _core_.IMAGE_ALPHA_OPAQUE
 #---------------------------------------------------------------------------
 
 class ImageHandler(Object):
+    """
+    This is the base class for implementing image file loading/saving, and
+    image creation from data. It is used within `wx.Image` and is not
+    normally seen by the application.
+    """
     def __init__(self): raise RuntimeError, "No constructor defined"
     def __repr__(self):
         return "<%s.%s; proxy of C++ wxImageHandler instance at %s>" % (self.__class__.__module__, self.__class__.__name__, self.this,)
@@ -1991,6 +2146,7 @@ class ImageHandlerPtr(ImageHandler):
 _core_.ImageHandler_swigregister(ImageHandlerPtr)
 
 class ImageHistogram(object):
+    """Proxy of C++ ImageHistogram class"""
     def __repr__(self):
         return "<%s.%s; proxy of C++ wxImageHistogram instance at %s>" % (self.__class__.__module__, self.__class__.__name__, self.this,)
     def __init__(self, *args, **kwargs):
@@ -2001,7 +2157,7 @@ class ImageHistogram(object):
         del newobj.thisown
     def MakeKey(*args, **kwargs):
         """
-        MakeKey(unsigned char r, unsigned char g, unsigned char b) -> unsigned long
+        MakeKey(byte r, byte g, byte b) -> unsigned long
 
         Get the key in the histogram for the given RGB values
         """
@@ -2018,6 +2174,31 @@ class ImageHistogram(object):
         """
         return _core_.ImageHistogram_FindFirstUnusedColour(*args, **kwargs)
 
+    def GetCount(*args, **kwargs):
+        """
+        GetCount(self, unsigned long key) -> unsigned long
+
+        Returns the pixel count for the given key.  Use `MakeKey` to create a
+        key value from a RGB tripple.
+        """
+        return _core_.ImageHistogram_GetCount(*args, **kwargs)
+
+    def GetCountRGB(*args, **kwargs):
+        """
+        GetCountRGB(self, byte r, byte g, byte b) -> unsigned long
+
+        Returns the pixel count for the given RGB values.
+        """
+        return _core_.ImageHistogram_GetCountRGB(*args, **kwargs)
+
+    def GetCountColour(*args, **kwargs):
+        """
+        GetCountColour(self, Colour colour) -> unsigned long
+
+        Returns the pixel count for the given `wx.Colour` value.
+        """
+        return _core_.ImageHistogram_GetCountColour(*args, **kwargs)
+
 
 class ImageHistogramPtr(ImageHistogram):
     def __init__(self, this):
@@ -2028,17 +2209,47 @@ _core_.ImageHistogram_swigregister(ImageHistogramPtr)
 
 def ImageHistogram_MakeKey(*args, **kwargs):
     """
-    ImageHistogram_MakeKey(unsigned char r, unsigned char g, unsigned char b) -> unsigned long
+    ImageHistogram_MakeKey(byte r, byte g, byte b) -> unsigned long
 
     Get the key in the histogram for the given RGB values
     """
     return _core_.ImageHistogram_MakeKey(*args, **kwargs)
 
 class Image(Object):
+    """
+    A platform-independent image class.  An image can be created from
+    data, or using `wx.Bitmap.ConvertToImage`, or loaded from a file in a
+    variety of formats.  Functions are available to set and get image
+    bits, so it can be used for basic image manipulation.
+
+    A wx.Image cannot be drawn directly to a `wx.DC`.  Instead, a
+    platform-specific `wx.Bitmap` object must be created from it using the
+    `wx.BitmapFromImage` constructor. This bitmap can then be drawn in a
+    device context, using `wx.DC.DrawBitmap`.
+
+    One colour value of the image may be used as a mask colour which will
+    lead to the automatic creation of a `wx.Mask` object associated to the
+    bitmap object.
+
+    wx.Image supports alpha channel data, that is in addition to a byte
+    for the red, green and blue colour components for each pixel it also
+    stores a byte representing the pixel opacity. An alpha value of 0
+    corresponds to a transparent pixel (null opacity) while a value of 255
+    means that the pixel is 100% opaque.
+
+    Unlike RGB data, not all images have an alpha channel and before using
+    `GetAlpha` you should check if this image contains an alpha channel
+    with `HasAlpha`. Note that currently only images loaded from PNG files
+    with transparency information will have an alpha channel.
+    """
     def __repr__(self):
         return "<%s.%s; proxy of C++ wxImage instance at %s>" % (self.__class__.__module__, self.__class__.__name__, self.this,)
     def __init__(self, *args, **kwargs):
-        """__init__(self, String name, long type=BITMAP_TYPE_ANY, int index=-1) -> Image"""
+        """
+        __init__(self, String name, long type=BITMAP_TYPE_ANY, int index=-1) -> Image
+
+        Loads an image from a file.
+        """
         newobj = _core_.new_Image(*args, **kwargs)
         self.this = newobj.this
         self.thisown = 1
@@ -2050,56 +2261,164 @@ class Image(Object):
         except: pass
 
     def Create(*args, **kwargs):
-        """Create(self, int width, int height)"""
+        """
+        Create(self, int width, int height, bool clear=True)
+
+        Creates a fresh image.  If clear is ``True``, the new image will be
+        initialized to black. Otherwise, the image data will be uninitialized.
+        """
         return _core_.Image_Create(*args, **kwargs)
 
     def Destroy(*args, **kwargs):
         """
         Destroy(self)
 
-        Deletes the C++ object this Python object is a proxy for.
+        Destroys the image data.
         """
         return _core_.Image_Destroy(*args, **kwargs)
 
     def Scale(*args, **kwargs):
-        """Scale(self, int width, int height) -> Image"""
+        """
+        Scale(self, int width, int height) -> Image
+
+        Returns a scaled version of the image. This is also useful for scaling
+        bitmaps in general as the only other way to scale bitmaps is to blit a
+        `wx.MemoryDC` into another `wx.MemoryDC`.
+        """
         return _core_.Image_Scale(*args, **kwargs)
 
     def ShrinkBy(*args, **kwargs):
-        """ShrinkBy(self, int xFactor, int yFactor) -> Image"""
+        """
+        ShrinkBy(self, int xFactor, int yFactor) -> Image
+
+        Return a version of the image scaled smaller by the given factors.
+        """
         return _core_.Image_ShrinkBy(*args, **kwargs)
 
     def Rescale(*args, **kwargs):
-        """Rescale(self, int width, int height) -> Image"""
+        """
+        Rescale(self, int width, int height) -> Image
+
+        Changes the size of the image in-place by scaling it: after a call to
+        this function, the image will have the given width and height.
+
+        Returns the (modified) image itself.
+        """
         return _core_.Image_Rescale(*args, **kwargs)
 
+    def Resize(*args, **kwargs):
+        """
+        Resize(self, Size size, Point pos, int r=-1, int g=-1, int b=-1) -> Image
+
+        Changes the size of the image in-place without scaling it, by adding
+        either a border with the given colour or cropping as necessary. The
+        image is pasted into a new image with the given size and background
+        colour at the position pos relative to the upper left of the new
+        image. If red = green = blue = -1 then use either the current mask
+        colour if set or find, use, and set a suitable mask colour for any
+        newly exposed areas.
+
+        Returns the (modified) image itself.
+        """
+        return _core_.Image_Resize(*args, **kwargs)
+
     def SetRGB(*args, **kwargs):
-        """SetRGB(self, int x, int y, unsigned char r, unsigned char g, unsigned char b)"""
+        """
+        SetRGB(self, int x, int y, byte r, byte g, byte b)
+
+        Sets the pixel at the given coordinate. This routine performs
+        bounds-checks for the coordinate so it can be considered a safe way to
+        manipulate the data, but in some cases this might be too slow so that
+        the data will have to be set directly. In that case you will have to
+        get access to the image data using the `GetData` method.
+        """
         return _core_.Image_SetRGB(*args, **kwargs)
 
+    def SetRGBRect(*args, **kwargs):
+        """
+        SetRGBRect(self, Rect rect, byte r, byte g, byte b)
+
+        Sets the colour of the pixels within the given rectangle. This routine
+        performs bounds-checks for the rectangle so it can be considered a
+        safe way to manipulate the data.
+        """
+        return _core_.Image_SetRGBRect(*args, **kwargs)
+
     def GetRed(*args, **kwargs):
-        """GetRed(self, int x, int y) -> unsigned char"""
+        """
+        GetRed(self, int x, int y) -> byte
+
+        Returns the red intensity at the given coordinate.
+        """
         return _core_.Image_GetRed(*args, **kwargs)
 
     def GetGreen(*args, **kwargs):
-        """GetGreen(self, int x, int y) -> unsigned char"""
+        """
+        GetGreen(self, int x, int y) -> byte
+
+        Returns the green intensity at the given coordinate.
+        """
         return _core_.Image_GetGreen(*args, **kwargs)
 
     def GetBlue(*args, **kwargs):
-        """GetBlue(self, int x, int y) -> unsigned char"""
+        """
+        GetBlue(self, int x, int y) -> byte
+
+        Returns the blue intensity at the given coordinate.
+        """
         return _core_.Image_GetBlue(*args, **kwargs)
 
     def SetAlpha(*args, **kwargs):
-        """SetAlpha(self, int x, int y, unsigned char alpha)"""
+        """
+        SetAlpha(self, int x, int y, byte alpha)
+
+        Sets the alpha value for the given pixel. This function should only be
+        called if the image has alpha channel data, use `HasAlpha` to check
+        for this.
+        """
         return _core_.Image_SetAlpha(*args, **kwargs)
 
     def GetAlpha(*args, **kwargs):
-        """GetAlpha(self, int x, int y) -> unsigned char"""
+        """
+        GetAlpha(self, int x, int y) -> byte
+
+        Returns the alpha value for the given pixel. This function may only be
+        called for the images with alpha channel, use `HasAlpha` to check for
+        this.
+
+        The returned value is the *opacity* of the image, i.e. the value of 0
+        corresponds to the fully transparent pixels while the value of 255 to
+        the fully opaque pixels.
+        """
         return _core_.Image_GetAlpha(*args, **kwargs)
 
     def HasAlpha(*args, **kwargs):
-        """HasAlpha(self) -> bool"""
+        """
+        HasAlpha(self) -> bool
+
+        Returns true if this image has alpha channel, false otherwise.
+        """
         return _core_.Image_HasAlpha(*args, **kwargs)
+
+    def InitAlpha(*args, **kwargs):
+        """
+        InitAlpha(self)
+
+        Initializes the image alpha channel data. It is an error to call it if
+        the image already has alpha data. If it doesn't, alpha data will be by
+        default initialized to all pixels being fully opaque. But if the image
+        has a a mask colour, all mask pixels will be completely transparent.
+        """
+        return _core_.Image_InitAlpha(*args, **kwargs)
+
+    def IsTransparent(*args, **kwargs):
+        """
+        IsTransparent(self, int x, int y, byte threshold=IMAGE_ALPHA_THRESHOLD) -> bool
+
+        Returns ``True`` if this pixel is masked or has an alpha value less
+        than the spcified threshold.
+        """
+        return _core_.Image_IsTransparent(*args, **kwargs)
 
     def FindFirstUnusedColour(*args, **kwargs):
         """
@@ -2113,111 +2432,261 @@ class Image(Object):
 
     def ConvertAlphaToMask(*args, **kwargs):
         """
-        ConvertAlphaToMask(self, byte threshold=128) -> bool
+        ConvertAlphaToMask(self, byte threshold=IMAGE_ALPHA_THRESHOLD) -> bool
 
-        If the image has alpha channel, this method converts it to mask. All pixels
-        with alpha value less than ``threshold`` are replaced with mask colour and the
-        alpha channel is removed. Mask colour is chosen automatically using
-        `FindFirstUnusedColour`.
+        If the image has alpha channel, this method converts it to mask. All
+        pixels with alpha value less than ``threshold`` are replaced with the
+        mask colour and the alpha channel is removed. The mask colour is
+        chosen automatically using `FindFirstUnusedColour`.
 
         If the image image doesn't have alpha channel, ConvertAlphaToMask does
         nothing.
         """
         return _core_.Image_ConvertAlphaToMask(*args, **kwargs)
 
+    def ConvertColourToAlpha(*args, **kwargs):
+        """
+        ConvertColourToAlpha(self, byte r, byte g, byte b) -> bool
+
+        This method converts an image where the original alpha information is
+        only available as a shades of a colour (actually shades of grey)
+        typically when you draw anti-aliased text into a bitmap. The DC
+        drawing routines draw grey values on the black background although
+        they actually mean to draw white with differnt alpha values.  This
+        method reverses it, assuming a black (!) background and white text.
+        The method will then fill up the whole image with the colour given.
+        """
+        return _core_.Image_ConvertColourToAlpha(*args, **kwargs)
+
     def SetMaskFromImage(*args, **kwargs):
-        """SetMaskFromImage(self, Image mask, byte mr, byte mg, byte mb) -> bool"""
+        """
+        SetMaskFromImage(self, Image mask, byte mr, byte mg, byte mb) -> bool
+
+        Sets the image's mask so that the pixels that have RGB value of
+        ``(mr,mg,mb)`` in ``mask`` will be masked in this image. This is done
+        by first finding an unused colour in the image, setting this colour as
+        the mask colour and then using this colour to draw all pixels in the
+        image who corresponding pixel in mask has given RGB value.
+
+        Returns ``False`` if ``mask`` does not have same dimensions as the
+        image or if there is no unused colour left. Returns ``True`` if the
+        mask was successfully applied.
+
+        Note that this method involves computing the histogram, which is
+        computationally intensive operation.
+        """
         return _core_.Image_SetMaskFromImage(*args, **kwargs)
 
     def CanRead(*args, **kwargs):
-        """CanRead(String name) -> bool"""
+        """
+        CanRead(String filename) -> bool
+
+        Returns True if the image handlers can read this file.
+        """
         return _core_.Image_CanRead(*args, **kwargs)
 
     CanRead = staticmethod(CanRead)
     def GetImageCount(*args, **kwargs):
-        """GetImageCount(String name, long type=BITMAP_TYPE_ANY) -> int"""
+        """
+        GetImageCount(String filename, long type=BITMAP_TYPE_ANY) -> int
+
+        If the image file contains more than one image and the image handler
+        is capable of retrieving these individually, this function will return
+        the number of available images.
+        """
         return _core_.Image_GetImageCount(*args, **kwargs)
 
     GetImageCount = staticmethod(GetImageCount)
     def LoadFile(*args, **kwargs):
-        """LoadFile(self, String name, long type=BITMAP_TYPE_ANY, int index=-1) -> bool"""
+        """
+        LoadFile(self, String name, long type=BITMAP_TYPE_ANY, int index=-1) -> bool
+
+        Loads an image from a file. If no handler type is provided, the
+        library will try to autodetect the format.
+        """
         return _core_.Image_LoadFile(*args, **kwargs)
 
     def LoadMimeFile(*args, **kwargs):
-        """LoadMimeFile(self, String name, String mimetype, int index=-1) -> bool"""
+        """
+        LoadMimeFile(self, String name, String mimetype, int index=-1) -> bool
+
+        Loads an image from a file, specifying the image type with a MIME type
+        string.
+        """
         return _core_.Image_LoadMimeFile(*args, **kwargs)
 
     def SaveFile(*args, **kwargs):
-        """SaveFile(self, String name, int type) -> bool"""
+        """
+        SaveFile(self, String name, int type) -> bool
+
+        Saves an image in the named file.
+        """
         return _core_.Image_SaveFile(*args, **kwargs)
 
     def SaveMimeFile(*args, **kwargs):
-        """SaveMimeFile(self, String name, String mimetype) -> bool"""
+        """
+        SaveMimeFile(self, String name, String mimetype) -> bool
+
+        Saves an image in the named file.
+        """
         return _core_.Image_SaveMimeFile(*args, **kwargs)
 
     def CanReadStream(*args, **kwargs):
-        """CanReadStream(InputStream stream) -> bool"""
+        """
+        CanReadStream(InputStream stream) -> bool
+
+        Returns True if the image handlers can read an image file from the
+        data currently on the input stream, or a readable Python file-like
+        object.
+        """
         return _core_.Image_CanReadStream(*args, **kwargs)
 
     CanReadStream = staticmethod(CanReadStream)
     def LoadStream(*args, **kwargs):
-        """LoadStream(self, InputStream stream, long type=BITMAP_TYPE_ANY, int index=-1) -> bool"""
+        """
+        LoadStream(self, InputStream stream, long type=BITMAP_TYPE_ANY, int index=-1) -> bool
+
+        Loads an image from an input stream or a readable Python file-like
+        object. If no handler type is provided, the library will try to
+        autodetect the format.
+        """
         return _core_.Image_LoadStream(*args, **kwargs)
 
     def LoadMimeStream(*args, **kwargs):
-        """LoadMimeStream(self, InputStream stream, String mimetype, int index=-1) -> bool"""
+        """
+        LoadMimeStream(self, InputStream stream, String mimetype, int index=-1) -> bool
+
+        Loads an image from an input stream or a readable Python file-like
+        object, using a MIME type string to specify the image file format.
+        """
         return _core_.Image_LoadMimeStream(*args, **kwargs)
 
     def Ok(*args, **kwargs):
-        """Ok(self) -> bool"""
+        """
+        Ok(self) -> bool
+
+        Returns true if image data is present.
+        """
         return _core_.Image_Ok(*args, **kwargs)
 
     def GetWidth(*args, **kwargs):
-        """GetWidth(self) -> int"""
+        """
+        GetWidth(self) -> int
+
+        Gets the width of the image in pixels.
+        """
         return _core_.Image_GetWidth(*args, **kwargs)
 
     def GetHeight(*args, **kwargs):
-        """GetHeight(self) -> int"""
+        """
+        GetHeight(self) -> int
+
+        Gets the height of the image in pixels.
+        """
         return _core_.Image_GetHeight(*args, **kwargs)
 
     def GetSize(*args, **kwargs):
-        """GetSize(self) -> Size"""
+        """
+        GetSize(self) -> Size
+
+        Returns the size of the image in pixels.
+        """
         return _core_.Image_GetSize(*args, **kwargs)
 
     def GetSubImage(*args, **kwargs):
-        """GetSubImage(self, Rect rect) -> Image"""
+        """
+        GetSubImage(self, Rect rect) -> Image
+
+        Returns a sub image of the current one as long as the rect belongs
+        entirely to the image.
+        """
         return _core_.Image_GetSubImage(*args, **kwargs)
 
+    def Size(*args, **kwargs):
+        """
+        Size(self, Size size, Point pos, int r=-1, int g=-1, int b=-1) -> Image
+
+        Returns a resized version of this image without scaling it by adding
+        either a border with the given colour or cropping as necessary. The
+        image is pasted into a new image with the given size and background
+        colour at the position ``pos`` relative to the upper left of the new
+        image. If red = green = blue = -1 then use either the current mask
+        colour if set or find, use, and set a suitable mask colour for any
+        newly exposed areas.
+        """
+        return _core_.Image_Size(*args, **kwargs)
+
     def Copy(*args, **kwargs):
-        """Copy(self) -> Image"""
+        """
+        Copy(self) -> Image
+
+        Returns an identical copy of the image.
+        """
         return _core_.Image_Copy(*args, **kwargs)
 
     def Paste(*args, **kwargs):
-        """Paste(self, Image image, int x, int y)"""
+        """
+        Paste(self, Image image, int x, int y)
+
+        Pastes ``image`` into this instance and takes care of the mask colour
+        and any out of bounds problems.
+        """
         return _core_.Image_Paste(*args, **kwargs)
 
     def GetData(*args, **kwargs):
-        """GetData(self) -> PyObject"""
+        """
+        GetData(self) -> PyObject
+
+        Returns a string containing a copy of the RGB bytes of the image.
+        """
         return _core_.Image_GetData(*args, **kwargs)
 
     def SetData(*args, **kwargs):
-        """SetData(self, PyObject data)"""
+        """
+        SetData(self, buffer data)
+
+        Resets the Image's RGB data from a buffer of RGB bytes.  Accepts
+        either a string or a buffer object holding the data and the length of
+        the data must be width*height*3.
+        """
         return _core_.Image_SetData(*args, **kwargs)
 
     def GetDataBuffer(*args, **kwargs):
-        """GetDataBuffer(self) -> PyObject"""
+        """
+        GetDataBuffer(self) -> PyObject
+
+        Returns a writable Python buffer object that is pointing at the RGB
+        image data buffer inside the wx.Image. You need to ensure that you do
+        not use this buffer object after the image has been destroyed.
+        """
         return _core_.Image_GetDataBuffer(*args, **kwargs)
 
     def SetDataBuffer(*args, **kwargs):
-        """SetDataBuffer(self, PyObject data)"""
+        """
+        SetDataBuffer(self, buffer data)
+
+        Sets the internal image data pointer to point at a Python buffer
+        object.  This can save making an extra copy of the data but you must
+        ensure that the buffer object lives longer than the wx.Image does.
+        """
         return _core_.Image_SetDataBuffer(*args, **kwargs)
 
     def GetAlphaData(*args, **kwargs):
-        """GetAlphaData(self) -> PyObject"""
+        """
+        GetAlphaData(self) -> PyObject
+
+        Returns a string containing a copy of the alpha bytes of the image.
+        """
         return _core_.Image_GetAlphaData(*args, **kwargs)
 
     def SetAlphaData(*args, **kwargs):
-        """SetAlphaData(self, PyObject data)"""
+        """
+        SetAlphaData(self, buffer alpha)
+
+        Resets the Image's alpha data from a buffer of bytes.  Accepts either
+        a string or a buffer object holding the data and the length of the
+        data must be width*height.
+        """
         return _core_.Image_SetAlphaData(*args, **kwargs)
 
     def GetAlphaBuffer(*args, **kwargs):
@@ -2225,77 +2694,160 @@ class Image(Object):
         return _core_.Image_GetAlphaBuffer(*args, **kwargs)
 
     def SetAlphaBuffer(*args, **kwargs):
-        """SetAlphaBuffer(self, PyObject data)"""
+        """SetAlphaBuffer(self, buffer alpha)"""
         return _core_.Image_SetAlphaBuffer(*args, **kwargs)
 
     def SetMaskColour(*args, **kwargs):
-        """SetMaskColour(self, unsigned char r, unsigned char g, unsigned char b)"""
+        """
+        SetMaskColour(self, byte r, byte g, byte b)
+
+        Sets the mask colour for this image (and tells the image to use the
+        mask).
+        """
         return _core_.Image_SetMaskColour(*args, **kwargs)
 
+    def GetOrFindMaskColour(*args, **kwargs):
+        """
+        GetOrFindMaskColour() -> (r,g,b)
+
+        Get the current mask colour or find a suitable colour.
+        """
+        return _core_.Image_GetOrFindMaskColour(*args, **kwargs)
+
     def GetMaskRed(*args, **kwargs):
-        """GetMaskRed(self) -> unsigned char"""
+        """
+        GetMaskRed(self) -> byte
+
+        Gets the red component of the mask colour.
+        """
         return _core_.Image_GetMaskRed(*args, **kwargs)
 
     def GetMaskGreen(*args, **kwargs):
-        """GetMaskGreen(self) -> unsigned char"""
+        """
+        GetMaskGreen(self) -> byte
+
+        Gets the green component of the mask colour.
+        """
         return _core_.Image_GetMaskGreen(*args, **kwargs)
 
     def GetMaskBlue(*args, **kwargs):
-        """GetMaskBlue(self) -> unsigned char"""
+        """
+        GetMaskBlue(self) -> byte
+
+        Gets the blue component of the mask colour.
+        """
         return _core_.Image_GetMaskBlue(*args, **kwargs)
 
     def SetMask(*args, **kwargs):
-        """SetMask(self, bool mask=True)"""
+        """
+        SetMask(self, bool mask=True)
+
+        Specifies whether there is a mask or not. The area of the mask is
+        determined by the current mask colour.
+        """
         return _core_.Image_SetMask(*args, **kwargs)
 
     def HasMask(*args, **kwargs):
-        """HasMask(self) -> bool"""
+        """
+        HasMask(self) -> bool
+
+        Returns ``True`` if there is a mask active, ``False`` otherwise.
+        """
         return _core_.Image_HasMask(*args, **kwargs)
 
     def Rotate(*args, **kwargs):
         """
         Rotate(self, double angle, Point centre_of_rotation, bool interpolating=True, 
             Point offset_after_rotation=None) -> Image
+
+        Rotates the image about the given point, by ``angle`` radians. Passing
+        ``True`` to ``interpolating`` results in better image quality, but is
+        slower. If the image has a mask, then the mask colour is used for the
+        uncovered pixels in the rotated image background. Otherwise, black
+        will be used as the fill colour.
+
+        Returns the rotated image, leaving this image intact.
         """
         return _core_.Image_Rotate(*args, **kwargs)
 
     def Rotate90(*args, **kwargs):
-        """Rotate90(self, bool clockwise=True) -> Image"""
+        """
+        Rotate90(self, bool clockwise=True) -> Image
+
+        Returns a copy of the image rotated 90 degrees in the direction
+        indicated by ``clockwise``.
+        """
         return _core_.Image_Rotate90(*args, **kwargs)
 
     def Mirror(*args, **kwargs):
-        """Mirror(self, bool horizontally=True) -> Image"""
+        """
+        Mirror(self, bool horizontally=True) -> Image
+
+        Returns a mirrored copy of the image. The parameter ``horizontally``
+        indicates the orientation.
+        """
         return _core_.Image_Mirror(*args, **kwargs)
 
     def Replace(*args, **kwargs):
         """
-        Replace(self, unsigned char r1, unsigned char g1, unsigned char b1, 
-            unsigned char r2, unsigned char g2, unsigned char b2)
+        Replace(self, byte r1, byte g1, byte b1, byte r2, byte g2, byte b2)
+
+        Replaces the colour specified by ``(r1,g1,b1)`` by the colour
+        ``(r2,g2,b2)``.
         """
         return _core_.Image_Replace(*args, **kwargs)
 
     def ConvertToMono(*args, **kwargs):
-        """ConvertToMono(self, unsigned char r, unsigned char g, unsigned char b) -> Image"""
+        """
+        ConvertToMono(self, byte r, byte g, byte b) -> Image
+
+        Returns monochromatic version of the image. The returned image has
+        white colour where the original has ``(r,g,b)`` colour and black
+        colour everywhere else.
+        """
         return _core_.Image_ConvertToMono(*args, **kwargs)
 
     def SetOption(*args, **kwargs):
-        """SetOption(self, String name, String value)"""
+        """
+        SetOption(self, String name, String value)
+
+        Sets an image handler defined option.  For example, when saving as a
+        JPEG file, the option ``wx.IMAGE_OPTION_QUALITY`` is used, which is a
+        number between 0 and 100 (0 is terrible, 100 is very good).
+        """
         return _core_.Image_SetOption(*args, **kwargs)
 
     def SetOptionInt(*args, **kwargs):
-        """SetOptionInt(self, String name, int value)"""
+        """
+        SetOptionInt(self, String name, int value)
+
+        Sets an image option as an integer.
+        """
         return _core_.Image_SetOptionInt(*args, **kwargs)
 
     def GetOption(*args, **kwargs):
-        """GetOption(self, String name) -> String"""
+        """
+        GetOption(self, String name) -> String
+
+        Gets the value of an image handler option.
+        """
         return _core_.Image_GetOption(*args, **kwargs)
 
     def GetOptionInt(*args, **kwargs):
-        """GetOptionInt(self, String name) -> int"""
+        """
+        GetOptionInt(self, String name) -> int
+
+        Gets the value of an image handler option as an integer.  If the given
+        option is not present, the function returns 0.
+        """
         return _core_.Image_GetOptionInt(*args, **kwargs)
 
     def HasOption(*args, **kwargs):
-        """HasOption(self, String name) -> bool"""
+        """
+        HasOption(self, String name) -> bool
+
+        Returns true if the given option is present.
+        """
         return _core_.Image_HasOption(*args, **kwargs)
 
     def CountColours(*args, **kwargs):
@@ -2322,7 +2874,13 @@ class Image(Object):
 
     RemoveHandler = staticmethod(RemoveHandler)
     def GetImageExtWildcard(*args, **kwargs):
-        """GetImageExtWildcard() -> String"""
+        """
+        GetImageExtWildcard() -> String
+
+        Iterates all registered wxImageHandler objects, and returns a string
+        containing file extension masks suitable for passing to file open/save
+        dialog boxes.
+        """
         return _core_.Image_GetImageExtWildcard(*args, **kwargs)
 
     GetImageExtWildcard = staticmethod(GetImageExtWildcard)
@@ -2331,7 +2889,7 @@ class Image(Object):
         return _core_.Image_ConvertToBitmap(*args, **kwargs)
 
     def ConvertToMonoBitmap(*args, **kwargs):
-        """ConvertToMonoBitmap(self, unsigned char red, unsigned char green, unsigned char blue) -> Bitmap"""
+        """ConvertToMonoBitmap(self, byte red, byte green, byte blue) -> Bitmap"""
         return _core_.Image_ConvertToMonoBitmap(*args, **kwargs)
 
     def __nonzero__(self): return self.Ok() 
@@ -2344,51 +2902,110 @@ class ImagePtr(Image):
 _core_.Image_swigregister(ImagePtr)
 
 def ImageFromMime(*args, **kwargs):
-    """ImageFromMime(String name, String mimetype, int index=-1) -> Image"""
+    """
+    ImageFromMime(String name, String mimetype, int index=-1) -> Image
+
+    Loads an image from a file, using a MIME type string (such as
+    'image/jpeg') to specify image type.
+    """
     val = _core_.new_ImageFromMime(*args, **kwargs)
     val.thisown = 1
     return val
 
 def ImageFromStream(*args, **kwargs):
-    """ImageFromStream(InputStream stream, long type=BITMAP_TYPE_ANY, int index=-1) -> Image"""
+    """
+    ImageFromStream(InputStream stream, long type=BITMAP_TYPE_ANY, int index=-1) -> Image
+
+    Loads an image from an input stream, or any readable Python file-like
+    object.
+    """
     val = _core_.new_ImageFromStream(*args, **kwargs)
     val.thisown = 1
     return val
 
 def ImageFromStreamMime(*args, **kwargs):
-    """ImageFromStreamMime(InputStream stream, String mimetype, int index=-1) -> Image"""
+    """
+    ImageFromStreamMime(InputStream stream, String mimetype, int index=-1) -> Image
+
+    Loads an image from an input stream, or any readable Python file-like
+    object, specifying the image format with a MIME type string.
+    """
     val = _core_.new_ImageFromStreamMime(*args, **kwargs)
     val.thisown = 1
     return val
 
 def EmptyImage(*args, **kwargs):
-    """EmptyImage(int width=0, int height=0, bool clear=True) -> Image"""
+    """
+    EmptyImage(int width=0, int height=0, bool clear=True) -> Image
+
+    Construct an empty image of a given size, optionally setting all
+    pixels to black.
+    """
     val = _core_.new_EmptyImage(*args, **kwargs)
     val.thisown = 1
     return val
 
 def ImageFromBitmap(*args, **kwargs):
-    """ImageFromBitmap(Bitmap bitmap) -> Image"""
+    """
+    ImageFromBitmap(Bitmap bitmap) -> Image
+
+    Construct an Image from a `wx.Bitmap`.
+    """
     val = _core_.new_ImageFromBitmap(*args, **kwargs)
     val.thisown = 1
     return val
 
 def ImageFromData(*args, **kwargs):
-    """ImageFromData(int width, int height, unsigned char data) -> Image"""
+    """
+    ImageFromData(int width, int height, buffer data) -> Image
+
+    Construct an Image from a buffer of RGB bytes.  Accepts either a
+    string or a buffer object holding the data and the length of the data
+    must be width*height*3.
+    """
     val = _core_.new_ImageFromData(*args, **kwargs)
     val.thisown = 1
     return val
 
+def ImageFromDataWithAlpha(*args, **kwargs):
+    """
+    ImageFromDataWithAlpha(int width, int height, buffer data, buffer alpha) -> Image
+
+    Construct an Image from a buffer of RGB bytes with an Alpha channel.
+    Accepts either a string or a buffer object holding the data and the
+    length of the data must be width*height*3 bytes, and the length of the
+    alpha data must be width*height bytes.
+    """
+    val = _core_.new_ImageFromDataWithAlpha(*args, **kwargs)
+    val.thisown = 1
+    return val
+
 def Image_CanRead(*args, **kwargs):
-    """Image_CanRead(String name) -> bool"""
+    """
+    Image_CanRead(String filename) -> bool
+
+    Returns True if the image handlers can read this file.
+    """
     return _core_.Image_CanRead(*args, **kwargs)
 
 def Image_GetImageCount(*args, **kwargs):
-    """Image_GetImageCount(String name, long type=BITMAP_TYPE_ANY) -> int"""
+    """
+    Image_GetImageCount(String filename, long type=BITMAP_TYPE_ANY) -> int
+
+    If the image file contains more than one image and the image handler
+    is capable of retrieving these individually, this function will return
+    the number of available images.
+    """
     return _core_.Image_GetImageCount(*args, **kwargs)
 
 def Image_CanReadStream(*args, **kwargs):
-    """Image_CanReadStream(InputStream stream) -> bool"""
+    """
+    Image_CanReadStream(InputStream stream) -> bool
+
+    Returns True if the image handlers can read an image file from the
+    data currently on the input stream, or a readable Python file-like
+    object.
+    """
     return _core_.Image_CanReadStream(*args, **kwargs)
 
 def Image_AddHandler(*args, **kwargs):
@@ -2404,7 +3021,13 @@ def Image_RemoveHandler(*args, **kwargs):
     return _core_.Image_RemoveHandler(*args, **kwargs)
 
 def Image_GetImageExtWildcard(*args, **kwargs):
-    """Image_GetImageExtWildcard() -> String"""
+    """
+    Image_GetImageExtWildcard() -> String
+
+    Iterates all registered wxImageHandler objects, and returns a string
+    containing file extension masks suitable for passing to file open/save
+    dialog boxes.
+    """
     return _core_.Image_GetImageExtWildcard(*args, **kwargs)
 
 def InitAllImageHandlers():
@@ -2416,6 +3039,9 @@ def InitAllImageHandlers():
 
 IMAGE_RESOLUTION_INCHES = _core_.IMAGE_RESOLUTION_INCHES
 IMAGE_RESOLUTION_CM = _core_.IMAGE_RESOLUTION_CM
+PNG_TYPE_COLOUR = _core_.PNG_TYPE_COLOUR
+PNG_TYPE_GREY = _core_.PNG_TYPE_GREY
+PNG_TYPE_GREY_RED = _core_.PNG_TYPE_GREY_RED
 BMP_24BPP = _core_.BMP_24BPP
 BMP_8BPP = _core_.BMP_8BPP
 BMP_8BPP_GREY = _core_.BMP_8BPP_GREY
@@ -2426,10 +3052,15 @@ BMP_4BPP = _core_.BMP_4BPP
 BMP_1BPP = _core_.BMP_1BPP
 BMP_1BPP_BW = _core_.BMP_1BPP_BW
 class BMPHandler(ImageHandler):
+    """A `wx.ImageHandler` for \*.bmp bitmap files."""
     def __repr__(self):
         return "<%s.%s; proxy of C++ wxBMPHandler instance at %s>" % (self.__class__.__module__, self.__class__.__name__, self.this,)
     def __init__(self, *args, **kwargs):
-        """__init__(self) -> BMPHandler"""
+        """
+        __init__(self) -> BMPHandler
+
+        A `wx.ImageHandler` for \*.bmp bitmap files.
+        """
         newobj = _core_.new_BMPHandler(*args, **kwargs)
         self.this = newobj.this
         self.thisown = 1
@@ -2442,17 +3073,32 @@ class BMPHandlerPtr(BMPHandler):
         self.__class__ = BMPHandler
 _core_.BMPHandler_swigregister(BMPHandlerPtr)
 NullImage = cvar.NullImage
+IMAGE_OPTION_FILENAME = cvar.IMAGE_OPTION_FILENAME
 IMAGE_OPTION_BMP_FORMAT = cvar.IMAGE_OPTION_BMP_FORMAT
 IMAGE_OPTION_CUR_HOTSPOT_X = cvar.IMAGE_OPTION_CUR_HOTSPOT_X
 IMAGE_OPTION_CUR_HOTSPOT_Y = cvar.IMAGE_OPTION_CUR_HOTSPOT_Y
 IMAGE_OPTION_RESOLUTION = cvar.IMAGE_OPTION_RESOLUTION
+IMAGE_OPTION_RESOLUTIONX = cvar.IMAGE_OPTION_RESOLUTIONX
+IMAGE_OPTION_RESOLUTIONY = cvar.IMAGE_OPTION_RESOLUTIONY
 IMAGE_OPTION_RESOLUTIONUNIT = cvar.IMAGE_OPTION_RESOLUTIONUNIT
+IMAGE_OPTION_QUALITY = cvar.IMAGE_OPTION_QUALITY
+IMAGE_OPTION_BITSPERSAMPLE = cvar.IMAGE_OPTION_BITSPERSAMPLE
+IMAGE_OPTION_SAMPLESPERPIXEL = cvar.IMAGE_OPTION_SAMPLESPERPIXEL
+IMAGE_OPTION_COMPRESSION = cvar.IMAGE_OPTION_COMPRESSION
+IMAGE_OPTION_IMAGEDESCRIPTOR = cvar.IMAGE_OPTION_IMAGEDESCRIPTOR
+IMAGE_OPTION_PNG_FORMAT = cvar.IMAGE_OPTION_PNG_FORMAT
+IMAGE_OPTION_PNG_BITDEPTH = cvar.IMAGE_OPTION_PNG_BITDEPTH
 
 class ICOHandler(BMPHandler):
+    """A `wx.ImageHandler` for \*.ico icon files."""
     def __repr__(self):
         return "<%s.%s; proxy of C++ wxICOHandler instance at %s>" % (self.__class__.__module__, self.__class__.__name__, self.this,)
     def __init__(self, *args, **kwargs):
-        """__init__(self) -> ICOHandler"""
+        """
+        __init__(self) -> ICOHandler
+
+        A `wx.ImageHandler` for \*.ico icon files.
+        """
         newobj = _core_.new_ICOHandler(*args, **kwargs)
         self.this = newobj.this
         self.thisown = 1
@@ -2466,10 +3112,15 @@ class ICOHandlerPtr(ICOHandler):
 _core_.ICOHandler_swigregister(ICOHandlerPtr)
 
 class CURHandler(ICOHandler):
+    """A `wx.ImageHandler` for \*.cur cursor files."""
     def __repr__(self):
         return "<%s.%s; proxy of C++ wxCURHandler instance at %s>" % (self.__class__.__module__, self.__class__.__name__, self.this,)
     def __init__(self, *args, **kwargs):
-        """__init__(self) -> CURHandler"""
+        """
+        __init__(self) -> CURHandler
+
+        A `wx.ImageHandler` for \*.cur cursor files.
+        """
         newobj = _core_.new_CURHandler(*args, **kwargs)
         self.this = newobj.this
         self.thisown = 1
@@ -2483,10 +3134,15 @@ class CURHandlerPtr(CURHandler):
 _core_.CURHandler_swigregister(CURHandlerPtr)
 
 class ANIHandler(CURHandler):
+    """A `wx.ImageHandler` for \*.ani animated cursor files."""
     def __repr__(self):
         return "<%s.%s; proxy of C++ wxANIHandler instance at %s>" % (self.__class__.__module__, self.__class__.__name__, self.this,)
     def __init__(self, *args, **kwargs):
-        """__init__(self) -> ANIHandler"""
+        """
+        __init__(self) -> ANIHandler
+
+        A `wx.ImageHandler` for \*.ani animated cursor files.
+        """
         newobj = _core_.new_ANIHandler(*args, **kwargs)
         self.this = newobj.this
         self.thisown = 1
@@ -2500,10 +3156,15 @@ class ANIHandlerPtr(ANIHandler):
 _core_.ANIHandler_swigregister(ANIHandlerPtr)
 
 class PNGHandler(ImageHandler):
+    """A `wx.ImageHandler` for PNG image files."""
     def __repr__(self):
         return "<%s.%s; proxy of C++ wxPNGHandler instance at %s>" % (self.__class__.__module__, self.__class__.__name__, self.this,)
     def __init__(self, *args, **kwargs):
-        """__init__(self) -> PNGHandler"""
+        """
+        __init__(self) -> PNGHandler
+
+        A `wx.ImageHandler` for PNG image files.
+        """
         newobj = _core_.new_PNGHandler(*args, **kwargs)
         self.this = newobj.this
         self.thisown = 1
@@ -2517,10 +3178,15 @@ class PNGHandlerPtr(PNGHandler):
 _core_.PNGHandler_swigregister(PNGHandlerPtr)
 
 class GIFHandler(ImageHandler):
+    """A `wx.ImageHandler` for GIF image files."""
     def __repr__(self):
         return "<%s.%s; proxy of C++ wxGIFHandler instance at %s>" % (self.__class__.__module__, self.__class__.__name__, self.this,)
     def __init__(self, *args, **kwargs):
-        """__init__(self) -> GIFHandler"""
+        """
+        __init__(self) -> GIFHandler
+
+        A `wx.ImageHandler` for GIF image files.
+        """
         newobj = _core_.new_GIFHandler(*args, **kwargs)
         self.this = newobj.this
         self.thisown = 1
@@ -2534,10 +3200,15 @@ class GIFHandlerPtr(GIFHandler):
 _core_.GIFHandler_swigregister(GIFHandlerPtr)
 
 class PCXHandler(ImageHandler):
+    """A `wx.ImageHandler` for PCX imager files."""
     def __repr__(self):
         return "<%s.%s; proxy of C++ wxPCXHandler instance at %s>" % (self.__class__.__module__, self.__class__.__name__, self.this,)
     def __init__(self, *args, **kwargs):
-        """__init__(self) -> PCXHandler"""
+        """
+        __init__(self) -> PCXHandler
+
+        A `wx.ImageHandler` for PCX imager files.
+        """
         newobj = _core_.new_PCXHandler(*args, **kwargs)
         self.this = newobj.this
         self.thisown = 1
@@ -2551,10 +3222,15 @@ class PCXHandlerPtr(PCXHandler):
 _core_.PCXHandler_swigregister(PCXHandlerPtr)
 
 class JPEGHandler(ImageHandler):
+    """A `wx.ImageHandler` for JPEG/JPG image files."""
     def __repr__(self):
         return "<%s.%s; proxy of C++ wxJPEGHandler instance at %s>" % (self.__class__.__module__, self.__class__.__name__, self.this,)
     def __init__(self, *args, **kwargs):
-        """__init__(self) -> JPEGHandler"""
+        """
+        __init__(self) -> JPEGHandler
+
+        A `wx.ImageHandler` for JPEG/JPG image files.
+        """
         newobj = _core_.new_JPEGHandler(*args, **kwargs)
         self.this = newobj.this
         self.thisown = 1
@@ -2568,10 +3244,15 @@ class JPEGHandlerPtr(JPEGHandler):
 _core_.JPEGHandler_swigregister(JPEGHandlerPtr)
 
 class PNMHandler(ImageHandler):
+    """A `wx.ImageHandler` for PNM image files."""
     def __repr__(self):
         return "<%s.%s; proxy of C++ wxPNMHandler instance at %s>" % (self.__class__.__module__, self.__class__.__name__, self.this,)
     def __init__(self, *args, **kwargs):
-        """__init__(self) -> PNMHandler"""
+        """
+        __init__(self) -> PNMHandler
+
+        A `wx.ImageHandler` for PNM image files.
+        """
         newobj = _core_.new_PNMHandler(*args, **kwargs)
         self.this = newobj.this
         self.thisown = 1
@@ -2585,10 +3266,15 @@ class PNMHandlerPtr(PNMHandler):
 _core_.PNMHandler_swigregister(PNMHandlerPtr)
 
 class XPMHandler(ImageHandler):
+    """A `wx.ImageHandler` for XPM image."""
     def __repr__(self):
         return "<%s.%s; proxy of C++ wxXPMHandler instance at %s>" % (self.__class__.__module__, self.__class__.__name__, self.this,)
     def __init__(self, *args, **kwargs):
-        """__init__(self) -> XPMHandler"""
+        """
+        __init__(self) -> XPMHandler
+
+        A `wx.ImageHandler` for XPM image.
+        """
         newobj = _core_.new_XPMHandler(*args, **kwargs)
         self.this = newobj.this
         self.thisown = 1
@@ -2602,10 +3288,15 @@ class XPMHandlerPtr(XPMHandler):
 _core_.XPMHandler_swigregister(XPMHandlerPtr)
 
 class TIFFHandler(ImageHandler):
+    """A `wx.ImageHandler` for TIFF image files."""
     def __repr__(self):
         return "<%s.%s; proxy of C++ wxTIFFHandler instance at %s>" % (self.__class__.__module__, self.__class__.__name__, self.this,)
     def __init__(self, *args, **kwargs):
-        """__init__(self) -> TIFFHandler"""
+        """
+        __init__(self) -> TIFFHandler
+
+        A `wx.ImageHandler` for TIFF image files.
+        """
         newobj = _core_.new_TIFFHandler(*args, **kwargs)
         self.this = newobj.this
         self.thisown = 1
@@ -2657,6 +3348,7 @@ def Quantize_Quantize(*args, **kwargs):
 #---------------------------------------------------------------------------
 
 class EvtHandler(Object):
+    """Proxy of C++ EvtHandler class"""
     def __repr__(self):
         return "<%s.%s; proxy of C++ wxEvtHandler instance at %s>" % (self.__class__.__module__, self.__class__.__name__, self.this,)
     def __init__(self, *args, **kwargs):
@@ -2710,7 +3402,7 @@ class EvtHandler(Object):
         return _core_.EvtHandler_Disconnect(*args, **kwargs)
 
     def _setOORInfo(*args, **kwargs):
-        """_setOORInfo(self, PyObject _self)"""
+        """_setOORInfo(self, PyObject _self, bool incref=True)"""
         return _core_.EvtHandler__setOORInfo(*args, **kwargs)
 
     def Bind(self, event, handler, source=None, id=wx.ID_ANY, id2=wx.ID_ANY):
@@ -2897,7 +3589,8 @@ wxEVT_SCROLL_PAGEUP = _core_.wxEVT_SCROLL_PAGEUP
 wxEVT_SCROLL_PAGEDOWN = _core_.wxEVT_SCROLL_PAGEDOWN
 wxEVT_SCROLL_THUMBTRACK = _core_.wxEVT_SCROLL_THUMBTRACK
 wxEVT_SCROLL_THUMBRELEASE = _core_.wxEVT_SCROLL_THUMBRELEASE
-wxEVT_SCROLL_ENDSCROLL = _core_.wxEVT_SCROLL_ENDSCROLL
+wxEVT_SCROLL_CHANGED = _core_.wxEVT_SCROLL_CHANGED
+wxEVT_SCROLL_ENDSCROLL = wxEVT_SCROLL_CHANGED 
 wxEVT_SCROLLWIN_TOP = _core_.wxEVT_SCROLLWIN_TOP
 wxEVT_SCROLLWIN_BOTTOM = _core_.wxEVT_SCROLLWIN_BOTTOM
 wxEVT_SCROLLWIN_LINEUP = _core_.wxEVT_SCROLLWIN_LINEUP
@@ -2942,6 +3635,7 @@ wxEVT_IDLE = _core_.wxEVT_IDLE
 wxEVT_UPDATE_UI = _core_.wxEVT_UPDATE_UI
 wxEVT_SIZING = _core_.wxEVT_SIZING
 wxEVT_MOVING = _core_.wxEVT_MOVING
+wxEVT_HIBERNATE = _core_.wxEVT_HIBERNATE
 wxEVT_COMMAND_LEFT_CLICK = _core_.wxEVT_COMMAND_LEFT_CLICK
 wxEVT_COMMAND_LEFT_DCLICK = _core_.wxEVT_COMMAND_LEFT_DCLICK
 wxEVT_COMMAND_RIGHT_CLICK = _core_.wxEVT_COMMAND_RIGHT_CLICK
@@ -2975,6 +3669,7 @@ EVT_KILL_FOCUS = wx.PyEventBinder( wxEVT_KILL_FOCUS )
 EVT_CHILD_FOCUS = wx.PyEventBinder( wxEVT_CHILD_FOCUS )
 EVT_ACTIVATE = wx.PyEventBinder( wxEVT_ACTIVATE )
 EVT_ACTIVATE_APP = wx.PyEventBinder( wxEVT_ACTIVATE_APP )
+EVT_HIBERNATE = wx.PyEventBinder( wxEVT_HIBERNATE )     
 EVT_END_SESSION = wx.PyEventBinder( wxEVT_END_SESSION )
 EVT_QUERY_END_SESSION = wx.PyEventBinder( wxEVT_QUERY_END_SESSION )
 EVT_DROP_FILES = wx.PyEventBinder( wxEVT_DROP_FILES )
@@ -3042,7 +3737,7 @@ EVT_SCROLLWIN_PAGEDOWN = wx.PyEventBinder( wxEVT_SCROLLWIN_PAGEDOWN )
 EVT_SCROLLWIN_THUMBTRACK = wx.PyEventBinder( wxEVT_SCROLLWIN_THUMBTRACK )
 EVT_SCROLLWIN_THUMBRELEASE = wx.PyEventBinder( wxEVT_SCROLLWIN_THUMBRELEASE )
 
-# Scrolling from wxSlider and wxScrollBar
+# Scrolling from wx.Slider and wx.ScrollBar
 EVT_SCROLL = wx.PyEventBinder([ wxEVT_SCROLL_TOP, 
                                wxEVT_SCROLL_BOTTOM, 
                                wxEVT_SCROLL_LINEUP, 
@@ -3051,7 +3746,7 @@ EVT_SCROLL = wx.PyEventBinder([ wxEVT_SCROLL_TOP,
                                wxEVT_SCROLL_PAGEDOWN, 
                                wxEVT_SCROLL_THUMBTRACK, 
                                wxEVT_SCROLL_THUMBRELEASE, 
-                               wxEVT_SCROLL_ENDSCROLL,
+                               wxEVT_SCROLL_CHANGED,
                                ])
 
 EVT_SCROLL_TOP = wx.PyEventBinder( wxEVT_SCROLL_TOP )
@@ -3062,9 +3757,10 @@ EVT_SCROLL_PAGEUP = wx.PyEventBinder( wxEVT_SCROLL_PAGEUP )
 EVT_SCROLL_PAGEDOWN = wx.PyEventBinder( wxEVT_SCROLL_PAGEDOWN )
 EVT_SCROLL_THUMBTRACK = wx.PyEventBinder( wxEVT_SCROLL_THUMBTRACK )
 EVT_SCROLL_THUMBRELEASE = wx.PyEventBinder( wxEVT_SCROLL_THUMBRELEASE )
-EVT_SCROLL_ENDSCROLL = wx.PyEventBinder( wxEVT_SCROLL_ENDSCROLL )
-
-# Scrolling from wxSlider and wxScrollBar, with an id
+EVT_SCROLL_CHANGED = wx.PyEventBinder( wxEVT_SCROLL_CHANGED )
+EVT_SCROLL_ENDSCROLL = EVT_SCROLL_CHANGED
+     
+# Scrolling from wx.Slider and wx.ScrollBar, with an id
 EVT_COMMAND_SCROLL = wx.PyEventBinder([ wxEVT_SCROLL_TOP, 
                                        wxEVT_SCROLL_BOTTOM, 
                                        wxEVT_SCROLL_LINEUP, 
@@ -3073,7 +3769,7 @@ EVT_COMMAND_SCROLL = wx.PyEventBinder([ wxEVT_SCROLL_TOP,
                                        wxEVT_SCROLL_PAGEDOWN, 
                                        wxEVT_SCROLL_THUMBTRACK, 
                                        wxEVT_SCROLL_THUMBRELEASE,
-                                       wxEVT_SCROLL_ENDSCROLL,
+                                       wxEVT_SCROLL_CHANGED,
                                        ], 1)
 
 EVT_COMMAND_SCROLL_TOP = wx.PyEventBinder( wxEVT_SCROLL_TOP, 1)
@@ -3084,7 +3780,8 @@ EVT_COMMAND_SCROLL_PAGEUP = wx.PyEventBinder( wxEVT_SCROLL_PAGEUP, 1)
 EVT_COMMAND_SCROLL_PAGEDOWN = wx.PyEventBinder( wxEVT_SCROLL_PAGEDOWN, 1)
 EVT_COMMAND_SCROLL_THUMBTRACK = wx.PyEventBinder( wxEVT_SCROLL_THUMBTRACK, 1)
 EVT_COMMAND_SCROLL_THUMBRELEASE = wx.PyEventBinder( wxEVT_SCROLL_THUMBRELEASE, 1)
-EVT_COMMAND_SCROLL_ENDSCROLL = wx.PyEventBinder( wxEVT_SCROLL_ENDSCROLL, 1)
+EVT_COMMAND_SCROLL_CHANGED = wx.PyEventBinder( wxEVT_SCROLL_CHANGED, 1)
+EVT_COMMAND_SCROLL_ENDSCROLL = EVT_COMMAND_SCROLL_CHANGED
 
 EVT_BUTTON = wx.PyEventBinder( wxEVT_COMMAND_BUTTON_CLICKED, 1)
 EVT_CHECKBOX = wx.PyEventBinder( wxEVT_COMMAND_CHECKBOX_CLICKED, 1)
@@ -3128,6 +3825,11 @@ EVT_CONTEXT_MENU = wx.PyEventBinder( wxEVT_CONTEXT_MENU )
 #---------------------------------------------------------------------------
 
 class Event(Object):
+    """
+    An event is a structure holding information about an event passed to a
+    callback or member function. wx.Event is an abstract base class for
+    other event classes
+    """
     def __init__(self): raise RuntimeError, "No constructor defined"
     def __repr__(self):
         return "<%s.%s; proxy of C++ wxEvent instance at %s>" % (self.__class__.__module__, self.__class__.__name__, self.this,)
@@ -3138,19 +3840,38 @@ class Event(Object):
         except: pass
 
     def SetEventType(*args, **kwargs):
-        """SetEventType(self, wxEventType typ)"""
+        """
+        SetEventType(self, wxEventType typ)
+
+        Sets the specific type of the event.
+        """
         return _core_.Event_SetEventType(*args, **kwargs)
 
     def GetEventType(*args, **kwargs):
-        """GetEventType(self) -> wxEventType"""
+        """
+        GetEventType(self) -> wxEventType
+
+        Returns the identifier of the given event type, such as
+        ``wxEVT_COMMAND_BUTTON_CLICKED``.
+        """
         return _core_.Event_GetEventType(*args, **kwargs)
 
     def GetEventObject(*args, **kwargs):
-        """GetEventObject(self) -> Object"""
+        """
+        GetEventObject(self) -> Object
+
+        Returns the object (usually a window) associated with the event, if
+        any.
+        """
         return _core_.Event_GetEventObject(*args, **kwargs)
 
     def SetEventObject(*args, **kwargs):
-        """SetEventObject(self, Object obj)"""
+        """
+        SetEventObject(self, Object obj)
+
+        Sets the originating object, or in other words, obj is normally the
+        object that is sending the event.
+        """
         return _core_.Event_SetEventObject(*args, **kwargs)
 
     def GetTimestamp(*args, **kwargs):
@@ -3162,35 +3883,85 @@ class Event(Object):
         return _core_.Event_SetTimestamp(*args, **kwargs)
 
     def GetId(*args, **kwargs):
-        """GetId(self) -> int"""
+        """
+        GetId(self) -> int
+
+        Returns the identifier associated with this event, such as a button
+        command id.
+        """
         return _core_.Event_GetId(*args, **kwargs)
 
     def SetId(*args, **kwargs):
-        """SetId(self, int Id)"""
+        """
+        SetId(self, int Id)
+
+        Set's the ID for the event.  This is usually the ID of the window that
+        is sending the event, but it can also be a command id from a menu
+        item, etc.
+        """
         return _core_.Event_SetId(*args, **kwargs)
 
     def IsCommandEvent(*args, **kwargs):
-        """IsCommandEvent(self) -> bool"""
+        """
+        IsCommandEvent(self) -> bool
+
+        Returns true if the event is or is derived from `wx.CommandEvent` else
+        it returns false. Note: Exists only for optimization purposes.
+        """
         return _core_.Event_IsCommandEvent(*args, **kwargs)
 
     def Skip(*args, **kwargs):
-        """Skip(self, bool skip=True)"""
+        """
+        Skip(self, bool skip=True)
+
+        Called by an event handler, it controls whether additional event
+        handlers bound to this event will be called after the current event
+        handler returns.  Skip(false) (the default setting) will prevent
+        additional event handlers from being called and control will be
+        returned to the sender of the event immediately after the current
+        handler has finished.  Skip(True) will cause the event processing
+        system to continue searching for a handler function for this event.
+
+        """
         return _core_.Event_Skip(*args, **kwargs)
 
     def GetSkipped(*args, **kwargs):
-        """GetSkipped(self) -> bool"""
+        """
+        GetSkipped(self) -> bool
+
+        Returns true if the event handler should be skipped, false otherwise.
+        :see: `Skip`
+        """
         return _core_.Event_GetSkipped(*args, **kwargs)
 
     def ShouldPropagate(*args, **kwargs):
-        """ShouldPropagate(self) -> bool"""
+        """
+        ShouldPropagate(self) -> bool
+
+        Test if this event should be propagated to the parent window or not,
+        i.e. if the propagation level is currently greater than 0.
+        """
         return _core_.Event_ShouldPropagate(*args, **kwargs)
 
     def StopPropagation(*args, **kwargs):
-        """StopPropagation(self) -> int"""
+        """
+        StopPropagation(self) -> int
+
+        Stop the event from propagating to its parent window.  Returns the old
+        propagation level value which may be later passed to
+        `ResumePropagation` to allow propagating the event again.
+        """
         return _core_.Event_StopPropagation(*args, **kwargs)
 
     def ResumePropagation(*args, **kwargs):
-        """ResumePropagation(self, int propagationLevel)"""
+        """
+        ResumePropagation(self, int propagationLevel)
+
+        Resume the event propagation by restoring the propagation level.  (For
+        example, you can use the value returned by an earlier call to
+        `StopPropagation`.)
+
+        """
         return _core_.Event_ResumePropagation(*args, **kwargs)
 
     def Clone(*args, **kwargs):
@@ -3208,10 +3979,21 @@ _core_.Event_swigregister(EventPtr)
 #---------------------------------------------------------------------------
 
 class PropagationDisabler(object):
+    """
+    Helper class to temporarily change an event not to propagate.  Simply
+    create an instance of this class and then whe it is destroyed the
+    propogation of the event will be restored.
+    """
     def __repr__(self):
         return "<%s.%s; proxy of C++ wxPropagationDisabler instance at %s>" % (self.__class__.__module__, self.__class__.__name__, self.this,)
     def __init__(self, *args, **kwargs):
-        """__init__(self, Event event) -> PropagationDisabler"""
+        """
+        __init__(self, Event event) -> PropagationDisabler
+
+        Helper class to temporarily change an event not to propagate.  Simply
+        create an instance of this class and then whe it is destroyed the
+        propogation of the event will be restored.
+        """
         newobj = _core_.new_PropagationDisabler(*args, **kwargs)
         self.this = newobj.this
         self.thisown = 1
@@ -3231,10 +4013,21 @@ class PropagationDisablerPtr(PropagationDisabler):
 _core_.PropagationDisabler_swigregister(PropagationDisablerPtr)
 
 class PropagateOnce(object):
+    """
+    A helper class that will temporarily lower propagation level of an
+    event.  Simply create an instance of this class and then whe it is
+    destroyed the propogation of the event will be restored.
+    """
     def __repr__(self):
         return "<%s.%s; proxy of C++ wxPropagateOnce instance at %s>" % (self.__class__.__module__, self.__class__.__name__, self.this,)
     def __init__(self, *args, **kwargs):
-        """__init__(self, Event event) -> PropagateOnce"""
+        """
+        __init__(self, Event event) -> PropagateOnce
+
+        A helper class that will temporarily lower propagation level of an
+        event.  Simply create an instance of this class and then whe it is
+        destroyed the propogation of the event will be restored.
+        """
         newobj = _core_.new_PropagateOnce(*args, **kwargs)
         self.this = newobj.this
         self.thisown = 1
@@ -3256,16 +4049,32 @@ _core_.PropagateOnce_swigregister(PropagateOncePtr)
 #---------------------------------------------------------------------------
 
 class CommandEvent(Event):
+    """
+    This event class contains information about command events, which
+    originate from a variety of simple controls, as well as menus and
+    toolbars.
+    """
     def __repr__(self):
         return "<%s.%s; proxy of C++ wxCommandEvent instance at %s>" % (self.__class__.__module__, self.__class__.__name__, self.this,)
     def __init__(self, *args, **kwargs):
-        """__init__(self, wxEventType commandType=wxEVT_NULL, int winid=0) -> CommandEvent"""
+        """
+        __init__(self, wxEventType commandType=wxEVT_NULL, int winid=0) -> CommandEvent
+
+        This event class contains information about command events, which
+        originate from a variety of simple controls, as well as menus and
+        toolbars.
+        """
         newobj = _core_.new_CommandEvent(*args, **kwargs)
         self.this = newobj.this
         self.thisown = 1
         del newobj.thisown
     def GetSelection(*args, **kwargs):
-        """GetSelection(self) -> int"""
+        """
+        GetSelection(self) -> int
+
+        Returns item index for a listbox or choice selection event (not valid
+        for a deselection).
+        """
         return _core_.CommandEvent_GetSelection(*args, **kwargs)
 
     def SetString(*args, **kwargs):
@@ -3273,16 +4082,34 @@ class CommandEvent(Event):
         return _core_.CommandEvent_SetString(*args, **kwargs)
 
     def GetString(*args, **kwargs):
-        """GetString(self) -> String"""
+        """
+        GetString(self) -> String
+
+        Returns item string for a listbox or choice selection event (not valid
+        for a deselection).
+        """
         return _core_.CommandEvent_GetString(*args, **kwargs)
 
     def IsChecked(*args, **kwargs):
-        """IsChecked(self) -> bool"""
+        """
+        IsChecked(self) -> bool
+
+        This method can be used with checkbox and menu events: for the
+        checkboxes, the method returns true for a selection event and false
+        for a deselection one. For the menu events, this method indicates if
+        the menu item just has become checked or unchecked (and thus only
+        makes sense for checkable menu items).
+        """
         return _core_.CommandEvent_IsChecked(*args, **kwargs)
 
     Checked = IsChecked 
     def IsSelection(*args, **kwargs):
-        """IsSelection(self) -> bool"""
+        """
+        IsSelection(self) -> bool
+
+        For a listbox or similar event, returns true if it is a selection,
+        false if it is a deselection.
+        """
         return _core_.CommandEvent_IsSelection(*args, **kwargs)
 
     def SetExtraLong(*args, **kwargs):
@@ -3290,7 +4117,16 @@ class CommandEvent(Event):
         return _core_.CommandEvent_SetExtraLong(*args, **kwargs)
 
     def GetExtraLong(*args, **kwargs):
-        """GetExtraLong(self) -> long"""
+        """
+        GetExtraLong(self) -> long
+
+        Returns extra information dependant on the event objects type. If the
+        event comes from a listbox selection, it is a boolean determining
+        whether the event was a selection (true) or a deselection (false). A
+        listbox deselection only occurs for multiple-selection boxes, and in
+        this case the index and string values are indeterminate and the
+        listbox must be examined by the application.
+        """
         return _core_.CommandEvent_GetExtraLong(*args, **kwargs)
 
     def SetInt(*args, **kwargs):
@@ -3298,7 +4134,13 @@ class CommandEvent(Event):
         return _core_.CommandEvent_SetInt(*args, **kwargs)
 
     def GetInt(*args, **kwargs):
-        """GetInt(self) -> long"""
+        """
+        GetInt(self) -> long
+
+        Returns the integer identifier corresponding to a listbox, choice or
+        radiobox selection (only if the event was a selection, not a
+        deselection), or a boolean value representing the value of a checkbox.
+        """
         return _core_.CommandEvent_GetInt(*args, **kwargs)
 
     def Clone(*args, **kwargs):
@@ -3316,24 +4158,57 @@ _core_.CommandEvent_swigregister(CommandEventPtr)
 #---------------------------------------------------------------------------
 
 class NotifyEvent(CommandEvent):
+    """
+    An instance of this class (or one of its derived classes) is sent from
+    a control when the control's state is being changed and the control
+    allows that change to be prevented from happening.  The event handler
+    can call `Veto` or `Allow` to tell the control what to do.
+    """
     def __repr__(self):
         return "<%s.%s; proxy of C++ wxNotifyEvent instance at %s>" % (self.__class__.__module__, self.__class__.__name__, self.this,)
     def __init__(self, *args, **kwargs):
-        """__init__(self, wxEventType commandType=wxEVT_NULL, int winid=0) -> NotifyEvent"""
+        """
+        __init__(self, wxEventType commandType=wxEVT_NULL, int winid=0) -> NotifyEvent
+
+        An instance of this class (or one of its derived classes) is sent from
+        a control when the control's state is being changed and the control
+        allows that change to be prevented from happening.  The event handler
+        can call `Veto` or `Allow` to tell the control what to do.
+        """
         newobj = _core_.new_NotifyEvent(*args, **kwargs)
         self.this = newobj.this
         self.thisown = 1
         del newobj.thisown
     def Veto(*args, **kwargs):
-        """Veto(self)"""
+        """
+        Veto(self)
+
+        Prevents the change announced by this event from happening.
+
+        It is in general a good idea to notify the user about the reasons for
+        vetoing the change because otherwise the applications behaviour (which
+        just refuses to do what the user wants) might be quite surprising.
+        """
         return _core_.NotifyEvent_Veto(*args, **kwargs)
 
     def Allow(*args, **kwargs):
-        """Allow(self)"""
+        """
+        Allow(self)
+
+        This is the opposite of `Veto`: it explicitly allows the event to be
+        processed. For most events it is not necessary to call this method as
+        the events are allowed anyhow but some are forbidden by default (this
+        will be mentioned in the corresponding event description).
+        """
         return _core_.NotifyEvent_Allow(*args, **kwargs)
 
     def IsAllowed(*args, **kwargs):
-        """IsAllowed(self) -> bool"""
+        """
+        IsAllowed(self) -> bool
+
+        Returns true if the change is allowed (`Veto` hasn't been called) or
+        false otherwise (if it was).
+        """
         return _core_.NotifyEvent_IsAllowed(*args, **kwargs)
 
 
@@ -3347,6 +4222,12 @@ _core_.NotifyEvent_swigregister(NotifyEventPtr)
 #---------------------------------------------------------------------------
 
 class ScrollEvent(CommandEvent):
+    """
+    A scroll event holds information about events sent from stand-alone
+    scrollbars and sliders. Note that scrolled windows do not send
+    instnaces of this event class, but send the `wx.ScrollWinEvent`
+    instead.
+    """
     def __repr__(self):
         return "<%s.%s; proxy of C++ wxScrollEvent instance at %s>" % (self.__class__.__module__, self.__class__.__name__, self.this,)
     def __init__(self, *args, **kwargs):
@@ -3359,11 +4240,20 @@ class ScrollEvent(CommandEvent):
         self.thisown = 1
         del newobj.thisown
     def GetOrientation(*args, **kwargs):
-        """GetOrientation(self) -> int"""
+        """
+        GetOrientation(self) -> int
+
+        Returns wx.HORIZONTAL or wx.VERTICAL, depending on the orientation of
+        the scrollbar.
+        """
         return _core_.ScrollEvent_GetOrientation(*args, **kwargs)
 
     def GetPosition(*args, **kwargs):
-        """GetPosition(self) -> int"""
+        """
+        GetPosition(self) -> int
+
+        Returns the position of the scrollbar.
+        """
         return _core_.ScrollEvent_GetPosition(*args, **kwargs)
 
     def SetOrientation(*args, **kwargs):
@@ -3385,20 +4275,40 @@ _core_.ScrollEvent_swigregister(ScrollEventPtr)
 #---------------------------------------------------------------------------
 
 class ScrollWinEvent(Event):
+    """
+    A wx.ScrollWinEvent holds information about scrolling and is sent from
+    scrolling windows.
+    """
     def __repr__(self):
         return "<%s.%s; proxy of C++ wxScrollWinEvent instance at %s>" % (self.__class__.__module__, self.__class__.__name__, self.this,)
     def __init__(self, *args, **kwargs):
-        """__init__(self, wxEventType commandType=wxEVT_NULL, int pos=0, int orient=0) -> ScrollWinEvent"""
+        """
+        __init__(self, wxEventType commandType=wxEVT_NULL, int pos=0, int orient=0) -> ScrollWinEvent
+
+        A wx.ScrollWinEvent holds information about scrolling and is sent from
+        scrolling windows.
+        """
         newobj = _core_.new_ScrollWinEvent(*args, **kwargs)
         self.this = newobj.this
         self.thisown = 1
         del newobj.thisown
     def GetOrientation(*args, **kwargs):
-        """GetOrientation(self) -> int"""
+        """
+        GetOrientation(self) -> int
+
+        Returns wx.HORIZONTAL or wx.VERTICAL, depending on the orientation of
+        the scrollbar.
+        """
         return _core_.ScrollWinEvent_GetOrientation(*args, **kwargs)
 
     def GetPosition(*args, **kwargs):
-        """GetPosition(self) -> int"""
+        """
+        GetPosition(self) -> int
+
+        Returns the position of the scrollbar for the thumb track and release
+        events. Note that this field can't be used for the other events, you
+        need to query the window itself for the current position in that case.
+        """
         return _core_.ScrollWinEvent_GetPosition(*args, **kwargs)
 
     def SetOrientation(*args, **kwargs):
@@ -3425,32 +4335,109 @@ MOUSE_BTN_LEFT = _core_.MOUSE_BTN_LEFT
 MOUSE_BTN_MIDDLE = _core_.MOUSE_BTN_MIDDLE
 MOUSE_BTN_RIGHT = _core_.MOUSE_BTN_RIGHT
 class MouseEvent(Event):
+    """
+    This event class contains information about the events generated by
+    the mouse: they include mouse buttons press and release events and
+    mouse move events.
+
+    All mouse events involving the buttons use ``wx.MOUSE_BTN_LEFT`` for
+    the left mouse button, ``wx.MOUSE_BTN_MIDDLE`` for the middle one and
+    ``wx.MOUSE_BTN_RIGHT`` for the right one. Note that not all mice have
+    a middle button so a portable application should avoid relying on the
+    events from it.
+
+    Note the difference between methods like `LeftDown` and `LeftIsDown`:
+    the former returns true when the event corresponds to the left mouse
+    button click while the latter returns true if the left mouse button is
+    currently being pressed. For example, when the user is dragging the
+    mouse you can use `LeftIsDown` to test whether the left mouse button
+    is (still) depressed. Also, by convention, if `LeftDown` returns true,
+    `LeftIsDown` will also return true in wxWidgets whatever the
+    underlying GUI behaviour is (which is platform-dependent). The same
+    applies, of course, to other mouse buttons as well.
+    """
     def __repr__(self):
         return "<%s.%s; proxy of C++ wxMouseEvent instance at %s>" % (self.__class__.__module__, self.__class__.__name__, self.this,)
     def __init__(self, *args, **kwargs):
-        """__init__(self, wxEventType mouseType=wxEVT_NULL) -> MouseEvent"""
+        """
+        __init__(self, wxEventType mouseType=wxEVT_NULL) -> MouseEvent
+
+        Constructs a wx.MouseEvent.  Valid event types are:
+
+            * wxEVT_ENTER_WINDOW
+            * wxEVT_LEAVE_WINDOW
+            * wxEVT_LEFT_DOWN
+            * wxEVT_LEFT_UP
+            * wxEVT_LEFT_DCLICK
+            * wxEVT_MIDDLE_DOWN
+            * wxEVT_MIDDLE_UP
+            * wxEVT_MIDDLE_DCLICK
+            * wxEVT_RIGHT_DOWN
+            * wxEVT_RIGHT_UP
+            * wxEVT_RIGHT_DCLICK
+            * wxEVT_MOTION
+            * wxEVT_MOUSEWHEEL 
+        """
         newobj = _core_.new_MouseEvent(*args, **kwargs)
         self.this = newobj.this
         self.thisown = 1
         del newobj.thisown
     def IsButton(*args, **kwargs):
-        """IsButton(self) -> bool"""
+        """
+        IsButton(self) -> bool
+
+        Returns true if the event was a mouse button event (not necessarily a
+        button down event - that may be tested using `ButtonDown`).
+        """
         return _core_.MouseEvent_IsButton(*args, **kwargs)
 
     def ButtonDown(*args, **kwargs):
-        """ButtonDown(self, int but=MOUSE_BTN_ANY) -> bool"""
+        """
+        ButtonDown(self, int but=MOUSE_BTN_ANY) -> bool
+
+        If the argument is omitted, this returns true if the event was any
+        mouse button down event. Otherwise the argument specifies which
+        button-down event shold be checked for (see `Button` for the possible
+        values).
+        """
         return _core_.MouseEvent_ButtonDown(*args, **kwargs)
 
     def ButtonDClick(*args, **kwargs):
-        """ButtonDClick(self, int but=MOUSE_BTN_ANY) -> bool"""
+        """
+        ButtonDClick(self, int but=MOUSE_BTN_ANY) -> bool
+
+        If the argument is omitted, this returns true if the event was any
+        mouse double click event. Otherwise the argument specifies which
+        double click event to check for (see `Button` for the possible
+        values).
+        """
         return _core_.MouseEvent_ButtonDClick(*args, **kwargs)
 
     def ButtonUp(*args, **kwargs):
-        """ButtonUp(self, int but=MOUSE_BTN_ANY) -> bool"""
+        """
+        ButtonUp(self, int but=MOUSE_BTN_ANY) -> bool
+
+        If the argument is omitted, this returns true if the event was any
+        mouse button up event. Otherwise the argument specifies which button
+        up event to check for (see `Button` for the possible values).
+        """
         return _core_.MouseEvent_ButtonUp(*args, **kwargs)
 
     def Button(*args, **kwargs):
-        """Button(self, int but) -> bool"""
+        """
+        Button(self, int button) -> bool
+
+        Returns true if the identified mouse button is changing state. Valid
+        values of button are:
+
+             ====================      =====================================
+             wx.MOUSE_BTN_LEFT         check if left button was pressed
+             wx.MOUSE_BTN_MIDDLE       check if middle button was pressed
+             wx.MOUSE_BTN_RIGHT        check if right button was pressed
+             wx.MOUSE_BTN_ANY          check if any button was pressed
+             ====================      =====================================
+
+        """
         return _core_.MouseEvent_Button(*args, **kwargs)
 
     def ButtonIsDown(*args, **kwargs):
@@ -3458,23 +4445,48 @@ class MouseEvent(Event):
         return _core_.MouseEvent_ButtonIsDown(*args, **kwargs)
 
     def GetButton(*args, **kwargs):
-        """GetButton(self) -> int"""
+        """
+        GetButton(self) -> int
+
+        Returns the mouse button which generated this event or
+        wx.MOUSE_BTN_NONE if no button is involved (for mouse move, enter or
+        leave event, for example). Otherwise wx.MOUSE_BTN_LEFT is returned for
+        the left button down, up and double click events, wx.MOUSE_BTN_MIDDLE
+        and wx.MOUSE_BTN_RIGHT for the same events for the middle and the
+        right buttons respectively.
+        """
         return _core_.MouseEvent_GetButton(*args, **kwargs)
 
     def ControlDown(*args, **kwargs):
-        """ControlDown(self) -> bool"""
+        """
+        ControlDown(self) -> bool
+
+        Returns true if the control key was down at the time of the event.
+        """
         return _core_.MouseEvent_ControlDown(*args, **kwargs)
 
     def MetaDown(*args, **kwargs):
-        """MetaDown(self) -> bool"""
+        """
+        MetaDown(self) -> bool
+
+        Returns true if the Meta key was down at the time of the event.
+        """
         return _core_.MouseEvent_MetaDown(*args, **kwargs)
 
     def AltDown(*args, **kwargs):
-        """AltDown(self) -> bool"""
+        """
+        AltDown(self) -> bool
+
+        Returns true if the Alt key was down at the time of the event.
+        """
         return _core_.MouseEvent_AltDown(*args, **kwargs)
 
     def ShiftDown(*args, **kwargs):
-        """ShiftDown(self) -> bool"""
+        """
+        ShiftDown(self) -> bool
+
+        Returns true if the Shift key was down at the time of the event.
+        """
         return _core_.MouseEvent_ShiftDown(*args, **kwargs)
 
     def CmdDown(*args, **kwargs):
@@ -3483,84 +4495,162 @@ class MouseEvent(Event):
 
         "Cmd" is a pseudo key which is the same as Control for PC and Unix
         platforms but the special "Apple" (a.k.a as "Command") key on
-        Macs: it makes often sense to use it instead of, say, `ControlDown`
+        Macs. It often makes sense to use it instead of, say, `ControlDown`
         because Cmd key is used for the same thing under Mac as Ctrl
-        elsewhere. The Ctrl still exists, it's just not used for this
+        elsewhere. The Ctrl key still exists, it's just not used for this
         purpose. So for non-Mac platforms this is the same as `ControlDown`
         and Macs this is the same as `MetaDown`.
         """
         return _core_.MouseEvent_CmdDown(*args, **kwargs)
 
     def LeftDown(*args, **kwargs):
-        """LeftDown(self) -> bool"""
+        """
+        LeftDown(self) -> bool
+
+        Returns true if the left mouse button state changed to down.
+        """
         return _core_.MouseEvent_LeftDown(*args, **kwargs)
 
     def MiddleDown(*args, **kwargs):
-        """MiddleDown(self) -> bool"""
+        """
+        MiddleDown(self) -> bool
+
+        Returns true if the middle mouse button state changed to down.
+        """
         return _core_.MouseEvent_MiddleDown(*args, **kwargs)
 
     def RightDown(*args, **kwargs):
-        """RightDown(self) -> bool"""
+        """
+        RightDown(self) -> bool
+
+        Returns true if the right mouse button state changed to down.
+        """
         return _core_.MouseEvent_RightDown(*args, **kwargs)
 
     def LeftUp(*args, **kwargs):
-        """LeftUp(self) -> bool"""
+        """
+        LeftUp(self) -> bool
+
+        Returns true if the left mouse button state changed to up.
+        """
         return _core_.MouseEvent_LeftUp(*args, **kwargs)
 
     def MiddleUp(*args, **kwargs):
-        """MiddleUp(self) -> bool"""
+        """
+        MiddleUp(self) -> bool
+
+        Returns true if the middle mouse button state changed to up.
+        """
         return _core_.MouseEvent_MiddleUp(*args, **kwargs)
 
     def RightUp(*args, **kwargs):
-        """RightUp(self) -> bool"""
+        """
+        RightUp(self) -> bool
+
+        Returns true if the right mouse button state changed to up.
+        """
         return _core_.MouseEvent_RightUp(*args, **kwargs)
 
     def LeftDClick(*args, **kwargs):
-        """LeftDClick(self) -> bool"""
+        """
+        LeftDClick(self) -> bool
+
+        Returns true if the event was a left button double click.
+        """
         return _core_.MouseEvent_LeftDClick(*args, **kwargs)
 
     def MiddleDClick(*args, **kwargs):
-        """MiddleDClick(self) -> bool"""
+        """
+        MiddleDClick(self) -> bool
+
+        Returns true if the event was a middle button double click.
+        """
         return _core_.MouseEvent_MiddleDClick(*args, **kwargs)
 
     def RightDClick(*args, **kwargs):
-        """RightDClick(self) -> bool"""
+        """
+        RightDClick(self) -> bool
+
+        Returns true if the event was a right button double click.
+        """
         return _core_.MouseEvent_RightDClick(*args, **kwargs)
 
     def LeftIsDown(*args, **kwargs):
-        """LeftIsDown(self) -> bool"""
+        """
+        LeftIsDown(self) -> bool
+
+        Returns true if the left mouse button is currently down, independent
+        of the current event type.
+
+        Please notice that it is not the same as LeftDown which returns true
+        if the left mouse button was just pressed. Rather, it describes the
+        state of the mouse button before the event happened.
+
+        This event is usually used in the mouse event handlers which process
+        "move mouse" messages to determine whether the user is (still)
+        dragging the mouse.
+        """
         return _core_.MouseEvent_LeftIsDown(*args, **kwargs)
 
     def MiddleIsDown(*args, **kwargs):
-        """MiddleIsDown(self) -> bool"""
+        """
+        MiddleIsDown(self) -> bool
+
+        Returns true if the middle mouse button is currently down, independent
+        of the current event type.
+        """
         return _core_.MouseEvent_MiddleIsDown(*args, **kwargs)
 
     def RightIsDown(*args, **kwargs):
-        """RightIsDown(self) -> bool"""
+        """
+        RightIsDown(self) -> bool
+
+        Returns true if the right mouse button is currently down, independent
+        of the current event type.
+        """
         return _core_.MouseEvent_RightIsDown(*args, **kwargs)
 
     def Dragging(*args, **kwargs):
-        """Dragging(self) -> bool"""
+        """
+        Dragging(self) -> bool
+
+        Returns true if this was a dragging event (motion while a button is
+        depressed).
+        """
         return _core_.MouseEvent_Dragging(*args, **kwargs)
 
     def Moving(*args, **kwargs):
-        """Moving(self) -> bool"""
+        """
+        Moving(self) -> bool
+
+        Returns true if this was a motion event and no mouse buttons were
+        pressed. If any mouse button is held pressed, then this method returns
+        false and Dragging returns true.
+        """
         return _core_.MouseEvent_Moving(*args, **kwargs)
 
     def Entering(*args, **kwargs):
-        """Entering(self) -> bool"""
+        """
+        Entering(self) -> bool
+
+        Returns true if the mouse was entering the window.
+        """
         return _core_.MouseEvent_Entering(*args, **kwargs)
 
     def Leaving(*args, **kwargs):
-        """Leaving(self) -> bool"""
+        """
+        Leaving(self) -> bool
+
+        Returns true if the mouse was leaving the window.
+        """
         return _core_.MouseEvent_Leaving(*args, **kwargs)
 
     def GetPosition(*args, **kwargs):
         """
         GetPosition(self) -> Point
 
-        Returns the position of the mouse in window coordinates when the event
-        happened.
+        Returns the pixel position of the mouse in window coordinates when the
+        event happened.
         """
         return _core_.MouseEvent_GetPosition(*args, **kwargs)
 
@@ -3568,37 +4658,77 @@ class MouseEvent(Event):
         """
         GetPositionTuple() -> (x,y)
 
-        Returns the position of the mouse in window coordinates when the event
-        happened.
+        Returns the pixel position of the mouse in window coordinates when the
+        event happened.
         """
         return _core_.MouseEvent_GetPositionTuple(*args, **kwargs)
 
     def GetLogicalPosition(*args, **kwargs):
-        """GetLogicalPosition(self, DC dc) -> Point"""
+        """
+        GetLogicalPosition(self, DC dc) -> Point
+
+        Returns the logical mouse position in pixels (i.e. translated
+        according to the translation set for the DC, which usually indicates
+        that the window has been scrolled).
+        """
         return _core_.MouseEvent_GetLogicalPosition(*args, **kwargs)
 
     def GetX(*args, **kwargs):
-        """GetX(self) -> int"""
+        """
+        GetX(self) -> int
+
+        Returns X coordinate of the physical mouse event position.
+        """
         return _core_.MouseEvent_GetX(*args, **kwargs)
 
     def GetY(*args, **kwargs):
-        """GetY(self) -> int"""
+        """
+        GetY(self) -> int
+
+        Returns Y coordinate of the physical mouse event position.
+        """
         return _core_.MouseEvent_GetY(*args, **kwargs)
 
     def GetWheelRotation(*args, **kwargs):
-        """GetWheelRotation(self) -> int"""
+        """
+        GetWheelRotation(self) -> int
+
+        Get wheel rotation, positive or negative indicates direction of
+        rotation. Current devices all send an event when rotation is equal to
+        +/-WheelDelta, but this allows for finer resolution devices to be
+        created in the future. Because of this you shouldn't assume that one
+        event is equal to 1 line or whatever, but you should be able to either
+        do partial line scrolling or wait until +/-WheelDelta rotation values
+        have been accumulated before scrolling.
+        """
         return _core_.MouseEvent_GetWheelRotation(*args, **kwargs)
 
     def GetWheelDelta(*args, **kwargs):
-        """GetWheelDelta(self) -> int"""
+        """
+        GetWheelDelta(self) -> int
+
+        Get wheel delta, normally 120. This is the threshold for action to be
+        taken, and one such action (for example, scrolling one increment)
+        should occur for each delta.
+        """
         return _core_.MouseEvent_GetWheelDelta(*args, **kwargs)
 
     def GetLinesPerAction(*args, **kwargs):
-        """GetLinesPerAction(self) -> int"""
+        """
+        GetLinesPerAction(self) -> int
+
+        Returns the configured number of lines (or whatever) to be scrolled
+        per wheel action. Defaults to three.
+        """
         return _core_.MouseEvent_GetLinesPerAction(*args, **kwargs)
 
     def IsPageScroll(*args, **kwargs):
-        """IsPageScroll(self) -> bool"""
+        """
+        IsPageScroll(self) -> bool
+
+        Returns true if the system has been setup to do page scrolling with
+        the mouse wheel instead of line scrolling.
+        """
         return _core_.MouseEvent_IsPageScroll(*args, **kwargs)
 
     m_x = property(_core_.MouseEvent_m_x_get, _core_.MouseEvent_m_x_set)
@@ -3624,32 +4754,63 @@ _core_.MouseEvent_swigregister(MouseEventPtr)
 #---------------------------------------------------------------------------
 
 class SetCursorEvent(Event):
+    """
+    A SetCursorEvent is generated when the mouse cursor is about to be set
+    as a result of mouse motion. This event gives the application the
+    chance to perform specific mouse cursor processing based on the
+    current position of the mouse within the window. Use the `SetCursor`
+    method to specify the cursor you want to be displayed.
+    """
     def __repr__(self):
         return "<%s.%s; proxy of C++ wxSetCursorEvent instance at %s>" % (self.__class__.__module__, self.__class__.__name__, self.this,)
     def __init__(self, *args, **kwargs):
-        """__init__(self, int x=0, int y=0) -> SetCursorEvent"""
+        """
+        __init__(self, int x=0, int y=0) -> SetCursorEvent
+
+        Construct a new `wx.SetCursorEvent`.
+        """
         newobj = _core_.new_SetCursorEvent(*args, **kwargs)
         self.this = newobj.this
         self.thisown = 1
         del newobj.thisown
     def GetX(*args, **kwargs):
-        """GetX(self) -> int"""
+        """
+        GetX(self) -> int
+
+        Returns the X coordinate of the mouse in client coordinates.
+        """
         return _core_.SetCursorEvent_GetX(*args, **kwargs)
 
     def GetY(*args, **kwargs):
-        """GetY(self) -> int"""
+        """
+        GetY(self) -> int
+
+        Returns the Y coordinate of the mouse in client coordinates.
+        """
         return _core_.SetCursorEvent_GetY(*args, **kwargs)
 
     def SetCursor(*args, **kwargs):
-        """SetCursor(self, Cursor cursor)"""
+        """
+        SetCursor(self, Cursor cursor)
+
+        Sets the cursor associated with this event.
+        """
         return _core_.SetCursorEvent_SetCursor(*args, **kwargs)
 
     def GetCursor(*args, **kwargs):
-        """GetCursor(self) -> Cursor"""
+        """
+        GetCursor(self) -> Cursor
+
+        Returns a reference to the cursor specified by this event.
+        """
         return _core_.SetCursorEvent_GetCursor(*args, **kwargs)
 
     def HasCursor(*args, **kwargs):
-        """HasCursor(self) -> bool"""
+        """
+        HasCursor(self) -> bool
+
+        Returns true if the cursor specified by this event is a valid cursor.
+        """
         return _core_.SetCursorEvent_HasCursor(*args, **kwargs)
 
 
@@ -3663,28 +4824,111 @@ _core_.SetCursorEvent_swigregister(SetCursorEventPtr)
 #---------------------------------------------------------------------------
 
 class KeyEvent(Event):
+    """
+    This event class contains information about keypress and character
+    events.  These events are only sent to the widget that currently has
+    the keyboard focus.
+
+    Notice that there are three different kinds of keyboard events in
+    wxWidgets: key down and up events and char events. The difference
+    between the first two is clear - the first corresponds to a key press
+    and the second to a key release - otherwise they are identical. Just
+    note that if the key is maintained in a pressed state you will
+    typically get a lot of (automatically generated) down events but only
+    one up so it is wrong to assume that there is one up event
+    corresponding to each down one.
+
+    Both key events provide untranslated key codes while the char event
+    carries the translated one. The untranslated code for alphanumeric
+    keys is always an upper case value. For the other keys it is one of
+    WXK_XXX values from the keycodes table. The translated key is, in
+    general, the character the user expects to appear as the result of the
+    key combination when typing the text into a text entry zone, for
+    example.
+
+    A few examples to clarify this (all assume that CAPS LOCK is unpressed
+    and the standard US keyboard): when the 'A' key is pressed, the key
+    down event key code is equal to ASCII A == 65. But the char event key
+    code is ASCII a == 97. On the other hand, if you press both SHIFT and
+    'A' keys simultaneously , the key code in key down event will still be
+    just 'A' while the char event key code parameter will now be 'A' as
+    well.
+
+    Although in this simple case it is clear that the correct key code
+    could be found in the key down event handler by checking the value
+    returned by `ShiftDown`, in general you should use EVT_CHAR for this
+    as for non alphanumeric keys or non-US keyboard layouts the
+    translation is keyboard-layout dependent and can only be done properly
+    by the system itself.
+
+    Another kind of translation is done when the control key is pressed:
+    for example, for CTRL-A key press the key down event still carries the
+    same key code 'A' as usual but the char event will have key code of 1,
+    the ASCII value of this key combination.
+
+    You may discover how the other keys on your system behave
+    interactively by running the KeyEvents sample in the wxPython demo and
+    pressing some keys while the blue box at the top has the keyboard
+    focus.
+
+    **Note**: If a key down event is caught and the event handler does not
+    call event.Skip() then the coresponding char event will not
+    happen. This is by design and enables the programs that handle both
+    types of events to be a bit simpler.
+
+    **Note for Windows programmers**: The key and char events in wxWidgets
+    are similar to but slightly different from Windows WM_KEYDOWN and
+    WM_CHAR events. In particular, Alt-x combination will generate a char
+    event in wxWidgets (unless it is used as an accelerator).
+
+    **Tip**: be sure to call event.Skip() for events that you don't
+    process in key event function, otherwise menu shortcuts may cease to
+    work under Windows.
+
+    """
     def __repr__(self):
         return "<%s.%s; proxy of C++ wxKeyEvent instance at %s>" % (self.__class__.__module__, self.__class__.__name__, self.this,)
     def __init__(self, *args, **kwargs):
-        """__init__(self, wxEventType keyType=wxEVT_NULL) -> KeyEvent"""
+        """
+        __init__(self, wxEventType eventType=wxEVT_NULL) -> KeyEvent
+
+        Construct a new `wx.KeyEvent`.  Valid event types are:
+            * 
+        """
         newobj = _core_.new_KeyEvent(*args, **kwargs)
         self.this = newobj.this
         self.thisown = 1
         del newobj.thisown
     def ControlDown(*args, **kwargs):
-        """ControlDown(self) -> bool"""
+        """
+        ControlDown(self) -> bool
+
+        Returns ``True`` if the Control key was down at the time of the event.
+        """
         return _core_.KeyEvent_ControlDown(*args, **kwargs)
 
     def MetaDown(*args, **kwargs):
-        """MetaDown(self) -> bool"""
+        """
+        MetaDown(self) -> bool
+
+        Returns ``True`` if the Meta key was down at the time of the event.
+        """
         return _core_.KeyEvent_MetaDown(*args, **kwargs)
 
     def AltDown(*args, **kwargs):
-        """AltDown(self) -> bool"""
+        """
+        AltDown(self) -> bool
+
+        Returns ``True`` if the Alt key was down at the time of the event.
+        """
         return _core_.KeyEvent_AltDown(*args, **kwargs)
 
     def ShiftDown(*args, **kwargs):
-        """ShiftDown(self) -> bool"""
+        """
+        ShiftDown(self) -> bool
+
+        Returns ``True`` if the Shift key was down at the time of the event.
+        """
         return _core_.KeyEvent_ShiftDown(*args, **kwargs)
 
     def CmdDown(*args, **kwargs):
@@ -3693,7 +4937,7 @@ class KeyEvent(Event):
 
         "Cmd" is a pseudo key which is the same as Control for PC and Unix
         platforms but the special "Apple" (a.k.a as "Command") key on
-        Macs: it makes often sense to use it instead of, say, `ControlDown`
+        Macs. It makes often sense to use it instead of, say, `ControlDown`
         because Cmd key is used for the same thing under Mac as Ctrl
         elsewhere. The Ctrl still exists, it's just not used for this
         purpose. So for non-Mac platforms this is the same as `ControlDown`
@@ -3702,32 +4946,71 @@ class KeyEvent(Event):
         return _core_.KeyEvent_CmdDown(*args, **kwargs)
 
     def HasModifiers(*args, **kwargs):
-        """HasModifiers(self) -> bool"""
+        """
+        HasModifiers(self) -> bool
+
+        Returns true if either CTRL or ALT keys was down at the time of the
+        key event. Note that this function does not take into account neither
+        SHIFT nor META key states (the reason for ignoring the latter is that
+        it is common for NUMLOCK key to be configured as META under X but the
+        key presses even while NUMLOCK is on should be still processed
+        normally).
+        """
         return _core_.KeyEvent_HasModifiers(*args, **kwargs)
 
     def GetKeyCode(*args, **kwargs):
-        """GetKeyCode(self) -> int"""
+        """
+        GetKeyCode(self) -> int
+
+        Returns the virtual key code. ASCII events return normal ASCII values,
+        while non-ASCII events return values such as WXK_LEFT for the left
+        cursor key. See `wx.KeyEvent` for a full list of the virtual key
+        codes.
+
+        Note that in Unicode build, the returned value is meaningful only if
+        the user entered a character that can be represented in current
+        locale's default charset. You can obtain the corresponding Unicode
+        character using `GetUnicodeKey`.
+        """
         return _core_.KeyEvent_GetKeyCode(*args, **kwargs)
 
     KeyCode = GetKeyCode 
     def GetUnicodeKey(*args, **kwargs):
-        """GetUnicodeKey(self) -> int"""
+        """
+        GetUnicodeKey(self) -> int
+
+        Returns the Unicode character corresponding to this key event.  This
+        function is only meaningfule in a Unicode build of wxPython.
+        """
         return _core_.KeyEvent_GetUnicodeKey(*args, **kwargs)
 
     GetUniChar = GetUnicodeKey 
     def GetRawKeyCode(*args, **kwargs):
-        """GetRawKeyCode(self) -> unsigned int"""
+        """
+        GetRawKeyCode(self) -> unsigned int
+
+        Returns the raw key code for this event. This is a platform-dependent
+        scan code which should only be used in advanced
+        applications. Currently the raw key codes are not supported by all
+        ports.
+        """
         return _core_.KeyEvent_GetRawKeyCode(*args, **kwargs)
 
     def GetRawKeyFlags(*args, **kwargs):
-        """GetRawKeyFlags(self) -> unsigned int"""
+        """
+        GetRawKeyFlags(self) -> unsigned int
+
+        Returns the low level key flags for this event. The flags are
+        platform-dependent and should only be used in advanced applications.
+        Currently the raw key flags are not supported by all ports.
+        """
         return _core_.KeyEvent_GetRawKeyFlags(*args, **kwargs)
 
     def GetPosition(*args, **kwargs):
         """
         GetPosition(self) -> Point
 
-        Find the position of the event.
+        Find the position of the event, if applicable.
         """
         return _core_.KeyEvent_GetPosition(*args, **kwargs)
 
@@ -3735,16 +5018,26 @@ class KeyEvent(Event):
         """
         GetPositionTuple() -> (x,y)
 
-        Find the position of the event.
+        Find the position of the event, if applicable.
         """
         return _core_.KeyEvent_GetPositionTuple(*args, **kwargs)
 
     def GetX(*args, **kwargs):
-        """GetX(self) -> int"""
+        """
+        GetX(self) -> int
+
+        Returns the X position (in client coordinates) of the event, if
+        applicable.
+        """
         return _core_.KeyEvent_GetX(*args, **kwargs)
 
     def GetY(*args, **kwargs):
-        """GetY(self) -> int"""
+        """
+        GetY(self) -> int
+
+        Returns the Y position (in client coordinates) of the event, if
+        applicable.
+        """
         return _core_.KeyEvent_GetY(*args, **kwargs)
 
     m_x = property(_core_.KeyEvent_m_x_get, _core_.KeyEvent_m_x_set)
@@ -3768,16 +5061,42 @@ _core_.KeyEvent_swigregister(KeyEventPtr)
 #---------------------------------------------------------------------------
 
 class SizeEvent(Event):
+    """
+    A size event holds information about size change events.  The EVT_SIZE
+    handler function will be called when the window it is bound to has
+    been resized.
+
+    Note that the size passed is of the whole window: call
+    `wx.Window.GetClientSize` for the area which may be used by the
+    application.
+
+    When a window is resized, usually only a small part of the window is
+    damaged and and that area is all that is in the update region for the
+    next paint event. However, if your drawing depends on the size of the
+    window, you may need to clear the DC explicitly and repaint the whole
+    window. In which case, you may need to call `wx.Window.Refresh` to
+    invalidate the entire window.
+
+    """
     def __repr__(self):
         return "<%s.%s; proxy of C++ wxSizeEvent instance at %s>" % (self.__class__.__module__, self.__class__.__name__, self.this,)
     def __init__(self, *args, **kwargs):
-        """__init__(self, Size sz=DefaultSize, int winid=0) -> SizeEvent"""
+        """
+        __init__(self, Size sz=DefaultSize, int winid=0) -> SizeEvent
+
+        Construct a new ``wx.SizeEvent``.
+        """
         newobj = _core_.new_SizeEvent(*args, **kwargs)
         self.this = newobj.this
         self.thisown = 1
         del newobj.thisown
     def GetSize(*args, **kwargs):
-        """GetSize(self) -> Size"""
+        """
+        GetSize(self) -> Size
+
+        Returns the entire size of the window generating the size change
+        event.
+        """
         return _core_.SizeEvent_GetSize(*args, **kwargs)
 
     def GetRect(*args, **kwargs):
@@ -3805,16 +5124,28 @@ _core_.SizeEvent_swigregister(SizeEventPtr)
 #---------------------------------------------------------------------------
 
 class MoveEvent(Event):
+    """
+    This event object is sent for EVT_MOVE event bindings when a window is
+    moved to a new position.
+    """
     def __repr__(self):
         return "<%s.%s; proxy of C++ wxMoveEvent instance at %s>" % (self.__class__.__module__, self.__class__.__name__, self.this,)
     def __init__(self, *args, **kwargs):
-        """__init__(self, Point pos=DefaultPosition, int winid=0) -> MoveEvent"""
+        """
+        __init__(self, Point pos=DefaultPosition, int winid=0) -> MoveEvent
+
+        Constructor.
+        """
         newobj = _core_.new_MoveEvent(*args, **kwargs)
         self.this = newobj.this
         self.thisown = 1
         del newobj.thisown
     def GetPosition(*args, **kwargs):
-        """GetPosition(self) -> Point"""
+        """
+        GetPosition(self) -> Point
+
+        Returns the position of the window generating the move change event.
+        """
         return _core_.MoveEvent_GetPosition(*args, **kwargs)
 
     def GetRect(*args, **kwargs):
@@ -3829,8 +5160,9 @@ class MoveEvent(Event):
         """SetPosition(self, Point pos)"""
         return _core_.MoveEvent_SetPosition(*args, **kwargs)
 
-    m_pos = property(_core_.MoveEvent_m_pos_get, _core_.MoveEvent_m_pos_set)
-    m_rect = property(_core_.MoveEvent_m_rect_get, _core_.MoveEvent_m_rect_set)
+    m_pos =  property(GetPosition, SetPosition)
+    m_rect = property(GetRect, SetRect)
+
 
 class MoveEventPtr(MoveEvent):
     def __init__(self, this):
@@ -3842,6 +5174,21 @@ _core_.MoveEvent_swigregister(MoveEventPtr)
 #---------------------------------------------------------------------------
 
 class PaintEvent(Event):
+    """
+    A paint event is sent when a window's contents needs to be repainted.
+    Note that in an EVT_PAINT handler the application must *always* create
+    a `wx.PaintDC` object, even if you do not use it.  Otherwise MS
+    Windows assumes that the window has not been painted yet and will send
+    the event again, causing endless refreshes.
+
+    You can optimize painting by retrieving the rectangles that have been
+    damaged using `wx.Window.GetUpdateRegion` and/or `wx.RegionIterator`,
+    and only repainting these rectangles. The rectangles are in terms of
+    the client area, and are unscrolled, so you will need to do some
+    calculations using the current view position to obtain logical,
+    scrolled units.
+
+    """
     def __repr__(self):
         return "<%s.%s; proxy of C++ wxPaintEvent instance at %s>" % (self.__class__.__module__, self.__class__.__name__, self.this,)
     def __init__(self, *args, **kwargs):
@@ -3859,6 +5206,7 @@ class PaintEventPtr(PaintEvent):
 _core_.PaintEvent_swigregister(PaintEventPtr)
 
 class NcPaintEvent(Event):
+    """Proxy of C++ NcPaintEvent class"""
     def __repr__(self):
         return "<%s.%s; proxy of C++ wxNcPaintEvent instance at %s>" % (self.__class__.__module__, self.__class__.__name__, self.this,)
     def __init__(self, *args, **kwargs):
@@ -3878,16 +5226,37 @@ _core_.NcPaintEvent_swigregister(NcPaintEventPtr)
 #---------------------------------------------------------------------------
 
 class EraseEvent(Event):
+    """
+    An erase event is sent whenever the background of a window needs to be
+    repainted.  To intercept this event use the EVT_ERASE_BACKGROUND event
+    binder.  On some platforms, such as GTK+, this event is simulated
+    (simply generated just before the paint event) and may cause flicker.
+
+    To paint a custom background use the `GetDC` method and use the returned
+    device context if it is not ``None``, otherwise create a temporary
+    `wx.ClientDC` and draw on that.
+
+    """
     def __repr__(self):
         return "<%s.%s; proxy of C++ wxEraseEvent instance at %s>" % (self.__class__.__module__, self.__class__.__name__, self.this,)
     def __init__(self, *args, **kwargs):
-        """__init__(self, int Id=0, DC dc=(wxDC *) NULL) -> EraseEvent"""
+        """
+        __init__(self, int Id=0, DC dc=None) -> EraseEvent
+
+        Constructor
+        """
         newobj = _core_.new_EraseEvent(*args, **kwargs)
         self.this = newobj.this
         self.thisown = 1
         del newobj.thisown
     def GetDC(*args, **kwargs):
-        """GetDC(self) -> DC"""
+        """
+        GetDC(self) -> DC
+
+        Returns the device context the event handler should draw upon.  If
+        ``None`` is returned then create a temporary `wx.ClientDC` and use
+        that instead.
+        """
         return _core_.EraseEvent_GetDC(*args, **kwargs)
 
 
@@ -3901,16 +5270,38 @@ _core_.EraseEvent_swigregister(EraseEventPtr)
 #---------------------------------------------------------------------------
 
 class FocusEvent(Event):
+    """
+    A focus event is sent when a window's focus changes. The window losing
+    focus receives an EVT_KILL_FOCUS event while the window gaining it
+    gets an EVT_SET_FOCUS event.
+
+    Notice that the set focus event happens both when the user gives focus
+    to the window (whether using the mouse or keyboard) and when it is
+    done from the program itself using `wx.Window.SetFocus`.
+
+    """
     def __repr__(self):
         return "<%s.%s; proxy of C++ wxFocusEvent instance at %s>" % (self.__class__.__module__, self.__class__.__name__, self.this,)
     def __init__(self, *args, **kwargs):
-        """__init__(self, wxEventType type=wxEVT_NULL, int winid=0) -> FocusEvent"""
+        """
+        __init__(self, wxEventType type=wxEVT_NULL, int winid=0) -> FocusEvent
+
+        Constructor
+        """
         newobj = _core_.new_FocusEvent(*args, **kwargs)
         self.this = newobj.this
         self.thisown = 1
         del newobj.thisown
     def GetWindow(*args, **kwargs):
-        """GetWindow(self) -> Window"""
+        """
+        GetWindow(self) -> Window
+
+        Returns the other window associated with this event, that is the
+        window which had the focus before for the EVT_SET_FOCUS event and the
+        window which is going to receive focus for the wxEVT_KILL_FOCUS event.
+
+        Warning: the window returned may be None!
+        """
         return _core_.FocusEvent_GetWindow(*args, **kwargs)
 
     def SetWindow(*args, **kwargs):
@@ -3928,16 +5319,29 @@ _core_.FocusEvent_swigregister(FocusEventPtr)
 #---------------------------------------------------------------------------
 
 class ChildFocusEvent(CommandEvent):
+    """
+    wx.ChildFocusEvent notifies the parent that a child has received the
+    focus.  Unlike `wx.FocusEvent` it is propagated up the window
+    heirarchy.
+    """
     def __repr__(self):
         return "<%s.%s; proxy of C++ wxChildFocusEvent instance at %s>" % (self.__class__.__module__, self.__class__.__name__, self.this,)
     def __init__(self, *args, **kwargs):
-        """__init__(self, Window win=None) -> ChildFocusEvent"""
+        """
+        __init__(self, Window win=None) -> ChildFocusEvent
+
+        Constructor
+        """
         newobj = _core_.new_ChildFocusEvent(*args, **kwargs)
         self.this = newobj.this
         self.thisown = 1
         del newobj.thisown
     def GetWindow(*args, **kwargs):
-        """GetWindow(self) -> Window"""
+        """
+        GetWindow(self) -> Window
+
+        The window which has just received the focus.
+        """
         return _core_.ChildFocusEvent_GetWindow(*args, **kwargs)
 
 
@@ -3951,16 +5355,41 @@ _core_.ChildFocusEvent_swigregister(ChildFocusEventPtr)
 #---------------------------------------------------------------------------
 
 class ActivateEvent(Event):
+    """
+    An activate event is sent when a top-level window or the entire
+    application is being activated or deactivated.
+
+    A top-level window (a dialog or frame) receives an activate event when
+    is being activated or deactivated. This is indicated visually by the
+    title bar changing colour, and a subwindow gaining the keyboard focus.
+    An application is activated or deactivated when one of its frames
+    becomes activated, or a frame becomes inactivate resulting in all
+    application frames being inactive.
+
+    Please note that usually you should call event.Skip() in your handlers
+    for these events so the default handlers will still be called, as not
+    doing so can result in strange effects.
+
+    """
     def __repr__(self):
         return "<%s.%s; proxy of C++ wxActivateEvent instance at %s>" % (self.__class__.__module__, self.__class__.__name__, self.this,)
     def __init__(self, *args, **kwargs):
-        """__init__(self, wxEventType type=wxEVT_NULL, bool active=True, int Id=0) -> ActivateEvent"""
+        """
+        __init__(self, wxEventType type=wxEVT_NULL, bool active=True, int Id=0) -> ActivateEvent
+
+        Constructor
+        """
         newobj = _core_.new_ActivateEvent(*args, **kwargs)
         self.this = newobj.this
         self.thisown = 1
         del newobj.thisown
     def GetActive(*args, **kwargs):
-        """GetActive(self) -> bool"""
+        """
+        GetActive(self) -> bool
+
+        Returns true if the application or window is being activated, false
+        otherwise.
+        """
         return _core_.ActivateEvent_GetActive(*args, **kwargs)
 
 
@@ -3974,10 +5403,21 @@ _core_.ActivateEvent_swigregister(ActivateEventPtr)
 #---------------------------------------------------------------------------
 
 class InitDialogEvent(Event):
+    """
+    A wx.InitDialogEvent is sent as a dialog is being initialised, or for
+    any window when `wx.Window.InitDialog` is called.  Handlers for this
+    event can transfer data to the window, or anything else that should be
+    done before the user begins editing the form. The default handler
+    calls `wx.Window.TransferDataToWindow`.
+    """
     def __repr__(self):
         return "<%s.%s; proxy of C++ wxInitDialogEvent instance at %s>" % (self.__class__.__module__, self.__class__.__name__, self.this,)
     def __init__(self, *args, **kwargs):
-        """__init__(self, int Id=0) -> InitDialogEvent"""
+        """
+        __init__(self, int Id=0) -> InitDialogEvent
+
+        Constructor
+        """
         newobj = _core_.new_InitDialogEvent(*args, **kwargs)
         self.this = newobj.this
         self.thisown = 1
@@ -3993,24 +5433,52 @@ _core_.InitDialogEvent_swigregister(InitDialogEventPtr)
 #---------------------------------------------------------------------------
 
 class MenuEvent(Event):
+    """
+    This class is used for a variety of menu-related events.  Note that
+    these do not include menu command events, which are handled by sending
+    `wx.CommandEvent` objects.
+
+    The default handler for wx.EVT_MENU_HIGHLIGHT displays menu item help
+    text in the first field of the status bar.
+    """
     def __repr__(self):
         return "<%s.%s; proxy of C++ wxMenuEvent instance at %s>" % (self.__class__.__module__, self.__class__.__name__, self.this,)
     def __init__(self, *args, **kwargs):
-        """__init__(self, wxEventType type=wxEVT_NULL, int winid=0, Menu menu=None) -> MenuEvent"""
+        """
+        __init__(self, wxEventType type=wxEVT_NULL, int winid=0, Menu menu=None) -> MenuEvent
+
+        Constructor
+        """
         newobj = _core_.new_MenuEvent(*args, **kwargs)
         self.this = newobj.this
         self.thisown = 1
         del newobj.thisown
     def GetMenuId(*args, **kwargs):
-        """GetMenuId(self) -> int"""
+        """
+        GetMenuId(self) -> int
+
+        Returns the menu identifier associated with the event. This method
+        should be only used with the HIGHLIGHT events.
+        """
         return _core_.MenuEvent_GetMenuId(*args, **kwargs)
 
     def IsPopup(*args, **kwargs):
-        """IsPopup(self) -> bool"""
+        """
+        IsPopup(self) -> bool
+
+        Returns ``True`` if the menu which is being opened or closed is a
+        popup menu, ``False`` if it is a normal one.  This method should only
+        be used with the OPEN and CLOSE events.
+        """
         return _core_.MenuEvent_IsPopup(*args, **kwargs)
 
     def GetMenu(*args, **kwargs):
-        """GetMenu(self) -> Menu"""
+        """
+        GetMenu(self) -> Menu
+
+        Returns the menu which is being opened or closed. This method should
+        only be used with the OPEN and CLOSE events.
+        """
         return _core_.MenuEvent_GetMenu(*args, **kwargs)
 
 
@@ -4024,37 +5492,92 @@ _core_.MenuEvent_swigregister(MenuEventPtr)
 #---------------------------------------------------------------------------
 
 class CloseEvent(Event):
+    """
+    This event class contains information about window and session close
+    events.
+
+    The handler function for EVT_CLOSE is called when the user has tried
+    to close a a frame or dialog box using the window manager controls or
+    the system menu. It can also be invoked by the application itself
+    programmatically, for example by calling the `wx.Window.Close`
+    function.
+
+    You should check whether the application is forcing the deletion of
+    the window using `CanVeto`. If it returns ``False``, you must destroy
+    the window using `wx.Window.Destroy`. If the return value is ``True``,
+    it is up to you whether you respond by destroying the window or not.
+    For example you may wish to display a message dialog prompting to save
+    files or to cancel the close.
+
+    If you don't destroy the window, you should call `Veto` to let the
+    calling code know that you did not destroy the window. This allows the
+    `wx.Window.Close` function to return ``True`` or ``False`` depending
+    on whether the close instruction was honored or not.
+    """
     def __repr__(self):
         return "<%s.%s; proxy of C++ wxCloseEvent instance at %s>" % (self.__class__.__module__, self.__class__.__name__, self.this,)
     def __init__(self, *args, **kwargs):
-        """__init__(self, wxEventType type=wxEVT_NULL, int winid=0) -> CloseEvent"""
+        """
+        __init__(self, wxEventType type=wxEVT_NULL, int winid=0) -> CloseEvent
+
+        Constructor.
+        """
         newobj = _core_.new_CloseEvent(*args, **kwargs)
         self.this = newobj.this
         self.thisown = 1
         del newobj.thisown
     def SetLoggingOff(*args, **kwargs):
-        """SetLoggingOff(self, bool logOff)"""
+        """
+        SetLoggingOff(self, bool logOff)
+
+        Sets the 'logging off' flag.
+        """
         return _core_.CloseEvent_SetLoggingOff(*args, **kwargs)
 
     def GetLoggingOff(*args, **kwargs):
-        """GetLoggingOff(self) -> bool"""
+        """
+        GetLoggingOff(self) -> bool
+
+        Returns ``True`` if the user is logging off or ``False`` if the
+        system is shutting down. This method can only be called for end
+        session and query end session events, it doesn't make sense for close
+        window event.
+        """
         return _core_.CloseEvent_GetLoggingOff(*args, **kwargs)
 
     def Veto(*args, **kwargs):
-        """Veto(self, bool veto=True)"""
+        """
+        Veto(self, bool veto=True)
+
+        Call this from your event handler to veto a system shutdown or to
+        signal to the calling application that a window close did not happen.
+
+        You can only veto a shutdown or close if `CanVeto` returns true.
+        """
         return _core_.CloseEvent_Veto(*args, **kwargs)
-
-    def SetCanVeto(*args, **kwargs):
-        """SetCanVeto(self, bool canVeto)"""
-        return _core_.CloseEvent_SetCanVeto(*args, **kwargs)
-
-    def CanVeto(*args, **kwargs):
-        """CanVeto(self) -> bool"""
-        return _core_.CloseEvent_CanVeto(*args, **kwargs)
 
     def GetVeto(*args, **kwargs):
         """GetVeto(self) -> bool"""
         return _core_.CloseEvent_GetVeto(*args, **kwargs)
+
+    def SetCanVeto(*args, **kwargs):
+        """
+        SetCanVeto(self, bool canVeto)
+
+        Sets the 'can veto' flag.
+        """
+        return _core_.CloseEvent_SetCanVeto(*args, **kwargs)
+
+    def CanVeto(*args, **kwargs):
+        """
+        CanVeto(self) -> bool
+
+        Returns true if you can veto a system shutdown or a window close
+        event. Vetoing a window close event is not possible if the calling
+        code wishes to force the application to exit, and so this function
+        must be called to check this.
+        """
+        return _core_.CloseEvent_CanVeto(*args, **kwargs)
 
 
 class CloseEventPtr(CloseEvent):
@@ -4067,10 +5590,15 @@ _core_.CloseEvent_swigregister(CloseEventPtr)
 #---------------------------------------------------------------------------
 
 class ShowEvent(Event):
+    """An EVT_SHOW event is sent when a window is shown or hidden."""
     def __repr__(self):
         return "<%s.%s; proxy of C++ wxShowEvent instance at %s>" % (self.__class__.__module__, self.__class__.__name__, self.this,)
     def __init__(self, *args, **kwargs):
-        """__init__(self, int winid=0, bool show=False) -> ShowEvent"""
+        """
+        __init__(self, int winid=0, bool show=False) -> ShowEvent
+
+        An EVT_SHOW event is sent when a window is shown or hidden.
+        """
         newobj = _core_.new_ShowEvent(*args, **kwargs)
         self.this = newobj.this
         self.thisown = 1
@@ -4094,16 +5622,30 @@ _core_.ShowEvent_swigregister(ShowEventPtr)
 #---------------------------------------------------------------------------
 
 class IconizeEvent(Event):
+    """
+    An EVT_ICONIZE event is sent when a frame is iconized (minimized) or
+    restored.
+    """
     def __repr__(self):
         return "<%s.%s; proxy of C++ wxIconizeEvent instance at %s>" % (self.__class__.__module__, self.__class__.__name__, self.this,)
     def __init__(self, *args, **kwargs):
-        """__init__(self, int id=0, bool iconized=True) -> IconizeEvent"""
+        """
+        __init__(self, int id=0, bool iconized=True) -> IconizeEvent
+
+        An EVT_ICONIZE event is sent when a frame is iconized (minimized) or
+        restored.
+        """
         newobj = _core_.new_IconizeEvent(*args, **kwargs)
         self.this = newobj.this
         self.thisown = 1
         del newobj.thisown
     def Iconized(*args, **kwargs):
-        """Iconized(self) -> bool"""
+        """
+        Iconized(self) -> bool
+
+        Returns ``True`` if the frame has been iconized, ``False`` if it has
+        been restored.
+        """
         return _core_.IconizeEvent_Iconized(*args, **kwargs)
 
 
@@ -4117,10 +5659,15 @@ _core_.IconizeEvent_swigregister(IconizeEventPtr)
 #---------------------------------------------------------------------------
 
 class MaximizeEvent(Event):
+    """An EVT_MAXIMIZE event is sent when a frame is maximized or restored."""
     def __repr__(self):
         return "<%s.%s; proxy of C++ wxMaximizeEvent instance at %s>" % (self.__class__.__module__, self.__class__.__name__, self.this,)
     def __init__(self, *args, **kwargs):
-        """__init__(self, int id=0) -> MaximizeEvent"""
+        """
+        __init__(self, int id=0) -> MaximizeEvent
+
+        An EVT_MAXIMIZE event is sent when a frame is maximized or restored.
+        """
         newobj = _core_.new_MaximizeEvent(*args, **kwargs)
         self.this = newobj.this
         self.thisown = 1
@@ -4136,19 +5683,46 @@ _core_.MaximizeEvent_swigregister(MaximizeEventPtr)
 #---------------------------------------------------------------------------
 
 class DropFilesEvent(Event):
+    """
+    This class is used for drop files events, that is, when files have
+    been dropped onto the window. This functionality is only available
+    under Windows. The window must have previously been enabled for
+    dropping by calling `wx.Window.DragAcceptFiles`.
+
+    Important note: this is a separate implementation to the more general
+    drag and drop implementation using `wx.FileDropTarget`, and etc. This
+    implementation uses the older, Windows message-based approach of
+    dropping files.
+
+    Use wx.EVT_DROP_FILES to bind an event handler to receive file drop
+    events.
+
+    """
     def __init__(self): raise RuntimeError, "No constructor defined"
     def __repr__(self):
         return "<%s.%s; proxy of C++ wxDropFilesEvent instance at %s>" % (self.__class__.__module__, self.__class__.__name__, self.this,)
     def GetPosition(*args, **kwargs):
-        """GetPosition(self) -> Point"""
+        """
+        GetPosition(self) -> Point
+
+        Returns the position at which the files were dropped.
+        """
         return _core_.DropFilesEvent_GetPosition(*args, **kwargs)
 
     def GetNumberOfFiles(*args, **kwargs):
-        """GetNumberOfFiles(self) -> int"""
+        """
+        GetNumberOfFiles(self) -> int
+
+        Returns the number of files dropped.
+        """
         return _core_.DropFilesEvent_GetNumberOfFiles(*args, **kwargs)
 
     def GetFiles(*args, **kwargs):
-        """GetFiles(self) -> PyObject"""
+        """
+        GetFiles(self) -> PyObject
+
+        Returns a list of the filenames that were dropped.
+        """
         return _core_.DropFilesEvent_GetFiles(*args, **kwargs)
 
 
@@ -4164,77 +5738,233 @@ _core_.DropFilesEvent_swigregister(DropFilesEventPtr)
 UPDATE_UI_PROCESS_ALL = _core_.UPDATE_UI_PROCESS_ALL
 UPDATE_UI_PROCESS_SPECIFIED = _core_.UPDATE_UI_PROCESS_SPECIFIED
 class UpdateUIEvent(CommandEvent):
+    """
+    This class is used for EVT_UPDATE_UI pseudo-events which are sent by
+    wxWidgets to give an application the chance to update various user
+    interface elements.
+
+    Without update UI events, an application has to work hard to
+    check/uncheck, enable/disable, and set the text for elements such as
+    menu items and toolbar buttons. The code for doing this has to be
+    mixed up with the code that is invoked when an action is invoked for a
+    menu item or button.
+
+    With update UI events, you define an event handler to look at the
+    state of the application and change UI elements accordingly. wxWidgets
+    will call your handler functions in idle time, so you don't have to
+    worry where to call this code. In addition to being a clearer and more
+    declarative method, it also means you don't have to worry whether
+    you're updating a toolbar or menubar identifier. The same handler can
+    update a menu item and toolbar button, if the ID values are the same.
+
+    Instead of directly manipulating the menu or button, you call
+    functions in the event object, such as `Check`. wxWidgets will
+    determine whether such a call has been made, and which UI element to
+    update.
+
+    These events will work for popup menus as well as menubars. Just
+    before a menu is popped up, `wx.Menu.UpdateUI` is called to process
+    any UI events for the window that owns the menu.
+
+    If you find that the overhead of UI update processing is affecting
+    your application, you can do one or both of the following:
+
+       1. Call `wx.UpdateUIEvent.SetMode` with a value of
+          wx.UPDATE_UI_PROCESS_SPECIFIED, and set the extra style
+          wx.WS_EX_PROCESS_UPDATE_EVENTS for every window that should
+          receive update events. No other windows will receive update
+          events.
+
+       2. Call `wx.UpdateUIEvent.SetUpdateInterval` with a millisecond
+          value to set the delay between updates. You may need to call
+          `wx.Window.UpdateWindowUI` at critical points, for example when
+          a dialog is about to be shown, in case the user sees a slight
+          delay before windows are updated.
+
+    Note that although events are sent in idle time, defining a EVT_IDLE
+    handler for a window does not affect this because the events are sent
+    from an internal idle handler.
+
+    wxWidgets tries to optimize update events on some platforms. On
+    Windows and GTK+, events for menubar items are only sent when the menu
+    is about to be shown, and not in idle time.
+
+    """
     def __repr__(self):
         return "<%s.%s; proxy of C++ wxUpdateUIEvent instance at %s>" % (self.__class__.__module__, self.__class__.__name__, self.this,)
     def __init__(self, *args, **kwargs):
-        """__init__(self, int commandId=0) -> UpdateUIEvent"""
+        """
+        __init__(self, int commandId=0) -> UpdateUIEvent
+
+        Constructor
+        """
         newobj = _core_.new_UpdateUIEvent(*args, **kwargs)
         self.this = newobj.this
         self.thisown = 1
         del newobj.thisown
     def GetChecked(*args, **kwargs):
-        """GetChecked(self) -> bool"""
+        """
+        GetChecked(self) -> bool
+
+        Returns ``True`` if the UI element should be checked.
+        """
         return _core_.UpdateUIEvent_GetChecked(*args, **kwargs)
 
     def GetEnabled(*args, **kwargs):
-        """GetEnabled(self) -> bool"""
+        """
+        GetEnabled(self) -> bool
+
+        Returns ``True`` if the UI element should be enabled.
+        """
         return _core_.UpdateUIEvent_GetEnabled(*args, **kwargs)
 
     def GetText(*args, **kwargs):
-        """GetText(self) -> String"""
+        """
+        GetText(self) -> String
+
+        Returns the text that should be set for the UI element.
+        """
         return _core_.UpdateUIEvent_GetText(*args, **kwargs)
 
     def GetSetText(*args, **kwargs):
-        """GetSetText(self) -> bool"""
+        """
+        GetSetText(self) -> bool
+
+        Returns ``True`` if the application has called `SetText`. For
+        wxWidgets internal use only.
+        """
         return _core_.UpdateUIEvent_GetSetText(*args, **kwargs)
 
     def GetSetChecked(*args, **kwargs):
-        """GetSetChecked(self) -> bool"""
+        """
+        GetSetChecked(self) -> bool
+
+        Returns ``True`` if the application has called `Check`. For wxWidgets
+        internal use only.
+        """
         return _core_.UpdateUIEvent_GetSetChecked(*args, **kwargs)
 
     def GetSetEnabled(*args, **kwargs):
-        """GetSetEnabled(self) -> bool"""
+        """
+        GetSetEnabled(self) -> bool
+
+        Returns ``True`` if the application has called `Enable`. For wxWidgets
+        internal use only.
+        """
         return _core_.UpdateUIEvent_GetSetEnabled(*args, **kwargs)
 
     def Check(*args, **kwargs):
-        """Check(self, bool check)"""
+        """
+        Check(self, bool check)
+
+        Check or uncheck the UI element.
+        """
         return _core_.UpdateUIEvent_Check(*args, **kwargs)
 
     def Enable(*args, **kwargs):
-        """Enable(self, bool enable)"""
+        """
+        Enable(self, bool enable)
+
+        Enable or disable the UI element.
+        """
         return _core_.UpdateUIEvent_Enable(*args, **kwargs)
 
     def SetText(*args, **kwargs):
-        """SetText(self, String text)"""
+        """
+        SetText(self, String text)
+
+        Sets the text for this UI element.
+        """
         return _core_.UpdateUIEvent_SetText(*args, **kwargs)
 
     def SetUpdateInterval(*args, **kwargs):
-        """SetUpdateInterval(long updateInterval)"""
+        """
+        SetUpdateInterval(long updateInterval)
+
+        Sets the interval between updates in milliseconds. Set to -1 to
+        disable updates, or to 0 to update as frequently as possible. The
+        default is 0.
+
+        Use this to reduce the overhead of UI update events if your
+        application has a lot of windows. If you set the value to -1 or
+        greater than 0, you may also need to call `wx.Window.UpdateWindowUI`
+        at appropriate points in your application, such as when a dialog is
+        about to be shown.
+        """
         return _core_.UpdateUIEvent_SetUpdateInterval(*args, **kwargs)
 
     SetUpdateInterval = staticmethod(SetUpdateInterval)
     def GetUpdateInterval(*args, **kwargs):
-        """GetUpdateInterval() -> long"""
+        """
+        GetUpdateInterval() -> long
+
+        Returns the current interval between updates in milliseconds. -1
+        disables updates, 0 updates as frequently as possible.
+        """
         return _core_.UpdateUIEvent_GetUpdateInterval(*args, **kwargs)
 
     GetUpdateInterval = staticmethod(GetUpdateInterval)
     def CanUpdate(*args, **kwargs):
-        """CanUpdate(Window win) -> bool"""
+        """
+        CanUpdate(Window win) -> bool
+
+        Returns ``True`` if it is appropriate to update (send UI update events
+        to) this window.
+
+        This function looks at the mode used (see `wx.UpdateUIEvent.SetMode`),
+        the wx.WS_EX_PROCESS_UPDATE_EVENTS flag in window, the time update
+        events were last sent in idle time, and the update interval, to
+        determine whether events should be sent to this window now. By default
+        this will always return true because the update mode is initially
+        wx.UPDATE_UI_PROCESS_ALL and the interval is set to 0; so update
+        events will be sent as often as possible. You can reduce the frequency
+        that events are sent by changing the mode and/or setting an update
+        interval.
+
+        """
         return _core_.UpdateUIEvent_CanUpdate(*args, **kwargs)
 
     CanUpdate = staticmethod(CanUpdate)
     def ResetUpdateTime(*args, **kwargs):
-        """ResetUpdateTime()"""
+        """
+        ResetUpdateTime()
+
+        Used internally to reset the last-updated time to the current time. It
+        is assumed that update events are normally sent in idle time, so this
+        is called at the end of idle processing.
+        """
         return _core_.UpdateUIEvent_ResetUpdateTime(*args, **kwargs)
 
     ResetUpdateTime = staticmethod(ResetUpdateTime)
     def SetMode(*args, **kwargs):
-        """SetMode(int mode)"""
+        """
+        SetMode(int mode)
+
+        Specify how wxWidgets will send update events: to all windows, or only
+        to those which specify that they will process the events.
+
+        The mode may be one of the following values:
+
+            =============================   ==========================================
+            wxUPDATE_UI_PROCESS_ALL         Send UI update events to all windows.  This
+                                            is the default setting.
+            wxUPDATE_UI_PROCESS_SPECIFIED   Send UI update events only to windows that
+                                            have the wx.WS_EX_PROCESS_UI_UPDATES extra
+                                            style set.
+            =============================   ==========================================
+
+        """
         return _core_.UpdateUIEvent_SetMode(*args, **kwargs)
 
     SetMode = staticmethod(SetMode)
     def GetMode(*args, **kwargs):
-        """GetMode() -> int"""
+        """
+        GetMode() -> int
+
+        Returns a value specifying how wxWidgets will send update events: to
+        all windows, or only to those which specify that they will process the
+        events.
+        """
         return _core_.UpdateUIEvent_GetMode(*args, **kwargs)
 
     GetMode = staticmethod(GetMode)
@@ -4247,36 +5977,113 @@ class UpdateUIEventPtr(UpdateUIEvent):
 _core_.UpdateUIEvent_swigregister(UpdateUIEventPtr)
 
 def UpdateUIEvent_SetUpdateInterval(*args, **kwargs):
-    """UpdateUIEvent_SetUpdateInterval(long updateInterval)"""
+    """
+    UpdateUIEvent_SetUpdateInterval(long updateInterval)
+
+    Sets the interval between updates in milliseconds. Set to -1 to
+    disable updates, or to 0 to update as frequently as possible. The
+    default is 0.
+
+    Use this to reduce the overhead of UI update events if your
+    application has a lot of windows. If you set the value to -1 or
+    greater than 0, you may also need to call `wx.Window.UpdateWindowUI`
+    at appropriate points in your application, such as when a dialog is
+    about to be shown.
+    """
     return _core_.UpdateUIEvent_SetUpdateInterval(*args, **kwargs)
 
 def UpdateUIEvent_GetUpdateInterval(*args, **kwargs):
-    """UpdateUIEvent_GetUpdateInterval() -> long"""
+    """
+    UpdateUIEvent_GetUpdateInterval() -> long
+
+    Returns the current interval between updates in milliseconds. -1
+    disables updates, 0 updates as frequently as possible.
+    """
     return _core_.UpdateUIEvent_GetUpdateInterval(*args, **kwargs)
 
 def UpdateUIEvent_CanUpdate(*args, **kwargs):
-    """UpdateUIEvent_CanUpdate(Window win) -> bool"""
+    """
+    UpdateUIEvent_CanUpdate(Window win) -> bool
+
+    Returns ``True`` if it is appropriate to update (send UI update events
+    to) this window.
+
+    This function looks at the mode used (see `wx.UpdateUIEvent.SetMode`),
+    the wx.WS_EX_PROCESS_UPDATE_EVENTS flag in window, the time update
+    events were last sent in idle time, and the update interval, to
+    determine whether events should be sent to this window now. By default
+    this will always return true because the update mode is initially
+    wx.UPDATE_UI_PROCESS_ALL and the interval is set to 0; so update
+    events will be sent as often as possible. You can reduce the frequency
+    that events are sent by changing the mode and/or setting an update
+    interval.
+
+    """
     return _core_.UpdateUIEvent_CanUpdate(*args, **kwargs)
 
 def UpdateUIEvent_ResetUpdateTime(*args, **kwargs):
-    """UpdateUIEvent_ResetUpdateTime()"""
+    """
+    UpdateUIEvent_ResetUpdateTime()
+
+    Used internally to reset the last-updated time to the current time. It
+    is assumed that update events are normally sent in idle time, so this
+    is called at the end of idle processing.
+    """
     return _core_.UpdateUIEvent_ResetUpdateTime(*args, **kwargs)
 
 def UpdateUIEvent_SetMode(*args, **kwargs):
-    """UpdateUIEvent_SetMode(int mode)"""
+    """
+    UpdateUIEvent_SetMode(int mode)
+
+    Specify how wxWidgets will send update events: to all windows, or only
+    to those which specify that they will process the events.
+
+    The mode may be one of the following values:
+
+        =============================   ==========================================
+        wxUPDATE_UI_PROCESS_ALL         Send UI update events to all windows.  This
+                                        is the default setting.
+        wxUPDATE_UI_PROCESS_SPECIFIED   Send UI update events only to windows that
+                                        have the wx.WS_EX_PROCESS_UI_UPDATES extra
+                                        style set.
+        =============================   ==========================================
+
+    """
     return _core_.UpdateUIEvent_SetMode(*args, **kwargs)
 
 def UpdateUIEvent_GetMode(*args, **kwargs):
-    """UpdateUIEvent_GetMode() -> int"""
+    """
+    UpdateUIEvent_GetMode() -> int
+
+    Returns a value specifying how wxWidgets will send update events: to
+    all windows, or only to those which specify that they will process the
+    events.
+    """
     return _core_.UpdateUIEvent_GetMode(*args, **kwargs)
 
 #---------------------------------------------------------------------------
 
 class SysColourChangedEvent(Event):
+    """
+    This class is used for EVT_SYS_COLOUR_CHANGED, which are generated
+    when the user changes the colour settings using the control
+    panel. This is only applicable under Windows.
+
+    The default event handler for this event propagates the event to child
+    windows, since Windows only sends the events to top-level windows. If
+    intercepting this event for a top-level window, remember to call
+    `Skip` so the the base class handler will still be executed, or to
+    pass the event on to the window's children explicitly.
+
+    """
     def __repr__(self):
         return "<%s.%s; proxy of C++ wxSysColourChangedEvent instance at %s>" % (self.__class__.__module__, self.__class__.__name__, self.this,)
     def __init__(self, *args, **kwargs):
-        """__init__(self) -> SysColourChangedEvent"""
+        """
+        __init__(self) -> SysColourChangedEvent
+
+        Constructor
+        """
         newobj = _core_.new_SysColourChangedEvent(*args, **kwargs)
         self.this = newobj.this
         self.thisown = 1
@@ -4292,16 +6099,34 @@ _core_.SysColourChangedEvent_swigregister(SysColourChangedEventPtr)
 #---------------------------------------------------------------------------
 
 class MouseCaptureChangedEvent(Event):
+    """
+    An mouse capture changed event (EVT_MOUSE_CAPTURE_CHANGED) is sent to
+    a window that loses its mouse capture. This is called even if
+    `wx.Window.ReleaseMouse` was called by the application code. Handling
+    this event allows an application to cater for unexpected capture
+    releases which might otherwise confuse mouse handling code.
+
+    This event is implemented under Windows only.
+    """
     def __repr__(self):
         return "<%s.%s; proxy of C++ wxMouseCaptureChangedEvent instance at %s>" % (self.__class__.__module__, self.__class__.__name__, self.this,)
     def __init__(self, *args, **kwargs):
-        """__init__(self, int winid=0, Window gainedCapture=None) -> MouseCaptureChangedEvent"""
+        """
+        __init__(self, int winid=0, Window gainedCapture=None) -> MouseCaptureChangedEvent
+
+        Constructor
+        """
         newobj = _core_.new_MouseCaptureChangedEvent(*args, **kwargs)
         self.this = newobj.this
         self.thisown = 1
         del newobj.thisown
     def GetCapturedWindow(*args, **kwargs):
-        """GetCapturedWindow(self) -> Window"""
+        """
+        GetCapturedWindow(self) -> Window
+
+        Returns the window that gained the capture, or ``None`` if it was a
+        non-wxWidgets window.
+        """
         return _core_.MouseCaptureChangedEvent_GetCapturedWindow(*args, **kwargs)
 
 
@@ -4315,6 +6140,12 @@ _core_.MouseCaptureChangedEvent_swigregister(MouseCaptureChangedEventPtr)
 #---------------------------------------------------------------------------
 
 class DisplayChangedEvent(Event):
+    """
+    An EVT_DISPLAY_CHANGED event is sent to all windows when the display
+    resolution has changed.
+
+    This event is implemented under Windows only.
+    """
     def __repr__(self):
         return "<%s.%s; proxy of C++ wxDisplayChangedEvent instance at %s>" % (self.__class__.__module__, self.__class__.__name__, self.this,)
     def __init__(self, *args, **kwargs):
@@ -4334,10 +6165,25 @@ _core_.DisplayChangedEvent_swigregister(DisplayChangedEventPtr)
 #---------------------------------------------------------------------------
 
 class PaletteChangedEvent(Event):
+    """
+    An EVT_PALETTE_CHANGED event is sent when the system palette has
+    changed, thereby giving each window a chance to redo their own to
+    match.
+
+    This event is implemented under Windows only.
+    """
     def __repr__(self):
         return "<%s.%s; proxy of C++ wxPaletteChangedEvent instance at %s>" % (self.__class__.__module__, self.__class__.__name__, self.this,)
     def __init__(self, *args, **kwargs):
-        """__init__(self, int id=0) -> PaletteChangedEvent"""
+        """
+        __init__(self, int id=0) -> PaletteChangedEvent
+
+        An EVT_PALETTE_CHANGED event is sent when the system palette has
+        changed, thereby giving each window a chance to redo their own to
+        match.
+
+        This event is implemented under Windows only.
+        """
         newobj = _core_.new_PaletteChangedEvent(*args, **kwargs)
         self.this = newobj.this
         self.thisown = 1
@@ -4361,16 +6207,30 @@ _core_.PaletteChangedEvent_swigregister(PaletteChangedEventPtr)
 #---------------------------------------------------------------------------
 
 class QueryNewPaletteEvent(Event):
+    """
+    An EVT_QUERY_NEW_PALETE event indicates the window is getting keyboard
+    focus and should re-do its palette.
+
+    This event is implemented under Windows only.
+    """
     def __repr__(self):
         return "<%s.%s; proxy of C++ wxQueryNewPaletteEvent instance at %s>" % (self.__class__.__module__, self.__class__.__name__, self.this,)
     def __init__(self, *args, **kwargs):
-        """__init__(self, int winid=0) -> QueryNewPaletteEvent"""
+        """
+        __init__(self, int winid=0) -> QueryNewPaletteEvent
+
+        Constructor.
+        """
         newobj = _core_.new_QueryNewPaletteEvent(*args, **kwargs)
         self.this = newobj.this
         self.thisown = 1
         del newobj.thisown
     def SetPaletteRealized(*args, **kwargs):
-        """SetPaletteRealized(self, bool realized)"""
+        """
+        SetPaletteRealized(self, bool realized)
+
+        App should set this if it changes the palette.
+        """
         return _core_.QueryNewPaletteEvent_SetPaletteRealized(*args, **kwargs)
 
     def GetPaletteRealized(*args, **kwargs):
@@ -4388,6 +6248,15 @@ _core_.QueryNewPaletteEvent_swigregister(QueryNewPaletteEventPtr)
 #---------------------------------------------------------------------------
 
 class NavigationKeyEvent(Event):
+    """
+    EVT_NAVIGATION_KEY events are used to control moving the focus between
+    widgets, otherwise known as tab-traversal.  You woudl normally not
+    catch navigation events in applications as there are already
+    appropriate handlers in `wx.Dialog` and `wx.Panel`, but you may find
+    it useful to send navigation events in certain situations to change
+    the focus in certain ways, although it's probably easier to just call
+    `wx.Window.Navigate`.
+    """
     def __repr__(self):
         return "<%s.%s; proxy of C++ wxNavigationKeyEvent instance at %s>" % (self.__class__.__module__, self.__class__.__name__, self.this,)
     def __init__(self, *args, **kwargs):
@@ -4397,36 +6266,93 @@ class NavigationKeyEvent(Event):
         self.thisown = 1
         del newobj.thisown
     def GetDirection(*args, **kwargs):
-        """GetDirection(self) -> bool"""
+        """
+        GetDirection(self) -> bool
+
+        Returns ``True`` if the direction is forward, ``False`` otherwise.
+        """
         return _core_.NavigationKeyEvent_GetDirection(*args, **kwargs)
 
     def SetDirection(*args, **kwargs):
-        """SetDirection(self, bool forward)"""
+        """
+        SetDirection(self, bool forward)
+
+        Specify the direction that the navigation should take.  Usually the
+        difference between using Tab and Shift-Tab.
+        """
         return _core_.NavigationKeyEvent_SetDirection(*args, **kwargs)
 
     def IsWindowChange(*args, **kwargs):
-        """IsWindowChange(self) -> bool"""
+        """
+        IsWindowChange(self) -> bool
+
+        Returns ``True`` if window change is allowed.
+        """
         return _core_.NavigationKeyEvent_IsWindowChange(*args, **kwargs)
 
     def SetWindowChange(*args, **kwargs):
-        """SetWindowChange(self, bool ischange)"""
+        """
+        SetWindowChange(self, bool ischange)
+
+        Specify if the navigation should be able to change parent windows.
+        For example, changing notebook pages, etc. This is usually implemented
+        by using Control-Tab.
+        """
         return _core_.NavigationKeyEvent_SetWindowChange(*args, **kwargs)
 
+    def IsFromTab(*args, **kwargs):
+        """
+        IsFromTab(self) -> bool
+
+        Returns ``True`` if the navigation event is originated from the Tab
+        key.
+        """
+        return _core_.NavigationKeyEvent_IsFromTab(*args, **kwargs)
+
+    def SetFromTab(*args, **kwargs):
+        """
+        SetFromTab(self, bool bIs)
+
+        Set to true under MSW if the event was generated using the tab key.
+        This is required for proper navogation over radio buttons.
+        """
+        return _core_.NavigationKeyEvent_SetFromTab(*args, **kwargs)
+
     def SetFlags(*args, **kwargs):
-        """SetFlags(self, long flags)"""
+        """
+        SetFlags(self, long flags)
+
+        Set the navigation flags to a combination of the following:
+
+            * wx.NavigationKeyEvent.IsBackward
+            * wx.NavigationKeyEvent.IsForward
+            * wx.NavigationKeyEvent.WinChange
+            * wx.NavigationKeyEvent.FromTab
+
+        """
         return _core_.NavigationKeyEvent_SetFlags(*args, **kwargs)
 
     def GetCurrentFocus(*args, **kwargs):
-        """GetCurrentFocus(self) -> Window"""
+        """
+        GetCurrentFocus(self) -> Window
+
+        Returns the child window which currenty has the focus.  May be
+        ``None``.
+        """
         return _core_.NavigationKeyEvent_GetCurrentFocus(*args, **kwargs)
 
     def SetCurrentFocus(*args, **kwargs):
-        """SetCurrentFocus(self, Window win)"""
+        """
+        SetCurrentFocus(self, Window win)
+
+        Set the window that has the focus.
+        """
         return _core_.NavigationKeyEvent_SetCurrentFocus(*args, **kwargs)
 
     IsBackward = _core_.NavigationKeyEvent_IsBackward
     IsForward = _core_.NavigationKeyEvent_IsForward
     WinChange = _core_.NavigationKeyEvent_WinChange
+    FromTab = _core_.NavigationKeyEvent_FromTab
 
 class NavigationKeyEventPtr(NavigationKeyEvent):
     def __init__(self, this):
@@ -4438,16 +6364,29 @@ _core_.NavigationKeyEvent_swigregister(NavigationKeyEventPtr)
 #---------------------------------------------------------------------------
 
 class WindowCreateEvent(CommandEvent):
+    """
+    The EVT_WINDOW_CREATE event is sent as soon as the window object (the
+    underlying GUI object) exists.
+    """
     def __repr__(self):
         return "<%s.%s; proxy of C++ wxWindowCreateEvent instance at %s>" % (self.__class__.__module__, self.__class__.__name__, self.this,)
     def __init__(self, *args, **kwargs):
-        """__init__(self, Window win=None) -> WindowCreateEvent"""
+        """
+        __init__(self, Window win=None) -> WindowCreateEvent
+
+        The EVT_WINDOW_CREATE event is sent as soon as the window object (the
+        underlying GUI object) exists.
+        """
         newobj = _core_.new_WindowCreateEvent(*args, **kwargs)
         self.this = newobj.this
         self.thisown = 1
         del newobj.thisown
     def GetWindow(*args, **kwargs):
-        """GetWindow(self) -> Window"""
+        """
+        GetWindow(self) -> Window
+
+        Returns the window that this event refers to.
+        """
         return _core_.WindowCreateEvent_GetWindow(*args, **kwargs)
 
 
@@ -4459,16 +6398,29 @@ class WindowCreateEventPtr(WindowCreateEvent):
 _core_.WindowCreateEvent_swigregister(WindowCreateEventPtr)
 
 class WindowDestroyEvent(CommandEvent):
+    """
+    The EVT_WINDOW_DESTROY event is sent right before the window is
+    destroyed.
+    """
     def __repr__(self):
         return "<%s.%s; proxy of C++ wxWindowDestroyEvent instance at %s>" % (self.__class__.__module__, self.__class__.__name__, self.this,)
     def __init__(self, *args, **kwargs):
-        """__init__(self, Window win=None) -> WindowDestroyEvent"""
+        """
+        __init__(self, Window win=None) -> WindowDestroyEvent
+
+        The EVT_WINDOW_DESTROY event is sent right before the window is
+        destroyed.
+        """
         newobj = _core_.new_WindowDestroyEvent(*args, **kwargs)
         self.this = newobj.this
         self.thisown = 1
         del newobj.thisown
     def GetWindow(*args, **kwargs):
-        """GetWindow(self) -> Window"""
+        """
+        GetWindow(self) -> Window
+
+        Returns the window that this event refers to.
+        """
         return _core_.WindowDestroyEvent_GetWindow(*args, **kwargs)
 
 
@@ -4482,20 +6434,37 @@ _core_.WindowDestroyEvent_swigregister(WindowDestroyEventPtr)
 #---------------------------------------------------------------------------
 
 class ContextMenuEvent(CommandEvent):
+    """
+    This class is used for context menu events (EVT_CONTECT_MENU,) sent to
+    give the application a chance to show a context (popup) menu.
+    """
     def __repr__(self):
         return "<%s.%s; proxy of C++ wxContextMenuEvent instance at %s>" % (self.__class__.__module__, self.__class__.__name__, self.this,)
     def __init__(self, *args, **kwargs):
-        """__init__(self, wxEventType type=wxEVT_NULL, int winid=0, Point pt=DefaultPosition) -> ContextMenuEvent"""
+        """
+        __init__(self, wxEventType type=wxEVT_NULL, int winid=0, Point pt=DefaultPosition) -> ContextMenuEvent
+
+        Constructor.
+        """
         newobj = _core_.new_ContextMenuEvent(*args, **kwargs)
         self.this = newobj.this
         self.thisown = 1
         del newobj.thisown
     def GetPosition(*args, **kwargs):
-        """GetPosition(self) -> Point"""
+        """
+        GetPosition(self) -> Point
+
+        Returns the position (in screen coordinants) at which the menu should
+        be shown.
+        """
         return _core_.ContextMenuEvent_GetPosition(*args, **kwargs)
 
     def SetPosition(*args, **kwargs):
-        """SetPosition(self, Point pos)"""
+        """
+        SetPosition(self, Point pos)
+
+        Sets the position at which the menu should be shown.
+        """
         return _core_.ContextMenuEvent_SetPosition(*args, **kwargs)
 
 
@@ -4511,34 +6480,102 @@ _core_.ContextMenuEvent_swigregister(ContextMenuEventPtr)
 IDLE_PROCESS_ALL = _core_.IDLE_PROCESS_ALL
 IDLE_PROCESS_SPECIFIED = _core_.IDLE_PROCESS_SPECIFIED
 class IdleEvent(Event):
+    """
+    This class is used for EVT_IDLE events, which are generated and sent
+    when the application *becomes* idle.  In other words, the when the
+    event queue becomes empty then idle events are sent to all windows (by
+    default) and as long as none of them call `RequestMore` then there are
+    no more idle events until after the system event queue has some normal
+    events and then becomes empty again.
+
+    By default, idle events are sent to all windows. If this is causing a
+    significant overhead in your application, you can call
+    `wx.IdleEvent.SetMode` with the value wx.IDLE_PROCESS_SPECIFIED, and
+    set the wx.WS_EX_PROCESS_IDLE extra window style for every window
+    which should receive idle events.  Then idle events will only be sent
+    to those windows and not to any others.
+    """
     def __repr__(self):
         return "<%s.%s; proxy of C++ wxIdleEvent instance at %s>" % (self.__class__.__module__, self.__class__.__name__, self.this,)
     def __init__(self, *args, **kwargs):
-        """__init__(self) -> IdleEvent"""
+        """
+        __init__(self) -> IdleEvent
+
+        Constructor
+        """
         newobj = _core_.new_IdleEvent(*args, **kwargs)
         self.this = newobj.this
         self.thisown = 1
         del newobj.thisown
     def RequestMore(*args, **kwargs):
-        """RequestMore(self, bool needMore=True)"""
+        """
+        RequestMore(self, bool needMore=True)
+
+        Tells wxWidgets that more processing is required. This function can be
+        called by an EVT_IDLE handler for a window to indicate that the
+        application should forward the EVT_IDLE event once more to the
+        application windows. If no window calls this function during its
+        EVT_IDLE handler, then the application will remain in a passive event
+        loop until a new event is posted to the application by the windowing
+        system.
+        """
         return _core_.IdleEvent_RequestMore(*args, **kwargs)
 
     def MoreRequested(*args, **kwargs):
-        """MoreRequested(self) -> bool"""
+        """
+        MoreRequested(self) -> bool
+
+        Returns ``True`` if the OnIdle function processing this event
+        requested more processing time.
+        """
         return _core_.IdleEvent_MoreRequested(*args, **kwargs)
 
     def SetMode(*args, **kwargs):
-        """SetMode(int mode)"""
+        """
+        SetMode(int mode)
+
+        Static method for specifying how wxWidgets will send idle events: to
+        all windows, or only to those which specify that they will process the
+        events.
+
+        The mode can be one of the following values:
+
+            =========================   ========================================
+            wx.IDLE_PROCESS_ALL         Send idle events to all windows
+            wx.IDLE_PROCESS_SPECIFIED   Send idle events only to windows that have
+                                        the wx.WS_EX_PROCESS_IDLE extra style
+                                        flag set.
+            =========================   ========================================
+
+        """
         return _core_.IdleEvent_SetMode(*args, **kwargs)
 
     SetMode = staticmethod(SetMode)
     def GetMode(*args, **kwargs):
-        """GetMode() -> int"""
+        """
+        GetMode() -> int
+
+        Static method returning a value specifying how wxWidgets will send
+        idle events: to all windows, or only to those which specify that they
+        will process the events.
+        """
         return _core_.IdleEvent_GetMode(*args, **kwargs)
 
     GetMode = staticmethod(GetMode)
     def CanSend(*args, **kwargs):
-        """CanSend(Window win) -> bool"""
+        """
+        CanSend(Window win) -> bool
+
+        Returns ``True`` if it is appropriate to send idle events to this
+        window.
+
+        This function looks at the mode used (see `wx.IdleEvent.SetMode`), and
+        the wx.WS_EX_PROCESS_IDLE style in window to determine whether idle
+        events should be sent to this window now. By default this will always
+        return ``True`` because the update mode is initially
+        wx.IDLE_PROCESS_ALL. You can change the mode to only send idle events
+        to windows with the wx.WS_EX_PROCESS_IDLE extra window style set.
+        """
         return _core_.IdleEvent_CanSend(*args, **kwargs)
 
     CanSend = staticmethod(CanSend)
@@ -4551,29 +6588,73 @@ class IdleEventPtr(IdleEvent):
 _core_.IdleEvent_swigregister(IdleEventPtr)
 
 def IdleEvent_SetMode(*args, **kwargs):
-    """IdleEvent_SetMode(int mode)"""
+    """
+    IdleEvent_SetMode(int mode)
+
+    Static method for specifying how wxWidgets will send idle events: to
+    all windows, or only to those which specify that they will process the
+    events.
+
+    The mode can be one of the following values:
+
+        =========================   ========================================
+        wx.IDLE_PROCESS_ALL         Send idle events to all windows
+        wx.IDLE_PROCESS_SPECIFIED   Send idle events only to windows that have
+                                    the wx.WS_EX_PROCESS_IDLE extra style
+                                    flag set.
+        =========================   ========================================
+
+    """
     return _core_.IdleEvent_SetMode(*args, **kwargs)
 
 def IdleEvent_GetMode(*args, **kwargs):
-    """IdleEvent_GetMode() -> int"""
+    """
+    IdleEvent_GetMode() -> int
+
+    Static method returning a value specifying how wxWidgets will send
+    idle events: to all windows, or only to those which specify that they
+    will process the events.
+    """
     return _core_.IdleEvent_GetMode(*args, **kwargs)
 
 def IdleEvent_CanSend(*args, **kwargs):
-    """IdleEvent_CanSend(Window win) -> bool"""
+    """
+    IdleEvent_CanSend(Window win) -> bool
+
+    Returns ``True`` if it is appropriate to send idle events to this
+    window.
+
+    This function looks at the mode used (see `wx.IdleEvent.SetMode`), and
+    the wx.WS_EX_PROCESS_IDLE style in window to determine whether idle
+    events should be sent to this window now. By default this will always
+    return ``True`` because the update mode is initially
+    wx.IDLE_PROCESS_ALL. You can change the mode to only send idle events
+    to windows with the wx.WS_EX_PROCESS_IDLE extra window style set.
+    """
     return _core_.IdleEvent_CanSend(*args, **kwargs)
 
 #---------------------------------------------------------------------------
 
 class PyEvent(Event):
+    """
+    wx.PyEvent can be used as a base class for implementing custom event
+    types in Python.  You should derived from this class instead of
+    `wx.Event` because this class is Python-aware and is able to transport
+    its Python bits safely through the wxWidgets event system and have
+    them still be there when the event handler is invoked.
+
+    :see: `wx.PyCommandEvent`
+
+    """
     def __repr__(self):
         return "<%s.%s; proxy of C++ wxPyEvent instance at %s>" % (self.__class__.__module__, self.__class__.__name__, self.this,)
     def __init__(self, *args, **kwargs):
-        """__init__(self, int winid=0, wxEventType commandType=wxEVT_NULL) -> PyEvent"""
+        """__init__(self, int winid=0, wxEventType eventType=wxEVT_NULL) -> PyEvent"""
         newobj = _core_.new_PyEvent(*args, **kwargs)
         self.this = newobj.this
         self.thisown = 1
         del newobj.thisown
-        self.SetSelf(self)
+        self._SetSelf(self)
 
     def __del__(self, destroy=_core_.delete_PyEvent):
         """__del__(self)"""
@@ -4581,13 +6662,13 @@ class PyEvent(Event):
             if self.thisown: destroy(self)
         except: pass
 
-    def SetSelf(*args, **kwargs):
-        """SetSelf(self, PyObject self)"""
-        return _core_.PyEvent_SetSelf(*args, **kwargs)
+    def _SetSelf(*args, **kwargs):
+        """_SetSelf(self, PyObject self)"""
+        return _core_.PyEvent__SetSelf(*args, **kwargs)
 
-    def GetSelf(*args, **kwargs):
-        """GetSelf(self) -> PyObject"""
-        return _core_.PyEvent_GetSelf(*args, **kwargs)
+    def _GetSelf(*args, **kwargs):
+        """_GetSelf(self) -> PyObject"""
+        return _core_.PyEvent__GetSelf(*args, **kwargs)
 
 
 class PyEventPtr(PyEvent):
@@ -4598,15 +6679,26 @@ class PyEventPtr(PyEvent):
 _core_.PyEvent_swigregister(PyEventPtr)
 
 class PyCommandEvent(CommandEvent):
+    """
+    wx.PyCommandEvent can be used as a base class for implementing custom
+    event types in Python, where the event shoudl travel up to parent
+    windows looking for a handler.  You should derived from this class
+    instead of `wx.CommandEvent` because this class is Python-aware and is
+    able to transport its Python bits safely through the wxWidgets event
+    system and have them still be there when the event handler is invoked.
+
+    :see: `wx.PyEvent`
+
+    """
     def __repr__(self):
         return "<%s.%s; proxy of C++ wxPyCommandEvent instance at %s>" % (self.__class__.__module__, self.__class__.__name__, self.this,)
     def __init__(self, *args, **kwargs):
-        """__init__(self, wxEventType commandType=wxEVT_NULL, int id=0) -> PyCommandEvent"""
+        """__init__(self, wxEventType eventType=wxEVT_NULL, int id=0) -> PyCommandEvent"""
         newobj = _core_.new_PyCommandEvent(*args, **kwargs)
         self.this = newobj.this
         self.thisown = 1
         del newobj.thisown
-        self.SetSelf(self)
+        self._SetSelf(self)
 
     def __del__(self, destroy=_core_.delete_PyCommandEvent):
         """__del__(self)"""
@@ -4614,13 +6706,13 @@ class PyCommandEvent(CommandEvent):
             if self.thisown: destroy(self)
         except: pass
 
-    def SetSelf(*args, **kwargs):
-        """SetSelf(self, PyObject self)"""
-        return _core_.PyCommandEvent_SetSelf(*args, **kwargs)
+    def _SetSelf(*args, **kwargs):
+        """_SetSelf(self, PyObject self)"""
+        return _core_.PyCommandEvent__SetSelf(*args, **kwargs)
 
-    def GetSelf(*args, **kwargs):
-        """GetSelf(self) -> PyObject"""
-        return _core_.PyCommandEvent_GetSelf(*args, **kwargs)
+    def _GetSelf(*args, **kwargs):
+        """_GetSelf(self) -> PyObject"""
+        return _core_.PyCommandEvent__GetSelf(*args, **kwargs)
 
 
 class PyCommandEventPtr(PyCommandEvent):
@@ -4629,6 +6721,49 @@ class PyCommandEventPtr(PyCommandEvent):
         if not hasattr(self,"thisown"): self.thisown = 0
         self.__class__ = PyCommandEvent
 _core_.PyCommandEvent_swigregister(PyCommandEventPtr)
+
+class DateEvent(CommandEvent):
+    """
+    This event class holds information about a date change event and is
+    used together with `wx.DatePickerCtrl`. It also serves as a base class
+    for `wx.calendar.CalendarEvent`.  Bind these event types with
+    EVT_DATE_CHANGED.
+    """
+    def __repr__(self):
+        return "<%s.%s; proxy of C++ wxDateEvent instance at %s>" % (self.__class__.__module__, self.__class__.__name__, self.this,)
+    def __init__(self, *args, **kwargs):
+        """__init__(self, Window win, DateTime dt, wxEventType type) -> DateEvent"""
+        newobj = _core_.new_DateEvent(*args, **kwargs)
+        self.this = newobj.this
+        self.thisown = 1
+        del newobj.thisown
+    def GetDate(*args, **kwargs):
+        """
+        GetDate(self) -> DateTime
+
+        Returns the date.
+        """
+        return _core_.DateEvent_GetDate(*args, **kwargs)
+
+    def SetDate(*args, **kwargs):
+        """
+        SetDate(self, DateTime date)
+
+        Sets the date carried by the event, normally only used by the library
+        internally.
+        """
+        return _core_.DateEvent_SetDate(*args, **kwargs)
+
+
+class DateEventPtr(DateEvent):
+    def __init__(self, this):
+        self.this = this
+        if not hasattr(self,"thisown"): self.thisown = 0
+        self.__class__ = DateEvent
+_core_.DateEvent_swigregister(DateEventPtr)
+
+wxEVT_DATE_CHANGED = _core_.wxEVT_DATE_CHANGED
+EVT_DATE_CHANGED = wx.PyEventBinder( wxEVT_DATE_CHANGED, 1 )
 
 #---------------------------------------------------------------------------
 
@@ -4655,8 +6790,8 @@ class PyApp(EvtHandler):
         self.this = newobj.this
         self.thisown = 1
         del newobj.thisown
-        self._setCallbackInfo(self, PyApp)
-        self._setOORInfo(self)
+        self._setCallbackInfo(self, PyApp, False)
+        self._setOORInfo(self, False)
 
     def __del__(self, destroy=_core_.delete_PyApp):
         """__del__(self)"""
@@ -4665,7 +6800,7 @@ class PyApp(EvtHandler):
         except: pass
 
     def _setCallbackInfo(*args, **kwargs):
-        """_setCallbackInfo(self, PyObject self, PyObject _class)"""
+        """_setCallbackInfo(self, PyObject self, PyObject _class, bool incref)"""
         return _core_.PyApp__setCallbackInfo(*args, **kwargs)
 
     def GetAppName(*args, **kwargs):
@@ -5140,6 +7275,30 @@ def GetApp(*args, **kwargs):
     Return a reference to the current wx.App object.
     """
     return _core_.GetApp(*args, **kwargs)
+
+def SetDefaultPyEncoding(*args, **kwargs):
+    """
+    SetDefaultPyEncoding(string encoding)
+
+    Sets the encoding that wxPython will use when it needs to convert a
+    Python string or unicode object to or from a wxString.
+
+    The default encoding is the value of ``locale.getdefaultlocale()[1]``
+    but please be aware that the default encoding within the same locale
+    may be slightly different on different platforms.  For example, please
+    see http://www.alanwood.net/demos/charsetdiffs.html for differences
+    between the common latin/roman encodings.
+    """
+    return _core_.SetDefaultPyEncoding(*args, **kwargs)
+
+def GetDefaultPyEncoding(*args, **kwargs):
+    """
+    GetDefaultPyEncoding() -> string
+
+    Gets the current encoding that wxPython will use when it needs to
+    convert a Python string or unicode object to or from a wxString.
+    """
+    return _core_.GetDefaultPyEncoding(*args, **kwargs)
 #----------------------------------------------------------------------
 
 class PyOnDemandOutputWindow:
@@ -5306,17 +7465,21 @@ your Mac."""
         if redirect:
             self.RedirectStdio(filename)
 
+        # Use Python's install prefix as the default  
+        wx.StandardPaths.Get().SetInstallPrefix(_sys.prefix)
+
         # This finishes the initialization of wxWindows and then calls
         # the OnInit that should be present in the derived class
         self._BootstrapApp()
 
 
-    def __del__(self):
-        try:
-            self.RestoreStdio()  # Just in case the MainLoop was overridden
-        except:
-            pass
+    def __del__(self, destroy=wx.PyApp.__del__):
+        self.RestoreStdio()  # Just in case the MainLoop was overridden
+        destroy(self)
 
+    def Destroy(self):
+        wx.PyApp.Destroy(self)
+        self.thisown = 0
 
     def SetTopWindow(self, frame):
         """Set the \"main\" top level window"""
@@ -5341,7 +7504,10 @@ your Mac."""
 
 
     def RestoreStdio(self):
-        _sys.stdout, _sys.stderr = self.saveStdio
+        try:
+            _sys.stdout, _sys.stderr = self.saveStdio
+        except:
+            pass
 
 
     def SetOutputWindowAttributes(self, title=None, pos=None, size=None):
@@ -5441,6 +7607,7 @@ _sys.__wxPythonCleanup = __wxPyCleanup()
 #---------------------------------------------------------------------------
 
 class EventLoop(object):
+    """Proxy of C++ EventLoop class"""
     def __repr__(self):
         return "<%s.%s; proxy of C++ wxEventLoop instance at %s>" % (self.__class__.__module__, self.__class__.__name__, self.this,)
     def __init__(self, *args, **kwargs):
@@ -5864,11 +8031,18 @@ class Window(EvtHandler):
 
         Sets the position and size of the window in pixels.  The sizeFlags
         parameter indicates the interpretation of the other params if they are
-        -1.  wx.SIZE_AUTO*: a -1 indicates that a class-specific default
-        shoudl be used.  wx.SIZE_USE_EXISTING: existing dimensions should be
-        used if -1 values are supplied.  wxSIZE_ALLOW_MINUS_ONE: allow
-        dimensions of -1 and less to be interpreted as real dimensions, not
-        default values.
+        equal to -1.
+
+            ========================  ======================================
+            wx.SIZE_AUTO              A -1 indicates that a class-specific
+                                      default should be used.
+            wx.SIZE_USE_EXISTING      Axisting dimensions should be used if
+                                      -1 values are supplied.
+            wxSIZE_ALLOW_MINUS_ONE    Allow dimensions of -1 and less to be
+                                      interpreted as real dimensions, not
+                                      default values.
+            ========================  ======================================
+
         """
         return _core_.Window_SetDimensions(*args, **kwargs)
 
@@ -6080,6 +8254,15 @@ class Window(EvtHandler):
         time it is needed.
         """
         return _core_.Window_InvalidateBestSize(*args, **kwargs)
+
+    def CacheBestSize(*args, **kwargs):
+        """
+        CacheBestSize(self, Size size)
+
+        Cache the best size so it doesn't need to be calculated again, (at least until
+        some properties of the window change.)
+        """
+        return _core_.Window_CacheBestSize(*args, **kwargs)
 
     def GetBestFittingSize(*args, **kwargs):
         """
@@ -6928,7 +9111,7 @@ class Window(EvtHandler):
 
     def RefreshRect(*args, **kwargs):
         """
-        RefreshRect(self, Rect rect)
+        RefreshRect(self, Rect rect, bool eraseBackground=True)
 
         Redraws the contents of the given rectangle: the area inside it will
         be repainted.  This is the same as Refresh but has a nicer syntax.
@@ -7134,6 +9317,14 @@ class Window(EvtHandler):
         """
         return _core_.Window_GetForegroundColour(*args, **kwargs)
 
+    def InheritsBackgroundColour(*args, **kwargs):
+        """InheritsBackgroundColour(self) -> bool"""
+        return _core_.Window_InheritsBackgroundColour(*args, **kwargs)
+
+    def UseBgCol(*args, **kwargs):
+        """UseBgCol(self) -> bool"""
+        return _core_.Window_UseBgCol(*args, **kwargs)
+
     def SetBackgroundStyle(*args, **kwargs):
         """
         SetBackgroundStyle(self, int style) -> bool
@@ -7166,6 +9357,21 @@ class Window(EvtHandler):
         :see: `SetBackgroundStyle`
         """
         return _core_.Window_GetBackgroundStyle(*args, **kwargs)
+
+    def HasTransparentBackground(*args, **kwargs):
+        """
+        HasTransparentBackground(self) -> bool
+
+        Returns True if this window's background is transparent (as, for
+        example, for `wx.StaticText`) and should show the parent window's
+        background.
+
+        This method is mostly used internally by the library itself and you
+        normally shouldn't have to call it. You may, however, have to override
+        it in your custom control classes to ensure that background is painted
+        correctly.
+        """
+        return _core_.Window_HasTransparentBackground(*args, **kwargs)
 
     def SetCursor(*args, **kwargs):
         """
@@ -7325,7 +9531,7 @@ class Window(EvtHandler):
         function from your application to ensure that your UI is up-to-date at
         a particular point in time (as far as your EVT_UPDATE_UI handlers are
         concerned). This may be necessary if you have called
-        wx.UpdateUIEvent.SetMode or wx.UpdateUIEvent.SetUpdateInterval to
+        `wx.UpdateUIEvent.SetMode` or `wx.UpdateUIEvent.SetUpdateInterval` to
         limit the overhead that wxWindows incurs by sending update UI events
         in idle time.
         """
@@ -7564,6 +9770,15 @@ class Window(EvtHandler):
         Returns the associated drop target, which may be None.
         """
         return _core_.Window_GetDropTarget(*args, **kwargs)
+
+    def DragAcceptFiles(*args, **kwargs):
+        """
+        DragAcceptFiles(self, bool accept)
+
+        Enables or disables eligibility for drop file events, EVT_DROP_FILES.
+        Only functional on Windows.
+        """
+        return _core_.Window_DragAcceptFiles(*args, **kwargs)
 
     def SetConstraints(*args, **kwargs):
         """
@@ -7866,9 +10081,22 @@ def FindWindowByLabel(*args, **kwargs):
 def Window_FromHWND(*args, **kwargs):
     """Window_FromHWND(Window parent, unsigned long _hWnd) -> Window"""
     return _core_.Window_FromHWND(*args, **kwargs)
+
+def GetTopLevelWindows(*args, **kwargs):
+    """
+    GetTopLevelWindows() -> PyObject
+
+    Returns a list of the the application's top-level windows, (frames,
+    dialogs, etc.)  NOTE: Currently this is a copy of the list maintained
+    by wxWidgets, and so it is only valid as long as no top-level windows
+    are closed or new top-level windows are created.
+
+    """
+    return _core_.GetTopLevelWindows(*args, **kwargs)
 #---------------------------------------------------------------------------
 
 class Validator(EvtHandler):
+    """Proxy of C++ Validator class"""
     def __repr__(self):
         return "<%s.%s; proxy of C++ wxValidator instance at %s>" % (self.__class__.__module__, self.__class__.__name__, self.this,)
     def __init__(self, *args, **kwargs):
@@ -7930,6 +10158,7 @@ def Validator_SetBellOnError(*args, **kwargs):
     return _core_.Validator_SetBellOnError(*args, **kwargs)
 
 class PyValidator(Validator):
+    """Proxy of C++ PyValidator class"""
     def __repr__(self):
         return "<%s.%s; proxy of C++ wxPyValidator instance at %s>" % (self.__class__.__module__, self.__class__.__name__, self.this,)
     def __init__(self, *args, **kwargs):
@@ -7957,6 +10186,7 @@ _core_.PyValidator_swigregister(PyValidatorPtr)
 #---------------------------------------------------------------------------
 
 class Menu(EvtHandler):
+    """Proxy of C++ Menu class"""
     def __repr__(self):
         return "<%s.%s; proxy of C++ wxMenu instance at %s>" % (self.__class__.__module__, self.__class__.__name__, self.this,)
     def __init__(self, *args, **kwargs):
@@ -8206,6 +10436,7 @@ DefaultValidator = cvar.DefaultValidator
 #---------------------------------------------------------------------------
 
 class MenuBar(Window):
+    """Proxy of C++ MenuBar class"""
     def __repr__(self):
         return "<%s.%s; proxy of C++ wxMenuBar instance at %s>" % (self.__class__.__module__, self.__class__.__name__, self.this,)
     def __init__(self, *args, **kwargs):
@@ -8316,6 +10547,16 @@ class MenuBar(Window):
         """Detach(self)"""
         return _core_.MenuBar_Detach(*args, **kwargs)
 
+    def SetAutoWindowMenu(*args, **kwargs):
+        """SetAutoWindowMenu(bool enable)"""
+        return _core_.MenuBar_SetAutoWindowMenu(*args, **kwargs)
+
+    SetAutoWindowMenu = staticmethod(SetAutoWindowMenu)
+    def GetAutoWindowMenu(*args, **kwargs):
+        """GetAutoWindowMenu() -> bool"""
+        return _core_.MenuBar_GetAutoWindowMenu(*args, **kwargs)
+
+    GetAutoWindowMenu = staticmethod(GetAutoWindowMenu)
 
 class MenuBarPtr(MenuBar):
     def __init__(self, this):
@@ -8324,9 +10565,18 @@ class MenuBarPtr(MenuBar):
         self.__class__ = MenuBar
 _core_.MenuBar_swigregister(MenuBarPtr)
 
+def MenuBar_SetAutoWindowMenu(*args, **kwargs):
+    """MenuBar_SetAutoWindowMenu(bool enable)"""
+    return _core_.MenuBar_SetAutoWindowMenu(*args, **kwargs)
+
+def MenuBar_GetAutoWindowMenu(*args, **kwargs):
+    """MenuBar_GetAutoWindowMenu() -> bool"""
+    return _core_.MenuBar_GetAutoWindowMenu(*args, **kwargs)
+
 #---------------------------------------------------------------------------
 
 class MenuItem(Object):
+    """Proxy of C++ MenuItem class"""
     def __repr__(self):
         return "<%s.%s; proxy of C++ wxMenuItem instance at %s>" % (self.__class__.__module__, self.__class__.__name__, self.this,)
     def __init__(self, *args, **kwargs):
@@ -8440,11 +10690,67 @@ class MenuItem(Object):
         """SetAccel(self, AcceleratorEntry accel)"""
         return _core_.MenuItem_SetAccel(*args, **kwargs)
 
+    def SetFont(*args, **kwargs):
+        """SetFont(self, Font font)"""
+        return _core_.MenuItem_SetFont(*args, **kwargs)
+
+    def GetFont(*args, **kwargs):
+        """GetFont(self) -> Font"""
+        return _core_.MenuItem_GetFont(*args, **kwargs)
+
+    def SetTextColour(*args, **kwargs):
+        """SetTextColour(self, Colour colText)"""
+        return _core_.MenuItem_SetTextColour(*args, **kwargs)
+
+    def GetTextColour(*args, **kwargs):
+        """GetTextColour(self) -> Colour"""
+        return _core_.MenuItem_GetTextColour(*args, **kwargs)
+
+    def SetBackgroundColour(*args, **kwargs):
+        """SetBackgroundColour(self, Colour colBack)"""
+        return _core_.MenuItem_SetBackgroundColour(*args, **kwargs)
+
+    def GetBackgroundColour(*args, **kwargs):
+        """GetBackgroundColour(self) -> Colour"""
+        return _core_.MenuItem_GetBackgroundColour(*args, **kwargs)
+
+    def SetBitmaps(*args, **kwargs):
+        """SetBitmaps(self, Bitmap bmpChecked, Bitmap bmpUnchecked=wxNullBitmap)"""
+        return _core_.MenuItem_SetBitmaps(*args, **kwargs)
+
+    def SetDisabledBitmap(*args, **kwargs):
+        """SetDisabledBitmap(self, Bitmap bmpDisabled)"""
+        return _core_.MenuItem_SetDisabledBitmap(*args, **kwargs)
+
+    def GetDisabledBitmap(*args, **kwargs):
+        """GetDisabledBitmap(self) -> Bitmap"""
+        return _core_.MenuItem_GetDisabledBitmap(*args, **kwargs)
+
+    def SetMarginWidth(*args, **kwargs):
+        """SetMarginWidth(self, int nWidth)"""
+        return _core_.MenuItem_SetMarginWidth(*args, **kwargs)
+
+    def GetMarginWidth(*args, **kwargs):
+        """GetMarginWidth(self) -> int"""
+        return _core_.MenuItem_GetMarginWidth(*args, **kwargs)
+
     def GetDefaultMarginWidth(*args, **kwargs):
         """GetDefaultMarginWidth() -> int"""
         return _core_.MenuItem_GetDefaultMarginWidth(*args, **kwargs)
 
     GetDefaultMarginWidth = staticmethod(GetDefaultMarginWidth)
+    def IsOwnerDrawn(*args, **kwargs):
+        """IsOwnerDrawn(self) -> bool"""
+        return _core_.MenuItem_IsOwnerDrawn(*args, **kwargs)
+
+    def SetOwnerDrawn(*args, **kwargs):
+        """SetOwnerDrawn(self, bool ownerDrawn=True)"""
+        return _core_.MenuItem_SetOwnerDrawn(*args, **kwargs)
+
+    def ResetOwnerDrawn(*args, **kwargs):
+        """ResetOwnerDrawn(self)"""
+        return _core_.MenuItem_ResetOwnerDrawn(*args, **kwargs)
+
     def SetBitmap(*args, **kwargs):
         """SetBitmap(self, Bitmap bitmap)"""
         return _core_.MenuItem_SetBitmap(*args, **kwargs)
@@ -8590,10 +10896,10 @@ def Control_GetClassDefaultAttributes(*args, **kwargs):
 
 class ItemContainer(object):
     """
-    wx.ItemContainer defines an interface which is implemented by all
-    controls which have string subitems, each of which may be selected,
-    such as `wx.ListBox`, `wx.CheckListBox`, `wx.Choice` as well as
-    `wx.ComboBox` which implements an extended interface deriving from
+    The wx.ItemContainer class defines an interface which is implemented
+    by all controls which have string subitems, each of which may be
+    selected, such as `wx.ListBox`, `wx.CheckListBox`, `wx.Choice` as well
+    as `wx.ComboBox` which implements an extended interface deriving from
     this one.
 
     It defines the methods for accessing the control's items and although
@@ -8656,6 +10962,22 @@ class ItemContainer(object):
         """
         return _core_.ItemContainer_Delete(*args, **kwargs)
 
+    def GetClientData(*args, **kwargs):
+        """
+        GetClientData(self, int n) -> PyObject
+
+        Returns the client data associated with the given item, (if any.)
+        """
+        return _core_.ItemContainer_GetClientData(*args, **kwargs)
+
+    def SetClientData(*args, **kwargs):
+        """
+        SetClientData(self, int n, PyObject clientData)
+
+        Associate the given client data with the item at position n.
+        """
+        return _core_.ItemContainer_SetClientData(*args, **kwargs)
+
     def GetCount(*args, **kwargs):
         """
         GetCount(self) -> int
@@ -8702,15 +11024,14 @@ class ItemContainer(object):
         """
         return _core_.ItemContainer_FindString(*args, **kwargs)
 
-    def Select(*args, **kwargs):
+    def SetSelection(*args, **kwargs):
         """
-        Select(self, int n)
+        SetSelection(self, int n)
 
         Sets the item at index 'n' to be the selected item.
         """
-        return _core_.ItemContainer_Select(*args, **kwargs)
+        return _core_.ItemContainer_SetSelection(*args, **kwargs)
 
-    SetSelection = Select 
     def GetSelection(*args, **kwargs):
         """
         GetSelection(self) -> int
@@ -8719,6 +11040,10 @@ class ItemContainer(object):
         is selected.
         """
         return _core_.ItemContainer_GetSelection(*args, **kwargs)
+
+    def SetStringSelection(*args, **kwargs):
+        """SetStringSelection(self, String s) -> bool"""
+        return _core_.ItemContainer_SetStringSelection(*args, **kwargs)
 
     def GetStringSelection(*args, **kwargs):
         """
@@ -8729,21 +11054,14 @@ class ItemContainer(object):
         """
         return _core_.ItemContainer_GetStringSelection(*args, **kwargs)
 
-    def GetClientData(*args, **kwargs):
+    def Select(*args, **kwargs):
         """
-        GetClientData(self, int n) -> PyObject
+        Select(self, int n)
 
-        Returns the client data associated with the given item, (if any.)
+        This is the same as `SetSelection` and exists only because it is
+        slightly more natural for controls which support multiple selection.
         """
-        return _core_.ItemContainer_GetClientData(*args, **kwargs)
-
-    def SetClientData(*args, **kwargs):
-        """
-        SetClientData(self, int n, PyObject clientData)
-
-        Associate the given client data with the item at position n.
-        """
-        return _core_.ItemContainer_SetClientData(*args, **kwargs)
+        return _core_.ItemContainer_Select(*args, **kwargs)
 
 
 class ItemContainerPtr(ItemContainer):
@@ -9204,7 +11522,7 @@ class Sizer(Object):
 
         Returns the `wx.SizerItem` which holds the *item* given.  The *item*
         parameter can be either a window, a sizer, or the zero-based index of
-        the item to be detached.
+        the item to be found.
         """
         return _core_.Sizer_GetItem(*args, **kwargs)
 
@@ -9264,18 +11582,45 @@ class Sizer(Object):
             self.Add(*item)
 
     # for backwards compatibility only, please do not use in new code
-    AddWindow     = wx._deprecated(Add, "AddWindow is deprecated, use `Add` instead.")
-    AddSizer      = wx._deprecated(Add, "AddSizer is deprecated, use `Add` instead.")
-    AddSpacer     = wx._deprecated(Add, "AddSpacer is deprecated, use `Add` instead.")
-    PrependWindow = wx._deprecated(Prepend, "PrependWindow is deprecated, use `Prepend` instead.")
-    PrependSizer  = wx._deprecated(Prepend, "PrependSizer is deprecated, use `Prepend` instead.")
-    PrependSpacer = wx._deprecated(Prepend, "PrependSpacer is deprecated, use `Prepend` instead.")
-    InsertWindow  = wx._deprecated(Insert, "InsertWindow is deprecated, use `Insert` instead.")
-    InsertSizer   = wx._deprecated(Insert, "InsertSizer is deprecated, use `Insert` instead.")
-    InsertSpacer  = wx._deprecated(Insert, "InsertSpacer is deprecated, use `Insert` instead.")
-    RemoveWindow  = wx._deprecated(Remove, "RemoveWindow is deprecated, use `Remove` instead.")
-    RemoveSizer   = wx._deprecated(Remove, "RemoveSizer is deprecated, use `Remove` instead.")
-    RemovePos     = wx._deprecated(Remove, "RemovePos is deprecated, use `Remove` instead.")
+    def AddWindow(self, *args, **kw):
+        """Compatibility alias for `Add`."""
+        return self.Add(*args, **kw)
+    def AddSizer(self, *args, **kw):
+        """Compatibility alias for `Add`."""
+        return self.Add(*args, **kw)
+    def AddSpacer(self, *args, **kw):
+        """Compatibility alias for `Add`."""
+        return self.Add(*args, **kw)
+
+    def PrependWindow(self, *args, **kw):
+        """Compatibility alias for `Prepend`."""
+        return self.Prepend(*args, **kw)
+    def PrependSizer(self, *args, **kw):
+        """Compatibility alias for `Prepend`."""
+        return self.Prepend(*args, **kw)
+    def PrependSpacer(self, *args, **kw):
+        """Compatibility alias for `Prepend`."""
+        return self.Prepend(*args, **kw)
+
+    def InsertWindow(self, *args, **kw):
+        """Compatibility alias for `Insert`."""
+        return self.Insert(*args, **kw)
+    def InsertSizer(self, *args, **kw):
+        """Compatibility alias for `Insert`."""
+        return self.Insert(*args, **kw)
+    def InsertSpacer(self, *args, **kw):
+        """Compatibility alias for `Insert`."""
+        return self.Insert(*args, **kw)
+
+    def RemoveWindow(self, *args, **kw):
+        """Compatibility alias for `Remove`."""
+        return self.Remove(*args, **kw)
+    def RemoveSizer(self, *args, **kw):
+        """Compatibility alias for `Remove`."""
+        return self.Remove(*args, **kw)
+    def RemovePos(self, *args, **kw):
+        """Compatibility alias for `Remove`."""
+        return self.Remove(*args, **kw)
 
 
     def SetDimension(*args, **kwargs):
@@ -9439,7 +11784,7 @@ class Sizer(Object):
 
     def GetChildren(*args, **kwargs):
         """
-        GetChildren(sefl) -> list
+        GetChildren(self) -> list
 
         Returns a list of all the `wx.SizerItem` objects managed by the sizer.
         """
@@ -9470,7 +11815,7 @@ class Sizer(Object):
 
     def Hide(self, item, recursive=False):
         """
-        A convenience method for Show(item, False, recursive).
+        A convenience method for `Show` (item, False, recursive).
         """
         return self.Show(item, False, recursive)
 
@@ -9526,7 +11871,7 @@ class PySizer(Sizer):
 
     When `Layout` is called it first calls `CalcMin` followed by
     `RecalcSizes` so you can optimize a bit by saving the results of
-    `CalcMin` and resuing them in `RecalcSizes`.
+    `CalcMin` and reusing them in `RecalcSizes`.
 
     :see: `wx.SizerItem`, `wx.Sizer.GetChildren`
 
@@ -9934,6 +12279,82 @@ class FlexGridSizerPtr(FlexGridSizer):
         self.__class__ = FlexGridSizer
 _core_.FlexGridSizer_swigregister(FlexGridSizerPtr)
 
+class StdDialogButtonSizer(BoxSizer):
+    """
+    A special sizer that knows how to order and position standard buttons
+    in order to conform to the current platform's standards.  You simply
+    need to add each `wx.Button` to the sizer, and be sure to create the
+    buttons using the standard ID's.  Then call `Realize` and the sizer
+    will take care of the rest.
+
+    """
+    def __repr__(self):
+        return "<%s.%s; proxy of C++ wxStdDialogButtonSizer instance at %s>" % (self.__class__.__module__, self.__class__.__name__, self.this,)
+    def __init__(self, *args, **kwargs):
+        """__init__(self) -> StdDialogButtonSizer"""
+        newobj = _core_.new_StdDialogButtonSizer(*args, **kwargs)
+        self.this = newobj.this
+        self.thisown = 1
+        del newobj.thisown
+    def AddButton(*args, **kwargs):
+        """
+        AddButton(self, wxButton button)
+
+        Use this to add the buttons to this sizer.  Do not use the `Add`
+        method in the base class.
+        """
+        return _core_.StdDialogButtonSizer_AddButton(*args, **kwargs)
+
+    def Realize(*args, **kwargs):
+        """
+        Realize(self)
+
+        This funciton needs to be called after all the buttons have been added
+        to the sizer.  It will reorder them and position them in a platform
+        specifc manner.
+        """
+        return _core_.StdDialogButtonSizer_Realize(*args, **kwargs)
+
+    def SetAffirmativeButton(*args, **kwargs):
+        """SetAffirmativeButton(self, wxButton button)"""
+        return _core_.StdDialogButtonSizer_SetAffirmativeButton(*args, **kwargs)
+
+    def SetNegativeButton(*args, **kwargs):
+        """SetNegativeButton(self, wxButton button)"""
+        return _core_.StdDialogButtonSizer_SetNegativeButton(*args, **kwargs)
+
+    def SetCancelButton(*args, **kwargs):
+        """SetCancelButton(self, wxButton button)"""
+        return _core_.StdDialogButtonSizer_SetCancelButton(*args, **kwargs)
+
+    def GetAffirmativeButton(*args, **kwargs):
+        """GetAffirmativeButton(self) -> wxButton"""
+        return _core_.StdDialogButtonSizer_GetAffirmativeButton(*args, **kwargs)
+
+    def GetApplyButton(*args, **kwargs):
+        """GetApplyButton(self) -> wxButton"""
+        return _core_.StdDialogButtonSizer_GetApplyButton(*args, **kwargs)
+
+    def GetNegativeButton(*args, **kwargs):
+        """GetNegativeButton(self) -> wxButton"""
+        return _core_.StdDialogButtonSizer_GetNegativeButton(*args, **kwargs)
+
+    def GetCancelButton(*args, **kwargs):
+        """GetCancelButton(self) -> wxButton"""
+        return _core_.StdDialogButtonSizer_GetCancelButton(*args, **kwargs)
+
+    def GetHelpButton(*args, **kwargs):
+        """GetHelpButton(self) -> wxButton"""
+        return _core_.StdDialogButtonSizer_GetHelpButton(*args, **kwargs)
+
+
+class StdDialogButtonSizerPtr(StdDialogButtonSizer):
+    def __init__(self, this):
+        self.this = this
+        if not hasattr(self,"thisown"): self.thisown = 0
+        self.__class__ = StdDialogButtonSizer
+_core_.StdDialogButtonSizer_swigregister(StdDialogButtonSizerPtr)
+
 #---------------------------------------------------------------------------
 
 class GBPosition(object):
@@ -10265,6 +12686,8 @@ class GridBagSizer(FlexGridSizer):
         self.this = newobj.this
         self.thisown = 1
         del newobj.thisown
+        self._setOORInfo(self)
+
     def Add(*args, **kwargs):
         """
         Add(self, item, GBPosition pos, GBSpan span=DefaultSpan, int flag=0,
@@ -10733,6 +13156,35 @@ if RELEASE_VERSION != _core_.RELEASE_VERSION:
 
 #----------------------------------------------------------------------------
 
+# Set wxPython's default string<-->unicode conversion encoding from
+# the locale, but only if Python's default hasn't been changed.  (We
+# assume that if the user has customized it already then that is the
+# encoding we need to use as well.)
+#
+# The encoding selected here is used when string or unicode objects
+# need to be converted in order to pass them to wxWidgets.  Please be
+# aware that the default encoding within the same locale may be
+# slightly different on different platforms.  For example, please see
+# http://www.alanwood.net/demos/charsetdiffs.html for differences
+# between the common latin/roman encodings.
+
+default = _sys.getdefaultencoding()
+if default == 'ascii':
+    import locale
+    import codecs
+    try:
+        default = locale.getdefaultlocale()[1]
+        codecs.lookup(default)
+    except (ValueError, LookupError, TypeError):
+        default = _sys.getdefaultencoding()
+    del locale
+    del codecs
+if default:
+    wx.SetDefaultPyEncoding(default)
+del default
+
+#----------------------------------------------------------------------------
+
 class PyDeadObjectError(AttributeError):
     pass
 
@@ -10791,7 +13243,6 @@ class _wxPyUnbornObject(object):
 
 
 #----------------------------------------------------------------------------
-_wxPyCallAfterId = None
 
 def CallAfter(callable, *args, **kw):
     """
@@ -10805,25 +13256,23 @@ def CallAfter(callable, *args, **kw):
     app = wx.GetApp()
     assert app is not None, 'No wx.App created yet'
 
-    global _wxPyCallAfterId
-    if _wxPyCallAfterId is None:
-        _wxPyCallAfterId = wx.NewEventType()
-        app.Connect(-1, -1, _wxPyCallAfterId,
-              lambda event: event.callable(*event.args, **event.kw) )
+    if not hasattr(app, "_CallAfterId"):
+        app._CallAfterId = wx.NewEventType()
+        app.Connect(-1, -1, app._CallAfterId,
+                    lambda event: event.callable(*event.args, **event.kw) )
     evt = wx.PyEvent()
-    evt.SetEventType(_wxPyCallAfterId)
+    evt.SetEventType(app._CallAfterId)
     evt.callable = callable
     evt.args = args
     evt.kw = kw
     wx.PostEvent(app, evt)
-
 
 #----------------------------------------------------------------------------
 
 
 class FutureCall:
     """
-    A convenience class for wx.Timer, that calls the given callable
+    A convenience class for `wx.Timer`, that calls the given callable
     object once after the given amount of milliseconds, passing any
     positional or keyword args.  The return value of the callable is
     availbale after it has been run with the `GetResult` method.

@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Created:     01/02/97
 // Modified:
-// Id:          $Id: treebase.cpp,v 1.16 2004/11/10 19:24:22 ABX Exp $
+// Id:          $Id: treebase.cpp,v 1.18 2005/01/04 19:28:31 ABX Exp $
 // Copyright:   (c) 1998 Robert Roebling, Julian Smart et al
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -63,6 +63,7 @@ DEFINE_EVENT_TYPE(wxEVT_COMMAND_TREE_ITEM_MIDDLE_CLICK)
 DEFINE_EVENT_TYPE(wxEVT_COMMAND_TREE_END_DRAG)
 DEFINE_EVENT_TYPE(wxEVT_COMMAND_TREE_STATE_IMAGE_CLICK)
 DEFINE_EVENT_TYPE(wxEVT_COMMAND_TREE_ITEM_GETTOOLTIP)
+DEFINE_EVENT_TYPE(wxEVT_COMMAND_TREE_ITEM_MENU)
 
 // ----------------------------------------------------------------------------
 // Tree event
@@ -88,6 +89,15 @@ wxTreeEvent::wxTreeEvent(const wxTreeEvent & event)
     m_label = event.m_label;
     m_editCancelled = event.m_editCancelled;
 }
+
+#if WXWIN_COMPATIBILITY_2_2
+
+int wxTreeEvent::GetCode() const
+{
+    return m_evtKey.GetKeyCode();
+}
+
+#endif // WXWIN_COMPATIBILITY_2_2
 
 #endif // wxUSE_TREECTRL
 

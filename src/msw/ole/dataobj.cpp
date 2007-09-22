@@ -4,7 +4,7 @@
 // Author:      Vadim Zeitlin
 // Modified by:
 // Created:     10.05.98
-// RCS-ID:      $Id: dataobj.cpp,v 1.84 2004/08/20 13:24:48 ABX Exp $
+// RCS-ID:      $Id: dataobj.cpp,v 1.86 2005/05/31 09:20:43 JS Exp $
 // Copyright:   (c) 1998 Vadim Zeitlin <zeitlin@dptmaths.ens-cachan.fr>
 // Licence:     wxWindows licence
 ///////////////////////////////////////////////////////////////////////////////
@@ -106,7 +106,7 @@ public:
     virtual ~wxIDataObject();
 
     // normally, wxDataObject controls our lifetime (i.e. we're deleted when it
-    // is), but in some cases, the situation is inversed, that is we delete it
+    // is), but in some cases, the situation is reversed, that is we delete it
     // when this object is deleted - setting this flag enables such logic
     void SetDeleteFlag() { m_mustDelete = true; }
 
@@ -500,7 +500,7 @@ STDMETHODIMP wxIDataObject::SetData(FORMATETC *pformatetc,
                             // we suppose that the size precedes the data
                             pBuf = m_pDataObject->GetSizeFromBuffer( pBuf, &size, format );
                             if (! format.IsStandard() ) {
-                                // see GetData for coresponding increment
+                                // see GetData for corresponding increment
                                 size -= m_pDataObject->GetBufferOffset( format  );
                             }
                         }
@@ -1224,6 +1224,7 @@ static const wxChar *GetTymedName(DWORD tymed)
 #endif // Debug
 
 #else // not using OLE at all
+
 // ----------------------------------------------------------------------------
 // wxDataObject
 // ----------------------------------------------------------------------------
@@ -1243,13 +1244,14 @@ void wxDataObject::SetAutoDelete()
 }
 
 #ifdef __WXDEBUG__
-const wxChar *wxDataObject::GetFormatName(wxDataFormat format)
+const wxChar *wxDataObject::GetFormatName(wxDataFormat WXUNUSED(format))
 {
     return NULL;
 }
-#endif
+#endif // __WXDEBUG__
 
-#endif
+#endif // wxUSE_DATAOBJ
 
-#endif
+#endif // wxUSE_OLE/!wxUSE_OLE
+
 

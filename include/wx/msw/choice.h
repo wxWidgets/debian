@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by: Vadim Zeitlin to derive from wxChoiceBase
 // Created:     01/02/97
-// RCS-ID:      $Id: choice.h,v 1.27 2004/05/23 20:51:27 JS Exp $
+// RCS-ID:      $Id: choice.h,v 1.29 2005/04/10 21:55:11 VZ Exp $
 // Copyright:   (c) Julian Smart
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -84,8 +84,7 @@ public:
     // MSW only
     virtual bool MSWCommand(WXUINT param, WXWORD id);
     WXLRESULT MSWWindowProc(WXUINT nMsg, WXWPARAM wParam, WXLPARAM lParam);
-    virtual WXHBRUSH OnCtlColor(WXHDC pDC, WXHWND pWnd, WXUINT nCtlColor,
-            WXUINT message, WXWPARAM wParam, WXLPARAM lParam);
+    virtual WXHBRUSH MSWControlColor(WXHDC hDC, WXHWND hWnd);
 
 protected:
     virtual void DoMoveWindow(int x, int y, int width, int height);

@@ -9,7 +9,7 @@
 //              robust Abort(), support for arbitrary FTP commands, ...)
 //              Randall Fox (support for active mode)
 // Created:     07/07/1997
-// RCS-ID:      $Id: ftp.cpp,v 1.59 2004/10/29 20:19:49 RN Exp $
+// RCS-ID:      $Id: ftp.cpp,v 1.61 2005/05/31 09:19:50 JS Exp $
 // Copyright:   (c) 1997, 1998 Guilhem Lavaux
 //              (c) 1998-2004 wxWidgets team
 // Licence:     wxWindows licence
@@ -348,7 +348,7 @@ char wxFTP::GetResult()
     }
 
     // if we got here we must have a non empty code string
-    return code[0u];
+    return (char)code[0u];
 }
 
 // ----------------------------------------------------------------------------
@@ -387,7 +387,7 @@ bool wxFTP::SetTransferMode(TransferMode transferMode)
         return false;
     }
 
-    // If we get here the operation has been succesfully completed
+    // If we get here the operation has been successfully completed
     // Set the status-member
     m_currentTransfermode = transferMode;
 
@@ -824,7 +824,7 @@ bool wxFTP::GetList(wxArrayString& files,
     //        - Windows : like "dir" command
     //        - others  : ?
     wxString line(details ? _T("LIST") : _T("NLST"));
-    if ( !wildcard.IsEmpty() )
+    if ( !wildcard.empty() )
     {
         line << _T(' ') << wildcard;
     }

@@ -5,7 +5,7 @@
 // Author:      Robin Dunn
 //
 // Created:     9-Mar-2004
-// RCS-ID:      $Id: _display.i,v 1.7 2004/09/23 20:23:18 RD Exp $
+// RCS-ID:      $Id: _display.i,v 1.8 2005/03/09 22:28:41 RD Exp $
 // Copyright:   (c) 2004 by Total Control Software
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -206,7 +206,7 @@ function is not supported at all on this platform.", "");
         PyObject* GetModes(const wxVideoMode& mode = wxDefaultVideoMode) {
             PyObject* pyList = NULL;
             wxArrayVideoModes arr = self->GetModes(mode);
-            bool blocked = wxPyBeginBlockThreads();
+            wxPyBlock_t blocked = wxPyBeginBlockThreads();
             pyList = PyList_New(0);
             for (int i=0; i < arr.GetCount(); i++) {
                 wxVideoMode* m = new wxVideoMode(arr.Item(i));

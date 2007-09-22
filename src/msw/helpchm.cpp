@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     16/04/2000
-// RCS-ID:      $Id: helpchm.cpp,v 1.21 2004/08/27 18:59:37 ABX Exp $
+// RCS-ID:      $Id: helpchm.cpp,v 1.24 2005/06/20 14:02:35 JS Exp $
 // Copyright:   (c) Julian Smart
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -33,7 +33,7 @@
 #endif
 
 #include "wx/msw/private.h"
-#include "wx/msw/missing.h"
+#include "wx/msw/htmlhelp.h"
 
 // ----------------------------------------------------------------------------
 // utility functions to manage the loading/unloading
@@ -79,7 +79,7 @@ static bool LoadHtmlHelpLibrary()
 static void UnloadHtmlHelpLibrary()
 {
     if ( gs_htmlHelp )
-    {
+    {		
         if (wxPluginManager::UnloadLibrary( _T("HHCTRL.OCX") ))
             gs_htmlHelp = 0;
     }

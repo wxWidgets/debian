@@ -4,7 +4,7 @@
 // Purpose:     Part of the widgets sample showing wxRadioBox
 // Author:      Vadim Zeitlin
 // Created:     15.04.01
-// Id:          $Id: radiobox.cpp,v 1.13 2004/10/04 20:25:14 ABX Exp $
+// Id:          $Id: radiobox.cpp,v 1.16 2005/02/23 15:50:48 ABX Exp $
 // Copyright:   (c) 2001 Vadim Zeitlin
 // License:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -24,6 +24,8 @@
     #pragma hdrstop
 #endif
 
+#if wxUSE_RADIOBOX
+
 // for all others, include the necessary headers
 #ifndef WX_PRECOMP
     #include "wx/log.h"
@@ -39,7 +41,7 @@
 #include "wx/sizer.h"
 
 #include "widgets.h"
-#if 1
+
 #include "icons/radiobox.xpm"
 
 // ----------------------------------------------------------------------------
@@ -54,6 +56,8 @@ enum
     RadioPage_Selection,
     RadioPage_Label,
     RadioPage_LabelBtn,
+    RadioPage_Enable2nd,
+    RadioPage_Show2nd,
     RadioPage_Radio
 };
 
@@ -76,8 +80,10 @@ static const unsigned int DEFAULT_MAJOR_DIM = 3;
 class RadioWidgetsPage : public WidgetsPage
 {
 public:
-    RadioWidgetsPage(wxNotebook *notebook, wxImageList *imaglist);
+    RadioWidgetsPage(wxBookCtrl *book, wxImageList *imaglist);
     virtual ~RadioWidgetsPage(){};
+
+    virtual wxControl *GetWidget() const { return m_radio; }
 
 protected:
     // event handlers
@@ -105,6 +111,8 @@ protected:
 
     // the check/radio boxes for styles
     wxCheckBox *m_chkVert;
+    wxCheckBox *m_2ndEnabled;
+    wxCheckBox *m_2ndShown;
     wxRadioBox *m_radioDir;
 
     // the gauge itself and the sizer it is in
@@ -152,14 +160,16 @@ END_EVENT_TABLE()
 
 IMPLEMENT_WIDGETS_PAGE(RadioWidgetsPage, _T("Radio"));
 
-RadioWidgetsPage::RadioWidgetsPage(wxNotebook *notebook,
-                                       wxImageList *imaglist)
-                  : WidgetsPage(notebook)
+RadioWidgetsPage::RadioWidgetsPage(wxBookCtrl *book,
+                                   wxImageList *imaglist)
+                  : WidgetsPage(book)
 {
     imaglist->Add(wxBitmap(radio_xpm));
 
     // init everything
     m_chkVert = (wxCheckBox *)NULL;
+    m_2ndEnabled = (wxCheckBox *)NULL;
+    m_2ndShown = (wxCheckBox *)NULL;
 
     m_textNumBtns =
     m_textLabelBtns =
@@ -243,6 +253,9 @@ RadioWidgetsPage::RadioWidgetsPage(wxNotebook *notebook,
                                             &m_textLabelBtns);
     sizerMiddle->Add(sizerRow, 0, wxGROW | wxALL, 5);
 
+    m_2ndEnabled = CreateCheckBoxAndAddToSizer(sizerMiddle, _T("2nd item enabled"));
+    m_2ndShown = CreateCheckBoxAndAddToSizer(sizerMiddle, _T("2nd item shown"));
+
     // right pane
     wxSizer *sizerRight = new wxBoxSizer(wxHORIZONTAL);
     sizerRight->SetMinSize(150, 0);
@@ -274,6 +287,8 @@ void RadioWidgetsPage::Reset()
     m_textLabelBtns->SetValue(_T("item"));
 
     m_chkVert->SetValue(false);
+    m_2ndEnabled->SetValue(true);
+    m_2ndShown->SetValue(true);
     m_radioDir->SetSelection(RadioDir_Default);
 }
 
@@ -359,6 +374,9 @@ void RadioWidgetsPage::CreateRadio()
 
     m_sizerRadio->Add(m_radio, 1, wxGROW);
     m_sizerRadio->Layout();
+
+    m_radio->Enable( 1 , m_2ndEnabled->GetValue() );
+    m_radio->Show( 1 , m_2ndShown->GetValue() );
 }
 
 // ----------------------------------------------------------------------------
@@ -453,4 +471,4 @@ void RadioWidgetsPage::OnUpdateUIReset(wxUpdateUIEvent& event)
     event.Enable(enable);
 }
 
-#endif
+#endif // wxUSE_RADIOBOX

@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     01/02/97
-// RCS-ID:      $Id: dcclient.cpp,v 1.42 2004/09/04 01:26:40 ABX Exp $
+// RCS-ID:      $Id: dcclient.cpp,v 1.44 2005/02/16 20:34:26 ABX Exp $
 // Copyright:   (c) Julian Smart
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -169,7 +169,7 @@ void wxClientDC::InitDC()
     }
 
     // clip the DC to avoid overwriting the non client area
-    SetClippingRegion(wxPoint(0, 0), m_canvas->GetClientSize());
+    SetClippingRegion(wxPoint(0,0), m_canvas->GetClientSize());
 #endif // __WXUNIVERSAL__ || __WXWINCE__
 }
 

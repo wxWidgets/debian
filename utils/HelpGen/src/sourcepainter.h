@@ -4,9 +4,9 @@
 // Author:      Aleksandras Gluchovas
 // Modified by:
 // Created:     22/09/98
-// RCS-ID:      $Id: sourcepainter.h,v 1.2 2002/12/04 14:11:00 VZ Exp $
+// RCS-ID:      $Id: sourcepainter.h,v 1.7 2005/06/02 09:44:45 ABX Exp $
 // Copyright:   (c) Aleskandars Gluchovas
-// Licence:   	wxWindows licence
+// Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
 
 #ifndef __SOURCEPAINTER_G__
@@ -18,24 +18,21 @@
 
 #if defined( wxUSE_TEMPLATE_STL )
 
-	#include <vector.h>
-	typedef vector<int> SPBlockListT;
+    #include <vector.h>
+    typedef vector<int> SPBlockListT;
 
-	#ifdef WIN32
-		#include <bstring.h>
-	#else
-		#include <strclass.h>
-		#include <string.h>
-	#endif
+    #ifdef WIN32
+        #include <bstring.h>
+    #else
+        #include <strclass.h>
+        #include <string.h>
+    #endif
 #else
 
-	#include "wxstlvec.h"
-	#include "wx/string.h"
-	
-	// FIXME:: dirty!
-	#define  string wxString
+    #include "wxstlvec.h"
+    #include "wx/string.h"
 
-	typedef WXSTL_VECTOR_SHALLOW_COPY(int) SPBlockListT;
+    typedef WXSTL_VECTOR_SHALLOW_COPY(int) SPBlockListT;
 
 #endif
 
@@ -59,46 +56,46 @@
 class SourcePainter
 {
 protected:
-	string		  mResultStr;
-	SPBlockListT  mBlocks;
-	bool          mCollectResultsOn;
+    wxString        mResultStr;
+    SPBlockListT    mBlocks;
+    bool            mCollectResultsOn;
 
-	// state variables
-	bool        mIsInComment;
-	bool        mCommentIsMultiline;
+    // state variables
+    bool            mIsInComment;
+    bool            mCommentIsMultiline;
 public:
 
-	// assembleResultString == TRUE - instructs painter
-	// to collect each chunk of srouce passed to ProcessSource(),
-	// so that results cann be futher obtained in a single string 
-	// instead of vector of block descriptions
+    // assembleResultString == true - instructs painter
+    // to collect each chunk of srouce passed to ProcessSource(),
+    // so that results cann be futher obtained in a single string
+    // instead of vector of block descriptions
 
-	SourcePainter( bool assembleResultString = TRUE );
-	virtual ~SourcePainter() {}
+    SourcePainter( bool assembleResultString = true );
+    virtual ~SourcePainter() {}
 
-	// can be called multiple times (e.g. on each source line)
-	void ProcessSource( char* src, int srcLen );
+    // can be called multiple times (e.g. on each source line)
+    void ProcessSource( char* src, int srcLen );
 
-	// method, for manually adjusting state of source painter
-	void SetState( bool isInComment,
-		           bool commentIsMultiline );
+    // method, for manually adjusting state of source painter
+    void SetState( bool isInComment,
+                   bool commentIsMultiline );
 
-	// reinitializes object - clears results of previouse processing
-	void Init( bool assembleResultString = TRUE );
+    // reinitializes object - clears results of previouse processing
+    void Init( bool assembleResultString = true );
 
-	// generates string of highlighted source for the scipting
-	// language given by "tags" argument
-	
-	virtual void GetResultString(string& result, MarkupTagsT tags);
+    // generates string of highlighted source for the scipting
+    // language given by "tags" argument
 
-	// returns vector of block descriptors, see SPBlockListT definition
-	// (block descriptors can be used for fast custom hightlighted text generation)
+    virtual void GetResultString(wxString& result, MarkupTagsT tags);
 
-	SPBlockListT& GetBlocks();
+    // returns vector of block descriptors, see SPBlockListT definition
+    // (block descriptors can be used for fast custom highlighted text generation)
 
-	// NOTE:: static method
-	// returns if the given word is a reserved word or basic type identifier
-	static bool IsKeyword( char* word, int wordLen );
+    SPBlockListT& GetBlocks();
+
+    // NOTE:: static method
+    // returns if the given word is a reserved word or basic type identifier
+    static bool IsKeyword( char* word, int wordLen );
 };
 
 #endif

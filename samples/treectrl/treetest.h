@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     04/01/98
-// RCS-ID:      $Id: treetest.h,v 1.42 2004/10/06 20:54:51 ABX Exp $
+// RCS-ID:      $Id: treetest.h,v 1.47 2005/04/09 11:04:00 VZ Exp $
 // Copyright:   (c) Julian Smart
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -74,9 +74,8 @@ public:
     void OnEndLabelEdit(wxTreeEvent& event);
     void OnDeleteItem(wxTreeEvent& event);
     void OnContextMenu(wxContextMenuEvent& event);
+    void OnItemMenu(wxTreeEvent& event);
     void OnGetInfo(wxTreeEvent& event);
-    void OnTreeRMouseClick(wxTreeEvent& event);
-    void OnItemRightClick(wxTreeEvent& event);
     void OnSetInfo(wxTreeEvent& event);
     void OnItemExpanded(wxTreeEvent& event);
     void OnItemExpanding(wxTreeEvent& event);
@@ -86,6 +85,10 @@ public:
     void OnSelChanging(wxTreeEvent& event);
     void OnTreeKeyDown(wxTreeEvent& event);
     void OnItemActivated(wxTreeEvent& event);
+    void OnItemRClick(wxTreeEvent& event);
+
+    void OnRMouseDown(wxMouseEvent& event);
+    void OnRMouseUp(wxMouseEvent& event);
     void OnRMouseDClick(wxMouseEvent& event);
 
     void GetItemsRecursively(const wxTreeItemId& idParent,
@@ -239,9 +242,9 @@ private:
 // menu and control ids
 enum
 {
-    TreeTest_Quit,
-    TreeTest_About,
-    TreeTest_TogButtons,
+    TreeTest_Quit = wxID_EXIT,
+    TreeTest_About = wxID_ABOUT,
+    TreeTest_TogButtons = wxID_HIGHEST,
     TreeTest_TogTwist,
     TreeTest_TogLines,
     TreeTest_TogEdit,

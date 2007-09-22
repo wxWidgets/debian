@@ -4,7 +4,7 @@
 // Author:      Stefan Csomor
 // Modified by:
 // Created:     12/10/98
-// RCS-ID:      $Id: wxshlba_cw_d.h,v 1.4 2004/09/24 14:32:18 ABX Exp $
+// RCS-ID:      $Id: wxshlba_cw_d.h,v 1.5 2005/04/19 10:06:30 SC Exp $
 // Copyright:   (c) Stefan Csomor
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -21,23 +21,23 @@
 #else
 #ifdef __cplusplus
     #if __POWERPC__
-        #include <wxshlba_PPC++_d.mch>
+        #include "wxshlba_PPC++_d.mch"
     #elif __INTEL__
-        #include <wxshlba_x86++_d.mch>
+        #include "wxshlba_x86++_d.mch"
     #elif __CFM68K__
-        #include <wxshlba_cfm++_d.mch>
+        #include "wxshlba_cfm++_d.mch"
     #else
-        #include <wxshlba_68k++_d.mch>
+        #include "wxshlba_68k++_d.mch"
     #endif
 #else
     #if __POWERPC__
-        #include <wxshlba_PPC_d.mch>
+        #include "wxshlba_PPC_d.mch"
     #elif __INTEL__
-        #include <wxshlba_x86_d.mch>
+        #include "wxshlba_x86_d.mch"
     #elif __CFM68K__
-        #include <wxshlba_cfm_d.mch>
+        #include "wxshlba_cfm_d.mch"
     #else
-        #include <wxshlba_68k_d.mch>
+        #include "wxshlba_68k_d.mch"
     #endif
 #endif
 #endif

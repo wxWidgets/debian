@@ -2,7 +2,7 @@
 // Name:        editlbox.h
 // Purpose:     ListBox with editable items
 // Author:      Vaclav Slavik
-// RCS-ID:      $Id: editlbox.h,v 1.9 2004/06/08 19:27:28 ABX Exp $
+// RCS-ID:      $Id: editlbox.h,v 1.10 2005/02/09 14:14:17 ABX Exp $
 // Copyright:   (c) Vaclav Slavik
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -31,7 +31,7 @@ class WXDLLEXPORT wxListEvent;
 
 class WXDLLIMPEXP_GIZMOS wxEditableListBox : public wxPanel
 {
-    DECLARE_CLASS(wxEditableListBox);
+    DECLARE_CLASS(wxEditableListBox)
 
 public:
     wxEditableListBox(wxWindow *parent, wxWindowID id,

@@ -2,9 +2,9 @@
 // Name:        common/tbarbase.cpp
 // Purpose:     wxToolBarBase implementation
 // Author:      Julian Smart
-// Modified by: VZ at 11.12.99 (wxScrollableToolBar splitted off)
+// Modified by: VZ at 11.12.99 (wxScrollableToolBar split off)
 // Created:     04/01/98
-// RCS-ID:      $Id: tbarbase.cpp,v 1.71 2004/10/18 05:55:59 ABX Exp $
+// RCS-ID:      $Id: tbarbase.cpp,v 1.78 2005/05/31 09:19:53 JS Exp $
 // Copyright:   (c) Julian Smart
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -35,8 +35,11 @@
 #endif
 
 #include "wx/frame.h"
-#include "wx/image.h"
-#include "wx/settings.h"
+
+#if wxUSE_IMAGE
+    #include "wx/image.h"
+    #include "wx/settings.h"
+#endif // wxUSE_IMAGE
 
 #include "wx/toolbar.h"
 
@@ -114,6 +117,30 @@ bool wxToolBarToolBase::SetLongHelp(const wxString& help)
     return true;
 }
 
+#if WXWIN_COMPATIBILITY_2_2
+
+const wxBitmap& wxToolBarToolBase::GetBitmap1() const
+{
+    return GetNormalBitmap();
+}
+
+const wxBitmap& wxToolBarToolBase::GetBitmap2() const
+{
+    return GetDisabledBitmap();
+}
+
+void wxToolBarToolBase::SetBitmap1(const wxBitmap& bmp)
+{
+    SetNormalBitmap(bmp);
+}
+
+void wxToolBarToolBase::SetBitmap2(const wxBitmap& bmp)
+{
+    SetDisabledBitmap(bmp);
+}
+
+#endif // WXWIN_COMPATIBILITY_2_2
+
 // ----------------------------------------------------------------------------
 // wxToolBarBase adding/deleting items
 // ----------------------------------------------------------------------------
@@ -122,8 +149,10 @@ wxToolBarBase::wxToolBarBase()
 {
     // the list owns the pointers
     m_xMargin = m_yMargin = 0;
-
     m_maxRows = m_maxCols = 0;
+    m_toolPacking = m_toolSeparation = 0;
+    m_defaultWidth = 16;
+    m_defaultHeight = 15;
 }
 
 wxToolBarToolBase *wxToolBarBase::DoAddTool(int id,
@@ -422,7 +451,7 @@ wxToolBarBase::~wxToolBarBase()
 
     // notify the frame that it doesn't have a tool bar any longer to avoid
     // dangling pointers
-    wxFrameBase *frame = wxDynamicCast(GetParent(), wxFrameBase);
+    wxFrame *frame = wxDynamicCast(GetParent(), wxFrame);
     if ( frame && frame->GetToolBar() == this )
     {
         frame->SetToolBar(NULL);
@@ -539,7 +568,7 @@ bool wxToolBarBase::GetToolEnabled(int id) const
 wxString wxToolBarBase::GetToolShortHelp(int id) const
 {
     wxToolBarToolBase *tool = FindById(id);
-    wxCHECK_MSG( tool, _T(""), _T("no such tool") );
+    wxCHECK_MSG( tool, wxEmptyString, _T("no such tool") );
 
     return tool->GetShortHelp();
 }
@@ -547,7 +576,7 @@ wxString wxToolBarBase::GetToolShortHelp(int id) const
 wxString wxToolBarBase::GetToolLongHelp(int id) const
 {
     wxToolBarToolBase *tool = FindById(id);
-    wxCHECK_MSG( tool, _T(""), _T("no such tool") );
+    wxCHECK_MSG( tool, wxEmptyString, _T("no such tool") );
 
     return tool->GetLongHelp();
 }
@@ -665,64 +694,73 @@ void wxToolBarBase::UpdateWindowUI(long flags)
     }
 }
 
-// Helper function, used by wxCreateGreyedImage
-
-static void wxGreyOutImage( const wxImage& src,
-                            wxImage& dest,
-                            const wxColour& darkCol,
-                            const wxColour& lightCol,
-                            const wxColour& bgCol )
-{
-    // Second attempt, just making things monochrome
-    int width = src.GetWidth();
-    int height = src.GetHeight();
-
-    int redCur, greenCur, blueCur;
-    for ( int x = 0; x < width; x++ )
-    {
-        for ( int y = 1; y < height; y++ )
-        {
-            redCur = src.GetRed(x, y);
-            greenCur = src.GetGreen(x, y);
-            blueCur = src.GetBlue(x, y);
-
-            // Change light things to the background colour
-            if ( redCur >= (lightCol.Red() - 50) && greenCur >= (lightCol.Green() - 50) && blueCur >= (lightCol.Blue() - 50) )
-            {
-                dest.SetRGB(x,y, bgCol.Red(), bgCol.Green(), bgCol.Blue());
-            }
-            else if ( redCur == bgCol.Red() && greenCur == bgCol.Green() && blueCur == bgCol.Blue() )
-            {
-                // Leave the background colour as-is
-                // dest.SetRGB(x,y, bgCol.Red(), bgCol.Green(), bgCol.Blue());
-            }
-            else // if ( redCur <= darkCol.Red() && greenCur <= darkCol.Green() && blueCur <= darkCol.Blue() )
-            {
-                // Change dark things to really dark
-                dest.SetRGB(x,y, darkCol.Red(), darkCol.Green(), darkCol.Blue());
-            }
-        }
-    }
-}
+#if wxUSE_IMAGE
 
 /*
  * Make a greyed-out image suitable for disabled buttons.
  * This code is adapted from wxNewBitmapButton in FL.
  */
 
-bool wxCreateGreyedImage(const wxImage& in, wxImage& out)
+bool wxCreateGreyedImage(const wxImage& src, wxImage& dst)
 {
-    out = in.Copy();
+    dst = src.Copy();
 
-    // assuming the pixels along the edges are of the background color
-    wxColour bgCol(in.GetRed(0, 0), in.GetGreen(0, 0), in.GetBlue(0, 0));
+    unsigned char rBg, gBg, bBg;
+    if ( src.HasMask() )
+    {
+        src.GetOrFindMaskColour(&rBg, &gBg, &bBg);
+        dst.SetMaskColour(rBg, gBg, bBg);
+    }
+    else // assuming the pixels along the edges are of the background color
+    {
+        rBg = src.GetRed(0, 0);
+        gBg = src.GetGreen(0, 0);
+        bBg = src.GetBlue(0, 0);
+    }
 
-    wxColour darkCol = wxSystemSettings::GetColour(wxSYS_COLOUR_3DSHADOW) ;
-    wxColour lightCol = wxSystemSettings::GetColour(wxSYS_COLOUR_3DHIGHLIGHT) ;
+    const wxColour colBg(rBg, gBg, bBg);
 
-    wxGreyOutImage(in, out, darkCol, lightCol, bgCol);
+    const wxColour colDark = wxSystemSettings::GetColour(wxSYS_COLOUR_3DSHADOW);
+    const wxColour colLight = wxSystemSettings::GetColour(wxSYS_COLOUR_3DHIGHLIGHT);
+
+    // Second attempt, just making things monochrome
+    const int width = src.GetWidth();
+    const int height = src.GetHeight();
+
+    for ( int x = 0; x < width; x++ )
+    {
+        for ( int y = 0; y < height; y++ )
+        {
+            const int r = src.GetRed(x, y);
+            const int g = src.GetGreen(x, y);
+            const int b = src.GetBlue(x, y);
+
+            if ( r == rBg && g == gBg && b == bBg )
+            {
+                // Leave the background colour as-is
+                continue;
+            }
+
+            // Change light things to the background colour
+            wxColour col;
+            if ( r >= (colLight.Red() - 50) &&
+                    g >= (colLight.Green() - 50) &&
+                        b >= (colLight.Blue() - 50) )
+            {
+                col = colBg;
+            }
+            else // Change dark things to really dark
+            {
+                col = colDark;
+            }
+
+            dst.SetRGB(x, y, col.Red(), col.Green(), col.Blue());
+        }
+    }
 
     return true;
 }
+
+#endif // wxUSE_IMAGE
 
 #endif // wxUSE_TOOLBAR

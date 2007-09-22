@@ -5,7 +5,7 @@
 // Author:      Robin Dunn
 //
 // Created:     10-June-1998
-// RCS-ID:      $Id: _gauge.i,v 1.7 2004/06/02 20:52:59 RD Exp $
+// RCS-ID:      $Id: _gauge.i,v 1.8 2004/12/23 20:43:52 RD Exp $
 // Copyright:   (c) 2003 by Total Control Software
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -42,7 +42,7 @@ public:
             long style = wxGA_HORIZONTAL,
             const wxValidator& validator = wxDefaultValidator,
             const wxString& name = wxPyGaugeNameStr);
-    %name(PreGauge)wxGauge();
+    %RenameCtor(PreGauge, wxGauge());
 
     bool Create(wxWindow* parent, wxWindowID id=-1, int range=100,
             const wxPoint& pos = wxDefaultPosition,

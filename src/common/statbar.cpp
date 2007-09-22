@@ -4,7 +4,7 @@
 // Author:      Vadim Zeitlin
 // Modified by:
 // Created:     14.10.01
-// RCS-ID:      $Id: statbar.cpp,v 1.16 2004/10/17 14:28:26 VZ Exp $
+// RCS-ID:      $Id: statbar.cpp,v 1.18 2005/04/12 07:33:20 JS Exp $
 // Copyright:   (c) 2001 Vadim Zeitlin <zeitlin@dptmaths.ens-cachan.fr>
 // License:     wxWindows licence
 ///////////////////////////////////////////////////////////////////////////////
@@ -61,11 +61,11 @@ wxStatusBarBase::~wxStatusBarBase()
 {
     FreeWidths();
     FreeStacks();
-    InitStyles();
+    FreeStyles();
 
     // notify the frame that it doesn't have a status bar any longer to avoid
     // dangling pointers
-    wxFrameBase *frame = wxDynamicCast(GetParent(), wxFrameBase);
+    wxFrame *frame = wxDynamicCast(GetParent(), wxFrame);
     if ( frame && frame->GetStatusBar() == this )
     {
         frame->SetStatusBar(NULL);
@@ -285,12 +285,12 @@ void wxStatusBarBase::InitStacks()
 
 void wxStatusBarBase::FreeStacks()
 {
-    if(!m_statusTextStacks) return;
-    size_t i;
+    if ( !m_statusTextStacks )
+        return;
 
-    for(i = 0; i < (size_t)m_nFields; ++i)
+    for ( size_t i = 0; i < (size_t)m_nFields; ++i )
     {
-        if(m_statusTextStacks[i])
+        if ( m_statusTextStacks[i] )
         {
             wxListString& t = *m_statusTextStacks[i];
             WX_CLEAR_LIST(wxListString, t);

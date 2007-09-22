@@ -5,7 +5,7 @@
 // Modified by:
 //  Chris Elliott (biol75@york.ac.uk) 5 Dec 00: write support for Win32
 // Created:     23.09.98
-// RCS-ID:      $Id: mimecmn.cpp,v 1.37 2004/09/17 22:23:59 ABX Exp $
+// RCS-ID:      $Id: mimecmn.cpp,v 1.39 2005/04/25 10:28:56 MW Exp $
 // Copyright:   (c) 1998 Vadim Zeitlin <zeitlin@dptmaths.ens-cachan.fr>
 // Licence:     wxWindows licence (part of wxExtra library)
 /////////////////////////////////////////////////////////////////////////////
@@ -56,6 +56,8 @@
 #elif defined(__WXPM__) || defined (__EMX__)
     #include "wx/os2/mimetype.h"
     #undef __UNIX__
+#elif defined(__DOS__)
+    #include "wx/msdos/mimetype.h"
 #else // Unix
     #include "wx/unix/mimetype.h"
 #endif
@@ -196,7 +198,7 @@ wxString wxFileType::ExpandCommand(const wxString& command,
     // know of the correct solution, try to guess what we have to do.
 
     // test now carried out on reading file so test should never get here
-    if ( !hasFilename && !str.IsEmpty()
+    if ( !hasFilename && !str.empty()
 #ifdef __UNIX__
                       && !str.StartsWith(_T("test "))
 #endif // Unix
@@ -428,7 +430,7 @@ bool wxFileType::SetDefaultIcon(const wxString& cmd, int index)
     // VZ: should we do this?
     // chris elliott : only makes sense in MS windows
     if ( sTmp.empty() )
-        GetOpenCommand(&sTmp, wxFileType::MessageParameters(wxT(""), wxT("")));
+        GetOpenCommand(&sTmp, wxFileType::MessageParameters(wxEmptyString, wxEmptyString));
 #endif
     wxCHECK_MSG( !sTmp.empty(), false, _T("need the icon file") );
 

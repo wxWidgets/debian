@@ -5,7 +5,7 @@
 // Modified by: Vadim Zeitlin on 13.05.99: complete refont of message handling,
 //              elimination of Default(), ...
 // Created:     01/02/97
-// RCS-ID:      $Id: window.h,v 1.121 2004/10/07 13:36:36 ABX Exp $
+// RCS-ID:      $Id: window.h,v 1.147 2005/06/16 15:36:42 JS Exp $
 // Copyright:   (c) Julian Smart
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -32,12 +32,14 @@
 // constants
 // ---------------------------------------------------------------------------
 
-// FIXME does anybody use those? they're unused by wxWidgets...
+#if WXWIN_COMPATIBILITY_2_4
+// they're unused by wxWidgets...
 enum
 {
     wxKEY_SHIFT = 1,
     wxKEY_CTRL  = 2
 };
+#endif
 
 // ---------------------------------------------------------------------------
 // wxWindow declaration for MSW
@@ -45,6 +47,12 @@ enum
 
 class WXDLLEXPORT wxWindowMSW : public wxWindowBase
 {
+    friend class wxSpinCtrl;
+    friend class wxSlider;
+    friend class wxRadioBox;
+#if defined __VISUALC__ && __VISUALC__ <= 1200
+    friend class wxWindowMSW;
+#endif
 public:
     wxWindowMSW() { Init(); }
 
@@ -165,17 +173,13 @@ public:
     // event handlers
     // --------------
 
-    void OnEraseBackground(wxEraseEvent& event);
     void OnPaint(wxPaintEvent& event);
+    void OnEraseBackground(wxEraseEvent& event);
 #ifdef __WXWINCE__
-    void OnInitDialog( wxInitDialogEvent& event );
+    void OnInitDialog(wxInitDialogEvent& event);
 #endif
 
 public:
-    // For implementation purposes - sometimes decorations make the client area
-    // smaller
-    virtual wxPoint GetClientAreaOrigin() const;
-
     // Windows subclassing
     void SubclassWin(WXHWND hWnd);
     void UnsubclassWin();
@@ -257,7 +261,7 @@ public:
     void UnpackScroll(WXWPARAM wParam, WXLPARAM lParam,
                       WXWORD *code, WXWORD *pos, WXHWND *hwnd);
     void UnpackCtlColor(WXWPARAM wParam, WXLPARAM lParam,
-                        WXWORD *nCtlColor, WXHDC *hdc, WXHWND *hwnd);
+                        WXHDC *hdc, WXHWND *hwnd);
     void UnpackMenuSelect(WXWPARAM wParam, WXLPARAM lParam,
                           WXWORD *item, WXWORD *flags, WXHMENU *hmenu);
 
@@ -292,7 +296,8 @@ public:
     bool HandleDestroy();
 
     bool HandlePaint();
-    bool HandleEraseBkgnd(WXHDC pDC);
+    bool HandlePrintClient(WXHDC hDC);
+    bool HandleEraseBkgnd(WXHDC hDC);
 
     bool HandleMinimize();
     bool HandleMaximize();
@@ -305,13 +310,7 @@ public:
 
     bool HandleCommand(WXWORD id, WXWORD cmd, WXHWND control);
 
-    bool HandleCtlColor(WXHBRUSH *hBrush,
-                        WXHDC hdc,
-                        WXHWND hWnd,
-                        WXUINT nCtlColor,
-                        WXUINT message,
-                        WXWPARAM wParam,
-                        WXLPARAM lParam);
+    bool HandleCtlColor(WXHBRUSH *hBrush, WXHDC hdc, WXHWND hWnd);
 
     bool HandlePaletteChanged(WXHWND hWndPalChange);
     bool HandleQueryNewPalette();
@@ -366,14 +365,40 @@ public:
     // called when the window is about to be destroyed
     virtual void MSWDestroyWindow();
 
-    // this function should return the brush to paint the window background
-    // with or 0 for the default brush
-    virtual WXHBRUSH OnCtlColor(WXHDC hDC,
-                                WXHWND hWnd,
-                                WXUINT nCtlColor,
-                                WXUINT message,
-                                WXWPARAM wParam,
-                                WXLPARAM lParam);
+
+    // this function should return the brush to paint the children controls
+    // background or 0 if this window doesn't impose any particular background
+    // on its children
+    //
+    // the base class version returns a solid brush if we have a non default
+    // background colour or 0 otherwise
+    virtual WXHBRUSH MSWGetBgBrushForChild(WXHDC hDC, WXHWND hWnd);
+
+    // return the background brush to use for painting the given window by
+    // quering the parent windows via their MSWGetBgBrushForChild() recursively
+    //
+    // hWndToPaint is normally NULL meaning this window itself, but it can also
+    // be a child of this window which is used by the static box and could be
+    // potentially useful for other transparent controls
+    WXHBRUSH MSWGetBgBrush(WXHDC hDC, WXHWND hWndToPaint = NULL);
+
+    // gives the parent the possibility to draw its children background, e.g.
+    // this is used by wxNotebook to do it using DrawThemeBackground()
+    //
+    // return true if background was drawn, false otherwise
+    virtual bool MSWPrintChild(WXHDC WXUNUSED(hDC), wxWindow * WXUNUSED(child))
+    {
+        return false;
+    }
+
+    // some controls (e.g. wxListBox) need to set the return value themselves
+    //
+    // return true to let parent handle it if we don't, false otherwise
+    virtual bool MSWShouldPropagatePrintChild()
+    {
+        return true;
+    }
+
 
     // Responds to colour changes: passes event on to children.
     void OnSysColourChanged(wxSysColourChangedEvent& event);
@@ -384,9 +409,12 @@ public:
     // check if mouse is in the window
     bool IsMouseInWindow() const;
 
+    // synthesize a wxEVT_LEAVE_WINDOW event and set m_mouseInWindow to false
+    void GenerateMouseLeave();
+
     // virtual function for implementing internal idle
     // behaviour
-    virtual void OnInternalIdle() ;
+    virtual void OnInternalIdle();
 
 protected:
     // the window handle
@@ -409,8 +437,6 @@ protected:
                           m_lastMouseY;
     int                   m_lastMouseEvent;
 #endif // wxUSE_MOUSEEVENT_HACK
-
-    WXHMENU               m_hMenu; // Menu, if any
 
     // implement the base class pure virtuals
     virtual void DoClientToScreen( int *x, int *y ) const;
@@ -449,6 +475,11 @@ protected:
     wxKeyEvent CreateKeyEvent(wxEventType evType, int id,
                               WXLPARAM lParam = 0, WXWPARAM wParam = 0) const;
 
+
+    // default OnEraseBackground() implementation, return true if we did erase
+    // the background, false otherwise (i.e. the system should erase it)
+    bool DoEraseBackground(WXHDC hDC);
+
 private:
     // common part of all ctors
     void Init();
@@ -467,6 +498,15 @@ private:
 
     // number of calls to Freeze() minus number of calls to Thaw()
     unsigned int m_frozenness;
+
+    // current defer window position operation handle (may be NULL)
+    WXHANDLE m_hDWP;
+
+    // When deferred positioning is done these hold the pending changes, and
+    // are used for the default values if another size/pos changes is done on
+    // this window before the group of deferred changes is completed.
+    wxPoint     m_pendingPosition;
+    wxSize      m_pendingSize;
 
     DECLARE_DYNAMIC_CLASS(wxWindowMSW)
     DECLARE_NO_COPY_CLASS(wxWindowMSW)

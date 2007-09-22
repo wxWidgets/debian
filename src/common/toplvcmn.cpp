@@ -3,7 +3,7 @@
 // Purpose:     common (for all platforms) wxTopLevelWindow functions
 // Author:      Julian Smart, Vadim Zeitlin
 // Created:     01/02/97
-// Id:          $Id: toplvcmn.cpp,v 1.32 2004/10/01 01:46:14 VZ Exp $
+// Id:          $Id: toplvcmn.cpp,v 1.33 2004/11/22 20:10:50 DE Exp $
 // Copyright:   (c) 1998 Robert Roebling and Julian Smart
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -108,6 +108,12 @@ bool wxTopLevelWindowBase::IsLastBeforeExit() const
 // ----------------------------------------------------------------------------
 // wxTopLevelWindow geometry
 // ----------------------------------------------------------------------------
+
+void wxTopLevelWindowBase::GetRectForTopLevelChildren(int *x, int *y, int *w, int *h)
+{
+    GetPosition(x,y);
+    GetSize(w,h);
+}
 
 wxSize wxTopLevelWindowBase::GetMaxSize() const
 {

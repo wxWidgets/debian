@@ -5,7 +5,7 @@
 // Author:      Robin Dunn
 //
 // Created:     10-June-1998
-// RCS-ID:      $Id: _listbox.i,v 1.14 2004/09/23 20:23:16 RD Exp $
+// RCS-ID:      $Id: _listbox.i,v 1.16 2005/05/27 00:53:05 RD Exp $
 // Copyright:   (c) 2003 by Total Control Software
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -37,17 +37,15 @@ public:
     wxListBox(wxWindow* parent, wxWindowID id=-1,
               const wxPoint& pos = wxDefaultPosition,
               const wxSize& size = wxDefaultSize,
-              //int choices=0, wxString* choices_array = NULL,
               const wxArrayString& choices = wxPyEmptyStringArray,              
               long style = 0,
               const wxValidator& validator = wxDefaultValidator,
               const wxString& name = wxPyListBoxNameStr);
-    %name(PreListBox)wxListBox();
+    %RenameCtor(PreListBox, wxListBox());
 
     bool Create(wxWindow* parent, wxWindowID id=-1,
                 const wxPoint& pos = wxDefaultPosition,
                 const wxSize& size = wxDefaultSize,
-                //int choices=0, wxString* choices_array = NULL,
                 const wxArrayString& choices = wxPyEmptyStringArray,
                 long style = 0,
                 const wxValidator& validator = wxDefaultValidator,
@@ -95,7 +93,7 @@ public:
     // set the specified item at the first visible item or scroll to max
     // range.
     void SetFirstItem(int n);
-    %name(SetFirstItemStr) void SetFirstItem(const wxString& s);
+    %Rename(SetFirstItemStr,  void, SetFirstItem(const wxString& s));
 
     // ensures that the given item is visible scrolling the listbox if
     // necessary
@@ -151,17 +149,15 @@ public:
     wxCheckListBox(wxWindow *parent, wxWindowID id=-1,
                    const wxPoint& pos = wxDefaultPosition,
                    const wxSize& size = wxDefaultSize,
-                   //int choices = 0, wxString* choices_array = NULL,
                    const wxArrayString& choices = wxPyEmptyStringArray,
                    long style = 0,
                    const wxValidator& validator = wxDefaultValidator,
                    const wxString& name = wxPyListBoxNameStr);
-    %name(PreCheckListBox)wxCheckListBox();
+    %RenameCtor(PreCheckListBox, wxCheckListBox());
 
     bool Create(wxWindow *parent, wxWindowID id=-1,
                 const wxPoint& pos = wxDefaultPosition,
                 const wxSize& size = wxDefaultSize,
-                //int choices = 0, wxString* choices_array = NULL,
                 const wxArrayString& choices = wxPyEmptyStringArray,
                 long style = 0,
                 const wxValidator& validator = wxDefaultValidator,
@@ -176,7 +172,7 @@ public:
 
     // return the index of the item at this position or wxNOT_FOUND
     int HitTest(const wxPoint& pt) const;
-    %name(HitTestXY)int HitTest(wxCoord x, wxCoord y) const;
+    %Rename(HitTestXY, int, HitTest(wxCoord x, wxCoord y) const);
 };
 
 //---------------------------------------------------------------------------

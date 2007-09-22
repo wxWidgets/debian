@@ -4,14 +4,14 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     04/01/98
-// RCS-ID:      $Id: dynamic.cpp,v 1.13 2004/05/28 10:43:14 ABX Exp $
+// RCS-ID:      $Id: dynamic.cpp,v 1.17 2005/06/02 12:04:09 JS Exp $
 // Copyright:   (c) Julian Smart
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
 
 #if defined(__GNUG__) && !defined(__APPLE__)
-#pragma implementation "dynamic.cpp"
-#pragma interface "dynamic.cpp"
+#pragma implementation
+#pragma interface
 #endif
 
 // For compilers that support precompilation, includes "wx/wx.h".
@@ -25,7 +25,7 @@
 #include "wx/wx.h"
 #endif
 
-#if defined(__WXGTK__) || defined(__WXX11__) || defined(__WXMOTIF__) || defined(__WXMAC__) || defined(__WXMGL__)
+#if defined(__WXGTK__) || defined(__WXX11__) || defined(__WXMOTIF__) || defined(__WXMAC__) || defined(__WXMGL__) || defined(__WXCOCOA__)
 #include "mondrian.xpm"
 #endif
 
@@ -46,9 +46,9 @@ class MyFrame: public wxFrame
 };
 
 // ID for the menu commands
-#define DYNAMIC_QUIT   1
+#define DYNAMIC_QUIT   wxID_EXIT
 #define DYNAMIC_TEXT   101
-#define DYNAMIC_ABOUT   102
+#define DYNAMIC_ABOUT  wxID_ABOUT
 
 // Create a new application object
 IMPLEMENT_APP  (MyApp)
@@ -59,12 +59,11 @@ bool MyApp::OnInit(void)
   // Create the main frame window
   MyFrame *frame = new MyFrame(NULL, _T("Dynamic wxWidgets App"), 50, 50, 450, 340);
 
-  frame->Connect( DYNAMIC_QUIT,  wxID_ANY, wxEVT_COMMAND_MENU_SELECTED,
-                  (wxObjectEventFunction) (wxEventFunction) (wxCommandEventFunction)
-                  &MyFrame::OnQuit );
-  frame->Connect( DYNAMIC_ABOUT, wxID_ANY, wxEVT_COMMAND_MENU_SELECTED,
-                  (wxObjectEventFunction) (wxEventFunction) (wxCommandEventFunction)
-                  &MyFrame::OnAbout );
+  // You used to have to do some casting for param 4, but now there are type-safe handlers
+  frame->Connect( DYNAMIC_QUIT,  wxID_ANY,
+                    wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler(MyFrame::OnQuit) );
+  frame->Connect( DYNAMIC_ABOUT, wxID_ANY,
+                    wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler(MyFrame::OnAbout) );
 
   // Give it an icon
 #ifdef __WXMSW__

@@ -4,7 +4,7 @@
 // Author:      Mattia Barbon
 // Modified by:
 // Created:     29/01/2002
-// RCS-ID:      $Id: hashmap.h,v 1.43 2004/10/15 20:35:39 VZ Exp $
+// RCS-ID:      $Id: hashmap.h,v 1.46 2005/05/22 12:10:47 JS Exp $
 // Copyright:   (c) Mattia Barbon
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -100,6 +100,10 @@ protected:
     static void** AllocTable( size_t sz )
     {
         return (void **)calloc(sz, sizeof(void*));
+    }
+    static void FreeTable(void *table)
+    {
+        free(table);
     }
 };
 
@@ -248,7 +252,7 @@ public: \
     { \
         clear(); \
  \
-        free(m_table); \
+        FreeTable(m_table); \
     } \
  \
     hasher hash_funct() { return m_hasher; } \
@@ -337,7 +341,7 @@ protected: \
     /* returns NULL if not found */ \
     Node** GetNodePtr( const const_key_type& key ) const \
     { \
-        unsigned long hash = m_hasher( key ); \
+        unsigned long hash = wx_static_cast(unsigned long, m_hasher( key )); \
         Node** node = &m_table[hash % m_tableBuckets]; \
  \
         while( *node ) \
@@ -354,7 +358,7 @@ protected: \
     /* expressing it in terms of GetNodePtr is 5-8% slower :-( */ \
     Node* GetNode( const const_key_type& key ) const \
     { \
-        unsigned long hash = m_hasher( key ); \
+        unsigned long hash = wx_static_cast(unsigned long, m_hasher( key )); \
         Node* node = m_table[hash % m_tableBuckets]; \
  \
         while( node ) \
@@ -379,7 +383,7 @@ protected: \
                        this, (_wxHashTable_NodeBase**)m_table, \
                        (BucketFromNode)GetBucketForNode,\
                        (ProcessNode)&DummyProcessNode ); \
-        free(srcTable); \
+        FreeTable(srcTable); \
     } \
  \
     /* this must be called _after_ m_table has been cleaned */ \

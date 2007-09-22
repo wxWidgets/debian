@@ -2,7 +2,7 @@
 // Name:        dc.cpp
 // Purpose:
 // Author:      Robert Roebling
-// RCS-ID:      $Id: dc.cpp,v 1.35 2004/05/23 20:52:19 JS Exp $
+// RCS-ID:      $Id: dc.cpp,v 1.36 2004/12/21 16:25:19 ABX Exp $
 // Copyright:   (c) 1998 Robert Roebling
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -19,17 +19,6 @@
 
 #include <gdk/gdk.h>
 #include <gtk/gtk.h>
-
-//-----------------------------------------------------------------------------
-// constants
-//-----------------------------------------------------------------------------
-
-#define mm2inches        0.0393700787402
-#define inches2mm        25.4
-#define mm2twips         56.6929133859
-#define twips2mm         0.0176388888889
-#define mm2pt            2.83464566929
-#define pt2mm            0.352777777778
 
 //-----------------------------------------------------------------------------
 // wxDC
@@ -117,7 +106,7 @@ void wxDC::SetMapMode( int mode )
           break;
     }
     m_mappingMode = mode;
-    
+
 /*  we don't do this mega optimisation
     if (mode != wxMM_TEXT)
     {

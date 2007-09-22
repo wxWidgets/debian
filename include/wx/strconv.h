@@ -4,7 +4,7 @@
 // Author:      Robert Roebling, Ove Kaaven
 // Modified by:
 // Created:     29/01/98
-// RCS-ID:      $Id: strconv.h,v 1.32 2004/11/06 08:23:50 RN Exp $
+// RCS-ID:      $Id: strconv.h,v 1.42 2005/04/13 20:05:51 MW Exp $
 // Copyright:   (c) 1998 Ove Kaaven, Robert Roebling, Vadim Zeitlin
 // Licence:     wxWindows licence
 ///////////////////////////////////////////////////////////////////////////////
@@ -86,10 +86,30 @@ public:
     virtual size_t WC2MB(char *outputBuf, const wchar_t *psz, size_t outputSize) const;
 };
 
-// not very accurately named because it is not necessarily of type wxMBConvLibc
-// (but the name can't eb changed because of backwards compatibility) default
-// conversion
-WXDLLIMPEXP_DATA_BASE(extern wxMBConv&) wxConvLibc;
+#ifdef __UNIX__
+
+// ----------------------------------------------------------------------------
+// wxConvBrokenFileNames is made for Unix in Unicode mode when
+// files are accidentally written in an encoding which is not
+// the system encoding. Typically, the system encoding will be
+// UTF8 but there might be files stored in ISO8859-1 on disk.
+// ----------------------------------------------------------------------------
+
+class WXDLLIMPEXP_BASE wxConvBrokenFileNames : public wxMBConv
+{
+public:
+    wxConvBrokenFileNames(const wxChar *charset);
+    virtual ~wxConvBrokenFileNames() { delete m_conv; }
+
+    virtual size_t MB2WC(wchar_t *outputBuf, const char *psz, size_t outputSize) const;
+    virtual size_t WC2MB(char *outputBuf, const wchar_t *psz, size_t outputSize) const;
+
+private:
+    // the conversion object we forward to
+    wxMBConv *m_conv;
+};
+
+#endif
 
 // ----------------------------------------------------------------------------
 // wxMBConvUTF7 (for conversion using UTF7 encoding)
@@ -102,8 +122,6 @@ public:
     virtual size_t WC2MB(char *outputBuf, const wchar_t *psz, size_t outputSize) const;
 };
 
-WXDLLIMPEXP_DATA_BASE(extern wxMBConvUTF7&) wxConvUTF7;
-
 // ----------------------------------------------------------------------------
 // wxMBConvUTF8 (for conversion using UTF8 encoding)
 // ----------------------------------------------------------------------------
@@ -111,11 +129,19 @@ WXDLLIMPEXP_DATA_BASE(extern wxMBConvUTF7&) wxConvUTF7;
 class WXDLLIMPEXP_BASE wxMBConvUTF8 : public wxMBConv
 {
 public:
+    enum { 
+        MAP_INVALID_UTF8_NOT = 0,
+        MAP_INVALID_UTF8_TO_PUA = 1,
+        MAP_INVALID_UTF8_TO_OCTAL = 2
+    };
+
+    wxMBConvUTF8(int options = MAP_INVALID_UTF8_NOT) : m_options(options) { }
     virtual size_t MB2WC(wchar_t *outputBuf, const char *psz, size_t outputSize) const;
     virtual size_t WC2MB(char *outputBuf, const wchar_t *psz, size_t outputSize) const;
+    
+private:
+    int m_options;
 };
-
-WXDLLIMPEXP_DATA_BASE(extern wxMBConvUTF8&) wxConvUTF8;
 
 // ----------------------------------------------------------------------------
 // wxMBConvUTF16LE (for conversion using UTF16 Little Endian encoding)
@@ -210,10 +236,39 @@ private:
     bool m_deferred;
 };
 
-#define wxConvFile wxConvLocal
-WXDLLIMPEXP_DATA_BASE(extern wxCSConv&) wxConvLocal;
-WXDLLIMPEXP_DATA_BASE(extern wxCSConv&) wxConvISO8859_1;
-WXDLLIMPEXP_DATA_BASE(extern wxMBConv *) wxConvCurrent;
+
+// ----------------------------------------------------------------------------
+// declare predefined conversion objects
+// ----------------------------------------------------------------------------
+
+// conversion to be used with all standard functions affected by locale, e.g.
+// strtol(), strftime(), ...
+extern WXDLLIMPEXP_DATA_BASE(wxMBConv&) wxConvLibc;
+
+// conversion ISO-8859-1/UTF-7/UTF-8 <-> wchar_t
+extern WXDLLIMPEXP_DATA_BASE(wxCSConv&) wxConvISO8859_1;
+extern WXDLLIMPEXP_DATA_BASE(wxMBConvUTF7&) wxConvUTF7;
+extern WXDLLIMPEXP_DATA_BASE(wxMBConvUTF8&) wxConvUTF8;
+
+// conversion used for the file names on the systems where they're not Unicode
+// (basically anything except Windows)
+//
+// this is used by all file functions, can be changed by the application
+//
+// by default UTF-8 under Mac OS X and wxConvLibc elsewhere (but it's not used
+// under Windows normally)
+extern WXDLLIMPEXP_DATA_BASE(wxMBConv *) wxConvFileName;
+
+// backwards compatible define
+#define wxConvFile (*wxConvFileName)
+
+// the current conversion object, may be set to any conversion, is used by
+// default in a couple of places inside wx (initially same as wxConvLibc)
+extern WXDLLIMPEXP_DATA_BASE(wxMBConv *) wxConvCurrent;
+
+// ???
+extern WXDLLIMPEXP_DATA_BASE(wxCSConv&) wxConvLocal;
+
 
 // ----------------------------------------------------------------------------
 // endianness-dependent conversions
@@ -239,15 +294,18 @@ WXDLLIMPEXP_DATA_BASE(extern wxMBConv *) wxConvCurrent;
 #endif
 
 #if wxMBFILES && wxUSE_UNICODE
-    #define wxFNCONV(name) wxConvFile.cWX2MB(name)
+    #define wxFNCONV(name) wxConvFileName->cWX2MB(name)
     #define wxFNSTRINGCAST wxMBSTRINGCAST
 #else
+#if defined( __WXOSX__ ) && wxMBFILES
+    #define wxFNCONV(name) wxConvFileName->cWC2MB( wxConvLocal.cWX2WC(name) )
+#else
     #define wxFNCONV(name) name
+#endif
     #define wxFNSTRINGCAST WXSTRINGCAST
 #endif
 
-#else
-  // !wxUSE_WCHAR_T
+#else // !wxUSE_WCHAR_T
 
 // ----------------------------------------------------------------------------
 // stand-ins in absence of wchar_t
@@ -262,11 +320,11 @@ public:
 
 #define wxConvFile wxConvLocal
 
-WXDLLIMPEXP_DATA_BASE(extern wxMBConv) wxConvLibc,
+extern WXDLLIMPEXP_DATA_BASE(wxMBConv) wxConvLibc,
                                        wxConvLocal,
                                        wxConvISO8859_1,
                                        wxConvUTF8;
-WXDLLIMPEXP_DATA_BASE(extern wxMBConv *) wxConvCurrent;
+extern WXDLLIMPEXP_DATA_BASE(wxMBConv *) wxConvCurrent;
 
 #define wxFNCONV(name) name
 #define wxFNSTRINGCAST WXSTRINGCAST

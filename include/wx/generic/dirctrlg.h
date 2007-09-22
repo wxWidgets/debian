@@ -7,7 +7,7 @@
 // Author:      Robert Roebling, Harm van der Heijden, Julian Smart et al
 // Modified by:
 // Created:     21/3/2000
-// RCS-ID:      $Id: dirctrlg.h,v 1.28 2004/11/03 23:01:56 VS Exp $
+// RCS-ID:      $Id: dirctrlg.h,v 1.30 2005/03/31 19:03:54 JS Exp $
 // Copyright:   (c) Robert Roebling, Harm van der Heijden, Julian Smart
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -168,7 +168,11 @@ public:
     // Collapse & expand the tree, thus re-creating it from scratch:
     virtual void ReCreateTree();
 
+    // Collapse the entire tree
+    virtual void CollapseTree();
+
 protected:
+    virtual void ExpandRoot();
     virtual void ExpandDir(wxTreeItemId parentId);
     virtual void CollapseDir(wxTreeItemId parentId);
     virtual const wxTreeItemId AddSection(const wxString& path, const wxString& name, int imageId = 0);
@@ -285,7 +289,7 @@ protected:
 };
 
 // The global fileicons table
-WXDLLEXPORT_DATA(extern wxFileIconsTable *) wxTheFileIconsTable;
+extern WXDLLEXPORT_DATA(wxFileIconsTable *) wxTheFileIconsTable;
 
 #endif // wxUSE_DIRDLG || wxUSE_FILEDLG
 

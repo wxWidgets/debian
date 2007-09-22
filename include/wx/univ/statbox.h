@@ -4,7 +4,7 @@
 // Author:      Vadim Zeitlin
 // Modified by:
 // Created:     15.08.00
-// RCS-ID:      $Id: statbox.h,v 1.12 2004/08/10 13:08:34 ABX Exp $
+// RCS-ID:      $Id: statbox.h,v 1.13 2005/01/07 16:54:07 VZ Exp $
 // Copyright:   (c) 2000 SciTech Software, Inc. (www.scitechsoft.com)
 // Licence:     wxWindows licence
 ///////////////////////////////////////////////////////////////////////////////
@@ -51,8 +51,6 @@ public:
     // take account of this
     virtual wxPoint GetBoxAreaOrigin() const;
 
-    virtual bool HasTransparentBackground() { return true; }
-    
 protected:
     // draw the control
     virtual void DoDraw(wxControlRenderer *renderer);

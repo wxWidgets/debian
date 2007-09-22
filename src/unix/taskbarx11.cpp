@@ -4,7 +4,7 @@
 // Author:      Vaclav Slavik
 // Modified by:
 // Created:     04/04/2003
-// RCS-ID:      $Id: taskbarx11.cpp,v 1.14 2004/09/23 14:03:58 VS Exp $
+// RCS-ID:      $Id: taskbarx11.cpp,v 1.16 2005/02/03 12:30:18 RR Exp $
 // Copyright:   (c) Vaclav Slavik, 2003
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////
@@ -131,6 +131,10 @@ wxTaskBarIconArea::wxTaskBarIconArea(wxTaskBarIcon *icon, const wxBitmap &bmp)
                    _T("using legacy KDE1,2 and GNOME 1.2 methods"));
         SetLegacyWMProperties();
     }
+
+#if defined(__WXGTK20__) && defined(TASKBAR_ICON_AREA_BASE_INCLUDED)
+    m_invokingWindow = icon;
+#endif
    
     // Set initial size to bitmap size (tray manager may and often will
     // change it):

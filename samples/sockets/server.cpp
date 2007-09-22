@@ -4,7 +4,7 @@
 // Author:      Guillermo Rodriguez Garcia <guille@iies.es>
 // Modified by:
 // Created:     1999/09/19
-// RCS-ID:      $Id: server.cpp,v 1.18 2004/07/19 15:35:33 ABX Exp $
+// RCS-ID:      $Id: server.cpp,v 1.20 2005/06/02 12:04:34 JS Exp $
 // Copyright:   (c) 1999 Guillermo Rodriguez Garcia
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -18,8 +18,8 @@
 // --------------------------------------------------------------------------
 
 #if defined(__GNUG__) && !defined(__APPLE__)
-#  pragma implementation "server.cpp"
-#  pragma interface "server.cpp"
+    #pragma implementation
+    #pragma interface
 #endif
 
 // For compilers that support precompilation, includes "wx/wx.h".
@@ -96,11 +96,11 @@ private:
 enum
 {
   // menu items
-  SERVER_QUIT = 1000,
-  SERVER_ABOUT,
+  SERVER_QUIT = wxID_EXIT,
+  SERVER_ABOUT = wxID_ABOUT,
 
   // id for sockets
-  SERVER_ID,
+  SERVER_ID = 100,
   SOCKET_ID
 };
 

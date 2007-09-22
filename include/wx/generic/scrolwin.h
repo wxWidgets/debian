@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     01/02/97
-// RCS-ID:      $Id: scrolwin.h,v 1.38 2004/09/26 14:04:32 SC Exp $
+// RCS-ID:      $Id: scrolwin.h,v 1.43 2005/06/21 20:16:03 MBN Exp $
 // Copyright:   (c) Julian Smart
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -23,7 +23,7 @@
 #include "wx/window.h"
 #include "wx/panel.h"
 
-WXDLLEXPORT_DATA(extern const wxChar*) wxPanelNameStr;
+extern WXDLLEXPORT_DATA(const wxChar*) wxPanelNameStr;
 
 // default scrolled window style
 #ifndef wxScrolledWindowStyle
@@ -32,6 +32,9 @@ WXDLLEXPORT_DATA(extern const wxChar*) wxPanelNameStr;
 
 // avoid triggering this stupid VC++ warning
 #ifdef __VISUALC__
+    #if _MSC_VER > 1100
+        #pragma warning(push)
+    #endif
     #pragma warning(disable:4355) // 'this' used in base member initializer list
 #endif
 
@@ -71,9 +74,14 @@ public:
 
     virtual void DoSetVirtualSize(int x, int y);
 
-#ifdef __WXMAC__
-	virtual bool MacClipChildren() const { return true ; }
-#endif
+    // wxWindow's GetBestVirtualSize returns the actual window size,
+    // whereas we want to return the virtual size
+    virtual wxSize GetBestVirtualSize() const;
+
+    // Return the size best suited for the current window
+    // (this isn't a virtual size, this is a sensible size for the window)
+    virtual wxSize DoGetBestSize() const;
+
 protected:
     // this is needed for wxEVT_PAINT processing hack described in
     // wxScrollHelperEvtHandler::ProcessEvent()
@@ -90,8 +98,8 @@ private:
     DECLARE_EVENT_TABLE()
 };
 
-#ifdef __VISUALC__
-    #pragma warning(default:4355)
+#if defined(__VISUALC__) && (_MSC_VER > 1100)
+    #pragma warning(pop)
 #endif
 
 #endif

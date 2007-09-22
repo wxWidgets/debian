@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     12/07/98
-// RCS-ID:      $Id: basic.h,v 1.15 2004/06/09 16:42:20 ABX Exp $
+// RCS-ID:      $Id: basic.h,v 1.16 2005/03/23 11:28:50 JS Exp $
 // Copyright:   (c) Julian Smart
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -17,7 +17,7 @@
 #endif
 
 #ifndef wxUSE_DEPRECATED
-#define wxUSE_DEPRECATED 1
+#define wxUSE_DEPRECATED 0
 #endif
 
 #if wxUSE_DEPRECATED

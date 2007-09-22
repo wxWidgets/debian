@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     04/01/98
-// RCS-ID:      $Id: fontdlgg.cpp,v 1.48 2004/11/07 05:38:02 KH Exp $
+// RCS-ID:      $Id: fontdlgg.cpp,v 1.50 2005/04/02 17:44:12 JS Exp $
 // Copyright:   (c) Julian Smart
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -52,7 +52,9 @@
 class WXDLLEXPORT wxFontPreviewer : public wxWindow
 {
 public:
-    wxFontPreviewer(wxWindow *parent) : wxWindow(parent, wxID_ANY) {}
+    wxFontPreviewer(wxWindow *parent, const wxSize& sz = wxDefaultSize) : wxWindow(parent, wxID_ANY, wxDefaultPosition, sz)
+    {
+    }
 
 private:
     void OnPaint(wxPaintEvent& event);
@@ -305,6 +307,10 @@ void wxGenericFontDialog::CreateWidgets()
     {
         wxStaticText* itemStaticText15 = new wxStaticText( this, wxID_STATIC, _("C&olour:"), wxDefaultPosition, wxDefaultSize, 0 );
         itemBoxSizer14->Add(itemStaticText15, 0, wxALIGN_LEFT|wxLEFT|wxRIGHT|wxTOP|wxADJUST_MINSIZE, 5);
+        
+        wxSize colourSize = wxDefaultSize;
+        if (is_pda)
+            colourSize.x = 100;
 
         wxChoice* itemChoice16 = new wxChoice( this, wxID_FONT_COLOUR, wxDefaultPosition, wxDefaultSize, NUM_COLS, wxColourDialogNames, 0 );
         itemChoice16->SetHelpText(_("The font colour."));
@@ -336,11 +342,12 @@ void wxGenericFontDialog::CreateWidgets()
         itemBoxSizer20->Add(itemCheckBox21, 0, wxALIGN_LEFT|wxALL, 5);
     }
 
-    itemBoxSizer3->Add(5, 5, 0, wxALIGN_CENTER_HORIZONTAL|wxALL, 5);
+    if (!is_pda)
+        itemBoxSizer3->Add(5, 5, 0, wxALIGN_CENTER_HORIZONTAL|wxALL, 5);
 
     wxStaticText* itemStaticText23 = new wxStaticText( this, wxID_STATIC, _("Preview:"), wxDefaultPosition, wxDefaultSize, 0 );
     itemBoxSizer3->Add(itemStaticText23, 0, wxALIGN_LEFT|wxLEFT|wxRIGHT|wxTOP|wxADJUST_MINSIZE, 5);
-
+    
     wxFontPreviewer* itemWindow24 = new wxFontPreviewer( this );
     m_previewer = itemWindow24;
     itemWindow24->SetHelpText(_("Shows the font preview."));
@@ -405,11 +412,13 @@ void wxGenericFontDialog::CreateWidgets()
 
     pointSizeChoice->SetSelection(dialogFont.GetPointSize()-1);
 
-    GetSizer()->SetItemMinSize(m_previewer, 430, 100);
+#if !defined(__SMARTPHONE__) && !defined(__POCKETPC__)
+    GetSizer()->SetItemMinSize(m_previewer, is_pda ? 100 : 430, is_pda ? 40 : 100);
     GetSizer()->SetSizeHints(this);
     GetSizer()->Fit(this);    
 
     Centre(wxBOTH);
+#endif
 
     delete[] families;
     delete[] styles;

@@ -3,7 +3,8 @@
 // Purpose:
 // Date: 08/11/1999
 // Author: Guilhem Lavaux <lavaux@easynet.fr> (C) 1999, 2000
-// CVSID: $Id: sndwin.cpp,v 1.9 2004/07/23 18:04:10 ABX Exp $
+// CVSID: $Id: sndwin.cpp,v 1.11 2005/05/31 09:17:38 JS Exp $
+// wxWindows licence
 // --------------------------------------------------------------------------
 #ifdef __GNUG__
 #pragma implementation "sndwin.cpp"
@@ -381,7 +382,7 @@ wxSoundInfoHeader *wxSoundStreamWin::AllocHeader(int mode)
 // AllocHeaders() allocates WXSOUND_MAX_QUEUE (= 128) blocks for an operation
 // queue. It uses AllocHeader() for each element.
 //
-// Once it has allocated all blocks, it returns true and if an error occured
+// Once it has allocated all blocks, it returns true and if an error occurred
 // it returns false.
 // -------------------------------------------------------------------------
 bool wxSoundStreamWin::AllocHeaders(int mode)

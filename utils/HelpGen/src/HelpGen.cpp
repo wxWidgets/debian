@@ -4,9 +4,9 @@
 // Author:      Vadim Zeitlin <zeitlin@dptmaths.ens-cachan.fr>
 // Modified by:
 // Created:     06/01/99
-// RCS-ID:      $Id: HelpGen.cpp,v 1.33 2004/11/12 03:30:07 RL Exp $
+// RCS-ID:      $Id: HelpGen.cpp,v 1.44 2005/05/31 17:47:45 ABX Exp $
 // Copyright:   (c) 1999 VZ
-// Licence:     GPL
+// Licence:     wxWindows Licence
 /////////////////////////////////////////////////////////////////////////////
 
 /*
@@ -53,6 +53,10 @@
 
 #ifdef __BORLANDC__
     #pragma hdrstop
+#endif
+
+#if wxUSE_UNICODE
+    #error "HelpGen doesn't build in Unicode mode"
 #endif
 
 #ifndef WX_PRECOMP
@@ -237,7 +241,7 @@ public:
     // return true if we ignore this class entirely
     bool IgnoreClass(const wxString& classname) const
     {
-        IgnoreListEntry ignore(classname, _T(""));
+        IgnoreListEntry ignore(classname, wxEmptyString);
 
         return m_ignore.Index(&ignore) != wxNOT_FOUND;
     }
@@ -421,6 +425,8 @@ protected:
 
     // information about all functions documented in the TeX file(s)
     // -------------------------------------------------------------
+
+public: // Note: Sun C++ 5.5 requires TypeInfo and ParamInfo to be public
 
     // info about a type: for now stored as text string, but must be parsed
     // further later (to know that "char *" == "char []" - TODO)
@@ -669,7 +675,7 @@ int main(int argc, char **argv)
                         }
 
                         directoryOut = argv[current];
-                        if ( !directoryOut.IsEmpty() ) {
+                        if ( !directoryOut.empty() ) {
                             // terminate with a '/' if it doesn't have it
                             switch ( directoryOut.Last() ) {
                                 case '/':
@@ -729,7 +735,7 @@ int main(int argc, char **argv)
     // create a parser object and a visitor derivation
     CJSourceParser parser;
     HelpGenVisitor visitor(directoryOut, overwrite);
-    if ( !ignoreFile.IsEmpty() && mode == Mode_Dump )
+    if ( !ignoreFile.empty() && mode == Mode_Dump )
         visitor.GetIgnoreHandler().AddNamesFromFile(ignoreFile);
 
     spContext *ctxTop = NULL;
@@ -744,14 +750,14 @@ int main(int argc, char **argv)
                          header.c_str());
         }
         else if ( mode == Mode_Dump ) {
-            ((spFile *)ctxTop)->mFileName = header;
+            ((spFile *)ctxTop)->m_FileName = header;
             visitor.VisitAll(*ctxTop);
             visitor.EndVisit();
         }
 
 #ifdef __WXDEBUG__
         if ( 0 && ctxTop )
-            ctxTop->Dump("");
+            ctxTop->Dump(wxEmptyString);
 #endif // __WXDEBUG__
     }
 
@@ -775,7 +781,7 @@ int main(int argc, char **argv)
             }
         }
 
-        if ( !ignoreFile.IsEmpty() )
+        if ( !ignoreFile.empty() )
             docman.GetIgnoreHandler().AddNamesFromFile(ignoreFile);
 
         docman.DumpDifferences(ctxTop);
@@ -807,7 +813,7 @@ void HelpGenVisitor::Reset()
     m_funcName =
     m_textFunc =
     m_textStoredTypedefs =
-    m_textStoredFunctionComment = "";
+    m_textStoredFunctionComment = wxEmptyString;
 
     m_arrayFuncDocs.Empty();
 
@@ -863,7 +869,7 @@ void HelpGenVisitor::CloseFunction()
 
         m_textFunc << "}\n\n";
 
-        if ( !m_textStoredFunctionComment.IsEmpty() ) {
+        if ( !m_textStoredFunctionComment.empty() ) {
             m_textFunc << m_textStoredFunctionComment << '\n';
         }
 
@@ -896,7 +902,7 @@ void HelpGenVisitor::CloseClass()
                 wxString section(m_arrayFuncDocs[n].text);
 
                 // Strip leading whitespace
-                int pos = section.Find("\\membersection");
+                int pos = section.Find(_T("\\membersection"));
                 if (pos > -1)
                 {
                     section = section.Mid(pos);
@@ -909,7 +915,7 @@ void HelpGenVisitor::CloseClass()
                 }
                 else
                 {
-                    membersections.Put(ms, & membersections);
+                    membersections.Put(ms.c_str(), & membersections);
                 }
             }
 
@@ -947,7 +953,7 @@ void HelpGenVisitor::EndVisit()
 
 void HelpGenVisitor::VisitFile( spFile& file )
 {
-    m_fileHeader = file.mFileName;
+    m_fileHeader = file.m_FileName;
     wxLogVerbose("%s: started generating docs for classes from file '%s'...",
                  GetCurrentTimeFormatted("%H:%M:%S"), m_fileHeader.c_str());
 }
@@ -1099,7 +1105,7 @@ void HelpGenVisitor::VisitClass( spClass& cl )
     // derived from section
     wxString derived = "\\wxheading{Derived from}\n\n";
 
-    const StrListT& baseClasses = cl.mSuperClassNames;
+    const StrListT& baseClasses = cl.m_SuperClassNames;
     if ( baseClasses.size() == 0 ) {
         derived << "No base class";
     }
@@ -1157,9 +1163,9 @@ void HelpGenVisitor::VisitEnumeration( spEnumeration& en )
     wxString enumeration = GetAllComments(en),
              enumerationVerb;
 
-    enumerationVerb << "\\begin{verbatim}\n"
-                    << en.mEnumContent
-                    << "\n\\end{verbatim}\n";
+    enumerationVerb << _T("\\begin{verbatim}\n")
+                    << en.m_EnumContent
+                    << _T("\n\\end{verbatim}\n");
 
     // remember for later use if we're not inside a class yet
     if ( !m_inClass ) {
@@ -1188,14 +1194,14 @@ void HelpGenVisitor::VisitTypeDef( spTypeDef& td )
     }
 
     wxString typedefdoc;
-    typedefdoc << "{\\small \\begin{verbatim}\n"
-               << "typedef " << td.mOriginalType << ' ' << td.GetName()
-               << "\n\\end{verbatim}}\n"
+    typedefdoc << _T("{\\small \\begin{verbatim}\n")
+               << _T("typedef ") << td.m_OriginalType << _T(' ') << td.GetName()
+               << _T("\n\\end{verbatim}}\n")
                << GetAllComments(td);
 
     // remember for later use if we're not inside a class yet
     if ( !m_inClass ) {
-        if ( !m_textStoredTypedefs.IsEmpty() ) {
+        if ( !m_textStoredTypedefs.empty() ) {
             m_textStoredTypedefs << '\n';
         }
 
@@ -1289,13 +1295,19 @@ void HelpGenVisitor::VisitOperation( spOperation& op )
         m_classname.c_str(), funcname.c_str(),
         MakeLabel(m_classname, funcname).c_str());
 
+    wxString constStr;
+    if(op.mIsConstant) constStr = _T("const");
+
+    wxString virtualStr;
+    if(op.mIsVirtual) virtualStr = _T("virtual ");
+
     wxString func;
-    func.Printf("\n"
-                      "\\%sfunc{%s%s}{%s}{",
-                      op.mIsConstant ? "const" : "",
-                      op.mIsVirtual ? "virtual " : "",
-                      op.mRetType.c_str(),
-                      funcname.c_str());
+    func.Printf(_T("\n")
+                _T("\\%sfunc{%s%s}{%s}{"),
+                constStr.c_str(),
+                virtualStr.c_str(),
+                op.m_RetType.c_str(),
+                funcname.c_str());
     m_textFunc += func;
 }
 
@@ -1311,9 +1323,9 @@ void HelpGenVisitor::VisitParameter( spParameter& param )
         m_textFunc << ", ";
     }
 
-    m_textFunc << "\\param{" << param.mType << " }{" << param.GetName();
-    wxString defvalue = param.mInitVal;
-    if ( !defvalue.IsEmpty() ) {
+    m_textFunc << "\\param{" << param.m_Type << " }{" << param.GetName();
+    wxString defvalue = param.m_InitVal;
+    if ( !defvalue.empty() ) {
         m_textFunc << " = " << defvalue;
     }
 
@@ -1384,7 +1396,7 @@ wxString DocManager::ExtractStringBetweenBraces(const char **pp)
 
     if ( !SkipSpaceUntil(pp, '{') ) {
         wxLogWarning("file %s(%d): '{' expected after '\\param'",
-                     m_filename.c_str(), m_line);
+                     m_filename.c_str(), (int)m_line);
 
     }
     else {
@@ -1392,7 +1404,7 @@ wxString DocManager::ExtractStringBetweenBraces(const char **pp)
 
         if ( !SkipUntil(pp, '}') ) {
             wxLogWarning("file %s(%d): '}' expected after '\\param'",
-                         m_filename.c_str(), m_line);
+                         m_filename.c_str(), (int)m_line);
         }
         else {
             result = wxString(startParam, (*pp)++ - startParam);
@@ -1490,7 +1502,7 @@ bool DocManager::ParseTeXFile(const wxString& filename)
         if ( !SkipSpaceUntil(&current, '{') ) {
             wxLogWarning("file %s(%d): '{' expected after \\func, "
                          "\\constfunc or \\membersection.",
-                         m_filename.c_str(), m_line);
+                         m_filename.c_str(), (int)m_line);
 
             continue;
         }
@@ -1502,7 +1514,7 @@ bool DocManager::ParseTeXFile(const wxString& filename)
             const char *startClass = current;
             if ( !SkipUntil(&current, ':') || *(current + 1) != ':' ) {
                 wxLogWarning("file %s(%d): '::' expected after "
-                             "\\membersection.", m_filename.c_str(), m_line);
+                             "\\membersection.", m_filename.c_str(), (int)m_line);
             }
             else {
                 classname = wxString(startClass, current - startClass);
@@ -1517,7 +1529,7 @@ bool DocManager::ParseTeXFile(const wxString& filename)
 
         if ( !SkipUntil(&current, '}') ) {
             wxLogWarning("file %s(%d): '}' expected after return type",
-                         m_filename.c_str(), m_line);
+                         m_filename.c_str(), (int)m_line);
 
             continue;
         }
@@ -1528,7 +1540,7 @@ bool DocManager::ParseTeXFile(const wxString& filename)
         current++;
         if ( !SkipSpaceUntil(&current, '{') ) {
             wxLogWarning("file %s(%d): '{' expected after return type",
-                         m_filename.c_str(), m_line);
+                         m_filename.c_str(), (int)m_line);
 
             continue;
         }
@@ -1537,7 +1549,7 @@ bool DocManager::ParseTeXFile(const wxString& filename)
         const char *funcEnd = current;
         if ( !SkipUntil(&funcEnd, '}') ) {
             wxLogWarning("file %s(%d): '}' expected after function name",
-                         m_filename.c_str(), m_line);
+                         m_filename.c_str(), (int)m_line);
 
             continue;
         }
@@ -1566,7 +1578,7 @@ bool DocManager::ParseTeXFile(const wxString& filename)
             size_t len = strlen("\\destruct{");
             if ( funcName(0, len) != "\\destruct{" ) {
                 wxLogWarning("file %s(%d): \\destruct expected",
-                             m_filename.c_str(), m_line);
+                             m_filename.c_str(), (int)m_line);
 
                 continue;
             }
@@ -1576,7 +1588,7 @@ bool DocManager::ParseTeXFile(const wxString& filename)
 
             if ( !SkipSpaceUntil(&current, '}') ) {
                 wxLogWarning("file %s(%d): '}' expected after destructor",
-                             m_filename.c_str(), m_line);
+                             m_filename.c_str(), (int)m_line);
 
                 continue;
             }
@@ -1591,7 +1603,7 @@ bool DocManager::ParseTeXFile(const wxString& filename)
         if ( !SkipSpaceUntil(&current, '{') ||
              (current++, !SkipSpaceUntil(&current, '\\')) ) {
             wxLogWarning("file %s(%d): '\\param' or '\\void' expected",
-                         m_filename.c_str(), m_line);
+                         m_filename.c_str(), (int)m_line);
 
             continue;
         }
@@ -1609,9 +1621,9 @@ bool DocManager::ParseTeXFile(const wxString& filename)
 
                 // now come {paramtype}{paramname}
                 wxString paramType = ExtractStringBetweenBraces(&current);
-                if ( !!paramType ) {
+                if ( !paramType.empty() ) {
                     wxString paramText = ExtractStringBetweenBraces(&current);
-                    if ( !!paramText ) {
+                    if ( !paramText.empty() ) {
                         // the param declaration may contain default value
                         wxString paramName = paramText.BeforeFirst('='),
                                  paramValue = paramText.AfterFirst('=');
@@ -1648,7 +1660,7 @@ bool DocManager::ParseTeXFile(const wxString& filename)
                 }
                 else {
                     wxLogWarning("file %s(%d): ',' or '}' expected after "
-                                 "'\\param'", m_filename.c_str(), m_line);
+                                 "'\\param'", m_filename.c_str(), (int)m_line);
 
                     continue;
                 }
@@ -1657,7 +1669,7 @@ bool DocManager::ParseTeXFile(const wxString& filename)
             // if we got here there was no '\\void', so must have some params
             if ( paramNames.IsEmpty() ) {
                 wxLogWarning("file %s(%d): '\\param' or '\\void' expected",
-                        m_filename.c_str(), m_line);
+                        m_filename.c_str(), (int)m_line);
 
                 continue;
             }
@@ -1674,13 +1686,18 @@ bool DocManager::ParseTeXFile(const wxString& filename)
             paramsAll << paramTypes[param] << ' ' << paramNames[param];
         }
 
+        wxString constStr;
+        if (foundCommand == ConstFunc)
+            constStr = _T(" const");
+
         wxLogVerbose("file %s(%d): found '%s %s::%s(%s)%s'",
-                     m_filename.c_str(), m_line,
+                     m_filename.c_str(),
+                     (int)m_line,
                      returnType.c_str(),
                      classname.c_str(),
                      funcName.c_str(),
                      paramsAll.c_str(),
-                     foundCommand == ConstFunc ? " const" : "");
+                     constStr.c_str());
 
         // store the info about the just found function
         ArrayMethodInfo *methods;
@@ -1744,7 +1761,7 @@ bool DocManager::DumpDifferences(spContext *ctxTop) const
         }
 
         spClass *ctxClass = (spClass *)ctx;
-        const wxString& nameClass = ctxClass->mName;
+        const wxString& nameClass = ctxClass->m_Name;
         int index = m_classes.Index(nameClass);
         if ( index == wxNOT_FOUND ) {
             if ( !m_ignoreNames.IgnoreClass(nameClass) ) {
@@ -1780,7 +1797,7 @@ bool DocManager::DumpDifferences(spContext *ctxTop) const
                 continue;
 
             spOperation *ctxMethod = (spOperation *)ctx;
-            const wxString& nameMethod = ctxMethod->mName;
+            const wxString& nameMethod = ctxMethod->m_Name;
 
             // find all functions with the same name
             wxArrayInt aMethodsWithSameName;
@@ -1818,21 +1835,29 @@ bool DocManager::DumpDifferences(spContext *ctxTop) const
                 const MethodInfo& method = *(methods[index]);
 
                 bool isVirtual = ctxMethod->mIsVirtual;
-                if ( isVirtual != method.HasFlag(MethodInfo::Virtual) ) {
+                if ( isVirtual != method.HasFlag(MethodInfo::Virtual) )
+                {
+                    wxString virtualStr;
+                    if(isVirtual)virtualStr = _T("not ");
+
                     wxLogWarning("'%s::%s' is incorrectly documented as %s"
                                  "virtual.",
                                  nameClass.c_str(),
                                  nameMethod.c_str(),
-                                 isVirtual ? "not " : "");
+                                 virtualStr.c_str());
                 }
 
                 bool isConst = ctxMethod->mIsConstant;
-                if ( isConst != method.HasFlag(MethodInfo::Const) ) {
+                if ( isConst != method.HasFlag(MethodInfo::Const) )
+                {
+                    wxString constStr;
+                    if(isConst)constStr = _T("not ");
+
                     wxLogWarning("'%s::%s' is incorrectly documented as %s"
                                  "constant.",
                                  nameClass.c_str(),
                                  nameMethod.c_str(),
-                                 isConst ? "not " : "");
+                                 constStr.c_str());
                 }
 
                 // check that the params match
@@ -1843,7 +1868,7 @@ bool DocManager::DumpDifferences(spContext *ctxTop) const
                                "in the docs: should be %d instead of %d.",
                                nameClass.c_str(),
                                nameMethod.c_str(),
-                               params.size(), method.GetParamCount());
+                               (int)params.size(), (int)method.GetParamCount());
                 }
                 else {
                     size_t nParam = 0;
@@ -1858,42 +1883,42 @@ bool DocManager::DumpDifferences(spContext *ctxTop) const
                         spParameter *ctxParam = (spParameter *)ctx;
                         const ParamInfo& param = method.GetParam(nParam);
                         if ( m_checkParamNames &&
-                             (param.GetName() != ctxParam->mName) ) {
+                             (param.GetName() != ctxParam->m_Name.c_str()) ) {
                             foundDiff = true;
 
                             wxLogError("Parameter #%d of '%s::%s' should be "
                                        "'%s' and not '%s'.",
-                                       nParam + 1,
+                                       (int)(nParam + 1),
                                        nameClass.c_str(),
                                        nameMethod.c_str(),
-                                       ctxParam->mName.c_str(),
+                                       ctxParam->m_Name.c_str(),
                                        param.GetName().c_str());
 
                             continue;
                         }
 
-                        if ( param.GetType() != ctxParam->mType ) {
+                        if ( param.GetType() != ctxParam->m_Type ) {
                             foundDiff = true;
 
                             wxLogError("Type of parameter '%s' of '%s::%s' "
                                        "should be '%s' and not '%s'.",
-                                       ctxParam->mName.c_str(),
+                                       ctxParam->m_Name.c_str(),
                                        nameClass.c_str(),
                                        nameMethod.c_str(),
-                                       ctxParam->mType.c_str(),
+                                       ctxParam->m_Type.c_str(),
                                        param.GetType().GetName().c_str());
 
                             continue;
                         }
 
-                        if ( param.GetDefValue() != ctxParam->mInitVal ) {
+                        if ( param.GetDefValue() != ctxParam->m_InitVal.c_str() ) {
                             wxLogWarning("Default value of parameter '%s' of "
                                          "'%s::%s' should be '%s' and not "
                                          "'%s'.",
-                                         ctxParam->mName.c_str(),
+                                         ctxParam->m_Name.c_str(),
                                          nameClass.c_str(),
                                          nameMethod.c_str(),
-                                         ctxParam->mInitVal.c_str(),
+                                         ctxParam->m_InitVal.c_str(),
                                          param.GetDefValue().c_str());
                         }
                     }
@@ -2011,7 +2036,7 @@ bool IgnoreNamesHandler::AddNamesFromFile(const wxString& filename)
                 }
                 else {
                     // entire class
-                    m_ignore.Add(new IgnoreListEntry(line, ""));
+                    m_ignore.Add(new IgnoreListEntry(line, wxEmptyString));
                 }
             }
             //else: comment
@@ -2153,7 +2178,7 @@ static wxString GetAllComments(const spContext& ctx)
 
         // don't take comments like "// ----------" &c
         comment.Trim(false);
-        if ( !!comment &&
+        if ( !comment.empty() &&
               comment == wxString(comment[0u], comment.length() - 1) + '\n' )
             comments << "\n";
         else
@@ -2179,13 +2204,46 @@ static const char *GetCurrentTimeFormatted(const char *timeFormat)
 
 static const wxString GetVersionString()
 {
-    wxString version = "$Revision: 1.33 $";
-    wxRegEx("^\\$Revision: 1.33 $$").ReplaceFirst(&version, "\\1");
+    wxString version = "$Revision: 1.44 $";
+    wxRegEx("^\\$Revision: 1.44 $$").ReplaceFirst(&version, "\\1");
     return version;
 }
 
 /*
    $Log: HelpGen.cpp,v $
+   Revision 1.44  2005/05/31 17:47:45  ABX
+   More warning and error fixes (work in progress with Tinderbox).
+
+   Revision 1.43  2005/05/31 15:42:43  ABX
+   More warning and error fixes (work in progress with Tinderbox).
+
+   Revision 1.42  2005/05/31 15:32:49  ABX
+   More warning and error fixes (work in progress with Tinderbox).
+
+   Revision 1.41  2005/05/30 13:06:15  ABX
+   More warning and error fixes (work in progress with Tinderbox).
+
+   Revision 1.40  2005/05/30 11:49:32  ABX
+   More warning and error fixes (work in progress with Tinderbox).
+
+   Revision 1.39  2005/05/30 09:26:42  ABX
+   More warning and error fixes (work in progress with Tinderbox).
+
+   Revision 1.38  2005/05/24 09:06:20  ABX
+   More fixes and wxWidgets coding standards.
+
+   Revision 1.37  2005/05/23 15:22:08  ABX
+   Initial HelpGen source cleaning.
+
+   Revision 1.36  2005/04/07 19:54:58  MW
+   Workarounds to allow compilation by Sun C++ 5.5
+
+   Revision 1.35  2004/12/12 11:03:31  VZ
+   give an error message if we're built in Unicode mode (in response to bug 1079224)
+
+   Revision 1.34  2004/11/23 09:53:31  JS
+   Changed GPL to wxWindows Licence
+
    Revision 1.33  2004/11/12 03:30:07  RL
 
    Cruft cleanup from MJW, strip the tabs out of sound.cpp

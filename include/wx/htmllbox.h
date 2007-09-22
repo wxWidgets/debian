@@ -4,7 +4,7 @@
 // Author:      Vadim Zeitlin
 // Modified by:
 // Created:     31.05.03
-// RCS-ID:      $Id: htmllbox.h,v 1.11 2004/05/23 20:50:23 JS Exp $
+// RCS-ID:      $Id: htmllbox.h,v 1.12 2005/02/02 11:08:48 VZ Exp $
 // Copyright:   (c) 2003 Vadim Zeitlin <vadim@wxwidgets.org>
 // Licence:     wxWindows licence
 ///////////////////////////////////////////////////////////////////////////////
@@ -67,6 +67,8 @@ public:
     virtual ~wxHtmlListBox();
 
     // override some base class virtuals
+    virtual void RefreshLine(size_t line);
+    virtual void RefreshLines(size_t from, size_t to);
     virtual void RefreshAll();
     virtual void SetItemCount(size_t count);
 

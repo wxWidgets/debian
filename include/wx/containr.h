@@ -5,7 +5,7 @@
 // Author:      Vadim Zeitlin
 // Modified by:
 // Created:     06.08.01
-// RCS-ID:      $Id: containr.h,v 1.15 2004/09/10 12:55:46 ABX Exp $
+// RCS-ID:      $Id: containr.h,v 1.16 2004/12/11 12:51:05 RR Exp $
 // Copyright:   (c) 2001 Vadim Zeitlin <zeitlin@dptmaths.ens-cachan.fr>
 // Licence:     wxWindows licence
 ///////////////////////////////////////////////////////////////////////////////
@@ -113,6 +113,7 @@ public: \
     void OnFocus(wxFocusEvent& event); \
     virtual void OnChildFocus(wxChildFocusEvent& event); \
     virtual void SetFocus(); \
+    virtual void SetFocusIgnoringChildren(); \
     virtual void RemoveChild(wxWindowBase *child); \
     virtual wxWindow *GetDefaultItem() const; \
     virtual wxWindow *SetDefaultItem(wxWindow *child); \
@@ -160,6 +161,11 @@ void classname::RemoveChild(wxWindowBase *child) \
 void classname::SetFocus() \
 { \
     if ( !m_container.DoSetFocus() ) \
+        wxWindow::SetFocus(); \
+} \
+ \
+void classname::SetFocusIgnoringChildren() \
+{ \
         wxWindow::SetFocus(); \
 } \
  \

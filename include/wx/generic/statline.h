@@ -3,7 +3,7 @@
 // Purpose:     a generic wxStaticLine class
 // Author:      Vadim Zeitlin
 // Created:     28.06.99
-// Version:     $Id: statline.h,v 1.9 2004/05/23 20:50:48 JS Exp $
+// Version:     $Id: statline.h,v 1.10 2005/03/11 02:12:53 VZ Exp $
 // Copyright:   (c) 1998 Vadim Zeitlin
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -30,7 +30,7 @@ public:
     wxStaticLine() { m_statbox = NULL; }
 
     wxStaticLine( wxWindow *parent,
-                  wxWindowID id,
+                  wxWindowID id = wxID_ANY,
                   const wxPoint &pos = wxDefaultPosition,
                   const wxSize &size = wxDefaultSize,
                   long style = wxLI_HORIZONTAL,
@@ -42,7 +42,7 @@ public:
     virtual ~wxStaticLine();
 
     bool Create( wxWindow *parent,
-                 wxWindowID id,
+                 wxWindowID id = wxID_ANY,
                  const wxPoint &pos = wxDefaultPosition,
                  const wxSize &size = wxDefaultSize,
                  long style = wxLI_HORIZONTAL,

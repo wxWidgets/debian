@@ -4,7 +4,7 @@
 // Purpose:     Part of the widgets sample showing wxNotebook
 // Author:      Vadim Zeitlin
 // Created:     06.04.01
-// Id:          $Id: notebook.cpp,v 1.13 2004/10/07 16:38:48 JS Exp $
+// Id:          $Id: notebook.cpp,v 1.16 2005/01/06 12:31:46 ABX Exp $
 // Copyright:   (c) 2001 Vadim Zeitlin
 // License:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -23,6 +23,8 @@
 #ifdef __BORLANDC__
     #pragma hdrstop
 #endif
+
+#if wxUSE_NOTEBOOK
 
 // for all others, include the necessary headers
 #ifndef WX_PRECOMP
@@ -44,7 +46,6 @@
 #include "wx/artprov.h"
 
 #include "widgets.h"
-#if 1
 #include "icons/notebook.xpm"
 
 // ----------------------------------------------------------------------------
@@ -78,11 +79,6 @@ enum Orient
     Orient_Max
 };
 
-// old versions of wxWidgets don't define this style
-#ifndef wxNB_TOP
-    #define wxNB_TOP (0)
-#endif
-
 // ----------------------------------------------------------------------------
 // NotebookWidgetsPage
 // ----------------------------------------------------------------------------
@@ -90,8 +86,10 @@ enum Orient
 class NotebookWidgetsPage : public WidgetsPage
 {
 public:
-    NotebookWidgetsPage(wxNotebook *notebook, wxImageList *imaglist);
+    NotebookWidgetsPage(wxBookCtrl *book, wxImageList *imaglist);
     virtual ~NotebookWidgetsPage();
+
+    virtual wxControl *GetWidget() const { return m_notebook; }
 
 protected:
     // event handlers
@@ -194,9 +192,9 @@ END_EVENT_TABLE()
 
 IMPLEMENT_WIDGETS_PAGE(NotebookWidgetsPage, _T("Notebook"));
 
-NotebookWidgetsPage::NotebookWidgetsPage(wxNotebook *notebook,
+NotebookWidgetsPage::NotebookWidgetsPage(wxBookCtrl *book,
                                          wxImageList *imaglist)
-                  : WidgetsPage(notebook)
+                  : WidgetsPage(book)
 {
     imaglist->Add(wxBitmap(notebook_xpm));
 
@@ -393,7 +391,7 @@ void NotebookWidgetsPage::CreateNotebook()
             m_notebook->AddPage(CreateNewPage(),
                                 old_note->GetPageText(n),
                                 false,
-																m_chkImages->GetValue() ?
+                                m_chkImages->GetValue() ?
                                 GetIconIndex() : -1);
         }
 
@@ -546,4 +544,4 @@ void NotebookWidgetsPage::OnPageChanged(wxNotebookEvent& event)
     event.Skip();
 }
 
-#endif
+#endif // wxUSE_NOTEBOOK

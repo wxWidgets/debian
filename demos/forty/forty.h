@@ -4,7 +4,7 @@
 // Author:      Chris Breeze
 // Modified by:
 // Created:     21/07/97
-// RCS-ID:      $Id: forty.h,v 1.12 2004/10/05 15:38:07 ABX Exp $
+// RCS-ID:      $Id: forty.h,v 1.13 2005/01/31 18:14:12 ABX Exp $
 // Copyright:   (c) 1993-1998 Chris Breeze
 // Licence:     wxWindows licence
 //---------------------------------------------------------------------------
@@ -61,10 +61,7 @@ public:
 
 private:
     enum MenuCommands {
-        NEW_GAME = 10,
-        SCORES,
-        UNDO,
-        REDO,
+        SCORES = 10,
         RIGHT_BUTTON_UNDO,
         HELPING_HAND,
         LARGE_CARDS

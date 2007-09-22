@@ -3,7 +3,8 @@
 // Purpose:
 // Date: 08/11/1999
 // Author: Guilhem Lavaux <lavaux@easynet.fr> (C) 1999
-// CVSID: $Id: sndpcm.h,v 1.3 2004/06/16 15:22:54 ABX Exp $
+// CVSID: $Id: sndpcm.h,v 1.4 2004/11/22 20:05:25 JS Exp $
+// License:    wxWindows license
 // --------------------------------------------------------------------------
 #ifndef _WX_SNDPCM_H
 #define _WX_SNDPCM_H

@@ -4,13 +4,13 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     01/02/97
-// RCS-ID:      $Id: tbar95.h,v 1.35 2004/05/23 20:51:29 JS Exp $
+// RCS-ID:      $Id: tbar95.h,v 1.37 2005/03/27 18:03:41 VZ Exp $
 // Copyright:   (c) Julian Smart
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
 
-#ifndef _WX_TBAR95_H_
-#define _WX_TBAR95_H_
+#ifndef _WX_MSW_TBAR95_H_
+#define _WX_MSW_TBAR95_H_
 
 #if defined(__GNUG__) && !defined(NO_GCC_PRAGMA)
     #pragma interface "tbar95.h"
@@ -19,6 +19,7 @@
 #if wxUSE_TOOLBAR
 
 #include "wx/dynarray.h"
+#include "wx/imaglist.h"
 
 class WXDLLEXPORT wxToolBar : public wxToolBarBase
 {
@@ -67,6 +68,7 @@ public:
 
     void OnMouseEvent(wxMouseEvent& event);
     void OnSysColourChanged(wxSysColourChangedEvent& event);
+    void OnEraseBackground(wxEraseEvent& event);
 
     void SetFocus() {}
 
@@ -115,8 +117,17 @@ protected:
     // should be called whenever the toolbar size changes
     void UpdateSize();
 
+    // create m_disabledImgList (but doesn't fill it), set it to NULL if it is
+    // unneeded
+    void CreateDisabledImageList();
+
+
     // the big bitmap containing all bitmaps of the toolbar buttons
     WXHBITMAP m_hBitmap;
+
+    // the image list with disabled images, may be NULL if we use
+    // system-provided versions of them
+    wxImageList *m_disabledImgList;
 
     // the total number of toolbar elements
     size_t m_nButtons;
@@ -132,5 +143,5 @@ private:
 
 #endif // wxUSE_TOOLBAR
 
-#endif
-    // _WX_TBAR95_H_
+#endif // _WX_MSW_TBAR95_H_
+

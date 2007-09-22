@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by: Wlodzimiez ABX Skiba 2003/2004 Unicode support
 // Created:     7.9.93
-// RCS-ID:      $Id: tex2rtf.h,v 1.8 2004/10/31 08:31:03 VS Exp $
+// RCS-ID:      $Id: tex2rtf.h,v 1.9 2005/06/02 12:16:20 JS Exp $
 // Copyright:   (c) Julian Smart
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -114,7 +114,7 @@ class ItemizeStruc: public wxObject
 };
 
 // ID for the menu quit command
-#define TEX_QUIT 1
+#define TEX_QUIT wxID_EXIT
 #define TEX_GO   2
 
 #define TEX_SET_INPUT   3
@@ -135,7 +135,7 @@ class ItemizeStruc: public wxObject
 #define TEX_OPTIONS_SYNTAX_CHECKING 14
 
 #define TEX_HELP        15
-#define TEX_ABOUT       16
+#define TEX_ABOUT       wxID_ABOUT
 #define TEX_SAVE_FILE   17
 
 extern TexChunk *currentMember;

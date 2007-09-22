@@ -3,7 +3,7 @@
 // Purpose:     wxGIFDecoder, GIF reader for wxImage and wxAnimation
 // Author:      Guillermo Rodriguez Garcia <guille@iies.es>
 // Version:     3.02
-// CVS-ID:      $Id: gifdecod.h,v 1.15 2004/09/15 13:20:10 ABX Exp $
+// CVS-ID:      $Id: gifdecod.h,v 1.16 2005/03/16 16:18:19 ABX Exp $
 // Copyright:   (c) 1999 Guillermo Rodriguez Garcia
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -15,7 +15,7 @@
 #pragma interface "gifdecod.h"
 #endif
 
-#include "wx/setup.h"
+#include "wx/defs.h"
 
 #if wxUSE_STREAMS && wxUSE_GIF
 

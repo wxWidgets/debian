@@ -5,7 +5,7 @@
 // Author:      Robin Dunn
 //
 // Created:     05-Nov-2003
-// RCS-ID:      $Id: _gbsizer.i,v 1.14 2004/11/11 02:24:19 RD Exp $
+// RCS-ID:      $Id: _gbsizer.i,v 1.17 2005/03/09 22:28:41 RD Exp $
 // Copyright:   (c) 2003 by Total Control Software
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -94,7 +94,7 @@ public:
         }
         
         PyObject* Get() {
-            bool blocked = wxPyBeginBlockThreads();
+            wxPyBlock_t blocked = wxPyBeginBlockThreads();
             PyObject* tup = PyTuple_New(2);
             PyTuple_SET_ITEM(tup, 0, PyInt_FromLong(self->GetRow()));
             PyTuple_SET_ITEM(tup, 1, PyInt_FromLong(self->GetCol()));
@@ -163,7 +163,7 @@ cell in each direction.", "");
         }
         
         PyObject* Get() {
-            bool blocked = wxPyBeginBlockThreads();
+            wxPyBlock_t blocked = wxPyBeginBlockThreads();
             PyObject* tup = PyTuple_New(2);
             PyTuple_SET_ITEM(tup, 0, PyInt_FromLong(self->GetRowspan()));
             PyTuple_SET_ITEM(tup, 1, PyInt_FromLong(self->GetColspan()));
@@ -221,16 +221,17 @@ are created automatically when the sizer's Add method is called.", "");
     %extend {
         DocStr(wxGBSizerItem( wxWindow *window, const wxGBPosition& pos,const wxGBSpan& span,int flag,int border,PyObject* userData=NULL ),
                "Construct a `wx.GBSizerItem` for a window.", "");
-        %name(GBSizerItemWindow) wxGBSizerItem( wxWindow *window,
-                                                const wxGBPosition& pos,
-                                                const wxGBSpan& span,
-                                                int flag,
-                                                int border,
-                                                PyObject* userData=NULL )
+        
+        %RenameCtor(GBSizerItemWindow, wxGBSizerItem( wxWindow *window,
+                                                      const wxGBPosition& pos,
+                                                      const wxGBSpan& span,
+                                                      int flag,
+                                                      int border,
+                                                      PyObject* userData=NULL ))
             {
                 wxPyUserData* data = NULL;
                 if ( userData ) {
-                    bool blocked = wxPyBeginBlockThreads();
+                    wxPyBlock_t blocked = wxPyBeginBlockThreads();
                     data = new wxPyUserData(userData);
                     wxPyEndBlockThreads(blocked);
                 }
@@ -240,16 +241,16 @@ are created automatically when the sizer's Add method is called.", "");
 
         DocStr(wxGBSizerItem( wxSizer *sizer,const wxGBPosition& pos,const wxGBSpan& span,int flag,int border,PyObject* userData=NULL ),
                "Construct a `wx.GBSizerItem` for a sizer", "");
-        %name(GBSizerItemSizer) wxGBSizerItem( wxSizer *sizer,
-                                               const wxGBPosition& pos,
-                                               const wxGBSpan& span,
-                                               int flag,
-                                               int border,
-                                               PyObject* userData=NULL )
+        %RenameCtor(GBSizerItemSizer, wxGBSizerItem( wxSizer *sizer,
+                                                     const wxGBPosition& pos,
+                                                     const wxGBSpan& span,
+                                                     int flag,
+                                                     int border,
+                                                     PyObject* userData=NULL ))
             {
                 wxPyUserData* data = NULL;
                 if ( userData ) {
-                    bool blocked = wxPyBeginBlockThreads();
+                    wxPyBlock_t blocked = wxPyBeginBlockThreads();
                     data = new wxPyUserData(userData);
                     wxPyEndBlockThreads(blocked);
                 }
@@ -259,17 +260,17 @@ are created automatically when the sizer's Add method is called.", "");
              
         DocStr(wxGBSizerItem( int width,int height,const wxGBPosition& pos,const wxGBSpan& span,int flag,int border,PyObject* userData=NULL),
                "Construct a `wx.GBSizerItem` for a spacer.", "");
-        %name(GBSizerItemSpacer) wxGBSizerItem( int width,
-                                                int height,
-                                                const wxGBPosition& pos,
-                                                const wxGBSpan& span,
-                                                int flag,
-                                                int border,
-                                                PyObject* userData=NULL)
+        %RenameCtor(GBSizerItemSpacer, wxGBSizerItem( int width,
+                                                      int height,
+                                                      const wxGBPosition& pos,
+                                                      const wxGBSpan& span,
+                                                      int flag,
+                                                      int border,
+                                                      PyObject* userData=NULL))
             {
                 wxPyUserData* data = NULL;
                 if ( userData ) {
-                    bool blocked = wxPyBeginBlockThreads();
+                    wxPyBlock_t blocked = wxPyBeginBlockThreads();
                     data = new wxPyUserData(userData);
                     wxPyEndBlockThreads(blocked);
                 }
@@ -359,6 +360,8 @@ positioned at, adjusted for spanning.
 class wxGridBagSizer : public wxFlexGridSizer
 {
 public:
+    %pythonAppend wxGridBagSizer "self._setOORInfo(self)"
+
     DocCtorStr(
         wxGridBagSizer(int vgap = 0, int hgap = 0 ),
         "Constructor, with optional parameters to specify the gap between the
@@ -385,7 +388,7 @@ position, False if something was already there.
                             PyObject* userData = NULL ) {
 
             wxPyUserData* data = NULL;
-            bool blocked = wxPyBeginBlockThreads();
+            wxPyBlock_t blocked = wxPyBeginBlockThreads();
             wxPySizerItemInfo info = wxPySizerItemTypeHelper(item, true, false);
             if ( userData && (info.window || info.sizer || info.gotSize) )
                 data = new wxPyUserData(userData);

@@ -3,12 +3,12 @@
 // Purpose:     XRC resource for wxTextCtrl
 // Author:      Aleksandras Gluchovas
 // Created:     2000/03/21
-// RCS-ID:      $Id: xh_text.cpp,v 1.11 2004/09/23 09:18:13 VS Exp $
+// RCS-ID:      $Id: xh_text.cpp,v 1.13 2005/05/22 15:42:37 JS Exp $
 // Copyright:   (c) 2000 Aleksandras Gluchovas
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
 
-#ifdef __GNUG__
+#if defined(__GNUG__) && !defined(NO_GCC_PRAGMA)
 #pragma implementation "xh_text.h"
 #endif
 
@@ -62,6 +62,9 @@ wxObject *wxTextCtrlXmlHandler::DoCreateResource()
                  GetName());
 
     SetupWindow(text);
+
+    if (HasParam(wxT("maxlength")))
+        text->SetMaxLength(GetLong(wxT("maxlength")));
 
     return text;
 }

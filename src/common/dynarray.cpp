@@ -4,7 +4,7 @@
 // Author:      Vadim Zeitlin
 // Modified by:
 // Created:     12.09.97
-// RCS-ID:      $Id: dynarray.cpp,v 1.50 2004/07/22 19:08:21 MBN Exp $
+// RCS-ID:      $Id: dynarray.cpp,v 1.52 2005/06/07 18:59:28 ABX Exp $
 // Copyright:   (c) 1998 Vadim Zeitlin <zeitlin@dptmaths.ens-cachan.fr>
 // Licence:     wxWindows licence
 ///////////////////////////////////////////////////////////////////////////////
@@ -28,10 +28,6 @@
 
 #include <stdlib.h>
 #include <string.h> // for memmove
-
-#ifndef max
-  #define max(a, b)   (((a) > (b)) ? (a) : (b))
-#endif
 
 // we cast the value to long from which we cast it to void * in IndexForInsert:
 // this can't work if the pointers are not big enough
@@ -99,8 +95,8 @@ int name::Index(T lItem, CMPFUNC fnCompare) const                           \
 {                                                                           \
     Predicate p((SCMPFUNC)fnCompare);                                       \
     const_iterator it = std::lower_bound(begin(), end(), lItem, p);         \
-    return (it != end() &&                                                  \
-            p(lItem, *it)) ? (int)(it - begin()) : wxNOT_FOUND;             \
+    return (it != end() && !p(lItem, *it)) ?                                \
+                             (int)(it - begin()) : wxNOT_FOUND;             \
 }                                                                           \
                                                                             \
 void name::Shrink()                                                         \

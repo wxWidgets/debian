@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     04/01/98
-// RCS-ID:      $Id: printdlg.cpp,v 1.21 2004/10/31 23:43:37 RR Exp $
+// RCS-ID:      $Id: printdlg.cpp,v 1.32 2005/06/13 12:19:28 ABX Exp $
 // Copyright:   (c) Julian Smart
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -38,14 +38,13 @@
 
 #include "wx/cmndata.h"
 #include "wx/printdlg.h"
+#include "wx/msw/printdlg.h"
 #include "wx/dcprint.h"
 #include "wx/paper.h"
 
 #include <stdlib.h>
 
-#include "wx/msw/private.h"
-
-#include <commdlg.h>
+#include "wx/msw/wrapcdlg.h"
 
 #ifndef __WIN32__
     #include <print.h>
@@ -93,8 +92,8 @@ static wxString wxGetPrintDlgError()
 static HGLOBAL wxCreateDevNames(const wxString& driverName, const wxString& printerName, const wxString& portName)
 {
     HGLOBAL hDev = NULL;
-    // if (!driverName.IsEmpty() && !printerName.IsEmpty() && !portName.IsEmpty())
-    if (driverName.IsEmpty() && printerName.IsEmpty() && portName.IsEmpty())
+    // if (!driverName.empty() && !printerName.empty() && !portName.empty())
+    if (driverName.empty() && printerName.empty() && portName.empty())
     {
     }
     else
@@ -129,6 +128,7 @@ wxWindowsPrintNativeData::wxWindowsPrintNativeData()
 {
     m_devMode = (void*) NULL;
     m_devNames = (void*) NULL;
+    m_customWindowsPaperId = 0;
 }
 
 wxWindowsPrintNativeData::~wxWindowsPrintNativeData()
@@ -152,9 +152,10 @@ bool wxWindowsPrintNativeData::TransferTo( wxPrintData &data )
     HGLOBAL hDevNames = (HGLOBAL)(DWORD) m_devNames;
 
     if (!hDevMode)
+    {
         return false;
-
-    if ( hDevMode )
+    }
+    else
     {
         LPDEVMODE devMode = (LPDEVMODE)GlobalLock(hDevMode);
 
@@ -199,6 +200,8 @@ bool wxWindowsPrintNativeData::TransferTo( wxPrintData &data )
         // set both DM_PAPERSIZE and DM_PAPERWIDTH & DM_PAPERLENGTH. Since
         // dmPaperSize >= DMPAPER_USER wouldn't be in wxWin's database, this
         // code wouldn't set m_paperSize correctly.
+
+        bool foundPaperSize = false;
         if ((devMode->dmFields & DM_PAPERSIZE) && (devMode->dmPaperSize < DMPAPER_USER))
         {
             if (wxThePrintPaperDatabase)
@@ -208,13 +211,8 @@ bool wxWindowsPrintNativeData::TransferTo( wxPrintData &data )
                 {
                     data.SetPaperId( paper->GetId() );
                     data.SetPaperSize( wxSize(paper->GetWidth() / 10,paper->GetHeight() / 10) );
-                }
-                else
-                {
-                    // Shouldn't really get here
-                    wxFAIL_MSG(wxT("Couldn't find paper size in paper database."));
-                    data.SetPaperId( wxPAPER_NONE );
-                    data.SetPaperSize( wxSize(0,0) );
+                    m_customWindowsPaperId = 0;
+                    foundPaperSize = true;
                 }
             }
             else
@@ -223,20 +221,29 @@ bool wxWindowsPrintNativeData::TransferTo( wxPrintData &data )
                 wxFAIL_MSG(wxT("Paper database wasn't initialized in wxPrintData::ConvertFromNative."));
                 data.SetPaperId( wxPAPER_NONE );
                 data.SetPaperSize( wxSize(0,0) );
+                m_customWindowsPaperId = 0;
+
+                GlobalUnlock(hDevMode);
+                return false;
             }
         }
-        else if ((devMode->dmFields & DM_PAPERWIDTH) && (devMode->dmFields & DM_PAPERLENGTH))
+
+        if (!foundPaperSize && (devMode->dmFields & DM_PAPERWIDTH) && (devMode->dmFields & DM_PAPERLENGTH))
         {
             // DEVMODE is in tenths of a milimeter
-            data.SetPaperId( wxPAPER_NONE );
             data.SetPaperSize( wxSize(devMode->dmPaperWidth / 10, devMode->dmPaperLength / 10) );
+            data.SetPaperId( wxPAPER_NONE );
+            m_customWindowsPaperId = devMode->dmPaperSize;
         }
         else
         {
-            // Shouldn't really get here
-            wxFAIL_MSG(wxT("Couldn't find paper size from DEVMODE."));
-            data.SetPaperId( wxPAPER_NONE );
+            // Often will reach this for non-standard paper sizes (sizes which
+            // wouldn't be in wxWidget's paper database). Setting
+            // m_customWindowsPaperId to devMode->dmPaperSize should be enough
+            // to get this paper size working.
             data.SetPaperSize( wxSize(0,0) );
+            data.SetPaperId( wxPAPER_NONE );
+            m_customWindowsPaperId = devMode->dmPaperSize;
         }
 
         //// Duplex
@@ -247,7 +254,7 @@ bool wxWindowsPrintNativeData::TransferTo( wxPrintData &data )
             {
                 case DMDUP_HORIZONTAL:   data.SetDuplex( wxDUPLEX_HORIZONTAL ); break;
                 case DMDUP_VERTICAL:     data.SetDuplex( wxDUPLEX_VERTICAL ); break;
-                default:    
+                default:
                 case DMDUP_SIMPLEX:      data.SetDuplex( wxDUPLEX_SIMPLEX ); break;
             }
         }
@@ -278,6 +285,11 @@ bool wxWindowsPrintNativeData::TransferTo( wxPrintData &data )
         else
             data.SetQuality( wxPRINT_QUALITY_HIGH );
 
+        if (devMode->dmDriverExtra > 0)
+            data.SetPrivData( (char *)devMode+devMode->dmSize, devMode->dmDriverExtra );
+        else
+            data.SetPrivData( NULL, 0 );
+
         GlobalUnlock(hDevMode);
     }
 
@@ -296,15 +308,15 @@ bool wxWindowsPrintNativeData::TransferTo( wxPrintData &data )
             wxString printerName = (LPTSTR)lpDevNames + lpDevNames->wDeviceOffset;
 
             // Not sure if we should check for this mismatch
-//            wxASSERT_MSG( (m_printerName == "" || (devName == m_printerName)), "Printer name obtained from DEVMODE and DEVNAMES were different!");
+//            wxASSERT_MSG( (m_printerName.empty() || (devName == m_printerName)), "Printer name obtained from DEVMODE and DEVNAMES were different!");
 
-            if (printerName != wxT(""))
+            if (!printerName.empty())
                 data.SetPrinterName( printerName );
 
             GlobalUnlock(hDevNames);
         }
     }
-    
+
     return true;
 }
 
@@ -390,7 +402,7 @@ bool wxWindowsPrintNativeData::TransferFrom( const wxPrintData &data )
 
         //// Printer name
         wxString name = data.GetPrinterName();
-        if (name != wxT(""))
+        if (!name.empty())
         {
             //int len = wxMin(31, m_printerName.Len());
             wxStrncpy((wxChar*)devMode->dmDeviceName,name.c_str(),31);
@@ -410,7 +422,10 @@ bool wxWindowsPrintNativeData::TransferFrom( const wxPrintData &data )
             // DEVMODE is in tenths of a milimeter
             devMode->dmPaperWidth = (short)(data.GetPaperSize().x * 10);
             devMode->dmPaperLength = (short)(data.GetPaperSize().y * 10);
-            devMode->dmPaperSize = DMPAPER_USER;
+            if(m_customWindowsPaperId != 0)
+                devMode->dmPaperSize = m_customWindowsPaperId;
+            else
+                devMode->dmPaperSize = DMPAPER_USER;
             devMode->dmFields |= DM_PAPERWIDTH;
             devMode->dmFields |= DM_PAPERLENGTH;
         }
@@ -423,6 +438,15 @@ bool wxWindowsPrintNativeData::TransferFrom( const wxPrintData &data )
                 {
                     devMode->dmPaperSize = (short)paper->GetPlatformId();
                     devMode->dmFields |= DM_PAPERSIZE;
+                }
+                else
+                {
+                    // Fall back on specifying the paper size explicitly
+                    devMode->dmPaperWidth = (short)(data.GetPaperSize().x * 10);
+                    devMode->dmPaperLength = (short)(data.GetPaperSize().y * 10);
+                    devMode->dmPaperSize = DMPAPER_USER;
+                    devMode->dmFields |= DM_PAPERWIDTH;
+                    devMode->dmFields |= DM_PAPERLENGTH;
                 }
             }
         }
@@ -469,6 +493,12 @@ bool wxWindowsPrintNativeData::TransferFrom( const wxPrintData &data )
         devMode->dmPrintQuality = quality;
         devMode->dmFields |= DM_PRINTQUALITY;
 
+        if (data.GetPrivDataLen() > 0)
+        {
+            memcpy( (char *)devMode+devMode->dmSize, data.GetPrivData(), data.GetPrivDataLen() );
+            devMode->dmDriverExtra = (WXWORD)data.GetPrivDataLen();
+        }
+
         if (data.GetBin() != wxPRINTBIN_DEFAULT)
         {
             switch (data.GetBin())
@@ -504,11 +534,11 @@ bool wxWindowsPrintNativeData::TransferFrom( const wxPrintData &data )
     }
 
     // TODO: I hope it's OK to pass some empty strings to DEVNAMES.
-    m_devNames = (void*) (long) wxCreateDevNames(wxT(""), data.GetPrinterName(), wxT(""));
-    
+    m_devNames = (void*) (long) wxCreateDevNames(wxEmptyString, data.GetPrinterName(), wxEmptyString);
+
     return true;
 }
-    
+
 // ---------------------------------------------------------------------------
 // wxPrintDialog
 // ---------------------------------------------------------------------------
@@ -537,7 +567,7 @@ bool wxWindowsPrintDialog::Create(wxWindow *p, wxPrintDialogData* data)
 
     // MSW handle
     m_printDlg = NULL;
-    
+
     if ( data )
         m_printDialogData = *data;
 
@@ -561,7 +591,7 @@ int wxWindowsPrintDialog::ShowModal()
     ConvertToNative( m_printDialogData );
 
     PRINTDLG *pd = (PRINTDLG*) m_printDlg;
-    
+
     if (m_dialogParent)
         pd->hwndOwner = (HWND) m_dialogParent->GetHWND();
     else if (wxTheApp->GetTopWindow())
@@ -573,7 +603,7 @@ int wxWindowsPrintDialog::ShowModal()
 
     pd->hwndOwner = 0;
 
-    if ( ret != false && (pd->hDC) )
+    if ( ret && (pd->hDC) )
     {
         wxPrinterDC *pdc = new wxPrinterDC( (WXHDC) pd->hDC );
         m_printerDC = pdc;
@@ -602,13 +632,13 @@ bool wxWindowsPrintDialog::ConvertToNative( wxPrintDialogData &data )
     wxWindowsPrintNativeData *native_data =
         (wxWindowsPrintNativeData *) data.GetPrintData().GetNativeData();
     data.GetPrintData().ConvertToNative();
-    
+
     PRINTDLG *pd = (PRINTDLG*) m_printDlg;
 
     // Shouldn't have been defined anywhere
     if (pd)
         return false;
-    
+
     pd = new PRINTDLG;
     memset( pd, 0, sizeof(PRINTDLG) );
     m_printDlg = (void*) pd;
@@ -625,7 +655,7 @@ bool wxWindowsPrintDialog::ConvertToNative( wxPrintDialogData &data )
 
     pd->Flags          = PD_RETURNDEFAULT;
     pd->nCopies        = 1;
-    
+
     // Pass the devmode data to the PRINTDLG structure, since it'll
     // be needed when PrintDlg is called.
     if (pd->hDevMode)
@@ -694,7 +724,7 @@ bool wxWindowsPrintDialog::ConvertToNative( wxPrintDialogData &data )
     if ( data.GetSetupDialog() )
         pd->Flags |= PD_PRINTSETUP;
 #endif
-    
+
     return true;
 }
 
@@ -706,7 +736,7 @@ bool wxWindowsPrintDialog::ConvertFromNative( wxPrintDialogData &data )
 
     wxWindowsPrintNativeData *native_data =
         (wxWindowsPrintNativeData *) data.GetPrintData().GetNativeData();
-    
+
     // Pass the devmode data back to the wxPrintData structure where it really belongs.
     if (pd->hDevMode)
     {
@@ -751,28 +781,28 @@ bool wxWindowsPrintDialog::ConvertFromNative( wxPrintDialogData &data )
     data.EnableHelp( ((pd->Flags & PD_SHOWHELP) == PD_SHOWHELP) );
 #if WXWIN_COMPATIBILITY_2_4
     data.SetSetupDialog( ((pd->Flags & PD_PRINTSETUP) == PD_PRINTSETUP) );
-#endif    
+#endif
     return true;
 }
 
 // ---------------------------------------------------------------------------
-// wxPageSetupDialog
+// wxWidnowsPageSetupDialog
 // ---------------------------------------------------------------------------
 
-IMPLEMENT_CLASS(wxPageSetupDialog, wxDialog)
+IMPLEMENT_CLASS(wxWindowsPageSetupDialog, wxPageSetupDialogBase)
 
-wxPageSetupDialog::wxPageSetupDialog()
+wxWindowsPageSetupDialog::wxWindowsPageSetupDialog()
 {
     m_dialogParent = NULL;
     m_pageDlg = NULL;
 }
 
-wxPageSetupDialog::wxPageSetupDialog(wxWindow *p, wxPageSetupDialogData *data)
+wxWindowsPageSetupDialog::wxWindowsPageSetupDialog(wxWindow *p, wxPageSetupDialogData *data)
 {
     Create(p, data);
 }
 
-bool wxPageSetupDialog::Create(wxWindow *p, wxPageSetupDialogData *data)
+bool wxWindowsPageSetupDialog::Create(wxWindow *p, wxPageSetupDialogData *data)
 {
     m_dialogParent = p;
     m_pageDlg = NULL;
@@ -783,7 +813,7 @@ bool wxPageSetupDialog::Create(wxWindow *p, wxPageSetupDialogData *data)
     return true;
 }
 
-wxPageSetupDialog::~wxPageSetupDialog()
+wxWindowsPageSetupDialog::~wxWindowsPageSetupDialog()
 {
     PAGESETUPDLG *pd = (PAGESETUPDLG *)m_pageDlg;
     if ( pd && pd->hDevMode )
@@ -794,10 +824,10 @@ wxPageSetupDialog::~wxPageSetupDialog()
         delete pd;
 }
 
-int wxPageSetupDialog::ShowModal()
+int wxWindowsPageSetupDialog::ShowModal()
 {
     ConvertToNative( m_pageSetupData );
-    
+
     PAGESETUPDLG *pd = (PAGESETUPDLG *) m_pageDlg;
     if (m_dialogParent)
         pd->hwndOwner = (HWND) m_dialogParent->GetHWND();
@@ -816,7 +846,7 @@ int wxPageSetupDialog::ShowModal()
         return wxID_CANCEL;
 }
 
-bool wxPageSetupDialog::ConvertToNative( wxPageSetupDialogData &data )
+bool wxWindowsPageSetupDialog::ConvertToNative( wxPageSetupDialogData &data )
 {
     wxWindowsPrintNativeData *native_data =
         (wxWindowsPrintNativeData *) data.GetPrintData().GetNativeData();
@@ -827,7 +857,7 @@ bool wxPageSetupDialog::ConvertToNative( wxPageSetupDialogData &data )
     // Shouldn't have been defined anywhere
     if (pd)
         return false;
-        
+
     pd = new PAGESETUPDLG;
     pd->hDevMode = NULL;
     pd->hDevNames = NULL;
@@ -920,7 +950,7 @@ bool wxPageSetupDialog::ConvertToNative( wxPageSetupDialogData &data )
     return true;
 }
 
-bool wxPageSetupDialog::ConvertFromNative( wxPageSetupDialogData &data )
+bool wxWindowsPageSetupDialog::ConvertFromNative( wxPageSetupDialogData &data )
 {
     PAGESETUPDLG *pd = (PAGESETUPDLG *) m_pageDlg;
     if ( !pd )
@@ -928,7 +958,7 @@ bool wxPageSetupDialog::ConvertFromNative( wxPageSetupDialogData &data )
 
     wxWindowsPrintNativeData *native_data =
         (wxWindowsPrintNativeData *) data.GetPrintData().GetNativeData();
-        
+
     // Pass the devmode data back to the wxPrintData structure where it really belongs.
     if (pd->hDevMode)
     {
@@ -940,7 +970,7 @@ bool wxPageSetupDialog::ConvertFromNative( wxPageSetupDialogData &data )
         native_data->SetDevMode( (void*) pd->hDevMode );
         pd->hDevMode = NULL;
     }
-    
+
     // Isn't this superfluous? It's called again below.
     // data.GetPrintData().ConvertFromNative();
 
@@ -976,7 +1006,7 @@ bool wxPageSetupDialog::ConvertFromNative( wxPageSetupDialogData &data )
 
     data.SetMarginTopLeft( wxPoint(pd->rtMargin.left / 100, pd->rtMargin.top / 100) );
     data.SetMarginBottomRight( wxPoint(pd->rtMargin.right / 100, pd->rtMargin.bottom / 100) );
-    
+
     return true;
 }
 

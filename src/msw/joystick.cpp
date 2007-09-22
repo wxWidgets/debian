@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     04/01/98
-// RCS-ID:      $Id: joystick.cpp,v 1.19 2004/08/30 10:18:54 ABX Exp $
+// RCS-ID:      $Id: joystick.cpp,v 1.22 2005/04/23 18:59:31 JS Exp $
 // Copyright:   (c) Julian Smart
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -30,10 +30,6 @@
 
 #if !defined(__WIN32__) && !defined(_MMRESULT_)
 typedef UINT MMRESULT;
-#endif
-
-#ifdef __GNUWIN32_OLD__
-#include "wx/msw/gnuwin32/extra.h"
 #endif
 
 // Why doesn't BC++ have joyGetPosEx?
@@ -87,7 +83,7 @@ wxPoint wxJoystick::GetPosition() const
     if (res == JOYERR_NOERROR )
         return wxPoint(joyInfo.wXpos, joyInfo.wYpos);
     else
-        return wxPoint(0, 0);
+        return wxPoint(0,0);
 }
 
 int wxJoystick::GetZPosition() const

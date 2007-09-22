@@ -4,7 +4,7 @@
 // Purpose:     Part of the widgets sample showing wxComboBox
 // Author:      Vadim Zeitlin
 // Created:     27.03.01
-// Id:          $Id: combobox.cpp,v 1.15 2004/05/25 11:19:42 JS Exp $
+// Id:          $Id: combobox.cpp,v 1.18 2004/12/08 22:08:28 RR Exp $
 // Copyright:   (c) 2001 Vadim Zeitlin
 // License:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -84,7 +84,9 @@ enum
 class ComboboxWidgetsPage : public WidgetsPage
 {
 public:
-    ComboboxWidgetsPage(wxNotebook *notebook, wxImageList *imaglist);
+    ComboboxWidgetsPage(wxBookCtrl *book, wxImageList *imaglist);
+
+    virtual wxControl *GetWidget() const { return m_combobox; }
 
 protected:
     // event handlers
@@ -188,9 +190,9 @@ END_EVENT_TABLE()
 
 IMPLEMENT_WIDGETS_PAGE(ComboboxWidgetsPage, _T("Combobox"));
 
-ComboboxWidgetsPage::ComboboxWidgetsPage(wxNotebook *notebook,
-                                       wxImageList *imaglist)
-                  : WidgetsPage(notebook)
+ComboboxWidgetsPage::ComboboxWidgetsPage(wxBookCtrl *book,
+                                         wxImageList *imaglist)
+                  : WidgetsPage(book)
 {
     // init everything
     m_chkSort =
@@ -543,6 +545,8 @@ void ComboboxWidgetsPage::OnComboBox(wxCommandEvent& event)
     m_textDelete->SetValue(wxString::Format(_T("%ld"), sel));
 
     wxLogMessage(_T("Combobox item %ld selected"), sel);
+    
+    wxLogMessage(_T("Combobox GetValue(): %s"), m_combobox->GetValue().c_str() );
 }
 
 void ComboboxWidgetsPage::OnCheckOrRadioBox(wxCommandEvent& WXUNUSED(event))

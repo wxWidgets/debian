@@ -5,7 +5,7 @@
 // Author:      Robin Dunn
 //
 // Created:     10-June-1998
-// RCS-ID:      $Id: controls.i,v 1.45 2004/06/02 02:29:20 RD Exp $
+// RCS-ID:      $Id: controls.i,v 1.46 2005/02/18 04:45:38 RD Exp $
 // Copyright:   (c) 1998 by Total Control Software
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -60,6 +60,8 @@ MAKE_CONST_WXSTRING_NOSWIG(ControlNameStr);
 %include _pycontrol.i
 %include _cshelp.i
 %include _dragimg.i
+%include _datectrl.i
+
 
 
 //---------------------------------------------------------------------------

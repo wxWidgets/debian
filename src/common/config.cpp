@@ -4,7 +4,7 @@
 // Author:      Vadim Zeitlin
 // Modified by:
 // Created:     07.04.98
-// RCS-ID:      $Id: config.cpp,v 1.71 2004/11/11 19:01:53 VZ Exp $
+// RCS-ID:      $Id: config.cpp,v 1.76 2005/04/16 16:03:42 SN Exp $
 // Copyright:   (c) 1997 Karsten Ballüder   Ballueder@usa.net
 //                       Vadim Zeitlin      <zeitlin@dptmaths.ens-cachan.fr>
 // Licence:     wxWindows licence
@@ -39,9 +39,9 @@
 #include "wx/textfile.h"
 #include "wx/utils.h"
 #include "wx/utils.h"
+#include "wx/math.h"
 
 #include <stdlib.h>
-#include <math.h>
 #include <ctype.h>
 #include <limits.h>     // for INT_MAX
 
@@ -91,6 +91,8 @@ wxConfigBase *wxConfigBase::Create()
     ms_pConfig =
     #if defined(__WXMSW__) && wxUSE_CONFIG_NATIVE
         new wxRegConfig(wxTheApp->GetAppName(), wxTheApp->GetVendorName());
+    #elif defined(__WXPALMOS__) && wxUSE_CONFIG_NATIVE
+        new wxPrefConfig(wxTheApp->GetAppName());
     #else // either we're under Unix or wish to use files even under Windows
       new wxFileConfig(wxTheApp->GetAppName());
     #endif
@@ -234,19 +236,31 @@ wxConfigPathChanger::wxConfigPathChanger(const wxConfigBase *pContainer,
   wxString strPath = strEntry.BeforeLast(wxCONFIG_PATH_SEPARATOR);
 
   // except in the special case of "/keyname" when there is nothing before "/"
-  if ( strPath.IsEmpty() &&
-       ((!strEntry.IsEmpty()) && strEntry[0] == wxCONFIG_PATH_SEPARATOR) )
+  if ( strPath.empty() &&
+       ((!strEntry.empty()) && strEntry[0] == wxCONFIG_PATH_SEPARATOR) )
   {
     strPath = wxCONFIG_PATH_SEPARATOR;
   }
 
-  if ( !strPath.IsEmpty() )
+  if ( !strPath.empty() )
   {
     if ( m_pContainer->GetPath() != strPath )
     {
         // do change the path
         m_bChanged = true;
-        m_strOldPath = m_pContainer->GetPath();
+
+        /* JACS: work around a memory bug that causes an assert
+           when using wxRegConfig, related to reference-counting.
+           Can be reproduced by removing (const wxChar*) below and
+           adding the following code to the config sample OnInit under
+           Windows:
+
+           pConfig->SetPath(wxT("MySettings"));
+           pConfig->SetPath(wxT(".."));
+           int value;
+           pConfig->Read(_T("MainWindowX"), & value);
+        */
+        m_strOldPath = (const wxChar*) m_pContainer->GetPath();
         if ( *m_strOldPath.c_str() != wxCONFIG_PATH_SEPARATOR )
           m_strOldPath += wxCONFIG_PATH_SEPARATOR;
         m_pContainer->SetPath(strPath);
@@ -279,23 +293,24 @@ wxConfigPathChanger::~wxConfigPathChanger()
 // understands both Unix and Windows (but only under Windows) environment
 // variables expansion: i.e. $var, $(var) and ${var} are always understood
 // and in addition under Windows %var% is also.
+
+// don't change the values the enum elements: they must be equal
+// to the matching [closing] delimiter.
+enum Bracket
+{
+  Bracket_None,
+  Bracket_Normal  = ')',
+  Bracket_Curly   = '}',
+#ifdef  __WXMSW__
+  Bracket_Windows = '%',    // yeah, Windows people are a bit strange ;-)
+#endif
+  Bracket_Max
+};
+
 wxString wxExpandEnvVars(const wxString& str)
 {
   wxString strResult;
   strResult.Alloc(str.Len());
-
-  // don't change the values the enum elements: they must be equal
-  // to the matching [closing] delimiter.
-  enum Bracket
-  {
-    Bracket_None,
-    Bracket_Normal  = ')',
-    Bracket_Curly   = '}',
-#ifdef  __WXMSW__
-    Bracket_Windows = '%',    // yeah, Windows people are a bit strange ;-)
-#endif
-    Bracket_Max
-  };
 
   size_t m;
   for ( size_t n = 0; n < str.Len(); n++ ) {
@@ -366,8 +381,8 @@ wxString wxExpandEnvVars(const wxString& str)
               // under Unix, OTOH, this warning could be useful for the user to
               // understand why isn't the variable expanded as intended
               #ifndef __WXMSW__
-                wxLogWarning(_("Environment variables expansion failed: missing '%c' at position %d in '%s'."),
-                             (char)bracket, m + 1, str.c_str());
+                wxLogWarning(_("Environment variables expansion failed: missing '%c' at position %u in '%s'."),
+                             (char)bracket, (unsigned int) (m + 1), str.c_str());
               #endif // __WXMSW__
             }
             else {
@@ -421,7 +436,7 @@ void wxSplitPath(wxArrayString& aParts, const wxChar *sz)
 
         strCurrent.Empty();
       }
-      else if ( !strCurrent.IsEmpty() ) {
+      else if ( !strCurrent.empty() ) {
         aParts.push_back(strCurrent);
         strCurrent.Empty();
       }

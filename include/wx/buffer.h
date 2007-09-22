@@ -4,7 +4,7 @@
 // Author:      Vadim Zeitlin
 // Modified by:
 // Created:     12.04.99
-// RCS-ID:      $Id: buffer.h,v 1.33 2004/08/30 21:31:38 VS Exp $
+// RCS-ID:      $Id: buffer.h,v 1.34 2005/04/16 04:08:35 RD Exp $
 // Copyright:   (c) 1998 Vadim Zeitlin <zeitlin@dptmaths.ens-cachan.fr>
 // Licence:     wxWindows licence
 ///////////////////////////////////////////////////////////////////////////////
@@ -30,7 +30,7 @@ public:                                                                     \
     {                                                                       \
     }                                                                       \
                                                                             \
-    classname(size_t len)                                                   \
+    classname(size_t len=0)                                                 \
         : m_str((chartype *)malloc((len + 1)*sizeof(chartype)))             \
     {                                                                       \
         m_str[len] = (chartype)0;                                           \

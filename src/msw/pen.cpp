@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     04/01/98
-// RCS-ID:      $Id: pen.cpp,v 1.32 2004/09/27 21:02:57 VZ Exp $
+// RCS-ID:      $Id: pen.cpp,v 1.34 2005/04/13 16:27:05 VZ Exp $
 // Copyright:   (c) Julian Smart
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -47,6 +47,7 @@ wxPenRefData::wxPenRefData()
 }
 
 wxPenRefData::wxPenRefData(const wxPenRefData& data)
+             :wxGDIRefData()
 {
     m_style = data.m_style;
     m_width = data.m_width;
@@ -127,11 +128,11 @@ bool wxPen::RealizeResource()
 #if !defined(__WXMICROWIN__) && !defined(__WXWINCE__)
    // Only NT can display dashed or dotted lines with width > 1
    if ( os != wxWINDOWS_NT &&
-           (M_PENDATA->m_style & (wxDOT |
-                                  wxLONG_DASH |
-                                  wxSHORT_DASH |
-                                  wxDOT_DASH |
-                                  wxUSER_DASH)) &&
+           (M_PENDATA->m_style == wxDOT ||
+            M_PENDATA->m_style == wxLONG_DASH ||
+            M_PENDATA->m_style == wxSHORT_DASH ||
+            M_PENDATA->m_style == wxDOT_DASH ||
+            M_PENDATA->m_style == wxUSER_DASH) &&
             M_PENDATA->m_width > 1 )
    {
        M_PENDATA->m_width = 1;

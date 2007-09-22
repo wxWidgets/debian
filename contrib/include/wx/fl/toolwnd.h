@@ -5,7 +5,7 @@
 // Author:      Aleksandras Gluchovas
 // Modified by:
 // Created:     06/09/98
-// RCS-ID:      $Id: toolwnd.h,v 1.9 2004/06/07 16:02:14 ABX Exp $
+// RCS-ID:      $Id: toolwnd.h,v 1.10 2005/02/10 16:35:08 JS Exp $
 // Copyright:   (c) Aleksandras Gluchovas
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -25,7 +25,7 @@
 
 #define BTN_BOX_HEIGHT       12
 #define BTN_BOX_WIDTH        12
-#define BTN_X_WIEGHT         2
+#define BTN_X_WEIGHT         2
 
 class WXDLLIMPEXP_FL cbMiniButton;
 

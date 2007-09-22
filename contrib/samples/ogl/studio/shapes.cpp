@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     12/07/98
-// RCS-ID:      $Id: shapes.cpp,v 1.9 2004/07/22 19:01:40 ABX Exp $
+// RCS-ID:      $Id: shapes.cpp,v 1.12 2005/03/31 19:18:24 ABX Exp $
 // Copyright:   (c) Julian Smart
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -28,15 +28,12 @@
 #error You must set wxUSE_DOC_VIEW_ARCHITECTURE to 1 in wx_setup.h!
 #endif
 
-#include <wx/deprecated/setup.h>
-#include <wx/deprecated/wxexpr.h>
+#include <wx/ogl/ogl.h> // base header of OGL, includes and adjusts wx/deprecated/setup.h
 
 #include "studio.h"
 #include "doc.h"
 #include "shapes.h"
 #include "view.h"
-#include <wx/ogl/basicp.h>
-#include <wx/ogl/linesp.h>
 #include "cspalette.h"
 #include "dialogs.h"
 
@@ -83,7 +80,7 @@ void csEvtHandler::CopyData(wxShapeEvtHandler& copy)
     csEvtHandler& csCopy = (csEvtHandler&) copy;
     csCopy.m_label = m_label;
 }
- 
+
 void csEvtHandler::OnLeftClick(double WXUNUSED(x), double WXUNUSED(y), int keys, int WXUNUSED(attachment))
 {
   wxClientDC dc(GetShape()->GetCanvas());
@@ -196,7 +193,7 @@ void csEvtHandler::OnBeginDragRight(double x, double y, int WXUNUSED(keys), int 
   wxClientDC dc(GetShape()->GetCanvas());
   GetShape()->GetCanvas()->PrepareDC(dc);
 
-  wxPen dottedPen(wxColour(0, 0, 0), 1, wxDOT);
+  wxPen dottedPen(*wxBLACK, 1, wxDOT);
   dc.SetLogicalFunction(OGLRBLF);
   dc.SetPen(dottedPen);
   double xp, yp;
@@ -210,7 +207,7 @@ void csEvtHandler::OnDragRight(bool WXUNUSED(draw), double x, double y, int WXUN
   wxClientDC dc(GetShape()->GetCanvas());
   GetShape()->GetCanvas()->PrepareDC(dc);
 
-  wxPen dottedPen(wxColour(0, 0, 0), 1, wxDOT);
+  wxPen dottedPen(*wxBLACK, 1, wxDOT);
   dc.SetLogicalFunction(OGLRBLF);
   dc.SetPen(dottedPen);
   double xp, yp;
@@ -226,7 +223,7 @@ void csEvtHandler::OnEndDragRight(double x, double y, int WXUNUSED(keys), int at
   // Check if we're on an object
   int new_attachment;
   wxShape *otherShape = canvas->FindFirstSensitiveShape(x, y, &new_attachment, OP_DRAG_RIGHT);
-  
+
   if (otherShape && !otherShape->IsKindOf(CLASSINFO(wxLineShape)))
   {
         wxLineShape* theShape = new csLineShape;
@@ -282,7 +279,7 @@ void csEvtHandler::OnDragLeft(bool draw, double x, double y, int keys, int attac
 
   dc.SetLogicalFunction(OGLRBLF);
 
-  wxPen dottedPen(wxColour(0, 0, 0), 1, wxDOT);
+  wxPen dottedPen(*wxBLACK, 1, wxDOT);
   dc.SetPen(dottedPen);
   dc.SetBrush(* wxTRANSPARENT_BRUSH);
 
@@ -351,7 +348,7 @@ void csEvtHandler::OnBeginDragLeft(double x, double y, int keys, int attachment)
 
   dc.SetLogicalFunction(OGLRBLF);
 
-  wxPen dottedPen(wxColour(0, 0, 0), 1, wxDOT);
+  wxPen dottedPen(*wxBLACK, 1, wxDOT);
   dc.SetPen(dottedPen);
   dc.SetBrush((* wxTRANSPARENT_BRUSH));
 
@@ -682,6 +679,9 @@ bool csEvtHandler::EditProperties()
         return false;
     }
 
+    wxString newLabel(m_label);
+
+#if wxUSE_WX_RESOURCES
     csShapePropertiesDialog* dialog = new csShapePropertiesDialog(shape->GetCanvas()->GetParent(), title, attributeDialog, attributeDialogName);
     dialog->GetGeneralPropertiesDialog()->SetShapeLabel(m_label);
     if (dialog->ShowModal() == wxID_CANCEL)
@@ -690,8 +690,11 @@ bool csEvtHandler::EditProperties()
         return false;
     }
 
-    wxString newLabel = dialog->GetGeneralPropertiesDialog()->GetShapeLabel();
+    newLabel = dialog->GetGeneralPropertiesDialog()->GetShapeLabel();
     dialog->Destroy();
+#else
+    wxUnusedVar(attributeDialog);
+#endif // wxUSE_WX_RESOURCES
 
     wxShape* newShape = shape->CreateNewCopy();
 
@@ -707,7 +710,8 @@ bool csEvtHandler::EditProperties()
 /*
  * Diagram
  */
- 
+
+#if wxUSE_PROLOGIO
 bool csDiagram::OnShapeSave(wxExprDatabase& db, wxShape& shape, wxExpr& expr)
 {
   wxDiagram::OnShapeSave(db, shape, expr);
@@ -723,9 +727,10 @@ bool csDiagram::OnShapeLoad(wxExprDatabase& db, wxShape& shape, wxExpr& expr)
   expr.GetAttributeValue(_T("label"), label);
   csEvtHandler *handler = new csEvtHandler(&shape, &shape, label);
   shape.SetEventHandler(handler);
-  
+
   return true;
 }
+#endif // wxUSE_PROLOGIO
 
 IMPLEMENT_DYNAMIC_CLASS(csThinRectangleShape, wxDrawnShape)
 
@@ -1155,7 +1160,7 @@ void studioShapeEditProc(wxMenu& menu, wxCommandEvent& event)
                 break;
 
             double theta = shape->GetRotation();
-            const double myPi = 3.1415926535897932384626433832795 ;
+            const double myPi = M_PI;
             double ninetyDegrees = myPi/2.0;
 
             wxString opStr;

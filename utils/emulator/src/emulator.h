@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     2002-03-10
-// RCS-ID:      $Id: emulator.h,v 1.7 2004/05/25 11:20:15 JS Exp $
+// RCS-ID:      $Id: emulator.h,v 1.8 2005/02/01 20:36:10 ABX Exp $
 // Copyright:   (c) wxWidgets team
 // Licence:     wxWindows licence
 ///////////////////////////////////////////////////////////////////////////////
@@ -24,7 +24,7 @@ class wxEmulatorInfo: public wxObject
 public:
 
     wxEmulatorInfo() { Init(); }
-    wxEmulatorInfo(const wxEmulatorInfo& info) { Init(); Copy(info); }
+    wxEmulatorInfo(const wxEmulatorInfo& info) : wxObject() { Init(); Copy(info); }
 
     void operator= (const wxEmulatorInfo& info) { Copy(info); }
     void Copy(const wxEmulatorInfo& info);

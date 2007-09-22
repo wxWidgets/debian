@@ -4,7 +4,7 @@
 // Author:      Denis Pershin
 // Modified by:
 // Created:     08/08/98
-// RCS-ID:      $Id: treectrl.h,v 1.18 2004/05/23 20:50:54 JS Exp $
+// RCS-ID:      $Id: treectrl.h,v 1.19 2005/05/23 10:28:20 ABX Exp $
 // Copyright:   (c) Denis Pershin
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -69,15 +69,6 @@ static const int wxTREE_HITTEST_ONITEM  = wxTREE_HITTEST_ONITEMICON |
 
 // NB: all the following flags are for compatbility only and will be removed in
 //     next versions
-
-// flags for deprecated `Expand(int action)'
-enum
-{
-    wxTREE_EXPAND_EXPAND,
-    wxTREE_EXPAND_COLLAPSE,
-    wxTREE_EXPAND_COLLAPSE_RESET,
-    wxTREE_EXPAND_TOGGLE
-};
 
 // flags for deprecated InsertItem() variant
 #define wxTREE_INSERT_FIRST 0xFFFF0001
@@ -145,7 +136,7 @@ public:
   // --------
   wxTreeCtrl() { Init(); }
 
-  wxTreeCtrl(wxWindow *parent, wxWindowID id = -1,
+  wxTreeCtrl(wxWindow *parent, wxWindowID id = wxID_ANY,
              const wxPoint& pos = wxDefaultPosition,
              const wxSize& size = wxDefaultSize,
              long style = wxTR_HAS_BUTTONS | wxTR_LINES_AT_ROOT,
@@ -156,7 +147,7 @@ public:
 
   virtual ~wxTreeCtrl();
 
-    bool Create(wxWindow *parent, wxWindowID id = -1,
+    bool Create(wxWindow *parent, wxWindowID id = wxID_ANY,
                 const wxPoint& pos = wxDefaultPosition,
                 const wxSize& size = wxDefaultSize,
                 long style = wxTR_HAS_BUTTONS | wxTR_LINES_AT_ROOT,
@@ -235,14 +226,14 @@ public:
     // number of children
     // ------------------
 
-        // if 'recursively' is FALSE, only immediate children count, otherwise
+        // if 'recursively' is false, only immediate children count, otherwise
         // the returned number is the number of all items in this branch
-    size_t GetChildrenCount(const wxTreeItemId& item, bool recursively = TRUE);
+    size_t GetChildrenCount(const wxTreeItemId& item, bool recursively = true);
 
     // navigation
     // ----------
 
-    // wxTreeItemId.IsOk() will return FALSE if there is no such item
+    // wxTreeItemId.IsOk() will return false if there is no such item
 
         // get the root tree item
     wxTreeItemId GetRootItem() const;
@@ -342,7 +333,7 @@ public:
         // edited simultaneously)
     wxTextCtrl* GetEditControl() const;
         // end editing and accept or discard the changes to item label
-    void EndEditLabel(const wxTreeItemId& item, bool discardChanges = FALSE);
+    void EndEditLabel(const wxTreeItemId& item, bool discardChanges = false);
 
         // sort the children of this item using the specified callback function
         // (it should return -1, 0 or +1 as usual), if it's not specified

@@ -4,9 +4,9 @@
 // Author:      Aleksandras Gluchovas
 // Modified by:
 // Created:     27/12/98
-// RCS-ID:      $Id: ifcontext.cpp,v 1.4 2001/12/03 10:54:59 GT Exp $
+// RCS-ID:      $Id: ifcontext.cpp,v 1.8 2005/05/31 19:03:55 ABX Exp $
 // Copyright:   (c) Aleskandars Gluchovas
-// Licence:   	wxWindows licence
+// Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
 
 #ifdef __GNUG__
@@ -33,25 +33,27 @@
 
 /***** Implementation for class spInterFileContext *****/
 
-size_t spInterFileContext::GetFileNo( const string& fname )
+size_t spInterFileContext::GetFileNo( const wxString& fname )
 {
-    size_t i;
-	for ( i = 0; i != mFiles.size(); ++i )
-		if ( fname == mFiles[i] )
+    for ( size_t i = 0; i != m_Files.size(); ++i )
+    {
+        if ( fname == m_Files[i] )
             return i;
+    }
 
     wxFAIL_MSG("File not found in array in function spInterFileContext::GetFileNo()");
-	return 0;
+
+    return 0;
 }
 
 size_t spInterFileContext::GetFileNoOfContext( spContext& ctx )
 {
-	spContext* pCtx = ctx.GetEnclosingContext( SP_CTX_FILE );
+    spContext* pCtx = ctx.GetEnclosingContext( SP_CTX_FILE );
 
-	// DBG:: outer-file context should be present
-	wxASSERT( pCtx && pCtx->GetType() == SP_CTX_FILE ); 
+    // DBG:: outer-file context should be present
+    wxASSERT( pCtx && pCtx->GetType() == SP_CTX_FILE );
 
-	return GetFileNo( ((spFile*)pCtx)->mFileName );
+    return GetFileNo( ((spFile*)pCtx)->m_FileName );
 }
 
 /*** public interface ***/
@@ -62,236 +64,234 @@ spInterFileContext::spInterFileContext()
 spInterFileContext::~spInterFileContext()
 {}
 
-void spInterFileContext::AddFile( const string& fname, const string& content )
+void spInterFileContext::AddFile( const wxString& fname, const wxString& content )
 {
-	mFiles.push_back( fname );
-	mContents.push_back( content );
+    m_Files.push_back( fname );
+    m_Contents.push_back( content );
 }
 
 void spInterFileContext::RemoveContext( spContext& ctx )
 {
-	wxASSERT( ctx.PositionIsKnown() ); // DBG:: should be checked by-user code
+    wxASSERT( ctx.PositionIsKnown() ); // DBG:: should be checked by-user code
 
-	size_t fNo = GetFileNoOfContext( ctx );
+    size_t fNo = GetFileNoOfContext( ctx );
 
-	mDeletionMarks.push_back( spBookmark( ctx.mSrcOffset, ctx.mContextLength, fNo ) );
+    mDeletionMarks.push_back( spBookmark( ctx.mSrcOffset, ctx.mContextLength, fNo ) );
 }
 
 void spInterFileContext::InsertBookmarkSorted( BookmarkListT& lst, spBookmark& mark )
 {
-	for( size_t i = 0; i != lst.size(); ++i )
-	
-		if ( lst[i].mFrom > mark.mFrom )
-		{
-			lst.insert( &lst[i], mark );
-			return;
-		}
+    for( size_t i = 0; i != lst.size(); ++i )
 
-	lst.push_back( mark );
-}		
+    if ( lst[i].mFrom > mark.mFrom )
+    {
+        lst.insert( &lst[i], mark );
+        return;
+    }
 
-void spInterFileContext::DoAppendSourceFragment( string& source, 
-												 string& result, 
-												 size_t  pos, size_t len )
-{
-	mFiltered.erase( mFiltered.begin(), mFiltered.end() );
-
-	size_t i;
-
-	for( i = 0; i != mDeletionMarks.size(); ++i )
-	{
-		spBookmark& mark = mDeletionMarks[i];
-
-		if ( mark.mFileNo == mCurFileNo && 
-			 mark.mFrom >= pos && mark.mFrom < pos + len )
-		
-			 InsertBookmarkSorted( mFiltered, mark );
-	}
-
-	size_t cur = pos;
-	
-	for( i = 0; i != mFiltered.size(); ++ i )
-	{
-		spBookmark& mark = mFiltered[i];
-
-		result.append( source, cur, ( (size_t)mark.mFrom - cur ) );
-
-		cur = size_t( mark.mFrom + mark.mLen );
-
-		if ( cur >= pos + len ) // check if we've overstepped the current source-fragment
-		{
-//			wxASSERT(0); // DBG:: with current imp. this should not happen
-            wxFAIL_MSG("Overstepped the current source fragment in function\nspInterFileContext::DoAppendSourceFragment()");			
-			cur = pos + len; break;
-		}
-	}
-
-	result.append( source, cur, ( pos + len ) - cur );
+    lst.push_back( mark );
 }
 
-void spInterFileContext::GenerateContextBody( spContext& ctx, 
-											  string&    source,
-											  string&    result, 
-											  size_t&    lastSavedPos,
-											  size_t&    lastKnownPos )
+void spInterFileContext::DoAppendSourceFragment( wxString& source,
+                                                 wxString& result,
+                                                 size_t  pos, size_t len )
 {
-	if ( ctx.PositionIsKnown() )
+    mFiltered.erase( mFiltered.begin(), mFiltered.end() );
 
-		lastKnownPos = ctx.mSrcOffset;
+    size_t i;
 
-	if ( ctx.IsVirtualContext() )
-	{
-		// add fragment accumulated before this context
+    for( i = 0; i != mDeletionMarks.size(); ++i )
+    {
+        spBookmark& mark = mDeletionMarks[i];
 
-		DoAppendSourceFragment( source, result,
-							    size_t(lastSavedPos), 
-							    size_t(lastKnownPos - lastSavedPos) );
+        if ( mark.mFileNo == mCurFileNo &&
+             mark.mFrom >= pos && mark.mFrom < pos + len )
 
-		// add context body
+        InsertBookmarkSorted( mFiltered, mark );
+    }
 
-		result += ctx.GetVirtualContextBody();
+    size_t cur = pos;
 
-		lastSavedPos = lastKnownPos;
+    for( i = 0; i != mFiltered.size(); ++ i )
+    {
+        spBookmark& mark = mFiltered[i];
 
-		if ( ctx.PositionIsKnown() )
-		{
-			if ( ctx.VitualContextHasChildren() )
-			{
-				lastKnownPos = ctx.mSrcOffset + ctx.mHeaderLength;
+        result.append( source, cur, ( (size_t)mark.mFrom - cur ) );
 
-				lastSavedPos = lastKnownPos;
-			}
-			else
-			{
-				lastKnownPos = ctx.mSrcOffset + ctx.mContextLength;
+        cur = size_t( mark.mFrom + mark.mLen );
 
-				lastSavedPos = lastKnownPos;
+        if ( cur >= pos + len ) // check if we've overstepped the current source-fragment
+        {
+//            wxASSERT(0); // DBG:: with current imp. this should not happen
+            wxFAIL_MSG("Overstepped the current source fragment in function\nspInterFileContext::DoAppendSourceFragment()");
+            cur = pos + len; break;
+        }
+    }
 
-				return; // have not children
-			}
-		}
-	}
+    result.append( source, cur, ( pos + len ) - cur );
+}
 
-	MMemberListT& lst = ctx.GetMembers();
+void spInterFileContext::GenerateContextBody( spContext& ctx,
+                                              wxString&  source,
+                                              wxString&  result,
+                                              size_t&    lastSavedPos,
+                                              size_t&    lastKnownPos )
+{
+    if ( ctx.PositionIsKnown() )
+        lastKnownPos = ctx.mSrcOffset;
 
-	for( size_t i = 0; i != lst.size(); ++i )
-	
-		GenerateContextBody( *lst[i], source, result, lastSavedPos, lastKnownPos );
-	
-	if ( ctx.IsVirtualContext() )
-	{
-		if ( ctx.VitualContextHasChildren() && 
+    if ( ctx.IsVirtualContext() )
+    {
+        // add fragment accumulated before this context
 
-			 ctx.GetFooterOfVirtualContextBody() != "" )
-		{
-			// append the reminder space after children of the context
+        DoAppendSourceFragment( source, result,
+                                size_t(lastSavedPos),
+                                size_t(lastKnownPos - lastSavedPos) );
 
-			DoAppendSourceFragment( result, source,
-									size_t(lastSavedPos), 
-									size_t(lastKnownPos - lastSavedPos) );
+        // add context body
 
-			// add footer 
-			result += ctx.GetFooterOfVirtualContextBody();
+        result += ctx.GetVirtualContextBody();
 
-			lastKnownPos = ctx.mSrcOffset + ctx.mContextLength;
+        lastSavedPos = lastKnownPos;
 
-			lastSavedPos = lastKnownPos;
-		}
-	}
+        if ( ctx.PositionIsKnown() )
+        {
+            if ( ctx.VitualContextHasChildren() )
+            {
+                lastKnownPos = ctx.mSrcOffset + ctx.mHeaderLength;
 
-	if ( ctx.PositionIsKnown() )
+                lastSavedPos = lastKnownPos;
+            }
+            else
+            {
+                lastKnownPos = ctx.mSrcOffset + ctx.mContextLength;
 
-		lastKnownPos = ctx.mSrcOffset + ctx.mContextLength;
+                lastSavedPos = lastKnownPos;
+
+                return; // have not children
+            }
+        }
+    }
+
+    MMemberListT& lst = ctx.GetMembers();
+
+    for( size_t i = 0; i != lst.size(); ++i )
+    {
+        GenerateContextBody( *lst[i], source, result, lastSavedPos, lastKnownPos );
+    }
+
+    if ( ctx.IsVirtualContext() )
+    {
+        if ( ctx.VitualContextHasChildren() && !ctx.GetFooterOfVirtualContextBody().empty() )
+        {
+            // append the reminder space after children of the context
+
+            DoAppendSourceFragment( result, source,
+                                    size_t(lastSavedPos),
+                                    size_t(lastKnownPos - lastSavedPos) );
+
+            // add footer
+            result += ctx.GetFooterOfVirtualContextBody();
+
+            lastKnownPos = ctx.mSrcOffset + ctx.mContextLength;
+
+            lastSavedPos = lastKnownPos;
+        }
+    }
+
+    if ( ctx.PositionIsKnown() )
+
+        lastKnownPos = ctx.mSrcOffset + ctx.mContextLength;
 }
 
 void spInterFileContext::GenrateContents()
 {
-	MMemberListT& lst = GetMembers();
+    MMemberListT& lst = GetMembers();
 
-	for( size_t f = 0; f != lst.size(); ++f )
-	{
-		string& fname = ((spFile*)lst[f])->mFileName;
+    for( size_t f = 0; f != lst.size(); ++f )
+    {
+        wxString& fname = ((spFile*)lst[f])->m_FileName;
 
-		size_t fileNo = GetFileNo( fname );
+        size_t fileNo = GetFileNo( fname );
 
-		string& source = mContents[ fileNo ];
+        wxString& source = m_Contents[ fileNo ];
 
-		string result;
+        wxString result;
 
-		size_t lastKnownPos = 0, // the begining of the file is always "known"
-			   lastSavedPos = 0;
+        size_t lastKnownPos = 0, // the begining of the file is always "known"
+               lastSavedPos = 0;
 
-		mCurFileNo = fileNo;
+        mCurFileNo = fileNo;
 
-		GenerateContextBody( *lst[f], source, result, lastSavedPos, lastKnownPos );
+        GenerateContextBody( *lst[f], source, result, lastSavedPos, lastKnownPos );
 
-		// the end of file is always known
+        // the end of file is always known
 
-		lastKnownPos = mContents[ fileNo ].length();
+        lastKnownPos = m_Contents[ fileNo ].length();
 
-		// append the reminder 
+        // append the reminder
 
-		DoAppendSourceFragment( source, result,
-							    size_t(lastSavedPos), 
-							    size_t(lastKnownPos - lastSavedPos) );
+        DoAppendSourceFragment( source, result,
+                                size_t(lastSavedPos),
+                                size_t(lastKnownPos - lastSavedPos) );
 
-		// replace original contnet with newly generated one
+        // replace original contnet with newly generated one
 
-		mContents[ fileNo ] = result;
-	}
+        m_Contents[ fileNo ] = result;
+    }
 }
 
 void spInterFileContext::ParseContents( SourceParserPlugin* pPlugin )
 {
-	mDeletionMarks.erase( mDeletionMarks.begin(), mDeletionMarks.end() );
+    mDeletionMarks.erase( mDeletionMarks.begin(), mDeletionMarks.end() );
 
-	RemoveChildren(); // clean up top-level context
+    RemoveChildren(); // clean up top-level context
 
-	mParser.SetPlugin( pPlugin );
+    mParser.SetPlugin( pPlugin );
 
-	for( size_t i = 0; i != mFiles.size(); ++i )
-	{
-		char* s = (char*)(mContents[i].c_str());
+    for( size_t i = 0; i != m_Files.size(); ++i )
+    {
+        wxChar* s = (char*)(m_Contents[i].c_str());
 
-		spFile* pFCtx = mParser.Parse( s, s + mContents[i].length() );
+        spFile* pFCtx = mParser.Parse( s, s + m_Contents[i].length() );
 
-		pFCtx->mFileName = mFiles[i];
+        pFCtx->m_FileName = m_Files[i];
 
-		AddMember( pFCtx );
-	}
+        AddMember( pFCtx );
+    }
 }
 
 void spInterFileContext::WriteToFiles()
 {
-	for( size_t i = 0; i != mFiles.size(); ++i )
-	{
-		FILE* fp = fopen( mFiles[i].c_str(), "w+t" );
+    for( size_t i = 0; i != m_Files.size(); ++i )
+    {
+        FILE* fp = fopen( m_Files[i].c_str(), "w+t" );
 
-		if ( int(fp) > 0 )
-		{
-			fwrite( mContents[i].c_str(), sizeof(char), mContents[i].length(), fp );
+        if ( fp != NULL )
+        {
+            fwrite( m_Contents[i].c_str(), sizeof(char), m_Contents[i].length(), fp );
 
-			fclose( fp );
-		}
-	}
+            fclose( fp );
+        }
+    }
 }
 
-string spInterFileContext::GetBody( spContext* pCtx )
+wxString spInterFileContext::GetBody( spContext* pCtx )
 {
-	wxASSERT( pCtx->PositionIsKnown() ); // DBG:: should be checked by-user code
+    wxASSERT( pCtx->PositionIsKnown() ); // DBG:: should be checked by-user code
 
-	string& source = mContents[ GetFileNoOfContext( *pCtx ) ];
+    wxString& source = m_Contents[ GetFileNoOfContext( *pCtx ) ];
 
-	return string( source.c_str() + pCtx->mSrcOffset, pCtx->mContextLength );
+    return wxString( source.c_str() + pCtx->mSrcOffset, pCtx->mContextLength );
 }
 
-string spInterFileContext::GetHeader( spContext* pCtx )
+wxString spInterFileContext::GetHeader( spContext* pCtx )
 {
-	wxASSERT( pCtx->PositionIsKnown() );   // DBG:: should be checked by-user code
+    wxASSERT( pCtx->PositionIsKnown() );   // DBG:: should be checked by-user code
 
-	wxASSERT( pCtx->mHeaderLength != -1 ); // DBG:: -/-
+    wxASSERT( pCtx->mHeaderLength != -1 ); // DBG:: -/-
 
-	string& source = mContents[ GetFileNoOfContext( *pCtx ) ];
+    wxString& source = m_Contents[ GetFileNoOfContext( *pCtx ) ];
 
-	return string( source.c_str() + pCtx->mSrcOffset, pCtx->mHeaderLength );
+    return wxString( source.c_str() + pCtx->mSrcOffset, pCtx->mHeaderLength );
 }

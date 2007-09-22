@@ -4,7 +4,7 @@
 // Purpose:     Part of the widgets sample showing wxSlider
 // Author:      Vadim Zeitlin
 // Created:     16.04.01
-// Id:          $Id: slider.cpp,v 1.19 2004/10/04 20:25:14 ABX Exp $
+// Id:          $Id: slider.cpp,v 1.26 2005/05/31 15:21:52 VZ Exp $
 // Copyright:   (c) 2001 Vadim Zeitlin
 // License:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -23,6 +23,8 @@
 #ifdef __BORLANDC__
     #pragma hdrstop
 #endif
+
+#if wxUSE_SLIDER
 
 // for all others, include the necessary headers
 #ifndef WX_PRECOMP
@@ -44,7 +46,7 @@
 #include "wx/sizer.h"
 
 #include "widgets.h"
-#if wxUSE_SLIDER
+
 #include "icons/slider.xpm"
 
 // ----------------------------------------------------------------------------
@@ -74,10 +76,10 @@ enum
 // sides radiobox values
 enum
 {
-    StaticSides_Top,
-    StaticSides_Bottom,
-    StaticSides_Left,
-    StaticSides_Right
+    SliderTicks_Top,
+    SliderTicks_Bottom,
+    SliderTicks_Left,
+    SliderTicks_Right
 };
 
 // ----------------------------------------------------------------------------
@@ -87,8 +89,10 @@ enum
 class SliderWidgetsPage : public WidgetsPage
 {
 public:
-    SliderWidgetsPage(wxNotebook *notebook, wxImageList *imaglist);
+    SliderWidgetsPage(wxBookCtrl *book, wxImageList *imaglist);
     virtual ~SliderWidgetsPage(){};
+
+    virtual wxControl *GetWidget() const { return m_slider; }
 
 protected:
     // event handlers
@@ -138,7 +142,7 @@ protected:
 
     // the check/radio boxes for styles
     wxCheckBox *m_chkLabels,
-               *m_chkVert,
+               *m_chkInverse,
                *m_chkTicks,
                *m_chkBothSides;
 
@@ -195,9 +199,9 @@ END_EVENT_TABLE()
 
 IMPLEMENT_WIDGETS_PAGE(SliderWidgetsPage, _T("Slider"));
 
-SliderWidgetsPage::SliderWidgetsPage(wxNotebook *notebook,
-                                       wxImageList *imaglist)
-                  : WidgetsPage(notebook)
+SliderWidgetsPage::SliderWidgetsPage(wxBookCtrl *book,
+                                     wxImageList *imaglist)
+                  : WidgetsPage(book)
 {
     imaglist->Add(wxBitmap(slider_xpm));
 
@@ -205,7 +209,7 @@ SliderWidgetsPage::SliderWidgetsPage(wxNotebook *notebook,
     m_min = 0;
     m_max = 100;
 
-    m_chkVert =
+    m_chkInverse =
     m_chkTicks =
     m_chkLabels =
     m_chkBothSides = (wxCheckBox *)NULL;
@@ -221,7 +225,7 @@ SliderWidgetsPage::SliderWidgetsPage(wxNotebook *notebook,
     wxStaticBox *box = new wxStaticBox(this, wxID_ANY, _T("&Set style"));
     wxSizer *sizerLeft = new wxStaticBoxSizer(box, wxVERTICAL);
 
-    m_chkVert = CreateCheckBoxAndAddToSizer(sizerLeft, _T("&Vertical"));
+    m_chkInverse = CreateCheckBoxAndAddToSizer(sizerLeft, _T("&Inverse"));
     m_chkTicks = CreateCheckBoxAndAddToSizer(sizerLeft, _T("Show &ticks"));
     m_chkLabels = CreateCheckBoxAndAddToSizer(sizerLeft, _T("Show &labels"));
     static const wxString sides[] =
@@ -319,23 +323,22 @@ SliderWidgetsPage::SliderWidgetsPage(wxNotebook *notebook,
 
 void SliderWidgetsPage::Reset()
 {
-    m_chkVert->SetValue(false);
+    m_chkInverse->SetValue(false);
     m_chkTicks->SetValue(true);
     m_chkLabels->SetValue(true);
     m_chkBothSides->SetValue(false);
 
-    m_radioSides->SetSelection(StaticSides_Top);
+    m_radioSides->SetSelection(SliderTicks_Top);
 }
 
 void SliderWidgetsPage::CreateSlider()
 {
     int flags = 0;
 
-    bool isVert = m_chkVert->GetValue();
-    if ( isVert )
-        flags |= wxSL_VERTICAL;
-    else
-        flags |= wxSL_HORIZONTAL;
+    if ( m_chkInverse->GetValue() )
+    {
+        flags |= wxSL_INVERSE;
+    }
 
     if ( m_chkLabels->GetValue() )
     {
@@ -349,18 +352,22 @@ void SliderWidgetsPage::CreateSlider()
 
     switch ( m_radioSides->GetSelection() )
     {
-        case StaticSides_Top:
+        case SliderTicks_Top:
             flags |= wxSL_TOP;
             break;
-        case StaticSides_Left:
+
+        case SliderTicks_Left:
             flags |= wxSL_LEFT;
             break;
-        case StaticSides_Bottom:
+
+        case SliderTicks_Bottom:
             flags |= wxSL_BOTTOM;
             break;
-        case StaticSides_Right:
+
+        case SliderTicks_Right:
             flags |= wxSL_RIGHT;
             break;
+
         default:
             wxFAIL_MSG(_T("unexpected radiobox selection"));
             // fall through
@@ -397,7 +404,7 @@ void SliderWidgetsPage::CreateSlider()
                             wxDefaultPosition, wxDefaultSize,
                             flags);
 
-    if ( isVert )
+    if ( m_slider->HasFlag(wxSL_VERTICAL) )
     {
         m_sizerSlider->Add(0, 0, 1);
         m_sizerSlider->Add(m_slider, 0, wxGROW | wxALL, 5);
@@ -480,6 +487,12 @@ void SliderWidgetsPage::OnButtonSetMinAndMax(wxCommandEvent& WXUNUSED(event))
     m_max = maxNew;
 
     m_slider->SetRange(minNew, maxNew);
+
+    if ( m_slider->GetMin() != m_min ||
+         m_slider->GetMax() != m_max )
+    {
+        wxLogWarning(_T("Invalid range in slider."));
+    }
 }
 
 void SliderWidgetsPage::OnButtonSetValue(wxCommandEvent& WXUNUSED(event))
@@ -525,10 +538,11 @@ void SliderWidgetsPage::OnUpdateUIMinMaxButton(wxUpdateUIEvent& event)
 
 void SliderWidgetsPage::OnUpdateUIResetButton(wxUpdateUIEvent& event)
 {
-    event.Enable( m_chkVert->GetValue() ||
+    event.Enable( m_chkInverse->GetValue() ||
                   !m_chkTicks->GetValue() ||
                   !m_chkLabels->GetValue() ||
-                  m_chkBothSides->GetValue() );
+                  m_chkBothSides->GetValue() ||
+                  m_radioSides->GetSelection() != SliderTicks_Top );
 }
 
 void SliderWidgetsPage::OnCheckOrRadioBox(wxCommandEvent& WXUNUSED(event))
@@ -577,7 +591,7 @@ void SliderWidgetsPage::OnSlider(wxScrollEvent& event)
         wxT("wxEVT_SCROLL_PAGEDOWN"),
         wxT("wxEVT_SCROLL_THUMBTRACK"),
         wxT("wxEVT_SCROLL_THUMBRELEASE"),
-        wxT("wxEVT_SCROLL_ENDSCROLL")
+        wxT("wxEVT_SCROLL_CHANGED")
     };
 
     int index = eventType - wxEVT_SCROLL_TOP;
@@ -592,11 +606,11 @@ void SliderWidgetsPage::OnSlider(wxScrollEvent& event)
 
     static int s_numSliderEvents = 0;
 
-    wxLogMessage(wxT("Slider event #%d: %s (pos = %d)"),
+    wxLogMessage(wxT("Slider event #%d: %s (pos = %d, int value = %ld)"),
                  s_numSliderEvents++,
                  eventNames[index],
-                 event.GetPosition());
+                 event.GetPosition(),
+                 event.GetInt());
 }
 
-#endif
-    // wxUSE_SLIDER
+#endif // wxUSE_SLIDER

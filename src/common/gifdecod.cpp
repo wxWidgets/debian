@@ -3,7 +3,7 @@
 // Purpose:     wxGIFDecoder, GIF reader for wxImage and wxAnimation
 // Author:      Guillermo Rodriguez Garcia <guille@iies.es>
 // Version:     3.04
-// RCS-ID:      $Id: gifdecod.cpp,v 1.35 2004/11/10 21:02:22 VZ Exp $
+// RCS-ID:      $Id: gifdecod.cpp,v 1.37 2005/05/31 09:19:51 JS Exp $
 // Copyright:   (c) Guillermo Rodriguez Garcia
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -271,17 +271,19 @@ bool wxGIFDecoder::GoPrevFrame(bool cyclic)
 
 bool wxGIFDecoder::GoFrame(int which)
 {
-    int i;
-
     if (!IsAnimation())
         return false;
 
     if ((which >= 1) && (which <= m_nimages))
     {
+        m_image = 1;
         m_pimage = m_pfirst;
 
-        for (i = 0; i < which; i++)
+        while (m_image < which)
+        {
+            m_image++;
             m_pimage = m_pimage->next;
+        }
 
         return true;
     }
@@ -507,7 +509,7 @@ int wxGIFDecoder::dgif(GIFImage *img, int interl, int bits)
                     /* loop until a valid y coordinate has been
                     found, Or if the maximum number of passes has
                     been reached, exit the loop, and stop image
-                    decoding (At this point the image is succesfully
+                    decoding (At this point the image is successfully
                     decoded).
                     If we don't loop, but merely set y to some other
                     value, that new value might still be invalid depending
@@ -752,7 +754,7 @@ int wxGIFDecoder::ReadGIF()
                     transparent = buf[4];
 
                 /* read disposal method */
-                disposal = (buf[1] & 0x1C) - 1;
+                disposal = ((buf[1] & 0x1C) >> 2) - 1;
             }
             else
             /* other extension, skip */

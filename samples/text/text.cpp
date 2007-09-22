@@ -3,7 +3,7 @@
 // Purpose:     TextCtrl wxWidgets sample
 // Author:      Robert Roebling
 // Modified by:
-// RCS-ID:      $Id: text.cpp,v 1.77 2004/11/07 13:01:59 RN Exp $
+// RCS-ID:      $Id: text.cpp,v 1.81 2005/06/02 12:04:38 JS Exp $
 // Copyright:   (c) Robert Roebling, Julian Smart, Vadim Zeitlin
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -116,8 +116,6 @@ public:
     void DoMoveToEndOfText();
     void DoMoveToEndOfEntry();
 
-    void OnSize( wxSizeEvent &event );
-
     MyTextCtrl    *m_text;
     MyTextCtrl    *m_password;
     MyTextCtrl    *m_enter;
@@ -139,8 +137,6 @@ private:
     // get the currently focused text control or return the default one is no
     // text ctrl has focus
     wxTextCtrl *GetFocusedText(wxTextCtrl *textDef);
-
-    DECLARE_EVENT_TABLE()
 };
 
 class MyFrame: public wxFrame
@@ -332,9 +328,9 @@ IMPLEMENT_APP(MyApp)
 
 enum
 {
-    TEXT_QUIT = 100,
-    TEXT_ABOUT,
-    TEXT_LOAD,
+    TEXT_QUIT = wxID_EXIT,
+    TEXT_ABOUT = wxID_ABOUT,
+    TEXT_LOAD = 101,
     TEXT_SAVE,
     TEXT_CLEAR,
     TEXT_RICH_TEXT_TEST,
@@ -381,7 +377,7 @@ bool MyApp::OnInit()
 {
     // Create the main frame window
     MyFrame *frame = new MyFrame((wxFrame *) NULL,
-            _T("Text wxWidgets sample"), 50, 50, 700, 420);
+            _T("Text wxWidgets sample"), 50, 50, 700, 550);
     frame->SetSizeHints( 500, 400 );
 
     wxMenu *file_menu = new wxMenu;
@@ -450,17 +446,17 @@ bool MyApp::OnInit()
     menuLog->AppendCheckItem(TEXT_LOG_TEXT, _T("Log &text events"));
     menuLog->AppendCheckItem(TEXT_LOG_FOCUS, _T("Log &focus events"));
     menuLog->AppendSeparator();
-    menuLog->Append(TEXT_CLEAR, _T("&Clear the log\tCtrl-C"),
+    menuLog->Append(TEXT_CLEAR, _T("&Clear the log\tCtrl-L"),
                     _T("Clear the log window contents"));
 
     // select only the interesting events by default
-    menuLog->Check(TEXT_LOG_KEY, true);
-    menuLog->Check(TEXT_LOG_CHAR, true);
-    menuLog->Check(TEXT_LOG_TEXT, true);
-
     MyTextCtrl::ms_logKey =
-    MyTextCtrl::ms_logChar =
+    MyTextCtrl::ms_logChar = false;
     MyTextCtrl::ms_logText = true;
+
+    menuLog->Check(TEXT_LOG_KEY, MyTextCtrl::ms_logKey);
+    menuLog->Check(TEXT_LOG_CHAR, MyTextCtrl::ms_logChar);
+    menuLog->Check(TEXT_LOG_TEXT, MyTextCtrl::ms_logText);
 
     menu_bar->Append(menuLog, _T("&Log"));
 #endif // wxUSE_LOG
@@ -883,10 +879,6 @@ void MyTextCtrl::OnKeyDown(wxKeyEvent& event)
 // MyPanel
 //----------------------------------------------------------------------
 
-BEGIN_EVENT_TABLE(MyPanel, wxPanel)
-    EVT_SIZE(MyPanel::OnSize)
-END_EVENT_TABLE()
-
 MyPanel::MyPanel( wxFrame *frame, int x, int y, int w, int h )
        : wxPanel( frame, wxID_ANY, wxPoint(x, y), wxSize(w, h) )
 {
@@ -960,7 +952,7 @@ MyPanel::MyPanel( wxFrame *frame, int x, int y, int w, int h )
     }
 
     m_multitext = new MyTextCtrl( this, wxID_ANY, _T("Multi line."),
-      wxPoint(180,10), wxSize(240,70), wxTE_MULTILINE );
+      wxPoint(180,10), wxSize(200,70), wxTE_MULTILINE );
     m_multitext->SetFont(*wxITALIC_FONT);
     (*m_multitext) << _T(" Appended.");
     m_multitext->SetInsertionPoint(0);
@@ -973,20 +965,22 @@ MyPanel::MyPanel( wxFrame *frame, int x, int y, int w, int h )
 #endif
 
     m_tab = new MyTextCtrl( this, 100, _T("Multiline, allow <TAB> processing."),
-      wxPoint(180,90), wxSize(240,70), wxTE_MULTILINE |  wxTE_PROCESS_TAB );
+      wxPoint(180,90), wxSize(200,70), wxTE_MULTILINE |  wxTE_PROCESS_TAB );
     m_tab->SetClientData((void *)_T("tab"));
 
     m_enter = new MyTextCtrl( this, 100, _T("Multiline, allow <ENTER> processing."),
-      wxPoint(180,170), wxSize(240,70), wxTE_MULTILINE);
+      wxPoint(180,170), wxSize(200,70), wxTE_MULTILINE);
     m_enter->SetClientData((void *)_T("enter"));
 
     m_textrich = new MyTextCtrl(this, wxID_ANY, _T("Allows more than 30Kb of text\n")
                                 _T("(even under broken Win9x)\n")
                                 _T("and a very very very very very ")
                                 _T("very very very long line to test ")
-                                _T("wxHSCROLL style"),
-                                wxPoint(450, 10), wxSize(230, 230),
-                                wxTE_RICH | wxTE_MULTILINE);
+                                _T("wxHSCROLL style\n")
+                                _T("\nAnd here is a link in quotation marks to ")
+                                _T("test wxTE_AUTO_URL: \"http://www.wxwidgets.org\""),
+                                wxPoint(450, 10), wxSize(200, 230),
+                                wxTE_RICH | wxTE_MULTILINE | wxTE_AUTO_URL);
     m_textrich->SetStyle(0, 10, *wxRED);
     m_textrich->SetStyle(10, 20, *wxBLUE);
     m_textrich->SetStyle(30, 40,
@@ -1002,11 +996,13 @@ MyPanel::MyPanel( wxFrame *frame, int x, int y, int w, int h )
     m_textrich->AppendText(_T("And this should be in blue and the text you ")
                            _T("type should be in blue as well"));
 
+
+    // lay out the controls
     wxBoxSizer *column1 = new wxBoxSizer(wxVERTICAL);
-    column1->Add( m_text, 0, wxALL, 10 );
-    column1->Add( m_password, 0, wxALL, 10 );
-    column1->Add( m_readonly, 0, wxALL, 10 );
-    column1->Add( m_limited, 0, wxALL, 10 );
+    column1->Add( m_text, 0, wxALL | wxEXPAND, 10 );
+    column1->Add( m_password, 0, wxALL | wxEXPAND, 10 );
+    column1->Add( m_readonly, 0, wxALL | wxEXPAND, 10 );
+    column1->Add( m_limited, 0, wxALL | wxEXPAND, 10 );
     column1->Add( m_horizontal, 1, wxALL | wxEXPAND, 10 );
 
     wxBoxSizer *column2 = new wxBoxSizer(wxVERTICAL);
@@ -1014,35 +1010,20 @@ MyPanel::MyPanel( wxFrame *frame, int x, int y, int w, int h )
     column2->Add( m_tab, 1, wxALL | wxEXPAND, 10 );
     column2->Add( m_enter, 1, wxALL | wxEXPAND, 10 );
 
-    wxBoxSizer *column3 = new wxBoxSizer(wxVERTICAL);
-    column3->Add( m_textrich, 1, wxALL | wxEXPAND, 10 );
-
     wxBoxSizer *row1 = new wxBoxSizer(wxHORIZONTAL);
     row1->Add( column1, 0, wxALL | wxEXPAND, 10 );
     row1->Add( column2, 1, wxALL | wxEXPAND, 10 );
-    row1->Add( column3, 1, wxALL | wxEXPAND, 10 );
+    row1->Add( m_textrich, 1, wxALL | wxEXPAND, 10 );
 
     wxBoxSizer *topSizer = new wxBoxSizer(wxVERTICAL);
     topSizer->Add( row1, 2, wxALL | wxEXPAND, 10 );
 
 #if wxUSE_LOG
-    wxBoxSizer *row2 = new wxBoxSizer(wxHORIZONTAL);
-    row2->Add( m_log, 1, wxALL | wxEXPAND, 10 );
-    topSizer->Add( row2, 1, wxALL | wxEXPAND, 10 );
+    topSizer->Add( m_log, 1, wxALL | wxEXPAND, 10 );
 #endif
 
     SetAutoLayout( true );
     SetSizer(topSizer);
-}
-
-void MyPanel::OnSize( wxSizeEvent &event )
-{
-#if wxUSE_LOG
-    wxSize client_area( GetClientSize() );
-    if (m_log)
-      m_log->SetSize( 0, 260, client_area.x, client_area.y - 260 );
-#endif // wxUSE_LOG
-    event.Skip();
 }
 
 wxTextCtrl *MyPanel::GetFocusedText(wxTextCtrl *textDef)

@@ -4,7 +4,7 @@
 // Author:      Vadim Zeitlin
 // Modified by:
 // Created:     10.09.00
-// RCS-ID:      $Id: tipwin.cpp,v 1.26 2004/06/17 16:22:36 ABX Exp $
+// RCS-ID:      $Id: tipwin.cpp,v 1.28 2005/02/16 20:34:22 ABX Exp $
 // Copyright:   (c) 2000 Vadim Zeitlin <zeitlin@dptmaths.ens-cachan.fr>
 // Licence:     wxWindows licence
 ///////////////////////////////////////////////////////////////////////////////
@@ -157,7 +157,7 @@ wxTipWindow::wxTipWindow(wxWindow *parent,
     y += wxSystemSettings::GetMetric(wxSYS_CURSOR_Y) / 2;
 
 #if wxUSE_POPUPWIN
-    Position(wxPoint(x, y), wxSize(0, 0));
+    Position(wxPoint(x, y), wxSize(0,0));
     Popup(m_view);
     #ifdef __WXGTK__
         if (!GTK_WIDGET_HAS_GRAB(m_widget))

@@ -5,7 +5,7 @@
 // Modified by:
 //  Chris Elliott (biol75@york.ac.uk) 5 Dec 00: write support for Win32
 // Created:     23.09.98
-// RCS-ID:      $Id: mimetype.h,v 1.36 2004/09/17 22:23:54 ABX Exp $
+// RCS-ID:      $Id: mimetype.h,v 1.38 2005/05/31 09:18:16 JS Exp $
 // Copyright:   (c) 1998 Vadim Zeitlin <zeitlin@dptmaths.ens-cachan.fr>
 // Licence:     wxWindows licence (part of wxExtra library)
 /////////////////////////////////////////////////////////////////////////////
@@ -98,7 +98,7 @@ public:
     wxFileTypeInfo() { }
 
     // test if this object can be used
-    bool IsValid() const { return !m_mimeType.IsEmpty(); }
+    bool IsValid() const { return !m_mimeType.empty(); }
 
     // setters
         // set the icon info
@@ -320,7 +320,7 @@ public:
     wxFileType *GetFileTypeFromMimeType(const wxString& mimeType);
 
     // other operations: return true if there were no errors or false if there
-    // were some unreckognized entries (the good entries are always read anyhow)
+    // were some unrecognized entries (the good entries are always read anyhow)
     //
     // FIXME: These ought to be private ??
 
@@ -388,7 +388,7 @@ private:
 // ----------------------------------------------------------------------------
 
 // the default mime manager for wxWidgets programs
-WXDLLIMPEXP_DATA_BASE(extern wxMimeTypesManager *) wxTheMimeTypesManager;
+extern WXDLLIMPEXP_DATA_BASE(wxMimeTypesManager *) wxTheMimeTypesManager;
 
 #endif // wxUSE_MIMETYPE
 

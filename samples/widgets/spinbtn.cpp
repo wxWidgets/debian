@@ -4,7 +4,7 @@
 // Purpose:     Part of the widgets sample showing wxSpinButton
 // Author:      Vadim Zeitlin
 // Created:     16.04.01
-// Id:          $Id: spinbtn.cpp,v 1.15 2004/10/04 20:25:15 ABX Exp $
+// Id:          $Id: spinbtn.cpp,v 1.18 2005/02/28 01:15:46 VZ Exp $
 // Copyright:   (c) 2001 Vadim Zeitlin
 // License:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -24,6 +24,8 @@
     #pragma hdrstop
 #endif
 
+#if wxUSE_SPINBTN
+
 // for all others, include the necessary headers
 #ifndef WX_PRECOMP
     #include "wx/log.h"
@@ -42,7 +44,7 @@
 #include "wx/sizer.h"
 
 #include "widgets.h"
-#if wxUSE_SPINBTN
+
 #include "icons/spinbtn.xpm"
 
 // ----------------------------------------------------------------------------
@@ -71,8 +73,11 @@ enum
 class SpinBtnWidgetsPage : public WidgetsPage
 {
 public:
-    SpinBtnWidgetsPage(wxNotebook *notebook, wxImageList *imaglist);
+    SpinBtnWidgetsPage(wxBookCtrl *book, wxImageList *imaglist);
     virtual ~SpinBtnWidgetsPage(){};
+
+    virtual wxControl *GetWidget() const { return m_spinbtn; }
+    virtual wxControl *GetWidget2() const { return m_spinctrl; }
 
 protected:
     // event handlers
@@ -162,9 +167,9 @@ END_EVENT_TABLE()
 
 IMPLEMENT_WIDGETS_PAGE(SpinBtnWidgetsPage, _T("Spin"));
 
-SpinBtnWidgetsPage::SpinBtnWidgetsPage(wxNotebook *notebook,
+SpinBtnWidgetsPage::SpinBtnWidgetsPage(wxBookCtrl *book,
                                        wxImageList *imaglist)
-                  : WidgetsPage(notebook)
+                  : WidgetsPage(book)
 {
     m_chkVert = NULL;
     m_chkWrap = NULL;

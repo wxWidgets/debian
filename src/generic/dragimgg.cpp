@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     29/2/2000
-// RCS-ID:      $Id: dragimgg.cpp,v 1.16 2004/06/17 16:22:34 ABX Exp $
+// RCS-ID:      $Id: dragimgg.cpp,v 1.17 2005/02/10 21:33:54 ABX Exp $
 // Copyright:   (c) Julian Smart
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -220,7 +220,7 @@ bool wxGenericDragImage::BeginDrag(const wxPoint& hotspot,
     // dragged.
 
     wxSize clientSize;
-    wxPoint pt(0, 0);
+    wxPoint pt;
     if (!m_fullScreen)
     {
         clientSize = window->GetClientSize();

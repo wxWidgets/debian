@@ -1,3 +1,14 @@
+/////////////////////////////////////////////////////////////////////////////
+// Name:        wx/dirdlg.h
+// Purpose:     wxDirDialog base class
+// Author:      Robert Roebling
+// Modified by:
+// Created:
+// Copyright:   (c) Robert Roebling
+// RCS-ID:      $Id: dirdlg.h,v 1.39 2005/05/04 18:51:57 JS Exp $
+// Licence:     wxWindows Licence
+/////////////////////////////////////////////////////////////////////////////
+
 #ifndef _WX_DIRDLG_H_BASE_
 #define _WX_DIRDLG_H_BASE_
 
@@ -9,12 +20,17 @@
 // constants
 // ----------------------------------------------------------------------------
 
-WXDLLEXPORT_DATA(extern const wxChar*) wxDirDialogNameStr;
-WXDLLEXPORT_DATA(extern const wxChar*) wxDirDialogDefaultFolderStr;
-WXDLLEXPORT_DATA(extern const wxChar*) wxDirSelectorPromptStr;
+extern WXDLLEXPORT_DATA(const wxChar*) wxDirDialogNameStr;
+extern WXDLLEXPORT_DATA(const wxChar*) wxDirDialogDefaultFolderStr;
+extern WXDLLEXPORT_DATA(const wxChar*) wxDirSelectorPromptStr;
 
-#define wxDD_DEFAULT_STYLE \
-    (wxDEFAULT_DIALOG_STYLE | wxRESIZE_BORDER | wxDD_NEW_DIR_BUTTON)
+#ifdef __WXWINCE__
+    #define wxDD_DEFAULT_STYLE \
+        (wxDEFAULT_DIALOG_STYLE | wxDD_NEW_DIR_BUTTON)
+#else
+    #define wxDD_DEFAULT_STYLE \
+        (wxDEFAULT_DIALOG_STYLE | wxRESIZE_BORDER | wxDD_NEW_DIR_BUTTON)
+#endif
 
 /*
     The interface (TODO: make the other classes really derive from it!) is
@@ -51,8 +67,8 @@ public:
     #include "wx/generic/dirdlgg.h"
     #define wxDirDialog wxGenericDirDialog
 
-// MS Smartphone
-#elif defined(__SMARTPHONE__) && defined(__WXWINCE__)
+// MS PocketPC or MS Smartphone
+#elif defined(__WXMSW__) && defined(__WXWINCE__) && !defined(__HANDHELDPC__)
 
     #include "wx/generic/dirdlgg.h"
     #define wxDirDialog wxGenericDirDialog

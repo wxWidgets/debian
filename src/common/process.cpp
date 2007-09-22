@@ -4,7 +4,7 @@
 // Author:      Guilhem Lavaux
 // Modified by: Vadim Zeitlin to check error codes, added Detach() method
 // Created:     24/06/98
-// RCS-ID:      $Id: process.cpp,v 1.22 2004/09/20 11:31:49 ABX Exp $
+// RCS-ID:      $Id: process.cpp,v 1.24 2005/01/07 20:03:16 ABX Exp $
 // Copyright:   (c) Guilhem Lavaux
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -46,6 +46,15 @@ IMPLEMENT_DYNAMIC_CLASS(wxProcessEvent, wxEvent)
 // ----------------------------------------------------------------------------
 // wxProcess creation
 // ----------------------------------------------------------------------------
+
+#if WXWIN_COMPATIBILITY_2_2
+
+wxProcess::wxProcess(wxEvtHandler *parent, bool redirect)
+{
+    Init(parent, wxID_ANY, redirect ? wxPROCESS_REDIRECT : wxPROCESS_DEFAULT);
+}
+
+#endif // WXWIN_COMPATIBILITY_2_2
 
 void wxProcess::Init(wxEvtHandler *parent, int id, int flags)
 {
@@ -142,10 +151,10 @@ bool wxProcess::IsErrorAvailable() const
 // ----------------------------------------------------------------------------
 
 /* static */
-wxKillError wxProcess::Kill(int pid, wxSignal sig)
+wxKillError wxProcess::Kill(int pid, wxSignal sig, int flags)
 {
     wxKillError rc;
-    (void)wxKill(pid, sig, &rc);
+    (void)wxKill(pid, sig, &rc, flags);
 
     return rc;
 }

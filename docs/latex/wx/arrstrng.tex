@@ -60,12 +60,20 @@ functions.
 
 \func{}{wxArrayString}{\void}
 
+Default constructor.
+
 \func{}{wxArrayString}{\param{const wxArrayString\&}{ array}}
 
-Default and copy constructors.
-
-Note that when an array is assigned to a sorted array, its contents is
+Copy constructor. Note that when an array is assigned to a sorted array, its contents is
 automatically sorted during construction.
+
+\func{}{wxArrayString}{\param{size\_t}{ sz}, \param{const wxChar**}{ arr}}
+
+Constructor from a C string array. Pass a size {\it sz} and array {\it arr}.
+
+\func{}{wxArrayString}{\param{size\_t}{ sz}, \param{const wxString*}{ arr}}
+
+Constructor from a wxString array. Pass a size {\it sz} and array {\it arr}.
 
 \membersection{wxArrayString::\destruct{wxArrayString}}\label{wxarraystringdtor}
 
@@ -195,7 +203,7 @@ could break the order of items and, for example, subsequent calls to
 
 \membersection{wxArrayString::IsEmpty}\label{wxarraystringisempty}
 
-\func{}{IsEmpty}{}
+\func{bool}{IsEmpty}{}
 
 Returns true if the array is empty, false otherwise. This function returns the
 same result as {\it GetCount() == 0} but is probably easier to read.
@@ -213,7 +221,7 @@ version.
 
 \membersection{wxArrayString::Last}\label{wxarraystringlast}
 
-\func{}{Last}{}
+\func{wxString&}{Last}{}
 
 Returns the last element of the array. Attempt to access the last element of
 an empty array will result in assert failure in debug build, however no checks

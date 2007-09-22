@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     04/01/98
-// RCS-ID:      $Id: radiobut.cpp,v 1.55 2004/10/18 20:20:38 JS Exp $
+// RCS-ID:      $Id: radiobut.cpp,v 1.58 2005/05/18 02:22:59 RD Exp $
 // Copyright:   (c) Julian Smart
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -168,6 +168,12 @@ void wxRadioButton::SetValue(bool value)
     // buttons in the same group: Windows doesn't do it automatically
     if ( m_isChecked )
     {
+        // If another radiobutton in the group currently has the focus, we have to 
+        // set it to this radiobutton, else the old readiobutton will be reselected
+        // automatically, if a parent window loses the focus and regains it.
+        bool shouldSetFocus = false;
+        wxWindow* pFocusWnd = FindFocus();
+
         const wxWindowList& siblings = GetParent()->GetChildren();
         wxWindowList::compatibility_iterator nodeThis = siblings.Find(this);
         wxCHECK_RET( nodeThis, _T("radio button not a child of its parent?") );
@@ -190,6 +196,9 @@ void wxRadioButton::SetValue(bool value)
                 
                 if (btn)
                 {
+                    if (btn == pFocusWnd)
+                        shouldSetFocus = true;
+
                     btn->SetValue(false);
 
                     if ( btn->HasFlag(wxRB_GROUP) )
@@ -217,8 +226,15 @@ void wxRadioButton::SetValue(bool value)
             }
 
             if (btn)
+            {
+                if (btn == pFocusWnd)
+                        shouldSetFocus = true;
+
                 btn->SetValue(false);
+            }
         }
+        if (shouldSetFocus)
+            SetFocus();
     }
 }
 
@@ -237,7 +253,7 @@ bool wxRadioButton::GetValue() const
 
 void wxRadioButton::Command (wxCommandEvent& event)
 {
-    SetValue(event.m_commandInt != 0);
+    SetValue(event.GetInt() != 0);
     ProcessCommand(event);
 }
 
@@ -296,7 +312,9 @@ wxSize wxRadioButton::DoGetBestSize() const
         hRadio = s_radioSize;
     }
 
-    return wxSize(wRadio, hRadio);
+    wxSize best(wRadio, hRadio);
+    CacheBestSize(best);
+    return best;
 }
 
 #endif // wxUSE_RADIOBTN

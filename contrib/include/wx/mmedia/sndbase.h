@@ -3,7 +3,8 @@
 // Purpose:
 // Date: 08/11/1999
 // Author: Guilhem Lavaux <lavaux@easynet.fr> (C) 1999
-// CVSID: $Id: sndbase.h,v 1.4 2004/06/16 15:22:54 ABX Exp $
+// CVSID: $Id: sndbase.h,v 1.6 2005/05/31 09:17:28 JS Exp $
+// License:    wxWindows license
 // --------------------------------------------------------------------------
 #ifndef _WX_SNDBASE_H
 #define _WX_SNDBASE_H
@@ -44,8 +45,8 @@ typedef enum {
 
 // ---------------------
 // wxSoundError:
-//   - wxSOUND_NOERR: No error occured
-//   - wxSOUND_IOERR: an input/output error occured, it may concern either
+//   - wxSOUND_NOERR: No error occurred
+//   - wxSOUND_IOERR: an input/output error occurred, it may concern either
 //                    a driver or a file
 //   - wxSOUND_INVFRMT: the sound format passed to the function is invalid.
 //                      Generally, it means that you passed out of range values
@@ -82,7 +83,7 @@ class WXDLLIMPEXP_MMEDIA wxSoundStream;
 // ---------------------
 // wxSoundCallback(stream, evt, cdata): C callback for sound event.
 //    - stream: current wxSoundStream
-//    - evt: the sound event which has occured, it may be wxSOUND_INPUT,
+//    - evt: the sound event which has occurred, it may be wxSOUND_INPUT,
 //            wxSOUND_OUTPUT or wxSOUND_DUPLEX
 //    - cdata: User callback data
 // ---------------------

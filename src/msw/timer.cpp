@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by: Vadim Zeitlin (use hash map instead of list, global rewrite)
 // Created:     04/01/98
-// RCS-ID:      $Id: timer.cpp,v 1.38 2004/11/11 19:08:15 VZ Exp $
+// RCS-ID:      $Id: timer.cpp,v 1.39 2005/05/22 12:10:55 JS Exp $
 // Copyright:   (c) Julian Smart
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -61,7 +61,7 @@ static wxTimerMap& TimerMap()
 // ----------------------------------------------------------------------------
 
 // timer callback used for all timers
-void WINAPI wxTimerProc(HWND hwnd, UINT msg, UINT idTimer, DWORD dwTime);
+void WINAPI wxTimerProc(HWND hwnd, UINT msg, UINT_PTR idTimer, DWORD dwTime);
 
 // ----------------------------------------------------------------------------
 // macros
@@ -155,7 +155,7 @@ void wxProcessTimer(wxTimer& timer)
 void WINAPI
 wxTimerProc(HWND WXUNUSED(hwnd),
             UINT WXUNUSED(msg),
-            UINT idTimer,
+            UINT_PTR idTimer,
             DWORD WXUNUSED(dwTime))
 {
     wxTimerMap::iterator node = TimerMap().find((unsigned long)idTimer);

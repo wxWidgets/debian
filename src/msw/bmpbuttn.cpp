@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     04/01/98
-// RCS-ID:      $Id: bmpbuttn.cpp,v 1.55 2004/10/28 22:43:02 VZ Exp $
+// RCS-ID:      $Id: bmpbuttn.cpp,v 1.57 2005/06/07 19:16:15 ABX Exp $
 // Copyright:   (c) Julian Smart
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -102,8 +102,6 @@ bitmap "selected" ,
 bitmap "focus" ,
 bitmap "disabled" ,
 */
-
-#define BUTTON_HEIGHT_FACTOR (EDIT_CONTROL_FACTOR * 1.1)
 
 bool wxBitmapButton::Create(wxWindow *parent, wxWindowID id,
     const wxBitmap& bitmap,
@@ -494,8 +492,10 @@ wxSize wxBitmapButton::DoGetBestSize() const
 {
     if ( m_bmpNormal.Ok() )
     {
-        return wxSize(m_bmpNormal.GetWidth() + 2*m_marginX,
+        wxSize best(m_bmpNormal.GetWidth() + 2*m_marginX,
                       m_bmpNormal.GetHeight() + 2*m_marginY);
+        CacheBestSize(best);
+        return best;
     }
 
     // no idea what our best size should be, defer to the base class

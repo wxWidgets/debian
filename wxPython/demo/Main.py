@@ -6,7 +6,7 @@
 # Author:       Robin Dunn
 #
 # Created:      A long time ago, in a galaxy far, far away...
-# RCS-ID:       $Id: Main.py,v 1.150 2004/11/04 21:54:08 RD Exp $
+# RCS-ID:       $Id: Main.py,v 1.168 2005/06/11 19:35:49 RD Exp $
 # Copyright:    (c) 1999 by Total Control Software
 # Licence:      wxWindows license
 #----------------------------------------------------------------------------
@@ -47,10 +47,10 @@ import images
 _treeList = [
     # new stuff
     ('Recent Additions/Updates', [
-        'StockButtons',
-        'Ticker',
-        'Choicebook',
-        'ListCtrl_edit',
+        'FoldPanelBar',
+        'GIFAnimationCtrl',
+        'HyperLinkCtrl',
+        'MultiSplitterWindow',
         ]),
 
     # managed windows == things with a (optional) caption you can close
@@ -70,6 +70,7 @@ _treeList = [
         'FindReplaceDialog',
         'FontDialog',
         'MessageDialog',
+        'MultiChoiceDialog',
         'PageSetupDialog',
         'PrintDialog',
         'ProgressDialog',
@@ -114,6 +115,7 @@ _treeList = [
         'SpinCtrl',
         'SplitterWindow',
         'StaticBitmap',
+        'StaticBox',
         'StaticText',
         'StatusBar',
         'StockButtons',
@@ -146,14 +148,20 @@ _treeList = [
         'Calendar',
         'CalendarCtrl',
         'ContextHelp',
+        'DatePickerCtrl',
         'DynamicSashWindow',
         'EditableListBox',
         'FancyText',
         'FileBrowseButton',
         'FloatBar',  
         'FloatCanvas',
+        'FoldPanelBar',
+        'GIFAnimationCtrl',
         'HtmlWindow',
+        'HyperLinkCtrl',
         'IntCtrl',
+        'MediaCtrl',
+        'MultiSplitterWindow',
         'MVCTree',   
         'MaskedEditControls',
         'MaskedNumCtrl',
@@ -194,7 +202,7 @@ _treeList = [
         'PythonEvents',
         'Threads',
         'Timer',
-        ##'infoframe',    # needs better explaination and some fixing
+        ##'infoframe',    # needs better explanation and some fixing
         ]),
 
     # Clipboard and DnD
@@ -209,6 +217,7 @@ _treeList = [
         'ArtProvider',
         'Cursor',
         'DragImage',
+        'GIFAnimationCtrl',
         'Image',
         'ImageAlpha',
         'ImageFromStream',
@@ -219,15 +228,17 @@ _treeList = [
     # Other stuff
     ('Miscellaneous', [
         'ColourDB',
-        ##'DialogUnits',   # needs more explainations
+        ##'DialogUnits',   # needs more explanations
         'DrawXXXList',
         'FileHistory',
         'FontEnumerator',
         'Joystick',
+        'MouseGestures',
         'OGL',
         'PrintFramework',
         'ShapedWindow',
         'Sound',
+        'StandardPaths',
         'Unicode',
         ]),
 
@@ -254,9 +265,10 @@ class MyLog(wx.PyLog):
         self.logTime = logTime
 
     def DoLogString(self, message, timeStamp):
-        if self.logTime:
-            message = time.strftime("%X", time.localtime(timeStamp)) + \
-                      ": " + message
+        #print message, timeStamp
+        #if self.logTime:
+        #    message = time.strftime("%X", time.localtime(timeStamp)) + \
+        #              ": " + message
         if self.tc:
             self.tc.AppendText(message + '\n')
 
@@ -317,7 +329,7 @@ class MessagePanel(wx.Panel):
         box.Add((10,10), 2)
 
         self.SetSizer(box)
-        
+        self.Fit()
         
 
 #---------------------------------------------------------------------------
@@ -515,13 +527,13 @@ except ImportError:
         def GetText(self):
             return self.GetValue()
 
-        def GetPositionFromLine(line):
+        def GetPositionFromLine(self, line):
             return self.XYToPosition(0,line)
 
         def GotoLine(self, line):
-            pos = self.editor.GetPositionFromLine(line)
-            self.editor.SetInsertionPoint(pos)
-            self.editor.ShowPosition(pos)
+            pos = self.GetPositionFromLine(line)
+            self.SetInsertionPoint(pos)
+            self.ShowPosition(pos)
 
         def SelectLine(self, line):
             start = self.GetPositionFromLine(line)
@@ -666,7 +678,7 @@ class DemoCodePanel(wx.Panel):
             try:
                 os.makedirs(GetModifiedDirectory())
                 if not os.path.exists(GetModifiedDirectory()):
-                    wx.LogMessage("BUG: Created demo directory but it still doesn't exit")
+                    wx.LogMessage("BUG: Created demo directory but it still doesn't exist")
                     raise AssetionError
             except:
                 wx.LogMessage("Error creating demo directory: %s" % GetModifiedDirectory())
@@ -927,7 +939,7 @@ class DemoErrorPanel(wx.Panel):
         self.box = wx.BoxSizer(wx.VERTICAL)
 
         # Main Label
-        self.box.Add(wx.StaticText(self, -1, "An error has occured while trying to run the demo")
+        self.box.Add(wx.StaticText(self, -1, "An error has occurred while trying to run the demo")
                      , 0, wx.ALIGN_CENTER | wx.TOP, 10)
 
         # Exception Information
@@ -1070,8 +1082,7 @@ class DemoTaskBarIcon(wx.TaskBarIcon):
 
 
     def OnTaskBarChange(self, evt):
-        names = [ "WXPdemo", "WXP", "Mondrian", "Test2m",
-                  "Blom08m", "Blom10m", "Blom15m" ]
+        names = [ "WXPdemo", "Mondrian", "Pencil", "Carrot" ]                  
         name = names[self.imgidx]
         
         getFunc = getattr(images, "get%sImage" % name)
@@ -1104,6 +1115,7 @@ class wxPythonDemo(wx.Frame):
         self.codePage = None
         self.shell = None
         self.firstTime = True
+        self.finddlg = None
 
         icon = images.getWXPdemoIcon()
         self.SetIcon(icon)
@@ -1190,9 +1202,11 @@ class wxPythonDemo(wx.Frame):
         self.Bind(wx.EVT_MENU, self.OnHelpAbout, helpItem)
         self.Bind(wx.EVT_MENU, self.OnHelpFind,  findItem)
         self.Bind(wx.EVT_MENU, self.OnFindNext,  findnextItem)
-        self.Bind(wx.EVT_COMMAND_FIND, self.OnFind)
-        self.Bind(wx.EVT_COMMAND_FIND_NEXT, self.OnFind)
-        self.Bind(wx.EVT_COMMAND_FIND_CLOSE, self.OnFindClose)
+        self.Bind(wx.EVT_FIND, self.OnFind)
+        self.Bind(wx.EVT_FIND_NEXT, self.OnFind)
+        self.Bind(wx.EVT_FIND_CLOSE, self.OnFindClose)
+        self.Bind(wx.EVT_UPDATE_UI, self.OnUpdateFindItems, findItem)
+        self.Bind(wx.EVT_UPDATE_UI, self.OnUpdateFindItems, findnextItem)
         self.mainmenu.Append(menu, '&Help')
         self.SetMenuBar(self.mainmenu)
 
@@ -1392,7 +1406,7 @@ class wxPythonDemo(wx.Frame):
         
         # o The RunTest() for all samples must now return a window that can
         #   be palced in a tab in the main notebook.
-        # o If an error occurs (or has occured before) an error tab is created.
+        # o If an error occurs (or has occurred before) an error tab is created.
         
         if module is not None:
             wx.LogMessage("Running demo module...")
@@ -1509,12 +1523,20 @@ class wxPythonDemo(wx.Frame):
         about.Destroy()
 
     def OnHelpFind(self, event):
+        if self.finddlg != None:
+            return
+        
         self.nb.SetSelection(1)
         self.finddlg = wx.FindReplaceDialog(self, self.finddata, "Find",
                         wx.FR_NOUPDOWN |
                         wx.FR_NOMATCHCASE |
                         wx.FR_NOWHOLEWORD)
         self.finddlg.Show(True)
+
+
+    def OnUpdateFindItems(self, evt):
+        evt.Enable(self.finddlg == None)
+
 
     def OnFind(self, event):
         editor = self.codePage.editor
@@ -1540,6 +1562,7 @@ class wxPythonDemo(wx.Frame):
                 return
             else:
                 self.finddlg.Destroy()
+                self.finddlg = None
         editor.ShowPosition(loc)
         editor.SetSelection(loc, loc + len(findstring))
 
@@ -1553,6 +1576,7 @@ class wxPythonDemo(wx.Frame):
 
     def OnFindClose(self, event):
         event.GetDialog().Destroy()
+        self.finddlg = None
 
 
     def OnOpenShellWindow(self, evt):
@@ -1652,18 +1676,33 @@ class wxPythonDemo(wx.Frame):
 
 class MySplashScreen(wx.SplashScreen):
     def __init__(self):
-        bmp = wx.Image(opj("bitmaps/splash.gif")).ConvertToBitmap()
+        bmp = wx.Image(opj("bitmaps/splash.png")).ConvertToBitmap()
         wx.SplashScreen.__init__(self, bmp,
                                  wx.SPLASH_CENTRE_ON_SCREEN | wx.SPLASH_TIMEOUT,
-                                 3000, None, -1)
+                                 5000, None, -1)
         self.Bind(wx.EVT_CLOSE, self.OnClose)
+        self.fc = wx.FutureCall(2000, self.ShowMain)
+
 
     def OnClose(self, evt):
+        # Make sure the default handler runs too so this window gets
+        # destroyed
+        evt.Skip()
         self.Hide()
+        
+        # if the timer is still running then go ahead and show the
+        # main frame now
+        if self.fc.IsRunning():
+            self.fc.Stop()
+            self.ShowMain()
+
+
+    def ShowMain(self):
         frame = wxPythonDemo(None, "wxPython: (A Demonstration)")
         frame.Show()
-        evt.Skip()  # Make sure the default handler runs too...
-
+        if self.fc.IsRunning():
+            self.Raise()
+        
 
 class MyApp(wx.App):
     def OnInit(self):
@@ -1671,6 +1710,8 @@ class MyApp(wx.App):
         Create and show the splash screen.  It will then create and show
         the main frame when it is time to do so.
         """
+
+        wx.SystemOptions.SetOptionInt("mac.window-plain-transition", 1)
 
         # For debugging
         #self.SetAssertMode(wx.PYAPP_ASSERT_DIALOG)
@@ -1680,7 +1721,7 @@ class MyApp(wx.App):
         # initialization, finally creating and showing the main
         # application window(s).  In this case we have nothing else to
         # do so we'll delay showing the main frame until later (see
-        # OnClose above) so the users can see the SplashScreen effect.        
+        # ShowMain above) so the users can see the SplashScreen effect.        
         splash = MySplashScreen()
         splash.Show()
 

@@ -4,7 +4,7 @@
 // Author:      Vadim Zeitlin
 // Modified by:
 // Created:     19.05.01
-// RCS-ID:      $Id: framuniv.cpp,v 1.32 2004/08/10 13:08:39 ABX Exp $
+// RCS-ID:      $Id: framuniv.cpp,v 1.33 2005/02/20 00:12:01 VZ Exp $
 // Copyright:   (c) 2001 SciTech Software, Inc. (www.scitechsoft.com)
 // Licence:     wxWindows licence
 ///////////////////////////////////////////////////////////////////////////////
@@ -32,6 +32,7 @@
 #ifndef WX_PRECOMP
     #include "wx/frame.h"
     #include "wx/statusbr.h"
+    #include "wx/settings.h"
     #include "wx/toolbar.h"
 #endif // WX_PRECOMP
 
@@ -41,6 +42,7 @@
 
 BEGIN_EVENT_TABLE(wxFrame, wxFrameBase)
     EVT_SIZE(wxFrame::OnSize)
+    EVT_SYS_COLOUR_CHANGED(wxFrame::OnSysColourChanged)
 END_EVENT_TABLE()
 
 IMPLEMENT_DYNAMIC_CLASS(wxFrame, wxTopLevelWindow)
@@ -57,9 +59,22 @@ bool wxFrame::Create(wxWindow *parent,
                 long style,
                 const wxString& name)
 {
-    return wxTopLevelWindow::Create(parent, id, title, pos, size, style, name);
+    if ( !wxTopLevelWindow::Create(parent, id, title, pos, size, style, name) )
+        return false;
+
+    SetOwnBackgroundColour(wxSystemSettings::GetColour(wxSYS_COLOUR_APPWORKSPACE));
+
+    return true;
 }
 
+// Responds to colour changes, and passes event on to children.
+void wxFrame::OnSysColourChanged(wxSysColourChangedEvent& event)
+{
+    SetOwnBackgroundColour(wxSystemSettings::GetColour(wxSYS_COLOUR_APPWORKSPACE));
+    Refresh();
+
+    event.Skip();
+}
 
 // ----------------------------------------------------------------------------
 // menu support

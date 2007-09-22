@@ -5,7 +5,7 @@
 //              differences between platforms.
 // Created:     14.11.01
 // Author:      Morten Hanssen, Vadim Zeitlin
-// Copyright:   (c) 1998-2001 wxWidgets team
+// Copyright:   (c) 1998-2001 Morten Hanssen, Vadim Zeitlin
 // Licence:     wxWindows licence
 ///////////////////////////////////////////////////////////////////////////////
 
@@ -157,7 +157,7 @@ public:
     }
 
     // remove all lines
-    void Clear() { m_aLines.clear(); m_nCurLine = 0; }
+    void Clear() { m_aLines.clear(); m_aTypes.clear(); m_nCurLine = 0; }
 
     // change the buffer (default argument means "don't change type")
     // possibly in another format

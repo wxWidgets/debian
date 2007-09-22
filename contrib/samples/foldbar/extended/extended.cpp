@@ -22,8 +22,10 @@
 
 #include "wx/toolbar.h"
 #include "wx/laywin.h"
-#include <wx/spinctrl.h>
-#include <wx/slider.h>
+#include "wx/spinctrl.h"
+#include "wx/slider.h"
+
+#include "sample.xpm"
 
 #include "extended.h"
 
@@ -41,29 +43,25 @@ int winNumber = 1;
 // Initialise this in OnInit, not statically
 bool MyApp::OnInit(void)
 {
-	// Create the main frame window
+    // Create the main frame window
 
-	frame = new MyFrame(NULL, -1, _T("FoldPanelBar Extended Demo"), wxPoint(-1, -1), wxSize(500, 600),
-						wxDEFAULT_FRAME_STYLE |
-						wxNO_FULL_REPAINT_ON_RESIZE |
-						wxHSCROLL | wxVSCROLL);
+    frame = new MyFrame(NULL, wxID_ANY, _T("FoldPanelBar Extended Demo"), wxDefaultPosition, wxSize(500, 600),
+                        wxDEFAULT_FRAME_STYLE |
+                        wxNO_FULL_REPAINT_ON_RESIZE |
+                        wxHSCROLL | wxVSCROLL);
 
-	// Give it an icon (this is ignored in MDI mode: uses resources)
+    frame->SetIcon(wxIcon(sample_xpm));
 
-#ifdef __WXMSW__
-	frame->SetIcon(wxIcon(_T("sashtest_icn")));
-#endif
+    // Associate the menu bar with the frame
+    frame->SetMenuBar(CreateMenuBar(false));
 
-	// Associate the menu bar with the frame
-	frame->SetMenuBar(CreateMenuBar(false));
+    frame->CreateStatusBar();
 
-	frame->CreateStatusBar();
+    frame->Show(true);
 
-	frame->Show(TRUE);
+    SetTopWindow(frame);
 
-	SetTopWindow(frame);
-
-	return TRUE;
+    return true;
 }
 
 BEGIN_EVENT_TABLE(MyFrame, wxMDIParentFrame)
@@ -75,14 +73,14 @@ BEGIN_EVENT_TABLE(MyFrame, wxMDIParentFrame)
     EVT_SASH_DRAGGED_RANGE(ID_WINDOW_TOP, ID_WINDOW_BOTTOM, MyFrame::OnFoldPanelBarDrag)
     EVT_MENU(FPB_BOTTOM_STICK, MyFrame::OnCreateBottomStyle)
     EVT_MENU(FPB_SINGLE_FOLD, MyFrame::OnCreateNormalStyle)
-	EVT_BUTTON(ID_COLLAPSEME, MyFrame::OnCollapseMe)
-	EVT_BUTTON(ID_APPLYTOALL, MyFrame::OnExpandMe)
-	EVT_SCROLL(MyFrame::OnSlideColour)
-	EVT_RADIOBUTTON(ID_USE_HGRADIENT, MyFrame::OnStyleChange)
-	EVT_RADIOBUTTON(ID_USE_VGRADIENT, MyFrame::OnStyleChange)
-	EVT_RADIOBUTTON(ID_USE_SINGLE, MyFrame::OnStyleChange)
-	EVT_RADIOBUTTON(ID_USE_RECTANGLE, MyFrame::OnStyleChange)
-	EVT_RADIOBUTTON(ID_USE_FILLED_RECTANGLE, MyFrame::OnStyleChange)
+    EVT_BUTTON(ID_COLLAPSEME, MyFrame::OnCollapseMe)
+    EVT_BUTTON(ID_APPLYTOALL, MyFrame::OnExpandMe)
+    EVT_SCROLL(MyFrame::OnSlideColour)
+    EVT_RADIOBUTTON(ID_USE_HGRADIENT, MyFrame::OnStyleChange)
+    EVT_RADIOBUTTON(ID_USE_VGRADIENT, MyFrame::OnStyleChange)
+    EVT_RADIOBUTTON(ID_USE_SINGLE, MyFrame::OnStyleChange)
+    EVT_RADIOBUTTON(ID_USE_RECTANGLE, MyFrame::OnStyleChange)
+    EVT_RADIOBUTTON(ID_USE_FILLED_RECTANGLE, MyFrame::OnStyleChange)
 END_EVENT_TABLE()
 
 
@@ -90,35 +88,35 @@ END_EVENT_TABLE()
 MyFrame::MyFrame(wxWindow *parent, const wxWindowID id, const wxString& title, const wxPoint& pos, const wxSize& size,
     const long style)
   : wxMDIParentFrame(parent, id, title, pos, size, style)
-  , _flags(0)
-{  
-	m_leftWindow1 = new wxSashLayoutWindow(this, ID_WINDOW_LEFT1,
-								wxDefaultPosition, wxSize(200, 30),
-								wxNO_BORDER | wxSW_3D | wxCLIP_CHILDREN);
+  , m_flags(0)
+{
+    m_leftWindow1 = new wxSashLayoutWindow(this, ID_WINDOW_LEFT1,
+                                wxDefaultPosition, wxSize(200, 30),
+                                wxNO_BORDER | wxSW_3D | wxCLIP_CHILDREN);
 
-	m_leftWindow1->SetDefaultSize(wxSize(160, 1000));
-	m_leftWindow1->SetOrientation(wxLAYOUT_VERTICAL);
-	m_leftWindow1->SetAlignment(wxLAYOUT_LEFT);
-	m_leftWindow1->SetSashVisible(wxSASH_RIGHT, TRUE);
-	m_leftWindow1->SetExtraBorderSize(0);
+    m_leftWindow1->SetDefaultSize(wxSize(160, 1000));
+    m_leftWindow1->SetOrientation(wxLAYOUT_VERTICAL);
+    m_leftWindow1->SetAlignment(wxLAYOUT_LEFT);
+    m_leftWindow1->SetSashVisible(wxSASH_RIGHT, true);
+    m_leftWindow1->SetExtraBorderSize(0);
 
-	_pnl = 0;
-	ReCreateFoldPanel(0);
+    m_pnl = NULL;
+    ReCreateFoldPanel(0);
 }
 
 void MyFrame::OnQuit(wxCommandEvent& WXUNUSED(event))
 {
-      Close(TRUE);
+    Close(true);
 }
 
 void MyFrame::OnAbout(wxCommandEvent& WXUNUSED(event))
 {
-	(void)wxMessageBox(_T("wxWidgets 2.0 FoldPanelBar Demo\nAuthor: Julian Smart (c) 1998"), _T("About FoldPanelBar Demo"));
+    (void)wxMessageBox(_T("wxWidgets 2.0 FoldPanelBar Demo\nAuthor: Julian Smart (c) 1998"), _T("About FoldPanelBar Demo"));
 }
 
 void MyFrame::OnToggleWindow(wxCommandEvent& WXUNUSED(event))
 {
-  	m_leftWindow1->Show(!m_leftWindow1->IsShown());
+    m_leftWindow1->Show(!m_leftWindow1->IsShown());
     wxLayoutAlgorithm layout;
     layout.LayoutMDIFrame(this);
 }
@@ -131,7 +129,7 @@ void MyFrame::OnFoldPanelBarDrag(wxSashEvent& event)
     if(event.GetId() == ID_WINDOW_LEFT1)
         m_leftWindow1->SetDefaultSize(wxSize(event.GetDragRect().width, 1000));
 
-	wxLayoutAlgorithm layout;
+    wxLayoutAlgorithm layout;
     layout.LayoutMDIFrame(this);
 
     // Leaves bits of itself behind sometimes
@@ -140,296 +138,300 @@ void MyFrame::OnFoldPanelBarDrag(wxSashEvent& event)
 
 void MyFrame::OnNewWindow(wxCommandEvent& WXUNUSED(event))
 {
-      // Make another frame, containing a canvas
-      MyChild *subframe = new MyChild(frame, _T("Canvas Frame"),
-                                      wxPoint(10, 10), wxSize(300, 300),
-                                      wxDEFAULT_FRAME_STYLE |
-                                      wxNO_FULL_REPAINT_ON_RESIZE);
+    // Make another frame, containing a canvas
+    MyChild *subframe = new MyChild(frame, _T("Canvas Frame"),
+                                    wxPoint(10, 10), wxSize(300, 300),
+                                    wxDEFAULT_FRAME_STYLE |
+                                    wxNO_FULL_REPAINT_ON_RESIZE);
 
-      subframe->SetTitle(wxString::Format(_T("Canvas Frame %d"), winNumber));
-      winNumber ++;
+    subframe->SetTitle(wxString::Format(_T("Canvas Frame %d"), winNumber));
+    winNumber ++;
 
-      // Give it an icon (this is ignored in MDI mode: uses resources)
-#ifdef __WXMSW__
-      subframe->SetIcon(wxIcon(_T("sashtest_icn")));
-#endif
+    // Give it a status line
+    subframe->CreateStatusBar();
 
-	// Give it a status line
-	subframe->CreateStatusBar();
+    // Associate the menu bar with the frame
+    subframe->SetMenuBar(CreateMenuBar(true));
 
-	// Associate the menu bar with the frame
-	subframe->SetMenuBar(CreateMenuBar(true));
+    int width, height;
+    subframe->GetClientSize(&width, &height);
+    MyCanvas *canvas = new MyCanvas(subframe, wxPoint(0, 0), wxSize(width, height));
+    canvas->SetCursor(wxCursor(wxCURSOR_PENCIL));
+    subframe->canvas = canvas;
 
-	int width, height;
-	subframe->GetClientSize(&width, &height);
-	MyCanvas *canvas = new MyCanvas(subframe, wxPoint(0, 0), wxSize(width, height));
-	canvas->SetCursor(wxCursor(wxCURSOR_PENCIL));
-	subframe->canvas = canvas;
+    // Give it scrollbars
+    canvas->SetScrollbars(20, 20, 50, 50);
 
-	// Give it scrollbars
-	canvas->SetScrollbars(20, 20, 50, 50);
-
-	subframe->Show(TRUE);
+    subframe->Show(true);
 }
 
 void MyFrame::ReCreateFoldPanel(int fpb_flags)
 {
     // delete earlier panel
-	m_leftWindow1->DestroyChildren();
+    m_leftWindow1->DestroyChildren();
 
-	// recreate the foldpanelbar
+    // recreate the foldpanelbar
 
-	_pnl = new wxFoldPanelBar(m_leftWindow1, -1, wxDefaultPosition, wxSize(-1,-1), wxFPB_DEFAULT_STYLE, fpb_flags);
-		
-	wxFoldPanel item = _pnl->AddFoldPanel("Caption colours", false);
+    m_pnl = new wxFoldPanelBar(m_leftWindow1, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxFPB_DEFAULT_STYLE, fpb_flags);
 
-	_pnl->AddFoldPanelWindow(item, new wxStaticText(item.GetParent(), -1, _T("Adjust the first colour")), 
-		                     wxFPB_ALIGN_WIDTH, 5, 20); 
+    wxFoldPanel item = m_pnl->AddFoldPanel(_T("Caption colours"), false);
 
-	// RED color spin control
-	_rslider1 = new wxSlider(item.GetParent(), -1, 0, 0, 255);
-	_pnl->AddFoldPanelWindow(item, _rslider1, wxFPB_ALIGN_WIDTH, 
-							 2, 20); 
+    m_pnl->AddFoldPanelWindow(item, new wxStaticText(item.GetParent(), wxID_ANY, _T("Adjust the first colour")),
+                              wxFPB_ALIGN_WIDTH, 5, 20);
 
-	// GREEN color spin control
-	_gslider1 = new wxSlider(item.GetParent(), -1, 0, 0, 255);
-	_pnl->AddFoldPanelWindow(item, _gslider1, wxFPB_ALIGN_WIDTH, 
-							 0, 20); 
+    // RED color spin control
+    m_rslider1 = new wxSlider(item.GetParent(), wxID_ANY, 0, 0, 255);
+    m_pnl->AddFoldPanelWindow(item, m_rslider1, wxFPB_ALIGN_WIDTH,
+                              2, 20);
 
-	// BLUE color spin control
-	_bslider1 = new wxSlider(item.GetParent(), -1, 0, 0, 255);
-	_pnl->AddFoldPanelWindow(item, _bslider1, wxFPB_ALIGN_WIDTH, 
-							 0, 20); 
-	
-	_pnl->AddFoldPanelSeperator(item);
+    // GREEN color spin control
+    m_gslider1 = new wxSlider(item.GetParent(), wxID_ANY, 0, 0, 255);
+    m_pnl->AddFoldPanelWindow(item, m_gslider1, wxFPB_ALIGN_WIDTH,
+                              0, 20);
 
-	_pnl->AddFoldPanelWindow(item, new wxStaticText(item.GetParent(), -1, _T("Adjust the second colour")), 
-		                     wxFPB_ALIGN_WIDTH, 5, 20); 
+    // BLUE color spin control
+    m_bslider1 = new wxSlider(item.GetParent(), wxID_ANY, 0, 0, 255);
+    m_pnl->AddFoldPanelWindow(item, m_bslider1, wxFPB_ALIGN_WIDTH,
+                              0, 20);
 
-	// RED color spin control
-	_rslider2 = new wxSlider(item.GetParent(), -1, 0, 0, 255);
-	_pnl->AddFoldPanelWindow(item, _rslider2, wxFPB_ALIGN_WIDTH, 
-							 2, 20); 
+    m_pnl->AddFoldPanelSeperator(item);
 
-	// GREEN color spin control
-	_gslider2 = new wxSlider(item.GetParent(), -1, 0, 0, 255);
-	_pnl->AddFoldPanelWindow(item, _gslider2, wxFPB_ALIGN_WIDTH, 
-							 0, 20); 
+    m_pnl->AddFoldPanelWindow(item, new wxStaticText(item.GetParent(), wxID_ANY, _T("Adjust the second colour")),
+                              wxFPB_ALIGN_WIDTH, 5, 20);
 
-	// BLUE color spin control
-	_bslider2 = new wxSlider(item.GetParent(), -1, 0, 0, 255);
-	_pnl->AddFoldPanelWindow(item, _bslider2, wxFPB_ALIGN_WIDTH, 
-							 0, 20); 
+    // RED color spin control
+    m_rslider2 = new wxSlider(item.GetParent(), wxID_ANY, 0, 0, 255);
+    m_pnl->AddFoldPanelWindow(item, m_rslider2, wxFPB_ALIGN_WIDTH,
+                              2, 20);
 
-	_pnl->AddFoldPanelSeperator(item);
-	
-	_btn = new wxButton(item.GetParent(), ID_APPLYTOALL, "Apply to all");
-	_pnl->AddFoldPanelWindow(item, _btn); 
+    // GREEN color spin control
+    m_gslider2 = new wxSlider(item.GetParent(), wxID_ANY, 0, 0, 255);
+    m_pnl->AddFoldPanelWindow(item, m_gslider2, wxFPB_ALIGN_WIDTH,
+                              0, 20);
 
-	// read back current gradients and set the sliders
-	// for the colour which is now taken as default
+    // BLUE color spin control
+    m_bslider2 = new wxSlider(item.GetParent(), wxID_ANY, 0, 0, 255);
+    m_pnl->AddFoldPanelWindow(item, m_bslider2, wxFPB_ALIGN_WIDTH,
+                              0, 20);
 
-	wxCaptionBarStyle style = _pnl->GetCaptionStyle(item);
-	wxColour col = style.GetFirstColour();
-	_rslider1->SetValue(col.Red());
-	_gslider1->SetValue(col.Green());
-	_bslider1->SetValue(col.Blue());
+    m_pnl->AddFoldPanelSeperator(item);
 
-	col = style.GetSecondColour();
-	_rslider2->SetValue(col.Red());
-	_gslider2->SetValue(col.Green());
-	_bslider2->SetValue(col.Blue());
+    m_btn = new wxButton(item.GetParent(), ID_APPLYTOALL, _T("Apply to all"));
+    m_pnl->AddFoldPanelWindow(item, m_btn);
 
-	// put down some caption styles from which the user can
-	// select to show how the current or all caption bars will look like
+    // read back current gradients and set the sliders
+    // for the colour which is now taken as default
 
-	item = _pnl->AddFoldPanel("Caption style", false);
+    wxCaptionBarStyle style = m_pnl->GetCaptionStyle(item);
+    wxColour col = style.GetFirstColour();
+    m_rslider1->SetValue(col.Red());
+    m_gslider1->SetValue(col.Green());
+    m_bslider1->SetValue(col.Blue());
 
-	wxRadioButton *currStyle =  new wxRadioButton(item.GetParent(), ID_USE_VGRADIENT, "&Vertical gradient");
-	_pnl->AddFoldPanelWindow(item, currStyle,  wxFPB_ALIGN_WIDTH, wxFPB_DEFAULT_YSPACING, 10); 
-	currStyle->SetValue(true);
+    col = style.GetSecondColour();
+    m_rslider2->SetValue(col.Red());
+    m_gslider2->SetValue(col.Green());
+    m_bslider2->SetValue(col.Blue());
 
-	_pnl->AddFoldPanelWindow(item, new wxRadioButton(item.GetParent(), ID_USE_HGRADIENT, "&Horizontal gradient"), 
-							 wxFPB_ALIGN_WIDTH, wxFPB_DEFAULT_YSPACING, 10); 
-	_pnl->AddFoldPanelWindow(item, new wxRadioButton(item.GetParent(), ID_USE_SINGLE, "&Single colour"), 
-							 wxFPB_ALIGN_WIDTH, wxFPB_DEFAULT_YSPACING, 10); 
-	_pnl->AddFoldPanelWindow(item, new wxRadioButton(item.GetParent(), ID_USE_RECTANGLE, "&Rectangle box"), 
-							 wxFPB_ALIGN_WIDTH, wxFPB_DEFAULT_YSPACING, 10); 
-	_pnl->AddFoldPanelWindow(item, new wxRadioButton(item.GetParent(), ID_USE_FILLED_RECTANGLE, "&Filled rectangle box"), 
-							 wxFPB_ALIGN_WIDTH, wxFPB_DEFAULT_YSPACING, 10); 
+    // put down some caption styles from which the user can
+    // select to show how the current or all caption bars will look like
 
-	_pnl->AddFoldPanelSeperator(item);
+    item = m_pnl->AddFoldPanel(_T("Caption style"), false);
 
-	_single = new wxCheckBox(item.GetParent(), -1, "&Only this caption");
-	_pnl->AddFoldPanelWindow(item, _single, wxFPB_ALIGN_WIDTH, wxFPB_DEFAULT_YSPACING, 10); 
+    wxRadioButton *currStyle =  new wxRadioButton(item.GetParent(), ID_USE_VGRADIENT, _T("&Vertical gradient"));
+    m_pnl->AddFoldPanelWindow(item, currStyle,  wxFPB_ALIGN_WIDTH, wxFPB_DEFAULT_SPACING, 10);
+    currStyle->SetValue(true);
+
+    m_pnl->AddFoldPanelWindow(item, new wxRadioButton(item.GetParent(), ID_USE_HGRADIENT, _T("&Horizontal gradient")),
+                              wxFPB_ALIGN_WIDTH, wxFPB_DEFAULT_SPACING, 10);
+    m_pnl->AddFoldPanelWindow(item, new wxRadioButton(item.GetParent(), ID_USE_SINGLE, _T("&Single colour")),
+                              wxFPB_ALIGN_WIDTH, wxFPB_DEFAULT_SPACING, 10);
+    m_pnl->AddFoldPanelWindow(item, new wxRadioButton(item.GetParent(), ID_USE_RECTANGLE, _T("&Rectangle box")),
+                              wxFPB_ALIGN_WIDTH, wxFPB_DEFAULT_SPACING, 10);
+    m_pnl->AddFoldPanelWindow(item, new wxRadioButton(item.GetParent(), ID_USE_FILLED_RECTANGLE, _T("&Filled rectangle box")),
+                              wxFPB_ALIGN_WIDTH, wxFPB_DEFAULT_SPACING, 10);
+
+    m_pnl->AddFoldPanelSeperator(item);
+
+    m_single = new wxCheckBox(item.GetParent(), wxID_ANY, _T("&Only this caption"));
+    m_pnl->AddFoldPanelWindow(item, m_single, wxFPB_ALIGN_WIDTH, wxFPB_DEFAULT_SPACING, 10);
 
 
-	// one more panel to finish it
+    // one more panel to finish it
 
-	wxCaptionBarStyle cs;
-	cs.SetCaptionStyle(wxCAPTIONBAR_RECTANGLE);
+    wxCaptionBarStyle cs;
+    cs.SetCaptionStyle(wxCAPTIONBAR_RECTANGLE);
 
-	item = _pnl->AddFoldPanel("Misc stuff", true, cs);
+    item = m_pnl->AddFoldPanel(_T("Misc stuff"), true, cs);
 
-	_pnl->AddFoldPanelWindow(item, new wxButton(item.GetParent(), ID_COLLAPSEME, "Collapse All")); 
+    m_pnl->AddFoldPanelWindow(item, new wxButton(item.GetParent(), ID_COLLAPSEME, _T("Collapse All")));
 
-	_pnl->AddFoldPanelWindow(item, new wxStaticText(item.GetParent(), -1, _T("Enter some comments")), 
-		                     wxFPB_ALIGN_WIDTH, 5, 20); 
-	
-	_pnl->AddFoldPanelWindow(item, new wxTextCtrl(item.GetParent(), -1, "Comments"), 
-							 wxFPB_ALIGN_WIDTH, wxFPB_DEFAULT_YSPACING, 10); 
+    m_pnl->AddFoldPanelWindow(item, new wxStaticText(item.GetParent(), wxID_ANY, _T("Enter some comments")),
+                             wxFPB_ALIGN_WIDTH, 5, 20);
 
-	m_leftWindow1->SizeWindows();
+    m_pnl->AddFoldPanelWindow(item, new wxTextCtrl(item.GetParent(), wxID_ANY, _T("Comments")),
+                             wxFPB_ALIGN_WIDTH, wxFPB_DEFAULT_SPACING, 10);
+
+    m_leftWindow1->SizeWindows();
 
 }
 
 void MyFrame::OnCreateBottomStyle(wxCommandEvent& event)
 {
-	// recreate with style collapse to bottom, which means
-	// all panels that are collapsed are placed at the bottom,
-	// or normal
-	
-	if(event.IsChecked())
-		_flags |= wxFPB_COLLAPSE_TO_BOTTOM;
-	else
-		_flags &= ~wxFPB_COLLAPSE_TO_BOTTOM;
+    // recreate with style collapse to bottom, which means
+    // all panels that are collapsed are placed at the bottom,
+    // or normal
 
-	ReCreateFoldPanel(_flags);
+    if(event.IsChecked())
+        m_flags |= wxFPB_COLLAPSE_TO_BOTTOM;
+    else
+        m_flags &= ~wxFPB_COLLAPSE_TO_BOTTOM;
+
+    ReCreateFoldPanel(m_flags);
 }
 
 void MyFrame::OnCreateNormalStyle(wxCommandEvent& event)
 {
-	// receate with style where only one panel at the time is
-	// allowed to be opened
-	
-	// TODO: Not yet implemented!
+    // receate with style where only one panel at the time is
+    // allowed to be opened
 
-	if(event.IsChecked())
-		_flags |= wxFPB_SINGLE_FOLD;
-	else
-		_flags &= ~wxFPB_SINGLE_FOLD;
+    // TODO: Not yet implemented!
 
-	ReCreateFoldPanel(_flags);
+    if(event.IsChecked())
+        m_flags |= wxFPB_SINGLE_FOLD;
+    else
+        m_flags &= ~wxFPB_SINGLE_FOLD;
+
+    ReCreateFoldPanel(m_flags);
 }
 
-void MyFrame::OnCollapseMe(wxCommandEvent &event)
+void MyFrame::OnCollapseMe(wxCommandEvent &WXUNUSED(event))
 {
-	wxFoldPanel item(0);
-	for(size_t i = 0; i < _pnl->GetCount(); i++)
-	{
-		item = _pnl->Item(i);
-		_pnl->Collapse(item);
-	}
+    wxFoldPanel item(0);
+    for(size_t i = 0; i < m_pnl->GetCount(); i++)
+    {
+        item = m_pnl->Item(i);
+        m_pnl->Collapse(item);
+    }
 }
 
-void MyFrame::OnExpandMe(wxCommandEvent &event)
+void MyFrame::OnExpandMe(wxCommandEvent &WXUNUSED(event))
 {
-	wxColour col1(_rslider1->GetValue(), _gslider1->GetValue(), _bslider1->GetValue()),
-		     col2(_rslider2->GetValue(), _gslider2->GetValue(), _bslider2->GetValue());
+    wxColour col1((unsigned char)m_rslider1->GetValue(),
+                  (unsigned char)m_gslider1->GetValue(),
+                  (unsigned char)m_bslider1->GetValue()),
+             col2((unsigned char)m_rslider2->GetValue(),
+                  (unsigned char)m_gslider2->GetValue(),
+                  (unsigned char)m_bslider2->GetValue());
 
-	wxCaptionBarStyle style;
+    wxCaptionBarStyle style;
 
-	style.SetFirstColour(col1);
-	style.SetSecondColour(col2);
+    style.SetFirstColour(col1);
+    style.SetSecondColour(col2);
 
-	_pnl->ApplyCaptionStyleAll(style);
+    m_pnl->ApplyCaptionStyleAll(style);
 }
 
 wxMenuBar *CreateMenuBar(bool with_window)
 {
-	// Make a menubar
-	wxMenu *file_menu = new wxMenu;
+    // Make a menubar
+    wxMenu *file_menu = new wxMenu;
 
-	file_menu->Append(FPBTEST_NEW_WINDOW, _T("&New window"));
-	if(with_window)
-		file_menu->Append(FPBTEST_CHILD_QUIT, _T("&Close child"));
+    file_menu->Append(FPBTEST_NEW_WINDOW, _T("&New window"));
+    if(with_window)
+        file_menu->Append(FPBTEST_CHILD_QUIT, _T("&Close child"));
 
-	file_menu->AppendSeparator();
-	file_menu->Append(FPBTEST_QUIT, _T("&Exit"));
+    file_menu->AppendSeparator();
+    file_menu->Append(FPBTEST_QUIT, _T("&Exit"));
 
-	wxMenu *option_menu = 0;
-	if(with_window)
-	{
-		// Dummy option
-		option_menu = new wxMenu;
-		option_menu->Append(FPBTEST_REFRESH, _T("&Refresh picture"));
-	}
+    wxMenu *option_menu = 0;
+    if(with_window)
+    {
+        // Dummy option
+        option_menu = new wxMenu;
+        option_menu->Append(FPBTEST_REFRESH, _T("&Refresh picture"));
+    }
 
-	// make fold panel menu
-	
-	wxMenu *fpb_menu = new wxMenu;
-	fpb_menu->AppendCheckItem(FPB_BOTTOM_STICK, _T("Create with &wxFPB_COLLAPSE_TO_BOTTOM"));
-	//fpb_menu->AppendCheckItem(FPB_SINGLE_FOLD, _T("Create with &wxFPB_SINGLE_FOLD"));
+    // make fold panel menu
 
-	fpb_menu->AppendSeparator();
-	fpb_menu->Append(FPBTEST_TOGGLE_WINDOW, _T("&Toggle FoldPanelBar"));
+    wxMenu *fpb_menu = new wxMenu;
+    fpb_menu->AppendCheckItem(FPB_BOTTOM_STICK, _T("Create with &wxFPB_COLLAPSE_TO_BOTTOM"));
+    //fpb_menu->AppendCheckItem(FPB_SINGLE_FOLD, _T("Create with &wxFPB_SINGLE_FOLD"));
 
-	wxMenu *help_menu = new wxMenu;
-	help_menu->Append(FPBTEST_ABOUT, _T("&About"));
+    fpb_menu->AppendSeparator();
+    fpb_menu->Append(FPBTEST_TOGGLE_WINDOW, _T("&Toggle FoldPanelBar"));
 
-	wxMenuBar *menu_bar = new wxMenuBar;
+    wxMenu *help_menu = new wxMenu;
+    help_menu->Append(FPBTEST_ABOUT, _T("&About"));
 
-	menu_bar->Append(file_menu, _T("&File"));
-	menu_bar->Append(fpb_menu, _T("&FoldPanel"));
-	if(option_menu)
-		menu_bar->Append(option_menu, _T("&Options"));
-	menu_bar->Append(help_menu, _T("&Help"));
+    wxMenuBar *menu_bar = new wxMenuBar;
 
-	return menu_bar;
+    menu_bar->Append(file_menu, _T("&File"));
+    menu_bar->Append(fpb_menu, _T("&FoldPanel"));
+    if(option_menu)
+        menu_bar->Append(option_menu, _T("&Options"));
+    menu_bar->Append(help_menu, _T("&Help"));
+
+    return menu_bar;
 }
 
-void MyFrame::OnSlideColour(wxScrollEvent &event)
+void MyFrame::OnSlideColour(wxScrollEvent &WXUNUSED(event))
 {
-	wxColour col1(_rslider1->GetValue(), _gslider1->GetValue(), _bslider1->GetValue()),
-		     col2(_rslider2->GetValue(), _gslider2->GetValue(), _bslider2->GetValue());
-	//_btn->SetBackgroundColour(col);
+    wxColour col1((unsigned char)m_rslider1->GetValue(),
+                  (unsigned char)m_gslider1->GetValue(),
+                  (unsigned char)m_bslider1->GetValue()),
+             col2((unsigned char)m_rslider2->GetValue(),
+                  (unsigned char)m_gslider2->GetValue(),
+                  (unsigned char)m_bslider2->GetValue());
+    //m_btn->SetBackgroundColour(col);
 
-	wxCaptionBarStyle style;
+    wxCaptionBarStyle style;
 
-	style.SetFirstColour(col1);
-	style.SetSecondColour(col2);
+    style.SetFirstColour(col1);
+    style.SetSecondColour(col2);
 
-	wxFoldPanel item = _pnl->Item(0);
-	_pnl->ApplyCaptionStyle(item, style);
+    wxFoldPanel item = m_pnl->Item(0);
+    m_pnl->ApplyCaptionStyle(item, style);
 }
 
 void MyFrame::OnStyleChange(wxCommandEvent &event)
 {
-	wxCaptionBarStyle style;
-	switch(event.GetId())
-	{
-	case ID_USE_HGRADIENT:
-		style.SetCaptionStyle(wxCAPTIONBAR_GRADIENT_H);
-		break;
+    wxCaptionBarStyle style;
+    switch(event.GetId())
+    {
+    case ID_USE_HGRADIENT:
+        style.SetCaptionStyle(wxCAPTIONBAR_GRADIENT_H);
+        break;
 
-	case ID_USE_VGRADIENT:
-		style.SetCaptionStyle(wxCAPTIONBAR_GRADIENT_V);
-		break;
+    case ID_USE_VGRADIENT:
+        style.SetCaptionStyle(wxCAPTIONBAR_GRADIENT_V);
+        break;
 
-	case ID_USE_SINGLE:
-		style.SetCaptionStyle(wxCAPTIONBAR_SINGLE);
-		break;
+    case ID_USE_SINGLE:
+        style.SetCaptionStyle(wxCAPTIONBAR_SINGLE);
+        break;
 
-	case ID_USE_RECTANGLE:
-		style.SetCaptionStyle(wxCAPTIONBAR_RECTANGLE);
-		break;
+    case ID_USE_RECTANGLE:
+        style.SetCaptionStyle(wxCAPTIONBAR_RECTANGLE);
+        break;
 
-	case ID_USE_FILLED_RECTANGLE:
-		style.SetCaptionStyle(wxCAPTIONBAR_FILLED_RECTANGLE);
-		break;
-			
-	default:
-		break;
-	}
+    case ID_USE_FILLED_RECTANGLE:
+        style.SetCaptionStyle(wxCAPTIONBAR_FILLED_RECTANGLE);
+        break;
 
-	if(_single->GetValue())
-	{
-		wxFoldPanel item = _pnl->Item(1);
-		_pnl->ApplyCaptionStyle(item, style);
-	}
-	else
-		_pnl->ApplyCaptionStyleAll(style);
+    default:
+        break;
+    }
 
+    if(m_single->GetValue())
+    {
+        wxFoldPanel item = m_pnl->Item(1);
+        m_pnl->ApplyCaptionStyle(item, style);
+    }
+    else
+    {
+        m_pnl->ApplyCaptionStyleAll(style);
+    }
 }
 
 /* ----------------------------------------------------------------------------------------------- */
@@ -440,7 +442,7 @@ END_EVENT_TABLE()
 
 // Define a constructor for my canvas
 MyCanvas::MyCanvas(wxWindow *parent, const wxPoint& pos, const wxSize& size)
-        : wxScrolledWindow(parent, -1, pos, size,
+         :wxScrolledWindow(parent, wxID_ANY, pos, size,
                            wxSUNKEN_BORDER | wxNO_FULL_REPAINT_ON_RESIZE)
 {
     SetBackgroundColour(* wxWHITE);
@@ -449,47 +451,47 @@ MyCanvas::MyCanvas(wxWindow *parent, const wxPoint& pos, const wxSize& size)
 // Define the repainting behaviour
 void MyCanvas::OnDraw(wxDC& dc)
 {
-  dc.SetFont(*wxSWISS_FONT);
-  dc.SetPen(*wxGREEN_PEN);
-  dc.DrawLine(0, 0, 200, 200);
-  dc.DrawLine(200, 0, 0, 200);
+    dc.SetFont(*wxSWISS_FONT);
+    dc.SetPen(*wxGREEN_PEN);
+    dc.DrawLine(0, 0, 200, 200);
+    dc.DrawLine(200, 0, 0, 200);
 
-  dc.SetBrush(*wxCYAN_BRUSH);
-  dc.SetPen(*wxRED_PEN);
-  dc.DrawRectangle(100, 100, 100, 50);
-  dc.DrawRoundedRectangle(150, 150, 100, 50, 20);
+    dc.SetBrush(*wxCYAN_BRUSH);
+    dc.SetPen(*wxRED_PEN);
+    dc.DrawRectangle(100, 100, 100, 50);
+    dc.DrawRoundedRectangle(150, 150, 100, 50, 20);
 
-  dc.DrawEllipse(250, 250, 100, 50);
+    dc.DrawEllipse(250, 250, 100, 50);
 #if wxUSE_SPLINES
-  dc.DrawSpline(50, 200, 50, 100, 200, 10);
+    dc.DrawSpline(50, 200, 50, 100, 200, 10);
 #endif // wxUSE_SPLINES
-  dc.DrawLine(50, 230, 200, 230);
-  dc.DrawText(_T("This is a test string"), 50, 230);
+    dc.DrawLine(50, 230, 200, 230);
+    dc.DrawText(_T("This is a test string"), 50, 230);
 
-  wxPoint points[3];
-  points[0].x = 200; points[0].y = 300;
-  points[1].x = 100; points[1].y = 400;
-  points[2].x = 300; points[2].y = 400;
-  
-  dc.DrawPolygon(3, points);
+    wxPoint points[3];
+    points[0].x = 200; points[0].y = 300;
+    points[1].x = 100; points[1].y = 400;
+    points[2].x = 300; points[2].y = 400;
+
+    dc.DrawPolygon(3, points);
 }
 
 // This implements a tiny doodling program! Drag the mouse using
 // the left button.
 void MyCanvas::OnEvent(wxMouseEvent& event)
 {
-  wxClientDC dc(this);
-  PrepareDC(dc);
+    wxClientDC dc(this);
+    PrepareDC(dc);
 
-  wxPoint pt(event.GetLogicalPosition(dc));
+    wxPoint pt(event.GetLogicalPosition(dc));
 
-  if (xpos > -1 && ypos > -1 && event.Dragging())
-  {
-    dc.SetPen(*wxBLACK_PEN);
-    dc.DrawLine(xpos, ypos, pt.x, pt.y);
-  }
-  xpos = pt.x;
-  ypos = pt.y;
+    if (xpos > -1 && ypos > -1 && event.Dragging())
+    {
+        dc.SetPen(*wxBLACK_PEN);
+        dc.DrawLine(xpos, ypos, pt.x, pt.y);
+    }
+    xpos = pt.x;
+    ypos = pt.y;
 }
 
 void MyFrame::OnSize(wxSizeEvent& WXUNUSED(event))
@@ -503,30 +505,31 @@ void MyFrame::OnSize(wxSizeEvent& WXUNUSED(event))
 // duplicate event handlers here.
 
 BEGIN_EVENT_TABLE(MyChild, wxMDIChildFrame)
-  EVT_MENU(FPBTEST_CHILD_QUIT, MyChild::OnQuit)
+    EVT_MENU(FPBTEST_CHILD_QUIT, MyChild::OnQuit)
 END_EVENT_TABLE()
 
-MyChild::MyChild(wxMDIParentFrame *parent, const wxString& title, const wxPoint& pos, const wxSize& size,
-const long style):
-  wxMDIChildFrame(parent, -1, title, pos, size, style)
+MyChild::MyChild(wxMDIParentFrame *parent, const wxString& title,
+                 const wxPoint& pos, const wxSize& size,
+                 const long style)
+        :wxMDIChildFrame(parent, wxID_ANY, title, pos, size, style)
 {
-  canvas = NULL;
-  my_children.Append(this);
+    canvas = NULL;
+    my_children.Append(this);
 }
 
 MyChild::~MyChild(void)
 {
-  my_children.DeleteObject(this);
+    my_children.DeleteObject(this);
 }
 
 void MyChild::OnQuit(wxCommandEvent& WXUNUSED(event))
 {
-      Close(TRUE);
+    Close(true);
 }
 
 void MyChild::OnActivate(wxActivateEvent& event)
 {
-  if (event.GetActive() && canvas)
-    canvas->SetFocus();
+    if (event.GetActive() && canvas)
+        canvas->SetFocus();
 }
 

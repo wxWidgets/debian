@@ -4,12 +4,17 @@
 %% Author:      Vadim Zeitlin
 %% Modified by:
 %% Created:     02.04.00
-%% RCS-ID:      $Id: dllload.tex,v 1.8 2004/05/04 08:25:43 JS Exp $
+%% RCS-ID:      $Id: dllload.tex,v 1.11 2005/04/08 14:33:31 MW Exp $
 %% Copyright:   (c) Vadim Zeitlin
-%% License:     wxWidgets license
+%% License:     wxWindows license
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \section{\class{wxDllLoader}}\label{wxdllloader}
+
+\textbf{Deprecation note: } This class is deprecated since version 2.4 and is
+not compiled in by default in version 2.6 and will be removed in 2.8. Please
+use \helpref{wxDynamicLibrary}{wxdynamiclibrary} instead.
+
 
 wxDllLoader is a class providing an interface similar to Unix's {\tt
 dlopen()}. It is used by the wxLibrary framework and manages the actual
@@ -108,7 +113,7 @@ This function resolves a symbol in a loaded DLL, such as a variable or
 function name.
 
 Returned value will be {\tt NULL} if the symbol was not found in the DLL or if
-an error occured.
+an error occurred.
 
 \wxheading{Parameters}
 

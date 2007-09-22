@@ -4,7 +4,7 @@
 // Author:      Wlodzimierz ABX Skiba
 // Modified by:
 // Created:     29.07.2004
-// RCS-ID:      $Id: choicece.h,v 1.2 2004/09/29 08:03:26 ABX Exp $
+// RCS-ID:      $Id: choicece.h,v 1.3 2005/03/13 15:32:21 ABX Exp $
 // Copyright:   (c) Wlodzimierz Skiba
 // License:     wxWindows licence
 ///////////////////////////////////////////////////////////////////////////////
@@ -97,6 +97,11 @@ public:
 
     // get the subclassed window proc of the buddy list of choices
     WXFARPROC GetBuddyWndProc() const { return m_wndProcBuddy; }
+
+    // return the choice object whose buddy is the given window or NULL
+    static wxChoice *GetChoiceForListBox(WXHWND hwndBuddy);
+
+    virtual bool MSWCommand(WXUINT param, WXWORD id);
 
 protected:
     virtual void DoSetItemClientData( int n, void* clientData );

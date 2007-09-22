@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     04/01/98
-// RCS-ID:      $Id: listctrl.cpp,v 1.213 2004/11/06 23:49:21 RN Exp $
+// RCS-ID:      $Id: listctrl.cpp,v 1.230 2005/05/31 09:20:31 JS Exp $
 // Copyright:   (c) Julian Smart
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -55,6 +55,15 @@
 
 // include <commctrl.h> "properly"
 #include "wx/msw/wrapcctl.h"
+
+// Currently gcc and watcom don't define NMLVFINDITEM, and DMC only defines
+// it by its old name NM_FINDTIEM.
+//
+#if defined(__VISUALC__) || defined(__BORLANDC__) || defined(NMLVFINDITEM)
+    #define HAVE_NMLVFINDITEM 1
+#elif defined(__DMC__) || defined(NM_FINDITEM)
+    #define HAVE_NM_FINDITEM 1
+#endif
 
 // ----------------------------------------------------------------------------
 // private functions
@@ -166,7 +175,7 @@ private:
 //
 // Solution:
 // Under MSW the only way to associate data with a List
-// item independant of its position in the list is to
+// item independent of its position in the list is to
 // store a pointer to it in its lParam attribute. However
 // user programs are already using this (via the
 // SetItemData() GetItemData() calls).
@@ -350,19 +359,19 @@ bool wxListCtrl::Create(wxWindow *parent,
     if ( !CreateControl(parent, id, pos, size, style, validator, name) )
         return false;
 
-    if ( !MSWCreateControl(WC_LISTVIEW, _T(""), pos, size) )
+    if ( !MSWCreateControl(WC_LISTVIEW, wxEmptyString, pos, size) )
         return false;
 
     // explicitly say that we want to use Unicode because otherwise we get ANSI
     // versions of _some_ messages (notably LVN_GETDISPINFOA) in MSLU build
     wxSetCCUnicodeFormat(GetHwnd());
 
-    // for comctl32.dll v 4.70+ we want to have this attribute because it's
-    // prettier (and also because wxGTK does it like this)
-    if ( InReportView() && wxTheApp->GetComCtl32Version() >= 470 )
+    // for comctl32.dll v 4.70+ we want to have some non default extended
+    // styles because it's prettier (and also because wxGTK does it like this)
+    if ( InReportView() && wxApp::GetComCtl32Version() >= 470 )
     {
         ::SendMessage(GetHwnd(), LVM_SETEXTENDEDLISTVIEWSTYLE,
-                      0, LVS_EX_FULLROWSELECT);
+                      0, LVS_EX_LABELTIP | LVS_EX_FULLROWSELECT);
     }
 
     return true;
@@ -428,7 +437,7 @@ WXDWORD wxListCtrl::MSWGetStyle(long style, WXDWORD *exstyle) const
 #if !( defined(__GNUWIN32__) && !wxCHECK_W32API_VERSION( 1, 0 ) )
     if ( style & wxLC_VIRTUAL )
     {
-        int ver = wxTheApp->GetComCtl32Version();
+        int ver = wxApp::GetComCtl32Version();
         if ( ver < 470 )
         {
             wxLogWarning(_("Please install a newer version of comctl32.dll\n(at least version 4.70 is required but you have %d.%02d)\nor this program won't operate correctly."),
@@ -480,8 +489,6 @@ void wxListCtrl::FreeAllInternalData()
         m_ignoreChangeMessages = false;
 
         m_AnyInternalData = false;
-
-        m_count = 0;
     }
 }
 
@@ -497,9 +504,12 @@ wxListCtrl::~wxListCtrl()
         m_textCtrl = NULL;
     }
 
-    if (m_ownsImageListNormal) delete m_imageListNormal;
-    if (m_ownsImageListSmall) delete m_imageListSmall;
-    if (m_ownsImageListState) delete m_imageListState;
+    if (m_ownsImageListNormal)
+        delete m_imageListNormal;
+    if (m_ownsImageListSmall)
+        delete m_imageListSmall;
+    if (m_ownsImageListState)
+        delete m_imageListState;
 }
 
 // ----------------------------------------------------------------------------
@@ -670,17 +680,15 @@ int wxListCtrl::GetColumnWidth(int col) const
 // Sets the column width
 bool wxListCtrl::SetColumnWidth(int col, int width)
 {
-    int col2 = col;
     if ( m_windowStyle & wxLC_LIST )
-        col2 = -1;
+        col = 0;
 
-    int width2 = width;
-    if ( width2 == wxLIST_AUTOSIZE)
-        width2 = LVSCW_AUTOSIZE;
-    else if ( width2 == wxLIST_AUTOSIZE_USEHEADER)
-        width2 = LVSCW_AUTOSIZE_USEHEADER;
+    if ( width == wxLIST_AUTOSIZE)
+        width = LVSCW_AUTOSIZE;
+    else if ( width == wxLIST_AUTOSIZE_USEHEADER)
+        width = LVSCW_AUTOSIZE_USEHEADER;
 
-    return ListView_SetColumnWidth(GetHwnd(), col2, width2) != 0;
+    return ListView_SetColumnWidth(GetHwnd(), col, width) != 0;
 }
 
 // Gets the number of items that can fit vertically in the
@@ -727,8 +735,7 @@ bool wxListCtrl::GetItem(wxListItem& info) const
     if ( info.m_mask & wxLIST_MASK_STATE )
     {
         lvItem.mask |= LVIF_STATE;
-        // the other bits are hardly interesting anyhow
-        lvItem.stateMask = LVIS_SELECTED | LVIS_FOCUSED;
+        wxConvertToMSWFlags(0, info.m_stateMask, lvItem);
     }
 
     bool success = ListView_GetItem((HWND)GetHWND(), &lvItem) != 0;
@@ -1232,7 +1239,7 @@ bool wxListCtrl::DeleteItem(long item)
         return false;
     }
 
-    m_count -= 1;
+    m_count--;
     wxASSERT_MSG( m_count == ListView_GetItemCount(GetHwnd()),
                   wxT("m_count should match ListView_GetItemCount"));
 
@@ -1818,7 +1825,8 @@ bool wxListCtrl::MSWOnNotify(int idCtrl, WXLPARAM lParam, WXLPARAM *result)
         // ignored for efficiency.  It is done here because the internal data is in the
         // process of being deleted so we don't want to try and access it below.
         if ( m_ignoreChangeMessages &&
-             ( (nmLV->hdr.code == LVN_ITEMCHANGED) || (nmLV->hdr.code == LVN_ITEMCHANGING)))
+             ( (nmLV->hdr.code == LVN_ITEMCHANGED) ||
+               (nmLV->hdr.code == LVN_ITEMCHANGING)) )
         {
             return true;
         }
@@ -1835,7 +1843,7 @@ bool wxListCtrl::MSWOnNotify(int idCtrl, WXLPARAM lParam, WXLPARAM *result)
                 event.m_item.m_data = internaldata->lParam;
         }
 
-
+        bool processed = true;
         switch ( nmhdr->code )
         {
             case LVN_BEGINRDRAG:
@@ -1924,10 +1932,12 @@ bool wxListCtrl::MSWOnNotify(int idCtrl, WXLPARAM lParam, WXLPARAM *result)
                 break;
 
             case LVN_DELETEITEM:
-                if (m_count == 0)
-                    // this should be prevented by the post-processing code below,
-                    // but "just in case"
+                if ( m_count == 0 )
+                {
+                    // this should be prevented by the post-processing code
+                    // below, but "just in case"
                     return false;
+                }
 
                 eventType = wxEVT_COMMAND_LIST_DELETE_ITEM;
                 event.m_itemIndex = iItem;
@@ -2132,6 +2142,82 @@ bool wxListCtrl::MSWOnNotify(int idCtrl, WXLPARAM lParam, WXLPARAM *result)
                 }
                 break;
 
+#if HAVE_NMLVFINDITEM || HAVE_NM_FINDITEM
+            case LVN_ODFINDITEM:
+                // this message is only used with the virtual list control but
+                // even there we don't want to always use it: in a control with
+                // sufficiently big number of items (defined as > 1000 here),
+                // accidentally pressing a key could result in hanging an
+                // application waiting while it performs linear search
+                if ( IsVirtual() && GetItemCount() <= 1000 )
+                {
+#if HAVE_NMLVFINDITEM
+                    NMLVFINDITEM* pFindInfo = (NMLVFINDITEM*)lParam;
+#else
+                    NM_FINDITEM* pFindInfo = (NM_FINDITEM*)lParam;
+#endif
+
+                    // no match by default
+                    *result = -1;
+
+                    // we only handle string-based searches here
+                    //
+                    // TODO: what about LVFI_PARTIAL, should we handle this?
+                    if ( !(pFindInfo->lvfi.flags & LVFI_STRING) )
+                    {
+                        return false;
+                    }
+
+                    const wxChar * const searchstr = pFindInfo->lvfi.psz;
+                    const size_t len = wxStrlen(searchstr);
+
+                    // this is the first item we should examine, search from it
+                    // wrapping if necessary
+                    const int startPos = pFindInfo->iStart;
+                    const int maxPos = GetItemCount();
+                    wxCHECK_MSG( startPos <= maxPos, false,
+                                 _T("bad starting position in LVN_ODFINDITEM") );
+
+                    int currentPos = startPos;
+                    do
+                    {
+                        // wrap to the beginning if necessary
+                        if ( currentPos == maxPos )
+                        {
+                            // somewhat surprizingly, LVFI_WRAP isn't set in
+                            // flags but we still should wrap
+                            currentPos = 0;
+                        }
+
+                        // does this item begin with searchstr?
+                        if ( wxStrnicmp(searchstr,
+                                            GetItemText(currentPos), len) == 0 )
+                        {
+                            *result = currentPos;
+                            break;
+                        }
+                    }
+                    while ( ++currentPos != startPos );
+
+                    if ( *result == -1 )
+                    {
+                        // not found
+                        return false;
+                    }
+
+                    SetItemState(*result,
+                                 wxLIST_STATE_SELECTED | wxLIST_STATE_FOCUSED,
+                                 wxLIST_STATE_SELECTED | wxLIST_STATE_FOCUSED);
+                    EnsureVisible(*result);
+                    return true;
+                }
+                else
+                {
+                    processed = false;
+                }
+                break;
+#endif // HAVE_NMLVFINDITEM || HAVE_NM_FINDITEM
+
             case LVN_GETDISPINFO:
                 if ( IsVirtual() )
                 {
@@ -2164,8 +2250,11 @@ bool wxListCtrl::MSWOnNotify(int idCtrl, WXLPARAM lParam, WXLPARAM *result)
                 // fall through
 
             default:
-                return wxControl::MSWOnNotify(idCtrl, lParam, result);
+                processed = false;
         }
+
+        if ( !processed )
+            return wxControl::MSWOnNotify(idCtrl, lParam, result);
     }
     else
     {
@@ -2193,11 +2282,15 @@ bool wxListCtrl::MSWOnNotify(int idCtrl, WXLPARAM lParam, WXLPARAM *result)
             // also, we may free all user data now (couldn't do it before as
             // the user should have access to it in OnDeleteAllItems() handler)
             FreeAllInternalData();
+
+            // the control is empty now, synchronize the cached number of items
+            // with the real one
+            m_count = 0;
             return true;
 
         case LVN_ENDLABELEDITA:
         case LVN_ENDLABELEDITW:
-            // logic here is inversed compared to all the other messages
+            // logic here is inverted compared to all the other messages
             *result = event.IsAllowed();
 
             // don't keep a stale wxTextCtrl around
@@ -2375,6 +2468,21 @@ void wxListCtrl::OnPaint(wxPaintEvent& event)
             }
         }
     }
+}
+
+WXLRESULT
+wxListCtrl::MSWWindowProc(WXUINT nMsg, WXWPARAM wParam, WXLPARAM lParam)
+{
+#ifdef WM_PRINT
+    if ( nMsg == WM_PRINT )
+    {
+        // we should bypass our own WM_PRINT handling as we don't handle
+        // PRF_CHILDREN flag, so leave it to the native control itself
+        return MSWDefWindowProc(nMsg, wParam, lParam);
+    }
+#endif // WM_PRINT
+
+    return wxControl::MSWWindowProc(nMsg, wParam, lParam);
 }
 
 // ----------------------------------------------------------------------------

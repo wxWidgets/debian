@@ -2,7 +2,7 @@
 // Name:        imagjpeg.cpp
 // Purpose:     wxImage JPEG handler
 // Author:      Vaclav Slavik
-// RCS-ID:      $Id: imagjpeg.cpp,v 1.44 2004/10/17 21:39:04 ABX Exp $
+// RCS-ID:      $Id: imagjpeg.cpp,v 1.47 2005/03/04 19:23:28 ABX Exp $
 // Copyright:   (c) Vaclav Slavik
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -356,20 +356,39 @@ bool wxJPEGHandler::SaveFile( wxImage *image, wxOutputStream& stream, bool verbo
     // 'Quality' is a number between 0 (terrible) and 100 (very good).
     // The default (in jcparam.c, jpeg_set_defaults) is 75,
     // and force_baseline is TRUE.
-    if (image->HasOption(wxT("quality")))
-        jpeg_set_quality(&cinfo, image->GetOptionInt(wxT("quality")), TRUE);
+    if (image->HasOption(wxIMAGE_OPTION_QUALITY))
+        jpeg_set_quality(&cinfo, image->GetOptionInt(wxIMAGE_OPTION_QUALITY), TRUE);
 
-    // sets the resolution fields in the output file
-    if (image->HasOption(wxIMAGE_OPTION_RESOLUTION))
+    // set the resolution fields in the output file
+    UINT16 resX,
+           resY;
+    if ( image->HasOption(wxIMAGE_OPTION_RESOLUTIONX) &&
+         image->HasOption(wxIMAGE_OPTION_RESOLUTIONY) )
     {
-        cinfo.X_density =
-        cinfo.Y_density = (UINT16)image->GetOptionInt(wxIMAGE_OPTION_RESOLUTION);
+        resX = (UINT16)image->GetOptionInt(wxIMAGE_OPTION_RESOLUTIONX);
+        resY = (UINT16)image->GetOptionInt(wxIMAGE_OPTION_RESOLUTIONY);
+    }
+    else if ( image->HasOption(wxIMAGE_OPTION_RESOLUTION) )
+    {
+        resX =
+        resY = (UINT16)image->GetOptionInt(wxIMAGE_OPTION_RESOLUTION);
+    }
+    else
+    {
+        resX =
+        resY = 0;
+    }
+
+    if ( resX && resY )
+    {
+        cinfo.X_density = resX;
+        cinfo.Y_density = resY;
     }
 
     // sets the resolution unit field in the output file
     // wxIMAGE_RESOLUTION_INCHES for inches
     // wxIMAGE_RESOLUTION_CM for centimeters
-    if (image->HasOption(wxIMAGE_OPTION_RESOLUTIONUNIT))
+    if ( image->HasOption(wxIMAGE_OPTION_RESOLUTIONUNIT) )
     {
         cinfo.density_unit = (UINT8)image->GetOptionInt(wxIMAGE_OPTION_RESOLUTIONUNIT);
     }

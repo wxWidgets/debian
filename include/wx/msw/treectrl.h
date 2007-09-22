@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by: Vadim Zeitlin to be less MSW-specific on 10/10/98
 // Created:     01/02/97
-// RCS-ID:      $Id: treectrl.h,v 1.68 2004/11/03 23:01:51 VS Exp $
+// RCS-ID:      $Id: treectrl.h,v 1.74 2005/06/16 17:01:15 JS Exp $
 // Copyright:   (c) Julian Smart
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -40,15 +40,6 @@ struct WXDLLEXPORT wxTreeViewItem;
 
 // NB: all the following flags are for compatbility only and will be removed in the
 //     next versions
-
-// flags for deprecated `Expand(int action)'
-enum
-{
-    wxTREE_EXPAND_EXPAND,
-    wxTREE_EXPAND_COLLAPSE,
-    wxTREE_EXPAND_COLLAPSE_RESET,
-    wxTREE_EXPAND_TOGGLE
-};
 
 // flags for deprecated InsertItem() variant (their values are the same as of
 // TVI_FIRST and TVI_LAST)
@@ -224,10 +215,9 @@ public:
 
 #if WXWIN_COMPATIBILITY_2_2
         // deprecated:  Use GetItemParent instead.
-    wxTreeItemId GetParent(const wxTreeItemId& item) const
-        { return GetItemParent( item ); }
+    wxDEPRECATED( wxTreeItemId GetParent(const wxTreeItemId& item) const);
 
-        // Expose the base class method hidden by the one above.
+        // Expose the base class method hidden by the one above. Not deprecatable.
     wxWindow *GetParent() const { return wxControl::GetParent(); }
 #endif  // WXWIN_COMPATIBILITY_2_2
 
@@ -340,7 +330,11 @@ public:
         // edited simultaneously)
     wxTextCtrl* GetEditControl() const;
         // end editing and accept or discard the changes to item label
-    void EndEditLabel(const wxTreeItemId& item, bool discardChanges = false);
+    void EndEditLabel(const wxTreeItemId& WXUNUSED(item),
+                      bool discardChanges = false)
+    {
+        DoEndEditLabel(discardChanges);
+    }
 
     // sorting
         // this function is called to compare 2 items and should return -1, 0
@@ -392,14 +386,12 @@ public:
                             long insertAfter = wxTREE_INSERT_LAST) );
 
         // use Set/GetImageList and Set/GetStateImageList
-    wxImageList *GetImageList(int) const { return GetImageList(); }
-    void SetImageList(wxImageList *imageList, int) { SetImageList(imageList); }
+    wxDEPRECATED( wxImageList *GetImageList(int) const );
+    wxDEPRECATED( void SetImageList(wxImageList *imageList, int) );
 
     // use Set/GetItemImage directly
-    int GetItemSelectedImage(const wxTreeItemId& item) const
-        { return GetItemImage(item, wxTreeItemIcon_Selected); }
-    void SetItemSelectedImage(const wxTreeItemId& item, int image)
-        { SetItemImage(item, image, wxTreeItemIcon_Selected); }
+    wxDEPRECATED( int GetItemSelectedImage(const wxTreeItemId& item) const );
+    wxDEPRECATED( void SetItemSelectedImage(const wxTreeItemId& item, int image) );
 
     // use the versions taking wxTreeItemIdValue cookies
     wxDEPRECATED( wxTreeItemId GetFirstChild(const wxTreeItemId& item,
@@ -424,6 +416,7 @@ public:
 
 
     virtual WXLRESULT MSWWindowProc(WXUINT nMsg, WXWPARAM wParam, WXLPARAM lParam);
+    virtual WXLRESULT MSWDefWindowProc(WXUINT nMsg, WXWPARAM wParam, WXLPARAM lParam);
     virtual bool MSWCommand(WXUINT param, WXWORD id);
     virtual bool MSWOnNotify(int idCtrl, WXLPARAM lParam, WXLPARAM *result);
 
@@ -445,6 +438,10 @@ protected:
 
     // refresh a single item
     void RefreshItem(const wxTreeItemId& item);
+
+    // end edit label
+    void DoEndEditLabel(bool discardChanges = false);
+
 
     // data used only while editing the item label:
     wxTextCtrl  *m_textCtrl;        // text control in which it is edited
@@ -501,7 +498,8 @@ private:
     void* m_pVirtualRoot;
 
     // the starting item for selection with Shift
-    wxTreeItemId m_htSelStart;
+    wxTreeItemId m_htSelStart, m_htClickedItem;
+    wxPoint m_ptClick;
 
     friend class wxTreeItemIndirectData;
     friend class wxTreeSortHelper;

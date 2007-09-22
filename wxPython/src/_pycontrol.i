@@ -5,7 +5,7 @@
 // Author:      Robin Dunn
 //
 // Created:     2-June-1998
-// RCS-ID:      $Id: _pycontrol.i,v 1.9 2004/06/02 20:52:59 RD Exp $
+// RCS-ID:      $Id: _pycontrol.i,v 1.14 2005/06/09 21:51:21 RD Exp $
 // Copyright:   (c) 2003 by Total Control Software
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -36,6 +36,16 @@ public:
 
     void SetBestSize(const wxSize& size) { wxControl::SetBestSize(size); }
 
+    bool DoEraseBackground(wxDC* dc) {
+#ifdef __WXMSW__
+        return wxWindow::DoEraseBackground(dc->GetHDC());
+#else
+        dc->SetBackground(wxBrush(GetBackgroundColour()));
+        dc->Clear();
+        return true;
+#endif
+    }
+
     DEC_PYCALLBACK_VOID_INT4(DoMoveWindow);
     DEC_PYCALLBACK_VOID_INT5(DoSetSize);
     DEC_PYCALLBACK_VOID_INTINT(DoSetClientSize);
@@ -61,9 +71,12 @@ public:
     DEC_PYCALLBACK_VOID_WXWINBASE(RemoveChild);
 
     DEC_PYCALLBACK_BOOL_const(ShouldInheritColours);
-    DEC_PYCALLBACK__COLOUR(ApplyParentThemeBackground);
     DEC_PYCALLBACK_VIZATTR_(GetDefaultAttributes);
     
+    DEC_PYCALLBACK_BOOL_(HasTransparentBackground);
+
+    DEC_PYCALLBACK_VOID_(OnInternalIdle);
+
     PYPRIVATE;
 };
 
@@ -94,8 +107,11 @@ IMP_PYCALLBACK_VOID_WXWINBASE(wxPyControl, wxControl, AddChild);
 IMP_PYCALLBACK_VOID_WXWINBASE(wxPyControl, wxControl, RemoveChild);
 
 IMP_PYCALLBACK_BOOL_const(wxPyControl, wxControl, ShouldInheritColours);
-IMP_PYCALLBACK__COLOUR(wxPyControl, wxControl, ApplyParentThemeBackground);
 IMP_PYCALLBACK_VIZATTR_(wxPyControl, wxControl, GetDefaultAttributes);
+
+IMP_PYCALLBACK_BOOL_(wxPyControl, wxControl, HasTransparentBackground);
+
+IMP_PYCALLBACK_VOID_(wxPyControl, wxControl, OnInternalIdle);
 %}
 
 // And now the one for SWIG to see
@@ -113,12 +129,13 @@ public:
                 const wxValidator& validator=wxDefaultValidator,
                 const wxString& name = wxPyControlNameStr);
 
-    %name(PrePyControl) wxPyControl();
+    %RenameCtor(PrePyControl,  wxPyControl());
     
     void _setCallbackInfo(PyObject* self, PyObject* _class);
 
     void SetBestSize(const wxSize& size);
-
+    bool DoEraseBackground(wxDC* dc);
+    
     void base_DoMoveWindow(int x, int y, int width, int height);
     void base_DoSetSize(int x, int y, int width, int height,
                         int sizeFlags = wxSIZE_AUTO);
@@ -151,8 +168,10 @@ public:
     void base_RemoveChild(wxWindow* child);
 
     bool base_ShouldInheritColours() const;
-    void base_ApplyParentThemeBackground(const wxColour& c);
     wxVisualAttributes base_GetDefaultAttributes();
+
+    void base_OnInternalIdle();
+
 };
 
 

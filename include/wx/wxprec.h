@@ -4,8 +4,8 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     01/02/97
-// RCS-ID:      $Id: wxprec.h,v 1.33 2004/09/10 13:24:12 ABX Exp $
-// Copyright:   (c)
+// RCS-ID:      $Id: wxprec.h,v 1.35 2005/05/04 18:52:06 JS Exp $
+// Copyright:   (c) Julian Smart
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
 
@@ -22,7 +22,9 @@
       defined(__VISAGECPP__) || \
       defined(__MWERKS__)
 
-    #if !defined(NOPCH)
+    // If user did not request NOCPH and we're not building using configure
+    // then assume user wants precompiled headers.
+    #if !defined(NOPCH) && !defined(__WX_SETUP_H__)
         #define WX_PRECOMP
     #endif
 #endif

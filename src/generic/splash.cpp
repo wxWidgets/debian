@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     28/6/2000
-// RCS-ID:      $Id: splash.cpp,v 1.25 2004/09/19 17:20:50 JS Exp $
+// RCS-ID:      $Id: splash.cpp,v 1.27 2005/02/16 20:34:21 ABX Exp $
 // Copyright:   (c) Julian Smart
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -53,7 +53,7 @@ END_EVENT_TABLE()
  */
 
 wxSplashScreen::wxSplashScreen(const wxBitmap& bitmap, long splashStyle, int milliseconds, wxWindow* parent, wxWindowID id, const wxPoint& pos, const wxSize& size, long style):
-    wxFrame(parent, id, wxEmptyString, wxPoint(0, 0), wxSize(100, 100), style)
+    wxFrame(parent, id, wxEmptyString, wxPoint(0,0), wxSize(100, 100), style)
 {
     // At least for GTK+ 2.0, this hint is not available.
 #if defined(__WXGTK20__)
@@ -62,7 +62,7 @@ wxSplashScreen::wxSplashScreen(const wxBitmap& bitmap, long splashStyle, int mil
                              GDK_WINDOW_TYPE_HINT_SPLASHSCREEN);
 #endif
 #endif
-    
+
     m_window = NULL;
     m_splashStyle = splashStyle;
     m_milliseconds = milliseconds;

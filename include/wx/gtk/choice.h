@@ -2,7 +2,7 @@
 // Name:        choice.h
 // Purpose:
 // Author:      Robert Roebling
-// Id:          $Id: choice.h,v 1.37 2004/06/14 17:31:25 VS Exp $
+// Id:          $Id: choice.h,v 1.39 2004/12/18 13:13:52 RR Exp $
 // Copyright:   (c) 1998 Robert Roebling
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -104,6 +104,12 @@ private:
     // allocate it if it's needed (hence using pointer)
     wxSortedArrayString *m_strings;
 
+public:
+    // this circumvents a GTK+ 2.0 bug so that the selection is 
+    // invalidated properly 
+    int m_selection_hack;
+
+private:
     DECLARE_DYNAMIC_CLASS(wxChoice)
 };
 

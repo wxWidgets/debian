@@ -4,7 +4,7 @@
 // Author:      Vadim Zeitlin
 // Modified by:
 // Created:     31.01.99
-// RCS-ID:      $Id: tooltip.cpp,v 1.39 2004/05/23 20:53:01 JS Exp $
+// RCS-ID:      $Id: tooltip.cpp,v 1.43 2005/06/14 17:43:45 ABX Exp $
 // Copyright:   (c) 1999 Vadim Zeitlin
 // Licence:     wxWindows licence
 ///////////////////////////////////////////////////////////////////////////////
@@ -141,7 +141,7 @@ LRESULT APIENTRY wxToolTipWndProc(HWND hwndTT,
     {
         LPPOINT ppt = (LPPOINT)lParam;
 
-        // the window on which event occured
+        // the window on which event occurred
         HWND hwnd = ::WindowFromPoint(*ppt);
 
         OutputDebugString("TTM_WINDOWFROMPOINT: ");
@@ -289,7 +289,7 @@ void wxToolTip::Add(WXHWND hWnd)
         if ( index != wxNOT_FOUND )
         {
 #ifdef TTM_SETMAXTIPWIDTH
-            if ( wxTheApp->GetComCtl32Version() >= 470 )
+            if ( wxApp::GetComCtl32Version() >= 470 )
             {
                 // use TTM_SETMAXTIPWIDTH to make tooltip multiline using the
                 // extent of its first line as max value
@@ -317,19 +317,27 @@ void wxToolTip::Add(WXHWND hWnd)
                 }
 
                 SIZE sz;
-                if ( !GetTextExtentPoint(hdc, m_text, index, &sz) )
+                if ( !::GetTextExtentPoint32(hdc, m_text, index, &sz) )
                 {
-                    wxLogLastError(wxT("GetTextExtentPoint"));
+                    wxLogLastError(wxT("GetTextExtentPoint32"));
                 }
 
                 SendTooltipMessage(GetToolTipCtrl(), TTM_SETMAXTIPWIDTH,
                                    0, (void *)sz.cx);
             }
+            else
 #endif // comctl32.dll >= 4.70
+            {
+                // replace the '\n's with spaces because otherwise they appear as
+                // unprintable characters in the tooltip string
+                m_text.Replace(_T("\n"), _T(" "));
+                ti.lpszText = (wxChar *)m_text.c_str(); // const_cast
 
-            // replace the '\n's with spaces because otherwise they appear as
-            // unprintable characters in the tooltip string
-            m_text.Replace(_T("\n"), _T(" "));
+                if ( !SendTooltipMessage(GetToolTipCtrl(), TTM_ADDTOOL, 0, &ti) )
+                {
+                    wxLogDebug(_T("Failed to create the tooltip '%s'"), m_text.c_str());
+                }
+            }
         }
     }
 }

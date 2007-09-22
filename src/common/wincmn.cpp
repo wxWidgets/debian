@@ -4,7 +4,7 @@
 // Author:      Julian Smart, Vadim Zeitlin
 // Modified by:
 // Created:     13/07/98
-// RCS-ID:      $Id: wincmn.cpp,v 1.209 2004/10/17 16:28:20 ABX Exp $
+// RCS-ID:      $Id: wincmn.cpp,v 1.233 2005/06/24 16:44:20 RL Exp $
 // Copyright:   (c) wxWidgets team
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -77,6 +77,10 @@
     #include "wx/caret.h"
 #endif // wxUSE_CARET
 
+#if wxUSE_DISPLAY
+    #include "wx/display.h"
+#endif
+
 #if wxUSE_SYSTEM_OPTIONS
     #include "wx/sysopt.h"
 #endif
@@ -85,7 +89,9 @@
 // static data
 // ----------------------------------------------------------------------------
 
-#if defined(__WXPM__)
+#if defined(__WXPALMOS__)
+int wxWindowBase::ms_lastControlId = 32767;
+#elif defined(__WXPM__)
 int wxWindowBase::ms_lastControlId = 2000;
 #else
 int wxWindowBase::ms_lastControlId = -200;
@@ -209,6 +215,7 @@ wxWindowBase::wxWindowBase()
 
     // VZ: this one shouldn't exist...
     m_isBeingDeleted = false;
+
 }
 
 // common part of window creation process
@@ -388,6 +395,7 @@ void wxWindowBase::Centre(int direction)
     int widthParent, heightParent;
 
     wxWindow *parent = NULL;
+    wxTopLevelWindow *winTop = NULL;
 
     if ( !(direction & wxCENTRE_ON_SCREEN) )
     {
@@ -409,9 +417,10 @@ void wxWindowBase::Centre(int direction)
         // Windows, for example, this places it completely off the screen
         if ( parent )
         {
-            wxTopLevelWindow *winTop = wxDynamicCast(parent, wxTopLevelWindow);
+            winTop = wxDynamicCast(parent, wxTopLevelWindow);
             if ( winTop && winTop->IsIconized() )
             {
+                winTop = NULL;
                 parent = NULL;
             }
         }
@@ -427,6 +436,21 @@ void wxWindowBase::Centre(int direction)
 
     if ( direction & wxCENTRE_ON_SCREEN )
     {
+        //RN:  If we are using wxDisplay we get
+        //the dimensions of the monitor the window is on,
+        //otherwise we get the dimensions of the primary monitor
+        //FIXME:  wxDisplay::GetFromWindow only implemented on MSW
+#if wxUSE_DISPLAY && defined(__WXMSW__)
+        int nDisplay = wxDisplay::GetFromWindow((wxWindow*)this);
+        if(nDisplay != wxNOT_FOUND)
+        {
+            wxDisplay windowDisplay(nDisplay);
+            wxRect displayRect = windowDisplay.GetGeometry();
+            widthParent = displayRect.width;
+            heightParent = displayRect.height;
+        }
+        else
+#endif
         // centre with respect to the whole screen
         wxDisplaySize(&widthParent, &heightParent);
     }
@@ -434,11 +458,16 @@ void wxWindowBase::Centre(int direction)
     {
         if ( IsTopLevel() )
         {
-            // centre on the parent
-            parent->GetSize(&widthParent, &heightParent);
+            if(winTop)
+                winTop->GetRectForTopLevelChildren(&posParent.x, &posParent.y, &widthParent, &heightParent);
+            else
+            {
+                // centre on the parent
+                parent->GetSize(&widthParent, &heightParent);
 
-            // adjust to the parents position
-            posParent = parent->GetPosition();
+                // adjust to the parents position
+                posParent = parent->GetPosition();
+            }
         }
         else
         {
@@ -462,11 +491,14 @@ void wxWindowBase::Centre(int direction)
     xNew += posParent.x;
     yNew += posParent.y;
 
+    // FIXME:  This needs to get the client display rect of the display
+    // the window is (via wxDisplay::GetFromWindow). 
+    
     // Base size of the visible dimensions of the display
     // to take into account the taskbar. And the Mac menu bar at top.
     wxRect clientrect = wxGetClientDisplayRect();
 
-    // NB: in wxMSW, negative position may not neccessary mean "out of screen",
+    // NB: in wxMSW, negative position may not necessarily mean "out of screen",
     //     but it may mean that the window is placed on other than the main
     //     display. Therefore we only make sure centered window is on the main display
     //     if the parent is at least partially present here.
@@ -499,7 +531,7 @@ void wxWindowBase::Fit()
 {
     if ( GetChildren().GetCount() > 0 )
     {
-        SetClientSize(GetBestSize());
+        SetSize(GetBestSize());
     }
     //else: do nothing if we have no children
 }
@@ -530,7 +562,7 @@ static bool wxHasRealChildren(const wxWindowBase* win)
     return (realChildCount > 0);
 }
 #endif
-    
+
 void wxWindowBase::InvalidateBestSize()
 {
     m_bestSizeCache = wxDefaultSize;
@@ -544,9 +576,11 @@ void wxWindowBase::InvalidateBestSize()
 // return the size best suited for the current window
 wxSize wxWindowBase::DoGetBestSize() const
 {
+    wxSize best;
+
     if ( m_windowSizer )
     {
-        return m_windowSizer->GetMinSize();
+        best = m_windowSizer->GetMinSize();
     }
 #if wxUSE_CONSTRAINTS
     else if ( m_constraints )
@@ -582,7 +616,7 @@ wxSize wxWindowBase::DoGetBestSize() const
             //       will never return a size bigger than the current one :-(
         }
 
-        return wxSize(maxX, maxY);
+        best = wxSize(maxX, maxY);
     }
 #endif // wxUSE_CONSTRAINTS
     else if ( !GetChildren().empty()
@@ -634,17 +668,31 @@ wxSize wxWindowBase::DoGetBestSize() const
         maxX += 7;
         maxY += 14;
 
-        return wxSize(maxX, maxY);
+        best = wxSize(maxX, maxY);
     }
     else // ! has children
     {
-        // for a generic window there is no natural best size - just use either the
-        // minimum size if there is one, or the current size
-        if ( GetMinSize().IsFullySpecified() )
-            return GetMinSize();
-        else
-            return GetSize();
+        // for a generic window there is no natural best size so, if the
+        // minimal size is not set, use the current size but take care to
+        // remember it as minimal size for the next time because our best size
+        // should be constant: otherwise we could get into a situation when the
+        // window is initially at some size, then expanded to a larger size and
+        // then, when the containing window is shrunk back (because our initial
+        // best size had been used for computing the parent min size), we can't
+        // be shrunk back any more because our best size is now bigger
+        if ( !GetMinSize().IsFullySpecified() )
+            wxConstCast(this, wxWindowBase)->SetMinSize(GetSize());
+
+        // return as-is, unadjusted by the client size difference.
+        return GetMinSize();
     }
+
+    // Add any difference between size and client size
+    wxSize diff = GetSize() - GetClientSize();
+    best.x += wxMax(0, diff.x);
+    best.y += wxMax(0, diff.y);
+
+    return best;
 }
 
 
@@ -680,7 +728,7 @@ void wxWindowBase::SetBestFittingSize(const wxSize& size)
 // by default the origin is not shifted
 wxPoint wxWindowBase::GetClientAreaOrigin() const
 {
-    return wxPoint(0, 0);
+    return wxPoint(0,0);
 }
 
 // set the min/max size of the window
@@ -770,10 +818,17 @@ void wxWindowBase::DoSetVirtualSize( int x, int y )
 
 wxSize wxWindowBase::DoGetVirtualSize() const
 {
-    wxSize  s( GetClientSize() );
+    if ( m_virtualSize.IsFullySpecified() )
+        return m_virtualSize;
 
-    return wxSize( wxMax( m_virtualSize.GetWidth(), s.GetWidth() ),
-                   wxMax( m_virtualSize.GetHeight(), s.GetHeight() ) );
+    wxSize size = GetClientSize();
+    if ( m_virtualSize.x != wxDefaultCoord )
+        size.x = m_virtualSize.x;
+
+    if ( m_virtualSize.y != wxDefaultCoord )
+        size.y = m_virtualSize.y;
+
+    return size;
 }
 
 // ----------------------------------------------------------------------------
@@ -976,8 +1031,15 @@ void wxWindowBase::InheritAttributes()
         if ( parent->m_inheritFgCol && !m_hasFgCol )
             SetForegroundColour(parent->GetForegroundColour());
 
+        // inheriting (solid) background colour is wrong as it totally breaks
+        // any kind of themed backgrounds
+        //
+        // instead, the controls should use the same background as their parent
+        // (ideally by not drawing it at all)
+#if 0
         if ( parent->m_inheritBgCol && !m_hasBgCol )
             SetBackgroundColour(parent->GetBackgroundColour());
+#endif // 0
     }
 }
 
@@ -989,8 +1051,17 @@ wxWindowBase::GetClassDefaultAttributes(wxWindowVariant WXUNUSED(variant))
     wxVisualAttributes attrs;
     attrs.font = wxSystemSettings::GetFont(wxSYS_DEFAULT_GUI_FONT);
     attrs.colFg = wxSystemSettings::GetColour(wxSYS_COLOUR_WINDOWTEXT);
-    attrs.colBg = wxSystemSettings::GetColour(wxSYS_COLOUR_BTNFACE);
 
+    // On Smartphone/PocketPC, wxSYS_COLOUR_WINDOW is a better reflection of
+    // the usual background colour than wxSYS_COLOUR_BTNFACE.
+    // It's a pity that wxSYS_COLOUR_WINDOW isn't always a suitable background
+    // colour on other platforms.
+
+#if defined(__WXWINCE__) && (defined(__SMARTPHONE__) || defined(__POCKETPC__))
+    attrs.colBg = wxSystemSettings::GetColour(wxSYS_COLOUR_WINDOW);
+#else
+    attrs.colBg = wxSystemSettings::GetColour(wxSYS_COLOUR_BTNFACE);
+#endif
     return attrs;
 }
 
@@ -1041,6 +1112,9 @@ bool wxWindowBase::SetBackgroundColour( const wxColour &colour )
         return false;
 
     m_hasBgCol = colour.Ok();
+    if ( m_backgroundStyle != wxBG_STYLE_CUSTOM )
+        m_backgroundStyle = m_hasBgCol ? wxBG_STYLE_COLOUR : wxBG_STYLE_SYSTEM;
+
     m_inheritBgCol = m_hasBgCol;
     m_backgroundColour = colour;
     SetThemeEnabled( !m_hasBgCol && !m_foregroundColour.Ok() );
@@ -1209,7 +1283,7 @@ void wxWindowBase::ClearBackground()
 // find child window by id or name
 // ----------------------------------------------------------------------------
 
-wxWindow *wxWindowBase::FindWindow( long id )
+wxWindow *wxWindowBase::FindWindow(long id) const
 {
     if ( id == m_windowId )
         return (wxWindow *)this;
@@ -1225,7 +1299,7 @@ wxWindow *wxWindowBase::FindWindow( long id )
     return (wxWindow *)res;
 }
 
-wxWindow *wxWindowBase::FindWindow( const wxString& name )
+wxWindow *wxWindowBase::FindWindow(const wxString& name) const
 {
     if ( name == m_windowName )
         return (wxWindow *)this;
@@ -1357,7 +1431,7 @@ wxWindowBase::FindWindowByName(const wxString& title, const wxWindow *parent)
 wxWindow *
 wxWindowBase::FindWindowById( long id, const wxWindow* parent )
 {
-    return wxFindWindowHelper(parent, _T(""), id, wxFindWindowCmpIds);
+    return wxFindWindowHelper(parent, wxEmptyString, id, wxFindWindowCmpIds);
 }
 
 // ----------------------------------------------------------------------------
@@ -2016,7 +2090,7 @@ void wxWindowBase::AdjustForParentClientOrigin(int& x, int& y, int sizeFlags) co
 void wxWindowBase::UpdateWindowUI(long flags)
 {
     wxUpdateUIEvent event(GetId());
-    event.m_eventObject = this;
+    event.SetEventObject(this);
 
     if ( GetEventHandler()->ProcessEvent(event) )
     {
@@ -2138,7 +2212,7 @@ void wxWindowBase::OnSysColourChanged(wxSysColourChangedEvent& event)
         if ( !win->IsTopLevel() )
         {
             wxSysColourChangedEvent event2;
-            event.m_eventObject = win;
+            event.SetEventObject(win);
             win->GetEventHandler()->ProcessEvent(event2);
         }
 
@@ -2199,7 +2273,7 @@ void wxWindowBase::OnMiddleClick( wxMouseEvent& event )
 
         wxMessageBox(wxString::Format(
                                       _T(
-                                        "       wxWidgets Library (%s port)\nVersion %u.%u.%u%s%s, compiled at %s %s\n   Copyright (c) 1995-2004 wxWidgets team"
+                                        "       wxWidgets Library (%s port)\nVersion %u.%u.%u%s%s, compiled at %s %s\n   Copyright (c) 1995-2005 wxWidgets team"
                                         ),
                                       port.c_str(),
                                       wxMAJOR_VERSION,
@@ -2213,7 +2287,7 @@ void wxWindowBase::OnMiddleClick( wxMouseEvent& event )
 #ifdef __WXDEBUG__
                                       _T(" Debug build"),
 #else
-                                      _T(""),
+                                      wxEmptyString,
 #endif
                                       __TDATE__,
                                       __TTIME__
@@ -2259,15 +2333,22 @@ wxAccessible* wxWindowBase::CreateAccessible()
 
 #endif
 
-#if !wxUSE_STL
 // ----------------------------------------------------------------------------
 // list classes implementation
 // ----------------------------------------------------------------------------
+
+#if wxUSE_STL
+
+#include <wx/listimpl.cpp>
+WX_DEFINE_LIST(wxWindowList);
+
+#else
 
 void wxWindowListNode::DeleteData()
 {
     delete (wxWindow *)GetData();
 }
+
 #endif
 
 // ----------------------------------------------------------------------------
@@ -2676,7 +2757,7 @@ wxAccStatus wxWindowAccessible::GetName(int childId, wxString* name)
 #endif
         title = GetWindow()->GetName();
 
-    if (!title.IsEmpty())
+    if (!title.empty())
     {
         *name = title;
         return wxACC_OK;
@@ -2782,7 +2863,7 @@ wxAccStatus wxWindowAccessible::GetDescription(int WXUNUSED(childId), wxString* 
         return wxACC_FAIL;
 
     wxString ht(GetWindow()->GetHelpText());
-    if (!ht.IsEmpty())
+    if (!ht.empty())
     {
         *description = ht;
         return wxACC_OK;
@@ -2798,7 +2879,7 @@ wxAccStatus wxWindowAccessible::GetHelpText(int WXUNUSED(childId), wxString* hel
         return wxACC_FAIL;
 
     wxString ht(GetWindow()->GetHelpText());
-    if (!ht.IsEmpty())
+    if (!ht.empty())
     {
         *helpText = ht;
         return wxACC_OK;

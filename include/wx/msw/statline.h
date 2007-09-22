@@ -3,7 +3,7 @@
 // Purpose:     MSW version of wxStaticLine class
 // Author:      Vadim Zeitlin
 // Created:     28.06.99
-// Version:     $Id: statline.h,v 1.8 2004/09/04 01:53:38 ABX Exp $
+// Version:     $Id: statline.h,v 1.9 2005/03/11 02:12:40 VZ Exp $
 // Copyright:   (c) 1998 Vadim Zeitlin
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -26,9 +26,9 @@ public:
     wxStaticLine() { }
 
     wxStaticLine( wxWindow *parent,
-                  wxWindowID id,
-                  const wxPoint &pos = wxDefaultPosition,
-                  const wxSize &size = wxDefaultSize,
+                  wxWindowID id = wxID_ANY,
+                  const wxPoint& pos = wxDefaultPosition,
+                  const wxSize& size = wxDefaultSize,
                   long style = wxLI_HORIZONTAL,
                   const wxString &name = wxStaticTextNameStr )
     {
@@ -36,9 +36,9 @@ public:
     }
 
     bool Create( wxWindow *parent,
-                 wxWindowID id,
-                 const wxPoint &pos = wxDefaultPosition,
-                 const wxSize &size = wxDefaultSize,
+                 wxWindowID id = wxID_ANY,
+                 const wxPoint& pos = wxDefaultPosition,
+                 const wxSize& size = wxDefaultSize,
                  long style = wxLI_HORIZONTAL,
                  const wxString &name = wxStaticTextNameStr );
 

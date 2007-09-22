@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     04/01/98
-// RCS-ID:      $Id: typetest.h,v 1.15 2004/05/25 11:19:24 JS Exp $
+// RCS-ID:      $Id: typetest.h,v 1.16 2005/06/02 12:04:45 JS Exp $
 // Copyright:   (c) Julian Smart
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -70,9 +70,9 @@ enum
 {
     TYPES_QUIT = wxID_EXIT,
     TYPES_TEXT = 101,
-    TYPES_ABOUT,
+    TYPES_ABOUT = wxID_ABOUT,
 
-    TYPES_DATE,
+    TYPES_DATE = 102,
     TYPES_TIME,
     TYPES_VARIANT,
     TYPES_BYTEORDER,

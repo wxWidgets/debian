@@ -3,8 +3,9 @@
 // Purpose:     wrapper header for CppUnit headers
 // Author:      Vadim Zeitlin
 // Created:     15.02.04
-// RCS-ID:      $Id: cppunit.h,v 1.4 2004/09/10 12:55:46 ABX Exp $
+// RCS-ID:      $Id: cppunit.h,v 1.6 2005/05/04 18:51:56 JS Exp $
 // Copyright:   (c) 2004 Vadim Zeitlin
+// Licence:     wxWindows Licence
 /////////////////////////////////////////////////////////////////////////////
 
 #ifndef _WX_CPPUNIT_H_
@@ -27,6 +28,15 @@
 #ifdef __BORLANDC__
     #pragma warn -8022
 #endif
+ 
+///////////////////////////////////////////////////////////////////////////////
+// Set the default format for the errors, which can be used by an IDE to jump
+// to the error location. This default gets overridden by the cppunit headers
+// for some compilers (e.g. VC++).
+
+#ifndef CPPUNIT_COMPILER_LOCATION_FORMAT 
+    #define CPPUNIT_COMPILER_LOCATION_FORMAT "%p:%l:"
+#endif
 
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -38,6 +48,7 @@
 #include <cppunit/ui/text/TestRunner.h>
 #include <cppunit/TestCase.h>
 #include <cppunit/extensions/HelperMacros.h>
+#include <cppunit/CompilerOutputter.h>
 #include "wx/afterstd.h"
 
 

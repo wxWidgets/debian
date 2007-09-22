@@ -4,7 +4,7 @@
 // Author:      Vadim Zeitlin
 // Modified by:
 // Created:     09.02.01
-// RCS-ID:      $Id: slider.cpp,v 1.15 2004/11/05 21:03:44 ABX Exp $
+// RCS-ID:      $Id: slider.cpp,v 1.16 2005/05/31 09:28:45 JS Exp $
 // Copyright:   (c) 2001 SciTech Software, Inc. (www.scitechsoft.com)
 // Licence:     wxWindows licence
 ///////////////////////////////////////////////////////////////////////////////
@@ -22,9 +22,9 @@
    or right.
 
    What we really need is probably a more fine grain control on labels, i.e. we
-   should be able to select if we show nothign at all, the current value only
+   should be able to select if we show nothing at all, the current value only
    or the value and the limits - the current approach is just that of the
-   greatest common denominator.
+   lowest common denominator.
 
    TODO:
 

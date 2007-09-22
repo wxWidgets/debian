@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     01/02/97
-// RCS-ID:      $Id: bitmap.h,v 1.48 2004/09/16 22:36:12 VZ Exp $
+// RCS-ID:      $Id: bitmap.h,v 1.49 2005/03/27 17:47:31 VZ Exp $
 // Copyright:   (c) Julian Smart
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -145,6 +145,7 @@ public:
 #endif // wxUSE_PALETTE
 
     wxMask *GetMask() const;
+    wxBitmap GetMaskBitmap() const;
     void SetMask(wxMask *mask);
 
     bool operator==(const wxBitmap& bitmap) const { return m_refData == bitmap.m_refData; }

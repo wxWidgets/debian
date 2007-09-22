@@ -4,7 +4,7 @@
 // Author:      Vadim Zeitlin
 // Modified by:
 // Created:     19.09.2003 (extracted from wx/fontenc.h)
-// RCS-ID:      $Id: encinfo.h,v 1.5 2004/10/19 13:39:03 JS Exp $
+// RCS-ID:      $Id: encinfo.h,v 1.6 2004/12/20 12:43:48 ABX Exp $
 // Copyright:   (c) 2003 Vadim Zeitlin <vadim@wxwidgets.org>
 // Licence:     wxWindows licence
 ///////////////////////////////////////////////////////////////////////////////
@@ -35,7 +35,7 @@
 struct WXDLLEXPORT wxNativeEncodingInfo
 {
     wxString facename;          // may be empty meaning "any"
-#ifndef __PALMOS__
+#ifndef __WXPALMOS__
     wxFontEncoding encoding;    // so that we know what this struct represents
 
 #if defined(__WXMSW__) || \

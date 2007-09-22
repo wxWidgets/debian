@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     27/7/98
-// RCS-ID:      $Id: project.h,v 1.1 2000/03/03 11:24:43 JS Exp $
+// RCS-ID:      $Id: project.h,v 1.2 2004/12/17 12:09:55 ABX Exp $
 // Copyright:   (c) Julian Smart
 // Licence:
 /////////////////////////////////////////////////////////////////////////////
@@ -30,9 +30,9 @@ public:
 
     ~csProjectTreeCtrl();
 
-    wxImageList& GetImageList() const { return (wxImageList&) m_imageList; }
+    wxImageList *GetImageList() const { return (wxImageList *)&m_imageList; }
 protected:
-    wxImageList     m_imageList;
+    wxImageList m_imageList;
 
 DECLARE_EVENT_TABLE()
 };

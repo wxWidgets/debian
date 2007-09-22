@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by: VZ at 25.02.00: type safe hashes with WX_DECLARE_HASH()
 // Created:     01/02/97
-// RCS-ID:      $Id: hash.cpp,v 1.35 2004/06/01 15:20:14 ABX Exp $
+// RCS-ID:      $Id: hash.cpp,v 1.37 2005/02/02 13:56:59 ABX Exp $
 // Copyright:   (c) Julian Smart
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -288,7 +288,7 @@ void wxStringHashTable::Put(long key, const wxString& value)
 
 wxString wxStringHashTable::Get(long key, bool *wasFound) const
 {
-    wxCHECK_MSG( m_hashSize, _T(""), _T("must call Create() first") );
+    wxCHECK_MSG( m_hashSize, wxEmptyString, _T("must call Create() first") );
 
     size_t slot = (size_t)abs((int)(key % (long)m_hashSize));
 
@@ -311,7 +311,7 @@ wxString wxStringHashTable::Get(long key, bool *wasFound) const
     if ( wasFound )
         *wasFound = false;
 
-    return _T("");
+    return wxEmptyString;
 }
 
 bool wxStringHashTable::Delete(long key) const
@@ -1018,9 +1018,12 @@ long wxHashTableBase::MakeKey( const wxChar *str )
     return int_key;
 }
 
-//
+// ----------------------------------------------------------------------------
+// wxHashTable
+// ----------------------------------------------------------------------------
 
 wxHashTable::wxHashTable( const wxHashTable& table )
+           : wxHashTableBase()
 {
     DoCopy( table );
 }

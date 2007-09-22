@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by: VZ 07.01.00: implemented wxMetaFileDataObject
 // Created:     04/01/98
-// RCS-ID:      $Id: metafile.cpp,v 1.31 2004/08/30 10:18:55 ABX Exp $
+// RCS-ID:      $Id: metafile.cpp,v 1.32 2005/05/17 16:03:24 DS Exp $
 // Copyright:   (c) Julian Smart
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -232,7 +232,7 @@ void wxMetafileDC::GetTextExtent(const wxString& string, long *x, long *y,
 
     SIZE sizeRect;
     TEXTMETRIC tm;
-    GetTextExtentPoint(dc, WXSTRINGCAST string, wxStrlen(WXSTRINGCAST string), &sizeRect);
+    ::GetTextExtentPoint32(dc, WXSTRINGCAST string, wxStrlen(WXSTRINGCAST string), &sizeRect);
     GetTextMetrics(dc, &tm);
 
     ReleaseDC(NULL, dc);

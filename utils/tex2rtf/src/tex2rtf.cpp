@@ -5,7 +5,7 @@
 // Modified by: Wlodzimiez ABX Skiba 2003/2004 Unicode support
 //              Ron Lee
 // Created:     7.9.93
-// RCS-ID:      $Id: tex2rtf.cpp,v 1.45 2004/10/31 08:31:03 VS Exp $
+// RCS-ID:      $Id: tex2rtf.cpp,v 1.51 2005/05/19 17:35:21 ABX Exp $
 // Copyright:   (c) Julian Smart
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -21,14 +21,21 @@
 #pragma hdrstop
 #endif
 
+#if defined(__WXMSW__)
+    #include "wx/msw/wrapwin.h"
+#endif
+
 #ifndef WX_PRECOMP
     #ifndef NO_GUI
         #include "wx/menu.h"
         #include "wx/textctrl.h"
         #include "wx/filedlg.h"
         #include "wx/msgdlg.h"
+        #include "wx/icon.h"
     #endif
 #endif
+
+#include "wx/log.h"
 
 #ifndef NO_GUI
     #include "wx/timer.h"
@@ -57,7 +64,7 @@
 #include "rtfutils.h"
 #include "symbols.h"
 
-#if (defined(__WXGTK__) || defined(__WXMOTIF__) || defined(__WXMAC__) || defined(__WXX11__)) && !defined(NO_GUI)
+#if (defined(__WXGTK__) || defined(__WXMOTIF__) || defined(__WXMAC__) || defined(__WXX11__) || defined(__WXMGL__)) && !defined(NO_GUI)
 #include "tex2rtf.xpm"
 #endif
 
@@ -66,7 +73,7 @@ static inline wxChar* copystring(const wxChar* s)
     { return wxStrcpy(new wxChar[wxStrlen(s) + 1], s); }
 #endif
 
-const float versionNo = (float)TEX2RTF_VERSION_NUMBER;
+const float versionNo = float(TEX2RTF_VERSION_NUMBER);
 
 TexChunk *currentMember = NULL;
 bool startedSections = false;
@@ -397,7 +404,7 @@ bool MyApp::OnInit()
      */
 
     wxString path = TexPathList.FindValidPath(MacroFile);
-    if (path != _T(""))
+    if (!path.empty())
       ReadCustomMacros((wxChar *)path.c_str());
 
 #if wxUSE_STATUSBAR
@@ -433,7 +440,7 @@ bool MyApp::OnInit()
      */
 
     wxString path = TexPathList.FindValidPath(MacroFile);
-    if (path != _T(""))
+    if (!path.empty())
       ReadCustomMacros((wxChar*)path.c_str());
 
     Go();
@@ -742,7 +749,7 @@ void MyFrame::OnLoadMacros(wxCommandEvent& WXUNUSED(event))
 {
       textWindow->Clear();
       wxString s = wxFileSelector(_T("Choose custom macro file"), wxPathOnly(MacroFile), wxFileNameFromPath(MacroFile), _T("ini"), _T("*.ini"));
-      if (s != _T("") && wxFileExists(s))
+      if (!s.empty() && wxFileExists(s))
       {
         MacroFile = copystring(s);
         ReadCustomMacros((wxChar *)s.c_str());
@@ -861,7 +868,7 @@ void ChooseInputFile(bool force)
   if (force || !InputFile)
   {
     wxString s = wxFileSelector(_T("Choose LaTeX input file"), wxPathOnly(InputFile), wxFileNameFromPath(InputFile), _T("tex"), _T("*.tex"));
-    if (s != _T(""))
+    if (!s.empty())
     {
       // Different file, so clear index entries.
       ClearKeyWordTable();
@@ -915,7 +922,7 @@ void ChooseOutputFile(bool force)
   {
     wxString s = wxFileSelector(_T("Choose output file"), path, wxFileNameFromPath(OutputFile),
                    extensionBuf, wildBuf);
-    if (s != _T(""))
+    if (!s.empty())
       OutputFile = copystring(s);
   }
 }
@@ -970,7 +977,7 @@ bool Go(void)
   if (!bulletFile)
   {
     wxString s = TexPathList.FindValidPath(_T("bullet.bmp"));
-    if (s != _T(""))
+    if (!s.empty())
     {
       wxString str = wxFileNameFromPath(s);
       bulletFile = copystring(str);
@@ -1089,59 +1096,56 @@ bool Go(void)
 
 void OnError(const wxChar *msg)
 {
-  wxString msg_string = msg;
-  errorCount++;
+    wxString msg_string = msg;
+    errorCount++;
 
 #ifdef NO_GUI
-  wxSTD cerr << "Error: " << msg_string.mb_str() << "\n";
-  wxSTD cerr.flush();
-#else
-  if (isInteractive && frame)
-    (*frame->textWindow) << _T("Error: ") << msg << _T("\n");
-  else
-#ifdef __UNIX__
-  {
     wxSTD cerr << "Error: " << msg_string.mb_str() << "\n";
     wxSTD cerr.flush();
-  }
+#else
+    if (isInteractive && frame)
+    {
+        (*frame->textWindow) << _T("Error: ") << msg << _T("\n");
+    }
+    else
+    {
+#if defined(__UNIX__)
+        wxSTD cerr << "Error: " << msg_string.mb_str() << "\n";
+        wxSTD cerr.flush();
+#elif defined(__WXMSW__)
+        wxLogError(msg);
 #endif
+    }
 
-#ifdef __WXMSW__
-    wxLogError(msg);
-#endif
-  Tex2RTFYield(true);
+    Tex2RTFYield(true);
 #endif // NO_GUI
 }
 
 void OnInform(const wxChar *msg)
 {
-  wxString msg_string = msg;
+    wxString msg_string = msg;
 #ifdef NO_GUI
-  wxSTD cout << msg_string.mb_str() << "\n";
-  wxSTD cout.flush();
-#else
-  if (isInteractive && frame)
-    (*frame->textWindow) << msg << _T("\n");
-/* This whole block of code is just wrong I think.  It would behave
-   completely wrong under anything other than MSW due to the ELSE
-   with no statement, and the cout calls would fail under MSW, as
-   the code in this block is compiled if !NO_GUI This code has been
-   here since v1.1 of this file too. - gt
-  else
-#ifdef __WXMSW__
-  {
     wxSTD cout << msg_string.mb_str() << "\n";
     wxSTD cout.flush();
-  }
+#else
+    if (isInteractive && frame)
+    {
+       (*frame->textWindow) << msg << _T("\n");
+    }
+    else
+    {
+#if defined(__UNIX__)
+        wxSTD cout << msg_string.mb_str() << "\n";
+        wxSTD cout.flush();
+#elif defined(__WXMSW__)
+        wxLogInfo(msg);
 #endif
-#ifdef __WXMSW__
-    {}
-#endif
-*/
-  if (isInteractive)
-  {
-    Tex2RTFYield(true);
-  }
+    }
+
+    if (isInteractive)
+    {
+        Tex2RTFYield(true);
+    }
 #endif // NO_GUI
 }
 

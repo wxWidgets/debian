@@ -3,12 +3,12 @@
 // Purpose:     XRC resource for panels
 // Author:      Vaclav Slavik
 // Created:     2000/03/05
-// RCS-ID:      $Id: xh_panel.cpp,v 1.11 2004/09/23 09:18:12 VS Exp $
+// RCS-ID:      $Id: xh_panel.cpp,v 1.12 2005/01/07 21:33:14 VS Exp $
 // Copyright:   (c) 2000 Vaclav Slavik
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
 
-#ifdef __GNUG__
+#if defined(__GNUG__) && !defined(NO_GCC_PRAGMA)
 #pragma implementation "xh_panel.h"
 #endif
 

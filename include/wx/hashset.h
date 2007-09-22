@@ -4,7 +4,7 @@
 // Author:      Mattia Barbon
 // Modified by:
 // Created:     11/08/2003
-// RCS-ID:      $Id: hashset.h,v 1.5 2004/05/23 20:50:22 JS Exp $
+// RCS-ID:      $Id: hashset.h,v 1.6 2004/12/08 22:39:17 MBN Exp $
 // Copyright:   (c) Mattia Barbon
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -51,14 +51,18 @@ _WX_DECLARE_HASHTABLE( KEY_T, KEY_T, HASH_T, CLASSNAME##_wxImplementation_KeyEx,
 CLASSEXP CLASSNAME:public CLASSNAME##_wxImplementation_HashTable             \
 {                                                                            \
 public:                                                                      \
+    _WX_DECLARE_PAIR( iterator, bool, Insert_Result, CLASSEXP )              \
+                                                                             \
     wxEXPLICIT CLASSNAME( size_type hint = 100, hasher hf = hasher(),        \
                           key_equal eq = key_equal() )                       \
         : CLASSNAME##_wxImplementation_HashTable( hint, hf, eq,              \
                       CLASSNAME##_wxImplementation_KeyEx() ) {}              \
                                                                              \
-    void insert( const key_type& key )                                       \
+    Insert_Result insert( const key_type& key )                              \
     {                                                                        \
-        GetOrCreateNode( key );                                              \
+        bool created;                                                        \
+        Node *node = GetOrCreateNode( key, created );                        \
+        return Insert_Result( iterator( node, this ), created );             \
     }                                                                        \
                                                                              \
     const_iterator find( const const_key_type& key ) const                   \

@@ -60,7 +60,6 @@ the corresponding topic.
 \helpref{wxDDEInitialize}{wxddeinitialize}\\
 \helpref{wxDROP\_ICON}{wxdropicon}\\
 \helpref{wxDebugMsg}{wxdebugmsg}\\
-\helpref{wxDirExists}{functionwxdirexists}\\
 \helpref{wxDirSelector}{wxdirselector}\\
 \helpref{wxDisplayDepth}{wxdisplaydepth}\\
 \helpref{wxDisplaySize}{wxdisplaysize}\\
@@ -96,6 +95,7 @@ the corresponding topic.
 \helpref{wxFinite}{wxfinite}\\
 \helpref{wxGetActiveWindow}{wxgetactivewindow}\\
 \helpref{wxGetApp}{wxgetapp}\\
+\helpref{wxGetBatteryState}{wxgetbatterystate}\\
 \helpref{wxGetClipboardData}{wxgetclipboarddata}\\
 \helpref{wxGetClipboardFormatName}{wxgetclipboardformatname}\\
 \helpref{wxGetColourFromUser}{wxgetcolourfromuser}\\
@@ -103,10 +103,11 @@ the corresponding topic.
 \helpref{wxGetDiskSpace}{wxgetdiskspace}\\
 \helpref{wxGetDisplayName}{wxgetdisplayname}\\
 \helpref{wxGetDisplaySize}{wxdisplaysize}\\
-\helpref{wxGetDisplaySizeMM}{wxdisplaysizemm}\\ 
+\helpref{wxGetDisplaySizeMM}{wxdisplaysizemm}\\
 \helpref{wxGetElapsedTime}{wxgetelapsedtime}\\
 \helpref{wxGetEmailAddress}{wxgetemailaddress}\\
 \helpref{wxGetEnv}{wxgetenv}\\
+\helpref{wxGetFileKind}{wxgetfilekind}\\
 \helpref{wxGetFontFromUser}{wxgetfontfromuser}\\
 \helpref{wxGetFreeMemory}{wxgetfreememory}\\
 \helpref{wxGetFullHostName}{wxgetfullhostname}\\
@@ -123,6 +124,7 @@ the corresponding topic.
 \helpref{wxGetOsDescription}{wxgetosdescription}\\
 \helpref{wxGetOsVersion}{wxgetosversion}\\
 \helpref{wxGetPasswordFromUser}{wxgetpasswordfromuser}\\
+\helpref{wxGetPowerType}{wxgetpowertype}\\
 \helpref{wxGetPrinterCommand}{wxgetprintercommand}\\
 \helpref{wxGetPrinterFile}{wxgetprinterfile}\\
 \helpref{wxGetPrinterMode}{wxgetprintermode}\\
@@ -162,6 +164,7 @@ the corresponding topic.
 \helpref{wxIsNaN}{wxisnan}\\
 \helpref{wxIsWild}{wxiswild}\\
 \helpref{wxKill}{wxkill}\\
+\helpref{wxLaunchDefaultBrowser}{wxlaunchdefaultbrowser}\\
 \helpref{wxLEAVE\_CRIT\_SECT}{wxleavecritsect}\\
 \helpref{wxLoadUserResource}{wxloaduserresource}\\
 \helpref{wxLogDebug}{wxlogdebug}\\
@@ -186,8 +189,11 @@ the corresponding topic.
 \helpref{wxNewId}{wxnewid}\\
 \helpref{wxNow}{wxnow}\\
 \helpref{wxOnAssert}{wxonassert}\\
+\helpref{wxON\_BLOCK\_EXIT}{wxonblockexit}\\
+\helpref{wxON\_BLOCK\_EXIT\_OBJ}{wxonblockexitobj}\\
 \helpref{wxOpenClipboard}{wxopenclipboard}\\
 \helpref{wxParseCommonDialogsFilter}{wxparsecommondialogsfilter}\\
+\helpref{wxDirExists}{functionwxdirexists}\\
 \helpref{wxPathOnly}{wxpathonly}\\
 \helpref{wxPostDelete}{wxpostdelete}\\
 \helpref{wxPostEvent}{wxpostevent}\\
@@ -247,6 +253,7 @@ the corresponding topic.
 \helpref{wx\_reinterpret\_cast}{wxreinterpretcastraw}\\
 \helpref{wx\_static\_cast}{wxstaticcastraw}\\
 \helpref{\_}{underscore}\\
+\helpref{wxPLURAL}{wxplural}\\
 \helpref{\_T}{underscoret}
 
 
@@ -315,7 +322,7 @@ the following can be done:
 
 \func{bool}{wxCHECK\_VERSION\_FULL}{\param{}{major, minor, release, subrel}}
 
-Same as \helpref{wxCHECK\_VERSION}{wxcheckversion} but also checks that 
+Same as \helpref{wxCHECK\_VERSION}{wxcheckversion} but also checks that
 \texttt{wxSUBRELEASE\_NUMBER} is at least \arg{subrel}.
 
 
@@ -432,7 +439,7 @@ This function is used in wxBase only and only if you don't create
 \helpref{wxApp}{wxapp} object at all. In this case you must call it from your
 {\tt main()} function before calling any other wxWidgets functions.
 
-If the function returns {\tt false} the initialization could not be performed,
+If the function returns \false the initialization could not be performed,
 in this case the library cannot be used and
 \helpref{wxUninitialize}{wxuninitialize} shouldn't be called neither.
 
@@ -521,16 +528,16 @@ processes.
 
 \perlnote{In wxPerl this function is called \texttt{Wx::ExecuteArgs}}
 
-\func{long}{wxExecute}{\param{const wxString\& }{command}, \param{wxArrayString\& }{output}}
+\func{long}{wxExecute}{\param{const wxString\& }{command}, \param{wxArrayString\& }{output}, \param{int }{flags = 0}}
 
 \perlnote{In wxPerl this function is called \texttt{Wx::ExecuteStdout} and it
 only takes the {\tt command} argument,
 and returns a 2-element list {\tt ( status, output )}, where {\tt output} is
 an array reference.}
 
-\func{long}{wxExecute}{\param{const wxString\& }{command}, \param{wxArrayString\& }{output}, \param{wxArrayString\& }{errors}}
+\func{long}{wxExecute}{\param{const wxString\& }{command}, \param{wxArrayString\& }{output}, \param{wxArrayString\& }{errors}, \param{int }{flags = 0}}
 
-\perlnote{In wxPerl this function is called \texttt{Wx::ExecuteStdoutStderr} 
+\perlnote{In wxPerl this function is called \texttt{Wx::ExecuteStdoutStderr}
 and it only takes the {\tt command} argument,
 and returns a 3-element list {\tt ( status, output, errors )}, where
 {\tt output} and {\tt errors} are array references.}
@@ -553,9 +560,12 @@ In the case of synchronous execution, the return value is the exit code of
 the process (which terminates by the moment the function returns) and will be
 $-1$ if the process couldn't be started and typically 0 if the process
 terminated successfully. Also, while waiting for the process to
-terminate, wxExecute will call \helpref{wxYield}{wxyield}. The caller
-should ensure that this can cause no recursion, in the simplest case by
-calling \helpref{wxEnableTopLevelWindows(false)}{wxenabletoplevelwindows}.
+terminate, wxExecute will call \helpref{wxYield}{wxyield}. Because of this, by
+default this function disables all application windows to avoid unexpected
+reentrancies which could result from the users interaction with the program
+while the child process is running. If you are sure that it is safe to not
+disable the program windows, you may pass \texttt{wxEXEC\_NODISABLE} flag to
+prevent this automatic disabling from happening.
 
 For asynchronous execution, however, the return value is the process id and
 zero value indicates that the command could not be executed. As an added
@@ -577,14 +587,15 @@ happening, i.e. with this flag the child process window will be shown normally.
 
 Under Unix the flag {\tt wxEXEC\_MAKE\_GROUP\_LEADER} may be used to ensure
 that the new process is a group leader (this will create a new session if
-needed). Calling \helpref{wxKill}{wxkill} with the argument of -pid where pid
-is the process ID of the new process will kill this process as well as all of
-its children (except those which have started their own session).
+needed). Calling \helpref{wxKill}{wxkill} passing wxKILL\_CHILDREN will
+will kill this process as well as all of its children (except those which have
+started their own session).
 
 Finally, you may use the third overloaded version of this function to execute
-a process (always synchronously) and capture its output in the array
-{\it output}. The fourth version adds the possibility to additionally capture
-the messages from standard error output in the {\it errors} array.
+a process (always synchronously, the contents of \arg{flags} is or'd with
+\texttt{wxEXEC\_SYNC}) and capture its output in the array \arg{output}. The
+fourth version adds the possibility to additionally capture the messages from
+standard error output in the \arg{errors} array.
 
 {\bf NB:} Currently wxExecute() can only be used from the main thread, calling
 this function from another thread will result in an assert failure in debug
@@ -629,7 +640,7 @@ application. See \helpref{wxCloseEvent}{wxcloseevent} and \helpref{wxApp}{wxapp}
 
 \membersection{::wxKill}\label{wxkill}
 
-\func{int}{wxKill}{\param{long}{ pid}, \param{int}{ sig = wxSIGTERM}, \param{wxKillError }{*rc = NULL}}
+\func{int}{wxKill}{\param{long}{ pid}, \param{int}{ sig = wxSIGTERM}, \param{wxKillError }{*rc = NULL}, \param{int }{flags = 0}}
 
 Equivalent to the Unix kill function: send the given signal {\it sig} to the
 process with PID {\it pid}. The valid signal values are
@@ -657,7 +668,7 @@ enum wxSignal
 \end{verbatim}
 
 {\tt wxSIGNONE}, {\tt wxSIGKILL} and {\tt wxSIGTERM} have the same meaning
-under both Unix and Windows but all the other signals are equivalent to 
+under both Unix and Windows but all the other signals are equivalent to
 {\tt wxSIGTERM} under Windows.
 
 Returns 0 on success, -1 on failure. If {\it rc} parameter is not NULL, it will
@@ -673,6 +684,12 @@ enum wxKillError
     wxKILL_ERROR            // another, unspecified error
 };
 \end{verbatim}
+
+The {\it flags} parameter can be wxKILL\_NOCHILDREN (the default),
+or wxKILL\_CHILDREN, in which case the child processes of this
+process will be killed too. Note that under Unix, for wxKILL\_CHILDREN
+to work you should have created the process by passing wxEXEC\_MAKE\_GROUP\_LEADER
+to wxExecute.
 
 \wxheading{See also}
 
@@ -727,7 +744,7 @@ and that this function is only implemented under Unix and Win32.
 
 \wxheading{Returns}
 
-{\tt true} on success, {\tt false} if an error occured.
+\true on success, \false if an error occurred.
 
 \wxheading{Include files}
 
@@ -761,7 +778,7 @@ to create and use the critical section only when needed.
 
 \func{}{wxCRIT\_SECT\_DECLARE}{\param{}{cs}}
 
-This macro declares a (static) critical section object named {\it cs} if 
+This macro declares a (static) critical section object named {\it cs} if
 {\tt wxUSE\_THREADS} is $1$ and does nothing if it is $0$.
 
 
@@ -770,9 +787,9 @@ This macro declares a (static) critical section object named {\it cs} if
 
 \func{}{wxCRIT\_SECT\_DECLARE}{\param{}{cs}}
 
-This macro declares a critical section object named {\it cs} if 
+This macro declares a critical section object named {\it cs} if
 {\tt wxUSE\_THREADS} is $1$ and does nothing if it is $0$. As it doesn't
-include the {\tt static} keyword (unlike 
+include the {\tt static} keyword (unlike
 \helpref{wxCRIT\_SECT\_DECLARE}{wxcritsectdeclare}), it can be used to declare
 a class or struct member which explains its name.
 
@@ -782,8 +799,8 @@ a class or struct member which explains its name.
 
 \func{}{wxCRIT\_SECT\_LOCKER}{\param{}{name}, \param{}{cs}}
 
-This macro creates a \helpref{critical section lock}{wxcriticalsectionlocker} 
-object named {\it name} and associated with the critical section {\it cs} if 
+This macro creates a \helpref{critical section lock}{wxcriticalsectionlocker}
+object named {\it name} and associated with the critical section {\it cs} if
 {\tt wxUSE\_THREADS} is $1$ and does nothing if it is $0$.
 
 
@@ -792,7 +809,7 @@ object named {\it name} and associated with the critical section {\it cs} if
 
 \func{}{wxCRITICAL\_SECTION}{\param{}{name}}
 
-This macro combines \helpref{wxCRIT\_SECT\_DECLARE}{wxcritsectdeclare} and 
+This macro combines \helpref{wxCRIT\_SECT\_DECLARE}{wxcritsectdeclare} and
 \helpref{wxCRIT\_SECT\_LOCKER}{wxcritsectlocker}: it creates a static critical
 section object and also the lock object associated with it. Because of this, it
 can be only used inside a function, not at global scope. For example:
@@ -810,7 +827,7 @@ int IncCount()
 
 (note that we suppose that the function is called the first time from the main
 thread so that the critical section object is initialized correctly by the time
-other threads start calling it, if this is not the case this approach can 
+other threads start calling it, if this is not the case this approach can
 {\bf not} be used and the critical section must be made a global instead).
 
 
@@ -819,7 +836,7 @@ other threads start calling it, if this is not the case this approach can
 
 \func{}{wxENTER\_CRIT\_SECT}{\param{wxCriticalSection\& }{cs}}
 
-This macro is equivalent to \helpref{cs.Enter()}{wxcriticalsectionenter} if 
+This macro is equivalent to \helpref{cs.Enter()}{wxcriticalsectionenter} if
 {\tt wxUSE\_THREADS} is $1$ and does nothing if it is $0$.
 
 
@@ -828,7 +845,7 @@ This macro is equivalent to \helpref{cs.Enter()}{wxcriticalsectionenter} if
 
 \func{bool}{wxIsMainThread}{\void}
 
-Returns {\tt true} if this thread is the main one. Always returns {\tt true} if
+Returns \true if this thread is the main one. Always returns \true if
 {\tt wxUSE\_THREADS} is $0$.
 
 
@@ -837,7 +854,7 @@ Returns {\tt true} if this thread is the main one. Always returns {\tt true} if
 
 \func{}{wxLEAVE\_CRIT\_SECT}{\param{wxCriticalSection\& }{cs}}
 
-This macro is equivalent to \helpref{cs.Leave()}{wxcriticalsectionleave} if 
+This macro is equivalent to \helpref{cs.Leave()}{wxcriticalsectionleave} if
 {\tt wxUSE\_THREADS} is $1$ and does nothing if it is $0$.
 
 
@@ -901,13 +918,6 @@ threads.
 \helpref{wxFileName}{wxfilename}
 
 
-\membersection{::wxDirExists}\label{functionwxdirexists}
-
-\func{bool}{wxDirExists}{\param{const wxString\& }{dirname}}
-
-Returns true if the directory exists.
-
-
 \membersection{::wxDos2UnixFilename}\label{wxdos2unixfilename}
 
 \func{void}{wxDos2UnixFilename}{\param{wxChar *}{s}}
@@ -928,6 +938,8 @@ Returns true if the file exists and is a plain file.
 \func{time\_t}{wxFileModificationTime}{\param{const wxString\& }{filename}}
 
 Returns time of last modification of given file.
+
+The return value is $0$ if an error occured (e.g. file not found).
 
 
 \membersection{::wxFileNameFromPath}\label{wxfilenamefrompath}
@@ -954,7 +966,7 @@ parent directory "..".
 
 \wxheading{Warning}
 
-As of wx 2.5.2, these functions are not thread-safe! (use static variables)
+As of wx 2.5.2, these functions are not thread-safe! (they use static variables). You probably want to use \helpref{wxDir::GetFirst}{wxdirgetfirst} or \helpref{wxDirTraverser}{wxdirtraverser} instead.
 
 {\it spec} may contain wildcards.
 
@@ -964,7 +976,7 @@ For example:
 
 \begin{verbatim}
   wxString f = wxFindFirstFile("/home/project/*.*");
-  while ( !f.IsEmpty() )
+  while ( !f.empty() )
   {
     ...
     f = wxFindNextFile();
@@ -992,7 +1004,7 @@ information is not needed.
 
 \wxheading{Returns}
 
-{\tt true} on success, {\tt false} if an error occured (for example, the
+\true on success, \false if an error occurred (for example, the
 directory doesn't exist).
 
 \wxheading{Portability}
@@ -1001,6 +1013,30 @@ This function is implemented for Win32,
 Mac OS and generic Unix provided the system has {\tt statfs()} function.
 
 This function first appeared in wxWidgets 2.3.2.
+
+
+\membersection{::wxGetFileKind}\label{wxgetfilekind}
+
+\func{wxFileKind}{wxGetFileKind}{\param{int }{fd}}
+
+\func{wxFileKind}{wxGetFileKind}{\param{FILE *}{fp}}
+
+Returns the type of an open file. Possible return values are:
+
+\begin{verbatim}
+enum wxFileKind
+{
+  wxFILE_KIND_UNKNOWN,
+  wxFILE_KIND_DISK,     // a file supporting seeking to arbitrary offsets
+  wxFILE_KIND_TERMINAL, // a tty
+  wxFILE_KIND_PIPE      // a pipe
+};
+
+\end{verbatim}
+
+\wxheading{Include files}
+
+<wx/filefn.h>
 
 
 \membersection{::wxGetOSDirectory}\label{wxgetosdirectory}
@@ -1016,6 +1052,13 @@ Returns the Windows directory under Windows; on other platforms returns the empt
 
 Returns true if the argument is an absolute filename, i.e. with a slash
 or drive name at the beginning.
+
+
+\membersection{::wxDirExists}\label{functionwxdirexists}
+
+\func{bool}{wxDirExists}{\param{const wxString\& }{dirname}}
+
+Returns true if the path exists.
 
 
 \membersection{::wxPathOnly}\label{wxpathonly}
@@ -1232,13 +1275,29 @@ The functions in this section are used to retrieve information about the
 current computer and/or user characteristics.
 
 
+\membersection{::wxGetEmailAddress}\label{wxgetemailaddress}
+
+\func{wxString}{wxGetEmailAddress}{\void}
+
+\func{bool}{wxGetEmailAddress}{\param{char * }{buf}, \param{int }{sz}}
+
+Copies the user's email address into the supplied buffer, by
+concatenating the values returned by \helpref{wxGetFullHostName}{wxgetfullhostname}\rtfsp
+and \helpref{wxGetUserId}{wxgetuserid}.
+
+Returns true if successful, false otherwise.
+
+\wxheading{Include files}
+
+<wx/utils.h>
+
+
 \membersection{::wxGetFreeMemory}\label{wxgetfreememory}
 
-\func{long}{wxGetFreeMemory}{\void}
+\func{wxMemorySize}{wxGetFreeMemory}{\void}
 
 Returns the amount of free memory in bytes under environments which
-support it, and -1 if not supported. Currently, it is supported only
-under Windows, Linux and Solaris.
+support it, and -1 if not supported or failed to perform measurement.
 
 \wxheading{Include files}
 
@@ -1255,21 +1314,6 @@ error.
 \wxheading{See also}
 
 \helpref{wxGetHostName}{wxgethostname}
-
-\wxheading{Include files}
-
-<wx/utils.h>
-
-
-\membersection{::wxGetEmailAddress}\label{wxgetemailaddress}
-
-\func{bool}{wxGetEmailAddress}{\param{const wxString\& }{buf}, \param{int }{sz}}
-
-Copies the user's email address into the supplied buffer, by
-concatenating the values returned by \helpref{wxGetFullHostName}{wxgetfullhostname}\rtfsp
-and \helpref{wxGetUserId}{wxgetuserid}.
-
-Returns true if successful, false otherwise.
 
 \wxheading{Include files}
 
@@ -1318,6 +1362,70 @@ if successful, false otherwise.
 <wx/utils.h>
 
 
+\membersection{::wxGetOsDescription}\label{wxgetosdescription}
+
+\func{wxString}{wxGetOsDescription}{\void}
+
+Returns the string containing the description of the current platform in a
+user-readable form. For example, this function may return strings like
+{\tt Windows NT Version 4.0} or {\tt Linux 2.2.2 i386}.
+
+\wxheading{See also}
+
+\helpref{::wxGetOsVersion}{wxgetosversion}
+
+\wxheading{Include files}
+
+<wx/utils.h>
+
+
+\membersection{::wxGetOsVersion}\label{wxgetosversion}
+
+\func{int}{wxGetOsVersion}{\param{int *}{major = NULL}, \param{int *}{minor = NULL}}
+
+Gets operating system version information.
+
+\begin{twocollist}\itemsep=0pt
+\twocolitemruled{Platform}{Return types}
+\twocolitem{Mac OS}{Return value is wxMAC when compiled with CodeWarrior under Mac OS 8.x/9.x and Mac OS X, wxMAC\_DARWIN when compiled with the Apple Developer Tools under Mac OS X.
+
+Both {\it major} and {\it minor} have to be looked at as hexadecimal numbers. So System 10.2.4 returns 0x10, resp 16 for {\it major} and 0x24, resp 36 for {\it minor}. }
+\twocolitem{GTK}{Return value is wxGTK, For GTK 1.0, {\it major} is 1, {\it minor} is 0. }
+\twocolitem{Motif}{Return value is wxMOTIF\_X, {\it major} is X version, {\it minor} is X revision.}
+\twocolitem{OS/2}{Return value is wxOS2\_PM.}
+\twocolitem{Windows 3.1}{Return value is wxWINDOWS, {\it major} is 3, {\it minor} is 1.}
+\twocolitem{Windows NT/2000}{Return value is wxWINDOWS\_NT, version is returned in {\it major} and {\it minor}.}
+\twocolitem{Windows 98}{Return value is wxWIN95, {\it major} is 4, {\it minor} is 1 or greater.}
+\twocolitem{Windows 95}{Return value is wxWIN95, {\it major} is 4, {\it minor} is 0.}
+\twocolitem{Win32s (Windows 3.1)}{Return value is wxWIN32S, {\it major} is 3, {\it minor} is 1.}
+\twocolitem{Windows PocketPC}{Return value is wxWINDOWS\_POCKETPC, version is returned in {\it major} and {\it minor}.}
+\twocolitem{Windows Smartphone}{Return value is wxWINDOWS\_SMARTPHONE, version is returned in {\it major} and {\it minor}.}
+\twocolitem{Windows CE (non-specific)}{Return value is wxWINDOWS\_CE, version is returned in {\it major} and {\it minor}.}
+\twocolitem{Watcom C++ 386 supervisor mode (Windows 3.1)}{Return value is wxWIN386, {\it major} is 3, {\it minor} is 1.}
+\end{twocollist}
+
+\wxheading{See also}
+
+\helpref{::wxGetOsDescription}{wxgetosdescription}
+
+\wxheading{Include files}
+
+<wx/utils.h>
+
+
+\membersection{::wxGetUserHome}\label{wxgetuserhome}
+
+\func{const wxChar *}{wxGetUserHome}{\param{const wxString\& }{user = ""}}
+
+Returns the home directory for the given user. If the username is empty
+(default value), this function behaves like
+\helpref{wxGetHomeDir}{wxgethomedir}.
+
+\wxheading{Include files}
+
+<wx/utils.h>
+
+
 \membersection{::wxGetUserId}\label{wxgetuserid}
 
 \func{wxString}{wxGetUserId}{\void}
@@ -1344,67 +1452,6 @@ if successful, false otherwise.
 <wx/utils.h>
 
 
-\membersection{::wxGetOsDescription}\label{wxgetosdescription}
-
-\func{wxString}{wxGetOsDescription}{\void}
-
-Returns the string containing the description of the current platform in a
-user-readable form. For example, this function may return strings like
-{\tt Windows NT Version 4.0} or {\tt Linux 2.2.2 i386}.
-
-\wxheading{See also}
-
-\helpref{::wxGetOsVersion}{wxgetosversion}
-
-\wxheading{Include files}
-
-<wx/utils.h>
-
-
-\membersection{::wxGetOsVersion}\label{wxgetosversion}
-
-\func{int}{wxGetOsVersion}{\param{int *}{major = NULL}, \param{int *}{minor = NULL}}
-
-Gets operating system version information.
-
-\begin{twocollist}\itemsep=0pt
-\twocolitemruled{Platform}{Return types}
-\twocolitem{Mac OS}{Return value is wxMAC when compiled with CodeWarrior under Mac OS 8.x/9.x and Mac OS X, wxMAC\_DARWIN when compiled with the Apple Developer Tools under Mac OS X. 
-
-Both {\it major} and {\it minor} have to be looked at as hexadecimal numbers. So System 10.2.4 returns 0x10, resp 16 for {\it major} and 0x24, resp 36 for {\it minor}. }
-\twocolitem{GTK}{Return value is wxGTK, For GTK 1.0, {\it major} is 1, {\it minor} is 0. }
-\twocolitem{Motif}{Return value is wxMOTIF\_X, {\it major} is X version, {\it minor} is X revision.}
-\twocolitem{OS/2}{Return value is wxOS2\_PM.}
-\twocolitem{Windows 3.1}{Return value is wxWINDOWS, {\it major} is 3, {\it minor} is 1.}
-\twocolitem{Windows NT/2000}{Return value is wxWINDOWS\_NT, version is returned in {\it major} and {\it minor}}
-\twocolitem{Windows 98}{Return value is wxWIN95, {\it major} is 4, {\it minor} is 1 or greater.}
-\twocolitem{Windows 95}{Return value is wxWIN95, {\it major} is 4, {\it minor} is 0.}
-\twocolitem{Win32s (Windows 3.1)}{Return value is wxWIN32S, {\it major} is 3, {\it minor} is 1.}
-\twocolitem{Watcom C++ 386 supervisor mode (Windows 3.1)}{Return value is wxWIN386, {\it major} is 3, {\it minor} is 1.}
-\end{twocollist}
-
-\wxheading{See also}
-
-\helpref{::wxGetOsDescription}{wxgetosdescription}
-
-\wxheading{Include files}
-
-<wx/utils.h>
-
-
-\membersection{::wxGetUserHome}\label{wxgetuserhome}
-
-\func{const wxChar *}{wxGetUserHome}{\param{const wxString\& }{user = ""}}
-
-Returns the home directory for the given user. If the username is empty
-(default value), this function behaves like
-\helpref{wxGetHomeDir}{wxgethomedir}.
-
-\wxheading{Include files}
-
-<wx/utils.h>
-
-
 \membersection{::wxGetUserName}\label{wxgetusername}
 
 \func{wxString}{wxGetUserName}{\void}
@@ -1419,8 +1466,8 @@ is running, the entry {\bf Current} in the section {\bf User} of
 the PENWIN.INI file is used.
 
 The first variant of this function returns the user name if successful or an
-empty string otherwise. The second (deprecated) function returns {\tt true}
-if successful, {\tt false} otherwise.
+empty string otherwise. The second (deprecated) function returns \true
+if successful, \false otherwise.
 
 \wxheading{See also}
 
@@ -1462,23 +1509,33 @@ as wxGetTranslation.
 
 The second form is used when retrieving translation of string that has
 different singular and plural form in English or different plural forms in some
-other language. It takes two extra arguments: \arg{str}
-parameter must contain the singular form of the string to be converted.
-It is also used as the key for the search in the catalog.
-The \arg{strPlural} parameter is the plural form (in English).
-The parameter \arg{n} is used to determine the plural form.  If no
-message catalog is found \arg{str} is returned if `n == 1',
+other language. It takes two extra arguments: as above, \arg{str} 
+parameter must contain the singular form of the string to be converted and
+is used as the key for the search in the catalog. The \arg{strPlural} parameter
+is the plural form (in English). The parameter \arg{n} is used to determine the
+plural form.  If no message catalog is found \arg{str} is returned if `n == 1',
 otherwise \arg{strPlural}.
-See \urlref{GNU gettext manual}{http://www.gnu.org/manual/gettext/html\_chapter/gettext\_10.html\#SEC150} for additional information on plural forms handling.
+
+See \urlref{GNU gettext manual}{http://www.gnu.org/manual/gettext/html\_chapter/gettext\_10.html\#SEC150} 
+for additional information on plural forms handling. For a shorter alternative
+see the \helpref{wxPLURAL()}{wxplural} macro.
 
 Both versions call \helpref{wxLocale::GetString}{wxlocalegetstring}.
+
+Note that this function is not suitable for literal strings in Unicode
+builds, since the literal strings must be enclosed into 
+\helpref{\_T()}{underscoret} or \helpref{wxT}{wxt} macro which makes them
+unrecognised by \texttt{xgettext}, and so they are not extracted to the message
+catalog. Instead, use the \helpref{\_()}{underscore} and 
+\helpref{wxPLURAL}{wxplural} macro for all literal strings.
+
 
 \membersection{::wxIsEmpty}\label{wxisempty}
 
 \func{bool}{wxIsEmpty}{\param{const char *}{ p}}
 
-Returns {\tt true} if the pointer is either {\tt NULL} or points to an empty
-string, {\tt false} otherwise.
+Returns \true if the pointer is either {\tt NULL} or points to an empty
+string, \false otherwise.
 
 
 \membersection{::wxStrcmp}\label{wxstrcmp}
@@ -1510,8 +1567,8 @@ case-sensitive comparison.
 
 {\bf NB:} This function is obsolete, use \helpref{wxString::Find}{wxstringfind} instead.
 
-Returns {\tt true} if the substring {\it s1} is found within {\it s2},
-ignoring case if {\it exact} is false. If {\it subString} is {\tt false},
+Returns \true if the substring {\it s1} is found within {\it s2},
+ignoring case if {\it exact} is false. If {\it subString} is \false,
 no substring matching is done.
 
 
@@ -1562,7 +1619,7 @@ enough space.
 
 wxT() is a macro which can be used with character and string literals (in other
 words, {\tt 'x'} or {\tt "foo"}) to automatically convert them to Unicode in
-Unicode build configuration. Please see the 
+Unicode build configuration. Please see the
 \helpref{Unicode overview}{unicode} for more information.
 
 This macro is simply returns the value passed to it without changes in ASCII
@@ -1581,21 +1638,21 @@ build. In fact, its definition is:
 \func{const wxChar *}{wxTRANSLATE}{\param{const char *}{s}}
 
 This macro doesn't do anything in the program code -- it simply expands to the
-value of its argument (except in Unicode build where it is equivalent to 
+value of its argument (except in Unicode build where it is equivalent to
 \helpref{wxT}{wxt} which makes it unnecessary to use both wxTRANSLATE and wxT
 with the same string which would be really unreadable).
 
 However it does have a purpose and it is to mark the literal strings for the
 extraction into the message catalog created by {\tt xgettext} program. Usually
 this is achieved using \helpref{\_()}{underscore} but that macro not only marks
-the string for extraction but also expands into a 
+the string for extraction but also expands into a
 \helpref{wxGetTranslation}{wxgettranslation} function call which means that it
 cannot be used in some situations, notably for static array
 initialization.
 
 Here is an example which should make it more clear: suppose that you have a
 static array of strings containing the weekday names and which have to be
-translated (note that it is a bad example, really, as 
+translated (note that it is a bad example, really, as
 \helpref{wxDateTime}{wxdatetime} already can be used to get the localized week
 day names already). If you write
 
@@ -1638,12 +1695,20 @@ argument instead of arbitrary number of parameters.
 
 \func{const wxChar *}{\_}{\param{const char *}{s}}
 
-This macro expands into a call to \helpref{wxGetTranslation}{wxgettranslation} 
+This macro expands into a call to \helpref{wxGetTranslation}{wxgettranslation}
 function, so it marks the message for the extraction by {\tt xgettext} just as
 \helpref{wxTRANSLATE}{wxtranslate} does, but also returns the translation of
 the string for the current locale during execution.
 
 Don't confuse this macro with \helpref{\_T()}{underscoret}!
+
+
+\membersection{wxPLURAL}\label{wxplural}
+
+\func{const wxChar *}{wxPLURAL}{\param{const char *}{sing}, \param{const char *}{plur}, \param{size\_t}{n}}
+
+This macro is identical to \helpref{\_()}{underscore} but for the plural variant
+of \helpref{wxGetTranslation}{wxgettranslation}.
 
 
 \membersection{\_T}\label{underscoret}
@@ -2168,7 +2233,7 @@ checkbox which is shown in the tips dialog.}
 
 \func{int}{wxFinite}{\param{double }{x}}
 
-Returns a non-zero value if {\it x} is neither infinite or NaN (not a number), 
+Returns a non-zero value if {\it x} is neither infinite or NaN (not a number),
 returns 0 otherwise.
 
 
@@ -2585,7 +2650,7 @@ This macro returns the concatenation of two tokens \arg{x} and \arg{y}.
 
 \func{}{wxDYNLIB\_FUNCTION}{\param{}{type}, \param{}{name}, \param{}{dynlib}}
 
-When loading a function from a DLL you always have to cast the returned 
+When loading a function from a DLL you always have to cast the returned
 {\tt void *} pointer to the correct type and, even more annoyingly, you have to
 repeat this type twice if you want to declare and define a function pointer all
 in one line
@@ -2593,7 +2658,7 @@ in one line
 This macro makes this slightly less painful by allowing you to specify the
 type only once, as the first parameter, and creating a variable of this type
 named after the function but with {\tt pfn} prefix and initialized with the
-function \arg{name} from the \helpref{wxDynamicLibrary}{wxdynamiclibrary} 
+function \arg{name} from the \helpref{wxDynamicLibrary}{wxdynamiclibrary}
 \arg{dynlib}.
 
 \wxheading{Parameters}
@@ -2619,9 +2684,14 @@ this language feature but still take advantage of it when it is available.
 
 \func{bool}{wxGetKeyState}{\param{wxKeyCode }{key}}
 
-Returns \true if the key parameter is currently pressed on the keyboard, or
-with modifier keys, (caps lock, etc) if the key is active (the led light is
-on).
+For normal keys, returns \true if the specified key is currently down.
+
+For togglable keys (Caps Lock, Num Lock and Scroll Lock), returns
+\true if the key is toggled such that its LED indicator is lit. There is
+currently no way to test whether togglable keys are up or down.
+
+Even though there are virtual key codes defined for mouse buttons, they
+cannot be used with this function currently.
 
 \wxheading{Include files}
 
@@ -2681,6 +2751,48 @@ Generates an integer identifier unique to this run of the program.
 \wxheading{Include files}
 
 <wx/utils.h>
+
+
+\membersection{wxON\_BLOCK\_EXIT}\label{wxonblockexit}
+
+\func{}{wxON\_BLOCK\_EXIT0}{\param{}{func}}
+\func{}{wxON\_BLOCK\_EXIT1}{\param{}{func}, \param{}{p1}}
+\func{}{wxON\_BLOCK\_EXIT2}{\param{}{func}, \param{}{p1}, \param{}{p2}}
+
+This family of macros allows to ensure that the global function \arg{func}
+with 0, 1, 2 or more parameters (up to some implementaton-defined limit) is
+executed on scope exit, whether due to a normal function return or because an
+exception has been thrown. A typical example of its usage:
+\begin{verbatim}
+    void *buf = malloc(size);
+    wxON_BLOCK_EXIT1(free, buf);
+\end{verbatim}
+
+Please see the original article by Andrei Alexandrescu and Petru Marginean
+published in December 2000 issue of \emph{C/C++ Users Journal} for more
+details.
+
+\wxheading{Include files}
+
+<wx/scopeguard.h>
+
+\wxheading{See also}
+
+\helpref{wxON\_BLOCK\_EXIT\_OBJ}{wxonblockexitobj}
+
+
+\membersection{wxON\_BLOCK\_EXIT\_OBJ}\label{wxonblockexitobj}
+
+\func{}{wxON\_BLOCK\_EXIT\_OBJ0}{\param{}{obj}, \param{}{method}}
+\func{}{wxON\_BLOCK\_EXIT\_OBJ1}{\param{}{obj}, \param{}{method}, \param{}{p1}}
+\func{}{wxON\_BLOCK\_EXIT\_OBJ2}{\param{}{obj}, \param{}{method}, \param{}{p1}, \param{}{p2}}
+
+This family of macros is similar to \helpref{wxON\_BLOCK\_EXIT}{wxonblockexit} 
+but calls a method of the given object instead of a free function.
+
+\wxheading{Include files}
+
+<wx/scopeguard.h>
 
 
 \membersection{::wxRegisterId}\label{wxregisterid}
@@ -2812,11 +2924,40 @@ Gets the currently active window (Windows only).
 <wx/windows.h>
 
 
+\membersection{::wxGetBatteryState}\label{wxgetbatterystate}
+
+\func{wxBatteryState}{wxGetBatteryState}{\void}
+
+Returns battery state as one of \texttt{wxBATTERY\_NORMAL\_STATE},
+\texttt{wxBATTERY\_LOW\_STATE}, \texttt{wxBATTERY\_CRITICAL\_STATE},
+\texttt{wxBATTERY\_SHUTDOWN\_STATE} or \texttt{wxBATTERY\_UNKNOWN\_STATE}.
+\texttt{wxBATTERY\_UNKNOWN\_STATE} is also the default on platforms where
+this feature is not implemented.
+
+\wxheading{Include files}
+
+<wx/utils.h>
+
+
 \membersection{::wxGetDisplayName}\label{wxgetdisplayname}
 
 \func{wxString}{wxGetDisplayName}{\void}
 
 Under X only, returns the current display name. See also \helpref{wxSetDisplayName}{wxsetdisplayname}.
+
+\wxheading{Include files}
+
+<wx/utils.h>
+
+
+\membersection{::wxGetPowerType}\label{wxgetpowertype}
+
+\func{wxPowerType}{wxGetPowerType}{\void}
+
+Returns the type of power source as one of \texttt{wxPOWER\_SOCKET},
+\texttt{wxPOWER\_BATTERY} or \texttt{wxPOWER\_UNKNOWN}.
+\texttt{wxPOWER\_UNKNOWN} is also the default on platforms where this
+feature is not implemented.
 
 \wxheading{Include files}
 
@@ -2869,6 +3010,28 @@ See also \helpref{wxWriteResource}{wxwriteresource}, \helpref{wxConfigBase}{wxco
 <wx/utils.h>
 
 
+\membersection{::wxGetStockLabel}\label{wxgetstocklabel}
+
+\func{wxString}{wxGetStockLabel}{\param{wxWindowID }{id}, \param{bool }{withCodes = true}, \param{wxString }{accelerator = wxEmptyString}}
+
+Returns label that should be used for given {\it id} element.
+
+\wxheading{Parameters}
+
+\docparam{id}{given id of the \helpref{wxMenuItem}{wxmenuitem}, \helpref{wxButton}{wxbutton}, \helpref{wxToolBar}{wxtoolbar} tool, etc.}
+
+\docparam{withCodes}{if false then strip accelerator code from the label;
+usefull for getting labels without accelerator char code like for toolbar tooltip or
+under platforms without traditional keyboard like smartphones}
+
+\docparam{accelerator}{optional accelerator string automatically added to label; useful
+for building labels for \helpref{wxMenuItem}{wxmenuitem}}
+
+\wxheading{Include files}
+
+<wx/stockitem.h>
+
+
 \membersection{::wxGetTopLevelParent}\label{wxgettoplevelparent}
 
 \func{wxWindow *}{wxGetTopLevelParent}{\param{wxWindow }{*win}}
@@ -2880,6 +3043,18 @@ frame or dialog containing it, or {\tt NULL}.
 
 <wx/window.h>
 
+
+\membersection{::wxLaunchDefaultBrowser}\label{wxlaunchdefaultbrowser}
+
+\func{bool}{wxLaunchDefaultBrowser}{\param{const wxString\& }{sUrl}}
+
+Launches the user's default browser and tells it to open the location at {\tt sUrl}.
+
+Returns true if the application was successfully launched.
+
+\wxheading{Include files}
+
+<wx/utils.h>
 
 \membersection{::wxLoadUserResource}\label{wxloaduserresource}
 
@@ -3001,7 +3176,7 @@ which support it or its replacement for those that don't. It must be used to
 preserve the value of a \texttt{va\_list} object if you need to use it after
 passing it to another function because it can be modified by the latter.
 
-As with \texttt{va\_start}, each call to \texttt{wxVaCopy} must have a matching 
+As with \texttt{va\_start}, each call to \texttt{wxVaCopy} must have a matching
 \texttt{va\_end}.
 
 
@@ -3160,9 +3335,9 @@ class wxCommand: public wxObject
 
 \func{}{DECLARE\_APP}{className}
 
-This is used in headers to create a forward declaration of the 
-\helpref{wxGetApp}{wxgetapp} function implemented by 
-\helpref{IMPLEMENT\_APP}{implementapp}. It creates the declaration 
+This is used in headers to create a forward declaration of the
+\helpref{wxGetApp}{wxgetapp} function implemented by
+\helpref{IMPLEMENT\_APP}{implementapp}. It creates the declaration
 {\tt className\& wxGetApp(void)}.
 
 Example:
@@ -3193,8 +3368,11 @@ dynamically. The same as DECLARE\_ABSTRACT\_CLASS.
 
 \func{}{DECLARE\_DYNAMIC\_CLASS}{className}
 
-Used inside a class declaration to declare that the objects of this class should be dynamically
-creatable from run-time type information.
+Used inside a class declaration to make the class known to wxWidgets RTTI
+system and also declare that the objects of this class should be dynamically
+creatable from run-time type information. Notice that this implies that the
+class should have a default constructor, if this is not the case consider using 
+\helpref{DECLARE\_CLASS}{declareclass}.
 
 Example:
 
@@ -3411,7 +3589,7 @@ Example:
 \helpref{RTTI overview}{runtimeclassoverview}\\
 \helpref{wxDynamicCastThis}{wxdynamiccastthis}\\
 \helpref{wxConstCast}{wxconstcast}\\
-\helpref{wxStatiicCast}{wxstaticcast}
+\helpref{wxStaticCast}{wxstaticcast}
 
 
 \membersection{wxDynamicCastThis}\label{wxdynamiccastthis}
@@ -3447,7 +3625,7 @@ result of executing an equivalent of {\tt static\_cast<classname *>(ptr)}.
 
 \func{T}{wx\_const\_cast}{T, x}
 
-Same as \texttt{const\_cast<T>(x)} if the compiler supports const cast or 
+Same as \texttt{const\_cast<T>(x)} if the compiler supports const cast or
 \texttt{(T)x} for old compilers. Unlike \helpref{wxConstCast}{wxconstcast},
 the cast it to the type \arg{T} and not to \texttt{T *} and also the order of
 arguments is the same as for the standard cast.
@@ -3462,7 +3640,7 @@ arguments is the same as for the standard cast.
 
 \func{T}{wx\_reinterpret\_cast}{T, x}
 
-Same as \texttt{reinterpret\_cast<T>(x)} if the compiler supports reinterpret cast or 
+Same as \texttt{reinterpret\_cast<T>(x)} if the compiler supports reinterpret cast or
 \texttt{(T)x} for old compilers.
 
 \wxheading{See also}
@@ -3475,7 +3653,7 @@ Same as \texttt{reinterpret\_cast<T>(x)} if the compiler supports reinterpret ca
 
 \func{T}{wx\_static\_cast}{T, x}
 
-Same as \texttt{static\_cast<T>(x)} if the compiler supports static cast or 
+Same as \texttt{static\_cast<T>(x)} if the compiler supports static cast or
 \texttt{(T)x} for old compilers. Unlike \helpref{wxStaticCast}{wxstaticcast},
 there are no checks being done and the meaning of the macro arguments is exactly
 the same as for the standard static cast, i.e. \arg{T} is the full type name and
@@ -3596,11 +3774,7 @@ the program work.
 \func{void}{wxVLogMessage}{\param{const char *}{formatString}, \param{va\_list }{argPtr}}
 
 For all normal, informational messages. They also appear in a message box by
-default (but it can be changed). Notice that the standard behaviour is to not
-show informational messages if there are any errors later - the logic being
-that the later error messages make the informational messages preceding them
-meaningless.
-
+default (but it can be changed).
 
 \membersection{::wxLogVerbose}\label{wxlogverbose}
 
@@ -3704,7 +3878,7 @@ this might lead to function signature confusion in some cases:
 if you intend to call the format string only version of wxLogTrace,
 then add a \%s format string parameter and then supply a second string parameter for that \%s, the string mask version of wxLogTrace will erroneously get called instead, since you are supplying two string parameters to the function.
 In this case you'll unfortunately have to avoid having two leading
-string parameters, e.g. by adding a bogus integer (with its \%d format string). 
+string parameters, e.g. by adding a bogus integer (with its \%d format string).
 
 The third version of the function only logs the message if all the bits
 corresponding to the {\it mask} are set in the wxLog trace mask which can be
@@ -3922,7 +4096,7 @@ Returns the number of seconds since GMT 00:00:00 Jan 1st 1970.
 
 Sleeps for the specified number of microseconds. The microsecond resolution may
 not, in fact, be available on all platforms (currently only Unix platforms with
-nanosleep(2) may provide it) in which case this is the same as 
+nanosleep(2) may provide it) in which case this is the same as
 \helpref{wxMilliSleep}{wxmillisleep}(\arg{microseconds}$/1000$).
 
 \wxheading{Include files}
@@ -3983,8 +4157,8 @@ See also \helpref{wxTimer}{wxtimer}.
 \func{void}{wxUsleep}{\param{unsigned long}{ milliseconds}}
 
 This function is deprecated because its name is misleading: notice that the
-argument is in milliseconds, not microseconds. Please use either 
-\helpref{wxMilliSleep}{wxmillisleep} or \helpref{wxMicroSleep}{wxmicrosleep} 
+argument is in milliseconds, not microseconds. Please use either
+\helpref{wxMilliSleep}{wxmillisleep} or \helpref{wxMicroSleep}{wxmicrosleep}
 depending on the resolution you need.
 
 
@@ -4202,11 +4376,10 @@ In release mode this function does nothing.
 
 \func{bool}{wxIsDebuggerRunning}{\void}
 
-Returns {\tt true} if the program is running under debugger, {\tt false} 
-otherwise.
+Returns \true if the program is running under debugger, \false otherwise.
 
-Please note that this function is currently only implemented for Mac builds
-using CodeWarrior and always returns {\tt false} elsewhere.
+Please note that this function is currently only implemented for Win32 and Mac
+builds using CodeWarrior and always returns \false elsewhere.
 
 
 
@@ -4244,7 +4417,7 @@ Returns the current value of the environment variable {\it var} in {\it value}.
 {\it value} may be {\tt NULL} if you just want to know if the variable exists
 and are not interested in its value.
 
-Returns {\tt true} if the variable exists, {\tt false} otherwise.
+Returns \true if the variable exists, \false otherwise.
 
 
 \membersection{wxSetEnv}\label{wxsetenv}
@@ -4254,7 +4427,7 @@ Returns {\tt true} if the variable exists, {\tt false} otherwise.
 Sets the value of the environment variable {\it var} (adding it if necessary)
 to {\it value}.
 
-Returns {\tt true} on success.
+Returns \true on success.
 
 
 \membersection{wxUnsetEnv}\label{wxunsetenv}
@@ -4265,5 +4438,5 @@ Removes the variable {\it var} from the environment.
 \helpref{wxGetEnv}{wxgetenv} will return {\tt NULL} after the call to this
 function.
 
-Returns {\tt true} on success.
+Returns \true on success.
 

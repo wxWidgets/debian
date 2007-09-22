@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     1995
-// RCS-ID:      $Id: printing.h,v 1.11 2004/10/31 23:43:33 RR Exp $
+// RCS-ID:      $Id: printing.h,v 1.12 2004/11/27 12:49:56 RR Exp $
 // Copyright:   (c) Julian Smart
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -33,9 +33,13 @@ class MyFrame: public wxFrame
 {
   public:
     MyCanvas *canvas;
+    wxBitmap m_bitmap;
+    int      m_angle;
     MyFrame(wxFrame *frame, const wxString& title, const wxPoint& pos, const wxSize& size);
 
     void Draw(wxDC& dc);
+    void OnAngleUp(wxCommandEvent& event);
+    void OnAngleDown(wxCommandEvent& event);
 
     void OnSize(wxSizeEvent& event);
     void OnPrint(wxCommandEvent& event);
@@ -89,3 +93,5 @@ class MyPrintout: public wxPrintout
 
 #define WXPRINT_ABOUT           109
 
+#define WXPRINT_ANGLEUP         110
+#define WXPRINT_ANGLEDOWN       111

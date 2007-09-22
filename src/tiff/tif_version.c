@@ -1,4 +1,4 @@
-/* $Header: /pack/cvsroots/wxwindows/wxWindows/src/tiff/tif_version.c,v 1.2 2002/12/04 14:10:21 VZ Exp $ */
+/* $Header: /pack/cvsroots/wxwindows/wxWindows/src/tiff/tif_version.c,v 1.3 2004/11/19 22:29:46 VZ Exp $ */
 /*
  * Copyright (c) 1992-1997 Sam Leffler
  * Copyright (c) 1992-1997 Silicon Graphics, Inc.
@@ -24,9 +24,7 @@
  */
 #include "tiffiop.h"
 
-#define VERSION "LIBTIFF, Version 3.5.201\nCopyright (c) 1988-1996 Sam Leffler\nCopyright (c) 1991-1996 Silicon Graphics, Inc."
-
-static const char TIFFVersion[] = VERSION;
+static const char TIFFVersion[] = TIFFLIB_VERSION_STR;
 
 const char*
 TIFFGetVersion(void)

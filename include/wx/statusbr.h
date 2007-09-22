@@ -4,8 +4,8 @@
 // Author:      Vadim Zeitlin
 // Modified by:
 // Created:     05.02.00
-// RCS-ID:      $Id: statusbr.h,v 1.24 2004/10/19 23:17:30 VZ Exp $
-// Copyright:   (c) wxWidgets team
+// RCS-ID:      $Id: statusbr.h,v 1.26 2005/05/04 18:52:03 JS Exp $
+// Copyright:   (c) Vadim Zeitlin
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
 
@@ -150,7 +150,7 @@ protected:
     #define wxStatusBarUniv wxStatusBar
 
     #include "wx/univ/statusbr.h"
-#elif defined(__PALMOS__)
+#elif defined(__WXPALMOS__)
     #define wxStatusBarPalm wxStatusBar
 
     #include "wx/palmos/statusbr.h"

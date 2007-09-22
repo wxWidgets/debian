@@ -3,7 +3,7 @@
 // Purpose:     html printing classes
 // Author:      Vaclav Slavik
 // Created:     25/09/99
-// RCS-ID:      $Id: htmprint.cpp,v 1.46 2004/10/31 23:43:39 RR Exp $
+// RCS-ID:      $Id: htmprint.cpp,v 1.49 2004/11/27 22:40:05 VS Exp $
 // Copyright:   (c) Vaclav Slavik, 1999
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -112,7 +112,9 @@ void wxHtmlDCRenderer::SetStandardFonts(int size,
 }
 
 
-int wxHtmlDCRenderer::Render(int x, int y, int from, int dont_render, int to, int *known_pagebreaks, int number_of_pages)
+int wxHtmlDCRenderer::Render(int x, int y, int from, int dont_render,
+                             int maxHeight,
+                             int *known_pagebreaks, int number_of_pages)
 {
     int pbreak, hght;
 
@@ -121,8 +123,8 @@ int wxHtmlDCRenderer::Render(int x, int y, int from, int dont_render, int to, in
     pbreak = (int)(from + m_Height);
     while (m_Cells->AdjustPagebreak(&pbreak, known_pagebreaks, number_of_pages)) {}
     hght = pbreak - from;
-    if(to < hght)
-        hght = to;
+    if (maxHeight < hght)
+        hght = maxHeight;
 
     if (!dont_render)
     {

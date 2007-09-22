@@ -4,7 +4,7 @@
 // Author:      Vadim Zeitlin
 // Modified by:
 // Created:     08.12.99
-// RCS-ID:      $Id: dir.cpp,v 1.16 2004/08/24 10:31:41 ABX Exp $
+// RCS-ID:      $Id: dir.cpp,v 1.18 2005/06/10 17:53:16 ABX Exp $
 // Copyright:   (c) 1999 Vadim Zeitlin <zeitlin@dptmaths.ens-cachan.fr>
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -34,9 +34,9 @@
 #endif // PCH
 
 #include "wx/dir.h"
-#include "wx/filefn.h"          // for wxPathExists()
+#include "wx/filefn.h"          // for wxDirExists()
 
-#ifdef __WXMSW__
+#ifdef __WINDOWS__
     #include "wx/msw/private.h"
 #endif
 
@@ -287,7 +287,7 @@ bool wxDirData::Read(wxString *filename)
 /* static */
 bool wxDir::Exists(const wxString& dir)
 {
-    return wxPathExists(dir);
+    return wxDirExists(dir);
 }
 
 // ----------------------------------------------------------------------------

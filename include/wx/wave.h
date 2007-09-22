@@ -4,7 +4,7 @@
 // Author:      Vaclav Slavik
 // Modified by:
 // Created:     2004/02/01
-// RCS-ID:      $Id: wave.h,v 1.14 2004/09/24 14:32:16 ABX Exp $
+// RCS-ID:      $Id: wave.h,v 1.15 2005/03/16 16:18:21 ABX Exp $
 // Copyright:   (c) 2004, Vaclav Slavik
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -12,7 +12,7 @@
 #ifndef _WX_WAVE_H_BASE_
 #define _WX_WAVE_H_BASE_
 
-#include "wx/setup.h"
+#include "wx/defs.h"
 
 #if wxUSE_SOUND
 

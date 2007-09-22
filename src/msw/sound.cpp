@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     04/01/98
-// RCS-ID:      $Id: sound.cpp,v 1.4 2004/09/04 01:53:42 ABX Exp $
+// RCS-ID:      $Id: sound.cpp,v 1.5 2005/04/23 18:59:32 JS Exp $
 // Copyright:   (c) Julian Smart
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -32,11 +32,7 @@
 
 #include <windowsx.h>
 
-#if defined(__GNUWIN32_OLD__) && !defined(__CYGWIN10__)
-    #include "wx/msw/gnuwin32/extra.h"
-#else
-    #include <mmsystem.h>
-#endif
+#include <mmsystem.h>
 
 wxSound::wxSound()
   : m_waveData(NULL), m_waveLength(0), m_isResource(false)

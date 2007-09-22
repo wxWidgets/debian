@@ -3,7 +3,7 @@
 // Purpose:     wxBitmapBase
 // Author:      VaclavSlavik
 // Created:     2001/04/11
-// RCS-ID:      $Id: bmpbase.cpp,v 1.15 2004/09/09 17:42:35 ABX Exp $
+// RCS-ID:      $Id: bmpbase.cpp,v 1.17 2005/04/15 16:47:28 ABX Exp $
 // Copyright:   (c) 2001, Vaclav Slavik
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -19,8 +19,11 @@
     #pragma hdrstop
 #endif
 
-#if defined(__WXMGL__) || defined(__WXMAC__) \
-    || defined(__WXMOTIF__) || defined(__WXX11__)
+#if defined(__WXMGL__)   || \
+    defined(__WXMAC__)   || \
+    defined(__WXGTK__)   || \
+    defined(__WXMOTIF__) || \
+    defined(__WXX11__)
 
 #include "wx/setup.h"
 #include "wx/utils.h"
@@ -122,5 +125,4 @@ public:
 
 IMPLEMENT_DYNAMIC_CLASS(wxBitmapBaseModule, wxModule)
 
-#endif // defined(__WXMGL__) || defined(__WXMAC__) || defined(__WXCOCOA__) || defined(__WXMOTIF__) || defined(__WXX11__)
-
+#endif // __WXMGL__ || __WXMAC__ || __WXCOCOA__ || __WXMOTIF__ || __WXX11__

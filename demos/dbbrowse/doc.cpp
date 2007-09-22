@@ -7,7 +7,7 @@
 // Created:     19990808
 // Copyright:   (c) Mark Johnson
 // Licence:     wxWindows license
-// RCS-ID:      $Id: doc.cpp,v 1.25 2004/11/04 21:36:32 GT Exp $
+// RCS-ID:      $Id: doc.cpp,v 1.27 2005/03/07 22:17:01 JS Exp $
 //----------------------------------------------------------------------------------------
 //-- all #ifdefs that the whole Project needs. -------------------------------------------
 //----------------------------------------------------------------------------------------
@@ -102,7 +102,7 @@ bool MainDoc::OnInitView()
     // create "workplace" window
     //---------------------------------------------------------------------------------------
     p_TabArea = new wxTabbedWindow(); // Init the Pointer
-    p_TabArea->Create(p_Splitter, wxID_ANY);
+    p_TabArea->Create(p_Splitter, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxFULL_REPAINT_ON_RESIZE);
     //---------------------------------------------------------------------------------------
     p_PgmCtrl = new PgmCtrl(p_TabArea, TREE_CTRL_PGM,wxDefaultPosition, wxDefaultSize,
         wxTR_HAS_BUTTONS | wxSUNKEN_BORDER);
@@ -119,7 +119,7 @@ bool MainDoc::OnInitView()
     // now create "output" window
     //---------------------------------------------------------------------------------------
     p_PageArea = new wxPagedWindow();  // Init the Pointer
-    p_PageArea->Create(p_Splitter, wxID_ANY);
+    p_PageArea->Create(p_Splitter, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxFULL_REPAINT_ON_RESIZE);
     //---------------------------------------------------------------------------------------
     p_LogWin = new wxTextCtrl(p_PageArea,wxID_ANY,wxEmptyString,
         wxDefaultPosition, wxDefaultSize,wxTE_MULTILINE );
@@ -157,7 +157,7 @@ bool MainDoc::OnInitODBC()
 {
     wxChar Dsn[SQL_MAX_DSN_LENGTH+1];
     wxChar DsDesc[254+1]; // BJO20002501 instead of 512
-    Temp0 = _T("");
+    Temp0 = wxEmptyString;
     i_DSN = 0;       // Counter
     int i;
     //---------------------------------------------------------------------------------------
@@ -183,7 +183,7 @@ bool MainDoc::OnInitODBC()
         s_SortDSNList.Add(Dsn);
         s_SortDsDescList.Add(KeyString);
     }
-    
+
     //---------------------------------------------------------------------------------------
     // Allocate n ODBC-DSN objects to hold the information
     // Allocate n wxDatabase objects to hold the column information
@@ -197,8 +197,8 @@ bool MainDoc::OnInitODBC()
         // ODBC-DSN object
         (p_DSN+i)->Dsn = s_SortDSNList[i];
         (p_DSN+i)->Drv = KeyString;
-        (p_DSN+i)->Usr = _T("");
-        (p_DSN+i)->Pas = _T("");
+        (p_DSN+i)->Usr = wxEmptyString;
+        (p_DSN+i)->Pas = wxEmptyString;
         Temp0.Printf(_T("%02d) Dsn(%s) DsDesc(%s)"),i,(p_DSN+i)->Dsn.c_str(),(p_DSN+i)->Drv.c_str());
         wxLogMessage(Temp0);
 
@@ -236,7 +236,7 @@ bool MainDoc::OnChosenDSN(int Which)
         p_TabArea->Show(false);    // Deactivate the Window
         p_TabArea->RemoveTab(p_DBTree->i_ViewNr);
         p_TabArea->Show(true);     // Activate the Window
-        OnChosenTbl(77,_T(""));
+        OnChosenTbl(77,wxEmptyString);
     }
     //-------------------------
     p_TabArea->Show(false);    // Deactivate the Window
@@ -286,7 +286,7 @@ bool MainDoc::OnChosenTbl(int Tab,wxString Table)
         p_TabArea->Show(false);    // Deactivate the Window
         p_DBGrid = new DBGrid(p_TabArea,GRID_CTRL_DB,wxDefaultPosition, wxDefaultSize,
             wxSUNKEN_BORDER);
-        p_TabArea->AddTab(p_DBGrid, Table, _T(""));
+        p_TabArea->AddTab(p_DBGrid, Table, wxEmptyString);
         p_DBGrid->i_ViewNr = p_TabArea->GetTabCount()-1;
         p_DBGrid->pDoc       = this;
         p_DBGrid->db_Br      = db_Br;
@@ -299,7 +299,7 @@ bool MainDoc::OnChosenTbl(int Tab,wxString Table)
         p_PageArea->Show(false);   // Deactivate the Window
         p_DBGrid = new DBGrid(p_PageArea,GRID_CTRL_DB,wxDefaultPosition, wxDefaultSize,
             wxSUNKEN_BORDER);
-        p_PageArea->AddTab(p_DBGrid, Table, _T(""));
+        p_PageArea->AddTab(p_DBGrid, Table, wxEmptyString);
         p_DBGrid->i_ViewNr = p_PageArea->GetTabCount()-1;
         p_DBGrid->pDoc       = this;
         p_DBGrid->db_Br      = db_Br;

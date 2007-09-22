@@ -3,12 +3,12 @@
 // Purpose:     XRC resource for wxSlider
 // Author:      Bob Mitchell
 // Created:     2000/03/21
-// RCS-ID:      $Id: xh_slidr.cpp,v 1.9 2004/09/23 09:18:12 VS Exp $
+// RCS-ID:      $Id: xh_slidr.cpp,v 1.11 2005/05/27 15:53:31 JS Exp $
 // Copyright:   (c) 2000 Bob Mitchell and Verant Interactive
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
 
-#ifdef __GNUG__
+#if defined(__GNUG__) && !defined(NO_GCC_PRAGMA)
 #pragma implementation "xh_slidr.h"
 #endif
 
@@ -39,6 +39,7 @@ wxSliderXmlHandler::wxSliderXmlHandler()
     XRC_ADD_STYLE(wxSL_BOTTOM);
     XRC_ADD_STYLE(wxSL_BOTH);
     XRC_ADD_STYLE(wxSL_SELRANGE);
+    XRC_ADD_STYLE(wxSL_INVERSE);
     AddWindowStyles();
 }
 

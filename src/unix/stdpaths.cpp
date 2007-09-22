@@ -1,10 +1,10 @@
 ///////////////////////////////////////////////////////////////////////////////
 // Name:        unix/stdpaths.cpp
-// Purpose:     wxStandardPaths implementation for Unix systems
+// Purpose:     wxStandardPaths implementation for Unix & OpenVMS systems
 // Author:      Vadim Zeitlin
 // Modified by:
 // Created:     2004-10-19
-// RCS-ID:      $Id: stdpaths.cpp,v 1.2 2004/10/22 00:23:35 VZ Exp $
+// RCS-ID:      $Id: stdpaths.cpp,v 1.4 2005/03/11 09:33:29 JJ Exp $
 // Copyright:   (c) 2004 Vadim Zeitlin <vadim@wxwindows.org>
 // License:     wxWindows license
 ///////////////////////////////////////////////////////////////////////////////
@@ -24,6 +24,8 @@
     #pragma hdrstop
 #endif
 
+#if wxUSE_STDPATHS
+
 #ifndef WX_PRECOMP
     #include "wx/app.h"
 #endif //WX_PRECOMP
@@ -32,7 +34,7 @@
 
 #include "wx/stdpaths.h"
 
-#ifdef __LINUX__
+#if defined( __LINUX__ ) || defined( __VMS )
     #include <unistd.h>
 #endif
 
@@ -74,7 +76,11 @@ wxString wxStandardPaths::GetInstallPrefix() const
         if ( m_prefix.empty() )
 #endif // __LINUX__
         {
-            self->m_prefix = _T("/usr/local");
+#ifdef __VMS
+	   self->m_prefix = _T("/sys$system");
+#else
+	   self->m_prefix = _T("/usr/local");
+#endif
         }
     }
 
@@ -87,7 +93,11 @@ wxString wxStandardPaths::GetInstallPrefix() const
 
 wxString wxStandardPaths::GetConfigDir() const
 {
-    return _T("/etc");
+#ifdef __VMS
+   return _T("/sys$manager");
+#else
+   return _T("/etc");
+#endif
 }
 
 wxString wxStandardPaths::GetUserConfigDir() const
@@ -97,17 +107,29 @@ wxString wxStandardPaths::GetUserConfigDir() const
 
 wxString wxStandardPaths::GetDataDir() const
 {
-    return AppendAppName(GetInstallPrefix() + _T("/share"));
+#ifdef __VMS
+   return AppendAppName(GetInstallPrefix() + _T("/sys$share"));
+#else
+   return AppendAppName(GetInstallPrefix() + _T("/share"));
+#endif
 }
 
 wxString wxStandardPaths::GetLocalDataDir() const
 {
-    return AppendAppName(_T("/etc"));
+#ifdef __VMS
+   return AppendAppName(_T("/sys$manager"));
+#else
+   return AppendAppName(_T("/etc"));
+#endif
 }
 
 wxString wxStandardPaths::GetUserDataDir() const
 {
-    return AppendAppName(wxFileName::GetHomeDir() + _T("/."));
+#ifdef __VMS
+   return wxFileName::GetHomeDir();
+#else
+   return AppendAppName(wxFileName::GetHomeDir() + _T("/."));
+#endif
 }
 
 wxString wxStandardPaths::GetPluginsDir() const
@@ -115,3 +137,4 @@ wxString wxStandardPaths::GetPluginsDir() const
     return wxString();
 }
 
+#endif // wxUSE_STDPATHS

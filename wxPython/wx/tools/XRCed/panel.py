@@ -2,7 +2,7 @@
 # Purpose:      XRC editor, Panel class and related
 # Author:       Roman Rolinsky <rolinsky@mema.ucl.ac.be>
 # Created:      02.12.2002
-# RCS-ID:       $Id: panel.py,v 1.14 2004/11/05 18:30:41 RD Exp $
+# RCS-ID:       $Id: panel.py,v 1.17 2005/05/26 21:14:05 RD Exp $
 
 from xxx import *                       # xxx imports globals and params
 from undo import *
@@ -171,8 +171,6 @@ class Panel(wxNotebook):
 class ParamPage(wxPanel):
     def __init__(self, parent, xxx):
         wxPanel.__init__(self, parent, -1)
-        self.SetBackgroundColour(parent.GetBackgroundColour())
-        self.SetForegroundColour(parent.GetForegroundColour())
         self.xxx = xxx
         # Register event handlers
         for id in paramIDs.values():
@@ -201,7 +199,10 @@ class ParamPage(wxPanel):
                 xxx.params[param] = xxxParam(elem)
             # Find place to put new element: first present element after param
             found = False
-            paramStyles = xxx.allParams + xxx.styles
+            if xxx.hasStyle: 
+                paramStyles = xxx.allParams + xxx.styles
+            else:
+                paramStyles = xxx.allParams 
             for p in paramStyles[paramStyles.index(param) + 1:]:
                 # Content params don't have same type
                 if xxx.params.has_key(p) and p != 'content':

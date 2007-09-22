@@ -4,7 +4,7 @@
 // Author:      Guilhem Lavaux (created from minimal by J. Smart)
 // Modified by:
 // Created:     13/02/2000
-// RCS-ID:      $Id: mmboard.cpp,v 1.14 2004/07/23 18:06:03 ABX Exp $
+// RCS-ID:      $Id: mmboard.cpp,v 1.16 2005/06/10 14:45:39 MW Exp $
 // Copyright:   (c) Guilhem Lavaux
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -17,7 +17,7 @@
 // headers
 // ----------------------------------------------------------------------------
 #ifdef __GNUG__
-    #pragma implementation "mmboard.cpp"
+    #pragma implementation "mmboard.h"
 #endif
 
 // For compilers that support precompilation, includes "wx/wx.h".
@@ -198,7 +198,15 @@ wxUint8 MMBoardApp::TestMultimediaCaps()
 
     caps = 0;
 
-#ifdef __UNIX__
+#ifdef __WIN32__
+    // We test the Windows sound support.
+
+    dev = new wxSoundStreamWin();
+    if (dev->GetError() == wxSOUND_NOERROR)
+        caps |= MM_SOUND_WIN;
+    delete dev;
+
+#elif defined __UNIX__
     // We now test the ESD support
 
     dev = new wxSoundStreamESD();
@@ -221,15 +229,6 @@ wxUint8 MMBoardApp::TestMultimediaCaps()
     }
 #endif
 
-#endif
-
-#ifdef __WIN32__
-    // We test the Windows sound support.
-
-    dev = new wxSoundStreamWin();
-    if (dev->GetError() == wxSOUND_NOERROR)
-        caps |= MM_SOUND_WIN;
-    delete dev;
 #endif
 
     return caps;

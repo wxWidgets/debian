@@ -3,12 +3,12 @@
 // Purpose:     XRC resource for wxCheckBox
 // Author:      Bob Mitchell
 // Created:     2000/03/21
-// RCS-ID:      $Id: xh_tglbtn.cpp,v 1.4 2004/09/23 09:18:13 VS Exp $
+// RCS-ID:      $Id: xh_tglbtn.cpp,v 1.5 2005/01/07 21:33:15 VS Exp $
 // Copyright:   (c) 2000 Bob Mitchell and Verant Interactive
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
 
-#ifdef __GNUG__
+#if defined(__GNUG__) && !defined(NO_GCC_PRAGMA)
 #pragma implementation "xh_tglbtn.h"
 #endif
 

@@ -413,15 +413,6 @@ is transferred to the application, so it must then be deleted
 explicitly.
 
 
-\membersection{wxPrintDialog::Ok}\label{wxprintdialogok}
-
-\constfunc{bool}{Ok}{\void}
-
-Returns true if the print data associated with the dialog is valid.
-This can return false on Windows if the current printer is not set, for example.
-On all other platforms, it returns true.
-
-
 \membersection{wxPrintDialog::ShowModal}\label{wxprintdialogshowmodal}
 
 \func{int}{ShowModal}{\void}
@@ -644,9 +635,7 @@ implements this command, if at all.
 Determines whether the dialog to be shown will be the Print dialog
 (pass false) or Print Setup dialog (pass true).
 
-Note that the setup dialog is (according to Microsoft) obsolete from
-Windows 95, though retained for backward compatibility.
-
+This function has been deprecated since version 2.5.4.
 
 \membersection{wxPrintDialogData::SetToPage}\label{wxprintdialogdatasettopage}
 
@@ -702,19 +691,6 @@ dialog data, which will be copied to the printer object's local data.
 \helpref{wxPrintData}{wxprintdata}
 
 
-\membersection{wxPrinter::\destruct{wxPrinter}}\label{wxprinterdtor}
-
-\func{}{\destruct{wxPrinter}}{\void}
-
-Destructor.
-
-
-\membersection{wxPrinter::Abort}\label{wxprinterabort}
-
-\func{bool}{Abort}{\void}
-
-Returns true if the user has aborted the print job.
-
 
 \membersection{wxPrinter::CreateAbortWindow}\label{wxprintercreateabortwindow}
 
@@ -722,6 +698,12 @@ Returns true if the user has aborted the print job.
 
 Creates the default printing abort window, with a cancel button.
 
+
+\membersection{wxPrinter::GetAbort}\label{wxprintergetabort}
+
+\func{bool}{GetAbort}{\void}
+
+Returns true if the user has aborted the print job.
 
 
 \membersection{wxPrinter::GetLastError}\label{wxprintergetlasterror}
@@ -820,7 +802,10 @@ achieving the correct scaling for the page.
 
 Pass a \helpref{wxPrintData}{wxprintdata} object with information
 necessary for setting up a suitable printer device context. This
-is the recommended way to construct a wxPrinterDC.
+is the recommended way to construct a wxPrinterDC.  Make sure you 
+specify a reference to a \helpref{wxPrintData}{wxprintdata} object,
+not a pointer - you may not even get a warning if you pass a pointer
+instead.
 
 \func{}{wxPrinterDC}{\param{const wxString\& }{driver}, \param{const wxString\& }{device}, \param{const wxString\& }{output},
  \param{const bool }{interactive = true}, \param{int }{orientation = wxPORTRAIT}}
@@ -1099,14 +1084,6 @@ Destructor. Deletes both print preview objects, so do not destroy these objects
 in your application.
 
 
-\membersection{wxPrintPreview::DrawBlankPage}\label{wxprintpreviewdrawblankpage}
-
-\func{bool}{DrawBlankPage}{\param{wxWindow* }{window}}
-
-Draws a representation of the blank page into the preview window. Used
-internally.
-
-
 \membersection{wxPrintPreview::GetCanvas}\label{wxprintpreviewgetcanvas}
 
 \func{wxPreviewCanvas* }{GetCanvas}{\void}
@@ -1143,13 +1120,6 @@ Returns the maximum page number.
 Returns the minimum page number.
 
 
-\membersection{wxPrintPreview::GetPrintData}\label{wxprintpreviewgetprintdata}
-
-\func{wxPrintData\&}{GetPrintData}{\void}
-
-Returns a reference to the internal print data.
-
-
 \membersection{wxPrintPreview::GetPrintout}\label{wxprintpreviewgetprintout}
 
 \func{wxPrintout *}{GetPrintout}{\void}
@@ -1175,7 +1145,7 @@ problem initializing the printer device context (current printer not set, for ex
 
 \membersection{wxPrintPreview::PaintPage}\label{wxprintpreviewpaintpage}
 
-\func{bool}{PaintPage}{\param{wxWindow* }{window}}
+\func{bool}{PaintPage}{\param{wxPreviewCanvas *}{canvas}, \param{wxDC& }{dc}}
 
 This refreshes the preview window with the preview image.
 It must be called from the preview window's OnPaint member.
@@ -1207,7 +1177,7 @@ Renders a page into a wxMemoryDC. Used internally by wxPrintPreview.
 
 \membersection{wxPrintPreview::SetCanvas}\label{wxprintpreviewsetcanvas}
 
-\func{void}{SetCanvas}{\param{wxPreviewCanvas** }{window}}
+\func{void}{SetCanvas}{\param{wxPreviewCanvas* }{window}}
 
 Sets the window to be used for displaying the print preview image.
 

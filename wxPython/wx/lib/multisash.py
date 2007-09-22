@@ -6,7 +6,7 @@
 #
 # Created:      2002/11/20
 # Version:      0.1
-# RCS-ID:       $Id: multisash.py,v 1.12 2004/11/10 18:16:22 RD Exp $
+# RCS-ID:       $Id: multisash.py,v 1.13 2005/03/24 20:37:48 RD Exp $
 # License:      wxWindows license
 #----------------------------------------------------------------------
 # 12/09/2003 - Jeff Grimmett (grimmtooth@softhome.net)
@@ -366,12 +366,17 @@ class MultiViewLeaf(wx.Window):
         return self.GetParent().CanSize(side,self)
 
     def OnSize(self,evt):
-        self.sizerHor.OnSize(evt)
-        self.sizerVer.OnSize(evt)
-        self.creatorHor.OnSize(evt)
-        self.creatorVer.OnSize(evt)
-        self.detail.OnSize(evt)
-        self.closer.OnSize(evt)
+        def doresize():
+            try:
+                self.sizerHor.OnSize(evt)
+                self.sizerVer.OnSize(evt)
+                self.creatorHor.OnSize(evt)
+                self.creatorVer.OnSize(evt)
+                self.detail.OnSize(evt)
+                self.closer.OnSize(evt)
+            except:
+                pass
+        wx.CallAfter(doresize)
 
 #----------------------------------------------------------------------
 

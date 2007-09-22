@@ -4,7 +4,7 @@
 // Author:      Vadim Zeitlin
 // Modified by:
 // Created:     14.08.00
-// RCS-ID:      $Id: inpcons.cpp,v 1.9 2004/08/10 13:08:39 ABX Exp $
+// RCS-ID:      $Id: inpcons.cpp,v 1.10 2004/12/20 01:08:13 VZ Exp $
 // Copyright:   (c) 2000 SciTech Software, Inc. (www.scitechsoft.com)
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -80,7 +80,8 @@ void wxInputConsumer::OnMouse(wxMouseEvent& event)
 {
     if ( m_inputHandler )
     {
-        if ( event.Moving() || event.Entering() || event.Leaving() )
+        if ( event.Moving() || event.Dragging() ||
+                event.Entering() || event.Leaving() )
         {
             if ( m_inputHandler->HandleMouseMove(this, event) )
                 return;

@@ -5,7 +5,7 @@
 // Author:      Robin Dunn
 //
 // Created:     7/3/97
-// RCS-ID:      $Id: my_typemaps.i,v 1.48 2004/09/23 20:23:12 RD Exp $
+// RCS-ID:      $Id: my_typemaps.i,v 1.53 2005/05/09 18:55:13 RD Exp $
 // Copyright:   (c) 1998 by Total Control Software
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -124,6 +124,11 @@ MAKE_INT_ARRAY_TYPEMAPS(styles, styles_field)
 
 
 
+%typemap(out) wxCharBuffer {
+    $result = PyString_FromString((char*)$1.data());
+}
+
+
 //---------------------------------------------------------------------------
 // Typemaps to convert Python sequence objects (tuples, etc.) to
 // wxSize, wxPoint, wxRealPoint, and wxRect.
@@ -201,15 +206,11 @@ MAKE_INT_ARRAY_TYPEMAPS(styles, styles_field)
     int i, len=PySequence_Length($input);
     for (i=0; i<len; i++) {
         PyObject* item = PySequence_GetItem($input, i);
-%#if wxUSE_UNICODE
-        PyObject* str  = PyObject_Unicode(item);
-%#else
-        PyObject* str  = PyObject_Str(item);
-%#endif
+        wxString* s = wxString_in_helper(item);
         if (PyErr_Occurred())  SWIG_fail;
-        $1->Add(Py2wxString(str));
+        $1->Add(*s);
+        delete s;
         Py_DECREF(item);
-        Py_DECREF(str);
     }
 }
 
@@ -284,6 +285,24 @@ MAKE_INT_ARRAY_TYPEMAPS(styles, styles_field)
 
 
 //---------------------------------------------------------------------------
+// wxFileOffset, can be a 32-bit or a 64-bit integer
+
+%typemap(in) wxFileOffset {
+    if (sizeof(wxFileOffset) > sizeof(long))
+        $1 = PyLong_AsLongLong($input);
+    else
+        $1 = PyInt_AsLong($input);
+}
+
+%typemap(out) wxFileOffset {
+    if (sizeof(wxFileOffset) > sizeof(long))
+        $result = PyLong_FromLongLong($1);
+    else
+        $result = PyInt_FromLong($1);
+}
+
+
+//---------------------------------------------------------------------------
 // Typemap for when GDI objects are returned by reference.  This will cause a
 // copy to be made instead of returning a reference to the same instance.  The
 // GDI object's internal refcounting scheme will do a copy-on-write of the
@@ -316,6 +335,7 @@ MAKE_INT_ARRAY_TYPEMAPS(styles, styles_field)
 %typemap(out) wxFSFile*                 { $result = wxPyMake_wxObject($1, $owner); }
 %typemap(out) wxFileSystem*             { $result = wxPyMake_wxObject($1, $owner); }
 %typemap(out) wxImageList*              { $result = wxPyMake_wxObject($1, $owner); }
+%typemap(out) wxImage*                  { $result = wxPyMake_wxObject($1, $owner); }
 %typemap(out) wxListItem*               { $result = wxPyMake_wxObject($1, $owner); }
 %typemap(out) wxMenuItem*               { $result = wxPyMake_wxObject($1, $owner); }
 %typemap(out) wxMouseEvent*             { $result = wxPyMake_wxObject($1, $owner); }
@@ -350,7 +370,7 @@ MAKE_INT_ARRAY_TYPEMAPS(styles, styles_field)
 %typemap(out) wxDialog*                 { $result = wxPyMake_wxObject($1, $owner); }
 %typemap(out) wxScrolledWindow*         { $result = wxPyMake_wxObject($1, $owner); }
 
-%typemap(out) wxSizer*                  { $result = wxPyMake_wxSizer($1, $owner); }
+%typemap(out) wxSizer*                  { $result = wxPyMake_wxObject($1, $owner); }
 
 
 //---------------------------------------------------------------------------

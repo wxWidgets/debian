@@ -27,10 +27,6 @@ if you wish the user to be able to edit labels in the tree control.}
 to document that no buttons are to be drawn.}
 \twocolitem{\windowstyle{wxTR\_HAS\_BUTTONS}}{Use this style
 to show + and - buttons to the left of parent items.}
-\twocolitem{\windowstyle{wxTR\_TWIST\_BUTTONS}}{Use this style
-to show Mac-style twister buttons to the left of parent items.
-If both wxTR\_HAS\_BUTTONS and wxTR\_TWIST\_BUTTONS are given,
-twister buttons are generated.  Generic only.}
 \twocolitem{\windowstyle{wxTR\_NO\_LINES}}{Use this style
 to hide vertical level connectors.}
 \twocolitem{\windowstyle{wxTR\_FULL\_ROW\_HIGHLIGHT}}{Use this style to have the background
@@ -86,11 +82,15 @@ functions that take a \helpref{wxTreeEvent}{wxtreeevent} argument.
 \twocolitem{{\bf EVT\_TREE\_ITEM\_COLLAPSING(id, func)}}{The item is being collapsed. This can be prevented by calling \helpref{Veto()}{wxnotifyeventveto}.}
 \twocolitem{{\bf EVT\_TREE\_ITEM\_EXPANDED(id, func)}}{The item has been expanded.}
 \twocolitem{{\bf EVT\_TREE\_ITEM\_EXPANDING(id, func)}}{The item is being expanded. This can be prevented by calling \helpref{Veto()}{wxnotifyeventveto}.}
+\twocolitem{{\bf EVT\_TREE\_ITEM\_RIGHT\_CLICK(id, func)}}{The user has clicked the item with the right mouse button.}
+\twocolitem{{\bf EVT\_TREE\_ITEM\_MIDDLE\_CLICK(id, func)}}{The user has clicked the item with the middle mouse button.}
 \twocolitem{{\bf EVT\_TREE\_SEL\_CHANGED(id, func)}}{Selection has changed.}
 \twocolitem{{\bf EVT\_TREE\_SEL\_CHANGING(id, func)}}{Selection is changing. This can be prevented by calling \helpref{Veto()}{wxnotifyeventveto}.}
 \twocolitem{{\bf EVT\_TREE\_KEY\_DOWN(id, func)}}{A key has been pressed.}
 \twocolitem{{\bf EVT\_TREE\_ITEM\_GETTOOLTIP(id, func)}}{The opportunity to set the item tooltip
 is being given to the application (call wxTreeEvent::SetToolTip). Windows only.}
+\twocolitem{{\bf EVT\_TREE\_ITEM\_MENU(id, func)}}{The context menu for the selected item has been requested, either by a right click or by using the menu key.}
+\twocolitem{{\bf EVT\_TREE\_STATE\_IMAGE\_CLICK(id, func)}}{The state image has been clicked. Windows only.}
 \end{twocollist}
 
 \wxheading{See also}
@@ -387,7 +387,7 @@ to make these functions reentrant (i.e. allow more than one
 enumeration on one and the same object simultaneously). The cookie passed to
 GetFirstChild and GetNextChild should be the same variable.
 
-Returns an invalid tree item if there are no further children.
+Returns an invalid tree item (i.e. IsOk() returns {\tt false}) if there are no further children.
 
 \wxheading{See also}
 
@@ -845,6 +845,15 @@ associated with the Wx::TreeItemData. It is just the same as
 tree->GetItemData(item)->SetData(data).}
 \end{twocollist}}
 }%
+
+\membersection{wxTreeCtrl::SetItemDropHighlight}\label{wxtreectrlsetitemdrophighlight}
+
+\func{void}{SetItemDropHighlight}{\param{const wxTreeItemId\&}{ item}, \param{bool}{highlight = {\tt true}}}
+
+Gives the item the visual feedback for Drag'n'Drop actions, which is
+useful if something is dragged from the outside onto the tree control
+(as opposed to a DnD operation within the tree control, which already
+is implemented internally).
 
 \membersection{wxTreeCtrl::SetItemFont}\label{wxtreectrlsetitemfont}
 

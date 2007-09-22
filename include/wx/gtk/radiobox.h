@@ -2,7 +2,7 @@
 // Name:        wx/gtk/radiobox.h
 // Purpose:
 // Author:      Robert Roebling
-// Id:          $Id: radiobox.h,v 1.36 2004/10/22 19:09:54 KH Exp $
+// Id:          $Id: radiobox.h,v 1.41 2005/02/28 20:31:31 RR Exp $
 // Copyright:   (c) 1998 Robert Roebling
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -87,29 +87,26 @@ public:
     wxString GetString( int n ) const;
     void SetString( int n, const wxString& label );
 
-    void Show( int item, bool show );
-    void Enable( int item, bool enable );
+    virtual bool Show( int item, bool show = true );
+    virtual bool Enable( int item, bool enable = true );
 
     virtual wxString GetStringSelection() const;
     virtual bool SetStringSelection( const wxString& s );
 
     int GetCount() const;
-    int GetNumberOfRowsOrCols() const;
-    void SetNumberOfRowsOrCols( int n );
 
     // for compatibility only, don't use these methods in new code!
 #if WXWIN_COMPATIBILITY_2_2
-    int Number() const { return GetCount(); }
-    wxString GetLabel(int n) const { return GetString(n); }
-    void SetLabel( int item, const wxString& label )
-        { SetString(item, label); }
+    wxDEPRECATED( int Number() const );
+    wxDEPRECATED( wxString GetLabel(int n) const );
+    wxDEPRECATED( void SetLabel( int item, const wxString& label ) );
 #endif // WXWIN_COMPATIBILITY_2_2
 
     // we have to override those to avoid virtual function name hiding
     virtual wxString GetLabel() const { return wxControl::GetLabel(); }
     virtual void SetLabel( const wxString& label );
-    virtual bool Show( bool show = TRUE );
-    virtual bool Enable( bool enable = TRUE );
+    virtual bool Show( bool show = true );
+    virtual bool Enable( bool enable = true );
 
     static wxVisualAttributes
     GetClassDefaultAttributes(wxWindowVariant variant = wxWINDOW_VARIANT_NORMAL);
@@ -126,11 +123,6 @@ public:
     void ApplyToolTip( GtkTooltips *tips, const wxChar *tip );
 #endif // wxUSE_TOOLTIPS
 
-    // reposition the radio buttons correctly unless justCalc == true and
-    // return the total size needed to accommodate them
-    wxSize LayoutItems(bool justCalc) const;
-
-    virtual void DoSetSize( int x, int y, int width, int height, int sizeFlags = wxSIZE_AUTO );
     virtual void OnInternalIdle();
 
     bool             m_hasFocus,
@@ -139,11 +131,12 @@ public:
     wxList           m_boxes;
 
 protected:
-    // implement some base class methods
-    virtual wxSize DoGetBestSize() const;
-
     // common part of all ctors
     void Init();
+
+    // check that the index is valid
+    // FIXME: remove once GTK will derive from wxRadioBoxBase
+    inline bool IsValid(int n) const { return n >= 0 && n < GetCount(); }
 
 private:
     DECLARE_DYNAMIC_CLASS(wxRadioBox)

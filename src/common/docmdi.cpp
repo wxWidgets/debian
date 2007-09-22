@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     01/02/97
-// RCS-ID:      $Id: docmdi.cpp,v 1.24 2004/09/10 12:56:07 ABX Exp $
+// RCS-ID:      $Id: docmdi.cpp,v 1.25 2005/02/01 19:37:34 ABX Exp $
 // Copyright:   (c) Julian Smart
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -67,8 +67,8 @@ void wxDocMDIParentFrame::Init()
 
 void wxDocMDIParentFrame::OnMRUFile(wxCommandEvent& event)
 {
-      wxString f(m_docManager->GetHistoryFile(event.GetId() - wxID_FILE1));
-      if (f != wxT(""))
+    wxString f(m_docManager->GetHistoryFile(event.GetId() - wxID_FILE1));
+    if (!f.empty())
         (void)m_docManager->CreateDocument(f, wxDOC_SILENT);
 }
 

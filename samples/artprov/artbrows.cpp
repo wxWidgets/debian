@@ -4,7 +4,7 @@
 // Author:      Vaclav Slavik
 // Modified by:
 // Created:     2002/04/05
-// RCS-ID:      $Id: artbrows.cpp,v 1.7 2004/06/12 23:43:51 DS Exp $
+// RCS-ID:      $Id: artbrows.cpp,v 1.10 2005/03/12 10:33:00 RR Exp $
 // Copyright:   (c) Vaclav Slavik
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -97,6 +97,17 @@ static void FillBitmaps(wxImageList *images, wxListCtrl *list,
     ART_ICON(wxART_TICK_MARK)
     ART_ICON(wxART_CROSS_MARK)
     ART_ICON(wxART_MISSING_IMAGE)
+    ART_ICON(wxART_FILE_SAVE)
+    ART_ICON(wxART_FILE_SAVE_AS)
+    ART_ICON(wxART_COPY)
+    ART_ICON(wxART_CUT)
+    ART_ICON(wxART_PASTE)
+    ART_ICON(wxART_UNDO)
+    ART_ICON(wxART_REDO)
+    ART_ICON(wxART_QUIT)
+    ART_ICON(wxART_FIND)
+    ART_ICON(wxART_FIND_AND_REPLACE)
+
 }
 
 
@@ -135,6 +146,9 @@ wxArtBrowserDialog::wxArtBrowserDialog(wxWindow *parent)
     subsizer->Add(m_list, 1, wxEXPAND | wxRIGHT, 10);
 
     wxSizer *subsub = new wxBoxSizer(wxVERTICAL);
+    m_text = new wxStaticText(this, wxID_ANY, wxT("Size: 333x333"));
+    subsub->Add(m_text);
+
     m_canvas = new wxStaticBitmap(this, wxID_ANY, wxBitmap(null_xpm));
     subsub->Add(m_canvas);
     subsub->Add(100, 100);
@@ -162,24 +176,37 @@ void wxArtBrowserDialog::SetArtClient(const wxArtClient& client)
     img->Add(wxIcon(null_xpm));
     int index = 0;
 
+    long sel = m_list->GetNextItem(-1, wxLIST_NEXT_ALL, wxLIST_STATE_FOCUSED);
+    if (sel < 0) sel = 0;
+
     m_list->DeleteAllItems();
     FillBitmaps(img, m_list, index, client, wxSize(16, 16));
     m_list->AssignImageList(img, wxIMAGE_LIST_SMALL);
     m_list->SetColumnWidth(0, wxLIST_AUTOSIZE);
 
+    m_list->SetItemState(sel, wxLIST_STATE_FOCUSED, wxLIST_STATE_FOCUSED);
+
     m_client = client;
+    SetArtBitmap((const wxChar*)m_list->GetItemData(sel), m_client);
 }
 
 void wxArtBrowserDialog::OnSelectItem(wxListEvent &event)
 {
     const wxChar *data = (const wxChar*)event.GetData();
-    wxBitmap bmp = wxArtProvider::GetBitmap(data, m_client);
-    m_canvas->SetBitmap(bmp);
-    m_canvas->SetSize(bmp.GetWidth(), bmp.GetHeight());
+    SetArtBitmap(data, m_client, wxDefaultSize);
 }
 
 void wxArtBrowserDialog::OnChooseClient(wxCommandEvent &event)
 {
     const wxChar *data = (const wxChar*)event.GetClientData();
     SetArtClient(data);
+}
+
+void wxArtBrowserDialog::SetArtBitmap(const wxArtID& id, const wxArtClient& client, const wxSize& size)
+{
+    wxBitmap bmp = wxArtProvider::GetBitmap(id, client, size);
+    m_canvas->SetSize(bmp.GetWidth(), bmp.GetHeight());
+    m_canvas->SetBitmap(bmp);
+    m_text->SetLabel(wxString::Format(wxT("Size: %d x %d"), bmp.GetWidth(), bmp.GetHeight()));
+    Refresh();
 }

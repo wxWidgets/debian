@@ -3,7 +3,7 @@
 // Purpose:     XRC resource for wxSplitterWindow
 // Author:      panga@freemail.hu, Vaclav Slavik
 // Created:     2003/01/26
-// RCS-ID:      $Id: xh_split.h,v 1.3 2003/07/04 13:33:42 VS Exp $
+// RCS-ID:      $Id: xh_split.h,v 1.4 2005/01/07 21:27:19 VS Exp $
 // Copyright:   (c) 2003 panga@freemail.hu, Vaclav Slavik
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -11,7 +11,7 @@
 #ifndef _WX_XH_SPLIT_H_
 #define _WX_XH_SPLIT_H_
 
-#if defined(__GNUG__) && !defined(__APPLE__)
+#if defined(__GNUG__) && !defined(NO_GCC_PRAGMA)
 #pragma interface "xh_split.h"
 #endif
 

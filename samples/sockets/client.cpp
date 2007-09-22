@@ -4,7 +4,7 @@
 // Author:      Guillermo Rodriguez Garcia <guille@iies.es>
 // Modified by:
 // Created:     1999/09/19
-// RCS-ID:      $Id: client.cpp,v 1.27 2004/10/06 20:54:32 ABX Exp $
+// RCS-ID:      $Id: client.cpp,v 1.32 2005/06/02 12:04:34 JS Exp $
 // Copyright:   (c) 1999 Guillermo Rodriguez Garcia
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -18,8 +18,8 @@
 // --------------------------------------------------------------------------
 
 #if defined(__GNUG__) && !defined(__APPLE__)
-#  pragma implementation "client.cpp"
-#  pragma interface "client.cpp"
+    #pragma implementation
+    #pragma interface
 #endif
 
 // For compilers that support precompilation, includes "wx/wx.h".
@@ -76,8 +76,10 @@ public:
   void OnTest3(wxCommandEvent& event);
   void OnCloseConnection(wxCommandEvent& event);
 
+#if wxUSE_URL
   // event handlers for Protocols menu
   void OnTestURL(wxCommandEvent& event);
+#endif
 
   // event handlers for DatagramSocket menu (stub)
   void OnDatagram(wxCommandEvent& event);
@@ -110,14 +112,16 @@ private:
 enum
 {
   // menu items
-  CLIENT_QUIT = 1000,
-  CLIENT_ABOUT,
-  CLIENT_OPEN,
+  CLIENT_QUIT = wxID_EXIT,
+  CLIENT_ABOUT = wxID_ABOUT,
+  CLIENT_OPEN = 100,
   CLIENT_TEST1,
   CLIENT_TEST2,
   CLIENT_TEST3,
   CLIENT_CLOSE,
+#if wxUSE_URL
   CLIENT_TESTURL,
+#endif
   CLIENT_DGRAM,
 
   // id for socket
@@ -137,7 +141,9 @@ BEGIN_EVENT_TABLE(MyFrame, wxFrame)
   EVT_MENU(CLIENT_TEST3,    MyFrame::OnTest3)
   EVT_MENU(CLIENT_CLOSE,    MyFrame::OnCloseConnection)
   EVT_MENU(CLIENT_DGRAM,    MyFrame::OnDatagram)
+#if wxUSE_URL
   EVT_MENU(CLIENT_TESTURL,  MyFrame::OnTestURL)
+#endif
   EVT_SOCKET(SOCKET_ID,     MyFrame::OnSocketEvent)
 END_EVENT_TABLE()
 
@@ -194,15 +200,19 @@ MyFrame::MyFrame() : wxFrame((wxFrame *)NULL, wxID_ANY,
   m_menuDatagramSocket = new wxMenu();
   m_menuDatagramSocket->Append(CLIENT_DGRAM, _("Send Datagram"), _("Test UDP sockets"));
 
+#if wxUSE_URL
   m_menuProtocols = new wxMenu();
   m_menuProtocols->Append(CLIENT_TESTURL, _("Test URL"), _("Get data from the specified URL"));
+#endif
 
   // Append menus to the menubar
   m_menuBar = new wxMenuBar();
   m_menuBar->Append(m_menuFile, _("&File"));
   m_menuBar->Append(m_menuSocket, _("&SocketClient"));
   m_menuBar->Append(m_menuDatagramSocket, _("&DatagramSocket"));
+#if wxUSE_URL
   m_menuBar->Append(m_menuProtocols, _("&Protocols"));
+#endif
   SetMenuBar(m_menuBar);
 
 #if wxUSE_STATUSBAR
@@ -280,7 +290,7 @@ void MyFrame::OnOpenConnection(wxCommandEvent& WXUNUSED(event))
   //
   // Connect(addr, false) will issue a nonblocking connection request
   // and return immediately. If the return value is true, then the
-  // connection has been already succesfully established. If it is
+  // connection has been already successfully established. If it is
   // false, you must wait for the request to complete, either with
   // WaitOnConnect() or by watching wxSOCKET_CONNECTION / LOST
   // events (please read the documentation).
@@ -533,6 +543,8 @@ void MyFrame::OnDatagram(wxCommandEvent& WXUNUSED(event))
   m_text->AppendText(_("=== Datagram test ends ===\n"));
 }
 
+#if wxUSE_URL
+
 void MyFrame::OnTestURL(wxCommandEvent& WXUNUSED(event))
 {
   // Note that we are creating a new socket here, so this
@@ -573,7 +585,7 @@ void MyFrame::OnTestURL(wxCommandEvent& WXUNUSED(event))
   wxYield();
 
   // Get the data
-  wxFile fileTest(wxT("test.url"));
+  wxFile fileTest(wxT("test.url"), wxFile::write);
   wxFileOutputStream sout(fileTest);
   if (!sout.Ok())
   {
@@ -589,6 +601,8 @@ void MyFrame::OnTestURL(wxCommandEvent& WXUNUSED(event))
 
   delete data;
 }
+
+#endif
 
 void MyFrame::OnSocketEvent(wxSocketEvent& event)
 {

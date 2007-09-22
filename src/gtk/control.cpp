@@ -2,7 +2,7 @@
 // Name:        control.cpp
 // Purpose:
 // Author:      Robert Roebling
-// Id:          $Id: control.cpp,v 1.42 2004/08/15 16:03:06 VS Exp $
+// Id:          $Id: control.cpp,v 1.43 2005/03/21 23:42:15 VZ Exp $
 // Copyright:   (c) 1998 Robert Roebling, Julian Smart and Vadim Zeitlin
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -231,7 +231,7 @@ wxControl::GetDefaultAttributesFromGTKWidget(GtkWidget* widget,
 
 //static
 wxVisualAttributes
-wxControl::GetDefaultAttributesFromGTKWidget(GtkWidget* (*widget_new)(void),
+wxControl::GetDefaultAttributesFromGTKWidget(wxGtkWidgetNew_t widget_new,
                                              bool useBase,
                                              int state)
 {
@@ -247,7 +247,7 @@ wxControl::GetDefaultAttributesFromGTKWidget(GtkWidget* (*widget_new)(void),
 
 //static
 wxVisualAttributes
-wxControl::GetDefaultAttributesFromGTKWidget(GtkWidget* (*widget_new)(const gchar*),
+wxControl::GetDefaultAttributesFromGTKWidget(wxGtkWidgetNewFromStr_t widget_new,
                                              bool useBase,
                                              int state)
 {
@@ -264,7 +264,7 @@ wxControl::GetDefaultAttributesFromGTKWidget(GtkWidget* (*widget_new)(const gcha
 
 //static
 wxVisualAttributes
-wxControl::GetDefaultAttributesFromGTKWidget(GtkWidget* (*widget_new)(GtkAdjustment*),
+wxControl::GetDefaultAttributesFromGTKWidget(wxGtkWidgetNewFromAdj_t widget_new,
                                              bool useBase,
                                              int state)
 {

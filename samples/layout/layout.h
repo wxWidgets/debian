@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     04/01/98
-// RCS-ID:      $Id: layout.h,v 1.13 2004/10/06 20:53:32 ABX Exp $
+// RCS-ID:      $Id: layout.h,v 1.16 2005/06/02 13:27:44 MW Exp $
 // Copyright:   (c) Julian Smart
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -41,7 +41,7 @@ public:
     MyFlexSizerFrame(const wxChar *title, int x, int y );
 
 private:
-    void InitFlexSizer(wxFlexGridSizer *sizer);
+    void InitFlexSizer(wxFlexGridSizer *sizer, wxWindow* parent);
 };
 
 
@@ -84,10 +84,10 @@ private:
 // controls and menu constants
 enum
 {
-    LAYOUT_QUIT = 100,
-    LAYOUT_ABOUT,
-    LAYOUT_TEST_SIZER,
-    LAYOUT_TEST_NB_SIZER,
-    LAYOUT_TEST_GB_SIZER
+    LAYOUT_QUIT = wxID_EXIT,
+    LAYOUT_ABOUT = wxID_ABOUT,
+    LAYOUT_TEST_SIZER = 101,
+    LAYOUT_TEST_NB_SIZER = 102,
+    LAYOUT_TEST_GB_SIZER = 103
 };
 

@@ -2,7 +2,7 @@
 // Name:        archive.h
 // Purpose:     Streams for archive formats
 // Author:      Mike Wetherell
-// RCS-ID:      $Id: archive.h,v 1.1 2004/11/10 23:58:02 VZ Exp $
+// RCS-ID:      $Id: archive.h,v 1.7 2005/04/11 23:24:30 MW Exp $
 // Copyright:   (c) 2004 Mike Wetherell
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -16,7 +16,7 @@
 
 #include "wx/defs.h"
 
-#if wxUSE_ZLIB && wxUSE_STREAMS && wxUSE_ZIPSTREAM
+#if wxUSE_STREAMS && wxUSE_ARCHIVE_STREAMS
 
 #include "wx/stream.h"
 #include "wx/filename.h"
@@ -67,6 +67,7 @@ public:
 
 protected:
     wxArchiveEntry() : m_notifier(NULL) { }
+    wxArchiveEntry(const wxArchiveEntry& e) : wxObject(e), m_notifier(NULL) { }
 
     virtual void SetOffset(wxFileOffset offset) = 0;
     virtual wxArchiveEntry* DoClone() const = 0;
@@ -149,7 +150,6 @@ public:
     virtual bool CopyArchiveMetaData(wxArchiveInputStream& stream) = 0;
 
     virtual bool CloseEntry() = 0;
-    virtual bool Close() = 0;
 
 protected:
     wxArchiveOutputStream(wxOutputStream& stream, wxMBConv& conv);
@@ -158,47 +158,6 @@ protected:
 
 private:
     wxMBConv& m_conv;
-};
-
-
-/////////////////////////////////////////////////////////////////////////////
-// wxArchiveClassFactory
-//
-// A wxArchiveClassFactory instance for a particular archive type allows
-// the creation of the other classes that may be needed.
-
-class WXDLLIMPEXP_BASE wxArchiveClassFactory : public wxObject
-{
-public:
-    virtual ~wxArchiveClassFactory() { }
-
-    wxArchiveEntry *NewEntry() const
-        { return DoNewEntry(); }
-    wxArchiveInputStream *NewStream(wxInputStream& stream) const
-        { return DoNewStream(stream); }
-    wxArchiveOutputStream *NewStream(wxOutputStream& stream) const
-        { return DoNewStream(stream); }
-
-    virtual wxString GetInternalName(
-        const wxString& name,
-        wxPathFormat format = wxPATH_NATIVE) const = 0;
-
-    void SetConv(wxMBConv& conv) { m_pConv = &conv; }
-    wxMBConv& GetConv() const { return *m_pConv; }
-
-protected:
-    virtual wxArchiveEntry        *DoNewEntry() const = 0;
-    virtual wxArchiveInputStream  *DoNewStream(wxInputStream& stream) const = 0;
-    virtual wxArchiveOutputStream *DoNewStream(wxOutputStream& stream) const = 0;
-
-    wxArchiveClassFactory() : m_pConv(&wxConvLocal) { }
-    wxArchiveClassFactory& operator=(const wxArchiveClassFactory& WXUNUSED(f))
-        { return *this; }
-
-private:
-    wxMBConv *m_pConv;
-
-    DECLARE_ABSTRACT_CLASS(wxArchiveClassFactory)
 };
 
 
@@ -212,14 +171,14 @@ private:
 #include <iterator>
 #include <utility>
 
-template <class X, class Y>
-void WXDLLIMPEXP_BASE _wxSetArchiveIteratorValue(
+template <class X, class Y> inline
+void _wxSetArchiveIteratorValue(
     X& val, Y entry, void *WXUNUSED(d))
 {
     val = X(entry);
 }
-template <class X, class Y, class Z>
-void WXDLLIMPEXP_BASE _wxSetArchiveIteratorValue(
+template <class X, class Y, class Z> inline
+void _wxSetArchiveIteratorValue(
     std::pair<X, Y>& val, Z entry, Z WXUNUSED(d))
 {
     val = std::make_pair(X(entry->GetInternalName()), Y(entry));
@@ -230,7 +189,7 @@ template <class Arc, class T = Arc::entry_type*>
 #else
 template <class Arc, class T = typename Arc::entry_type*>
 #endif
-class WXDLLIMPEXP_BASE wxArchiveIterator
+class wxArchiveIterator
 {
 public:
     typedef std::input_iterator_tag iterator_category;
@@ -284,14 +243,12 @@ public:
         return it;
     }
 
-    friend bool operator ==(const wxArchiveIterator& i,
-                            const wxArchiveIterator& j) {
-        return i.m_rep == j.m_rep;
+    bool operator ==(const wxArchiveIterator& j) const {
+        return m_rep == j.m_rep;
     }
 
-    friend bool operator !=(const wxArchiveIterator& i,
-                            const wxArchiveIterator& j) {
-        return !(i == j);
+    bool operator !=(const wxArchiveIterator& j) const {
+        return !(*this == j);
     }
 
 private:
@@ -348,6 +305,58 @@ typedef wxArchiveIterator<wxArchiveInputStream,
 
 #endif // wxUSE_STL || defined WX_TEST_ARCHIVE_ITERATOR
 
-#endif // wxUSE_STREAMS
+
+/////////////////////////////////////////////////////////////////////////////
+// wxArchiveClassFactory
+//
+// A wxArchiveClassFactory instance for a particular archive type allows
+// the creation of the other classes that may be needed.
+
+class WXDLLIMPEXP_BASE wxArchiveClassFactory : public wxObject
+{
+public:
+    typedef wxArchiveEntry        entry_type;
+    typedef wxArchiveInputStream  instream_type;
+    typedef wxArchiveOutputStream outstream_type;
+    typedef wxArchiveNotifier     notifier_type;
+#if wxUSE_STL || defined WX_TEST_ARCHIVE_ITERATOR
+    typedef wxArchiveIter         iter_type;
+    typedef wxArchivePairIter     pairiter_type;
+#endif
+
+    virtual ~wxArchiveClassFactory() { }
+
+    wxArchiveEntry *NewEntry() const
+        { return DoNewEntry(); }
+    wxArchiveInputStream *NewStream(wxInputStream& stream) const
+        { return DoNewStream(stream); }
+    wxArchiveOutputStream *NewStream(wxOutputStream& stream) const
+        { return DoNewStream(stream); }
+
+    virtual wxString GetInternalName(
+        const wxString& name,
+        wxPathFormat format = wxPATH_NATIVE) const = 0;
+
+    void SetConv(wxMBConv& conv) { m_pConv = &conv; }
+    wxMBConv& GetConv() const { return *m_pConv; }
+
+protected:
+    // old compilers don't support covarient returns, so 'Do' methods are
+    // used to simulate them
+    virtual wxArchiveEntry        *DoNewEntry() const = 0;
+    virtual wxArchiveInputStream  *DoNewStream(wxInputStream& stream) const = 0;
+    virtual wxArchiveOutputStream *DoNewStream(wxOutputStream& stream) const = 0;
+
+    wxArchiveClassFactory() : m_pConv(&wxConvLocal) { }
+    wxArchiveClassFactory& operator=(const wxArchiveClassFactory& WXUNUSED(f))
+        { return *this; }
+
+private:
+    wxMBConv *m_pConv;
+
+    DECLARE_ABSTRACT_CLASS(wxArchiveClassFactory)
+};
+
+#endif // wxUSE_STREAMS && wxUSE_ARCHIVE_STREAMS
 
 #endif // _WX_ARCHIVE_H__

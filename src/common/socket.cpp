@@ -5,7 +5,7 @@
 // Created:    April 1997
 // Copyright:  (C) 1999-1997, Guilhem Lavaux
 //             (C) 2000-1999, Guillermo Rodriguez Garcia
-// RCS_ID:     $Id: socket.cpp,v 1.131 2004/10/06 16:25:33 KH Exp $
+// RCS_ID:     $Id: socket.cpp,v 1.133 2005/05/22 15:06:36 JS Exp $
 // License:    see wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
 
@@ -40,6 +40,7 @@
 
 #include "wx/sckaddr.h"
 #include "wx/socket.h"
+#include "wx/stopwatch.h"
 
 // DLL options compatibility check:
 #include "wx/build.h"
@@ -1153,6 +1154,8 @@ bool wxSocketServer::WaitForAccept(long seconds, long milliseconds)
 
 bool wxSocketBase::GetOption(int level, int optname, void *optval, int *optlen)
 {
+    wxASSERT_MSG( m_socket, _T("Socket not initialised") );
+
     if (m_socket->GetSockOpt(level, optname, optval, optlen)
         != GSOCK_NOERROR)
     {
@@ -1164,6 +1167,8 @@ bool wxSocketBase::GetOption(int level, int optname, void *optval, int *optlen)
 bool wxSocketBase::SetOption(int level, int optname, const void *optval,
                               int optlen)
 {
+    wxASSERT_MSG( m_socket, _T("Socket not initialised") );
+    
     if (m_socket->SetSockOpt(level, optname, optval, optlen)
         != GSOCK_NOERROR)
     {
@@ -1303,6 +1308,8 @@ wxDatagramSocket& wxDatagramSocket::SendTo( wxSockAddress& addr,
                                             const void* buf,
                                             wxUint32 nBytes )
 {
+    wxASSERT_MSG( m_socket, _T("Socket not initialised") );
+    
     m_socket->SetPeer(addr.GetAddress());
     Write(buf, nBytes);
     return (*this);

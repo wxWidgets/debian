@@ -5,7 +5,7 @@
 # Author:      Gordon Williams
 #
 # Created:     2003/11/03
-# RCS-ID:      $Id: plot.py,v 1.9 2004/11/09 17:58:15 RD Exp $
+# RCS-ID:      $Id: plot.py,v 1.14 2005/06/13 20:48:52 RD Exp $
 # Copyright:   (c) 2002
 # Licence:     Use as you wish.
 #-----------------------------------------------------------------------------
@@ -556,7 +556,7 @@ class PlotCanvas(wx.Window):
                 self.pageSetupData.SetMarginBottomRight(data.GetMarginBottomRight())
                 self.pageSetupData.SetMarginTopLeft(data.GetMarginTopLeft())
                 self.pageSetupData.SetPrintData(data.GetPrintData())
-                self.print_data=data.GetPrintData() # updates print_data
+                self.print_data=wx.PrintData(data.GetPrintData()) # updates print_data
         finally:
             dlg.Destroy()
                 
@@ -564,13 +564,12 @@ class PlotCanvas(wx.Window):
         """Print current plot."""
         if paper != None:
             self.print_data.SetPaperId(paper)
-        pdd = wx.PrintDialogData()
-        pdd.SetPrintData(self.print_data)
+        pdd = wx.PrintDialogData(self.print_data)
         printer = wx.Printer(pdd)
         out = PlotPrintout(self)
         print_ok = printer.Print(self.parent, out)
         if print_ok:
-            self.print_data = printer.GetPrintDialogData().GetPrintData()
+            self.print_data = wx.PrintData(printer.GetPrintDialogData().GetPrintData())
         out.Destroy()
 
     def PrintPreview(self):
@@ -630,8 +629,8 @@ class PlotCanvas(wx.Window):
 
     def SetEnableGrid(self, value):
         """Set True to enable grid."""
-        if value not in [True,False]:
-            raise TypeError, "Value should be True or False"
+        if value not in [True,False,'Horizontal','Vertical']:
+            raise TypeError, "Value should be True, False, Horizontal or Vertical"
         self._gridEnabled= value
         self.Redraw()
 
@@ -689,9 +688,11 @@ class PlotCanvas(wx.Window):
     def ScrollUp(self, units):
         """Move view up number of axis units."""
         self.last_PointLabel = None        #reset pointLabel
-        if self.BeenDrawn():
-            self._drawCmd.scrollAxisY(units, self._ySpec)
-            self._draw()
+        if self.last_draw is not None: 	
+             graphics, xAxis, yAxis= self.last_draw
+             yAxis= (yAxis[0]+units, yAxis[1]+units)
+             self.Draw(graphics,xAxis,yAxis)
+
         
     def GetXY(self,event):
         """Takes a mouse event and returns the XY user axis values."""
@@ -1025,7 +1026,9 @@ class PlotCanvas(wx.Window):
         # The Buffer init is done here, to make sure the buffer is always
         # the same size as the Window
         Size  = self.GetClientSize()
-
+        if Size.width <= 0 or Size.height <= 0:
+            return
+        
         # Make new offscreen bitmap: this bitmap will always have the
         # current drawing in it, so it can be used to save the image to
         # a file, or whatever.
@@ -1228,8 +1231,15 @@ class PlotCanvas(wx.Window):
         # set length of tick marks--long ones make grid
         if self._gridEnabled:
             x,y,width,height= self._point2ClientCoord(p1,p2)
-            yTickLength= width/2.0 +1
-            xTickLength= height/2.0 +1
+            if self._gridEnabled == 'Horizontal':
+                yTickLength= width/2.0 +1
+                xTickLength= 3 * self.printerScale
+            elif self._gridEnabled == 'Vertical':
+                yTickLength= 3 * self.printerScale
+                xTickLength= height/2.0 +1
+            else:
+                yTickLength= width/2.0 +1
+                xTickLength= height/2.0 +1
         else:
             yTickLength= 3 * self.printerScale  # lengthens lines for printing
             xTickLength= 3 * self.printerScale

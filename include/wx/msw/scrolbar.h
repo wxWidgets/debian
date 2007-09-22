@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     01/02/97
-// RCS-ID:      $Id: scrolbar.h,v 1.15 2004/09/04 01:53:38 ABX Exp $
+// RCS-ID:      $Id: scrolbar.h,v 1.19 2005/05/31 14:52:17 VZ Exp $
 // Copyright:   (c) Julian Smart
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -54,14 +54,15 @@ public:
     void SetRange( int s ) { SetScrollbar( GetThumbPosition() , GetThumbSize() , s , GetPageSize() , true ) ; }
 
     void Command(wxCommandEvent& event);
-    virtual WXHBRUSH OnCtlColor(WXHDC pDC, WXHWND pWnd, WXUINT nCtlColor,
-            WXUINT message, WXWPARAM wParam, WXLPARAM lParam);
     virtual bool MSWOnScroll(int orientation, WXWORD wParam,
                              WXWORD pos, WXHWND control);
 
-protected:
+    // override wxControl version to not use solid background here
+    virtual WXHBRUSH MSWControlColor(WXHDC pDC, WXHWND hWnd);
 
-    wxSize DoGetBestSize() const;
+protected:
+    virtual wxSize DoGetBestSize() const;
+    virtual WXDWORD MSWGetStyle(long style, WXDWORD *exstyle) const;
 
     int m_pageSize;
     int m_viewSize;

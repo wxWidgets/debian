@@ -3,13 +3,13 @@
 // Purpose:     wxXmlResource::InitAllHandlers
 // Author:      Vaclav Slavik
 // Created:     2000/03/05
-// RCS-ID:      $Id: xmlrsall.cpp,v 1.14 2004/09/23 09:18:13 VS Exp $
+// RCS-ID:      $Id: xmlrsall.cpp,v 1.20 2005/04/02 22:22:38 VS Exp $
 // Copyright:   (c) 2000 Vaclav Slavik
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
 
 // -- Already done in xmlres.cpp
-//#ifdef __GNUG__
+//#if defined(__GNUG__) && !defined(NO_GCC_PRAGMA)
 //#pragma implementation "xmlres.h"
 //#endif
 
@@ -34,6 +34,7 @@ void wxXmlResource::InitAllHandlers()
     AddHandler(new wxDialogXmlHandler);
     AddHandler(new wxPanelXmlHandler);
     AddHandler(new wxSizerXmlHandler);
+    AddHandler(new wxStdDialogButtonSizerXmlHandler);
     AddHandler(new wxButtonXmlHandler);
     AddHandler(new wxBitmapButtonXmlHandler);
     AddHandler(new wxStaticTextXmlHandler);
@@ -84,6 +85,12 @@ void wxXmlResource::InitAllHandlers()
 #if wxUSE_NOTEBOOK
     AddHandler(new wxNotebookXmlHandler);
 #endif
+#if wxUSE_LISTBOOK
+    AddHandler(new wxListbookXmlHandler);
+#endif
+#if wxUSE_CHOICEBOOK
+    AddHandler(new wxChoicebookXmlHandler);
+#endif
     AddHandler(new wxTextCtrlXmlHandler);
 #if wxUSE_LISTBOX
     AddHandler(new wxListBoxXmlHandler);
@@ -106,6 +113,12 @@ void wxXmlResource::InitAllHandlers()
 #endif
 #if wxUSE_STATUSBAR
     AddHandler(new wxStatusBarXmlHandler);
+#endif
+#if wxUSE_DATEPICKCTRL
+    AddHandler(new wxDateCtrlXmlHandler);
+#endif
+#if wxUSE_MDI
+    AddHandler(new wxMdiXmlHandler);
 #endif
 }
 

@@ -5,7 +5,7 @@
 # Author:      Ron <ron@debian.org>
 # Modified by:
 # Created:     8/9/2004
-# RCS-ID:      $Id: wx-config.in,v 1.115 2004/11/10 05:01:23 RL Exp $
+# RCS-ID:      $Id: wx-config.in,v 1.120 2005/06/17 14:57:13 RL Exp $
 # Copyright:   (c) 2004 Ron <ron@debian.org>
 #              Essentially a fresh start this time around, but for maximum
 #              compatibility basic code was taken from, and heavy reference
@@ -16,6 +16,9 @@
 #              Robert Roebling, Vadim Zeitlin, Vaclav Slavik, Robin Dunn
 # Licence:     wxWindows licence
 ############################################################################
+
+# Extra^2 debug mode, for if things ever get really wierd.
+[ -z "$WXDEBUG_X" ] || set -x
 
 # We expect a posix shell, so if this is a Bourne shell,
 # and apparently a few still exist, try for bash or ksh.
@@ -91,6 +94,9 @@ EOF
 [ $# -gt 0 ] || usage 1
 
 
+# Contentious tools determined by configure.
+EGREP="@EGREP@"
+
 
 # For the people who know what they want, or think they do:
 # Divide the valid arguments into functional groups for later examination,
@@ -151,7 +157,7 @@ wxconfig_flag_options="$wxconfig_yesno_options no_rpath inplace"
 option_name()
 {
     _option_name_temp=${1%%=*}
-    echo "${_option_name_temp#--}" | tr '-' '_'
+    echo ${_option_name_temp#--} | tr '-' '_'
 }
 
 # option_value _string
@@ -450,11 +456,11 @@ fi
 # find_eligible_delegates _mask
 # Outputs all the config files installed which match the
 # (extended regex) _mask passed as an argument.
-find_eligible_delegates() { echo "$installed_configs" | grep -E "$1" 2> /dev/null; }
+find_eligible_delegates() { echo "$installed_configs" | $EGREP "$1" 2> /dev/null; }
 
 # user_mask_fits _config
 # Returns true if the string _config satisfies the user specified mask.
-user_mask_fits()          { echo "$1" | grep -E "$configmask" > /dev/null 2>&1; }
+user_mask_fits()          { echo "$1" | $EGREP "$configmask" > /dev/null 2>&1; }
 
 # count_fields _word
 # Returns the number of IFS split fields in _word
@@ -600,7 +606,7 @@ find_best_legacy_config()
     if [ -n "$_legacy_configs" ]; then
         _legacy_mask=$(get_legacy_mask)
         for d in $_legacy_configs; do
-            if echo $d | grep -E $_legacy_mask > /dev/null 2>&1 ; then
+            if echo $d | $EGREP $_legacy_mask > /dev/null 2>&1 ; then
                 echo "$d"
                 return
             fi
@@ -996,7 +1002,21 @@ lib_flags_for()
         if is_static; then
             _wxlibs="$_wxlibs ${libdir}/lib${_libname}.a"
             for f in $(eval echo \"\$ldlibs_$lib\"); do
-                _all_libs="$(remove_field $f $_all_libs) $f"
+
+                # Only propagate duplicate -libraries to their latest
+                # possible position.  Do not eliminate any other
+                # duplicates that might occur.  They should be fixed
+                # in configure long before they get here.
+                # This started as a workaround for Mac -framework,
+                # but it seems like a better policy in general, which
+                # will let the more heinous bugs in configure shake out.
+                # We should maybe filter *.a here too, but not unless
+                # we have to.
+                case "$f" in
+                  -l*)  _all_libs="$(remove_field $f $_all_libs) $f"    ;;
+                    *)  _all_libs="$_all_libs $f"                       ;;
+                esac
+
             done
         else
             _wxlibs="$_wxlibs -l${_libname}"
@@ -1018,7 +1038,11 @@ lib_flags_for()
 # output the list of libraries the main program should depend on
 #
 # of course, this duplication is bad but I'll leave to somebody else the care
-# of refactoring this as I don't see any way to do it
+# of refactoring this as I don't see any way to do it - VZ.
+
+# This (and the other cruft to support it) should be removed with
+# reference to the FIXME above when configure stops piping us a slurry
+# of options that need to be decomposed again for most practical uses - RL.
 link_deps_for()
 {
     _wxlibs=''
@@ -1118,7 +1142,11 @@ else
     _include_cppflags="-I${includedir} -I${prefix}/contrib/include"
 fi
 
-_cppflags=$(echo "-I${libdir}/wx/include/@TOOLCHAIN_FULLNAME@" $_include_cppflags "@WXDEBUG_DEFINE@" "@TOOLCHAIN_DEFS@" "@TOOLCHAIN_DLL_DEFS@" $_gui_cppflags "@WXCONFIG_INCLUDE@" "@WX_LARGEFILE_FLAGS@" "@GCC_PRAGMA_FLAGS@")  
+_cppflags=$(echo "-I${libdir}/wx/include/@TOOLCHAIN_FULLNAME@" $_include_cppflags "@WXDEBUG_DEFINE@" "@TOOLCHAIN_DEFS@" "@TOOLCHAIN_DLL_DEFS@" $_gui_cppflags "@WXCONFIG_INCLUDE@" "@WX_LARGEFILE_FLAGS@" "-DNO_GCC_PRAGMA")
+
+# FIXME: NO_GCC_PRAGMA is defined here to cover for a historical accident.
+#        it may be removed once it is purged from the wx/headers also.
+
 
 # now without further ado, we can answer these too.
 [ -z "$output_option_cppflags" ] || echo $_cppflags

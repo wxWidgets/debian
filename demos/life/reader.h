@@ -4,7 +4,7 @@
 // Author:      Guillermo Rodriguez Garcia, <guille@iies.es>
 // Modified by:
 // Created:     Jan/2000
-// RCS-ID:      $Id: reader.h,v 1.3 2002/09/07 12:21:28 GD Exp $
+// RCS-ID:      $Id: reader.h,v 1.4 2005/01/31 18:18:18 ABX Exp $
 // Copyright:   (c) 2000, Guillermo Rodriguez Garcia
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -45,7 +45,7 @@ public:
     inline wxArrayString GetShape() const       { return m_shape; };
     inline LifePattern   GetPattern() const
     {
-        return LifePattern(_(""), m_description, m_rules, m_shape);
+        return LifePattern(wxEmptyString, m_description, m_rules, m_shape);
     };
 
 private:

@@ -4,7 +4,7 @@
 // Author:      Vaclav Slavik
 // Modified by:
 // Created:     2004-08-15
-// RCS-ID:      $Id: stockitem.cpp,v 1.8 2004/09/22 14:38:50 ABX Exp $
+// RCS-ID:      $Id: stockitem.cpp,v 1.12 2005/06/13 12:19:20 ABX Exp $
 // Copyright:   (c) Vaclav Slavik, 2004
 // Licence:     wxWindows licence
 ///////////////////////////////////////////////////////////////////////////////
@@ -30,7 +30,7 @@
 
 #include "wx/stockitem.h"
 #include "wx/intl.h"
-
+#include "wx/utils.h" // for wxStripMenuCodes()
 
 bool wxIsStockID(wxWindowID id)
 {
@@ -90,14 +90,17 @@ bool wxIsStockID(wxWindowID id)
 
         default:
             return false;
-    };
+    }
 }
 
-wxString wxGetStockLabel(wxWindowID id)
+wxString wxGetStockLabel(wxWindowID id, bool withCodes, wxString accelerator)
 {
+    wxString stockLabel;
+
     #define STOCKITEM(stockid, label) \
         case stockid:                 \
-            return label;
+            stockLabel = label;       \
+            break;
 
     switch (id)
     {
@@ -159,7 +162,17 @@ wxString wxGetStockLabel(wxWindowID id)
 
     #undef STOCKITEM
 
-    return wxEmptyString;
+    if(!withCodes)
+    {
+        stockLabel = wxStripMenuCodes( stockLabel );
+    }
+    else if (!stockLabel.empty() && !accelerator.empty())
+    {
+        stockLabel += _T("\t");
+        stockLabel += accelerator;
+    }
+
+    return stockLabel;
 }
 
 bool wxIsStockLabel(wxWindowID id, const wxString& label)

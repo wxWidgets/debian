@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     04/01/98
-// RCS-ID:      $Id: docview.h,v 1.6 2003/03/17 11:43:57 JS Exp $
+// RCS-ID:      $Id: docview.h,v 1.7 2005/06/02 12:04:03 JS Exp $
 // Copyright:   (c) Julian Smart
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -58,7 +58,7 @@ DECLARE_EVENT_TABLE()
 extern MyFrame *GetMainFrame(void);
 
 #define DOCVIEW_CUT     1
-#define DOCVIEW_ABOUT   2
+#define DOCVIEW_ABOUT   wxID_ABOUT
 
 extern bool singleWindowMode;
 

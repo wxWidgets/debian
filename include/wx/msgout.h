@@ -4,8 +4,8 @@
 // Author:      Mattia Barbon
 // Modified by:
 // Created:     17.07.02
-// RCS-ID:      $Id: msgout.h,v 1.12 2004/09/17 22:23:54 ABX Exp $
-// Copyright:   (c) wxWidgets team
+// RCS-ID:      $Id: msgout.h,v 1.14 2005/06/06 23:34:19 VZ Exp $
+// Copyright:   (c) Mattia Barbon
 // Licence:     wxWindows licence
 ///////////////////////////////////////////////////////////////////////////////
 
@@ -43,7 +43,8 @@ public:
     // show a message to the user
     virtual void Printf(const wxChar* format, ...)  ATTRIBUTE_PRINTF_2 = 0;
 
-    // gets the current wxMessageOutput object
+    // gets the current wxMessageOutput object (may be NULL during
+    // initialization or shutdown)
     static wxMessageOutput* Get();
 
     // sets the global wxMessageOutput instance; returns the previous one
@@ -51,6 +52,20 @@ public:
 
 private:
     static wxMessageOutput* ms_msgOut;
+};
+
+// ----------------------------------------------------------------------------
+// implementation showing the message to the user in "best" possible way: uses
+// native message box if available (currently only under Windows) and stderr
+// otherwise; unlike wxMessageOutputMessageBox this class is always safe to use
+// ----------------------------------------------------------------------------
+
+class WXDLLIMPEXP_BASE wxMessageOutputBest : public wxMessageOutput
+{
+public:
+    wxMessageOutputBest() { }
+
+    virtual void Printf(const wxChar* format, ...) ATTRIBUTE_PRINTF_2;
 };
 
 // ----------------------------------------------------------------------------

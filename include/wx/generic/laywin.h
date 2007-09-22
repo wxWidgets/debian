@@ -7,7 +7,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     04/01/98
-// RCS-ID:      $Id: laywin.h,v 1.26 2004/09/26 14:04:32 SC Exp $
+// RCS-ID:      $Id: laywin.h,v 1.27 2005/03/31 05:08:24 SC Exp $
 // Copyright:   (c) Julian Smart
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -183,10 +183,6 @@ public:
 
     // Called by layout algorithm to retrieve information about the window.
     void OnQueryLayoutInfo(wxQueryLayoutInfoEvent& event);
-
-#ifdef __WXMAC__
-    virtual bool MacClipChildren() const { return true ; }
-#endif
 
 private:
     void Init();

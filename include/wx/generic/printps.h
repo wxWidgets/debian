@@ -5,8 +5,8 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     01/02/97
-// RCS-ID:      $Id: printps.h,v 1.12 2004/06/17 16:22:27 ABX Exp $
-// Copyright:   (c)
+// RCS-ID:      $Id: printps.h,v 1.13 2005/05/04 18:52:32 JS Exp $
+// Copyright:   (c) Julian Smart
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
 

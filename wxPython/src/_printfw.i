@@ -5,7 +5,7 @@
 // Author:      Robin Dunn
 //
 // Created:     9-Aug-2003
-// RCS-ID:      $Id: _printfw.i,v 1.16 2004/11/11 02:24:18 RD Exp $
+// RCS-ID:      $Id: _printfw.i,v 1.22 2005/03/09 22:28:40 RD Exp $
 // Copyright:   (c) 2003 by Total Control Software
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -100,6 +100,33 @@ public:
 
     %pythoncode { def __nonzero__(self): return self.Ok() }
 
+    //char* GetPrivData() const;
+    //int GetPrivDataLen() const;
+    //void SetPrivData( char *privData, int len );
+
+    %extend {
+        PyObject* GetPrivData() {
+            PyObject* data;
+            wxPyBlock_t blocked = wxPyBeginBlockThreads();
+            data = PyString_FromStringAndSize(self->GetPrivData(),
+                                              self->GetPrivDataLen());
+            wxPyEndBlockThreads(blocked);
+            return data;
+        }
+
+        void SetPrivData(PyObject* data) {
+            if (! PyString_Check(data)) {
+                wxPyBLOCK_THREADS(PyErr_SetString(PyExc_TypeError,
+                                                  "Expected string object"));
+                return /* NULL */ ;
+            }
+
+            wxPyBlock_t blocked = wxPyBeginBlockThreads();
+            self->SetPrivData(PyString_AS_STRING(data), PyString_GET_SIZE(data));
+            wxPyEndBlockThreads(blocked);
+        }
+    }
+    
 
     // NOTE: These are now inside of #if WXWIN_COMPATIBILITY_2_4, so be
     //       prepared to remove them...
@@ -133,6 +160,7 @@ public:
     %nokwargs wxPageSetupDialogData;
     wxPageSetupDialogData();
     wxPageSetupDialogData(const wxPageSetupDialogData& data);  // for making copies
+    wxPageSetupDialogData(const wxPrintData& data); 
     ~wxPageSetupDialogData();
 
     void EnableHelp(bool flag);
@@ -140,6 +168,7 @@ public:
     void EnableOrientation(bool flag);
     void EnablePaper(bool flag);
     void EnablePrinter(bool flag);
+    
     bool GetDefaultMinMargins();
     bool GetEnableMargins();
     bool GetEnableOrientation();
@@ -155,11 +184,6 @@ public:
     wxSize GetPaperSize();
 
     wxPrintData& GetPrintData();
-//     %addmethods {
-//         %new wxPrintData* GetPrintData() {
-//             return new wxPrintData(self->GetPrintData());  // force a copy
-//         }
-//     }
 
     bool Ok();
 
@@ -171,22 +195,34 @@ public:
     void SetMinMarginBottomRight(const wxPoint& pt);
     void SetPaperId(wxPaperSize id);
     void SetPaperSize(const wxSize& size);
+    
     void SetPrintData(const wxPrintData& printData);
+
+    // Use paper size defined in this object to set the wxPrintData
+    // paper id
+    void CalculateIdFromPaperSize();
+
+    // Use paper id in wxPrintData to set this object's paper size
+    void CalculatePaperSizeFromId();
 
     %pythoncode { def __nonzero__(self): return self.Ok() }
 };
 
 
 
+// NOTE: Contrary to it's name, this class doesn't derive from wxDialog.  It
+// is a facade in front of a platform-specific (native dialog) provided by the
+// wxPrintFactory.
+
 MustHaveApp(wxPageSetupDialog);
 
-class wxPageSetupDialog : public wxDialog {
+class wxPageSetupDialog : public wxObject
+{
 public:
-    %pythonAppend wxPageSetupDialog         "self._setOORInfo(self)"
-
     wxPageSetupDialog(wxWindow* parent, wxPageSetupDialogData* data = NULL);
 
     wxPageSetupDialogData& GetPageSetupData();
+    wxPageSetupDialogData& GetPageSetupDialogData();
     int ShowModal();
 };
 
@@ -197,7 +233,8 @@ class wxPrintDialogData : public wxObject {
 public:
     %nokwargs wxPrintDialogData;
     wxPrintDialogData();
-    wxPrintDialogData(const wxPrintData& printData);  // for making copies
+    wxPrintDialogData(const wxPrintData& printData);
+    wxPrintDialogData(const wxPrintDialogData& printData);  // for making copies
     ~wxPrintDialogData();
 
     int GetFromPage() const;
@@ -245,12 +282,16 @@ public:
 };
 
 
+
 MustHaveApp(wxPrintDialog);
 
-class wxPrintDialog : public wxDialog {
-public:
-    %pythonAppend wxPrintDialog         "self._setOORInfo(self)"
 
+// NOTE: Contrary to it's name, this class doesn't derive from wxDialog.  It
+// is a facade in front of a platform-specific (native dialog) provided by the
+// wxPrintFactory.
+
+class wxPrintDialog : public wxObject {
+public:
     wxPrintDialog(wxWindow* parent, wxPrintDialogData* data = NULL);
 
     // TODO?: wxPrintDialog(wxWindow *parent, wxPrintData* data);
@@ -285,11 +326,11 @@ public:
     wxPrinter(wxPrintDialogData* data = NULL);
     ~wxPrinter();
 
-    virtual wxWindow *CreateAbortWindow(wxWindow *parent, wxPrintout *printout);
-    virtual void ReportError(wxWindow *parent, wxPrintout *printout, const wxString& message);
+    virtual wxWindow *CreateAbortWindow(wxWindow *parent, wxPyPrintout *printout);
+    virtual void ReportError(wxWindow *parent, wxPyPrintout *printout, const wxString& message);
 
     virtual bool Setup(wxWindow *parent);
-    virtual bool Print(wxWindow *parent, wxPrintout *printout, bool prompt = true);
+    virtual bool Print(wxWindow *parent, wxPyPrintout *printout, bool prompt = true);
     virtual wxDC* PrintDialog(wxWindow *parent);
     
     virtual wxPrintDialogData& GetPrintDialogData() const;
@@ -300,16 +341,19 @@ public:
 
 
 //---------------------------------------------------------------------------
-// Custom wxPrintout class that knows how to call python
+// Custom wxPrintout class that knows how to call python, See implementation in
+// include/sx/wxPython/printfw.h
+
 %{
 
+IMPLEMENT_ABSTRACT_CLASS(wxPyPrintout, wxPrintout);
 
 // Since this one would be tough and ugly to do with the Macros...
 void wxPyPrintout::GetPageInfo(int *minPage, int *maxPage, int *pageFrom, int *pageTo) {
     bool hadErr = false;
     bool found;
 
-    bool blocked = wxPyBeginBlockThreads();
+    wxPyBlock_t blocked = wxPyBeginBlockThreads();
     if ((found = wxPyCBH_findCallback(m_myInst, "GetPageInfo"))) {
         PyObject* result = wxPyCBH_callCallbackObj(m_myInst, Py_BuildValue("()"));
         if (result && PyTuple_Check(result) && PyTuple_Size(result) == 4) {
@@ -365,7 +409,8 @@ IMP_PYCALLBACK_BOOL_INT(wxPyPrintout, wxPrintout, HasPage);
 MustHaveApp(wxPyPrintout);
 
 // Now define the custom class for SWIGging
-%name(Printout) class wxPyPrintout  : public wxObject {
+%rename(Printout) wxPyPrintout;
+class wxPyPrintout  : public wxObject {
 public:
     %pythonAppend wxPyPrintout   "self._setCallbackInfo(self, Printout)"
 
@@ -576,7 +621,7 @@ public:
     bool CLASS::CBNAME(wxPreviewCanvas* a, wxDC& b) {                                   \
         bool rval=false;                                                                \
         bool found;                                                                     \
-        bool blocked = wxPyBeginBlockThreads();                                         \
+        wxPyBlock_t blocked = wxPyBeginBlockThreads();                                         \
         if ((found = wxPyCBH_findCallback(m_myInst, #CBNAME))) {                        \
             PyObject* win = wxPyMake_wxObject(a,false);                                 \
             PyObject* dc  = wxPyMake_wxObject(&b,false);                                \
@@ -779,101 +824,6 @@ public:
     void base_CreateButtons();
     void base_SetZoomControl(int zoom);
 };
-
-//---------------------------------------------------------------------------
-// wxPrintFactory
-//---------------------------------------------------------------------------
-
-class wxPrintFactory
-{
-public:
-    // wxPrintFactory() {}            *** It's an ABC
-    // virtual ~wxPrintFactory();
-    
-    virtual wxPrinterBase *CreatePrinter( wxPrintDialogData* data );
-
-    %nokwargs CreatePrintPreview;
-    virtual wxPrintPreviewBase *CreatePrintPreview( wxPrintout *preview, 
-                                                    wxPrintout *printout = NULL, 
-                                                    wxPrintDialogData *data = NULL );
-    virtual wxPrintPreviewBase *CreatePrintPreview( wxPrintout *preview, 
-                                                    wxPrintout *printout, 
-                                                    wxPrintData *data );
-
-    %nokwargs CreatePrintDialog;
-    virtual wxPrintDialogBase *CreatePrintDialog( wxWindow *parent, 
-                                                  wxPrintDialogData *data = NULL );
-    virtual wxPrintDialogBase *CreatePrintDialog( wxWindow *parent, 
-                                                  wxPrintData *data );
-                                                  
-    // What to do and what to show in the wxPrintDialog
-    // a) Use the generic print setup dialog or a native one?
-    virtual bool HasPrintSetupDialog();
-    virtual wxDialog *CreatePrintSetupDialog( wxWindow *parent, wxPrintData *data );
-    
-    // b) Provide the "print to file" option ourselves or via print setup?
-    virtual bool HasOwnPrintToFile();
-    
-    // c) Show current printer
-    virtual bool HasPrinterLine();
-    virtual wxString CreatePrinterLine();
-    
-    // d) Show Status line for current printer?
-    virtual bool HasStatusLine();
-    virtual wxString CreateStatusLine();
-
-                                                  
-    virtual wxPrintNativeDataBase *CreatePrintNativeData();
-    
-    static void SetPrintFactory( wxPrintFactory *factory );
-    static wxPrintFactory *GetFactory();
-    //static wxPrintFactory *m_factory;
-};
-
-// class wxNativePrintFactory: public wxPrintFactory
-// {
-// public:
-//     virtual wxPrinterBase *CreatePrinter( wxPrintDialogData *data );
-    
-//     virtual wxPrintPreviewBase *CreatePrintPreview( wxPrintout *preview, 
-//                                                     wxPrintout *printout = NULL, 
-//                                                     wxPrintDialogData *data = NULL );
-//     virtual wxPrintPreviewBase *CreatePrintPreview( wxPrintout *preview, 
-//                                                     wxPrintout *printout,
-//                                                     wxPrintData *data );
-                                                    
-//     virtual wxPrintDialogBase *CreatePrintDialog( wxWindow *parent, 
-//                                                   wxPrintDialogData *data = NULL );
-//     virtual wxPrintDialogBase *CreatePrintDialog( wxWindow *parent, 
-//                                                   wxPrintData *data );
-                                                  
-//     virtual bool HasPrintSetupDialog();
-//     virtual wxDialog *CreatePrintSetupDialog( wxWindow *parent, wxPrintData *data );
-//     virtual bool HasOwnPrintToFile();
-//     virtual bool HasPrinterLine();
-//     virtual wxString CreatePrinterLine();
-//     virtual bool HasStatusLine();
-//     virtual wxString CreateStatusLine();
-    
-//     virtual wxPrintNativeDataBase *CreatePrintNativeData();
-// };
-
-
-class wxPrintNativeDataBase: public wxObject
-{
-public:
-    wxPrintNativeDataBase();
-    virtual ~wxPrintNativeDataBase() {}
-    
-    virtual bool TransferTo( wxPrintData &data ) = 0;
-    virtual bool TransferFrom( const wxPrintData &data ) = 0; 
-    
-    virtual bool Ok() const = 0;
-    
-    int  m_ref;
-};
-
-
 
 //---------------------------------------------------------------------------
 //---------------------------------------------------------------------------

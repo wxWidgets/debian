@@ -5,7 +5,7 @@
 // Author:      Robin Dunn
 //
 // Created:     10-June-1998
-// RCS-ID:      $Id: _combobox.i,v 1.16 2004/09/18 23:11:02 RD Exp $
+// RCS-ID:      $Id: _combobox.i,v 1.20 2005/05/27 00:53:05 RD Exp $
 // Copyright:   (c) 2003 by Total Control Software
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -53,6 +53,8 @@ Events
                         Note that calling `GetValue` in this handler 
                         will return the newly selected value.
     EVT_TEXT            Sent when the combobox text changes.
+    EVT_TEXT_ENTER      Sent when the RETURN/ENTER key is pressed in
+                        the combobox.
     ================    ===============================================
 ");
 
@@ -81,7 +83,7 @@ public:
                    const wxString& name = wxPyComboBoxNameStr),
         "__init__(Window parent, int id, String value=EmptyString,
     Point pos=DefaultPosition, Size size=DefaultSize,
-    List choices=[], long style=0, Validator validator=DefaultValidator,
+    List choices=EmptyList, long style=0, Validator validator=DefaultValidator,
     String name=ComboBoxNameStr) -> ComboBox",
         "Constructor, creates and shows a ComboBox control.", "");
 
@@ -102,7 +104,7 @@ public:
                      const wxString& name = wxPyChoiceNameStr),
         "Create(Window parent, int id, String value=EmptyString,
     Point pos=DefaultPosition, Size size=DefaultSize,
-    List choices=[], long style=0, Validator validator=DefaultValidator,
+    List choices=EmptyList, long style=0, Validator validator=DefaultValidator,
     String name=ChoiceNameStr) -> bool",
         "Actually create the GUI wxComboBox control for 2-phase creation", "");
     
@@ -155,6 +157,15 @@ combobox text field.", "");
         "Selects the text between the two positions in the combobox text field.", "",
         SetMark);    
 
+#ifndef __WXMAC__
+    DocDeclAStrName(
+        virtual void , GetSelection(long* OUTPUT, long* OUTPUT),
+        "GetMark(self) -> (from, to)",
+        "Gets the positions of the begining and ending of the selection mark in
+the combobox text field.", "",
+        GetMark);
+#endif
+
     DocDeclStr(
         bool , SetStringSelection(const wxString& string),
         "Select the item with the specifed string", "");
@@ -175,6 +186,54 @@ combobox text field.", "");
     DocDeclStr(
         virtual void , Remove(long from, long to),
         "Removes the text between the two positions in the combobox text field.", "");
+
+
+
+    DocDeclStr(
+        bool , IsEditable() const,
+        "Returns True if the combo is ediatable (not read-only.)", "");
+    
+
+    DocDeclStr(
+        void , Undo(),
+        "Redoes the last undo in the text field. Windows only.", "");
+    
+    DocDeclStr(
+        void , Redo(),
+        "Undoes the last edit in the text field. Windows only.", "");
+    
+    DocDeclStr(
+        void , SelectAll(),
+        "Select all the text in the combo's text field.", "");
+    
+
+    DocDeclStr(
+        bool , CanCopy() const,
+        "Returns True if the combobox is editable and there is a text selection
+to copy to the clipboard.  Only available on Windows.", "");
+    
+    DocDeclStr(
+        bool , CanCut() const,
+        "Returns True if the combobox is editable and there is a text selection
+to copy to the clipboard.  Only available on Windows.", "");
+    
+    DocDeclStr(
+        bool , CanPaste() const,
+        "Returns True if the combobox is editable and there is text on the
+clipboard that can be pasted into the text field. Only available on
+Windows.", "");
+    
+    DocDeclStr(
+        bool , CanUndo() const,
+        "Returns True if the combobox is editable and the last edit can be
+undone.  Only available on Windows.", "");
+    
+    DocDeclStr(
+        bool , CanRedo() const,
+        "Returns True if the combobox is editable and the last undo can be
+redone.  Only available on Windows.", "");
+    
+
     
     static wxVisualAttributes
     GetClassDefaultAttributes(wxWindowVariant variant = wxWINDOW_VARIANT_NORMAL);

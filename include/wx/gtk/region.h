@@ -2,7 +2,7 @@
 // Name:        wx/gtk/region.h
 // Purpose:
 // Author:      Robert Roebling
-// Id:          $Id: region.h,v 1.29 2004/06/03 21:12:53 VS Exp $
+// Id:          $Id: region.h,v 1.30 2005/02/09 15:01:45 JJ Exp $
 // Copyright:   (c) 1998 Robert Roebling
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -155,7 +155,7 @@ protected:
     void InitRect(wxCoord x, wxCoord y, wxCoord w, wxCoord h);
 
 private:
-    DECLARE_DYNAMIC_CLASS(wxRegion);
+    DECLARE_DYNAMIC_CLASS(wxRegion)
 };
 
 // ----------------------------------------------------------------------------
@@ -190,7 +190,7 @@ private:
     wxRegion m_region;
 
 private:
-    DECLARE_DYNAMIC_CLASS(wxRegionIterator);
+    DECLARE_DYNAMIC_CLASS(wxRegionIterator)
 };
 
 

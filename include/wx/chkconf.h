@@ -1,13 +1,13 @@
-/**
-* Name:        wx/chkconf.h
-* Purpose:     check the config settings for consistency
-* Author:      Vadim Zeitlin
-* Modified by:
-* Created:     09.08.00
-* RCS-ID:      $Id: chkconf.h,v 1.78 2004/11/11 07:26:54 RL Exp $
-* Copyright:   (c) 2000 Vadim Zeitlin <vadim@wxwidgets.org>
-* Licence:     wxWindows licence
-*/
+/*
+ * Name:        wx/chkconf.h
+ * Purpose:     check the config settings for consistency
+ * Author:      Vadim Zeitlin
+ * Modified by:
+ * Created:     09.08.00
+ * RCS-ID:      $Id: chkconf.h,v 1.106 2005/06/06 00:05:56 VZ Exp $
+ * Copyright:   (c) 2000 Vadim Zeitlin <vadim@wxwidgets.org>
+ * Licence:     wxWindows licence
+ */
 
 /* THIS IS A C FILE, DON'T USE C++ FEATURES (IN PARTICULAR COMMENTS) IN IT */
 
@@ -15,12 +15,16 @@
    Compiler-specific checking.
  */
 
-#if defined(__PALMOS__)
+#if defined(__WXPALMOS__)
 #  include "wx/palmos/chkconf.h"
+#elif defined(__WXWINCE__)
+#  include "wx/msw/wince/chkconf.h"
 #elif defined(__WXMSW__)
 #  include "wx/msw/chkconf.h"
 #elif defined(__WXMAC__)
 #  include "wx/mac/chkconf.h"
+#elif defined(__WXMOTIF__)
+#  include "wx/motif/chkconf.h"
 #endif
 
 /*
@@ -41,8 +45,39 @@
 #endif /* !defined(wxUSE_GUI) */
 
 /*
+    If we're compiling without support for threads/exceptions we have to
+    disable the corresponding features.
+ */
+#ifdef wxNO_THREADS
+#   undef wxUSE_THREADS
+#   define wxUSE_THREADS 0
+#endif /* wxNO_THREADS */
+
+#ifdef wxNO_EXCEPTIONS
+#   undef wxUSE_EXCEPTIONS
+#   define wxUSE_EXCEPTIONS 0
+#endif /* wxNO_EXCEPTIONS */
+
+/* we also must disable exceptions if compiler doesn't support them */
+#if defined(_MSC_VER) && !defined(_CPPUNWIND)
+#   undef wxUSE_EXCEPTIONS
+#   define wxUSE_EXCEPTIONS 0
+#endif /* VC++ without exceptions support */
+
+
+/*
    tests for non GUI features
  */
+
+#ifndef wxUSE_CRASHREPORT
+    /* this one is special: as currently it is Windows-only, don't force it
+       to be defined on other platforms */
+#   if defined(wxABORT_ON_CONFIG_ERROR) && defined(__WXMSW__)
+#       error "wxUSE_CRASHREPORT must be defined."
+#   else
+#       define wxUSE_CRASHREPORT 0
+#   endif
+#endif /* !defined(wxUSE_CRASHREPORT) */
 
 #ifndef wxUSE_DYNLIB_CLASS
 #   ifdef wxABORT_ON_CONFIG_ERROR
@@ -105,6 +140,14 @@
 #   endif
 #endif /* !defined(wxUSE_MIMETYPE) */
 
+#ifndef wxUSE_ON_FATAL_EXCEPTION
+#   ifdef wxABORT_ON_CONFIG_ERROR
+#       error "wxUSE_ON_FATAL_EXCEPTION must be defined."
+#   else
+#       define wxUSE_ON_FATAL_EXCEPTION 0
+#   endif
+#endif /* !defined(wxUSE_ON_FATAL_EXCEPTION) */
+
 #ifndef wxUSE_PROTOCOL
 #   ifdef wxABORT_ON_CONFIG_ERROR
 #       error "wxUSE_PROTOCOL must be defined."
@@ -154,6 +197,14 @@
 #       define wxUSE_REGEX 0
 #   endif
 #endif /* !defined(wxUSE_REGEX) */
+
+#ifndef wxUSE_STDPATHS
+#   ifdef wxABORT_ON_CONFIG_ERROR
+#       error "wxUSE_STDPATHS must be defined."
+#   else
+#       define wxUSE_STDPATHS 1
+#   endif
+#endif /* !defined(wxUSE_STDPATHS) */
 
 #ifndef wxUSE_XML
 #   ifdef wxABORT_ON_CONFIG_ERROR
@@ -340,6 +391,14 @@
 #       define wxUSE_DATAOBJ 0
 #   endif
 #endif /* !defined(wxUSE_DATAOBJ) */
+
+#ifndef wxUSE_DATEPICKCTRL
+#   ifdef wxABORT_ON_CONFIG_ERROR
+#       error "wxUSE_DATEPICKCTRL must be defined."
+#   else
+#       define wxUSE_DATEPICKCTRL 0
+#   endif
+#endif /* !defined(wxUSE_DATEPICKCTRL) */
 
 #ifndef wxUSE_DISPLAY
 #   ifdef wxABORT_ON_CONFIG_ERROR
@@ -768,6 +827,15 @@
    check consistency of the settings
  */
 
+#if wxUSE_CRASHREPORT && !wxUSE_ON_FATAL_EXCEPTION
+#   ifdef wxABORT_ON_CONFIG_ERROR
+#       error "wxUSE_CRASHREPORT requires wxUSE_ON_FATAL_EXCEPTION"
+#   else
+#       undef wxUSE_CRASHREPORT
+#       define wxUSE_CRASHREPORT 0
+#   endif
+#endif /* wxUSE_CRASHREPORT */
+
 #if wxUSE_PROTOCOL_FILE || wxUSE_PROTOCOL_FTP || wxUSE_PROTOCOL_HTTP
 #   if !wxUSE_PROTOCOL
 #        ifdef wxABORT_ON_CONFIG_ERROR
@@ -884,27 +952,6 @@
 #   endif
 #endif /* wxUSE_TEXTFILE */
 
-#if wxUSE_UNICODE_MSLU && !wxUSE_UNICODE
-#   ifdef wxABORT_ON_CONFIG_ERROR
-#       error "wxUSE_UNICODE_MSLU requires wxUSE_UNICODE"
-#   else
-#       undef wxUSE_UNICODE
-#       define wxUSE_UNICODE 1
-#   endif
-#endif /* wxUSE_UNICODE_MSLU */
-
-/* ODBC and Unicode are now compatible */
-
-#if 0 /* wxUSE_ODBC && wxUSE_UNICODE */
-#   ifdef wxABORT_ON_CONFIG_ERROR
-        /* (ODBC classes aren't Unicode-compatible yet) */
-#       error "wxUSE_ODBC can't be used with wxUSE_UNICODE"
-#   else
-#       undef wxUSE_ODBC
-#       define wxUSE_ODBC 0
-#   endif
-#endif /* wxUSE_ODBC */
-
 #if wxUSE_XML && !wxUSE_WCHAR_T
 #   ifdef wxABORT_ON_CONFIG_ERROR
 #       error "wxUSE_XML requires wxUSE_WCHAR_T"
@@ -912,7 +959,7 @@
 #       undef wxUSE_XML
 #       define wxUSE_XML 0
 #   endif
-#endif /* wxUSE_UNICODE_MSLU */
+#endif /* wxUSE_XML */
 
 #if !wxUSE_DYNLIB_CLASS
 #   if wxUSE_DYNAMIC_LOADER
@@ -923,6 +970,25 @@
 #       endif
 #   endif
 #endif  /* wxUSE_DYNLIB_CLASS */
+
+#if wxUSE_ZIPSTREAM
+#   if !wxUSE_ZLIB
+#       ifdef wxABORT_ON_CONFIG_ERROR
+#           error "wxZip requires wxZlib"
+#       else
+#           undef wxUSE_ZLIB
+#           define wxUSE_ZLIB 1
+#       endif
+#   endif
+#   if !wxUSE_ARCHIVE_STREAMS
+#       ifdef wxABORT_ON_CONFIG_ERROR
+#           error "wxZip requires wxArchive"
+#       else
+#           undef wxUSE_ARCHIVE_STREAMS
+#           define wxUSE_ARCHIVE_STREAMS 1
+#       endif
+#   endif
+#endif /* wxUSE_ZIPSTREAM */
 
 /* the rest of the tests is for the GUI settings only */
 #if wxUSE_GUI
@@ -1010,6 +1076,18 @@
 #       endif
 #   endif
 #endif /* wxUSE_CHOICEBOOK */
+
+/* don't attempt to use native status bar on the platforms not having it */
+#ifndef wxUSE_NATIVE_STATUSBAR
+#   define wxUSE_NATIVE_STATUSBAR 0
+#elif wxUSE_NATIVE_STATUSBAR
+#   if defined(__WXUNIVERSAL__) || !( defined(__WXMSW__) || \
+                                      defined(__WXMAC__) || \
+                                      defined(__WXPALMOS__) )
+#       undef wxUSE_NATIVE_STATUSBAR
+#       define wxUSE_NATIVE_STATUSBAR 0
+#   endif
+#endif
 
 /* wxUniv-specific dependencies */
 #if defined(__WXUNIVERSAL__)
@@ -1144,25 +1222,8 @@
 #           endif
 #       endif
 #   endif  /* wxUSE_DYNAMIC_LOADER */
-#endif /* wxMSW */
 
-/* wxMAC-specific dependencies */
-#ifdef __WXMAC__
-#   if wxUSE_UNICODE
-#       if !TARGET_CARBON
-#           ifdef wxABORT_ON_CONFIG_ERROR
-#               error "wxUSE_UNICODE is only supported for Carbon Targets."
-#           else
-#               define wxUSE_UNICODE 0
-#           endif
-#       endif
-#   endif
-#endif /* wxMAC */
-/* wxMotif-specific dependencies */
-#if defined(__WXMOTIF__) && wxUSE_NOTEBOOK && !wxUSE_TAB_DIALOG
-#  undef wxUSE_TAB_DIALOG
-#  define wxUSE_TAB_DIALOG 1
-#endif
+#endif /* wxMSW */
 
 /* wxMGL-specific dependencies */
 #ifdef __WXMGL__
@@ -1230,6 +1291,17 @@
 #   endif
 #endif /* wxUSE_CALENDARCTRL */
 
+#if wxUSE_DATEPICKCTRL
+#   if !wxUSE_DATETIME
+#       ifdef wxABORT_ON_CONFIG_ERROR
+#           error "wxDatePickerCtrl requires wxUSE_DATETIME"
+#       else
+#           undef wxUSE_DATETIME
+#           define wxUSE_DATETIME 1
+#       endif
+#   endif
+#endif /* wxUSE_DATEPICKCTRL */
+
 #if wxUSE_CHECKLISTBOX
 #   if !wxUSE_LISTBOX
 #        ifdef wxABORT_ON_CONFIG_ERROR
@@ -1273,7 +1345,7 @@
 #endif /* wxUSE_HELP */
 
 #if wxUSE_WXHTML_HELP
-#   if !wxUSE_HELP || !wxUSE_HTML || !wxUSE_COMBOBOX || !wxUSE_NOTEBOOK
+#   if !wxUSE_HELP || !wxUSE_HTML || !wxUSE_COMBOBOX || !wxUSE_NOTEBOOK || !wxUSE_SPINCTRL
 #       ifdef wxABORT_ON_CONFIG_ERROR
 #           error "Built in help controller can't be compiled"
 #       else
@@ -1285,6 +1357,8 @@
 #           define wxUSE_COMBOBOX 1
 #           undef wxUSE_NOTEBOOK
 #           define wxUSE_NOTEBOOK 1
+#           undef wxUSE_SPINCTRL
+#           define wxUSE_SPINCTRL 1
 #       endif
 #   endif
 #endif /* wxUSE_WXHTML_HELP */
@@ -1458,9 +1532,21 @@
 #   endif
 #endif /* wxUSE_FILEDLG */
 
+#if !wxUSE_GAUGE || !wxUSE_BUTTON
+#   if wxUSE_PROGRESSDLG && !defined(__WXPALMOS__)
+#       ifdef wxABORT_ON_CONFIG_ERROR
+#           error "Generic progress dialog requires wxUSE_GAUGE and wxUSE_BUTTON"
+#       else
+#           undef wxUSE_GAUGE
+#           undef wxUSE_BUTTON
+#           define wxUSE_GAUGE 1
+#           define wxUSE_BUTTON 1
+#       endif
+#   endif
+#endif /* !wxUSE_GAUGE */
+
 #if !wxUSE_BUTTON
-#   if wxUSE_PROGRESSDLG || \
-       wxUSE_FONTDLG || \
+#   if wxUSE_FONTDLG || \
        wxUSE_FILEDLG || \
        wxUSE_CHOICEDLG || \
        wxUSE_NUMBERDLG || \
@@ -1475,7 +1561,7 @@
 #           define wxUSE_BUTTON 1
 #       endif
 #   endif
-#endif /* wxUSE_PROGRESSDLG */
+#endif /* !wxUSE_BUTTON */
 
 #if !wxUSE_TOOLBAR
 #   if wxUSE_TOOLBAR_NATIVE
@@ -1519,13 +1605,19 @@
 #endif
 
 #if wxUSE_RADIOBOX
-#   if !wxUSE_RADIOBTN || !wxUSE_STATBOX
+#   if !wxUSE_RADIOBTN
 #        ifdef wxABORT_ON_CONFIG_ERROR
-#            error "wxUSE_RADIOBOX requires wxUSE_RADIOBTN and wxUSE_STATBOX"
+#            error "wxUSE_RADIOBOX requires wxUSE_RADIOBTN"
 #        else
 #            undef wxUSE_RADIOBTN
-#            undef wxUSE_STATBOX
 #            define wxUSE_RADIOBTN 1
+#        endif
+#   endif
+#   if !wxUSE_STATBOX && !defined(__WXPALMOS__)
+#        ifdef wxABORT_ON_CONFIG_ERROR
+#            error "wxUSE_RADIOBOX requires wxUSE_STATBOX"
+#        else
+#            undef wxUSE_STATBOX
 #            define wxUSE_STATBOX 1
 #        endif
 #   endif
@@ -1555,17 +1647,6 @@
 #    endif
 #endif /* wxUSE_LOG_DIALOG */
 
-/* I wonder if we shouldn't just remove all occurrences of
-   wxUSE_DYNAMIC_CLASSES from the sources? */
-#if !defined(wxUSE_DYNAMIC_CLASSES) || !wxUSE_DYNAMIC_CLASSES
-#   ifdef wxABORT_ON_CONFIG_ERROR
-#       error "wxUSE_DYNAMIC_CLASSES must be defined as 1"
-#   else
-#       undef wxUSE_DYNAMIC_CLASSES
-#       define wxUSE_DYNAMIC_CLASSES 1
-#   endif
-#endif /* wxUSE_DYNAMIC_CLASSES */
-
 #if wxUSE_CLIPBOARD && !wxUSE_DATAOBJ
 #   ifdef wxABORT_ON_CONFIG_ERROR
 #       error "wxClipboard requires wxDataObject"
@@ -1592,6 +1673,15 @@
 #       define wxUSE_XRC 0
 #   endif
 #endif /* wxUSE_XRC */
+
+#if wxUSE_SOCKETS && !wxUSE_STOPWATCH
+#   ifdef wxABORT_ON_CONFIG_ERROR
+#       error "wxUSE_SOCKETS requires wxUSE_STOPWATCH"
+#   else
+#       undef wxUSE_SOCKETS
+#       define wxUSE_SOCKETS 0
+#   endif
+#endif /* wxUSE_SOCKETS */
 
 #endif /* wxUSE_GUI */
 

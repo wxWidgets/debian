@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by: Dimitri Schoolwerth
 // Created:     25/10/98
-// RCS-ID:      $Id: notebook.h,v 1.15 2004/09/24 13:45:52 ABX Exp $
+// RCS-ID:      $Id: notebook.h,v 1.16 2004/11/23 11:44:31 ABX Exp $
 // Copyright:   (c) 1998-2002 wxWidgets team
 // License:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -60,7 +60,7 @@ public:
 
     void OnIdle(wxIdleEvent& event);
 
-    wxBookCtrl *GetCurrentBook();
+    wxBookCtrlBase *GetCurrentBook();
 
 private:
     wxLog *m_logTargetOld;

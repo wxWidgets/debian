@@ -114,7 +114,7 @@ Destroys the wxSplitterWindow and its children.
 
 \membersection{wxSplitterWindow::Create}\label{wxsplitterwindowcreate}
 
-\func{bool}{Create}{\param{wxWindow*}{ parent}, \param{wxWindowID}{ id}, \param{int }{x},\rtfsp
+\func{bool}{Create}{\param{wxWindow*}{ parent}, \param{wxWindowID}{ id}, \rtfsp
 \param{const wxPoint\& }{point = wxDefaultPosition}, \param{const wxSize\& }{size = wxDefaultSize},\rtfsp
 \param{long }{style=wxSP\_3D}, \param{const wxString\&}{ name = "splitterWindow"}}
 
@@ -130,6 +130,16 @@ Returns the current minimum pane size (defaults to zero).
 \wxheading{See also}
 
 \helpref{wxSplitterWindow::SetMinimumPaneSize}{wxsplitterwindowsetminimumpanesize}
+
+\membersection{wxSplitterWindow::GetSashGravity}\label{wxsplitterwindowgetsashgravity}
+
+\func{double}{GetSashGravity}{\void}
+
+Returns the current sash gravity.
+
+\wxheading{See also}
+
+\helpref{wxSplitterWindow::SetSashGravity}{wxsplitterwindowsetsashgravity}
 
 \membersection{wxSplitterWindow::GetSashPosition}\label{wxsplitterwindowgetsashposition}
 
@@ -168,7 +178,8 @@ Returns the right/bottom pane.
 
 \func{void}{Initialize}{\param{wxWindow* }{window}}
 
-Initializes the splitter window to have one pane.
+Initializes the splitter window to have one pane.  The child window is
+shown if it is currently hidden.
 
 \wxheading{Parameters}
 
@@ -269,6 +280,37 @@ may wish to do it yourself.
 \helpref{wxSplitterWindow::SplitVertically}{wxsplitterwindowsplitvertically}\\
 \helpref{wxSplitterWindow::SplitHorizontally}{wxsplitterwindowsplithorizontally}
 
+\membersection{wxSplitterWindow::SetSashGravity}\label{wxsplitterwindowsetsashgravity}
+
+\func{void}{SetSashGravity}{\param{double }{gravity}}
+
+Sets the sash gravity. 
+
+\wxheading{Parameters}
+
+\docparam{gravity}{The sash gravity. Value between 0.0 and 1.0.}
+
+
+\wxheading{Remarks}
+Gravity is real factor which controls position of sash while resizing wxSplitterWindow.
+Gravity tells wxSplitterWindow how much will left/top window grow while resizing.
+
+Example values:
+\begin{itemize}\itemsep=0pt
+\item{ 0.0  - only the bottom/right window is automaticaly resized}
+\item{ 0.5  - both windows grow by equal size}
+\item{ 1.0  - only left/top window grows}
+\end{itemize}
+
+Gravity should be real value betwwen 0.0 and 1.0.
+
+Default value of sash gravity is 0.0. That value is compatible with previous 
+(before gravity was introduced) behaviour of wxSplitterWindow.
+
+\wxheading{See also}
+
+\helpref{wxSplitterWindow::GetSashGravity}{wxsplitterwindowgetsashgravity}
+
 \membersection{wxSplitterWindow::SetSashPosition}\label{wxsplitterwindowsetsashposition}
 
 \func{void}{SetSashPosition}{\param{int }{position}, \param{const bool}{ redraw = true}}
@@ -288,6 +330,15 @@ Does not currently check for an out-of-range value.
 \wxheading{See also}
 
 \helpref{wxSplitterWindow::GetSashPosition}{wxsplitterwindowgetsashposition}
+
+\membersection{wxSplitterWindow::SetSashSize}\label{wxsplitterwindowsetsashsize}
+
+\func{void}{SetSashSize}{\param{int }{size}}
+
+Sets the sash size. Normally, the sash size is determined according to the metrics
+of each platform, but the application can override this, for example to show
+a thin sash that the user is not expected to drag. If {\it size} is more -1,
+the custom sash size will be used.
 
 \membersection{wxSplitterWindow::SetMinimumPaneSize}\label{wxsplitterwindowsetminimumpanesize}
 
@@ -335,7 +386,8 @@ Only sets the internal variable; does not update the display.
 \func{bool}{SplitHorizontally}{\param{wxWindow* }{window1}, \param{wxWindow* }{window2},
  \param{int}{ sashPosition = 0}}
 
-Initializes the top and bottom panes of the splitter window.
+Initializes the top and bottom panes of the splitter window.  The
+child windows are shown if they are currently hidden.
 
 \wxheading{Parameters}
 
@@ -368,7 +420,8 @@ window is not currently split using \helpref{IsSplit}{wxsplitterwindowissplit}.
 \func{bool}{SplitVertically}{\param{wxWindow* }{window1}, \param{wxWindow* }{window2},
  \param{int}{ sashPosition = 0}}
 
-Initializes the left and right panes of the splitter window.
+Initializes the left and right panes of the splitter window.  The
+child windows are shown if they are currently hidden.
 
 \wxheading{Parameters}
 

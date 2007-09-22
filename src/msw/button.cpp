@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     04/01/98
-// RCS-ID:      $Id: button.cpp,v 1.87 2004/08/30 14:36:12 VS Exp $
+// RCS-ID:      $Id: button.cpp,v 1.93 2005/05/22 22:53:11 VZ Exp $
 // Copyright:   (c) Julian Smart
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -41,6 +41,7 @@
 #endif
 
 #include "wx/stockitem.h"
+#include "wx/tokenzr.h"
 #include "wx/msw/private.h"
 
 // ----------------------------------------------------------------------------
@@ -131,7 +132,18 @@ bool wxButton::Create(wxWindow *parent,
 {
     wxString label(lbl);
     if (label.empty() && wxIsStockID(id))
-        label = wxGetStockLabel(id);
+    {
+        // On Windows, some buttons aren't supposed to have
+        // mnemonics, so strip them out.
+        
+        label = wxGetStockLabel(id 
+#if defined(__WXMSW__) || defined(__WXWINCE__)
+                                        , ( id != wxID_OK &&
+                                            id != wxID_CANCEL &&
+                                            id != wxID_CLOSE )
+#endif
+                                );
+     }
     
     if ( !CreateControl(parent, id, pos, size, style, validator, name) )
         return false;
@@ -204,17 +216,16 @@ WXDWORD wxButton::MSWGetStyle(long style, WXDWORD *exstyle) const
 
 wxSize wxButton::DoGetBestSize() const
 {
-    int wBtn;
-    GetTextExtent(wxGetWindowText(GetHWND()), &wBtn, NULL);
+    wxClientDC dc(wx_const_cast(wxButton *, this));
+    dc.SetFont(GetFont());
 
-    int wChar, hChar;
-    wxGetCharSize(GetHWND(), &wChar, &hChar, GetFont());
+    wxCoord wBtn,
+            hBtn;
+    dc.GetMultiLineTextExtent(GetLabel(), &wBtn, &hBtn);
 
     // add a margin -- the button is wider than just its label
-    wBtn += 3*wChar;
-
-    // the button height is proportional to the height of the font used
-    int hBtn = BUTTON_HEIGHT_FROM_CHAR_HEIGHT(hChar);
+    wBtn += 3*GetCharWidth();
+    hBtn = BUTTON_HEIGHT_FROM_CHAR_HEIGHT(hBtn);
 
     // all buttons have at least the standard size unless the user explicitly
     // wants them to be of smaller size and used wxBU_EXACTFIT style when
@@ -230,7 +241,9 @@ wxSize wxButton::DoGetBestSize() const
         return sz;
     }
 
-    return wxSize(wBtn, hBtn);
+    wxSize best(wBtn, hBtn);
+    CacheBestSize(best);
+    return best;
 }
 
 /* static */
@@ -484,8 +497,31 @@ static void DrawButtonText(HDC hdc,
     COLORREF colOld = SetTextColor(hdc, col);
     int modeOld = SetBkMode(hdc, TRANSPARENT);
 
-    // Note: we must have DT_SINGLELINE for DT_VCENTER to work.
-    ::DrawText(hdc, text, text.length(), pRect, DT_SINGLELINE | DT_CENTER | DT_VCENTER);
+    if ( text.find(_T('\n')) != wxString::npos )
+    {
+        // draw multiline label
+
+        // first we need to compute its bounding rect
+        RECT rc;
+        ::CopyRect(&rc, pRect);
+        ::DrawText(hdc, text, text.length(), &rc, DT_CENTER | DT_CALCRECT);
+
+        // now center this rect inside the entire button area
+        const LONG w = rc.right - rc.left;
+        const LONG h = rc.bottom - rc.top;
+        rc.left = (pRect->right - pRect->left)/2 - w/2;
+        rc.right = rc.left+w;
+        rc.top = (pRect->bottom - pRect->top)/2 - h/2;
+        rc.bottom = rc.top+h;
+
+        ::DrawText(hdc, text, text.length(), &rc, DT_CENTER);
+    }
+    else // single line label
+    {
+        // Note: we must have DT_SINGLELINE for DT_VCENTER to work.
+        ::DrawText(hdc, text, text.length(), pRect,
+                   DT_SINGLELINE | DT_CENTER | DT_VCENTER);
+    }
 
     SetBkMode(hdc, modeOld);
     SetTextColor(hdc, colOld);

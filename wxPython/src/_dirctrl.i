@@ -5,7 +5,7 @@
 // Author:      Robin Dunn
 //
 // Created:     10-June-1998
-// RCS-ID:      $Id: _dirctrl.i,v 1.8 2004/06/01 21:37:13 RD Exp $
+// RCS-ID:      $Id: _dirctrl.i,v 1.9 2004/12/23 20:43:53 RD Exp $
 // Copyright:   (c) 2002 by Total Control Software
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -70,7 +70,7 @@ public:
                      const wxString& filter = wxPyEmptyString,
                      int defaultFilter = 0,
                      const wxString& name = wxPyTreeCtrlNameStr);
-    %name(PreGenericDirCtrl)wxGenericDirCtrl();
+    %RenameCtor(PreGenericDirCtrl, wxGenericDirCtrl());
 
 
     bool Create(wxWindow *parent, const wxWindowID id = -1,
@@ -150,7 +150,7 @@ public:
                         const wxPoint& pos = wxDefaultPosition,
                         const wxSize& size = wxDefaultSize,
                         long style = 0);
-    %name(PreDirFilterListCtrl)wxDirFilterListCtrl();
+    %RenameCtor(PreDirFilterListCtrl, wxDirFilterListCtrl());
 
     bool Create(wxGenericDirCtrl* parent, const wxWindowID id = -1,
               const wxPoint& pos = wxDefaultPosition,

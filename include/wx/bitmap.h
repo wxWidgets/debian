@@ -4,7 +4,7 @@
 // Author:      Vaclav Slavik
 // Modified by:
 // Created:     22.04.01
-// RCS-ID:      $Id: bitmap.h,v 1.26 2004/10/19 13:39:02 JS Exp $
+// RCS-ID:      $Id: bitmap.h,v 1.29 2005/02/05 14:17:21 RR Exp $
 // Copyright:   (c) wxWidgets team
 // Licence:     wxWindows licence
 ///////////////////////////////////////////////////////////////////////////////
@@ -34,6 +34,7 @@ class WXDLLEXPORT wxPalette;
 
 #if defined(__WXMGL__) || \
     defined(__WXMAC__) || \
+    defined(__WXGTK__) || \
     defined(__WXCOCOA__) || \
     defined(__WXMOTIF__) || \
     defined(__WXX11__)
@@ -63,18 +64,19 @@ public:
     virtual bool SaveFile(const wxBitmap *bitmap, const wxString& name,
                           int type, const wxPalette *palette = NULL) = 0;
 
-    void SetName(const wxString& name) { m_name = name; }
-    void SetExtension(const wxString& ext) { m_extension = ext; }
-    void SetType(wxBitmapType type) { m_type = type; }
-    wxString GetName() const { return m_name; }
-    wxString GetExtension() const { return m_extension; }
-    wxBitmapType GetType() const { return m_type; }
+    void SetName(const wxString& name)      { m_name = name; }
+    void SetExtension(const wxString& ext)  { m_extension = ext; }
+    void SetType(wxBitmapType type)         { m_type = type; }
+    wxString GetName() const                { return m_name; }
+    wxString GetExtension() const           { return m_extension; }
+    wxBitmapType GetType() const            { return m_type; }
 
-protected:
+private:
     wxString      m_name;
     wxString      m_extension;
     wxBitmapType  m_type;
 
+private:
     DECLARE_ABSTRACT_CLASS(wxBitmapHandlerBase)
 };
 
@@ -163,7 +165,7 @@ protected:
 };
 #endif
 
-#if defined(__PALMOS__)
+#if defined(__WXPALMOS__)
 #include "wx/palmos/bitmap.h"
 #elif defined(__WXMSW__)
 #include "wx/msw/bitmap.h"

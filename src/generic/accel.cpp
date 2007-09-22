@@ -3,7 +3,7 @@
 // Purpose:     generic implementation of wxAcceleratorTable class
 // Author:      Robert Roebling
 // Modified:    VZ pn 31.05.01: use typed lists, Unicode cleanup, Add/Remove
-// Id:          $Id: accel.cpp,v 1.11 2004/11/05 21:11:11 ABX Exp $
+// Id:          $Id: accel.cpp,v 1.12 2004/12/10 16:20:13 ABX Exp $
 // Copyright:   (c) 1998 Robert Roebling
 // Licence:     wxWindows licence
 ///////////////////////////////////////////////////////////////////////////////
@@ -139,7 +139,11 @@ void wxAcceleratorTable::Remove(const wxAcceleratorEntry& entry)
     {
         const wxAcceleratorEntry *entryCur = node->GetData();
 
-        if ( *entryCur == entry )
+        // given entry contains only the information of the accelerator key
+        // because it was set that way in wxGetAccelFromString()
+        // so do not perform full ( *entryCur == entry ) comparison
+        if ((entryCur->GetKeyCode() == entry.GetKeyCode()) &&
+            (entryCur->GetFlags() == entry.GetFlags()))
         {
             delete node->GetData();
             M_ACCELDATA->m_accels.Erase(node);

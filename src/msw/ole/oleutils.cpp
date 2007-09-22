@@ -4,7 +4,7 @@
 // Author:      Vadim Zeitlin
 // Modified by:
 // Created:     19.02.98
-// RCS-ID:      $Id: oleutils.cpp,v 1.23 2004/08/16 12:45:46 ABX Exp $
+// RCS-ID:      $Id: oleutils.cpp,v 1.24 2005/04/14 15:07:17 ABX Exp $
 // Copyright:   (c) 1998 Vadim Zeitlin <zeitlin@dptmaths.ens-cachan.fr>
 // Licence:     wxWindows licence
 ///////////////////////////////////////////////////////////////////////////////
@@ -223,7 +223,7 @@ void wxLogRelease(const char *szInterface, ULONG cRef)
   wxLogTrace("After %s::Release: m_cRef = %d", szInterface, cRef - 1);
 }
 
-#endif  //WXDEBUG
+#endif  // __WXDEBUG__
 
 #endif
   // wxUSE_DRAG_AND_DROP

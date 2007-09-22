@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     04/01/98
-// RCS-ID:      $Id: clipbrd.cpp,v 1.62 2004/08/20 12:03:08 ABX Exp $
+// RCS-ID:      $Id: clipbrd.cpp,v 1.64 2005/03/11 11:49:44 VZ Exp $
 // Copyright:   (c) Julian Smart
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -26,10 +26,6 @@
 
 #ifdef __BORLANDC__
     #pragma hdrstop
-#endif
-
-#ifndef WX_PRECOMP
-    #include "wx/setup.h"
 #endif
 
 #if wxUSE_CLIPBOARD
@@ -54,9 +50,10 @@
 #include <string.h>
 
 #include "wx/msw/private.h"
+#include "wx/msw/ole/oleutils.h"
 
 #if wxUSE_WXDIB
-#include "wx/msw/dib.h"
+    #include "wx/msw/dib.h"
 #endif
 
 // wxDataObject is tied to OLE/drag and drop implementation, therefore so are
@@ -534,6 +531,10 @@ IMPLEMENT_DYNAMIC_CLASS(wxClipboard, wxObject)
 
 wxClipboard::wxClipboard()
 {
+#if wxUSE_OLE_CLIPBOARD
+    wxOleInitialize();
+#endif
+
     m_clearOnExit = false;
     m_isOpened = false;
 }
@@ -544,24 +545,30 @@ wxClipboard::~wxClipboard()
     {
         Clear();
     }
+
+#if wxUSE_OLE_CLIPBOARD
+    wxOleUninitialize();
+#endif
 }
 
 void wxClipboard::Clear()
 {
 #if wxUSE_OLE_CLIPBOARD
-    if ( FAILED(OleSetClipboard(NULL)) )
+    HRESULT hr = OleSetClipboard(NULL);
+    if ( FAILED(hr) )
     {
-        wxLogLastError(wxT("OleSetClipboard(NULL)"));
+        wxLogApiError(wxT("OleSetClipboard(NULL)"), hr);
     }
-#endif
+#endif // wxUSE_OLE_CLIPBOARD
 }
 
 bool wxClipboard::Flush()
 {
 #if wxUSE_OLE_CLIPBOARD
-    if ( FAILED(OleFlushClipboard()) )
+    HRESULT hr = OleFlushClipboard();
+    if ( FAILED(hr) )
     {
-        wxLogLastError(wxT("OleFlushClipboard"));
+        wxLogApiError(wxT("OleFlushClipboard"), hr);
 
         return false;
     }

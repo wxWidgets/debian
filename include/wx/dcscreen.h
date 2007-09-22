@@ -1,7 +1,18 @@
+/////////////////////////////////////////////////////////////////////////////
+// Name:        wx/dcscreen.h
+// Purpose:     wxScreenDC base header
+// Author:      Julian Smart
+// Modified by:
+// Created:
+// Copyright:   (c) Julian Smart
+// RCS-ID:      $Id: dcscreen.h,v 1.13 2005/05/04 18:51:56 JS Exp $
+// Licence:     wxWindows Licence
+/////////////////////////////////////////////////////////////////////////////
+
 #ifndef _WX_DCSCREEN_H_BASE_
 #define _WX_DCSCREEN_H_BASE_
 
-#if defined(__PALMOS__)
+#if defined(__WXPALMOS__)
 #include "wx/palmos/dcscreen.h"
 #elif defined(__WXMSW__)
 #include "wx/msw/dcscreen.h"

@@ -1,10 +1,10 @@
 /////////////////////////////////////////////////////////////////////////////
 // Name:        samples/console/console.cpp
-// Purpose:     a sample console (as opposed to GUI) progam using wxWidgets
+// Purpose:     A sample console (as opposed to GUI) program using wxWidgets
 // Author:      Vadim Zeitlin
 // Modified by:
 // Created:     04.10.99
-// RCS-ID:      $Id: console.cpp,v 1.180 2004/11/10 21:02:09 VZ Exp $
+// RCS-ID:      $Id: console.cpp,v 1.190 2005/05/31 09:19:03 JS Exp $
 // Copyright:   (c) 1999 Vadim Zeitlin <zeitlin@dptmaths.ens-cachan.fr>
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -61,10 +61,7 @@
     #define TEST_FILENAME
     #define TEST_FILETIME
  //   #define TEST_FTP  --FIXME! (RN)
-    #define TEST_HASHMAP
-    #define TEST_HASHSET
     #define TEST_INFO_FUNCTIONS
-    #define TEST_LIST
     #define TEST_LOCALE
     #define TEST_LOG
     #define TEST_MIME
@@ -77,6 +74,7 @@
     #define TEST_SCOPEGUARD
     #define TEST_SNGLINST
 //    #define TEST_SOCKETS  --FIXME! (RN)
+    #define TEST_STACKWALKER
     #define TEST_STDPATHS
     #define TEST_STREAMS
     #define TEST_TEXTSTREAM
@@ -87,7 +85,7 @@
     #define TEST_WCHAR
     #define TEST_ZIP
 #else // #if TEST_ALL
-    #define TEST_STDPATHS
+    #define TEST_STACKWALKER
 #endif
 
 // some tests are interactive, define this to run them
@@ -98,33 +96,6 @@
 #else
     #define TEST_INTERACTIVE 0
 #endif
-
-// ----------------------------------------------------------------------------
-// test class for container objects
-// ----------------------------------------------------------------------------
-
-#if defined(TEST_LIST)
-
-class Bar // Foo is already taken in the hash test
-{
-public:
-    Bar(const wxString& name) : m_name(name) { ms_bars++; }
-    Bar(const Bar& bar) : m_name(bar.m_name) { ms_bars++; }
-   ~Bar() { ms_bars--; }
-
-   static size_t GetNumber() { return ms_bars; }
-
-   const wxChar *GetName() const { return m_name; }
-
-private:
-   wxString m_name;
-
-   static size_t ms_bars;
-};
-
-size_t Bar::ms_bars = 0;
-
-#endif // defined(TEST_LIST)
 
 // ============================================================================
 // implementation
@@ -412,13 +383,13 @@ static void TestDllLoad()
     static const wxChar *FUNC_NAME = _T("lstrlenA");
 #elif defined(__UNIX__)
     // weird: using just libc.so does *not* work!
-    static const wxChar *LIB_NAME = _T("/lib/libc-2.0.7.so");
+    static const wxChar *LIB_NAME = _T("/lib/libc.so.6");
     static const wxChar *FUNC_NAME = _T("strlen");
 #else
     #error "don't know how to test wxDllLoader on this platform"
 #endif
 
-    wxPuts(_T("*** testing wxDllLoader ***\n"));
+    wxPuts(_T("*** testing basic wxDynamicLibrary functions ***\n"));
 
     wxDynamicLibrary lib(LIB_NAME);
     if ( !lib.IsLoaded() )
@@ -436,6 +407,9 @@ static void TestDllLoad()
         }
         else
         {
+            wxPrintf(_T("Calling %s dynamically loaded from %s "),
+                     FUNC_NAME, LIB_NAME);
+
             if ( pfnStrlen("foo") != 3 )
             {
                 wxPrintf(_T("ERROR: loaded function is not wxStrlen()!\n"));
@@ -447,6 +421,34 @@ static void TestDllLoad()
         }
     }
 }
+
+#if defined(__WXMSW__) || defined(__UNIX__)
+
+static void TestDllListLoaded()
+{
+    wxPuts(_T("*** testing wxDynamicLibrary::ListLoaded() ***\n"));
+
+    puts("\nLoaded modules:");
+    wxDynamicLibraryDetailsArray dlls = wxDynamicLibrary::ListLoaded();
+    const size_t count = dlls.GetCount();
+    for ( size_t n = 0; n < count; ++n )
+    {
+        const wxDynamicLibraryDetails& details = dlls[n];
+        printf("%-45s", details.GetPath().mb_str());
+
+        void *addr;
+        size_t len;
+        if ( details.GetAddress(&addr, &len) )
+        {
+            printf(" %08lx:%08lx",
+                   (unsigned long)addr, (unsigned long)((char *)addr + len));
+        }
+
+        printf(" %s\n", details.GetVersion().mb_str());
+    }
+}
+
+#endif
 
 #endif // TEST_DLLLOADER
 
@@ -839,70 +841,6 @@ static void TestFileNameTemp()
     }
 }
 
-static void TestFileNameMakeRelative()
-{
-    wxPuts(_T("*** testing wxFileName::MakeRelativeTo() ***"));
-
-    for ( size_t n = 0; n < WXSIZEOF(filenames); n++ )
-    {
-        const FileNameInfo& fni = filenames[n];
-
-        wxFileName fn(fni.fullname, fni.format);
-
-        // choose the base dir of the same format
-        wxString base;
-        switch ( fni.format )
-        {
-            case wxPATH_UNIX:
-                base = _T("/usr/bin/");
-                break;
-
-            case wxPATH_DOS:
-                base = _T("c:\\");
-                break;
-
-            case wxPATH_MAC:
-            case wxPATH_VMS:
-                // TODO: I don't know how this is supposed to work there
-                continue;
-
-            case wxPATH_NATIVE: // make gcc happy
-            default:
-                wxFAIL_MSG( _T("unexpected path format") );
-        }
-
-        wxPrintf(_T("'%s' relative to '%s': "),
-               fn.GetFullPath(fni.format).c_str(), base.c_str());
-
-        if ( !fn.MakeRelativeTo(base, fni.format) )
-        {
-            wxPuts(_T("unchanged"));
-        }
-        else
-        {
-            wxPrintf(_T("'%s'\n"), fn.GetFullPath(fni.format).c_str());
-        }
-    }
-}
-
-static void TestFileNameMakeAbsolute()
-{
-    wxPuts(_T("*** testing wxFileName::MakeAbsolute() ***"));
-
-    for ( size_t n = 0; n < WXSIZEOF(filenames); n++ )
-    {
-        const FileNameInfo& fni = filenames[n];
-        wxFileName fn(fni.fullname, fni.format);
-
-        wxPrintf(_T("'%s' absolutized: "),
-               fn.GetFullPath(fni.format).c_str());
-        fn.MakeAbsolute();
-        wxPrintf(_T("'%s'\n"), fn.GetFullPath(fni.format).c_str());
-    }
-
-    wxPuts(wxEmptyString);
-}
-
 static void TestFileNameDirManip()
 {
     // TODO: test AppendDir(), RemoveDir(), ...
@@ -967,386 +905,6 @@ static void TestFileSetTimes()
 #endif
 
 #endif // TEST_FILETIME
-
-// ----------------------------------------------------------------------------
-// wxHashMap
-// ----------------------------------------------------------------------------
-
-#ifdef TEST_HASHMAP
-
-#include "wx/hashmap.h"
-
-// test compilation of basic map types
-WX_DECLARE_HASH_MAP( int*, int*, wxPointerHash, wxPointerEqual, myPtrHashMap );
-WX_DECLARE_HASH_MAP( long, long, wxIntegerHash, wxIntegerEqual, myLongHashMap );
-WX_DECLARE_HASH_MAP( unsigned long, unsigned, wxIntegerHash, wxIntegerEqual,
-                     myUnsignedHashMap );
-WX_DECLARE_HASH_MAP( unsigned int, unsigned, wxIntegerHash, wxIntegerEqual,
-                     myTestHashMap1 );
-WX_DECLARE_HASH_MAP( int, unsigned, wxIntegerHash, wxIntegerEqual,
-                     myTestHashMap2 );
-WX_DECLARE_HASH_MAP( short, unsigned, wxIntegerHash, wxIntegerEqual,
-                     myTestHashMap3 );
-WX_DECLARE_HASH_MAP( unsigned short, unsigned, wxIntegerHash, wxIntegerEqual,
-                     myTestHashMap4 );
-
-// same as:
-// WX_DECLARE_HASH_MAP( wxString, wxString, wxStringHash, wxStringEqual,
-//                      myStringHashMap );
-WX_DECLARE_STRING_HASH_MAP(wxString, myStringHashMap);
-
-typedef myStringHashMap::iterator Itor;
-
-static void TestHashMap()
-{
-    wxPuts(_T("*** Testing wxHashMap ***\n"));
-    myStringHashMap sh(0); // as small as possible
-    wxString buf;
-    size_t i;
-    const size_t count = 10000;
-
-    // init with some data
-    for( i = 0; i < count; ++i )
-    {
-        buf.Printf(wxT("%d"), i );
-        sh[buf] = wxT("A") + buf + wxT("C");
-    }
-
-    // test that insertion worked
-    if( sh.size() != count )
-    {
-        wxPrintf(_T("*** ERROR: %u ELEMENTS, SHOULD BE %u ***\n"), sh.size(), count);
-    }
-
-    for( i = 0; i < count; ++i )
-    {
-        buf.Printf(wxT("%d"), i );
-        if( sh[buf] != wxT("A") + buf + wxT("C") )
-        {
-            wxPrintf(_T("*** ERROR INSERTION BROKEN! STOPPING NOW! ***\n"));
-            return;
-        }
-    }
-
-    // check that iterators work
-    Itor it;
-    for( i = 0, it = sh.begin(); it != sh.end(); ++it, ++i )
-    {
-        if( i == count )
-        {
-            wxPrintf(_T("*** ERROR ITERATORS DO NOT TERMINATE! STOPPING NOW! ***\n"));
-            return;
-        }
-
-        if( it->second != sh[it->first] )
-        {
-            wxPrintf(_T("*** ERROR ITERATORS BROKEN! STOPPING NOW! ***\n"));
-            return;
-        }
-    }
-
-    if( sh.size() != i )
-    {
-        wxPrintf(_T("*** ERROR: %u ELEMENTS ITERATED, SHOULD BE %u ***\n"), i, count);
-    }
-
-    // test copy ctor, assignment operator
-    myStringHashMap h1( sh ), h2( 0 );
-    h2 = sh;
-
-    for( i = 0, it = sh.begin(); it != sh.end(); ++it, ++i )
-    {
-        if( h1[it->first] != it->second )
-        {
-            wxPrintf(_T("*** ERROR: COPY CTOR BROKEN %s ***\n"), it->first.c_str());
-        }
-
-        if( h2[it->first] != it->second )
-        {
-            wxPrintf(_T("*** ERROR: OPERATOR= BROKEN %s ***\n"), it->first.c_str());
-        }
-    }
-
-    // other tests
-    for( i = 0; i < count; ++i )
-    {
-        buf.Printf(wxT("%d"), i );
-        size_t sz = sh.size();
-
-        // test find() and erase(it)
-        if( i < 100 )
-        {
-            it = sh.find( buf );
-            if( it != sh.end() )
-            {
-                sh.erase( it );
-
-                if( sh.find( buf ) != sh.end() )
-                {
-                    wxPrintf(_T("*** ERROR: FOUND DELETED ELEMENT %u ***\n"), i);
-                }
-            }
-            else
-                wxPrintf(_T("*** ERROR: CANT FIND ELEMENT %u ***\n"), i);
-        }
-        else
-        // test erase(key)
-        {
-            size_t c = sh.erase( buf );
-            if( c != 1 )
-                wxPrintf(_T("*** ERROR: SHOULD RETURN 1 ***\n"));
-
-            if( sh.find( buf ) != sh.end() )
-            {
-                wxPrintf(_T("*** ERROR: FOUND DELETED ELEMENT %u ***\n"), i);
-            }
-        }
-
-        // count should decrease
-        if( sh.size() != sz - 1 )
-        {
-            wxPrintf(_T("*** ERROR: COUNT DID NOT DECREASE ***\n"));
-        }
-    }
-
-    wxPrintf(_T("*** Finished testing wxHashMap ***\n"));
-}
-
-#endif // TEST_HASHMAP
-
-// ----------------------------------------------------------------------------
-// wxHashSet
-// ----------------------------------------------------------------------------
-
-#ifdef TEST_HASHSET
-
-#include "wx/hashset.h"
-
-// test compilation of basic map types
-WX_DECLARE_HASH_SET( int*, wxPointerHash, wxPointerEqual, myPtrHashSet );
-WX_DECLARE_HASH_SET( long, wxIntegerHash, wxIntegerEqual, myLongHashSet );
-WX_DECLARE_HASH_SET( unsigned long, wxIntegerHash, wxIntegerEqual,
-                     myUnsignedHashSet );
-WX_DECLARE_HASH_SET( unsigned int, wxIntegerHash, wxIntegerEqual,
-                     myTestHashSet1 );
-WX_DECLARE_HASH_SET( int, wxIntegerHash, wxIntegerEqual,
-                     myTestHashSet2 );
-WX_DECLARE_HASH_SET( short, wxIntegerHash, wxIntegerEqual,
-                     myTestHashSet3 );
-WX_DECLARE_HASH_SET( unsigned short, wxIntegerHash, wxIntegerEqual,
-                     myTestHashSet4 );
-WX_DECLARE_HASH_SET( wxString, wxStringHash, wxStringEqual,
-                     myTestHashSet5 );
-
-struct MyStruct
-{
-    int* ptr;
-    wxString str;
-};
-
-class MyHash
-{
-public:
-    unsigned long operator()(const MyStruct& s) const
-        { return m_dummy(s.ptr); }
-    MyHash& operator=(const MyHash&) { return *this; }
-private:
-    wxPointerHash m_dummy;
-};
-
-class MyEqual
-{
-public:
-    bool operator()(const MyStruct& s1, const MyStruct& s2) const
-        { return s1.ptr == s2.ptr; }
-    MyEqual& operator=(const MyEqual&) { return *this; }
-};
-
-WX_DECLARE_HASH_SET( MyStruct, MyHash, MyEqual, mySet );
-
-typedef myTestHashSet5 wxStringHashSet;
-
-static void TestHashSet()
-{
-    wxPrintf(_T("*** Testing wxHashSet ***\n"));
-
-    wxStringHashSet set1;
-
-    set1.insert( _T("abc") );
-    set1.insert( _T("bbc") );
-    set1.insert( _T("cbc") );
-    set1.insert( _T("abc") );
-
-    if( set1.size() != 3 )
-        wxPrintf(_T("*** ERROR IN INSERT ***\n"));
-
-    mySet set2;
-    int dummy;
-    MyStruct tmp;
-
-    tmp.ptr = &dummy; tmp.str = _T("ABC");
-    set2.insert( tmp );
-    tmp.ptr = &dummy + 1;
-    set2.insert( tmp );
-    tmp.ptr = &dummy; tmp.str = _T("CDE");
-    set2.insert( tmp );
-
-    if( set2.size() != 2 )
-        wxPrintf(_T("*** ERROR IN INSERT - 2 ***\n"));
-
-    mySet::iterator it = set2.find( tmp );
-
-    if( it == set2.end() )
-        wxPrintf(_T("*** ERROR IN FIND - 1 ***\n"));
-    if( it->ptr != &dummy )
-        wxPrintf(_T("*** ERROR IN FIND - 2 ***\n"));
-    if( it->str != _T("ABC") )
-        wxPrintf(_T("*** ERROR IN INSERT - 3 ***\n"));
-
-    wxPrintf(_T("*** Finished testing wxHashSet ***\n"));
-}
-
-#endif // TEST_HASHSET
-
-// ----------------------------------------------------------------------------
-// wxList
-// ----------------------------------------------------------------------------
-
-#ifdef TEST_LIST
-
-#include "wx/list.h"
-
-WX_DECLARE_LIST(Bar, wxListBars);
-#include "wx/listimpl.cpp"
-WX_DEFINE_LIST(wxListBars);
-
-WX_DECLARE_LIST(int, wxListInt);
-WX_DEFINE_LIST(wxListInt);
-
-static void TestList()
-{
-    wxPuts(_T("*** Testing wxList operations ***\n"));
-    {
-        wxListInt list1;
-        int dummy[5];
-        int i;
-
-        for ( i = 0; i < 5; ++i )
-            list1.Append(dummy + i);
-
-        if ( list1.GetCount() != 5 )
-            wxPuts(_T("Wrong number of items in list\n"));
-
-        if ( list1.Item(3)->GetData() != dummy + 3 )
-            wxPuts(_T("Error in Item()\n"));
-
-        if ( !list1.Find(dummy + 4) )
-            wxPuts(_T("Error in Find()\n"));
-
-        wxListInt::compatibility_iterator node = list1.GetFirst();
-        i = 0;
-
-        while (node)
-        {
-            if ( node->GetData() != dummy + i )
-                wxPuts(_T("Error in compatibility_iterator\n"));
-            node = node->GetNext();
-            ++i;
-        }
-
-        if ( size_t(i) != list1.GetCount() )
-            wxPuts(_T("Error in compatibility_iterator\n"));
-
-        list1.Insert(dummy + 0);
-        list1.Insert(1, dummy + 1);
-        list1.Insert(list1.GetFirst()->GetNext()->GetNext(), dummy + 2);
-
-        node = list1.GetFirst();
-        i = 0;
-
-        while (i < 3)
-        {
-            int* t = node->GetData();
-            if ( t != dummy + i )
-                wxPuts(_T("Error in Insert\n"));
-            node = node->GetNext();
-            ++i;
-        }
-    }
-
-    wxPuts(_T("*** Testing wxList operations finished ***\n"));
-
-    wxPuts(_T("*** Testing std::list operations ***\n"));
-
-    {
-        wxListInt list1;
-        wxListInt::iterator it, en;
-        wxListInt::reverse_iterator rit, ren;
-        int i;
-        for ( i = 0; i < 5; ++i )
-            list1.push_back(i + &i);
-
-        for ( it = list1.begin(), en = list1.end(), i = 0;
-              it != en; ++it, ++i )
-            if ( *it != i + &i )
-                wxPuts(_T("Error in iterator\n"));
-
-        for ( rit = list1.rbegin(), ren = list1.rend(), i = 4;
-              rit != ren; ++rit, --i )
-            if ( *rit != i + &i )
-                wxPuts(_T("Error in reverse_iterator\n"));
-
-        if ( *list1.rbegin() != *--list1.end() ||
-             *list1.begin() != *--list1.rend() )
-            wxPuts(_T("Error in iterator/reverse_iterator\n"));
-        if ( *list1.begin() != *--++list1.begin() ||
-             *list1.rbegin() != *--++list1.rbegin() )
-            wxPuts(_T("Error in iterator/reverse_iterator\n"));
-
-        if ( list1.front() != &i || list1.back() != &i + 4 )
-            wxPuts(_T("Error in front()/back()\n"));
-
-        list1.erase(list1.begin());
-        list1.erase(--list1.end());
-
-        for ( it = list1.begin(), en = list1.end(), i = 1;
-              it != en; ++it, ++i )
-            if ( *it != i + &i )
-                wxPuts(_T("Error in erase()\n"));
-    }
-
-    wxPuts(_T("*** Testing std::list operations finished ***\n"));
-}
-
-static void TestListCtor()
-{
-    wxPuts(_T("*** Testing wxList construction ***\n"));
-
-    {
-        wxListBars list1;
-        list1.Append(new Bar(_T("first")));
-        list1.Append(new Bar(_T("second")));
-
-        wxPrintf(_T("After 1st list creation: %u objects in the list, %u objects total.\n"),
-               list1.GetCount(), Bar::GetNumber());
-
-        wxListBars list2;
-        list2 = list1;
-
-        wxPrintf(_T("After 2nd list creation: %u and %u objects in the lists, %u objects total.\n"),
-               list1.GetCount(), list2.GetCount(), Bar::GetNumber());
-
-#if !wxUSE_STL
-        list1.DeleteContents(true);
-#else
-        WX_CLEAR_LIST(wxListBars, list1);
-#endif
-    }
-
-    wxPrintf(_T("After list destruction: %u objects left.\n"), Bar::GetNumber());
-}
-
-#endif // TEST_LIST
 
 // ----------------------------------------------------------------------------
 // wxLocale
@@ -3009,6 +2567,75 @@ static void TestFtpUpload()
 #endif // TEST_FTP
 
 // ----------------------------------------------------------------------------
+// stack backtrace
+// ----------------------------------------------------------------------------
+
+#ifdef TEST_STACKWALKER
+
+#if wxUSE_STACKWALKER
+
+#include "wx/stackwalk.h"
+
+class StackDump : public wxStackWalker
+{
+public:
+    StackDump(const char *argv0)
+        : wxStackWalker(argv0)
+    {
+    }
+
+    virtual void Walk(size_t skip = 1)
+    {
+        wxPuts(_T("Stack dump:"));
+
+        wxStackWalker::Walk(skip);
+    }
+
+protected:
+    virtual void OnStackFrame(const wxStackFrame& frame)
+    {
+        printf("[%2d] ", frame.GetLevel());
+
+        wxString name = frame.GetName();
+        if ( !name.empty() )
+        {
+            printf("%-20.40s", name.mb_str());
+        }
+        else
+        {
+            printf("0x%08lx", (unsigned long)frame.GetAddress());
+        }
+
+        if ( frame.HasSourceLocation() )
+        {
+            printf("\t%s:%d",
+                   frame.GetFileName().mb_str(),
+                   frame.GetLine());
+        }
+
+        puts("");
+
+        wxString type, val;
+        for ( size_t n = 0; frame.GetParam(n, &type, &name, &val); n++ )
+        {
+            printf("\t%s %s = %s\n", type.mb_str(), name.mb_str(), val.mb_str());
+        }
+    }
+};
+
+static void TestStackWalk(const char *argv0)
+{
+    wxPuts(_T("*** Testing wxStackWalker ***\n"));
+
+    StackDump dump(argv0);
+    dump.Walk();
+}
+
+#endif // wxUSE_STACKWALKER
+
+#endif // TEST_STACKWALKER
+
+// ----------------------------------------------------------------------------
 // standard paths
 // ----------------------------------------------------------------------------
 
@@ -3022,7 +2649,7 @@ static void TestStandardPaths()
 
     wxTheApp->SetAppName(_T("console"));
 
-    wxStandardPaths& stdp = wxStandardPaths::Get();
+    wxStandardPathsBase& stdp = wxStandardPaths::Get();
     wxPrintf(_T("Config dir (sys):\t%s\n"), stdp.GetConfigDir().c_str());
     wxPrintf(_T("Config dir (user):\t%s\n"), stdp.GetUserConfigDir().c_str());
     wxPrintf(_T("Data dir (sys):\t\t%s\n"), stdp.GetDataDir().c_str());
@@ -3107,7 +2734,7 @@ static void TestMemoryStream()
 
 #ifdef TEST_TIMER
 
-#include "wx/timer.h"
+#include "wx/stopwatch.h"
 #include "wx/utils.h"
 
 static void TestStopWatch()
@@ -3368,7 +2995,7 @@ static void TestVCardRead()
 
         wxPrintf(_T("Full name from wxVCard API: %s\n"), value.c_str());
 
-        // now show how to deal with multiply occuring properties
+        // now show how to deal with multiply occurring properties
         DumpVCardAddresses(vcard);
         DumpVCardPhoneNumbers(vcard);
 
@@ -3670,8 +3297,7 @@ static void TestZipFileSystem()
 
 #ifdef TEST_DATETIME
 
-#include <math.h>
-
+#include "wx/math.h"
 #include "wx/datetime.h"
 
 // this test miscellaneous static wxDateTime functions
@@ -4388,6 +4014,24 @@ static void TestSemaphore()
 
 int main(int argc, char **argv)
 {
+#if wxUSE_UNICODE
+    wxChar **wxArgv = new wxChar *[argc + 1];
+
+    {
+        int n;
+
+        for (n = 0; n < argc; n++ )
+        {
+            wxMB2WXbuf warg = wxConvertMB2WX(argv[n]);
+            wxArgv[n] = wxStrdup(warg);
+        }
+
+        wxArgv[n] = NULL;
+    }
+#else // !wxUSE_UNICODE
+    #define wxArgv argv
+#endif // wxUSE_UNICODE/!wxUSE_UNICODE
+
     wxApp::CheckBuildOptions(WX_BUILD_OPTIONS_SIGNATURE, "program");
 
     wxInitializer initializer;
@@ -4443,34 +4087,7 @@ int main(int argc, char **argv)
         { wxCMD_LINE_NONE }
     };
 
-#if wxUSE_UNICODE
-    wxChar **wargv = new wxChar *[argc + 1];
-
-    {
-        int n;
-
-        for (n = 0; n < argc; n++ )
-        {
-            wxMB2WXbuf warg = wxConvertMB2WX(argv[n]);
-            wargv[n] = wxStrdup(warg);
-        }
-
-        wargv[n] = NULL;
-    }
-
-    #define argv wargv
-#endif // wxUSE_UNICODE
-
-    wxCmdLineParser parser(cmdLineDesc, argc, argv);
-
-#if wxUSE_UNICODE
-    {
-        for ( int n = 0; n < argc; n++ )
-            free(wargv[n]);
-
-        delete [] wargv;
-    }
-#endif // wxUSE_UNICODE
+    wxCmdLineParser parser(cmdLineDesc, argc, wxArgv);
 
     parser.AddOption(_T("project_name"), _T(""), _T("full path to project file"),
                      wxCMD_LINE_VAL_STRING,
@@ -4504,6 +4121,7 @@ int main(int argc, char **argv)
 
 #ifdef TEST_DLLLOADER
     TestDllLoad();
+    TestDllListLoaded();
 #endif // TEST_DLLLOADER
 
 #ifdef TEST_ENVIRON
@@ -4517,11 +4135,6 @@ int main(int argc, char **argv)
 #ifdef TEST_FILECONF
     TestFileConfRead();
 #endif // TEST_FILECONF
-
-#ifdef TEST_LIST
-    TestListCtor();
-    TestList();
-#endif // TEST_LIST
 
 #ifdef TEST_LOCALE
     TestDefaultLang();
@@ -4558,10 +4171,6 @@ int main(int argc, char **argv)
 #endif // TEST_FILE
 
 #ifdef TEST_FILENAME
-    TestFileNameConstruction();
-    TestFileNameMakeRelative();
-    TestFileNameMakeAbsolute();
-    TestFileNameSplit();
     TestFileNameTemp();
     TestFileNameCwd();
     TestFileNameDirManip();
@@ -4598,14 +4207,6 @@ int main(int argc, char **argv)
         TestFtpWuFtpd();
     #endif
 #endif // TEST_FTP
-
-#ifdef TEST_HASHMAP
-    TestHashMap();
-#endif // TEST_HASHMAP
-
-#ifdef TEST_HASHSET
-    TestHashSet();
-#endif // TEST_HASHSET
 
 #ifdef TEST_MIME
     wxLog::AddTraceMask(_T("mime"));
@@ -4697,17 +4298,10 @@ int main(int argc, char **argv)
 
 #ifdef TEST_DATETIME
     #if TEST_ALL
-        TestTimeSet();
         TestTimeStatic();
         TestTimeRange();
         TestTimeZones();
-        TestTimeTicks();
-        TestTimeJDN();
         TestTimeDST();
-        TestTimeWDays();
-        TestTimeWNumber();
-        TestTimeParse();
-        TestTimeArithmetics();
         TestTimeHolidays();
         TestTimeSpanFormat();
         TestTimeMS();
@@ -4723,6 +4317,12 @@ int main(int argc, char **argv)
 #ifdef TEST_SCOPEGUARD
     TestScopeGuard();
 #endif
+
+#ifdef TEST_STACKWALKER
+#if wxUSE_STACKWALKER
+    TestStackWalk(argv[0]);
+#endif
+#endif // TEST_STACKWALKER
 
 #ifdef TEST_STDPATHS
     TestStandardPaths();
@@ -4751,6 +4351,15 @@ int main(int argc, char **argv)
     TestZipStreamRead();
     TestZipFileSystem();
 #endif // TEST_ZIP
+
+#if wxUSE_UNICODE
+    {
+        for ( int n = 0; n < argc; n++ )
+            free(wxArgv[n]);
+
+        delete [] wxArgv;
+    }
+#endif // wxUSE_UNICODE
 
     wxUnusedVar(argc);
     wxUnusedVar(argv);

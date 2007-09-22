@@ -4,7 +4,7 @@
 // Author:      Robert Roebling
 // Modified by:
 // Created:     01/02/97
-// RCS-ID:      $Id: treectlg.h,v 1.47 2004/11/03 23:01:57 VS Exp $
+// RCS-ID:      $Id: treectlg.h,v 1.52 2005/01/30 12:44:46 RR Exp $
 // Copyright:   (c) 1997,1998 Robert Roebling
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -105,6 +105,9 @@ public:
     virtual void AssignStateImageList(wxImageList *imageList);
     virtual void AssignButtonsImageList(wxImageList *imageList);
 
+    virtual void SetDropEffectAboveItem( bool above = false ) { m_dropEffectAboveItem = above; }
+    virtual bool GetDropEffectAboveItem() const { return m_dropEffectAboveItem; }
+
     // Functions to work with tree ctrl items.
 
     // accessors
@@ -146,6 +149,9 @@ public:
 
         // the item will be shown in bold
     void SetItemBold(const wxTreeItemId& item, bool bold = true);
+
+        // the item will be shown with a drop highlight
+    void SetItemDropHighlight(const wxTreeItemId& item, bool highlight = true);
 
         // set the item's text colour
     void SetItemTextColour(const wxTreeItemId& item, const wxColour& col);
@@ -207,10 +213,9 @@ public:
 
 #if WXWIN_COMPATIBILITY_2_2
         // deprecated:  Use GetItemParent instead.
-    wxTreeItemId GetParent(const wxTreeItemId& item) const
-        { return GetItemParent( item ); }
+    wxDEPRECATED( wxTreeItemId GetParent(const wxTreeItemId& item) const);
 
-        // Expose the base class method hidden by the one above.
+        // Expose the base class method hidden by the one above. Not deprecatable.
     wxWindow *GetParent() const { return wxScrolledWindow::GetParent(); }
 #endif  // WXWIN_COMPATIBILITY_2_2
 
@@ -356,10 +361,8 @@ public:
 
 #if WXWIN_COMPATIBILITY_2_4
     // deprecated functions: use Set/GetItemImage directly
-    int GetItemSelectedImage(const wxTreeItemId& item) const
-        { return GetItemImage(item, wxTreeItemIcon_Selected); }
-    void SetItemSelectedImage(const wxTreeItemId& item, int image)
-        { SetItemImage(item, image, wxTreeItemIcon_Selected); }
+    wxDEPRECATED( int GetItemSelectedImage(const wxTreeItemId& item) const );
+    wxDEPRECATED( void SetItemSelectedImage(const wxTreeItemId& item, int image) );
 
     // use the versions taking wxTreeItemIdValue cookies (note that
     // GetNextChild() is not inside wxDEPRECATED on purpose, as otherwise we
@@ -448,6 +451,8 @@ protected:
     wxString             m_findPrefix;
     wxTimer             *m_findTimer;
 
+    bool                 m_dropEffectAboveItem;
+
     // the common part of all ctors
     void Init();
 
@@ -503,6 +508,7 @@ protected:
     bool TagAllChildrenUntilLast(wxGenericTreeItem *crt_item, wxGenericTreeItem *last_item, bool select);
     bool TagNextChildren(wxGenericTreeItem *crt_item, wxGenericTreeItem *last_item, bool select);
     void UnselectAllChildren( wxGenericTreeItem *item );
+    void ChildrenClosing(wxGenericTreeItem* item);
 
 private:
     DECLARE_EVENT_TABLE()

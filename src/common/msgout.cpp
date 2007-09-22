@@ -4,7 +4,7 @@
 // Author:      Mattia Barbon
 // Modified by:
 // Created:     17.07.02
-// RCS-ID:      $Id: msgout.cpp,v 1.28 2004/10/19 13:38:15 JS Exp $
+// RCS-ID:      $Id: msgout.cpp,v 1.34 2005/06/15 22:03:49 VZ Exp $
 // Copyright:   (c) the wxWidgets team
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -52,7 +52,7 @@
 #include <stdarg.h>
 #include <stdio.h>
 
-#if defined(__WXMSW__) && !defined(__PALMOS__)
+#if defined(__WINDOWS__)
     #include "wx/msw/private.h"
 #endif
 #ifdef __WXMAC__
@@ -89,6 +89,46 @@ wxMessageOutput* wxMessageOutput::Set(wxMessageOutput* msgout)
 }
 
 // ----------------------------------------------------------------------------
+// wxMessageOutputBest
+// ----------------------------------------------------------------------------
+
+#ifdef __WINDOWS__
+
+// check if we're running in a console under Windows
+static inline bool IsInConsole()
+{
+#ifdef __WXWINCE__
+    return false;
+#else // !__WXWINCE__
+    HANDLE hStdErr = ::GetStdHandle(STD_ERROR_HANDLE);
+    return hStdErr && hStdErr != INVALID_HANDLE_VALUE;
+#endif // __WXWINCE__/!__WXWINCE__
+}
+
+#endif // __WINDOWS__
+
+void wxMessageOutputBest::Printf(const wxChar* format, ...)
+{
+    va_list args;
+    va_start(args, format);
+    wxString out;
+
+    out.PrintfV(format, args);
+    va_end(args);
+
+#ifdef __WINDOWS__
+    if ( !IsInConsole() )
+    {
+        ::MessageBox(NULL, out, _T("wxWidgets"), MB_ICONINFORMATION | MB_OK);
+    }
+    else
+#endif // __WINDOWS__/!__WINDOWS__
+    {
+        fprintf(stderr, "%s", (const char*) out.mb_str());
+    }
+}
+
+// ----------------------------------------------------------------------------
 // wxMessageOutputStderr
 // ----------------------------------------------------------------------------
 
@@ -118,7 +158,7 @@ void wxMessageOutputDebug::Printf(const wxChar* format, ...)
     out.PrintfV(format, args);
     va_end(args);
 
-#if defined(__WXMSW__) && !defined(__WXMICROWIN__) && !defined(__PALMOS__)
+#if defined(__WXMSW__) && !defined(__WXMICROWIN__)
     out.Replace(wxT("\t"), wxT("        "));
     out.Replace(wxT("\n"), wxT("\r\n"));
     ::OutputDebugString(out);

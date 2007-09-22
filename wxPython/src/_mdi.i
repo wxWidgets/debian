@@ -5,7 +5,7 @@
 // Author:      Robin Dunn
 //
 // Created:     26-May-1998
-// RCS-ID:      $Id: _mdi.i,v 1.6 2004/07/17 22:50:56 RD Exp $
+// RCS-ID:      $Id: _mdi.i,v 1.10 2005/03/24 16:47:23 RD Exp $
 // Copyright:   (c) 2003 by Total Control Software
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -28,6 +28,7 @@
 #define IDM_WINDOWICONS         4003
 #define IDM_WINDOWNEXT          4004
 #define IDM_WINDOWTILEVERT      4005
+#define IDM_WINDOWPREV          4006
 #define wxFIRST_MDI_CHILD       4100
 #define wxLAST_MDI_CHILD        4600
 
@@ -47,7 +48,7 @@ public:
                      const wxSize& size = wxDefaultSize,
                      long style = wxDEFAULT_FRAME_STYLE | wxVSCROLL | wxHSCROLL,
                      const wxString& name = wxPyFrameNameStr);
-    %name(PreMDIParentFrame)wxMDIParentFrame();
+    %RenameCtor(PreMDIParentFrame, wxMDIParentFrame());
 
     bool Create(wxWindow *parent,
                      const wxWindowID id=-1,
@@ -75,7 +76,7 @@ public:
     void SetWindowMenu(wxMenu* menu);
     void SetToolBar(wxToolBar* toolbar);
 #endif
-    void Tile();
+    void Tile(wxOrientation orient = wxHORIZONTAL);
 };
 
 //---------------------------------------------------------------------------
@@ -95,7 +96,7 @@ public:
                     const wxSize& size = wxDefaultSize,
                     long style = wxDEFAULT_FRAME_STYLE,
                     const wxString& name = wxPyFrameNameStr);
-    %name(PreMDIChildFrame)wxMDIChildFrame();
+    %RenameCtor(PreMDIChildFrame, wxMDIChildFrame());
 
     // Turn it back on again
     %typemap(out) wxMDIChildFrame* { $result = wxPyMake_wxObject($1, $owner); }
@@ -109,7 +110,7 @@ public:
                     const wxString& name = wxPyFrameNameStr);
 
     void Activate();
-    void Maximize(bool maximize);
+    void Maximize(bool maximize=true);
     void Restore();
 
 };
@@ -126,7 +127,7 @@ public:
     %typemap(out) wxMDIClientWindow*;    // turn off this typemap
 
     wxMDIClientWindow(wxMDIParentFrame* parent, long style = 0);
-    %name(PreMDIClientWindow)wxMDIClientWindow();
+    %RenameCtor(PreMDIClientWindow, wxMDIClientWindow());
 
     // Turn it back on again
     %typemap(out) wxMDIClientWindow* { $result = wxPyMake_wxObject($1, $owner); }

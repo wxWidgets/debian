@@ -4,7 +4,7 @@
 // Author:      Robert Roebling, Vadim Zeitlin
 // Modified by:
 // Created:     28.12.2000
-// RCS-ID:      $Id: filename.cpp,v 1.145 2004/11/07 20:11:30 VZ Exp $
+// RCS-ID:      $Id: filename.cpp,v 1.157 2005/05/30 08:30:43 JS Exp $
 // Copyright:   (c) 2000 Robert Roebling
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -300,12 +300,14 @@ void wxFileName::Assign( const wxFileName &filepath )
     m_name = filepath.GetName();
     m_ext = filepath.GetExt();
     m_relative = filepath.m_relative;
+    m_hasExt = filepath.m_hasExt;
 }
 
 void wxFileName::Assign(const wxString& volume,
                         const wxString& path,
                         const wxString& name,
                         const wxString& ext,
+                        bool hasExt,
                         wxPathFormat format )
 {
     SetPath( path, format );
@@ -313,6 +315,8 @@ void wxFileName::Assign(const wxString& volume,
     m_volume = volume;
     m_ext = ext;
     m_name = name;
+
+    m_hasExt = hasExt;
 }
 
 void wxFileName::SetPath( const wxString& pathOrig, wxPathFormat format )
@@ -411,9 +415,10 @@ void wxFileName::Assign(const wxString& fullpath,
                         wxPathFormat format)
 {
     wxString volume, path, name, ext;
-    SplitPath(fullpath, &volume, &path, &name, &ext, format);
+    bool hasExt;
+    SplitPath(fullpath, &volume, &path, &name, &ext, &hasExt, format);
 
-    Assign(volume, path, name, ext, format);
+    Assign(volume, path, name, ext, hasExt, format);
 }
 
 void wxFileName::Assign(const wxString& fullpathOrig,
@@ -429,15 +434,16 @@ void wxFileName::Assign(const wxString& fullpathOrig,
     }
 
     wxString volume, path, name, ext;
+    bool hasExt;
 
     // do some consistency checks in debug mode: the name should be really just
     // the filename and the path should be really just a path
 #ifdef __WXDEBUG__
-    wxString pathDummy, nameDummy, extDummy;
+    wxString volDummy, pathDummy, nameDummy, extDummy;
 
-    SplitPath(fullname, &pathDummy, &name, &ext, format);
+    SplitPath(fullname, &volDummy, &pathDummy, &name, &ext, &hasExt, format);
 
-    wxASSERT_MSG( pathDummy.empty(),
+    wxASSERT_MSG( volDummy.empty() && pathDummy.empty(),
                   _T("the file name shouldn't contain the path") );
 
     SplitPath(fullpath, &volume, &path, &nameDummy, &extDummy, format);
@@ -446,11 +452,12 @@ void wxFileName::Assign(const wxString& fullpathOrig,
                   _T("the path shouldn't contain file name nor extension") );
 
 #else // !__WXDEBUG__
-    SplitPath(fullname, NULL /* no path */, &name, &ext, format);
+    SplitPath(fullname, NULL /* no volume */, NULL /* no path */,
+                        &name, &ext, &hasExt, format);
     SplitPath(fullpath, &volume, &path, NULL, NULL, format);
 #endif // __WXDEBUG__/!__WXDEBUG__
 
-    Assign(volume, path, name, ext, format);
+    Assign(volume, path, name, ext, hasExt, format);
 }
 
 void wxFileName::Assign(const wxString& pathOrig,
@@ -467,7 +474,7 @@ void wxFileName::Assign(const wxString& pathOrig,
 
 void wxFileName::AssignDir(const wxString& dir, wxPathFormat format)
 {
-    Assign(dir, _T(""), format);
+    Assign(dir, wxEmptyString, format);
 }
 
 void wxFileName::Clear()
@@ -480,6 +487,9 @@ void wxFileName::Clear()
 
     // we don't have any absolute path for now
     m_relative = true;
+
+    // nor any extension
+    m_hasExt = false;
 }
 
 /* static */
@@ -573,6 +583,8 @@ wxString wxFileName::GetHomeDir()
     return ::wxGetHomeDir();
 }
 
+#if wxUSE_FILE
+
 void wxFileName::AssignTempFileName(const wxString& prefix, wxFile *fileTemp)
 {
     wxString tempname = CreateTempFileName(prefix, fileTemp);
@@ -602,11 +614,11 @@ wxFileName::CreateTempFileName(const wxString& prefix, wxFile *fileTemp)
         // FIXME. Create \temp dir?
         dir = wxT("\\");
     }
-    path = dir + wxT("\\") + prefix;
+    path = dir + wxT("\\") + name;
     int i = 1;
-    while (wxFileExists(path))
+    while (FileExists(path))
     {
-        path = dir + wxT("\\") + prefix ;
+        path = dir + wxT("\\") + name ;
         path << i;
         i ++;
     }
@@ -720,7 +732,7 @@ wxFileName::CreateTempFileName(const wxString& prefix, wxFile *fileTemp)
     }
 #else // !HAVE_MKTEMP (includes __DOS__)
     // generate the unique file name ourselves
-    #if !defined(__DOS__) && (!defined(__MWERKS__) || defined(__DARWIN__) )
+    #if !defined(__DOS__) && !defined(__PALMOS__) && (!defined(__MWERKS__) || defined(__DARWIN__) )
     path << (unsigned int)getpid();
     #endif
 
@@ -731,7 +743,7 @@ wxFileName::CreateTempFileName(const wxString& prefix, wxFile *fileTemp)
     {
         // 3 hex digits is enough for numTries == 1000 < 4096
         pathTry = path + wxString::Format(_T("%.03x"), (unsigned int) n);
-        if ( !wxFile::Exists(pathTry) )
+        if ( !FileExists(pathTry) )
         {
             break;
         }
@@ -781,6 +793,8 @@ wxFileName::CreateTempFileName(const wxString& prefix, wxFile *fileTemp)
 
     return path;
 }
+
+#endif // wxUSE_FILE
 
 // ----------------------------------------------------------------------------
 // directory operations
@@ -1042,7 +1056,7 @@ bool wxFileName::GetShortcutTarget(const wxString& shortcutPath, wxString& targe
     bool success = false;
 
     // Assume it's not a shortcut if it doesn't end with lnk
-    if (ext.Lower() != wxT("lnk"))
+    if (ext.CmpNoCase(wxT("lnk"))!=0)
         return false;
 
     // create a ShellLink object
@@ -1075,7 +1089,7 @@ bool wxFileName::GetShortcutTarget(const wxString& shortcutPath, wxString& targe
 
                 psl->GetArguments(buf, 2048);
                 wxString args(buf);
-                if (!args.IsEmpty() && arguments)
+                if (!args.empty() && arguments)
                 {
                     *arguments = args;
                 }
@@ -1320,26 +1334,26 @@ bool wxFileName::IsPathSeparator(wxChar ch, wxPathFormat format)
     return true;
 }
 
-void wxFileName::AppendDir( const wxString &dir )
+void wxFileName::AppendDir( const wxString& dir )
 {
     if ( IsValidDirComponent(dir) )
         m_dirs.Add( dir );
 }
 
-void wxFileName::PrependDir( const wxString &dir )
+void wxFileName::PrependDir( const wxString& dir )
 {
     InsertDir(0, dir);
 }
 
-void wxFileName::InsertDir( int before, const wxString &dir )
+void wxFileName::InsertDir(size_t before, const wxString& dir)
 {
     if ( IsValidDirComponent(dir) )
-        m_dirs.Insert( dir, before );
+        m_dirs.Insert(dir, before);
 }
 
-void wxFileName::RemoveDir( int pos )
+void wxFileName::RemoveDir(size_t pos)
 {
-    m_dirs.RemoveAt( (size_t)pos );
+    m_dirs.RemoveAt(pos);
 }
 
 // ----------------------------------------------------------------------------
@@ -1348,13 +1362,14 @@ void wxFileName::RemoveDir( int pos )
 
 void wxFileName::SetFullName(const wxString& fullname)
 {
-    SplitPath(fullname, NULL /* no path */, &m_name, &m_ext);
+    SplitPath(fullname, NULL /* no volume */, NULL /* no path */,
+                        &m_name, &m_ext, &m_hasExt);
 }
 
 wxString wxFileName::GetFullName() const
 {
     wxString fullname = m_name;
-    if ( !m_ext.empty() )
+    if ( m_hasExt )
     {
         fullname << wxFILE_SEP_EXT << m_ext;
     }
@@ -1438,7 +1453,7 @@ wxString wxFileName::GetPath( int flags, wxPathFormat format ) const
                 }
 
                 // convert back from ".." to nothing
-                if ( m_dirs[i] != wxT("..") )
+                if ( !m_dirs[i].IsSameAs(wxT("..")) )
                      fullpath += m_dirs[i];
                 break;
 
@@ -1455,7 +1470,7 @@ wxString wxFileName::GetPath( int flags, wxPathFormat format ) const
                 // TODO: What to do with ".." under VMS
 
                 // convert back from ".." to nothing
-                if ( m_dirs[i] != wxT("..") )
+                if ( !m_dirs[i].IsSameAs(wxT("..")) )
                     fullpath += m_dirs[i];
                 break;
         }
@@ -1487,27 +1502,26 @@ wxString wxFileName::GetFullPath( wxPathFormat format ) const
 // Return the short form of the path (returns identity on non-Windows platforms)
 wxString wxFileName::GetShortPath() const
 {
-#if defined(__WXMSW__) && defined(__WIN32__) && !defined(__WXMICROWIN__) && !defined(__WXWINCE__)
     wxString path(GetFullPath());
-    wxString pathOut;
+
+#if defined(__WXMSW__) && defined(__WIN32__) && !defined(__WXMICROWIN__) && !defined(__WXWINCE__)
     DWORD sz = ::GetShortPathName(path, NULL, 0);
-    bool ok = sz != 0;
-    if ( ok )
+    if ( sz != 0 )
     {
-        ok = ::GetShortPathName
+        wxString pathOut;
+        if ( ::GetShortPathName
                (
                 path,
                 wxStringBuffer(pathOut, sz),
                 sz
-               ) != 0;
+               ) != 0 )
+        {
+            return pathOut;
+        }
     }
-    if (ok)
-        return pathOut;
+#endif // Windows
 
     return path;
-#else
-    return GetFullPath();
-#endif
 }
 
 // Return the long form of the path (returns identity on non-Windows platforms)
@@ -1517,116 +1531,115 @@ wxString wxFileName::GetLongPath() const
              path = GetFullPath();
 
 #if defined(__WIN32__) && !defined(__WXMICROWIN__)
-    bool success = false;
 
 #if wxUSE_DYNAMIC_LOADER
     typedef DWORD (WINAPI *GET_LONG_PATH_NAME)(const wxChar *, wxChar *, DWORD);
 
-    static bool s_triedToLoad = false;
-
-    if ( !s_triedToLoad )
+    // this is MT-safe as in the worst case we're going to resolve the function
+    // twice -- but as the result is the same in both threads, it's ok
+    static GET_LONG_PATH_NAME s_pfnGetLongPathName = NULL;
+    if ( !s_pfnGetLongPathName )
     {
-        // suppress the errors about missing GetLongPathName[AW]
-        wxLogNull noLog;
+        static bool s_triedToLoad = false;
 
-        s_triedToLoad = true;
-        wxDynamicLibrary dllKernel(_T("kernel32"));
-        if ( dllKernel.IsLoaded() )
+        if ( !s_triedToLoad )
         {
-            // may succeed or fail depending on the Windows version
-            static GET_LONG_PATH_NAME s_pfnGetLongPathName = NULL;
-#ifdef _UNICODE
-            s_pfnGetLongPathName = (GET_LONG_PATH_NAME) dllKernel.GetSymbol(_T("GetLongPathNameW"));
-#else
-            s_pfnGetLongPathName = (GET_LONG_PATH_NAME) dllKernel.GetSymbol(_T("GetLongPathNameA"));
-#endif
+            s_triedToLoad = true;
 
-            if ( s_pfnGetLongPathName )
+            wxDynamicLibrary dllKernel(_T("kernel32"));
+
+            const wxChar* GetLongPathName = _T("GetLongPathName")
+#if wxUSE_UNICODE
+                              _T("W");
+#else // ANSI
+                              _T("A");
+#endif // Unicode/ANSI
+
+            if ( dllKernel.HasSymbol(GetLongPathName) )
             {
-                DWORD dwSize = (*s_pfnGetLongPathName)(path, NULL, 0);
-                bool ok = dwSize > 0;
-
-                if ( ok )
-                {
-                    DWORD sz = (*s_pfnGetLongPathName)(path, NULL, 0);
-                    ok = sz != 0;
-                    if ( ok )
-                    {
-                        ok = (*s_pfnGetLongPathName)
-                                (
-                                path,
-                                wxStringBuffer(pathOut, sz),
-                                sz
-                                ) != 0;
-                        success = true;
-                    }
-                }
+                s_pfnGetLongPathName = (GET_LONG_PATH_NAME)
+                    dllKernel.GetSymbol(GetLongPathName);
             }
+
+            // note that kernel32.dll can be unloaded, it stays in memory
+            // anyhow as all Win32 programs link to it and so it's safe to call
+            // GetLongPathName() even after unloading it
         }
     }
 
-    if (success)
-        return pathOut;
+    if ( s_pfnGetLongPathName )
+    {
+        DWORD dwSize = (*s_pfnGetLongPathName)(path, NULL, 0);
+        if ( dwSize > 0 )
+        {
+            if ( (*s_pfnGetLongPathName)
+                 (
+                  path,
+                  wxStringBuffer(pathOut, dwSize),
+                  dwSize
+                 ) != 0 )
+            {
+                return pathOut;
+            }
+        }
+    }
 #endif // wxUSE_DYNAMIC_LOADER
 
-    if (!success)
+    // The OS didn't support GetLongPathName, or some other error.
+    // We need to call FindFirstFile on each component in turn.
+
+    WIN32_FIND_DATA findFileData;
+    HANDLE hFind;
+
+    if ( HasVolume() )
+        pathOut = GetVolume() +
+                  GetVolumeSeparator(wxPATH_DOS) +
+                  GetPathSeparator(wxPATH_DOS);
+    else
+        pathOut = wxEmptyString;
+
+    wxArrayString dirs = GetDirs();
+    dirs.Add(GetFullName());
+
+    wxString tmpPath;
+
+    size_t count = dirs.GetCount();
+    for ( size_t i = 0; i < count; i++ )
     {
-        // The OS didn't support GetLongPathName, or some other error.
-        // We need to call FindFirstFile on each component in turn.
+        // We're using pathOut to collect the long-name path, but using a
+        // temporary for appending the last path component which may be
+        // short-name
+        tmpPath = pathOut + dirs[i];
 
-        WIN32_FIND_DATA findFileData;
-        HANDLE hFind;
+        if ( tmpPath.empty() )
+            continue;
 
-        if ( HasVolume() )
-            pathOut = GetVolume() +
-                      GetVolumeSeparator(wxPATH_DOS) +
-                      GetPathSeparator(wxPATH_DOS);
-        else
-            pathOut = wxEmptyString;
-
-        wxArrayString dirs = GetDirs();
-        dirs.Add(GetFullName());
-
-        wxString tmpPath;
-
-        size_t count = dirs.GetCount();
-        for ( size_t i = 0; i < count; i++ )
+        // can't see this being necessary? MF
+        if ( tmpPath.Last() == GetVolumeSeparator(wxPATH_DOS) )
         {
-            // We're using pathOut to collect the long-name path, but using a
-            // temporary for appending the last path component which may be
-            // short-name
-            tmpPath = pathOut + dirs[i];
-
-            if ( tmpPath.empty() )
-                continue;
-
-            // can't see this being necessary? MF
-            if ( tmpPath.Last() == GetVolumeSeparator(wxPATH_DOS) )
-            {
-                // Can't pass a drive and root dir to FindFirstFile,
-                // so continue to next dir
-                tmpPath += wxFILE_SEP_PATH;
-                pathOut = tmpPath;
-                continue;
-            }
-
-            hFind = ::FindFirstFile(tmpPath, &findFileData);
-            if (hFind == INVALID_HANDLE_VALUE)
-            {
-                // Error: most likely reason is that path doesn't exist, so
-                // append any unprocessed parts and return
-                for ( i += 1; i < count; i++ )
-                    tmpPath += wxFILE_SEP_PATH + dirs[i];
-
-                return tmpPath;
-            }
-
-            pathOut += findFileData.cFileName;
-            if ( (i < (count-1)) )
-                pathOut += wxFILE_SEP_PATH;
-
-            ::FindClose(hFind);
+            // Can't pass a drive and root dir to FindFirstFile,
+            // so continue to next dir
+            tmpPath += wxFILE_SEP_PATH;
+            pathOut = tmpPath;
+            continue;
         }
+
+        hFind = ::FindFirstFile(tmpPath, &findFileData);
+        if (hFind == INVALID_HANDLE_VALUE)
+        {
+            // Error: most likely reason is that path doesn't exist, so
+            // append any unprocessed parts and return
+            for ( i += 1; i < count; i++ )
+                tmpPath += wxFILE_SEP_PATH + dirs[i];
+
+            return tmpPath;
+        }
+
+        pathOut += findFileData.cFileName;
+        if ( (i < (count-1)) )
+            pathOut += wxFILE_SEP_PATH;
+
+        ::FindClose(hFind);
     }
 #else // !Win32
     pathOut = path;
@@ -1716,6 +1729,7 @@ void wxFileName::SplitPath(const wxString& fullpathWithVolume,
                            wxString *pstrPath,
                            wxString *pstrName,
                            wxString *pstrExt,
+                           bool *hasExt,
                            wxPathFormat format)
 {
     format = GetFormat(format);
@@ -1802,18 +1816,25 @@ void wxFileName::SplitPath(const wxString& fullpathWithVolume,
         *pstrName = fullpath.Mid(nStart, count);
     }
 
-    if ( pstrExt )
+    // finally deal with the extension here: we have an added complication that
+    // extension may be empty (but present) as in "foo." where trailing dot
+    // indicates the empty extension at the end -- and hence we must remember
+    // that we have it independently of pstrExt
+    if ( posLastDot == wxString::npos )
     {
-        if ( posLastDot == wxString::npos )
-        {
-            // no extension
-            pstrExt->Empty();
-        }
-        else
-        {
-            // take everything after the dot
+        // no extension
+        if ( pstrExt )
+            pstrExt->clear();
+        if ( hasExt )
+            *hasExt = false;
+    }
+    else
+    {
+        // take everything after the dot
+        if ( pstrExt )
             *pstrExt = fullpath.Mid(posLastDot + 1);
-        }
+        if ( hasExt )
+            *hasExt = true;
     }
 }
 
@@ -1998,7 +2019,7 @@ public :
   MacDefaultExtensionRecord()
   {
     m_ext[0] = 0 ;
-    m_type = m_creator = NULL ;
+    m_type = m_creator = 0 ;
   }
   MacDefaultExtensionRecord( const MacDefaultExtensionRecord& from )
   {

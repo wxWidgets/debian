@@ -40,10 +40,10 @@ DEBIAN_WXFLAVOUR := $(shell pwd | sed -e 's@.*/wxwidgets[0-9.]\+-\?\(.*\)-[0-9.]
 
 release   := $(shell dpkg-parsechangelog | sed -n 's/^Source: wxwidgets//p')
 soversion := $(shell grep '^WX_CURRENT=' configure.in | sed 's/WX_CURRENT=\([0-9]\+\).*/\1/')
-sorelease := $(release:%-$(DEBIAN_WXFLAVOUR)=%).$(soversion)$(addprefix -,$(DEBIAN_WXFLAVOUR))
+sorelease := $(release:%-$(DEBIAN_WXFLAVOUR)=%)-$(soversion)$(addprefix -,$(DEBIAN_WXFLAVOUR))
 
 pydir     := usr/lib/$(python_ver)/site-packages
-wxpydir   := $(pydir)/wx-$(sorelease)-gtk2-unicode
+wxpydir   := $(pydir)/wx-$(release)-gtk2-unicode
 
 cross_host  = i586-mingw32msvc
 cross_build = $(shell ./config.guess)
@@ -70,7 +70,6 @@ package_headers_msw     = wx$(release)-headers-msw
 
 # Build directories:
 objdir_gtk_shared          = objs_gtk_sh
-objdir_gtk_static          = objs_gtk_st
 objdir_gtk_debug           = objs_gtk_d
 objdir_gtk_install         = objs_gtk_install
 objdir_doc_cruft           = objs_doc_con
@@ -83,8 +82,7 @@ objdir_msw_static          = objs_msw_st
 objdir_msw_dbg             = objs_msw_d
 objdir_msw_install         = objs_msw_install
 
-objdirs = $(objdir_gtk_shared) $(objdir_gtk_static) $(objdir_gtk_debug)   \
-	  $(objdir_gtk_install)                                           \
+objdirs = $(objdir_gtk_shared) $(objdir_gtk_debug) $(objdir_gtk_install)  \
 	  $(objdir_doc_cruft) $(objdir_doc) $(objdir_examples)            \
 	  $(objdir_msw_shared) $(objdir_msw_static) $(objdir_msw_dbg)     \
 	  $(objdir_msw_install)
@@ -96,7 +94,6 @@ objdirs = $(objdir_gtk_shared) $(objdir_gtk_static) $(objdir_gtk_debug)   \
 
 # Build stamps:
 build_arch_stamps = build-gtk-shared-stamp build-gtk-shared-contrib-stamp \
-                    build-gtk-static-stamp build-gtk-static-contrib-stamp \
                     build-gtk-debug-stamp build-gtk-debug-contrib-stamp   \
                     build-i18n-stamp build-gtk-py-stamp
 
@@ -219,14 +216,13 @@ configure-gtk-shared-stamp:
 				--cache-file=$(config_cache)		\
 				--with-flavour=$(DEBIAN_WXFLAVOUR)	\
 				--with-gtk				\
-				--enable-unicode			\
 				--with-opengl				\
+				--with-gnomeprint			\
 				--with-zlib=sys				\
 				--with-libjpeg=sys			\
 				--with-libpng=sys			\
 				--with-libtiff=sys			\
-				--enable-dynamic-loader			\
-				--enable-std_iostreams
+				--enable-unicode
 	touch $@
 
 build-gtk-shared-stamp: configure-gtk-shared-stamp
@@ -234,29 +230,6 @@ build-gtk-shared-stamp: configure-gtk-shared-stamp
 	cd $(objdir_gtk_shared) && $(FAST_MAKE)
 	touch $@
 
-configure-gtk-static-stamp:
-	dh_testdir
-	mkdir -p $(objdir_gtk_static)
-	cd $(objdir_gtk_static) \
-		&& ../configure --prefix=/usr				\
-				--cache-file=$(config_cache)		\
-				--with-flavour=$(DEBIAN_WXFLAVOUR)	\
-				--with-gtk				\
-				--enable-unicode			\
-				--with-opengl				\
-				--disable-shared			\
-				--with-zlib=sys				\
-				--with-libjpeg=sys			\
-				--with-libpng=sys			\
-				--with-libtiff=sys			\
-				--enable-dynamic-loader			\
-				--enable-std_iostreams
-	touch $@
-
-build-gtk-static-stamp: configure-gtk-static-stamp
-	dh_testdir
-	cd $(objdir_gtk_static) && $(FAST_MAKE)
-	touch $@
 
 configure-gtk-debug-stamp:
 	dh_testdir
@@ -266,15 +239,14 @@ configure-gtk-debug-stamp:
 				--cache-file=$(config_cache)		\
 				--with-flavour=$(DEBIAN_WXFLAVOUR)	\
 				--with-gtk				\
-				--enable-unicode			\
 				--with-opengl				\
-				--enable-debug				\
+				--with-gnomeprint			\
 				--with-zlib=sys				\
 				--with-libjpeg=sys			\
 				--with-libpng=sys			\
 				--with-libtiff=sys			\
-				--enable-dynamic-loader			\
-				--enable-std_iostreams
+				--enable-debug				\
+				--enable-unicode
 	touch $@
 
 build-gtk-debug-stamp: configure-gtk-debug-stamp
@@ -287,13 +259,8 @@ build-gtk-shared-contrib-stamp: build-gtk-shared-stamp
 	dh_testdir
 	cd $(objdir_gtk_shared)/contrib/src && $(FAST_MAKE)
 	cd $(objdir_gtk_shared)/utils/wxrc && $(FAST_MAKE)
-	#cd $(objdir_gtk_shared)/contrib/utils/wxrcedit && $(FAST_MAKE)
 	touch $@
 
-build-gtk-static-contrib-stamp: build-gtk-static-stamp
-	dh_testdir
-	cd $(objdir_gtk_static)/contrib/src && $(FAST_MAKE)
-	touch $@
 
 build-gtk-debug-contrib-stamp: build-gtk-debug-stamp
 	dh_testdir
@@ -493,7 +460,7 @@ install-gtk-lib: install-gtk-shared-stamp
 	dh_install $(objdir_gtk_install)/lib/libwx_*.so.*	usr/lib
 
 install-gtk-dev: DH_OPTIONS=-p$(package_gtk_dev)
-install-gtk-dev: build-gtk-static-stamp build-gtk-static-contrib-stamp install-gtk-shared-stamp
+install-gtk-dev: install-gtk-shared-stamp
 	dh_testdir
 	dh_testroot
 	dh_clean -k
@@ -501,9 +468,6 @@ install-gtk-dev: build-gtk-static-stamp build-gtk-static-contrib-stamp install-g
 	dh_install $(objdir_gtk_install)/lib/libwx_*.so 	usr/lib
 	dh_install $(objdir_gtk_install)/lib/wx/include 	usr/lib/wx
 	dh_install $(objdir_gtk_install)/lib/wx/config/gtk* 	usr/lib/wx/config
-	dh_install $(objdir_gtk_static)/lib/libwx*.a		usr/lib
-	dh_install $(objdir_gtk_static)/lib/wx/include		usr/lib/wx
-	dh_install $(objdir_gtk_static)/lib/wx/config/gtk*	usr/lib/wx/config
 
 install-gtk-dbg: DH_OPTIONS=-p$(package_gtk_dbg)
 install-gtk-dbg: build-gtk-debug-stamp build-gtk-debug-contrib-stamp
@@ -569,18 +533,12 @@ install-common: install-gtk-shared-stamp
 	dh_clean -k
 	dh_installdirs
 
-#	We don't need the afm metrics for gtk2, but we might need them to support
-#	the 2.4 release for a while still and any other ports we might build.
-	dh_install $(objdir_gtk_install)/share/wx	usr/share
 	dh_install $(objdir_gtk_install)/share/aclocal 	usr/share
 	dh_installman debian/wx-config.1
 
 	dh_install $(objdir_gtk_shared)/utils/wxrc/wxrc	usr/bin
-#	dh_install $(objdir_gtk_shared)/contrib/utils/wxrcedit/wxrcedit	usr/bin
-
 	dh_installman debian/wxrc-tools.1
 	dh_link usr/share/man/man1/wxrc-tools.1 usr/share/man/man1/wxrc.1
-#	dh_link usr/share/man/man1/wxrc-tools.1 usr/share/man/man1/wxrcedit.1
 
 
 install-headers: DH_OPTIONS=-p$(package_headers)

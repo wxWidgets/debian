@@ -5,7 +5,7 @@
 // Author:      Aleksandras Gluchovas
 // Modified by:
 // Created:     22/09/98
-// RCS-ID:      $Id: cjparser.h,v 1.4 2001/07/19 13:44:57 VZ Exp $
+// RCS-ID:      $Id: cjparser.h,v 1.6 2005/06/02 09:44:44 ABX Exp $
 // Copyright:   (c) Aleskandars Gluchovas
 // Licence:       wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -34,17 +34,17 @@ class CJSourceParser : public SourceParserBase
 {
 protected:
     // begining of the full-text area of the source file
-    char* mpStart;
+    wxChar* mpStart;
 
     // points to first character after the end
     // of teh full-text area
-    char* mpEnd;
+    wxChar* mpEnd;
 
     // current "privacy level"
     int   mCurVis;
 
     // current parsing position int full-text area
-    char*  cur;
+    wxChar*  m_cur;
 
     // about the current class
     bool   mIsVirtual;
@@ -75,7 +75,7 @@ protected:
     void AddEnumNode( char*& cur );
     void AddTypeDefNode( char*& cur );
 
-    void DumpOperationInfo( spOperation& info, const string& tab, wxSTD ostream& os );
+    void DumpOperationInfo( spOperation& info, const wxString& tab, wxSTD ostream& os );
     void DumpClassHeader( spClass& info, wxSTD ostream& os );
     void DumpClassBody( spClass& info, wxSTD ostream& os );
 
@@ -114,17 +114,17 @@ static inline void skip_tempalate_statement( char*& cur );
 static inline void skip_statement( char*& cur );
 static inline void skip_token_back( char*& cur );
 static inline void skip_next_token_back( char*& cur );
-static string get_token_str( char* cur );
+static wxString get_token_str( char* cur );
 static size_t skip_block( char*& cur );
 static inline bool skip_imp_block( char*& cur );
 static bool is_class_token( char*& cur );
 inline static bool is_forward_decl( char* cur );
 inline static bool is_function( char* cur, bool& isAMacro );
 static inline void skip_scope_block( char*& cur );
-static void arrange_indirection_tokens_between( string& type, string& identifier );
+static void arrange_indirection_tokens_between( wxString& type, wxString& identifier );
 static bool is_keyword( char* cur );
-static inline void get_string_between( char* start, char* end, string* pStr );
-static char* set_comment_text( string& text, char* start );
+static inline void get_string_between( char* start, char* end, wxString* pStr );
+static char* set_comment_text( wxString& text, char* start );
 */
 
 #endif

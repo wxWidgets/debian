@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     04/01/98
-// RCS-ID:      $Id: penwin.cpp,v 1.13 2004/08/31 12:38:46 ABX Exp $
+// RCS-ID:      $Id: penwin.cpp,v 1.14 2005/01/04 19:40:54 ABX Exp $
 // Copyright:   (c) Julian Smart
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -62,7 +62,7 @@ void wxEnablePenAppHooks (bool hook)
       ///////////////////////////////////////////////////////////////////////
       // If running on a Pen Windows system, register this app so all
       // EDIT controls in dialogs are replaced by HEDIT controls.
-      if ((g_hPenWin = (HANDLE)GetSystemMetrics (SM_PENWINDOWS)) != (HANDLE) NULL)
+      if ((g_hPenWin = (HANDLE)::GetSystemMetrics (SM_PENWINDOWS)) != (HANDLE) NULL)
       {
         // We do this fancy GetProcAddress simply because we don't
         // know if we're running Pen Windows.
@@ -97,7 +97,7 @@ void wxRegisterPenWin(void)
 // (Notice the CONTROL statement in the RC file is "EDIT",
 // RegisterPenApp will automatically change that control to
 // an HEDIT.
-  if ((g_hPenWin = (HANDLE)GetSystemMetrics(SM_PENWINDOWS)) != (HANDLE)NULL) {
+  if ((g_hPenWin = (HANDLE)::GetSystemMetrics(SM_PENWINDOWS)) != (HANDLE)NULL) {
     // We do this fancy GetProcAddress simply because we don't
     // know if we're running Pen Windows.
    if ( (RegPenApp = (void (CALLBACK *)(WORD, BOOL))GetProcAddress(g_hPenWin, "RegisterPenApp"))!= NULL)

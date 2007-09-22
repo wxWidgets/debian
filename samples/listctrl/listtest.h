@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     04/01/98
-// RCS-ID:      $Id: listtest.h,v 1.40 2004/09/30 19:13:38 JS Exp $
+// RCS-ID:      $Id: listtest.h,v 1.42 2005/05/22 21:31:42 VZ Exp $
 // Copyright:   (c) Julian Smart
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -98,6 +98,7 @@ protected:
     void OnSmallIconView(wxCommandEvent& event);
     void OnSmallIconTextView(wxCommandEvent& event);
     void OnVirtualView(wxCommandEvent& event);
+    void OnSmallVirtualView(wxCommandEvent& event);
 
     void OnFocusLast(wxCommandEvent& event);
     void OnToggleFirstSel(wxCommandEvent& event);
@@ -144,6 +145,8 @@ private:
 
     wxLog *m_logOld;
 
+    bool m_smallVirtual;
+
     DECLARE_NO_COPY_CLASS(MyFrame)
     DECLARE_EVENT_TABLE()
 };
@@ -152,16 +155,17 @@ private:
 // IDs for the menu commands
 enum
 {
-    LIST_ABOUT,
-    LIST_QUIT,
+    LIST_ABOUT = wxID_ABOUT,
+    LIST_QUIT = wxID_EXIT,
 
-    LIST_LIST_VIEW,
+    LIST_LIST_VIEW = wxID_HIGHEST,
     LIST_ICON_VIEW,
     LIST_ICON_TEXT_VIEW,
     LIST_SMALL_ICON_VIEW,
     LIST_SMALL_ICON_TEXT_VIEW,
     LIST_REPORT_VIEW,
     LIST_VIRTUAL_VIEW,
+    LIST_SMALL_VIRTUAL_VIEW,
 
     LIST_DESELECT_ALL,
     LIST_SELECT_ALL,

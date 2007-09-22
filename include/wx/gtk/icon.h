@@ -2,7 +2,7 @@
 // Name:        icon.h
 // Purpose:
 // Author:      Robert Roebling
-// Id:          $Id: icon.h,v 1.22 2004/05/23 20:50:53 JS Exp $
+// Id:          $Id: icon.h,v 1.23 2005/02/05 13:08:43 RR Exp $
 // Copyright:   (c) 1998 Robert Roebling
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -38,7 +38,7 @@ public:
 
     // For compatibility with wxMSW where desired size is sometimes required to
     // distinguish between multiple icons in a resource.
-    wxIcon( const wxString& filename, int type = wxBITMAP_TYPE_XPM,
+    wxIcon( const wxString& filename, wxBitmapType type = wxBITMAP_TYPE_XPM,
             int WXUNUSED(desiredWidth)=-1, int WXUNUSED(desiredHeight)=-1 ) :
         wxBitmap(filename, type)
     {

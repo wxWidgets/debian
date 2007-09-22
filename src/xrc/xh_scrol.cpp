@@ -3,12 +3,12 @@
 // Purpose:     XRC resource for wxScrollBar
 // Author:      Brian Gavin
 // Created:     2000/09/09
-// RCS-ID:      $Id: xh_scrol.cpp,v 1.10 2004/09/23 09:18:12 VS Exp $
+// RCS-ID:      $Id: xh_scrol.cpp,v 1.12 2005/01/07 21:33:14 VS Exp $
 // Copyright:   (c) 2000 Brian Gavin
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
 
-#ifdef __GNUG__
+#if defined(__GNUG__) && !defined(NO_GCC_PRAGMA)
 #pragma implementation "xh_scrol.h"
 #endif
 
@@ -19,7 +19,7 @@
     #pragma hdrstop
 #endif
 
-#if wxUSE_XRC
+#if wxUSE_XRC && wxUSE_SCROLLBAR
 
 #include "wx/xrc/xh_scrol.h"
 #include "wx/scrolbar.h"
@@ -61,4 +61,4 @@ bool wxScrollBarXmlHandler::CanHandle(wxXmlNode *node)
     return IsOfClass(node, wxT("wxScrollBar"));
 }
 
-#endif // wxUSE_XRC
+#endif // wxUSE_XRC && wxUSE_SCROLLBAR

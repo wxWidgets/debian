@@ -6,7 +6,7 @@
 // Author:      Aleksandras Gluchovas
 // Modified by: AG on 28/12/98
 // Created:     22/09/98
-// RCS-ID:      $Id: srcparser.h,v 1.5 2004/07/15 06:27:13 ABX Exp $
+// RCS-ID:      $Id: srcparser.h,v 1.14 2005/06/02 09:44:45 ABX Exp $
 // Copyright:   (c) Aleskandars Gluchovas
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -29,10 +29,6 @@
 #else
     #include "wx/string.h"
     #include "wxstlvec.h"
-
-    // FOR NOW:: quick n' dirty:
-
-    #define  string wxString
 
 #endif
 
@@ -129,8 +125,8 @@ class spComment;
     typedef vector<spComment*> MCommentListT;
     // list of parameters
     typedef vector<spParameter*> MParamListT;
-    // string list
-    typedef vector<string>     StrListT;
+    // wxString list
+    typedef vector<wxString>   StrListT;
 
 #else
 
@@ -140,7 +136,7 @@ class spComment;
     typedef WXSTL_VECTOR_SHALLOW_COPY(spContextPtrT)   MMemberListT;
     typedef WXSTL_VECTOR_SHALLOW_COPY(spCommentPtrT)   MCommentListT;
     typedef WXSTL_VECTOR_SHALLOW_COPY(spParameterPtrT) MParamListT;
-    typedef WXSTL_VECTOR_SHALLOW_COPY(string)          StrListT;
+    typedef WXSTL_VECTOR_SHALLOW_COPY(wxString)        StrListT;
 
 #endif
 // base class for all visitors of source code contents
@@ -163,7 +159,7 @@ public:
     // spClass on sorting the class members
 
     void VisitAll( spContext& atContext,
-                   bool sortContent = TRUE
+                   bool sortContent = true
                  );
 
     // methods invoked by visitor
@@ -230,23 +226,23 @@ public:
 class spComment
 {
 public:
-    string mText;
-    bool   mIsMultiline; // multiline comments ar those with /**/'s
+    wxString  m_Text;
+    bool      mIsMultiline; // multiline comments ar those with /**/'s
 
-    // TRUE, if these was an empty empty
+    // true, if these was an empty empty
     // line above single line comment
 
-    bool   mStartsPar;
+    bool      mStartsPar;
 
 public:
 
-    bool    IsMultiline() const;
-    bool    StartsParagraph() const;
+    bool      IsMultiline() const;
+    bool      StartsParagraph() const;
 
-    string& GetText();
+    wxString& GetText();
 
     // contstant version of GetText()
-    string  GetText() const;
+    wxString  GetText() const;
 };
 
 // abstract base class for common (to most languages) code
@@ -263,7 +259,7 @@ protected:
     MMemberListT   mMembers;
 
     // NULL, if this is top-most context
-    spContext*    mpParent;
+    spContext*    m_pParent;
 
     // points to context object, where the this context
     // was originally declared, meaning that this object
@@ -308,15 +304,15 @@ public:
     // see SRC_VISIBLITY_TYPES enumeration
     int           mVisibility;
 
-    // TRUE, if context does not really exist in the source
+    // true, if context does not really exist in the source
     //       but was created by external tools (e.g. forward engineering)
 
     bool         mIsVirtualContext;
     bool         mVirtualContextHasChildren;
 
-    // body of the context in case (mIsVirtual == TRUE)
-    string       mVirtualContextBody;
-    string       mVittualContextFooter;
+    // body of the context in case (mIsVirtual == true)
+    wxString     mVirtualContextBody;
+    wxString     mVittualContextFooter;
 
     // e.g. can be used by documentation generator to store
     // reference to section object
@@ -324,7 +320,7 @@ public:
 
 public:
     // universal identifier of the context (e.g. class name)
-    string        mName;
+    wxString      m_Name;
 
 public:
     // default constructor
@@ -356,21 +352,21 @@ public:
 
     bool VitualContextHasChildren();
 
-    void SetVirtualContextBody( const string& body,
-                                bool  hasChildren = FALSE,
-                                const string& footer = wxEmptyString );
+    void SetVirtualContextBody( const wxString& body,
+                                bool  hasChildren = false,
+                                const wxString& footer = wxEmptyString );
 
-    string GetVirtualContextBody();
-    string GetFooterOfVirtualContextBody();
+    wxString GetVirtualContextBody();
+    wxString GetFooterOfVirtualContextBody();
 
     // can be overriden by top-level context classes
     // to find-out ot the source-fragment of this
     // context using it's position information
-    virtual string GetBody( spContext* pCtx = NULL );
+    virtual wxString GetBody( spContext* pCtx = NULL );
 
-    virtual string GetHeader( spContext* pCtx = NULL );
+    virtual wxString GetHeader( spContext* pCtx = NULL );
 
-    // TRUE, if there is at least one entry
+    // true, if there is at least one entry
     // in the comment list of this context
     bool HasComments();
     MCommentListT& GetCommentList() { return mComments; }
@@ -381,7 +377,7 @@ public:
     virtual void SortMembers() {}
 
     // returns identifier of this context
-    inline string& GetName() { return mName; }
+    inline wxString& GetName() { return m_Name; }
 
     // returns -1, if souce line # is unknow
     inline int GetSourceLineNo() { return mSrcLineNo; }
@@ -395,7 +391,7 @@ public:
     spContext* GetOutterContext();
 
     // perhaps more intuitive alias for `GetOutterContext()'
-    inline spContext* GetParent() { return mpParent; }
+    inline spContext* GetParent() { return m_pParent; }
 
     bool HasOutterContext();
 
@@ -410,11 +406,11 @@ public:
     // returns NULL, if the context with the given
     // name and type is not contained by this context
     // and it's children. Children's children are not
-    // searched recursivelly if searchSubMembers is FALSE
+    // searched recursivelly if searchSubMembers is false
 
-    spContext* FindContext( const string& identifier,
+    spContext* FindContext( const wxString& identifier,
                             int   contextType      = SP_CTX_ANY,
-                            bool  searchSubMembers = TRUE
+                            bool  searchSubMembers = true
                           );
 
     // removes this context from it's parent
@@ -423,19 +419,19 @@ public:
     //  will result assertion failure)
     void RemoveThisContext();
 
-    // returns TRUE, if this object is aggregated in the file
+    // returns true, if this object is aggregated in the file
     bool IsInFile();
 
-    // TRUE, if outter context is a namespace
+    // true, if outter context is a namespace
     bool IsInNameSpace();
 
-    // TRUE, if outter context is a class
+    // true, if outter context is a class
     bool IsInClass();
 
-    // TRUE, if outter cotext is an operation (TRUE for "spParameter"s)
+    // true, if outter cotext is an operation (true for "spParameter"s)
     bool IsInOperation();
 
-    // TRUE if the context is public
+    // true if the context is public
     bool IsPublic() const { return mVisibility == SP_VIS_PUBLIC; }
 
     // NOTE:: method returns not the type of this object
@@ -497,10 +493,10 @@ class spParameter : public spContext
 {
 public:
     // type of argument (parameter)
-    string mType;
+    wxString m_Type;
 
     // "stringified" initial value
-    string mInitVal;
+    wxString m_InitVal;
 
 public:
     virtual int GetContextType() const { return SP_CTX_PARAMETER; }
@@ -518,10 +514,10 @@ class spAttribute : public spContext
 {
 public:
     // type of the attribute
-    string mType;
+    wxString m_Type;
 
     // it's initial value
-    string mInitVal;
+    wxString m_InitVal;
 
     // constantness
     bool   mIsConstant;
@@ -539,25 +535,25 @@ class spOperation : public spContext
 {
 public:
     // type of return value
-    string      mRetType;
+    wxString    m_RetType;
 
     // argument list
     //MParamListT mParams;
 
-    // TRUE, if operation does not modify
+    // true, if operation does not modify
     // the content of the object
     bool        mIsConstant;
 
     // flag, specific to C++
     bool        mIsVirtual;
 
-    // TRUE, if definition follows the declaration immediatelly
+    // true, if definition follows the declaration immediatelly
     bool        mHasDefinition;
 
     // scope if any (e.g. MyClass::MyFunction(), scope stirng is "MyClass" )
     // usually found along with implementation of the method, which is now skipped
 
-    string      mScope;
+    wxString    mScope;
 
 public:
     spOperation();
@@ -577,7 +573,7 @@ public:
     // the default implementation outputs name in
     // C++/Java syntax
 
-    virtual string GetFullName(MarkupTagsT tags);
+    virtual wxString GetFullName(MarkupTagsT tags);
 
     virtual int GetContextType() const { return SP_CTX_OPERATION; }
 
@@ -596,7 +592,7 @@ public:
 
     // prepocessor statement including '#' and
     // attached multiple lines with '\' character
-    string mLine;
+    wxString m_Line;
 
     int    mDefType; // see SP_PREP_DEFINITION_TYPES enumeration
 
@@ -606,7 +602,7 @@ public:
 
     virtual int GetStatementType() const { return mDefType; }
 
-    string CPP_GetIncludedFileNeme() const;
+    wxString CPP_GetIncludedFileNeme() const;
 
     virtual void AcceptVisitor( spVisitor& visitor )
         { visitor.VisitPreprocessorLine( *this ); }
@@ -620,7 +616,7 @@ class spClass : public spContext
 {
 public:
     // list of superclasses/interfaces
-    StrListT     mSuperClassNames;
+    StrListT     m_SuperClassNames;
 
     // see SP_CLASS_TYPES enumeration
     int          mClassSubType;
@@ -629,9 +625,9 @@ public:
     int          mInheritanceType;
 
     // valid if mClassSubType is SP_CLTYPE_TEMPLATE_CLASS
-    string       mTemplateTypes;
+    wxString     mTemplateTypes;
 
-    // TRUE, if it's and interface of abstract base class
+    // true, if it's and interface of abstract base class
     bool         mIsAbstract;
 
 public:
@@ -662,7 +658,7 @@ public:
 class spEnumeration  : public spContext
 {
 public:
-    string mEnumContent; // full-text content of enumeration
+    wxString m_EnumContent; // full-text content of enumeration
 
 public:
     virtual int GetContextType() const { return SP_CTX_ENUMERATION; }
@@ -678,7 +674,7 @@ class spTypeDef  : public spContext
 public:
     // the original type which is redefined
     // by this type definition
-    string mOriginalType;
+    wxString m_OriginalType;
 
 public:
     virtual int GetContextType() const { return SP_CTX_TYPEDEF; }
@@ -698,7 +694,7 @@ class spFile : public spContext
 public:
     // since file name cannot be determined from
     // source code, filling in this field is optional
-    string mFileName;
+    wxString m_FileName;
 
 public:
     virtual int GetContextType() const { return SP_CTX_FILE; }

@@ -4,7 +4,7 @@
 // Author:      Vadim Zeitlin
 // Modified by:
 // Created:     21.06.2003 (extracted from common/fontmap.cpp)
-// RCS-ID:      $Id: fmapbase.cpp,v 1.12 2004/09/14 12:08:28 ABX Exp $
+// RCS-ID:      $Id: fmapbase.cpp,v 1.15 2005/06/16 14:16:43 DS Exp $
 // Copyright:   (c) 1999-2003 Vadim Zeitlin <vadim@wxwindows.org>
 // License:     wxWindows license
 ///////////////////////////////////////////////////////////////////////////////
@@ -73,6 +73,7 @@ static wxFontEncoding gs_encodings[] =
     wxFONTENCODING_ISO8859_15,
     wxFONTENCODING_KOI8,
     wxFONTENCODING_KOI8_U,
+    wxFONTENCODING_CP874,
     wxFONTENCODING_CP932,
     wxFONTENCODING_CP936,
     wxFONTENCODING_CP949,
@@ -117,6 +118,7 @@ static const wxChar* gs_encodingDescs[] =
     wxTRANSLATE( "Western European with Euro (ISO-8859-15)" ),
     wxTRANSLATE( "KOI8-R" ),
     wxTRANSLATE( "KOI8-U" ),
+    wxTRANSLATE( "Windows Thai (CP 874)" ),
     wxTRANSLATE( "Windows Japanese (CP 932)" ),
     wxTRANSLATE( "Windows Chinese Simplified (CP 936)" ),
     wxTRANSLATE( "Windows Korean (CP 949)" ),
@@ -161,6 +163,7 @@ static const wxChar* gs_encodingNames[] =
     wxT( "iso-8859-15" ),
     wxT( "koi8-r" ),
     wxT( "koi8-u" ),
+    wxT( "windows-874" ),
     wxT( "windows-932" ),
     wxT( "windows-936" ),
     wxT( "windows-949" ),
@@ -199,7 +202,7 @@ class wxFontMapperModule : public wxModule
 public:
     wxFontMapperModule() : wxModule() { }
     virtual bool OnInit() { return true; }
-    virtual void OnExit() { delete wxFontMapper::Set(NULL); }
+    virtual void OnExit() { delete (wxFontMapperBase*)wxFontMapperBase::Set(NULL); }
 
     DECLARE_DYNAMIC_CLASS(wxFontMapperModule)
 };
@@ -233,8 +236,11 @@ wxFontMapperBase::~wxFontMapperBase()
 #endif // wxUSE_CONFIG
 }
 
+bool wxFontMapperBase::IsWxFontMapper()
+{   return false; }
+
 /* static */
-wxFontMapper *wxFontMapperBase::Get()
+wxFontMapperBase *wxFontMapperBase::Get()
 {
     if ( !sm_instance )
     {
@@ -255,7 +261,7 @@ wxFontMapper *wxFontMapperBase::Get()
         }
     }
 
-    return sm_instance;
+    return (wxFontMapperBase*)sm_instance;
 }
 
 /* static */
@@ -623,6 +629,10 @@ wxFontMapperBase::NonInteractiveCharsetToEncoding(const wxString& charset)
 
                     switch ( value )
                     {
+                        case 874:
+                            encoding = wxFONTENCODING_CP874;
+                            break;
+
                         case 932:
                             encoding = wxFONTENCODING_CP932;
                             break;

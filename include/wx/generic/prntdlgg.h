@@ -5,8 +5,8 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     01/02/97
-// RCS-ID:      $Id: prntdlgg.h,v 1.24 2004/11/01 15:24:39 RR Exp $
-// Copyright:   (c)
+// RCS-ID:      $Id: prntdlgg.h,v 1.28 2005/05/04 18:52:32 JS Exp $
+// Copyright:   (c) Julian Smart
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
 
@@ -43,7 +43,8 @@ class WXDLLEXPORT wxPageSetupData;
 // constants
 // ----------------------------------------------------------------------------
 
-// FIXME why all these enums start with 10 or 30?
+// This is not clear why all these enums start with 10 or 30 but do not change it
+// without good reason to avoid some subtle backwards compatibility breakage
 
 enum
 {
@@ -85,12 +86,12 @@ class WXDLLEXPORT wxPostScriptPrintNativeData: public wxPrintNativeDataBase
 public:
     wxPostScriptPrintNativeData();
     virtual ~wxPostScriptPrintNativeData();
-    
+
     virtual bool TransferTo( wxPrintData &data );
     virtual bool TransferFrom( const wxPrintData &data );
-    
+
     virtual bool Ok() const { return true; }
-    
+
     const wxString& GetPrinterCommand() const { return m_printerCommand; }
     const wxString& GetPrinterOptions() const { return m_printerOptions; }
     const wxString& GetPreviewCommand() const { return m_previewCommand; }
@@ -128,11 +129,11 @@ private:
 #if wxUSE_STREAMS
     wxOutputStream *m_outputStream;
 #endif
-    
+
 private:
     DECLARE_DYNAMIC_CLASS(wxPostScriptPrintNativeData)
 };
-    
+
 // ----------------------------------------------------------------------------
 // Simulated Print and Print Setup dialogs for non-Windows platforms (and
 // Windows using PostScript print/preview)
@@ -194,7 +195,7 @@ public:
     void Init(wxPrintData* data);
 
     void OnPrinter(wxListEvent& event);
-    
+
     virtual bool TransferDataFromWindow();
     virtual bool TransferDataToWindow();
 
@@ -210,7 +211,7 @@ public:
 
     wxPrintData         m_printData;
     wxPrintData&        GetPrintData() { return m_printData; }
-    
+
     // After pressing OK, write data here.
     wxPrintData*        m_targetData;
 
@@ -221,20 +222,20 @@ private:
 #endif
     // wxUSE_POSTSCRIPT
 
-class WXDLLEXPORT wxGenericPageSetupDialog : public wxDialog
+class WXDLLEXPORT wxGenericPageSetupDialog : public wxPageSetupDialogBase
 {
 public:
     wxGenericPageSetupDialog(wxWindow *parent = NULL,
-                             wxPageSetupData* data = NULL);
+                             wxPageSetupDialogData* data = NULL);
     virtual ~wxGenericPageSetupDialog();
 
     virtual bool TransferDataFromWindow();
     virtual bool TransferDataToWindow();
 
-    void OnPrinter(wxCommandEvent& event);
+    virtual wxPageSetupDialogData& GetPageSetupDialogData();
 
+    void OnPrinter(wxCommandEvent& event);
     wxComboBox *CreatePaperTypeChoice(int* x, int* y);
-    wxPageSetupData& GetPageSetupData() { return m_pageData; }
 
 public:
     wxButton*       m_printerButton;
@@ -245,9 +246,7 @@ public:
     wxTextCtrl*     m_marginBottomText;
     wxComboBox*       m_paperTypeChoice;
 
-    static bool     m_pageSetupDialogCancelled;
-
-    wxPageSetupData m_pageData;
+    wxPageSetupDialogData m_pageData;
 
 private:
     DECLARE_EVENT_TABLE()
@@ -257,4 +256,4 @@ private:
 #endif
 
 #endif
-// __PRINTDLGH_G__
+// __PRINTDLGH_G_

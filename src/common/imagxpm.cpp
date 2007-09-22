@@ -2,7 +2,7 @@
 // Name:        imagxpm.cpp
 // Purpose:     wxXPMHandler
 // Author:      Vaclav Slavik, Robert Roebling
-// RCS-ID:      $Id: imagxpm.cpp,v 1.17 2004/09/16 18:13:31 ABX Exp $
+// RCS-ID:      $Id: imagxpm.cpp,v 1.18 2005/03/17 23:19:06 VZ Exp $
 // Copyright:   (c) 2001 Vaclav Slavik
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -180,7 +180,7 @@ bool wxXPMHandler::SaveFile(wxImage * image,
 
     // 2b. generate colour table:
     for (wxImageHistogram::iterator entry = histogram.begin();
-         entry != histogram.end(); entry++ )
+         entry != histogram.end(); ++entry )
     {
         unsigned long index = entry->second.index;
         symbols[index] = symbols_data + index * (chars_per_pixel+1);

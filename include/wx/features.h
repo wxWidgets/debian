@@ -5,7 +5,7 @@
 *  Author:      Vadim Zeitlin
 *  Modified by: Ryan Norton (Converted to C)
 *  Created:     18.03.02
-*  RCS-ID:      $Id: features.h,v 1.26 2004/11/01 05:57:24 SC Exp $
+*  RCS-ID:      $Id: features.h,v 1.28 2005/05/21 16:59:23 JS Exp $
 *  Copyright:   (c) 2002 Vadim Zeitlin <vadim@wxwidgets.org>
 *  Licence:     wxWindows licence
 */
@@ -23,16 +23,16 @@
 #endif
 
 /*  the raw keyboard codes are generated under wxGTK and wxMSW only */
-#if defined(__WXGTK__) || defined(__WXMSW__)
+#if defined(__WXGTK__) || defined(__WXMSW__) || defined(__WXMAC__)
     #define wxHAS_RAW_KEY_CODES
 #else
     #undef wxHAS_RAW_KEY_CODES
 #endif
 
 /*  taskbar is implemented in the major ports */
-#if defined(__WXMSW__) || defined(__WXCOCOA__) || \
-        defined(__WXGTK__) || defined(__WXMOTIF__) || defined(__WXX11__) || \
-	(defined(__WXMAC__) && defined(__WXMAC_OSX__)) || defined(__WXCOCOA__)
+#if defined(__WXMSW__) || defined(__WXCOCOA__) \
+    || defined(__WXGTK__) || defined(__WXMOTIF__) || defined(__WXX11__) \
+    || defined(__WXMAC_OSX__) || defined(__WXCOCOA__)
     #define wxHAS_TASK_BAR_ICON
 #else
     #undef wxHAS_TASK_BAR_ICON

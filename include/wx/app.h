@@ -5,7 +5,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     01/02/97
-// RCS-ID:      $Id: app.h,v 1.124 2004/10/19 13:39:02 JS Exp $
+// RCS-ID:      $Id: app.h,v 1.129 2005/06/21 09:56:12 VS Exp $
 // Copyright:   (c) Julian Smart
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -206,12 +206,12 @@ public:
         // user-defined class (default implementation creates a wxLogGui
         // object) -- this log object is used by default by all wxLogXXX()
         // functions.
-    virtual wxLog *CreateLogTarget();
+    wxDEPRECATED( virtual wxLog *CreateLogTarget() );
 #endif // wxUSE_LOG
 
         // similar to CreateLogTarget() but for the global wxMessageOutput
         // object
-    virtual wxMessageOutput *CreateMessageOutput();
+    wxDEPRECATED( virtual wxMessageOutput *CreateMessageOutput() );
 
 #endif // WXWIN_COMPATIBILITY_2_4
 
@@ -263,7 +263,7 @@ public:
     // version does the normal processing (i.e. shows the usual assert failure
     // dialog box)
     //
-    // the arguments are the place where the assert occured, the text of the
+    // the arguments are the place where the assert occurred, the text of the
     // assert itself and the user-specified message
 #ifdef __WXDEBUG__
     virtual void OnAssert(const wxChar *file,
@@ -278,10 +278,7 @@ public:
     static bool CheckBuildOptions(const char *optionsSignature,
                                   const char *componentName);
 #if WXWIN_COMPATIBILITY_2_4
-    static bool CheckBuildOptions(const wxBuildOptions& buildOptions)
-    {
-        return CheckBuildOptions(buildOptions.m_signature, "your program");
-    }
+    wxDEPRECATED( static bool CheckBuildOptions(const wxBuildOptions& buildOptions) );
 #endif
 
     // implementation only from now on
@@ -561,7 +558,7 @@ protected:
 // ----------------------------------------------------------------------------
 
 #if wxUSE_GUI
-    #if defined(__PALMOS__)
+    #if defined(__WXPALMOS__)
         #include "wx/palmos/app.h"
     #elif defined(__WXMSW__)
         #include "wx/msw/app.h"

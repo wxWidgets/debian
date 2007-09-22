@@ -4,7 +4,7 @@
 // Author:      Royce Mitchell III
 // Modified by: Vadim Zeitlin (resolution changes, display modes, ...)
 // Created:     06/21/02
-// RCS-ID:      $Id: display.h,v 1.19 2004/11/07 00:48:29 RN Exp $
+// RCS-ID:      $Id: display.h,v 1.20 2005/01/21 18:48:18 ABX Exp $
 // Copyright:   (c) 2002-2003 wxWidgets team
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -29,7 +29,7 @@ class WXDLLEXPORT wxString;
 WX_DECLARE_EXPORTED_OBJARRAY(wxVideoMode, wxArrayVideoModes);
 
 // default, uninitialized, video mode object
-WXDLLEXPORT_DATA(extern const wxVideoMode) wxDefaultVideoMode;
+extern WXDLLEXPORT_DATA(const wxVideoMode) wxDefaultVideoMode;
 
 // ----------------------------------------------------------------------------
 // wxDisplayBase: represents a display/monitor attached to the system

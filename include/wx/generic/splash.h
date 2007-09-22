@@ -4,9 +4,9 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     28/6/2000
-// RCS-ID:      $Id: splash.h,v 1.10 2004/10/13 14:04:11 ABX Exp $
+// RCS-ID:      $Id: splash.h,v 1.11 2005/05/04 18:52:32 JS Exp $
 // Copyright:   (c) Julian Smart
-// Licence:
+// Licence:     wxWindows Licence
 /////////////////////////////////////////////////////////////////////////////
 
 #if defined(__GNUG__) && !defined(NO_GCC_PRAGMA)

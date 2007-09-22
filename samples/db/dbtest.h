@@ -4,7 +4,7 @@
 // Author:      George Tasker
 // Modified by:
 // Created:     1998
-// RCS-ID:      $Id: dbtest.h,v 1.33 2004/11/10 12:12:37 GT Exp $
+// RCS-ID:      $Id: dbtest.h,v 1.35 2005/06/02 12:03:58 JS Exp $
 // Copyright:   (c) 1998 Remstar International, Inc.
 // Licence:     wxWindows licence
 ///////////////////////////////////////////////////////////////////////////////
@@ -26,9 +26,9 @@ enum    DialogModes {mView,mCreate,mEdit,mSearch};
 #if wxUSE_GRID
 #define FILE_DBGRID_TABLE     130
 #endif
-#define FILE_EXIT             199
+#define FILE_EXIT             wxID_EXIT
 #define EDIT_PARAMETERS       200
-#define HELP_ABOUT            300
+#define HELP_ABOUT            wxID_ABOUT
 
 // this seems to be missing, Robert Roebling (?)
 #ifndef MAX_PATH
@@ -40,7 +40,7 @@ enum    DialogModes {mView,mCreate,mEdit,mSearch};
 #endif
 
 // Name of the table to be created/opened
-const wxString     CONTACT_TABLE_NAME       = wxT("contacts");
+const wxString     CONTACT_TABLE_NAME       = wxT("CONTACTS");
 
 #define wxODBC_BLOB_SUPPORT
 

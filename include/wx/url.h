@@ -4,7 +4,7 @@
 // Author:      Guilhem Lavaux
 // Modified by: Ryan Norton
 // Created:     20/07/1997
-// RCS-ID:      $Id: url.h,v 1.26 2004/10/30 20:22:20 RN Exp $
+// RCS-ID:      $Id: url.h,v 1.30 2005/03/19 23:09:30 MBN Exp $
 // Copyright:   (c) 1997, 1998 Guilhem Lavaux
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -64,35 +64,35 @@ public:
 
     wxInputStream *GetInputStream();
 
-#if wxUSE_SOCKETS
+#if wxUSE_PROTOCOL_HTTP
     static void SetDefaultProxy(const wxString& url_proxy);
     void SetProxy(const wxString& url_proxy);
-#endif // wxUSE_SOCKETS
+#endif // wxUSE_PROTOCOL_HTTP
 
 #if WXWIN_COMPATIBILITY_2_4
     //Use the proper wxURI accessors instead
-    wxString GetProtocolName() const { return m_scheme; }
-    wxString GetHostName() const     { return m_server; }
-    wxString GetPath() const         { return m_path; }
+    wxDEPRECATED( wxString GetProtocolName() const );
+    wxDEPRECATED( wxString GetHostName() const );
+    wxDEPRECATED( wxString GetPath() const );
 
     //Use wxURI instead - this does not work that well
-    static wxString ConvertToValidURI(
+    wxDEPRECATED( static wxString ConvertToValidURI(
                         const wxString& uri,
                         const wxChar* delims = wxT(";/?:@&=+$,")
-                    );
+                  ) );
 
     //Use wxURI::Unescape instead
-    static wxString ConvertFromURI(const wxString& uri);
+    wxDEPRECATED( static wxString ConvertFromURI(const wxString& uri) );
 #endif
 
 protected:
     static wxProtoInfo *ms_protocols;
 
-#if wxUSE_SOCKETS
+#if wxUSE_PROTOCOL_HTTP
     static wxHTTP *ms_proxyDefault;
     static bool ms_useDefaultProxy;
     wxHTTP *m_proxy;
-#endif // wxUSE_SOCKETS
+#endif // wxUSE_PROTOCOL_HTTP
 
 #if wxUSE_URL_NATIVE
     friend class wxURLNativeImp;

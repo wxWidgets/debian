@@ -3,7 +3,7 @@
 // Purpose:     wxFileSystem class - interface for opening files
 // Author:      Vaclav Slavik
 // Copyright:   (c) 1999 Vaclav Slavik
-// CVS-ID:      $Id: filesys.cpp,v 1.58 2004/11/04 20:09:05 ABX Exp $
+// CVS-ID:      $Id: filesys.cpp,v 1.60 2005/02/01 19:37:35 ABX Exp $
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
 
@@ -64,28 +64,28 @@ wxString wxFileSystemHandler::GetMimeTypeFromExt(const wxString& location)
         static const wxFileTypeInfo fallbacks[] =
         {
             wxFileTypeInfo(_T("image/jpeg"),
-                           _T(""),
-                           _T(""),
+                           wxEmptyString,
+                           wxEmptyString,
                            _T("JPEG image (from fallback)"),
                            _T("jpg"), _T("jpeg"), _T("JPG"), _T("JPEG"), NULL),
             wxFileTypeInfo(_T("image/gif"),
-                           _T(""),
-                           _T(""),
+                           wxEmptyString,
+                           wxEmptyString,
                            _T("GIF image (from fallback)"),
                            _T("gif"), _T("GIF"), NULL),
             wxFileTypeInfo(_T("image/png"),
-                           _T(""),
-                           _T(""),
+                           wxEmptyString,
+                           wxEmptyString,
                            _T("PNG image (from fallback)"),
                            _T("png"), _T("PNG"), NULL),
             wxFileTypeInfo(_T("image/bmp"),
-                           _T(""),
-                           _T(""),
+                           wxEmptyString,
+                           wxEmptyString,
                            _T("windows bitmap image (from fallback)"),
                            _T("bmp"), _T("BMP"), NULL),
             wxFileTypeInfo(_T("text/html"),
-                           _T(""),
-                           _T(""),
+                           wxEmptyString,
+                           wxEmptyString,
                            _T("HTML document (from fallback)"),
                            _T("htm"), _T("html"), _T("HTM"), _T("HTML"), NULL),
             // must terminate the table with this!
@@ -460,8 +460,8 @@ void wxFileSystem::CleanUpHandlers()
     WX_CLEAR_LIST(wxList, m_Handlers);
 }
 
-const static wxString g_unixPathString(wxT("/"));
-const static wxString g_nativePathString(wxFILE_SEP_PATH);
+static const wxString g_unixPathString(wxT("/"));
+static const wxString g_nativePathString(wxFILE_SEP_PATH);
 
 // Returns the native path for a file URL
 wxFileName wxFileSystem::URLToFileName(const wxString& url)

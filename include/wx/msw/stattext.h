@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     01/02/97
-// RCS-ID:      $Id: stattext.h,v 1.26 2004/06/21 22:58:06 RD Exp $
+// RCS-ID:      $Id: stattext.h,v 1.28 2005/04/10 15:22:58 VZ Exp $
 // Copyright:   (c) Julian Smart
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -51,6 +51,7 @@ protected:
                            int sizeFlags = wxSIZE_AUTO);
     virtual wxSize DoGetBestSize() const;
     virtual WXDWORD MSWGetStyle(long flags, WXDWORD *exstyle = NULL) const;
+
 
     DECLARE_DYNAMIC_CLASS_NO_COPY(wxStaticText)
 };

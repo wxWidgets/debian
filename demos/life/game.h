@@ -4,7 +4,7 @@
 // Author:      Guillermo Rodriguez Garcia, <guille@iies.es>
 // Modified by:
 // Created:     Jan/2000
-// RCS-ID:      $Id: game.h,v 1.10 2004/05/27 17:38:06 ABX Exp $
+// RCS-ID:      $Id: game.h,v 1.11 2005/01/31 18:18:16 ABX Exp $
 // Copyright:   (c) 2000, Guillermo Rodriguez Garcia
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -47,8 +47,8 @@ public:
         m_rules       = rules;
         m_shape       = shape;
     };
-    
-    // A more convenient ctor for the built-in samples    
+
+    // A more convenient ctor for the built-in samples
     LifePattern(wxString      name,
                 wxString      description,
                 int           width,
@@ -57,7 +57,7 @@ public:
     {
         m_name        = name;
         m_description = description;
-        m_rules       = _("");
+        m_rules       = wxEmptyString;
         m_shape.Add( wxString::Format(_T("%i %i"), -width/2, -height/2) );
         for(int j = 0; j < height; j++)
         {
@@ -88,7 +88,7 @@ struct LifeCell
 {
     wxInt32 i;
     wxInt32 j;
-};       
+};
 
 // A private class that contains data about a block of cells
 class LifeCellBox;

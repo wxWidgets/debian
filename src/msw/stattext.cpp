@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     04/01/98
-// RCS-ID:      $Id: stattext.cpp,v 1.57 2004/09/04 01:53:42 ABX Exp $
+// RCS-ID:      $Id: stattext.cpp,v 1.64 2005/05/18 02:22:59 RD Exp $
 // Copyright:   (c) Julian Smart
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -23,14 +23,15 @@
 #if wxUSE_STATTEXT
 
 #ifndef WX_PRECOMP
-#include "wx/event.h"
-#include "wx/app.h"
-#include "wx/brush.h"
+    #include "wx/event.h"
+    #include "wx/app.h"
+    #include "wx/brush.h"
+    #include "wx/dcclient.h"
+    #include "wx/settings.h"
 #endif
 
 #include "wx/stattext.h"
 #include "wx/msw/private.h"
-#include <stdio.h>
 
 #if wxUSE_EXTENDED_RTTI
 WX_DEFINE_FLAGS( wxStaticTextStyle )
@@ -127,75 +128,24 @@ WXDWORD wxStaticText::MSWGetStyle(long style, WXDWORD *exstyle) const
 
 wxSize wxStaticText::DoGetBestSize() const
 {
-    wxString text(wxGetWindowText(GetHWND()));
+    wxClientDC dc(wx_const_cast(wxStaticText *, this));
+    wxFont font(GetFont());
+    if (!font.Ok())
+        font = wxSystemSettings::GetFont(wxSYS_DEFAULT_GUI_FONT);
+    
+    dc.SetFont(font);
 
-    int widthTextMax = 0, widthLine,
-        heightTextTotal = 0, heightLineDefault = 0, heightLine = 0;
+    wxCoord widthTextMax, heightTextTotal;
+    dc.GetMultiLineTextExtent(GetLabel(), &widthTextMax, &heightTextTotal);
 
-    bool lastWasAmpersand = false;
-
-    wxString curLine;
-    for ( const wxChar *pc = text; ; pc++ )
-    {
-        if ( *pc == wxT('\n') || *pc == wxT('\0') )
-        {
-            if ( !curLine )
-            {
-                // we can't use GetTextExtent - it will return 0 for both width
-                // and height and an empty line should count in height
-                // calculation
-                if ( !heightLineDefault )
-                    heightLineDefault = heightLine;
-                if ( !heightLineDefault )
-                    GetTextExtent(_T("W"), NULL, &heightLineDefault);
-
-                heightTextTotal += heightLineDefault;
-            }
-            else
-            {
-                GetTextExtent(curLine, &widthLine, &heightLine);
-                if ( widthLine > widthTextMax )
-                    widthTextMax = widthLine;
-                heightTextTotal += heightLine;
-            }
-
-            if ( *pc == wxT('\n') )
-            {
-               curLine.Empty();
-            }
-            else
-            {
-               // the end of string
-               break;
-            }
-        }
-        else
-        {
-            // we shouldn't take into account the '&' which just introduces the
-            // mnemonic characters and so are not shown on the screen -- except
-            // when it is preceded by another '&' in which case it stands for a
-            // literal ampersand
-            if ( *pc == _T('&') )
-            {
-                if ( !lastWasAmpersand )
-                {
-                    lastWasAmpersand = true;
-
-                    // skip the statement adding pc to curLine below
-                    continue;
-                }
-
-                // it is a literal ampersand
-                lastWasAmpersand = false;
-            }
-
-            curLine += *pc;
-        }
-    }
 #ifdef __WXWINCE__
-    if(widthTextMax) widthTextMax += 2;
-#endif
-    return wxSize(widthTextMax, heightTextTotal);
+    if ( widthTextMax )
+        widthTextMax += 2;
+#endif // __WXWINCE__
+
+    wxSize best(widthTextMax, heightTextTotal);
+    CacheBestSize(best);
+    return best;
 }
 
 void wxStaticText::DoSetSize(int x, int y, int w, int h, int sizeFlags)

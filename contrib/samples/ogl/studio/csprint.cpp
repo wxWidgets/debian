@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     12/07/98
-// RCS-ID:      $Id: csprint.cpp,v 1.10 2004/07/23 18:04:07 ABX Exp $
+// RCS-ID:      $Id: csprint.cpp,v 1.11 2005/03/31 19:18:23 ABX Exp $
 // Copyright:   (c) Julian Smart
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -24,8 +24,7 @@
 #include <wx/wx.h>
 #endif
 
-#include <wx/deprecated/setup.h>
-#include <wx/deprecated/wxexpr.h>
+#include <wx/ogl/ogl.h> // base header of OGL, includes and adjusts wx/deprecated/setup.h
 
 #include <wx/clipbrd.h>
 
@@ -190,7 +189,7 @@ bool wxDiagramClipboard::CopyToClipboard(double scale)
     if (!newBitmap->Ok())
     {
       delete newBitmap;
-      
+
       wxChar buf[200];
       wxSprintf(buf, _T("Sorry, could not allocate clipboard bitmap (%dx%d)"), (maxX+10), (maxY+10));
       wxMessageBox(buf, _T("Clipboard copy problem"));
@@ -226,7 +225,7 @@ bool wxDiagramClipboard::CopyToClipboard(double scale)
         // Close clipboard
         wxCloseClipboard();
     }
-    
+
     delete newBitmap;
     delete mf;
 

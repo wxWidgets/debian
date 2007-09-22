@@ -3,14 +3,15 @@
 // Purpose:     wxStopWatch and global time-related functions
 // Author:      Julian Smart (wxTimer), Sylvain Bougnoux (wxStopWatch)
 // Created:     26.06.03 (extracted from wx/timer.h)
-// RCS-ID:      $Id: stopwatch.h,v 1.7 2004/09/22 14:38:30 ABX Exp $
-// Copyright:   (c) 1998-2003 wxWidgets team
+// RCS-ID:      $Id: stopwatch.h,v 1.9 2005/05/04 18:52:03 JS Exp $
+// Copyright:   (c) 1998-2003 Julian Smart, Sylvain Bougnoux
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
 
 #ifndef _WX_STOPWATCH_H_
 #define _WX_STOPWATCH_H_
 
+#include "wx/defs.h"
 #include "wx/longlong.h"
 
 // ----------------------------------------------------------------------------

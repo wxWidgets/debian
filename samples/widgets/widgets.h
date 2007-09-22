@@ -4,7 +4,7 @@
 // Purpose:     Common stuff for all widgets project files
 // Author:      Vadim Zeitlin
 // Created:     27.03.01
-// Id:          $Id: widgets.h,v 1.7 2004/05/25 11:19:43 JS Exp $
+// Id:          $Id: widgets.h,v 1.11 2005/02/28 01:15:46 VZ Exp $
 // Copyright:   (c) 2001 Vadim Zeitlin
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -13,7 +13,7 @@
 #define _WX_SAMPLE_WIDGETS_H_
 
 class WXDLLEXPORT wxCheckBox;
-class WXDLLEXPORT wxNotebook;
+class WXDLLEXPORT wxBookCtrl;
 class WXDLLEXPORT wxSizer;
 class WXDLLEXPORT wxTextCtrl;
 
@@ -24,14 +24,26 @@ class WidgetsPageInfo;
 // all source files use wxImageList
 #include "wx/imaglist.h"
 
+#if wxUSE_LOG && !defined(__SMARTPHONE__)
+    #define USE_LOG 1
+#else
+    #define USE_LOG 0
+#endif
+
 // ----------------------------------------------------------------------------
-// WidgetsPage: a notebook page demonstrating some widget
+// WidgetsPage: a book page demonstrating some widget
 // ----------------------------------------------------------------------------
 
 class WidgetsPage : public wxPanel
 {
 public:
-    WidgetsPage(wxNotebook *notebook);
+    WidgetsPage(wxBookCtrl *book);
+
+    // return the control shown by this page
+    virtual wxControl *GetWidget() const = 0;
+
+    // some pages show 2 controls, in this case override this one as well
+    virtual wxControl *GetWidget2() const { return NULL; }
 
 protected:
     // several helper functions for page creation
@@ -71,7 +83,7 @@ public:
 class WidgetsPageInfo
 {
 public:
-    typedef WidgetsPage *(*Constructor)(wxNotebook *notebook,
+    typedef WidgetsPage *(*Constructor)(wxBookCtrl *book,
                                         wxImageList *imaglist);
 
     // our ctor
@@ -105,9 +117,9 @@ private:
 
 // and this one must be inserted somewhere in the source file
 #define IMPLEMENT_WIDGETS_PAGE(classname, label)                            \
-    WidgetsPage *wxCtorFor##classname(wxNotebook *notebook,                 \
+    WidgetsPage *wxCtorFor##classname(wxBookCtrl *book,                     \
                                       wxImageList *imaglist)                \
-        { return new classname(notebook, imaglist); }                       \
+        { return new classname(book, imaglist); }                           \
     WidgetsPageInfo classname::                                             \
         ms_info##classname(wxCtorFor##classname, label)
 

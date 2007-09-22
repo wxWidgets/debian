@@ -2,7 +2,7 @@
 // Name:        imagtiff.h
 // Purpose:     wxImage TIFF handler
 // Author:      Robert Roebling
-// RCS-ID:      $Id: imagtiff.h,v 1.11 2004/09/16 18:13:25 ABX Exp $
+// RCS-ID:      $Id: imagtiff.h,v 1.13 2005/03/16 16:18:19 ABX Exp $
 // Copyright:   (c) Robert Roebling
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -14,14 +14,22 @@
 #pragma interface "imagtiff.h"
 #endif
 
-#include "wx/image.h"
-
+#include "wx/defs.h"
 
 //-----------------------------------------------------------------------------
 // wxTIFFHandler
 //-----------------------------------------------------------------------------
 
 #if wxUSE_LIBTIFF
+
+#include "wx/image.h"
+
+// defines for wxImage::SetOption
+#define wxIMAGE_OPTION_BITSPERSAMPLE               wxString(_T("BitsPerSample"))
+#define wxIMAGE_OPTION_SAMPLESPERPIXEL             wxString(_T("SamplesPerPixel"))
+#define wxIMAGE_OPTION_COMPRESSION                 wxString(_T("Compression"))
+#define wxIMAGE_OPTION_IMAGEDESCRIPTOR             wxString(_T("ImageDescriptor"))
+
 class WXDLLEXPORT wxTIFFHandler: public wxImageHandler
 {
 public:
@@ -37,9 +45,8 @@ public:
 private:
     DECLARE_DYNAMIC_CLASS(wxTIFFHandler)
 };
-#endif
 
+#endif // wxUSE_LIBTIFF
 
-#endif
-  // _WX_IMAGTIFF_H_
+#endif // _WX_IMAGTIFF_H_
 

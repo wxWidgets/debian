@@ -6,7 +6,7 @@
 // Author:      Robin Dunn
 //
 // Created:     30-April-2003
-// RCS-ID:      $Id: pytree.h,v 1.3 2004/03/24 23:09:56 RD Exp $
+// RCS-ID:      $Id: pytree.h,v 1.4 2005/03/09 22:28:46 RD Exp $
 // Copyright:   (c) 2003 by Total Control Software
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -25,7 +25,7 @@ public:
     }
 
     ~wxPyTreeItemData() {
-        bool blocked = wxPyBeginBlockThreads();
+        wxPyBlock_t blocked = wxPyBeginBlockThreads();
         Py_DECREF(m_obj);
         wxPyEndBlockThreads(blocked);
     }
@@ -36,7 +36,7 @@ public:
     }
 
     void SetData(PyObject* obj) {
-        bool blocked = wxPyBeginBlockThreads();
+        wxPyBlock_t blocked = wxPyBeginBlockThreads();
         Py_DECREF(m_obj);
         wxPyEndBlockThreads(blocked);
         m_obj = obj;

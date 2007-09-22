@@ -5,7 +5,7 @@
 // Author:      Robin Dunn
 //
 // Created:     15-Mar-1999
-// RCS-ID:      $Id: glcanvas.i,v 1.31 2004/06/02 02:29:46 RD Exp $
+// RCS-ID:      $Id: glcanvas.i,v 1.32 2004/12/23 20:44:06 RD Exp $
 // Copyright:   (c) 1998 by Total Control Software
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -134,7 +134,7 @@ public:
                const wxPalette& palette = wxNullPalette);
 
     %pythonAppend wxGLCanvas   "val._setOORInfo(val)"
-    %name(GLCanvasWithContext)
+    %RenameCtor(GLCanvasWithContext, 
         wxGLCanvas( wxWindow *parent,
                     const wxGLContext *shared = NULL,
                     wxWindowID id = -1,
@@ -143,7 +143,7 @@ public:
                     long style = 0,
                     const wxString& name = wxPyGLCanvasNameStr,
                     int *attribList = NULL,
-                    const wxPalette& palette = wxNullPalette );
+                    const wxPalette& palette = wxNullPalette ));
 
 
     void SetCurrent();

@@ -4,9 +4,9 @@
 %% Author:      Vadim Zeitlin
 %% Modified by:
 %% Created:     01.01.03
-%% RCS-ID:      $Id: ctrlsub.tex,v 1.6 2004/10/20 11:12:54 ABX Exp $
+%% RCS-ID:      $Id: ctrlsub.tex,v 1.9 2005/02/22 15:09:47 ABX Exp $
 %% Copyright:   (c) 2003 Vadim Zeitlin
-%% License:     wxWidgets license
+%% License:     wxWindows license
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \section{\class{wxControlWithItems}}\label{wxcontrolwithitems}
@@ -269,6 +269,15 @@ the new code. This method is only available if wxWidgets was compiled with
 future versions.
 
 
+\membersection{wxControlWithItems::Select}\label{wxcontrolwithitemsselect}
+
+\func{void}{Select}{\param{int}{ n}}
+
+This is the same as \helpref{SetSelection}{wxcontrolwithitemssetselection} and
+exists only because it is slightly more natural for controls which support
+multiple selection.
+
+
 \membersection{wxControlWithItems::SetClientData}\label{wxcontrolwithitemssetclientdata}
 
 \func{void}{SetClientData}{\param{int}{ n}, \param{void *}{data}}
@@ -310,7 +319,8 @@ pointers had been associated with the control items before.
 Sets the selection to the given item \arg{n} or removes the selection entirely
 if \arg{n} $==$ {\tt wxNOT\_FOUND}.
 
-Note that this does not cause any command events to be emitted.
+Note that this does not cause any command events to be emitted nor does it
+deselect any other items in the controls which support multiple selections.
 
 \wxheading{Parameters}
 
@@ -337,7 +347,7 @@ Sets the label for the given item.
 
 \membersection{wxControlWithItems::SetStringSelection}\label{wxcontrolwithitemssetstringselection}
 
-\func{void}{SetStringSelection}{\param{const wxString\& }{ string}}
+\func{bool}{SetStringSelection}{\param{const wxString\& }{ string}}
 
 Selects the item with the specified string in the control. This doesn't cause
 any command events being emitted.
@@ -345,6 +355,11 @@ any command events being emitted.
 \wxheading{Parameters}
 
 \docparam{string}{The string to select.}
+
+\wxheading{Return value}
+
+\true if the specified string has been selected, \false if it wasn't found in
+the control.
 
 \wxheading{See also}
 

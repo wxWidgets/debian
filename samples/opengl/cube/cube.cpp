@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     04/01/98
-// RCS-ID:      $Id: cube.cpp,v 1.15 2004/10/13 21:19:29 VZ Exp $
+// RCS-ID:      $Id: cube.cpp,v 1.19 2005/03/27 18:08:08 VZ Exp $
 // Copyright:   (c) Julian Smart
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -30,8 +30,9 @@
 #endif
 
 #include "cube.h"
+#include "../../sample.xpm"
 
-#ifndef __WXMSW__     // for wxStopWatch, see remark below
+#ifndef __WXMSW__     // for StopWatch, see remark below
   #if defined(__WXMAC__) && !defined(__DARWIN__)
     #include <utime.h>
     #include <unistd.h>
@@ -135,7 +136,7 @@ int ScanCodeDialog::GetValue()
   in time (in sec)  (because current version of wxGetElapsedTime doesn´t
   works right with glibc-2.1 and linux, at least for me)
 -----------------------------------------------------------------------*/
-unsigned long wxStopWatch( unsigned long *sec_base )
+unsigned long StopWatch( unsigned long *sec_base )
 {
   unsigned long secs,msec;
 
@@ -182,7 +183,7 @@ unsigned long  TestGLCanvas::m_gsynct;
 
 TestGLCanvas::TestGLCanvas(wxWindow *parent, wxWindowID id,
     const wxPoint& pos, const wxSize& size, long style, const wxString& name)
-    : wxGLCanvas(parent, (wxGLCanvas*) NULL, id, pos, size, style, name )
+    : wxGLCanvas(parent, (wxGLCanvas*) NULL, id, pos, size, style|wxFULL_REPAINT_ON_RESIZE , name )
 {
     m_init = false;
     m_gllist = 0;
@@ -190,13 +191,13 @@ TestGLCanvas::TestGLCanvas(wxWindow *parent, wxWindowID id,
     m_rright = WXK_RIGHT;
 }
 
-TestGLCanvas::TestGLCanvas(wxWindow *parent, const TestGLCanvas &other,
+TestGLCanvas::TestGLCanvas(wxWindow *parent, const TestGLCanvas *other,
     wxWindowID id, const wxPoint& pos, const wxSize& size, long style,
     const wxString& name )
-    : wxGLCanvas(parent, other.GetContext(), id, pos, size, style, name)
+    : wxGLCanvas(parent, other->GetContext(), id, pos, size, style|wxFULL_REPAINT_ON_RESIZE , name)
 {
     m_init = false;
-    m_gllist = other.m_gllist; // share display list
+    m_gllist = other->m_gllist; // share display list
     m_rleft = WXK_LEFT;
     m_rright = WXK_RIGHT;
 }
@@ -371,8 +372,8 @@ void TestGLCanvas::OnKeyDown( wxKeyEvent& event )
     if (!m_TimeInitialized)
     {
         m_TimeInitialized = 1;
-        m_xsynct = event.m_timeStamp;
-        m_gsynct = wxStopWatch(&m_secbase);
+        m_xsynct = event.GetTimestamp();
+        m_gsynct = StopWatch(&m_secbase);
 
         m_Key = evkey;
         m_StartTime = 0;
@@ -380,7 +381,7 @@ void TestGLCanvas::OnKeyDown( wxKeyEvent& event )
         m_LastRedraw = 0;
     }
 
-    unsigned long currTime = event.m_timeStamp - m_xsynct;
+    unsigned long currTime = event.GetTimestamp() - m_xsynct;
 
     if (evkey != m_Key)
     {
@@ -393,9 +394,9 @@ void TestGLCanvas::OnKeyDown( wxKeyEvent& event )
         Action( m_Key, m_LastTime-m_StartTime, currTime-m_StartTime );
 
 #if defined(__WXMAC__) && !defined(__DARWIN__)
-        m_LastRedraw = currTime;    // wxStopWatch() doesn't work on Mac...
+        m_LastRedraw = currTime;    // StopWatch() doesn't work on Mac...
 #else
-        m_LastRedraw = wxStopWatch(&m_secbase) - m_gsynct;
+        m_LastRedraw = StopWatch(&m_secbase) - m_gsynct;
 #endif
         m_LastTime = currTime;
     }
@@ -440,6 +441,7 @@ MyFrame::MyFrame(wxWindow *parent, const wxString& title, const wxPoint& pos,
     : wxFrame(parent, wxID_ANY, title, pos, size, style)
 {
     m_canvas = NULL;
+    SetIcon(wxIcon(sample_xpm));
 }
 
 // Intercept menu commands
@@ -456,11 +458,6 @@ void MyFrame::OnExit( wxCommandEvent& WXUNUSED(event) )
 
     MyFrame *frame = new MyFrame(NULL, str, wxDefaultPosition,
         wxSize(400, 300));
-
-    // Give it an icon
-#ifdef __WXMSW__
-    frame->SetIcon(wxIcon(_T("mondrian")));
-#endif
 
     // Make a menubar
     wxMenu *winMenu = new wxMenu;

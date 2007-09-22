@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     04/01/98
-// RCS-ID:      $Id: mdi.cpp,v 1.115 2004/10/08 18:49:07 ABX Exp $
+// RCS-ID:      $Id: mdi.cpp,v 1.119 2005/06/07 19:16:15 ABX Exp $
 // Copyright:   (c) Julian Smart
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -76,7 +76,6 @@ static HWND invalidHandle = 0;
 // constants
 // ---------------------------------------------------------------------------
 
-static const int IDM_WINDOWTILE  = 4001;
 static const int IDM_WINDOWTILEHOR  = 4001;
 static const int IDM_WINDOWCASCADE = 4002;
 static const int IDM_WINDOWICONS = 4003;
@@ -87,10 +86,6 @@ static const int IDM_WINDOWPREV = 4006;
 // This range gives a maximum of 500 MDI children. Should be enough :-)
 static const int wxFIRST_MDI_CHILD = 4100;
 static const int wxLAST_MDI_CHILD = 4600;
-
-// Status border dimensions
-static const int wxTHICK_LINE_BORDER = 3;
-static const int wxTHICK_LINE_WIDTH  = 1;
 
 // ---------------------------------------------------------------------------
 // private functions
@@ -384,10 +379,14 @@ void wxMDIParentFrame::Cascade()
     ::SendMessage(GetWinHwnd(GetClientWindow()), WM_MDICASCADE, 0, 0);
 }
 
-// TODO: add a direction argument (hor/vert)
-void wxMDIParentFrame::Tile()
+void wxMDIParentFrame::Tile(wxOrientation orient)
 {
-    ::SendMessage(GetWinHwnd(GetClientWindow()), WM_MDITILE, MDITILE_HORIZONTAL, 0);
+    wxASSERT_MSG( orient == wxHORIZONTAL || orient == wxVERTICAL,
+                  _T("invalid orientation value") );
+
+    ::SendMessage(GetWinHwnd(GetClientWindow()), WM_MDITILE,
+                  orient == wxHORIZONTAL ? MDITILE_HORIZONTAL
+                                         : MDITILE_VERTICAL, 0);
 }
 
 void wxMDIParentFrame::ArrangeIcons()
@@ -486,9 +485,8 @@ WXLRESULT wxMDIParentFrame::MSWWindowProc(WXUINT message,
             break;
 
         case WM_SIZE:
-            // as we don't (usually) resize the MDI client to exactly fit the
-            // client area (we put it below the toolbar, above statusbar &c),
-            // we should not pass this one to DefFrameProc
+            // though we don't (usually) resize the MDI client to exactly fit the
+            // client area we need to pass this one to DefFrameProc to allow the children to show
             break;
     }
 
@@ -836,8 +834,10 @@ void wxMDIChildFrame::DoGetPosition(int *x, int *y) const
   wxMDIParentFrame *mdiParent = (wxMDIParentFrame *)GetParent();
   ::ScreenToClient((HWND) mdiParent->GetClientWindow()->GetHWND(), &point);
 
-  *x = point.x;
-  *y = point.y;
+  if (x)
+      *x = point.x;
+  if (y)
+      *y = point.y;
 }
 
 void wxMDIChildFrame::InternalSetMenuBar()

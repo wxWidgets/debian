@@ -5,7 +5,7 @@
 // Author:      Robin Dunn
 //
 // Created:     10-June-1998
-// RCS-ID:      $Id: _tglbtn.i,v 1.12 2004/06/02 20:52:59 RD Exp $
+// RCS-ID:      $Id: _tglbtn.i,v 1.13 2004/12/23 20:43:49 RD Exp $
 // Copyright:   (c) 2003 by Total Control Software
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -66,7 +66,7 @@ public:
                    long style = 0,
                    const wxValidator& validator = wxDefaultValidator,
                    const wxString& name = wxPyToggleButtonNameStr);
-    %name(PreToggleButton)wxToggleButton();
+    %RenameCtor(PreToggleButton, wxToggleButton());
 
     bool Create(wxWindow *parent,
                    wxWindowID id=-1,

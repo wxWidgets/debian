@@ -4,7 +4,7 @@
 // Author:      Julian Smart and Guillermo Rodriguez Garcia
 // Modified by:
 // Created:     13/8/99
-// RCS-ID:      $Id: animate.cpp,v 1.8 2004/02/29 15:15:57 MBN Exp $
+// RCS-ID:      $Id: animate.cpp,v 1.11 2005/05/23 23:51:06 RD Exp $
 // Copyright:   (c) Julian Smart and Guillermo Rodriguez Garcia
 // Licence:     wxWindows licence
 ///////////////////////////////////////////////////////////////////////////////
@@ -245,7 +245,7 @@ bool wxAnimationPlayer::PlayFrame(int frame, wxWindow& window, const wxPoint& WX
     // Draw all intermediate frames that haven't been removed from the
     // animation
     int i;
-    for (i = 0; i < (frame - 1); i++)
+    for (i = 0; i < frame; i++)
     {
         if ((GetDisposalMethod(i) == wxANIM_DONOTREMOVE) || (GetDisposalMethod(i) == wxANIM_UNSPECIFIED))
         {
@@ -270,7 +270,11 @@ bool wxAnimationPlayer::PlayFrame()
     PlayFrame(GetCurrentFrame(), * GetWindow(), GetPosition());
 
     // Set the timer for the next frame
-    m_timer.Start(GetDelay(GetCurrentFrame()));
+    int delay = GetDelay(GetCurrentFrame());
+    if (delay == 0)
+        delay = 1;      // 0 is invalid timeout for wxTimer.
+    
+    m_timer.Start(delay);
 
     m_currentFrame ++;
 
@@ -416,7 +420,7 @@ wxImage* wxGIFAnimation::GetFrame(int i) const
 {
     wxASSERT_MSG( (m_decoder != (wxGIFDecoder*) NULL), _T("m_decoder must be non-NULL"));
 
-    m_decoder->GoFrame(i);
+    m_decoder->GoFrame(i + 1);
 
     wxImage* image = new wxImage;
     m_decoder->ConvertToImage(image);
@@ -427,7 +431,7 @@ wxAnimationDisposal wxGIFAnimation::GetDisposalMethod(int i) const
 {
     wxASSERT_MSG( (m_decoder != (wxGIFDecoder*) NULL), _T("m_decoder must be non-NULL"));
 
-    m_decoder->GoFrame(i);
+    m_decoder->GoFrame(i + 1);
 
     int disposalMethod = m_decoder->GetDisposalMethod();
     return (wxAnimationDisposal) disposalMethod;
@@ -437,7 +441,7 @@ wxRect wxGIFAnimation::GetFrameRect(int i) const
 {
     wxASSERT_MSG( (m_decoder != (wxGIFDecoder*) NULL), _T("m_decoder must be non-NULL"));
 
-    m_decoder->GoFrame(i);
+    m_decoder->GoFrame(i + 1);
 
     wxRect rect(m_decoder->GetLeft(), m_decoder->GetTop(), m_decoder->GetWidth(), m_decoder->GetHeight());
     return rect;
@@ -447,7 +451,7 @@ int wxGIFAnimation::GetDelay(int i) const
 {
     wxASSERT_MSG( (m_decoder != (wxGIFDecoder*) NULL), _T("m_decoder must be non-NULL"));
 
-    m_decoder->GoFrame(i);
+    m_decoder->GoFrame(i + 1);
     return m_decoder->GetDelay();
 }
 
@@ -572,6 +576,8 @@ bool wxAnimationCtrlBase::Create(wxWindow *parent, wxWindowID id,
     m_animationPlayer.SetPosition(wxPoint(0, 0));
     m_animationPlayer.SetDestroyAnimation(FALSE);
 
+    LoadFile(filename);
+    
     return TRUE;
 }
 

@@ -6,7 +6,7 @@
 # Author:      Robin Dunn
 #
 # Created:     22-March-2004
-# RCS-ID:      $Id: iewin.py,v 1.1 2004/03/23 05:29:33 RD Exp $
+# RCS-ID:      $Id: iewin.py,v 1.2 2004/12/17 02:01:08 RD Exp $
 # Copyright:   (c) 2004 by Total Control Software
 # Licence:     wxWindows license
 #----------------------------------------------------------------------
@@ -136,7 +136,7 @@ class IEHtmlWindow(wx.activex.IEHtmlWindowBase):
         return self.Navigate2(URL, Flags)
 
 
-    def GetStringSelection(self, asHTML):
+    def GetStringSelection(self, asHTML=True):
         """
         Returns the contents of the selected portion of the document as
         either html or plain text.
@@ -144,7 +144,7 @@ class IEHtmlWindow(wx.activex.IEHtmlWindowBase):
         return wx.activex.IEHtmlWindowBase.GetStringSelection(self, asHTML)
 
 
-    def GetText(self, asHTML):
+    def GetText(self, asHTML=True):
         """
         Returns the contents of the the html document as either html or plain text.
         """

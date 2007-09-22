@@ -4,7 +4,7 @@
 // Author:      Brian Paul (original gltk version), Wolfram Gloger
 // Modified by: Julian Smart
 // Created:     04/01/98
-// RCS-ID:      $Id: isosurf.cpp,v 1.14 2004/10/13 21:19:33 VZ Exp $
+// RCS-ID:      $Id: isosurf.cpp,v 1.18 2005/02/26 20:03:26 JS Exp $
 // Copyright:   (c) Julian Smart
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -31,6 +31,7 @@
 
 #include "wx/timer.h"
 #include "wx/glcanvas.h"
+#include "wx/math.h"
 
 #if defined(__WXMAC__) || defined(__WXCOCOA__)
 #   ifdef __DARWIN__
@@ -53,9 +54,9 @@
 
 #include "isosurf.h"
 
-// The following part is taken largely unchanged from the original C Version
+#include "../../sample.xpm"
 
-#include <math.h>
+// The following part is taken largely unchanged from the original C Version
 
 GLboolean speed_test = GL_FALSE;
 GLboolean use_vertex_arrays = GL_FALSE;
@@ -316,6 +317,7 @@ MyFrame::MyFrame(wxFrame *frame, const wxString& title, const wxPoint& pos,
     : wxFrame(frame, wxID_ANY, title, pos, size, style)
 {
     m_canvas = NULL;
+    SetIcon(wxIcon(sample_xpm));
 }
 
 MyFrame::~MyFrame()
@@ -345,7 +347,7 @@ END_EVENT_TABLE()
 TestGLCanvas::TestGLCanvas(wxWindow *parent, wxWindowID id,
     const wxPoint& pos, const wxSize& size, long style,
     const wxString& name, int* gl_attrib)
-    : wxGLCanvas(parent, id, pos, size, style, name, gl_attrib)
+    : wxGLCanvas(parent, id, pos, size, style|wxFULL_REPAINT_ON_RESIZE, name, gl_attrib)
 {
     parent->Show(true);
     SetCurrent();

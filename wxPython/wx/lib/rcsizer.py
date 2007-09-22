@@ -5,7 +5,7 @@
 # Author:      Robin Dunn, adapted from code by Niki Spahiev
 #
 # Created:     26-Feb-2002
-# RCS-ID:      $Id: rcsizer.py,v 1.8 2004/05/02 02:41:24 RD Exp $
+# RCS-ID:      $Id: rcsizer.py,v 1.9 2005/04/06 04:39:11 RD Exp $
 # Copyright:   (c) 2002 by Total Control Software
 # Licence:     wxWindows license
 #----------------------------------------------------------------------
@@ -94,8 +94,8 @@ class RowColSizer(wx.PySizer):
         #if rowspan > 1 or colspan > 1:
         #    flag = flag | wx.EXPAND
 
-        wx.PySizer.Add(self, item, option, flag, border,
-                       userData=(row, col, row+rowspan, col+colspan))
+        return wx.PySizer.Add(self, item, option, flag, border,
+                              userData=(row, col, row+rowspan, col+colspan))
 
     #AddWindow = Add
     #AddSizer  = Add
@@ -113,8 +113,8 @@ class RowColSizer(wx.PySizer):
         assert row != -1, "Row must be specified"
         assert col != -1, "Column must be specified"
 
-        wx.PySizer.Add(self, (width, height), option, flag, border,
-                       userData=(row, col, row+rowspan, col+colspan))
+        return wx.PySizer.Add(self, (width, height), option, flag, border,
+                              userData=(row, col, row+rowspan, col+colspan))
 
     #--------------------------------------------------
     def _add( self, size, dim ):

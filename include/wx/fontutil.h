@@ -4,7 +4,7 @@
 // Author:      Vadim Zeitlin
 // Modified by:
 // Created:     05.11.99
-// RCS-ID:      $Id: fontutil.h,v 1.34 2004/10/19 13:39:04 JS Exp $
+// RCS-ID:      $Id: fontutil.h,v 1.36 2004/12/22 07:22:18 ABX Exp $
 // Copyright:   (c) wxWidgets team
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -26,7 +26,7 @@
 
 #include "wx/font.h"        // for wxFont and wxFontEncoding
 
-#if defined(__WXMSW__) && !defined(__PALMOS__)
+#if defined(__WXMSW__)
     #include "wx/msw/wrapwin.h"
 #endif
 
@@ -109,7 +109,7 @@ public:
 
     // set the XFLD
     void SetXFontName(const wxString& xFontName);
-#elif defined(__WXMSW__) && !defined(__PALMOS__)
+#elif defined(__WXMSW__)
     LOGFONT      lf;
 #elif defined(__WXPM__)
     // OS/2 native structures that define a font

@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     12/07/98
-// RCS-ID:      $Id: symbols.cpp,v 1.9 2004/07/22 19:01:40 ABX Exp $
+// RCS-ID:      $Id: symbols.cpp,v 1.10 2005/03/31 19:18:25 ABX Exp $
 // Copyright:   (c) Julian Smart
 // Licence:
 /////////////////////////////////////////////////////////////////////////////
@@ -24,8 +24,7 @@
 #include <wx/wx.h>
 #endif
 
-#include <wx/deprecated/setup.h>
-#include <wx/deprecated/wxexpr.h>
+#include <wx/ogl/ogl.h> // base header of OGL, includes and adjusts wx/deprecated/setup.h
 
 #include "studio.h"
 #include "doc.h"
@@ -189,7 +188,7 @@ wxBitmap* csSymbolDatabase::CreateToolBitmap(csSymbol* symbol, const wxSize& too
     memDC.SelectObject(wxNullBitmap);
 #endif
 
-#if 1       
+#if 1
     wxMemoryDC memDC;
 
     double height, width, maxSize;

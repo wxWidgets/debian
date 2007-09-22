@@ -3,7 +3,7 @@
 // Purpose:     Grid control wxWidgets sample
 // Author:      Michael Bedward
 // Modified by:
-// RCS-ID:      $Id: griddemo.h,v 1.7 2004/10/06 20:53:19 ABX Exp $
+// RCS-ID:      $Id: griddemo.h,v 1.8 2005/06/02 12:04:11 JS Exp $
 // Copyright:   (c) Michael Bedward, Julian Smart
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -133,7 +133,6 @@ public:
         ID_SELCOLS,
         ID_SET_CELL_FG_COLOUR,
         ID_SET_CELL_BG_COLOUR,
-        ID_ABOUT,
         ID_VTABLE,
         ID_BUGS_TABLE,
         ID_SMALL_GRID,

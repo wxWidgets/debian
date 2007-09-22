@@ -2,7 +2,7 @@
 // Name:        dc.h
 // Purpose:
 // Author:      Robert Roebling
-// Id:          $Id: dc.h,v 1.28 2004/10/07 16:42:06 JS Exp $
+// Id:          $Id: dc.h,v 1.29 2004/12/16 21:23:58 ABX Exp $
 // Copyright:   (c) 1998 Robert Roebling
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -51,7 +51,7 @@ public:
     // Resolution in pixels per logical inch
     virtual wxSize GetPPI() const;
 
-    virtual bool StartDoc( const wxString& WXUNUSED(message) ) { return TRUE; }
+    virtual bool StartDoc( const wxString& WXUNUSED(message) ) { return true; }
     virtual void EndDoc() { }
     virtual void StartPage() { }
     virtual void EndPage() { }

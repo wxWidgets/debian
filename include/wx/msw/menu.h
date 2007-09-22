@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by: Vadim Zeitlin (wxMenuItem is now in separate file)
 // Created:     01/02/97
-// RCS-ID:      $Id: menu.h,v 1.58 2004/08/30 10:18:43 ABX Exp $
+// RCS-ID:      $Id: menu.h,v 1.61 2005/05/31 09:18:31 JS Exp $
 // Copyright:   (c) Julian Smart
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -140,19 +140,19 @@ private:
 class WXDLLEXPORT wxMenuInfo : public wxObject
 {
 public :
-    wxMenuInfo() { m_menu = NULL ; }
+    wxMenuInfo() { m_menu = NULL; }
     virtual ~wxMenuInfo() { }
 
     void Create( wxMenu *menu , const wxString &title )
-    { m_menu = menu ; m_title = title ; }
-    wxMenu* GetMenu() const { return m_menu ; }
-    wxString GetTitle() const { return m_title ; }
+    { m_menu = menu; m_title = title; }
+    wxMenu* GetMenu() const { return m_menu; }
+    wxString GetTitle() const { return m_title; }
 private :
-    wxMenu *m_menu ;
-    wxString m_title ;
+    wxMenu *m_menu;
+    wxString m_title;
 
-    DECLARE_DYNAMIC_CLASS(wxMenuInfo) ;
-} ;
+    DECLARE_DYNAMIC_CLASS(wxMenuInfo)
+};
 
 WX_DECLARE_EXPORTED_LIST(wxMenuInfo, wxMenuInfoList );
 
@@ -165,12 +165,12 @@ public:
         // unused under MSW
     wxMenuBar(long style);
         // menubar takes ownership of the menus arrays but copies the titles
-    wxMenuBar(int n, wxMenu *menus[], const wxString titles[]);
+    wxMenuBar(size_t n, wxMenu *menus[], const wxString titles[], long style = 0);
     virtual ~wxMenuBar();
 
     // menubar construction
-    bool Append( wxMenuInfo *info ) { return Append( info->GetMenu() , info->GetTitle() ) ; }
-    const wxMenuInfoList& GetMenuInfos() const ;
+    bool Append( wxMenuInfo *info ) { return Append( info->GetMenu() , info->GetTitle() ); }
+    const wxMenuInfoList& GetMenuInfos() const;
 
     virtual bool Append( wxMenu *menu, const wxString &title );
     virtual bool Insert(size_t pos, wxMenu *menu, const wxString& title);
@@ -201,7 +201,7 @@ public:
     // get the accel table for all the menus
     const wxAcceleratorTable& GetAccelTable() const { return m_accelTable; }
 
-    // update the accel table (must be called after adding/deletign a menu)
+    // update the accel table (must be called after adding/deleting a menu)
     void RebuildAccelTable();
 #endif // wxUSE_ACCEL
 
@@ -220,7 +220,7 @@ protected:
     // common part of all ctors
     void Init();
 
-    wxArrayString m_titles ;
+    wxArrayString m_titles;
     wxMenuInfoList m_menuInfos;
 
     WXHMENU       m_hMenu;

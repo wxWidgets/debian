@@ -3,7 +3,7 @@
 // Purpose:     wxImage PCX handler
 // Author:      Guillermo Rodriguez Garcia <guille@iies.es>
 // Version:     1.1
-// CVS-ID:      $Id: imagpcx.cpp,v 1.39 2004/10/17 21:39:05 ABX Exp $
+// CVS-ID:      $Id: imagpcx.cpp,v 1.40 2005/03/17 23:19:06 VZ Exp $
 // Copyright:   (c) 1999 Guillermo Rodriguez Garcia
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -418,7 +418,7 @@ int SavePCX(wxImage *image, wxOutputStream& stream)
         unsigned long index;
 
         for (wxImageHistogram::iterator entry = histogram.begin();
-             entry != histogram.end(); entry++ )
+             entry != histogram.end(); ++entry )
         {
             key = entry->first;
             index = entry->second.index;

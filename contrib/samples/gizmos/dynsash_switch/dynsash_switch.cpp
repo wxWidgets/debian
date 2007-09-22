@@ -7,7 +7,7 @@
 // Author:      Matt Kimball
 // Modified by:
 // Created:     7/15/2001
-// RCS-ID:      $Id: dynsash_switch.cpp,v 1.7 2004/06/08 19:27:33 ABX Exp $
+// RCS-ID:      $Id: dynsash_switch.cpp,v 1.8 2005/01/18 15:07:35 KH Exp $
 // Copyright:   (c) 2001 Matt Kimball
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -239,7 +239,7 @@ void SwitchView::OnFocus(wxFocusEvent& event) {
     wxScrollBar *hscroll = m_dyn_sash->GetHScrollBar(this);
     wxScrollBar *vscroll = m_dyn_sash->GetVScrollBar(this);
 
-    if (event.m_eventObject == hscroll || event.m_eventObject == vscroll) {
+    if (event.GetEventObject() == hscroll || event.GetEventObject() == vscroll) {
         m_view->SetFocus();
     } else {
         event.Skip();

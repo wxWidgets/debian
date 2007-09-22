@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     01/02/97
-// RCS-ID:      $Id: colordlg.cpp,v 1.28 2004/09/28 18:17:06 ABX Exp $
+// RCS-ID:      $Id: colordlg.cpp,v 1.30 2005/03/22 19:39:52 ABX Exp $
 // Copyright:   (c) Julian Smart
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -47,12 +47,9 @@
 #include "wx/msw/private.h"
 #include "wx/colordlg.h"
 #include "wx/cmndata.h"
+#include "wx/math.h"
+#include "wx/msw/wrapcdlg.h"
 
-#if !defined(__WIN32__) || defined(__WXWINCE__)
-    #include <commdlg.h>
-#endif
-
-#include <math.h>
 #include <stdlib.h>
 #include <string.h>
 

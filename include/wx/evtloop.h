@@ -4,7 +4,7 @@
 // Author:      Vadim Zeitlin
 // Modified by:
 // Created:     01.06.01
-// RCS-ID:      $Id: evtloop.h,v 1.17 2004/10/19 13:39:04 JS Exp $
+// RCS-ID:      $Id: evtloop.h,v 1.18 2004/12/20 12:43:48 ABX Exp $
 // Copyright:   (c) 2001 Vadim Zeitlin <zeitlin@dptmaths.ens-cachan.fr>
 // Licence:     wxWindows licence
 ///////////////////////////////////////////////////////////////////////////////
@@ -72,7 +72,7 @@ protected:
 // can sometimes be very useful (e.g. under MSW this is necessary for
 // integration with MFC) but currently this is done for MSW only, other ports
 // should follow a.s.a.p.
-#if defined(__PALMOS__)
+#if defined(__WXPALMOS__)
     #include "wx/palmos/evtloop.h"
 #elif defined(__WXMSW__)
     #include "wx/msw/evtloop.h"

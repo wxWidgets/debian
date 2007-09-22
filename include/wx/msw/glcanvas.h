@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     04/01/98
-// RCS-ID:      $Id: glcanvas.h,v 1.14 2004/07/25 16:36:49 VZ Exp $
+// RCS-ID:      $Id: glcanvas.h,v 1.15 2005/02/21 01:52:19 VZ Exp $
 // Copyright:   (c) Julian Smart
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -96,7 +96,7 @@ public:
         const wxPalette& palette = wxNullPalette);
 
     wxGLCanvas(wxWindow *parent,
-        const wxGLContext *shared = (wxGLContext *) NULL,
+        const wxGLContext *shared,
         wxWindowID id = wxID_ANY,
         const wxPoint& pos = wxDefaultPosition,
         const wxSize& size = wxDefaultSize,
@@ -106,7 +106,7 @@ public:
         const wxPalette& palette = wxNullPalette);
 
     wxGLCanvas(wxWindow *parent,
-        const wxGLCanvas *shared = (wxGLCanvas *)NULL,
+        const wxGLCanvas *shared,
         wxWindowID id = wxID_ANY,
         const wxPoint& pos = wxDefaultPosition,
         const wxSize& size = wxDefaultSize,

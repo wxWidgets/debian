@@ -5,7 +5,7 @@
 // Author:      Robin Dunn
 //
 // Created:     10-June-1998
-// RCS-ID:      $Id: _scrolbar.i,v 1.8 2004/09/23 20:23:14 RD Exp $
+// RCS-ID:      $Id: _scrolbar.i,v 1.10 2005/05/07 06:26:59 RD Exp $
 // Copyright:   (c) 2003 by Total Control Software
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -33,7 +33,7 @@ public:
                 long style = wxSB_HORIZONTAL,
                 const wxValidator& validator = wxDefaultValidator,
                 const wxString& name = wxPyScrollBarNameStr);
-    %name(PreScrollBar)wxScrollBar();
+    %RenameCtor(PreScrollBar, wxScrollBar());
 
     bool Create(wxWindow* parent, wxWindowID id = -1,
                 const wxPoint& pos = wxDefaultPosition,
@@ -51,9 +51,13 @@ public:
     bool IsVertical() const { return (m_windowStyle & wxVERTICAL) != 0; }
 
     virtual void SetThumbPosition(int viewStart);
-    virtual void SetScrollbar(int position, int thumbSize,
-                              int range, int pageSize,
-                              bool refresh = true);
+    
+    DocDeclStr(
+        virtual void , SetScrollbar(int position, int thumbSize,
+                                    int range, int pageSize,
+                                    bool refresh = true),
+        "", "");
+    
 
     static wxVisualAttributes
     GetClassDefaultAttributes(wxWindowVariant variant = wxWINDOW_VARIANT_NORMAL);

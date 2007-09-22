@@ -1,4 +1,4 @@
-/* $Header: /pack/cvsroots/wxwindows/wxWindows/src/tiff/tif_predict.h,v 1.2 2002/12/04 14:10:20 VZ Exp $ */
+/* $Header: /pack/cvsroots/wxwindows/wxWindows/src/tiff/tif_predict.h,v 1.3 2004/11/19 22:29:45 VZ Exp $ */
 
 /*
  * Copyright (c) 1995-1997 Sam Leffler

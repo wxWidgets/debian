@@ -4,7 +4,7 @@
 // Author:      Vadim Zeitlin
 // Modified by:
 // Created:     31.05.03
-// RCS-ID:      $Id: vlbox.cpp,v 1.18 2004/07/17 23:22:21 RD Exp $
+// RCS-ID:      $Id: vlbox.cpp,v 1.22 2005/02/19 04:04:08 KH Exp $
 // Copyright:   (c) 2003 Vadim Zeitlin <vadim@wxwindows.org>
 // License:     wxWindows license
 ///////////////////////////////////////////////////////////////////////////////
@@ -23,6 +23,8 @@
 #ifdef __BORLANDC__
     #pragma hdrstop
 #endif
+
+#if wxUSE_LISTBOX
 
 #ifndef WX_PRECOMP
     #include "wx/settings.h"
@@ -243,7 +245,7 @@ void wxVListBox::SendSelectedEvent()
 
     wxCommandEvent event(wxEVT_COMMAND_LISTBOX_SELECTED, GetId());
     event.SetEventObject(this);
-    event.m_commandInt = m_current;
+    event.SetInt(m_current);
 
     (void)GetEventHandler()->ProcessEvent(event);
 }
@@ -574,6 +576,8 @@ void wxVListBox::OnKeyDown(wxKeyEvent& event)
 
 void wxVListBox::OnLeftDown(wxMouseEvent& event)
 {
+    SetFocus();
+    
     int item = HitTest(event.GetPosition());
 
     if ( item != wxNOT_FOUND )
@@ -602,7 +606,7 @@ void wxVListBox::OnLeftDClick(wxMouseEvent& event)
     {
         wxCommandEvent event(wxEVT_COMMAND_LISTBOX_DOUBLECLICKED, GetId());
         event.SetEventObject(this);
-        event.m_commandInt = item;
+        event.SetInt(item);
 
         (void)GetEventHandler()->ProcessEvent(event);
     }
@@ -621,3 +625,5 @@ wxVListBox::GetClassDefaultAttributes(wxWindowVariant variant)
 {
     return wxListBox::GetClassDefaultAttributes(variant);
 }
+
+#endif

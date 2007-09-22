@@ -4,7 +4,7 @@
 // Author:      Julian Smart, Robert Roebling, Vadim Zeitlin
 // Modified by:
 // Created:     31.05.01 (extracted from other files)
-// RCS-ID:      $Id: accel.h,v 1.15 2004/09/08 17:30:11 ABX Exp $
+// RCS-ID:      $Id: accel.h,v 1.16 2005/01/21 18:48:17 ABX Exp $
 // Copyright:   (c) wxWidgets team
 // Licence:     wxWindows licence
 ///////////////////////////////////////////////////////////////////////////////
@@ -128,7 +128,7 @@ private:
     #include "wx/os2/accel.h"
 #endif
 
-WXDLLEXPORT_DATA(extern wxAcceleratorTable) wxNullAcceleratorTable;
+extern WXDLLEXPORT_DATA(wxAcceleratorTable) wxNullAcceleratorTable;
 
 #endif // wxUSE_ACCEL
 

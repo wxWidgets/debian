@@ -1,3 +1,14 @@
+/////////////////////////////////////////////////////////////////////////////
+// Name:        wx/glcanvas.h
+// Purpose:     wxGLCanvas base header
+// Author:      Julian Smart
+// Modified by:
+// Created:
+// Copyright:   (c) Julian Smart
+// RCS-ID:      $Id: glcanvas.h,v 1.12 2005/05/04 18:51:58 JS Exp $
+// Licence:     wxWindows licence
+/////////////////////////////////////////////////////////////////////////////
+
 #ifndef _WX_GLCANVAS_H_BASE_
 #define _WX_GLCANVAS_H_BASE_
 

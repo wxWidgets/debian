@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     12/07/98
-// RCS-ID:      $Id: doc.h,v 1.5 2004/06/09 16:42:29 ABX Exp $
+// RCS-ID:      $Id: doc.h,v 1.6 2005/03/31 19:18:24 ABX Exp $
 // Copyright:   (c) Julian Smart
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -20,16 +20,14 @@
 #include <wx/cmdproc.h>
 #include <wx/string.h>
 
-#include <wx/deprecated/setup.h>
-#include <wx/deprecated/wxexpr.h>
+#include <wx/ogl/ogl.h> // base header of OGL, includes and adjusts wx/deprecated/setup.h
 
-#include <wx/ogl/ogl.h>
 #include "shapes.h"
 
 /*
  * A diagram document, which contains a diagram.
  */
- 
+
 class csDiagramDocument: public wxDocument
 {
   DECLARE_DYNAMIC_CLASS(csDiagramDocument)
@@ -37,11 +35,13 @@ public:
   csDiagramDocument();
   ~csDiagramDocument();
 
+#if wxUSE_PROLOGIO
   bool OnSaveDocument(const wxString& file);
   bool OnOpenDocument(const wxString& file);
-  
+#endif // wxUSE_PROLOGIO
+
   inline wxDiagram *GetDiagram() { return &m_diagram; }
-  
+
   bool OnCloseDocument();
 
 protected:
@@ -71,7 +71,7 @@ protected:
 
  */
 
-  
+
 class csCommandState;
 class csDiagramCommand: public wxCommand
 {

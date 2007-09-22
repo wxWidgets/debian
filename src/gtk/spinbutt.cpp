@@ -3,7 +3,7 @@
 // Purpose:     wxSpinButton
 // Author:      Robert
 // Modified by:
-// RCS-ID:      $Id: spinbutt.cpp,v 1.36 2004/06/24 20:04:01 RD Exp $
+// RCS-ID:      $Id: spinbutt.cpp,v 1.38 2005/03/21 23:42:19 VZ Exp $
 // Copyright:   (c) Robert Roebling
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -21,9 +21,7 @@
 #if wxUSE_SPINBTN
 
 #include "wx/utils.h"
-
-#include <math.h>
-
+#include "wx/math.h"
 #include "wx/gtk/private.h"
 
 //-----------------------------------------------------------------------------
@@ -45,6 +43,7 @@ static const float sensitivity = 0.02;
 // "value_changed"
 //-----------------------------------------------------------------------------
 
+extern "C" {
 static void gtk_spinbutt_callback( GtkWidget *WXUNUSED(widget), wxSpinButton *win )
 {
     if (g_isIdle) wxapp_install_idle_handler();
@@ -99,6 +98,7 @@ static void gtk_spinbutt_callback( GtkWidget *WXUNUSED(widget), wxSpinButton *wi
         event2.SetEventObject( win );
         win->GetEventHandler()->ProcessEvent( event2 );
     }
+}
 }
 
 //-----------------------------------------------------------------------------

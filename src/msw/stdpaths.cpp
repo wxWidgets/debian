@@ -4,7 +4,7 @@
 // Author:      Vadim Zeitlin
 // Modified by:
 // Created:     2004-10-19
-// RCS-ID:      $Id: stdpaths.cpp,v 1.3 2004/10/20 09:18:02 ABX Exp $
+// RCS-ID:      $Id: stdpaths.cpp,v 1.9 2005/06/15 23:44:18 VZ Exp $
 // Copyright:   (c) 2004 Vadim Zeitlin <vadim@wxwindows.org>
 // License:     wxWindows license
 ///////////////////////////////////////////////////////////////////////////////
@@ -23,6 +23,8 @@
 #ifdef __BORLANDC__
     #pragma hdrstop
 #endif
+
+#if wxUSE_STDPATHS
 
 #ifndef WX_PRECOMP
     #include "wx/app.h"
@@ -49,6 +51,10 @@ typedef HRESULT (WINAPI *SHGetSpecialFolderPath_t)(HWND, LPTSTR, int, BOOL);
 
 // used in our wxLogTrace messages
 static const wxChar *TRACE_MASK = _T("stdpaths");
+
+#ifndef CSIDL_APPDATA
+    #define CSIDL_APPDATA         0x001a
+#endif
 
 #ifndef CSIDL_LOCAL_APPDATA
     #define CSIDL_LOCAL_APPDATA   0x001c
@@ -240,7 +246,9 @@ wxString wxStandardPaths::GetUserConfigDir() const
 
 wxString wxStandardPaths::GetDataDir() const
 {
-    return AppendAppName(DoGetDirectory(CSIDL_PROGRAM_FILES));
+    // under Windows each program is usually installed in its own directory and
+    // so its datafiles are in the same directory as its main executable
+    return wxFileName(wxGetFullModuleName()).GetPath();
 }
 
 wxString wxStandardPaths::GetUserDataDir() const
@@ -268,10 +276,15 @@ wxString wxStandardPathsWin16::GetConfigDir() const
     // this is for compatibility with earlier wxFileConfig versions
     // which used the Windows directory for the global files
     wxString dir;
+#ifndef __WXWINCE__
     if ( !::GetWindowsDirectory(wxStringBuffer(dir, MAX_PATH), MAX_PATH) )
     {
         wxLogLastError(_T("GetWindowsDirectory"));
     }
+#else
+    // TODO: use CSIDL_WINDOWS (eVC4, possibly not eVC3)
+    dir = wxT("\\Windows");
+#endif
 
     return dir;
 }
@@ -282,3 +295,4 @@ wxString wxStandardPathsWin16::GetUserConfigDir() const
     return wxGetHomeDir();
 }
 
+#endif // wxUSE_STDPATHS

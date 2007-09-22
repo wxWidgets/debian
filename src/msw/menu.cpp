@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by: Vadim Zeitlin
 // Created:     04/01/98
-// RCS-ID:      $Id: menu.cpp,v 1.108 2004/08/30 10:18:54 ABX Exp $
+// RCS-ID:      $Id: menu.cpp,v 1.122 2005/06/24 00:09:34 VZ Exp $
 // Copyright:   (c) Julian Smart
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -62,11 +62,20 @@
 // other standard headers
 #include <string.h>
 
+#if wxUSE_OWNER_DRAWN && defined(MIIM_BITMAP)
+    #include "wx/dynlib.h"
+#endif
+
+#ifndef MNS_CHECKORBMP
+    #define MNS_CHECKORBMP 0x04000000
+#endif
+#ifndef MIM_STYLE
+    #define MIM_STYLE 0x00000010
+#endif
+
 // ----------------------------------------------------------------------------
 // global variables
 // ----------------------------------------------------------------------------
-
-extern wxMenu *wxCurrentPopupMenu;
 
 // ----------------------------------------------------------------------------
 // constants
@@ -106,7 +115,8 @@ UINT GetMenuState(HMENU hMenu, UINT id, UINT flags)
     wxZeroMemory(info);
     info.cbSize = sizeof(info);
     info.fMask = MIIM_STATE;
-    if ( !::GetMenuItemInfo(hMenu, id, flags & MF_BYCOMMAND ? FALSE : TRUE, & info) )
+    // MF_BYCOMMAND is zero so test MF_BYPOSITION
+    if ( !::GetMenuItemInfo(hMenu, id, flags & MF_BYPOSITION ? TRUE : FALSE , & info) )
         wxLogLastError(wxT("GetMenuItemInfo"));
     return info.fState;
 }
@@ -228,7 +238,7 @@ void wxMenu::Init()
     }
 
     // if we have a title, insert it in the beginning of the menu
-    if ( !m_title.IsEmpty() )
+    if ( !m_title.empty() )
     {
         Append(idMenuTitle, m_title);
         AppendSeparator();
@@ -369,57 +379,131 @@ bool wxMenu::DoInsertOrAppend(wxMenuItem *pItem, size_t pos)
         id = pItem->GetId();
     }
 
-#ifdef __WXWINCE__
-    wxString strippedString;
-#endif
 
-    LPCTSTR pData;
+    // prepare to insert the item in the menu
+    wxString itemText = pItem->GetText();
+    LPCTSTR pData = NULL;
+    if ( pos == (size_t)-1 )
+    {
+        // append at the end (note that the item is already appended to
+        // internal data structures)
+        pos = GetMenuItemCount() - 1;
+    }
 
+    // adjust position to account for the title, if any
+    if ( !m_title.empty() )
+        pos += 2; // for the title itself and its separator
+
+    BOOL ok = false;
+
+    // check if we have something more than a simple text item
 #if wxUSE_OWNER_DRAWN
-    if ( pItem->IsOwnerDrawn() ) {  // want to get {Measure|Draw}Item messages?
-        // item draws itself, pass pointer to it in data parameter
-        flags |= MF_OWNERDRAW;
-        pData = (LPCTSTR)pItem;
+    if ( pItem->IsOwnerDrawn() )
+    {
+        // is the item owner-drawn just because of the bitmap?
+        if ( pItem->GetBitmap().Ok() &&
+                !pItem->GetTextColour().Ok() &&
+                    !pItem->GetBackgroundColour().Ok() &&
+                        !pItem->GetFont().Ok() )
+        {
+            // try to use InsertMenuItem() as it's guaranteed to look correctly
+            // while our owner-drawning code is not
+
+            // first compile-time check
+#ifdef MIIM_BITMAP
+            WinStruct<MENUITEMINFO> mii;
+
+            // now run-time one: MIIM_BITMAP only works under WinME/2000+
+            if ( wxGetWinVersion() >= wxWinVersion_98 )
+            {
+                mii.fMask = MIIM_ID | MIIM_STRING | MIIM_DATA | MIIM_BITMAP;
+                mii.wID = id;
+                mii.cch = itemText.length();
+                mii.dwTypeData = wx_const_cast(wxChar *, itemText.c_str());
+
+                // we can't pass HBITMAP directly as hbmpItem for 2 reasons:
+                //  1. we can't draw it with transparency then (this is not
+                //     very important now but would be with themed menu bg)
+                //  2. worse, Windows inverses the bitmap for the selected
+                //     item and this looks downright ugly
+                //
+                // so instead draw it ourselves in MSWOnDrawItem()
+                mii.dwItemData = wx_reinterpret_cast(ULONG_PTR, pItem);
+                mii.hbmpItem = HBMMENU_CALLBACK;
+
+                ok = ::InsertMenuItem(GetHmenu(), pos, TRUE /* by pos */, &mii);
+                if ( !ok )
+                {
+                    wxLogLastError(wxT("InsertMenuItem()"));
+                }
+                else // InsertMenuItem() ok
+                {
+                    // we need to remove the extra indent which is reserved for
+                    // the checkboxes by default as it looks ugly unless check
+                    // boxes are used together with bitmaps and this is not the
+                    // case in wx API
+                    WinStruct<MENUINFO> mi;
+
+                    // don't call SetMenuInfo() directly, this would prevent
+                    // the app from starting up under Windows 95/NT 4
+                    typedef BOOL (WINAPI *SetMenuInfo_t)(HMENU, MENUINFO *);
+
+                    wxDynamicLibrary dllUser(_T("user32"));
+                    wxDYNLIB_FUNCTION(SetMenuInfo_t, SetMenuInfo, dllUser);
+                    if ( pfnSetMenuInfo )
+                    {
+                        mi.fMask = MIM_STYLE;
+                        mi.dwStyle = MNS_CHECKORBMP;
+                        if ( !(*pfnSetMenuInfo)(GetHmenu(), &mi) )
+                            wxLogLastError(_T("SetMenuInfo(MNS_NOCHECK)"));
+                    }
+
+                    // tell the item that it's not really owner-drawn but only
+                    // needs to draw its bitmap, the rest is done by Windows
+                    pItem->ResetOwnerDrawn();
+                }
+            }
+#endif // MIIM_BITMAP
+        }
+
+        if ( !ok )
+        {
+            // item draws itself, pass pointer to it in data parameter
+            flags |= MF_OWNERDRAW;
+            pData = (LPCTSTR)pItem;
+        }
     }
     else
-#endif
+#endif // wxUSE_OWNER_DRAWN
     {
         // menu is just a normal string (passed in data parameter)
         flags |= MF_STRING;
 
 #ifdef __WXWINCE__
-        strippedString = wxStripMenuCodes(pItem->GetText());
-        pData = (wxChar*)strippedString.c_str();
-#else
-        pData = (wxChar*)pItem->GetText().c_str();
+        itemText = wxMenuItem::GetLabelFromText(itemText);
 #endif
+
+        pData = (wxChar*)itemText.c_str();
     }
 
-    BOOL ok;
-    if ( pos == (size_t)-1 )
-    {
-        ok = ::AppendMenu(GetHmenu(), flags, id, pData);
-    }
-    else
-    {
-        ok = ::InsertMenu(GetHmenu(), pos, flags | MF_BYPOSITION, id, pData);
-    }
-
+    // item might have been already inserted by InsertMenuItem() above
     if ( !ok )
     {
-        wxLogLastError(wxT("Insert or AppendMenu"));
+        if ( !::InsertMenu(GetHmenu(), pos, flags | MF_BYPOSITION, id, pData) )
+        {
+            wxLogLastError(wxT("InsertMenu[Item]()"));
 
-        return false;
+            return false;
+        }
     }
 
+
     // if we just appended the title, highlight it
-#ifdef __WIN32__
     if ( (int)id == idMenuTitle )
     {
         // visually select the menu title
         SetDefaultMenuItem(GetHmenu(), id);
     }
-#endif // __WIN32__
 
     // if we're already attached to the menubar, we must update it
     if ( IsAttached() && GetMenuBar()->IsAttached() )
@@ -572,14 +656,14 @@ size_t wxMenu::CopyAccels(wxAcceleratorEntry *accels) const
 
 void wxMenu::SetTitle(const wxString& label)
 {
-    bool hasNoTitle = m_title.IsEmpty();
+    bool hasNoTitle = m_title.empty();
     m_title = label;
 
     HMENU hMenu = GetHmenu();
 
     if ( hasNoTitle )
     {
-        if ( !label.IsEmpty() )
+        if ( !label.empty() )
         {
             if ( !::InsertMenu(hMenu, 0u, MF_BYPOSITION | MF_STRING,
                                (unsigned)idMenuTitle, m_title) ||
@@ -591,7 +675,7 @@ void wxMenu::SetTitle(const wxString& label)
     }
     else
     {
-        if ( label.IsEmpty() )
+        if ( label.empty() )
         {
             // remove the title and the separator after it
             if ( !RemoveMenu(hMenu, 0, MF_BYPOSITION) ||
@@ -628,7 +712,7 @@ void wxMenu::SetTitle(const wxString& label)
 
 #ifdef __WIN32__
     // put the title string in bold face
-    if ( !m_title.IsEmpty() )
+    if ( !m_title.empty() )
     {
         SetDefaultMenuItem(GetHmenu(), (UINT)idMenuTitle);
     }
@@ -642,16 +726,12 @@ void wxMenu::SetTitle(const wxString& label)
 bool wxMenu::MSWCommand(WXUINT WXUNUSED(param), WXWORD id)
 {
     // ignore commands from the menu title
-
-    // NB: VC++ generates wrong assembler for `if ( id != idMenuTitle )'!!
     if ( id != (WXWORD)idMenuTitle )
     {
-        // VZ: previosuly, the command int was set to id too which was quite
-        //     useless anyhow (as it could be retrieved using GetId()) and
-        //     uncompatible with wxGTK, so now we use the command int instead
-        //     to pass the checked status
-        UINT menuState = ::GetMenuState(GetHmenu(), id, MF_BYCOMMAND) ;
-        SendEvent(id, menuState & MF_CHECKED);
+        // get the checked status of the command: notice that menuState is the
+        // old state of the menu, so the test for MF_CHECKED must be inverted
+        UINT menuState = ::GetMenuState(GetHmenu(), id, MF_BYCOMMAND);
+        SendEvent(id, !(menuState & MF_CHECKED));
     }
 
     return true;
@@ -701,13 +781,13 @@ wxMenuBar::wxMenuBar( long WXUNUSED(style) )
     Init();
 }
 
-wxMenuBar::wxMenuBar(int count, wxMenu *menus[], const wxString titles[])
+wxMenuBar::wxMenuBar(size_t count, wxMenu *menus[], const wxString titles[], long WXUNUSED(style))
 {
     Init();
 
     m_titles.Alloc(count);
 
-    for ( int i = 0; i < count; i++ )
+    for ( size_t i = 0; i < count; i++ )
     {
         m_menus.Append(menus[i]);
         m_titles.Add(titles[i]);
@@ -720,9 +800,13 @@ wxMenuBar::~wxMenuBar()
 {
     // In Windows CE (not .NET), the menubar is always associated
     // with a toolbar, which destroys the menu implicitly.
-#if defined(WINCE_WITHOUT_COMMANDBAR)
+#if defined(WINCE_WITHOUT_COMMANDBAR) && defined(__POCKETPC__)
     if (GetToolBar())
-        GetToolBar()->SetMenuBar(NULL);
+    {
+        wxToolMenuBar* toolMenuBar = wxDynamicCast(GetToolBar(), wxToolMenuBar);
+        if (toolMenuBar)
+            toolMenuBar->SetMenuBar(NULL);
+    }
 #else
     // we should free Windows resources only if Windows doesn't do it for us
     // which happens if we're attached to a frame

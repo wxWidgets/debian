@@ -5,7 +5,7 @@
 // Author:      Robin Dunn
 //
 // Created:     25-July-1998
-// RCS-ID:      $Id: _cmndlgs.i,v 1.18 2004/11/11 02:24:19 RD Exp $
+// RCS-ID:      $Id: _cmndlgs.i,v 1.22 2005/05/27 00:53:05 RD Exp $
 // Copyright:   (c) 2003 by Total Control Software
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -353,21 +353,34 @@ public:
                             int choices=0, wxString* choices_array=NULL,
                             long style = wxCHOICEDLG_STYLE,
                             const wxPoint& pos = wxDefaultPosition),
-        "__init__(Window parent, String message, String caption,
-    List choices=[], long style=CHOICEDLG_STYLE,
+        "__init__(self, Window parent, String message, String caption,
+    List choices=EmptyList, long style=CHOICEDLG_STYLE,
     Point pos=DefaultPosition) -> MultiChoiceDialog",
-        "Constructor.  Use ShowModal method to show the dialog.", "");
+        "Constructor.  Use the `ShowModal` method to show the dialog.
+
+    :param parent: The parent window.
+    :param message: Text to display above the list of selections.
+    :param caption: Text to use in the title bar of the dialog.
+    :param choices: A list of strings or unicode objects that the
+        user is allowed to choose from.
+    :param style: Styles to apply to the dialog.  The default value is
+        equivallent to wx.DEFAULT_DIALOG_STYLE|wx.RESIZE_BORDER|wx.OK|wx.CANCEL|wx.CENTER.
+    :param pos: Where to position the dialog (not used on Windows)
+
+", "");
 
     
     DocDeclAStr(
         void, SetSelections(const wxArrayInt& selections),
         "SetSelections(List selections)",
         "Specify the items in the list that should be selected, using a list of
-integers.", "");
+integers.  The list should specify the indexes of the items that
+should be selected.", "");
 
     DocAStr(GetSelections,
             "GetSelections() -> [selections]",
-            "Returns a list of integers representing the items that are selected.", "");
+            "Returns a list of integers representing the items that are selected.
+If an item is selected then its index will appear in the list.", "");
     %extend {
         PyObject* GetSelections() {
             return wxArrayInt2PyList_helper(self->GetSelections());
@@ -389,7 +402,7 @@ public:
 
     DocAStr(wxSingleChoiceDialog,
             "__init__(Window parent, String message, String caption,
-    List choices=[], long style=CHOICEDLG_STYLE,
+    List choices=EmptyList, long style=CHOICEDLG_STYLE,
     Point pos=DefaultPosition) -> SingleChoiceDialog",
             "Constructor.  Use ShowModal method to show the dialog.", "");
 
@@ -428,6 +441,8 @@ DocStr(wxTextEntryDialog,
        "A dialog with text control, [ok] and [cancel] buttons", "");
 
 MustHaveApp(wxTextEntryDialog);
+
+enum { wxTextEntryDialogStyle };
 
 class wxTextEntryDialog : public wxDialog {
 public:
@@ -651,9 +666,14 @@ Window Styles
 
     wx.PD_REMAINING_TIME     This flag tells the dialog that it should show
                              remaining time.
+
+    wx.PD_SMOOTH             Uses the wx.GA_SMOOTH style on the embedded
+                             wx.Gauge widget.
     ====================     =============================================
 ");
 
+
+// TODO: wxPD_CAN_SKIP
 
 MustHaveApp(wxProgressDialog);
 
@@ -671,12 +691,15 @@ public:
 for other windows, or, if wx.PD_APP_MODAL flag is not given, for its
 parent window only.", "");
 
+    // TODO: support getting the skipped value back in the return value, but
+    // only if style is set.  This is so the API doesn't change for existing
+    // users...
     DocDeclStr(
         virtual bool , Update(int value, const wxString& newmsg = wxPyEmptyString),
         "Updates the dialog, setting the progress bar to the new value and, if
 given changes the message above it. The value given should be less
 than or equal to the maximum value given to the constructor and the
-dialog is closed if it is equal to the maximum.  Returns true unless
+dialog is closed if it is equal to the maximum.  Returns True unless
 the Cancel button has been pressed.
 
 If false is returned, the application can either immediately destroy

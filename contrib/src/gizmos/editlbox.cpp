@@ -2,7 +2,7 @@
 // Name:        editlbox.cpp
 // Purpose:     ListBox with editable items
 // Author:      Vaclav Slavik
-// RCS-ID:      $Id: editlbox.cpp,v 1.20 2004/11/05 21:17:45 VS Exp $
+// RCS-ID:      $Id: editlbox.cpp,v 1.21 2005/01/14 13:06:52 ABX Exp $
 // Copyright:   (c) Vaclav Slavik
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -41,7 +41,7 @@ public:
                   const wxSize &size = wxDefaultSize,
                   long style = wxLC_ICON,
                   const wxValidator& validator = wxDefaultValidator,
-                  const wxString &name = _T("listctrl"))
+                  const wxString &name = wxListCtrlNameStr)
          : wxListCtrl(parent, id, pos, size, style, validator, name)
     {
         CreateColumns();
@@ -222,7 +222,7 @@ void wxEditableListBox::OnNewItem(wxCommandEvent& WXUNUSED(event))
 void wxEditableListBox::OnEndLabelEdit(wxListEvent& event)
 {
     if ( event.GetIndex() == m_listCtrl->GetItemCount()-1 &&
-         !event.GetText().IsEmpty() )
+         !event.GetText().empty() )
     {
         // The user edited last (empty) line, i.e. added new entry. We have to
         // add new empty line here so that adding one more line is still

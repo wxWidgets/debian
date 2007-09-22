@@ -4,7 +4,7 @@
 // Author:      Vadim Zeitlin
 // Modified by:
 // Created:     14.08.00
-// RCS-ID:      $Id: stattext.h,v 1.14 2004/08/10 13:08:34 ABX Exp $
+// RCS-ID:      $Id: stattext.h,v 1.15 2005/01/07 16:54:07 VZ Exp $
 // Copyright:   (c) 2000 SciTech Software, Inc. (www.scitechsoft.com)
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -54,8 +54,6 @@ public:
     // implementation only from now on
 
     virtual void SetLabel(const wxString& label);
-
-    virtual bool HasTransparentBackground() { return true; }
 
     virtual bool IsFocused() const { return false; }
 

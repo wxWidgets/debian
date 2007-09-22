@@ -4,7 +4,7 @@
 // Author:      Vadim Zeitlin
 // Modified by:
 // Created:     29.06.2003
-// RCS-ID:      $Id: init.h,v 1.7 2004/05/23 20:50:23 JS Exp $
+// RCS-ID:      $Id: init.h,v 1.8 2005/01/17 00:13:39 VZ Exp $
 // Copyright:   (c) 2003 Vadim Zeitlin <vadim@wxwidgets.org>
 // Licence:     wxWindows licence
 ///////////////////////////////////////////////////////////////////////////////
@@ -72,7 +72,10 @@ class WXDLLIMPEXP_BASE wxInitializer
 {
 public:
     // initialize the library
-    wxInitializer() { m_ok = wxInitialize(); }
+    wxInitializer(int argc = 0, wxChar **argv = NULL)
+    {
+        m_ok = wxInitialize(argc, argv);
+    }
 
     // has the initialization been successful? (explicit test)
     bool IsOk() const { return m_ok; }

@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     01/02/97
-// RCS-ID:      $Id: paper.h,v 1.10 2004/09/20 11:31:40 ABX Exp $
+// RCS-ID:      $Id: paper.h,v 1.11 2005/01/21 18:48:20 ABX Exp $
 // Copyright:   (c) Julian Smart
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -119,7 +119,7 @@ private:
     // DECLARE_DYNAMIC_CLASS(wxPrintPaperDatabase)
 };
 
-WXDLLEXPORT_DATA(extern wxPrintPaperDatabase*) wxThePrintPaperDatabase;
+extern WXDLLEXPORT_DATA(wxPrintPaperDatabase*) wxThePrintPaperDatabase;
 
 
 #endif

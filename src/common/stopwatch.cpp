@@ -8,7 +8,7 @@
 //    Guillermo Rodriguez <guille@iies.es> rewrote from scratch (Dic/99)
 // Modified by:
 // Created:     20.06.2003 (extracted from common/timercmn.cpp)
-// RCS-ID:      $Id: stopwatch.cpp,v 1.12 2004/09/22 14:38:51 ABX Exp $
+// RCS-ID:      $Id: stopwatch.cpp,v 1.16 2005/04/12 21:08:04 ABX Exp $
 // Copyright:   (c) 1998-2003 wxWidgets Team
 // License:     wxWindows license
 ///////////////////////////////////////////////////////////////////////////////
@@ -110,14 +110,48 @@
 
 void wxStopWatch::Start(long t)
 {
+#if 0
+// __WXMSW__
+    LARGE_INTEGER frequency_li;
+    ::QueryPerformanceFrequency( &frequency_li );
+    m_frequency = frequency_li.QuadPart;
+    if (m_frequency == 0)
+    {
+        m_t0 = wxGetLocalTimeMillis() - t;
+    }
+    else
+    {
+        LARGE_INTEGER counter_li;
+        ::QueryPerformanceCounter( &counter_li );
+        wxLongLong counter = counter_li.QuadPart;
+        m_t0 = (counter * 10000 / m_frequency) - t*10;
+    }
+#else
     m_t0 = wxGetLocalTimeMillis() - t;
+#endif
     m_pause = 0;
     m_pauseCount = 0;
 }
 
 long wxStopWatch::GetElapsedTime() const
 {
+#if 0
+//__WXMSW__
+    if (m_frequency == 0)
+    {
+        return (wxGetLocalTimeMillis() - m_t0).GetLo();
+    }
+    else
+    {
+        LARGE_INTEGER counter_li;
+        ::QueryPerformanceCounter( &counter_li );
+        wxLongLong counter = counter_li.QuadPart;
+        wxLongLong res = (counter * 10000 / m_frequency) - m_t0;
+        return res.GetLo() / 10;
+    }
+#else
     return (wxGetLocalTimeMillis() - m_t0).GetLo();
+#endif
 }
 
 long wxStopWatch::Time() const
@@ -206,7 +240,19 @@ wxLongLong wxGetLocalTimeMillis()
     // If possible, use a function which avoids conversions from
     // broken-up time structures to milliseconds
 
-#if defined(__WXMSW__) && (defined(__WINE__) || defined(__MWERKS__))
+#if defined(__WXPALMOS__)
+    DateTimeType thenst;
+    thenst.second  = 0;
+    thenst.minute  = 0;
+    thenst.hour    = 0;
+    thenst.day     = 1;
+    thenst.month   = 1;
+    thenst.year    = 1970;
+    thenst.weekDay = 5;
+    uint32_t now = TimGetSeconds();
+    uint32_t then = TimDateTimeToSeconds (&thenst);
+    return SysTimeToMilliSecs(SysTimeInSecs(now - then));
+#elif defined(__WXMSW__) && (defined(__WINE__) || defined(__MWERKS__))
     // This should probably be the way all WXMSW compilers should do it
     // Go direct to the OS for time
 
@@ -240,7 +286,7 @@ wxLongLong wxGetLocalTimeMillis()
 
     // ftime() is void and not int in some mingw32 headers, so don't
     // test the return code (well, it shouldn't fail anyhow...)
-    (void)ftime(&tp);
+    (void)::ftime(&tp);
     val *= tp.time;
     return (val + tp.millitm);
 #elif defined(__WXMAC__)

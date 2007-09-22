@@ -5,7 +5,7 @@
 // Author:      Robin Dunn
 //
 // Created:     1-Apr-2002
-// RCS-ID:      $Id: _intl.i,v 1.6 2004/09/23 20:23:16 RD Exp $
+// RCS-ID:      $Id: _intl.i,v 1.7 2004/11/12 18:12:49 RD Exp $
 // Copyright:   (c) 2002 by Total Control Software
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -16,6 +16,7 @@
 //---------------------------------------------------------------------------
 
 %{
+#include <locale.h>
 %}
 
 //---------------------------------------------------------------------------
@@ -311,24 +312,51 @@ public:
     %extend {
         wxLocale(int language = -1,
                  int flags = wxLOCALE_LOAD_DEFAULT | wxLOCALE_CONV_ENCODING) {
+            wxLocale* loc;
             if (language == -1)
-                return new wxLocale();
+                loc = new wxLocale();
             else
-                return new wxLocale(language, flags);
+                loc = new wxLocale(language, flags);
+            // Python before 2.4 needs to have LC_NUMERIC set to "C" in order
+            // for the floating point conversions and such to work right.
+%#if PY_VERSION_HEX < 0x02040000
+            setlocale(LC_NUMERIC, "C");
+%#endif
+            return loc;
         }
     }
 
         // restores old locale
     ~wxLocale();
 
-    %name(Init1)bool Init(const wxString& szName,
-                          const wxString& szShort = wxPyEmptyString,
-                          const wxString& szLocale = wxPyEmptyString,
-                          bool bLoadDefault = true,
-                          bool bConvertEncoding = false);
+    %extend { 
+        bool Init1(const wxString& szName,
+                   const wxString& szShort = wxPyEmptyString,
+                   const wxString& szLocale = wxPyEmptyString,
+                   bool bLoadDefault = true,
+                   bool bConvertEncoding = false) {
+            bool rc = self->Init(szName, szShort, szLocale, bLoadDefault, bConvertEncoding);
+            // Python before 2.4 needs to have LC_NUMERIC set to "C" in order
+            // for the floating point conversions and such to work right.
+%#if PY_VERSION_HEX < 0x02040000
+            setlocale(LC_NUMERIC, "C");
+%#endif
+            return rc;
+        }
 
-    %name(Init2) bool Init(int language = wxLANGUAGE_DEFAULT,
-                           int flags = wxLOCALE_LOAD_DEFAULT | wxLOCALE_CONV_ENCODING);
+        bool Init2(int language = wxLANGUAGE_DEFAULT,
+                   int flags = wxLOCALE_LOAD_DEFAULT | wxLOCALE_CONV_ENCODING) {
+            bool rc = self->Init(language, flags);
+            // Python before 2.4 needs to have LC_NUMERIC set to "C" in order
+            // for the floating point conversions and such to work right.
+%#if PY_VERSION_HEX < 0x02040000
+            setlocale(LC_NUMERIC, "C");
+%#endif
+            return rc;
+        }
+    }
+
+    
 
     %pythoncode {
     def Init(self, *_args, **_kwargs):

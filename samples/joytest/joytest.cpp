@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     04/01/98
-// RCS-ID:      $Id: joytest.cpp,v 1.18 2004/10/06 20:53:29 ABX Exp $
+// RCS-ID:      $Id: joytest.cpp,v 1.21 2005/03/28 13:43:20 JS Exp $
 // Copyright:   (c) Julian Smart
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -39,6 +39,7 @@ long ypos = -1;
 
 int winNumber = 1;
 
+int nButtons = 0;
 // Initialise this in OnInit, not statically
 bool MyApp::OnInit()
 {
@@ -50,7 +51,7 @@ bool MyApp::OnInit()
     }
 
 #if wxUSE_SOUND
-    m_fire.Create(_T("gun.wav"));
+    m_fire.Create(_T("buttonpress.wav"));
 #endif // wxUSE_SOUND
 
     m_minX = stick.GetXMin();
@@ -85,6 +86,7 @@ bool MyApp::OnInit()
 
 #if wxUSE_STATUSBAR
     frame->CreateStatusBar();
+    frame->SetStatusText(wxString::Format(wxT("Device [%s] (PID:[%i] MID:[%i]) Ready... # of joysticks:[%i]"), stick.GetProductName().c_str(), stick.GetProductId(), stick.GetManufacturerId(), stick.GetNumberJoysticks()));
 #endif // wxUSE_STATUSBAR
 
     frame->CenterOnScreen();
@@ -104,6 +106,7 @@ MyCanvas::MyCanvas(wxWindow *parent, const wxPoint& pos, const wxSize& size):
     wxScrolledWindow(parent, wxID_ANY, pos, size, wxSUNKEN_BORDER)
 {
     m_stick = new wxJoystick(wxJOYSTICK1);
+    nButtons = m_stick->GetNumberButtons();
     m_stick->SetCapture(this, 10);
 }
 
@@ -152,9 +155,17 @@ void MyCanvas::OnJoystickEvent(wxJoystickEvent& event)
 #if wxUSE_STATUSBAR
     wxString buf;
     if (event.ButtonDown())
-        buf.Printf(_T("Joystick (%d, %d) Fire!"), pt.x, pt.y);
+        buf.Printf(_T("Joystick (%d, %d) #%i Fire!"), pt.x, pt.y, event.GetButtonChange());
     else
-        buf.Printf(_T("Joystick (%d, %d)"), pt.x, pt.y);
+        buf.Printf(_T("Joystick (%d, %d)  "), pt.x, pt.y);
+
+/*
+    for(int i = 0; i < nButtons; ++i)
+    {
+        buf += wxString(wxT("[")) +
+        ((event.GetButtonState() & (1 << i)) ? wxT("Y") : wxT("N")) + wxString(wxT("]"));
+    }
+*/
 
     frame->SetStatusText(buf);
 #endif // wxUSE_STATUSBAR

@@ -4,7 +4,7 @@
 // Author:      Vadim Zeitlin
 // Modified by:
 // Created:     19.06.2003
-// RCS-ID:      $Id: apptrait.h,v 1.30 2004/10/19 13:39:02 JS Exp $
+// RCS-ID:      $Id: apptrait.h,v 1.36 2005/06/10 17:53:06 ABX Exp $
 // Copyright:   (c) 2003 Vadim Zeitlin <vadim@wxwidgets.org>
 // Licence:     wxWindows licence
 ///////////////////////////////////////////////////////////////////////////////
@@ -49,9 +49,14 @@ struct WXDLLIMPEXP_BASE wxToolkitInfo
 // wxAppTraits: this class defines various configurable aspects of wxApp
 // ----------------------------------------------------------------------------
 
+class WXDLLIMPEXP_BASE wxStandardPathsBase;
+
 class WXDLLIMPEXP_BASE wxAppTraitsBase
 {
 public:
+    // needed since this class declares virtual members
+    virtual ~wxAppTraitsBase() { }
+
     // hooks for creating the global objects, may be overridden by the user
     // ------------------------------------------------------------------------
 
@@ -75,6 +80,11 @@ public:
     // NB: returned pointer will be deleted by the caller
     virtual wxRendererNative *CreateRenderer() = 0;
 
+#if wxUSE_STDPATHS
+    // wxStandardPaths object is normally the same for wxBase and wxGUI
+    // except in the case of wxMac and wxCocoa
+    virtual wxStandardPathsBase& GetStandardPaths();
+#endif // wxUSE_STDPATHS
 
     // functions abstracting differences between GUI and console modes
     // ------------------------------------------------------------------------
@@ -132,11 +142,12 @@ public:
 // include the platform-specific version of the class
 // ----------------------------------------------------------------------------
 
-// NB: test for __UNIX__ before __WXMAC__ as under Darwin we want to use the
-//     Unix code (and otherwise __UNIX__ wouldn't be defined)
-#if defined(__PALMOS__)
+// NB:  test for __UNIX__ before __WXMAC__ as under Darwin we want to use the
+//      Unix code (and otherwise __UNIX__ wouldn't be defined)
+// ABX: check __WIN32__ instead of __WXMSW__ for the same MSWBase in any Win32 port
+#if defined(__WXPALMOS__)
     #include "wx/palmos/apptbase.h"
-#elif defined(__WXMSW__)
+#elif defined(__WIN32__)
     #include "wx/msw/apptbase.h"
 #elif defined(__UNIX__) && !defined(__EMX__)
     #include "wx/unix/apptbase.h"
@@ -219,9 +230,10 @@ public:
 // include the platform-specific version of the classes above
 // ----------------------------------------------------------------------------
 
-#if defined(__PALMOS__)
+// ABX: check __WIN32__ instead of __WXMSW__ for the same MSWBase in any Win32 port
+#if defined(__WXPALMOS__)
     #include "wx/palmos/apptrait.h"
-#elif defined(__WXMSW__)
+#elif defined(__WIN32__)
     #include "wx/msw/apptrait.h"
 #elif defined(__UNIX__) && !defined(__EMX__)
     #include "wx/unix/apptrait.h"

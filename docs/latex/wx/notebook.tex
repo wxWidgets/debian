@@ -23,23 +23,59 @@ managed by wxNotebook.
 
 \twocolwidtha{5cm}
 \begin{twocollist}\itemsep=0pt
-
-\twocolitem{\windowstyle{wxNB\_LEFT}}{Place tabs on the left side. Not supported under Windows XP.}
-\twocolitem{\windowstyle{wxNB\_RIGHT}}{Place tabs on the right side. Not supported under Windows XP.}
-\twocolitem{\windowstyle{wxNB\_BOTTOM}}{Place tabs under instead of above the notebook pages. Not supported under Windows XP.}
+\twocolitem{\windowstyle{wxNB\_TOP}}{Place tabs on the top side.}
+\twocolitem{\windowstyle{wxNB\_LEFT}}{Place tabs on the left side.}
+\twocolitem{\windowstyle{wxNB\_RIGHT}}{Place tabs on the right side.}
+\twocolitem{\windowstyle{wxNB\_BOTTOM}}{Place tabs under instead of above the notebook pages.}
 \twocolitem{\windowstyle{wxNB\_FIXEDWIDTH}}{(Windows only) All tabs will have same width.}
 \twocolitem{\windowstyle{wxNB\_MULTILINE}}{(Windows only) There can be several rows of tabs.}
+\twocolitem{\windowstyle{wxNB\_NOPAGETHEME}}{(Windows only) Display a solid colour on notebook pages, and not a gradient, which can reduce performance.}
+\twocolitem{\windowstyle{wxNB\_FLAT}}{(Windows CE only) Show tabs in a flat style.}
 
 \end{twocollist}
+
+The styles \texttt{wxNB\_LEFT}, \texttt{RIGHT} and \texttt{BOTTOM} are not
+supported under Microsoft Windows XP when using visual themes.
 
 See also \helpref{window styles overview}{windowstyles}.
 
 \input noteevt.inc
 
+\wxheading{Page backgrounds}
+
+On Windows XP, the default theme paints a gradient on the notebook's pages.
+If you wish to suppress this theme, for aesthetic or performance reasons,
+there are three ways of doing it. You can use wxNB\_NOPAGETHEME to disable
+themed drawing for a particular notebook, you can call {\tt wxSystemOptions::SetOption} 
+to disable it for the whole application, or you can disable it for individual
+pages by using {\tt SetBackgroundColour}.
+
+To disable themed pages globally:
+
+\begin{verbatim}
+    wxSystemOptions::SetOption(wxT("msw.notebook.themed-background"), 0);
+\end{verbatim}
+
+Set the value to 1 to enable it again.
+
+To give a single page a solid background that more or less fits in with the
+overall theme, use:
+
+\begin{verbatim}
+    wxColour col = notebook->GetThemeBackgroundColour();
+    if (col.Ok())
+    {
+        page->SetBackgroundColour(col);
+    }
+\end{verbatim}
+
+On platforms other than Windows, or if the application is not using Windows
+themes, {\tt GetThemeBackgroundColour} will return an uninitialised colour object,
+and the above code will therefore work on all platforms.
+
 \wxheading{See also}
 
-\helpref{wxNotebookEvent}{wxnotebookevent}, \helpref{wxImageList}{wximagelist},\rtfsp
-\helpref{wxTabCtrl}{wxtabctrl}
+\helpref{wxBookCtrl}{wxbookctrloverview}, \helpref{wxNotebookEvent}{wxnotebookevent}, \helpref{wxImageList}{wximagelist}, \helpref{notebook sample}{samplenotebook}\rtfsp
 
 \latexignore{\rtfignore{\wxheading{Members}}}
 
@@ -50,7 +86,7 @@ See also \helpref{window styles overview}{windowstyles}.
 Default constructor.
 
 \func{}{wxNotebook}{\param{wxWindow*}{ parent}, \param{wxWindowID }{id}, \param{const wxPoint\&}{ pos = wxDefaultPosition},
- \param{const wxSize\&}{ size = wxDefaultSize}, \param{long}{ style = 0}, \param{const wxString\& }{name = "notebook"}}
+ \param{const wxSize\&}{ size = wxDefaultSize}, \param{long}{ style = 0}, \param{const wxString\& }{name = wxNotebookNameStr}}
 
 Constructs a notebook control.
 
@@ -70,11 +106,13 @@ Note that sometimes you can reduce flicker by passing the wxCLIP\_CHILDREN windo
 
 \docparam{name}{The name of the control (used only under Motif).}
 
+
 \membersection{wxNotebook::\destruct{wxNotebook}}\label{wxnotebookdtor}
 
 \func{}{\destruct{wxNotebook}}{\void}
 
 Destroys the wxNotebook object.
+
 
 \membersection{wxNotebook::AddPage}\label{wxnotebookaddpage}
 
@@ -109,6 +147,7 @@ Do not delete the page, it will be deleted by the notebook.
 
 \helpref{wxNotebook::InsertPage}{wxnotebookinsertpage}
 
+
 \membersection{wxNotebook::AdvanceSelection}\label{wxnotebookadvanceselection}
 
 \func{void}{AdvanceSelection}{\param{bool}{ forward = true}}
@@ -116,6 +155,7 @@ Do not delete the page, it will be deleted by the notebook.
 Cycles through the tabs.
 
 The call to this function generates the page changing events.
+
 
 \membersection{wxNotebook::AssignImageList}\label{wxnotebookassignimagelist}
 
@@ -129,19 +169,22 @@ the list.
 \helpref{wxImageList}{wximagelist},
 \helpref{SetImageList}{wxnotebooksetimagelist}
 
+
 \membersection{wxNotebook::Create}\label{wxnotebookcreate}
 
 \func{bool}{Create}{\param{wxWindow*}{ parent}, \param{wxWindowID }{id}, \param{const wxPoint\&}{ pos = wxDefaultPosition},
- \param{const wxSize\&}{ size}, \param{long}{ style = 0}, \param{const wxString\& }{name = "notebook"}}
+ \param{const wxSize\&}{ size}, \param{long}{ style = 0}, \param{const wxString\& }{name = wxNotebookNameStr}}
 
 Creates a notebook control. See \helpref{wxNotebook::wxNotebook}{wxnotebookctor} for a description
 of the parameters.
+
 
 \membersection{wxNotebook::DeleteAllPages}\label{wxnotebookdeleteallpages}
 
 \func{bool}{DeleteAllPages}{\void}
 
 Deletes all pages.
+
 
 \membersection{wxNotebook::DeletePage}\label{wxnotebookdeletepage}
 
@@ -150,6 +193,14 @@ Deletes all pages.
 Deletes the specified page, and the associated window.
 
 The call to this function generates the page changing events.
+
+
+\membersection{wxNotebook::GetCurrentPage}\label{wxnotebookgetcurrentpage}
+
+\constfunc{wxWindow *}{GetCurrentPage}{\void}
+
+Returns the currently selected notebook age or \texttt{NULL}.
+
 
 \membersection{wxNotebook::GetImageList}\label{wxnotebookgetimagelist}
 
@@ -161,11 +212,13 @@ Returns the associated image list.
 
 \helpref{wxImageList}{wximagelist}, \helpref{wxNotebook::SetImageList}{wxnotebooksetimagelist}
 
+
 \membersection{wxNotebook::GetPage}\label{wxnotebookgetpage}
 
 \func{wxNotebookPage*}{GetPage}{\param{size\_t}{ page}}
 
 Returns the window at the given page position.
+
 
 \membersection{wxNotebook::GetPageCount}\label{wxnotebookgetpagecount}
 
@@ -173,11 +226,13 @@ Returns the window at the given page position.
 
 Returns the number of pages in the notebook control.
 
+
 \membersection{wxNotebook::GetPageImage}\label{wxnotebookgetpageimage}
 
 \constfunc{int}{GetPageImage}{\param{size\_t }{nPage}}
 
 Returns the image index for the given page.
+
 
 \membersection{wxNotebook::GetPageText}\label{wxnotebookgetpagetext}
 
@@ -185,11 +240,13 @@ Returns the image index for the given page.
 
 Returns the string for the given page.
 
+
 \membersection{wxNotebook::GetRowCount}\label{wxnotebookgetrowcount}
 
 \constfunc{int}{GetRowCount}{\void}
 
 Returns the number of rows in the notebook control.
+
 
 \membersection{wxNotebook::GetSelection}\label{wxnotebookgetselection}
 
@@ -203,11 +260,19 @@ the platform and so\rtfsp
 \helpref{wxNotebookEvent::GetSelection}{wxnotebookeventgetselection} should be
 used instead in this case.
 
+\membersection{wxNotebook::GetThemeBackgroundColour}\label{wxnotebookgetthemebackgroundcolour}
+
+\constfunc{wxColour}{GetThemeBackgroundColour}{\void}
+
+If running under Windows and themes are enabled for the application, this function
+returns a suitable colour for painting the background of a notebook page, and can be passed
+to {\tt SetBackgroundColour}. Otherwise, an uninitialised colour will be returned.
+
 \membersection{wxNotebook::HitTest}\label{wxnotebookhittest}
 
 \func{int}{HitTest}{\param{const wxPoint\&}{ pt}, \param{long}{ *flags = {\tt NULL}}}
 
-Returns the index of the tab at the specified position or {\tt wxNOT\_FOUND} 
+Returns the index of the tab at the specified position or {\tt wxNOT\_FOUND}
 if none. If {\it flags} parameter is non {\tt NULL}, the position of the point
 inside the tab is returned as well.
 
@@ -231,6 +296,7 @@ inside the tab is returned as well.
 
 Returns the zero-based tab index or {\tt wxNOT\_FOUND} if there is no tab is at
 the specified position.
+
 
 
 \membersection{wxNotebook::InsertPage}\label{wxnotebookinsertpage}
@@ -266,6 +332,7 @@ Do not delete the page, it will be deleted by the notebook.
 
 \helpref{wxNotebook::AddPage}{wxnotebookaddpage}
 
+
 \membersection{wxNotebook::OnSelChange}\label{wxnotebookonselchange}
 
 \func{void}{OnSelChange}{\param{wxNotebookEvent\&}{ event}}
@@ -276,11 +343,13 @@ An event handler function, called when the page selection is changed.
 
 \helpref{wxNotebookEvent}{wxnotebookevent}
 
+
 \membersection{wxNotebook::RemovePage}\label{wxnotebookremovepage}
 
 \func{bool}{RemovePage}{\param{size\_t}{ page}}
 
 Deletes the specified page, without deleting the associated window.
+
 
 \membersection{wxNotebook::SetImageList}\label{wxnotebooksetimagelist}
 
@@ -294,6 +363,7 @@ ownership of the image list, you must delete it yourself.
 \helpref{wxImageList}{wximagelist},
 \helpref{AssignImageList}{wxnotebookassignimagelist}
 
+
 \membersection{wxNotebook::SetPadding}\label{wxnotebooksetpadding}
 
 \func{void}{SetPadding}{\param{const wxSize\&}{ padding}}
@@ -301,6 +371,7 @@ ownership of the image list, you must delete it yourself.
 Sets the amount of space around each page's icon and label, in pixels.
 
 {\bf NB:} The vertical padding cannot be changed in wxGTK.
+
 
 \membersection{wxNotebook::SetPageSize}\label{wxnotebooksetpagesize}
 
@@ -310,6 +381,7 @@ Sets the width and height of the pages.
 
 {\bf NB:} This method is currently not implemented for wxGTK.
 
+
 \membersection{wxNotebook::SetPageImage}\label{wxnotebooksetpageimage}
 
 \func{bool}{SetPageImage}{\param{size\_t}{ page}, \param{int }{image}}
@@ -317,11 +389,13 @@ Sets the width and height of the pages.
 Sets the image index for the given page. {\it image} is an index into
 the image list which was set with \helpref{wxNotebook::SetImageList}{wxnotebooksetimagelist}.
 
+
 \membersection{wxNotebook::SetPageText}\label{wxnotebooksetpagetext}
 
 \func{bool}{SetPageText}{\param{size\_t}{ page}, \param{const wxString\& }{text}}
 
 Sets the text for the given page.
+
 
 \membersection{wxNotebook::SetSelection}\label{wxnotebooksetselection}
 

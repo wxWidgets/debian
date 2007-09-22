@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     04/01/98
-// RCS-ID:      $Id: cube.h,v 1.6 2003/11/15 04:21:03 DS Exp $
+// RCS-ID:      $Id: cube.h,v 1.7 2005/03/27 18:08:08 VZ Exp $
 // Copyright:   (c) Julian Smart
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -56,7 +56,7 @@ public:
         const wxSize& size = wxDefaultSize,
         long style = 0, const wxString& name = _T("TestGLCanvas") );
 
-    TestGLCanvas( wxWindow *parent, const TestGLCanvas &other,
+    TestGLCanvas( wxWindow *parent, const TestGLCanvas *other,
         wxWindowID id = wxID_ANY, const wxPoint& pos = wxDefaultPosition,
         const wxSize& size = wxDefaultSize, long style = 0,
         const wxString& name = _T("TestGLCanvas") );

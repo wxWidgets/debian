@@ -5,7 +5,7 @@
 // Author:      Robin Dunn
 //
 // Created:     10-June-1998
-// RCS-ID:      $Id: _slider.i,v 1.8 2004/06/02 20:52:59 RD Exp $
+// RCS-ID:      $Id: _slider.i,v 1.11 2005/04/11 19:58:15 RD Exp $
 // Copyright:   (c) 2003 by Total Control Software
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -25,6 +25,22 @@ MAKE_CONST_WXSTRING(SliderNameStr);
 //---------------------------------------------------------------------------
 %newgroup
 
+enum {
+    wxSL_HORIZONTAL,
+    wxSL_VERTICAL,
+    wxSL_TICKS,
+    wxSL_AUTOTICKS,
+    wxSL_LABELS,
+    wxSL_LEFT,
+    wxSL_TOP,
+    wxSL_RIGHT,
+    wxSL_BOTTOM,
+    wxSL_BOTH,
+    wxSL_SELRANGE,
+    wxSL_INVERSE
+};
+
+
 MustHaveApp(wxSlider);
 
 class wxSlider : public wxControl {
@@ -41,7 +57,7 @@ public:
              long style = wxSL_HORIZONTAL,
              const wxValidator& validator = wxDefaultValidator,
              const wxString& name = wxPySliderNameStr);
-    %name(PreSlider)wxSlider();
+    %RenameCtor(PreSlider, wxSlider());
 
     bool Create(wxWindow* parent, wxWindowID id=-1,
              int value=0, int minValue=0, int maxValue=100,

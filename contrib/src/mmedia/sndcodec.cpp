@@ -3,7 +3,8 @@
 // Purpose:
 // Date: 08/11/1999
 // Author: Guilhem Lavaux <lavaux@easynet.fr> (C) 1999
-// CVSID: $Id: sndcodec.cpp,v 1.1 2000/03/05 19:03:18 GL Exp $
+// CVSID: $Id: sndcodec.cpp,v 1.2 2004/11/22 20:10:24 JS Exp $
+// wxWindows licence
 // --------------------------------------------------------------------------
 #ifdef __GNUG__
 #pragma implementation "sndcodec.cpp"

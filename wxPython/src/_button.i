@@ -5,7 +5,7 @@
 // Author:      Robin Dunn
 //
 // Created:     10-June-1998
-// RCS-ID:      $Id: _button.i,v 1.16 2004/09/18 23:11:02 RD Exp $
+// RCS-ID:      $Id: _button.i,v 1.17 2004/11/17 23:50:46 RD Exp $
 // Copyright:   (c) 2003 by Total Control Software
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -23,6 +23,8 @@ enum {
     wxBU_TOP,
     wxBU_RIGHT,
     wxBU_BOTTOM,
+
+    wxBU_ALIGN_MASK,
 
     wxBU_EXACTFIT,
     wxBU_AUTODRAW,

@@ -4,7 +4,7 @@
 // Author:      Vadim Zeitlin
 // Modified by:
 // Created:     07/07/03
-// RCS-ID:      $Id: beforestd.h,v 1.6 2004/09/09 17:42:29 ABX Exp $
+// RCS-ID:      $Id: beforestd.h,v 1.8 2005/06/19 23:49:27 VZ Exp $
 // Copyright:   (c) 2003 Vadim Zeitlin <zeitlin@dptmaths.ens-cachan.fr>
 // Licence:     wxWindows licence
 ///////////////////////////////////////////////////////////////////////////////
@@ -20,10 +20,18 @@
     it can be included several times.
  */
 
-// VC 7.x isn't as bad as VC6 and doesn't give these warnings
-#if defined(__VISUALC__) && __VISUALC__ <= 1200
+// VC 7.x isn't as bad as VC6 and doesn't give these warnings but eVC (which
+// defines _MSC_VER as 1201) does need to be included as it's VC6-like
+#if defined(__VISUALC__) && __VISUALC__ <= 1201
     // MSVC 5 does not have this
     #if __VISUALC__ > 1100
+        // we have to disable (and reenable in afterstd.h) this one because,
+        // even though it is of level 4, it is not disabled by warning(push, 1)
+        // below for VC7.1!
+
+        // unreachable code
+        #pragma warning(disable:4702)
+
         #pragma warning(push, 1)
     #else // VC 5
         // 'expression' : signed/unsigned mismatch

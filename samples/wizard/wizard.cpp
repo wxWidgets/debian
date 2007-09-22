@@ -4,7 +4,7 @@
 // Author:      Vadim Zeitlin
 // Modified by: Robert Vazan (sizers)
 // Created:     15.08.99
-// RCS-ID:      $Id: wizard.cpp,v 1.14 2004/10/02 12:35:56 VS Exp $
+// RCS-ID:      $Id: wizard.cpp,v 1.20 2005/05/18 14:37:03 JS Exp $
 // Copyright:   (c) Vadim Zeitlin
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -30,6 +30,7 @@
     #include "wx/log.h"
     #include "wx/app.h"
     #include "wx/checkbox.h"
+    #include "wx/checklst.h"
     #include "wx/msgdlg.h"
     #include "wx/radiobox.h"
     #include "wx/menu.h"
@@ -38,10 +39,8 @@
 
 #include "wx/wizard.h"
 
-#ifndef __WXMSW__
-    #include "wiztest.xpm"
-    #include "wiztest2.xpm"
-#endif
+#include "wiztest.xpm"
+#include "wiztest2.xpm"
 
 // ----------------------------------------------------------------------------
 // constants
@@ -89,21 +88,21 @@ private:
 // some pages for our wizard
 // ----------------------------------------------------------------------------
 
-// this shows how to simply control the validity of the user input by just
+// This shows how to simply control the validity of the user input by just
 // overriding TransferDataFromWindow() - of course, in a real program, the
 // check wouldn't be so trivial and the data will be probably saved somewhere
-// too
+// too.
 //
-// it also shows how to use a different bitmap for one of the pages
+// It also shows how to use a different bitmap for one of the pages.
 class wxValidationPage : public wxWizardPageSimple
 {
 public:
     wxValidationPage(wxWizard *parent) : wxWizardPageSimple(parent)
     {
-        m_bitmap = wxBITMAP(wiztest2);
+        m_bitmap = wxBitmap(wiztest2_xpm);
 
         m_checkbox = new wxCheckBox(this, wxID_ANY, _T("&Check me"));
-        
+
         wxBoxSizer *mainSizer = new wxBoxSizer(wxVERTICAL);
         mainSizer->Add(
             new wxStaticText(this, wxID_ANY,
@@ -169,7 +168,7 @@ public:
                                  WXSIZEOF(choices), choices,
                                  1, wxRA_SPECIFY_COLS);
         m_radio->SetSelection(Both);
-        
+
         wxBoxSizer *mainSizer = new wxBoxSizer(wxVERTICAL);
         mainSizer->Add(
             m_radio,
@@ -177,6 +176,7 @@ public:
             wxALL,
             5 // Border
         );
+
         SetSizer(mainSizer);
         mainSizer->Fit(this);
     }
@@ -217,7 +217,7 @@ private:
     DECLARE_EVENT_TABLE()
 };
 
-// this shows how to dynamically (i.e. during run-time) arrange the page order
+// This shows how to dynamically (i.e. during run-time) arrange the page order.
 class wxCheckboxPage : public wxWizardPage
 {
 public:
@@ -228,7 +228,7 @@ public:
     {
         m_prev = prev;
         m_next = next;
-        
+
         wxBoxSizer *mainSizer = new wxBoxSizer(wxVERTICAL);
 
         mainSizer->Add(
@@ -246,7 +246,26 @@ public:
             wxALL,
             5 // Border width
         );
-        
+
+#if wxUSE_CHECKLISTBOX
+        static const wxChar *aszChoices[] =
+            { _T("Zeroth"), _T("First"), _T("Second"), _T("Third"), _T("Fourth"), _T("Fifth"), _T("Sixth"), _T("Seventh"), _T("Eighth"), _T("Nineth") };
+        wxString *astrChoices = new wxString[WXSIZEOF(aszChoices)];
+        unsigned int ui;
+        for ( ui = 0; ui < WXSIZEOF(aszChoices); ui++ )
+            astrChoices[ui] = aszChoices[ui];
+
+        m_checklistbox = new wxCheckListBox(this, wxID_ANY, wxDefaultPosition, wxSize(100,100),
+            WXSIZEOF(aszChoices), astrChoices);
+
+        mainSizer->Add(
+            m_checklistbox,
+            0, // No vertical stretching
+            wxALL,
+            5 // Border width
+        );
+#endif // wxUSE_CHECKLISTBOX
+
         SetSizer(mainSizer);
         mainSizer->Fit(this);
     }
@@ -263,6 +282,9 @@ private:
                  *m_next;
 
     wxCheckBox *m_checkbox;
+#if wxUSE_CHECKLISTBOX
+    wxCheckListBox *m_checklistbox;
+#endif
 };
 
 // ============================================================================
@@ -353,19 +375,19 @@ void MyFrame::OnRunWizard(wxCommandEvent& WXUNUSED(event))
 {
     wxWizard *wizard = new wxWizard(this, wxID_ANY,
                     _T("Absolutely Useless Wizard"),
-                    wxBITMAP(wiztest),
+                    wxBitmap(wiztest_xpm),
                     wxDefaultPosition,
                     wxDEFAULT_DIALOG_STYLE | wxRESIZE_BORDER);
 
     // a wizard page may be either an object of predefined class
     wxWizardPageSimple *page1 = new wxWizardPageSimple(wizard);
-    wxStaticText *text = new wxStaticText(page1, wxID_ANY,
+
+    /* wxStaticText *text = */ new wxStaticText(page1, wxID_ANY,
              _T("This wizard doesn't help you\nto do anything at all.\n")
              _T("\n")
              _T("The next pages will present you\nwith more useless controls."),
              wxPoint(5,5)
         );
-    wxSize size = text->GetBestSize();
 
     // ... or a derived class
     wxRadioboxPage *page3 = new wxRadioboxPage(wizard);
@@ -381,9 +403,9 @@ void MyFrame::OnRunWizard(wxCommandEvent& WXUNUSED(event))
     page1->SetNext(page2);
     page3->SetPrev(page2);
 
-    wizard->SetPageSize(size);
+    // allow the wizard to size itself around the pages
     wizard->GetPageAreaSizer()->Add(page1);
-    
+
     if ( wizard->RunWizard(page1) )
     {
         wxMessageBox(_T("The wizard successfully completed"), _T("That's all"),

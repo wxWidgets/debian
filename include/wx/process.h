@@ -4,7 +4,7 @@
 // Author:      Guilhem Lavaux
 // Modified by: Vadim Zeitlin to check error codes, added Detach() method
 // Created:     24/06/98
-// RCS-ID:      $Id: process.h,v 1.33 2004/10/07 08:53:16 RN Exp $
+// RCS-ID:      $Id: process.h,v 1.37 2005/03/09 16:29:55 ABX Exp $
 // Copyright:   (c) 1998 Guilhem Lavaux
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -43,7 +43,7 @@ class WXDLLIMPEXP_BASE wxProcess : public wxEvtHandler
 {
 public:
     // kill the process with the given PID
-    static wxKillError Kill(int pid, wxSignal sig = wxSIGTERM);
+    static wxKillError Kill(int pid, wxSignal sig = wxSIGTERM, int flags = wxKILL_NOCHILDREN);
 
     // test if the given process exists
     static bool Exists(int pid);
@@ -107,8 +107,7 @@ public:
 
     // for backwards compatibility only, don't use
 #if WXWIN_COMPATIBILITY_2_2
-    wxProcess(wxEvtHandler *parent, bool redirect)
-        { Init(parent, wxID_ANY, redirect ? wxPROCESS_REDIRECT : wxPROCESS_DEFAULT); }
+    wxDEPRECATED( wxProcess(wxEvtHandler *parent, bool redirect) );
 #endif // WXWIN_COMPATIBILITY_2_2
 
 protected:
@@ -168,10 +167,10 @@ public:
 
 typedef void (wxEvtHandler::*wxProcessEventFunction)(wxProcessEvent&);
 
-#define EVT_END_PROCESS(id, func) \
-   DECLARE_EVENT_TABLE_ENTRY( \
-           wxEVT_END_PROCESS, id, wxID_ANY, \
-           (wxObjectEventFunction) (wxEventFunction)  wxStaticCastEvent( wxProcessEventFunction, & func ), NULL),
+#define wxProcessEventHandler(func) \
+    (wxObjectEventFunction)(wxEventFunction)wxStaticCastEvent(wxProcessEventFunction, &func)
 
-#endif
-    // _WX_PROCESSH__
+#define EVT_END_PROCESS(id, func) \
+   wx__DECLARE_EVT1(wxEVT_END_PROCESS, id, wxProcessEventHandler(func))
+
+#endif // _WX_PROCESSH__

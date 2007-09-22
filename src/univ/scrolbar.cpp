@@ -4,7 +4,7 @@
 // Author:      Vadim Zeitlin
 // Modified by:
 // Created:     20.08.00
-// RCS-ID:      $Id: scrolbar.cpp,v 1.22 2004/08/10 13:08:39 ABX Exp $
+// RCS-ID:      $Id: scrolbar.cpp,v 1.24 2005/05/31 09:28:45 JS Exp $
 // Copyright:   (c) 2000 SciTech Software, Inc. (www.scitechsoft.com)
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -256,7 +256,7 @@ void wxScrollBar::SetScrollbar(int position, int thumbSize,
                                int range, int pageSize,
                                bool refresh)
 {
-    // we only refresh everythign when the range changes, thumb position
+    // we only refresh everything when the range changes, thumb position
     // changes are handled in OnIdle
     bool needsRefresh = (range != m_range) ||
                         (thumbSize != m_thumbSize) ||
@@ -849,7 +849,7 @@ bool wxStdScrollBarInputHandler::HandleMouseMove(wxInputConsumer *consumer,
 
     if ( m_winCapture )
     {
-        if ( (m_htLast == wxHT_SCROLLBAR_THUMB) && event.Moving() )
+        if ( (m_htLast == wxHT_SCROLLBAR_THUMB) && event.Dragging() )
         {
             // make the thumb follow the mouse by keeping the same offset
             // between the mouse position and the top/left of the thumb
@@ -864,7 +864,7 @@ bool wxStdScrollBarInputHandler::HandleMouseMove(wxInputConsumer *consumer,
 
     bool isArrow = scrollbar->GetArrows().HandleMouseMove(event);
 
-    if ( event.Moving() )
+    if ( event.Dragging() )
     {
         wxHitTest ht = m_renderer->HitTestScrollbar
                                    (

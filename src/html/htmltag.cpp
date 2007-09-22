@@ -2,7 +2,7 @@
 // Name:        htmltag.cpp
 // Purpose:     wxHtmlTag class (represents single tag)
 // Author:      Vaclav Slavik
-// RCS-ID:      $Id: htmltag.cpp,v 1.44 2004/10/11 16:30:36 ABX Exp $
+// RCS-ID:      $Id: htmltag.cpp,v 1.47 2005/05/31 09:20:13 JS Exp $
 // Copyright:   (c) 1999 Vaclav Slavik
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -114,9 +114,14 @@ wxHtmlTagsCache::wxHtmlTagsCache(const wxString& source)
             else
             {
                 m_Cache[tg].End1 = m_Cache[tg].End2 = -1;
-
+                
                 if (wxIsCDATAElement(tagBuffer))
                 {
+                    // store the orig pos in case we are missing the closing
+                    // tag (see below)
+                    wxInt32 old_pos = pos; 
+                    bool foundCloseTag = false;
+                    
                     // find next matching tag
                     int tag_len = wxStrlen(tagBuffer);
                     while (pos < lng)
@@ -147,13 +152,24 @@ wxHtmlTagsCache::wxHtmlTagsCache(const wxString& source)
                         }
 
                         // found a match
-                        if (match_pos == tag_len) {
+                        if (match_pos == tag_len) 
+                        {
                             pos = pos - tag_len - 3;
+                            foundCloseTag = true;
                             break;
                         }
-                        else {
+                        else // keep looking for the closing tag
+                        {
                             ++pos;
                         }
+                    }
+                    if (!foundCloseTag)
+                    {
+                        // we didn't find closing tag; this means the markup
+                        // is incorrect and the best thing we can do is to
+                        // ignore the unclosed tag and continue parsing as if
+                        // it didn't exist:
+                        pos = old_pos;
                     }
                 }
             }
@@ -392,7 +408,7 @@ bool wxHtmlTag::GetParamAsColour(const wxString& par, wxColour *clr) const
 {
     wxString str = GetParam(par);
 
-    if (str.IsEmpty()) return false;
+    if (str.empty()) return false;
     if (str.GetChar(0) == wxT('#'))
     {
         unsigned long tmp;
@@ -442,7 +458,7 @@ bool wxHtmlTag::GetParamAsInt(const wxString& par, int *clr) const
 
 wxString wxHtmlTag::GetAllParams() const
 {
-    // VS: this function is for backward compatiblity only,
+    // VS: this function is for backward compatibility only,
     //     never used by wxHTML
     wxString s;
     size_t cnt = m_ParamNames.GetCount();
@@ -494,5 +510,14 @@ wxHtmlTag *wxHtmlTag::GetNextTag() const
         cur = cur->m_Parent;
     return cur->m_Next;
 }
+
+#if WXWIN_COMPATIBILITY_2_2
+
+bool wxHtmlTag::IsEnding() const
+{
+    return false;
+}
+
+#endif // WXWIN_COMPATIBILITY_2_2
 
 #endif

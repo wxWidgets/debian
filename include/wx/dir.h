@@ -4,7 +4,7 @@
 // Author:      Vadim Zeitlin
 // Modified by:
 // Created:     08.12.99
-// RCS-ID:      $Id: dir.h,v 1.17 2004/09/10 12:55:49 ABX Exp $
+// RCS-ID:      $Id: dir.h,v 1.18 2005/02/24 14:33:28 VZ Exp $
 // Copyright:   (c) 1999 Vadim Zeitlin <zeitlin@dptmaths.ens-cachan.fr>
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -54,6 +54,8 @@ enum wxDirTraverseResult
 class WXDLLIMPEXP_BASE wxDirTraverser
 {
 public:
+    /// a virtual dtor has been provided since this class has virtual members
+    virtual ~wxDirTraverser() { }
     // called for each file found by wxDir::Traverse()
     //
     // return wxDIR_STOP or wxDIR_CONTINUE from here (wxDIR_IGNORE doesn't

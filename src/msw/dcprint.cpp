@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     01/02/97
-// RCS-ID:      $Id: dcprint.cpp,v 1.53 2004/11/04 19:13:31 ABX Exp $
+// RCS-ID:      $Id: dcprint.cpp,v 1.58 2005/05/31 09:20:30 JS Exp $
 // Copyright:   (c) Julian Smart
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -45,12 +45,10 @@
 
 #include "wx/dcprint.h"
 #include "wx/printdlg.h"
-#include "math.h"
+#include "wx/msw/printdlg.h"
+#include "wx/math.h"
 
-#if wxUSE_COMMON_DIALOGS
-    #include <commdlg.h>
-#endif
-
+#include "wx/msw/wrapcdlg.h"
 #ifndef __WIN32__
     #include <print.h>
 #endif
@@ -181,7 +179,7 @@ bool wxPrinterDC::StartDoc(const wxString& message)
 
     wxString filename(m_printData.GetFilename());
 
-    if (filename.IsEmpty())
+    if (filename.empty())
         docinfo.lpszOutput = NULL;
     else
         docinfo.lpszOutput = (const wxChar *) filename;
@@ -277,7 +275,7 @@ static bool wxGetDefaultDeviceName(wxString& deviceName, wxString& portName)
         GlobalFree(pd.hDevMode);
         pd.hDevMode=NULL;
     }
-    return ( deviceName != wxEmptyString );
+    return ( !deviceName.empty() );
 }
 
 // Gets an HDC for the specified printer configuration
@@ -403,7 +401,7 @@ void wxPrinterDC::DoDrawBitmap(const wxBitmap& bmp,
     if ( !(::GetDeviceCaps(GetHdc(), RASTERCAPS) & RC_STRETCHDIB) ||
             !DrawBitmapUsingStretchDIBits(GetHdc(), bmp, x, y) )
     {
-        // no support for StretchDIBits() or an error occured if we got here
+        // no support for StretchDIBits() or an error occurred if we got here
         wxMemoryDC memDC;
         memDC.SelectObject(bmp);
 

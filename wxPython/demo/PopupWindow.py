@@ -76,9 +76,8 @@ class TestTransientPopup(wx.PopupTransientWindow):
     def __init__(self, parent, style, log):
         wx.PopupTransientWindow.__init__(self, parent, style)
         self.log = log
-        panel = wx.Panel(self, -1)
-        panel.SetBackgroundColour("#FFB6C1")
-        st = wx.StaticText(panel, -1,
+        self.SetBackgroundColour("#FFB6C1")
+        st = wx.StaticText(self, -1,
                           "wx.PopupTransientWindow is a\n"
                           "wx.PopupWindow which disappears\n"
                           "automatically when the user\n"
@@ -88,8 +87,7 @@ class TestTransientPopup(wx.PopupTransientWindow):
                           ,
                           pos=(10,10))
         sz = st.GetBestSize()
-        panel.SetSize( (sz.width+20, sz.height+20) )
-        self.SetSize(panel.GetSize())
+        self.SetSize( (sz.width+20, sz.height+20) )
 
     def ProcessLeftDown(self, evt):
         self.log.write("ProcessLeftDown\n")
@@ -120,6 +118,7 @@ class TestPanel(wx.Panel):
 
     def OnShowPopup(self, evt):
         win = TestPopup(self, wx.SIMPLE_BORDER)
+        #win = TestPopupWithListbox(self, wx.SIMPLE_BORDER, self.log)
 
         # Show the popup right below or above the button
         # depending on available screen space...
@@ -132,7 +131,9 @@ class TestPanel(wx.Panel):
 
 
     def OnShowPopupTransient(self, evt):
-        win = TestTransientPopup(self, wx.SIMPLE_BORDER, self.log)
+        win = TestTransientPopup(self,
+                                 wx.SIMPLE_BORDER,
+                                 self.log)
 
         # Show the popup right below or above the button
         # depending on available screen space...
@@ -156,6 +157,8 @@ class TestPanel(wx.Panel):
 
         win.Show(True)
 
+
+
 # This class is currently not implemented in the demo. It does not
 # behave the way it should, so for the time being it's only here
 # for show. If you figure out how to make it work, please send
@@ -163,31 +166,25 @@ class TestPanel(wx.Panel):
 class TestPopupWithListbox(wx.PopupWindow):
     def __init__(self, parent, style, log):
         wx.PopupWindow.__init__(self, parent, style)
-
+        self.log = log
         import keyword
-
         self.lb = wx.ListBox(self, -1, choices = keyword.kwlist)
         #sz = self.lb.GetBestSize()
         self.SetSize((150, 75)) #sz)
         self.lb.SetSize(self.GetClientSize())
         self.lb.SetFocus()
         self.Bind(wx.EVT_LISTBOX, self.OnListBox)
-        self.lb.Bind(wx.EVT_LEFT_DOWN, self.OnLeft)
-
-    def OnLeft(self, evt):
-        obj = evt.GetEventObject()
-        print "OnLeft", obj
-        print 'Selected: %s' % obj.GetStringSelection()
-        obj.Show(False)
-        evt.Skip()
+        self.Bind(wx.EVT_LISTBOX_DCLICK, self.OnListBoxDClick)
 
     def OnListBox(self, evt):
         obj = evt.GetEventObject()
-        print "OnListBox", obj
-        print 'Selected: %s' % obj.GetString()
+        self.log.write("OnListBox: %s\n" % obj)
+        self.log.write('Selected: %s\n' % obj.GetString(evt.GetInt()))
         evt.Skip()
 
-
+    def OnListBoxDClick(self, evt):
+        self.Hide()
+        self.Destroy()
 
 #---------------------------------------------------------------------------
 

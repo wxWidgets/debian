@@ -5,7 +5,7 @@
 // Author:      Robin Dunn
 //
 // Created:     25-Sept-2000
-// RCS-ID:      $Id: pyistream.h,v 1.6 2004/11/10 21:10:25 VZ Exp $
+// RCS-ID:      $Id: pyistream.h,v 1.7 2005/03/03 19:56:42 RD Exp $
 // Copyright:   (c) 2000 by Total Control Software
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -74,6 +74,8 @@ public:
     // factory function
     static wxPyCBInputStream* create(PyObject *py, bool block=true);
 
+    wxPyCBInputStream(const wxPyCBInputStream& other);
+    
 protected:
     // can only be created via the factory
     wxPyCBInputStream(PyObject *r, PyObject *s, PyObject *t, bool block);

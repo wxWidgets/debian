@@ -4,8 +4,8 @@
 // Author:      John Labenski
 // Modified by:
 // Created:     07.02.04 (extracted from wx/textdlg.h)
-// RCS-ID:      $Id: numdlg.h,v 1.3 2004/05/23 20:50:24 JS Exp $
-// Copyright:   (c) wxWidgets team
+// RCS-ID:      $Id: numdlg.h,v 1.4 2005/05/04 18:52:00 JS Exp $
+// Copyright:   (c) John Labenski
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
 

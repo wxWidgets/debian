@@ -34,11 +34,11 @@ application windows.
 \twocolitem{\windowstyle{wxMAXIMIZE\_BOX}}{Displays a maximize box on the frame.}
 \twocolitem{\windowstyle{wxCLOSE\_BOX}}{Displays a close box on the frame.}
 \twocolitem{\windowstyle{wxSTAY\_ON\_TOP}}{Stay on top of all other windows,
-see also wxFRAME\_FLOAT\_ON\_PARENT. Windows only.}
+see also wxFRAME\_FLOAT\_ON\_PARENT.}
 \twocolitem{\windowstyle{wxSYSTEM\_MENU}}{Displays a system menu.}
 \twocolitem{\windowstyle{wxRESIZE\_BORDER}}{Displays a resizeable border around the window.}
 \twocolitem{\windowstyle{wxFRAME\_TOOL\_WINDOW}}{Causes a frame with a small
-titlebar to be created; the frame does not appear in the taskbar under Windows.}
+titlebar to be created; the frame does not appear in the taskbar under Windows or GTK+.}
 \twocolitem{\windowstyle{wxFRAME\_NO\_TASKBAR}}{Creates an otherwise normal
 frame but it does not appear in the taskbar under Windows or GTK+ (note that it
 will minimize to the desktop window under Windows which may seem strange to the
@@ -61,6 +61,7 @@ frames having this style (the dialogs don't have a minimize or a maximize box by
 default)}
 \twocolitem{\windowstyle{wxFRAME\_SHAPED}}{Windows with this style are
   allowed to have their shape changed with the \helpref{SetShape}{wxtoplevelwindowsetshape} method.}
+\twocolitem{\windowstyle{wxFRAME\_EX\_METAL}}{On Mac OS X, frames with this style will be shown with a metallic look. This is an {\it extra} style.}
 \end{twocollist}
 
 The default frame style is for normal, resizeable frames. To create a frame
@@ -157,16 +158,6 @@ Centres the frame on the display.
 
 \docparam{direction}{The parameter may be {\tt wxHORIZONTAL}, {\tt wxVERTICAL} or {\tt wxBOTH}.}
 
-\membersection{wxFrame::Command}\label{wxframecommand}
-
-\func{void}{Command}{\param{int }{id}}
-
-Simulate a menu command.
-
-\wxheading{Parameters}
-
-\docparam{id}{The identifier for a menu item.}
-
 \membersection{wxFrame::Create}\label{wxframecreate}
 
 \func{bool}{Create}{\param{wxWindow* }{parent}, \param{wxWindowID }{id},\rtfsp
@@ -200,7 +191,7 @@ wxWidgets.}
 
 \wxheading{Return value}
 
-A pointer to the the status bar if it was created successfully, NULL otherwise.
+A pointer to the status bar if it was created successfully, NULL otherwise.
 
 \wxheading{Remarks}
 
@@ -237,7 +228,7 @@ wxWidgets.}
 
 \wxheading{Return value}
 
-A pointer to the the toolbar if it was created successfully, NULL otherwise.
+A pointer to the toolbar if it was created successfully, NULL otherwise.
 
 \wxheading{Remarks}
 
@@ -249,6 +240,11 @@ When a toolbar has been created with this function, or made known to the frame
 with \helpref{wxFrame::SetToolBar}{wxframesettoolbar}, the frame will manage the toolbar
 position and adjust the return value from \helpref{wxWindow::GetClientSize}{wxwindowgetclientsize} to
 reflect the available space for application windows.
+
+Under Pocket PC, you should {\it always} use this function for creating the toolbar
+to be managed by the frame, so that wxWidgets can use a combined
+menubar and toolbar. Where you manage your own toolbars, create a wxToolBar
+as usual.
 
 \wxheading{See also}
 
@@ -367,6 +363,18 @@ implementation returns an instance of \helpref{wxToolBar}{wxtoolbar}.
 \wxheading{See also}
 
 \helpref{wxFrame::CreateToolBar}{wxframecreatetoolbar}, \helpref{wxToolBar}{wxtoolbar}.
+
+
+\membersection{wxFrame::ProcessCommand}\label{wxframeprocesscommand}
+
+\func{void}{ProcessCommand}{\param{int }{id}}
+
+Simulate a menu command.
+
+\wxheading{Parameters}
+
+\docparam{id}{The identifier for a menu item.}
+
 
 \membersection{wxFrame::SendSizeEvent}\label{wxframesendsizeevent}
 

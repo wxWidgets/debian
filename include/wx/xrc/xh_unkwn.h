@@ -3,7 +3,7 @@
 // Purpose:     XML resource handler for unkown widget
 // Author:      Vaclav Slavik
 // Created:     2000/03/05
-// RCS-ID:      $Id: xh_unkwn.h,v 1.4 2003/07/04 13:33:42 VS Exp $
+// RCS-ID:      $Id: xh_unkwn.h,v 1.5 2005/01/07 21:27:20 VS Exp $
 // Copyright:   (c) 2000 Vaclav Slavik
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -11,7 +11,7 @@
 #ifndef _WX_XH_UNKWN_H_
 #define _WX_XH_UNKWN_H_
 
-#if defined(__GNUG__) && !defined(__APPLE__)
+#if defined(__GNUG__) && !defined(NO_GCC_PRAGMA)
 #pragma interface "xh_unkwn.h"
 #endif
 

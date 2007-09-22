@@ -4,7 +4,7 @@
 // Author:      Guilhem Lavaux, <guilhem.lavaux@libertysurf.fr>
 // Modified by:
 // Created:     13/02/2000
-// RCS-ID:      $Id: mmboard.h,v 1.2 2002/09/07 12:12:21 GD Exp $
+// RCS-ID:      $Id: mmboard.h,v 1.3 2005/03/31 19:10:23 ABX Exp $
 // Copyright:   (c) 2000, Guilhem Lavaux
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -13,7 +13,7 @@
 #define _MMBOARD_APP_H_
 
 #if defined(__GNUG__) && !defined(__APPLE__)
-    #pragma interface "mmboard.cpp"
+    #pragma interface "mmboard.h"
 #endif
 
 // for compilers that support precompilation, includes "wx/wx.h"
@@ -50,7 +50,7 @@ public:
   // ----------------------------
 
   virtual bool OnInit();
-  
+
   wxUint8 TestMultimediaCaps();
 };
 

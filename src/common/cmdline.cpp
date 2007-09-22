@@ -4,7 +4,7 @@
 // Author:      Vadim Zeitlin
 // Modified by:
 // Created:     05.01.00
-// RCS-ID:      $Id: cmdline.cpp,v 1.40 2004/09/09 17:42:35 ABX Exp $
+// RCS-ID:      $Id: cmdline.cpp,v 1.41 2004/12/25 01:58:36 VZ Exp $
 // Copyright:   (c) 2000 Vadim Zeitlin <zeitlin@dptmaths.ens-cachan.fr>
 // Licence:     wxWindows licence
 ///////////////////////////////////////////////////////////////////////////////
@@ -189,7 +189,10 @@ struct wxCmdLineParserData
 
     // methods
     wxCmdLineParserData();
+    void SetArguments(int argc, char **argv);
+#if wxUSE_UNICODE
     void SetArguments(int argc, wxChar **argv);
+#endif // wxUSE_UNICODE
     void SetArguments(const wxString& cmdline);
 
     int FindOption(const wxString& name);
@@ -214,6 +217,18 @@ wxCmdLineParserData::wxCmdLineParserData()
 #endif
 }
 
+void wxCmdLineParserData::SetArguments(int argc, char **argv)
+{
+    m_arguments.clear();
+
+    for ( int n = 0; n < argc; n++ )
+    {
+        m_arguments.push_back(wxString::FromAscii(argv[n]));
+    }
+}
+
+#if wxUSE_UNICODE
+
 void wxCmdLineParserData::SetArguments(int argc, wxChar **argv)
 {
     m_arguments.clear();
@@ -223,6 +238,8 @@ void wxCmdLineParserData::SetArguments(int argc, wxChar **argv)
         m_arguments.push_back(argv[n]);
     }
 }
+
+#endif // wxUSE_UNICODE
 
 void wxCmdLineParserData::SetArguments(const wxString& cmdLine)
 {
@@ -277,10 +294,19 @@ void wxCmdLineParser::Init()
     m_data = new wxCmdLineParserData;
 }
 
+void wxCmdLineParser::SetCmdLine(int argc, char **argv)
+{
+    m_data->SetArguments(argc, argv);
+}
+
+#if wxUSE_UNICODE
+
 void wxCmdLineParser::SetCmdLine(int argc, wxChar **argv)
 {
     m_data->SetArguments(argc, argv);
 }
+
+#endif // wxUSE_UNICODE
 
 void wxCmdLineParser::SetCmdLine(const wxString& cmdline)
 {

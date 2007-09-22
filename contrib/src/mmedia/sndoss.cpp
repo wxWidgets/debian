@@ -3,7 +3,8 @@
 // Purpose:
 // Date: 08/11/1999
 // Author: Guilhem Lavaux <lavaux@easynet.fr> (C) 1999, 2000
-// CVSID: $Id: sndoss.cpp,v 1.4 2004/09/15 14:00:40 ABX Exp $
+// CVSID: $Id: sndoss.cpp,v 1.5 2004/11/22 20:10:25 JS Exp $
+// wxWindows licence
 // --------------------------------------------------------------------------
 #ifdef __GNUG__
 #pragma implementation "sndoss.cpp"

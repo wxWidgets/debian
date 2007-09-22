@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     17/09/98
-// RCS-ID:      $Id: notebook.cpp,v 1.32 2004/10/19 13:38:20 JS Exp $
+// RCS-ID:      $Id: notebook.cpp,v 1.33 2004/12/20 12:44:16 ABX Exp $
 // Copyright:   (c) Julian Smart
 // Licence:     wxWindows licence
 ///////////////////////////////////////////////////////////////////////////////
@@ -16,8 +16,6 @@
 // ----------------------------------------------------------------------------
 // headers
 // ----------------------------------------------------------------------------
-
-#ifndef __PALMOS__
 
 #if defined(__GNUG__) && !defined(NO_GCC_PRAGMA)
 #pragma implementation "notebook.h"
@@ -33,6 +31,8 @@
 #ifdef __BORLANDC__
 #pragma hdrstop
 #endif
+
+#ifndef __WXPALMOS__
 
 #include  "wx/string.h"
 #include  "wx/log.h"
@@ -708,4 +708,4 @@ bool wxNotebookTabView::OnTabPreActivate(int activateId, int deactivateId)
   return retval;
 }
 
-#endif // __PALMOS__
+#endif // __WXPALMOS__

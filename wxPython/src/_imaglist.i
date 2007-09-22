@@ -5,7 +5,7 @@
 // Author:      Robin Dunn
 //
 // Created:     7-July-1997
-// RCS-ID:      $Id: _imaglist.i,v 1.6 2004/09/23 20:23:16 RD Exp $
+// RCS-ID:      $Id: _imaglist.i,v 1.8 2005/02/28 18:41:07 RD Exp $
 // Copyright:   (c) 2003 by Total Control Software
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -47,12 +47,16 @@ public:
     ~wxImageList();
 
     int Add(const wxBitmap& bitmap, const wxBitmap& mask = wxNullBitmap);
-    %name(AddWithColourMask)int Add(const wxBitmap& bitmap, const wxColour& maskColour);
-    %name(AddIcon)int Add(const wxIcon& icon);
+    %Rename(AddWithColourMask,int, Add(const wxBitmap& bitmap, const wxColour& maskColour));
+    %Rename(AddIcon,int, Add(const wxIcon& icon));
+
+    wxBitmap GetBitmap(int index) const;
+    wxIcon GetIcon(int index) const;
+      
 #ifdef __WXMSW__
     bool Replace(int index, const wxBitmap& bitmap, const wxBitmap& mask = wxNullBitmap);
 #else
-//      %name(ReplaceIcon)bool Replace(int index, const wxIcon& icon);
+//      %Rename(ReplaceIcon,bool, Replace(int index, const wxIcon& icon));
 //      int Add(const wxBitmap& bitmap);
     bool Replace(int index, const wxBitmap& bitmap);
 #endif

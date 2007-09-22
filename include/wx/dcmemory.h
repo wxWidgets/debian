@@ -1,7 +1,18 @@
+/////////////////////////////////////////////////////////////////////////////
+// Name:        wx/dcmemory.h
+// Purpose:     wxMemoryDC base header
+// Author:      Julian Smart
+// Modified by:
+// Created:
+// Copyright:   (c) Julian Smart
+// RCS-ID:      $Id: dcmemory.h,v 1.13 2005/05/04 18:51:56 JS Exp $
+// Licence:     wxWindows Licence
+/////////////////////////////////////////////////////////////////////////////
+
 #ifndef _WX_DCMEMORY_H_BASE_
 #define _WX_DCMEMORY_H_BASE_
 
-#if defined(__PALMOS__)
+#if defined(__WXPALMOS__)
 #include "wx/palmos/dcmemory.h"
 #elif defined(__WXMSW__)
 #include "wx/msw/dcmemory.h"

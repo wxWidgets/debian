@@ -4,7 +4,7 @@
 // Author:      Vadim Zeitlin
 // Modified by:
 // Created:     29/01/98
-// RCS-ID:      $Id: string.h,v 1.193 2004/11/09 19:35:33 VZ Exp $
+// RCS-ID:      $Id: string.h,v 1.204 2005/06/08 14:29:06 ABX Exp $
 // Copyright:   (c) 1998 Vadim Zeitlin <zeitlin@dptmaths.ens-cachan.fr>
 // Licence:     wxWindows licence
 ///////////////////////////////////////////////////////////////////////////////
@@ -17,10 +17,6 @@
 
 #ifndef _WX_WXSTRINGH__
 #define _WX_WXSTRINGH__
-
-#if defined(__GNUG__) && !defined(NO_GCC_PRAGMA)
-    #pragma interface "string.h"
-#endif
 
 // ----------------------------------------------------------------------------
 // headers
@@ -51,7 +47,7 @@
     #include <strings.h>    // for strcasecmp()
 #endif // HAVE_STRCASECMP_IN_STRINGS_H
 
-#ifdef __PALMOS__
+#ifdef __WXPALMOS__
     #include <StringMgr.h>
 #endif
 
@@ -80,16 +76,8 @@ class WXDLLIMPEXP_BASE wxString;
 // constants
 // ----------------------------------------------------------------------------
 
-#if defined(__VISAGECPP__) && __IBMCPP__ >= 400
-// must define this static for VA or else you get multiply defined symbols everywhere
-extern const unsigned int wxSTRING_MAXLEN;
-
-#else
 // maximum possible length for a string means "take all string" everywhere
-//  (as sizeof(StringData) is unknown here, we subtract 100)
-const unsigned int wxSTRING_MAXLEN = UINT_MAX - 100;
-
-#endif
+#define wxSTRING_MAXLEN wxStringBase::npos
 
 // ----------------------------------------------------------------------------
 // global data
@@ -140,7 +128,8 @@ inline int Stricmp(const char *psz1, const char *psz2)
   return stricmp(psz1, psz2);
 #elif defined(__WXPM__)
   return stricmp(psz1, psz2);
-#elif defined(HAVE_STRCASECMP_IN_STRING_H) || \
+#elif defined(__WXPALMOS__) || \
+      defined(HAVE_STRCASECMP_IN_STRING_H) || \
       defined(HAVE_STRCASECMP_IN_STRINGS_H) || \
       defined(__GNUWIN32__)
   return strcasecmp(psz1, psz2);
@@ -170,7 +159,12 @@ inline int Stricmp(const char *psz1, const char *psz2)
 #endif  // OS/compiler
 }
 
-#if wxUSE_STL
+// ----------------------------------------------------------------------------
+// deal with STL/non-STL/non-STL-but-wxUSE_STD_STRING
+// ----------------------------------------------------------------------------
+
+// in both cases we need to define wxStdString
+#if wxUSE_STL || wxUSE_STD_STRING
 
 #include "wx/beforestd.h"
 #include <string>
@@ -178,22 +172,32 @@ inline int Stricmp(const char *psz1, const char *psz2)
 
 #if wxUSE_UNICODE
     #ifdef HAVE_STD_WSTRING
-        typedef std::wstring wxStringBase;
+        typedef std::wstring wxStdString;
     #else
-        typedef std::basic_string<wxChar> wxStringBase;
+        typedef std::basic_string<wxChar> wxStdString;
     #endif
 #else
-    typedef std::string wxStringBase;
+    typedef std::string wxStdString;
 #endif
 
-#if (defined(__GNUG__) && (__GNUG__ < 3)) || \
-    (defined(_MSC_VER) && (_MSC_VER <= 1200))
-    #define wxSTRING_BASE_HASNT_CLEAR
-#endif
+#endif // need <string>
 
+#if wxUSE_STL
+
+    // we don't need an extra ctor from std::string when copy ctor already does
+    // the work
+    #undef wxUSE_STD_STRING
+
+    #if (defined(__GNUG__) && (__GNUG__ < 3)) || \
+        (defined(_MSC_VER) && (_MSC_VER <= 1200))
+        #define wxSTRING_BASE_HASNT_CLEAR
+    #endif
+
+    typedef wxStdString wxStringBase;
 #else // if !wxUSE_STL
 
-#ifndef HAVE_STD_STRING_COMPARE
+#if !defined(HAVE_STD_STRING_COMPARE) && \
+    (!defined(__WX_SETUP_H__) || wxUSE_STL == 0)
     #define HAVE_STD_STRING_COMPARE
 #endif
 
@@ -378,11 +382,8 @@ public:
     // return the character at position n
   value_type at(size_type n) const
     { wxASSERT_VALID_INDEX( n ); return m_pchData[n]; }
-  value_type operator[](size_type n) const { return at(n); }
     // returns the writable character at position n
   reference at(size_type n)
-    { wxASSERT_VALID_INDEX( n ); CopyBeforeWrite(); return m_pchData[n]; }
-  reference operator[](size_type n)
     { wxASSERT_VALID_INDEX( n ); CopyBeforeWrite(); return m_pchData[n]; }
 
   // lib.string.modifiers
@@ -512,11 +513,8 @@ public:
     // find a substring
   size_t find(const wxStringBase& str, size_t nStart = 0) const;
 
-  // VC++ 1.5 can't cope with this syntax.
-#if !defined(__VISUALC__) || defined(__WIN32__)
     // find first n characters of sz
   size_t find(const wxChar* sz, size_t nStart = 0, size_t n = npos) const;
-#endif // VC++ 1.5
 
     // find the first occurence of character ch after nStart
   size_t find(wxChar ch, size_t nStart = 0) const;
@@ -526,7 +524,6 @@ public:
     // as find, but from the end
   size_t rfind(const wxStringBase& str, size_t nStart = npos) const;
 
-  // VC++ 1.5 can't cope with this syntax.
     // as find, but from the end
   size_t rfind(const wxChar* sz, size_t nStart = npos,
                size_t n = npos) const;
@@ -655,6 +652,17 @@ public:
   wxString(const wxChar *psz, wxMBConv& WXUNUSED(conv), size_t nLength = npos)
       : wxStringBase(psz, nLength == npos ? wxStrlen(psz) : nLength) { }
 
+  // even we're not build with wxUSE_STL == 1 it is very convenient to allow
+  // implicit conversions from std::string to wxString as this allows to use
+  // the same strings in non-GUI and GUI code, however we don't want to
+  // unconditionally add this ctor as it would make wx lib dependent on
+  // libstdc++ on some Linux versions which is bad, so instead we ask the
+  // client code to define this wxUSE_STD_STRING symbol if they need it
+#if wxUSE_STD_STRING
+  wxString(const wxStdString& s)
+      : wxStringBase(s.c_str()) { }
+#endif // wxUSE_STD_STRING
+
 #if wxUSE_UNICODE
     // from multibyte string
   wxString(const char *psz, wxMBConv& conv, size_t nLength = npos);
@@ -689,7 +697,7 @@ public:
   {
     Truncate(0);
 
-    wxASSERT_MSG( IsEmpty(), _T("string not empty after call to Empty()?") );
+    wxASSERT_MSG( empty(), _T("string not empty after call to Empty()?") );
   }
     // empty the string and free memory
   void Clear()
@@ -709,66 +717,58 @@ public:
   // data access (all indexes are 0 based)
     // read access
     wxChar  GetChar(size_t n) const
-      { return operator[](n); }
+      { return at(n); }
     // read/write access
     wxChar& GetWritableChar(size_t n)
-      { return operator[](n); }
+      { return at(n); }
     // write access
     void  SetChar(size_t n, wxChar ch)
-      { operator[](n) = ch; }
+      { at(n) = ch; }
 
     // get last character
     wxChar  Last() const
       {
-          wxASSERT_MSG( !IsEmpty(), _T("wxString: index out of bounds") );
+          wxASSERT_MSG( !empty(), _T("wxString: index out of bounds") );
 
-          return operator[](length() - 1);
+          return at(length() - 1);
       }
 
     // get writable last character
     wxChar& Last()
       {
-          wxASSERT_MSG( !IsEmpty(), _T("wxString: index out of bounds") );
-          return operator[](length() - 1);
+          wxASSERT_MSG( !empty(), _T("wxString: index out of bounds") );
+          return at(length() - 1);
       }
 
     /*
-        So why do we have all these overloaded operator[]s? A bit of history:
-        initially there was only one of them, taking size_t. Then people
-        started complaining because they wanted to use ints as indices (I
-        wonder why) and compilers were giving warnings about it, so we had to
-        add the operator[](int). Then it became apparent that you couldn't
-        write str[0] any longer because there was ambiguity between two
-        overloads and so you now had to write str[0u] (or, of course, use the
-        explicit casts to either int or size_t but nobody did this).
-
-        Finally, someone decided to compile wxWin on an Alpha machine and got
-        a surprize: str[0u] didn't compile there because it is of type
-        unsigned int and size_t is unsigned _long_ on Alpha and so there was
-        ambiguity between converting uint to int or ulong. To fix this one we
-        now add operator[](uint) for the machines where size_t is not already
-        the same as unsigned int - hopefully this fixes the problem (for some
-        time)
-
-        The only real fix is, of course, to remove all versions but the one
-        taking size_t...
+       Note that we we must define all of the overloads below to avoid
+       ambiguity when using str[0]. Also note that for a conforming compiler we
+       don't need const version of operatorp[] at all as indexed access to
+       const string is provided by implicit conversion to "const wxChar *"
+       below and defining them would only result in ambiguities, but some other
+       compilers refuse to compile "str[0]" without them.
      */
 
-    // operator version of GetChar
-    wxChar  operator[](int n) const
-      { return wxStringBase::operator[](n); }
-    wxChar& operator[](size_type n)
-      { return wxStringBase::operator[](n); }
+#if defined(__BORLANDC__) || defined(__WATCOMC__) || defined(__MWERKS__)
+    wxChar operator[](int n) const
+      { return wxStringBase::at(n); }
     wxChar operator[](size_type n) const
-      { return wxStringBase::operator[](n); }
+      { return wxStringBase::at(n); }
 #ifndef wxSIZE_T_IS_UINT
-    // operator version of GetChar
     wxChar operator[](unsigned int n) const
-      { return wxStringBase::operator[](n); }
+      { return wxStringBase::at(n); }
+#endif // size_t != unsigned int
+#endif // broken compiler
 
-    // operator version of GetWriteableChar
+
+    // operator versions of GetWriteableChar()
+    wxChar& operator[](int n)
+      { return wxStringBase::at(n); }
+    wxChar& operator[](size_type n)
+      { return wxStringBase::at(n); }
+#ifndef wxSIZE_T_IS_UINT
     wxChar& operator[](unsigned int n)
-      { return wxStringBase::operator[](n); }
+      { return wxStringBase::at(n); }
 #endif // size_t != unsigned int
 
     // implicit conversion to C string
@@ -830,8 +830,11 @@ public:
 #if wxUSE_WCHAR_T
     const wxWCharBuffer wc_str(wxMBConv& conv) const;
 #endif // wxUSE_WCHAR_T
-
+#ifdef __WXOSX__
+    const wxCharBuffer fn_str() const { return wxConvFile.cWC2WX( wc_str( wxConvLocal ) ); }
+#else
     const wxChar* fn_str() const { return c_str(); }
+#endif
 #endif // Unicode/ANSI
 
   // overloaded assignment
@@ -841,9 +844,16 @@ public:
     // from a character
   wxString& operator=(wxChar ch)
     { return (wxString&)wxStringBase::operator=(ch); }
-    // from a C string
+    // from a C string - STL probably will crash on NULL,
+    // so we need to compensate in that case
+#if wxUSE_STL
+  wxString& operator=(const wxChar *psz)
+    { if(psz) wxStringBase::operator=(psz); else Clear(); return *this; }
+#else
   wxString& operator=(const wxChar *psz)
     { return (wxString&)wxStringBase::operator=(psz); }
+#endif
+
 #if wxUSE_UNICODE
     // from wxWCharBuffer
   wxString& operator=(const wxWCharBuffer& psz)
@@ -900,8 +910,8 @@ public:
     // string += C string
   wxString& Append(const wxString& s)
     {
-        // test for IsEmpty() to share the string if possible
-        if ( IsEmpty() )
+        // test for empty() to share the string if possible
+        if ( empty() )
             *this = s;
         else
             append(s);
@@ -1121,8 +1131,8 @@ public:
   int Last( const wxChar ch ) const { return Find(ch, true); }
   bool Contains(const wxString& str) const { return Find(str) != wxNOT_FOUND; }
 
-    // use IsEmpty()
-  bool IsNull() const { return IsEmpty(); }
+    // use empty()
+  bool IsNull() const { return empty(); }
 
   // std::string compatibility functions
 
@@ -1175,7 +1185,7 @@ public:
     { return (wxString&)wxStringBase::assign(first, last); }
 
     // string comparison
-#ifndef HAVE_STD_STRING_COMPARE
+#if !defined(HAVE_STD_STRING_COMPARE)
   int compare(const wxStringBase& str) const;
     // comparison with a substring
   int compare(size_t nStart, size_t nLen, const wxStringBase& str) const;
@@ -1362,8 +1372,8 @@ class WXDLLIMPEXP_BASE wxStringBufferLength
 public:
     wxStringBufferLength(wxString& str, size_t lenWanted = 1024)
         : m_str(str), m_buf(NULL), m_len(0), m_lenSet(false)
-    { 
-        m_buf = m_str.GetWriteBuf(lenWanted); 
+    {
+        m_buf = m_str.GetWriteBuf(lenWanted);
         wxASSERT(m_buf != NULL);
     }
 
@@ -1452,12 +1462,6 @@ inline bool operator!=(const wxString& s1, const wxCharBuffer& s2)
 inline bool operator!=(const wxCharBuffer& s1, const wxString& s2)
     { return (s2.Cmp((const char *)s1) != 0); }
 #endif // wxUSE_UNICODE/!wxUSE_UNICODE
-
-wxString WXDLLIMPEXP_BASE operator+(const wxString& string1,  const wxString& string2);
-wxString WXDLLIMPEXP_BASE operator+(const wxString& string, wxChar ch);
-wxString WXDLLIMPEXP_BASE operator+(wxChar ch, const wxString& string);
-wxString WXDLLIMPEXP_BASE operator+(const wxString& string, const wxChar *psz);
-wxString WXDLLIMPEXP_BASE operator+(const wxChar *psz, const wxString& string);
 
 #if wxUSE_UNICODE
 inline wxString operator+(const wxString& string, const wxWCharBuffer& buf)

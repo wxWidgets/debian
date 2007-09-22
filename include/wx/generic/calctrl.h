@@ -4,7 +4,7 @@
 // Author:      Vadim Zeitlin
 // Modified by:
 // Created:     29.12.99
-// RCS-ID:      $Id: calctrl.h,v 1.27 2004/06/30 21:49:17 RD Exp $
+// RCS-ID:      $Id: calctrl.h,v 1.28 2005/05/24 21:50:01 MW Exp $
 // Copyright:   (c) 1999 Vadim Zeitlin <zeitlin@dptmaths.ens-cachan.fr>
 // Licence:     wxWindows licence
 ///////////////////////////////////////////////////////////////////////////////
@@ -31,9 +31,6 @@ class WXDLLEXPORT wxSpinCtrl;
 
 class WXDLLIMPEXP_ADV wxCalendarCtrl : public wxControl
 {
-friend class wxMonthComboBox;
-friend class wxYearSpinCtrl;
-
 public:
     // construction
     wxCalendarCtrl() { Init(); }
@@ -179,6 +176,7 @@ private:
     void OnChar(wxKeyEvent& event);
     void OnMonthChange(wxCommandEvent& event);
     void OnYearChange(wxCommandEvent& event);
+    void OnYearTextChange(wxCommandEvent& event);
 
     // override some base class virtuals
     virtual wxSize DoGetBestSize() const;
@@ -247,6 +245,10 @@ private:
 
     // show the correct controls
     void ShowCurrentControls();
+
+    // create the month combo and year spin controls
+    void CreateMonthComboBox();
+    void CreateYearSpinCtrl();
 
 public:
     // get the currently shown control for month/year

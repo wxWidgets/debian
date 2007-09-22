@@ -4,7 +4,7 @@
 // Author:      Guilhem Lavaux
 // Modified by: Mike Wetherell
 // Created:     11/07/98
-// RCS-ID:      $Id: zstream.cpp,v 1.48 2004/09/24 14:32:35 ABX Exp $
+// RCS-ID:      $Id: zstream.cpp,v 1.51 2005/05/31 09:19:53 JS Exp $
 // Copyright:   (c) Guilhem Lavaux
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -56,7 +56,7 @@ wxZlibInputStream::wxZlibInputStream(wxInputStream& stream, int flags)
   m_pos = 0;
 
 #if WXWIN_COMPATIBILITY_2_4
-  // treat compatibilty mode as auto
+  // treat compatibility mode as auto
   m_24compatibilty = flags == wxZLIB_24COMPATIBLE;
   if (m_24compatibilty)
     flags = wxZLIB_AUTO;
@@ -162,7 +162,7 @@ size_t wxZlibInputStream::OnSysRead(void *buffer, size_t size)
     default:
       wxString msg(m_inflate->msg, *wxConvCurrent);
       if (!msg)
-        msg.Format(_("zlib error %d"), err);
+        msg = wxString::Format(_("zlib error %d"), err);
       wxLogError(_("Can't read from inflate stream: %s"), msg.c_str());
       m_lasterror = wxSTREAM_READ_ERROR;
   }
@@ -238,20 +238,20 @@ wxZlibOutputStream::wxZlibOutputStream(wxOutputStream& stream,
   m_lasterror = wxSTREAM_WRITE_ERROR;
 }
 
-wxZlibOutputStream::~wxZlibOutputStream()
-{
-  if (m_deflate && m_z_buffer)
-    DoFlush(true);
-  deflateEnd(m_deflate);
-  delete m_deflate;
+bool wxZlibOutputStream::Close()
+ {
+  DoFlush(true);
+   deflateEnd(m_deflate);
+   delete m_deflate;
 
-  delete[] m_z_buffer;
-}
+  m_deflate = NULL;
+   delete[] m_z_buffer;
+  m_z_buffer = NULL;
+  return IsOk();
+ }
 
 void wxZlibOutputStream::DoFlush(bool final)
 {
-  wxASSERT_MSG(m_deflate && m_z_buffer, wxT("Deflate stream not open"));
-
   if (!m_deflate || !m_z_buffer)
     m_lasterror = wxSTREAM_WRITE_ERROR;
   if (!IsOk())
@@ -312,7 +312,7 @@ size_t wxZlibOutputStream::OnSysWrite(const void *buffer, size_t size)
     m_lasterror = wxSTREAM_WRITE_ERROR;
     wxString msg(m_deflate->msg, *wxConvCurrent);
     if (!msg)
-      msg.Format(_("zlib error %d"), err);
+      msg = wxString::Format(_("zlib error %d"), err);
     wxLogError(_("Can't write to deflate stream: %s"), msg.c_str());
   }
 

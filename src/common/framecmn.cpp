@@ -3,7 +3,7 @@
 // Purpose:     common (for all platforms) wxFrame functions
 // Author:      Julian Smart, Vadim Zeitlin
 // Created:     01/02/97
-// Id:          $Id: framecmn.cpp,v 1.60 2004/10/01 01:49:45 VZ Exp $
+// Id:          $Id: framecmn.cpp,v 1.65 2005/05/10 19:10:52 ABX Exp $
 // Copyright:   (c) 1998 Robert Roebling and Julian Smart
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -176,6 +176,15 @@ wxPoint wxFrameBase::GetClientAreaOrigin() const
     return pt;
 }
 
+
+void wxFrameBase::SendSizeEvent()
+{
+    wxSizeEvent event( GetSize(), GetId() );
+    event.SetEventObject( this );
+    GetEventHandler()->AddPendingEvent( event );
+}
+
+
 // ----------------------------------------------------------------------------
 // misc
 // ----------------------------------------------------------------------------
@@ -194,6 +203,9 @@ bool wxFrameBase::ProcessCommand(int id)
     if (item)
     {
         if (!item->IsEnabled())
+            return true;
+
+        if ((item->GetKind() == wxITEM_RADIO) && item->IsChecked() )
             return true;
 
         if (item->IsCheckable())
@@ -267,7 +279,7 @@ void wxFrameBase::OnMenuOpen(wxMenuEvent& WXUNUSED(event))
 void wxFrameBase::OnMenuClose(wxMenuEvent& WXUNUSED(event))
 {
     // do we have real status text to restore?
-    if ( m_oldStatusText.length() > 1 || m_oldStatusText[0u] )
+    if ( !m_oldStatusText.empty() )
     {
         if ( m_statusBarPane >= 0 )
         {
@@ -378,7 +390,7 @@ bool wxFrameBase::ShowMenuHelp(wxStatusBar *WXUNUSED(statbar), int menuId)
 
     DoGiveHelp(helpString, show);
 
-    return !helpString.IsEmpty();
+    return !helpString.empty();
 #else // !wxUSE_MENUS
     return false;
 #endif // wxUSE_MENUS/!wxUSE_MENUS
@@ -480,9 +492,15 @@ wxToolBar* wxFrameBase::OnCreateToolBar(long style,
                                         wxWindowID id,
                                         const wxString& name)
 {
+#if defined(__WXWINCE__) && defined(__POCKETPC__)
+    return new wxToolMenuBar(this, id,
+                         wxDefaultPosition, wxDefaultSize,
+                         style, name);
+#else
     return new wxToolBar(this, id,
                          wxDefaultPosition, wxDefaultSize,
                          style, name);
+#endif
 }
 
 void wxFrameBase::SetToolBar(wxToolBar *toolbar)
@@ -554,3 +572,12 @@ void wxFrameBase::SetMenuBar(wxMenuBar *menubar)
 }
 
 #endif // wxUSE_MENUS
+
+#if WXWIN_COMPATIBILITY_2_2
+
+bool wxFrameBase::Command(int winid)
+{
+    return ProcessCommand(winid);
+}
+
+#endif // WXWIN_COMPATIBILITY_2_2

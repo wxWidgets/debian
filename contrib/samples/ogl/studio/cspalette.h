@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     12/07/98
-// RCS-ID:      $Id: cspalette.h,v 1.5 2004/06/09 16:42:29 ABX Exp $
+// RCS-ID:      $Id: cspalette.h,v 1.6 2005/03/31 19:18:23 ABX Exp $
 // Copyright:   (c) Julian Smart
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -18,19 +18,13 @@
 
 #include <wx/wx.h>
 #include <wx/string.h>
-#include <wx/deprecated/tbarsmpl.h>
+#include <wx/ogl/ogl.h> // base header of OGL, includes and adjusts wx/deprecated/setup.h
 
 /*
  * Object editor tool palette
  *
  */
 
-// TODO for wxWin: wxToolBar95 cannot be moved to a non-0,0 position!
-// Needs to have a parent window...
-// So use a simple toolbar at present.
-// ABX: Simple toolbar is not available in default compilation and is deprecated
-//      so I use wxToolBar anyway
-// #define TOOLPALETTECLASS    wxToolBarSimple
 #define TOOLPALETTECLASS    wxToolBar
 
 class csEditorToolPalette: public TOOLPALETTECLASS

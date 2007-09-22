@@ -4,7 +4,7 @@
 // Author:      Stefan Csomor
 // Modified by:
 // Created:     12/10/98
-// RCS-ID:      $Id: wxshlb_cwc.h,v 1.5 2004/09/24 14:32:18 ABX Exp $
+// RCS-ID:      $Id: wxshlb_cwc.h,v 1.6 2005/04/19 10:06:30 SC Exp $
 // Copyright:   (c) Stefan Csomor
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -19,25 +19,25 @@
 #if __option(profile)
 #ifdef __cplusplus
     #if __POWERPC__
-        #include <wxshlb_Carbon++_prof.mch>
+        #include "wxshlb_Carbon++_prof.mch"
     #endif
 #else
     #if __POWERPC__
-        #include <wxshlb_Carbon_prof.mch>
+        #include "wxshlb_Carbon_prof.mch"
     #endif
 #endif
 #else
 #ifdef __cplusplus
-    #if __POWERPC__
-        #include <wxshlb_Carbon++.mch>
-    #elif __MACH__
-        #include <wxshlb_Mach++.mch>
+    #if __MACH__
+        #include "wxshlb_Mach++.mch"
+    #elif __POWERPC__
+        #include "wxshlb_Carbon++.mch"
     #endif
 #else
-    #if __POWERPC__
-        #include <wxshlb_Carbon.mch>
-    #elif __MACH__
-        #include <wxshlb_Mach.mch>
+    #if __MACH__
+        #include "wxshlb_Mach.mch"
+    #elif __POWERPC__
+        #include "wxshlb_Carbon.mch"
     #endif
 #endif
 #endif

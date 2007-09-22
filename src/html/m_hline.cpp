@@ -2,7 +2,7 @@
 // Name:        m_hline.cpp
 // Purpose:     wxHtml module for horizontal line (HR tag)
 // Author:      Vaclav Slavik
-// RCS-ID:      $Id: m_hline.cpp,v 1.23 2004/09/27 19:15:05 ABX Exp $
+// RCS-ID:      $Id: m_hline.cpp,v 1.25 2004/11/25 08:32:49 VS Exp $
 // Copyright:   (c) 1999 Vaclav Slavik
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////

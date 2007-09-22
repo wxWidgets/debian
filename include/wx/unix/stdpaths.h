@@ -4,7 +4,7 @@
 // Author:      Vadim Zeitlin
 // Modified by:
 // Created:     2004-10-19
-// RCS-ID:      $Id: stdpaths.h,v 1.2 2004/10/20 00:35:22 VZ Exp $
+// RCS-ID:      $Id: stdpaths.h,v 1.3 2005/05/31 09:18:55 JS Exp $
 // Copyright:   (c) 2004 Vadim Zeitlin <vadim@wxwindows.org>
 // Licence:     wxWindows licence
 ///////////////////////////////////////////////////////////////////////////////
@@ -23,7 +23,7 @@ public:
     //
     // under some systems (currently only Linux) the program directory can be
     // determined automatically but for portable programs you should always set
-    // it explicitely
+    // it explicitly
     void SetInstallPrefix(const wxString& prefix);
 
     // get the program installation prefix

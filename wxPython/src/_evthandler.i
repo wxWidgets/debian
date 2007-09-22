@@ -5,7 +5,7 @@
 // Author:      Robin Dunn
 //
 // Created:     9-Aug-2003
-// RCS-ID:      $Id: _evthandler.i,v 1.8 2004/07/17 22:50:56 RD Exp $
+// RCS-ID:      $Id: _evthandler.i,v 1.9 2004/12/20 22:49:41 RD Exp $
 // Copyright:   (c) 2003 by Total Control Software
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -73,9 +73,9 @@ public:
     }
 
     %extend {
-        void _setOORInfo(PyObject* _self) {
+        void _setOORInfo(PyObject* _self, bool incref=true) {
             if (_self && _self != Py_None) {
-                self->SetClientObject(new wxPyOORClientData(_self));
+                self->SetClientObject(new wxPyOORClientData(_self, incref));
             }
             else {
                 wxPyOORClientData* data = (wxPyOORClientData*)self->GetClientObject();

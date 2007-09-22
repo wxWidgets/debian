@@ -3,7 +3,7 @@
 # Author:       Will Sadkin
 # Created:      03/21/2003
 # Copyright:    (c) 2003 by Will Sadkin
-# RCS-ID:       $Id: scrolledpanel.py,v 1.8 2004/08/04 22:24:55 RD Exp $
+# RCS-ID:       $Id: scrolledpanel.py,v 1.9 2005/05/04 00:03:00 RD Exp $
 # License:      wxWindows license
 #----------------------------------------------------------------------------
 # 12/11/2003 - Jeff Grimmett (grimmtooth@softhome.net)
@@ -35,7 +35,7 @@ class ScrolledPanel( wx.PyScrolledWindow ):
                  size = wx.DefaultSize, style = wx.TAB_TRAVERSAL,
                  name = "scrolledpanel"):
 
-        wx.PyScrolledWindow.__init__(self, parent, -1,
+        wx.PyScrolledWindow.__init__(self, parent, id,
                                      pos=pos, size=size,
                                      style=style, name=name)
         self.SetBestFittingSize(size)

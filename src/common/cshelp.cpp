@@ -4,7 +4,7 @@
 // Author:      Julian Smart, Vadim Zeitlin
 // Modified by:
 // Created:     08/09/2000
-// RCS-ID:      $Id: cshelp.cpp,v 1.33 2004/10/18 12:59:59 ABX Exp $
+// RCS-ID:      $Id: cshelp.cpp,v 1.34 2005/03/24 17:49:52 ABX Exp $
 // Copyright:   (c) 2000 Julian Smart, Vadim Zeitlin
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -384,6 +384,8 @@ bool wxSimpleHelpProvider::ShowHelp(wxWindowBase *window)
 
         return true;
     }
+#else
+    wxUnusedVar(window);
 #endif // wxUSE_TIPWINDOW
 
     return false;

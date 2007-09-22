@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by: ABX (2004) - adjustements for conditional building + new menu
 // Created:     04/01/98
-// RCS-ID:      $Id: dialogs.cpp,v 1.117 2004/10/04 20:22:58 ABX Exp $
+// RCS-ID:      $Id: dialogs.cpp,v 1.127 2005/06/10 17:53:10 ABX Exp $
 // Copyright:   (c) Julian Smart
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -24,6 +24,8 @@
 #ifndef WX_PRECOMP
 #include "wx/wx.h"
 #endif
+
+#include "../sample.xpm"
 
 #include "wx/datetime.h"
 #include "wx/image.h"
@@ -71,6 +73,12 @@
 #if wxUSE_FINDREPLDLG
     #include "wx/fdrepdlg.h"
 #endif // wxUSE_FINDREPLDLG
+
+#if wxUSE_SPINCTRL
+#include "wx/spinctrl.h"
+#endif
+
+#include "wx/propdlg.h"
 
 #include "dialogs.h"
 
@@ -185,7 +193,11 @@ BEGIN_EVENT_TABLE(MyFrame, wxFrame)
     EVT_FIND_CLOSE(wxID_ANY, MyFrame::OnFindDialog)
 #endif // wxUSE_FINDREPLDLG
 
-    EVT_MENU(DIALOGS_REQUEST, MyFrame::OnRequestUserAttention)
+#if USE_SETTINGS_DIALOG
+    EVT_MENU(DIALOGS_PROPERTY_SHEET,                MyFrame::OnPropertySheet)
+#endif
+
+    EVT_MENU(DIALOGS_REQUEST,                       MyFrame::OnRequestUserAttention)
 
     EVT_MENU(wxID_EXIT,                             MyFrame::OnExit)
 END_EVENT_TABLE()
@@ -348,6 +360,10 @@ bool MyApp::OnInit()
     file_menu->Append(wxID_ANY,_T("&Modal/Modeless"),modal_menu);
 #endif // USE_MODAL_PRESENTATION
 
+#if USE_SETTINGS_DIALOG
+    file_menu->Append(DIALOGS_PROPERTY_SHEET, _T("&Property Sheet Dialog\tCtrl-P"));
+#endif
+
     file_menu->Append(DIALOGS_REQUEST, _T("&Request user attention\tCtrl-R"));
 
     file_menu->AppendSeparator();
@@ -375,6 +391,8 @@ MyFrame::MyFrame(wxWindow *parent,
                  const wxString& title)
        : wxFrame(parent, wxID_ANY, title)
 {
+    SetIcon(sample_xpm);
+
 #if USE_MODAL_PRESENTATION
     m_dialog = (MyModelessDialog *)NULL;
 #endif // USE_MODAL_PRESENTATION
@@ -398,10 +416,6 @@ MyFrame::MyFrame(wxWindow *parent,
         );
     }
 #endif // wxUSE_COLOURDLG
-
-#if wxUSE_STATUSBAR
-    CreateStatusBar();
-#endif // wxUSE_STATUSBAR
 }
 
 #if wxUSE_COLOURDLG
@@ -420,6 +434,36 @@ void MyFrame::ChooseColour(wxCommandEvent& WXUNUSED(event) )
     }
 }
 #endif // wxUSE_COLOURDLG
+
+#if USE_COLOURDLG_GENERIC
+void MyFrame::ChooseColourGeneric(wxCommandEvent& WXUNUSED(event))
+{
+    m_clrData.SetColour(myCanvas->GetBackgroundColour());
+
+    //FIXME:TODO:This has no effect...
+    m_clrData.SetChooseFull(true);
+
+    for (int i = 0; i < 16; i++)
+    {
+        wxColour colour(
+            (unsigned char)(i*16),
+            (unsigned char)(i*16),
+            (unsigned char)(i*16)
+        );
+        m_clrData.SetCustomColour(i, colour);
+    }
+
+    wxGenericColourDialog *dialog = new wxGenericColourDialog(this, &m_clrData);
+    if (dialog->ShowModal() == wxID_OK)
+    {
+        m_clrData = dialog->GetColourData();
+        myCanvas->SetBackgroundColour(m_clrData.GetColour());
+        myCanvas->ClearBackground();
+        myCanvas->Refresh();
+    }
+    dialog->Destroy();
+}
+#endif // USE_COLOURDLG_GENERIC
 
 #if wxUSE_FONTDLG
 void MyFrame::ChooseFont(wxCommandEvent& WXUNUSED(event) )
@@ -445,35 +489,6 @@ void MyFrame::ChooseFont(wxCommandEvent& WXUNUSED(event) )
     //else: cancelled by the user, don't change the font
 }
 #endif // wxUSE_FONTDLG
-
-#if USE_COLOURDLG_GENERIC
-void MyFrame::ChooseColourGeneric(wxCommandEvent& WXUNUSED(event))
-{
-    wxColourData data;
-    data.SetChooseFull(true);
-    for (int i = 0; i < 16; i++)
-    {
-        wxColour colour(
-            (unsigned char)(i*16),
-            (unsigned char)(i*16),
-            (unsigned char)(i*16)
-        );
-        data.SetCustomColour(i, colour);
-    }
-
-    wxGenericColourDialog *dialog = new wxGenericColourDialog(this, &data);
-    if (dialog->ShowModal() == wxID_OK)
-    {
-        wxColourData retData = dialog->GetColourData();
-        wxColour col = retData.GetColour();
-//        wxBrush *brush = wxTheBrushList->FindOrCreateBrush(&col, wxSOLID);
-        myCanvas->SetBackgroundColour(col);
-        myCanvas->ClearBackground();
-        myCanvas->Refresh();
-    }
-    dialog->Destroy();
-}
-#endif // USE_COLOURDLG_GENERIC
 
 #if USE_FONTDLG_GENERIC
 void MyFrame::ChooseFontGeneric(wxCommandEvent& WXUNUSED(event) )
@@ -574,7 +589,7 @@ void MyFrame::PasswordEntry(wxCommandEvent& WXUNUSED(event))
                                          _T("Password entry dialog"),
                                          wxEmptyString,
                                          this);
-    if ( !!pwd )
+    if ( !pwd.empty() )
     {
         wxMessageBox(wxString::Format(wxT("Your password is '%s'"), pwd.c_str()),
                      _T("Got password"), wxOK | wxICON_INFORMATION, this);
@@ -691,7 +706,12 @@ void MyFrame::FileOpen2(wxCommandEvent& WXUNUSED(event) )
                                     _T("Select the file to load"),
                                     wxEmptyString, wxEmptyString,
                                     s_extDef,
-                                    _T("Waveform (*.wav)|*.wav|Plain text (*.txt)|*.txt|All files (*.*)|*.*"),
+                                    wxString::Format
+                                    (
+                                        _T("Waveform (*.wav)|*.wav|Plain text (*.txt)|*.txt|All files (%s)|%s"),
+                                        wxFileSelectorDefaultWildcardStr,
+                                        wxFileSelectorDefaultWildcardStr
+                                    ),
                                     wxCHANGE_DIR,
                                     this
                                    );
@@ -712,7 +732,12 @@ void MyFrame::FilesOpen(wxCommandEvent& WXUNUSED(event) )
 #ifdef __WXMOTIF__
                     _T("C++ files (*.cpp)|*.cpp");
 #else
-                    _T("All files (*.*)|*.*|C++ files (*.cpp;*.h)|*.cpp;*.h");
+                    wxString::Format
+                    (
+                        _T("All files (%s)|%s|C++ files (*.cpp;*.h)|*.cpp;*.h"),
+                        wxFileSelectorDefaultWildcardStr,
+                        wxFileSelectorDefaultWildcardStr
+                    );
 #endif
     wxFileDialog dialog(this, _T("Testing open multiple file dialog"),
                         wxEmptyString, wxEmptyString, wildcards,
@@ -904,7 +929,14 @@ void MyFrame::ModelessDlg(wxCommandEvent& event)
     }
     else // hide
     {
-        m_dialog->Hide();
+        // If m_dialog is NULL, then possibly the system
+        // didn't report the checked menu item status correctly.
+        // It should be true just after the menu item was selected,
+        // if there was no modeless dialog yet.
+
+        wxASSERT( m_dialog != NULL );
+        if (m_dialog)
+            m_dialog->Hide();
     }
 }
 #endif // USE_MODAL_PRESENTATION
@@ -937,6 +969,14 @@ void MyFrame::ShowTip(wxCommandEvent& WXUNUSED(event))
     delete tipProvider;
 }
 #endif // wxUSE_STARTUP_TIPS
+
+#if USE_SETTINGS_DIALOG
+void MyFrame::OnPropertySheet(wxCommandEvent& WXUNUSED(event))
+{
+    SettingsDialog dialog(this);
+    dialog.ShowModal();
+}
+#endif // USE_SETTINGS_DIALOG
 
 void MyFrame::OnRequestUserAttention(wxCommandEvent& WXUNUSED(event))
 {
@@ -989,14 +1029,18 @@ void MyFrame::ShowProgress( wxCommandEvent& WXUNUSED(event) )
                             max,    // range
                             this,   // parent
                             wxPD_CAN_ABORT |
+                            wxPD_CAN_SKIP |
                             wxPD_APP_MODAL |
                             // wxPD_AUTO_HIDE | -- try this as well
                             wxPD_ELAPSED_TIME |
                             wxPD_ESTIMATED_TIME |
-                            wxPD_REMAINING_TIME);
+                            wxPD_REMAINING_TIME |
+                            wxPD_SMOOTH);
 
     bool cont = true;
-    for ( int i = 0; i <= max; i++ )
+    bool skip = false;
+    // each skip will move progress about quarter forward
+    for ( int i = 0; i <= max; i = wxMin(i+(skip?int(max/4):1), max+1), skip = false )
     {
         #if wxUSE_STOPWATCH && wxUSE_LONGLONG
         // do (almost) the same operations as we did for the performance test
@@ -1017,25 +1061,27 @@ void MyFrame::ShowProgress( wxCommandEvent& WXUNUSED(event) )
         #else
         wxSleep(1);
         #endif
+
+        wxString msg;
+
         if ( i == max )
         {
-            cont = dialog.Update(i, _T("That's all, folks!"));
+            msg = _T("That's all, folks!");
         }
-        else if ( i == max / 2 )
+        else if ( i > max / 2 )
         {
-            cont = dialog.Update(i, _T("Only a half left (very long message)!"));
+            msg = _T("Only a half left (very long message)!");
         }
-        else
+
+#if wxUSE_STOPWATCH && wxUSE_LONGLONG
+        if ( (i % (max/100)) == 0 ) // // only 100 updates, this makes it much faster
         {
-            #if wxUSE_STOPWATCH && wxUSE_LONGLONG
-            if ( (i % (max/100)) == 0 ) // // only 100 updates, this makes it much faster
-            {
-                cont = dialog.Update(i);
-            }
-            #else
-            cont = dialog.Update(i);
-            #endif
+            cont = dialog.Update(i, msg, &skip);
         }
+#else
+        cont = dialog.Update(i, msg, &skip);
+#endif
+
         if ( !cont )
         {
             if ( wxMessageBox(_T("Do you really want to cancel?"),
@@ -1318,3 +1364,145 @@ void MyModalDialog::OnButton(wxCommandEvent& event)
 
 #endif // USE_MODAL_PRESENTATION
 
+#if USE_SETTINGS_DIALOG
+// ----------------------------------------------------------------------------
+// SettingsDialog
+// ----------------------------------------------------------------------------
+
+IMPLEMENT_CLASS(SettingsDialog, wxPropertySheetDialog)
+
+BEGIN_EVENT_TABLE(SettingsDialog, wxPropertySheetDialog)
+END_EVENT_TABLE()
+
+SettingsDialog::SettingsDialog(wxWindow* win)
+{
+    SetExtraStyle(wxDIALOG_EX_CONTEXTHELP|wxWS_EX_VALIDATE_RECURSIVELY);
+
+    Create(win, wxID_ANY, _("Preferences"), wxDefaultPosition, wxDefaultSize,
+        wxDEFAULT_DIALOG_STYLE
+#ifndef __WXWINCE__
+        |wxRESIZE_BORDER
+#endif
+    );
+    CreateButtons(wxOK|wxCANCEL|wxHELP);
+
+    wxBookCtrlBase* notebook = GetBookCtrl();
+
+    wxPanel* generalSettings = CreateGeneralSettingsPage(notebook);
+    wxPanel* aestheticSettings = CreateAestheticSettingsPage(notebook);
+
+    notebook->AddPage(generalSettings, _("General"));
+    notebook->AddPage(aestheticSettings, _("Aesthetics"));
+
+    LayoutDialog();
+}
+
+wxPanel* SettingsDialog::CreateGeneralSettingsPage(wxWindow* parent)
+{
+    wxPanel* panel = new wxPanel(parent, wxID_ANY);
+
+    wxBoxSizer *topSizer = new wxBoxSizer( wxVERTICAL );
+    wxBoxSizer *item0 = new wxBoxSizer( wxVERTICAL );
+
+    //// LOAD LAST FILE
+
+    wxBoxSizer* itemSizer3 = new wxBoxSizer( wxHORIZONTAL );
+    wxCheckBox* checkBox3 = new wxCheckBox(panel, ID_LOAD_LAST_PROJECT, _("&Load last project on startup"), wxDefaultPosition, wxDefaultSize);
+    itemSizer3->Add(checkBox3, 0, wxALL|wxALIGN_CENTER_VERTICAL, 5);
+    item0->Add(itemSizer3, 0, wxGROW|wxALL, 0);
+
+    //// AUTOSAVE
+
+    wxString autoSaveLabel = _("&Auto-save every");
+    wxString minsLabel = _("mins");
+
+    wxBoxSizer* itemSizer12 = new wxBoxSizer( wxHORIZONTAL );
+    wxCheckBox* checkBox12 = new wxCheckBox(panel, ID_AUTO_SAVE, autoSaveLabel, wxDefaultPosition, wxDefaultSize);
+
+#if wxUSE_SPINCTRL
+    wxSpinCtrl* spinCtrl12 = new wxSpinCtrl(panel, ID_AUTO_SAVE_MINS, wxEmptyString,
+        wxDefaultPosition, wxSize(40, wxDefaultCoord), wxSP_ARROW_KEYS, 1, 60, 1);
+#endif
+
+    itemSizer12->Add(checkBox12, 0, wxALL|wxALIGN_CENTER_VERTICAL, 5);
+#if wxUSE_SPINCTRL
+    itemSizer12->Add(spinCtrl12, 0, wxALL|wxALIGN_CENTER_VERTICAL, 5);
+#endif
+    itemSizer12->Add(new wxStaticText(panel, wxID_STATIC, minsLabel), 0, wxALL|wxALIGN_CENTER_VERTICAL, 5);
+    item0->Add(itemSizer12, 0, wxGROW|wxALL, 0);
+
+    //// TOOLTIPS
+
+    wxBoxSizer* itemSizer8 = new wxBoxSizer( wxHORIZONTAL );
+    wxCheckBox* checkBox6 = new wxCheckBox(panel, ID_SHOW_TOOLTIPS, _("Show &tooltips"), wxDefaultPosition, wxDefaultSize);
+    itemSizer8->Add(checkBox6, 0, wxALL|wxALIGN_CENTER_VERTICAL, 5);
+    item0->Add(itemSizer8, 0, wxGROW|wxALL, 0);
+
+    topSizer->Add( item0, 1, wxGROW|wxALIGN_CENTRE|wxALL, 5 );
+
+    panel->SetSizer(topSizer);
+    topSizer->Fit(panel);
+
+    return panel;
+}
+
+wxPanel* SettingsDialog::CreateAestheticSettingsPage(wxWindow* parent)
+{
+    wxPanel* panel = new wxPanel(parent, wxID_ANY);
+
+    wxBoxSizer *topSizer = new wxBoxSizer( wxVERTICAL );
+    wxBoxSizer *item0 = new wxBoxSizer( wxVERTICAL );
+
+    //// PROJECT OR GLOBAL
+    wxString globalOrProjectChoices[2];
+    globalOrProjectChoices[0] = _("&New projects");
+    globalOrProjectChoices[1] = _("&This project");
+
+    wxRadioBox* projectOrGlobal = new wxRadioBox(panel, ID_APPLY_SETTINGS_TO, _("&Apply settings to:"),
+        wxDefaultPosition, wxDefaultSize, 2, globalOrProjectChoices);
+    item0->Add(projectOrGlobal, 0, wxGROW|wxALL, 5);
+
+    projectOrGlobal->SetSelection(0);
+
+    //// BACKGROUND STYLE
+    wxArrayString backgroundStyleChoices;
+    backgroundStyleChoices.Add(wxT("Colour"));
+    backgroundStyleChoices.Add(wxT("Image"));
+    wxStaticBox* staticBox3 = new wxStaticBox(panel, wxID_ANY, _("Background style:"));
+
+    wxBoxSizer* styleSizer = new wxStaticBoxSizer( staticBox3, wxVERTICAL );
+    item0->Add(styleSizer, 0, wxGROW|wxALL, 5);
+
+    wxBoxSizer* itemSizer2 = new wxBoxSizer( wxHORIZONTAL );
+
+    wxChoice* choice2 = new wxChoice(panel, ID_BACKGROUND_STYLE, wxDefaultPosition, wxDefaultSize, backgroundStyleChoices);
+
+    itemSizer2->Add(new wxStaticText(panel, wxID_ANY, _("&Window:")), 0, wxALL|wxALIGN_CENTER_VERTICAL, 5);
+    itemSizer2->Add(5, 5, 1, wxALL, 0);
+    itemSizer2->Add(choice2, 0, wxALL|wxALIGN_CENTER_VERTICAL, 5);
+
+    styleSizer->Add(itemSizer2, 0, wxGROW|wxALL, 5);
+
+#if wxUSE_SPINCTRL
+    //// FONT SIZE SELECTION
+
+    wxStaticBox* staticBox1 = new wxStaticBox(panel, wxID_ANY, _("Tile font size:"));
+    wxBoxSizer* itemSizer5 = new wxStaticBoxSizer( staticBox1, wxHORIZONTAL );
+
+    wxSpinCtrl* spinCtrl = new wxSpinCtrl(panel, ID_FONT_SIZE, wxEmptyString, wxDefaultPosition,
+        wxSize(80, wxDefaultCoord));
+    itemSizer5->Add(spinCtrl, 0, wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
+
+    item0->Add(itemSizer5, 0, wxGROW|wxLEFT|wxRIGHT, 5);
+#endif
+
+    topSizer->Add( item0, 1, wxGROW|wxALIGN_CENTRE|wxALL, 5 );
+    topSizer->AddSpacer(5);
+
+    panel->SetSizer(topSizer);
+    topSizer->Fit(panel);
+
+    return panel;
+}
+
+#endif // USE_SETTINGS_DIALOG

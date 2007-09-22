@@ -6,7 +6,7 @@
 # Author:       Robin Dunn
 #
 # Created:      8-Aug-1998
-# RCS-ID:       $Id: __init__.py,v 1.9 2004/04/27 19:26:36 RD Exp $
+# RCS-ID:       $Id: __init__.py,v 1.11 2005/06/02 03:31:17 RD Exp $
 # Copyright:    (c) 1998 by Total Control Software
 # Licence:      wxWindows license
 #----------------------------------------------------------------------------
@@ -26,21 +26,24 @@ __all__ = [
     'calendar',
     'grid',
     'html',
+    'media',
+    'webkit',
     'wizard',
+    'xrc',
 
     # contribs (need a better way to find these...)
-    'activex',
+    'animate',
     'gizmos',
     'glcanvas',
-    'iewin',
-    'ogl',
     'stc',
-    'xrc',
     ]
 
 # Load the package namespace with the core classes and such
 from wx._core import *
 del wx
+
+if 'wxMSW' in PlatformInfo:
+    __all__ += ['activex']
 
 # Load up __all__ with all the names of items that should appear to be
 # defined in this pacakge so epydoc will document them that way.

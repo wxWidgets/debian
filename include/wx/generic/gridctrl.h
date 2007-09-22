@@ -4,7 +4,7 @@
 // Author:      Paul Gammans, Roger Gammans
 // Modified by:
 // Created:     11/04/2001
-// RCS-ID:      $Id: gridctrl.h,v 1.14 2004/10/13 14:04:10 ABX Exp $
+// RCS-ID:      $Id: gridctrl.h,v 1.15 2005/01/17 21:29:20 ABX Exp $
 // Copyright:   (c) The Computer Surgery (paul@compsurg.co.uk)
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -32,8 +32,8 @@
 class WXDLLIMPEXP_ADV wxGridCellDateTimeRenderer : public wxGridCellStringRenderer
 {
 public:
-    wxGridCellDateTimeRenderer(wxString outformat =  _T("%c"),
-                               wxString informat =  _T("%c"));
+    wxGridCellDateTimeRenderer(wxString outformat = wxDefaultDateTimeFormat,
+                               wxString informat = wxDefaultDateTimeFormat);
 
     // draw the string right aligned
     virtual void Draw(wxGrid& grid,

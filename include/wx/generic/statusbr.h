@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by: VZ at 05.02.00 to derive from wxStatusBarBase
 // Created:     01/02/97
-// RCS-ID:      $Id: statusbr.h,v 1.25 2004/06/19 22:39:01 VS Exp $
+// RCS-ID:      $Id: statusbr.h,v 1.26 2005/01/21 18:26:01 ABX Exp $
 // Copyright:   (c) Julian Smart
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -21,7 +21,7 @@
 #include "wx/statusbr.h"
 #include "wx/arrstr.h"
 
-WXDLLEXPORT_DATA(extern const wxChar*) wxPanelNameStr;
+extern WXDLLEXPORT_DATA(const wxChar*) wxPanelNameStr;
 
 class WXDLLEXPORT wxStatusBarGeneric : public wxStatusBarBase
 {

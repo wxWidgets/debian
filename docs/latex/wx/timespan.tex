@@ -4,9 +4,9 @@
 %% Author:      Vadim Zeitlin
 %% Modified by:
 %% Created:     04.04.00
-%% RCS-ID:      $Id: timespan.tex,v 1.10 2004/10/22 19:15:34 KH Exp $
+%% RCS-ID:      $Id: timespan.tex,v 1.12 2005/02/22 15:09:54 ABX Exp $
 %% Copyright:   (c) Vadim Zeitlin
-%% License:     wxWidgets license
+%% License:     wxWindows license
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \section{\class{wxTimeSpan}}\label{wxtimespan}
@@ -115,7 +115,7 @@ Returns the timespan for one day.
 
 \membersection{wxTimeSpan::Format}\label{wxtimespanformat}
 
-\func{wxString}{Format}{\param{const wxChar * }{format = "\%H:\%M:\%S"}}
+\func{wxString}{Format}{\param{const wxChar * }{format = wxDefaultTimeSpanFormat}}
 
 Returns the string containing the formatted representation of the time span.
 The following format specifiers are allowed after \%:

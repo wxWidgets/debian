@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     04/01/98
-// RCS-ID:      $Id: utilsexc.cpp,v 1.75 2004/09/07 11:11:05 ABX Exp $
+// RCS-ID:      $Id: utilsexc.cpp,v 1.80 2005/05/31 09:20:34 JS Exp $
 // Copyright:   (c) 1998-2002 wxWidgets dev team
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -179,7 +179,8 @@ class wxPipeOutputStream: public wxOutputStream
 {
 public:
     wxPipeOutputStream(HANDLE hOutput);
-    virtual ~wxPipeOutputStream();
+    virtual ~wxPipeOutputStream() { Close(); }
+    bool Close();
 
 protected:
     size_t OnSysWrite(const void *buffer, size_t len);
@@ -384,7 +385,7 @@ bool wxPipeInputStream::CanRead() const
             wxLogLastError(_T("PeekNamedPipe"));
         }
 
-        // don't try to continue reading from a pipe if an error occured or if
+        // don't try to continue reading from a pipe if an error occurred or if
         // it had been closed
         ::CloseHandle(m_hInput);
 
@@ -416,7 +417,7 @@ size_t wxPipeInputStream::OnSysRead(void *buffer, size_t len)
                         : wxSTREAM_READ_ERROR;
     }
 
-    // bytesRead is set to 0, as desired, if an error occured
+    // bytesRead is set to 0, as desired, if an error occurred
     return bytesRead;
 }
 
@@ -444,10 +445,11 @@ wxPipeOutputStream::wxPipeOutputStream(HANDLE hOutput)
     }
 }
 
-wxPipeOutputStream::~wxPipeOutputStream()
+bool wxPipeOutputStream::Close()
 {
-    ::CloseHandle(m_hOutput);
+   return ::CloseHandle(m_hOutput) != 0;
 }
+
 
 size_t wxPipeOutputStream::OnSysWrite(const void *buffer, size_t len)
 {
@@ -529,7 +531,7 @@ static bool wxExecuteDDE(const wxString& ddeServer,
 
 long wxExecute(const wxString& cmd, int flags, wxProcess *handler)
 {
-    wxCHECK_MSG( !cmd.IsEmpty(), 0, wxT("empty command in wxExecute") );
+    wxCHECK_MSG( !cmd.empty(), 0, wxT("empty command in wxExecute") );
 
 #if wxUSE_THREADS
     // for many reasons, the code below breaks down if it's called from another
@@ -889,8 +891,12 @@ long wxExecute(const wxString& cmd, int flags, wxProcess *handler)
     wxAppTraits *traits = wxTheApp ? wxTheApp->GetTraits() : NULL;
     wxCHECK_MSG( traits, -1, _T("no wxAppTraits in wxExecute()?") );
 
-    // disable all app windows while waiting for the child process to finish
-    void *cookie = traits->BeforeChildWaitLoop();
+    void *cookie = NULL;
+    if ( !(flags & wxEXEC_NODISABLE) )
+    {
+        // disable all app windows while waiting for the child process to finish
+        cookie = traits->BeforeChildWaitLoop();
+    }
 
     // wait until the child process terminates
     while ( data->state )
@@ -908,7 +914,11 @@ long wxExecute(const wxString& cmd, int flags, wxProcess *handler)
         traits->AlwaysYield();
     }
 
-    traits->AfterChildWaitLoop(cookie);
+    if ( !(flags & wxEXEC_NODISABLE) )
+    {
+        // reenable disabled windows back
+        traits->AfterChildWaitLoop(cookie);
+    }
 
     DWORD dwExitCode = data->dwExitCode;
     delete data;

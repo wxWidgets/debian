@@ -4,7 +4,7 @@
 // Author:      Vadim Zeitlin
 // Modified by:
 // Created:     25.08.00
-// RCS-ID:      $Id: menu.cpp,v 1.45 2004/11/05 21:03:44 ABX Exp $
+// RCS-ID:      $Id: menu.cpp,v 1.57 2005/05/18 21:36:13 MW Exp $
 // Copyright:   (c) 2000 SciTech Software, Inc. (www.scitechsoft.com)
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -136,7 +136,14 @@ public:
     virtual void OnDismiss();
 
     // called when a submenu is dismissed
-    void OnSubmenuDismiss() { m_hasOpenSubMenu = false; }
+    void OnSubmenuDismiss(bool dismissParent);
+
+    // the default wxMSW wxPopupTransientWindow::OnIdle disables the capture
+    // when the cursor is inside the popup, which dsables the menu tracking
+    // so override it to do nothing
+#ifdef __WXMSW__
+    void OnIdle(wxIdleEvent& WXUNUSED(event)) { }
+#endif
 
     // get the currently selected item (may be NULL)
     wxMenuItem *GetCurrentItem() const
@@ -282,6 +289,9 @@ BEGIN_EVENT_TABLE(wxPopupMenuWindow, wxPopupTransientWindow)
     EVT_LEFT_UP(wxPopupMenuWindow::OnLeftUp)
     EVT_MOTION(wxPopupMenuWindow::OnMouseMove)
     EVT_LEAVE_WINDOW(wxPopupMenuWindow::OnMouseLeave)
+#ifdef __WXMSW__
+    EVT_IDLE(wxPopupMenuWindow::OnIdle)
+#endif
 END_EVENT_TABLE()
 
 BEGIN_EVENT_TABLE(wxMenuBar, wxMenuBarBase)
@@ -358,7 +368,7 @@ void wxPopupMenuWindow::ChangeCurrent(wxMenuItemList::compatibility_iterator nod
             if ( item->IsSubMenu() && item->GetSubMenu()->IsShown() )
             {
                 item->GetSubMenu()->Dismiss();
-                OnSubmenuDismiss();
+                OnSubmenuDismiss( false );
             }
 
             RefreshItem(item);
@@ -428,6 +438,11 @@ void wxPopupMenuWindow::Popup(wxWindow *focus)
 
     wxPopupTransientWindow::Popup(focus);
 
+    // the base class no-longer captures the mouse automatically when Popup
+    // is called, so do it here to allow the menu tracking to work
+    if ( !HasCapture() )
+        CaptureMouse();
+
 #ifdef __WXMSW__
     // ensure that this window is really on top of everything: without using
     // SetWindowPos() it can be covered by its parent menu which is not
@@ -463,10 +478,12 @@ void wxPopupMenuWindow::Dismiss()
         wxCHECK_RET( win, _T("opened submenu is not opened?") );
 
         win->Dismiss();
-        OnSubmenuDismiss();
+        OnSubmenuDismiss( false );
     }
 
     wxPopupTransientWindow::Dismiss();
+
+    ResetCurrent();
 }
 
 void wxPopupMenuWindow::OnDismiss()
@@ -476,10 +493,13 @@ void wxPopupMenuWindow::OnDismiss()
     HandleDismiss(true);
 }
 
+void wxPopupMenuWindow::OnSubmenuDismiss(bool WXUNUSED(dismissParent))
+{
+    m_hasOpenSubMenu = false;
+}
+
 void wxPopupMenuWindow::HandleDismiss(bool dismissParent)
 {
-    ResetCurrent();
-
     m_menu->OnDismiss(dismissParent);
 }
 
@@ -851,7 +871,13 @@ void wxPopupMenuWindow::OnMouseLeave(wxMouseEvent& event)
 
 void wxPopupMenuWindow::OnKeyDown(wxKeyEvent& event)
 {
-    if ( !ProcessKeyDown(event.GetKeyCode()) )
+    wxMenuBar *menubar = m_menu->GetMenuBar();
+
+    if ( menubar )
+    {
+        menubar->ProcessEvent(event);
+    }
+    else if ( !ProcessKeyDown(event.GetKeyCode()) )
     {
         event.Skip();
     }
@@ -969,7 +995,7 @@ bool wxPopupMenuWindow::ProcessKeyDown(int key)
                 bool notUnique = false;
 
                 // translate everything to lower case before comparing
-                wxChar chAccel = wxTolower(key);
+                wxChar chAccel = (wxChar)wxTolower(key);
 
                 // loop through all items searching for the item with this
                 // accel
@@ -1307,7 +1333,7 @@ void wxMenu::OnDismiss(bool dismissParent)
         wxPopupMenuWindow *win = m_menuParent->m_popupMenu;
         if ( win )
         {
-            win->OnSubmenuDismiss();
+            win->OnSubmenuDismiss( true );
         }
         else
         {
@@ -1669,6 +1695,14 @@ void wxMenuBar::Init()
     m_shouldShowMenu = false;
 }
 
+wxMenuBar::wxMenuBar(size_t n, wxMenu *menus[], const wxString titles[], long WXUNUSED(style))
+{
+    Init();
+
+    for (size_t i = 0; i < n; ++i )
+        Append(menus[i], titles[i]);
+}
+
 void wxMenuBar::Attach(wxFrame *frame)
 {
     // maybe you really wanted to call Detach()?
@@ -1823,7 +1857,7 @@ void wxMenuBar::SetLabelTop(size_t pos, const wxString& label)
 
 wxString wxMenuBar::GetLabelTop(size_t pos) const
 {
-    wxCHECK_MSG( pos < GetCount(), _T(""), _T("invalid index in GetLabelTop") );
+    wxCHECK_MSG( pos < GetCount(), wxEmptyString, _T("invalid index in GetLabelTop") );
 
     return m_menuInfos[pos].GetLabel();
 }
@@ -2176,7 +2210,7 @@ void wxMenuBar::OnKeyDown(wxKeyEvent& event)
     // the menu when up/down one is
     switch ( key )
     {
-        case WXK_MENU:
+        case WXK_ALT:
             // Alt must be processed at wxWindow level too
             event.Skip();
             // fall through
@@ -2295,7 +2329,7 @@ int wxMenuBar::FindNextItemForAccel(int idxStart, int key, bool *unique) const
         *unique = true;
 
     // translate everything to lower case before comparing
-    wxChar chAccel = wxTolower(key);
+    wxChar chAccel = (wxChar)wxTolower(key);
 
     // the index of the item with this accel
     int idxFound = -1;
@@ -2446,11 +2480,8 @@ void wxMenuBar::OnDismissMenu(bool dismissMenuBar)
 
 void wxMenuBar::OnDismiss()
 {
-    if ( GetCapture() )
-    {
+    if ( ReleaseMouseCapture() )
         wxLogTrace(_T("mousecapture"), _T("Releasing mouse from wxMenuBar::OnDismiss"));
-        GetCapture()->ReleaseMouse();
-    }
 
     if ( m_current != -1 )
     {
@@ -2461,6 +2492,42 @@ void wxMenuBar::OnDismiss()
     }
 
     GiveAwayFocus();
+}
+
+bool wxMenuBar::ReleaseMouseCapture()
+{
+#if __WXX11__
+    // With wxX11, when a menu is closed by clicking away from it, a control
+    // under the click will still get an event, even though the menu has the
+    // capture (bug?). So that control may already have taken the capture by
+    // this point, preventing us from releasing the menu's capture. So to work
+    // around this, we release both captures, then put back the control's
+    // capture.
+    wxWindow *capture = GetCapture();
+    if ( capture )
+    {
+        capture->ReleaseMouse();
+
+        if ( capture == this )
+            return true;
+
+        bool had = HasCapture();
+
+        if ( had )
+            ReleaseMouse();
+
+        capture->CaptureMouse();
+
+        return had;
+    }
+#else
+    if ( HasCapture() )
+    {
+        ReleaseMouse();
+        return true;
+    }
+#endif
+    return false;
 }
 
 void wxMenuBar::GiveAwayFocus()
@@ -2506,7 +2573,7 @@ bool wxWindow::DoPopupMenu(wxMenu *menu, int x, int y)
 
     // wxLogDebug( "Name of invoking window %s", menu->GetInvokingWindow()->GetName().c_str() );
 
-    menu->Popup(ClientToScreen(wxPoint(x, y)), wxSize(0, 0));
+    menu->Popup(ClientToScreen(wxPoint(x, y)), wxSize(0,0));
 
     // this is not very useful if the menu was popped up because of the mouse
     // click but I think it is nice to do when it appears because of a key

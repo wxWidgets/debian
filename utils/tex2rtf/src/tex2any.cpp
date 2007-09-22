@@ -2,10 +2,10 @@
 // Name:        tex2any.cpp
 // Purpose:     Utilities for Latex conversion.
 // Author:      Julian Smart
-// Modified by: Wlodzimiez ABX Skiba 2003/2004 Unicode support
+// Modified by: Wlodzimierz ABX Skiba 2003/2004 Unicode support
 //              Ron Lee
 // Created:     01/01/99
-// RCS-ID:      $Id: tex2any.cpp,v 1.35 2004/11/09 19:17:05 ABX Exp $
+// RCS-ID:      $Id: tex2any.cpp,v 1.37 2005/03/24 20:01:54 ABX Exp $
 // Copyright:   (c) Julian Smart
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -813,7 +813,7 @@ bool read_a_line(wxChar *buf)
   if (checkSyntax)
   {
       wxString bufStr = buf;
-      for (int index=0; syntaxTokens[index] != wxEmptyString; index++)
+      for (int index=0; !syntaxTokens[index].empty(); index++)
       {
           size_t pos = bufStr.find(syntaxTokens[index]);
           if (pos != wxString::npos && pos != 0)
@@ -1222,7 +1222,7 @@ int ParseArg(TexChunk *thisArg, wxList& children, wxChar *buffer, int pos, wxCha
             pos ++;
 
           // Find the delimiter character
-          int ch = buffer[pos];
+          wxChar ch = buffer[pos];
           pos ++;
           // Now at start of verbatim text
           int j = pos;

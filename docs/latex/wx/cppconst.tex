@@ -1,11 +1,10 @@
 \section{Preprocesser symbols defined by wxWidgets}\label{cppconst}
 
-Here is the list of preprocessor symbols used in the wxWidgets source grouped
+These are preprocessor symbols used in the wxWidgets source, grouped
 by category (and sorted by alphabetical order inside each category). All of
-these macros except for \texttt{wxUSE\_XXX} variety is defined if the
+these macros except for the \texttt{wxUSE\_XXX} variety is defined if the
 corresponding condition is true and undefined if it isn't, so they should be
-always tested usin \texttt{#ifdef} and not \texttt{#if}.
-
+always tested using \texttt{#ifdef} and not \texttt{#if}.
 
 \subsection{GUI system}\label{guisystemconst}
 
@@ -31,6 +30,7 @@ defined)}
 \twocolitem{\_\_WXMSW\_\_}{Any Windows}
 \twocolitem{\_\_WXOS2\_\_}{Identical to \_\_WXPM\_\_}
 \twocolitem{\_\_WXOSX\_\_}{Any Mac OS X port (either Carbon or Cocoa)}
+\twocolitem{\_\_WXPALMOS\_\_}{PalmOS}
 \twocolitem{\_\_WXPM\_\_}{OS/2 native Presentation Manager}
 \twocolitem{\_\_WXSTUBS\_\_}{Stubbed version ('template' wxWin implementation)}
 \twocolitem{\_\_WXXT\_\_}{Xt; mutually exclusive with WX\_MOTIF, not
@@ -42,27 +42,24 @@ to one of the symbols above so this should be tested first.}
 \twocolitem{\_\_X\_\_}{any X11-based GUI toolkit except GTK+}
 \end{twocollist}
 
-Mac situation is a bit confusing so a few extra words to explain it: there are
-2 wx ports to Mac OS. One of them, wxMac, exists in 2 versions: Classic and
+There are two wxWidgets ports to Mac OS. One of them, wxMac, exists in two versions: Classic and
 Carbon. The Classic version is the only one to work on Mac OS version 8. The
 Carbon version may be built either as CFM or Mach-O (binary format, like ELF)
 and the former may run under OS 9 while the latter only runs under OS X.
 Finally, there is a new Cocoa port which can only be used under OS X. To
 summarize:
+
 \begin{itemize}
-    \item If you want to test for all Mac platforms, classic and OS X, you
-        should test both \texttt{\_\_WXMAC\_\_} and \texttt{\_\_WXCOCOA\_\_}
-    \item If you want to test for any GUI Mac port under OS X, use
-        \texttt{\_\_WXOSX\_\_}
-    \item If you want to test for any port under Mac OS X, including, for
-        example, wxGTK and also wxBase, use \texttt{\_\_DARWIN\_\_} (see below)
+\item If you want to test for all Mac platforms, classic and OS X, you
+should test both \texttt{\_\_WXMAC\_\_} and \texttt{\_\_WXCOCOA\_\_}.
+\item If you want to test for any GUI Mac port under OS X, use 
+\texttt{\_\_WXOSX\_\_}.
+\item If you want to test for any port under Mac OS X, including, for
+example, wxGTK and also wxBase, use \texttt{\_\_DARWIN\_\_} (see below).
 \end{itemize}
 
-
-Note to implementors: although some of the symbols above don't start with 
-\texttt{\_\_WX} prefix, they really should always use it, so please do start
-any new symbols with it.
-
+The convention is to use the \texttt{\_\_WX} prefix for these
+symbols, although this has not always been followed.
 
 \subsection{Operating systems}\label{osconst}
 
@@ -80,6 +77,7 @@ any new symbols with it.
 \twocolitem{\_\_LINUX\_\_}{Linux}
 \twocolitem{\_\_MACH\_\_}{Mach-O Architecture (Mac OS X only builds)}
 \twocolitem{\_\_OSF\_\_}{OSF/1}
+\twocolitem{\_\_PALMOS\_\_}{PalmOS}
 \twocolitem{\_\_SGI\_\_}{IRIX}
 \twocolitem{\_\_SOLARIS\_\_}{Solaris}
 \twocolitem{\_\_SUN\_\_}{Any Sun}
@@ -102,21 +100,21 @@ compiler used.
 \begin{twocollist}\itemsep=0pt
 \twocolitem{\_\_ALPHA\_\_}{DEC Alpha architecture}
 \twocolitem{\_\_INTEL\_\_}{Intel i386 or compatible}
+\twocolitem{\_\_IA64\_\_}{Intel 64 bit architecture}
 \twocolitem{\_\_POWERPC\_\_}{Motorola Power PC}
 \end{twocollist}
 
 
 \subsection{Hardware type}\label{hardwareconst}
 
-Combination of these symbols with GUI symbols describes real hardware
-(like \_\_PDA\_\_ $&&$ \_\_WXWINCE\_\_ $==$ PocketPC devices).
-
 \begin{twocollist}\itemsep=0pt
-\twocolitem{\_\_SMARTPHONE\_\_}{Mobile devices with dialog capability through 
-phone buttons and small display}
-\twocolitem{\_\_PDA\_\_}{Personal digital assistant usually with touch screen and
-middle sized screen}
-\twocolitem{\_\_HANDHELD\_\_}{Small enough but powerful computer}
+\twocolitem{\_\_SMARTPHONE\_\_}{Generic mobile devices with phone buttons and a small display}
+\twocolitem{\_\_PDA\_\_}{Personal digital assistant, usually with touch screen}
+\twocolitem{\_\_HANDHELD\_\_}{Small but powerful computer, usually with a keyboard}
+\twocolitem{\_\_POCKETPC\_\_}{Microsoft-powered PocketPC devices with touch-screen}
+\twocolitem{\_\_WINCE\_STANDARDSDK\_\_}{Microsoft-powered Windows CE devices, for generic Windows CE applications}
+\twocolitem{\_\_WINCE\_NET\_\_}{Microsoft-powered Windows CE .NET devices (\_WIN32\_WCE is 400 or greater)}
+\twocolitem{WIN32\_PLATFORM\_WFSP}{Microsoft-powered smartphone}
 \end{twocollist}
 
 
@@ -155,11 +153,26 @@ also \helpref{wxCHECK\_VERSION}{wxcheckversion}}
 \twocolitem{wxUSE\_XXX}{if defined as $1$, feature XXX is active
 (the symbols of this form are always defined, use \#if and not \#ifdef to test
  for them)}
+\twocolitem{WX\_PRECOMP}{is defined if precompiled headers (PCH) are in use. In
+this case, \texttt{wx/wxprec.h} includes \texttt{wx/wx.h} which, in turn,
+includes a number of wxWidgets headers thus making it unnecessary to include
+them explicitly. However if this is not defined, you do need to include them
+and so the usual idiom which allows to support both cases is to first include 
+\texttt{wx/wxprec.h} and then, inside \texttt{#ifndef WX\_PRECOMP}, individual
+headers you need.}
+\twocolitem{\_UNICODE and UNICODE}{both are defined if wxUSE\_UNICODE is set to $1$}
 \twocolitem{wxUSE\_GUI}{this particular feature test macro is defined to $1$
 when compiling or using the library with the GUI features activated, if it is
 defined as $0$, only wxBase is available.}
 \twocolitem{wxUSE\_BASE}{only used by wxWidgets internally (defined as $1$ when
 building wxBase code, either as a standalone library or as part of the
 monolithic wxWidgets library, defined as $0$ when building GUI library only)}
+\twocolitem{wxNO\_RTTI}{is defined if the compiler RTTI support has been switched off}
+\twocolitem{wxNO\_EXCEPTIONS}{is defined if the compiler support for C++
+exceptions has been switched off}
+\twocolitem{wxNO\_THREADS}{if this macro is defined, the compilation options
+don't include compiler flags needed for multithreaded code generation. This
+implies that wxUSE\_THREADS is $0$ and also that other (non wx-based) threading
+packages cannot be used neither.}
 \end{twocollist}
 

@@ -2,9 +2,9 @@
 // Name:        bombs1.cpp
 // Purpose:     Implementation of the class BombsGame
 // Author:      P. Foggia 1996
-// Modified by: Wlodzimierz Skiba (ABX) 2003
+// Modified by: Wlodzimierz Skiba (ABX) since 2003
 // Created:     1996
-// RCS-ID:      $Id: game.cpp,v 1.2 2003/12/19 01:34:40 DS Exp $
+// RCS-ID:      $Id: game.cpp,v 1.5 2005/05/16 15:32:04 ABX Exp $
 // Copyright:   (c) 1996 P. Foggia
 // Licence:     wxWindows licence
 ///////////////////////////////////////////////////////////////////////////////
@@ -43,7 +43,7 @@ BombsGame::~BombsGame()
 }
 
 // Initialize the play field. Returns false on failure
-bool BombsGame::Init(int aWidth, int aHeight)
+bool BombsGame::Init(int aWidth, int aHeight, bool easyCorner)
 {
     m_gridFocusX = m_gridFocusY = -1;
 
@@ -75,6 +75,15 @@ bool BombsGame::Init(int aWidth, int aHeight)
         }
     }
 
+    /* Force (0,0) not to have a bomb for those that don't want to have
+       to guess on the first move. Better would be to for the MS rule that
+       whatever is picked first isn't a bomb.
+     */
+    if(easyCorner)
+    {
+        m_field[0] = BG_HIDDEN;
+    }
+
     m_numBombCells = 0;
     for(x=0; x<m_width; x++)
         for(y=0; y<m_height; y++)
@@ -90,6 +99,7 @@ bool BombsGame::Init(int aWidth, int aHeight)
             }
 
     m_numRemainingCells = m_height*m_width-m_numBombCells;
+    m_numMarkedCells = 0;
 
     return true;
 }
@@ -97,14 +107,21 @@ bool BombsGame::Init(int aWidth, int aHeight)
 void BombsGame::Mark(int x, int y)
 {
     m_field[x+y*m_width] ^= BG_MARKED;
+    if (IsMarked(x, y))
+        m_numMarkedCells++;
+    else
+        m_numMarkedCells--;
 }
 
-void BombsGame::Unhide(int x, int y)
+void BombsGame::Unhide(int x, int y, bool b_selected)
 {
     if (!IsHidden(x,y))
     {
         return;
     }
+
+    if (b_selected)
+        m_field[x+y*m_width] |= BG_SELECTED;
 
     m_field[x+y*m_width] &= ~BG_HIDDEN;
 

@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     01/02/97
-// RCS-ID:      $Id: font.cpp,v 1.69 2004/11/11 18:59:47 VZ Exp $
+// RCS-ID:      $Id: font.cpp,v 1.73 2005/05/22 13:04:23 JS Exp $
 // Copyright:   (c) wxWidgets team
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -108,8 +108,8 @@ public:
     // constructors
     wxFontRefData()
     {
-        Init(-1, wxSize(0, 0), FALSE, wxFONTFAMILY_DEFAULT, wxFONTSTYLE_NORMAL,
-             wxFONTWEIGHT_NORMAL, FALSE, wxEmptyString,
+        Init(-1, wxSize(0,0), false, wxFONTFAMILY_DEFAULT, wxFONTSTYLE_NORMAL,
+             wxFONTWEIGHT_NORMAL, false, wxEmptyString,
              wxFONTENCODING_DEFAULT);
     }
 
@@ -132,7 +132,7 @@ public:
         Init(info, hFont);
     }
 
-    wxFontRefData(const wxFontRefData& data)
+    wxFontRefData(const wxFontRefData& data) : wxGDIRefData()
     {
         if ( data.m_nativeFontInfoOk )
         {
@@ -223,7 +223,7 @@ public:
         else
         {
             m_pointSize = pointSize;
-            m_sizeUsingPixels = FALSE;
+            m_sizeUsingPixels = false;
         }
     }
 
@@ -236,7 +236,7 @@ public:
         else
         {
             m_pixelSize = pixelSize;
-            m_sizeUsingPixels = TRUE;
+            m_sizeUsingPixels = true;
         }
     }
 
@@ -606,8 +606,16 @@ void wxNativeFontInfo::SetFamily(wxFontFamily family)
 
         case wxDEFAULT:
         default:
+        {
+            // We want Windows 2000 or later to have new fonts even MS Shell Dlg
+            // is returned as default GUI font for compatibility
+            int verMaj;
             ff_family = FF_SWISS;
-            facename = _T("MS Sans Serif");
+            if(wxGetOsVersion(&verMaj) == wxWINDOWS_NT && verMaj >= 5)
+                facename = _T("MS Shell Dlg 2");
+            else
+                facename = _T("MS Shell Dlg");
+        }
     }
 
     lf.lfPitchAndFamily = (BYTE)(DEFAULT_PITCH) | ff_family;

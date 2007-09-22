@@ -2,7 +2,7 @@
 // Name:        stattext.h
 // Purpose:
 // Author:      Robert Roebling
-// Id:          $Id: stattext.h,v 1.16 2004/06/21 22:58:10 RD Exp $
+// Id:          $Id: stattext.h,v 1.17 2005/04/07 22:52:32 RR Exp $
 // Copyright:   (c) 1998 Robert Roebling
 // Licence:   	wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -67,6 +67,10 @@ public:
     // --------------
 
 protected:
+    virtual void DoSetSize(int x, int y,
+                           int width, int height,
+                           int sizeFlags = wxSIZE_AUTO);
+                           
     virtual wxSize DoGetBestSize() const;
 
     DECLARE_DYNAMIC_CLASS(wxStaticText)

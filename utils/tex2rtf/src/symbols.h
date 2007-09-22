@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     2002-03-26
-// RCS-ID:      $Id: symbols.h,v 1.1 2002/08/07 09:56:22 JS Exp $
+// RCS-ID:      $Id: symbols.h,v 1.2 2004/11/23 17:40:26 ABX Exp $
 // Copyright:   (c) Julian Smart
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -15,7 +15,7 @@
 //// Build settings
 
 // ScriptTracks version
-#define TEX2RTF_VERSION_NUMBER            2.01
+#define TEX2RTF_VERSION_NUMBER            wxVERSION_FLOAT
 
 #endif
     // _TEX2RTF_SYMBOLS_H_

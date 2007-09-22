@@ -2,7 +2,7 @@
 // Name:        wx/toplevel.h
 // Purpose:     Top level window, abstraction of wxFrame and wxDialog
 // Author:      Vaclav Slavik
-// Id:          $Id: toplevel.h,v 1.23 2004/08/10 13:08:34 ABX Exp $
+// Id:          $Id: toplevel.h,v 1.24 2004/12/19 20:51:06 VZ Exp $
 // Copyright:   (c) 2001-2002 SciTech Software, Inc. (www.scitechsoft.com)
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -143,8 +143,6 @@ public:
     virtual int GetMinWidth() const;
     virtual int GetMinHeight() const;
 
-    virtual bool ProvidesBackground() const { return true; }
-    
 protected:
     // handle titlebar button click event
     virtual void ClickTitleBarButton(long button);

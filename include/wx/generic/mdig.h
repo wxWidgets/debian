@@ -4,7 +4,7 @@
 // Author:      Hans Van Leemputten
 // Modified by:
 // Created:     29/07/2002
-// RCS-ID:      $Id: mdig.h,v 1.17 2004/09/30 16:37:46 VS Exp $
+// RCS-ID:      $Id: mdig.h,v 1.19 2005/03/21 12:27:31 VZ Exp $
 // Copyright:   (c) Hans Van Leemputten
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -24,8 +24,8 @@
 #include "wx/panel.h"
 #include "wx/notebook.h"
 
-WXDLLEXPORT_DATA(extern const wxChar*) wxFrameNameStr;
-WXDLLEXPORT_DATA(extern const wxChar*) wxStatusLineNameStr;
+extern WXDLLEXPORT_DATA(const wxChar*) wxFrameNameStr;
+extern WXDLLEXPORT_DATA(const wxChar*) wxStatusLineNameStr;
 
 
 //-----------------------------------------------------------------------------
@@ -79,7 +79,7 @@ public:
     virtual wxGenericMDIClientWindow *OnCreateClient();
 
     virtual void Cascade() { /* Has no effect */ }
-    virtual void Tile() { /* Has no effect */ }
+    virtual void Tile(wxOrientation WXUNUSED(orient) = wxHORIZONTAL) { }
     virtual void ArrangeIcons() { /* Has no effect */ }
     virtual void ActivateNext();
     virtual void ActivatePrevious();

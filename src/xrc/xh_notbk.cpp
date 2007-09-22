@@ -3,12 +3,12 @@
 // Purpose:     XRC resource for wxNotebook
 // Author:      Vaclav Slavik
 // Created:     2000/03/21
-// RCS-ID:      $Id: xh_notbk.cpp,v 1.13 2004/11/04 17:53:20 VS Exp $
+// RCS-ID:      $Id: xh_notbk.cpp,v 1.17 2005/03/28 09:40:25 VS Exp $
 // Copyright:   (c) 2000 Vaclav Slavik
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
 
-#ifdef __GNUG__
+#if defined(__GNUG__) && !defined(NO_GCC_PRAGMA)
 #pragma implementation "xh_notbk.h"
 #endif
 
@@ -25,6 +25,7 @@
 
 #include "wx/log.h"
 #include "wx/notebook.h"
+#include "wx/imaglist.h"
 #include "wx/sizer.h"
 
 IMPLEMENT_DYNAMIC_CLASS(wxNotebookXmlHandler, wxXmlResourceHandler)
@@ -32,11 +33,16 @@ IMPLEMENT_DYNAMIC_CLASS(wxNotebookXmlHandler, wxXmlResourceHandler)
 wxNotebookXmlHandler::wxNotebookXmlHandler()
 : wxXmlResourceHandler(), m_isInside(false), m_notebook(NULL)
 {
-    XRC_ADD_STYLE(wxNB_FIXEDWIDTH);
+    XRC_ADD_STYLE(wxNB_DEFAULT);
     XRC_ADD_STYLE(wxNB_LEFT);
     XRC_ADD_STYLE(wxNB_RIGHT);
     XRC_ADD_STYLE(wxNB_TOP);
     XRC_ADD_STYLE(wxNB_BOTTOM);
+
+    XRC_ADD_STYLE(wxNB_FIXEDWIDTH);
+    XRC_ADD_STYLE(wxNB_MULTILINE);
+    XRC_ADD_STYLE(wxNB_NOPAGETHEME);
+
     AddWindowStyles();
 }
 
@@ -58,8 +64,22 @@ wxObject *wxNotebookXmlHandler::DoCreateResource()
             wxWindow *wnd = wxDynamicCast(item, wxWindow);
 
             if (wnd)
+            {
                 m_notebook->AddPage(wnd, GetText(wxT("label")),
                                          GetBool(wxT("selected")));
+                if ( HasParam(wxT("bitmap")) )
+                {
+                    wxBitmap bmp = GetBitmap(wxT("bitmap"), wxART_OTHER);
+                    wxImageList *imgList = m_notebook->GetImageList();
+                    if ( imgList == NULL )
+                    {
+                        imgList = new wxImageList( bmp.GetWidth(), bmp.GetHeight() );
+                        m_notebook->AssignImageList( imgList );
+                    }
+                    int imgIndex = imgList->Add(bmp);
+                    m_notebook->SetPageImage(m_notebook->GetPageCount()-1, imgIndex );
+                }
+            }
             else
                 wxLogError(wxT("Error in resource."));
             return wnd;
@@ -80,6 +100,8 @@ wxObject *wxNotebookXmlHandler::DoCreateResource()
                    GetPosition(), GetSize(),
                    GetStyle(wxT("style")),
                    GetName());
+
+        SetupWindow(nb);
 
         wxNotebook *old_par = m_notebook;
         m_notebook = nb;

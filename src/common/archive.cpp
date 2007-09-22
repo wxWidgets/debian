@@ -2,7 +2,7 @@
 // Name:        archive.cpp
 // Purpose:     Streams for archive formats
 // Author:      Mike Wetherell
-// RCS-ID:      $Id: archive.cpp,v 1.1 2004/11/10 23:58:08 VZ Exp $
+// RCS-ID:      $Id: archive.cpp,v 1.5 2005/02/22 10:41:48 MW Exp $
 // Copyright:   (c) Mike Wetherell
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -22,15 +22,19 @@
   #include "wx/defs.h"
 #endif
 
-#if wxUSE_ZLIB && wxUSE_STREAMS && wxUSE_ZIPSTREAM
+#if wxUSE_STREAMS && wxUSE_ARCHIVE_STREAMS
 
 #include "wx/archive.h"
-#include "wx/html/forcelnk.h"
 
 IMPLEMENT_ABSTRACT_CLASS(wxArchiveEntry, wxObject)
 IMPLEMENT_ABSTRACT_CLASS(wxArchiveClassFactory, wxObject)
 
-FORCE_LINK(zipstrm)
+#if wxUSE_ZIPSTREAM
+//FORCE_LINK(zipstrm)
+extern int _wx_link_dummy_func_zipstrm();
+static int _wx_link_dummy_var_zipstrm =
+               _wx_link_dummy_func_zipstrm ();
+#endif
 
 
 /////////////////////////////////////////////////////////////////////////////
@@ -65,10 +69,10 @@ void wxArchiveEntry::SetNotifier(wxArchiveNotifier& notifier)
     m_notifier->OnEntryUpdated(*this);
 }
 
-wxArchiveEntry& wxArchiveEntry::operator=(const wxArchiveEntry& entry)
+wxArchiveEntry& wxArchiveEntry::operator=(const wxArchiveEntry& WXUNUSED(e))
 {
-    m_notifier = entry.m_notifier;
+    m_notifier = NULL;
     return *this;
 }
 
-#endif
+#endif // wxUSE_STREAMS && wxUSE_ARCHIVE_STREAMS

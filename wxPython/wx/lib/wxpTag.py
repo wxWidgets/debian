@@ -6,7 +6,7 @@
 # Author:      Robin Dunn
 #
 # Created:     13-Sept-1999
-# RCS-ID:      $Id: wxpTag.py,v 1.9 2004/10/15 18:45:07 RD Exp $
+# RCS-ID:      $Id: wxpTag.py,v 1.10 2005/01/13 21:15:08 RD Exp $
 # Copyright:   (c) 1999 by Total Control Software
 # Licence:     wxWindows license
 #----------------------------------------------------------------------
@@ -169,7 +169,8 @@ class wxpTagHandler(wx.html.HtmlWinTagHandler):
             obj.Show(True)
 
             # add it to the HtmlWindow
-            self.GetParser().GetContainer().InsertCell(wx.html.HtmlWidgetCell(obj, self.ctx.floatWidth))
+            self.GetParser().GetContainer().InsertCell(
+                wx.html.HtmlWidgetCell(obj, self.ctx.floatWidth))
             self.ctx = None
 
         return True

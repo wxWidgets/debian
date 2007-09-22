@@ -4,7 +4,7 @@
 // Author:      Vaclav Slavik
 // Modified by:
 // Created:     2002/02/17
-// RCS-ID:      $Id: mslu.cpp,v 1.17 2004/09/27 13:06:30 RR Exp $
+// RCS-ID:      $Id: mslu.cpp,v 1.20 2005/04/05 16:10:22 ABX Exp $
 // Copyright:   (c) 2002 Vaclav Slavik
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -167,6 +167,14 @@ WXDLLIMPEXP_BASE int wxMSLU__tremove(const wxChar *name)
         return remove(wxConvFile.cWX2MB(name));
     else
         return _tremove(name);
+}
+
+WXDLLIMPEXP_BASE FILE* wxMSLU__tfopen(const wxChar *name,const wxChar* mode)
+{
+    if ( wxUsingUnicowsDll() )
+        return fopen(wxConvFile.cWX2MB(name),wxConvFile.cWX2MB(mode));
+    else
+        return _tfopen(name,mode);
 }
 
 #if defined( __VISUALC__ ) \

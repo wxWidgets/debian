@@ -1,3 +1,14 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% Name:        radiobox.tex
+%% Purpose:     wxRadioBox documentation
+%% Author:      wxWidgets Team
+%% Modified by:
+%% Created:     
+%% RCS-ID:      $Id: radiobox.tex,v 1.23 2005/02/22 15:09:52 ABX Exp $
+%% Copyright:   (c) wxWidgets Team
+%% License:     wxWindows license
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
 \section{\class{wxRadioBox}}\label{wxradiobox}
 
 A radio box item is used to select one of number of mutually exclusive
@@ -23,6 +34,8 @@ labelled buttons.
 maximum number of rows.}
 \twocolitem{\windowstyle{wxRA\_SPECIFY\_COLS}}{The major dimension parameter refers to the
 maximum number of columns.}
+\twocolitem{\windowstyle{wxRA\_USE\_CHECKBOX}}{Use of the checkbox controls instead of radio
+buttons (currently supported only on PalmOS)}
 \end{twocollist}
 
 See also \helpref{window styles overview}{windowstyles}.
@@ -127,11 +140,11 @@ for further details.
 
 \membersection{wxRadioBox::Enable}\label{wxradioboxenable}
 
-\func{void}{Enable}{\param{bool}{ enable = {\tt true}}}
+\func{virtual bool}{Enable}{\param{bool}{ enable = {\tt true}}}
 
 Enables or disables the entire radiobox.
 
-\func{void}{Enable}{\param{int}{ n}, \param{bool}{ enable = {\tt true}}}
+\func{virtual bool}{Enable}{\param{int}{ n}, \param{bool}{ enable = {\tt true}}}
 
 Enables or disables an individual button in the radiobox.
 
@@ -149,6 +162,10 @@ implements the following methods:\par
 individual button in the radiobox.}
 \end{twocollist}}
 }
+
+\wxheading{See also}
+
+\helpref{wxWindow::Enable}{wxwindowenable}
 
 
 \membersection{wxRadioBox::FindString}\label{wxradioboxfindstring}
@@ -173,10 +190,6 @@ Returns the number of items in the radiobox.
 \constfunc{wxString}{GetLabel}{\void}
 
 Returns the radiobox label.
-
-\constfunc{wxString}{GetLabel}{\param{int }{n}}
-
-Returns the label for the given button.
 
 \wxheading{Parameters}
 
@@ -221,9 +234,9 @@ Returns the label for the button at the given position.
 
 \constfunc{int}{Number}{\void}
 
-{\bf Obsolescence note:} This method is obsolete and was replaced with 
+{\bf Obsolescence note:} This method is obsolete and was replaced with
 \helpref{GetCount}{wxradioboxgetcount}, please use the new method in the new
-code. This method is only available if wxWidgets was compiled with 
+code. This method is only available if wxWidgets was compiled with
 {\tt WXWIN\_COMPATIBILITY\_2\_2} defined and will disappear completely in
 future versions.
 
@@ -235,9 +248,6 @@ Returns the number of buttons in the radiobox.
 
 Sets the radiobox label.
 
-\func{void}{SetLabel}{\param{int }{n}, \param{const wxString\&}{ label}}
-
-Sets a label for a radio button.
 
 \wxheading{Parameters}
 
@@ -277,11 +287,11 @@ a wxEVT\_COMMAND\_RADIOBOX\_SELECTED event to get emitted.
 
 \membersection{wxRadioBox::Show}\label{wxradioboxshow}
 
-\func{void}{Show}{\param{const bool}{ show}}
+\func{virtual bool}{Show}{\param{const bool}{ show = {\tt true}}}
 
 Shows or hides the entire radiobox.
 
-\func{void}{Show}{\param{int }{item}, \param{const bool}{ show}}
+\func{virtual bool}{Show}{\param{int}{ item}, \param{const bool}{ show = {\tt true}}}
 
 Shows or hides individual buttons.
 
@@ -291,6 +301,15 @@ Shows or hides individual buttons.
 
 \docparam{item}{The zero-based position of the button to show or hide.}
 
+\wxheading{Return value}
+
+{\tt true} if the box or item has been shown or hidden or {\tt false} if nothing was
+done because it already was in the requested state.
+
+\wxheading{See also}
+
+\helpref{wxWindow::Show}{wxwindowshow}
+
 \pythonnote{In place of a single overloaded method name, wxPython
 implements the following methods:\par
 \indented{2cm}{\begin{twocollist}
@@ -298,4 +317,3 @@ implements the following methods:\par
 \twocolitem{{\bf ShowItem(n, flag)}}{Shows or hides individual buttons.}
 \end{twocollist}}
 }
-

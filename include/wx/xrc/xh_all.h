@@ -3,7 +3,7 @@
 // Purpose:     includes all xh_*.h files
 // Author:      Vaclav Slavik
 // Created:     2000/03/05
-// RCS-ID:      $Id: xh_all.h,v 1.7 2004/08/31 07:53:09 JS Exp $
+// RCS-ID:      $Id: xh_all.h,v 1.10 2005/04/02 22:22:25 VS Exp $
 // Copyright:   (c) 2000 Vaclav Slavik
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -30,9 +30,12 @@
 #include "wx/xrc/xh_combo.h"
 #include "wx/xrc/xh_chckl.h"
 #include "wx/xrc/xh_choic.h"
+#include "wx/xrc/xh_datectrl.h"
 #include "wx/xrc/xh_sizer.h"
 #include "wx/xrc/xh_stbmp.h"
 #include "wx/xrc/xh_notbk.h"
+#include "wx/xrc/xh_listbk.h"
+#include "wx/xrc/xh_choicbk.h"
 #include "wx/xrc/xh_text.h"
 #include "wx/xrc/xh_listb.h"
 #include "wx/xrc/xh_toolb.h"
@@ -51,5 +54,6 @@
 #include "wx/xrc/xh_split.h"
 #include "wx/xrc/xh_wizrd.h"
 #include "wx/xrc/xh_statbar.h"
+#include "wx/xrc/xh_mdi.h"
 
-#endif // _WX_XMLRES_H_
+#endif // _WX_XH_ALL_H_

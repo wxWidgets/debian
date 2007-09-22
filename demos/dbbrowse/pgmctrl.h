@@ -4,7 +4,7 @@
 // Author:      Mark Johnson
 // Modified by: 19990806.mj10777
 // Created:     19991010
-// RCS-ID:      $Id: pgmctrl.h,v 1.7 2001/02/12 19:23:44 georgetasker Exp $
+// RCS-ID:      $Id: pgmctrl.h,v 1.8 2005/01/31 18:09:46 ABX Exp $
 // Copyright:   (c) Mark Johnson, Berlin Germany
 // Licence:     wxWindows license
 
@@ -56,7 +56,7 @@ public:
     void OnRightSelect(wxTreeEvent& event);
     void OnMouseMove(wxMouseEvent& event);
     void OnUserPassword(wxCommandEvent& event);
-    
+
 public:
     //----------------------------------------------------------------------------------------
     // NB: due to an ugly wxMSW hack you _must_ use DECLARE_DYNAMIC_CLASS()

@@ -4,7 +4,7 @@
 // Author:      Vadim Zeitlin
 // Modified by:
 // Created:     13.01.00
-// RCS-ID:      $Id: enhmeta.h,v 1.10 2004/10/16 13:31:17 VZ Exp $
+// RCS-ID:      $Id: enhmeta.h,v 1.11 2005/01/18 20:23:48 ABX Exp $
 // Copyright:   (c) 2000 Vadim Zeitlin <zeitlin@dptmaths.ens-cachan.fr>
 // Licence:     wxWindows licence
 ///////////////////////////////////////////////////////////////////////////////
@@ -31,7 +31,7 @@ class WXDLLEXPORT wxEnhMetaFile : public wxObject
 public:
     wxEnhMetaFile(const wxString& file = wxEmptyString) : m_filename(file)
         { Init(); }
-    wxEnhMetaFile(const wxEnhMetaFile& metafile)
+    wxEnhMetaFile(const wxEnhMetaFile& metafile) : wxObject()
         { Init(); Assign(metafile); }
     wxEnhMetaFile& operator=(const wxEnhMetaFile& metafile)
         { Free(); Assign(metafile); return *this; }

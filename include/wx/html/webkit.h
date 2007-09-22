@@ -4,7 +4,7 @@
 // Author:      Jethro Grassie / Kevin Ollivier
 // Modified by:
 // Created:     2004-4-16
-// RCS-ID:      $Id: webkit.h,v 1.11 2004/09/30 21:00:18 DE Exp $
+// RCS-ID:      $Id: webkit.h,v 1.12 2005/04/13 05:12:36 KO Exp $
 // Copyright:   (c) Jethro Grassie / Kevin Ollivier
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -67,6 +67,8 @@ public:
     bool CanGetPageSource();
     wxString GetPageSource();
     void SetPageSource(wxString& source, const wxString& baseUrl = wxEmptyString);
+	wxString GetPageURL(){ return m_currentURL; }
+	wxString GetPageTitle(){ return m_pageTitle; }
 
     //we need to resize the webview when the control size changes
     void OnSize(wxSizeEvent &event);

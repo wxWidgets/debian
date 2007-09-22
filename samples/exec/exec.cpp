@@ -4,7 +4,7 @@
 // Author:      Vadim Zeitlin
 // Modified by:
 // Created:     15.01.00
-// RCS-ID:      $Id: exec.cpp,v 1.35 2004/10/02 12:35:37 VS Exp $
+// RCS-ID:      $Id: exec.cpp,v 1.36 2005/03/30 19:10:17 ABX Exp $
 // Copyright:   (c) Vadim Zeitlin
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -18,8 +18,8 @@
 // ----------------------------------------------------------------------------
 
 #if defined(__GNUG__) && !defined(__APPLE__)
-    #pragma implementation "exec.cpp"
-    #pragma interface "exec.cpp"
+    #pragma implementation
+    #pragma interface
 #endif
 
 // For compilers that support precompilation, includes "wx/wx.h".
@@ -1028,7 +1028,7 @@ void MyPipedProcess::OnTerminate(int pid, int status)
 
 bool MyPipedProcess2::HasInput()
 {
-    if ( !!m_input )
+    if ( !m_input.empty() )
     {
         wxTextOutputStream os(*GetOutputStream());
         os.WriteString(m_input);

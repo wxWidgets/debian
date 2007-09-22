@@ -4,7 +4,7 @@
 // Author:      Karsten Ballüder and Vadim Zeitlin
 // Modified by:
 // Created:     13.07.01
-// RCS-ID:      $Id: regex.cpp,v 1.32 2004/09/21 18:15:59 ABX Exp $
+// RCS-ID:      $Id: regex.cpp,v 1.34 2005/05/31 09:19:52 JS Exp $
 // Copyright:   (c) 2000 Karsten Ballüder <ballueder@gmx.net>
 //                  2001 Vadim Zeitlin <vadim@wxwindows.org>
 // Licence:     wxWindows licence
@@ -199,7 +199,7 @@ bool wxRegExImpl::Compile(const wxString& expr, int flags)
     // compile it
 #ifdef __REG_NOFRONT
     bool conv = true;
-    int errorcode = re_comp(&m_RegEx, expr, expr.length(), flagsRE);
+    int errorcode = wx_re_comp(&m_RegEx, expr, expr.length(), flagsRE);
 #else
     const wxWX2MBbuf conv = expr.mbc_str();
     int errorcode = conv ? regcomp(&m_RegEx, conv, flagsRE) : REG_BADPAT;
@@ -283,7 +283,7 @@ bool wxRegExImpl::Matches(const wxChar *str, int flags) const
     // do match it
 #ifdef __REG_NOFRONT
     bool conv = true;
-    int rc = re_exec(&self->m_RegEx, str, wxStrlen(str), NULL, m_nMatches, m_Matches, flagsRE);
+    int rc = wx_re_exec(&self->m_RegEx, str, wxStrlen(str), NULL, m_nMatches, m_Matches, flagsRE);
 #else
     const wxWX2MBbuf conv = wxConvertWX2MB(str);
     int rc = conv ? regexec(&self->m_RegEx, conv, m_nMatches, m_Matches, flagsRE) : REG_BADPAT;
@@ -296,7 +296,7 @@ bool wxRegExImpl::Matches(const wxChar *str, int flags) const
             return true;
 
         default:
-            // an error occured
+            // an error occurred
             wxLogError(_("Failed to match '%s' in regular expression: %s"),
                        str, GetErrorMsg(rc, !conv).c_str());
             // fall through

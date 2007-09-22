@@ -3,7 +3,7 @@
  * Name:    gsockgtk.c
  * Purpose: GSocket: GTK part
  * Licence: The wxWindows licence
- * CVSID:   $Id: gsockgtk.cpp,v 1.4 2004/08/04 03:04:46 DE Exp $
+ * CVSID:   $Id: gsockgtk.cpp,v 1.5 2005/03/21 23:42:17 VZ Exp $
  * -------------------------------------------------------------------------
  */
 #include "wx/setup.h"
@@ -21,6 +21,8 @@
 #include "wx/unix/gsockunx.h"
 
 
+extern "C" {
+static
 void _GSocket_GDK_Input(gpointer data,
                         gint source,
                         GdkInputCondition condition)
@@ -31,6 +33,7 @@ void _GSocket_GDK_Input(gpointer data,
     socket->Detected_Read();
   if (condition & GDK_INPUT_WRITE)
     socket->Detected_Write();
+}
 }
 
 bool GSocketGUIFunctionsTableConcrete::CanUseEventLoop()

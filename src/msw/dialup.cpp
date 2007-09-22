@@ -4,7 +4,7 @@
 // Author:      Vadim Zeitlin
 // Modified by:
 // Created:     07.07.99
-// RCS-ID:      $Id: dialup.cpp,v 1.50 2004/11/05 20:53:23 ABX Exp $
+// RCS-ID:      $Id: dialup.cpp,v 1.52 2005/05/31 09:20:30 JS Exp $
 // Copyright:   (c) Vadim Zeitlin
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -505,7 +505,7 @@ HRASCONN wxDialUpManagerMSW::FindActiveConnection()
         }
         else
         {
-            // an error occured
+            // an error occurred
             wxLogError(_("Cannot find active dialup connection: %s"),
                        GetErrorString(dwRet).c_str());
             return 0;
@@ -1285,7 +1285,7 @@ static void WINAPI wxRasDialFunc(UINT WXUNUSED(unMsg),
 
     wxCHECK_RET( dialUpManager, wxT("who started to dial then?") );
 
-    SendMessage(dialUpManager->GetRasWindow(), wxWM_RAS_DIALING_PROGRESS,
+    SendMessage(wxDialUpManagerMSW::GetRasWindow(), wxWM_RAS_DIALING_PROGRESS,
                 rasconnstate, dwError);
 }
 

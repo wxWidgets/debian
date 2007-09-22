@@ -4,9 +4,9 @@
 // Author:      Aleksandras Gluchovas
 // Modified by:
 // Created:     27/09/98
-// RCS-ID:      $Id: wxstlac.h,v 1.3 2003/10/13 17:21:30 MBN Exp $
+// RCS-ID:      $Id: wxstlac.h,v 1.5 2005/06/02 09:44:45 ABX Exp $
 // Copyright:   (c) Aleskandars Gluchovas
-// Licence:   	wxWindows licence
+// Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
 
 #ifndef __WXSTLAC_G__
@@ -28,18 +28,18 @@
 
 // arguments:
 //
-//	    ARG_IS_UNIQUE
-//		ASSOC_CONT_CLASS_NAME
+//      ARG_IS_UNIQUE
+//      ASSOC_CONT_CLASS_NAME
 //
-//	    ARG_VALUE_TYPE
+//      ARG_VALUE_TYPE
 //      ARG_KEY_TYPE
 //      ARG_ACTUAL_VALUE_TYPE
-//      
+//
 //      _KEY_NAME
 //      _VALUE_NAME
 //
-//		_X_KEY_NAME
-// 		_X_VALUE_NAME
+//      _X_KEY_NAME
+//      _X_VALUE_NAME
 //
 //      _INSERT_METHOD_DEFINITION
 
@@ -60,9 +60,9 @@ ASSOC_CONT_CLASS_NAME\
 protected:\
 \
 public:\
-	typedef ARG_VALUE_TYPE        value_type;\
-	typedef ARG_KEY_TYPE          key_type;\
-	typedef ARG_ACTUAL_VALUE_TYPE actual_value_type;\
+    typedef ARG_VALUE_TYPE        value_type;\
+    typedef ARG_KEY_TYPE          key_type;\
+    typedef ARG_ACTUAL_VALUE_TYPE actual_value_type;\
 \
 	typedef value_type*			  pointer;\
 	typedef value_type&			  reference;\
@@ -76,14 +76,16 @@ protected:\
 \
 	struct tree_node \
 	{\
-		tree_node*  mpParent;\
+		tree_node*  m_pParent;\
 		tree_node*  mpLeft;\
 		tree_node*  mpRight;\
 \
 		value_type  mData;\
 	};\
 \
+public:\
 	typedef tree_node* node_ref_type;\
+protected:\
 \
 	node_ref_type   mpRoot;\
 	node_ref_type   mpLeftMost;\
@@ -107,16 +109,16 @@ public:\
 			return pNode;\
 		}\
 		else\
-		if ( pNode->mpParent )\
+		if ( pNode->m_pParent )\
 		{\
-			if ( pNode == pNode->mpParent->mpLeft )\
+			if ( pNode == pNode->m_pParent->mpLeft )\
 \
-				return pNode->mpParent;\
+				return pNode->m_pParent;\
 \
-			pNode = pNode->mpParent;\
+			pNode = pNode->m_pParent;\
 \
 			node_ref_type prevNode = pNode;\
-			pNode = pNode->mpParent;\
+			pNode = pNode->m_pParent;\
 \
 			while(pNode)\
 			{\
@@ -125,7 +127,7 @@ public:\
 				   ) return pNode;\
 \
 				prevNode = pNode;\
-				pNode= pNode->mpParent;\
+				pNode= pNode->m_pParent;\
 			}\
 \
 			return 0;\
@@ -145,15 +147,15 @@ public:\
 			return pNode;\
 		}\
 		else\
-		if ( pNode->mpParent )\
+		if ( pNode->m_pParent )\
 		{\
-			if ( pNode == pNode->mpParent->mpRight )\
-				return pNode->mpParent;\
+			if ( pNode == pNode->m_pParent->mpRight )\
+				return pNode->m_pParent;\
 \
-			pNode = pNode->mpParent;\
+			pNode = pNode->m_pParent;\
 \
 			node_ref_type prevNode = pNode;\
-			pNode = pNode->mpParent;\
+			pNode = pNode->m_pParent;\
 \
 			while(pNode)\
 			{\
@@ -162,7 +164,7 @@ public:\
 				   ) return pNode;\
 \
 				prevNode = pNode;\
-				pNode= pNode->mpParent;\
+				pNode= pNode->m_pParent;\
 			}\
 \
 			return 0;\
@@ -231,7 +233,7 @@ protected:\
 	{\
 		node_ref_type pNewNode = AllocNode();\
 \
-		pNewNode->mpParent = \
+		pNewNode->m_pParent = \
 			pNewNode->mpLeft =\
 				pNewNode->mpRight = 0;\
 \
@@ -253,7 +255,7 @@ protected:\
 				: pCurrent->mpRight;\
 		}\
     \
-		pNewNode->mpParent = pParent;\
+		pNewNode->m_pParent = pParent;\
 \
 	    if(pParent)\
 \
@@ -544,15 +546,15 @@ public:\
         else\
             pX = pY->mpRight;\
 	    \
-        if ( pX ) pX->mpParent = pY->mpParent;\
+        if ( pX ) pX->m_pParent = pY->m_pParent;\
 	    \
-        if (pY->mpParent)\
+        if (pY->m_pParent)\
 	    \
-            if (pY == pY->mpParent->mpLeft )\
+            if (pY == pY->m_pParent->mpLeft )\
 	    \
-                pY->mpParent->mpLeft = pX;\
+                pY->m_pParent->mpLeft = pX;\
 		    else\
-                pY->mpParent->mpRight = pX;\
+                pY->m_pParent->mpRight = pX;\
         else\
             mpRoot = pX;\
 	    \
@@ -562,23 +564,23 @@ public:\
 	    \
             pY->mpLeft = pZ->mpLeft;\
 	    \
-            if (pY->mpLeft) pY->mpLeft->mpParent = pY;\
+            if (pY->mpLeft) pY->mpLeft->m_pParent = pY;\
 	    \
             pY->mpRight = pZ->mpRight;\
 	    \
             if ( pY->mpRight ) \
 				\
-				pY->mpRight->mpParent = pY;\
+				pY->mpRight->m_pParent = pY;\
 	    \
-            pY->mpParent = pZ->mpParent;\
+            pY->m_pParent = pZ->m_pParent;\
 	    \
-            if (pZ->mpParent)\
+            if (pZ->m_pParent)\
 	    \
-                if (pZ == pZ->mpParent->mpLeft)\
+                if (pZ == pZ->m_pParent->mpLeft)\
 	    \
-                    pZ->mpParent->mpLeft = pY;\
+                    pZ->m_pParent->mpLeft = pY;\
                 else\
-                    pZ->mpParent->mpRight = pY;\
+                    pZ->m_pParent->mpRight = pY;\
             else\
                 mpRoot = pY;\
 	    \
@@ -660,7 +662,7 @@ inline insert_result_iterator insert( const value_type& x )\
 #define GREATER_THEN_FUNCTOR(TYPE) struct \
 { inline int operator()(const TYPE& x, const TYPE& y ) const { return x > y; } }
 
-// functor argument should be created using the two above macros 
+// functor argument should be created using the two above macros
 // or passing own class with method "operator()(const TYPE&,cosnt TYPE&)" defined in it
 
 #define WXSTL_MAP( KEY_TYPE, VALUE_TYPE, FUNCTOR )      __DEFINE_MAP( 1 ,KEY_TYPE, VALUE_TYPE, FUNCTOR)

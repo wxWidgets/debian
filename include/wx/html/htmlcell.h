@@ -3,7 +3,7 @@
 // Purpose:     wxHtmlCell class is used by wxHtmlWindow/wxHtmlWinParser
 //              as a basic visual element of HTML page
 // Author:      Vaclav Slavik
-// RCS-ID:      $Id: htmlcell.h,v 1.57 2004/09/27 19:06:38 ABX Exp $
+// RCS-ID:      $Id: htmlcell.h,v 1.58 2005/02/24 14:33:32 VZ Exp $
 // Copyright:   (c) 1999-2003 Vaclav Slavik
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -104,6 +104,7 @@ private:
 class WXDLLIMPEXP_HTML wxHtmlRenderingStyle
 {
 public:
+    virtual ~wxHtmlRenderingStyle() {}
     virtual wxColour GetSelectedTextColour(const wxColour& clr) = 0;
     virtual wxColour GetSelectedTextBgColour(const wxColour& clr) = 0;
 };

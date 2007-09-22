@@ -4,7 +4,7 @@
 // Author:      Vadim Zeitlin
 // Modified by:
 // Created:     23.06.2003
-// RCS-ID:      $Id: apptrait.h,v 1.6 2004/05/23 20:51:50 JS Exp $
+// RCS-ID:      $Id: apptrait.h,v 1.7 2004/11/12 21:20:46 DE Exp $
 // Copyright:   (c) 2003 Vadim Zeitlin <vadim@wxwidgets.org>
 // Licence:     wxWindows licence
 ///////////////////////////////////////////////////////////////////////////////
@@ -37,6 +37,9 @@ public:
     virtual void DetachWriteFDOfEndProcessPipe(wxExecuteData& execData);
     virtual int WaitForChild(wxExecuteData& execData);
 
+#if defined(__WXMAC__) || defined(__WXCOCOA__)
+    virtual wxStandardPathsBase& GetStandardPaths();
+#endif
     virtual wxToolkitInfo& GetToolkitInfo();
 };
 

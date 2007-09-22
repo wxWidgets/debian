@@ -4,7 +4,7 @@
 // Author:      PJ Naughter <pjna@naughter.com>
 // Modified by: Julian Smart
 // Created:     2001-08-21
-// RCS-ID:      $Id: smapi.cpp,v 1.8 2003/09/10 09:14:01 MBN Exp $
+// RCS-ID:      $Id: smapi.cpp,v 1.9 2005/06/06 19:23:11 MW Exp $
 // Copyright:   (c) PJ Naughter
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -29,7 +29,15 @@
 #include "wx/string.h"
 #include "wx/msw/private.h"
 
+// mapi.h in Cygwin's include directory isn't a full implementation and is
+// not sufficient for this lib. However recent versions of Cygwin also
+// have another mapi.h in include/w32api which can be used.
+//
+#ifdef __CYGWIN__
+#include <w32api/mapi.h>
+#else
 #include <mapi.h>
+#endif
 
 #include "wx/net/smapi.h"
 

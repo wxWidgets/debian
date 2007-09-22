@@ -4,7 +4,7 @@
 // Purpose:     Part of the widgets sample showing various static controls
 // Author:      Vadim Zeitlin
 // Created:     11.04.01
-// Id:          $Id: static.cpp,v 1.13 2004/10/04 20:25:15 ABX Exp $
+// Id:          $Id: static.cpp,v 1.15 2004/11/23 11:44:42 ABX Exp $
 // Copyright:   (c) 2001 Vadim Zeitlin
 // License:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -139,8 +139,10 @@ END_EVENT_TABLE()
 class StaticWidgetsPage : public WidgetsPage
 {
 public:
-    StaticWidgetsPage(wxNotebook *notebook, wxImageList *imaglist);
+    StaticWidgetsPage(wxBookCtrl *book, wxImageList *imaglist);
     virtual ~StaticWidgetsPage(){};
+
+    virtual wxControl *GetWidget() const { return m_statText; }
 
 protected:
     // event handlers
@@ -203,9 +205,9 @@ END_EVENT_TABLE()
 
 IMPLEMENT_WIDGETS_PAGE(StaticWidgetsPage, _T("Static"));
 
-StaticWidgetsPage::StaticWidgetsPage(wxNotebook *notebook,
-                                       wxImageList *imaglist)
-                  : WidgetsPage(notebook)
+StaticWidgetsPage::StaticWidgetsPage(wxBookCtrl *book,
+                                     wxImageList *imaglist)
+                  : WidgetsPage(book)
 {
     imaglist->Add(wxBitmap(statbox_xpm));
 

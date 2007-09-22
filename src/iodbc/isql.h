@@ -1,13 +1,13 @@
 /*
  *  isql.h
  *
- *  $Id: isql.h,v 1.7 2004/10/22 19:00:22 KH Exp $
+ *  $Id: isql.h,v 1.8 2005/04/16 09:45:32 JS Exp $
  *
  *  iODBC defines
  *
  *  The iODBC driver manager.
- *  
- *  Copyright (C) 1995 by Ke Jin <kejin@empress.com> 
+ *
+ *  Copyright (C) 1995 by Ke Jin <kejin@empress.com>
  *
  *  This library is free software; you can redistribute it and/or
  *  modify it under the terms of the GNU Library General Public
@@ -47,6 +47,7 @@ typedef long int SDWORD;
 typedef short int SWORD;
 typedef unsigned long int UDWORD;
 typedef unsigned short int UWORD;
+typedef long SQLINTEGER;
 
 typedef void FAR *PTR;
 typedef void FAR *HENV;

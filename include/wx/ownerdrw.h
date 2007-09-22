@@ -4,13 +4,15 @@
 // Author:      Vadim Zeitlin
 // Modified by:
 // Created:     11.11.97
-// RCS-ID:      $Id: ownerdrw.h,v 1.23 2004/09/20 11:31:40 ABX Exp $
+// RCS-ID:      $Id: ownerdrw.h,v 1.26 2005/06/07 18:28:47 VZ Exp $
 // Copyright:   (c) 1998 Vadim Zeitlin <zeitlin@dptmaths.ens-cachan.fr>
 // Licence:     wxWindows licence
 ///////////////////////////////////////////////////////////////////////////////
 
 #ifndef   _OWNERDRW_H
 #define   _OWNERDRW_H
+
+#include "wx/defs.h"
 
 #if wxUSE_OWNER_DRAWN
 
@@ -38,7 +40,7 @@ public:
   wxOwnerDrawn(const wxString& str = wxEmptyString,
                bool bCheckable = false,
                bool bMenuItem = false); // FIXME kludge for colors
-  virtual ~wxOwnerDrawn() { }
+  virtual ~wxOwnerDrawn();
 
   // fix appearance
   void SetFont(const wxFont& font)
@@ -131,7 +133,8 @@ public:
     wxODDisabled  = 0x0004,         // item is to be drawn as disabled
     wxODChecked   = 0x0008,         // item is to be checked
     wxODHasFocus  = 0x0010,         // item has the keyboard focus
-    wxODDefault   = 0x0020          // item is the default item
+    wxODDefault   = 0x0020,         // item is the default item
+    wxODHidePrefix= 0x0100          // hide keyboard cues (w2k and xp only)
   };
 
   // virtual functions to implement drawing (return true if processed)
@@ -139,6 +142,13 @@ public:
   virtual bool OnDrawItem(wxDC& dc, const wxRect& rc, wxODAction act, wxODStatus stat);
 
 protected:
+  // return true if this is a menu item
+  bool IsMenuItem() const;
+
+  // get the font to use, whether m_font is set or not
+  wxFont GetFontToUse() const;
+
+
   wxString  m_strName,      // label for a manu item
             m_strAccel;     // the accel string ("Ctrl-F17") if any
 

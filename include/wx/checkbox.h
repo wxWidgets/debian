@@ -4,7 +4,7 @@
 // Author:      Vadim Zeitlin
 // Modified by:
 // Created:     07.09.00
-// RCS-ID:      $Id: checkbox.h,v 1.20 2004/05/23 20:50:19 JS Exp $
+// RCS-ID:      $Id: checkbox.h,v 1.23 2005/01/25 06:55:06 ABX Exp $
 // Copyright:   (c) wxWidgets team
 // Licence:     wxWindows licence
 ///////////////////////////////////////////////////////////////////////////////
@@ -49,7 +49,7 @@ enum wxCheckBoxState
 };
 
 
-WXDLLEXPORT_DATA(extern const wxChar *) wxCheckBoxNameStr;
+extern WXDLLEXPORT_DATA(const wxChar *) wxCheckBoxNameStr;
 
 // ----------------------------------------------------------------------------
 // wxCheckBox: a control which shows a label and a box which may be checked
@@ -106,8 +106,7 @@ public:
         return HasFlag(wxCHK_ALLOW_3RD_STATE_FOR_USER);
     }
 
-    virtual void ApplyParentThemeBackground(const wxColour& bg)
-        { SetBackgroundColour(bg); }
+    virtual bool HasTransparentBackground() { return true; }
 
 protected:
     virtual void DoSet3StateValue(wxCheckBoxState WXUNUSED(state)) { wxFAIL; }
@@ -136,6 +135,8 @@ private:
     #include "wx/cocoa/checkbox.h"
 #elif defined(__WXPM__)
     #include "wx/os2/checkbox.h"
+#elif defined(__WXPALMOS__)
+    #include "wx/palmos/checkbox.h"
 #endif
 
 #endif // wxUSE_CHECKBOX

@@ -4,7 +4,7 @@
 // Notes:       Based on htmlhelp.cpp, implementing a monolithic
 //              HTML Help controller class,  by Vaclav Slavik
 // Author:      Harm van der Heijden and Vaclav Slavik
-// RCS-ID:      $Id: helpdata.cpp,v 1.78 2004/10/11 16:30:36 ABX Exp $
+// RCS-ID:      $Id: helpdata.cpp,v 1.79 2005/01/06 11:52:05 RR Exp $
 // Copyright:   (c) Harm van der Heijden and Vaclav Slavik
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -700,9 +700,11 @@ bool wxHtmlHelpData::AddBook(const wxString& book)
             charset = linebuf + wxStrlen(_T("charset="));
     } while (lineptr != NULL);
 
-    wxFontEncoding enc;
-    if (charset == wxEmptyString) enc = wxFONTENCODING_SYSTEM;
-    else enc = wxFontMapper::Get()->CharsetToEncoding(charset);
+    wxFontEncoding enc = wxFONTENCODING_SYSTEM;
+#if wxUSE_FONTMAP
+    if (charset != wxEmptyString)
+        enc = wxFontMapper::Get()->CharsetToEncoding(charset);
+#endif
 
     bool rtval = AddBookParam(*fi, enc,
                               title, contents, index, start, fsys.GetPath());

@@ -3,7 +3,7 @@
 // Purpose:     XML resource handler for bitmap buttons
 // Author:      Brian Gavin
 // Created:     2000/03/05
-// RCS-ID:      $Id: xh_bmpbt.h,v 1.6 2004/09/23 09:17:06 VS Exp $
+// RCS-ID:      $Id: xh_bmpbt.h,v 1.7 2005/01/07 21:27:18 VS Exp $
 // Copyright:   (c) 2000 Brian Gavin
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -11,7 +11,7 @@
 #ifndef _WX_XH_BMPBT_H_
 #define _WX_XH_BMPBT_H_
 
-#if defined(__GNUG__) && !defined(__APPLE__)
+#if defined(__GNUG__) && !defined(NO_GCC_PRAGMA)
 #pragma interface "xh_bmpbt.h"
 #endif
 

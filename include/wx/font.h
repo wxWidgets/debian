@@ -4,7 +4,7 @@
 // Author:      Vadim Zeitlin
 // Modified by:
 // Created:     20.09.99
-// RCS-ID:      $Id: font.h,v 1.48 2004/10/19 13:39:04 JS Exp $
+// RCS-ID:      $Id: font.h,v 1.50 2005/05/31 09:18:16 JS Exp $
 // Copyright:   (c) wxWidgets team
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -142,7 +142,7 @@ public:
         int family,                 // see wxFontFamily enum
         int style,                  // see wxFontStyle enum
         int weight,                 // see wxFontWeight enum
-        bool underlined = FALSE,    // not underlined by default
+        bool underlined = false,    // not underlined by default
         const wxString& face = wxEmptyString,              // facename
         wxFontEncoding encoding = wxFONTENCODING_DEFAULT); // ISO8859-X, ...
 
@@ -226,12 +226,12 @@ private:
     // the currently default encoding: by default, it's the default system
     // encoding, but may be changed by the application using
     // SetDefaultEncoding() to make all subsequent fonts created without
-    // specifing encoding parameter using this encoding
+    // specifying encoding parameter using this encoding
     static wxFontEncoding ms_encodingDefault;
 };
 
 // include the real class declaration
-#if defined(__PALMOS__)
+#if defined(__WXPALMOS__)
     #include "wx/palmos/font.h"
 #elif defined(__WXMSW__)
     #include "wx/msw/font.h"

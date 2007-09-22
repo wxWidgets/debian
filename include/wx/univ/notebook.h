@@ -4,7 +4,7 @@
 // Author:      Vadim Zeitlin
 // Modified by:
 // Created:     01.02.01
-// RCS-ID:      $Id: notebook.h,v 1.19 2004/08/10 13:08:34 ABX Exp $
+// RCS-ID:      $Id: notebook.h,v 1.20 2005/01/13 20:30:04 ABX Exp $
 // Copyright:   (c) 2001 SciTech Software, Inc. (www.scitechsoft.com)
 // Licence:     wxWindows licence
 ///////////////////////////////////////////////////////////////////////////////
@@ -46,7 +46,7 @@ public:
                const wxPoint& pos = wxDefaultPosition,
                const wxSize& size = wxDefaultSize,
                long style = 0,
-               const wxString& name = wxNOTEBOOK_NAME)
+               const wxString& name = wxNotebookNameStr)
     {
         Init();
 
@@ -59,7 +59,7 @@ public:
                 const wxPoint& pos = wxDefaultPosition,
                 const wxSize& size = wxDefaultSize,
                 long style = 0,
-                const wxString& name = wxNOTEBOOK_NAME);
+                const wxString& name = wxNotebookNameStr);
 
     // dtor
     virtual ~wxNotebook();

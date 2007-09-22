@@ -4,7 +4,7 @@
 // Author:      Vadim Zeitlin
 // Modified by:
 // Created:     07/07/03
-// RCS-ID:      $Id: afterstd.h,v 1.6 2004/05/23 20:50:19 JS Exp $
+// RCS-ID:      $Id: afterstd.h,v 1.9 2005/06/19 23:49:27 VZ Exp $
 // Copyright:   (c) 2003 Vadim Zeitlin <zeitlin@dptmaths.ens-cachan.fr>
 // Licence:     wxWindows licence
 ///////////////////////////////////////////////////////////////////////////////
@@ -13,13 +13,21 @@
     See the comments in beforestd.h.
  */
 
-#if defined(__WXMSW__) && defined(__MINGW32__)
+#if defined(__WXMSW__)
     #include "wx/msw/winundef.h"
 #endif
-// VC 7.x isn't as bad as VC6 and doesn't give these warnings
-#if defined(__VISUALC__) && __VISUALC__ <= 1200
+
+// undo what we did in wx/beforestd.h
+#if defined(__VISUALC__) && __VISUALC__ <= 1201
     // MSVC 5 does not have this
     #if _MSC_VER > 1100
+        // don't restore this one for VC6, it gives it in each try/catch which is a
+        // bit annoying to say the least
+        #if _MSC_VER >= 0x1300
+            // unreachable code
+            #pragma warning(default:4702)
+        #endif // VC++ >= 7
+
         #pragma warning(pop)
     #else
         // 'expression' : signed/unsigned mismatch

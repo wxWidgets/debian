@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     04/01/98
-// RCS-ID:      $Id: layout.cpp,v 1.29 2004/10/24 14:47:49 VZ Exp $
+// RCS-ID:      $Id: layout.cpp,v 1.30 2005/03/12 20:57:14 RD Exp $
 // Copyright:   (c) Julian Smart
 // Licence:       wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -46,6 +46,32 @@
 
     IMPLEMENT_DYNAMIC_CLASS(wxIndividualLayoutConstraint, wxObject)
     IMPLEMENT_DYNAMIC_CLASS(wxLayoutConstraints, wxObject)
+
+
+
+inline void wxGetAsIs(wxWindowBase* win, int* w, int* h)
+{
+#if 1
+    // The old way.  Works for me.
+    win->GetSize(w, h);
+#endif
+    
+#if 0
+    // Vadim's change.  Breaks wxPython's LayoutAnchors
+    win->GetBestSize(w, h);
+#endif
+
+#if 0
+    // Proposed compromise.  Doesn't work.
+    int sw, sh, bw, bh;
+    win->GetSize(&sw, &sh);
+    win->GetBestSize(&bw, &bh);
+    if (w)
+        *w = wxMax(sw, bw);
+    if (h)
+        *h = wxMax(sh, bh);
+#endif
+}
 
 
 wxIndividualLayoutConstraint::wxIndividualLayoutConstraint()
@@ -300,7 +326,7 @@ bool wxIndividualLayoutConstraint::SatisfyConstraint(wxLayoutConstraints *constr
                 {
                     int x, y;
                     int w, h;
-                    win->GetBestSize(&w, &h);
+                    wxGetAsIs(win, &w, &h);
                     win->GetPosition(&x, &y);
                     value = x + w;
                     done = true;
@@ -453,7 +479,7 @@ bool wxIndividualLayoutConstraint::SatisfyConstraint(wxLayoutConstraints *constr
                 {
                     int x, y;
                     int w, h;
-                    win->GetBestSize(&w, &h);
+                    wxGetAsIs(win, &w, &h);
                     win->GetPosition(&x, &y);
                     value = h + y;
                     done = true;
@@ -621,7 +647,7 @@ bool wxIndividualLayoutConstraint::SatisfyConstraint(wxLayoutConstraints *constr
                     if (win)
                     {
                         int h;
-                        win->GetBestSize(&value, &h);
+                        wxGetAsIs(win, &value, &h);
                         done = true;
                         return true;
                     }
@@ -679,7 +705,7 @@ bool wxIndividualLayoutConstraint::SatisfyConstraint(wxLayoutConstraints *constr
                     if (win)
                     {
                         int w;
-                        win->GetBestSize(&w, &value);
+                        wxGetAsIs(win, &w, &value);
                         done = true;
                         return true;
                     }

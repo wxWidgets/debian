@@ -2,7 +2,7 @@
 // Name:        mgl/timer.cpp
 // Purpose:     wxTimer implementation
 // Author:      Vaclav Slavik
-// Id:          $Id: timer.cpp,v 1.15 2004/06/17 16:22:36 ABX Exp $
+// Id:          $Id: timer.cpp,v 1.17 2005/05/21 17:11:16 JS Exp $
 // Copyright:   (c) Vaclav Slavik
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -142,29 +142,32 @@ void wxTimerScheduler::NotifyTimers()
         bool oneShot;
         volatile bool timerDeleted;
         wxTimerTick_t now = GetMillisecondsTime();
-        wxTimerDesc *desc;
 
-        while ( m_timers && m_timers->shotTime <= now )
+        for ( wxTimerDesc *desc = m_timers; desc; desc = desc->next )
         {
-            desc = m_timers;
-            oneShot = desc->timer->IsOneShot();
-            RemoveTimer(desc);
-
-            timerDeleted = false;
-            desc->deleteFlag = &timerDeleted;
-            desc->timer->Notify();
-
-            if ( !timerDeleted )
+            if ( desc->running && desc->shotTime <= now )
             {
-                wxLogTrace( wxT("timer"),
-                            wxT("notified timer %p sheduled for %")
-                            wxTimerTickFmtSpec,
-                            desc->timer,
-                            wxTimerTickPrintfArg(desc->shotTime) );
+                oneShot = desc->timer->IsOneShot();
+                RemoveTimer(desc);
 
-                desc->deleteFlag = NULL;
-                if ( !oneShot )
-                    QueueTimer(desc, now + desc->timer->GetInterval());
+                timerDeleted = false;
+                desc->deleteFlag = &timerDeleted;
+                desc->timer->Notify();
+
+                if ( !timerDeleted )
+                {
+                    wxLogTrace( wxT("timer"),
+                                wxT("notified timer %p sheduled for %")
+                                wxTimerTickFmtSpec,
+                                desc->timer,
+                                wxTimerTickPrintfArg(desc->shotTime) );
+
+                    desc->deleteFlag = NULL;
+                    if ( !oneShot )
+                        QueueTimer(desc, now + desc->timer->GetInterval());
+                }
+                else
+                    desc = m_timers;
             }
         }
     }

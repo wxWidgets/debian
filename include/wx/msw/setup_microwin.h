@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     01/02/97
-// RCS-ID:      $Id: setup_microwin.h,v 1.24 2004/11/11 18:59:28 VZ Exp $
+// RCS-ID:      $Id: setup_microwin.h,v 1.26 2005/05/31 09:18:31 JS Exp $
 // Copyright:   (c) Julian Smart
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -808,10 +808,6 @@
 // Set to 1 to use font metric files in GetTextExtent
 #define wxUSE_AFM_FOR_POSTSCRIPT 0
 
-// Set to 0 to disable PostScript print/preview architecture code under Windows
-// (just use Windows printing).
-#define wxUSE_POSTSCRIPT_ARCHITECTURE_IN_MSW 0
-
 // ----------------------------------------------------------------------------
 // database classes
 // ----------------------------------------------------------------------------
@@ -829,7 +825,7 @@
 #define wxODBC_FWD_ONLY_CURSORS	 1
 
 // Default is 0.  Set to 1 to use the deprecated classes, enum types, function,
-// member variables.  With a setting of 1, full backward compatability with the
+// member variables.  With a setting of 1, full backward compatibility with the
 // 2.0.x release is possible. It is STRONGLY recommended that this be set to 0,
 // as future development will be done only on the non-deprecated
 // functions/classes/member variables/etc.
@@ -932,6 +928,10 @@
 #else
 #define wxUSE_CTL3D                      1
 #endif
+
+// Set to 0 to disable PostScript print/preview architecture code under Windows
+// (just use Windows printing).
+#define wxUSE_POSTSCRIPT_ARCHITECTURE_IN_MSW 0
 
 // Define as 1 to use Microsoft's ItsyBitsy small title bar library, for
 // wxMiniFrame. This setting is only used for Win3.1; Win9x and NT use native

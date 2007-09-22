@@ -4,7 +4,7 @@
 // Author:      Vadim Zeitlin
 // Modified by:
 // Created:     25.08.00
-// RCS-ID:      $Id: statbmp.h,v 1.20 2004/09/22 14:38:29 ABX Exp $
+// RCS-ID:      $Id: statbmp.h,v 1.22 2005/04/17 15:34:05 JS Exp $
 // Copyright:   (c) 2000 Vadim Zeitlin
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -26,7 +26,7 @@
 class WXDLLEXPORT wxIcon;
 class WXDLLEXPORT wxBitmap;
 
-WXDLLEXPORT_DATA(extern const wxChar*) wxStaticBitmapNameStr;
+extern WXDLLEXPORT_DATA(const wxChar*) wxStaticBitmapNameStr;
 
 // a control showing an icon or a bitmap
 class WXDLLEXPORT wxStaticBitmapBase : public wxControl
@@ -42,6 +42,7 @@ public:
 
     // overriden base class virtuals
     virtual bool AcceptsFocus() const { return false; }
+    virtual bool HasTransparentBackground() { return true; }
 
 protected:
     virtual wxSize DoGetBestSize() const;

@@ -3,7 +3,7 @@
 // Purpose:     CHM (Help) support for wxHTML
 // Author:      Markus Sinner
 // Copyright:   (c) 2003 Herd Software Development
-// CVS-ID:      $Id: chm.cpp,v 1.6 2004/11/10 21:02:37 VZ Exp $
+// CVS-ID:      $Id: chm.cpp,v 1.9 2005/05/31 09:20:12 JS Exp $
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
 
@@ -70,7 +70,7 @@ public:
     /// check archive for a file
     bool Contains(const wxString& pattern);
 
-    /// get a string for the last error occured
+    /// get a string for the last error which occurred
     const wxString GetLastErrorMessage();
 
     /// Last Error
@@ -595,7 +595,9 @@ wxChmInputStream::CreateHHPStream()
         {
             // Read #SYSTEM-Code and length
             i->Read(&code, 2);
+            code = wxUINT16_SWAP_ON_BE( code ) ;
             i->Read(&len, 2);
+            len = wxUINT16_SWAP_ON_BE( len ) ;
             // data
             buf = malloc(len);
             i->Read(buf, len);
@@ -625,7 +627,19 @@ wxChmInputStream::CreateHHPStream()
                     out->Write( (const void *) tmp, strlen(tmp));
                     tmp = NULL;
                     break;
-                case 4: // STRUCT
+                case 4: // STRUCT SYSTEM INFO
+                    tmp = NULL ;
+                    if ( len >= 28 )
+                    {
+                        char *structptr = (char*) buf ;
+                        // LCID at position 0
+                        wxUint32 dummy = *((wxUint32 *)(structptr+0)) ;
+                        wxUint32 lcid = wxUINT32_SWAP_ON_BE( dummy ) ;
+                        wxString msg ;
+                        msg.Printf(_T("Language=0x%X\r\n"),lcid) ;
+                        out->Write(msg.c_str() , msg.Length() ) ;
+                    }
+                    break ;
                 default:
                     tmp=NULL;
             }
@@ -659,7 +673,7 @@ wxChmInputStream::CreateHHPStream()
             tmp = "Index File=*.hhk\r\n";
             out->Write((const void *) tmp, strlen(tmp));
         }
-
+        
         // Now copy the Data from the memory
         out->SeekO(0, wxFromEnd);
         m_size = out->TellO();
@@ -735,9 +749,9 @@ public:
     virtual bool CanOpen(const wxString& location);
     /// Open a file
     virtual wxFSFile* OpenFile(wxFileSystem& fs, const wxString& location);
-    /// Find first occurence of spec
+    /// Find first occurrence of spec
     virtual wxString FindFirst(const wxString& spec, int flags = 0);
-    /// Find next occurence of spec
+    /// Find next occurrence of spec
     virtual wxString FindNext();
 
 private:

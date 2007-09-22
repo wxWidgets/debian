@@ -4,7 +4,7 @@
 // Author:      Vadim Zeitlin
 // Modified by:
 // Created:     26.10.99
-// RCS-ID:      $Id: menu.h,v 1.41 2004/10/19 13:39:04 JS Exp $
+// RCS-ID:      $Id: menu.h,v 1.43 2005/01/24 11:14:09 ABX Exp $
 // Copyright:   (c) wxWidgets team
 // Licence:     wxWindows licence
 ///////////////////////////////////////////////////////////////////////////////
@@ -450,6 +450,7 @@ public:
     void Check(int itemid, bool check);
     bool IsChecked(int itemid) const;
     bool IsEnabled(int itemid) const;
+    virtual bool IsEnabled() const { return wxWindow::IsEnabled(); }
 
     void SetLabel(int itemid, const wxString &label);
     wxString GetLabel(int itemid) const;
@@ -498,7 +499,7 @@ protected:
 #else // !wxUSE_BASE_CLASSES_ONLY
 #if defined(__WXUNIVERSAL__)
     #include "wx/univ/menu.h"
-#elif defined(__PALMOS__)
+#elif defined(__WXPALMOS__)
     #include "wx/palmos/menu.h"
 #elif defined(__WXMSW__)
     #include "wx/msw/menu.h"

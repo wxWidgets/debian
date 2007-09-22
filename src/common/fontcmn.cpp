@@ -4,7 +4,7 @@
 // Author:      Vadim Zeitlin
 // Modified by:
 // Created:     20.09.99
-// RCS-ID:      $Id: fontcmn.cpp,v 1.46 2004/10/19 13:38:14 JS Exp $
+// RCS-ID:      $Id: fontcmn.cpp,v 1.50 2005/04/15 16:48:21 ABX Exp $
 // Copyright:   (c) wxWidgets team
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -29,6 +29,7 @@
 #endif
 
 #ifndef WX_PRECOMP
+    #include "wx/dc.h"
     #include "wx/font.h"
     #include "wx/intl.h"
     #include "wx/dcscreen.h"
@@ -36,7 +37,7 @@
 
 #include "wx/gdicmn.h"
 
-#if defined(__WXMSW__) && !defined(__PALMOS__)
+#if defined(__WXMSW__)
   #include  "wx/msw/private.h"  // includes windows.h for LOGFONT
   #include  "wx/msw/winundef.h"
 #endif
@@ -602,7 +603,7 @@ wxString wxNativeFontInfo::ToUserString() const
     wxFontEncoding enc = GetEncoding();
     if ( enc != wxFONTENCODING_DEFAULT && enc != wxFONTENCODING_SYSTEM )
     {
-        desc << _T(' ') << wxFontMapper::Get()->GetEncodingName(enc);
+        desc << _T(' ') << wxFontMapper::GetEncodingName(enc);
     }
 #endif // wxUSE_FONTMAP
 

@@ -3,7 +3,7 @@
 // Purpose:     class for opening files - virtual file system
 // Author:      Vaclav Slavik
 // Copyright:   (c) 1999 Vaclav Slavik
-// RCS-ID:      $Id: filesys.h,v 1.28 2004/09/14 12:08:17 ABX Exp $
+// RCS-ID:      $Id: filesys.h,v 1.30 2005/04/08 14:33:56 MW Exp $
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
 
@@ -14,7 +14,7 @@
 #pragma interface "filesys.h"
 #endif
 
-#include "wx/setup.h"
+#include "wx/defs.h"
 
 #if !wxUSE_STREAMS
 #error You cannot compile virtual file systems without wxUSE_STREAMS
@@ -186,7 +186,7 @@ public:
     wxString FindNext();
 
     // Adds FS handler.
-    // In fact, this class is only front-end to the FS hanlers :-)
+    // In fact, this class is only front-end to the FS handlers :-)
     static void AddHandler(wxFileSystemHandler *handler);
 
     // remove all items from the m_Handlers list

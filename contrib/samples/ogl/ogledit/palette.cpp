@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     12/07/98
-// RCS-ID:      $Id: palette.cpp,v 1.8 2004/07/20 10:08:37 ABX Exp $
+// RCS-ID:      $Id: palette.cpp,v 1.9 2005/05/17 14:06:04 JS Exp $
 // Copyright:   (c) Julian Smart
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -80,21 +80,12 @@ void EditorToolPalette::SetSize(int x, int y, int width, int height, int sizeFla
 
 EditorToolPalette *MyApp::CreatePalette(wxFrame *parent)
 {
-  // Load palette bitmaps. MSW-specific bitmaps no
-  // longer needed.
-#if 0
-  wxBitmap PaletteTool1(_T("TOOL1"));
-  wxBitmap PaletteTool2(_T("TOOL2"));
-  wxBitmap PaletteTool3(_T("TOOL3"));
-  wxBitmap PaletteTool4(_T("TOOL4"));
-  wxBitmap PaletteArrow(_T("ARROWTOOL"));
-#else
+  // Load palette bitmaps.
   wxBitmap PaletteTool1(tool1_xpm);
   wxBitmap PaletteTool2(tool2_xpm);
   wxBitmap PaletteTool3(tool3_xpm);
   wxBitmap PaletteTool4(tool4_xpm);
   wxBitmap PaletteArrow(arrow_xpm);
-#endif
 
   EditorToolPalette *palette = new EditorToolPalette(parent, wxPoint(0, 0), wxDefaultSize,
       wxTB_VERTICAL);

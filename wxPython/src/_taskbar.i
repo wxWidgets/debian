@@ -5,7 +5,7 @@
 // Author:      Robin Dunn
 //
 // Created:     2-June-1998
-// RCS-ID:      $Id: _taskbar.i,v 1.9 2004/09/29 21:18:28 RD Exp $
+// RCS-ID:      $Id: _taskbar.i,v 1.11 2005/03/09 22:28:40 RD Exp $
 // Copyright:   (c) 2003 by Total Control Software
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -69,7 +69,7 @@ public:
     wxMenu* CreatePopupMenu() {
         wxMenu *rval = NULL;
         bool found;
-        bool blocked = wxPyBeginBlockThreads();
+        wxPyBlock_t blocked = wxPyBeginBlockThreads();
         if ((found = wxPyCBH_findCallback(m_myInst, "CreatePopupMenu"))) {
             PyObject* ro;
             wxMenu* ptr;
@@ -97,7 +97,8 @@ IMPLEMENT_ABSTRACT_CLASS(wxPyTaskBarIcon, wxTaskBarIcon);
 
 MustHaveApp(wxPyTaskBarIcon);
 
-%name(TaskBarIcon)class wxPyTaskBarIcon : public wxEvtHandler
+%rename(TaskBarIcon) wxPyTaskBarIcon;
+class wxPyTaskBarIcon : public wxEvtHandler
 {
 public:
     %pythonAppend wxPyTaskBarIcon   "self._setCallbackInfo(self, TaskBarIcon, 0)"

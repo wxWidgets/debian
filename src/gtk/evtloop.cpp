@@ -4,7 +4,7 @@
 // Author:      Vadim Zeitlin
 // Modified by:
 // Created:     10.07.01
-// RCS-ID:      $Id: evtloop.cpp,v 1.10 2004/11/04 20:04:59 VS Exp $
+// RCS-ID:      $Id: evtloop.cpp,v 1.11 2004/11/12 21:44:26 VS Exp $
 // Copyright:   (c) 2001 Vadim Zeitlin <zeitlin@dptmaths.ens-cachan.fr>
 // License:     wxWindows licence
 ///////////////////////////////////////////////////////////////////////////////
@@ -101,16 +101,13 @@ void wxEventLoop::Exit(int rc)
 // wxEventLoop message processing dispatching
 // ----------------------------------------------------------------------------
 
-extern bool g_isIdle;
-
 bool wxEventLoop::Pending() const
 {
-    if (wxTheApp && !g_isIdle)
+    if (wxTheApp)
     {
         // We need to remove idle callbacks or gtk_events_pending will
         // never return false.
         wxTheApp->RemoveIdleTag();
-        g_isIdle = TRUE;
     }
 
     return gtk_events_pending();

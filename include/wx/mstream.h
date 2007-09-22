@@ -4,7 +4,7 @@
 // Author:      Guilhem Lavaux
 // Modified by:
 // Created:     11/07/98
-// RCS-ID:      $Id: mstream.h,v 1.29 2004/11/10 21:10:15 VZ Exp $
+// RCS-ID:      $Id: mstream.h,v 1.32 2005/04/02 22:36:52 VZ Exp $
 // Copyright:   (c) Guilhem Lavaux
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -12,17 +12,23 @@
 #ifndef _WX_WXMMSTREAM_H__
 #define _WX_WXMMSTREAM_H__
 
-#include "wx/stream.h"
+#include "wx/defs.h"
 
 #if wxUSE_STREAMS
+
+#include "wx/stream.h"
+
+class WXDLLIMPEXP_BASE wxMemoryOutputStream;
 
 class WXDLLIMPEXP_BASE wxMemoryInputStream : public wxInputStream
 {
 public:
     wxMemoryInputStream(const void *data, size_t length);
+    wxMemoryInputStream(const wxMemoryOutputStream& stream);
     virtual ~wxMemoryInputStream();
     virtual wxFileOffset GetLength() const { return m_length; }
     virtual bool Eof() const;
+    virtual bool IsSeekable() const { return true; }
 
     char Peek();
 
@@ -51,6 +57,7 @@ public:
     wxMemoryOutputStream(void *data = NULL, size_t length = 0);
     virtual ~wxMemoryOutputStream();
     virtual wxFileOffset GetLength() const { return m_o_streambuf->GetLastAccess(); }
+    virtual bool IsSeekable() const { return true; }
 
     size_t CopyTo(void *buffer, size_t len) const;
 

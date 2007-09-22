@@ -3,7 +3,8 @@
 // Purpose:
 // Date: 08/11/1999
 // Author: Guilhem Lavaux <lavaux@easynet.fr> (C) 1999
-// CVSID: $Id: sndwin.h,v 1.4 2003/09/11 09:55:17 JS Exp $
+// CVSID: $Id: sndwin.h,v 1.5 2004/11/22 20:05:26 JS Exp $
+// License:    wxWindows license
 // --------------------------------------------------------------------------
 #ifndef _WX_SNDWIN_H
 #define _WX_SNDWIN_H

@@ -4,7 +4,7 @@
 // Author:      Stefan Neis
 // Modified by:
 // Created:     20/02/1999
-// RCS-ID:      $Id: gridsel.cpp,v 1.20 2004/06/17 16:22:34 ABX Exp $
+// RCS-ID:      $Id: gridsel.cpp,v 1.22 2005/06/06 16:46:50 ABX Exp $
 // Copyright:   (c) Stefan Neis (Stefan.Neis@t-online.de)
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -443,14 +443,17 @@ void wxGridSelection::SelectBlock( int topRow, int leftCol,
                                coords2.GetRow(), coords2.GetCol(),
                                topRow, leftCol, bottomRow, rightCol ) )
         {
-          case 1:
-            return;
-          case -1:
-            m_blockSelectionTopLeft.RemoveAt(n);
-            m_blockSelectionBottomRight.RemoveAt(n);
-            n--; count--;
-          default:
-            ;
+            case 1:
+                return;
+
+            case -1:
+                m_blockSelectionTopLeft.RemoveAt(n);
+                m_blockSelectionBottomRight.RemoveAt(n);
+                n--; count--;
+                break;
+
+            default:
+                break;
         }
     }
 
@@ -465,13 +468,16 @@ void wxGridSelection::SelectBlock( int topRow, int leftCol,
                                    m_rowSelection[n], m_grid->GetNumberCols()-1,
                                    topRow, leftCol, bottomRow, rightCol ) )
             {
-              case 1:
-                return;
-              case -1:
-                m_rowSelection.RemoveAt(n);
-                n--; count--;
-              default:
-                ;
+                case 1:
+                    return;
+
+                case -1:
+                    m_rowSelection.RemoveAt(n);
+                    n--; count--;
+                    break;
+
+                default:
+                    break;
             }
         }
     }
@@ -484,13 +490,16 @@ void wxGridSelection::SelectBlock( int topRow, int leftCol,
                                    m_grid->GetNumberRows()-1, m_colSelection[n],
                                    topRow, leftCol, bottomRow, rightCol ) )
             {
-              case 1:
-                return;
-              case -1:
-                m_colSelection.RemoveAt(n);
-                n--; count--;
-              default:
-                ;
+                case 1:
+                    return;
+
+                case -1:
+                    m_colSelection.RemoveAt(n);
+                    n--; count--;
+                    break;
+
+                default:
+                    break;
             }
         }
     }
@@ -807,6 +816,9 @@ void wxGridSelection::ClearSelection()
             {
                 r = m_grid->BlockToDeviceRect( coords1, coords1 );
                 ((wxWindow *)m_grid->m_gridWin)->Refresh( false, &r );
+#ifdef __WXMAC__
+                ((wxWindow *)m_grid->m_gridWin)->Update();
+#endif
             }
         }
     }
@@ -823,6 +835,9 @@ void wxGridSelection::ClearSelection()
         {
             r = m_grid->BlockToDeviceRect( coords1, coords2 );
             ((wxWindow *)m_grid->m_gridWin)->Refresh( false, &r );
+#ifdef __WXMAC__
+            ((wxWindow *)m_grid->m_gridWin)->Update();
+#endif
         }
     }
 
@@ -839,6 +854,9 @@ void wxGridSelection::ClearSelection()
                 r = m_grid->BlockToDeviceRect( wxGridCellCoords( row, 0 ),
                                                wxGridCellCoords( row, m_grid->GetNumberCols() - 1 ) );
                 ((wxWindow *)m_grid->m_gridWin)->Refresh( false, &r );
+#ifdef __WXMAC__
+                ((wxWindow *)m_grid->m_gridWin)->Update();
+#endif
             }
         }
     }
@@ -856,6 +874,9 @@ void wxGridSelection::ClearSelection()
                 r = m_grid->BlockToDeviceRect( wxGridCellCoords( 0, col ),
                                                wxGridCellCoords( m_grid->GetNumberRows() - 1, col ) );
                 ((wxWindow *)m_grid->m_gridWin)->Refresh( false, &r );
+#ifdef __WXMAC__
+                ((wxWindow *)m_grid->m_gridWin)->Update();
+#endif
             }
         }
     }

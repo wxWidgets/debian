@@ -3,12 +3,12 @@
 // Purpose:     XRC resource for wxBitmap and wxIcon
 // Author:      Vaclav Slavik
 // Created:     2000/09/09
-// RCS-ID:      $Id: xh_bmp.cpp,v 1.8 2004/09/23 09:18:10 VS Exp $
+// RCS-ID:      $Id: xh_bmp.cpp,v 1.10 2005/02/10 17:25:11 ABX Exp $
 // Copyright:   (c) 2000 Vaclav Slavik
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
 
-#ifdef __GNUG__
+#if defined(__GNUG__) && !defined(NO_GCC_PRAGMA)
 #pragma implementation "xh_bmp.h"
 #endif
 
@@ -33,7 +33,7 @@ wxBitmapXmlHandler::wxBitmapXmlHandler()
 
 wxObject *wxBitmapXmlHandler::DoCreateResource()
 {
-    return new wxBitmap(GetBitmap(wxT("")));
+    return new wxBitmap(GetBitmap(wxEmptyString));
 }
 
 bool wxBitmapXmlHandler::CanHandle(wxXmlNode *node)
@@ -50,7 +50,7 @@ wxIconXmlHandler::wxIconXmlHandler()
 
 wxObject *wxIconXmlHandler::DoCreateResource()
 {
-    return new wxIcon(GetIcon(wxT("")));
+    return new wxIcon(GetIcon(wxEmptyString));
 }
 
 bool wxIconXmlHandler::CanHandle(wxXmlNode *node)

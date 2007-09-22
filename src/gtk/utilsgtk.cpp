@@ -2,7 +2,7 @@
 // Name:        src/gtk/utilsgtk.cpp
 // Purpose:
 // Author:      Robert Roebling
-// Id:          $Id: utilsgtk.cpp,v 1.62 2004/06/27 13:42:17 VS Exp $
+// Id:          $Id: utilsgtk.cpp,v 1.63 2005/03/21 23:42:20 VZ Exp $
 // Copyright:   (c) 1998 Robert Roebling
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -194,7 +194,8 @@ wxWindow* wxFindWindowAtPoint(const wxPoint& pt)
 // subprocess routines
 // ----------------------------------------------------------------------------
 
-extern "C"
+extern "C" {
+static
 void GTK_EndProcessDetector(gpointer data, gint source,
                             GdkInputCondition WXUNUSED(condition) )
 {
@@ -224,6 +225,7 @@ void GTK_EndProcessDetector(gpointer data, gint source,
    gdk_input_remove(proc_data->tag);
 
    wxHandleProcessTermination(proc_data);
+}
 }
 
 int wxAddProcessCallback(wxEndProcessData *proc_data, int fd)

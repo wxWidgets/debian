@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     13.07.99
-// RCS-ID:      $Id: textcmn.cpp,v 1.40 2004/10/28 11:19:30 VS Exp $
+// RCS-ID:      $Id: textcmn.cpp,v 1.42 2005/04/13 17:51:16 ABX Exp $
 // Copyright:   (c) wxWidgets team
 // Licence:     wxWindows licence
 ///////////////////////////////////////////////////////////////////////////////
@@ -220,7 +220,7 @@ bool wxTextCtrlBase::LoadFile(const wxString& filename)
 
 bool wxTextCtrlBase::SaveFile(const wxString& filename)
 {
-    wxString filenameToUse = filename.IsEmpty() ? m_filename : filename;
+    wxString filenameToUse = filename.empty() ? m_filename : filename;
     if ( filenameToUse.empty() )
     {
         // what kind of message to give? is it an error or a program bug?
@@ -299,7 +299,7 @@ wxTextCtrl& wxTextCtrlBase::operator<<(const wxChar c)
 // streambuf methods implementation
 // ----------------------------------------------------------------------------
 
-#ifndef NO_TEXT_WINDOW_STREAM
+#if wxHAS_TEXT_WINDOW_STREAM
 
 int wxTextCtrlBase::overflow(int c)
 {
@@ -309,7 +309,7 @@ int wxTextCtrlBase::overflow(int c)
     return 0;
 }
 
-#endif // NO_TEXT_WINDOW_STREAM
+#endif // wxHAS_TEXT_WINDOW_STREAM
 
 // ----------------------------------------------------------------------------
 // clipboard stuff
@@ -394,9 +394,8 @@ bool wxTextCtrlBase::EmulateKeyPress(const wxKeyEvent& event)
         case WXK_NUMPAD_DELETE:
             // delete the character at cursor
             {
-                const long pos = GetInsertionPoint(),
-                           last = GetLastPosition();
-                if ( pos < last )
+                const long pos = GetInsertionPoint();
+                if ( pos < GetLastPosition() )
                     Remove(pos, pos + 1);
             }
             break;

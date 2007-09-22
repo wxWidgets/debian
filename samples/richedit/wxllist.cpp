@@ -3,7 +3,7 @@
  *                                                                  *
  * (C) 1998-2000 by Karsten Ballüder (Ballueder@gmx.net)            *
  *                                                                  *
- * $Id: wxllist.cpp,v 1.42 2004/10/22 19:06:02 KH Exp $
+ * $Id: wxllist.cpp,v 1.43 2005/04/16 19:19:22 JS Exp $
  *******************************************************************/
 
 /*
@@ -3303,10 +3303,12 @@ void wxLayoutPrintout::GetPageInfo(int *minPage, int *maxPage, int *selPageFrom,
    /* We allocate a temporary wxDC for printing, so that we can
       determine the correct paper size and scaling. We don't actually
       print anything on it. */
-#if defined(__WXMSW__)
+#if defined(__WXMSW__) || defined(__WXMAC__)
    wxPrinterDC *psdc = new wxPrinterDC(wxEmptyString,wxEmptyString,_T(WXLLIST_TEMPFILE),false);
 #else
-   wxPostScriptDC *psdc = new wxPostScriptDC(WXLLIST_TEMPFILE,false);
+   wxPrintData data;
+   data.SetFilename(WXLLIST_TEMPFILE);
+   wxPostScriptDC *psdc = new wxPostScriptDC(data);
 #endif
 
    psdc->StartDoc(m_title);

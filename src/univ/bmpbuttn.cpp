@@ -4,7 +4,7 @@
 // Author:      Vadim Zeitlin
 // Modified by:
 // Created:     25.08.00
-// RCS-ID:      $Id: bmpbuttn.cpp,v 1.13 2004/08/10 13:08:39 ABX Exp $
+// RCS-ID:      $Id: bmpbuttn.cpp,v 1.14 2005/02/10 17:25:07 ABX Exp $
 // Copyright:   (c) 2000 SciTech Software, Inc. (www.scitechsoft.com)
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -64,7 +64,7 @@ bool wxBitmapButton::Create(wxWindow *parent,
     // we add wxBU_EXACTFIT because the bitmap buttons are not the standard
     // ones and so shouldn't be forced to be of the standard size which is
     // typically too big for them
-    if ( !wxButton::Create(parent, id, bitmap, _T(""),
+    if ( !wxButton::Create(parent, id, bitmap, wxEmptyString,
                            pos, size, style | wxBU_EXACTFIT, validator, name) )
         return false;
 

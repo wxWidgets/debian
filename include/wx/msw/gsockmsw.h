@@ -1,8 +1,10 @@
 /* -------------------------------------------------------------------------
- * Project: GSocket (Generic Socket) for WX
- * Name:    gsockmsw.h
- * Purpose: GSocket MSW header
- * CVSID:   $Id: gsockmsw.h,v 1.22 2004/08/08 05:30:26 DE Exp $
+ * Project:     GSocket (Generic Socket) for WX
+ * Name:        gsockmsw.h
+ * Copyright:   (c) Guilhem Lavaux
+ * Licence:     wxWindows Licence
+ * Purpose:     GSocket MSW header
+ * CVSID:       $Id: gsockmsw.h,v 1.26 2005/05/04 18:53:02 JS Exp $
  * -------------------------------------------------------------------------
  */
 
@@ -22,6 +24,16 @@
 #endif
 
 #include "wx/msw/wrapwin.h"
+
+#if defined(__CYGWIN__)
+    //CYGWIN gives annoying warning about runtime stuff if we don't do this
+#   define USE_SYS_TYPES_FD_SET
+#   include <sys/types.h>
+#endif
+
+#if defined(__WXWINCE__) || defined(__CYGWIN__)
+#include <winsock.h>
+#endif
 
 class GSocketGUIFunctionsTableConcrete: public GSocketGUIFunctionsTable
 {

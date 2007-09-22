@@ -5,7 +5,7 @@
 // Author:      Robin Dunn
 //
 // Created:     18-June-1999
-// RCS-ID:      $Id: _mimetype.i,v 1.5 2004/09/23 20:23:15 RD Exp $
+// RCS-ID:      $Id: _mimetype.i,v 1.8 2005/05/31 09:29:15 JS Exp $
 // Copyright:   (c) 2003 by Total Control Software
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -48,11 +48,11 @@ public:
 
     // the array elements correspond to the parameters of the ctor above in
     // the same order
-    %name(FileTypeInfoSequence)wxFileTypeInfo(const wxArrayString& sArray);
+    %Rename(FileTypeInfoSequence,, wxFileTypeInfo(const wxArrayString& sArray));
 
     // invalid item - use this to terminate the array passed to
     // wxMimeTypesManager::AddFallbacks
-    %name(NullFileTypeInfo)wxFileTypeInfo();
+    %Rename(NullFileTypeInfo,, wxFileTypeInfo());
 
 
     // test if this object can be used
@@ -190,7 +190,7 @@ public:
                 iconIndex = loc.GetIndex();
 #endif
                 // Make a tuple and put the values in it
-                bool blocked = wxPyBeginBlockThreads();
+                wxPyBlock_t blocked = wxPyBeginBlockThreads();
                 PyObject* tuple = PyTuple_New(3);
                 PyTuple_SetItem(tuple, 0, wxPyConstructObject(new wxIcon(loc),
                                                               wxT("wxIcon"), true));
@@ -250,7 +250,7 @@ public:
             wxArrayString commands;
             if (self->GetAllCommands(&verbs, &commands,
                                      wxFileType::MessageParameters(filename, mimetype))) {
-                bool blocked = wxPyBeginBlockThreads();
+                wxPyBlock_t blocked = wxPyBeginBlockThreads();
                 PyObject* tuple = PyTuple_New(2);
                 PyTuple_SetItem(tuple, 0, wxArrayString2PyList_helper(verbs));
                 PyTuple_SetItem(tuple, 1, wxArrayString2PyList_helper(commands));
@@ -343,7 +343,7 @@ public:
     wxFileType *GetFileTypeFromMimeType(const wxString& mimeType);
 
     // other operations: return True if there were no errors or False if there
-    // were some unreckognized entries (the good entries are always read anyhow)
+    // were some unrecognized entries (the good entries are always read anyhow)
     //
 
     // read in additional file (the standard ones are read automatically)

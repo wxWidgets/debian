@@ -6,7 +6,7 @@
 # Author:       Pierre Hjälm (from C++ original by Julian Smart)
 #
 # Created:      2004-05-08
-# RCS-ID:       $Id: _lines.py,v 1.10 2004/10/22 15:24:55 RD Exp $
+# RCS-ID:       $Id: _lines.py,v 1.15 2005/05/19 00:13:41 RD Exp $
 # Copyright:    (c) 2004 Pierre Hjälm - 1998 Julian Smart
 # Licence:      wxWindows license
 #----------------------------------------------------------------------------
@@ -220,7 +220,6 @@ class LineShape(Shape):
 
     def __del__(self):
         if self._lineControlPoints:
-            self.ClearPointList(self._lineControlPoints)
             self._lineControlPoints = []
         for i in range(3):
             if self._labelObjects[i]:
@@ -289,8 +288,6 @@ class LineShape(Shape):
 
     def MakeLineControlPoints(self, n):
         """Make a given number of control points (minimum of two)."""
-        if self._lineControlPoints:
-            self.ClearPointList(self._lineControlPoints)
         self._lineControlPoints = []
         
         for _ in range(n):
@@ -301,19 +298,22 @@ class LineShape(Shape):
         # the middle points to something other than (-999, -999)
         self._initialised = False
         
-    def InsertLineControlPoint(self, dc = None):
-        """Insert a control point at an arbitrary position."""
+    def InsertLineControlPoint(self, dc = None, point = None):
+        """Insert a control point at an optional given position."""
         if dc:
             self.Erase(dc)
 
-        last_point = self._lineControlPoints[-1]
-        second_last_point = self._lineControlPoints[-2]
+        if point:
+            line_x, line_y = point
+        else:
+            last_point = self._lineControlPoints[-1]
+            second_last_point = self._lineControlPoints[-2]
 
-        line_x = (last_point[0] + second_last_point[0]) / 2.0
-        line_y = (last_point[1] + second_last_point[1]) / 2.0
+            line_x = (last_point[0] + second_last_point[0]) / 2.0
+            line_y = (last_point[1] + second_last_point[1]) / 2.0
 
         point = wx.RealPoint(line_x, line_y)
-        self._lineControlPoints.insert(len(self._lineControlPoints), point)
+        self._lineControlPoints.insert(len(self._lineControlPoints)-1, point)
 
     def DeleteLineControlPoint(self):
         """Delete an arbitary point on the line."""
@@ -1378,7 +1378,7 @@ class LineShape(Shape):
         """
         for arrow in self._arcArrows:
             if (position == -1 or position == arrow.GetArrowEnd()) and arrow.GetName() == name:
-                return arow
+                return arrow
 
         return None
 
@@ -1514,12 +1514,7 @@ class LineShape(Shape):
         labelShape._shapeRegion.SetSize(labelShape.GetWidth(), labelShape.GetHeight())
 
         # Find position in line's region list
-        i = 0
-        for region in self.GetRegions():
-            if labelShape._shapeRegion == region:
-                self.GetRegions().remove(region)
-            else:
-                i += 1
+        i = self._regions.index(labelShape._shapeRegion)
                 
         xx, yy = self.GetLabelPosition(i)
         # Set the region's offset, relative to the default position for

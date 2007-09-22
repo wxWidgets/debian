@@ -4,7 +4,7 @@
 // Author:      Vadim Zeitlin
 // Modified by:
 // Created:     26.07.99
-// RCS-ID:      $Id: choiccmn.cpp,v 1.17 2004/10/12 20:13:14 ABX Exp $
+// RCS-ID:      $Id: choiccmn.cpp,v 1.19 2005/02/13 16:29:23 VZ Exp $
 // Copyright:   (c) wxWidgets team
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -44,27 +44,12 @@ wxChoiceBase::~wxChoiceBase()
 }
 
 // ----------------------------------------------------------------------------
-// selection
-// ----------------------------------------------------------------------------
-
-bool wxChoiceBase::SetStringSelection(const wxString& s)
-{
-    int sel = FindString(s);
-    wxCHECK_MSG( sel != -1, false,
-                 wxT("invalid string in wxChoice::SetStringSelection") );
-
-    Select(sel);
-
-    return true;
-}
-
-// ----------------------------------------------------------------------------
 // misc
 // ----------------------------------------------------------------------------
 
 void wxChoiceBase::Command(wxCommandEvent& event)
 {
-    SetSelection(event.m_commandInt);
+    SetSelection(event.GetInt());
     (void)ProcessEvent(event);
 }
 

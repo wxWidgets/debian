@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     27/7/98
-// RCS-ID:      $Id: mainfrm.cpp,v 1.6 2004/06/09 16:42:29 ABX Exp $
+// RCS-ID:      $Id: mainfrm.cpp,v 1.7 2005/03/31 19:18:24 ABX Exp $
 // Copyright:   (c) Julian Smart
 // Licence:
 /////////////////////////////////////////////////////////////////////////////
@@ -80,9 +80,11 @@ void csFrame::OnHelp(wxCommandEvent& WXUNUSED(event))
 
 void csFrame::OnSettings(wxCommandEvent& WXUNUSED(event))
 {
+#if wxUSE_WX_RESOURCES
     csSettingsDialog* dialog = new csSettingsDialog(this);
     /* int ret = */ dialog->ShowModal();
     dialog->Destroy();
+#endif // wxUSE_WX_RESOURCES
 }
 
 void csFrame::OnQuit(wxCommandEvent& WXUNUSED(event))

@@ -17,7 +17,7 @@
 //                     databases operate the same in that respect
 //
 // Created:     9.96
-// RCS-ID:      $Id: db.h,v 1.85 2004/11/06 20:32:34 RN Exp $
+// RCS-ID:      $Id: db.h,v 1.97 2005/05/31 09:18:14 JS Exp $
 // Copyright:   (c) 1996 Remstar International, Inc.
 // Licence:     wxWindows licence
 ///////////////////////////////////////////////////////////////////////////////
@@ -26,18 +26,14 @@
 #define _WX_DB_H_
 
 
-// BJO 20000503: introduce new GetColumns members which are more database independant and
+// BJO 20000503: introduce new GetColumns members which are more database independent and
 //               return columns in the order they were created
 #define OLD_GETCOLUMNS 1
 #define EXPERIMENTAL_WXDB_FUNCTIONS 1
 
-#include "wx/version.h"
-
 #if defined(__GNUG__) && !defined(NO_GCC_PRAGMA)
     #pragma interface "db.h"
 #endif
-
-#include "wx/setup.h"
 
 #include "wx/defs.h"
 #include "wx/string.h"
@@ -65,6 +61,9 @@
     //
     #include "sql.h"
     #include "sqlext.h"
+    //#if wxUSE_UNICODE
+    //    #include <sqlucode.h>
+    //#endif
     #include "odbcinst.h"
 #else
     #if defined(__WINDOWS__) && ( defined(HAVE_W32API_H) || defined(__BORLANDC__) )
@@ -76,9 +75,20 @@
         // Use the ones from the library
         #include "wx/isql.h"
         #include "wx/isqlext.h"
+        // Not available in v2.x of iODBC
+        #ifndef __WXMSW__
+          #if wxUSE_UNICODE
+          typedef wxChar SQLTCHAR;
+          #else
+          typedef UCHAR SQLTCHAR;
+          #endif
+        #endif
     #else
         #include <sql.h>
         #include <sqlext.h>
+        //#if wxUSE_UNICODE
+        //    #include <sqlucode.h>
+        //#endif
     #endif
     }
 #endif
@@ -93,11 +103,6 @@ typedef float SFLOAT;
 typedef double SDOUBLE;
 typedef unsigned int UINT;
 #define ULONG UDWORD
-
-// Not available in iODBC
-#ifndef __WXMSW__
-typedef UCHAR SQLTCHAR;
-#endif
 
 #ifndef wxODBC_FWD_ONLY_CURSORS
 #define wxODBC_FWD_ONLY_CURSORS 1
@@ -123,8 +128,8 @@ enum enumDummy {enumDum1};
 
 const int wxDB_PATH_MAX                 = 254;
 
-WXDLLIMPEXP_DATA_ODBC(extern wxChar const *) SQL_LOG_FILENAME;
-WXDLLIMPEXP_DATA_ODBC(extern wxChar const *) SQL_CATALOG_FILENAME;
+extern WXDLLIMPEXP_DATA_ODBC(wxChar const *) SQL_LOG_FILENAME;
+extern WXDLLIMPEXP_DATA_ODBC(wxChar const *) SQL_CATALOG_FILENAME;
 
 // Database Globals
 const int DB_TYPE_NAME_LEN            = 40;
@@ -460,7 +465,19 @@ enum wxDBMS
     dbmsDB2,
     dbmsINTERBASE,
     dbmsPERVASIVE_SQL,
-    dbmsXBASE_SEQUITER
+    dbmsXBASE_SEQUITER,
+    dbmsFIREBIRD,
+    dbmsMAXDB,
+    dbmsFuture1,
+    dbmsFuture2,
+    dbmsFuture3,
+    dbmsFuture4,
+    dbmsFuture5,
+    dbmsFuture6,
+    dbmsFuture7,
+    dbmsFuture8,
+    dbmsFuture9,
+    dbmsFuture10
 };
 
 
@@ -472,8 +489,8 @@ enum wxDBMS
 // will overwrite the errors of the previously destroyed wxDb object in
 // this variable.
 
-WXDLLIMPEXP_DATA_ODBC(extern wxChar)
-    DBerrorList[DB_MAX_ERROR_HISTORY][DB_MAX_ERROR_MSG_LEN];
+extern WXDLLIMPEXP_DATA_ODBC(wxChar)
+    DBerrorList[DB_MAX_ERROR_HISTORY][DB_MAX_ERROR_MSG_LEN+1];
 
 
 class WXDLLIMPEXP_ODBC wxDb
@@ -498,6 +515,7 @@ private:
     bool             setConnectionOptions(void);
     void             logError(const wxString &errMsg, const wxString &SQLState);
     const wxChar    *convertUserID(const wxChar *userID, wxString &UserID);
+    bool             determineDataTypes(bool failOnDataTypeUnsupported);
     void             initialize();
     bool             open(bool failOnDataTypeUnsupported=true);
 
@@ -587,9 +605,15 @@ public:
     // ODBC Error Inf.
     SWORD  cbErrorMsg;
     int    DB_STATUS;
+#ifdef __VMS
+   // The DECC compiler chokes when in db.cpp the array is accessed outside
+   // its bounds. Maybe this change should also applied for other platforms.
+    wxChar errorList[DB_MAX_ERROR_HISTORY][DB_MAX_ERROR_MSG_LEN+1];
+#else
     wxChar errorList[DB_MAX_ERROR_HISTORY][DB_MAX_ERROR_MSG_LEN];
+#endif
     wxChar errorMsg[SQL_MAX_MESSAGE_LENGTH];
-    SDWORD nativeError;
+    SQLINTEGER nativeError;
     wxChar sqlState[20];
 
 #if wxODBC_BACKWARD_COMPATABILITY
@@ -612,6 +636,8 @@ public:
 
     // Data Source Name, User ID, Password and whether open should fail on data type not supported
     bool         Open(const wxString& inConnectStr, bool failOnDataTypeUnsupported=true);
+                    ///This version of Open will open the odbc source selection dialog. Cast a wxWindow::GetHandle() to SQLHWND to use.
+    bool         Open(const wxString& inConnectStr, SQLHWND parentWnd, bool failOnDataTypeUnsupported=true);
     bool         Open(const wxString &Dsn, const wxString &Uid, const wxString &AuthStr, bool failOnDataTypeUnsupported=true);
     bool         Open(wxDbConnectInf *dbConnectInf, bool failOnDataTypeUnsupported=true);
     bool         Open(wxDb *copyDb);  // pointer to a wxDb whose connection info should be copied rather than re-queried
@@ -763,7 +789,7 @@ wxDbGetDataSource(HENV henv, wxChar *Dsn, SWORD DsnMaxLength, wxChar *DsDesc,
 // Change this to 0 to remove use of all deprecated functions
 #if wxODBC_BACKWARD_COMPATABILITY
 //#################################################################################
-//############### DEPRECATED functions for backward compatability #################
+//############### DEPRECATED functions for backward compatibility #################
 //#################################################################################
 
 // Backward compability structures/classes.  This will eventually go away

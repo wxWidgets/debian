@@ -4,7 +4,7 @@
 // Author:      wxWidgets team
 // Modified by:
 // Created:     13.01.00
-// RCS-ID:      $Id: metafile.h,v 1.12 2004/10/19 13:39:05 JS Exp $
+// RCS-ID:      $Id: metafile.h,v 1.13 2004/12/20 12:43:49 ABX Exp $
 // Copyright:   (c) wxWidgets team
 // Licence:     wxWindows licence
 ///////////////////////////////////////////////////////////////////////////////
@@ -21,7 +21,7 @@
 
 #if defined(__WXMSW__)
     #if wxUSE_ENH_METAFILE
-        #if defined(__PALMOS__)
+        #if defined(__WXPALMOS__)
             #include "wx/palmos/enhmeta.h"
         #else
         #include "wx/msw/enhmeta.h"
@@ -38,7 +38,7 @@
             #define wxMETAFILE_IS_ENH
         #endif // wxUSE_WIN_METAFILES_ALWAYS
     #else // !wxUSE_ENH_METAFILE
-        #if defined(__PALMOS__)
+        #if defined(__WXPALMOS__)
             #include "wx/palmos/metafile.h"
         #else
         #include "wx/msw/metafile.h"

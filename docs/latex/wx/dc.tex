@@ -193,6 +193,15 @@ wxUSE\_DC\_CACHEING preprocessor symbol for portability.
 \end{comment}
 
 
+\membersection{wxDC::ComputeScaleAndOrigin}\label{wxdccomputescaleandorigin}
+
+\func{virtual void}{ComputeScaleAndOrigin}{\void}
+
+Performs all necessary computations for given platform and context type
+after each change of scale and origin parameters. Usually called automatically 
+internally after such changes.
+
+
 \membersection{wxDC::CrossHair}\label{wxdccrosshair}
 
 \func{void}{CrossHair}{\param{wxCoord}{ x}, \param{wxCoord}{ y}}
@@ -336,6 +345,24 @@ Draw an icon on the display (does nothing if the device context is PostScript).
 This can be the simplest way of drawing bitmaps on a window.
 
 
+\membersection{wxDC::DrawLabel}\label{wxdcdrawlabel}
+
+\func{virtual void}{DrawLabel}{\param{const wxString\&}{ text},
+                               \param{const wxBitmap\&}{ image},
+                               \param{const wxRect\&}{ rect},
+                               \param{int}{ alignment = wxALIGN\_LEFT | wxALIGN\_TOP},
+                               \param{int}{ indexAccel = -1},
+                               \param{wxRect *}{rectBounding = NULL}}
+
+\func{void}{DrawLabel}{\param{const wxString\&}{ text}, \param{const wxRect\&}{ rect},
+                       \param{int}{ alignment = wxALIGN\_LEFT | wxALIGN\_TOP},
+                       \param{int}{ indexAccel = -1}}
+
+Draw optional bitmap and the text into the given rectangle and aligns it as specified
+by alignment parameter; it also will emphasize the character with the given index if
+it is != -1 and return the bounding rectangle if required.
+
+
 \membersection{wxDC::DrawLine}\label{wxdcdrawline}
 
 \func{void}{DrawLine}{\param{wxCoord}{ x1}, \param{wxCoord}{ y1}, \param{wxCoord}{ x2}, \param{wxCoord}{ y2}}
@@ -477,12 +504,15 @@ the rectangle.
 
 \membersection{wxDC::DrawSpline}\label{wxdcdrawspline}
 
+\func{void}{DrawSpline}{\param{int }{n}, \param{wxPoint }{points[]}}
+
+Draws a spline between all given control points, using the current
+pen.
+
 \func{void}{DrawSpline}{\param{wxList *}{points}}
 
 Draws a spline between all given control points, using the current
-pen.  Doesn't delete the wxList and contents. The spline is drawn
-using a series of lines, using an algorithm taken from the X drawing
-program `XFIG'.
+pen.  Doesn't delete the wxList and contents.
 
 \func{void}{DrawSpline}{\param{wxCoord}{ x1}, \param{wxCoord}{ y1}, \param{wxCoord}{ x2}, \param{wxCoord}{ y2}, \param{wxCoord}{ x3}, \param{wxCoord}{ y3}}
 
@@ -646,25 +676,17 @@ Gets the current logical function (see \helpref{wxDC::SetLogicalFunction}{wxdcse
 Gets the {\it mapping mode} for the device context (see \helpref{wxDC::SetMapMode}{wxdcsetmapmode}).
 
 
-\membersection{wxDC::GetOptimization}\label{wxdcgetoptimization}
-
-\func{bool}{GetOptimization}{\void}
-
-Returns true if device context optimization is on.
-See \helpref{wxDC::SetOptimization}{wxsetoptimization} for details.
-
-
 \membersection{wxDC::GetPartialTextExtents}\label{wxdcgetpartialtextextents}
 
 \constfunc{bool}{GetPartialTextExtents}{\param{const wxString\&  }{text}, 
 \param{wxArrayInt\& }{widths}}
 
-Fills the {\it widths} array with the widths from the begining of 
-{\it text} to the coresponding character of {\it text}.  The generic
+Fills the {\it widths} array with the widths from the beginning of 
+{\it text} to the corresponding character of {\it text}.  The generic
 version simply builds a running total of the widths of each character
 using \helpref{GetTextExtent}{wxdcgettextextent}, however if the
 various platforms have a native API function that is faster or more
-accurate than the generic implementaiton then it should be used
+accurate than the generic implementation then it should be used
 instead. 
 
 \pythonnote{This method only takes the {\it text} parameter and
@@ -682,8 +704,10 @@ Gets the current pen (see \helpref{wxDC::SetPen}{wxdcsetpen}).
 
 \func{bool}{GetPixel}{\param{wxCoord}{ x}, \param{wxCoord}{ y}, \param{wxColour *}{colour}}
 
-Sets {\it colour} to the colour at the specified location.
+Gets in {\it colour} the colour at the specified location.
 Not available for wxPostScriptDC or wxMetafileDC.
+
+Note that setting a pixel can be done using \helpref{DrawPoint}{wxdcdrawpoint}.
 
 \pythonnote{For wxPython the wxColour value is returned and is not
 required as a parameter.}
@@ -885,8 +909,8 @@ doesn't contain anything.
                                 \param{bool}{ yBottomUp}}
 
 Sets the x and y axis orientation (i.e., the direction from lowest to
-highest values on the axis). The default orientation is the natural
-orientation, e.g. x axis from left to right and y axis from bottom up.
+highest values on the axis). The default orientation is 
+x axis from left to right and y axis from top down.
 
 \wxheading{Parameters}
 
@@ -1041,21 +1065,6 @@ The mapping mode can be one of the following:
 \end{twocollist}
 
 
-\membersection{wxDC::SetOptimization}\label{wxsetoptimization}
-
-\func{void}{SetOptimization}{\param{bool }{optimize}}
-
-If {\it optimize} is true (the default), this function sets optimization mode on.
-This currently means that under X, the device context will not try to set a pen or brush
-property if it is known to be set already. This approach can fall down
-if non-wxWidgets code is using the same device context or window, for example
-when the window is a panel on which the windowing system draws panel items.
-The wxWidgets device context 'memory' will now be out of step with reality.
-
-Setting optimization off, drawing, then setting it back on again, is a trick
-that must occasionally be employed.
-
-
 \membersection{wxDC::SetPalette}\label{wxdcsetpalette}
 
 \func{void}{SetPalette}{\param{const wxPalette\& }{palette}}
@@ -1111,7 +1120,7 @@ Sets the user scaling factor, useful for applications which require
 \func{bool}{StartDoc}{\param{const wxString\& }{message}}
 
 Starts a document (only relevant when outputting to a printer).
-Message is a message to show whilst printing.
+Message is a message to show while printing.
 
 
 \membersection{wxDC::StartPage}\label{wxdcstartpage}
@@ -1122,9 +1131,9 @@ Starts a document page (only relevant when outputting to a printer).
 
 \section{\class{wxDCClipper}}\label{wxdcclipper}
 
-This is a small helper class which sets the specified to its constructor
+This is a small helper class which sets the specified DC to its constructor
 clipping region and then automatically destroys it in its destructor. Using
-it ensures that unwanted clipping region is not left set on the DC.
+it ensures that an unwanted clipping region is not left set on the DC.
 
 \wxheading{Derived from}
 
@@ -1147,7 +1156,7 @@ No base class
 
 \func{}{wxDCClipper}{\param{wxDC\& }{dc}, \param{const wxRect\&}{ rect}}
 
-Constructor: sets the the clipping region for the given device context to the
+Constructor: sets the clipping region for the given device context to the
 specified rectangle.
 
 

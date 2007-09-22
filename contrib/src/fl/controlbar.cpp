@@ -4,7 +4,7 @@
 // Author:      Aleksandras Gluchovas
 // Modified by:
 // Created:     06/09/98
-// RCS-ID:      $Id: controlbar.cpp,v 1.23 2004/10/28 11:20:44 VS Exp $
+// RCS-ID:      $Id: controlbar.cpp,v 1.25 2005/06/14 19:57:01 MR Exp $
 // Copyright:   (c) Aleksandras Gluchovas
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -1558,11 +1558,11 @@ void wxFrameLayout::FirePluginEvent( cbPluginEvent& event )
     {
         bool isInputEvt = true;
 #if wxCHECK_VERSION(2,3,0)
-        if ( event.m_eventType != cbEVT_PL_LEFT_DOWN &&
-             event.m_eventType != cbEVT_PL_LEFT_UP &&
-             event.m_eventType != cbEVT_PL_RIGHT_DOWN &&
-             event.m_eventType != cbEVT_PL_RIGHT_UP &&
-             event.m_eventType != cbEVT_PL_MOTION )
+        if ( event.GetEventType() != cbEVT_PL_LEFT_DOWN &&
+             event.GetEventType() != cbEVT_PL_LEFT_UP &&
+             event.GetEventType() != cbEVT_PL_RIGHT_DOWN &&
+             event.GetEventType() != cbEVT_PL_RIGHT_UP &&
+             event.GetEventType() != cbEVT_PL_MOTION )
             isInputEvt = false;
 #else
         switch ( event.m_eventType )
@@ -3423,11 +3423,13 @@ void cbDockPane::DrawHorizHandle( wxDC& dc, int x, int y, int width  )
         dc.DrawLine( x,y, right, y );
     }
 
+    ++y;
     dc.SetPen( mpLayout->mDarkPen );
-    dc.DrawLine( x,y, right, ++y );
+    dc.DrawLine( x,y, right, y );
 
+    ++y;
     dc.SetPen( mpLayout->mBlackPen );
-    dc.DrawLine( x,y, right, ++y );
+    dc.DrawLine( x,y, right, y );
 }
 
 cbBarInfo* cbDockPane::GetBarInfoByWindow( wxWindow* pBarWnd )

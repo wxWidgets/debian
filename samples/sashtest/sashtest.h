@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     04/01/98
-// RCS-ID:      $Id: sashtest.h,v 1.4 2002/03/17 14:15:55 VZ Exp $
+// RCS-ID:      $Id: sashtest.h,v 1.5 2005/06/02 12:04:24 JS Exp $
 // Copyright:   (c) Julian Smart
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -63,11 +63,11 @@ class MyChild: public wxMDIChildFrame
 DECLARE_EVENT_TABLE()
 };
 
-#define SASHTEST_QUIT        1
+#define SASHTEST_QUIT        wxID_EXIT
 #define SASHTEST_NEW_WINDOW  2
 #define SASHTEST_REFRESH     3
 #define SASHTEST_CHILD_QUIT  4
-#define SASHTEST_ABOUT       5
+#define SASHTEST_ABOUT       wxID_ABOUT
 #define SASHTEST_TOGGLE_WINDOW 6
 
 #define ID_WINDOW_TOP       100

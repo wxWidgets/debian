@@ -4,7 +4,7 @@
 // Author:      Vadim Zeitlin
 // Modified by:
 // Created:     04/01/98
-// RCS-ID:      $Id: dnd.cpp,v 1.95 2004/10/06 20:31:54 ABX Exp $
+// RCS-ID:      $Id: dnd.cpp,v 1.98 2005/05/31 09:19:22 JS Exp $
 // Copyright:
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -36,7 +36,7 @@
 #endif // wxUSE_METAFILES
 
 #if defined(__WXGTK__) || defined(__WXX11__) || defined(__WXMOTIF__) || defined(__WXMAC__)
-    #include "mondrian.xpm"
+    #include "../sample.xpm"
 #if wxUSE_DRAG_AND_DROP
     #include "dnd_copy.xpm"
     #include "dnd_move.xpm"
@@ -935,7 +935,7 @@ DnDFrame::DnDFrame(wxFrame *frame, wxChar *title, int x, int y, int w, int h)
 
 {
     // frame icon and status bar
-    SetIcon(wxICON(mondrian));
+    SetIcon(wxICON(sample));
 
 #if wxUSE_STATUSBAR
     CreateStatusBar();
@@ -1011,19 +1011,20 @@ DnDFrame::DnDFrame(wxFrame *frame, wxChar *title, int x, int y, int w, int h)
 #endif // wxUSE_LOG
 #endif // wxUSE_DRAG_AND_DROP
 
-    wxBoxSizer *m_sizer_top = new wxBoxSizer( wxHORIZONTAL );
-    m_sizer_top->Add(m_ctrlFile, 1, wxEXPAND );
-    m_sizer_top->Add(m_ctrlText, 1, wxEXPAND );
+    wxBoxSizer *sizer_top = new wxBoxSizer( wxHORIZONTAL );
+    sizer_top->Add(m_ctrlFile, 1, wxEXPAND );
+    sizer_top->Add(m_ctrlText, 1, wxEXPAND );
 
-    wxBoxSizer *m_sizer = new wxBoxSizer( wxVERTICAL );
-    m_sizer->Add(m_sizer_top, 1, wxEXPAND );
+    wxBoxSizer *sizer = new wxBoxSizer( wxVERTICAL );
+    sizer->Add(sizer_top, 1, wxEXPAND );
 #if wxUSE_LOG
-    m_sizer->Add(m_ctrlLog, 1, wxEXPAND);
+    sizer->Add(m_ctrlLog, 2, wxEXPAND);
+    sizer->SetItemMinSize(m_ctrlLog, 450, 0);
 #endif // wxUSE_LOG
-    m_sizer->Add(0,50);
+    sizer->AddSpacer(50);
 
-    SetSizer( m_sizer );
-    m_sizer->SetSizeHints( this );
+    SetSizer(sizer);
+    sizer->SetSizeHints( this );
 
     // copy data by default but allow moving it as well
     m_moveByDefault = false;
@@ -1729,7 +1730,7 @@ void DnDShapeFrame::OnDrag(wxMouseEvent& event)
     {
         default:
         case wxDragError:
-            wxLogError(wxT("An error occured during drag and drop operation"));
+            wxLogError(wxT("An error occurred during drag and drop operation"));
             break;
 
         case wxDragNone:

@@ -7,7 +7,7 @@
 // Author:      Robin Dunn
 //
 // Created:     2-June-1998
-// RCS-ID:      $Id: _pywindows.i,v 1.9 2004/06/02 20:52:59 RD Exp $
+// RCS-ID:      $Id: _pywindows.i,v 1.15 2005/06/09 21:51:21 RD Exp $
 // Copyright:   (c) 2003 by Total Control Software
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -49,7 +49,6 @@
 
 //---------------------------------------------------------------------------
 
-
 %{ // C++ version of Python aware wxWindow
 class wxPyWindow : public wxWindow
 {
@@ -65,6 +64,16 @@ public:
 
     void SetBestSize(const wxSize& size) { wxWindow::SetBestSize(size); }
 
+    bool DoEraseBackground(wxDC* dc) {
+#ifdef __WXMSW__
+        return wxWindow::DoEraseBackground(dc->GetHDC());
+#else
+        dc->SetBackground(wxBrush(GetBackgroundColour()));
+        dc->Clear();
+        return true;
+#endif
+    }
+    
     DEC_PYCALLBACK_VOID_INT4(DoMoveWindow);
     DEC_PYCALLBACK_VOID_INT5(DoSetSize);
     DEC_PYCALLBACK_VOID_INTINT(DoSetClientSize);
@@ -90,8 +99,11 @@ public:
     DEC_PYCALLBACK_VOID_WXWINBASE(RemoveChild);
 
     DEC_PYCALLBACK_BOOL_const(ShouldInheritColours);
-    DEC_PYCALLBACK__COLOUR(ApplyParentThemeBackground);
     DEC_PYCALLBACK_VIZATTR_(GetDefaultAttributes);
+    
+    DEC_PYCALLBACK_BOOL_(HasTransparentBackground);
+
+    DEC_PYCALLBACK_VOID_(OnInternalIdle);
     
     PYPRIVATE;
 };
@@ -123,9 +135,11 @@ IMP_PYCALLBACK_VOID_WXWINBASE(wxPyWindow, wxWindow, AddChild);
 IMP_PYCALLBACK_VOID_WXWINBASE(wxPyWindow, wxWindow, RemoveChild);
 
 IMP_PYCALLBACK_BOOL_const(wxPyWindow, wxWindow, ShouldInheritColours);
-IMP_PYCALLBACK__COLOUR(wxPyWindow, wxWindow, ApplyParentThemeBackground);
 IMP_PYCALLBACK_VIZATTR_(wxPyWindow, wxWindow, GetDefaultAttributes);
- 
+
+IMP_PYCALLBACK_BOOL_(wxPyWindow, wxWindow, HasTransparentBackground);
+
+IMP_PYCALLBACK_VOID_(wxPyWindow, wxWindow, OnInternalIdle);
 %}
 
 // And now the one for SWIG to see
@@ -142,13 +156,13 @@ public:
                long style = 0,
                const wxString& name = wxPyPanelNameStr);
 
-    %name(PrePyWindow) wxPyWindow();
+    %RenameCtor(PrePyWindow, wxPyWindow());
     
     void _setCallbackInfo(PyObject* self, PyObject* _class);
 
-
     void SetBestSize(const wxSize& size);
-
+    bool DoEraseBackground(wxDC* dc);
+    
     void base_DoMoveWindow(int x, int y, int width, int height);
     void base_DoSetSize(int x, int y, int width, int height,
                         int sizeFlags = wxSIZE_AUTO);
@@ -181,8 +195,10 @@ public:
     void base_RemoveChild(wxWindow* child);
 
     bool base_ShouldInheritColours() const;
-    void base_ApplyParentThemeBackground(const wxColour& c);
     wxVisualAttributes base_GetDefaultAttributes();
+
+    void base_OnInternalIdle();
+
 };
 
 //---------------------------------------------------------------------------
@@ -208,6 +224,15 @@ public:
         : wxPanel(parent, id, pos, size, style, name) {}
 
     void SetBestSize(const wxSize& size) { wxPanel::SetBestSize(size); }
+    bool DoEraseBackground(wxDC* dc) {
+#ifdef __WXMSW__
+        return wxWindow::DoEraseBackground(dc->GetHDC());
+#else
+        dc->SetBackground(wxBrush(GetBackgroundColour()));
+        dc->Clear();
+        return true;
+#endif
+    }
     
 
     DEC_PYCALLBACK_VOID_INT4(DoMoveWindow);
@@ -235,9 +260,12 @@ public:
     DEC_PYCALLBACK_VOID_WXWINBASE(RemoveChild);
 
     DEC_PYCALLBACK_BOOL_const(ShouldInheritColours);
-    DEC_PYCALLBACK__COLOUR(ApplyParentThemeBackground);
     DEC_PYCALLBACK_VIZATTR_(GetDefaultAttributes);
     
+    DEC_PYCALLBACK_BOOL_(HasTransparentBackground);
+
+    DEC_PYCALLBACK_VOID_(OnInternalIdle);
+
     PYPRIVATE;
 };
 
@@ -268,10 +296,12 @@ IMP_PYCALLBACK_VOID_WXWINBASE(wxPyPanel, wxPanel, AddChild);
 IMP_PYCALLBACK_VOID_WXWINBASE(wxPyPanel, wxPanel, RemoveChild);
 
 IMP_PYCALLBACK_BOOL_const(wxPyPanel, wxPanel, ShouldInheritColours);
-IMP_PYCALLBACK__COLOUR(wxPyPanel, wxPanel, ApplyParentThemeBackground);
 IMP_PYCALLBACK_VIZATTR_(wxPyPanel, wxPanel, GetDefaultAttributes);
 
- %}
+IMP_PYCALLBACK_BOOL_(wxPyPanel, wxPanel, HasTransparentBackground);
+
+IMP_PYCALLBACK_VOID_(wxPyPanel, wxPanel, OnInternalIdle);
+%}
 
 // And now the one for SWIG to see
 MustHaveApp(wxPyPanel);
@@ -287,12 +317,13 @@ public:
                long style = 0,
                const wxString& name = wxPyPanelNameStr);
 
-    %name(PrePyPanel) wxPyPanel();
+    %RenameCtor(PrePyPanel,  wxPyPanel());
 
     void _setCallbackInfo(PyObject* self, PyObject* _class);
 
     void SetBestSize(const wxSize& size);
-
+    bool DoEraseBackground(wxDC* dc);
+    
     void base_DoMoveWindow(int x, int y, int width, int height);
     void base_DoSetSize(int x, int y, int width, int height,
                         int sizeFlags = wxSIZE_AUTO);
@@ -325,8 +356,10 @@ public:
     void base_RemoveChild(wxWindow* child);
 
     bool base_ShouldInheritColours() const ;
-    void base_ApplyParentThemeBackground(const wxColour& c);
     wxVisualAttributes base_GetDefaultAttributes();
+
+    void base_OnInternalIdle();
+
 };
 
 //---------------------------------------------------------------------------
@@ -346,6 +379,15 @@ public:
         : wxScrolledWindow(parent, id, pos, size, style, name) {}
 
     void SetBestSize(const wxSize& size) { wxScrolledWindow::SetBestSize(size); }
+    bool DoEraseBackground(wxDC* dc) {
+#ifdef __WXMSW__
+        return wxWindow::DoEraseBackground(dc->GetHDC());
+#else
+        dc->SetBackground(wxBrush(GetBackgroundColour()));
+        dc->Clear();
+        return true;
+#endif
+    }
 
     DEC_PYCALLBACK_VOID_INT4(DoMoveWindow);
     DEC_PYCALLBACK_VOID_INT5(DoSetSize);
@@ -372,9 +414,12 @@ public:
     DEC_PYCALLBACK_VOID_WXWINBASE(RemoveChild);
 
     DEC_PYCALLBACK_BOOL_const(ShouldInheritColours);
-    DEC_PYCALLBACK__COLOUR(ApplyParentThemeBackground);
     DEC_PYCALLBACK_VIZATTR_(GetDefaultAttributes);
     
+    DEC_PYCALLBACK_BOOL_(HasTransparentBackground);
+
+    DEC_PYCALLBACK_VOID_(OnInternalIdle);
+
     PYPRIVATE;
 };
 
@@ -405,9 +450,11 @@ IMP_PYCALLBACK_VOID_WXWINBASE(wxPyScrolledWindow, wxScrolledWindow, AddChild);
 IMP_PYCALLBACK_VOID_WXWINBASE(wxPyScrolledWindow, wxScrolledWindow, RemoveChild);
 
 IMP_PYCALLBACK_BOOL_const(wxPyScrolledWindow, wxScrolledWindow, ShouldInheritColours);
-IMP_PYCALLBACK__COLOUR(wxPyScrolledWindow, wxScrolledWindow, ApplyParentThemeBackground);
 IMP_PYCALLBACK_VIZATTR_(wxPyScrolledWindow, wxScrolledWindow, GetDefaultAttributes);
 
+IMP_PYCALLBACK_BOOL_(wxPyScrolledWindow, wxScrolledWindow, HasTransparentBackground);
+
+IMP_PYCALLBACK_VOID_(wxPyScrolledWindow, wxScrolledWindow, OnInternalIdle);
 %}
 
 // And now the one for SWIG to see
@@ -415,7 +462,7 @@ MustHaveApp(wxPyScrolledWindow);
 class wxPyScrolledWindow : public wxScrolledWindow
 {
 public:
-    %pythonAppend wxPyScrolledWindow         "self._setOORInfo(self); self._setCallbackInfo(self, PyPanel)"
+    %pythonAppend wxPyScrolledWindow         "self._setOORInfo(self); self._setCallbackInfo(self, PyScrolledWindow)"
     %pythonAppend wxPyScrolledWindow()       ""
 
     wxPyScrolledWindow(wxWindow* parent, const wxWindowID id=-1,
@@ -424,12 +471,13 @@ public:
                long style = 0,
                const wxString& name = wxPyPanelNameStr);
 
-    %name(PrePyScrolledWindow) wxPyScrolledWindow();
+    %RenameCtor(PrePyScrolledWindow,  wxPyScrolledWindow());
 
     void _setCallbackInfo(PyObject* self, PyObject* _class);
 
     void SetBestSize(const wxSize& size);
-
+    bool DoEraseBackground(wxDC* dc);
+    
     void base_DoMoveWindow(int x, int y, int width, int height);
     void base_DoSetSize(int x, int y, int width, int height,
                         int sizeFlags = wxSIZE_AUTO);
@@ -462,8 +510,10 @@ public:
     void base_RemoveChild(wxWindow* child);
 
     bool base_ShouldInheritColours() const;
-    void base_ApplyParentThemeBackground(const wxColour& c);
     wxVisualAttributes base_GetDefaultAttributes();
+
+    void base_OnInternalIdle();
+
 };
 
 

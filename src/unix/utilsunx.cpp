@@ -2,7 +2,7 @@
 // Name:        unix/utilsunx.cpp
 // Purpose:     generic Unix implementation of many wx functions
 // Author:      Vadim Zeitlin
-// Id:          $Id: utilsunx.cpp,v 1.115 2004/11/10 22:08:32 VZ Exp $
+// Id:          $Id: utilsunx.cpp,v 1.126 2005/05/10 05:44:10 SC Exp $
 // Copyright:   (c) 1998 Robert Roebling, Vadim Zeitlin
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -126,9 +126,9 @@
 // headers - please add your system here if it is the case for your OS.
 // SunOS < 5.6 (i.e. Solaris < 2.6) and DG-UX are like this.
 #if !defined(HAVE_USLEEP) && \
-    (defined(__SUN__) && !defined(__SunOs_5_6) && \
+    ((defined(__SUN__) && !defined(__SunOs_5_6) && \
                          !defined(__SunOs_5_7) && !defined(__SUNPRO_CC)) || \
-     defined(__osf__) || defined(__EMX__)
+     defined(__osf__) || defined(__EMX__))
     extern "C"
     {
         #ifdef __SUN__
@@ -200,12 +200,12 @@ void wxMilliSleep(unsigned long milliseconds)
 // process management
 // ----------------------------------------------------------------------------
 
-int wxKill(long pid, wxSignal sig, wxKillError *rc)
+int wxKill(long pid, wxSignal sig, wxKillError *rc, int flags)
 {
-    int err = kill((pid_t)pid, (int)sig);
+    int err = kill((pid_t) (flags & wxKILL_CHILDREN) ? -pid : pid, (int)sig);
     if ( rc )
     {
-        switch ( errno )
+        switch ( err ? errno : 0 )
         {
             case 0:
                 *rc = wxKILL_OK;
@@ -237,9 +237,16 @@ int wxKill(long pid, wxSignal sig, wxKillError *rc)
 
 #define WXEXECUTE_NARGS   127
 
+#if defined(__DARWIN__)
+long wxMacExecute(wxChar **argv,
+               int flags,
+               wxProcess *process);
+#endif
+
 long wxExecute( const wxString& command, int flags, wxProcess *process )
 {
-    wxCHECK_MSG( !command.IsEmpty(), 0, wxT("can't exec empty command") );
+    wxCHECK_MSG( !command.empty(), 0, wxT("can't exec empty command") );
+    wxLogDebug(wxString(wxT("Launching: ")) + command);
 
 #if wxUSE_THREADS
     // fork() doesn't mix well with POSIX threads: on many systems the program
@@ -256,7 +263,7 @@ long wxExecute( const wxString& command, int flags, wxProcess *process )
     wxString argument;
     const wxChar *cptr = command.c_str();
     wxChar quotechar = wxT('\0'); // is arg quoted?
-    bool escaped = FALSE;
+    bool escaped = false;
 
     // split the command line in arguments
     do
@@ -275,14 +282,14 @@ long wxExecute( const wxString& command, int flags, wxProcess *process )
         {
             if ( *cptr == wxT('\\') && ! escaped )
             {
-                escaped = TRUE;
+                escaped = true;
                 cptr++;
                 continue;
             }
 
             // all other characters:
             argument += *cptr++;
-            escaped = FALSE;
+            escaped = false;
 
             // have we reached the end of the argument?
             if ( (*cptr == quotechar && ! escaped)
@@ -306,8 +313,18 @@ long wxExecute( const wxString& command, int flags, wxProcess *process )
     } while(*cptr);
     argv[argc] = NULL;
 
+    long lRc;
+#if defined(__DARWIN__)
+    // wxMacExecute only executes app bundles.
+    // It returns an error code if the target is not an app bundle, thus falling
+    // through to the regular wxExecute for non app bundles.
+    lRc = wxMacExecute(argv, flags, process);
+    if( lRc != ((flags & wxEXEC_SYNC) ? -1 : 0))
+        return lRc;
+#endif
+
     // do execute the command
-    long lRc = wxExecute(argv, flags, process);
+    lRc = wxExecute(argv, flags, process);
 
     // clean up
     argc = 0;
@@ -345,7 +362,7 @@ bool wxShell(const wxString& command)
 
 bool wxShell(const wxString& command, wxArrayString& output)
 {
-    wxCHECK_MSG( !!command, FALSE, _T("can't exec shell non interactively") );
+    wxCHECK_MSG( !command.empty(), false, _T("can't exec shell non interactively") );
 
     return wxExecute(wxMakeShellCommand(command), output);
 }
@@ -366,12 +383,23 @@ bool wxShutdown(wxShutdownFlags wFlags)
 
         default:
             wxFAIL_MSG( _T("unknown wxShutdown() flag") );
-            return FALSE;
+            return false;
     }
 
     return system(wxString::Format(_T("init %c"), level).mb_str()) == 0;
 }
 
+wxPowerType wxGetPowerType()
+{
+    // TODO
+    return wxPOWER_UNKNOWN;
+}
+
+wxBatteryState wxGetBatteryState()
+{
+    // TODO
+    return wxBATTERY_UNKNOWN_STATE;
+}
 
 // ----------------------------------------------------------------------------
 // wxStream classes to support IO redirection in wxExecute
@@ -382,7 +410,7 @@ bool wxShutdown(wxShutdownFlags wFlags)
 bool wxPipeInputStream::CanRead() const
 {
     if ( m_lasterror == wxSTREAM_EOF )
-        return FALSE;
+        return false;
 
     // check if there is any input available
     struct timeval tv;
@@ -401,7 +429,7 @@ bool wxPipeInputStream::CanRead() const
             // fall through
 
         case 0:
-            return FALSE;
+            return false;
 
         default:
             wxFAIL_MSG(_T("unexpected select() return value"));
@@ -424,7 +452,7 @@ bool wxPipeInputStream::CanRead() const
 #ifdef __VMS
     #pragma message disable codeunreachable
 #endif
-
+               
 long wxExecute(wxChar **argv,
                int flags,
                wxProcess *process)
@@ -576,7 +604,7 @@ long wxExecute(wxChar **argv,
         }
 
         execvp (*mb_argv, mb_argv);
-
+       
         fprintf(stderr, "execvp(");
         // CS changed ppc to ppc_ as ppc is not available under mac os CW Mach-O
         for ( char **ppc_ = mb_argv; *ppc_; ppc_++ )
@@ -660,9 +688,9 @@ long wxExecute(wxChar **argv,
 
 const wxChar* wxGetHomeDir( wxString *home  )
 {
-    *home = wxGetUserHome( wxString() );
+    *home = wxGetUserHome( wxEmptyString );
     wxString tmp;
-    if ( home->IsEmpty() )
+    if ( home->empty() )
         *home = wxT("/");
 #ifdef __VMS
     tmp = *home;
@@ -721,7 +749,7 @@ char *wxGetUserHome( const wxString &user )
 // private use only)
 static bool wxGetHostNameInternal(wxChar *buf, int sz)
 {
-    wxCHECK_MSG( buf, FALSE, wxT("NULL pointer in wxGetHostNameInternal") );
+    wxCHECK_MSG( buf, false, wxT("NULL pointer in wxGetHostNameInternal") );
 
     *buf = wxT('\0');
 
@@ -739,7 +767,7 @@ static bool wxGetHostNameInternal(wxChar *buf, int sz)
 #else // no uname, no gethostname
     wxFAIL_MSG(wxT("don't know host name for this machine"));
 
-    bool ok = FALSE;
+    bool ok = false;
 #endif // uname/gethostname
 
     if ( !ok )
@@ -782,7 +810,7 @@ bool wxGetFullHostName(wxChar *buf, int sz)
             {
                 wxLogSysError(_("Cannot get the official hostname"));
 
-                ok = FALSE;
+                ok = false;
             }
             else
             {
@@ -804,10 +832,10 @@ bool wxGetUserId(wxChar *buf, int sz)
     if ((who = getpwuid(getuid ())) != NULL)
     {
         wxStrncpy (buf, wxConvertMB2WX(who->pw_name), sz - 1);
-        return TRUE;
+        return true;
     }
 
-    return FALSE;
+    return false;
 }
 
 bool wxGetUserName(wxChar *buf, int sz)
@@ -826,10 +854,10 @@ bool wxGetUserName(wxChar *buf, int sz)
 #else // !HAVE_PW_GECOS
        wxStrncpy (buf, wxConvertMB2WX(who->pw_name), sz - 1);
 #endif // HAVE_PW_GECOS/!HAVE_PW_GECOS
-       return TRUE;
+       return true;
     }
 
-    return FALSE;
+    return false;
 }
 
 // this function is in mac/utils.cpp for wxMac
@@ -860,7 +888,7 @@ unsigned long wxGetProcessId()
     return (unsigned long)getpid();
 }
 
-long wxGetFreeMemory()
+wxMemorySize wxGetFreeMemory()
 {
 #if defined(__LINUX__)
     // get it from /proc/meminfo
@@ -878,10 +906,10 @@ long wxGetFreeMemory()
 
         fclose(fp);
 
-        return memFree;
+        return (wxMemorySize)memFree;
     }
 #elif defined(__SUN__) && defined(_SC_AVPHYS_PAGES)
-    return sysconf(_SC_AVPHYS_PAGES)*sysconf(_SC_PAGESIZE);
+    return (wxMemorySize)(sysconf(_SC_AVPHYS_PAGES)*sysconf(_SC_PAGESIZE));
 //#elif defined(__FREEBSD__) -- might use sysctl() to find it out, probably
 #endif
 
@@ -898,7 +926,7 @@ bool wxGetDiskSpace(const wxString& path, wxLongLong *pTotal, wxLongLong *pFree)
     {
         wxLogSysError( wxT("Failed to get file system statistics") );
 
-        return FALSE;
+        return false;
     }
 
     // under Solaris we also have to use f_frsize field instead of f_bsize
@@ -919,9 +947,9 @@ bool wxGetDiskSpace(const wxString& path, wxLongLong *pTotal, wxLongLong *pFree)
         *pFree = wxLongLong(fs.f_bavail) * blockSize;
     }
 
-    return TRUE;
+    return true;
 #else // !HAVE_STATFS && !HAVE_STATVFS
-    return FALSE;
+    return false;
 #endif // HAVE_STATFS
 }
 
@@ -934,14 +962,14 @@ bool wxGetEnv(const wxString& var, wxString *value)
     // wxGetenv is defined as getenv()
     wxChar *p = wxGetenv(var);
     if ( !p )
-        return FALSE;
+        return false;
 
     if ( value )
     {
         *value = p;
     }
 
-    return TRUE;
+    return true;
 }
 
 bool wxSetEnv(const wxString& variable, const wxChar *value)
@@ -991,13 +1019,13 @@ extern "C" void wxFatalSignalHandler(wxTYPE_SA_HANDLER)
 bool wxHandleFatalExceptions(bool doit)
 {
     // old sig handlers
-    static bool s_savedHandlers = FALSE;
+    static bool s_savedHandlers = false;
     static struct sigaction s_handlerFPE,
                             s_handlerILL,
                             s_handlerBUS,
                             s_handlerSEGV;
 
-    bool ok = TRUE;
+    bool ok = true;
     if ( doit && !s_savedHandlers )
     {
         // install the signal handler
@@ -1019,7 +1047,7 @@ bool wxHandleFatalExceptions(bool doit)
             wxLogDebug(_T("Failed to install our signal handler."));
         }
 
-        s_savedHandlers = TRUE;
+        s_savedHandlers = true;
     }
     else if ( s_savedHandlers )
     {
@@ -1033,7 +1061,7 @@ bool wxHandleFatalExceptions(bool doit)
             wxLogDebug(_T("Failed to uninstall our signal handler."));
         }
 
-        s_savedHandlers = FALSE;
+        s_savedHandlers = false;
     }
     //else: nothing to do
 
@@ -1130,10 +1158,12 @@ int wxGUIAppTraits::WaitForChild(wxExecuteData& execData)
 {
     wxEndProcessData *endProcData = new wxEndProcessData;
 
+    const int flags = execData.flags;
+
     // wxAddProcessCallback is now (with DARWIN) allowed to call the
     // callback function directly if the process terminates before
     // the callback can be added to the run loop. Set up the endProcData.
-    if ( execData.flags & wxEXEC_SYNC )
+    if ( flags & wxEXEC_SYNC )
     {
         // we may have process for capturing the program output, but it's
         // not used in wxEndProcessData in the case of sync execution
@@ -1164,10 +1194,11 @@ int wxGUIAppTraits::WaitForChild(wxExecuteData& execData)
     execData.pipeEndProcDetect.Close();
 #endif // defined(__DARWIN__) && (defined(__WXMAC__) || defined(__WXCOCOA__))
 
-    if ( execData.flags & wxEXEC_SYNC )
+    if ( flags & wxEXEC_SYNC )
     {
         wxBusyCursor bc;
-        wxWindowDisabler wd;
+        wxWindowDisabler *wd = flags & wxEXEC_NODISABLE ? NULL
+                                                        : new wxWindowDisabler;
 
         // endProcData->pid will be set to 0 from GTK_EndProcessDetector when the
         // process terminates
@@ -1201,6 +1232,7 @@ int wxGUIAppTraits::WaitForChild(wxExecuteData& execData)
 
         int exitcode = endProcData->exitcode;
 
+        delete wd;
         delete endProcData;
 
         return exitcode;

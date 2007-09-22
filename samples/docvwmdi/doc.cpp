@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     04/01/98
-// RCS-ID:      $Id: doc.cpp,v 1.14 2004/10/06 20:32:05 ABX Exp $
+// RCS-ID:      $Id: doc.cpp,v 1.15 2005/03/01 16:53:19 ABX Exp $
 // Copyright:   (c) Julian Smart
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -122,6 +122,7 @@ wxInputStream& DrawingDocument::LoadObject(wxInputStream& stream)
 #endif
 
 DoodleSegment::DoodleSegment(DoodleSegment& seg)
+              :wxObject()
 {
   wxList::compatibility_iterator node = seg.lines.GetFirst();
   while (node)

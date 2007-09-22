@@ -5,7 +5,7 @@
 // Author:      Robin Dunn
 //
 // Created:     18-June-1999
-// RCS-ID:      $Id: _timer.i,v 1.12 2004/09/23 20:23:14 RD Exp $
+// RCS-ID:      $Id: _timer.i,v 1.16 2005/05/13 00:00:38 RD Exp $
 // Copyright:   (c) 2003 by Total Control Software
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -35,10 +35,17 @@ enum {
 //IMP_PYCALLBACK__(wxPyTimer, wxTimer, Notify);
 
 IMPLEMENT_ABSTRACT_CLASS(wxPyTimer, wxTimer);
-    
+
+wxPyTimer::wxPyTimer(wxEvtHandler *owner, int id)
+    : wxTimer(owner, id)
+{
+    if (owner == NULL) SetOwner(this);
+}
+
+
 void wxPyTimer::Notify() {
     bool found;
-    bool blocked = wxPyBeginBlockThreads();
+    wxPyBlock_t blocked = wxPyBeginBlockThreads();
     if ((found = wxPyCBH_findCallback(m_myInst, "Notify")))
         wxPyCBH_callCallback(m_myInst, Py_BuildValue("()"));
     wxPyEndBlockThreads(blocked);
@@ -55,10 +62,15 @@ void wxPyTimer::base_Notify() {
 
 MustHaveApp(wxPyTimer);
 
-%name(Timer) class wxPyTimer : public wxEvtHandler
+%rename(Timer) wxPyTimer;
+class wxPyTimer : public wxEvtHandler
 {
 public:
-    %pythonAppend wxPyTimer         "self._setCallbackInfo(self, Timer, 0); self._setOORInfo(self)"
+    // Don't let the OOR or callback info hold references to the object so
+    // there won't be a reference cycle and it can clean itself up via normal
+    // Python refcounting
+    %pythonAppend wxPyTimer
+        "self._setCallbackInfo(self, Timer, 0); self._setOORInfo(self, 0)"
 
 
     // if you don't call SetOwner() or provide an owner in the contstructor
@@ -66,6 +78,8 @@ public:
     // notification.  If the owner is set then it will get the timer
     // notifications which can be handled with EVT_TIMER.
     wxPyTimer(wxEvtHandler *owner=NULL, int id = -1);
+
+    // Destructor.  
     virtual ~wxPyTimer();
 
     void _setCallbackInfo(PyObject* self, PyObject* _class, int incref=1);
@@ -101,6 +115,11 @@ public:
     // return the timer ID
     int GetId() const;
 
+    %pythoncode {
+        def Destroy(self):
+            """NO-OP: Timers must be destroyed by normal refrence counting"""
+            pass
+    }
 };
 
 

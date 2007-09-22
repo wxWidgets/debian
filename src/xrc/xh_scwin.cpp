@@ -3,12 +3,12 @@
 // Purpose:     XRC resource for wxScrolledWindow
 // Author:      Vaclav Slavik
 // Created:     2002/10/18
-// RCS-ID:      $Id: xh_scwin.cpp,v 1.9 2004/09/23 09:18:12 VS Exp $
+// RCS-ID:      $Id: xh_scwin.cpp,v 1.10 2005/01/07 21:33:14 VS Exp $
 // Copyright:   (c) 2002 Vaclav Slavik
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
 
-#ifdef __GNUG__
+#if defined(__GNUG__) && !defined(NO_GCC_PRAGMA)
 #pragma implementation "xh_scwin.h"
 #endif
 

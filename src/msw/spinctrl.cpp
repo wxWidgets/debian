@@ -4,8 +4,8 @@
 // Author:      Vadim Zeitlin
 // Modified by:
 // Created:     22.07.99
-// RCS-ID:      $Id: spinctrl.cpp,v 1.50 2004/09/04 01:53:42 ABX Exp $
-// Copyright:   (c) Vadim Zeitlin
+// RCS-ID:      $Id: spinctrl.cpp,v 1.56 2005/05/06 06:09:24 ABX Exp $
+// Copyright:   (c) 1999-2005 Vadim Zeitlin
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
 
@@ -35,16 +35,18 @@
 
 #if wxUSE_SPINCTRL
 
-#if defined(__WIN95__)
-
 #include "wx/spinctrl.h"
 #include "wx/msw/private.h"
+#include "wx/msw/wrapcctl.h"
 
-#if defined(__WIN95__) && !(defined(__GNUWIN32_OLD__) && !defined(__CYGWIN10__))
-    #include <commctrl.h>
-#endif
+#if wxUSE_TOOLTIPS
+    #include "wx/tooltip.h"
+#endif // wxUSE_TOOLTIPS
 
 #include <limits.h>         // for INT_MIN
+
+#define USE_DEFERRED_SIZING 1
+#define USE_DEFER_BUG_WORKAROUND 0
 
 // ----------------------------------------------------------------------------
 // macros
@@ -392,7 +394,7 @@ bool wxSpinCtrl::Create(wxWindow *parent,
     // associate the text window with the spin button
     (void)::SendMessage(GetHwnd(), UDM_SETBUDDY, (WPARAM)m_hwndBuddy, 0);
 
-    if ( !value.IsEmpty() )
+    if ( !value.empty() )
     {
         SetValue(value);
     }
@@ -436,6 +438,9 @@ int wxSpinCtrl::GetValue() const
     long n;
     if ( (wxSscanf(val, wxT("%lu"), &n) != 1) )
         n = INT_MIN;
+
+    if (n < m_min) n = m_min;
+    if (n > m_max) n = m_max;
 
     return n;
 }
@@ -499,6 +504,18 @@ void wxSpinCtrl::SetFocus()
     ::SetFocus(GetBuddyHwnd());
 }
 
+#if wxUSE_TOOLTIPS
+
+void wxSpinCtrl::DoSetToolTip(wxToolTip *tip)
+{
+    wxSpinButton::DoSetToolTip(tip);
+
+    if ( tip )
+        tip->Add(m_hwndBuddy);
+}
+
+#endif // wxUSE_TOOLTIPS
+
 // ----------------------------------------------------------------------------
 // event processing
 // ----------------------------------------------------------------------------
@@ -553,16 +570,32 @@ void wxSpinCtrl::DoMoveWindow(int x, int y, int width, int height)
         wxLogDebug(_T("not enough space for wxSpinCtrl!"));
     }
 
-    if ( !::MoveWindow(GetBuddyHwnd(), x, y, widthText, height, TRUE) )
-    {
-        wxLogLastError(wxT("MoveWindow(buddy)"));
-    }
+    // if our parent had prepared a defer window handle for us, use it (unless
+    // we are a top level window)
+    wxWindowMSW *parent = GetParent();
 
+#if USE_DEFERRED_SIZING
+    HDWP hdwp = parent && !IsTopLevel() ? (HDWP)parent->m_hDWP : NULL;
+#else
+    HDWP hdwp = 0;
+#endif
+
+    // 1) The buddy window
+    wxMoveWindowDeferred(hdwp, this, GetBuddyHwnd(),
+                     x, y, widthText, height);
+
+    // 2) The button window
     x += widthText + MARGIN_BETWEEN;
-    if ( !::MoveWindow(GetHwnd(), x, y, widthBtn, height, TRUE) )
+    wxMoveWindowDeferred(hdwp, this, GetHwnd(),
+                     x, y, widthBtn, height);
+
+#if USE_DEFERRED_SIZING
+    if (parent)
     {
-        wxLogLastError(wxT("MoveWindow"));
+        // hdwp must be updated as it may have been changed
+        parent->m_hDWP = (WXHANDLE)hdwp;
     }
+#endif
 }
 
 // get total size of the control
@@ -590,8 +623,5 @@ void wxSpinCtrl::DoGetPosition(int *x, int *y) const
     wxConstCast(this, wxSpinCtrl)->m_hWnd = hWnd;
 }
 
-#endif // __WIN95__
-
-#endif
-       // wxUSE_SPINCTRL
+#endif // wxUSE_SPINCTRL
 

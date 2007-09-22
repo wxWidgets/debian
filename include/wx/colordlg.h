@@ -4,7 +4,7 @@
 // Author:      Vadim Zeitiln
 // Modified by:
 // Created:     01/02/97
-// RCS-ID:      $Id: colordlg.h,v 1.17 2004/06/04 16:00:43 VS Exp $
+// RCS-ID:      $Id: colordlg.h,v 1.18 2005/01/18 10:31:20 ABX Exp $
 // Copyright:   (c) wxWidgets team
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -22,6 +22,8 @@
     #include "wx/mac/colordlg.h"
 #elif defined(__WXGTK20__) && !defined(__WXUNIVERSAL__)
     #include "wx/gtk/colordlg.h"
+#elif defined(__WXPALMOS__)
+    #include "wx/palmos/colordlg.h"
 #else
     #include "wx/generic/colrdlgg.h"
 

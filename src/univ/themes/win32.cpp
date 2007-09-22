@@ -1,9 +1,10 @@
+///////////////////////////////////////////////////////////////////////////////
 // Name:        univ/themes/win32.cpp
 // Purpose:     wxUniversal theme implementing Win32-like LNF
 // Author:      Vadim Zeitlin
 // Modified by:
 // Created:     06.08.00
-// RCS-ID:      $Id: win32.cpp,v 1.69 2004/08/10 13:08:43 ABX Exp $
+// RCS-ID:      $Id: win32.cpp,v 1.77 2005/05/31 16:17:57 JS Exp $
 // Copyright:   (c) 2000 SciTech Software, Inc. (www.scitechsoft.com)
 // Licence:     wxWindows licence
 ///////////////////////////////////////////////////////////////////////////////
@@ -32,6 +33,7 @@
     #include "wx/dcmemory.h"
 
     #include "wx/button.h"
+    #include "wx/bmpbuttn.h"
     #include "wx/listbox.h"
     #include "wx/checklst.h"
     #include "wx/combobox.h"
@@ -54,6 +56,7 @@
 #include "wx/menu.h"
 #include "wx/artprov.h"
 #include "wx/toplevel.h"
+#include "wx/image.h"
 
 #include "wx/univ/scrtimer.h"
 #include "wx/univ/renderer.h"
@@ -108,6 +111,7 @@ enum IndicatorStatus
 {
     IndicatorStatus_Checked,
     IndicatorStatus_Unchecked,
+    IndicatorStatus_Undeterminated,
     IndicatorStatus_Max
 };
 
@@ -132,8 +136,8 @@ public:
         Arrow_Normal,
         Arrow_Disabled,
         Arrow_Pressed,
-        Arrow_Inversed,
-        Arrow_InversedDisabled,
+        Arrow_Inverted,
+        Arrow_InvertedDisabled,
         Arrow_StateMax
     };
 
@@ -625,7 +629,7 @@ public:
                              const wxMouseEvent& event);
 
     virtual bool HandleActivation(wxInputConsumer *consumer, bool activated);
-                             
+
     void PopupSystemMenu(wxTopLevelWindow *window, const wxPoint& pos) const;
 
 private:
@@ -678,7 +682,7 @@ private:
     wxInputHandler *GetDefaultInputHandler();
 
     wxWin32Renderer *m_renderer;
-    
+
     wxWin32ArtProvider *m_artProvider;
 
     // the names of the already created handlers and the handlers themselves
@@ -1007,6 +1011,54 @@ static const char *unchecked_item_xpm[] = {
 "wwwwwwwwwwwww"
 };
 
+static const char *undetermined_xpm[] = {
+/* columns rows colors chars-per-pixel */
+"13 13 5 1",
+"A c #030303",
+"B c #838383",
+"C c #C3C3C3",
+"D c #FBFBFB",
+"E c #DBDBDB",
+/* pixels */
+"BBBBBBBBBBBBD",
+"BAAAAAAAAAAED",
+"BACDCDCDCDCED",
+"BADCDCDCDBDED",
+"BACDCDCDBBCED",
+"BADBDCEBBBDED",
+"BACBBDBBBDCED",
+"BADBBBBBDCDED",
+"BACDBBBDCDCED",
+"BADCDBDCDCDED",
+"BACDCDCDCDCED",
+"BEEEEEEEEEEED",
+"DDDDDDDDDDDDD"
+};
+
+static const char *pressed_undetermined_xpm[] = {
+/* columns rows colors chars-per-pixel */
+"13 13 5 1",
+"A c #040404",
+"B c #848484",
+"C c #C4C4C4",
+"D c #FCFCFC",
+"E c #DCDCDC",
+/* pixels */
+"BBBBBBBBBBBBD",
+"BAAAAAAAAAAED",
+"BACCCCCCCCCCD",
+"BACCCCCCCACED",
+"BACCCCCCAACED",
+"BACACCCAAACED",
+"BACAACAAACCED",
+"BACAAAAACCCED",
+"BACCAAACCCCCD",
+"BACCCACCCCCED",
+"BACCCCCCCCCED",
+"BEEEEEEEEEEED",
+"DDDDDDDDDDDDD"
+};
+
 static const char *checked_radio_xpm[] = {
 /* columns rows colors chars-per-pixel */
 "12 12 6 1",
@@ -1133,40 +1185,40 @@ static const char **
     // checkboxes first
     {
         // normal state
-        { checked_xpm, unchecked_xpm },
+        { checked_xpm, unchecked_xpm, undetermined_xpm },
 
         // pressed state
-        { pressed_checked_xpm, pressed_unchecked_xpm },
+        { pressed_checked_xpm, pressed_unchecked_xpm, pressed_undetermined_xpm },
 
         // disabled state
-        { pressed_disabled_checked_xpm, pressed_unchecked_xpm },
+        { pressed_disabled_checked_xpm, pressed_unchecked_xpm, pressed_disabled_checked_xpm },
     },
 
     // radio
     {
         // normal state
-        { checked_radio_xpm, unchecked_radio_xpm },
+        { checked_radio_xpm, unchecked_radio_xpm, NULL },
 
         // pressed state
-        { pressed_checked_radio_xpm, pressed_unchecked_radio_xpm },
+        { pressed_checked_radio_xpm, pressed_unchecked_radio_xpm, NULL },
 
         // disabled state
-        { pressed_disabled_checked_radio_xpm, pressed_unchecked_radio_xpm },
+        { pressed_disabled_checked_radio_xpm, pressed_unchecked_radio_xpm, NULL },
     },
 
     // menu
     {
         // normal state
-        { checked_menu_xpm, NULL },
+        { checked_menu_xpm, NULL, NULL },
 
         // selected state
-        { selected_checked_menu_xpm, NULL },
+        { selected_checked_menu_xpm, NULL, NULL },
 
         // disabled state
-        { disabled_checked_menu_xpm, NULL },
+        { disabled_checked_menu_xpm, NULL, NULL },
 
         // disabled selected state
-        { selected_disabled_checked_menu_xpm, NULL },
+        { selected_disabled_checked_menu_xpm, NULL, NULL },
     }
 };
 
@@ -1337,11 +1389,11 @@ wxColour wxWin32ColourScheme::GetBackground(wxWindow *win) const
         wxTextCtrl *text = wxDynamicCast(win, wxTextCtrl);
 #if wxUSE_LISTBOX
         wxListBox* listBox = wxDynamicCast(win, wxListBox);
-#endif        
+#endif
         if ( text
 #if wxUSE_LISTBOX
          || listBox
-#endif         
+#endif
           )
         {
             if ( !win->IsEnabled() ) // not IsEditable()
@@ -1355,7 +1407,7 @@ wxColour wxWin32ColourScheme::GetBackground(wxWindow *win) const
                 }
             }
         }
-        
+
         if (!col.Ok())
             col = Get(CONTROL); // Most controls should be this colour, not WINDOW
     }
@@ -1625,31 +1677,31 @@ wxWin32Renderer::wxWin32Renderer(const wxColourScheme *scheme)
 
         }
 
-        // create the inversed bitmap but only for the right arrow as we only
+        // create the inverted bitmap but only for the right arrow as we only
         // use it for the menus
         if ( n == Arrow_Right )
         {
-            m_bmpArrows[Arrow_Inversed][n].Create(w, h);
-            dcInverse.SelectObject(m_bmpArrows[Arrow_Inversed][n]);
+            m_bmpArrows[Arrow_Inverted][n].Create(w, h);
+            dcInverse.SelectObject(m_bmpArrows[Arrow_Inverted][n]);
             dcInverse.Clear();
             dcInverse.Blit(0, 0, w, h,
                           &dcNormal, 0, 0,
                           wxXOR);
             dcInverse.SelectObject(wxNullBitmap);
 
-            mask = new wxMask(m_bmpArrows[Arrow_Inversed][n], *wxBLACK);
-            m_bmpArrows[Arrow_Inversed][n].SetMask(mask);
+            mask = new wxMask(m_bmpArrows[Arrow_Inverted][n], *wxBLACK);
+            m_bmpArrows[Arrow_Inverted][n].SetMask(mask);
 
-            m_bmpArrows[Arrow_InversedDisabled][n].Create(w, h);
-            dcInverse.SelectObject(m_bmpArrows[Arrow_InversedDisabled][n]);
+            m_bmpArrows[Arrow_InvertedDisabled][n].Create(w, h);
+            dcInverse.SelectObject(m_bmpArrows[Arrow_InvertedDisabled][n]);
             dcInverse.Clear();
             dcInverse.Blit(0, 0, w, h,
                           &dcDisabled, 0, 0,
                           wxXOR);
             dcInverse.SelectObject(wxNullBitmap);
 
-            mask = new wxMask(m_bmpArrows[Arrow_InversedDisabled][n], *wxBLACK);
-            m_bmpArrows[Arrow_InversedDisabled][n].SetMask(mask);
+            mask = new wxMask(m_bmpArrows[Arrow_InvertedDisabled][n], *wxBLACK);
+            m_bmpArrows[Arrow_InvertedDisabled][n].SetMask(mask);
         }
 
         dcNormal.SelectObject(wxNullBitmap);
@@ -1893,7 +1945,7 @@ wxRect wxWin32Renderer::GetBorderDimensions(wxBorder border) const
             break;
 
         default:
-        { 
+        {
             // char *crash = NULL;
             // *crash = 0;
             wxFAIL_MSG(_T("unknown border type"));
@@ -2313,7 +2365,9 @@ wxBitmap wxWin32Renderer::GetIndicator(IndicatorType indType, int flags)
 
     IndicatorStatus indStatus = flags & wxCONTROL_CHECKED
                                     ? IndicatorStatus_Checked
-                                    : IndicatorStatus_Unchecked;
+                                    : ( flags & wxCONTROL_UNDETERMINED
+                                          ? IndicatorStatus_Undeterminated
+                                          : IndicatorStatus_Unchecked );
 
     wxBitmap bmp = m_bmpIndicators[indType][indState][indStatus];
     if ( !bmp.Ok() )
@@ -2486,13 +2540,23 @@ void wxWin32Renderer::DrawTab(wxDC& dc,
                               int flags,
                               int indexAccel)
 {
+    #define SELECT_FOR_VERTICAL(X,Y) ( isVertical ? Y : X )
+    #define REVERSE_FOR_VERTICAL(X,Y) \
+        SELECT_FOR_VERTICAL(X,Y)      \
+        ,                             \
+        SELECT_FOR_VERTICAL(Y,X)
+
     wxRect rect = rectOrig;
+
+    bool isVertical = ( dir == wxLEFT ) || ( dir == wxRIGHT );
 
     // the current tab is drawn indented (to the top for default case) and
     // bigger than the other ones
     const wxSize indent = GetTabIndent();
     if ( flags & wxCONTROL_SELECTED )
     {
+        rect.Inflate( SELECT_FOR_VERTICAL( indent.x , 0),
+                      SELECT_FOR_VERTICAL( 0, indent.y ));
         switch ( dir )
         {
             default:
@@ -2500,100 +2564,146 @@ void wxWin32Renderer::DrawTab(wxDC& dc,
                 // fall through
 
             case wxTOP:
-                rect.Inflate(indent.x, 0);
                 rect.y -= indent.y;
-                rect.height += indent.y;
-                break;
-
+                // fall through
             case wxBOTTOM:
-                rect.Inflate(indent.x, 0);
                 rect.height += indent.y;
                 break;
 
             case wxLEFT:
+                rect.x -= indent.x;
+                // fall through
             case wxRIGHT:
-                wxFAIL_MSG(_T("TODO"));
+                rect.width += indent.x;
                 break;
         }
     }
 
     // draw the text, image and the focus around them (if necessary)
-    wxRect rectLabel = rect;
+    wxRect rectLabel( REVERSE_FOR_VERTICAL(rect.x,rect.y),
+                      REVERSE_FOR_VERTICAL(rect.width,rect.height)
+                    );
     rectLabel.Deflate(1, 1);
-    DrawButtonLabel(dc, label, bitmap, rectLabel,
-                    flags, wxALIGN_CENTRE, indexAccel);
+    if ( isVertical )
+    {
+        // draw it horizontally into memory and rotate for screen
+        wxMemoryDC dcMem;
+        wxBitmap bitmapRotated,
+                 bitmapMem( rectLabel.x + rectLabel.width,
+                            rectLabel.y + rectLabel.height );
+        dcMem.SelectObject(bitmapMem);
+        dcMem.SetBackground(dc.GetBackground());
+        dcMem.SetFont(dc.GetFont());
+        dcMem.SetTextForeground(dc.GetTextForeground());
+        dcMem.Clear();
+        bitmapRotated = wxBitmap( wxImage( bitmap.ConvertToImage() ).Rotate90(dir==wxLEFT) );
+        DrawButtonLabel(dcMem, label, bitmapRotated, rectLabel,
+                        flags, wxALIGN_CENTRE, indexAccel);
+        dcMem.SelectObject(wxNullBitmap);
+        bitmapMem = bitmapMem.GetSubBitmap(rectLabel);
+        bitmapMem = wxBitmap(wxImage(bitmapMem.ConvertToImage()).Rotate90(dir==wxRIGHT));
+        dc.DrawBitmap(bitmapMem, rectLabel.y, rectLabel.x, false);
+    }
+    else
+    {
+        DrawButtonLabel(dc, label, bitmap, rectLabel,
+                        flags, wxALIGN_CENTRE, indexAccel);
+    }
 
     // now draw the tab border itself (maybe use DrawRoundedRectangle()?)
     static const wxCoord CUTOFF = 2; // radius of the rounded corner
-    wxCoord x = rect.x,
-            y = rect.y,
-            x2 = rect.GetRight(),
-            y2 = rect.GetBottom();
+    wxCoord x = SELECT_FOR_VERTICAL(rect.x,rect.y),
+            y = SELECT_FOR_VERTICAL(rect.y,rect.x),
+            x2 = SELECT_FOR_VERTICAL(rect.GetRight(),rect.GetBottom()),
+            y2 = SELECT_FOR_VERTICAL(rect.GetBottom(),rect.GetRight());
 
     // FIXME: all this code will break if the tab indent or the border width,
     //        it is tied to the fact that both of them are equal to 2
     switch ( dir )
     {
         default:
+            // default is top
+        case wxLEFT:
+            // left orientation looks like top but IsVertical makes x and y reversed
         case wxTOP:
+            // top is not vertical so use coordinates in written order
             dc.SetPen(m_penHighlight);
-            dc.DrawLine(x, y2, x, y + CUTOFF);
-            dc.DrawLine(x, y + CUTOFF, x + CUTOFF, y);
-            dc.DrawLine(x + CUTOFF, y, x2 - CUTOFF + 1, y);
+            dc.DrawLine(REVERSE_FOR_VERTICAL(x, y2),
+                        REVERSE_FOR_VERTICAL(x, y + CUTOFF));
+            dc.DrawLine(REVERSE_FOR_VERTICAL(x, y + CUTOFF),
+                        REVERSE_FOR_VERTICAL(x + CUTOFF, y));
+            dc.DrawLine(REVERSE_FOR_VERTICAL(x + CUTOFF, y),
+                        REVERSE_FOR_VERTICAL(x2 - CUTOFF + 1, y));
 
             dc.SetPen(m_penBlack);
-            dc.DrawLine(x2, y2, x2, y + CUTOFF);
-            dc.DrawLine(x2, y + CUTOFF, x2 - CUTOFF, y);
+            dc.DrawLine(REVERSE_FOR_VERTICAL(x2, y2),
+                        REVERSE_FOR_VERTICAL(x2, y + CUTOFF));
+            dc.DrawLine(REVERSE_FOR_VERTICAL(x2, y + CUTOFF),
+                        REVERSE_FOR_VERTICAL(x2 - CUTOFF, y));
 
             dc.SetPen(m_penDarkGrey);
-            dc.DrawLine(x2 - 1, y2, x2 - 1, y + CUTOFF - 1);
+            dc.DrawLine(REVERSE_FOR_VERTICAL(x2 - 1, y2),
+                        REVERSE_FOR_VERTICAL(x2 - 1, y + CUTOFF - 1));
 
             if ( flags & wxCONTROL_SELECTED )
             {
                 dc.SetPen(m_penLightGrey);
 
                 // overwrite the part of the border below this tab
-                dc.DrawLine(x + 1, y2 + 1, x2 - 1, y2 + 1);
+                dc.DrawLine(REVERSE_FOR_VERTICAL(x + 1, y2 + 1),
+                            REVERSE_FOR_VERTICAL(x2 - 1, y2 + 1));
 
                 // and the shadow of the tab to the left of us
-                dc.DrawLine(x + 1, y + CUTOFF + 1, x + 1, y2 + 1);
+                dc.DrawLine(REVERSE_FOR_VERTICAL(x + 1, y + CUTOFF + 1),
+                            REVERSE_FOR_VERTICAL(x + 1, y2 + 1));
             }
             break;
 
+        case wxRIGHT:
+            // right orientation looks like bottom but IsVertical makes x and y reversed
         case wxBOTTOM:
+            // bottom is not vertical so use coordinates in written order
             dc.SetPen(m_penHighlight);
             // we need to continue one pixel further to overwrite the corner of
             // the border for the selected tab
-            dc.DrawLine(x, y - (flags & wxCONTROL_SELECTED ? 1 : 0),
-                        x, y2 - CUTOFF);
-            dc.DrawLine(x, y2 - CUTOFF, x + CUTOFF, y2);
+            dc.DrawLine(REVERSE_FOR_VERTICAL(x, y - (flags & wxCONTROL_SELECTED ? 1 : 0)),
+                        REVERSE_FOR_VERTICAL(x, y2 - CUTOFF));
+            dc.DrawLine(REVERSE_FOR_VERTICAL(x, y2 - CUTOFF),
+                        REVERSE_FOR_VERTICAL(x + CUTOFF, y2));
 
             dc.SetPen(m_penBlack);
-            dc.DrawLine(x + CUTOFF, y2, x2 - CUTOFF + 1, y2);
-            dc.DrawLine(x2, y, x2, y2 - CUTOFF);
-            dc.DrawLine(x2, y2 - CUTOFF, x2 - CUTOFF, y2);
+            dc.DrawLine(REVERSE_FOR_VERTICAL(x + CUTOFF, y2),
+                        REVERSE_FOR_VERTICAL(x2 - CUTOFF + 1, y2));
+            dc.DrawLine(REVERSE_FOR_VERTICAL(x2, y),
+                        REVERSE_FOR_VERTICAL(x2, y2 - CUTOFF));
+            dc.DrawLine(REVERSE_FOR_VERTICAL(x2, y2 - CUTOFF),
+                        REVERSE_FOR_VERTICAL(x2 - CUTOFF, y2));
 
             dc.SetPen(m_penDarkGrey);
-            dc.DrawLine(x + CUTOFF, y2 - 1, x2 - CUTOFF + 1, y2 - 1);
-            dc.DrawLine(x2 - 1, y, x2 - 1, y2 - CUTOFF + 1);
+            dc.DrawLine(REVERSE_FOR_VERTICAL(x + CUTOFF, y2 - 1),
+                        REVERSE_FOR_VERTICAL(x2 - CUTOFF + 1, y2 - 1));
+            dc.DrawLine(REVERSE_FOR_VERTICAL(x2 - 1, y),
+                        REVERSE_FOR_VERTICAL(x2 - 1, y2 - CUTOFF + 1));
 
             if ( flags & wxCONTROL_SELECTED )
             {
                 dc.SetPen(m_penLightGrey);
 
                 // overwrite the part of the (double!) border above this tab
-                dc.DrawLine(x + 1, y - 1, x2 - 1, y - 1);
-                dc.DrawLine(x + 1, y - 2, x2 - 1, y - 2);
+                dc.DrawLine(REVERSE_FOR_VERTICAL(x + 1, y - 1),
+                            REVERSE_FOR_VERTICAL(x2 - 1, y - 1));
+                dc.DrawLine(REVERSE_FOR_VERTICAL(x + 1, y - 2),
+                            REVERSE_FOR_VERTICAL(x2 - 1, y - 2));
 
                 // and the shadow of the tab to the left of us
-                dc.DrawLine(x + 1, y2 - CUTOFF, x + 1, y - 1);
+                dc.DrawLine(REVERSE_FOR_VERTICAL(x + 1, y2 - CUTOFF),
+                            REVERSE_FOR_VERTICAL(x + 1, y - 1));
             }
             break;
-
-        case wxLEFT:
-        case wxRIGHT:
-            wxFAIL_MSG(_T("TODO"));
     }
+
+    #undef SELECT_FOR_VERTICAL
+    #undef REVERSE_FOR_VERTICAL
 }
 
 // ----------------------------------------------------------------------------
@@ -2609,7 +2719,7 @@ wxWin32Renderer::GetSliderThumbSize(const wxRect& WXUNUSED(rect),
     wxCoord width  = wxMax (lenThumb, SLIDER_THUMB_LENGTH) / 2;
     wxCoord height = wxMax (lenThumb, SLIDER_THUMB_LENGTH);
 
-    if (orient == wxHORIZONTAL) 
+    if (orient == wxHORIZONTAL)
     {
         size.x = width;
         size.y = height;
@@ -2644,11 +2754,11 @@ wxRect wxWin32Renderer::GetSliderShaftRect(const wxRect& rectOrig,
 
     if (orient == wxHORIZONTAL) {
         rect.x += SLIDER_MARGIN;
-        if (left & right) 
+        if (left & right)
         {
             rect.y += wxMax ((rect.height - 2*BORDER_THICKNESS) / 2, sizeThumb.y/2);
         }
-        else if (left) 
+        else if (left)
         {
             rect.y += wxMax ((rect.height - 2*BORDER_THICKNESS - sizeThumb.y/2), sizeThumb.y/2);
         }
@@ -2662,11 +2772,11 @@ wxRect wxWin32Renderer::GetSliderShaftRect(const wxRect& rectOrig,
     else
     { // == wxVERTICAL
         rect.y += SLIDER_MARGIN;
-        if (left & right) 
+        if (left & right)
         {
             rect.x += wxMax ((rect.width - 2*BORDER_THICKNESS) / 2, sizeThumb.x/2);
         }
-        else if (left) 
+        else if (left)
         {
             rect.x += wxMax ((rect.width - 2*BORDER_THICKNESS - sizeThumb.x/2), sizeThumb.x/2);
         }
@@ -2733,7 +2843,7 @@ void wxWin32Renderer::DrawSliderThumb(wxDC& dc,
        H         D B
        H         D B
        H         D B
-       H         D B   where H is hightlight colour
+       H         D B   where H is highlight colour
        H         D B         D    dark grey
        H         D B         B    black
        H         D B
@@ -2780,7 +2890,7 @@ void wxWin32Renderer::DrawSliderThumb(wxDC& dc,
         DrawLine(dc, x3+1-c, y1, x2, y3, transpose);
     }
     DrawLine(dc, x2, y3, x2, y4, transpose);
-    if (right) 
+    if (right)
     {
         DrawLine(dc, x3+1-c, y2, x2, y4, transpose);
     }
@@ -2800,7 +2910,7 @@ void wxWin32Renderer::DrawSliderThumb(wxDC& dc,
     }
 
     dc.SetPen(m_penHighlight);
-    if (left) 
+    if (left)
     {
         DrawLine(dc, x1, y3, x3, y1, transpose);
         DrawLine(dc, x3+1-c, y1+1, x2-1, y3, transpose);
@@ -2810,7 +2920,7 @@ void wxWin32Renderer::DrawSliderThumb(wxDC& dc,
         DrawLine(dc, x1, y1, x2, y1, transpose);
     }
     DrawLine(dc, x1, y3, x1, y4, transpose);
-    if (right) 
+    if (right)
     {
         DrawLine(dc, x1, y4, x3+c, y2+c, transpose);
     }
@@ -2818,7 +2928,7 @@ void wxWin32Renderer::DrawSliderThumb(wxDC& dc,
     if (flags & wxCONTROL_PRESSED) {
         // TODO: MSW fills the entire area inside, not just the rect
         wxRect rectInt = rect;
-        if ( transpose ) 
+        if ( transpose )
         {
             rectInt.SetLeft(y3);
             rectInt.SetRight(y4);
@@ -3087,10 +3197,10 @@ void wxWin32Renderer::DrawMenuItem(wxDC& dc,
 
         wxArrowStyle arrowStyle;
         if ( flags & wxCONTROL_DISABLED )
-            arrowStyle = flags & wxCONTROL_SELECTED ? Arrow_InversedDisabled
+            arrowStyle = flags & wxCONTROL_SELECTED ? Arrow_InvertedDisabled
                                                     : Arrow_Disabled;
         else if ( flags & wxCONTROL_SELECTED )
-            arrowStyle = Arrow_Inversed;
+            arrowStyle = Arrow_Inverted;
         else
             arrowStyle = Arrow_Normal;
 
@@ -3822,7 +3932,7 @@ wxSize wxWin32Renderer::GetFrameTotalSize(const wxSize& clientSize,
 
 wxSize wxWin32Renderer::GetFrameMinSize(int flags) const
 {
-    wxSize s(0, 0);
+    wxSize s;
 
     if ( (flags & wxTOPLEVEL_BORDER) && !(flags & wxTOPLEVEL_MAXIMIZED) )
     {
@@ -3864,168 +3974,274 @@ wxSize wxWin32Renderer::GetFrameIconSize() const
 // standard icons
 // ----------------------------------------------------------------------------
 
+/* Copyright (c) Julian Smart */
 static char *error_xpm[]={
-"32 32 5 1",
-". c None",
-"# c #800000",
-"b c #808080",
-"a c #ff0000",
-"c c #ffffff",
-"...........########.............",
-"........###aaaaaaaa###..........",
-".......#aaaaaaaaaaaaaa#.........",
-".....##aaaaaaaaaaaaaaaa##.......",
-"....#aaaaaaaaaaaaaaaaaaaa#......",
-"...#aaaaaaaaaaaaaaaaaaaaaa#.....",
-"...#aaaaaaaaaaaaaaaaaaaaaa#b....",
-"..#aaaaaacaaaaaaaaaacaaaaaa#b...",
-".#aaaaaacccaaaaaaaacccaaaaaa#...",
-".#aaaaacccccaaaaaacccccaaaaa#b..",
-".#aaaaaacccccaaaacccccaaaaaa#bb.",
-"#aaaaaaaacccccaacccccaaaaaaaa#b.",
-"#aaaaaaaaaccccccccccaaaaaaaaa#b.",
-"#aaaaaaaaaaccccccccaaaaaaaaaa#bb",
-"#aaaaaaaaaaaccccccaaaaaaaaaaa#bb",
-"#aaaaaaaaaaaccccccaaaaaaaaaaa#bb",
-"#aaaaaaaaaaccccccccaaaaaaaaaa#bb",
-"#aaaaaaaaaccccccccccaaaaaaaaa#bb",
-"#aaaaaaaacccccaacccccaaaaaaaa#bb",
-".#aaaaaacccccaaaacccccaaaaaa#bbb",
-".#aaaaacccccaaaaaacccccaaaaa#bbb",
-".#aaaaaacccaaaaaaaacccaaaaaa#bb.",
-"..#aaaaaacaaaaaaaaaacaaaaaa#bbb.",
-"...#aaaaaaaaaaaaaaaaaaaaaa#bbbb.",
-"...#aaaaaaaaaaaaaaaaaaaaaa#bbb..",
-"....#aaaaaaaaaaaaaaaaaaaa#bbb...",
-".....##aaaaaaaaaaaaaaaa##bbbb...",
-"......b#aaaaaaaaaaaaaa#bbbbb....",
-".......b###aaaaaaaa###bbbbb.....",
-".........bb########bbbbbb.......",
-"..........bbbbbbbbbbbbbb........",
-".............bbbbbbbb..........."};
+/* columns rows colors chars-per-pixel */
+"32 32 70 1",
+"- c #BF0101",
+"b c #361F1F",
+"& c #C08484",
+"X c #BF3333",
+"# c #C08181",
+"% c #C01111",
+"d c #C51515",
+"s c #551818",
+"O c #C07E7E",
+": c #C00E0E",
+"u c #E28A8A",
+"2 c #C81F1F",
+"8 c #FFFFFF",
+"p c #E59494",
+"< c #BB0101",
+"y c #DA6A6A",
+"A c #4C4C4C",
+"9 c #F7DFDF",
+"@ c #BF5353",
+"w c #FAE9E9",
+"F c #272727",
+"5 c #D24A4A",
+". c #C06363",
+"n c #BF8282",
+"7 c #F2C9C9",
+"t c #C09292",
+"M c #3E3E3E",
+"x c #4D4D4D",
+"4 c #CA2A2A",
+"h c #E79F9F",
+"* c #C05454",
+"D c #711212",
+"V c #737373",
+"$ c #BF3232",
+"N c #900B0B",
+"6 c #BD0303",
+"3 c #DF7F7F",
+"K c #6F1212",
+"C c #BD0000",
+"m c #950909",
+"P c #8A8A8A",
+"j c #D75F5F",
+"  c None",
+"e c #F4D4D4",
+"S c #BF2020",
+"L c #747474",
+"G c #842C2C",
+"c c #ECB4B4",
+"l c #2E2121",
+"g c #BF7E7E",
+"k c #9B0808",
+"= c #BF0505",
+"a c #B10303",
+"q c #7E2020",
+"1 c #642222",
+"J c #676767",
+"B c #322020",
+"; c #C00303",
+"i c #242424",
+"o c #C00000",
+"> c #BF1F1F",
+", c #842B2B",
+"f c #701212",
+"0 c #BE0000",
+"r c #960909",
+"H c #686868",
+"v c #BC0000",
+"Z c #671414",
+"+ c #C02020",
+"z c #CD3535",
+/* pixels */
+"                                ",
+"                                ",
+"            .XoooOO             ",
+"         .+ooooooooo@#          ",
+"        $oooooooooooo%&         ",
+"      *=-ooooooooooooo;:        ",
+"     *oooooooooooooooooo>       ",
+"     =ooooooooooooooooooo,      ",
+"    $-ooooooooooooooooooo<1     ",
+"   .oooooo2334ooo533oooooo6     ",
+"   +ooooooo789oo2883oooooo0q    ",
+"   oooooooo2w83o78eoooooooor    ",
+"  toooooooooy88u884oooooooori   ",
+"  Xooooooooooe888poooooooooas   ",
+"  ooooooooooo4889doooooooooof   ",
+"  ooooooooooo588w2oooooooooofi  ",
+"  oooooooooodw8887oooooooooofi  ",
+"  goooooooooh8w588jooooooookli  ",
+"  tooooooooz885op8wdooooooorix  ",
+"   oooooood98cood98cooooooori   ",
+"   @oooooop8w2ooo5885ooooovbi   ",
+"   n%ooooooooooooooooooooomiM   ",
+"    &;oooooooooooooooooooNBiV   ",
+"     :ooooooooooooooooooCZiA    ",
+"     nSooooooooooooooooCDiF     ",
+"      nG<oooooooooooooNZiiH     ",
+"        160ooooooooovmBiFH      ",
+"         nqrraoookrrbiiA        ",
+"          nJisKKKliiiML         ",
+"             nPiiix             ",
+"                                ",
+"                                "
+};
 
+/* Copyright (c) Julian Smart */
 static char *info_xpm[]={
-"32 32 6 1",
-". c None",
-"d c #000000",
-"c c #0000ff",
-"# c #808080",
-"a c #c0c0c0",
-"b c #ffffff",
-"...........########.............",
-"........###abbbbbba###..........",
-"......##abbbbbbbbbbbba##........",
-".....#abbbbbbbbbbbbbbbba#.......",
-"....#bbbbbbbaccccabbbbbbbd......",
-"...#bbbbbbbbccccccbbbbbbbbd.....",
-"..#bbbbbbbbbccccccbbbbbbbbbd....",
-".#abbbbbbbbbaccccabbbbbbbbbad...",
-".#bbbbbbbbbbbbbbbbbbbbbbbbbbd#..",
-"#abbbbbbbbbbbbbbbbbbbbbbbbbbad#.",
-"#bbbbbbbbbbcccccccbbbbbbbbbbbd#.",
-"#bbbbbbbbbbbbcccccbbbbbbbbbbbd##",
-"#bbbbbbbbbbbbcccccbbbbbbbbbbbd##",
-"#bbbbbbbbbbbbcccccbbbbbbbbbbbd##",
-"#bbbbbbbbbbbbcccccbbbbbbbbbbbd##",
-"#abbbbbbbbbbbcccccbbbbbbbbbbad##",
-".#bbbbbbbbbbbcccccbbbbbbbbbbd###",
-".#abbbbbbbbbbcccccbbbbbbbbbad###",
-"..#bbbbbbbbcccccccccbbbbbbbd###.",
-"...dbbbbbbbbbbbbbbbbbbbbbbd####.",
-"....dbbbbbbbbbbbbbbbbbbbbd####..",
-".....dabbbbbbbbbbbbbbbbad####...",
-"......ddabbbbbbbbbbbbadd####....",
-".......#dddabbbbbbaddd#####.....",
-"........###dddabbbd#######......",
-"..........####dbbbd#####........",
-".............#dbbbd##...........",
-"...............dbbd##...........",
-"................dbd##...........",
-".................dd##...........",
-"..................###...........",
-"...................##..........."};
+/* columns rows colors chars-per-pixel */
+"32 32 17 1",
+"* c #A1A3FB",
+"X c #FFFFFF",
+"O c #191EF4",
+"= c #777AF9",
+": c #4D51F7",
+"  c None",
+"- c #2328F5",
+"+ c #4247F6",
+"; c #C1C2FC",
+". c #C0C0C0",
+"& c #E0E1FE",
+"% c #242424",
+"> c #2D32F5",
+"o c #CBCCFD",
+"# c #0309F3",
+"@ c #8C8FFA",
+"$ c #EAEBFE",
+/* pixels */
+"          .......               ",
+"       ...XXXXXXX...            ",
+"     ..XXXXXXXXXXXXX..          ",
+"    .XXXXXXXXXXXXXXXXX.         ",
+"   .XXXXXXXXoO+XXXXXXXX.        ",
+"  .XXXXXXXXX@#OXXXXXXXXX.       ",
+" .XXXXXXXXXX$@oXXXXXXXXXX.      ",
+" .XXXXXXXXXXXXXXXXXXXXXXX.%     ",
+" .XXXXXXXXX&*=-XXXXXXXXXX.%%    ",
+".XXXXXXXXXX;:#>XXXXXXXXXXX.%    ",
+".XXXXXXXXXXX;#+XXXXXXXXXXX.%    ",
+".XXXXXXXXXXX;#+XXXXXXXXXXX.%%   ",
+" .XXXXXXXXXX;#+XXXXXXXXXX.%%%   ",
+" .XXXXXXXXXX;#+XXXXXXXXXX.%%%   ",
+" .XXXXXXXXXX;#+XXXXXXXXXX.%%    ",
+"  .XXXXXXXX*-##+XXXXXXXX.%%%    ",
+"   .XXXXXXXXXXXXXXXXXXX.%%%%    ",
+"    .XXXXXXXXXXXXXXXXX.%%%%     ",
+"     ..XXXXXXXXXXXXX..%%%%      ",
+"      %...XXXXXXXX..%%%%%       ",
+"       %%%..XXXXXX.%%%%%        ",
+"         %%%.XXXXX.%%%          ",
+"            %.XXXX.%%           ",
+"              .XXX.%%           ",
+"               .XX.%%           ",
+"                .X.%%           ",
+"                 ..%%           ",
+"                  .%%           ",
+"                   %%           ",
+"                    %           ",
+"                                ",
+"                                "
+};
 
+/* Copyright (c) Julian Smart */
 static char *question_xpm[]={
-"32 32 6 1",
-". c None",
-"c c #000000",
-"d c #0000ff",
-"# c #808080",
-"a c #c0c0c0",
-"b c #ffffff",
-"...........########.............",
-"........###abbbbbba###..........",
-"......##abbbbbbbbbbbba##........",
-".....#abbbbbbbbbbbbbbbba#.......",
-"....#bbbbbbbbbbbbbbbbbbbbc......",
-"...#bbbbbbbaddddddabbbbbbbc.....",
-"..#bbbbbbbadabbddddabbbbbbbc....",
-".#abbbbbbbddbbbbddddbbbbbbbac...",
-".#bbbbbbbbddddbbddddbbbbbbbbc#..",
-"#abbbbbbbbddddbaddddbbbbbbbbac#.",
-"#bbbbbbbbbaddabddddbbbbbbbbbbc#.",
-"#bbbbbbbbbbbbbadddbbbbbbbbbbbc##",
-"#bbbbbbbbbbbbbdddbbbbbbbbbbbbc##",
-"#bbbbbbbbbbbbbddabbbbbbbbbbbbc##",
-"#bbbbbbbbbbbbbddbbbbbbbbbbbbbc##",
-"#abbbbbbbbbbbbbbbbbbbbbbbbbbac##",
-".#bbbbbbbbbbbaddabbbbbbbbbbbc###",
-".#abbbbbbbbbbddddbbbbbbbbbbac###",
-"..#bbbbbbbbbbddddbbbbbbbbbbc###.",
-"...cbbbbbbbbbaddabbbbbbbbbc####.",
-"....cbbbbbbbbbbbbbbbbbbbbc####..",
-".....cabbbbbbbbbbbbbbbbac####...",
-"......ccabbbbbbbbbbbbacc####....",
-".......#cccabbbbbbaccc#####.....",
-"........###cccabbbc#######......",
-"..........####cbbbc#####........",
-".............#cbbbc##...........",
-"...............cbbc##...........",
-"................cbc##...........",
-".................cc##...........",
-"..................###...........",
-"...................##..........."};
+/* columns rows colors chars-per-pixel */
+"32 32 16 1",
+"O c #A3A3FF",
+"X c #FFFFFF",
+"% c #CACAFF",
+"- c #4141FF",
+"= c #6060FF",
+"* c #2B2BFF",
+"@ c #B5B5FF",
+"  c None",
+"# c #1616FF",
+"+ c #8181FF",
+"$ c #0000FF",
+". c #C0C0C0",
+"; c #5555FF",
+": c #242424",
+"o c #E7E7FF",
+"& c #7575FF",
+/* pixels */
+"          .......               ",
+"       ...XXXXXXX...            ",
+"     ..XXXXXXXXXXXXX..          ",
+"    .XXXXXXoO++@XXXXXX.         ",
+"   .XXXXXXO#$$$$#%XXXXX.        ",
+"  .XXXXXX@$$#&&#$#oXXXXX.       ",
+" .XXXXXXX*$$%XX%$$=XXXXXX.      ",
+" .XXXXXXX+-;XXXX$$-XXXXXX.:     ",
+" .XXXXXXXXXXXXX+$$&XXXXXX.::    ",
+".XXXXXXXXXXXXo;$$*oXXXXXXX.:    ",
+".XXXXXXXXXXXo*$$*oXXXXXXXX.:    ",
+".XXXXXXXXXXX+$$*oXXXXXXXXX.::   ",
+" .XXXXXXXXXX-$$oXXXXXXXXX.:::   ",
+" .XXXXXXXXXXX--XXXXXXXXXX.:::   ",
+" .XXXXXXXXXXXXXXXXXXXXXXX.::    ",
+"  .XXXXXXXXX-$$XXXXXXXXX.:::    ",
+"   .XXXXXXXX-$$XXXXXXXX.::::    ",
+"    .XXXXXXXO++XXXXXXX.::::     ",
+"     ..XXXXXXXXXXXXX..::::      ",
+"      :...XXXXXXXX..:::::       ",
+"       :::..XXXXXX.:::::        ",
+"         :::.XXXXX.:::          ",
+"            :.XXXX.::           ",
+"              .XXX.::           ",
+"               .XX.::           ",
+"                .X.::           ",
+"                 ..::           ",
+"                  .::           ",
+"                   ::           ",
+"                    :           ",
+"                                ",
+"                                "
+};
 
+/* Copyright (c) Julian Smart */
 static char *warning_xpm[]={
-"32 32 6 1",
-". c None",
-"c c #000000",
-"# c #808000",
-"d c #808080",
-"b c #c0c0c0",
-"a c #ffff00",
-".............###................",
-"............#aabc...............",
-"...........#aaaabcd.............",
-"...........#aaaaacdd............",
-"..........#aaaaaabcdd...........",
-"..........#aaaaaaacdd...........",
-".........#aaaaaaaabcdd..........",
-".........#aaaaaaaaacdd..........",
-"........#aaaaaaaaaabcdd.........",
-"........#aaabcccbaaacdd.........",
-".......#aaaacccccaaabcdd........",
-".......#aaaacccccaaaacdd........",
-"......#aaaaacccccaaaabcdd.......",
-"......#aaaaacccccaaaaacdd.......",
-".....#aaaaaacccccaaaaabcdd......",
-".....#aaaaaa#ccc#aaaaaacdd......",
-"....#aaaaaaabcccbaaaaaabcdd.....",
-"....#aaaaaaaacccaaaaaaaacdd.....",
-"...#aaaaaaaaa#c#aaaaaaaabcdd....",
-"...#aaaaaaaaabcbaaaaaaaaacdd....",
-"..#aaaaaaaaaaacaaaaaaaaaabcdd...",
-"..#aaaaaaaaaaaaaaaaaaaaaaacdd...",
-".#aaaaaaaaaaabccbaaaaaaaaabcdd..",
-".#aaaaaaaaaaaccccaaaaaaaaaacdd..",
-"#aaaaaaaaaaaaccccaaaaaaaaaabcdd.",
-"#aaaaaaaaaaaabccbaaaaaaaaaaacdd.",
-"#aaaaaaaaaaaaaaaaaaaaaaaaaaacddd",
-"#aaaaaaaaaaaaaaaaaaaaaaaaaabcddd",
-".#aaaaaaaaaaaaaaaaaaaaaaaabcdddd",
-"..#ccccccccccccccccccccccccddddd",
-"....ddddddddddddddddddddddddddd.",
-".....ddddddddddddddddddddddddd.."};
+/* columns rows colors chars-per-pixel */
+"32 32 9 1",
+"@ c Black",
+"o c #A6A800",
+"+ c #8A8C00",
+"$ c #B8BA00",
+"  c None",
+"O c #6E7000",
+"X c #DCDF00",
+". c #C00000",
+"# c #373800",
+/* pixels */
+"                                ",
+"                                ",
+"                                ",
+"                .               ",
+"               ...              ",
+"               ...              ",
+"              .....             ",
+"             ...X..             ",
+"             ..XXX..            ",
+"            ...XXX...           ",
+"            ..XXXXX..           ",
+"           ..XXXXXX...          ",
+"          ...XXoO+XX..          ",
+"          ..XXXO@#XXX..         ",
+"         ..XXXXO@#XXX...        ",
+"        ...XXXXO@#XXXX..        ",
+"        ..XXXXXO@#XXXX...       ",
+"       ...XXXXXo@OXXXXX..       ",
+"      ...XXXXXXo@OXXXXXX..      ",
+"      ..XXXXXXX$@OXXXXXX...     ",
+"     ...XXXXXXXX@XXXXXXXX..     ",
+"    ...XXXXXXXXXXXXXXXXXX...    ",
+"    ..XXXXXXXXXXOXXXXXXXXX..    ",
+"   ...XXXXXXXXXO@#XXXXXXXXX..   ",
+"   ..XXXXXXXXXXX#XXXXXXXXXX...  ",
+"  ...XXXXXXXXXXXXXXXXXXXXXXX..  ",
+" ...XXXXXXXXXXXXXXXXXXXXXXXX... ",
+" .............................. ",
+" .............................. ",
+"                                ",
+"                                ",
+"                                "
+};
+
 
 wxBitmap wxWin32ArtProvider::CreateBitmap(const wxArtID& id,
                                           const wxArtClient& WXUNUSED(client),
@@ -4108,6 +4324,12 @@ void wxWin32Renderer::AdjustSize(wxSize *size, const wxWindow *window)
     }
 #endif // wxUSE_SCROLLBAR/!wxUSE_SCROLLBAR
 
+#if wxUSE_BMPBUTTON
+    if ( wxDynamicCast(window, wxBitmapButton) )
+    {
+        // do nothing
+    } else
+#endif // wxUSE_BMPBUTTON
 #if wxUSE_BUTTON
     if ( wxDynamicCast(window, wxButton) )
     {
@@ -4548,16 +4770,16 @@ class wxWin32SystemMenuEvtHandler : public wxEvtHandler
 {
 public:
     wxWin32SystemMenuEvtHandler(wxWin32FrameInputHandler *handler);
-    
+
     void Attach(wxInputConsumer *consumer);
     void Detach();
-    
+
 private:
     DECLARE_EVENT_TABLE()
     void OnSystemMenu(wxCommandEvent &event);
     void OnCloseFrame(wxCommandEvent &event);
     void OnClose(wxCloseEvent &event);
-   
+
     wxWin32FrameInputHandler *m_inputHnd;
     wxTopLevelWindow         *m_wnd;
 #if wxUSE_ACCEL
@@ -4578,9 +4800,9 @@ void wxWin32SystemMenuEvtHandler::Attach(wxInputConsumer *consumer)
 
     m_wnd = wxStaticCast(consumer->GetInputWindow(), wxTopLevelWindow);
     m_wnd->PushEventHandler(this);
-    
+
 #if wxUSE_ACCEL
-    // VS: This code relies on using generic implementation of 
+    // VS: This code relies on using generic implementation of
     //     wxAcceleratorTable in wxUniv!
     wxAcceleratorTable table = *m_wnd->GetAcceleratorTable();
     m_oldAccelTable = table;
@@ -4597,7 +4819,7 @@ void wxWin32SystemMenuEvtHandler::Detach()
 #if wxUSE_ACCEL
         m_wnd->SetAcceleratorTable(m_oldAccelTable);
 #endif
-        m_wnd->RemoveEventHandler(this); 
+        m_wnd->RemoveEventHandler(this);
         m_wnd = NULL;
     }
 }
@@ -4678,8 +4900,8 @@ bool wxWin32FrameInputHandler::HandleMouse(wxInputConsumer *consumer,
         else if ( tlw->GetWindowStyle() & wxSYSTEM_MENU )
         {
             if ( (event.LeftDown() && hit == wxHT_TOPLEVEL_ICON) ||
-                 (event.RightDown() && 
-                      (hit == wxHT_TOPLEVEL_TITLEBAR || 
+                 (event.RightDown() &&
+                      (hit == wxHT_TOPLEVEL_TITLEBAR ||
                        hit == wxHT_TOPLEVEL_ICON)) )
             {
                 PopupSystemMenu(tlw, event.GetPosition());
@@ -4691,7 +4913,7 @@ bool wxWin32FrameInputHandler::HandleMouse(wxInputConsumer *consumer,
     return wxStdFrameInputHandler::HandleMouse(consumer, event);
 }
 
-void wxWin32FrameInputHandler::PopupSystemMenu(wxTopLevelWindow *window, 
+void wxWin32FrameInputHandler::PopupSystemMenu(wxTopLevelWindow *window,
                                                const wxPoint& pos) const
 {
     wxMenu *menu = new wxMenu;
@@ -4707,7 +4929,7 @@ void wxWin32FrameInputHandler::PopupSystemMenu(wxTopLevelWindow *window,
         menu->Append(wxID_MAXIMIZE_FRAME , _("Ma&ximize"));
     menu->AppendSeparator();
     menu->Append(wxID_CLOSE_FRAME, _("Close\tAlt-F4"));
-    
+
     if ( window->GetWindowStyle() & wxMAXIMIZE_BOX )
     {
         if ( window->IsMaximized() )
@@ -4725,7 +4947,7 @@ void wxWin32FrameInputHandler::PopupSystemMenu(wxTopLevelWindow *window,
     delete menu;
 }
 
-bool wxWin32FrameInputHandler::HandleActivation(wxInputConsumer *consumer, 
+bool wxWin32FrameInputHandler::HandleActivation(wxInputConsumer *consumer,
                                                 bool activated)
 {
     if ( consumer->GetInputWindow()->GetWindowStyle() & wxSYSTEM_MENU )

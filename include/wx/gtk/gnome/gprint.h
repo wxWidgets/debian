@@ -46,6 +46,7 @@ public:
     virtual bool Ok() const { return true; }
     
     GnomePrintConfig* GetPrintConfig() { return m_config; }
+    void SetPrintJob( GnomePrintJob *job ) { m_job = job; }
     GnomePrintJob* GetPrintJob() { return m_job; }
     
     
@@ -77,7 +78,10 @@ public:
                                                   wxPrintDialogData *data = NULL );
     virtual wxPrintDialogBase *CreatePrintDialog( wxWindow *parent, 
                                                   wxPrintData *data );
-                                                  
+
+    virtual wxPageSetupDialogBase *CreatePageSetupDialog( wxWindow *parent,
+                                                          wxPageSetupDialogData * data = NULL );
+          
     virtual bool HasPrintSetupDialog();
     virtual wxDialog *CreatePrintSetupDialog( wxWindow *parent, wxPrintData *data );
     virtual bool HasOwnPrintToFile();
@@ -90,14 +94,23 @@ public:
 };
 
 //----------------------------------------------------------------------------
-// wxGnomePrintSetupDialog
+// wxGnomePrintDialog
 //----------------------------------------------------------------------------
 
-class wxGnomePrintSetupDialog: public wxDialog
+class wxGnomePrintDialog: public wxPrintDialogBase
 {
 public:
-    wxGnomePrintSetupDialog( wxWindow *parent, wxPrintData *data );
-    ~wxGnomePrintSetupDialog();
+    wxGnomePrintDialog( wxWindow *parent,
+                         wxPrintDialogData* data = NULL );
+    wxGnomePrintDialog( wxWindow *parent, wxPrintData* data);
+    ~wxGnomePrintDialog();
+
+    wxPrintData& GetPrintData()
+        { return m_printDialogData.GetPrintData(); }
+    wxPrintDialogData& GetPrintDialogData()
+        { return m_printDialogData; }
+        
+    wxDC *GetPrintDC();
 
     virtual int ShowModal();
 
@@ -113,8 +126,46 @@ private:
                            int WXUNUSED(sizeFlags) = wxSIZE_AUTO) {}
     virtual void DoMoveWindow(int WXUNUSED(x), int WXUNUSED(y),
                               int WXUNUSED(width), int WXUNUSED(height)) {}
+                              
+    void Init();
+    wxPrintDialogData   m_printDialogData;
+    
 private:
-    DECLARE_DYNAMIC_CLASS(wxGnomePrintSetupDialog)
+    DECLARE_DYNAMIC_CLASS(wxGnomePrintDialog)
+};
+
+//----------------------------------------------------------------------------
+// wxGnomePageSetupDialog
+//----------------------------------------------------------------------------
+
+class wxGnomePageSetupDialog: public wxPageSetupDialogBase
+{
+public:
+    wxGnomePageSetupDialog( wxWindow *parent,
+                            wxPageSetupDialogData* data = NULL );
+    ~wxGnomePageSetupDialog();
+
+    virtual wxPageSetupDialogData& GetPageSetupDialogData();
+
+    virtual int ShowModal();
+
+    virtual bool Validate();
+    virtual bool TransferDataToWindow();
+    virtual bool TransferDataFromWindow();
+
+private:    
+    // Implement some base class methods to do nothing to avoid asserts and
+    // GTK warnings, since this is not a real wxDialog.
+    virtual void DoSetSize(int WXUNUSED(x), int WXUNUSED(y),
+                           int WXUNUSED(width), int WXUNUSED(height),
+                           int WXUNUSED(sizeFlags) = wxSIZE_AUTO) {}
+    virtual void DoMoveWindow(int WXUNUSED(x), int WXUNUSED(y),
+                              int WXUNUSED(width), int WXUNUSED(height)) {}
+                              
+    wxPageSetupDialogData   m_pageDialogData;
+    
+private:
+    DECLARE_DYNAMIC_CLASS(wxGnomePageSetupDialog)
 };
 
 //----------------------------------------------------------------------------
@@ -137,6 +188,7 @@ public:
     
 private:
     GnomePrintContext *m_gpc;
+    bool               m_native_preview;
 
 private:
     DECLARE_DYNAMIC_CLASS(wxGnomePrinter)

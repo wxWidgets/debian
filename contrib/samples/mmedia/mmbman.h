@@ -4,7 +4,7 @@
 // Author:      Guilhem Lavaux, <guilhem.lavaux@libertysurf.fr>
 // Modified by:
 // Created:     13/02/2000
-// RCS-ID:      $Id: mmbman.h,v 1.2 2002/09/07 12:12:21 GD Exp $
+// RCS-ID:      $Id: mmbman.h,v 1.3 2005/03/31 19:10:23 ABX Exp $
 // Copyright:   (c) 2000, Guilhem Lavaux
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -13,7 +13,7 @@
 #define _MMBMAN_APP_H_
 
 #if defined(__GNUG__) && !defined(__APPLE__)
-  #pragma interface "mmbman.cpp"
+  #pragma interface "mmbman.h"
 #endif
 
 #include "wx/stream.h"
@@ -46,7 +46,7 @@ class MMBoardFile {
   virtual bool NeedWindow() = 0;
 
   virtual void SetWindow(wxWindow *window) = 0;
-  
+
   virtual void Play() = 0;
   virtual void Pause() = 0;
   virtual void Resume() = 0;
@@ -55,7 +55,7 @@ class MMBoardFile {
   virtual MMBoardTime GetPosition() = 0;
   virtual MMBoardTime GetLength() = 0;
   virtual void SetPosition(MMBoardTime btime) = 0;
-  
+
   virtual bool IsStopped() = 0;
   virtual bool IsPaused() = 0;
 

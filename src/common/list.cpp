@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by: VZ at 16/11/98: WX_DECLARE_LIST() and typesafe lists added
 // Created:     04/01/98
-// RCS-ID:      $Id: list.cpp,v 1.51 2004/09/17 17:57:44 ABX Exp $
+// RCS-ID:      $Id: list.cpp,v 1.55 2005/06/07 18:59:29 ABX Exp $
 // Copyright:   (c) Julian Smart
 // Licence:     wxWindows licence
 ////////////////////////////////////////////////////////////////////////////////
@@ -594,12 +594,6 @@ void wxObjectListNode::DeleteData()
 // wxStringList
 // ----------------------------------------------------------------------------
 
-static inline wxChar* MYcopystring(const wxString& s)
-{
-    wxChar* copy = new wxChar[s.length() + 1];
-    return wxStrcpy(copy, s.c_str());
-}
-
 static inline wxChar* MYcopystring(const wxChar* s)
 {
     wxChar* copy = new wxChar[wxStrlen(s) + 1];
@@ -756,4 +750,15 @@ wxNode *wxStringList::Prepend(const wxChar *s)
 
 #endif // wxLIST_COMPATIBILITY
 
+#else // wxUSE_STL = 1
+
+    #include <wx/listimpl.cpp>
+    WX_DEFINE_LIST(wxObjectList);
+
+// with wxUSE_STL wxStringList contains wxString objects, not pointers
+void wxStringListBase::DeleteFunction( const wxString WXUNUSED(X) )
+{
+}
+
 #endif // !wxUSE_STL
+

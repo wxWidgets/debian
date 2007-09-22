@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     11/6/98
-// RCS-ID:      $Id: automtn.cpp,v 1.40 2004/10/08 18:49:13 ABX Exp $
+// RCS-ID:      $Id: automtn.cpp,v 1.42 2005/05/31 09:20:42 JS Exp $
 // Copyright:   (c) 1998, Julian Smart
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -31,8 +31,7 @@
 #include "wx/msw/private.h"
 #include "wx/msw/ole/oleutils.h"
 #include "wx/msw/ole/automtn.h"
-
-#include <math.h>
+#include "wx/math.h"
 
 #ifdef __WXWINCE__
 #include "wx/msw/wince/time.h"
@@ -1232,7 +1231,7 @@ void ShowException(LPOLESTR szMember, HRESULT hr, EXCEPINFO *pexcep, unsigned in
             break;
 
         default:
-            wsprintf(szBuf, L"%s: Unknown error occured.", szMember);
+            wsprintf(szBuf, L"%s: Unknown error occurred.", szMember);
             break;
     }
 

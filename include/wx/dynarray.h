@@ -4,7 +4,7 @@
 // Author:      Vadim Zeitlin
 // Modified by:
 // Created:     12.09.97
-// RCS-ID:      $Id: dynarray.h,v 1.79 2004/11/08 14:43:04 VZ Exp $
+// RCS-ID:      $Id: dynarray.h,v 1.81 2005/06/08 15:17:42 ABX Exp $
 // Copyright:   (c) 1998 Vadim Zeitlin <zeitlin@dptmaths.ens-cachan.fr>
 // Licence:     wxWindows licence
 ///////////////////////////////////////////////////////////////////////////////
@@ -296,15 +296,15 @@ public:                                                               \
   int Index(T e, bool bFromEnd = false) const                         \
     { return base::Index(e, bFromEnd); }                              \
                                                                       \
-  void Add(T Item, size_t nInsert = 1)                                \
-    { insert(end(), nInsert, Item); }                                 \
-  void Insert(T Item, size_t uiIndex, size_t nInsert = 1)             \
-    { insert(begin() + uiIndex, nInsert, Item); }                     \
+  void Add(T lItem, size_t nInsert = 1)                               \
+    { insert(end(), nInsert, lItem); }                                \
+  void Insert(T lItem, size_t uiIndex, size_t nInsert = 1)            \
+    { insert(begin() + uiIndex, nInsert, lItem); }                    \
                                                                       \
   void RemoveAt(size_t uiIndex, size_t nRemove = 1)                   \
     { base::RemoveAt(uiIndex, nRemove); }                             \
-  void Remove(T Item)                                                 \
-    { int iIndex = Index(Item);                                       \
+  void Remove(T lItem)                                                \
+    { int iIndex = Index(lItem);                                      \
       wxCHECK2_MSG( iIndex != wxNOT_FOUND, return,                    \
          _WX_ERROR_REMOVE);                                           \
       RemoveAt((size_t)iIndex); }                                     \
@@ -342,18 +342,18 @@ public:                                                               \
   T& Last() const                                                     \
     { return (T&)(base::operator[](Count() - 1)); }                   \
                                                                       \
-  int Index(T Item, bool bFromEnd = false) const                      \
-    { return base::Index((base_type)Item, bFromEnd); }                \
+  int Index(T lItem, bool bFromEnd = false) const                     \
+    { return base::Index((base_type)lItem, bFromEnd); }               \
                                                                       \
-  void Add(T Item, size_t nInsert = 1)                                \
-    { base::Add((base_type)Item, nInsert); }                          \
-  void Insert(T Item, size_t uiIndex, size_t nInsert = 1)             \
-    { base::Insert((base_type)Item, uiIndex, nInsert) ; }             \
+  void Add(T lItem, size_t nInsert = 1)                               \
+    { base::Add((base_type)lItem, nInsert); }                         \
+  void Insert(T lItem, size_t uiIndex, size_t nInsert = 1)            \
+    { base::Insert((base_type)lItem, uiIndex, nInsert) ; }            \
                                                                       \
   void RemoveAt(size_t uiIndex, size_t nRemove = 1)                   \
     { base::RemoveAt(uiIndex, nRemove); }                             \
-  void Remove(T Item)                                                 \
-    { int iIndex = Index(Item);                                       \
+  void Remove(T lItem)                                                \
+    { int iIndex = Index(lItem);                                      \
       wxCHECK2_MSG( iIndex != wxNOT_FOUND, return,                    \
          _WX_ERROR_REMOVE);                                           \
       base::RemoveAt((size_t)iIndex); }                               \
@@ -400,11 +400,11 @@ public:                                                               \
     reverse_iterator(const itor& it) : m_ptr(it.m_ptr) { }            \
     reference operator*() const { return *m_ptr; }                    \
     ptrop                                                             \
-    itor operator++() { --m_ptr; return *this; }                      \
-    itor operator++(int)                                              \
+    itor& operator++() { --m_ptr; return *this; }                     \
+    const itor operator++(int)                                        \
       { reverse_iterator tmp = *this; --m_ptr; return tmp; }          \
-    itor operator--() { ++m_ptr; return *this; }                      \
-    itor operator--(int) { itor tmp = *this; ++m_ptr; return tmp; }   \
+    itor& operator--() { ++m_ptr; return *this; }                     \
+    const itor operator--(int) { itor tmp = *this; ++m_ptr; return tmp; }\
     bool operator ==(const itor& it) { return m_ptr == it.m_ptr; }    \
     bool operator !=(const itor& it) { return m_ptr != it.m_ptr; }    \
   };                                                                  \
@@ -433,11 +433,11 @@ public:                                                               \
     const_reverse_iterator(const reverse_iterator& it) : m_ptr(it.m_ptr) { }\
     reference operator*() const { return *m_ptr; }                    \
     ptrop                                                             \
-    itor operator++() { --m_ptr; return *this; }                      \
-    itor operator++(int)                                              \
+    itor& operator++() { --m_ptr; return *this; }                     \
+    const itor operator++(int)                                        \
       { itor tmp = *this; --m_ptr; return tmp; }                      \
-    itor operator--() { ++m_ptr; return *this; }                      \
-    itor operator--(int) { itor tmp = *this; ++m_ptr; return tmp; }   \
+    itor& operator--() { ++m_ptr; return *this; }                     \
+    const itor operator--(int) { itor tmp = *this; ++m_ptr; return tmp; }\
     bool operator ==(const itor& it) { return m_ptr == it.m_ptr; }    \
     bool operator !=(const itor& it) { return m_ptr != it.m_ptr; }    \
   };                                                                  \
@@ -518,22 +518,22 @@ public:                                                               \
   T& Last() const                                                     \
     { return (T&)(base::operator[](size() - 1)); }                    \
                                                                       \
-  int Index(T Item) const                                             \
-    { return base::Index(Item, (CMPFUNC)m_fnCompare); }               \
+  int Index(T lItem) const                                            \
+    { return base::Index(lItem, (CMPFUNC)m_fnCompare); }              \
                                                                       \
-  size_t IndexForInsert(T Item) const                                 \
-    { return base::IndexForInsert(Item, (CMPFUNC)m_fnCompare); }      \
+  size_t IndexForInsert(T lItem) const                                \
+    { return base::IndexForInsert(lItem, (CMPFUNC)m_fnCompare); }     \
                                                                       \
   void AddAt(T item, size_t index)                                    \
     { base::insert(begin() + index, item); }                          \
                                                                       \
-  size_t Add(T Item)                                                  \
-    { return base::Add(Item, (CMPFUNC)m_fnCompare); }                 \
+  size_t Add(T lItem)                                                 \
+    { return base::Add(lItem, (CMPFUNC)m_fnCompare); }                \
                                                                       \
   void RemoveAt(size_t uiIndex, size_t nRemove = 1)                   \
     { base::erase(begin() + uiIndex, begin() + uiIndex + nRemove); }  \
-  void Remove(T Item)                                                 \
-    { int iIndex = Index(Item);                                       \
+  void Remove(T lItem)                                                \
+    { int iIndex = Index(lItem);                                      \
       wxCHECK2_MSG( iIndex != wxNOT_FOUND, return,                    \
         _WX_ERROR_REMOVE );                                           \
       base::erase(begin() + iIndex); }                                \
@@ -575,17 +575,17 @@ public:                                                                  \
   T& Last() const                                                        \
     { return *(T*)(base::operator[](size() - 1)); }                      \
                                                                          \
-  int Index(const T& Item, bool bFromEnd = false) const;                 \
+  int Index(const T& lItem, bool bFromEnd = false) const;                \
                                                                          \
-  void Add(const T& Item, size_t nInsert = 1);                           \
+  void Add(const T& lItem, size_t nInsert = 1);                          \
   void Add(const T* pItem)                                               \
     { base::push_back((T*)pItem); }                                      \
   void push_back(const T* pItem)                                         \
     { base::push_back((T*)pItem); }                                      \
-  void push_back(const T& Item)                                          \
-    { Add(Item); }                                                       \
+  void push_back(const T& lItem)                                         \
+    { Add(lItem); }                                                      \
                                                                          \
-  void Insert(const T& Item,  size_t uiIndex, size_t nInsert = 1);       \
+  void Insert(const T& lItem,  size_t uiIndex, size_t nInsert = 1);      \
   void Insert(const T* pItem, size_t uiIndex)                            \
     { base::insert(begin() + uiIndex, (T*)pItem); }                      \
                                                                          \
