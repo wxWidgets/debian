@@ -1,3 +1,15 @@
+wxwindows2.4 (2.4.2.6.1) unstable; urgency=high
+
+  * High urgency because this removes some source files we appear
+    not to have permssion to distribute.  Fortunately their removal
+    does not effect any of the existing package binaries.  This must
+    propagate through the archive before we freeze.  Closes: #306013
+  * Remove typo apostrophe in control.in  Closes: #268527
+  * There are no other changes in this otherwise unintended release,
+    it should have no effect on dependent packages.
+
+ -- Ron Lee <ron@debian.org>  Sun, 24 Apr 2005 01:14:56 +0930
+
 wxwindows2.4 (2.4.2.6) unstable; urgency=high
 
   * High urgency so as not to reset the shotclock for getting wx and

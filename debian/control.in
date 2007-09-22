@@ -126,7 +126,7 @@ Description: wxWindows Cross-platform C++ GUI toolkit (wxPython binding)
  Interface) and other facilities on more than one platform.  Version =V
  currently supports subsets of GTK+, Motif, and MS Windows.
  .
- This package provides a Python binding to the wxGTK library and it's
+ This package provides a Python binding to the wxGTK library and its
  contrib libs.  If you wish to use xrced you'll also need the python-xml
  package installed.
 
