@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     29/01/98
-// RCS-ID:      $Id: filefn.cpp,v 1.159.2.6 2002/11/21 21:49:20 RR Exp $
+// RCS-ID:      $Id: filefn.cpp,v 1.159.2.9 2003/06/11 18:21:13 GD Exp $
 // Copyright:   (c) 1998 Julian Smart
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -210,34 +210,43 @@ void wxPathList::Add (const wxString& path)
 // Add paths e.g. from the PATH environment variable
 void wxPathList::AddEnvList (const wxString& envVariable)
 {
-  static const wxChar PATH_TOKS[] =
+    static const wxChar PATH_TOKS[] =
 #ifdef __WINDOWS__
-        wxT(" ;"); // Don't seperate with colon in DOS (used for drive)
+        /*
+        The space has been removed from the tokenizers, otherwise a
+        path such as "C:\Program Files" would be split into 2 paths:
+        "C:\Program" and "Files"
+        */
+//        wxT(" ;"); // Don't seperate with colon in DOS (used for drive)
+        wxT(";"); // Don't seperate with colon in DOS (used for drive)
 #else
         wxT(" :;");
 #endif
 
-  wxChar *val = wxGetenv (WXSTRINGCAST envVariable);
-  if (val && *val)
+    wxChar *val = wxGetenv (WXSTRINGCAST envVariable);
+    if (val && *val)
     {
-      wxChar *s = copystring (val);
-      wxChar *save_ptr, *token = wxStrtok (s, PATH_TOKS, &save_ptr);
+        wxChar *s = copystring (val);
+        wxChar *save_ptr, *token = wxStrtok (s, PATH_TOKS, &save_ptr);
 
-      if (token)
-      {
-          Add (copystring (token));
-          while (token)
-          {
-              if ((token = wxStrtok ((wxChar *) NULL, PATH_TOKS, &save_ptr)) != NULL)
-                  Add (wxString(token));
-          }
-      }
+        if (token)
+        {
+            Add(token);
+            while (token)
+            {
+                if ( (token = wxStrtok ((wxChar *) NULL, PATH_TOKS, &save_ptr))
+                    != NULL )
+                {
+                    Add(token);
+                }
+            }
+        }
 
-      // suppress warning about unused variable save_ptr when wxStrtok() is a
-      // macro which throws away its third argument
-      save_ptr = token;
+        // suppress warning about unused variable save_ptr when wxStrtok() is a
+        // macro which throws away its third argument
+        save_ptr = token;
 
-      delete [] s;
+        delete [] s;
     }
 }
 
@@ -1030,13 +1039,13 @@ void wxUnixFilename2FSSpec( const char *path , FSSpec *spec )
 #endif // __WXMAC__
 
 void
-wxDos2UnixFilename (char *s)
+wxDos2UnixFilename (wxChar *s)
 {
   if (s)
     while (*s)
       {
-        if (*s == '\\')
-          *s = '/';
+        if (*s == _T('\\'))
+          *s = _T('/');
 #ifdef __WXMSW__
         else
           *s = wxTolower (*s);        // Case INDEPENDENT
@@ -1586,6 +1595,8 @@ wxString wxGetOSDirectory()
     wxChar buf[256];
     GetWindowsDirectory(buf, 256);
     return wxString(buf);
+#elif defined(__WXMAC__)
+    return wxMacFindFolder(kOnSystemDisk, 'macs', false);
 #else
     return wxEmptyString;
 #endif

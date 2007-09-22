@@ -5,7 +5,7 @@
 // Author:      Robin Dunn
 //
 // Created:     28-Apr-1999
-// RCS-ID:      $Id: image.i,v 1.19.2.1 2003/02/14 19:25:27 RD Exp $
+// RCS-ID:      $Id: image.i,v 1.19.2.2 2003/04/10 19:38:10 RD Exp $
 // Copyright:   (c) 1998 by Total Control Software
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -256,6 +256,8 @@ public:
             return bitmap;
         }
     }
+
+    %pragma(python) addtoclass = "def __nonzero__(self): return self.Ok()"
 };
 
 

@@ -9,7 +9,7 @@
 // Author:      Robin Dunn
 //
 // Created:     13-Jan-2000
-// RCS-ID:      $Id: ScintillaWX.h,v 1.11.2.3 2002/12/19 18:27:21 RD Exp $
+// RCS-ID:      $Id: ScintillaWX.h,v 1.11.2.5 2003/04/19 19:56:49 RD Exp $
 // Copyright:   (c) 2000 by Total Control Software
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -27,6 +27,7 @@
 #include "Platform.h"
 
 #include "Scintilla.h"
+#include "XPM.h"
 #ifdef SCI_LEXER
 #include "SciLexer.h"
 #include "PropSet.h"
@@ -149,6 +150,7 @@ public:
     bool GetHideSelection() { return hideSelection; }
     void DoScrollToLine(int line);
     void DoScrollToColumn(int column);
+    void ClipChildren(wxDC& dc, PRectangle rect);
 
 private:
     bool                capturedMouse;
@@ -159,6 +161,9 @@ private:
     wxDragResult        dragResult;
 #endif
     int                 wheelRotation;
+
+
+    friend class wxSTCCallTip;
 };
 
 //----------------------------------------------------------------------

@@ -17,7 +17,7 @@
 //                     databases operate the same in that respect
 //
 // Created:     9.96
-// RCS-ID:      $Id: db.h,v 1.61.2.2 2002/12/03 19:00:43 rgammans Exp $
+// RCS-ID:      $Id: db.h,v 1.61.2.4 2003/06/05 20:33:17 JS Exp $
 // Copyright:   (c) 1996 Remstar International, Inc.
 // Licence:     wxWindows licence, plus:
 // Notice:      This class library and its intellectual design are free of charge for use,

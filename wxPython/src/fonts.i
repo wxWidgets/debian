@@ -5,7 +5,7 @@
 // Author:      Robin Dunn
 //
 // Created:     1-Apr-2002
-// RCS-ID:      $Id: fonts.i,v 1.4.2.6 2003/02/26 03:56:38 RD Exp $
+// RCS-ID:      $Id: fonts.i,v 1.4.2.8 2003/04/10 19:38:11 RD Exp $
 // Copyright:   (c) 2002 by Total Control Software
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -374,6 +374,7 @@ public:
     static wxFontEncoding GetDefaultEncoding();
     static void SetDefaultEncoding(wxFontEncoding encoding);
 
+    %pragma(python) addtoclass = "def __nonzero__(self): return self.Ok()"
 };
 
 
@@ -739,9 +740,9 @@ public:
     %pragma(python) addtoclass = "
     def Init(self, *_args, **_kwargs):
         if type(_args[0]) in [type(''), type(u'')]:
-            val = apply(self.Init1, _args, _kwargs)
+            val = self.Init1(*_args, **_kwargs)
         else:
-            val = apply(self.Init2, _args, _kwargs)
+            val = self.Init2(*_args, **_kwargs)
         return val
     "
 
@@ -962,6 +963,7 @@ public:
     // equivalent encodings, regardless the platform, including itself.
     static wxFontEncodingArray GetAllEquivalents(wxFontEncoding enc);
 
+    %pragma(python) addtoclass = "def __nonzero__(self): return self.IsOk()"
 };
 
 

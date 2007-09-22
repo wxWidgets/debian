@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     29/01/98
-// RCS-ID:      $Id: utilscmn.cpp,v 1.93.2.7 2002/12/16 23:08:31 RD Exp $
+// RCS-ID:      $Id: utilscmn.cpp,v 1.93.2.8 2003/04/10 13:15:22 VZ Exp $
 // Copyright:   (c) 1998 Julian Smart
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -132,6 +132,15 @@ wxRegisterId (long id)
   if (id >= wxCurrentId)
     wxCurrentId = id + 1;
 }
+
+// for GUI ports this is defined (without any real reason) in src/*/data.cpp
+// files
+#if !wxUSE_GUI
+
+WXDLLEXPORT_DATA(const wxChar *) wxFloatToStringStr = wxT("%.2f");
+WXDLLEXPORT_DATA(const wxChar *) wxDoubleToStringStr = wxT("%.2f");
+
+#endif // wxUSE_GUI
 
 void
 StringToFloat (const wxChar *s, float *number)

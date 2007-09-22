@@ -4,7 +4,7 @@
 // Author:      Aleksandras Gluchovas
 // Modified by:
 // Created:     ??/09/98
-// RCS-ID:      $Id: newbmpbtn.h,v 1.7.2.1 2002/10/24 11:21:35 JS Exp $
+// RCS-ID:      $Id: newbmpbtn.h,v 1.7.2.2 2003/04/02 14:14:06 JS Exp $
 // Copyright:   (c) Aleksandras Gluchovas
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -110,7 +110,7 @@ public:
 
         // Constructor.
     wxNewBitmapButton( const wxBitmap& labelBitmap = wxNullBitmap,
-                       const wxString& labelText   = "",
+                       const wxString& labelText   = wxT(""),
                        int   alignText             = NB_ALIGN_TEXT_BOTTOM,
                        bool  isFlat                = TRUE,
                        // this is the default type of fired events
@@ -124,7 +124,7 @@ public:
         // Use this constructor if buttons have to be persistant
     wxNewBitmapButton( const wxString& bitmapFileName,
                            const wxBitmapType     bitmapFileType = wxBITMAP_TYPE_BMP,
-                           const wxString& labelText      = "",
+                           const wxString& labelText      = wxT(""),
                            int alignText                  = NB_ALIGN_TEXT_BOTTOM,
                            bool  isFlat                   = TRUE,
                            // this is the default type of fired events
@@ -143,7 +143,7 @@ public:
     virtual void Reshape();
 
         // Sets the label and optionally label text.
-    virtual void SetLabel(const wxBitmap& labelBitmap, const wxString& labelText = "" );
+    virtual void SetLabel(const wxBitmap& labelBitmap, const wxString& labelText = wxT("") );
 
         // Sets the text alignment and margins.
     virtual void SetAlignments( int alignText = NB_ALIGN_TEXT_BOTTOM,

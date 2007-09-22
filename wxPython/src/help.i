@@ -5,7 +5,7 @@
 // Author:      Robin Dunn
 //
 // Created:     28-July-2001
-// RCS-ID:      $Id: help.i,v 1.5 2002/07/06 00:48:25 RD Exp $
+// RCS-ID:      $Id: help.i,v 1.5.2.1 2003/05/16 17:58:48 RD Exp $
 // Copyright:   (c) 2001 by Total Control Software
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -105,8 +105,8 @@ public:
 
     // Virtuals...
     wxString GetHelp(const wxWindow *window);
-    bool ShowHelp(wxWindowBase *window);
-    void AddHelp(wxWindowBase *window, const wxString& text);
+    bool ShowHelp(wxWindow *window);
+    void AddHelp(wxWindow *window, const wxString& text);
     %name(AddHelpById)void AddHelp(wxWindowID id, const wxString& text);
 
     %addmethods { void Destroy() { delete self; } }

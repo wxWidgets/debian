@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by: Ron Lee
 // Created:     01/02/97
-// RCS-ID:      $Id: scrolwin.cpp,v 1.24.2.6 2002/11/11 05:29:18 RL Exp $
+// RCS-ID:      $Id: scrolwin.cpp,v 1.24.2.8 2003/04/06 12:03:07 JS Exp $
 // Copyright:   (c) Julian Smart and Markus Holzem
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -340,8 +340,11 @@ void wxScrolledWindow::SetScrollbars( int pixelsPerUnitX, int pixelsPerUnitY,
                                       int noUnitsX, int noUnitsY,
                                       int xPos, int yPos, bool noRefresh )
 {
-    int old_x = m_xScrollPixelsPerLine * m_xScrollPosition;
-    int old_y = m_yScrollPixelsPerLine * m_yScrollPosition;
+    int xs, ys;
+    GetViewStart (& xs, & ys);
+    
+    int old_x = m_xScrollPixelsPerLine * xs;
+    int old_y = m_yScrollPixelsPerLine * ys;
 
     m_xScrollPixelsPerLine = pixelsPerUnitX;
     m_yScrollPixelsPerLine = pixelsPerUnitY;
@@ -638,18 +641,24 @@ void wxScrolledWindow::GetViewStart (int *x, int *y) const
 
 void wxScrolledWindow::DoCalcScrolledPosition(int x, int y, int *xx, int *yy) const
 {
+    int xs, ys;
+    GetViewStart (& xs, & ys);
+    
     if ( xx )
-        *xx = x - m_xScrollPosition * m_xScrollPixelsPerLine;
+        *xx = x - xs * m_xScrollPixelsPerLine;
     if ( yy )
-        *yy = y - m_yScrollPosition * m_yScrollPixelsPerLine;
+        *yy = y - ys * m_yScrollPixelsPerLine;
 }
 
 void wxScrolledWindow::DoCalcUnscrolledPosition(int x, int y, int *xx, int *yy) const
 {
+    int xs, ys;
+    GetViewStart (& xs, & ys);
+    
     if ( xx )
-        *xx = x + m_xScrollPosition * m_xScrollPixelsPerLine;
+        *xx = x + xs * m_xScrollPixelsPerLine;
     if ( yy )
-        *yy = y + m_yScrollPosition * m_yScrollPixelsPerLine;
+        *yy = y + ys * m_yScrollPixelsPerLine;
 }
 
 int wxScrolledWindow::CalcScrollInc(wxScrollWinEvent& event)
@@ -833,12 +842,19 @@ bool wxScrolledWindow::Layout()
 // Default OnSize resets scrollbars, if any
 void wxScrolledWindow::OnSize(wxSizeEvent& WXUNUSED(event))
 {
-    if( GetAutoLayout() )
+    if( GetAutoLayout() || m_targetWindow->GetAutoLayout() )
     {
         if( m_targetWindow != this )
             m_targetWindow->FitInside();
 
         FitInside();
+
+        // FIXME:  Something is really weird here...  This should be
+        // called by FitInside above (and apparently is), yet the
+        // scrollsub sample will get the scrollbar wrong if resized
+        // quickly.  This masks the bug, but is surely not the right
+        // answer at all.
+        AdjustScrollbars();
     }
     else
     {

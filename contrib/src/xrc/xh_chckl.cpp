@@ -3,7 +3,7 @@
 // Purpose:     XRC resource for wxCheckList
 // Author:      Bob Mitchell
 // Created:     2000/03/21
-// RCS-ID:      $Id: xh_chckl.cpp,v 1.6 2002/09/01 17:11:38 VS Exp $
+// RCS-ID:      $Id: xh_chckl.cpp,v 1.6.2.1 2003/04/02 14:26:58 JS Exp $
 // Copyright:   (c) 2000 Bob Mitchell and Verant Interactive
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -18,6 +18,8 @@
 #ifdef __BORLANDC__
     #pragma hdrstop
 #endif
+
+#if wxUSE_OWNER_DRAWN || !defined(__WXMSW__)
 
 #include "wx/xrc/xh_chckl.h"
 #include "wx/checklst.h"
@@ -105,4 +107,4 @@ bool wxCheckListXmlHandler::CanHandle(wxXmlNode *node)
            (m_insideBox && node->GetName() == wxT("item")));
 }
 
-
+#endif

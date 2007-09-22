@@ -3,7 +3,7 @@
 // Purpose:     wxXmlDocument - XML parser & data holder class
 // Author:      Vaclav Slavik
 // Created:     2000/03/05
-// RCS-ID:      $Id: xml.cpp,v 1.9.2.1 2002/12/21 13:35:49 VS Exp $
+// RCS-ID:      $Id: xml.cpp,v 1.9.2.2 2003/04/16 22:33:54 VS Exp $
 // Copyright:   (c) 2000 Vaclav Slavik
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -531,6 +531,7 @@ bool wxXmlDocument::Load(wxInputStream& stream, const wxString& encoding)
     XML_SetDefaultHandler(parser, DefaultHnd);
     XML_SetUnknownEncodingHandler(parser, UnknownEncodingHnd, NULL);
 
+    bool ok = TRUE;
     do
     {
         size_t len = stream.Read(buf, BUFSIZE).LastRead();
@@ -540,13 +541,17 @@ bool wxXmlDocument::Load(wxInputStream& stream, const wxString& encoding)
             wxLogError(_("XML parsing error: '%s' at line %d"),
                        XML_ErrorString(XML_GetErrorCode(parser)),
                        XML_GetCurrentLineNumber(parser));
-          return FALSE;
+            ok = FALSE;
+            break;
         }
     } while (!done);
 
-    SetVersion(ctx.version);
-    SetFileEncoding(ctx.encoding);
-    SetRoot(ctx.root);
+    if (ok)
+    {
+        SetVersion(ctx.version);
+        SetFileEncoding(ctx.encoding);
+        SetRoot(ctx.root);
+    }
 
     XML_ParserFree(parser);
 #if !wxUSE_UNICODE
@@ -554,7 +559,7 @@ bool wxXmlDocument::Load(wxInputStream& stream, const wxString& encoding)
         delete ctx.conv;
 #endif
 
-    return TRUE;
+    return ok;
 
 }
 

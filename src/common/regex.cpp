@@ -4,7 +4,7 @@
 // Author:      Karsten Ballüder and Vadim Zeitlin
 // Modified by:
 // Created:     13.07.01
-// RCS-ID:      $Id: regex.cpp,v 1.8.2.1 2002/11/09 00:25:37 VS Exp $
+// RCS-ID:      $Id: regex.cpp,v 1.8.2.3 2003/06/13 17:16:30 VZ Exp $
 // Copyright:   (c) 2000 Karsten Ballüder <ballueder@gmx.net>
 //                  2001 Vadim Zeitlin <vadim@wxwindows.org>
 // Licence:     wxWindows licence
@@ -73,16 +73,32 @@ private:
     // return the string containing the error message for the given err code
     wxString GetErrorMsg(int errorcode) const;
 
+    // init the members
+    void Init()
+    {
+        m_isCompiled = FALSE;
+        m_Matches = NULL;
+        m_nMatches = 0;
+    }
+
     // free the RE if compiled
     void Free()
     {
         if ( IsValid() )
         {
             regfree(&m_RegEx);
-
-            m_isCompiled = FALSE;
         }
+
+        delete [] m_Matches;
     }
+
+    // free the RE if any and reinit the members
+    void Reinit()
+    {
+        Free();
+        Init();
+    }
+
 
     // compiled RE
     regex_t     m_RegEx;
@@ -105,16 +121,12 @@ private:
 
 wxRegExImpl::wxRegExImpl()
 {
-    m_isCompiled = FALSE;
-    m_Matches = NULL;
-    m_nMatches = 0;
+    Init();
 }
 
 wxRegExImpl::~wxRegExImpl()
 {
     Free();
-
-    delete [] m_Matches;
 }
 
 wxString wxRegExImpl::GetErrorMsg(int errorcode) const
@@ -149,7 +161,7 @@ wxString wxRegExImpl::GetErrorMsg(int errorcode) const
 
 bool wxRegExImpl::Compile(const wxString& expr, int flags)
 {
-    Free();
+    Reinit();
 
     // translate our flags to regcomp() ones
     wxASSERT_MSG( !(flags &
@@ -192,21 +204,24 @@ bool wxRegExImpl::Compile(const wxString& expr, int flags)
             m_nMatches = 1;
 
             // and some more for bracketed subexperessions
-            const wxChar *cptr = expr.c_str();
-            wxChar prev = _T('\0');
-            while ( *cptr != _T('\0') )
+            for ( const wxChar *cptr = expr.c_str(); *cptr; cptr++ )
             {
-                // is this a subexpr start, i.e. "(" for extended regex or
-                // "\(" for a basic one?
-                if ( *cptr == _T('(') &&
-                     (flags & wxRE_BASIC ? prev == _T('\\')
-                                         : prev != _T('\\')) )
+                if ( *cptr == _T('\\') )
                 {
+                    // in basic RE syntax groups are inside \(...\)
+                    if ( *++cptr == _T('(') && (flags & wxRE_BASIC) )
+                    {
+                        m_nMatches++;
+                    }
+                }
+                else if ( *cptr == _T('(') && !(flags & wxRE_BASIC) )
+                {
+                    // we know that the previous character is not an unquoted
+                    // backslash because it would have been eaten above, so we
+                    // have a bar '(' and this indicates a group start for the
+                    // extended syntax
                     m_nMatches++;
                 }
-
-                prev = *cptr;
-                cptr++;
             }
         }
 

@@ -5,7 +5,7 @@
 // Author:      Robin Dunn Chris Barker
 //
 // Created:
-// RCS-ID:      $Id: drawlist.cpp,v 1.1.2.1 2003/02/28 00:15:25 RD Exp $
+// RCS-ID:      $Id: drawlist.cpp,v 1.1.2.2 2003/03/30 06:22:12 RD Exp $
 // Copyright:   (c) 2003 by Total Control Software
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -35,7 +35,6 @@ PyObject* wxPyDrawXXXList(wxDC& dc, wxPyDrawListOp_t doDraw,
     wxBrush*  brush;
     PyObject* obj;
     PyObject* coords;
-    int       x1, x2, x3, x4;
     int       i = 0;
     PyObject* retval;
 

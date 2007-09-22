@@ -3,7 +3,7 @@
 // Purpose:     wxHtmlCell class is used by wxHtmlWindow/wxHtmlWinParser
 //              as a basic visual element of HTML page
 // Author:      Vaclav Slavik
-// RCS-ID:      $Id: htmlcell.h,v 1.29.2.1 2002/10/11 22:21:56 VS Exp $
+// RCS-ID:      $Id: htmlcell.h,v 1.29.2.2 2003/05/21 23:05:39 VS Exp $
 // Copyright:   (c) 1999 Vaclav Slavik
 // Licence:     wxWindows Licence
 /////////////////////////////////////////////////////////////////////////////
@@ -28,6 +28,15 @@
 class WXDLLEXPORT wxHtmlLinkInfo;
 class WXDLLEXPORT wxHtmlCell;
 class WXDLLEXPORT wxHtmlContainerCell;
+
+// Temporary kludge for backporting html pagebreaks to 2.4.0;
+// Do not use, this will NOT be part of wx 2.5!
+struct WXDLLEXPORT wxHtmlKludge
+{
+    int pbreak;
+    int *known_pagebreaks;
+    int number_of_pages;
+};
 
 //--------------------------------------------------------------------------------
 // wxHtmlCell
@@ -109,6 +118,8 @@ public:
     // Returned value : true if pagebreak was modified, false otherwise
     // Usage : while (container->AdjustPagebreak(&p)) {}
     virtual bool AdjustPagebreak(int *pagebreak) const;
+// wx 2.5 will use this signature:
+//  virtual bool AdjustPagebreak(int *pagebreak, int *known_pagebreaks = NULL, int number_of_pages = 0) const;
 
     // Sets cell's behaviour on pagebreaks (see AdjustPagebreak). Default
     // is true - the cell can be split on two pages
@@ -190,6 +201,8 @@ public:
     virtual void Draw(wxDC& dc, int x, int y, int view_y1, int view_y2);
     virtual void DrawInvisible(wxDC& dc, int x, int y);
     virtual bool AdjustPagebreak(int *pagebreak) const;
+// wx 2.5 will use this signature:
+//  virtual bool AdjustPagebreak(int *pagebreak, int *known_pagebreaks = NULL, int number_of_pages = 0) const;
 
     // insert cell at the end of m_Cells list
     void InsertCell(wxHtmlCell *cell);

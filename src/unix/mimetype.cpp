@@ -4,7 +4,7 @@
 // Author:      Vadim Zeitlin
 // Modified by:
 // Created:     23.09.98
-// RCS-ID:      $Id: mimetype.cpp,v 1.27.2.6 2002/11/07 12:03:29 VS Exp $
+// RCS-ID:      $Id: mimetype.cpp,v 1.27.2.9 2003/04/06 19:09:15 JS Exp $
 // Copyright:   (c) 1998 Vadim Zeitlin <zeitlin@dptmaths.ens-cachan.fr>
 // Licence:     wxWindows license (part of wxExtra library)
 /////////////////////////////////////////////////////////////////////////////
@@ -1851,6 +1851,10 @@ int wxMimeTypesManagerImpl::AddToMimeData(const wxString& strType,
                         entryOld->AddOrReplaceVerb(verb, entry->GetCmd(i));
                     }
                 }
+
+                // as we don't store it anywhere, it won't be deleted later as
+                // usual -- do it immediately instead
+                delete entry;
             }
         }
     }

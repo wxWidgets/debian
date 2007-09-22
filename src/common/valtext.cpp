@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     04/01/98
-// RCS-ID:      $Id: valtext.cpp,v 1.27 2002/05/07 21:58:25 GD Exp $
+// RCS-ID:      $Id: valtext.cpp,v 1.27.2.2 2003/04/30 12:41:14 JS Exp $
 // Copyright:   (c) Julian Smart and Markus Holzem
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -303,8 +303,7 @@ static bool wxIsNumeric(const wxString& val)
     {
         // Allow for "," (French) as well as "." -- in future we should
         // use wxSystemSettings or other to do better localisation
-        if ((!isdigit(val[i])) && (val[i] != '.') && (val[i] != ','))
-          if(!((i == 0) && (val[i] == '-')))
+        if ((!isdigit(val[i])) && (val[i] != '.') && (val[i] != ',') && (val[i] != wxT('e')) && (val[i] != wxT('E')) && (val[i] != wxT('+')) && (val[i] != wxT('-')))
             return FALSE;
     }
     return TRUE;

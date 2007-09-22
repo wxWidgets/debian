@@ -5,7 +5,7 @@
 // Author:      Aleksandras Gluchovas <mailto:alex@soften.ktu.lt>
 // Modified by:
 // Created:     06/09/98
-// RCS-ID:      $Id: controlbar.h,v 1.10.2.1 2002/10/24 11:21:32 JS Exp $
+// RCS-ID:      $Id: controlbar.h,v 1.10.2.2 2003/04/02 14:14:05 JS Exp $
 // Copyright:   (c) Aleksandras Gluchovas
 // Licence:       wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -239,7 +239,7 @@ public:
                          int alignment    = FL_ALIGN_TOP,
                          int rowNo        = 0,
                          int columnPos    = 0,
-                         const wxString& name="bar",
+                         const wxString& name = wxT("bar"),
                          bool spyEvents    = FALSE,
                          int state        = wxCBAR_DOCKED_HORIZONTALLY
                        );

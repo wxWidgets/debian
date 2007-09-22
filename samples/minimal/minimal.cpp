@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     04/01/98
-// RCS-ID:      $Id: minimal.cpp,v 1.57 2002/04/07 21:12:45 JS Exp $
+// RCS-ID:      $Id: minimal.cpp,v 1.57.2.1 2003/06/01 12:04:23 JS Exp $
 // Copyright:   (c) Julian Smart
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -103,7 +103,7 @@ END_EVENT_TABLE()
 
 // Create a new application object: this macro will allow wxWindows to create
 // the application object during program execution (it's better than using a
-// static object for many reasons) and also declares the accessor function
+// static object for many reasons) and also implements the accessor function
 // wxGetApp() which will return the reference of the right type (i.e. MyApp and
 // not wxApp)
 IMPLEMENT_APP(MyApp)

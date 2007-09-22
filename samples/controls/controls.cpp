@@ -3,7 +3,7 @@
 // Purpose:     Controls wxWindows sample
 // Author:      Robert Roebling
 // Modified by:
-// RCS-ID:      $Id: controls.cpp,v 1.199.2.3 2002/12/13 21:38:48 MBN Exp $
+// RCS-ID:      $Id: controls.cpp,v 1.199.2.4 2003/06/07 09:58:17 JS Exp $
 // Copyright:   (c) Robert Roebling, Julian Smart
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -1076,15 +1076,19 @@ void MyPanel::OnListBoxButtons( wxCommandEvent &event )
             }
         case ID_LISTBOX_SEL_NUM:
             {
-                m_listbox->SetSelection( 2 );
-                m_listboxSorted->SetSelection( 2 );
+                if (m_listbox->GetCount() > 2)
+                    m_listbox->SetSelection( 2 );
+                if (m_listboxSorted->GetCount() > 2)
+                    m_listboxSorted->SetSelection( 2 );
                 m_lbSelectThis->WarpPointer( 40, 14 );
                 break;
             }
         case ID_LISTBOX_SEL_STR:
             {
-                m_listbox->SetStringSelection( _T("This") );
-                m_listboxSorted->SetStringSelection( _T("This") );
+                if (m_listbox->FindString(_T("This")) > -1)
+                    m_listbox->SetStringSelection( _T("This") );
+                if (m_listboxSorted->FindString(_T("This")) > -1)
+                    m_listboxSorted->SetStringSelection( _T("This") );
                 m_lbSelectNum->WarpPointer( 40, 14 );
                 break;
             }

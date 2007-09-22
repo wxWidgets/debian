@@ -1,5 +1,5 @@
 dnl Process this file with autoconf to produce a configure script.
-AC_REVISION($Id: configure.in,v 1.27.2.1 2002/09/21 17:20:51 JS Exp $)dnl
+AC_REVISION($Id: configure.in,v 1.27.2.2 2003/03/29 19:02:42 RD Exp $)dnl
 
 AC_INIT(Makefile.in)
 
@@ -77,6 +77,7 @@ AC_OUTPUT([
             resource/Makefile
             rotate/Makefile
             sashtest/Makefile
+	    shaped/Makefile
             scroll/Makefile
             scrollsub/Makefile
             sockets/Makefile

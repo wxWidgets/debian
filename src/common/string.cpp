@@ -4,7 +4,7 @@
 // Author:      Vadim Zeitlin
 // Modified by:
 // Created:     29/01/98
-// RCS-ID:      $Id: string.cpp,v 1.164.2.4 2002/11/03 13:07:41 RR Exp $
+// RCS-ID:      $Id: string.cpp,v 1.164.2.6 2003/06/06 00:43:51 RD Exp $
 // Copyright:   (c) 1998 Vadim Zeitlin <zeitlin@dptmaths.ens-cachan.fr>
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -161,6 +161,18 @@ wxSTD ostream& operator<<(wxSTD ostream& os, const wxString& str)
 #endif // WXSTRING_STATISTICS
 
 // ===========================================================================
+// wxStringData core
+// ===========================================================================
+
+#if defined(__VISUALC__) && defined(_MT) && !defined(_DLL)
+#  pragma message (__FILE__ ": building with Multithreaded non DLL runtime has a performance impact on wxString!")
+void wxStringData::Free()
+{
+   free(this);
+}
+#endif
+
+// ===========================================================================
 // wxString class core
 // ===========================================================================
 
@@ -255,6 +267,7 @@ wxString::wxString(const char *psz, wxMBConv& conv, size_t nLength)
         if ( conv.MB2WC(m_pchData, psz, nLen + 1) != (size_t)-1 )
         {
             // initialized ok
+            m_pchData[nLen] = 0;
             return;
         }
         //else: the conversion failed -- leave the string empty (what else?)
@@ -761,7 +774,7 @@ wxString wxString::FromAscii(const char ascii)
 
     wxString res;
     res += (wchar_t)(unsigned char) ascii;
-    
+
     return res;
 }
 

@@ -4,7 +4,7 @@
 // Author:      Aleksandras Gluchovas
 // Modified by:
 // Created:     06/09/98
-// RCS-ID:      $Id: toolwnd.cpp,v 1.9 2002/07/21 10:17:02 GD Exp $
+// RCS-ID:      $Id: toolwnd.cpp,v 1.9.2.1 2003/04/02 14:14:13 JS Exp $
 // Copyright:   (c) Aleksandras Gluchovas
 // Licence:   	wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -81,7 +81,7 @@ wxToolWindow::wxToolWindow()
 	  mTitleFont( 8, wxSWISS,  wxNORMAL, wxNORMAL ),
 #else
 	  // just to simulate MS-Dev style
-	  mTitleFont( 8, wxSWISS,  wxNORMAL, wxNORMAL, FALSE, "MS Sans Serif" ),
+	  mTitleFont( 8, wxSWISS,  wxNORMAL, wxNORMAL, FALSE, wxT("MS Sans Serif") ),
 #endif
 
       mTitleHeight  ( 16 ),
@@ -572,7 +572,7 @@ void wxToolWindow::OnMotion( wxMouseEvent& event )
 			DrawHintRect( mPrevHintRect );
 			DrawHintRect( finalRect );
 
-            ::wxLogTrace("%d,%d / %d,%d\n", finalRect.x, finalRect.y, finalRect.width, finalRect.height);
+            ::wxLogTrace(wxT("%d,%d / %d,%d\n"), finalRect.x, finalRect.y, finalRect.width, finalRect.height);
 		}
 
 		mPrevHintRect = finalRect;

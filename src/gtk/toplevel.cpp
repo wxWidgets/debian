@@ -2,7 +2,7 @@
 // Name:        toplevel.cpp
 // Purpose:
 // Author:      Robert Roebling
-// Id:          $Id: toplevel.cpp,v 1.33.2.2 2003/02/26 19:28:18 VS Exp $
+// Id:          $Id: toplevel.cpp,v 1.33.2.6 2003/05/03 17:56:20 RD Exp $
 // Copyright:   (c) 1998 Robert Roebling
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -31,6 +31,7 @@
 #include "wx/app.h"
 #include "wx/dcclient.h"
 #include "wx/gtk/private.h"
+#include "wx/timer.h"
 
 #include <glib.h>
 #include <gdk/gdk.h>
@@ -497,69 +498,20 @@ wxTopLevelWindowGTK::~wxTopLevelWindowGTK()
 }
 
 
-// X11 ICCCM values for window layers
-#define  WIN_LAYER_NORMAL      4
-#define  WIN_LAYER_ABOVE_DOCK  10
-
-// X11 window manager property name
-#define  XA_WIN_LAYER          "_WIN_LAYER"
-
-// X11 window manager property name atom
-static Atom gs_XA_WIN_LAYER = 0;
-
-
-static void wx_win_hints_set_layer(GtkWidget *window, int layer)
-{
-#ifndef __WXGTK20__
-    XEvent xev;
-    GdkWindowPrivate *priv;
-    gint prev_error;
-
-    prev_error = gdk_error_warnings;
-    gdk_error_warnings = 0;
-    priv = (GdkWindowPrivate*)(GTK_WIDGET(window)->window);
-
-    if (GTK_WIDGET_MAPPED(window))
-    {
-        xev.type = ClientMessage;
-        xev.xclient.type = ClientMessage;
-        xev.xclient.window = priv->xwindow;
-        xev.xclient.message_type = gs_XA_WIN_LAYER;
-        xev.xclient.format = 32;
-        xev.xclient.data.l[0] = (long)layer;
-        xev.xclient.data.l[1] = gdk_time_get();
-
-        XSendEvent(GDK_DISPLAY(), GDK_ROOT_WINDOW(), False,
-            SubstructureNotifyMask, (XEvent*) &xev);
-    }
-    else
-    {
-        long data[1];
-
-        data[0] = layer;
-        XChangeProperty(GDK_DISPLAY(), priv->xwindow, gs_XA_WIN_LAYER,
-              XA_CARDINAL, 32, PropModeReplace, (unsigned char *)data, 1);
-    }
-    gdk_error_warnings = prev_error;
-#endif
-}
 
 bool wxTopLevelWindowGTK::ShowFullScreen(bool show, long style )
 {
     if (show == m_fsIsShowing) return FALSE; // return what?
 
-    if (gs_XA_WIN_LAYER == 0)
-    {
-        // Initialose X11 Atom only once
-        gs_XA_WIN_LAYER = XInternAtom( GDK_DISPLAY(), XA_WIN_LAYER, False );
-    }
-
     m_fsIsShowing = show;
+
+    GdkWindow *window = m_widget->window;
+    wxX11FullScreenMethod method =
+        wxGetFullScreenMethodX11((WXDisplay*)GDK_DISPLAY(),
+                                 (WXWindow)GDK_ROOT_WINDOW());
 
     if (show)
     {
-        m_fsSaveGdkFunc = m_gdkFunc;
-        m_fsSaveGdkDecor = m_gdkDecor;
         m_fsSaveFlag = style;
         GetPosition( &m_fsSaveFrame.x, &m_fsSaveFrame.y );
         GetSize( &m_fsSaveFrame.width, &m_fsSaveFrame.height );
@@ -570,21 +522,48 @@ bool wxTopLevelWindowGTK::ShowFullScreen(bool show, long style )
 		gint client_x, client_y, root_x, root_y;
 		gint width, height;
 
+        if (method != wxX11_FS_WMSPEC)
+        {
+            // don't do it always, Metacity hates it
+            m_fsSaveGdkFunc = m_gdkFunc;
+            m_fsSaveGdkDecor = m_gdkDecor;
+            m_gdkFunc = m_gdkDecor = 0;
+            gdk_window_set_decorations(window, (GdkWMDecoration)0);
+            gdk_window_set_functions(window, (GdkWMFunction)0);
+        }
+
 		gdk_window_get_origin (m_widget->window, &root_x, &root_y);
 		gdk_window_get_geometry (m_widget->window, &client_x, &client_y,
 					 &width, &height, NULL);
 
-        wx_win_hints_set_layer( m_widget, WIN_LAYER_ABOVE_DOCK );
-
 		gdk_window_move_resize (m_widget->window, -client_x, -client_y,
 					screen_width + 1, screen_height + 1);
+
+        wxSetFullScreenStateX11((WXDisplay*)GDK_DISPLAY(),
+                                (WXWindow)GDK_ROOT_WINDOW(),
+                                (WXWindow)GDK_WINDOW_XWINDOW(window),
+                                show, &m_fsSaveFrame, method);
     }
     else
     {
-        wx_win_hints_set_layer( m_widget, WIN_LAYER_NORMAL );
+        if (method != wxX11_FS_WMSPEC)
+        {
+            // don't do it always, Metacity hates it
+            m_gdkFunc = m_fsSaveGdkFunc;
+            m_gdkDecor = m_fsSaveGdkDecor;
+            gdk_window_set_decorations(window, (GdkWMDecoration)m_gdkDecor);
+            gdk_window_set_functions(window, (GdkWMFunction)m_gdkFunc);
+        }
 
-        SetSize( m_fsSaveFrame.x, m_fsSaveFrame.y, m_fsSaveFrame.width, m_fsSaveFrame.height );
+        wxSetFullScreenStateX11((WXDisplay*)GDK_DISPLAY(),
+                                (WXWindow)GDK_ROOT_WINDOW(),
+                                (WXWindow)GDK_WINDOW_XWINDOW(window),
+                                show, &m_fsSaveFrame, method);
+
+        SetSize(m_fsSaveFrame.x, m_fsSaveFrame.y,
+                m_fsSaveFrame.width, m_fsSaveFrame.height);
     }
+
 
     return TRUE;
 }
@@ -985,6 +964,48 @@ void wxTopLevelWindowGTK::RemoveGrab()
         gtk_main_quit();
         m_grabbed = FALSE;
     }
+}
+
+
+// helper
+static bool do_shape_combine_region(GdkWindow* window, const wxRegion& region)
+{
+    if (window)
+    {
+        if (region.IsEmpty())
+        {
+            gdk_window_shape_combine_mask(window, NULL, 0, 0);
+        }
+        else
+        {
+#ifdef __WXGTK20__
+        gdk_window_shape_combine_region(window, region.GetRegion(), 0, 0);
+#else
+        wxBitmap bmp = region.ConvertToBitmap();
+        bmp.SetMask(new wxMask(bmp, *wxBLACK));
+        GdkBitmap* mask = bmp.GetMask()->GetBitmap();
+        gdk_window_shape_combine_mask(window, mask, 0, 0);
+#endif
+        return TRUE;
+        }
+    }
+    return FALSE;
+}
+
+
+bool wxTopLevelWindowGTK::SetShape(const wxRegion& region)
+{
+    wxCHECK_MSG( HasFlag(wxFRAME_SHAPED), FALSE,
+                 _T("Shaped windows must be created with the wxFRAME_SHAPED style."));
+
+    GdkWindow *window = NULL;
+    if (m_wxwindow)
+    {
+        window = GTK_PIZZA(m_wxwindow)->bin_window;
+        do_shape_combine_region(window, region);
+    }
+    window = m_widget->window;
+    return do_shape_combine_region(window, region);
 }
 
 // vi:sts=4:sw=4:et

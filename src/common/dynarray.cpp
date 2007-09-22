@@ -4,7 +4,7 @@
 // Author:      Vadim Zeitlin
 // Modified by:
 // Created:     12.09.97
-// RCS-ID:      $Id: dynarray.cpp,v 1.27.2.3 2003/03/10 18:11:11 VZ Exp $
+// RCS-ID:      $Id: dynarray.cpp,v 1.27.2.6 2003/04/27 21:24:36 VZ Exp $
 // Copyright:   (c) 1998 Vadim Zeitlin <zeitlin@dptmaths.ens-cachan.fr>
 // Licence:     wxWindows license
 ///////////////////////////////////////////////////////////////////////////////
@@ -248,7 +248,10 @@ int name::Index(T lItem, CMPFUNC fnCompare) const                           \
 {                                                                           \
     size_t n = IndexForInsert(lItem, fnCompare);                            \
                                                                             \
-    return n < m_nCount && m_pItems[n] == lItem ? (int)n : wxNOT_FOUND;     \
+    return (n >= m_nCount ||                                                \
+           (*fnCompare)((const void *)(long)lItem,                          \
+                        ((const void *)(long)m_pItems[n]))) ? wxNOT_FOUND   \
+                                                            : (int)n;       \
 }                                                                           \
                                                                             \
 /* add item at the end */                                                   \

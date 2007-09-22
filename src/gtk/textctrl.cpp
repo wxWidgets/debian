@@ -1,8 +1,9 @@
+
 /////////////////////////////////////////////////////////////////////////////
 // Name:        textctrl.cpp
 // Purpose:
 // Author:      Robert Roebling
-// Id:          $Id: textctrl.cpp,v 1.149.2.6 2003/03/16 13:46:28 RR Exp $
+// Id:          $Id: textctrl.cpp,v 1.149.2.9 2003/06/01 13:42:21 JS Exp $
 // Copyright:   (c) 1998 Robert Roebling, Vadim Zeitlin
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -995,7 +996,14 @@ void wxTextCtrl::SetSelection( long from, long to )
     if (m_windowStyle & wxTE_MULTILINE)
     {
 #ifdef __WXGTK20__
-        // ????
+        GtkTextBuffer *buf = gtk_text_view_get_buffer( GTK_TEXT_VIEW(m_text) );
+
+        GtkTextIter fromi, toi;
+        gtk_text_buffer_get_iter_at_offset( buf, &fromi, from );
+        gtk_text_buffer_get_iter_at_offset( buf, &toi, to );
+
+        gtk_text_buffer_place_cursor( buf, &toi );
+        gtk_text_buffer_move_mark_by_name( buf, "selection_bound", &fromi );
 #else
         gtk_editable_select_region( GTK_EDITABLE(m_text), (gint)from, (gint)to );
 #endif
@@ -1079,29 +1087,44 @@ void wxTextCtrl::Remove( long from, long to )
 {
     wxCHECK_RET( m_text != NULL, wxT("invalid text ctrl") );
 
-#ifndef __WXGTK20__
-    gtk_editable_delete_text( GTK_EDITABLE(m_text), (gint)from, (gint)to );
+#ifdef __WXGTK20__
+    if ( m_windowStyle & wxTE_MULTILINE )
+    {
+        GtkTextBuffer *
+            text_buffer = gtk_text_view_get_buffer( GTK_TEXT_VIEW(m_text) );
+
+        GtkTextIter fromi, toi;
+        gtk_text_buffer_get_iter_at_offset( text_buffer, &fromi, from );
+        gtk_text_buffer_get_iter_at_offset( text_buffer, &toi, to );
+
+        gtk_text_buffer_delete( text_buffer, &fromi, &toi );
+    }
+    else // single line
 #endif
+    gtk_editable_delete_text( GTK_EDITABLE(m_text), (gint)from, (gint)to );
 }
 
 void wxTextCtrl::Replace( long from, long to, const wxString &value )
 {
     wxCHECK_RET( m_text != NULL, wxT("invalid text ctrl") );
 
-#ifndef __WXGTK20__
-    gtk_editable_delete_text( GTK_EDITABLE(m_text), (gint)from, (gint)to );
+    Remove( from, to );
 
     if (!value.IsEmpty())
     {
+#ifdef __WXGTK20__
+        SetInsertionPoint( from );
+        WriteText( value );
+#else // GTK 1.x
         gint pos = (gint)from;
 #if wxUSE_UNICODE
         wxWX2MBbuf buf = value.mbc_str();
         gtk_editable_insert_text( GTK_EDITABLE(m_text), buf, strlen(buf), &pos );
 #else
         gtk_editable_insert_text( GTK_EDITABLE(m_text), value, value.Length(), &pos );
-#endif
+#endif // wxUSE_UNICODE
+#endif // GTK 1.x/2.x
     }
-#endif
 }
 
 void wxTextCtrl::Cut()
@@ -1166,7 +1189,9 @@ void wxTextCtrl::GetSelection(long* fromOut, long* toOut) const
 
     gint from, to;
 #ifdef __WXGTK20__
-    if ( !gtk_editable_get_selection_bounds(GTK_EDITABLE(m_text), &from, &to) )
+    GtkTextBuffer *buffer = gtk_text_view_get_buffer (GTK_TEXT_VIEW (m_text));
+    GtkTextIter ifrom, ito;
+    if (!gtk_text_buffer_get_selection_bounds(buffer, &ifrom, &ito))
 #else
     if ( !(GTK_EDITABLE(m_text)->has_selection) )
 #endif
@@ -1176,7 +1201,10 @@ void wxTextCtrl::GetSelection(long* fromOut, long* toOut) const
     }
     else // got selection
     {
-#ifndef __WXGTK20__
+#ifdef __WXGTK20__
+        from = gtk_text_iter_get_offset(&ifrom);
+        to = gtk_text_iter_get_offset(&ito);
+#else
         from = (long) GTK_EDITABLE(m_text)->selection_start_pos;
         to = (long) GTK_EDITABLE(m_text)->selection_end_pos;
 #endif

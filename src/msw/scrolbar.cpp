@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     04/01/98
-// RCS-ID:      $Id: scrolbar.cpp,v 1.22.2.2 2002/09/25 17:53:47 VZ Exp $
+// RCS-ID:      $Id: scrolbar.cpp,v 1.22.2.5 2003/05/17 09:30:00 JS Exp $
 // Copyright:   (c) Julian Smart and Markus Holzem
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -53,6 +53,9 @@ bool wxScrollBar::Create(wxWindow *parent, wxWindowID id,
     SetValidator(validator);
 #endif // wxUSE_VALIDATORS
 
+    if ((style & wxBORDER_MASK) == wxBORDER_DEFAULT)
+        style |= wxNO_BORDER;
+
     SetBackgroundColour(parent->GetBackgroundColour()) ;
     SetForegroundColour(parent->GetForegroundColour()) ;
     m_windowStyle = style;
@@ -82,15 +85,13 @@ bool wxScrollBar::Create(wxWindow *parent, wxWindowID id,
         height = 14;
     }
 
-    DWORD wstyle = WS_VISIBLE | WS_CHILD;
-
-    if ( m_windowStyle & wxCLIP_SIBLINGS )
-      wstyle |= WS_CLIPSIBLINGS;
+    WXDWORD exStyle = 0;
+    WXDWORD wstyle = MSWGetStyle(style, & exStyle) ;
 
     // Now create scrollbar
     DWORD _direction = (style & wxHORIZONTAL) ?
                         SBS_HORZ: SBS_VERT;
-    HWND scroll_bar = CreateWindowEx(MakeExtendedStyle(style), wxT("SCROLLBAR"), wxT("scrollbar"),
+    HWND scroll_bar = CreateWindowEx(exStyle, wxT("SCROLLBAR"), wxT("scrollbar"),
                          _direction | wstyle,
                          0, 0, 0, 0, (HWND) parent->GetHWND(), (HMENU)m_windowId,
                          wxGetInstance(), NULL);
@@ -239,6 +240,7 @@ bool wxScrollBar::MSWOnScroll(int WXUNUSED(orientation), WXWORD wParam,
     }
 
     wxScrollEvent event(scrollEvent, m_windowId);
+    event.SetOrientation(IsVertical() ? wxVERTICAL : wxHORIZONTAL);
     event.SetPosition(position);
     event.SetEventObject( this );
 

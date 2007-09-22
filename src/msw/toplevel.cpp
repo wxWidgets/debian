@@ -4,7 +4,7 @@
 // Author:      Vadim Zeitlin
 // Modified by:
 // Created:     24.09.01
-// RCS-ID:      $Id: toplevel.cpp,v 1.38.2.4 2002/12/19 23:43:30 VS Exp $
+// RCS-ID:      $Id: toplevel.cpp,v 1.38.2.8 2003/05/07 15:00:05 JS Exp $
 // Copyright:   (c) 2001 SciTech Software, Inc. (www.scitechsoft.com)
 // License:     wxWindows license
 ///////////////////////////////////////////////////////////////////////////////
@@ -141,7 +141,7 @@ WXDWORD wxTopLevelWindowMSW::MSWGetStyle(long style, WXDWORD *exflags) const
     WXDWORD msflags = wxWindow::MSWGetStyle
                       (
                         (style & ~wxBORDER_MASK) | wxBORDER_NONE, exflags
-                      ) & ~WS_CHILD;
+                      ) & ~WS_CHILD & ~WS_VISIBLE;
 
     // first select the kind of window being created
     //
@@ -564,7 +564,7 @@ void wxTopLevelWindowMSW::Maximize(bool maximize)
     {
         // we can't maximize the hidden frame because it shows it as well, so
         // just remember that we should do it later in this case
-        m_maximizeOnShow = TRUE;
+        m_maximizeOnShow = maximize;
     }
 }
 
@@ -724,6 +724,50 @@ bool wxTopLevelWindowMSW::EnableCloseButton(bool enable)
     return TRUE;
 }
 
+bool wxTopLevelWindowMSW::SetShape(const wxRegion& region)
+{
+    wxCHECK_MSG( HasFlag(wxFRAME_SHAPED), FALSE,
+                 _T("Shaped windows must be created with the wxFRAME_SHAPED style."));
+
+    // The empty region signifies that the shape should be removed from the
+    // window.
+    if ( region.IsEmpty() )
+    {
+        if (::SetWindowRgn(GetHwnd(), NULL, TRUE) == 0)
+        {
+            wxLogLastError(_T("SetWindowRgn"));
+            return FALSE;
+        }
+        return TRUE;
+    }
+
+    // Windows takes ownership of the region, so
+    // we'll have to make a copy of the region to give to it.
+    DWORD noBytes = ::GetRegionData(GetHrgnOf(region), 0, NULL);
+    RGNDATA *rgnData = (RGNDATA*) new char[noBytes];
+    ::GetRegionData(GetHrgnOf(region), noBytes, rgnData);
+    HRGN hrgn = ::ExtCreateRegion(NULL, noBytes, rgnData);
+    delete[] (char*) rgnData;
+
+    // SetWindowRgn expects the region to be in coordinants
+    // relative to the window, not the client area.  Figure
+    // out the offset, if any.
+    RECT rect;
+    DWORD dwStyle =   ::GetWindowLong(GetHwnd(), GWL_STYLE);
+    DWORD dwExStyle = ::GetWindowLong(GetHwnd(), GWL_EXSTYLE);
+    ::GetClientRect(GetHwnd(), &rect);
+    ::AdjustWindowRectEx(&rect, dwStyle, FALSE, dwExStyle);
+    ::OffsetRgn(hrgn, -rect.left, -rect.top);
+
+    // Now call the shape API with the new region.
+    if (::SetWindowRgn(GetHwnd(), hrgn, TRUE) == 0)
+    {
+        wxLogLastError(_T("SetWindowRgn"));
+        return FALSE;
+    }
+    return TRUE;
+}
+
 // ----------------------------------------------------------------------------
 // wxTopLevelWindow event handling
 // ----------------------------------------------------------------------------
@@ -871,4 +915,5 @@ HWND wxTLWHiddenParentModule::GetHWND()
 
     return ms_hwnd;
 }
+
 

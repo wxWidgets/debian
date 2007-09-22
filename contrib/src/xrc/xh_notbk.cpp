@@ -3,7 +3,7 @@
 // Purpose:     XRC resource for wxNotebook
 // Author:      Vaclav Slavik
 // Created:     2000/03/21
-// RCS-ID:      $Id: xh_notbk.cpp,v 1.4 2001/12/29 16:14:04 VS Exp $
+// RCS-ID:      $Id: xh_notbk.cpp,v 1.4.2.1 2003/06/12 16:15:26 VS Exp $
 // Copyright:   (c) 2000 Vaclav Slavik
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -50,8 +50,8 @@ wxObject *wxNotebookXmlHandler::DoCreateResource()
         {
             bool old_ins = m_isInside;
             m_isInside = FALSE;
-            m_isInside = old_ins;
             wxObject *item = CreateResFromNode(n, m_notebook, NULL);
+            m_isInside = old_ins;
             wxWindow *wnd = wxDynamicCast(item, wxWindow);
 
             if (wnd)

@@ -4,7 +4,7 @@
 // Author:      Vadim Zeitlin
 // Modified by:
 // Created:     29.12.99
-// RCS-ID:      $Id: calctrl.cpp,v 1.33.2.1 2002/10/23 17:32:13 RR Exp $
+// RCS-ID:      $Id: calctrl.cpp,v 1.33.2.3 2003/06/01 16:42:38 JS Exp $
 // Copyright:   (c) 1999 Vadim Zeitlin <zeitlin@dptmaths.ens-cachan.fr>
 // Licence:     wxWindows license
 ///////////////////////////////////////////////////////////////////////////////
@@ -67,7 +67,11 @@ class wxYearSpinCtrl : public wxSpinCtrl
 public:
     wxYearSpinCtrl(wxCalendarCtrl *cal);
 
-    void OnYearTextChange(wxCommandEvent& event) { m_cal->OnYearChange(event); }
+    void OnYearTextChange(wxCommandEvent& event) 
+    {
+        m_cal->SetUserChangedYear();
+        m_cal->OnYearChange(event);
+    }
     void OnYearChange(wxSpinEvent& event) { m_cal->OnYearChange(event); }
 
 private:
@@ -446,8 +450,6 @@ bool wxCalendarCtrl::SetDate(const wxDateTime& date)
                     {
                         if ( !m_userChangedYear )
                             m_spinYear->SetValue(m_date.Format(_T("%Y")));
-                        else // don't overwrite what the user typed in
-                            m_userChangedYear = FALSE;
                     }
                 }
 
@@ -465,6 +467,8 @@ bool wxCalendarCtrl::SetDate(const wxDateTime& date)
         }
     }
 
+    m_userChangedYear = FALSE;
+    
     return retval;
 }
 
@@ -863,7 +867,7 @@ void wxCalendarCtrl::OnPaint(wxPaintEvent& WXUNUSED(event))
         dc.SetTextForeground(*wxBLACK);
         dc.SetBrush(wxBrush(m_colHeaderBg, wxSOLID));
         dc.SetPen(wxPen(m_colHeaderBg, 1, wxSOLID));
-        dc.DrawRectangle(0, y, 7*m_widthCol, m_heightRow);
+        dc.DrawRectangle(0, y, GetClientSize().x, m_heightRow);
 
         // Get extent of month-name + year
         wxCoord monthw, monthh;
@@ -1536,10 +1540,6 @@ void wxCalendarCtrl::OnYearChange(wxCommandEvent& event)
         // invalid year in the spin control, ignore it
         return;
     }
-
-    // set the flag for SetDate(): otherwise it would overwrite the year
-    // typed in by the user
-    m_userChangedYear = TRUE;
 
     wxDateTime::Tm tm = m_date.GetTm();
 

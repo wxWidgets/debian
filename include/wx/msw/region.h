@@ -4,7 +4,7 @@
 // Author:      Markus Holzem, Julian Smart
 // Modified by:
 // Created:     01/02/97
-// RCS-ID:      $Id: region.h,v 1.12.2.1 2002/09/20 23:36:23 VZ Exp $
+// RCS-ID:      $Id: region.h,v 1.12.2.3 2003/05/03 17:56:24 RD Exp $
 // Copyright:   (c) 1997-2002 wxWindows team
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -48,6 +48,12 @@ public:
     wxRegion(const wxRect& rect);
     wxRegion(WXHRGN hRegion); // Hangs on to this region
     wxRegion(size_t n, const wxPoint *points, int fillStyle = wxODDEVEN_RULE );
+    wxRegion( const wxBitmap& bmp,
+              const wxColour& transColour = wxNullColour,
+              int   tolerance = 0)
+    {
+        Union(bmp, transColour, tolerance);
+    }
 
     virtual ~wxRegion();
 
@@ -107,6 +113,18 @@ public:
     wxRegionContain Contains(wxCoord x, wxCoord y, wxCoord w, wxCoord h) const;
     // Does the region contain the rectangle rect?
     wxRegionContain Contains(const wxRect& rect) const;
+
+    // Convert the region to a B&W bitmap with the white pixels being inside
+    // the region.
+    wxBitmap ConvertToBitmap() const;
+
+    // Use the non-transparent pixels of a wxBitmap for the region to combine
+    // with this region.  If the bitmap has a mask then it will be used,
+    // otherwise the colour to be treated as transparent may be specified,
+    // along with an optional tolerance value.
+    bool Union(const wxBitmap& bmp,
+               const wxColour& transColour = wxNullColour,
+               int   tolerance = 0);
 
 // Internal
     bool Combine(wxCoord x, wxCoord y, wxCoord width, wxCoord height, wxRegionOp op);

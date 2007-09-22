@@ -3,7 +3,7 @@
 // Purpose:     generic implementation of wxListCtrl
 // Author:      Robert Roebling
 //              Vadim Zeitlin (virtual list control support)
-// Id:          $Id: listctrl.cpp,v 1.269.2.10 2003/02/06 02:18:51 RD Exp $
+// Id:          $Id: listctrl.cpp,v 1.269.2.15 2003/06/03 10:46:08 VZ Exp $
 // Copyright:   (c) 1998 Robert Roebling
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -495,7 +495,9 @@ private:
     // common part of all ctors
     void Init();
 
-    void SendListEvent(wxEventType type, wxPoint pos);
+    // generate and process the list event of the given type, return true if
+    // it wasn't vetoed, i.e. if we should proceed
+    bool SendListEvent(wxEventType type, wxPoint pos);
 
     DECLARE_DYNAMIC_CLASS(wxListHeaderWindow)
     DECLARE_EVENT_TABLE()
@@ -2151,12 +2153,15 @@ void wxListHeaderWindow::OnMouse( wxMouseEvent &event )
         {
             if (hit_border && event.LeftDown())
             {
-                m_isDragging = TRUE;
-                m_currentX = x;
-                DrawCurrent();
-                CaptureMouse();
-                SendListEvent(wxEVT_COMMAND_LIST_COL_BEGIN_DRAG,
-                              event.GetPosition());
+                if ( SendListEvent(wxEVT_COMMAND_LIST_COL_BEGIN_DRAG,
+                                   event.GetPosition()) )
+                {
+                    m_isDragging = TRUE;
+                    m_currentX = x;
+                    DrawCurrent();
+                    CaptureMouse();
+                }
+                //else: column resizing was vetoed by the user code
             }
             else // click on a column
             {
@@ -2191,7 +2196,7 @@ void wxListHeaderWindow::OnSetFocus( wxFocusEvent &WXUNUSED(event) )
     m_owner->SetFocus();
 }
 
-void wxListHeaderWindow::SendListEvent(wxEventType type, wxPoint pos)
+bool wxListHeaderWindow::SendListEvent(wxEventType type, wxPoint pos)
 {
     wxWindow *parent = GetParent();
     wxListEvent le( type, parent->GetId() );
@@ -2205,7 +2210,7 @@ void wxListHeaderWindow::SendListEvent(wxEventType type, wxPoint pos)
     le.m_pointDrag.y -= GetSize().y;
 
     le.m_col = m_column;
-    parent->GetEventHandler()->ProcessEvent( le );
+    return !parent->GetEventHandler()->ProcessEvent( le ) || le.IsAllowed();
 }
 
 //-----------------------------------------------------------------------------
@@ -3143,6 +3148,7 @@ void wxListMainWindow::OnMouse( wxMouseEvent &event )
 
         wxListEvent le( command, GetParent()->GetId() );
         le.SetEventObject( GetParent() );
+        le.m_itemIndex = current;
         le.m_pointDrag = m_dragStart;
         GetParent()->GetEventHandler()->ProcessEvent( le );
 
@@ -4461,6 +4467,9 @@ void wxListMainWindow::InsertItem( wxListItem &item )
     m_lines.Insert( line, id );
 
     m_dirty = TRUE;
+
+    SendNotify(id, wxEVT_COMMAND_LIST_INSERT_ITEM);
+
     RefreshLines(id, GetItemCount() - 1);
 }
 
@@ -4663,7 +4672,7 @@ bool wxGenericListCtrl::Create(wxWindow *parent,
         return FALSE;
 
     // don't create the inner window with the border
-    style &= ~wxSUNKEN_BORDER;
+    style &= ~wxBORDER_MASK;
 
     m_mainWin = new wxListMainWindow( this, -1, wxPoint(0,0), size, style );
 
@@ -4859,6 +4868,8 @@ bool wxGenericListCtrl::SetItemData( long item, long data )
 bool wxGenericListCtrl::GetItemRect( long item, wxRect &rect,  int WXUNUSED(code) ) const
 {
     m_mainWin->GetItemRect( item, rect );
+    if ( m_mainWin->HasHeader() )
+        rect.y += HEADER_HEIGHT + 1;
     return TRUE;
 }
 

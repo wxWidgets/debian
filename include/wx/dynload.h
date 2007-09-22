@@ -5,7 +5,7 @@
 //               (derived in part from dynlib.cpp (c) 1998 Guilhem Lavaux)
 // Modified by:
 // Created:      03/12/01
-// RCS-ID:       $Id: dynload.h,v 1.9.2.1 2002/11/03 21:02:54 VZ Exp $
+// RCS-ID:       $Id: dynload.h,v 1.9.2.2 2003/06/01 19:00:41 JS Exp $
 // Copyright:    (c) 2001 Ron Lee <ron@debian.org>
 // Licence:      wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -40,7 +40,16 @@
 
 class WXDLLEXPORT wxPluginLibrary;
 
+#ifdef __BORLANDC__
+#   pragma option -w-inl
+#endif
+
 WX_DECLARE_EXPORTED_STRING_HASH_MAP(wxPluginLibrary *, wxDLManifest);
+
+#ifdef __BORLANDC__
+#   pragma option -w.inl
+#endif
+
 typedef wxDLManifest wxDLImports;
 
 // ----------------------------------------------------------------------------
@@ -97,6 +106,10 @@ enum wxDLFlags
 #endif
 };
 
+
+#ifdef __BORLANDC__
+#   pragma option -w-inl
+#endif
 
 class WXDLLEXPORT wxDynamicLibrary
 {
@@ -170,6 +183,9 @@ protected:
     DECLARE_NO_COPY_CLASS(wxDynamicLibrary)
 };
 
+#ifdef __BORLANDC__
+#   pragma option -w.inl
+#endif
 
 // ---------------------------------------------------------------------------
 // wxPluginLibrary

@@ -5,7 +5,7 @@
 // Author:      Karsten Ballüder & Vadim Zeitlin
 // Modified by:
 // Created:     07.04.98 (adapted from appconf.h)
-// RCS-ID:      $Id: confbase.h,v 1.39 2002/08/31 11:29:09 GD Exp $
+// RCS-ID:      $Id: confbase.h,v 1.39.2.1 2003/06/01 19:00:41 JS Exp $
 // Copyright:   (c) 1997 Karsten Ballüder   Ballueder@usa.net
 //                       Vadim Zeitlin      <zeitlin@dptmaths.ens-cachan.fr>
 // Licence:     wxWindows license
@@ -61,6 +61,10 @@ enum
     wxCONFIG_USE_RELATIVE_PATH = 4,
     wxCONFIG_USE_NO_ESCAPE_CHARACTERS = 8
 };
+
+#ifdef __BORLANDC__
+#   pragma option -w-inl
+#endif
 
 // ----------------------------------------------------------------------------
 // abstract base class wxConfigBase which defines the interface for derived
@@ -286,6 +290,10 @@ private:
   // Style flag
   long              m_style;
 };
+
+#ifdef __BORLANDC__
+#   pragma option -w.inl
+#endif
 
 // a handy little class which changes current path to the path of given entry
 // and restores it in dtor: so if you declare a local variable of this type,

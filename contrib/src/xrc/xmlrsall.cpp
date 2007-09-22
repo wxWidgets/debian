@@ -3,7 +3,7 @@
 // Purpose:     wxXmlResource::InitAllHandlers
 // Author:      Vaclav Slavik
 // Created:     2000/03/05
-// RCS-ID:      $Id: xmlrsall.cpp,v 1.4.2.1 2002/10/18 20:53:59 VS Exp $
+// RCS-ID:      $Id: xmlrsall.cpp,v 1.4.2.2 2003/05/25 13:20:25 JS Exp $
 // Copyright:   (c) 2000 Vaclav Slavik
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -95,4 +95,8 @@ void wxXmlResource::InitAllHandlers()
 #endif
     AddHandler(new wxFrameXmlHandler);
     AddHandler(new wxScrolledWindowXmlHandler);
+    AddHandler(new wxSplitterWindowXmlHandler);
+#if wxUSE_WIZARDDLG
+    AddHandler(new wxWizardXmlHandler);
+#endif
 }

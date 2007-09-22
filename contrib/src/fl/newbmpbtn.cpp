@@ -4,7 +4,7 @@
 // Author:      Aleksandras Gluchovas
 // Modified by:
 // Created:     ??/09/98
-// RCS-ID:      $Id: newbmpbtn.cpp,v 1.8.2.2 2002/12/22 11:02:27 JS Exp $
+// RCS-ID:      $Id: newbmpbtn.cpp,v 1.8.2.3 2003/04/02 14:14:13 JS Exp $
 // Copyright:   (c) Aleksandras Gluchovas
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -433,7 +433,7 @@ void wxNewBitmapButton::RenderLabelImage( wxBitmap*& destBmp, wxBitmap* srcBmp,
         }
         else 
         {
-            wxFAIL_MSG("Unsupported FL alignment type detected in wxNewBitmapButton::RenderLabelImage()");
+            wxFAIL_MSG(wxT("Unsupported FL alignment type detected in wxNewBitmapButton::RenderLabelImage()"));
         }
     }
     else
@@ -731,7 +731,7 @@ void wxNewBitmapButton::Reshape( )
         // in the case of loading button from stream, check if we
         // have non-empty image-file name, load if possible 
 
-        if ( mImageFileName != "" )
+        if ( mImageFileName != wxT("") )
         {
             mDepressedBmp.LoadFile( mImageFileName, mImageFileType );
 
@@ -796,6 +796,6 @@ void wxNewBitmapButton::OnKillFocus( wxFocusEvent& event )
 {
     // useless
 
-    wxMessageBox("kill-focus for button!");
+    wxMessageBox(wxT("kill-focus for button!"));
 }
 

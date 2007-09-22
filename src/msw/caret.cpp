@@ -4,7 +4,7 @@
 // Author:      Vadim Zeitlin
 // Modified by:
 // Created:     23.05.99
-// RCS-ID:      $Id: caret.cpp,v 1.14 2001/06/26 20:59:16 VZ Exp $
+// RCS-ID:      $Id: caret.cpp,v 1.14.2.1 2003/04/06 14:26:29 JS Exp $
 // Copyright:   (c) wxWindows team
 // Licence:     wxWindows licence
 ///////////////////////////////////////////////////////////////////////////////
@@ -189,6 +189,6 @@ void wxCaret::DoSize()
         m_hasCaret = FALSE;
         CALL_CARET_API(DestroyCaret, ());
         MSWCreateCaret();
-        DoMove();
+        OnSetFocus();
     }
 }

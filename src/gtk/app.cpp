@@ -2,7 +2,7 @@
 // Name:        app.cpp
 // Purpose:
 // Author:      Robert Roebling
-// Id:          $Id: app.cpp,v 1.172.2.6 2002/11/23 20:47:21 VS Exp $
+// Id:          $Id: app.cpp,v 1.172.2.9 2003/05/21 18:53:12 JS Exp $
 // Copyright:   (c) 1998 Robert Roebling, Julian Smart
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -172,6 +172,8 @@ bool wxApp::Yield(bool onlyIfNeeded)
 // wxWakeUpIdle
 //-----------------------------------------------------------------------------
 
+static bool gs_WakeUpIdle = false;
+
 void wxWakeUpIdle()
 {
 #if wxUSE_THREADS
@@ -179,8 +181,11 @@ void wxWakeUpIdle()
         wxMutexGuiEnter();
 #endif
 
-    if (g_isIdle)
+    if (g_isIdle) {
+        gs_WakeUpIdle = true;
         wxapp_install_idle_handler();
+        gs_WakeUpIdle = false;
+    }
 
 #if wxUSE_THREADS
     if (!wxThread::IsMain())
@@ -361,6 +366,11 @@ static gint wxapp_poll_func( GPollFD *ufds, guint nfds, gint timeout )
 
 void wxapp_install_idle_handler()
 {
+    // GD: this assert is raised when using the thread sample (which works)
+    //     so the test is probably not so easy. Can widget callbacks be 
+    //     triggered from child threads and, if so, for which widgets?
+    // wxASSERT_MSG( wxThread::IsMain() || gs_WakeUpIdle, wxT("attempt to install idle handler from widget callback in child thread (should be exclusively from wxWakeUpIdle)") );
+
     wxASSERT_MSG( wxTheApp->m_idleTag == 0, wxT("attempt to install idle handler twice") );
 
     g_isIdle = FALSE;
@@ -799,9 +809,10 @@ int wxEntryStart( int& argc, char *argv[] )
     if (!wxOKlibc()) wxConvCurrent = (wxMBConv*) NULL;
 #endif
 
-    gdk_threads_enter();
-
     gtk_init( &argc, &argv );
+
+    /* we can not enter threads before gtk_init is done */
+    gdk_threads_enter();
 
     wxSetDetectableAutoRepeat( TRUE );
 

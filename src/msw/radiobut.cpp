@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     04/01/98
-// RCS-ID:      $Id: radiobut.cpp,v 1.29.2.2 2002/11/10 00:47:11 VZ Exp $
+// RCS-ID:      $Id: radiobut.cpp,v 1.29.2.3 2003/04/06 16:33:45 JS Exp $
 // Copyright:   (c) Julian Smart and Markus Holzem
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -117,7 +117,10 @@ void wxRadioButton::SetValue(bool value)
         wxWindowList::Node *nodeThis = siblings.Find(this);
         wxCHECK_RET( nodeThis, _T("radio button not a child of its parent?") );
 
-        // turn off all radio buttons before this one
+        // if it's not the first item of the group ...
+        if ( !HasFlag(wxRB_GROUP) )
+        {
+            // ... turn off all radio buttons before it
         for ( wxWindowList::Node *nodeBefore = nodeThis->GetPrevious();
               nodeBefore;
               nodeBefore = nodeBefore->GetPrevious() )
@@ -126,8 +129,8 @@ void wxRadioButton::SetValue(bool value)
                                                wxRadioButton);
             if ( !btn )
             {
-                // the radio buttons in a group must be consecutive, so there
-                // are no more of them
+                    // the radio buttons in a group must be consecutive, so
+                    // there are no more of them
                 break;
             }
 
@@ -140,8 +143,9 @@ void wxRadioButton::SetValue(bool value)
                 break;
             }
         }
+        }
 
-        // ... and all after this one
+        // ... and also turn off all buttons after this one
         for ( wxWindowList::Node *nodeAfter = nodeThis->GetNext();
               nodeAfter;
               nodeAfter = nodeAfter->GetNext() )

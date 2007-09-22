@@ -4,7 +4,7 @@
 // Author:      Aleksandras Gluchovas
 // Modified by:
 // Created:     09/09/98
-// RCS-ID:      $Id: rowlayoutpl.cpp,v 1.4 2002/04/04 21:05:14 JS Exp $
+// RCS-ID:      $Id: rowlayoutpl.cpp,v 1.4.2.1 2003/06/04 12:51:52 JS Exp $
 // Copyright:   (c) Aleksandras Gluchovas
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -455,6 +455,9 @@ void cbRowLayoutPlugin::ApplyLengthRatios( cbRowInfo* pRow )
             }
         }
     }  // for
+
+    if (pcntSum == 0.0)
+        pcntSum = 1.0;
 
     if ( haveSquished )
         unit = freeSpc / pcntSum;

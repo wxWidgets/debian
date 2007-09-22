@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     04/01/98
-// RCS-ID:      $Id: utils.cpp,v 1.100.2.2 2003/03/10 23:38:17 RD Exp $
+// RCS-ID:      $Id: utils.cpp,v 1.100.2.3 2003/04/11 22:32:44 VZ Exp $
 // Copyright:   (c) Julian Smart and Markus Holzem
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -829,6 +829,9 @@ int wxKill(long pid, wxSignal sig, wxKillError *krc)
         if ( ok && rc == STILL_ACTIVE )
         {
             // there is such process => success
+            if ( krc )
+                *krc = wxKILL_OK;
+
             return 0;
         }
     }
@@ -837,6 +840,9 @@ int wxKill(long pid, wxSignal sig, wxKillError *krc)
         if ( ok && rc != STILL_ACTIVE )
         {
             // killed => success
+            if ( krc )
+                *krc = wxKILL_OK;
+
             return 0;
         }
     }

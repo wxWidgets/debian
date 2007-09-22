@@ -7,7 +7,7 @@
 // Author:      Robin Dunn
 //
 // Created:     18-June-1999
-// RCS-ID:      $Id: misc2.i,v 1.62.2.8 2003/02/26 03:59:33 RD Exp $
+// RCS-ID:      $Id: misc2.i,v 1.62.2.10 2003/04/16 06:08:59 RD Exp $
 // Copyright:   (c) 1998 by Total Control Software
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -379,6 +379,8 @@ public:
     void SetSize(const wxSize& size);
     void Show(int show = TRUE);
     void Hide();
+
+    %pragma(python) addtoclass = "def __nonzero__(self): return self.IsOk()"
 };
 
 %inline %{
@@ -537,7 +539,7 @@ public:
     bool IsOneShot();
     bool IsRunning();
     void SetOwner(wxEvtHandler *owner, int id = -1);
-    void Start(int milliseconds=-1, int oneShot=FALSE);
+    bool Start(int milliseconds=-1, int oneShot=FALSE);
     void Stop();
 };
 
@@ -1050,6 +1052,8 @@ public:
 
     bool SetCapture(wxWindow* win, int pollingFreq = 0);
     bool ReleaseCapture();
+
+    %pragma(python) addtoclass = "def __nonzero__(self): return self.IsOk()"
 };
 
 //----------------------------------------------------------------------
@@ -1083,11 +1087,13 @@ public:
 class wxWave : public wxObject
 {
 public:
-  wxWave(const wxString& fileName, bool isResource = FALSE);
-  ~wxWave();
+    wxWave(const wxString& fileName, bool isResource = FALSE);
+    ~wxWave();
 
-  bool  IsOk() const;
-  bool  Play(bool async = TRUE, bool looped = FALSE) const;
+    bool  IsOk() const;
+    bool  Play(bool async = TRUE, bool looped = FALSE) const;
+
+    %pragma(python) addtoclass = "def __nonzero__(self): return self.IsOk()"
 };
 
 %new wxWave* wxWaveData(const wxString& data);

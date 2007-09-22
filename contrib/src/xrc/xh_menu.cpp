@@ -3,7 +3,7 @@
 // Purpose:     XRC resource for menus and menubars
 // Author:      Vaclav Slavik
 // Created:     2000/03/05
-// RCS-ID:      $Id: xh_menu.cpp,v 1.7 2002/08/20 22:28:15 VS Exp $
+// RCS-ID:      $Id: xh_menu.cpp,v 1.7.2.1 2003/04/02 14:26:58 JS Exp $
 // Copyright:   (c) 2000 Vaclav Slavik
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -85,7 +85,7 @@ wxObject *wxMenuXmlHandler::DoCreateResource()
             wxMenuItem *mitem = new wxMenuItem(p_menu, id, fullLabel,
                                                GetText(wxT("help")), kind);
                                                
-#if wxCHECK_VERSION(2,3,0) || defined(__WXMSW__)
+#if wxCHECK_VERSION(2,3,0) || (defined(__WXMSW__) && wxUSE_OWNER_DRAWN)
                 if (HasParam(wxT("bitmap")))
                     mitem->SetBitmap(GetBitmap(wxT("bitmap"), wxART_MENU));
 #endif

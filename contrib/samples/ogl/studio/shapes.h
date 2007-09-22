@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     12/07/98
-// RCS-ID:      $Id: shapes.h,v 1.2 2002/09/07 12:12:22 GD Exp $
+// RCS-ID:      $Id: shapes.h,v 1.2.2.1 2003/06/05 17:26:32 JS Exp $
 // Copyright:   (c) Julian Smart
 // Licence:
 /////////////////////////////////////////////////////////////////////////////
@@ -37,8 +37,10 @@ DECLARE_CLASS(csDiagram)
 public:
     csDiagram(csDiagramDocument* doc) { m_doc = doc; }
     ~csDiagram();
+#if wxUSE_PROLOGIO
     bool OnShapeSave(wxExprDatabase& db, wxShape& shape, wxExpr& expr);
     bool OnShapeLoad(wxExprDatabase& db, wxShape& shape, wxExpr& expr);
+#endif
 
     inline csDiagramDocument* GetDocument() const { return m_doc; }
     virtual void Redraw(wxDC& dc);

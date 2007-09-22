@@ -6,7 +6,7 @@
 # Author:      Josu Oyanguren
 #
 # Created:     19-October-2001
-# RCS-ID:      $Id: rightalign.py,v 1.1 2001/10/21 03:43:58 RD Exp $
+# RCS-ID:      $Id: rightalign.py,v 1.1.2.2 2003/06/11 21:33:42 RD Exp $
 # Copyright:   (c) 2001 by Total Control Software
 # Licence:     wxWindows license
 #----------------------------------------------------------------------
@@ -28,6 +28,9 @@ Hope this can help someone, as much as this list helps me.
 
 Josu Oyanguren
 Ubera Servicios Informáticos.
+
+
+P.S.  This only works well on wxMSW.
 """
 
 from wxPython.wx import *
@@ -50,6 +53,12 @@ class wxRightTextCtrl(wxTextCtrl):
 
         y = (dcheight - textheight) / 2
         x = dcwidth - textwidth - 2
+
+        if self.IsEnabled():
+            fclr = self.GetForegroundColour()
+        else:
+            fclr = wxSystemSettings_GetColour(wxSYS_COLOUR_GRAYTEXT)
+        dc.SetTextForeground(fclr)
 
         dc.SetClippingRegion(0, 0, dcwidth, dcheight)
         dc.DrawText(text, x, y)

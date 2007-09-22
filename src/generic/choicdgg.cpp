@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by: 03.11.00: VZ to add wxArrayString and multiple sel functions
 // Created:     04/01/98
-// RCS-ID:      $Id: choicdgg.cpp,v 1.39.2.1 2002/12/19 09:54:44 MBN Exp $
+// RCS-ID:      $Id: choicdgg.cpp,v 1.39.2.3 2003/04/18 10:48:35 VZ Exp $
 // Copyright:   (c) wxWindows team
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -52,17 +52,6 @@
 // ----------------------------------------------------------------------------
 
 #define wxID_LISTBOX 3000
-
-#if defined(__WXMSW__) || defined(__WXMAC__)
-#define wxCHOICEDLG_DIALOG_STYLE (wxDEFAULT_DIALOG_STYLE | \
-                                  wxDIALOG_MODAL |         \
-                                  wxTAB_TRAVERSAL)
-#else
-#define wxCHOICEDLG_DIALOG_STYLE (wxDEFAULT_DIALOG_STYLE | \
-                                  wxDIALOG_MODAL |         \
-                                  wxRESIZE_BORDER |        \
-                                  wxTAB_TRAVERSAL)
-#endif
 
 // ----------------------------------------------------------------------------
 // private functions
@@ -133,7 +122,7 @@ wxString wxGetSingleChoice( const wxString& message,
 // Overloaded for backward compatibility
 wxString wxGetSingleChoice( const wxString& message,
                             const wxString& caption,
-                            int n, char *choices[],
+                            int n, wxChar *choices[],
                             wxWindow *parent,
                             int x, int y, bool centre,
                             int width, int height )
@@ -321,8 +310,7 @@ bool wxAnyChoiceDialog::Create(wxWindow *parent,
                                const wxPoint& pos,
                                long styleLbox)
 {
-    if ( !wxDialog::Create(parent, -1, caption, pos, wxDefaultSize,
-                           wxCHOICEDLG_DIALOG_STYLE) )
+    if ( !wxDialog::Create(parent, -1, caption, pos, wxDefaultSize, styleDlg) )
         return FALSE;
 
     wxBoxSizer *topsizer = new wxBoxSizer( wxVERTICAL );

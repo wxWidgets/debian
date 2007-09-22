@@ -4,7 +4,7 @@
 // Author:      Robert Roebling
 // Modified by:
 // Created:     12/12/98
-// RCS-ID:      $Id: filedlgg.cpp,v 1.72.2.10 2003/02/18 09:27:23 JS Exp $
+// RCS-ID:      $Id: filedlgg.cpp,v 1.72.2.11 2003/04/06 15:36:12 JS Exp $
 // Copyright:   (c) Robert Roebling
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -1244,6 +1244,13 @@ wxFileDialog::~wxFileDialog()
                                ms_lastViewStyle);
         wxConfig::Get()->Write(wxT("/wxWindows/wxFileDialog/ShowHidden"),
                                ms_lastShowHidden);
+    }
+
+    const size_t count = m_choice->GetCount();
+    size_t i;
+    for ( i = 0; i < count; i++ )
+    {
+        delete (wxString *)m_choice->GetClientData(i);
     }
 }
 

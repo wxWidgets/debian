@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     12/07/98
-// RCS-ID:      $Id: doc.h,v 1.4 2002/09/07 12:12:21 GD Exp $
+// RCS-ID:      $Id: doc.h,v 1.4.2.1 2003/06/05 17:26:31 JS Exp $
 // Copyright:   (c) Julian Smart
 // Licence:   	wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -35,8 +35,10 @@ class MyDiagram: public wxDiagram
 {
  public:
   MyDiagram(void) {}
+#if wxUSE_PROLOGIO
   bool OnShapeSave(wxExprDatabase& db, wxShape& shape, wxExpr& expr);
   bool OnShapeLoad(wxExprDatabase& db, wxShape& shape, wxExpr& expr);
+#endif
 };
 
 /*

@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     01/02/97
-// RCS-ID:      $Id: gauge95.cpp,v 1.24 2001/06/08 15:03:59 JS Exp $
+// RCS-ID:      $Id: gauge95.cpp,v 1.24.2.1 2003/05/07 08:36:35 JS Exp $
 // Copyright:   (c) Julian Smart and Markus Holzem
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -101,11 +101,8 @@ bool wxGauge95::Create(wxWindow *parent, wxWindowID id,
   int width = size.x;
   int height = size.y;
 
-  long msFlags = WS_CHILD | WS_VISIBLE /* | WS_CLIPSIBLINGS */;
-
-  if ( m_windowStyle & wxCLIP_SIBLINGS )
-    msFlags |= WS_CLIPSIBLINGS;
-
+  WXDWORD exStyle = 0;
+  long msFlags = MSWGetStyle(style, & exStyle) ;
 
   if (m_windowStyle & wxGA_VERTICAL)
     msFlags |= PBS_VERTICAL;
@@ -114,7 +111,7 @@ bool wxGauge95::Create(wxWindow *parent, wxWindowID id,
     msFlags |= PBS_SMOOTH;
 
   HWND wx_button =
-      CreateWindowEx(MakeExtendedStyle(m_windowStyle), PROGRESS_CLASS, NULL, msFlags,
+      CreateWindowEx(exStyle, PROGRESS_CLASS, NULL, msFlags,
                     0, 0, 0, 0, (HWND) parent->GetHWND(), (HMENU)m_windowId,
                     wxGetInstance(), NULL);
 

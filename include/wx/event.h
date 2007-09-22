@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     01/02/97
-// RCS-ID:      $Id: event.h,v 1.158.2.1 2002/10/30 19:55:06 RR Exp $
+// RCS-ID:      $Id: event.h,v 1.158.2.2 2003/06/01 19:00:41 JS Exp $
 // Copyright:   (c) wxWindows team
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -1418,6 +1418,10 @@ private:
     DECLARE_DYNAMIC_CLASS(wxJoystickEvent)
 };
 
+#ifdef __BORLANDC__
+#   pragma option -w-inl
+#endif
+
 // Drop files event class
 /*
  wxEVT_DROP_FILES
@@ -1470,6 +1474,11 @@ public:
 private:
     DECLARE_DYNAMIC_CLASS(wxDropFilesEvent)
 };
+
+#ifdef __BORLANDC__
+#   pragma option -w.inl
+#endif
+
 
 // Update UI event
 /*

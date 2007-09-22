@@ -5,7 +5,7 @@
 // Author:      Robin Dunn
 //
 // Created:     6/2/98
-// RCS-ID:      $Id: windows2.i,v 1.20.2.1 2003/02/28 00:16:52 RD Exp $
+// RCS-ID:      $Id: windows2.i,v 1.20.2.2 2003/04/03 02:27:54 RD Exp $
 // Copyright:   (c) 1998 by Total Control Software
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -120,7 +120,7 @@ public:
                  const wxString& text,
                  int select = FALSE,
                  int imageId = -1);
-    bool InsertPage(int page,
+    bool InsertPage(int index,
                     /*wxNotebookPage*/ wxWindow *page,
                     const wxString& text,
                     bool select = FALSE,

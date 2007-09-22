@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     16/04/2000
-// RCS-ID:      $Id: helpchm.cpp,v 1.13.2.1 2002/11/09 00:20:23 VS Exp $
+// RCS-ID:      $Id: helpchm.cpp,v 1.13.2.2 2003/06/11 14:15:36 JS Exp $
 // Copyright:   (c) Julian Smart
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -80,9 +80,8 @@ static void UnloadHtmlHelpLibrary()
 {
     if ( gs_htmlHelp )
     {
-        wxPluginManager::UnloadLibrary( _T("HHCTRL.OCX") );
-
-        gs_htmlHelp = 0;
+        if (wxPluginManager::UnloadLibrary( _T("HHCTRL.OCX") ))
+            gs_htmlHelp = 0;
     }
 }
 

@@ -6,7 +6,7 @@
 # Author:      Various
 #
 # Created:     3-January-2002
-# RCS-ID:      $Id: dialogs.py,v 1.4.2.1 2003/01/04 07:10:19 RD Exp $
+# RCS-ID:      $Id: dialogs.py,v 1.4.2.3 2003/06/16 23:38:05 RD Exp $
 # Copyright:   (c) 2002 by Total Control Software
 # Licence:     wxWindows license
 #----------------------------------------------------------------------
@@ -33,15 +33,16 @@ class wxScrolledMessageDialog(wx.wxDialog):
 
 
 class wxMultipleChoiceDialog(wx.wxDialog):
-    def __init__(self, parent, msg, title, lst, pos = wx.wxDefaultPosition, size = (200,200)):
-        wx.wxDialog.__init__(self, parent, -1, title, pos, size)
+    def __init__(self, parent, msg, title, lst, pos = wx.wxDefaultPosition,
+                 size = (200,200), style = wx.wxDEFAULT_DIALOG_STYLE):
+        wx.wxDialog.__init__(self, parent, -1, title, pos, size, style)
         x, y = pos
         if x == -1 and y == -1:
             self.CenterOnScreen(wx.wxBOTH)
         dc = wx.wxClientDC(self)
         height = 0
         for line in msg.splitlines():
-            height = height + dc.GetTextExtent(msg)[1] + 4
+            height = height + dc.GetTextExtent(line)[1] + 2
         stat = wx.wxStaticText(self, -1, msg)
         self.lbox = wx.wxListBox(self, 100, wx.wxDefaultPosition,
                                  wx.wxDefaultSize, lst, wx.wxLB_MULTIPLE)

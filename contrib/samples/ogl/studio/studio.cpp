@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     27/7/98
-// RCS-ID:      $Id: studio.cpp,v 1.8 2002/03/21 10:32:03 JS Exp $
+// RCS-ID:      $Id: studio.cpp,v 1.8.2.1 2003/06/05 17:26:33 JS Exp $
 // Copyright:   (c) Julian Smart
 // Licence:
 /////////////////////////////////////////////////////////////////////////////
@@ -24,6 +24,10 @@
 #include "wx/resource.h"
 #include "wx/config.h"
 #include "wx/laywin.h"
+
+#if !wxUSE_WX_RESOURCES 
+#error "OGL studio sample requires wxUSE_WX_RESOURCES" 
+#endif // wxUSE_WX_RESOURCES 
 
 #include "studio.h"
 #include "view.h"

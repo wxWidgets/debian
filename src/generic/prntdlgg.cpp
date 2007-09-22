@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     04/01/98
-// RCS-ID:      $Id: prntdlgg.cpp,v 1.43.2.1 2002/10/29 21:47:57 RR Exp $
+// RCS-ID:      $Id: prntdlgg.cpp,v 1.43.2.2 2003/03/24 20:29:32 VZ Exp $
 // Copyright:   (c) Julian Smart and Markus Holzem
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -503,9 +503,13 @@ bool wxGenericPrintSetupDialog::TransferDataFromWindow()
     }
     if (m_paperTypeChoice)
     {
-        wxString val(m_paperTypeChoice->GetStringSelection());
-        if (!val.IsNull() && val != wxT(""))
-            m_printData.SetPaperId(wxThePrintPaperDatabase->ConvertNameToId(val));
+        int selectedItem = m_paperTypeChoice->GetSelection();
+        if (selectedItem != -1)
+        {
+            wxPrintPaperType *paper = (wxPrintPaperType *)wxThePrintPaperDatabase->Nth(selectedItem)->Data();
+            if (paper != NULL)
+              m_printData.SetPaperId( paper->GetId());
+        }
     }
 
     return TRUE;
@@ -753,10 +757,10 @@ bool wxGenericPageSetupDialog::TransferDataFromWindow()
     
     if (m_paperTypeChoice)
     {
-        wxString val(m_paperTypeChoice->GetStringSelection());
-        if (!val.IsEmpty())
+        int selectedItem = m_paperTypeChoice->GetSelection();
+        if (selectedItem != -1)
         {
-            wxPrintPaperType* paper = wxThePrintPaperDatabase->FindPaperType(val);
+            wxPrintPaperType *paper = (wxPrintPaperType *)wxThePrintPaperDatabase->Nth(selectedItem)->Data();
             if ( paper )
             {
                 m_pageData.SetPaperSize(wxSize(paper->GetWidth()/10, paper->GetHeight()/10));

@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by: VZ on 13.05.99: no more Default(), MSWOnXXX() reorganisation
 // Created:     04/01/98
-// RCS-ID:      $Id: window.cpp,v 1.349.2.11 2003/02/19 03:07:33 RD Exp $
+// RCS-ID:      $Id: window.cpp,v 1.349.2.25 2003/06/16 22:40:11 RD Exp $
 // Copyright:   (c) Julian Smart and Markus Holzem
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -56,6 +56,10 @@
 
 #if wxUSE_DRAG_AND_DROP
     #include "wx/dnd.h"
+#endif
+
+#if wxUSE_POPUPWIN
+#include "wx/popupwin.h"
 #endif
 
 #include "wx/menuitem.h"
@@ -125,16 +129,19 @@
 
 #ifndef VK_OEM_1
     #define VK_OEM_1        0xBA
-    #define VK_OEM_PLUS     0xBB
-    #define VK_OEM_COMMA    0xBC
-    #define VK_OEM_MINUS    0xBD
-    #define VK_OEM_PERIOD   0xBE
     #define VK_OEM_2        0xBF
     #define VK_OEM_3        0xC0
     #define VK_OEM_4        0xDB
     #define VK_OEM_5        0xDC
     #define VK_OEM_6        0xDD
     #define VK_OEM_7        0xDE
+#endif
+
+#ifndef VK_OEM_COMMA
+    #define VK_OEM_PLUS     0xBB
+    #define VK_OEM_COMMA    0xBC
+    #define VK_OEM_MINUS    0xBD
+    #define VK_OEM_PERIOD   0xBE
 #endif
 
 // ---------------------------------------------------------------------------
@@ -567,7 +574,11 @@ bool wxWindowMSW::Show(bool show)
     int cshow = show ? SW_SHOW : SW_HIDE;
     ::ShowWindow(hWnd, cshow);
 
-    if ( show )
+    if ( show && (IsTopLevel()
+#if wxUSE_POPUPWIN
+                  || IsKindOf(CLASSINFO(wxPopupWindow)))
+#endif
+        )
     {
         wxBringWindowToTop(hWnd);
     }
@@ -1146,7 +1157,7 @@ void wxWindowMSW::SetWindowStyleFlag(long flags)
 WXDWORD wxWindowMSW::MSWGetStyle(long flags, WXDWORD *exstyle) const
 {
     // translate the style
-    WXDWORD style = WS_CHILD;
+    WXDWORD style = WS_CHILD | WS_VISIBLE;
 
     if ( flags & wxCLIP_CHILDREN )
         style |= WS_CLIPCHILDREN;
@@ -1154,8 +1165,29 @@ WXDWORD wxWindowMSW::MSWGetStyle(long flags, WXDWORD *exstyle) const
     if ( flags & wxCLIP_SIBLINGS )
         style |= WS_CLIPSIBLINGS;
 
+    if ( flags & wxVSCROLL )
+        style |= WS_VSCROLL;
+
+    if ( flags & wxHSCROLL )
+        style |= WS_HSCROLL;
+
     wxBorder border = (wxBorder)(flags & wxBORDER_MASK);
-    if ( border != wxBORDER_NONE && border != wxBORDER_DEFAULT )
+
+    // Check if we want to automatically give it a sunken style.
+    // Note than because 'sunken' actually maps to WS_EX_CLIENTEDGE, which
+    // is a more neutral term, we don't necessarily get a sunken effect in
+    // Windows XP. Instead we get the appropriate style for the theme.
+
+    if (border == wxBORDER_DEFAULT && wxTheApp->GetAuto3D() &&
+        IsKindOf(CLASSINFO(wxControl)) &&
+        GetParent() &&
+        ((GetParent()->GetWindowStyleFlag() & wxUSER_COLOURS) != wxUSER_COLOURS))
+    {
+        border = (wxBorder)((flags & wxBORDER_MASK) | wxBORDER_SUNKEN);
+    }
+
+    // Only give it WS_BORDER for wxBORDER_SIMPLE
+    if (border & wxBORDER_SIMPLE)
         style |= WS_BORDER;
 
     // now deal with ext style if the caller wants it
@@ -1166,7 +1198,7 @@ WXDWORD wxWindowMSW::MSWGetStyle(long flags, WXDWORD *exstyle) const
         if ( flags & wxTRANSPARENT_WINDOW )
             *exstyle |= WS_EX_TRANSPARENT;
 
-        switch ( flags & wxBORDER_MASK )
+        switch ( border )
         {
             default:
                 wxFAIL_MSG( _T("unknown border style") );
@@ -1182,11 +1214,12 @@ WXDWORD wxWindowMSW::MSWGetStyle(long flags, WXDWORD *exstyle) const
                 break;
 
             case wxBORDER_RAISED:
-                *exstyle |= WS_EX_WINDOWEDGE;
+                *exstyle |= WS_EX_DLGMODALFRAME;
                 break;
 
             case wxBORDER_SUNKEN:
                 *exstyle |= WS_EX_CLIENTEDGE;
+                style &= ~WS_BORDER;
                 break;
 
             case wxBORDER_DOUBLE:
@@ -1209,6 +1242,7 @@ WXDWORD wxWindowMSW::MSWGetStyle(long flags, WXDWORD *exstyle) const
 }
 
 // Make a Windows extended style from the given wxWindows window style
+// OBSOLETE! DO NOT USE. USE MSWGetStyle INSTEAD.
 WXDWORD wxWindowMSW::MakeExtendedStyle(long style, bool eliminateBorders)
 {
     WXDWORD exStyle = 0;
@@ -1236,6 +1270,7 @@ WXDWORD wxWindowMSW::MakeExtendedStyle(long style, bool eliminateBorders)
 // Determines whether native 3D effects or CTL3D should be used,
 // applying a default border style if required, and returning an extended
 // style to pass to CreateWindowEx.
+// OBSOLETE! DO NOT USE. USE MSWGetStyle INSTEAD.
 WXDWORD wxWindowMSW::Determine3DEffects(WXDWORD defaultBorderStyle,
                                         bool *want3D) const
 {
@@ -1899,6 +1934,8 @@ static void wxYieldForCommandsOnly()
 
 bool wxWindowMSW::DoPopupMenu(wxMenu *menu, int x, int y)
 {
+    wxCHECK_MSG( menu != NULL, FALSE, wxT("invalid popup-menu") );
+
     menu->SetInvokingWindow(this);
     menu->UpdateUI();
 
@@ -3155,36 +3192,9 @@ bool wxWindowMSW::HandleTooltipNotify(WXUINT code,
         // in Unicode mode this is just what we need
         ttText->lpszText = (wxChar *)ttip.c_str();
 #else // !Unicode
-        // in ANSI mode we have to convert the string and put it into the
-        // provided buffer: be careful not to overrun it
-        const size_t lenAnsi = ttip.length();
-
-        // some compilers (MetroWerks and Cygwin) don't like calling mbstowcs
-        // with NULL argument
-        #if defined( __MWERKS__ ) || defined( __CYGWIN__ )
-            size_t lenUnicode = 2*lenAnsi;
-        #else
-            size_t lenUnicode = mbstowcs(NULL, ttip, lenAnsi);
-        #endif
-
-        // using the pointer of right type avoids us doing all sorts of
-        // pointer arithmetics ourselves
-        wchar_t *dst = (wchar_t *)ttText->szText,
-                *pwz = new wchar_t[lenUnicode + 1];
-        mbstowcs(pwz, ttip, lenAnsi + 1);
-
-        // stay inside the buffer (-1 because it must be NUL-terminated)
-        if ( lenUnicode > WXSIZEOF(ttText->szText) - 1 )
-        {
-            lenUnicode = WXSIZEOF(ttText->szText) - 1;
-        }
-
-        memcpy(dst, pwz, lenUnicode*sizeof(wchar_t));
-
-        // put the terminating wide NUL
-        dst[lenUnicode] = L'\0';
-
-        delete [] pwz;
+        MultiByteToWideChar(CP_ACP, 0, ttip, ttip.length()+1,
+                            (wchar_t *)ttText->szText,
+                            sizeof(ttText->szText) / sizeof(wchar_t));
 #endif // Unicode/!Unicode
     }
 
@@ -4158,7 +4168,10 @@ void wxWindowMSW::InitMouseEvent(wxMouseEvent& event,
     event.m_leftDown = (flags & MK_LBUTTON) != 0;
     event.m_middleDown = (flags & MK_MBUTTON) != 0;
     event.m_rightDown = (flags & MK_RBUTTON) != 0;
-    event.m_altDown = (::GetKeyState(VK_MENU) & 0x80000000) != 0;
+//    event.m_altDown = (::GetKeyState(VK_MENU) & 0x80000000) != 0;
+    // Returns different negative values on WinME and WinNT,
+    // so simply test for negative value.
+    event.m_altDown = ::GetKeyState(VK_MENU) < 0;
 
     event.SetTimestamp(s_currentMsg.time);
     event.m_eventObject = this;

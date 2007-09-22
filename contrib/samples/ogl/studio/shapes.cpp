@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     12/07/98
-// RCS-ID:      $Id: shapes.cpp,v 1.3 2001/11/19 16:07:18 JS Exp $
+// RCS-ID:      $Id: shapes.cpp,v 1.3.2.1 2003/06/05 17:26:32 JS Exp $
 // Copyright:   (c) Julian Smart
 // Licence:   	wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -705,6 +705,7 @@ bool csEvtHandler::EditProperties()
  * Diagram
  */
  
+#if wxUSE_PROLOGIO
 bool csDiagram::OnShapeSave(wxExprDatabase& db, wxShape& shape, wxExpr& expr)
 {
   wxDiagram::OnShapeSave(db, shape, expr);
@@ -723,6 +724,7 @@ bool csDiagram::OnShapeLoad(wxExprDatabase& db, wxShape& shape, wxExpr& expr)
   
   return TRUE;
 }
+#endif
 
 IMPLEMENT_DYNAMIC_CLASS(csThinRectangleShape, wxDrawnShape)
 

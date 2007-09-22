@@ -2,7 +2,7 @@
 // Name:        htmlpars.cpp
 // Purpose:     wxHtmlParser class (generic parser)
 // Author:      Vaclav Slavik
-// RCS-ID:      $Id: htmlpars.cpp,v 1.28.2.5 2002/11/10 00:05:39 VS Exp $
+// RCS-ID:      $Id: htmlpars.cpp,v 1.28.2.7 2003/06/10 21:20:21 VS Exp $
 // Copyright:   (c) 1999 Vaclav Slavik
 // Licence:     wxWindows Licence
 /////////////////////////////////////////////////////////////////////////////
@@ -127,6 +127,8 @@ void wxHtmlParser::CreateDOMTree()
     m_CurTextPiece = 0;
 }
 
+extern bool wxIsCDATAElement(const wxChar *tag);
+
 void wxHtmlParser::CreateDOMSubTree(wxHtmlTag *cur,
                                     int begin_pos, int end_pos,
                                     wxHtmlTagsCache *cache)
@@ -136,6 +138,15 @@ void wxHtmlParser::CreateDOMSubTree(wxHtmlTag *cur,
     wxChar c;
     int i = begin_pos;
     int textBeginning = begin_pos;
+
+    // If the tag contains CDATA text, we include the text between beginning
+    // and ending tag verbosely. Setting i=end_pos will skip to the very
+    // end of this function where text piece is added, bypassing any child
+    // tags parsing (CDATA element can't have child elements by definition):
+    if (cur != NULL && wxIsCDATAElement(cur->GetName().c_str()))
+    {
+        i = end_pos;
+    }
 
     while (i < end_pos)
     {
@@ -209,6 +220,7 @@ void wxHtmlParser::CreateDOMSubTree(wxHtmlTag *cur,
                 }
                 else
                     i = chd->GetBeginPos();
+                
                 textBeginning = i;
             }
 
@@ -860,7 +872,7 @@ bool wxMetaTagHandler::HandleTag(const wxHtmlTag& tag)
     }
 
     if (tag.HasParam(_T("HTTP-EQUIV")) &&
-        tag.GetParam(_T("HTTP-EQUIV")) == _T("Content-Type") &&
+        tag.GetParam(_T("HTTP-EQUIV")).IsSameAs(_T("Content-Type"), FALSE) &&
         tag.HasParam(_T("CONTENT")))
     {
         wxString content = tag.GetParam(_T("CONTENT"));

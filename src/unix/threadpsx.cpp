@@ -4,7 +4,7 @@
 // Author:      Original from Wolfram Gloger/Guilhem Lavaux
 // Modified by: K. S. Sreeram (2002): POSIXified wxCondition, added wxSemaphore
 // Created:     04/22/98
-// RCS-ID:      $Id: threadpsx.cpp,v 1.58.2.2 2002/10/22 07:11:32 JJ Exp $
+// RCS-ID:      $Id: threadpsx.cpp,v 1.58.2.5 2003/05/08 23:36:42 VZ Exp $
 // Copyright:   (c) Wolfram Gloger (1996, 1997)
 //                  Guilhem Lavaux (1998)
 //                  Vadim Zeitlin (1999-2002)

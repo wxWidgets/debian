@@ -2,7 +2,7 @@
 // Name:        button.cpp
 // Purpose:
 // Author:      Robert Roebling
-// Id:          $Id: button.cpp,v 1.52.2.1 2002/11/04 20:13:23 RR Exp $
+// Id:          $Id: button.cpp,v 1.52.2.2 2003/04/06 17:55:52 JS Exp $
 // Copyright:   (c) 1998 Robert Roebling
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -175,7 +175,12 @@ void wxButton::SetLabel( const wxString &label )
 
     wxControl::SetLabel( label );
 
+#ifdef __WXGTK20__
+    wxString label2 = PrepareLabelMnemonics( label );
+    gtk_label_set_text_with_mnemonic( GTK_LABEL( BUTTON_CHILD(m_widget) ), wxGTK_CONV( label2 ) );
+#else
     gtk_label_set( GTK_LABEL( BUTTON_CHILD(m_widget) ), wxGTK_CONV( GetLabel() ) );
+#endif
 }
 
 bool wxButton::Enable( bool enable )

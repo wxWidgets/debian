@@ -6,7 +6,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     01/02/97
-// RCS-ID:      $Id: private.h,v 1.77.2.1 2003/01/18 01:51:05 VZ Exp $
+// RCS-ID:      $Id: private.h,v 1.77.2.2 2003/05/21 18:43:03 JS Exp $
 // Copyright:   (c) Julian Smart
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -280,12 +280,18 @@ extern HBITMAP wxInvertMask(HBITMAP hbmpMask, int w = 0, int h = 0);
 // get the current state of SHIFT/CTRL keys
 inline bool wxIsShiftDown()
 {
-    return (::GetKeyState(VK_SHIFT) & 0x100) != 0;
+//    return (::GetKeyState(VK_SHIFT) & 0x100) != 0;
+    // Returns different negative values on WinME and WinNT,
+    // so simply test for negative value.
+    return ::GetKeyState(VK_SHIFT) < 0;
 }
 
 inline bool wxIsCtrlDown()
 {
-    return (::GetKeyState(VK_CONTROL) & 0x100) != 0;
+//    return (::GetKeyState(VK_CONTROL) & 0x100) != 0;
+    // Returns different negative values on WinME and WinNT,
+    // so simply test for negative value.
+    return ::GetKeyState(VK_CONTROL) < 0;
 }
 
 // wrapper around GetWindowRect() and GetClientRect() APIs doing error checking

@@ -4,7 +4,7 @@
 // Author:      Mattia Barbon
 // Modified by:
 // Created:     29/01/2002
-// RCS-ID:      $Id: hashmap.h,v 1.13.2.4 2003/01/11 20:56:40 MBN Exp $
+// RCS-ID:      $Id: hashmap.h,v 1.13.2.6 2003/06/01 19:00:41 JS Exp $
 // Copyright:   (c) Mattia Barbon
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -18,6 +18,8 @@
 
 #include "wx/string.h"
 
+#include <stddef.h>             // for ptrdiff_t
+
 // private
 struct WXDLLEXPORT _wxHashTable_NodeBase
 {
@@ -25,6 +27,10 @@ struct WXDLLEXPORT _wxHashTable_NodeBase
 
     _wxHashTable_NodeBase* m_nxt;
 };
+
+#ifdef __BORLANDC__
+#   pragma option -w-inl
+#endif
 
 // private
 class WXDLLEXPORT _wxHashTableBase2
@@ -67,6 +73,10 @@ protected:
         return (void **)calloc(sz, sizeof(void*));
     }
 };
+
+#ifdef __BORLANDC__
+#   pragma option -w.inl
+#endif
 
 #define _WX_DECLARE_HASHTABLE( VALUE_T, KEY_T, HASH_T, KEY_EX_T, KEY_EQ_T, CLASSNAME, CLASSEXP, SHOULD_GROW, SHOULD_SHRINK ) \
 CLASSEXP CLASSNAME : protected _wxHashTableBase2 \

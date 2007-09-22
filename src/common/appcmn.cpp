@@ -4,7 +4,7 @@
 // Author:      Vadim Zeitlin
 // Modified by:
 // Created:     18.10.99
-// RCS-ID:      $Id: appcmn.cpp,v 1.43.2.1 2002/09/24 13:40:18 JS Exp $
+// RCS-ID:      $Id: appcmn.cpp,v 1.43.2.2 2003/04/10 06:13:48 GD Exp $
 // Copyright:   (c) Vadim Zeitlin
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -548,6 +548,24 @@ void ShowAssertDialog(const wxChar *szFile,
     {
         wxStrcat(szBuf, wxT("."));
     }
+
+#if wxUSE_THREADS
+    // if we are not in the main thread,
+    // output the assert directly and trap since dialogs cannot be displayed
+    if (!wxThread::IsMain()) {
+        wxStrcat(szBuf, wxT(" [in child thread]"));
+#if defined(__WXMSW__) && !defined(__WXMICROWIN__)
+        wxStrcat(szBuf, wxT("\r\n"));
+        OutputDebugString(szBuf);
+#else
+        // send to stderr
+        wxFprintf(stderr, wxT("%s\n"), szBuf);
+        fflush(stderr); 
+#endif
+        // He-e-e-e-elp!! we're asserting in a child thread
+        wxTrap();
+    }
+#endif // wxUSE_THREADS
 
     if ( !s_bNoAsserts )
     {

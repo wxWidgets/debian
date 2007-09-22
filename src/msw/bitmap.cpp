@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     04/01/98
-// RCS-ID:      $Id: bitmap.cpp,v 1.78 2002/08/26 21:12:25 GRG Exp $
+// RCS-ID:      $Id: bitmap.cpp,v 1.78.2.1 2003/04/16 09:54:23 JS Exp $
 // Copyright:   (c) Julian Smart and Markus Holzem
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -1088,6 +1088,7 @@ void wxBitmap::SetMask(wxMask *mask)
 {
     EnsureHasData();
 
+    delete GetBitmapData()->m_bitmapMask ;
     GetBitmapData()->m_bitmapMask = mask;
 }
 

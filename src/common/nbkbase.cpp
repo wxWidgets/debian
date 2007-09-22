@@ -4,7 +4,7 @@
 // Author:      Vadim Zeitlin
 // Modified by:
 // Created:     02.07.01
-// RCS-ID:      $Id: nbkbase.cpp,v 1.8 2002/01/11 14:34:37 RR Exp $
+// RCS-ID:      $Id: nbkbase.cpp,v 1.8.2.3 2003/06/03 10:39:59 VZ Exp $
 // Copyright:   (c) 2001 Vadim Zeitlin
 // Licence:     wxWindows licence
 ///////////////////////////////////////////////////////////////////////////////
@@ -35,6 +35,16 @@
 
 #include "wx/imaglist.h"
 #include "wx/notebook.h"
+
+#ifdef __GNUWIN32_OLD__
+    #include "wx/msw/gnuwin32/extra.h"
+#endif
+
+#if defined(__WIN95__) && !(defined(__GNUWIN32_OLD__) && !defined(__CYGWIN10__))
+#include "wx/msw/private.h"
+#include <commctrl.h>
+#include "wx/msw/winundef.h"
+#endif
 
 // ============================================================================
 // implementation
@@ -92,6 +102,28 @@ wxSize wxNotebookBase::CalcSizeFromPage(const wxSize& sizePage)
     // course, totally bogus - just like the original code was
     wxSize sizeTotal = sizePage;
     
+    // Slightly less bogus, at least under Windows.
+    // We need to make getting tab size part of the wxWindows API.
+#ifdef __WXMSW__
+    wxSize tabSize(0, 0);
+    if (GetPageCount() > 0)
+    {
+        RECT rect;
+        TabCtrl_GetItemRect((HWND) GetHWND(), 0, & rect);
+        tabSize.x = rect.right - rect.left;
+        tabSize.y = rect.bottom - rect.top;
+    }
+    if ( HasFlag(wxNB_LEFT) || HasFlag(wxNB_RIGHT) )
+    {
+        sizeTotal.x += tabSize.x + 7;
+        sizeTotal.y += 7;
+    }
+    else
+    {
+        sizeTotal.x += 7;
+        sizeTotal.y += tabSize.y + 7;
+    }
+#else
     if ( HasFlag(wxNB_LEFT) || HasFlag(wxNB_RIGHT) )
     {
         sizeTotal.x += 90;
@@ -102,8 +134,32 @@ wxSize wxNotebookBase::CalcSizeFromPage(const wxSize& sizePage)
         sizeTotal.x += 10;
         sizeTotal.y += 40;
     }
+#endif
 
     return sizeTotal;
+}
+
+wxSize wxNotebookBase::DoGetBestSize() const
+{
+    wxSize bestSize;
+
+    // iterate over all pages, get the largest width and height
+    const size_t nCount = m_pages.Count();
+    for ( size_t nPage = 0; nPage < nCount; nPage++ )
+    {
+        wxNotebookPage *pPage = m_pages[nPage];
+        wxSize childBestSize(pPage->GetBestSize());
+
+        if ( childBestSize.x > bestSize.x )
+            bestSize.x = childBestSize.x;
+
+        if ( childBestSize.y > bestSize.y )
+            bestSize.y = childBestSize.y;
+    }
+
+    // convert display area to window area, adding the size neccessary for the
+    // tabs
+    return wxConstCast(this, wxNotebookBase)->CalcSizeFromPage(bestSize);
 }
 
 // ----------------------------------------------------------------------------

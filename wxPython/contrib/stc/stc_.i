@@ -5,7 +5,7 @@
 // Author:      Robin Dunn
 //
 // Created:     12-Oct-1999
-// RCS-ID:      $Id: stc_.i,v 1.12 2002/09/06 16:59:31 RD Exp $
+// RCS-ID:      $Id: stc_.i,v 1.12.2.1 2003/04/19 20:20:43 RD Exp $
 // Copyright:   (c) 2000 by Total Control Software
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -114,6 +114,14 @@ def EVT_STC_DO_DROP(win, id, func):
 def EVT_STC_ZOOM(win, id, func):
     win.Connect(id, -1, wxEVT_STC_ZOOM, func)
 
+def EVT_STC_HOTSPOT_CLICK(win, id, func):
+    win.Connect(id, -1, wxEVT_STC_HOTSPOT_CLICK, func)
+
+def EVT_STC_HOTSPOT_DCLICK(win, id, func):
+    win.Connect(id, -1, wxEVT_STC_HOTSPOT_DCLICK, func)
+
+def EVT_STC_CALLTIP_CLICK(win, id, func):
+    win.Connect(id, -1, wxEVT_STC_CALLTIP_CLICK, func)
 "
 
 //----------------------------------------------------------------------

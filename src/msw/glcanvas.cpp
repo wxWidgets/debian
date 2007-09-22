@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     04/01/98
-// RCS-ID:      $Id: glcanvas.cpp,v 1.16.2.1 2002/11/28 11:27:33 JS Exp $
+// RCS-ID:      $Id: glcanvas.cpp,v 1.16.2.2 2003/05/07 08:36:35 JS Exp $
 // Copyright:   (c) Julian Smart
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -293,10 +293,6 @@ bool wxGLCanvas::Create(wxWindow *parent,
   parent->AddChild(this);
 
   DWORD msflags = 0;
-  if ( style & wxBORDER )
-    msflags |= WS_BORDER;
-  if ( style & wxTHICK_FRAME )
-    msflags |= WS_THICKFRAME;
 
   /*
   A general rule with OpenGL and Win32 is that any window that will have a
@@ -305,18 +301,9 @@ bool wxGLCanvas::Create(wxWindow *parent,
   books that contain the wgl function descriptions.
   */
 
+  WXDWORD exStyle = 0;
   msflags |= WS_CHILD | WS_VISIBLE | WS_CLIPSIBLINGS | WS_CLIPCHILDREN;
-
-  bool want3D;
-  WXDWORD exStyle = Determine3DEffects(WS_EX_CLIENTEDGE, &want3D);
-
-  // Even with extended styles, need to combine with WS_BORDER
-  // for them to look right.
-  if ( want3D || (m_windowStyle & wxSIMPLE_BORDER) || (m_windowStyle & wxRAISED_BORDER ) ||
-       (m_windowStyle & wxSUNKEN_BORDER) || (m_windowStyle & wxDOUBLE_BORDER))
-  {
-    msflags |= WS_BORDER;
-  }
+  msflags |= MSWGetStyle(style, & exStyle) ;
 
   return MSWCreate(wxGLCanvasClassName, NULL, pos, size, msflags, exStyle);
 }

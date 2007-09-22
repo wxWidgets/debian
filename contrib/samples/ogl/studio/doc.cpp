@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     12/07/98
-// RCS-ID:      $Id: doc.cpp,v 1.2 2001/10/30 13:28:45 GT Exp $
+// RCS-ID:      $Id: doc.cpp,v 1.2.2.1 2003/06/05 17:26:32 JS Exp $
 // Copyright:   (c) Julian Smart
 // Licence:   	wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -60,6 +60,7 @@ bool csDiagramDocument::OnSaveDocument(const wxString& file)
   if (file == "")
     return FALSE;
 
+#if wxUSE_PROLOGIO
   if (!m_diagram.SaveFile(file))
   {
     wxString msgTitle;
@@ -72,6 +73,7 @@ bool csDiagramDocument::OnSaveDocument(const wxString& file)
       GetDocumentWindow());
     return FALSE;
   }
+#endif
 
   Modify(FALSE);
   SetFilename(file);
@@ -90,12 +92,14 @@ bool csDiagramDocument::OnOpenDocument(const wxString& file)
     msgTitle = wxString("File error");
 
   m_diagram.DeleteAllShapes();
+#if wxUSE_PROLOGIO
   if (!m_diagram.LoadFile(file))
   {
     (void)wxMessageBox("Sorry, could not open this file.", msgTitle, wxOK|wxICON_EXCLAMATION,
      GetDocumentWindow());
     return FALSE;
   }
+#endif
   SetFilename(file, TRUE);
   Modify(FALSE);
   UpdateAllViews();

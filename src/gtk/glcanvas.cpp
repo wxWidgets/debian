@@ -4,7 +4,7 @@
 // Author:      Robert Roebling
 // Modified by:
 // Created:     17/08/98
-// RCS-ID:      $Id: glcanvas.cpp,v 1.9.2.2 2002/12/02 21:23:13 VZ Exp $
+// RCS-ID:      $Id: glcanvas.cpp,v 1.9.2.3 2003/05/06 07:01:14 RR Exp $
 // Copyright:   (c) Robert Roebling
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -206,6 +206,7 @@ gtk_glwindow_expose_callback( GtkWidget *WXUNUSED(widget), GdkEventExpose *gdk_e
 // "draw" of m_wxwindow
 //-----------------------------------------------------------------------------
 
+#ifndef __WXGTK20__
 static void
 gtk_glwindow_draw_callback( GtkWidget *WXUNUSED(widget), GdkRectangle *rect, wxGLCanvas *win )
 {
@@ -217,6 +218,7 @@ gtk_glwindow_draw_callback( GtkWidget *WXUNUSED(widget), GdkRectangle *rect, wxG
     win->GetUpdateRegion().Union( rect->x, rect->y,
                                   rect->width, rect->height );
 }
+#endif
 
 //-----------------------------------------------------------------------------
 // "size_allocate" of m_wxwindow
@@ -319,6 +321,10 @@ bool wxGLCanvas::Create( wxWindow *parent,
 
     m_glWidget = m_wxwindow;
 
+#ifdef __WXGTK20__
+    gtk_widget_set_double_buffered( m_glWidget, FALSE );
+#endif
+
     gtk_pizza_set_clear( GTK_PIZZA(m_wxwindow), FALSE );
 
     gtk_signal_connect( GTK_OBJECT(m_wxwindow), "realize",
@@ -330,8 +336,10 @@ bool wxGLCanvas::Create( wxWindow *parent,
     gtk_signal_connect( GTK_OBJECT(m_wxwindow), "expose_event",
         GTK_SIGNAL_FUNC(gtk_glwindow_expose_callback), (gpointer)this );
 
+#ifndef __WXGTK20__
     gtk_signal_connect( GTK_OBJECT(m_wxwindow), "draw",
         GTK_SIGNAL_FUNC(gtk_glwindow_draw_callback), (gpointer)this );
+#endif
 
     gtk_signal_connect( GTK_OBJECT(m_widget), "size_allocate",
         GTK_SIGNAL_FUNC(gtk_glcanvas_size_callback), (gpointer)this );

@@ -5,7 +5,7 @@
 //               (derived in part from dynlib.cpp (c) 1998 Guilhem Lavaux)
 // Modified by:
 // Created:      03/12/01
-// RCS-ID:       $Id: dynload.cpp,v 1.19.2.4 2002/12/19 23:43:33 VS Exp $
+// RCS-ID:       $Id: dynload.cpp,v 1.19.2.5 2003/06/01 12:58:30 JS Exp $
 // Copyright:    (c) 2001 Ron Lee <ron@debian.org>
 // Licence:      wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -665,7 +665,7 @@ void wxPluginManager::Unload()
         if ( i->second == m_entry )
         {
             ms_manifest->erase(i);
-            return;
+            break;
         }
     }
 

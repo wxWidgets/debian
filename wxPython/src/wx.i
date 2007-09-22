@@ -5,7 +5,7 @@
 // Author:      Robin Dunn
 //
 // Created:     5/22/98
-// RCS-ID:      $Id: wx.i,v 1.37.2.7 2003/03/21 18:57:01 RD Exp $
+// RCS-ID:      $Id: wx.i,v 1.37.2.8 2003/04/02 01:49:04 RD Exp $
 // Copyright:   (c) 1998 by Total Control Software
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -53,9 +53,6 @@
 %native(_wxSetDictionary)   __wxSetDictionary;
 
 //---------------------------------------------------------------------------
-
-
-#define __version__ "0.0.0"   // The real value is now in setup.py...
 
 %readonly
 wxPoint     wxDefaultPosition;
@@ -287,17 +284,12 @@ static wxPyCoreAPI API = {
     initfontsc();
 
 
+    // Although these are redfined in __version__ they need to be here too so
+    // that an assert can be done to ensure that the wxPython and the wxWindows
+    // versions match.
     PyDict_SetItemString(d,"wxMAJOR_VERSION", PyInt_FromLong((long)wxMAJOR_VERSION ));
     PyDict_SetItemString(d,"wxMINOR_VERSION", PyInt_FromLong((long)wxMINOR_VERSION ));
-    PyDict_SetItemString(d,"wxRELEASE_NUMBER", PyInt_FromLong((long)wxRELEASE_NUMBER ));
-    PyDict_SetItemString(d,"wxVERSION_NUMBER", PyInt_FromLong((long)wxVERSION_NUMBER ));
-#if wxUSE_UNICODE
-    wxString tempStr(wxVERSION_STRING);
-    PyDict_SetItemString(d,"wxVERSION_STRING", PyUnicode_FromWideChar(tempStr.c_str(), tempStr.Len()));
-#else
-    PyDict_SetItemString(d,"wxVERSION_STRING", PyString_FromString(wxVERSION_STRING));
-#endif
-
+    PyDict_SetItemString(d,"wxRELEASE_VERSION", PyInt_FromLong((long)wxRELEASE_NUMBER ));
 
 %}
 

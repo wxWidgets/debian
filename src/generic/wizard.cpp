@@ -7,7 +7,7 @@
 //              2) Added "Help" button handler stub
 //              3) Fixed ShowPage() bug on displaying bitmaps
 // Created:     15.08.99
-// RCS-ID:      $Id: wizard.cpp,v 1.34.2.2 2002/12/09 09:46:04 JS Exp $
+// RCS-ID:      $Id: wizard.cpp,v 1.34.2.4 2003/05/01 22:53:59 VZ Exp $
 // Copyright:   (c) 1999 Vadim Zeitlin <zeitlin@dptmaths.ens-cachan.fr>
 // Licence:     wxWindows license
 ///////////////////////////////////////////////////////////////////////////////
@@ -43,12 +43,6 @@
 #include "wx/statline.h"
 
 #include "wx/wizard.h"
-
-// ----------------------------------------------------------------------------
-// simple types
-// ----------------------------------------------------------------------------
-
-WX_DEFINE_ARRAY(wxPanel *, wxArrayPages);
 
 // ----------------------------------------------------------------------------
 // event tables and such
@@ -452,7 +446,7 @@ wxSize wxWizard::GetPageSize() const
     return wxSize(m_width, m_height);
 }
 
-void wxWizard::OnCancel(wxCommandEvent& WXUNUSED(event))
+void wxWizard::OnCancel(wxCommandEvent& WXUNUSED(eventUnused))
 {
     // this function probably can never be called when we don't have an active
     // page, but a small extra check won't hurt

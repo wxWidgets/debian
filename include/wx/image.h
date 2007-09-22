@@ -2,7 +2,7 @@
 // Name:        image.h
 // Purpose:     wxImage class
 // Author:      Robert Roebling
-// RCS-ID:      $Id: image.h,v 1.73.2.6 2003/03/04 12:03:50 SC Exp $
+// RCS-ID:      $Id: image.h,v 1.73.2.7 2003/06/01 19:00:41 JS Exp $
 // Copyright:   (c) Robert Roebling
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -95,9 +95,17 @@ public:
     unsigned long value;
 };
 
+#ifdef __BORLANDC__
+#   pragma option -w-inl
+#endif
+
 WX_DECLARE_EXPORTED_HASH_MAP(unsigned long, wxImageHistogramEntry,
                              wxIntegerHash, wxIntegerEqual,
                              wxImageHistogram);
+
+#ifdef __BORLANDC__
+#   pragma option -w.inl
+#endif
 
 //-----------------------------------------------------------------------------
 // wxImage

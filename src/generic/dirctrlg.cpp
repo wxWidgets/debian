@@ -4,7 +4,7 @@
 // Author:      Harm van der Heijden, Robert Roebling, Julian Smart
 // Modified by:
 // Created:     12/12/98
-// RCS-ID:      $Id: dirctrlg.cpp,v 1.48.2.2 2002/12/29 07:48:17 RL Exp $
+// RCS-ID:      $Id: dirctrlg.cpp,v 1.48.2.3 2003/05/07 16:06:37 JS Exp $
 // Copyright:   (c) Harm van der Heijden, Robert Roebling and Julian Smart
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -511,10 +511,14 @@ bool wxGenericDirCtrl::Create(wxWindow *parent,
 
     if ((style & wxDIRCTRL_3D_INTERNAL) == 0)
         treeStyle |= wxNO_BORDER;
+    else
+        treeStyle |= wxBORDER_SUNKEN;
 
     long filterStyle = 0;
     if ((style & wxDIRCTRL_3D_INTERNAL) == 0)
         filterStyle |= wxNO_BORDER;
+    else
+        filterStyle |= wxBORDER_SUNKEN;
 
     m_treeCtrl = new wxTreeCtrl(this, wxID_TREECTRL, pos, size, treeStyle);
 

@@ -3,7 +3,7 @@
 // Purpose:     MSW/GTK compatible notebook (a.k.a. property sheet)
 // Author:      Robert Roebling
 // Modified by: Vadim Zeitlin for Windows version
-// RCS-ID:      $Id: notebook.h,v 1.30.2.3 2002/11/17 10:08:08 MBN Exp $
+// RCS-ID:      $Id: notebook.h,v 1.30.2.4 2003/06/02 13:47:06 JS Exp $
 // Copyright:   (c) Julian Smart and Markus Holzem
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -139,6 +139,12 @@ protected:
   DECLARE_DYNAMIC_CLASS(wxNotebook)
   DECLARE_EVENT_TABLE()
 };
+
+// Windows only: attempts to get colour for UX theme page background
+WXDLLEXPORT wxColour wxNotebookGetThemeBackgroundColour(wxNotebook* notebook);
+
+// Windows only: attempts to apply the UX theme page background to this page
+WXDLLEXPORT void wxNotebookApplyThemeBackground(wxNotebook* notebook, wxWindow* window, const wxColour& colour);
 
 #endif // wxUSE_NOTEBOOK
 

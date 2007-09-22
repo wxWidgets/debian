@@ -4,7 +4,7 @@
  * Author:      Vadim Zeitlin
  * Modified by:
  * Created:     09.08.00
- * RCS-ID:      $Id: chkconf.h,v 1.32.2.2 2003/01/21 23:28:07 VS Exp $
+ * RCS-ID:      $Id: chkconf.h,v 1.32.2.3 2003/06/13 15:33:14 VS Exp $
  * Copyright:   (c) 2000 Vadim Zeitlin <vadim@wxwindows.org>
  * Licence:     wxWindows license
  */
@@ -771,6 +771,17 @@
 #       endif
 #   endif
 #endif /* wxUSE_FILESYSTEM */
+
+#if wxUSE_FS_INET
+#   if !wxUSE_PROTOCOL
+#       ifdef wxABORT_ON_CONFIG_ERROR
+#           error "wxUSE_FS_INET requires wxUSE_PROTOCOL"
+#       else
+#           undef wxUSE_PROTOCOL
+#           define wxUSE_PROTOCOL 1
+#       endif
+#   endif
+#endif /* wxUSE_FS_INET */
 
 #if wxUSE_STOPWATCH || wxUSE_DATETIME
 #    if !wxUSE_LONGLONG

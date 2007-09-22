@@ -2,7 +2,7 @@
 // Name:        notebook.cpp
 // Purpose:
 // Author:      Robert Roebling
-// Id:          $Id: notebook.cpp,v 1.88.2.2 2003/02/27 20:47:06 RR Exp $
+// Id:          $Id: notebook.cpp,v 1.88.2.3 2003/06/01 19:41:50 JS Exp $
 // Copyright:   (c) 1998 Robert Roebling, Vadim Zeitlin
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -373,7 +373,7 @@ int wxNotebook::SetSelection( int page )
 {
     wxCHECK_MSG( m_widget != NULL, -1, wxT("invalid notebook") );
 
-    wxCHECK_MSG( page < (int)m_pagesData.GetCount(), -1, wxT("invalid notebook index") );
+    wxCHECK_MSG( page >= 0 && page < (int)m_pagesData.GetCount(), -1, wxT("invalid notebook index") );
 
     int selOld = GetSelection();
 

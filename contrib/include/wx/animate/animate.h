@@ -4,7 +4,7 @@
 // Author:      Julian Smart and Guillermo Rodriguez Garcia
 // Modified by:
 // Created:     13/8/99
-// RCS-ID:      $Id: animate.h,v 1.2 2002/09/07 12:10:19 GD Exp $
+// RCS-ID:      $Id: animate.h,v 1.2.2.1 2003/04/05 10:36:29 JS Exp $
 // Copyright:   (c) Julian Smart and Guillermo Rodriguez Garcia
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -138,7 +138,7 @@ public:
 //// Implementation
 
     // Play the frame
-    virtual bool PlayFrame(int frame, wxWindow& window, wxPoint& pos);
+    virtual bool PlayFrame(int frame, wxWindow& window, const wxPoint& pos);
     virtual bool PlayFrame();
     virtual void DrawFrame(int frame, wxDC& dc, const wxPoint& pos);
     virtual void DrawBackground(wxDC& dc, const wxPoint& pos, const wxColour& colour);

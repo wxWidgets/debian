@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     12/07/98
-// RCS-ID:      $Id: dialogs.cpp,v 1.2 2001/10/30 13:28:45 GT Exp $
+// RCS-ID:      $Id: dialogs.cpp,v 1.2.2.1 2003/06/05 17:26:32 JS Exp $
 // Copyright:   (c) Julian Smart
 // Licence:
 /////////////////////////////////////////////////////////////////////////////
@@ -25,6 +25,11 @@
 #endif
 
 #include <wx/resource.h>
+
+#if !wxUSE_WX_RESOURCES 
+#error "OGL studio sample requires wxUSE_WX_RESOURCES" 
+#endif // wxUSE_WX_RESOURCES 
+
 #include "dialogs.h"
 #include "doc.h"
 #include "view.h"

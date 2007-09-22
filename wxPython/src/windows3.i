@@ -5,7 +5,7 @@
 // Author:      Robin Dunn
 //
 // Created:     22-Dec-1998
-// RCS-ID:      $Id: windows3.i,v 1.16 2002/03/21 05:50:00 RD Exp $
+// RCS-ID:      $Id: windows3.i,v 1.16.2.1 2003/06/04 00:46:56 RD Exp $
 // Copyright:   (c) 1998 by Total Control Software
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -16,10 +16,8 @@
 #include "helpers.h"
 #include <wx/sashwin.h>
 #include <wx/laywin.h>
-#ifndef __WXMAC__
 #include <wx/popupwin.h>
 #include <wx/tipwin.h>
-#endif
 %}
 
 //----------------------------------------------------------------------
@@ -304,7 +302,39 @@ public:
     void Close();
 };
 
+#endif // ! __WXMAC__
 
 //---------------------------------------------------------------------------
 
-#endif
+#ifdef __WXMAC__
+
+%import frames.i
+
+class wxTipWindow : public wxFrame
+{
+public:
+    %addmethods {
+        wxTipWindow(wxWindow *parent,
+                    const wxString* text,
+                    wxCoord maxLength = 100,
+                    wxRect* rectBound = NULL) {
+            wxString tmp = *text;
+            return new wxTipWindow(parent, tmp, maxLength, NULL, rectBound);
+        }
+    }
+
+    %pragma(python) addtomethod = "__init__:self._setOORInfo(self)"
+
+    // If rectBound is not NULL, the window will disappear automatically when
+    // the mouse leave the specified rect: note that rectBound should be in the
+    // screen coordinates!
+    void SetBoundingRect(const wxRect& rectBound);
+
+    // Hide and destroy the window
+    void Close();
+};
+
+#endif // __WXMAC__
+
+//---------------------------------------------------------------------------
+

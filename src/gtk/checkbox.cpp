@@ -2,7 +2,7 @@
 // Name:        checkbox.cpp
 // Purpose:
 // Author:      Robert Roebling
-// Id:          $Id: checkbox.cpp,v 1.52 2002/08/05 17:59:19 RR Exp $
+// Id:          $Id: checkbox.cpp,v 1.52.2.1 2003/04/06 17:55:52 JS Exp $
 // Copyright:   (c) 1998 Robert Roebling
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -85,8 +85,6 @@ bool wxCheckBox::Create(wxWindow *parent,
         return FALSE;
     }
 
-    wxControl::SetLabel( label );
-
     if ( style & wxALIGN_RIGHT )
     {
         // VZ: as I don't know a way to create a right aligned checkbox with
@@ -94,7 +92,7 @@ bool wxCheckBox::Create(wxWindow *parent,
         //     left of it
         m_widgetCheckbox = gtk_check_button_new();
 
-        m_widgetLabel = gtk_label_new( wxGTK_CONV( m_label ) );
+        m_widgetLabel = gtk_label_new("");
         gtk_misc_set_alignment(GTK_MISC(m_widgetLabel), 0.0, 0.5);
 
         m_widget = gtk_hbox_new(FALSE, 0);
@@ -106,10 +104,11 @@ bool wxCheckBox::Create(wxWindow *parent,
     }
     else
     {
-        m_widgetCheckbox = gtk_check_button_new_with_label( wxGTK_CONV( m_label ) );
+        m_widgetCheckbox = gtk_check_button_new_with_label("");
         m_widgetLabel = BUTTON_CHILD( m_widgetCheckbox );
         m_widget = m_widgetCheckbox;
     }
+    SetLabel( label );
 
     gtk_signal_connect( GTK_OBJECT(m_widgetCheckbox),
                         "clicked",
@@ -166,7 +165,12 @@ void wxCheckBox::SetLabel( const wxString& label )
 
     wxControl::SetLabel( label );
 
+#ifdef __WXGTK20__
+    wxString label2 = PrepareLabelMnemonics( label );
+    gtk_label_set_text_with_mnemonic( GTK_LABEL(m_widgetLabel), wxGTK_CONV( label2 ) );
+#else
     gtk_label_set( GTK_LABEL(m_widgetLabel), wxGTK_CONV( GetLabel() ) );
+#endif
 }
 
 bool wxCheckBox::Enable( bool enable )

@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     04/01/98
-// RCS-ID:      $Id: treetest.cpp,v 1.70.2.2 2002/12/29 07:48:16 RL Exp $
+// RCS-ID:      $Id: treetest.cpp,v 1.70.2.3 2003/04/02 14:40:35 JS Exp $
 // Copyright:   (c) Julian Smart and Markus Holzem
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -696,7 +696,7 @@ void MyTreeCtrl::CreateButtonsImageList(int size)
         }
         else
         {
-            images->Add(wxBitmap(icons[i].ConvertToImage().Rescale(size, size)));
+            images->Add(wxBitmap(wxBitmap(icons[i]).ConvertToImage().Rescale(size, size)));
         }
     }
 

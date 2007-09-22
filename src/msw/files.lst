@@ -127,6 +127,7 @@ ALL_SOURCES = \
 		common/radiocmn.cpp \
 		common/regex.cpp \
 		common/resource.cpp \
+		common/rgncmn.cpp \
 		common/sckaddr.cpp \
 		common/sckfile.cpp \
 		common/sckipc.cpp \
@@ -269,6 +270,7 @@ ALL_SOURCES = \
 		msw/utils.cpp \
 		msw/utilsexc.cpp \
 		msw/ole/uuid.cpp \
+		msw/uxtheme.cpp \
 		msw/volume.cpp \
 		msw/wave.cpp \
 		msw/window.cpp \
@@ -797,6 +799,7 @@ COMMONOBJS = \
 		radiocmn.o \
 		regex.o \
 		resource.o \
+		rgncmn.o \
 		sckaddr.o \
 		sckfile.o \
 		sckipc.o \
@@ -1017,6 +1020,7 @@ GUI_LOWLEVEL_OBJS = \
 		toplevel.o \
 		utils.o \
 		utilsexc.o \
+		uxtheme.o \
 		wave.o \
 		window.o
 

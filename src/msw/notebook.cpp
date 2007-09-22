@@ -4,7 +4,7 @@
 // Author:      Vadim Zeitlin
 // Modified by:
 // Created:     11.06.98
-// RCS-ID:      $Id: notebook.cpp,v 1.64.2.3 2002/11/10 00:56:40 VZ Exp $
+// RCS-ID:      $Id: notebook.cpp,v 1.64.2.5 2003/06/05 13:29:52 JS Exp $
 // Copyright:   (c) 1998 Vadim Zeitlin <zeitlin@dptmaths.ens-cachan.fr>
 // Licence:     wxWindows license
 ///////////////////////////////////////////////////////////////////////////////
@@ -32,6 +32,7 @@
 #include  "wx/event.h"
 #include  "wx/control.h"
 #include  "wx/notebook.h"
+#include  "wx/app.h"
 
 #include  "wx/msw/private.h"
 
@@ -50,6 +51,23 @@
 
 #if defined(__WIN95__) && !((defined(__GNUWIN32_OLD__) || defined(__TWIN32__)) && !defined(__CYGWIN10__))
     #include <commctrl.h>
+#endif
+
+#include "wx/msw/winundef.h"
+
+#if wxUSE_UXTHEME
+#include "wx/msw/uxtheme.h"
+
+#include "wx/radiobut.h"
+#include "wx/radiobox.h"
+#include "wx/checkbox.h"
+#include "wx/bmpbuttn.h"
+#include "wx/statline.h"
+#include "wx/statbox.h"
+#include "wx/stattext.h"
+#include "wx/slider.h"
+#include "wx/scrolwin.h"
+#include "wx/panel.h"
 #endif
 
 // ----------------------------------------------------------------------------
@@ -141,6 +159,20 @@ bool wxNotebook::Create(wxWindow *parent,
                         long style,
                         const wxString& name)
 {
+    // Does ComCtl32 support non-top tabs?
+    int verComCtl32 = wxApp::GetComCtl32Version();
+    if ( verComCtl32 < 470 || verComCtl32 >= 600 )
+    {
+        if (style & wxNB_BOTTOM)
+            style &= ~wxNB_BOTTOM;
+        
+        if (style & wxNB_LEFT)
+            style &= ~wxNB_LEFT;
+        
+        if (style & wxNB_RIGHT)
+            style &= ~wxNB_RIGHT;
+    }
+    
     // base init
     if ( !CreateControl(parent, id, pos, size, style, wxDefaultValidator, name) )
         return FALSE;
@@ -405,6 +437,18 @@ bool wxNotebook::InsertPage(int nPage,
   wxASSERT( pPage != NULL );
   wxCHECK( IS_VALID_PAGE(nPage) || nPage == GetPageCount(), FALSE );
 
+#if wxUSE_UXTHEME && wxUSE_UXTHEME_AUTO
+    // Automatically apply the theme background,
+    // changing the colour of the panel to match the
+    // tab page colour. This won't work well with all
+    // themes but it's a start.
+    if (wxUxThemeEngine::Get() && pPage->IsKindOf(CLASSINFO(wxPanel)))
+    {
+        wxNotebookApplyThemeBackground(this, pPage, wxNotebookGetThemeBackgroundColour(this));
+    }
+#endif
+
+    // add a new tab to the control
   // do add the tab to the control
 
   // init all fields to 0
@@ -643,6 +687,69 @@ bool wxNotebook::MSWOnNotify(int idCtrl, WXLPARAM lParam, WXLPARAM* result)
   bool processed = GetEventHandler()->ProcessEvent(event);
   *result = !event.IsAllowed();
   return processed;
+}
+
+// Windows only: attempts to get colour for UX theme page background
+wxColour wxNotebookGetThemeBackgroundColour(wxNotebook* notebook)
+{
+#if wxUSE_UXTHEME
+    if (wxUxThemeEngine::Get())
+    {
+        WXHTHEME hTheme = wxUxThemeEngine::Get()->m_pfnOpenThemeData(notebook->GetHWND(), L"TAB");
+        if (hTheme)
+        {
+            // This is total guesswork.
+            // See PlatformSDK\Include\Tmschema.h for values
+            COLORREF themeColor;
+            wxUxThemeEngine::Get()->
+                m_pfnGetThemeColor(hTheme,
+                10 /* TABP_BODY */,
+                1 /* NORMAL */,
+                3821, /* FILLCOLORHINT */
+                & themeColor);
+            
+            wxUxThemeEngine::Get()->m_pfnCloseThemeData(hTheme);
+            
+            wxColour colour(GetRValue(themeColor), GetGValue(themeColor), GetBValue(themeColor));
+            return colour;
+        }
+    }
+#endif
+    return notebook->GetBackgroundColour();
+}
+
+// Windows only: attempts to apply the UX theme page background to this page
+void wxNotebookApplyThemeBackground(wxNotebook* notebook, wxWindow* window, const wxColour& colour)
+{
+#if wxUSE_UXTHEME
+    // Don't set the background for buttons since this will
+    // switch it into ownerdraw mode
+    if (window->IsKindOf(CLASSINFO(wxButton)) && !window->IsKindOf(CLASSINFO(wxBitmapButton)))
+        // This is essential, otherwise you'll see dark grey
+        // corners in the buttons.
+        ((wxButton*)window)->wxControl::SetBackgroundColour(colour);
+    else if (window->IsKindOf(CLASSINFO(wxStaticText)) ||
+             window->IsKindOf(CLASSINFO(wxStaticBox)) ||
+             window->IsKindOf(CLASSINFO(wxStaticLine)) ||
+             window->IsKindOf(CLASSINFO(wxRadioButton)) ||
+             window->IsKindOf(CLASSINFO(wxRadioBox)) ||
+             window->IsKindOf(CLASSINFO(wxCheckBox)) ||
+             window->IsKindOf(CLASSINFO(wxBitmapButton)) ||
+             window->IsKindOf(CLASSINFO(wxSlider)) ||
+             window->IsKindOf(CLASSINFO(wxPanel)) ||
+             (window->IsKindOf(CLASSINFO(wxNotebook)) && (window != notebook)) ||
+             window->IsKindOf(CLASSINFO(wxScrolledWindow))
+        )
+    {
+        window->SetBackgroundColour(colour);
+    }
+
+    for ( wxWindowList::Node *node = window->GetChildren().GetFirst(); node; node = node->GetNext() )
+    {
+        wxWindow *child = node->GetData();
+        wxNotebookApplyThemeBackground(notebook, child, colour);
+    }
+#endif
 }
 
 #endif // wxUSE_NOTEBOOK

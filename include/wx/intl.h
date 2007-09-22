@@ -4,7 +4,7 @@
 // Author:      Vadim Zeitlin
 // Modified by:
 // Created:     29/01/98
-// RCS-ID:      $Id: intl.h,v 1.37 2002/09/07 22:53:03 VZ Exp $
+// RCS-ID:      $Id: intl.h,v 1.37.2.1 2003/05/25 11:18:28 VS Exp $
 // Copyright:   (c) 1998 Vadim Zeitlin <zeitlin@dptmaths.ens-cachan.fr>
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -526,7 +526,7 @@ inline const wxChar *wxGetTranslation(const wxChar *sz)
 // the macros should still be defined - otherwise compilation would fail
 
 #if !defined(WXINTL_NO_GETTEXT_MACRO) && !defined(_)
-    #define   _(str)  (str)
+    #define   _(str)  (_T(str))
 #endif
 
 #define wxTRANSLATE(str) _T(str)

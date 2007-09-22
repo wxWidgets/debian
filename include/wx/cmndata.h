@@ -4,7 +4,7 @@
 // Author:      Julian Smart and others
 // Modified by:
 // Created:     01/02/97
-// RCS-ID:      $Id: cmndata.h,v 1.31.2.1 2002/12/03 14:39:32 SC Exp $
+// RCS-ID:      $Id: cmndata.h,v 1.31.2.2 2003/05/22 21:14:56 SC Exp $
 // Copyright:   (c)
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -209,6 +209,7 @@ public:
 #elif defined(__WXMAC__)
   void ConvertToNative();
   void ConvertFromNative();
+  void ValidateOrCreate() ;
 #endif
 
 public:

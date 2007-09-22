@@ -4,7 +4,7 @@
 // Author:      Vadim Zeitlin
 // Modified by:
 // Created:     06.08.00
-// RCS-ID:      $Id: winuniv.cpp,v 1.33.2.2 2002/12/09 10:20:44 JS Exp $
+// RCS-ID:      $Id: winuniv.cpp,v 1.33.2.3 2003/04/06 15:19:47 JS Exp $
 // Copyright:   (c) 2000 SciTech Software, Inc. (www.scitechsoft.com)
 // Licence:     wxWindows license
 ///////////////////////////////////////////////////////////////////////////////
@@ -391,6 +391,19 @@ void wxWindow::Refresh(bool eraseBackground, const wxRect *rectClient)
 #endif // WXDEBUG_REFRESH
 
     wxWindowNative::Refresh(eraseBackground, &rectWin);
+
+    // Refresh all sub controls if any.
+    wxWindowList::Node *node = GetChildren().GetFirst();
+    while ( node )
+    {
+        wxWindow *win = node->GetData();
+        // Only refresh sub controls when it is visible 
+        // and when it is in the update region.
+        if(!win->IsKindOf(CLASSINFO(wxTopLevelWindow)) && win->IsShown() && wxRegion(rectWin).Contains(win->GetRect()) != wxOutRegion)
+            win->Refresh(eraseBackground, &rectWin);
+            
+        node = node->GetNext();
+    }
 }
 
 // ----------------------------------------------------------------------------

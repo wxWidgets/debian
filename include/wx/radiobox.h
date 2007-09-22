@@ -4,7 +4,7 @@
 // Author:      Vadim Zeitlin
 // Modified by:
 // Created:     10.09.00
-// RCS-ID:      $Id: radiobox.h,v 1.10 2002/08/31 11:29:11 GD Exp $
+// RCS-ID:      $Id: radiobox.h,v 1.10.2.1 2003/06/01 19:00:41 JS Exp $
 // Copyright:   (c) wxWindows team
 // Licence:     wxWindows license
 ///////////////////////////////////////////////////////////////////////////////
@@ -21,6 +21,10 @@
 #include "wx/control.h"
 
 WXDLLEXPORT_DATA(extern const wxChar*) wxRadioBoxNameStr;
+
+#ifdef __BORLANDC__
+#   pragma option -w-inl
+#endif
 
 // ----------------------------------------------------------------------------
 // wxRadioBoxBase is not a normal base class, but rather a mix-in because the
@@ -93,6 +97,10 @@ public:
     void SetLabel(int n, const wxString& label) { SetString(n, label); }
 #endif // WXWIN_COMPATIBILITY_2_2
 };
+
+#ifdef __BORLANDC__
+#   pragma option -w.inl
+#endif
 
 #if defined(__WXUNIVERSAL__)
     #include "wx/univ/radiobox.h"

@@ -4,7 +4,7 @@
 // Author:      Aleksandras Gluchovas
 // Modified by:
 // Created:     23/09/98
-// RCS-ID:      $Id: bardragpl.cpp,v 1.5 2002/06/12 08:29:12 JS Exp $
+// RCS-ID:      $Id: bardragpl.cpp,v 1.5.2.1 2003/04/02 14:14:13 JS Exp $
 // Copyright:   (c) Aleksandras Gluchovas
 // Licence:   	wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -669,7 +669,7 @@ void cbBarDragPlugin::OnLButtonDown( cbLeftDownEvent& event )
 {
 	if ( mBarDragStarted  )
 	{
-		wxMessageBox("DblClick!");
+		wxMessageBox(wxT("DblClick!"));
 	}
 
 	event.Skip();

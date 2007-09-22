@@ -4,7 +4,7 @@
 // Notes:       Based on htmlhelp.cpp, implementing a monolithic
 //              HTML Help controller class,  by Vaclav Slavik
 // Author:      Harm van der Heijden and Vaclav Slavik
-// RCS-ID:      $Id: helpdata.h,v 1.21.2.1 2002/11/11 00:00:11 VS Exp $
+// RCS-ID:      $Id: helpdata.h,v 1.21.2.2 2003/06/01 19:00:46 JS Exp $
 // Copyright:   (c) Harm van der Heijden and Vaclav Slavik
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -79,6 +79,9 @@ protected:
 
 WX_DECLARE_EXPORTED_OBJARRAY(wxHtmlBookRecord, wxHtmlBookRecArray);
 
+#ifdef __BORLANDC__
+#   pragma option -w-inl
+#endif
 
 struct wxHtmlContentsItem
 {
@@ -91,6 +94,10 @@ struct wxHtmlContentsItem
     // returns full filename of m_Page, i.e. with book's basePath prepended
     wxString GetFullPath() const { return m_Book->GetFullPath(m_Page); }
 };
+
+#ifdef __BORLANDC__
+#   pragma option -w.inl
+#endif
 
 //------------------------------------------------------------------------------
 // wxHtmlSearchEngine

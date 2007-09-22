@@ -3,7 +3,7 @@
 // Purpose:     Declarations for parts of the Win32 SDK that are missing in
 //              the version that comes with some compilers
 // Created:     2002/04/23
-// RCS-ID:      $Id: missing.h,v 1.5.2.6 2003/03/14 10:47:51 CE Exp $
+// RCS-ID:      $Id: missing.h,v 1.5.2.9 2003/05/27 09:16:22 CE Exp $
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
 
@@ -41,6 +41,10 @@
 
 #ifndef LVCFMT_JUSTIFYMASK
     #define LVCFMT_JUSTIFYMASK 0x0003
+#endif
+
+#ifndef LVSICF_NOSCROLL
+    #define LVSICF_NOSCROLL 0x0002
 #endif
 
 // mingw32/cygwin don't have declarations for comctl32.dll 4.70+ stuff
@@ -159,7 +163,7 @@ typedef struct tagNMLVDISPINFOW {
 #endif
 #endif
 
-#if ((defined(__WATCOMC__) && __WATCOMC__ >= 1200) || defined(__GNUWIN32__) || defined (__BORLANDC__)) && !defined(HDN_GETDISPINFOW)
+#if ((defined(__WATCOMC__) && __WATCOMC__ >= 1200) || defined(__GNUWIN32__) || defined (__MINGW32__) || defined (__BORLANDC__)) && !defined(HDN_GETDISPINFOW)
 #define HDN_GETDISPINFOW (HDN_FIRST-29)
 #if !wxCHECK_W32API_VERSION(2, 2)
 typedef struct {

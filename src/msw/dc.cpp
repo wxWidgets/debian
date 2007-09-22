@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     01/02/97
-// RCS-ID:      $Id: dc.cpp,v 1.130 2002/08/30 20:34:25 JS Exp $
+// RCS-ID:      $Id: dc.cpp,v 1.130.2.1 2003/06/02 22:41:02 VZ Exp $
 // Copyright:   (c) Julian Smart and Markus Holzem
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -1552,8 +1552,8 @@ void wxDC::SetMapMode(int mode)
             return;
         }
 
-        double mm2pixelsX = pixel_width / mm_width,
-               mm2pixelsY = pixel_height / mm_height;
+        double mm2pixelsX = (double)pixel_width / mm_width,
+               mm2pixelsY = (double)pixel_height / mm_height;
 
         switch (mode)
         {

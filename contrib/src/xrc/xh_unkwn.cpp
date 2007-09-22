@@ -3,7 +3,7 @@
 // Purpose:     XRC resource for unknown widget
 // Author:      Vaclav Slavik
 // Created:     2000/09/09
-// RCS-ID:      $Id: xh_unkwn.cpp,v 1.6 2002/06/12 15:26:34 VZ Exp $
+// RCS-ID:      $Id: xh_unkwn.cpp,v 1.6.2.1 2003/03/31 22:03:28 VS Exp $
 // Copyright:   (c) 2000 Vaclav Slavik
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -43,6 +43,7 @@ public:
     }
 
     virtual void AddChild(wxWindowBase *child);
+    virtual void RemoveChild(wxWindowBase *child);
 
 protected:
     wxString m_controlName;
@@ -68,7 +69,12 @@ void wxUnknownControlContainer::AddChild(wxWindowBase *child)
     Layout();
 }
 
-
+void wxUnknownControlContainer::RemoveChild(wxWindowBase *child)
+{
+    wxPanel::RemoveChild(child);
+    m_controlAdded = FALSE;
+    GetSizer()->Remove((wxWindow*)child);
+}
 
 wxUnknownWidgetXmlHandler::wxUnknownWidgetXmlHandler()
 : wxXmlResourceHandler()

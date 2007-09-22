@@ -4,7 +4,7 @@
 // Author:      Vadim Zeitlin
 // Modified by:
 // Created:     26.10.99
-// RCS-ID:      $Id: menucmn.cpp,v 1.18.2.3 2003/02/01 13:45:49 GD Exp $
+// RCS-ID:      $Id: menucmn.cpp,v 1.18.2.6 2003/06/10 23:48:46 RD Exp $
 // Copyright:   (c) wxWindows team
 // Licence:     wxWindows license
 ///////////////////////////////////////////////////////////////////////////////
@@ -81,6 +81,15 @@ wxMenuItemBase::~wxMenuItemBase()
 
 #if wxUSE_ACCEL
 
+static inline bool CompareAccelString(const wxString& str, const wxChar *accel)
+{
+#if wxUSE_INTL
+    return str == accel || str == wxGetTranslation(accel);
+#else
+    return str == accel;
+#endif
+}
+
 // return wxAcceleratorEntry for the given menu string or NULL if none
 // specified
 wxAcceleratorEntry *wxGetAccelFromString(const wxString& label)
@@ -94,11 +103,11 @@ wxAcceleratorEntry *wxGetAccelFromString(const wxString& label)
         wxString current;
         for ( size_t n = (size_t)posTab + 1; n < label.Len(); n++ ) {
             if ( (label[n] == '+') || (label[n] == '-') ) {
-                if ( current == _("ctrl") )
+                if ( CompareAccelString(current, wxTRANSLATE("ctrl")) )
                     accelFlags |= wxACCEL_CTRL;
-                else if ( current == _("alt") )
+                else if ( CompareAccelString(current, wxTRANSLATE("alt")) )
                     accelFlags |= wxACCEL_ALT;
-                else if ( current == _("shift") )
+                else if ( CompareAccelString(current, wxTRANSLATE("shift")) )
                     accelFlags |= wxACCEL_SHIFT;
                 else {
                     // we may have "Ctrl-+", for example, but we still want to
@@ -323,6 +332,7 @@ bool wxMenuBase::DoAppend(wxMenuItem *item)
     wxCHECK_MSG( item, FALSE, wxT("invalid item in wxMenu::Append()") );
 
     m_items.Append(item);
+    item->SetMenu((wxMenu*)this);
     if ( item->IsSubMenu() )
     {
         AddSubMenu(item->GetSubMenu());
@@ -356,6 +366,7 @@ bool wxMenuBase::DoInsert(size_t pos, wxMenuItem *item)
     wxCHECK_MSG( node, FALSE, wxT("invalid index in wxMenu::Insert()") );
 
     m_items.Insert(node, item);
+    item->SetMenu((wxMenu*)this);
     if ( item->IsSubMenu() )
     {
         AddSubMenu(item->GetSubMenu());
@@ -384,6 +395,7 @@ wxMenuItem *wxMenuBase::DoRemove(wxMenuItem *item)
     m_items.DeleteNode(node);
 
     // item isn't attached to anything any more
+    item->SetMenu((wxMenu *)NULL);
     wxMenu *submenu = item->GetSubMenu();
     if ( submenu )
     {

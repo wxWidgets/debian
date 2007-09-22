@@ -4,7 +4,7 @@
 // Author:      Ove Kaaven, Robert Roebling, Vadim Zeitlin, Vaclav Slavik
 // Modified by:
 // Created:     29/01/98
-// RCS-ID:      $Id: strconv.cpp,v 1.67.2.8 2002/12/27 14:59:35 JS Exp $
+// RCS-ID:      $Id: strconv.cpp,v 1.67.2.9 2003/04/07 22:14:14 VS Exp $
 // Copyright:   (c) 1999 Ove Kaaven, Robert Roebling, Vadim Zeitlin, Vaclav Slavik
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -58,7 +58,8 @@
     WXDLLEXPORT_DATA(wxMBConv) wxConvLibc,
                                wxConvFile,
                                wxConvISO8859_1,
-                               wxConvLocal;
+                               wxConvLocal,
+                               wxConvUTF8;
 #endif // wxUSE_WCHAR_T
 
 WXDLLEXPORT_DATA(wxMBConv *) wxConvCurrent = &wxConvLibc;

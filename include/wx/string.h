@@ -4,7 +4,7 @@
 // Author:      Vadim Zeitlin
 // Modified by:
 // Created:     29/01/98
-// RCS-ID:      $Id: string.h,v 1.146.4.4 2002/11/09 00:48:46 VS Exp $
+// RCS-ID:      $Id: string.h,v 1.146.4.5 2003/05/30 15:01:42 GD Exp $
 // Copyright:   (c) 1998 Vadim Zeitlin <zeitlin@dptmaths.ens-cachan.fr>
 // Licence:     wxWindows license
 ///////////////////////////////////////////////////////////////////////////////
@@ -190,12 +190,19 @@ struct WXDLLEXPORT wxStringData
   // lock/unlock
   void  Lock()   { if ( !IsEmpty() ) nRefs++;                    }
 
-  // VC++ will refuse to inline this function but profiling shows that it
-  // is wrong
+  // VC++ will refuse to inline Unlock but profiling shows that it is wrong
 #if defined(__VISUALC__) && (__VISUALC__ >= 1200)
   __forceinline
 #endif
+  // VC++ free must take place in same DLL as allocation when using non dll
+  // run-time library (e.g. Multithreaded instead of Multithreaded DLL)
+#if defined(__VISUALC__) && defined(_MT) && !defined(_DLL)
+  void  Unlock() { if ( !IsEmpty() && --nRefs == 0) Free();  }
+  // we must not inline deallocation since allocation is not inlined
+  void  Free();
+#else
   void  Unlock() { if ( !IsEmpty() && --nRefs == 0) free(this);  }
+#endif
 
   // if we had taken control over string memory (GetWriteBuf), it's
   // intentionally put in invalid state

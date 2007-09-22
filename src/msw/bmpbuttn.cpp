@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     04/01/98
-// RCS-ID:      $Id: bmpbuttn.cpp,v 1.30 2001/06/26 20:59:16 VZ Exp $
+// RCS-ID:      $Id: bmpbuttn.cpp,v 1.30.2.1 2003/06/02 13:47:12 JS Exp $
 // Copyright:   (c) Julian Smart and Markus Holzem
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -234,7 +234,10 @@ void wxBitmapButton::DrawFace( WXHDC dc, int left, int top, int right, int botto
     penLight    = CreatePen(PS_SOLID, 0, GetSysColor(COLOR_3DLIGHT));
     penShadow   = CreatePen(PS_SOLID, 0, GetSysColor(COLOR_3DSHADOW));
     penDkShadow = CreatePen(PS_SOLID, 0, GetSysColor(COLOR_3DDKSHADOW));
-    brushFace   = CreateSolidBrush(GetSysColor(COLOR_BTNFACE));
+    // brushFace   = CreateSolidBrush(GetSysColor(COLOR_BTNFACE));
+    // Taking the background colour fits in better with
+    // Windows XP themes.
+    brushFace   = CreateSolidBrush(m_backgroundColour.m_pixel);
 
     // draw the rectangle
     RECT rect;

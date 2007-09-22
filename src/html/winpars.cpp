@@ -2,7 +2,7 @@
 // Name:        winpars.cpp
 // Purpose:     wxHtmlParser class (generic parser)
 // Author:      Vaclav Slavik
-// RCS-ID:      $Id: winpars.cpp,v 1.35.2.5 2002/12/30 18:55:33 VS Exp $
+// RCS-ID:      $Id: winpars.cpp,v 1.35.2.6 2003/04/07 22:17:52 VS Exp $
 // Copyright:   (c) 1999 Vaclav Slavik
 // Licence:     wxWindows Licence
 /////////////////////////////////////////////////////////////////////////////
@@ -69,14 +69,8 @@ wxHtmlWinParser::wxHtmlWinParser(wxHtmlWindow *wnd) : wxHtmlParser()
                             m_FontsEncTable[i][j][k][l][m] = wxFONTENCODING_DEFAULT;
 #endif
                         }
-#ifdef __WXMSW__
-        static int default_sizes[7] = {7, 8, 10, 12, 16, 22, 30};
-#elif defined(__WXMAC__)
-        static int default_sizes[7] = {9, 12, 14, 18, 24, 30, 36};
-#else
-        static int default_sizes[7] = {10, 12, 14, 16, 19, 24, 32};
-#endif
-        SetFonts(wxT(""), wxT(""), default_sizes);
+
+        SetFonts(wxEmptyString, wxEmptyString, NULL);
     }
 
     // fill in wxHtmlParser's tables:
@@ -118,8 +112,22 @@ void wxHtmlWinParser::RemoveModule(wxHtmlTagsModule *module)
     m_Modules.DeleteObject(module);
 }
 
-void wxHtmlWinParser::SetFonts(wxString normal_face, wxString fixed_face, const int *sizes)
+void wxHtmlWinParser::SetFonts(wxString normal_face, wxString fixed_face,
+                               const int *sizes)
 {
+    static int default_sizes[7] =
+        {
+            wxHTML_FONT_SIZE_1,
+			wxHTML_FONT_SIZE_2,
+			wxHTML_FONT_SIZE_3,
+			wxHTML_FONT_SIZE_4,
+			wxHTML_FONT_SIZE_5,
+			wxHTML_FONT_SIZE_6,
+			wxHTML_FONT_SIZE_7
+        };
+    
+    if (sizes == NULL) sizes = default_sizes;
+
     int i, j, k, l, m;
 
     for (i = 0; i < 7; i++) m_FontsSizes[i] = sizes[i];

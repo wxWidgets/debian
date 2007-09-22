@@ -4,7 +4,7 @@
 // Author:      Vadim Zeitlin
 // Modified by:
 // Created:     07.07.99
-// RCS-ID:      $Id: dialup.cpp,v 1.34 2002/08/30 20:34:25 JS Exp $
+// RCS-ID:      $Id: dialup.cpp,v 1.34.2.1 2003/06/01 19:05:16 JS Exp $
 // Copyright:   (c) Vadim Zeitlin
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -50,7 +50,7 @@ DEFINE_EVENT_TYPE(wxEVT_DIALUP_DISCONNECTED)
 
 // Doesn't yet compile under VC++ 4, BC++, Watcom C++,
 // Wine: no wininet.h
-#if !defined(__BORLANDC__) && \
+#if (!defined(__BORLANDC__) || (__BORLANDC__>=0x550)) && \
     (!defined(__GNUWIN32__) || wxCHECK_W32API_VERSION(0, 5)) && \
     !defined(__GNUWIN32_OLD__) && \
     !defined(__WATCOMC__) && \

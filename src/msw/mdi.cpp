@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     04/01/98
-// RCS-ID:      $Id: mdi.cpp,v 1.87 2002/08/20 09:09:54 JS Exp $
+// RCS-ID:      $Id: mdi.cpp,v 1.87.2.1 2003/06/13 18:54:28 JS Exp $
 // Copyright:   (c) Julian Smart and Markus Holzem
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -212,6 +212,8 @@ bool wxMDIParentFrame::Create(wxWindow *parent,
 
   WXDWORD exflags;
   WXDWORD msflags = MSWGetCreateWindowFlags(&exflags);
+  msflags &= ~WS_VSCROLL;
+  msflags &= ~WS_HSCROLL;
 
   if ( !wxWindow::MSWCreate(wxMDIFrameClassName,
                             title,

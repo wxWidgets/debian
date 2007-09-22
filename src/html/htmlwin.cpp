@@ -2,7 +2,7 @@
 // Name:        htmlwin.cpp
 // Purpose:     wxHtmlWindow class for parsing & displaying HTML (implementation)
 // Author:      Vaclav Slavik
-// RCS-ID:      $Id: htmlwin.cpp,v 1.62.2.2 2003/02/26 19:21:02 VS Exp $
+// RCS-ID:      $Id: htmlwin.cpp,v 1.62.2.3 2003/04/09 16:02:31 VS Exp $
 // Copyright:   (c) 1999 Vaclav Slavik
 // Licence:     wxWindows Licence
 /////////////////////////////////////////////////////////////////////////////
@@ -344,6 +344,12 @@ bool wxHtmlWindow::LoadPage(const wxString& location)
     return rt_val;
 }
 
+
+bool wxHtmlWindow::LoadFile(const wxFileName& filename)
+{
+    wxString url = wxFileSystem::FileNameToURL(filename);
+    return LoadPage(url);
+}
 
 
 bool wxHtmlWindow::ScrollToAnchor(const wxString& anchor)

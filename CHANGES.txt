@@ -49,6 +49,7 @@ wxBase:
   must modify YourApp::OnAssert() signature if you were using it to override
   the default assert handling.
 
+
 All (GUI):
 
 ! the event type constants are not constants any more but are dynamically
@@ -112,6 +113,7 @@ All (GUI):
   wxMessageOutput::Set(new wxMessageOutputLog); to your program
   (you will need to #include <wx/msgout.h>)
 
+
 wxMSW:
 
 ! build system changed: setup.h is not a static file in include/wx any more
@@ -170,6 +172,26 @@ wxThread and related classes:
 OTHER CHANGES
 =============
 
+2.4.2
+-----
+
+wxBase:
+
+- always NUL-terminate the log messages
+
+All:
+
+- wxRegEx::Compile() now calculates the number of groups correctly
+
+Generic:
+
+- wxListCtrl: respect wxLC_NO_HEADER style when inserting first column
+
+Unix:
+
+- fixed build problems with OpenGL when libGL(U) were in different directories
+
+
 2.4.1
 -----
 
@@ -177,23 +199,101 @@ All:
 
 - fixed wxLANGUAGE_CHINESE_TAIWAN to use zh_TW catalogs
 - added missing wx/quantize.h to install
+- improved wxScrolledWindow/sizer interaction
+- fixed assert (and crash in debug) in wxFileConfigGroup::DeleteSubgroupByName
+- fix for deleting entries at root level in wxFileConfig
+- wxStopWatch::Start() didn't resume it contrary to the docs
+- accept '\r' as delimiter when parsing dates
+- fixed duplicate wxFontEncoding values
+- wxFileConfig now always uses UTF-8 to store settings in Unicode build;
+  it will be possible to set different charset in wxWindows >= 2.5.0
+- added wxFileName::MakeAbsolute
+- bugs in wxCalCtrl fixed (year not being updated)
 
 Unix (GUI):
 
 - fixed the "close" button of dialogs under KDE 3.1
+- fixed memory leak in wxMimeTypesManager
+- use GNOME2's /usr/share/pixmaps/document-icons in wxMimeTypesManager
 
 wxBase
 
 - compilation with wxUSE_ODBC=1 fixed (dbkeyg.h file was missing in the archive)
 - bug in wxDateTime with timezones on systems with tm_gmtoff in struct tm fixed
 - fixed bug in wxArray::Shrink() (Seth Manley)
+- fixed bug with searching in sorted arrays (Jürgen Palm)
+- wxFileConfig parse bug fixed
 
 wxGTK:
 
 - added wxEVT_MENU_OPEN event generation
 - fixed bug in generic file selector causing incomplete file extensions to
   be appended to filenames with no extension
+- added SetSelection implementation for GTK+ 2
+- fixed a memory leak in generic wxFileDialog
+- implemented wxTextCtrl::Remove/Replace() for GTK2
+- improved X11 ShowFullScreen
+- added support for GTK2 label mnemonics
 
+wxMSW:
+
+- no longer take ampersand into account in wxStaticText::GetBestSize
+- set orientation for scrollbar events
+- fix for explicit keyword detection (VC++)
+- fix for sending event from wxCheckListBox::Check()
+- wxCaret::SetSize correction for showing caret
+- fix for wxTreeCtrl label editing in wxTR_MULTIPLE mode
+- wxFrame::Maximize(FALSE) would maximize the window if
+  called before showing it
+- use ES_DISABLENOSCROLL to work around the vertical scrollbar bug in
+  wxTE_RICH2 text control
+- fixes for wxLocale::Init and Borland C++
+- fix for bug whereby owner-drawn buttons didn't draw multiline labels correctly
+- Alt-letter didn't switch focus to a spin ctrl following static control with
+  hotkey
+- fix for multiple consecutive groups of radiobuttons
+- fix for incorrect display of tooltips in non English locales (Niki Spahiev)
+- fixed memory leak when setting new wxMask for wxBitmap
+- improved border handling so it no longer shows a thin and
+  sunken border under XP
+- partial fix for wxNotebook pages looking bad under XP: wxUSE_UXTHEME
+  enables XP theme engine code, and wxUSE_UXTHEME_AUTO tells
+  wxWindows to use the theme tab colour for control backgrounds.
+  Proper XP theme support is planned for 2.6
+- disable wxNB_RIGHT, wxNB_LEFT, wxNB_BOTTOM notebook styles
+  if the version of CommCtl doesn't support it (XP)
+
+wxMotif:
+
+- don't use stipples in DoDrawText
+
+wxUniv:
+
+- fixed refresh problem when message box is shown
+
+wxMac:
+
+- implement wxExecute with proper callback on Mac OS X
+
+wxHTML:
+
+- fixed parsing of CDATA tags (Bill Nalen)
+- content of <script> tags is not displayed anymore
+- added wxHtmlWindow::LoadFile
+- added SetFonts methods to wxHtmlDCRenderer and wxHtmlPrintout classes
+- 'sizes' argument to SetFonts can now be NULL to use default font sizes
+  (both by Adrian Philip Look)
+- it is now possible to force page break when printing by inserting
+  <div style="page-break-before:always"> into the markup (Greg Chicares)
+
+wxXRC:
+
+- wxrc fixes: fixed compilation of wxBitmap, wxIcon toplevel
+  nodes; fixed wxrc when using -o dirname/filename
+- wxToolBar handler now supports all wxToolBar's features
+- <object_ref> handling was fixed
+- loading of resources specified using relative file names was fixed
+- added wxSplitterWindow and wxWizard support
 
 2.4.0
 -----

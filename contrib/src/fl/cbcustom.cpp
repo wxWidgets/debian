@@ -4,7 +4,7 @@
 // Author:      Aleksandras Gluchovas
 // Modified by:
 // Created:     06/09/98
-// RCS-ID:      $Id: cbcustom.cpp,v 1.3 2002/05/09 10:01:41 JS Exp $
+// RCS-ID:      $Id: cbcustom.cpp,v 1.3.2.1 2003/04/02 14:14:13 JS Exp $
 // Copyright:   (c) Aleksandras Gluchovas
 // Licence:   	wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -97,8 +97,8 @@ void cbSimpleCustomizationPlugin::OnCustomizeBar( cbCustomizeBarEvent& event )
 
 void cbSimpleCustomizationPlugin::OnCustomizeLayout( cbCustomizeLayoutEvent& event )
 {
-	wxString helpStr1 = "Select this item to show the corresponding control bar";
-	wxString helpStr2 = "Select this itme to hide the corresponding control bar";
+	wxString helpStr1 = wxT("Select this item to show the corresponding control bar");
+	wxString helpStr2 = wxT("Select this itme to hide the corresponding control bar");
 
 	int id = CB_CUSTOMIZE_MENU_FIRST_ITEM_ID;
 
@@ -153,7 +153,7 @@ void cbSimpleCustomizationPlugin::OnMenuItemSelected( wxCommandEvent& event )
 {
 	if ( event.GetId() == mCustMenuItemId )
 	{
-		wxMessageBox("Customization dialog box is not supported by this plugin yet");
+		wxMessageBox(wxT("Customization dialog box is not supported by this plugin yet"));
 
 		return;
 	}

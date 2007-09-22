@@ -4,7 +4,7 @@
 // Author:      Julian Smart and Guillermo Rodriguez Garcia
 // Modified by:
 // Created:     13/8/99
-// RCS-ID:      $Id: animate.cpp,v 1.2 2002/04/07 22:58:15 JS Exp $
+// RCS-ID:      $Id: animate.cpp,v 1.2.2.1 2003/04/05 10:36:32 JS Exp $
 // Copyright:   (c) Julian Smart and Guillermo Rodriguez Garcia
 // Licence:     wxWindows licence
 ///////////////////////////////////////////////////////////////////////////////
@@ -212,7 +212,7 @@ bool wxAnimationPlayer::GetTransparentColour(wxColour& col) const
 }
 
 // Play the frame
-bool wxAnimationPlayer::PlayFrame(int frame, wxWindow& window, wxPoint& pos)
+bool wxAnimationPlayer::PlayFrame(int frame, wxWindow& window, const wxPoint& pos)
 {
     wxMemoryDC dc;
     dc.SelectObject(m_backingStore);

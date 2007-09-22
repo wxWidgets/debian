@@ -3,7 +3,7 @@
 // Purpose:     wxGIFDecoder, GIF reader for wxImage and wxAnimation
 // Author:      Guillermo Rodriguez Garcia <guille@iies.es>
 // Version:     3.04
-// RCS-ID:      $Id: gifdecod.cpp,v 1.27 2002/05/22 23:14:47 VZ Exp $
+// RCS-ID:      $Id: gifdecod.cpp,v 1.27.2.1 2003/04/05 18:59:50 JS Exp $
 // Copyright:   (c) Guillermo Rodriguez Garcia
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -279,7 +279,7 @@ bool wxGIFDecoder::GoFrame(int which)
     {
         m_pimage = m_pfirst;
 
-        for (i = 1; i < which; i++)
+        for (i = 0; i < which; i++)
             m_pimage = m_pimage->next;
 
         return TRUE;

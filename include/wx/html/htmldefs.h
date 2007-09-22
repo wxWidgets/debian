@@ -2,7 +2,7 @@
 // Name:        htmldefs.h
 // Purpose:     constants for wxhtml library
 // Author:      Vaclav Slavik
-// RCS-ID:      $Id: htmldefs.h,v 1.7 2000/01/18 09:17:58 VS Exp $
+// RCS-ID:      $Id: htmldefs.h,v 1.7.6.1 2003/04/07 22:18:36 VS Exp $
 // Copyright:   (c) 1999 Vaclav Slavik
 // Licence:     wxWindows Licence
 /////////////////////////////////////////////////////////////////////////////
@@ -99,10 +99,32 @@
     /* maximum number of pages printable via html printing */
 
 
-
-
-
-
+    /* default font sizes */
+#ifdef __WXMSW__
+   #define wxHTML_FONT_SIZE_1              7
+   #define wxHTML_FONT_SIZE_2              8
+   #define wxHTML_FONT_SIZE_3             10
+   #define wxHTML_FONT_SIZE_4             12
+   #define wxHTML_FONT_SIZE_5             16
+   #define wxHTML_FONT_SIZE_6             22
+   #define wxHTML_FONT_SIZE_7             30
+#elif defined(__WXMAC__)
+   #define wxHTML_FONT_SIZE_1              9
+   #define wxHTML_FONT_SIZE_2             12
+   #define wxHTML_FONT_SIZE_3             14
+   #define wxHTML_FONT_SIZE_4             18
+   #define wxHTML_FONT_SIZE_5             24
+   #define wxHTML_FONT_SIZE_6             30
+   #define wxHTML_FONT_SIZE_7             36
+#else
+   #define wxHTML_FONT_SIZE_1             10
+   #define wxHTML_FONT_SIZE_2             12
+   #define wxHTML_FONT_SIZE_3             14
+   #define wxHTML_FONT_SIZE_4             16
+   #define wxHTML_FONT_SIZE_5             19
+   #define wxHTML_FONT_SIZE_6             24
+   #define wxHTML_FONT_SIZE_7             32
+#endif
 
 
 #if WXWIN_COMPATIBILITY_2

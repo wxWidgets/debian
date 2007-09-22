@@ -4,7 +4,7 @@
 // Author:      Julian Smart, Vadim Zeitlin
 // Modified by:
 // Created:     13/07/98
-// RCS-ID:      $Id: wincmn.cpp,v 1.123.2.5 2003/02/02 15:06:36 JS Exp $
+// RCS-ID:      $Id: wincmn.cpp,v 1.123.2.8 2003/06/01 21:29:17 VZ Exp $
 // Copyright:   (c) wxWindows team
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -143,6 +143,8 @@ void wxWindowBase::InitBase()
     m_hasBgCol =
     m_hasFgCol =
     m_hasFont = FALSE;
+    
+    m_isBeingDeleted = FALSE;
 
     // no style bits
     m_exStyle =
@@ -622,12 +624,8 @@ wxSize wxWindowBase::DoGetVirtualSize() const
 {
     wxSize  s( GetClientSize() );
 
-    if( m_virtualSize.GetWidth() != -1 )
-        s.SetWidth( m_virtualSize.GetWidth() );
-    if( m_virtualSize.GetHeight() != -1 )
-        s.SetHeight( m_virtualSize.GetHeight() );
-
-    return s;
+    return wxSize( wxMax( m_virtualSize.GetWidth(), s.GetWidth() ),
+                   wxMax( m_virtualSize.GetHeight(), s.GetHeight() ) );
 }
 
 // ----------------------------------------------------------------------------

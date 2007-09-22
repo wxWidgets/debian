@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     04/01/98
-// RCS-ID:      $Id: treetest.h,v 1.31.2.1 2002/12/29 07:48:16 RL Exp $
+// RCS-ID:      $Id: treetest.h,v 1.31.2.3 2003/05/07 09:48:22 JS Exp $
 // Copyright:   (c) Julian Smart and Markus Holzem
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////

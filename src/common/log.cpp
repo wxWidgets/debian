@@ -4,7 +4,7 @@
 // Author:      Vadim Zeitlin
 // Modified by:
 // Created:     29/01/98
-// RCS-ID:      $Id: log.cpp,v 1.128.2.2 2003/01/01 05:04:49 RD Exp $
+// RCS-ID:      $Id: log.cpp,v 1.128.2.3 2003/06/14 16:45:30 VZ Exp $
 // Copyright:   (c) 1998 Vadim Zeitlin <zeitlin@dptmaths.ens-cachan.fr>
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -114,13 +114,24 @@ static inline bool IsLoggingEnabled()
 //     macros and not all compilers inline vararg functions.
 // ----------------------------------------------------------------------------
 
+// wrapper for wxVsnprintf(s_szBuf) which always NULL-terminates it
+static inline void PrintfInLogBug(const wxChar *szFormat, va_list argptr)
+{
+    if ( wxVsnprintf(s_szBuf, s_szBufSize, szFormat, argptr) < 0 )
+    {
+        // must NUL-terminate it manually
+        s_szBuf[s_szBufSize - 1] = _T('\0');
+    }
+    //else: NUL-terminated by vsnprintf()
+}
+
 // generic log function
 void wxVLogGeneric(wxLogLevel level, const wxChar *szFormat, va_list argptr)
 {
     if ( IsLoggingEnabled() ) {
         wxCRIT_SECT_LOCKER(locker, gs_csLogBuf);
 
-        wxVsnprintf(s_szBuf, s_szBufSize, szFormat, argptr);
+        PrintfInLogBug(szFormat, argptr);
 
         wxLog::OnLog(level, s_szBuf, time(NULL));
     }
@@ -140,11 +151,12 @@ void wxLogGeneric(wxLogLevel level, const wxChar *szFormat, ...)
     if ( IsLoggingEnabled() ) {                                     \
       wxCRIT_SECT_LOCKER(locker, gs_csLogBuf);                      \
                                                                     \
-      wxVsnprintf(s_szBuf, s_szBufSize, szFormat, argptr);    \
+      PrintfInLogBug(szFormat, argptr);                             \
                                                                     \
       wxLog::OnLog(wxLOG_##level, s_szBuf, time(NULL));             \
     }                                                               \
   }                                                                 \
+                                                                    \
   void wxLog##level(const wxChar *szFormat, ...)                    \
   {                                                                 \
     va_list argptr;                                                 \

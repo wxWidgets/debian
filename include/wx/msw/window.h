@@ -5,7 +5,7 @@
 // Modified by: Vadim Zeitlin on 13.05.99: complete refont of message handling,
 //              elimination of Default(), ...
 // Created:     01/02/97
-// RCS-ID:      $Id: window.h,v 1.93 2002/08/30 00:33:16 VZ Exp $
+// RCS-ID:      $Id: window.h,v 1.93.2.1 2003/05/07 08:36:40 JS Exp $
 // Copyright:   (c) Julian Smart and Markus Holzem
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -213,10 +213,12 @@ public:
     wxWindow *FindItemByHWND(WXHWND hWnd, bool controlOnly = FALSE) const;
 
     // Make a Windows extended style from the given wxWindows window style
+    // OBSOLETE: do not use. Use MSWGetStyle instead.
     static WXDWORD MakeExtendedStyle(long style,
                                      bool eliminateBorders = FALSE);
 
     // Determine whether 3D effects are wanted
+    // OBSOLETE: do not use. Use MSWGetStyle instead.
     WXDWORD Determine3DEffects(WXDWORD defaultBorderStyle, bool *want3D) const;
 
     // MSW only: TRUE if this control is part of the main control

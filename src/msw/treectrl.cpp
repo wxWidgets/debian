@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by: Vadim Zeitlin to be less MSW-specific on 10.10.98
 // Created:     1997
-// RCS-ID:      $Id: treectrl.cpp,v 1.129.2.6 2002/12/29 07:48:21 RL Exp $
+// RCS-ID:      $Id: treectrl.cpp,v 1.129.2.9 2003/06/12 18:53:40 RD Exp $
 // Copyright:   (c) Julian Smart
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -595,14 +595,15 @@ bool wxTreeCtrl::Create(wxWindow *parent,
 {
     Init();
 
+    if ( (style & wxBORDER_MASK) == wxBORDER_DEFAULT )
+        style |= wxBORDER_SUNKEN;
+
     if ( !CreateControl(parent, id, pos, size, style, validator, name) )
         return FALSE;
 
-    DWORD wstyle = WS_VISIBLE | WS_CHILD | WS_TABSTOP |
-                   TVS_SHOWSELALWAYS;
-
-    if ( m_windowStyle & wxCLIP_SIBLINGS )
-        wstyle |= WS_CLIPSIBLINGS;
+    DWORD exStyle = 0;
+    DWORD wstyle = MSWGetStyle(m_windowStyle, & exStyle);
+    wstyle |= WS_TABSTOP | TVS_SHOWSELALWAYS;
 
     if ((m_windowStyle & wxTR_NO_LINES) == 0)
         wstyle |= TVS_HASLINES;
@@ -1913,6 +1914,13 @@ bool wxTreeCtrl::GetBoundingRect(const wxTreeItemId& item,
                                  bool textOnly) const
 {
     RECT rc;
+
+    // Virtual root items have no bounding rectangle
+    if ( IS_VIRTUAL_ROOT(item) )
+    {
+        return FALSE;
+    }
+
     if ( TreeView_GetItemRect(GetHwnd(), HITEM(item),
                               &rc, textOnly) )
     {
@@ -2091,13 +2099,23 @@ long wxTreeCtrl::MSWWindowProc(WXUINT nMsg, WXWPARAM wParam, WXLPARAM lParam)
                     }
                     else // normal click
                     {
-                        // clear the selection and then let the default handler
-                        // do the job
+                        // avoid doing anything if we click on the only
+                        // currently selected item
+                        wxArrayTreeItemIds selections;
+                        size_t count = GetSelections(selections);
+                        if ( count == 0 ||
+                                count > 1 ||
+                                    HITEM(selections[0]) != htItem )
+                        {
+                            // clear the previously selected items
                         UnselectAll();
 
                         // prevent the click from starting in-place editing
-                        // when there was no selection in the control
+                            // which should only happen if we click on the
+                            // already selected item (and nothing else is
+                            // selected)
                         TreeView_SelectItem(GetHwnd(), 0);
+                        }
 
                         // reset on any click without Shift
                         m_htSelStart = 0;
@@ -2402,7 +2420,7 @@ bool wxTreeCtrl::MSWOnNotify(int idCtrl, WXLPARAM lParam, WXLPARAM *result)
             }
             break;
 
-        // NB: MSLU is broken and sends TVN_SELCHANGEDA instead of 
+        // NB: MSLU is broken and sends TVN_SELCHANGEDA instead of
         //     TVN_SELCHANGEDW in Unicode mode under Win98. Therefore
         //     we have to handle both messages:
         case TVN_SELCHANGEDA:
@@ -2417,7 +2435,7 @@ bool wxTreeCtrl::MSWOnNotify(int idCtrl, WXLPARAM lParam, WXLPARAM *result)
                     eventType = wxEVT_COMMAND_TREE_SEL_CHANGING;
                 //else: already set above
 
-                if (hdr->code == TVN_SELCHANGINGW || 
+                if (hdr->code == TVN_SELCHANGINGW ||
                     hdr->code == TVN_SELCHANGEDW)
                 {
                     NM_TREEVIEWW* tv = (NM_TREEVIEWW *)lParam;
@@ -2620,7 +2638,7 @@ bool wxTreeCtrl::MSWOnNotify(int idCtrl, WXLPARAM lParam, WXLPARAM *result)
                 HWND hText = TreeView_GetEditControl(GetHwnd());
                 if(hText != NULL)
                 {
-                    // MBN: if m_textCtrl already has an HWND, it is a stale 
+                    // MBN: if m_textCtrl already has an HWND, it is a stale
                     // pointer from a previous edit (because the user
                     // didn't modify the label before dismissing the control,
                     // and TVN_ENDLABELEDIT was not sent), so delete it

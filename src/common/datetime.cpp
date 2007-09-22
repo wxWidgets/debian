@@ -4,7 +4,7 @@
 // Author:      Vadim Zeitlin
 // Modified by:
 // Created:     11.05.99
-// RCS-ID:      $Id: datetime.cpp,v 1.70.2.3 2003/02/27 13:00:02 VZ Exp $
+// RCS-ID:      $Id: datetime.cpp,v 1.70.2.4 2003/04/06 15:39:36 JS Exp $
 // Copyright:   (c) 1999 Vadim Zeitlin <zeitlin@dptmaths.ens-cachan.fr>
 //              parts of code taken from sndcal library by Scott E. Lee:
 //
@@ -3237,7 +3237,7 @@ const wxChar *wxDateTime::ParseDate(const wxChar *date)
 
     // tokenize the string
     size_t nPosCur = 0;
-    static const wxChar *dateDelimiters = _T(".,/-\t\n ");
+    static const wxChar *dateDelimiters = _T(".,/-\t\r\n ");
     wxStringTokenizer tok(p, dateDelimiters);
     while ( tok.HasMoreTokens() )
     {

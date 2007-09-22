@@ -4,7 +4,7 @@
 // Author:      Vadim Zeitlin
 // Modified by:
 // Created:     20.09.01
-// RCS-ID:      $Id: toplevel.h,v 1.16.2.1 2002/10/02 23:32:22 VZ Exp $
+// RCS-ID:      $Id: toplevel.h,v 1.16.2.3 2003/03/29 19:17:41 RD Exp $
 // Copyright:   (c) 2001 SciTech Software, Inc. (www.scitechsoft.com)
 // Licence:     wxWindows licence
 ///////////////////////////////////////////////////////////////////////////////
@@ -57,6 +57,8 @@ public:
     virtual void SetIcon(const wxIcon& icon);
     virtual void SetIcons(const wxIconBundle& icons );
     virtual void Restore();
+
+    /*virtual*/ bool SetShape(const wxRegion& region);
 
     virtual bool Show(bool show = TRUE);
 

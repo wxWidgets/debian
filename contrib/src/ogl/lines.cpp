@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     12/07/98
-// RCS-ID:      $Id: lines.cpp,v 1.6.2.3 2002/12/28 18:32:07 JS Exp $
+// RCS-ID:      $Id: lines.cpp,v 1.6.2.4 2003/06/05 17:26:35 JS Exp $
 // Copyright:   (c) Julian Smart
 // Licence:   	wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -2334,7 +2334,7 @@ wxRealPoint *wxLineShape::GetNextControlPoint(wxShape *nodeObject)
     return (wxRealPoint *)node->Data();
   }
   else
-    return FALSE;
+    return NULL;
 }
 
 /*

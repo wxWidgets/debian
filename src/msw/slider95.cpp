@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     04/01/98
-// RCS-ID:      $Id: slider95.cpp,v 1.34.2.1 2002/10/04 10:28:06 JS Exp $
+// RCS-ID:      $Id: slider95.cpp,v 1.34.2.3 2003/05/26 22:59:24 JS Exp $
 // Copyright:   (c) Julian Smart and Markus Holzem
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -59,6 +59,9 @@ bool wxSlider95::Create(wxWindow *parent, wxWindowID id,
            const wxValidator& validator,
            const wxString& name)
 {
+    if ( (style & wxBORDER_MASK) == wxBORDER_DEFAULT )
+        style |= wxBORDER_NONE;
+
     SetName(name);
 #if wxUSE_VALIDATORS
     SetValidator(validator);
@@ -69,9 +72,9 @@ bool wxSlider95::Create(wxWindow *parent, wxWindowID id,
     SetBackgroundColour(parent->GetBackgroundColour()) ;
     SetForegroundColour(parent->GetForegroundColour()) ;
 
-    m_staticValue = (WXHWND) NULL;;
-    m_staticMin = (WXHWND) NULL;;
-    m_staticMax = (WXHWND) NULL;;
+    m_staticValue = (WXHWND) NULL;
+    m_staticMin = (WXHWND) NULL;
+    m_staticMax = (WXHWND) NULL;
     m_pageSize = 1;
     m_lineSize = 1;
     m_windowStyle = style;
@@ -90,15 +93,14 @@ bool wxSlider95::Create(wxWindow *parent, wxWindowID id,
     long msStyle = 0;
     long wstyle = 0;
 
-    if ( m_windowStyle & wxCLIP_SIBLINGS )
-        msStyle |= WS_CLIPSIBLINGS;
-
     if ( m_windowStyle & wxSL_LABELS )
     {
-        msStyle |= WS_CHILD | WS_VISIBLE | WS_BORDER | SS_CENTER;
+        msStyle |= SS_CENTER;
 
-        bool want3D;
-        WXDWORD exStyle = Determine3DEffects(WS_EX_CLIENTEDGE, &want3D) ;
+        WXDWORD exStyle = 0;
+        long valueStyle = m_windowStyle & ~wxBORDER_MASK;
+        valueStyle |= wxBORDER_SUNKEN;
+        msStyle |= MSWGetStyle(valueStyle, & exStyle) ;
 
         m_staticValue = (WXHWND) CreateWindowEx
             (
@@ -123,7 +125,9 @@ bool wxSlider95::Create(wxWindow *parent, wxWindowID id,
             );
     }
 
-    msStyle = 0;
+    WXDWORD exStyle = 0;
+
+    msStyle = MSWGetStyle(GetWindowStyle(), & exStyle) ;    
 
     if ( m_windowStyle & wxCLIP_SIBLINGS )
         msStyle |= WS_CLIPSIBLINGS;
@@ -154,7 +158,7 @@ bool wxSlider95::Create(wxWindow *parent, wxWindowID id,
 
     HWND scroll_bar = CreateWindowEx
         (
-            MakeExtendedStyle(m_windowStyle), TRACKBAR_CLASS, wxT(""),
+            exStyle, TRACKBAR_CLASS, wxT(""),
             msStyle,
             0, 0, 0, 0, (HWND) parent->GetHWND(), (HMENU)m_windowId,
             wxGetInstance(), NULL

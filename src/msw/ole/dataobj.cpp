@@ -4,7 +4,7 @@
 // Author:      Vadim Zeitlin
 // Modified by:
 // Created:     10.05.98
-// RCS-ID:      $Id: dataobj.cpp,v 1.56.2.2 2003/01/13 18:25:26 MBN Exp $
+// RCS-ID:      $Id: dataobj.cpp,v 1.56.2.3 2003/04/06 19:43:26 VZ Exp $
 // Copyright:   (c) 1998 Vadim Zeitlin <zeitlin@dptmaths.ens-cachan.fr>
 // Licence:     wxWindows license
 ///////////////////////////////////////////////////////////////////////////////
@@ -443,7 +443,7 @@ STDMETHODIMP wxIDataObject::SetData(FORMATETC *pformatetc,
                 // as we can't fix this bug in explorer (it's a bug because it
                 // should only use formats returned by EnumFormatEtc), do the
                 // check here
-                if ( !m_pDataObject->IsSupportedFormat(format) ) {
+                if ( !m_pDataObject->IsSupported(format, wxDataObject::Set) ) {
                     // go away!
                     return DV_E_FORMATETC;
                 }

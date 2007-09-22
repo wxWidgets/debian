@@ -2,7 +2,7 @@
 // Name:        control.h
 // Purpose:
 // Author:      Robert Roebling
-// Id:          $Id: control.h,v 1.16 2002/09/07 12:28:46 GD Exp $
+// Id:          $Id: control.h,v 1.16.2.1 2003/04/06 17:55:49 JS Exp $
 // Copyright:   (c) 1998 Robert Roebling, Julian Smart
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -55,6 +55,9 @@ public:
 
 protected:
     virtual wxSize DoGetBestSize() const;
+#ifdef __WXGTK20__
+    wxString PrepareLabelMnemonics( const wxString &label ) const;
+#endif
 
     wxString   m_label;
     char       m_chAccel;  // enabled to avoid breaking binary compatibility later on

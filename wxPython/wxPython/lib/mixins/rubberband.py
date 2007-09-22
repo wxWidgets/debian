@@ -1,14 +1,21 @@
+#---------------------------------------------------------------------------
+# Name:        wxPython.lib.mixins.rubberband
+# Purpose:     A mixin class for doing "RubberBand"-ing on a window.
+#
+# Author:      Robb Shecter and members of wxPython-users
+#
+# Created:     11-September-2002
+# RCS-ID:      $Id: rubberband.py,v 1.1.2.4 2003/05/16 18:33:44 RD Exp $
+# Copyright:   (c) 2002 by db-X Corporation
+# Licence:     wxWindows license
+#---------------------------------------------------------------------------
+
 """
 A mixin class for doing "RubberBand"-ing on a window.
-
-by "Robb Shecter" <rs@onsitetech.com>
-
-$Id: rubberband.py,v 1.1.2.2 2003/02/26 18:38:07 RD Exp $
-
 """
 
 from wxPython.wx import *
-import Image
+
 
 #
 # Some miscellaneous mathematical and geometrical functions

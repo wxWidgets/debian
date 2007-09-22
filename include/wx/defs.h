@@ -4,7 +4,7 @@
 // Author:      Julian Smart and others
 // Modified by:
 // Created:     01/02/97
-// RCS-ID:      $Id: defs.h,v 1.320.2.6 2002/12/29 01:35:28 VZ Exp $
+// RCS-ID:      $Id: defs.h,v 1.320.2.9 2003/04/30 00:39:13 RD Exp $
 // Copyright:   (c)
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -162,6 +162,8 @@
     #elif defined(__VISAGECPP__)
         #if __IBMCPP__ < 400
             typedef unsigned long bool;
+            #define true ((bool)1)
+            #define false ((bool)0)
         #endif
         #define HAVE_BOOL
     #endif // compilers
@@ -231,7 +233,7 @@ typedef int wxWindowID;
 
 // check for explicit keyword support
 #ifndef HAVE_EXPLICIT
-    #if defined(__VISUALC__) && (__VISUALC__ > 1200)
+    #if defined(__VISUALC__) && (__VISUALC__ >= 1200)
         // VC++ 6.0 has explicit (what about the earlier versions?)
         #define HAVE_EXPLICIT
     #elif defined(__BORLANDC__) && (__BORLANDC__ >= 0x0520)
@@ -321,7 +323,7 @@ typedef int wxWindowID;
         #define WXEXPORT _Export
         #define WXIMPORT _Export
     #endif
-#elif defined(__WXMAC__)    
+#elif defined(__WXMAC__)
     #ifdef __MWERKS__
         #define WXEXPORT __declspec(export)
         #define WXIMPORT __declspec(import)
@@ -988,6 +990,7 @@ enum wxBorder
 #define wxFRAME_NO_TASKBAR      0x0002  // No taskbar button (MSW only)
 #define wxFRAME_TOOL_WINDOW     0x0004  // No taskbar button, no system menu
 #define wxFRAME_FLOAT_ON_PARENT 0x0008  // Always above its parent
+#define wxFRAME_SHAPED          0x0010  // Create a window that is able to be shaped
 
 // deprecated versions defined for compatibility reasons
 #define wxRESIZE_BOX            wxMAXIMIZE_BOX

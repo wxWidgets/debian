@@ -4,7 +4,7 @@
 // Author:      Aleksandras Gluchovas
 // Modified by:
 // Created:     ??/10/98
-// RCS-ID:      $Id: dyntbar.h,v 1.6.2.1 2002/10/24 11:21:33 JS Exp $
+// RCS-ID:      $Id: dyntbar.h,v 1.6.2.2 2003/04/02 14:14:05 JS Exp $
 // Copyright:   (c) Aleksandras Gluchovas
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -148,12 +148,12 @@ public:
     virtual void AddTool( int toolIndex,
                               const wxString& imageFileName,
                               wxBitmapType imageFileType = wxBITMAP_TYPE_BMP,
-                              const wxString& labelText = "", bool alignTextRight = FALSE,
+                              const wxString& labelText = wxT(""), bool alignTextRight = FALSE,
                               bool isFlat = TRUE );
         // Adds a tool. See the documentation for wxToolBar for details.
 
     virtual void AddTool( int toolIndex, wxBitmap labelBmp,
-                              const wxString& labelText = "", bool alignTextRight = FALSE,
+                              const wxString& labelText = wxT(""), bool alignTextRight = FALSE,
                               bool isFlat = TRUE );
 
     // Method from wxToolBarBase (for compatibility), only
@@ -162,7 +162,7 @@ public:
 
     virtual wxToolBarToolBase *AddTool(const int toolIndex, const wxBitmap& bitmap, const wxBitmap& pushedBitmap = wxNullBitmap,
                const bool toggle = FALSE, const long xPos = -1, const long yPos = -1, wxObject *clientData = NULL,
-               const wxString& helpString1 = "", const wxString& helpString2 = "");
+               const wxString& helpString1 = wxT(""), const wxString& helpString2 = wxT(""));
 
         // Adds a separator. See the documentation for wxToolBar for details.
 

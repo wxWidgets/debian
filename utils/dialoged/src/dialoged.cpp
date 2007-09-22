@@ -3,7 +3,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     04/01/98
-// RCS-ID:      $Id: dialoged.cpp,v 1.9.2.1 2003/01/23 20:32:24 MBN Exp $
+// RCS-ID:      $Id: dialoged.cpp,v 1.9.2.2 2003/06/05 12:15:05 JS Exp $
 // Copyright:   (c) Julian Smart
 // Licence:   	wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -22,6 +22,10 @@
 #ifndef WX_PRECOMP
 #include "wx/wx.h"
 #endif
+
+#if !wxUSE_WX_RESOURCES 
+#error "Dialog editor requires wxUSE_WX_RESOURCES" 
+#endif // wxUSE_WX_RESOURCES 
 
 #include "dialoged.h"
 

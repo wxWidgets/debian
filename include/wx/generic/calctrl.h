@@ -4,7 +4,7 @@
 // Author:      Vadim Zeitlin
 // Modified by:
 // Created:     29.12.99
-// RCS-ID:      $Id: calctrl.h,v 1.16.2.1 2002/10/23 17:32:07 RR Exp $
+// RCS-ID:      $Id: calctrl.h,v 1.16.2.2 2003/06/01 16:42:36 JS Exp $
 // Copyright:   (c) 1999 Vadim Zeitlin <zeitlin@dptmaths.ens-cachan.fr>
 // Licence:     wxWindows license
 ///////////////////////////////////////////////////////////////////////////////
@@ -255,6 +255,10 @@ private:
     // using (day, week): upper left coord is (1, 1), lower right coord is (7, 6)
     // if the date isn't visible (-1, -1) is put in (day, week) and false is returned
     bool GetDateCoord(const wxDateTime& date, int *day, int *week) const;
+
+    // Set the flag for SetDate(): otherwise it would overwrite the year
+    // typed in by the user
+    void SetUserChangedYear() { m_userChangedYear = TRUE; }
 
     // the subcontrols
     wxStaticText *m_staticMonth;

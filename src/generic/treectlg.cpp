@@ -4,7 +4,7 @@
 // Author:      Robert Roebling
 // Created:     01/02/97
 // Modified:    22/10/98 - almost total rewrite, simpler interface (VZ)
-// Id:          $Id: treectlg.cpp,v 1.85.2.6 2003/03/19 01:02:45 RD Exp $
+// Id:          $Id: treectlg.cpp,v 1.85.2.9 2003/06/03 23:20:21 RD Exp $
 // Copyright:   (c) 1998 Robert Roebling, Julian Smart and Markus Holzem
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -1315,7 +1315,7 @@ wxTreeItemId wxGenericTreeCtrl::FindItem(const wxTreeItemId& idParent,
         }
 
         // and try all the items (stop when we get to the one we started from)
-        while ( id != idParent && !GetItemText(id).Lower().StartsWith(prefix) )
+        while ( id.IsOk() && (id != idParent) && !GetItemText(id).Lower().StartsWith(prefix) )
         {
             id = GetNext(id);
         }
@@ -1855,7 +1855,7 @@ void wxGenericTreeCtrl::EnsureVisible(const wxTreeItemId& item)
 
     if ( HasFlag(wxTR_HIDE_ROOT) )
     {
-        while ( parent != m_anchor )
+        while ( parent && parent != m_anchor )
         {
             Expand(parent);
             parent = parent->GetParent();
@@ -2319,7 +2319,8 @@ void wxGenericTreeCtrl::PaintLevel( wxGenericTreeItem *item, wxDC &dc, int level
 
                 if (HasFlag(wxTR_AQUA_BUTTONS))
                 {
-#ifdef __WXMAC__
+                    // This causes update problems, so disabling for now.
+#if 0 //#ifdef __WXMAC__
                     wxMacPortSetter helper(&dc) ;
                     wxMacWindowClipper clipper(this) ;
                     wxDC::MacSetupBackgroundForCurrentPort( MacGetBackgroundBrush() ) ;
@@ -2815,6 +2816,7 @@ wxTreeItemId wxGenericTreeCtrl::HitTest(const wxPoint& point, int& flags)
     }
 
     wxGenericTreeItem *hit =  m_anchor->HitTest(CalcUnscrolledPosition(point),
+   //    wxGenericTreeItem *hit =  m_anchor->HitTest(point,
                                                 this, flags, 0);
     if (hit == NULL)
     {

@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     04/01/98
-// RCS-ID:      $Id: ipcbase.cpp,v 1.5 2002/09/14 02:09:52 DW Exp $
+// RCS-ID:      $Id: ipcbase.cpp,v 1.5.2.1 2003/04/28 10:33:05 JS Exp $
 // Copyright:   (c) Julian Smart and Markus Holzem
 // Licence:   	wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -77,7 +77,7 @@ wxChar *wxConnectionBase::GetBufferAtLeast( size_t bytes )
   {  // need to resize buffer
     if ( m_deletebufferwhendone )
     { // we're in charge of buffer, increase it
-      if ( !m_buffer )
+      if ( m_buffer )
         delete m_buffer;
       m_buffer = new wxChar[bytes];
       m_buffersize = bytes;

@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     01/02/97
-// RCS-ID:      $Id: cursor.cpp,v 1.39 2002/06/08 17:36:27 JS Exp $
+// RCS-ID:      $Id: cursor.cpp,v 1.39.2.1 2003/04/05 10:51:54 JS Exp $
 // Copyright:   (c) Julian Smart and Markus Holzem
 // Licence:       wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -397,8 +397,7 @@ wxCursor::wxCursor(int cursor_type)
   }
 
   // no need to destroy the stock cursors
-  // TODO: check this
-  //m_refData->m_destroyCursor = FALSE;
+  ((wxCursorRefData *)m_refData)->m_destroyCursor = FALSE;
 #endif
 }
 

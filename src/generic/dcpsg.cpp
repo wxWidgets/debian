@@ -4,7 +4,7 @@
 // Author:      Julian Smart, Robert Roebling, Markus Holzhem
 // Modified by:
 // Created:     04/01/98
-// RCS-ID:      $Id: dcpsg.cpp,v 1.88.2.5 2003/02/11 11:45:31 RR Exp $
+// RCS-ID:      $Id: dcpsg.cpp,v 1.88.2.7 2003/06/01 19:22:31 JS Exp $
 // Copyright:   (c) Julian Smart and Markus Holzem
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -1886,6 +1886,8 @@ void wxPostScriptDC::EndDoc ()
         wxString command;
         command += m_printData.GetPrinterCommand();
         command += wxT(" ");
+        command += m_printData.GetPrinterOptions();
+        command += wxT(" ");
         command += m_printData.GetFilename();
 
         wxExecute( command, TRUE );
@@ -1993,6 +1995,8 @@ void wxPostScriptDC::DoGetTextExtent(const wxString& string,
     {
         if (x) (*x) = 0;
         if (y) (*y) = 0;
+        if (descent) (*descent) = 0;
+        if (externalLeading) (*externalLeading) = 0;
         return;
     }
     

@@ -5,7 +5,7 @@
 // Author:      Robin Dunn
 //
 // Created:     6/24/97
-// RCS-ID:      $Id: _defs.i,v 1.50.2.3 2003/02/26 18:38:24 RD Exp $
+// RCS-ID:      $Id: _defs.i,v 1.50.2.5 2003/06/04 00:37:39 RD Exp $
 // Copyright:   (c) 1998 by Total Control Software
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -221,6 +221,7 @@ enum {
     wxFRAME_FLOAT_ON_PARENT,
     wxFRAME_NO_WINDOW_MENU,
     wxFRAME_NO_TASKBAR,
+    wxFRAME_SHAPED,
 
     wxED_CLIENT_MARGIN,
     wxED_BUTTONS_BOTTOM,
@@ -491,6 +492,7 @@ enum {
     wxEXPAND,
 
     wxNB_FIXEDWIDTH,
+    wxNB_TOP,
     wxNB_LEFT,
     wxNB_RIGHT,
     wxNB_BOTTOM,

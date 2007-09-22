@@ -3,7 +3,7 @@
 // Purpose:     XML resources
 // Author:      Vaclav Slavik
 // Created:     2000/03/05
-// RCS-ID:      $Id: xmlres.h,v 1.19.2.5 2002/12/21 00:21:23 VS Exp $
+// RCS-ID:      $Id: xmlres.h,v 1.19.2.6 2003/04/07 22:15:47 VS Exp $
 // Copyright:   (c) 2000 Vaclav Slavik
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -240,8 +240,18 @@ protected:
     wxXmlNode *DoFindResource(wxXmlNode *parent, const wxString& name, const wxString& classname, bool recursive);
 
     // Creates a resource from information in the given node.
-    wxObject *CreateResFromNode(wxXmlNode *node, wxObject *parent, wxObject *instance = NULL);
+    wxObject *CreateResFromNode(wxXmlNode *node, wxObject *parent,
+                                wxObject *instance = NULL);
 
+    // Creates a resource from information in the given node
+    // (Uses only 'handlerToUse' if != NULL)
+    //
+    // ATTENTION: Do *NOT* use this function, it will disappear in
+    //            wxWindows 2.5.0! It exists *only* as a hack to preserve
+    //            binary compatibility in 2.4.x branch.
+    wxObject *CreateResFromNode2(wxXmlNode *node, wxObject *parent,
+                                 wxObject *instance = NULL,
+                                 wxXmlResourceHandler *handlerToUse = NULL);
 private:
     long m_version;
 

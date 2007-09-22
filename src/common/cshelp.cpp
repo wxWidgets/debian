@@ -4,7 +4,7 @@
 // Author:      Julian Smart, Vadim Zeitlin
 // Modified by:
 // Created:     08/09/2000
-// RCS-ID:      $Id: cshelp.cpp,v 1.20 2002/08/09 18:35:00 JS Exp $
+// RCS-ID:      $Id: cshelp.cpp,v 1.20.2.1 2003/05/09 10:00:38 JS Exp $
 // Copyright:   (c) 2000 Julian Smart, Vadim Zeitlin
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -246,7 +246,6 @@ bool wxContextHelp::DispatchEvent(wxWindow* win, const wxPoint& pt)
  * to put the application into context help mode.
  */
 
-#if !defined(__WXMSW__)
 static const char * csquery_xpm[] = {
 "12 11 2 1",
 "  c None",
@@ -262,7 +261,6 @@ static const char * csquery_xpm[] = {
 "     ..     ",
 "     ..     ",
 "            "};
-#endif
 
 IMPLEMENT_CLASS(wxContextHelpButton, wxBitmapButton)
 
@@ -281,7 +279,7 @@ wxContextHelpButton::wxContextHelpButton(wxWindow* parent,
                                                         ),
                                     pos, size, style)
 #else
-                   : wxBitmapButton(parent, id, wxBITMAP(csquery),
+                   : wxBitmapButton(parent, id, wxBitmap(csquery_xpm),
                                     pos, size, style)
 #endif
 {

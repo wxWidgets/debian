@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     01/02/97
-// RCS-ID:      $Id: setup0.h,v 1.123.2.8 2003/02/25 13:17:04 CE Exp $
+// RCS-ID:      $Id: setup0.h,v 1.123.2.13 2003/06/05 15:50:28 JS Exp $
 // Copyright:   (c) Julian Smart
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -175,7 +175,7 @@
 // Set wxUSE_UNICODE_MSLU to 1 if you want to compile wxWindows in Unicode mode
 // and be able to run compiled apps under Windows 9x as well as NT/2000/XP.
 // This setting enables use of unicows.dll from MSLU (MS Layer for Unicode, see
-// http://www.microsoft.com/globaldev/Articles/mslu_announce.asp). Note that
+// http://www.microsoft.com/globaldev/handson/dev/mslu_announce.mspx). Note that
 // you will have to modify the makefiles to include unicows.lib import library
 // as the first library (if you use MSVC, you can run the makefile with "nmake
 // MSLU=1 UNICODE=1" command).
@@ -1042,6 +1042,13 @@
 // Recommended setting: 1, set to 0 for a small library size reduction
 #define wxUSE_OWNER_DRAWN 1
 
+// Set to 1 to compile MS Windows XP theme engine support
+#define wxUSE_UXTHEME           1
+
+// Set to 1 to auto-adapt to MS Windows XP themes where possible
+// (notably, wxNotebook pages)
+#define wxUSE_UXTHEME_AUTO      1
+
 // ----------------------------------------------------------------------------
 // obsolete settings
 // ----------------------------------------------------------------------------
@@ -1178,7 +1185,7 @@
 #define wxUSE_DEBUG_NEW_ALWAYS 0
 #endif
 
-#if defined(__WXMSW__) && defined(__WATCOMC__)
+#if defined(__WXMSW__) && (defined(__WATCOMC__) && __WATCOMC__ < 1200)
 /*
 #undef  wxUSE_GLCANVAS
 #define wxUSE_GLCANVAS 0

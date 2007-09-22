@@ -4,7 +4,7 @@
 // Author:      Vadim Zeitlin
 // Modified by: 
 // Created:     12.09.96
-// RCS-ID:      $Id: uuid.cpp,v 1.12 2002/08/30 20:34:27 JS Exp $
+// RCS-ID:      $Id: uuid.cpp,v 1.12.2.2 2003/05/04 15:50:27 JS Exp $
 // Copyright:   (c) 1998 Vadim Zeitlin <zeitlin@dptmaths.ens-cachan.fr>
 // Licence:     wxWindows license
 ///////////////////////////////////////////////////////////////////////////////
@@ -26,7 +26,7 @@
 
 #include  "wx/setup.h"
 
-#if wxUSE_OLE && wxUSE_DRAG_AND_DROP
+#if wxUSE_OLE && ( wxUSE_DRAG_AND_DROP || (defined(__WXDEBUG__) && wxUSE_DATAOBJ) )
 
 // standard headers
 #if wxCHECK_W32API_VERSION( 1, 0 )

@@ -2,7 +2,7 @@
 // Name:        menu.cpp
 // Purpose:
 // Author:      Robert Roebling
-// Id:          $Id: menu.cpp,v 1.125.2.11 2003/02/18 09:08:58 JS Exp $
+// Id:          $Id: menu.cpp,v 1.125.2.18 2003/05/09 14:31:40 RR Exp $
 // Copyright:   (c) 1998 Robert Roebling
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -58,12 +58,7 @@ extern bool g_isIdle;
 // substitute for missing GtkPixmapMenuItem
 //-----------------------------------------------------------------------------
 
-// FIXME: I can't make this compile with GTK+ 2.0, disabling for now (VZ)
 #ifndef __WXGTK20__
-    #define USE_MENU_BITMAPS
-#endif
-
-#ifdef USE_MENU_BITMAPS
 
 #define GTK_TYPE_PIXMAP_MENU_ITEM            (gtk_pixmap_menu_item_get_type ())
 #define GTK_PIXMAP_MENU_ITEM(obj)            (GTK_CHECK_CAST ((obj), GTK_TYPE_PIXMAP_MENU_ITEM, GtkPixmapMenuItem))
@@ -83,7 +78,7 @@ typedef struct _GtkPixmapMenuItemClass  GtkPixmapMenuItemClass;
 struct _GtkPixmapMenuItem
 {
     GtkMenuItem menu_item;
-
+    
     GtkWidget *pixmap;
 };
 
@@ -96,12 +91,11 @@ struct _GtkPixmapMenuItemClass
 };
 
 
-GtkType           gtk_pixmap_menu_item_get_type       (void);
+GtkType    gtk_pixmap_menu_item_get_type       (void);
 GtkWidget* gtk_pixmap_menu_item_new            (void);
 void       gtk_pixmap_menu_item_set_pixmap     (GtkPixmapMenuItem *menu_item,
                                                                     GtkWidget *pixmap);
-
-#endif // USE_MENU_BITMAPS
+#endif // GTK 2.0
 
 //-----------------------------------------------------------------------------
 // idle system
@@ -172,7 +166,8 @@ static void gtk_menu_open_callback( GtkWidget *widget, wxMenu *menu )
     wxMenuEvent event( wxEVT_MENU_OPEN, -1 );
     event.SetEventObject( menu );
 
-    if (menu->GetEventHandler()->ProcessEvent(event))
+    wxEvtHandler* handler = menu->GetEventHandler();
+    if (handler && handler->ProcessEvent(event))
         return;
 
     wxWindow *win = menu->GetInvokingWindow();
@@ -375,7 +370,7 @@ bool wxMenuBar::GtkAppend(wxMenu *menu, const wxString& title)
     buf << wxT('/') << str.c_str();
 
     /* local buffer in multibyte form */
-    char cbuf[400]; 
+    char cbuf[400];
     strcpy(cbuf, wxGTK_CONV(buf) );
 
     GtkItemFactoryEntry entry;
@@ -493,10 +488,10 @@ static wxMenu *CopyMenu (wxMenu *menu)
         else
           menucopy->Append (itemid, text, CopyMenu(submenu),
                             menu->GetHelpString(itemid));
-    
+
         node = node->GetNext();
     }
-  
+
     return menucopy;
 }
 
@@ -706,7 +701,7 @@ static void gtk_menu_clicked_callback( GtkWidget *widget, wxMenu *menu )
     if (item->IsCheckable())
     {
         bool isReallyChecked = item->IsChecked(),
-             isInternallyChecked = item->wxMenuItemBase::IsChecked();
+            isInternallyChecked = item->wxMenuItemBase::IsChecked();
 
         // ensure that the internal state is always consistent with what is
         // shown on the screen
@@ -719,11 +714,36 @@ static void gtk_menu_clicked_callback( GtkWidget *widget, wxMenu *menu )
         {
             return;
         }
-
-        // the user pressed on the menu item: report the event below
     }
 
-    menu->SendEvent(id, item->IsCheckable() ? item->IsChecked() : -1);
+
+    // Is this menu on a menubar?  (possibly nested)
+    wxFrame* frame = NULL;
+    wxMenu*  pm = menu;
+    while ( pm && !frame )
+    {
+        if ( pm->IsAttached() )
+            frame = pm->GetMenuBar()->GetFrame();
+        pm = pm->GetParent();
+    }
+
+    if (frame)
+    {
+        // If it is attached then let the frame send the event.
+        // Don't call frame->ProcessCommand(id) because it toggles
+        // checkable items and we've already done that above.
+        wxCommandEvent commandEvent(wxEVT_COMMAND_MENU_SELECTED, id);
+        commandEvent.SetEventObject(frame);
+        if (item->IsCheckable())
+            commandEvent.SetInt(item->IsChecked());
+
+        frame->GetEventHandler()->ProcessEvent(commandEvent);
+    }
+    else
+    {
+        // otherwise let the menu have it
+        menu->SendEvent(id, item->IsCheckable() ? item->IsChecked() : -1);
+    }
 }
 
 //-----------------------------------------------------------------------------
@@ -744,7 +764,8 @@ static void gtk_menu_hilight_callback( GtkWidget *widget, wxMenu *menu )
     wxMenuEvent event( wxEVT_MENU_HIGHLIGHT, id );
     event.SetEventObject( menu );
 
-    if (menu->GetEventHandler()->ProcessEvent(event))
+    wxEvtHandler* handler = menu->GetEventHandler();
+    if (handler && handler->ProcessEvent(event))
         return;
 
     wxWindow *win = menu->GetInvokingWindow();
@@ -769,7 +790,8 @@ static void gtk_menu_nolight_callback( GtkWidget *widget, wxMenu *menu )
     wxMenuEvent event( wxEVT_MENU_HIGHLIGHT, -1 );
     event.SetEventObject( menu );
 
-    if (menu->GetEventHandler()->ProcessEvent(event))
+    wxEvtHandler* handler = menu->GetEventHandler();
+    if (handler && handler->ProcessEvent(event))
         return;
 
     wxWindow *win = menu->GetInvokingWindow();
@@ -861,7 +883,7 @@ wxString wxMenuItemBase::GetLabelFromText(const wxString& text)
             // "&" is doubled to indicate "&" instead of accelerator
             continue;
         }
-        
+
         label += *pc;
     }
     return label;
@@ -876,7 +898,7 @@ void wxMenuItem::SetText( const wxString& str )
     wxString label1 = wxStripMenuCodes(str.BeforeFirst('\t'));
     if (oldLabel == label1)
         return;
-    
+
     DoSetText(str);
 
     if (m_menuItem)
@@ -895,7 +917,7 @@ void wxMenuItem::SetText( const wxString& str )
             if (m_text[n] != wxT('\\'))
                 tmp += m_text[n];
         }
-        
+
         gtk_label_set_text_with_mnemonic( GTK_LABEL(label), wxGTK_CONV(tmp) );
 #else
         // set new text
@@ -929,7 +951,7 @@ void wxMenuItem::DoSetText( const wxString& str )
 #if GTK_CHECK_VERSION(2, 0, 0)
         else if ( *pc == wxT('_') )    // escape underscores
         {
-            m_text << wxT("__"); 
+            m_text << wxT("__");
         }
         else if (*pc == wxT('/'))      // we have to escape slashes
         {
@@ -954,7 +976,7 @@ void wxMenuItem::DoSetText( const wxString& str )
         }
         ++pc;
     }
-    
+
     m_hotKey = wxT("");
 
     if(*pc == wxT('\t'))
@@ -1090,7 +1112,8 @@ wxMenu::~wxMenu()
 {
    m_items.Clear();
 
-   gtk_widget_destroy( m_menu );
+   if ( GTK_IS_WIDGET( m_menu ))
+       gtk_widget_destroy( m_menu );
 
    gtk_object_unref( GTK_OBJECT(m_factory) );
 }
@@ -1098,10 +1121,6 @@ wxMenu::~wxMenu()
 bool wxMenu::GtkAppend(wxMenuItem *mitem)
 {
     GtkWidget *menuItem;
-
-#if defined(USE_MENU_BITMAPS) || !GTK_CHECK_VERSION(1, 2, 0)
-    bool appended = FALSE;
-#endif
 
     // does this item terminate the current radio group?
     bool endOfRadioGroup = TRUE;
@@ -1153,9 +1172,10 @@ bool wxMenu::GtkAppend(wxMenuItem *mitem)
         if ( m_invokingWindow )
             wxMenubarSetInvokingWindow(mitem->GetSubMenu(), m_invokingWindow);
     }
-#ifdef USE_MENU_BITMAPS
-    else if (mitem->GetBitmap().Ok()) // An item with bitmap
+#ifndef __WXGTK20__
+    else if (mitem->GetBitmap().Ok())
     {
+        // Our extra code for Bitmaps in GTK 1.2
         wxString text( mitem->GetText() );
         const wxBitmap *bitmap = &mitem->GetBitmap();
 
@@ -1163,6 +1183,7 @@ bool wxMenu::GtkAppend(wxMenuItem *mitem)
         GtkWidget *label = gtk_accel_label_new ( wxGTK_CONV( text ) );
         gtk_misc_set_alignment (GTK_MISC (label), 0.0, 0.5);
         gtk_container_add (GTK_CONTAINER (menuItem), label);
+        
         guint accel_key = gtk_label_parse_uline (GTK_LABEL(label), wxGTK_CONV( text ) );
         gtk_accel_label_set_accel_widget (GTK_ACCEL_LABEL (label), menuItem);
         if (accel_key != GDK_VoidSymbol)
@@ -1170,9 +1191,10 @@ bool wxMenu::GtkAppend(wxMenuItem *mitem)
             gtk_widget_add_accelerator (menuItem,
                                         "activate_item",
                                         gtk_menu_ensure_uline_accel_group (GTK_MENU (m_menu)),
-                                        accel_key, 0,
+                                        accel_key, (GdkModifierType) 0,
                                         GTK_ACCEL_LOCKED);
         }
+            
         gtk_widget_show (label);
 
         mitem->SetLabelWidget(label);
@@ -1181,16 +1203,14 @@ bool wxMenu::GtkAppend(wxMenuItem *mitem)
         gtk_widget_show(pixmap);
         gtk_pixmap_menu_item_set_pixmap(GTK_PIXMAP_MENU_ITEM( menuItem ), pixmap);
 
-        gtk_signal_connect( GTK_OBJECT(menuItem), "activate",
+        gtk_signal_connect( GTK_OBJECT(menuItem), "activate_item",
                             GTK_SIGNAL_FUNC(gtk_menu_clicked_callback),
                             (gpointer)this );
-                            
+
         gtk_menu_append( GTK_MENU(m_menu), menuItem );
         gtk_widget_show( menuItem );
-
-        appended = TRUE; // We've done this, don't do it again
     }
-#endif // USE_MENU_BITMAPS
+#endif 
     else // a normal item
     {
         // text has "_" instead of "&" after mitem->SetText() so don't use it
@@ -1241,12 +1261,70 @@ bool wxMenu::GtkAppend(wxMenuItem *mitem)
                 endOfRadioGroup = FALSE;
                 break;
 
+
             default:
                 wxFAIL_MSG( _T("unexpected menu item kind") );
                 // fall through
 
             case wxITEM_NORMAL:
                 item_type = "<Item>";
+#ifdef __WXGTK20__                
+                if (mitem->GetBitmap().Ok())
+                {
+                    item_type = "<ImageItem>";
+                    // GTK2's image factory know about image items, but they need to
+                    // get a GdkPixbuf structure, which we need to create on the fly.
+                    // This Pixbuf structure needs to be static so we create it and
+                    // just make it a memory leak...
+                    wxImage image( mitem->GetBitmap() );
+                    size_t size = 4 +   // magic
+                                  20 +  // header
+                                  image.GetHeight() * image.GetWidth() * 4; // RGBA
+
+                    unsigned char *dest = new unsigned char[size];
+                    entry.extra_data = dest;
+
+                    unsigned char *source = image.GetData();
+                    bool has_mask = image.HasMask();
+                    unsigned char mask_r = image.GetMaskRed();
+                    unsigned char mask_b = image.GetMaskBlue();
+                    unsigned char mask_g = image.GetMaskGreen();
+                    wxUint32 tmp;
+                    
+                    // Magic
+                    *dest = 'G'; dest++; *dest = 'd'; dest++; *dest = 'k'; dest++; *dest = 'P'; dest++;
+                    // Data size                    
+                    tmp = size;
+                    *dest = tmp >> 24; dest++; *dest = tmp >> 16; dest++; *dest = tmp >> 8; dest++; *dest = tmp; dest++;
+                    // Pixdata type
+                    *dest = 1; dest++; *dest = 1; dest++; *dest = 0; dest++; *dest = 2; dest++;  
+                    // Rowstride
+                    tmp = image.GetWidth()*4;
+                    *dest = tmp >> 24; dest++; *dest = tmp >> 16; dest++; *dest = tmp >> 8; dest++; *dest = tmp; dest++;
+                    // Width
+                    tmp = image.GetWidth();
+                    *dest = tmp >> 24; dest++; *dest = tmp >> 16; dest++; *dest = tmp >> 8; dest++; *dest = tmp; dest++;
+                    // Height
+                    tmp = image.GetHeight();
+                    *dest = tmp >> 24; dest++; *dest = tmp >> 16; dest++; *dest = tmp >> 8; dest++; *dest = tmp; dest++;
+
+                    for (int i = 0; i < image.GetWidth()*image.GetHeight(); i++)
+                    {
+                        unsigned char r = *source; source++;
+                        unsigned char g = *source; source++;
+                        unsigned char b = *source; source++;
+                        *dest = r; dest++;
+                        *dest = g; dest++;
+                        *dest = b; dest++;
+                        if (has_mask && (r == mask_r)  && (g == mask_g)  && (b == mask_b))
+                             *dest = 0;
+                        else
+                             *dest = 255;
+                        dest++;
+                    }
+                    break;
+                }
+#endif
                 break;
         }
 
@@ -1270,7 +1348,7 @@ bool wxMenu::GtkAppend(wxMenuItem *mitem)
 
         wxString path( mitem->GetFactoryPath() );
         menuItem = gtk_item_factory_get_widget( m_factory, wxGTK_CONV( path ) );
-        
+
         if (!menuItem)
             wxLogError( wxT("Wrong menu path: %s\n"), path.c_str() );
     }
@@ -1278,7 +1356,7 @@ bool wxMenu::GtkAppend(wxMenuItem *mitem)
     if ( !mitem->IsSeparator() )
     {
         wxASSERT_MSG( menuItem, wxT("invalid menuitem") );
-    
+
         gtk_signal_connect( GTK_OBJECT(menuItem), "select",
                             GTK_SIGNAL_FUNC(gtk_menu_hilight_callback),
                             (gpointer)this );
@@ -1473,7 +1551,7 @@ static wxString GetHotKey( const wxMenuItem& item )
 // substitute for missing GtkPixmapMenuItem
 //-----------------------------------------------------------------------------
 
-#ifdef USE_MENU_BITMAPS
+#ifndef __WXGTK20__ 
 
 /*
  * Copyright (C) 1998, 1999, 2000 Free Software Foundation
@@ -1650,7 +1728,9 @@ gtk_pixmap_menu_item_expose (GtkWidget      *widget,
     (* GTK_WIDGET_CLASS (parent_class)->expose_event) (widget, event);
 
   if (GTK_WIDGET_DRAWABLE (widget) &&
-      GTK_PIXMAP_MENU_ITEM(widget)->pixmap) {
+      GTK_PIXMAP_MENU_ITEM(widget)->pixmap)
+  {
+    // Use GtkPixmap for drawing
     gtk_widget_draw(GTK_WIDGET(GTK_PIXMAP_MENU_ITEM(widget)->pixmap),NULL);
   }
 
@@ -1845,5 +1925,5 @@ changed_have_pixmap_status (GtkPixmapMenuItem *menu_item)
     gtk_widget_queue_resize(GTK_WIDGET(menu_item));
 }
 
-#endif // USE_MENU_BITMAPS
+#endif // __WXGTK20__
 

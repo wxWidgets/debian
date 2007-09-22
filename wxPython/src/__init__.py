@@ -6,19 +6,18 @@
 # Author:       Robin Dunn
 #
 # Created:      8/8/98
-# RCS-ID:       $Id: __init__.py,v 1.4 2001/02/16 08:18:58 robind Exp $
+# RCS-ID:       $Id: __init__.py,v 1.4.2.1 2003/04/02 01:49:05 RD Exp $
 # Copyright:    (c) 1998 by Total Control Software
 # Licence:      wxWindows license
 #----------------------------------------------------------------------------
 
 import __version__
-__version__ = __version__.ver
+__version__ = __version__.wxVERSION_STRING
 
 
 # Ensure the main extension module is loaded, in case the add-on modules
 # (such as utils,) are used standalone.
 import wxc
-wxc.__version__ = __version__
 
 #----------------------------------------------------------------------------
 

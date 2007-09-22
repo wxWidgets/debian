@@ -5,7 +5,7 @@
 // Author:      Robin Dunn
 //
 // Created:     9-Sept-1999
-// RCS-ID:      $Id: oglhelpers.h,v 1.9 2002/07/06 04:14:52 RD Exp $
+// RCS-ID:      $Id: oglhelpers.h,v 1.9.2.1 2003/06/13 01:03:32 RD Exp $
 // Copyright:   (c) 1998 by Total Control Software
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -54,8 +54,7 @@
     DEC_PYCALLBACK__WXCP2DBL2INT    (OnSizingEndDragLeft);  \
     DEC_PYCALLBACK__2DBL            (OnBeginSize);          \
     DEC_PYCALLBACK__2DBL            (OnEndSize);            \
-                                                            \
-    PYPRIVATE;
+    PYPRIVATE
 
 
 #define WXSHAPE_IMP_CALLBACKS(CLASS, PARENT)       \
@@ -87,7 +86,7 @@
     IMP_PYCALLBACK__WXCP2DBL2INT    (CLASS, PARENT,  OnSizingBeginDragLeft);\
     IMP_PYCALLBACK__WXCP2DBL2INT    (CLASS, PARENT,  OnSizingEndDragLeft);  \
     IMP_PYCALLBACK__2DBL            (CLASS, PARENT,  OnBeginSize);          \
-    IMP_PYCALLBACK__2DBL            (CLASS, PARENT,  OnEndSize);            \
+    IMP_PYCALLBACK__2DBL            (CLASS, PARENT,  OnEndSize)
 
 
     //  This one may be difficult...

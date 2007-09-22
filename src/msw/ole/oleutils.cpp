@@ -4,7 +4,7 @@
 // Author:      Vadim Zeitlin
 // Modified by:
 // Created:     19.02.98
-// RCS-ID:      $Id: oleutils.cpp,v 1.16 2002/05/09 22:31:45 VZ Exp $
+// RCS-ID:      $Id: oleutils.cpp,v 1.16.2.1 2003/05/03 13:47:02 JS Exp $
 // Copyright:   (c) 1998 Vadim Zeitlin <zeitlin@dptmaths.ens-cachan.fr>
 // Licence:     wxWindows license
 ///////////////////////////////////////////////////////////////////////////////
@@ -60,7 +60,7 @@ bool IsIidFromList(REFIID riid, const IID *aIids[], size_t nCount)
   return FALSE;
 }
 
-#if wxUSE_DRAG_AND_DROP
+#if wxUSE_DATAOBJ
 
 // ----------------------------------------------------------------------------
 // Debug support

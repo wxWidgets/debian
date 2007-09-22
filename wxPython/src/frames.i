@@ -5,7 +5,7 @@
 // Author:      Robin Dunn
 //
 // Created:     8/27/98
-// RCS-ID:      $Id: frames.i,v 1.21.2.1 2002/10/04 00:44:55 RD Exp $
+// RCS-ID:      $Id: frames.i,v 1.21.2.2 2003/03/29 19:02:14 RD Exp $
 // Copyright:   (c) 1998 by Total Control Software
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -116,6 +116,12 @@ public:
 
     virtual void SetTitle(const wxString& title);
     virtual wxString GetTitle() const;
+
+    // Set the shape of the window to the given region.
+    // Returns TRUE if the platform supports this feature (and the operation
+    // is successful.)
+    virtual bool SetShape(const wxRegion& region);
+
 };
 
 //----------------------------------------------------------------------

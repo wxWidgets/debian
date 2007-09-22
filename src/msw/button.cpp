@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     04/01/98
-// RCS-ID:      $Id: button.cpp,v 1.56.2.1 2003/02/21 20:27:56 RD Exp $
+// RCS-ID:      $Id: button.cpp,v 1.56.2.3 2003/06/07 09:58:14 JS Exp $
 // Copyright:   (c) Julian Smart and Markus Holzem
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -415,8 +415,8 @@ static void DrawButtonText(HDC hdc,
     COLORREF colOld = SetTextColor(hdc, col);
     int modeOld = SetBkMode(hdc, TRANSPARENT);
 
-    DrawText(hdc, text, text.length(), pRect,
-             DT_CENTER | DT_VCENTER | DT_SINGLELINE);
+    // Note: we must have DT_SINGLELINE for DT_VCENTER to work.
+    ::DrawText(hdc, text, text.length(), pRect, DT_SINGLELINE | DT_CENTER | DT_VCENTER);
 
     SetBkMode(hdc, modeOld);
     SetTextColor(hdc, colOld);

@@ -3,7 +3,7 @@
 // Purpose:     common (for all platforms) wxFrame functions
 // Author:      Julian Smart, Vadim Zeitlin
 // Created:     01/02/97
-// Id:          $Id: framecmn.cpp,v 1.34 2002/05/02 20:07:10 MBN Exp $
+// Id:          $Id: framecmn.cpp,v 1.34.2.2 2003/06/01 20:40:09 JS Exp $
 // Copyright:   (c) 1998 Robert Roebling, Julian Smart and Markus Holzem
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -204,7 +204,8 @@ bool wxFrameBase::ProcessCommand(int id)
         }
     }
 
-    return GetEventHandler()->ProcessEvent(commandEvent);
+    GetEventHandler()->ProcessEvent(commandEvent);
+    return TRUE;
 #else // !wxUSE_MENUS
     return FALSE;
 #endif // wxUSE_MENUS/!wxUSE_MENUS
@@ -415,7 +416,7 @@ void wxFrameBase::DoMenuUpdates(wxMenu* menu, wxWindow* focusWin)
             }
 
             if (item->GetSubMenu())
-                DoMenuUpdates(item->GetSubMenu(), (wxWindow*) NULL);
+                DoMenuUpdates(item->GetSubMenu(), focusWin);
         }
         node = node->GetNext();
     }

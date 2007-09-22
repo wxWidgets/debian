@@ -2,7 +2,7 @@
 # Purpose:      XRC editor, toolbar
 # Author:       Roman Rolinsky <rolinsky@mema.ucl.ac.be>
 # Created:      19.03.2003
-# RCS-ID:       $Id: tools.py,v 1.1.2.3 2003/03/21 00:31:59 ROL Exp $
+# RCS-ID:       $Id: tools.py,v 1.1.2.4 2003/05/12 14:12:39 ROL Exp $
 
 from xxx import *                       # xxx imports globals and params
 from tree import ID_NEW
@@ -178,6 +178,7 @@ class Tools(wxPanel):
 
     # Update interface
     def UpdateUI(self):
+        if not self.IsShown(): return
         # Update status bar
         pullDownMenu = g.pullDownMenu
         tree = g.tree

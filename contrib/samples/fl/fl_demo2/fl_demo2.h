@@ -4,7 +4,7 @@
 // Author:      Aleksandras Gluchovas
 // Modified by:
 // Created:     04/11/98
-// RCS-ID:      $Id: fl_demo2.h,v 1.1 2001/07/24 15:27:11 JS Exp $
+// RCS-ID:      $Id: fl_demo2.h,v 1.1.2.1 2003/06/03 16:17:29 JS Exp $
 // Copyright:   (c) Aleksandras Gluchovas
 // Licence:   	wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -153,7 +153,7 @@ public:
     void OnMouseUp( wxMouseEvent& event );
     void OnPaint( wxPaintEvent& event );
     
-    DECLARE_EVENT_TABLE();
+    DECLARE_EVENT_TABLE()
 };
 
 #endif

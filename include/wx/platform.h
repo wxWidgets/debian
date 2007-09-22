@@ -4,7 +4,7 @@
  * Author:      Vadim Zeitlin
  * Modified by:
  * Created:     29.10.01 (extracted from wx/defs.h)
- * RCS-ID:      $Id: platform.h,v 1.8.4.1 2003/01/23 20:25:18 MBN Exp $
+ * RCS-ID:      $Id: platform.h,v 1.8.4.2 2003/06/01 16:54:22 JS Exp $
  * Copyright:   (c) 1997-2001 wxWindows team
  * Licence:     wxWindows license
  */
@@ -39,6 +39,15 @@
 
     #ifndef __WIN32__
         #define __WIN32__
+    #endif
+
+    /*
+       see MSDN for the description of possible WINVER values, this one is a
+       good default and, anyhow, we check for most of the features we use
+       during run-time.
+     */
+    #ifndef WINVER
+        #define WINVER  0x0400
     #endif
 
     /* Win95 means Win95-style UI, i.e. Win9x/NT 4+ */

@@ -4,7 +4,7 @@
 // Author:      Guillermo Rodriguez Garcia, <guille@iies.es>
 // Modified by:
 // Created:     Jan/2000
-// RCS-ID:      $Id: life.cpp,v 1.22.2.1 2003/01/12 20:48:09 MBN Exp $
+// RCS-ID:      $Id: life.cpp,v 1.22.2.2 2003/03/30 19:15:24 MBN Exp $
 // Copyright:   (c) 2000, Guillermo Rodriguez Garcia
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -1057,7 +1057,7 @@ void LifeCanvas::OnScroll(wxScrollWinEvent& event)
     else
     if (type == wxEVT_SCROLLWIN_PAGEDOWN)
     {
-        scrollinc = -10;
+        scrollinc = +10;
     }
     else
     if (type == wxEVT_SCROLLWIN_THUMBTRACK)

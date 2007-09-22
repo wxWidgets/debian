@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     04/01/98
-// RCS-ID:      $Id: listctrl.cpp,v 1.142.2.19 2003/03/10 23:58:30 RD Exp $
+// RCS-ID:      $Id: listctrl.cpp,v 1.142.2.25 2003/06/01 20:10:55 JS Exp $
 // Copyright:   (c) Julian Smart and Markus Holzem
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -305,11 +305,6 @@ bool wxListCtrl::Create(wxWindow *parent,
     DWORD wstyle = WS_VISIBLE | WS_CHILD | WS_TABSTOP |
                    LVS_SHAREIMAGELISTS | LVS_SHOWSELALWAYS;
 
-    if ( m_windowStyle & wxCLIP_SIBLINGS )
-        wstyle |= WS_CLIPSIBLINGS;
-
-    if ( wxStyleHasBorder(m_windowStyle) )
-        wstyle |= WS_BORDER;
     m_baseStyle = wstyle;
 
     if ( !DoCreateControl(x, y, width, height) )
@@ -325,16 +320,12 @@ bool wxListCtrl::DoCreateControl(int x, int y, int w, int h)
 {
     DWORD wstyle = m_baseStyle;
 
-    bool want3D;
-    WXDWORD exStyle = Determine3DEffects(WS_EX_CLIENTEDGE, &want3D);
-
-    // Even with extended styles, need to combine with WS_BORDER
-    // for them to look right.
-    if ( want3D )
-        wstyle |= WS_BORDER;
+    WXDWORD exStyle = 0;
+    WXDWORD standardStyle = MSWGetStyle(GetWindowStyle(), & exStyle) ;
 
     long oldStyle = 0; // Dummy
     wstyle |= ConvertToMSWStyle(oldStyle, m_windowStyle);
+    wstyle |= standardStyle;
 
     // Create the ListView control.
     m_hWnd = (WXHWND)CreateWindowEx(exStyle,
@@ -1862,7 +1853,19 @@ bool wxListCtrl::MSWOnNotify(int idCtrl, WXLPARAM lParam, WXLPARAM *result)
                     wxConvertFromMSWListItem(NULL, event.m_item, item);
                     if ( ((LV_ITEM)item).pszText == NULL ||
                          ((LV_ITEM)item).iItem == -1 )
+                    {
+                        // don't keep a stale wxTextCtrl around
+                        if ( m_textCtrl )
+                        {
+                            // EDIT control will be deleted by the list control itself so
+                            // prevent us from deleting it as well
+                            m_textCtrl->UnsubclassWin();
+                            m_textCtrl->SetHWND(0);
+                            delete m_textCtrl;
+                            m_textCtrl = NULL;
+                        }
                         return FALSE;
+                    }
 
                     event.m_itemIndex = event.m_item.m_itemId;
                 }
@@ -1874,7 +1877,19 @@ bool wxListCtrl::MSWOnNotify(int idCtrl, WXLPARAM lParam, WXLPARAM *result)
                     wxConvertFromMSWListItem(NULL, event.m_item, item);
                     if ( ((LV_ITEM)item).pszText == NULL ||
                          ((LV_ITEM)item).iItem == -1 )
+                    {
+                        // don't keep a stale wxTextCtrl around
+                        if ( m_textCtrl )
+                        {
+                            // EDIT control will be deleted by the list control itself so
+                            // prevent us from deleting it as well
+                            m_textCtrl->UnsubclassWin();
+                            m_textCtrl->SetHWND(0);
+                            delete m_textCtrl;
+                            m_textCtrl = NULL;
+                        }
                         return FALSE;
+                    }
 
                     event.m_itemIndex = event.m_item.m_itemId;
                 }
@@ -2371,7 +2386,7 @@ void wxListCtrl::SetItemCount(long count)
 {
     wxASSERT_MSG( IsVirtual(), _T("this is for virtual controls only") );
 
-    if ( !::SendMessage(GetHwnd(), LVM_SETITEMCOUNT, (WPARAM)count, 0) )
+    if ( !::SendMessage(GetHwnd(), LVM_SETITEMCOUNT, (WPARAM)count, LVSICF_NOSCROLL) )
     {
         wxLogLastError(_T("ListView_SetItemCount"));
     }
@@ -2437,13 +2452,13 @@ static void wxDeleteInternalData(wxListCtrl* ctl, long itemId)
     wxListItemInternalData *data = wxGetInternalData(ctl, itemId);
     if (data)
     {
-        delete data;
         LV_ITEM item;
         memset(&item, 0, sizeof(item));
         item.iItem = itemId;
         item.mask = LVIF_PARAM;
         item.lParam = (LPARAM) 0;
         ListView_SetItem((HWND)ctl->GetHWND(), &item);
+        delete data;
     }
 }
 

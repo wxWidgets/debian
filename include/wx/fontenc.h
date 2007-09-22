@@ -4,7 +4,7 @@
 // Author:      Vadim Zeitlin
 // Modified by:
 // Created:     29.03.00
-// RCS-ID:      $Id: fontenc.h,v 1.10.2.2 2002/10/31 20:43:48 VZ Exp $
+// RCS-ID:      $Id: fontenc.h,v 1.10.2.3 2003/04/06 16:53:16 JS Exp $
 // Copyright:   (c) Vadim Zeitlin
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -78,7 +78,7 @@ enum wxFontEncoding
 
         // Japanese (see http://zsigri.tripod.com/fontboard/cjk/jis.html)
     wxFONTENCODING_SHIFT_JIS = wxFONTENCODING_CP932,  // Shift JIS
-    wxFONTENCODING_EUC_JP,          // Extended Unix Codepage for Japanese
+    wxFONTENCODING_EUC_JP = wxFONTENCODING_UTF8 + 1,  // Extended Unix Codepage for Japanese
 
     wxFONTENCODING_UNICODE,         // Unicode - currently used only by
                                     // wxEncodingConverter class

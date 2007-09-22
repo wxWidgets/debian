@@ -4,7 +4,7 @@
 // Author:      Vadim Zeitlin
 // Modified by:
 // Created:     04.10.99
-// RCS-ID:      $Id: console.cpp,v 1.138.2.5 2002/10/24 16:13:40 VZ Exp $
+// RCS-ID:      $Id: console.cpp,v 1.138.2.7 2003/06/12 22:55:16 VZ Exp $
 // Copyright:   (c) 1999 Vadim Zeitlin <zeitlin@dptmaths.ens-cachan.fr>
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -27,6 +27,7 @@
 
 #include "wx/string.h"
 #include "wx/file.h"
+#include "wx/log.h"
 #include "wx/app.h"
 
 // without this pragma, the stupid compiler precompiles #defines below so that
@@ -48,7 +49,7 @@
  */
 
 // what to test (in alphabetic order)? uncomment the line below to do all tests
-//#define TEST_ALL
+#define TEST_ALL
 #ifdef TEST_ALL
     #define TEST_ARRAYS
     #define TEST_CHARSET
@@ -3170,7 +3171,7 @@ static void TestFtpWuFtpd()
         }
         else
         {
-            size_t size = in->StreamSize();
+            size_t size = in->GetSize();
             wxPrintf(_T("Reading file %s (%u bytes)..."), filename, size);
 
             wxChar *data = new wxChar[size];
@@ -3253,7 +3254,7 @@ static void TestFtpDownload()
     }
     else
     {
-        size_t size = in->StreamSize();
+        size_t size = in->GetSize();
         wxPrintf(_T("Reading file %s (%u bytes)..."), filename, size);
         fflush(stdout);
 

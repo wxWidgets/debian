@@ -4,7 +4,7 @@
 // Author:      Robert Roebling, Vadim Zeitlin
 // Modified by:
 // Created:     28.12.00
-// RCS-ID:      $Id: filename.h,v 1.32.2.1 2002/11/07 13:16:28 VZ Exp $
+// RCS-ID:      $Id: filename.h,v 1.32.2.2 2003/04/13 17:08:31 VS Exp $
 // Copyright:   (c) 2000 Robert Roebling
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -271,6 +271,10 @@ public:
     bool MakeRelativeTo(const wxString& pathBase = _T(""),
                         wxPathFormat format = wxPATH_NATIVE);
 
+    bool MakeAbsolute(const wxString& cwd = wxEmptyString,
+                      wxPathFormat format = wxPATH_NATIVE)
+        { return Normalize(wxPATH_NORM_DOTS | wxPATH_NORM_ABSOLUTE |
+                           wxPATH_NORM_TILDE, cwd, format); }
 
     // Comparison
 

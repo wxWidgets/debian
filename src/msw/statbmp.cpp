@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     04/01/98
-// RCS-ID:      $Id: statbmp.cpp,v 1.33 2001/11/06 21:16:02 MBN Exp $
+// RCS-ID:      $Id: statbmp.cpp,v 1.33.2.1 2003/05/26 22:15:25 JS Exp $
 // Copyright:   (c) Julian Smart and Markus Holzem
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -97,6 +97,12 @@ bool wxStaticBitmap::Create(wxWindow *parent, wxWindowID id,
                             long style,
                             const wxString& name)
 {
+    // default border for this control is none
+    if ( (style & wxBORDER_MASK) == wxBORDER_DEFAULT )
+    {
+        style |= wxBORDER_NONE;
+    }
+    
     Init();
 
     SetName(name);
