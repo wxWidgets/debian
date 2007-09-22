@@ -3,7 +3,7 @@
 // Purpose:     includes all xh_*.h files
 // Author:      Vaclav Slavik
 // Created:     2000/03/05
-// RCS-ID:      $Id: xh_all.h,v 1.2.2.3 2004/01/23 10:01:30 JS Exp $
+// RCS-ID:      $Id: xh_all.h,v 1.2.2.4 2004/11/22 20:18:45 JS Exp $
 // Copyright:   (c) 2000 Vaclav Slavik
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -19,6 +19,7 @@
 #include "wx/xrc/xh_dlg.h"
 #include "wx/xrc/xh_bttn.h"
 #include "wx/xrc/xh_chckb.h"
+#include "wx/xrc/xh_tglbtn.h"
 #include "wx/xrc/xh_gauge.h"
 #include "wx/xrc/xh_html.h"
 #include "wx/xrc/xh_spin.h"

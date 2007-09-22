@@ -1,3 +1,14 @@
+/////////////////////////////////////////////////////////////////////////////
+// Name:        wx/print.h
+// Purpose:     Base header for printer classes
+// Author:      Julian Smart
+// Modified by:
+// Created:
+// RCS-ID:      $Id: print.h,v 1.5.6.2 2005/05/04 18:23:29 JS Exp $
+// Copyright:   (c) Julian Smart
+// Licence:     wxWindows Licence
+/////////////////////////////////////////////////////////////////////////////
+
 #ifndef _WX_PRINT_H_BASE_
 #define _WX_PRINT_H_BASE_
 

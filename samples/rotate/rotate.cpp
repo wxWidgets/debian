@@ -4,7 +4,7 @@
 // Author:    Carlos Moreno
 // Modified by:
 // Created:   6/2/2000
-// RCS-ID:    $Id: rotate.cpp,v 1.8.2.1 2002/12/15 17:25:32 MBN Exp $
+// RCS-ID:    $Id: rotate.cpp,v 1.8.2.2 2005/05/19 10:18:11 JS Exp $
 // Copyright: (c) 2000
 // Licence:   wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -89,10 +89,11 @@ IMPLEMENT_APP(MyApp)
 
 bool MyApp::OnInit()
 {
-    m_image = wxImage(_T("kclub.bmp"), wxBITMAP_TYPE_BMP);
+#if wxUSE_LIBPNG
+    wxImage::AddHandler( new wxPNGHandler );
+#endif
 
-    // any unused colour will do
-    m_image.SetMaskColour( 0, 255, 255 );
+    m_image = wxImage(_T("duck.png"), wxBITMAP_TYPE_PNG);
 
     if ( !m_image.Ok() )
     {

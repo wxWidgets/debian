@@ -6,8 +6,8 @@
 //                Added edit in place facility, 20 April 1999
 //                Added cursor key control, 29 Jun 1999
 // Created:     01/02/97
-// RCS-ID:      $Id: gridg.h,v 1.21 2002/08/31 11:29:12 GD Exp $
-// Copyright:   (c)
+// RCS-ID:      $Id: gridg.h,v 1.21.2.1 2005/05/04 18:23:52 JS Exp $
+// Copyright:   (c) Julian Smart
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
 

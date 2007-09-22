@@ -1,9 +1,9 @@
 /////////////////////////////////////////////////////////////////////////////
 // Name:        imagfill.cpp
 // Purpose:     FloodFill for wxImage
-// Author:
-// RCS-ID:      $Id: imagfill.cpp,v 1.9 2002/04/17 14:16:36 VZ Exp $
-// Copyright:
+// Author:      Julian Smart
+// RCS-ID:      $Id: imagfill.cpp,v 1.9.2.2 2005/05/06 12:17:01 JS Exp $
+// Copyright:   (c) Julian Smart
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
 
@@ -67,7 +67,10 @@ wxImageFloodFill(wxImage *image,
     /* A diamond flood-fill using a circular queue system.
     Each pixel surrounding the current pixel is added to
     the queue if it meets the criteria, then is retrieved in
-    its turn.  Code originally based on http://www.drawit.co.nz/Developers.htm */
+    its turn.  Code originally based on http://www.drawit.co.nz/Developers.htm,
+    with explicit permission to use this for wxWidgets granted by Andrew Empson
+    (no copyright claimed)
+     */
 
     int width = image->GetWidth();
     int height = image->GetHeight();

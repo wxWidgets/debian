@@ -1,3 +1,14 @@
+/////////////////////////////////////////////////////////////////////////////
+// Name:        wx/msgdlgg.h
+// Purpose:     common header and base class for wxMessageDialog
+// Author:      Julian Smart
+// Modified by:
+// Created:
+// RCS-ID:      $Id: msgdlg.h,v 1.12.2.1 2005/05/04 18:23:28 JS Exp $
+// Copyright:   (c) Julian Smart
+// Licence:     wxWindows Licence
+/////////////////////////////////////////////////////////////////////////////
+
 #ifndef _WX_MSGDLG_H_BASE_
 #define _WX_MSGDLG_H_BASE_
 

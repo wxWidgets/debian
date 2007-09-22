@@ -1,3 +1,14 @@
+/////////////////////////////////////////////////////////////////////////////
+// Name:        wx/splitter.h
+// Purpose:     Base header for wxSplitterWindow
+// Author:      Julian Smart
+// Modified by:
+// Created:
+// RCS-ID:      $Id: splitter.h,v 1.4.2.1 2005/05/04 18:23:30 JS Exp $
+// Copyright:   (c) Julian Smart
+// Licence:     wxWindows Licence
+/////////////////////////////////////////////////////////////////////////////
+
 #ifndef _WX_SPLITTER_H_BASE_
 #define _WX_SPLITTER_H_BASE_
 

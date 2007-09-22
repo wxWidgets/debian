@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     04/01/98
-// RCS-ID:      $Id: tbar95.cpp,v 1.97.2.8 2004/08/02 10:03:32 JS Exp $
+// RCS-ID:      $Id: tbar95.cpp,v 1.97.2.9 2005/04/23 19:06:14 JS Exp $
 // Copyright:   (c) Julian Smart and Markus Holzem
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -59,11 +59,7 @@
 
 #ifndef __TWIN32__
 
-#if defined(__WIN95__) && !((defined(__GNUWIN32_OLD__) || defined(__TWIN32__)) && !defined(__CYGWIN10__))
-    #include <commctrl.h>
-#else
-    #include "wx/msw/gnuwin32/extra.h"
-#endif
+#include <commctrl.h>
 
 #if !defined(CCS_VERT)
 #define CCS_VERT                0x00000080L

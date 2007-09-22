@@ -4,7 +4,7 @@
 // Author:      Arthur Seaton, Julian Smart
 // Modified by:
 // Created:     04/01/98
-// RCS-ID:      $Id: memory.cpp,v 1.51.2.2 2003/01/26 16:22:28 VS Exp $
+// RCS-ID:      $Id: memory.cpp,v 1.51.2.4 2004/10/09 17:02:07 JS Exp $
 // Copyright:   (c) Julian Smart and Markus Holzem
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -1075,13 +1075,5 @@ void wxTraceLevel(int, const wxChar * ...)
 #endif
 }
 
-#else // wxUSE_MEMORY_TRACING && defined(__WXDEBUG__)
-void wxTrace(const char *WXUNUSED(fmt) ...)
-{
-}
-
-void wxTraceLevel(int WXUNUSED(level), const char *WXUNUSED(fmt) ...)
-{
-}
 #endif
 

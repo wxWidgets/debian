@@ -6,18 +6,9 @@
 //              Bart Jourquin
 //              Mark Johnson
 // Created:     9.96
-// RCS-ID:      $Id: dbtable.h,v 1.30 2002/08/31 11:29:09 GD Exp $
+// RCS-ID:      $Id: dbtable.h,v 1.30.2.1 2005/05/04 18:23:24 JS Exp $
 // Copyright:   (c) 1996 Remstar International, Inc.
-// Licence:     wxWindows licence, plus:
-// Notice:      This class library and its intellectual design are free of charge for use,
-//              modification, enhancement, debugging under the following conditions:
-//              1) These classes may only be used as part of the implementation of a
-//                 wxWindows-based application
-//              2) All enhancements and bug fixes are to be submitted back to the wxWindows
-//                 user groups free of all charges for use with the wxWindows library.
-//              3) These classes may not be distributed as part of any other class library,
-//                 DLL, text (written or electronic), other than a complete distribution of
-//                 the wxWindows GUI development toolkit.
+// Licence:     wxWindows licence
 ///////////////////////////////////////////////////////////////////////////////
 
 /*

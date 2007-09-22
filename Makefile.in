@@ -3,7 +3,7 @@
 # Purpose:  Makefile for Unix wxWindows ports (both GUI and wxBase)
 # Author:   Julian Smart, Robert Roebling, Vadim Zeitlin, Ron Lee
 # Created:  1993
-# Version:  $Id: Makefile.in,v 1.211.2.27 2004/07/31 18:24:11 RL Exp $
+# Version:  $Id: Makefile.in,v 1.211.2.31 2005/05/20 06:20:24 RL Exp $
 # Copyright:(c) 1993, AIAI, University of Edinburgh,
 # Copyright:(c) 1999, Vadim Zeitlin
 # Copyright:(c) 1999, Robert Roebling
@@ -391,15 +391,6 @@ CREATE_INSTALLED_LINKS_GL: preinstall_gl
 		&& $(LN_S) @WX_LIBRARY_NAME_SHARED_GL@ @WX_LIBRARY_LINK1_GL@ \
 		&& $(LN_S) @WX_LIBRARY_NAME_SHARED_GL@ @WX_LIBRARY_LINK2_GL@
 
-afminstall: preinstall
-	@if test ! -d $(datadir); then $(INSTALL) -d $(datadir); fi
-	$(INSTALL) -d $(datadir)/wx
-	$(INSTALL) -d $(datadir)/wx/$(VER_MAJMIN)
-	$(INSTALL) -d $(datadir)/wx/$(VER_MAJMIN)/afm
-	$(INSTALL) -d $(datadir)/wx/$(VER_MAJMIN)/gs_afm
-	$(INSTALL_DATA) $(top_srcdir)/misc/afm/*.afm $(datadir)/wx/$(VER_MAJMIN)/afm
-	$(INSTALL_DATA) $(top_srcdir)/misc/gs_afm/*.afm $(datadir)/wx/$(VER_MAJMIN)/gs_afm
-
 m4datainstall: preinstall
 	$(INSTALL) -d $(datadir)/aclocal
 	$(INSTALL_DATA) $(top_srcdir)/wxwin.m4 $(datadir)/aclocal
@@ -478,7 +469,7 @@ preinstall_gl: $(build_libdir)/@WX_TARGET_LIBRARY_GL@
 	@if test ! -d $(libdir); then $(INSTALL) -d $(libdir); fi
 	@INSTALL_LIBRARY@ $(build_libdir)/@WX_TARGET_LIBRARY_GL@ $(libdir)/@WX_TARGET_LIBRARY_GL@
 
-install: @AFMINSTALL@ @WX_ALL_INSTALLED@ m4datainstall @WIN32INSTALL@
+install: @WX_ALL_INSTALLED@ m4datainstall @WIN32INSTALL@
 	@echo " "
 	@echo " The installation of wxWindows is finished.  On certain"
 	@echo " platforms (e.g. Linux) you'll now have to run ldconfig"
@@ -507,11 +498,7 @@ uninstall:
 	@$(RM) $(libdir)/wx/include/@TOOLCHAIN_NAME@/wx/setup.h
 	@$(RM) $(bindir)/wx-config
 	@$(RM) $(bindir)/wx@TOOLCHAIN_NAME@-config
-	@$(RM) $(datadir)/wx/$(VER_MAJMIN)/afm/*
-	@$(RM) $(datadir)/wx/$(VER_MAJMIN)/gs_afm/*
 	# FIXME: wxBase doesnt install these next 3 dirs.
-	@-rmdir $(datadir)/wx/$(VER_MAJMIN)/gs_afm
-	@-rmdir $(datadir)/wx/$(VER_MAJMIN)/afm
 	@-rmdir $(datadir)/wx/$(VER_MAJMIN)
 	@-rmdir $(datadir)/wx
 	@echo " Removing headers..."
@@ -751,14 +738,12 @@ MACX_DIST: ALL_GUI_DIST
 
 MSW_DIST: ALL_GUI_DIST
 	cp $(WXDIR)/wxWINE.spec $(DISTDIR)
-	mkdir $(DISTDIR)/include/wx/msw/ctl3d
 	mkdir $(DISTDIR)/include/wx/msw/ole
 	cp $(INCDIR)/wx/msw/*.h $(DISTDIR)/include/wx/msw
 	cp $(INCDIR)/wx/msw/*.cur $(DISTDIR)/include/wx/msw
 	cp $(INCDIR)/wx/msw/*.ico $(DISTDIR)/include/wx/msw
 	cp $(INCDIR)/wx/msw/*.bmp $(DISTDIR)/include/wx/msw
 	cp $(INCDIR)/wx/msw/*.rc $(DISTDIR)/include/wx/msw
-	cp $(INCDIR)/wx/msw/ctl3d/*.h $(DISTDIR)/include/wx/msw/ctl3d
 	cp $(INCDIR)/wx/msw/ole/*.h $(DISTDIR)/include/wx/msw/ole
 	mkdir $(DISTDIR)/src/msw/ole
 	cp $(MSWDIR)/files.lst $(DISTDIR)/src/msw
@@ -770,11 +755,9 @@ MSW_DIST: ALL_GUI_DIST
 MSW_ZIP_TEXT_DIST: ALL_GUI_DIST
 	cp $(WXDIR)/wxWINE.spec $(DISTDIR)
 	mkdir $(DISTDIR)/include/wx/msw
-	mkdir $(DISTDIR)/include/wx/msw/ctl3d
 	mkdir $(DISTDIR)/include/wx/msw/ole
 	cp $(INCDIR)/wx/msw/*.h $(DISTDIR)/include/wx/msw
 	cp $(INCDIR)/wx/msw/*.rc $(DISTDIR)/include/wx/msw
-	cp $(INCDIR)/wx/msw/ctl3d/*.h $(DISTDIR)/include/wx/msw/ctl3d
 	cp $(INCDIR)/wx/msw/ole/*.h $(DISTDIR)/include/wx/msw/ole
 	mkdir $(DISTDIR)/src/msw
 	mkdir $(DISTDIR)/src/msw/ole
@@ -1199,7 +1182,6 @@ SAMPLES_DIST: ALL_GUI_DIST
 	cp $(SAMPDIR)/printing/*.cpp $(DISTDIR)/samples/printing
 	cp $(SAMPDIR)/printing/*.h $(DISTDIR)/samples/printing
 	cp $(SAMPDIR)/printing/*.xpm $(DISTDIR)/samples/printing
-	cp $(SAMPDIR)/printing/*.xbm $(DISTDIR)/samples/printing
 
 	mkdir $(DISTDIR)/samples/resource
 	cp $(SAMPDIR)/resource/Makefile.in $(DISTDIR)/samples/resource
@@ -1212,7 +1194,7 @@ SAMPLES_DIST: ALL_GUI_DIST
 	cp $(SAMPDIR)/rotate/Makefile.in $(DISTDIR)/samples/rotate
 	cp $(SAMPDIR)/rotate/makefile.unx $(DISTDIR)/samples/rotate
 	cp $(SAMPDIR)/rotate/*.cpp $(DISTDIR)/samples/rotate
-	cp $(SAMPDIR)/rotate/*.bmp $(DISTDIR)/samples/rotate
+	cp $(SAMPDIR)/rotate/*.png $(DISTDIR)/samples/rotate
 
 	mkdir $(DISTDIR)/samples/richedit
 	cp $(SAMPDIR)/richedit/Makefile.in $(DISTDIR)/samples/richedit
@@ -1400,11 +1382,6 @@ UTILS_DIST: ALL_GUI_DIST
 	cp $(UTILSDIR)/helpview/src/bitmaps/*.xpm $(DISTDIR)/utils/helpview/src/bitmaps
 
 MISC_DIST: ALL_GUI_DIST
-	mkdir $(DISTDIR)/misc
-	mkdir $(DISTDIR)/misc/afm
-	cp $(MISCDIR)/afm/*.afm  $(DISTDIR)/misc/afm
-	mkdir $(DISTDIR)/misc/gs_afm
-	cp $(MISCDIR)/gs_afm/*.afm  $(DISTDIR)/misc/gs_afm
 
 INTL_DIST:
 	mkdir $(DISTDIR)/locale
@@ -1602,8 +1579,6 @@ debian-dist: debian-native-dist debian-msw-dirs MSW_DIST
 	rm -rf $(WXDIR)/../wxwindows$(WX_MAJOR_VERSION_NUMBER).$(WX_MINOR_VERSION_NUMBER)-$(WX_MAJOR_VERSION_NUMBER).$(WX_MINOR_VERSION_NUMBER).$(WX_RELEASE_NUMBER)
 	mv $(DISTDIR) $(WXDIR)/../wxwindows$(WX_MAJOR_VERSION_NUMBER).$(WX_MINOR_VERSION_NUMBER)-$(WX_MAJOR_VERSION_NUMBER).$(WX_MINOR_VERSION_NUMBER).$(WX_RELEASE_NUMBER)
 
-# This is to keep non-gnu make's happy.
-@IF_NOT_GNU_MAKE@debian-native-dist: @GUIDIST@ UNIV_DIST MANUAL_DIST PYTHON_DIST
 
 @IF_GNU_MAKE@debian-native-dist: $(filter-out DEMOS_DIST,@GUIDIST@) MANUAL_DIST PYTHON_DIST
 	cp $(SRCDIR)/files.lst $(DISTDIR)/src
@@ -1611,6 +1586,11 @@ debian-dist: debian-native-dist debian-msw-dirs MSW_DIST
 debian-msw-dirs:
 	mkdir $(DISTDIR)/include/wx/msw
 	mkdir $(DISTDIR)/src/msw
+
+
+# This is to keep non-gnu make's happy.
+# ... but is of course stupid and useless here, so make it a noop at least.
+@IF_NOT_GNU_MAKE@debian-native-dist: 
 
 
 clean:

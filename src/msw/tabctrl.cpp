@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     04/01/98
-// RCS-ID:      $Id: tabctrl.cpp,v 1.21.2.5 2003/02/18 12:51:31 JS Exp $
+// RCS-ID:      $Id: tabctrl.cpp,v 1.21.2.6 2005/04/23 19:06:13 JS Exp $
 // Copyright:   (c) Julian Smart
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -32,11 +32,7 @@
 
 #include <windows.h>
 
-#if defined(__WIN95__) && !((defined(__GNUWIN32_OLD__) || defined(__TWIN32__)) && !defined(__CYGWIN10__))
-    #include <commctrl.h>
-#else
-    #include "wx/msw/gnuwin32/extra.h"
-#endif
+#include <commctrl.h>
 
 #include "wx/msw/dib.h"
 #include "wx/tabctrl.h"

@@ -1,8 +1,10 @@
 /* -------------------------------------------------------------------------
- * Project: GSocket (Generic Socket) for WX
- * Name:    gsockmsw.h
- * Purpose: GSocket MSW header
- * CVSID:   $Id: gsockmsw.h,v 1.12 2001/05/10 06:31:39 GRG Exp $
+ * Project:     GSocket (Generic Socket) for WX
+ * Name:        gsockmsw.h
+ * Copyright:   (c) Guilhem Lavaux
+ * Licence:     wxWindows Licence
+ * Purpose:     GSocket MSW header
+ * CVSID:       $Id: gsockmsw.h,v 1.12.2.1 2005/05/04 18:23:43 JS Exp $
  * -------------------------------------------------------------------------
  */
 

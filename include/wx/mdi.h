@@ -1,3 +1,14 @@
+/////////////////////////////////////////////////////////////////////////////
+// Name:        wx/mdi.h
+// Purpose:     wxMDI base header
+// Author:      Julian Smart
+// Modified by:
+// Created:
+// Copyright:   (c) Julian Smart
+// RCS-ID:      $Id: mdi.h,v 1.10.2.2 2005/05/04 18:23:28 JS Exp $
+// Licence:     wxWindows Licence
+/////////////////////////////////////////////////////////////////////////////
+
 #ifndef _WX_MDI_H_BASE_
 #define _WX_MDI_H_BASE_
 

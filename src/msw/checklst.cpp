@@ -4,7 +4,7 @@
 // Author:      Vadim Zeitlin
 // Modified by:
 // Created:     16.11.97
-// RCS-ID:      $Id: checklst.cpp,v 1.33.2.6 2003/08/14 11:48:28 CE Exp $
+// RCS-ID:      $Id: checklst.cpp,v 1.33.2.7 2005/04/23 19:06:10 JS Exp $
 // Copyright:   (c) 1998 Vadim Zeitlin <zeitlin@dptmaths.ens-cachan.fr>
 // Licence:     wxWindows license
 ///////////////////////////////////////////////////////////////////////////////
@@ -49,10 +49,6 @@
 
 #include <windows.h>
 #include <windowsx.h>
-
-#if defined(__GNUWIN32_OLD__)
-    #include "wx/msw/gnuwin32/extra.h"
-#endif
 
 // ----------------------------------------------------------------------------
 // private functions

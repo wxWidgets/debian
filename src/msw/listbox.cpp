@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by: Vadim Zeitlin (owner drawn stuff)
 // Created:
-// RCS-ID:      $Id: listbox.cpp,v 1.68.2.9 2004/04/13 12:51:13 JS Exp $
+// RCS-ID:      $Id: listbox.cpp,v 1.68.2.10 2005/04/23 19:06:11 JS Exp $
 // Copyright:   (c) Julian Smart
 // Licence:     wxWindows license
 ///////////////////////////////////////////////////////////////////////////////
@@ -47,12 +47,6 @@
 
 #if wxUSE_OWNER_DRAWN
     #include  "wx/ownerdrw.h"
-#endif
-
-#ifndef __TWIN32__
-    #ifdef __GNUWIN32_OLD__
-        #include "wx/msw/gnuwin32/extra.h"
-    #endif
 #endif
 
 #ifdef __WXWINE__

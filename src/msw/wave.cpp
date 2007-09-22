@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     04/01/98
-// RCS-ID:      $Id: wave.cpp,v 1.12 2001/06/26 20:59:17 VZ Exp $
+// RCS-ID:      $Id: wave.cpp,v 1.12.2.1 2005/04/23 19:06:15 JS Exp $
 // Copyright:   (c) Julian Smart and Markus Holzem
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -33,11 +33,7 @@
 #include <windows.h>
 #include <windowsx.h>
 
-#if defined(__GNUWIN32_OLD__) && !defined(__CYGWIN10__)
-    #include "wx/msw/gnuwin32/extra.h"
-#else
-    #include <mmsystem.h>
-#endif
+#include <mmsystem.h>
 
 wxWave::wxWave()
   : m_waveData(NULL), m_waveLength(0), m_isResource(FALSE)

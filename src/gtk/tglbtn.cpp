@@ -5,9 +5,9 @@
 // Author:      John Norris, minor changes by Axel Schlueter
 // Modified by:
 // Created:     08.02.01
-// RCS-ID:      $Id: tglbtn.cpp,v 1.7 2002/08/05 17:59:20 RR Exp $
+// RCS-ID:      $Id: tglbtn.cpp,v 1.7.2.1 2004/11/22 18:04:04 JS Exp $
 // Copyright:   (c) 2000 Johnny C. Norris II
-// License:     Rocketeer license
+// License:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
 
 #include "wx/tglbtn.h"

@@ -5,9 +5,9 @@
 // Author:      John Norris, minor changes by Axel Schlueter
 // Modified by:
 // Created:     08.02.01
-// RCS-ID:      $Id: tglbtn.h,v 1.3 2002/08/15 20:43:00 RR Exp $
+// RCS-ID:      $Id: tglbtn.h,v 1.3.2.1 2004/11/22 18:02:24 JS Exp $
 // Copyright:   (c) 2000 Johnny C. Norris II
-// License:     Rocketeer license
+// License:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
 
 #ifndef _WX_GTK_TOGGLEBUTTON_H_

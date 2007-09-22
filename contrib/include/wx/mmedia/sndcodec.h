@@ -3,7 +3,8 @@
 // Purpose:
 // Date: 08/11/1999
 // Author: Guilhem Lavaux <lavaux@easynet.fr> (C) 1999
-// CVSID: $Id: sndcodec.h,v 1.2 2000/06/04 08:38:36 GL Exp $
+// CVSID: $Id: sndcodec.h,v 1.2.4.1 2004/11/22 20:04:46 JS Exp $
+// License:    wxWindows license
 // --------------------------------------------------------------------------
 #ifndef _WX_SNDCODEC_H
 #define _WX_SNDCODEC_H

@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by: Vadim Zeitlin to be less MSW-specific on 10.10.98
 // Created:     1997
-// RCS-ID:      $Id: treectrl.cpp,v 1.129.2.9 2003/06/12 18:53:40 RD Exp $
+// RCS-ID:      $Id: treectrl.cpp,v 1.129.2.10 2005/04/23 19:06:14 JS Exp $
 // Copyright:   (c) Julian Smart
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -55,13 +55,7 @@
 #include "wx/msw/treectrl.h"
 #include "wx/msw/dragimag.h"
 
-#ifdef __GNUWIN32_OLD__
-    #include "wx/msw/gnuwin32/extra.h"
-#endif
-
-#if defined(__WIN95__) && !((defined(__GNUWIN32_OLD__) || defined(__TWIN32__)) && !defined(__CYGWIN10__))
-    #include <commctrl.h>
-#endif
+#include <commctrl.h>
 
 // Bug in headers, sometimes
 #ifndef TVIS_FOCUSED

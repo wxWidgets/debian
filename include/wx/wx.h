@@ -7,8 +7,8 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     01/02/97
-// RCS-ID:      $Id: wx.h,v 1.18 2001/12/11 06:40:48 RL Exp $
-// Copyright:   (c)
+// RCS-ID:      $Id: wx.h,v 1.18.2.1 2005/05/04 18:23:32 JS Exp $
+// Copyright:   (c) Julian Smart
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
 

@@ -2,7 +2,7 @@
 // Name:        menu.cpp
 // Purpose:
 // Author:      Robert Roebling
-// Id:          $Id: menu.cpp,v 1.125.2.22 2003/12/26 11:43:51 JS Exp $
+// Id:          $Id: menu.cpp,v 1.125.2.23 2004/10/16 19:51:26 VZ Exp $
 // Copyright:   (c) 1998 Robert Roebling
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -30,13 +30,13 @@
 #ifdef __WXGTK20__
     #include <glib-object.h>
 
-    #define gtk_accel_group_attach(g, o) _gtk_accel_group_attach((g), (o))
-    #define gtk_accel_group_detach(g, o) _gtk_accel_group_detach((g), (o))
+    #define gtk_accel_group_attach(g, o) gtk_window_add_accel_group((o), (g))
+    #define gtk_accel_group_detach(g, o) gtk_window_remove_accel_group((o), (g))
     #define gtk_menu_ensure_uline_accel_group(m) gtk_menu_get_accel_group(m)
 
-    #define ACCEL_OBJECT        GObject
+    #define ACCEL_OBJECT        GtkWindow
     #define ACCEL_OBJECTS(a)    (a)->acceleratables
-    #define ACCEL_OBJ_CAST(obj) G_OBJECT(obj)
+    #define ACCEL_OBJ_CAST(obj) ((GtkWindow*) obj)
 #else // GTK+ 1.x
     #define ACCEL_OBJECT        GtkObject
     #define ACCEL_OBJECTS(a)    (a)->attach_objects

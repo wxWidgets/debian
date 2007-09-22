@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by: VZ on 13.05.99: no more Default(), MSWOnXXX() reorganisation
 // Created:     04/01/98
-// RCS-ID:      $Id: window.cpp,v 1.349.2.26 2003/06/17 17:07:21 RD Exp $
+// RCS-ID:      $Id: window.cpp,v 1.349.2.27 2005/04/23 19:06:15 JS Exp $
 // Copyright:   (c) Julian Smart and Markus Holzem
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -96,15 +96,7 @@
     #include <windowsx.h>
 #endif
 
-#if (!defined(__GNUWIN32_OLD__) && !defined(__TWIN32__) && !defined(__WXMICROWIN__)) || defined(__CYGWIN10__)
-    #ifdef __WIN95__
-        #include <commctrl.h>
-    #endif
-#elif !defined(__WXMICROWIN__) // broken compiler
-    #ifndef __TWIN32__
-        #include "wx/msw/gnuwin32/extra.h"
-    #endif
-#endif
+#include <commctrl.h>
 
 // ----------------------------------------------------------------------------
 // standard constants not available with all compilers/headers

@@ -1,3 +1,14 @@
+/////////////////////////////////////////////////////////////////////////////
+// Name:        wx/xpmhand.h
+// Purpose:     XPM handler base header
+// Author:      Julian Smart
+// Modified by:
+// Created:
+// RCS-ID:      $Id: xpmhand.h,v 1.3.2.1 2005/05/04 18:23:33 JS Exp $
+// Copyright:   (c) Julian Smart
+// Licence:     wxWindows licence
+/////////////////////////////////////////////////////////////////////////////
+
 #ifndef _WX_XPMHAND_H_BASE_
 #define _WX_XPMHAND_H_BASE_
 

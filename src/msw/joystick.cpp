@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     04/01/98
-// RCS-ID:      $Id: joystick.cpp,v 1.12.2.1 2002/11/09 00:20:33 VS Exp $
+// RCS-ID:      $Id: joystick.cpp,v 1.12.2.2 2005/04/23 19:06:11 JS Exp $
 // Copyright:   (c) Julian Smart and Markus Holzem
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -30,12 +30,6 @@
 
 #if !defined(__WIN32__) && !defined(_MMRESULT_)
 typedef UINT MMRESULT;
-#endif
-
-#ifndef __TWIN32__
-#ifdef __GNUWIN32_OLD__
-#include "wx/msw/gnuwin32/extra.h"
-#endif
 #endif
 
 // Why doesn't BC++ have joyGetPosEx?

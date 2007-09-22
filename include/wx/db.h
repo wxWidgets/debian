@@ -17,18 +17,9 @@
 //                     databases operate the same in that respect
 //
 // Created:     9.96
-// RCS-ID:      $Id: db.h,v 1.61.2.5 2004/06/19 10:40:52 VZ Exp $
+// RCS-ID:      $Id: db.h,v 1.61.2.6 2005/05/04 18:23:24 JS Exp $
 // Copyright:   (c) 1996 Remstar International, Inc.
-// Licence:     wxWindows licence, plus:
-// Notice:      This class library and its intellectual design are free of charge for use,
-//              modification, enhancement, debugging under the following conditions:
-//              1) These classes may only be used as part of the implementation of a
-//                 wxWindows-based application
-//              2) All enhancements and bug fixes are to be submitted back to the wxWindows
-//                 user groups free of all charges for use with the wxWindows library.
-//              3) These classes may not be distributed as part of any other class library,
-//                 DLL, text (written or electronic), other than a complete distribution of
-//                 the wxWindows GUI development toolkit.
+// Licence:     wxWindows licence
 //
 ///////////////////////////////////////////////////////////////////////////////
 

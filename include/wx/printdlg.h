@@ -1,3 +1,14 @@
+/////////////////////////////////////////////////////////////////////////////
+// Name:        wx/printdlg.h
+// Purpose:     Base header for print dialogs
+// Author:      Julian Smart
+// Modified by:
+// Created:
+// RCS-ID:      $Id: printdlg.h,v 1.10.2.2 2005/05/04 18:23:29 JS Exp $
+// Copyright:   (c) Julian Smart
+// Licence:     wxWindows Licence
+/////////////////////////////////////////////////////////////////////////////
+
 #ifndef _WX_PRINTDLG_H_BASE_
 #define _WX_PRINTDLG_H_BASE_
 

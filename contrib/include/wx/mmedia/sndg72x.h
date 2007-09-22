@@ -3,7 +3,8 @@
 // Purpose:
 // Date: 08/26/1999
 // Author: Guilhem Lavaux <lavaux@easynet.fr> (C) 1999
-// CVSID: $Id: sndg72x.h,v 1.1 2000/03/05 19:03:13 GL Exp $
+// CVSID: $Id: sndg72x.h,v 1.1.6.1 2004/11/22 20:04:47 JS Exp $
+// License:    wxWindows license
 // --------------------------------------------------------------------------
 #ifndef _WX_SNDG72X_H
 #define _WX_SNDG72X_H

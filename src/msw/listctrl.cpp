@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     04/01/98
-// RCS-ID:      $Id: listctrl.cpp,v 1.142.2.26 2003/08/13 10:06:02 VZ Exp $
+// RCS-ID:      $Id: listctrl.cpp,v 1.142.2.27 2005/04/23 19:06:12 JS Exp $
 // Copyright:   (c) Julian Smart and Markus Holzem
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -45,11 +45,7 @@
 
 #include "wx/msw/private.h"
 
-#if ((defined(__GNUWIN32_OLD__) || defined(__TWIN32__)) && !defined(__CYGWIN10__))
-    #include "wx/msw/gnuwin32/extra.h"
-#else
-    #include <commctrl.h>
-#endif
+#include <commctrl.h>
 
 #include "wx/msw/missing.h"
 

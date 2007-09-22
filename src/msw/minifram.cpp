@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     04/01/98
-// RCS-ID:      $Id: minifram.cpp,v 1.20 2000/02/14 18:21:20 VZ Exp $
+// RCS-ID:      $Id: minifram.cpp,v 1.20.6.1 2005/04/23 19:06:12 JS Exp $
 // Copyright:   (c) Julian Smart and Markus Holzem
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -44,12 +44,6 @@ IMPLEMENT_DYNAMIC_CLASS(wxMiniFrame, wxFrame)
 #if wxUSE_ITSY_BITSY
 
 #include "wx/minifram.h"
-
-#ifndef __TWIN32__
-    #ifdef __GNUWIN32_OLD__
-        #include "wx/msw/gnuwin32/extra.h"
-    #endif
-#endif
 
 IMPLEMENT_DYNAMIC_CLASS(wxMiniFrame, wxFrame)
 

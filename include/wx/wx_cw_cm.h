@@ -1,3 +1,14 @@
+/*
+ Name:        wx/wx_cw_cm.h
+ Purpose:     wxWidgets definitions for CodeWarrior builds
+ Author:      Stefan Csomor
+ Modified by:
+ Created:
+ RCS-ID:      $Id: wx_cw_cm.h,v 1.12.2.1 2005/05/04 18:23:32 JS Exp $
+ Copyright:   (c) Stefan Csomor
+ Licence:     wxWindows licence
+*/
+
 #define MSL_USE_PRECOMPILED_HEADERS	0
 
 #if !defined( __MWERKS__ )

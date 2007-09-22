@@ -1,5 +1,5 @@
 dnl Process this file with autoconf to produce a configure script.
-AC_REVISION($Id: configure.in,v 1.624.2.61 2004/08/02 06:09:42 RL Exp $)dnl
+AC_REVISION($Id: configure.in,v 1.624.2.65 2005/05/20 07:08:33 RL Exp $)dnl
 
 dnl ---------------------------------------------------------------------------
 dnl
@@ -8,7 +8,7 @@ dnl Vadim Zeitlin and Ron Lee
 dnl
 dnl This script is under the wxWindows licence.
 dnl
-dnl Version: $Id: configure.in,v 1.624.2.61 2004/08/02 06:09:42 RL Exp $
+dnl Version: $Id: configure.in,v 1.624.2.65 2005/05/20 07:08:33 RL Exp $
 dnl ---------------------------------------------------------------------------
 
 dnl ---------------------------------------------------------------------------
@@ -25,22 +25,30 @@ dnl When making releases do:
 dnl
 dnl WX_RELEASE_NUMBER += 1
 dnl
-dnl In case of backwards incompatible change (shouldn't happen
-dnl but if it does, do change the soname here to avoid run-time
-dnl problems!), do WX_CURRENT++; WX_REVISION = WX_AGE = 0. Otherwise
-dnl (i.e. normal case), WX_CURRENT should be left unchanged, but you
-dnl should do WX_REVISION++ and, if any public methods were added to
-dnl the library, also WX_AGE++.
+dnl ..and update WX_CURRENT, WX_RELEASE and WX_AGE according to the
+dnl following (libtool derived) rules:
+dnl
+dnl    If any changes have been made to the public interface -- ie. if any
+dnl    exported class, method, global or global type has been added (to),
+dnl    removed (from) or changed in any way -- then do:  WX_CURRENT += 1
+dnl
+dnl    If WX_CURRENT was incremented (as above) do:  WX_REVISION = 0
+dnl    Otherwise (if source changes have been made that do not _alter_ the
+dnl    existing public interfaces) do:  WX_REVISION += 1
+dnl
+dnl    If any public interface was added, do:  WX_AGE += 1
+dnl    If any public interface was removed (or altered in a way effectively
+dnl    removing the previous definition), instead do:  WX_AGE = 0
 dnl
 dnl When the major or minor version numbers are incremented, all the above
-dnl variables should be reset to 0.
+dnl variables should be reset to 0 once again.
 dnl
 dnl The resulting library name will be of the form:
 dnl   libwx_$(TOOLKIT)-$(WX_RELEASE).so.$(WX_CURRENT).$(WX_REVISION).$(WX_AGE)
 
 WX_MAJOR_VERSION_NUMBER=2
 WX_MINOR_VERSION_NUMBER=4
-WX_RELEASE_NUMBER=2
+WX_RELEASE_NUMBER=3
 
 WX_VERSION=$WX_MAJOR_VERSION_NUMBER.$WX_MINOR_VERSION_NUMBER.$WX_RELEASE_NUMBER
 WX_RELEASE=$WX_MAJOR_VERSION_NUMBER.$WX_MINOR_VERSION_NUMBER
@@ -48,8 +56,8 @@ WX_RELEASE=$WX_MAJOR_VERSION_NUMBER.$WX_MINOR_VERSION_NUMBER
 WX_MSW_VERSION=$WX_MAJOR_VERSION_NUMBER$WX_MINOR_VERSION_NUMBER$WX_RELEASE_NUMBER
 
 WX_CURRENT=0
-WX_REVISION=1
-WX_AGE=1
+WX_REVISION=2
+WX_AGE=0
 
 
 dnl ------------------------------------------------------------------------
@@ -2017,7 +2025,6 @@ dnl ----------------------------------------------------------------
 dnl search for toolkit (widget sets)
 dnl ----------------------------------------------------------------
 
-AFMINSTALL=
 WIN32INSTALL=
 
 TOOLKIT=
@@ -2208,7 +2215,6 @@ equivalent variable and GTK+ is version 1.2.3 or above.
         TOOLKIT_INCLUDE="$wx_cv_cflags_gtk"
         GUI_TK_LIBRARY="$wx_cv_libs_gtk"
 
-        AFMINSTALL=afminstall
         TOOLKIT=GTK
         GUIDIST=GTK_DIST
 
@@ -2276,7 +2282,6 @@ equivalent variable and GTK+ is version 1.2.3 or above.
         TOOLKIT_INCLUDE="-I$MGL_ROOT/include"
         GUI_TK_LIBRARY="-L$MGL_ROOT/lib/$mgl_lib_type/$mgl_os -lmgl -lmglcpp -lpm"
 
-        AFMINSTALL=afminstall
         TOOLKIT=MGL
         GUIDIST=MGL_DIST
     fi
@@ -2301,7 +2306,6 @@ equivalent variable and GTK+ is version 1.2.3 or above.
 
         wxUSE_UNIVERSAL="yes"
 
-        AFMINSTALL=afminstall
         TOOLKIT=MICROWIN
         GUIDIST=MICROWIN_DIST
 
@@ -2319,7 +2323,6 @@ equivalent variable and GTK+ is version 1.2.3 or above.
 
         GUI_TK_LIBRARY="$X_LIBS"
         TOOLKIT_INCLUDE="$X_CFLAGS"
-        AFMINSTALL=afminstall
         COMPILED_X_PROGRAM=0
 
         if test "$wxUSE_NANOX" = "yes"; then
@@ -2461,7 +2464,6 @@ equivalent variable and GTK+ is version 1.2.3 or above.
         dnl X_LIBS and X_CFLAGS respectively -- what for??
         GUI_TK_LIBRARY=`echo $X_LIBS | sed 's/ -LNONE//'`
         TOOLKIT_INCLUDE=`echo $X_CFLAGS | sed 's/ -INONE//'`
-        AFMINSTALL=afminstall
         COMPILED_X_PROGRAM=0
 
         AC_MSG_CHECKING(for Motif/Lesstif headers)
@@ -5503,7 +5505,6 @@ AC_SUBST(WXDEBUG_DEFINE)
 
 dnl toolkit options
 AC_SUBST(USE_GUI)
-AC_SUBST(AFMINSTALL)
 AC_SUBST(WIN32INSTALL)
 AC_SUBST(TOOLKIT)
 AC_SUBST(TOOLKIT_DIR)

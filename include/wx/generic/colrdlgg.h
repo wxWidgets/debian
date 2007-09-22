@@ -4,8 +4,8 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     01/02/97
-// RCS-ID:      $Id: colrdlgg.h,v 1.11 2002/08/31 11:29:12 GD Exp $
-// Copyright:   (c)
+// RCS-ID:      $Id: colrdlgg.h,v 1.11.2.1 2005/05/04 18:23:52 JS Exp $
+// Copyright:   (c) Julian Smart
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
 

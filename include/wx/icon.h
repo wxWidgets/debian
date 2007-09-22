@@ -1,3 +1,14 @@
+/////////////////////////////////////////////////////////////////////////////
+// Name:        wx/icon.h
+// Purpose:     wxIcon base header
+// Author:      Julian Smart
+// Modified by:
+// Created:
+// Copyright:   (c) Julian Smart
+// RCS-ID:      $Id: icon.h,v 1.10.2.1 2005/05/04 18:23:28 JS Exp $
+// Licence:     wxWindows licence
+/////////////////////////////////////////////////////////////////////////////
+
 #ifndef _WX_ICON_H_BASE_
 #define _WX_ICON_H_BASE_
 

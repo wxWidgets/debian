@@ -4,8 +4,8 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     01/02/97
-// RCS-ID:      $Id: panelg.h,v 1.31.2.2 2002/09/21 20:38:05 VZ Exp $
-// Copyright:   (c)
+// RCS-ID:      $Id: panelg.h,v 1.31.2.3 2005/05/04 18:23:53 JS Exp $
+// Copyright:   (c) Julian Smart
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
 

@@ -3,7 +3,8 @@
 // Purpose:
 // Date: 08/11/1999
 // Author: Guilhem Lavaux <lavaux@easynet.fr> (C) 1999
-// CVSID: $Id: sndpcm.cpp,v 1.2 2001/10/30 13:28:45 GT Exp $
+// CVSID: $Id: sndpcm.cpp,v 1.2.2.1 2004/11/22 20:19:04 JS Exp $
+// Licence: wxWindows licence
 // --------------------------------------------------------------------------
 #ifdef __GNUG__
 #pragma implementation "sndpcm.cpp"

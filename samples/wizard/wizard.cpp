@@ -4,7 +4,7 @@
 // Author:      Vadim Zeitlin
 // Modified by:
 // Created:     15.08.99
-// RCS-ID:      $Id: wizard.cpp,v 1.7.2.1 2002/12/13 21:38:55 MBN Exp $
+// RCS-ID:      $Id: wizard.cpp,v 1.7.2.2 2005/05/18 14:36:23 JS Exp $
 // Copyright:   (c) Vadim Zeitlin
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -37,10 +37,8 @@
 
 #include "wx/wizard.h"
 
-#ifndef __WXMSW__
-    #include "wiztest.xpm"
-    #include "wiztest2.xpm"
-#endif
+#include "wiztest.xpm"
+#include "wiztest2.xpm"
 
 // ----------------------------------------------------------------------------
 // constants
@@ -98,7 +96,7 @@ class wxValidationPage : public wxWizardPageSimple
 public:
     wxValidationPage(wxWizard *parent) : wxWizardPageSimple(parent)
     {
-        m_bitmap = wxBITMAP(wiztest2);
+        m_bitmap = wxBitmap(wiztest2_xpm);
 
         m_checkbox = new wxCheckBox(this, -1, _T("&Check me"));
     }
@@ -304,7 +302,7 @@ void MyFrame::OnRunWizard(wxCommandEvent& WXUNUSED(event))
 {
     wxWizard *wizard = new wxWizard(this, -1,
                     _T("Absolutely Useless Wizard"),
-                    wxBITMAP(wiztest));
+                    wxBitmap(wiztest_xpm));
 
     // a wizard page may be either an object of predefined class
     wxWizardPageSimple *page1 = new wxWizardPageSimple(wizard);

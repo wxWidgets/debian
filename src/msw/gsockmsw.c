@@ -1,9 +1,11 @@
 /* -------------------------------------------------------------------------
- * Project: GSocket (Generic Socket)
- * Name:    gsockmsw.c
- * Author:  Guillermo Rodriguez Garcia <guille@iies.es>
- * Purpose: GSocket GUI-specific MSW code
- * CVSID:   $Id: gsockmsw.c,v 1.12 2002/05/09 22:31:44 VZ Exp $
+ * Project:     GSocket (Generic Socket)
+ * Name:        gsockmsw.c
+ * Author:      Guillermo Rodriguez Garcia <guille@iies.es>
+ * Copyright:   (c) Guilhem Lavaux
+ * Licence:     wxWindows Licence
+ * Purpose:     GSocket GUI-specific MSW code
+ * CVSID:       $Id: gsockmsw.c,v 1.12.2.1 2005/05/04 18:26:21 JS Exp $
  * -------------------------------------------------------------------------
  */
 

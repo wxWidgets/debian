@@ -1,3 +1,14 @@
+/////////////////////////////////////////////////////////////////////////////
+// Name:        wx/tabctrl.h
+// Purpose:     wxTabCtrl base header
+// Author:      Julian Smart
+// Modified by:
+// Created:
+// Copyright:   (c) Julian Smart
+// RCS-ID:      $Id: tabctrl.h,v 1.6.2.1 2005/05/04 18:23:30 JS Exp $
+// Licence:     wxWindows licence
+/////////////////////////////////////////////////////////////////////////////
+
 #ifndef _WX_TABCTRL_H_BASE_
 #define _WX_TABCTRL_H_BASE_
 

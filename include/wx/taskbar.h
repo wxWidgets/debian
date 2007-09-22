@@ -1,3 +1,14 @@
+/////////////////////////////////////////////////////////////////////////////
+// Name:        wx/taskbar.h
+// Purpose:     wxTaskBarIcon base header and class
+// Author:      Julian Smart
+// Modified by:
+// Created:
+// Copyright:   (c) Julian Smart
+// RCS-ID:      $Id: taskbar.h,v 1.5.2.1 2005/05/04 18:23:30 JS Exp $
+// Licence:     wxWindows licence
+/////////////////////////////////////////////////////////////////////////////
+
 #ifndef _WX_TASKBAR_H_BASE_
 #define _WX_TASKBAR_H_BASE_
 

@@ -1,3 +1,14 @@
+/////////////////////////////////////////////////////////////////////////////
+// Name:        wx/palette.h
+// Purpose:     Common header and base class for wxPalette
+// Author:      Julian Smart
+// Modified by:
+// Created:
+// RCS-ID:      $Id: palette.h,v 1.11.2.1 2005/05/04 18:23:29 JS Exp $
+// Copyright:   (c) Julian Smart
+// Licence:     wxWindows Licence
+/////////////////////////////////////////////////////////////////////////////
+
 #ifndef _WX_PALETTE_H_BASE_
 #define _WX_PALETTE_H_BASE_
 

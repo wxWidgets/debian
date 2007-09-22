@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     01/02/97
-// RCS-ID:      $Id: dde.cpp,v 1.27 2002/09/03 11:22:56 JS Exp $
+// RCS-ID:      $Id: dde.cpp,v 1.27.2.1 2005/04/23 19:06:10 JS Exp $
 // Copyright:   (c) Julian Smart and Markus Holzem
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -48,10 +48,6 @@
 
 #ifdef __WXWINE__
 #define PCONVCONTEXT CONVCONTEXT*
-#endif
-
-#if defined(__TWIN32__) || defined(__GNUWIN32_OLD__)
-    #include "wx/msw/gnuwin32/extra.h"
 #endif
 
 // some compilers headers don't define this one (mingw32)

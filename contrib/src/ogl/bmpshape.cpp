@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     12/07/98
-// RCS-ID:      $Id: bmpshape.cpp,v 1.2.2.3 2003/12/11 11:38:29 JS Exp $
+// RCS-ID:      $Id: bmpshape.cpp,v 1.2.2.4 2004/11/22 20:19:07 JS Exp $
 // Copyright:   (c) Julian Smart
 // Licence:   	wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -37,7 +37,7 @@
  *
  */
 
-IMPLEMENT_DYNAMIC_CLASS(wxBitmapShape, wxShape)
+IMPLEMENT_DYNAMIC_CLASS(wxBitmapShape, wxRectangleShape)
 
 wxBitmapShape::wxBitmapShape():wxRectangleShape(100.0, 50.0)
 {

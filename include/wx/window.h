@@ -4,8 +4,8 @@
 // Author:      Vadim Zeitlin
 // Modified by: Ron Lee
 // Created:     01/02/97
-// RCS-ID:      $Id: window.h,v 1.94.2.4 2002/11/22 21:37:10 VZ Exp $
-// Copyright:   (c) wxWindows team
+// RCS-ID:      $Id: window.h,v 1.94.2.5 2005/05/04 18:23:32 JS Exp $
+// Copyright:   (c) Vadim Zeitlin
 // Licence:     wxWindows licence
 ///////////////////////////////////////////////////////////////////////////////
 

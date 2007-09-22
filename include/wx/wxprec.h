@@ -4,8 +4,8 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     01/02/97
-// RCS-ID:      $Id: wxprec.h,v 1.24.4.1 2003/08/14 11:46:19 CE Exp $
-// Copyright:   (c)
+// RCS-ID:      $Id: wxprec.h,v 1.24.4.2 2005/05/04 18:23:32 JS Exp $
+// Copyright:   (c) Julian Smart
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
 

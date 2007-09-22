@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     16/04/2000
-// RCS-ID:      $Id: helpchm.cpp,v 1.13.2.2 2003/06/11 14:15:36 JS Exp $
+// RCS-ID:      $Id: helpchm.cpp,v 1.13.2.3 2005/05/14 16:58:35 JS Exp $
 // Copyright:   (c) Julian Smart
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -33,7 +33,7 @@
 #endif
 
 #include "wx/msw/private.h"
-#include "wx/msw/missing.h"
+#include "wx/msw/htmlhelp.h"
 
 // ----------------------------------------------------------------------------
 // utility functions to manage the loading/unloading

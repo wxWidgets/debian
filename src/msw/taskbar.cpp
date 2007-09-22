@@ -5,7 +5,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     24/3/98
-// RCS-ID:      $Id: taskbar.cpp,v 1.25.2.1 2002/11/09 00:23:31 VS Exp $
+// RCS-ID:      $Id: taskbar.cpp,v 1.25.2.2 2005/04/23 19:06:13 JS Exp $
 // Copyright:   (c)
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////
@@ -38,12 +38,6 @@
 #include <string.h>
 #include "wx/msw/taskbar.h"
 #include "wx/msw/private.h"
-
-#ifndef __TWIN32__
-    #ifdef __GNUWIN32_OLD__
-        #include "wx/msw/gnuwin32/extra.h"
-    #endif
-#endif
 
 #ifdef __SALFORDC__
     #include <shellapi.h>

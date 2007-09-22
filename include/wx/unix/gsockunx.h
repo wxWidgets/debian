@@ -1,8 +1,10 @@
 /* -------------------------------------------------------------------------
- * Project: GSocket (Generic Socket) for WX
- * Name:    gsockunx.h
- * Purpose: GSocket Unix header
- * CVSID:   $Id: gsockunx.h,v 1.7 2001/05/10 06:31:39 GRG Exp $
+ * Project:     GSocket (Generic Socket) for WX
+ * Name:        gsockunx.h
+ * Copyright:   (c) Guilhem Lavaux
+ * Licence:     wxWindows Licence
+ * Purpose:     GSocket Unix header
+ * CVSID:       $Id: gsockunx.h,v 1.7.2.1 2005/05/04 18:23:47 JS Exp $
  * -------------------------------------------------------------------------
  */
 

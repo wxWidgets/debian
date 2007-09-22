@@ -1,9 +1,10 @@
 /*-*- c++ -*-********************************************************
- * helpext.h - an external help controller for wxWindows             *
+ * helpext.h - an external help controller for wxWindows            *
  *                                                                  *
  * (C) 1998 by Karsten Ballüder (Ballueder@usa.net)                 *
+ * License: wxWindows licence                                       *
  *                                                                  *
- * $Id: helpext.h,v 1.11 2002/08/31 11:29:12 GD Exp $
+ * $Id: helpext.h,v 1.11.2.1 2004/11/22 20:27:46 JS Exp $
  *******************************************************************/
 
 #ifndef __WX_HELPEXT_H_

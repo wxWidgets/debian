@@ -1,4 +1,13 @@
-// MinGW w32api specific stuff
+/*
+ Name:        wx/msw/gccpriv.h
+ Purpose:     MinGW/Cygwin definitions
+ Author:      Vadim Zeitlin
+ Modified by:
+ Created:
+ RCS-ID:      $Id: gccpriv.h,v 1.6.4.3 2005/05/04 18:23:42 JS Exp $
+ Copyright:   (c) Vadim Zeitlin
+ Licence:     wxWindows Licence
+*/
 
 #ifndef _WX_MSW_GCCPRIV_H_
 #define _WX_MSW_GCCPRIV_H_

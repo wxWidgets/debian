@@ -5,8 +5,8 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     01/02/97
-// RCS-ID:      $Id: prntdlgg.h,v 1.15 2002/09/13 22:00:45 RR Exp $
-// Copyright:   (c)
+// RCS-ID:      $Id: prntdlgg.h,v 1.15.2.1 2005/05/04 18:23:54 JS Exp $
+// Copyright:   (c) Julian Smart
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
 

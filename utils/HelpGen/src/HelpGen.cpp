@@ -4,9 +4,9 @@
 // Author:      Vadim Zeitlin <zeitlin@dptmaths.ens-cachan.fr>
 // Modified by:
 // Created:     06/01/99
-// RCS-ID:      $Id: HelpGen.cpp,v 1.22.2.1 2004/05/29 20:23:33 DS Exp $
+// RCS-ID:      $Id: HelpGen.cpp,v 1.22.2.2 2004/11/23 09:54:12 JS Exp $
 // Copyright:   (c) 1999 VZ
-// Licence:     GPL
+// Licence:     wxWindows Licence
 /////////////////////////////////////////////////////////////////////////////
 
 /*
@@ -2196,13 +2196,16 @@ static const char *GetCurrentTime(const char *timeFormat)
 
 static const wxString GetVersionString()
 {
-    wxString version = "$Revision: 1.22.2.1 $";
-    wxRegEx("^\\$Revision: 1.22.2.1 $$").ReplaceFirst(&version, "\\1");
+    wxString version = "$Revision: 1.22.2.2 $";
+    wxRegEx("^\\$Revision: 1.22.2.2 $$").ReplaceFirst(&version, "\\1");
     return version;
 }
 
 /*
    $Log: HelpGen.cpp,v $
+   Revision 1.22.2.2  2004/11/23 09:54:12  JS
+   Changed GPL to wxWindows Licence
+
    Revision 1.22.2.1  2004/05/29 20:23:33  DS
    blind compilation fix for first warning and error reported by "i686-pc-linux-gnu+RH" tinderbox compilation
 

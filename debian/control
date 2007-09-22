@@ -108,7 +108,7 @@ Description: wxWindows Cross-platform C++ GUI toolkit (GTK+ development)
  Interface) and other facilities on more than one platform.  Version 2.4
  currently supports subsets of GTK+, Motif, and MS Windows.
  .
- This package provides a debug version of the wxGtk library.  It is compiled
+ This package provides a debug version of the wxGTK library.  It is compiled
  both with -g for normal debugger tracing and with the __WXDEBUG__ flag which
  provides many internal checks by wxWindows itself that are not performed on
  apps compiled with the 'release version' libs in the -dev package.
@@ -282,18 +282,5 @@ Replaces: wxwin-headers-msw
 Provides: wxwin-headers-msw
 Description: Extra wxWindows headers for mingw32msvc-cross
  Headers required by the wxWindows mingw32msvc-cross libraries.
-
-Package: libwxgtk2.4-univ
-Architecture: any
-Section: libs
-Depends: wxwin2.4-headers (= ${Source-Version}), libwxgtk2.4 (= ${Source-Version}), libc6-dev, ${shlibs:Depends}
-Suggests: wxwin2.4-doc, libstdc++-dev, gettext, libgl-dev
-Description: wxWindows Cross-platform C++ GUI toolkit (wxUNIVERSAL widgets)
- wxWindows is a class library for C++ providing GUI (Graphical User
- Interface) and other facilities on more than one platform.  Version 2.4
- currently supports subsets of GTK+, Motif, and MS Windows.
- .
- This package is built to use the wxUNIVERSAL widget set instead of
- native gtk widgets.
 
 

@@ -4,7 +4,7 @@
 // Author:      Vadim Zeitlin
 // Modified by:
 // Created:     11.06.98
-// RCS-ID:      $Id: notebook.cpp,v 1.64.2.9 2004/05/13 20:53:28 DS Exp $
+// RCS-ID:      $Id: notebook.cpp,v 1.64.2.11 2005/05/14 16:58:36 JS Exp $
 // Copyright:   (c) 1998 Vadim Zeitlin <zeitlin@dptmaths.ens-cachan.fr>
 // Licence:     wxWindows license
 ///////////////////////////////////////////////////////////////////////////////
@@ -43,15 +43,7 @@
 
 #include  <windowsx.h>  // for SetWindowFont
 
-#ifndef __TWIN32__
-    #ifdef __GNUWIN32_OLD__
-        #include "wx/msw/gnuwin32/extra.h"
-    #endif
-#endif
-
-#if defined(__WIN95__) && !((defined(__GNUWIN32_OLD__) || defined(__TWIN32__)) && !defined(__CYGWIN10__))
-    #include <commctrl.h>
-#endif
+#include <commctrl.h>
 
 #include "wx/msw/winundef.h"
 
@@ -694,7 +686,7 @@ wxColour wxNotebookGetThemeBackgroundColour(wxNotebook* notebook)
 #if wxUSE_UXTHEME
     if (wxUxThemeEngine::Get())
     {
-        WXHTHEME hTheme = wxUxThemeEngine::Get()->m_pfnOpenThemeData(notebook->GetHWND(), L"TAB");
+        HTHEME hTheme = wxUxThemeEngine::Get()->m_pfnOpenThemeData((HWND) notebook->GetHWND(), L"TAB");
         if (hTheme)
         {
             // This is total guesswork.

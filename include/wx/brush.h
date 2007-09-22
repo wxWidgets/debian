@@ -1,3 +1,14 @@
+/////////////////////////////////////////////////////////////////////////////
+// Name:        wx/brush.h
+// Purpose:     Includes platform-specific wxBrush file
+// Author:      Julian Smart
+// Modified by:
+// Created:
+// RCS-ID:      $Id: brush.h,v 1.8.2.1 2005/05/04 18:23:23 JS Exp $
+// Copyright:   Julian Smart
+// Licence:     wxWindows Licence
+/////////////////////////////////////////////////////////////////////////////
+
 #ifndef _WX_BRUSH_H_BASE_
 #define _WX_BRUSH_H_BASE_
 

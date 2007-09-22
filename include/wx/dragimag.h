@@ -1,3 +1,14 @@
+/////////////////////////////////////////////////////////////////////////////
+// Name:        wx/dragimag.h
+// Purpose:     wxDragImage base header
+// Author:      Julian Smart
+// Modified by:
+// Created:
+// Copyright:   (c) Julian Smart
+// RCS-ID:      $Id: dragimag.h,v 1.8.2.2 2005/05/04 18:23:26 JS Exp $
+// Licence:     wxWindows Licence
+/////////////////////////////////////////////////////////////////////////////
+
 #ifndef _WX_DRAGIMAG_H_BASE_
 #define _WX_DRAGIMAG_H_BASE_
 

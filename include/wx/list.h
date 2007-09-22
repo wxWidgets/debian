@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by: VZ at 16/11/98: WX_DECLARE_LIST() and typesafe lists added
 // Created:     29/01/98
-// RCS-ID:      $Id: list.h,v 1.53.2.2 2002/10/17 16:41:47 VZ Exp $
+// RCS-ID:      $Id: list.h,v 1.53.2.3 2005/02/19 13:47:42 VZ Exp $
 // Copyright:   (c) 1998 Julian Smart
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -402,6 +402,7 @@ private:
     {                                                                       \
     public:                                                                 \
         typedef nodetype Node;                                              \
+        typedef Node* compatibility_iterator;                               \
                                                                             \
         name(wxKeyType keyType = wxKEY_NONE) : wxListBase(keyType)          \
             { }                                                             \

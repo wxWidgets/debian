@@ -2,7 +2,7 @@
 // Name:        gtk/settings.cpp
 // Purpose:
 // Author:      Robert Roebling
-// Id:          $Id: settings.cpp,v 1.38.2.4 2003/06/20 20:20:16 VS Exp $
+// Id:          $Id: settings.cpp,v 1.38.2.5 2004/10/16 19:51:28 VZ Exp $
 // Copyright:   (c) 1998 Robert Roebling
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -340,9 +340,17 @@ wxFont wxSystemSettingsNative::GetFont( wxSystemFont index )
                 }  
                 else  
                 {  
-                    const gchar *font_name =
-                        _gtk_rc_context_get_default_font_name(gtk_settings_get_default());
-                    g_systemFont = new wxFont(wxString::FromAscii(font_name));
+                    GtkSettings *settings = gtk_settings_get_default();
+                    gchar *font_name = NULL;
+                    g_object_get ( settings,
+                                   "gtk-font-name",
+                                   &font_name,
+                                   NULL);
+                    if (!font_name)
+                        g_systemFont = new wxFont( 12, wxSWISS, wxNORMAL, wxNORMAL );
+                    else
+                        g_systemFont = new wxFont(wxString::FromAscii(font_name));
+                    g_free (font_name);
                 }  
                 gtk_widget_destroy( widget );
 #else

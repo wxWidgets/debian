@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by: Vadim Zeitlin to derive from wxChoiceBase
 // Created:     04/01/98
-// RCS-ID:      $Id: choice.cpp,v 1.51.2.1 2002/11/28 21:27:30 VZ Exp $
+// RCS-ID:      $Id: choice.cpp,v 1.51.2.2 2005/04/23 19:06:10 JS Exp $
 // Copyright:   (c) Julian Smart and Markus Holzem
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -300,7 +300,19 @@ void wxChoice::DoMoveWindow(int x, int y, int width, int height)
     if ( width < 0 )
         return;
 
+    // To work around a Windows bug (see "Bug in Windows Combobox" thread in Google Groups)
+    // we have to reset the selection if it was accidentally selected in the size.
+    DWORD oldSelStart = 0;
+    DWORD oldSelEnd = 0;
+    DWORD newSelStart = 0;
+    DWORD newSelEnd = 0;
+
     wxControl::DoMoveWindow(x, y, width, height);
+
+    if (oldSelStart != newSelStart || oldSelEnd != newSelEnd)
+    {
+        ::SendMessage(GetHwnd(), CB_SETEDITSEL, (WPARAM) 0, (LPARAM) MAKELPARAM(oldSelStart, oldSelEnd));
+    }
 }
 
 void wxChoice::DoSetSize(int x, int y,
@@ -313,7 +325,21 @@ void wxChoice::DoSetSize(int x, int y,
     // the _displayed_ size (NOT the drop down menu size) so
     // setting-getting-setting size would not work.
 
+    // To work around a Windows bug (see "Bug in Windows Combobox" thread in Google Groups)
+    // we have to reset the selection if it was accidentally selected in the size.
+    DWORD oldSelStart = 0;
+    DWORD oldSelEnd = 0;
+    DWORD newSelStart = 0;
+    DWORD newSelEnd = 0;
+
+    ::SendMessage(GetHwnd(), CB_GETEDITSEL, (WPARAM) & oldSelStart, (LPARAM) & oldSelEnd);
+
     wxControl::DoSetSize(x, y, width, -1, sizeFlags);
+
+    if (oldSelStart != newSelStart || oldSelEnd != newSelEnd)
+    {
+        ::SendMessage(GetHwnd(), CB_SETEDITSEL, (WPARAM) 0, (LPARAM) MAKELPARAM(oldSelStart, oldSelEnd));
+    }
 }
 
 wxSize wxChoice::DoGetBestSize() const

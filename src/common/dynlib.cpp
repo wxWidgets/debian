@@ -4,7 +4,7 @@
 // Author:      Guilhem Lavaux
 // Modified by:
 // Created:     20/07/98
-// RCS-ID:      $Id: dynlib.cpp,v 1.67.2.2 2002/12/19 23:43:33 VS Exp $
+// RCS-ID:      $Id: dynlib.cpp,v 1.67.2.3 2005/05/10 04:53:04 SC Exp $
 // Copyright:   (c) Guilhem Lavaux
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -480,7 +480,7 @@ void *dlopen(const char *path, int WXUNUSED(mode) /* mode is ignored */)
 
 int dlclose(void *handle)
 {
-    NSUnLinkModule( handle, NSUNLINKMODULE_OPTION_NONE);
+    NSUnLinkModule( (NSModule) handle, NSUNLINKMODULE_OPTION_NONE);
     return 0;
 }
 

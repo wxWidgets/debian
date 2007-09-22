@@ -1,3 +1,14 @@
+/////////////////////////////////////////////////////////////////////////////
+// Name:        wx/dirdlg.h
+// Purpose:     wxDirDialog base class
+// Author:      Robert Roebling
+// Modified by:
+// Created:
+// Copyright:   (c) Robert Roebling
+// RCS-ID:      $Id: dirdlg.h,v 1.28.2.1 2005/05/04 18:23:26 JS Exp $
+// Licence:     wxWindows Licence
+/////////////////////////////////////////////////////////////////////////////
+
 #ifndef _WX_DIRDLG_H_BASE_
 #define _WX_DIRDLG_H_BASE_
 

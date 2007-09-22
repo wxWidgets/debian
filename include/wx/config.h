@@ -1,3 +1,14 @@
+/////////////////////////////////////////////////////////////////////////////
+// Name:        wx/config.h
+// Purpose:     wxConfig base header
+// Author:      Julian Smart
+// Modified by:
+// Created:
+// Copyright:   (c) Julian Smart
+// RCS-ID:      $Id: config.h,v 1.17.6.1 2005/05/04 18:23:24 JS Exp $
+// Licence:     wxWindows Licence
+/////////////////////////////////////////////////////////////////////////////
+
 #ifndef _WX_CONFIG_H_BASE_
 #define _WX_CONFIG_H_BASE_
 

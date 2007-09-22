@@ -3,7 +3,7 @@
 // Purpose:     wxXmlResource::InitAllHandlers
 // Author:      Vaclav Slavik
 // Created:     2000/03/05
-// RCS-ID:      $Id: xmlrsall.cpp,v 1.4.2.4 2004/01/23 10:01:39 JS Exp $
+// RCS-ID:      $Id: xmlrsall.cpp,v 1.4.2.5 2004/11/22 20:19:12 JS Exp $
 // Copyright:   (c) 2000 Vaclav Slavik
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -101,5 +101,8 @@ void wxXmlResource::InitAllHandlers()
 #endif
 #if wxUSE_STATUSBAR
     AddHandler(new wxStatusBarXmlHandler);
+#endif
+#if wxUSE_TOGGLEBTN
+    AddHandler(new wxToggleButtonXmlHandler);
 #endif
 }

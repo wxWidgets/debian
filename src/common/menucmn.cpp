@@ -4,7 +4,7 @@
 // Author:      Vadim Zeitlin
 // Modified by:
 // Created:     26.10.99
-// RCS-ID:      $Id: menucmn.cpp,v 1.18.2.9 2003/12/13 10:17:39 JS Exp $
+// RCS-ID:      $Id: menucmn.cpp,v 1.18.2.10 2004/10/09 16:55:25 JS Exp $
 // Copyright:   (c) wxWindows team
 // Licence:     wxWindows license
 ///////////////////////////////////////////////////////////////////////////////
@@ -406,6 +406,7 @@ wxMenuItem *wxMenuBase::DoRemove(wxMenuItem *item)
     if ( submenu )
     {
         submenu->SetParent((wxMenu *)NULL);
+        if (submenu->IsAttached()) submenu->Detach();
     }
 
     return item;
