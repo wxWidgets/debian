@@ -12,7 +12,7 @@
 // Author:      Robin Dunn
 //
 // Created:     13-Jan-2000
-// RCS-ID:      $Id: stc.h.in,v 1.1.2.1 2000/09/26 05:15:39 robind Exp $
+// RCS-ID:      $Id: stc.h.in,v 1.1.2.2 2000/10/10 22:41:48 robind Exp $
 // Copyright:   (c) 2000 by Total Control Software
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -132,6 +132,14 @@ public:
 
     // Retrieve the point in the window where a position is displayed.
     wxPoint PointFromPosition(int pos);
+
+
+    // Scroll enough to make the given line visible
+    void ScrollToLine(int line);
+
+
+    // Scroll enough to make the given column visible
+    void ScrollToColumn(int column);
 
 //----------------------------------------------------------------------
 

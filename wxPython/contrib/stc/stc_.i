@@ -5,7 +5,7 @@
 // Author:      Robin Dunn
 //
 // Created:     12-Oct-1999
-// RCS-ID:      $Id: stc_.i,v 1.1.2.2 2000/05/24 14:57:31 RD Exp $
+// RCS-ID:      $Id: stc_.i,v 1.1.2.4 2001/01/30 20:53:15 robind Exp $
 // Copyright:   (c) 2000 by Total Control Software
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -14,7 +14,7 @@
 
 
 %{
-#include "helpers.h"
+#include "export.h"
 #include "wx/stc/stc.h"
 %}
 
@@ -34,7 +34,6 @@
 // Get all our defs from the REAL header file.
 
 %include stc.h
-%include SciLexer.h
 
 //----------------------------------------------------------------------
 // Python functions to act like the event macros
@@ -78,6 +77,9 @@ def EVT_STC_MARGINCLICK(win, id, fn):
 
 def EVT_STC_NEEDSHOWN(win, id, fn):
     win.Connect(id, -1, wxEVT_STC_NEEDSHOWN, fn)
+
+def EVT_STC_POSCHANGED(win, id, fn):
+    win.Connect(id, -1, wxEVT_STC_POSCHANGED, fn)
 
 
 "

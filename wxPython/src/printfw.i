@@ -5,7 +5,7 @@
 // Author:      Robin Dunn
 //
 // Created:     7-May-1999
-// RCS-ID:      $Id: printfw.i,v 1.1.2.3 2000/08/03 02:02:37 RD Exp $
+// RCS-ID:      $Id: printfw.i,v 1.1.2.4 2001/01/30 20:53:43 robind Exp $
 // Copyright:   (c) 1998 by Total Control Software
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -97,6 +97,20 @@ public:
 };
 
 //----------------------------------------------------------------------
+
+#ifdef __WXMSW__
+class  wxPrinterDC : public wxDC {
+public:
+    wxPrinterDC(const wxPrintData& printData);
+    %name(wxPrinterDC2) wxPrinterDC(const wxString& driver,
+                                    const wxString& device,
+                                    const wxString& output,
+                                    bool interactive = TRUE,
+                                    int orientation = wxPORTRAIT);
+};
+#endif
+
+//---------------------------------------------------------------------------
 
 class wxPageSetupDialogData {
 public:
@@ -334,8 +348,8 @@ public:
 class wxPreviewFrame : public wxFrame {
 public:
     wxPreviewFrame(wxPrintPreview* preview, wxFrame* parent, const wxString& title,
-                   const wxPoint& pos = wxPyDefaultPosition,
-                   const wxSize&  size = wxPyDefaultSize,
+                   const wxPoint& pos = wxDefaultPosition,
+                   const wxSize&  size = wxDefaultSize,
                    long style = wxDEFAULT_FRAME_STYLE,
                    char* name = "frame");
 

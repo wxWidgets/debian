@@ -4,7 +4,7 @@
 // Author:      Vadim Zeitlin
 // Modified by:
 // Created:     03.04.98
-// RCS-ID:      $Id: textfile.cpp,v 1.24.2.2 2000/04/29 18:07:33 VZ Exp $
+// RCS-ID:      $Id: textfile.cpp,v 1.24.2.4 2000/12/20 23:05:00 vaclavslavik Exp $
 // Copyright:   (c) 1998 Vadim Zeitlin <zeitlin@dptmaths.ens-cachan.fr>
 // Licence:     wxWindows license
 ///////////////////////////////////////////////////////////////////////////////
@@ -118,6 +118,10 @@ wxString wxTextFile::Translate(const wxString& text, wxTextFileType type)
                 if ( chLast == _T('\r') ) {
                     // Mac line termination
                     result += eol;
+
+                    // reset chLast to avoid inserting another eol before the
+                    // next character
+                    chLast = 0;
                 }
 
                 // add to the current line
@@ -213,8 +217,7 @@ bool wxTextFile::Open()
 // if it fails, it assumes the native type for our platform.
 wxTextFileType wxTextFile::GuessType() const
 {
-  // file should be opened and we must be in it's beginning
-  wxASSERT( m_file.IsOpened() && m_file.Tell() == 0 );
+  wxASSERT( IsOpened() );
 
   // scan the file lines
   size_t nUnix = 0,     // number of '\n's alone

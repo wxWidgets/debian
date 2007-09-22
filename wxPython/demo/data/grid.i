@@ -5,7 +5,7 @@
 // Author:      Robin Dunn
 //
 // Created:     17-March-2000
-// RCS-ID:      $Id: grid.i,v 1.1.2.2 2000/08/08 19:17:23 RD Exp $
+// RCS-ID:      $Id: grid.i,v 1.1.2.5 2001/01/30 20:53:33 robind Exp $
 // Copyright:   (c) 2000 by Total Control Software
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -1565,7 +1565,8 @@ public:
     void SelectRow( int row, bool addToSelected = FALSE );
     void SelectCol( int col, bool addToSelected = FALSE );
 
-    void SelectBlock( int topRow, int leftCol, int bottomRow, int rightCol );
+    void SelectBlock( int topRow, int leftCol, int bottomRow, int rightCol,
+                      bool addToSelected = FALSE );
     // TODO: ??? void SelectBlock( const wxGridCellCoords& topLeft,
     // TODO: ???                   const wxGridCellCoords& bottomRight )
 

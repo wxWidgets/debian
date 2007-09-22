@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     01/02/97
-// RCS-ID:      $Id: splitter.cpp,v 1.48.2.2 2000/04/25 14:35:58 JS Exp $
+// RCS-ID:      $Id: splitter.cpp,v 1.48.2.3 2000/10/23 11:30:43 roebling Exp $
 // Copyright:   (c) Julian Smart and Markus Holzem
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -134,10 +134,12 @@ void wxSplitterWindow::OnPaint(wxPaintEvent& WXUNUSED(event))
     DrawSash(dc);
 }
 
-void wxSplitterWindow::OnIdle(wxIdleEvent& WXUNUSED(event))
+void wxSplitterWindow::OnIdle(wxIdleEvent& event)
 {
     if (m_needUpdating)
         SizeWindows();
+        
+    event.Skip( TRUE );
 }
 
 void wxSplitterWindow::OnMouseEvent(wxMouseEvent& event)

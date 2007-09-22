@@ -4,7 +4,7 @@
 // Author:      Vadim Zeitlin
 // Modified by:
 // Created:     05.11.99
-// RCS-ID:      $Id: fontutil.cpp,v 1.11 2000/01/16 22:52:59 VS Exp $
+// RCS-ID:      $Id: fontutil.cpp,v 1.11.2.1 2000/10/12 23:39:05 vadz Exp $
 // Copyright:   (c) Vadim Zeitlin
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -171,6 +171,7 @@ bool wxGetNativeFontEncoding(wxFontEncoding encoding,
         case wxFONTENCODING_ISO8859_9:
         case wxFONTENCODING_ISO8859_10:
         case wxFONTENCODING_ISO8859_11:
+        case wxFONTENCODING_ISO8859_12:
         case wxFONTENCODING_ISO8859_13:
         case wxFONTENCODING_ISO8859_14:
         case wxFONTENCODING_ISO8859_15:

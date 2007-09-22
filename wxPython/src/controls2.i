@@ -5,7 +5,7 @@
 // Author:      Robin Dunn
 //
 // Created:     6/10/98
-// RCS-ID:      $Id: controls2.i,v 1.1.2.7 2000/09/23 22:30:51 robind Exp $
+// RCS-ID:      $Id: controls2.i,v 1.1.2.10 2001/01/30 20:53:43 robind Exp $
 // Copyright:   (c) 1998 by Total Control Software
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -38,11 +38,6 @@
 
 //----------------------------------------------------------------------
 
-%{
-extern wxValidator wxPyDefaultValidator;
-%}
-
-//----------------------------------------------------------------------
 
 enum {
     wxLIST_MASK_TEXT,
@@ -214,10 +209,10 @@ public:
 class wxListCtrl : public wxControl {
 public:
     wxListCtrl(wxWindow* parent, wxWindowID id,
-               const wxPoint& pos = wxPyDefaultPosition,
-               const wxSize& size = wxPyDefaultSize,
+               const wxPoint& pos = wxDefaultPosition,
+               const wxSize& size = wxDefaultSize,
                long style = wxLC_ICON,
-               const wxValidator& validator = wxPyDefaultValidator,
+               const wxValidator& validator = wxDefaultValidator,
                char* name = "listCtrl");
 
     %pragma(python) addtomethod = "__init__:#wx._StdWindowCallbacks(self)"
@@ -281,7 +276,7 @@ public:
 #endif
     long GetTopItem();
     long HitTest(const wxPoint& point, int& OUTPUT);
-    %name(InsertColumnWith)long InsertColumn(long col, wxListItem& info);
+    %name(InsertColumnInfo)long InsertColumn(long col, wxListItem& info);
     long InsertColumn(long col, const wxString& heading,
                       int format = wxLIST_FORMAT_LEFT,
                       int width = -1);
@@ -410,7 +405,9 @@ public:
     }
 
     void SetData(PyObject* obj) {
+        bool doSave = wxPyRestoreThread();
         Py_DECREF(m_obj);
+        wxPySaveThread(doSave);
         m_obj = obj;
         Py_INCREF(obj);
     }
@@ -484,10 +481,10 @@ public:
 %name(wxTreeCtrl)class wxPyTreeCtrl : public wxControl {
 public:
     wxPyTreeCtrl(wxWindow *parent, wxWindowID id = -1,
-               const wxPoint& pos = wxPyDefaultPosition,
-               const wxSize& size = wxPyDefaultSize,
+               const wxPoint& pos = wxDefaultPosition,
+               const wxSize& size = wxDefaultSize,
                long style = wxTR_HAS_BUTTONS | wxTR_LINES_AT_ROOT,
-               const wxValidator& validator = wxPyDefaultValidator,
+               const wxValidator& validator = wxDefaultValidator,
                char* name = "wxTreeCtrl");
 
     void _setSelf(PyObject* self, PyObject* _class);
@@ -712,8 +709,8 @@ public:
 class wxTabCtrl : public wxControl {
 public:
     wxTabCtrl(wxWindow* parent, wxWindowID id,
-              const wxPoint& pos = wxPyDefaultPosition,
-              const wxSize& size = wxPyDefaultSize,
+              const wxPoint& pos = wxDefaultPosition,
+              const wxSize& size = wxDefaultSize,
               long style = 0,
               char* name = "tabCtrl");
 

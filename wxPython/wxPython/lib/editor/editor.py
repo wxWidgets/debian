@@ -5,7 +5,7 @@
 # Author:      Dirk Holtwic, Robin Dunn
 #
 # Created:     15-Dec-1999
-# RCS-ID:      $Id: editor.py,v 1.1.2.2 2000/06/02 01:50:43 RD Exp $
+# RCS-ID:      $Id: editor.py,v 1.1.2.3 2001/01/30 20:54:28 robind Exp $
 # Copyright:   (c) 1999 by Dirk Holtwick, 1999
 # Licence:     wxWindows license
 #----------------------------------------------------------------------

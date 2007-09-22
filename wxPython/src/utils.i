@@ -4,8 +4,8 @@
 //
 // Author:      Robin Dunn
 //
-// Created:     25-nov-1998
-// RCS-ID:      $Id: utils.i,v 1.1.2.5 2000/08/08 19:17:32 RD Exp $
+// Created:     25-Nov-1998
+// RCS-ID:      $Id: utils.i,v 1.1.2.7 2001/01/30 20:53:43 robind Exp $
 // Copyright:   (c) 1998 by Total Control Software
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -14,7 +14,7 @@
 %module utils
 
 %{
-#include "helpers.h"
+#include "export.h"
 #include <wx/config.h>
 #include <wx/fileconf.h>
 #include <wx/datetime.h>
@@ -34,6 +34,8 @@
 //---------------------------------------------------------------------------
 
 %{
+    static wxString wxPyEmptyStr("");
+
     static PyObject* __EnumerationHelper(bool flag, wxString& str, long index) {
         PyObject* ret = PyTuple_New(3);
         if (ret) {
@@ -1030,10 +1032,8 @@ wxLongLong wxGetLocalTimeMillis();
 //---------------------------------------------------------------------------
 
 %init %{
-
-//    wxClassInfo::CleanUpClasses();
-//    wxClassInfo::InitializeClasses();
-
+    wxClassInfo::CleanUpClasses();
+    wxClassInfo::InitializeClasses();
 %}
 
 //---------------------------------------------------------------------------

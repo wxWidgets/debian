@@ -7,7 +7,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     04/01/98
-// RCS-ID:      $Id: laywin.cpp,v 1.8.2.3 2000/06/15 14:10:18 JS Exp $
+// RCS-ID:      $Id: laywin.cpp,v 1.8.2.4 2000/11/29 00:09:37 vadz Exp $
 // Copyright:   (c) Julian Smart
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -176,6 +176,8 @@ void wxSashLayoutWindow::OnCalculateLayout(wxCalculateLayoutEvent& event)
  * wxLayoutAlgorithm
  */
 
+#if wxUSE_MDI_ARCHITECTURE
+
 // Lays out windows for an MDI frame. The MDI client area gets what's left
 // over.
 bool wxLayoutAlgorithm::LayoutMDIFrame(wxMDIParentFrame* frame, wxRect* r)
@@ -212,6 +214,8 @@ bool wxLayoutAlgorithm::LayoutMDIFrame(wxMDIParentFrame* frame, wxRect* r)
 
     return TRUE;
 }
+
+#endif // wxUSE_MDI_ARCHITECTURE
 
 // Layout algorithm for any window. mainWindow gets what's left over.
 bool wxLayoutAlgorithm::LayoutWindow(wxWindow* parent, wxWindow* mainWindow)

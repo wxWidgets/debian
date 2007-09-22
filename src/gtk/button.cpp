@@ -2,7 +2,7 @@
 // Name:        button.cpp
 // Purpose:
 // Author:      Robert Roebling
-// Id:          $Id: button.cpp,v 1.46 2000/01/06 17:32:48 RR Exp $
+// Id:          $Id: button.cpp,v 1.46.2.1 2000/12/31 17:45:50 roebling Exp $
 // Copyright:   (c) 1998 Robert Roebling
 // Licence:   	wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -103,7 +103,7 @@ bool wxButton::Create(  wxWindow *parent, wxWindowID id, const wxString &label,
 */
     
     m_widget = gtk_button_new_with_label("");
-
+    
     SetLabel( label );
 
 #if (GTK_MINOR_VERSION > 0)    
@@ -182,6 +182,7 @@ void wxButton::ApplyWidgetStyle()
 wxSize wxButton::DoGetBestSize() const
 {
     wxSize ret( wxControl::DoGetBestSize() );
+    ret.x += 6;
     if (ret.x < 80) ret.x = 80;
     return ret;
 }

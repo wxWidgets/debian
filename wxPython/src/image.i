@@ -5,7 +5,7 @@
 // Author:      Robin Dunn
 //
 // Created:     28-Apr-1999
-// RCS-ID:      $Id: image.i,v 1.1.2.2 2000/05/24 14:57:39 RD Exp $
+// RCS-ID:      $Id: image.i,v 1.1.2.3 2001/01/30 20:53:43 robind Exp $
 // Copyright:   (c) 1998 by Total Control Software
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -139,7 +139,7 @@ public:
             }
 
             size_t len = self->GetWidth() * self->GetHeight() * 3;
-            dataPtr = new unsigned char[len];
+            dataPtr = (unsigned char*) malloc(len);
             memcpy(dataPtr, PyString_AsString(data), len);
             self->SetData(dataPtr);
         }

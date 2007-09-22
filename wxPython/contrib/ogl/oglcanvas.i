@@ -5,7 +5,7 @@
 // Author:      Robin Dunn
 //
 // Created:     7-Sept-1999
-// RCS-ID:      $Id: oglcanvas.i,v 1.1.2.2 2000/06/02 01:50:08 RD Exp $
+// RCS-ID:      $Id: oglcanvas.i,v 1.1.2.3 2001/01/30 20:53:08 robind Exp $
 // Copyright:   (c) 1998 by Total Control Software
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -14,7 +14,7 @@
 %module oglcanvas
 
 %{
-#include "helpers.h"
+#include "export.h"
 #include "oglhelpers.h"
 %}
 
@@ -112,8 +112,8 @@ public:
 class wxPyShapeCanvas : public wxScrolledWindow {
 public:
     wxPyShapeCanvas(wxWindow* parent = NULL, wxWindowID id = -1,
-                    const wxPoint& pos = wxPyDefaultPosition,
-                    const wxSize& size = wxPyDefaultSize,
+                    const wxPoint& pos = wxDefaultPosition,
+                    const wxSize& size = wxDefaultSize,
                     long style = wxBORDER);
 
     void _setSelf(PyObject* self, PyObject* _class);

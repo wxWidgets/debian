@@ -4,7 +4,7 @@
 // Author:      Robert Roebling
 // Modified by:
 // Created:     12/12/98
-// RCS-ID:      $Id: filedlgg.cpp,v 1.42.2.3 2000/10/03 10:03:32 roebling Exp $
+// RCS-ID:      $Id: filedlgg.cpp,v 1.42.2.4 2000/12/31 17:45:50 roebling Exp $
 // Copyright:   (c) Robert Roebling
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -894,10 +894,10 @@ wxFileDialog::wxFileDialog(wxWindow *parent,
 
     if (m_dialogStyle & wxMULTIPLE)
         m_list = new wxFileCtrl( this, ID_LIST_CTRL, m_dir, firstWild, wxDefaultPosition,
-                                 wxSize(440,180), s_lastViewStyle | wxSUNKEN_BORDER );
+                                 wxSize(510,180), s_lastViewStyle | wxSUNKEN_BORDER );
     else
         m_list = new wxFileCtrl( this, ID_LIST_CTRL, m_dir, firstWild, wxDefaultPosition,
-                                 wxSize(440,180), s_lastViewStyle | wxSUNKEN_BORDER | wxLC_SINGLE_SEL );
+                                 wxSize(510,180), s_lastViewStyle | wxSUNKEN_BORDER | wxLC_SINGLE_SEL );
     m_list -> ShowHidden(s_lastShowHidden);
     mainsizer->Add( m_list, 1, wxEXPAND | wxLEFT|wxRIGHT, 10 );
 

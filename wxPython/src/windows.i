@@ -5,7 +5,7 @@
 // Author:      Robin Dunn
 //
 // Created:     6/24/97
-// RCS-ID:      $Id: windows.i,v 1.1.2.8 2000/09/12 04:01:28 RD Exp $
+// RCS-ID:      $Id: windows.i,v 1.1.2.11 2001/01/30 20:53:43 robind Exp $
 // Copyright:   (c) 1998 by Total Control Software
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -30,6 +30,11 @@
 %import clip_dnd.i
 
 %pragma(python) code = "import wx"
+
+
+%{
+    static wxString wxPyEmptyStr("");
+%}
 
 //---------------------------------------------------------------------------
 
@@ -197,8 +202,8 @@ class wxWindow : public wxEvtHandler {
 public:
 
     wxWindow(wxWindow* parent, const wxWindowID id,
-             const wxPoint& pos = wxPyDefaultPosition,
-             const wxSize& size = wxPyDefaultSize,
+             const wxPoint& pos = wxDefaultPosition,
+             const wxSize& size = wxDefaultSize,
              long style = 0,
              char* name = "panel");
 
@@ -331,6 +336,10 @@ public:
         void SetPosition(const wxPoint& pos) {
             self->Move(pos);
         }
+
+        void SetRect(const wxRect& rect, int sizeFlags=wxSIZE_AUTO) {
+            self->SetSize(rect, sizeFlags);
+        }
     }
 
     void SetSizeHints(int minW=-1, int minH=-1, int maxW=-1, int maxH=-1, int incW=-1, int incH=-1);
@@ -428,7 +437,6 @@ public:
 //      "
 };
 
-//%clear int* x, int* y;
 
 
 
@@ -483,8 +491,8 @@ class wxPanel : public wxWindow {
 public:
     wxPanel(wxWindow* parent,
             const wxWindowID id,
-            const wxPoint& pos = wxPyDefaultPosition,
-            const wxSize& size = wxPyDefaultSize,
+            const wxPoint& pos = wxDefaultPosition,
+            const wxSize& size = wxDefaultSize,
             long style = wxTAB_TRAVERSAL,
             const char* name = "panel");
 
@@ -511,8 +519,8 @@ public:
     wxDialog(wxWindow* parent,
              const wxWindowID id,
              const wxString& title,
-             const wxPoint& pos = wxPyDefaultPosition,
-             const wxSize& size = wxPyDefaultSize,
+             const wxPoint& pos = wxDefaultPosition,
+             const wxSize& size = wxDefaultSize,
              long style = wxDEFAULT_DIALOG_STYLE,
              const char* name = "dialogBox");
 
@@ -539,8 +547,8 @@ class wxScrolledWindow : public wxPanel {
 public:
     wxScrolledWindow(wxWindow* parent,
                      const wxWindowID id = -1,
-                     const wxPoint& pos = wxPyDefaultPosition,
-                     const wxSize& size = wxPyDefaultSize,
+                     const wxPoint& pos = wxDefaultPosition,
+                     const wxSize& size = wxDefaultSize,
                      long style = wxHSCROLL | wxVSCROLL,
                      char* name = "scrolledWindow");
 
@@ -642,7 +650,7 @@ public:
 
 class wxMenuBar : public wxWindow {
 public:
-    wxMenuBar();
+    wxMenuBar(long style = 0);
 
     bool Append(wxMenu *menu, const wxString& title);
     bool Insert(size_t pos, wxMenu *menu, const wxString& title);

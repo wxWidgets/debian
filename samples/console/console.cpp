@@ -4,7 +4,7 @@
 // Author:      Vadim Zeitlin
 // Modified by:
 // Created:     04.10.99
-// RCS-ID:      $Id: console.cpp,v 1.51.2.20 2000/10/02 18:56:23 vadz Exp $
+// RCS-ID:      $Id: console.cpp,v 1.51.2.22 2001/01/29 15:26:02 vadz Exp $
 // Copyright:   (c) 1999 Vadim Zeitlin <zeitlin@dptmaths.ens-cachan.fr>
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -35,28 +35,28 @@
 
 // what to test (in alphabetic order)?
 
-//#define TEST_ARRAYS
-//#define TEST_CMDLINE
-//#define TEST_DATETIME
-//#define TEST_DIR
-//#define TEST_DLLLOADER
-//#define TEST_EXECUTE
-//#define TEST_FILE
+#define TEST_ARRAYS
+#define TEST_CMDLINE
+#define TEST_DATETIME
+#define TEST_DIR
+#define TEST_DLLLOADER
+#define TEST_EXECUTE
+#define TEST_FILE
 #define TEST_FILECONF
-//#define TEST_HASH
-//#define TEST_LIST
-//#define TEST_LOG
-//#define TEST_LONGLONG
-//#define TEST_MIME
-//#define TEST_INFO_FUNCTIONS
-//#define TEST_SOCKETS
-//#define TEST_STRINGS
-//#define TEST_THREADS
-//#define TEST_TIMER
-////#define TEST_VCARD            -- don't enable this (VZ)
-//#define TEST_WCHAR
-//#define TEST_ZIP
-//#define TEST_ZLIB
+#define TEST_HASH
+#define TEST_LIST
+#define TEST_LOG
+#define TEST_LONGLONG
+#define TEST_MIME
+#define TEST_INFO_FUNCTIONS
+#define TEST_SOCKETS
+#define TEST_STRINGS
+#define TEST_THREADS
+#define TEST_TIMER
+//#define TEST_VCARD            -- don't enable this (VZ)
+#define TEST_WCHAR
+#define TEST_ZIP
+#define TEST_ZLIB
 
 // ----------------------------------------------------------------------------
 // test class for container objects
@@ -1319,6 +1319,51 @@ static void TestProtocolFtpUpload()
             printf("--- Uploading to %s ---\n", file1);
             out->Write("Second hello", 12);
             delete out;
+        }
+    }
+}
+
+static void TestProtocolHttp()
+{
+    puts("*** Testing wxHTTP ***\n");
+
+    wxLog::AddTraceMask(_T("http"));
+
+    static const char *hostname = "www.wxwindows.org";
+
+    printf("--- Attempting to connect to %s:80...\n", hostname);
+
+    wxHTTP http;
+    if ( !http.Connect(hostname) )
+    {
+        printf("ERROR: failed to connect to %s\n", hostname);
+    }
+    else
+    {
+        static const char *filename = "docs.htm";
+        wxInputStream *in = http.GetInputStream(filename);
+        if ( !in )
+        {
+            printf("ERROR: couldn't retrieve '%s'\n", filename);
+        }
+        else
+        {
+            size_t size = in->StreamSize();
+            printf("Reading file %s of type %s (%u bytes)...",
+                   filename, http.GetContentType().c_str(), size);
+
+            char *data = new char[size];
+            if ( !in->Read(data, size) )
+            {
+                puts("ERROR: read error");
+            }
+            else
+            {
+                printf("\nContents of %s:\n%s\n", filename, data);
+            }
+
+            delete [] data;
+            delete in;
         }
     }
 }
@@ -3618,8 +3663,9 @@ int main(int argc, char **argv)
         TestSocketServer();
         TestSocketClient();
         TestProtocolFtp();
-    }
         TestProtocolFtpUpload();
+    }
+    TestProtocolHttp();
 #endif // TEST_SOCKETS
 
 #ifdef TEST_TIMER

@@ -2,7 +2,7 @@
 // Name:        colour.cpp
 // Purpose:
 // Author:      Robert Roebling
-// Id:          $Id: colour.cpp,v 1.26.2.2 2000/06/27 10:27:09 VZ Exp $
+// Id:          $Id: colour.cpp,v 1.26.2.4 2001/01/07 18:40:43 roebling Exp $
 // Copyright:   (c) 1998 Robert Roebling
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -23,17 +23,39 @@
 
 class wxColourRefData: public wxObjectRefData
 {
-  public:
-
+public:
     wxColourRefData();
     ~wxColourRefData();
+    
     void FreeColour();
+    void AllocColour( GdkColormap* cmap );
+
+private:
+    friend class wxColour;
 
     GdkColor     m_color;
     GdkColormap *m_colormap;
     bool         m_hasPixel;
+    
+    // reference counter for systems with <= 8-Bit display
+    static gushort colMapAllocCounter[ 256 ];
+};
 
-    friend class wxColour;
+gushort wxColourRefData::colMapAllocCounter[ 256 ] = 
+{  
+  0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+  0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+  0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+  0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+  0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+  0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+  0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+  0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+  0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+  0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+  0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+  0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+  0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
 };
 
 wxColourRefData::wxColourRefData()
@@ -53,7 +75,41 @@ wxColourRefData::~wxColourRefData()
 
 void wxColourRefData::FreeColour()
 {
-//  if (m_hasPixel) gdk_colors_free( m_colormap, &m_color, 1, 0 );
+    if (m_colormap)
+    {
+        GdkColormapPrivate *private_colormap = (GdkColormapPrivate*) m_colormap;
+        if ((private_colormap->visual->type == GDK_VISUAL_GRAYSCALE) ||
+            (private_colormap->visual->type == GDK_VISUAL_PSEUDO_COLOR))
+        {
+            int idx = m_color.pixel;
+            colMapAllocCounter[ idx ] = colMapAllocCounter[ idx ] - 1;
+            
+            if (colMapAllocCounter[ idx ] == 0)
+                gdk_colormap_free_colors( m_colormap, &m_color, 1 );
+        }
+    }
+}
+
+void wxColourRefData::AllocColour( GdkColormap *cmap )
+{
+    if (m_hasPixel && (m_colormap == cmap))
+        return;
+
+    FreeColour();
+    
+    GdkColormapPrivate *private_colormap = (GdkColormapPrivate*) cmap;
+    if ((private_colormap->visual->type == GDK_VISUAL_GRAYSCALE) ||
+        (private_colormap->visual->type == GDK_VISUAL_PSEUDO_COLOR))
+    {
+        m_hasPixel = gdk_colormap_alloc_color( cmap, &m_color, FALSE, TRUE );
+        int idx = m_color.pixel;
+        colMapAllocCounter[ idx ] = colMapAllocCounter[ idx ] + 1;
+    }
+    else
+    {
+        m_hasPixel = gdk_color_alloc( cmap, &m_color );
+    }
+    m_colormap = cmap;
 }
 
 //-----------------------------------------------------------------------------
@@ -176,36 +232,7 @@ void wxColour::CalcPixel( GdkColormap *cmap )
 {
     if (!Ok()) return;
 
-    if ((M_COLDATA->m_hasPixel) && (M_COLDATA->m_colormap == cmap)) return;
-    
-    M_COLDATA->FreeColour();
-
-    GdkColormapPrivate *private_colormap = (GdkColormapPrivate*) cmap;
-    if ((private_colormap->visual->type == GDK_VISUAL_GRAYSCALE) ||
-        (private_colormap->visual->type == GDK_VISUAL_PSEUDO_COLOR))
-    {
-        GdkColor *colors = cmap->colors;
-        int max = 3 * (65536);
-        int index = -1;
-
-        for (int i = 0; i < cmap->size; i++)
-        {
-            int rdiff = (M_COLDATA->m_color.red - colors[i].red);
-            int gdiff = (M_COLDATA->m_color.green - colors[i].green);
-            int bdiff = (M_COLDATA->m_color.blue - colors[i].blue);
-            int sum = ABS (rdiff) + ABS (gdiff) + ABS (bdiff);
-            if (sum < max) { index = i; max = sum; }
-        }
-
-        M_COLDATA->m_hasPixel = TRUE;
-        M_COLDATA->m_color.pixel = index;
-    }
-    else
-    { 
-        M_COLDATA->m_hasPixel = gdk_color_alloc( cmap, &M_COLDATA->m_color );
-    }
-
-    M_COLDATA->m_colormap = cmap;
+    M_COLDATA->AllocColour( cmap );
 }
 
 int wxColour::GetPixel() const
@@ -221,5 +248,4 @@ GdkColor *wxColour::GetColor() const
 
     return &M_COLDATA->m_color;
 }
-
 

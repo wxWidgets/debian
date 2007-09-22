@@ -23,7 +23,7 @@ History:
                   renamed to wxPyShell.py since i've renounced the 8.3 scheme
 
 """
-__version__ ="$Revision: 1.1.2.2 $"
+__version__ ="$Revision: 1.1.2.3 $"
 # $RCSfile: shell.py,v $
 
 import sys, string, code, traceback

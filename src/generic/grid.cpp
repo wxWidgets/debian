@@ -4,7 +4,7 @@
 // Author:      Michael Bedward (based on code by Julian Smart, Robin Dunn)
 // Modified by:
 // Created:     1/08/1999
-// RCS-ID:      $Id: grid.cpp,v 1.146.2.46 2000/08/04 05:16:26 MB Exp $
+// RCS-ID:      $Id: grid.cpp,v 1.146.2.51 2001/02/02 15:56:30 vadz Exp $
 // Copyright:   (c) Michael Bedward (mbedward@ozemail.com.au)
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -474,7 +474,7 @@ void wxGridCellEditor::HandleReturn(wxKeyEvent& event)
 bool wxGridCellEditor::IsAcceptedKey(wxKeyEvent& event)
 {
     // accept the simple key presses, not anything with Ctrl/Alt/Meta
-    return !event.HasModifiers();
+    return !(event.ControlDown() || event.AltDown());
 }
 
 void wxGridCellEditor::StartingKey(wxKeyEvent& event)
@@ -502,7 +502,8 @@ void wxGridCellTextEditor::Create(wxWindow* parent,
     m_control = new wxTextCtrl(parent, id, wxEmptyString,
                                wxDefaultPosition, wxDefaultSize
 #if defined(__WXMSW__)
-                               , wxTE_MULTILINE | wxTE_NO_VSCROLL | wxTE_AUTO_SCROLL
+                               , wxTE_PROCESS_TAB | wxTE_MULTILINE |
+                                 wxTE_NO_VSCROLL | wxTE_AUTO_SCROLL
 #endif
                               );
 
@@ -538,9 +539,9 @@ void wxGridCellTextEditor::SetSize(const wxRect& rectOrig)
     }
 #else // !GTK
     int extra_x = ( rect.x > 2 )? 2 : 1;
-    
-// MB: treat MSW separately here otherwise the caret doesn't show 
-// when the editor is in the first row. 
+
+// MB: treat MSW separately here otherwise the caret doesn't show
+// when the editor is in the first row.
 #if defined(__WXMSW__)
     int extra_y = 2;
 #else
@@ -1386,11 +1387,12 @@ void wxGridCellEditorEvtHandler::OnKeyDown(wxKeyEvent& event)
             break;
 
         case WXK_TAB:
-            event.Skip( m_grid->ProcessEvent( event ) );
+            event.Skip( m_grid->GetEventHandler()->ProcessEvent( event ) );
             break;
 
         case WXK_RETURN:
-            if (!m_grid->ProcessEvent(event))
+        case WXK_NUMPAD_ENTER:
+            if (!m_grid->GetEventHandler()->ProcessEvent(event))
                 m_editor->HandleReturn(event);
             break;
 
@@ -1407,6 +1409,7 @@ void wxGridCellEditorEvtHandler::OnChar(wxKeyEvent& event)
         case WXK_ESCAPE:
         case WXK_TAB:
         case WXK_RETURN:
+        case WXK_NUMPAD_ENTER:
             break;
 
         default:
@@ -2411,14 +2414,16 @@ int wxGridTypeRegistry::FindOrCloneDataType(const wxString& typeName)
 wxGridCellRenderer* wxGridTypeRegistry::GetRenderer(int index)
 {
     wxGridCellRenderer* renderer = m_typeinfo[index]->m_renderer;
-    renderer->IncRef();
+    if (renderer)
+        renderer->IncRef();
     return renderer;
 }
 
 wxGridCellEditor* wxGridTypeRegistry::GetEditor(int index)
 {
     wxGridCellEditor* editor = m_typeinfo[index]->m_editor;
-    editor->IncRef();
+    if (editor)
+        editor->IncRef();
     return editor;
 }
 
@@ -3112,12 +3117,12 @@ void wxGridRowLabelWindow::OnMouseEvent( wxMouseEvent& event )
 //
 void wxGridRowLabelWindow::OnKeyDown( wxKeyEvent& event )
 {
-    if ( !m_owner->ProcessEvent( event ) ) event.Skip();
+    if ( !m_owner->GetEventHandler()->ProcessEvent( event ) ) event.Skip();
 }
 
 void wxGridRowLabelWindow::OnKeyUp( wxKeyEvent& event )
 {
-    if ( !m_owner->ProcessEvent( event ) ) event.Skip();
+    if ( !m_owner->GetEventHandler()->ProcessEvent( event ) ) event.Skip();
 }
 
 
@@ -3171,12 +3176,12 @@ void wxGridColLabelWindow::OnMouseEvent( wxMouseEvent& event )
 //
 void wxGridColLabelWindow::OnKeyDown( wxKeyEvent& event )
 {
-    if ( !m_owner->ProcessEvent( event ) ) event.Skip();
+    if ( !m_owner->GetEventHandler()->ProcessEvent( event ) ) event.Skip();
 }
 
 void wxGridColLabelWindow::OnKeyUp( wxKeyEvent& event )
 {
-    if ( !m_owner->ProcessEvent( event ) ) event.Skip();
+    if ( !m_owner->GetEventHandler()->ProcessEvent( event ) ) event.Skip();
 }
 
 
@@ -3229,12 +3234,12 @@ void wxGridCornerLabelWindow::OnMouseEvent( wxMouseEvent& event )
 //
 void wxGridCornerLabelWindow::OnKeyDown( wxKeyEvent& event )
 {
-    if ( !m_owner->ProcessEvent( event ) ) event.Skip();
+    if ( !m_owner->GetEventHandler()->ProcessEvent( event ) ) event.Skip();
 }
 
 void wxGridCornerLabelWindow::OnKeyUp( wxKeyEvent& event )
 {
-    if ( !m_owner->ProcessEvent( event ) ) event.Skip();
+    if ( !m_owner->GetEventHandler()->ProcessEvent( event ) ) event.Skip();
 }
 
 
@@ -3303,12 +3308,12 @@ void wxGridWindow::OnMouseEvent( wxMouseEvent& event )
 //
 void wxGridWindow::OnKeyDown( wxKeyEvent& event )
 {
-    if ( !m_owner->ProcessEvent( event ) ) event.Skip();
+    if ( !m_owner->GetEventHandler()->ProcessEvent( event ) ) event.Skip();
 }
 
 void wxGridWindow::OnKeyUp( wxKeyEvent& event )
 {
-    if ( !m_owner->ProcessEvent( event ) ) event.Skip();
+    if ( !m_owner->GetEventHandler()->ProcessEvent( event ) ) event.Skip();
 }
 
 void wxGridWindow::OnEraseBackground( wxEraseEvent& WXUNUSED(event) )
@@ -3825,8 +3830,8 @@ bool wxGrid::Redimension( wxGridTableMessage& msg )
             wxGridCellAttrProvider * attrProvider = m_table->GetAttrProvider();
             if (attrProvider) {
                 attrProvider->UpdateAttrRows( pos, -((int)numRows) );
-// ifdef'd out following patch from Paul Gammans                
-#if 0                
+// ifdef'd out following patch from Paul Gammans
+#if 0
                 // No need to touch column attributes, unless we
                 // removed _all_ rows, in this case, we remove
                 // all column attributes.
@@ -3834,7 +3839,7 @@ bool wxGrid::Redimension( wxGridTableMessage& msg )
                 // needed data is not available inside UpdateAttrRows.
                 if ( !GetNumberRows() )
                     attrProvider->UpdateAttrCols( 0, -GetNumberCols() );
-#endif                    
+#endif
             }
             if ( !GetBatchCount() )
             {
@@ -3961,8 +3966,8 @@ bool wxGrid::Redimension( wxGridTableMessage& msg )
             wxGridCellAttrProvider * attrProvider = m_table->GetAttrProvider();
             if (attrProvider) {
                 attrProvider->UpdateAttrCols( pos, -((int)numCols) );
-// ifdef'd out following patch from Paul Gammans                
-#if 0                
+// ifdef'd out following patch from Paul Gammans
+#if 0
                 // No need to touch row attributes, unless we
                 // removed _all_ columns, in this case, we remove
                 // all row attributes.
@@ -3970,7 +3975,7 @@ bool wxGrid::Redimension( wxGridTableMessage& msg )
                 // needed data is not available inside UpdateAttrCols.
                 if ( !GetNumberCols() )
                     attrProvider->UpdateAttrRows( 0, -GetNumberRows() );
-#endif                    
+#endif
             }
             if ( !GetBatchCount() )
             {
@@ -5411,6 +5416,7 @@ void wxGrid::OnKeyDown( wxKeyEvent& event )
                 break;
 
             case WXK_RETURN:
+            case WXK_NUMPAD_ENTER:
                 if ( event.ControlDown() )
                 {
                     event.Skip();  // to let the edit control have the return
@@ -5607,7 +5613,7 @@ void wxGrid::SetCurrentCell( const wxGridCellCoords& coords )
             }
 
             CalcCellsExposed( r );
-    
+
             // Otherwise refresh redraws the highlight!
             m_currentCellCoords = coords;
 
@@ -8050,7 +8056,7 @@ void wxGrid::AutoSizeColOrRow( int colOrRow, bool setAsMin, bool column )
     if ( column )
         dc.GetTextExtent( GetColLabelValue(col), &w, &h );
     else
-        dc.GetTextExtent( GetRowLabelValue(col), &w, &h );
+        dc.GetTextExtent( GetRowLabelValue(row), &w, &h );
 
     extent = column ? w : h;
     if ( extent > extentMax )
@@ -8203,14 +8209,14 @@ void wxGrid::SelectCol( int col, bool addToSelected )
 }
 
 
-void wxGrid::SelectBlock( int topRow, int leftCol, int bottomRow, int rightCol, 
+void wxGrid::SelectBlock( int topRow, int leftCol, int bottomRow, int rightCol,
                           bool addToSelected )
 {
     if ( IsSelection() && !addToSelected )
         ClearSelection();
 
-    m_selection->SelectBlock( topRow, leftCol, bottomRow, rightCol, 
-                              FALSE, addToSelected );    
+    m_selection->SelectBlock( topRow, leftCol, bottomRow, rightCol,
+                              FALSE, addToSelected );
 }
 
 

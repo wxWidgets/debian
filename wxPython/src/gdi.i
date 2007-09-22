@@ -5,7 +5,7 @@
 // Author:      Robin Dunn
 //
 // Created:     7/7/97
-// RCS-ID:      $Id: gdi.i,v 1.1.2.4 2000/06/24 00:28:40 RD Exp $
+// RCS-ID:      $Id: gdi.i,v 1.1.2.5 2001/01/30 20:53:43 robind Exp $
 // Copyright:   (c) 1998 by Total Control Software
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -30,6 +30,11 @@
 // Import some definitions of other classes, etc.
 %import _defs.i
 %import misc.i
+
+
+%{
+    static wxString wxPyEmptyStr("");
+%}
 
 //---------------------------------------------------------------------------
 
@@ -339,6 +344,7 @@ public:
 };
 
 %new wxColour* wxNamedColour(const wxString& colorName);
+
 %{                                      // Alternate 'constructor'
     wxColour* wxNamedColour(const wxString& colorName) {
         return new wxColour(colorName);
@@ -588,15 +594,6 @@ public:
 
 //---------------------------------------------------------------------------
 
-#ifdef __WXMSW__
-class  wxPrinterDC : public wxDC {
-public:
-    wxPrinterDC(const wxString& driver, const wxString& device, const wxString& output,
-                bool interactive = TRUE, int orientation = wxPORTRAIT);
-};
-#endif
-
-//---------------------------------------------------------------------------
 
 #ifdef __WXMSW__
 class wxMetaFileDC : public wxDC {

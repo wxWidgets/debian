@@ -2,7 +2,7 @@
 // Name:        listctrl.cpp
 // Purpose:
 // Author:      Robert Roebling
-// Id:          $Id: listctrl.cpp,v 1.139.2.21 2000/10/03 10:04:42 roebling Exp $
+// Id:          $Id: listctrl.cpp,v 1.139.2.25 2000/12/24 14:03:21 vaclavslavik Exp $
 // Copyright:   (c) 1998 Robert Roebling
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -315,7 +315,9 @@ public:
     void RefreshLine( wxListLineData *line );
     void OnPaint( wxPaintEvent &event );
     void HilightAll( bool on );
-    void SendNotify( wxListLineData *line, wxEventType command );
+    void SendNotify( wxListLineData *line,
+                     wxEventType command,
+                     wxPoint point = wxDefaultPosition );
     void FocusLine( wxListLineData *line );
     void UnfocusLine( wxListLineData *line );
     void SelectLine( wxListLineData *line );
@@ -768,6 +770,8 @@ void wxListLineData::CalculateSize( wxDC *dc, int spacing )
                 m_bound_all.height = lh;
                 node = node->Next();
             }
+            m_bound_label.width = m_bound_all.width;
+            m_bound_label.height = m_bound_all.height;
             break;
         }
     }
@@ -1253,7 +1257,7 @@ void wxListHeaderWindow::OnPaint( wxPaintEvent &WXUNUSED(event) )
 
     // do *not* use the listctrl colour for headers - one day we will have a
     // function to set it separately
-    // dc.SetTextForeground( *wxBLACK );
+    //dc.SetTextForeground( *wxBLACK );
     dc.SetTextForeground(wxSystemSettings::GetSystemColour( wxSYS_COLOUR_WINDOWTEXT ));
 
     int x = 1;          // left of the header rect
@@ -1264,40 +1268,24 @@ void wxListHeaderWindow::OnPaint( wxPaintEvent &WXUNUSED(event) )
     {
         m_owner->GetColumn( i, item );
         int wCol = item.m_width;
+        int cw = wCol - 2; // the width of the rect to draw
 
         int xEnd = x + wCol;
 
-#ifdef __WXGTK__
-        int cw = wCol; // the width of the rect to draw
-        int ch = h;
-        GtkStateType state = GTK_STATE_NORMAL;
-        if (!m_parent->IsEnabled()) state = GTK_STATE_INSENSITIVE;
-    
-        int xx = dc.XLOG2DEV( x );
-    
-	    gtk_paint_box (m_wxwindow->style, GTK_PIZZA(m_wxwindow)->bin_window, state, GTK_SHADOW_OUT,
-		    (GdkRectangle*) NULL, m_wxwindow, "button", xx-1, y-1, cw, ch);
-        
-        // The +6 is a guess, I don' t know how GTK figures out
-        // where to draw lables.
-        int cy = y+6 + gdk_char_height( m_wxwindow->style->font, 'H' );
-        GdkRectangle clip;
-        clip.x = xx+4;
-        clip.y = 2;
-        clip.width = cw-6;
-        clip.height = ch-4;
-        gtk_paint_string (m_wxwindow->style, GTK_PIZZA(m_wxwindow)->bin_window, state,
-		    &clip, m_wxwindow, "label", xx+4, cy, item.m_text.c_str() );
-#else
-        int cw = wCol - 2; // the width of the rect to draw
-        int ch = h - 2;
+        // VZ: no, draw it normally - this is better now as we allow resizing
+        //     of the last column as well
+#if 0
+        // let the last column occupy all available space
+        if ( i == numColumns - 1 )
+            cw = w-x-1;
+#endif // 0
+
         dc.SetPen( *wxWHITE_PEN );
-        DoDrawRect( &dc, x, y, cw, ch );
-        dc.SetClippingRegion( x, y, cw-5, ch-2 );
+
+        DoDrawRect( &dc, x, y, cw, h-2 );
+        dc.SetClippingRegion( x, y, cw-5, h-4 );
         dc.DrawText( item.m_text, x+4, y+3 );
         dc.DestroyClippingRegion();
-#endif        
-        
         x += wCol;
 
         if (xEnd > w+5)
@@ -1703,12 +1691,19 @@ void wxListMainWindow::HilightAll( bool on )
     }
 }
 
-void wxListMainWindow::SendNotify( wxListLineData *line, wxEventType command )
+void wxListMainWindow::SendNotify( wxListLineData *line,
+                                   wxEventType command,
+                                   wxPoint point )
 {
     wxListEvent le( command, GetParent()->GetId() );
     le.SetEventObject( GetParent() );
     le.m_itemIndex = GetIndexOfLine( line );
     line->GetItem( 0, le.m_item );
+
+    // set only for events which have position
+    if ( point != wxDefaultPosition )
+        le.m_pointDrag = point;
+
     GetParent()->GetEventHandler()->ProcessEvent( le );
 //    GetParent()->GetEventHandler()->AddPendingEvent( le );
 }
@@ -1838,8 +1833,8 @@ void wxListMainWindow::OnMouse( wxMouseEvent &event )
 
         if (m_dragCount != 3) return;
 
-        int command = wxEVT_COMMAND_LIST_BEGIN_DRAG;
-        if (event.RightIsDown()) command = wxEVT_COMMAND_LIST_BEGIN_RDRAG;
+        int command = event.RightIsDown() ? wxEVT_COMMAND_LIST_BEGIN_RDRAG
+                                          : wxEVT_COMMAND_LIST_BEGIN_DRAG;
 
         wxListEvent le( command, GetParent()->GetId() );
         le.SetEventObject( GetParent() );
@@ -1892,7 +1887,8 @@ void wxListMainWindow::OnMouse( wxMouseEvent &event )
 
     if (event.RightDown())
     {
-        SendNotify( line, wxEVT_COMMAND_LIST_ITEM_RIGHT_CLICK );
+        SendNotify( line, wxEVT_COMMAND_LIST_ITEM_RIGHT_CLICK,
+                    event.GetPosition() );
         return;
     }
 
@@ -2620,6 +2616,7 @@ void wxListMainWindow::GetItemRect( long index, wxRect &rect )
     if (index >= 0 && (size_t)index < m_lines.GetCount())
     {
         m_lines[(size_t)index].GetRect( rect );
+        this->CalcScrolledPosition(rect.x,rect.y,&rect.x,&rect.y);
     }
     else
     {
@@ -2632,18 +2629,9 @@ void wxListMainWindow::GetItemRect( long index, wxRect &rect )
 
 bool wxListMainWindow::GetItemPosition(long item, wxPoint& pos)
 {
-    if (item >= 0 && (size_t)item < m_lines.GetCount())
-    {
-        wxRect rect;
-        m_lines[(size_t)item].GetRect( rect );
-        pos.x = rect.x;
-        pos.y = rect.y;
-    }
-    else
-    {
-       pos.x = 0;
-       pos.y = 0;
-    }
+    wxRect rect;
+    this->GetItemRect(item,rect);
+    pos.x=rect.x; pos.y=rect.y;
     return TRUE;
 }
 

@@ -2,7 +2,7 @@
 // Name:        gauge.cpp
 // Purpose:
 // Author:      Robert Roebling
-// Id:          $Id: gauge.cpp,v 1.17 1999/11/27 16:45:59 RR Exp $
+// Id:          $Id: gauge.cpp,v 1.17.2.1 2001/01/31 12:23:40 vadz Exp $
 // Copyright:   (c) 1998 Robert Roebling
 // Licence:   	wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -42,6 +42,8 @@ bool wxGauge::Create( wxWindow *parent, wxWindowID id,  int range,
     m_useProgressBar = TRUE;
   
     m_widget = gtk_progress_bar_new();
+    if( style & wxGA_VERTICAL)
+        gtk_progress_bar_set_orientation( GTK_PROGRESS_BAR(m_widget) , GTK_PROGRESS_BOTTOM_TO_TOP );
   
     m_parent->DoAddChild( this );
   

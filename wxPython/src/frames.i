@@ -5,7 +5,7 @@
 // Author:      Robin Dunn
 //
 // Created:     8/27/98
-// RCS-ID:      $Id: frames.i,v 1.1.2.4 2000/07/03 20:09:52 RD Exp $
+// RCS-ID:      $Id: frames.i,v 1.1.2.5 2001/01/30 20:53:43 robind Exp $
 // Copyright:   (c) 1998 by Total Control Software
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -47,8 +47,8 @@ enum {
 class wxFrame : public wxWindow {
 public:
     wxFrame(wxWindow* parent, const wxWindowID id, const wxString& title,
-            const wxPoint& pos = wxPyDefaultPosition,
-            const wxSize& size = wxPyDefaultSize,
+            const wxPoint& pos = wxDefaultPosition,
+            const wxSize& size = wxDefaultSize,
             long style = wxDEFAULT_FRAME_STYLE,
             char* name = "frame");
 
@@ -95,8 +95,8 @@ public:
 class wxMiniFrame : public wxFrame {
 public:
     wxMiniFrame(wxWindow* parent, const wxWindowID id, const wxString& title,
-                const wxPoint& pos = wxPyDefaultPosition,
-                const wxSize& size = wxPyDefaultSize,
+                const wxPoint& pos = wxDefaultPosition,
+                const wxSize& size = wxDefaultSize,
                 long style = wxDEFAULT_FRAME_STYLE,
                 char* name = "frame");
 

@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     04/01/98
-// RCS-ID:      $Id: layout.cpp,v 1.17 1999/12/14 23:42:39 VS Exp $
+// RCS-ID:      $Id: layout.cpp,v 1.17.2.2 2000/11/28 11:05:45 vadz Exp $
 // Copyright:   (c) Julian Smart and Markus Holzem
 // Licence:       wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -66,11 +66,20 @@ wxIndividualLayoutConstraint::~wxIndividualLayoutConstraint()
 
 void wxIndividualLayoutConstraint::Set(wxRelationship rel, wxWindowBase *otherW, wxEdge otherE, int val, int marg)
 {
-  relationship = rel;
-  otherWin = otherW;
-  otherEdge = otherE;
-  value = val;
-  margin = marg;
+    relationship = rel;
+    otherWin = otherW;
+    otherEdge = otherE;
+
+    if ( rel == wxPercentOf )
+    {
+        percent = val;
+    }
+    else
+    {
+        value = val;
+    }
+
+    margin = marg;
 }
 
 void wxIndividualLayoutConstraint::LeftOf(wxWindowBase *sibling, int marg)
@@ -98,18 +107,13 @@ void wxIndividualLayoutConstraint::Below(wxWindowBase *sibling, int marg)
 //
 void wxIndividualLayoutConstraint::SameAs(wxWindowBase *otherW, wxEdge edge, int marg)
 { 
-    Set(wxPercentOf, otherW, edge, 0, marg);
-    percent = 100;
+    Set(wxPercentOf, otherW, edge, 100, marg);
 }
 
 // The edge is a percentage of the other window's edge
 void wxIndividualLayoutConstraint::PercentOf(wxWindowBase *otherW, wxEdge wh, int per)
 { 
-    otherWin = otherW;
-    relationship = wxPercentOf;
-    percent = per;
-
-    otherEdge = wh;
+    Set(wxPercentOf, otherW, wh, per);
 }
 
 //

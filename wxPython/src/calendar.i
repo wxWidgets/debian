@@ -5,7 +5,7 @@
 // Author:      Robin Dunn
 //
 // Created:     23-May-2000
-// RCS-ID:      $Id: calendar.i,v 1.1.2.1 2000/05/24 14:57:38 RD Exp $
+// RCS-ID:      $Id: calendar.i,v 1.1.2.2 2001/01/30 20:53:43 robind Exp $
 // Copyright:   (c) 2000 by Total Control Software
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -14,7 +14,7 @@
 
 
 %{
-#include "helpers.h"
+#include "export.h"
 #include <wx/calctrl.h>
 %}
 
@@ -223,6 +223,12 @@ public:
 
 
 //---------------------------------------------------------------------------
+
+%init %{
+    wxClassInfo::CleanUpClasses();
+    wxClassInfo::InitializeClasses();
+%}
+
 //---------------------------------------------------------------------------
 
 %pragma(python) include="_calextras.py";

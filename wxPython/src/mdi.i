@@ -5,7 +5,7 @@
 // Author:      Robin Dunn
 //
 // Created:     5/26/98
-// RCS-ID:      $Id: mdi.i,v 1.1.2.4 2000/08/03 02:51:21 RD Exp $
+// RCS-ID:      $Id: mdi.i,v 1.1.2.5 2001/01/30 20:53:43 robind Exp $
 // Copyright:   (c) 1998 by Total Control Software
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -37,8 +37,8 @@ public:
     wxMDIParentFrame(wxWindow *parent,
                      const wxWindowID id,
                      const wxString& title,
-                     const wxPoint& pos = wxPyDefaultPosition,
-                     const wxSize& size = wxPyDefaultSize,
+                     const wxPoint& pos = wxDefaultPosition,
+                     const wxSize& size = wxDefaultSize,
                      long style = wxDEFAULT_FRAME_STYLE | wxVSCROLL | wxHSCROLL,
                      const char* name = "frame");
 
@@ -71,8 +71,8 @@ public:
     wxMDIChildFrame(wxMDIParentFrame* parent,
                     const wxWindowID id,
                     const wxString& title,
-                    const wxPoint& pos = wxPyDefaultPosition,
-                    const wxSize& size = wxPyDefaultSize,
+                    const wxPoint& pos = wxDefaultPosition,
+                    const wxSize& size = wxDefaultSize,
                     long style = wxDEFAULT_FRAME_STYLE,
                     const char* name = "frame");
 

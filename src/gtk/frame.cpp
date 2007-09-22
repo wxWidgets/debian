@@ -2,7 +2,7 @@
 // Name:        frame.cpp
 // Purpose:
 // Author:      Robert Roebling
-// Id:          $Id: frame.cpp,v 1.159.2.7 2000/10/02 18:55:22 roebling Exp $
+// Id:          $Id: frame.cpp,v 1.159.2.8 2000/10/20 13:16:22 vadz Exp $
 // Copyright:   (c) 1998 Robert Roebling
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -1117,9 +1117,14 @@ void wxFrame::Iconize( bool iconize )
 {
    if (iconize)
    {
-        XIconifyWindow( GDK_WINDOW_XDISPLAY( m_widget->window ),
-                        GDK_WINDOW_XWINDOW( m_widget->window ),
-                        DefaultScreen( GDK_DISPLAY() ) );
+       GdkWindow *window = m_widget->window;
+
+       // you should do it later, for example from OnCreate() handler
+       wxCHECK_RET( window, _T("frame not created yet - can't iconize") );
+
+       XIconifyWindow(GDK_WINDOW_XDISPLAY(window),
+                      GDK_WINDOW_XWINDOW(window),
+                      DefaultScreen(GDK_DISPLAY()));
    }
 }
 

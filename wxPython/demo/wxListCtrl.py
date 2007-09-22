@@ -6,7 +6,7 @@
 # Author:       Robin Dunn & Gary Dumer
 #
 # Created:
-# RCS-ID:       $Id: wxListCtrl.py,v 1.1.2.5 2000/09/19 00:20:49 RD Exp $
+# RCS-ID:       $Id: wxListCtrl.py,v 1.1.2.7 2001/01/30 20:53:21 robind Exp $
 # Copyright:    (c) 1998 by Total Control Software
 # Licence:      wxWindows license
 #----------------------------------------------------------------------------
@@ -66,17 +66,18 @@ class TestListCtrlPanel(wxPanel):
         tID = wxNewId()
 
         self.il = wxImageList(16, 16)
-        idx1 = self.il.Add(wxBitmap('bitmaps/smiles.bmp', wxBITMAP_TYPE_BMP))
+        bmp = wxBitmap('bitmaps/smiles.bmp', wxBITMAP_TYPE_BMP)
+        idx1 = self.il.AddWithColourMask(bmp, wxWHITE)
 
         self.list = wxListCtrl(self, tID,
                                style=wxLC_REPORT|wxSUNKEN_BORDER)
         self.list.SetImageList(self.il, wxIMAGE_LIST_SMALL)
 
+        #  Why doesn't this show up on MSW???
         self.list.SetToolTip(wxToolTip("This is a ToolTip!"))
-        wxToolTip_Enable(true)
 
         self.list.InsertColumn(0, "Artist")
-        self.list.InsertColumn(1, "Title")
+        self.list.InsertColumn(1, "Title", wxLIST_FORMAT_RIGHT)
         self.list.InsertColumn(2, "Genre")
         items = musicdata.items()
         for x in range(len(items)):
@@ -90,7 +91,10 @@ class TestListCtrlPanel(wxPanel):
         self.list.SetColumnWidth(1, wxLIST_AUTOSIZE)
         ##self.list.SetColumnWidth(2, wxLIST_AUTOSIZE)
 
-        self.list.SetItemState(5, wxLIST_STATE_SELECTED, wxLIST_STATE_SELECTED)
+        self.list.SetItemState(25, wxLIST_STATE_SELECTED, wxLIST_STATE_SELECTED)
+
+        #self.list.SetItemState(25, wxLIST_STATE_SELECTED, wxLIST_STATE_SELECTED)
+        #self.list.EnsureVisible(25)
 
         # show how to change the colour of an item
         item = self.list.GetItem(1)
@@ -119,9 +123,19 @@ class TestListCtrlPanel(wxPanel):
         self.log.WriteText("x, y = %s\n" % str((self.x, self.y)))
         event.Skip()
 
+
+    def getColumnText(self, index, col):
+        item = self.list.GetItem(index, col)
+        return item.GetText()
+
+
     def OnItemSelected(self, event):
         self.currentItem = event.m_itemIndex
-        self.log.WriteText("OnItemSelected: %s\n" % self.list.GetItemText(self.currentItem))
+        self.log.WriteText("OnItemSelected: %s, %s, %s\n" %
+                           (self.list.GetItemText(self.currentItem),
+                            self.getColumnText(self.currentItem, 1),
+                            self.getColumnText(self.currentItem, 2)))
+
 
     def OnItemActivated(self, event):
         self.currentItem = event.m_itemIndex
@@ -145,7 +159,7 @@ class TestListCtrlPanel(wxPanel):
 
     def OnDoubleClick(self, event):
         self.log.WriteText("OnDoubleClick item %s\n" % self.list.GetItemText(self.currentItem))
-
+        event.Skip()
 
     def OnRightClick(self, event):
         self.log.WriteText("OnRightClick %s\n" % self.list.GetItemText(self.currentItem))
@@ -167,6 +181,7 @@ class TestListCtrlPanel(wxPanel):
         EVT_MENU(self, tPopupID5, self.OnPopupFive)
         self.PopupMenu(menu, wxPoint(self.x, self.y))
         menu.Destroy()
+        event.Skip()
 
     def OnPopupOne(self, event):
         self.log.WriteText("Popup one\n")

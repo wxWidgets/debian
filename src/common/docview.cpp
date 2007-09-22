@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     01/02/97
-// RCS-ID:      $Id: docview.cpp,v 1.66.2.10 2000/08/06 10:12:08 VZ Exp $
+// RCS-ID:      $Id: docview.cpp,v 1.66.2.11 2000/10/12 19:18:17 vadz Exp $
 // Copyright:   (c) Julian Smart and Markus Holzem
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -1657,7 +1657,7 @@ void wxDocParentFrame::OnExit(wxCommandEvent& WXUNUSED(event))
 
 void wxDocParentFrame::OnMRUFile(wxCommandEvent& event)
 {
-    int n = event.GetSelection() - wxID_FILE1;  // the index in MRU list
+    int n = event.GetId() - wxID_FILE1;  // the index in MRU list
     wxString filename(m_docManager->GetHistoryFile(n));
     if ( !filename.IsEmpty() )
     {

@@ -5,7 +5,7 @@
 // Author:      Robin Dunn
 //
 // Created:     25-nov-1998
-// RCS-ID:      $Id: htmlhelp.i,v 1.1.2.1 2000/05/16 02:06:13 RD Exp $
+// RCS-ID:      $Id: htmlhelp.i,v 1.1.2.2 2001/01/30 20:53:43 robind Exp $
 // Copyright:   (c) 1998 by Total Control Software
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -14,7 +14,7 @@
 %module htmlhelp
 
 %{
-#include "helpers.h"
+#include "export.h"
 #include <wx/html/htmlwin.h>
 #include <wx/html/helpctrl.h>
 #include <wx/image.h>

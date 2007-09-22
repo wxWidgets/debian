@@ -5,7 +5,7 @@
 // Author:      Robin Dunn
 //
 // Created:     6/24/97
-// RCS-ID:      $Id: _defs.i,v 1.1.2.3 2000/08/08 19:17:31 RD Exp $
+// RCS-ID:      $Id: _defs.i,v 1.1.2.5 2001/01/30 20:53:43 robind Exp $
 // Copyright:   (c) 1998 by Total Control Software
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -218,6 +218,10 @@ enum {
     wxFRAME_TOOL_WINDOW,
     wxFRAME_FLOAT_ON_PARENT,
     wxFRAME_NO_WINDOW_MENU,
+#ifdef FOR_2_3
+    wxFRAME_NO_TASKBAR,
+    wxFRAME_EX_CONTEXTHELP,
+#endif
     wxED_CLIENT_MARGIN,
     wxED_BUTTONS_BOTTOM,
     wxED_BUTTONS_RIGHT,
@@ -316,12 +320,19 @@ enum {
     wxLC_MASK_TYPE,
     wxLC_MASK_ALIGN,
     wxLC_MASK_SORT,
+#ifdef FOR_2_3
+    wxLC_HRULES,
+    wxLC_VRULES,
+#endif
     wxSP_VERTICAL,
     wxSP_HORIZONTAL,
     wxSP_ARROW_KEYS,
     wxSP_WRAP,
     wxSP_NOBORDER,
     wxSP_3D,
+    wxSP_3DSASH,
+    wxSP_3DBORDER,
+    wxSP_FULLSASH,
     wxSP_BORDER,
     wxSP_LIVE_UPDATE,
     wxSP_PERMIT_UNSPLIT,
@@ -482,6 +493,14 @@ enum {
 
     wxHW_SCROLLBAR_NEVER,
     wxHW_SCROLLBAR_AUTO,
+
+    wxJOYSTICK1,
+    wxJOYSTICK2,
+    wxJOY_BUTTON1,
+    wxJOY_BUTTON2,
+    wxJOY_BUTTON3,
+    wxJOY_BUTTON4,
+    wxJOY_BUTTON_ANY,
 
 };
 
@@ -955,6 +974,8 @@ enum wxEventType {
  wxEVT_NAVIGATION_KEY,
 
  wxEVT_TIMER,
+
+ wxEVT_END_PROCESS,
 
 };
 

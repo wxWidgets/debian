@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     29/01/98
-// RCS-ID:      $Id: utils.h,v 1.50.2.3 2000/06/09 21:15:49 RL Exp $
+// RCS-ID:      $Id: utils.h,v 1.50.2.4 2000/12/17 01:38:50 vadz Exp $
 // Copyright:   (c) 1998 Julian Smart
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -300,6 +300,7 @@ public:
 private:
     wxWindowList *m_winDisabled;
 
+    // not used any more but left here for binary compatibility
 #ifdef __WXMSW__
     wxWindow *m_winTop;
 #endif // MSW

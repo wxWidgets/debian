@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     04/01/98
-// RCS-ID:      $Id: mdi.h,v 1.9.2.2 2000/08/10 08:42:34 VZ Exp $
+// RCS-ID:      $Id: mdi.h,v 1.9.2.3 2000/12/10 11:57:55 vadz Exp $
 // Copyright:   (c) Julian Smart and Markus Holzem
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -71,6 +71,8 @@ public:
     void OnSize(wxSizeEvent& event);
     void OnMove(wxMoveEvent& event);
     void OnClose(wxCloseEvent& event);
+
+    void OnUpdateRefresh(wxUpdateUIEvent& event);
 
     DECLARE_EVENT_TABLE()
 };

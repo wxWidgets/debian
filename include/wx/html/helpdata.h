@@ -4,7 +4,7 @@
 // Notes:       Based on htmlhelp.cpp, implementing a monolithic
 //              HTML Help controller class,  by Vaclav Slavik
 // Author:      Harm van der Heijden and Vaclav Slavik
-// RCS-ID:      $Id: helpdata.h,v 1.11 2000/01/19 23:05:24 VS Exp $
+// RCS-ID:      $Id: helpdata.h,v 1.11.2.1 2000/10/18 17:00:01 juliansmart Exp $
 // Copyright:   (c) Harm van der Heijden and Vaclav Slavik
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -85,7 +85,7 @@ class WXDLLEXPORT wxSearchEngine : public wxObject
 {
     public:
         wxSearchEngine() : wxObject() {m_Keyword = NULL; }
-        ~wxSearchEngine() {if (m_Keyword) free(m_Keyword); }
+        ~wxSearchEngine() {if (m_Keyword) delete[] m_Keyword; }
 
         virtual void LookFor(const wxString& keyword, bool case_sensitive, bool whole_words_only);
         // Sets the keyword we will be searching for

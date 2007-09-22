@@ -3,7 +3,7 @@
 // Purpose:     wxSpinCtrl
 // Author:      Robert
 // Modified by:
-// RCS-ID:      $Id: spinctrl.cpp,v 1.18.2.1 2000/03/24 17:45:40 RR Exp $
+// RCS-ID:      $Id: spinctrl.cpp,v 1.18.2.2 2000/12/16 10:04:14 roebling Exp $
 // Copyright:   (c) Robert Roebling
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -50,6 +50,24 @@ static void gtk_spinctrl_callback( GtkWidget *WXUNUSED(widget), wxSpinCtrl *win 
     if (g_blockEventsOnDrag) return;
 
     wxCommandEvent event( wxEVT_COMMAND_SPINCTRL_UPDATED, win->GetId());
+    event.SetEventObject( win );
+    event.SetInt( win->GetValue() );
+    win->GetEventHandler()->ProcessEvent( event );
+}
+
+//-----------------------------------------------------------------------------
+//  "changed"
+//-----------------------------------------------------------------------------
+
+static void
+gtk_spinctrl_text_changed_callback( GtkWidget *WXUNUSED(widget), wxSpinCtrl *win )
+{
+    if (!win->m_hasVMT) return;
+
+    if (g_isIdle)
+        wxapp_install_idle_handler();
+
+    wxCommandEvent event( wxEVT_COMMAND_TEXT_UPDATED, win->GetId() );
     event.SetEventObject( win );
     event.SetInt( win->GetValue() );
     win->GetEventHandler()->ProcessEvent( event );
@@ -125,6 +143,9 @@ void wxSpinCtrl::GtkDisableEvents()
                         GTK_SIGNAL_FUNC(gtk_spinctrl_callback),
                         (gpointer) this );
 
+    gtk_signal_disconnect_by_func( GTK_OBJECT(m_widget),
+                        GTK_SIGNAL_FUNC(gtk_spinctrl_text_changed_callback),
+                        (gpointer) this );
 }
 
 void wxSpinCtrl::GtkEnableEvents()
@@ -133,6 +154,11 @@ void wxSpinCtrl::GtkEnableEvents()
                         "value_changed",
                         GTK_SIGNAL_FUNC(gtk_spinctrl_callback),
                         (gpointer) this );
+    
+    gtk_signal_connect( GTK_OBJECT(m_widget),
+                        "changed",
+                        GTK_SIGNAL_FUNC(gtk_spinctrl_text_changed_callback),
+                        (gpointer)this);
 }
 
 int wxSpinCtrl::GetMin() const

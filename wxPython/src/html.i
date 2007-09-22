@@ -5,7 +5,7 @@
 // Author:      Robin Dunn
 //
 // Created:     25-nov-1998
-// RCS-ID:      $Id: html.i,v 1.1.2.2 2000/06/02 01:50:24 RD Exp $
+// RCS-ID:      $Id: html.i,v 1.1.2.4 2001/01/30 20:53:43 robind Exp $
 // Copyright:   (c) 1998 by Total Control Software
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -14,7 +14,7 @@
 %module html
 
 %{
-#include "helpers.h"
+#include "export.h"
 #include <wx/html/htmlwin.h>
 #include <wx/html/htmprint.h>
 #include <wx/image.h>
@@ -39,16 +39,6 @@
 %extern printfw.i
 
 %extern utils.i
-
-//---------------------------------------------------------------------------
-
-%{
-//  #ifdef __WXMSW__
-//  wxString wxPyEmptyStr("");
-//  wxPoint wxPyDefaultPosition(wxDefaultPosition);
-//  wxSize wxPyDefaultSize(wxDefaultSize);
-//  #endif
-%}
 
 %pragma(python) code = "import wx"
 
@@ -275,12 +265,14 @@ public:
     }
 
     void OnExit() {
+        bool doSave = wxPyRestoreThread();
         Py_DECREF(m_tagHandlerClass);
         m_tagHandlerClass = NULL;
         for (size_t x=0; x < m_objArray.GetCount(); x++) {
             PyObject* obj = (PyObject*)m_objArray.Item(x);
             Py_DECREF(obj);
         }
+        wxPySaveThread(doSave);
     };
 
     void FillHandlersTable(wxHtmlWinParser *parser) {
@@ -431,9 +423,10 @@ IMP_PYCALLBACK__STRING(wxPyHtmlWindow, wxHtmlWindow, OnSetTitle);
 
  void wxPyHtmlWindow::OnLinkClicked(const wxHtmlLinkInfo& link) {
     bool doSave = wxPyRestoreThread();
-    if (m_myInst.findCallback("OnLinkClicked")) {
-        PyObject* obj = wxPyConstructObject((void*)&link, "wxHtmlLinkInfo");
-        m_myInst.callCallback(Py_BuildValue("(O)", obj));
+    if (wxPyCBH_findCallback(m_myInst, "OnLinkClicked")) {
+        PyObject* obj = wxPyConstructObject((void*)&link, "wxHtmlLinkInfo", 0);
+        wxPyCBH_callCallback(m_myInst, Py_BuildValue("(O)", obj));
+        Py_DECREF(obj);
     }
     else
         wxHtmlWindow::OnLinkClicked(link);
@@ -449,8 +442,8 @@ void wxPyHtmlWindow::base_OnLinkClicked(const wxHtmlLinkInfo& link) {
 %name(wxHtmlWindow) class wxPyHtmlWindow : public wxScrolledWindow {
 public:
     wxPyHtmlWindow(wxWindow *parent, int id = -1,
-                 wxPoint& pos = wxPyDefaultPosition,
-                 wxSize& size = wxPyDefaultSize,
+                 wxPoint& pos = wxDefaultPosition,
+                 wxSize& size = wxDefaultSize,
                  int flags=wxHW_SCROLLBAR_AUTO,
                  char* name = "htmlWindow");
 
@@ -581,14 +574,6 @@ public:
 
     wxClassInfo::CleanUpClasses();
     wxClassInfo::InitializeClasses();
-
-    // Until wxFileSystem is wrapped...
-    #if wxUSE_FS_ZIP
-       wxFileSystem::AddHandler(new wxZipFSHandler);
-    #endif
-    #if wxUSE_FS_INET
-//       wxFileSystem::AddHandler(new wxInternetFSHandler);
-    #endif
 %}
 
 //----------------------------------------------------------------------

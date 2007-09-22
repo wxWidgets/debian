@@ -4,7 +4,7 @@
 // Author:      Vadim Zeitlin
 // Modified by:
 // Created:     23.07.99
-// RCS-ID:      $Id: numdlgg.cpp,v 1.17.2.1 2000/03/23 21:16:18 JS Exp $
+// RCS-ID:      $Id: numdlgg.cpp,v 1.17.2.2 2000/10/24 10:08:00 roebling Exp $
 // Copyright:   (c) Vadim Zeitlin
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -18,7 +18,6 @@
 // ----------------------------------------------------------------------------
 
 #ifdef __GNUG__
-    #pragma interface "numdlgg.cpp"
     #pragma implementation "numdlgg.cpp"
 #endif
 

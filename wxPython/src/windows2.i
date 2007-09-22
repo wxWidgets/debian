@@ -5,7 +5,7 @@
 // Author:      Robin Dunn
 //
 // Created:     6/2/98
-// RCS-ID:      $Id: windows2.i,v 1.1.2.4 2000/08/08 19:17:32 RD Exp $
+// RCS-ID:      $Id: windows2.i,v 1.1.2.5 2001/01/30 20:53:43 robind Exp $
 // Copyright:   (c) 1998 by Total Control Software
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -75,8 +75,8 @@ public:
 class wxGrid : public wxPanel {
 public:
     wxGrid(wxWindow* parent, wxWindowID id,
-           const wxPoint& pos=wxPyDefaultPosition,
-           const wxSize& size=wxPyDefaultSize,
+           const wxPoint& pos=wxDefaultPosition,
+           const wxSize& size=wxDefaultSize,
            long style=0,
            char* name="grid");
 
@@ -256,8 +256,8 @@ class wxNotebook : public wxControl {
 public:
     wxNotebook(wxWindow *parent,
                wxWindowID id,
-               const wxPoint& pos = wxPyDefaultPosition,
-               const wxSize& size = wxPyDefaultSize,
+               const wxPoint& pos = wxDefaultPosition,
+               const wxSize& size = wxDefaultSize,
                long style = 0,
                char* name = "notebook");
 
@@ -330,8 +330,8 @@ public:
 class wxSplitterWindow : public wxWindow {
 public:
     wxSplitterWindow(wxWindow* parent, wxWindowID id,
-                     const wxPoint& point = wxPyDefaultPosition,
-                     const wxSize& size = wxPyDefaultSize,
+                     const wxPoint& point = wxDefaultPosition,
+                     const wxSize& size = wxDefaultSize,
                      long style=wxSP_3D|wxCLIP_CHILDREN,
                      char* name = "splitterWindow");
 

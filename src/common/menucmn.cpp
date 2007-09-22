@@ -4,7 +4,7 @@
 // Author:      Vadim Zeitlin
 // Modified by:
 // Created:     26.10.99
-// RCS-ID:      $Id: menucmn.cpp,v 1.14.2.1 2000/08/12 13:30:47 VZ Exp $
+// RCS-ID:      $Id: menucmn.cpp,v 1.14.2.2 2001/01/23 17:30:22 vadz Exp $
 // Copyright:   (c) wxWindows team
 // Licence:     wxWindows license
 ///////////////////////////////////////////////////////////////////////////////
@@ -266,7 +266,10 @@ int wxMenuBase::FindItem(const wxString& text) const
             if ( rc != wxNOT_FOUND )
                 return rc;
         }
-        else if ( !item->IsSeparator() )
+
+        // we execute this code for submenus as well to alllow finding them by
+        // name just like the ordinary items
+        if ( !item->IsSeparator() )
         {
             if ( item->GetLabel() == label )
                 return item->GetId();

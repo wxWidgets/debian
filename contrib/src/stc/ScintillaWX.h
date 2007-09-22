@@ -9,7 +9,7 @@
 // Author:      Robin Dunn
 //
 // Created:     13-Jan-2000
-// RCS-ID:      $Id: ScintillaWX.h,v 1.2.2.2 2000/04/29 05:17:21 RD Exp $
+// RCS-ID:      $Id: ScintillaWX.h,v 1.2.2.3 2000/10/09 20:38:25 robind Exp $
 // Copyright:   (c) 2000 by Total Control Software
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -97,8 +97,12 @@ public:
     virtual void AddToPopUp(const char *label, int cmd = 0, bool enabled = true);
     virtual void ClaimSelection();
 
-    virtual LRESULT DefWndProc(UINT iMessage, WPARAM wParam, LPARAM lParam);
-    virtual LRESULT WndProc(UINT iMessage, WPARAM wParam, LPARAM lParam);
+    virtual long DefWndProc(unsigned int iMessage,
+                            unsigned long wParam,
+                            long lParam);
+    virtual long WndProc(unsigned int iMessage,
+                         unsigned long wParam,
+                         long lParam);
 
     virtual void NotifyChange();
     virtual void NotifyParent(SCNotification scn);

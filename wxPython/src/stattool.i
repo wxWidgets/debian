@@ -5,7 +5,7 @@
 // Author:      Robin Dunn
 //
 // Created:     08/24/1998
-// RCS-ID:      $Id: stattool.i,v 1.1.2.2 2000/06/02 01:50:24 RD Exp $
+// RCS-ID:      $Id: stattool.i,v 1.1.2.4 2001/01/30 20:53:43 robind Exp $
 // Copyright:   (c) 1998 by Total Control Software
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -32,13 +32,18 @@
 
 %pragma(python) code = "import wx"
 
+
+%{
+    static wxString wxPyEmptyStr("");
+%}
+
 //---------------------------------------------------------------------------
 
 class wxStatusBar : public wxWindow {
 public:
     wxStatusBar(wxWindow* parent, wxWindowID id,
-                const wxPoint& pos = wxPyDefaultPosition,
-                const wxSize& size = wxPyDefaultSize,
+                const wxPoint& pos = wxDefaultPosition,
+                const wxSize& size = wxDefaultSize,
                 long style = wxST_SIZEGRIP,
                 char* name = "statusBar");
 
@@ -152,14 +157,14 @@ public:
         wxToolBarToolBase *AddTool(int id,
                                    const wxBitmap& bitmap,
                                    const wxBitmap& pushedBitmap = wxNullBitmap,
-                                   int toggle = FALSE,
+                                   int isToggle = FALSE,
                                    PyObject *clientData = NULL,
                                    const wxString& shortHelpString = wxPyEmptyStr,
                                    const wxString& longHelpString = wxPyEmptyStr) {
             wxPyUserData* udata = NULL;
             if (clientData)
                 udata = new wxPyUserData(clientData);
-            return self->AddTool(id, bitmap, pushedBitmap, (bool)toggle,
+            return self->AddTool(id, bitmap, pushedBitmap, (bool)isToggle,
                                  udata, shortHelpString, longHelpString);
         }
 
@@ -168,8 +173,8 @@ public:
                                          const wxBitmap& bitmap,
                                          const wxString& shortHelpString = wxPyEmptyStr,
                                          const wxString& longHelpString = wxPyEmptyStr,
-                                         int toggle = FALSE) {
-            return self->AddTool(id, bitmap, wxNullBitmap, toggle, NULL,
+                                         int isToggle = FALSE) {
+            return self->AddTool(id, bitmap, wxNullBitmap, isToggle, NULL,
                                  shortHelpString, longHelpString);
         }
 
@@ -179,14 +184,14 @@ public:
                                       int id,
                                       const wxBitmap& bitmap,
                                       const wxBitmap& pushedBitmap = wxNullBitmap,
-                                      int toggle = FALSE,
+                                      int isToggle = FALSE,
                                       PyObject *clientData = NULL,
                                       const wxString& shortHelpString = wxPyEmptyStr,
                                       const wxString& longHelpString = wxPyEmptyStr) {
             wxPyUserData* udata = NULL;
             if (clientData)
                 udata = new wxPyUserData(clientData);
-            return self->InsertTool(pos, id, bitmap, pushedBitmap, (bool)toggle,
+            return self->InsertTool(pos, id, bitmap, pushedBitmap, (bool)isToggle,
                                     udata, shortHelpString, longHelpString);
         }
 
@@ -196,8 +201,8 @@ public:
                                             const wxBitmap& bitmap,
                                             const wxString& shortHelpString = wxPyEmptyStr,
                                             const wxString& longHelpString = wxPyEmptyStr,
-                                            int toggle = FALSE) {
-            return self->InsertTool(pos, id, bitmap, wxNullBitmap, toggle, NULL,
+                                            int isToggle = FALSE) {
+            return self->InsertTool(pos, id, bitmap, wxNullBitmap, isToggle, NULL,
                                     shortHelpString, longHelpString);
         }
     }
@@ -273,8 +278,8 @@ class wxToolBar : public wxToolBarBase {
 public:
     wxToolBar(wxWindow *parent,
               wxWindowID id,
-              const wxPoint& pos = wxPyDefaultPosition,
-              const wxSize& size = wxPyDefaultSize,
+              const wxPoint& pos = wxDefaultPosition,
+              const wxSize& size = wxDefaultSize,
               long style = wxNO_BORDER | wxTB_HORIZONTAL,
               const char* name = wxToolBarNameStr);
 
@@ -290,8 +295,8 @@ class wxToolBarSimple : public wxToolBarBase {
 public:
     wxToolBarSimple(wxWindow *parent,
                     wxWindowID id,
-                    const wxPoint& pos = wxPyDefaultPosition,
-                    const wxSize& size = wxPyDefaultSize,
+                    const wxPoint& pos = wxDefaultPosition,
+                    const wxSize& size = wxDefaultSize,
                     long style = wxNO_BORDER | wxTB_HORIZONTAL,
                     const char* name = wxToolBarNameStr);
 
@@ -342,8 +347,8 @@ public:
 class wxToolBar : public wxControl {
 public:
     wxToolBar(wxWindow* parent, wxWindowID id,
-              const wxPoint& pos = wxPyDefaultPosition,
-              const wxSize& size = wxPyDefaultSize,
+              const wxPoint& pos = wxDefaultPosition,
+              const wxSize& size = wxDefaultSize,
               long style = wxTB_HORIZONTAL | wxNO_BORDER,
               char* name = "toolBar");
 

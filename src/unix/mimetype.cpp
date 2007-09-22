@@ -4,7 +4,7 @@
 // Author:      Vadim Zeitlin
 // Modified by:
 // Created:     23.09.98
-// RCS-ID:      $Id: mimetype.cpp,v 1.7.2.1 2000/06/07 12:54:32 VZ Exp $
+// RCS-ID:      $Id: mimetype.cpp,v 1.7.2.3 2001/01/15 21:48:44 vadz Exp $
 // Copyright:   (c) 1998 Vadim Zeitlin <zeitlin@dptmaths.ens-cachan.fr>
 // Licence:     wxWindows license (part of wxExtra library)
 /////////////////////////////////////////////////////////////////////////////
@@ -897,24 +897,27 @@ wxFileTypeImpl::GetEntry(const wxFileType::MessageParameters& params) const
     wxString command;
     MailCapEntry *entry = m_manager->m_aEntries[m_index[0]];
     while ( entry != NULL ) {
-        // notice that an empty command would always succeed (it's ok)
+        // get the command to run as the test for this entry
         command = wxFileType::ExpandCommand(entry->GetTestCmd(), params);
 
-        // suppress the command output
-        if ( !command.IsEmpty() )
+        // don't trace the test result if there is no test at all
+        if ( command.IsEmpty() )
         {
-            if ( wxSystem(command) == 0 ) {
-                // ok, passed
-                wxLogTrace(TRACE_MIME,
-                           wxT("Test '%s' for mime type '%s' succeeded."),
-                           command.c_str(), params.GetMimeType().c_str());
-                break;
-            }
-            else {
-                wxLogTrace(TRACE_MIME,
-                           wxT("Test '%s' for mime type '%s' failed."),
-                           command.c_str(), params.GetMimeType().c_str());
-            }
+            // no test at all, ok
+            break;
+        }
+
+        if ( wxSystem(command) == 0 ) {
+            // ok, test passed
+            wxLogTrace(TRACE_MIME,
+                       wxT("Test '%s' for mime type '%s' succeeded."),
+                       command.c_str(), params.GetMimeType().c_str());
+            break;
+        }
+        else {
+            wxLogTrace(TRACE_MIME,
+                       wxT("Test '%s' for mime type '%s' failed."),
+                       command.c_str(), params.GetMimeType().c_str());
         }
 
         entry = entry->GetNext();
@@ -1512,17 +1515,18 @@ bool wxMimeTypesManagerImpl::ReadMailcap(const wxString& strFileName,
                                 }
                                 else {
                                     // no, it's a simple flag
-                                    // TODO support the flags:
-                                    //  1. create an xterm for 'needsterminal'
-                                    //  2. append "| $PAGER" for 'copiousoutput'
                                     if ( curField == wxT("needsterminal") )
                                         needsterminal = TRUE;
-                                    else if ( curField == wxT("copiousoutput") )
+                                    else if ( curField == wxT("copiousoutput")) {
+                                        // copiousoutput impies that the
+                                        // viewer is a console program
+                                        needsterminal =
                                         copiousoutput = TRUE;
-                                    else if ( curField == wxT("textualnewlines") )
-                                        ;   // ignore
-                                    else
+                                    }
+                                    else {
+                                        // unknown flag
                                         ok = FALSE;
+                                    }
                                 }
 
                                 if ( !ok )
@@ -1572,6 +1576,19 @@ bool wxMimeTypesManagerImpl::ReadMailcap(const wxString& strFileName,
                          strFileName.c_str(), nLine + 1);
         }
         else {
+            // support for flags:
+            //  1. create an xterm for 'needsterminal'
+            //  2. append "| $PAGER" for 'copiousoutput'
+            if ( copiousoutput ) {
+                const wxChar *p = wxGetenv(_T("PAGER"));
+                strOpenCmd << _T(" | ") << (p ? p : _T("more"));
+            }
+
+            if ( needsterminal ) {
+                strOpenCmd.Printf(_T("xterm -e sh -c '%s'"),
+                                  strOpenCmd.c_str());
+            }
+
             MailCapEntry *entry = new MailCapEntry(strOpenCmd,
                                                    strPrintCmd,
                                                    strTest);

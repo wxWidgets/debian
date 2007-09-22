@@ -5,7 +5,7 @@
 // Author:      Robin Dunn
 //
 // Created:     9-Sept-1999
-// RCS-ID:      $Id: oglhelpers.h,v 1.1.2.1 2000/05/16 02:05:25 RD Exp $
+// RCS-ID:      $Id: oglhelpers.h,v 1.1.2.2 2001/01/30 20:53:08 robind Exp $
 // Copyright:   (c) 1998 by Total Control Software
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -110,8 +110,8 @@ wxList* wxPy_wxRealPoint_ListHelper(PyObject* pyList);
 class wxPyShapeCanvas : public wxShapeCanvas {
 public:
     wxPyShapeCanvas(wxWindow* parent = NULL, wxWindowID id = -1,
-                    const wxPoint& pos = wxPyDefaultPosition,
-                    const wxSize& size = wxPyDefaultSize,
+                    const wxPoint& pos = wxDefaultPosition,
+                    const wxSize& size = wxDefaultSize,
                     long style = wxBORDER)
         : wxShapeCanvas(parent, id, pos, size, style) {}
 

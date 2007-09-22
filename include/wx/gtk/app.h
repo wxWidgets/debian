@@ -2,7 +2,7 @@
 // Name:        app.h
 // Purpose:
 // Author:      Robert Roebling
-// Id:          $Id: app.h,v 1.26 2000/03/16 08:07:57 JJ Exp $
+// Id:          $Id: app.h,v 1.26.2.1 2001/01/24 15:00:59 vadz Exp $
 // Copyright:   (c) 1998 Robert Roebling, Julian Smart
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -91,5 +91,7 @@ extern "C"
      extern guint vms_gtk_micro_version(void);
   }
 #endif
+
+int WXDLLEXPORT wxEntry( int argc, char *argv[] );
 
 #endif // __GTKAPPH__

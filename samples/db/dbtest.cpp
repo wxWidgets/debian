@@ -4,7 +4,7 @@
 // Author:      George Tasker
 // Modified by:
 // Created:     1998
-// RCS-ID:      $Id: dbtest.cpp,v 1.18.2.7 2000/08/05 18:34:44 GT Exp $
+// RCS-ID:      $Id: dbtest.cpp,v 1.18.2.8 2000/11/05 13:23:07 vadz Exp $
 // Copyright:   (c) 1998 Remstar International, Inc.
 // Licence:     wxWindows licence
 ///////////////////////////////////////////////////////////////////////////////
@@ -1646,7 +1646,7 @@ void CparameterDlg::FillDataSourceList()
     for (i = 0; wxStrlen(p[i]); i++)
         pParamODBCSourceList->Append(p[i]);
 
-     delete p;
+    delete [] p;
 }  // CparameterDlg::CparameterDlg::FillDataSourceList()
 
 

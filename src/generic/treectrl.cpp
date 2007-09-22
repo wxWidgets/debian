@@ -4,7 +4,7 @@
 // Author:      Robert Roebling
 // Created:     01/02/97
 // Modified:    22/10/98 - almost total rewrite, simpler interface (VZ)
-// Id:          $Id: treectrl.cpp,v 1.118.2.10 2000/09/12 16:27:03 VZ Exp $
+// Id:          $Id: treectrl.cpp,v 1.118.2.13 2001/01/10 23:54:44 roebling Exp $
 // Copyright:   (c) 1998 Robert Roebling, Julian Smart and Markus Holzem
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -2255,8 +2255,6 @@ void wxTreeCtrl::OnMouse( wxMouseEvent &event )
 
             // highlight the current drop target if any
             DrawDropEffect(m_dropTarget);
-
-            wxYield();
         }
     }
     else if ( (event.LeftUp() || event.RightUp()) && m_isDragging )
@@ -2286,8 +2284,6 @@ void wxTreeCtrl::OnMouse( wxMouseEvent &event )
         ReleaseMouse();
 
         SetCursor(m_oldCursor);
-
-        wxYield();
     }
     else
     {
@@ -2302,6 +2298,9 @@ void wxTreeCtrl::OnMouse( wxMouseEvent &event )
             wxTreeEvent nevent(wxEVT_COMMAND_TREE_ITEM_RIGHT_CLICK, GetId());
             nevent.m_item = item;
             nevent.m_code = 0;
+            CalcScrolledPosition(x, y,
+                                 &nevent.m_pointDrag.x,
+                                 &nevent.m_pointDrag.y);
             nevent.SetEventObject(this);
             GetEventHandler()->ProcessEvent(nevent);
         }
@@ -2354,6 +2353,9 @@ void wxTreeCtrl::OnMouse( wxMouseEvent &event )
                 wxTreeEvent nevent( wxEVT_COMMAND_TREE_ITEM_ACTIVATED, GetId() );
                 nevent.m_item = item;
                 nevent.m_code = 0;
+                CalcScrolledPosition(x, y,
+                                     &nevent.m_pointDrag.x,
+                                     &nevent.m_pointDrag.y);
                 nevent.SetEventObject( this );
                 GetEventHandler()->ProcessEvent( nevent );
             }

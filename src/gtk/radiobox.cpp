@@ -2,7 +2,7 @@
 // Name:        radiobox.cpp
 // Purpose:
 // Author:      Robert Roebling
-// Id:          $Id: radiobox.cpp,v 1.63.2.1 2000/04/17 16:11:16 VZ Exp $
+// Id:          $Id: radiobox.cpp,v 1.63.2.2 2000/11/25 22:23:44 vadz Exp $
 // Copyright:   (c) 1998 Robert Roebling
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -183,7 +183,9 @@ bool wxRadioBox::Create( wxWindow *parent, wxWindowID id, const wxString& title,
 
     m_widget = gtk_frame_new( title.mbc_str() );
 
-    m_majorDim = majorDim;
+    // majorDim may be 0 if all trailing parameters were omitted, so don't
+    // assert here but just use the correct value for it
+    m_majorDim = majorDim == 0 ? n : majorDim;
 
     GtkRadioButton *m_radio = (GtkRadioButton*) NULL;
 

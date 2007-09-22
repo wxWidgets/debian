@@ -4,7 +4,7 @@
 // Author:      Harm van der Heijden and Robert Roebling
 // Modified by:
 // Created:     12/12/98
-// RCS-ID:      $Id: dirdlgg.cpp,v 1.22.2.2 2000/04/01 11:38:04 RR Exp $
+// RCS-ID:      $Id: dirdlgg.cpp,v 1.22.2.3 2000/11/23 21:37:28 roebling Exp $
 // Copyright:   (c) Harm van der Heijden and Robert Roebling
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -331,7 +331,7 @@ void wxDirCtrl::OnExpandItem(wxTreeEvent &event)
         /* Don't add "." and ".." to the tree. I think wxFindNextFile
          * also checks this, but I don't quite understand what happens
          * there. Also wxFindNextFile seems to swallow hidden dirs */
-        if ((filename != ".") && (filename != ".."))
+        if ((filename != ".") && (filename != "..") && (filename[0] != '.'))
         {
             m_paths.Add(path);
             m_names.Add(filename);

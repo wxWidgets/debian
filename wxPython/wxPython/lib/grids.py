@@ -6,7 +6,7 @@
 # Author:      Robin Dunn
 #
 # Created:     21-Sept-1999
-# RCS-ID:      $Id: grids.py,v 1.1.2.1 2000/05/16 02:07:23 RD Exp $
+# RCS-ID:      $Id: grids.py,v 1.1.2.2 2001/01/30 20:54:22 robind Exp $
 # Copyright:   (c) 1999 by Total Control Software
 # Licence:     wxWindows license
 #----------------------------------------------------------------------

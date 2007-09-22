@@ -6,7 +6,7 @@
 # Author:       Robin Dunn
 #
 # Created:      A long time ago, in a galaxy far, far away...
-# RCS-ID:       $Id: DialogUnits.py,v 1.1.2.2 2000/06/02 01:50:17 RD Exp $
+# RCS-ID:       $Id: DialogUnits.py,v 1.1.2.3 2001/01/30 20:53:21 robind Exp $
 # Copyright:    (c) 1998 by Total Control Software
 # Licence:      wxWindows license
 #----------------------------------------------------------------------------

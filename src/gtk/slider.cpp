@@ -2,7 +2,7 @@
 // Name:        slider.cpp
 // Purpose:
 // Author:      Robert Roebling
-// Id:          $Id: slider.cpp,v 1.38.2.1 2000/06/12 11:53:09 RR Exp $
+// Id:          $Id: slider.cpp,v 1.38.2.3 2000/12/16 10:04:14 roebling Exp $
 // Copyright:   (c) 1998 Robert Roebling
 // Licence:           wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -61,7 +61,8 @@ static void gtk_slider_callback( GtkAdjustment *adjust, wxSlider *win )
     else if (range->scroll_type == GTK_SCROLL_PAGE_BACKWARD) command = wxEVT_SCROLL_PAGEUP;
     else if (range->scroll_type == GTK_SCROLL_PAGE_FORWARD)  command = wxEVT_SCROLL_PAGEDOWN;
 
-    int value = (int)ceil(adjust->value);
+    double dvalue = adjust->value;
+    int value = (int)(dvalue >= 0 ? dvalue - 0.5 : dvalue + 0.5);
 
     int orient = wxHORIZONTAL;
     if ( (win->GetWindowStyleFlag() & wxSB_VERTICAL) == wxSB_VERTICAL)
@@ -95,7 +96,7 @@ bool wxSlider::Create(wxWindow *parent, wxWindowID id,
         !CreateBase( parent, id, pos, size, style, validator, name ))
     {
         wxFAIL_MSG( wxT("wxSlider creation failed") );
-	    return FALSE;
+        return FALSE;
     }
 
     m_oldPos = 0.0;
@@ -108,7 +109,7 @@ bool wxSlider::Create(wxWindow *parent, wxWindowID id,
     if (style & wxSL_LABELS)
     {
         gtk_scale_set_draw_value( GTK_SCALE( m_widget ), TRUE );
-	    gtk_scale_set_digits( GTK_SCALE( m_widget ), 0 );
+        gtk_scale_set_digits( GTK_SCALE( m_widget ), 0 );
 
         /* labels need more space and too small window will
            cause junk to appear on the dialog */
@@ -157,7 +158,10 @@ bool wxSlider::Create(wxWindow *parent, wxWindowID id,
 
 int wxSlider::GetValue() const
 {
-    return (int)(m_adjust->value+0.5);
+    // we want to round to the nearest integer, i.e. 0.9 is rounded to 1 and
+    // -0.9 is rounded to -1
+    double val = m_adjust->value;
+    return (int)(val >= 0 ? val - 0.5 : val + 0.5);
 }
 
 void wxSlider::SetValue( int value )

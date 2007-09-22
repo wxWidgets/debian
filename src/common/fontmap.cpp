@@ -4,7 +4,7 @@
 // Author:      Vadim Zeitlin
 // Modified by:
 // Created:     04.11.99
-// RCS-ID:      $Id: fontmap.cpp,v 1.13.2.13 2000/08/13 13:28:50 VZ Exp $
+// RCS-ID:      $Id: fontmap.cpp,v 1.13.2.16 2001/02/02 16:52:10 vadz Exp $
 // Copyright:   (c) Vadim Zeitlin
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -94,25 +94,25 @@ static wxFontEncoding gs_encodings[] =
 // the descriptions for them
 static const wxChar* gs_encodingDescs[] =
 {
-    wxTRANSLATE( "West European (ISO-8859-1/Latin 1)" ),
-    wxTRANSLATE( "Central European (ISO-8859-2/Latin 2)" ),
+    wxTRANSLATE( "Western European (ISO-8859-1)" ),
+    wxTRANSLATE( "Central European (ISO-8859-2)" ),
     wxTRANSLATE( "Esperanto (ISO-8859-3)" ),
     wxTRANSLATE( "Baltic (old) (ISO-8859-4)" ),
-    wxTRANSLATE( "Cyrillic (Latin 5)" ),
+    wxTRANSLATE( "Cyrillic (ISO-8859-5)" ),
     wxTRANSLATE( "Arabic (ISO-8859-6)" ),
     wxTRANSLATE( "Greek (ISO-8859-7)" ),
     wxTRANSLATE( "Hebrew (ISO-8859-8)" ),
     wxTRANSLATE( "Turkish (ISO-8859-9)" ),
     wxTRANSLATE( "Nordic (ISO-8859-10)" ),
     wxTRANSLATE( "Thai (ISO-8859-11)" ),
-    wxTRANSLATE( "ISO-8859-12" ),
+    wxTRANSLATE( "Indian (ISO-8859-12)" ),
     wxTRANSLATE( "Baltic (ISO-8859-13)" ),
-    wxTRANSLATE( "ISO-8859-14" ),
-    wxTRANSLATE( "West European new (ISO-8859-15/Latin 0)" ),
+    wxTRANSLATE( "Celtic (ISO-8859-14)" ),
+    wxTRANSLATE( "Western European with Euro (ISO-8859-15)" ),
     wxTRANSLATE( "KOI8-R" ),
-    wxTRANSLATE( "Windows Latin 2 (CP 1250)" ),
+    wxTRANSLATE( "Windows Central European (CP 1250)" ),
     wxTRANSLATE( "Windows Cyrillic (CP 1251)" ),
-    wxTRANSLATE( "Windows Latin 1 (CP 1252)" ),
+    wxTRANSLATE( "Windows Western European (CP 1252)" ),
     wxTRANSLATE( "Windows Greek (CP 1253)" ),
     wxTRANSLATE( "Windows Turkish (CP 1254)" ),
     wxTRANSLATE( "Windows Hebrew (CP 1255)" ),
@@ -451,7 +451,7 @@ wxFontEncoding wxFontMapper::CharsetToEncoding(const wxString& charset,
                 {
                     value -= 1250;
                     if ( value < wxFONTENCODING_CP12_MAX -
-                                 wxFONTENCODING_CP1250 - 1 )
+                                 wxFONTENCODING_CP1250 )
                     {
                         // a valid Windows code page
                         value += wxFONTENCODING_CP1250;

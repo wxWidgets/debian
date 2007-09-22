@@ -1,9 +1,10 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: wxWindows-2.2.1\n"
-"POT-Creation-Date: 2000-08-13 16:29+0200\n"
+"POT-Creation-Date: 2001-01-27 13:50-0800\n"
 "PO-Revision-Date: 2000-08-10 16:09+0200\n"
-"Last-Translator: Roman Rolinsky <rolinsky@mema.ucl.ac.be>, Vadim Zeitlin <vadimwxwindows.org>\n"
+"Last-Translator: Roman Rolinsky <rolinsky@mema.ucl.ac.be>, Vadim Zeitlin "
+"<vadimwxwindows.org>\n"
 "Language-Team: wx-translators <wx-translators@wxwindows.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=koi8-r\n"
@@ -100,19 +101,19 @@ msgid "%s (or %s)"
 msgstr "%s (или %s)"
 
 # ../src/generic/logg.cpp:239
-#: ../src/generic/logg.cpp:239
+#: ../src/generic/logg.cpp:243
 #, c-format
 msgid "%s Error"
 msgstr "Ошибка %s"
 
 # ../src/generic/logg.cpp:247
-#: ../src/generic/logg.cpp:247
+#: ../src/generic/logg.cpp:251
 #, c-format
 msgid "%s Information"
 msgstr "Информация %s"
 
 # ../src/generic/logg.cpp:243
-#: ../src/generic/logg.cpp:243
+#: ../src/generic/logg.cpp:247
 #, c-format
 msgid "%s Warning"
 msgstr "Предупреждение %s"
@@ -140,12 +141,12 @@ msgid "%s: ill-formed resource file syntax."
 msgstr "%s: ошибочный синтаксис файла ресурсов."
 
 # ../src/generic/logg.cpp:473 ../src/generic/tipdlg.cpp:170
-#: ../src/generic/logg.cpp:473 ../src/generic/tipdlg.cpp:170
+#: ../src/generic/logg.cpp:477 ../src/generic/tipdlg.cpp:170
 msgid "&Close"
 msgstr "&Закрыть"
 
 # ../src/generic/logg.cpp:685
-#: ../src/generic/logg.cpp:685
+#: ../src/generic/logg.cpp:689
 msgid "&Details"
 msgstr "&Детали"
 
@@ -155,7 +156,7 @@ msgid "&Finish"
 msgstr "&Завершить"
 
 # ../src/generic/logg.cpp:474
-#: ../src/generic/logg.cpp:474
+#: ../src/generic/logg.cpp:478
 msgid "&Log"
 msgstr "&Журнал"
 
@@ -180,7 +181,7 @@ msgid "&Redo "
 msgstr "&Восстановить "
 
 # ../src/generic/logg.cpp:469 ../src/generic/logg.cpp:770
-#: ../src/generic/logg.cpp:469 ../src/generic/logg.cpp:770
+#: ../src/generic/logg.cpp:473 ../src/generic/logg.cpp:774
 msgid "&Save..."
 msgstr "&Сохранить..."
 
@@ -200,7 +201,7 @@ msgid "&Undo "
 msgstr "О&тменить "
 
 # ../src/common/docview.cpp:1906
-#: ../src/msw/mdi.cpp:1280 ../src/msw/mdi.cpp:1287
+#: ../src/msw/mdi.cpp:1284 ../src/msw/mdi.cpp:1291 ../src/msw/window.cpp:2276
 msgid "&Window"
 msgstr "&Окно"
 
@@ -229,7 +230,7 @@ msgid "'%s' is not a valid message catalog."
 msgstr "'%s' неверный каталог сообщений."
 
 # ../src/common/textfile.cpp:250
-#: ../src/common/textfile.cpp:250
+#: ../src/common/textfile.cpp:253
 #, c-format
 msgid "'%s' is probably a binary file."
 msgstr "'%s' возможно двоичный файл."
@@ -291,6 +292,12 @@ msgstr "."
 # ../src/generic/dirdlgg.cpp:265 ../src/generic/filedlgg.cpp:714
 #: ../src/generic/dirdlgg.cpp:265 ../src/generic/filedlgg.cpp:714
 msgid ".."
+msgstr ".."
+
+# ../src/generic/dirdlgg.cpp:265 ../src/generic/filedlgg.cpp:714
+#: ../src/msw/dirdlg.cpp:156
+#, fuzzy
+msgid "..."
 msgstr ".."
 
 # ../src/common/paper.cpp:120
@@ -381,7 +388,7 @@ msgid "A3 sheet, 297 x 420 mm"
 msgstr "Лист A3 297 x 420 мм"
 
 # ../src/common/paper.cpp:104 ../src/generic/dcpsg.cpp:2516
-#: ../src/common/paper.cpp:104 ../src/generic/dcpsg.cpp:2533
+#: ../src/common/paper.cpp:104 ../src/generic/dcpsg.cpp:2531
 msgid "A4 sheet, 210 x 297 mm"
 msgstr "Лист A4, 210 x 297 мм"
 
@@ -432,7 +439,7 @@ msgid "Already dialling ISP."
 msgstr "Уже звоним ISP."
 
 # ../src/generic/logg.cpp:1017
-#: ../src/generic/logg.cpp:1017
+#: ../src/generic/logg.cpp:1021
 #, c-format
 msgid "Append log to file '%s' (choosing [No] will overwrite it)?"
 msgstr "Добавить в файл журнала '%s' (выбор [Нет] перепишет его)?"
@@ -559,7 +566,7 @@ msgid "C sheet, 17 x 22 in"
 msgstr "Лист C, 17 x 22 дюйм"
 
 # ../src/generic/logg.cpp:471
-#: ../src/generic/logg.cpp:471
+#: ../src/generic/logg.cpp:475
 msgid "C&lear"
 msgstr "О&чистить"
 
@@ -588,12 +595,17 @@ msgstr "C6 Envelope, 114 x 162 мм"
 msgid "C65 Envelope, 114 x 229 mm"
 msgstr "C65 Envelope, 114 x 229 мм"
 
-#: ../src/msw/thread.cpp:222
+#: ../src/mac/thread.cpp:179 ../src/msw/thread.cpp:222
 msgid "Can not create event object."
 msgstr "Невозможно создать объект события."
 
 #: ../src/msw/thread.cpp:124
 msgid "Can not create mutex"
+msgstr "Невозможно создать семафор"
+
+#: ../src/mac/thread.cpp:92
+#, fuzzy
+msgid "Can not create mutex."
 msgstr "Невозможно создать семафор"
 
 # ../src/common/filefn.cpp:1272 ../src/unix/dir.cpp:214
@@ -603,21 +615,21 @@ msgstr "Невозможно создать семафор"
 msgid "Can not enumerate files in directory '%s'"
 msgstr "Не могу подсчитать файлы в каталоге '%s'"
 
-#: ../src/msw/thread.cpp:527
+#: ../src/msw/thread.cpp:552
 #, c-format
 msgid "Can not resume thread %x"
 msgstr "Невозможно возобновить нить %x"
 
-#: ../src/msw/thread.cpp:408
+#: ../src/msw/thread.cpp:433
 msgid "Can not start thread: error writing TLS."
 msgstr "Невозможно запустить нить: ошибка записи TLS."
 
-#: ../src/msw/thread.cpp:512
+#: ../src/msw/thread.cpp:537
 #, c-format
 msgid "Can not suspend thread %x"
 msgstr "Невозможно остановить нить %x"
 
-#: ../src/msw/thread.cpp:846
+#: ../src/msw/thread.cpp:871
 msgid "Can not wait for thread termination"
 msgstr "Невозможно дождаться окончания нити"
 
@@ -627,17 +639,17 @@ msgid "Can't &Undo "
 msgstr "Не могу О&тменить "
 
 # ../src/common/image.cpp:926
-#: ../src/common/image.cpp:926
+#: ../src/common/image.cpp:953
 #, c-format
 msgid "Can't check image format of file '%s': file does not exist."
 msgstr "Не могу проверить формат изображения файла '%s': файл не существует."
 
-#: ../src/msw/registry.cpp:410
+#: ../src/msw/registry.cpp:409
 #, c-format
 msgid "Can't close registry key '%s'"
 msgstr "Невозможно закрыть ключ registry '%s'"
 
-#: ../src/msw/registry.cpp:486
+#: ../src/msw/registry.cpp:485
 #, c-format
 msgid "Can't copy values of unsupported type %d."
 msgstr "Невозможно скопировать значение неподдерживаемого типа %d."
@@ -646,7 +658,7 @@ msgstr "Невозможно скопировать значение неподдерживаемого типа %d."
 msgid "Can't create list control window, check that comctl32.dll is installed."
 msgstr "Невозможно создать listview control, проверьте установку comctl32.dll."
 
-#: ../src/msw/registry.cpp:393
+#: ../src/msw/registry.cpp:392
 #, c-format
 msgid "Can't create registry key '%s'"
 msgstr "Невозможно создать ключ registry '%s'"
@@ -659,11 +671,11 @@ msgstr "Невозможно создать коммуникационный канал для чтения"
 msgid "Can't create the inter-process write pipe"
 msgstr "Невозможно создать коммуникационный канал для записи"
 
-#: ../src/msw/thread.cpp:494
+#: ../src/msw/thread.cpp:519
 msgid "Can't create thread"
 msgstr "Невозможно создать нить"
 
-#: ../src/msw/window.cpp:2396
+#: ../src/msw/window.cpp:2402
 #, c-format
 msgid ""
 "Can't create window of class %s!\n"
@@ -692,12 +704,12 @@ msgstr "Невозможно удалить значение '%s' ключа '%s'"
 msgid "Can't delete value of key '%s'"
 msgstr "Невозможно удалить значение ключа '%s'"
 
-#: ../src/msw/registry.cpp:991
+#: ../src/msw/registry.cpp:1015
 #, c-format
 msgid "Can't enumerate subkeys of key '%s'"
 msgstr "Невозможно подсчитать подключи ключа '%s'"
 
-#: ../src/msw/registry.cpp:946
+#: ../src/msw/registry.cpp:970
 #, c-format
 msgid "Can't enumerate values of key '%s'"
 msgstr "Невозможно подсчитать значения ключа '%s'"
@@ -708,7 +720,7 @@ msgstr "Невозможно подсчитать значения ключа '%s'"
 msgid "Can't find current position in file '%s'"
 msgstr "Не могу найти текущую позицию в файле '%s'"
 
-#: ../src/msw/window.cpp:2346
+#: ../src/msw/window.cpp:2352
 msgid ""
 "Can't find dummy dialog template!\n"
 "Check resource include path for finding wx.rc."
@@ -722,13 +734,13 @@ msgstr ""
 msgid "Can't find the serialization object '%s' for the object '%s'."
 msgstr "Не могу найти объект сериализации '%s' для объекта '%s'."
 
-#: ../src/msw/registry.cpp:342
+#: ../src/msw/registry.cpp:341
 #, c-format
 msgid "Can't get info about registry key '%s'"
 msgstr "Невозможно получить информацию о ключе registry '%s'"
 
 # ../src/common/image.cpp:626 ../src/common/image.cpp:646
-#: ../src/common/image.cpp:626 ../src/common/image.cpp:646
+#: ../src/common/image.cpp:653 ../src/common/image.cpp:673
 #, c-format
 msgid "Can't load image from file '%s': file does not exist."
 msgstr "Не могу загрузить изображение из файла '%s': файл не существует."
@@ -744,12 +756,12 @@ msgstr "Не могу загрузить динамическую библиотеку wxSerial."
 msgid "Can't open file '%s'"
 msgstr "Невозможно открыть файл '%s'"
 
-#: ../src/msw/registry.cpp:368
+#: ../src/msw/registry.cpp:367
 #, c-format
 msgid "Can't open registry key '%s'"
 msgstr "Невозможно открыть ключ registry '%s'"
 
-#: ../src/msw/registry.cpp:870
+#: ../src/msw/registry.cpp:894
 #, c-format
 msgid "Can't read value of '%s'"
 msgstr "Невозможно прочитать значение '%s'"
@@ -760,15 +772,15 @@ msgid "Can't read value of key '%s'"
 msgstr "Невозможно прочитать значение ключа '%s'"
 
 # ../src/generic/logg.cpp:531 ../src/generic/logg.cpp:928
-#: ../src/generic/logg.cpp:531 ../src/generic/logg.cpp:928
+#: ../src/generic/logg.cpp:535 ../src/generic/logg.cpp:932
 msgid "Can't save log contents to file."
 msgstr "Не могу сохранить содержание журнала в файл."
 
-#: ../src/msw/thread.cpp:460
+#: ../src/msw/thread.cpp:485
 msgid "Can't set thread priority"
 msgstr "Невозможно установить приоритет нити"
 
-#: ../src/msw/registry.cpp:794 ../src/msw/registry.cpp:894
+#: ../src/msw/registry.cpp:794 ../src/msw/registry.cpp:918
 #, c-format
 msgid "Can't set value of '%s'"
 msgstr "Невозможно установить значение '%s'"
@@ -781,7 +793,7 @@ msgstr "Невозможно установить значение '%s'"
 # ../src/gtk/filedlg.cpp:164 ../src/gtk/fontdlg.cpp:178
 # ../src/html/helpfrm.cpp:910
 #: ../src/common/dlgcmn.cpp:148 ../src/common/prntbase.cpp:109
-#: ../src/generic/dcpsg.cpp:2257 ../src/generic/dirdlgg.cpp:424
+#: ../src/generic/dcpsg.cpp:2255 ../src/generic/dirdlgg.cpp:424
 #: ../src/generic/filedlgg.cpp:916 ../src/generic/fontdlgg.cpp:257
 #: ../src/generic/prntdlgg.cpp:468 ../src/generic/progdlgg.cpp:179
 #: ../src/generic/proplist.cpp:523 ../src/generic/wizard.cpp:192
@@ -790,12 +802,12 @@ msgstr "Невозможно установить значение '%s'"
 msgid "Cancel"
 msgstr "Отмена"
 
-#: ../src/msw/dialup.cpp:514
+#: ../src/msw/dialup.cpp:518
 #, c-format
 msgid "Cannot find active dialup connection: %s"
 msgstr "Невозможно определить текущее модемное подсоединение: %s"
 
-#: ../src/msw/dialup.cpp:827
+#: ../src/msw/dialup.cpp:832
 msgid "Cannot find the location of address book file"
 msgstr "Файл с адрессной книжкой не найден"
 
@@ -806,16 +818,16 @@ msgid "Cannot get priority range for scheduling policy %d."
 msgstr "Невозможно получить интервал приоритета для распорядка %d."
 
 # ../src/unix/utilsunx.cpp:709
-#: ../src/unix/utilsunx.cpp:709
+#: ../src/unix/utilsunx.cpp:713
 msgid "Cannot get the hostname"
 msgstr "Невозможно получить имя хоста"
 
 # ../src/unix/utilsunx.cpp:745
-#: ../src/unix/utilsunx.cpp:745
+#: ../src/unix/utilsunx.cpp:749
 msgid "Cannot get the official hostname"
 msgstr "Невозможно получить официальное имя хоста"
 
-#: ../src/msw/dialup.cpp:920
+#: ../src/msw/dialup.cpp:925
 msgid "Cannot hang up - no active dialup connection."
 msgstr "Невозможно повесить трубку - нет подсоединения."
 
@@ -848,7 +860,7 @@ msgid "Cannot open contents file: %s"
 msgstr "Невозможно открыть файл содержания: %s"
 
 # ../src/generic/dcpsg.cpp:1584
-#: ../src/generic/dcpsg.cpp:1599
+#: ../src/generic/dcpsg.cpp:1584
 msgid "Cannot open file for PostScript printing!"
 msgstr "Невозможно открыть файл для печати в PostScript!"
 
@@ -878,12 +890,18 @@ msgstr "Невозможно стартовать нить: ошибка записи TLS"
 msgid "Case sensitive"
 msgstr "Учет регистра"
 
+# ../src/common/fontmap.cpp:109
+#: ../src/common/fontmap.cpp:110
+#, fuzzy
+msgid "Celtic (ISO-8859-14)"
+msgstr "Baltic (ISO-8859-13)"
+
 # ../src/common/fontmap.cpp:98
 #: ../src/common/fontmap.cpp:98
 msgid "Central European (ISO-8859-2/Latin 2)"
 msgstr "Central European (ISO-8859-2/Latin 2)"
 
-#: ../src/msw/dialup.cpp:762
+#: ../src/msw/dialup.cpp:767
 msgid "Choose ISP to dial"
 msgstr "Выберите подсоединения"
 
@@ -893,7 +911,7 @@ msgid "Choose font"
 msgstr "Выберите шрифт"
 
 # ../src/generic/logg.cpp:471
-#: ../src/generic/logg.cpp:471
+#: ../src/generic/logg.cpp:475
 msgid "Clear the log contents"
 msgstr "Очистить содержимое журнала"
 
@@ -905,12 +923,12 @@ msgid "Close"
 msgstr "Закрыть"
 
 # ../src/generic/logg.cpp:473
-#: ../src/generic/logg.cpp:473
+#: ../src/generic/logg.cpp:477
 msgid "Close this window"
 msgstr "Закрыть это окно"
 
 # ../src/common/fileconf.cpp:750
-#: ../src/common/fileconf.cpp:750
+#: ../src/common/fileconf.cpp:757
 #, c-format
 msgid "Config entry name cannot start with '%c'."
 msgstr "Имя поля в файле конфигурации не может начинаться с '%c'."
@@ -956,7 +974,7 @@ msgstr "Не найден включаемый файл ресурсов %s."
 msgid "Could not find tab for id"
 msgstr "невозможно найти tab для id"
 
-#: ../src/msw/textctrl.cpp:1244
+#: ../src/msw/textctrl.cpp:1249
 #, c-format
 msgid "Could not load Rich Edit DLL '%s'"
 msgstr "Невозможно проинициализировать Rich Edit DLL '%s'"
@@ -1007,17 +1025,21 @@ msgstr "Невозможно получить семафор"
 msgid "Couldn't add an image to the image list."
 msgstr "Невозможно добавить изображение к списку изображений."
 
+#: ../src/mac/thread.cpp:227
+msgid "Couldn't change the state of event object."
+msgstr "Невозможно изменить состояние объекта сообщения."
+
 #: ../src/msw/timer.cpp:96
 msgid "Couldn't create a timer"
 msgstr "Невозможно создать таймер"
 
 # ../src/common/dynlib.cpp:268
-#: ../src/common/dynlib.cpp:305
+#: ../src/common/dynlib.cpp:309
 #, c-format
 msgid "Couldn't find symbol '%s' in a dynamic library"
 msgstr "Невозможно найти символ '%s' в динамической библиотеке"
 
-#: ../src/msw/thread.cpp:553
+#: ../src/msw/thread.cpp:578
 msgid "Couldn't get the current thread pointer"
 msgstr "Невозможно получить указатель на текущую нить"
 
@@ -1042,13 +1064,13 @@ msgstr "Невозможно зарегестрировать формат '%s;"
 msgid "Couldn't release a mutex"
 msgstr "Невозможно освободить mutex"
 
-#: ../src/msw/listctrl.cpp:612
+#: ../src/msw/listctrl.cpp:615
 #, c-format
 msgid "Couldn't retrieve information about list control item %d."
 msgstr "Невозможно извлечь информацию об элементе списка %d."
 
 # ../src/unix/threadpsx.cpp:1251
-#: ../src/msw/thread.cpp:933
+#: ../src/msw/thread.cpp:958
 msgid "Couldn't terminate thread"
 msgstr "Не удалось завершить нить"
 
@@ -1097,13 +1119,13 @@ msgstr "Дата"
 msgid "Decorative"
 msgstr "Декоративный"
 
-#: ../src/msw/dialup.cpp:350
+#: ../src/msw/dialup.cpp:354
 msgid ""
 "Dial up functions are unavailable because the remote access service (RAS) is "
 "not installed on this machine. Please install it."
 msgstr ""
-"Сервис удаленного подсоединения (RAS) не установлен на этой машине."
-"Пожалуйста установите его."
+"Сервис удаленного подсоединения (RAS) не установлен на этой "
+"машине.Пожалуйста установите его."
 
 # ../src/generic/tipdlg.cpp:177
 #: ../src/generic/tipdlg.cpp:177
@@ -1192,7 +1214,7 @@ msgid "Error"
 msgstr "Ошибка"
 
 # ../src/unix/utilsunx.cpp:948 ../src/unix/utilsunx.cpp:956
-#: ../src/unix/utilsunx.cpp:948 ../src/unix/utilsunx.cpp:956
+#: ../src/unix/utilsunx.cpp:952 ../src/unix/utilsunx.cpp:960
 msgid "Error "
 msgstr "Ошибка "
 
@@ -1258,7 +1280,7 @@ msgstr "Ожидалось '=' при синтаксическом анализе ресурса."
 msgid "Expected 'char' whilst parsing resource."
 msgstr "Ожидалось 'char' при синтаксическом анализе ресурса."
 
-#: ../src/msw/dialup.cpp:855
+#: ../src/msw/dialup.cpp:860
 #, c-format
 msgid "Failed to %s dialup connection: %s"
 msgstr "Невозможно %s удаленное подсоединение: %s"
@@ -1267,20 +1289,20 @@ msgstr "Невозможно %s удаленное подсоединение: %s"
 msgid "Failed to close the clipboard."
 msgstr "Не удалось закрыть clipboard."
 
-#: ../src/msw/dialup.cpp:796
+#: ../src/msw/dialup.cpp:801
 msgid "Failed to connect: missing username/password."
 msgstr "Невозможно подключиться: нет имени/пароля."
 
-#: ../src/msw/dialup.cpp:742
+#: ../src/msw/dialup.cpp:747
 msgid "Failed to connect: no ISP to dial."
 msgstr "Невозможно дозвониться: нету ISP."
 
-#: ../src/msw/registry.cpp:590
+#: ../src/msw/registry.cpp:589
 #, c-format
 msgid "Failed to copy registry value '%s'"
 msgstr "Невозможно скопировать значение registry '%s'"
 
-#: ../src/msw/registry.cpp:599
+#: ../src/msw/registry.cpp:598
 #, c-format
 msgid "Failed to copy the contents of registry key '%s' to '%s'."
 msgstr "Невозможно скопировать ключ registry '%s'"
@@ -1289,7 +1311,7 @@ msgstr "Невозможно скопировать ключ registry '%s'"
 msgid "Failed to create DDE string"
 msgstr "Ошибка создания строки DDE"
 
-#: ../src/msw/mdi.cpp:421
+#: ../src/msw/mdi.cpp:425
 msgid "Failed to create MDI parent frame."
 msgstr "Ошибка создания родительского фрейма MDI."
 
@@ -1328,13 +1350,13 @@ msgstr "Не удалось очистить clipboard."
 msgid "Failed to establish an advise loop with DDE server"
 msgstr "Невозможно установить 'advise loop' с DDE сервером"
 
-#: ../src/msw/dialup.cpp:635
+#: ../src/msw/dialup.cpp:639
 #, c-format
 msgid "Failed to establish dialup connection: %s"
 msgstr "Невозможно дозвониться: %s"
 
 # ../src/unix/utilsunx.cpp:441 ../src/unix/utilsunx.cpp:469
-#: ../src/unix/utilsunx.cpp:441 ../src/unix/utilsunx.cpp:469
+#: ../src/unix/utilsunx.cpp:444 ../src/unix/utilsunx.cpp:472
 #, c-format
 msgid "Failed to execute '%s'\n"
 msgstr "Не удалось выполнить '%s'\n"
@@ -1370,7 +1392,7 @@ msgstr ""
 "Вы забыли применить wxResourceLoadBitmapData?"
 
 # ../src/unix/utilsunx.cpp:441 ../src/unix/utilsunx.cpp:469
-#: ../src/msw/dialup.cpp:695
+#: ../src/msw/dialup.cpp:699
 #, c-format
 msgid "Failed to get ISP names: %s"
 msgstr "Не удалось получить номера ISP: %s"
@@ -1400,7 +1422,7 @@ msgstr ""
 "программу"
 
 # ../src/common/dynlib.cpp:225
-#: ../src/common/dynlib.cpp:235
+#: ../src/common/dynlib.cpp:239
 #, c-format
 msgid "Failed to load shared library '%s'"
 msgstr "Ошибка загрузки разделяемой библиотеки '%s'"
@@ -1414,7 +1436,7 @@ msgid "Failed to put data on the clipboard"
 msgstr "Не удалось положить данные на clipboard."
 
 # ../src/unix/utilsunx.cpp:540
-#: ../src/unix/utilsunx.cpp:540
+#: ../src/unix/utilsunx.cpp:543
 msgid "Failed to redirect child process input/output"
 msgstr "Не удалось перенаправить ввод/вывод порожденного процесса"
 
@@ -1430,12 +1452,12 @@ msgstr "Не удалось зарегестрировать сервер DDE '%s'"
 msgid "Failed to remember the encoding for the charset '%s'."
 msgstr "Не удалось запомнить кодировку для набора символов '%s'."
 
-#: ../src/msw/registry.cpp:436
+#: ../src/msw/registry.cpp:435
 #, c-format
 msgid "Failed to rename registry value '%s' to '%s'."
 msgstr "Невозможно переименовать значение registry из '%s' в '%s."
 
-#: ../src/msw/registry.cpp:536
+#: ../src/msw/registry.cpp:535
 #, c-format
 msgid "Failed to rename the registry key '%s' to '%s'."
 msgstr "Невозможно переименовать ключ registry из '%s' в '%s."
@@ -1444,7 +1466,7 @@ msgstr "Невозможно переименовать ключ registry из '%s' в '%s."
 msgid "Failed to retrieve data from the clipboard."
 msgstr "Не удалось извлечь данные из clipboard."
 
-#: ../src/msw/dialup.cpp:459
+#: ../src/msw/dialup.cpp:463
 msgid "Failed to retrieve text of RAS error message"
 msgstr "Не удалось получить сообщение об ошибке RAS"
 
@@ -1483,7 +1505,7 @@ msgid "Failed to terminate the advise loop with DDE server"
 msgstr "Не удалось завершить 'advise loop' с DDE сервером."
 
 # ../src/unix/threadpsx.cpp:1251
-#: ../src/msw/dialup.cpp:928
+#: ../src/msw/dialup.cpp:933
 #, c-format
 msgid "Failed to terminate the dialup connection: %s"
 msgstr "Не удалось повесить трубку: %s"
@@ -1495,7 +1517,7 @@ msgid "Failed to unregister DDE server '%s'"
 msgstr "Не удалось отзарегестрировать DDE сервер '%s'"
 
 # ../src/generic/logg.cpp:367
-#: ../src/generic/logg.cpp:367
+#: ../src/generic/logg.cpp:371
 msgid "Fatal error"
 msgstr "Критическая ошибка"
 
@@ -1561,7 +1583,7 @@ msgid "Font size:"
 msgstr "Размер шрифта:"
 
 # ../src/unix/utilsunx.cpp:497
-#: ../src/unix/utilsunx.cpp:497
+#: ../src/unix/utilsunx.cpp:500
 msgid "Fork failed"
 msgstr "Неудачный Fork"
 
@@ -1675,7 +1697,7 @@ msgstr "Hebrew (ISO-8859-8)"
 # ../src/common/dlgcmn.cpp:144 ../src/generic/proplist.cpp:528
 # ../src/html/helpfrm.cpp:208
 #: ../src/common/dlgcmn.cpp:144 ../src/generic/proplist.cpp:528
-#: ../src/html/helpfrm.cpp:208 ../src/msw/mdi.cpp:1276
+#: ../src/html/helpfrm.cpp:208 ../src/msw/mdi.cpp:1280
 msgid "Help"
 msgstr "Помощь"
 
@@ -1699,16 +1721,6 @@ msgstr "Помощь печати"
 #, c-format
 msgid "Help: %s"
 msgstr "Помощь: %s"
-
-# ../src/common/fontmap.cpp:108
-#: ../src/common/fontmap.cpp:108
-msgid "ISO-8859-12"
-msgstr "ISO-8859-12"
-
-# ../src/common/fontmap.cpp:110
-#: ../src/common/fontmap.cpp:110
-msgid "ISO-8859-14"
-msgstr "ISO-8859-14"
 
 # ../src/common/resourc2.cpp:997 ../src/common/resourc2.cpp:1008
 # ../src/common/resource.cpp:2647 ../src/common/resource.cpp:2658
@@ -1754,6 +1766,12 @@ msgstr "Неправильная версия книги помощи HTML"
 msgid "Index"
 msgstr "Индекс"
 
+# ../src/common/fontmap.cpp:106
+#: ../src/common/fontmap.cpp:108
+#, fuzzy
+msgid "Indian (ISO-8859-12)"
+msgstr "Nordic (ISO-8859-10)"
+
 # ../src/common/imagtiff.cpp:171
 #: ../src/common/imagtiff.cpp:171
 msgid "Invalid TIFF image index."
@@ -1786,7 +1804,7 @@ msgstr "KOI8-R"
 
 # ../src/generic/dcpsg.cpp:2232 ../src/generic/prntdlgg.cpp:441
 # ../src/generic/prntdlgg.cpp:637
-#: ../src/generic/dcpsg.cpp:2248 ../src/generic/prntdlgg.cpp:441
+#: ../src/generic/dcpsg.cpp:2246 ../src/generic/prntdlgg.cpp:441
 #: ../src/generic/prntdlgg.cpp:637
 msgid "Landscape"
 msgstr "Пейзаж"
@@ -1844,7 +1862,7 @@ msgid "Loading Grey Raw PNM image is not yet implemented."
 msgstr "Загрузка изображения Grey Raw PNM еще не реализована."
 
 # ../src/generic/logg.cpp:534
-#: ../src/generic/logg.cpp:534
+#: ../src/generic/logg.cpp:538
 #, c-format
 msgid "Log saved to the file '%s'."
 msgstr "Журнал записан в файл '%s'."
@@ -1855,7 +1873,7 @@ msgid "MDI child"
 msgstr "Потомок MDI"
 
 # ../src/unix/mimetype.cpp:1570
-#: ../src/unix/mimetype.cpp:1570
+#: ../src/unix/mimetype.cpp:1574
 #, c-format
 msgid "Mailcap file %s, line %d: incomplete entry ignored."
 msgstr "Файл mailcap %s, строка %d: неполная запись проигнорирована."
@@ -1867,7 +1885,7 @@ msgid "Memory VFS already contains file '%s'!"
 msgstr "Память VFS уже содержит файл '%s'!"
 
 # ../src/unix/mimetype.cpp:1292
-#: ../src/unix/mimetype.cpp:1292
+#: ../src/unix/mimetype.cpp:1295
 #, c-format
 msgid "Mime.types file %s, line %d: unterminated quoted string."
 msgstr "Файл mime.types %s, строка %d: незакрытые кавычки."
@@ -1951,18 +1969,18 @@ msgid "No entries found."
 msgstr "Запись не найдена."
 
 # ../src/common/image.cpp:731
-#: ../src/common/image.cpp:731
+#: ../src/common/image.cpp:758
 msgid "No handler found for image type."
 msgstr "Не найден ни один обработчик для изображения."
 
 # ../src/common/image.cpp:739 ../src/common/image.cpp:773
-#: ../src/common/image.cpp:739 ../src/common/image.cpp:773
+#: ../src/common/image.cpp:766 ../src/common/image.cpp:800
 #, c-format
 msgid "No image handler for type %d defined."
 msgstr "Не определен ни один обработчик для изображения типа %d."
 
 # ../src/common/image.cpp:757 ../src/common/image.cpp:789
-#: ../src/common/image.cpp:757 ../src/common/image.cpp:789
+#: ../src/common/image.cpp:784 ../src/common/image.cpp:816
 #, c-format
 msgid "No image handler for type %s defined."
 msgstr "Не определен ни один обработчик для изображения типа %d."
@@ -1998,9 +2016,9 @@ msgstr "Note, 8 1/2 x 11 дюйм"
 # ../src/generic/prntdlgg.cpp:467 ../src/generic/proplist.cpp:511
 # ../src/gtk/filedlg.cpp:158 ../src/gtk/fontdlg.cpp:172
 # ../src/html/helpfrm.cpp:909
-#: ../src/common/dlgcmn.cpp:127 ../src/generic/dcpsg.cpp:2256
+#: ../src/common/dlgcmn.cpp:127 ../src/generic/dcpsg.cpp:2254
 #: ../src/generic/dirdlgg.cpp:422 ../src/generic/filedlgg.cpp:907
-#: ../src/generic/fontdlgg.cpp:256 ../src/generic/logg.cpp:729
+#: ../src/generic/fontdlgg.cpp:256 ../src/generic/logg.cpp:733
 #: ../src/generic/prntdlgg.cpp:467 ../src/generic/proplist.cpp:511
 #: ../src/gtk/filedlg.cpp:158 ../src/gtk/fontdlg.cpp:172
 #: ../src/html/helpfrm.cpp:909
@@ -2134,7 +2152,7 @@ msgid "Permissions"
 msgstr "Разрешения"
 
 # ../src/unix/utilsunx.cpp:440 ../src/unix/utilsunx.cpp:468
-#: ../src/unix/utilsunx.cpp:440 ../src/unix/utilsunx.cpp:468
+#: ../src/unix/utilsunx.cpp:443 ../src/unix/utilsunx.cpp:471
 msgid "Pipe creation failed"
 msgstr "Ошибка создания потока ввода-вывода"
 
@@ -2148,7 +2166,7 @@ msgstr "Пожалуйста выберите допустимый шрифт."
 msgid "Please choose an existing file."
 msgstr "Будьте добры выбрать существующий файл."
 
-#: ../src/msw/dialup.cpp:763
+#: ../src/msw/dialup.cpp:768
 msgid "Please choose which ISP do you want to connect to"
 msgstr "Пожалуйста выберите ISP"
 
@@ -2159,7 +2177,7 @@ msgstr "Подождите, пожалуйста..."
 
 # ../src/generic/dcpsg.cpp:2231 ../src/generic/prntdlgg.cpp:440
 # ../src/generic/prntdlgg.cpp:636
-#: ../src/generic/dcpsg.cpp:2247 ../src/generic/prntdlgg.cpp:440
+#: ../src/generic/dcpsg.cpp:2245 ../src/generic/prntdlgg.cpp:440
 #: ../src/generic/prntdlgg.cpp:636
 msgid "Portrait"
 msgstr "Портрет"
@@ -2175,12 +2193,12 @@ msgid "PostScript file"
 msgstr "Файл PostScript"
 
 # ../src/generic/dcpsg.cpp:2273
-#: ../src/generic/dcpsg.cpp:2289
+#: ../src/generic/dcpsg.cpp:2287
 msgid "PostScript:"
 msgstr "PostScript:"
 
 # ../src/generic/dcpsg.cpp:2236
-#: ../src/generic/dcpsg.cpp:2252
+#: ../src/generic/dcpsg.cpp:2250
 msgid "Preview Only"
 msgstr "Только пред-осмотр"
 
@@ -2235,7 +2253,7 @@ msgid "Print this page"
 msgstr "Напечатать эту страницу"
 
 # ../src/generic/dcpsg.cpp:2235 ../src/generic/prntdlgg.cpp:150
-#: ../src/generic/dcpsg.cpp:2251 ../src/generic/prntdlgg.cpp:150
+#: ../src/generic/dcpsg.cpp:2249 ../src/generic/prntdlgg.cpp:150
 msgid "Print to File"
 msgstr "Печать в файл"
 
@@ -2245,12 +2263,12 @@ msgid "Print..."
 msgstr "Печать..."
 
 # ../src/generic/dcpsg.cpp:2246
-#: ../src/generic/dcpsg.cpp:2262
+#: ../src/generic/dcpsg.cpp:2260
 msgid "Printer Command: "
 msgstr "Команда принтера: "
 
 # ../src/generic/dcpsg.cpp:2251
-#: ../src/generic/dcpsg.cpp:2267
+#: ../src/generic/dcpsg.cpp:2265
 msgid "Printer Options: "
 msgstr "Опции принтера: "
 
@@ -2311,7 +2329,7 @@ msgid "Quarto, 215 x 275 mm"
 msgstr "Quarto, 215 x 275 мм"
 
 # ../src/generic/logg.cpp:1019
-#: ../src/generic/logg.cpp:1019
+#: ../src/generic/logg.cpp:1023
 msgid "Question"
 msgstr "Вопрос"
 
@@ -2321,12 +2339,12 @@ msgstr "Вопрос"
 msgid "Read error on file '%s'"
 msgstr "Ошибка чтения файла '%s'"
 
-#: ../src/msw/registry.cpp:528
+#: ../src/msw/registry.cpp:527
 #, c-format
 msgid "Registry key '%s' already exists."
 msgstr "Ключ registry '%s' уже существует."
 
-#: ../src/msw/registry.cpp:497
+#: ../src/msw/registry.cpp:496
 #, c-format
 msgid "Registry key '%s' does not exist, cannot rename it."
 msgstr "Ключ registry '%s' не существует, невозможно его переименовать."
@@ -2342,7 +2360,7 @@ msgstr ""
 "его удаление приведет вашу систему в нерабочее состояние:\n"
 "операция отменена."
 
-#: ../src/msw/registry.cpp:428
+#: ../src/msw/registry.cpp:427
 #, c-format
 msgid "Registry value '%s' already exists."
 msgstr "Значение registry '%s' уже существует."
@@ -2391,7 +2409,7 @@ msgid "Save as"
 msgstr "Сохранить как"
 
 # ../src/generic/logg.cpp:469
-#: ../src/generic/logg.cpp:469
+#: ../src/generic/logg.cpp:473
 msgid "Save log contents to file"
 msgstr "Сохранить содержание журнала в файл"
 
@@ -2453,7 +2471,7 @@ msgid "Select a file"
 msgstr "Выберите файл"
 
 # ../src/generic/dcpsg.cpp:2234
-#: ../src/generic/dcpsg.cpp:2250
+#: ../src/generic/dcpsg.cpp:2248
 msgid "Send to Printer"
 msgstr "Отправить на печать"
 
@@ -2473,7 +2491,7 @@ msgstr "Настройки"
 msgid "Setup..."
 msgstr "Настройки..."
 
-#: ../src/msw/dialup.cpp:535
+#: ../src/msw/dialup.cpp:539
 msgid "Several active dialup connections found, choosing one randomly."
 msgstr "Несколько активных подсоединений найдено, случайно выбираем одно."
 
@@ -2534,7 +2552,7 @@ msgid "Statement, 5 1/2 x 8 1/2 in"
 msgstr "Statement, 5 1/2 x 8 1/2 дюйм"
 
 # ../src/generic/logg.cpp:594
-#: ../src/generic/logg.cpp:594
+#: ../src/generic/logg.cpp:598
 msgid "Status: "
 msgstr "Статус: "
 
@@ -2661,7 +2679,7 @@ msgstr "Текст не может быть сохранен."
 msgid "The value for the option '%s' must be specified."
 msgstr "Значение опции '%s' должно быть указано."
 
-#: ../src/msw/dialup.cpp:411
+#: ../src/msw/dialup.cpp:415
 #, c-format
 msgid ""
 "The version of remote access service (RAS) installed on this machine is "
@@ -2670,7 +2688,7 @@ msgstr ""
 "Сервис удаленного подсоединения (RAS) установленный на этой машине "
 "недостаточно новый (функция %s не найденф)."
 
-#: ../src/msw/thread.cpp:1058
+#: ../src/msw/thread.cpp:1083
 msgid ""
 "Thread module initialization failed: can not store value in thread local "
 "storage"
@@ -2683,7 +2701,7 @@ msgstr ""
 msgid "Thread module initialization failed: failed to create thread key"
 msgstr "Ошибка инициализации модуля нитей: не удалось создать ключ нити"
 
-#: ../src/msw/thread.cpp:1046
+#: ../src/msw/thread.cpp:1071
 msgid ""
 "Thread module initialization failed: impossible to allocate index in thread "
 "local storage"
@@ -2794,7 +2812,7 @@ msgid "Unknown encoding (%d)"
 msgstr "Неожиданная кодировка (%d)"
 
 # ../src/unix/mimetype.cpp:1335
-#: ../src/unix/mimetype.cpp:1335
+#: ../src/unix/mimetype.cpp:1338
 #, c-format
 msgid "Unknown field in file %s, line %d: '%s'."
 msgstr "Неизвестное поле в файле %s, строка %d: '%s'."
@@ -2876,7 +2894,7 @@ msgid "Views"
 msgstr "Виды"
 
 # ../src/unix/utilsunx.cpp:270 ../src/unix/utilsunx.cpp:619
-#: ../src/unix/utilsunx.cpp:270 ../src/unix/utilsunx.cpp:619
+#: ../src/unix/utilsunx.cpp:270 ../src/unix/utilsunx.cpp:622
 msgid "Waiting for subprocess termination failed"
 msgstr "Ошибка ожидания окончания подпроцесса"
 
@@ -2891,18 +2909,20 @@ msgid "Warning: "
 msgstr "Предупреждение: "
 
 # ../src/html/htmlpars.cpp:179
-#: ../src/html/htmlpars.cpp:179
+#: ../src/html/htmlpars.cpp:177
 msgid "Warning: attempt to remove HTML tag handler from empty stack."
 msgstr "Предупреждение: попытка удалить обработчик тега HTML из пустого стека."
 
 # ../src/common/fontmap.cpp:97
 #: ../src/common/fontmap.cpp:97
-msgid "West European (ISO-8859-1/Latin 1)"
+#, fuzzy
+msgid "Western European (ISO-8859-1/Latin 1)"
 msgstr "West European (ISO-8859-1/Latin 1)"
 
 # ../src/common/fontmap.cpp:111
 #: ../src/common/fontmap.cpp:111
-msgid "West European new (ISO-8859-15/Latin 0)"
+#, fuzzy
+msgid "Western European with Euro (ISO-8859-15/Latin 0)"
 msgstr "West European новый (ISO-8859-15/Latin 0)"
 
 # ../src/html/helpfrm.cpp:406
@@ -2915,7 +2935,7 @@ msgid "Win32s on Windows 3.1"
 msgstr "Win32s на Windows 3.1"
 
 # ../src/html/helpfrm.cpp:340
-#: ../src/msw/mdi.cpp:1311
+#: ../src/msw/mdi.cpp:1315
 msgid "Window"
 msgstr "Окно"
 
@@ -2938,6 +2958,12 @@ msgstr "Windows Arabic (CP 1256)"
 msgid "Windows Baltic (CP 1257)"
 msgstr "Windows Baltic (CP 1257)"
 
+# ../src/common/fontmap.cpp:118
+#: ../src/common/fontmap.cpp:113
+#, fuzzy
+msgid "Windows Central European (CP 1250)"
+msgstr "Windows Hebrew (CP 1255)"
+
 # ../src/common/fontmap.cpp:114
 #: ../src/common/fontmap.cpp:114
 msgid "Windows Cyrillic (CP 1251)"
@@ -2953,20 +2979,16 @@ msgstr "Windows Greek (CP 1253)"
 msgid "Windows Hebrew (CP 1255)"
 msgstr "Windows Hebrew (CP 1255)"
 
-# ../src/common/fontmap.cpp:115
-#: ../src/common/fontmap.cpp:115
-msgid "Windows Latin 1 (CP 1252)"
-msgstr "Windows Latin 1 (CP 1252)"
-
-# ../src/common/fontmap.cpp:113
-#: ../src/common/fontmap.cpp:113
-msgid "Windows Latin 2 (CP 1250)"
-msgstr "Windows Latin 2 (CP 1250)"
-
 # ../src/common/fontmap.cpp:117
 #: ../src/common/fontmap.cpp:117
 msgid "Windows Turkish (CP 1254)"
 msgstr "Windows Turkish (CP 1254)"
+
+# ../src/common/fontmap.cpp:115
+#: ../src/common/fontmap.cpp:115
+#, fuzzy
+msgid "Windows Western European (CP 1252)"
+msgstr "Windows Latin 1 (CP 1252)"
 
 # ../src/common/fontmap.cpp:121
 #: ../src/common/fontmap.cpp:121
@@ -2980,22 +3002,22 @@ msgid "Write error on file '%s'"
 msgstr "Ошибка записи в файл '%s'"
 
 # ../src/generic/dcpsg.cpp:2291
-#: ../src/generic/dcpsg.cpp:2307
+#: ../src/generic/dcpsg.cpp:2305
 msgid "X Scaling"
 msgstr "Масштабирование по X"
 
 # ../src/generic/dcpsg.cpp:2300
-#: ../src/generic/dcpsg.cpp:2316
+#: ../src/generic/dcpsg.cpp:2314
 msgid "X Translation"
 msgstr "Сдвиг вдоль X"
 
 # ../src/generic/dcpsg.cpp:2295
-#: ../src/generic/dcpsg.cpp:2311
+#: ../src/generic/dcpsg.cpp:2309
 msgid "Y Scaling"
 msgstr "Масштабирование по Y"
 
 # ../src/generic/dcpsg.cpp:2304
-#: ../src/generic/dcpsg.cpp:2320
+#: ../src/generic/dcpsg.cpp:2318
 msgid "Y Translation"
 msgstr "Сдвиг вдоль Y"
 
@@ -3017,7 +3039,8 @@ msgstr "[ПУСТО]"
 
 #: ../src/msw/dde.cpp:986
 msgid "a DDEML application has created a prolonged race condition."
-msgstr "непереводимо (a DDEML application has created a prolonged race condition)"
+msgstr ""
+"непереводимо (a DDEML application has created a prolonged race condition)"
 
 #: ../src/msw/dde.cpp:974
 msgid ""
@@ -3025,7 +3048,8 @@ msgid ""
 "function,\n"
 "or an invalid instance identifier\n"
 "was passed to a DDEML function."
-msgstr "непереводимо\n"
+msgstr ""
+"непереводимо\n"
 "(a DDEML function was called without first calling the DdeInitialize "
 "function,\n"
 "or an invalid instance identifier\n"
@@ -3105,7 +3129,7 @@ msgid ""
 msgstr ""
 
 # ../src/common/fileconf.cpp:1440
-#: ../src/common/fileconf.cpp:1440
+#: ../src/common/fileconf.cpp:1447
 #, c-format
 msgid "attempt to change immutable key '%s' ignored."
 msgstr "попытка изменить неизменную клавишу '%s' проигнорирована."
@@ -3135,7 +3159,7 @@ msgid "can't create file '%s'"
 msgstr "невозможно создать файл '%s'"
 
 # ../src/common/fileconf.cpp:910
-#: ../src/common/fileconf.cpp:910
+#: ../src/common/fileconf.cpp:917
 #, c-format
 msgid "can't delete user configuration file '%s'"
 msgstr "невозможно удалить файл конфигурации пользователя '%s'"
@@ -3194,7 +3218,7 @@ msgid "can't open user configuration file '%s'."
 msgstr "невозможно открыть пользовательский файл конфигурации '%s'."
 
 # ../src/common/fileconf.cpp:790
-#: ../src/common/fileconf.cpp:790
+#: ../src/common/fileconf.cpp:797
 msgid "can't open user configuration file."
 msgstr "невозможно открыть пользовательский файл конфигурации."
 
@@ -3223,7 +3247,7 @@ msgid "can't seek on file descriptor %d"
 msgstr "невозможно переместиться по файлу с дескриптором %d"
 
 # ../src/common/textfile.cpp:354
-#: ../src/common/textfile.cpp:354
+#: ../src/common/textfile.cpp:357
 #, c-format
 msgid "can't write file '%s' to disk."
 msgstr "ошибка записи файла '%s' на диск."
@@ -3235,7 +3259,7 @@ msgid "can't write to file descriptor %d"
 msgstr "невозможно записать в файл с дескриптором %d"
 
 # ../src/common/fileconf.cpp:797
-#: ../src/common/fileconf.cpp:797
+#: ../src/common/fileconf.cpp:804
 msgid "can't write user configuration file."
 msgstr "невозможно записать пользовательский файл конфигурации."
 
@@ -3271,12 +3295,12 @@ msgid "eleventh"
 msgstr "одиннадцатый"
 
 # ../src/common/fileconf.cpp:1427
-#: ../src/common/fileconf.cpp:1427
+#: ../src/common/fileconf.cpp:1434
 #, c-format
 msgid "entry '%s' appears more than once in group '%s'"
 msgstr "поле '%s' появляется более одного раза в группе '%s'"
 
-#: ../src/msw/dialup.cpp:856
+#: ../src/msw/dialup.cpp:861
 msgid "establish"
 msgstr "установить"
 
@@ -3297,31 +3321,31 @@ msgid "fifth"
 msgstr "пятый"
 
 # ../src/common/fileconf.cpp:471
-#: ../src/common/fileconf.cpp:471
+#: ../src/common/fileconf.cpp:478
 #, c-format
 msgid "file '%s', line %d: '%s' ignored after group header."
 msgstr "файл '%s', строка %d: '%s' проигнорировано после заголовка группы."
 
 # ../src/common/fileconf.cpp:500
-#: ../src/common/fileconf.cpp:500
+#: ../src/common/fileconf.cpp:507
 #, c-format
 msgid "file '%s', line %d: '=' expected."
 msgstr "файл '%s', строка %d: ожидался '='."
 
 # ../src/common/fileconf.cpp:526
-#: ../src/common/fileconf.cpp:526
+#: ../src/common/fileconf.cpp:533
 #, c-format
 msgid "file '%s', line %d: key '%s' was first found at line %d."
 msgstr "файл '%s', строка %d: ключ '%s' был уже замечен на строке %d."
 
 # ../src/common/fileconf.cpp:516
-#: ../src/common/fileconf.cpp:516
+#: ../src/common/fileconf.cpp:523
 #, c-format
 msgid "file '%s', line %d: value for immutable key '%s' ignored."
 msgstr "файл '%s', строка %d: значение неизменного ключа '%s' проигнорировано."
 
 # ../src/common/fileconf.cpp:439
-#: ../src/common/fileconf.cpp:439
+#: ../src/common/fileconf.cpp:446
 #, c-format
 msgid "file '%s': unexpected character %c at line %d."
 msgstr "файл '%s': неожиданный символ %c на строке %d."
@@ -3346,7 +3370,7 @@ msgstr "четвертый"
 msgid "gmtime() failed"
 msgstr "ошибка gmtime()"
 
-#: ../src/msw/dialup.cpp:856
+#: ../src/msw/dialup.cpp:861
 msgid "initiate"
 msgstr "начать звонить"
 
@@ -3356,7 +3380,7 @@ msgid "invalid eof() return value."
 msgstr "недопустимое значение возврата из eof()."
 
 # ../src/generic/logg.cpp:1033
-#: ../src/generic/logg.cpp:1033
+#: ../src/generic/logg.cpp:1037
 msgid "invalid message box return value"
 msgstr "недопустимое значение возврата из окна сообщения"
 
@@ -3505,7 +3529,7 @@ msgid "twentieth"
 msgstr "двадцатый"
 
 # ../src/common/fileconf.cpp:1547
-#: ../src/common/fileconf.cpp:1547
+#: ../src/common/fileconf.cpp:1554
 #, c-format
 msgid "unexpected \" at position %d in '%s'."
 msgstr "неожиданный \" в позиции %d в '%s'."
@@ -3515,7 +3539,7 @@ msgstr "неожиданный \" в позиции %d в '%s'."
 msgid "unknown"
 msgstr "неизвестный"
 
-#: ../src/msw/dialup.cpp:462
+#: ../src/msw/dialup.cpp:466
 #, c-format
 msgid "unknown error (error code %08x)."
 msgstr "неизвестная ошибка (код ошибки %08x)"
@@ -3588,6 +3612,18 @@ msgstr "wxWindows: ошибка определения имени временного файла.\n"
 msgid "yesterday"
 msgstr "вчера"
 
+# ../src/common/fontmap.cpp:108
+#~ msgid "ISO-8859-12"
+#~ msgstr "ISO-8859-12"
+
+# ../src/common/fontmap.cpp:110
+#~ msgid "ISO-8859-14"
+#~ msgstr "ISO-8859-14"
+
+# ../src/common/fontmap.cpp:113
+#~ msgid "Windows Latin 2 (CP 1250)"
+#~ msgstr "Windows Latin 2 (CP 1250)"
+
 #~ msgid " B.C."
 #~ msgstr " до р.хр."
 
@@ -3629,9 +3665,6 @@ msgstr "вчера"
 
 #~ msgid "Character '%c' is invalid in a config entry name."
 #~ msgstr "Недопустимый символ '%c' в имени записи файла конфигурации."
-
-#~ msgid "Couldn't change the state of event object."
-#~ msgstr "Невозможно изменить состояние объекта сообщения."
 
 #~ msgid "Debug"
 #~ msgstr "Отладка"

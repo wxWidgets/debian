@@ -7,7 +7,7 @@
 #
 # Author:      Mike Fletcher
 #
-# RCS-ID:      $Id: filebrowsebutton.py,v 1.1.2.4 2000/09/26 23:53:12 robind Exp $
+# RCS-ID:      $Id: filebrowsebutton.py,v 1.1.2.5 2001/01/30 20:54:22 robind Exp $
 # Copyright:   (c) 2000 by Total Control Software
 # Licence:     wxWindows license
 #----------------------------------------------------------------------
@@ -31,7 +31,7 @@ class FileBrowseButton(wxPanel):
         startDirectory -- Default directory for file dialog startup
         fileMask -- File mask (glob pattern, such as *.*) to use in file dialog
         fileMode -- wxOPEN or wxSAVE, indicates type of file dialog to use
-        changeCallback -- callback receives all changes in value of control
+        changeCallback -- callback receives all > > changes in value of control
     )
     GetValue() -- retrieve current value of text control
     SetValue(string) -- set current value of text control

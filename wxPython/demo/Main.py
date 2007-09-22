@@ -6,7 +6,7 @@
 # Author:       Robin Dunn
 #
 # Created:      A long time ago, in a galaxy far, far away...
-# RCS-ID:       $Id: Main.py,v 1.1.2.12 2000/08/19 04:56:15 RD Exp $
+# RCS-ID:       $Id: Main.py,v 1.1.2.17 2001/01/30 20:53:21 robind Exp $
 # Copyright:    (c) 1999 by Total Control Software
 # Licence:      wxWindows license
 #----------------------------------------------------------------------------
@@ -20,8 +20,8 @@ from   wxPython.html import wxHtmlWindow
 
 
 _treeList = [
-    #('New since last release', ['PyShellWindow',
-    #                            ]),
+    ('New since last release', ['LayoutAnchors', "FancyText",
+                                ]),
 
     ('Managed Windows', ['wxFrame', 'wxDialog', 'wxMiniFrame']),
 
@@ -43,20 +43,22 @@ _treeList = [
                   'wxCalendarCtrl',
                   ]),
 
-    ('Window Layout', ['wxLayoutConstraints', 'Sizers', 'OldSizers']),
+    ('Window Layout', ['wxLayoutConstraints', 'LayoutAnchors', 'Sizers', ]),
 
     ('Miscellaneous', [ 'DragAndDrop', 'CustomDragAndDrop', 'FontEnumerator',
                         'wxTimer', 'wxValidator', 'wxGLCanvas', 'DialogUnits',
                         'wxImage', 'wxMask', 'PrintFramework', 'wxOGL',
                         'PythonEvents', 'Threads',
                         'ActiveXWrapper_Acrobat', 'ActiveXWrapper_IE',
-                        'wxDragImage', 'PyShellWindow',
+                        'wxDragImage', "FancyText",
                         ]),
 
     ('wxPython Library', ['Layoutf', 'wxScrolledMessageDialog',
                           'wxMultipleChoiceDialog', 'wxPlotCanvas', 'wxFloatBar',
                           'PyShell', 'wxCalendar', 'wxMVCTree', 'wxVTKRenderWindow',
-                          'FileBrowseButton', 'GenericButtons', 'wxEditor']),
+                          'FileBrowseButton', 'GenericButtons', 'wxEditor',
+                          'PyShellWindow',
+                          ]),
 
     ('Cool Contribs', ['pyTree', 'hangman', 'SlashDot', 'XMLtreeview']),
 
@@ -162,9 +164,25 @@ class wxPythonDemo(wxFrame):
         # Create a Notebook
         self.nb = wxNotebook(splitter2, -1)
 
-        # Set up a TextCtrl on the Overview Notebook page
-        self.ovr = wxHtmlWindow(self.nb, -1)
-        self.nb.AddPage(self.ovr, "Overview")
+        # Set up a wxHtmlWindow on the Overview Notebook page
+        # we put it in a panel first because there seems to be a
+        # refresh bug of some sort (wxGTK) when it is directly in
+        # the notebook...
+        if 0:  # the old way
+            self.ovr = wxHtmlWindow(self.nb, -1, size=(400, 400))
+            self.nb.AddPage(self.ovr, "Overview")
+
+        else:  # hopefully I can remove this hacky code soon
+            panel = wxPanel(self.nb, -1)
+            self.ovr = wxHtmlWindow(panel, -1, size=(400, 400))
+            self.nb.AddPage(panel, "Overview")
+
+            def OnOvrSize(evt, ovr=self.ovr):
+                ovr.SetSize(evt.GetSize())
+
+            EVT_SIZE(panel, OnOvrSize)
+
+        self.SetOverview("Overview", overview)
 
 
         # Set up a TextCtrl on the Demo Code Notebook page
@@ -239,8 +257,7 @@ class wxPythonDemo(wxFrame):
         item, flags = self.tree.HitTest(pt)
         if item == self.tree.GetSelection():
             self.SetOverview(self.tree.GetItemText(item), self.curOverview)
-        else:
-            event.Skip()
+        event.Skip()
 
     #---------------------------------------------
     def OnSelChanged(self, event):

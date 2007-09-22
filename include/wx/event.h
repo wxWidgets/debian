@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     01/02/97
-// RCS-ID:      $Id: event.h,v 1.92.2.5 2000/09/09 19:40:01 VZ Exp $
+// RCS-ID:      $Id: event.h,v 1.92.2.7 2001/01/27 20:15:39 vadz Exp $
 // Copyright:   (c)
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -50,6 +50,11 @@ class WXDLLEXPORT wxList;
 #endif
 
 typedef int wxEventType;
+
+// this macro is for upwards compatibility with 2.4, use it when defining your
+// event table macros
+#define DECLARE_EVENT_TABLE_ENTRY(type, id, idLast, fn, obj) \
+    { type, id, idLast, fn, obj }
 
 // the standard event types
 enum
@@ -873,7 +878,7 @@ public:
 
 #if defined(__WXDEBUG__) && defined(__WXMSW__)
     // see comments in src/msw/dcclient.cpp where g_isPainting is defined
-    extern int g_isPainting;
+    extern WXDLLEXPORT int g_isPainting;
 #endif // debug
 
 class WXDLLEXPORT wxPaintEvent : public wxEvent

@@ -5,7 +5,7 @@
 // Author:      Robin Dunn
 //
 // Created:     31-October-1999
-// RCS-ID:      $Id: clip_dnd.i,v 1.1.2.2 2000/08/03 02:02:37 RD Exp $
+// RCS-ID:      $Id: clip_dnd.i,v 1.1.2.4 2001/01/30 20:53:43 robind Exp $
 // Copyright:   (c) 1999 by Total Control Software
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -346,6 +346,7 @@ public:
     }
 
     size_t GetSize();
+
     //void *GetData();
     %addmethods {
         PyObject* GetData() {

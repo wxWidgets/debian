@@ -5,7 +5,7 @@
 // Author:      Robin Dunn
 //
 // Created:     5/24/98
-// RCS-ID:      $Id: events.i,v 1.1.2.6 2000/09/19 00:20:54 RD Exp $
+// RCS-ID:      $Id: events.i,v 1.1.2.7 2001/01/30 20:53:43 robind Exp $
 // Copyright:   (c) 1998 by Total Control Software
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -383,6 +383,7 @@ class wxNotifyEvent : public wxCommandEvent {
 public:
     wxNotifyEvent(int commandType = wxEVT_NULL, int id = 0);
     bool IsAllowed();
+    void Allow();
     void Veto();
 };
 

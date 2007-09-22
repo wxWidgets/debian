@@ -2,7 +2,7 @@
 // Name:        cursor.cpp
 // Purpose:
 // Author:      Robert Roebling
-// Id:          $Id: cursor.cpp,v 1.24.2.1 2000/06/09 21:15:49 RL Exp $
+// Id:          $Id: cursor.cpp,v 1.24.2.2 2000/11/03 22:08:00 roebling Exp $
 // Copyright:   (c) 1998 Robert Roebling
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -14,6 +14,7 @@
 
 #include "wx/cursor.h"
 #include "wx/utils.h"
+#include "wx/app.h"
 
 #include <gdk/gdk.h>
 
@@ -173,7 +174,8 @@ void wxEndBusyCursor()
     wxSetCursor( gs_savedCursor );
     gs_savedCursor = wxNullCursor;
 
-    wxYield();
+    if (wxTheApp)
+        wxTheApp->SendIdleEvents();
 }
 
 void wxBeginBusyCursor( wxCursor *WXUNUSED(cursor) )
@@ -188,7 +190,8 @@ void wxBeginBusyCursor( wxCursor *WXUNUSED(cursor) )
 
     wxSetCursor( wxCursor(wxCURSOR_WATCH) );
 
-    wxYield();
+    if (wxTheApp)
+        wxTheApp->SendIdleEvents();
 }
 
 bool wxIsBusy()

@@ -4,7 +4,7 @@
 // Author:      Vadim Zeitlin/Julian Smart
 // Modified by:
 // Created:     04/01/98
-// RCS-ID:      $Id: internat.cpp,v 1.12.2.2 2000/08/10 15:05:21 VZ Exp $
+// RCS-ID:      $Id: internat.cpp,v 1.12.2.3 2000/12/31 17:45:49 roebling Exp $
 // Copyright:   (c) Julian Smart and Markus Holzem
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -115,7 +115,8 @@ bool MyApp::OnInit()
   };
 
   // there are very few systems right now which support locales other than "C"
-  m_locale.Init(language, langid, "C");
+  m_locale.Init(NULL, "de", "");
+//  m_locale.Init(language, langid, "C");
                // note that under GTK starting from version 1.2.8 if
                // you set locale to "C" and then use ASCII characters above
                // #128 in GUI elements, they will be truncated (it seems GTK

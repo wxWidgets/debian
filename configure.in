@@ -1,5 +1,5 @@
 dnl Process this file with autoconf to produce a configure script.
-AC_REVISION($Id: configure.in,v 1.314.2.27 2000/09/16 11:02:09 RR Exp $)dnl
+AC_REVISION($Id: configure.in,v 1.314.2.32 2001/01/29 15:26:01 vadz Exp $)dnl
 
 dnl ---------------------------------------------------------------------------
 dnl
@@ -8,7 +8,7 @@ dnl Vadim Zeitlin
 dnl
 dnl This script is under the wxWindows licence.
 dnl
-dnl Version: $Id: configure.in,v 1.314.2.27 2000/09/16 11:02:09 RR Exp $
+dnl Version: $Id: configure.in,v 1.314.2.32 2001/01/29 15:26:01 vadz Exp $
 dnl ---------------------------------------------------------------------------
 
 dnl ---------------------------------------------------------------------------
@@ -457,10 +457,10 @@ dnl WX_INTERFACE_AGE = 0
 
 WX_MAJOR_VERSION_NUMBER=2
 WX_MINOR_VERSION_NUMBER=2
-WX_RELEASE_NUMBER=2
+WX_RELEASE_NUMBER=5
 
-WX_INTERFACE_AGE=2
-WX_BINARY_AGE=3
+WX_INTERFACE_AGE=5
+WX_BINARY_AGE=5
 
 WX_VERSION=$WX_MAJOR_VERSION_NUMBER.$WX_MINOR_VERSION_NUMBER.$WX_RELEASE_NUMBER
 
@@ -2727,12 +2727,13 @@ fi
 
 DEP_INFO_FLAGS=
 CODE_GEN_FLAGS=
+CODE_GEN_FLAGS_CXX=
 if test "$GCC" = yes ; then
     if test "$wxUSE_NO_RTTI" = "yes" ; then
-        CODE_GEN_FLAGS="$CODE_GEN_FLAGS -fno-rtti"
+        CODE_GEN_FLAGS_CXX="$CODE_GEN_FLAGS_CXX -fno-rtti"
     fi
     if test "$wxUSE_NO_EXCEPTIONS" = "yes" ; then
-        CODE_GEN_FLAGS="$CODE_GEN_FLAGS -fno-exceptions"
+        CODE_GEN_FLAGS_CXX="$CODE_GEN_FLAGS_CXX -fno-exceptions"
     fi
     if test "$wxUSE_PERMISSIVE" = "yes" ; then
        CODE_GEN_FLAGS="$CODE_GEN_FLAGS -fpermissive"
@@ -3752,7 +3753,7 @@ if test "$wxUSE_GUI" = "yes"; then
     dnl TODO some samples are never built so far:
     dnl      ipc, mfc, nativdlg, oleauto, ownerdrw, proplist
     SAMPLES_SUBDIRS="$SAMPLES_SUBDIRS controls dialogs dragimag drawing dynamic \
-                     font fractal image menu minimal richedit"
+                     font image menu minimal richedit"
 
     dnl this is needed to be able to find AFM files
     CPPFLAGS="$CPPFLAGS \$(EXTRADEFS) \$(APPEXTRADEFS)"
@@ -3806,6 +3807,7 @@ AC_SUBST(SHARED_LD)
 AC_SUBST(PIC_FLAG)
 AC_SUBST(DEP_INFO_FLAGS)
 AC_SUBST(CODE_GEN_FLAGS)
+AC_SUBST(CODE_GEN_FLAGS_CXX)
 AC_SUBST(BURNT_LIBRARY_NAME)
 AC_SUBST(BURNT_LIBRARY_NAME_GL)
 AC_SUBST(WX_TARGET_LIBRARY_SONAME)

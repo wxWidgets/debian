@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by: VZ at 16/11/98: WX_DECLARE_LIST() and typesafe lists added
 // Created:     29/01/98
-// RCS-ID:      $Id: list.h,v 1.37.2.3 2000/06/07 13:12:01 VZ Exp $
+// RCS-ID:      $Id: list.h,v 1.37.2.4 2001/01/04 19:06:24 vadz Exp $
 // Copyright:   (c) 1998 Julian Smart
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -247,7 +247,7 @@ public:
 protected:
         // copy ctor and assignment operator
     wxListBase(const wxListBase& list)
-        { DoCopy(list); }
+        { Init(); DoCopy(list); }
     wxListBase& operator=(const wxListBase& list)
         { Clear(); DoCopy(list); return *this; }
 

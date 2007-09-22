@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     04/01/98
-// RCS-ID:      $Id: mdi.cpp,v 1.29.2.5 2000/08/10 08:42:33 VZ Exp $
+// RCS-ID:      $Id: mdi.cpp,v 1.29.2.6 2000/12/10 11:57:55 vadz Exp $
 // Copyright:   (c) Julian Smart and Markus Holzem
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -83,6 +83,8 @@ BEGIN_EVENT_TABLE(MyChild, wxMDIChildFrame)
     EVT_MENU(MDI_CHANGE_TITLE, MyChild::OnChangeTitle)
     EVT_MENU(MDI_CHANGE_POSITION, MyChild::OnChangePosition)
     EVT_MENU(MDI_CHANGE_SIZE, MyChild::OnChangeSize)
+
+    EVT_UPDATE_UI(MDI_REFRESH, MyChild::OnUpdateRefresh)
 
     EVT_SIZE(MyChild::OnSize)
     EVT_MOVE(MyChild::OnMove)
@@ -422,6 +424,11 @@ MyChild::~MyChild()
 void MyChild::OnQuit(wxCommandEvent& WXUNUSED(event))
 {
     Close(TRUE);
+}
+
+void MyChild::OnUpdateRefresh(wxUpdateUIEvent& event)
+{
+    event.Enable( canvas && canvas->IsDirty() );
 }
 
 void MyChild::OnRefresh(wxCommandEvent& WXUNUSED(event))

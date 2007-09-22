@@ -6,7 +6,7 @@
 # Author:      Robin Dunn
 #
 # Created:     9-Dec-1999
-# RCS-ID:      $Id: buttons.py,v 1.1.2.2 2000/06/02 01:50:39 RD Exp $
+# RCS-ID:      $Id: buttons.py,v 1.1.2.3 2001/01/30 20:54:22 robind Exp $
 # Copyright:   (c) 1999 by Total Control Software
 # Licence:     wxWindows license
 #----------------------------------------------------------------------
@@ -67,6 +67,7 @@ class wxGenButton(wxControl):
         self.bezelWidth = 2
         self.hasFocus = false
         self.useFocusInd = true
+        self.evtToSend = []
 
         self.SetLabel(label)
         self.SetPosition(pos)
@@ -86,6 +87,7 @@ class wxGenButton(wxControl):
         EVT_KEY_UP(self,           self.OnKeyUp)
         EVT_ERASE_BACKGROUND(self, self.OnEraseBackground)
         EVT_PAINT(self,            self.OnPaint)
+        EVT_IDLE(self,             self.OnIdle)
 
 
     def SetBestSize(self, size=None):
@@ -174,7 +176,14 @@ class wxGenButton(wxControl):
         evt = wxGenButtonEvent(wxEVT_COMMAND_BUTTON_CLICKED, self.GetId())
         evt.SetIsDown(not self.up)
         evt.SetButtonObj(self)
-        self.GetEventHandler().ProcessEvent(evt)
+        self.evtToSend.append(evt)
+
+
+    def OnIdle(self, evt):
+        while self.evtToSend:
+            evt = self.evtToSend[0]
+            del self.evtToSend[0]
+            self.GetEventHandler().ProcessEvent(evt)
 
 
     def DrawBezel(self, dc, x1, y1, x2, y2):
@@ -248,6 +257,7 @@ class wxGenButton(wxControl):
         self.CaptureMouse()
         self.SetFocus()
         self.Refresh()
+        event.Skip()
 
 
     def OnLeftUp(self, event):
@@ -258,7 +268,7 @@ class wxGenButton(wxControl):
         self.up = true
         self.ReleaseMouse()
         self.Refresh()
-
+        event.Skip()
 
     def OnMotion(self, event):
         if not self.IsEnabled():
@@ -274,6 +284,7 @@ class wxGenButton(wxControl):
                 self.up = true
                 self.Refresh()
                 return
+        event.Skip()
 
 
     def OnGainFocus(self, event):

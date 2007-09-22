@@ -4,7 +4,7 @@
 // Author:      Julian Smart, Robert Roebling
 // Modified by:
 // Created:     04/01/98
-// RCS-ID:      $Id: msgdlgg.cpp,v 1.30 2000/01/21 02:26:24 VZ Exp $
+// RCS-ID:      $Id: msgdlgg.cpp,v 1.30.2.1 2000/11/23 21:36:40 roebling Exp $
 // Copyright:   (c) Julian Smart, Markus Holzem, Robert Roebling
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -63,8 +63,6 @@ wxGenericMessageDialog::wxGenericMessageDialog( wxWindow *parent,
 {
     m_dialogStyle = style;
 
-    wxBeginBusyCursor();
-
     wxBoxSizer *topsizer = new wxBoxSizer( wxVERTICAL );
 
     wxBoxSizer *icon_text = new wxBoxSizer( wxHORIZONTAL );
@@ -103,8 +101,6 @@ wxGenericMessageDialog::wxGenericMessageDialog( wxWindow *parent,
     }
 
     Centre( wxBOTH | wxCENTER_FRAME);
-
-    wxEndBusyCursor();
 }
 
 void wxGenericMessageDialog::OnYes(wxCommandEvent& WXUNUSED(event))

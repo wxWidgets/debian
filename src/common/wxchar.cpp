@@ -4,7 +4,7 @@
 // Author:      Ove Kåven
 // Modified by:
 // Created:     09/04/99
-// RCS-ID:      $Id: wxchar.cpp,v 1.24.2.3 2000/08/12 11:24:06 VZ Exp $
+// RCS-ID:      $Id: wxchar.cpp,v 1.24.2.4 2000/10/11 23:17:04 vadz Exp $
 // Copyright:   (c) wxWindows copyright
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -171,10 +171,6 @@ int WXDLLEXPORT wxStricmp(const wxChar *psz1, const wxChar *psz2)
 #ifndef wxStrtok
 WXDLLEXPORT wxChar * wxStrtok(wxChar *psz, const wxChar *delim, wxChar **save_ptr)
 {
-  if (!(save_ptr && *save_ptr)) {
-    return (wxChar *) NULL;
-  }
-
   if (!psz) psz = *save_ptr;
   psz += wxStrspn(psz, delim);
   if (!*psz) {

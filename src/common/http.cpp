@@ -4,7 +4,7 @@
 // Author:      Guilhem Lavaux
 // Modified by:
 // Created:     August 1997
-// RCS-ID:      $Id: http.cpp,v 1.37.2.1 2000/03/23 21:16:14 JS Exp $
+// RCS-ID:      $Id: http.cpp,v 1.37.2.2 2000/10/16 07:10:32 juliansmart Exp $
 // Copyright:   (c) 1997, 1998 Guilhem Lavaux
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -299,7 +299,8 @@ bool wxHTTP::Abort(void)
 
 wxInputStream *wxHTTP::GetInputStream(const wxString& path)
 {
-  wxHTTPStream *inp_stream = new wxHTTPStream(this);
+  wxHTTPStream *inp_stream;
+
   wxString new_path;
 
   m_perr = wxPROTO_CONNERR;
@@ -312,6 +313,8 @@ wxInputStream *wxHTTP::GetInputStream(const wxString& path)
 
   if (!BuildRequest(path, wxHTTP_GET))
     return NULL;
+
+  inp_stream = new wxHTTPStream(this);
 
   if (!GetHeader(wxT("Content-Length")).IsEmpty())
     inp_stream->m_httpsize = wxAtoi(WXSTRINGCAST GetHeader(wxT("Content-Length")));

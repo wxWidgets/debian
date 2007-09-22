@@ -5,7 +5,7 @@
 // Author:      Robin Dunn
 //
 // Created:     22-Dec-1998
-// RCS-ID:      $Id: windows3.i,v 1.1.2.2 2000/06/02 01:50:24 RD Exp $
+// RCS-ID:      $Id: windows3.i,v 1.1.2.3 2001/01/30 20:53:43 robind Exp $
 // Copyright:   (c) 1998 by Total Control Software
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -47,6 +47,9 @@ enum wxSashEdgePosition {
 enum {
     wxEVT_SASH_DRAGGED,
     wxSW_3D,
+    wxSW_3DSASH,
+    wxSW_3DBORDER,
+    wxSW_BORDER
 };
 
 enum wxSashDragStatus
@@ -71,8 +74,8 @@ public:
 class wxSashWindow: public wxWindow {
 public:
     wxSashWindow(wxWindow* parent, wxWindowID id,
-                 const wxPoint& pos = wxPyDefaultPosition,
-                 const wxSize& size = wxPyDefaultSize,
+                 const wxPoint& pos = wxDefaultPosition,
+                 const wxSize& size = wxDefaultSize,
                  long style = wxCLIP_CHILDREN | wxSW_3D,
                  const char* name = "sashWindow");
 
@@ -150,8 +153,8 @@ public:
 class wxSashLayoutWindow: public wxSashWindow {
 public:
     wxSashLayoutWindow(wxWindow* parent, wxWindowID id,
-                       const wxPoint& pos = wxPyDefaultPosition,
-                       const wxSize& size = wxPyDefaultSize,
+                       const wxPoint& pos = wxDefaultPosition,
+                       const wxSize& size = wxDefaultSize,
                        long style = wxCLIP_CHILDREN | wxSW_3D,
                        const char* name = "layoutWindow");
 

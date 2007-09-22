@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by: VZ at 25.02.00: type safe hashes with WX_DECLARE_HASH()
 // Created:     01/02/97
-// RCS-ID:      $Id: hash.h,v 1.11.2.1 2000/03/24 01:55:51 VZ Exp $
+// RCS-ID:      $Id: hash.h,v 1.11.2.2 2001/01/27 12:42:47 vadz Exp $
 // Copyright:   (c)
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -244,7 +244,7 @@ private:
     protected:                                                                 \
         void DoPut(long key, long value, eltype *data)                         \
         {                                                                      \
-            size_t slot = (size_t)abs(key % m_hashSize);                       \
+            size_t slot = (size_t)abs((int)(key % (long)m_hashSize));          \
                                                                                \
             if ( !m_hashTable[slot] )                                          \
             {                                                                  \
