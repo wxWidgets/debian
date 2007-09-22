@@ -1,3 +1,23 @@
+wxwindows2.4 (2.4.3.1) unstable; urgency=high
+
+  * This one is for Sarge.
+  * Restore some symbols inadvertantly removed before the last snapshot.
+    We are going to tolerate the newly added symbols that should have
+    resulted in an soname change.  Not as a habit though.
+  * Restore the static builds for sarge, we can't be easily certain
+    of no package, or no build script they use, doing something
+    stupid that relies on them, even tangentially.  Too late to
+    test that now, so be on notice, its a sign-o-the-times for etch.
+  * New artwork.  See below.
+  * Forge the internal version number to be wx2.4.2 / wxPy2.4.2.4 for
+    this release, to be 100% compatible with the binaries already in
+    testing.  Some packages (boa-constructor being the first reported)
+    check this at runtime and cannot tolerate a library version upgrade
+    without modification to their own code.  This is an issue to resolve
+    after the freeze.
+
+ -- Ron Lee <ron@debian.org>  Wed, 25 May 2005 11:36:49 +0930
+
 wxwindows2.4 (2.4.3) unstable; urgency=medium
 
   * Really should be high urgency, as this resolves more licence

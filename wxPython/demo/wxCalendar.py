@@ -107,25 +107,18 @@ class TestPanel(wxPanel):
 
 # button for calendar dialog test
 
-        wxStaticText(self, -1, "Test Calendar Dialog", wxPoint(350, 50), wxSize(150, -1))
-
         mID = wxNewId()
-        bmp = images.getCalendarBitmap()
-        self.but = wxBitmapButton(self, mID, bmp, wxPoint(380, 80))#, wxSize(30, 30))
+        self.but = wxButton(self, mID, "Test Calendar Dialog", wxPoint(380, 80))#, wxSize(30, 30))
         EVT_BUTTON(self, mID, self.TestDlg)
 
 # button for calendar window test
 
-        wxStaticText(self, -1, "Test Calendar Window", wxPoint(350, 150), wxSize(150, -1))
-
         mID = wxNewId()
-        self.but = wxBitmapButton(self, mID, bmp, wxPoint(380, 180))#, wxSize(30, 30))
+        self.but = wxButton(self, mID, "Test Calendar Window", wxPoint(380, 180))#, wxSize(30, 30))
         EVT_BUTTON(self, mID, self.TestFrame)
 
-        wxStaticText(self, -1, "Test Calendar Print", wxPoint(350, 250), wxSize(150, -1))
-
         mID = wxNewId()
-        self.but = wxBitmapButton(self, mID, bmp, wxPoint(380, 280))#, wxSize(30, 30))
+        self.but = wxButton(self, mID, "Test Calendar Print", wxPoint(380, 280))#, wxSize(30, 30))
         EVT_BUTTON(self, mID, self.OnPreview)
 
 # calendar dialog
@@ -598,7 +591,8 @@ class SetPrintout(wxPrintout):
 
 class MyApp(wxApp):
     def OnInit(self):
-        frame = CalendFrame(None, -1, "Test Calendar")
+        wxInitAllImageHandlers()
+        frame = CalendFrame(None, -1, "Test Calendar", sys.stdout)
         frame.Show(True)
         self.SetTopWindow(frame)
         return True
@@ -612,22 +606,19 @@ def MessageDlg(self, message, type = 'Message'):
 
 #---------------------------------------------------------------------------
 
-def main():
-    app = MyApp(0)
-    app.MainLoop()
-
-
-if __name__ == '__main__':
-    main()
-
-
-#---------------------------------------------------------------------------
-
 def runTest(frame, nb, log):
     win = TestPanel(nb, log, frame)
     return win
 
 #---------------------------------------------------------------------------
+
+
+if __name__ == '__main__':
+    import sys,os
+    import run
+    run.main(['', os.path.basename(sys.argv[0])])
+
+
 
 
 overview = """\

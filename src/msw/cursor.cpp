@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     01/02/97
-// RCS-ID:      $Id: cursor.cpp,v 1.39.2.2 2005/05/15 16:41:20 JS Exp $
+// RCS-ID:      $Id: cursor.cpp,v 1.39.2.3 2005/05/28 16:06:33 JS Exp $
 // Copyright:   (c) Julian Smart and Markus Holzem
 // Licence:       wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -345,7 +345,7 @@ wxCursor::wxCursor(int cursor_type)
     }
     case wxCURSOR_SIZING:
     {
-      refData->m_hCursor = (WXHCURSOR) LoadCursor(wxGetInstance(), wxT("wxCURSOR_SIZING"));
+      refData->m_hCursor = (WXHCURSOR) LoadCursor((HINSTANCE) NULL, IDC_SIZEALL);
       break;
     }
     case wxCURSOR_WATCH:

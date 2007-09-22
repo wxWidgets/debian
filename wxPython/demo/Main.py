@@ -6,7 +6,7 @@
 # Author:       Robin Dunn
 #
 # Created:      A long time ago, in a galaxy far, far away...
-# RCS-ID:       $Id: Main.py,v 1.76.2.39 2004/01/15 17:38:10 RD Exp $
+# RCS-ID:       $Id: Main.py,v 1.76.2.40 2005/05/24 21:08:08 RD Exp $
 # Copyright:    (c) 1999 by Total Control Software
 # Licence:      wxWindows license
 #----------------------------------------------------------------------------
@@ -756,7 +756,7 @@ class wxPythonDemo(wx.Frame):
 
 class MySplashScreen(wx.SplashScreen):
     def __init__(self):
-        bmp = wx.Image(opj("bitmaps/splash.gif")).ConvertToBitmap()
+        bmp = wx.Image(opj("bitmaps/splash.png")).ConvertToBitmap()
         wx.SplashScreen.__init__(self, bmp,
                                 wx.SPLASH_CENTRE_ON_SCREEN|wx.SPLASH_TIMEOUT,
                                 4000, None, -1,
