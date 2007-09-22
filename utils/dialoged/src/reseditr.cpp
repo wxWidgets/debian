@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     04/01/98
-// RCS-ID:      $Id: reseditr.cpp,v 1.48.2.4 2000/05/10 17:39:35 JS Exp $
+// RCS-ID:      $Id: reseditr.cpp,v 1.48.2.5 2002/01/18 11:50:49 JS Exp $
 // Copyright:   (c) Julian Smart
 // Licence:   	wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -2392,34 +2392,6 @@ void wxResourceEditorScrolledWindow::DrawTitle(wxDC& dc)
             
             dc.DrawText(str, m_marginX + (- x * 10), m_marginY + (- y * 10) - h - 5);
         }
-    }
-}
-
-// Popup menu callback
-void ObjectMenuProc(wxMenu *menu, wxCommandEvent& event)
-{
-    wxWindow *data = (wxWindow *)menu->GetClientData();
-    if (!data)
-        return;
-    
-    switch (event.GetInt())
-    {
-    case OBJECT_MENU_EDIT:
-        {
-            wxResourceManager::GetCurrentResourceManager()->EditWindow(data);
-            break;
-        }
-    case OBJECT_MENU_DELETE:
-        {
-            wxResourceManager::GetCurrentResourceManager()->DeselectItemIfNecessary(data);
-            
-            wxResourceManager::GetCurrentResourceManager()->SaveInfoAndDeleteHandler(data);
-            wxResourceManager::GetCurrentResourceManager()->DeleteResource(data);
-            wxResourceManager::GetCurrentResourceManager()->DeleteWindow(data);
-            break;
-        }
-    default:
-        break;
     }
 }
 

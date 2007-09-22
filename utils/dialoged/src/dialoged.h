@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     04/01/98
-// RCS-ID:      $Id: dialoged.h,v 1.5.2.1 2000/04/22 14:41:06 JS Exp $
+// RCS-ID:      $Id: dialoged.h,v 1.5.2.2 2002/01/18 11:50:49 JS Exp $
 // Copyright:   (c) Julian Smart
 // Licence:   	wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -19,8 +19,6 @@
 #include "wx/proplist.h"
 #include "reseditr.h"
 
-extern void ObjectMenuProc(wxMenu *menu, wxCommandEvent& event);
-
 class MyChild;
 
 // Define a new application
@@ -30,11 +28,6 @@ public:
     MyApp(void);
     bool OnInit(void);
     int OnExit(void);
-    
-    void OnObjectPopupMenu(wxCommandEvent& event)
-    {
-        ObjectMenuProc((wxMenu *)event.GetEventObject(), event);
-    }
     
 private:
     DECLARE_EVENT_TABLE()

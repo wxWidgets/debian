@@ -4,7 +4,7 @@
 // Author:      Vadim Zeitlin
 // Modified by:
 // Created:     04.10.99
-// RCS-ID:      $Id: console.cpp,v 1.51.2.23 2001/11/02 06:58:54 GD Exp $
+// RCS-ID:      $Id: console.cpp,v 1.51.2.24 2002/01/04 15:28:34 VZ Exp $
 // Copyright:   (c) 1999 Vadim Zeitlin <zeitlin@dptmaths.ens-cachan.fr>
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -2618,6 +2618,9 @@ static void TestInteractive()
 
     puts("\n*** done ***");
 }
+
+// for sqrt() below
+#include <math.h>
 
 static void TestTimeMS()
 {

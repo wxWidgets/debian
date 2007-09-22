@@ -3,7 +3,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     04/01/98
-// RCS-ID:      $Id: dialoged.cpp,v 1.6.2.1 2000/04/22 14:41:06 JS Exp $
+// RCS-ID:      $Id: dialoged.cpp,v 1.6.2.2 2002/01/18 11:50:49 JS Exp $
 // Copyright:   (c) Julian Smart
 // Licence:   	wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -28,8 +28,6 @@
 IMPLEMENT_APP(MyApp)
 
 BEGIN_EVENT_TABLE(MyApp, wxApp)
-EVT_MENU(OBJECT_MENU_EDIT, MyApp::OnObjectPopupMenu)
-EVT_MENU(OBJECT_MENU_DELETE, MyApp::OnObjectPopupMenu)
 END_EVENT_TABLE()
 
 MyApp::MyApp(void)

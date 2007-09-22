@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     04/01/98
-// RCS-ID:      $Id: dlghndlr.h,v 1.4.4.1 2000/04/22 14:41:06 JS Exp $
+// RCS-ID:      $Id: dlghndlr.h,v 1.4.4.2 2002/01/18 11:50:49 JS Exp $
 // Copyright:   (c) Julian Smart
 // Licence:   	wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -51,6 +51,8 @@ public:
     void OnPaint(wxPaintEvent& event);
     void OnMouseEvent(wxMouseEvent& event);
     void OnSize(wxSizeEvent& event);
+	void OnObjectEdit(wxCommandEvent& event);
+	void OnObjectDelete(wxCommandEvent& event);
     
     virtual void OnItemEvent(wxControl *win, wxMouseEvent& event);
     virtual void OnLeftClick(int x, int y, int keys);
