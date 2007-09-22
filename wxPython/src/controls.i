@@ -5,7 +5,7 @@
 // Author:      Robin Dunn
 //
 // Created:     6/10/98
-// RCS-ID:      $Id: controls.i,v 1.30.2.8 2003/06/11 21:44:46 RD Exp $
+// RCS-ID:      $Id: controls.i,v 1.30.2.9 2004/01/15 17:43:36 RD Exp $
 // Copyright:   (c) 1998 by Total Control Software
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -1134,6 +1134,8 @@ public:
     int GetValue();
     void SetRange(int min, int max);
     void SetValue(int value);
+    %name(SetValueString) void SetValue(const wxString& text);
+
 #ifdef __WXGTK__
     %addmethods {
         void SetSelection(long from, long to) {

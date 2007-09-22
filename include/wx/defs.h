@@ -4,7 +4,7 @@
 // Author:      Julian Smart and others
 // Modified by:
 // Created:     01/02/97
-// RCS-ID:      $Id: defs.h,v 1.320.2.11 2003/08/26 20:53:48 CE Exp $
+// RCS-ID:      $Id: defs.h,v 1.320.2.13 2004/04/18 12:57:48 VZ Exp $
 // Copyright:   (c)
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -95,7 +95,7 @@
 // compiler defects workarounds
 // ----------------------------------------------------------------------------
 
-#if defined(__VISUALC__) && !defined(WIN32)
+#if defined(__VISUALC__) && !defined(__WIN32__)
     // VC1.5 does not have LPTSTR type
 #define LPTSTR  LPSTR
 #define LPCTSTR LPCSTR
@@ -935,8 +935,16 @@ enum wxBorder
 // Windows, it won't normally get the dialog navigation key events)
 #define wxWANTS_CHARS           0x00040000
 
-// Make window retained (mostly Motif, I think) -- obsolete (VZ)?
+/*  Make window retained (Motif only, see src/generic/scrolwing.cpp)
+ *  This is non-zero only under wxMotif, to avoid a clash with wxPOPUP_WINDOW
+ *  on other platforms
+ */
+
+#ifdef __WXMOTIF__
 #define wxRETAINED              0x00020000
+#else
+#define wxRETAINED              0x00000000
+#endif
 #define wxBACKINGSTORE          wxRETAINED
 
 // set this flag to create a special popup window: it will be always shown on

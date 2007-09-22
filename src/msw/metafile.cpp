@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by: VZ 07.01.00: implemented wxMetaFileDataObject
 // Created:     04/01/98
-// RCS-ID:      $Id: metafile.cpp,v 1.21 2002/08/30 20:34:26 JS Exp $
+// RCS-ID:      $Id: metafile.cpp,v 1.21.2.1 2003/10/22 20:29:22 MBN Exp $
 // Copyright:   (c) Julian Smart and Markus Holzem
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -94,7 +94,7 @@ wxMetafile::wxMetafile(const wxString& file)
 
     M_METAFILEDATA->m_windowsMappingMode = wxMM_ANISOTROPIC;
     M_METAFILEDATA->m_metafile = 0;
-    if (!file.IsNull() && (file.Cmp(wxT("")) == 0))
+    if (!file.empty())
         M_METAFILEDATA->m_metafile = (WXHANDLE) GetMetaFile(file);
 }
 
@@ -377,12 +377,12 @@ bool wxMakeMetafilePlaceable(const wxString& filename, int x1, int y1, int x2, i
             p < (WORD *)&pMFHead ->checksum; ++p)
         pMFHead ->checksum ^= *p;
 
-    FILE *fd = wxFopen(filename.fn_str(), "rb");
+    FILE *fd = wxFopen(filename.fn_str(), wxT("rb"));
     if (!fd) return FALSE;
 
     wxChar tempFileBuf[256];
     wxGetTempFileName(wxT("mf"), tempFileBuf);
-    FILE *fHandle = wxFopen(wxConvFile.cWX2MB(tempFileBuf), "wb");
+    FILE *fHandle = wxFopen(wxFNCONV(tempFileBuf), wxT("wb"));
     if (!fHandle)
         return FALSE;
     fwrite((void *)&header, sizeof(unsigned char), sizeof(mfPLACEABLEHEADER), fHandle);

@@ -4,7 +4,7 @@
 // Author:      Vadim Zeitlin
 // Modified by:
 // Created:     23.09.98
-// RCS-ID:      $Id: mimetype.cpp,v 1.27.2.9 2003/04/06 19:09:15 JS Exp $
+// RCS-ID:      $Id: mimetype.cpp,v 1.27.2.11 2004/04/15 22:15:12 VZ Exp $
 // Copyright:   (c) 1998 Vadim Zeitlin <zeitlin@dptmaths.ens-cachan.fr>
 // Licence:     wxWindows license (part of wxExtra library)
 /////////////////////////////////////////////////////////////////////////////
@@ -2161,14 +2161,19 @@ bool wxMimeTypesManagerImpl::ReadMimeTypes(const wxString& strFileName)
             else if ( strLHS == wxT("exts") ) {
                 strExtensions = strRHS;
             }
-            else {
+            else if ( strLHS == _T("icon") )
+            {
                 // this one is simply ignored: it usually refers to Netscape
                 // built in icons which are useless for us anyhow
-                if ( strLHS != _T("icon") )
-                {
-                    wxLogWarning(_("Unknown field in file %s, line %d: '%s'."),
-                                 strFileName.c_str(), nLine + 1, strLHS.c_str());
-                }
+            }
+            else if ( !strLHS.StartsWith(_T("x-")) )
+            {
+                // we suppose that all fields starting with "X-" are
+                // unregistered extensions according to the standard practice,
+                // but it may be worth telling the user about other junk in
+                // his mime.types file
+                wxLogWarning(_("Unknown field in file %s, line %d: '%s'."),
+                             strFileName.c_str(), nLine + 1, strLHS.c_str());
             }
 
             if ( !entryEnded ) {
@@ -2554,7 +2559,7 @@ bool wxMimeTypesManagerImpl::ReadMailcap(const wxString& strFileName,
 
             // and if we have, was it in this file?
             overwrite = nIndex == wxNOT_FOUND ||
-                            aIndicesSeenHere.Index(nIndex) != wxNOT_FOUND;
+                            aIndicesSeenHere.Index(nIndex) == wxNOT_FOUND;
         }
 
         wxLogTrace(TRACE_MIME, _T("mailcap %s: %s [%s]"),

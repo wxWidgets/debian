@@ -2,7 +2,7 @@
 // Name:        choice.cpp
 // Purpose:
 // Author:      Robert Roebling
-// Id:          $Id: choice.cpp,v 1.55.2.2 2003/07/07 14:21:56 RR Exp $
+// Id:          $Id: choice.cpp,v 1.55.2.3 2003/10/06 18:08:15 RR Exp $
 // Copyright:   (c) 1998 Robert Roebling
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -296,11 +296,33 @@ int wxChoice::GetSelection() const
 #endif
 }
 
-void wxChoice::SetString( int WXUNUSED(n), const wxString& WXUNUSED(string) )
+void wxChoice::SetString( int n, const wxString& str )
 {
     wxCHECK_RET( m_widget != NULL, wxT("invalid choice") );
 
-    wxFAIL_MSG(wxT("not implemented"));
+    GtkMenuShell *menu_shell = GTK_MENU_SHELL( gtk_option_menu_get_menu( GTK_OPTION_MENU(m_widget) ) );
+    int count = 0;
+    GList *child = menu_shell->children;
+    while (child)
+    {
+        GtkBin *bin = GTK_BIN( child->data );
+        if (count == n)
+        {
+            GtkLabel *label = (GtkLabel *) NULL;
+            if (bin->child)
+                label = GTK_LABEL(bin->child);
+            if (!label)
+                label = GTK_LABEL( BUTTON_CHILD(m_widget) );
+
+            wxASSERT_MSG( label != NULL , wxT("wxChoice: invalid label") );
+
+            gtk_label_set_text( label, wxGTK_CONV( str ) ); 
+            
+            return;
+        }
+        child = child->next;
+        count++;
+    }
 }
 
 wxString wxChoice::GetString( int n ) const

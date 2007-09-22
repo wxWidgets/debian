@@ -4,7 +4,7 @@
 // Notes:       Based on htmlhelp.cpp, implementing a monolithic
 //              HTML Help controller class,  by Vaclav Slavik
 // Author:      Harm van der Heijden and Vaclav Slavik
-// RCS-ID:      $Id: helpfrm.cpp,v 1.72.2.3 2002/12/16 10:23:20 JS Exp $
+// RCS-ID:      $Id: helpfrm.cpp,v 1.72.2.5 2003/10/03 19:00:17 VS Exp $
 // Copyright:   (c) Harm van der Heijden and Vaclav Slavik
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -469,6 +469,9 @@ wxHtmlHelpFrame::~wxHtmlHelpFrame()
     if (m_NormalFonts) delete m_NormalFonts;
     if (m_FixedFonts) delete m_FixedFonts;
     if (m_PagesHash) delete m_PagesHash;
+#if wxUSE_PRINTING_ARCHITECTURE
+    delete m_Printer;
+#endif
 }
 
 

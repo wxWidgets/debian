@@ -3,7 +3,7 @@
 // Purpose:     XRC resource for dialogs
 // Author:      Vaclav Slavik
 // Created:     2000/03/05
-// RCS-ID:      $Id: xh_dlg.cpp,v 1.6.2.1 2002/09/17 19:14:38 VS Exp $
+// RCS-ID:      $Id: xh_dlg.cpp,v 1.6.2.2 2004/02/18 09:34:11 JS Exp $
 // Copyright:   (c) 2000 Vaclav Slavik
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -36,6 +36,7 @@ wxDialogXmlHandler::wxDialogXmlHandler() : wxXmlResourceHandler()
     XRC_ADD_STYLE(wxRESIZE_BOX);
     XRC_ADD_STYLE(wxDIALOG_MODAL);
     XRC_ADD_STYLE(wxDIALOG_MODELESS);
+    XRC_ADD_STYLE(wxDIALOG_NO_PARENT);
 
     XRC_ADD_STYLE(wxNO_3D);
     XRC_ADD_STYLE(wxTAB_TRAVERSAL);

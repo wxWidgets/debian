@@ -4,7 +4,7 @@
 // Author:      Vadim Zeitlin
 // Modified by:
 // Created:     29/01/98
-// RCS-ID:      $Id: intl.cpp,v 1.82.2.18 2003/09/19 21:43:19 VS Exp $
+// RCS-ID:      $Id: intl.cpp,v 1.82.2.22 2004/01/21 17:53:52 VS Exp $
 // Copyright:   (c) 1998 Vadim Zeitlin <zeitlin@dptmaths.ens-cachan.fr>
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -449,7 +449,7 @@ void wxMsgCatalogFile::FillHash(wxMessagesHash& hash, bool convertEncoding) cons
     if ( convertEncoding )
     {
         wxFontEncoding targetEnc = wxFONTENCODING_SYSTEM;
-        wxFontEncoding enc = wxFontMapper::Get()->CharsetToEncoding(charset, FALSE);
+        wxFontEncoding enc = wxFontMapper::Get()->CharsetToEncoding(m_charset, FALSE);
         if ( enc == wxFONTENCODING_SYSTEM )
         {
             convertEncoding = FALSE; // unknown encoding
@@ -622,7 +622,7 @@ bool wxLocale::Init(const wxChar *szName,
   if ( m_strShort.IsEmpty() ) {
     // FIXME I don't know how these 2 letter abbreviations are formed,
     //       this wild guess is surely wrong
-    if ( szLocale[0] )
+    if ( szLocale && szLocale[0] )
     {
         m_strShort += (wxChar)wxTolower(szLocale[0]);
         if ( szLocale[1] )
@@ -1593,6 +1593,11 @@ bool wxLocale::AddCatalog(const wxChar *szDomain)
   else {
     // don't add it because it couldn't be loaded anyway
     delete pMsgCat;
+    
+    // it's OK to not load English catalog, the texts are embedded in
+    // the program:
+    if (m_strShort.Mid(0, 2) == wxT("en"))
+        return TRUE;
 
     return FALSE;
   }
@@ -2406,7 +2411,7 @@ void wxLocale::InitLanguagesDB()
    LNG(wxLANGUAGE_SWAHILI,                    "sw_KE", LANG_SWAHILI   , SUBLANG_DEFAULT                   , "Swahili")
    LNG(wxLANGUAGE_SWEDISH,                    "sv_SE", LANG_SWEDISH   , SUBLANG_SWEDISH                   , "Swedish")
    LNG(wxLANGUAGE_SWEDISH_FINLAND,            "sv_FI", LANG_SWEDISH   , SUBLANG_SWEDISH_FINLAND           , "Swedish (Finland)")
-   LNG(wxLANGUAGE_TAGALOG,                    "tl"   , 0              , 0                                 , "Tagalog")
+   LNG(wxLANGUAGE_TAGALOG,                    "tl_PH", 0              , 0                                 , "Tagalog")
    LNG(wxLANGUAGE_TAJIK,                      "tg"   , 0              , 0                                 , "Tajik")
    LNG(wxLANGUAGE_TAMIL,                      "ta"   , LANG_TAMIL     , SUBLANG_DEFAULT                   , "Tamil")
    LNG(wxLANGUAGE_TATAR,                      "tt"   , LANG_TATAR     , SUBLANG_DEFAULT                   , "Tatar")

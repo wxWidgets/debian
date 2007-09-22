@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     04/01/98
-// RCS-ID:      $Id: valtext.cpp,v 1.27.2.3 2003/07/10 08:21:49 JS Exp $
+// RCS-ID:      $Id: valtext.cpp,v 1.27.2.4 2003/12/11 10:00:19 JS Exp $
 // Copyright:   (c) Julian Smart and Markus Holzem
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -205,9 +205,15 @@ bool wxTextValidator::TransferToWindow(void)
 {
     if( !CheckValidator() )
         return FALSE;
-    
-    if (!m_stringValue)
-        return TRUE;
+
+    // The two lines below have been commented because they would trigger
+    // an 'unreachable code' warning with MSVC6 in Win32 Release build. The
+    // CheckValidator() call above has a wxCHECK() for m_stringValue. If
+    // m_stringValue is NULL CheckValidator() returns false and this code
+    // is never reached.
+
+    //if ( !m_stringValue )
+    //    return TRUE;
 
     wxTextCtrl *control = (wxTextCtrl *) m_validatorWindow ;
     control->SetValue(* m_stringValue) ;
@@ -221,8 +227,14 @@ bool wxTextValidator::TransferFromWindow(void)
     if( !CheckValidator() )
         return FALSE;
 
-    if (!m_stringValue)
-        return TRUE;
+    // The two lines below have been commented because they would trigger
+    // an 'unreachable code' warning with MSVC6 in Win32 Release build. The
+    // CheckValidator() call above has a wxCHECK() for m_stringValue. If
+    // m_stringValue is NULL CheckValidator() returns false and this code
+    // is never reached.
+
+    //if ( !m_stringValue )
+    //    return TRUE;
 
     wxTextCtrl *control = (wxTextCtrl *) m_validatorWindow ;
     * m_stringValue = control->GetValue() ;

@@ -5,7 +5,7 @@
 // Author:      Robin Dunn
 //
 // Created:     7/1/97
-// RCS-ID:      $Id: helpers.cpp,v 1.59.2.27 2003/07/31 18:28:07 RD Exp $
+// RCS-ID:      $Id: helpers.cpp,v 1.59.2.29 2004/02/25 21:43:19 RD Exp $
 // Copyright:   (c) 1998 by Total Control Software
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -26,6 +26,10 @@
 #include <gtk/gtk.h>
 #include <gdk/gdkprivate.h>
 #include <wx/gtk/win_gtk.h>
+#endif
+
+#ifdef __WXMAC__
+#include <wx/mac/private.h>
 #endif
 
 //----------------------------------------------------------------------
@@ -489,8 +493,10 @@ PyObject* __wxStart(PyObject* /* self */, PyObject* args)
 
 void __wxCleanup() {
     wxPyDoingCleanup = TRUE;
-    if (wxPyDoCleanup)
+    if (wxPyDoCleanup) {
+        wxPyDoCleanup = FALSE;
         wxEntryCleanup();
+    }
 #ifdef WXP_WITH_THREAD
     delete wxPyTMutex;
     wxPyTMutex = NULL;
@@ -1603,10 +1609,12 @@ PyObject* wxPy_ConvertList(wxListBase* list, const char* className) {
 //----------------------------------------------------------------------
 
 long wxPyGetWinHandle(wxWindow* win) {
+
 #ifdef __WXMSW__
     return (long)win->GetHandle();
 #endif
 
+    
     // Find and return the actual X-Window.
 #ifdef __WXGTK__
     if (win->m_wxwindow) {
@@ -1620,6 +1628,12 @@ long wxPyGetWinHandle(wxWindow* win) {
 #endif
     }
 #endif
+
+    
+#ifdef __WXMAC__
+    return (long)MAC_WXHWND(win->MacGetRootWindow());
+#endif
+    
     return 0;
 }
 

@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     01/02/97
-// RCS-ID:      $Id: dialog.cpp,v 1.81.2.2 2002/10/22 00:30:26 VZ Exp $
+// RCS-ID:      $Id: dialog.cpp,v 1.81.2.3 2003/12/11 09:10:03 JS Exp $
 // Copyright:   (c) Julian Smart and Markus Holzem
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -121,8 +121,8 @@ bool wxDialog::Create(wxWindow *parent,
 
     if ( !wxTopLevelWindow::Create(parent, id, title, pos, size, style, name) )
         return FALSE;
-
-    SetFont(wxSystemSettings::GetFont(wxSYS_DEFAULT_GUI_FONT));
+    if (!m_hasFont)
+        SetFont(wxSystemSettings::GetFont(wxSYS_DEFAULT_GUI_FONT));
 
     return TRUE;
 }

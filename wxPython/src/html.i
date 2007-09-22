@@ -5,7 +5,7 @@
 // Author:      Robin Dunn
 //
 // Created:     25-nov-1998
-// RCS-ID:      $Id: html.i,v 1.28.2.8 2003/06/11 21:19:57 RD Exp $
+// RCS-ID:      $Id: html.i,v 1.28.2.9 2004/01/15 17:43:35 RD Exp $
 // Copyright:   (c) 1998 by Total Control Software
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -89,6 +89,14 @@ enum {
     wxHTML_COND_ISANCHOR,
     wxHTML_COND_ISIMAGEMAP,
     wxHTML_COND_USER,
+
+    wxHTML_FONT_SIZE_1,
+    wxHTML_FONT_SIZE_2,
+    wxHTML_FONT_SIZE_3,
+    wxHTML_FONT_SIZE_4,
+    wxHTML_FONT_SIZE_5,
+    wxHTML_FONT_SIZE_6,
+    wxHTML_FONT_SIZE_7,
 };
 
 
@@ -378,6 +386,8 @@ public:
     int GetWidth();
     int GetHeight();
     int GetDescent();
+    const wxString& GetId() const;
+    void SetId(const wxString& id);
     wxHtmlLinkInfo* GetLink(int x = 0, int y = 0);
     wxHtmlCell* GetNext();
     wxHtmlContainerCell* GetParent();

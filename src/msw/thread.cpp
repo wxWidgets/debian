@@ -4,7 +4,7 @@
 // Author:      Original from Wolfram Gloger/Guilhem Lavaux
 // Modified by: Vadim Zeitlin to make it work :-)
 // Created:     04/22/98
-// RCS-ID:      $Id: thread.cpp,v 1.59.2.4 2003/08/17 22:57:24 SN Exp $
+// RCS-ID:      $Id: thread.cpp,v 1.59.2.5 2004/02/07 13:47:52 VZ Exp $
 // Copyright:   (c) Wolfram Gloger (1996, 1997), Guilhem Lavaux (1998);
 //                  Vadim Zeitlin (1999-2002)
 // Licence:     wxWindows licence
@@ -887,8 +887,10 @@ wxThreadError wxThread::Delete(ExitCode *pRc)
                     break;
 
                 case WAIT_OBJECT_0 + 1:
-                    // new message arrived, process it
-                    if ( !wxTheApp->DoMessage() )
+                    // new message arrived (or maybe not... sometimes the queue
+                    // is empty, hence call Pending() to be sure and not hang
+                    // forever in DoMessage(), process it
+                    if ( wxTheApp->Pending() && !wxTheApp->DoMessage() )
                     {
                         // WM_QUIT received: kill the thread
                         Kill();

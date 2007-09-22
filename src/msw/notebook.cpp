@@ -4,7 +4,7 @@
 // Author:      Vadim Zeitlin
 // Modified by:
 // Created:     11.06.98
-// RCS-ID:      $Id: notebook.cpp,v 1.64.2.6 2003/07/22 16:47:33 JS Exp $
+// RCS-ID:      $Id: notebook.cpp,v 1.64.2.9 2004/05/13 20:53:28 DS Exp $
 // Copyright:   (c) 1998 Vadim Zeitlin <zeitlin@dptmaths.ens-cachan.fr>
 // Licence:     wxWindows license
 ///////////////////////////////////////////////////////////////////////////////
@@ -366,36 +366,34 @@ wxNotebookPage *wxNotebook::DoRemovePage(int nPage)
     }
     else // notebook still not empty
     {
-        // change the selected page if it was deleted or became invalid
-        int selNew;
-        if ( m_nSelection == GetPageCount() )
+        int selNew = TabCtrl_GetCurSel(m_hwnd);
+        if (selNew != -1)
         {
-            // last page deleted, make the new last page the new selection
-            selNew = m_nSelection - 1;
+            // No selection change, just refresh the current selection.
+            // Because it could be that the slection index changed 
+            // we need to update it. 
+            // Note: this does not mean the selection it self changed.
+            m_nSelection = selNew;
+            m_pages[m_nSelection]->Refresh();
         }
-        else if ( nPage <= m_nSelection )
+        else if (int(nPage) == m_nSelection)
         {
-            // we must show another page, even if it has the same index
-            selNew = m_nSelection;
-        }
-        else // nothing changes for the currently selected page
-        {
-            selNew = -1;
-
-            // we still must refresh the current page: this needs to be done
-            // for some unknown reason if the tab control shows the up-down
-            // control (i.e. when there are too many pages) -- otherwise after
-            // deleting a page nothing at all is shown
-            if (m_nSelection >= 0)
-                m_pages[m_nSelection]->Refresh();
-        }
-
-        if ( selNew != -1 )
-        {
+            // The selection was deleted.
+            
+            // Determine new selection.
+            if (m_nSelection == int(GetPageCount()))
+                selNew = m_nSelection - 1;
+            else
+                selNew = m_nSelection;
+            
             // m_nSelection must be always valid so reset it before calling
             // SetSelection()
             m_nSelection = -1;
             SetSelection(selNew);
+        }
+        else
+        {
+            wxFAIL; // Windows did not behave ok.
         }
     }
 
@@ -706,9 +704,27 @@ wxColour wxNotebookGetThemeBackgroundColour(wxNotebook* notebook)
                 m_pfnGetThemeColor(hTheme,
                 10 /* TABP_BODY */,
                 1 /* NORMAL */,
-                3821, /* FILLCOLORHINT */
-                & themeColor);
-            
+                3821 /* FILLCOLORHINT */,
+                &themeColor);
+
+            /*
+            [DS] Workaround for WindowBlinds:
+            Some themes return a near black theme color using FILLCOLORHINT,
+            this makes notebook pages have an ugly black background and makes
+            text (usually black) unreadable. Retry again with FILLCOLOR.
+
+            This workaround potentially breaks appearance of some themes,
+            but in practice it already fixes some themes.
+            */
+            if (themeColor == 1)
+            {
+                wxUxThemeEngine::Get()->m_pfnGetThemeColor(hTheme,
+                    10 /* TABP_BODY */,
+                    1 /* NORMAL */,
+                    3802 /* FILLCOLOR */,
+                    &themeColor);
+            }
+
             wxUxThemeEngine::Get()->m_pfnCloseThemeData(hTheme);
             
             wxColour colour(GetRValue(themeColor), GetGValue(themeColor), GetBValue(themeColor));

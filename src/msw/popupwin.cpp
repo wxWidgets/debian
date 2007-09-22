@@ -4,7 +4,7 @@
 // Author:      Vadim Zeitlin
 // Modified by:
 // Created:     08.05.02
-// RCS-ID:      $Id: popupwin.cpp,v 1.4 2002/06/05 23:30:00 VZ Exp $
+// RCS-ID:      $Id: popupwin.cpp,v 1.4.2.1 2003/11/16 20:43:06 DS Exp $
 // Copyright:   (c) 2002 Vadim Zeitlin <zeitlin@dptmaths.ens-cachan.fr>
 // License:     wxWindows license
 ///////////////////////////////////////////////////////////////////////////////
@@ -29,7 +29,10 @@
 #endif
 
 #ifndef WX_PRECOMP
+#include "wx/wx.h"
 #endif //WX_PRECOMP
+
+#if wxUSE_POPUPWIN
 
 #include "wx/popupwin.h"
 
@@ -84,4 +87,6 @@ WXHWND wxPopupWindow::MSWGetParent() const
     //     ugly
     return (WXHWND)::GetDesktopWindow();
 }
+
+#endif // #if wxUSE_POPUPWIN
 

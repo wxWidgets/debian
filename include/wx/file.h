@@ -5,7 +5,7 @@
 // Author:      Vadim Zeitlin
 // Modified by:
 // Created:     29/01/98
-// RCS-ID:      $Id: file.h,v 1.25 2002/09/04 22:17:09 VS Exp $
+// RCS-ID:      $Id: file.h,v 1.25.2.1 2003/12/11 10:57:49 JS Exp $
 // Copyright:   (c) 1998 Vadim Zeitlin <zeitlin@dptmaths.ens-cachan.fr>
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -74,11 +74,11 @@ public:
   // ctors
   // -----
     // def ctor
-  wxFile() { m_fd = fd_invalid; }
+  wxFile() { m_fd = fd_invalid; m_error = false; }
     // open specified file (may fail, use IsOpened())
   wxFile(const wxChar *szFileName, OpenMode mode = read);
     // attach to (already opened) file
-  wxFile(int fd) { m_fd = fd; }
+  wxFile(int fd) { m_fd = fd; m_error = false; }
 
   // open/close
     // create a new file (with the default value of bOverwrite, it will fail if
@@ -90,7 +90,7 @@ public:
   bool Close();  // Close is a NOP if not opened
 
   // assign an existing file descriptor and get it back from wxFile object
-  void Attach(int fd) { Close(); m_fd = fd; }
+  void Attach(int fd) { Close(); m_fd = fd; m_error = false; }
   void Detach()       { m_fd = fd_invalid;  }
   int  fd() const { return m_fd; }
 

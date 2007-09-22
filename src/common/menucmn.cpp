@@ -4,7 +4,7 @@
 // Author:      Vadim Zeitlin
 // Modified by:
 // Created:     26.10.99
-// RCS-ID:      $Id: menucmn.cpp,v 1.18.2.7 2003/07/10 08:57:32 JS Exp $
+// RCS-ID:      $Id: menucmn.cpp,v 1.18.2.9 2003/12/13 10:17:39 JS Exp $
 // Copyright:   (c) wxWindows team
 // Licence:     wxWindows license
 ///////////////////////////////////////////////////////////////////////////////
@@ -168,6 +168,9 @@ wxAcceleratorEntry *wxGetAccelFromString(const wxString& label)
                     else if ( current == wxT("DELETE") ) {
                         keyCode = WXK_DELETE;
                     }
+                    else if ( current == wxT("BACK") ) {
+                        keyCode = WXK_BACK;
+                    }
                     else if ( current == wxT("INS") ) {
                         keyCode = WXK_INSERT;
                     }
@@ -206,6 +209,9 @@ wxAcceleratorEntry *wxGetAccelFromString(const wxString& label)
                     }
                     else if ( current == wxT("TAB") ) {
                         keyCode = WXK_TAB;
+                    }
+                    else if ( current == wxT("ESC") ) {
+                        keyCode = WXK_ESCAPE;
                     }
                     else
                     {

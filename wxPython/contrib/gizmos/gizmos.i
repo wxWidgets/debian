@@ -5,7 +5,7 @@
 // Author:      Robin Dunn
 //
 // Created:     23-Nov-2001
-// RCS-ID:      $Id: gizmos.i,v 1.12.2.7 2003/07/28 16:01:26 RD Exp $
+// RCS-ID:      $Id: gizmos.i,v 1.12.2.8 2004/01/15 17:36:23 RD Exp $
 // Copyright:   (c) 2001 by Total Control Software
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -225,9 +225,6 @@ public:
  * It also updates the scrolled window vertical scrollbar as appropriate.
  */
 
-%{
-    typedef wxTreeCtrl wxPyTreeCtrl;
-%}
 
 class wxRemotelyScrolledTreeCtrl: public wxPyTreeCtrl
 {

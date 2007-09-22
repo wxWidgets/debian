@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     01/02/97
-// RCS-ID:      $Id: filedlg.cpp,v 1.46.2.4 2003/05/18 09:20:40 JS Exp $
+// RCS-ID:      $Id: filedlg.cpp,v 1.46.2.5 2004/01/21 13:38:56 JS Exp $
 // Copyright:   (c) Julian Smart and Markus Holzem
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -458,6 +458,7 @@ int wxFileDialog::ShowModal()
             if ( m_dir.Last() != _T('\\') )
                 dir += _T('\\');
 
+            m_filterIndex = (int)of.nFilterIndex - 1;
             m_fileNames.Sort();
             m_path = dir + m_fileName;
         }

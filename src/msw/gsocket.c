@@ -3,7 +3,7 @@
  * Name:    gsocket.c
  * Author:  Guillermo Rodriguez Garcia <guille@iies.es>
  * Purpose: GSocket main MSW file
- * CVSID:   $Id: gsocket.c,v 1.41.2.1 2002/12/06 16:55:55 SN Exp $
+ * CVSID:   $Id: gsocket.c,v 1.41.2.2 2004/01/11 16:54:39 JS Exp $
  * -------------------------------------------------------------------------
  */
 
@@ -317,6 +317,11 @@ GSocketError GSocket_SetServer(GSocket *sck)
 
   ioctlsocket(sck->m_fd, FIONBIO, (u_long FAR *) &arg);
   _GSocket_Enable_Events(sck);
+
+  /* allow a socket to re-bind if the socket is in the TIME_WAIT
+     state after being previously closed.
+   */
+  setsockopt(sck->m_fd, SOL_SOCKET, SO_REUSEADDR, (const char*)&arg, sizeof(u_long));
 
   /* Bind to the local address,
    * retrieve the actual address bound,

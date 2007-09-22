@@ -2,7 +2,7 @@
 // Name:        gtk/font.cpp
 // Purpose:
 // Author:      Robert Roebling
-// Id:          $Id: font.cpp,v 1.67.2.5 2003/01/04 03:50:50 RD Exp $
+// Id:          $Id: font.cpp,v 1.67.2.7 2003/12/24 20:23:13 VS Exp $
 // Copyright:   (c) 1998 Robert Roebling, Julian Smart and Markus Holzem
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -232,8 +232,15 @@ void wxFontRefData::InitFromNative()
 
     // init fields
     m_faceName = wxGTK_CONV_BACK( pango_font_description_get_family( desc ) );
+    
+    // Pango sometimes needs to have a size
+    int pango_size = pango_font_description_get_size( desc );
+    if (pango_size == 0)
+        pango_font_description_set_size( desc, 12 * PANGO_SCALE);
 
     m_pointSize = pango_font_description_get_size( desc ) / PANGO_SCALE;
+    
+    // wxPrintf( wxT("face %s m_pointSize %d\n"), m_faceName.c_str(), m_pointSize );
 
     switch (pango_font_description_get_style( desc ))
     {
@@ -962,6 +969,7 @@ GdkFont *wxFont::GetInternalFont( float scale ) const
                 if ( font )
                 {
                     M_FONTDATA->m_nativeFontInfo.SetXFontName(xfontname);
+                    M_FONTDATA->InitFromNative();
                 }
             }
         }

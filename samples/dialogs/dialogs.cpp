@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     04/01/98
-// RCS-ID:      $Id: dialogs.cpp,v 1.85.2.5 2003/02/11 21:23:59 MBN Exp $
+// RCS-ID:      $Id: dialogs.cpp,v 1.85.2.6 2004/01/21 13:39:00 JS Exp $
 // Copyright:   (c) Julian Smart and Markus Holzem
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -507,8 +507,14 @@ void MyFrame::FileOpen2(wxCommandEvent& WXUNUSED(event) )
 
 void MyFrame::FilesOpen(wxCommandEvent& WXUNUSED(event) )
 {
+    wxString wildcards = 
+#ifdef __WXMOTIF__
+                    _T("C++ files (*.cpp)|*.cpp");
+#else
+                    _T("All files (*.*)|*.*|C++ files (*.h;*.cpp)|*.h;*.cpp");
+#endif
     wxFileDialog dialog(this, _T("Testing open multiple file dialog"),
-                        _T(""), _T(""), wxFileSelectorDefaultWildcardStr,
+                        _T(""), _T(""), wildcards,
                         wxMULTIPLE);
 
     if (dialog.ShowModal() == wxID_OK)
@@ -527,6 +533,8 @@ void MyFrame::FilesOpen(wxCommandEvent& WXUNUSED(event) )
 
             msg += s;
         }
+        s.Printf(_T("Filter index: %d"), dialog.GetFilterIndex());
+        msg += s;
 
         wxMessageDialog dialog2(this, msg, _T("Selected files"));
         dialog2.ShowModal();

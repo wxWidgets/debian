@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by: VZ at 11.12.99 (wxScrollableToolBar splitted off)
 // Created:     04/01/98
-// RCS-ID:      $Id: tbarbase.cpp,v 1.46.2.1 2003/03/03 00:01:51 VZ Exp $
+// RCS-ID:      $Id: tbarbase.cpp,v 1.46.2.3 2004/01/11 17:32:09 JS Exp $
 // Copyright:   (c) Julian Smart and Markus Holzem
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////

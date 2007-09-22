@@ -4,7 +4,7 @@
 // Author:      Ove Kaaven, Robert Roebling, Vadim Zeitlin, Vaclav Slavik
 // Modified by:
 // Created:     29/01/98
-// RCS-ID:      $Id: strconv.cpp,v 1.67.2.9 2003/04/07 22:14:14 VS Exp $
+// RCS-ID:      $Id: strconv.cpp,v 1.67.2.10 2003/10/24 19:25:48 VS Exp $
 // Copyright:   (c) 1999 Ove Kaaven, Robert Roebling, Vadim Zeitlin, Vaclav Slavik
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -1071,7 +1071,19 @@ size_t wxCSConv::WC2MB(char *buf, const wchar_t *psz, size_t n) const
     if (buf)
     {
         for (size_t c = 0; c <= len; c++)
-            buf[c] = (psz[c] > 0xff) ? '?' : psz[c];
+        {
+            if (psz[c] > 0xFF)
+                return (size_t)-1;
+            buf[c] = psz[c];
+        }
+    }
+    else
+    {
+        for (size_t c = 0; c <= len; c++)
+        {
+            if (psz[c] > 0xFF)
+                return (size_t)-1;
+        }
     }
 
     return len;

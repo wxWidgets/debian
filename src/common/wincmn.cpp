@@ -4,7 +4,7 @@
 // Author:      Julian Smart, Vadim Zeitlin
 // Modified by:
 // Created:     13/07/98
-// RCS-ID:      $Id: wincmn.cpp,v 1.123.2.8 2003/06/01 21:29:17 VZ Exp $
+// RCS-ID:      $Id: wincmn.cpp,v 1.123.2.10 2004/03/03 02:06:09 RD Exp $
 // Copyright:   (c) wxWindows team
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -788,7 +788,9 @@ bool wxWindowBase::RemoveEventHandler(wxEvtHandler *handler)
             {
                 handlerNext->SetPreviousHandler ( handlerPrev );
             }
+
             handler->SetNextHandler(NULL);
+            handler->SetPreviousHandler(NULL);
 
             return TRUE;
         }
@@ -1427,6 +1429,9 @@ void wxWindowBase::DeleteRelatedConstraints()
 
 void wxWindowBase::SetSizer(wxSizer *sizer, bool deleteOld)
 {
+    if ( sizer == m_windowSizer)
+        return;
+    
     if ( deleteOld )
         delete m_windowSizer;
 

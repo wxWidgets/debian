@@ -3,7 +3,7 @@
 // Purpose:     XRC resource for wxTextCtrl
 // Author:      Aleksandras Gluchovas
 // Created:     2000/03/21
-// RCS-ID:      $Id: xh_text.cpp,v 1.5 2002/09/13 17:22:34 VS Exp $
+// RCS-ID:      $Id: xh_text.cpp,v 1.5.2.1 2004/04/11 19:11:27 VS Exp $
 // Copyright:   (c) 2000 Aleksandras Gluchovas
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -24,6 +24,8 @@
 
 wxTextCtrlXmlHandler::wxTextCtrlXmlHandler() : wxXmlResourceHandler() 
 {
+    XRC_ADD_STYLE(wxTE_AUTO_SCROLL);
+    XRC_ADD_STYLE(wxTE_NO_VSCROLL);
     XRC_ADD_STYLE(wxTE_PROCESS_ENTER);
     XRC_ADD_STYLE(wxTE_PROCESS_TAB);
     XRC_ADD_STYLE(wxTE_MULTILINE);

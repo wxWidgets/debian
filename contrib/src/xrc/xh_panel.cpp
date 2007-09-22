@@ -3,7 +3,7 @@
 // Purpose:     XRC resource for panels
 // Author:      Vaclav Slavik
 // Created:     2000/03/05
-// RCS-ID:      $Id: xh_panel.cpp,v 1.4 2001/12/29 16:14:04 VS Exp $
+// RCS-ID:      $Id: xh_panel.cpp,v 1.4.2.1 2004/01/08 22:18:06 JS Exp $
 // Copyright:   (c) 2000 Vaclav Slavik
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -28,6 +28,7 @@ wxPanelXmlHandler::wxPanelXmlHandler() : wxXmlResourceHandler()
     XRC_ADD_STYLE(wxNO_3D);
     XRC_ADD_STYLE(wxTAB_TRAVERSAL);
     XRC_ADD_STYLE(wxWS_EX_VALIDATE_RECURSIVELY);
+    XRC_ADD_STYLE(wxWS_EX_BLOCK_EVENTS);
     XRC_ADD_STYLE(wxCLIP_CHILDREN);
     AddWindowStyles();
 }

@@ -6,7 +6,7 @@
 # Author:       Robin Dunn
 #
 # Created:      A long time ago, in a galaxy far, far away...
-# RCS-ID:       $Id: Main.py,v 1.76.2.38 2003/10/01 19:31:42 RD Exp $
+# RCS-ID:       $Id: Main.py,v 1.76.2.39 2004/01/15 17:38:10 RD Exp $
 # Copyright:    (c) 1999 by Total Control Software
 # Licence:      wxWindows license
 #----------------------------------------------------------------------------
@@ -19,6 +19,13 @@ import wx.html
 import images
 
 
+# Use Python's bool constants if available, make aliases if not
+try:
+    True
+except NameError:
+    True = 1==1
+    False = 1==0
+
 #---------------------------------------------------------------------------
 
 
@@ -27,6 +34,7 @@ _treeList = [
     ('Recent Additions', [
         'wxMaskedNumCtrl',
         'FloatCanvas',
+        'wxXmlResourceSubclass',
         ]),
 
     # managed windows == things with a (optional) caption you can close
@@ -146,6 +154,7 @@ _treeList = [
         'wxScrolledPanel',
         'wxXmlResource',
         'wxXmlResourceHandler',
+        'wxXmlResourceSubclass',
         ]),
 
     # ditto
@@ -183,7 +192,9 @@ _treeList = [
         'DialogUnits',
         'DrawXXXList',
         'FontEnumerator',
+        'NewNamespace',
         'PrintFramework',
+        'ShapedWindow',
         'Throbber',
         'Unicode',
         'wxFileHistory',

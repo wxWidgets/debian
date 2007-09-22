@@ -6,7 +6,7 @@
 //              not documented and is for private use only.
 // Modified by:
 // Created:     10.02.99
-// RCS-ID:      $Id: longlong.cpp,v 1.24 2001/12/07 22:40:17 VS Exp $
+// RCS-ID:      $Id: longlong.cpp,v 1.24.2.1 2003/12/11 09:14:51 JS Exp $
 // Copyright:   (c) 1998 Vadim Zeitlin <zeitlin@dptmaths.ens-cachan.fr>
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -1075,7 +1075,7 @@ wxLongLongWx::ToString() const
     wxLongLong ll = *this;
 
     bool neg;
-    if ( ll < 0 )
+    if ( ll < 0L )
     {
         ll.Negate();
         neg = TRUE;
@@ -1085,9 +1085,9 @@ wxLongLongWx::ToString() const
         neg = FALSE;
     }
 
-    while ( ll != 0 )
+    while ( ll != 0L )
     {
-        result.Prepend((wxChar)(_T('0') + (ll % 10).ToLong()));
+        result.Prepend((wxChar)(_T('0') + (ll % 10L).ToLong()));
         ll /= 10;
     }
 

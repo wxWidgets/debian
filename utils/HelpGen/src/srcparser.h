@@ -6,7 +6,7 @@
 // Author:      Aleksandras Gluchovas
 // Modified by: AG on 28/12/98
 // Created:     22/09/98
-// RCS-ID:      $Id: srcparser.h,v 1.1 1999/09/13 14:29:41 JS Exp $
+// RCS-ID:      $Id: srcparser.h,v 1.1.6.1 2004/05/29 20:23:34 DS Exp $
 // Copyright:   (c) Aleskandars Gluchovas
 // Licence:       wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -142,7 +142,7 @@ class spComment;
     typedef WXSTL_VECTOR_SHALLOW_COPY(spParameterPtrT) MParamListT;
     typedef WXSTL_VECTOR_SHALLOW_COPY(string)          StrListT;
 
-#endif;
+#endif
 // base class for all visitors of source code contents
 
 class spVisitor

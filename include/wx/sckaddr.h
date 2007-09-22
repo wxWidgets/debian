@@ -4,7 +4,7 @@
 // Author:      Guilhem Lavaux
 // Modified by:
 // Created:     26/04/1997
-// RCS-ID:      $Id: sckaddr.h,v 1.16.2.1 2003/09/20 23:49:59 VZ Exp $
+// RCS-ID:      $Id: sckaddr.h,v 1.16.2.2 2004/01/11 15:47:52 JS Exp $
 // Copyright:   (c) 1997, 1998 Guilhem Lavaux
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -77,6 +77,9 @@ public:
 private:
   wxString m_origHostname;
 };
+
+// Compatibility with wxWindows 2.5.x
+typedef wxIPV4address wxIPaddress;
 
 #ifdef ENABLE_IPV6
 class WXDLLEXPORT wxIPV6address : public wxSockAddress {

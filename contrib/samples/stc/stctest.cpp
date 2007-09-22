@@ -1,9 +1,9 @@
 //////////////////////////////////////////////////////////////////////////////
-// File:        app.cpp
+// File:        stctest.cpp
 // Purpose:     STC test application
 // Maintainer:  Otto Wyss
 // Created:     2003-09-01
-// RCS-ID:      $Id: stctest.cpp,v 1.5.2.5 2003/09/19 18:35:23 RD Exp $
+// RCS-ID:      $Id: stctest.cpp,v 1.5.2.6 2003/10/11 01:20:24 RD Exp $
 // Copyright:   (c) wxGuide
 // Licence:     wxWindows licence
 //////////////////////////////////////////////////////////////////////////////
@@ -191,7 +191,7 @@ IMPLEMENT_APP (App)
 bool App::OnInit () {
 
     wxInitAllImageHandlers();
-    
+
     // set application and vendor name
     SetAppName (APP_NAME);
     SetVendorName (APP_VENDOR);
@@ -378,8 +378,10 @@ void AppFrame::OnFileClose (wxCommandEvent &WXUNUSED(event)) {
                 return;
             }
         }
-        Destroy();
     }
+    m_edit->SetFilename (wxEmptyString);
+    m_edit->ClearAll();
+    m_edit->SetSavePoint();
 }
 
 // properties event handlers
@@ -641,7 +643,7 @@ AppAbout::AppAbout (wxWindow *parent,
 
     SetSizerAndFit (totalpane);
 
-    CenterOnScreen();    
+    CenterOnScreen();
     ShowModal();
 }
 

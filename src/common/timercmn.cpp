@@ -8,7 +8,7 @@
 //    Guillermo Rodriguez <guille@iies.es> rewrote from scratch (Dic/99)
 // Modified by:
 // Created:     04/01/98
-// RCS-ID:      $Id: timercmn.cpp,v 1.62.2.4 2003/04/06 14:41:57 JS Exp $
+// RCS-ID:      $Id: timercmn.cpp,v 1.62.2.5 2003/12/11 09:14:51 JS Exp $
 // Copyright:   (c) Julian Smart and Markus Holzem
 //              (c) 1999 Guillermo Rodriguez <guille@iies.es>
 // Licence:     wxWindows license
@@ -167,7 +167,7 @@ bool wxTimerBase::Start(int milliseconds, bool oneShot)
 
 void wxStopWatch::Start(long t)
 {
-    m_t0 = wxGetLocalTimeMillis() - t;
+    m_t0 = wxGetLocalTimeMillis() - (wxLongLong)t;
     m_pause = 0;
     m_pauseCount = 0;
 }
@@ -329,7 +329,7 @@ wxLongLong wxGetLocalTimeMillis()
     if ( wxGetTimeOfDay(&tp, (struct timezone *)NULL) != -1 )
     {
         val *= tp.tv_sec;
-        return (val + (tp.tv_usec / 1000));
+        return (val + (wxLongLong)(tp.tv_usec / 1000));
     }
     else
     {

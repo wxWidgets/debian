@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     04/01/98
-// RCS-ID:      $Id: app.cpp,v 1.173.2.2 2002/11/03 21:11:11 VZ Exp $
+// RCS-ID:      $Id: app.cpp,v 1.173.2.3 2003/10/23 13:41:38 CE Exp $
 // Copyright:   (c) Julian Smart and Markus Holzem
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -75,7 +75,7 @@
 
 // OLE is used for drag-and-drop, clipboard, OLE Automation..., but some
 // compilers don't support it (missing headers, libs, ...)
-#if defined(__GNUWIN32_OLD__) || defined(__SC__) || defined(__SALFORDC__)
+#if defined(__GNUWIN32_OLD__) || defined(__SYMANTEC__) || defined(__SALFORDC__)
     #undef wxUSE_OLE
 
     #define  wxUSE_OLE 0

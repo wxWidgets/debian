@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     01/02/97
-// RCS-ID:      $Id: docview.cpp,v 1.90.2.8 2003/06/05 12:03:47 JS Exp $
+// RCS-ID:      $Id: docview.cpp,v 1.90.2.9 2004/01/08 08:28:20 JS Exp $
 // Copyright:   (c) Julian Smart and Markus Holzem
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -920,8 +920,13 @@ void wxDocManager::OnPreview(wxCommandEvent& WXUNUSED(event))
     if (printout)
     {
         // Pass two printout objects: for preview, and possible printing.
-        wxPrintPreviewBase *preview = (wxPrintPreviewBase *) NULL;
-        preview = new wxPrintPreview(printout, view->OnCreatePrintout());
+        wxPrintPreviewBase *preview = new wxPrintPreview(printout, view->OnCreatePrintout());
+        if ( !preview->Ok() )
+        {
+            delete preview;
+            wxMessageBox( _("Sorry, print preview needs a printer to be installed.") );
+            return;
+        }
 
         wxPreviewFrame *frame = new wxPreviewFrame(preview, (wxFrame *)wxTheApp->GetTopWindow(), _("Print Preview"),
                 wxPoint(100, 100), wxSize(600, 650));

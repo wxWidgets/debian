@@ -4,7 +4,7 @@
 // Author:      Vadim Zeitlin
 // Modified by:
 // Created:     24.09.01
-// RCS-ID:      $Id: toplevel.cpp,v 1.38.2.11 2003/09/18 13:02:35 JS Exp $
+// RCS-ID:      $Id: toplevel.cpp,v 1.38.2.12 2004/02/02 14:16:25 CE Exp $
 // Copyright:   (c) 2001 SciTech Software, Inc. (www.scitechsoft.com)
 // License:     wxWindows license
 ///////////////////////////////////////////////////////////////////////////////
@@ -193,7 +193,7 @@ WXDWORD wxTopLevelWindowMSW::MSWGetStyle(long style, WXDWORD *exflags) const
 
     if ( exflags )
     {
-#if !defined(__WIN16__) && !defined(__SC__)
+#if !defined(__WIN16__) && (!defined(__SC__) || defined (__DIGITALMARS__))
         if ( !(GetExtraStyle() & wxTOPLEVEL_EX_DIALOG) )
         {
             if ( style & wxFRAME_TOOL_WINDOW )

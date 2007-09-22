@@ -4,7 +4,7 @@
 // Author:      Vadim Zeitlin
 // Modified by:
 // Created:     12.09.97
-// RCS-ID:      $Id: dynarray.h,v 1.48 2002/08/31 11:29:10 GD Exp $
+// RCS-ID:      $Id: dynarray.h,v 1.48.2.1 2004/02/04 15:14:55 VZ Exp $
 // Copyright:   (c) 1998 Vadim Zeitlin <zeitlin@dptmaths.ens-cachan.fr>
 // Licence:     wxWindows license
 ///////////////////////////////////////////////////////////////////////////////
@@ -509,6 +509,10 @@ WX_DECLARE_EXPORTED_BASEARRAY(double,       wxBaseArrayDouble);
     WX_DEFINE_EXPORTED_TYPEARRAY(T, name, wxBaseArrayDouble)
 #define WX_DEFINE_USER_EXPORTED_ARRAY_DOUBLE(T, name, expmode)         \
     WX_DEFINE_USER_EXPORTED_TYPEARRAY(T, name, wxBaseArrayDouble, expmode)
+
+// allow to use WX_DEFINE_ARRAY_PTR in the code which has to be compiled with
+// both 2.4 and 2.5 for forward compatibility
+#define WX_DEFINE_ARRAY_PTR WX_DEFINE_ARRAY
 
 // ----------------------------------------------------------------------------
 // Convenience macros to define sorted arrays from base arrays

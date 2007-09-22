@@ -5,7 +5,7 @@
 //               (derived in part from dynlib.cpp (c) 1998 Guilhem Lavaux)
 // Modified by:
 // Created:      03/12/01
-// RCS-ID:       $Id: dynload.h,v 1.9.2.2 2003/06/01 19:00:41 JS Exp $
+// RCS-ID:       $Id: dynload.h,v 1.9.2.3 2004/06/06 14:59:00 VS Exp $
 // Copyright:    (c) 2001 Ron Lee <ron@debian.org>
 // Licence:      wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -277,7 +277,7 @@ public:
     {
         Load(libname, flags);
     }
-    ~wxPluginManager() { Unload(); }
+    ~wxPluginManager() { if ( IsLoaded() ) Unload(); }
 
     bool   Load(const wxString &libname, int flags = wxDL_DEFAULT);
     void   Unload();

@@ -4,7 +4,7 @@
 // Author:      Vadim Zeitlin
 // Modified by:
 // Created:     19.05.01
-// RCS-ID:      $Id: dircmn.cpp,v 1.6 2002/07/17 16:58:05 MBN Exp $
+// RCS-ID:      $Id: dircmn.cpp,v 1.6.2.1 2003/10/05 21:39:15 SN Exp $
 // Copyright:   (c) 2001 Vadim Zeitlin <zeitlin@dptmaths.ens-cachan.fr>
 // License:     wxWindows license
 ///////////////////////////////////////////////////////////////////////////////
@@ -56,7 +56,7 @@ bool wxDir::HasFiles(const wxString& spec)
 }
 
 // we have a (much) faster version for Unix
-#if (defined(__CYGWIN__) && defined(__WINDOWS__)) || !defined(__UNIX_LIKE__) || defined(__WXMAC__)
+#if (defined(__CYGWIN__) && defined(__WINDOWS__)) || defined(__WXPM__) || !defined(__UNIX_LIKE__) || defined(__WXMAC__)
 
 bool wxDir::HasSubDirs(const wxString& spec)
 {

@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by: Vadim Zeitlin (owner drawn stuff)
 // Created:
-// RCS-ID:      $Id: listbox.cpp,v 1.68.2.7 2003/05/12 10:09:40 JS Exp $
+// RCS-ID:      $Id: listbox.cpp,v 1.68.2.9 2004/04/13 12:51:13 JS Exp $
 // Copyright:   (c) Julian Smart
 // Licence:     wxWindows license
 ///////////////////////////////////////////////////////////////////////////////
@@ -369,7 +369,8 @@ void wxListBox::Free()
 
 void wxListBox::SetSelection(int N, bool select)
 {
-    wxCHECK_RET( N >= 0 && N < m_noItems,
+    wxCHECK_RET( N == wxNOT_FOUND || 
+                    (N >= 0 && N < m_noItems),
                  wxT("invalid index in wxListBox::SetSelection") );
 
     if ( HasMultipleSelection() )
@@ -554,10 +555,6 @@ void wxListBox::SetString(int N, const wxString& s)
     else if ( oldObjData )
         SetClientObject(N, oldObjData);
 
-    // we may have lost the selection
-    if ( wasSelected )
-        Select(N);
-
 #if wxUSE_OWNER_DRAWN
     if ( m_windowStyle & wxLB_OWNERDRAW )
     {
@@ -568,6 +565,10 @@ void wxListBox::SetString(int N, const wxString& s)
         ListBox_SetItemData(GetHwnd(), N, m_aItems[N]);
     }
 #endif  //USE_OWNER_DRAWN
+
+    // we may have lost the selection
+    if ( wasSelected )
+        Select(N);
 }
 
 int wxListBox::GetCount() const

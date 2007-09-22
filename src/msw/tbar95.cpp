@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     04/01/98
-// RCS-ID:      $Id: tbar95.cpp,v 1.97.2.5 2003/08/25 14:27:05 JS Exp $
+// RCS-ID:      $Id: tbar95.cpp,v 1.97.2.6 2004/02/02 14:16:25 CE Exp $
 // Copyright:   (c) Julian Smart and Markus Holzem
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -50,9 +50,6 @@
 // ----------------------------------------------------------------------------
 // Toolbar define value missing 
 // ----------------------------------------------------------------------------
-#if defined(__DIGITALMARS__) 
-#define CCS_VERT                0x00000080L
-#endif
 
 #include "wx/msw/private.h"
 

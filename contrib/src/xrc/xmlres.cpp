@@ -3,7 +3,7 @@
 // Purpose:     XRC resources
 // Author:      Vaclav Slavik
 // Created:     2000/03/05
-// RCS-ID:      $Id: xmlres.cpp,v 1.22.2.14 2003/07/19 11:52:47 VS Exp $
+// RCS-ID:      $Id: xmlres.cpp,v 1.22.2.19 2004/06/10 20:40:43 JS Exp $
 // Copyright:   (c) 2000 Vaclav Slavik
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -124,8 +124,7 @@ bool wxXmlResource::Load(const wxString& filemask)
         if (fnd.Lower().Matches(wxT("*.zip")) ||
             fnd.Lower().Matches(wxT("*.xrs")))
         {
-            wxString url(wxFileSystem::FileNameToURL(fnd));
-            rt = rt && Load(url + wxT("#zip:*.xrc"));
+            rt = rt && Load(fnd + wxT("#zip:*.xrc"));
         }
         else
 #endif
@@ -400,7 +399,11 @@ void wxXmlResource::UpdateResources()
                     wxLogError(_("Resource files must have same version number!"));
 
                 ProcessPlatformProperty(m_data[i].Doc->GetRoot());
+#if wxUSE_FILESYSTEM
 				m_data[i].Time = file->GetModificationTime();
+#else
+                m_data[i].Time = wxDateTime(wxFileModificationTime(m_data[i].File));
+#endif
 			}
 
 #           if wxUSE_FILESYSTEM
@@ -709,6 +712,7 @@ void wxXmlResourceHandler::AddWindowStyles()
     XRC_ADD_STYLE(wxTRANSPARENT_WINDOW);
     XRC_ADD_STYLE(wxWANTS_CHARS);
     XRC_ADD_STYLE(wxNO_FULL_REPAINT_ON_RESIZE);
+    XRC_ADD_STYLE(wxWS_EX_BLOCK_EVENTS);
 }
 
 
@@ -1093,7 +1097,7 @@ void wxXmlResourceHandler::SetupWindow(wxWindow *wnd)
     //FIXME : add cursor
 
     if (HasParam(wxT("exstyle")))
-        wnd->SetExtraStyle(GetStyle(wxT("exstyle")));
+        wnd->SetExtraStyle(wnd->GetExtraStyle()|GetStyle(wxT("exstyle")));
     if (HasParam(wxT("bg")))
         wnd->SetBackgroundColour(GetColour(wxT("bg")));
     if (HasParam(wxT("fg")))

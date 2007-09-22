@@ -3,7 +3,7 @@
 // Purpose:     includes all xh_*.h files
 // Author:      Vaclav Slavik
 // Created:     2000/03/05
-// RCS-ID:      $Id: xh_all.h,v 1.2.2.2 2003/05/25 13:20:23 JS Exp $
+// RCS-ID:      $Id: xh_all.h,v 1.2.2.3 2004/01/23 10:01:30 JS Exp $
 // Copyright:   (c) 2000 Vaclav Slavik
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -49,5 +49,6 @@
 #include "wx/xrc/xh_scwin.h"
 #include "wx/xrc/xh_split.h"
 #include "wx/xrc/xh_wizrd.h"
+#include "wx/xrc/xh_statbar.h"
 
 #endif // _WX_XMLRES_H_

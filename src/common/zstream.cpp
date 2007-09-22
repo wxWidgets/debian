@@ -4,7 +4,7 @@
 // Author:      Guilhem Lavaux
 // Modified by:
 // Created:     11/07/98
-// RCS-ID:      $Id: zstream.cpp,v 1.38.2.1 2002/11/04 19:31:59 VZ Exp $
+// RCS-ID:      $Id: zstream.cpp,v 1.38.2.2 2004/04/21 20:47:39 VS Exp $
 // Copyright:   (c) Guilhem Lavaux
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -163,6 +163,9 @@ wxZlibOutputStream::~wxZlibOutputStream()
   }
 
   deflateEnd(m_deflate);
+
+  m_parent_o_stream->Write(m_z_buffer, m_z_size-m_deflate->avail_out);
+
   delete m_deflate;
 
   delete[] m_z_buffer;

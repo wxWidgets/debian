@@ -2,7 +2,7 @@
 // Name:        unix/execute.h
 // Purpose:     private details of wxExecute() implementation
 // Author:      Vadim Zeitlin
-// Id:          $Id: execute.h,v 1.1.6.1 2003/04/06 16:47:48 JS Exp $
+// Id:          $Id: execute.h,v 1.1.6.2 2004/01/02 20:45:35 JS Exp $
 // Copyright:   (c) 1998 Robert Roebling, Julian Smart, Vadim Zeitlin
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -28,7 +28,10 @@ extern void wxHandleProcessTermination(wxEndProcessData *proc_data);
 // this function is called to associate the port-specific callback with the
 // child process. The return valus is port-specific.
 extern int wxAddProcessCallback(wxEndProcessData *proc_data, int fd);
+
+#if defined(__DARWIN__) && defined(__WXMAC__)
 // For ports (e.g. DARWIN) which can add callbacks based on the pid
 extern int wxAddProcessCallbackForPid(wxEndProcessData *proc_data, int pid);
+#endif
 
 #endif // _WX_UNIX_EXECUTE_H

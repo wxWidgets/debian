@@ -7,7 +7,7 @@
 //              2) Added "Help" button handler stub
 //              3) Fixed ShowPage() bug on displaying bitmaps
 // Created:     15.08.99
-// RCS-ID:      $Id: wizard.cpp,v 1.34.2.4 2003/05/01 22:53:59 VZ Exp $
+// RCS-ID:      $Id: wizard.cpp,v 1.34.2.5 2004/01/06 08:54:57 JS Exp $
 // Copyright:   (c) 1999 Vadim Zeitlin <zeitlin@dptmaths.ens-cachan.fr>
 // Licence:     wxWindows license
 ///////////////////////////////////////////////////////////////////////////////
@@ -515,6 +515,7 @@ void wxWizard::OnWizEvent(wxWizardEvent& event)
     if ( !(GetExtraStyle() & wxWS_EX_BLOCK_EVENTS) )
     {
         // the event will be propagated anyhow
+        event.Skip();
         return;
     }
 

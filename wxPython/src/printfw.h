@@ -6,12 +6,15 @@
 // Author:      Robin Dunn
 //
 // Created:     29-Oct-1999
-// RCS-ID:      $Id: printfw.h,v 1.4 2001/02/16 08:18:58 robind Exp $
+// RCS-ID:      $Id: printfw.h,v 1.4.2.1 2003/11/10 22:33:34 RD Exp $
 // Copyright:   (c) 1999 by Total Control Software
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
 
 
+#if !wxUSE_PRINTING_ARCHITECTURE
+#error wxPython requires the wx printing architecture to be enabled
+#endif
 
 class wxPyPrintout : public wxPrintout {
 public:

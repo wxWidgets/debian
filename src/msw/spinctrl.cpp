@@ -4,7 +4,7 @@
 // Author:      Vadim Zeitlin
 // Modified by:
 // Created:     22.07.99
-// RCS-ID:      $Id: spinctrl.cpp,v 1.21.2.3 2003/05/07 08:36:36 JS Exp $
+// RCS-ID:      $Id: spinctrl.cpp,v 1.21.2.4 2004/02/17 14:44:22 JS Exp $
 // Copyright:   (c) Vadim Zeitlin
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -463,7 +463,12 @@ wxSize wxSpinCtrl::DoGetBestSize() const
     wxGetCharSize(GetHWND(), NULL, &y, &GetFont());
     y = EDIT_HEIGHT_FROM_CHAR_HEIGHT(y);
 
-    if ( sizeBtn.y < y )
+    // JACS: we should always use the height calculated
+    // from above, because otherwise we'll get a spin control
+    // that's too big. So never use the height calculated
+    // from wxSpinButton::DoGetBestSize().
+    
+    // if ( sizeBtn.y < y )
     {
         // make the text tall enough
         sizeBtn.y = y;

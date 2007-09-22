@@ -2,7 +2,7 @@
 // Name:        gtk/window.cpp
 // Purpose:
 // Author:      Robert Roebling
-// Id:          $Id: window.cpp,v 1.408.2.32 2003/09/19 22:32:24 RD Exp $
+// Id:          $Id: window.cpp,v 1.408.2.33 2003/12/11 08:06:08 JS Exp $
 // Copyright:   (c) 1998 Robert Roebling, Julian Smart
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -4289,9 +4289,7 @@ bool wxWindowGTK::IsOwnGtkWindow( GdkWindow *window )
 
 bool wxWindowGTK::SetFont( const wxFont &font )
 {
-    wxCHECK_MSG( m_widget != NULL, FALSE, wxT("invalid window") );
-
-    if (!wxWindowBase::SetFont(font))
+    if (!wxWindowBase::SetFont(font) || !m_widget)
     {
         return FALSE;
     }

@@ -4,7 +4,7 @@
 // Author:      Vadim Zeitlin
 // Modified by:
 // Created:     11.11.97
-// RCS-ID:      $Id: menuitem.cpp,v 1.42.2.2 2003/05/03 11:58:18 JS Exp $
+// RCS-ID:      $Id: menuitem.cpp,v 1.42.2.3 2004/01/17 17:05:35 JS Exp $
 // Copyright:   (c) 1998 Vadim Zeitlin <zeitlin@dptmaths.ens-cachan.fr>
 // Licence:     wxWindows license
 ///////////////////////////////////////////////////////////////////////////////
@@ -89,7 +89,7 @@ wxMenuItem::wxMenuItem(wxMenu *pParentMenu,
                        wxMenu *pSubMenu)
           : wxMenuItemBase(pParentMenu, id, text, strHelp, kind, pSubMenu)
 #if wxUSE_OWNER_DRAWN
-            , wxOwnerDrawn(text, kind == wxITEM_CHECK)
+            , wxOwnerDrawn(text, kind == wxITEM_CHECK, TRUE)
 #endif // owner drawn
 {
     Init();

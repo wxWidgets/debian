@@ -5,7 +5,7 @@
 // Author:      Robin Dunn
 //
 // Created:     25-Sept-2000
-// RCS-ID:      $Id: pyistream.h,v 1.2.2.2 2002/11/06 04:23:54 RD Exp $
+// RCS-ID:      $Id: pyistream.h,v 1.2.2.3 2003/11/10 22:33:42 RD Exp $
 // Copyright:   (c) 2000 by Total Control Software
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -17,9 +17,6 @@
 //----------------------------------------------------------------------
 // Handling of wxInputStreams by Joerg Baumann
 // See stream.i for implementations
-
-// list class for return list of strings, e.g. readlines()
-WX_DECLARE_LIST(wxString, wxStringPtrList);
 
 
 // C++ class wxPyInputStream to act as base for python class wxInputStream

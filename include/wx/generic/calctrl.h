@@ -4,7 +4,7 @@
 // Author:      Vadim Zeitlin
 // Modified by:
 // Created:     29.12.99
-// RCS-ID:      $Id: calctrl.h,v 1.16.2.2 2003/06/01 16:42:36 JS Exp $
+// RCS-ID:      $Id: calctrl.h,v 1.16.2.3 2003/12/11 09:50:37 JS Exp $
 // Copyright:   (c) 1999 Vadim Zeitlin <zeitlin@dptmaths.ens-cachan.fr>
 // Licence:     wxWindows license
 ///////////////////////////////////////////////////////////////////////////////
@@ -242,10 +242,12 @@ private:
     // show the correct controls
     void ShowCurrentControls();
 
+public:
     // get the currently shown control for month/year
     wxControl *GetMonthControl() const;
     wxControl *GetYearControl() const;
 
+private:
     // OnPaint helper-methods
 
     // Highlight the [fromdate : todate] range using pen and brush

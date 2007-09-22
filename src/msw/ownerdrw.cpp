@@ -4,7 +4,7 @@
 // Author:      Vadim Zeitlin
 // Modified by:
 // Created:     13.11.97
-// RCS-ID:      $Id: ownerdrw.cpp,v 1.32.2.7 2003/06/03 13:19:21 VZ Exp $
+// RCS-ID:      $Id: ownerdrw.cpp,v 1.32.2.8 2004/02/02 14:16:25 CE Exp $
 // Copyright:   (c) 1998 Vadim Zeitlin <zeitlin@dptmaths.ens-cachan.fr>
 // Licence:     wxWindows license
 ///////////////////////////////////////////////////////////////////////////////
@@ -228,7 +228,7 @@ bool wxOwnerDrawn::OnMeasureItem(size_t *pwidth, size_t *pheight)
 // get drawn embossed? How can we tell DrawState that we don't want the
 // embossing?
 
-#if defined(__WIN32__) && !defined(__SC__) && !defined(__TWIN32__)
+#if defined(__WIN32__) && (!defined(__SC__) || defined (__DIGITALMARS__)) && !defined(__TWIN32__)
 #define   O_DRAW_NATIVE_API     // comments below explain why I use it
 #endif
 

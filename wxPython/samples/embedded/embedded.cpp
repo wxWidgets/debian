@@ -6,7 +6,7 @@
 // Author:      Robin Dunn
 //
 // Created:     1-May-2002
-// RCS-ID:      $Id: embedded.cpp,v 1.4.2.1 2003/09/22 22:04:45 RD Exp $
+// RCS-ID:      $Id: embedded.cpp,v 1.4.2.2 2004/01/15 17:40:13 RD Exp $
 // Copyright:   (c) 2002 by Total Control Software
 // Licence:     wxWindows license
 //----------------------------------------------------------------------
@@ -173,7 +173,7 @@ void MyFrame::OnPyFrame(wxCommandEvent& event)
     // C++ code in any way, you can execute it with PyRun_SimpleString.
 
 
-    // First, whenever you do anyting with Python objects or code, you
+    // First, whenever you do anything with Python objects or code, you
     // *MUST* aquire the Global Interpreter Lock and block other
     // Python threads from running.
     wxPyBeginBlockThreads();

@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     01/02/97
-// RCS-ID:      $Id: tbarbase.h,v 1.38 2002/08/31 11:29:11 GD Exp $
+// RCS-ID:      $Id: tbarbase.h,v 1.38.2.1 2003/12/25 11:55:43 JS Exp $
 // Copyright:   (c) Julian Smart and Markus Holzem
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -419,6 +419,9 @@ public:
     virtual wxToolBarToolBase *FindToolForPosition(wxCoord x,
                                                    wxCoord y) const = 0;
 
+    // find the tool by id
+    wxToolBarToolBase *FindById(int id) const;
+
     // return TRUE if this is a vertical toolbar, otherwise FALSE
     bool IsVertical() const { return HasFlag(wxTB_VERTICAL); }
 
@@ -576,9 +579,6 @@ protected:
 
     // helper functions
     // ----------------
-
-    // find the tool by id
-    wxToolBarToolBase *FindById(int id) const;
 
     // the list of all our tools
     wxToolBarToolsList m_tools;

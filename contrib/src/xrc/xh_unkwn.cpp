@@ -3,7 +3,7 @@
 // Purpose:     XRC resource for unknown widget
 // Author:      Vaclav Slavik
 // Created:     2000/09/09
-// RCS-ID:      $Id: xh_unkwn.cpp,v 1.6.2.3 2003/09/13 11:05:52 VS Exp $
+// RCS-ID:      $Id: xh_unkwn.cpp,v 1.6.2.4 2003/12/03 14:32:19 VS Exp $
 // Copyright:   (c) 2000 Vaclav Slavik
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -87,6 +87,9 @@ wxUnknownWidgetXmlHandler::wxUnknownWidgetXmlHandler()
 
 wxObject *wxUnknownWidgetXmlHandler::DoCreateResource()
 {
+    wxASSERT_MSG( m_instance == NULL,
+                  _T("'unknown' controls can't be subclassed, use wxXmlResource::AttachUnknownControl") );
+    
     wxPanel *panel =
         new wxUnknownControlContainer(m_parentAsWindow,
                                       GetName(), -1,

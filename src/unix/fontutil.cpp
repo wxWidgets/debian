@@ -4,7 +4,7 @@
 // Author:      Vadim Zeitlin
 // Modified by:
 // Created:     05.11.99
-// RCS-ID:      $Id: fontutil.cpp,v 1.34.2.6 2003/07/22 08:57:09 RR Exp $
+// RCS-ID:      $Id: fontutil.cpp,v 1.34.2.7 2003/12/01 09:37:30 RR Exp $
 // Copyright:   (c) Vadim Zeitlin
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -139,7 +139,7 @@ bool wxNativeFontInfo::FromString( const wxString& str )
 
     description = pango_font_description_from_string( wxGTK_CONV( str ) );
     
-    // wxPrintf( L"FromString result: %s\n", ToString().c_str() );
+    // wxPrintf( L"FromString before: %s result: %s\n", str.c_str(), ToString().c_str() );
 
     return TRUE;
 }

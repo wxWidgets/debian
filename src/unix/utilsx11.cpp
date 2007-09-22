@@ -4,7 +4,7 @@
 // Author:      Mattia Barbon, Vaclav Slavik, Robert Roebling
 // Modified by:
 // Created:     25.03.02
-// RCS-ID:      $Id: utilsx11.cpp,v 1.5.2.1 2003/04/06 17:43:05 JS Exp $
+// RCS-ID:      $Id: utilsx11.cpp,v 1.5.2.2 2004/04/20 18:39:20 VS Exp $
 // Copyright:   (c) wxWindows team
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -101,8 +101,8 @@ void wxSetIconsX11( WXDisplay* display, WXWindow window,
 
     if( size > 0 )
     {
-        wxUint32* data = new wxUint32[size];
-        wxUint32* ptr = data;
+        long* data = new long[size];
+        long* ptr = data;
 
         for( i = 0; i < max; ++i )
         {

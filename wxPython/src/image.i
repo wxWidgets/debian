@@ -5,7 +5,7 @@
 // Author:      Robin Dunn
 //
 // Created:     28-Apr-1999
-// RCS-ID:      $Id: image.i,v 1.19.2.2 2003/04/10 19:38:10 RD Exp $
+// RCS-ID:      $Id: image.i,v 1.19.2.3 2003/11/10 22:33:06 RD Exp $
 // Copyright:   (c) 1998 by Total Control Software
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -170,28 +170,35 @@ public:
         PyObject* GetDataBuffer() {
             unsigned char* data = self->GetData();
             int len = self->GetWidth() * self->GetHeight() * 3;
-            return PyBuffer_FromReadWriteMemory(data, len);
+            PyObject* rv;
+            wxPyBLOCK_THREADS( rv = PyBuffer_FromReadWriteMemory(data, len) );
+            return rv;
         }
 
         PyObject* GetData() {
             unsigned char* data = self->GetData();
             int len = self->GetWidth() * self->GetHeight() * 3;
-            return PyString_FromStringAndSize((char*)data, len);
+            PyObject* rv;
+            wxPyBLOCK_THREADS( rv = PyString_FromStringAndSize((char*)data, len));
+            return rv;
         }
 
         void SetDataBuffer(PyObject* data) {
             unsigned char* buffer;
             int size;
 
-            if (!PyArg_Parse(data, "w#", &buffer, &size))
-                return;
+            wxPyBeginBlockThreads();
+            if (!PyArg_Parse(data, "t#", &buffer, &size))
+                goto done;
 
             if (size != self->GetWidth() * self->GetHeight() * 3) {
                 PyErr_SetString(PyExc_TypeError, "Incorrect buffer size");
-                return;
+                goto done;
             }
 
             self->SetData(buffer);
+        done:
+            wxPyEndBlockThreads();
         }
 
         void SetData(PyObject* data) {
@@ -204,7 +211,7 @@ public:
 
             size_t len = self->GetWidth() * self->GetHeight() * 3;
             dataPtr = (unsigned char*) malloc(len);
-            memcpy(dataPtr, PyString_AsString(data), len);
+            wxPyBLOCK_THREADS( memcpy(dataPtr, PyString_AsString(data), len) );
             self->SetData(dataPtr);
             // wxImage takes ownership of dataPtr...
         }

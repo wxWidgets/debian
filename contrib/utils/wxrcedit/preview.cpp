@@ -1,7 +1,7 @@
 /////////////////////////////////////////////////////////////////////////////
 // Author:      Vaclav Slavik
 // Created:     2000/05/05
-// RCS-ID:      $Id: preview.cpp,v 1.9.2.1 2002/09/25 11:10:18 VS Exp $
+// RCS-ID:      $Id: preview.cpp,v 1.9.2.2 2004/07/31 13:58:29 RL Exp $
 // Copyright:   (c) 2000 Vaclav Slavik
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -197,7 +197,7 @@ void PreviewFrame::Preview(wxXmlNode *node, wxXmlDocument *orig_doc)
 
 void PreviewFrame::PreviewMenu()
 {
-    wxMenuBar *mbar;
+    wxMenuBar *mbar = NULL;
 
     if (XmlGetClass(m_Node) == _T("wxMenuBar"))
         mbar = m_RC->LoadMenuBar(m_Node->GetPropVal(_T("name"), _T("-1")));

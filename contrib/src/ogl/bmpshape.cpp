@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     12/07/98
-// RCS-ID:      $Id: bmpshape.cpp,v 1.2.2.2 2002/12/18 06:12:59 RD Exp $
+// RCS-ID:      $Id: bmpshape.cpp,v 1.2.2.3 2003/12/11 11:38:29 JS Exp $
 // Copyright:   (c) Julian Smart
 // Licence:   	wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -53,12 +53,10 @@ void wxBitmapShape::OnDraw(wxDC& dc)
   if (!m_bitmap.Ok())
     return;
 
-  wxMemoryDC tempDC;
-  tempDC.SelectObject(m_bitmap);
   double x, y;
   x = WXROUND(m_xpos - m_bitmap.GetWidth() / 2.0);
   y = WXROUND(m_ypos - m_bitmap.GetHeight() / 2.0);
-  dc.Blit((long) x, (long) y, m_bitmap.GetWidth(), m_bitmap.GetHeight(), &tempDC, 0, 0);
+  dc.DrawBitmap(m_bitmap, x, y, true);
 }
 
 void wxBitmapShape::SetSize(double w, double h, bool recursive)

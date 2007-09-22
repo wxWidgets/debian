@@ -5,7 +5,7 @@
 // Author:      Jeffrey C. Ollie <jeff@ollie.clive.ia.us>, Vadim Zeitlin
 // Modified by:
 // Created:     10.02.99
-// RCS-ID:      $Id: longlong.h,v 1.43.4.4 2002/10/17 16:30:36 VZ Exp $
+// RCS-ID:      $Id: longlong.h,v 1.43.4.5 2003/12/11 08:56:00 JS Exp $
 // Copyright:   (c) 1998 Vadim Zeitlin <zeitlin@dptmaths.ens-cachan.fr>
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -68,7 +68,11 @@
         (defined(__DJGPP__) && __DJGPP__ >= 2)
     #define wxLongLong_t long long
     #define wxLongLongSuffix ll
+    #if defined(__MINGW32__)
+      #define wxLongLongFmtSpec _T("I64")
+    #else
     #define wxLongLongFmtSpec _T("ll")
+    #endif
 #elif defined(__MWERKS__)
     #if __option(longlong)
         #define wxLongLong_t long long

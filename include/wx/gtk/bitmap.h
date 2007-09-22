@@ -2,7 +2,7 @@
 // Name:        bitmap.h
 // Purpose:
 // Author:      Robert Roebling
-// RCS-ID:      $Id: bitmap.h,v 1.36 2002/09/07 12:28:46 GD Exp $
+// RCS-ID:      $Id: bitmap.h,v 1.36.2.1 2003/10/07 12:42:05 RR Exp $
 // Copyright:   (c) 1998 Robert Roebling
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -110,6 +110,9 @@ public:
 
     GdkPixmap *GetPixmap() const;
     GdkBitmap *GetBitmap() const;
+    
+    // Basically, this corresponds to Win32 StretchBlt()
+    wxBitmap Rescale( int clipx, int clipy, int clipwidth, int clipheight, int width, int height );
     
 protected:
     bool CreateFromXpm(const char **bits);

@@ -3,7 +3,7 @@
 // Purpose:     XRC resource for wxScrollBar
 // Author:      Brian Gavin
 // Created:     2000/09/09
-// RCS-ID:      $Id: xh_scrol.cpp,v 1.4 2001/12/29 16:14:04 VS Exp $
+// RCS-ID:      $Id: xh_scrol.cpp,v 1.4.2.1 2003/12/12 20:41:58 VS Exp $
 // Copyright:   (c) 2000 Brian Gavin
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -48,6 +48,7 @@ wxObject *wxScrollBarXmlHandler::DoCreateResource()
                           GetLong( wxT("pagesize"),1));
 
     SetupWindow(control);
+    CreateChildren(control);
     
     return control;
 }

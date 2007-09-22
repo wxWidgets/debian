@@ -5,7 +5,7 @@
 // Author:      Robin Dunn
 //
 // Created:     31-October-1999
-// RCS-ID:      $Id: clip_dnd.i,v 1.19.2.3 2003/02/20 22:19:06 RD Exp $
+// RCS-ID:      $Id: clip_dnd.i,v 1.19.2.4 2004/01/15 17:41:18 RD Exp $
 // Copyright:   (c) 1999 by Total Control Software
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -455,13 +455,13 @@ bool wxIsDragResultOk(wxDragResult res);
 class wxPyDropSource : public wxDropSource {
 public:
 #ifdef __WXMSW__
-     wxPyDropSource(wxWindow *win = NULL,
+     wxPyDropSource(wxWindow *win,
                     const wxCursor &copy = wxNullCursor,
                     const wxCursor &move = wxNullCursor,
                     const wxCursor &none = wxNullCursor)
          : wxDropSource(win, copy, move, none) {}
 #else
-    wxPyDropSource(wxWindow *win = NULL,
+    wxPyDropSource(wxWindow *win,
                    const wxIcon& copy = wxNullIcon,
                    const wxIcon& move = wxNullIcon,
                    const wxIcon& none = wxNullIcon)
@@ -481,12 +481,12 @@ IMP_PYCALLBACK_BOOL_DR(wxPyDropSource, wxDropSource, GiveFeedback);
 %name(wxDropSource) class wxPyDropSource {
 public:
 #ifdef __WXMSW__
-     wxPyDropSource(wxWindow *win = NULL,
+     wxPyDropSource(wxWindow *win,
                     const wxCursor &copy = wxNullCursor,
                     const wxCursor &move = wxNullCursor,
                     const wxCursor &none = wxNullCursor);
 #else
-    wxPyDropSource(wxWindow *win = NULL,
+    wxPyDropSource(wxWindow *win,
                    const wxIcon& copy = wxNullIcon,
                    const wxIcon& move = wxNullIcon,
                    const wxIcon& none = wxNullIcon);

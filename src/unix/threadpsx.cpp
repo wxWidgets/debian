@@ -4,7 +4,7 @@
 // Author:      Original from Wolfram Gloger/Guilhem Lavaux
 // Modified by: K. S. Sreeram (2002): POSIXified wxCondition, added wxSemaphore
 // Created:     04/22/98
-// RCS-ID:      $Id: threadpsx.cpp,v 1.58.2.5 2003/05/08 23:36:42 VZ Exp $
+// RCS-ID:      $Id: threadpsx.cpp,v 1.58.2.6 2003/12/11 09:14:56 JS Exp $
 // Copyright:   (c) Wolfram Gloger (1996, 1997)
 //                  Guilhem Lavaux (1998)
 //                  Vadim Zeitlin (1999-2002)
@@ -374,7 +374,7 @@ wxCondError wxConditionInternal::WaitTimeout(unsigned long milliseconds)
 {
     wxLongLong curtime = wxGetLocalTimeMillis();
     curtime += milliseconds;
-    wxLongLong temp = curtime / 1000;
+    wxLongLong temp = curtime / 1000L;
     int sec = temp.GetLo();
     temp *= 1000;
     temp = curtime - temp;

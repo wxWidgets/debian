@@ -4,7 +4,7 @@
 // Author:      Vadim Zeitlin
 // Modified by:
 // Created:     31.01.99
-// RCS-ID:      $Id: tooltip.cpp,v 1.28.2.3 2003/01/03 12:13:20 JS Exp $
+// RCS-ID:      $Id: tooltip.cpp,v 1.28.2.4 2004/02/19 15:04:54 JS Exp $
 // Copyright:   (c) 1999 Vadim Zeitlin
 // Licence:     wxWindows license
 ///////////////////////////////////////////////////////////////////////////////
@@ -357,7 +357,7 @@ void wxToolTip::SetWindow(wxWindow *win)
     wxControl *control = wxDynamicCast(m_window, wxControl);
     if ( control )
     {
-        const wxArrayLong& subcontrols = control->GetSubcontrols();
+        const wxArrayLong subcontrols = control->GetSubcontrols();
         size_t count = subcontrols.GetCount();
         for ( size_t n = 0; n < count; n++ )
         {

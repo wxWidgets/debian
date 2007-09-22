@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     01/02/97
-// RCS-ID:      $Id: cmndata.cpp,v 1.64.2.6 2003/05/23 18:38:12 JS Exp $
+// RCS-ID:      $Id: cmndata.cpp,v 1.64.2.7 2004/02/02 14:16:20 CE Exp $
 // Copyright:   (c) Julian Smart and Markus Holzem
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -61,7 +61,7 @@
         #include <commdlg.h>
     #endif
 
-    #if defined(__WATCOMC__) || defined(__SC__) || defined(__SALFORDC__)
+    #if defined(__WATCOMC__) || (defined(__SC__) && !defined(__DIGITALMARS__)) || defined(__SALFORDC__)
         #include <windowsx.h>
         #include <commdlg.h>
     #endif

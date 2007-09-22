@@ -2,7 +2,7 @@
 // Name:        menu.cpp
 // Purpose:
 // Author:      Robert Roebling
-// Id:          $Id: menu.cpp,v 1.125.2.21 2003/08/03 23:26:10 VZ Exp $
+// Id:          $Id: menu.cpp,v 1.125.2.22 2003/12/26 11:43:51 JS Exp $
 // Copyright:   (c) 1998 Robert Roebling
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -1520,9 +1520,11 @@ static wxString GetHotKey( const wxMenuItem& item )
                 hotkey << wxT("Down" );
                 break;
             case WXK_PAGEUP:
+            case WXK_PRIOR:
                 hotkey << wxT("Prior" );
                 break;
             case WXK_PAGEDOWN:
+            case WXK_NEXT:
                 hotkey << wxT("Next" );
                 break;
             case WXK_LEFT:

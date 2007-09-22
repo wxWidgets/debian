@@ -5,7 +5,7 @@
 # Author:      Robin Dunn
 #
 # Created:     15-May-2001
-# RCS-ID:      $Id: listctrl.py,v 1.7.2.2 2003/01/10 00:06:55 RD Exp $
+# RCS-ID:      $Id: listctrl.py,v 1.7.2.3 2004/01/15 17:45:07 RD Exp $
 # Copyright:   (c) 2001 by Total Control Software
 # Licence:     wxWindows license
 #----------------------------------------------------------------------------
@@ -40,13 +40,16 @@ class wxColumnSorterMixin:
     """
 
     def __init__(self, numColumns):
-        self._colSortFlag = [0] * numColumns
-        self._col = -1
-
+        self.SetColumnCount(numColumns)
         list = self.GetListCtrl()
         if not list:
             raise ValueError, "No wxListCtrl available"
         EVT_LIST_COL_CLICK(list, list.GetId(), self.__OnColClick)
+
+
+    def SetColumnCount(self, newNumColumns):
+        self._colSortFlag = [0] * newNumColumns
+        self._col = -1
 
 
     def SortListItems(self, col=-1, ascending=1):

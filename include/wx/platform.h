@@ -4,7 +4,7 @@
  * Author:      Vadim Zeitlin
  * Modified by:
  * Created:     29.10.01 (extracted from wx/defs.h)
- * RCS-ID:      $Id: platform.h,v 1.8.4.4 2003/08/14 11:46:19 CE Exp $
+ * RCS-ID:      $Id: platform.h,v 1.8.4.5 2004/02/02 14:16:29 CE Exp $
  * Copyright:   (c) 1997-2001 wxWindows team
  * Licence:     wxWindows license
  */
@@ -302,7 +302,7 @@
    This macro can be used to check that the version of mingw32 compiler is
    at least maj.min
  */
-#if defined( __GNUWIN32__ ) || defined( __MINGW32__ ) || defined( __CYGWIN__ ) || defined(__DIGITALMARS__)
+#if defined( __GNUWIN32__ ) || defined( __MINGW32__ ) || defined( __CYGWIN__ ) 
     #include "wx/msw/gccpriv.h"
 #else
     #undef wxCHECK_W32API_VERSION

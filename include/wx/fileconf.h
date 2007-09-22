@@ -4,7 +4,7 @@
 // Author:      Vadim Zeitlin
 // Modified by:
 // Created:     07.04.98 (adapted from appconf.cpp)
-// RCS-ID:      $Id: fileconf.h,v 1.38 2002/08/31 11:29:10 GD Exp $
+// RCS-ID:      $Id: fileconf.h,v 1.38.2.1 2004/01/16 03:08:34 RN Exp $
 // Copyright:   (c) 1997 Karsten Ballüder   &  Vadim Zeitlin
 //                       Ballueder@usa.net     <zeitlin@dptmaths.ens-cachan.fr>
 // Licence:     wxWindows license
@@ -116,7 +116,7 @@ public:
   // ctor & dtor
     // New constructor: one size fits all. Specify wxCONFIG_USE_LOCAL_FILE or
     // wxCONFIG_USE_GLOBAL_FILE to say which files should be used.
-  wxFileConfig(const wxString& appName,
+  wxFileConfig(const wxString& appName = wxT(""),
                const wxString& vendorName = wxT(""),
                const wxString& localFilename = wxT(""),
                const wxString& globalFilename = wxT(""),

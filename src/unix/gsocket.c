@@ -4,7 +4,7 @@
  * Authors: Guilhem Lavaux,
  *          Guillermo Rodriguez Garcia <guille@iies.es> (maintainer)
  * Purpose: GSocket main Unix file
- * CVSID:   $Id: gsocket.c,v 1.71 2002/09/05 20:49:18 GRG Exp $
+ * CVSID:   $Id: gsocket.c,v 1.71.2.2 2004/07/25 12:36:30 VZ Exp $
  * -------------------------------------------------------------------------
  */
 

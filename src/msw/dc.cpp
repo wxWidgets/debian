@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     01/02/97
-// RCS-ID:      $Id: dc.cpp,v 1.130.2.1 2003/06/02 22:41:02 VZ Exp $
+// RCS-ID:      $Id: dc.cpp,v 1.130.2.2 2004/02/02 14:16:25 CE Exp $
 // Copyright:   (c) Julian Smart and Markus Holzem
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -620,7 +620,7 @@ void wxDC::DoDrawCheckMark(wxCoord x1, wxCoord y1,
     wxCoord x2 = x1 + width,
             y2 = y1 + height;
 
-#if defined(__WIN32__) && !defined(__SC__) && !defined(__WXMICROWIN__)
+#if defined(__WIN32__) && (!defined(__SC__) || defined(__DIGITALMARS__)) && !defined(__WXMICROWIN__)
     RECT rect;
     rect.left   = x1;
     rect.top    = y1;

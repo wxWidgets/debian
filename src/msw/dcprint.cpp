@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     01/02/97
-// RCS-ID:      $Id: dcprint.cpp,v 1.31.2.2 2003/01/24 12:31:41 JS Exp $
+// RCS-ID:      $Id: dcprint.cpp,v 1.31.2.3 2004/01/08 08:28:15 JS Exp $
 // Copyright:   (c) Julian Smart and Markus Holzem
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -383,14 +383,10 @@ WXHDC WXDLLEXPORT wxGetPrinterDC(const wxPrintData& printDataConst)
     {
         // Retrieve the default device name
         wxString portName;
-#ifdef  __WXDEBUG__
-        bool ret =
-#else   // !Debug
-        (void)
-#endif // Debug/Release
-        wxGetDefaultDeviceName(devNameStr, portName);
-
-        wxASSERT_MSG( ret, wxT("Could not get default device name.") );
+        if (!wxGetDefaultDeviceName(devNameStr, portName))
+        {
+            return 0; // Could not get default device name
+        }
 
         deviceName = devNameStr.c_str();
     }

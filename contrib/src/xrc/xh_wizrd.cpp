@@ -3,7 +3,7 @@
 // Purpose:     XRC resource for wxWizard
 // Author:      Vaclav Slavik
 // Created:     2003/03/01
-// RCS-ID:      $Id: xh_wizrd.cpp,v 1.1.2.1 2003/05/25 13:20:24 JS Exp $
+// RCS-ID:      $Id: xh_wizrd.cpp,v 1.1.2.3 2004/01/09 08:41:55 JS Exp $
 // Copyright:   (c) 2000 Vaclav Slavik
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////

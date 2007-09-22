@@ -3,7 +3,7 @@
 // Purpose:     generic implementation of wxListCtrl
 // Author:      Robert Roebling
 //              Vadim Zeitlin (virtual list control support)
-// Id:          $Id: listctrl.cpp,v 1.269.2.19 2003/09/23 23:48:17 RD Exp $
+// Id:          $Id: listctrl.cpp,v 1.269.2.20 2003/12/01 09:39:38 RR Exp $
 // Copyright:   (c) 1998 Robert Roebling
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -3204,7 +3204,7 @@ void wxListMainWindow::OnMouse( wxMouseEvent &event )
     {
         m_renameTimer->Stop();
         m_lastOnSame = FALSE;
-
+        
         if ( current == m_lineLastClicked )
         {
             SendNotify( current, wxEVT_COMMAND_LIST_ITEM_ACTIVATED );

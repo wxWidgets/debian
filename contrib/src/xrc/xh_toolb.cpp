@@ -3,7 +3,7 @@
 // Purpose:     XRC resource for wxBoxSizer
 // Author:      Vaclav Slavik
 // Created:     2000/08/11
-// RCS-ID:      $Id: xh_toolb.cpp,v 1.6.2.2 2003/06/18 16:25:36 VS Exp $
+// RCS-ID:      $Id: xh_toolb.cpp,v 1.6.2.3 2004/05/12 09:06:39 JS Exp $
 // Copyright:   (c) 2000 Vaclav Slavik
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -37,6 +37,7 @@ wxToolBarXmlHandler::wxToolBarXmlHandler()
     XRC_ADD_STYLE(wxTB_NOICONS);
     XRC_ADD_STYLE(wxTB_NODIVIDER);
     XRC_ADD_STYLE(wxTB_NOALIGN);
+    AddWindowStyles();
 }
 
 wxObject *wxToolBarXmlHandler::DoCreateResource()

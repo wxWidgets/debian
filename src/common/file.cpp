@@ -5,7 +5,7 @@
 // Author:      Vadim Zeitlin
 // Modified by:
 // Created:     29/01/98
-// RCS-ID:      $Id: file.cpp,v 1.66 2002/09/12 19:32:29 VZ Exp $
+// RCS-ID:      $Id: file.cpp,v 1.66.2.1 2003/11/23 22:27:38 SN Exp $
 // Copyright:   (c) 1998 Vadim Zeitlin <zeitlin@dptmaths.ens-cachan.fr>
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -26,6 +26,10 @@
 #endif
 
 #if wxUSE_FILE
+
+#ifdef __EMX__
+#define __OS2__
+#endif
 
 // standard
 #if defined(__WXMSW__) && !defined(__GNUWIN32__) && !defined(__WXWINE__) && !defined(__WXMICROWIN__)
@@ -54,6 +58,8 @@
     #define   NOMCX
 #endif
 
+#elif (defined(__OS2__))
+    #include <io.h>
 #elif (defined(__UNIX__) || defined(__GNUWIN32__))
     #include  <unistd.h>
     #ifdef __GNUWIN32__
@@ -69,8 +75,6 @@
     #else
         #error  "Please specify the header with file functions declarations."
     #endif
-#elif (defined(__WXPM__))
-    #include <io.h>
 #elif (defined(__WXSTUBS__))
     // Have to ifdef this for different environments
     #include <io.h>
@@ -523,7 +527,9 @@ bool wxTempFile::Open(const wxString& strName)
 
     if ( chmod( (const char*) m_strTemp.fn_str(), mode) == -1 )
     {
+#ifndef __OS2__
         wxLogSysError(_("Failed to set temporary file permissions"));
+#endif
     }
 #endif // Unix
 

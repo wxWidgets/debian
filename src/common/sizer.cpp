@@ -4,7 +4,7 @@
 // Author:      Robert Roebling and Robin Dunn
 // Modified by: Ron Lee
 // Created:
-// RCS-ID:      $Id: sizer.cpp,v 1.46.2.6 2003/09/19 20:27:11 RD Exp $
+// RCS-ID:      $Id: sizer.cpp,v 1.46.2.8 2004/04/17 22:39:35 RD Exp $
 // Copyright:   (c) Robin Dunn, Dirk Holtwick and Robert Roebling
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -235,7 +235,10 @@ void wxSizerItem::SetDimension( wxPoint pos, wxSize size )
 void wxSizerItem::DeleteWindows()
 {
     if (m_window)
+    {
          m_window->Destroy();
+         m_window = NULL;
+    }
 
     if (m_sizer)
         m_sizer->DeleteWindows();
@@ -1231,6 +1234,36 @@ static void GetStaticBoxBorders(wxStaticBox *box,
 {
     // this has to be done platform by platform as there is no way to
     // guess the thickness of a wxStaticBox border
+#if defined(__WXMAC__)
+
+    static int extraTop = -1; // Uninitted
+    static int other = 5;
+
+    if ( extraTop == -1 )
+    {
+        int verMaj, verMin;
+        (void) ::wxGetOsVersion(&verMaj, &verMin);
+
+        // The minimal border used for the top. Later on the staticbox'
+        // font height is added to this.
+        extraTop = 0;
+
+        // Is the Mac OS version OS X Panther or higher?
+        if ( ((verMaj << 16) + verMin) >= 0x00100030 )
+        {
+            // As indicated by the HIG, Panther needs an extra border of 11
+            // pixels (otherwise overlapping occurs at the top). The "other"
+            // border has to be 11.
+            extraTop = 11;
+            other = 11; 
+        }
+
+    }
+
+    *borderTop = extraTop + box->GetCharHeight();
+    *borderOther = other;
+
+#else
 #ifdef __WXGTK__
     if ( box->GetLabel().IsEmpty() )
         *borderTop = 5;
@@ -1239,6 +1272,7 @@ static void GetStaticBoxBorders(wxStaticBox *box,
         *borderTop = box->GetCharHeight();
 
     *borderOther = 5;
+#endif
 }
 
 void wxStaticBoxSizer::RecalcSizes()

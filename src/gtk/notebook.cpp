@@ -2,7 +2,7 @@
 // Name:        notebook.cpp
 // Purpose:
 // Author:      Robert Roebling
-// Id:          $Id: notebook.cpp,v 1.88.2.3 2003/06/01 19:41:50 JS Exp $
+// Id:          $Id: notebook.cpp,v 1.88.2.4 2004/03/06 13:10:32 RR Exp $
 // Copyright:   (c) 1998 Robert Roebling, Vadim Zeitlin
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -643,7 +643,7 @@ bool wxNotebook::InsertPage( int position,
     nb_page->m_text = text;
     if (nb_page->m_text.IsEmpty()) nb_page->m_text = wxT("");
   
-    nb_page->m_label = GTK_LABEL( gtk_label_new(nb_page->m_text.mbc_str()) );
+    nb_page->m_label = GTK_LABEL( gtk_label_new(wxGTK_CONV(nb_page->m_text)) );
     gtk_box_pack_end( GTK_BOX(nb_page->m_box), GTK_WIDGET(nb_page->m_label), FALSE, FALSE, m_padding );
   
     /* show the label */

@@ -2,7 +2,7 @@
 // Name:        imagepng.cpp
 // Purpose:     wxImage PNG handler
 // Author:      Robert Roebling
-// RCS-ID:      $Id: imagpng.cpp,v 1.27.2.3 2003/02/25 13:10:23 CE Exp $
+// RCS-ID:      $Id: imagpng.cpp,v 1.27.2.4 2004/01/30 12:20:40 VS Exp $
 // Copyright:   (c) Robert Roebling
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -105,12 +105,14 @@ struct wxPNGInfoStruct
 extern "C"
 {
 
-void PNGLINKAGEMODE _PNG_stream_reader( png_structp png_ptr, png_bytep data, png_size_t length )
+void PNGLINKAGEMODE wx_PNG_stream_reader( png_structp png_ptr, png_bytep data,
+                                          png_size_t length )
 {
     WX_PNG_INFO(png_ptr)->stream.in->Read(data, length);
 }
 
-void PNGLINKAGEMODE _PNG_stream_writer( png_structp png_ptr, png_bytep data, png_size_t length )
+void PNGLINKAGEMODE wx_PNG_stream_writer( png_structp png_ptr, png_bytep data,
+                                          png_size_t length )
 {
     WX_PNG_INFO(png_ptr)->stream.out->Write(data, length);
 }
@@ -177,7 +179,7 @@ bool wxPNGHandler::LoadFile( wxImage *image, wxInputStream& stream, bool verbose
 
     // NB: please see the comment near wxPNGInfoStruct declaration for
     //     explanation why this line is mandatory
-    png_set_read_fn( png_ptr, &wxinfo, _PNG_stream_reader);
+    png_set_read_fn( png_ptr, &wxinfo, wx_PNG_stream_reader);
 
     info_ptr = png_create_info_struct( png_ptr );
     if (!info_ptr)
@@ -370,7 +372,7 @@ bool wxPNGHandler::SaveFile( wxImage *image, wxOutputStream& stream, bool verbos
 
     // NB: please see the comment near wxPNGInfoStruct declaration for
     //     explanation why this line is mandatory
-    png_set_write_fn( png_ptr, &wxinfo, _PNG_stream_writer, NULL);
+    png_set_write_fn( png_ptr, &wxinfo, wx_PNG_stream_writer, NULL);
 
     png_set_IHDR( png_ptr, info_ptr, image->GetWidth(), image->GetHeight(), 8,
         PNG_COLOR_TYPE_RGB_ALPHA, PNG_INTERLACE_NONE,

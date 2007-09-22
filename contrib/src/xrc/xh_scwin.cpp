@@ -3,7 +3,7 @@
 // Purpose:     XRC resource for wxScrolledWindow
 // Author:      Vaclav Slavik
 // Created:     2002/10/18
-// RCS-ID:      $Id: xh_scwin.cpp,v 1.1.2.1 2002/10/18 20:53:59 VS Exp $
+// RCS-ID:      $Id: xh_scwin.cpp,v 1.1.2.2 2004/05/12 09:06:39 JS Exp $
 // Copyright:   (c) 2002 Vaclav Slavik
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -42,6 +42,7 @@ wxObject *wxScrolledWindowXmlHandler::DoCreateResource()
                     GetName());
 
     SetupWindow(control);
+    CreateChildren(control);
     
     return control;
 }

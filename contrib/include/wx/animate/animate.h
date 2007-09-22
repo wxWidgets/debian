@@ -4,7 +4,7 @@
 // Author:      Julian Smart and Guillermo Rodriguez Garcia
 // Modified by:
 // Created:     13/8/99
-// RCS-ID:      $Id: animate.h,v 1.2.2.1 2003/04/05 10:36:29 JS Exp $
+// RCS-ID:      $Id: animate.h,v 1.2.2.2 2003/12/11 10:47:57 JS Exp $
 // Copyright:   (c) Julian Smart and Guillermo Rodriguez Garcia
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -21,6 +21,7 @@
 #include <wx/gdicmn.h>
 #include <wx/list.h>
 #include <wx/timer.h>
+#include <wx/control.h>
 
 //#define ANIMDLLEXPORT WXDLLEXPORT
 #define ANIMDLLEXPORT

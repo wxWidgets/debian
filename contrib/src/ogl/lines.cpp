@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     12/07/98
-// RCS-ID:      $Id: lines.cpp,v 1.6.2.5 2003/07/22 16:39:31 JS Exp $
+// RCS-ID:      $Id: lines.cpp,v 1.6.2.6 2003/12/11 06:30:50 JS Exp $
 // Copyright:   (c) Julian Smart
 // Licence:   	wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -749,7 +749,7 @@ void wxLineShape::DrawArrow(wxDC& dc, wxArrowHead *arrow, double xOffset, bool p
 
       dc.SetPen(* m_pen);
       if (arrow->_GetType() == ARROW_HOLLOW_CIRCLE)
-        dc.SetBrush(* g_oglWhiteBackgroundBrush);
+        dc.SetBrush(GetBackgroundBrush());
       else
         dc.SetBrush(* m_brush);
 

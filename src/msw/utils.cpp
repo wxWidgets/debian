@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     04/01/98
-// RCS-ID:      $Id: utils.cpp,v 1.100.2.3 2003/04/11 22:32:44 VZ Exp $
+// RCS-ID:      $Id: utils.cpp,v 1.100.2.4 2004/02/02 14:16:26 CE Exp $
 // Copyright:   (c) Julian Smart and Markus Holzem
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -1022,7 +1022,7 @@ wxString wxGetOsDescription()
 
 int wxGetOsVersion(int *majorVsn, int *minorVsn)
 {
-#if defined(__WIN32__) && !defined(__SC__)
+#if defined(__WIN32__) && (!defined(__SC__) || defined(__DIGITALMARS__))
     static int ver = -1, major = -1, minor = -1;
 
     if ( ver == -1 )

@@ -6,7 +6,7 @@
 # Author:      Robin Dunn
 #
 # Created:     30-April-2001
-# RCS-ID:      $Id: make_installer.py,v 1.37.2.20 2003/09/27 21:16:49 RD Exp $
+# RCS-ID:      $Id: make_installer.py,v 1.37.2.21 2004/01/15 17:40:28 RD Exp $
 # Copyright:   (c) 2003 by Total Control Software
 # Licence:     wxWindows license
 #----------------------------------------------------------------------
@@ -19,6 +19,8 @@ calculated based on what wxc.pyd imports and an appropriate installer
 will be created.
 """
 
+
+# TODO:  Remove the registry entry upon uninstall.
 
 import sys, os, time
 

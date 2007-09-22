@@ -4,7 +4,7 @@
 // Author:      Julian Smart and Guillermo Rodriguez Garcia
 // Modified by:
 // Created:     13/8/99
-// RCS-ID:      $Id: animate.cpp,v 1.2.2.1 2003/04/05 10:36:32 JS Exp $
+// RCS-ID:      $Id: animate.cpp,v 1.2.2.2 2003/12/11 10:47:59 JS Exp $
 // Copyright:   (c) Julian Smart and Guillermo Rodriguez Garcia
 // Licence:     wxWindows licence
 ///////////////////////////////////////////////////////////////////////////////
@@ -22,6 +22,8 @@
 #include "wx/wfstream.h"
 #include "wx/image.h"
 #include "wx/gifdecod.h"
+#include "wx/log.h"
+#include "wx/dcmemory.h"
 #include "wx/animate/animate.h"
 
 /*
@@ -80,7 +82,7 @@ bool wxAnimationPlayer::Play(wxWindow& window, const wxPoint& pos, bool looped)
     {
         if (!Build())
         {
-            wxLogWarning("wxAnimationPlayer::Play: could not build the image cache.");
+            wxLogWarning(_T("wxAnimationPlayer::Play: could not build the image cache."));
             return FALSE;
         }
     }

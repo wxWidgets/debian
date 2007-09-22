@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     04/01/98
-// RCS-ID:      $Id: textctrl.cpp,v 1.151.2.10 2003/07/17 21:54:14 VZ Exp $
+// RCS-ID:      $Id: textctrl.cpp,v 1.151.2.12 2003/10/10 08:20:31 JS Exp $
 // Copyright:   (c) Julian Smart
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -570,16 +570,15 @@ void wxTextCtrl::SetValue(const wxString& value)
     if ( (value.length() > 0x400) || (value != GetValue()) )
     {
         DoWriteText(value, FALSE /* not selection only */);
-    }
 
+        // for compatibility, don't move the cursor when doing SetValue()
+        SetInsertionPoint(0);
+    }
     // we should reset the modified flag even if the value didn't really change
 
     // mark the control as being not dirty - we changed its text, not the
     // user
     DiscardEdits();
-
-    // for compatibility, don't move the cursor when doing SetValue()
-    SetInsertionPoint(0);
 }
 
 #if wxUSE_RICHEDIT && (!wxUSE_UNICODE || wxUSE_UNICODE_MSLU)

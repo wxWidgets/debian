@@ -3,7 +3,7 @@
 // Purpose:     XRC resource for wxBoxSizer
 // Author:      Vaclav Slavik
 // Created:     2000/03/21
-// RCS-ID:      $Id: xh_sizer.cpp,v 1.6.2.3 2003/09/10 19:20:03 VS Exp $
+// RCS-ID:      $Id: xh_sizer.cpp,v 1.6.2.4 2003/12/12 22:03:43 VS Exp $
 // Copyright:   (c) 2000 Vaclav Slavik
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -139,7 +139,7 @@ wxObject *wxSizerXmlHandler::DoCreateResource()
         wxXmlNode *parentNode = m_node->GetParent();
 
         wxCHECK_MSG(m_parentSizer != NULL ||
-                (parentNode->GetType() == wxXML_ELEMENT_NODE &&
+                (parentNode && parentNode->GetType() == wxXML_ELEMENT_NODE &&
                     m_parentAsWindow != NULL &&
                     (m_parentAsWindow->IsKindOf(CLASSINFO(wxPanel)) ||
                      m_parentAsWindow->IsKindOf(CLASSINFO(wxFrame)) ||
