@@ -4,7 +4,7 @@
 // Author:      Robert Roebling and Robin Dunn
 // Modified by:
 // Created:
-// RCS-ID:      $Id: sizer.cpp,v 1.21.2.10 2000/10/02 18:53:34 roebling Exp $
+// RCS-ID:      $Id: sizer.cpp,v 1.21.2.11 2001/05/14 17:50:29 RR Exp $
 // Copyright:   (c) Robin Dunn, Dirk Holtwick and Robert Roebling
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -715,7 +715,7 @@ void wxFlexGridSizer::RecalcSizes()
             {
                 wxNode *node = m_children.Nth( i );
                 wxASSERT( node );
-
+                
                 int w = wxMax( 0, wxMin( m_colWidths[c], sz.x - x ) );
                 int h = wxMax( 0, wxMin( m_rowHeights[r], sz.y - y ) );
 
@@ -755,6 +755,7 @@ wxSize wxFlexGridSizer::CalcMin()
         row = i / ncols;
         col = i % ncols;
         m_rowHeights[ row ] = wxMax( sz.y, m_rowHeights[ row ] );
+
         m_colWidths[ col ] = wxMax( sz.x, m_colWidths[ col ] );
 
         node = node->Next();

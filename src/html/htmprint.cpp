@@ -3,7 +3,7 @@
 // Purpose:     html printing classes
 // Author:      Vaclav Slavik
 // Created:     25/09/99
-// RCS-ID:      $Id: htmprint.cpp,v 1.12.2.4 2001/02/16 18:17:17 vaclavslavik Exp $
+// RCS-ID:      $Id: htmprint.cpp,v 1.12.2.6 2001/09/19 22:44:17 VS Exp $
 // Copyright:   (c) Vaclav Slavik, 1999
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -462,7 +462,9 @@ bool wxHtmlEasyPrinting::PrintFile(const wxString &htmlfile)
 {
     wxHtmlPrintout *p = CreatePrintout();
     p -> SetHtmlFile(htmlfile);
-    return DoPrint(p);
+    bool ret = DoPrint(p);
+    delete p;
+    return ret;
 }
 
 
@@ -471,7 +473,9 @@ bool wxHtmlEasyPrinting::PrintText(const wxString &htmltext, const wxString &bas
 {
     wxHtmlPrintout *p = CreatePrintout();
     p -> SetHtmlText(htmltext, basepath, TRUE);
-    return DoPrint(p);
+    bool ret = DoPrint(p);
+    delete p;
+    return ret;
 }
 
 
@@ -576,6 +580,10 @@ wxHtmlPrintout *wxHtmlEasyPrinting::CreatePrintout()
     return p;
 }
 
+// This hack forces the linker to always link in m_* files
+// (wxHTML doesn't work without handlers from these files)
+#include "wx/html/forcelnk.h"
+FORCE_WXHTML_MODULES()
 
 
 #endif // wxUSE_HTML & wxUSE_PRINTING_ARCHITECTURE

@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     01/02/97
-// RCS-ID:      $Id: event.cpp,v 1.74.2.2 2000/09/09 19:40:01 VZ Exp $
+// RCS-ID:      $Id: event.cpp,v 1.74.2.3 2001/05/17 23:45:06 VZ Exp $
 // Copyright:   (c) Julian Smart and Markus Holzem
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -765,15 +765,21 @@ bool wxEvtHandler::ProcessEvent(wxEvent& event)
     }
 
 #if wxUSE_GUI
-    // Carry on up the parent-child hierarchy,
-    // but only if event is a command event: it wouldn't
-    // make sense for a parent to receive a child's size event, for example
+    // Carry on up the parent-child hierarchy, but only if event is a command
+    // event: it wouldn't make sense for a parent to receive a child's size
+    // event, for example
     if ( m_isWindow && event.IsCommandEvent() )
     {
         wxWindow *win = (wxWindow *)this;
-        wxWindow *parent = win->GetParent();
-        if (parent && !parent->IsBeingDeleted())
-            return parent->GetEventHandler()->ProcessEvent(event);
+
+        // also, don't propagate events beyond the first top level window: it
+        // doesn't make sense to process dialogs events in the parent frame
+        if ( !win->IsTopLevel() )
+        {
+            wxWindow *parent = win->GetParent();
+            if (parent && !parent->IsBeingDeleted())
+                return parent->GetEventHandler()->ProcessEvent(event);
+        }
     }
 #endif // wxUSE_GUI
 

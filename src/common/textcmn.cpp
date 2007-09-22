@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     13.07.99
-// RCS-ID:      $Id: textcmn.cpp,v 1.8 2000/02/17 18:23:41 SB Exp $
+// RCS-ID:      $Id: textcmn.cpp,v 1.8.2.1 2001/06/06 11:17:30 JS Exp $
 // Copyright:   (c) wxWindows team
 // Licence:     wxWindows license
 ///////////////////////////////////////////////////////////////////////////////
@@ -64,7 +64,7 @@ wxTextCtrlBase::~wxTextCtrlBase()
 {
 #ifndef NO_TEXT_WINDOW_STREAM
 #if !wxUSE_IOSTREAMH
-  delete m_streambuf;
+  delete[] m_streambuf;
 #endif
 #endif
 }

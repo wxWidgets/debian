@@ -4,7 +4,7 @@
 // Author:      Karsten Ballueder
 // Modified by:
 // Created:     04/01/98
-// RCS-ID:      $Id: demo.cpp,v 1.14.2.3 2001/01/23 14:54:40 juliansmart Exp $
+// RCS-ID:      $Id: demo.cpp,v 1.14.2.4 2001/05/20 16:54:10 JS Exp $
 // Copyright:   (c) Karsten Ballueder, Julian Smart
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -40,7 +40,7 @@
 #define USE_HTML_HELP 1
 
 // Use old-style HTML help if 1
-#define USE_OLD_HTML_HELP 1
+#define USE_OLD_HTML_HELP 0
 
 #if !wxUSE_HTML
 #undef USE_HTML_HELP

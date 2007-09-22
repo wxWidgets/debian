@@ -10,7 +10,7 @@
 // Author:      Robin Dunn
 //
 // Created:     13-Jan-2000
-// RCS-ID:      $Id: stc.cpp,v 1.2.2.13 2000/10/21 22:09:00 robind Exp $
+// RCS-ID:      $Id: stc.cpp,v 1.2.2.14 2001/07/09 18:26:38 RD Exp $
 // Copyright:   (c) 2000 by Total Control Software
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -1055,7 +1055,7 @@ void wxStyledTextCtrl::SetText(const wxString& text) {
 // Retrieve all the text in the document.
 wxString wxStyledTextCtrl::GetText() {
                         wxString text;
-                        int   len  = GetTextLength();
+                        int   len  = GetTextLength()+1;
                         char* buff = text.GetWriteBuf(len+1);
 
                         SendMsg(2182, len, (long)buff);

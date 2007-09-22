@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     01/02/97
-// RCS-ID:      $Id: event.h,v 1.92.2.7 2001/01/27 20:15:39 vadz Exp $
+// RCS-ID:      $Id: event.h,v 1.92.2.9 2001/10/11 00:08:07 RL Exp $
 // Copyright:   (c)
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -51,10 +51,17 @@ class WXDLLEXPORT wxList;
 
 typedef int wxEventType;
 
-// this macro is for upwards compatibility with 2.4, use it when defining your
-// event table macros
+// these macros are for upwards compatibility with 2.4,
+// use them when defining events and event tables
 #define DECLARE_EVENT_TABLE_ENTRY(type, id, idLast, fn, obj) \
     { type, id, idLast, fn, obj }
+
+#define BEGIN_DECLARE_EVENT_TYPES() enum {
+#define END_DECLARE_EVENT_TYPES() };
+#define DECLARE_EVENT_TYPE(name, value) name = wxEVT_FIRST + value,
+#define DECLARE_LOCAL_EVENT_TYPE(name, value) name = wxEVT_FIRST + value,
+#define DEFINE_EVENT_TYPE(name)
+#define DEFINE_LOCAL_EVENT_TYPE(name)
 
 // the standard event types
 enum
@@ -989,7 +996,7 @@ class WXDLLEXPORT wxMenuEvent : public wxEvent
 
 public:
     wxMenuEvent(wxEventType type = wxEVT_NULL, int id = 0)
-      { m_eventType = type; m_menuId = id; }
+      { m_eventType = type; m_menuId = id; m_id = id; }
 
     int GetMenuId() const { return m_menuId; }
 

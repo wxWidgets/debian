@@ -5,7 +5,7 @@
 // Created:    April 1997
 // Copyright:  (C) 1999-1997, Guilhem Lavaux
 //             (C) 2000-1999, Guillermo Rodriguez Garcia
-// RCS_ID:     $Id: socket.cpp,v 1.99.2.1 2001/02/20 16:48:15 vadz Exp $
+// RCS_ID:     $Id: socket.cpp,v 1.99.2.2 2001/05/14 09:37:22 GRG Exp $
 // License:    see wxWindows license
 /////////////////////////////////////////////////////////////////////////////
 
@@ -51,12 +51,30 @@
 // discard buffer
 #define MAX_DISCARD_SIZE (10 * 1024)
 
-// what to do within waits
+// what to do within waits: in wxBase we don't do anything as we don't have
+// the event loop anyhow (for now). In GUI apps we have 2 cases: from the main
+// thread itself we have to call wxYield() to let the events (including the
+// GUI events and the low-level (not wxWindows) events from GSocket) be
+// processed. From another thread it is enough to just call wxThread::Yield()
+// which will give away the rest of our time slice: the explanation is that
+// the events will be processed by the main thread anyhow, without calling
+// wxYield(), but we don't want to eat the CPU time uselessly while sitting
+// in the loop waiting for the data
 #if wxUSE_GUI
-  #define PROCESS_EVENTS() wxYield()
-#else
-  #define PROCESS_EVENTS()
-#endif
+    #if wxUSE_THREADS
+        #define PROCESS_EVENTS()        \
+        {                               \
+            if ( wxThread::IsMain() )   \
+                wxYield();              \
+            else                        \
+                wxThread::Yield();      \
+        }
+    #else // !wxUSE_THREADS
+        #define PROCESS_EVENTS() wxYield()
+    #endif // wxUSE_THREADS/!wxUSE_THREADS
+#else // !wxUSE_GUI
+    #define PROCESS_EVENTS()
+#endif // wxUSE_GUI/!wxUSE_GUI
 
 // --------------------------------------------------------------------------
 // wxWin macros

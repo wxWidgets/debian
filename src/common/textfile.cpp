@@ -4,7 +4,7 @@
 // Author:      Vadim Zeitlin
 // Modified by:
 // Created:     03.04.98
-// RCS-ID:      $Id: textfile.cpp,v 1.24.2.4 2000/12/20 23:05:00 vaclavslavik Exp $
+// RCS-ID:      $Id: textfile.cpp,v 1.24.2.5 2001/04/21 01:34:57 VZ Exp $
 // Copyright:   (c) 1998 Vadim Zeitlin <zeitlin@dptmaths.ens-cachan.fr>
 // Licence:     wxWindows license
 ///////////////////////////////////////////////////////////////////////////////
@@ -282,6 +282,8 @@ bool wxTextFile::Read()
   wxASSERT( m_file.IsOpened() && m_file.Tell() == 0 );
 
   wxString str;
+  str.reserve(1024);
+
   char ch, chLast = '\0';
   char buf[1024];
   int n, nRead;

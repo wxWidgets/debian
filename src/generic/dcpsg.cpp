@@ -4,7 +4,7 @@
 // Author:      Julian Smart, Robert Roebling, Markus Holzhem
 // Modified by:
 // Created:     04/01/98
-// RCS-ID:      $Id: dcpsg.cpp,v 1.50.2.13 2000/12/10 00:18:22 vadz Exp $
+// RCS-ID:      $Id: dcpsg.cpp,v 1.50.2.15 2001/05/21 11:14:58 VZ Exp $
 // Copyright:   (c) Julian Smart and Markus Holzem
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -244,7 +244,7 @@ int wxPostScriptDC::GetResolution()
 {
     return (int)(ms_PSScaleFactor * 72.0);
 }
-  
+
 
 
 wxPostScriptDC::wxPostScriptDC ()
@@ -649,7 +649,7 @@ void wxPostScriptDC::DoDrawPolygon (int n, wxPoint points[], wxCoord xoffset, wx
 
         wxCoord xx = XLOG2DEV(points[0].x + xoffset);
         wxCoord yy = YLOG2DEV(points[0].y + yoffset);
-        
+
         fprintf( m_pstream, "%d %d moveto\n", xx, yy );
 
         CalcBoundingBox( points[0].x + xoffset, points[0].y + yoffset );
@@ -1562,7 +1562,7 @@ void wxPostScriptDC::DoGetSizeMM(int *width, int *height) const
 // Resolution in pixels per logical inch
 wxSize wxPostScriptDC::GetPPI(void) const
 {
-    return wxSize((int)(72 * ms_PSScaleFactor), 
+    return wxSize((int)(72 * ms_PSScaleFactor),
                   (int)(72 * ms_PSScaleFactor));
 }
 
@@ -1666,10 +1666,26 @@ void wxPostScriptDC::EndDoc ()
 
     // Compute the bounding box.  Note that it is in the default user
     // coordinate system, thus we have to convert the values.
-    wxCoord llx = (wxCoord) ((XLOG2DEV(m_minX)+wx_printer_translate_x)*wx_printer_scale_x);
-    wxCoord lly = (wxCoord) ((YLOG2DEV(m_minY)+wx_printer_translate_y)*wx_printer_scale_y);
-    wxCoord urx = (wxCoord) ((XLOG2DEV(m_maxX)+wx_printer_translate_x)*wx_printer_scale_x);
-    wxCoord ury = (wxCoord) ((YLOG2DEV(m_maxY)+wx_printer_translate_y)*wx_printer_scale_y);
+    wxCoord minX = (wxCoord) XLOG2DEV(m_minX);
+    wxCoord minY = (wxCoord) YLOG2DEV(m_minY);
+    wxCoord maxX = (wxCoord) XLOG2DEV(m_maxX);
+    wxCoord maxY = (wxCoord) YLOG2DEV(m_maxY);
+
+    // LOG2DEV may have changed the minimum to maximum vice versa
+    if ( minX > maxX ) { wxCoord tmp = minX; minX = maxX; maxX = tmp; }
+    if ( minY > maxY ) { wxCoord tmp = minY; minY = maxY; maxY = tmp; }
+
+    // account for used scaling (boundingbox is before scaling in ps-file)
+    double scale_x = m_printData.GetPrinterScaleX() / ms_PSScaleFactor;
+    double scale_y = m_printData.GetPrinterScaleY() / ms_PSScaleFactor;
+
+    wxCoord llx, lly, urx, ury;
+    llx = (wxCoord) ((minX+wx_printer_translate_x)*scale_x);
+    lly = (wxCoord) ((minY+wx_printer_translate_y)*scale_y);
+    urx = (wxCoord) ((maxX+wx_printer_translate_x)*scale_x);
+    ury = (wxCoord) ((maxY+wx_printer_translate_y)*scale_y);
+    // (end of bounding box computation)
+
 
     // If we're landscape, our sense of "x" and "y" is reversed.
     if (m_printData.GetOrientation() == wxLANDSCAPE)
@@ -1799,7 +1815,7 @@ void wxPostScriptDC::StartPage()
     }
 
     char buffer[100];
-    sprintf( buffer, "%.8f %.8f scale\n", scale_x / ms_PSScaleFactor, 
+    sprintf( buffer, "%.8f %.8f scale\n", scale_x / ms_PSScaleFactor,
                                           scale_y / ms_PSScaleFactor);
     for (int i = 0; i < 100; i++)
         if (buffer[i] == ',') buffer[i] = '.';
@@ -2004,7 +2020,7 @@ void wxPostScriptDC::DoGetTextExtent(const wxString& string,
 
         afmName << name;
         FILE *afmFile = wxFopen(afmName,wxT("r"));
-        
+
         if (afmFile==NULL)
         {
            afmName = wxThePrintSetupData->GetAFMPath();
@@ -2034,8 +2050,8 @@ void wxPostScriptDC::DoGetTextExtent(const wxString& string,
 
         if (afmFile==NULL)
         {
-            wxLogDebug( wxT("GetTextExtent: can't open AFM file '%hs'\n"), afmName.c_str() );
-            wxLogDebug( wxT("               using approximate values\n"));
+            wxLogDebug( wxT("GetTextExtent: can't open AFM file '%hs'"), afmName.c_str() );
+            wxLogDebug( wxT("               using approximate values"));
             for (int i=0; i<256; i++) lastWidths[i] = 500; /* an approximate value */
             lastDescender = -150; /* dito. */
         }
@@ -2057,7 +2073,7 @@ void wxPostScriptDC::DoGetTextExtent(const wxString& string,
                     if ((sscanf(line,"%s%d",descString,&lastDescender)!=2) ||
                             (strcmp(descString,"Descender")!=0))
                     {
-                        wxLogDebug( wxT("AFM-file '%hs': line '%hs' has error (bad descender)\n"), afmName.c_str(),line );
+                        wxLogDebug( wxT("AFM-file '%hs': line '%hs' has error (bad descender)"), afmName.c_str(),line );
                     }
                 }
                 /* JC 1.) check for UnderlinePosition */
@@ -2066,7 +2082,7 @@ void wxPostScriptDC::DoGetTextExtent(const wxString& string,
                     if ((sscanf(line,"%s%lf",upString,&UnderlinePosition)!=2) ||
                             (strcmp(upString,"UnderlinePosition")!=0))
                     {
-                        wxLogDebug( wxT("AFM-file '%hs': line '%hs' has error (bad UnderlinePosition)\n"), afmName.c_str(), line );
+                        wxLogDebug( wxT("AFM-file '%hs': line '%hs' has error (bad UnderlinePosition)"), afmName.c_str(), line );
                     }
                 }
                 /* JC 2.) check for UnderlineThickness */
@@ -2075,7 +2091,7 @@ void wxPostScriptDC::DoGetTextExtent(const wxString& string,
                     if ((sscanf(line,"%s%lf",utString,&UnderlineThickness)!=2) ||
                             (strcmp(utString,"UnderlineThickness")!=0))
                     {
-                        wxLogDebug( wxT("AFM-file '%hs': line '%hs' has error (bad UnderlineThickness)\n"), afmName.c_str(), line );
+                        wxLogDebug( wxT("AFM-file '%hs': line '%hs' has error (bad UnderlineThickness)"), afmName.c_str(), line );
                     }
                 }
                 /* JC 3.) check for EncodingScheme */
@@ -2084,11 +2100,11 @@ void wxPostScriptDC::DoGetTextExtent(const wxString& string,
                     if ((sscanf(line,"%s%s",utString,encString)!=2) ||
                             (strcmp(utString,"EncodingScheme")!=0))
                     {
-                        wxLogDebug( wxT("AFM-file '%hs': line '%hs' has error (bad EncodingScheme)\n"), afmName.c_str(), line );
+                        wxLogDebug( wxT("AFM-file '%hs': line '%hs' has error (bad EncodingScheme)"), afmName.c_str(), line );
                     }
                     else if (strncmp(encString, "AdobeStandardEncoding", 21))
                     {
-                        wxLogDebug( wxT("AFM-file '%hs': line '%hs' has error (unsupported EncodingScheme %hs)\n"),
+                        wxLogDebug( wxT("AFM-file '%hs': line '%hs' has error (unsupported EncodingScheme %hs)"),
                                 afmName.c_str(),line, encString);
                     }
                 }
@@ -2097,11 +2113,11 @@ void wxPostScriptDC::DoGetTextExtent(const wxString& string,
                 {
                     if (sscanf(line,"%s%d%s%s%d",cString,&ascii,semiString,WXString,&cWidth)!=5)
                     {
-                        wxLogDebug(wxT("AFM-file '%hs': line '%hs' has an error (bad character width)\n"),afmName.c_str(),line);
+                        wxLogDebug(wxT("AFM-file '%hs': line '%hs' has an error (bad character width)"),afmName.c_str(),line);
                     }
                     if(strcmp(cString,"C")!=0 || strcmp(semiString,";")!=0 || strcmp(WXString,"WX")!=0)
                     {
-                        wxLogDebug(wxT("AFM-file '%hs': line '%hs' has a format error\n"),afmName.c_str(),line);
+                        wxLogDebug(wxT("AFM-file '%hs': line '%hs' has a format error"),afmName.c_str(),line);
                     }
                     /* printf("            char '%c'=%d has width '%d'\n",ascii,ascii,cWidth); */
                     if (ascii>=0 && ascii<256)
@@ -2111,7 +2127,7 @@ void wxPostScriptDC::DoGetTextExtent(const wxString& string,
                     else
                     {
                         /* MATTHEW: this happens a lot; don't print an error */
-                        /* wxLogDebug("AFM-file '%s': ASCII value %d out of range\n",afmName.c_str(),ascii); */
+                        /* wxLogDebug("AFM-file '%s': ASCII value %d out of range",afmName.c_str(),ascii); */
                     }
                 }
                 /* C.) ignore other entries. */
@@ -2153,7 +2169,7 @@ void wxPostScriptDC::DoGetTextExtent(const wxString& string,
     {
         if(lastWidths[*p]== INT_MIN)
         {
-            wxLogDebug(wxT("GetTextExtent: undefined width for character '%hc' (%d)\n"), *p,*p);
+            wxLogDebug(wxT("GetTextExtent: undefined width for character '%hc' (%d)"), *p,*p);
             sum += lastWidths[' ']; /* assume space */
         }
         else
@@ -2161,11 +2177,11 @@ void wxPostScriptDC::DoGetTextExtent(const wxString& string,
             sum += lastWidths[*p];
         }
     }
-    
+
     double widthSum = sum;
     widthSum *= Size;
     widthSum /= 1000.0F;
-    
+
     /* add descender to height (it is usually a negative value) */
     //if (lastDescender != INT_MIN)
     //{

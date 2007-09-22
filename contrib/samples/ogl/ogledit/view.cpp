@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     12/07/98
-// RCS-ID:      $Id: view.cpp,v 1.1 2000/03/03 11:24:39 JS Exp $
+// RCS-ID:      $Id: view.cpp,v 1.1.2.1 2001/04/26 10:48:49 JS Exp $
 // Copyright:   (c) Julian Smart
 // Licence:   	wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -292,7 +292,7 @@ void MyCanvas::OnLeftClick(double x, double y, int keys)
   }
   if (info)
   {
-    view->GetDocument()->GetCommandProcessor()->Submit(new DiagramCommand(info->GetClassName(), OGLEDIT_ADD_SHAPE, (DiagramDocument *)view->GetDocument(), info,
+    view->GetDocument()->GetCommandProcessor()->Submit(new DiagramCommand((char*) info->GetClassName(), OGLEDIT_ADD_SHAPE, (DiagramDocument *)view->GetDocument(), info,
       x, y));
   }
 }

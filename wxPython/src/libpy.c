@@ -1,5 +1,5 @@
 /***********************************************************************
- * $Header: /cvsroot/wxwindows/wxWindows/wxPython/src/libpy.c,v 1.1.2.2 2001/01/30 20:53:43 robind Exp $
+ * $Header: /home/wxcvs/wxWindows/wxPython/src/libpy.c,v 1.1.2.3 2001/07/27 19:28:08 RD Exp $
  * swig_lib/python/python.cfg
  *
  * Contains variable linking and pointer type-checking code.

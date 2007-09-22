@@ -4,7 +4,7 @@
 // Author:      Julian Smart, Robert Roebling, Vadim Zeitlin
 // Modified by:
 // Created:     04/01/98
-// RCS-ID:      $Id: panelg.cpp,v 1.43.2.4 2001/04/14 21:41:08 VZ Exp $
+// RCS-ID:      $Id: panelg.cpp,v 1.43.2.5 2001/04/21 15:54:19 VZ Exp $
 // Copyright:   (c) Julian Smart and Markus Holzem
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -74,15 +74,7 @@ bool wxPanel::Create(wxWindow *parent, wxWindowID id,
                      long style,
                      const wxString& name)
 {
-    bool ret = wxWindow::Create(parent, id, pos, size, style, name);
-
-    if ( ret )
-    {
-        SetBackgroundColour(wxSystemSettings::GetSystemColour(wxSYS_COLOUR_3DFACE));
-        SetFont(wxSystemSettings::GetSystemFont(wxSYS_DEFAULT_GUI_FONT));
-    }
-
-    return ret;
+    return wxWindow::Create(parent, id, pos, size, style, name);
 }
 
 // ----------------------------------------------------------------------------

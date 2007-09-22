@@ -4,7 +4,7 @@
 // Author:      Vadim Zeitlin
 // Modified by:
 // Created:     12.09.97
-// RCS-ID:      $Id: dynarray.cpp,v 1.18 1999/11/18 14:54:02 VZ Exp $
+// RCS-ID:      $Id: dynarray.cpp,v 1.18.2.1 2001/05/16 00:19:05 VZ Exp $
 // Copyright:   (c) 1998 Vadim Zeitlin <zeitlin@dptmaths.ens-cachan.fr>
 // Licence:     wxWindows license
 ///////////////////////////////////////////////////////////////////////////////
@@ -141,8 +141,6 @@ void wxBaseArray::Clear()
 // pre-allocates memory (frees the previous data!)
 void wxBaseArray::Alloc(size_t nSize)
 {
-  wxASSERT( nSize > 0 );
-
   // only if old buffer was not big enough
   if ( nSize > m_nSize ) {
     wxDELETEA(m_pItems);

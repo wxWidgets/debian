@@ -2,7 +2,7 @@
 // Name:        gtk/window.cpp
 // Purpose:
 // Author:      Robert Roebling
-// Id:          $Id: window.cpp,v 1.289.2.15 2001/02/12 13:47:35 juliansmart Exp $
+// Id:          $Id: window.cpp,v 1.289.2.19 2001/05/14 17:50:30 RR Exp $
 // Copyright:   (c) 1998 Robert Roebling, Julian Smart
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -197,13 +197,13 @@ extern bool       g_blockEventsOnScroll;
 extern wxCursor   g_globalCursor;
 static wxWindow  *g_captureWindow = (wxWindow*) NULL;
 
-/* extern */ wxWindow  *g_focusWindow = (wxWindow*) NULL;
+wxWindow  *g_focusWindow = (wxWindow*) NULL;
 
 // if we detect that the app has got/lost the focus, we set this variable to
 // either TRUE or FALSE and an activate event will be sent during the next
 // OnIdle() call and it is reset to -1: this value means that we shouldn't
 // send any activate events at all
-static int        g_sendActivateEvent = -1;
+int        g_sendActivateEvent = -1;
 
 /* hack: we need something to pass to gtk_menu_popup, so we store the time of
    the last click here */
@@ -432,8 +432,9 @@ static void gtk_window_own_draw_callback( GtkWidget *widget, GdkRectangle *WXUNU
 // key code mapping routines
 //-----------------------------------------------------------------------------
 
-static long map_to_unmodified_wx_keysym( KeySym keysym )
+static long map_to_unmodified_wx_keysym( GdkEventKey *event )
 {
+    KeySym keysym = event->keyval;
     guint key_code = 0;
 
     switch (keysym)
@@ -529,7 +530,11 @@ static long map_to_unmodified_wx_keysym( KeySym keysym )
         case GDK_F12:           key_code = WXK_F12;         break;
         default:
         {
-            if ((keysym & 0xF000) == 0)
+	    if (event->length == 1)
+	    {
+	        key_code = toupper( (unsigned char)*event->string );
+	    }
+	    else if ((keysym & 0xFF) == keysym)
             {
                 guint upper = gdk_keyval_to_upper( (guint)keysym );
                 keysym = (upper != 0 ? upper : keysym ); /* to be MSW compatible */
@@ -541,8 +546,9 @@ static long map_to_unmodified_wx_keysym( KeySym keysym )
     return (key_code);
 }
 
-static long map_to_wx_keysym( KeySym keysym )
+static long map_to_wx_keysym( GdkEventKey *event )
 {
+    KeySym keysym = event->keyval;
     guint key_code = 0;
 
     switch (keysym)
@@ -628,7 +634,11 @@ static long map_to_wx_keysym( KeySym keysym )
         case GDK_F12:           key_code = WXK_F12;         break;
         default:
         {
-            if ((keysym & 0xF000) == 0)
+	    if (event->length == 1)
+	    {
+	        key_code = (unsigned char)*event->string;
+	    }
+	    else if ((keysym & 0xFF) == keysym)
             {
                 key_code = (guint)keysym;
             }
@@ -668,7 +678,7 @@ static int gtk_window_expose_callback( GtkWidget *widget, GdkEventExpose *gdk_ev
     if (win->IsTopLevel())
     {
         gtk_paint_flat_box (parent->m_widget->style, pizza->bin_window, GTK_STATE_NORMAL,
-		    GTK_SHADOW_NONE, &gdk_event->area, parent->m_widget, "base", 0, 0, -1, -1);
+            GTK_SHADOW_NONE, &gdk_event->area, parent->m_widget, "base", 0, 0, -1, -1);
     } 
     else
     {
@@ -681,7 +691,7 @@ static int gtk_window_expose_callback( GtkWidget *widget, GdkEventExpose *gdk_ev
                 if (frame->GetStatusBar() == win)
                 {
                     gtk_paint_flat_box (parent->m_widget->style, pizza->bin_window, GTK_STATE_NORMAL,
-		                GTK_SHADOW_NONE, &gdk_event->area, parent->m_widget, "base", 0, 0, -1, -1);
+                        GTK_SHADOW_NONE, &gdk_event->area, parent->m_widget, "base", 0, 0, -1, -1);
                 }
             }
             else
@@ -693,7 +703,7 @@ static int gtk_window_expose_callback( GtkWidget *widget, GdkEventExpose *gdk_ev
                 if (!parent) parent = win;
                     
                 gtk_paint_flat_box (parent->m_widget->style, pizza->bin_window, GTK_STATE_NORMAL,
-		            GTK_SHADOW_NONE, &gdk_event->area, parent->m_widget, "base", 0, 0, -1, -1);
+                    GTK_SHADOW_NONE, &gdk_event->area, parent->m_widget, "base", 0, 0, -1, -1);
             }
         }
     }
@@ -870,7 +880,7 @@ static gint gtk_window_key_press_callback( GtkWidget *widget, GdkEventKey *gdk_e
 
     bool ret = FALSE;
 
-    long key_code = map_to_unmodified_wx_keysym( gdk_event->keyval );
+    long key_code = map_to_unmodified_wx_keysym( gdk_event );
     /* sending unknown key events doesn't really make sense */
     if (key_code == 0) return FALSE;
 
@@ -910,7 +920,7 @@ static gint gtk_window_key_press_callback( GtkWidget *widget, GdkEventKey *gdk_e
     /* wxMSW doesn't send char events with Alt pressed */
     /* Only send wxEVT_CHAR event if not processed yet. Thus, ALT-x
        will only be sent if it is not in an accelerator table. */
-    key_code = map_to_wx_keysym( gdk_event->keyval );
+    key_code = map_to_wx_keysym( gdk_event );
 
     if ( (!ret) &&
          (key_code != 0))
@@ -1028,7 +1038,7 @@ static gint gtk_window_key_release_callback( GtkWidget *widget, GdkEventKey *gdk
     printf( "\n" );
 */
 
-    long key_code = map_to_unmodified_wx_keysym( gdk_event->keyval );
+    long key_code = map_to_unmodified_wx_keysym( gdk_event );
 
     /* sending unknown key events doesn't really make sense */
     if (key_code == 0) return FALSE;
@@ -1533,7 +1543,7 @@ static gint gtk_window_focus_in_callback( GtkWidget *widget, GdkEvent *WXUNUSED(
 
         case 0:
             // another our window just lost focus, it was already ours before
-            // - don't send any wxActivateEvent
+            // - don't send any wxActivateAppEvent
             g_sendActivateEvent = -1;
             break;
     }
@@ -1569,13 +1579,23 @@ static gint gtk_window_focus_in_callback( GtkWidget *widget, GdkEvent *WXUNUSED(
     }
 #endif // wxUSE_CARET
 
+
+    if (win->IsTopLevel())
+    {
+        wxActivateEvent event( wxEVT_ACTIVATE, TRUE, win->GetId() );
+        event.SetEventObject( win );
+
+        // ignore return value
+        win->GetEventHandler()->ProcessEvent( event );
+    }
+
     wxFocusEvent event( wxEVT_SET_FOCUS, win->GetId() );
     event.SetEventObject( win );
 
     if (win->GetEventHandler()->ProcessEvent( event ))
     {
-        gtk_signal_emit_stop_by_name( GTK_OBJECT(widget), "focus_in_event" );
-        return TRUE;
+       gtk_signal_emit_stop_by_name( GTK_OBJECT(widget), "focus_in_event" );
+       return TRUE;
     }
 
     return FALSE;
@@ -1626,6 +1646,15 @@ static gint gtk_window_focus_out_callback( GtkWidget *widget, GdkEvent *WXUNUSED
         caret->OnKillFocus();
     }
 #endif // wxUSE_CARET
+
+    if (win->IsTopLevel())
+    {
+        wxActivateEvent event( wxEVT_ACTIVATE, FALSE, win->GetId() );
+        event.SetEventObject( win );
+
+        // ignore return value
+        win->GetEventHandler()->ProcessEvent( event );
+    }
 
     wxFocusEvent event( wxEVT_KILL_FOCUS, win->GetId() );
     event.SetEventObject( win );
@@ -2605,7 +2634,7 @@ void wxWindow::OnInternalIdle()
         // do it only once
         g_sendActivateEvent = -1;
 
-        wxActivateEvent event(wxEVT_ACTIVATE, activate, GetId());
+        wxActivateEvent event(wxEVT_ACTIVATE_APP, activate, GetId());
         event.SetEventObject(this);
 
         (void)GetEventHandler()->ProcessEvent(event);

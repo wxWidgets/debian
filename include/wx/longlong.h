@@ -5,7 +5,7 @@
 // Author:      Jeffrey C. Ollie <jeff@ollie.clive.ia.us>, Vadim Zeitlin
 // Modified by:
 // Created:     10.02.99
-// RCS-ID:      $Id: longlong.h,v 1.22.2.5 2001/03/21 13:59:58 VZ Exp $
+// RCS-ID:      $Id: longlong.h,v 1.22.2.6 2001/05/22 10:52:24 JS Exp $
 // Copyright:   (c) 1998 Vadim Zeitlin <zeitlin@dptmaths.ens-cachan.fr>
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -87,7 +87,12 @@
     #endif
 
     class WXDLLEXPORT wxLongLongWx;
+#if defined(__VISUALC__) && !defined(__WIN32__)
+    #define wxLongLong wxLongLongWx
+#else
     typedef wxLongLongWx wxLongLong;
+#endif
+
 #else
     // if nothing is defined, use native implementation by default, of course
     #ifndef wxUSE_LONGLONG_NATIVE
@@ -312,7 +317,6 @@ private:
 #endif // wxUSE_LONGLONG_NATIVE
 
 #if wxUSE_LONGLONG_WX
-
 class WXDLLEXPORT wxLongLongWx
 {
 public:

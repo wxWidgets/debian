@@ -4,7 +4,7 @@
 // Author:      Guilhem Lavaux
 // Modified by:
 // Created:     11/07/98
-// RCS-ID:      $Id: stream.cpp,v 1.60.2.1 2000/11/26 19:51:38 vadz Exp $
+// RCS-ID:      $Id: stream.cpp,v 1.60.2.2 2001/08/22 22:13:38 VS Exp $
 // Copyright:   (c) Guilhem Lavaux
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -53,7 +53,13 @@ wxStreamBuffer::wxStreamBuffer(BufMode mode)
     m_buffer_size(0), m_fixed(TRUE), m_flushable(FALSE), m_stream(NULL),
     m_mode(mode), m_destroybuf(FALSE), m_destroystream(TRUE)
 {
-  m_stream = new wxStreamBase();
+  wxASSERT_MSG(mode != read_write, wxT("you have to use the other ctor for read_write mode") );
+  if ( mode == read )
+      m_stream = new wxInputStream;
+  else if ( mode == write)
+      m_stream = new wxOutputStream;
+  else
+      m_stream = NULL;
 }
 
 wxStreamBuffer::wxStreamBuffer(const wxStreamBuffer& buffer)

@@ -856,7 +856,7 @@ wxDefaultSize = wxSizePtr(wxc.cvar.wxDefaultSize)
 # Author:       Robin Dunn
 #
 # Created:      6/30/97
-# RCS-ID:       $Id: wx.py,v 1.1.2.13 2001/01/30 22:49:51 robind Exp $
+# RCS-ID:       $Id: wx.py,v 1.1.2.14 2001/07/28 03:01:19 RD Exp $
 # Copyright:    (c) 1998 by Total Control Software
 # Licence:      wxWindows license
 #----------------------------------------------------------------------------

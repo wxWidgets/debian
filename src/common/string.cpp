@@ -4,7 +4,7 @@
 // Author:      Vadim Zeitlin
 // Modified by:
 // Created:     29/01/98
-// RCS-ID:      $Id: string.cpp,v 1.123.2.9 2000/10/04 23:35:05 vadz Exp $
+// RCS-ID:      $Id: string.cpp,v 1.123.2.12 2001/07/27 11:54:11 RR Exp $
 // Copyright:   (c) 1998 Vadim Zeitlin <zeitlin@dptmaths.ens-cachan.fr>
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -1143,7 +1143,7 @@ wxString wxString::Format(const wxChar *pszFormat, ...)
 wxString wxString::FormatV(const wxChar *pszFormat, va_list argptr)
 {
     wxString s;
-    s.Printf(pszFormat, argptr);
+    s.PrintfV(pszFormat, argptr);
     return s;
 }
 
@@ -2073,9 +2073,9 @@ void wxArrayString::Insert(const wxString& str, size_t nIndex)
 }
 
 // removes item from array (by index)
-void wxArrayString::Remove(size_t nIndex)
+void wxArrayString::RemoveAt(size_t nIndex)
 {
-  wxCHECK_RET( nIndex <= m_nCount, wxT("bad index in wxArrayString::Remove") );
+  wxCHECK_RET( nIndex <= m_nCount, wxT("bad index in wxArrayString::RemoveAt") );
 
   // release our lock
   Item(nIndex).GetStringData()->Unlock();
@@ -2084,6 +2084,12 @@ void wxArrayString::Remove(size_t nIndex)
           (m_nCount - nIndex - 1)*sizeof(wxChar *));
   m_nCount--;
 }
+
+void wxArrayString::Remove(size_t nIndex)
+{
+    RemoveAt( nIndex );
+}
+
 
 // removes item from array (by value)
 void wxArrayString::Remove(const wxChar *sz)

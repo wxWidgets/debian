@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     01/02/97
-// RCS-ID:      $Id: splitter.cpp,v 1.48.2.3 2000/10/23 11:30:43 roebling Exp $
+// RCS-ID:      $Id: splitter.cpp,v 1.48.2.4 2001/04/27 17:03:23 RD Exp $
 // Copyright:   (c) Julian Smart and Markus Holzem
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -138,7 +138,7 @@ void wxSplitterWindow::OnIdle(wxIdleEvent& event)
 {
     if (m_needUpdating)
         SizeWindows();
-        
+
     event.Skip( TRUE );
 }
 
@@ -309,7 +309,7 @@ void wxSplitterWindow::OnMouseEvent(wxMouseEvent& event)
                 return;
             }
         }
-        
+
         if (new_sash_position == m_sashPosition)
             return;
 
@@ -693,7 +693,7 @@ void wxSplitterWindow::SizeWindows()
     if ( GetBorderSize() > 0 )
         DrawBorders(dc);
     DrawSash(dc);
-    
+
     SetNeedUpdating(FALSE);
 }
 
@@ -722,7 +722,7 @@ bool wxSplitterWindow::SplitVertically(wxWindow *window1, wxWindow *window2, int
     if ( sashPosition > 0 )
         m_sashPosition = sashPosition;
     else if ( sashPosition < 0 )
-        m_sashPosition = w - sashPosition;
+        m_sashPosition = w + sashPosition;   // It's negative so adding is subtracting
     else    // default
         m_sashPosition = w/2;
 
@@ -745,7 +745,7 @@ bool wxSplitterWindow::SplitHorizontally(wxWindow *window1, wxWindow *window2, i
     if ( sashPosition > 0 )
         m_sashPosition = sashPosition;
     else if ( sashPosition < 0 )
-        m_sashPosition = h - sashPosition;
+        m_sashPosition = h + sashPosition; // It's negative so adding is subtracting
     else    // default
         m_sashPosition = h/2;
 

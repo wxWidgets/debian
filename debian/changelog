@@ -1,7 +1,40 @@
+wxwindows2.2 (2.2.8) unstable; urgency=medium
+
+  * Fixed bogus samples makefile. Closes: #110061
+  * Added ability to build wxMSW-cross packages, but they
+    are not built and distributed by default.
+
+      If you think such creatures belong in the archive,
+      see README.Debian
+
+  * Pruned more inapplicable files from the raw cvs source,
+    cleaned configure.in and removed the need for a common setup.h,
+    removed superfluous library links and generally tweaked things
+    so as to make adding new ports easier.
+  * added --gl-libs flag to wx-config.
+  * added wx2.4 forward compatible event macros.
+  * added build fixes for IA64 from Jeff Licquia, and fixed clean
+    rules to pick up unnoticed strays that effected NMU builds.
+    Thanks Jeff.  Closes: #101734, #104679  (fixed in NMU)
+  * Medium urgency since several other packages are waiting
+    for this to get into testing.
+
+ -- Ron Lee <ron@debian.org>  Thu, 30 Aug 2001 15:41:49 -0700
+
+wxwindows2.2 (2.2.7) unstable; urgency=medium
+
+  * The "Testing Tarantella" release.
+  * various small control (mis)behaviours corrected.
+  * added missing build-dep for gettext.
+  * updated wxPython description, Closes: #102689
+  * Never publicly released, oh well.
+
+ -- Ron Lee <ron@debian.org>  Sun, 10 Jun 2001 19:32:46 -0700
+
 wxwindows2.2 (2.2.6.1) unstable; urgency=low
 
   * fix rules so it really doesn't build -indep for ports
-    and fixed ambiguous oveload bug in mmedia contrib.
+    and fixed ambiguous overload bug in mmedia contrib.
     This time it will build on alpha for sure.  Really. :)
     Closes: #92288
   * added extra -dev package deps.  Closes: #91364

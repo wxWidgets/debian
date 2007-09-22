@@ -3,7 +3,7 @@
 // Purpose:     GTK toolbar
 // Author:      Robert Roebling
 // Modified:    13.12.99 by VZ to derive from wxToolBarBase
-// RCS-ID:      $Id: tbargtk.cpp,v 1.58.2.1 2000/05/01 19:04:30 RR Exp $
+// RCS-ID:      $Id: tbargtk.cpp,v 1.58.2.2 2001/05/03 14:41:24 VZ Exp $
 // Copyright:   (c) Robert Roebling
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -389,7 +389,7 @@ bool wxToolBar::DoInsertTool(size_t pos, wxToolBarToolBase *toolBase)
             break;
 
         case wxTOOL_STYLE_SEPARATOR:
-            gtk_toolbar_append_space( m_toolbar );
+            gtk_toolbar_insert_space( m_toolbar, pos );
 
             // skip the rest
             return TRUE;

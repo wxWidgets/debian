@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by: VZ at 25.02.00: type safe hashes with WX_DECLARE_HASH()
 // Created:     01/02/97
-// RCS-ID:      $Id: hash.cpp,v 1.15.2.2 2001/04/12 22:29:30 VZ Exp $
+// RCS-ID:      $Id: hash.cpp,v 1.15.2.3 2001/06/15 11:37:56 VZ Exp $
 // Copyright:   (c) Julian Smart and Markus Holzem
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -329,7 +329,7 @@ void wxHashTable::Put (long key, const wxChar *value, wxObject * object)
 
   if (!hash_table[position])
   {
-    hash_table[position] = new wxList (wxKEY_INTEGER);
+    hash_table[position] = new wxList (wxKEY_STRING);
     if (m_deleteContents) hash_table[position]->DeleteContents(TRUE);
   }
 

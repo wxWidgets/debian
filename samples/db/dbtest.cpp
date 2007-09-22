@@ -4,7 +4,7 @@
 // Author:      George Tasker
 // Modified by:
 // Created:     1998
-// RCS-ID:      $Id: dbtest.cpp,v 1.18.2.8 2000/11/05 13:23:07 vadz Exp $
+// RCS-ID:      $Id: dbtest.cpp,v 1.18.2.9 2001/10/19 10:54:44 GT Exp $
 // Copyright:   (c) 1998 Remstar International, Inc.
 // Licence:     wxWindows licence
 ///////////////////////////////////////////////////////////////////////////////
@@ -53,6 +53,10 @@ IMPLEMENT_APP(DatabaseDemoApp)
 
 extern char ListDB_Selection[];        /* Used to return the first column value for the selected line from the listDB routines */
 extern char ListDB_Selection2[];    /* Used to return the second column value for the selected line from the listDB routines */
+
+#if !wxUSE_ODBC
+  #error Sample cannot be compiled unless setup.h has wxUSE_ODBC set to 1
+#endif
 
 DatabaseDemoFrame *DemoFrame;       /* Pointer to the main frame */
 

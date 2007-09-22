@@ -2,7 +2,7 @@
 // Name:        m_image.cpp
 // Purpose:     wxHtml module for displaying images
 // Author:      Vaclav Slavik
-// RCS-ID:      $Id: m_image.cpp,v 1.20.2.2 2001/01/17 00:31:42 vaclavslavik Exp $
+// RCS-ID:      $Id: m_image.cpp,v 1.20.2.3 2001/07/18 23:00:41 VS Exp $
 // Copyright:   (c) 1999 Vaclav Slavik, Joel Lucsy
 // Licence:     wxWindows Licence
 /////////////////////////////////////////////////////////////////////////////
@@ -325,7 +325,6 @@ void wxHtmlImageCell::Draw(wxDC& dc, int x, int y, int view_y1, int view_y2)
                                 (y + m_PosY) / m_Scale, TRUE);
         dc.SetUserScale(us_x, us_y);
     }
-    wxHtmlCell::Draw(dc, x, y, view_y1, view_y2);
 }
 
 wxHtmlLinkInfo *wxHtmlImageCell::GetLink( int x, int y ) const

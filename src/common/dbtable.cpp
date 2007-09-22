@@ -6,7 +6,7 @@
 //              Bart Jourquin
 //              Mark Johnson
 // Created:     9.96
-// RCS-ID:      $Id: dbtable.cpp,v 1.37.2.18 2000/08/05 18:49:22 GT Exp $
+// RCS-ID:      $Id: dbtable.cpp,v 1.37.2.19 2001/07/06 12:11:03 GT Exp $
 // Copyright:   (c) 1996 Remstar International, Inc.
 // Licence:     wxWindows licence, plus:
 // Notice:      This class library and its intellectual design are free of charge for use,
@@ -315,6 +315,7 @@ wxDbTable::~wxDbTable()
 
         if (hstmtDelete)
             if (SQLFreeStmt(hstmtDelete, SQL_DROP) != SQL_SUCCESS)
+                pDb->DispAllErrors(henv, hdbc);
 
         if (hstmtUpdate)
             if (SQLFreeStmt(hstmtUpdate, SQL_DROP) != SQL_SUCCESS)

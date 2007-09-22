@@ -4,7 +4,7 @@
 // Author:      Robert Roebling
 // Created:     01/02/97
 // Modified:    22/10/98 - almost total rewrite, simpler interface (VZ)
-// Id:          $Id: treectrl.cpp,v 1.118.2.17 2001/04/08 21:12:40 RR Exp $
+// Id:          $Id: treectrl.cpp,v 1.118.2.18 2001/08/02 20:46:55 RR Exp $
 // Copyright:   (c) 1998 Robert Roebling, Julian Smart and Markus Holzem
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -2273,6 +2273,13 @@ void wxTreeCtrl::OnMouse( wxMouseEvent &event )
         // erase the highlighting
         DrawDropEffect(m_dropTarget);
 
+        if ( m_oldSelection )
+        {
+            m_oldSelection->SetHilight(TRUE);
+            RefreshLine(m_oldSelection);
+            m_oldSelection = (wxGenericTreeItem *)NULL;
+        }
+
         // generate the drag end event
         wxTreeEvent event(wxEVT_COMMAND_TREE_END_DRAG, GetId());
 
@@ -2284,13 +2291,6 @@ void wxTreeCtrl::OnMouse( wxMouseEvent &event )
 
         m_isDragging = FALSE;
         m_dropTarget = (wxGenericTreeItem *)NULL;
-
-        if ( m_oldSelection )
-        {
-            m_oldSelection->SetHilight(TRUE);
-            RefreshLine(m_oldSelection);
-            m_oldSelection = (wxGenericTreeItem *)NULL;
-        }
 
         ReleaseMouse();
 

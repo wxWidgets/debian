@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by: 
 // Created:     7/4/98
-// RCS-ID:      $Id: treelay.cpp,v 1.2.2.3 2000/06/19 08:00:27 JS Exp $
+// RCS-ID:      $Id: treelay.cpp,v 1.2.2.4 2001/06/06 16:29:51 VZ Exp $
 // Copyright:   (c) 1998 Julian Smart
 // Licence:     wxWindows licence
 ///////////////////////////////////////////////////////////////////////////////
@@ -14,7 +14,7 @@
 #endif
 
 // For compilers that support precompilation, includes "wx.h".
-#include <wx/wxprec.h>
+#include "wx/wxprec.h"
 
 #ifdef __BORLANDC__
 #pragma hdrstop
@@ -26,7 +26,7 @@
 
 #if wxUSE_TREELAYOUT
 
-#include <wx/treelay.h>
+#include "wx/treelay.h"
 
 /*
  * Abstract tree

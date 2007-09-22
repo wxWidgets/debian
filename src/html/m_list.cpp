@@ -2,7 +2,7 @@
 // Name:        m_list.cpp
 // Purpose:     wxHtml module for lists
 // Author:      Vaclav Slavik
-// RCS-ID:      $Id: m_list.cpp,v 1.7.2.1 2000/03/23 21:16:21 JS Exp $
+// RCS-ID:      $Id: m_list.cpp,v 1.7.2.2 2001/07/18 23:00:41 VS Exp $
 // Copyright:   (c) 1999 Vaclav Slavik
 // Licence:     wxWindows Licence
 /////////////////////////////////////////////////////////////////////////////
@@ -59,7 +59,6 @@ void wxHtmlListmarkCell::Draw(wxDC& dc, int x, int y, int view_y1, int view_y2)
 {
     dc.SetBrush(m_Brush);
     dc.DrawEllipse(x + m_PosX + m_Width / 4, y + m_PosY + m_Height / 4, m_Width / 2, m_Width / 2);
-    wxHtmlCell::Draw(dc, x, y, view_y1, view_y2);
 }
 
 

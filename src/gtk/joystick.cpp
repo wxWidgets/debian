@@ -4,7 +4,7 @@
 // Author:      Ported to Linux by Guilhem Lavaux
 // Modified by:
 // Created:     05/23/98
-// RCS-ID:      $Id: joystick.cpp,v 1.3.2.1 2000/03/29 06:27:52 RL Exp $
+// RCS-ID:      $Id: joystick.cpp,v 1.3.2.2 2001/09/16 09:29:04 GD Exp $
 // Copyright:   (c) Guilhem Lavaux
 // Licence:   	wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -12,7 +12,12 @@
 #ifdef __GNUG__
 #pragma implementation "joystick.h"
 #endif
+
+#include "wx/defs.h"
+
 #if wxUSE_JOYSTICK
+
+#include "wx/joystick.h"
 
 #include <linux/joystick.h>
 #include <sys/types.h>
@@ -21,9 +26,9 @@
 #include <sys/ioctl.h>
 #include <fcntl.h>
 #include <unistd.h>
+
 #include "wx/event.h"
 #include "wx/window.h"
-#include "wx/gtk/joystick.h"
 
 #define JOYSTICK_AXE_MAX 32767
 #define JOYSTICK_AXE_MIN -32767

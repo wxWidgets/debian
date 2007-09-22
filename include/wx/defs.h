@@ -4,7 +4,7 @@
 // Author:      Julian Smart and others
 // Modified by:
 // Created:     01/02/97
-// RCS-ID:      $Id: defs.h,v 1.209.2.16 2000/09/01 13:44:19 DW Exp $
+// RCS-ID:      $Id: defs.h,v 1.209.2.17 2001/09/06 08:16:50 RL Exp $
 // Copyright:   (c)
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -1767,17 +1767,17 @@ typedef unsigned long   WXHDC;
 typedef unsigned int    WXUINT;
 typedef unsigned long   WXDWORD;
 typedef unsigned short  WXWORD;
-#ifdef __WXMSW__
-typedef unsigned int    WXWPARAM;
-typedef long            WXLPARAM;
-#else
+#ifdef __WXPM__
 #  define WXWPARAM      MPARAM
 #  define WXLPARAM      MPARAM
 #  define RECT          RECTL
 #  define LOGFONT       FATTRS
 #  define LOWORD        SHORT1FROMMP
 #  define HIWORD        SHORT2FROMMP
-#endif // __WXMSW__
+#else
+typedef unsigned int    WXWPARAM;
+typedef long            WXLPARAM;
+#endif // __WXPM__
 typedef unsigned long   WXCOLORREF;
 typedef void *          WXRGNDATA;
 typedef void *          WXMSG;

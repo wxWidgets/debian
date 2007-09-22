@@ -6,7 +6,7 @@
 # Author:       Robin Dunn
 #
 # Created:      5-Sept-2000
-# RCS-ID:       $Id: gen_iface.py,v 1.1.2.1 2000/09/26 05:15:39 robind Exp $
+# RCS-ID:       $Id: gen_iface.py,v 1.1.2.2 2001/07/09 18:26:38 RD Exp $
 # Copyright:    (c) 2000 by Total Control Software
 # Licence:      wxWindows license
 #----------------------------------------------------------------------------
@@ -338,7 +338,7 @@ methodOverrideMap = {
 
                  '''wxString %s() {
                         wxString text;
-                        int   len  = GetTextLength();
+                        int   len  = GetTextLength()+1;
                         char* buff = text.GetWriteBuf(len+1);
 
                         SendMsg(%s, len, (long)buff);

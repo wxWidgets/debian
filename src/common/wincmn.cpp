@@ -4,7 +4,7 @@
 // Author:      Julian Smart, Vadim Zeitlin
 // Modified by:
 // Created:     13/07/98
-// RCS-ID:      $Id: wincmn.cpp,v 1.64.2.6 2000/07/05 19:27:30 VZ Exp $
+// RCS-ID:      $Id: wincmn.cpp,v 1.64.2.9 2001/10/03 08:40:32 RL Exp $
 // Copyright:   (c) wxWindows team
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -118,14 +118,16 @@ void wxWindowBase::InitBase()
 #endif // wxUSE_VALIDATORS
 
     // use the system default colours
-    wxSystemSettings settings;
-
-    m_backgroundColour = settings.GetSystemColour(wxSYS_COLOUR_BTNFACE);
-    // m_foregroundColour = *wxBLACK;  // TODO take this from sys settings too?
+    m_backgroundColour = wxSystemSettings::GetSystemColour(wxSYS_COLOUR_BTNFACE);
     m_foregroundColour = wxSystemSettings::GetSystemColour(wxSYS_COLOUR_WINDOWTEXT);
 
-    // GRG, changed Mar/2000
-    m_font = settings.GetSystemFont(wxSYS_DEFAULT_GUI_FONT);
+    // don't set the font here for wxMSW as we don't call WM_SETFONT here and
+    // so the font is *not* really set - but calls to SetFont() later won't do
+    // anything because m_font appears to be already set!
+#ifndef __WXMSW__
+    m_font = wxSystemSettings::GetSystemFont(wxSYS_DEFAULT_GUI_FONT);
+#endif // __WXMSW__
+
     // no style bits
     m_exStyle =
     m_windowStyle = 0;
@@ -625,7 +627,7 @@ bool wxWindowBase::SetFont(const wxFont& font)
     // don't try to set invalid font, always fall back to the default
     const wxFont& fontOk = font.Ok() ? font : *wxSWISS_FONT;
 
-    if ( (wxFont&)fontOk == m_font )
+    if ( fontOk == m_font )
     {
         // no change
         return FALSE;
@@ -1434,7 +1436,7 @@ void wxWindowBase::OnMiddleClick( wxMouseEvent& event )
 
         wxMessageBox(wxString::Format(
                                       _T(
-                                        "       wxWindows Library (%s port)\nVersion %u.%u.%u, compiled at %s %s\n   Copyright (c) 1995-2000 wxWindows team"
+                                        "       wxWindows Library (%s port)\nVersion %u.%u.%u, compiled at %s %s\n   Copyright (c) 1995-2001 wxWindows team"
                                         ),
                                       port.c_str(),
                                       wxMAJOR_VERSION,

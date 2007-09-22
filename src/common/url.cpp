@@ -4,7 +4,7 @@
 // Author:      Guilhem Lavaux
 // Modified by:
 // Created:     20/07/1997
-// RCS-ID:      $Id: url.cpp,v 1.26.2.3 2001/02/23 22:52:11 vaclavslavik Exp $
+// RCS-ID:      $Id: url.cpp,v 1.26.2.4 2001/08/17 23:11:50 VS Exp $
 // Copyright:   (c) 1997, 1998 Guilhem Lavaux
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -36,11 +36,12 @@ IMPLEMENT_CLASS(wxURL, wxObject)
 wxProtoInfo *wxURL::ms_protocols = NULL;
 
 // Enforce linking of protocol classes:
-USE_PROTOCOL(wxHTTP)
-USE_PROTOCOL(wxFTP)
 USE_PROTOCOL(wxFileProto)
 
 #if wxUSE_SOCKETS
+USE_PROTOCOL(wxHTTP)
+USE_PROTOCOL(wxFTP)
+
     wxHTTP *wxURL::ms_proxyDefault = NULL;
     bool wxURL::ms_useDefaultProxy = FALSE;
 #endif

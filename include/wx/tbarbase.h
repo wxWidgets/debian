@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     01/02/97
-// RCS-ID:      $Id: tbarbase.h,v 1.20.2.5 2001/04/12 22:29:30 VZ Exp $
+// RCS-ID:      $Id: tbarbase.h,v 1.20.2.6 2001/05/22 15:15:54 JS Exp $
 // Copyright:   (c) Julian Smart and Markus Holzem
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -335,7 +335,7 @@ public:
     virtual void SetToolSeparation(int separation)
         { m_toolSeparation = separation; }
 
-    virtual wxSize GetToolMargins() { return GetToolMargins(); }
+    virtual wxSize GetToolMargins() { return GetMargins(); }
     virtual int GetToolPacking() { return m_toolPacking; }
     virtual int GetToolSeparation() { return m_toolSeparation; }
 

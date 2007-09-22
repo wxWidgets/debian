@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     29/01/98
-// RCS-ID:      $Id: filefn.cpp,v 1.77.2.15 2000/07/20 04:07:51 DW Exp $
+// RCS-ID:      $Id: filefn.cpp,v 1.77.2.18 2001/10/03 17:20:22 JS Exp $
 // Copyright:   (c) 1998 Julian Smart
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -261,11 +261,11 @@ wxString wxPathList::FindAbsoluteValidPath (const wxString& file)
 bool
 wxFileExists (const wxString& filename)
 {
-#ifdef __GNUWIN32__ // (fix a B20 bug)
-  if (GetFileAttributes(filename) == 0xFFFFFFFF)
-    return FALSE;
-  else
-    return TRUE;
+#ifdef __WINDOWS__
+    // GetFileAttributes can copy with network paths
+    DWORD ret = GetFileAttributes(filename);
+    DWORD isDir = (ret & FILE_ATTRIBUTE_DIRECTORY);
+    return ((ret != 0xffffffff) && (isDir == 0));
 #elif defined(__WXMAC__)
           struct stat stbuf;
         if (filename && stat (wxUnix2MacFilename(filename), &stbuf) == 0 )
@@ -1073,12 +1073,11 @@ bool wxMkdir(const wxString& dir, int perm)
 #else // !Mac
     const wxChar *dirname = dir.c_str();
 
-    // assume mkdir() has 2 args on non Windows-OS/2 platforms and on Windows too
-    // for the GNU compiler
-#if (!(defined(__WXMSW__) || defined(__WXPM__))) || (defined(__GNUWIN32__) && !defined(__MINGW32__)) || defined(__WXWINE__)
-    if ( mkdir(wxFNCONV(dirname), perm) != 0 )
-#elif defined(__WXPM__)
+    // assume mkdir() has 2 args on non Windows-OS/2 platforms
+#if defined(__WXPM__)
     if (::DosCreateDir((PSZ)dirname, NULL) != 0) // enhance for EAB's??
+#elif !defined(__WXMSW__) || defined(__WXWINE__) || defined(__CYGWIN__)
+    if ( mkdir(wxFNCONV(dirname), perm) != 0 )
 #else  // !MSW and !OS/2 VAC++
     if ( wxMkDir(wxFNSTRINGCAST wxFNCONV(dirname)) != 0 )
 #endif // !MSW/MSW
@@ -1175,6 +1174,13 @@ bool wxPathExists(const wxChar *pszPathName)
     }
 #endif // __WINDOWS__
 
+#ifdef __WINDOWS__
+    // Stat can't cope with network paths
+    DWORD ret = GetFileAttributes(strPath.c_str());
+    DWORD isDir = (ret & FILE_ATTRIBUTE_DIRECTORY);
+    return ((ret != 0xffffffff) && (isDir != 0));
+#else
+
     wxStructStat st;
 #ifndef __VISAGECPP__
     return wxStat(wxFNSTRINGCAST strPath.fn_str(), &st) == 0 &&
@@ -1185,6 +1191,7 @@ bool wxPathExists(const wxChar *pszPathName)
         (st.st_mode == S_IFDIR);
 #endif
 
+#endif
 }
 
 // Get a temporary filename, opening and closing the file.

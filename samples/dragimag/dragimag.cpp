@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     28/2/2000
-// RCS-ID:      $Id: dragimag.cpp,v 1.1.2.1 2000/06/20 19:35:11 JS Exp $
+// RCS-ID:      $Id: dragimag.cpp,v 1.1.2.2 2001/04/26 10:48:50 JS Exp $
 // Copyright:   (c) Julian Smart
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -25,7 +25,7 @@
 // Under Windows, change this to 1
 // to use wxGenericDragImage
 
-#define wxUSE_GENERIC_DRAGIMAGE 1
+#define wxUSE_GENERIC_DRAGIMAGE 0
 
 #if wxUSE_GENERIC_DRAGIMAGE
 #include "wx/generic/dragimgg.h"

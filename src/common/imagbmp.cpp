@@ -2,7 +2,7 @@
 // Name:        imagbmp.cpp
 // Purpose:     wxImage BMP handler
 // Author:      Robert Roebling
-// RCS-ID:      $Id: imagbmp.cpp,v 1.13.2.3 2000/06/21 09:15:59 VZ Exp $
+// RCS-ID:      $Id: imagbmp.cpp,v 1.13.2.4 2001/04/22 09:52:59 RR Exp $
 // Copyright:   (c) Robert Roebling
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -370,7 +370,7 @@ bool wxBMPHandler::LoadFile( wxImage *image, wxInputStream& stream, bool verbose
                 if (bpp == 1)
                 {
                     int bit = 0;
-                    for (bit = 0; bit < 8; bit++)
+                    for (bit = 0; bit < 8 && column < width; bit++)
                     {
                         index = ((aByte & (0x80 >> bit)) ? 1 : 0);
                         ptr[poffset] = cmap[index].r;
@@ -392,7 +392,7 @@ bool wxBMPHandler::LoadFile( wxImage *image, wxInputStream& stream, bool verbose
                     else
                     {
                         int nibble = 0;
-                        for (nibble = 0; nibble < 2; nibble++)
+                        for (nibble = 0; nibble < 2 && column < width; nibble++)
                         {
                             index = ((aByte & (0xF0 >> nibble * 4)) >> (!nibble * 4));
                             if (index >= 16)
@@ -448,7 +448,7 @@ bool wxBMPHandler::LoadFile( wxImage *image, wxInputStream& stream, bool verbose
                         }
                         else
                         {
-                            for (int l = 0; l < first; l++)
+                            for (int l = 0; l < first && column < width; l++)
                             {
                                 ptr[poffset    ] = cmap[aByte].r;
                                 ptr[poffset + 1] = cmap[aByte].g;

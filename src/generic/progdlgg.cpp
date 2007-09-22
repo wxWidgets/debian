@@ -4,7 +4,7 @@
 // Author:      Karsten Ballüder
 // Modified by:
 // Created:     09.05.1999
-// RCS-ID:      $Id: progdlgg.cpp,v 1.41.2.1 2001/03/08 15:07:19 VZ Exp $
+// RCS-ID:      $Id: progdlgg.cpp,v 1.41.2.2 2001/04/21 15:54:19 VZ Exp $
 // Copyright:   (c) Karsten Ballüder
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -101,7 +101,7 @@ wxProgressDialog::wxProgressDialog(wxString const &title,
     wxLayoutConstraints *c;
 
     wxClientDC dc(this);
-    dc.SetFont(wxSystemSettings::GetSystemFont(wxSYS_DEFAULT_GUI_FONT));
+    dc.SetFont(GetFont());
     long widthText;
     dc.GetTextExtent(message, &widthText, NULL, NULL, NULL, NULL);
 

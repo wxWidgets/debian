@@ -13,7 +13,7 @@ from my_distutils import run_swig, contrib_copy_tree
 # flags and values that affect this script
 #----------------------------------------------------------------------
 
-VERSION          = "2.2.6"
+VERSION          = "2.2.8"
 DESCRIPTION      = "Cross platform GUI toolkit for Python"
 AUTHOR           = "Robin Dunn"
 AUTHOR_EMAIL     = "robin@alldunn.com"
@@ -60,7 +60,7 @@ HYBRID = 0         # If set and not debug or FINAL, then build a
                    # wxWindows must have been built with /MD, not /MDd
                    # (using FINAL=hybrid will do it.)
 
-WXDLLVER = '22_6'  # Version part of DLL name
+WXDLLVER = '22_8'  # Version part of DLL name
 
 
 #----------------------------------------------------------------------
@@ -332,11 +332,11 @@ if BUILD_GLCANVAS or GL_ONLY:
                             USE_SWIG, swig_force, swig_args)
 
     gl_libs = []
+    # libwx_gtk_gl is linked in now by wx-config so we don't need
+    # to add it here.  (If it's not you built without --with-opengl
+    # and are screwed here anyway.
     if os.name == 'posix':
-        if '-D__WXDEBUG__' in cflags:
-            gl_libs = ['wx_gtkd_gl', 'GL', 'GLU']
-        else:
-            gl_libs = ['wx_gtk_gl', 'GL', 'GLU']
+            gl_libs = ['GL', 'GLU']
 
     ext = Extension('glcanvasc',
                     swig_sources,

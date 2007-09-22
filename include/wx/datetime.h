@@ -5,7 +5,7 @@
 // Author:      Vadim Zeitlin
 // Modified by:
 // Created:     10.02.99
-// RCS-ID:      $Id: datetime.h,v 1.24.2.6 2000/07/02 21:48:21 VZ Exp $
+// RCS-ID:      $Id: datetime.h,v 1.24.2.8 2001/05/21 18:55:53 RL Exp $
 // Copyright:   (c) 1998 Vadim Zeitlin <zeitlin@dptmaths.ens-cachan.fr>
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -526,7 +526,7 @@ public:
     // ------------------------------------------------------------------------
 
         // default ctor does not initialize the object, use Set()!
-    wxDateTime() { }
+    wxDateTime() { m_time = wxLongLong((long)ULONG_MAX, ULONG_MAX); }
 
         // from time_t: seconds since the Epoch 00:00:00 UTC, Jan 1, 1970)
 #if (!(defined(__VISAGECPP__) && __IBMCPP__ >= 400))
@@ -760,8 +760,8 @@ public:
     // result of timezone shift)
     // ------------------------------------------------------------------------
 
-        // is the date valid (TRUE even for non initialized objects)?
-    inline bool IsValid() const { return this != &wxInvalidDateTime; }
+        // is the date valid?
+    inline bool IsValid() const { return m_time != wxInvalidDateTime.m_time; }
 
         // get the broken down date/time representation in the given timezone
         //

@@ -5,7 +5,7 @@
 // Author:      Robin Dunn
 //
 // Created:     7-Sept-1999
-// RCS-ID:      $Id: oglcanvas.i,v 1.1.2.3 2001/01/30 20:53:08 robind Exp $
+// RCS-ID:      $Id: oglcanvas.i,v 1.1.2.4 2001/07/03 22:22:32 RD Exp $
 // Copyright:   (c) 1998 by Total Control Software
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -49,7 +49,16 @@ public:
     void Clear(wxDC& dc);
     void DeleteAllShapes();
     void DrawOutline(wxDC& dc, double x1, double y1, double x2, double y2);
+
     wxPyShape* FindShape(long id);
+    %pragma(python) addtoclass = "# replaces broken shadow methods
+    def FindShape(self, *_args, **_kwargs):
+        from oglbasic import wxPyShapePtr
+        val = apply(oglcanvasc.wxDiagram_FindShape,(self,) + _args, _kwargs)
+        if val: val = wxPyShapePtr(val)
+        return val
+    "
+
     wxPyShapeCanvas* GetCanvas();
     int GetCount();
     double GetGridSpacing();

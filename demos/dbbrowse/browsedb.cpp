@@ -6,7 +6,7 @@
 // Created:     19991127.mj10777
 // Copyright:   (c) Mark Johnson
 // Licence:     wxWindows license
-// RCS-ID:      $Id: browsedb.cpp,v 1.14.2.1 2000/04/03 12:39:34 GT Exp $
+// RCS-ID:      $Id: browsedb.cpp,v 1.14.2.2 2001/10/19 10:54:44 GT Exp $
 //----------------------------------------------------------------------------------------
 //-- 1)
 //----------------------------------------------------------------------------------------
@@ -33,6 +33,11 @@
 // Global structure for holding ODBC connection information
 // - darf nur einmal im Projekte definiert werden ?? Extra Databasse Klasse ?
 wxDbConnectInf ConnectInf;      // Für DBase
+
+#if !wxUSE_ODBC
+  #error Demo cannot be compiled unless setup.h has wxUSE_ODBC set to 1
+#endif
+
 //----------------------------------------------------------------------------------------
 extern WXDLLEXPORT_DATA(wxDbList*) PtrBegDbList;    /* from db.cpp, used in getting back error results from db connections */
 //----------------------------------------------------------------------------------------

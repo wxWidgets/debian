@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     04/01/98
-// RCS-ID:      $Id: joytest.h,v 1.2 1999/02/05 23:47:10 JS Exp $
+// RCS-ID:      $Id: joytest.h,v 1.2.4.1 2001/09/15 13:53:13 GD Exp $
 // Copyright:   (c) Julian Smart and Markus Holzem
 // Licence:   	wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -19,7 +19,9 @@ class MyApp: public wxApp
     int     m_maxX;
     int     m_maxY;
 
+#if wxUSE_WAVE
     wxWave  m_fire;
+#endif // wxUSE_WAVE
 };
 
 DECLARE_APP(MyApp)

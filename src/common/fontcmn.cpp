@@ -4,7 +4,7 @@
 // Author:      Vadim Zeitlin
 // Modified by:
 // Created:     20.09.99
-// RCS-ID:      $Id: fontcmn.cpp,v 1.7 1999/11/05 19:03:15 VZ Exp $
+// RCS-ID:      $Id: fontcmn.cpp,v 1.7.2.1 2001/04/21 15:54:19 VZ Exp $
 // Copyright:   (c) wxWindows team
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -62,15 +62,25 @@ wxFont& wxFont::operator=(const wxFont& font)
     return (wxFont &)*this;
 }
 
-// VZ: is it correct to compare pointers and not the contents? (FIXME)
 bool wxFontBase::operator==(const wxFont& font) const
 {
-    return GetFontData() == font.GetFontData();
+    // either it is the same font, i.e. they share the same common data or they
+    // have different ref datas but still describe the same font
+    return GetFontData() == font.GetFontData() ||
+           (
+            Ok() == font.Ok() &&
+            GetPointSize() == font.GetPointSize() &&
+            GetFamily() == font.GetFamily() &&
+            GetStyle() == font.GetStyle() &&
+            GetUnderlined() == font.GetUnderlined() &&
+            GetFaceName() == font.GetFaceName() &&
+            GetEncoding() == font.GetEncoding()
+           );
 }
 
 bool wxFontBase::operator!=(const wxFont& font) const
 {
-    return GetFontData() != font.GetFontData();
+    return !(*this == font);
 }
 
 wxString wxFontBase::GetFamilyString() const

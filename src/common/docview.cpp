@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     01/02/97
-// RCS-ID:      $Id: docview.cpp,v 1.66.2.12 2001/03/05 16:50:36 JS Exp $
+// RCS-ID:      $Id: docview.cpp,v 1.66.2.13 2001/06/07 13:30:54 JS Exp $
 // Copyright:   (c) Julian Smart and Markus Holzem
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -230,7 +230,7 @@ bool wxDocument::Save()
 {
     bool ret = FALSE;
 
-    if (!IsModified()) return TRUE;
+    if (!IsModified() && m_savedYet) return TRUE;
     if (m_documentFile == wxT("") || !m_savedYet)
         ret = SaveAs();
     else

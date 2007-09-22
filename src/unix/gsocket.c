@@ -4,7 +4,7 @@
  * Authors: Guilhem Lavaux,
  *          Guillermo Rodriguez Garcia <guille@iies.es> (maintainer)
  * Purpose: GSocket main Unix file
- * CVSID:   $Id: gsocket.c,v 1.64.2.1 2000/04/13 17:57:01 VZ Exp $
+ * CVSID:   $Id: gsocket.c,v 1.64.2.2 2001/05/19 23:36:26 VZ Exp $
  * -------------------------------------------------------------------------
  */
 
@@ -1499,7 +1499,9 @@ GSocketError GAddress_INET_SetPortName(GAddress *address, const char *port,
   se = getservbyname(port, protocol);
   if (!se)
   {
-    if (isdigit(port[0]))
+    /* the cast to int suppresses compiler warnings about subscript having the
+       type char */
+    if (isdigit((int)port[0]))
     {
       int port_int;
 

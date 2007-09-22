@@ -4,7 +4,7 @@
 // Notes:       Based on htmlhelp.cpp, implementing a monolithic
 //              HTML Help controller class,  by Vaclav Slavik
 // Author:      Harm van der Heijden and Vaclav Slavik
-// RCS-ID:      $Id: helpdata.cpp,v 1.25.2.6 2001/01/20 19:50:05 vaclavslavik Exp $
+// RCS-ID:      $Id: helpdata.cpp,v 1.25.2.8 2001/06/01 21:54:38 VS Exp $
 // Copyright:   (c) Harm van der Heijden and Vaclav Slavik
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -219,7 +219,7 @@ bool HP_TagHandler::HandleTag(const wxHtmlTag& tag)
                         ESCSEQ("Uuml", "\334"/* Ü */),
 
                         ESCSEQ("szlig", "\247"/* § */),
-                        ESCSEQ("agrave;","à"),
+                        ESCSEQ("agrave","\340"),
                         ESCSEQ("aacute", "\341"/* á */),
                         ESCSEQ("acirc", "\342"/* â */),
                         ESCSEQ("atilde", "\343"/* ã */),

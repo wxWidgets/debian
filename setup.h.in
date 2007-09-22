@@ -83,6 +83,7 @@
 #undef __SOLARIS__
 #undef __SUNOS__
 #undef __ALPHA__
+#undef __IA64__
 #undef __OSF__
 #undef __BSD__
 #undef __FREEBSD__
@@ -99,7 +100,9 @@
 #endif
 
 #undef __WIN95__
+#ifndef __WIN32__
 #undef __WIN32__
+#endif
 #undef __GNUWIN32__
 #undef STRICT
 #undef WINVER
@@ -349,6 +352,11 @@
     #define wxUSE_BUTTONBAR 1
   #endif
 #endif
+
+/*
+ * Use wxTreeLayout class
+ */
+#define wxUSE_TREELAYOUT 0
 
 /*
  * Use this control

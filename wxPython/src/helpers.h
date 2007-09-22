@@ -5,7 +5,7 @@
 // Author:      Robin Dunn
 //
 // Created:     7/1/97
-// RCS-ID:      $Id: helpers.h,v 1.1.2.7 2001/01/30 20:53:43 robind Exp $
+// RCS-ID:      $Id: helpers.h,v 1.1.2.8 2001/07/03 21:54:12 RD Exp $
 // Copyright:   (c) 1998 by Total Control Software
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -621,7 +621,7 @@ public:
     void CLASS::CBNAME(bool a, double b, double c, int d, int e) {              \
         bool doSave = wxPyRestoreThread();                                      \
         if (wxPyCBH_findCallback(m_myInst, #CBNAME))                                     \
-            wxPyCBH_callCallback(m_myInst, Py_BuildValue("(idii)",                       \
+            wxPyCBH_callCallback(m_myInst, Py_BuildValue("(iddii)",                       \
                                                 (int)a,b,c,d,e));               \
         else                                                                    \
             PCLASS::CBNAME(a, b, c, d, e);                                      \

@@ -4,7 +4,7 @@
 // Author:      Vadim Zeitlin
 // Modified by:
 // Created:     07.04.98 (adapted from appconf.cpp)
-// RCS-ID:      $Id: fileconf.cpp,v 1.67.2.7 2000/10/02 18:19:00 vadz Exp $
+// RCS-ID:      $Id: fileconf.cpp,v 1.67.2.9 2001/09/06 08:16:50 RL Exp $
 // Copyright:   (c) 1997 Karsten Ballüder   &  Vadim Zeitlin
 //                       Ballueder@usa.net     <zeitlin@dptmaths.ens-cachan.fr>
 // Licence:     wxWindows license
@@ -41,11 +41,10 @@
 
 #include  "wx/utils.h"    // for wxGetHomeDir
 
-// _WINDOWS_ is defined when windows.h is included,
-// __WXMSW__ is defined for MS Windows compilation
-#if       defined(__WXMSW__) && !defined(_WINDOWS_)
+#if defined(__WXMSW__)
   #include  <windows.h>
 #endif  //windows.h
+
 #if defined(__WXPM__)
   #define INCL_DOS
   #include <os2.h>
@@ -63,11 +62,14 @@
 // ----------------------------------------------------------------------------
 // macros
 // ----------------------------------------------------------------------------
+
+// const_cast<> replacement
 #define CONST_CAST ((wxFileConfig *)this)->
 
 // ----------------------------------------------------------------------------
 // constants
 // ----------------------------------------------------------------------------
+
 #ifndef MAX_PATH
   #define MAX_PATH 512
 #endif

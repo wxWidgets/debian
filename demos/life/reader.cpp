@@ -4,7 +4,7 @@
 // Author:      Guillermo Rodriguez Garcia, <guille@iies.es>
 // Modified by:
 // Created:     Jan/2000
-// RCS-ID:      $Id: reader.cpp,v 1.1.2.1 2000/07/10 05:53:01 GRG Exp $
+// RCS-ID:      $Id: reader.cpp,v 1.1.2.2 2001/05/14 09:33:31 GRG Exp $
 // Copyright:   (c) 2000, Guillermo Rodriguez Garcia
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -45,8 +45,8 @@
 
 LifeReader::LifeReader(wxInputStream& is)
 {
-    wxBufferedInputStream buff_is = wxBufferedInputStream(is);
-    wxTextInputStream     text_is = wxTextInputStream(buff_is);
+    wxBufferedInputStream buff_is(is);
+    wxTextInputStream     text_is(buff_is);
     wxString              line, rest; 
 
     // check stream

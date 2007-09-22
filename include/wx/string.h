@@ -4,7 +4,7 @@
 // Author:      Vadim Zeitlin
 // Modified by:
 // Created:     29/01/98
-// RCS-ID:      $Id: string.h,v 1.115.2.10 2000/10/04 23:35:04 vadz Exp $
+// RCS-ID:      $Id: string.h,v 1.115.2.11 2001/07/11 14:55:20 VZ Exp $
 // Copyright:   (c) 1998 Vadim Zeitlin <zeitlin@dptmaths.ens-cachan.fr>
 // Licence:     wxWindows license
 ///////////////////////////////////////////////////////////////////////////////
@@ -1011,6 +1011,9 @@ public:
     // remove first item matching this value
   void Remove(const wxChar *sz);
     // remove item by index
+  void RemoveAt(size_t nIndex);
+
+  // obsolete, use RemoveAt(), this one is going to disappear!
   void Remove(size_t nIndex);
 
   // sorting

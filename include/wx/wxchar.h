@@ -4,7 +4,7 @@
 // Author:      Joel Farley
 // Modified by:
 // Created:     1998/06/12
-// RCS-ID:      $Id: wxchar.h,v 1.49.2.2 2000/04/08 15:47:47 OK Exp $
+// RCS-ID:      $Id: wxchar.h,v 1.49.2.3 2001/05/18 23:30:59 VZ Exp $
 // Copyright:   (c) wxWindows copyright
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -636,6 +636,13 @@ WXDLLEXPORT int      wxSystem(const wxChar *psz);
 #ifdef wxNEED_WX_TIME_H
 WXDLLEXPORT size_t   wxStrftime(wxChar *s, size_t max, const wxChar *fmt, const struct tm *tm);
 #endif
+
+// under VC++ 6.0 isspace() returns 1 for 8 bit chars which completely breaks
+// the file parsing - this may be true for 5.0 as well, update #ifdef then
+#if defined(__VISUALC__) && (__VISUALC__ >= 1200) && !wxUSE_UNICODE
+    #undef wxIsspace
+    #define wxIsspace(c) ((((unsigned)c) < 128) && isspace(c))
+#endif // VC++
 
 // ----------------------------------------------------------------------------
 // common macros which are always defined

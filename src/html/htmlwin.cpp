@@ -2,7 +2,7 @@
 // Name:        htmlwin.cpp
 // Purpose:     wxHtmlWindow class for parsing & displaying HTML (implementation)
 // Author:      Vaclav Slavik
-// RCS-ID:      $Id: htmlwin.cpp,v 1.35.2.4 2000/06/28 15:56:38 VS Exp $
+// RCS-ID:      $Id: htmlwin.cpp,v 1.35.2.5 2001/09/19 22:44:17 VS Exp $
 // Copyright:   (c) 1999 Vaclav Slavik
 // Licence:     wxWindows Licence
 /////////////////////////////////////////////////////////////////////////////
@@ -26,7 +26,6 @@
 #endif
 
 #include "wx/html/htmlwin.h"
-#include "wx/html/forcelnk.h"
 #include "wx/log.h"
 
 
@@ -572,20 +571,10 @@ public:
 IMPLEMENT_DYNAMIC_CLASS(wxHtmlWinModule, wxModule)
 
 
-
-
-///// default mod handlers are forced there:
-
-FORCE_LINK(m_layout)
-FORCE_LINK(m_fonts)
-FORCE_LINK(m_image)
-FORCE_LINK(m_list)
-FORCE_LINK(m_dflist)
-FORCE_LINK(m_pre)
-FORCE_LINK(m_hline)
-FORCE_LINK(m_links)
-FORCE_LINK(m_tables)
-FORCE_LINK(m_meta)
+// This hack forces the linker to always link in m_* files
+// (wxHTML doesn't work without handlers from these files)
+#include "wx/html/forcelnk.h"
+FORCE_WXHTML_MODULES()
 
 
 #endif
