@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by: VZ on 13.05.99: no more Default(), MSWOnXXX() reorganisation
 // Created:     04/01/98
-// RCS-ID:      $Id: window.cpp,v 1.178.2.35 2001/12/14 00:56:07 VZ Exp $
+// RCS-ID:      $Id: window.cpp,v 1.178.2.36 2002/01/27 10:07:19 JS Exp $
 // Copyright:   (c) Julian Smart and Markus Holzem
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -977,7 +977,7 @@ void wxWindow::OnIdle(wxIdleEvent& event)
     {
         POINT pt;
         ::GetCursorPos(&pt);
-        if ( ::WindowFromPoint(pt) != GetHwnd() )
+        if ( ::WindowFromPoint(pt) != GetHwnd() && !m_winCaptured)
         {
             // Generate a LEAVE event
             m_mouseInWindow = FALSE;

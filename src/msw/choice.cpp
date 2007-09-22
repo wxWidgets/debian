@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by: Vadim Zeitlin to derive from wxChoiceBase
 // Created:     04/01/98
-// RCS-ID:      $Id: choice.cpp,v 1.39.2.11 2001/05/16 23:42:45 VZ Exp $
+// RCS-ID:      $Id: choice.cpp,v 1.39.2.12 2002/01/27 10:07:19 JS Exp $
 // Copyright:   (c) Julian Smart and Markus Holzem
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -189,12 +189,9 @@ int wxChoice::FindString(const wxString& s) const
 
 void wxChoice::SetString(int n, const wxString& s)
 {
-    wxFAIL_MSG(wxT("not implemented"));
-
-#if 0 // should do this, but no Insert() so far
-    Delete(n);
-    Insert(n + 1, s);
-#endif
+    wxCHECK_RET( (n>=0)&&(n<GetCount()), wxT("invalid item index in wxChoice::SetString") );
+    SendMessage(GetHwnd(), CB_DELETESTRING, n, 0);
+    SendMessage(GetHwnd(), CB_INSERTSTRING, n, (LONG)s.c_str() );
 }
 
 wxString wxChoice::GetString(int n) const
