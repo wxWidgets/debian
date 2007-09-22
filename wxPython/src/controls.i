@@ -5,7 +5,7 @@
 // Author:      Robin Dunn
 //
 // Created:     6/10/98
-// RCS-ID:      $Id: controls.i,v 1.30 2002/08/21 20:15:05 RD Exp $
+// RCS-ID:      $Id: controls.i,v 1.30.2.3 2003/01/14 21:27:24 RD Exp $
 // Copyright:   (c) 1998 by Total Control Software
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -338,6 +338,7 @@ public:
     %pragma(python) addtomethod = "wxPreCheckBox:val._setOORInfo(val)"
 
     bool GetValue();
+    bool IsChecked();
     void SetValue(const bool state);
 };
 

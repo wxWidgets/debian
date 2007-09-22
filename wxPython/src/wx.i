@@ -5,7 +5,7 @@
 // Author:      Robin Dunn
 //
 // Created:     5/22/98
-// RCS-ID:      $Id: wx.i,v 1.37.2.4 2003/01/02 22:24:43 RD Exp $
+// RCS-ID:      $Id: wx.i,v 1.37.2.5 2003/01/15 23:07:14 RD Exp $
 // Copyright:   (c) 1998 by Total Control Software
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -290,4 +290,5 @@ static wxPyCoreAPI API = {
 //----------------------------------------------------------------------
 
 %pragma(python) include="_extras.py";
+
 

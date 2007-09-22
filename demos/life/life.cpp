@@ -4,7 +4,7 @@
 // Author:      Guillermo Rodriguez Garcia, <guille@iies.es>
 // Modified by:
 // Created:     Jan/2000
-// RCS-ID:      $Id: life.cpp,v 1.22 2002/04/11 18:49:47 JS Exp $
+// RCS-ID:      $Id: life.cpp,v 1.22.2.1 2003/01/12 20:48:09 MBN Exp $
 // Copyright:   (c) 2000, Guillermo Rodriguez Garcia
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -194,9 +194,9 @@ LifeFrame::LifeFrame() : wxFrame((wxFrame *)0, -1, _("Life!"), wxPoint(200, 200)
     SetIcon(wxICON(mondrian));
 
     // menu bar
-    wxMenu *menuFile = new wxMenu("", wxMENU_TEAROFF);
-    wxMenu *menuView = new wxMenu("", wxMENU_TEAROFF);
-    wxMenu *menuGame = new wxMenu("", wxMENU_TEAROFF);
+    wxMenu *menuFile = new wxMenu(_T(""), wxMENU_TEAROFF);
+    wxMenu *menuView = new wxMenu(_T(""), wxMENU_TEAROFF);
+    wxMenu *menuGame = new wxMenu(_T(""), wxMENU_TEAROFF);
 
     menuFile->Append(ID_NEW, _("&New"), _("Start a new game"));
     menuFile->Append(ID_OPEN, _("&Open..."), _("Open an existing Life pattern"));

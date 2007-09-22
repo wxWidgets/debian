@@ -4,7 +4,7 @@
 #
 # Author:      Robin Dunn
 #
-# RCS-ID:      $Id: img2py.py,v 1.2.2.2 2002/12/10 22:06:33 RD Exp $
+# RCS-ID:      $Id: img2py.py,v 1.2.2.3 2003/01/21 00:04:33 RD Exp $
 # Copyright:   (c) 2002 by Total Control Software
 # Licence:     wxWindows license
 #----------------------------------------------------------------------
@@ -56,7 +56,7 @@ Options:
 #
 
 
-import sys, os, glob, getopt, tempfile, string
+import sys, os, glob, getopt, tempfile
 import cPickle, cStringIO, zlib
 import img2img
 from wxPython import wx

@@ -6,7 +6,7 @@
 # Author:      Robin Dunn
 #
 # Created:     21-Sept-1999
-# RCS-ID:      $Id: grids.py,v 1.5 2002/02/28 19:01:19 RD Exp $
+# RCS-ID:      $Id: grids.py,v 1.5.2.1 2003/01/15 23:07:06 RD Exp $
 # Copyright:   (c) 1999 by Total Control Software
 # Licence:     wxWindows license
 #----------------------------------------------------------------------
@@ -126,8 +126,8 @@ class wxGridSizer(wxPySizer):
 
         sz = self.GetSize()
         pt = self.GetPosition()
-	w = (sz.width  - (ncols - 1) * self.hgap) / ncols;
-	h = (sz.height - (nrows - 1) * self.vgap) / nrows;
+        w = (sz.width  - (ncols - 1) * self.hgap) / ncols;
+        h = (sz.height - (nrows - 1) * self.vgap) / nrows;
 
         x = pt.x
         for c in range(ncols):

@@ -5,7 +5,7 @@
 # Author:       Robin Dunn & Gary Dumer
 #
 # Created:
-# RCS-ID:       $Id: wxListCtrl.py,v 1.26.2.3 2002/11/19 18:55:39 RD Exp $
+# RCS-ID:       $Id: wxListCtrl.py,v 1.26.2.5 2003/01/21 22:43:40 RD Exp $
 # Copyright:    (c) 1998 by Total Control Software
 # Licence:      wxWindows license
 #----------------------------------------------------------------------------
@@ -203,6 +203,7 @@ class TestListCtrlPanel(wxPanel, wxColumnSorterMixin):
 
 
     def OnItemSelected(self, event):
+        ##print event.GetItem().GetTextColour()
         self.currentItem = event.m_itemIndex
         self.log.WriteText("OnItemSelected: %s, %s, %s, %s\n" %
                            (self.currentItem,

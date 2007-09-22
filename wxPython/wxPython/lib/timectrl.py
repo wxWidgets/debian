@@ -3,7 +3,7 @@
 # Author:       Will Sadkin
 # Created:      09/19/2002
 # Copyright:    (c) 2002 by Will Sadkin, 2002
-# RCS-ID:       $Id: timectrl.py,v 1.1.2.7 2002/09/30 17:33:14 RD Exp $
+# RCS-ID:       $Id: timectrl.py,v 1.1.2.9 2003/01/22 18:14:19 RD Exp $
 # License:      wxWindows license
 #----------------------------------------------------------------------------
 # NOTE:
@@ -21,6 +21,15 @@
 
 from wxPython.wx import *
 import string
+
+# wxWindows' wxTextCtrl translates Composite "control key"
+# events into single events before returning them to its OnChar
+# routine.  The doc says that this results in 1 for Ctrl-A, 2 for
+# Ctrl-B, etc. However, there are no wxPython or wxWindows
+# symbols for them, so I'm defining codes for Ctrl-X (cut) and
+# Ctrl-V (paste) here for readability:
+WXK_CTRL_X = (ord('X')+1) - ord('A')
+WXK_CTRL_V = (ord('V')+1) - ord('A')
 
 # The following bit of function is for debugging the subsequent code.
 # To turn on debugging output, set _debug to 1
@@ -470,7 +479,8 @@ class wxTimeCtrl(wxTextCtrl):
         _dbg('keycode = ', key)
         _dbg('pos = ', pos)
 
-        if key in (WXK_DELETE, WXK_BACK):                   # don't allow deletion
+        # don't allow deletion, cut or paste:
+        if key in (WXK_DELETE, WXK_BACK, WXK_CTRL_X, WXK_CTRL_V):
             pass
 
         elif key == WXK_TAB:                                # skip to next field if applicable:
@@ -738,7 +748,7 @@ class wxTimeCtrl(wxTextCtrl):
 
         # Process AM/PM cell
         elif pos == dict_start['am_pm']:
-            char = string.upper(char)
+            char = char.upper()
             if char not in ('A','P'): return                    # disallow all but A or P as 1st char of column
             newtext = text[:pos] + char + text[pos+1:]
         else: return    # not a valid position
@@ -755,6 +765,21 @@ class wxTimeCtrl(wxTextCtrl):
         self.SetSelection(self.__posCurrent, self.__posSelectTo)
         _dbg(indent=0)
 
+
+    def Cut(self):
+        """
+        Override wxTextCtrl::Cut() method, as this operation should not
+        be allowed for wxTimeCtrls.
+        """
+        return
+
+
+    def Paste(self):
+        """
+        Override wxTextCtrl::Paste() method, as this operation should not
+        be allowed for wxTimeCtrls.
+        """
+        return
 
 
 #----------------------------------------------------------------------------

@@ -6,7 +6,7 @@
 # Author:      Robin Dunn
 #
 # Created:     9-Dec-1999
-# RCS-ID:      $Id: buttons.py,v 1.14.2.3 2002/11/09 21:37:28 RD Exp $
+# RCS-ID:      $Id: buttons.py,v 1.14.2.4 2003/01/21 23:14:59 RD Exp $
 # Copyright:   (c) 1999 by Total Control Software
 # Licence:     wxWindows license
 #----------------------------------------------------------------------
@@ -131,6 +131,11 @@ class wxGenButton(wxPyControl):
     def AcceptsFocus(self):
         """Overridden base class virtual."""
         return self.IsShown() and self.IsEnabled()
+
+
+    def Enable(self, enable=true):
+        wxPyControl.Enable(self, enable)
+        self.Refresh()
 
 
     def SetBezelWidth(self, width):

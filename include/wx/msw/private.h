@@ -6,7 +6,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     01/02/97
-// RCS-ID:      $Id: private.h,v 1.77 2002/09/02 00:32:30 VZ Exp $
+// RCS-ID:      $Id: private.h,v 1.77.2.1 2003/01/18 01:51:05 VZ Exp $
 // Copyright:   (c) Julian Smart
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -344,7 +344,7 @@ class MemoryHDC
 {
 public:
     MemoryHDC() { m_hdc = ::CreateCompatibleDC(NULL); }
-   ~MemoryHDC() { ::DeleteObject(m_hdc);              }
+   ~MemoryHDC() { ::DeleteDC(m_hdc);                  }
 
     operator HDC() const { return m_hdc; }
 

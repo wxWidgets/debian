@@ -5,7 +5,7 @@
 // Author:      Joerg Baumann and Robin Dunn
 //
 // Created:     25-Sept-2000
-// RCS-ID:      $Id: filesys.i,v 1.9.2.2 2002/12/24 00:06:08 RD Exp $
+// RCS-ID:      $Id: filesys.i,v 1.9.2.3 2003/01/15 00:23:32 RD Exp $
 // Copyright:   (c) 2000 by Joerg Baumann
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -33,7 +33,6 @@
 %import streams.i
 
 %pragma(python) code = "import wx"
-%pragma(python) code = "import string"
 
 //---------------------------------------------------------------------------
 

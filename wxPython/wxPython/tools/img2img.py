@@ -4,13 +4,13 @@
 #
 # Author:      Robin Dunn
 #
-# RCS-ID:      $Id: img2img.py,v 1.2.2.1 2002/12/10 22:06:33 RD Exp $
+# RCS-ID:      $Id: img2img.py,v 1.2.2.2 2003/01/21 00:04:33 RD Exp $
 # Copyright:   (c) 2002 by Total Control Software
 # Licence:     wxWindows license
 #----------------------------------------------------------------------
 
 
-import sys, os, glob, getopt, string
+import sys, os, glob, getopt
 from wxPython.wx import *
 
 if wxPlatform == "__WXGTK__":
@@ -20,7 +20,7 @@ if wxPlatform == "__WXGTK__":
 wxInitAllImageHandlers()
 
 def convert(file, maskClr, outputDir, outputName, outType, outExt):
-    if string.lower(os.path.splitext(file)[1]) == ".ico":
+    if os.path.splitext(file)[1].lower() == ".ico":
         icon = wxIcon(file, wxBITMAP_TYPE_ICO)
         img = wxBitmapFromIcon(icon)
     else:

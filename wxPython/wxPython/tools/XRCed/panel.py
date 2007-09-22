@@ -2,12 +2,11 @@
 # Purpose:      XRC editor, Panel class and related
 # Author:       Roman Rolinsky <rolinsky@mema.ucl.ac.be>
 # Created:      02.12.2002
-# RCS-ID:       $Id: panel.py,v 1.1.2.2 2002/12/27 03:57:40 RD Exp $
+# RCS-ID:       $Id: panel.py,v 1.1.2.3 2003/01/13 12:11:26 ROL Exp $
 
 from xxx import *                       # xxx imports globals and params
 from undo import *
 from wxPython.html import wxHtmlWindow
-
 
 # Properties panel containing notebook
 class Panel(wxNotebook):
@@ -69,10 +68,9 @@ class Panel(wxNotebook):
             else:                       # nothing selected
                 # If first time, show some help
                 if g.conf.panic:
-                    import xrced
                     html = wxHtmlWindow(self.page1, -1, wxDefaultPosition,
                                         wxDefaultSize, wxSUNKEN_BORDER)
-                    html.SetPage(xrced.helpText)
+                    html.SetPage(g.helpText)
                     sizer.Add(html, 1, wxEXPAND)
                     g.conf.panic = false
                 else:

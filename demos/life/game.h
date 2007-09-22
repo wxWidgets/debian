@@ -4,7 +4,7 @@
 // Author:      Guillermo Rodriguez Garcia, <guille@iies.es>
 // Modified by:
 // Created:     Jan/2000
-// RCS-ID:      $Id: game.h,v 1.8 2002/09/07 12:21:28 GD Exp $
+// RCS-ID:      $Id: game.h,v 1.8.2.1 2003/01/12 20:48:08 MBN Exp $
 // Copyright:   (c) 2000, Guillermo Rodriguez Garcia
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -58,9 +58,18 @@ public:
         m_name        = name;
         m_description = description;
         m_rules       = _("");
-        m_shape.Add( wxString::Format("%i %i", -width/2, -height/2) );
+        m_shape.Add( wxString::Format(_T("%i %i"), -width/2, -height/2) );
         for(int j = 0; j < height; j++)
-            m_shape.Add( wxString(shape + (j * width), (size_t) width) );        
+        {
+            wxString tmp;
+
+            for(int i = 0; i < width; i++)
+            {
+                tmp += wxChar(shape[j * width + i]);
+            }
+
+            m_shape.Add( tmp );
+        }
     };
 
     wxString      m_name;

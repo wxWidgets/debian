@@ -1,7 +1,7 @@
 Source: wxwindows2.4
 Section: libs
 Priority: optional
-Build-Depends: debhelper (>=2.0), flex, bison, gettext, libgtk1.2-dev, python (>=2.2), python (<<2.3), python2.2-dev, zlib1g-dev, libjpeg62-dev, libpng3-dev, libtiff3g-dev, libgl-dev, libglu-dev, libesd0-dev
+Build-Depends: debhelper (>=2.0), flex, bison, gettext, libgtk1.2-dev, python (>=2.2), python (<<2.3), python2.2-dev, zlib1g-dev, libjpeg62-dev, libpng12-0-dev, libtiff3g-dev, libgl-dev, libglu-dev, libesd0-dev
 Maintainer: Ron Lee <ron@debian.org>
 Standards-Version: 3.5.8.0
 
@@ -25,7 +25,7 @@ Description: wxBase library (runtime) - non-GUI support classes of wxWindows too
 Package: libwxbase2.4-dev
 Architecture: any
 Section: devel
-Depends: wxwin2.4-headers (= ${Source-Version}), libwxbase2.4 (= ${Source-Version}), zlib1g-dev, libc6-dev
+Depends: wxwin2.4-headers (= ${Source-Version}), libwxbase2.4 (= ${Source-Version}), libc6-dev
 Suggests: wxwin2.4-doc, gettext
 Conflicts: libwxbase-dev
 Replaces: libwxbase-dev
@@ -81,7 +81,7 @@ Description: wxWindows Cross-platform C++ GUI toolkit (GTK+ runtime)
 Package: libwxgtk2.4-dev
 Architecture: any
 Section: devel
-Depends: wxwin2.4-headers (= ${Source-Version}), libwxgtk2.4 (= ${Source-Version}), libgtk1.2-dev, zlib1g-dev, libjpeg62-dev, libpng-dev, libtiff3g-dev, libc6-dev
+Depends: wxwin2.4-headers (= ${Source-Version}), libwxgtk2.4 (= ${Source-Version}), libc6-dev
 Suggests: wxwin2.4-doc, libstdc++-dev, gettext, libgl-dev
 Conflicts: libwxgtk-dev
 Replaces: libwxgtk-dev, wxgtk2.1-dev
@@ -159,7 +159,7 @@ Description: wxWindows Cross-platform C++ GUI toolkit (development contrib libs)
 Package: wxwin2.4-headers
 Architecture: any
 Section: devel
-Conflicts: wxwin-headers
+Conflicts: wxwin-headers, libwxgtk2.3
 Replaces: wxwin-headers, wxgtk2.1-dev
 Provides: wxwin-headers
 Description: wxWindows Cross-platform C++ GUI toolkit (header files)
@@ -209,7 +209,7 @@ Description: wxWindows Cross-platform C++ GUI toolkit (examples)
 Package: libwxgtk2.4-univ
 Architecture: any
 Section: libs
-Depends: wxwin2.4-headers (= ${Source-Version}), libwxgtk2.4 (= ${Source-Version}), libgtk1.2-dev, zlib1g-dev, libjpeg62-dev, libpng-dev, libtiff3g-dev, libc6-dev, ${shlibs:Depends}
+Depends: wxwin2.4-headers (= ${Source-Version}), libwxgtk2.4 (= ${Source-Version}), libc6-dev, ${shlibs:Depends}
 Suggests: wxwin2.4-doc, libstdc++-dev, gettext, libgl-dev
 Description: wxWindows Cross-platform C++ GUI toolkit (wxUNIVERSAL widgets)
  wxWindows is a class library for C++ providing GUI (Graphical User

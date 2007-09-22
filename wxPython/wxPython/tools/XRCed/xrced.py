@@ -2,7 +2,24 @@
 # Purpose:      XRC editor, main module
 # Author:       Roman Rolinsky <rolinsky@mema.ucl.ac.be>
 # Created:      20.08.2001
-# RCS-ID:       $Id: xrced.py,v 1.4.2.6 2002/12/09 09:44:30 ROL Exp $
+# RCS-ID:       $Id: xrced.py,v 1.4.2.9 2003/01/21 00:04:27 RD Exp $
+
+"""
+
+xrced -- Simple resource editor for XRC format used by wxWindows/wxPython
+         GUI toolkit.
+
+Usage:
+
+    xrced [ -h ] [ -v ] [ XRC-file ]
+
+Options:
+
+    -h          Print short usage info.
+
+    -v          Print version info.
+"""
+    
 
 from globals import *
 
@@ -28,7 +45,7 @@ else:
 # 1 adds CMD command to Help menu
 debug = 0
 
-helpText = """\
+g.helpText = """\
 <HTML><H2>Welcome to XRCed!</H2><H3><font color="green">DON'T PANIC :)</font></H3>
 To start select tree root, then popup menu with your right mouse button,
 select "Append Child", and then any command.<P>
@@ -655,7 +672,7 @@ class Frame(wxFrame):
             except:
                 (etype, value, tb) =sys.exc_info()
                 tblist =traceback.extract_tb(tb)[1:]
-                msg =string.join(traceback.format_exception_only(etype, value)
+                msg =' '.join(traceback.format_exception_only(etype, value)
                         +traceback.format_list(tblist))
                 print msg
 

@@ -5,7 +5,7 @@
 // Author:      Robin Dunn
 //
 // Created:     25-Nov-1998
-// RCS-ID:      $Id: utils.i,v 1.17.2.3 2003/01/02 22:24:43 RD Exp $
+// RCS-ID:      $Id: utils.i,v 1.17.2.4 2003/01/15 00:23:32 RD Exp $
 // Copyright:   (c) 1998 by Total Control Software
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -35,7 +35,7 @@
 // Import some definitions of other classes, etc.
 %import _defs.i
 
-%pragma(python) code = "import string"
+%pragma(python) code = "import wx"
 
 
 //---------------------------------------------------------------------------
@@ -762,17 +762,17 @@ public:
 
     %pragma(python) addtoclass = "
     def __add__(self, other):
-        if string.find(other.this, 'wxTimeSpan') != -1:
+        if isinstance(other, wxTimeSpanPtr):
             return self.__add__TS(other)
-        if string.find(other.this, 'wxDateSpan') != -1:
+        if isinstance(other, wxDateSpanPtr):
             return self.__add__DS(other)
         raise TypeError, 'Invalid r.h.s. type for __add__'
     def __sub__(self, other):
-        if string.find(other.this, 'wxDateTime') != -1:
+        if isinstance(other, wxDateTimePtr):
             return self.__sub__DT(other)
-        if string.find(other.this, 'wxTimeSpan') != -1:
+        if isinstance(other, wxTimeSpanPtr):
             return self.__sub__TS(other)
-        if string.find(other.this, 'wxDateSpan') != -1:
+        if isinstnace(other, wxDateSpanPtr):
             return self.__sub__DS(other)
         raise TypeError, 'Invalid r.h.s. type for __sub__'
 "

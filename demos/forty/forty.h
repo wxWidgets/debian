@@ -4,7 +4,7 @@
 // Author:      Chris Breeze
 // Modified by:
 // Created:     21/07/97
-// RCS-ID:      $Id: forty.h,v 1.4 2002/06/12 13:19:08 JS Exp $
+// RCS-ID:      $Id: forty.h,v 1.4.2.1 2003/01/12 20:47:59 MBN Exp $
 // Copyright:   (c) 1993-1998 Chris Breeze
 // Licence:   	wxWindows licence
 //---------------------------------------------------------------------------
@@ -34,7 +34,7 @@ class FortyCanvas;
 class FortyFrame: public wxFrame
 {
 public:
-        FortyFrame(wxFrame* frame, char* title, int x, int y, int w, int h,bool largecards);
+        FortyFrame(wxFrame* frame, const wxString& title, int x, int y, int w, int h,bool largecards);
 	virtual ~FortyFrame();
 
 	void OnCloseWindow(wxCloseEvent& event);

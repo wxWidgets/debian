@@ -4,7 +4,7 @@
 // Author:      Vadim Zeitlin
 // Modified by:
 // Created:     10.05.98
-// RCS-ID:      $Id: dataobj.cpp,v 1.56.2.1 2002/11/09 00:32:30 VS Exp $
+// RCS-ID:      $Id: dataobj.cpp,v 1.56.2.2 2003/01/13 18:25:26 MBN Exp $
 // Copyright:   (c) 1998 Vadim Zeitlin <zeitlin@dptmaths.ens-cachan.fr>
 // Licence:     wxWindows license
 ///////////////////////////////////////////////////////////////////////////////
@@ -474,7 +474,7 @@ STDMETHODIMP wxIDataObject::SetData(FORMATETC *pformatetc,
     || ( defined(__MWERKS__) && defined(__WXMSW__) )
                         size = std::wcslen((const wchar_t *)pBuf) * sizeof(wchar_t);
 #else
-                        size = ::wcslen((const wchar_t *)pBuf) * sizeof(wchar_t);
+                        size = ::wxWcslen((const wchar_t *)pBuf) * sizeof(wchar_t);
 #endif
                         break;
 #endif

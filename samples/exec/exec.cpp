@@ -4,7 +4,7 @@
 // Author:      Vadim Zeitlin
 // Modified by:
 // Created:     15.01.00
-// RCS-ID:      $Id: exec.cpp,v 1.21.2.2 2002/12/14 18:19:48 MBN Exp $
+// RCS-ID:      $Id: exec.cpp,v 1.21.2.3 2003/01/12 20:47:49 MBN Exp $
 // Copyright:   (c) Vadim Zeitlin
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -202,7 +202,7 @@ protected:
 
     void DoSend()
     {
-        m_out.WriteString(m_textIn->GetValue() + '\n');
+        m_out.WriteString(m_textIn->GetValue() + _T('\n'));
         m_textIn->Clear();
 
         DoGet();

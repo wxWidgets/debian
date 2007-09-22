@@ -6,7 +6,7 @@
 # Author:      Robin Dunn
 #
 # Created:     7-July-2000
-# RCS-ID:      $Id: pyshell.py,v 1.6 2001/08/14 19:19:48 RD Exp $
+# RCS-ID:      $Id: pyshell.py,v 1.6.2.2 2003/01/20 23:41:15 RD Exp $
 # Copyright:   (c) 2000 by Total Control Software
 # Licence:     wxWindows license
 #----------------------------------------------------------------------
@@ -30,7 +30,7 @@ etc...  But it's a good start.
 from wxPython.wx  import *
 from wxPython.stc import *
 
-import sys, string, keyword
+import sys, keyword
 from code import InteractiveInterpreter
 
 #----------------------------------------------------------------------
@@ -238,7 +238,7 @@ class PyShellWindow(wxStyledTextCtrl, InteractiveInterpreter):
         lastPos = self.GetTextLength()
         if self.lastPromptPos and self.lastPromptPos != lastPos:
             self.SetLexer(wxSTC_LEX_PYTHON)
-            self.SetKeywords(0, string.join(keyword.kwlist))
+            self.SetKeywords(0, ' '.join(keyword.kwlist))
 
             self.Colourise(self.lastPromptPos, lastPos)
 
@@ -248,7 +248,7 @@ class PyShellWindow(wxStyledTextCtrl, InteractiveInterpreter):
     def OnUpdateUI(self, evt):
         # check for matching braces
         braceAtCaret = -1
-	braceOpposite = -1
+        braceOpposite = -1
         charBefore = None
         caretPos = self.GetCurrentPos()
         if caretPos > 0:

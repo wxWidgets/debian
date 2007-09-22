@@ -5,7 +5,7 @@
 // Author:      Joerg Baumann and Robin Dunn
 //
 // Created:     25-Sept-2000
-// RCS-ID:      $Id: streams.i,v 1.12.2.2 2002/12/18 06:15:25 RD Exp $
+// RCS-ID:      $Id: streams.i,v 1.12.2.3 2003/01/15 00:23:32 RD Exp $
 // Copyright:   (c) 2000 by Joerg Baumann
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -28,7 +28,6 @@
 %import _defs.i
 
 %pragma(python) code = "import wx"
-%pragma(python) code = "import string"
 
 //----------------------------------------------------------------------
 // typemaps for wxInputStream

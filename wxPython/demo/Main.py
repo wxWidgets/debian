@@ -6,12 +6,12 @@
 # Author:       Robin Dunn
 #
 # Created:      A long time ago, in a galaxy far, far away...
-# RCS-ID:       $Id: Main.py,v 1.76.2.11 2003/01/07 19:59:45 RD Exp $
+# RCS-ID:       $Id: Main.py,v 1.76.2.15 2003/01/22 21:14:47 RD Exp $
 # Copyright:    (c) 1999 by Total Control Software
 # Licence:      wxWindows license
 #----------------------------------------------------------------------------
 
-import sys, os, time, string
+import sys, os, time
 from   wxPython.wx import *
 from   wxPython.html import wxHtmlWindow
 
@@ -25,11 +25,8 @@ import images
 _treeList = [
     # new stuff
     ('New since last release', [
-        'wxRadioButton',
-        'Throbber',
-        'wxPopupControl',
-        'wxMultiSash',
-        'EventManager',
+        'wxIntCtrl',
+        'wxPyColourChooser',
         ]),
 
     # managed windows == things with a caption you can close
@@ -102,6 +99,7 @@ _treeList = [
     ('More Windows/Controls', [
         #'wxFloatBar',          deprecated
         #'wxMVCTree',           deprecated
+        #'wxRightTextCtrl',    deprecated as we have wxTE_RIGHT now.
         'ColourSelect',
         'ContextHelp',
         'FancyText',
@@ -114,16 +112,17 @@ _treeList = [
         'Throbber',
         'wxCalendar',
         'wxCalendarCtrl',
+        'wxPyColourChooser',
         'wxDynamicSashWindow',
         'wxEditableListBox',
         'wxEditor',
         'wxHtmlWindow',
         'wxIEHtmlWin',
+        'wxIntCtrl',
         'wxLEDNumberCtrl',
         'wxMimeTypesManager',
         'wxMultiSash',
         'wxPopupControl',
-        'wxRightTextCtrl',
         'wxStyledTextCtrl_1',
         'wxStyledTextCtrl_2',
         'wxTimeCtrl',
@@ -148,9 +147,9 @@ _treeList = [
         'OOR',
         'PythonEvents',
         'Threads',
+        'wxKeyEvents',
         'wxProcess',
         'wxTimer',
-        'wxKeyEvents',
         ]),
 
     # Clipboard and DnD
@@ -161,13 +160,13 @@ _treeList = [
         ]),
 
     # Images
-    ('Images', [
+    ('Using Images', [
         'Throbber',
+        'wxArtProvider',
         'wxDragImage',
         'wxImage',
         'wxImageFromStream',
         'wxMask',
-        'wxArtProvider',
         ]),
 
     # Other stuff
@@ -225,7 +224,7 @@ class MyTP(wxPyTipProvider):
 
 def opj(path):
     """Convert paths to the platform-specific separator"""
-    return apply(os.path.join, tuple(string.split(path, '/')))
+    return apply(os.path.join, tuple(path.split('/')))
 
 
 #---------------------------------------------------------------------------
@@ -513,7 +512,7 @@ class wxPythonDemo(wxFrame):
         self.curOverview = text
         lead = text[:6]
         if lead != '<html>' and lead != '<HTML>':
-            text = string.join(string.split(text, '\n'), '<br>')
+            text = '<br>'.join(text.split('\n'))
         self.ovr.SetPage(text)
         self.nb.SetPageText(0, name)
 

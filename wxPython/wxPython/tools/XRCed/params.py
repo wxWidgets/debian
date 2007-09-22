@@ -2,7 +2,7 @@
 # Purpose:      Classes for parameter introduction
 # Author:       Roman Rolinsky <rolinsky@mema.ucl.ac.be>
 # Created:      22.08.2001
-# RCS-ID:       $Id: params.py,v 1.2.2.2 2002/12/09 09:46:58 ROL Exp $
+# RCS-ID:       $Id: params.py,v 1.2.2.3 2003/01/21 00:04:27 RD Exp $
 
 import string
 import os.path
@@ -62,7 +62,7 @@ class ParamBinaryOr(PPanel):
         dlg = wxDialog(self, -1, 'Choices')
         topSizer = wxBoxSizer(wxVERTICAL)
         listBox = wxCheckListBox(dlg, -1, choices=self.values, size=(250,200))
-        value = map(string.strip, string.split(self.text.GetValue(), '|'))
+        value = map(string.strip, self.text.GetValue().split('|'))
         if value == ['']: value = []
         ignored = []
         for i in value:

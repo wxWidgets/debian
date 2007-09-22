@@ -5,7 +5,7 @@
 // Author:      Robin Dunn
 //
 // Created:     7/1/97
-// RCS-ID:      $Id: helpers.cpp,v 1.59.2.11 2003/01/02 22:24:44 RD Exp $
+// RCS-ID:      $Id: helpers.cpp,v 1.59.2.13 2003/01/16 03:30:18 RD Exp $
 // Copyright:   (c) 1998 by Total Control Software
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -540,8 +540,8 @@ PyObject*  wxPyMake_wxObject(wxObject* source, bool checkEvtHandler) {
         if (! target) {
             // Otherwise make it the old fashioned way by making a
             // new shadow object and putting this pointer in it.
-            wxClassInfo* info = source->GetClassInfo();
-            wxChar*      name = (wxChar*)info->GetClassName();
+            wxClassInfo* info  = source->GetClassInfo();
+            wxString     name  = info->GetClassName();
             PyObject*    klass = wxPyClassExists(name);
             while (info && !klass) {
                 name = (wxChar*)info->GetBaseClassName1();
@@ -1466,8 +1466,10 @@ wxString* wxString_in_helper(PyObject* source) {
     if (PyUnicode_Check(source)) {
         target = new wxString();
         size_t len = PyUnicode_GET_SIZE(source);
-        PyUnicode_AsWideChar((PyUnicodeObject*)source, target->GetWriteBuf(len), len);
-        target->UngetWriteBuf();
+        if (len) {
+            PyUnicode_AsWideChar((PyUnicodeObject*)source, target->GetWriteBuf(len), len);
+            target->UngetWriteBuf();
+        }
     } else {
         // It is a string, get pointers to it and transform to unicode
         char* tmpPtr; int tmpSize;
@@ -1510,8 +1512,10 @@ wxString Py2wxString(PyObject* source)
 #if wxUSE_UNICODE
     if (PyUnicode_Check(source)) {
         size_t len = PyUnicode_GET_SIZE(source);
-        PyUnicode_AsWideChar((PyUnicodeObject*)source, target.GetWriteBuf(len), len);
-        target.UngetWriteBuf();
+        if (len) {
+            PyUnicode_AsWideChar((PyUnicodeObject*)source, target.GetWriteBuf(len), len);
+            target.UngetWriteBuf();
+        }
     } else {
         // It is a string, get pointers to it and transform to unicode
         char* tmpPtr; int tmpSize;

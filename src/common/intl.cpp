@@ -4,7 +4,7 @@
 // Author:      Vadim Zeitlin
 // Modified by:
 // Created:     29/01/98
-// RCS-ID:      $Id: intl.cpp,v 1.82.2.12 2002/12/07 02:30:34 VZ Exp $
+// RCS-ID:      $Id: intl.cpp,v 1.82.2.13 2003/01/19 23:31:03 VS Exp $
 // Copyright:   (c) 1998 Vadim Zeitlin <zeitlin@dptmaths.ens-cachan.fr>
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -764,11 +764,14 @@ bool wxLocale::Init(int language, int flags)
     wxMB2WXbuf retloc = wxSetlocale(LC_ALL , wxEmptyString);
 #else
     return FALSE;
+    #define WX_NO_LOCALE_SUPPORT
 #endif
 
+#ifndef WX_NO_LOCALE_SUPPORT
     return Init(name, canonical, retloc,
                 (flags & wxLOCALE_LOAD_DEFAULT) != 0,
                 (flags & wxLOCALE_CONV_ENCODING) != 0);
+#endif
 }
 
 

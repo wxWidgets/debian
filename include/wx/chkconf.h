@@ -4,7 +4,7 @@
  * Author:      Vadim Zeitlin
  * Modified by:
  * Created:     09.08.00
- * RCS-ID:      $Id: chkconf.h,v 1.32.2.1 2002/11/10 20:57:46 MBN Exp $
+ * RCS-ID:      $Id: chkconf.h,v 1.32.2.2 2003/01/21 23:28:07 VS Exp $
  * Copyright:   (c) 2000 Vadim Zeitlin <vadim@wxwindows.org>
  * Licence:     wxWindows license
  */
@@ -12,10 +12,10 @@
 /* THIS IS A C FILE, DON'T USE C++ FEATURES (IN PARTICULAR COMMENTS) IN IT */
 
 /*
-   this global setting determintes what should we do if the setting FOO
+   this global setting determines what should we do if the setting FOO
    requires BAR and BAR is not set: we can either silently define BAR
    (default, recommended) or give an error and abort (mainly useful for
-   developpers only)
+   developers only)
  */
 #define wxABORT_ON_CONFIG_ERROR
 
@@ -1061,7 +1061,7 @@
 #endif /* wxUSE_RADIOBTN */
 
 #if wxUSE_WXHTML_HELP
-#   if !wxUSE_HELP || !wxUSE_HTML || !wxUSE_COMBOBOX
+#   if !wxUSE_HELP || !wxUSE_HTML || !wxUSE_COMBOBOX || !wxUSE_NOTEBOOK
 #       ifdef wxABORT_ON_CONFIG_ERROR
 #           error "Built in help controller can't be compiled"
 #       else
@@ -1071,6 +1071,8 @@
 #           define wxUSE_HTML 1
 #           undef wxUSE_COMBOBOX
 #           define wxUSE_COMBOBOX 1
+#           undef wxUSE_NOTEBOOK
+#           define wxUSE_NOTEBOOK 1
 #       endif
 #   endif
 #endif /* wxUSE_WXHTML_HELP */

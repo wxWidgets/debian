@@ -4,7 +4,7 @@
 // Author:      PJ Naughter <pjna@naughter.com>
 // Modified by: Julian Smart
 // Created:     2001-08-21
-// RCS-ID:      $Id: smapi.cpp,v 1.2 2001/09/06 19:27:52 JS Exp $
+// RCS-ID:      $Id: smapi.cpp,v 1.2.2.1 2003/01/19 10:03:16 MBN Exp $
 // Copyright:   (c) PJ Naughter
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -301,7 +301,8 @@ bool wxMapiSession::Send(wxMailMessage& message)
     //Setup the "To" recipients
     int nRecipIndex = 0;
     int nToSize = message.m_to.GetCount();
-    for (int i=0; i<nToSize; i++)
+    int i;
+    for (i=0; i<nToSize; i++)
     {
         MapiRecipDesc& recip = mapiMessage.lpRecips[nRecipIndex];
         ZeroMemory(&recip, sizeof(MapiRecipDesc));

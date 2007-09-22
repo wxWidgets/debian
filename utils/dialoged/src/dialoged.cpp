@@ -3,7 +3,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     04/01/98
-// RCS-ID:      $Id: dialoged.cpp,v 1.9 2002/01/18 11:50:13 JS Exp $
+// RCS-ID:      $Id: dialoged.cpp,v 1.9.2.1 2003/01/23 20:32:24 MBN Exp $
 // Copyright:   (c) Julian Smart
 // Licence:   	wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -27,6 +27,9 @@
 
 #if !wxUSE_PROPSHEET
 #error Please set wxUSE_PROPSHEET to 1 in setup.h.
+#endif
+#if !wxUSE_RESOURCES
+#error Please set wxUSE_RESOURCES to 1 in setup.h.
 #endif
 
 IMPLEMENT_APP(MyApp)

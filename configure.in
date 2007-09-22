@@ -1,5 +1,5 @@
 dnl Process this file with autoconf to produce a configure script.
-AC_REVISION($Id: configure.in,v 1.624.2.37 2003/01/01 18:23:13 GD Exp $)dnl
+AC_REVISION($Id: configure.in,v 1.624.2.39 2003/01/20 23:21:18 VS Exp $)dnl
 
 dnl ---------------------------------------------------------------------------
 dnl
@@ -8,7 +8,7 @@ dnl Vadim Zeitlin and Ron Lee
 dnl
 dnl This script is under the wxWindows licence.
 dnl
-dnl Version: $Id: configure.in,v 1.624.2.37 2003/01/01 18:23:13 GD Exp $
+dnl Version: $Id: configure.in,v 1.624.2.39 2003/01/20 23:21:18 VS Exp $
 dnl ---------------------------------------------------------------------------
 
 dnl ---------------------------------------------------------------------------
@@ -2154,36 +2154,52 @@ equivalent variable and GTK+ is version 1.2.3 or above.
             AC_MSG_RESULT($MGL_ROOT)
         fi
 
+        AC_MSG_CHECKING(for libmgl location)
         dnl Find MGL library that we want
         dnl FIXME_MGL - test for MGL variants for freebsd etc.
         case "${host}" in
             *-*-linux* )
-              mgl_os="linux/gcc/glibc*"
+              if test "x$wxUSE_SHARED" = xyes ; then
+                  mgl_os_candidates="linux/gcc/glibc.so linux/gcc/glibc"
+              else
+                  mgl_os_candidates="linux/gcc/glibc linux/gcc/glibc.so"
+              fi
               ;;
             *-pc-msdosdjgpp )
-              mgl_os=dos32/dj2
+              mgl_os_candidates="dos32/dj2"
               ;;
             *)
               AC_MSG_ERROR(This system type ${host} is not yet supported by wxMGL.)
         esac
 
         mgl_lib_type=""
+        mgl_os=""
 
-        if test "$wxUSE_DEBUG_FLAG" = yes ; then
-            if test -f $MGL_ROOT/lib/debug/$mgl_os/libmgl.a -o \
-                    -f $MGL_ROOT/lib/debug/$mgl_os/libmgl.so; then
-                mgl_lib_type=debug
+        for mgl_os_i in $mgl_os_candidates ; do
+            if test "x$mgl_os" = x ; then
+                if test "$wxUSE_DEBUG_FLAG" = yes ; then
+                    if test -f $MGL_ROOT/lib/debug/$mgl_os_i/libmgl.a -o \
+                            -f $MGL_ROOT/lib/debug/$mgl_os_i/libmgl.so; then
+                        mgl_lib_type=debug
+                        mgl_os=$mgl_os_i
+                    fi
+                fi
+                if test "x$mgl_lib_type" = x ; then
+                    if test -f $MGL_ROOT/lib/release/$mgl_os_i/libmgl.a -o \
+                            -f $MGL_ROOT/lib/release/$mgl_os_i/libmgl.so; then
+                        mgl_lib_type=release
+                        mgl_os=$mgl_os_i
+                    fi
+                fi
             fi
-        fi
-        if test "x$mgl_lib_type" = x ; then
-            if test -f $MGL_ROOT/lib/release/$mgl_os/libmgl.a -o \
-                    -f $MGL_ROOT/lib/release/$mgl_os/libmgl.so; then
-                mgl_lib_type=release
-            else
-                AC_MSG_ERROR([Cannot find MGL libraries, make sure they are compiled.])
-            fi
-        fi
+        done
 
+        if test "x$mgl_os" = x ; then
+            AC_MSG_RESULT(not found)
+            AC_MSG_ERROR([Cannot find MGL libraries, make sure they are compiled.])
+        fi
+        AC_MSG_RESULT("$MGL_ROOT/lib/$mgl_lib_type/$mgl_os")
+ 
         wxUSE_UNIVERSAL="yes"
 
         TOOLKIT_INCLUDE="-I$MGL_ROOT/include"
@@ -2781,9 +2797,10 @@ case "${host}" in
         dnl Under Mac OS X, we should build real frameworks instead of simple
         dnl dynamic shared libraries (in order to embed the resources)
         if test "$wxUSE_MAC" = 1; then
-            dnl the name of the resources file for wxMac
-            WX_RESOURCES_MACOSX_ASCII="lib${WX_LIBRARY}.r"
-            WX_RESOURCES_MACOSX_DATA="lib${WX_LIBRARY}.rsrc"
+            dnl base name of the resource file for wxMac must be the same
+            dnl as library installation base name (-install_name)
+            WX_RESOURCES_MACOSX_ASCII="lib${WX_LIBRARY}.${WX_CURRENT}.r"
+            WX_RESOURCES_MACOSX_DATA="lib${WX_LIBRARY}.${WX_CURRENT}.rsrc"
         fi
         ;;
 esac
@@ -2914,6 +2931,9 @@ if test "$wxUSE_SHARED" = "yes"; then
         dnl "-init _wxWindowsDylibInit" not useful with lazy linking solved
         SHARED_LD="\${top_srcdir}/distrib/mac/shared-ld-sh -undefined suppress -flat_namespace -o"
         PIC_FLAG="-dynamic -fPIC"
+        dnl library installation base name and wxMac resources file base name
+        dnl must be identical in order for the resource file to be found at
+        dnl run time in src/mac/app.cpp
         SONAME_FLAGS="-compatibility_version ${WX_RELEASE} -current_version ${WX_VERSION} -install_name \$(libdir)/${WX_LIBRARY_LINK1}"
         SONAME_FLAGS_GL="-compatibility_version ${WX_RELEASE} -current_version ${WX_VERSION} -install_name \$(libdir)/${WX_LIBRARY_LINK1_GL}"
       ;;

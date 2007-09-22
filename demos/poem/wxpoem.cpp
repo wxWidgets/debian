@@ -9,7 +9,7 @@
 //              beware, inelegant code!
 // Author:      Julian Smart
 // Created:     12/12/98
-// RCS-ID:      $Id: wxpoem.cpp,v 1.7 2002/05/14 13:53:48 JS Exp $
+// RCS-ID:      $Id: wxpoem.cpp,v 1.7.2.1 2003/01/12 20:48:13 MBN Exp $
 // Copyright:   (c) 1998 Julian Smart
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -206,7 +206,7 @@ void MainWindow::ScanBuffer(wxDC *dc, bool DrawIt, int *max_x, int *max_y)
     dc->SetFont(* NormalFont);
     long xx;
     long yy;
-    dc->GetTextExtent("X", &xx, &yy);
+    dc->GetTextExtent(_T("X"), &xx, &yy);
     char_height = (int)yy;
 
     if (current_page == 0)
@@ -844,9 +844,11 @@ int GetIndex()
 // Read preferences
 void ReadPreferences()
 {
+#if wxUSE_RESOURCES
   wxGetResource("wxPoem", "FontSize", &pointSize);
   wxGetResource("wxPoem", "X", &XPos);
   wxGetResource("wxPoem", "Y", &YPos);
+#endif
 }
 
 // Write preferences to disk
@@ -854,9 +856,11 @@ void WritePreferences()
 {
 #ifdef __WXMSW__
   TheMainWindow->GetPosition(&XPos, &YPos);
+#if wxUSE_RESOURCES
   wxWriteResource("wxPoem", "FontSize", pointSize);
   wxWriteResource("wxPoem", "X", XPos);
   wxWriteResource("wxPoem", "Y", YPos);
+#endif
 #endif
 }
 

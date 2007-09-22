@@ -4,7 +4,7 @@
  * Author:      Vadim Zeitlin
  * Modified by:
  * Created:     29.10.01 (extracted from wx/defs.h)
- * RCS-ID:      $Id: platform.h,v 1.8 2002/08/24 21:28:48 VZ Exp $
+ * RCS-ID:      $Id: platform.h,v 1.8.4.1 2003/01/23 20:25:18 MBN Exp $
  * Copyright:   (c) 1997-2001 wxWindows team
  * Licence:     wxWindows license
  */
@@ -13,6 +13,20 @@
 
 #ifndef _WX_PLATFORM_H_
 #define _WX_PLATFORM_H_
+
+
+/*
+    Codewarrior doesn't define any Windows symbols until some headers are included
+*/
+#if __MWERKS__
+    #include <stddef.h>
+    #if defined(WIN32) || defined(_WIN32)
+        #ifndef WINVER
+            #define WINVER  0x0400
+        #endif
+    #endif
+#endif
+
 
 /*
    first define Windows symbols if they're not defined on the command line: we

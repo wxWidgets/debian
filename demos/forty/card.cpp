@@ -4,7 +4,7 @@
 // Author:      Chris Breeze
 // Modified by:
 // Created:     21/07/97
-// RCS-ID:      $Id: card.cpp,v 1.3 2002/03/11 12:50:06 JS Exp $
+// RCS-ID:      $Id: card.cpp,v 1.3.2.1 2003/01/12 20:47:59 MBN Exp $
 // Copyright:   (c) 1993-1998 Chris Breeze
 // Licence:   	wxWindows licence
 //---------------------------------------------------------------------------
@@ -67,25 +67,25 @@ Card::Card(int value, WayUp way_up) :
 	if (!m_symbolBmap)
 	{
 #ifdef __WXMSW__
-		m_symbolBmap = new wxBitmap("CardSymbols", wxBITMAP_TYPE_BMP_RESOURCE);
+		m_symbolBmap = new wxBitmap(_T("CardSymbols"), wxBITMAP_TYPE_BMP_RESOURCE);
 #else
 		m_symbolBmap = new wxBitmap(Symbols_bits, Symbols_width, Symbols_height);
 #endif
 		if (!m_symbolBmap->Ok())
 		{
-			::wxMessageBox("Failed to load bitmap CardSymbols", "Error");
+			::wxMessageBox(_T("Failed to load bitmap CardSymbols"), _T("Error"));
 		}
 	}
 	if (!m_pictureBmap)
 	{
 #ifdef __WXMSW__
-		m_pictureBmap = new wxBitmap("CardPictures", wxBITMAP_TYPE_BMP_RESOURCE);
+		m_pictureBmap = new wxBitmap(_T("CardPictures"), wxBITMAP_TYPE_BMP_RESOURCE);
 #else
 		m_pictureBmap = new wxBitmap(Pictures);
 #endif
 		if (!m_pictureBmap->Ok())
 		{
-			::wxMessageBox("Failed to load bitmap CardPictures", "Error");
+			::wxMessageBox(_T("Failed to load bitmap CardPictures"), _T("Error"));
 		}
 	}
 
@@ -196,7 +196,7 @@ void Card::Draw(wxDC& dc, int x, int y)
 		dc.SetBackground(* wxRED_BRUSH);
 		dc.SetBackgroundMode(wxSOLID);
 		wxBrush* brush = wxTheBrushList->FindOrCreateBrush(
-							"BLACK", wxCROSSDIAG_HATCH
+							_T("BLACK"), wxCROSSDIAG_HATCH
 							);
 		dc.SetBrush(* brush);
 

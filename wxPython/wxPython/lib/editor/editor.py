@@ -16,7 +16,7 @@
 #
 #
 # Created:     15-Dec-1999
-# RCS-ID:      $Id: editor.py,v 1.10 2002/08/13 23:59:07 RD Exp $
+# RCS-ID:      $Id: editor.py,v 1.10.2.1 2003/01/20 23:41:12 RD Exp $
 # Copyright:   (c) 1999 by Dirk Holtwick, 1999
 # Licence:     wxWindows license
 #----------------------------------------------------------------------
@@ -24,7 +24,6 @@
 import os, time
 
 from wxPython.wx import *
-from string import *
 
 import selection
 import images
@@ -650,7 +649,7 @@ class wxEditor(wxScrolledWindow):
 
     def CopyToClipboard(self, linesOfText):
         do = wxTextDataObject()
-        do.SetText(string.join(linesOfText, os.linesep))
+        do.SetText(os.linesep.join(linesOfText))
         wxTheClipboard.Open()
         wxTheClipboard.SetData(do)
         wxTheClipboard.Close()

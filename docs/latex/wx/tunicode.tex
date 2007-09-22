@@ -4,7 +4,7 @@
 %% Author:      Vadim Zeitlin
 %% Modified by:
 %% Created:     22.09.99
-%% RCS-ID:      $Id: tunicode.tex,v 1.9.2.1 2002/11/04 20:13:13 RR Exp $
+%% RCS-ID:      $Id: tunicode.tex,v 1.9.2.2 2003/01/23 19:50:34 VS Exp $
 %% Copyright:   (c) 1999 Vadim Zeitlin <zeitlin@dptmaths.ens-cachan.fr>
 %% Licence:     wxWindows license
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -182,7 +182,7 @@ compile your program in ANSI mode you can still define {\tt wxUSE\_WCHAR\_T}
 to get some limited support for {\tt wchar\_t} type.
 
 This will allow your program to perform conversions between Unicode strings and
-ANSI ones (\helpref{wxEncodingConverter}{wxencodingconverter} depends on this
-partially) and construct wxString objects from Unicode strings (presumably read
+ANSI ones (using \helpref{wxMBConv classes}{mbconvclasses}) 
+and construct wxString objects from Unicode strings (presumably read
 from some external file or elsewhere).
 

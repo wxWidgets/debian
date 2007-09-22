@@ -1,6 +1,6 @@
 #----------------------------------------------------------------------------
 # Name:         _extra.py
-# Purpose:	This file is appended to the shadow class file generated
+# Purpose:      This file is appended to the shadow class file generated
 #               by SWIG.  We add some unSWIGable things here.
 #
 # Author:       Robin Dunn
@@ -597,6 +597,10 @@ NULL                = None
 wxSystemSettings_GetSystemColour = wxSystemSettings_GetColour
 wxSystemSettings_GetSystemFont   = wxSystemSettings_GetFont
 wxSystemSettings_GetSystemMetric = wxSystemSettings_GetMetric
+
+# workarounds for bad wxRTTI names
+wxGauge95    = wxGauge
+wxGauge95Ptr = wxGaugePtr
 
 
 wxPyAssertionError = wxc.wxPyAssertionError

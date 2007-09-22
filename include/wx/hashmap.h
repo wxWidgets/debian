@@ -4,7 +4,7 @@
 // Author:      Mattia Barbon
 // Modified by:
 // Created:     29/01/2002
-// RCS-ID:      $Id: hashmap.h,v 1.13.2.3 2002/12/07 01:33:37 VZ Exp $
+// RCS-ID:      $Id: hashmap.h,v 1.13.2.4 2003/01/11 20:56:40 MBN Exp $
 // Copyright:   (c) Mattia Barbon
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -328,7 +328,7 @@ protected: \
  \
         CopyHashTable( (_wxHashTable_NodeBase**)srcTable, srcBuckets, \
                        this, (_wxHashTable_NodeBase**)m_table, \
-                       (BucketFromNode)&GetBucketForNode,\
+                       (BucketFromNode)GetBucketForNode,\
                        (ProcessNode)&DummyProcessNode ); \
         free(srcTable); \
     } \
@@ -340,8 +340,8 @@ protected: \
         CopyHashTable( (_wxHashTable_NodeBase**)ht.m_table, ht.m_tableBuckets,\
                        (_wxHashTableBase2*)this, \
                        (_wxHashTable_NodeBase**)m_table, \
-                       (BucketFromNode)&GetBucketForNode, \
-                       (ProcessNode)&CopyNode ); \
+                       (BucketFromNode)GetBucketForNode, \
+                       (ProcessNode)CopyNode ); \
     } \
 };
 

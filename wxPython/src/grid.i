@@ -5,7 +5,7 @@
 // Author:      Robin Dunn
 //
 // Created:     17-March-2000
-// RCS-ID:      $Id: grid.i,v 1.31.2.4 2002/12/24 00:06:08 RD Exp $
+// RCS-ID:      $Id: grid.i,v 1.31.2.6 2003/01/14 21:27:56 RD Exp $
 // Copyright:   (c) 2000 by Total Control Software
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -1408,7 +1408,7 @@ public:
     }
     %pragma(python) addtoclass = "
     def __str__(self):                   return str(self.asTuple())
-    def __repr__(self):                  return str(self.asTuple())
+    def __repr__(self):                  return 'wxGridCellCoords'+str(self.asTuple())
     def __len__(self):                   return len(self.asTuple())
     def __getitem__(self, index):        return self.asTuple()[index]
     def __setitem__(self, index, val):
@@ -1804,8 +1804,8 @@ public:
     const wxGridCellCoordsArray& GetSelectedCells() const;
     const wxGridCellCoordsArray& GetSelectionBlockTopLeft() const;
     const wxGridCellCoordsArray& GetSelectionBlockBottomRight() const;
-    const wxArrayInt& GetSelectedRows() const;
-    const wxArrayInt& GetSelectedCols() const;
+    const wxArrayInt GetSelectedRows() const;
+    const wxArrayInt GetSelectedCols() const;
 
 
     // This function returns the rectangle that encloses the block of cells

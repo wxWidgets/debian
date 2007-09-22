@@ -5,7 +5,7 @@
 // Author:      Robin Dunn
 //
 // Created:     7/3/97
-// RCS-ID:      $Id: my_typemaps.i,v 1.23.2.3 2003/01/02 22:24:43 RD Exp $
+// RCS-ID:      $Id: my_typemaps.i,v 1.23.2.5 2003/01/21 00:59:20 RD Exp $
 // Copyright:   (c) 1998 by Total Control Software
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -313,7 +313,7 @@ $function
 }
 
 
-// Typemap to convert an array of ints to a list
+// Typemaps to convert an array of ints to a list
 %typemap(python, out) wxArrayInt& {
     $target = PyList_New(0);
     size_t idx;
@@ -322,6 +322,17 @@ $function
         PyList_Append($target, val);
         Py_DECREF(val);
     }
+}
+
+%typemap(python, out) wxArrayInt {
+    $target = PyList_New(0);
+    size_t idx;
+    for (idx = 0; idx < $source->GetCount(); idx += 1) {
+        PyObject* val = PyInt_FromLong($source->Item(idx));
+        PyList_Append($target, val);
+        Py_DECREF(val);
+    }
+    delete $source;
 }
 
 
@@ -376,6 +387,11 @@ $function
 
 %typemap(python,ignore) byte  *OUTPUT = byte *T_OUTPUT;
 %typemap(python,argout) byte  *OUTPUT = byte *T_OUTPUT;
+
+
+%typemap(python,ignore) wxCoord *OUTPUT = int *OUTPUT;
+%typemap(python,argout) wxCoord *OUTPUT = int *OUTPUT;
+
 
 //---------------------------------------------------------------------------
 // Typemaps to convert return values that are base class pointers

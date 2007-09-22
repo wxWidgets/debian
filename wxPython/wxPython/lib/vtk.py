@@ -21,7 +21,7 @@ print __doc__
 # Author:      Robin Dunn
 #
 # Created:     16-Nov-1999
-# RCS-ID:      $Id: vtk.py,v 1.10 2002/05/14 07:49:32 RD Exp $
+# RCS-ID:      $Id: vtk.py,v 1.10.2.1 2003/01/15 23:07:06 RD Exp $
 # Copyright:   (c) 1999 by Total Control Software
 # Licence:     wxWindows license
 #----------------------------------------------------------------------
@@ -136,7 +136,7 @@ class wxVTKRenderWindowBase(wxWindow):
 
 
     def OnCreateWindow(self, event):
-	hdl = self.GetHandle()
+        hdl = self.GetHandle()
         try:
             self._RenderWindow.SetParentInfo(str(hdl))
         except:
@@ -163,7 +163,7 @@ class wxVTKRenderWindowBase(wxWindow):
         # Windows.
         #self._RenderWindow.GetSize()
         #
-	self._RenderWindow.SetSize(sz.width, sz.height)
+        self._RenderWindow.SetSize(sz.width, sz.height)
 
 
     def OnLeftButtonDown(self, event):

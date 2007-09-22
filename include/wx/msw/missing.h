@@ -3,7 +3,7 @@
 // Purpose:     Declarations for parts of the Win32 SDK that are missing in
 //              the version that comes with some compilers
 // Created:     2002/04/23
-// RCS-ID:      $Id: missing.h,v 1.5.2.2 2002/10/24 16:10:00 VS Exp $
+// RCS-ID:      $Id: missing.h,v 1.5.2.3 2003/01/18 14:41:53 CE Exp $
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
 
@@ -159,7 +159,7 @@ typedef struct tagNMLVDISPINFOW {
 #endif
 #endif
 
-#if defined(__GNUWIN32__) && !defined(HDN_GETDISPINFOW)
+#if (defined(__GNUWIN32__) || defined __BORLANDC__) && !defined(HDN_GETDISPINFOW)
 #define HDN_GETDISPINFOW (HDN_FIRST-29)
 typedef struct {
         NMHDR hdr;
