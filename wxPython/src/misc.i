@@ -5,7 +5,7 @@
 // Author:      Robin Dunn
 //
 // Created:     7/3/97
-// RCS-ID:      $Id: misc.i,v 1.25.2.5 2003/01/10 00:04:54 RD Exp $
+// RCS-ID:      $Id: misc.i,v 1.25.2.9 2003/03/19 22:09:55 RD Exp $
 // Copyright:   (c) 1998 by Total Control Software
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -83,15 +83,17 @@ public:
         bool __eq__(PyObject* obj) {
             wxSize  tmp;
             wxSize* ptr = &tmp;
-            if (obj == Py_None)               return FALSE;
-            if (! wxSize_helper(obj, &ptr))   return FALSE;
+            if (obj == Py_None)    return FALSE;
+            wxPyBLOCK_THREADS(bool success = wxSize_helper(obj, &ptr); PyErr_Clear());
+            if (! success)         return FALSE;
             return *self == *ptr;
         }
         bool __ne__(PyObject* obj) {
             wxSize  tmp;
             wxSize* ptr = &tmp;
-            if (obj == Py_None)               return TRUE;
-            if (! wxSize_helper(obj, &ptr))   return TRUE;
+            if (obj == Py_None)    return TRUE;
+            wxPyBLOCK_THREADS(bool success = wxSize_helper(obj, &ptr); PyErr_Clear());
+            if (! success)         return TRUE;
             return *self != *ptr;
         }
 
@@ -106,7 +108,10 @@ public:
         if index == 0: self.width = val
         elif index == 1: self.height = val
         else: raise IndexError
-    def __nonzero__(self):      return self.asTuple() != (0,0)
+    def __nonzero__(self):               return self.asTuple() != (0,0)
+    def __getinitargs__(self):           return ()
+    def __getstate__(self):              return self.asTuple()
+    def __setstate__(self, state):       self.Set(*state)
 "
 
 };
@@ -145,17 +150,20 @@ public:
         bool __eq__(PyObject* obj) {
             wxRealPoint  tmp;
             wxRealPoint* ptr = &tmp;
-            if (obj == Py_None)                    return FALSE;
-            if (! wxRealPoint_helper(obj, &ptr))   return FALSE;
+            if (obj == Py_None)    return FALSE;
+            wxPyBLOCK_THREADS(bool success = wxRealPoint_helper(obj, &ptr); PyErr_Clear());
+            if (! success)         return FALSE;
             return *self == *ptr;
         }
         bool __ne__(PyObject* obj) {
             wxRealPoint  tmp;
             wxRealPoint* ptr = &tmp;
-            if (obj == Py_None)                    return TRUE;
-            if (! wxRealPoint_helper(obj, &ptr))   return TRUE;
+            if (obj == Py_None)    return TRUE;
+            wxPyBLOCK_THREADS(bool success = wxRealPoint_helper(obj, &ptr); PyErr_Clear());
+            if (! success)         return TRUE;
             return *self != *ptr;
         }
+
     }
 
     %pragma(python) addtoclass = "
@@ -168,6 +176,9 @@ public:
         elif index == 1: self.height = val
         else: raise IndexError
     def __nonzero__(self):      return self.asTuple() != (0.0, 0.0)
+    def __getinitargs__(self):           return ()
+    def __getstate__(self):              return self.asTuple()
+    def __setstate__(self, state):       self.Set(*state)
 "
 };
 
@@ -204,17 +215,20 @@ public:
         bool __eq__(PyObject* obj) {
             wxPoint  tmp;
             wxPoint* ptr = &tmp;
-            if (obj == Py_None)                return FALSE;
-            if (! wxPoint_helper(obj, &ptr))   return FALSE;
+            if (obj == Py_None)    return FALSE;
+            wxPyBLOCK_THREADS(bool success = wxPoint_helper(obj, &ptr); PyErr_Clear());
+            if (! success)         return FALSE;
             return *self == *ptr;
         }
         bool __ne__(PyObject* obj) {
             wxPoint  tmp;
             wxPoint* ptr = &tmp;
-            if (obj == Py_None)                return TRUE;
-            if (! wxPoint_helper(obj, &ptr))   return TRUE;
+            if (obj == Py_None)    return TRUE;
+            wxPyBLOCK_THREADS(bool success = wxPoint_helper(obj, &ptr); PyErr_Clear());
+            if (! success)         return TRUE;
             return *self != *ptr;
         }
+
     }
 
     %pragma(python) addtoclass = "
@@ -227,6 +241,9 @@ public:
         elif index == 1: self.y = val
         else: raise IndexError
     def __nonzero__(self):      return self.asTuple() != (0,0)
+    def __getinitargs__(self):           return ()
+    def __getstate__(self):              return self.asTuple()
+    def __setstate__(self, state):       self.Set(*state)
 "
 };
 
@@ -234,7 +251,7 @@ public:
 
 class wxRect {
 public:
-    wxRect(int x=0, int y=0, int w=0, int h=0);
+    wxRect(int x=0, int y=0, int width=0, int height=0);
     // TODO: do this one too... wxRect(const wxPoint& pos, const wxSize& size);
     ~wxRect();
 
@@ -263,12 +280,24 @@ public:
     void SetTop(int top);
     void SetBottom(int bottom);
 
+    void Deflate(int dx, int dy);
     void Inflate(int dx, int dy);
-    bool Inside(int cx, int cy);
+    %name(InsideXY)bool Inside(int cx, int cy);
+    bool Inside(const wxPoint& pt);
+    bool Intersects(const wxRect& rect);
+    %name(OffsetXY) void Offset(int dx, int dy);
+    void Offset(const wxPoint& pt);
 
     int x, y, width, height;
 
     %addmethods {
+        void Set(int x=0, int y=0, int width=0, int height=0) {
+            self->x = x;
+            self->y = y;
+            self->width = width;
+            self->height = height;
+        }
+
         PyObject* asTuple() {
             wxPyBeginBlockThreads();
             PyObject* tup = PyTuple_New(4);
@@ -287,17 +316,20 @@ public:
         bool __eq__(PyObject* obj) {
             wxRect  tmp;
             wxRect* ptr = &tmp;
-            if (obj == Py_None)                 return FALSE;
-            if (! wxRect_helper(obj, &ptr))     return FALSE;
+            if (obj == Py_None)    return FALSE;
+            wxPyBLOCK_THREADS(bool success = wxRect_helper(obj, &ptr); PyErr_Clear());
+            if (! success)         return FALSE;
             return *self == *ptr;
         }
         bool __ne__(PyObject* obj) {
             wxRect  tmp;
             wxRect* ptr = &tmp;
-            if (obj == Py_None)                 return TRUE;
-            if (! wxRect_helper(obj, &ptr))     return TRUE;
+            if (obj == Py_None)    return TRUE;
+            wxPyBLOCK_THREADS(bool success = wxRect_helper(obj, &ptr); PyErr_Clear());
+            if (! success)         return TRUE;
             return *self != *ptr;
         }
+
     }
 
     %pragma(python) addtoclass = "
@@ -311,7 +343,10 @@ public:
         elif index == 2: self.width = val
         elif index == 3: self.height = val
         else: raise IndexError
-    def __nonzero__(self):      return self.asTuple() != (0,0,0,0)
+    def __nonzero__(self):               return self.asTuple() != (0,0,0,0)
+    def __getinitargs__(self):           return ()
+    def __getstate__(self):              return self.asTuple()
+    def __setstate__(self, state):       self.Set(*state)
 
     # override the __getattr__ made by SWIG
     def __getattr__(self, name):
@@ -421,6 +456,11 @@ public:
     double GetCrossProduct( const wxPoint2DDouble &vec ) const;
 
     %addmethods {
+        void Set( double x=0 , double y=0 ) {
+            self->m_x = x;
+            self->m_y = y;
+        }
+
         // the reflection of this point
         wxPoint2DDouble __neg__() { return -(*self); }
 
@@ -438,17 +478,20 @@ public:
         bool __eq__(PyObject* obj) {
             wxPoint2DDouble  tmp;
             wxPoint2DDouble* ptr = &tmp;
-            if (obj == Py_None)                        return FALSE;
-            if (! wxPoint2DDouble_helper(obj, &ptr))   return FALSE;
+            if (obj == Py_None)    return FALSE;
+            wxPyBLOCK_THREADS(bool success = wxPoint2DDouble_helper(obj, &ptr); PyErr_Clear());
+            if (! success)         return FALSE;
             return *self == *ptr;
         }
         bool __ne__(PyObject* obj) {
             wxPoint2DDouble  tmp;
             wxPoint2DDouble* ptr = &tmp;
-            if (obj == Py_None)                        return TRUE;
-            if (! wxPoint2DDouble_helper(obj, &ptr))   return TRUE;
+            if (obj == Py_None)    return TRUE;
+            wxPyBLOCK_THREADS(bool success = wxPoint2DDouble_helper(obj, &ptr); PyErr_Clear());
+            if (! success)         return TRUE;
             return *self != *ptr;
         }
+
 
         PyObject* asTuple() {
             wxPyBeginBlockThreads();
@@ -469,7 +512,10 @@ public:
         if index == 0: self.m_x = val
         elif index == 1: self.m_yt = val
         else: raise IndexError
-    def __nonzero__(self):      return self.asTuple() != (0.0, 0.0)
+    def __nonzero__(self):               return self.asTuple() != (0.0, 0.0)
+    def __getinitargs__(self):           return ()
+    def __getstate__(self):              return self.asTuple()
+    def __setstate__(self, state):       self.Set(*state)
 "
 };
 
@@ -479,8 +525,6 @@ public:
 
 long wxNewId();
 void wxRegisterId(long id);
-%name(NewId) long wxNewId();
-%name(RegisterId) void wxRegisterId(long id);
 long wxGetCurrentId();
 
 void wxBell();

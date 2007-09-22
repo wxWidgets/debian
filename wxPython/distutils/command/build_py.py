@@ -4,7 +4,7 @@ Implements the Distutils 'build_py' command."""
 
 # This module should be kept compatible with Python 1.5.2.
 
-__revision__ = "$Id: build_py.py,v 1.1.2.1 2003/01/21 22:14:29 RD Exp $"
+__revision__ = "$Id: build_py.py,v 1.1.2.2 2003/02/21 21:45:53 RD Exp $"
 
 import sys, string, os
 from types import *

@@ -6,12 +6,14 @@ from distutils.core      import setup, Extension
 from distutils.file_util import copy_file
 from distutils.dir_util  import mkpath
 from distutils.dep_util  import newer
+from distutils.spawn     import spawn
+from distutils.command.install_data import install_data
 
 #----------------------------------------------------------------------
 # flags and values that affect this script
 #----------------------------------------------------------------------
 
-VERSION          = "2.4.0.2"
+VERSION          = "2.4.0.7"
 DESCRIPTION      = "Cross platform GUI toolkit for Python"
 AUTHOR           = "Robin Dunn"
 AUTHOR_EMAIL     = "Robin Dunn <robin@alldunn.com>"
@@ -21,7 +23,7 @@ LONG_DESCRIPTION = """\
 wxPython is a GUI toolkit for Python that is a wrapper around the
 wxWindows C++ GUI library.  wxPython provides a large variety of
 window types and controls, all implemented with a native look and
-feel (and native runtime speed) on the platforms it is supported
+feel (by using the native widgets) on the platforms it is supported
 on.
 """
 
@@ -45,6 +47,8 @@ BUILD_ART2D = 0    # Build a canvas module using code from the wxArt2D project (
 
 CORE_ONLY = 0      # if true, don't build any of the above
 
+PREP_ONLY = 0      # Only run the prepatory steps, not the actual build.
+
 USE_SWIG = 0       # Should we actually execute SWIG, or just use the
                    # files already in the distribution?
 
@@ -52,9 +56,13 @@ UNICODE = 0        # This will pass the 'wxUSE_UNICODE' flag to SWIG and
                    # will ensure that the right headers are found and the
                    # right libs are linked.
 
-IN_CVS_TREE = 0    # Set to true if building in a full wxWindows CVS
-                   # tree, otherwise will assume all needed files are
-                   # available in the wxPython source distribution
+IN_CVS_TREE = 1    # Set to true if building in a full wxWindows CVS
+                   # tree, or the new style of a full wxPythonSrc tarball.
+                   # wxPython used to be distributed as a separate source
+                   # tarball without the wxWindows but with a copy of the
+                   # needed contrib code.  That's no longer the case and so
+                   # this setting is now defaulting to true.  Eventually it
+                   # should be removed entirly.
 
 UNDEF_NDEBUG = 1   # Python 2.2 on Unix/Linux by default defines NDEBUG,
                    # and distutils will pick this up and use it on the
@@ -96,7 +104,7 @@ HYBRID = 1         # If set and not debug or FINAL, then build a
                    # wxWindows must have been built with /MD, not /MDd
                    # (using FINAL=hybrid will do it.)
 
-WXDLLVER = '240'   # Version part of wxWindows DLL name
+WXDLLVER = '24'   # Version part of wxWindows DLL name
 
 
 #----------------------------------------------------------------------
@@ -129,6 +137,7 @@ def libFlag():
 
 PKGDIR = 'wxPython'
 wxpExtensions = []
+DATA_FILES = []
 
 force = '--force' in sys.argv or '-f' in sys.argv
 debug = '--debug' in sys.argv or '-g' in sys.argv
@@ -149,7 +158,7 @@ if os.name == 'nt':
 # Boolean (int) flags
 for flag in ['BUILD_GLCANVAS', 'BUILD_OGL', 'BUILD_STC', 'BUILD_XRC',
              'BUILD_GIZMOS', 'BUILD_DLLWIDGET', 'BUILD_IEWIN',
-             'CORE_ONLY', 'USE_SWIG', 'IN_CVS_TREE', 'UNICODE',
+             'CORE_ONLY', 'PREP_ONLY', 'USE_SWIG', 'IN_CVS_TREE', 'UNICODE',
              'UNDEF_NDEBUG', 'NO_SCRIPTS',
              'FINAL', 'HYBRID', ]:
     for x in range(len(sys.argv)):
@@ -209,12 +218,9 @@ def Verify_WX_CONFIG():
             WX_CONFIG = 'wx-config'
 
 
+
 def run_swig(files, dir, gendir, package, USE_SWIG, force, swig_args, swig_deps=[]):
     """Run SWIG the way I want it done"""
-    from distutils.file_util import copy_file
-    from distutils.dep_util import newer
-    from distutils.spawn import spawn
-
     if not os.path.exists(os.path.join(dir, gendir)):
         os.mkdir(os.path.join(dir, gendir))
 
@@ -240,7 +246,7 @@ def run_swig(files, dir, gendir, package, USE_SWIG, force, swig_args, swig_deps=
                 i_file = '/'.join(i_file.split('\\'))
 
                 cmd = ['./wxSWIG/wxswig'] + swig_args + ['-I'+dir, '-c', '-o', cpp_file, i_file]
-                print ' '.join(cmd)
+                msg(' '.join(cmd))
                 spawn(cmd)
 
         # copy the generated python file to the package directory
@@ -256,6 +262,40 @@ def contrib_copy_tree(src, dest, verbose=0):
 
     mkpath(dest, verbose=verbose)
     copy_tree(src, dest, update=1, verbose=verbose)
+
+
+
+class smart_install_data(install_data):
+    def run(self):
+        #need to change self.install_dir to the actual library dir
+        install_cmd = self.get_finalized_command('install')
+        self.install_dir = getattr(install_cmd, 'install_lib')
+        return install_data.run(self)
+
+
+def build_locale_dir(destdir, verbose=1):
+    """Build a locale dir under the wxPython package for MSW"""
+    moFiles = glob.glob(opj(WXDIR, 'locale', '*.mo'))
+    for src in moFiles:
+        lang = os.path.splitext(os.path.basename(src))[0]
+        dest = opj(destdir, lang, 'LC_MESSAGES')
+        mkpath(dest, verbose=verbose)
+        copy_file(src, opj(dest, 'wxstd.mo'), update=1, verbose=verbose)
+
+
+def build_locale_list(srcdir):
+    # get a list of all files under the srcdir, to be used for install_data
+    def walk_helper(lst, dirname, files):
+        for f in files:
+            filename = opj(dirname, f)
+            if not os.path.isdir(filename):
+                lst.append( (dirname, [filename]) )
+    file_list = []
+    os.path.walk(srcdir, walk_helper, file_list)
+    return file_list
+
+
+
 
 
 #----------------------------------------------------------------------
@@ -331,7 +371,7 @@ if os.name == 'nt':
 
     libs = libs + ['kernel32', 'user32', 'gdi32', 'comdlg32',
             'winspool', 'winmm', 'shell32', 'oldnames', 'comctl32',
-            'ctl3d32', 'odbc32', 'ole32', 'oleaut32', 'uuid', 'rpcrt4',
+            'odbc32', 'ole32', 'oleaut32', 'uuid', 'rpcrt4',
             'advapi32', 'wsock32']
 
 
@@ -496,12 +536,17 @@ swig_sources = run_swig(swig_files, 'src', GENDIR, PKGDIR,
 
 copy_file('src/__init__.py', PKGDIR, update=1, verbose=0)
 copy_file('src/__version__.py', PKGDIR, update=1, verbose=0)
-copy_file('src/wxc.pyd.manifest', PKGDIR, update=1, verbose=0)
+
 
 if IN_CVS_TREE:   # update the license files
     mkpath('licence')
     for file in ['preamble.txt', 'licence.txt', 'licendoc.txt', 'lgpl.txt']:
         copy_file(opj(WXDIR, 'docs', file), opj('licence',file), update=1, verbose=0)
+
+
+if os.name == 'nt':
+    build_locale_dir(opj(PKGDIR, 'locale'))
+    DATA_FILES += build_locale_list(opj(PKGDIR, 'locale'))
 
 
 if os.name == 'nt':
@@ -511,6 +556,7 @@ else:
 
 
 ext = Extension('wxc', ['src/helpers.cpp',
+                        'src/drawlist.cpp',
                         'src/libpy.c',
                         ] + rc_file + swig_sources,
 
@@ -707,6 +753,7 @@ if BUILD_STC:
             msg('Running gen_iface.py, regenerating stc.h and stc.cpp...')
             cwd = os.getcwd()
             os.chdir(opj(CTRB_SRC, 'stc'))
+            sys.path.insert(0, os.curdir)
             import gen_iface
             gen_iface.main([])
             os.chdir(cwd)
@@ -1115,15 +1162,6 @@ if BUILD_ART2D:
 # Tools and scripts
 #----------------------------------------------------------------------
 
-## TOOLS = [("wxPython/tools",        glob.glob("tools/*.py")),
-##          ("wxPython/tools/XRCed",  glob.glob("tools/XRCed/*.py") +
-##                                    glob.glob("tools/XRCed/*.xrc") +
-##                                    ["tools/XRCed/CHANGES",
-##                                     "tools/XRCed/TODO",
-##                                     "tools/XRCed/README"]),
-##          ]
-
-
 if NO_SCRIPTS:
     SCRIPTS = None
 else:
@@ -1134,7 +1172,15 @@ else:
                opj('scripts/xrced'),
                opj('scripts/pyshell'),
                opj('scripts/pycrust'),
+               opj('scripts/pycwrap'),
                ]
+
+
+DATA_FILES.append( ('wxPython/tools/XRCed', glob.glob('wxPython/tools/XRCed/*.txt') +
+                                            [ 'wxPython/tools/XRCed/xrced.xrc']))
+
+DATA_FILES.append( ('wxPython/lib/PyCrust', glob.glob('wxPython/lib/PyCrust/*.txt') +
+                                            glob.glob('wxPython/lib/PyCrust/*.ico')))
 
 
 #----------------------------------------------------------------------
@@ -1142,33 +1188,38 @@ else:
 #----------------------------------------------------------------------
 
 if __name__ == "__main__":
-    setup(name             = PKGDIR,
-          version          = VERSION,
-          description      = DESCRIPTION,
-          long_description = LONG_DESCRIPTION,
-          author           = AUTHOR,
-          author_email     = AUTHOR_EMAIL,
-          url              = URL,
-          license          = LICENSE,
+    if not PREP_ONLY:
+        setup(name             = PKGDIR,
+              version          = VERSION,
+              description      = DESCRIPTION,
+              long_description = LONG_DESCRIPTION,
+              author           = AUTHOR,
+              author_email     = AUTHOR_EMAIL,
+              url              = URL,
+              license          = LICENSE,
 
-          packages = [PKGDIR,
-                      PKGDIR+'.lib',
-                      PKGDIR+'.lib.colourchooser',
-                      PKGDIR+'.lib.editor',
-                      PKGDIR+'.lib.mixins',
-                      PKGDIR+'.lib.PyCrust',
-                      PKGDIR+'.tools',
-                      PKGDIR+'.tools.XRCed',
-                      ],
+              packages = [PKGDIR,
+                          PKGDIR+'.lib',
+                          PKGDIR+'.lib.colourchooser',
+                          PKGDIR+'.lib.editor',
+                          PKGDIR+'.lib.mixins',
+                          PKGDIR+'.lib.PyCrust',
+                          PKGDIR+'.lib.PyCrust.wxd',
+                          PKGDIR+'.tools',
+                          PKGDIR+'.tools.XRCed',
+                          ],
 
-          ext_package = PKGDIR,
-          ext_modules = wxpExtensions,
+              ext_package = PKGDIR,
+              ext_modules = wxpExtensions,
 
-          options = { 'build' : { 'build_base' : BUILD_BASE }},
+              options = { 'build' : { 'build_base' : BUILD_BASE }},
 
-          ##data_files = TOOLS,
-          scripts = SCRIPTS,
-          )
+              scripts = SCRIPTS,
+
+              cmdclass = { 'install_data': smart_install_data},
+              data_files = DATA_FILES,
+
+              )
 
 
 #----------------------------------------------------------------------

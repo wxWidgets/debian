@@ -3,7 +3,7 @@
 # Author:       Will Sadkin
 # Created:      01/16/2003
 # Copyright:   (c) 2003 by Will Sadkin
-# RCS-ID:      $Id: intctrl.py,v 1.1.2.1 2003/01/22 18:15:56 RD Exp $
+# RCS-ID:      $Id: intctrl.py,v 1.1.2.4 2003/02/26 18:38:15 RD Exp $
 # License:     wxWindows license
 #----------------------------------------------------------------------------
 # NOTE:
@@ -295,10 +295,12 @@ class wxIntValidator( wxPyValidator ):
             elif set_to_zero:
                 # select to "empty" numeric value
                 wxCallAfter(ctrl.SetValue, new_value)
+                wxCallAfter(ctrl.SetInsertionPoint, 0)
                 wxCallAfter(ctrl.SetSelection, 0, 1)
 
             elif set_to_minus_one:
                 wxCallAfter(ctrl.SetValue, new_value)
+                wxCallAfter(ctrl.SetInsertionPoint, 1)
                 wxCallAfter(ctrl.SetSelection, 1, 2)
 
             elif not internally_set:
@@ -311,19 +313,19 @@ class wxIntValidator( wxPyValidator ):
     def TransferToWindow(self):
      """ Transfer data from validator to window.
 
-         The default implementation returns false, indicating that an error
-         occurred.  We simply return true, as we don't do any data transfer.
+         The default implementation returns False, indicating that an error
+         occurred.  We simply return True, as we don't do any data transfer.
      """
-     return true # Prevent wxDialog from complaining.
+     return True # Prevent wxDialog from complaining.
 
 
     def TransferFromWindow(self):
      """ Transfer data from window to validator.
 
-         The default implementation returns false, indicating that an error
-         occurred.  We simply return true, as we don't do any data transfer.
+         The default implementation returns False, indicating that an error
+         occurred.  We simply return True, as we don't do any data transfer.
      """
-     return true # Prevent wxDialog from complaining.
+     return True # Prevent wxDialog from complaining.
 
 
 #----------------------------------------------------------------------------
@@ -371,7 +373,7 @@ class wxIntCtrl(wxTextCtrl):
     limited
         Boolean indicating whether the control prevents values from
         exceeding the currently set minimum and maximum values (bounds).
-        If false and bounds are set, out-of-bounds values will
+        If False and bounds are set, out-of-bounds values will
         be colored with the current out-of-bounds color.
 
     allow_none
@@ -537,7 +539,7 @@ class wxIntCtrl(wxTextCtrl):
         """
         This function is a convenience function for setting the min and max
         values at the same time.  The function only applies the maximum bound
-        if setting the minimum bound is successful, and returns true
+        if setting the minimum bound is successful, and returns True
         only if both operations succeed.
         NOTE: leaving out an argument will remove the corresponding bound.
         """
@@ -556,7 +558,7 @@ class wxIntCtrl(wxTextCtrl):
 
     def SetLimited(self, limited):
         """
-        If called with a value of true, this function will cause the control
+        If called with a value of True, this function will cause the control
         to limit the value to fall within the bounds currently specified.
         If the control's value currently exceeds the bounds, it will then
         be limited accordingly.
@@ -579,7 +581,7 @@ class wxIntCtrl(wxTextCtrl):
 
     def IsLimited(self):
         """
-        Returns true if the control is currently limiting the
+        Returns True if the control is currently limiting the
         value to fall within the current bounds.
         """
         return self.__limited
@@ -587,7 +589,7 @@ class wxIntCtrl(wxTextCtrl):
 
     def IsInBounds(self, value=None):
         """
-        Returns true if no value is specified and the current value
+        Returns True if no value is specified and the current value
         of the control falls within the current bounds.  This function can
         also be called with a value to see if that value would fall within
         the current bounds of the given control.
@@ -605,7 +607,7 @@ class wxIntCtrl(wxTextCtrl):
         if min is None: min = value
         if max is None: max = value
 
-        # if bounds set, and value is None, return false
+        # if bounds set, and value is None, return False
         if value == None and (min is not None or max is not None):
             return 0
         else:
@@ -718,7 +720,10 @@ class wxIntCtrl(wxTextCtrl):
         Conversion function used in getting the value of the control.
         """
         if value == '':
-            return None
+            if not self.IsNoneAllowed():
+                return 0
+            else:
+                return None
         else:
             try:
                 return int( value )
@@ -747,6 +752,7 @@ class wxIntCtrl(wxTextCtrl):
         if select_len == len(wxTextCtrl.GetValue(self)):
             if not self.IsNoneAllowed():
                 self.SetValue(0)
+                self.SetInsertionPoint(0)
                 self.SetSelection(0,1)
             else:
                 self.SetValue(None)
@@ -816,7 +822,7 @@ if __name__ == '__main__':
             hs.AddWindow( self.Cancel, 0, wxALIGN_CENTRE|wxALL, 5 )
             vs.AddSizer(hs, 0, wxALIGN_CENTRE|wxALL, 5 )
 
-            self.SetAutoLayout( true )
+            self.SetAutoLayout( True )
             self.SetSizer( vs )
             vs.Fit( self )
             vs.SetSizeHints( self )
@@ -836,12 +842,13 @@ if __name__ == '__main__':
                 EVT_BUTTON(self, 10, self.OnClick)
             except:
                 traceback.print_exc()
-                return false
-            return true
+                return False
+            return True
 
         def OnClick(self, event):
             dlg = myDialog(self.panel, -1, "test wxIntCtrl")
             dlg.int_ctrl.SetValue(501)
+            dlg.int_ctrl.SetInsertionPoint(1)
             dlg.int_ctrl.SetSelection(1,2)
             rc = dlg.ShowModal()
             print 'final value', dlg.int_ctrl.GetValue()
@@ -849,7 +856,7 @@ if __name__ == '__main__':
             self.frame.Destroy()
 
         def Show(self):
-            self.frame.Show(true)
+            self.frame.Show(True)
 
     try:
         app = TestApp(0)

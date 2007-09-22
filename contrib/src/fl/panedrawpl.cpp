@@ -4,7 +4,7 @@
 // Author:      Aleksandras Gluchovas
 // Modified by:
 // Created:     06/09/98
-// RCS-ID:      $Id: panedrawpl.cpp,v 1.4 2002/04/04 21:05:14 JS Exp $
+// RCS-ID:      $Id: panedrawpl.cpp,v 1.4.2.1 2003/02/21 21:38:11 JS Exp $
 // Copyright:   (c) Aleksandras Gluchovas
 // Licence:       wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -591,10 +591,14 @@ void cbPaneDrawPlugin::OnSizeBarWindow( cbSizeBarWndEvent& event )
 
         // FIXME:: +/- 1s
 
+        int nNewHeight = bounds.height - 2 - bar.mDimInfo.mVertGap *2;
+        if(nNewHeight < 0)
+           nNewHeight = 0;
+
         bar.mpBarWnd->wxWindow::SetSize( bounds.x      + 1 + bar.mDimInfo.mHorizGap,     
                                          bounds.y      + 1 + bar.mDimInfo.mVertGap,
                                          bounds.width  - 2 - bar.mDimInfo.mHorizGap*2,
-                                         bounds.height - 2 - bar.mDimInfo.mVertGap *2 , 
+                                         nNewHeight,
                                          0 
                                        );
 

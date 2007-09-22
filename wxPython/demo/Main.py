@@ -6,7 +6,7 @@
 # Author:       Robin Dunn
 #
 # Created:      A long time ago, in a galaxy far, far away...
-# RCS-ID:       $Id: Main.py,v 1.76.2.15 2003/01/22 21:14:47 RD Exp $
+# RCS-ID:       $Id: Main.py,v 1.76.2.21 2003/03/05 04:06:40 RD Exp $
 # Copyright:    (c) 1999 by Total Control Software
 # Licence:      wxWindows license
 #----------------------------------------------------------------------------
@@ -19,17 +19,18 @@ from   wxPython.html import wxHtmlWindow
 
 import images
 
+
 #---------------------------------------------------------------------------
 
 
 _treeList = [
     # new stuff
-    ('New since last release', [
+    ('Recent Additions', [
         'wxIntCtrl',
         'wxPyColourChooser',
         ]),
 
-    # managed windows == things with a caption you can close
+    # managed windows == things with a (optional) caption you can close
     ('Base Frames and Dialogs', [
         'wxDialog',
         'wxFrame',
@@ -270,8 +271,8 @@ class wxPythonDemo(wxFrame):
         EVT_ERASE_BACKGROUND(splitter, EmptyHandler)
         EVT_ERASE_BACKGROUND(splitter2, EmptyHandler)
 
-        # Prevent TreeCtrl from displaying all items after destruction when true
-        self.dying = false
+        # Prevent TreeCtrl from displaying all items after destruction when True
+        self.dying = False
 
         # Make a File menu
         self.mainmenu = wxMenuBar()
@@ -279,6 +280,7 @@ class wxPythonDemo(wxFrame):
         exitID = wxNewId()
         menu.Append(exitID, 'E&xit\tAlt-X', 'Get the heck outta here!')
         EVT_MENU(self, exitID, self.OnFileExit)
+        wxApp_SetMacExitMenuItemId(exitID)
         self.mainmenu.Append(menu, '&File')
 
         # Make a Demo menu
@@ -295,16 +297,33 @@ class wxPythonDemo(wxFrame):
 
         # Make a Help menu
         helpID = wxNewId()
+        findID = wxNewId()
+        findnextID = wxNewId()
         menu = wxMenu()
+        menu.Append(findID, '&Find\tCtrl-F', 'Find in the Demo Code')
+        menu.Append(findnextID, 'Find &Next\tF3', 'Find Next')
+        menu.AppendSeparator()
         menu.Append(helpID, '&About\tCtrl-H', 'wxPython RULES!!!')
+        wxApp_SetMacAboutMenuItemId(helpID)
         EVT_MENU(self, helpID, self.OnHelpAbout)
+        EVT_MENU(self, findID, self.OnHelpFind)
+        EVT_MENU(self, findnextID, self.OnFindNext)
+        EVT_COMMAND_FIND(self, -1, self.OnFind)
+        EVT_COMMAND_FIND_NEXT(self, -1, self.OnFind)
+        EVT_COMMAND_FIND_CLOSE(self, -1 , self.OnFindClose)
         self.mainmenu.Append(menu, '&Help')
         self.SetMenuBar(self.mainmenu)
 
-        # set the menu accellerator table...
-        aTable = wxAcceleratorTable([(wxACCEL_ALT,  ord('X'), exitID),
-                                     (wxACCEL_CTRL, ord('H'), helpID)])
-        self.SetAcceleratorTable(aTable)
+        self.finddata = wxFindReplaceData()
+
+        if 0:
+            # This is another way to set Accelerators, in addition to
+            # using the '\t<key>' syntax in the menu items.
+            aTable = wxAcceleratorTable([(wxACCEL_ALT,  ord('X'), exitID),
+                                         (wxACCEL_CTRL, ord('H'), helpID),
+                                         (wxACCEL_CTRL, ord('F'), findID),
+                                         (wxACCEL_NORMAL, WXK_F3, findnextID)])
+            self.SetAcceleratorTable(aTable)
 
 
         # Create a TreeCtrl
@@ -360,7 +379,8 @@ class wxPythonDemo(wxFrame):
 
         # Set up a TextCtrl on the Demo Code Notebook page
         self.txt = wxTextCtrl(self.nb, -1,
-                              style = wxTE_MULTILINE|wxTE_READONLY|wxHSCROLL|wxTE_RICH2)
+                              style = wxTE_MULTILINE|wxTE_READONLY|
+                              wxHSCROLL|wxTE_RICH2|wxTE_NOHIDESEL)
         self.nb.AddPage(self.txt, "Demo Code")
 
 
@@ -378,7 +398,7 @@ class wxPythonDemo(wxFrame):
         #wxLog_SetActiveTarget(wxLogStderr())
         #wxLog_SetTraceMask(wxTraceMessages)
 
-        self.Show(true)
+        self.Show(True)
 
 
         # add the windows to the splitter and split it.
@@ -521,17 +541,61 @@ class wxPythonDemo(wxFrame):
     def OnFileExit(self, *event):
         self.Close()
 
-
     def OnHelpAbout(self, event):
         from About import MyAboutBox
         about = MyAboutBox(self)
         about.ShowModal()
         about.Destroy()
 
+    def OnHelpFind(self, event):
+        self.nb.SetSelection(1)
+        self.finddlg = wxFindReplaceDialog(self, self.finddata, "Find",
+                        wxFR_NOUPDOWN |
+                        wxFR_NOMATCHCASE |
+                        wxFR_NOWHOLEWORD)
+        self.finddlg.Show(True)
+
+    def OnFind(self, event):
+        self.nb.SetSelection(1)
+        end = self.txt.GetLastPosition()
+        textstring = self.txt.GetRange(0, end).lower()
+        start = self.txt.GetSelection()[1]
+        findstring = self.finddata.GetFindString().lower()
+        loc = textstring.find(findstring, start)
+        if loc == -1 and start != 0:
+            # string not found, start at beginning
+            start = 0
+            loc = textstring.find(findstring, start)
+        if loc == -1:
+            dlg = wxMessageDialog(self, 'Find String Not Found',
+                          'Find String Not Found in Demo File',
+                          wxOK | wxICON_INFORMATION)
+            dlg.ShowModal()
+            dlg.Destroy()
+        if self.finddlg:
+            if loc == -1:
+                self.finddlg.SetFocus()
+                return
+            else:
+                self.finddlg.Destroy()
+        self.txt.SetSelection(loc, loc + len(findstring))
+        self.txt.ShowPosition(loc)
+
+
+
+    def OnFindNext(self, event):
+        if self.finddata.GetFindString():
+            self.OnFind(event)
+        else:
+            self.OnHelpFind(event)
+
+    def OnFindClose(self, event):
+        event.GetDialog().Destroy()
+
 
     #---------------------------------------------
     def OnCloseWindow(self, event):
-        self.dying = true
+        self.dying = True
         self.window = None
         self.mainmenu = None
         if hasattr(self, "tbicon"):
@@ -576,9 +640,9 @@ class wxPythonDemo(wxFrame):
     #---------------------------------------------
     def OnTaskBarActivate(self, evt):
         if self.IsIconized():
-            self.Iconize(false)
+            self.Iconize(False)
         if not self.IsShown():
-            self.Show(true)
+            self.Show(True)
         self.Raise()
 
     #---------------------------------------------
@@ -629,7 +693,7 @@ class MySplashScreen(wxSplashScreen):
 
     def OnClose(self, evt):
         frame = wxPythonDemo(None, -1, "wxPython: (A Demonstration)")
-        frame.Show(true)
+        frame.Show()
         evt.Skip()  # Make sure the default handler runs too...
 
 
@@ -639,10 +703,15 @@ class MyApp(wxApp):
         Create and show the splash screen.  It will then create and show
         the main frame when it is time to do so.
         """
+
+        #import locale
+        #self.locale = wxLocale(wxLANGUAGE_FRENCH)
+        #locale.setlocale(locale.LC_ALL, 'fr')
+
         wxInitAllImageHandlers()
         splash = MySplashScreen()
         splash.Show()
-        return true
+        return True
 
 
 

@@ -4,7 +4,7 @@
 // Author:      Vadim Zeitlin
 // Modified by:
 // Created:     16.11.97
-// RCS-ID:      $Id: checklst.cpp,v 1.33.2.3 2002/11/09 00:18:55 VS Exp $
+// RCS-ID:      $Id: checklst.cpp,v 1.33.2.4 2003/03/12 19:48:45 RD Exp $
 // Copyright:   (c) 1998 Vadim Zeitlin <zeitlin@dptmaths.ens-cachan.fr>
 // Licence:     wxWindows license
 ///////////////////////////////////////////////////////////////////////////////
@@ -298,7 +298,7 @@ bool wxCheckListBox::Create(wxWindow *parent, wxWindowID id,
     return wxListBox::Create(parent, id, pos, size, n, choices,
                              style | wxLB_OWNERDRAW, validator, name);
 }
-                            
+
 
 
 void wxCheckListBox::Delete(int N)
@@ -408,15 +408,19 @@ void wxCheckListBox::OnKeyDown(wxKeyEvent& event)
     if ( oper != None )
     {
         wxArrayInt selections;
-        int count;
+        int count = 0;
         if ( HasMultipleSelection() )
         {
             count = GetSelections(selections);
         }
         else
         {
-            count = 1;
-            selections.Add(GetSelection());
+            int sel = GetSelection();
+            if (sel != -1)
+            {
+                count = 1;
+                selections.Add(sel);
+            }
         }
 
         for ( int i = 0; i < count; i++ )

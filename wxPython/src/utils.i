@@ -5,7 +5,7 @@
 // Author:      Robin Dunn
 //
 // Created:     25-Nov-1998
-// RCS-ID:      $Id: utils.i,v 1.17.2.4 2003/01/15 00:23:32 RD Exp $
+// RCS-ID:      $Id: utils.i,v 1.17.2.5 2003/03/19 03:45:43 RD Exp $
 // Copyright:   (c) 1998 by Total Control Software
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -772,7 +772,7 @@ public:
             return self.__sub__DT(other)
         if isinstance(other, wxTimeSpanPtr):
             return self.__sub__TS(other)
-        if isinstnace(other, wxDateSpanPtr):
+        if isinstance(other, wxDateSpanPtr):
             return self.__sub__DS(other)
         raise TypeError, 'Invalid r.h.s. type for __sub__'
 "

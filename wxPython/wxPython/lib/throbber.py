@@ -14,11 +14,10 @@ processing can continue unencumbered.
 # Thanks to Harald Massa <harald.massa@suedvers.de> for
 # suggestions and sample code.
 #
-# $Id: throbber.py,v 1.1.2.4 2002/12/24 00:12:48 RD Exp $
+# $Id: throbber.py,v 1.1.2.6 2003/02/26 18:38:14 RD Exp $
 #
 
 import threading, os
-##os.putenv('LANG', 'C') # for running on GTK2
 from wxPython.wx import *
 
 # ------------------------------------------------------------------------------
@@ -124,12 +123,6 @@ class Throbber(wxPanel):
         self.event.set() # we start out in the "resting" state
 
 
-    def __del__(self):
-        # make sure it's stopped, since EVT_WINDOW_DESTROY may not be sent
-        # on all platforms
-        self.Stop()
-
-
     def OnDestroyWindow(self, event):
         # this is currently broken due to a bug in wxWindows... hopefully
         # it'll be fixed soon.  Meanwhile be sure to explicitly call Stop()
@@ -139,9 +132,9 @@ class Throbber(wxPanel):
 
 
     def Draw(self, dc):
-        dc.DrawBitmap(self.submaps[self.sequence[self.current]], 0, 0, true)
+        dc.DrawBitmap(self.submaps[self.sequence[self.current]], 0, 0, True)
         if self.overlay and self.showOverlay:
-            dc.DrawBitmap(self.overlay, self.overlayX, self.overlayY, true)
+            dc.DrawBitmap(self.overlay, self.overlayX, self.overlayY, True)
         if self.label and self.showLabel:
             dc.DrawText(self.label, self.labelX, self.labelY)
             dc.SetTextForeground(wxWHITE)
@@ -202,7 +195,7 @@ class Throbber(wxPanel):
 
 
     def Running(self):
-        """Returns true if the animation is running"""
+        """Returns True if the animation is running"""
         return not self.event.isSet()
 
 

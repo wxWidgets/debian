@@ -10,9 +10,12 @@ class wxConfigBasePtr :
     def __init__(self,this):
         self.this = this
         self.thisown = 0
-    def __del__(self,utilsc=utilsc):
-        if self.thisown == 1 :
-            utilsc.delete_wxConfigBase(self)
+    def __del__(self, delfunc=utilsc.delete_wxConfigBase):
+        if self.thisown == 1:
+            try:
+                delfunc(self)
+            except:
+                pass
     def DeleteAll(self, *_args, **_kwargs):
         val = apply(utilsc.wxConfigBase_DeleteAll,(self,) + _args, _kwargs)
         return val
@@ -137,9 +140,12 @@ class wxConfigPtr(wxConfigBasePtr):
     def __init__(self,this):
         self.this = this
         self.thisown = 0
-    def __del__(self,utilsc=utilsc):
-        if self.thisown == 1 :
-            utilsc.delete_wxConfig(self)
+    def __del__(self, delfunc=utilsc.delete_wxConfig):
+        if self.thisown == 1:
+            try:
+                delfunc(self)
+            except:
+                pass
     def __repr__(self):
         return "<C wxConfig instance at %s>" % (self.this,)
 class wxConfig(wxConfigPtr):
@@ -154,9 +160,12 @@ class wxFileConfigPtr(wxConfigBasePtr):
     def __init__(self,this):
         self.this = this
         self.thisown = 0
-    def __del__(self,utilsc=utilsc):
-        if self.thisown == 1 :
-            utilsc.delete_wxFileConfig(self)
+    def __del__(self, delfunc=utilsc.delete_wxFileConfig):
+        if self.thisown == 1:
+            try:
+                delfunc(self)
+            except:
+                pass
     def __repr__(self):
         return "<C wxFileConfig instance at %s>" % (self.this,)
 class wxFileConfig(wxFileConfigPtr):
@@ -262,9 +271,12 @@ class wxDateTimePtr :
     def __init__(self,this):
         self.this = this
         self.thisown = 0
-    def __del__(self,utilsc=utilsc):
-        if self.thisown == 1 :
-            utilsc.delete_wxDateTime(self)
+    def __del__(self, delfunc=utilsc.delete_wxDateTime):
+        if self.thisown == 1:
+            try:
+                delfunc(self)
+            except:
+                pass
     def SetToCurrent(self, *_args, **_kwargs):
         val = apply(utilsc.wxDateTime_SetToCurrent,(self,) + _args, _kwargs)
         if val: val = wxDateTimePtr(val) 
@@ -561,7 +573,7 @@ class wxDateTimePtr :
             return self.__sub__DT(other)
         if isinstance(other, wxTimeSpanPtr):
             return self.__sub__TS(other)
-        if isinstnace(other, wxDateSpanPtr):
+        if isinstance(other, wxDateSpanPtr):
             return self.__sub__DS(other)
         raise TypeError, 'Invalid r.h.s. type for __sub__'
 
@@ -603,9 +615,12 @@ class wxTimeSpanPtr :
     def __init__(self,this):
         self.this = this
         self.thisown = 0
-    def __del__(self,utilsc=utilsc):
-        if self.thisown == 1 :
-            utilsc.delete_wxTimeSpan(self)
+    def __del__(self, delfunc=utilsc.delete_wxTimeSpan):
+        if self.thisown == 1:
+            try:
+                delfunc(self)
+            except:
+                pass
     def Add(self, *_args, **_kwargs):
         val = apply(utilsc.wxTimeSpan_Add,(self,) + _args, _kwargs)
         if val: val = wxTimeSpanPtr(val) 
@@ -702,9 +717,12 @@ class wxDateSpanPtr :
     def __init__(self,this):
         self.this = this
         self.thisown = 0
-    def __del__(self,utilsc=utilsc):
-        if self.thisown == 1 :
-            utilsc.delete_wxDateSpan(self)
+    def __del__(self, delfunc=utilsc.delete_wxDateSpan):
+        if self.thisown == 1:
+            try:
+                delfunc(self)
+            except:
+                pass
     def SetYears(self, *_args, **_kwargs):
         val = apply(utilsc.wxDateSpan_SetYears,(self,) + _args, _kwargs)
         if val: val = wxDateSpanPtr(val) 

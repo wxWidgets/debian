@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     11/07/98
-// RCS-ID:      $Id: wfstream.cpp,v 1.15.2.1 2002/11/04 19:31:58 VZ Exp $
+// RCS-ID:      $Id: wfstream.cpp,v 1.15.2.2 2003/01/31 22:56:49 VZ Exp $
 // Copyright:   (c) Guilhem Lavaux
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -71,19 +71,23 @@ size_t wxFileInputStream::OnSysRead(void *buffer, size_t size)
 {
     off_t ret = m_file->Read(buffer, size);
 
-    switch ( ret )
+    // NB: we can't use a switch here because HP-UX CC doesn't allow
+    //     switching over long long (which off_t is in 64bit mode)
+
+    if ( !ret )
     {
-        case 0:
-            m_lasterror = wxSTREAM_EOF;
-            break;
-
-        case wxInvalidOffset:
-            m_lasterror = wxSTREAM_READ_ERROR;
-            ret = 0;
-            break;
-
-        default:
-            m_lasterror = wxSTREAM_NO_ERROR;
+        // nothing read, so nothing more to read
+        m_lasterror = wxSTREAM_EOF;
+    }
+    else if ( ret == wxInvalidOffset )
+    {
+        m_lasterror = wxSTREAM_READ_ERROR;
+        ret = 0;
+    }
+    else
+    {
+        // normal case
+        m_lasterror = wxSTREAM_NO_ERROR;
     }
 
     return ret;

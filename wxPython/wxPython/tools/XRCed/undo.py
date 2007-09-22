@@ -2,7 +2,7 @@
 # Purpose:      XRC editor, undo/redo module
 # Author:       Roman Rolinsky <rolinsky@mema.ucl.ac.be>
 # Created:      01.12.2002
-# RCS-ID:       $Id: undo.py,v 1.1.2.1 2002/12/09 09:45:57 ROL Exp $
+# RCS-ID:       $Id: undo.py,v 1.1.2.2 2003/02/26 18:37:58 RD Exp $
 
 from globals import *
 #from panel import *
@@ -20,13 +20,13 @@ class UndoManager:
         undoObj = self.undo.pop()
         undoObj.undo()
         self.redo.append(undoObj)
-        g.frame.modified = true
+        g.frame.modified = True
         g.frame.SetStatusText('Undone')
     def Redo(self):
         undoObj = self.redo.pop()
         undoObj.redo()
         self.undo.append(undoObj)
-        g.frame.modified = true
+        g.frame.modified = True
         g.frame.SetStatusText('Redone')
     def Clear(self):
         for i in self.undo: i.destroy()
@@ -37,7 +37,7 @@ class UndoManager:
         return not not self.undo
     def CanRedo(self):
         return not not self.redo
-    
+
 class UndoCutDelete:
     def __init__(self, itemIndex, parent, elem):
         self.itemIndex = itemIndex
@@ -56,7 +56,7 @@ class UndoCutDelete:
         # Update testWin if needed
         if g.testWin and g.tree.IsHighlatable(item):
             if g.conf.autoRefresh:
-                g.tree.needUpdate = true
+                g.tree.needUpdate = True
                 g.tree.pendingHighLight = item
             else:
                 g.tree.pendingHighLight = None
@@ -72,7 +72,7 @@ class UndoCutDelete:
                 # Remove highlight, update testWin
                 if g.testWin.highLight:
                     g.testWin.highLight.Remove()
-                g.tree.needUpdate = true
+                g.tree.needUpdate = True
         self.elem = g.tree.RemoveLeaf(item)
         g.tree.Unselect()
         g.panel.Clear()
@@ -102,7 +102,7 @@ class UndoPasteCreate:
                 # Remove highlight, update testWin
                 if g.testWin.highLight:
                     g.testWin.highLight.Remove()
-                g.tree.needUpdate = true
+                g.tree.needUpdate = True
     def redo(self):
         item = g.tree.InsertNode(g.tree.ItemAtFullIndex(self.itemParentIndex),
                                  self.parent, self.elem,
@@ -114,7 +114,7 @@ class UndoPasteCreate:
         # Update testWin if needed
         if g.testWin and g.tree.IsHighlatable(item):
             if g.conf.autoRefresh:
-                g.tree.needUpdate = true
+                g.tree.needUpdate = True
                 g.tree.pendingHighLight = item
             else:
                 g.tree.pendingHighLight = None
@@ -134,7 +134,7 @@ class UndoEdit:
                 g.testWin.highLight.Remove()
             g.tree.pendingHighLight = selected
         if g.testWin:
-            g.tree.needUpdate = true        
+            g.tree.needUpdate = True
     def undo(self):
         # Restore selection
         selected = g.tree.ItemAtFullIndex(self.selectedIndex)

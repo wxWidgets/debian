@@ -4,7 +4,7 @@
 # Implements multiple version numbering conventions for the
 # Python Module Distribution Utilities.
 #
-# $Id: version.py,v 1.1.2.1 2003/01/21 22:14:32 RD Exp $
+# $Id: version.py,v 1.1.2.2 2003/02/21 21:45:57 RD Exp $
 #
 
 """Provides classes to represent module version numbers (one class for

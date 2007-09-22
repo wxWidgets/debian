@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by: VZ on 13.05.99: no more Default(), MSWOnXXX() reorganisation
 // Created:     04/01/98
-// RCS-ID:      $Id: window.cpp,v 1.349.2.10 2003/01/03 12:13:20 JS Exp $
+// RCS-ID:      $Id: window.cpp,v 1.349.2.11 2003/02/19 03:07:33 RD Exp $
 // Copyright:   (c) Julian Smart and Markus Holzem
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -1891,7 +1891,7 @@ static void wxYieldForCommandsOnly()
     {
         wxTheApp->DoMessage((WXMSG *)&msg);
     }
-    
+
     // If we retrieved a WM_QUIT, insert back into the message queue.
     if (msg.message == WM_QUIT)
         ::PostQuitMessage(0);
@@ -3298,6 +3298,7 @@ bool wxWindowMSW::HandleCreate(WXLPCREATESTRUCT cs, bool *mayCreate)
 bool wxWindowMSW::HandleDestroy()
 {
     wxWindowDestroyEvent event((wxWindow *)this);
+    event.SetId(GetId());
     (void)GetEventHandler()->ProcessEvent(event);
 
     // delete our drop target if we've got one

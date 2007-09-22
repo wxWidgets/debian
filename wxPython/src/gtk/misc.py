@@ -23,9 +23,12 @@ class wxSizePtr :
     def __init__(self,this):
         self.this = this
         self.thisown = 0
-    def __del__(self,miscc=miscc):
-        if self.thisown == 1 :
-            miscc.delete_wxSize(self)
+    def __del__(self, delfunc=miscc.delete_wxSize):
+        if self.thisown == 1:
+            try:
+                delfunc(self)
+            except:
+                pass
     def Set(self, *_args, **_kwargs):
         val = apply(miscc.wxSize_Set,(self,) + _args, _kwargs)
         return val
@@ -91,7 +94,10 @@ class wxSizePtr :
         if index == 0: self.width = val
         elif index == 1: self.height = val
         else: raise IndexError
-    def __nonzero__(self):      return self.asTuple() != (0,0)
+    def __nonzero__(self):               return self.asTuple() != (0,0)
+    def __getinitargs__(self):           return ()
+    def __getstate__(self):              return self.asTuple()
+    def __setstate__(self, state):       self.Set(*state)
 
 class wxSize(wxSizePtr):
     def __init__(self,*_args,**_kwargs):
@@ -105,9 +111,12 @@ class wxRealPointPtr :
     def __init__(self,this):
         self.this = this
         self.thisown = 0
-    def __del__(self,miscc=miscc):
-        if self.thisown == 1 :
-            miscc.delete_wxRealPoint(self)
+    def __del__(self, delfunc=miscc.delete_wxRealPoint):
+        if self.thisown == 1:
+            try:
+                delfunc(self)
+            except:
+                pass
     def Set(self, *_args, **_kwargs):
         val = apply(miscc.wxRealPoint_Set,(self,) + _args, _kwargs)
         return val
@@ -154,6 +163,9 @@ class wxRealPointPtr :
         elif index == 1: self.height = val
         else: raise IndexError
     def __nonzero__(self):      return self.asTuple() != (0.0, 0.0)
+    def __getinitargs__(self):           return ()
+    def __getstate__(self):              return self.asTuple()
+    def __setstate__(self, state):       self.Set(*state)
 
 class wxRealPoint(wxRealPointPtr):
     def __init__(self,*_args,**_kwargs):
@@ -167,9 +179,12 @@ class wxPointPtr :
     def __init__(self,this):
         self.this = this
         self.thisown = 0
-    def __del__(self,miscc=miscc):
-        if self.thisown == 1 :
-            miscc.delete_wxPoint(self)
+    def __del__(self, delfunc=miscc.delete_wxPoint):
+        if self.thisown == 1:
+            try:
+                delfunc(self)
+            except:
+                pass
     def Set(self, *_args, **_kwargs):
         val = apply(miscc.wxPoint_Set,(self,) + _args, _kwargs)
         return val
@@ -216,6 +231,9 @@ class wxPointPtr :
         elif index == 1: self.y = val
         else: raise IndexError
     def __nonzero__(self):      return self.asTuple() != (0,0)
+    def __getinitargs__(self):           return ()
+    def __getstate__(self):              return self.asTuple()
+    def __setstate__(self, state):       self.Set(*state)
 
 class wxPoint(wxPointPtr):
     def __init__(self,*_args,**_kwargs):
@@ -229,9 +247,12 @@ class wxRectPtr :
     def __init__(self,this):
         self.this = this
         self.thisown = 0
-    def __del__(self,miscc=miscc):
-        if self.thisown == 1 :
-            miscc.delete_wxRect(self)
+    def __del__(self, delfunc=miscc.delete_wxRect):
+        if self.thisown == 1:
+            try:
+                delfunc(self)
+            except:
+                pass
     def GetX(self, *_args, **_kwargs):
         val = apply(miscc.wxRect_GetX,(self,) + _args, _kwargs)
         return val
@@ -294,11 +315,29 @@ class wxRectPtr :
     def SetBottom(self, *_args, **_kwargs):
         val = apply(miscc.wxRect_SetBottom,(self,) + _args, _kwargs)
         return val
+    def Deflate(self, *_args, **_kwargs):
+        val = apply(miscc.wxRect_Deflate,(self,) + _args, _kwargs)
+        return val
     def Inflate(self, *_args, **_kwargs):
         val = apply(miscc.wxRect_Inflate,(self,) + _args, _kwargs)
         return val
+    def InsideXY(self, *_args, **_kwargs):
+        val = apply(miscc.wxRect_InsideXY,(self,) + _args, _kwargs)
+        return val
     def Inside(self, *_args, **_kwargs):
         val = apply(miscc.wxRect_Inside,(self,) + _args, _kwargs)
+        return val
+    def Intersects(self, *_args, **_kwargs):
+        val = apply(miscc.wxRect_Intersects,(self,) + _args, _kwargs)
+        return val
+    def OffsetXY(self, *_args, **_kwargs):
+        val = apply(miscc.wxRect_OffsetXY,(self,) + _args, _kwargs)
+        return val
+    def Offset(self, *_args, **_kwargs):
+        val = apply(miscc.wxRect_Offset,(self,) + _args, _kwargs)
+        return val
+    def Set(self, *_args, **_kwargs):
+        val = apply(miscc.wxRect_Set,(self,) + _args, _kwargs)
         return val
     def asTuple(self, *_args, **_kwargs):
         val = apply(miscc.wxRect_asTuple,(self,) + _args, _kwargs)
@@ -350,7 +389,10 @@ class wxRectPtr :
         elif index == 2: self.width = val
         elif index == 3: self.height = val
         else: raise IndexError
-    def __nonzero__(self):      return self.asTuple() != (0,0,0,0)
+    def __nonzero__(self):               return self.asTuple() != (0,0,0,0)
+    def __getinitargs__(self):           return ()
+    def __getstate__(self):              return self.asTuple()
+    def __setstate__(self, state):       self.Set(*state)
 
     # override the __getattr__ made by SWIG
     def __getattr__(self, name):
@@ -431,6 +473,9 @@ class wxPoint2DDoublePtr :
     def GetCrossProduct(self, *_args, **_kwargs):
         val = apply(miscc.wxPoint2DDouble_GetCrossProduct,(self,) + _args, _kwargs)
         return val
+    def Set(self, *_args, **_kwargs):
+        val = apply(miscc.wxPoint2DDouble_Set,(self,) + _args, _kwargs)
+        return val
     def __neg__(self, *_args, **_kwargs):
         val = apply(miscc.wxPoint2DDouble___neg__,(self,) + _args, _kwargs)
         if val: val = wxPoint2DDoublePtr(val) ; val.thisown = 1
@@ -502,7 +547,10 @@ class wxPoint2DDoublePtr :
         if index == 0: self.m_x = val
         elif index == 1: self.m_yt = val
         else: raise IndexError
-    def __nonzero__(self):      return self.asTuple() != (0.0, 0.0)
+    def __nonzero__(self):               return self.asTuple() != (0.0, 0.0)
+    def __getinitargs__(self):           return ()
+    def __getstate__(self):              return self.asTuple()
+    def __setstate__(self, state):       self.Set(*state)
 
 class wxPoint2DDouble(wxPoint2DDoublePtr):
     def __init__(self,*_args,**_kwargs):
@@ -627,9 +675,12 @@ class wxAcceleratorEntryPtr :
     def __init__(self,this):
         self.this = this
         self.thisown = 0
-    def __del__(self,miscc=miscc):
-        if self.thisown == 1 :
-            miscc.delete_wxAcceleratorEntry(self)
+    def __del__(self, delfunc=miscc.delete_wxAcceleratorEntry):
+        if self.thisown == 1:
+            try:
+                delfunc(self)
+            except:
+                pass
     def Set(self, *_args, **_kwargs):
         val = apply(miscc.wxAcceleratorEntry_Set,(self,) + _args, _kwargs)
         return val
@@ -656,9 +707,12 @@ class wxAcceleratorTablePtr(wxObjectPtr):
     def __init__(self,this):
         self.this = this
         self.thisown = 0
-    def __del__(self,miscc=miscc):
-        if self.thisown == 1 :
-            miscc.delete_wxAcceleratorTable(self)
+    def __del__(self, delfunc=miscc.delete_wxAcceleratorTable):
+        if self.thisown == 1:
+            try:
+                delfunc(self)
+            except:
+                pass
     def __repr__(self):
         return "<C wxAcceleratorTable instance at %s>" % (self.this,)
 class wxAcceleratorTable(wxAcceleratorTablePtr):
@@ -673,9 +727,12 @@ class wxBusyInfoPtr(wxObjectPtr):
     def __init__(self,this):
         self.this = this
         self.thisown = 0
-    def __del__(self,miscc=miscc):
-        if self.thisown == 1 :
-            miscc.delete_wxBusyInfo(self)
+    def __del__(self, delfunc=miscc.delete_wxBusyInfo):
+        if self.thisown == 1:
+            try:
+                delfunc(self)
+            except:
+                pass
     def __repr__(self):
         return "<C wxBusyInfo instance at %s>" % (self.this,)
 class wxBusyInfo(wxBusyInfoPtr):
@@ -695,10 +752,6 @@ wxIntersectRect = miscc.wxIntersectRect
 wxNewId = miscc.wxNewId
 
 wxRegisterId = miscc.wxRegisterId
-
-NewId = miscc.NewId
-
-RegisterId = miscc.RegisterId
 
 wxGetCurrentId = miscc.wxGetCurrentId
 

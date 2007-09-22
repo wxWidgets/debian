@@ -4,7 +4,7 @@
 // Author:      Robert Roebling
 // Modified by:
 // Created:     12/12/98
-// RCS-ID:      $Id: filedlgg.cpp,v 1.72.2.9 2002/12/17 22:31:37 JS Exp $
+// RCS-ID:      $Id: filedlgg.cpp,v 1.72.2.10 2003/02/18 09:27:23 JS Exp $
 // Copyright:   (c) Robert Roebling
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -1262,8 +1262,8 @@ void wxFileDialog::DoSetFilterIndex(int filterindex)
     m_filterIndex = filterindex;
     if ( str->Left(2) == wxT("*.") )
     {
-        m_filterExtension = str->Mid(2);
-        if (m_filterExtension == _T("*"))
+        m_filterExtension = str->Mid(1);
+        if (m_filterExtension == _T(".*"))
             m_filterExtension.clear();
     }
     else

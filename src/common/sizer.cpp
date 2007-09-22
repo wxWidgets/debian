@@ -4,7 +4,7 @@
 // Author:      Robert Roebling and Robin Dunn
 // Modified by: Ron Lee
 // Created:
-// RCS-ID:      $Id: sizer.cpp,v 1.46.2.4 2002/11/09 13:29:22 RL Exp $
+// RCS-ID:      $Id: sizer.cpp,v 1.46.2.5 2003/02/02 14:58:56 JS Exp $
 // Copyright:   (c) Robin Dunn, Dirk Holtwick and Robert Roebling
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -1232,8 +1232,8 @@ static void GetStaticBoxBorders(wxStaticBox *box,
         *borderTop = 5;
     else
 #endif // __WXGTK__
-        *borderTop = 15;
-    (void)box;
+        *borderTop = box->GetCharHeight();
+
     *borderOther = 5;
 }
 

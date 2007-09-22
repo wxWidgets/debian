@@ -4,7 +4,7 @@
 // Author:      Karsten Ballüder
 // Modified by:
 // Created:     09.05.1999
-// RCS-ID:      $Id: progdlgg.cpp,v 1.62.2.2 2002/12/16 10:57:48 JS Exp $
+// RCS-ID:      $Id: progdlgg.cpp,v 1.62.2.4 2003/03/04 13:37:09 SC Exp $
 // Copyright:   (c) Karsten Ballüder
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -337,7 +337,8 @@ wxProgressDialog::Update(int value, const wxString& newmsg)
     if ( (m_elapsed || m_remaining || m_estimated) && (value != 0) )
     {
         unsigned long elapsed = wxGetCurrentTime() - m_timeStart;
-        unsigned long estimated = elapsed * m_maximum / value;
+        unsigned long estimated = (unsigned long)( ( (double) elapsed * m_maximum ) 
+            / ((double)value) ) ;
         unsigned long remaining = estimated - elapsed;
 
         SetTimeLabel(elapsed, m_elapsed);

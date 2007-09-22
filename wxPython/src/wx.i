@@ -5,7 +5,7 @@
 // Author:      Robin Dunn
 //
 // Created:     5/22/98
-// RCS-ID:      $Id: wx.i,v 1.37.2.5 2003/01/15 23:07:14 RD Exp $
+// RCS-ID:      $Id: wx.i,v 1.37.2.7 2003/03/21 18:57:01 RD Exp $
 // Copyright:   (c) 1998 by Total Control Software
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -68,7 +68,8 @@ wxSize      wxDefaultSize;
 enum {
     wxPYAPP_ASSERT_SUPPRESS  = 1,
     wxPYAPP_ASSERT_EXCEPTION = 2,
-    wxPYAPP_ASSERT_DIALOG    = 4
+    wxPYAPP_ASSERT_DIALOG    = 4,
+    wxPYAPP_ASSERT_LOG       = 8
 };
 
 
@@ -120,6 +121,21 @@ public:
 
     int  GetAssertMode();
     void SetAssertMode(int mode);
+
+
+    static bool GetMacDefaultEncodingIsPC();
+    static bool GetMacSupportPCMenuShortcuts();
+    static long GetMacAboutMenuItemId();
+    static long GetMacPreferencesMenuItemId();
+    static long GetMacExitMenuItemId();
+    static wxString GetMacHelpMenuTitleName();
+
+    static void SetMacDefaultEncodingIsPC(bool val);
+    static void SetMacSupportPCMenuShortcuts(bool val);
+    static void SetMacAboutMenuItemId(long val);
+    static void SetMacPreferencesMenuItemId(long val);
+    static void SetMacExitMenuItemId(long val);
+    static void SetMacHelpMenuTitleName(const wxString& val);
 };
 
 %inline %{

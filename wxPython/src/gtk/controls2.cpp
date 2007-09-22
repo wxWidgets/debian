@@ -3713,6 +3713,38 @@ static PyObject *_wrap_wxListCtrl_GetItemSpacing(PyObject *self, PyObject *args,
     return _resultobj;
 }
 
+#define wxListCtrl_SetItemSpacing(_swigobj,_swigarg0,_swigarg1)  (_swigobj->SetItemSpacing(_swigarg0,_swigarg1))
+static PyObject *_wrap_wxListCtrl_SetItemSpacing(PyObject *self, PyObject *args, PyObject *kwargs) {
+    PyObject * _resultobj;
+    wxPyListCtrl * _arg0;
+    int  _arg1;
+    bool  _arg2 = (bool ) FALSE;
+    PyObject * _argo0 = 0;
+    int tempbool2 = (int) FALSE;
+    char *_kwnames[] = { "self","spacing","isSmall", NULL };
+
+    self = self;
+    if(!PyArg_ParseTupleAndKeywords(args,kwargs,"Oi|i:wxListCtrl_SetItemSpacing",_kwnames,&_argo0,&_arg1,&tempbool2)) 
+        return NULL;
+    if (_argo0) {
+        if (_argo0 == Py_None) { _arg0 = NULL; }
+        else if (SWIG_GetPtrObj(_argo0,(void **) &_arg0,"_wxPyListCtrl_p")) {
+            PyErr_SetString(PyExc_TypeError,"Type error in argument 1 of wxListCtrl_SetItemSpacing. Expected _wxPyListCtrl_p.");
+        return NULL;
+        }
+    }
+    _arg2 = (bool ) tempbool2;
+{
+    PyThreadState* __tstate = wxPyBeginAllowThreads();
+    wxListCtrl_SetItemSpacing(_arg0,_arg1,_arg2);
+
+    wxPyEndAllowThreads(__tstate);
+    if (PyErr_Occurred()) return NULL;
+}    Py_INCREF(Py_None);
+    _resultobj = Py_None;
+    return _resultobj;
+}
+
 #define wxListCtrl_GetSelectedItemCount(_swigobj)  (_swigobj->GetSelectedItemCount())
 static PyObject *_wrap_wxListCtrl_GetSelectedItemCount(PyObject *self, PyObject *args, PyObject *kwargs) {
     PyObject * _resultobj;
@@ -4282,6 +4314,35 @@ static PyObject *_wrap_wxListCtrl_ClearAll(PyObject *self, PyObject *args, PyObj
 {
     PyThreadState* __tstate = wxPyBeginAllowThreads();
     wxListCtrl_ClearAll(_arg0);
+
+    wxPyEndAllowThreads(__tstate);
+    if (PyErr_Occurred()) return NULL;
+}    Py_INCREF(Py_None);
+    _resultobj = Py_None;
+    return _resultobj;
+}
+
+#define wxListCtrl_EditLabel(_swigobj,_swigarg0)  (_swigobj->EditLabel(_swigarg0))
+static PyObject *_wrap_wxListCtrl_EditLabel(PyObject *self, PyObject *args, PyObject *kwargs) {
+    PyObject * _resultobj;
+    wxPyListCtrl * _arg0;
+    long  _arg1;
+    PyObject * _argo0 = 0;
+    char *_kwnames[] = { "self","item", NULL };
+
+    self = self;
+    if(!PyArg_ParseTupleAndKeywords(args,kwargs,"Ol:wxListCtrl_EditLabel",_kwnames,&_argo0,&_arg1)) 
+        return NULL;
+    if (_argo0) {
+        if (_argo0 == Py_None) { _arg0 = NULL; }
+        else if (SWIG_GetPtrObj(_argo0,(void **) &_arg0,"_wxPyListCtrl_p")) {
+            PyErr_SetString(PyExc_TypeError,"Type error in argument 1 of wxListCtrl_EditLabel. Expected _wxPyListCtrl_p.");
+        return NULL;
+        }
+    }
+{
+    PyThreadState* __tstate = wxPyBeginAllowThreads();
+    wxListCtrl_EditLabel(_arg0,_arg1);
 
     wxPyEndAllowThreads(__tstate);
     if (PyErr_Occurred()) return NULL;
@@ -10849,6 +10910,7 @@ static PyMethodDef controls2cMethods[] = {
 	 { "wxListCtrl_FindItemData", (PyCFunction) _wrap_wxListCtrl_FindItemData, METH_VARARGS | METH_KEYWORDS },
 	 { "wxListCtrl_FindItem", (PyCFunction) _wrap_wxListCtrl_FindItem, METH_VARARGS | METH_KEYWORDS },
 	 { "wxListCtrl_EnsureVisible", (PyCFunction) _wrap_wxListCtrl_EnsureVisible, METH_VARARGS | METH_KEYWORDS },
+	 { "wxListCtrl_EditLabel", (PyCFunction) _wrap_wxListCtrl_EditLabel, METH_VARARGS | METH_KEYWORDS },
 	 { "wxListCtrl_ClearAll", (PyCFunction) _wrap_wxListCtrl_ClearAll, METH_VARARGS | METH_KEYWORDS },
 	 { "wxListCtrl_DeleteAllColumns", (PyCFunction) _wrap_wxListCtrl_DeleteAllColumns, METH_VARARGS | METH_KEYWORDS },
 	 { "wxListCtrl_DeleteColumn", (PyCFunction) _wrap_wxListCtrl_DeleteColumn, METH_VARARGS | METH_KEYWORDS },
@@ -10868,6 +10930,7 @@ static PyMethodDef controls2cMethods[] = {
 	 { "wxListCtrl_SetTextColour", (PyCFunction) _wrap_wxListCtrl_SetTextColour, METH_VARARGS | METH_KEYWORDS },
 	 { "wxListCtrl_GetTextColour", (PyCFunction) _wrap_wxListCtrl_GetTextColour, METH_VARARGS | METH_KEYWORDS },
 	 { "wxListCtrl_GetSelectedItemCount", (PyCFunction) _wrap_wxListCtrl_GetSelectedItemCount, METH_VARARGS | METH_KEYWORDS },
+	 { "wxListCtrl_SetItemSpacing", (PyCFunction) _wrap_wxListCtrl_SetItemSpacing, METH_VARARGS | METH_KEYWORDS },
 	 { "wxListCtrl_GetItemSpacing", (PyCFunction) _wrap_wxListCtrl_GetItemSpacing, METH_VARARGS | METH_KEYWORDS },
 	 { "wxListCtrl_GetColumnCount", (PyCFunction) _wrap_wxListCtrl_GetColumnCount, METH_VARARGS | METH_KEYWORDS },
 	 { "wxListCtrl_GetItemCount", (PyCFunction) _wrap_wxListCtrl_GetItemCount, METH_VARARGS | METH_KEYWORDS },

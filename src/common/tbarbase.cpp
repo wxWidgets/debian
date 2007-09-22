@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by: VZ at 11.12.99 (wxScrollableToolBar splitted off)
 // Created:     04/01/98
-// RCS-ID:      $Id: tbarbase.cpp,v 1.46 2002/06/02 10:57:13 RR Exp $
+// RCS-ID:      $Id: tbarbase.cpp,v 1.46.2.1 2003/03/03 00:01:51 VZ Exp $
 // Copyright:   (c) Julian Smart and Markus Holzem
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -212,12 +212,20 @@ wxControl *wxToolBarBase::FindControl( int id )
           node;
           node = node->GetNext() )
     {
-        wxControl *control = node->GetData()->GetControl();
-        
-        if (control)
+        const wxToolBarToolBase * const tool = node->GetData();
+        if ( tool->IsControl() )
         {
-            if (control->GetId() == id)
+            wxControl * const control = tool->GetControl();
+
+            if ( !control )
+            {
+                wxFAIL_MSG( _T("NULL control in toolbar?") );
+            }
+            else if ( control->GetId() == id )
+            {
+                // found
                 return control;
+            }
         }
     }
 

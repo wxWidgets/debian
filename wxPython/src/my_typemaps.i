@@ -5,7 +5,7 @@
 // Author:      Robin Dunn
 //
 // Created:     7/3/97
-// RCS-ID:      $Id: my_typemaps.i,v 1.23.2.5 2003/01/21 00:59:20 RD Exp $
+// RCS-ID:      $Id: my_typemaps.i,v 1.23.2.6 2003/02/18 00:24:58 RD Exp $
 // Copyright:   (c) 1998 by Total Control Software
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -402,6 +402,8 @@ $function
 %typemap(python, out) wxMenu*                   { $target = wxPyMake_wxObject($source); }
 %typemap(python, out) wxValidator*              { $target = wxPyMake_wxObject($source); }
 
+%typemap(python, out) wxApp*                    { $target = wxPyMake_wxObject($source); }
+%typemap(python, out) wxPyApp*                  { $target = wxPyMake_wxObject($source); }
 %typemap(python, out) wxDC*                     { $target = wxPyMake_wxObject($source); }
 %typemap(python, out) wxFSFile*                 { $target = wxPyMake_wxObject($source); }
 %typemap(python, out) wxFileSystem*             { $target = wxPyMake_wxObject($source); }

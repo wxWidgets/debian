@@ -7,7 +7,7 @@ platform-independent data files."""
 
 # This module should be kept compatible with Python 1.5.2.
 
-__revision__ = "$Id: install_data.py,v 1.1.2.1 2003/01/21 22:14:28 RD Exp $"
+__revision__ = "$Id: install_data.py,v 1.1.2.2 2003/02/21 21:45:53 RD Exp $"
 
 import os
 from types import StringType

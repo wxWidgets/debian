@@ -4,9 +4,10 @@ Implements the Distutils 'build_scripts' command."""
 
 # This module should be kept compatible with Python 1.5.2.
 
-__revision__ = "$Id: build_scripts.py,v 1.1.2.1 2003/01/21 22:14:29 RD Exp $"
+__revision__ = "$Id: build_scripts.py,v 1.1.2.2 2003/02/21 21:45:53 RD Exp $"
 
 import sys, os, re
+from stat import ST_MODE
 from distutils import sysconfig
 from distutils.core import Command
 from distutils.dep_util import newer
@@ -54,10 +55,12 @@ class build_scripts (Command):
         line to refer to the current Python interpreter as we copy.
         """
         self.mkpath(self.build_dir)
+        outfiles = []
         for script in self.scripts:
             adjust = 0
             script = convert_path(script)
             outfile = os.path.join(self.build_dir, os.path.basename(script))
+            outfiles.append(outfile)
 
             if not self.force and not newer(script, outfile):
                 log.debug("not copying %s (up-to-date)", script)
@@ -105,6 +108,18 @@ class build_scripts (Command):
             else:
                 f.close()
                 self.copy_file(script, outfile)
+
+        if os.name == 'posix':
+            for file in outfiles:
+                if self.dry_run:
+                    log.info("changing mode of %s", file)
+                else:
+                    oldmode = os.stat(file)[ST_MODE] & 07777
+                    newmode = (oldmode | 0555) & 07777
+                    if newmode != oldmode:
+                        log.info("changing mode of %s from %o to %o",
+                                 file, oldmode, newmode)
+                        os.chmod(file, newmode)
 
     # copy_scripts ()
 

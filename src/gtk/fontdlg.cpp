@@ -2,7 +2,7 @@
 // Name:        gtk/fontdlg.cpp
 // Purpose:     wxFontDialog
 // Author:      Robert Roebling
-// Id:          $Id: fontdlg.cpp,v 1.18.2.1 2002/10/29 21:48:04 RR Exp $
+// Id:          $Id: fontdlg.cpp,v 1.18.2.2 2003/02/11 11:35:12 RR Exp $
 // Copyright:   (c) 1998 Robert Roebling
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -64,6 +64,8 @@ void gtk_fontdialog_ok_callback( GtkWidget *WXUNUSED(widget), wxFontDialog *dial
         wxapp_install_idle_handler();
 
     GtkFontSelectionDialog *fontdlg = GTK_FONT_SELECTION_DIALOG(dialog->m_widget);
+    
+#ifndef __WXGTK20__
     GdkFont *gfont = gtk_font_selection_dialog_get_font(fontdlg);
 
     if (!gfont)
@@ -72,13 +74,10 @@ void gtk_fontdialog_ok_callback( GtkWidget *WXUNUSED(widget), wxFontDialog *dial
                      wxOK | wxICON_ERROR);
         return;
     }
+#endif
 
-    gchar *fontname = gtk_font_selection_dialog_get_font_name(fontdlg);
-    
-    // printf( "font %s\n", fontname );
-
+    gchar *fontname = gtk_font_selection_dialog_get_font_name( fontdlg );
     dialog->SetChosenFont( fontname);
-
     g_free( fontname );
 
     wxCommandEvent event(wxEVT_COMMAND_BUTTON_CLICKED, wxID_OK);

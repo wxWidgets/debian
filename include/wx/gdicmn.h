@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     01/02/97
-// RCS-ID:      $Id: gdicmn.h,v 1.60.2.2 2002/11/09 00:24:59 VS Exp $
+// RCS-ID:      $Id: gdicmn.h,v 1.60.2.3 2003/03/04 12:02:30 SC Exp $
 // Copyright:   (c)
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -117,6 +117,9 @@ enum wxStockCursor
     wxCURSOR_BLANK,
 #ifdef __WXGTK__
     wxCURSOR_DEFAULT, // standard X11 cursor
+#endif
+#ifdef __WXMAC__
+	wxCURSOR_COPY_ARROW , // MacOS Theme Plus arrow 
 #endif
 #ifdef __X__
     // Not yet implemented for Windows

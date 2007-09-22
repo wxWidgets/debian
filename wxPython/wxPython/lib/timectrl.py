@@ -3,7 +3,7 @@
 # Author:       Will Sadkin
 # Created:      09/19/2002
 # Copyright:    (c) 2002 by Will Sadkin, 2002
-# RCS-ID:       $Id: timectrl.py,v 1.1.2.9 2003/01/22 18:14:19 RD Exp $
+# RCS-ID:       $Id: timectrl.py,v 1.1.2.12 2003/03/11 19:45:41 RD Exp $
 # License:      wxWindows license
 #----------------------------------------------------------------------------
 # NOTE:
@@ -138,7 +138,7 @@ class wxTimeCtrl(wxTextCtrl):
         # Validate initial value and set if appropriate
         try:
             self.SetValue(value)
-        except ValueError:
+        except:
             self.SetValue('12:00:00 AM')
 
         # set initial position and selection state
@@ -154,7 +154,7 @@ class wxTimeCtrl(wxTextCtrl):
         EVT_CHAR(self, self.__OnChar)
 
         if spinButton:
-            self.BindSpinbutton(spinButton)     # bind spin button up/down events to this control
+            self.BindSpinButton(spinButton)     # bind spin button up/down events to this control
 
 
     def BindSpinButton(self, sb):
@@ -474,7 +474,7 @@ class wxTimeCtrl(wxTextCtrl):
         selection = sel_start != sel_to
         _dbg('sel_start=', sel_start, 'sel_to =', sel_to)
         if not selection:
-            self.__bSelection = false                       # predict unselection of entire region
+            self.__bSelection = False                       # predict unselection of entire region
 
         _dbg('keycode = ', key)
         _dbg('pos = ', pos)
@@ -806,7 +806,7 @@ if __name__ == '__main__':
             sizer.AddWindow( self.tc, 0, wxALIGN_CENTRE|wxLEFT|wxTOP|wxBOTTOM, 5 )
             sizer.AddWindow( sb, 0, wxALIGN_CENTRE|wxRIGHT|wxTOP|wxBOTTOM, 5 )
 
-            self.SetAutoLayout( true )
+            self.SetAutoLayout( True )
             self.SetSizer( sizer )
             sizer.Fit( self )
             sizer.SetSizeHints( self )
@@ -830,11 +830,11 @@ if __name__ == '__main__':
             try:
                 frame = wxFrame(NULL, -1, "wxTimeCtrl Test", wxPoint(20,20), wxSize(100,100) )
                 panel = TestPanel(frame, -1, wxPoint(-1,-1), fmt24hr=fmt24hr, test_mx = test_mx)
-                frame.Show(true)
+                frame.Show(True)
             except:
                 traceback.print_exc()
-                return false
-            return true
+                return False
+            return True
 
     try:
         app = MyApp(0)

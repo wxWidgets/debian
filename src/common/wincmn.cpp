@@ -4,7 +4,7 @@
 // Author:      Julian Smart, Vadim Zeitlin
 // Modified by:
 // Created:     13/07/98
-// RCS-ID:      $Id: wincmn.cpp,v 1.123.2.4 2003/01/03 12:56:31 JS Exp $
+// RCS-ID:      $Id: wincmn.cpp,v 1.123.2.5 2003/02/02 15:06:36 JS Exp $
 // Copyright:   (c) wxWindows team
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -219,7 +219,7 @@ bool wxWindowBase::CreateBase(wxWindowBase *parent,
     // dialog/frame and all children will inherit it by defult
     if ( parent && (parent->GetExtraStyle() & wxWS_EX_VALIDATE_RECURSIVELY) )
     {
-        SetExtraStyle(wxWS_EX_VALIDATE_RECURSIVELY);
+        SetExtraStyle(GetExtraStyle() | wxWS_EX_VALIDATE_RECURSIVELY);
     }
 
     return TRUE;

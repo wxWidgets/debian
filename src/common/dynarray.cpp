@@ -4,7 +4,7 @@
 // Author:      Vadim Zeitlin
 // Modified by:
 // Created:     12.09.97
-// RCS-ID:      $Id: dynarray.cpp,v 1.27.2.2 2002/09/24 00:35:08 RD Exp $
+// RCS-ID:      $Id: dynarray.cpp,v 1.27.2.3 2003/03/10 18:11:11 VZ Exp $
 // Copyright:   (c) 1998 Vadim Zeitlin <zeitlin@dptmaths.ens-cachan.fr>
 // Licence:     wxWindows license
 ///////////////////////////////////////////////////////////////////////////////
@@ -189,6 +189,7 @@ void name::Shrink()                                                         \
         memcpy(pNew, m_pItems, m_nCount*sizeof(T));                         \
         delete [] m_pItems;                                                 \
         m_pItems = pNew;                                                    \
+        m_nSize = m_nCount;                                                 \
     }                                                                       \
   }                                                                         \
 }                                                                           \

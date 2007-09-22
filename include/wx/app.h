@@ -5,7 +5,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     01/02/97
-// RCS-ID:      $Id: app.h,v 1.72 2002/09/10 17:35:07 VZ Exp $
+// RCS-ID:      $Id: app.h,v 1.72.2.1 2003/02/14 17:25:45 SN Exp $
 // Copyright:   (c) Julian Smart and Markus Holzem
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -16,22 +16,6 @@
 #if defined(__GNUG__) && !defined(__APPLE__)
     #pragma interface "appbase.h"
 #endif
-
-// ----------------------------------------------------------------------------
-// typedefs
-// ----------------------------------------------------------------------------
-
-#if (defined(__WXMSW__) && !defined(__WXMICROWIN__)) || defined (__WXPM__)
-    class WXDLLEXPORT wxApp;
-    typedef wxApp* (*wxAppInitializerFunction)();
-#else
-    // returning wxApp* won't work with gcc
-    #include "wx/object.h"
-
-    typedef wxObject* (*wxAppInitializerFunction)();
-#endif
-
-class WXDLLEXPORT wxCmdLineParser;
 
 // ----------------------------------------------------------------------------
 // headers we have to include here
@@ -49,6 +33,25 @@ class WXDLLEXPORT wxCmdLineParser;
 
 #include "wx/build.h"
 
+// ----------------------------------------------------------------------------
+// typedefs
+// ----------------------------------------------------------------------------
+// Do includes first to insure that even wxBase consistently uses
+// the wxMSW case for defining wxAppInitializerFunction.
+// (otherwise, __WXMSW__ will not yet be set, if app.h is the
+//  first file to be included).
+
+#if (defined(__WXMSW__) && !defined(__WXMICROWIN__)) || defined (__WXPM__)
+    class WXDLLEXPORT wxApp;
+    typedef wxApp* (*wxAppInitializerFunction)();
+#else
+    // returning wxApp* won't work with gcc
+    #include "wx/object.h"
+
+    typedef wxObject* (*wxAppInitializerFunction)();
+#endif
+
+class WXDLLEXPORT wxCmdLineParser;
 class WXDLLEXPORT wxLog;
 class WXDLLEXPORT wxMessageOutput;
 

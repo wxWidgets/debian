@@ -13,8 +13,8 @@ class SimpleGrid(wxGrid): ##, wxGridAutoEditMixin):
 
         EVT_IDLE(self, self.OnIdle)
 
-        self.CreateGrid(25, 25)
-        ##self.EnableEditing(false)
+        self.CreateGrid(25, 25) #, wxGrid.wxGridSelectRows)
+        ##self.EnableEditing(False)
 
         # simple cell formatting
         self.SetColSize(3, 200)
@@ -26,7 +26,7 @@ class SimpleGrid(wxGrid): ##, wxGridAutoEditMixin):
         self.SetCellFont(0, 0, wxFont(12, wxROMAN, wxITALIC, wxNORMAL))
         self.SetCellTextColour(1, 1, wxRED)
         self.SetCellBackgroundColour(2, 2, wxCYAN)
-        self.SetReadOnly(3, 3, true)
+        self.SetReadOnly(3, 3, True)
 
         self.SetCellEditor(5, 0, wxGridCellNumberEditor(1,1000))
         self.SetCellValue(5, 0, "123")
@@ -52,6 +52,10 @@ class SimpleGrid(wxGrid): ##, wxGridAutoEditMixin):
         self.SetColLabelValue(2, "labels")
 
         self.SetColLabelAlignment(wxALIGN_LEFT, wxALIGN_BOTTOM)
+
+        #self.SetDefaultCellOverflow(False)
+        #r = wxGridCellAutoWrapStringRenderer()
+        #self.SetCellRenderer(9, 1, r)
 
         # overflow cells
         self.SetCellValue( 9, 1, "This default cell will overflow into neighboring cells, but not if you turn overflow off.");
@@ -224,7 +228,7 @@ if __name__ == '__main__':
     import sys
     app = wxPySimpleApp()
     frame = TestFrame(None, sys.stdout)
-    frame.Show(true)
+    frame.Show(True)
     app.MainLoop()
 
 

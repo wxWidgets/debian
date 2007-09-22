@@ -5,7 +5,7 @@
 // Author:      Robin Dunn
 //
 // Created:     6/24/97
-// RCS-ID:      $Id: windows.i,v 1.51.2.4 2002/11/19 02:43:40 RD Exp $
+// RCS-ID:      $Id: windows.i,v 1.51.2.5 2003/03/05 04:08:08 RD Exp $
 // Copyright:   (c) 1998 by Total Control Software
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -216,6 +216,7 @@ public:
     void DragAcceptFiles(bool accept);
 #endif
     void Enable(bool enable);
+    void Disable();
 
     // Find child window by ID or name
     %name(FindWindowById) wxWindow* FindWindow(long id);

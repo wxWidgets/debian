@@ -3,7 +3,7 @@
 # Purpose:  Makefile for Unix wxWindows ports (both GUI and wxBase)
 # Author:   Julian Smart, Robert Roebling, Vadim Zeitlin, Ron Lee
 # Created:  1993
-# Version:  $Id: Makefile.in,v 1.211.2.15 2003/01/28 02:52:20 RL Exp $
+# Version:  $Id: Makefile.in,v 1.211.2.17 2003/03/11 19:48:29 RD Exp $
 # Copyright:(c) 1993, AIAI, University of Edinburgh,
 # Copyright:(c) 1999, Vadim Zeitlin
 # Copyright:(c) 1999, Robert Roebling
@@ -1153,7 +1153,7 @@ SAMPLES_DIST: ALL_GUI_DIST
 	cp $(SAMPDIR)/mobile/styles/*.cpp $(DISTDIR)/samples/mobile/styles
 	cp $(SAMPDIR)/mobile/styles/*.h $(DISTDIR)/samples/mobile/styles
 	cp $(SAMPDIR)/mobile/styles/*.jpg $(DISTDIR)/samples/mobile/styles
-    
+
 	mkdir $(DISTDIR)/samples/dialup
 	cp $(SAMPDIR)/dialup/Makefile.in $(DISTDIR)/samples/dialup
 	cp $(SAMPDIR)/dialup/makefile.unx $(DISTDIR)/samples/dialup
@@ -1449,11 +1449,13 @@ PYTHON_DIST:
 	mkdir $(DISTDIR)/wxPython/wxPython
 	mkdir $(DISTDIR)/wxPython/wxPython/lib
 	mkdir $(DISTDIR)/wxPython/wxPython/lib/PyCrust
+	mkdir $(DISTDIR)/wxPython/wxPython/lib/PyCrust/wxd
 	mkdir $(DISTDIR)/wxPython/wxPython/lib/colourchooser
 	mkdir $(DISTDIR)/wxPython/wxPython/lib/editor
 	mkdir $(DISTDIR)/wxPython/wxPython/lib/mixins
 	mkdir $(DISTDIR)/wxPython/wxPython/tools
 	mkdir $(DISTDIR)/wxPython/wxPython/tools/XRCed
+	mkdir $(DISTDIR)/wxPython/wxPython/tools/XRCed/src-images
 
 	cp $(WXDIR)/wxPython/*.txt $(DISTDIR)/wxPython
 	cp $(WXDIR)/wxPython/*.py $(DISTDIR)/wxPython
@@ -1481,11 +1483,14 @@ PYTHON_DIST:
 	cp $(WXDIR)/wxPython/src/gtk/*.cpp $(DISTDIR)/wxPython/src/gtk
 	cp $(WXDIR)/wxPython/wxPython/lib/*.py $(DISTDIR)/wxPython/wxPython/lib
 	cp $(WXDIR)/wxPython/wxPython/lib/PyCrust/*.py $(DISTDIR)/wxPython/wxPython/lib/PyCrust
+	cp $(WXDIR)/wxPython/wxPython/lib/PyCrust/wxd/*.py $(DISTDIR)/wxPython/wxPython/lib/PyCrust/wxd
 	cp $(WXDIR)/wxPython/wxPython/lib/colourchooser/*.py $(DISTDIR)/wxPython/wxPython/lib/colourchooser
 	cp $(WXDIR)/wxPython/wxPython/lib/editor/*.py $(DISTDIR)/wxPython/wxPython/lib/editor
 	cp $(WXDIR)/wxPython/wxPython/lib/mixins/*.py $(DISTDIR)/wxPython/wxPython/lib/mixins
 	cp $(WXDIR)/wxPython/wxPython/tools/*.py $(DISTDIR)/wxPython/wxPython/tools
 	cp $(WXDIR)/wxPython/wxPython/tools/XRCed/*.{py,ico,sh,xrc} $(DISTDIR)/wxPython/wxPython/tools/XRCed
+	cp $(WXDIR)/wxPython/wxPython/tools/XRCed/README.txt $(DISTDIR)/wxPython/wxPython/tools/XRCed
+	cp $(WXDIR)/wxPython/wxPython/tools/XRCed/src-images/*.png $(DISTDIR)/wxPython/wxPython/tools/XRCed/src-images
 
 distclean:
 	$(RM) -r _dist_dir

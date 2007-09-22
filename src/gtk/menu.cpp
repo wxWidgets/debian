@@ -2,7 +2,7 @@
 // Name:        menu.cpp
 // Purpose:
 // Author:      Robert Roebling
-// Id:          $Id: menu.cpp,v 1.125.2.9 2002/12/18 21:25:09 JS Exp $
+// Id:          $Id: menu.cpp,v 1.125.2.11 2003/02/18 09:08:58 JS Exp $
 // Copyright:   (c) 1998 Robert Roebling
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -145,7 +145,7 @@ static wxString wxReplaceUnderscore( const wxString& title )
 #endif
         else
         {
-#if __WXGTK12__
+#ifdef __WXGTK12__
             if ( *pc == wxT('_') )
             {
                 // underscores must be doubled to prevent them from being
@@ -159,6 +159,24 @@ static wxString wxReplaceUnderscore( const wxString& title )
         ++pc;
     }
     return str;
+}
+
+//-----------------------------------------------------------------------------
+// activate message from GTK
+//-----------------------------------------------------------------------------
+
+static void gtk_menu_open_callback( GtkWidget *widget, wxMenu *menu )
+{
+    if (g_isIdle) wxapp_install_idle_handler();
+
+    wxMenuEvent event( wxEVT_MENU_OPEN, -1 );
+    event.SetEventObject( menu );
+
+    if (menu->GetEventHandler()->ProcessEvent(event))
+        return;
+
+    wxWindow *win = menu->GetInvokingWindow();
+    if (win) win->GetEventHandler()->ProcessEvent( event );
 }
 
 //-----------------------------------------------------------------------------
@@ -391,6 +409,10 @@ bool wxMenuBar::GtkAppend(wxMenu *menu, const wxString& title)
     gtk_menu_bar_append( GTK_MENU_BAR(m_menubar), menu->m_owner );
 
 #endif
+
+    gtk_signal_connect( GTK_OBJECT(menu->m_owner), "activate",
+                        GTK_SIGNAL_FUNC(gtk_menu_open_callback),
+                        (gpointer)menu );
 
     // m_invokingWindow is set after wxFrame::SetMenuBar(). This call enables
     // addings menu later on.
@@ -907,7 +929,7 @@ void wxMenuItem::DoSetText( const wxString& str )
 #if GTK_CHECK_VERSION(2, 0, 0)
         else if ( *pc == wxT('_') )    // escape underscores
         {
-            // m_text << wxT("__");    doesn't work
+            m_text << wxT("__"); 
         }
         else if (*pc == wxT('/'))      // we have to escape slashes
         {
@@ -1010,8 +1032,12 @@ wxString wxMenuItem::GetFactoryPath() const
     {
         if ( *pc == wxT('_') )
         {
+#ifdef __WXGTK20__
+            pc++;
+#else
             // remove '_' unconditionally
             continue;
+#endif
         }
 
         // don't remove ampersands '&' since if we have them in the menu item title

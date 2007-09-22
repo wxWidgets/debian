@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     28/6/2000
-// RCS-ID:      $Id: splash.cpp,v 1.16 2002/02/14 13:50:10 VZ Exp $
+// RCS-ID:      $Id: splash.cpp,v 1.16.2.1 2003/03/04 05:14:50 RD Exp $
 // Copyright:   (c) Julian Smart
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -70,7 +70,7 @@ wxSplashScreen::wxSplashScreen(const wxBitmap& bitmap, long splashStyle, int mil
 
     Show(TRUE);
     m_window->SetFocus();
-#ifdef __WXMSW__
+#if defined(__WXMSW__) || defined(__WXMAC__)
     Update(); // Without this, you see a blank screen for an instant
 #else
     wxYieldIfNeeded(); // Should eliminate this

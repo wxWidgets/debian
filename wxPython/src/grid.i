@@ -5,7 +5,7 @@
 // Author:      Robin Dunn
 //
 // Created:     17-March-2000
-// RCS-ID:      $Id: grid.i,v 1.31.2.6 2003/01/14 21:27:56 RD Exp $
+// RCS-ID:      $Id: grid.i,v 1.31.2.8 2003/03/04 21:21:36 RD Exp $
 // Copyright:   (c) 2000 by Total Control Software
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -1455,8 +1455,12 @@ bool wxGridCellCoords_helper(PyObject* source, wxGridCellCoords** obj) {
 
 
 // Typemap to convert an array of cells coords to a list of tuples...
-%typemap(python, out) wxGridCellCoordsArray& {
+%typemap(python, out) wxGridCellCoordsArray {
     $target = wxGridCellCoordsArray_helper($source);
+}
+
+%typemap(python, ret) wxGridCellCoordsArray {
+    delete $source;
 }
 
 
@@ -1801,11 +1805,15 @@ public:
     bool IsInSelection( int row, int col );
     // TODO: ??? bool IsInSelection( const wxGridCellCoords& coords )
 
-    const wxGridCellCoordsArray& GetSelectedCells() const;
-    const wxGridCellCoordsArray& GetSelectionBlockTopLeft() const;
-    const wxGridCellCoordsArray& GetSelectionBlockBottomRight() const;
+    const wxGridCellCoordsArray GetSelectedCells() const;
+    const wxGridCellCoordsArray GetSelectionBlockTopLeft() const;
+    const wxGridCellCoordsArray GetSelectionBlockBottomRight() const;
     const wxArrayInt GetSelectedRows() const;
     const wxArrayInt GetSelectedCols() const;
+
+    void DeselectRow( int row );
+    void DeselectCol( int col );
+    void DeselectCell( int row, int col );
 
 
     // This function returns the rectangle that encloses the block of cells

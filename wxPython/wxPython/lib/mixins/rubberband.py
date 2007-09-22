@@ -3,7 +3,7 @@ A mixin class for doing "RubberBand"-ing on a window.
 
 by "Robb Shecter" <rs@onsitetech.com>
 
-$Id: rubberband.py,v 1.1.2.1 2002/09/17 00:27:20 RD Exp $
+$Id: rubberband.py,v 1.1.2.2 2003/02/26 18:38:07 RD Exp $
 
 """
 
@@ -49,7 +49,7 @@ def boxToExtent(box):
 
 def pointInBox(x, y, box):
     """
-    Return true if the given point is contained in the box.
+    Return True if the given point is contained in the box.
     """
     e = boxToExtent(box)
     return x >= e[0] and x <= e[2] and y >= e[1] and y <= e[3]
@@ -57,7 +57,7 @@ def pointInBox(x, y, box):
 
 def pointOnBox(x, y, box, thickness=1):
     """
-    Return true if the point is on the outside edge
+    Return True if the point is on the outside edge
     of the box.  The thickness defines how thick the
     edge should be.  This is necessary for HCI reasons:
     For example, it's normally very difficult for a user
@@ -133,14 +133,14 @@ class RubberBand:
 
     def __isMovingCursor(self):
         """
-        Return true if the current cursor is one used to
+        Return True if the current cursor is one used to
         mean moving the rubberband.
         """
         return self.__currentCursor == wxCURSOR_HAND
 
     def __isSizingCursor(self):
         """
-        Return true if the current cursor is one of the ones
+        Return True if the current cursor is one of the ones
         I may use to signify sizing.
         """
         sizingCursors = [wxCURSOR_SIZENESW,

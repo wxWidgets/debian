@@ -6,7 +6,7 @@
 # Author:       Robin Dunn
 #
 # Created:      6-March-2000
-# RCS-ID:       $Id: run.py,v 1.10.2.2 2002/12/24 00:06:11 RD Exp $
+# RCS-ID:       $Id: run.py,v 1.10.2.4 2003/02/26 18:38:29 RD Exp $
 # Copyright:    (c) 2000 by Total Control Software
 # Licence:      wxWindows license
 #----------------------------------------------------------------------------
@@ -51,7 +51,9 @@ class RunDemoApp(wxApp):
         EVT_MENU(self, 101, self.OnButton)
         menuBar.Append(menu, "&File")
         frame.SetMenuBar(menuBar)
-        frame.Show(true)
+        frame.Show(True)
+        EVT_CLOSE(frame, self.OnCloseFrame)
+
         win = self.demoModule.runTest(frame, frame, Log())
 
         # a window will be returned if the demo does not create
@@ -60,6 +62,7 @@ class RunDemoApp(wxApp):
             # so set the frame to a good size for showing stuff
             frame.SetSize((640, 480))
             win.SetFocus()
+            self.window = win
 
         else:
             # otherwise the demo made its own frame, so just put a
@@ -72,17 +75,24 @@ class RunDemoApp(wxApp):
                 # It was probably a dialog or something that is already
                 # gone, so we're done.
                 frame.Destroy()
-                return true
+                return True
 
         self.SetTopWindow(frame)
         self.frame = frame
         #wxLog_SetActiveTarget(wxLogStderr())
         #wxLog_SetTraceMask(wxTraceMessages)
-        return true
+        return True
 
 
     def OnButton(self, evt):
-        self.frame.Close(true)
+        self.frame.Close(True)
+
+
+    def OnCloseFrame(self, evt):
+        if hasattr(self, "window") and hasattr(self.window, "ShutdownDemo"):
+            self.window.ShutdownDemo()
+        evt.Skip()
+
 
 #----------------------------------------------------------------------------
 

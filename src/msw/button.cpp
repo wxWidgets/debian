@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     04/01/98
-// RCS-ID:      $Id: button.cpp,v 1.56 2002/08/23 16:00:32 VZ Exp $
+// RCS-ID:      $Id: button.cpp,v 1.56.2.1 2003/02/21 20:27:56 RD Exp $
 // Copyright:   (c) Julian Smart and Markus Holzem
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -352,9 +352,18 @@ bool wxButton::MSWCommand(WXUINT param, WXWORD WXUNUSED(id))
     bool processed = FALSE;
     switch ( param )
     {
+        // NOTE: Apparently older versions (NT 4?) of the common controls send
+        //       BN_DOUBLECLICKED but not a second BN_CLICKED for owner-drawn
+        //       buttons, so in order to send two EVET_BUTTON events we should
+        //       catch both types.  Currently (Feb 2003) up-to-date versions of
+        //       win98, win2k and winXP all send two BN_CLICKED messages for
+        //       all button types, so we don't catch BN_DOUBLECLICKED anymore
+        //       in order to not get 3 EVT_BUTTON events.  If this is a problem
+        //       then we need to figure out which version of the comctl32 changed
+        //       this behaviour and test for it.
+
         case 1:                     // message came from an accelerator
         case BN_CLICKED:            // normal buttons send this
-        case BN_DOUBLECLICKED:      // owner-drawn ones also send this
             processed = SendClickEvent();
             break;
     }

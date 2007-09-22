@@ -3,7 +3,7 @@
 // Purpose:     generic implementation of wxListCtrl
 // Author:      Robert Roebling
 //              Vadim Zeitlin (virtual list control support)
-// Id:          $Id: listctrl.cpp,v 1.269.2.9 2002/11/05 00:57:38 VZ Exp $
+// Id:          $Id: listctrl.cpp,v 1.269.2.10 2003/02/06 02:18:51 RD Exp $
 // Copyright:   (c) 1998 Robert Roebling
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -2527,8 +2527,16 @@ wxCoord wxListMainWindow::GetLineHeight() const
 
         if ( y < SCROLL_UNIT_Y )
             y = SCROLL_UNIT_Y;
-        y += EXTRA_HEIGHT;
 
+        if ( m_small_image_list && m_small_image_list->GetImageCount() )
+        {
+            int iw = 0;
+            int ih = 0;
+            m_small_image_list->GetSize(0, iw, ih);
+            y = wxMax(y, ih);
+        }
+
+        y += EXTRA_HEIGHT;
         self->m_lineHeight = y + LINE_SPACING;
     }
 
@@ -3633,6 +3641,7 @@ void wxListMainWindow::SetImageList( wxImageListType *imageList, int which )
     {
         m_small_image_list = imageList;
         m_small_spacing = width + 14;
+        m_lineHeight = 0;  // ensure that the line height will be recalc'd
     }
 }
 

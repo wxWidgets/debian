@@ -7,7 +7,7 @@
 // Author:      Robin Dunn
 //
 // Created:     18-June-1999
-// RCS-ID:      $Id: misc2.i,v 1.62.2.7 2003/01/02 22:24:43 RD Exp $
+// RCS-ID:      $Id: misc2.i,v 1.62.2.8 2003/02/26 03:59:33 RD Exp $
 // Copyright:   (c) 1998 by Total Control Software
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -511,8 +511,10 @@ public:
     bool BeginDrag(const wxPoint& hotspot, wxWindow* window,
                    bool fullScreen = FALSE, wxRect* rect = NULL);
 
-    %name(BeginDrag2) bool BeginDrag(const wxPoint& hotspot, wxWindow* window,
-                                     wxWindow* fullScreenRect);
+    %name(BeginDragBounded) bool BeginDrag(const wxPoint& hotspot, wxWindow* window,
+                                           wxWindow* boundingWindow);
+
+    %pragma(python) addtoclass = "BeginDrag2 = BeginDragBounded"
 
     bool EndDrag();
     bool Move(const wxPoint& pt);

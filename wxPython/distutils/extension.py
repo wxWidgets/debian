@@ -3,7 +3,7 @@
 Provides the Extension class, used to describe C/C++ extension
 modules in setup scripts."""
 
-__revision__ = "$Id: extension.py,v 1.1.2.1 2003/01/21 22:14:33 RD Exp $"
+__revision__ = "$Id: extension.py,v 1.1.2.2 2003/02/21 21:45:57 RD Exp $"
 
 import os, string, sys
 from types import *
@@ -82,6 +82,8 @@ class Extension:
         from the source extensions if not provided.
     """
 
+    # When adding arguments to this constructor, be sure to update
+    # setup_keywords in core.py.
     def __init__ (self, name, sources,
                   include_dirs=None,
                   define_macros=None,

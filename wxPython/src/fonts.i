@@ -5,7 +5,7 @@
 // Author:      Robin Dunn
 //
 // Created:     1-Apr-2002
-// RCS-ID:      $Id: fonts.i,v 1.4.2.4 2003/01/04 04:17:57 RD Exp $
+// RCS-ID:      $Id: fonts.i,v 1.4.2.6 2003/02/26 03:56:38 RD Exp $
 // Copyright:   (c) 2002 by Total Control Software
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -443,7 +443,9 @@ public:
 
 enum wxLanguage
 {
+    // user's default/preffered language as got from OS:
     wxLANGUAGE_DEFAULT,
+    // unknown language, if wxLocale::GetSystemLanguage fails:
     wxLANGUAGE_UNKNOWN,
 
     wxLANGUAGE_ABKHAZIAN,
@@ -722,15 +724,27 @@ public:
     wxLocale(int language = wxLANGUAGE_DEFAULT,
              int flags = wxLOCALE_LOAD_DEFAULT | wxLOCALE_CONV_ENCODING);
 
-        // the same as a function (returns TRUE on success)
-    bool Init(const wxString& szName,
-              const wxString& szShort = wxPyEmptyString,
-              const wxString& szLocale = wxPyEmptyString,
-              bool bLoadDefault = TRUE,
-              bool bConvertEncoding = FALSE);
-
         // restores old locale
     ~wxLocale();
+
+    %name(Init1)bool Init(const wxString& szName,
+                          const wxString& szShort = wxPyEmptyString,
+                          const wxString& szLocale = wxPyEmptyString,
+                          bool bLoadDefault = TRUE,
+                          bool bConvertEncoding = FALSE);
+
+    %name(Init2) bool Init(int language = wxLANGUAGE_DEFAULT,
+                           int flags = wxLOCALE_LOAD_DEFAULT | wxLOCALE_CONV_ENCODING);
+
+    %pragma(python) addtoclass = "
+    def Init(self, *_args, **_kwargs):
+        if type(_args[0]) in [type(''), type(u'')]:
+            val = apply(self.Init1, _args, _kwargs)
+        else:
+            val = apply(self.Init2, _args, _kwargs)
+        return val
+    "
+
 
     // Try to get user's (or OS's) prefered language setting.
     // Return wxLANGUAGE_UNKNOWN if language-guessing algorithm failed

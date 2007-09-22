@@ -8,7 +8,7 @@ really defined in distutils.dist and distutils.cmd.
 
 # This module should be kept compatible with Python 1.5.2.
 
-__revision__ = "$Id: core.py,v 1.1.2.1 2003/01/21 22:14:33 RD Exp $"
+__revision__ = "$Id: core.py,v 1.1.2.2 2003/02/21 21:45:58 RD Exp $"
 
 import sys, os
 from types import *
@@ -42,6 +42,19 @@ def gen_usage (script_name):
 _setup_stop_after = None
 _setup_distribution = None
 
+# Legal keyword arguments for the setup() function
+setup_keywords = ('distclass', 'script_name', 'script_args', 'options',
+                  'name', 'version', 'author', 'author_email',
+                  'maintainer', 'maintainer_email', 'url', 'license',
+                  'description', 'long_description', 'keywords',
+                  'platforms', 'classifiers', 'download_url')
+
+# Legal keyword arguments for the Extension constructor
+extension_keywords = ('name', 'sources', 'include_dirs',
+                      'define_macros', 'undef_macros',
+                      'library_dirs', 'libraries', 'runtime_library_dirs',
+                      'extra_objects', 'extra_compile_args', 'extra_link_args',
+                      'export_symbols', 'depends', 'language')
 
 def setup (**attrs):
     """The gateway to the Distutils: do everything your setup script needs
@@ -226,11 +239,3 @@ def run_setup (script_name, script_args=None, stop_after="run"):
 
 # run_setup ()
 
-def get_distutil_options ():
-    """Returns a list of strings recording changes to the Distutils.
-
-    setup.py files can then do:
-      if 'optional-thing' in get_distutil_options():
-          ...
-    """
-    return []

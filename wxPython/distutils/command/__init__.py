@@ -5,7 +5,7 @@ commands."""
 
 # This module should be kept compatible with Python 1.5.2.
 
-__revision__ = "$Id: __init__.py,v 1.1.2.1 2003/01/21 22:14:29 RD Exp $"
+__revision__ = "$Id: __init__.py,v 1.1.2.2 2003/02/21 21:45:53 RD Exp $"
 
 __all__ = ['build',
            'build_py',

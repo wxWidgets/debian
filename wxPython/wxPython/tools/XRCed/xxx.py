@@ -2,13 +2,15 @@
 # Purpose:      XML interface classes
 # Author:       Roman Rolinsky <rolinsky@mema.ucl.ac.be>
 # Created:      22.08.2001
-# RCS-ID:       $Id: xxx.py,v 1.1.2.4 2002/12/09 09:46:55 ROL Exp $
+# RCS-ID:       $Id: xxx.py,v 1.1.2.9 2003/03/21 22:35:49 RD Exp $
 
 from xml.dom import minidom
 from globals import *
 from params import *
 
 currentEncoding = wxLocale_GetSystemEncodingName()
+if not currentEncoding:
+    currentEncoding = 'ascii'
 
 # Base class for interface parameter classes
 class xxxNode:
@@ -138,7 +140,7 @@ class xxxParamContentCheckList(xxxNode):
             l = []
             for s,ch in value:
                 itemElem = g.tree.dom.createElement('item')
-                # Add checked only if true
+                # Add checked only if True
                 if ch: itemElem.setAttribute('checked', '1')
                 itemText = g.tree.dom.createTextNode(s)
                 itemElem.appendChild(itemText)
@@ -151,20 +153,37 @@ class xxxParamContentCheckList(xxxNode):
                 self.l[i][1].setAttribute('checked', str(value[i][1]))
         self.data = value
 
+# Bitmap parameter
+class xxxParamBitmap(xxxParam):
+    def __init__(self, node):
+        xxxParam.__init__(self, node)
+        self.stock_id = node.getAttribute('stock_id')
+    def value(self):
+        return [self.stock_id, xxxParam.value(self)]
+    def update(self, value):
+        self.stock_id = value[0]
+        if self.stock_id:
+            self.node.setAttribute('stock_id', self.stock_id)
+        else:
+            self.node.removeAttribute('stock_id')
+        xxxParam.update(self, value[1])
+
 ################################################################################
 
 # Classes to interface DOM objects
 class xxxObject:
     # Default behavior
-    hasChildren = false                 # has children elements?
-    hasStyle = true                     # almost everyone
-    hasName = true                      # has name attribute?
-    isSizer = hasChild = false
+    hasChildren = False                 # has children elements?
+    hasStyle = True                     # almost everyone
+    hasName = True                      # has name attribute?
+    isSizer = hasChild = False
     allParams = None                    # Some nodes have no parameters
     # Style parameters (all optional)
     styles = ['fg', 'bg', 'font', 'enabled', 'focused', 'hidden', 'tooltip']
     # Special parameters
     specials = []
+    # Bitmap tags
+    bitmapTags = ['bitmap', 'bitmap2', 'icon']
     # Required paremeters: none by default
     required = []
     # Default parameters with default values
@@ -204,12 +223,38 @@ class xxxObject:
                         self.params[tag] = xxxParamContent(node)
                 elif tag == 'font': # has children
                     self.params[tag] = xxxParamFont(element, node)
+                elif tag in self.bitmapTags:
+                    # Can have attributes
+                    self.params[tag] = xxxParamBitmap(node)
                 else:                   # simple parameter
                     self.params[tag] = xxxParam(node)
             else:
                 # Remove all other nodes
                 element.removeChild(node)
                 node.unlink()
+        # Check that all required params are set
+        for param in self.required:
+            if not self.params.has_key(param):
+                # If default is specified, set it
+                if self.default.has_key(param):
+                    elem = g.tree.dom.createElement(param)
+                    self.params[param] = xxxParam(elem)
+                    # Find place to put new element: first present element after param
+                    found = False
+                    paramStyles = self.allParams + self.styles
+                    for p in paramStyles[paramStyles.index(param) + 1:]:
+                        # Content params don't have same type
+                        if self.params.has_key(p) and p != 'content':
+                            found = True
+                            break
+                    if found:
+                        nextTextElem = self.params[p].node
+                        self.element.insertBefore(elem, nextTextElem)
+                    else:
+                        self.element.appendChild(elem)
+                else:
+                    wxLogWarning('Required parameter %s of %s missing' %
+                                 (param, self.className))
     # Returns real tree object
     def treeObject(self):
         if self.hasChild: return self.child
@@ -266,7 +311,7 @@ class xxxParamFont(xxxObject, xxxNode):
 ################################################################################
 
 class xxxContainer(xxxObject):
-    hasChildren = true
+    hasChildren = True
 
 # Simulate normal parameter for encoding
 class xxxEncoding:
@@ -281,7 +326,8 @@ class xxxEncoding:
 class xxxMainNode(xxxContainer):
     allParams = ['encoding']
     required = ['encoding']
-    hasStyle = hasName = false
+    default = {'encoding': ''}
+    hasStyle = hasName = False
     def __init__(self, dom):
         xxxContainer.__init__(self, None, dom.documentElement)
         self.className = 'XML tree'
@@ -304,7 +350,7 @@ class xxxDialog(xxxContainer):
     winStyles = ['wxDEFAULT_DIALOG_STYLE', 'wxSTAY_ON_TOP',
                  'wxDIALOG_MODAL', 'wxDIALOG_MODELESS',
                  'wxCAPTION', 'wxSYSTEM_MENU', 'wxRESIZE_BORDER', 'wxRESIZE_BOX',
-                 'wxTHICK_FRAME', 
+                 'wxTHICK_FRAME',
                  'wxNO_3D', 'wxTAB_TRAVERSAL', 'wxCLIP_CHILDREN']
     styles = ['fg', 'bg', 'font', 'enabled', 'focused', 'hidden', 'exstyle',
               'tooltip']
@@ -315,7 +361,7 @@ class xxxFrame(xxxContainer):
     paramDict = {'centered': ParamBool}
     required = ['title']
     winStyles = ['wxDEFAULT_FRAME_STYLE', 'wxDEFAULT_DIALOG_STYLE',
-                 'wxSTAY_ON_TOP', 
+                 'wxSTAY_ON_TOP',
                  'wxCAPTION', 'wxSYSTEM_MENU', 'wxRESIZE_BORDER',
                  'wxRESIZE_BOX', 'wxMINIMIZE_BOX', 'wxMAXIMIZE_BOX',
                  'wxFRAME_FLOAT_ON_PARENT', 'wxFRAME_TOOL_WINDOW',
@@ -326,13 +372,14 @@ class xxxFrame(xxxContainer):
 
 class xxxTool(xxxObject):
     allParams = ['bitmap', 'bitmap2', 'toggle', 'tooltip', 'longhelp']
-    paramDict = {'bitmap2': ParamFile}
-    hasStyle = false
+    required = ['bitmap']
+    paramDict = {'bitmap2': ParamBitmap, 'toggle': ParamBool}
+    hasStyle = False
 
 class xxxToolBar(xxxContainer):
-    allParams = ['bitmapsize', 'margins', 'packing', 'separation', 
+    allParams = ['bitmapsize', 'margins', 'packing', 'separation',
                  'pos', 'size', 'style']
-    hasStyle = false
+    hasStyle = False
     paramDict = {'bitmapsize': ParamPosSize, 'margins': ParamPosSize,
                  'packing': ParamInt, 'separation': ParamInt,
                  'style': ParamNonGenericStyle}
@@ -345,6 +392,7 @@ class xxxBitmap(xxxObject):
     allParams = ['bitmap']
     required = ['bitmap']
 
+# Just like bitmap
 class xxxIcon(xxxObject):
     allParams = ['icon']
     required = ['icon']
@@ -355,6 +403,7 @@ class xxxIcon(xxxObject):
 class xxxStaticText(xxxObject):
     allParams = ['label', 'pos', 'size', 'style']
     required = ['label']
+    default = {'label': ''}
     winStyles = ['wxALIGN_LEFT', 'wxALIGN_RIGHT', 'wxALIGN_CENTRE', 'wxST_NO_AUTORESIZE']
 
 class xxxStaticLine(xxxObject):
@@ -389,7 +438,7 @@ class xxxSlider(xxxObject):
 
 class xxxGauge(xxxObject):
     allParams = ['range', 'pos', 'size', 'style', 'value', 'shadow', 'bezel']
-    paramDict = {'range': ParamInt, 'value': ParamInt, 
+    paramDict = {'range': ParamInt, 'value': ParamInt,
                  'shadow': ParamInt, 'bezel': ParamInt}
     winStyles = ['wxGA_HORIZONTAL', 'wxGA_VERTICAL', 'wxGA_PROGRESSBAR', 'wxGA_SMOOTH']
 
@@ -499,14 +548,14 @@ class xxxCheckList(xxxObject):
               'wxLC_USER_TEXT', 'wxLC_EDIT_LABELS', 'wxLC_NO_HEADER',
               'wxLC_SINGLE_SEL', 'wxLC_SORT_ASCENDING', 'wxLC_SORT_DESCENDING']
     paramDict = {'content': ParamContentCheckList}
-    
+
 ################################################################################
 # Sizers
 
 class xxxSizer(xxxContainer):
-    hasName = hasStyle = false
+    hasName = hasStyle = False
     paramDict = {'orient': ParamOrient}
-    isSizer = true
+    isSizer = True
 
 class xxxBoxSizer(xxxSizer):
     allParams = ['orient']
@@ -520,7 +569,6 @@ class xxxBoxSizer(xxxSizer):
 class xxxStaticBoxSizer(xxxBoxSizer):
     allParams = ['label', 'orient']
     required = ['label', 'orient']
-    default = {'orient': 'wxVERTICAL'}
 
 class xxxGridSizer(xxxSizer):
     allParams = ['cols', 'rows', 'vgap', 'hgap']
@@ -529,7 +577,8 @@ class xxxGridSizer(xxxSizer):
 
 # For repeated parameters
 class xxxParamMulti:
-    def __init__(self):
+    def __init__(self, node):
+        self.node = node
         self.l, self.data = [], []
     def append(self, param):
         self.l.append(param)
@@ -549,7 +598,8 @@ class xxxFlexGridSizer(xxxGridSizer):
     # (they are represented by several nodes)
     def special(self, tag, node):
         if not self.params.has_key(tag):
-            self.params[tag] = xxxParamMulti()
+            # Create new multi-group
+            self.params[tag] = xxxParamMulti(node)
         self.params[tag].append(xxxParamInt(node))
     def setSpecial(self, param, value):
         # Straightforward implementation: remove, add again
@@ -565,8 +615,8 @@ class xxxFlexGridSizer(xxxGridSizer):
 # Container with only one child.
 # Not shown in tree.
 class xxxChildContainer(xxxObject):
-    hasName = hasStyle = false
-    hasChild = true
+    hasName = hasStyle = False
+    hasChild = True
     def __init__(self, parent, element):
         xxxObject.__init__(self, parent, element)
         # Must have one child with 'object' tag, but we don't check it
@@ -587,8 +637,8 @@ class xxxChildContainer(xxxObject):
         assert 0, 'no child found'
 
 class xxxSizerItem(xxxChildContainer):
-    allParams = ['option', 'flag', 'border']
-    paramDict = {'option': ParamInt}
+    allParams = ['option', 'flag', 'border', 'minsize']
+    paramDict = {'option': ParamInt, 'minsize': ParamPosSize}
     def __init__(self, parent, element):
         xxxChildContainer.__init__(self, parent, element)
         # Remove pos parameter - not needed for sizeritems
@@ -611,7 +661,7 @@ class xxxNotebookPage(xxxChildContainer):
             self.child.allParams.remove('size')
 
 class xxxSpacer(xxxObject):
-    hasName = hasStyle = false
+    hasName = hasStyle = False
     allParams = ['size', 'option', 'flag', 'border']
     paramDict = {'option': ParamInt}
     default = {'size': '0,0'}
@@ -631,10 +681,10 @@ class xxxMenuItem(xxxObject):
     allParams = ['label', 'bitmap', 'accel', 'help',
                  'checkable', 'radio', 'enabled', 'checked']
     default = {'label': ''}
-    hasStyle = false
+    hasStyle = False
 
 class xxxSeparator(xxxObject):
-    hasName = hasStyle = false
+    hasName = hasStyle = False
 
 ################################################################################
 # Unknown control
@@ -651,7 +701,7 @@ xxxDict = {
     'wxFrame': xxxFrame,
     'tool': xxxTool,
     'wxToolBar': xxxToolBar,
-    
+
     'wxBitmap': xxxBitmap,
     'wxIcon': xxxIcon,
 
@@ -683,7 +733,7 @@ xxxDict = {
     'wxCalendarCtrl': xxxCalendarCtrl,
     'wxGenericDirCtrl': xxxGenericDirCtrl,
     'wxSpinCtrl': xxxSpinCtrl,
-    
+
     'wxBoxSizer': xxxBoxSizer,
     'wxStaticBoxSizer': xxxStaticBoxSizer,
     'wxGridSizer': xxxGridSizer,
@@ -728,7 +778,7 @@ def MakeXXXFromDOM(parent, element):
     return klass(parent, element)
 
 # Make empty DOM element
-def MakeEmptyDOM(className): 
+def MakeEmptyDOM(className):
     elem = g.tree.dom.createElement('object')
     elem.setAttribute('class', className)
     # Set required and default parameters

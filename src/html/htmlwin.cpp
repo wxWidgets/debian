@@ -2,7 +2,7 @@
 // Name:        htmlwin.cpp
 // Purpose:     wxHtmlWindow class for parsing & displaying HTML (implementation)
 // Author:      Vaclav Slavik
-// RCS-ID:      $Id: htmlwin.cpp,v 1.62.2.1 2002/11/04 22:46:22 VZ Exp $
+// RCS-ID:      $Id: htmlwin.cpp,v 1.62.2.2 2003/02/26 19:21:02 VS Exp $
 // Copyright:   (c) 1999 Vaclav Slavik
 // Licence:     wxWindows Licence
 /////////////////////////////////////////////////////////////////////////////
@@ -592,14 +592,12 @@ wxHtmlProcessorList *wxHtmlWindow::m_GlobalProcessors = NULL;
 
 void wxHtmlWindow::CleanUpStatics()
 {
-    delete m_DefaultFilter;
-    m_DefaultFilter = NULL;
+    wxDELETE(m_DefaultFilter);
     m_Filters.DeleteContents(TRUE);
     m_Filters.Clear();
-    delete m_GlobalProcessors;
-    m_GlobalProcessors = NULL;
-    delete s_cur_hand;
-    delete s_cur_arrow;
+    wxDELETE(m_GlobalProcessors);
+    wxDELETE(s_cur_hand);
+    wxDELETE(s_cur_arrow);
 }
 
 

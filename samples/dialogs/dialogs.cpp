@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     04/01/98
-// RCS-ID:      $Id: dialogs.cpp,v 1.85.2.4 2002/12/13 21:38:50 MBN Exp $
+// RCS-ID:      $Id: dialogs.cpp,v 1.85.2.5 2003/02/11 21:23:59 MBN Exp $
 // Copyright:   (c) Julian Smart and Markus Holzem
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -457,7 +457,11 @@ void MyFrame::FileOpen(wxCommandEvent& WXUNUSED(event) )
                     _T("Testing open file dialog"),
                     _T(""),
                     _T(""),
+#ifdef __WXMOTIF__
+                    _T("C++ files (*.cpp)|*.cpp")
+#else
                     _T("C++ files (*.h;*.cpp)|*.h;*.cpp")
+#endif
                  );
 
     dialog.SetDirectory(wxGetHomeDir());

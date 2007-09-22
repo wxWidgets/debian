@@ -4,7 +4,7 @@ Miscellaneous utility functions -- anything that doesn't fit into
 one of the other *util.py modules.
 """
 
-__revision__ = "$Id: util.py,v 1.1.2.1 2003/01/21 22:14:32 RD Exp $"
+__revision__ = "$Id: util.py,v 1.1.2.2 2003/02/21 21:45:57 RD Exp $"
 
 import sys, os, string, re
 from distutils.errors import DistutilsPlatformError
@@ -40,10 +40,11 @@ def get_platform ():
 
     (osname, host, release, version, machine) = os.uname()
 
-    # Convert the OS name to lowercase and remove '/' characters
-    # (to accommodate BSD/OS)
+    # Convert the OS name to lowercase, remove '/' characters
+    # (to accommodate BSD/OS), and translate spaces (for "Power Macintosh")
     osname = string.lower(osname)
     osname = string.replace(osname, '/', '')
+    machine = string.replace(machine, ' ', '_')
 
     if osname[:5] == "linux":
         # At least on Linux/Intel, 'machine' is the processor --

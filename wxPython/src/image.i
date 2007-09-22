@@ -5,7 +5,7 @@
 // Author:      Robin Dunn
 //
 // Created:     28-Apr-1999
-// RCS-ID:      $Id: image.i,v 1.19 2002/07/20 00:14:28 RD Exp $
+// RCS-ID:      $Id: image.i,v 1.19.2.1 2003/02/14 19:25:27 RD Exp $
 // Copyright:   (c) 1998 by Total Control Software
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -177,6 +177,21 @@ public:
             unsigned char* data = self->GetData();
             int len = self->GetWidth() * self->GetHeight() * 3;
             return PyString_FromStringAndSize((char*)data, len);
+        }
+
+        void SetDataBuffer(PyObject* data) {
+            unsigned char* buffer;
+            int size;
+
+            if (!PyArg_Parse(data, "w#", &buffer, &size))
+                return;
+
+            if (size != self->GetWidth() * self->GetHeight() * 3) {
+                PyErr_SetString(PyExc_TypeError, "Incorrect buffer size");
+                return;
+            }
+
+            self->SetData(buffer);
         }
 
         void SetData(PyObject* data) {

@@ -791,7 +791,7 @@ Example:
     // rescale it to have size of 32*32
     if ( bmp.GetWidth() != 32 || bmp.GetHeight() != 32 )
     {
-        wxImage image(bmp);
+        wxImage image = bmp.ConvertToImage();
         bmp = wxBitmap(image.Scale(32, 32));
 
         // another possibility:
@@ -828,7 +828,7 @@ Specifies whether there is a mask or not. The area of the mask is determined by 
 
 \membersection{wxImage::SetMaskColour}\label{wximagesetmaskcolour}
 
-\func{void}{SetMaskColour}{\param{unsigned char }{red}, \param{unsigned char }{blue}, \param{unsigned char }{green}}
+\func{void}{SetMaskColour}{\param{unsigned char }{red}, \param{unsigned char }{green}, \param{unsigned char }{blue}}
 
 Sets the mask colour for this image (and tells the image to use the mask).
 

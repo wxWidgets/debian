@@ -6,7 +6,7 @@
 # Author:       Robin Dunn
 #
 # Created:      A long time ago, in a galaxy far, far away...
-# RCS-ID:       $Id: DialogUnits.py,v 1.5 2001/05/18 21:59:50 RD Exp $
+# RCS-ID:       $Id: DialogUnits.py,v 1.5.2.1 2003/02/26 18:38:36 RD Exp $
 # Copyright:    (c) 1998 by Total Control Software
 # Licence:      wxWindows license
 #----------------------------------------------------------------------------
@@ -88,13 +88,13 @@ if __name__ == "__main__":
 
             # Create an instance of our customized Frame class
             frame = MyFrame(None, -1, "This is a test")
-            frame.Show(true)
+            frame.Show(True)
 
             # Tell wxWindows that this is our main window
             self.SetTopWindow(frame)
 
             # Return a success flag
-            return true
+            return True
 
 
     app = MyApp(0)     # Create an instance of the application class
@@ -107,7 +107,7 @@ if __name__ == "__main__":
 def runTest(frame, nb, log):
     win = MyFrame(frame, -1, "This is a test")
     frame.otherWin = win
-    win.Show(true)
+    win.Show(True)
 
 
 overview = """\

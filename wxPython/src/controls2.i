@@ -5,7 +5,7 @@
 // Author:      Robin Dunn
 //
 // Created:     6/10/98
-// RCS-ID:      $Id: controls2.i,v 1.53.2.6 2002/12/31 22:08:41 RD Exp $
+// RCS-ID:      $Id: controls2.i,v 1.53.2.9 2003/03/05 23:13:30 RD Exp $
 // Copyright:   (c) 1998 by Total Control Software
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -559,6 +559,10 @@ public:
     // view, otherwise the large icon view.
     int GetItemSpacing(bool isSmall) const;
 
+#ifndef __WXMSW__
+    void SetItemSpacing( int spacing, bool isSmall = FALSE );
+#endif
+
     // Gets the number of selected items in the list control
     int GetSelectedItemCount() const;
 
@@ -623,6 +627,8 @@ public:
 
     // End label editing, optionally cancelling the edit
     bool EndEditLabel(bool cancel);
+#else
+    void EditLabel(long item);
 #endif
 
     // Ensures this item is visible
@@ -699,7 +705,7 @@ public:
         '''get the currently focused item or -1 if none'''
         return self.GetNextItem(-1, wxLIST_NEXT_ALL, wxLIST_STATE_FOCUSED)
 
-    def GetFirstSelected(self, item):
+    def GetFirstSelected(self, *args):
         '''return first selected item, or -1 when none'''
         return self.GetNextSelected(-1)
 

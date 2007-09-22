@@ -3,7 +3,7 @@
 // Purpose:     XML resource compiler
 // Author:      Vaclav Slavik
 // Created:     2000/03/05
-// RCS-ID:      $Id: wxrc.cpp,v 1.21.2.5 2002/11/11 21:46:16 VS Exp $
+// RCS-ID:      $Id: wxrc.cpp,v 1.21.2.6 2003/03/16 20:27:15 VS Exp $
 // Copyright:   (c) 2000 Vaclav Slavik
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -408,15 +408,15 @@ _T("\n"));
         file.Write(FileToCppArray(flist[i], i));
     
     file.Write(_T("")
-_T("void " + parFuncname + "()\n")
+_T("void ") + parFuncname + wxT("()\n")
 _T("{\n")
 _T("\n")
 _T("    // Check for memory FS. If not present, load the handler:\n")
 _T("    {\n")
-_T("        wxMemoryFSHandler::AddFile(\"XRC_resource/dummy_file\", \"dummy one\");\n")
+_T("        wxMemoryFSHandler::AddFile(wxT(\"XRC_resource/dummy_file\"), wxT(\"dummy one\"));\n")
 _T("        wxFileSystem fsys;\n")
-_T("        wxFSFile *f = fsys.OpenFile(\"memory:XRC_resource/dummy_file\");\n")
-_T("        wxMemoryFSHandler::RemoveFile(\"XRC_resource/dummy_file\");\n")
+_T("        wxFSFile *f = fsys.OpenFile(wxT(\"memory:XRC_resource/dummy_file\"));\n")
+_T("        wxMemoryFSHandler::RemoveFile(wxT(\"XRC_resource/dummy_file\"));\n")
 _T("        if (f) delete f;\n")
 _T("        else wxFileSystem::AddHandler(new wxMemoryFSHandler);\n")
 _T("    }\n")
@@ -425,15 +425,15 @@ _T("\n"));
     for (i = 0; i < flist.Count(); i++)
     {
         wxString s;
-        s.Printf(_T("    wxMemoryFSHandler::AddFile(\"XRC_resource/") + flist[i] +
-                 _T("\", xml_res_file_%i, xml_res_size_%i);\n"), i, i);
+        s.Printf(_T("    wxMemoryFSHandler::AddFile(wxT(\"XRC_resource/") + flist[i] +
+                 _T("\"), xml_res_file_%i, xml_res_size_%i);\n"), i, i);
         file.Write(s);
     }
 
     for (i = 0; i < parFiles.Count(); i++)
     {
-        file.Write(_T("    wxXmlResource::Get()->Load(\"memory:XRC_resource/") + 
-                   GetInternalFileName(parFiles[i], flist) + _T("\");\n"));
+        file.Write(_T("    wxXmlResource::Get()->Load(wxT(\"memory:XRC_resource/") +
+                   GetInternalFileName(parFiles[i], flist) + _T("\"));\n"));
     }
     
     file.Write(_T("}\n"));

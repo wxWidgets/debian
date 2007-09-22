@@ -5,7 +5,7 @@
 // Author:      Vadim Zeitlin
 // Modified by:
 // Created:     10.02.99
-// RCS-ID:      $Id: datetime.h,v 1.34.4.3 2002/11/04 22:38:09 VZ Exp $
+// RCS-ID:      $Id: datetime.h,v 1.34.4.4 2003/02/16 18:24:57 GD Exp $
 // Copyright:   (c) 1998 Vadim Zeitlin <zeitlin@dptmaths.ens-cachan.fr>
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -50,12 +50,8 @@ class WXDLLEXPORT wxDateSpan;
 // set this to the corresponding value in seconds 1/1/1970 has on your
 // systems c-runtime
 
-#ifdef __WXMAC__
-#if __MSL__ < 0x6000
+#if defined(__WXMAC__) && !defined(__DARWIN__) && __MSL__ < 0x6000
     #define WX_TIME_BASE_OFFSET ( 2082844800L + 126144000L )
-#else
-    #define WX_TIME_BASE_OFFSET 0
-#endif
 #else
     #define WX_TIME_BASE_OFFSET 0
 #endif

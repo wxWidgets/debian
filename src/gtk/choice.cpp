@@ -2,7 +2,7 @@
 // Name:        choice.cpp
 // Purpose:
 // Author:      Robert Roebling
-// Id:          $Id: choice.cpp,v 1.55 2002/08/27 20:28:48 MBN Exp $
+// Id:          $Id: choice.cpp,v 1.55.2.1 2003/02/11 11:35:11 RR Exp $
 // Copyright:   (c) 1998 Robert Roebling
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -448,14 +448,11 @@ wxSize wxChoice::DoGetBestSize() const
     ret.x = 0;
     if ( m_widget )
     {
-        GdkFont *font = m_font.GetInternalFont();
-
-        wxCoord width;
+        int width;
         size_t count = GetCount();
         for ( size_t n = 0; n < count; n++ )
         {
-            // FIXME GTK 2.0
-            width = (wxCoord)gdk_string_width(font, wxGTK_CONV( GetString(n) ) );
+            GetTextExtent( GetString(n), &width, NULL, NULL, NULL, &m_font );
             if ( width > ret.x )
                 ret.x = width;
         }
@@ -477,7 +474,7 @@ wxSize wxChoice::DoGetBestSize() const
     if ( ret.x < 80 )
         ret.x = 80;
 
-    ret.y = 16 + gdk_char_height(GET_STYLE_FONT( m_widget->style ), 'H' );
+    ret.y = 16 + GetCharHeight();
 
     return ret;
 }

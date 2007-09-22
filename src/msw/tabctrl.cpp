@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     04/01/98
-// RCS-ID:      $Id: tabctrl.cpp,v 1.21.2.3 2002/11/23 00:00:21 JS Exp $
+// RCS-ID:      $Id: tabctrl.cpp,v 1.21.2.5 2003/02/18 12:51:31 JS Exp $
 // Copyright:   (c) Julian Smart
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -90,7 +90,7 @@ bool wxTabCtrl::Create(wxWindow *parent, wxWindowID id, const wxPoint& pos, cons
 
   m_windowId = (id < 0 ? NewControlId() : id);
 
-  long tabStyle = 0;
+  long tabStyle = WS_CHILD;
   if (m_windowStyle & wxTC_MULTILINE)
     tabStyle |= TCS_MULTILINE;
   if (m_windowStyle & wxTC_RIGHTJUSTIFY)

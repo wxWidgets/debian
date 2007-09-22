@@ -2,7 +2,7 @@
 // Name:        cursor.cpp
 // Purpose:
 // Author:      Robert Roebling
-// Id:          $Id: cursor.cpp,v 1.36 2002/06/12 14:12:19 VZ Exp $
+// Id:          $Id: cursor.cpp,v 1.36.2.1 2003/03/02 21:33:08 RR Exp $
 // Copyright:   (c) 1998 Robert Roebling
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -370,7 +370,7 @@ void wxBeginBusyCursor( wxCursor *WXUNUSED(cursor) )
     wxSetCursor( wxCursor(wxCURSOR_WATCH) );
 
     if (wxTheApp)
-        wxTheApp->SendIdleEvents();
+        wxTheApp->ProcessIdle();
 
     gdk_flush();
 }

@@ -2,7 +2,7 @@
 // Name:        image.h
 // Purpose:     wxImage class
 // Author:      Robert Roebling
-// RCS-ID:      $Id: image.h,v 1.73.2.5 2002/12/07 02:30:32 VZ Exp $
+// RCS-ID:      $Id: image.h,v 1.73.2.6 2003/03/04 12:03:50 SC Exp $
 // Copyright:   (c) Robert Roebling
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -146,6 +146,8 @@ public:
 
     // return the new image with size width*height
     wxImage Scale( int width, int height ) const;
+
+    wxImage ShrinkBy( int xFactor , int yFactor ) const ;
 
     // rescales the image in place
     wxImage& Rescale( int width, int height ) { return *this = Scale(width, height); }

@@ -4,7 +4,7 @@
 // Author:      Robert Roebling, Vadim Zeitlin
 // Modified by:
 // Created:     28.12.2000
-// RCS-ID:      $Id: filename.cpp,v 1.100.2.4 2002/11/07 13:16:29 VZ Exp $
+// RCS-ID:      $Id: filename.cpp,v 1.100.2.5 2003/03/01 21:17:34 SC Exp $
 // Copyright:   (c) 2000 Robert Roebling
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -776,7 +776,14 @@ bool wxFileName::Mkdir( const wxString& dir, int perm, int flags )
         size_t count = dirs.GetCount();
         for ( size_t i = 0; i < count; i++ )
         {
-            if ( i > 0 || filename.IsAbsolute() )
+            if ( i > 0 || 
+#if defined(__WXMAC__) && !defined(__DARWIN__)
+			// relative pathnames are exactely the other way round under mac...
+            	!filename.IsAbsolute() 
+#else
+            	filename.IsAbsolute() 
+#endif
+            )
                 currPath += wxFILE_SEP_PATH;
             currPath += dirs[i];
 

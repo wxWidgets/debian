@@ -5,7 +5,7 @@
 // Author:      Robin Dunn
 //
 // Created:     7/1/97
-// RCS-ID:      $Id: helpers.cpp,v 1.59.2.13 2003/01/16 03:30:18 RD Exp $
+// RCS-ID:      $Id: helpers.cpp,v 1.59.2.21 2003/03/21 18:57:02 RD Exp $
 // Copyright:   (c) 1998 by Total Control Software
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -141,7 +141,7 @@ bool wxPyApp::OnInitGui() {
     // wxPyBeginBlockThreads();  *** only called from within __wxStart so we already have the GIL
     if (wxPyCBH_findCallback(m_myInst, "OnInitGui"))
         rval = wxPyCBH_callCallback(m_myInst, Py_BuildValue("()"));
-    // wxPyEndBlockThreads();
+    // wxPyEndBlockThreads();    ***
     return rval;
 }
 
@@ -198,11 +198,6 @@ void wxPyApp::OnAssert(const wxChar *file,
                 buf += msg;
             }
 
-            // Send it to the normal log destination, but only if
-            // not _DIALOG because it will call this too
-            if ( !(m_assertMode & wxPYAPP_ASSERT_DIALOG))
-                wxLogDebug(buf);
-
             // set the exception
             wxPyBeginBlockThreads();
             PyObject* s = wx2PyString(buf);
@@ -215,12 +210,125 @@ void wxPyApp::OnAssert(const wxChar *file,
             // NULL, signalling the exception to Python.
         }
 
+        // Send it to the normal log destination, but only if
+        // not _DIALOG because it will call this too
+        if ( (m_assertMode & wxPYAPP_ASSERT_LOG) && !(m_assertMode & wxPYAPP_ASSERT_DIALOG)) {
+            wxString buf;
+            buf.Alloc(4096);
+            buf.Printf(wxT("%s(%d): assert \"%s\" failed"),
+                       file, line, cond);
+            if (msg != NULL) {
+                buf += wxT(": ");
+                buf += msg;
+            }
+            wxLogDebug(buf);
+        }
+
         // do the normal wx assert dialog?
         if (m_assertMode & wxPYAPP_ASSERT_DIALOG)
             wxApp::OnAssert(file, line, cond, msg);
     }
 }
 #endif
+
+
+/*static*/
+bool wxPyApp::GetMacDefaultEncodingIsPC() {
+#ifdef __WXMAC__
+    return s_macDefaultEncodingIsPC;
+#else
+    return 0;
+#endif
+}
+
+/*static*/
+bool wxPyApp::GetMacSupportPCMenuShortcuts() {
+#ifdef __WXMAC__
+    return s_macSupportPCMenuShortcuts;
+#else
+    return 0;
+#endif
+}
+
+/*static*/
+long wxPyApp::GetMacAboutMenuItemId() {
+#ifdef __WXMAC__
+    return s_macAboutMenuItemId;
+#else
+    return 0;
+#endif
+}
+
+/*static*/
+long wxPyApp::GetMacPreferencesMenuItemId() {
+#ifdef __WXMAC__
+    return s_macPreferencesMenuItemId;
+#else
+    return 0;
+#endif
+}
+
+/*static*/
+long wxPyApp::GetMacExitMenuItemId() {
+#ifdef __WXMAC__
+    return s_macExitMenuItemId;
+#else
+    return 0;
+#endif
+}
+
+/*static*/
+wxString wxPyApp::GetMacHelpMenuTitleName() {
+#ifdef __WXMAC__
+    return s_macHelpMenuTitleName;
+#else
+    return wxEmptyString;
+#endif
+}
+
+/*static*/
+void wxPyApp::SetMacDefaultEncodingIsPC(bool val) {
+#ifdef __WXMAC__
+    s_macDefaultEncodingIsPC = val;
+#endif
+}
+
+/*static*/
+void wxPyApp::SetMacSupportPCMenuShortcuts(bool val) {
+#ifdef __WXMAC__
+    s_macSupportPCMenuShortcuts = val;
+#endif
+}
+
+/*static*/
+void wxPyApp::SetMacAboutMenuItemId(long val) {
+#ifdef __WXMAC__
+    s_macAboutMenuItemId = val;
+#endif
+}
+
+/*static*/
+void wxPyApp::SetMacPreferencesMenuItemId(long val) {
+#ifdef __WXMAC__
+    s_macPreferencesMenuItemId = val;
+#endif
+}
+
+/*static*/
+void wxPyApp::SetMacExitMenuItemId(long val) {
+#ifdef __WXMAC__
+    s_macExitMenuItemId = val;
+#endif
+}
+
+/*static*/
+void wxPyApp::SetMacHelpMenuTitleName(const wxString& val) {
+#ifdef __WXMAC__
+    s_macHelpMenuTitleName = val;
+#endif
+}
+
+
 
 //---------------------------------------------------------------------
 //----------------------------------------------------------------------
@@ -346,26 +454,35 @@ PyObject* __wxStart(PyObject* /* self */, PyObject* args)
     // Call the Python App's OnInit function
     arglist = PyTuple_New(0);
     result = PyEval_CallObject(onInitFunc, arglist);
+    Py_DECREF(arglist);
     if (!result) {      // an exception was raised.
         return NULL;
     }
 
-    if (! PyInt_Check(result)) {
+    PyObject* pyint = PyNumber_Int(result);
+    if (! pyint) {
         PyErr_SetString(PyExc_TypeError, "OnInit should return a boolean value");
-        return NULL;
+        goto error;
     }
-    bResult = PyInt_AS_LONG(result);
+    bResult = PyInt_AS_LONG(pyint);
     if (! bResult) {
         PyErr_SetString(PyExc_SystemExit, "OnInit returned FALSE, exiting...");
-        return NULL;
+        goto error;
     }
 
 #ifdef __WXGTK__
     wxTheApp->m_initialized = (wxTopLevelWindows.GetCount() > 0);
 #endif
 
+    Py_DECREF(result);
+    Py_DECREF(pyint);
     Py_INCREF(Py_None);
     return Py_None;
+
+ error:
+    Py_XDECREF(result);
+    Py_XDECREF(pyint);
+    return NULL;
 }
 
 
@@ -507,13 +624,25 @@ void wxPyPtrTypeMap_Add(const char* commonName, const char* ptrName) {
 
 PyObject* wxPyClassExists(const wxString& className) {
 
+    PyObject* item;
+    wxString  name(className);
+    char      buff[64];               // should always be big enough...
+
     if (!className)
         return NULL;
 
-    char    buff[64];               // should always be big enough...
-
-    sprintf(buff, "%sPtr", (const char*)className.mbc_str());
+    // Try the name as-is first
+    sprintf(buff, "%sPtr", (const char*)name.mbc_str());
     PyObject* classobj = PyDict_GetItemString(wxPython_dict, buff);
+
+    // if not found see if there is a mapped name for it
+    if ( ! classobj) {
+        if ((item = PyDict_GetItemString(wxPyPtrTypeMap, (char*)(const char*)name.mbc_str())) != NULL) {
+            name = wxString(PyString_AsString(item), *wxConvCurrent);
+            sprintf(buff, "%sPtr", (const char*)name.mbc_str());
+            classobj = PyDict_GetItemString(wxPython_dict, buff);
+        }
+    }
 
     return classobj;  // returns NULL if not found
 }
@@ -1753,7 +1882,7 @@ error2:
     if (!isFast)
         Py_DECREF(o);
 error1:
-    delete temp;
+    delete [] temp;
 error0:
     PyErr_SetString(PyExc_TypeError, "Expected a sequence of length-2 sequences or wxPoints.");
     return NULL;
@@ -2104,9 +2233,9 @@ bool wxColour_helper(PyObject* source, wxColour** obj) {
         *obj = ptr;
         return TRUE;
     }
-    // otherwise a string is expected
-    else if (PyString_Check(source)) {
-        wxString spec(PyString_AS_STRING(source), *wxConvCurrent);
+    // otherwise check for a string
+    else if (PyString_Check(source) || PyUnicode_Check(source)) {
+        wxString spec = Py2wxString(source);
         if (spec.GetChar(0) == '#' && spec.Length() == 7) {  // It's  #RRGGBB
             long red, green, blue;
             red = green = blue = 0;
@@ -2121,6 +2250,23 @@ bool wxColour_helper(PyObject* source, wxColour** obj) {
             **obj = wxColour(spec);
             return TRUE;
         }
+    }
+    // last chance: 3-tuple of integers is expected
+    else if (PySequence_Check(source) && PyObject_Length(source) == 3) {
+        PyObject* o1 = PySequence_GetItem(source, 0);
+        PyObject* o2 = PySequence_GetItem(source, 1);
+        PyObject* o3 = PySequence_GetItem(source, 2);
+        if (!PyNumber_Check(o1) || !PyNumber_Check(o2) || !PyNumber_Check(o3)) {
+            Py_DECREF(o1);
+            Py_DECREF(o2);
+            Py_DECREF(o3);
+            goto error;
+        }
+        **obj = wxColour(PyInt_AsLong(o1), PyInt_AsLong(o2), PyInt_AsLong(o3));
+        Py_DECREF(o1);
+        Py_DECREF(o2);
+        Py_DECREF(o3);
+        return TRUE;
     }
 
  error:

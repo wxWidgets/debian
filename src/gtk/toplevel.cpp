@@ -2,7 +2,7 @@
 // Name:        toplevel.cpp
 // Purpose:
 // Author:      Robert Roebling
-// Id:          $Id: toplevel.cpp,v 1.33.2.1 2002/09/23 15:26:27 VZ Exp $
+// Id:          $Id: toplevel.cpp,v 1.33.2.2 2003/02/26 19:28:18 VS Exp $
 // Copyright:   (c) 1998 Robert Roebling
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -447,15 +447,16 @@ bool wxTopLevelWindowGTK::Create( wxWindow *parent,
     else
     {
         m_gdkDecor = (long) GDK_DECOR_BORDER;
-        m_gdkFunc = (long) GDK_FUNC_MOVE;
+        m_gdkFunc = (long) GDK_FUNC_MOVE | GDK_FUNC_CLOSE;
 
         // All this is for Motif Window Manager "hints" and is supposed to be
         // recognized by other WMs as well.
         if ((style & wxCAPTION) != 0)
+        {
             m_gdkDecor |= GDK_DECOR_TITLE;
+        }
         if ((style & wxSYSTEM_MENU) != 0)
         {
-            m_gdkFunc |= GDK_FUNC_CLOSE;
             m_gdkDecor |= GDK_DECOR_MENU;
         }
         if ((style & wxMINIMIZE_BOX) != 0)

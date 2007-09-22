@@ -3,7 +3,7 @@
 // Purpose:     GTK toolbar
 // Author:      Robert Roebling
 // Modified:    13.12.99 by VZ to derive from wxToolBarBase
-// RCS-ID:      $Id: tbargtk.cpp,v 1.77.2.3 2002/10/28 00:21:00 RR Exp $
+// RCS-ID:      $Id: tbargtk.cpp,v 1.77.2.4 2003/02/11 11:35:12 RR Exp $
 // Copyright:   (c) Robert Roebling
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -342,8 +342,6 @@ bool wxToolBar::Create( wxWindow *parent,
                     GTK_TOOLBAR(m_toolbar)->tooltips->tip_window ) );
 
     g_style->bg[GTK_STATE_NORMAL] = *m_bg;
-
-    SET_STYLE_FONT(g_style, GtkGetDefaultGuiFont());
 
     gtk_widget_set_style( GTK_TOOLBAR(m_toolbar)->tooltips->tip_window, g_style );
 

@@ -186,9 +186,12 @@ class wxListItemPtr(wxObjectPtr):
     def __init__(self,this):
         self.this = this
         self.thisown = 0
-    def __del__(self,controls2c=controls2c):
-        if self.thisown == 1 :
-            controls2c.delete_wxListItem(self)
+    def __del__(self, delfunc=controls2c.delete_wxListItem):
+        if self.thisown == 1:
+            try:
+                delfunc(self)
+            except:
+                pass
     def Clear(self, *_args, **_kwargs):
         val = apply(controls2c.wxListItem_Clear,(self,) + _args, _kwargs)
         return val
@@ -511,6 +514,9 @@ class wxListCtrlPtr(wxControlPtr):
     def GetItemSpacing(self, *_args, **_kwargs):
         val = apply(controls2c.wxListCtrl_GetItemSpacing,(self,) + _args, _kwargs)
         return val
+    def SetItemSpacing(self, *_args, **_kwargs):
+        val = apply(controls2c.wxListCtrl_SetItemSpacing,(self,) + _args, _kwargs)
+        return val
     def GetSelectedItemCount(self, *_args, **_kwargs):
         val = apply(controls2c.wxListCtrl_GetSelectedItemCount,(self,) + _args, _kwargs)
         return val
@@ -569,6 +575,9 @@ class wxListCtrlPtr(wxControlPtr):
         return val
     def ClearAll(self, *_args, **_kwargs):
         val = apply(controls2c.wxListCtrl_ClearAll,(self,) + _args, _kwargs)
+        return val
+    def EditLabel(self, *_args, **_kwargs):
+        val = apply(controls2c.wxListCtrl_EditLabel,(self,) + _args, _kwargs)
         return val
     def EnsureVisible(self, *_args, **_kwargs):
         val = apply(controls2c.wxListCtrl_EnsureVisible,(self,) + _args, _kwargs)
@@ -661,7 +670,7 @@ class wxListCtrlPtr(wxControlPtr):
         '''get the currently focused item or -1 if none'''
         return self.GetNextItem(-1, wxLIST_NEXT_ALL, wxLIST_STATE_FOCUSED)
 
-    def GetFirstSelected(self, item):
+    def GetFirstSelected(self, *args):
         '''return first selected item, or -1 when none'''
         return self.GetNextSelected(-1)
 
@@ -808,9 +817,12 @@ class wxTreeItemIdPtr :
     def __init__(self,this):
         self.this = this
         self.thisown = 0
-    def __del__(self,controls2c=controls2c):
-        if self.thisown == 1 :
-            controls2c.delete_wxTreeItemId(self)
+    def __del__(self, delfunc=controls2c.delete_wxTreeItemId):
+        if self.thisown == 1:
+            try:
+                delfunc(self)
+            except:
+                pass
     def IsOk(self, *_args, **_kwargs):
         val = apply(controls2c.wxTreeItemId_IsOk,(self,) + _args, _kwargs)
         return val

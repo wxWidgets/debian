@@ -6,7 +6,7 @@
 # Author:      Robin Dunn
 #
 # Created:     13-Sept-1999
-# RCS-ID:      $Id: wxpTag.py,v 1.6.2.2 2003/01/20 23:41:15 RD Exp $
+# RCS-ID:      $Id: wxpTag.py,v 1.6.2.3 2003/02/26 18:38:14 RD Exp $
 # Copyright:   (c) 1999 by Total Control Software
 # Licence:     wxWindows license
 #----------------------------------------------------------------------
@@ -162,18 +162,18 @@ class wxpTagHandler(wxHtmlWinTagHandler):
             obj = apply(self.ctx.classObj,
                         (parent,),
                         self.ctx.kwargs)
-            obj.Show(true)
+            obj.Show(True)
 
             # add it to the HtmlWindow
             self.GetParser().GetContainer().InsertCell(wxHtmlWidgetCell(obj, self.ctx.floatWidth))
             self.ctx = None
 
-        return true
+        return True
 
 
     def HandleParamTag(self, tag):
         if not tag.HasParam('NAME'):
-            return false
+            return False
 
         name = tag.GetParam('NAME')
         value = ""
@@ -209,7 +209,7 @@ class wxpTagHandler(wxHtmlWinTagHandler):
                 pass
 
         self.ctx.kwargs[str(name)] = value
-        return false
+        return False
 
 
 #----------------------------------------------------------------------

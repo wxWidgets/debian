@@ -2,7 +2,7 @@
 // Name:        src/gtk/scrolbar.cpp
 // Purpose:
 // Author:      Robert Roebling
-// Id:          $Id: scrolbar.cpp,v 1.43 2002/04/14 16:26:36 VZ Exp $
+// Id:          $Id: scrolbar.cpp,v 1.43.2.2 2003/03/01 20:29:30 VS Exp $
 // Copyright:   (c) 1998 Robert Roebling
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -179,6 +179,8 @@ bool wxScrollBar::Create(wxWindow *parent, wxWindowID id,
     m_parent->DoAddChild( this );
 
     PostCreation();
+
+    SetBestSize(size);
 
     SetBackgroundColour( parent->GetBackgroundColour() );
 

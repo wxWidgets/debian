@@ -5,7 +5,7 @@
 // Author:      Robin Dunn
 //
 // Created:     7/1/97
-// RCS-ID:      $Id: helpers.h,v 1.43.2.6 2002/12/18 04:23:55 RD Exp $
+// RCS-ID:      $Id: helpers.h,v 1.43.2.10 2003/03/21 18:57:01 RD Exp $
 // Copyright:   (c) 1998 by Total Control Software
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -66,6 +66,8 @@ void           wxPyEndAllowThreads(PyThreadState* state);
 void wxPyBeginBlockThreads();
 void wxPyEndBlockThreads();
 
+#define wxPyBLOCK_THREADS(stmt) wxPyBeginBlockThreads(); stmt; wxPyEndBlockThreads()
+
 //----------------------------------------------------------------------
 // These are helpers used by the typemaps
 
@@ -108,6 +110,21 @@ PyObject* wxArrayInt2PyList_helper(const wxArrayInt& arr);
 #define RETURN_NONE()                 { Py_INCREF(Py_None); return Py_None; }
 #define DECLARE_DEF_STRING(name)      static const wxString wxPy##name(wx##name)
 #define DECLARE_DEF_STRING2(name,val) static const wxString wxPy##name(val)
+
+//----------------------------------------------------------------------
+// functions used by the DrawXXXList enhancements added to wxDC
+
+typedef bool (*wxPyDrawListOp_t)(wxDC& dc, PyObject* coords);
+PyObject* wxPyDrawXXXList(wxDC& dc, wxPyDrawListOp_t doDraw,
+                          PyObject* pyCoords, PyObject* pyPens, PyObject* pyBrushes);
+bool wxPyDrawXXXPoint(wxDC& dc, PyObject* coords);
+bool wxPyDrawXXXLine(wxDC& dc, PyObject* coords);
+bool wxPyDrawXXXRectangle(wxDC& dc, PyObject* coords);
+bool wxPyDrawXXXEllipse(wxDC& dc, PyObject* coords);
+bool wxPyDrawXXXPolygon(wxDC& dc, PyObject* coords);
+
+PyObject* wxPyDrawTextList(wxDC& dc, PyObject* textList, PyObject* pyPoints,
+                           PyObject* foregroundList, PyObject* backgroundList);
 
 //----------------------------------------------------------------------
 
@@ -410,7 +427,8 @@ void wxPyCBH_delete(wxPyCallbackHelper* cbh);
 enum {
     wxPYAPP_ASSERT_SUPPRESS  = 1,
     wxPYAPP_ASSERT_EXCEPTION = 2,
-    wxPYAPP_ASSERT_DIALOG    = 4
+    wxPYAPP_ASSERT_DIALOG    = 4,
+    wxPYAPP_ASSERT_LOG       = 8
 };
 
 class wxPyApp: public wxApp
@@ -434,8 +452,23 @@ public:
                           const wxChar *cond,
                           const wxChar *msg);
 #endif
-
     // virtual int FilterEvent(wxEvent& event); // This one too????
+
+
+    static bool GetMacDefaultEncodingIsPC();
+    static bool GetMacSupportPCMenuShortcuts();
+    static long GetMacAboutMenuItemId();
+    static long GetMacPreferencesMenuItemId();
+    static long GetMacExitMenuItemId();
+    static wxString GetMacHelpMenuTitleName();
+
+    static void SetMacDefaultEncodingIsPC(bool val);
+    static void SetMacSupportPCMenuShortcuts(bool val);
+    static void SetMacAboutMenuItemId(long val);
+    static void SetMacPreferencesMenuItemId(long val);
+    static void SetMacExitMenuItemId(long val);
+    static void SetMacHelpMenuTitleName(const wxString& val);
+
 
     PYPRIVATE;
     int m_assertMode;

@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     01/02/97
-// RCS-ID:      $Id: cmndata.cpp,v 1.64.2.3 2002/12/05 15:13:12 SC Exp $
+// RCS-ID:      $Id: cmndata.cpp,v 1.64.2.4 2003/03/04 13:35:47 SC Exp $
 // Copyright:   (c) Julian Smart and Markus Holzem
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -1481,11 +1481,11 @@ void wxPageSetupDialogData::ConvertFromNative()
 	OSStatus err = PMGetAdjustedPaperRect((PMPageFormat)m_printData.m_macPageFormat, &rPaper);
     if ( err == noErr )
     {
-	    m_paperSize.x = ((double) rPaper.right - rPaper.left ) * pt2mm;
-	    m_paperSize.y = ((double) rPaper.bottom - rPaper.top ) * pt2mm;
+	    m_paperSize.x = int(( rPaper.right - rPaper.left ) * pt2mm);
+	    m_paperSize.y = int(( rPaper.bottom - rPaper.top ) * pt2mm);
 
-	    m_minMarginTopLeft.x = ((double) - rPaper.left ) * pt2mm;
-	    m_minMarginTopLeft.y = ((double) - rPaper.top ) * pt2mm;
+	    m_minMarginTopLeft.x = int( ( - rPaper.left ) * pt2mm );
+	    m_minMarginTopLeft.y = int( ( - rPaper.top ) * pt2mm );
 
 //	    m_minMarginBottomRight.x = ((double) rPaper.right - (**(THPrint)m_printData.m_macPrintSettings).prInfo.rPage.right ) * pt2mm;
 //	    m_minMarginBottomRight.y = ((double)(**(THPrint)m_printData.m_macPrintSettings).rPaper.bottom - (**(THPrint)m_printData.m_macPrintSettings).prInfo.rPage.bottom ) * pt2mm;

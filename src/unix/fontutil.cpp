@@ -4,7 +4,7 @@
 // Author:      Vadim Zeitlin
 // Modified by:
 // Created:     05.11.99
-// RCS-ID:      $Id: fontutil.cpp,v 1.34.2.3 2002/11/09 15:20:40 RR Exp $
+// RCS-ID:      $Id: fontutil.cpp,v 1.34.2.4 2003/02/11 11:35:15 RR Exp $
 // Copyright:   (c) Vadim Zeitlin
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -132,26 +132,30 @@ wxFontEncoding wxNativeFontInfo::GetEncoding() const
     return wxFONTENCODING_SYSTEM;
 }
 
-bool wxNativeFontInfo::FromString(const wxString& s)
+bool wxNativeFontInfo::FromString( const wxString& str )
 {
     if (description)
         pango_font_description_free( description );
 
-    description = pango_font_description_from_string( wxGTK_CONV( s ) );
+    description = pango_font_description_from_string( wxGTK_CONV( str ) );
+    
+    // wxPrintf( L"FromString result: %s\n", ToString().c_str() );
 
     return TRUE;
 }
 
 wxString wxNativeFontInfo::ToString() const
 {
-    wxString tmp = wxGTK_CONV_BACK( pango_font_description_to_string( description ) );
+    char *str = pango_font_description_to_string( description );
+    wxString tmp = wxGTK_CONV_BACK(  str );
+    g_free( str );
 
     return tmp;
 }
 
-bool wxNativeFontInfo::FromUserString(const wxString& s)
+bool wxNativeFontInfo::FromUserString( const wxString& str )
 {
-    return FromString( s );
+    return FromString( str );
 }
 
 wxString wxNativeFontInfo::ToUserString() const

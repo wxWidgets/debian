@@ -170,12 +170,30 @@ wxThread and related classes:
 OTHER CHANGES
 =============
 
-2.4.0.2
--------
+2.4.1
+-----
 
 All:
 
-- Added missing wx/quantize.h to install.
+- fixed wxLANGUAGE_CHINESE_TAIWAN to use zh_TW catalogs
+- added missing wx/quantize.h to install
+
+Unix (GUI):
+
+- fixed the "close" button of dialogs under KDE 3.1
+
+wxBase
+
+- compilation with wxUSE_ODBC=1 fixed (dbkeyg.h file was missing in the archive)
+- bug in wxDateTime with timezones on systems with tm_gmtoff in struct tm fixed
+- fixed bug in wxArray::Shrink() (Seth Manley)
+
+wxGTK:
+
+- added wxEVT_MENU_OPEN event generation
+- fixed bug in generic file selector causing incomplete file extensions to
+  be appended to filenames with no extension
+
 
 2.4.0
 -----
@@ -210,10 +228,12 @@ Unix (Base/GUI):
 - shared library symbols are now versioned on platforms that support it (Linux)
 
 wxGTK:
+
 - Further work for GTK 2.0 and Unicode support.
 - Addition of native frame site grip.
 
 wxX11:
+
 - Unicode support through Pango library.
 
 wxMSW:

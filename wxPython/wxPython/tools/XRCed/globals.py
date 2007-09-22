@@ -2,21 +2,26 @@
 # Purpose:      XRC editor, global variables
 # Author:       Roman Rolinsky <rolinsky@mema.ucl.ac.be>
 # Created:      02.12.2002
-# RCS-ID:       $Id: globals.py,v 1.1.2.1 2002/12/09 09:41:42 ROL Exp $
+# RCS-ID:       $Id: globals.py,v 1.1.2.8 2003/03/21 00:25:28 ROL Exp $
 
 from wxPython.wx import *
+from wxPython.xrc import *
 
 # Global constants
 
-if wxPlatform == '__WXGTK__':
-    labelFont = wxFont(12, wxDEFAULT, wxNORMAL, wxBOLD)
-    modernFont = wxFont(12, wxMODERN, wxNORMAL, wxNORMAL)
-else:
-    labelFont = wxFont(10, wxDEFAULT, wxNORMAL, wxBOLD)
-    modernFont = wxFont(10, wxMODERN, wxNORMAL, wxNORMAL)
+sysFont = wxSystemSettings_GetFont(wxSYS_SYSTEM_FONT)
+labelFont = wxFont(sysFont.GetPointSize(), wxDEFAULT, wxNORMAL, wxBOLD)
+modernFont = wxFont(sysFont.GetPointSize(), wxMODERN, wxNORMAL, wxNORMAL)
+smallerFont = wxFont(sysFont.GetPointSize()-2, wxDEFAULT, wxNORMAL, wxNORMAL)
 
 progname = 'XRCed'
-version = '0.0.9-1'
+version = '0.1.0'
+
+try:
+    True
+except NameError:
+    True = 1==1
+    False = 1==0
 
 # Global variables
 
@@ -24,9 +29,11 @@ class Globals:
     panel = None
     tree = None
     frame = None
+    tools = None
     undoMan = None
     testWin = None
     testWinPos = wxDefaultPosition
     currentXXX = None
+    xmlFlags = wxXRC_USE_LOCALE | wxXRC_NO_SUBCLASSING
 
 g = Globals()

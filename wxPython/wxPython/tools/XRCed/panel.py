@@ -2,7 +2,7 @@
 # Purpose:      XRC editor, Panel class and related
 # Author:       Roman Rolinsky <rolinsky@mema.ucl.ac.be>
 # Created:      02.12.2002
-# RCS-ID:       $Id: panel.py,v 1.1.2.3 2003/01/13 12:11:26 ROL Exp $
+# RCS-ID:       $Id: panel.py,v 1.1.2.8 2003/03/20 20:01:51 ROL Exp $
 
 from xxx import *                       # xxx imports globals and params
 from undo import *
@@ -11,10 +11,17 @@ from wxPython.html import wxHtmlWindow
 # Properties panel containing notebook
 class Panel(wxNotebook):
     def __init__(self, parent, id = -1):
-        wxNotebook.__init__(self, parent, id, style=wxNB_BOTTOM)
+        if wxPlatform != '__WXMAC__':   # some problems with this style on macs
+            wxNotebook.__init__(self, parent, id, style=wxNB_BOTTOM)
+        else:
+            wxNotebook.__init__(self, parent, id)
         global panel
         g.panel = panel = self
-        self.modified = false
+        self.modified = False
+
+        # Set common button size for parameter buttons
+        import params
+        params.buttonSize = self.DLG_SZE(buttonSize)
 
         # List of child windows
         self.pages = []
@@ -22,14 +29,14 @@ class Panel(wxNotebook):
         self.page1 = wxScrolledWindow(self, -1)
         sizer = wxBoxSizer()
         sizer.Add(wxBoxSizer())         # dummy sizer
-        self.page1.SetAutoLayout(true)
+        self.page1.SetAutoLayout(True)
         self.page1.SetSizer(sizer)
         self.AddPage(self.page1, 'Properties')
         # Second page
         self.page2 = wxScrolledWindow(self, -1)
         sizer = wxBoxSizer()
         sizer.Add(wxBoxSizer())         # dummy sizer
-        self.page2.SetAutoLayout(true)
+        self.page2.SetAutoLayout(True)
         self.page2.SetSizer(sizer)
         # Cache for already used panels
         self.pageCache = {}             # cached property panels
@@ -72,7 +79,7 @@ class Panel(wxNotebook):
                                         wxDefaultSize, wxSUNKEN_BORDER)
                     html.SetPage(g.helpText)
                     sizer.Add(html, 1, wxEXPAND)
-                    g.conf.panic = false
+                    g.conf.panic = False
                 else:
                     sizer.Add(wxStaticText(self.page1, -1, 'Select a tree item.'))
         else:
@@ -100,7 +107,7 @@ class Panel(wxNotebook):
                 sizer.Add(page, 0, wxEXPAND | wxTOP, 5)
         self.page1.Layout()
         size = self.page1.GetSizer().GetMinSize()
-        self.page1.SetScrollbars(1, 1, size.x, size.y, 0, 0, true)
+        self.page1.SetScrollbars(1, 1, size.x, size.y, 0, 0, True)
 
         # Second page
         # Create if does not exist
@@ -122,17 +129,17 @@ class Panel(wxNotebook):
                 self.AddPage(self.page2, 'Style')
             self.page2.Layout()
             size = self.page2.GetSizer().GetMinSize()
-            self.page2.SetScrollbars(1, 1, size.x, size.y, 0, 0, true)
+            self.page2.SetScrollbars(1, 1, size.x, size.y, 0, 0, True)
         else:
             # Remove page if exists
             if self.GetPageCount() == 2:
                 self.SetSelection(0)
                 self.page1.Refresh()
                 self.RemovePage(1)
-        self.modified = false
+        self.modified = False
     def Clear(self):
         self.SetData(None)
-        self.modified = false
+        self.modified = False
     # If some parameter has changed
     def IsModified(self):
         return self.modified
@@ -157,10 +164,12 @@ class ParamPage(wxPanel):
         self.checks = {}
         self.controls = {}              # save python objects
         self.controlName = None
+        
     def OnCheckParams(self, evt):
         xxx = self.xxx
         param = evt.GetEventObject().GetName()
         w = self.controls[param]
+        w.Enable(True)
         objElem = xxx.element
         if evt.IsChecked():
             # Ad  new text node in order of allParams
@@ -170,15 +179,17 @@ class ParamPage(wxPanel):
             # Some classes are special
             if param == 'font':
                 xxx.params[param] = xxxParamFont(xxx.element, elem)
+            elif param in xxxObject.bitmapTags:
+                xxx.params[param] = xxxParamBitmap(elem)
             else:
                 xxx.params[param] = xxxParam(elem)
             # Find place to put new element: first present element after param
-            found = false
+            found = False
             paramStyles = xxx.allParams + xxx.styles
             for p in paramStyles[paramStyles.index(param) + 1:]:
                 # Content params don't have same type
                 if xxx.params.has_key(p) and p != 'content':
-                    found = true
+                    found = True
                     break
             if found:
                 nextTextElem = xxx.params[p].node
@@ -190,10 +201,10 @@ class ParamPage(wxPanel):
             xxx.params[param].remove()
             del xxx.params[param]
             w.SetValue('')
-            w.modified = false          # mark as not changed
-        w.Enable(evt.IsChecked())
+            w.modified = False          # mark as not changed
+            w.Enable(False)
         # Set modified flag (provokes undo storing is necessary)
-        panel.SetModified(true)
+        panel.SetModified(True)
     def Apply(self):
         xxx = self.xxx
         if self.controlName:
@@ -229,7 +240,7 @@ class ParamPage(wxPanel):
         for k,v,e in state[1]:
             self.controls[k].SetValue(v)
             self.controls[k].Enable(e)
-            if e: self.controls[k].modified = true
+            if e: self.controls[k].modified = True
         if self.controlName:
             self.controlName.SetValue(state[2])
 
@@ -243,11 +254,12 @@ class PropPage(ParamPage):
         box.SetFont(labelFont)
         topSizer = wxStaticBoxSizer(box, wxVERTICAL)
         sizer = wxFlexGridSizer(len(xxx.allParams), 2, 1, 1)
+        sizer.AddGrowableCol(1)
         if xxx.hasName:
             label = wxStaticText(self, -1, 'XML ID:', size=(100,-1))
-            control = ParamText(self, name='XML_name')
+            control = ParamText(self, 'XML_name', 200)
             sizer.AddMany([ (label, 0, wxALIGN_CENTER_VERTICAL),
-                            (control, 0, wxALIGN_CENTER_VERTICAL) ])
+                            (control, 0, wxALIGN_CENTER_VERTICAL | wxBOTTOM | wxGROW, 5) ])
             self.controlName = control
         for param in xxx.allParams:
             present = xxx.params.has_key(param)
@@ -273,37 +285,37 @@ class PropPage(ParamPage):
             control = typeClass(self, param)
             control.Enable(present)
             sizer.AddMany([ (label, 0, wxALIGN_CENTER_VERTICAL),
-                            (control, 0, wxALIGN_CENTER_VERTICAL) ])
+                            (control, 0, wxALIGN_CENTER_VERTICAL | wxGROW) ])
             self.controls[param] = control
         topSizer.Add(sizer, 1, wxALL | wxEXPAND, 3)
-        self.SetAutoLayout(true)
+        self.SetAutoLayout(True)
         self.SetSizer(topSizer)
         topSizer.Fit(self)
     def SetValues(self, xxx):
         self.xxx = xxx
         self.origChecks = []
         self.origControls = []
-        # Set values, checkboxes to false, disable defaults
+        # Set values, checkboxes to False, disable defaults
         if xxx.hasName:
             self.controlName.SetValue(xxx.name)
             self.origName = xxx.name
         for param in xxx.allParams:
             w = self.controls[param]
-            w.modified = false
+            w.modified = False
             try:
                 value = xxx.params[param].value()
-                w.Enable(true)
+                w.Enable(True)
                 w.SetValue(value)
                 if not param in xxx.required:
-                    self.checks[param].SetValue(true)
-                    self.origChecks.append((param, true))
-                self.origControls.append((param, value, true))
+                    self.checks[param].SetValue(True)
+                    self.origChecks.append((param, True))
+                self.origControls.append((param, value, True))
             except KeyError:
-                self.checks[param].SetValue(false)
+                self.checks[param].SetValue(False)
                 w.SetValue('')
-                w.Enable(false)
-                self.origChecks.append((param, false))
-                self.origControls.append((param, '', false))
+                w.Enable(False)
+                self.origChecks.append((param, False))
+                self.origControls.append((param, '', False))
 
 ################################################################################
 
@@ -315,6 +327,7 @@ class StylePage(ParamPage):
         box.SetFont(labelFont)
         topSizer = wxStaticBoxSizer(box, wxVERTICAL)
         sizer = wxFlexGridSizer(len(xxx.styles), 2, 1, 1)
+        sizer.AddGrowableCol(1)
         for param in xxx.styles:
             present = xxx.params.has_key(param)
             check = wxCheckBox(self, paramIDs[param],
@@ -323,11 +336,11 @@ class StylePage(ParamPage):
             control = paramDict[param](self, name = param)
             control.Enable(present)
             sizer.AddMany([ (check, 0, wxALIGN_CENTER_VERTICAL),
-                            (control, 0, wxALIGN_CENTER_VERTICAL) ])
+                            (control, 0, wxALIGN_CENTER_VERTICAL | wxGROW) ])
             self.checks[param] = check
             self.controls[param] = control
         topSizer.Add(sizer, 1, wxALL | wxEXPAND, 3)
-        self.SetAutoLayout(true)
+        self.SetAutoLayout(True)
         self.SetSizer(topSizer)
         topSizer.Fit(self)
     # Set data for a cahced page
@@ -340,7 +353,7 @@ class StylePage(ParamPage):
             check = self.checks[param]
             check.SetValue(present)
             w = self.controls[param]
-            w.modified = false
+            w.modified = False
             if present:
                 value = xxx.params[param].value()
             else:

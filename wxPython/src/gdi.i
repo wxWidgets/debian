@@ -5,7 +5,7 @@
 // Author:      Robin Dunn
 //
 // Created:     7/7/97
-// RCS-ID:      $Id: gdi.i,v 1.51.2.7 2003/01/21 00:59:20 RD Exp $
+// RCS-ID:      $Id: gdi.i,v 1.51.2.14 2003/03/19 22:09:56 RD Exp $
 // Copyright:   (c) 1998 by Total Control Software
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -68,6 +68,11 @@ public:
     bool LoadFile(const wxString& name, wxBitmapType type=wxBITMAP_TYPE_ANY);
     bool SaveFile(const wxString& name, wxBitmapType type, wxPalette* palette = NULL);
     void SetMask(wxMask* mask);
+    %pragma(python) addtoclass = "
+    def SetMaskColour(self, colour):
+        mask = wxMaskColour(self, colour)
+        self.SetMask(mask)
+    "
 #ifdef __WXMSW__
     void SetPalette(wxPalette& palette);
 #endif
@@ -96,14 +101,6 @@ public:
     void SetQuality(int q);
 #endif
 
-    %pragma(python) addtoclass = "
-    def __del__(self,gdic=gdic):
-        try:
-            if self.thisown == 1 :
-                gdic.delete_wxBitmap(self)
-        except:
-            pass
-"
 };
 
 
@@ -232,14 +229,6 @@ public:
 #endif
     void CopyFromBitmap(const wxBitmap& bmp);
 
-    %pragma(python) addtoclass = "
-    def __del__(self,gdic=gdic):
-        try:
-            if self.thisown == 1 :
-                gdic.delete_wxIcon(self)
-        except:
-            pass
-"
 };
 
 
@@ -338,6 +327,17 @@ public:
     }
 %}
 
+%new wxCursor* wxCursorFromImage(const wxImage& image);
+%{
+    wxCursor* wxCursorFromImage(const wxImage& image) {
+    #ifndef __WXMAC__
+        return new wxCursor(image);
+    #else
+        return NULL;
+    #endif
+    }
+%}
+
 //----------------------------------------------------------------------
 
 class wxColour : public wxObject {
@@ -368,23 +368,28 @@ public:
         bool __eq__(PyObject* obj) {
             wxColour  tmp;
             wxColour* ptr = &tmp;
-            if (obj == Py_None)                 return FALSE;
-            if (! wxColour_helper(obj, &ptr))   return FALSE;
+            if (obj == Py_None)    return FALSE;
+            wxPyBLOCK_THREADS(bool success = wxColour_helper(obj, &ptr); PyErr_Clear());
+            if (! success)         return FALSE;
             return *self == *ptr;
         }
         bool __ne__(PyObject* obj) {
             wxColour  tmp;
             wxColour* ptr = &tmp;
-            if (obj == Py_None)                 return TRUE;
-            if (! wxColour_helper(obj, &ptr))   return TRUE;
+            if (obj == Py_None)    return TRUE;
+            wxPyBLOCK_THREADS(bool success = wxColour_helper(obj, &ptr); PyErr_Clear());
+            if (! success)         return TRUE;
             return *self != *ptr;
         }
-
     }
+
     %pragma(python) addtoclass = "asTuple = Get
-    def __str__(self):      return str(self.asTuple())
-    def __repr__(self):     return 'wxColour: ' + str(self.asTuple())
-    def __nonzero__(self):  return self.Ok()
+    def __str__(self):                  return str(self.asTuple())
+    def __repr__(self):                 return 'wxColour:' + str(self.asTuple())
+    def __nonzero__(self):              return self.Ok()
+    def __getinitargs__(self):          return ()
+    def __getstate__(self):             return self.asTuple()
+    def __setstate__(self, state):      self.Set(*state)
 "
 
 };
@@ -709,210 +714,134 @@ public:
 #endif
 
 
-    %addmethods {
-        // NOTE: These methods are VERY SIMILAR in implentation.  It would be
-        // nice to factor out common code and or turn them into a set of
-        // template-like macros.
+    %addmethods {  // See drawlist.cpp for impplementaion of these...
 
-        // Draw a point for every set of coordinants in pyPoints, optionally
-        // setting a new pen for each
-        PyObject* _DrawPointList(PyObject* pyPoints, PyObject* pyPens) {
-            wxPyBeginBlockThreads();
-
-            bool      isFastSeq  = PyList_Check(pyPoints) || PyTuple_Check(pyPoints);
-            bool      isFastPens = PyList_Check(pyPens) || PyTuple_Check(pyPens);
-            int       numObjs = 0;
-            int       numPens = 0;
-            wxPen*    pen;
-            PyObject* obj;
-            int       x1, y1;
-            int       i = 0;
-            PyObject* retval;
-
-            if (!PySequence_Check(pyPoints)) {
-                goto err0;
-            }
-            if (!PySequence_Check(pyPens)) {
-                goto err1;
-            }
-            numObjs = PySequence_Length(pyPoints);
-            numPens = PySequence_Length(pyPens);
-
-            for (i = 0; i < numObjs; i++) {
-                // Use a new pen?
-                if (i < numPens) {
-                    if (isFastPens) {
-                        obj = PySequence_Fast_GET_ITEM(pyPens, i);
-                    }
-                    else {
-                        obj = PySequence_GetItem(pyPens, i);
-                    }
-                    if (SWIG_GetPtrObj(obj, (void **) &pen, "_wxPen_p")) {
-                        if (!isFastPens)
-                            Py_DECREF(obj);
-                        goto err1;
-                    }
-
-                    self->SetPen(*pen);
-                    if (!isFastPens)
-                        Py_DECREF(obj);
-                }
-
-                // Get the point coordinants
-                if (isFastSeq) {
-                    obj = PySequence_Fast_GET_ITEM(pyPoints, i);
-                }
-                else {
-                    obj = PySequence_GetItem(pyPoints, i);
-                }
-                if (! wxPy2int_seq_helper(obj, &x1, &y1)) {
-                    if (!isFastPens)
-                        Py_DECREF(obj);
-                    goto err0;
-                }
-                if (PyErr_Occurred()) {
-                    retval = NULL;
-                    if (!isFastPens)
-                        Py_DECREF(obj);
-                    goto exit;
-                }
-
-
-                // Now draw the point
-                self->DrawPoint(x1, y1);
-
-                if (!isFastSeq)
-                    Py_DECREF(obj);
-            }
-
-            Py_INCREF(Py_None);
-            retval = Py_None;
-            goto exit;
-
-        err1:
-            PyErr_SetString(PyExc_TypeError, "Expected a sequence of wxPens");
-            retval = NULL;
-            goto exit;
-        err0:
-            PyErr_SetString(PyExc_TypeError, "Expected a sequence of (x,y) sequences.");
-            retval = NULL;
-            goto exit;
-
-        exit:
-            wxPyEndBlockThreads();
-            return retval;
+        PyObject* _DrawPointList(PyObject* pyCoords, PyObject* pyPens, PyObject* pyBrushes)
+        {
+            return wxPyDrawXXXList(*self, wxPyDrawXXXPoint, pyCoords, pyPens, pyBrushes);
         }
 
+        PyObject* _DrawLineList(PyObject* pyCoords, PyObject* pyPens, PyObject* pyBrushes)
+        {
+            return wxPyDrawXXXList(*self, wxPyDrawXXXLine, pyCoords, pyPens, pyBrushes);
+        }
 
-        // Draw a line for every set of coordinants in pyLines, optionally
-        // setting a new pen for each
-        PyObject* _DrawLineList(PyObject* pyLines, PyObject* pyPens) {
-            wxPyBeginBlockThreads();
+        PyObject* _DrawRectangleList(PyObject* pyCoords, PyObject* pyPens, PyObject* pyBrushes)
+        {
+            return wxPyDrawXXXList(*self, wxPyDrawXXXRectangle, pyCoords, pyPens, pyBrushes);
+        }
 
-            bool      isFastSeq  = PyList_Check(pyLines) || PyTuple_Check(pyLines);
-            bool      isFastPens = PyList_Check(pyPens) || PyTuple_Check(pyPens);
-            int       numObjs = 0;
-            int       numPens = 0;
-            wxPen*    pen;
-            PyObject* obj;
-            int       x1, y1, x2, y2;
-            int       i = 0;
-            PyObject* retval;
+        PyObject* _DrawEllipseList(PyObject* pyCoords, PyObject* pyPens, PyObject* pyBrushes)
+        {
+            return wxPyDrawXXXList(*self, wxPyDrawXXXEllipse, pyCoords, pyPens, pyBrushes);
+        }
 
-            if (!PySequence_Check(pyLines)) {
-                goto err0;
-            }
-            if (!PySequence_Check(pyPens)) {
-                goto err1;
-            }
-            numObjs = PySequence_Length(pyLines);
-            numPens = PySequence_Length(pyPens);
+        PyObject* _DrawPolygonList(PyObject* pyCoords, PyObject* pyPens, PyObject* pyBrushes)
+        {
+            return wxPyDrawXXXList(*self, wxPyDrawXXXPolygon, pyCoords, pyPens, pyBrushes);
+        }
 
-            for (i = 0; i < numObjs; i++) {
-                // Use a new pen?
-                if (i < numPens) {
-                    if (isFastPens) {
-                        obj = PySequence_Fast_GET_ITEM(pyPens, i);
-                    }
-                    else {
-                        obj = PySequence_GetItem(pyPens, i);
-                    }
-                    if (SWIG_GetPtrObj(obj, (void **) &pen, "_wxPen_p")) {
-                        if (!isFastPens)
-                            Py_DECREF(obj);
-                        goto err1;
-                    }
-
-                    self->SetPen(*pen);
-                    if (!isFastPens)
-                        Py_DECREF(obj);
-                }
-
-                // Get the line coordinants
-                if (isFastSeq) {
-                    obj = PySequence_Fast_GET_ITEM(pyLines, i);
-                }
-                else {
-                    obj = PySequence_GetItem(pyLines, i);
-                }
-                if (! wxPy4int_seq_helper(obj, &x1, &y1, &x2, &y2)) {
-                    if (!isFastPens)
-                        Py_DECREF(obj);
-                    goto err0;
-                }
-                if (PyErr_Occurred()) {
-                    retval = NULL;
-                    if (!isFastPens)
-                        Py_DECREF(obj);
-                    goto exit;
-                }
-
-                // Now draw the line
-                self->DrawLine(x1, y1, x2, y2);
-
-                if (!isFastSeq)
-                    Py_DECREF(obj);
-            }
-
-            Py_INCREF(Py_None);
-            retval = Py_None;
-            goto exit;
-
-        err1:
-            PyErr_SetString(PyExc_TypeError, "Expected a sequence of wxPens");
-            retval = NULL;
-            goto exit;
-
-        err0:
-            PyErr_SetString(PyExc_TypeError, "Expected a sequence of (x1,y1, x2,y2) sequences.");
-            retval = NULL;
-            goto exit;
-
-        exit:
-            wxPyEndBlockThreads();
-            return retval;
+        PyObject* _DrawTextList(PyObject* textList, PyObject* pyPoints,
+                                PyObject* foregroundList, PyObject* backgroundList) {
+            return wxPyDrawTextList(*self, textList, pyPoints, foregroundList, backgroundList);
         }
     }
-
 
     %pragma(python) addtoclass = "
     def DrawPointList(self, points, pens=None):
         if pens is None:
            pens = []
-        elif wx.wxPy_isinstance(pens, (wxPen, wxPenPtr)):
+        elif isinstance(pens, wxPenPtr):
            pens = [pens]
         elif len(pens) != len(points):
            raise ValueError('points and pens must have same length')
-        return self._DrawPointList(points, pens)
+        return self._DrawPointList(points, pens, [])
+
 
     def DrawLineList(self, lines, pens=None):
         if pens is None:
            pens = []
-        elif wx.wxPy_isinstance(pens, (wxPen, wxPenPtr)):
+        elif isinstance(pens, wxPenPtr):
            pens = [pens]
         elif len(pens) != len(lines):
            raise ValueError('lines and pens must have same length')
-        return self._DrawLineList(lines, pens)
+        return self._DrawLineList(lines, pens, [])
+
+
+    def DrawRectangleList(self, rectangles, pens=None, brushes=None):
+        if pens is None:
+           pens = []
+        elif isinstance(pens, wxPenPtr):
+           pens = [pens]
+        elif len(pens) != len(rectangles):
+           raise ValueError('rectangles and pens must have same length')
+        if brushes is None:
+           brushes = []
+        elif isinstance(brushes, wxBrushPtr):
+           brushes = [brushes]
+        elif len(brushes) != len(rectangles):
+           raise ValueError('rectangles and brushes must have same length')
+        return self._DrawRectangleList(rectangles, pens, brushes)
+
+
+    def DrawEllipseList(self, ellipses, pens=None, brushes=None):
+        if pens is None:
+           pens = []
+        elif isinstance(pens, wxPenPtr):
+           pens = [pens]
+        elif len(pens) != len(ellipses):
+           raise ValueError('ellipses and pens must have same length')
+        if brushes is None:
+           brushes = []
+        elif isinstance(brushes, wxBrushPtr):
+           brushes = [brushes]
+        elif len(brushes) != len(ellipses):
+           raise ValueError('ellipses and brushes must have same length')
+        return self._DrawEllipseList(ellipses, pens, brushes)
+
+
+    def DrawPolygonList(self, polygons, pens=None, brushes=None):
+        ## Note: This does not currently support fill style or offset
+        ## you can always use the non-List version if need be.
+        ## I really would like to support fill-style, however,
+        ## but wxODDEVEN_RULE does not appear to be defined at the Python level
+        ## [It's in wx.py... --Robin]
+        if pens is None:
+           pens = []
+        elif isinstance(pens, wxPenPtr):
+           pens = [pens]
+        elif len(pens) != len(polygons):
+           raise ValueError('polygons and pens must have same length')
+        if brushes is None:
+           brushes = []
+        elif isinstance(brushes, wxBrushPtr):
+           brushes = [brushes]
+        elif len(brushes) != len(polygons):
+           raise ValueError('polygons and brushes must have same length')
+        return self._DrawPolygonList(polygons, pens, brushes)
+
+
+    def DrawTextList(self, textList, coords, foregrounds = None, backgrounds = None, fonts = None):
+        ## NOTE: this does not currently support changing the font
+        ##       Make sure you set Background mode to wxSolid (DC.SetBackgroundMode)
+        ##       If you want backgounds to do anything.
+        if type(textList) == type(''):
+           textList = [textList]
+        elif len(textList) != len(coords):
+           raise ValueError('textlist and coords must have same length')
+        if foregrounds is None:
+           foregrounds = []
+        elif isinstance(foregrounds, wxColourPtr):
+           foregrounds = [foregrounds]
+        elif len(foregrounds) != len(coords):
+           raise ValueError('foregrounds and coords must have same length')
+        if backgrounds is None:
+           backgrounds = []
+        elif isinstance(backgrounds, wxColourPtr):
+           backgrounds = [backgrounds]
+        elif len(backgrounds) != len(coords):
+           raise ValueError('backgrounds and coords must have same length')
+        return  self._DrawTextList(textList, coords, foregrounds, backgrounds)
 "
 
 

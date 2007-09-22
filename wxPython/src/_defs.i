@@ -5,7 +5,7 @@
 // Author:      Robin Dunn
 //
 // Created:     6/24/97
-// RCS-ID:      $Id: _defs.i,v 1.50.2.2 2002/12/10 22:37:10 RD Exp $
+// RCS-ID:      $Id: _defs.i,v 1.50.2.3 2003/02/26 18:38:24 RD Exp $
 // Copyright:   (c) 1998 by Total Control Software
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -931,12 +931,6 @@ enum wxHitTest
     wxHT_MAX
 };
 
-
-
-#define FALSE 0
-#define false 0
-#define TRUE 1
-#define true 1
 
 
 //---------------------------------------------------------------------------

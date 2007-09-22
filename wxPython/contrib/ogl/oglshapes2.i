@@ -5,7 +5,7 @@
 // Author:      Robin Dunn
 //
 // Created:     3-Sept-1999
-// RCS-ID:      $Id: oglshapes2.i,v 1.12 2002/05/02 02:46:13 RD Exp $
+// RCS-ID:      $Id: oglshapes2.i,v 1.12.2.1 2003/02/20 19:16:31 RD Exp $
 // Copyright:   (c) 1998 by Total Control Software
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -209,7 +209,7 @@ public:
     void GetEnds(double *OUTPUT, double *OUTPUT, double *OUTPUT, double *OUTPUT);
     wxPyShape * GetFrom();
     void GetLabelPosition(int position, double *OUTPUT, double *OUTPUT);
-    wxPoint * GetNextControlPoint(wxPyShape *shape);
+    wxRealPoint * GetNextControlPoint(wxPyShape *shape);
     wxPyShape * GetTo();
     void Initialise();
     void InsertLineControlPoint(wxDC* dc);

@@ -4,7 +4,7 @@
 // Author:      Vadim Zeitlin
 // Modified by:
 // Created:     26.10.99
-// RCS-ID:      $Id: menucmn.cpp,v 1.18.2.2 2002/11/19 18:54:46 RD Exp $
+// RCS-ID:      $Id: menucmn.cpp,v 1.18.2.3 2003/02/01 13:45:49 GD Exp $
 // Copyright:   (c) wxWindows team
 // Licence:     wxWindows license
 ///////////////////////////////////////////////////////////////////////////////
@@ -132,7 +132,13 @@ wxAcceleratorEntry *wxGetAccelFromString(const wxString& label)
         else {
             if ( current.Len() == 1 ) {
                 // it's a letter
-                keyCode = wxToupper(current[0U]);
+                keyCode = current[0U];
+
+                // Only call wxToupper if control, alt, or shift is held down,
+                // otherwise lower case accelerators won't work.
+                if (accelFlags != wxACCEL_NORMAL) {
+                    keyCode = wxToupper(keyCode);
+                }
             }
             else {
                 // is it a function key?

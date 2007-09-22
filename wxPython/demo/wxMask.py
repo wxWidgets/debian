@@ -86,7 +86,7 @@ class TestMaskWindow(wxScrolledWindow):
             x,y = 120+150*(i%4), 20+100*(i/4)
             dc.DrawText(text, x, y-20)
             mdc.SelectObject(self.bmp_withcolourmask)
-            dc.Blit(x,y, cx,cy, mdc, 0,0, code, true)
+            dc.Blit(x,y, cx,cy, mdc, 0,0, code, True)
             i = i + 1
 
 
@@ -114,3 +114,11 @@ def runTest(frame, nb, log):
 
 overview = """\
 """
+
+
+
+if __name__ == '__main__':
+    import sys,os
+    import run
+    run.main(['', os.path.basename(sys.argv[0])])
+

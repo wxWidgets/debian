@@ -7,7 +7,7 @@
 # Author:      Robin Dunn
 #
 # Created:     8-July-2002
-# RCS-ID:      $Id: stattext.py,v 1.2.2.5 2003/01/04 04:16:21 RD Exp $
+# RCS-ID:      $Id: stattext.py,v 1.2.2.6 2003/02/26 18:38:14 RD Exp $
 # Copyright:   (c) 2002 by Total Control Software
 # Licence:     wxWindows license
 #----------------------------------------------------------------------
@@ -96,7 +96,7 @@ class wxGenStaticText(wxPyControl):
 
     def AcceptsFocus(self):
         """Overridden base class virtual."""
-        return false
+        return False
 
 
     def OnPaint(self, event):

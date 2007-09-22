@@ -1,4 +1,4 @@
-/* $Header: /pack/cvsroots/wxwindows/wxWindows/src/tiff/tif_predict.c,v 1.3.4.1 2002/11/10 13:13:57 JS Exp $ */
+/* $Header: /pack/cvsroots/wxwindows/wxWindows/src/tiff/tif_predict.c,v 1.3.4.2 2003/02/25 13:10:36 CE Exp $ */
 
 /*
  * Copyright (c) 1988-1997 Sam Leffler
@@ -31,7 +31,7 @@
  */
 #include "tiffiop.h"
 /* Watcom C++ (or its make utility) doesn't like long filenames */
-#ifdef __WATCOMC__
+#ifdef wxUSE_SHORTNAMES
 #include "tif_pred.h"
 #else
 #include "tif_predict.h"
