@@ -5,7 +5,7 @@
 // Created:    April 1997
 // Copyright:  (C) 1999-1997, Guilhem Lavaux
 //             (C) 2000-1999, Guillermo Rodriguez Garcia
-// RCS_ID:     $Id: socket.cpp,v 1.99 2000/03/17 23:00:08 VZ Exp $
+// RCS_ID:     $Id: socket.cpp,v 1.99.2.1 2001/02/20 16:48:15 vadz Exp $
 // License:    see wxWindows license
 /////////////////////////////////////////////////////////////////////////////
 
@@ -1070,7 +1070,10 @@ wxSocketBase *wxSocketServer::Accept(bool wait)
   sock->SetFlags(m_flags);
 
   if (!AcceptWith(*sock, wait))
-    return NULL;
+  {
+    sock->Destroy();
+    sock = NULL;
+  }
 
   return sock;
 }

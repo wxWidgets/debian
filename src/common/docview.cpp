@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     01/02/97
-// RCS-ID:      $Id: docview.cpp,v 1.66.2.11 2000/10/12 19:18:17 vadz Exp $
+// RCS-ID:      $Id: docview.cpp,v 1.66.2.12 2001/03/05 16:50:36 JS Exp $
 // Copyright:   (c) Julian Smart and Markus Holzem
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -248,7 +248,7 @@ bool wxDocument::SaveAs()
 
     wxString tmp = wxFileSelector(_("Save as"),
             docTemplate->GetDirectory(),
-            GetFilename(),
+            wxFileNameFromPath(GetFilename()),
             docTemplate->GetDefaultExtension(),
             docTemplate->GetFileFilter(),
             wxSAVE | wxOVERWRITE_PROMPT,

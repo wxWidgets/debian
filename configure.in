@@ -1,5 +1,5 @@
 dnl Process this file with autoconf to produce a configure script.
-AC_REVISION($Id: configure.in,v 1.314.2.32 2001/01/29 15:26:01 vadz Exp $)dnl
+AC_REVISION($Id: configure.in,v 1.314.2.38 2001/03/10 17:39:11 VZ Exp $)dnl
 
 dnl ---------------------------------------------------------------------------
 dnl
@@ -8,7 +8,7 @@ dnl Vadim Zeitlin
 dnl
 dnl This script is under the wxWindows licence.
 dnl
-dnl Version: $Id: configure.in,v 1.314.2.32 2001/01/29 15:26:01 vadz Exp $
+dnl Version: $Id: configure.in,v 1.314.2.38 2001/03/10 17:39:11 VZ Exp $
 dnl ---------------------------------------------------------------------------
 
 dnl ---------------------------------------------------------------------------
@@ -457,10 +457,10 @@ dnl WX_INTERFACE_AGE = 0
 
 WX_MAJOR_VERSION_NUMBER=2
 WX_MINOR_VERSION_NUMBER=2
-WX_RELEASE_NUMBER=5
+WX_RELEASE_NUMBER=6
 
-WX_INTERFACE_AGE=5
-WX_BINARY_AGE=5
+WX_INTERFACE_AGE=0
+WX_BINARY_AGE=6
 
 WX_VERSION=$WX_MAJOR_VERSION_NUMBER.$WX_MINOR_VERSION_NUMBER.$WX_RELEASE_NUMBER
 
@@ -1087,6 +1087,7 @@ dnl ---------------------------------------------------------------------------
 
 WX_ARG_ENABLE(clipboard,   [  --enable-clipboard      use wxClipboard classes], wxUSE_CLIPBOARD)
 WX_ARG_ENABLE(dnd,         [  --enable-dnd            use Drag'n'Drop classes], wxUSE_DRAG_AND_DROP)
+WX_ARG_ENABLE(metafile,    [  --enable-metafile       use win32 metafiles], wxUSE_METAFILE)
 
 dnl TODO: doesn't work yet
 WX_ARG_ENABLE(wxtree,      [  --enable-wxtree         make wxTree library], wxUSE_WXTREE)
@@ -1532,10 +1533,6 @@ USE_GUI=1
 TOOLKIT=
 TOOLKIT_INCLUDE=
 
-GUIOBJS=
-COMMONOBJS=
-GENERICOBJS=
-
 GUI_TK_LIBRARY=
 GUI_TK_LINK=
 
@@ -1577,12 +1574,6 @@ if test "$wxUSE_CYGWIN" = 1 || test "$wxUSE_MINGW" = 1 ; then
     fi
 
     TOOLKIT=MSW
-
-    GUIOBJS="\$(MSW_GUIOBJS)"
-    GUIHEADERS="\$(MSW_HEADERS)"
-    COMMONOBJS="\$(MSW_COMMONOBJS)"
-    GENERICOBJS="\$(MSW_GENERICOBJS)"
-    UNIXOBJS=
     GUIDIST=MSW_DIST
 
     dnl we should calculate these
@@ -1637,19 +1628,9 @@ dnl       GUI_TK_LIBRARY="$GTK_LIBS -gthread12"
 dnl    else
 dnl       GUI_TK_LIBRARY="$GTK_LIBS -lgthread"
 dnl    fi
-    TOOLKIT=GTK
 
     AFMINSTALL=afminstall
-
-    GUIOBJS="\$(GTK_GUIOBJS)"
-    GUIHEADERS="\$(GTK_HEADERS)"
-    COMMONOBJS="\$(GTK_COMMONOBJS)"
-    GENERICOBJS="\$(GTK_GENERICOBJS)"
-    GUIDEPS="\$(GTK_GUIDEPS)"
-    COMMONDEPS="\$(GTK_COMMONDEPS)"
-    GENERICDEPS="\$(GTK_GENERICDEPS)"
-    UNIXOBJS="\$(UNIX_OBJS)"
-    UNIXDEPS="\$(UNIX_DEPS)"
+    TOOLKIT=GTK
     GUIDIST=GTK_DIST
 
     dnl test for XIM support in libgdk
@@ -1695,16 +1676,6 @@ if test "$wxUSE_WINE" = 1; then
     GUI_TK_LIBRARY="$GUI_TK_LIBRARY $GUI_TK_LINK"
     WXWINE=1
     TOOLKIT=MSW
-
-    GUIHEADERS="\$(MSW_HEADERS)"
-    GUIOBJS="\$(MSW_GUIOBJS)"
-    COMMONOBJS="\$(MSW_COMMONOBJS)"
-    GENERICOBJS="\$(MSW_GENERICOBJS)"
-    GUIDEPS="\$(MSW_GUIDEPS)"
-    COMMONDEPS="\$(MSW_COMMONDEPS)"
-    GENERICDEPS="\$(MSW_GENERICDEPS)"
-    UNIXOBJS="\$(UNIX_OBJS)"
-    UNIXDEPS="\$(UNIX_DEPS)"
     GUIDIST=MSW_DIST
 fi
 
@@ -1876,31 +1847,11 @@ if test "$wxUSE_MOTIF" = 1; then
     GUI_TK_LINK="-lXm $XPM_LINK -lXmu -lXext -lXt -lX11"
     GUI_TK_LIBRARY="$GUI_TK_LIBRARY $GUI_TK_LINK"
     TOOLKIT=MOTIF
-
-    GUIHEADERS="\$(MOTIF_HEADERS)"
-    GUIOBJS="\$(MOTIF_GUIOBJS)"
-    COMMONOBJS="\$(MOTIF_COMMONOBJS)"
-    GENERICOBJS="\$(MOTIF_GENERICOBJS)"
-    GUIDEPS="\$(MOTIF_GUIDEPS)"
-    COMMONDEPS="\$(MOTIF_COMMONDEPS)"
-    GENERICDEPS="\$(MOTIF_GENERICDEPS)"
-    UNIXOBJS="\$(UNIX_OBJS)"
-    UNIXDEPS="\$(UNIX_DEPS)"
     GUIDIST=MOTIF_DIST
 fi
 
 if test "$wxUSE_PM" = 1; then
     TOOLKIT=PM
-
-    GUIOBJS="\$(PM_GUIOBJS)"
-    GUIHEADERS="\$(PM_HEADERS)"
-    COMMONOBJS="\$(PM_COMMONOBJS)"
-    GENERICOBJS="\$(PM_GENERICOBJS)"
-    GUIDEPS="\$(PM_GUIDEPS)"
-    COMMONDEPS="\$(PM_COMMONDEPS)"
-    GENERICDEPS="\$(PM_GENERICDEPS)"
-    UNIXOBJS=
-    UNIXDEPS=
     GUIDIST=GTK_DIST
 fi
 
@@ -1928,10 +1879,8 @@ fi
     ALL_OBJECTS="\$(GUIOBJS) \$(COMMONOBJS) \$(GENERICOBJS) \$(UNIXOBJS) \$(HTMLOBJS) \$(OGLOBJS)"
 
     dnl ODBC objects are Unix only
-    if test "$TOOLKIT" != "MSW"; then
-        if test "$wxUSE_ODBC" = "yes" ; then
-            ALL_OBJECTS="${ALL_OBJECTS} \$(IODBCOBJS)"
-        fi
+    if test "$TOOLKIT" != "MSW" -a "$wxUSE_ODBC" = "yes" ; then
+        ALL_OBJECTS="${ALL_OBJECTS} \$(IODBCOBJS)"
     fi
 
     if test "$wxUSE_LIBJPEG" = "yes" ; then
@@ -2325,6 +2274,14 @@ dnl understand why it works, remember that AC_TRY_COMPILE() just prepends
 dnl "int main() {" in the beginning of the code and "; return 0; }" at the
 dnl end...
 
+dnl if we fail to find vsnprintf, also try for _vsnprintf as that is what
+dnl we'll find under MSW if it exists.
+
+dnl final note: AC_TRY_COMPILE will only be executed if there is nothing in
+dnl the cache so we have to do AC_DEFINE(HAVE_VSNPRINTF) below and not inside
+dnl it or the symbol wouldn't be defined for the 2nd and subsequent configure
+dnl runs
+
 dnl check for vsnprintf() - a safe version of vsprintf()
 AC_CACHE_CHECK([for vsnprintf], wx_cv_func_vsnprintf,
 [
@@ -2347,13 +2304,39 @@ AC_CACHE_CHECK([for vsnprintf], wx_cv_func_vsnprintf,
                     vsnprintf(s, 42, fmt, argp);
                     va_end(argp);
                  ], [
-                    AC_DEFINE(HAVE_VSNPRINTF)
                     wx_cv_func_vsnprintf=yes
                  ], [
-                    AC_MSG_WARN(unsafe function sprintf will be used instead of snprintf)
-                    wx_cv_func_vsnprintf=no
+                    AC_TRY_COMPILE([
+                                      #include <stdio.h>
+                                      #include <stdarg.h>
+                                   ], [
+                                      int wx_test_vsnprintf(const char *, ...);
+
+                                      wx_test_vsnprintf("%s");
+                                      return 0;
+                                   }
+
+                                   int wx_test_vsnprintf(const char *fmt, ...)
+                                   {
+                                      char *s;
+
+                                      va_list argp;
+                                      va_start(argp, fmt);
+                                      _vsnprintf(s, 42, fmt, argp);
+                                      va_end(argp);
+                                   ], [
+                                      wx_cv_func_vsnprintf=yes
+                                   ], [
+                                      wx_cv_func_vsnprintf=no
+                                   ])
                  ])
 ])
+
+if test "$wx_cv_func_vsnprintf" = yes; then
+    AC_DEFINE(HAVE_VSNPRINTF)
+else
+    AC_MSG_WARN(unsafe function sprintf will be used instead of snprintf)
+fi
 
 dnl check for vsscanf()
 AC_CACHE_CHECK([for vsscanf], wx_cv_func_vsscanf,
@@ -2375,12 +2358,15 @@ AC_CACHE_CHECK([for vsscanf], wx_cv_func_vsscanf,
                     vsscanf("42", fmt, argp);
                     va_end(argp);
                 ], [
-                    AC_DEFINE(HAVE_VSSCANF)
                     wx_cv_func_vsscanf=yes
                 ], [
                     wx_cv_func_vsscanf=no
                 ])
 ])
+
+if test "$wx_cv_func_vsscanf" = yes; then
+    AC_DEFINE(HAVE_VSSCANF)
+fi
 
 AC_LANG_RESTORE
 
@@ -3125,8 +3111,9 @@ if test "$wxUSE_SOCKETS" = "yes"; then
     )
 fi
 
-fi
-dnl if !MSW
+dnl this test may be appropriate if building under cygwin
+dnl right now I'm assuming it also uses the winsock stuff
+dnl like mingw does..  -- RL
 
 if test "$wxUSE_SOCKETS" = "yes" ; then
     dnl determine the type of third argument for getsockname
@@ -3181,6 +3168,9 @@ if test "$wxUSE_SOCKETS" = "yes" ; then
         AC_DEFINE_UNQUOTED(SOCKLEN_T, $wx_cv_type_getsockname3)
     fi
 fi
+
+fi
+dnl if !MSW
 
 if test "$wxUSE_SOCKETS" = "yes" ; then
     AC_DEFINE(wxUSE_SOCKETS)
@@ -3320,9 +3310,6 @@ if test "$wxUSE_ODBC" = "yes" ; then
     AC_DEFINE(wxUSE_ODBC)
     WXODBCFLAG="-D_IODBC_"
     SAMPLES_SUBDIRS="$SAMPLES_SUBDIRS db"
-    IODBCOBJS="\$(IODBC_OBJS)"
-else
-    IODBCOBJS=
 fi
 
 dnl ----------------------------------------------------------------
@@ -3422,8 +3409,28 @@ if test "$wxUSE_DRAG_AND_DROP" = "yes" ; then
     if test "$USE_WIN32" = 1; then
         dnl check for ole headers and disable DnD if not present (earlier
         dnl versions of mingw32 don't have them)
+
         AC_CHECK_HEADERS(ole2.h)
-        if test "x$HAVE_OLE2_H" = x ; then
+
+	dnl for some reason this test always fails here??
+        dnl if test "x$HAVE_OLE2_H" != x ; then
+	dnl this one does the right thing though
+        if test "$ac_cv_header_ole2_h" = "yes" ; then
+            if test "$GCC" = yes ; then
+                ALL_OBJECTS="$ALL_OBJECTS \$(OLEOBJS)"
+                ALL_DEPFILES="$ALL_DEPFILES \$(OLEDEPS)"
+                CODE_GEN_FLAGS_CXX="$CODE_GEN_FLAGS_CXX -fvtable-thunks"
+                LIBS="$LIBS -lole32 -luuid"
+
+                dnl metafiles need the ole code, right??  if not this
+                dnl doesn't need to be in here.
+                if test "$wxUSE_METAFILE" = "yes"; then
+                    AC_DEFINE(wxUSE_METAFILE)
+                    dnl this one should probably be made separately configurable
+                    AC_DEFINE(wxUSE_ENH_METAFILE)
+                fi
+            fi
+        else
             AC_MSG_WARN(Drag and drop disabled because OLE headers not found)
             wxUSE_DRAG_AND_DROP=no
         fi
@@ -3622,10 +3629,6 @@ dnl TODO this is unused for now...
 dnl if test "$wxUSE_WXTREE" = "yes"; then
 dnl   AC_DEFINE(wxUSE_WXTREE)
 dnl fi
-
-if test "$wxUSE_METAFILE" = "yes"; then
-    AC_DEFINE(wxUSE_METAFILE)
-fi
 
 if test "$wxUSE_DIRDLG" = "yes"; then
     if test "$wxUSE_CONSTRAINTS" != "yes"; then
@@ -3827,16 +3830,6 @@ AC_SUBST(TOOLKIT_INCLUDE)
 AC_SUBST(WXCONFIG_INCLUDE)
 
 dnl what to compile
-AC_SUBST(GUIHEADERS)
-AC_SUBST(GUIOBJS)
-AC_SUBST(COMMONOBJS)
-AC_SUBST(GENERICOBJS)
-AC_SUBST(GUIDEPS)
-AC_SUBST(COMMONDEPS)
-AC_SUBST(GENERICDEPS)
-AC_SUBST(IODBCOBJS)
-AC_SUBST(UNIXOBJS)
-AC_SUBST(UNIXDEPS)
 AC_SUBST(ALL_OBJECTS)
 AC_SUBST(ALL_DEPFILES)
 

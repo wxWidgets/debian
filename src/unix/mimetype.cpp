@@ -4,7 +4,7 @@
 // Author:      Vadim Zeitlin
 // Modified by:
 // Created:     23.09.98
-// RCS-ID:      $Id: mimetype.cpp,v 1.7.2.3 2001/01/15 21:48:44 vadz Exp $
+// RCS-ID:      $Id: mimetype.cpp,v 1.7.2.4 2001/02/12 00:54:02 vadz Exp $
 // Copyright:   (c) 1998 Vadim Zeitlin <zeitlin@dptmaths.ens-cachan.fr>
 // Licence:     wxWindows license (part of wxExtra library)
 /////////////////////////////////////////////////////////////////////////////
@@ -1428,18 +1428,31 @@ bool wxMimeTypesManagerImpl::ReadMailcap(const wxString& strFileName,
                  strTest,
                  strDesc,
                  curField; // accumulator
-        for ( bool cont = TRUE; cont; pc++ ) {
+        bool cont = TRUE;
+        while ( cont ) {
             switch ( *pc ) {
                 case wxT('\\'):
                     // interpret the next character literally (notice that
                     // backslash can be used for line continuation)
                     if ( *++pc == wxT('\0') ) {
-                        // fetch the next line.
+                        // fetch the next line if there is one
+                        if ( nLine == nLineCount - 1 ) {
+                            // something is wrong, bail out
+                            cont = FALSE;
 
-                        // pc currently points to nowhere, but after the next
-                        // pc++ in the for line it will point to the beginning
-                        // of the next line in the file
-                        pc = file[++nLine].c_str() - 1;
+                            wxLogDebug(wxT("Mailcap file %s, line %d: "
+                                           "'\\' on the end of the last line "
+                                           "ignored."),
+                                       strFileName.c_str(),
+                                       nLine + 1);
+                        }
+                        else {
+                            // pass to the beginning of the next line
+                            pc = file[++nLine].c_str();
+
+                            // skip pc++ at the end of the loop
+                            continue;
+                        }
                     }
                     else {
                         // just a normal character
@@ -1461,6 +1474,12 @@ bool wxMimeTypesManagerImpl::ReadMailcap(const wxString& strFileName,
                     switch ( currentToken ) {
                         case Field_Type:
                             strType = curField;
+                            if ( strType.empty() ) {
+                                // I don't think that this is a valid mailcap
+                                // entry, but try to interpret it somehow
+                                strType = _T('*');
+                            }
+
                             if ( strType.Find(wxT('/')) == wxNOT_FOUND ) {
                                 // we interpret "type" as "type/*"
                                 strType += wxT("/*");
@@ -1476,7 +1495,7 @@ bool wxMimeTypesManagerImpl::ReadMailcap(const wxString& strFileName,
                             break;
 
                         case Field_Other:
-                            {
+                            if ( !curField.empty() ) {
                                 // "good" mailcap entry?
                                 bool ok = TRUE;
 
@@ -1551,6 +1570,7 @@ bool wxMimeTypesManagerImpl::ReadMailcap(const wxString& strFileName,
                                     }
                                 }
                             }
+                            //else: the field is empty, ignore silently
 
                             // it already has this value
                             //currentToken = Field_Other;
@@ -1567,6 +1587,9 @@ bool wxMimeTypesManagerImpl::ReadMailcap(const wxString& strFileName,
                 default:
                     curField += *pc;
             }
+
+            // continue in the same line
+            pc++;
         }
 
         // check that we really read something reasonable

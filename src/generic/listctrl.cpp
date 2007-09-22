@@ -2,7 +2,7 @@
 // Name:        listctrl.cpp
 // Purpose:
 // Author:      Robert Roebling
-// Id:          $Id: listctrl.cpp,v 1.139.2.25 2000/12/24 14:03:21 vaclavslavik Exp $
+// Id:          $Id: listctrl.cpp,v 1.139.2.27 2001/03/08 15:07:19 VZ Exp $
 // Copyright:   (c) 1998 Robert Roebling
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -1754,7 +1754,7 @@ void wxListMainWindow::EditLabel( long item )
     // We have to call this here because the label in
     // question might just have been added and no screen
     // update taken place.
-    if (m_dirty) wxYield();
+    if (m_dirty) wxYieldIfNeeded();
 
     wxString s;
     m_currentEdit->GetText( 0, s );
@@ -2584,7 +2584,7 @@ int wxListMainWindow::GetItemState( long item, long stateMask )
         if (item >= 0 && (size_t)item < m_lines.GetCount())
         {
             wxListLineData *line = &m_lines[(size_t)item];
-            if (line->IsHilighted()) ret |= wxLIST_STATE_FOCUSED;
+            if (line->IsHilighted()) ret |= wxLIST_STATE_SELECTED;
         }
     }
     return ret;
@@ -2896,7 +2896,7 @@ void wxListMainWindow::EnsureVisible( long index )
     // We have to call this here because the label in
     // question might just have been added and no screen
     // update taken place.
-    if (m_dirty) wxYield();
+    if (m_dirty) wxYieldIfNeeded();
 
     wxListLineData *oldCurrent = m_current;
     m_current = (wxListLineData *) NULL;

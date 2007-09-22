@@ -4,7 +4,7 @@
 // Author:      Vadim Zeitlin
 // Modified by:
 // Created:     01.11.99
-// RCS-ID:      $Id: menu.cpp,v 1.7.2.4 2000/08/12 13:30:47 VZ Exp $
+// RCS-ID:      $Id: menu.cpp,v 1.7.2.5 2001/03/02 12:49:26 JS Exp $
 // Copyright:   (c) 1999 Vadim Zeitlin
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -361,6 +361,8 @@ wxMenuItem *MyFrame::GetLastMenuItem() const
 void MyFrame::LogMenuEvent(const wxCommandEvent& event)
 {
     int id = event.GetId();
+    if (!GetMenuBar()->FindItem(id))
+        return;
     wxString msg = wxString::Format("Menu command %d", id);
     if ( GetMenuBar()->FindItem(id)->IsCheckable() )
     {

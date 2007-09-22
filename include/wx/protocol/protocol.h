@@ -4,7 +4,7 @@
 // Author:      Guilhem Lavaux
 // Modified by:
 // Created:     10/07/1997
-// RCS-ID:      $Id: protocol.h,v 1.8 2000/03/15 17:16:33 VZ Exp $
+// RCS-ID:      $Id: protocol.h,v 1.8.2.1 2001/02/23 22:52:11 vaclavslavik Exp $
 // Copyright:   (c) 1997, 1998 Guilhem Lavaux
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -96,7 +96,15 @@ public: \
   static wxProtoInfo g_proto_##class;
 
 #define IMPLEMENT_PROTOCOL(class, name, serv, host) \
-wxProtoInfo class::g_proto_##class(name, serv, host, CLASSINFO(class));
+wxProtoInfo class::g_proto_##class(name, serv, host, CLASSINFO(class)); \
+bool wxProtocolUse##class = TRUE;
+
+#define USE_PROTOCOL(class) \
+    extern bool wxProtocolUse##class ; \
+    static struct wxProtocolUserFor##class \
+    { \
+        wxProtocolUserFor##class() { wxProtocolUse##class = TRUE; } \
+    } wxProtocolDoUse##class;
 
 class WXDLLEXPORT wxProtoInfo : public wxObject
 {

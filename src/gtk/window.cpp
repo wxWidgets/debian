@@ -2,7 +2,7 @@
 // Name:        gtk/window.cpp
 // Purpose:
 // Author:      Robert Roebling
-// Id:          $Id: window.cpp,v 1.289.2.14 2000/10/03 10:05:40 roebling Exp $
+// Id:          $Id: window.cpp,v 1.289.2.15 2001/02/12 13:47:35 juliansmart Exp $
 // Copyright:   (c) 1998 Robert Roebling, Julian Smart
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -2306,6 +2306,9 @@ bool wxWindow::Create( wxWindow *parent, wxWindowID id,
 
 wxWindow::~wxWindow()
 {
+    if (g_focusWindow == this)
+        g_focusWindow = NULL;
+
     m_isBeingDeleted = TRUE;
     m_hasVMT = FALSE;
 

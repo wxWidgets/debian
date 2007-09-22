@@ -13,7 +13,7 @@ from my_distutils import run_swig, contrib_copy_tree
 # flags and values that affect this script
 #----------------------------------------------------------------------
 
-VERSION          = "2.2.5"
+VERSION          = "2.2.6"
 DESCRIPTION      = "Cross platform GUI toolkit for Python"
 AUTHOR           = "Robin Dunn"
 AUTHOR_EMAIL     = "robin@alldunn.com"
@@ -28,11 +28,11 @@ on.
 """
 
 
-BUILD_GLCANVAS = 0 #1 # If true, build the contrib/glcanvas extension module
+BUILD_GLCANVAS = 1 # If true, build the contrib/glcanvas extension module
 BUILD_OGL = 1      # If true, build the contrib/ogl extension module
 BUILD_STC = 1      # If true, build the contrib/stc extension module
 CORE_ONLY = 0      # if true, don't build any of the above
-GL_ONLY = 0 #1 #0        # Only used when making the -gl RPM.  See the "b" script
+GL_ONLY = 0        # Only used when making the -gl RPM.  See the "b" script
                    # for the ugly details
 
 USE_SWIG = 0       # Should we actually execute SWIG, or just use the
@@ -42,6 +42,10 @@ IN_CVS_TREE = 0    # Set to true if building in a full wxWindows CVS
                    # tree, otherwise will assume all needed files are
                    # available in the wxPython source distribution
 
+WX_CONFIG = "wx-config"    # Usually you shouldn't need to touch this,
+                           # but you can set it to pass an alternate
+                           # version of wx-config or alternate flags,
+                           # eg. as required by the .deb in-tree build.
 
 # Some MSW build settings
 
@@ -56,7 +60,7 @@ HYBRID = 0         # If set and not debug or FINAL, then build a
                    # wxWindows must have been built with /MD, not /MDd
                    # (using FINAL=hybrid will do it.)
 
-WXDLLVER = '22_5'  # Version part of DLL name
+WXDLLVER = '22_6'  # Version part of DLL name
 
 
 #----------------------------------------------------------------------
@@ -75,8 +79,7 @@ debug = '--debug' in sys.argv or '-g' in sys.argv
 #----------------------------------------------------------------------
 
 for flag in ['BUILD_GLCANVAS', 'BUILD_OGL', 'BUILD_STC', 'CORE_ONLY',
-             'USE_SWIG', 'IN_CVS_TREE', 'FINAL', 'HYBRID',
-             'WXDLLVER', ]:
+             'USE_SWIG', 'IN_CVS_TREE', 'FINAL', 'HYBRID', ]:
     for x in range(len(sys.argv)):
         if string.find(sys.argv[x], flag) == 0:
             pos = string.find(sys.argv[x], '=') + 1
@@ -84,11 +87,19 @@ for flag in ['BUILD_GLCANVAS', 'BUILD_OGL', 'BUILD_STC', 'CORE_ONLY',
                 vars()[flag] = eval(sys.argv[x][pos:])
                 sys.argv[x] = ''
 
+for option in ['WX_CONFIG', 'WXDLLVER', ]:
+    for x in range(len(sys.argv)):
+        if string.find(sys.argv[x], option) == 0:
+            pos = string.find(sys.argv[x], '=') + 1
+            if pos > 0:
+                vars()[option] = sys.argv[x][pos:]
+                sys.argv[x] = ''
+
 sys.argv = filter(None, sys.argv)
 
 
 if CORE_ONLY:
-    BUILD_GLCANVAS = 0 #0
+    BUILD_GLCANVAS = 0
     BUILD_OGL = 0
     BUILD_STC = 0
 
@@ -172,11 +183,11 @@ elif os.name == 'posix':
     libdirs = []
     libs = []
 
-    cflags = os.popen('wx-config --cflags', 'r').read()[:-1] + ' ' + \
+    cflags = os.popen(WX_CONFIG + ' --cflags', 'r').read()[:-1] + ' ' + \
              os.popen('gtk-config --cflags', 'r').read()[:-1]
     cflags = string.split(cflags)
 
-    lflags = os.popen('wx-config --libs', 'r').read()[:-1]
+    lflags = os.popen(WX_CONFIG + ' --libs', 'r').read()[:-1]
     lflags = string.split(lflags)
 
 

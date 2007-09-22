@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     29/01/98
-// RCS-ID:      $Id: utils.h,v 1.50.2.4 2000/12/17 01:38:50 vadz Exp $
+// RCS-ID:      $Id: utils.h,v 1.50.2.5 2001/03/08 07:57:52 JS Exp $
 // Copyright:   (c) 1998 Julian Smart
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -275,6 +275,9 @@ WXDLLEXPORT int wxFindMenuItemId(wxFrame *frame, const wxString& menuString, con
 
 // Yield to other apps/messages
 WXDLLEXPORT bool wxYield();
+
+// Like wxYield, but fails silently if the yield is recursive.
+WXDLLEXPORT bool wxYieldIfNeeded();
 
 // Yield to other apps/messages and disable user input
 WXDLLEXPORT bool wxSafeYield(wxWindow *win = NULL);

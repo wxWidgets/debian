@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by: VZ at 16/11/98: WX_DECLARE_LIST() and typesafe lists added
 // Created:     29/01/98
-// RCS-ID:      $Id: list.h,v 1.37.2.4 2001/01/04 19:06:24 vadz Exp $
+// RCS-ID:      $Id: list.h,v 1.37.2.5 2001/02/11 10:36:05 juliansmart Exp $
 // Copyright:   (c) 1998 Julian Smart
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -20,6 +20,7 @@
   working with right types. This achieves the 2nd goal. As for the first one,
   we provide a special derivation of wxListBase called wxList which looks just
   like the old class.
+	Last change:  AC   27 Jan 101    4:38 pm
 */
 
 #ifndef _WX_LISTH__
@@ -245,9 +246,7 @@ public:
     wxListBase(void *object, ... /* terminate with NULL */);
 
 protected:
-        // copy ctor and assignment operator
-    wxListBase(const wxListBase& list)
-        { Init(); DoCopy(list); }
+        // assignment operator
     wxListBase& operator=(const wxListBase& list)
         { Clear(); DoCopy(list); return *this; }
 
@@ -323,6 +322,11 @@ private:
                *m_nodeLast;
 
     wxKeyType m_keyType;        // type of our keys (may be wxKEY_NONE)
+
+protected:
+        // copy ctor. This has to go below Init, or VC++ 1.5 will complain.
+    wxListBase(const wxListBase& list)
+        { Init(); DoCopy(list); }
 };
 
 // -----------------------------------------------------------------------------

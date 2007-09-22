@@ -4,7 +4,7 @@
 // Author:      Karsten Ballüder
 // Modified by:
 // Created:     09.05.1999
-// RCS-ID:      $Id: progdlgg.cpp,v 1.41 2000/03/12 00:25:20 VZ Exp $
+// RCS-ID:      $Id: progdlgg.cpp,v 1.41.2.1 2001/03/08 15:07:19 VZ Exp $
 // Copyright:   (c) Karsten Ballüder
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -226,7 +226,7 @@ wxProgressDialog::wxProgressDialog(wxString const &title,
     Enable(TRUE); // enable this window
 
     // Update the display (especially on X, GTK)
-    wxYield();
+    wxYieldIfNeeded();
 
 #ifdef __WXMAC__
     MacUpdateImmediately();
@@ -285,7 +285,7 @@ wxProgressDialog::Update(int value, const wxString& newmsg)
 
         m_msg->SetLabel(newmsg);
 
-        wxYield();
+        wxYieldIfNeeded();
     }
 
     if ( (m_elapsed || m_remaining || m_estimated) && (value != 0) )
@@ -317,14 +317,14 @@ wxProgressDialog::Update(int value, const wxString& newmsg)
         // to do
         m_state = Finished;
 
-        wxYield();
+        wxYieldIfNeeded();
 
         (void)ShowModal();
     }
     else
     {
         // update the display
-        wxYield();
+        wxYieldIfNeeded();
     }
 
 #ifdef __WXMAC__

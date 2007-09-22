@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     01/02/97
-// RCS-ID:      $Id: tbarbase.h,v 1.20.2.2 2000/08/05 15:53:54 VZ Exp $
+// RCS-ID:      $Id: tbarbase.h,v 1.20.2.4 2001/02/23 20:28:54 vadz Exp $
 // Copyright:   (c) Julian Smart and Markus Holzem
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -335,9 +335,12 @@ public:
     virtual void SetToolSeparation(int separation)
         { m_toolSeparation = separation; }
 
-    virtual wxSize GetToolMargins() { return wxSize(m_xMargin, m_yMargin); }
+    virtual wxSize GetToolMargins() { return GetToolMargins(); }
     virtual int GetToolPacking() { return m_toolPacking; }
     virtual int GetToolSeparation() { return m_toolSeparation; }
+
+    // for compatibility
+    wxSize GetMargins() const { return wxSize(m_xMargin, m_yMargin); }
 
     // toolbar geometry
     // ----------------

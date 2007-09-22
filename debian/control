@@ -44,6 +44,7 @@ Description: wxBase library (development) - non-GUI support classes of wxWindows
 Package: libwxbase2.2-dbg
 Architecture: any
 Section: devel
+Priority: extra
 Depends: wxwin2.2-headers (= ${Source-Version}), libc6-dev
 Conflicts: libwxbase-dbg
 Replaces: libwxbase-dbg
@@ -97,6 +98,7 @@ Description: wxWindows Cross-platform C++ GUI toolkit (GTK+ development)
 Package: libwxgtk2.2-dbg
 Architecture: any
 Section: devel
+Priority: extra
 Depends: wxwin2.2-headers (= ${Source-Version}), libc6-dev
 Conflicts: libwxgtk-dbg
 Replaces: libwxgtk-dbg
@@ -114,7 +116,7 @@ Description: wxWindows Cross-platform C++ GUI toolkit (GTK+ development)
 Package: libwxgtk2.2-python
 Architecture: any
 Section: interpreters
-Depends: libwxgtk2.2 (= ${Source-Version}), libwxgtk2.2-contrib (= ${Source-Version}), python-base (>=1.5.2), ${shlibs:Depends}
+Depends: python-base (>=1.5.2), ${shlibs:Depends}
 Suggests: wxwin2.2-doc
 Conflicts: libwxgtk2.2-python-contrib, python-wxwin
 Replaces: libwxgtk2.2-python-contrib, python-wxwin
