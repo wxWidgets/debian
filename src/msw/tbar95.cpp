@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     04/01/98
-// RCS-ID:      $Id: tbar95.cpp,v 1.97.2.6 2004/02/02 14:16:25 CE Exp $
+// RCS-ID:      $Id: tbar95.cpp,v 1.97.2.8 2004/08/02 10:03:32 JS Exp $
 // Copyright:   (c) Julian Smart and Markus Holzem
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -52,6 +52,10 @@
 // ----------------------------------------------------------------------------
 
 #include "wx/msw/private.h"
+
+#if wxUSE_UXTHEME
+#include "wx/msw/uxtheme.h"
+#endif
 
 #ifndef __TWIN32__
 
@@ -252,6 +256,26 @@ bool wxToolBar::Create(wxWindow *parent,
     // set up the colors and fonts
     SetBackgroundColour(wxSystemSettings::GetColour(wxSYS_COLOUR_MENUBAR));
     SetFont(wxSystemSettings::GetFont(wxSYS_DEFAULT_GUI_FONT));
+
+    // workaround for flat toolbar on Windows XP classic style
+#if wxUSE_UXTHEME
+    if ( style & wxTB_FLAT )
+    {
+        wxUxThemeEngine *p = wxUxThemeEngine::Get();
+        if ( !p || !p->m_pfnIsThemeActive() )
+        {
+            DWORD dwToolbarStyle;
+
+            dwToolbarStyle = (DWORD)::SendMessage(GetHwnd(), TB_GETSTYLE, 0, 0L );
+        
+            if ((dwToolbarStyle & TBSTYLE_FLAT) == 0)
+            {
+                dwToolbarStyle |= TBSTYLE_FLAT;
+                ::SendMessage(GetHwnd(), TB_SETSTYLE, 0, (LPARAM)dwToolbarStyle );
+            }
+        }
+    }
+#endif
 
     return TRUE;
 }

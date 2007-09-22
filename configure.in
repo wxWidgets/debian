@@ -1,5 +1,5 @@
 dnl Process this file with autoconf to produce a configure script.
-AC_REVISION($Id: configure.in,v 1.624.2.60 2004/07/31 18:26:01 RL Exp $)dnl
+AC_REVISION($Id: configure.in,v 1.624.2.61 2004/08/02 06:09:42 RL Exp $)dnl
 
 dnl ---------------------------------------------------------------------------
 dnl
@@ -8,7 +8,7 @@ dnl Vadim Zeitlin and Ron Lee
 dnl
 dnl This script is under the wxWindows licence.
 dnl
-dnl Version: $Id: configure.in,v 1.624.2.60 2004/07/31 18:26:01 RL Exp $
+dnl Version: $Id: configure.in,v 1.624.2.61 2004/08/02 06:09:42 RL Exp $
 dnl ---------------------------------------------------------------------------
 
 dnl ---------------------------------------------------------------------------
@@ -2948,7 +2948,7 @@ if test "$wxUSE_SHARED" = "yes"; then
         fi
       ;;
 
-      *-*-linux* )
+      *-*-linux* | *-*-gnu* | *-*-k*bsd*-gnu )
         if test "$GCC" != "yes"; then
             AC_CACHE_CHECK([for Intel compiler], wx_cv_prog_icc,
             [

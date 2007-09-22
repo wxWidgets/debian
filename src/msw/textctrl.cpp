@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     04/01/98
-// RCS-ID:      $Id: textctrl.cpp,v 1.151.2.12 2003/10/10 08:20:31 JS Exp $
+// RCS-ID:      $Id: textctrl.cpp,v 1.151.2.13 2004/07/31 15:43:18 JS Exp $
 // Copyright:   (c) Julian Smart
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -1247,6 +1247,11 @@ wxString wxTextCtrl::GetLineText(long lineNo) const
 
 void wxTextCtrl::SetMaxLength(unsigned long len)
 {
+#if wxUSE_RICHEDIT
+    if (IsRich())
+        ::SendMessage(GetHwnd(), EM_EXLIMITTEXT, 0, (LPARAM) (DWORD) len);
+    else
+#endif
     ::SendMessage(GetHwnd(), EM_LIMITTEXT, len, 0);
 }
 
