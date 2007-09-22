@@ -39,7 +39,7 @@ import distutils.command.clean
 VER_MAJOR        = 2      # The first three must match wxWidgets
 VER_MINOR        = 6
 VER_RELEASE      = 1
-VER_SUBREL       = 1      # wxPython release num for x.y.z release of wxWidgets
+VER_SUBREL       = 2      # wxPython release num for x.y.z release of wxWidgets
 VER_FLAGS        = "pre"  # release flags, such as prerelease or RC num, etc.
 
 DESCRIPTION      = "Cross platform GUI toolkit for Python"
@@ -147,6 +147,15 @@ WX_CONFIG = None   # Usually you shouldn't need to touch this, but you can set
                    # default a wx-config command will be assembled based on
                    # version, port, etc. and it will be looked for on the
                    # default $PATH.
+
+SYS_WX_CONFIG = None # When installing an in tree build, setup.py uses wx-config
+                     # for two different purposes.  First, to determine the prefix
+		     # where files will be installed, and secondly, to initialise
+		     # build_options.py with the correct options for it.
+		     # WX_CONFIG is used for the first task.  SYS_WX_CONFIG may
+		     # be set independently, to the value that should appear in
+		     # build_options.py, if it is different to that.  The default
+		     # is to use the value of WX_CONFIG.
 
 WXPORT = 'gtk2'    # On Linux/Unix there are several ports of wxWidgets available.
                    # Setting this value lets you select which will be used for
@@ -256,8 +265,8 @@ for flag in [ 'BUILD_ACTIVEX', 'BUILD_ANIMATE', 'BUILD_DLLWIDGET',
                 sys.argv[x] = ''
 
 # String options
-for option in ['WX_CONFIG', 'WXDLLVER', 'BUILD_BASE', 'WXPORT', 'SWIG',
-               'CONTRIBS_INC', 'WXPY_SRC', 'FLAVOUR', 
+for option in ['WX_CONFIG', 'SYS_WX_CONFIG', 'WXDLLVER', 'BUILD_BASE',
+               'WXPORT', 'SWIG', 'CONTRIBS_INC', 'WXPY_SRC', 'FLAVOUR', 
                ]:
     for x in range(len(sys.argv)):
         if sys.argv[x].find(option) == 0:
@@ -273,6 +282,9 @@ sys.argv = filter(None, sys.argv)
 # build options file
 #----------------------------------------------------------------------
 
+if SYS_WX_CONFIG is None:
+    SYS_WX_CONFIG = WX_CONFIG
+
 build_options_template = """
 UNICODE=%d
 UNDEF_NDEBUG=%d
@@ -285,7 +297,7 @@ MONOLITHIC=%d
 FINAL=%d
 HYBRID=%d
 """ % (UNICODE, UNDEF_NDEBUG, INSTALL_MULTIVERSION, FLAVOUR, EP_ADD_OPTS,
-       WX_CONFIG, WXPORT, MONOLITHIC, FINAL, HYBRID)
+       SYS_WX_CONFIG, WXPORT, MONOLITHIC, FINAL, HYBRID)
 
 try: 
     from build_options import *

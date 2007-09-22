@@ -23,7 +23,7 @@ Package: libwxgtk2.6-dev
 Architecture: any
 Section: libdevel
 Depends: wx2.6-headers (= ${Source-Version}), libwxgtk2.6-0 (= ${Source-Version}), libc6-dev
-Suggests: wx2.6-common | wx-common, wx2.6-doc, libstdc++-dev, gettext, xlibmesa-gl-dev | libgl-dev, xlibmesa-glu-dev | libglu-dev
+Suggests: wx-common, wx2.6-doc, libstdc++-dev, gettext, xlibmesa-gl-dev | libgl-dev, xlibmesa-glu-dev | libglu-dev
 Description: wxWidgets Cross-platform C++ GUI toolkit (GTK+ development)
  wxWidgets (formerly known as wxWindows) is a class library for C++ providing
  GUI components and other facilities on several popular platforms (and some

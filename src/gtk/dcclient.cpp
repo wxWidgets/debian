@@ -2,7 +2,7 @@
 // Name:        gtk/dcclient.cpp
 // Purpose:
 // Author:      Robert Roebling
-// RCS-ID:      $Id: dcclient.cpp,v 1.201 2005/06/14 13:00:42 MR Exp $
+// RCS-ID:      $Id: dcclient.cpp,v 1.204 2005/08/17 21:40:44 MR Exp $
 // Copyright:   (c) 1998 Robert Roebling, Chris Breeze
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -1217,7 +1217,6 @@ bool wxWindowDC::DoBlit( wxCoord xdest, wxCoord ydest,
     bool use_bitmap_method = false;
     bool is_mono = false;
 
-    // TODO: use the mask origin when drawing transparently
     if (xsrcMask == -1 && ysrcMask == -1)
     {
         xsrcMask = xsrc;
@@ -1347,6 +1346,7 @@ bool wxWindowDC::DoBlit( wxCoord xdest, wxCoord ydest,
                 GdkGC *gc = gdk_gc_new( new_mask );
                 col.pixel = 0;
                 gdk_gc_set_foreground( gc, &col );
+                gdk_gc_set_ts_origin( gc, -xsrcMask, -ysrcMask);
                 gdk_draw_rectangle( new_mask, gc, TRUE, 0, 0, bm_ww, bm_hh );
                 col.pixel = 0;
                 gdk_gc_set_background( gc, &col );
@@ -1364,20 +1364,28 @@ bool wxWindowDC::DoBlit( wxCoord xdest, wxCoord ydest,
             if (is_mono)
             {
                 if (new_mask)
+                {
                     gdk_gc_set_clip_mask( m_textGC, new_mask );
+                    gdk_gc_set_clip_origin( m_textGC, cx, cy );
+                }
                 else
+                {
                     gdk_gc_set_clip_mask( m_textGC, mask );
-                // was: gdk_gc_set_clip_origin( m_textGC, xx, yy );
-                gdk_gc_set_clip_origin( m_textGC, cx, cy );
+                    gdk_gc_set_clip_origin( m_textGC, cx-xsrcMask, cy-ysrcMask );
+                }
             }
             else
             {
                 if (new_mask)
+                {
                     gdk_gc_set_clip_mask( m_penGC, new_mask );
+                    gdk_gc_set_clip_origin( m_penGC, cx, cy );
+                }
                 else
+                {
                     gdk_gc_set_clip_mask( m_penGC, mask );
-                // was: gdk_gc_set_clip_origin( m_penGC, xx, yy );
-                gdk_gc_set_clip_origin( m_penGC, cx, cy );
+                    gdk_gc_set_clip_origin( m_penGC, cx-xsrcMask, cy-ysrcMask );
+                }
             }
         }
 
@@ -1880,11 +1888,14 @@ void wxWindowDC::SetFont( const wxFont &font )
             PangoContext *oldContext = m_context;
 
             // We might want to use the X11 context for faster
-            // rendering on screen
+            // rendering on screen.
+            // MR: Lets not want to do this, as this introduces libpangox dependancy.
+#if 0
             if (m_font.GetNoAntiAliasing())
                 m_context = m_owner->GtkGetPangoX11Context();
             else
-                m_context = m_owner->GtkGetPangoDefaultContext();
+#endif
+            m_context = m_owner->GtkGetPangoDefaultContext();
 
             // If we switch back/forth between different contexts
             // we also have to create a new layout. I think so,
@@ -2369,12 +2380,12 @@ void wxWindowDC::ComputeScaleAndOrigin()
     if ((m_scaleX != origScaleX || m_scaleY != origScaleY) &&
         (m_pen.Ok()))
     {
-      /* this is a bit artificial, but we need to force wxDC to think
-         the pen has changed */
-      wxPen pen = m_pen;
-      m_pen = wxNullPen;
-      SetPen( pen );
-  }
+        /* this is a bit artificial, but we need to force wxDC to think
+           the pen has changed */
+        wxPen pen = m_pen;
+        m_pen = wxNullPen;
+        SetPen( pen );
+    }
 }
 
 // Resolution in pixels per logical inch

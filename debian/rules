@@ -45,8 +45,9 @@ sorelease := $(release:%-$(DEBIAN_WXFLAVOUR)=%)-$(soversion)$(addprefix -,$(DEBI
 # Base value for alternative priorities.
 alt_prio  := $(subst .,,$(release))
 
+pytoolkit := gtk2
 pydir     := usr/lib/$(python_ver)/site-packages
-wxpydir   := $(pydir)/wx-$(release)-gtk2-unicode
+wxpydir   := $(pydir)/wx-$(release)-$(pytoolkit)-unicode
 
 cross_host  = i586-mingw32msvc
 cross_build = $(shell ./config.guess)
@@ -130,8 +131,16 @@ install_all_native = $(install_all_arch) $(install_all_indep)
 install_all = $(install_all_native) $(install_all_cross)
 
 
+# wxPython uses this to build in-tree
 wxconfig     := $(shell pwd)/$(objdir_gtk_shared)/wx-config --no_rpath
 wxconfig-dbg := $(shell pwd)/$(objdir_gtk_debug)/wx-config --no_rpath
+
+# and this after it is installed.
+py_wxconfig  := wx-config --version=$(release) --toolkit=$(pytoolkit)     \
+			  --unicode --debug=no --static=no
+pyd_wxconfig := wx-config --version=$(release) --toolkit=$(pytoolkit)     \
+			  --unicode --debug --static=no
+
 
 #contrib_libs := $(subst CVS,,$(notdir $(wildcard contrib/include/wx/*)))
 
@@ -301,7 +310,7 @@ build-gtk-py-stamp: build-gtk-shared-stamp purge-dbg-py
 	cd wxPython \
 		&& $(python_ver) ./setup.py 	build			\
 						WX_CONFIG='$(wxconfig)'	\
-						WXPORT=gtk2		\
+						WXPORT=$(pytoolkit)	\
 						UNICODE=1		\
 					    	FLAVOUR=$(DEBIAN_WXFLAVOUR)
 	touch $@
@@ -368,7 +377,7 @@ build-gtk-dbg-py-stamp: build-gtk-debug-stamp purge-release-py
 	cd wxPython							\
 		&& $(python_ver) ./setup.py build			\
 					    WX_CONFIG='$(wxconfig-dbg)' \
-					    WXPORT=gtk2			\
+					    WXPORT=$(pytoolkit)		\
 					    UNICODE=1			\
 					    FLAVOUR=$(addsuffix -,$(DEBIAN_WXFLAVOUR))dbg
 	touch $@
@@ -505,17 +514,18 @@ install-gtk-py-lib: build-gtk-py-stamp
 	dh_testdir
 	dh_testroot
 	dh_clean -k
-	dh_installdirs usr/lib/wx/config
+	dh_installdirs usr/lib/wx/python
 	cd wxPython 								\
 		&& $(python_ver) ./setup.py install 				\
 			      --prefix=`pwd`/../debian/$(package_gtk_py_lib)/usr \
 			      WX_CONFIG='$(wxconfig)'				\
-			      WXPORT=gtk2					\
+			      SYS_WX_CONFIG='$(py_wxconfig)'			\
+			      WXPORT=$(pytoolkit)				\
 			      UNICODE=1						\
 			      FLAVOUR=$(DEBIAN_WXFLAVOUR)
 
 	mv debian/$(package_gtk_py_lib)/$(pydir)/wx.pth 			\
-	   debian/$(package_gtk_py_lib)/usr/lib/wx/config/wx$(release).pth
+	   debian/$(package_gtk_py_lib)/usr/lib/wx/python/wx$(release).pth
 
 	find debian/$(package_gtk_py_lib)/$(pydir) -name '*.py?' -exec rm '{}' ';'
 
@@ -612,17 +622,18 @@ install-gtk-dbg-py: build-gtk-dbg-py-stamp
 	dh_testdir
 	dh_testroot
 	dh_clean -k
-	dh_installdirs usr/lib/wx/config
+	dh_installdirs usr/lib/wx/python
 	cd wxPython 								\
 		&& $(python_ver) ./setup.py install 				\
 			      --prefix=`pwd`/../debian/$(package_gtk_dbg_py)/usr \
 			      WX_CONFIG='$(wxconfig-dbg)'			\
-			      WXPORT=gtk2					\
+			      SYS_WX_CONFIG='$(pyd_wxconfig)'			\
+			      WXPORT=$(pytoolkit)				\
 			      UNICODE=1						\
 			      FLAVOUR=$(addsuffix -,$(DEBIAN_WXFLAVOUR))dbg
 
 	mv debian/$(package_gtk_py_lib)/$(pydir)/wx.pth 			\
-	   debian/$(package_gtk_py_lib)/usr/lib/wx/config/wx$(release)-dbg.pth
+	   debian/$(package_gtk_py_lib)/usr/lib/wx/python/wx$(release)-dbg.pth
 
 	find debian/$(package_gtk_dbg_py)/$(pydir) -name '*.py?' -exec rm '{}' ';'
 	rm -rf usr/bin $(pydir)/{wxversion.py,wx.pth}
