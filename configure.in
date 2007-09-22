@@ -1,5 +1,5 @@
 dnl Process this file with autoconf to produce a configure script.
-AC_REVISION($Id: configure.in,v 1.314.2.61 2001/11/14 09:37:26 RL Exp $)dnl
+AC_REVISION($Id: configure.in,v 1.314.2.62 2001/11/15 21:10:39 GD Exp $)dnl
 
 dnl ---------------------------------------------------------------------------
 dnl
@@ -8,7 +8,7 @@ dnl Vadim Zeitlin and Ron Lee
 dnl
 dnl This script is under the wxWindows licence.
 dnl
-dnl Version: $Id: configure.in,v 1.314.2.61 2001/11/14 09:37:26 RL Exp $
+dnl Version: $Id: configure.in,v 1.314.2.62 2001/11/15 21:10:39 GD Exp $
 dnl ---------------------------------------------------------------------------
 
 dnl ---------------------------------------------------------------------------
@@ -2085,7 +2085,6 @@ if test "$wxUSE_GUI" = "yes"; then
         TOOLKIT_DIR=`echo ${TOOLKIT} | tr "[[A-Z]]" "[[a-z]]"`
     fi
 
-
     dnl the sources, their dependencies and the headers
     ALL_OBJECTS="\$(GUIOBJS) \$(COMMONOBJS) \$(GENERICOBJS) \$(UNIXOBJS) \$(HTMLOBJS) \$(OGLOBJS)"
 
@@ -2094,13 +2093,13 @@ if test "$wxUSE_GUI" = "yes"; then
         ALL_OBJECTS="${ALL_OBJECTS} \$(IODBCOBJS)"
     fi
 
-    if test "$wxUSE_LIBJPEG" = "yes" ; then
+    if test "$wxUSE_LIBJPEG" = "builtin" ; then
         ALL_OBJECTS="${ALL_OBJECTS} \$(JPEGOBJS)"
     fi
-    if test "$wxUSE_LIBTIFF" = "yes" ; then
+    if test "$wxUSE_LIBTIFF" = "builtin" ; then
         ALL_OBJECTS="${ALL_OBJECTS} \$(TIFFOBJS)"
     fi
-    if test "$wxUSE_LIBPNG" = "yes" ; then
+    if test "$wxUSE_LIBPNG" = "builtin" ; then
         ALL_OBJECTS="${ALL_OBJECTS} \$(PNGOBJS)"
     fi
     ALL_DEPFILES="\$(GUIDEPS) \$(COMMONDEPS) \$(GENERICDEPS) \$(UNIXDEPS) \$(HTMLDEPS) \$(OGLDEPS)"
@@ -2146,7 +2145,7 @@ fi
 dnl ---------------------------------------------------------------------------
 dnl Optional libraries included when system library is not used
 dnl ---------------------------------------------------------------------------
-if test "$wxUSE_ZLIB" = "yes" ; then
+if test "$wxUSE_ZLIB" = "builtin" ; then
     ALL_OBJECTS="${ALL_OBJECTS} \$(ZLIBOBJS)"
 fi
 
