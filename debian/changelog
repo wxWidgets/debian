@@ -1,3 +1,19 @@
+wxwindows2.4 (2.4.4.1) unstable; urgency=low
+
+  * Rebuild for the xorg transition ^W^W^W^W^W^W
+  * Add conflicts/replaces for the Ubuntu -c2 branded packages.
+  * Update fr.po, thanks to Thomas Huriaux and debian-l10n-french.
+    Closes: #323587
+  * Rearrange the wxPython packages to comply with the Debian -python
+    policy now that we have one, and to better support apps that
+    depend on a particular version of wxPython.
+  * Backport the multi-version install system from 2.6 where helpful.
+  * Fully automate priority creep in the lib package alternatives.
+  * Collapse the wx-common package, it does not need multiple versions
+    present simultaneously.
+
+ -- Ron Lee <ron@debian.org>  Sat, 16 Jul 2005 16:03:52 +0930
+
 wxwindows2.4 (2.4.4) unstable; urgency=low
 
   * Remove the (apparently long obsolete) #pragma interface goop.
