@@ -3,7 +3,7 @@
 // Purpose:     wxHtmlCell class is used by wxHtmlWindow/wxHtmlWinParser
 //              as a basic visual element of HTML page
 // Author:      Vaclav Slavik
-// RCS-ID:      $Id: htmlcell.h,v 1.18 2000/01/27 00:02:34 VS Exp $
+// RCS-ID:      $Id: htmlcell.h,v 1.18.2.1 2001/12/31 15:39:53 RL Exp $
 // Copyright:   (c) 1999 Vaclav Slavik
 // Licence:     wxWindows Licence
 /////////////////////////////////////////////////////////////////////////////
@@ -314,7 +314,7 @@ class WXDLLEXPORT wxHtmlLinkInfo : public wxObject
                 { m_Href = m_Target = wxEmptyString; m_Event = NULL, m_Cell = NULL; }
         wxHtmlLinkInfo(const wxString& href, const wxString& target = wxEmptyString) : wxObject()
                 { m_Href = href; m_Target = target; m_Event = NULL, m_Cell = NULL; }
-        wxHtmlLinkInfo(const wxHtmlLinkInfo& l)
+        wxHtmlLinkInfo(const wxHtmlLinkInfo& l) : wxObject()
                 { m_Href = l.m_Href, m_Target = l.m_Target, m_Event = l.m_Event, m_Cell = l.m_Cell; }
         wxHtmlLinkInfo& operator=(const wxHtmlLinkInfo& l)
                 { m_Href = l.m_Href, m_Target = l.m_Target, m_Event = l.m_Event, m_Cell = l.m_Cell; return *this; }

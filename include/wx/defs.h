@@ -4,7 +4,7 @@
 // Author:      Julian Smart and others
 // Modified by:
 // Created:     01/02/97
-// RCS-ID:      $Id: defs.h,v 1.209.2.17 2001/09/06 08:16:50 RL Exp $
+// RCS-ID:      $Id: defs.h,v 1.209.2.19 2001/12/31 18:22:22 RL Exp $
 // Copyright:   (c)
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -227,16 +227,22 @@
 #undef PACKAGE
 #undef VERSION
 
+// size_t is the same as unsigned int for all Windows compilers we know,
+// so define it if it hadn't been done by configure yet
+#if defined(__WXMSW__) && !defined(wxSIZE_T_IS_UINT) && !defined(wxSIZE_T_IS_ULONG)
+#define wxSIZE_T_IS_UINT
+#endif
+
 // this has to be done after including setup.h which might
 // define __HPUX__ 1 itself
 #if defined(__hpux) && !defined(__HPUX__)
-    #define __HPUX__
+#define __HPUX__
 #endif // HP-UX
 
 // if we're on a Unix system but didn't use configure (so that setup.h didn't
 // define __UNIX__), do define __UNIX__ now
 #if !defined(__UNIX__) && defined(__UNIX_LIKE__)
-    #define __UNIX__
+#define __UNIX__
 #endif // Unix
 
 #include "wx/version.h"

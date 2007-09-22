@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by: VZ on 13.05.99: no more Default(), MSWOnXXX() reorganisation
 // Created:     04/01/98
-// RCS-ID:      $Id: window.cpp,v 1.178.2.34 2001/08/23 23:28:06 VZ Exp $
+// RCS-ID:      $Id: window.cpp,v 1.178.2.35 2001/12/14 00:56:07 VZ Exp $
 // Copyright:   (c) Julian Smart and Markus Holzem
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -272,10 +272,10 @@ wxWindow::~wxWindow()
 
     MSWDetachWindowMenu();
 
+    DestroyChildren();
+
     if ( m_parent )
         m_parent->RemoveChild(this);
-
-    DestroyChildren();
 
     if ( m_hWnd )
     {

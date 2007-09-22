@@ -2,7 +2,7 @@
 // Name:        winpars.cpp
 // Purpose:     wxHtmlParser class (generic parser)
 // Author:      Vaclav Slavik
-// RCS-ID:      $Id: winpars.cpp,v 1.16.2.4 2001/10/19 23:18:44 VS Exp $
+// RCS-ID:      $Id: winpars.cpp,v 1.16.2.5 2001/12/12 18:51:05 RR Exp $
 // Copyright:   (c) 1999 Vaclav Slavik
 // Licence:     wxWindows Licence
 /////////////////////////////////////////////////////////////////////////////
@@ -199,7 +199,8 @@ void wxHtmlWinParser::AddText(const char* txt)
     if (lng+1 > gs_htmlBufLen)
     {
         gs_htmlBufLen = wxMax(lng+1, wxHTML_BUFLEN);
-        delete gs_htmlBuf;
+        if (gs_htmlBuf)
+          delete [] gs_htmlBuf;
         gs_htmlBuf = new char[gs_htmlBufLen];
     }
     temp = gs_htmlBuf;
@@ -409,8 +410,9 @@ bool wxHtmlTagsModule::OnInit()
 
 void wxHtmlTagsModule::OnExit()
 {
+    if (gs_htmlBuf)
+        delete [] gs_htmlBuf;
     wxHtmlWinParser::RemoveModule(this);
-    delete gs_htmlBuf;
 }
 #endif
 

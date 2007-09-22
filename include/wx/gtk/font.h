@@ -2,7 +2,7 @@
 // Name:        font.h
 // Purpose:
 // Author:      Robert Roebling
-// Id:          $Id: font.h,v 1.16 1999/11/05 19:03:13 VZ Exp $
+// Id:          $Id: font.h,v 1.16.2.1 2001/12/31 15:39:53 RL Exp $
 // Copyright:   (c) 1998 Robert Roebling, Julian Smart and Markus Holzem
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -35,7 +35,7 @@ class wxFont : public wxFontBase
 public:
     // ctors and such
     wxFont() { Init(); }
-    wxFont(const wxFont& font) { Init(); Ref(font); }
+    wxFont(const wxFont& font) : wxFontBase() { Init(); Ref(font); }
     wxFont(const wxString& fontname, const wxFontData& fontdata);
 
     // assignment

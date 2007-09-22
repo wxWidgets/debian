@@ -2,7 +2,7 @@
 // Name:        combobox.cpp
 // Purpose:
 // Author:      Robert Roebling
-// Id:          $Id: combobox.cpp,v 1.72.2.3 2001/11/13 15:16:31 RR Exp $
+// Id:          $Id: combobox.cpp,v 1.72.2.4 2001/12/22 23:20:49 VZ Exp $
 // Copyright:   (c) 1998 Robert Roebling
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -275,7 +275,7 @@ wxClientData* wxComboBox::GetClientObject( int n )
 {
     wxCHECK_MSG( m_widget != NULL, (wxClientData*)NULL, wxT("invalid combobox") );
 
-    wxNode *node = m_clientDataList.Nth( n );
+    wxNode *node = m_clientObjectList.Nth( n );
     if (!node) return (wxClientData*) NULL;
 
     return (wxClientData*) node->Data();

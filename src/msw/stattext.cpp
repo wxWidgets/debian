@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     04/01/98
-// RCS-ID:      $Id: stattext.cpp,v 1.23.2.1 2000/04/27 17:41:29 JS Exp $
+// RCS-ID:      $Id: stattext.cpp,v 1.23.2.2 2001/12/18 16:34:34 VZ Exp $
 // Copyright:   (c) Julian Smart and Markus Holzem
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -145,6 +145,8 @@ void wxStaticText::SetLabel(const wxString& label)
     if ( !(GetWindowStyle() & wxST_NO_AUTORESIZE) )
     {
         DoSetSize(-1, -1, -1, -1, wxSIZE_AUTO_WIDTH | wxSIZE_AUTO_HEIGHT);
+
+        Refresh();
     }
 }
 

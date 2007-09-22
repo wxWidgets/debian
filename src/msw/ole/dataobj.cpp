@@ -4,7 +4,7 @@
 // Author:      Vadim Zeitlin
 // Modified by:
 // Created:     10.05.98
-// RCS-ID:      $Id: dataobj.cpp,v 1.36.2.5 2001/02/14 19:17:30 robind Exp $
+// RCS-ID:      $Id: dataobj.cpp,v 1.36.2.6 2001/11/30 07:34:40 JS Exp $
 // Copyright:   (c) 1998 Vadim Zeitlin <zeitlin@dptmaths.ens-cachan.fr>
 // Licence:     wxWindows license
 ///////////////////////////////////////////////////////////////////////////////
@@ -1158,8 +1158,15 @@ wxBitmap wxConvertDIBToBitmap(const LPBITMAPINFO pbmi)
     // BITMAPINFO starts with BITMAPINFOHEADER followed by colour info
     const BITMAPINFOHEADER *pbmih = &pbmi->bmiHeader;
 
+    // biClrUsed has the number of colors, unless it's 0
+    int numColors = pbmih->biClrUsed;
+    if (numColors==0)
+    {
+        numColors = wxGetNumOfBitmapColors(pbmih->biBitCount);
+    }
+
     // offset of image from the beginning of the header
-    DWORD ofs = wxGetNumOfBitmapColors(pbmih->biBitCount) * sizeof(RGBQUAD);
+    DWORD ofs = numColors * sizeof(RGBQUAD);
     void *image = (char *)pbmih + sizeof(BITMAPINFOHEADER) + ofs;
 
     ScreenHDC hdc;

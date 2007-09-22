@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by: VZ at 25.02.00: type safe hashes with WX_DECLARE_HASH()
 // Created:     01/02/97
-// RCS-ID:      $Id: hash.h,v 1.11.2.2 2001/01/27 12:42:47 vadz Exp $
+// RCS-ID:      $Id: hash.h,v 1.11.2.3 2001/12/31 15:39:53 RL Exp $
 // Copyright:   (c)
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -128,7 +128,7 @@ public:
     ~wxHashTable();
 
     // copy ctor and assignment operator
-    wxHashTable(const wxHashTable& table) { DoCopy(table); }
+    wxHashTable(const wxHashTable& table) : wxObject() { DoCopy(table); }
     wxHashTable& operator=(const wxHashTable& table)
         { Clear(); DoCopy(table); return *this; }
 

@@ -1,5 +1,5 @@
 dnl Process this file with autoconf to produce a configure script.
-AC_REVISION($Id: configure.in,v 1.314.2.63 2001/11/24 05:26:40 RL Exp $)dnl
+AC_REVISION($Id: configure.in,v 1.314.2.64 2001/12/31 15:09:20 RL Exp $)dnl
 
 dnl ---------------------------------------------------------------------------
 dnl
@@ -8,7 +8,7 @@ dnl Vadim Zeitlin and Ron Lee
 dnl
 dnl This script is under the wxWindows licence.
 dnl
-dnl Version: $Id: configure.in,v 1.314.2.63 2001/11/24 05:26:40 RL Exp $
+dnl Version: $Id: configure.in,v 1.314.2.64 2001/12/31 15:09:20 RL Exp $
 dnl ---------------------------------------------------------------------------
 
 dnl ---------------------------------------------------------------------------
@@ -475,7 +475,7 @@ dnl   libwx_$(TOOLKIT)-$(WX_RELEASE).${SO_SUFFIX}.$(WX_CURRENT).$(WX_REVISION).$
 
 WX_MAJOR_VERSION_NUMBER=2
 WX_MINOR_VERSION_NUMBER=2
-WX_RELEASE_NUMBER=8
+WX_RELEASE_NUMBER=9
 
 WX_VERSION=$WX_MAJOR_VERSION_NUMBER.$WX_MINOR_VERSION_NUMBER.$WX_RELEASE_NUMBER
 WX_RELEASE=$WX_MAJOR_VERSION_NUMBER.$WX_MINOR_VERSION_NUMBER

@@ -4,7 +4,7 @@
 // Author:      Vadim Zeitlin
 // Modified by:
 // Created:     29/01/98
-// RCS-ID:      $Id: log.h,v 1.52.2.4 2000/07/01 12:01:17 VS Exp $
+// RCS-ID:      $Id: log.h,v 1.52.2.5 2001/12/17 16:53:46 VZ Exp $
 // Copyright:   (c) 1998 Vadim Zeitlin <zeitlin@dptmaths.ens-cachan.fr>
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -488,11 +488,6 @@ DECLARE_LOG_FUNCTION2(SysError, long lErrCode);
 // ----------------------------------------------------------------------------
 // debug only logging functions: use them with API name and error code
 // ----------------------------------------------------------------------------
-
-#ifndef __TFILE__
-    #define __XFILE__(x) Tx)
-    #define __TFILE__ __XFILE__(__FILE__)
-#endif
 
 #ifdef __WXDEBUG__
     // make life easier for people using VC++ IDE: clicking on the message

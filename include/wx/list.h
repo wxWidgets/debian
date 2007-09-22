@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by: VZ at 16/11/98: WX_DECLARE_LIST() and typesafe lists added
 // Created:     29/01/98
-// RCS-ID:      $Id: list.h,v 1.37.2.5 2001/02/11 10:36:05 juliansmart Exp $
+// RCS-ID:      $Id: list.h,v 1.37.2.6 2001/12/31 15:39:53 RL Exp $
 // Copyright:   (c) 1998 Julian Smart
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -325,7 +325,7 @@ private:
 
 protected:
         // copy ctor. This has to go below Init, or VC++ 1.5 will complain.
-    wxListBase(const wxListBase& list)
+    wxListBase(const wxListBase& list) : wxObject()
         { Init(); DoCopy(list); }
 };
 
@@ -514,7 +514,8 @@ public:
 
         // copying the string list: the strings are copied, too (extremely
         // inefficient!)
-    wxStringList(const wxStringList& other) { DeleteContents(TRUE); DoCopy(other); }
+    wxStringList(const wxStringList& other) : wxStringListBase()
+    	{ DeleteContents(TRUE); DoCopy(other); }
     wxStringList& operator=(const wxStringList& other)
         { Clear(); DoCopy(other); return *this; }
 

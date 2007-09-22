@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     01/02/97
-// RCS-ID:      $Id: frame.cpp,v 1.84.2.17 2001/09/24 14:13:48 JS Exp $
+// RCS-ID:      $Id: frame.cpp,v 1.84.2.19 2001/12/15 12:52:57 RR Exp $
 // Copyright:   (c) Julian Smart and Markus Holzem
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -334,8 +334,8 @@ void wxFrame::Maximize(bool maximize)
     // maximizing a hidden frame shows it - which is often much worse than not
     // maximizing it at all
     //
-    // the correct workaround this bug breaks binary compatibility and so is
-    // only in 2.3
+    // the correct workaround for this bug breaks binary compatibility and so
+    // is only in 2.3
     if ( IsShown() )
     {
         DoShowWindow(maximize ? SW_MAXIMIZE : SW_RESTORE);
@@ -701,6 +701,14 @@ bool wxFrame::MSWCreate(int id, wxWindow *parent, const wxChar *wclass, wxWindow
   return TRUE;
 }
 
+void wxFrame::RemoveChild(wxWindowBase *child)
+{
+    if ( child == m_winLastFocused )
+        m_winLastFocused = NULL;
+
+    wxFrameBase::RemoveChild(child);
+}
+
 // Default activation behaviour - set the focus for the first child
 // subwindow found.
 void wxFrame::OnActivate(wxActivateEvent& event)
@@ -793,6 +801,8 @@ void wxFrame::PositionToolBar()
         else
         {
             tw = rect.right;
+            if ( GetToolBar()->HasFlag(wxTB_FLAT ) )
+                th -= 3;
         }
 
         // Use the 'real' MSW position here

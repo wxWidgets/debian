@@ -4,7 +4,7 @@
 // Author:      Julian Smart, Vadim Zeitlin
 // Modified by:
 // Created:     13/07/98
-// RCS-ID:      $Id: wincmn.cpp,v 1.64.2.9 2001/10/03 08:40:32 RL Exp $
+// RCS-ID:      $Id: wincmn.cpp,v 1.64.2.10 2001/12/17 16:53:46 VZ Exp $
 // Copyright:   (c) wxWindows team
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -1436,14 +1436,19 @@ void wxWindowBase::OnMiddleClick( wxMouseEvent& event )
 
         wxMessageBox(wxString::Format(
                                       _T(
-                                        "       wxWindows Library (%s port)\nVersion %u.%u.%u, compiled at %s %s\n   Copyright (c) 1995-2001 wxWindows team"
+                                        "       wxWindows Library (%s port)\nVersion %u.%u.%u%s, compiled at %s %s\n   Copyright (c) 1995-2001 wxWindows team"
                                         ),
                                       port.c_str(),
                                       wxMAJOR_VERSION,
                                       wxMINOR_VERSION,
                                       wxRELEASE_NUMBER,
-                                      __DATE__,
-                                      __TIME__
+#if wxUSE_UNICODE
+                                      L" (Unicode)",
+#else
+                                      "",
+#endif
+                                      __TDATE__,
+                                      __TTIME__
                                      ),
                      _T("wxWindows information"),
                      wxICON_INFORMATION | wxOK,

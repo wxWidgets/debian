@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     01/02/97
-// RCS-ID:      $Id: frame.h,v 1.40.2.1 2000/06/17 22:44:45 VZ Exp $
+// RCS-ID:      $Id: frame.h,v 1.40.2.2 2001/12/14 00:56:08 VZ Exp $
 // Copyright:   (c) Julian Smart and Markus Holzem
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -95,6 +95,8 @@ public:
 #endif // wxUSE_STATUSBAR
 
     WXHMENU GetWinMenu() const { return m_hMenu; }
+
+    virtual void RemoveChild(wxWindowBase *child);
 
     // event handlers
     bool HandlePaint();
