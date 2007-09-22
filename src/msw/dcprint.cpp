@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     01/02/97
-// RCS-ID:      $Id: dcprint.cpp,v 1.31.2.1 2002/10/22 21:34:22 JS Exp $
+// RCS-ID:      $Id: dcprint.cpp,v 1.31.2.2 2003/01/24 12:31:41 JS Exp $
 // Copyright:   (c) Julian Smart and Markus Holzem
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -530,7 +530,11 @@ bool wxPrinterDC::DoBlit(wxCoord xdest, wxCoord ydest,
                 height = bmp.GetHeight();
 
             BITMAPINFO *info = (BITMAPINFO *) malloc( sizeof( BITMAPINFOHEADER ) + 256 * sizeof(RGBQUAD ) );
-            int iBitsSize = ((width + 3 ) & ~3 ) * height;
+#if wxUSE_DRAWBITMAP_24BITS
+            int iBitsSize = (((width * 3) + 3 ) & ~3 ) * height;
+#else
+            int iBitsSize = ((width + 3 ) & ~3 ) * height ;
+#endif
 
             void* bits = malloc( iBitsSize );
 
@@ -540,7 +544,11 @@ bool wxPrinterDC::DoBlit(wxCoord xdest, wxCoord ydest,
             info->bmiHeader.biWidth = width;
             info->bmiHeader.biHeight = height;
             info->bmiHeader.biPlanes = 1;
+#if wxUSE_DRAWBITMAP_24BITS
+            info->bmiHeader.biBitCount = 24;
+#else
             info->bmiHeader.biBitCount = 8;
+#endif
             info->bmiHeader.biCompression = BI_RGB;
 
             ScreenHDC display;

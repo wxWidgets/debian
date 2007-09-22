@@ -4,7 +4,7 @@
 // Author:      Arthur Seaton, Julian Smart
 // Modified by:
 // Created:     04/01/98
-// RCS-ID:      $Id: memory.cpp,v 1.51.2.1 2003/01/06 21:12:15 JS Exp $
+// RCS-ID:      $Id: memory.cpp,v 1.51.2.2 2003/01/26 16:22:28 VS Exp $
 // Copyright:   (c) Julian Smart and Markus Holzem
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -33,6 +33,7 @@
 #ifndef WX_PRECOMP
 #include "wx/utils.h"
 #include "wx/app.h"
+#include "wx/hash.h"
 #endif
 
 #if wxUSE_THREADS

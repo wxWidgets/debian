@@ -2,7 +2,7 @@
 // Name:        gtk/dcclient.cpp
 // Purpose:
 // Author:      Robert Roebling
-// RCS-ID:      $Id: dcclient.cpp,v 1.160.2.5 2002/12/09 09:14:39 JS Exp $
+// RCS-ID:      $Id: dcclient.cpp,v 1.160.2.6 2003/01/24 12:35:19 JS Exp $
 // Copyright:   (c) 1998 Robert Roebling, Markus Holzem, Chris Breeze
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -393,6 +393,14 @@ void wxWindowDC::SetUpDC()
         m_textGC = wxGetPoolGC( m_window, wxTEXT_COLOUR );
         m_bgGC = wxGetPoolGC( m_window, wxBG_COLOUR );
     }
+
+#ifdef __WXGTK20__
+    if (m_isMemDC)
+    {
+        m_context = gdk_pango_context_get();
+        m_fontdesc = pango_context_get_font_description(m_context);
+    }
+#endif
 
     /* background colour */
     m_backgroundBrush = *wxWHITE_BRUSH;

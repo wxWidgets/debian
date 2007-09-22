@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     04/01/98
-// RCS-ID:      $Id: prntbase.cpp,v 1.46.2.3 2002/12/19 23:43:33 VS Exp $
+// RCS-ID:      $Id: prntbase.cpp,v 1.46.2.4 2003/01/27 01:04:57 VZ Exp $
 // Copyright:   (c) Julian Smart and Markus Holzem
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -467,7 +467,7 @@ void wxPreviewControlBar::CreateButtons()
 
     if (m_buttonFlags & wxPREVIEW_GOTO)
     {
-        m_gotoPageButton = new wxButton(this, wxID_PREVIEW_GOTO, wxT("Goto..."), wxPoint(x, y),
+        m_gotoPageButton = new wxButton(this, wxID_PREVIEW_GOTO, _("Goto..."), wxPoint(x, y),
             wxSize(buttonWidth, buttonHeight));
         x += gap + buttonWidth;
     }
