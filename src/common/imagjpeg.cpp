@@ -2,7 +2,7 @@
 // Name:        imagjpeg.cpp
 // Purpose:     wxImage JPEG handler
 // Author:      Vaclav Slavik
-// RCS-ID:      $Id: imagjpeg.cpp,v 1.16.2.2 2000/07/27 22:06:17 VZ Exp $
+// RCS-ID:      $Id: imagjpeg.cpp,v 1.16.2.3 2001/11/24 13:26:26 VS Exp $
 // Copyright:   (c) Vaclav Slavik
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -200,6 +200,7 @@ bool wxJPEGHandler::LoadFile( wxImage *image, wxInputStream& stream, bool verbos
        */
       if (verbose) 
         wxLogError(_("JPEG: Couldn't load - file is probably corrupted."));
+      (cinfo.src->term_source)(&cinfo);
       jpeg_destroy_decompress(&cinfo);
       if (image->Ok()) image->Destroy();
       return FALSE;
