@@ -4,7 +4,7 @@
 // Author:      Aleksandras Gluchovas
 // Modified by:
 // Created:     02/01/99
-// RCS-ID:      $Id: frmview.h,v 1.3 2002/09/07 12:10:19 GD Exp $
+// RCS-ID:      $Id: frmview.h,v 1.3.2.1 2002/10/24 11:21:34 JS Exp $
 // Copyright:   (c) Aleksandras Gluchovas
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -32,7 +32,7 @@ class wxFrameManager;
 It is not clear what this class does. It is not used elsewhere in FL.
 */
 
-class wxFrameView : public wxEvtHandler
+class WXFL_DECLSPEC wxFrameView : public wxEvtHandler
 {
 protected:
     wxStringList    mTopMenus;
@@ -87,7 +87,7 @@ class wxFrame;
 It is not clear what this class does. It is not used elsewhere in FL.
 */
 
-class wxFrameManager : wxObject
+class WXFL_DECLSPEC wxFrameManager : wxObject
 {
 protected:
     wxList       mViews;

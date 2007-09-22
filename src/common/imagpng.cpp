@@ -2,7 +2,7 @@
 // Name:        imagepng.cpp
 // Purpose:     wxImage PNG handler
 // Author:      Robert Roebling
-// RCS-ID:      $Id: imagpng.cpp,v 1.27.2.1 2002/09/20 08:53:30 JS Exp $
+// RCS-ID:      $Id: imagpng.cpp,v 1.27.2.2 2002/10/29 21:47:45 RR Exp $
 // Copyright:   (c) Robert Roebling
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -111,8 +111,8 @@ void
 PNGLINKAGEMODE wx_png_error(png_structp png_ptr, png_const_charp message)
 {
     wxPNGInfoStruct *info = WX_PNG_INFO(png_ptr);
-    if ( info->verbose )
-        wxLogError(wxString(message));
+    if (info->verbose)
+        wxLogError( wxString::FromAscii(message) );
 
 #ifdef USE_FAR_KEYWORD
     {
@@ -129,8 +129,8 @@ void
 PNGLINKAGEMODE wx_png_warning(png_structp png_ptr, png_const_charp message)
 {
     wxPNGInfoStruct *info = WX_PNG_INFO(png_ptr);
-    if ( info->verbose )
-        wxLogWarning(wxString(message));
+    if (info->verbose)
+        wxLogWarning( wxString::FromAscii(message) );
 }
 
 } // extern "C"

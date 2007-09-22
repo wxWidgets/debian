@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     04/01/98
-// RCS-ID:      $Id: joystick.cpp,v 1.12 2002/08/20 17:16:58 JS Exp $
+// RCS-ID:      $Id: joystick.cpp,v 1.12.2.1 2002/11/09 00:20:33 VS Exp $
 // Copyright:   (c) Julian Smart and Markus Holzem
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -306,7 +306,7 @@ wxString wxJoystick::GetProductName() const
 {
     JOYCAPS joyCaps;
     if (joyGetDevCaps(m_joystick, & joyCaps, sizeof(JOYCAPS)) != JOYERR_NOERROR)
-        return wxString("");
+        return wxEmptyString;
     else
         return wxString(joyCaps.szPname);
 }

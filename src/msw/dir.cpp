@@ -4,7 +4,7 @@
 // Author:      Vadim Zeitlin
 // Modified by:
 // Created:     08.12.99
-// RCS-ID:      $Id: dir.cpp,v 1.7 2001/05/19 00:58:05 VZ Exp $
+// RCS-ID:      $Id: dir.cpp,v 1.7.2.1 2002/10/22 22:16:49 VZ Exp $
 // Copyright:   (c) 1999 Vadim Zeitlin <zeitlin@dptmaths.ens-cachan.fr>
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -458,3 +458,36 @@ bool wxDir::GetNext(wxString *filename) const
 
     return M_DIR->Read(filename);
 }
+
+// ----------------------------------------------------------------------------
+// wxGetDirectoryTimes: used by wxFileName::GetTimes()
+// ----------------------------------------------------------------------------
+
+#ifdef __WIN32__
+
+extern bool
+wxGetDirectoryTimes(const wxString& dirname,
+                    FILETIME *ftAccess, FILETIME *ftCreate, FILETIME *ftMod)
+{
+    // FindFirst() is going to fail
+    wxASSERT_MSG( !dirname.empty() && dirname.Last() != _T('\\'),
+                  _T("incorrect directory name format in wxGetDirectoryTimes") );
+
+    FIND_STRUCT fs;
+    FIND_DATA fd = FindFirst(dirname, &fs);
+    if ( !IsFindDataOk(fd) )
+    {
+        return FALSE;
+    }
+
+    *ftAccess = fs.ftLastAccessTime;
+    *ftCreate = fs.ftCreationTime;
+    *ftMod = fs.ftLastWriteTime;
+
+    FindClose(fd);
+
+    return TRUE;
+}
+
+#endif // __WIN32__
+

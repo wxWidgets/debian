@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     7.9.93
-// RCS-ID:      $Id: xlputils.cpp,v 1.2 2000/11/23 13:27:52 georgetasker Exp $
+// RCS-ID:      $Id: xlputils.cpp,v 1.2.2.1 2002/10/20 22:17:48 VS Exp $
 // Copyright:   (c) Julian Smart
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -1195,7 +1195,7 @@ bool XLPGo(void)
     fclose(Subsubsections); Subsubsections = NULL;
     fclose(Index); Index = NULL;
 
-    if (FileExists(ContentsName)) wxRemoveFile(ContentsName);
+    if (wxFileExists(ContentsName)) wxRemoveFile(ContentsName);
 
     if (!wxRenameFile(TmpContentsName, ContentsName))
     {

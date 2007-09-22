@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     04/01/98
-// RCS-ID:      $Id: toolbar.cpp,v 1.24.2.1 2002/09/19 11:54:18 VZ Exp $
+// RCS-ID:      $Id: toolbar.cpp,v 1.24.2.4 2002/12/28 18:37:06 JS Exp $
 // Copyright:   (c) Julian Smart
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -89,7 +89,7 @@ class MyFrame: public wxFrame
 public:
     MyFrame(wxFrame *parent,
             wxWindowID id = -1,
-            const wxString& title = "wxToolBar Sample",
+            const wxString& title = _T("wxToolBar Sample"),
             const wxPoint& pos = wxDefaultPosition,
             const wxSize& size = wxDefaultSize,
             long style = wxDEFAULT_FRAME_STYLE);
@@ -156,7 +156,7 @@ private:
 
 const int ID_TOOLBAR = 500;
 
-static const long TOOLBAR_STYLE = wxTB_FLAT | wxTB_DOCKABLE | wxTB_TEXT;
+static const long TOOLBAR_STYLE = wxTB_FLAT | wxTB_DOCKABLE | wxTB_TEXT ;
 
 enum
 {
@@ -232,12 +232,12 @@ bool MyApp::OnInit()
 {
     // Create the main frame window
     MyFrame* frame = new MyFrame((wxFrame *) NULL, -1,
-                                 "wxToolBar Sample",
+                                 _T("wxToolBar Sample"),
                                  wxPoint(100, 100), wxSize(550, 300));
 
     frame->Show(TRUE);
 
-    frame->SetStatusText("Hello, wxWindows");
+    frame->SetStatusText(_T("Hello, wxWindows"));
 
     SetTopWindow(frame);
 
@@ -299,11 +299,11 @@ void MyFrame::RecreateToolbar()
     toolBar->AddTool(wxID_OPEN, _T("Open"), toolBarBitmaps[1], _T("Open file"));
 
     // neither the generic nor Motif native toolbars really support this
-#if (wxUSE_TOOLBAR_NATIVE && !USE_GENERIC_TBAR) && !defined(__WXMOTIF__) && !defined(__WXX11__)
+#if (wxUSE_TOOLBAR_NATIVE && !USE_GENERIC_TBAR) && !defined(__WXMOTIF__) && !defined(__WXX11__) && !defined(__WXMAC__)
     // adding a combo to a vertical toolbar is not very smart
     if ( m_horzToolbar )
     {
-        wxComboBox *combo = new wxComboBox(toolBar, ID_COMBO, "", wxDefaultPosition, wxSize(200,-1) );
+        wxComboBox *combo = new wxComboBox(toolBar, ID_COMBO, _T(""), wxDefaultPosition, wxSize(200,-1) );
         combo->Append(_T("This"));
         combo->Append(_T("is a"));
         combo->Append(_T("combobox"));

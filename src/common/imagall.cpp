@@ -2,7 +2,7 @@
 // Name:        imagall.cpp
 // Purpose:     wxImage access all handler
 // Author:      Sylvain Bougnoux
-// RCS-ID:      $Id: imagall.cpp,v 1.8 2002/01/15 17:57:07 RR Exp $
+// RCS-ID:      $Id: imagall.cpp,v 1.8.2.1 2002/12/19 12:24:47 VS Exp $
 // Copyright:   (c) Sylvain Bougnoux
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -55,7 +55,7 @@ void wxInitAllImageHandlers()
 #if wxUSE_IFF
   wxImage::AddHandler( new wxIFFHandler );
 #endif
-#if wxUSE_XPM
+#if wxUSE_XPM && (defined(__WXGTK__) || defined(__WXMOTIF__))
   wxImage::AddHandler( new wxXPMHandler );
 #endif
 #if wxUSE_ICO_CUR

@@ -1,7 +1,7 @@
 /////////////////////////////////////////////////////////////////////////////
 // Author:      Vaclav Slavik
 // Created:     2000/05/05
-// RCS-ID:      $Id: editor.cpp,v 1.18.2.1 2002/09/25 11:10:18 VS Exp $
+// RCS-ID:      $Id: editor.cpp,v 1.18.2.3 2002/12/29 07:48:09 RL Exp $
 // Copyright:   (c) 2000 Vaclav Slavik
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -92,7 +92,7 @@ void wxXmlRcEditDocument::Upgrade()
         UpgradeNode(node);
     }
     node->DeleteProperty(wxT("version"));
-    node->AddProperty(wxT("version"), wxT(WX_XMLRES_CURRENT_VERSION_STRING));
+    node->AddProperty(wxT("version"), WX_XMLRES_CURRENT_VERSION_STRING);
 }
 
 
@@ -341,6 +341,12 @@ void EditorFrame::NewFile()
     m_FileName = "";
     m_Resource = new wxXmlRcEditDocument;
     m_Resource->SetRoot(new wxXmlNode(wxXML_ELEMENT_NODE, _("resource")));
+	m_Resource->SetFileEncoding("utf-8");
+#if !wxUSE_UNICODE
+    m_Resource->SetEncoding(wxLocale::GetSystemEncodingName());
+#endif
+	m_Resource->GetRoot()->AddProperty(_T("version"),
+                                       WX_XMLRES_CURRENT_VERSION_STRING);
     
     m_Modified = FALSE;
     RefreshTree();
@@ -482,14 +488,14 @@ void EditorFrame::OnTreeSel(wxTreeEvent& event)
     if (node)
         PropertiesFrame::Get()->ShowProps(node);
 
-    if (m_TreeCtrl->GetParent(event.GetItem()) == m_TreeCtrl->GetRootItem())
+    if (m_TreeCtrl->GetItemParent(event.GetItem()) == m_TreeCtrl->GetRootItem())
     {
         wxTreeItemId it = event.GetOldItem();
 
         if (it.IsOk() && m_TreeCtrl->GetRootItem() != it)
         {
-            while (m_TreeCtrl->GetParent(it) != m_TreeCtrl->GetRootItem())
-                it = m_TreeCtrl->GetParent(it);
+            while (m_TreeCtrl->GetItemParent(it) != m_TreeCtrl->GetRootItem())
+                it = m_TreeCtrl->GetItemParent(it);
             m_TreeCtrl->Collapse(it);
         }
         RecursivelyExpand(m_TreeCtrl, event.GetItem());
@@ -557,7 +563,7 @@ void EditorFrame::OnToolbar(wxCommandEvent& event)
 void EditorFrame::DeleteSelectedNode()
 {
     XmlTreeData *dt = (XmlTreeData*)
-            (m_TreeCtrl->GetItemData(m_TreeCtrl->GetParent(m_TreeCtrl->GetSelection())));
+            (m_TreeCtrl->GetItemData(m_TreeCtrl->GetItemParent(m_TreeCtrl->GetSelection())));
     wxXmlNode *n = (dt) ? dt->Node : NULL;
 
     m_SelectedNode->GetParent()->RemoveChild(m_SelectedNode);
@@ -573,7 +579,7 @@ void EditorFrame::OnNewNode(wxCommandEvent& event)
     {
         XmlTreeData *pardt = 
             (XmlTreeData*)(m_TreeCtrl->GetItemData(
-                m_TreeCtrl->GetParent(m_TreeCtrl->GetSelection())));
+                m_TreeCtrl->GetItemParent(m_TreeCtrl->GetSelection())));
 
         if (pardt && pardt->Node && pardt->Node != m_Resource->GetRoot())
         {
@@ -677,7 +683,7 @@ void EditorFrame::OnRightClickTree(wxPoint pos)
 
         XmlTreeData *pardt = 
             (XmlTreeData*)(m_TreeCtrl->GetItemData(
-                m_TreeCtrl->GetParent(m_TreeCtrl->GetSelection())));
+                m_TreeCtrl->GetItemParent(m_TreeCtrl->GetSelection())));
         if (pardt && pardt->Node && pardt->Node != m_Resource->GetRoot())
         {
             wxXmlNode *nd = pardt->Node;
@@ -742,7 +748,7 @@ void EditorFrame::OnClipboardAction(wxCommandEvent& event)
             {
             XmlTreeData *pardt = 
                 (XmlTreeData*)(m_TreeCtrl->GetItemData(
-                    m_TreeCtrl->GetParent(m_TreeCtrl->GetSelection())));
+                    m_TreeCtrl->GetItemParent(m_TreeCtrl->GetSelection())));
 
             if (pardt && pardt->Node && pardt->Node != m_Resource->GetRoot())
             {

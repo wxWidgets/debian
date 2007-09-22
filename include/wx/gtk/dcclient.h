@@ -2,7 +2,7 @@
 // Name:        dcclient.h
 // Purpose:
 // Author:      Robert Roebling
-// Id:          $Id: dcclient.h,v 1.32 2002/09/07 12:28:46 GD Exp $
+// Id:          $Id: dcclient.h,v 1.32.2.1 2002/10/28 00:20:52 RR Exp $
 // Copyright:   (c) 1998 Robert Roebling
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -118,6 +118,8 @@ public:
     wxWindow     *m_owner;
     wxRegion      m_currentClippingRegion;
     wxRegion      m_paintClippingRegion;
+    
+    // PangoContext stuff for GTK 2.0
 #ifdef __WXGTK20__
     PangoContext *m_context;
     PangoFontDescription *m_fontdesc;

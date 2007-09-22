@@ -4,7 +4,7 @@
 // Author:      Vadim Zeitlin
 // Modified by:
 // Created:     20.09.01
-// RCS-ID:      $Id: toplevel.h,v 1.16 2002/06/13 00:04:22 VZ Exp $
+// RCS-ID:      $Id: toplevel.h,v 1.16.2.1 2002/10/02 23:32:22 VZ Exp $
 // Copyright:   (c) 2001 SciTech Software, Inc. (www.scitechsoft.com)
 // Licence:     wxWindows licence
 ///////////////////////////////////////////////////////////////////////////////
@@ -118,10 +118,6 @@ protected:
 
     // the last focused child: we restore focus to it on activation
     wxWindow             *m_winLastFocused;
-
-    // the hidden parent window for the frames which shouldn't appear in the
-    // taskbar
-    static wxWindow *ms_hiddenParent;
 
     DECLARE_EVENT_TABLE()
 };

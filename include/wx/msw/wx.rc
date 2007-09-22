@@ -26,7 +26,7 @@
 // DAMAGE, AND ON ANY THEORY OF LIABILITY, ARISING OUT OF OR IN CONNECTION WITH
 // THE USE OR PERFORMANCE OF THIS SOFTWARE.
 //
-// Version: $Id: wx.rc,v 1.26 2002/03/22 23:22:02 VS Exp $
+// Version: $Id: wx.rc,v 1.26.2.1 2002/11/30 10:51:34 JS Exp $
 /////////////////////////////////////////////////////////////////////////////
 
 #if (defined( __GNUWIN32__ ) && !defined(__TWIN32__)) || defined(__MWERKS__)
@@ -98,12 +98,7 @@ wxICON_SMALL_REMOVEABLE         ICON "wx/msw/removble.ico"
 // Bitmaps
 //
 
-#ifdef __SALFORDC__
-wxDISABLE_BUTTON_BITMAP         BITMAP  WXINCDIR"wx/msw/disable.bmp"
-#else
 wxDISABLE_BUTTON_BITMAP         BITMAP  "wx/msw/disable.bmp"
-#endif
-
 
 // For wxContextHelpButton
 csquery                 BITMAP "wx/msw/csquery.bmp"

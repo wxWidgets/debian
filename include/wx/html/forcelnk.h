@@ -2,7 +2,7 @@
 // Name:        forcelnk.h
 // Purpose:     see bellow
 // Author:      Vaclav Slavik
-// RCS-ID:      $Id: forcelnk.h,v 1.4 2002/01/24 21:12:45 VS Exp $
+// RCS-ID:      $Id: forcelnk.h,v 1.4.2.1 2002/11/09 00:23:08 VS Exp $
 // Copyright:   (c) Vaclav Slavik
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -67,7 +67,6 @@ See mod_*.cpp and htmlwin.cpp for example :-)
     FORCE_LINK(m_hline) \
     FORCE_LINK(m_links) \
     FORCE_LINK(m_tables) \
-    FORCE_LINK(m_meta) \
     FORCE_LINK(m_style)
 
 

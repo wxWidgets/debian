@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     2001-07-10
-// RCS-ID:      $Id: sysopt.cpp,v 1.1 2001/07/11 10:06:58 JS Exp $
+// RCS-ID:      $Id: sysopt.cpp,v 1.1.2.1 2002/12/13 21:35:15 MBN Exp $
 // Copyright:   (c) Julian Smart
 // Licence:   	wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -46,7 +46,7 @@
 // singleton class so it can't be done in the dtor)
 class wxSystemOptionsModule : public wxModule
 {
-    friend class wxSystemOptions;
+    friend class WXDLLEXPORT wxSystemOptions;
 public:
     virtual bool OnInit();
     virtual void OnExit();

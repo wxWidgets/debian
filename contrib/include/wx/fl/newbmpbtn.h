@@ -4,7 +4,7 @@
 // Author:      Aleksandras Gluchovas
 // Modified by:
 // Created:     ??/09/98
-// RCS-ID:      $Id: newbmpbtn.h,v 1.7 2002/09/07 12:10:19 GD Exp $
+// RCS-ID:      $Id: newbmpbtn.h,v 1.7.2.1 2002/10/24 11:21:35 JS Exp $
 // Copyright:   (c) Aleksandras Gluchovas
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -18,6 +18,7 @@
 
 #include "wx/button.h"
 #include "wx/string.h"
+#include "wx/fl/fldefs.h"
 
 // defaults
 #define NB_DEFAULT_MARGIN 2
@@ -31,8 +32,8 @@
 
 // classes declared in this header file
 
-class wxNewBitmapButton;
-class wxBorderLessBitmapButton;
+class WXFL_DECLSPEC wxNewBitmapButton;
+class WXFL_DECLSPEC wxBorderLessBitmapButton;
 
 /*
 This is an alternative class to wxBitmapButton. It is used
@@ -193,11 +194,6 @@ public:
 
         // Responds to a kill focus event.
     void OnKillFocus( wxFocusEvent& event );
-
-        // Maps bitmap to current system colours on Windows
-#ifdef __WXMSW__
-    WXHBITMAP MapBitmap(WXHBITMAP bitmap, int width, int height);
-#endif
 
     DECLARE_EVENT_TABLE()
 };

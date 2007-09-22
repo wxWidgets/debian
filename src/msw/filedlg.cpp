@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     01/02/97
-// RCS-ID:      $Id: filedlg.cpp,v 1.46.2.2 2002/09/23 12:15:48 CE Exp $
+// RCS-ID:      $Id: filedlg.cpp,v 1.46.2.3 2002/10/05 20:20:57 VZ Exp $
 // Copyright:   (c) Julian Smart and Markus Holzem
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -35,6 +35,7 @@
     #include "wx/msgdlg.h"
     #include "wx/dialog.h"
     #include "wx/filedlg.h"
+    #include "wx/filefn.h"
     #include "wx/intl.h"
     #include "wx/log.h"
     #include "wx/app.h"
@@ -197,9 +198,13 @@ wxString wxFileSelectorEx(const wxChar *title,
     return filename;
 }
 
-wxFileDialog::wxFileDialog(wxWindow *parent, const wxString& message,
-        const wxString& defaultDir, const wxString& defaultFileName, const wxString& wildCard,
-        long style, const wxPoint& WXUNUSED(pos))
+wxFileDialog::wxFileDialog(wxWindow *parent,
+                           const wxString& message,
+                           const wxString& defaultDir,
+                           const wxString& defaultFileName,
+                           const wxString& wildCard,
+                           long style,
+                           const wxPoint& WXUNUSED(pos))
 {
     m_message = message;
     m_dialogStyle = style;
@@ -226,6 +231,14 @@ void wxFileDialog::GetPaths(wxArrayString& paths) const
     {
         paths.Add(dir + m_fileNames[n]);
     }
+}
+
+void wxFileDialog::SetPath(const wxString& path)
+{
+    wxString ext;
+    wxSplitPath(path, &m_dir, &m_fileName, &ext);
+    if ( !ext.empty() )
+        m_fileName << _T('.') << ext;
 }
 
 int wxFileDialog::ShowModal()

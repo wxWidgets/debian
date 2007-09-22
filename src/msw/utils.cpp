@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     04/01/98
-// RCS-ID:      $Id: utils.cpp,v 1.100 2002/09/08 00:41:16 VZ Exp $
+// RCS-ID:      $Id: utils.cpp,v 1.100.2.1 2002/11/09 00:24:11 VS Exp $
 // Copyright:   (c) Julian Smart and Markus Holzem
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -199,7 +199,7 @@ bool wxGetFullHostName(wxChar *buf, int maxSize)
 
                 if ( pHostEnt )
                 {
-                    host = pHostEnt->h_name;
+                    host = wxString::FromAscii(pHostEnt->h_name);
                 }
             }
         }

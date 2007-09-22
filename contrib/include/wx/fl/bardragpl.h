@@ -4,7 +4,7 @@
 // Author:      Aleksandras Gluchovas
 // Modified by:
 // Created:     23/09/98
-// RCS-ID:      $Id: bardragpl.h,v 1.4 2002/09/07 12:10:19 GD Exp $
+// RCS-ID:      $Id: bardragpl.h,v 1.4.2.1 2002/10/24 11:21:32 JS Exp $
 // Copyright:   (c) Aleksandras Gluchovas
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -23,7 +23,7 @@
 Plugin class implementing bar dragging.
 */
 
-class cbBarDragPlugin : public cbPluginBase
+class WXFL_DECLSPEC cbBarDragPlugin : public cbPluginBase
 {
     DECLARE_DYNAMIC_CLASS( cbBarDragPlugin )
 protected:

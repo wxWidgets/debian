@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     01/02/97
-// RCS-ID:      $Id: gdicmn.cpp,v 1.73 2002/08/24 18:34:24 SC Exp $
+// RCS-ID:      $Id: gdicmn.cpp,v 1.73.2.1 2002/11/03 19:08:56 RR Exp $
 // Copyright:   (c) Julian Smart and Markus Holzem
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -364,7 +364,8 @@ wxColour *wxColourDatabase::FindColour(const wxString& colour)
 #ifdef __WXGTK__
   wxColour *col = new wxColour( colour );
 
-  if (!(col->Ok())) {
+  if (!(col->Ok()))
+  {
       delete col;
       return (wxColour *) NULL;
   }
@@ -382,7 +383,7 @@ wxColour *wxColourDatabase::FindColour(const wxString& colour)
     Display* display = (Display*) wxGetDisplay();
 #endif
     /* MATTHEW: [4] Use wxGetMainColormap */
-    if (!XParseColor(display, (Colormap) wxTheApp->GetMainColormap((WXDisplay*) display), colour,&xcolour))
+    if (!XParseColor(display, (Colormap) wxTheApp->GetMainColormap((WXDisplay*) display), colour.ToAscii() ,&xcolour))
       return NULL;
 
 #if wxUSE_NANOX

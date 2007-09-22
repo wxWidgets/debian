@@ -17,7 +17,7 @@
 //                     databases operate the same in that respect
 //
 // Created:     9.96
-// RCS-ID:      $Id: db.h,v 1.61.2.1 2002/09/18 14:09:15 VZ Exp $
+// RCS-ID:      $Id: db.h,v 1.61.2.2 2002/12/03 19:00:43 rgammans Exp $
 // Copyright:   (c) 1996 Remstar International, Inc.
 // Licence:     wxWindows licence, plus:
 // Notice:      This class library and its intellectual design are free of charge for use,
@@ -714,7 +714,7 @@ int   WXDLLEXPORT  wxDbConnectionsInUse(void);
 
 // Writes a message to the wxLog window (stdout usually) when an internal error
 // situation occurs.  This function only works in DEBUG builds
-const wxChar WXDLLEXPORT *wxDbLogExtendedErrorMsg(const wxChar *userText,
+const wxChar* WXDLLEXPORT wxDbLogExtendedErrorMsg(const wxChar *userText,
                                                   wxDb *pDb,
                                                   const wxChar *ErrFile,
                                                   int ErrLine);

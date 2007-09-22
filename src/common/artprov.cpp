@@ -4,7 +4,7 @@
 // Author:      Vaclav Slavik
 // Modified by:
 // Created:     18/03/2002
-// RCS-ID:      $Id: artprov.cpp,v 1.7 2002/04/06 15:01:49 VS Exp $
+// RCS-ID:      $Id: artprov.cpp,v 1.7.2.1 2002/11/03 17:19:09 VS Exp $
 // Copyright:   (c) Vaclav Slavik
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -207,8 +207,15 @@ wxArtProviderCache *wxArtProvider::sm_cache = NULL;
 class wxArtProviderModule: public wxModule
 {
 public:
-    bool OnInit() { return TRUE; }
-    void OnExit() { wxArtProvider::CleanUpProviders(); }
+    bool OnInit()
+    {
+        wxArtProvider::InitStdProvider();
+        return TRUE;
+    }
+    void OnExit()
+    {
+        wxArtProvider::CleanUpProviders();
+    }
 
     DECLARE_DYNAMIC_CLASS(wxArtProviderModule)
 };

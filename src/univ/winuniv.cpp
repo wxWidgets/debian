@@ -4,7 +4,7 @@
 // Author:      Vadim Zeitlin
 // Modified by:
 // Created:     06.08.00
-// RCS-ID:      $Id: winuniv.cpp,v 1.33.2.1 2002/09/21 20:38:05 VZ Exp $
+// RCS-ID:      $Id: winuniv.cpp,v 1.33.2.2 2002/12/09 10:20:44 JS Exp $
 // Copyright:   (c) 2000 SciTech Software, Inc. (www.scitechsoft.com)
 // Licence:     wxWindows license
 ///////////////////////////////////////////////////////////////////////////////
@@ -284,10 +284,10 @@ bool wxWindow::DoDrawBackground(wxDC& dc)
         AdjustForParentClientOrigin( pos.x, pos.y, 0 );
 
         // Adjust DC logical origin
-        wxCoord x,y;
-        dc.GetLogicalOrigin( &x, &y );
-        x += pos.x;
-        y += pos.y;
+        wxCoord org_x, org_y, x, y;
+        dc.GetLogicalOrigin( &org_x, &org_y );
+        x = org_x + pos.x;
+        y = org_y + pos.y;
         dc.SetLogicalOrigin( x, y );
 
         // Adjust draw rect
@@ -296,6 +296,9 @@ bool wxWindow::DoDrawBackground(wxDC& dc)
 
         // Let parent draw the background
         parent->EraseBackground( dc, rect );
+
+        // Restore DC logical origin
+        dc.SetLogicalOrigin( org_x, org_y );
     }
     else
     {

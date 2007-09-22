@@ -4,7 +4,7 @@
 // Author:      Guilhem Lavaux
 // Modified by:
 // Created:     20/07/1997
-// RCS-ID:      $Id: url.cpp,v 1.31 2002/06/04 11:00:50 JS Exp $
+// RCS-ID:      $Id: url.cpp,v 1.31.2.1 2002/11/03 15:48:13 RR Exp $
 // Copyright:   (c) 1997, 1998 Guilhem Lavaux
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -65,7 +65,7 @@ wxURL::wxURL(const wxString& url)
 #if wxUSE_SOCKETS
     if ( ms_useDefaultProxy && !ms_proxyDefault )
     {
-        SetDefaultProxy(getenv("HTTP_PROXY"));
+        SetDefaultProxy( wxGetenv(wxT("HTTP_PROXY")) );
 
         if ( !ms_proxyDefault )
         {

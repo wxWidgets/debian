@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     7.9.93
-// RCS-ID:      $Id: texutils.cpp,v 1.19 2002/07/14 13:21:23 GD Exp $
+// RCS-ID:      $Id: texutils.cpp,v 1.19.2.2 2002/10/24 11:06:18 JS Exp $
 // Copyright:   (c) Julian Smart
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -36,6 +36,7 @@
 #else
 #include <iostream>
 #include <fstream>
+using namespace std;
 #endif
 
 #include <ctype.h>
@@ -1143,7 +1144,7 @@ char *RegisterSetting(char *settingName, char *settingValue, bool interactive)
   else if (StringMatch(settingName, "authorFontSize", FALSE, TRUE))
     StringToInt(settingValue, &authorFont);
   else if (StringMatch(settingName, "ignoreInput", FALSE, TRUE))
-    IgnorableInputFiles.Add(FileNameFromPath(settingValue));
+    IgnorableInputFiles.Add(wxFileNameFromPath(settingValue));
   else if (StringMatch(settingName, "mirrorMargins", FALSE, TRUE))
     mirrorMargins = StringTobool(settingValue);
   else if (StringMatch(settingName, "runTwice", FALSE, TRUE))
@@ -1671,3 +1672,25 @@ char *ConvertCase(char *s)
   buf[i] = 0;
   return buf;  
 }
+
+#if !WXWIN_COMPATIBILITY_2
+// if substring is TRUE, search for str1 in str2
+bool StringMatch(const wxChar *str1, const wxChar *str2, bool subString, 
+                 bool exact)
+{
+   if (subString)
+   {
+      wxString Sstr1(str1);
+      wxString Sstr2(str2);
+      if (!exact)
+      {
+          Sstr1.MakeUpper();
+          Sstr2.MakeUpper();
+      }
+      return Sstr2.Index(Sstr1) != wxNOT_FOUND;
+   }
+   else
+      return exact ? wxString(str2).Cmp(str1) == 0 : 
+                     wxString(str2).CmpNoCase(str1) == 0;
+}
+#endif

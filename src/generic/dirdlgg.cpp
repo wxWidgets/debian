@@ -4,7 +4,7 @@
 // Author:      Harm van der Heijden, Robert Roebling & Julian Smart
 // Modified by:
 // Created:     12/12/98
-// RCS-ID:      $Id: dirdlgg.cpp,v 1.38 2002/05/04 14:22:57 VZ Exp $
+// RCS-ID:      $Id: dirdlgg.cpp,v 1.38.2.2 2002/12/29 07:48:18 RL Exp $
 // Copyright:   (c) Harm van der Heijden, Robert Roebling, Julian Smart
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -250,14 +250,14 @@ void wxGenericDirDialog::OnShowHidden( wxCommandEvent& event )
     if (!m_dirCtrl)
         return;
 
-    m_dirCtrl->ShowHidden( event.GetInt() );
+    m_dirCtrl->ShowHidden( event.GetInt() != 0 );
 }
 
 void wxGenericDirDialog::OnNew( wxCommandEvent& WXUNUSED(event) )
 {
     wxTreeItemId id = m_dirCtrl->GetTreeCtrl()->GetSelection();
     if ((id == m_dirCtrl->GetTreeCtrl()->GetRootItem()) ||
-        (m_dirCtrl->GetTreeCtrl()->GetParent(id) == m_dirCtrl->GetTreeCtrl()->GetRootItem()))
+        (m_dirCtrl->GetTreeCtrl()->GetItemParent(id) == m_dirCtrl->GetTreeCtrl()->GetRootItem()))
     {
         wxMessageDialog msg(this, _("You cannot add a new directory to this section."),
                             _("Create directory"), wxOK | wxICON_INFORMATION );
@@ -265,7 +265,7 @@ void wxGenericDirDialog::OnNew( wxCommandEvent& WXUNUSED(event) )
         return;
     }
 
-    wxTreeItemId parent = id ; // m_dirCtrl->GetTreeCtrl()->GetParent( id );
+    wxTreeItemId parent = id ; // m_dirCtrl->GetTreeCtrl()->GetItemParent( id );
     wxDirItemData *data = (wxDirItemData*)m_dirCtrl->GetTreeCtrl()->GetItemData( parent );
     wxASSERT( data );
 

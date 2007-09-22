@@ -5,7 +5,7 @@
 // Author:      Robin Dunn
 //
 // Created:     6/24/97
-// RCS-ID:      $Id: _defs.i,v 1.50 2002/09/05 19:39:27 RD Exp $
+// RCS-ID:      $Id: _defs.i,v 1.50.2.2 2002/12/10 22:37:10 RD Exp $
 // Copyright:   (c) 1998 by Total Control Software
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -298,6 +298,7 @@ enum {
     wxRA_SPECIFY_ROWS,
     wxRA_SPECIFY_COLS,
     wxRB_GROUP,
+    wxRB_SINGLE,
     wxGA_PROGRESSBAR,
     wxGA_HORIZONTAL,
     wxGA_VERTICAL,
@@ -531,6 +532,17 @@ enum {
     wxMOUSE_BTN_LEFT,
     wxMOUSE_BTN_MIDDLE,
     wxMOUSE_BTN_RIGHT,
+
+    // It looks like wxTabCtrl may rise from the dead.  Uncomment these if
+    // it gets an implementation for all platforms...
+//     wxTC_RIGHTJUSTIFY,
+//     wxTC_FIXEDWIDTH,
+//     wxTC_TOP,
+//     wxTC_LEFT,
+//     wxTC_RIGHT,
+//     wxTC_BOTTOM,
+//     wxTC_MULTILINE,
+//     wxTC_OWNERDRAW,
 
 };
 

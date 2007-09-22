@@ -4,7 +4,7 @@
 // Author:    Carlos Moreno
 // Modified by:
 // Created:   6/2/2000
-// RCS-ID:    $Id: rotate.cpp,v 1.8 2002/03/24 00:21:33 VS Exp $
+// RCS-ID:    $Id: rotate.cpp,v 1.8.2.1 2002/12/15 17:25:32 MBN Exp $
 // Copyright: (c) 2000
 // Licence:   wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -89,7 +89,7 @@ IMPLEMENT_APP(MyApp)
 
 bool MyApp::OnInit()
 {
-    m_image = wxImage("kclub.bmp", wxBITMAP_TYPE_BMP);
+    m_image = wxImage(_T("kclub.bmp"), wxBITMAP_TYPE_BMP);
 
     // any unused colour will do
     m_image.SetMaskColour( 0, 255, 255 );
@@ -101,7 +101,7 @@ bool MyApp::OnInit()
         return FALSE;
     }
 
-    MyFrame *frame = new MyFrame ("wxWindows rotate sample",
+    MyFrame *frame = new MyFrame (_T("wxWindows rotate sample"),
                                   wxPoint(20,20), wxSize(600,450));
 
     frame->Show (TRUE);
@@ -117,12 +117,12 @@ MyFrame::MyFrame(const wxString& title, const wxPoint& pos, const wxSize& size)
     new MyCanvas(this);
 
     wxMenu *menuFile = new wxMenu;
-    menuFile->Append (ID_Angle, "Set &angle\tCtrl-A");
+    menuFile->Append (ID_Angle, _T("Set &angle\tCtrl-A"));
     menuFile->AppendSeparator();
-    menuFile->Append (ID_Quit, "E&xit\tAlt-X");
+    menuFile->Append (ID_Quit, _T("E&xit\tAlt-X"));
 
     wxMenuBar *menuBar = new wxMenuBar;
-    menuBar->Append (menuFile, "&File");
+    menuBar->Append (menuFile, _T("&File"));
 
     SetMenuBar (menuBar);
 }
@@ -130,9 +130,9 @@ MyFrame::MyFrame(const wxString& title, const wxPoint& pos, const wxSize& size)
 void MyFrame::OnAngle (wxCommandEvent &)
 {
     long degrees = (long)((180*m_angle)/M_PI);
-    degrees = wxGetNumberFromUser("Change the image rotation angle",
-                                  "Angle in degrees:",
-                                  "wxWindows rotate sample",
+    degrees = wxGetNumberFromUser(_T("Change the image rotation angle"),
+                                  _T("Angle in degrees:"),
+                                  _T("wxWindows rotate sample"),
                                   degrees,
                                   -180, +180,
                                   this);

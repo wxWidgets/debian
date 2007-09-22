@@ -4,7 +4,7 @@
 // Author:      Aleksandras Gluchovas (@Lithuania)
 // Modified by:
 // Created:     23/10/98
-// RCS-ID:      $Id: antiflickpl.h,v 1.4 2002/09/07 12:10:19 GD Exp $
+// RCS-ID:      $Id: antiflickpl.h,v 1.4.2.1 2002/10/24 11:21:32 JS Exp $
 // Copyright:   (c) Aleksandras Gluchovas
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -26,7 +26,7 @@ antiflicker plugins within the application.
 Locking for multithreaded applications is not yet implemented.
 */
 
-class cbAntiflickerPlugin : public cbPluginBase
+class WXFL_DECLSPEC cbAntiflickerPlugin : public cbPluginBase
 {
     DECLARE_DYNAMIC_CLASS( cbAntiflickerPlugin )
 protected:

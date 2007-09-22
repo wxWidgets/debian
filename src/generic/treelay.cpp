@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     7/4/98
-// RCS-ID:      $Id: treelay.cpp,v 1.7 2002/05/12 18:43:46 JS Exp $
+// RCS-ID:      $Id: treelay.cpp,v 1.7.2.1 2002/10/29 21:47:58 RR Exp $
 // Copyright:   (c) 1998 Julian Smart
 // Licence:     wxWindows licence
 ///////////////////////////////////////////////////////////////////////////////
@@ -270,7 +270,7 @@ void wxTreeLayoutStored::Initialize(int n)
     int i;
     for (i = 0; i < n; i++)
     {
-        m_nodes[i].m_name = "";
+        m_nodes[i].m_name = wxT("");
         m_nodes[i].m_active = FALSE;
         m_nodes[i].m_parentId = -1;
         m_nodes[i].m_x = 0;
@@ -464,7 +464,7 @@ wxString wxTreeLayoutStored::HitTest(wxMouseEvent& event, wxDC& dc)
         }
     }
 
-    return wxString("");
+    return wxString( wxT("") );
 }
 
 #endif

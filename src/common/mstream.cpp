@@ -4,7 +4,7 @@
 // Author:      Guilhem Lavaux
 // Modified by: VZ (23.11.00): general code review
 // Created:     04/01/98
-// RCS-ID:      $Id: mstream.cpp,v 1.24 2000/11/23 16:26:12 vadz Exp $
+// RCS-ID:      $Id: mstream.cpp,v 1.24.2.1 2002/11/04 19:31:55 VZ Exp $
 // Copyright:   (c) Guilhem Lavaux
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -80,7 +80,7 @@ size_t wxMemoryInputStream::OnSysRead(void *buffer, size_t nbytes)
     }
 
     m_i_streambuf->Read(buffer, nbytes);
-    m_lasterror = wxSTREAM_NOERROR;
+    m_lasterror = wxSTREAM_NO_ERROR;
 
     return m_i_streambuf->GetIntPosition() - pos;
 }

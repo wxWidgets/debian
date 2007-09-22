@@ -3,7 +3,7 @@
 // Purpose:     wxXmlResource::InitAllHandlers
 // Author:      Vaclav Slavik
 // Created:     2000/03/05
-// RCS-ID:      $Id: xmlrsall.cpp,v 1.4 2002/04/09 19:34:59 MBN Exp $
+// RCS-ID:      $Id: xmlrsall.cpp,v 1.4.2.1 2002/10/18 20:53:59 VS Exp $
 // Copyright:   (c) 2000 Vaclav Slavik
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -94,4 +94,5 @@ void wxXmlResource::InitAllHandlers()
     AddHandler(new wxGenericDirCtrlXmlHandler);
 #endif
     AddHandler(new wxFrameXmlHandler);
+    AddHandler(new wxScrolledWindowXmlHandler);
 }

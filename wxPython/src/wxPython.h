@@ -7,7 +7,7 @@
 // Author:      Robin Dunn
 //
 // Created:     14-Dec-2000
-// RCS-ID:      $Id: wxPython.h,v 1.2 2002/07/20 00:10:46 RD Exp $
+// RCS-ID:      $Id: wxPython.h,v 1.2.2.1 2002/12/10 22:37:06 RD Exp $
 // Copyright:   (c) 2000 by Total Control Software
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -71,6 +71,7 @@ static void wxPyCoreAPI_IMPORT() {
 #define wxRealPoint_helper(a,b)             (wxPyCoreAPIPtr->p_wxRealPoint_helper(a,b))
 #define wxRect_helper(a,b)                  (wxPyCoreAPIPtr->p_wxRect_helper(a,b))
 #define wxColour_helper(a,b)                (wxPyCoreAPIPtr->p_wxColour_helper(a,b))
+#define wxPoint2DDouble_helper(a,b)         (wxPyCoreAPIPtr->p_wxPoint2DDouble_helper(a,b))
 
 #define wxPyCBH_setCallbackInfo(a, b, c, d) (wxPyCoreAPIPtr->p_wxPyCBH_setCallbackInfo(a,b,c,d))
 #define wxPyCBH_findCallback(a, b)          (wxPyCoreAPIPtr->p_wxPyCBH_findCallback(a, b))

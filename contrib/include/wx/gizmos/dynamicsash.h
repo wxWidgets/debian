@@ -5,7 +5,7 @@
 // Author:      Matt Kimball
 // Modified by:
 // Created:     7/15/2001
-// RCS-ID:      $Id: dynamicsash.h,v 1.5 2002/03/07 10:06:22 JS Exp $
+// RCS-ID:      $Id: dynamicsash.h,v 1.5.2.1 2002/12/18 06:11:08 RD Exp $
 // Copyright:   (c) 2001 Matt Kimball
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -142,19 +142,21 @@ typedef void (wxEvtHandler::*wxDynamicSashUnifyEventFunction)(wxDynamicSashSplit
 /*
     wxDynamicSashWindow.  See above.
 */
+extern const wxChar* GIZMODLLEXPORT wxDynamicSashWindowNameStr;
+
 class GIZMODLLEXPORT wxDynamicSashWindow : public wxWindow {
 public:
     wxDynamicSashWindow();
     wxDynamicSashWindow(wxWindow *parent, wxWindowID id,
                         const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxDefaultSize,
                         long style = wxCLIP_CHILDREN | wxDS_MANAGE_SCROLLBARS | wxDS_DRAG_CORNER,
-                        const wxString& name = "dynamicSashWindow");
+                        const wxString& name = wxDynamicSashWindowNameStr);
     virtual ~wxDynamicSashWindow();
 
     virtual bool Create(wxWindow *parent, wxWindowID id,
                         const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxDefaultSize,
                         long style = wxCLIP_CHILDREN | wxDS_MANAGE_SCROLLBARS | wxDS_DRAG_CORNER,
-                        const wxString& name = "dynamicSashWindow");
+                        const wxString& name = wxDynamicSashWindowNameStr);
     virtual wxScrollBar *GetHScrollBar(const wxWindow *child) const;
     virtual wxScrollBar *GetVScrollBar(const wxWindow *child) const;
 

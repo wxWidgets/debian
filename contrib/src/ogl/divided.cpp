@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     12/07/98
-// RCS-ID:      $Id: divided.cpp,v 1.3 2002/03/15 20:50:39 RD Exp $
+// RCS-ID:      $Id: divided.cpp,v 1.3.2.2 2002/12/18 06:13:00 RD Exp $
 // Copyright:   (c) Julian Smart
 // Licence:   	wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -415,7 +415,7 @@ void wxDividedShape::ResetMandatoryControlPoints()
   }
 }
 
-#ifdef PROLOGIO
+#if wxUSE_PROLOGIO
 void wxDividedShape::WriteAttributes(wxExpr *clause)
 {
   wxRectangleShape::WriteAttributes(clause);
@@ -434,7 +434,7 @@ void wxDividedShape::ReadAttributes(wxExpr *clause)
 
 void wxDividedShape::EditRegions()
 {
-  wxMessageBox("EditRegions() is unimplemented.", "OGL", wxOK);
+  wxMessageBox(wxT("EditRegions() is unimplemented."), wxT("OGL"), wxOK);
 
   // TODO
 #if 0

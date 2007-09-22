@@ -1,7 +1,7 @@
 /////////////////////////////////////////////////////////////////////////////
 // Author:      Vaclav Slavik
 // Created:     2000/05/05
-// RCS-ID:      $Id: pe_basic.cpp,v 1.7 2002/01/27 23:42:16 VS Exp $
+// RCS-ID:      $Id: pe_basic.cpp,v 1.7.2.1 2002/12/29 07:48:09 RL Exp $
 // Copyright:   (c) 2000 Vaclav Slavik
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -172,7 +172,7 @@ class PropEditCtrlCoordXY : public PropEditCtrlInt
             wxString prev = XmlReadValue(GetNode(), m_PropInfo->Name);
             if (prev[prev.Len()-1] == _T('d')) s << _T('d');
             XmlWriteValue(GetNode(), m_PropInfo->Name, s);
-            m_TreeCtrl->SetItemBold(m_TreeCtrl->GetParent(m_TreeItem), TRUE);
+            m_TreeCtrl->SetItemBold(m_TreeCtrl->GetItemParent(m_TreeItem), TRUE);
         }
         
         virtual wxString GetValueAsText(wxTreeItemId ti)
@@ -228,7 +228,7 @@ class PropEditCtrlCoordDlg : public PropEditCtrlBool
             wxString s = XmlReadValue(GetNode(), m_PropInfo->Name).BeforeFirst(_T('d'));
             if (m_Choice->GetSelection() == 1) s << _T('d');
             XmlWriteValue(GetNode(), m_PropInfo->Name, s);
-            m_TreeCtrl->SetItemBold(m_TreeCtrl->GetParent(m_TreeItem), TRUE);
+            m_TreeCtrl->SetItemBold(m_TreeCtrl->GetItemParent(m_TreeItem), TRUE);
         }
         
         virtual wxString GetValueAsText(wxTreeItemId ti)
@@ -309,7 +309,7 @@ class PropEditCtrlDimX : public PropEditCtrlInt
             s = m_c;
             if (dlg) s << _T('d');
             XmlWriteValue(GetNode(), m_PropInfo->Name, s);
-            m_TreeCtrl->SetItemBold(m_TreeCtrl->GetParent(m_TreeItem), TRUE);
+            m_TreeCtrl->SetItemBold(m_TreeCtrl->GetItemParent(m_TreeItem), TRUE);
         }
         
         virtual wxString GetValueAsText(wxTreeItemId ti)

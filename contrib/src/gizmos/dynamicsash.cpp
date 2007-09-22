@@ -5,7 +5,7 @@
 // Author:      Matt Kimball
 // Modified by:
 // Created:     7/15/2001
-// RCS-ID:      $Id: dynamicsash.cpp,v 1.6 2002/01/08 23:27:53 VS Exp $
+// RCS-ID:      $Id: dynamicsash.cpp,v 1.6.2.1 2002/12/18 06:10:24 RD Exp $
 // Copyright:   (c) 2001 Matt Kimball
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -28,6 +28,10 @@
 #endif
 
 #include "wx/gizmos/dynamicsash.h"
+
+
+const wxChar* wxDynamicSashWindowNameStr = wxT("dynamicSashWindow");
+
 
 /*
     wxDynamicSashWindow works by internally storing a tree of Implementation

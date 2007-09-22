@@ -4,7 +4,7 @@
 // Purpose:     Common stuff for all widgets project files
 // Author:      Vadim Zeitlin
 // Created:     27.03.01
-// Id:          $Id: widgets.h,v 1.3 2001/11/25 15:54:25 GD Exp $
+// Id:          $Id: widgets.h,v 1.3.2.1 2002/10/02 00:16:49 RD Exp $
 // Copyright:   (c) 2001 Vadim Zeitlin
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -17,7 +17,7 @@ class WXDLLEXPORT wxNotebook;
 class WXDLLEXPORT wxSizer;
 class WXDLLEXPORT wxTextCtrl;
 
-class WXDLLEXPORT WidgetsPageInfo;
+class WidgetsPageInfo;
 
 #include "wx/panel.h"
 
@@ -68,7 +68,7 @@ public:
 // dynamic WidgetsPage creation helpers
 // ----------------------------------------------------------------------------
 
-class WXDLLEXPORT WidgetsPageInfo
+class WidgetsPageInfo
 {
 public:
     typedef WidgetsPage *(*Constructor)(wxNotebook *notebook,

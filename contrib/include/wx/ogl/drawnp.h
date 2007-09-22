@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     12/07/98
-// RCS-ID:      $Id: drawnp.h,v 1.3 2002/09/07 12:10:20 GD Exp $
+// RCS-ID:      $Id: drawnp.h,v 1.3.2.1 2002/11/19 02:13:32 RD Exp $
 // Copyright:   (c) Julian Smart
 // Licence:   	wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -65,9 +65,10 @@ public:
   inline virtual void Rotate(double x, double y, double theta, double sinTheta, double cosTheta) {};
   virtual void Do(wxDC& dc, double xoffset, double yoffset) = 0;
   virtual wxDrawOp *Copy(wxPseudoMetaFile *newImage) = 0;
+#if wxUSE_PROLOGIO
   virtual wxExpr *WriteExpr(wxPseudoMetaFile *image) = 0;
   virtual void ReadExpr(wxPseudoMetaFile *image, wxExpr *expr) = 0;
-
+#endif
   inline int GetOp() const { return m_op; }
 
   // Draw an outline using the current operation. By default, return FALSE (not drawn)
@@ -98,8 +99,10 @@ class wxOpSetGDI: public wxDrawOp
   wxOpSetGDI(int theOp, wxPseudoMetaFile *theImage, int theGdiIndex, int theMode = 0);
   void Do(wxDC& dc, double xoffset, double yoffset);
   wxDrawOp *Copy(wxPseudoMetaFile *newImage);
+#if wxUSE_PROLOGIO
   wxExpr *WriteExpr(wxPseudoMetaFile *image);
   void ReadExpr(wxPseudoMetaFile *image, wxExpr *expr);
+#endif
 
 public:
   int               m_mode;
@@ -123,8 +126,10 @@ public:
   void Scale(double xScale, double yScale);
   void Translate(double x, double y);
   wxDrawOp *Copy(wxPseudoMetaFile *newImage);
+#if wxUSE_PROLOGIO
   wxExpr *WriteExpr(wxPseudoMetaFile *image);
   void ReadExpr(wxPseudoMetaFile *image, wxExpr *expr);
+#endif
 
 public:
   double     m_x1;
@@ -149,8 +154,10 @@ class wxOpDraw: public wxDrawOp
   void Translate(double x, double y);
   void Rotate(double x, double y, double theta, double sinTheta, double cosTheta);
   wxDrawOp *Copy(wxPseudoMetaFile *newImage);
+#if wxUSE_PROLOGIO
   wxExpr *WriteExpr(wxPseudoMetaFile *image);
   void ReadExpr(wxPseudoMetaFile *image, wxExpr *expr);
+#endif
 
 public:
   double     m_x1;
@@ -179,8 +186,10 @@ public:
   void Translate(double x, double y);
   void Rotate(double x, double y, double theta, double sinTheta, double cosTheta);
   wxDrawOp *Copy(wxPseudoMetaFile *newImage);
+#if wxUSE_PROLOGIO
   wxExpr *WriteExpr(wxPseudoMetaFile *image);
   void ReadExpr(wxPseudoMetaFile *image, wxExpr *expr);
+#endif
 
   // Draw an outline using the current operation.
   virtual bool OnDrawOutline(wxDC& dc, double x, double y, double w, double h,

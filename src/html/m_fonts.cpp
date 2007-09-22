@@ -2,7 +2,7 @@
 // Name:        m_fonts.cpp
 // Purpose:     wxHtml module for fonts & colors of fonts
 // Author:      Vaclav Slavik
-// RCS-ID:      $Id: m_fonts.cpp,v 1.18 2002/03/08 23:45:37 VS Exp $
+// RCS-ID:      $Id: m_fonts.cpp,v 1.18.2.3 2002/11/09 00:07:31 VS Exp $
 // Copyright:   (c) 1999 Vaclav Slavik
 // Licence:     wxWindows Licence
 /////////////////////////////////////////////////////////////////////////////
@@ -16,7 +16,7 @@
 #include "wx/defs.h"
 #if wxUSE_HTML && wxUSE_STREAMS
 
-#ifdef __BORDLANDC__
+#ifdef __BORLANDC__
 #pragma hdrstop
 #endif
 
@@ -31,7 +31,7 @@
 FORCE_LINK_ME(m_fonts)
 
 
-TAG_HANDLER_BEGIN(FONT, "FONT")
+TAG_HANDLER_BEGIN(FONT, "FONT" )
 
     TAG_HANDLER_VARS
         wxArrayString m_Faces;

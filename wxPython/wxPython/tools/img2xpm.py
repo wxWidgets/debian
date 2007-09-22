@@ -1,3 +1,14 @@
+#----------------------------------------------------------------------
+# Name:        wxPython.tools.img2xpm
+# Purpose:     Convert an image to XPM format
+#
+# Author:      Robin Dunn
+#
+# RCS-ID:      $Id: img2xpm.py,v 1.1.2.2 2002/12/10 22:06:33 RD Exp $
+# Copyright:   (c) 2002 by Total Control Software
+# Licence:     wxWindows license
+#----------------------------------------------------------------------
+
 """
 img2xpm.py  -- convert several image formats to XPM
 

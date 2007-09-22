@@ -5,7 +5,7 @@
 // Modified by:
 // Created:     8/17/99
 // Copyright:   (c) Robert Roebling
-// RCS-ID:      $Id: filedlgg.h,v 1.19.2.1 2002/09/23 14:55:55 VZ Exp $
+// RCS-ID:      $Id: filedlgg.h,v 1.19.2.2 2002/12/09 10:42:25 JS Exp $
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
 
@@ -91,6 +91,7 @@ public:
     void OnNew( wxCommandEvent &event );
     void OnChoiceFilter( wxCommandEvent &event );
     void OnTextEnter( wxCommandEvent &event );
+    void OnTextChange( wxCommandEvent &event );
     void OnCheck( wxCommandEvent &event );
 
     void HandleAction( const wxString &fn );

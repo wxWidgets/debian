@@ -2,7 +2,7 @@
 // Name:        m_tables.cpp
 // Purpose:     wxHtml module for tables
 // Author:      Vaclav Slavik
-// RCS-ID:      $Id: m_tables.cpp,v 1.27 2002/02/10 23:42:32 VS Exp $
+// RCS-ID:      $Id: m_tables.cpp,v 1.27.2.3 2002/11/09 00:07:36 VS Exp $
 // Copyright:   (c) 1999 Vaclav Slavik
 // Licence:     wxWindows Licence
 /////////////////////////////////////////////////////////////////////////////
@@ -15,7 +15,7 @@
 
 #include "wx/defs.h"
 #if wxUSE_HTML && wxUSE_STREAMS
-#ifdef __BORDLANDC__
+#ifdef __BORLANDC__
 #pragma hdrstop
 #endif
 

@@ -6,7 +6,7 @@
 //              Bart Jourquin
 //              Mark Johnson
 // Created:     9.96
-// RCS-ID:      $Id: dbtable.cpp,v 1.68 2002/08/16 12:43:07 JS Exp $
+// RCS-ID:      $Id: dbtable.cpp,v 1.68.2.2 2002/12/09 10:49:02 JS Exp $
 // Copyright:   (c) 1996 Remstar International, Inc.
 // Licence:     wxWindows licence, plus:
 // Notice:      This class library and its intellectual design are free of charge for use,
@@ -1651,6 +1651,26 @@ bool wxDbTable::CreateIndex(const wxString &idxName, bool unique, UWORD noIdxCol
         sqlStmt += pDb->SQLColumnName(pIdxDefs[i].ColName);
 //        sqlStmt += pIdxDefs[i].ColName;
 
+        // MySQL requires a key length on VARCHAR keys
+        if ( pDb->Dbms() == dbmsMY_SQL )
+        {
+            // Find the details on this column
+            int j;
+            for ( j = 0; j < noCols; ++j )
+            {
+                if ( wxStrcmp( pIdxDefs[i].ColName, colDefs[j].ColName ) == 0 )
+                {
+                    break;
+                }
+            }
+            if ( colDefs[j].DbDataType ==  DB_DATA_TYPE_VARCHAR)
+            {
+                wxString s;
+                s.Printf(wxT("(%d)"), colDefs[i].SzDataObj);
+                sqlStmt += s;
+            }
+        }
+        
         // Postgres and SQL Server 7 do not support the ASC/DESC keywords for index columns
         if (!((pDb->Dbms() == dbmsMS_SQL_SERVER) && (strncmp(pDb->dbInf.dbmsVer,"07",2)==0)) &&
             !(pDb->Dbms() == dbmsPOSTGRES))
@@ -2586,8 +2606,8 @@ wxVariant wxDbTable::GetCol(const int colNo) const
 
 void csstrncpyt(char *s, const char *t, int n)
 {
-    while ((*s++ = *t++) && --n)
-    {};
+    while ( (*s++ = *t++) != '\0' && --n )
+        ;
 
     *s = '\0';
 }

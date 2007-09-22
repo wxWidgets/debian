@@ -2,7 +2,7 @@
 // Name:        htmltag.cpp
 // Purpose:     wxHtmlTag class (represents single tag)
 // Author:      Vaclav Slavik
-// RCS-ID:      $Id: htmltag.cpp,v 1.30 2002/05/05 18:26:24 VS Exp $
+// RCS-ID:      $Id: htmltag.cpp,v 1.30.2.1 2002/11/04 22:46:22 VZ Exp $
 // Copyright:   (c) 1999 Vaclav Slavik
 // Licence:     wxWindows Licence
 /////////////////////////////////////////////////////////////////////////////
@@ -17,7 +17,7 @@
 #include "wx/defs.h"
 #if wxUSE_HTML
 
-#ifdef __BORDLANDC__
+#ifdef __BORLANDC__
 #pragma hdrstop
 #endif
 

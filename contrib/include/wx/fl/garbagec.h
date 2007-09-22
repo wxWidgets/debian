@@ -4,7 +4,7 @@
 // Author:      Aleksandras Gluchovas (@Lithuania)
 // Modified by:
 // Created:     ??/10/98
-// RCS-ID:      $Id: garbagec.h,v 1.3 2002/09/07 12:10:19 GD Exp $
+// RCS-ID:      $Id: garbagec.h,v 1.3.2.1 2002/10/24 11:21:34 JS Exp $
 // Copyright:   (c) Aleksandras Gluchovas
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -17,6 +17,7 @@
 #endif
 
 #include "wx/list.h"
+#include "wx/fl/fldefs.h"
 
 struct GCItem
 {
@@ -33,7 +34,7 @@ inline void* gc_node_to_obj( wxNode* pGCNode )
 This class implements an extremely slow but simple garbage collection algorithm.
 */
 
-class GarbageCollector
+class WXFL_DECLSPEC GarbageCollector
 {
 protected:
     wxList mAllNodes;

@@ -2,7 +2,7 @@
 // Name:        editlbox.cpp
 // Purpose:     ListBox with editable items
 // Author:      Vaclav Slavik
-// RCS-ID:      $Id: editlbox.cpp,v 1.13 2002/03/16 19:32:44 VS Exp $
+// RCS-ID:      $Id: editlbox.cpp,v 1.13.2.1 2002/11/12 23:28:35 VS Exp $
 // Copyright:   (c) Vaclav Slavik
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -41,7 +41,7 @@ public:
                   const wxSize &size = wxDefaultSize,
                   long style = wxLC_ICON,
                   const wxValidator& validator = wxDefaultValidator,
-                  const wxString &name = "listctrl")
+                  const wxString &name = _T("listctrl"))
          : wxListCtrl(parent, id, pos, size, style, validator, name)
     {
         CreateColumns();

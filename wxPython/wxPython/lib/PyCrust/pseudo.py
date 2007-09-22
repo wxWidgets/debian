@@ -1,8 +1,8 @@
 """Provides a variety of classes to create pseudo keywords and pseudo files."""
 
 __author__ = "Patrick K. O'Brien <pobrien@orbtech.com>"
-__cvsid__ = "$Id: pseudo.py,v 1.7 2002/04/10 18:42:07 RD Exp $"
-__revision__ = "$Revision: 1.7 $"[11:-2]
+__cvsid__ = "$Id: pseudo.py,v 1.7.2.1 2002/12/16 18:19:42 RD Exp $"
+__revision__ = "$Revision: 1.7.2.1 $"[11:-2]
 
 class PseudoKeyword:
     """A callable class that calls a method passed as a parameter.
@@ -64,11 +64,13 @@ class PseudoFile:
         
 class PseudoFileIn(PseudoFile):
     
-    def __init__(self, readline):
+    def __init__(self, readline, readlines=None):
         if callable(readline):
             self.readline = readline
         else:
             raise ValueError, 'readline must be callable'
+        if callable(readlines):
+            self.readlines = readlines
     
     def isatty(self):
         return 1

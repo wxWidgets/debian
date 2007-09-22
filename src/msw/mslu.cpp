@@ -4,7 +4,7 @@
 // Author:      Vaclav Slavik
 // Modified by:
 // Created:     2002/02/17
-// RCS-ID:      $Id: mslu.cpp,v 1.3 2002/03/09 02:42:09 RD Exp $
+// RCS-ID:      $Id: mslu.cpp,v 1.3.2.2 2002/11/04 18:52:18 VZ Exp $
 // Copyright:   (c) 2002 Vaclav Slavik
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -46,10 +46,6 @@
 #include <io.h>
 #include <sys/stat.h>
 
-#ifdef __GNUWIN32__
-    #include <wchar.h>
-#endif
-
 #ifdef __VISUALC__
     #include <direct.h>
 #endif
@@ -76,7 +72,7 @@ WXDLLEXPORT int  wxMSLU_DrawStateW(WXHDC dc, WXHBRUSH br, WXFARPROC outputFunc,
 
     if ( wxUsingUnicowsDll() )
     {
-		return DrawStateA((HDC)dc, (HBRUSH)br, (DRAWSTATEPROC)outputFunc,
+        return DrawStateA((HDC)dc, (HBRUSH)br, (DRAWSTATEPROC)outputFunc,
                           (LPARAM)(const char*)
                                 wxConvLocal.cWX2MB((const wxChar*)lData),
                           wData, x, y, cx, cy, flags);

@@ -5,7 +5,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     12/07/98
-// RCS-ID:      $Id: mfutils.h,v 1.3 2002/09/07 12:10:20 GD Exp $
+// RCS-ID:      $Id: mfutils.h,v 1.3.2.1 2002/12/18 06:11:27 RD Exp $
 // Copyright:   (c) Julian Smart
 // Licence:   	wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -195,7 +195,7 @@ class wxXMetaFile: public wxObject
   wxList metaRecords;
   wxList gdiObjects; // List of wxMetaRecord objects created with Create...,
                      // referenced by position in list by SelectObject
-  wxXMetaFile(char *file = NULL);
+  wxXMetaFile(const wxChar* file = NULL);
   ~wxXMetaFile(void);
 
   // After this is called, the metafile cannot be used for anything
@@ -204,7 +204,7 @@ class wxXMetaFile: public wxObject
 
   bool Play(wxDC *dc);
   inline bool Ok(void) const { return ok; }
-  bool ReadFile(char *file);
+  bool ReadFile(const wxChar *file);
 };
 
 #endif

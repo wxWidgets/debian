@@ -4,7 +4,7 @@
 // Author:      Vadim Zeitlin
 // Modified by:
 // Created:     13.11.97
-// RCS-ID:      $Id: checklst.cpp,v 1.19 2002/05/09 21:58:04 VZ Exp $
+// RCS-ID:      $Id: checklst.cpp,v 1.19.2.2 2002/12/13 21:38:46 MBN Exp $
 // Copyright:   (c) 1998 Vadim Zeitlin <zeitlin@dptmaths.ens-cachan.fr>
 // Licence:     wxWindows license
 ///////////////////////////////////////////////////////////////////////////////
@@ -46,7 +46,7 @@ class CheckListBoxFrame : public wxFrame
 {
 public:
     // ctor & dtor
-    CheckListBoxFrame(wxFrame *frame, const char *title,
+    CheckListBoxFrame(wxFrame *frame, const wxChar *title,
                       int x, int y, int w, int h);
     virtual ~CheckListBoxFrame();
 
@@ -324,8 +324,8 @@ void CheckListBoxFrame::OnButtonMove(bool up)
 
 void CheckListBoxFrame::AdjustColour(size_t index)
 {
-    // not implemented in other ports yet
-#ifdef __WXMSW__
+    // not implemented in ports other than (native) MSW yet
+#if defined(__WXMSW__) && !defined(__WXUNIVERSAL__)
     // even items have grey backround, odd ones - white
     unsigned char c = index % 2 ? 255 : 200;
     m_pListBox->GetItem(index)->SetBackgroundColour(wxColor(c, c, c));

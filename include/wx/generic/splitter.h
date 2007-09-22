@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     01/02/97
-// RCS-ID:      $Id: splitter.h,v 1.32 2002/08/31 11:29:12 GD Exp $
+// RCS-ID:      $Id: splitter.h,v 1.32.2.1 2002/10/29 21:47:27 RR Exp $
 // Copyright:   (c) Julian Smart and Markus Holzem
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -71,7 +71,7 @@ public:
                      const wxPoint& pos = wxDefaultPosition,
                      const wxSize& size = wxDefaultSize,
                      long style = wxSP_3D,
-                     const wxString& name = "splitter")
+                     const wxString& name = wxT("splitter"))
     {
         Init();
         Create(parent, id, pos, size, style, name);
@@ -83,7 +83,7 @@ public:
                      const wxPoint& pos = wxDefaultPosition,
                      const wxSize& size = wxDefaultSize,
                      long style = wxSP_3D,
-                     const wxString& name = "splitter");
+                     const wxString& name = wxT("splitter"));
 
     // Gets the only or left/top pane
     wxWindow *GetWindow1() const { return m_windowOne; }

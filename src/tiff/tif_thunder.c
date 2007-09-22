@@ -1,4 +1,4 @@
-/* $Header: /home/karsten/CVSSERVER/wxcvs/wxWindows/src/tiff/tif_thunder.c,v 1.2 2000/02/16 17:12:56 DW Exp $ */
+/* $Header: /pack/cvsroots/wxwindows/wxWindows/src/tiff/tif_thunder.c,v 1.2.6.1 2002/11/10 13:13:57 JS Exp $ */
 
 /*
  * Copyright (c) 1988-1997 Sam Leffler

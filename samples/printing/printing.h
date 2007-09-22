@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     1995
-// RCS-ID:      $Id: printing.h,v 1.6 2002/08/31 22:30:51 GD Exp $
+// RCS-ID:      $Id: printing.h,v 1.6.2.1 2002/12/15 17:25:23 MBN Exp $
 // Copyright:   (c) Julian Smart
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -70,7 +70,7 @@ DECLARE_EVENT_TABLE()
 class MyPrintout: public wxPrintout
 {
  public:
-  MyPrintout(char *title = "My printout"):wxPrintout(title) {}
+  MyPrintout(wxChar *title = _T("My printout")):wxPrintout(title) {}
   bool OnPrintPage(int page);
   bool HasPage(int page);
   bool OnBeginDocument(int startPage, int endPage);

@@ -1,4 +1,4 @@
-/* $Header: /home/wxcvs/wxWindows/src/tiff/tiff.h,v 1.2 2002/02/15 15:11:04 VZ Exp $ */
+/* $Header: /pack/cvsroots/wxwindows/wxWindows/src/tiff/tiff.h,v 1.2.2.1 2002/11/10 13:13:58 JS Exp $ */
 
 /*
  * Copyright (c) 1988-1997 Sam Leffler

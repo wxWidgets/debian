@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     04/01/98
-// RCS-ID:      $Id: utilsexc.cpp,v 1.53.2.1 2002/09/19 18:23:34 JS Exp $
+// RCS-ID:      $Id: utilsexc.cpp,v 1.53.2.4 2002/11/04 21:33:28 VZ Exp $
 // Copyright:   (c) 1998-2002 wxWindows dev team
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -139,7 +139,7 @@ public:
     bool IsOpened() const { return m_hInput != INVALID_HANDLE_VALUE; }
 
     // returns TRUE if there is any data to be read from the pipe
-    bool IsAvailable() const;
+    virtual bool CanRead() const;
 
 protected:
     size_t OnSysRead(void *buffer, size_t len);
@@ -341,12 +341,12 @@ wxPipeInputStream::~wxPipeInputStream()
         ::CloseHandle(m_hInput);
 }
 
-bool wxPipeInputStream::IsAvailable() const
+bool wxPipeInputStream::CanRead() const
 {
     // FIXME
 #ifdef __WXWINE__
     return FALSE;
-#else
+#else // !Wine
     if ( !IsOpened() )
         return FALSE;
 
@@ -374,37 +374,36 @@ bool wxPipeInputStream::IsAvailable() const
         // it had been closed
         ::CloseHandle(m_hInput);
 
-        wxConstCast(this, wxPipeInputStream)->m_hInput = INVALID_HANDLE_VALUE;
+        wxPipeInputStream *self = wxConstCast(this, wxPipeInputStream);
 
-        return FALSE;
+        self->m_hInput = INVALID_HANDLE_VALUE;
+        self->m_lasterror = wxSTREAM_EOF;
+
+        nAvailable = 0;
     }
 
     return nAvailable != 0;
-#endif
+#endif // Wine/!Wine
 }
 
 size_t wxPipeInputStream::OnSysRead(void *buffer, size_t len)
 {
-    // reading from a pipe may block if there is no more data, always check for
-    // EOF first
-    if ( !IsAvailable() )
+    if ( !IsOpened() )
     {
         m_lasterror = wxSTREAM_EOF;
 
         return 0;
     }
 
-    m_lasterror = wxSTREAM_NOERROR;
-
     DWORD bytesRead;
     if ( !::ReadFile(m_hInput, buffer, len, &bytesRead, NULL) )
     {
-        if ( ::GetLastError() == ERROR_BROKEN_PIPE )
-            m_lasterror = wxSTREAM_EOF;
-        else
-            m_lasterror = wxSTREAM_READ_ERROR;
+        m_lasterror = ::GetLastError() == ERROR_BROKEN_PIPE
+                        ? wxSTREAM_EOF
+                        : wxSTREAM_READ_ERROR;
     }
 
+    // bytesRead is set to 0, as desired, if an error occured
     return bytesRead;
 }
 
@@ -424,18 +423,17 @@ wxPipeOutputStream::~wxPipeOutputStream()
 
 size_t wxPipeOutputStream::OnSysWrite(const void *buffer, size_t len)
 {
-    DWORD bytesRead;
+    DWORD bytesWritten;
 
-    m_lasterror = wxSTREAM_NOERROR;
-    if ( !::WriteFile(m_hOutput, buffer, len, &bytesRead, NULL) )
+    m_lasterror = wxSTREAM_NO_ERROR;
+    if ( !::WriteFile(m_hOutput, buffer, len, &bytesWritten, NULL) )
     {
-        if ( ::GetLastError() == ERROR_BROKEN_PIPE )
-            m_lasterror = wxSTREAM_EOF;
-        else
-            m_lasterror = wxSTREAM_READ_ERROR;
+        m_lasterror = ::GetLastError() == ERROR_BROKEN_PIPE
+                            ? wxSTREAM_EOF
+                            : wxSTREAM_WRITE_ERROR;
     }
 
-    return bytesRead;
+    return bytesWritten;
 }
 
 #endif // wxUSE_STREAMS

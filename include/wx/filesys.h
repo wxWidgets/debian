@@ -3,7 +3,7 @@
 // Purpose:     class for opening files - virtual file system
 // Author:      Vaclav Slavik
 // Copyright:   (c) 1999 Vaclav Slavik
-// RCS-ID:      $Id: filesys.h,v 1.12 2002/08/31 11:29:10 GD Exp $
+// RCS-ID:      $Id: filesys.h,v 1.12.2.2 2002/12/16 00:16:42 VS Exp $
 // Licence:     wxWindows Licence
 /////////////////////////////////////////////////////////////////////////////
 
@@ -29,6 +29,7 @@
 #include "wx/stream.h"
 #include "wx/url.h"
 #include "wx/datetime.h"
+#include "wx/filename.h"
 
 class wxFSFile;
 class wxFileSystemHandler;
@@ -179,6 +180,13 @@ public:
 
     // remove all items from the m_Handlers list
     static void CleanUpHandlers();
+
+    // Returns the native path for a file URL
+    static wxFileName URLToFileName(const wxString& url);
+
+    // Returns the file URL for a native path
+    static wxString FileNameToURL(const wxFileName& filename);
+
 
 protected:
     wxString m_Path;

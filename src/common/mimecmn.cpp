@@ -5,7 +5,7 @@
 // Modified by:
 //  Chris Elliott (biol75@york.ac.uk) 5 Dec 00: write support for Win32
 // Created:     23.09.98
-// RCS-ID:      $Id: mimecmn.cpp,v 1.22 2002/09/08 00:49:48 VZ Exp $
+// RCS-ID:      $Id: mimecmn.cpp,v 1.22.2.1 2002/11/09 00:25:27 VS Exp $
 // Copyright:   (c) 1998 Vadim Zeitlin <zeitlin@dptmaths.ens-cachan.fr>
 // Licence:     wxWindows license (part of wxExtra library)
 /////////////////////////////////////////////////////////////////////////////
@@ -426,7 +426,7 @@ bool wxFileType::SetDefaultIcon(const wxString& cmd, int index)
     // VZ: should we do this?
     // chris elliott : only makes sense in MS windows
     if ( sTmp.empty() )
-        GetOpenCommand(&sTmp, wxFileType::MessageParameters("", ""));
+        GetOpenCommand(&sTmp, wxFileType::MessageParameters(wxT(""), wxT("")));
 #endif
     wxCHECK_MSG( !sTmp.empty(), FALSE, _T("need the icon file") );
 

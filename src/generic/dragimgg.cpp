@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     29/2/2000
-// RCS-ID:      $Id: dragimgg.cpp,v 1.9 2002/04/12 20:26:42 JS Exp $
+// RCS-ID:      $Id: dragimgg.cpp,v 1.9.2.1 2002/10/02 08:11:27 JS Exp $
 // Copyright:   (c) Julian Smart
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -139,12 +139,12 @@ bool wxGenericDragImage::Create(const wxString& str, const wxCursor& cursor)
     dc.SetFont(wxNullFont);
 
     wxMemoryDC dc2;
-    dc2.SetFont(font);
 
     // Sometimes GetTextExtent isn't accurate enough, so make it longer
     wxBitmap bitmap((int) ((w+2) * 1.5), (int) h+2);
     dc2.SelectObject(bitmap);
 
+    dc2.SetFont(font);
     dc2.SetBackground(* wxWHITE_BRUSH);
     dc2.Clear();
     dc2.SetBackgroundMode(wxTRANSPARENT);

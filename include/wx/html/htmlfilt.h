@@ -2,7 +2,7 @@
 // Name:        htmlfilt.h
 // Purpose:     filters
 // Author:      Vaclav Slavik
-// RCS-ID:      $Id: htmlfilt.h,v 1.4 2002/08/31 11:29:12 GD Exp $
+// RCS-ID:      $Id: htmlfilt.h,v 1.4.2.1 2002/11/10 23:58:51 VS Exp $
 // Copyright:   (c) 1999 Vaclav Slavik
 // Licence:     wxWindows Licence
 /////////////////////////////////////////////////////////////////////////////
@@ -63,6 +63,20 @@ class WXDLLEXPORT wxHtmlFilterPlainText : public wxHtmlFilter
 public:
     virtual bool CanRead(const wxFSFile& file) const;
     virtual wxString ReadFile(const wxFSFile& file) const;
+};
+
+//--------------------------------------------------------------------------------
+// wxHtmlFilterHTML
+//          filter for text/html
+//--------------------------------------------------------------------------------
+
+class wxHtmlFilterHTML : public wxHtmlFilter
+{
+    DECLARE_DYNAMIC_CLASS(wxHtmlFilterHTML)
+
+    public:
+        virtual bool CanRead(const wxFSFile& file) const;
+        virtual wxString ReadFile(const wxFSFile& file) const;
 };
 
 

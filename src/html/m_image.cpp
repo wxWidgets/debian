@@ -2,7 +2,7 @@
 // Name:        m_image.cpp
 // Purpose:     wxHtml module for displaying images
 // Author:      Vaclav Slavik
-// RCS-ID:      $Id: m_image.cpp,v 1.37 2002/05/23 17:54:44 RR Exp $
+// RCS-ID:      $Id: m_image.cpp,v 1.37.2.3 2002/11/09 00:07:32 VS Exp $
 // Copyright:   (c) 1999 Vaclav Slavik, Joel Lucsy
 // Licence:     wxWindows Licence
 /////////////////////////////////////////////////////////////////////////////
@@ -16,7 +16,7 @@
 #include "wx/defs.h"
 #if wxUSE_HTML && wxUSE_STREAMS
 
-#ifdef __BORDLANDC__
+#ifdef __BORLANDC__
 #pragma hdrstop
 #endif
 

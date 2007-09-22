@@ -1,6 +1,15 @@
-"""
-Common routines for the image converter utilities.
-"""
+#----------------------------------------------------------------------
+# Name:        wxPython.tools.img2img
+# Purpose:     Common routines for the image converter utilities.
+#
+# Author:      Robin Dunn
+#
+# RCS-ID:      $Id: img2img.py,v 1.2.2.1 2002/12/10 22:06:33 RD Exp $
+# Copyright:   (c) 2002 by Total Control Software
+# Licence:     wxWindows license
+#----------------------------------------------------------------------
+
+
 import sys, os, glob, getopt, string
 from wxPython.wx import *
 

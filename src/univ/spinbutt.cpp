@@ -4,7 +4,7 @@
 // Author:      Vadim Zeitlin
 // Modified by:
 // Created:     21.01.01
-// RCS-ID:      $Id: spinbutt.cpp,v 1.7 2001/09/22 11:54:54 VS Exp $
+// RCS-ID:      $Id: spinbutt.cpp,v 1.7.2.1 2002/12/27 15:21:34 JS Exp $
 // Copyright:   (c) 2001 SciTech Software, Inc. (www.scitechsoft.com)
 // Licence:     wxWindows licence
 ///////////////////////////////////////////////////////////////////////////////
@@ -144,14 +144,14 @@ int wxSpinButton::NormalizeValue(int value) const
     if ( value > m_max )
     {
         if ( GetWindowStyleFlag() & wxSP_WRAP )
-            value = m_min + (value - m_max) % (m_max - m_min);
+            value = m_min + (value - m_max - 1) % (m_max - m_min + 1);
         else
             value = m_max;
     }
     else if ( value < m_min )
     {
         if ( GetWindowStyleFlag() & wxSP_WRAP )
-            value = m_max - (m_min - value) % (m_max - m_min);
+            value = m_max - (m_min - value - 1) % (m_max - m_min + 1);
         else
             value = m_min;
     }

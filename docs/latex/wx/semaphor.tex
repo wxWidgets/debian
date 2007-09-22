@@ -4,7 +4,7 @@
 %% Author:      Vadim Zeitlin
 %% Modified by:
 %% Created:     02.04.02
-%% RCS-ID:      $Id: semaphor.tex,v 1.4 2002/08/20 13:25:21 VZ Exp $
+%% RCS-ID:      $Id: semaphor.tex,v 1.4.2.1 2002/10/20 13:47:12 VS Exp $
 %% Copyright:   (c) 2002 Vadim Zeitlin
 %% License:     wxWindows license
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -60,7 +60,7 @@ Destructor is not virtual, don't use this class polymorphically.
 \func{wxSemaError }{Post}{\void}
 
 Increments the semaphore count and signals one of the waiting
-threads in an atomic way. Returns wxSEMA_OVERFLOW if the count
+threads in an atomic way. Returns wxSEMA\_OVERFLOW if the count
 would increase the counter past the maximum.
 
 \wxheading{Return value}

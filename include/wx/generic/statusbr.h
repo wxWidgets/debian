@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by: VZ at 05.02.00 to derive from wxStatusBarBase
 // Created:     01/02/97
-// RCS-ID:      $Id: statusbr.h,v 1.13 2002/09/04 13:16:42 VZ Exp $
+// RCS-ID:      $Id: statusbr.h,v 1.13.2.3 2002/11/22 07:13:36 GD Exp $
 // Copyright:   (c) Julian Smart and Markus Holzem
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -92,7 +92,9 @@ public:
   void SetBorderY(int y);
 
   void OnPaint(wxPaintEvent& event);
-  void OnSize(wxSizeEvent& event);
+  
+  void OnLeftDown(wxMouseEvent& event);
+  void OnRightDown(wxMouseEvent& event);
 
   virtual void InitColours();
 
@@ -105,6 +107,8 @@ protected:
 
   wxArrayString     m_statusStrings;
 
+  // the last known width of the client rect (used to rebuild cache)
+  int               m_lastClientWidth;
   // the widths of the status bar panes in pixels
   wxArrayInt        m_widthsAbs;
 

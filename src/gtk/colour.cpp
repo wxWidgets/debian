@@ -2,7 +2,7 @@
 // Name:        colour.cpp
 // Purpose:
 // Author:      Robert Roebling
-// Id:          $Id: colour.cpp,v 1.37.2.1 2002/09/25 11:10:51 VS Exp $
+// Id:          $Id: colour.cpp,v 1.37.2.3 2002/10/13 13:22:12 RR Exp $
 // Copyright:   (c) 1998 Robert Roebling
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -13,6 +13,7 @@
 #endif
 
 #include "wx/gdicmn.h"
+#include "wx/gtk/private.h"
 
 #include <gdk/gdk.h>
 #include <gdk/gdkx.h>
@@ -167,7 +168,7 @@ void wxColour::InitFromName( const wxString &colourName )
     {
         m_refData = new wxColourRefData();
         
-        if (!gdk_color_parse( colourName.mb_str(), &M_COLDATA->m_color ))
+        if (!gdk_color_parse( wxGTK_CONV( colourName ), &M_COLDATA->m_color ))
         {
             // VZ: asserts are good in general but this one is triggered by
             //     calling wxColourDatabase::FindColour() with an
@@ -221,6 +222,9 @@ void wxColour::Set( unsigned char red, unsigned char green, unsigned char blue )
     M_COLDATA->m_color.green = ((unsigned short)green) << SHIFT;
     M_COLDATA->m_color.blue = ((unsigned short)blue) << SHIFT;
     M_COLDATA->m_color.pixel = 0;
+    
+    M_COLDATA->m_colormap = (GdkColormap*) NULL;
+    M_COLDATA->m_hasPixel = FALSE;
 }
 
 unsigned char wxColour::Red() const

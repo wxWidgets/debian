@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     12/07/98
-// RCS-ID:      $Id: mfutils.cpp,v 1.4 2002/03/15 20:50:39 RD Exp $
+// RCS-ID:      $Id: mfutils.cpp,v 1.4.2.1 2002/12/18 06:13:00 RD Exp $
 // Copyright:   (c) Julian Smart
 // Licence:   	wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -98,7 +98,7 @@ wxMetaRecord::~wxMetaRecord(void)
   if (stringParam) delete[] stringParam;
 }
 
-wxXMetaFile::wxXMetaFile(char *file)
+wxXMetaFile::wxXMetaFile(const wxChar *file)
 {
   ok = FALSE;
   top = 0.0;
@@ -162,11 +162,11 @@ int AddMetaRecordHandle(wxMetaRecord *record)
   return (HandleTableSize - 1);
 }
 
-bool wxXMetaFile::ReadFile(char *file)
+bool wxXMetaFile::ReadFile(const wxChar *file)
 {
   HandleTableSize = 0;
 
-  FILE *handle = fopen(file, "rb");
+  FILE *handle = wxFopen(file, wxT("rb"));
   if (!handle) return FALSE;
 
   // Read placeable metafile header, if any

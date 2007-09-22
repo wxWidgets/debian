@@ -3,7 +3,7 @@
 // Purpose:     ZIP file system
 // Author:      Vaclav Slavik
 // Copyright:   (c) 1999 Vaclav Slavik
-// CVS-ID:      $Id: fs_zip.h,v 1.11 2002/08/31 11:29:10 GD Exp $
+// CVS-ID:      $Id: fs_zip.h,v 1.11.2.1 2002/11/04 22:46:11 VZ Exp $
 // Licence:     wxWindows Licence
 /////////////////////////////////////////////////////////////////////////////
 
@@ -16,7 +16,7 @@
 
 #include "wx/wxprec.h"
 
-#ifdef __BORDLANDC__
+#ifdef __BORLANDC__
 #pragma hdrstop
 #endif
 

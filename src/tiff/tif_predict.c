@@ -1,4 +1,4 @@
-/* $Header: /home/karsten/CVSSERVER/wxcvs/wxWindows/src/tiff/tif_predict.c,v 1.3 2000/07/15 19:50:39 cvsuser Exp $ */
+/* $Header: /pack/cvsroots/wxwindows/wxWindows/src/tiff/tif_predict.c,v 1.3.4.1 2002/11/10 13:13:57 JS Exp $ */
 
 /*
  * Copyright (c) 1988-1997 Sam Leffler

@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     04/01/98
-// RCS-ID:      $Id: glcanvas.cpp,v 1.16 2002/07/21 18:46:50 VZ Exp $
+// RCS-ID:      $Id: glcanvas.cpp,v 1.16.2.1 2002/11/28 11:27:33 JS Exp $
 // Copyright:   (c) Julian Smart
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -104,7 +104,7 @@ void wxGLContext::SetCurrent()
   */
 }
 
-void wxGLContext::SetColour(const char *colour)
+void wxGLContext::SetColour(const wxChar *colour)
 {
   float r = 0.0;
   float g = 0.0;
@@ -522,7 +522,7 @@ void wxGLCanvas::SetCurrent()
   }
 }
 
-void wxGLCanvas::SetColour(const char *colour)
+void wxGLCanvas::SetColour(const wxChar *colour)
 {
   if (m_glContext)
     m_glContext->SetColour(colour);

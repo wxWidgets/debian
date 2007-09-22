@@ -4,7 +4,7 @@
 //              GtkFixed. It makes use of the gravity window property and
 //              therefore does not work with GTK 1.0.
 // Author:      Robert Roebling
-// Id:          $Id: win_gtk.c,v 1.62 2002/08/20 15:48:14 RR Exp $
+// Id:          $Id: win_gtk.c,v 1.62.2.1 2002/09/30 19:30:52 RR Exp $
 // Copyright:   (c) 1998 Robert Roebling
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////// */
@@ -310,10 +310,10 @@ gtk_pizza_put (GtkPizza   *pizza,
 
     pizza->children = g_list_append (pizza->children, child_info);
 
-    gtk_widget_set_parent (widget, GTK_WIDGET (pizza));
-
     if (GTK_WIDGET_REALIZED (pizza))
       gtk_widget_set_parent_window (widget, pizza->bin_window);
+
+    gtk_widget_set_parent (widget, GTK_WIDGET (pizza));
 
 #ifndef __WXGTK20__ /* FIXME? */
     if (!IS_ONSCREEN (x, y))

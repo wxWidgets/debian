@@ -4,7 +4,7 @@
 // Author:      Hans Van Leemputten
 // Modified by:
 // Created:     29/07/2002
-// RCS-ID:      $Id: mdig.h,v 1.2.2.2 2002/09/17 15:39:45 DW Exp $
+// RCS-ID:      $Id: mdig.h,v 1.2.2.3 2002/10/28 15:22:13 CE Exp $
 // Copyright:   (c) Hans Van Leemputten
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -265,6 +265,8 @@ private:
 
 #if wxUSE_GENERIC_MDI_AS_NATIVE
 
+class wxMDIChildFrame ;
+
 //-----------------------------------------------------------------------------
 // wxMDIParentFrame
 //-----------------------------------------------------------------------------
@@ -284,6 +286,9 @@ public:
     {
     }
 
+    wxMDIChildFrame * GetActiveChild() const ;
+    
+    
 private:
     DECLARE_DYNAMIC_CLASS(wxMDIParentFrame)
 };

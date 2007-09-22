@@ -4,7 +4,7 @@
 // Author:      Vadim Zeitlin
 // Modified by:
 // Created:     27.04.98
-// RCS-ID:      $Id: regconf.cpp,v 1.42 2002/03/22 19:15:13 VZ Exp $
+// RCS-ID:      $Id: regconf.cpp,v 1.42.2.1 2002/11/09 00:22:19 VS Exp $
 // Copyright:   (c) 1998 Vadim Zeitlin <zeitlin@dptmaths.ens-cachan.fr>
 // Licence:     wxWindows license
 ///////////////////////////////////////////////////////////////////////////////
@@ -43,7 +43,7 @@
 // ----------------------------------------------------------------------------
 
 // we put our data in HKLM\SOFTWARE_KEY\appname
-#define SOFTWARE_KEY    wxString("Software\\")
+#define SOFTWARE_KEY    wxString(wxT("Software\\"))
 
 // ----------------------------------------------------------------------------
 // global functions
@@ -696,7 +696,7 @@ bool wxRegConfig::DeleteEntry(const wxString& value, bool WXUNUSED(bGroupIfEmpty
 
     if ( m_keyLocal.IsEmpty() ) {
       wxString strKey = GetPath().AfterLast(wxCONFIG_PATH_SEPARATOR);
-      SetPath("..");  // changes m_keyLocal
+      SetPath(_T(".."));  // changes m_keyLocal
       return LocalKey().DeleteKey(strKey);
     }
   }

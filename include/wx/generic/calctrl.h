@@ -4,7 +4,7 @@
 // Author:      Vadim Zeitlin
 // Modified by:
 // Created:     29.12.99
-// RCS-ID:      $Id: calctrl.h,v 1.16 2002/08/31 11:29:12 GD Exp $
+// RCS-ID:      $Id: calctrl.h,v 1.16.2.1 2002/10/23 17:32:07 RR Exp $
 // Copyright:   (c) 1999 Vadim Zeitlin <zeitlin@dptmaths.ens-cachan.fr>
 // Licence:     wxWindows license
 ///////////////////////////////////////////////////////////////////////////////
@@ -43,12 +43,7 @@ public:
                    const wxPoint& pos = wxDefaultPosition,
                    const wxSize& size = wxDefaultSize,
                    long style = wxCAL_SHOW_HOLIDAYS | wxWANTS_CHARS,
-                   const wxString& name = wxCalendarNameStr)
-    {
-        Init();
-
-        (void)Create(parent, id, date, pos, size, style, name);
-    }
+                   const wxString& name = wxCalendarNameStr);
 
     bool Create(wxWindow *parent,
                 wxWindowID id,

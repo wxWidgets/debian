@@ -5,7 +5,7 @@
 // Author:      Robin Dunn
 //
 // Created:     8/27/98
-// RCS-ID:      $Id: frames.i,v 1.21 2002/08/24 02:30:11 RD Exp $
+// RCS-ID:      $Id: frames.i,v 1.21.2.1 2002/10/04 00:44:55 RD Exp $
 // Copyright:   (c) 1998 by Total Control Software
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -145,11 +145,9 @@ public:
     wxMenuBar *GetMenuBar();
 
 
-    // call this to simulate a menu command
-    bool Command(int id);
-
     // process menu command: returns TRUE if processed
     bool ProcessCommand(int id);
+    %pragma(python) addtoclass = "Command = ProcessCommand"
 
     // create the main status bar
     wxStatusBar* CreateStatusBar(int number = 1,

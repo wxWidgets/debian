@@ -4,7 +4,7 @@
 // Author:      Original from Wolfram Gloger/Guilhem Lavaux
 // Modified by: K. S. Sreeram (2002): POSIXified wxCondition, added wxSemaphore
 // Created:     04/22/98
-// RCS-ID:      $Id: threadpsx.cpp,v 1.58.2.1 2002/09/17 13:41:49 VZ Exp $
+// RCS-ID:      $Id: threadpsx.cpp,v 1.58.2.2 2002/10/22 07:11:32 JJ Exp $
 // Copyright:   (c) Wolfram Gloger (1996, 1997)
 //                  Guilhem Lavaux (1998)
 //                  Vadim Zeitlin (1999-2002)
@@ -696,8 +696,12 @@ void *wxThreadInternal::PthreadStart(wxThread *thread)
 {
     wxThreadInternal *pthread = thread->m_internal;
 
-    wxLogTrace(TRACE_THREADS, _T("Thread %ld started."), (long)pthread->GetId());
-
+#ifdef __VMS
+   wxLogTrace(TRACE_THREADS, _T("Thread %ld started."), (long long)pthread->GetId());
+#else
+   wxLogTrace(TRACE_THREADS, _T("Thread %ld started."), (long)pthread->GetId());
+#endif
+   
     // associate the thread pointer with the newly created thread so that
     // wxThread::This() will work
     int rc = pthread_setspecific(gs_keySelf, thread);
@@ -734,13 +738,21 @@ void *wxThreadInternal::PthreadStart(wxThread *thread)
     {
         // call the main entry
         wxLogTrace(TRACE_THREADS, _T("Thread %ld about to enter its Entry()."),
+#ifdef __VMS
+                   (long long)pthread->GetId());
+#else
                    (long)pthread->GetId());
-
+#endif
+       
         pthread->m_exitcode = thread->Entry();
 
         wxLogTrace(TRACE_THREADS, _T("Thread %ld Entry() returned %lu."),
+#ifdef __VMS
+                   (long long)pthread->GetId(), (unsigned long)pthread->m_exitcode);
+#else
                    (long)pthread->GetId(), (unsigned long)pthread->m_exitcode);
-
+#endif
+       
         {
             wxCriticalSectionLocker lock(thread->m_critsect);
 
@@ -849,8 +861,12 @@ void wxThreadInternal::Wait()
         wxMutexGuiLeave();
 
     wxLogTrace(TRACE_THREADS,
+#ifdef __VMS
+               _T("Starting to wait for thread %ld to exit."), (long long)GetId());
+#else
                _T("Starting to wait for thread %ld to exit."), (long)GetId());
-
+#endif
+   
     // to avoid memory leaks we should call pthread_join(), but it must only be
     // done once so use a critical section to serialize the code below
     {
@@ -888,8 +904,12 @@ void wxThreadInternal::Pause()
     wxCHECK_RET( m_state == STATE_PAUSED,
                  wxT("thread must first be paused with wxThread::Pause().") );
 
-    wxLogTrace(TRACE_THREADS, _T("Thread %ld goes to sleep."), (long)GetId());
-
+#ifdef __VMS
+   wxLogTrace(TRACE_THREADS, _T("Thread %ld goes to sleep."), (long long)GetId());
+#else
+   wxLogTrace(TRACE_THREADS, _T("Thread %ld goes to sleep."), (long)GetId());
+#endif
+   
     // wait until the semaphore is Post()ed from Resume()
     m_semSuspend.Wait();
 }
@@ -903,8 +923,12 @@ void wxThreadInternal::Resume()
     // TestDestroy() since the last call to Pause() for example
     if ( IsReallyPaused() )
     {
-        wxLogTrace(TRACE_THREADS, _T("Waking up thread %ld"), (long)GetId());
-
+#ifdef __VMS
+       wxLogTrace(TRACE_THREADS, _T("Waking up thread %ld"), (long long)GetId());
+#else
+       wxLogTrace(TRACE_THREADS, _T("Waking up thread %ld"), (long)GetId());
+#endif
+       
         // wake up Pause()
         m_semSuspend.Post();
 
@@ -914,7 +938,11 @@ void wxThreadInternal::Resume()
     else
     {
         wxLogTrace(TRACE_THREADS, _T("Thread %ld is not yet really paused"),
+#ifdef __VMS
+                   (long long)GetId());
+#else
                    (long)GetId());
+#endif
     }
 
     SetState(STATE_RUNNING);

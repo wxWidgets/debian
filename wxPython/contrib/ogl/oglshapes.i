@@ -5,7 +5,7 @@
 // Author:      Robin Dunn
 //
 // Created:     3-Sept-1999
-// RCS-ID:      $Id: oglshapes.i,v 1.12 2002/05/02 02:46:13 RD Exp $
+// RCS-ID:      $Id: oglshapes.i,v 1.12.2.2 2002/12/18 06:15:31 RD Exp $
 // Copyright:   (c) 1998 by Total Control Software
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -46,16 +46,17 @@ public:
   ~wxPseudoMetaFile();
 
     void Draw(wxDC& dc, double xoffset, double yoffset);
-
+#ifdef wxUSE_PROLOGIO
     void WriteAttributes(wxExpr *clause, int whichAngle);
     void ReadAttributes(wxExpr *clause, int whichAngle);
+#endif
     void Clear();
     void Copy(wxPseudoMetaFile& copy);
     void Scale(double sx, double sy);
     void ScaleTo(double w, double h);
     void Translate(double x, double y);
     void Rotate(double x, double y, double theta);
-    bool LoadFromMetaFile(char* filename, double *width, double *height);
+    bool LoadFromMetaFile(const wxString& filename, double *width, double *height);
     void GetBounds(double *minX, double *minY, double *maxX, double *maxY);
     void CalculateSize(wxPyDrawnShape* shape);
 
@@ -280,7 +281,7 @@ public:
     wxPseudoMetaFile& GetMetaFile();
 
     double GetRotation();
-    bool LoadFromMetaFile(char * filename);
+    bool LoadFromMetaFile(const wxString& filename);
     void Rotate(double x, double y, double theta);
     void SetClippingRect(const wxRect& rect);
     void SetDrawnBackgroundColour(const wxColour& colour);

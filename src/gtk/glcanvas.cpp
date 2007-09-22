@@ -4,7 +4,7 @@
 // Author:      Robert Roebling
 // Modified by:
 // Created:     17/08/98
-// RCS-ID:      $Id: glcanvas.cpp,v 1.9.2.1 2002/09/22 14:53:45 VZ Exp $
+// RCS-ID:      $Id: glcanvas.cpp,v 1.9.2.2 2002/12/02 21:23:13 VZ Exp $
 // Copyright:   (c) Robert Roebling
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -121,7 +121,7 @@ void wxGLContext::SetCurrent()
     }
 }
 
-void wxGLContext::SetColour(const char *colour)
+void wxGLContext::SetColour(const wxChar *colour)
 {
     float r = 0.0;
     float g = 0.0;
@@ -441,7 +441,7 @@ void wxGLCanvas::SetCurrent()
         m_glContext->SetCurrent();
 }
 
-void wxGLCanvas::SetColour( const char *colour )
+void wxGLCanvas::SetColour( const wxChar *colour )
 {
     if (m_glContext)
         m_glContext->SetColour( colour );

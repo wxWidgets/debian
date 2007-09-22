@@ -2,7 +2,7 @@
 // Name:        m_dflist.cpp
 // Purpose:     wxHtml module for definition lists (DL,DT,DD)
 // Author:      Vaclav Slavik
-// RCS-ID:      $Id: m_dflist.cpp,v 1.6 2001/07/19 22:31:00 VS Exp $
+// RCS-ID:      $Id: m_dflist.cpp,v 1.6.2.3 2002/11/09 00:07:31 VS Exp $
 // Copyright:   (c) 1999 Vaclav Slavik
 // Licence:     wxWindows Licence
 /////////////////////////////////////////////////////////////////////////////
@@ -17,7 +17,7 @@
 #include "wx/defs.h"
 #if wxUSE_HTML && wxUSE_STREAMS
 
-#ifdef __BORDLANDC__
+#ifdef __BORLANDC__
 #pragma hdrstop
 #endif
 
@@ -34,7 +34,7 @@ FORCE_LINK_ME(m_dflist)
 
 
 
-TAG_HANDLER_BEGIN(DEFLIST, "DL,DT,DD")
+TAG_HANDLER_BEGIN(DEFLIST, "DL,DT,DD" )
 
     TAG_HANDLER_PROC(tag)
     {

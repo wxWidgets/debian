@@ -6,7 +6,7 @@
 # Author:       Robin Dunn
 #
 # Created:      A long time ago, in a galaxy far, far away...
-# RCS-ID:       $Id: Main.py,v 1.76.2.1 2002/09/19 05:13:00 RD Exp $
+# RCS-ID:       $Id: Main.py,v 1.76.2.11 2003/01/07 19:59:45 RD Exp $
 # Copyright:    (c) 1999 by Total Control Software
 # Licence:      wxWindows license
 #----------------------------------------------------------------------------
@@ -25,19 +25,11 @@ import images
 _treeList = [
     # new stuff
     ('New since last release', [
-        'RowColSizer',
-        'Unicode',
-        'wxFileHistory',
-        'wxGenericDirCtrl',
-        'wxImageFromStream',
-        'wxArtProvider',
-        'ScrolledPanel',
-        'wxMenu',
-        'wxIEHtmlWin',
-        'wxKeyEvents',
-        'wxWizard',
-        'wxXmlResourceHandler',
-        'wxTimeCtrl',
+        'wxRadioButton',
+        'Throbber',
+        'wxPopupControl',
+        'wxMultiSash',
+        'EventManager',
         ]),
 
     # managed windows == things with a caption you can close
@@ -89,14 +81,15 @@ _treeList = [
         'wxNotebook',
         'wxPopupWindow',
         'wxRadioBox',
+        'wxRadioButton',
         'wxSashWindow',
-        'wxSlider',
         'wxScrolledWindow',
-        'wxSplitterWindow',
+        'wxSlider',
         'wxSpinButton',
         'wxSpinCtrl',
-        'wxStaticText',
+        'wxSplitterWindow',
         'wxStaticBitmap',
+        'wxStaticText',
         'wxStatusBar',
         'wxTextCtrl',
         'wxToggleButton',
@@ -107,6 +100,8 @@ _treeList = [
 
     # controls coming from other librairies
     ('More Windows/Controls', [
+        #'wxFloatBar',          deprecated
+        #'wxMVCTree',           deprecated
         'ColourSelect',
         'ContextHelp',
         'FancyText',
@@ -116,17 +111,18 @@ _treeList = [
         'PyCrustWithFilling',
         'SplitTree',
         'TablePrint',
+        'Throbber',
         'wxCalendar',
         'wxCalendarCtrl',
         'wxDynamicSashWindow',
         'wxEditableListBox',
         'wxEditor',
-        #'wxFloatBar',          deprecated
         'wxHtmlWindow',
         'wxIEHtmlWin',
         'wxLEDNumberCtrl',
         'wxMimeTypesManager',
-        #'wxMVCTree',           deprecated
+        'wxMultiSash',
+        'wxPopupControl',
         'wxRightTextCtrl',
         'wxStyledTextCtrl_1',
         'wxStyledTextCtrl_2',
@@ -147,6 +143,7 @@ _treeList = [
 
     # ditto
     ('Process and Events', [
+        'EventManager',
         'infoframe',
         'OOR',
         'PythonEvents',
@@ -165,6 +162,7 @@ _treeList = [
 
     # Images
     ('Images', [
+        'Throbber',
         'wxDragImage',
         'wxImage',
         'wxImageFromStream',
@@ -179,6 +177,7 @@ _treeList = [
         'DrawXXXList',
         'FontEnumerator',
         'PrintFramework',
+        'Throbber',
         'Unicode',
         'wxFileHistory',
         'wxJoystick',
@@ -214,7 +213,8 @@ class MyLog(wxPyLog):
         if self.logTime:
             message = time.strftime("%X", time.localtime(timeStamp)) + \
                       ": " + message
-        self.tc.AppendText(message + '\n')
+        if self.tc:
+            self.tc.AppendText(message + '\n')
 
 
 class MyTP(wxPyTipProvider):
@@ -239,6 +239,7 @@ class wxPythonDemo(wxFrame):
 
         self.cwd = os.getcwd()
         self.curOverview = ""
+        self.window = None
 
         icon = images.getMondrianIcon()
         self.SetIcon(icon)
@@ -252,9 +253,9 @@ class wxPythonDemo(wxFrame):
             EVT_MENU(self.tbicon, self.TBMENU_RESTORE, self.OnTaskBarActivate)
             EVT_MENU(self.tbicon, self.TBMENU_CLOSE, self.OnTaskBarClose)
 
+        wxCallAfter(self.ShowTip)
 
         self.otherWin = None
-        self.showTip = true
         EVT_IDLE(self, self.OnIdle)
         EVT_CLOSE(self, self.OnCloseWindow)
         EVT_ICONIZE(self, self.OnIconfiy)
@@ -360,7 +361,7 @@ class wxPythonDemo(wxFrame):
 
         # Set up a TextCtrl on the Demo Code Notebook page
         self.txt = wxTextCtrl(self.nb, -1,
-                              style = wxTE_MULTILINE|wxTE_READONLY|wxHSCROLL)
+                              style = wxTE_MULTILINE|wxTE_READONLY|wxHSCROLL|wxTE_RICH2)
         self.nb.AddPage(self.txt, "Demo Code")
 
 
@@ -382,12 +383,10 @@ class wxPythonDemo(wxFrame):
 
 
         # add the windows to the splitter and split it.
-        splitter2.SplitHorizontally(self.nb, self.log)
-        splitter.SplitVertically(self.tree, splitter2)
+        splitter2.SplitHorizontally(self.nb, self.log, 450)
+        splitter.SplitVertically(self.tree, splitter2, 180)
 
-        splitter.SetSashPosition(180, true)
         splitter.SetMinimumPaneSize(20)
-        splitter2.SetSashPosition(450, true)
         splitter2.SetMinimumPaneSize(20)
 
 
@@ -455,6 +454,11 @@ class wxPythonDemo(wxFrame):
         if self.nb.GetPageCount() == 3:
             if self.nb.GetSelection() == 2:
                 self.nb.SetSelection(0)
+            # inform the window that it's time to quit if it cares
+            if self.window is not None:
+                if hasattr(self.window, "ShutdownDemo"):
+                    self.window.ShutdownDemo()
+            wxSafeYield() # in case the page has pending events
             self.nb.DeletePage(2)
 
         if itemText == self.overviewText:
@@ -480,7 +484,7 @@ class wxPythonDemo(wxFrame):
                 wxSafeYield()
 
                 self.window = module.runTest(self, self.nb, self) ###
-                if self.window:
+                if self.window is not None:
                     self.nb.AddPage(self.window, 'Demo')
                     self.nb.SetSelection(2)
                     self.nb.Refresh()  # without this wxMac has troubles showing the just added page
@@ -542,10 +546,6 @@ class wxPythonDemo(wxFrame):
             self.otherWin.Raise()
             self.window = self.otherWin
             self.otherWin = None
-
-        if self.showTip:
-            self.ShowTip()
-            self.showTip = false
 
 
     #---------------------------------------------

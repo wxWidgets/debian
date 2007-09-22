@@ -4,7 +4,7 @@
 // Author:      Vadim Zeitlin
 // Modified by:
 // Created:     16.05.99
-// RCS-ID:      $Id: winundef.h,v 1.21 2002/03/27 18:43:12 VZ Exp $
+// RCS-ID:      $Id: winundef.h,v 1.21.2.1 2002/09/27 13:58:23 CE Exp $
 // Copyright:   (c) wxWindows team
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -55,6 +55,21 @@
         #else
             return LoadMenuA(instance, name);
         #endif
+    }
+#endif
+
+// FindText
+
+#ifdef FindText
+    #undef FindText
+
+    inline HWND APIENTRY FindText(LPFINDREPLACE lpfindreplace)
+    {
+        #ifdef UNICODE
+            return FindTextW(lpfindreplace);
+        #else
+            return FindTextA(lpfindreplace);
+        #endif // !UNICODE
     }
 #endif
 

@@ -4,7 +4,7 @@
 // Author:      Vadim Zeitlin
 // Modified by:
 // Created:     01.10.99
-// RCS-ID:      $Id: fontenum.cpp,v 1.17 2002/08/11 19:39:22 RR Exp $
+// RCS-ID:      $Id: fontenum.cpp,v 1.17.2.2 2002/11/09 19:27:01 RR Exp $
 // Copyright:   (c) Vadim Zeitlin
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -26,20 +26,23 @@
 #include "wx/string.h"
 #include "wx/regex.h"
 #include "wx/utils.h"
-
+#include "wx/app.h"
 #include "wx/fontmap.h"
 #include "wx/fontenum.h"
 #include "wx/fontutil.h"
 
 // ----------------------------------------------------------------------------
-// GTK 2.0
+// Pango
 // ----------------------------------------------------------------------------
 
+#if wxUSE_PANGO
+
+#include "pango/pango.h"
+
 #ifdef __WXGTK20__
-
-#include "wx/gtk/private.h"
-
+#include "gtk/gtk.h"
 extern GtkWidget *wxGetRootWindow();
+#endif
 
 static int
 cmp_families (const void *a, const void *b)
@@ -63,7 +66,11 @@ bool wxFontEnumerator::EnumerateFacenames(wxFontEncoding encoding,
         PangoFontFamily **families = NULL;
         gint n_families = 0;
         pango_context_list_families ( 
+#ifdef __WXGTK20__
             gtk_widget_get_pango_context( wxGetRootWindow() ),
+#else
+            wxTheApp->GetPangoContext(),
+#endif
             &families, &n_families );
         qsort (families, n_families, sizeof (PangoFontFamily *), cmp_families);
 
@@ -86,7 +93,7 @@ bool wxFontEnumerator::EnumerateEncodings(const wxString& family)
 
 
 #else
-  // GTK 2.0
+  // Pango
 
 #ifdef __VMS__ // Xlib.h for VMS is not (yet) compatible with C++
                // The resulting warnings are switched off here

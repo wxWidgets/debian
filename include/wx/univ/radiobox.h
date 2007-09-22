@@ -4,7 +4,7 @@
 // Author:      Vadim Zeitlin
 // Modified by:
 // Created:     11.09.00
-// RCS-ID:      $Id: radiobox.h,v 1.5 2001/07/04 18:07:14 VZ Exp $
+// RCS-ID:      $Id: radiobox.h,v 1.5.2.1 2003/01/03 12:13:19 JS Exp $
 // Copyright:   (c) 2000 SciTech Software, Inc. (www.scitechsoft.com)
 // Licence:     wxWindows license
 ///////////////////////////////////////////////////////////////////////////////
@@ -83,6 +83,10 @@ public:
     virtual bool Show(bool show = TRUE);
     virtual wxString GetLabel() const;
     virtual void SetLabel(const wxString& label);
+
+#if wxUSE_TOOLTIPS
+    virtual void DoSetToolTip( wxToolTip *tip );
+#endif // wxUSE_TOOLTIPS
 
     // wxUniversal-only methods
 

@@ -4,7 +4,7 @@
 // Author:      Karsten Ballüder and Vadim Zeitlin
 // Modified by:
 // Created:     13.07.01
-// RCS-ID:      $Id: regex.cpp,v 1.8 2001/12/07 22:51:08 VS Exp $
+// RCS-ID:      $Id: regex.cpp,v 1.8.2.1 2002/11/09 00:25:37 VS Exp $
 // Copyright:   (c) 2000 Karsten Ballüder <ballueder@gmx.net>
 //                  2001 Vadim Zeitlin <vadim@wxwindows.org>
 // Licence:     wxWindows licence
@@ -132,7 +132,7 @@ wxString wxRegExImpl::GetErrorMsg(int errorcode) const
 
         (void)regerror(errorcode, &m_RegEx, (char *)buf.data(), len);
 
-        msg = buf.data();
+        msg = wxString(buf.data(), wxConvLibc);
 #else // !Unicode
         (void)regerror(errorcode, &m_RegEx, msg.GetWriteBuf(len), len);
 

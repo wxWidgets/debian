@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     25/01/99
-// RCS-ID:      $Id: server.h,v 1.4 2002/09/01 14:48:16 JS Exp $
+// RCS-ID:      $Id: server.h,v 1.4.2.1 2002/12/15 17:25:08 MBN Exp $
 // Copyright:   (c) Julian Smart
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -45,9 +45,9 @@ public:
     MyConnection();
     ~MyConnection();
 
-    bool OnExecute(const wxString& topic, char *data, int size, wxIPCFormat format);
-    char *OnRequest(const wxString& topic, const wxString& item, int *size, wxIPCFormat format);
-    bool OnPoke(const wxString& topic, const wxString& item, char *data, int size, wxIPCFormat format);
+    bool OnExecute(const wxString& topic, wxChar *data, int size, wxIPCFormat format);
+    wxChar *OnRequest(const wxString& topic, const wxString& item, int *size, wxIPCFormat format);
+    bool OnPoke(const wxString& topic, const wxString& item, wxChar *data, int size, wxIPCFormat format);
     bool OnStartAdvise(const wxString& topic, const wxString& item);
 
     IPCDialogBox *dialog;

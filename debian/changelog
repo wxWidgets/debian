@@ -1,3 +1,34 @@
+wxwindows2.4 (2.4.0) unstable; urgency=low
+
+  * The fingers crossed release.
+  * de.po typo fix.  Closes: #174084
+  * tr.po stable tree patch.  Closes: #174667
+  * Add a manpage for the wxPython scripts pointing to the pydoc docs.
+  * Disabled generation of gtk-univ, it is a rather insensible combination
+    now and should be replaced by x11-univ instead.
+  * There had to be some payoff to all the delays -- a clean gcc3.2
+    transition :-)  This package certainly obsoletes 2.3.3.2 and I'll
+    be seeking to finally have 2.2.9.2 removed as well once Audacity
+    is updated.
+
+ -- Ron Lee <ron@debian.org>  Thu, 19 Dec 2002 00:50:48 -0800
+
+wxwindows2.3 (2.3.4.1) unstable; urgency=low
+
+  * 2.4.0pre1 I guess.
+  * Added -ffunction-sections for broken hppa linker. Closes: #162948
+  * Conflict/Replace wxPython2.2.  Since its nmu these two packages
+    can no longer currently coexist.  Closes: #171258
+  * xrced.py path search fixed.  Closes: #168148, #170748
+  * Actually install all wxUniv headers to the header package.
+    Closes: #168250, #164557
+  * Robin tells me this one should be fixed in 2.3 too, I can't confirm
+    so please reopen if it's not.  Closes: #172390
+  * Added menu items for pycrust/pyshell, thanks Martin.  Closes: #172447
+  * Broken header fixed.  Closes: #168887
+
+ -- Ron Lee <ron@debian.org>  Mon, 18 Nov 2002 18:54:21 -0800
+
 wxwindows2.3 (2.3.3.2) unstable; urgency=low
 
   * The one more for luck release.

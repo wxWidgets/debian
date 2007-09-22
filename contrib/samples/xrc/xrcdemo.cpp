@@ -2,7 +2,7 @@
 // Name:        xrcdemo.cpp
 // Purpose:     XML resources sample: Main application file
 // Author:      Robert O'Connor (rob@medicalmnemonics.com), Vaclav Slavik
-// RCS-ID:      $Id: xrcdemo.cpp,v 1.7 2002/08/16 11:24:46 JS Exp $
+// RCS-ID:      $Id: xrcdemo.cpp,v 1.7.2.1 2002/11/09 23:18:16 VS Exp $
 // Copyright:   (c) Robert O'Connor and Vaclav Slavik
 // Licence:     wxWindows licence
 //-----------------------------------------------------------------------------
@@ -88,27 +88,27 @@ bool MyApp::OnInit()
     // into one giant XRC file if you wanted, but then they become more 
     // diffcult to manage, and harder to reuse in later projects.   
     // The menubar
-    wxXmlResource::Get()->Load("rc/menu.xrc");
+    wxXmlResource::Get()->Load(wxT("rc/menu.xrc"));
     // The toolbar
-    wxXmlResource::Get()->Load("rc/toolbar.xrc");
+    wxXmlResource::Get()->Load(wxT("rc/toolbar.xrc"));
     // Non-derived dialog example
-    wxXmlResource::Get()->Load("rc/basicdlg.xrc");
+    wxXmlResource::Get()->Load(wxT("rc/basicdlg.xrc"));
     // Derived dialog example
-    wxXmlResource::Get()->Load("rc/derivdlg.xrc");
+    wxXmlResource::Get()->Load(wxT("rc/derivdlg.xrc"));
     // Controls property example
-    wxXmlResource::Get()->Load("rc/controls.xrc");
+    wxXmlResource::Get()->Load(wxT("rc/controls.xrc"));
     // Frame example
-    wxXmlResource::Get()->Load("rc/frame.xrc");
+    wxXmlResource::Get()->Load(wxT("rc/frame.xrc"));
     // Uncentered example
-    wxXmlResource::Get()->Load("rc/uncenter.xrc");    
+    wxXmlResource::Get()->Load(wxT("rc/uncenter.xrc"));    
     // Custom class example
-    wxXmlResource::Get()->Load("rc/custclas.xrc");
+    wxXmlResource::Get()->Load(wxT("rc/custclas.xrc"));
     // wxArtProvider example
-    wxXmlResource::Get()->Load("rc/artprov.xrc");
+    wxXmlResource::Get()->Load(wxT("rc/artprov.xrc"));
     // Platform property example
-    wxXmlResource::Get()->Load("rc/platform.xrc");
+    wxXmlResource::Get()->Load(wxT("rc/platform.xrc"));
     // Variable expansion example
-    wxXmlResource::Get()->Load("rc/variable.xrc");
+    wxXmlResource::Get()->Load(wxT("rc/variable.xrc"));
 
     // Make an instance of your derived frame. Passing NULL (the default value 
     // of MyFrame's constructor is NULL) as the frame doesn't have a frame

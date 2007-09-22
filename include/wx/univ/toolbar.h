@@ -4,7 +4,7 @@
 // Author:      Robert Roebling
 // Modified by:
 // Created:     10.09.00
-// RCS-ID:      $Id: toolbar.h,v 1.8 2002/03/30 21:18:39 RR Exp $
+// RCS-ID:      $Id: toolbar.h,v 1.8.2.1 2003/01/03 12:09:48 JS Exp $
 // Copyright:   (c) Robert Roebling
 // Licence:     wxWindows license
 ///////////////////////////////////////////////////////////////////////////////
@@ -98,6 +98,9 @@ protected:
                                long numArg = -1,
                                const wxString& strArg = wxEmptyString);
     virtual wxSize DoGetBestClientSize() const;
+    virtual void DoSetSize(int x, int y,
+                           int width, int height,
+                           int sizeFlags = wxSIZE_AUTO);
     virtual void DoDraw(wxControlRenderer *renderer);
 
     // get the bounding rect for the given tool

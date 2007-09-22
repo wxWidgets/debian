@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     16/04/2000
-// RCS-ID:      $Id: helpchm.cpp,v 1.13 2002/04/23 16:18:26 VS Exp $
+// RCS-ID:      $Id: helpchm.cpp,v 1.13.2.1 2002/11/09 00:20:23 VS Exp $
 // Copyright:   (c) Julian Smart
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -42,10 +42,10 @@
 
 #ifndef UNICODE
     typedef HWND ( WINAPI * HTMLHELP )( HWND, LPCSTR, UINT, DWORD );
-    #define HTMLHELP_NAME "HtmlHelpA"
+    #define HTMLHELP_NAME wxT("HtmlHelpA")
 #else // ANSI
     typedef HWND ( WINAPI * HTMLHELP )( HWND, LPCWSTR, UINT, DWORD );
-    #define HTMLHELP_NAME "HtmlHelpW"
+    #define HTMLHELP_NAME wxT("HtmlHelpW")
 #endif
 
 // dll symbol handle

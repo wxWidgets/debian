@@ -4,7 +4,7 @@
 // Author:      Guilhem Lavaux
 // Modified by:
 // Created:     11/07/98
-// RCS-ID:      $Id: zstream.cpp,v 1.38 2002/05/11 15:08:53 VZ Exp $
+// RCS-ID:      $Id: zstream.cpp,v 1.38.2.1 2002/11/04 19:31:59 VZ Exp $
 // Copyright:   (c) Guilhem Lavaux
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -89,17 +89,17 @@ size_t wxZlibInputStream::OnSysRead(void *buffer, size_t size)
       m_inflate->next_in = m_z_buffer;
       m_inflate->avail_in = m_parent_i_stream->LastRead();
 
-      if (m_parent_i_stream->LastError() != wxStream_NOERROR &&
-          m_parent_i_stream->LastError() != wxStream_EOF)
+      wxStreamError err = m_parent_i_stream->GetLastError();
+      if ( err != wxSTREAM_NO_ERROR && err != wxSTREAM_EOF)
       { 
-        m_lasterror = m_parent_i_stream->LastError();
+        m_lasterror = err;
         return 0; // failed to read anything
       }
 
       if ( m_inflate->avail_in == 0 )
       {
           // EOF
-          m_lasterror = wxStream_EOF;
+          m_lasterror = wxSTREAM_EOF;
           break;
       }
     }
@@ -210,7 +210,7 @@ size_t wxZlibOutputStream::OnSysWrite(const void *buffer, size_t size)
 
     if (m_deflate->avail_out == 0) {
       m_parent_o_stream->Write(m_z_buffer, m_z_size);
-      if (m_parent_o_stream->LastError() != wxStream_NOERROR)
+      if ( !*m_parent_o_stream )
         return (size - m_deflate->avail_in);
 
       m_deflate->next_out = m_z_buffer;

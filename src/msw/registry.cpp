@@ -4,7 +4,7 @@
 // Author:      Vadim Zeitlin
 // Modified by:
 // Created:     03.04.98
-// RCS-ID:      $Id: registry.cpp,v 1.45 2002/01/21 15:52:03 VZ Exp $
+// RCS-ID:      $Id: registry.cpp,v 1.45.2.1 2002/11/09 00:22:38 VS Exp $
 // Copyright:   (c) 1998 Vadim Zeitlin <zeitlin@dptmaths.ens-cachan.fr>
 // Licence:     wxWindows license
 // TODO:        - parsing of registry key names
@@ -303,7 +303,7 @@ wxString wxRegKey::GetName(bool bShortPrefix) const
   wxString str = bShortPrefix ? aStdKeys[key].szShortName
                               : aStdKeys[key].szName;
   if ( !m_strKey.IsEmpty() )
-    str << "\\" << m_strKey;
+    str << _T("\\") << m_strKey;
 
   return str;
 }

@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     01/02/97
-// RCS-ID:      $Id: dcclient.cpp,v 1.31 2002/02/23 21:32:35 VZ Exp $
+// RCS-ID:      $Id: dcclient.cpp,v 1.31.2.1 2002/12/17 23:21:17 JS Exp $
 // Copyright:   (c) Julian Smart and Markus Holzem
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -276,9 +276,10 @@ wxPaintDCInfo *wxPaintDC::FindInCache(size_t *index) const
     size_t nCache = ms_cache.GetCount();
     for ( size_t n = 0; n < nCache; n++ )
     {
-        info = &ms_cache[n];
-        if ( info->hwnd == m_canvas->GetHWND() )
+        wxPaintDCInfo *info1 = &ms_cache[n];
+        if ( info1->hwnd == m_canvas->GetHWND() )
         {
+            info = info1;
             if ( index )
                 *index = n;
             break;

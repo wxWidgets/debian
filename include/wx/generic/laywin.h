@@ -7,7 +7,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     04/01/98
-// RCS-ID:      $Id: laywin.h,v 1.16 2002/08/31 11:29:12 GD Exp $
+// RCS-ID:      $Id: laywin.h,v 1.16.2.1 2002/10/29 21:47:27 RR Exp $
 // Copyright:   (c) Julian Smart
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -61,9 +61,7 @@ enum wxLayoutAlignment
 
 class WXDLLEXPORT wxQueryLayoutInfoEvent: public wxEvent
 {
-DECLARE_DYNAMIC_CLASS(wxQueryLayoutInfoEvent)
 public:
-
     wxQueryLayoutInfoEvent(wxWindowID id = 0)
     {
         SetEventType(wxEVT_QUERY_LAYOUT_INFO);
@@ -99,7 +97,9 @@ protected:
     wxSize                  m_size;
     wxLayoutOrientation     m_orientation;
     wxLayoutAlignment       m_alignment;
-
+    
+private:
+    DECLARE_DYNAMIC_CLASS(wxQueryLayoutInfoEvent)
 };
 
 typedef void (wxEvtHandler::*wxQueryLayoutInfoEventFunction)(wxQueryLayoutInfoEvent&);
@@ -113,7 +113,6 @@ typedef void (wxEvtHandler::*wxQueryLayoutInfoEventFunction)(wxQueryLayoutInfoEv
 
 class WXDLLEXPORT wxCalculateLayoutEvent: public wxEvent
 {
-DECLARE_DYNAMIC_CLASS(wxCalculateLayoutEvent)
 public:
     wxCalculateLayoutEvent(wxWindowID id = 0)
     {
@@ -135,6 +134,9 @@ public:
 protected:
     int                     m_flags;
     wxRect                  m_rect;
+    
+private:
+    DECLARE_DYNAMIC_CLASS(wxCalculateLayoutEvent)
 };
 
 typedef void (wxEvtHandler::*wxCalculateLayoutEventFunction)(wxCalculateLayoutEvent&);
@@ -149,7 +151,6 @@ typedef void (wxEvtHandler::*wxCalculateLayoutEventFunction)(wxCalculateLayoutEv
 // an IDE-style interface.
 class WXDLLEXPORT wxSashLayoutWindow: public wxSashWindow
 {
-    DECLARE_CLASS(wxSashLayoutWindow)
 public:
     wxSashLayoutWindow()
     {
@@ -157,13 +158,13 @@ public:
     }
 
     wxSashLayoutWindow(wxWindow *parent, wxWindowID id = -1, const wxPoint& pos = wxDefaultPosition,
-        const wxSize& size = wxDefaultSize, long style = wxSW_3D|wxCLIP_CHILDREN, const wxString& name = "layoutWindow")
+        const wxSize& size = wxDefaultSize, long style = wxSW_3D|wxCLIP_CHILDREN, const wxString& name = wxT("layoutWindow"))
     {
         Create(parent, id, pos, size, style, name);
     }
 
     bool Create(wxWindow *parent, wxWindowID id = -1, const wxPoint& pos = wxDefaultPosition,
-        const wxSize& size = wxDefaultSize, long style = wxSW_3D|wxCLIP_CHILDREN, const wxString& name = "layoutWindow");
+        const wxSize& size = wxDefaultSize, long style = wxSW_3D|wxCLIP_CHILDREN, const wxString& name = wxT("layoutWindow"));
 
 // Accessors
     inline wxLayoutAlignment GetAlignment() const { return m_alignment; };
@@ -190,7 +191,9 @@ private:
     wxLayoutOrientation         m_orientation;
     wxSize                      m_defaultSize;
 
-DECLARE_EVENT_TABLE()
+private:
+    DECLARE_CLASS(wxSashLayoutWindow)
+    DECLARE_EVENT_TABLE()
 };
 
 #endif // wxUSE_SASH

@@ -2,7 +2,7 @@
 // Name:        wx/gtk/button.h
 // Purpose:
 // Author:      Robert Roebling
-// Id:          $Id: button.h,v 1.21 2002/09/07 12:28:46 GD Exp $
+// Id:          $Id: button.h,v 1.21.2.1 2002/11/04 20:13:21 RR Exp $
 // Copyright:   (c) 1998 Robert Roebling
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -65,6 +65,7 @@ public:
     // --------------
 
     void ApplyWidgetStyle();
+    bool IsOwnGtkWindow( GdkWindow *window );
 
 protected:
     virtual wxSize DoGetBestSize() const;

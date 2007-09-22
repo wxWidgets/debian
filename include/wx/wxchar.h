@@ -4,7 +4,7 @@
 // Author:      Joel Farley, Ove Kåven
 // Modified by: Vadim Zeitlin, Robert Roebling
 // Created:     1998/06/12
-// RCS-ID:      $Id: wxchar.h,v 1.100.2.1 2002/09/20 23:00:32 VZ Exp $
+// RCS-ID:      $Id: wxchar.h,v 1.100.2.4 2002/11/17 10:06:08 MBN Exp $
 // Copyright:   (c) 1998-2002 wxWindows dev team
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -81,8 +81,9 @@
 #include <stdarg.h>
 
 // non Unix compilers which do have wchar.h (but not tchar.h which is included
-// below and which includes wchar.h anyhow)
-#if defined(__MWERKS__) || defined(__VISAGECPP__)
+// below and which includes wchar.h anyhow).
+// Actually MinGW has tchar.h, but it does not include wchar.h
+#if defined(__MWERKS__) || defined(__VISAGECPP__) || defined(__MINGW32__)
     #ifndef HAVE_WCHAR_H
         #define HAVE_WCHAR_H
     #endif
@@ -90,7 +91,18 @@
 
 #if wxUSE_WCHAR_T
     #ifdef HAVE_WCHAR_H
-        #include <wchar.h>
+        // the current (as of Nov 2002) version of cygwin has a bug in its
+        // wchar.h -- there is no extern "C" around the declarations in it and
+        // this results in linking errors later; also, at least on some
+        // Cygwin versions, wchar.h requires sys/types.h
+        #ifdef __CYGWIN__
+            #include <sys/types.h>
+            extern "C" {
+        #endif // Cygwin
+                #include <wchar.h>
+        #ifdef __CYGWIN__
+            }
+        #endif // Cygwin
     #elif defined(HAVE_WCSTR_H)
         // old compilers have relevant declarations here
         #include <wcstr.h>

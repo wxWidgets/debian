@@ -4,7 +4,7 @@
 // Author:      Vadim Zeitlin
 // Modified by:
 // Created:     23.09.98
-// RCS-ID:      $Id: mimetype.cpp,v 1.15.2.1 2002/09/19 18:23:34 JS Exp $
+// RCS-ID:      $Id: mimetype.cpp,v 1.15.2.2 2002/11/09 00:22:04 VS Exp $
 // Copyright:   (c) 1998 Vadim Zeitlin <zeitlin@dptmaths.ens-cachan.fr>
 // Licence:     wxWindows license (part of wxExtra library)
 /////////////////////////////////////////////////////////////////////////////
@@ -88,7 +88,7 @@ void wxFileTypeImpl::Init(const wxString& strFileType, const wxString& ext)
 
     m_strFileType = strFileType;
     if ( !strFileType ) {
-        m_strFileType = m_ext.AfterFirst('.') + "_auto_file";
+        m_strFileType = m_ext.AfterFirst('.') + _T("_auto_file");
     }
 }
 

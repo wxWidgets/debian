@@ -28,7 +28,7 @@ class SimpleGrid(wxGrid): ##, wxGridAutoEditMixin):
         self.SetCellBackgroundColour(2, 2, wxCYAN)
         self.SetReadOnly(3, 3, true)
 
-        self.SetCellEditor(5, 0, wxGridCellNumberEditor())
+        self.SetCellEditor(5, 0, wxGridCellNumberEditor(1,1000))
         self.SetCellValue(5, 0, "123")
         self.SetCellEditor(6, 0, wxGridCellFloatEditor())
         self.SetCellValue(6, 0, "123.34")
@@ -57,7 +57,7 @@ class SimpleGrid(wxGrid): ##, wxGridAutoEditMixin):
         self.SetCellValue( 9, 1, "This default cell will overflow into neighboring cells, but not if you turn overflow off.");
         self.SetCellSize(11, 1, 3, 3);
         self.SetCellAlignment(11, 1, wxALIGN_CENTRE, wxALIGN_CENTRE);
-        self.SetCellValue(11, 1, "This cell is set span 3 rows and 3 columns");
+        self.SetCellValue(11, 1, "This cell is set to span 3 rows and 3 columns");
 
 
 

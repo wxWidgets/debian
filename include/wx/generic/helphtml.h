@@ -3,7 +3,7 @@
  *                                                                  *
  * (C) 1999 by Karsten Ballüder (Ballueder@usa.net)                 *
  *                                                                  *
- * $Id: helphtml.h,v 1.12 2002/08/31 11:29:12 GD Exp $
+ * $Id: helphtml.h,v 1.12.2.1 2002/10/29 21:47:26 RR Exp $
  *******************************************************************/
 
 #ifndef __WX_HELPHTML_H_
@@ -86,7 +86,7 @@ DECLARE_ABSTRACT_CLASS(wxHTMLHelpControllerBase)
        @file Name of help directory.
        @return true on success
    */
-   virtual bool LoadFile(const wxString& file = "");
+   virtual bool LoadFile(const wxString& file = wxT(""));
 
    /** Display list of all help entries.
        @return true on success

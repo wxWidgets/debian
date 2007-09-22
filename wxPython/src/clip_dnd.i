@@ -5,7 +5,7 @@
 // Author:      Robin Dunn
 //
 // Created:     31-October-1999
-// RCS-ID:      $Id: clip_dnd.i,v 1.19 2002/06/15 05:51:11 RD Exp $
+// RCS-ID:      $Id: clip_dnd.i,v 1.19.2.2 2002/12/18 06:15:27 RD Exp $
 // Copyright:   (c) 1999 by Total Control Software
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -111,10 +111,13 @@ public:
 
     wxDataFormat GetPreferredFormat(Direction dir = wxDataObject::Get);
     size_t GetFormatCount(Direction dir = wxDataObject::Get);
+
+    // TODO:  Fix these two to be usable from wxPython.
     void GetAllFormats(wxDataFormat *formats,
                        Direction dir = wxDataObject::Get);
-    size_t GetDataSize(const wxDataFormat& format);
     bool GetDataHere(const wxDataFormat& format, void *buf);
+
+    size_t GetDataSize(const wxDataFormat& format);
     bool SetData(const wxDataFormat& format,
                  size_t len, const void * buf);
     bool IsSupportedFormat(const wxDataFormat& format);
@@ -288,7 +291,7 @@ wxBitmap wxPyBitmapDataObject::GetBitmap() {
 void wxPyBitmapDataObject::SetBitmap(const wxBitmap& bitmap) {
     wxPyBeginBlockThreads();
     if (m_myInst.findCallback("SetBitmap")) {
-        PyObject* bo = wxPyConstructObject((void*)&bitmap, "wxBitmap");
+        PyObject* bo = wxPyConstructObject((void*)&bitmap, wxT("wxBitmap"));
         m_myInst.callCallback(Py_BuildValue("(O)", bo));
         Py_DECREF(bo);
     }

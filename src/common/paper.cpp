@@ -4,7 +4,7 @@
 // Author:      Julian Smart 
 // Modified by:
 // Created:     04/01/98
-// RCS-ID:      $Id: paper.cpp,v 1.5 2000/07/15 19:50:27 cvsuser Exp $
+// RCS-ID:      $Id: paper.cpp,v 1.5.4.1 2002/11/03 19:08:57 RR Exp $
 // Copyright:   (c) Julian Smart
 // Licence:   	wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -59,7 +59,7 @@ wxPrintPaperType::wxPrintPaperType()
 {
     m_paperId = wxPAPER_NONE;
     m_platformId = 0;
-    m_paperName = "";
+    m_paperName = wxT("");
     m_width = 0;
     m_height = 0;
 }

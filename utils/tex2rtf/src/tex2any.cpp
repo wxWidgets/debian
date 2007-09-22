@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     01/01/99
-// RCS-ID:      $Id: tex2any.cpp,v 1.22 2002/07/14 13:21:23 GD Exp $
+// RCS-ID:      $Id: tex2any.cpp,v 1.22.2.1 2002/10/20 13:46:38 VS Exp $
 // Copyright:   (c) Julian Smart
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -146,7 +146,7 @@ char            *followedLinkColourString = NULL;
 bool            combineSubSections = FALSE;
 bool            htmlWorkshopFiles = FALSE;
 bool            ignoreBadRefs = FALSE;
-char			*htmlFaceName = copystring("Times New Roman");
+char			*htmlFaceName = NULL;
 
 extern int passNumber;
 
@@ -750,7 +750,7 @@ bool read_a_line(char *buf)
     fileNameStr.Replace("\\", "");
 
     // Ignore some types of input files (e.g. macro definition files)
-    char *fileOnly = FileNameFromPath((char*) (const char*) fileNameStr);
+    char *fileOnly = wxFileNameFromPath((char*) (const char*) fileNameStr);
     currentFileName = fileOnly;
     if (IgnorableInputFiles.Member(fileOnly))
       return read_a_line(buf);

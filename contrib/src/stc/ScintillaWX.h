@@ -9,7 +9,7 @@
 // Author:      Robin Dunn
 //
 // Created:     13-Jan-2000
-// RCS-ID:      $Id: ScintillaWX.h,v 1.11 2002/07/19 21:09:39 RD Exp $
+// RCS-ID:      $Id: ScintillaWX.h,v 1.11.2.3 2002/12/19 18:27:21 RD Exp $
 // Copyright:   (c) 2000 by Total Control Software
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -122,9 +122,10 @@ public:
     void DoLoseFocus();
     void DoGainFocus();
     void DoSysColourChange();
-    void DoButtonDown(Point pt, unsigned int curTime, bool shift, bool ctrl, bool alt);
-    void DoButtonUp(Point pt, unsigned int curTime, bool ctrl);
-    void DoButtonMove(Point pt);
+    void DoLeftButtonDown(Point pt, unsigned int curTime, bool shift, bool ctrl, bool alt);
+    void DoLeftButtonUp(Point pt, unsigned int curTime, bool ctrl);
+    void DoLeftButtonMove(Point pt);
+    void DoMiddleButtonUp(Point pt);
     void DoMouseWheel(int rotation, int delta, int linesPerAction, int ctrlDown, bool isPageScroll);
     void DoAddChar(int key);
     int  DoKeyDown(int key, bool shift, bool ctrl, bool alt, bool* consumed);

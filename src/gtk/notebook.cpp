@@ -2,7 +2,7 @@
 // Name:        notebook.cpp
 // Purpose:
 // Author:      Robert Roebling
-// Id:          $Id: notebook.cpp,v 1.88 2002/08/08 10:11:32 JS Exp $
+// Id:          $Id: notebook.cpp,v 1.88.2.1 2002/11/04 19:06:04 VZ Exp $
 // Copyright:   (c) 1998 Robert Roebling, Vadim Zeitlin
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -86,14 +86,12 @@ static void gtk_notebook_page_change_callback(GtkNotebook *WXUNUSED(widget),
                                               gint page,
                                               wxNotebook *notebook )
 {
-    static bool s_inPageChange = FALSE;
-
     // are you trying to call SetSelection() from a notebook event handler?
     // you shouldn't!
-    wxCHECK_RET( !s_inPageChange,
+    wxCHECK_RET( !notebook->m_inSwitchPage,
                  _T("gtk_notebook_page_change_callback reentered") );
 
-    s_inPageChange = TRUE;
+    notebook->m_inSwitchPage = TRUE;
     if (g_isIdle)
         wxapp_install_idle_handler();
 
@@ -123,7 +121,7 @@ static void gtk_notebook_page_change_callback(GtkNotebook *WXUNUSED(widget),
         notebook->GetEventHandler()->ProcessEvent( eventChanged );
     }
 
-    s_inPageChange = FALSE;
+    notebook->m_inSwitchPage = FALSE;
 }
 
 //-----------------------------------------------------------------------------
@@ -236,6 +234,8 @@ END_EVENT_TABLE()
 void wxNotebook::Init()
 {
     m_padding = 0;
+    m_inSwitchPage = FALSE;
+
     m_imageList = (wxImageList *) NULL;
     m_pagesData.DeleteContents( TRUE );
     m_selection = -1;

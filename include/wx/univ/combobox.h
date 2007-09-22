@@ -4,7 +4,7 @@
 // Author:      Vadim Zeitlin
 // Modified by:
 // Created:     30.08.00
-// RCS-ID:      $Id: combobox.h,v 1.12 2001/11/21 21:42:44 VZ Exp $
+// RCS-ID:      $Id: combobox.h,v 1.12.2.1 2003/01/03 12:13:19 JS Exp $
 // Copyright:   (c) 2000 SciTech Software, Inc. (www.scitechsoft.com)
 // Licence:     wxWindows licence
 ///////////////////////////////////////////////////////////////////////////////
@@ -159,6 +159,10 @@ public:
     // forward these functions to all subcontrols
     virtual bool Enable(bool enable = TRUE);
     virtual bool Show(bool show = TRUE);
+
+#if wxUSE_TOOLTIPS
+    virtual void DoSetToolTip( wxToolTip *tip );
+#endif // wxUSE_TOOLTIPS
 
 protected:
     // override the base class virtuals involved into geometry calculations

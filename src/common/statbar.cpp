@@ -4,7 +4,7 @@
 // Author:      Vadim Zeitlin
 // Modified by:
 // Created:     14.10.01
-// RCS-ID:      $Id: statbar.cpp,v 1.5 2002/05/02 20:07:10 MBN Exp $
+// RCS-ID:      $Id: statbar.cpp,v 1.5.2.1 2002/12/17 22:31:34 JS Exp $
 // Copyright:   (c) 2001 Vadim Zeitlin <zeitlin@dptmaths.ens-cachan.fr>
 // License:     wxWindows license
 ///////////////////////////////////////////////////////////////////////////////
@@ -249,7 +249,11 @@ void wxStatusBarBase::FreeStacks()
 void wxStatusBarBase::PushStatusText(const wxString& text, int number)
 {
     wxListString* st = GetOrCreateStatusStack(number);
-    st->Insert(new wxString(GetStatusText(number)));
+    // Temporary variables used here to avoid an internal compiler error
+    // in VC++ 6 in _AFXDLL mode
+    wxString statusText(GetStatusText(number));
+    wxString* s = new wxString(statusText);
+    st->Insert(s);
     SetStatusText(text, number);
 }
 

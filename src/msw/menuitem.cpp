@@ -4,7 +4,7 @@
 // Author:      Vadim Zeitlin
 // Modified by:
 // Created:     11.11.97
-// RCS-ID:      $Id: menuitem.cpp,v 1.42 2002/05/16 19:26:26 VZ Exp $
+// RCS-ID:      $Id: menuitem.cpp,v 1.42.2.1 2002/12/09 10:13:42 JS Exp $
 // Copyright:   (c) 1998 Vadim Zeitlin <zeitlin@dptmaths.ens-cachan.fr>
 // Licence:     wxWindows license
 ///////////////////////////////////////////////////////////////////////////////
@@ -104,7 +104,7 @@ wxMenuItem::wxMenuItem(wxMenu *parentMenu,
           : wxMenuItemBase(parentMenu, id, text, help,
                            isCheckable ? wxITEM_CHECK : wxITEM_NORMAL, subMenu)
 #if wxUSE_OWNER_DRAWN
-            , wxOwnerDrawn(text, isCheckable)
+           , wxOwnerDrawn(text, isCheckable)
 #endif // owner drawn
 {
     Init();
@@ -300,6 +300,10 @@ void wxMenuItem::SetText(const wxString& text)
 
     wxMenuItemBase::SetText(text);
     OWNER_DRAWN_ONLY( wxOwnerDrawn::SetName(text) );
+#if wxUSE_OWNER_DRAWN
+    // tell the owner drawing code to to show the accel string as well
+    SetAccelString(text.AfterFirst(_T('\t')));
+#endif
 
     HMENU hMenu = GetHMenuOf(m_parentMenu);
     wxCHECK_RET( hMenu, wxT("menuitem without menu") );

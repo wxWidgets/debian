@@ -4,7 +4,7 @@
 // Author:      Vadim Zeitiln
 // Modified by:
 // Created:     01/02/97
-// RCS-ID:      $Id: colordlg.h,v 1.12 2002/04/24 19:53:23 SC Exp $
+// RCS-ID:      $Id: colordlg.h,v 1.12.2.1 2002/10/29 00:02:07 VZ Exp $
 // Copyright:   (c) wxWindows team
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -14,9 +14,9 @@
 
 #if wxUSE_COLOURDLG
 
-#if defined(__WXMSW__)
+#if defined(__WXMSW__) && !defined(__WXUNIVERSAL__)
     #include "wx/msw/colordlg.h"
-#elif defined(__WXMAC__)
+#elif defined(__WXMAC__) && !defined(__WXUNIVERSAL__)
     #include "wx/mac/colordlg.h"
 #else
     #include "wx/generic/colrdlgg.h"

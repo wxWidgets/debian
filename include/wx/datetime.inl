@@ -7,7 +7,7 @@
 //              dependencies (and hence the rebuild time) in debug builds.
 // Modified by:
 // Created:     30.11.99
-// RCS-ID:      $Id: datetime.inl,v 1.22 2001/12/23 15:52:28 RR Exp $
+// RCS-ID:      $Id: datetime.inl,v 1.22.2.1 2002/10/24 16:10:56 VZ Exp $
 // Copyright:   (c) 1999 Vadim Zeitlin <zeitlin@dptmaths.ens-cachan.fr>
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -156,7 +156,8 @@ inline bool wxDateTime::SetToLastWeekDay(WeekDay weekday,
     return SetToWeekDay(weekday, -1, month, year);
 }
 
-inline wxDateTime wxDateTime::GetWeekDayInSameWeek(WeekDay weekday) const
+inline wxDateTime wxDateTime::GetWeekDayInSameWeek(WeekDay weekday,
+                                                   WeekFlags flags) const
 {
     MODIFY_AND_RETURN( SetToWeekDayInSameWeek(weekday) );
 }
@@ -191,11 +192,12 @@ inline wxDateTime wxDateTime::GetLastWeekDay(WeekDay weekday,
 }
 
 inline wxDateTime wxDateTime::GetWeek(wxDateTime_t numWeek,
-                                      WeekDay weekday) const
+                                      WeekDay weekday,
+                                      WeekFlags flags) const
 {
     wxDateTime dt(*this);
 
-    return dt.SetToTheWeek(numWeek, weekday) ? dt : wxInvalidDateTime;
+    return dt.SetToTheWeek(numWeek, weekday, flags) ? dt : wxInvalidDateTime;
 }
 
 inline wxDateTime wxDateTime::GetLastMonthDay(Month month, int year) const

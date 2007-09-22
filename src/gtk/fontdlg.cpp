@@ -2,7 +2,7 @@
 // Name:        gtk/fontdlg.cpp
 // Purpose:     wxFontDialog
 // Author:      Robert Roebling
-// Id:          $Id: fontdlg.cpp,v 1.18 2002/08/06 16:41:31 RR Exp $
+// Id:          $Id: fontdlg.cpp,v 1.18.2.1 2002/10/29 21:48:04 RR Exp $
 // Copyright:   (c) 1998 Robert Roebling
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -77,7 +77,7 @@ void gtk_fontdialog_ok_callback( GtkWidget *WXUNUSED(widget), wxFontDialog *dial
     
     // printf( "font %s\n", fontname );
 
-    dialog->SetChosenFont(fontname);
+    dialog->SetChosenFont( fontname);
 
     g_free( fontname );
 
@@ -181,7 +181,7 @@ wxFontDialog::~wxFontDialog()
 
 void wxFontDialog::SetChosenFont(const char *fontname)
 {
-    m_fontData.SetChosenFont(wxFont(fontname));
+    m_fontData.SetChosenFont(wxFont( wxString::FromAscii(fontname) ));
 }
 
 #endif // wxUSE_FONTDLG

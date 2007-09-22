@@ -4,7 +4,7 @@
 // Author:      Vadim Zeitlin
 // Modified by:
 // Created:     06.08.01
-// RCS-ID:      $Id: containr.cpp,v 1.14.2.1 2002/09/23 15:25:55 VZ Exp $
+// RCS-ID:      $Id: containr.cpp,v 1.14.2.2 2002/10/29 00:34:15 VZ Exp $
 // Copyright:   (c) 2001 Vadim Zeitlin <zeitlin@dptmaths.ens-cachan.fr>
 // License:     wxWindows license
 ///////////////////////////////////////////////////////////////////////////////
@@ -247,10 +247,12 @@ void wxControlContainer::HandleOnNavigationKey( wxNavigationKeyEvent& event )
             event.SetEventObject(m_winParent);
             if ( !child->GetEventHandler()->ProcessEvent(event) )
             {
+                // set it first in case SetFocusFromKbd() results in focus
+                // change too
+                m_winLastFocused = child;
+
                 // everything is simple: just give focus to it
                 child->SetFocusFromKbd();
-
-                m_winLastFocused = child;
             }
             //else: the child manages its focus itself
 

@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     25/01/99
-// RCS-ID:      $Id: client.h,v 1.4 2002/09/01 14:48:16 JS Exp $
+// RCS-ID:      $Id: client.h,v 1.4.2.1 2002/12/15 17:25:07 MBN Exp $
 // Copyright:   (c) Julian Smart
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -37,7 +37,7 @@ private:
 class MyConnection: public wxConnection
 {
 public:
-    bool OnAdvise(const wxString& topic, const wxString& item, char *data, int size, wxIPCFormat format);
+    bool OnAdvise(const wxString& topic, const wxString& item, wxChar *data, int size, wxIPCFormat format);
     bool OnDisconnect();
 };
 

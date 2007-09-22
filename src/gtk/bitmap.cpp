@@ -2,7 +2,7 @@
 // Name:        bitmap.cpp
 // Purpose:
 // Author:      Robert Roebling
-// RCS-ID:      $Id: bitmap.cpp,v 1.64 2002/05/07 21:58:26 GD Exp $
+// RCS-ID:      $Id: bitmap.cpp,v 1.64.2.1 2002/11/09 00:48:42 VS Exp $
 // Copyright:   (c) 1998 Robert Roebling
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -344,7 +344,7 @@ bool wxBitmap::CreateFromImage( const wxImage& image, int depth )
     m_refData = new wxBitmapRefData();
 
     // ------
-    // convertion to mono bitmap:
+    // conversion to mono bitmap:
     // ------
     if (depth == 1)
     {
@@ -440,7 +440,7 @@ bool wxBitmap::CreateFromImage( const wxImage& image, int depth )
     }
 
     // ------
-    // convertion to colour bitmap:
+    // conversion to colour bitmap:
     // ------
     else
     {

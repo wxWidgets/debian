@@ -3,7 +3,7 @@
 // Purpose:     wxNotebook class
 // Author:      Robert Roebling
 // Modified by:
-// RCS-ID:      $Id: notebook.h,v 1.42 2002/09/07 12:28:46 GD Exp $
+// RCS-ID:      $Id: notebook.h,v 1.42.2.1 2002/11/04 19:06:00 VZ Exp $
 // Copyright:   (c) Julian Smart and Robert Roebling
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -122,12 +122,15 @@ public:
     // selection internally instead of querying the notebook for it
     int m_selection;
 
+    // flag set to TRUE while we're inside "switch_page" callback
+    bool m_inSwitchPage;
+
 protected:
     // remove one page from the notebook but do not destroy it
     virtual wxNotebookPage *DoRemovePage(int nPage);
 
 private:
-
+    // the padding set by SetPadding()
     int m_padding;
 
     DECLARE_DYNAMIC_CLASS(wxNotebook)

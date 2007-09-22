@@ -4,7 +4,7 @@
 // Author:      Vadim Zeitlin
 // Modified by:
 // Created:     22.07.99
-// RCS-ID:      $Id: spinctrl.cpp,v 1.21 2002/08/30 01:00:04 VZ Exp $
+// RCS-ID:      $Id: spinctrl.cpp,v 1.21.2.1 2002/12/19 23:13:53 JS Exp $
 // Copyright:   (c) Vadim Zeitlin
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -214,6 +214,10 @@ bool wxSpinCtrl::Create(wxWindow *parent,
     // know whether this is a horizontal or vertical control (we're always
     // vertical)
     style |= wxSP_VERTICAL;
+
+    if ( (style & wxBORDER_MASK) == wxBORDER_DEFAULT )
+        style |= wxBORDER_SUNKEN;
+
     SetWindowStyle(style);
 
     // calculate the sizes: the size given is the toal size for both controls

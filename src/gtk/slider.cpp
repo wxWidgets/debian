@@ -2,7 +2,7 @@
 // Name:        gtk/slider.cpp
 // Purpose:
 // Author:      Robert Roebling
-// Id:          $Id: slider.cpp,v 1.46 2002/08/08 09:24:38 JS Exp $
+// Id:          $Id: slider.cpp,v 1.46.2.1 2002/11/20 17:45:14 RR Exp $
 // Copyright:   (c) 1998 Robert Roebling
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -255,14 +255,15 @@ int wxSlider::GetLineSize() const
 bool wxSlider::IsOwnGtkWindow( GdkWindow *window )
 {
     GtkRange *range = GTK_RANGE(m_widget);
+#ifdef __WXGTK20__
+    return (range->event_window == window);
+#else
     return ( (window == GTK_WIDGET(range)->window)
-#ifndef __WXGTK20__
                 || (window == range->trough)
                 || (window == range->slider)
                 || (window == range->step_forw)
-                || (window == range->step_back)
-#endif // GTK+ 1.x
-           );
+                || (window == range->step_back) );
+#endif
 }
 
 void wxSlider::ApplyWidgetStyle()

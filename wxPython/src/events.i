@@ -5,7 +5,7 @@
 // Author:      Robin Dunn
 //
 // Created:     5/24/98
-// RCS-ID:      $Id: events.i,v 1.22 2002/07/06 00:48:25 RD Exp $
+// RCS-ID:      $Id: events.i,v 1.22.2.1 2003/01/02 22:24:44 RD Exp $
 // Copyright:   (c) 1998 by Total Control Software
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -407,7 +407,7 @@ public:
 
             for (int i=0; i<count; i++) {
 #if wxUSE_UNICODE
-                PyList_SetItem(list, i, PyUnicode_FromUnicode(files[i], files[i].Len()));
+                PyList_SetItem(list, i, PyUnicode_FromWideChar(files[i], files[i].Len()));
 #else
                 PyList_SetItem(list, i, PyString_FromString((const char*)files[i]));
 #endif

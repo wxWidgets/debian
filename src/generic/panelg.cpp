@@ -4,7 +4,7 @@
 // Author:      Julian Smart, Robert Roebling, Vadim Zeitlin
 // Modified by:
 // Created:     04/01/98
-// RCS-ID:      $Id: panelg.cpp,v 1.56 2002/08/30 13:39:01 DW Exp $
+// RCS-ID:      $Id: panelg.cpp,v 1.56.2.1 2002/09/28 07:01:33 RL Exp $
 // Copyright:   (c) Julian Smart and Markus Holzem
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -107,22 +107,20 @@ void wxPanel::OnSize(wxSizeEvent& event)
 #if wxUSE_CONSTRAINTS
     if (GetAutoLayout())
         Layout();
-#endif // wxUSE_CONSTRAINTS
-
-    //
-    // Need to properly move child windows under OS/2
-    //
 #if defined(__WXPM__)
     else
     {
+        // Need to properly move child windows under OS/2
+
         PSWP                        pWinSwp = GetSwp();
 
         if (pWinSwp->cx == 0 && pWinSwp->cy == 0 && pWinSwp->fl == 0)
-            //
+        {
             // Uninitialized
-            //
+
             ::WinQueryWindowPos(GetHWND(), pWinSwp);
-        else
+	}
+	else
         {
             SWP                     vSwp;
             int                     nYDiff;
@@ -135,6 +133,8 @@ void wxPanel::OnSize(wxSizeEvent& event)
         }
     }
 #endif
+#endif // wxUSE_CONSTRAINTS
+
     event.Skip();
 }
 

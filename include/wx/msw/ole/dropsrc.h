@@ -4,7 +4,7 @@
 // Author:      Vadim Zeitlin
 // Modified by:
 // Created:     06.03.98
-// RCS-ID:      $Id: dropsrc.h,v 1.15 2002/04/28 14:30:53 VZ Exp $
+// RCS-ID:      $Id: dropsrc.h,v 1.15.2.1 2002/12/13 21:36:19 MBN Exp $
 // Copyright:   (c) 1998 Vadim Zeitlin <zeitlin@dptmaths.ens-cachan.fr>
 // Licence:     wxWindows licence
 ///////////////////////////////////////////////////////////////////////////////
@@ -36,7 +36,7 @@ class WXDLLEXPORT wxWindow;
 // the cursor 'name' from the resources under MSW, but will expand to
 // something else under GTK. If you don't use it, you will have to use #ifdef
 // in the application code.
-#define wxDROP_ICON(name)   wxCursor(#name)
+#define wxDROP_ICON(name)   wxCursor(_T(#name))
 
 // ----------------------------------------------------------------------------
 // wxDropSource is used to start the drag-&-drop operation on associated

@@ -7,7 +7,7 @@
 # Author:      Robin Dunn
 #
 # Created:     8-July-2002
-# RCS-ID:      $Id: stattext.py,v 1.2 2002/08/16 19:54:03 RD Exp $
+# RCS-ID:      $Id: stattext.py,v 1.2.2.5 2003/01/04 04:16:21 RD Exp $
 # Copyright:   (c) 2002 by Total Control Software
 # Licence:     wxWindows license
 #----------------------------------------------------------------------
@@ -16,7 +16,6 @@
 """
 
 from wxPython.wx import *
-import string
 
 #----------------------------------------------------------------------
 
@@ -65,6 +64,8 @@ class wxGenStaticText(wxPyControl):
         style = self.GetWindowStyleFlag()
         if not style & wxST_NO_AUTORESIZE:
             self.SetSize(self.GetBestSize())
+        self.Refresh()
+
 
     def SetFont(self, font):
         """
@@ -75,6 +76,7 @@ class wxGenStaticText(wxPyControl):
         style = self.GetWindowStyleFlag()
         if not style & wxST_NO_AUTORESIZE:
             self.SetSize(self.GetBestSize())
+        self.Refresh()
 
 
     def DoGetBestSize(self):
@@ -98,9 +100,13 @@ class wxGenStaticText(wxPyControl):
 
 
     def OnPaint(self, event):
-        width, height = self.GetClientSize()
         dc = wxBufferedPaintDC(self)
+        #dc = wxPaintDC(self)
+        width, height = self.GetClientSize()
+        if not width or not height:
+            return
         dc.SetBackground(wxBrush(self.GetBackgroundColour(), wxSOLID))
+        dc.SetTextForeground(self.GetForegroundColour())
         dc.Clear()
         dc.SetFont(self.GetFont())
         label = self.GetLabel()

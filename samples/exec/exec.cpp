@@ -4,7 +4,7 @@
 // Author:      Vadim Zeitlin
 // Modified by:
 // Created:     15.01.00
-// RCS-ID:      $Id: exec.cpp,v 1.21 2002/08/31 22:30:49 GD Exp $
+// RCS-ID:      $Id: exec.cpp,v 1.21.2.2 2002/12/14 18:19:48 MBN Exp $
 // Copyright:   (c) Vadim Zeitlin
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -386,6 +386,10 @@ bool MyApp::OnInit()
 // ----------------------------------------------------------------------------
 // main frame
 // ----------------------------------------------------------------------------
+
+#ifdef __VISUALC__
+#pragma warning(disable: 4355) // this used in base member initializer list
+#endif
 
 // frame constructor
 MyFrame::MyFrame(const wxString& title, const wxPoint& pos, const wxSize& size)
@@ -843,7 +847,7 @@ void MyFrame::OnDDEExec(wxCommandEvent& WXUNUSED(event))
         return;
 
     wxDDEClient client;
-    wxConnectionBase *conn = client.MakeConnection("", m_server, m_topic);
+    wxConnectionBase *conn = client.MakeConnection(_T(""), m_server, m_topic);
     if ( !conn )
     {
         wxLogError(_T("Failed to connect to the DDE server '%s'."),
@@ -869,7 +873,7 @@ void MyFrame::OnDDERequest(wxCommandEvent& WXUNUSED(event))
         return;
 
     wxDDEClient client;
-    wxConnectionBase *conn = client.MakeConnection("", m_server, m_topic);
+    wxConnectionBase *conn = client.MakeConnection(_T(""), m_server, m_topic);
     if ( !conn )
     {
         wxLogError(_T("Failed to connect to the DDE server '%s'."),

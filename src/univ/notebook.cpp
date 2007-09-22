@@ -4,7 +4,7 @@
 // Author:      Vadim Zeitlin
 // Modified by:
 // Created:     01.02.01
-// RCS-ID:      $Id: notebook.cpp,v 1.14 2002/08/20 08:34:05 JS Exp $
+// RCS-ID:      $Id: notebook.cpp,v 1.14.2.1 2002/11/24 11:52:33 JS Exp $
 // Copyright:   (c) 2001 SciTech Software, Inc. (www.scitechsoft.com)
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -330,6 +330,7 @@ bool wxNotebook::InsertPage(int nPage,
         bSelect = TRUE;
 
         Relayout();
+        Refresh();
     }
     else // not the first tab
     {
@@ -518,9 +519,19 @@ void wxNotebook::DoDraw(wxControlRenderer *renderer)
         wxSize sizeSpinBtn = m_spinbtn->GetSize();
 
         if ( IsVertical() )
+        {
             rectTabs.height -= sizeSpinBtn.y;
+
+            // Allow for erasing the line under selected tab
+            rectTabs.width += 2;
+        }
         else
+        {
             rectTabs.width -= sizeSpinBtn.x;
+
+            // Allow for erasing the line under selected tab
+            rectTabs.height += 2;
+        }
 
         dc.SetClippingRegion(rectTabs);
     }
@@ -566,6 +577,8 @@ void wxNotebook::DoDraw(wxControlRenderer *renderer)
     {
         DoDrawTab(dc, rectSel, m_sel);
     }
+
+    dc.DestroyClippingRegion();
 }
 
 // ----------------------------------------------------------------------------

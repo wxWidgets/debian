@@ -4,7 +4,7 @@
 // Purpose:     Part of the widgets sample showing wxSlider
 // Author:      Vadim Zeitlin
 // Created:     16.04.01
-// Id:          $Id: slider.cpp,v 1.8 2002/08/22 19:22:52 VZ Exp $
+// Id:          $Id: slider.cpp,v 1.8.2.1 2002/11/13 01:12:55 VZ Exp $
 // Copyright:   (c) 2001 Vadim Zeitlin
 // License:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -459,10 +459,8 @@ void SliderWidgetsPage::OnUpdateUIOtherSide(wxUpdateUIEvent& event)
 
 void SliderWidgetsPage::OnSlider(wxScrollEvent& event)
 {
-    long value = event.GetInt();
-
-    wxASSERT_MSG( value == m_slider->GetValue(),
-        wxT("slider value should be the same") );
+    wxASSERT_MSG( event.GetInt() == m_slider->GetValue(),
+                  wxT("slider value should be the same") );
 
     wxEventType eventType = event.GetEventType();
 

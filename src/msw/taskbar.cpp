@@ -5,7 +5,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     24/3/98
-// RCS-ID:      $Id: taskbar.cpp,v 1.25 2002/06/09 19:24:21 MBN Exp $
+// RCS-ID:      $Id: taskbar.cpp,v 1.25.2.1 2002/11/09 00:23:31 VS Exp $
 // Copyright:   (c)
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////
@@ -180,7 +180,7 @@ bool wxTaskBarIcon::PopupMenu(wxMenu *menu) //, int x, int y);
     wxGetMousePosition(&x, &y);
 
     // is wxFrame the best window type to use???
-    win = new wxFrame(NULL, -1, "", wxPoint(x,y), wxSize(-1,-1), 0);
+    win = new wxFrame(NULL, -1, wxEmptyString, wxPoint(x,y), wxSize(-1,-1), 0);
     win->PushEventHandler(this);
 
     // Remove from record of top-level windows, or will confuse wxWindows

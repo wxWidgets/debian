@@ -2,7 +2,7 @@
 // Name:        textctrl.cpp
 // Purpose:
 // Author:      Robert Roebling
-// Id:          $Id: textctrl.cpp,v 1.149.2.2 2002/09/18 18:47:39 RD Exp $
+// Id:          $Id: textctrl.cpp,v 1.149.2.3 2002/10/01 09:24:37 RR Exp $
 // Copyright:   (c) 1998 Robert Roebling, Vadim Zeitlin
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -475,7 +475,7 @@ wxString wxTextCtrl::GetValue() const
         GtkTextIter end;
         gtk_text_buffer_get_end_iter( text_buffer, &end );
         gchar *text = gtk_text_buffer_get_text( text_buffer, &start, &end, TRUE );
-
+        
 #if wxUSE_UNICODE
         wxWCharBuffer buffer( wxConvUTF8.cMB2WX( text ) );
 #else

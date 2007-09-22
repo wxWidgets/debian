@@ -3,7 +3,7 @@
 // Purpose:     XML resources
 // Author:      Vaclav Slavik
 // Created:     2000/03/05
-// RCS-ID:      $Id: xmlres.h,v 1.19.2.1 2002/09/25 11:10:29 VS Exp $
+// RCS-ID:      $Id: xmlres.h,v 1.19.2.5 2002/12/21 00:21:23 VS Exp $
 // Copyright:   (c) 2000 Vaclav Slavik
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -58,7 +58,7 @@ class wxXmlResourceModule;
 #define WX_XMLRES_CURRENT_VERSION_MINOR            3
 #define WX_XMLRES_CURRENT_VERSION_RELEASE          0
 #define WX_XMLRES_CURRENT_VERSION_REVISION         1
-#define WX_XMLRES_CURRENT_VERSION_STRING    "2.3.0.1"
+#define WX_XMLRES_CURRENT_VERSION_STRING    wxT("2.3.0.1")
 
 #define WX_XMLRES_CURRENT_VERSION \
                 (WX_XMLRES_CURRENT_VERSION_MAJOR * 256*256*256 + \
@@ -224,7 +224,9 @@ public:
     static wxXmlResource *Set(wxXmlResource *res);
 
     // Returns flags, which may be a bitlist of wxXRC_USE_LOCALE and wxXRC_NO_SUBCLASSING.
-    int GetFlags() { return m_flags; }
+    int GetFlags() const { return m_flags; }
+    // Set flags after construction.
+    void SetFlags(int flags) { m_flags = flags; }
 
 protected:
     // Scans the resources list for unloaded files and loads them. Also reloads

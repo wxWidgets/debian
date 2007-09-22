@@ -4,7 +4,7 @@
 // Author:      Aleksandras Gluchovas
 // Modified by:
 // Created:     06/09/98
-// RCS-ID:      $Id: controlbar.cpp,v 1.12 2002/08/16 10:31:53 JS Exp $
+// RCS-ID:      $Id: controlbar.cpp,v 1.12.2.1 2002/12/22 12:19:15 JS Exp $
 // Copyright:   (c) Aleksandras Gluchovas
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -1155,6 +1155,9 @@ void wxFrameLayout::PositionPanes()
 
 void wxFrameLayout::OnSize( wxSizeEvent& event )
 {
+    mpFrame->ProcessEvent( event );
+    event.Skip( FALSE ); // stop its progpagation
+
     if ( event.GetEventObject() == (wxObject*) mpFrame )
     {
         GetUpdatesManager().OnStartChanges();

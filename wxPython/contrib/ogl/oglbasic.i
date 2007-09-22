@@ -5,7 +5,7 @@
 // Author:      Robin Dunn
 //
 // Created:     3-Sept-1999
-// RCS-ID:      $Id: oglbasic.i,v 1.13 2002/05/02 02:46:13 RD Exp $
+// RCS-ID:      $Id: oglbasic.i,v 1.13.2.1 2002/11/19 02:40:02 RD Exp $
 // Copyright:   (c) 1998 by Total Control Software
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -303,7 +303,7 @@ public:
     void ClearText(int regionId = 0);
     void RemoveLine(wxPyLineShape *line);
 
-#ifdef PROLOGIO
+#ifdef wxUSE_PROLOGIO
     void WriteAttributes(wxExpr *clause);
     void ReadAttributes(wxExpr *clause);
     void ReadConstraints(wxExpr *clause, wxExprDatabase *database);

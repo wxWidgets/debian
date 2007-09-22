@@ -5,7 +5,7 @@
 // Author:      Robin Dunn
 //
 // Created:     16-Aug-2002
-// RCS-ID:      $Id: wizard.i,v 1.4 2002/08/28 01:38:29 RD Exp $
+// RCS-ID:      $Id: wizard.i,v 1.4.2.2 2002/12/24 00:06:08 RD Exp $
 // Copyright:   (c) 2002 by Total Control Software
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -43,7 +43,8 @@ enum {
     wxEVT_WIZARD_PAGE_CHANGED,
     wxEVT_WIZARD_PAGE_CHANGING,
     wxEVT_WIZARD_CANCEL,
-    wxEVT_WIZARD_HELP
+    wxEVT_WIZARD_HELP,
+    wxEVT_WIZARD_FINISHED
 };
 
 
@@ -60,6 +61,9 @@ def EVT_WIZARD_CANCEL(win, id, func):
 
 def EVT_WIZARD_HELP(win, id, func):
     win.Connect(id, -1, wxEVT_WIZARD_HELP, func)
+
+def EVT_WIZARD_FINISHED(win, id, func):
+    win.Connect(id, -1, wxEVT_WIZARD_FINISHED, func)
 
 "
 
@@ -361,6 +365,9 @@ public:
     // page first and return FALSE without changing the page if
     // TransferDataFromWindow() returns FALSE - otherwise, returns TRUE
     bool ShowPage(wxWizardPage *page, bool goingForward = TRUE);
+
+    bool HasNextPage(wxWizardPage* page);
+    bool HasPrevPage(wxWizardPage* page);
 };
 
 

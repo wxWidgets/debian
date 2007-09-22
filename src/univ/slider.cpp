@@ -4,7 +4,7 @@
 // Author:      Vadim Zeitlin
 // Modified by:
 // Created:     09.02.01
-// RCS-ID:      $Id: slider.cpp,v 1.7 2002/01/27 23:38:53 VS Exp $
+// RCS-ID:      $Id: slider.cpp,v 1.7.2.1 2002/10/02 13:44:21 JS Exp $
 // Copyright:   (c) 2001 SciTech Software, Inc. (www.scitechsoft.com)
 // Licence:     wxWindows licence
 ///////////////////////////////////////////////////////////////////////////////
@@ -787,14 +787,15 @@ bool wxSlider::PerformAction(const wxControlAction& action,
 wxScrollThumb::Shaft wxSlider::HitTest(const wxPoint& pt) const
 {
     wxRect rectShaft = GetShaftRect();
-    if ( !rectShaft.Inside(pt) )
+    wxRect rectThumb;
+    CalcThumbRect(&rectShaft, &rectThumb, NULL);
+
+	// check for possible shaft or thumb hit
+    if (!rectShaft.Inside(pt) && !rectThumb.Inside(pt))
     {
         return wxScrollThumb::Shaft_None;
     }
 
-    // inside the shaft, where is it relatively to the thumb?
-    wxRect rectThumb;
-    CalcThumbRect(&rectShaft, &rectThumb, NULL);
 
     // the position to test and the start and end of the thumb
     wxCoord x, x1, x2;

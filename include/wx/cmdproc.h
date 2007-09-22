@@ -4,7 +4,7 @@
 // Author:      Julian Smart (extracted from docview.h by VZ)
 // Modified by:
 // Created:     05.11.00
-// RCS-ID:      $Id: cmdproc.h,v 1.4 2002/08/31 11:29:09 GD Exp $
+// RCS-ID:      $Id: cmdproc.h,v 1.4.2.2 2002/12/20 10:13:38 JS Exp $
 // Copyright:   (c) wxWindows team
 // Licence:     wxWindows licence
 ///////////////////////////////////////////////////////////////////////////////
@@ -26,7 +26,7 @@
 class WXDLLEXPORT wxCommand : public wxObject
 {
 public:
-    wxCommand(bool canUndoIt = FALSE, const wxString& name = "");
+    wxCommand(bool canUndoIt = FALSE, const wxString& name = wxT(""));
     ~wxCommand();
 
     // Override this to perform a command
@@ -69,8 +69,17 @@ public:
     virtual bool CanUndo() const;
     virtual bool CanRedo() const;
 
+    // Initialises the current command and menu strings.
     virtual void Initialize();
+
+    // Sets the Undo/Redo menu strings for the current menu.
     virtual void SetMenuStrings();
+
+    // Gets the current Undo menu label.
+    wxString GetUndoMenuLabel() const;
+
+    // Gets the current Undo menu label.
+    wxString GetRedoMenuLabel() const;
 
 #if wxUSE_MENUS
     // Call this to manage an edit menu.

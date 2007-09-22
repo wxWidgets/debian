@@ -4,7 +4,7 @@
 // Notes:       Based on htmlhelp.cpp, implementing a monolithic
 //              HTML Help controller class,  by Vaclav Slavik
 // Author:      Harm van der Heijden and Vaclav Slavik
-// RCS-ID:      $Id: helpctrl.h,v 1.20 2002/08/31 11:29:12 GD Exp $
+// RCS-ID:      $Id: helpctrl.h,v 1.20.2.2 2002/12/16 00:16:49 VS Exp $
 // Copyright:   (c) Harm van der Heijden and Vaclav Slavik
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -35,7 +35,8 @@ public:
 
     void SetTitleFormat(const wxString& format);
     void SetTempDir(const wxString& path) { m_helpData.SetTempDir(path); }
-    bool AddBook(const wxString& book, bool show_wait_msg = FALSE);
+    bool AddBook(const wxString& book_url, bool show_wait_msg = FALSE);
+    bool AddBook(const wxFileName& book_file, bool show_wait_msg = FALSE);
 
     bool Display(const wxString& x);
     bool Display(int id);
@@ -57,7 +58,7 @@ public:
     virtual bool Initialize(const wxString& file, int WXUNUSED(server) ) { return Initialize(file); }
     virtual bool Initialize(const wxString& file);
     virtual void SetViewer(const wxString& WXUNUSED(viewer), long WXUNUSED(flags) = 0) {}
-    virtual bool LoadFile(const wxString& file = "");
+    virtual bool LoadFile(const wxString& file = wxT(""));
     virtual bool DisplaySection(int sectionNo);
     virtual bool DisplaySection(const wxString& section) { return Display(section); }
     virtual bool DisplayBlock(long blockNo) { return DisplaySection(blockNo); }

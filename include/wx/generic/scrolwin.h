@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     01/02/97
-// RCS-ID:      $Id: scrolwin.h,v 1.24 2002/08/31 11:29:12 GD Exp $
+// RCS-ID:      $Id: scrolwin.h,v 1.24.2.1 2002/11/09 13:29:19 RL Exp $
 // Copyright:   (c) Julian Smart and Markus Holzem
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -68,6 +68,8 @@ public:
 
     // lay out the window and its children
     virtual bool Layout();
+
+    virtual void DoSetVirtualSize(int x, int y);
 
 protected:
     // this is needed for wxEVT_PAINT processing hack described in

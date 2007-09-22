@@ -4,7 +4,7 @@
 // Author:      Vadim Zeitlin
 // Modified by:
 // Created:     19.05.01
-// RCS-ID:      $Id: frame.h,v 1.16 2002/02/10 19:08:53 VS Exp $
+// RCS-ID:      $Id: frame.h,v 1.16.2.2 2003/01/03 12:09:48 JS Exp $
 // Copyright:   (c) 2001 SciTech Software, Inc. (www.scitechsoft.com)
 // Licence:     wxWindows licence
 ///////////////////////////////////////////////////////////////////////////////
@@ -64,11 +64,11 @@ public:
     virtual int GetMinWidth() const;
     virtual int GetMinHeight() const;
 
+    // sends wxSizeEvent to itself (used after attaching xxxBar)
+    virtual void SendSizeEvent();
+
 protected:
     void OnSize(wxSizeEvent& event);
-
-    // sends wxSizeEvent to itself (used after attaching xxxBar)
-    void SendSizeEvent();
 
     virtual void DoGetClientSize(int *width, int *height) const;
     virtual void DoSetClientSize(int width, int height);

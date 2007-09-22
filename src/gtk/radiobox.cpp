@@ -2,7 +2,7 @@
 // Name:        radiobox.cpp
 // Purpose:
 // Author:      Robert Roebling
-// Id:          $Id: radiobox.cpp,v 1.74 2002/08/05 17:59:19 RR Exp $
+// Id:          $Id: radiobox.cpp,v 1.74.2.1 2002/10/29 21:48:06 RR Exp $
 // Copyright:   (c) 1998 Robert Roebling
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -418,7 +418,7 @@ bool wxRadioBox::Show( bool show )
     return TRUE;
 }
 
-int wxRadioBox::FindString( const wxString &s ) const
+int wxRadioBox::FindString( const wxString &find ) const
 {
     wxCHECK_MSG( m_widget != NULL, -1, wxT("invalid radiobox") );
 
@@ -428,7 +428,12 @@ int wxRadioBox::FindString( const wxString &s ) const
     while (node)
     {
         GtkLabel *label = GTK_LABEL( BUTTON_CHILD(node->Data()) );
-        if (s == label->label)
+#ifdef __WXGTK20__
+        wxString str( wxGTK_CONV_BACK( gtk_label_get_text(label) ) );
+#else
+        wxString str( label->label );
+#endif
+        if (find == str)
             return count;
 
         count++;
@@ -505,7 +510,13 @@ wxString wxRadioBox::GetString( int n ) const
 
     GtkLabel *label = GTK_LABEL( BUTTON_CHILD(node->Data()) );
 
-    return wxString( label->label );
+#ifdef __WXGTK20__
+    wxString str( wxGTK_CONV_BACK( gtk_label_get_text(label) ) );
+#else
+    wxString str( label->label );
+#endif
+
+    return str;
 }
 
 void wxRadioBox::SetLabel( const wxString& label )
@@ -592,7 +603,12 @@ wxString wxRadioBox::GetStringSelection() const
         {
             GtkLabel *label = GTK_LABEL( BUTTON_CHILD(node->Data()) );
 
-            return label->label;
+#ifdef __WXGTK20__
+            wxString str( wxGTK_CONV_BACK( gtk_label_get_text(label) ) );
+#else
+            wxString str( label->label );
+#endif
+            return str;
         }
         node = node->Next();
     }

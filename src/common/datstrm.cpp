@@ -4,7 +4,7 @@
 // Author:      Guilhem Lavaux
 // Modified by:
 // Created:     28/06/98
-// RCS-ID:      $Id: datstrm.cpp,v 1.36 2002/07/21 22:28:57 VS Exp $
+// RCS-ID:      $Id: datstrm.cpp,v 1.36.2.2 2002/10/30 18:01:24 RR Exp $
 // Copyright:   (c) Guilhem Lavaux
 // Licence:   	wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -113,14 +113,14 @@ wxString wxDataInputStream::ReadString()
     char *tmp = new char[len + 1];
     m_input->Read(tmp, len);
     tmp[len] = 0;
-    wxString s(tmp, m_conv);
+    wxString ret( (const wxChar*) m_conv.cMB2WX(tmp) );
     delete[] tmp;
 #else
-    wxString s;
-    m_input->Read(s.GetWriteBuf(len), len);
-    s.UngetWriteBuf();
+    wxString ret;
+    m_input->Read( ret.GetWriteBuf(len), len);
+    ret.UngetWriteBuf();
 #endif
-    return s;
+    return ret;
   }
   else
     return wxEmptyString;

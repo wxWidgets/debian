@@ -1,35 +1,37 @@
 """PyShellApp is a python shell application."""
 
 __author__ = "Patrick K. O'Brien <pobrien@orbtech.com>"
-__cvsid__ = "$Id: PyShellApp.py,v 1.8.2.1 2002/09/18 20:30:25 RD Exp $"
-__revision__ = "$Revision: 1.8.2.1 $"[11:-2]
+__cvsid__ = "$Id: PyShellApp.py,v 1.8.2.2 2002/12/16 18:19:42 RD Exp $"
+__revision__ = "$Revision: 1.8.2.2 $"[11:-2]
 
-from wxPython.wx import *
+from wxPython import wx
 from shell import ShellFrame
 
+True, False = 1, 0
 
-class App(wxApp):
+
+class App(wx.wxApp):
     """PyShell standalone application."""
 
     def OnInit(self):
-        wxInitAllImageHandlers()
+        wx.wxInitAllImageHandlers()
         locals = {'__app__': 'PyShell Standalone Application'}
         self.shellFrame = ShellFrame(locals=locals)
         self.shellFrame.SetSize((750, 525))
-        self.shellFrame.Show(true)
-        self.shellFrame.shell.SetFocus()
+        self.shellFrame.Show(True)
         self.SetTopWindow(self.shellFrame)
+        self.shellFrame.shell.SetFocus()
         # Add the application object to the sys module's namespace.
         # This allows a shell user to do:
         # >>> import sys
         # >>> sys.application.whatever
         import sys
         sys.application = self
-        return true
+        return True
 
 
 def main():
-    application = App(1)
+    application = App(0)
     application.MainLoop()
 
 if __name__ == '__main__':

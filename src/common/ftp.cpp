@@ -8,7 +8,7 @@
 //              code, support ASCII/Binary modes, better error reporting, more
 //              robust Abort(), support for arbitrary FTP commands, ...)
 // Created:     07/07/1997
-// RCS-ID:      $Id: ftp.cpp,v 1.43 2002/04/12 10:23:55 VZ Exp $
+// RCS-ID:      $Id: ftp.cpp,v 1.43.2.1 2002/11/04 19:31:53 VZ Exp $
 // Copyright:   (c) 1997, 1998 Guilhem Lavaux
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -507,7 +507,7 @@ public:
     {
         delete m_i_socket;
 
-        if ( LastError() == wxStream_NOERROR )
+        if ( IsOk() )
         {
             // wait for "226 transfer completed"
             m_ftp->CheckResult('2');

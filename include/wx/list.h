@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by: VZ at 16/11/98: WX_DECLARE_LIST() and typesafe lists added
 // Created:     29/01/98
-// RCS-ID:      $Id: list.h,v 1.53.2.1 2002/09/21 16:16:57 MBN Exp $
+// RCS-ID:      $Id: list.h,v 1.53.2.2 2002/10/17 16:41:47 VZ Exp $
 // Copyright:   (c) 1998 Julian Smart
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -235,7 +235,7 @@ public:
     int Number() const { return GetCount(); }
     wxNode *First() const { return (wxNode *)GetFirst(); }
     wxNode *Last() const { return (wxNode *)GetLast(); }
-    wxNode *Nth(size_t index) const { return (wxNode *)Item(index); }
+    wxNode *Nth(size_t n) const { return (wxNode *)Item(n); }
 #endif // wxLIST_COMPATIBILITY
 
 protected:
@@ -274,8 +274,12 @@ protected:
     wxNodeBase *Item(size_t index) const;
 
         // get the list item's data
-    void *operator[](size_t index) const
-        { wxNodeBase *node = Item(index); return node ? node->GetData() : (wxNodeBase*)NULL; }
+    void *operator[](size_t n) const
+    {
+        wxNodeBase *node = Item(n);
+
+        return node ? node->GetData() : (wxNodeBase *)NULL;
+    }
 
     // operations
         // append to end of list

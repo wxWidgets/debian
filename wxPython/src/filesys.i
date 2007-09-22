@@ -5,7 +5,7 @@
 // Author:      Joerg Baumann and Robin Dunn
 //
 // Created:     25-Sept-2000
-// RCS-ID:      $Id: filesys.i,v 1.9 2002/03/18 22:11:22 RD Exp $
+// RCS-ID:      $Id: filesys.i,v 1.9.2.2 2002/12/24 00:06:08 RD Exp $
 // Copyright:   (c) 2000 by Joerg Baumann
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -141,6 +141,12 @@ public:
 
     static void AddHandler(wxFileSystemHandler *handler);
     static void CleanUpHandlers();
+
+//     // Returns the native path for a file URL
+//     static wxFileName URLToFileName(const wxString& url);
+
+//     // Returns the file URL for a native path
+//     static wxString FileNameToURL(const wxFileName& filename);
 };
 
 //---------------------------------------------------------------------------
@@ -209,9 +215,9 @@ void __wxMemoryFSHandler_AddFile_Data(const wxString& filename,
 %pragma(python) code = "
 import types
 def wxMemoryFSHandler_AddFile(filename, a, b=''):
-    if isinstance(a, wxImage):
+    if wx.wxPy_isinstance(a, (wxImage, wxImagePtr)):
         __wxMemoryFSHandler_AddFile_wxImage(filename, a, b)
-    elif isinstance(a, wxBitmap):
+    elif wx.wxPy_isinstance(a, (wxBitmap, wxBitmapPtr)):
         __wxMemoryFSHandler_AddFile_wxBitmap(filename, a, b)
     elif type(a) == types.StringType:
         #__wxMemoryFSHandler_AddFile_wxString(filename, a)

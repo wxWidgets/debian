@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     7.9.93
-// RCS-ID:      $Id: tex2rtf.cpp,v 1.26 2002/08/07 09:56:22 JS Exp $
+// RCS-ID:      $Id: tex2rtf.cpp,v 1.26.2.2 2002/11/05 14:53:23 JS Exp $
 // Copyright:   (c) Julian Smart
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -330,7 +330,7 @@ bool MyApp::OnInit()
 
     if (InputFile)
     {
-      sprintf(buf, "Tex2RTF [%s]", FileNameFromPath(InputFile));
+      sprintf(buf, "Tex2RTF [%s]", wxFileNameFromPath(InputFile));
       frame->SetTitle(buf);
     }
 
@@ -967,7 +967,7 @@ bool Go(void)
 
   if (InputFile && OutputFile)
   {
-    if (!FileExists(InputFile))
+    if (!wxFileExists(InputFile))
     {
       OnError("Cannot open input file!");
       TexCleanUp();

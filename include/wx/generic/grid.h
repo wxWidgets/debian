@@ -4,7 +4,7 @@
 // Author:      Michael Bedward (based on code by Julian Smart, Robin Dunn)
 // Modified by:
 // Created:     1/08/1999
-// RCS-ID:      $Id: grid.h,v 1.111 2002/09/14 02:09:22 DW Exp $
+// RCS-ID:      $Id: grid.h,v 1.111.2.2 2002/12/16 12:34:06 JS Exp $
 // Copyright:   (c) Michael Bedward
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -302,6 +302,9 @@ public:
     wxControl* GetControl() { return m_control; }
     void SetControl(wxControl* control) { m_control = control; }
 
+    wxGridCellAttr* GetCellAttr() { return m_attr; }
+    void SetCellAttr(wxGridCellAttr* attr) { m_attr = attr; }
+
     // Creates the actual edit control
     virtual void Create(wxWindow* parent,
                         wxWindowID id,
@@ -363,6 +366,9 @@ protected:
 
     // the control we show on screen
     wxControl*  m_control;
+
+    // a temporary pointer to the attribute being edited
+    wxGridCellAttr* m_attr;
 
     // if we change the colours/font of the control from the default ones, we
     // must restore the default later and we save them here between calls to
@@ -1824,7 +1830,7 @@ protected:
     bool GetModelValues();
     bool SetModelValues();
 
-        friend class wxGridSelection;
+    friend class WXDLLEXPORT wxGridSelection;
 
     DECLARE_DYNAMIC_CLASS( wxGrid )
     DECLARE_EVENT_TABLE()

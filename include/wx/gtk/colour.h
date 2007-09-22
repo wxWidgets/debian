@@ -2,7 +2,7 @@
 // Name:        colour.h
 // Purpose:
 // Author:      Robert Roebling
-// Id:          $Id: colour.h,v 1.15 2002/09/07 12:28:46 GD Exp $
+// Id:          $Id: colour.h,v 1.15.2.1 2002/10/29 21:47:31 RR Exp $
 // Copyright:   (c) 1998 Robert Roebling
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -47,7 +47,7 @@ public:
 
     // Implicit conversion from the colour name
     wxColour( const wxString &colourName ) { InitFromName(colourName); }
-    wxColour( const char *colourName ) { InitFromName(colourName); }
+    wxColour( const char *colourName ) { InitFromName( wxString::FromAscii(colourName) ); }
 #if wxUSE_UNICODE
     wxColour( const wxChar *colourName ) { InitFromName( wxString(colourName) ); }
 #endif

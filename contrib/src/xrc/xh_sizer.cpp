@@ -3,7 +3,7 @@
 // Purpose:     XRC resource for wxBoxSizer
 // Author:      Vaclav Slavik
 // Created:     2000/03/21
-// RCS-ID:      $Id: xh_sizer.cpp,v 1.6 2002/07/26 22:09:04 VS Exp $
+// RCS-ID:      $Id: xh_sizer.cpp,v 1.6.2.1 2002/12/08 13:22:17 VS Exp $
 // Copyright:   (c) 2000 Vaclav Slavik
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -150,7 +150,12 @@ wxObject *wxSizerXmlHandler::DoCreateResource()
         else if (m_class == wxT("wxStaticBoxSizer"))
         {
             sizer = new wxStaticBoxSizer(
-                         new wxStaticBox(m_parentAsWindow, -1, GetText(wxT("label"))),
+                         new wxStaticBox(m_parentAsWindow,
+                                         GetID(),
+                                         GetText(wxT("label")),
+                                         wxDefaultPosition, wxDefaultSize,
+                                         0/*style*/,
+                                         GetName()),
                          GetStyle(wxT("orient"), wxHORIZONTAL));
         }
         

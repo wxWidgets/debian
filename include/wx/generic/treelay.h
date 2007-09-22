@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     7/4/98
-// RCS-ID:      $Id: treelay.h,v 1.9 2002/08/31 11:29:12 GD Exp $
+// RCS-ID:      $Id: treelay.h,v 1.9.2.1 2002/10/29 21:47:28 RR Exp $
 // Copyright:   (c) 1998 Julian Smart
 // Licence:     wxWindows licence
 ///////////////////////////////////////////////////////////////////////////////
@@ -29,8 +29,6 @@ class wxMouseEvent;
 
 class WXDLLEXPORT wxTreeLayout: public wxObject
 {
-    DECLARE_ABSTRACT_CLASS(wxTreeLayout)
-
 public:
     wxTreeLayout();
     virtual ~wxTreeLayout() { }
@@ -49,7 +47,7 @@ public:
     // Optional redefinition
     void Initialize(void);
     inline virtual void SetNodeName(long WXUNUSED(id), const wxString& WXUNUSED(name)) {}
-    inline virtual wxString GetNodeName(long WXUNUSED(id)) { return wxString(""); }
+    inline virtual wxString GetNodeName(long WXUNUSED(id)) { return wxString(wxT("")); }
     virtual void GetNodeSize(long id, long *x, long *y, wxDC& dc);
     virtual void Draw(wxDC& dc);
     virtual void DrawNodes(wxDC& dc);
@@ -76,8 +74,6 @@ public:
 private:
     void CalcLayout(long node_id, int level, wxDC& dc);
 
-    // Members
-
 protected:
     long          m_parentNode;
     long          m_lastY;
@@ -87,6 +83,9 @@ protected:
     long          m_topMargin;
     long          m_leftMargin;
     bool          m_orientation; // TRUE for top-to-bottom, FALSE for left-to-right
+    
+private:
+    DECLARE_ABSTRACT_CLASS(wxTreeLayout)
 };
 
 class WXDLLEXPORT wxStoredNode
@@ -105,7 +104,6 @@ public:
 
 class WXDLLEXPORT wxTreeLayoutStored: public wxTreeLayout
 {
-    DECLARE_DYNAMIC_CLASS(wxTreeLayoutStored)
 public:
     wxTreeLayoutStored(int noNodes = 200);
     virtual ~wxTreeLayoutStored(void);
@@ -130,7 +128,7 @@ public:
     virtual void SetClientData(long id, long clientData);
     virtual long GetClientData(long id) const;
 
-    virtual long AddChild(const wxString& name, const wxString& parent = "");
+    virtual long AddChild(const wxString& name, const wxString& parent = wxT(""));
     virtual long AddChild(const wxString& name, long parent);
     virtual long NameToId(const wxString& name);
 
@@ -139,6 +137,9 @@ private:
     wxStoredNode*     m_nodes;
     int               m_num;
     int               m_maxNodes;
+    
+private:
+    DECLARE_DYNAMIC_CLASS(wxTreeLayoutStored)
 };
 
 // For backward compatibility

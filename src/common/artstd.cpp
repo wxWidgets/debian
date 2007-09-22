@@ -4,7 +4,7 @@
 // Author:      Vaclav Slavik
 // Modified by:
 // Created:     18/03/2002
-// RCS-ID:      $Id: artstd.cpp,v 1.8 2002/05/07 21:58:25 GD Exp $
+// RCS-ID:      $Id: artstd.cpp,v 1.8.2.1 2002/11/03 17:19:10 VS Exp $
 // Copyright:   (c) Vaclav Slavik
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -27,7 +27,6 @@
 #endif
 
 #include "wx/artprov.h"
-#include "wx/module.h"
 
 // For the purposes of forcing this module to link
 char g_ArtProviderModule = 0;
@@ -93,23 +92,20 @@ protected:
     }
 
 // ----------------------------------------------------------------------------
-// wxDefaultArtProviderModule
+// wxArtProvider::InitStdProvider
 // ----------------------------------------------------------------------------
 
-class wxDefaultArtProviderModule: public wxModule
+/*static*/ void wxArtProvider::InitStdProvider()
 {
-public:
-    bool OnInit() 
-    {
-        wxArtProvider::PushProvider(new wxDefaultArtProvider);
-        return TRUE; 
-    }
-    void OnExit() {}
+    // NB: A few notes about this function:
+    //     (1) it is in artstd.cpp and not in artprov.cpp on purpose. I wanted
+    //         to avoid declaring wxDefaultArtProvider in any public header as
+    //         it is only an implementation detail
+    //     (2) other default art providers (e.g. GTK one) should NOT be added
+    //         here. Instead, add them in port-specific initialialization code
 
-    DECLARE_DYNAMIC_CLASS(wxDefaultArtProviderModule)
-};
-
-IMPLEMENT_DYNAMIC_CLASS(wxDefaultArtProviderModule, wxModule)
+    wxArtProvider::PushProvider(new wxDefaultArtProvider);
+}
 
 
 // ----------------------------------------------------------------------------

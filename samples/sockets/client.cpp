@@ -4,7 +4,7 @@
 // Author:      Guillermo Rodriguez Garcia <guille@iies.es>
 // Modified by:
 // Created:     1999/09/19
-// RCS-ID:      $Id: client.cpp,v 1.21 2002/08/31 22:30:58 GD Exp $
+// RCS-ID:      $Id: client.cpp,v 1.21.2.1 2002/11/11 19:07:23 RR Exp $
 // Copyright:   (c) 1999 Guillermo Rodriguez Garcia
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -571,7 +571,7 @@ void MyFrame::OnTestURL(wxCommandEvent& WXUNUSED(event))
   wxYield();
 
   // Get the data
-  wxFileOutputStream sout(wxString("test.url"));
+  wxFileOutputStream sout( wxT("test.url") );
   if (!sout.Ok())
   {
     m_text->AppendText(_("Error: couldn't open file for output\n"));

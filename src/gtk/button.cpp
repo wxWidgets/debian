@@ -2,7 +2,7 @@
 // Name:        button.cpp
 // Purpose:
 // Author:      Robert Roebling
-// Id:          $Id: button.cpp,v 1.52 2002/09/02 12:29:11 VZ Exp $
+// Id:          $Id: button.cpp,v 1.52.2.1 2002/11/04 20:13:23 RR Exp $
 // Copyright:   (c) 1998 Robert Roebling
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -186,6 +186,15 @@ bool wxButton::Enable( bool enable )
     gtk_widget_set_sensitive( BUTTON_CHILD(m_widget), enable );
 
     return TRUE;
+}
+
+bool wxButton::IsOwnGtkWindow( GdkWindow *window )
+{
+#ifdef __WXGTK20__
+    return GTK_BUTTON(m_widget)->event_window;
+#else
+    return (window == m_widget->window);
+#endif
 }
 
 void wxButton::ApplyWidgetStyle()

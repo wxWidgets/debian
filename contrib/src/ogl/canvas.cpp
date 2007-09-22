@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     12/07/98
-// RCS-ID:      $Id: canvas.cpp,v 1.6 2002/07/06 04:14:27 RD Exp $
+// RCS-ID:      $Id: canvas.cpp,v 1.6.2.1 2002/12/28 18:32:07 JS Exp $
 // Copyright:   (c) Julian Smart
 // Licence:   	wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -28,12 +28,6 @@
 
 #ifdef new
 #undef new
-#endif
-
-#if wxUSE_IOSTREAMH
-#include <iostream.h>
-#else
-#include <iostream>
 #endif
 
 #include <ctype.h>

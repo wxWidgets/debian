@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     04/01/98
-// RCS-ID:      $Id: tbar95.cpp,v 1.97.2.1 2002/09/19 11:53:21 VZ Exp $
+// RCS-ID:      $Id: tbar95.cpp,v 1.97.2.2 2002/12/27 14:37:58 JS Exp $
 // Copyright:   (c) Julian Smart and Markus Holzem
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -1197,7 +1197,7 @@ bool wxToolBar::HandleSize(WXWPARAM wParam, WXLPARAM lParam)
                 // FIXME: 6 is hardcoded separator line height...
                 //h += 6;
                 if (HasFlag(wxTB_NODIVIDER))
-                    h += 3;
+                    h += 4;
                 else
                     h += 6;
                 h *= m_maxRows;

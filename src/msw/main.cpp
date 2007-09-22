@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     04/01/98
-// RCS-ID:      $Id: main.cpp,v 1.12 2002/08/30 20:34:26 JS Exp $
+// RCS-ID:      $Id: main.cpp,v 1.12.2.1 2002/12/17 10:50:43 JS Exp $
 // Copyright:   (c) Julian Smart and Markus Holzem
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -32,6 +32,12 @@
 #include "wx/app.h"
 
 #include "wx/msw/private.h"
+
+// Don't implement WinMain if we're building an MFC/wxWindows
+// hybrid app.
+#if wxUSE_MFC && !defined(NOMAIN)
+#define NOMAIN 1
+#endif
 
 // from src/msw/app.cpp
 extern void WXDLLEXPORT wxEntryCleanup();

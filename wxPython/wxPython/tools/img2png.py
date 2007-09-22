@@ -1,3 +1,14 @@
+#----------------------------------------------------------------------
+# Name:        wxPython.tools.img2png
+# Purpose:     Convert an image to PNG format
+#
+# Author:      Robin Dunn
+#
+# RCS-ID:      $Id: img2png.py,v 1.1.2.2 2002/12/10 22:06:33 RD Exp $
+# Copyright:   (c) 2002 by Total Control Software
+# Licence:     wxWindows license
+#----------------------------------------------------------------------
+
 """
 img2png.py  -- convert several image formats to PNG format
 

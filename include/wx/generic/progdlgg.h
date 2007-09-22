@@ -4,7 +4,7 @@
 // Author:      Karsten Ballüder
 // Modified by:
 // Created:     09.05.1999
-// RCS-ID:      $Id: progdlgg.h,v 1.23 2002/08/31 11:29:12 GD Exp $
+// RCS-ID:      $Id: progdlgg.h,v 1.23.2.1 2002/12/16 10:57:45 JS Exp $
 // Copyright:   (c) Karsten Ballüder
 // Licence:     wxWindows license
 ////////////////////////////////////////////////////
@@ -62,6 +62,8 @@ public:
        confirm it)
    */
    void Resume();
+
+   bool Show( bool show = TRUE );
 
 protected:
    // callback for optional abort button

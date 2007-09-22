@@ -4,7 +4,7 @@
 // Author:      Guilhem Lavaux
 // Modified by:
 // Created:     20/07/98
-// RCS-ID:      $Id: dynlib.cpp,v 1.67 2002/06/13 19:09:24 VZ Exp $
+// RCS-ID:      $Id: dynlib.cpp,v 1.67.2.2 2002/12/19 23:43:33 VS Exp $
 // Copyright:   (c) Guilhem Lavaux
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -146,7 +146,7 @@ wxLibrary::wxLibrary(wxDllType handle)
     m_handle = handle;
 
     // Some system may use a local heap for library.
-    get_first = (t_get_first)GetSymbol("wxGetClassFirst");
+    get_first = (t_get_first)GetSymbol(_T("wxGetClassFirst"));
     // It is a wxWindows DLL.
     if (get_first)
         PrepareClasses(get_first());
@@ -333,14 +333,11 @@ void *wxDllLoader::GetSymbol(wxDllType dllHandle, const wxString &name, bool *su
 
     if ( !symbol )
     {
-        wxString msg(_("wxDllLoader failed to GetSymbol '%s'"));
-
 #ifdef HAVE_DLERROR
         const wxChar *err = dlerror();
         if( err )
         {
-            failed = TRUE;
-            wxLogError( msg, err );
+            wxLogError(wxT("%s"), err);
         }
 #else
         failed = TRUE;

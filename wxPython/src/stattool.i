@@ -5,7 +5,7 @@
 // Author:      Robin Dunn
 //
 // Created:     08/24/1998
-// RCS-ID:      $Id: stattool.i,v 1.20 2002/06/05 16:45:04 RD Exp $
+// RCS-ID:      $Id: stattool.i,v 1.20.2.2 2002/11/22 21:33:21 RD Exp $
 // Copyright:   (c) 1998 by Total Control Software
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -196,7 +196,7 @@ public:
 
         // Insert the new tool at the given position, if pos == GetToolsCount(), it
         // is equivalent to DoAddTool()
-        wxToolBarToolBase *InsertTool(size_t pos,
+        wxToolBarToolBase *DoInsertTool(size_t pos,
                                       int id,
                                       const wxString& label,
                                       const wxBitmap& bitmap,
@@ -270,7 +270,7 @@ public:
     # 2.3.3.  They are renamed to have 'Label' in the name so as to be
     # able to keep backwards compatibility with using the above
     # methods.  Eventually these should migrate to be the methods used
-    # primarily and loose the 'Label' in the name...
+    # primarily and lose the 'Label' in the name...
 
     def AddLabelTool(self, id, label, bitmap,
                      bmpDisabled = wxNullBitmap,

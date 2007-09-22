@@ -5,7 +5,7 @@
 // Author:      Robin Dunn
 //
 // Created:     6/24/97
-// RCS-ID:      $Id: windows.i,v 1.51.2.1 2002/09/18 20:39:41 RD Exp $
+// RCS-ID:      $Id: windows.i,v 1.51.2.4 2002/11/19 02:43:40 RD Exp $
 // Copyright:   (c) 1998 by Total Control Software
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -222,6 +222,10 @@ public:
     %name(FindWindowByName) wxWindow* FindWindow(const wxString& name);
 
     void Fit();
+
+    // set virtual size to satisfy children
+    void FitInside();
+
     wxColour GetBackgroundColour();
     wxBorder GetBorder() const;
 
@@ -291,7 +295,9 @@ public:
     bool IsShown();
     bool IsTopLevel();
     void Layout();
+#ifdef wxUSE_WX_RESOURCES
     bool LoadFromResource(wxWindow* parent, const wxString& resourceName, const wxResourceTable* resourceTable = NULL);
+#endif
     void Lower();
     void MakeModal(bool flag=TRUE);
     %name(MoveXY)void Move(int x, int y, int flags = wxSIZE_USE_EXISTING);
@@ -365,6 +371,8 @@ public:
     wxSize GetVirtualSize() const;
     %name(GetVirtualSizeTuple)void GetVirtualSize( int *OUTPUT, int *OUTPUT ) const;
 
+    wxSize GetBestVirtualSize();
+
     %name(SetClientSizeWH)void SetClientSize(int width, int height);
     void SetClientSize(const wxSize& size);
     //void SetPalette(wxPalette* palette);
@@ -409,6 +417,13 @@ public:
 
     wxSize GetBestSize();
     wxSize GetMaxSize();
+
+    // There are times (and windows) where 'Best' size and 'Min' size
+    // are vastly out of sync.  This should be remedied somehow, but in
+    // the meantime, this method will return the larger of BestSize
+    // (the window's smallest legible size), and any user specified
+    // MinSize hint.
+    wxSize GetAdjustedBestSize();
 
     void SetCaret(wxCaret *caret);
     wxCaret *GetCaret();

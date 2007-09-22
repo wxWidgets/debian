@@ -3,7 +3,7 @@
 // Purpose:     Declarations for parts of the Win32 SDK that are missing in
 //              the version that comes with some compilers
 // Created:     2002/04/23
-// RCS-ID:      $Id: missing.h,v 1.5 2002/09/08 10:28:15 JS Exp $
+// RCS-ID:      $Id: missing.h,v 1.5.2.2 2002/10/24 16:10:00 VS Exp $
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
 
@@ -157,6 +157,19 @@ typedef struct tagNMLVDISPINFOW {
 #define _LV_DISPINFOW tagNMLVDISPINFOW
 #define LV_DISPINFOW NMLVDISPINFOW
 #endif
+#endif
+
+#if defined(__GNUWIN32__) && !defined(HDN_GETDISPINFOW)
+#define HDN_GETDISPINFOW (HDN_FIRST-29)
+typedef struct {
+        NMHDR hdr;
+        int iItem;
+        UINT mask;
+        LPWSTR pszText;
+        int cchTextMax;
+        int iImage;
+        LPARAM lParam;
+} NMHDDISPINFOW, *LPNMHDDISPINFOW;
 #endif
 
 

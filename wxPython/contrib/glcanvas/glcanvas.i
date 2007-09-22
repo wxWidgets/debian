@@ -5,7 +5,7 @@
 // Author:      Robin Dunn
 //
 // Created:     15-Mar-1999
-// RCS-ID:      $Id: glcanvas.i,v 1.16 2002/05/02 02:46:14 RD Exp $
+// RCS-ID:      $Id: glcanvas.i,v 1.16.2.1 2002/12/18 06:15:38 RD Exp $
 // Copyright:   (c) 1998 by Total Control Software
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -69,7 +69,7 @@ public:
     ~wxGLContext();
 
     void SetCurrent();
-    void SetColour(const char *colour);
+    void SetColour(const wxString& colour);
     void SwapBuffers();
 
 #ifdef __WXGTK__
@@ -151,7 +151,7 @@ public:
     %pragma(python) addtomethod = "wxGLCanvasWithContext:val._setOORInfo(self)"
 
     void SetCurrent();
-    void SetColour(const char *colour);
+    void SetColour(const wxString& colour);
     void SwapBuffers();
 
     wxGLContext* GetContext();

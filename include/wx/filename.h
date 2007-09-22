@@ -4,7 +4,7 @@
 // Author:      Robert Roebling, Vadim Zeitlin
 // Modified by:
 // Created:     28.12.00
-// RCS-ID:      $Id: filename.h,v 1.32 2002/08/31 11:29:10 GD Exp $
+// RCS-ID:      $Id: filename.h,v 1.32.2.1 2002/11/07 13:16:28 VZ Exp $
 // Copyright:   (c) 2000 Robert Roebling
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -274,14 +274,21 @@ public:
 
     // Comparison
 
-        // compares with the rules of this platform
-    bool SameAs(const wxFileName &filepath,
-                wxPathFormat format = wxPATH_NATIVE);
+        // compares with the rules of the given platforms format
+    bool SameAs(const wxFileName& filepath,
+                wxPathFormat format = wxPATH_NATIVE) const;
 
-        // uses the current platform settings
-    bool operator==(const wxFileName& filename) { return SameAs(filename); }
-    bool operator==(const wxString& filename)
-        { return *this == wxFileName(filename); }
+        // compare with another filename object
+    bool operator==(const wxFileName& filename) const
+        { return SameAs(filename); }
+    bool operator!=(const wxFileName& filename) const
+        { return !SameAs(filename); }
+
+        // compare with a filename string interpreted as a native file name
+    bool operator==(const wxString& filename) const
+        { return SameAs(wxFileName(filename)); }
+    bool operator!=(const wxString& filename) const
+        { return !SameAs(wxFileName(filename)); }
 
         // are the file names of this type cases sensitive?
     static bool IsCaseSensitive( wxPathFormat format = wxPATH_NATIVE );

@@ -4,7 +4,7 @@
 %% Author:      Vadim Zeitlin
 %% Modified by:
 %% Created:     02.04.00
-%% RCS-ID:      $Id: wizard.tex,v 1.6.2.1 2002/09/15 23:49:38 VZ Exp $
+%% RCS-ID:      $Id: wizard.tex,v 1.6.2.3 2002/12/09 09:46:13 JS Exp $
 %% Copyright:   (c) Vadim Zeitlin
 %% License:     wxWindows license
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -55,6 +55,7 @@ changed (this event can be vetoed).}
 \twocolitem{{\bf EVT\_WIZARD\_CANCEL(id, func)}}{The user attempted to cancel
 the wizard (this event may also be vetoed).}
 \twocolitem{{\bf EVT\_WIZARD\_HELP(id, func)}}{The wizard help button was pressed.}
+\twocolitem{{\bf EVT\_WIZARD\_FINISHED(id, func)}}{The wizard finished button was pressed.}
 \end{twocollist}%
 
 \wxheading{Extended styles}
@@ -159,6 +160,32 @@ Get the current page while the wizard is running. {\tt NULL} is returned if
 \constfunc{wxSize}{GetPageSize}{\void}
 
 Returns the size available for the pages.
+
+\membersection{wxWizard::HasNextPage}\label{wxwizardhasnextpage}
+
+\func{virtual bool}{HasNextPage}{\param{wxWizardPage *}{page}}
+
+Return {\tt TRUE} if this page is not the last one in the wizard. The base
+class version implements this by calling 
+\helpref{page->GetNext}{wxwizardpagegetnext} but this could be undesirable if,
+for example, the pages are created on demand only.
+
+\wxheading{See also}
+
+\helpref{HasPrevPage}{wxwizardhasprevpage}
+
+\membersection{wxWizard::HasPrevPage}\label{wxwizardhasprevpage}
+
+\func{virtual bool}{HasPrevPage}{\param{wxWizardPage *}{page}}
+
+Return {\tt TRUE} if this page is not the last one in the wizard. The base
+class version implements this by calling 
+\helpref{page->GetPrev}{wxwizardpagegetprev} but this could be undesirable if,
+for example, the pages are created on demand only.
+
+\wxheading{See also}
+
+\helpref{HasNextPage}{wxwizardhasnextpage}
 
 \membersection{wxWizard::RunWizard}\label{wxwizardrunwizard}
 

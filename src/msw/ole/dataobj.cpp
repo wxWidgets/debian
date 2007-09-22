@@ -4,7 +4,7 @@
 // Author:      Vadim Zeitlin
 // Modified by:
 // Created:     10.05.98
-// RCS-ID:      $Id: dataobj.cpp,v 1.56 2002/09/08 14:46:17 JS Exp $
+// RCS-ID:      $Id: dataobj.cpp,v 1.56.2.1 2002/11/09 00:32:30 VS Exp $
 // Copyright:   (c) 1998 Vadim Zeitlin <zeitlin@dptmaths.ens-cachan.fr>
 // Licence:     wxWindows license
 ///////////////////////////////////////////////////////////////////////////////
@@ -1098,7 +1098,7 @@ protected:
         // CFSTR_SHELLURL is _always_ ANSI!
         wxCharBuffer char_buffer( GetDataSize() );
         wxCustomDataObject::GetDataHere( (void*)char_buffer.data() );
-        wxString unicode_buffer( char_buffer );
+        wxString unicode_buffer( char_buffer, wxConvLibc );
         memcpy( buffer, unicode_buffer.c_str(),
                 ( unicode_buffer.length() + 1 ) * sizeof(wxChar) );
 

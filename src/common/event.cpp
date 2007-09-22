@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     01/02/97
-// RCS-ID:      $Id: event.cpp,v 1.110 2002/09/01 19:01:31 JS Exp $
+// RCS-ID:      $Id: event.cpp,v 1.110.2.1 2002/10/30 19:55:38 RR Exp $
 // Copyright:   (c) Julian Smart and Markus Holzem
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -545,9 +545,32 @@ wxKeyEvent::wxKeyEvent(wxEventType type)
     m_altDown = FALSE;
     m_keyCode = 0;
     m_scanCode = 0;
+#if wxUSE_UNICODE
+    m_uniChar = 0;
+#endif
 }
 
+wxKeyEvent::wxKeyEvent(const wxKeyEvent& evt) 
+    : wxEvent(evt)
+{
+    m_x = evt.m_x;
+    m_y = evt.m_y;
 
+    m_keyCode = evt.m_keyCode;
+
+    m_controlDown = evt.m_controlDown;
+    m_shiftDown = evt.m_shiftDown;
+    m_altDown = evt.m_altDown;
+    m_metaDown = evt.m_metaDown;
+    m_scanCode = evt.m_scanCode;
+    m_rawCode = evt.m_rawCode;
+    m_rawFlags = evt.m_rawFlags;
+        
+#if wxUSE_UNICODE
+    m_uniChar = evt.m_uniChar;
+#endif
+}
+    
 wxWindowCreateEvent::wxWindowCreateEvent(wxWindow *win)
 {
     SetEventType(wxEVT_CREATE);

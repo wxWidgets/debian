@@ -3,7 +3,7 @@
 // Purpose:     html printing classes
 // Author:      Vaclav Slavik
 // Created:     25/09/99
-// RCS-ID:      $Id: htmprint.cpp,v 1.27 2002/08/17 16:29:05 RR Exp $
+// RCS-ID:      $Id: htmprint.cpp,v 1.27.2.2 2002/11/11 00:01:23 VS Exp $
 // Copyright:   (c) Vaclav Slavik, 1999
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -269,9 +269,6 @@ void wxHtmlPrintout::SetHtmlText(const wxString& html, const wxString &basepath,
     m_BasePathIsDir = isdir;
 }
 
-// defined in htmlfilt.cpp
-void wxPrivate_ReadString(wxString& str, wxInputStream* s);
-
 void wxHtmlPrintout::SetHtmlFile(const wxString& htmlfile)
 {
     wxFileSystem fs;
@@ -283,13 +280,11 @@ void wxHtmlPrintout::SetHtmlFile(const wxString& htmlfile)
         return;
     }
 
-    wxInputStream *st = ff->GetStream();
-    wxString doc;
-    wxPrivate_ReadString(doc, st);
-
-    delete ff;
-
+    wxHtmlFilterHTML filter;
+    wxString doc = filter.ReadFile(*ff);
+    
     SetHtmlText(doc, htmlfile, FALSE);
+    delete ff;
 }
 
 

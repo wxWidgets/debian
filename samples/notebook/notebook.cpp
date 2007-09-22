@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by: Dimitri Schoolwerth
 // Created:     26/10/98
-// RCS-ID:      $Id: notebook.cpp,v 1.11 2002/08/21 15:58:49 JS Exp $
+// RCS-ID:      $Id: notebook.cpp,v 1.11.2.1 2002/11/11 13:16:15 VZ Exp $
 // Copyright:   (c) 1998-2002 wxWindows team
 // License:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -439,11 +439,13 @@ void MyFrame::OnButtonAddPage( wxCommandEvent& WXUNUSED(event) )
     static size_t s_pageAdded = 0;
 
     wxPanel *panel = new wxPanel( m_notebook, -1 );
-    (void) new wxButton( panel, -1, wxT("Button"),
+    (void) new wxButton( panel, -1, wxT("Frist button"),
         wxPoint(10, 10), wxSize(-1, -1) );
+    (void) new wxButton( panel, -1, wxT("Second button"),
+        wxPoint(50, 100), wxSize(-1, -1) );
 
     m_notebook->AddPage(panel, wxString::Format(ADDED_PAGE_NAME wxT("%u"),
-        ++s_pageAdded), FALSE, m_notebook->GetIconIndex() );
+        ++s_pageAdded), TRUE, m_notebook->GetIconIndex() );
 }
 
 void MyFrame::OnButtonInsertPage( wxCommandEvent& WXUNUSED(event) )

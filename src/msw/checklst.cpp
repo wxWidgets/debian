@@ -4,7 +4,7 @@
 // Author:      Vadim Zeitlin
 // Modified by:
 // Created:     16.11.97
-// RCS-ID:      $Id: checklst.cpp,v 1.33.2.2 2002/09/22 21:02:00 VZ Exp $
+// RCS-ID:      $Id: checklst.cpp,v 1.33.2.3 2002/11/09 00:18:55 VS Exp $
 // Copyright:   (c) 1998 Vadim Zeitlin <zeitlin@dptmaths.ens-cachan.fr>
 // Licence:     wxWindows license
 ///////////////////////////////////////////////////////////////////////////////
@@ -93,7 +93,7 @@ private:
 };
 
 wxCheckListBoxItem::wxCheckListBoxItem(wxCheckListBox *pParent, size_t nIndex)
-                  : wxOwnerDrawn("", TRUE)   // checkable
+                  : wxOwnerDrawn(wxEmptyString, TRUE)   // checkable
 {
   m_bChecked = FALSE;
   m_pParent  = pParent;

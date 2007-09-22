@@ -4,7 +4,7 @@
 // Author:      Denis Pershin
 // Modified by:
 // Created:     08/08/98
-// RCS-ID:      $Id: treectrl.h,v 1.13 2002/09/07 12:28:46 GD Exp $
+// RCS-ID:      $Id: treectrl.h,v 1.13.2.1 2002/12/29 07:48:12 RL Exp $
 // Copyright:   (c) Denis Pershin
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -251,7 +251,7 @@ public:
     wxTreeItemId GetSelection() const;
 
         // get the parent of this item (may return NULL if root)
-    wxTreeItemId GetParent(const wxTreeItemId& item) const;
+    wxTreeItemId GetItemParent(const wxTreeItemId& item) const;
 
         // for this enumeration function you must pass in a "cookie" parameter
         // which is opaque for the application but is necessary for the library

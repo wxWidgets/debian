@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     12/07/98
-// RCS-ID:      $Id: ogldiag.h,v 1.2 2002/09/07 12:10:20 GD Exp $
+// RCS-ID:      $Id: ogldiag.h,v 1.2.2.1 2002/11/19 02:13:31 RD Exp $
 // Copyright:   (c) Julian Smart
 // Licence:   	wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -67,7 +67,7 @@ public:
   // Make sure all text that should be centred, is centred.
   void RecentreAll(wxDC& dc);
 
-#ifdef PROLOGIO
+#if wxUSE_PROLOGIO
   virtual bool SaveFile(const wxString& filename);
   virtual bool LoadFile(const wxString& filename);
 

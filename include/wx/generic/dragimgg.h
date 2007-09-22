@@ -1,11 +1,11 @@
-/////////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////////
 // Name:        wx/generic/dragimgg.h
 // Purpose:     wxDragImage class: a kind of a cursor, that can cope
 //              with more sophisticated images
 // Author:      Julian Smart
 // Modified by:
 // Created:     29/2/2000
-// RCS-ID:      $Id: dragimgg.h,v 1.5 2002/08/31 11:29:12 GD Exp $
+// RCS-ID:      $Id: dragimgg.h,v 1.5.2.1 2002/11/13 08:32:19 RL Exp $
 // Copyright:   (c) Julian Smart
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -22,6 +22,7 @@
 #include "wx/cursor.h"
 #include "wx/treectrl.h"
 #include "wx/listctrl.h"
+#include "wx/log.h"
 
 /*
   To use this class, create a wxDragImage when you start dragging, for example:

@@ -5,7 +5,7 @@
 //               (derived in part from dynlib.cpp (c) 1998 Guilhem Lavaux)
 // Modified by:
 // Created:      03/12/01
-// RCS-ID:       $Id: dynload.h,v 1.9 2002/08/31 11:29:10 GD Exp $
+// RCS-ID:       $Id: dynload.h,v 1.9.2.1 2002/11/03 21:02:54 VZ Exp $
 // Copyright:    (c) 2001 Ron Lee <ron@debian.org>
 // Licence:      wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -25,7 +25,7 @@
 
 #if wxUSE_DYNAMIC_LOADER
 
-#include "wx/hash.h"
+#include "wx/hashmap.h"
 #include "wx/module.h"
 
 // FIXME: can this go in private.h or something too??
@@ -38,11 +38,10 @@
 #include "wx/msw/private.h"
 #endif
 
-// Ugh, I'd much rather this was typesafe, but no time
-// to rewrite wxHashTable right now..
+class WXDLLEXPORT wxPluginLibrary;
 
-typedef wxHashTable wxDLManifest;
-typedef wxHashTable wxDLImports;
+WX_DECLARE_EXPORTED_STRING_HASH_MAP(wxPluginLibrary *, wxDLManifest);
+typedef wxDLManifest wxDLImports;
 
 // ----------------------------------------------------------------------------
 // conditional compilation
@@ -168,7 +167,7 @@ protected:
         // no copy ctor/assignment operators
         // or we'd try to unload the library twice
 
-DECLARE_NO_COPY_CLASS(wxDynamicLibrary)
+    DECLARE_NO_COPY_CLASS(wxDynamicLibrary)
 };
 
 
@@ -234,7 +233,7 @@ private:
     void    RegisterModules();      // Init any wxModules in the lib.
     void    UnregisterModules();    // Cleanup any wxModules we installed.
 
-DECLARE_NO_COPY_CLASS(wxPluginLibrary)
+    DECLARE_NO_COPY_CLASS(wxPluginLibrary)
 };
 
 
@@ -257,7 +256,7 @@ public:
 
         // Instance methods.
 
-    wxPluginManager() : m_entry(0) {};
+    wxPluginManager() : m_entry(NULL) {};
     wxPluginManager(const wxString &libname, int flags = wxDL_DEFAULT)
     {
         Load(libname, flags);
@@ -277,14 +276,21 @@ public:
     static void ClearManifest() { delete ms_manifest; ms_manifest = NULL; }
 
 private:
+    // return the pointer to the entry for the library with given name in
+    // ms_manifest or NULL if none
+    static wxPluginLibrary *FindByName(const wxString& name)
+    {
+        const wxDLManifest::iterator i = ms_manifest->find(name);
+
+        return i == ms_manifest->end() ? NULL : i->second;
+    }
 
     static wxDLManifest* ms_manifest;  // Static hash of loaded libs.
     wxPluginLibrary*     m_entry;      // Cache our entry in the manifest.
 
     // We could allow this class to be copied if we really
     // wanted to, but not without modification.
-
-DECLARE_NO_COPY_CLASS(wxPluginManager)
+    DECLARE_NO_COPY_CLASS(wxPluginManager)
 };
 
 

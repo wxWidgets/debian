@@ -4,7 +4,7 @@
 // Author:      Vadim Zeitlin
 // Modified by:
 // Created:     05.11.99
-// RCS-ID:      $Id: fontutil.h,v 1.19 2002/08/31 11:29:10 GD Exp $
+// RCS-ID:      $Id: fontutil.h,v 1.19.2.1 2002/11/09 15:20:31 RR Exp $
 // Copyright:   (c) wxWindows team
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -72,7 +72,9 @@ enum wxXLFDField
 //     further it might make sense to make it a real class with virtual methods
 struct WXDLLEXPORT wxNativeFontInfo
 {
-#if defined(_WX_X_FONTLIKE)
+#if wxUSE_PANGO
+    PangoFontDescription *description;
+#elif defined(_WX_X_FONTLIKE)
     // the members can't be accessed directly as we only parse the
     // xFontName on demand
 private:
@@ -113,8 +115,6 @@ public:
     FATTRS       fa;
     FONTMETRICS  fm;
     FACENAMEDESC fn;
-#elif defined(__WXGTK20__)
-    PangoFontDescription *description;
 #else // other platforms
     //
     //  This is a generic implementation that should work on all ports

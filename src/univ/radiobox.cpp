@@ -4,7 +4,7 @@
 // Author:      Vadim Zeitlin
 // Modified by:
 // Created:     11.09.00
-// RCS-ID:      $Id: radiobox.cpp,v 1.7 2001/12/25 23:35:11 VS Exp $
+// RCS-ID:      $Id: radiobox.cpp,v 1.7.2.1 2003/01/03 12:13:17 JS Exp $
 // Copyright:   (c) 2000 SciTech Software, Inc. (www.scitechsoft.com)
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -35,6 +35,8 @@
     #include "wx/radiobut.h"
     #include "wx/validate.h"
 #endif
+
+#include "wx/tooltip.h"
 
 #include "wx/univ/theme.h"
 #include "wx/univ/renderer.h"
@@ -340,6 +342,23 @@ void wxRadioBox::SetLabel(const wxString& label)
 {
     wxStaticBox::SetLabel(label);
 }
+
+#if wxUSE_TOOLTIPS
+void wxRadioBox::DoSetToolTip(wxToolTip *tooltip)
+{
+    wxControl::DoSetToolTip(tooltip);
+
+    // Also set them for all Radio Buttons
+    size_t count = m_buttons.GetCount();
+    for ( size_t n = 0; n < count; n++ )
+    {
+        if (tooltip)
+            m_buttons[n]->SetToolTip(tooltip->GetTip());
+        else
+            m_buttons[n]->SetToolTip(NULL);
+    }
+}
+#endif // wxUSE_TOOLTIPS
 
 // ----------------------------------------------------------------------------
 // buttons positioning

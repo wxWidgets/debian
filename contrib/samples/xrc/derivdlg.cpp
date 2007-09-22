@@ -2,7 +2,7 @@
 // Name:        derivdlg.cpp
 // Purpose:     XML resources sample: A derived dialog
 // Author:      Robert O'Connor (rob@medicalmnemonics.com), Vaclav Slavik
-// RCS-ID:      $Id: derivdlg.cpp,v 1.1 2002/08/16 11:24:46 JS Exp $
+// RCS-ID:      $Id: derivdlg.cpp,v 1.1.2.1 2002/11/09 23:18:16 VS Exp $
 // Copyright:   (c) Robert O'Connor and Vaclav Slavik
 // Licence:     wxWindows licence
 //-----------------------------------------------------------------------------
@@ -61,7 +61,7 @@ END_EVENT_TABLE()
 // Constructor (Notice how small and easy it is)
 PreferencesDialog::PreferencesDialog(wxWindow* parent)
 {    
-    wxXmlResource::Get()->LoadDialog(this, parent, "derived_dialog");                                                            
+    wxXmlResource::Get()->LoadDialog(this, parent, wxT("derived_dialog"));
 }
 
 // Destructor. (Empty, as I don't need anything special done when destructing).

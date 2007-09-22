@@ -2,7 +2,7 @@
 // Name:        gtk/dataobj.h
 // Purpose:     declaration of the wxDataObject
 // Author:      Robert Roebling
-// RCS-ID:      $Id: dataobj.h,v 1.19 2002/09/07 12:28:46 GD Exp $
+// RCS-ID:      $Id: dataobj.h,v 1.19.2.1 2002/11/25 01:51:00 VZ Exp $
 // Copyright:   (c) 1998, 1999 Vadim Zeitlin, Robert Roebling
 // Licence:     wxWindows license
 ///////////////////////////////////////////////////////////////////////////////
@@ -22,10 +22,8 @@ class wxDataObject : public wxDataObjectBase
 {
 public:
     wxDataObject();
-#ifdef __DARWIN__
-    virtual ~wxDataObject() { }
-#endif
-    
+    virtual ~wxDataObject();
+
     virtual bool IsSupportedFormat( const wxDataFormat& format, Direction dir = Get ) const;
 };
 

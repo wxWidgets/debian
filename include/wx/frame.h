@@ -4,7 +4,7 @@
 // Author:      Vadim Zeitlin
 // Modified by:
 // Created:     15.11.99
-// RCS-ID:      $Id: frame.h,v 1.28 2002/08/31 11:29:10 GD Exp $
+// RCS-ID:      $Id: frame.h,v 1.28.2.1 2002/10/02 23:33:01 VZ Exp $
 // Copyright:   (c) wxWindows team
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -86,8 +86,10 @@ public:
     virtual wxMenuBar *GetMenuBar() const { return m_frameMenuBar; }
 #endif // wxUSE_MENUS
 
+#ifdef WXWIN_COMPATIBILITY_2_2
     // call this to simulate a menu command
     bool Command(int id) { return ProcessCommand(id); }
+#endif // WXWIN_COMPATIBILITY_2_2
 
     // process menu command: returns TRUE if processed
     bool ProcessCommand(int id);

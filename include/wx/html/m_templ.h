@@ -2,7 +2,7 @@
 // Name:        m_templ.h
 // Purpose:     Modules template file
 // Author:      Vaclav Slavik
-// RCS-ID:      $Id: m_templ.h,v 1.4 2001/07/05 18:48:47 VZ Exp $
+// RCS-ID:      $Id: m_templ.h,v 1.4.2.1 2002/11/09 00:05:58 VS Exp $
 // Copyright:   (c) Vaclav Slavik
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -32,7 +32,7 @@ I STRONGLY recommend reading and understanding these macros!!
     class HTML_Handler_##name : public wxHtmlWinTagHandler                \
     {                                                                     \
         public:                                                           \
-            wxString GetSupportedTags() {return tags;}
+            wxString GetSupportedTags() {return wxT(tags);}
 
 
 

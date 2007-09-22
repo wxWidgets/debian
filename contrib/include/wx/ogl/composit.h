@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     12/07/98
-// RCS-ID:      $Id: composit.h,v 1.2 2002/09/07 12:10:20 GD Exp $
+// RCS-ID:      $Id: composit.h,v 1.2.2.1 2002/11/19 02:13:32 RD Exp $
 // Copyright:   (c) Julian Smart
 // Licence:   	wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -77,7 +77,7 @@ public:
   // Calculates size and position of composite object based on children
   void CalculateSize();
 
-#ifdef PROLOGIO
+#if wxUSE_PROLOGIO
   void WriteAttributes(wxExpr *clause);
   void ReadAttributes(wxExpr *clause);
   // In case the object has constraints it needs to read in in a different pass
@@ -152,7 +152,7 @@ class wxDivisionShape: public wxCompositeShape
   void MakeMandatoryControlPoints();
   void ResetMandatoryControlPoints();
 
-#ifdef PROLOGIO
+#if wxUSE_PROLOGIO
   void WriteAttributes(wxExpr *clause);
   void ReadAttributes(wxExpr *clause);
 #endif

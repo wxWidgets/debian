@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     12/07/98
-// RCS-ID:      $Id: bmpshape.cpp,v 1.2 2001/10/30 13:31:59 GT Exp $
+// RCS-ID:      $Id: bmpshape.cpp,v 1.2.2.2 2002/12/18 06:12:59 RD Exp $
 // Copyright:   (c) Julian Smart
 // Licence:   	wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -41,7 +41,7 @@ IMPLEMENT_DYNAMIC_CLASS(wxBitmapShape, wxShape)
 
 wxBitmapShape::wxBitmapShape():wxRectangleShape(100.0, 50.0)
 {
-  m_filename = "";
+  m_filename = wxEmptyString;
 }
 
 wxBitmapShape::~wxBitmapShape()
@@ -52,7 +52,7 @@ void wxBitmapShape::OnDraw(wxDC& dc)
 {
   if (!m_bitmap.Ok())
     return;
-    
+
   wxMemoryDC tempDC;
   tempDC.SelectObject(m_bitmap);
   double x, y;
@@ -76,7 +76,7 @@ void wxBitmapShape::SetSize(double w, double h, bool recursive)
   SetDefaultRegionSize();
 }
 
-#ifdef PROLOGIO
+#if wxUSE_PROLOGIO
 void wxBitmapShape::WriteAttributes(wxExpr *clause)
 {
   // Can't really save the bitmap; so instantiate the bitmap

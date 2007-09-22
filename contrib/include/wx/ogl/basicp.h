@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     12/07/98
-// RCS-ID:      $Id: basicp.h,v 1.2 2002/09/07 12:10:20 GD Exp $
+// RCS-ID:      $Id: basicp.h,v 1.2.2.2 2002/12/18 06:11:26 RD Exp $
 // Copyright:   (c) Julian Smart
 // Licence:   	wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -22,7 +22,7 @@ class wxShapeTextLine: public wxObject
 {
  DECLARE_DYNAMIC_CLASS(wxShapeTextLine)
 public:
-   wxShapeTextLine(double the_x = 0.0, double the_y = 0.0, const wxString& the_line = "");
+   wxShapeTextLine(double the_x = 0.0, double the_y = 0.0, const wxString& the_line = wxEmptyString);
    ~wxShapeTextLine();
 
    inline double GetX() const { return m_x; }
@@ -136,7 +136,8 @@ class wxShapeRegion: public wxObject
   ~wxShapeRegion();
 
   // Accessors
-  inline void SetText(const wxString& s) { m_regionText = s; }
+  inline void SetText(const wxString& s)
+    { m_regionText = s; m_formattedText.Append(new wxShapeTextLine(0,0,s));}
   void SetFont(wxFont *f);
   void SetMinSize(double w, double h);
   void SetSize(double w, double h);

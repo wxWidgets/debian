@@ -4,7 +4,7 @@
 // Author:      Harm van der Heijden, Robert Roebling, Julian Smart
 // Modified by:
 // Created:     12/12/98
-// RCS-ID:      $Id: dirctrlg.cpp,v 1.48 2002/09/06 14:42:47 JS Exp $
+// RCS-ID:      $Id: dirctrlg.cpp,v 1.48.2.2 2002/12/29 07:48:17 RL Exp $
 // Copyright:   (c) Harm van der Heijden, Robert Roebling and Julian Smart
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -70,7 +70,9 @@
 
 #define INCL_BASE
 #include <os2.h>
+#ifndef __EMX__
 #include <direct.h>
+#endif
 #include <stdlib.h>
 #include <ctype.h>
 
@@ -685,7 +687,7 @@ void wxGenericDirCtrl::OnBeginEditItem(wxTreeEvent &event)
     }
 
     // don't rename the individual sections
-    if (m_treeCtrl->GetParent( event.GetItem() ) == m_rootId)
+    if (m_treeCtrl->GetItemParent( event.GetItem() ) == m_rootId)
     {
         event.Veto();
         return;

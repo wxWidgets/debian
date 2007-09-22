@@ -2,7 +2,7 @@
 // Name:        popupwin.cpp
 // Purpose:
 // Author:      Robert Roebling
-// Id:          $Id: popupwin.cpp,v 1.6 2002/06/06 19:35:51 RR Exp $
+// Id:          $Id: popupwin.cpp,v 1.6.2.1 2002/10/29 21:48:06 RR Exp $
 // Copyright:   (c) 1998 Robert Roebling
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -160,7 +160,7 @@ bool wxPopupWindow::Create( wxWindow *parent, int style )
     m_needParent = FALSE;
 
     if (!PreCreation( parent, wxDefaultPosition, wxDefaultSize ) ||
-        !CreateBase( parent, -1, wxDefaultPosition, wxDefaultSize, style, wxDefaultValidator, "popup" ))
+        !CreateBase( parent, -1, wxDefaultPosition, wxDefaultSize, style, wxDefaultValidator, wxT("popup") ))
     {
         wxFAIL_MSG( wxT("wxPopupWindow creation failed") );
         return FALSE;

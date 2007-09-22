@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     04/01/98
-// RCS-ID:      $Id: listtest.h,v 1.31 2002/05/26 10:53:51 VZ Exp $
+// RCS-ID:      $Id: listtest.h,v 1.31.2.2 2002/11/04 22:25:55 VZ Exp $
 // Copyright:   (c) Julian Smart and Markus Holzem
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -58,6 +58,7 @@ private:
     void SetColumnImage(int col, int image);
 
     void LogEvent(const wxListEvent& event, const wxChar *eventName);
+    void LogColEvent(const wxListEvent& event, const wxChar *eventName);
 
     virtual wxString OnGetItemText(long item, long column) const;
     virtual int OnGetItemImage(long item) const;
@@ -72,13 +73,10 @@ private:
 class MyFrame: public wxFrame
 {
 public:
-    MyListCtrl *m_listCtrl;
-    wxTextCtrl *m_logWindow;
-
     MyFrame(const wxChar *title, int x, int y, int w, int h);
     ~MyFrame();
 
-public:
+protected:
     void OnSize(wxSizeEvent& event);
 
     void OnQuit(wxCommandEvent& event);
@@ -112,6 +110,10 @@ public:
 
     wxImageList *m_imageListNormal;
     wxImageList *m_imageListSmall;
+
+    wxPanel *m_panel;
+    MyListCtrl *m_listCtrl;
+    wxTextCtrl *m_logWindow;
 
 private:
     // recreate the list control with the new flags

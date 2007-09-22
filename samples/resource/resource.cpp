@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     04/01/98
-// RCS-ID:      $Id: resource.cpp,v 1.12 2002/03/27 18:44:50 VZ Exp $
+// RCS-ID:      $Id: resource.cpp,v 1.12.2.1 2002/12/02 19:53:20 VZ Exp $
 // Copyright:   (c) Julian Smart and Markus Holzem
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -22,6 +22,10 @@
 
 #ifndef WX_PRECOMP
 #include "wx/wx.h"
+#endif
+
+#if !wxUSE_RESOURCES
+    #error "You should set wxUSE_RESOURCES to 1 to compile this sample"
 #endif
 
 #if wxUSE_UNICODE

@@ -4,7 +4,7 @@
 // Author:      Guilhem Lavaux
 // Modified by:
 // Created:     17/07/97
-// RCS-ID:      $Id: sckstrm.cpp,v 1.9 1999/09/15 00:17:15 GRG Exp $
+// RCS-ID:      $Id: sckstrm.cpp,v 1.9.6.1 2002/11/04 19:31:57 VZ Exp $
 // Copyright:   (c)
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -44,17 +44,11 @@ wxSocketOutputStream::~wxSocketOutputStream()
 
 size_t wxSocketOutputStream::OnSysWrite(const void *buffer, size_t size)
 {
-  size_t ret;
+  size_t ret = m_o_socket->Write((const char *)buffer, size).LastCount();
 
-  ret = m_o_socket->Write((const char *)buffer, size).LastCount();
-
-  if (m_o_socket->Error())
-    m_lasterror = wxStream_WRITE_ERR;
-  else
-    m_lasterror = wxStream_NOERROR;
+  m_lasterror = m_o_socket->Error() ? wxSTREAM_WRITE_ERROR : wxSTREAM_NO_ERROR;
 
   return ret;
-
 }
 
 // ---------------------------------------------------------------------------
@@ -72,14 +66,9 @@ wxSocketInputStream::~wxSocketInputStream()
 
 size_t wxSocketInputStream::OnSysRead(void *buffer, size_t size)
 {
-  size_t ret;
+  size_t ret = m_i_socket->Read((char *)buffer, size).LastCount();
 
-  ret = m_i_socket->Read((char *)buffer, size).LastCount();
-
-  if (m_i_socket->Error())
-    m_lasterror = wxStream_READ_ERR;
-  else
-    m_lasterror = wxStream_NOERROR;
+  m_lasterror = m_i_socket->Error() ? wxSTREAM_READ_ERROR : wxSTREAM_NO_ERROR;
 
   return ret;
 }

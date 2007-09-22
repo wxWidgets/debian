@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     04/01/98
-// RCS-ID:      $Id: doc.cpp,v 1.11 2002/03/17 14:15:40 VZ Exp $
+// RCS-ID:      $Id: doc.cpp,v 1.11.2.1 2002/12/14 14:23:07 MBN Exp $
 // Copyright:   (c) Julian Smart and Markus Holzem
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -177,16 +177,16 @@ wxOutputStream &DoodleSegment::SaveObject(wxOutputStream& stream)
     wxTextOutputStream text_stream( stream );
     
     wxInt32 n = lines.Number();
-    text_stream << n << '\n';
+    text_stream << n << _T('\n');
     
     wxNode *node = lines.First();
     while (node)
     {
         DoodleLine *line = (DoodleLine *)node->Data();
-        text_stream << line->x1 << " " << 
-            line->y1 << " " << 
-            line->x2 << " " << 
-            line->y2 << "\n";
+        text_stream << line->x1 << _T(" ") << 
+            line->y1 << _T(" ") << 
+            line->x2 << _T(" ") << 
+            line->y2 << _T("\n");
         node = node->Next();
     }
     

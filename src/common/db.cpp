@@ -16,7 +16,7 @@
 //                -Set ODBC option to only read committed writes to the DB so all
 //                   databases operate the same in that respect
 // Created:     9.96
-// RCS-ID:      $Id: db.cpp,v 1.76 2002/08/16 12:43:07 JS Exp $
+// RCS-ID:      $Id: db.cpp,v 1.76.2.2 2002/12/09 10:49:00 JS Exp $
 // Copyright:   (c) 1996 Remstar International, Inc.
 // Licence:     wxWindows licence, plus:
 // Notice:      This class library and its intellectual design are free of charge for use,
@@ -3576,8 +3576,16 @@ bool wxDb::ModifyColumn(const wxString &tableName, const wxString &columnName,
     }
 
     // create the SQL statement
-    sqlStmt.Printf(wxT("ALTER TABLE \"%s\" \"%s\" \"%s\" %s"), tableName.c_str(), alterSlashModify.c_str(),
+    if ( Dbms() == dbmsMY_SQL )
+    {
+        sqlStmt.Printf(wxT("ALTER TABLE %s %s %s %s"), tableName.c_str(), alterSlashModify.c_str(),
               columnName.c_str(), dataTypeName.c_str());
+    }
+    else
+    {
+        sqlStmt.Printf(wxT("ALTER TABLE \"%s\" \"%s\" \"%s\" %s"), tableName.c_str(), alterSlashModify.c_str(),
+              columnName.c_str(), dataTypeName.c_str());
+    }
 
     // For varchars only, append the size of the column
     if (dataType == DB_DATA_TYPE_VARCHAR &&
@@ -3750,7 +3758,7 @@ int WXDLLEXPORT wxDbConnectionsInUse(void)
 
 /********** wxDbLogExtendedErrorMsg() **********/
 // DEBUG ONLY function
-const wxChar WXDLLEXPORT *wxDbLogExtendedErrorMsg(const wxChar *userText,
+const wxChar* WXDLLEXPORT wxDbLogExtendedErrorMsg(const wxChar *userText,
                                                   wxDb *pDb,
                                                   const wxChar *ErrFile,
                                                   int ErrLine)

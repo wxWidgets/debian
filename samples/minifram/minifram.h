@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     23/07/98
-// RCS-ID:      $Id: minifram.h,v 1.2 2002/03/17 14:15:44 VZ Exp $
+// RCS-ID:      $Id: minifram.h,v 1.2.2.1 2002/12/15 17:25:12 MBN Exp $
 // Copyright:   (c) Julian Smart and Robert Roebling
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -23,7 +23,7 @@ class MyApp: public wxApp
 class MyMiniFrame: public wxMiniFrame
 {
 public:
-    MyMiniFrame(wxFrame *parent, wxWindowID id = -1, const wxString& title = "wxToolBar Sample",
+    MyMiniFrame(wxFrame *parent, wxWindowID id = -1, const wxString& title = _T("wxToolBar Sample"),
         const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxDefaultSize );
 
     void OnCloseWindow(wxCloseEvent& event);
@@ -36,7 +36,7 @@ DECLARE_EVENT_TABLE()
 class MyMainFrame: public wxFrame
 {
 public:
-    MyMainFrame(wxFrame *parent, wxWindowID id = -1, const wxString& title = "wxToolBar Sample",
+    MyMainFrame(wxFrame *parent, wxWindowID id = -1, const wxString& title = _T("wxToolBar Sample"),
         const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxDefaultSize );
 
     void OnCloseWindow(wxCloseEvent& event);

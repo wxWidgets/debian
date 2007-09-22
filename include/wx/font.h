@@ -4,7 +4,7 @@
 // Author:      Vadim Zeitlin
 // Modified by:
 // Created:     20.09.99
-// RCS-ID:      $Id: font.h,v 1.32 2002/08/31 11:29:10 GD Exp $
+// RCS-ID:      $Id: font.h,v 1.32.2.2 2002/10/28 01:51:41 RR Exp $
 // Copyright:   (c) wxWindows team
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -141,6 +141,10 @@ public:
     wxString GetStyleString() const;
     wxString GetWeightString() const;
 
+    // Unofficial API, don't use
+    virtual void SetNoAntiAliasing( bool no = TRUE ) {  }
+    virtual bool GetNoAntiAliasing() { return FALSE; }
+
     // the default encoding is used for creating all fonts with default
     // encoding parameter
     static wxFontEncoding GetDefaultEncoding() { return ms_encodingDefault; }
@@ -150,7 +154,7 @@ protected:
     // get the internal data
     wxFontRefData *GetFontData() const
         { return (wxFontRefData *)m_refData; }
-
+    
 private:
     // the currently default encoding: by default, it's the default system
     // encoding, but may be changed by the application using

@@ -3,7 +3,7 @@
 // Purpose:
 // Author:      Robert Roebling
 // Created:     01/02/97
-// Id:          $Id: combobox.h,v 1.30 2002/09/07 12:28:46 GD Exp $
+// Id:          $Id: combobox.h,v 1.30.2.1 2002/10/13 21:01:15 RR Exp $
 // Copyright:   (c) 1998 Robert Roebling
 // Licence:   	wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -107,6 +107,8 @@ public:
     void SetEditable( bool editable );
   
     // implementation
+    
+    virtual void SetFocus();
     
     void OnSize( wxSizeEvent &event );
     void OnChar( wxKeyEvent &event );

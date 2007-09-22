@@ -4,7 +4,7 @@
 // Author:      Julian Smart and others
 // Modified by:
 // Created:     01/02/97
-// RCS-ID:      $Id: cmndata.h,v 1.31 2002/08/31 11:29:09 GD Exp $
+// RCS-ID:      $Id: cmndata.h,v 1.31.2.1 2002/12/03 14:39:32 SC Exp $
 // Copyright:   (c)
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -218,9 +218,11 @@ public:
 #elif defined(__WXMAC__)
     void*           m_macPageFormat ;
     void*           m_macPrintSettings ;
+    void*			m_macPrintSession ;
 #endif
 
 private:
+
     int             m_printNoCopies;
     int             m_printOrientation;
     bool            m_printCollate;

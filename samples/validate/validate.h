@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     04/01/98
-// RCS-ID:      $Id: validate.h,v 1.3 1999/02/25 14:46:57 VZ Exp $
+// RCS-ID:      $Id: validate.h,v 1.3.8.1 2002/12/14 14:23:10 MBN Exp $
 // Copyright:   (c) Julian Smart and Markus Holzem
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -24,7 +24,7 @@ public:
 class MyFrame : public wxFrame
 {
 public:
-    MyFrame(wxFrame *frame, const char *title, int x, int y, int w, int h);
+    MyFrame(wxFrame *frame, const wxChar *title, int x, int y, int w, int h);
 
     void OnQuit(wxCommandEvent& event);
     void OnTestDialog(wxCommandEvent& event);
@@ -45,7 +45,7 @@ class MyData
 public:
     wxString m_string;
 
-    MyData() { m_string = "My string"; }
+    MyData() { m_string = _T("My string"); }
 };
 
 #define VALIDATE_DIALOG_ID      200

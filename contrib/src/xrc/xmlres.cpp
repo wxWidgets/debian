@@ -3,7 +3,7 @@
 // Purpose:     XRC resources
 // Author:      Vaclav Slavik
 // Created:     2000/03/05
-// RCS-ID:      $Id: xmlres.cpp,v 1.22.2.2 2002/09/25 11:10:39 VS Exp $
+// RCS-ID:      $Id: xmlres.cpp,v 1.22.2.10 2002/12/28 18:32:12 JS Exp $
 // Copyright:   (c) 2000 Vaclav Slavik
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -146,7 +146,6 @@ void wxXmlResource::ClearHandlers()
 }
 
 
-
 wxMenu *wxXmlResource::LoadMenu(const wxString& name)
 {
     return (wxMenu*)CreateResFromNode(FindResource(name, wxT("wxMenu")), NULL, NULL);
@@ -261,7 +260,7 @@ static void ProcessPlatformProperty(wxXmlNode *node)
             isok = TRUE;
         else
         {
-            wxStringTokenizer tkn(s, " |");
+            wxStringTokenizer tkn(s, wxT(" |"));
 
             while (tkn.HasMoreTokens())
             {
@@ -408,10 +407,25 @@ wxXmlNode *wxXmlResource::DoFindResource(wxXmlNode *parent,
         if ( node->GetType() == wxXML_ELEMENT_NODE &&
                  (node->GetName() == wxT("object") ||
                   node->GetName() == wxT("object_ref")) &&
-                (!classname ||
-                 node->GetPropVal(wxT("class"), wxEmptyString) == classname) &&
-                node->GetPropVal(wxT("name"), &dummy) && dummy == name )
-            return node;
+             node->GetPropVal(wxT("name"), &dummy) && dummy == name )
+        {
+            wxString cls(node->GetPropVal(wxT("class"), wxEmptyString));
+            if (!classname || cls == classname)
+                return node;
+            // object_ref may not have 'class' property:
+            if (cls.empty() && node->GetName() == wxT("object_ref"))
+            {
+                wxString refName = node->GetPropVal(wxT("ref"), wxEmptyString);
+                if (refName.empty())
+                    continue;
+                wxXmlNode* refNode = FindResource(refName, wxEmptyString, TRUE);
+                if (refNode &&
+                    refNode->GetPropVal(wxT("class"), wxEmptyString) == classname)
+                {
+                    return node;
+                }
+            }
+        }
     }
 
     if ( recursive )
@@ -487,7 +501,7 @@ static void MergeNodes(wxXmlNode& dest, wxXmlNode& with)
         for (dnode = dest.GetChildren(); dnode; dnode = dnode->GetNext() )
         {
             if ( dnode->GetName() == node->GetName() &&
-                 dnode->GetPropVal("name", wxEmptyString) == name &&
+                 dnode->GetPropVal(wxT("name"), wxEmptyString) == name &&
                  dnode->GetType() == node->GetType() )
             {
                 MergeNodes(*dnode, *node);
@@ -673,7 +687,7 @@ int wxXmlResourceHandler::GetStyle(const wxString& param, int defaults)
 
     if (!s) return defaults;
 
-    wxStringTokenizer tkn(s, wxT("| "), wxTOKEN_STRTOK);
+    wxStringTokenizer tkn(s, wxT("| \t\n"), wxTOKEN_STRTOK);
     int style = 0;
     int index;
     wxString fl;
@@ -885,6 +899,8 @@ wxIcon wxXmlResourceHandler::GetIcon(const wxString& param,
 
 wxXmlNode *wxXmlResourceHandler::GetParamNode(const wxString& param)
 {
+    wxCHECK_MSG(m_node, NULL, wxT("You can't access handler data before it was initialized!"));
+
     wxXmlNode *n = m_node->GetChildren();
 
     while (n)
@@ -1094,7 +1110,7 @@ void wxXmlResourceHandler::CreateChildren(wxObject *parent, bool this_hnd_only)
     while (n)
     {
         if (n->GetType() == wxXML_ELEMENT_NODE &&
-            n->GetName() == wxT("object"))
+           (n->GetName() == wxT("object") || n->GetName() == wxT("object_ref")))
         {
             if (this_hnd_only && CanHandle(n))
                 CreateResource(n, parent, NULL);
@@ -1166,9 +1182,20 @@ static XRCID_record *XRCID_Records[XRCID_TABLE_SIZE] = {NULL};
     XRCID_record **rec_var = (oldrec == NULL) ?
                               &XRCID_Records[index] : &oldrec->next;
     *rec_var = new XRCID_record;
-    (*rec_var)->id = ++XRCID_LastID;
     (*rec_var)->key = wxStrdup(str_id);
     (*rec_var)->next = NULL;
+
+    wxChar *end;
+    int asint = wxStrtol(str_id, &end, 10);
+    if (*str_id && *end == 0)
+    {
+        // if str_id was integer, keep it verbosely:
+        (*rec_var)->id = asint;
+    }
+    else
+    {
+        (*rec_var)->id = ++XRCID_LastID;
+    }
 
     return (*rec_var)->id;
 }

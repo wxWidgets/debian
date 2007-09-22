@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by: VZ on 14.12.99 during wxToolBarSimple reorganization
 // Created:     04/01/98
-// RCS-ID:      $Id: tbarsmpl.cpp,v 1.19.2.1 2002/09/20 08:21:00 JS Exp $
+// RCS-ID:      $Id: tbarsmpl.cpp,v 1.19.2.2 2002/12/16 10:50:49 JS Exp $
 // Copyright:   (c) Julian Smart and Markus Holzem
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -86,7 +86,7 @@ public:
 
 IMPLEMENT_DYNAMIC_CLASS(wxToolBarSimple, wxToolBarBase)
 
-#if !wxUSE_TOOLBAR_NATIVE
+#if !defined(wxUSE_TOOLBAR_NATIVE) && !defined(__WXUNIVERSAL__)
     #include "wx/toolbar.h"
 
     IMPLEMENT_DYNAMIC_CLASS(wxToolBar, wxToolBarSimple)

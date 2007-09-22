@@ -2,7 +2,7 @@
 // Name:        custclass.cpp
 // Purpose:     XML resources sample: A custom class to insert into a XRC file
 // Author:      Robert O'Connor (rob@medicalmnemonics.com), Vaclav Slavik
-// RCS-ID:      $Id: custclas.cpp,v 1.1 2002/08/16 11:24:46 JS Exp $
+// RCS-ID:      $Id: custclas.cpp,v 1.1.2.1 2002/11/09 23:18:16 VS Exp $
 // Copyright:   (c) Robert O'Connor and Vaclav Slavik
 // Licence:     wxWindows licence
 //-----------------------------------------------------------------------------
@@ -156,7 +156,7 @@ void MyResizableListCtrl::SetColumnWidths()
     
     // This is just a debug message in case you want to watch the 
     // events scroll by as you resize.
-    wxLogDebug( "Successfully set column widths" );
+    wxLogDebug( wxT("Successfully set column widths") );
 }
 
 

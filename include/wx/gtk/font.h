@@ -2,7 +2,7 @@
 // Name:        font.h
 // Purpose:
 // Author:      Robert Roebling
-// Id:          $Id: font.h,v 1.22 2002/09/07 12:28:46 GD Exp $
+// Id:          $Id: font.h,v 1.22.2.1 2002/10/28 01:51:44 RR Exp $
 // Copyright:   (c) 1998 Robert Roebling, Julian Smart and Markus Holzem
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -96,6 +96,9 @@ public:
     virtual void SetEncoding(wxFontEncoding encoding);
     virtual void SetNativeFontInfo( const wxNativeFontInfo& info );
 
+    virtual void SetNoAntiAliasing( bool no = TRUE );
+    virtual bool GetNoAntiAliasing();
+    
     // implementation from now on
     void Unshare();
 

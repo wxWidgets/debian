@@ -4,7 +4,7 @@
 // Purpose:     Part of the widgets sample showing wxNotebook
 // Author:      Vadim Zeitlin
 // Created:     06.04.01
-// Id:          $Id: notebook.cpp,v 1.5.2.1 2002/09/20 00:11:49 VZ Exp $
+// Id:          $Id: notebook.cpp,v 1.5.2.2 2002/12/27 15:01:58 JS Exp $
 // Copyright:   (c) 2001 Vadim Zeitlin
 // License:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -133,6 +133,10 @@ protected:
 
     // get the numeric value of text ctrl
     int GetTextValue(wxTextCtrl *text) const;
+
+    // is the value in range?
+    bool IsValidValue(int val) const
+        { return (val >= 0) && (val < m_notebook->GetPageCount()); }
 
     // the controls
     // ------------
@@ -458,7 +462,7 @@ void NotebookWidgetsPage::OnButtonDeleteAll(wxCommandEvent& WXUNUSED(event))
 void NotebookWidgetsPage::OnButtonSelectPage(wxCommandEvent& event)
 {
     int pos = GetTextValue(m_textSelect);
-    wxCHECK_RET( pos >= 0, _T("button should be disabled") );
+    wxCHECK_RET( IsValidValue(pos), _T("button should be disabled") );
 
     m_notebook->SetSelection(pos);
 }
@@ -472,7 +476,7 @@ void NotebookWidgetsPage::OnButtonAddPage(wxCommandEvent& WXUNUSED(event))
 void NotebookWidgetsPage::OnButtonInsertPage(wxCommandEvent& WXUNUSED(event))
 {
     int pos = GetTextValue(m_textInsert);
-    wxCHECK_RET( pos >= 0, _T("button should be disabled") );
+    wxCHECK_RET( IsValidValue(pos), _T("button should be disabled") );
 
     m_notebook->InsertPage(pos, CreateNewPage(), _T("Inserted page"), FALSE,
                            GetIconIndex());
@@ -481,24 +485,24 @@ void NotebookWidgetsPage::OnButtonInsertPage(wxCommandEvent& WXUNUSED(event))
 void NotebookWidgetsPage::OnButtonRemovePage(wxCommandEvent& WXUNUSED(event))
 {
     int pos = GetTextValue(m_textRemove);
-    wxCHECK_RET( pos >= 0, _T("button should be disabled") );
+    wxCHECK_RET( IsValidValue(pos), _T("button should be disabled") );
 
     m_notebook->DeletePage(pos);
 }
 
 void NotebookWidgetsPage::OnUpdateUISelectButton(wxUpdateUIEvent& event)
 {
-    event.Enable( GetTextValue(m_textSelect) >= 0 );
+    event.Enable( IsValidValue(GetTextValue(m_textSelect)) );
 }
 
 void NotebookWidgetsPage::OnUpdateUIInsertButton(wxUpdateUIEvent& event)
 {
-    event.Enable( GetTextValue(m_textInsert) >= 0 );
+    event.Enable( IsValidValue(GetTextValue(m_textInsert)) );
 }
 
 void NotebookWidgetsPage::OnUpdateUIRemoveButton(wxUpdateUIEvent& event)
 {
-    event.Enable( GetTextValue(m_textRemove) >= 0 );
+    event.Enable( IsValidValue(GetTextValue(m_textRemove)) );
 }
 
 void NotebookWidgetsPage::OnUpdateUIResetButton(wxUpdateUIEvent& event)

@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     12/07/98
-// RCS-ID:      $Id: lines.cpp,v 1.6 2002/03/15 20:50:39 RD Exp $
+// RCS-ID:      $Id: lines.cpp,v 1.6.2.3 2002/12/28 18:32:07 JS Exp $
 // Copyright:   (c) Julian Smart
 // Licence:   	wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -29,12 +29,6 @@
 
 #ifdef new
 #undef new
-#endif
-
-#if wxUSE_IOSTREAMH
-#include <iostream.h>
-#else
-#include <iostream>
 #endif
 
 #include <ctype.h>
@@ -77,17 +71,17 @@ wxLineShape::wxLineShape()
   // and make the three line regions.
   ClearRegions();
   wxShapeRegion *newRegion = new wxShapeRegion;
-  newRegion->SetName("Middle");
+  newRegion->SetName(wxT("Middle"));
   newRegion->SetSize(150, 50);
   m_regions.Append((wxObject *)newRegion);
 
   newRegion = new wxShapeRegion;
-  newRegion->SetName("Start");
+  newRegion->SetName(wxT("Start"));
   newRegion->SetSize(150, 50);
   m_regions.Append((wxObject *)newRegion);
 
   newRegion = new wxShapeRegion;
-  newRegion->SetName("End");
+  newRegion->SetName(wxT("End"));
   newRegion->SetSize(150, 50);
   m_regions.Append((wxObject *)newRegion);
 
@@ -234,7 +228,7 @@ void wxLineShape::FormatText(wxDC& dc, const wxString& s, int i)
   node = string_list->First();
   while (node)
   {
-    char *s = (char *)node->Data();
+    wxChar *s = (wxChar *)node->Data();
     wxShapeTextLine *line = new wxShapeTextLine(0.0, 0.0, s);
     region->GetFormattedText().Append((wxObject *)line);
     node = node->Next();
@@ -1373,7 +1367,7 @@ void wxLineShape::ResetControlPoints()
   }
 }
 
-#ifdef PROLOGIO
+#if wxUSE_PROLOGIO
 void wxLineShape::WriteAttributes(wxExpr *clause)
 {
   wxShape::WriteAttributes(clause);

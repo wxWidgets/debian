@@ -2,7 +2,7 @@
 // Name:        listbox.cpp
 // Purpose:
 // Author:      Robert Roebling
-// Id:          $Id: listbox.cpp,v 1.123 2002/09/04 13:45:39 VZ Exp $
+// Id:          $Id: listbox.cpp,v 1.123.2.1 2002/10/29 21:48:04 RR Exp $
 // Copyright:   (c) 1998 Robert Roebling
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -1057,7 +1057,7 @@ wxSize wxListBox::DoGetBestSize() const
 
     // And just a bit more
     int cx, cy;
-    GetTextExtent("X", &cx, &cy);
+    GetTextExtent( wxT("X"), &cx, &cy);
     lbWidth += 3 * cx;
 
     // don't make the listbox too tall (limit height to around 10 items) but don't

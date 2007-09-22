@@ -4,7 +4,7 @@
 // Author:      Guilhem Lavaux
 // Modified by:
 // Created:     26/04/97
-// RCS-ID:      $Id: sckaddr.cpp,v 1.33 2002/05/08 13:19:14 GD Exp $
+// RCS-ID:      $Id: sckaddr.cpp,v 1.33.2.2 2002/11/09 10:53:27 RR Exp $
 // Copyright:   (c) 1997, 1998 Guilhem Lavaux
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -136,7 +136,7 @@ bool wxIPV4address::Hostname(unsigned long addr)
   if (rv)
       m_origHostname = Hostname();
   else
-      m_origHostname = "";
+      m_origHostname = wxEmptyString;
   return rv;
 }
 
@@ -166,7 +166,7 @@ wxString wxIPV4address::Hostname()
 
    hostname[0] = 0;
    GAddress_INET_GetHostName(m_address, hostname, 1024);
-   return wxString(hostname);
+   return wxString::FromAscii(hostname);
 }
 
 unsigned short wxIPV4address::Service()
@@ -268,7 +268,8 @@ wxString wxUNIXaddress::Filename()
 
   path[0] = 0;
   GAddress_UNIX_GetPath(m_address, path, 1024);
-  return wxString(path);
+  
+  return wxString::FromAscii(path);
 }
 
 #endif // __UNIX__

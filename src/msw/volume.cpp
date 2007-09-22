@@ -4,7 +4,7 @@
 // Author:      George Policello
 // Modified by:
 // Created:     28 Jan 02
-// RCS-ID:      $Id: volume.cpp,v 1.12 2002/09/08 10:28:15 JS Exp $
+// RCS-ID:      $Id: volume.cpp,v 1.12.2.1 2002/11/09 00:24:13 VS Exp $
 // Copyright:   (c) 2002 George Policello
 // Licence:     wxWindows license
 ///////////////////////////////////////////////////////////////////////////////
@@ -422,7 +422,7 @@ wxArrayString wxFSVolume::GetVolumes(int flagsSet, int flagsUnset)
     {
 #ifdef UNICODE
         s_pWNetOpenEnum = (WNetOpenEnumPtr)s_mprLib.GetSymbol(_T("WNetOpenEnumW"));
-        s_pWNetEnumResource = (WNetEnumResourcePtr)s_mprLib.GetSymbol("WNetEnumResourceW");
+        s_pWNetEnumResource = (WNetEnumResourcePtr)s_mprLib.GetSymbol(_T("WNetEnumResourceW"));
 #else
         s_pWNetOpenEnum = (WNetOpenEnumPtr)s_mprLib.GetSymbol(_T("WNetOpenEnumA"));
         s_pWNetEnumResource = (WNetEnumResourcePtr)s_mprLib.GetSymbol(_T("WNetEnumResourceA"));

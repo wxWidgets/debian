@@ -2,7 +2,7 @@
 // Name:        mgl/timer.cpp
 // Purpose:     wxTimer implementation
 // Author:      Vaclav Slavik
-// Id:          $Id: timer.cpp,v 1.3 2002/09/01 17:02:36 JS Exp $
+// Id:          $Id: timer.cpp,v 1.3.2.1 2002/11/09 15:20:36 RR Exp $
 // Copyright:   (c) 2001-2002 SciTech Software, Inc. (www.scitechsoft.com)
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -90,7 +90,7 @@ void wxTimerScheduler::QueueTimer(wxTimerDesc *desc, unsigned long when)
     desc->shotTime = when;
     desc->running = TRUE;
 
-    wxLogTrace("timer", "queued timer %p at tick %ld", 
+    wxLogTrace( wxT("timer"), wxT("queued timer %p at tick %ld"), 
                desc->timer, (long) when);
 
     if ( m_timers )
@@ -143,7 +143,7 @@ void wxTimerScheduler::NotifyTimers()
             
             if ( !timerDeleted )
             {
-                wxLogTrace("timer", "notified timer %p sheduled for %ld", 
+                wxLogTrace( wxT("timer"), wxT("notified timer %p sheduled for %ld"), 
                            desc->timer, (long) desc->shotTime);
 
                 desc->deleteFlag = NULL;
@@ -172,7 +172,7 @@ void wxTimer::Init()
 
 wxTimer::~wxTimer()
 {
-    wxLogTrace("timer", "destroying timer %p...", this);
+    wxLogTrace( wxT("timer"), wxT("destroying timer %p..."), this);
     if ( IsRunning() )
         Stop();
 
@@ -184,7 +184,7 @@ wxTimer::~wxTimer()
         *m_desc->deleteFlag = TRUE;
 
     delete m_desc;
-    wxLogTrace("timer", "    ...done destroying timer %p...", this);
+    wxLogTrace( wxT("timer"), wxT("    ...done destroying timer %p..."), this);
 }
 
 bool wxTimer::IsRunning() const
@@ -194,7 +194,7 @@ bool wxTimer::IsRunning() const
 
 bool wxTimer::Start(int millisecs, bool oneShot)
 {
-    wxLogTrace("timer", "started timer %p: %i ms, oneshot=%i", 
+    wxLogTrace( wxT("timer"), wxT("started timer %p: %i ms, oneshot=%i"), 
                this, millisecs, oneShot);
 
     if ( !wxTimerBase::Start(millisecs, oneShot) )

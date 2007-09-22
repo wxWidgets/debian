@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     11/6/98
-// RCS-ID:      $Id: automtn.cpp,v 1.24 2002/09/08 14:46:17 JS Exp $
+// RCS-ID:      $Id: automtn.cpp,v 1.24.2.3 2003/01/03 14:57:33 JS Exp $
 // Copyright:   (c) 1998, Julian Smart
 // Licence:     wxWindows Licence
 /////////////////////////////////////////////////////////////////////////////
@@ -183,6 +183,8 @@ bool wxAutomationObject::Invoke(const wxString& member, int action,
 	if (FAILED(hr)) 
 	{
 //		ShowException(szMember, hr, NULL, 0);
+        delete[] argNames;
+        delete[] dispIds;
 		return FALSE;
 	}
 
@@ -201,7 +203,12 @@ bool wxAutomationObject::Invoke(const wxString& member, int action,
 	{
 		// Again, reverse args
 		if (!ConvertVariantToOle(INVOKEARG((noArgs-1) - i), oleArgs[i]))
-			return FALSE; // TODO: clean up memory at this point
+        {
+	        delete[] argNames;
+	        delete[] dispIds;
+            delete[] oleArgs;
+			return FALSE;
+        }
 	}
 
 	dispparams.rgdispidNamedArgs = dispIds + 1;
@@ -833,12 +840,15 @@ static BSTR ConvertStringToOle(const wxString& str)
 
 static wxString ConvertStringFromOle(BSTR bStr)
 {
+#if wxUSE_UNICODE
+    wxString str(bStr);
+#else
 	int len = SysStringLen(bStr) + 1;
 	char    *buf = new char[len];
 	(void)wcstombs( buf, bStr, len);
-
-	wxString str(buf);
+	wxString str(buf); 
 	delete[] buf;
+#endif
 	return str;
 }
 

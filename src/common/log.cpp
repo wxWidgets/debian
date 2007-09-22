@@ -4,7 +4,7 @@
 // Author:      Vadim Zeitlin
 // Modified by:
 // Created:     29/01/98
-// RCS-ID:      $Id: log.cpp,v 1.128.2.1 2002/09/26 08:52:09 SC Exp $
+// RCS-ID:      $Id: log.cpp,v 1.128.2.2 2003/01/01 05:04:49 RD Exp $
 // Copyright:   (c) 1998 Vadim Zeitlin <zeitlin@dptmaths.ens-cachan.fr>
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -844,6 +844,8 @@ wxLog          *wxLog::ms_pLogger      = (wxLog *)NULL;
 bool            wxLog::ms_doLog        = TRUE;
 bool            wxLog::ms_bAutoCreate  = TRUE;
 bool            wxLog::ms_bVerbose     = FALSE;
+
+wxLogLevel      wxLog::ms_logLevel     = wxLOG_Max;  // log everything by default
 
 size_t          wxLog::ms_suspendCount = 0;
 

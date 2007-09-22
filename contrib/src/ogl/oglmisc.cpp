@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     12/07/98
-// RCS-ID:      $Id: oglmisc.cpp,v 1.3 2001/10/30 13:32:00 GT Exp $
+// RCS-ID:      $Id: oglmisc.cpp,v 1.3.2.1 2002/12/28 18:32:09 JS Exp $
 // Copyright:   (c) Julian Smart
 // Licence:   	wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -32,11 +32,6 @@
 #undef new
 #endif
 
-#if wxUSE_IOSTREAMH
-#include <iostream.h>
-#else
-#include <iostream>
-#endif
 #include <ctype.h>
 #include <math.h>
 #include <stdlib.h>

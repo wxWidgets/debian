@@ -1,4 +1,4 @@
-/* $Header: /home/karsten/CVSSERVER/wxcvs/wxWindows/src/tiff/tif_apple.c,v 1.1 1999/11/30 18:42:28 RR Exp $ */
+/* $Header: /pack/cvsroots/wxwindows/wxWindows/src/tiff/tif_apple.c,v 1.1.6.1 2002/11/10 13:13:54 JS Exp $ */
 
 /*
  * Copyright (c) 1988-1997 Sam Leffler

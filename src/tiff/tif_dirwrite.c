@@ -1,4 +1,4 @@
-/* $Header: /home/karsten/CVSSERVER/wxcvs/wxWindows/src/tiff/tif_dirwrite.c,v 1.1 1999/11/30 18:42:30 RR Exp $ */
+/* $Header: /pack/cvsroots/wxwindows/wxWindows/src/tiff/tif_dirwrite.c,v 1.1.6.1 2002/11/10 13:13:55 JS Exp $ */
 
 /*
  * Copyright (c) 1988-1997 Sam Leffler

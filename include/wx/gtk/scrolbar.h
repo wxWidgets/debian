@@ -2,7 +2,7 @@
 // Name:        scrolbar.h
 // Purpose:
 // Author:      Robert Roebling
-// Id:          $Id: scrolbar.h,v 1.14 2002/09/07 12:28:46 GD Exp $
+// Id:          $Id: scrolbar.h,v 1.14.2.1 2002/10/20 18:21:36 RR Exp $
 // Copyright:   (c) 1998 Robert Roebling
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -12,7 +12,7 @@
 #define __GTKSCROLLBARH__
 
 #if defined(__GNUG__) && !defined(__APPLE__)
-#pragma interface
+#pragma interface "scrolbar.h"
 #endif
 
 #include "wx/defs.h"

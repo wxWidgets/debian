@@ -115,13 +115,13 @@ All (GUI):
 wxMSW:
 
 ! build system changed: setup.h is not a static file in include/wx any more
-  but is created as part of the build process under lib/<toolkit>/wx/include
+  but is created as part of the build process under lib/<toolkit>/wx
   where <toolkit> is of the form (msw|univ)[dll][u][d]. You'll need to update
   the include path in your make/project files appropriately. Furthermore,
   xpm.lib is no longer used by wxMSW, it was superseded by the wxXPMDecoder
   class. You'll need to remove all references to xpm.lib from your
   make/project files. Finally, the library names have changed as well and now
-  use the following consistent naming convention: wxmsw[u][d][ver].(lib|dll)
+  use the following consistent naming convention: wxmsw[ver][u][d].(lib|dll)
   where 'u' appears for Unicode version, 'd' -- for the debug one and version
   is only present for the DLLs builds.
 
@@ -173,10 +173,50 @@ OTHER CHANGES
 2.4.0
 -----
 
+wxMSW:
+
+- fixed loss of client data in wxChoice::SetString()
+
+wxGTK:
+
+- fixed wxMenu::Remove (John Skiff and Benjamin Williams)
+
+All:
+
+- Improved contrib/utils/convertrc parsing (David J. Cooke)
+- Fixed handling of URLs and filenames in wxFileSystem
+- Implemented alignment for wxGrid bool editor and renderer
+
+2.3.4
+-----
+
+All:
+
+- added (partial) Indonesian translations (Bambang Purnomosidi D. P.)
+- added wxSizer::Show()/Hide() (Carl Godkin)
+- fixed bugs in wxDateTime::SetToWeekDay()/GetWeek()
+
 Unix (Base/GUI):
 
 - minor OpenBSD compilation/linking fixes, now builds OOB under OpenBSD 3.1
 - don't include -I/usr/include nor -I/usr/local/include in wx-config output
+- shared library symbols are now versioned on platforms that support it (Linux)
+
+wxGTK:
+- Further work for GTK 2.0 and Unicode support.
+- Addition of native frame site grip.
+
+wxX11:
+- Unicode support through Pango library.
+
+wxMSW:
+
+- fixed crashes in wxListCtrl under XP
+- added context menu for rich edit wxTextCtrl
+
+wxHTML:
+
+- fixed wxHTML to work in Unicode build
 
 2.3.3
 -----

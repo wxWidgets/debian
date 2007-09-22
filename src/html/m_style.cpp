@@ -2,7 +2,7 @@
 // Name:        m_style.cpp
 // Purpose:     wxHtml module for parsing <style> tag
 // Author:      Vaclav Slavik
-// RCS-ID:      $Id: m_style.cpp,v 1.2 2002/02/07 18:46:28 KLB Exp $
+// RCS-ID:      $Id: m_style.cpp,v 1.2.2.3 2002/11/09 00:07:35 VS Exp $
 // Copyright:   (c) 2002 Vaclav Slavik
 // Licence:     wxWindows Licence
 /////////////////////////////////////////////////////////////////////////////
@@ -17,7 +17,7 @@
 #include "wx/defs.h"
 #if wxUSE_HTML && wxUSE_STREAMS
 
-#ifdef __BORDLANDC__
+#ifdef __BORLANDC__
 #pragma hdrstop
 #endif
 

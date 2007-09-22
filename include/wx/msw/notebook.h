@@ -3,7 +3,7 @@
 // Purpose:     MSW/GTK compatible notebook (a.k.a. property sheet)
 // Author:      Robert Roebling
 // Modified by: Vadim Zeitlin for Windows version
-// RCS-ID:      $Id: notebook.h,v 1.30 2002/08/16 00:48:45 VZ Exp $
+// RCS-ID:      $Id: notebook.h,v 1.30.2.3 2002/11/17 10:08:08 MBN Exp $
 // Copyright:   (c) Julian Smart and Markus Holzem
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -40,14 +40,14 @@ public:
              const wxPoint& pos = wxDefaultPosition,
              const wxSize& size = wxDefaultSize,
              long style = 0,
-             const wxString& name = "notebook");
+             const wxString& name = wxNOTEBOOK_NAME);
     // Create() function
   bool Create(wxWindow *parent,
               wxWindowID id,
               const wxPoint& pos = wxDefaultPosition,
               const wxSize& size = wxDefaultSize,
               long style = 0,
-              const wxString& name = "notebook");
+              const wxString& name = wxNOTEBOOK_NAME);
 
   // accessors
   // ---------
@@ -133,10 +133,8 @@ protected:
   // remove one page from the notebook, without deleting
   virtual wxNotebookPage *DoRemovePage(int nPage);
 
-  // helper functions
-  void ChangePage(int nOldSel, int nSel); // change pages
-
-  int m_nSelection;           // the current selection (-1 if none)
+  // the current selection (-1 if none)
+  int m_nSelection;
 
   DECLARE_DYNAMIC_CLASS(wxNotebook)
   DECLARE_EVENT_TABLE()

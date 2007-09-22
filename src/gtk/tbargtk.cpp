@@ -3,7 +3,7 @@
 // Purpose:     GTK toolbar
 // Author:      Robert Roebling
 // Modified:    13.12.99 by VZ to derive from wxToolBarBase
-// RCS-ID:      $Id: tbargtk.cpp,v 1.77.2.1 2002/09/17 10:40:23 VZ Exp $
+// RCS-ID:      $Id: tbargtk.cpp,v 1.77.2.3 2002/10/28 00:21:00 RR Exp $
 // Copyright:   (c) Robert Roebling
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -278,6 +278,10 @@ bool wxToolBar::Create( wxWindow *parent,
 #ifdef __WXGTK20__
     m_toolbar = GTK_TOOLBAR( gtk_toolbar_new() );
     GtkSetStyle();
+    
+    // Doesn't work this way.
+    // GtkToolbarSpaceStyle space_style = GTK_TOOLBAR_SPACE_EMPTY;
+    // gtk_widget_style_set (GTK_WIDGET (m_toolbar), "space_style", &space_style, NULL);
 #else
     GtkOrientation orient;
     GtkToolbarStyle gtkStyle;
@@ -374,9 +378,13 @@ bool wxToolBar::DoInsertTool(size_t pos, wxToolBarToolBase *toolBase)
 {
     wxToolBarTool *tool = (wxToolBarTool *)toolBase;
 
+#ifndef __WXGTK20__
     // if we have inserted a space before all the tools we must change the GTK
     // index by 1
     size_t posGtk = m_xMargin > 1 ? pos + 1 : pos;
+#else
+    size_t posGtk = pos;
+#endif
 
     if ( tool->IsButton() )
     {
@@ -467,7 +475,7 @@ bool wxToolBar::DoInsertTool(size_t pos, wxToolBarToolBase *toolBase)
 
                     return FALSE;
                 }
-
+                
                 gtk_signal_connect( GTK_OBJECT(tool->m_item),
                                     "enter_notify_event",
                                     GTK_SIGNAL_FUNC(gtk_toolbar_tool_callback),
@@ -590,8 +598,10 @@ void wxToolBar::SetMargins( int x, int y )
     wxCHECK_RET( GetToolsCount() == 0,
                  wxT("wxToolBar::SetMargins must be called before adding tools.") );
 
+#ifndef __WXGTK20__
     if (x > 1)
         gtk_toolbar_append_space( m_toolbar );  // oh well
+#endif
 
     m_xMargin = x;
     m_yMargin = y;

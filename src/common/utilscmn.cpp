@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     29/01/98
-// RCS-ID:      $Id: utilscmn.cpp,v 1.93.2.1 2002/09/19 20:28:57 RR Exp $
+// RCS-ID:      $Id: utilscmn.cpp,v 1.93.2.7 2002/12/16 23:08:31 RD Exp $
 // Copyright:   (c) 1998 Julian Smart
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -98,134 +98,9 @@
     const wxChar *wxFatalErrorStr = wxT("wxWindows Fatal Error");
 #endif // WXWIN_COMPATIBILITY_2_2
 
-// ----------------------------------------------------------------------------
-// function protoypes
-// ----------------------------------------------------------------------------
-
 // ============================================================================
 // implementation
 // ============================================================================
-
-// ----------------------------------------------------------------------------
-// string functions
-// ----------------------------------------------------------------------------
-
-#if defined(__WXMAC__) && !defined(__DARWIN__)
-int strcasecmp(const char *str_1, const char *str_2)
-{
-  register char c1, c2;
-  do {
-    c1 = tolower(*str_1++);
-    c2 = tolower(*str_2++);
-  } while ( c1 && (c1 == c2) );
-
-  return c1 - c2;
-}
-
-int strncasecmp(const char *str_1, const char *str_2, size_t maxchar)
-{
-
-  register char c1, c2;
-  while( maxchar--)
-  {
-    c1 = tolower(*str_1++);
-    c2 = tolower(*str_2++);
-
-    if ( !c1 || c1!=c2 )
-                  return c1 - c2;
-
-  } ;
-
-  return 0 ;
-
-}
-#endif // __WXMAC__ && !__DARWIN__
-
-#if defined( __VMS__ ) && ( __VMS_VER < 70000000 )
-// we have no strI functions under VMS, therefore I have implemented
-// an inefficient but portable version: convert copies of strings to lowercase
-// and then use the normal comparison
-static void myLowerString(char *s)
-{
-  while(*s){
-    if(isalpha(*s)) *s = (char)tolower(*s);
-    s++;
-  }
-}
-
-int strcasecmp(const char *str_1, const char *str_2)
-{
-  char *temp1 = new char[strlen(str_1)+1];
-  char *temp2 = new char[strlen(str_2)+1];
-  strcpy(temp1,str_1);
-  strcpy(temp2,str_2);
-  myLowerString(temp1);
-  myLowerString(temp2);
-
-  int result = wxStrcmp(temp1,temp2);
-  delete[] temp1;
-  delete[] temp2;
-
-  return(result);
-}
-
-int strncasecmp(const char *str_1, const char *str_2, size_t maxchar)
-{
-  char *temp1 = new char[strlen(str_1)+1];
-  char *temp2 = new char[strlen(str_2)+1];
-  strcpy(temp1,str_1);
-  strcpy(temp2,str_2);
-  myLowerString(temp1);
-  myLowerString(temp2);
-
-  int result = strncmp(temp1,temp2,maxchar);
-  delete[] temp1;
-  delete[] temp2;
-
-  return(result);
-}
-#endif // __VMS__
-
-#if defined(__WINDOWS__) && !defined(__WXMICROWIN__) && !defined(__WXWINE__)
-
-#ifndef __GNUWIN32__
-#ifndef __MWERKS__
-#define strcasecmp stricmp
-#define strncasecmp strnicmp
-#else
-#define strcasecmp _stricmp
-#define strncasecmp _strnicmp
-#endif
-#endif
-
-#else
-
-#ifdef __EMX__
-#define strcasecmp stricmp
-#define strncasecmp strnicmp
-#endif
-
-// This declaration is missing in SunOS!
-// (Yes, I know it is NOT ANSI-C but its in BSD libc)
-#if defined(__xlC) || defined(__AIX__) 
-// || defined(__GNUG__)
-extern "C"
-{
-  int strcasecmp (const char *, const char *);
-  int strncasecmp (const char *, const char *, size_t);
-}
-#endif
-#endif  /* __WXMSW__ */
-
-#ifdef __WXPM__
-#define strcasecmp stricmp
-#define strncasecmp strnicmp
-#endif
-
-#ifdef __WATCOMC__
-#define strcasecmp stricmp
-#define strncasecmp strnicmp
-#endif
 
 wxChar *
 copystring (const wxChar *s)
@@ -361,9 +236,9 @@ wxString wxDecToHex(int dec)
     return wxString(buf);
 }
 
-// Match a string INDEPENDENT OF CASE
+#if WXWIN_COMPATIBILITY_2
 bool
-StringMatch (const char *str1, const char *str2, bool subString, bool exact)
+StringMatch (const wxChar *str1, const wxChar *str2, bool subString, bool exact)
 {
   if (str1 == NULL || str2 == NULL)
     return FALSE;
@@ -372,43 +247,44 @@ StringMatch (const char *str1, const char *str2, bool subString, bool exact)
 
   if (subString)
     {
-      int len1 = strlen (str1);
-      int len2 = strlen (str2);
+      int len1 = wxStrlen (str1);
+      int len2 = wxStrlen (str2);
       int i;
 
       // Search for str1 in str2
       // Slow .... but acceptable for short strings
       for (i = 0; i <= len2 - len1; i++)
         {
-          if (strncasecmp (str1, str2 + i, len1) == 0)
+          if (wxStrnicmp (str1, str2 + i, len1) == 0)
             return TRUE;
         }
     }
   else if (exact)
     {
-      if (strcasecmp (str1, str2) == 0)
+      if (wxStricmp (str1, str2) == 0)
         return TRUE;
     }
   else
     {
-      int len1 = strlen (str1);
-      int len2 = strlen (str2);
+      int len1 = wxStrlen (str1);
+      int len2 = wxStrlen (str2);
 
-      if (strncasecmp (str1, str2, wxMin (len1, len2)) == 0)
+      if (wxStrnicmp (str1, str2, wxMin (len1, len2)) == 0)
         return TRUE;
     }
 
   return FALSE;
 }
+#endif
 
 // Return the current date/time
 // [volatile]
 wxString wxNow()
 {
-  time_t now = time((time_t *) NULL);
-  char *date = ctime(&now);
-  date[24] = '\0';
-  return wxString(date);
+    time_t now = time((time_t *) NULL);
+    char *date = ctime(&now);
+    date[24] = '\0';
+    return wxString::FromAscii(date);
 }
 
 #if wxUSE_GUI
@@ -996,11 +872,15 @@ wxWindowDisabler::~wxWindowDisabler()
 
 // Yield to other apps/messages and disable user input to all windows except
 // the given one
-bool wxSafeYield(wxWindow *win)
+bool wxSafeYield(wxWindow *win, bool onlyIfNeeded)
 {
     wxWindowDisabler wd(win);
 
-    bool rc = wxYield();
+    bool rc;
+    if (onlyIfNeeded)
+        rc = wxYieldIfNeeded();
+    else
+        rc = wxYield();
 
     return rc;
 }
@@ -1024,13 +904,13 @@ bool wxSetDetectableAutoRepeat( bool WXUNUSED(flag) )
 const wxChar *wxGetInstallPrefix()
 {
     wxString prefix;
-    
+
     if ( wxGetEnv(wxT("WXPREFIX"), &prefix) )
         return prefix.c_str();
-    
+
 #ifdef wxINSTALL_PREFIX
     return wxT(wxINSTALL_PREFIX);
-#else 
+#else
     return wxT("");
 #endif
 }
@@ -1186,6 +1066,38 @@ wxString wxGetCurrentDir()
 // wxExecute
 // ----------------------------------------------------------------------------
 
+// wxDoExecuteWithCapture() helper: reads an entire stream into one array
+//
+// returns TRUE if ok, FALSE if error
+static bool ReadAll(wxInputStream *is, wxArrayString& output)
+{
+    wxCHECK_MSG( is, FALSE, _T("NULL stream in wxExecute()?") );
+
+    // the stream could be already at EOF or in wxSTREAM_BROKEN_PIPE state
+    is->Reset();
+
+    wxTextInputStream tis(*is);
+
+    bool cont = TRUE;
+    while ( cont )
+    {
+        wxString line = tis.ReadLine();
+        if ( is->Eof() )
+            break;
+
+        if ( !*is )
+        {
+            cont = FALSE;
+        }
+        else
+        {
+            output.Add(line);
+        }
+    }
+
+    return cont;
+}
+
 // this is a private function because it hasn't a clean interface: the first
 // array is passed by reference, the second by pointer - instead we have 2
 // public versions of wxExecute() below
@@ -1207,51 +1119,15 @@ static long wxDoExecuteWithCapture(const wxString& command,
 #if wxUSE_STREAMS
     if ( rc != -1 )
     {
-        wxInputStream* is = process->GetInputStream();
-        wxCHECK_MSG( is, -1, _T("if wxExecute() succeded, stream can't be NULL") );
-        wxTextInputStream tis(*is);
+        if ( !ReadAll(process->GetInputStream(), output) )
+            rc = -1;
 
-        wxTextInputStream *tes = NULL;
-        wxInputStream *es = NULL;
         if ( error )
         {
-            es = process->GetErrorStream();
-
-            wxCHECK_MSG( es, -1, _T("stderr can't be NULL") );
-
-            tes = new wxTextInputStream(*es);
+            if ( !ReadAll(process->GetErrorStream(), *error) )
+                rc = -1;
         }
 
-        bool cont;
-        do
-        {
-            cont = FALSE;
-
-            if ( !is->Eof() && is->IsOk() )
-            {
-                wxString line = tis.ReadLine();
-                if ( is->LastError() )
-                    break;
-
-                cont = TRUE;
-
-                output.Add(line);
-            }
-
-            if ( error && !es->Eof() && es->IsOk() )
-            {
-                wxString line = tes->ReadLine();
-                if ( es->LastError() )
-                    break;
-
-                cont = TRUE;
-
-                error->Add(line);
-            }
-        }
-        while ( cont );
-
-        delete tes;
     }
 #endif // wxUSE_STREAMS
 

@@ -3,7 +3,7 @@
 // Author:      Vadim Zeitlin, Robert Roebling
 // Modified by:
 // Created:     06.08.00
-// RCS-ID:      $Id: metal.cpp,v 1.6 2002/06/05 23:13:34 VZ Exp $
+// RCS-ID:      $Id: metal.cpp,v 1.6.2.1 2002/11/03 19:09:02 RR Exp $
 // Copyright:   (c) 2000 SciTech Software, Inc. (www.scitechsoft.com)
 // Licence:     wxWindows license
 ///////////////////////////////////////////////////////////////////////////////
@@ -157,7 +157,7 @@ private:
     bool GetOrCreateTheme()
     {
         if ( !m_win32Theme )
-            m_win32Theme = wxTheme::Create("win32");
+            m_win32Theme = wxTheme::Create( wxT("win32") );
         return m_win32Theme != NULL;
     }
 private:

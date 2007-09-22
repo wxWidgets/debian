@@ -2,7 +2,7 @@
 // Name:        wx/gtk/frame.h
 // Purpose:
 // Author:      Robert Roebling
-// Id:          $Id: frame.h,v 1.67 2002/09/07 12:28:46 GD Exp $
+// Id:          $Id: frame.h,v 1.67.2.2 2002/10/01 15:13:43 RL Exp $
 // Copyright:   (c) 1998 Robert Roebling, Julian Smart
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -84,6 +84,7 @@ public:
     virtual void OnInternalIdle();
 
     bool          m_menuBarDetached;
+    int           m_menuBarHeight;
     bool          m_toolBarDetached;
 
 protected:
@@ -95,8 +96,14 @@ protected:
     virtual void DoGetClientSize( int *width, int *height ) const;
 
 #if wxUSE_MENUS_NATIVE
+
     virtual void DetachMenuBar();
     virtual void AttachMenuBar(wxMenuBar *menubar);
+
+public:
+    // Menu size is dynamic now, call this whenever it might change.
+    void UpdateMenuBarSize();
+
 #endif // wxUSE_MENUS_NATIVE
 
     DECLARE_DYNAMIC_CLASS(wxFrame)

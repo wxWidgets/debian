@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     12/07/98
-// RCS-ID:      $Id: basic.h,v 1.5 2002/09/07 12:10:20 GD Exp $
+// RCS-ID:      $Id: basic.h,v 1.5.2.2 2002/12/18 06:11:26 RD Exp $
 // Copyright:   (c) Julian Smart
 // Licence:   	wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -20,11 +20,6 @@
 
 #ifndef DEFAULT_MOUSE_TOLERANCE
 #define DEFAULT_MOUSE_TOLERANCE 3
-#endif
-
-// Edit these lines if you positively don't want PROLOGIO support
-#ifndef PROLOGIO
-#define PROLOGIO
 #endif
 
 // Key identifiers
@@ -110,7 +105,7 @@ class wxControlPoint;
 class wxShapeRegion;
 class wxShape;
 
-#ifdef PROLOGIO
+#if wxUSE_PROLOGIO
 class WXDLLEXPORT wxExpr;
 class WXDLLEXPORT wxExprDatabase;
 #endif
@@ -358,7 +353,7 @@ class wxShape: public wxShapeEvtHandler
   virtual int GetRegionId(const wxString& name);
 
   // Construct names for regions, unique even for children of a composite.
-  virtual void NameRegions(const wxString& parentName = "");
+  virtual void NameRegions(const wxString& parentName = wxEmptyString);
 
   // Get list of regions
   inline wxList& GetRegions() const { return (wxList&) m_regions; }
@@ -381,7 +376,7 @@ class wxShape: public wxShapeEvtHandler
   virtual void ClearText(int regionId = 0);
   void RemoveLine(wxLineShape *line);
 
-#ifdef PROLOGIO
+#if wxUSE_PROLOGIO
   // I/O
   virtual void WriteAttributes(wxExpr *clause);
   virtual void ReadAttributes(wxExpr *clause);
@@ -613,7 +608,7 @@ class wxPolygonShape: public wxShape
   // Recalculates the centre of the polygon
   virtual void CalculatePolygonCentre();
 
-#ifdef PROLOGIO
+#if wxUSE_PROLOGIO
   void WriteAttributes(wxExpr *clause);
   void ReadAttributes(wxExpr *clause);
 #endif
@@ -652,7 +647,7 @@ class wxRectangleShape: public wxShape
   void SetSize(double x, double y, bool recursive = TRUE);
   void SetCornerRadius(double rad); // If > 0, rounded corners
 
-#ifdef PROLOGIO
+#if wxUSE_PROLOGIO
   void WriteAttributes(wxExpr *clause);
   void ReadAttributes(wxExpr *clause);
 #endif
@@ -682,8 +677,8 @@ class wxTextShape: public wxRectangleShape
 
   void OnDraw(wxDC& dc);
 
-#ifdef PROLOGIO
-  void WriteAttributes(wxExpr *clause);
+#if wxUSE_PROLOGIO
+    void WriteAttributes(wxExpr *clause);
 #endif
 
   // Does the copying for this object
@@ -704,7 +699,7 @@ class wxEllipseShape: public wxShape
   void OnDraw(wxDC& dc);
   void SetSize(double x, double y, bool recursive = TRUE);
 
-#ifdef PROLOGIO
+#if wxUSE_PROLOGIO
   void WriteAttributes(wxExpr *clause);
   void ReadAttributes(wxExpr *clause);
 #endif

@@ -4,7 +4,7 @@
 // Author:      Vadim Zeitlin
 // Modified by:
 // Created:     08.12.99
-// RCS-ID:      $Id: dir.cpp,v 1.8 2002/08/10 11:54:51 RR Exp $
+// RCS-ID:      $Id: dir.cpp,v 1.8.2.1 2002/09/30 16:56:13 RR Exp $
 // Copyright:   (c) 1999 Vadim Zeitlin <zeitlin@dptmaths.ens-cachan.fr>
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -172,13 +172,9 @@ bool wxDirData::Read(wxString *filename)
         }
         else
         {
-#if wxUSE_UNICODE
-            matches = TRUE;  // FIXME
-#else
             // test against the pattern
             matches = wxMatchWild(m_filespec, de_d_name,
                                   !(m_flags & wxDIR_HIDDEN));
-#endif
         }
     }
 

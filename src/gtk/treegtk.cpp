@@ -4,7 +4,7 @@
 // Author:      Denis Pershin
 // Modified by:
 // Created:     07/05/98
-// RCS-ID:      $Id: treegtk.cpp,v 1.3 1999/12/14 23:44:22 VS Exp $
+// RCS-ID:      $Id: treegtk.cpp,v 1.3.6.1 2002/12/29 07:48:20 RL Exp $
 // Copyright:   (c) Denis Pershin
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -315,7 +315,7 @@ wxTreeItemId wxTreeCtrl::GetSelection() const {
   return p;
 }
 
-wxTreeItemId wxTreeCtrl::GetParent(const wxTreeItemId& item) const {
+wxTreeItemId wxTreeCtrl::GetItemParent(const wxTreeItemId& item) const {
   if (item.IsOk())
     return (GtkTreeItem *)gtk_object_get_data(GTK_OBJECT((GtkTreeItem *)item), "parent");
 

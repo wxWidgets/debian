@@ -4,7 +4,7 @@
 // Author:      Vadim Zeitlin
 // Modified by:
 // Created:     04.12.99
-// RCS-ID:      $Id: listctrl.h,v 1.47 2002/08/31 11:29:10 GD Exp $
+// RCS-ID:      $Id: listctrl.h,v 1.47.2.1 2002/10/29 21:47:17 RR Exp $
 // Copyright:   (c) wxWindows team
 // Licence:     wxWindows licence
 ///////////////////////////////////////////////////////////////////////////////
@@ -44,7 +44,7 @@ public:
                 const wxSize& size = wxDefaultSize,
                 long style = wxLC_REPORT,
                 const wxValidator& validator = wxDefaultValidator,
-                const wxString &name = "listctrl" )
+                const wxString &name = wxT("listctrl") )
     {
         Create(parent, id, pos, size, style, validator, name);
     }

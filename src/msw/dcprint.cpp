@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     01/02/97
-// RCS-ID:      $Id: dcprint.cpp,v 1.31 2002/09/05 19:59:34 JS Exp $
+// RCS-ID:      $Id: dcprint.cpp,v 1.31.2.1 2002/10/22 21:34:22 JS Exp $
 // Copyright:   (c) Julian Smart and Markus Holzem
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -435,7 +435,7 @@ void wxPrinterDC::DoDrawBitmap(const wxBitmap &bmp,
         memset( info, 0, sizeof( BITMAPINFOHEADER ) );
 
 #if wxUSE_DRAWBITMAP_24BITS
-        int iBitsSize = ((width + 3 ) & ~3 ) * height * 3;
+        int iBitsSize = (((width * 3) + 3 ) & ~3 ) * height;
 #else
         int iBitsSize = ((width + 3 ) & ~3 ) * height ;
 #endif

@@ -5,7 +5,7 @@
 // Author:      Joerg Baumann and Robin Dunn
 //
 // Created:     25-Sept-2000
-// RCS-ID:      $Id: streams.i,v 1.12 2002/07/20 00:10:46 RD Exp $
+// RCS-ID:      $Id: streams.i,v 1.12.2.2 2002/12/18 06:15:25 RD Exp $
 // Copyright:   (c) 2000 by Joerg Baumann
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -61,7 +61,7 @@
     if ($source) {
         _ptr = new wxPyInputStream($source);
     }
-    $target = wxPyConstructObject(_ptr, "wxInputStream", TRUE);
+    $target = wxPyConstructObject(_ptr, wxT("wxInputStream"), TRUE);
 }
 
 //----------------------------------------------------------------------
@@ -88,6 +88,12 @@
 //          $target=0;
 //  }
 
+enum wxSeekMode
+{
+  wxFromStart,
+  wxFromCurrent,
+  wxFromEnd
+};
 
 
 
@@ -118,6 +124,16 @@ public:
       void write(wxString data);
       void writelines(wxStringPtrList);
     */
+
+    char Peek();
+    char GetC();
+    size_t LastRead();
+    bool CanRead();
+    bool Eof();
+    bool Ungetch(char c);
+
+    long SeekI(long pos, wxSeekMode mode = wxFromStart);
+    long TellI();
 }
 
 

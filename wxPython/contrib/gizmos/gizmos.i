@@ -5,7 +5,7 @@
 // Author:      Robin Dunn
 //
 // Created:     23-Nov-2001
-// RCS-ID:      $Id: gizmos.i,v 1.12 2002/06/24 23:55:30 RD Exp $
+// RCS-ID:      $Id: gizmos.i,v 1.12.2.1 2002/12/18 06:15:40 RD Exp $
 // Copyright:   (c) 2001 by Total Control Software
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -272,8 +272,8 @@ public:
         wxPyBeginBlockThreads();
         if ((found = wxPyCBH_findCallback(m_myInst, "DrawItem"))) {
             PyObject* dcobj = wxPyMake_wxObject(&dc);
-            PyObject* idobj = wxPyConstructObject((void*)&id, "wxTreeItemId", FALSE);
-            PyObject* recobj= wxPyConstructObject((void*)&rect, "wxRect", FALSE);
+            PyObject* idobj = wxPyConstructObject((void*)&id, wxT("wxTreeItemId"), FALSE);
+            PyObject* recobj= wxPyConstructObject((void*)&rect, wxT("wxRect"), FALSE);
             wxPyCBH_callCallback(m_myInst, Py_BuildValue("(OOO)", dcobj, idobj, recobj));
             Py_DECREF(dcobj);
             Py_DECREF(idobj);

@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     04/01/98
-// RCS-ID:      $Id: wxexpr.cpp,v 1.25 2002/02/23 21:29:36 VZ Exp $
+// RCS-ID:      $Id: wxexpr.cpp,v 1.25.2.1 2002/11/04 23:11:23 VZ Exp $
 // Copyright:   (c) Julian Smart and Markus Holzem
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -20,7 +20,7 @@
 #pragma hdrstop
 #endif
 
-#if 1 // wxUSE_PROLOGIO
+#if wxUSE_PROLOGIO
 
 #include <stdarg.h>
 #include <ctype.h>

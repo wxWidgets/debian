@@ -4,7 +4,7 @@
 // Author:      Vadim Zeitlin
 // Modified by:
 // Created:     04.10.99
-// RCS-ID:      $Id: init.cpp,v 1.18 2002/09/04 11:45:06 VZ Exp $
+// RCS-ID:      $Id: init.cpp,v 1.18.2.1 2002/12/17 19:49:48 VZ Exp $
 // Copyright:   (c) Vadim Zeitlin
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -160,7 +160,7 @@ int wxEntry(int argc, char **argv)
     wxTheApp->argv = argv;
 #endif
 
-    wxString name = wxFileNameFromPath(argv[0]);
+    wxString name = wxFileNameFromPath(wxTheApp->argv[0]);
     wxStripExtension(name);
     wxTheApp->SetAppName(name);
 

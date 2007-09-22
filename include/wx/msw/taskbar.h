@@ -5,7 +5,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     24/3/98
-// RCS-ID:      $Id: taskbar.h,v 1.9 2002/06/09 19:24:21 MBN Exp $
+// RCS-ID:      $Id: taskbar.h,v 1.9.2.1 2002/11/09 00:23:23 VS Exp $
 // Copyright:   (c) Julian Smart
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////
@@ -33,7 +33,7 @@ public:
     inline bool IsIconInstalled() const { return m_iconAdded; }
 
 // Operations
-    bool SetIcon(const wxIcon& icon, const wxString& tooltip = "");
+    bool SetIcon(const wxIcon& icon, const wxString& tooltip = wxEmptyString);
     bool RemoveIcon(void);
     bool PopupMenu(wxMenu *menu); //, int x, int y);
 

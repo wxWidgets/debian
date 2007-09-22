@@ -4,7 +4,7 @@
 // Notes:       Based on htmlhelp.cpp, implementing a monolithic
 //              HTML Help controller class,  by Vaclav Slavik
 // Author:      Harm van der Heijden and Vaclav Slavik
-// RCS-ID:      $Id: helpfrm.cpp,v 1.72.2.1 2002/09/25 19:40:43 VS Exp $
+// RCS-ID:      $Id: helpfrm.cpp,v 1.72.2.3 2002/12/16 10:23:20 JS Exp $
 // Copyright:   (c) Harm van der Heijden and Vaclav Slavik
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -1020,13 +1020,17 @@ Normal face<br>(and <u>underlined</u>. <i>Italic face.</i> \
     {
         UpdateTestWin();
     }
+    void OnUpdateSpin(wxSpinEvent& WXUNUSED(event))
+    {
+        UpdateTestWin();
+    }
 
     DECLARE_EVENT_TABLE()
 };
 
 BEGIN_EVENT_TABLE(wxHtmlHelpFrameOptionsDialog, wxDialog)
     EVT_COMBOBOX(-1, wxHtmlHelpFrameOptionsDialog::OnUpdate)
-    EVT_SPINCTRL(-1, wxHtmlHelpFrameOptionsDialog::OnUpdate)
+    EVT_SPINCTRL(-1, wxHtmlHelpFrameOptionsDialog::OnUpdateSpin)
 END_EVENT_TABLE()
 
 
@@ -1125,8 +1129,12 @@ void wxHtmlHelpFrame::OnActivate(wxActivateEvent& event)
 {
     // This saves one mouse click when using the
     // wxHTML for context sensitive help systems
+#ifndef __WXGTK__
+    // NB: wxActivateEvent is a bit broken in wxGTK
+    //     and is sometimes sent when it should not be
     if (event.GetActive() && m_HtmlWin)
         m_HtmlWin->SetFocus();
+#endif
 
     event.Skip();
 }

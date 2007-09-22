@@ -4,7 +4,7 @@
 // Author:      Vadim Zeitlin
 // Modified by:
 // Created:     20.09.99
-// RCS-ID:      $Id: fontcmn.cpp,v 1.30 2002/04/06 14:57:25 VS Exp $
+// RCS-ID:      $Id: fontcmn.cpp,v 1.30.2.1 2002/12/10 16:10:02 JS Exp $
 // Copyright:   (c) wxWindows team
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -296,8 +296,11 @@ bool wxNativeFontInfo::FromString(const wxString& s)
     underlined = l != 0;
 
     faceName = tokenizer.GetNextToken();
+
+#ifndef __WXMAC__
     if( !faceName )
         return FALSE;
+#endif
 
     token = tokenizer.GetNextToken();
     if ( !token.ToLong(&l) )

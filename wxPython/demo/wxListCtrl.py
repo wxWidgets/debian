@@ -5,7 +5,7 @@
 # Author:       Robin Dunn & Gary Dumer
 #
 # Created:
-# RCS-ID:       $Id: wxListCtrl.py,v 1.26.2.1 2002/09/17 00:27:21 RD Exp $
+# RCS-ID:       $Id: wxListCtrl.py,v 1.26.2.3 2002/11/19 18:55:39 RD Exp $
 # Copyright:    (c) 1998 by Total Control Software
 # Licence:      wxWindows license
 #----------------------------------------------------------------------------
@@ -191,7 +191,9 @@ class TestListCtrlPanel(wxPanel, wxColumnSorterMixin):
         self.x = event.GetX()
         self.y = event.GetY()
         self.log.WriteText("x, y = %s\n" % str((self.x, self.y)))
-        print event.GetEventObject()
+        item, flags = self.list.HitTest((self.x, self.y))
+        if flags & wxLIST_HITTEST_ONITEM:
+            self.list.Select(item)
         event.Skip()
 
 
@@ -213,10 +215,11 @@ class TestListCtrlPanel(wxPanel, wxColumnSorterMixin):
             # this does
             self.list.SetItemState(10, 0, wxLIST_STATE_SELECTED)
 
-    # Show how to reselect something we don't want deselected
     def OnItemDeselected(self, evt):
         item = evt.GetItem()
-        print evt.m_itemIndex
+        self.log.WriteText("OnItemDeselected: %d" % evt.m_itemIndex)
+
+        # Show how to reselect something we don't want deselected
         if evt.m_itemIndex == 11:
             wxCallAfter(self.list.SetItemState, 11, wxLIST_STATE_SELECTED, wxLIST_STATE_SELECTED)
 

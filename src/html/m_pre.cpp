@@ -2,7 +2,7 @@
 // Name:        m_pre.cpp
 // Purpose:     wxHtml module for <PRE> ... </PRE> tag (code citation)
 // Author:      Vaclav Slavik
-// RCS-ID:      $Id: m_pre.cpp,v 1.21 2002/01/17 23:42:01 VS Exp $
+// RCS-ID:      $Id: m_pre.cpp,v 1.21.2.3 2002/11/09 00:07:35 VS Exp $
 // Copyright:   (c) 1999 Vaclav Slavik
 // Licence:     wxWindows Licence
 /////////////////////////////////////////////////////////////////////////////
@@ -15,7 +15,7 @@
 
 #include "wx/defs.h"
 #if wxUSE_HTML && wxUSE_STREAMS
-#ifdef __BORDLANDC__
+#ifdef __BORLANDC__
 #pragma hdrstop
 #endif
 

@@ -1,5 +1,5 @@
 dnl Process this file with autoconf to produce a configure script.
-AC_REVISION($Id: configure.in,v 1.20.2.1 2002/09/22 15:07:50 VS Exp $)dnl
+AC_REVISION($Id: configure.in,v 1.20.2.2 2002/10/29 14:41:30 VZ Exp $)dnl
 
 AC_INIT(Makefile.in)
 
@@ -70,11 +70,12 @@ AC_OUTPUT([
             samples/canvas/test/Makefile
             samples/canvas/simple/Makefile
             samples/gizmos/Makefile
-            samples/gizmos/multicell/Makefile
-            samples/gizmos/splittree/Makefile
             samples/gizmos/editlbox/Makefile
             samples/gizmos/dynsash/Makefile
             samples/gizmos/dynsash_switch/Makefile
+            samples/gizmos/multicell/Makefile
+            samples/gizmos/splittree/Makefile
+            samples/gizmos/led/Makefile
             samples/xrc/Makefile
             samples/plot/Makefile
             samples/applet/Makefile

@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     12/07/98
-// RCS-ID:      $Id: ogldiag.cpp,v 1.5 2002/03/15 20:50:40 RD Exp $
+// RCS-ID:      $Id: ogldiag.cpp,v 1.5.2.2 2002/12/28 18:32:09 JS Exp $
 // Copyright:   (c) Julian Smart
 // Licence:   	wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -28,17 +28,6 @@
 
 #ifdef new
 #undef new
-#endif
-
-#if wxUSE_IOSTREAMH
-#include <iostream.h>
-#include <fstream.h>
-#else
-#include <iostream>
-#include <fstream>
-#ifdef _MSC_VER
-//using namespace std;
-#endif
 #endif
 
 #include <ctype.h>
@@ -225,7 +214,7 @@ void wxDiagram::RecentreAll(wxDC& dc)
 }
 
 // Input/output
-#ifdef PROLOGIO
+#if wxUSE_PROLOGIO
 bool wxDiagram::SaveFile(const wxString& filename)
 {
   wxBeginBusyCursor();

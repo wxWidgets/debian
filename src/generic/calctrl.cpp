@@ -4,7 +4,7 @@
 // Author:      Vadim Zeitlin
 // Modified by:
 // Created:     29.12.99
-// RCS-ID:      $Id: calctrl.cpp,v 1.33 2002/06/27 23:02:07 RD Exp $
+// RCS-ID:      $Id: calctrl.cpp,v 1.33.2.1 2002/10/23 17:32:13 RR Exp $
 // Copyright:   (c) 1999 Vadim Zeitlin <zeitlin@dptmaths.ens-cachan.fr>
 // Licence:     wxWindows license
 ///////////////////////////////////////////////////////////////////////////////
@@ -154,6 +154,19 @@ wxYearSpinCtrl::wxYearSpinCtrl(wxCalendarCtrl *cal)
 // ----------------------------------------------------------------------------
 // wxCalendarCtrl
 // ----------------------------------------------------------------------------
+
+wxCalendarCtrl::wxCalendarCtrl(wxWindow *parent,
+                   wxWindowID id,
+                   const wxDateTime& date,
+                   const wxPoint& pos,
+                   const wxSize& size,
+                   long style,
+                   const wxString& name)
+{
+    Init();
+    
+    (void)Create(parent, id, date, pos, size, style, name);
+}
 
 void wxCalendarCtrl::Init()
 {

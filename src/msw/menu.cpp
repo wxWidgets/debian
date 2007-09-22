@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by: Vadim Zeitlin
 // Created:     04/01/98
-// RCS-ID:      $Id: menu.cpp,v 1.71 2002/04/16 08:57:36 VZ Exp $
+// RCS-ID:      $Id: menu.cpp,v 1.71.2.1 2002/12/09 09:29:00 JS Exp $
 // Copyright:   (c) Julian Smart and Markus Holzem
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -557,6 +557,13 @@ wxMenuBar::wxMenuBar(int count, wxMenu *menus[], const wxString titles[])
 
 wxMenuBar::~wxMenuBar()
 {
+    // we should free Windows resources only if Windows doesn't do it for us
+    // which happens if we're attached to a frame
+    if (m_hMenu && !IsAttached())
+    {
+        ::DestroyMenu((HMENU)m_hMenu);
+        m_hMenu = (WXHMENU)NULL;
+    }
 }
 
 // ---------------------------------------------------------------------------
@@ -838,8 +845,6 @@ void wxMenuBar::Attach(wxFrame *frame)
 
 void wxMenuBar::Detach()
 {
-    m_hMenu = (WXHMENU)NULL;
-
     wxMenuBarBase::Detach();
 }
 

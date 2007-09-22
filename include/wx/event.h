@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     01/02/97
-// RCS-ID:      $Id: event.h,v 1.158 2002/08/31 11:29:10 GD Exp $
+// RCS-ID:      $Id: event.h,v 1.158.2.1 2002/10/30 19:55:06 RR Exp $
 // Copyright:   (c) wxWindows team
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -817,22 +817,7 @@ class WXDLLEXPORT wxKeyEvent : public wxEvent
 {
 public:
     wxKeyEvent(wxEventType keyType = wxEVT_NULL);
-	wxKeyEvent(const wxKeyEvent& evt) : wxEvent(evt)
-    {
-        m_x = evt.m_x;
-        m_y = evt.m_y;
-
-        m_keyCode = evt.m_keyCode;
-
-        m_controlDown = evt.m_controlDown;
-        m_shiftDown = evt.m_shiftDown;
-        m_altDown = evt.m_altDown;
-        m_metaDown = evt.m_metaDown;
-        m_scanCode = evt.m_scanCode;
-        m_rawCode = evt.m_rawCode;
-        m_rawFlags = evt.m_rawFlags;
-    }
-
+	wxKeyEvent(const wxKeyEvent& evt);
 
     // Find state of shift/control keys
     bool ControlDown() const { return m_controlDown; }
@@ -914,8 +899,14 @@ public:
     bool          m_metaDown;
     bool          m_scanCode;
 
-    // these fields contain the platform-specific information about the pressed
-    // key
+#if wxUSE_UNICODE
+    // This contains the full Unicode character
+    // in a character events in Unicode mode
+    wxChar        m_uniChar;
+#endif
+
+    // these fields contain the platform-specific information about
+    // key that was pressed
     wxUint32      m_rawCode;
     wxUint32      m_rawFlags;
 

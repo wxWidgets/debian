@@ -4,7 +4,7 @@
 // Author:      Aleksandras Gluchovas
 // Modified by:
 // Created:     30/11/98 (my 22th birthday :-)
-// RCS-ID:      $Id: barhintspl.h,v 1.4 2002/09/07 12:10:19 GD Exp $
+// RCS-ID:      $Id: barhintspl.h,v 1.4.2.1 2002/10/24 11:21:32 JS Exp $
 // Copyright:   (c) Aleksandras Gluchovas
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -24,7 +24,7 @@ This class intercepts bar-decoration and sizing events, and draws 3D hints
 around fixed and flexible bars, similar to those in Microsoft DevStudio 6.x
 */
 
-class cbBarHintsPlugin : public cbPluginBase
+class WXFL_DECLSPEC cbBarHintsPlugin : public cbPluginBase
 {
     DECLARE_DYNAMIC_CLASS( cbBarHintsPlugin )
 

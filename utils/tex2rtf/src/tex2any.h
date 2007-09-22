@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     7.9.93
-// RCS-ID:      $Id: tex2any.h,v 1.13 2002/07/14 13:21:23 GD Exp $
+// RCS-ID:      $Id: tex2any.h,v 1.13.2.1 2002/10/20 22:17:48 VS Exp $
 // Copyright:   (c) Julian Smart
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -172,6 +172,10 @@ void DefineDefaultMacros(void);     // Optional set of default macros
 int GetCurrentColumn(void);         // number of characters on current line
 char *ConvertCase(char *s);         // Convert case, according to upperCaseNames setting.
 extern wxPathList TexPathList;      // Path list, can be used for file searching.
+
+#if !WXWIN_COMPATIBILITY_2
+extern bool StringMatch(const wxChar *one, const wxChar *two, bool subString = TRUE, bool exact = FALSE);
+#endif
 
 // Define a variable value from the .ini file
 char *RegisterSetting(char *settingName, char *settingValue, bool interactive = TRUE);

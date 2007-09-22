@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     01/02/97
-// RCS-ID:      $Id: wxexpr.h,v 1.16 2002/08/31 11:29:11 GD Exp $
+// RCS-ID:      $Id: wxexpr.h,v 1.16.2.1 2002/11/04 23:22:44 VZ Exp $
 // Copyright:   (c)
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -16,7 +16,7 @@
 #pragma interface "wxexpr.h"
 #endif
 
-#include <stdio.h>
+#if wxUSE_PROLOGIO
 
 #include "wx/defs.h"
 #include "wx/string.h"
@@ -25,6 +25,8 @@
 #include "wx/hash.h"
 
 #include "wx/expr.h"
+
+#include <stdio.h>
 
 // Compatibility
 #define PrologExpr wxExpr
@@ -269,5 +271,7 @@ WXDLLEXPORT_DATA(extern wxExprDatabase*) thewxExprDatabase;
 // YACC/LEX can leave memory lying around...
 extern "C" WXDLLEXPORT int wxExprCleanUp();
 
-#endif
+#endif // wxUSE_PROLOGIO
+
+#endif // _WX_WXEXPRH__
 

@@ -2,7 +2,7 @@
 // Name:        imagtiff.h
 // Purpose:     wxImage TIFF handler
 // Author:      Robert Roebling
-// RCS-ID:      $Id: imagtiff.h,v 1.5 2002/08/31 11:29:10 GD Exp $
+// RCS-ID:      $Id: imagtiff.h,v 1.5.2.1 2002/10/23 17:32:03 RR Exp $
 // Copyright:   (c) Robert Roebling
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -24,24 +24,24 @@
 #if wxUSE_LIBTIFF
 class WXDLLEXPORT wxTIFFHandler: public wxImageHandler
 {
-  DECLARE_DYNAMIC_CLASS(wxTIFFHandler)
-
 public:
-
-  inline wxTIFFHandler()
-  {
-      m_name = "TIFF file";
-      m_extension = "tif";
-      m_type = wxBITMAP_TYPE_TIF;
-      m_mime = "image/tiff";
-  };
+    inline wxTIFFHandler()
+    {
+        m_name = wxT("TIFF file");
+        m_extension = wxT("tif");
+        m_type = wxBITMAP_TYPE_TIF;
+        m_mime = wxT("image/tiff");
+    }
 
 #if wxUSE_STREAMS
-  virtual bool LoadFile( wxImage *image, wxInputStream& stream, bool verbose=TRUE, int index=-1 );
-  virtual bool SaveFile( wxImage *image, wxOutputStream& stream, bool verbose=TRUE );
-  virtual bool DoCanRead( wxInputStream& stream );
-  virtual int GetImageCount( wxInputStream& stream );
+    virtual bool LoadFile( wxImage *image, wxInputStream& stream, bool verbose=TRUE, int index=-1 );
+    virtual bool SaveFile( wxImage *image, wxOutputStream& stream, bool verbose=TRUE );
+    virtual bool DoCanRead( wxInputStream& stream );
+    virtual int GetImageCount( wxInputStream& stream );
 #endif
+
+private:
+    DECLARE_DYNAMIC_CLASS(wxTIFFHandler)
 };
 #endif
 

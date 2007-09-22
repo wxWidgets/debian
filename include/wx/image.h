@@ -2,7 +2,7 @@
 // Name:        image.h
 // Purpose:     wxImage class
 // Author:      Robert Roebling
-// RCS-ID:      $Id: image.h,v 1.73 2002/08/31 11:29:10 GD Exp $
+// RCS-ID:      $Id: image.h,v 1.73.2.5 2002/12/07 02:30:32 VZ Exp $
 // Copyright:   (c) Robert Roebling
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -44,7 +44,7 @@ class WXDLLEXPORT wxImageHandler: public wxObject
 {
 public:
     wxImageHandler()
-        : m_name(""), m_extension(""), m_mime(), m_type(0)
+        : m_name(wxT("")), m_extension(wxT("")), m_mime(), m_type(0)
         { }
 
 #if wxUSE_STREAMS
@@ -121,7 +121,7 @@ public:
     wxImage( const wxImage* image );
 
 #if WXWIN_COMPATIBILITY_2_2 && wxUSE_GUI
-    // convertion to/from wxBitmap (deprecated, use wxBitmap's methods instead):
+    // conversion to/from wxBitmap (deprecated, use wxBitmap's methods instead):
     wxImage( const wxBitmap &bitmap );
     wxBitmap ConvertToBitmap() const;
 #ifdef __WXGTK__
@@ -248,9 +248,9 @@ public:
         return *this;
     }
 
-    bool operator == (const wxImage& image)
+    bool operator == (const wxImage& image) const
         { return m_refData == image.m_refData; }
-    bool operator != (const wxImage& image)
+    bool operator != (const wxImage& image) const
         { return m_refData != image.m_refData; }
 
     static wxList& GetHandlers() { return sm_handlers; }

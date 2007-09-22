@@ -4,7 +4,7 @@
 // Author:      Original from Wolfram Gloger/Guilhem Lavaux
 // Modified by: Vadim Zeitlin to make it work :-)
 // Created:     04/22/98
-// RCS-ID:      $Id: thread.cpp,v 1.59 2002/07/04 17:26:36 VZ Exp $
+// RCS-ID:      $Id: thread.cpp,v 1.59.2.1 2002/11/08 11:12:26 VZ Exp $
 // Copyright:   (c) Wolfram Gloger (1996, 1997), Guilhem Lavaux (1998);
 //                  Vadim Zeitlin (1999-2002)
 // Licence:     wxWindows licence
@@ -243,7 +243,7 @@ wxMutexError wxMutexInternal::Unlock()
 {
     if ( !::ReleaseMutex(m_mutex) )
     {
-        wxLogLastError(_("ReleaseMutex()"));
+        wxLogLastError(_T("ReleaseMutex()"));
 
         return wxMUTEX_MISC_ERROR;
     }

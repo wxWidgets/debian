@@ -4,7 +4,7 @@
 // Author:      Robert Roebling, Ove Kaaven
 // Modified by:
 // Created:     29/01/98
-// RCS-ID:      $Id: strconv.h,v 1.11.2.1 2002/09/20 23:01:58 VZ Exp $
+// RCS-ID:      $Id: strconv.h,v 1.11.2.2 2002/11/06 13:12:42 VS Exp $
 // Copyright:   (c) 1998 Ove Kaaven, Robert Roebling, Vadim Zeitlin
 // Licence:     wxWindows license
 ///////////////////////////////////////////////////////////////////////////////
@@ -138,6 +138,7 @@ private:
 
 #define wxConvFile wxConvLocal
 WXDLLEXPORT_DATA(extern wxCSConv) wxConvLocal;
+WXDLLEXPORT_DATA(extern wxCSConv) wxConvISO8859_1;
 WXDLLEXPORT_DATA(extern wxMBConv *) wxConvCurrent;
 
 // ----------------------------------------------------------------------------
@@ -173,7 +174,7 @@ public:
     const char* cWX2MB(const char *psz) const { return psz; }
 };
 
-WXDLLEXPORT_DATA(extern wxMBConv) wxConvLibc, wxConvFile, wxConvLocal;
+WXDLLEXPORT_DATA(extern wxMBConv) wxConvLibc, wxConvFile, wxConvLocal, wxConvISO8859_1;
 WXDLLEXPORT_DATA(extern wxMBConv *) wxConvCurrent;
 
 #define wxFNCONV(name) name

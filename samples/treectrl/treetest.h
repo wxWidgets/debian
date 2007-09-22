@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     04/01/98
-// RCS-ID:      $Id: treetest.h,v 1.31 2002/03/16 15:10:43 VZ Exp $
+// RCS-ID:      $Id: treetest.h,v 1.31.2.1 2002/12/29 07:48:16 RL Exp $
 // Copyright:   (c) Julian Smart and Markus Holzem
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -112,7 +112,7 @@ protected:
     bool IsTestItem(const wxTreeItemId& item)
     {
         // the test item is the first child folder
-        return GetParent(item) == GetRootItem() && !GetPrevSibling(item);
+        return GetItemParent(item) == GetRootItem() && !GetPrevSibling(item);
     }
 
 private:

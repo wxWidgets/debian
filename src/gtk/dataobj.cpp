@@ -2,7 +2,7 @@
 // Name:        dataobj.cpp
 // Purpose:     wxDataObject class
 // Author:      Robert Roebling
-// Id:          $Id: dataobj.cpp,v 1.37 2002/08/30 21:10:28 VZ Exp $
+// Id:          $Id: dataobj.cpp,v 1.37.2.1 2002/11/25 01:51:04 VZ Exp $
 // Copyright:   (c) 1998 Robert Roebling
 // Licence:     wxWindows licence
 ///////////////////////////////////////////////////////////////////////////////
@@ -156,6 +156,11 @@ void wxDataFormat::PrepareFormats()
 
 wxDataObject::wxDataObject()
 {
+}
+
+wxDataObject::~wxDataObject()
+{
+    // dtor is empty but needed for Darwin and AIX -- otherwise it doesn't link
 }
 
 bool wxDataObject::IsSupportedFormat(const wxDataFormat& format, Direction dir) const

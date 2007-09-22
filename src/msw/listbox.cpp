@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by: Vadim Zeitlin (owner drawn stuff)
 // Created:
-// RCS-ID:      $Id: listbox.cpp,v 1.68.2.2 2002/09/22 21:45:17 VZ Exp $
+// RCS-ID:      $Id: listbox.cpp,v 1.68.2.5 2002/12/19 23:13:53 JS Exp $
 // Copyright:   (c) Julian Smart
 // Licence:     wxWindows license
 ///////////////////////////////////////////////////////////////////////////////
@@ -93,7 +93,7 @@
 class wxListBoxItem : public wxOwnerDrawn
 {
 public:
-    wxListBoxItem(const wxString& str = "");
+    wxListBoxItem(const wxString& str = wxEmptyString);
 };
 
 wxListBoxItem::wxListBoxItem(const wxString& str) : wxOwnerDrawn(str, FALSE)
@@ -161,6 +161,10 @@ bool wxListBox::Create(wxWindow *parent,
 
     wxASSERT_MSG( !(style & wxLB_MULTIPLE) || !(style & wxLB_EXTENDED),
                   _T("only one of listbox selection modes can be specified") );
+
+    if ( (m_windowStyle & wxBORDER_MASK) == wxBORDER_DEFAULT )
+        m_windowStyle |= wxBORDER_SUNKEN;
+
     if ( m_windowStyle & wxCLIP_SIBLINGS )
         wstyle |= WS_CLIPSIBLINGS;
 
@@ -272,7 +276,7 @@ void wxListBox::Delete(int N)
     SendMessage(GetHwnd(), LB_DELETESTRING, N, 0);
     m_noItems--;
 
-    SetHorizontalExtent("");
+    SetHorizontalExtent(wxEmptyString);
 }
 
 int wxListBox::DoAppend(const wxString& item)
@@ -313,16 +317,7 @@ void wxListBox::DoSetItems(const wxArrayString& choices, void** clientData)
         ListBox_AddString(GetHwnd(), choices[i]);
         if ( clientData )
         {
-#if wxUSE_OWNER_DRAWN
-            if ( m_windowStyle & wxLB_OWNERDRAW )
-            {
-                wxASSERT_MSG(clientData[i] == NULL,
-                             wxT("Can't use client data with owner-drawn listboxes"));
-            }
-            ListBox_SetItemData(GetHwnd(), i, clientData[i]);
-#else // !wxUSE_OWNER_DRAWN
-            ListBox_SetItemData(GetHwnd(), i, clientData[i]);
-#endif // wxUSE_OWNER_DRAWN/!wxUSE_OWNER_DRAWN
+            SetClientData(i, clientData[i]);
         }
     }
 
@@ -502,7 +497,7 @@ int wxListBox::GetSelection() const
 // Find string for position
 wxString wxListBox::GetString(int N) const
 {
-    wxCHECK_MSG( N >= 0 && N < m_noItems, "",
+    wxCHECK_MSG( N >= 0 && N < m_noItems, wxEmptyString,
                  wxT("invalid index in wxListBox::GetClientData") );
 
     int len = ListBox_GetTextLen(GetHwnd(), N);

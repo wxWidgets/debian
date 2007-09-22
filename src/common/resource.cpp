@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     04/01/98
-// RCS-ID:      $Id: resource.cpp,v 1.82 2002/07/08 03:41:26 DW Exp $
+// RCS-ID:      $Id: resource.cpp,v 1.82.2.1 2002/11/04 19:31:56 VZ Exp $
 // Copyright:   (c) Julian Smart and Markus Holzem
 // Licence:    wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -216,7 +216,7 @@ bool wxResourceTable::DeleteResource(const wxString& name)
 bool wxResourceTable::ParseResourceFile( wxInputStream *is )
 {
     wxExprDatabase db;
-    int len = is->StreamSize() ;
+    int len = is->GetSize() ;
 
     bool eof = FALSE;
     while ( is->TellI() + 10 < len) // it's a hack because the streams dont support EOF

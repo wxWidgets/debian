@@ -2,7 +2,7 @@
 // Name:        dialog.cpp
 // Purpose:
 // Author:      Robert Roebling
-// Id:          $Id: dialog.cpp,v 1.102 2001/11/30 23:40:12 VZ Exp $
+// Id:          $Id: dialog.cpp,v 1.102.2.2 2002/10/13 21:03:45 RR Exp $
 // Copyright:   (c) 1998 Robert Roebling
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -29,8 +29,6 @@
 extern void wxapp_install_idle_handler();
 extern bool g_isIdle;
 extern int g_openDialogs;
-
-
 
 //-----------------------------------------------------------------------------
 // wxDialog
@@ -209,8 +207,10 @@ int wxDialog::ShowModal()
     }
 
     wxBusyCursorSuspender cs; // temporarily suppress the busy cursor
-
+    
     Show( TRUE );
+
+    SetFocus();
 
     m_modalShowing = TRUE;
 
