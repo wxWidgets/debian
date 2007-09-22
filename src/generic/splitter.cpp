@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     01/02/97
-// RCS-ID:      $Id: splitter.cpp,v 1.115 2005/06/21 16:08:22 JS Exp $
+// RCS-ID:      $Id: splitter.cpp,v 1.116 2005/08/05 22:34:24 VZ Exp $
 // Copyright:   (c) Julian Smart
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -578,8 +578,6 @@ int wxSplitterWindow::GetWindowSize() const
 
 int wxSplitterWindow::AdjustSashPosition(int sashPos) const
 {
-    int window_size = GetWindowSize();
-
     wxWindow *win;
 
     win = GetWindow1();
@@ -608,8 +606,8 @@ int wxSplitterWindow::AdjustSashPosition(int sashPos) const
         if ( minSize == -1 || m_minimumPaneSize > minSize )
             minSize = m_minimumPaneSize;
 
-        int maxSize = window_size - minSize - GetBorderSize() - GetSashSize();
-        if ( sashPos > maxSize )
+        int maxSize = GetWindowSize() - minSize - GetBorderSize() - GetSashSize();
+        if ( maxSize > 0 && sashPos > maxSize )
             sashPos = maxSize;
     }
 

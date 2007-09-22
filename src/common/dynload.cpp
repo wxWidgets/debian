@@ -5,7 +5,7 @@
 //               (derived in part from dynlib.cpp (c) 1998 Guilhem Lavaux)
 // Modified by:
 // Created:      03/12/01
-// RCS-ID:       $Id: dynload.cpp,v 1.42 2005/01/04 19:28:30 ABX Exp $
+// RCS-ID:       $Id: dynload.cpp,v 1.43 2005/07/31 07:31:33 MBN Exp $
 // Copyright:    (c) 2001 Ron Lee <ron@debian.org>
 // Licence:      wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -137,11 +137,11 @@ void wxPluginLibrary::UpdateClasses()
 {
     for (wxClassInfo *info = m_after; info != m_before; info = info->m_next)
     {
-        if( info->m_className )
+        if( info->GetClassName() )
         {
             // Hash all the class names into a local table too so
             // we can quickly find the entry they correspond to.
-            (*ms_classes)[info->m_className] = this;
+            (*ms_classes)[info->GetClassName()] = this;
         }
     }
 }
@@ -154,7 +154,7 @@ void wxPluginLibrary::RestoreClasses()
 
     for(wxClassInfo *info = m_after; info != m_before; info = info->m_next)
     {
-        ms_classes->erase(ms_classes->find(info->m_className));
+        ms_classes->erase(ms_classes->find(info->GetClassName()));
     }
 }
 

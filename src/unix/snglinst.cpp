@@ -5,7 +5,7 @@
 // Author:      Vadim Zeitlin
 // Modified by:
 // Created:     09.06.01
-// RCS-ID:      $Id: snglinst.cpp,v 1.16 2004/11/12 03:30:00 RL Exp $
+// RCS-ID:      $Id: snglinst.cpp,v 1.17 2005/09/17 21:02:29 VZ Exp $
 // Copyright:   (c) 2001 Vadim Zeitlin <zeitlin@dptmaths.ens-cachan.fr>
 // License:     wxWindows licence
 ///////////////////////////////////////////////////////////////////////////////
@@ -89,9 +89,9 @@ static int wxLockFile(int fd, LockOperation lock)
     fl.l_type = lock == LOCK ? F_WRLCK : F_UNLCK;
 
     // lock the entire file
-    fl.l_whence =
     fl.l_start =
-    fl.l_len = 0;
+    fl.l_len =
+    fl.l_whence = 0;
 
     // is this needed?
     fl.l_pid = getpid();

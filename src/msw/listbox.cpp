@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by: Vadim Zeitlin (owner drawn stuff)
 // Created:
-// RCS-ID:      $Id: listbox.cpp,v 1.123 2005/06/16 15:36:48 JS Exp $
+// RCS-ID:      $Id: listbox.cpp,v 1.123.2.1 2005/10/18 14:33:35 MW Exp $
 // Copyright:   (c) Julian Smart
 // Licence:     wxWindows licence
 ///////////////////////////////////////////////////////////////////////////////
@@ -354,7 +354,7 @@ void wxListBox::DoSetItems(const wxArrayString& choices, void** clientData)
 
 int wxListBox::FindString(const wxString& s) const
 {
-    int pos = ListBox_FindStringExact(GetHwnd(), (WPARAM)-1, s);
+    int pos = ListBox_FindStringExact(GetHwnd(), -1, s);
     if (pos == LB_ERR)
         return wxNOT_FOUND;
     else

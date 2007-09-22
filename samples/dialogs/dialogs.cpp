@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by: ABX (2004) - adjustements for conditional building + new menu
 // Created:     04/01/98
-// RCS-ID:      $Id: dialogs.cpp,v 1.127 2005/06/10 17:53:10 ABX Exp $
+// RCS-ID:      $Id: dialogs.cpp,v 1.129.2.1 2006/03/23 11:38:07 JS Exp $
 // Copyright:   (c) Julian Smart
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -29,6 +29,7 @@
 
 #include "wx/datetime.h"
 #include "wx/image.h"
+#include "wx/bookctrl.h"
 
 #if wxUSE_COLOURDLG
     #include "wx/colordlg.h"
@@ -376,7 +377,9 @@ bool MyApp::OnInit()
     myCanvas = new MyCanvas(frame);
     myCanvas->SetBackgroundColour(*wxWHITE);
 
+#ifndef __WXWINCE__
     frame->Centre(wxBOTH);
+#endif
 
     // Show the frame
     frame->Show(true);
@@ -681,6 +684,7 @@ void MyFrame::FileOpen(wxCommandEvent& WXUNUSED(event) )
                  );
 
     dialog.SetDirectory(wxGetHomeDir());
+    dialog.CentreOnParent();
 
     if (dialog.ShowModal() == wxID_OK)
     {

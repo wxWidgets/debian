@@ -4,7 +4,7 @@
 // Author:      Robert Roebling
 // Modified by: Alberto Griggio, 2002
 // Created:     01/02/97
-// RCS-ID:      $Id: treelistctrl.h,v 1.6 2005/03/02 18:32:28 RD Exp $
+// RCS-ID:      $Id: treelistctrl.h,v 1.6.2.1 2005/12/16 17:15:51 RD Exp $
 // Copyright:   (c) Robert Roebling, Julian Smart, Alberto Griggio,
 //              Vadim Zeitlin, Otto Wyss
 // Licence:     wxWindows license
@@ -13,10 +13,6 @@
 
 #ifndef TREELISTCTRL_H
 #define TREELISTCTRL_H
-
-#if defined(__GNUG__) && !defined(__APPLE__)
-    #pragma interface "treelistctrl.h"
-#endif
 
 #include <wx/treectrl.h>
 #include <wx/control.h>

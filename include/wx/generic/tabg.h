@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     01/02/97
-// RCS-ID:      $Id: tabg.h,v 1.23 2005/05/04 18:52:32 JS Exp $
+// RCS-ID:      $Id: tabg.h,v 1.24 2005/08/28 14:36:46 VZ Exp $
 // Copyright:   (c) Julian Smart
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -107,7 +107,7 @@ public:
 
   inline int GetNumberOfLayers() const { return m_layers.GetCount(); }
 #if WXWIN_COMPATIBILITY_2_4
-  inline wxList& GetLayers() { return (wxList&)m_layers; }
+  inline wxList& GetLayers() { return *(wxList *)&m_layers; }
 #else
   inline wxTabLayerList& GetLayers() { return m_layers; }
 #endif

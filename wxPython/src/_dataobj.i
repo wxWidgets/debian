@@ -5,7 +5,7 @@
 // Author:      Robin Dunn
 //
 // Created:     31-October-1999
-// RCS-ID:      $Id: _dataobj.i,v 1.19 2005/03/09 22:28:42 RD Exp $
+// RCS-ID:      $Id: _dataobj.i,v 1.19.2.2 2006/01/05 06:03:36 RD Exp $
 // Copyright:   (c) 2003 by Total Control Software
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -248,8 +248,7 @@ in the given direction.", "");
             for (size_t i=0; i<count; i++) {
                 wxDataFormat* format = new wxDataFormat(formats[i]);
                 PyObject* obj = wxPyConstructObject((void*)format, wxT("wxDataFormat"), true);
-                PyList_Append(list, obj);
-                Py_DECREF(obj);
+                PyList_SET_ITEM(list, i, obj); // PyList_SET_ITEM steals a reference
             }            
             wxPyEndBlockThreads(blocked);
             delete [] formats;
@@ -804,7 +803,7 @@ public:
 DocStr(wxURLDataObject,
 "This data object holds a URL in a format that is compatible with some
 browsers such that it is able to be dragged to or from them.", "");
-class wxURLDataObject : public wxDataObjectComposite {
+class wxURLDataObject : public wxDataObject/*Composite*/ {
 public:
     wxURLDataObject();
 

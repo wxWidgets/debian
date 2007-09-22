@@ -5,7 +5,7 @@
 // Author:      Robin Dunn
 //
 // Created:     24-June-1997
-// RCS-ID:      $Id: _menu.i,v 1.16 2005/06/01 02:09:33 RD Exp $
+// RCS-ID:      $Id: _menu.i,v 1.16.2.1 2006/01/10 21:23:25 RD Exp $
 // Copyright:   (c) 2003 by Total Control Software
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -374,7 +374,9 @@ public:
     // SetText()
     virtual void SetAccel(wxAcceleratorEntry *accel);
 
-    
+    void SetBitmap(const wxBitmap& bitmap);
+    const wxBitmap& GetBitmap();
+
     // wxOwnerDrawn methods
 #ifdef __WXMSW__
     void SetFont(const wxFont& font);
@@ -405,8 +407,10 @@ public:
         wxColour GetTextColour() { return wxNullColour; }
         void SetBackgroundColour(const wxColour& colBack) {}
         wxColour GetBackgroundColour() { return wxNullColour; }
+        
         void SetBitmaps(const wxBitmap& bmpChecked,
-                        const wxBitmap& bmpUnchecked = wxNullBitmap) {}
+                        const wxBitmap& bmpUnchecked = wxNullBitmap)
+            { self->SetBitmap( bmpChecked ); }
     
         void SetDisabledBitmap( const wxBitmap& bmpDisabled ) {}
         const wxBitmap& GetDisabledBitmap() const { return wxNullBitmap; }
@@ -419,9 +423,6 @@ public:
         void ResetOwnerDrawn() {}
     }
 #endif
-
-    void SetBitmap(const wxBitmap& bitmap);
-    const wxBitmap& GetBitmap();
 };
 
 //---------------------------------------------------------------------------

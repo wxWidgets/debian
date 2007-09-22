@@ -2,7 +2,7 @@
 // Name:        gtk/dataobj.h
 // Purpose:     declaration of the wxDataObject
 // Author:      Robert Roebling
-// RCS-ID:      $Id: dataobj.h,v 1.24 2004/05/23 20:50:53 JS Exp $
+// RCS-ID:      $Id: dataobj.h,v 1.25 2005/08/02 22:57:53 MW Exp $
 // Copyright:   (c) 1998, 1999 Vadim Zeitlin, Robert Roebling
 // Licence:     wxWindows licence
 ///////////////////////////////////////////////////////////////////////////////
@@ -18,7 +18,7 @@
 // wxDataObject is the same as wxDataObjectBase under wxGTK
 // ----------------------------------------------------------------------------
 
-class wxDataObject : public wxDataObjectBase
+class WXDLLIMPEXP_CORE wxDataObject : public wxDataObjectBase
 {
 public:
     wxDataObject();

@@ -2,7 +2,7 @@
 // Name:        minifram.h
 // Purpose:     wxMiniFrame class
 // Author:      Robert Roebling
-// RCS-ID:      $Id: minifram.h,v 1.9 2004/11/03 20:47:05 RR Exp $
+// RCS-ID:      $Id: minifram.h,v 1.10 2005/08/02 22:57:56 MW Exp $
 // Copyright:   (c) Robert Roebling
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -25,13 +25,13 @@
 // classes
 //-----------------------------------------------------------------------------
 
-class wxMiniFrame;
+class WXDLLIMPEXP_CORE wxMiniFrame;
 
 //-----------------------------------------------------------------------------
 // wxMiniFrame
 //-----------------------------------------------------------------------------
 
-class wxMiniFrame: public wxFrame
+class WXDLLIMPEXP_CORE wxMiniFrame: public wxFrame
 {
     DECLARE_DYNAMIC_CLASS(wxMiniFrame)
 

@@ -1,10 +1,10 @@
 /////////////////////////////////////////////////////////////////////////////
-// Name:        sound.h
+// Name:        wx/msw/sound.h
 // Purpose:     wxSound class
 // Author:      Julian Smart
 // Modified by:
 // Created:     01/02/97
-// RCS-ID:      $Id: sound.h,v 1.4 2004/09/04 01:53:38 ABX Exp $
+// RCS-ID:      $Id: sound.h,v 1.5 2005/07/29 13:19:29 VZ Exp $
 // Copyright:   (c) Julian Smart
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -18,38 +18,39 @@
 
 #if wxUSE_SOUND
 
-#include "wx/object.h"
-
 class WXDLLIMPEXP_ADV wxSound : public wxSoundBase
 {
 public:
-  wxSound();
-  wxSound(const wxString& fileName, bool isResource = false);
-  wxSound(int size, const wxByte* data);
-  ~wxSound();
+    wxSound();
+    wxSound(const wxString& fileName, bool isResource = false);
+    wxSound(int size, const wxByte* data);
+    virtual ~wxSound();
 
-public:
-  // Create from resource or file
-  bool  Create(const wxString& fileName, bool isResource = false);
-  // Create from data
-  bool Create(int size, const wxByte* data);
+    // Create from resource or file
+    bool Create(const wxString& fileName, bool isResource = false);
 
-  bool  IsOk() const { return (m_waveData ? true : false); };
+    // Create from data
+    bool Create(int size, const wxByte* data);
 
-  static void Stop();
+    bool IsOk() const { return m_data != NULL; }
+
+    static void Stop();
 
 protected:
-  bool  Free();
+    void Init() { m_data = NULL; }
+    bool CheckCreatedOk();
+    void Free();
 
-  bool DoPlay(unsigned flags) const;
+    virtual bool DoPlay(unsigned flags) const;
 
 private:
-  wxByte* m_waveData;
-  int   m_waveLength;
-  bool  m_isResource;
+    // data of this object
+    class wxSoundData *m_data;
 
     DECLARE_NO_COPY_CLASS(wxSound)
 };
-#endif
-#endif
+
+#endif // wxUSE_SOUND
+
+#endif // _WX_SOUND_H_
 

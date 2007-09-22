@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     04/01/98
-// RCS-ID:      $Id: prntdlgg.cpp,v 1.81 2005/03/26 12:44:49 RR Exp $
+// RCS-ID:      $Id: prntdlgg.cpp,v 1.82.2.1 2005/11/08 18:11:12 JS Exp $
 // Copyright:   (c) Julian Smart
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -65,6 +65,11 @@
 
 #include <stdlib.h>
 #include <string.h>
+
+#if wxUSE_LIBGNOMEPRINT
+#include "wx/html/forcelnk.h"
+FORCE_LINK(gnome_print)
+#endif
 
 // ----------------------------------------------------------------------------
 // global vars
@@ -448,7 +453,7 @@ wxDialog(parent, wxID_ANY, _("Print Setup"), wxPoint(0,0), wxSize(600, 600), wxD
 }
 
 /* XPM */
-static char * check_xpm[] = {
+static const char * check_xpm[] = {
 /* width height ncolors chars_per_pixel */
 "16 16 3 1",
 /* colors */

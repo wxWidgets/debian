@@ -2,7 +2,7 @@
 // Name:        button.cpp
 // Purpose:
 // Author:      Robert Roebling
-// Id:          $Id: button.cpp,v 1.80 2005/03/21 23:42:15 VZ Exp $
+// Id:          $Id: button.cpp,v 1.81 2005/09/04 10:33:09 MR Exp $
 // Copyright:   (c) 1998 Robert Roebling
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -174,7 +174,7 @@ bool wxButton::Create(  wxWindow *parent, wxWindowID id, const wxString &label,
     else if (HasFlag(wxBU_BOTTOM))
         y_alignment = 1.0;
 
-#if __WXGTK24__
+#ifdef __WXGTK24__
     if (!gtk_check_version(2,4,0))
     {
         gtk_button_set_alignment(GTK_BUTTON(m_widget), x_alignment, y_alignment);

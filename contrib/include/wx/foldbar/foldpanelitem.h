@@ -5,7 +5,7 @@
 // Modified by: ABX - 19/12/2004 : possibility of horizontal orientation
 //                               : wxWidgets coding standards
 // Created:     22/06/2004
-// RCS-ID:      $Id: foldpanelitem.h,v 1.6 2005/05/31 09:17:24 JS Exp $
+// RCS-ID:      $Id: foldpanelitem.h,v 1.7 2005/07/28 23:23:22 VZ Exp $
 // Copyright:   (c) Jorgen Bodde
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -146,7 +146,7 @@ public:
 };
 
 #include <wx/dynarray.h>
-WX_DECLARE_OBJARRAY(wxFoldWindowItem, wxFoldWindowItemArray);
+WX_DECLARE_OBJARRAY_WITH_DECL(wxFoldWindowItem, wxFoldWindowItemArray, class WXDLLIMPEXP_FOLDBAR);
 
 #ifndef _NO_DOXYGEN_
 

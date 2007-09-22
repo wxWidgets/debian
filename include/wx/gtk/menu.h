@@ -2,7 +2,7 @@
 // Name:        wx/gtk/menu.h
 // Purpose:
 // Author:      Robert Roebling
-// Id:          $Id: menu.h,v 1.54 2005/03/17 23:44:45 VZ Exp $
+// Id:          $Id: menu.h,v 1.55 2005/08/02 22:57:56 MW Exp $
 // Copyright:   (c) 1998 Robert Roebling, Julian Smart
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -18,7 +18,7 @@
 // wxMenuBar
 //-----------------------------------------------------------------------------
 
-class wxMenuBar : public wxMenuBarBase
+class WXDLLIMPEXP_CORE wxMenuBar : public wxMenuBarBase
 {
 public:
     // ctors
@@ -65,7 +65,7 @@ private:
 // wxMenu
 //-----------------------------------------------------------------------------
 
-class wxMenu : public wxMenuBase
+class WXDLLIMPEXP_CORE wxMenu : public wxMenuBase
 {
 public:
     // ctors & dtor

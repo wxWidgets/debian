@@ -2,7 +2,7 @@
 // Name:        colour.h
 // Purpose:
 // Author:      Robert Roebling
-// Id:          $Id: colour.h,v 1.21 2004/05/23 20:50:53 JS Exp $
+// Id:          $Id: colour.h,v 1.22 2005/08/02 22:57:53 MW Exp $
 // Copyright:   (c) 1998 Robert Roebling
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -25,18 +25,18 @@
 // classes
 //-----------------------------------------------------------------------------
 
-class wxDC;
-class wxPaintDC;
-class wxBitmap;
-class wxWindow;
+class WXDLLIMPEXP_CORE wxDC;
+class WXDLLIMPEXP_CORE wxPaintDC;
+class WXDLLIMPEXP_CORE wxBitmap;
+class WXDLLIMPEXP_CORE wxWindow;
 
-class wxColour;
+class WXDLLIMPEXP_CORE wxColour;
 
 //-----------------------------------------------------------------------------
 // wxColour
 //-----------------------------------------------------------------------------
 
-class wxColour: public wxGDIObject
+class WXDLLIMPEXP_CORE wxColour: public wxGDIObject
 {
 public:
     wxColour() { }

@@ -2,7 +2,7 @@
 // Name:        wx/gtk/timer.h
 // Purpose:
 // Author:      Robert Roebling
-// Id:          $Id: timer.h,v 1.11 2004/05/23 20:50:54 JS Exp $
+// Id:          $Id: timer.h,v 1.12 2005/08/02 22:57:58 MW Exp $
 // Copyright:   (c) 1998 Robert Roebling
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -19,7 +19,7 @@
 // wxTimer
 //-----------------------------------------------------------------------------
 
-class wxTimer : public wxTimerBase
+class WXDLLIMPEXP_CORE wxTimer : public wxTimerBase
 {
 public:
     wxTimer() { Init(); }

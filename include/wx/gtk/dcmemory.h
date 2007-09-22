@@ -2,7 +2,7 @@
 // Name:        dcmemory.h
 // Purpose:
 // Author:      Robert Roebling
-// RCS-ID:      $Id: dcmemory.h,v 1.16 2004/05/23 20:50:53 JS Exp $
+// RCS-ID:      $Id: dcmemory.h,v 1.17 2005/08/02 22:57:54 MW Exp $
 // Copyright:   (c) 1998 Robert Roebling
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -22,13 +22,13 @@
 // classes
 //-----------------------------------------------------------------------------
 
-class wxMemoryDC;
+class WXDLLIMPEXP_CORE wxMemoryDC;
 
 //-----------------------------------------------------------------------------
 // wxMemoryDC
 //-----------------------------------------------------------------------------
 
-class wxMemoryDC : public wxWindowDC
+class WXDLLIMPEXP_CORE wxMemoryDC : public wxWindowDC
 {
 public:
     wxMemoryDC();

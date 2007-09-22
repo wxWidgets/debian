@@ -2,7 +2,7 @@
 // Name:        listbox.h
 // Purpose:     wxListBox class declaration
 // Author:      Robert Roebling
-// Id:          $Id: listbox.h,v 1.49 2005/02/13 17:07:47 VZ Exp $
+// Id:          $Id: listbox.h,v 1.50 2005/08/02 22:57:55 MW Exp $
 // Copyright:   (c) 1998 Robert Roebling
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -23,7 +23,7 @@ class WXDLLIMPEXP_BASE wxSortedArrayString;
 // wxListBox
 //-----------------------------------------------------------------------------
 
-class wxListBox : public wxListBoxBase
+class WXDLLIMPEXP_CORE wxListBox : public wxListBoxBase
 {
 public:
     // ctors and such

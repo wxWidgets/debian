@@ -16,6 +16,11 @@ method ({\tt length()} in this case, always the lowercase version) should be
 used as it will ensure smoother transition to {\tt std::string} when wxWidgets
 starts using it instead of wxString.
 
+Also please note that in this manual \texttt{char} is sometimes used instead of 
+\texttt{wxChar} because it hasn't been fully updated yet. Please substitute as
+necessary and refer to the sources in case of a doubt.
+
+
 \wxheading{Derived from}
 
 None
@@ -909,7 +914,7 @@ Same as Truncate. Removes the portion from {\it pos} to the end of the string.
 
 \func{wxString\&}{Remove}{\param{size\_t}{ pos}, \param{size\_t}{ len}}
 
-Removes the {\it len} characters from the string, starting at {\it pos}.
+Removes {\it len} characters from the string, starting at {\it pos}.
 
 \membersection{wxString::RemoveLast}\label{wxstringremovelast}
 
@@ -1040,7 +1045,10 @@ familiar with C) results.
 Attempts to convert the string to an unsigned integer in base {\it base}.
 Returns {\tt true} on success in which case the number is stored in the
 location pointed to by {\it val} or {\tt false} if the string does not
-represent a valid number in the given base.
+represent a valid number in the given base. Please notice that this function
+behaves in the same way as the standard \texttt{strtoul()} and so it simply
+converts negative numbers to unsigned representation instead of rejecting them
+(e.g. $-1$ is returned as \texttt{ULONG\_MAX}).
 
 See \helpref{wxString::ToLong}{wxstringtolong} for the more detailed
 description of the {\it base} parameter.
@@ -1160,11 +1168,13 @@ Concatenation in place: the argument is appended to the string.
 
 \membersection{wxString::operator []}\label{wxstringoperatorbracket}
 
-\func{char\&}{operator []}{\param{size\_t}{ i}}
+\func{wxChar\&}{operator []}{\param{size\_t}{ i}}
 
-\func{char}{operator []}{\param{size\_t}{ i}}
+\constfunc{wxChar}{operator []}{\param{size\_t}{ i}}
 
-\func{char}{operator []}{\param{int}{ i}}
+\func{wxChar\&}{operator []}{\param{int}{ i}}
+
+\constfunc{wxChar}{operator []}{\param{int}{ i}}
 
 Element extraction.
 

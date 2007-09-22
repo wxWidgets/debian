@@ -1,3 +1,14 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% Name:        listctrl.tex
+%% Purpose:     wxListCtrl docs
+%% Author:
+%% Modified by:
+%% Created:
+%% RCS-ID:      $Id: listctrl.tex,v 1.64.2.7 2006/03/10 21:37:37 RD Exp $
+%% Copyright:   (c) wxWidgets
+%% License:     wxWindows license
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
 \section{\class{wxListCtrl}}\label{wxlistctrl}
 
 A list control presents lists in a number of formats: list view, report view,
@@ -96,8 +107,8 @@ functions that take a \helpref{wxListEvent}{wxlistevent} argument.
 
 \wxheading{See also}
 
-\helpref{wxListCtrl overview}{wxlistctrloverview}, \helpref{wxListBox}{wxlistbox}, \helpref{wxTreeCtrl}{wxtreectrl},\rtfsp
-\helpref{wxImageList}{wximagelist}, \helpref{wxListEvent}{wxlistevent},
+\helpref{wxListCtrl overview}{wxlistctrloverview}, \helpref{wxListView}{wxlistview}, \helpref{wxListBox}{wxlistbox},\rtfsp
+\helpref{wxTreeCtrl}{wxtreectrl}, \helpref{wxImageList}{wximagelist}, \helpref{wxListEvent}{wxlistevent},
 \helpref{wxListItem}{wxlistitem}
 
 \latexignore{\rtfignore{\wxheading{Members}}}
@@ -377,6 +388,13 @@ Returns the number of items in the list control.
 Gets the application-defined data associated with this item.
 
 
+\membersection{wxListCtrl::GetItemFont}\label{wxlistctrlgetitemfont}
+
+\constfunc{wxFont}{GetItemFont}{\param{long }{item}}
+
+Returns the item's font.
+
+
 \membersection{wxListCtrl::GetItemPosition}\label{wxlistctrlgetitemposition}
 
 \constfunc{bool}{GetItemPosition}{\param{long }{item}, \param{wxPoint\& }{pos}}
@@ -394,7 +412,8 @@ returns a Wx::Point ( or undef ).}
 
 \constfunc{bool}{GetItemRect}{\param{long }{item}, \param{wxRect\& }{rect}, \param{int }{code = wxLIST\_RECT\_BOUNDS}}
 
-Returns the rectangle representing the item's size and position, in client coordinates.
+Returns the rectangle representing the item's size and position, in physical
+coordinates.
 
 {\it code} is one of wxLIST\_RECT\_BOUNDS, wxLIST\_RECT\_ICON, wxLIST\_RECT\_LABEL.
 
@@ -482,7 +501,7 @@ This function may be used to find all selected items in the control like this:
 \twocolitem{wxLIST\_NEXT\_RIGHT}{Searches for an item to the right of the specified item.}
 \end{twocollist}
 
-{\bf NB:} this parameters is only supported by wxMSW currently and ignored on
+{\bf NB:} this parameter is only supported by wxMSW currently and ignored on
 other platforms.
 
 {\it state} can be a bitlist of the following:
@@ -638,12 +657,15 @@ method:\par
 
 \membersection{wxListCtrl::OnGetItemAttr}\label{wxlistctrlongetitemattr}
 
-\func{virtual wxListItemAttr *}{OnGetItemAttr}{\param{long }{item}}
+\constfunc{virtual wxListItemAttr *}{OnGetItemAttr}{\param{long }{item}}
 
 This function may be overloaded in the derived class for a control with
 {\tt wxLC\_VIRTUAL} style. It should return the attribute for the
 for the specified {\tt item} or {\tt NULL} to use the default appearance
 parameters.
+
+wxListCtrl will not delete the pointer or keep a reference of it. You can 
+return the same wxListItemAttr pointer for every OnGetItemAttr call.
 
 The base class version always returns {\tt NULL}.
 
@@ -662,6 +684,8 @@ This function must be overloaded in the derived class for a control with
 (if the control doesn't have an image list, it is not necessary to overload
  it). It should return the index of the items image in the controls image list
 or $-1$ for no image.
+In a control with {\tt wxLC\_REPORT} style, OnGetItemImage only gets called for
+the first column of each line.
 
 The base class version always returns $-1$.
 
@@ -865,18 +889,34 @@ from $0$ to {\it count}.
 Associates application-defined data with this item.
 
 
+\membersection{wxListCtrl::SetItemFont}\label{wxlistctrlsetitemfont}
+
+\func{void}{SetItemFont}{\param{long }{item}, \param{const wxFont\& }{font}}
+
+Sets the item's font.
+
+
 \membersection{wxListCtrl::SetItemImage}\label{wxlistctrlsetitemimage}
 
 \func{bool}{SetItemImage}{\param{long }{item}, \param{int }{image}}
 
 Sets the image associated with the item. The image is an index into the
-image list associated with the list control.
+image list associated with the list control. In report view, this only sets
+the image for the first column.
 
 \func{bool}{SetItemImage}{\param{long }{item}, \param{int }{image}, \param{int }{selImage}}
 
 Sets the unselected and selected images associated with the item. The images are indices into the
 image list associated with the list control. This form is deprecated: {\it selImage} is not
 used.
+
+
+\membersection{wxListCtrl::SetItemColumnImage}\label{wxlistctrlsetitemcolumnimage}
+
+\func{bool}{SetItemImage}{\param{long }{item}, \param{long }{column}\param{int }{image}}
+
+Sets the image associated with the item. In report view, you can specify the column.
+The image is an index into the image list associated with the list control.
 
 
 \membersection{wxListCtrl::SetItemPosition}\label{wxlistctrlsetitemposition}
@@ -970,6 +1010,6 @@ SortItems with a reference to a callable object that expects two
 parameters.}
 
 \perlnote{In wxPerl the comparison function must take just two parameters;
- however, you may use a closure to achieve an effect similar to the
- SortItems third parameter.}
+however, you may use a closure to achieve an effect similar to the
+SortItems third parameter.}
 

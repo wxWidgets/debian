@@ -5,7 +5,7 @@
 // Author:      Vadim Zeitlin, Vaclav Slavik
 // Modified by:
 // Created:     06.08.01
-// RCS-ID:      $Id: toplevel.h,v 1.52 2005/06/24 16:44:18 RL Exp $
+// RCS-ID:      $Id: toplevel.h,v 1.53 2005/06/26 15:46:08 RR Exp $
 // Copyright:   (c) 2001 Vadim Zeitlin <zeitlin@dptmaths.ens-cachan.fr>
 //                       Vaclav Slavik <vaclav@wxwidgets.org>
 // Licence:     wxWindows licence
@@ -205,6 +205,19 @@ public:
 
     // do the window-specific processing after processing the update event
     virtual void DoUpdateWindowUI(wxUpdateUIEvent& event) ;
+
+#if WX_USE_RESERVED_VIRTUALS
+    // Reserved for future use
+    virtual void ReservedTopLevelWindowFunc1() {}
+    virtual void ReservedTopLevelWindowFunc2() {}
+    virtual void ReservedTopLevelWindowFunc3() {}
+    virtual void ReservedTopLevelWindowFunc4() {}
+    virtual void ReservedTopLevelWindowFunc5() {}
+    virtual void ReservedTopLevelWindowFunc6() {}
+    virtual void ReservedTopLevelWindowFunc7() {}
+    virtual void ReservedTopLevelWindowFunc8() {}
+    virtual void ReservedTopLevelWindowFunc9() {}
+#endif
 
 protected:
     // the frame client to screen translation should take account of the

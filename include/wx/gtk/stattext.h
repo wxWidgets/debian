@@ -2,7 +2,7 @@
 // Name:        stattext.h
 // Purpose:
 // Author:      Robert Roebling
-// Id:          $Id: stattext.h,v 1.17 2005/04/07 22:52:32 RR Exp $
+// Id:          $Id: stattext.h,v 1.19 2005/08/17 13:47:35 VZ Exp $
 // Copyright:   (c) 1998 Robert Roebling
 // Licence:   	wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -24,7 +24,7 @@
 // classes
 //-----------------------------------------------------------------------------
 
-class wxStaticText;
+class WXDLLIMPEXP_CORE wxStaticText;
 
 //-----------------------------------------------------------------------------
 // global data
@@ -34,7 +34,7 @@ class wxStaticText;
 // wxStaticText
 //-----------------------------------------------------------------------------
 
-class wxStaticText : public wxControl
+class WXDLLIMPEXP_CORE wxStaticText : public wxControl
 {
 public:
     wxStaticText();
@@ -63,6 +63,9 @@ public:
     static wxVisualAttributes
     GetClassDefaultAttributes(wxWindowVariant variant = wxWINDOW_VARIANT_NORMAL);
     
+    // see wx/stattext.h
+    void Wrap(int width);
+
     // implementation
     // --------------
 

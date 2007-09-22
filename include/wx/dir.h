@@ -4,7 +4,7 @@
 // Author:      Vadim Zeitlin
 // Modified by:
 // Created:     08.12.99
-// RCS-ID:      $Id: dir.h,v 1.18 2005/02/24 14:33:28 VZ Exp $
+// RCS-ID:      $Id: dir.h,v 1.18.2.1 2005/09/25 20:46:17 MW Exp $
 // Copyright:   (c) 1999 Vadim Zeitlin <zeitlin@dptmaths.ens-cachan.fr>
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -16,9 +16,7 @@
     #pragma interface "dir.h"
 #endif
 
-#ifndef WX_PRECOMP
-    #include "wx/string.h"
-#endif
+#include "wx/string.h"
 
 class WXDLLIMPEXP_BASE wxArrayString;
 

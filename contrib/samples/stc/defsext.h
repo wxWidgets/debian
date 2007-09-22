@@ -3,7 +3,7 @@
 // Purpose:     STC test declarations
 // Maintainer:  Wyo
 // Created:     2003-09-01
-// RCS-ID:      $Id: defsext.h,v 1.2 2004/05/25 11:14:03 JS Exp $
+// RCS-ID:      $Id: defsext.h,v 1.4 2005/09/16 18:25:44 ABX Exp $
 // Copyright:   (c) wxGuide
 // Licence:     wxWindows licence
 //////////////////////////////////////////////////////////////////////////////
@@ -16,8 +16,8 @@
 //----------------------------------------------------------------------------
 
 //! wxWidgets headers
-#include <wx/print.h>    // printing support
-#include <wx/printdlg.h> // printing dialog
+#include "wx/print.h"    // printing support
+#include "wx/printdlg.h" // printing dialog
 
 
 //============================================================================
@@ -96,9 +96,12 @@ enum {
 //! global application name
 extern wxString *g_appname;
 
+#if wxUSE_PRINTING_ARCHITECTURE
+
 //! global print data, to remember settings during the session
 extern wxPrintData *g_printData;
 extern wxPageSetupData *g_pageSetupData;
 
-#endif // _WX_DEFSEXT_H_
+#endif // wxUSE_PRINTING_ARCHITECTURE
 
+#endif // _WX_DEFSEXT_H_

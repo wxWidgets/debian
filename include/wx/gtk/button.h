@@ -2,7 +2,7 @@
 // Name:        wx/gtk/button.h
 // Purpose:
 // Author:      Robert Roebling
-// Id:          $Id: button.h,v 1.30 2004/08/30 14:38:55 VS Exp $
+// Id:          $Id: button.h,v 1.31 2005/08/02 22:57:51 MW Exp $
 // Copyright:   (c) 1998 Robert Roebling
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -23,19 +23,19 @@
 // classes
 //-----------------------------------------------------------------------------
 
-class wxButton;
+class WXDLLIMPEXP_CORE wxButton;
 
 //-----------------------------------------------------------------------------
 // global data
 //-----------------------------------------------------------------------------
 
-extern const wxChar *wxButtonNameStr;
+extern WXDLLIMPEXP_CORE const wxChar *wxButtonNameStr;
 
 //-----------------------------------------------------------------------------
 // wxButton
 //-----------------------------------------------------------------------------
 
-class wxButton: public wxButtonBase
+class WXDLLIMPEXP_CORE wxButton: public wxButtonBase
 {
 public:
     wxButton();

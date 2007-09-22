@@ -4,7 +4,7 @@
 // Author:      Vadim Zeitlin
 // Modified by:
 // Created:     20.11.99
-// RCS-ID:      $Id: gdiimage.cpp,v 1.49 2005/03/08 20:13:58 VZ Exp $
+// RCS-ID:      $Id: gdiimage.cpp,v 1.50 2005/07/01 13:38:58 ABX Exp $
 // Copyright:   (c) 1999 Vadim Zeitlin <zeitlin@dptmaths.ens-cachan.fr>
 // Licence:     wxWindows licence
 ///////////////////////////////////////////////////////////////////////////////
@@ -570,7 +570,7 @@ bool wxICOResourceHandler::LoadIcon(wxIcon *icon,
 // private functions
 // ----------------------------------------------------------------------------
 
-wxSize wxGetHiconSize(HICON hicon)
+wxSize wxGetHiconSize(HICON WXUNUSED_IN_WINCE(hicon))
 {
     // default icon size on this hardware
     // usually 32x32 but can be other (smaller) on pocket devices
@@ -601,9 +601,8 @@ wxSize wxGetHiconSize(HICON hicon)
                 ::DeleteObject(info.hbmColor);
         }
     }
-#else
-    wxUnusedVar(hicon);
 #endif
+
     return size;
 }
 

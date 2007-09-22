@@ -3,7 +3,7 @@
 // Purpose:
 // Date: 08/11/1999
 // Author: Guilhem Lavaux <lavaux@easynet.fr> (C) 1999
-// CVSID: $Id: sndesd.h,v 1.3 2004/11/22 20:05:24 JS Exp $
+// CVSID: $Id: sndesd.h,v 1.4 2005/08/02 21:44:34 MW Exp $
 // License:    wxWindows license
 // --------------------------------------------------------------------------
 #ifndef _WX_SNDESD_H
@@ -23,7 +23,7 @@
 // ESD output class
 //
 
-class wxSoundStreamESD : public wxSoundStream {
+class WXDLLIMPEXP_MMEDIA wxSoundStreamESD : public wxSoundStream {
 public:
     wxSoundStreamESD(const wxString& hostname = wxT("localhost"));
     ~wxSoundStreamESD();

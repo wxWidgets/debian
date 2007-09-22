@@ -1,10 +1,10 @@
 /////////////////////////////////////////////////////////////////////////////
-// Name:        dcpsg.cpp
+// Name:        src/generic/dcpsg.cpp
 // Purpose:     Generic wxPostScriptDC implementation
 // Author:      Julian Smart, Robert Roebling, Markus Holzhem
 // Modified by:
 // Created:     04/01/98
-// RCS-ID:      $Id: dcpsg.cpp,v 1.129 2005/01/16 12:58:52 RR Exp $
+// RCS-ID:      $Id: dcpsg.cpp,v 1.131.2.4 2006/03/08 23:03:24 MR Exp $
 // Copyright:   (c) Julian Smart
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -40,6 +40,7 @@
 #include "wx/paper.h"
 #include "wx/filefn.h"
 #include "wx/math.h"
+#include "wx/stdpaths.h"
 
 #ifdef __WXMSW__
 
@@ -872,14 +873,14 @@ void wxPostScriptDC::DoDrawBitmap( const wxBitmap& bitmap, wxCoord x, wxCoord y,
 
     unsigned char* data = image.GetData();
 
-    /* buffer = line = width*rgb(3)*hexa(2)+'\n'(1)+null(1) */
-    char* buffer = new char[ w*6+2 ];
+    // size of the buffer = width*rgb(3)*hexa(2)+'\n'
+    wxCharBuffer buffer(w*6 + 1);
     int firstDigit, secondDigit;
 
     //rows
     for (int j = 0; j < h; j++)
     {
-        char* bufferindex = buffer;
+        char* bufferindex = buffer.data();
 
         //cols
         for (int i = 0; i < w*3; i++)
@@ -1037,12 +1038,26 @@ void wxPostScriptDC::SetPen( const wxPen& pen )
         case wxSHORT_DASH:    psdash = short_dashed;   break;
         case wxLONG_DASH:     psdash = wxCoord_dashed; break;
         case wxDOT_DASH:      psdash = dotted_dashed;  break;
+        case wxUSER_DASH:
+        {
+            wxDash *dashes;
+            int nDashes = m_pen.GetDashes (&dashes);
+            PsPrint ("[");
+            for (int i = 0; i < nDashes; ++i)
+            {
+                sprintf( buffer, "%d ", dashes [i] );
+                PsPrint( buffer );
+            }
+            PsPrint ("] 0 setdash\n");
+            psdash = 0; 
+        } 
+        break;
         case wxSOLID:
         case wxTRANSPARENT:
         default:              psdash = "[] 0";         break;
     }
 
-    if ( (oldStyle != m_pen.GetStyle()) )
+    if (psdash && (oldStyle != m_pen.GetStyle()) )
     {
         PsPrint( psdash );
         PsPrint( " setdash\n" );
@@ -1384,6 +1399,7 @@ void wxPostScriptDC::SetLogicalFunction (int WXUNUSED(function))
     wxFAIL_MSG( wxT("wxPostScriptDC::SetLogicalFunction not implemented.") );
 }
 
+#if wxUSE_SPLINES
 void wxPostScriptDC::DoDrawSpline( wxList *points )
 {
     wxCHECK_RET( m_ok, wxT("invalid postscript dc") );
@@ -1458,6 +1474,7 @@ void wxPostScriptDC::DoDrawSpline( wxList *points )
               wxT("stroke\n"),
             LogicalToDeviceX((wxCoord)c), LogicalToDeviceY((wxCoord)d) );
 }
+#endif // wxUSE_SPLINES
 
 wxCoord wxPostScriptDC::GetCharWidth() const
 {
@@ -1962,22 +1979,39 @@ void wxPostScriptDC::DoGetTextExtent(const wxString& string,
 
         FILE *afmFile = NULL;
 
-        wxPostScriptPrintNativeData *data =
-            (wxPostScriptPrintNativeData *) m_printData.GetNativeData();
-
         // Get the directory of the AFM files
         wxString afmName;
-        if (!data->GetFontMetricPath().empty())
+
+        // VZ: I don't know if the cast always works under Unix but it clearly
+        //     never does under Windows where the pointer is
+        //     wxWindowsPrintNativeData and so calling GetFontMetricPath() on
+        //     it just crashes
+#ifndef __WIN32__
+        wxPostScriptPrintNativeData *data =
+            wxDynamicCast(m_printData.GetNativeData(), wxPostScriptPrintNativeData);
+
+        if (data && !data->GetFontMetricPath().empty())
         {
             afmName = data->GetFontMetricPath();
             afmName << wxFILE_SEP_PATH << name;
-            afmFile = wxFopen(afmName,wxT("r"));
+        }
+#endif // __WIN32__
+
+        if ( !afmName.empty() )
+            afmFile = wxFopen(afmName, wxT("r"));
+
+        if ( !afmFile )
+        {
         }
 
-#if defined(__UNIX__) && !defined(__VMS__)
-        if (afmFile==NULL)
+        if ( !afmFile )
         {
+#if defined(__UNIX__) && !defined(__VMS__)
            afmName = wxGetDataDir();
+#else // !__UNIX__
+           afmName = wxStandardPaths::Get().GetDataDir();
+#endif // __UNIX__/!__UNIX__
+
            afmName <<  wxFILE_SEP_PATH
 #if defined(__LINUX__) || defined(__FREEBSD__)
                    << wxT("gs_afm") << wxFILE_SEP_PATH
@@ -1987,7 +2021,6 @@ void wxPostScriptDC::DoGetTextExtent(const wxString& string,
                    << name;
            afmFile = wxFopen(afmName,wxT("r"));
         }
-#endif
 
         /* 2. open and process the file
            /  a short explanation of the AFM format:

@@ -4,10 +4,13 @@
 // Author:      Vadim Zeitlin
 // Modified by: Robert Vazan (sizers)
 // Created:     28.09.99
-// RCS-ID:      $Id: wizard.h,v 1.19 2004/06/17 16:22:27 ABX Exp $
+// RCS-ID:      $Id: wizard.h,v 1.21.2.1 2005/09/25 20:46:23 MW Exp $
 // Copyright:   (c) 1999 Vadim Zeitlin <zeitlin@dptmaths.ens-cachan.fr>
 // Licence:     wxWindows licence
 ///////////////////////////////////////////////////////////////////////////////
+
+#ifndef _WX_GENERIC_WIZARD_H_
+#define _WX_GENERIC_WIZARD_H_
 
 // ----------------------------------------------------------------------------
 // wxWizard
@@ -86,8 +89,12 @@ private:
     void AddBackNextPair(wxBoxSizer *buttonRow);
     void AddButtonRow(wxBoxSizer *mainColumn);
 
+#if wxABI_VERSION >= 20602
+protected:
+#endif
     void FinishLayout();
 
+private:
     wxSize GetManualPageSize() const;
 
     // the page size requested by user
@@ -126,3 +133,4 @@ private:
     DECLARE_NO_COPY_CLASS(wxWizard)
 };
 
+#endif // _WX_GENERIC_WIZARD_H_

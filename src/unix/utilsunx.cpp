@@ -2,7 +2,7 @@
 // Name:        unix/utilsunx.cpp
 // Purpose:     generic Unix implementation of many wx functions
 // Author:      Vadim Zeitlin
-// Id:          $Id: utilsunx.cpp,v 1.126 2005/05/10 05:44:10 SC Exp $
+// Id:          $Id: utilsunx.cpp,v 1.127 2005/08/23 23:12:37 VZ Exp $
 // Copyright:   (c) 1998 Robert Roebling, Vadim Zeitlin
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -80,6 +80,11 @@
     #endif // __BSD__/!__BSD__
 
     #define wxStatfs statfs
+
+    #ifndef HAVE_STATFS_DECL
+        // some systems lack statfs() prototype in the system headers (AIX 4)
+        extern "C" int statfs(const char *path, struct statfs *buf);
+    #endif
 #endif // HAVE_STATFS
 
 #ifdef HAVE_STATVFS

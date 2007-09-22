@@ -2,7 +2,7 @@
 // Name:        brush.h
 // Purpose:
 // Author:      Robert Roebling
-// Id:          $Id: brush.h,v 1.19 2004/12/03 15:28:55 ABX Exp $
+// Id:          $Id: brush.h,v 1.20 2005/08/02 22:57:51 MW Exp $
 // Copyright:   (c) 1998 Robert Roebling
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -25,13 +25,13 @@
 // classes
 //-----------------------------------------------------------------------------
 
-class wxBrush;
+class WXDLLIMPEXP_CORE wxBrush;
 
 //-----------------------------------------------------------------------------
 // wxBrush
 //-----------------------------------------------------------------------------
 
-class wxBrush: public wxBrushBase
+class WXDLLIMPEXP_CORE wxBrush: public wxBrushBase
 {
 public:
     wxBrush() { }

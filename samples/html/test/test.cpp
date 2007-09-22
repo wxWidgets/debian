@@ -3,7 +3,7 @@
 // Purpose:     wxHtml testing example
 // Author:      Vaclav Slavik
 // Created:     1999-07-07
-// RCS-ID:      $Id: test.cpp,v 1.31 2005/03/30 19:10:24 ABX Exp $
+// RCS-ID:      $Id: test.cpp,v 1.33.2.1 2005/12/18 12:24:25 JS Exp $
 // Copyright:   (c) Vaclav Slavik
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -32,6 +32,7 @@
 #include "wx/html/htmlproc.h"
 #include "wx/fs_inet.h"
 #include "wx/filedlg.h"
+#include "wx/utils.h"
 
 #include "../../sample.xpm"
 
@@ -70,6 +71,7 @@ public:
     // event handlers (these functions should _not_ be virtual)
     void OnQuit(wxCommandEvent& event);
     void OnPageOpen(wxCommandEvent& event);
+    void OnDefaultBrowser(wxCommandEvent& event);
     void OnBack(wxCommandEvent& event);
     void OnForward(wxCommandEvent& event);
     void OnProcessor(wxCommandEvent& event);
@@ -107,6 +109,7 @@ enum
 {
     // menu items
     ID_PageOpen = wxID_HIGHEST,
+    ID_DefaultBrowser,
     ID_Back,
     ID_Forward,
     ID_Processor
@@ -119,6 +122,7 @@ enum
 BEGIN_EVENT_TABLE(MyFrame, wxFrame)
     EVT_MENU(wxID_EXIT,  MyFrame::OnQuit)
     EVT_MENU(ID_PageOpen, MyFrame::OnPageOpen)
+    EVT_MENU(ID_DefaultBrowser, MyFrame::OnDefaultBrowser)
     EVT_MENU(ID_Back, MyFrame::OnBack)
     EVT_MENU(ID_Forward, MyFrame::OnForward)
     EVT_MENU(ID_Processor, MyFrame::OnProcessor)
@@ -173,6 +177,7 @@ MyFrame::MyFrame(const wxString& title, const wxPoint& pos, const wxSize& size)
     wxMenu *menuNav = new wxMenu;
 
     menuFile->Append(ID_PageOpen, _("&Open HTML page..."));
+    menuFile->Append(ID_DefaultBrowser, _("&Open current page with default browser"));
     menuFile->AppendSeparator();
     menuFile->Append(ID_Processor, _("&Remove bold attribute"),
                      wxEmptyString, wxITEM_CHECK);
@@ -232,11 +237,22 @@ void MyFrame::OnQuit(wxCommandEvent& WXUNUSED(event))
 
 void MyFrame::OnPageOpen(wxCommandEvent& WXUNUSED(event))
 {
+#if wxUSE_FILEDLG
     wxString p = wxFileSelector(_("Open HTML document"), wxEmptyString,
         wxEmptyString, wxEmptyString, wxT("HTML files|*.htm"));
 
-    if (p != wxEmptyString)
-        m_Html->LoadPage(p);
+    if (!p.empty())
+        m_Html->LoadFile(wxFileName(p));
+#endif // wxUSE_FILEDLG
+}
+
+void MyFrame::OnDefaultBrowser(wxCommandEvent& WXUNUSED(event))
+{
+    wxString page = m_Html->GetOpenedPage();
+    if (!page.empty())
+    {
+        wxLaunchDefaultBrowser(page);
+    }
 }
 
 void MyFrame::OnBack(wxCommandEvent& WXUNUSED(event))

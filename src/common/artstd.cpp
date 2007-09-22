@@ -4,7 +4,7 @@
 // Author:      Vaclav Slavik
 // Modified by:
 // Created:     18/03/2002
-// RCS-ID:      $Id: artstd.cpp,v 1.23 2005/06/10 17:53:12 ABX Exp $
+// RCS-ID:      $Id: artstd.cpp,v 1.23.2.1 2006/01/21 16:46:33 JS Exp $
 // Copyright:   (c) Vaclav Slavik
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -229,7 +229,7 @@ wxBitmap wxDefaultArtProvider::CreateBitmap(const wxArtID& id,
 {
     wxBitmap bmp = wxDefaultArtProvider_CreateBitmap(id);
 
-#if wxUSE_IMAGE
+#if wxUSE_IMAGE && (!defined(__WXMSW__) || wxUSE_WXDIB)
     if (bmp.Ok())
     {
         // fit into transparent image with desired size hint from the client

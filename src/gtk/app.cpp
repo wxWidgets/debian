@@ -2,7 +2,7 @@
 // Name:        app.cpp
 // Purpose:
 // Author:      Robert Roebling
-// Id:          $Id: app.cpp,v 1.211 2005/05/30 09:08:49 JS Exp $
+// Id:          $Id: app.cpp,v 1.212.2.2 2006/03/09 13:43:22 VZ Exp $
 // Copyright:   (c) 1998 Robert Roebling, Julian Smart
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -274,17 +274,18 @@ static gint wxapp_idle_callback( gpointer WXUNUSED(data) )
         wxTheApp->m_idleTag = 0;
     }
 
+    bool moreIdles;
+
     // Send idle event to all who request them as long as
     // no events have popped up in the event queue.
-    while (wxTheApp->ProcessIdle() && (gtk_events_pending() == 0))
+    while ( (moreIdles = wxTheApp->ProcessIdle()) && gtk_events_pending() == 0)
         ;
 
     // Release lock again
     gdk_threads_leave();
 
-    // Return FALSE to indicate that no more idle events are
-    // to be sent (single shot instead of continuous stream).
-    return FALSE;
+    // Return FALSE if no more idle events are to be sent
+    return moreIdles; 
 }
 
 #if wxUSE_THREADS
@@ -616,6 +617,7 @@ bool wxApp::Initialize(int& argc, wxChar **argv)
     // (1) this variable exists for the sole purpose of specifying the encoding
     //     of the filenames for GTK+ programs, so use it if it is set
     wxString encName(wxGetenv(_T("G_FILENAME_ENCODING")));
+    encName = encName.BeforeFirst(_T(','));
     if (encName == _T("@locale"))
         encName.clear();
     encName.MakeUpper();

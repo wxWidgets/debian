@@ -2,7 +2,7 @@
 // Name:        dcclient.h
 // Purpose:
 // Author:      Robert Roebling
-// Id:          $Id: dcclient.h,v 1.38 2004/12/16 21:23:58 ABX Exp $
+// Id:          $Id: dcclient.h,v 1.39 2005/08/02 22:57:54 MW Exp $
 // Copyright:   (c) 1998 Robert Roebling
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -21,15 +21,15 @@
 // classes
 //-----------------------------------------------------------------------------
 
-class wxWindowDC;
-class wxPaintDC;
-class wxClientDC;
+class WXDLLIMPEXP_CORE wxWindowDC;
+class WXDLLIMPEXP_CORE wxPaintDC;
+class WXDLLIMPEXP_CORE wxClientDC;
 
 //-----------------------------------------------------------------------------
 // wxWindowDC
 //-----------------------------------------------------------------------------
 
-class wxWindowDC : public wxDC
+class WXDLLIMPEXP_CORE wxWindowDC : public wxDC
 {
 public:
     wxWindowDC();
@@ -140,7 +140,7 @@ private:
 // wxClientDC
 //-----------------------------------------------------------------------------
 
-class wxClientDC : public wxWindowDC
+class WXDLLIMPEXP_CORE wxClientDC : public wxWindowDC
 {
 public:
     wxClientDC() { }
@@ -157,7 +157,7 @@ private:
 // wxPaintDC
 //-----------------------------------------------------------------------------
 
-class wxPaintDC : public wxClientDC
+class WXDLLIMPEXP_CORE wxPaintDC : public wxClientDC
 {
 public:
     wxPaintDC() { }

@@ -4,7 +4,7 @@
 // Author:      Paul Gammans, Roger Gammans
 // Modified by:
 // Created:     11/04/2001
-// RCS-ID:      $Id: gridctrl.cpp,v 1.16 2005/05/31 09:20:01 JS Exp $
+// RCS-ID:      $Id: gridctrl.cpp,v 1.17.2.1 2005/10/18 14:33:33 MW Exp $
 // Copyright:   (c) The Computer Surgery (paul@compsurg.co.uk)
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -118,8 +118,9 @@ wxSize wxGridCellDateTimeRenderer::GetBestSize(wxGrid& grid,
     return DoGetBestSize(attr, dc, GetString(grid, row, col));
 }
 
-void wxGridCellDateTimeRenderer::SetParameters(const wxString& params){
-    if (!params.IsEmpty())
+void wxGridCellDateTimeRenderer::SetParameters(const wxString& params)
+{
+    if (!params.empty())
         m_oformat=params;
 }
 
@@ -134,7 +135,7 @@ void wxGridCellDateTimeRenderer::SetParameters(const wxString& params){
 
 wxGridCellEnumRenderer::wxGridCellEnumRenderer(const wxString& choices)
 {
-    if (!choices.IsEmpty())
+    if (!choices.empty())
         SetParameters(choices);
 }
 
@@ -222,11 +223,11 @@ void wxGridCellEnumRenderer::SetParameters(const wxString& params)
 // "John","Fred"..."Bob" in the combo choice box
 
 wxGridCellEnumEditor::wxGridCellEnumEditor(const wxString& choices)
-                    : wxGridCellChoiceEditor()
+                     :wxGridCellChoiceEditor()
 {
     m_startint = -1;
 
-    if (!choices.IsEmpty())
+    if (!choices.empty())
         SetParameters(choices);
 }
 
@@ -251,7 +252,7 @@ void wxGridCellEnumEditor::BeginEdit(int row, int col, wxGrid* grid)
     else
     {
         wxString startValue = table->GetValue(row, col);
-        if (startValue.IsNumber() && !startValue.IsEmpty())
+        if (startValue.IsNumber() && !startValue.empty())
         {
             startValue.ToLong(&m_startint);
         }
@@ -349,22 +350,24 @@ wxGridCellAutoWrapStringRenderer::GetTextLines(wxGrid& grid,
     while ( tk.HasMoreTokens() )
     {
         wxString tok = tk.GetNextToken();
-    //FIXME: this causes us to print an extra unnecesary
-    //       space at the end of the line. But it
-    //       is invisible , simplifies the size calculation
-    //       and ensures tokens are separated in the display
-    tok += _T(" ");
+        //FIXME: this causes us to print an extra unnecesary
+        //       space at the end of the line. But it
+        //       is invisible , simplifies the size calculation
+        //       and ensures tokens are separated in the display
+        tok += _T(" ");
 
         dc.GetTextExtent(tok, &x, &y);
-        if ( curr_x + x > max_x) {
+        if ( curr_x + x > max_x)
+        {
             lines.Add( wxString(thisline) );
-        thisline = tok;
-        curr_x=x;
-    } else {
+            thisline = tok;
+            curr_x=x;
+        }
+        else
+        {
             thisline+= tok;
-        curr_x += x;
-    }
-
+            curr_x += x;
+        }
     }
     //Add last line
     lines.Add( wxString(thisline) );
@@ -391,7 +394,7 @@ wxGridCellAutoWrapStringRenderer::GetBestSize(wxGrid& grid,
     {
         width+=10;
         rect.SetWidth(width);
-        height = y *( GetTextLines(grid,dc,attr,rect,row,col).GetCount());
+        height = y * (wx_truncate_cast(wxCoord, GetTextLines(grid,dc,attr,rect,row,col).GetCount()));
         count--;
     // Search for a shape no taller than the golden ratio.
     } while (count && (width  < (height*1.68)) );

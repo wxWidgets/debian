@@ -5,7 +5,7 @@
 // Modified by: ABX - 19/12/2004 : possibility of horizontal orientation
 //                               : wxWidgets coding standards
 // Created:     22/06/2004
-// RCS-ID:      $Id: foldpanelbar.h,v 1.8 2005/05/31 09:17:24 JS Exp $
+// RCS-ID:      $Id: foldpanelbar.h,v 1.9 2005/07/28 23:23:22 VZ Exp $
 // Copyright:   (c) Jorgen Bodde
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -87,7 +87,7 @@ public:
 };
 
 #include <wx/dynarray.h>
-WX_DEFINE_ARRAY_PTR(wxFoldPanelItem *, wxFoldPanelItemArray);
+WX_DEFINE_ARRAY_WITH_DECL_PTR(wxFoldPanelItem *, wxFoldPanelItemArray, class WXDLLIMPEXP_FOLDBAR);
 
 /** \class wxFoldPanelBar
     The wxFoldPanelBar is a class which can maintain a list of collapsable panels. Once a panel is collapsed, only
@@ -105,7 +105,7 @@ WX_DEFINE_ARRAY_PTR(wxFoldPanelItem *, wxFoldPanelItemArray);
 class WXDLLIMPEXP_FOLDBAR wxFoldPanelBar: public wxPanel
 {
 private:
-    DECLARE_CLASS( wxFoldPanelBar )
+    DECLARE_DYNAMIC_CLASS( wxFoldPanelBar )
     DECLARE_EVENT_TABLE()
 
     wxImageList *m_images;

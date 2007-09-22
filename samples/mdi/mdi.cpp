@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     04/01/98
-// RCS-ID:      $Id: mdi.cpp,v 1.55 2004/07/20 10:09:09 ABX Exp $
+// RCS-ID:      $Id: mdi.cpp,v 1.57 2005/08/11 13:29:28 VZ Exp $
 // Copyright:   (c) Julian Smart
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -72,7 +72,6 @@ BEGIN_EVENT_TABLE(MyFrame, wxMDIParentFrame)
     EVT_MENU(MDI_QUIT, MyFrame::OnQuit)
 
     EVT_CLOSE(MyFrame::OnClose)
-
     EVT_SIZE(MyFrame::OnSize)
 END_EVENT_TABLE()
 

@@ -4,7 +4,7 @@
 // Author:      Vadim Zeitlin
 // Modified by:
 // Created:     10.05.98
-// RCS-ID:      $Id: dataobj.cpp,v 1.86 2005/05/31 09:20:43 JS Exp $
+// RCS-ID:      $Id: dataobj.cpp,v 1.87.2.1 2005/10/18 14:33:37 MW Exp $
 // Copyright:   (c) 1998 Vadim Zeitlin <zeitlin@dptmaths.ens-cachan.fr>
 // Licence:     wxWindows licence
 ///////////////////////////////////////////////////////////////////////////////
@@ -624,7 +624,7 @@ STDMETHODIMP wxIDataObject::EnumFormatEtc(DWORD dwDir,
     wxDataObject::Direction dir = dwDir == DATADIR_GET ? wxDataObject::Get
                                                        : wxDataObject::Set;
 
-    size_t nFormatCount = m_pDataObject->GetFormatCount(dir);
+    ULONG nFormatCount = wx_truncate_cast(ULONG, m_pDataObject->GetFormatCount(dir));
     wxDataFormat format;
     wxDataFormat *formats;
     formats = nFormatCount == 1 ? &format : new wxDataFormat[nFormatCount];
@@ -979,7 +979,8 @@ bool wxBitmapDataObject::SetData(const wxDataFormat& format,
 // wxFileDataObject
 // ----------------------------------------------------------------------------
 
-bool wxFileDataObject::SetData(size_t WXUNUSED(size), const void *pData)
+bool wxFileDataObject::SetData(size_t WXUNUSED(size),
+                               const void *WXUNUSED_IN_WINCE(pData))
 {
 #ifndef __WXWINCE__
     m_filenames.Empty();
@@ -1015,7 +1016,6 @@ bool wxFileDataObject::SetData(size_t WXUNUSED(size), const void *pData)
 
     return true;
 #else
-    wxUnusedVar(pData);
     return false;
 #endif
 }
@@ -1055,7 +1055,7 @@ size_t wxFileDataObject::GetDataSize() const
 #endif
 }
 
-bool wxFileDataObject::GetDataHere(void *pData) const
+bool wxFileDataObject::GetDataHere(void *WXUNUSED_IN_WINCE(pData)) const
 {
 #ifndef __WXWINCE__
     // pData points to an externally allocated memory block
@@ -1095,7 +1095,6 @@ bool wxFileDataObject::GetDataHere(void *pData) const
 
     return true;
 #else
-    wxUnusedVar(pData);
     return false;
 #endif
 }

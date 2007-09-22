@@ -2,7 +2,7 @@
 // Name:        wx/gtk/slider.h
 // Purpose:
 // Author:      Robert Roebling
-// Id:          $Id: slider.h,v 1.19 2004/06/14 17:31:26 VS Exp $
+// Id:          $Id: slider.h,v 1.20 2005/08/02 22:57:57 MW Exp $
 // Copyright:   (c) 1998 Robert Roebling
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -18,7 +18,7 @@
 // wxSlider
 // ----------------------------------------------------------------------------
 
-class wxSlider : public wxSliderBase
+class WXDLLIMPEXP_CORE wxSlider : public wxSliderBase
 {
 public:
     wxSlider() { }

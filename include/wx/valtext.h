@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     29/01/98
-// RCS-ID:      $Id: valtext.h,v 1.21 2005/04/06 11:09:23 RN Exp $
+// RCS-ID:      $Id: valtext.h,v 1.21.2.2 2006/02/06 04:24:40 KH Exp $
 // Copyright:   (c) 1998 Julian Smart
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -57,7 +57,7 @@ public:
     // Called to transfer data to the window
     virtual bool TransferToWindow();
 
-    // Called to transfer data to the window
+    // Called to transfer data from the window
     virtual bool TransferFromWindow();
 
     // ACCESSORS
@@ -106,8 +106,6 @@ protected:
                      _T("No window associated with validator") );
         wxCHECK_MSG( m_validatorWindow->IsKindOf(CLASSINFO(wxTextCtrl)), false,
                      _T("wxTextValidator is only for wxTextCtrl's") );
-        wxCHECK_MSG( m_stringValue, false,
-                     _T("No variable storage for validator") );
 
         return true;
     }

@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     01/02/97
-// RCS-ID:      $Id: colordlg.cpp,v 1.30 2005/03/22 19:39:52 ABX Exp $
+// RCS-ID:      $Id: colordlg.cpp,v 1.31 2005/07/30 17:07:18 MBN Exp $
 // Copyright:   (c) Julian Smart
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -31,15 +31,10 @@
 #ifndef WX_PRECOMP
     #include <stdio.h>
     #include "wx/defs.h"
-    #include "wx/bitmap.h"
-    #include "wx/pen.h"
-    #include "wx/brush.h"
     #include "wx/colour.h"
     #include "wx/gdicmn.h"
     #include "wx/utils.h"
-    #include "wx/frame.h"
     #include "wx/dialog.h"
-    #include "wx/msgdlg.h"
 #endif
 
 #if wxUSE_COLOURDLG && !(defined(__SMARTPHONE__) && defined(__WXWINCE__))

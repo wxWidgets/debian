@@ -4,7 +4,7 @@
 // Author:      Robin Dunn
 // Modified by:
 // Created:     9-Oct-2001
-// RCS-ID:      $Id: clntdata.h,v 1.16 2004/10/13 14:03:56 ABX Exp $
+// RCS-ID:      $Id: clntdata.h,v 1.22.2.2 2006/01/18 16:32:37 JS Exp $
 // Copyright:   (c) wxWidgets team
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -18,6 +18,79 @@
 
 #include "wx/defs.h"
 #include "wx/string.h"
+#include "wx/hashmap.h"
+
+#if wxABI_VERSION >= 20602
+
+typedef int (*wxShadowObjectMethod)(void*, void*);
+WX_DECLARE_STRING_HASH_MAP_WITH_DECL(
+    wxShadowObjectMethod,
+    wxShadowObjectMethods,
+    class WXDLLIMPEXP_BASE
+);
+WX_DECLARE_STRING_HASH_MAP_WITH_DECL(
+    void *,
+    wxShadowObjectFields,
+    class WXDLLIMPEXP_BASE
+);
+
+class WXDLLIMPEXP_BASE wxShadowObject
+{
+public:
+    wxShadowObject() { }
+    
+    void AddMethod( const wxString &name, wxShadowObjectMethod method )
+    { 
+        wxShadowObjectMethods::iterator it = m_methods.find( name );
+        if (it == m_methods.end())
+            m_methods[ name ] = method;
+        else
+            it->second = method;
+    }
+    
+    bool InvokeMethod( const wxString &name, void* window, void* param, int* returnValue )
+    { 
+        wxShadowObjectMethods::iterator it = m_methods.find( name );
+        if (it == m_methods.end())
+            return false;
+        wxShadowObjectMethod method = it->second;
+        int ret = (*method)(window, param);
+        if (returnValue)
+            *returnValue = ret;
+        return true;
+    }
+    
+    void AddField( const wxString &name, void* initialValue = NULL )
+    {
+        wxShadowObjectFields::iterator it = m_fields.find( name );
+        if (it == m_fields.end())
+            m_fields[ name ] = initialValue;
+        else
+            it->second = initialValue;
+    }
+    
+    void SetField( const wxString &name, void* value )
+    {
+        wxShadowObjectFields::iterator it = m_fields.find( name );
+        if (it == m_fields.end())
+            return;
+        it->second = value;
+    }
+    
+    void* GetField( const wxString &name, void *defaultValue = NULL )
+    {
+        wxShadowObjectFields::iterator it = m_fields.find( name );
+        if (it == m_fields.end())
+            return defaultValue;
+        return it->second;
+    }
+    
+private:
+    wxShadowObjectMethods   m_methods;
+    wxShadowObjectFields    m_fields;
+};
+
+#endif // wxABI_VERSION
 
 // ----------------------------------------------------------------------------
 
@@ -93,10 +166,11 @@ protected:
 
 };
 
-// not Motif-specific, but currently used only under Motif
-#ifdef __WXMOTIF__
+// not Motif-specific, but currently used only under Motif,
+// compiled to make wxMotif and wxGTK base libraries compatible
+#if defined(__WXMOTIF__) || wxABI_VERSION >= 20602
 
-#include <wx/vector.h>
+#include "wx/vector.h"
 
 struct WXDLLIMPEXP_BASE wxClientDataDictionaryPair
 {
@@ -106,7 +180,11 @@ struct WXDLLIMPEXP_BASE wxClientDataDictionaryPair
     wxClientData* data;
 };
 
-WX_DECLARE_VECTOR(wxClientDataDictionaryPair,wxClientDataDictionaryPairVector);
+_WX_DECLARE_VECTOR(
+    wxClientDataDictionaryPair,
+    wxClientDataDictionaryPairVector,
+    WXDLLIMPEXP_BASE
+);
 
 // this class is used internally to maintain the association between items
 // of (some subclasses of) wxControlWithItems and their client data

@@ -2,9 +2,10 @@
 # Purpose:      XRC editor, undo/redo module
 # Author:       Roman Rolinsky <rolinsky@mema.ucl.ac.be>
 # Created:      01.12.2002
-# RCS-ID:       $Id: undo.py,v 1.4 2003/11/12 21:28:39 RD Exp $
+# RCS-ID:       $Id: undo.py,v 1.7.2.1 2005/12/16 17:15:40 RD Exp $
 
 from globals import *
+from xxx import MakeXXXFromDOM
 #from panel import *
 
 # Undo/redo classes
@@ -20,13 +21,13 @@ class UndoManager:
         undoObj = self.undo.pop()
         undoObj.undo()
         self.redo.append(undoObj)
-        g.frame.modified = True
+        g.frame.SetModified()
         g.frame.SetStatusText('Undone')
     def Redo(self):
         undoObj = self.redo.pop()
         undoObj.redo()
         self.undo.append(undoObj)
-        g.frame.modified = True
+        g.frame.SetModified()
         g.frame.SetStatusText('Redone')
     def Clear(self):
         for i in self.undo: i.destroy()
@@ -74,7 +75,7 @@ class UndoCutDelete:
                     g.testWin.highLight.Remove()
                 g.tree.needUpdate = True
         self.elem = g.tree.RemoveLeaf(item)
-        g.tree.Unselect()
+        g.tree.UnselectAll()
         g.panel.Clear()
 
 class UndoPasteCreate:
@@ -118,6 +119,49 @@ class UndoPasteCreate:
                 g.tree.pendingHighLight = item
             else:
                 g.tree.pendingHighLight = None
+
+class UndoReplace:
+    def __init__(self, item):
+        self.itemIndex = g.tree.ItemFullIndex(item)
+        self.xxx = g.tree.GetPyData(item)
+    def destroy(self):
+        if self.xxx: self.xxx.element.unlink()
+    def undo(self):
+        print 'Sorry, UndoReplace is not yet implemented.'
+        return
+        item = g.tree.ItemAtFullIndex(self.itemIndex)
+        xxx = g.tree.GetPyData(item)
+        # Replace with old element
+        parent = xxx.parent.element
+        if xxx is self.xxx:   # sizeritem or notebookpage - replace child
+            parent.replaceChild(self.xxx.child.element, xxx.child.element)
+        else:
+            parent.replaceChild(self.xxx.element, xxx.element)
+        self.xxx.parent = xxx.parent
+        xxx = self.xxx
+        g.tree.SetPyData(item, xxx)
+        g.tree.SetItemText(item, xxx.treeName())
+        g.tree.SetItemImage(item, xxx.treeImage())
+
+        # Update panel
+        g.panel.SetData(xxx)
+        # Update tools
+        g.tools.UpdateUI()
+        g.tree.EnsureVisible(item)
+        g.tree.SelectItem(item)
+        # Delete testWin?
+        if g.testWin:
+            # If deleting top-level item, delete testWin
+            if selected == g.testWin.item:
+                g.testWin.Destroy()
+                g.testWin = None
+            else:
+                # Remove highlight, update testWin
+                if g.testWin.highLight:
+                    g.testWin.highLight.Remove()
+                g.tree.needUpdate = True
+    def redo(self):
+        return
 
 class UndoEdit:
     def __init__(self):

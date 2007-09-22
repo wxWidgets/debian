@@ -5,7 +5,7 @@
 // Author:      Robin Dunn
 //
 // Created:     27-Aug-1998
-// RCS-ID:      $Id: _toplvl.i,v 1.26 2005/03/08 00:43:06 RD Exp $
+// RCS-ID:      $Id: _toplvl.i,v 1.26.2.1 2006/02/10 19:07:36 RD Exp $
 // Copyright:   (c) 2003 by Total Control Software
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -144,6 +144,11 @@ public:
         bool MacGetMetalAppearance() const    { /*wxPyRaiseNotImplemented();*/ return false; }
     }
 #endif
+
+    DocDeclStr(
+        void , CenterOnScreen(int dir = wxBOTH),
+        "Center the window on screen", "");
+    %pythoncode { CentreOnScreen = CenterOnScreen }
 };
 
 

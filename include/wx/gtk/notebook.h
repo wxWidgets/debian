@@ -3,7 +3,7 @@
 // Purpose:     wxNotebook class
 // Author:      Robert Roebling
 // Modified by:
-// RCS-ID:      $Id: notebook.h,v 1.56 2005/01/13 20:29:26 ABX Exp $
+// RCS-ID:      $Id: notebook.h,v 1.57 2005/08/02 22:57:56 MW Exp $
 // Copyright:   (c) Julian Smart and Robert Roebling
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -19,7 +19,7 @@
 // internal class
 //-----------------------------------------------------------------------------
 
-class wxGtkNotebookPage;
+class WXDLLIMPEXP_CORE wxGtkNotebookPage;
 
 #include "wx/list.h"
 WX_DECLARE_LIST(wxGtkNotebookPage, wxGtkNotebookPagesList);
@@ -28,7 +28,7 @@ WX_DECLARE_LIST(wxGtkNotebookPage, wxGtkNotebookPagesList);
 // wxNotebook
 //-----------------------------------------------------------------------------
 
-class wxNotebook : public wxNotebookBase
+class WXDLLIMPEXP_CORE wxNotebook : public wxNotebookBase
 {
 public:
       // default for dynamic class

@@ -2,7 +2,7 @@
 // Name:        myframe.h
 // Purpose:     XML resources sample: A derived frame, called MyFrame
 // Author:      Robert O'Connor (rob@medicalmnemonics.com), Vaclav Slavik
-// RCS-ID:      $Id: myframe.h,v 1.4 2004/06/11 13:14:13 ABX Exp $
+// RCS-ID:      $Id: myframe.h,v 1.5 2005/07/13 18:04:55 VZ Exp $
 // Copyright:   (c) Robert O'Connor and Vaclav Slavik
 // Licence:     wxWindows licence
 //-----------------------------------------------------------------------------
@@ -44,6 +44,8 @@ public:
 private:
 
     // Event handlers (these functions should _not_ be virtual)
+    void OnUnloadResourceMenuCommand(wxCommandEvent& event);
+    void OnReloadResourceMenuCommand(wxCommandEvent& event);
     void OnExitToolOrMenuCommand(wxCommandEvent& event);
     void OnAboutToolOrMenuCommand(wxCommandEvent& event);
     void OnNonDerivedDialogToolOrMenuCommand(wxCommandEvent& event);

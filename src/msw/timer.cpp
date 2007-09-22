@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by: Vadim Zeitlin (use hash map instead of list, global rewrite)
 // Created:     04/01/98
-// RCS-ID:      $Id: timer.cpp,v 1.39 2005/05/22 12:10:55 JS Exp $
+// RCS-ID:      $Id: timer.cpp,v 1.39.2.2 2006/01/18 16:32:50 JS Exp $
 // Copyright:   (c) Julian Smart
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////

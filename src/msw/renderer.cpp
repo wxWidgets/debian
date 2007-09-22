@@ -4,7 +4,7 @@
 // Author:      Vadim Zeitlin
 // Modified by:
 // Created:     20.07.2003
-// RCS-ID:      $Id: renderer.cpp,v 1.21 2005/05/17 13:23:51 JS Exp $
+// RCS-ID:      $Id: renderer.cpp,v 1.23 2005/09/17 23:40:01 JS Exp $
 // Copyright:   (c) 2003 Vadim Zeitlin <vadim@wxwindows.org>
 // License:     wxWindows licence
 ///////////////////////////////////////////////////////////////////////////////
@@ -32,6 +32,7 @@
 
 #include "wx/splitter.h"
 #include "wx/renderer.h"
+#include "wx/settings.h"
 #include "wx/msw/uxtheme.h"
 #include "wx/msw/private.h"
 
@@ -244,36 +245,18 @@ wxRendererXP::DrawSplitterSash(wxWindow *win,
 {
     if ( !win->HasFlag(wxSP_NO_XP_THEME) )
     {
-        wxUxThemeHandle hTheme(win, L"REBAR");
-        if ( hTheme )
+        dc.SetPen(*wxTRANSPARENT_PEN);
+        dc.SetBrush(wxBrush(wxSystemSettings::GetColour(wxSYS_COLOUR_BTNFACE)));
+        if ( orient == wxVERTICAL )
         {
-            RECT rect;
-            if ( orient == wxVERTICAL )
-            {
-                rect.left = position;
-                rect.right = position + SASH_WIDTH;
-                rect.top = 0;
-                rect.bottom = size.y;
-            }
-            else // wxHORIZONTAL
-            {
-                rect.left = 0;
-                rect.right = size.x;
-                rect.top = position;
-                rect.bottom = position + SASH_WIDTH;
-            }
-
-            wxUxThemeEngine::Get()->DrawThemeBackground
-                                    (
-                                        hTheme,
-                                        (HDC) dc.GetHDC(),
-                                        29, // WP_DIALOG: dlg background
-                                        0, // no particular state
-                                        &rect,
-                                        NULL
-                                    );
-            return;
+            dc.DrawRectangle(position, 0, SASH_WIDTH, size.y);
         }
+        else // wxHORIZONTAL
+        {
+            dc.DrawRectangle(0, position, size.x, SASH_WIDTH);
+        }
+
+        return;
     }
 
     m_rendererNative.DrawSplitterSash(win, dc, size, position, orient, flags);

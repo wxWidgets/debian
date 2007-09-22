@@ -4,7 +4,7 @@
 // Author:      Vadim Zeitlin
 // Modified by:
 // Created:     04.11.99
-// RCS-ID:      $Id: fontmap.h,v 1.26 2005/03/26 21:47:49 DE Exp $
+// RCS-ID:      $Id: fontmap.h,v 1.27 2005/09/18 14:01:09 VZ Exp $
 // Copyright:   (c) Vadim Zeitlin
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -90,9 +90,12 @@ public:
     // get the n-th supported encoding
     static wxFontEncoding GetEncoding(size_t n);
 
-    // return internal string identifier for the encoding (see also
-    // GetEncodingDescription())
+    // return canonical name of this encoding (this is a short string,
+    // GetEncodingDescription() returns a longer one)
     static wxString GetEncodingName(wxFontEncoding encoding);
+
+    // return a list of all names of this encoding (see GetEncodingName)
+    static const wxChar** GetAllEncodingNames(wxFontEncoding encoding);
 
     // return user-readable string describing the given encoding
     //

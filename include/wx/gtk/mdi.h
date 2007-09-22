@@ -2,7 +2,7 @@
 // Name:        gtk/mdi.h
 // Purpose:
 // Author:      Robert Roebling
-// Id:          $Id: mdi.h,v 1.40 2005/03/21 12:27:34 VZ Exp $
+// Id:          $Id: mdi.h,v 1.41 2005/08/02 22:57:56 MW Exp $
 // Copyright:   (c) 1998 Robert Roebling
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -27,22 +27,22 @@
 // classes
 //-----------------------------------------------------------------------------
 
-class wxMDIParentFrame;
-class wxMDIClientWindow;
-class wxMDIChildFrame;
+class WXDLLIMPEXP_CORE wxMDIParentFrame;
+class WXDLLIMPEXP_CORE wxMDIClientWindow;
+class WXDLLIMPEXP_CORE wxMDIChildFrame;
 
 //-----------------------------------------------------------------------------
 // global data
 //-----------------------------------------------------------------------------
 
-extern const wxChar* wxFrameNameStr;
-extern const wxChar* wxStatusLineNameStr;
+extern WXDLLIMPEXP_CORE const wxChar* wxFrameNameStr;
+extern WXDLLIMPEXP_CORE const wxChar* wxStatusLineNameStr;
 
 //-----------------------------------------------------------------------------
 // wxMDIParentFrame
 //-----------------------------------------------------------------------------
 
-class wxMDIParentFrame: public wxFrame
+class WXDLLIMPEXP_CORE wxMDIParentFrame: public wxFrame
 {
 public:
     wxMDIParentFrame() { Init(); }
@@ -102,7 +102,7 @@ private:
 // wxMDIChildFrame
 //-----------------------------------------------------------------------------
 
-class wxMDIChildFrame: public wxFrame
+class WXDLLIMPEXP_CORE wxMDIChildFrame: public wxFrame
 {
 public:
     wxMDIChildFrame();
@@ -205,7 +205,7 @@ private:
 // wxMDIClientWindow
 //-----------------------------------------------------------------------------
 
-class wxMDIClientWindow: public wxWindow
+class WXDLLIMPEXP_CORE wxMDIClientWindow: public wxWindow
 {
 public:
     wxMDIClientWindow();

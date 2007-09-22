@@ -4,13 +4,17 @@
 // Author:      wxWidgets team
 // Modified by:
 // Created:     13.01.00
-// RCS-ID:      $Id: metafile.h,v 1.13 2004/12/20 12:43:49 ABX Exp $
+// RCS-ID:      $Id: metafile.h,v 1.14 2005/08/19 13:48:19 MW Exp $
 // Copyright:   (c) wxWidgets team
 // Licence:     wxWindows licence
 ///////////////////////////////////////////////////////////////////////////////
 
 #ifndef _WX_METAFILE_H_BASE_
 #define _WX_METAFILE_H_BASE_
+
+#include "wx/defs.h"
+
+#if wxUSE_METAFILE
 
 // provide synonyms for all metafile classes
 #define wxMetaFile wxMetafile
@@ -50,5 +54,6 @@
     #include "wx/mac/metafile.h"
 #endif
 
+#endif // wxUSE_METAFILE
 #endif
     // _WX_METAFILE_H_BASE_

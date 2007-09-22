@@ -17,7 +17,7 @@
 //                     databases operate the same in that respect
 //
 // Created:     9.96
-// RCS-ID:      $Id: db.h,v 1.97 2005/05/31 09:18:14 JS Exp $
+// RCS-ID:      $Id: db.h,v 1.98 2005/09/16 11:03:48 JS Exp $
 // Copyright:   (c) 1996 Remstar International, Inc.
 // Licence:     wxWindows licence
 ///////////////////////////////////////////////////////////////////////////////
@@ -99,6 +99,14 @@
 #define SQL_C_WXCHAR SQL_C_CHAR
 #endif
 
+#ifdef __DIGITALMARS__
+#if wxUSE_UNICODE
+typedef wxChar SQLTCHAR;
+#else
+typedef UCHAR SQLTCHAR;
+#endif
+#endif
+
 typedef float SFLOAT;
 typedef double SDOUBLE;
 typedef unsigned int UINT;
@@ -124,6 +132,15 @@ enum enumDummy {enumDum1};
     #ifdef SQL_C_BINARY
         #define SQL_C_BLOB SQL_C_BINARY
     #endif
+#endif
+
+#ifndef _WIN64
+#ifndef SQLLEN
+#define SQLLEN SQLINTEGER
+#endif
+#ifndef SQLULEN
+#define SQLULEN SQLUINTEGER
+#endif
 #endif
 
 const int wxDB_PATH_MAX                 = 254;
@@ -652,7 +669,7 @@ public:
     bool         ExecSql(const wxString &pSqlStmt);
     bool         ExecSql(const wxString &pSqlStmt, wxDbColInf** columns, short& numcols);
     bool         GetNext(void);
-    bool         GetData(UWORD colNo, SWORD cType, PTR pData, SDWORD maxLen, SDWORD FAR *cbReturned);
+    bool         GetData(UWORD colNo, SWORD cType, PTR pData, SDWORD maxLen, SQLLEN FAR *cbReturned);
     bool         Grant(int privileges, const wxString &tableName, const wxString &userList = wxT("PUBLIC"));
     int          TranslateSqlState(const wxString &SQLState);
     wxDbInf     *GetCatalog(const wxChar *userID=NULL);

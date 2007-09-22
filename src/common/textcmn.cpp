@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     13.07.99
-// RCS-ID:      $Id: textcmn.cpp,v 1.42 2005/04/13 17:51:16 ABX Exp $
+// RCS-ID:      $Id: textcmn.cpp,v 1.43 2005/07/21 16:19:40 ABX Exp $
 // Copyright:   (c) wxWidgets team
 // Licence:     wxWindows licence
 ///////////////////////////////////////////////////////////////////////////////
@@ -362,7 +362,7 @@ bool wxTextCtrlBase::EmulateKeyPress(const wxKeyEvent& event)
         case WXK_NUMPAD7:
         case WXK_NUMPAD8:
         case WXK_NUMPAD9:
-            ch = _T('0') + keycode - WXK_NUMPAD0;
+            ch = (wxChar)(_T('0') + keycode - WXK_NUMPAD0);
             break;
 
         case WXK_MULTIPLY:
@@ -523,4 +523,3 @@ wxTextCtrlBase::HitTest(const wxPoint& WXUNUSED(pt),
 DEFINE_EVENT_TYPE(wxEVT_COMMAND_TEXT_UPDATED)
 
 #endif // wxUSE_TEXTCTRL/!wxUSE_TEXTCTRL
-

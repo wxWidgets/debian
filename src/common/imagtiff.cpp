@@ -2,7 +2,7 @@
 // Name:        imagtiff.cpp
 // Purpose:     wxImage TIFF handler
 // Author:      Robert Roebling
-// RCS-ID:      $Id: imagtiff.cpp,v 1.36 2005/06/24 12:29:22 VZ Exp $
+// RCS-ID:      $Id: imagtiff.cpp,v 1.37.2.1 2005/10/18 14:33:30 MW Exp $
 // Copyright:   (c) Robert Roebling
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -65,7 +65,7 @@ _tiffReadProc(thandle_t handle, tdata_t buf, tsize_t size)
 {
     wxInputStream *stream = (wxInputStream*) handle;
     stream->Read( (void*) buf, (size_t) size );
-    return stream->LastRead();
+    return wx_truncate_cast(tsize_t, stream->LastRead());
 }
 
 tsize_t TIFFLINKAGEMODE
@@ -73,7 +73,7 @@ _tiffWriteProc(thandle_t handle, tdata_t buf, tsize_t size)
 {
     wxOutputStream *stream = (wxOutputStream*) handle;
     stream->Write( (void*) buf, (size_t) size );
-    return stream->LastWrite();
+    return wx_truncate_cast(tsize_t, stream->LastWrite());
 }
 
 toff_t TIFFLINKAGEMODE
@@ -137,7 +137,9 @@ _tiffUnmapProc(thandle_t WXUNUSED(handle),
 }
 
 static void
-TIFFwxWarningHandler(const char* module, const char* fmt, va_list ap)
+TIFFwxWarningHandler(const char* module,
+                     const char* WXUNUSED_IN_UNICODE(fmt),
+                     va_list WXUNUSED_IN_UNICODE(ap))
 {
     if (module != NULL)
         wxLogWarning(_("tiff module: %s"), wxString::FromAscii(module).c_str());
@@ -151,7 +153,9 @@ TIFFwxWarningHandler(const char* module, const char* fmt, va_list ap)
 }
 
 static void
-TIFFwxErrorHandler(const char* module, const char* fmt, va_list ap)
+TIFFwxErrorHandler(const char* module,
+                   const char* WXUNUSED_IN_UNICODE(fmt),
+                   va_list WXUNUSED_IN_UNICODE(ap))
 {
     if (module != NULL)
         wxLogError(_("tiff module: %s"), wxString::FromAscii(module).c_str());

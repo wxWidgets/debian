@@ -4,7 +4,7 @@
 // Author:      Guilhem Lavaux
 // Modified by:
 // Created:     26/04/1997
-// RCS-ID:      $Id: sckaddr.h,v 1.30 2005/04/10 06:44:50 RN Exp $
+// RCS-ID:      $Id: sckaddr.h,v 1.31 2005/08/04 00:28:58 VZ Exp $
 // Copyright:   (c) 1997, 1998 Guilhem Lavaux
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -113,6 +113,12 @@ public:
 private:
   wxString m_origHostname;
 };
+
+
+// the IPv6 code probably doesn't work, untested -- set to 1 at your own risk
+#ifndef wxUSE_IPV6
+    #define wxUSE_IPV6 0
+#endif
 
 #if wxUSE_IPV6
 

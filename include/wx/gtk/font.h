@@ -2,7 +2,7 @@
 // Name:        font.h
 // Purpose:
 // Author:      Robert Roebling
-// Id:          $Id: font.h,v 1.32 2004/07/14 16:24:13 SC Exp $
+// Id:          $Id: font.h,v 1.33 2005/08/02 22:57:55 MW Exp $
 // Copyright:   (c) 1998 Robert Roebling
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -20,17 +20,17 @@
 // classes
 // ----------------------------------------------------------------------------
 
-class wxDC;
-class wxPaintDC;
-class wxWindow;
+class WXDLLIMPEXP_CORE wxDC;
+class WXDLLIMPEXP_CORE wxPaintDC;
+class WXDLLIMPEXP_CORE wxWindow;
 
-class wxFont;
+class WXDLLIMPEXP_CORE wxFont;
 
 // ----------------------------------------------------------------------------
 // wxFont
 // ----------------------------------------------------------------------------
 
-class wxFont : public wxFontBase
+class WXDLLIMPEXP_CORE wxFont : public wxFontBase
 {
 public:
     // ctors and such

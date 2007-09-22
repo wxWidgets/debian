@@ -5,7 +5,7 @@
 // Author:      Robin Dunn
 //
 // Created:     23-Nov-2001
-// RCS-ID:      $Id: gizmos.i,v 1.42 2005/03/30 22:56:44 RD Exp $
+// RCS-ID:      $Id: gizmos.i,v 1.42.2.1 2006/03/30 01:35:44 RD Exp $
 // Copyright:   (c) 2001 by Total Control Software
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -768,6 +768,7 @@ public:
                 wxTreeItemId *tii = new wxTreeItemId(array.Item(x));
                 PyObject* item = wxPyConstructObject((void*)tii, wxT("wxTreeItemId"), true);
                 PyList_Append(rval, item);
+                Py_DECREF(item);
             }
             wxPyEndBlockThreads(blocked);
             return rval;

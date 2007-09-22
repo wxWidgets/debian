@@ -4,7 +4,7 @@
 // Author:      Ryan Norton <wxprojects@comcast.net>
 // Modified by:
 // Created:     11/07/04
-// RCS-ID:      $Id: mediactrlcmn.cpp,v 1.14 2005/05/21 16:45:17 JS Exp $
+// RCS-ID:      $Id: mediactrlcmn.cpp,v 1.16 2005/09/11 11:03:46 VZ Exp $
 // Copyright:   (c) Ryan Norton
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -52,6 +52,7 @@ IMPLEMENT_CLASS(wxMediaCtrl, wxControl);
 IMPLEMENT_CLASS(wxMediaBackend, wxObject);
 IMPLEMENT_DYNAMIC_CLASS(wxMediaEvent, wxEvent);
 DEFINE_EVENT_TYPE(wxEVT_MEDIA_FINISHED);
+DEFINE_EVENT_TYPE(wxEVT_MEDIA_LOADED);
 DEFINE_EVENT_TYPE(wxEVT_MEDIA_STOP);
 
 //+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
@@ -281,6 +282,8 @@ wxMediaCtrl::~wxMediaCtrl()
 //---------------------------------------------------------------------------
 // wxMediaCtrl::Load (file version)
 // wxMediaCtrl::Load (URL version)
+// wxMediaCtrl::Load (URL & Proxy version)
+// wxMediaCtrl::Load (wxInputStream version)
 //
 // Here we call load of the backend - keeping
 // track of whether it was successful or not - which
@@ -300,6 +303,13 @@ bool wxMediaCtrl::Load(const wxURI& location)
     return false;
 }
 
+bool wxMediaCtrl::Load(const wxURI& location, const wxURI& proxy)
+{
+    if(m_imp)
+        return (m_bLoaded = m_imp->Load(location, proxy));
+    return false;
+}
+
 //---------------------------------------------------------------------------
 // wxMediaCtrl::Play
 // wxMediaCtrl::Pause
@@ -313,6 +323,9 @@ bool wxMediaCtrl::Load(const wxURI& location)
 // wxMediaCtrl::DoGetBestSize
 // wxMediaCtrl::SetVolume
 // wxMediaCtrl::GetVolume
+// wxMediaCtrl::ShowInterface
+// wxMediaCtrl::GetDownloadProgress
+// wxMediaCtrl::GetDownloadTotal
 //
 // 1) Check to see whether the backend exists and is loading
 // 2) Call the backend's version of the method, returning success
@@ -418,6 +431,27 @@ bool wxMediaCtrl::SetVolume(double dVolume)
     return false;
 }
 
+bool wxMediaCtrl::ShowPlayerControls(wxMediaCtrlPlayerControls flags) 
+{
+    if(m_imp)
+        return m_imp->ShowPlayerControls(flags);
+    return false;
+}
+
+wxFileOffset wxMediaCtrl::GetDownloadProgress()
+{
+    if(m_imp && m_bLoaded)
+        return (wxFileOffset) m_imp->GetDownloadProgress().ToLong();
+    return wxInvalidOffset;
+}
+
+wxFileOffset wxMediaCtrl::GetDownloadTotal()
+{
+    if(m_imp && m_bLoaded)
+        return (wxFileOffset) m_imp->GetDownloadTotal().ToLong();
+    return wxInvalidOffset;
+}
+
 //---------------------------------------------------------------------------
 // wxMediaCtrl::DoMoveWindow
 //
@@ -432,6 +466,49 @@ void wxMediaCtrl::DoMoveWindow(int x, int y, int w, int h)
 
     if(m_imp)
         m_imp->Move(x, y, w, h);
+}
+
+//+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+//
+//  wxMediaBackendCommonBase
+//
+//+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+void wxMediaBackendCommonBase::NotifyMovieSizeChanged()
+{
+    // our best size changed after opening a new file
+    m_ctrl->InvalidateBestSize();
+    m_ctrl->SetSize(m_ctrl->GetSize());
+
+    // if the parent of the control has a sizer ask it to refresh our size
+    wxWindow * const parent = m_ctrl->GetParent();
+    if ( parent->GetSizer() )
+    {
+        m_ctrl->GetParent()->Layout();
+        m_ctrl->GetParent()->Refresh();
+        m_ctrl->GetParent()->Update();
+    }
+}
+
+void wxMediaBackendCommonBase::NotifyMovieLoaded()
+{
+    NotifyMovieSizeChanged();
+
+    // notify about movie being fully loaded
+    QueueEvent(wxEVT_MEDIA_LOADED);
+}
+
+bool wxMediaBackendCommonBase::SendStopEvent()
+{
+    wxMediaEvent theEvent(wxEVT_MEDIA_STOP, m_ctrl->GetId());
+
+    return !m_ctrl->ProcessEvent(theEvent) || theEvent.IsAllowed();
+}
+
+void wxMediaBackendCommonBase::QueueEvent(wxEventType evtType)
+{
+    wxMediaEvent theEvent(evtType, m_ctrl->GetId());
+    m_ctrl->AddPendingEvent(theEvent);
 }
 
 #include "wx/html/forcelnk.h"

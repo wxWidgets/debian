@@ -4,7 +4,7 @@
 // Author:      Vadim Zeitlin, Robert Roebling
 // Modified by:
 // Created:     19.10.99
-// RCS-ID:      $Id: dobjcmn.cpp,v 1.33 2005/06/08 23:27:41 SC Exp $
+// RCS-ID:      $Id: dobjcmn.cpp,v 1.35.2.2 2006/03/30 09:52:54 RR Exp $
 // Copyright:   (c) wxWidgets Team
 // Licence:     wxWindows licence
 ///////////////////////////////////////////////////////////////////////////////
@@ -248,16 +248,20 @@ static inline wxMBConv& GetConv(const wxDataFormat& format)
 size_t wxTextDataObject::GetDataSize(const wxDataFormat& format) const
 {
     wxCharBuffer buffer = GetConv(format).cWX2MB( GetText().c_str() );
-    return buffer ? strlen(buffer) + 1 : 0;
+    return buffer ? strlen(buffer) : 0;
 }
 
 bool wxTextDataObject::GetDataHere(const wxDataFormat& format, void *buf) const
 {
+    if ( !buf )
+        return false;
+        
     wxCharBuffer buffer = GetConv(format).cWX2MB( GetText().c_str() );
     if ( !buffer )
         return false;
 
-    strcpy( (char*) buf, buffer );
+    memcpy( (char*) buf, buffer, GetDataSize(format) );
+    // strcpy( (char*) buf, buffer );
 
     return true;
 }
@@ -276,36 +280,30 @@ bool wxTextDataObject::SetData(const wxDataFormat& format,
 
 #elif wxUSE_UNICODE && defined(__WXMAC__)
 
+static wxMBConvUTF16 sUTF16Converter ;
+
+static inline wxMBConv& GetConv(const wxDataFormat& format)
+{
+    return format == wxDF_UNICODETEXT ? sUTF16Converter : (wxMBConv&) wxConvLocal;
+}
+
 size_t wxTextDataObject::GetDataSize(const wxDataFormat& format) const
 {
-    if (format == wxDF_UNICODETEXT)
-    {
-        // host native is UTF16
-        wxMBConvUTF16 converter ;
-        return converter.WC2MB( NULL , GetText().c_str() , 0 ) + 2; // add space for trailing unichar 0
-    }
-    else  // == wxDF_TEXT
-    {
-        wxCharBuffer buffer = wxConvLibc.cWX2MB( GetText().c_str() );
-        return strlen( (const char*) buffer ) + 1;
-    }
+    size_t len = GetConv(format).WC2MB( NULL , GetText().c_str() , 0 )  
+        + ( format == wxDF_UNICODETEXT ? 2 : 1 ) ;
+    return len ;
 }
 
 bool wxTextDataObject::GetDataHere(const wxDataFormat& format, void *buf) const
 {
-    if (format == wxDF_UNICODETEXT)
-    {
-        // host native is UTF16
-        wxMBConvUTF16 converter ;
-        size_t len = converter.WC2MB( NULL , GetText().c_str() , 0 ) ;
-        wxCharBuffer buffer = converter.cWX2MB( GetText().c_str() );
-        memcpy( (char*) buf, (const char*) buffer , len + 2); // trailing unichar 0
-    }
-    else
-    {
-        wxCharBuffer buffer = wxConvLibc.cWX2MB( GetText().c_str() );
-        strcpy( (char*) buf, (const char*) buffer );
-    }
+    wxCharBuffer buffer = GetConv(format).cWX2MB( GetText().c_str() );
+    if ( !buffer )
+        return false;
+
+    size_t len = GetConv(format).WC2MB( NULL , GetText().c_str() , 0 )  
+        + ( format == wxDF_UNICODETEXT ? 2 : 1 ) ;
+
+    memcpy( (char*) buf, (const char*) buffer , len ); // trailing (uni)char 0
 
     return true;
 }
@@ -313,15 +311,12 @@ bool wxTextDataObject::GetDataHere(const wxDataFormat& format, void *buf) const
 bool wxTextDataObject::SetData(const wxDataFormat& format,
                                size_t WXUNUSED(len), const void *buf)
 {
-    if (format == wxDF_UNICODETEXT)
-    {
-        // host native is UTF16
-        wxMBConvUTF16 converter ;
-        SetText( converter.cMB2WX( (const char*) buf ) );
-    }
-    else
-        SetText( wxConvLibc.cMB2WX( (const char*) buf ) );
-
+    wxWCharBuffer buffer = GetConv(format).cMB2WX((const char *)buf);
+    if ( !buffer )
+        return false;
+    
+    SetText(buffer);
+    
     return true;
 }
 

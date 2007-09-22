@@ -4,7 +4,7 @@
 // Author:      Guilhem Lavaux, Vadim Zeitlin, Vaclav Slavik
 // Modified by:
 // Created:     20/07/98
-// RCS-ID:      $Id: dynlib.h,v 1.53 2005/05/31 09:18:15 JS Exp $
+// RCS-ID:      $Id: dynlib.h,v 1.56 2005/08/05 11:48:43 VZ Exp $
 // Copyright:   (c) 1998 Guilhem Lavaux
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -23,10 +23,8 @@
 #include "wx/string.h"
 #include "wx/dynarray.h"
 
-// FIXME: can this go in private.h or something too??
 #if defined(__WXPM__) || defined(__EMX__)
-#define INCL_DOS
-#include <os2.h>
+#include "wx/os2/private.h"
 #endif
 
 #ifdef __WXMSW__
@@ -247,6 +245,30 @@ public:
 #endif
     }
 
+#ifdef __WXMSW__
+    // this function is useful for loading functions from the standard Windows
+    // DLLs: such functions have an 'A' (in ANSI build) or 'W' (in Unicode, or
+    // wide character build) suffix if they take string parameters
+    static void *RawGetSymbolAorW(wxDllType handle, const wxString& name)
+    {
+        return RawGetSymbol
+               (
+                handle,
+                name + 
+#if wxUSE_UNICODE
+                L'W'
+#else
+                'A'
+#endif
+               );
+    }
+
+    void *GetSymbolAorW(const wxString& name) const
+    {
+        return RawGetSymbolAorW(m_handle, name);
+    }
+#endif // __WXMSW__
+
     // return all modules/shared libraries in the address space of this process
     //
     // returns an empty array if not implemented or an error occurred
@@ -299,6 +321,8 @@ protected:
 // ----------------------------------------------------------------------------
 
 #if WXWIN_COMPATIBILITY_2_2 && wxUSE_DYNAMIC_LOADER
+
+#include "wx/object.h"
 
 /*
     wxDllLoader is a class providing an interface similar to unix's dlopen().

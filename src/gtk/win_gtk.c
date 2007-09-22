@@ -4,7 +4,7 @@
 //              GtkFixed. It makes use of the gravity window property and
 //              therefore does not work with GTK 1.0.
 // Author:      Robert Roebling
-// Id:          $Id: win_gtk.c,v 1.68 2004/09/29 10:42:37 VZ Exp $
+// Id:          $Id: win_gtk.c,v 1.69 2005/09/04 10:33:09 MR Exp $
 // Copyright:   (c) 1998 Robert Roebling
 // Licence:     wxWidgets licence
 /////////////////////////////////////////////////////////////////////////// */
@@ -145,7 +145,7 @@ gtk_pizza_get_type ()
     return pizza_type;
 }
 
-#if __WXGTK20__
+#ifdef __WXGTK20__
 /* Marshaller needed for set_scroll_adjustments signal,
    generated with GLib-2.4.6 glib-genmarshal */
 #define g_marshal_value_peek_object(v)   g_value_get_object (v)
@@ -218,7 +218,7 @@ gtk_pizza_class_init (GtkPizzaClass *klass)
     klass->set_scroll_adjustments = gtk_pizza_scroll_set_adjustments;
 
     widget_class->set_scroll_adjustments_signal =
-#if __WXGTK20__
+#ifdef __WXGTK20__
         g_signal_new(
             "set_scroll_adjustments",
             G_TYPE_FROM_CLASS(object_class),

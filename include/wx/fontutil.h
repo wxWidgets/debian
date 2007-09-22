@@ -4,7 +4,7 @@
 // Author:      Vadim Zeitlin
 // Modified by:
 // Created:     05.11.99
-// RCS-ID:      $Id: fontutil.h,v 1.36 2004/12/22 07:22:18 ABX Exp $
+// RCS-ID:      $Id: fontutil.h,v 1.37 2005/07/22 16:56:23 ABX Exp $
 // Copyright:   (c) wxWidgets team
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -166,7 +166,7 @@ public:
         if ( font.IsUsingSizeInPixels() )
             SetPixelSize(font.GetPixelSize());
         else
-        SetPointSize(font.GetPointSize());
+            SetPointSize(font.GetPointSize());
 #else
         SetPointSize(font.GetPointSize());
 #endif

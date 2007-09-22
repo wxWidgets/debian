@@ -3,14 +3,10 @@
 // Purpose:     Dynamically loadable C++ widget for wxPython
 // Author:      Vaclav Slavik
 // Created:     2001/12/03
-// RCS-ID:      $Id: dllwidget.cpp,v 1.3 2004/06/12 23:44:07 DS Exp $
+// RCS-ID:      $Id: dllwidget.cpp,v 1.3.2.1 2005/12/16 17:15:52 RD Exp $
 // Copyright:   (c) 2001 Vaclav Slavik
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
-
-#ifdef __GNUG__
-#pragma implementation "dllwidget.h"
-#endif
 
 // For compilers that support precompilation, includes "wx.h".
 #include "wx/wxprec.h"

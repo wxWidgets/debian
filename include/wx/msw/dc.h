@@ -1,10 +1,10 @@
 /////////////////////////////////////////////////////////////////////////////
-// Name:        dc.h
+// Name:        wx/msw/dc.h
 // Purpose:     wxDC class
 // Author:      Julian Smart
 // Modified by:
 // Created:     01/02/97
-// RCS-ID:      $Id: dc.h,v 1.50 2004/12/06 15:48:41 ABX Exp $
+// RCS-ID:      $Id: dc.h,v 1.51 2005/09/16 12:55:04 ABX Exp $
 // Copyright:   (c) Julian Smart
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -163,6 +163,10 @@ protected:
                                         wxCoord width, wxCoord height,
                                         double radius);
     virtual void DoDrawEllipse(wxCoord x, wxCoord y, wxCoord width, wxCoord height);
+
+#if wxUSE_SPLINES
+    virtual void DoDrawSpline(wxList *points);
+#endif
 
     virtual void DoCrossHair(wxCoord x, wxCoord y);
 

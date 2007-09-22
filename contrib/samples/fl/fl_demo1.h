@@ -4,7 +4,7 @@
 // Author:      Aleksandras Gluchovas
 // Modified by: Sebastian Haase (June 21, 2001)
 // Created:     04/11/98
-// RCS-ID:      $Id: fl_demo1.h,v 1.3 2004/07/22 18:47:17 ABX Exp $
+// RCS-ID:      $Id: fl_demo1.h,v 1.4 2005/07/22 16:43:04 MR Exp $
 // Copyright:   (c) Aleksandras Gluchovas
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -21,34 +21,34 @@
 #define NEW_TEST_EXIT 1103
 
 #include "wx/panel.h"
-#include "wx/statline.h"    
+#include "wx/statline.h"
 
 // Define a new application type
 class MyApp: public wxApp
-{ 
+{
 public:
     bool OnInit(void);
 };
 
 // Define a new frame type
 class MyFrame: public wxFrame
-{ 
+{
 public:
     wxFrameLayout*  mpLayout;
     wxTextCtrl*     mpClientWnd;
-    
+
     wxTextCtrl* CreateTextCtrl( const wxString& value );
-    
+
 public:
     MyFrame(wxFrame *frame);
     virtual ~MyFrame();
-    
+
     bool OnClose(void) { Show(false); return true; }
-    
+
     void OnLoad( wxCommandEvent& event );
     void OnSave( wxCommandEvent& event );
     void OnExit( wxCommandEvent& event );
-    
+
     DECLARE_EVENT_TABLE()
 };
 
@@ -59,9 +59,9 @@ public:
 class wxMySeparatorLine : public wxStaticLine
 {
 public:
-    wxMySeparatorLine() 
+    wxMySeparatorLine()
     {}
-    wxMySeparatorLine( wxWindow *parent, wxWindowID id) 
+    wxMySeparatorLine( wxWindow *parent, wxWindowID id)
         : wxStaticLine( parent, id)
     {}
 

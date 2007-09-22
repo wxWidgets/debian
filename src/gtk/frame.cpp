@@ -2,7 +2,7 @@
 // Name:        frame.cpp
 // Purpose:
 // Author:      Robert Roebling
-// Id:          $Id: frame.cpp,v 1.203 2005/06/08 14:49:36 ABX Exp $
+// Id:          $Id: frame.cpp,v 1.204 2005/07/22 18:01:45 ABX Exp $
 // Copyright:   (c) 1998 Robert Roebling
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -622,12 +622,12 @@ void wxFrame::UpdateMenuBarSize()
 
     // this is called after Remove with a NULL m_frameMenuBar
     if ( m_frameMenuBar )
-    (* GTK_WIDGET_CLASS( GTK_OBJECT_GET_CLASS(m_frameMenuBar->m_widget) )->size_request )
-        (m_frameMenuBar->m_widget, &req );
+        (* GTK_WIDGET_CLASS( GTK_OBJECT_GET_CLASS(m_frameMenuBar->m_widget) )->size_request )
+            (m_frameMenuBar->m_widget, &req );
 
     m_menuBarHeight = req.height;
 
-        // resize window in OnInternalIdle
+    // resize window in OnInternalIdle
 
     GtkUpdateSize();
 }
@@ -714,4 +714,3 @@ void wxFrame::PositionStatusBar()
     GtkUpdateSize();
 }
 #endif // wxUSE_STATUSBAR
-

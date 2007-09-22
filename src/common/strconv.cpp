@@ -5,7 +5,7 @@
 //              Ryan Norton, Fredrik Roubert (UTF7)
 // Modified by:
 // Created:     29/01/98
-// RCS-ID:      $Id: strconv.cpp,v 1.151 2005/06/13 12:19:21 ABX Exp $
+// RCS-ID:      $Id: strconv.cpp,v 1.160.2.2 2006/01/18 16:32:46 JS Exp $
 // Copyright:   (c) 1999 Ove Kaaven, Robert Roebling, Vaclav Slavik
 //              (c) 2000-2003 Vadim Zeitlin
 //              (c) 2004 Ryan Norton, Fredrik Roubert
@@ -75,12 +75,17 @@
 #include "wx/utils.h"
 
 #ifdef __WXMAC__
+#ifndef __DARWIN__
 #include <ATSUnicode.h>
 #include <TextCommon.h>
 #include <TextEncodingConverter.h>
+#endif
 
 #include  "wx/mac/private.h"  // includes mac headers
 #endif
+
+#define TRACE_STRCONV _T("strconv")
+
 // ----------------------------------------------------------------------------
 // macros
 // ----------------------------------------------------------------------------
@@ -1344,15 +1349,26 @@ private:
     static bool ms_wcNeedsSwap;
 };
 
+// make the constructor available for unit testing
+WXDLLIMPEXP_BASE wxMBConv* new_wxMBConv_iconv( const wxChar* name )
+{
+    wxMBConv_iconv* result = new wxMBConv_iconv( name );
+    if ( !result->IsOk() )
+    {
+        delete result;
+        return 0;
+    }
+    return result;
+}
+
 const char *wxMBConv_iconv::ms_wcCharsetName = NULL;
 bool wxMBConv_iconv::ms_wcNeedsSwap = false;
 
 wxMBConv_iconv::wxMBConv_iconv(const wxChar *name)
 {
-    // Do it the hard way
-    char cname[100];
-    for (size_t i = 0; i < wxStrlen(name)+1; i++)
-        cname[i] = (char) name[i];
+    // iconv operates with chars, not wxChars, but luckily it uses only ASCII
+    // names for the charsets
+    const wxCharBuffer cname(wxString(name).ToAscii());
 
     // check for charset that represents wchar_t:
     if (ms_wcCharsetName == NULL)
@@ -1412,11 +1428,12 @@ wxMBConv_iconv::wxMBConv_iconv(const wxChar *name)
 
                 // VS: we must not output an error here, since wxWidgets will safely
                 //     fall back to using wxEncodingConverter.
-                wxLogTrace(wxT("strconv"), wxT("Impossible to convert to/from charset '%s' with iconv, falling back to wxEncodingConverter."), name);
-                //wxLogError(
+                wxLogTrace(TRACE_STRCONV, wxT("Impossible to convert to/from charset '%s' with iconv, falling back to wxEncodingConverter."), name);
             }
         }
-        wxLogTrace(wxT("strconv"), wxT("wchar_t charset is '%s', needs swap: %i"), ms_wcCharsetName, ms_wcNeedsSwap);
+        wxLogTrace(TRACE_STRCONV,
+                   wxT("wchar_t charset is '%s', needs swap: %i"),
+                   ms_wcCharsetName ? ms_wcCharsetName : "<none>", ms_wcNeedsSwap);
     }
     else // we already have ms_wcCharsetName
     {
@@ -1502,7 +1519,7 @@ size_t wxMBConv_iconv::MB2WC(wchar_t *buf, const char *psz, size_t n) const
     if (ICONV_FAILED(cres, inbuf))
     {
         //VS: it is ok if iconv fails, hence trace only
-        wxLogTrace(wxT("strconv"), wxT("iconv failed: %s"), wxSysErrorMsg(wxSysErrorCode()));
+        wxLogTrace(TRACE_STRCONV, wxT("iconv failed: %s"), wxSysErrorMsg(wxSysErrorCode()));
         return (size_t)-1;
     }
 
@@ -1570,7 +1587,7 @@ size_t wxMBConv_iconv::WC2MB(char *buf, const wchar_t *psz, size_t n) const
     if (ICONV_FAILED(cres, inbuf))
     {
         //VS: it is ok if iconv fails, hence trace only
-        wxLogTrace(wxT("strconv"), wxT("iconv failed: %s"), wxSysErrorMsg(wxSysErrorCode()));
+        wxLogTrace(TRACE_STRCONV, wxT("iconv failed: %s"), wxSysErrorMsg(wxSysErrorCode()));
         return (size_t)-1;
     }
 
@@ -2403,6 +2420,18 @@ public:
     DECLARE_NO_COPY_CLASS(wxMBConv_wxwin)
 };
 
+// make the constructors available for unit testing
+WXDLLIMPEXP_BASE wxMBConv* new_wxMBConv_wxwin( const wxChar* name )
+{
+    wxMBConv_wxwin* result = new wxMBConv_wxwin( name );
+    if ( !result->IsOk() )
+    {
+        delete result;
+        return 0;
+    }
+    return result;
+}
+
 #endif // wxUSE_FONTMAP
 
 // ============================================================================
@@ -2484,8 +2513,24 @@ void wxCSConv::SetName(const wxChar *charset)
     }
 }
 
+#if wxUSE_FONTMAP
+#include "wx/hashmap.h"
+
+WX_DECLARE_HASH_MAP( wxFontEncoding, wxString, wxIntegerHash, wxIntegerEqual,
+                     wxEncodingNameCache );
+
+static wxEncodingNameCache gs_nameCache;
+#endif
+
 wxMBConv *wxCSConv::DoCreate() const
 {
+#if wxUSE_FONTMAP
+    wxLogTrace(TRACE_STRCONV,
+               wxT("creating conversion for %s"),
+               (m_name ? m_name
+                       : wxFontMapperBase::GetEncodingName(m_encoding).c_str()));
+#endif // wxUSE_FONTMAP
+
     // check for the special case of ASCII or ISO8859-1 charset: as we have
     // special knowledge of it anyhow, we don't need to create a special
     // conversion object
@@ -2510,17 +2555,53 @@ wxMBConv *wxCSConv::DoCreate() const
 #endif // !wxUSE_FONTMAP
     {
         wxString name(m_name);
+        wxFontEncoding encoding(m_encoding);
+
+        if ( !name.empty() )
+        {
+            wxMBConv_iconv *conv = new wxMBConv_iconv(name);
+            if ( conv->IsOk() )
+                return conv;
+
+            delete conv;
 
 #if wxUSE_FONTMAP
-        if ( name.empty() )
-            name = wxFontMapperBase::GetEncodingName(m_encoding);
+            encoding =
+                wxFontMapperBase::Get()->CharsetToEncoding(name, false);
 #endif // wxUSE_FONTMAP
+        }
+#if wxUSE_FONTMAP
+        {
+            const wxEncodingNameCache::iterator it = gs_nameCache.find(encoding);
+            if ( it != gs_nameCache.end() )
+            {
+                if ( it->second.empty() )
+                    return NULL;
 
-        wxMBConv_iconv *conv = new wxMBConv_iconv(name);
-        if ( conv->IsOk() )
-            return conv;
+                wxMBConv_iconv *conv = new wxMBConv_iconv(it->second);
+                if ( conv->IsOk() )
+                    return conv;
 
-        delete conv;
+                delete conv;
+            }
+
+            const wxChar** names = wxFontMapperBase::GetAllEncodingNames(encoding);
+
+            for ( ; *names; ++names )
+            {
+                wxMBConv_iconv *conv = new wxMBConv_iconv(*names);
+                if ( conv->IsOk() )
+                {
+                    gs_nameCache[encoding] = *names;
+                    return conv;
+                }
+
+                delete conv;
+            }
+
+            gs_nameCache[encoding] = _T(""); // cache the failure
+        }
+#endif // wxUSE_FONTMAP
     }
 #endif // HAVE_ICONV
 

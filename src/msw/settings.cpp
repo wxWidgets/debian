@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     04/01/98
-// RCS-ID:      $Id: settings.cpp,v 1.41 2005/05/22 14:07:32 JS Exp $
+// RCS-ID:      $Id: settings.cpp,v 1.42.2.1 2006/03/16 11:03:26 JS Exp $
 // Copyright:   (c) Julian Smart
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -172,7 +172,7 @@ wxColour wxSystemSettingsNative::GetColour(wxSystemColour index)
                         index = wxSYS_COLOUR_MENU ;
                 }
             }
-       }
+        }
 
         if ( useDefault )
         {
@@ -310,8 +310,12 @@ static const int gs_metricsMap[] =
 
     SM_CXBORDER,
     SM_CYBORDER,
-    SM_CXCURSOR,
+#ifdef SM_CXCURSOR
+	SM_CXCURSOR,
     SM_CYCURSOR,
+#else
+	-1, -1,
+#endif
     SM_CXDOUBLECLK,
     SM_CYDOUBLECLK,
 #if defined(__WIN32__) && defined(SM_CXDRAG)

@@ -5,7 +5,7 @@
 // Modified by:
 // Created:
 // Copyright:   (C) 1999, Robert Roebling
-// RCS-ID:      $Id: plot.cpp,v 1.8 2005/05/04 15:22:06 ABX Exp $
+// RCS-ID:      $Id: plot.cpp,v 1.9 2005/08/10 22:53:41 MW Exp $
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
 
@@ -128,6 +128,13 @@ MyFrame::MyFrame()
     m_plot = new wxPlotWindow( this, wxID_ANY, wxPoint(0,0), wxSize(100,100), wxSUNKEN_BORDER | wxPLOT_DEFAULT );
     m_plot->SetUnitsPerValue( 0.01 );
 //    m_plot->SetScrollOnThumbRelease( true );
+
+    //Add a blue, 16pt chart title
+    wxString titleText( _T("The Chart Title") );
+    wxFont titleFont( *wxNORMAL_FONT );
+    titleFont.SetPointSize( 16 );
+    wxColour titleColour( *wxBLUE );
+    m_plot->AddChartTitle( titleText, titleFont, titleColour );
 
     m_plot->Add( new MyPlotCurve( 0,  -1.5, 1.5 ) );
     m_plot->Add( new MyPlotCurve( 50, -1.5, 1.5 ) );

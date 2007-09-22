@@ -4,7 +4,7 @@
 // Author:      Vadim Zeitlin (original code by Robert Roebling)
 // Modified by:
 // Created:     25.05.99
-// RCS-ID:      $Id: caret.h,v 1.11 2004/07/25 16:32:21 VZ Exp $
+// RCS-ID:      $Id: caret.h,v 1.12 2005/08/02 18:16:37 MW Exp $
 // Copyright:   (c) wxWidgets team
 // Licence:     wxWindows licence
 ///////////////////////////////////////////////////////////////////////////////
@@ -18,7 +18,7 @@
 
 #include "wx/timer.h"
 
-class wxCaret;
+class WXDLLIMPEXP_CORE wxCaret;
 
 class WXDLLEXPORT wxCaretTimer : public wxTimer
 {
@@ -30,7 +30,7 @@ private:
     wxCaret *m_caret;
 };
 
-class wxCaret : public wxCaretBase
+class WXDLLIMPEXP_CORE wxCaret : public wxCaretBase
 {
 public:
     // ctors

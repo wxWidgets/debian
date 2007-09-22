@@ -4,7 +4,7 @@
 // Author:      Robert Roebling, Vadim Zeitlin
 // Modified by:
 // Created:     28.12.00
-// RCS-ID:      $Id: filename.h,v 1.63 2005/03/17 17:46:19 ABX Exp $
+// RCS-ID:      $Id: filename.h,v 1.63.2.1 2005/09/25 20:46:18 MW Exp $
 // Copyright:   (c) 2000 Robert Roebling
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -14,11 +14,6 @@
 
 #if defined(__GNUG__) && !defined(NO_GCC_PRAGMA)
     #pragma interface "filename.h"
-#endif
-
-#ifndef WX_PRECOMP
-    #include  "wx/string.h"
-    #include  "wx/arrstr.h"
 #endif
 
 /*
@@ -35,6 +30,7 @@
     3. SameFileAs() function to compare inodes under Unix
  */
 
+#include "wx/arrstr.h"
 #include "wx/filefn.h"
 #include "wx/datetime.h"
 

@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     04/01/98
-// RCS-ID:      $Id: radiobox.cpp,v 1.121 2005/05/22 18:29:13 VZ Exp $
+// RCS-ID:      $Id: radiobox.cpp,v 1.122.2.2 2006/01/18 16:16:21 JS Exp $
 // Copyright:   (c) Julian Smart
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -39,11 +39,6 @@
 #endif
 
 #include "wx/msw/subwin.h"
-
-// This is switched off because in some situations, the radiobox
-// buttons simply don't appear when deferred sizing is on.
-// Instead, refreshing on WM_MOVE seems to at least cure the droppings.
-#define USE_DEFERRED_SIZING 0
 
 #if wxUSE_TOOLTIPS
     #if !defined(__GNUWIN32_OLD__) || defined(__CYGWIN10__)
@@ -188,7 +183,7 @@ bool wxRadioBox::Create(wxWindow *parent,
                                       choices[i],
                                       styleBtn,
                                       0, 0, 0, 0,   // will be set in SetSize()
-                                      GetHwnd(),
+                                      GetHwndOf(parent),
                                       (HMENU)newId,
                                       wxGetInstance(),
                                       NULL);
@@ -211,7 +206,7 @@ bool wxRadioBox::Create(wxWindow *parent,
     (void)::CreateWindow(_T("BUTTON"),
                          wxEmptyString,
                          WS_GROUP | BS_AUTORADIOBUTTON | WS_CHILD,
-                         0, 0, 0, 0, GetHwnd(),
+                         0, 0, 0, 0, GetHwndOf(parent),
                          (HMENU)NewControlId(), wxGetInstance(), NULL);
 
     m_radioButtons->SetFont(GetFont());
@@ -453,7 +448,7 @@ wxSize wxRadioBox::GetMaxButtonSize() const
         int width, height;
         if ( m_radioWidth[i] < 0 )
         {
-            GetTextExtent(wxGetWindowText((*m_radioButtons)[i]), &width, &height);
+            GetTextExtent(wxStripMenuCodes(wxGetWindowText((*m_radioButtons)[i])), &width, &height);
 
             // adjust the size to take into account the radio box itself
             // FIXME this is totally bogus!
@@ -493,7 +488,7 @@ wxSize wxRadioBox::GetTotalButtonSize(const wxSize& sizeBtn) const
 
     // and also wide enough for its label
     int widthLabel;
-    GetTextExtent(GetTitle(), &widthLabel, NULL);
+    GetTextExtent(wxStripMenuCodes(GetTitle()), &widthLabel, NULL);
     widthLabel += RADIO_SIZE; // FIXME this is bogus too
     if ( widthLabel > width )
         width = widthLabel;
@@ -524,8 +519,8 @@ void wxRadioBox::DoSetSize(int x, int y, int width, int height, int sizeFlags)
     if (y == wxDefaultCoord && !(sizeFlags & wxSIZE_ALLOW_MINUS_ONE))
         yy = currentY;
 
-    int y_offset = 0;
-    int x_offset = 0;
+    int y_offset = yy;
+    int x_offset = xx;
 
     int cx1, cy1;
     wxGetCharSize(m_hWnd, &cx1, &cy1, GetFont());
@@ -557,17 +552,7 @@ void wxRadioBox::DoSetSize(int x, int y, int width, int height, int sizeFlags)
             height = heightOld;
     }
 
-    // if our parent had prepared a defer window handle for us, use it (unless
-    // we are a top level window)
-
-#if USE_DEFERRED_SIZING
-    wxWindowMSW *parent = GetParent();
-    HDWP hdwp = parent && !IsTopLevel() ? (HDWP)parent->m_hDWP : NULL;
-#else
-    HDWP hdwp = 0;
-#endif
-
-    wxMoveWindowDeferred(hdwp, this, GetHwnd(), xx, yy, width, height);
+    DoMoveWindow(xx, yy, width, height);
 
     // Now position all the buttons: the current button will be put at
     // wxPoint(x_offset, y_offset) and the new row/column will start at
@@ -646,9 +631,7 @@ void wxRadioBox::DoSetSize(int x, int y, int width, int height, int sizeFlags)
         // the radiobox entirely and the radiobox tooltips are always shown
         // (otherwise they are not when the mouse pointer is in the radiobox
         // part not belonging to any radiobutton)
-        ::MoveWindow((*m_radioButtons)[i],
-                     x_offset, y_offset, widthBtn, maxHeight,
-                     TRUE);
+        DoMoveSibling((*m_radioButtons)[i], x_offset, y_offset, widthBtn, maxHeight);
 
         // where do we put the next button?
         if ( m_windowStyle & wxRA_SPECIFY_ROWS )
@@ -664,14 +647,6 @@ void wxRadioBox::DoSetSize(int x, int y, int width, int height, int sizeFlags)
             x_offset += widthBtn + cx1;
         }
     }
-
-#if USE_DEFERRED_SIZING
-    if (parent)
-    {
-        // hdwp must be updated as it may have been changed
-        parent->m_hDWP = (WXHANDLE)hdwp;
-    }
-#endif
 }
 
 // ----------------------------------------------------------------------------
@@ -700,18 +675,6 @@ WXHRGN wxRadioBox::MSWGetRegionWithoutChildren()
 WXLRESULT
 wxRadioBox::MSWWindowProc(WXUINT nMsg, WXWPARAM wParam, WXLPARAM lParam)
 {
-    // FIXME: Without this, the radiobox corrupts other controls as it moves
-    // in a dynamic layout. Refreshing causes flicker, but it's better than
-    // leaving droppings. Note that for some reason, wxStaticBox doesn't need
-    // this (perhaps because it has no real children?)
-    if ( nMsg == WM_MOVE )
-    {
-        WXLRESULT res = wxControl::MSWWindowProc(nMsg, wParam, lParam);
-        wxRect rect = GetRect();
-        GetParent()->Refresh(true, & rect);
-        return res;
-    }
-
     return wxStaticBox::MSWWindowProc(nMsg, wParam, lParam);
 }
 

@@ -3,7 +3,7 @@
 // Purpose:     common (for all platforms) wxTopLevelWindow functions
 // Author:      Julian Smart, Vadim Zeitlin
 // Created:     01/02/97
-// Id:          $Id: toplvcmn.cpp,v 1.33 2004/11/22 20:10:50 DE Exp $
+// Id:          $Id: toplvcmn.cpp,v 1.34 2005/09/14 14:36:02 VZ Exp $
 // Copyright:   (c) 1998 Robert Roebling and Julian Smart
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -46,7 +46,7 @@ END_EVENT_TABLE()
 // implementation
 // ============================================================================
 
-IMPLEMENT_DYNAMIC_CLASS(wxTopLevelWindow, wxWindow)
+IMPLEMENT_ABSTRACT_CLASS(wxTopLevelWindow, wxWindow)
 
 // ----------------------------------------------------------------------------
 // construction/destruction

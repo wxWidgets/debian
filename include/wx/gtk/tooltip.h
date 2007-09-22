@@ -2,7 +2,7 @@
 // Name:        tooltip.h
 // Purpose:     wxToolTip class
 // Author:      Robert Roebling
-// Id:          $Id: tooltip.h,v 1.10 2004/05/23 20:50:54 JS Exp $
+// Id:          $Id: tooltip.h,v 1.11 2005/08/02 22:57:59 MW Exp $
 // Copyright:   (c) 1998 Robert Roebling
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -22,14 +22,14 @@
 // forward declarations
 //-----------------------------------------------------------------------------
 
-class wxToolTip;
-class wxWindow;
+class WXDLLIMPEXP_CORE wxToolTip;
+class WXDLLIMPEXP_CORE wxWindow;
 
 //-----------------------------------------------------------------------------
 // wxToolTip
 //-----------------------------------------------------------------------------
 
-class wxToolTip : public wxObject
+class WXDLLIMPEXP_CORE wxToolTip : public wxObject
 {
 public:
     // globally change the tooltip parameters

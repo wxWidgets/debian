@@ -4,7 +4,7 @@
 // Author:      Vadim Zeitlin
 // Modified by:
 // Created:     2005-01-09
-// RCS-ID:      $Id: datectrl.h,v 1.11 2005/02/17 23:16:47 VZ Exp $
+// RCS-ID:      $Id: datectrl.h,v 1.11.2.2 2006/02/21 22:19:06 MR Exp $
 // Copyright:   (c) 2005 Vadim Zeitlin <vadim@wxwindows.org>
 // Licence:     wxWindows licence
 ///////////////////////////////////////////////////////////////////////////////

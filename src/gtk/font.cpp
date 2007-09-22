@@ -2,7 +2,7 @@
 // Name:        gtk/font.cpp
 // Purpose:
 // Author:      Robert Roebling
-// Id:          $Id: font.cpp,v 1.87 2005/04/13 13:53:19 RR Exp $
+// Id:          $Id: font.cpp,v 1.93 2005/08/24 00:25:19 MR Exp $
 // Copyright:   (c) 1998 Robert Roebling and Julian Smart
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -239,37 +239,11 @@ void wxFontRefData::InitFromNative()
     // Pango sometimes needs to have a size
     int pango_size = pango_font_description_get_size( desc );
     if (pango_size == 0)
-        pango_font_description_set_size( desc, 12 * PANGO_SCALE);
+        m_nativeFontInfo.SetPointSize(12);
 
-    m_pointSize = pango_font_description_get_size( desc ) / PANGO_SCALE;
-
-    switch (pango_font_description_get_style( desc ))
-    {
-        case PANGO_STYLE_NORMAL:
-            m_style = wxFONTSTYLE_NORMAL;
-            break;
-        case PANGO_STYLE_ITALIC:
-            m_style = wxFONTSTYLE_ITALIC;
-            break;
-        case PANGO_STYLE_OBLIQUE:
-            m_style = wxFONTSTYLE_SLANT;
-            break;
-    }
-
-    PangoWeight pango_weight = pango_font_description_get_weight( desc );
-
-    if (pango_weight >= 600)
-    {
-        m_weight = wxFONTWEIGHT_BOLD;
-    }
-    else if (pango_weight < 350)
-    {
-        m_weight = wxFONTWEIGHT_LIGHT;
-    }
-    else
-    {
-        m_weight = wxFONTWEIGHT_NORMAL;
-    }
+    m_pointSize = m_nativeFontInfo.GetPointSize();
+    m_style = m_nativeFontInfo.GetStyle();
+    m_weight = m_nativeFontInfo.GetWeight();
 
     if (m_faceName == wxT("monospace"))
     {
@@ -464,10 +438,7 @@ void wxFontRefData::SetPointSize(int pointSize)
     m_pointSize = pointSize;
 
 #ifdef __WXGTK20__
-    // Get native info
-    PangoFontDescription *desc = m_nativeFontInfo.description;
-
-    pango_font_description_set_size( desc, m_pointSize * PANGO_SCALE );
+    m_nativeFontInfo.SetPointSize(pointSize);
 #else
     if ( HasNativeFont() )
     {
@@ -494,24 +465,7 @@ void wxFontRefData::SetStyle(int style)
     m_style = style;
 
 #ifdef __WXGTK20__
-    // Get native info
-    PangoFontDescription *desc = m_nativeFontInfo.description;
-
-    switch ( style )
-    {
-        case wxFONTSTYLE_ITALIC:
-            pango_font_description_set_style( desc, PANGO_STYLE_ITALIC );
-            break;
-        case wxFONTSTYLE_SLANT:
-            pango_font_description_set_style( desc, PANGO_STYLE_OBLIQUE );
-            break;
-        default:
-            wxFAIL_MSG( _T("unknown font style") );
-            // fall through
-        case wxFONTSTYLE_NORMAL:
-            pango_font_description_set_style( desc, PANGO_STYLE_NORMAL );
-            break;
-    }
+    m_nativeFontInfo.SetStyle((wxFontStyle)style);
 #else
     if ( HasNativeFont() )
     {
@@ -544,25 +498,7 @@ void wxFontRefData::SetWeight(int weight)
     m_weight = weight;
 
 #ifdef __WXGTK20__
-    PangoFontDescription *desc = m_nativeFontInfo.description;
-    switch ( weight )
-    {
-        case wxFONTWEIGHT_BOLD:
-            pango_font_description_set_weight(desc, PANGO_WEIGHT_BOLD);
-            break;
-
-        case wxFONTWEIGHT_LIGHT:
-            pango_font_description_set_weight(desc, PANGO_WEIGHT_LIGHT);
-            break;
-
-        default:
-            wxFAIL_MSG( _T("unknown font weight") );
-            // fall through
-
-        case wxFONTWEIGHT_NORMAL:
-            // unspecified
-            pango_font_description_set_weight(desc, PANGO_WEIGHT_NORMAL);
-    }
+    m_nativeFontInfo.SetWeight((wxFontWeight)weight);
 #else //!__WXGTK20__
     if ( HasNativeFont() )
     {
@@ -602,7 +538,9 @@ void wxFontRefData::SetFaceName(const wxString& facename)
 {
     m_faceName = facename;
 
-#ifndef __WXGTK20__
+#ifdef __WXGTK20__
+    m_nativeFontInfo.SetFaceName(facename);
+#else
     if ( HasNativeFont() )
     {
         m_nativeFontInfo.SetXFontComponent(wxXLFD_FAMILY, facename);
@@ -722,35 +660,67 @@ int wxFont::GetPointSize() const
 {
     wxCHECK_MSG( Ok(), 0, wxT("invalid font") );
 
+#if wxUSE_PANGO
+    return M_FONTDATA->HasNativeFont() ? M_FONTDATA->m_nativeFontInfo.GetPointSize()
+                                       : M_FONTDATA->m_pointSize;
+#else
     return M_FONTDATA->m_pointSize;
+#endif
 }
 
 wxString wxFont::GetFaceName() const
 {
     wxCHECK_MSG( Ok(), wxT(""), wxT("invalid font") );
 
+#if wxUSE_PANGO
+    return M_FONTDATA->HasNativeFont() ? M_FONTDATA->m_nativeFontInfo.GetFaceName()
+                                       : M_FONTDATA->m_faceName;
+#else
     return M_FONTDATA->m_faceName;
+#endif
 }
 
 int wxFont::GetFamily() const
 {
     wxCHECK_MSG( Ok(), 0, wxT("invalid font") );
 
+#if wxUSE_PANGO
+    int ret = M_FONTDATA->m_family;
+    if (M_FONTDATA->HasNativeFont())
+        // wxNativeFontInfo::GetFamily is expensive, must not call more than once
+        ret = M_FONTDATA->m_nativeFontInfo.GetFamily();
+
+    if (ret == wxFONTFAMILY_DEFAULT)
+        ret = M_FONTDATA->m_family;
+
+    return ret;
+#else
     return M_FONTDATA->m_family;
+#endif
 }
 
 int wxFont::GetStyle() const
 {
     wxCHECK_MSG( Ok(), 0, wxT("invalid font") );
 
+#if wxUSE_PANGO
+    return M_FONTDATA->HasNativeFont() ? M_FONTDATA->m_nativeFontInfo.GetStyle()
+                                       : M_FONTDATA->m_style;
+#else
     return M_FONTDATA->m_style;
+#endif
 }
 
 int wxFont::GetWeight() const
 {
     wxCHECK_MSG( Ok(), 0, wxT("invalid font") );
 
+#if wxUSE_PANGO
+    return M_FONTDATA->HasNativeFont() ? M_FONTDATA->m_nativeFontInfo.GetWeight()
+                                       : M_FONTDATA->m_weight;
+#else
     return M_FONTDATA->m_weight;
+#endif
 }
 
 bool wxFont::GetUnderlined() const
@@ -764,6 +734,7 @@ wxFontEncoding wxFont::GetEncoding() const
 {
     wxCHECK_MSG( Ok(), wxFONTENCODING_DEFAULT, wxT("invalid font") );
 
+    // m_encoding is unused in wxGTK2, return encoding that the user set.
     return M_FONTDATA->m_encoding;
 }
 

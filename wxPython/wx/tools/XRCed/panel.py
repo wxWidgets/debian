@@ -2,7 +2,7 @@
 # Purpose:      XRC editor, Panel class and related
 # Author:       Roman Rolinsky <rolinsky@mema.ucl.ac.be>
 # Created:      02.12.2002
-# RCS-ID:       $Id: panel.py,v 1.17 2005/05/26 21:14:05 RD Exp $
+# RCS-ID:       $Id: panel.py,v 1.18.2.1 2005/12/16 17:15:41 RD Exp $
 
 from xxx import *                       # xxx imports globals and params
 from undo import *
@@ -72,7 +72,7 @@ class Panel(wxNotebook):
         # First page
         # Remove current objects and sizer
         sizer = self.ResetPage(self.page1)
-        if not xxx or (not xxx.allParams and not xxx.hasName):
+        if not xxx or (not xxx.allParams and not xxx.hasName and not xxx.hasChild):
             if g.tree.selection:
                 sizer.Add(wxStaticText(self.page1, -1, 'This item has no properties.'))
             else:                       # nothing selected
@@ -272,13 +272,13 @@ class PropPage(ParamPage):
         self.box = wxStaticBox(self, -1, label)
         self.box.SetFont(g.labelFont())
         topSizer = wxStaticBoxSizer(self.box, wxVERTICAL)
-        sizer = wxFlexGridSizer(len(xxx.allParams), 2, 1, 1)
+        sizer = wxFlexGridSizer(len(xxx.allParams), 2, 0, 1)
         sizer.AddGrowableCol(1)
         if xxx.hasName:
             label = wxStaticText(self, -1, 'XML ID:', size=(LABEL_WIDTH,-1))
             control = ParamText(self, 'XML_name', 200)
             sizer.AddMany([ (label, 0, wxALIGN_CENTER_VERTICAL),
-                            (control, 0, wxALIGN_CENTER_VERTICAL | wxBOTTOM | wxGROW, 5) ])
+                            (control, 0, wxALIGN_CENTER_VERTICAL | wxBOTTOM | wxGROW, 10) ])
             self.controlName = control
         for param in xxx.allParams:
             present = xxx.params.has_key(param)
@@ -345,7 +345,7 @@ class StylePage(ParamPage):
         box = wxStaticBox(self, -1, label)
         box.SetFont(g.labelFont())
         topSizer = wxStaticBoxSizer(box, wxVERTICAL)
-        sizer = wxFlexGridSizer(len(xxx.styles), 2, 1, 1)
+        sizer = wxFlexGridSizer(len(xxx.styles), 2, 0, 1)
         sizer.AddGrowableCol(1)
         for param in xxx.styles:
             present = xxx.params.has_key(param)

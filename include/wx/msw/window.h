@@ -5,7 +5,7 @@
 // Modified by: Vadim Zeitlin on 13.05.99: complete refont of message handling,
 //              elimination of Default(), ...
 // Created:     01/02/97
-// RCS-ID:      $Id: window.h,v 1.147 2005/06/16 15:36:42 JS Exp $
+// RCS-ID:      $Id: window.h,v 1.151.2.1 2006/02/28 13:36:51 JS Exp $
 // Copyright:   (c) Julian Smart
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -156,6 +156,11 @@ public:
     virtual bool UnregisterHotKey(int hotkeyId);
 #endif // wxUSE_HOTKEY
 
+#ifdef __POCKETPC__
+    bool IsContextMenuEnabled() const { return m_contextMenuEnabled; }
+    void EnableContextMenu(bool enable = true) { m_contextMenuEnabled = enable; }
+#endif
+
     // window handle stuff
     // -------------------
 
@@ -165,6 +170,9 @@ public:
 
     void AssociateHandle(WXWidget handle);
     void DissociateHandle();
+
+    // does this window have deferred position and/or size?
+    bool IsSizeDeferred() const;
 
 
     // implementation from now on
@@ -455,6 +463,14 @@ protected:
     // has the window been frozen by Freeze()?
     bool IsFrozen() const { return m_frozenness > 0; }
 
+    // this simply moves/resizes the given HWND which is supposed to be our
+    // sibling (this is useful for controls which are composite at MSW level
+    // and for which DoMoveWindow() is not enough)
+    //
+    // returns true if the window move was deferred, false if it was moved
+    // immediately (no error return)
+    bool DoMoveSibling(WXHWND hwnd, int x, int y, int width, int height);
+
     // move the window to the specified location and resize it: this is called
     // from both DoSetSize() and DoSetClientSize() and would usually just call
     // ::MoveWindow() except for composite controls which will want to arrange
@@ -479,6 +495,9 @@ protected:
     // default OnEraseBackground() implementation, return true if we did erase
     // the background, false otherwise (i.e. the system should erase it)
     bool DoEraseBackground(WXHDC hDC);
+
+    // generate WM_UPDATEUISTATE if it's needed for the OS we're running under
+    void MSWUpdateUIState();
 
 private:
     // common part of all ctors
@@ -507,6 +526,10 @@ private:
     // this window before the group of deferred changes is completed.
     wxPoint     m_pendingPosition;
     wxSize      m_pendingSize;
+
+#ifdef __POCKETPC__
+    bool        m_contextMenuEnabled;
+#endif
 
     DECLARE_DYNAMIC_CLASS(wxWindowMSW)
     DECLARE_NO_COPY_CLASS(wxWindowMSW)

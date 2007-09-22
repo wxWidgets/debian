@@ -3,7 +3,7 @@
 // Purpose:     XRC resource for menus and menubars
 // Author:      Vaclav Slavik
 // Created:     2000/03/05
-// RCS-ID:      $Id: xh_menu.cpp,v 1.19 2005/01/07 21:33:13 VS Exp $
+// RCS-ID:      $Id: xh_menu.cpp,v 1.19.2.1 2005/10/13 10:44:50 JS Exp $
 // Copyright:   (c) 2000 Vaclav Slavik
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -53,7 +53,11 @@ wxObject *wxMenuXmlHandler::DoCreateResource()
         {
             wxMenu *p_menu = wxDynamicCast(m_parent, wxMenu);
             if (p_menu)
+            {
                 p_menu->Append(GetID(), title, menu, help);
+                if (HasParam(wxT("enabled")))
+                    p_menu->Enable(GetID(), GetBool(wxT("enabled")));
+            }
         }
 
         return menu;

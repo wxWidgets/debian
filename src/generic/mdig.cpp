@@ -4,7 +4,7 @@
 // Author:      Hans Van Leemputten
 // Modified by:
 // Created:     29/07/2002
-// RCS-ID:      $Id: mdig.cpp,v 1.19 2005/06/06 16:46:50 ABX Exp $
+// RCS-ID:      $Id: mdig.cpp,v 1.21 2005/08/16 20:22:54 ABX Exp $
 // Copyright:   (c) Hans Van Leemputten
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -35,6 +35,7 @@
 #endif //WX_PRECOMP
 
 #include "wx/generic/mdig.h"
+#include "wx/stockitem.h"
 
 enum MDI_MENU_ID
 {
@@ -307,7 +308,7 @@ void wxGenericMDIParentFrame::AddWindowMenu(wxMenuBar *pMenuBar)
 {
     if (pMenuBar && m_pWindowMenu)
     {
-        int pos = pMenuBar->FindMenu(_("Help"));
+        int pos = pMenuBar->FindMenu(wxGetStockLabel(wxID_HELP,false));
         if (pos == wxNOT_FOUND)
         {
             pMenuBar->Append(m_pWindowMenu, _("&Window"));

@@ -2,7 +2,7 @@
 // Name:        icon.h
 // Purpose:
 // Author:      Robert Roebling
-// Id:          $Id: icon.h,v 1.23 2005/02/05 13:08:43 RR Exp $
+// Id:          $Id: icon.h,v 1.24 2005/08/02 22:57:55 MW Exp $
 // Copyright:   (c) 1998 Robert Roebling
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -23,13 +23,13 @@
 // classes
 //-----------------------------------------------------------------------------
 
-class wxIcon;
+class WXDLLIMPEXP_CORE wxIcon;
 
 //-----------------------------------------------------------------------------
 // wxIcon
 //-----------------------------------------------------------------------------
 
-class wxIcon: public wxBitmap
+class WXDLLIMPEXP_CORE wxIcon: public wxBitmap
 {
 public:
     wxIcon();

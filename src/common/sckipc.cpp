@@ -7,7 +7,7 @@
 //                                  (callbacks deprecated)    Mar 2000
 //              Vadim Zeitlin (added support for Unix sockets) Apr 2002
 // Created:     1993
-// RCS-ID:      $Id: sckipc.cpp,v 1.46 2005/04/12 17:16:37 RN Exp $
+// RCS-ID:      $Id: sckipc.cpp,v 1.47.2.1 2006/01/17 18:10:17 JS Exp $
 // Copyright:   (c) Julian Smart 1993
 //              (c) Guilhem Lavaux 1997, 1998
 //              (c) 2000 Guillermo Rodriguez <guille@iies.es>
@@ -89,7 +89,7 @@ static wxSockAddress *
 GetAddressFromName(const wxString& serverName, const wxString& host = wxEmptyString)
 {
     // we always use INET sockets under non-Unix systems
-#if defined(__UNIX__) && !defined(__WINDOWS__) && !defined(__WXMAC__) && !defined(__WINE__)
+#if defined(__UNIX__) && !defined(__WINDOWS__) && !defined(__WINE__) && (!defined(__WXMAC__) || defined(__DARWIN__))
     // under Unix, if the server name looks like a path, create a AF_UNIX
     // socket instead of AF_INET one
     if ( serverName.Find(_T('/')) != wxNOT_FOUND )
@@ -399,7 +399,7 @@ bool wxTCPConnection::Execute(const wxChar *data, int size, wxIPCFormat format)
   m_codeco->Write8(format);
 
   if (size < 0)
-    size = wxStrlen(data) + 1;    // includes final NUL
+    size = (wxStrlen(data) + 1) * sizeof(wxChar);    // includes final NUL
 
   m_codeco->Write32(size);
   m_sockstrm->Write(data, size);
@@ -448,7 +448,7 @@ bool wxTCPConnection::Poke (const wxString& item, wxChar *data, int size, wxIPCF
   m_codeco->Write8(format);
 
   if (size < 0)
-    size = wxStrlen(data) + 1;    // includes final NUL
+    size = (wxStrlen(data) + 1) * sizeof(wxChar);    // includes final NUL
 
   m_codeco->Write32(size);
   m_sockstrm->Write(data, size);
@@ -504,7 +504,7 @@ bool wxTCPConnection::Advise (const wxString& item,
   m_codeco->Write8(format);
 
   if (size < 0)
-    size = wxStrlen(data) + 1;    // includes final NUL
+    size = (wxStrlen(data) + 1) * sizeof(wxChar);    // includes final NUL
 
   m_codeco->Write32(size);
   m_sockstrm->Write(data, size);
@@ -646,7 +646,7 @@ void wxTCPEventHandler::Client_OnRequest(wxSocketEvent &event)
       codeco->Write8(IPC_REQUEST_REPLY);
 
       if (user_size == -1)
-        user_size = wxStrlen(user_data) + 1;      // includes final NUL
+        user_size = (wxStrlen(user_data) + 1) * sizeof(wxChar);    // includes final NUL
 
       codeco->Write32(user_size);
       sockstrm->Write(user_data, user_size);

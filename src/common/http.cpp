@@ -4,7 +4,7 @@
 // Author:      Guilhem Lavaux
 // Modified by:
 // Created:     August 1997
-// RCS-ID:      $Id: http.cpp,v 1.73 2005/06/07 18:59:28 ABX Exp $
+// RCS-ID:      $Id: http.cpp,v 1.75 2005/09/02 17:30:31 SC Exp $
 // Copyright:   (c) 1997, 1998 Guilhem Lavaux
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -154,7 +154,7 @@ bool wxHTTP::ParseHeaders()
     while (1)
 #endif
     {
-        m_perr = GetLine(this, line);
+        m_perr = ReadLine(this, line);
         if (m_perr != wxPROTO_NOERR)
             return false;
 
@@ -258,7 +258,7 @@ bool wxHTTP::BuildRequest(const wxString& path, wxHTTP_Req req)
     }
 
     wxString tmp_str;
-    m_perr = GetLine(this, tmp_str);
+    m_perr = ReadLine(this, tmp_str);
     if (m_perr != wxPROTO_NOERR) {
         RestoreState();
         return false;
@@ -334,6 +334,15 @@ size_t wxHTTPStream::OnSysRead(void *buffer, size_t bufsize)
 
     size_t ret = wxSocketInputStream::OnSysRead(buffer, bufsize);
     m_read_bytes += ret;
+
+    if (m_httpsize==(size_t)-1 && m_lasterror == wxSTREAM_READ_ERROR )
+    {
+        // if m_httpsize is (size_t) -1 this means read until connection closed
+        // which is equivalent to getting a READ_ERROR, for clients however this
+        // must be translated into EOF, as it is the expected way of signalling
+        // end end of the content
+        m_lasterror = wxSTREAM_EOF ;
+    }
 
     return ret;
 }

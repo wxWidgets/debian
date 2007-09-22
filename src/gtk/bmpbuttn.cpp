@@ -2,7 +2,7 @@
 // Name:        gtk/bmpbuttn.cpp
 // Purpose:
 // Author:      Robert Roebling
-// Id:          $Id: bmpbuttn.cpp,v 1.60 2005/06/06 16:46:53 ABX Exp $
+// Id:          $Id: bmpbuttn.cpp,v 1.60.2.1 2006/03/18 12:22:09 MR Exp $
 // Copyright:   (c) 1998 Robert Roebling
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -301,4 +301,3 @@ void wxBitmapButton::EndSelect()
 }
 
 #endif // wxUSE_BMPBUTTON
-

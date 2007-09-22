@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     01/02/97
-// RCS-ID:      $Id: prntbase.h,v 1.44 2005/06/13 12:19:14 ABX Exp $
+// RCS-ID:      $Id: prntbase.h,v 1.45 2005/07/28 22:20:05 VZ Exp $
 // Copyright:   (c) Julian Smart
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -313,11 +313,14 @@ public:
 
     void OnPaint(wxPaintEvent& event);
     void OnChar(wxKeyEvent &event);
-
     // Responds to colour changes
     void OnSysColourChanged(wxSysColourChangedEvent& event);
 
 private:
+#if wxUSE_MOUSEWHEEL
+    void OnMouseWheel(wxMouseEvent& event);
+#endif // wxUSE_MOUSEWHEEL
+
     wxPrintPreviewBase* m_printPreview;
 
     DECLARE_CLASS(wxPreviewCanvas)

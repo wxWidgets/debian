@@ -3,7 +3,7 @@
 // Purpose:     Controls wxWidgets sample
 // Author:      Robert Roebling
 // Modified by:
-// RCS-ID:      $Id: controls.cpp,v 1.230 2005/06/02 12:03:53 JS Exp $
+// RCS-ID:      $Id: controls.cpp,v 1.233 2005/08/17 13:13:42 VZ Exp $
 // Copyright:   (c) Robert Roebling, Julian Smart
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -77,6 +77,7 @@ public:
     virtual ~MyPanel();
 
     void OnSize( wxSizeEvent& event );
+    void OnIdle( wxIdleEvent &event );
     void OnListBox( wxCommandEvent &event );
     void OnListBoxDoubleClick( wxCommandEvent &event );
     void OnListBoxButtons( wxCommandEvent &event );
@@ -326,7 +327,7 @@ public:
                long style = 0,
                const wxValidator& validator = wxDefaultValidator,
                const wxString& name = wxChoiceNameStr )
-        : wxChoice(parent, id, pos, size, n, choices, 
+        : wxChoice(parent, id, pos, size, n, choices,
                      style, validator, name) { }
 
 protected:
@@ -481,6 +482,7 @@ const int  ID_SIZER_CHECKBIG    = 206;
 
 BEGIN_EVENT_TABLE(MyPanel, wxPanel)
 EVT_SIZE      (                         MyPanel::OnSize)
+EVT_IDLE      (                         MyPanel::OnIdle)
 EVT_BOOKCTRL_PAGE_CHANGING(ID_BOOK,     MyPanel::OnPageChanging)
 EVT_BOOKCTRL_PAGE_CHANGED(ID_BOOK,      MyPanel::OnPageChanged)
 EVT_LISTBOX   (ID_LISTBOX,              MyPanel::OnListBox)
@@ -831,10 +833,10 @@ MyPanel::MyPanel( wxFrame *frame, int x, int y, int w, int h )
 
 #if wxUSE_SLIDER && wxUSE_GAUGE
     panel = new wxPanel(m_book);
-    
+
     wxBoxSizer *main_sizer = new wxBoxSizer( wxHORIZONTAL );
     panel->SetSizer( main_sizer );
-    
+
     wxStaticBoxSizer *gauge_sizer = new wxStaticBoxSizer( wxHORIZONTAL, panel, _T("&wxGauge and wxSlider") );
     main_sizer->Add( gauge_sizer, 0, wxALL, 5 );
     wxBoxSizer *sz = new wxBoxSizer( wxVERTICAL );
@@ -851,7 +853,7 @@ MyPanel::MyPanel( wxFrame *frame, int x, int y, int w, int h )
     m_slider->SetToolTip(_T("This is a sliding slider"));
 #endif // wxUSE_TOOLTIPS
     sz->Add( m_slider, 0, wxALL, 10 );
-    
+
     m_gaugeVert = new wxGauge( panel, wxID_ANY, 100,
                                wxDefaultPosition, wxSize(wxDefaultCoord, 90),
                                wxGA_VERTICAL | wxGA_SMOOTH | wxNO_BORDER );
@@ -1047,6 +1049,39 @@ void MyPanel::OnSize( wxSizeEvent& WXUNUSED(event) )
 
     if (m_book) m_book->SetSize( 2, 2, x-4, y*2/3-4 );
     if (m_text) m_text->SetSize( 2, y*2/3+2, x-4, y/3-4 );
+}
+
+void MyPanel::OnIdle(wxIdleEvent& event)
+{
+    static const int INVALID_SELECTION = -2;
+
+    static int s_selCombo = INVALID_SELECTION;
+    int sel = m_combo->GetSelection();
+    if ( sel != s_selCombo )
+    {
+        if ( s_selCombo != INVALID_SELECTION )
+        {
+            wxLogMessage(_T("EVT_IDLE: combobox selection changed from %d to %d"),
+                         s_selCombo, sel);
+        }
+
+        s_selCombo = sel;
+    }
+
+    static int s_selChoice = INVALID_SELECTION;
+    sel = m_choice->GetSelection();
+    if ( sel != s_selChoice )
+    {
+        if ( s_selChoice != INVALID_SELECTION )
+        {
+            wxLogMessage(_T("EVT_IDLE: choice selection changed from %d to %d"),
+                         s_selChoice, sel);
+        }
+
+        s_selChoice = sel;
+    }
+
+    event.Skip();
 }
 
 void MyPanel::OnPageChanging( wxBookCtrlEvent &event )
@@ -1326,20 +1361,18 @@ void MyPanel::OnChoiceButtons( wxCommandEvent &event )
 
 void MyPanel::OnCombo( wxCommandEvent &event )
 {
-    m_text->AppendText( _T("ComboBox event selection string is: ") );
-    m_text->AppendText( event.GetString() );
-    m_text->AppendText( _T("\n") );
-    m_text->AppendText( _T("ComboBox control selection string is: ") );
-    m_text->AppendText( m_combo->GetStringSelection() );
-    m_text->AppendText( _T("\n") );
+    wxLogMessage(_T("EVT_COMBOBOX: item %d/%d (event/control), string \"%s\"/\"%s\""),
+                 (int)event.GetInt(),
+                 m_combo->GetSelection(),
+                 event.GetString().c_str(),
+                 m_combo->GetStringSelection().c_str());
 }
 
 void MyPanel::OnComboTextChanged(wxCommandEvent& event)
 {
-    wxString str;
-    str.Printf( wxT("Text in the combobox changed: now is '%s'."),
-                event.GetString().c_str() );
-    wxLogMessage( str.c_str() );
+    wxLogMessage(wxT("EVT_TEXT for the combobox: \"%s\" (event) or \"%s\" (control)."),
+                 event.GetString().c_str(),
+                 m_combo->GetValue().c_str());
 }
 
 void MyPanel::OnComboTextEnter(wxCommandEvent& WXUNUSED(event))
@@ -1737,10 +1770,13 @@ void MyFrame::OnQuit (wxCommandEvent& WXUNUSED(event) )
 
 void MyFrame::OnAbout( wxCommandEvent& WXUNUSED(event) )
 {
+    SetSize(800, 600);
+#if 0
     wxBusyCursor bc;
 
     wxMessageDialog dialog(this, _T("This is a control sample"), _T("About Controls"), wxOK );
     dialog.ShowModal();
+#endif
 }
 
 void MyFrame::OnClearLog(wxCommandEvent& WXUNUSED(event))

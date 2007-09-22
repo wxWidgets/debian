@@ -16,7 +16,7 @@
 #
 #
 # Created:     15-Dec-1999
-# RCS-ID:      $Id: editor.py,v 1.10 2004/05/02 02:41:19 RD Exp $
+# RCS-ID:      $Id: editor.py,v 1.10.2.1 2006/01/01 20:17:17 KO Exp $
 # Copyright:   (c) 1999 by Dirk Holtwick, 1999
 # Licence:     wxWindows license
 #----------------------------------------------------------------------
@@ -483,6 +483,7 @@ class Editor(wx.ScrolledWindow):
         self.SelectEnd = None
         self.UpdateView()
         self.CaptureMouse()
+        self.SetFocus()
 
     def OnLeftUp(self, event):
         if not self.HasCapture():

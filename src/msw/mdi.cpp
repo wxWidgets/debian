@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     04/01/98
-// RCS-ID:      $Id: mdi.cpp,v 1.119 2005/06/07 19:16:15 ABX Exp $
+// RCS-ID:      $Id: mdi.cpp,v 1.125.2.3 2006/01/23 20:10:29 RD Exp $
 // Copyright:   (c) Julian Smart
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -45,6 +45,7 @@
     #include "wx/log.h"
 #endif
 
+#include "wx/stockitem.h"
 #include "wx/mdi.h"
 #include "wx/msw/private.h"
 
@@ -133,6 +134,7 @@ IMPLEMENT_DYNAMIC_CLASS(wxMDIClientWindow, wxWindow)
 
 BEGIN_EVENT_TABLE(wxMDIParentFrame, wxFrame)
     EVT_SIZE(wxMDIParentFrame::OnSize)
+    EVT_ICONIZE(wxMDIParentFrame::OnIconized)
     EVT_SYS_COLOUR_CHANGED(wxMDIParentFrame::OnSysColourChanged)
 END_EVENT_TABLE()
 
@@ -313,7 +315,7 @@ void wxMDIParentFrame::DoMenuUpdates(wxMenu* menu)
             {
                 int nCount = bar->GetMenuCount();
                 for (int n = 0; n < nCount; n++)
-                bar->GetMenu(n)->UpdateUI(source);
+                    bar->GetMenu(n)->UpdateUI(source);
             }
         }
     }
@@ -323,7 +325,7 @@ void wxMDIParentFrame::DoMenuUpdates(wxMenu* menu)
     }
 }
 
-void wxMDIParentFrame::OnSize(wxSizeEvent&)
+void wxMDIParentFrame::UpdateClientSize()
 {
     if ( GetClientWindow() )
     {
@@ -331,6 +333,23 @@ void wxMDIParentFrame::OnSize(wxSizeEvent&)
         GetClientSize(&width, &height);
 
         GetClientWindow()->SetSize(0, 0, width, height);
+    }
+}
+
+void wxMDIParentFrame::OnSize(wxSizeEvent& WXUNUSED(event))
+{
+    UpdateClientSize();
+
+    // do not call event.Skip() here, it somehow messes up MDI client window
+}
+
+void wxMDIParentFrame::OnIconized(wxIconizeEvent& event)
+{
+    event.Skip();
+
+    if ( !event.Iconized() )
+    {
+        UpdateClientSize();
     }
 }
 
@@ -528,6 +547,14 @@ bool wxMDIParentFrame::HandleCommand(WXWORD id, WXWORD cmd, WXHWND hwnd)
         wxWindow *win = wxFindWinFromHandle(hwnd);
         if ( win )
             return win->MSWCommand(cmd, id);
+    }
+
+    if (wxCurrentPopupMenu)
+    {
+        wxMenu *popupMenu = wxCurrentPopupMenu;
+        wxCurrentPopupMenu = NULL;
+        if (popupMenu->MSWCommand(cmd, id))
+            return true;
     }
 
     // is it one of standard MDI commands?
@@ -850,6 +877,12 @@ void wxMDIChildFrame::InternalSetMenuBar()
     parent->m_parentFrameActive = false;
 }
 
+void wxMDIChildFrame::DetachMenuBar()
+{
+    RemoveWindowMenu(NULL, m_hMenu);
+    wxFrame::DetachMenuBar();
+}
+
 WXHICON wxMDIChildFrame::GetDefaultIcon() const
 {
     // we don't have any standard icons (any more)
@@ -1120,9 +1153,29 @@ WXLRESULT wxMDIChildFrame::MSWDefWindowProc(WXUINT message, WXWPARAM wParam, WXL
                            (UINT)message, (WPARAM)wParam, (LPARAM)lParam);
 }
 
-bool wxMDIChildFrame::MSWTranslateMessage(WXMSG* msg)
+bool wxMDIChildFrame::MSWTranslateMessage(WXMSG* pMsg)
 {
-    return wxFrame::MSWTranslateMessage(msg);
+    // NB: this duplicates the code in wxFrame::MSWTranslateMessage() to avoid
+    //     breaking backwards compatibility; cvs HEAD has a better version of
+    //     this fix
+
+    if ( wxWindow::MSWTranslateMessage(pMsg) )
+        return true;
+
+#if wxUSE_MENUS && wxUSE_ACCEL && !defined(__WXUNIVERSAL__)
+    // try the menu bar accels
+    wxMenuBar *menuBar = GetMenuBar();
+    if ( menuBar )
+    {
+        const wxAcceleratorTable& acceleratorTable = menuBar->GetAccelTable();
+
+        // the difference with wxFrame version is that we must pass the top
+        // level frame to Translate() here, not "this" pointer
+        return acceleratorTable.Translate(GetParent(), pMsg);
+    }
+#endif // wxUSE_MENUS && wxUSE_ACCEL
+
+    return false;
 }
 
 // ---------------------------------------------------------------------------
@@ -1279,11 +1332,11 @@ void wxMDIClientWindow::DoSetSize(int x, int y, int width, int height, int sizeF
     // (see OGL studio sample). So check if the position is changed and if so,
     // redraw the MDI child frames.
 
-    wxPoint oldPos = GetPosition();
+    const wxPoint oldPos = GetPosition();
 
-    wxWindow::DoSetSize(x, y, width, height, sizeFlags);
+    wxWindow::DoSetSize(x, y, width, height, sizeFlags | wxSIZE_FORCE);
 
-    wxPoint newPos = GetPosition();
+    const wxPoint newPos = GetPosition();
 
     if ((newPos.x != oldPos.x) || (newPos.y != oldPos.y))
     {
@@ -1377,7 +1430,8 @@ static void InsertWindowMenu(wxWindow *win, WXHMENU menu, HMENU subMenu)
                 continue;
             }
 
-            if ( wxStripMenuCodes(wxString(buf)).IsSameAs(_("Help")) )
+            wxString strBuf(buf);
+            if ( wxStripMenuCodes(strBuf) == wxGetStockLabel(wxID_HELP,false) )
             {
                 success = true;
                 ::InsertMenu(hmenu, i, MF_BYPOSITION | MF_POPUP | MF_STRING,

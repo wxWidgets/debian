@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     02/07/2001
-// RCS-ID:      $Id: anitest.h,v 1.1 2001/07/06 10:24:53 JS Exp $
+// RCS-ID:      $Id: anitest.h,v 1.2 2005/08/23 16:02:13 ABX Exp $
 // Copyright:   (c) Julian Smart
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -41,12 +41,14 @@ public:
     void OnAbout(wxCommandEvent& event);
     void OnQuit(wxCommandEvent& event);
 
+#if wxUSE_FILEDLG
     void OnOpen(wxCommandEvent& event);
+#endif // wxUSE_FILEDLG
 
     MyCanvas* GetCanvas() const { return m_canvas; }
     wxGIFAnimationCtrl* GetAnimationCtrl() const { return m_animationCtrl; }
 
-#if 0    
+#if 0
     wxAnimationPlayer& GetPlayer() { return m_player; }
     wxAnimationBase& GetAnimation() { return m_animation; }
 #endif
@@ -60,12 +62,4 @@ protected:
     wxAnimationPlayer   m_player;
     wxGIFAnimation      m_animation;
 #endif
-};
-
-// menu items ids
-enum
-{
-    ANITEST_QUIT = 100,
-    ANITEST_OPEN,
-    ANITEST_ABOUT
 };

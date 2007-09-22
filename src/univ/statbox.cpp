@@ -4,7 +4,7 @@
 // Author:      Vadim Zeitlin
 // Modified by:
 // Created:     25.08.00
-// RCS-ID:      $Id: statbox.cpp,v 1.12 2004/08/10 13:08:39 ABX Exp $
+// RCS-ID:      $Id: statbox.cpp,v 1.13 2005/08/06 01:46:32 MW Exp $
 // Copyright:   (c) 2000 SciTech Software, Inc. (www.scitechsoft.com)
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -55,6 +55,9 @@ bool wxStaticBox::Create(wxWindow *parent,
                          long style,
                          const wxString &name)
 {
+    // FIXME refresh just the right/bottom parts affected in OnSize
+    style |= wxFULL_REPAINT_ON_RESIZE;
+
     if ( !wxControl::Create(parent, id, pos, size, style, wxDefaultValidator, name) )
         return false;
 

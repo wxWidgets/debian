@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     01/02/97
-// RCS-ID:      $Id: textctrl.h,v 1.67 2005/04/10 21:55:11 VZ Exp $
+// RCS-ID:      $Id: textctrl.h,v 1.68 2005/07/29 23:01:56 VZ Exp $
 // Copyright:   (c) Julian Smart
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -200,6 +200,10 @@ protected:
 
     // intercept WM_GETDLGCODE
     virtual WXLRESULT MSWWindowProc(WXUINT nMsg, WXWPARAM wParam, WXLPARAM lParam);
+
+    // return true if this control has a user-set limit on amount of text (i.e.
+    // the limit is due to a previous call to SetMaxLength() and not built in)
+    bool HasSpaceLimit(unsigned int *len) const;
 
     // call this to increase the size limit (will do nothing if the current
     // limit is big enough)

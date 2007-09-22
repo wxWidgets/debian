@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     04/01/98
-// RCS-ID:      $Id: typetest.cpp,v 1.48 2005/04/17 18:57:46 RN Exp $
+// RCS-ID:      $Id: typetest.cpp,v 1.48.2.1 2005/11/30 20:48:20 MW Exp $
 // Copyright:   (c) Julian Smart
 // Licence:       wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -889,7 +889,7 @@ void MyApp::DoUnicodeDemo(wxCommandEvent& WXUNUSED(event))
     textCtrl << _T("\nTest wchar_t to char (Unicode to ANSI/Multibyte) converions:");
 
     wxString str;
-    str = _T("Robert Röbling\n");
+    str = _T("Robert R\366bling\n");
 
     printf( "\n\nConversion with wxConvLocal:\n" );
     wxConvCurrent = &wxConvLocal;

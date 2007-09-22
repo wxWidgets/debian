@@ -4,7 +4,7 @@
 // Author:      Robert Roebling
 // Modified by: Ron Lee
 // Created:     01/02/97
-// RCS-ID:      $Id: scrolwin.cpp,v 1.44 2005/03/21 23:42:19 VZ Exp $
+// RCS-ID:      $Id: scrolwin.cpp,v 1.44.2.1 2005/11/02 15:57:38 JS Exp $
 // Copyright:   (c) Robert Roebling
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -528,6 +528,7 @@ void wxScrolledWindow::DoPrepareDC(wxDC& dc)
 {
     dc.SetDeviceOrigin( -m_xScrollPosition * m_xScrollPixelsPerLine,
                         -m_yScrollPosition * m_yScrollPixelsPerLine );
+    dc.SetUserScale( m_scaleX, m_scaleY );
 }
 
 void wxScrolledWindow::SetScrollRate( int xstep, int ystep )

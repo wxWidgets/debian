@@ -4,7 +4,7 @@
 // Author:      Vadim Zeitlin
 // Modified by:
 // Created:     26.10.99
-// RCS-ID:      $Id: menucmn.cpp,v 1.52 2005/06/06 16:46:45 ABX Exp $
+// RCS-ID:      $Id: menucmn.cpp,v 1.54.2.1 2005/10/21 19:18:40 ABX Exp $
 // Copyright:   (c) wxWidgets team
 // Licence:     wxWindows licence
 ///////////////////////////////////////////////////////////////////////////////
@@ -193,7 +193,7 @@ wxAcceleratorEntry *wxGetAccelFromString(const wxString& label)
                         keyCode = WXK_HOME;
                     else if ( current == wxT("END") )
                         keyCode = WXK_END;
-                    else if ( current == wxT("SPACE") )
+                    else if ( current == wxT("SPACE") || current == _("SPACE") )
                         keyCode = WXK_SPACE;
                     else if ( current == wxT("TAB") )
                         keyCode = WXK_TAB;
@@ -217,8 +217,6 @@ wxAcceleratorEntry *wxGetAccelFromString(const wxString& label)
                         keyCode = WXK_EXECUTE;
                     else if ( current == wxT("SNAPSHOT") )
                         keyCode = WXK_SNAPSHOT;
-                    else if ( current == wxT("HELP") )
-                        keyCode = WXK_HELP;
                     else if ( current == wxT("HELP") )
                         keyCode = WXK_HELP;
                     else if ( current == wxT("ADD") )
@@ -289,14 +287,14 @@ wxAcceleratorEntry *wxGetAccelFromString(const wxString& label)
                         keyCode = WXK_WINDOWS_LEFT;
                     else if ( current == wxT("WINDOWS_RIGHT") )
                         keyCode = WXK_WINDOWS_RIGHT;
-                     else if ( current == wxT("WINDOWS_MENU") )
+                    else if ( current == wxT("WINDOWS_MENU") )
                         keyCode = WXK_WINDOWS_MENU;
                     else if ( current == wxT("COMMAND") )
                         keyCode = WXK_COMMAND;
-                    else if ( current.Left(3) == wxT("KP_") && wxIsdigit(current[3U]) ) {
-                    keyCode = WXK_NUMPAD0 + wxAtoi(current.c_str() + 3);  }
-                    else if ( current.Left(7) == wxT("SPECIAL") && wxIsdigit(current[7U]) ) {
-                    keyCode = WXK_SPECIAL1 + wxAtoi(current.c_str() + 7) - 1;  }
+                    else if ( current.Left(3) == wxT("KP_") && wxIsdigit(current[3U]) )
+                        keyCode = WXK_NUMPAD0 + wxAtoi(current.c_str() + 3);
+                    else if ( current.Left(7) == wxT("SPECIAL") && wxIsdigit(current[7U]) )
+                        keyCode = WXK_SPECIAL1 + wxAtoi(current.c_str() + 7) - 1;
                     else
                     {
                         wxLogDebug(wxT("Unrecognized accel key '%s', accel string ignored."),

@@ -4,7 +4,7 @@
 // Author:      Vadim Zeitlin
 // Modified by:
 // Created:     04/01/98
-// RCS-ID:      $Id: dnd.cpp,v 1.98 2005/05/31 09:19:22 JS Exp $
+// RCS-ID:      $Id: dnd.cpp,v 1.100.2.1 2006/01/21 18:07:48 MR Exp $
 // Copyright:
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -19,21 +19,12 @@
 #include "wx/wx.h"
 #endif
 
-#include "wx/intl.h"
-#include "wx/log.h"
-
 #include "wx/dnd.h"
-#include "wx/dirdlg.h"
-#include "wx/filedlg.h"
+#include "wx/dataobj.h"
 #include "wx/image.h"
 #include "wx/clipbrd.h"
 #include "wx/colordlg.h"
-#include "wx/sizer.h"
-#include "wx/dataobj.h"
-
-#if wxUSE_METAFILES
-    #include "wx/metafile.h"
-#endif // wxUSE_METAFILES
+#include "wx/metafile.h"
 
 #if defined(__WXGTK__) || defined(__WXX11__) || defined(__WXMOTIF__) || defined(__WXMAC__)
     #include "../sample.xpm"
@@ -163,7 +154,7 @@ private:
     DECLARE_EVENT_TABLE()
 };
 
-#if wxUSE_METAFILES
+#if wxUSE_METAFILE
 
 // and the same thing fo metafiles
 class DnDCanvasMetafile : public wxScrolledWindow
@@ -181,7 +172,7 @@ public:
         Refresh();
     }
 
-    void OnPaint(wxPaintEvent& event)
+    void OnPaint(wxPaintEvent&)
     {
         wxPaintDC dc(this);
 
@@ -199,7 +190,7 @@ private:
     DECLARE_EVENT_TABLE()
 };
 
-#endif // wxUSE_METAFILES
+#endif // wxUSE_METAFILE
 
 // ----------------------------------------------------------------------------
 // Define a new frame type for the main frame
@@ -230,9 +221,9 @@ public:
     void OnCopyBitmap(wxCommandEvent& event);
     void OnPasteBitmap(wxCommandEvent& event);
 
-#if wxUSE_METAFILES
+#if wxUSE_METAFILE
     void OnPasteMetafile(wxCommandEvent& event);
-#endif // wxUSE_METAFILES
+#endif // wxUSE_METAFILE
 
     void OnCopyFiles(wxCommandEvent& event);
 
@@ -494,9 +485,9 @@ public:
         // we don't draw the shape to a bitmap until it's really needed (i.e.
         // we're asked to do so)
         m_hasBitmap = false;
-#if wxUSE_METAFILES
+#if wxUSE_METAFILE
         m_hasMetaFile = false;
-#endif // wxUSE_METAFILES
+#endif // wxUSE_METAFILE
     }
 
     virtual ~DnDShapeDataObject() { delete m_shape; }
@@ -513,9 +504,9 @@ public:
 
         m_shape = (DnDShape *)NULL;
         m_hasBitmap = false;
-#if wxUSE_METAFILES
+#if wxUSE_METAFILE
         m_hasMetaFile = false;
-#endif // wxUSE_METAFILES
+#endif // wxUSE_METAFILE
 
         return shape;
     }
@@ -537,9 +528,9 @@ public:
             // but the bitmap format(s) are only supported for output
             nFormats += m_dobjBitmap.GetFormatCount(dir);
 
-#if wxUSE_METAFILES
+#if wxUSE_METAFILE
             nFormats += m_dobjMetaFile.GetFormatCount(dir);
-#endif // wxUSE_METAFILES
+#endif // wxUSE_METAFILE
         }
 
         return nFormats;
@@ -554,11 +545,11 @@ public:
             // under Windows
             m_dobjBitmap.GetAllFormats(&formats[1], dir);
 
-#if wxUSE_METAFILES
+#if wxUSE_METAFILE
             // don't assume that m_dobjBitmap has only 1 format
             m_dobjMetaFile.GetAllFormats(&formats[1 +
                     m_dobjBitmap.GetFormatCount(dir)], dir);
-#endif // wxUSE_METAFILES
+#endif // wxUSE_METAFILE
         }
     }
 
@@ -568,7 +559,7 @@ public:
         {
             return m_shape->GetDataSize();
         }
-#if wxUSE_METAFILES
+#if wxUSE_METAFILE
         else if ( m_dobjMetaFile.IsSupported(format) )
         {
             if ( !m_hasMetaFile )
@@ -576,7 +567,7 @@ public:
 
             return m_dobjMetaFile.GetDataSize(format);
         }
-#endif // wxUSE_METAFILES
+#endif // wxUSE_METAFILE
         else
         {
             wxASSERT_MSG( m_dobjBitmap.IsSupported(format),
@@ -597,7 +588,7 @@ public:
 
             return true;
         }
-#if wxUSE_METAFILES
+#if wxUSE_METAFILE
         else if ( m_dobjMetaFile.IsSupported(format) )
         {
             if ( !m_hasMetaFile )
@@ -605,7 +596,7 @@ public:
 
             return m_dobjMetaFile.GetDataHere(format, pBuf);
         }
-#endif // wxUSE_METAFILES
+#endif // wxUSE_METAFILE
         else
         {
             wxASSERT_MSG( m_dobjBitmap.IsSupported(format),
@@ -630,9 +621,9 @@ public:
         // the shape has changed
         m_hasBitmap = false;
 
-#if wxUSE_METAFILES
+#if wxUSE_METAFILE
         m_hasMetaFile = false;
-#endif // wxUSE_METAFILES
+#endif // wxUSE_METAFILE
 
         return true;
     }
@@ -640,19 +631,19 @@ public:
 private:
     // creates a bitmap and assigns it to m_dobjBitmap (also sets m_hasBitmap)
     void CreateBitmap() const;
-#if wxUSE_METAFILES
+#if wxUSE_METAFILE
     void CreateMetaFile() const;
-#endif // wxUSE_METAFILES
+#endif // wxUSE_METAFILE
 
     wxDataFormat        m_formatShape;  // our custom format
 
     wxBitmapDataObject  m_dobjBitmap;   // it handles bitmaps
     bool                m_hasBitmap;    // true if m_dobjBitmap has valid bitmap
 
-#if wxUSE_METAFILES
+#if wxUSE_METAFILE
     wxMetaFileDataObject m_dobjMetaFile;// handles metafiles
     bool                 m_hasMetaFile; // true if we have valid metafile
-#endif // wxUSE_METAFILES
+#endif // wxUSE_METAFILE
 
     DnDShape           *m_shape;        // our data
 };
@@ -786,9 +777,9 @@ private:
 
 static void ShowBitmap(const wxBitmap& bitmap);
 
-#if wxUSE_METAFILES
+#if wxUSE_METAFILE
 static void ShowMetaFile(const wxMetaFile& metafile);
-#endif // wxUSE_METAFILES
+#endif // wxUSE_METAFILE
 
 // ----------------------------------------------------------------------------
 // IDs for the menu commands
@@ -833,9 +824,9 @@ BEGIN_EVENT_TABLE(DnDFrame, wxFrame)
     EVT_MENU(Menu_Paste,      DnDFrame::OnPaste)
     EVT_MENU(Menu_CopyBitmap, DnDFrame::OnCopyBitmap)
     EVT_MENU(Menu_PasteBitmap,DnDFrame::OnPasteBitmap)
-#if wxUSE_METAFILES
+#if wxUSE_METAFILE
     EVT_MENU(Menu_PasteMFile, DnDFrame::OnPasteMetafile)
-#endif // wxUSE_METAFILES
+#endif // wxUSE_METAFILE
     EVT_MENU(Menu_CopyFiles,  DnDFrame::OnCopyFiles)
 
     EVT_UPDATE_UI(Menu_DragMoveDef, DnDFrame::OnUpdateUIMoveByDefault)
@@ -877,11 +868,11 @@ BEGIN_EVENT_TABLE(DnDCanvasBitmap, wxScrolledWindow)
     EVT_PAINT(DnDCanvasBitmap::OnPaint)
 END_EVENT_TABLE()
 
-#if wxUSE_METAFILES
+#if wxUSE_METAFILE
 BEGIN_EVENT_TABLE(DnDCanvasMetafile, wxScrolledWindow)
     EVT_PAINT(DnDCanvasMetafile::OnPaint)
 END_EVENT_TABLE()
-#endif // wxUSE_METAFILES
+#endif // wxUSE_METAFILE
 
 #endif // wxUSE_DRAG_AND_DROP
 
@@ -967,10 +958,10 @@ DnDFrame::DnDFrame(wxFrame *frame, wxChar *title, int x, int y, int w, int h)
     clip_menu->AppendSeparator();
     clip_menu->Append(Menu_CopyBitmap, _T("Copy &bitmap\tCtrl-Shift-C"));
     clip_menu->Append(Menu_PasteBitmap, _T("Paste b&itmap\tCtrl-Shift-V"));
-#if wxUSE_METAFILES
+#if wxUSE_METAFILE
     clip_menu->AppendSeparator();
     clip_menu->Append(Menu_PasteMFile, _T("Paste &metafile\tCtrl-M"));
-#endif // wxUSE_METAFILES
+#endif // wxUSE_METAFILE
     clip_menu->AppendSeparator();
     clip_menu->Append(Menu_CopyFiles, _T("Copy &files\tCtrl-F"));
 
@@ -1339,7 +1330,7 @@ void DnDFrame::OnPasteBitmap(wxCommandEvent& WXUNUSED(event))
     wxTheClipboard->Close();
 }
 
-#if wxUSE_METAFILES
+#if wxUSE_METAFILE
 
 void DnDFrame::OnPasteMetafile(wxCommandEvent& WXUNUSED(event))
 {
@@ -1375,7 +1366,7 @@ void DnDFrame::OnPasteMetafile(wxCommandEvent& WXUNUSED(event))
     wxTheClipboard->Close();
 }
 
-#endif // wxUSE_METAFILES
+#endif // wxUSE_METAFILE
 
 // ----------------------------------------------------------------------------
 // file clipboard
@@ -1518,7 +1509,7 @@ bool DnDFile::OnDropFiles(wxCoord, wxCoord, const wxArrayString& filenames)
 DnDShapeDialog::DnDShapeDialog(wxFrame *parent, DnDShape *shape)
   :wxDialog( parent, 6001, wxT("Choose Shape"), wxPoint( 10, 10 ),
              wxSize( 40, 40 ),
-             wxRAISED_BORDER|wxCAPTION|wxTHICK_FRAME|wxSYSTEM_MENU )
+             wxDEFAULT_DIALOG_STYLE | wxRAISED_BORDER | wxTHICK_FRAME )
 {
     m_shape = shape;
     wxBoxSizer* topSizer = new wxBoxSizer( wxVERTICAL );
@@ -1909,7 +1900,7 @@ DnDShape *DnDShape::New(const void *buf)
 // DnDShapeDataObject
 // ----------------------------------------------------------------------------
 
-#if wxUSE_METAFILES
+#if wxUSE_METAFILE
 
 void DnDShapeDataObject::CreateMetaFile() const
 {
@@ -1929,7 +1920,7 @@ void DnDShapeDataObject::CreateMetaFile() const
     delete mf;
 }
 
-#endif // wxUSE_METAFILES
+#endif // wxUSE_METAFILE
 
 void DnDShapeDataObject::CreateBitmap() const
 {
@@ -1975,7 +1966,7 @@ static void ShowBitmap(const wxBitmap& bitmap)
     frame->Show(true);
 }
 
-#if wxUSE_METAFILES
+#if wxUSE_METAFILE
 
 static void ShowMetaFile(const wxMetaFile& metafile)
 {
@@ -1992,6 +1983,6 @@ static void ShowMetaFile(const wxMetaFile& metafile)
     frame->Show();
 }
 
-#endif // wxUSE_METAFILES
+#endif // wxUSE_METAFILE
 
 #endif // wxUSE_DRAG_AND_DROP || wxUSE_CLIPBOARD

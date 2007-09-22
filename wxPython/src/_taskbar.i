@@ -5,7 +5,7 @@
 // Author:      Robin Dunn
 //
 // Created:     2-June-1998
-// RCS-ID:      $Id: _taskbar.i,v 1.11 2005/03/09 22:28:40 RD Exp $
+// RCS-ID:      $Id: _taskbar.i,v 1.11.2.1 2006/01/16 23:47:30 RD Exp $
 // Copyright:   (c) 2003 by Total Control Software
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -61,7 +61,7 @@ enum {
 // Otherwise make a class that can virtualize CreatePopupMenu
 class wxPyTaskBarIcon : public wxTaskBarIcon
 {
-    DECLARE_ABSTRACT_CLASS(wxPyTaskBarIcon);
+    DECLARE_ABSTRACT_CLASS(wxPyTaskBarIcon)
 public:
     wxPyTaskBarIcon() : wxTaskBarIcon()
     {}

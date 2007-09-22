@@ -4,7 +4,7 @@
 // Author:      Vadim Zeitlin
 // Modified by:
 // Created:     05.11.99
-// RCS-ID:      $Id: fontutil.cpp,v 1.52 2005/04/13 13:53:17 RR Exp $
+// RCS-ID:      $Id: fontutil.cpp,v 1.62.2.2 2006/04/18 22:59:06 VZ Exp $
 // Copyright:   (c) Vadim Zeitlin
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -45,6 +45,7 @@
 
 #ifdef __WXGTK20__
 #include "wx/gtk/private.h"
+extern GtkWidget *wxGetRootWindow();
 #else
 #include "wx/x11/private.h"
 #endif
@@ -137,7 +138,71 @@ wxString wxNativeFontInfo::GetFaceName() const
 
 wxFontFamily wxNativeFontInfo::GetFamily() const
 {
-    return wxFONTFAMILY_SWISS;
+    wxFontFamily ret = wxFONTFAMILY_DEFAULT;
+    // note: not passing -1 as the 2nd parameter to g_ascii_strdown to work
+    // around a bug in the 64-bit glib shipped with solaris 10, -1 causes it
+    // to try to allocate 2^32 bytes.
+    const char *family_name = pango_font_description_get_family( description );
+    char *family_text = g_ascii_strdown( family_name, family_name ? strlen( family_name ) : 0 );
+    // Check for some common fonts, to salvage what we can from the current win32 centric wxFont API:
+    if (strncmp( family_text, "monospace", 9 ) == 0)
+        ret = wxFONTFAMILY_TELETYPE; // begins with "Monospace"
+    else if (strncmp( family_text, "courier", 7 ) == 0)
+        ret = wxFONTFAMILY_TELETYPE; // begins with "Courier"
+#if defined(__WXGTK24__) || defined(HAVE_PANGO_FONT_FAMILY_IS_MONOSPACE)
+    else
+#ifdef __WXGTK24__
+    if (!gtk_check_version(2,4,0))
+#endif
+    {
+        PangoFontFamily **families;
+        PangoFontFamily  *family = NULL;
+        int n_families;
+        pango_context_list_families(
+#ifdef __WXGTK20__
+                gtk_widget_get_pango_context( wxGetRootWindow() ),
+#else
+                wxTheApp->GetPangoContext(),
+#endif
+                &families, &n_families);
+
+        for (int i = 0;i < n_families;++i)
+        {
+            if (g_ascii_strcasecmp(pango_font_family_get_name( families[i] ), pango_font_description_get_family( description )) == 0 )
+            {
+                family = families[i];
+                break;
+            }
+        }
+
+        g_free(families);
+
+        // Some gtk+ systems might query for a non-existing font from wxSystemSettings::GetFont(wxSYS_DEFAULT_GUI_FONT)
+        // on initialization, don't assert until wxSystemSettings::GetFont is checked for this - MR
+        // wxASSERT_MSG( family, wxT("wxNativeFontInfo::GetFamily() - No appropriate PangoFontFamily found for ::description") );
+
+        //BCI: Cache the wxFontFamily inside the class. Validate cache with
+        //BCI: g_ascii_strcasecmp(pango_font_description_get_family(description), pango_font_family_get_name(family)) == 0
+
+        if (family != NULL && pango_font_family_is_monospace( family ))
+            ret = wxFONTFAMILY_TELETYPE; // is deemed a monospace font by pango
+    }
+#endif // gtk24 || HAVE_PANGO_FONT_FAMILY_IS_MONOSPACE
+
+    if (ret == wxFONTFAMILY_DEFAULT)
+    {
+        if (strstr( family_text, "sans" ) != NULL) // checked before serif, so that "* Sans Serif" fonts are detected correctly
+            ret = wxFONTFAMILY_SWISS; // contains "Sans"
+        else if (strstr( family_text, "serif" ) != NULL)
+            ret = wxFONTFAMILY_ROMAN; // contains "Serif"
+        else if (strncmp( family_text, "times", 5 ) == 0)
+            ret = wxFONTFAMILY_ROMAN; // begins with "Times"
+        else if (strncmp( family_text, "old", 3 ) == 0)
+            ret = wxFONTFAMILY_DECORATIVE; // Begins with "Old" - "Old English", "Old Town"
+    }
+
+    free(family_text);
+    return ret;
 }
 
 wxFontEncoding wxNativeFontInfo::GetEncoding() const
@@ -146,19 +211,46 @@ wxFontEncoding wxNativeFontInfo::GetEncoding() const
 }
 
 
-void wxNativeFontInfo::SetPointSize(int WXUNUSED(pointsize))
+void wxNativeFontInfo::SetPointSize(int pointsize)
 {
-    wxFAIL_MSG( _T("not implemented") );
+    pango_font_description_set_size( description, pointsize * PANGO_SCALE );
 }
 
-void wxNativeFontInfo::SetStyle(wxFontStyle WXUNUSED(style))
+void wxNativeFontInfo::SetStyle(wxFontStyle style)
 {
-    wxFAIL_MSG( _T("not implemented") );
+    switch (style)
+    {
+        case wxFONTSTYLE_ITALIC:
+            pango_font_description_set_style( description, PANGO_STYLE_ITALIC );
+            break;
+        case wxFONTSTYLE_SLANT:
+            pango_font_description_set_style( description, PANGO_STYLE_OBLIQUE );
+            break;
+        default:
+            wxFAIL_MSG( _T("unknown font style") );
+            // fall through
+        case wxFONTSTYLE_NORMAL:
+            pango_font_description_set_style( description, PANGO_STYLE_NORMAL );
+            break;
+    }
 }
 
-void wxNativeFontInfo::SetWeight(wxFontWeight WXUNUSED(weight))
+void wxNativeFontInfo::SetWeight(wxFontWeight weight)
 {
-    wxFAIL_MSG( _T("not implemented") );
+    switch (weight)
+    {
+        case wxFONTWEIGHT_BOLD:
+            pango_font_description_set_weight(description, PANGO_WEIGHT_BOLD);
+            break;
+        case wxFONTWEIGHT_LIGHT:
+            pango_font_description_set_weight(description, PANGO_WEIGHT_LIGHT);
+            break;
+        default:
+            wxFAIL_MSG( _T("unknown font weight") );
+            // fall through
+        case wxFONTWEIGHT_NORMAL:
+            pango_font_description_set_weight(description, PANGO_WEIGHT_NORMAL);
+    }
 }
 
 void wxNativeFontInfo::SetUnderlined(bool WXUNUSED(underlined))
@@ -166,9 +258,9 @@ void wxNativeFontInfo::SetUnderlined(bool WXUNUSED(underlined))
     wxFAIL_MSG( _T("not implemented") );
 }
 
-void wxNativeFontInfo::SetFaceName(wxString WXUNUSED(facename))
+void wxNativeFontInfo::SetFaceName(wxString facename)
 {
-    wxFAIL_MSG( _T("not implemented") );
+    pango_font_description_set_family( description, wxGTK_CONV(facename) );
 }
 
 void wxNativeFontInfo::SetFamily(wxFontFamily WXUNUSED(family))
@@ -216,7 +308,7 @@ wxString wxNativeFontInfo::ToUserString() const
 // wxNativeEncodingInfo
 // ----------------------------------------------------------------------------
 
-bool wxNativeEncodingInfo::FromString(const wxString& s)
+bool wxNativeEncodingInfo::FromString(const wxString& WXUNUSED(s))
 {
     return FALSE;
 }
@@ -226,7 +318,7 @@ wxString wxNativeEncodingInfo::ToString() const
     return wxEmptyString;
 }
 
-bool wxTestFontEncoding(const wxNativeEncodingInfo& info)
+bool wxTestFontEncoding(const wxNativeEncodingInfo& WXUNUSED(info))
 {
     return TRUE;
 }
@@ -234,17 +326,26 @@ bool wxTestFontEncoding(const wxNativeEncodingInfo& info)
 bool wxGetNativeFontEncoding(wxFontEncoding encoding,
                              wxNativeEncodingInfo *info)
 {
-    // we *must* return true for default encoding as otherwise wxFontMapper
-    // considers that we can't load any font and aborts with wxLogFatalError!
-    if ( encoding == wxFONTENCODING_SYSTEM )
-    {
-        info->facename.clear();
-        info->encoding = wxFONTENCODING_SYSTEM;
-    }
+    info->facename.clear();
 
-    // pretend that we support everything, it's better than to always return
-    // false as the old code did
-    return true;
+    switch ( encoding )
+    {
+        // we *must* return true for default encodings as otherwise wxFontMapper
+        // considers that we can't load any font and aborts with wxLogFatalError!
+        case wxFONTENCODING_DEFAULT:
+        case wxFONTENCODING_SYSTEM:
+            info->encoding = wxFONTENCODING_SYSTEM;
+            return true;
+
+        case wxFONTENCODING_ISO8859_1:
+        case wxFONTENCODING_UTF8:
+            info->encoding = encoding;
+            return true;
+
+        default:
+            // everything else must be converted to UTF-8
+            return false;
+    }
 }
 
 #else // GTK+ 1.x
@@ -759,6 +860,12 @@ bool wxGetNativeFontEncoding(wxFontEncoding encoding,
             }
             break;
 
+        case wxFONTENCODING_EUC_JP:
+        case wxFONTENCODING_SHIFT_JIS:
+            info->xregistry = "jis*";
+            info->xencoding = "*";
+            break;
+
         case wxFONTENCODING_SYSTEM:
             info->xregistry =
             info->xencoding = wxT("*");
@@ -875,7 +982,7 @@ wxNativeFont wxLoadQueryNearestFont(int pointSize,
         {
             // second round: use normal weight
             if ( round == 1 )
-        {
+            {
                 if ( testweight != wxNORMAL )
                 {
                     testweight = wxNORMAL;
@@ -904,11 +1011,11 @@ wxNativeFont wxLoadQueryNearestFont(int pointSize,
                 font = wxLoadQueryFont(i, family, teststyle, testweight, underlined,
                                    facename, info.xregistry, info.xencoding,
                                    xFontName);
-        }
+            }
 
-        // Search for larger size (approx.)
-        for ( i = pointSize + 10; !font && i <= max_size; i += 10 )
-        {
+            // Search for larger size (approx.)
+            for ( i = pointSize + 10; !font && i <= max_size; i += 10 )
+            {
                 font = wxLoadQueryFont(i, family, teststyle, testweight, underlined,
                                    facename, info.xregistry, info.xencoding,
                                    xFontName);

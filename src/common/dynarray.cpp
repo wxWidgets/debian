@@ -4,7 +4,7 @@
 // Author:      Vadim Zeitlin
 // Modified by:
 // Created:     12.09.97
-// RCS-ID:      $Id: dynarray.cpp,v 1.52 2005/06/07 18:59:28 ABX Exp $
+// RCS-ID:      $Id: dynarray.cpp,v 1.52.2.2 2006/01/18 16:32:45 JS Exp $
 // Copyright:   (c) 1998 Vadim Zeitlin <zeitlin@dptmaths.ens-cachan.fr>
 // Licence:     wxWindows licence
 ///////////////////////////////////////////////////////////////////////////////

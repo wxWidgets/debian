@@ -1,10 +1,10 @@
 /////////////////////////////////////////////////////////////////////////////
-// Name:        ddesetup.h
-// Purpose:     DDE sample settings
+// Name:        ipcsetup.h
+// Purpose:     IPC sample settings
 // Author:      Julian Smart
-// Modified by:
+// Modified by: Jurgen Doornik
 // Created:     25/01/99
-// RCS-ID:      $Id: ddesetup.h,v 1.4 2002/12/15 17:22:46 MBN Exp $
+// RCS-ID:      $Id: ipcsetup.h,v 1.2 2005/09/20 09:12:14 JS Exp $
 // Copyright:   (c) Julian Smart
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -16,6 +16,10 @@
 
 // the default service name
 #define IPC_SERVICE _T("4242")
+//#define IPC_SERVICE _T("/tmp/wxsrv424")
+
+// the hostname
+#define IPC_HOST _T("localhost")
 
 // the IPC topic
 #define IPC_TOPIC _T("IPC TEST")

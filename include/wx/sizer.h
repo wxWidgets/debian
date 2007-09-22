@@ -4,7 +4,7 @@
 // Author:      Robert Roebling and Robin Dunn
 // Modified by: Ron Lee, Vadim Zeitlin (wxSizerFlags)
 // Created:
-// RCS-ID:      $Id: sizer.h,v 1.70 2005/03/23 05:12:08 DE Exp $
+// RCS-ID:      $Id: sizer.h,v 1.70.2.3 2006/01/09 12:32:19 VZ Exp $
 // Copyright:   (c) Robin Dunn, Robert Roebling
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -248,6 +248,10 @@ public:
     void Show(bool show);
     bool IsShown() const;
 
+#if wxABI_VERSION > 20602
+    void SetUserData(wxObject* userData)
+        { delete m_userData; m_userData = userData; }
+#endif
     wxObject* GetUserData() const
         { return m_userData; }
     wxPoint GetPosition() const

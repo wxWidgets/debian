@@ -4,7 +4,7 @@
 // Author:      Julian Smart, Robert Roebling, Vadim Zeitlin
 // Modified by:
 // Created:     04/01/98
-// RCS-ID:      $Id: panelg.cpp,v 1.79 2005/04/02 17:41:08 JS Exp $
+// RCS-ID:      $Id: panelg.cpp,v 1.79.2.1 2006/01/11 22:35:02 SN Exp $
 // Copyright:   (c) Julian Smart
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -169,11 +169,8 @@ void wxPanel::OnSize(wxSizeEvent& event)
         else
         {
             SWP                     vSwp;
-            int                     nYDiff;
 
             ::WinQueryWindowPos(GetHWND(), &vSwp);
-            nYDiff = pWinSwp->cy - vSwp.cy;
-            MoveChildren(nYDiff);
             pWinSwp->cx = vSwp.cx;
             pWinSwp->cy = vSwp.cy;
         }

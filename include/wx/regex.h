@@ -4,7 +4,7 @@
 // Author:      Karsten Ballüder
 // Modified by: VZ at 13.07.01 (integrated to wxWin)
 // Created:     05.02.2000
-// RCS-ID:      $Id: regex.h,v 1.14 2004/09/21 18:15:50 ABX Exp $
+// RCS-ID:      $Id: regex.h,v 1.14.4.1 2005/11/27 03:03:48 MW Exp $
 // Copyright:   (c) 2000 Karsten Ballüder <ballueder@gmx.net>
 // Licence:     wxWindows licence
 ///////////////////////////////////////////////////////////////////////////////
@@ -98,9 +98,15 @@ public:
     // true if matches and false otherwise
     //
     // flags may be combination of wxRE_NOTBOL and wxRE_NOTEOL
+    // len may be the length of text (ignored by most system regex libs)
     //
     // may only be called after successful call to Compile()
     bool Matches(const wxChar *text, int flags = 0) const;
+#if wxABI_VERSION >= 20603
+    bool Matches(const wxChar *text, int flags, size_t len) const;
+    bool Matches(const wxString& text, int flags = 0) const
+        { return Matches(text.c_str(), flags, text.length()); }
+#endif
 
     // get the start index and the length of the match of the expression
     // (index 0) or a bracketed subexpression (index != 0)

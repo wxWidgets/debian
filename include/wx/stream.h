@@ -4,7 +4,7 @@
 // Author:      Guilhem Lavaux, Guillermo Rodriguez Garcia, Vadim Zeitlin
 // Modified by:
 // Created:     11/07/98
-// RCS-ID:      $Id: stream.h,v 1.70 2005/06/24 16:44:18 RL Exp $
+// RCS-ID:      $Id: stream.h,v 1.71 2005/06/26 15:46:08 RR Exp $
 // Copyright:   (c) Guilhem Lavaux
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -93,6 +93,20 @@ public:
     wxDEPRECATED( wxStreamError LastError() const );
     wxDEPRECATED( size_t StreamSize() const );
 #endif // WXWIN_COMPATIBILITY_2_2
+
+
+#if WX_USE_RESERVED_VIRTUALS
+    // Reserved for future use
+    virtual void ReservedStreamFunc1() {}
+    virtual void ReservedStreamFunc2() {}
+    virtual void ReservedStreamFunc3() {}
+    virtual void ReservedStreamFunc4() {}
+    virtual void ReservedStreamFunc5() {}
+    virtual void ReservedStreamFunc6() {}
+    virtual void ReservedStreamFunc7() {}
+    virtual void ReservedStreamFunc8() {}
+    virtual void ReservedStreamFunc9() {}
+#endif
 
 protected:
     virtual wxFileOffset OnSysSeek(wxFileOffset seek, wxSeekMode mode);

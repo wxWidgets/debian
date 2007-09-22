@@ -5,7 +5,7 @@
 // Author:      Robin Dunn
 //
 // Created:     7-July-1997
-// RCS-ID:      $Id: _bitmap.i,v 1.14 2005/03/28 19:57:49 RD Exp $
+// RCS-ID:      $Id: _bitmap.i,v 1.14.2.1 2005/12/29 23:01:06 RD Exp $
 // Copyright:   (c) 2003 by Total Control Software
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -285,6 +285,8 @@ the ``type`` parameter.", "");
     bool CopyFromCursor(const wxCursor& cursor);
     int GetQuality();
     void SetQuality(int q);
+    %pythoncode { GetQuality = wx._deprecated(GetQuality) }
+    %pythoncode { SetQuality = wx._deprecated(SetQuality) }
 #endif
 
     %pythoncode { def __nonzero__(self): return self.Ok() }

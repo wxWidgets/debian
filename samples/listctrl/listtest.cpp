@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     04/01/98
-// RCS-ID:      $Id: listtest.cpp,v 1.78 2005/05/22 21:31:42 VZ Exp $
+// RCS-ID:      $Id: listtest.cpp,v 1.83.2.5 2006/04/02 15:51:15 JS Exp $
 // Copyright:   (c) Julian Smart
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -25,9 +25,11 @@
 #include "wx/wx.h"
 #endif
 
-#ifndef __WXMSW__
+#if !defined(__WXMSW__) && !defined(__WXPM__)
     #include "mondrian.xpm"
+#endif
 
+#ifndef __WXMSW__
     #include "bitmaps/toolbrai.xpm"
     #include "bitmaps/toolchar.xpm"
     #include "bitmaps/tooldata.xpm"
@@ -44,6 +46,7 @@
 #include "wx/listctrl.h"
 #include "wx/timer.h"           // for wxStopWatch
 #include "wx/colordlg.h"        // for wxGetColourFromUser
+#include "wx/settings.h"
 
 #include "listtest.h"
 
@@ -95,7 +98,7 @@ BEGIN_EVENT_TABLE(MyFrame, wxFrame)
     EVT_MENU(LIST_TOGGLE_LINES, MyFrame::OnToggleLines)
 
     EVT_UPDATE_UI(LIST_SHOW_COL_INFO, MyFrame::OnUpdateShowColInfo)
-    EVT_UPDATE_UI(LIST_TOGGLE_MULTI_SEL, MyFrame::OnUpdateToggleMultiSel)    
+    EVT_UPDATE_UI(LIST_TOGGLE_MULTI_SEL, MyFrame::OnUpdateToggleMultiSel)
 END_EVENT_TABLE()
 
 BEGIN_EVENT_TABLE(MyListCtrl, wxListCtrl)
@@ -124,6 +127,10 @@ BEGIN_EVENT_TABLE(MyListCtrl, wxListCtrl)
     EVT_LIST_CACHE_HINT(LIST_CTRL, MyListCtrl::OnCacheHint)
 
     EVT_CHAR(MyListCtrl::OnChar)
+
+#if USE_CONTEXT_MENU
+    EVT_CONTEXT_MENU(MyListCtrl::OnContextMenu)
+#endif
 END_EVENT_TABLE()
 
 IMPLEMENT_APP(MyApp)
@@ -149,7 +156,7 @@ int wxCALLBACK MyCompareFunction(long item1, long item2, long WXUNUSED(sortData)
 bool MyApp::OnInit()
 {
   // Create the main frame window
-  MyFrame *frame = new MyFrame(wxT("wxListCtrl Test"), 50, 50, 450, 340);
+  MyFrame *frame = new MyFrame(wxT("wxListCtrl Test"));
 
   // Show the frame
   frame->Show(true);
@@ -160,12 +167,15 @@ bool MyApp::OnInit()
 }
 
 // My frame constructor
-MyFrame::MyFrame(const wxChar *title, int x, int y, int w, int h)
-       : wxFrame(NULL, wxID_ANY, title, wxPoint(x, y), wxSize(w, h))
+MyFrame::MyFrame(const wxChar *title)
+       : wxFrame(NULL, wxID_ANY, title)
 {
     m_listCtrl = NULL;
     m_logWindow = NULL;
     m_smallVirtual = false;
+
+    if ( wxSystemSettings::GetScreenType() > wxSYS_SCREEN_SMALL )
+        SetSize(wxSize(450, 340));
 
     // Give it an icon
     SetIcon( wxICON(mondrian) );
@@ -494,6 +504,18 @@ void MyFrame::InitWithReportItems()
     m_listCtrl->SetColumnWidth( 0, wxLIST_AUTOSIZE );
     m_listCtrl->SetColumnWidth( 1, wxLIST_AUTOSIZE );
     m_listCtrl->SetColumnWidth( 2, wxLIST_AUTOSIZE );
+
+    // Set images in columns
+    m_listCtrl->SetItemColumnImage(1, 1, 0);
+
+    wxListItem info;
+    info.SetImage(0);
+    info.SetId(3);
+    info.SetColumn(2);
+    m_listCtrl->SetItem(info);
+
+    // test SetItemFont too
+    m_listCtrl->SetItemFont(0, *wxITALIC_FONT);
 }
 
 void MyFrame::InitWithIconItems(bool withText, bool sameIcon)
@@ -717,7 +739,11 @@ void MyListCtrl::SetColumnImage(int col, int image)
 void MyListCtrl::OnColClick(wxListEvent& event)
 {
     int col = event.GetColumn();
-    SetColumnImage(col, 0);
+
+    // set or unset image
+    static bool x = false;
+    x = !x;
+    SetColumnImage(col, x ? 0 : -1);
 
     wxLogMessage( wxT("OnColumnClick at %d."), col );
 }
@@ -733,7 +759,7 @@ void MyListCtrl::OnColRightClick(wxListEvent& event)
     // Show popupmenu at position
     wxMenu menu(wxT("Test"));
     menu.Append(LIST_ABOUT, _T("&About"));
-    PopupMenu(&menu, event.GetPoint()); 
+    PopupMenu(&menu, event.GetPoint());
 
     wxLogMessage( wxT("OnColumnRightClick at %d."), event.GetColumn() );
 }
@@ -884,6 +910,8 @@ void MyListCtrl::OnFocused(wxListEvent& event)
 
 void MyListCtrl::OnListKeyDown(wxListEvent& event)
 {
+    long item;
+
     switch ( event.GetKeyCode() )
     {
         case 'c': // colorize
@@ -907,35 +935,45 @@ void MyListCtrl::OnListKeyDown(wxListEvent& event)
 
         case 'n': // next
         case 'N':
+            item = GetNextItem(-1, wxLIST_NEXT_ALL, wxLIST_STATE_FOCUSED);
+            if ( item++ == GetItemCount() - 1 )
             {
-                long item = GetNextItem(-1,
-                                        wxLIST_NEXT_ALL, wxLIST_STATE_FOCUSED);
-                if ( item++ == GetItemCount() - 1 )
+                item = 0;
+            }
+
+            wxLogMessage(_T("Focusing item %ld"), item);
+
+            SetItemState(item, wxLIST_STATE_FOCUSED, wxLIST_STATE_FOCUSED);
+            EnsureVisible(item);
+            break;
+
+        case 'r': // show bounding Rect
+        case 'R':
+            {
+                item = event.GetIndex();
+                wxRect r;
+                if ( !GetItemRect(item, r) )
                 {
-                    item = 0;
+                    wxLogError(_T("Failed to retrieve rect of item %ld"), item);
+                    break;
                 }
 
-                wxLogMessage(_T("Focusing item %ld"), item);
-
-                SetItemState(item, wxLIST_STATE_FOCUSED, wxLIST_STATE_FOCUSED);
-                EnsureVisible(item);
+                wxLogMessage(_T("Bounding rect of item %ld is (%d, %d)-(%d, %d)"),
+                             item, r.x, r.y, r.x + r.width, r.y + r.height);
             }
             break;
 
         case WXK_DELETE:
+            item = GetNextItem(-1, wxLIST_NEXT_ALL, wxLIST_STATE_SELECTED);
+            while ( item != -1 )
             {
-                long item = GetNextItem(-1,
-                                        wxLIST_NEXT_ALL, wxLIST_STATE_SELECTED);
-                while ( item != -1 )
-                {
-                    DeleteItem(item);
+                DeleteItem(item);
 
-                    wxLogMessage(_T("Item %ld deleted"), item);
+                wxLogMessage(_T("Item %ld deleted"), item);
 
-                    // -1 because the indices were shifted by DeleteItem()
-                    item = GetNextItem(item - 1,
-                                       wxLIST_NEXT_ALL, wxLIST_STATE_SELECTED);
-                }
+                // -1 because the indices were shifted by DeleteItem()
+                item = GetNextItem(item - 1,
+                                   wxLIST_NEXT_ALL, wxLIST_STATE_SELECTED);
             }
             break;
 
@@ -1015,9 +1053,36 @@ void MyListCtrl::InsertItemInReportView(int i)
     SetItemData(tmp, i);
 
     buf.Printf(_T("Col 1, item %d"), i);
-    SetItem(i, 1, buf);
+    SetItem(tmp, 1, buf);
 
     buf.Printf(_T("Item %d in column 2"), i);
-    SetItem(i, 2, buf);
+    SetItem(tmp, 2, buf);
+}
+
+#if USE_CONTEXT_MENU
+void MyListCtrl::OnContextMenu(wxContextMenuEvent& event)
+{
+    wxPoint point = event.GetPosition();
+    // If from keyboard
+    if (point.x == -1 && point.y == -1) {
+        wxSize size = GetSize();
+        point.x = size.x / 2;
+        point.y = size.y / 2;
+    } else {
+        point = ScreenToClient(point);
+    }
+    ShowContextMenu(point);
+}
+#endif
+
+void MyListCtrl::ShowContextMenu(const wxPoint& pos)
+{
+    wxMenu menu;
+
+    menu.Append(wxID_ABOUT, _T("&About"));
+    menu.AppendSeparator();
+    menu.Append(wxID_EXIT, _T("E&xit"));
+
+    PopupMenu(&menu, pos.x, pos.y);
 }
 

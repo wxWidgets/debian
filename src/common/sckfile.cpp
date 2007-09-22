@@ -4,7 +4,7 @@
 // Author:      Guilhem Lavaux
 // Modified by:
 // Created:     20/07/97
-// RCS-ID:      $Id: sckfile.cpp,v 1.22 2004/10/29 20:19:49 RN Exp $
+// RCS-ID:      $Id: sckfile.cpp,v 1.23 2005/08/06 21:35:12 VZ Exp $
 // Copyright:   (c) 1997, 1998 Guilhem Lavaux
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -33,8 +33,9 @@ IMPLEMENT_DYNAMIC_CLASS(wxFileProto, wxProtocol)
 IMPLEMENT_PROTOCOL(wxFileProto, wxT("file"), NULL, false)
 
 wxFileProto::wxFileProto()
-  : wxProtocol()
+           : wxProtocol()
 {
+    m_error = wxPROTO_NOERR;
 }
 
 wxFileProto::~wxFileProto()
@@ -43,13 +44,18 @@ wxFileProto::~wxFileProto()
 
 wxInputStream *wxFileProto::GetInputStream(const wxString& path)
 {
-  wxFileInputStream* retval = new wxFileInputStream(wxURI::Unescape(path));
-  if (retval->Ok()) {
-    return retval;
-  } else {
+    wxFileInputStream *retval = new wxFileInputStream(wxURI::Unescape(path));
+    if ( retval->Ok() )
+    {
+        m_error = wxPROTO_NOERR;
+
+        return retval;
+    }
+
+    m_error = wxPROTO_NOFILE;
     delete retval;
-    return 0;
-  }
+
+    return NULL;
 }
 
 #endif // wxUSE_STREAMS && wxUSE_PROTOCOL_FILE

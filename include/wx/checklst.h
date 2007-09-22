@@ -4,7 +4,7 @@
 // Author:      Vadim Zeitlin
 // Modified by:
 // Created:     12.09.00
-// RCS-ID:      $Id: checklst.h,v 1.12 2004/09/10 12:55:45 ABX Exp $
+// RCS-ID:      $Id: checklst.h,v 1.12.4.1 2006/02/24 16:05:34 JS Exp $
 // Copyright:   (c) Vadim Zeitlin
 // Licence:     wxWindows licence
 ///////////////////////////////////////////////////////////////////////////////
@@ -34,6 +34,8 @@ public:
 
 #if defined(__WXUNIVERSAL__)
     #include "wx/univ/checklst.h"
+#elif defined(__WXWINCE__)
+    #include "wx/msw/wince/checklst.h"
 #elif defined(__WXMSW__)
     #include "wx/msw/checklst.h"
 #elif defined(__WXMOTIF__)

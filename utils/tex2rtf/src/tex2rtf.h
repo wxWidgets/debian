@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by: Wlodzimiez ABX Skiba 2003/2004 Unicode support
 // Created:     7.9.93
-// RCS-ID:      $Id: tex2rtf.h,v 1.9 2005/06/02 12:16:20 JS Exp $
+// RCS-ID:      $Id: tex2rtf.h,v 1.10 2005/08/24 17:56:29 ABX Exp $
 // Copyright:   (c) Julian Smart
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -150,8 +150,8 @@ extern FILE *Sections;
 extern FILE *Subsections;
 extern FILE *Subsubsections;
 
-extern wxChar *InputFile;
-extern wxChar *OutputFile;
+extern wxString InputFile;
+extern wxString OutputFile;
 extern wxChar *MacroFile;
 
 extern wxChar *FileRoot;

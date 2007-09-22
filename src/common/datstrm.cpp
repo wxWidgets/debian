@@ -4,7 +4,7 @@
 // Author:      Guilhem Lavaux
 // Modified by: Mickael Gilabert
 // Created:     28/06/98
-// RCS-ID:      $Id: datstrm.cpp,v 1.46 2005/02/17 10:19:31 RN Exp $
+// RCS-ID:      $Id: datstrm.cpp,v 1.47 2005/07/22 17:04:39 ABX Exp $
 // Copyright:   (c) Guilhem Lavaux
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -144,24 +144,24 @@ void wxDataInputStream::Read64(wxUint64 *buffer, size_t size)
 
 void wxDataInputStream::Read32(wxUint32 *buffer, size_t size)
 {
-  m_input->Read(buffer, size * 4);
+    m_input->Read(buffer, size * 4);
 
-  if (m_be_order)
-  {
-    for (wxUint32 i=0; i<size; i++)
+    if (m_be_order)
     {
-      wxUint32 v = wxUINT32_SWAP_ON_LE(*buffer);
-      *(buffer++) = v;
+        for (wxUint32 i=0; i<size; i++)
+        {
+            wxUint32 v = wxUINT32_SWAP_ON_LE(*buffer);
+            *(buffer++) = v;
+        }
     }
-  }
-else
-  {
-    for (wxUint32 i=0; i<size; i++)
+    else
     {
-      wxUint32 v = wxUINT32_SWAP_ON_BE(*buffer);
-      *(buffer++) = v;
+        for (wxUint32 i=0; i<size; i++)
+        {
+            wxUint32 v = wxUINT32_SWAP_ON_BE(*buffer);
+            *(buffer++) = v;
+        }
     }
-  }
 }
 
 void wxDataInputStream::Read16(wxUint16 *buffer, size_t size)

@@ -5,7 +5,7 @@
 // Modified by:
 // Created:
 // Copyright:   (c) Julian Smart
-// RCS-ID:      $Id: stattext.h,v 1.20 2005/05/04 18:52:03 JS Exp $
+// RCS-ID:      $Id: stattext.h,v 1.23 2005/08/18 22:15:40 VZ Exp $
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
 
@@ -24,6 +24,16 @@ class WXDLLEXPORT wxStaticTextBase : public wxControl
 {
 public:
     wxStaticTextBase() { }
+
+    // in wxGTK wxStaticText doesn't derive from wxStaticTextBase so we have to
+    // declare this function directly in gtk header
+#if !defined(__WXGTK__) || defined(__WXUNIVERSAL__)
+    // wrap the text of the control so that no line is longer than the given
+    // width (if possible: this function won't break words)
+    //
+    // NB: implemented in dlgcmn.cpp for now
+    void Wrap(int width);
+#endif // ! native __WXGTK__
 
     // overriden base virtuals
     virtual bool AcceptsFocus() const { return false; }

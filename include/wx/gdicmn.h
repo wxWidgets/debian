@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     01/02/97
-// RCS-ID:      $Id: gdicmn.h,v 1.97 2005/05/04 18:51:58 JS Exp $
+// RCS-ID:      $Id: gdicmn.h,v 1.97.2.2 2006/01/18 16:32:38 JS Exp $
 // Copyright:   (c) Julian Smart
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////

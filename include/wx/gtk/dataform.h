@@ -4,7 +4,7 @@
 // Author:      Vadim Zeitlin
 // Modified by:
 // Created:     19.10.99 (extracted from gtk/dataobj.h)
-// RCS-ID:      $Id: dataform.h,v 1.6 2004/05/23 20:50:53 JS Exp $
+// RCS-ID:      $Id: dataform.h,v 1.7 2005/08/02 22:57:53 MW Exp $
 // Copyright:   (c) 1998 Vadim Zeitlin <zeitlin@dptmaths.ens-cachan.fr>
 // Licence:     wxWindows licence
 ///////////////////////////////////////////////////////////////////////////////
@@ -12,7 +12,7 @@
 #ifndef _WX_GTK_DATAFORM_H
 #define _WX_GTK_DATAFORM_H
 
-class wxDataFormat
+class WXDLLIMPEXP_CORE wxDataFormat
 {
 public:
     // the clipboard formats under GDK are GdkAtoms

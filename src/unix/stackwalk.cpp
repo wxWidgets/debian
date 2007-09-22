@@ -4,7 +4,7 @@
 // Author:      Vadim Zeitlin
 // Modified by:
 // Created:     2005-01-18
-// RCS-ID:      $Id: stackwalk.cpp,v 1.4 2005/03/31 16:26:39 JS Exp $
+// RCS-ID:      $Id: stackwalk.cpp,v 1.5 2005/07/14 09:14:31 VZ Exp $
 // Copyright:   (c) 2005 Vadim Zeitlin <vadim@wxwindows.org>
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -129,9 +129,13 @@ void wxStackFrame::OnGetName()
                     m_offset = ofs;
             }
         }
-    }
 
-    m_module.assign(syminfo, posOpen);
+        m_module.assign(syminfo, posOpen);
+    }
+    else // not in "module(funcname+offset)" format
+    {
+        m_module = syminfo;
+    }
 }
 
 void wxStackFrame::OnGetLocation()

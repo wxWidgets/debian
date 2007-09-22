@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     01/02/97
-// RCS-ID:      $Id: setup.h,v 1.60 2005/05/31 09:18:37 JS Exp $
+// RCS-ID:      $Id: setup.h,v 1.68.2.1 2006/02/24 16:04:43 JS Exp $
 // Copyright:   (c) Julian Smart
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -13,7 +13,6 @@
 #define _WX_SETUP_H_
 
 /* --- start common options --- */
-
 // ----------------------------------------------------------------------------
 // global settings
 // ----------------------------------------------------------------------------
@@ -121,7 +120,7 @@
 // Default is 1
 //
 // Recommended setting: 1 if your compiler supports it.
-#define wxUSE_ON_FATAL_EXCEPTION 1
+#define wxUSE_ON_FATAL_EXCEPTION 0
 
 // Set this to 1 to be able to generate a human-readable (unlike
 // machine-readable minidump created by wxCrashReport::Generate()) stack back
@@ -130,7 +129,7 @@
 // Default is 1 if supported by the compiler.
 //
 // Recommended setting: 1, set to 0 if your programs never crash
-#define wxUSE_STACKWALKER 1
+#define wxUSE_STACKWALKER 0
 
 // Set this to 1 to compile in wxDebugReport class which allows you to create
 // and optionally upload to your web site a debug report consisting of back
@@ -140,7 +139,7 @@
 //
 // Recommended setting: 1, it is compiled into a separate library so there
 //                         is no overhead if you don't use it
-#define wxUSE_DEBUGREPORT 1
+#define wxUSE_DEBUGREPORT 0
 
 // ----------------------------------------------------------------------------
 // Unicode support
@@ -160,22 +159,6 @@
 #ifndef wxUSE_UNICODE
     #define wxUSE_UNICODE 0
 #endif
-
-// Set wxUSE_UNICODE_MSLU to 1 if you want to compile wxWidgets in Unicode mode
-// and be able to run compiled apps under Windows 9x as well as NT/2000/XP.
-// This setting enables use of unicows.dll from MSLU (MS Layer for Unicode, see
-// http://www.microsoft.com/globaldev/handson/dev/mslu_announce.mspx). Note
-// that you will have to modify the makefiles to include unicows.lib import
-// library as the first library (see installation instructions in install.txt
-// to learn how to do it when building the library or samples).
-//
-// If your compiler doesn't have unicows.lib, you can get a version of it at
-// http://libunicows.sourceforge.net
-//
-// Default is 0
-//
-// Recommended setting: 0 (1 if you want to deploy Unicode apps on 9x systems)
-#define wxUSE_UNICODE_MSLU 0
 
 // Setting wxUSE_WCHAR_T to 1 gives you some degree of Unicode support without
 // compiling the program in Unicode mode. More precisely, it will be possible
@@ -205,7 +188,7 @@
 //
 // Recommended setting: depends on whether you intend to use C++ exceptions
 //                      in your own code (1 if you do, 0 if you don't)
-#define wxUSE_EXCEPTIONS    1
+#define wxUSE_EXCEPTIONS    0
 
 // Set wxUSE_EXTENDED_RTTI to 1 to use extended RTTI
 //
@@ -269,7 +252,7 @@
 // Use standard C++ streams if 1. If 0, use wxWin streams implementation only.
 #define wxUSE_STD_IOSTREAM  0
 
-// Enable converion to  standard C++ string if 1.
+// Enable conversion to standard C++ string if 1.
 #define wxUSE_STD_STRING  0
 
 // ----------------------------------------------------------------------------
@@ -939,11 +922,11 @@
                                 // 0 for no interprocess comms
 #define wxUSE_HELP        1
                                 // 0 for no help facility
-#define wxUSE_MS_HTML_HELP 1
+#define wxUSE_MS_HTML_HELP 0
                                 // 0 for no MS HTML Help
 
 // Use wxHTML-based help controller?
-#define wxUSE_WXHTML_HELP 1
+#define wxUSE_WXHTML_HELP 0
 
 #define wxUSE_RESOURCES   0
                                 // 0 for no wxGetResource/wxWriteResource
@@ -1084,10 +1067,6 @@
 // NB: stuff which doesn't work at all under CE is forcefully disabled in
 //     wx/msw/wince/chkconf.h
 
-// wxCheckListBox requires wxOwnerDrawn which is disabled below
-#undef wxUSE_CHECKLISTBOX
-#define wxUSE_CHECKLISTBOX 0
-
 // Windows CE doesn't use RAS so wxDialUpManager doesn't work under it
 #undef wxUSE_DIALUP_MANAGER
 #define wxUSE_DIALUP_MANAGER 0
@@ -1133,15 +1112,6 @@
 #define wxUSE_COMMON_DIALOGS 1
 
 // ----------------------------------------------------------------------------
-// MSW settings not supported by CE
-// ----------------------------------------------------------------------------
-
-#define wxUSE_RICHEDIT 0
-#define wxUSE_RICHEDIT2 0
-#define wxUSE_UXTHEME 0
-#define wxUSE_UXTHEME_AUTO 0
-
-// ----------------------------------------------------------------------------
 // Crash debugging helpers
 // ----------------------------------------------------------------------------
 
@@ -1157,7 +1127,6 @@
 // obsolete MSW settings, don't change
 // ----------------------------------------------------------------------------
 
-#define wxUSE_ITSY_BITSY 0
 #define wxUSE_POSTSCRIPT_ARCHITECTURE_IN_MSW 0
 
 #endif // _WX_SETUP_H_

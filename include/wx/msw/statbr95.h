@@ -4,7 +4,7 @@
 // Author:      Vadim Zeitlin
 // Modified by:
 // Created:     04.04.98
-// RCS-ID:      $Id: statbr95.h,v 1.18 2004/09/04 01:53:38 ABX Exp $
+// RCS-ID:      $Id: statbr95.h,v 1.19 2005/08/28 16:21:35 VZ Exp $
 // Copyright:   (c) 1998 Vadim Zeitlin <zeitlin@dptmaths.ens-cachan.fr>
 // Licence:     wxWindows licence
 ///////////////////////////////////////////////////////////////////////////////
@@ -67,6 +67,10 @@ protected:
 
     // override base class virtual
     void DoMoveWindow(int x, int y, int width, int height);
+
+    virtual WXLRESULT MSWWindowProc(WXUINT nMsg,
+                                    WXWPARAM wParam,
+                                    WXLPARAM lParam);
 
 private:
     DECLARE_DYNAMIC_CLASS_NO_COPY(wxStatusBar95)

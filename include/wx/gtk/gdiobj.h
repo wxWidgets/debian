@@ -2,7 +2,7 @@
 // Name:        gdiobj.h
 // Purpose:
 // Author:      Robert Roebling
-// Id:          $Id: gdiobj.h,v 1.9 2004/05/23 20:50:53 JS Exp $
+// Id:          $Id: gdiobj.h,v 1.10 2005/08/02 22:57:55 MW Exp $
 // Copyright:   (c) 1998 Robert Roebling, Julian Smart
 // Licence:   	wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -17,7 +17,7 @@
 #pragma interface
 #endif
 
-class wxGDIObject : public wxObject
+class WXDLLIMPEXP_CORE wxGDIObject : public wxObject
 {
 public:
     inline wxGDIObject() { m_visible = FALSE; };

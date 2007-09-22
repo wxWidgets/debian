@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     08/04/99
-// RCS-ID:      $Id: dragimag.cpp,v 1.34 2005/01/04 19:40:53 ABX Exp $
+// RCS-ID:      $Id: dragimag.cpp,v 1.34.2.2 2006/03/16 11:03:26 JS Exp $
 // Copyright:   (c) Julian Smart
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -243,10 +243,14 @@ bool wxDragImage::Create(const wxString& str, const wxCursor& cursor)
 
     dc2.SelectObject(wxNullBitmap);
 
+#if wxUSE_WXDIB
     // Make the bitmap masked
     wxImage image = bitmap.ConvertToImage();
     image.SetMaskColour(255, 255, 255);
     return Create(wxBitmap(image), cursor);
+#else
+    return false;
+#endif
 }
 
 #if wxUSE_TREECTRL
@@ -301,9 +305,14 @@ bool wxDragImage::BeginDrag(const wxPoint& hotspot, wxWindow* window, bool fullS
 #else
         if (!m_hCursorImageList)
         {
+#ifndef SM_CXCURSOR
+			// Smartphone may not have these metric symbol
+			int cxCursor = 16;
+            int cyCursor = 16;
+#else
             int cxCursor = ::GetSystemMetrics(SM_CXCURSOR);
             int cyCursor = ::GetSystemMetrics(SM_CYCURSOR);
-
+#endif
             m_hCursorImageList = (WXHIMAGELIST) ImageList_Create(cxCursor, cyCursor, ILC_MASK, 1, 1);
         }
 

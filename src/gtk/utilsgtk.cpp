@@ -2,7 +2,7 @@
 // Name:        src/gtk/utilsgtk.cpp
 // Purpose:
 // Author:      Robert Roebling
-// Id:          $Id: utilsgtk.cpp,v 1.63 2005/03/21 23:42:20 VZ Exp $
+// Id:          $Id: utilsgtk.cpp,v 1.63.2.1 2005/11/14 23:00:58 RR Exp $
 // Copyright:   (c) 1998 Robert Roebling
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -67,7 +67,7 @@ void wxBell()
 
 /* Don't synthesize KeyUp events holding down a key and producing
    KeyDown events with autorepeat. */
-#ifdef HAVE_X11_XKBLIB_H
+#if defined(HAVE_X11_XKBLIB_H) && !(defined(__WXGPE__))
 bool wxSetDetectableAutoRepeat( bool flag )
 {
     Bool result;

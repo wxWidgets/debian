@@ -4,7 +4,7 @@
 // Author:      Vadim Zeitlin
 // Modified by:
 // Created:     05/25/99
-// RCS-ID:      $Id: dc.h,v 1.68 2005/06/24 16:44:18 RL Exp $
+// RCS-ID:      $Id: dc.h,v 1.69 2005/06/26 15:46:07 RR Exp $
 // Copyright:   (c) wxWidgets team
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -630,6 +630,19 @@ public:
         if (w) *w = ww;
         if (h) *h = hh;
     }
+
+#if WX_USE_RESERVED_VIRTUALS
+    // Reserved for future use
+    virtual void ReservedDCFunc1() {}
+    virtual void ReservedDCFunc2() {}
+    virtual void ReservedDCFunc3() {}
+    virtual void ReservedDCFunc4() {}
+    virtual void ReservedDCFunc5() {}
+    virtual void ReservedDCFunc6() {}
+    virtual void ReservedDCFunc7() {}
+    virtual void ReservedDCFunc8() {}
+    virtual void ReservedDCFunc9() {}
+#endif
 
 protected:
     // the pure virtual functions which should be implemented by wxDC

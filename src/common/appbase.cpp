@@ -4,7 +4,7 @@
 // Author:      Vadim Zeitlin
 // Modified by:
 // Created:     19.06.2003 (extracted from common/appcmn.cpp)
-// RCS-ID:      $Id: appbase.cpp,v 1.55 2005/06/21 09:56:16 VS Exp $
+// RCS-ID:      $Id: appbase.cpp,v 1.61 2005/09/13 14:30:18 VZ Exp $
 // Copyright:   (c) 2003 Vadim Zeitlin <vadim@wxwindows.org>
 // License:     wxWindows license
 ///////////////////////////////////////////////////////////////////////////////
@@ -57,11 +57,8 @@
 #endif
 
 #if defined(__WXMAC__)
-    // VZ: MacTypes.h is enough under Mac OS X (where I could test it) but
-    //     I don't know which headers are needed under earlier systems so
-    //     include everything when in doubt
     #ifdef __DARWIN__
-        #include  "MacTypes.h"
+        #include  <CoreServices/CoreServices.h>
     #else
         #include  "wx/mac/private.h"  // includes mac headers
     #endif
@@ -75,6 +72,13 @@
         #endif
     #endif // wxUSE_STACKWALKER
 #endif // __WXDEBUG__
+
+// wxABI_VERSION can be defined when compiling applications but it should be
+// left undefined when compiling the library itself, it is then set to its
+// default value in version.h
+#if wxABI_VERSION != wxMAJOR_VERSION * 10000 + wxMINOR_VERSION * 100 + 99
+#error "wxABI_VERSION should not be defined when compiling the library"
+#endif
 
 // ----------------------------------------------------------------------------
 // private functions prototypes
@@ -140,11 +144,11 @@ wxAppConsole::~wxAppConsole()
 // initilization/cleanup
 // ----------------------------------------------------------------------------
 
-bool wxAppConsole::Initialize(int& argc, wxChar **argv)
+bool wxAppConsole::Initialize(int& argcOrig, wxChar **argvOrig)
 {
     // remember the command line arguments
-    this->argc = argc;
-    this->argv = argv;
+    argc = argcOrig;
+    argv = argvOrig;
 
 #ifndef __WXPALMOS__
     if ( m_appName.empty() && argv )
@@ -707,12 +711,6 @@ static wxString GetAssertStackTrace()
 {
     wxString stackTrace;
 
-#if wxUSE_DBGHELP
-    // check that we can get the stack trace before trying to do it
-    if ( !wxDbgHelpDLL::Init() )
-        return stackTrace;
-#endif
-    
     class StackDump : public wxStackWalker
     {
     public:

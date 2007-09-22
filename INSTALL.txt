@@ -11,7 +11,7 @@ IMPORTANT NOTE:
 
   When sending bug reports tell us what version of wxWidgets you are
   using (including the beta) and what compiler on what system. One
-  example: wxGTK 2.6.1, gcc 2.95.4, Redhat 6.2
+  example: wxGTK 2.6.3, gcc 3.4.5, Fedora Core 4
 
 * The simplest case
 -------------------
@@ -26,26 +26,16 @@ install instructions just do (in the base dir):
 > su <type root password>
 > make install
 > ldconfig
-> exit
+[if you get "ldconfig: command not found", try using "/sbin/ldconfig"]
 
-Afterwards you can continue with:
-
-> make
-> su <type root password>
-> make install
-> ldconfig
-> exit
-
-(If you don't do the 'make install' part, you can still
-use the libraries from the buildgtk directory, but they
-will not be available to other users.)
+If you don't do the 'make install' part, you can still use the libraries from
+the buildgtk directory, but they may not be available to other users.
 
 If you want to remove wxWidgets on Unix you can do this:
 
 > su <type root password>
 > make uninstall
 > ldconfig
-> exit
 
 Note that by default, GTK+ 2.X is used. GTK+ 1.2 can be specified
 with --with-gtk=1.
@@ -128,8 +118,9 @@ g++ myfoo.cpp `wx-config --libs --cxxflags` -o myfoo
 ---------------
 
 wxWidgets/GTK+ requires the GTK+ library to be installed on your system. It has
-to be a stable version, preferably version 1.2.10 (at least 1.2.3 is required,
-1.2.7 is strongly recommended).
+to be a stable version, preferably GTK+ 2.x.y, where x is an even number.
+GTK+ version 1.2 is highly discouraged, but if you decide to still use it,
+please use version 1.2.10 (at least 1.2.3 is required, 1.2.7 is strongly recommended).
 
 You can get the newest version of the GTK+ from the GTK+ homepage at:
 
@@ -269,7 +260,7 @@ The following options handle the kind of library you want to build.
                             such as Sun with gcc 2.8.X which
                             would otherwise produce segvs.
 
-    --enable-unicode        Enable Unicode support. Default for GTK+2.0
+    --enable-unicode        Enable Unicode support.
 
     --enable-profile        Add profiling info to the object
                             files. Currently broken, I think.

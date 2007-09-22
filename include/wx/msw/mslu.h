@@ -4,7 +4,7 @@
 // Author:      Vaclav Slavik
 // Modified by:
 // Created:     2002/02/17
-// RCS-ID:      $Id: mslu.h,v 1.14 2005/02/27 14:43:31 VZ Exp $
+// RCS-ID:      $Id: mslu.h,v 1.14.2.1 2006/04/14 12:24:20 ABX Exp $
 // Copyright:   (c) 2002 Vaclav Slavik
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -56,7 +56,8 @@ WXDLLIMPEXP_BASE FILE* wxMSLU__tfopen(const wxChar *name, const wxChar *mode);
 #if defined( __VISUALC__ ) \
     || ( defined(__MINGW32__) && wxCHECK_W32API_VERSION( 0, 5 ) ) \
     || ( defined(__MWERKS__) && defined(__WXMSW__) ) \
-    || ( defined(__BORLANDC__) && (__BORLANDC__ > 0x460) )
+    || ( defined(__BORLANDC__) && (__BORLANDC__ > 0x460) ) \
+    || defined(__DMC__)
 
 #ifdef __BORLANDC__
     // BCC has _stati64() function but struct stati64

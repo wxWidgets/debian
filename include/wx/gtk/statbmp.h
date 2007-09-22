@@ -2,7 +2,7 @@
 // Name:        wx/gtk/statbmp.h
 // Purpose:
 // Author:      Robert Roebling
-// Id:          $Id: statbmp.h,v 1.19 2004/08/21 22:41:04 VS Exp $
+// Id:          $Id: statbmp.h,v 1.20 2005/08/02 22:57:57 MW Exp $
 // Copyright:   (c) 1998 Robert Roebling
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -21,7 +21,7 @@
 // wxStaticBitmap
 //-----------------------------------------------------------------------------
 
-class wxStaticBitmap : public wxStaticBitmapBase
+class WXDLLIMPEXP_CORE wxStaticBitmap : public wxStaticBitmapBase
 {
 public:
     wxStaticBitmap();

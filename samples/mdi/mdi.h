@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     04/01/98
-// RCS-ID:      $Id: mdi.h,v 1.16 2005/06/02 12:04:22 JS Exp $
+// RCS-ID:      $Id: mdi.h,v 1.18 2005/08/11 13:29:28 VZ Exp $
 // Copyright:   (c) Julian Smart
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////

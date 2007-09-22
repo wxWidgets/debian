@@ -4,7 +4,7 @@
 // Author:      Vadim Zeitlin
 // Modified by:
 // Created:     30.09.99
-// RCS-ID:      $Id: font.cpp,v 1.49 2005/03/30 16:49:23 JS Exp $
+// RCS-ID:      $Id: font.cpp,v 1.50 2005/08/24 17:46:54 ABX Exp $
 // Copyright:   (c) 1999 Vadim Zeitlin
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -237,7 +237,7 @@ MyFrame::MyFrame(const wxString& title, const wxPoint& pos, const wxSize& size)
     m_fontSize = 12;
 
     SetIcon(wxIcon(sample_xpm));
-    
+
     // create a menu bar
     wxMenu *menuFile = new wxMenu;
 
@@ -386,6 +386,7 @@ bool MyFrame::DoEnumerateFamilies(bool fixedWidthOnly,
         }
 
         wxString facename;
+
         if ( silent )
         {
             // choose the first
@@ -408,7 +409,7 @@ bool MyFrame::DoEnumerateFamilies(bool fixedWidthOnly,
             delete [] facenames;
         }
 
-        if ( !facename.IsEmpty() )
+        if ( !facename.empty() )
         {
             wxFont font(12, wxFONTFAMILY_DEFAULT, wxFONTSTYLE_NORMAL,
                         wxFONTWEIGHT_NORMAL, false, facename, encoding);
@@ -471,7 +472,7 @@ void MyFrame::OnCheckNativeToFromString(wxCommandEvent& WXUNUSED(event))
 {
     wxString fontInfo = m_canvas->GetTextFont().GetNativeFontInfoDesc();
 
-    if ( fontInfo.IsEmpty() )
+    if ( fontInfo.empty() )
     {
         wxLogError(wxT("Native font info string is empty!"));
     }
@@ -585,6 +586,7 @@ void MyFrame::OnQuit(wxCommandEvent& WXUNUSED(event))
 
 void MyFrame::OnViewMsg(wxCommandEvent& WXUNUSED(event))
 {
+#if wxUSE_FILEDLG
     // first, choose the file
     static wxString s_dir, s_file;
     wxFileDialog dialog(this, wxT("Open an email message file"),
@@ -696,6 +698,7 @@ void MyFrame::OnViewMsg(wxCommandEvent& WXUNUSED(event))
                          wxFontMapper::GetEncodingDescription(fontenc).c_str());
         }
     }
+#endif // wxUSE_FILEDLG
 }
 
 void MyFrame::OnAbout(wxCommandEvent& WXUNUSED(event))

@@ -4,7 +4,7 @@
 // Author:      Robin Dunn
 // Modified by:
 // Created:     28-Mar-2003
-// RCS-ID:      $Id: shaped.cpp,v 1.9 2005/03/30 19:10:41 ABX Exp $
+// RCS-ID:      $Id: shaped.cpp,v 1.10 2005/07/20 10:23:05 VZ Exp $
 // Copyright:   (c) Robin Dunn
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -161,12 +161,8 @@ ShapedFrame::ShapedFrame()
     m_hasShape = false;
     m_bmp = wxBitmap(_T("star.png"), wxBITMAP_TYPE_PNG);
     SetSize(wxSize(m_bmp.GetWidth(), m_bmp.GetHeight()));
-#ifndef __WXMAC__
-    // On wxMac the tooltip gets clipped by the window shape, YUCK!!
-#if wxUSE_TOOLTOP
     SetToolTip(wxT("Right-click to exit"));
-#endif
-#endif
+
 #ifndef __WXGTK__
     // On wxGTK we can't do this yet because the window hasn't been created
     // yet so we wait until the EVT_WINDOW_CREATE event happens.  On wxMSW and

@@ -3,7 +3,7 @@
 // Purpose:
 // Author:      Robert Roebling
 // Created:
-// Id:          $Id: dialog.h,v 1.32 2004/05/23 20:50:53 JS Exp $
+// Id:          $Id: dialog.h,v 1.33 2005/08/02 22:57:54 MW Exp $
 // Copyright:   (c) 1998 Robert Roebling
 // Licence:           wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -21,19 +21,19 @@
 // classes
 //-----------------------------------------------------------------------------
 
-class wxDialog;
+class WXDLLIMPEXP_CORE wxDialog;
 
 //-----------------------------------------------------------------------------
 // global data
 //-----------------------------------------------------------------------------
 
-extern const wxChar *wxDialogNameStr;
+extern WXDLLIMPEXP_CORE const wxChar *wxDialogNameStr;
 
 //-----------------------------------------------------------------------------
 // wxDialog
 //-----------------------------------------------------------------------------
 
-class wxDialog: public wxDialogBase
+class WXDLLIMPEXP_CORE wxDialog: public wxDialogBase
 {
 public:
     wxDialog() { Init(); }

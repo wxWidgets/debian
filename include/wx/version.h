@@ -4,7 +4,7 @@
 *  Author:      Julian Smart
 *  Modified by: Ryan Norton (Converted to C)
 *  Created:     29/01/98
-*  RCS-ID:      $Id: version.h,v 1.65 2005/06/13 12:19:15 ABX Exp $
+*  RCS-ID:      $Id: version.h,v 1.69.2.3 2006/03/30 17:05:48 RD Exp $
 *  Copyright:   (c) 1998 Julian Smart
 *  Licence:     wxWindows licence
 */
@@ -21,12 +21,22 @@
 /*      so don't change its format too much or they could break */
 #define wxMAJOR_VERSION      2
 #define wxMINOR_VERSION      6
-#define wxRELEASE_NUMBER     1
+#define wxRELEASE_NUMBER     3
 #define wxSUBRELEASE_NUMBER  2
-#define wxVERSION_STRING   _T("wxWidgets 2.6.1")
+#define wxVERSION_STRING   _T("wxWidgets 2.6.3")
 
 /*  nothing to update below this line when updating the version */
 /*  ---------------------------------------------------------------------------- */
+
+/* Users can pre-define wxABI_VERSION to a lower value in their
+ * makefile/project settings to compile code that will be binary compatible
+ * with earlier versions of the ABI within the same minor version (between
+ * minor versions binary compatibility breaks anyway). The default is the
+ * version of wxWidgets being used. A single number with two decimal digits
+ * for each component, e.g. 20601 for 2.6.1 */
+#ifndef wxABI_VERSION
+#define wxABI_VERSION ( wxMAJOR_VERSION * 10000 + wxMINOR_VERSION * 100 + 99 )
+#endif
 
 /*  helpers for wxVERSION_NUM_XXX */
 #define wxSTRINGIZE(x)  #x

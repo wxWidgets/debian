@@ -4,7 +4,7 @@
 // Author:      Vadim Zeitlin, Andrej Putrin
 // Modified by:
 // Created:     2005-01-21
-// RCS-ID:      $Id: dbgrptg.cpp,v 1.10 2005/06/09 21:52:20 VZ Exp $
+// RCS-ID:      $Id: dbgrptg.cpp,v 1.12 2005/07/21 16:22:28 ABX Exp $
 // Copyright:   (c) 2005 Vadim Zeitlin <zeitlin@dptmaths.ens-cachan.fr>
 // License:     wxWindows licence
 ///////////////////////////////////////////////////////////////////////////////
@@ -42,6 +42,10 @@
 #include "wx/stattext.h"
 #include "wx/filedlg.h"
 #include "wx/valtext.h"
+
+#ifdef __WXMSW__
+    #include "wx/evtloop.h"     // for SetCriticalWindow()
+#endif // __WXMSW__
 
 // ----------------------------------------------------------------------------
 // wxDumpPreviewDlg: simple class for showing ASCII preview of dump files
@@ -127,14 +131,21 @@ public:
     wxString m_command;
 
 private:
+
+#if wxUSE_FILEDLG
     void OnBrowse(wxCommandEvent& event);
+#endif // wxUSE_FILEDLG
 
     DECLARE_EVENT_TABLE()
     DECLARE_NO_COPY_CLASS(wxDumpOpenExternalDlg)
 };
 
 BEGIN_EVENT_TABLE(wxDumpOpenExternalDlg, wxDialog)
+
+#if wxUSE_FILEDLG
     EVT_BUTTON(wxID_MORE, wxDumpOpenExternalDlg::OnBrowse)
+#endif
+
 END_EVENT_TABLE()
 
 
@@ -176,11 +187,16 @@ wxDumpOpenExternalDlg::wxDumpOpenExternalDlg(wxWindow *parent,
                               );
     sizerH->Add(command,
                     wxSizerFlags(1).Align(wxALIGN_CENTER_VERTICAL));
+
+#if wxUSE_FILEDLG
+
     wxButton *browse = new wxButton(this, wxID_MORE, wxT(">>"),
                                     wxDefaultPosition, wxDefaultSize,
                                     wxBU_EXACTFIT);
     sizerH->Add(browse,
                 wxSizerFlags(0).Align(wxALIGN_CENTER_VERTICAL). Border(wxLEFT));
+
+#endif // wxUSE_FILEDLG
 
     sizerTop->Add(sizerH, wxSizerFlags(0).Expand().Border());
 
@@ -200,6 +216,8 @@ wxDumpOpenExternalDlg::wxDumpOpenExternalDlg(wxWindow *parent,
     command->SetFocus();
 }
 
+#if wxUSE_FILEDLG
+
 void wxDumpOpenExternalDlg::OnBrowse(wxCommandEvent& )
 {
     wxFileName fname(m_command);
@@ -218,6 +236,7 @@ void wxDumpOpenExternalDlg::OnBrowse(wxCommandEvent& )
     }
 }
 
+#endif // wxUSE_FILEDLG
 
 // ----------------------------------------------------------------------------
 // wxDebugReportDialog: class showing debug report to the user
@@ -397,7 +416,7 @@ bool wxDebugReportDialog::TransferDataFromWindow()
 void wxDebugReportDialog::OnView(wxCommandEvent& )
 {
     const int sel = m_checklst->GetSelection();
-    wxCHECK_RET( sel != -1, _T("invalid selection in OnView()") );
+    wxCHECK_RET( sel != wxNOT_FOUND, _T("invalid selection in OnView()") );
 
     wxFileName fn(m_dbgrpt.GetDirectory(), m_files[sel]);
     wxString str;
@@ -413,7 +432,7 @@ void wxDebugReportDialog::OnView(wxCommandEvent& )
 void wxDebugReportDialog::OnOpen(wxCommandEvent& )
 {
     const int sel = m_checklst->GetSelection();
-    wxCHECK_RET( sel != -1, _T("invalid selection in OnOpen()") );
+    wxCHECK_RET( sel != wxNOT_FOUND, _T("invalid selection in OnOpen()") );
 
     wxFileName fn(m_dbgrpt.GetDirectory(), m_files[sel]);
 
@@ -484,8 +503,13 @@ bool wxDebugReportPreviewStd::Show(wxDebugReport& dbgrpt) const
 
     wxDebugReportDialog dlg(dbgrpt);
 
+#ifdef __WXMSW__
+    // before entering the event loop (from ShowModal()), block the event
+    // handling for all other windows as this could result in more crashes
+    wxEventLoop::SetCriticalWindow(&dlg);
+#endif // __WXMSW__
+
     return dlg.ShowModal() == wxID_OK && dbgrpt.GetFilesCount() != 0;
 }
 
 #endif // wxUSE_DEBUGREPORT
-

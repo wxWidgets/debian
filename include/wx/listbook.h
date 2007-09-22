@@ -4,7 +4,7 @@
 // Author:      Vadim Zeitlin
 // Modified by:
 // Created:     19.08.03
-// RCS-ID:      $Id: listbook.h,v 1.11 2005/03/08 20:53:15 ABX Exp $
+// RCS-ID:      $Id: listbook.h,v 1.12 2005/08/04 00:16:43 VZ Exp $
 // Copyright:   (c) 2003 Vadim Zeitlin <vadim@wxwidgets.org>
 // Licence:     wxWindows licence
 ///////////////////////////////////////////////////////////////////////////////
@@ -23,7 +23,7 @@
 // this can be defined to put a static line as separator between the list
 // control and the page area; but I think it finally looks better without it so
 // it is not enabled by default
-//#define wxUSE_LINE_IN_LISTBOOK 1
+#define wxUSE_LINE_IN_LISTBOOK 0
 
 #if !wxUSE_STATLINE
     #undef wxUSE_LINE_IN_LISTBOOK

@@ -4,7 +4,7 @@
 // Author:      Vadim Zeitlin
 // Modified by:
 // Created:     14.08.00
-// RCS-ID:      $Id: button.cpp,v 1.25 2004/11/15 06:23:57 ABX Exp $
+// RCS-ID:      $Id: button.cpp,v 1.26 2005/08/24 06:32:56 ABX Exp $
 // Copyright:   (c) 2000 SciTech Software, Inc. (www.scitechsoft.com)
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -81,7 +81,7 @@ bool wxButton::Create(wxWindow *parent,
     if (label.empty() && wxIsStockID(id))
         label = wxGetStockLabel(id);
 
-    long ctrl_style = style & !wxBU_ALIGN_MASK;
+    long ctrl_style = style & ~wxBU_ALIGN_MASK;
 
     wxASSERT_MSG( (ctrl_style & wxALIGN_MASK) == 0,
                   _T("Some style conflicts with align flags") );

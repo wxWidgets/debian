@@ -8,7 +8,7 @@
 //    Guillermo Rodriguez <guille@iies.es> rewrote from scratch (Dic/99)
 // Modified by:
 // Created:     20.06.2003 (extracted from common/timercmn.cpp)
-// RCS-ID:      $Id: stopwatch.cpp,v 1.16 2005/04/12 21:08:04 ABX Exp $
+// RCS-ID:      $Id: stopwatch.cpp,v 1.18 2005/07/24 13:33:57 SC Exp $
 // Copyright:   (c) 1998-2003 wxWidgets Team
 // License:     wxWindows license
 ///////////////////////////////////////////////////////////////////////////////
@@ -79,8 +79,18 @@
 #endif
 
 #ifdef __WXMAC__
+#ifndef __DARWIN__
     #include <Timer.h>
     #include <DriverServices.h>
+#else
+    #include <Carbon/Carbon.h>
+#endif
+#endif
+
+#ifdef __WXPALMOS__
+    #include <DateTime.h>
+    #include <TimeMgr.h>
+    #include <SystemMgr.h>
 #endif
 
 // ----------------------------------------------------------------------------

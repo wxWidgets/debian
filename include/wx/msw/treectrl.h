@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by: Vadim Zeitlin to be less MSW-specific on 10/10/98
 // Created:     01/02/97
-// RCS-ID:      $Id: treectrl.h,v 1.74 2005/06/16 17:01:15 JS Exp $
+// RCS-ID:      $Id: treectrl.h,v 1.74.2.2 2006/01/18 16:32:42 JS Exp $
 // Copyright:   (c) Julian Smart
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////

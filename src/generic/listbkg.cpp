@@ -4,7 +4,7 @@
 // Author:      Vadim Zeitlin
 // Modified by:
 // Created:     19.08.03
-// RCS-ID:      $Id: listbkg.cpp,v 1.26 2005/02/11 00:22:54 RD Exp $
+// RCS-ID:      $Id: listbkg.cpp,v 1.29.2.1 2005/10/18 14:33:33 MW Exp $
 // Copyright:   (c) 2003 Vadim Zeitlin <vadim@wxwindows.org>
 // Licence:     wxWindows licence
 ///////////////////////////////////////////////////////////////////////////////
@@ -151,7 +151,8 @@ wxListbook::Create(wxWindow *parent,
 wxSize wxListbook::GetListSize() const
 {
     const wxSize sizeClient = GetClientSize(),
-                 sizeList = m_list->GetViewRect().GetSize();
+                 sizeBorder = m_list->GetSize() - m_list->GetClientSize(),
+                 sizeList = m_list->GetViewRect().GetSize() + sizeBorder;
 
     wxSize size;
     if ( IsVertical() )
@@ -210,10 +211,21 @@ void wxListbook::OnSize(wxSizeEvent& event)
         return;
     }
 
+    // arrange the icons before calling SetClientSize(), otherwise it wouldn't
+    // account for the scrollbars the list control might need and, at least
+    // under MSW, we'd finish with an ugly looking list control with both
+    // vertical and horizontal scrollbar (with one of them being added because
+    // the other one is not accounted for in client size computations)
+    m_list->Arrange();
+
     // resize the list control and the page area to fit inside our new size
     const wxSize sizeClient = GetClientSize(),
+                 sizeBorder = m_list->GetSize() - m_list->GetClientSize(),
                  sizeList = GetListSize();
 
+    m_list->SetClientSize( sizeList.x - sizeBorder.x, sizeList.y - sizeBorder.y );
+
+    const wxSize sizeNew = m_list->GetSize();
     wxPoint posList;
     switch ( GetWindowStyle() & wxLB_ALIGN_MASK )
     {
@@ -227,16 +239,16 @@ void wxListbook::OnSize(wxSizeEvent& event)
             break;
 
         case wxLB_BOTTOM:
-            posList.y = sizeClient.y - sizeList.y;
+            posList.y = sizeClient.y - sizeNew.y;
             break;
 
         case wxLB_RIGHT:
-            posList.x = sizeClient.x - sizeList.x;
+            posList.x = sizeClient.x - sizeNew.x;
             break;
     }
 
-    m_list->Move(posList.x, posList.y);
-    m_list->SetClientSize(sizeList.x, sizeList.y);
+    if ( m_list->GetPosition() != posList )
+        m_list->Move(posList);
 
 #if wxUSE_LINE_IN_LISTBOOK
     if ( m_line )
@@ -246,23 +258,23 @@ void wxListbook::OnSize(wxSizeEvent& event)
         switch ( GetWindowStyle() & wxLB_ALIGN_MASK )
         {
             case wxLB_TOP:
-                rectLine.y = sizeList.y + 1;
+                rectLine.y = sizeNew.y + 1;
                 rectLine.height = MARGIN - 2;
                 break;
 
             case wxLB_BOTTOM:
                 rectLine.height = MARGIN - 2;
-                rectLine.y = sizeClient.y - sizeList.y - rectLine.height;
+                rectLine.y = sizeClient.y - sizeNew.y - rectLine.height;
                 break;
 
             case wxLB_LEFT:
-                rectLine.x = sizeList.x + 1;
+                rectLine.x = sizeNew.x + 1;
                 rectLine.width = MARGIN - 2;
                 break;
 
             case wxLB_RIGHT:
                 rectLine.width = MARGIN - 2;
-                rectLine.x = sizeClient.x - sizeList.x - rectLine.width;
+                rectLine.x = sizeClient.x - sizeNew.x - rectLine.width;
                 break;
         }
 
@@ -276,7 +288,7 @@ void wxListbook::OnSize(wxSizeEvent& event)
         wxWindow *page = m_pages[m_selection];
         wxCHECK_RET( page, _T("NULL page in wxListbook?") );
         page->SetSize(GetPageRect());
-        }
+    }
 }
 
 wxSize wxListbook::CalcSizeFromPage(const wxSize& sizePage) const
@@ -318,7 +330,7 @@ int wxListbook::GetPageImage(size_t WXUNUSED(n)) const
 {
     wxFAIL_MSG( _T("wxListbook::GetPageImage() not implemented") );
 
-    return -1;
+    return wxNOT_FOUND;
 }
 
 bool wxListbook::SetPageImage(size_t n, int imageId)
@@ -423,12 +435,13 @@ wxListbook::InsertPage(size_t n,
         SetSelection(selNew);
 
     InvalidateBestSize();
+    m_list->Arrange();
     return true;
 }
 
 wxWindow *wxListbook::DoRemovePage(size_t page)
 {
-    const int page_count = GetPageCount();
+    const size_t page_count = GetPageCount();
     wxWindow *win = wxBookCtrlBase::DoRemovePage(page);
 
     if ( win )
@@ -450,6 +463,8 @@ wxWindow *wxListbook::DoRemovePage(size_t page)
             if ((sel != wxNOT_FOUND) && (sel != m_selection))
                 SetSelection(sel);
         }
+
+        m_list->Arrange();
     }
 
     return win;

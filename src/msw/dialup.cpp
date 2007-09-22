@@ -4,7 +4,7 @@
 // Author:      Vadim Zeitlin
 // Modified by:
 // Created:     07.07.99
-// RCS-ID:      $Id: dialup.cpp,v 1.52 2005/05/31 09:20:30 JS Exp $
+// RCS-ID:      $Id: dialup.cpp,v 1.54 2005/07/28 21:15:53 VZ Exp $
 // Copyright:   (c) Vadim Zeitlin
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -38,6 +38,7 @@
 
 #include "wx/dynlib.h"
 #include "wx/dialup.h"
+#include "wx/module.h"
 
 DEFINE_EVENT_TYPE(wxEVT_DIALUP_CONNECTED)
 DEFINE_EVENT_TYPE(wxEVT_DIALUP_DISCONNECTED)
@@ -62,6 +63,14 @@ DEFINE_EVENT_TYPE(wxEVT_DIALUP_DISCONNECTED)
 #ifndef INTERNET_CONNECTION_PROXY
 #define INTERNET_CONNECTION_PROXY 4
 #endif
+
+// implemented in utils.cpp
+extern "C" WXDLLIMPEXP_BASE HWND
+wxCreateHiddenWindow(LPCTSTR *pclassname, LPCTSTR classname, WNDPROC wndproc);
+
+static const wxChar *
+    wxMSWDIALUP_WNDCLASSNAME = wxT("_wxDialUpManager_Internal_Class");
+static const wxChar *gs_classForDialUpWindow = NULL;
 
 // ----------------------------------------------------------------------------
 // constants
@@ -195,6 +204,7 @@ public:
 
     // for wxRasDialFunc
     static HWND GetRasWindow() { return ms_hwndRas; }
+    static void ResetRasWindow() { ms_hwndRas = NULL; }
     static wxDialUpManagerMSW *GetDialer() { return ms_dialer; }
 
 private:
@@ -279,6 +289,33 @@ private:
 
     DECLARE_NO_COPY_CLASS(wxDialUpManagerMSW)
 };
+
+// module to destroy helper window created by wxDialUpManagerMSW
+class wxDialUpManagerModule : public wxModule
+{
+public:
+    bool OnInit() { return true; }
+    void OnExit()
+    {
+        HWND hwnd = wxDialUpManagerMSW::GetRasWindow();
+        if ( hwnd )
+        {
+            ::DestroyWindow(hwnd);
+            wxDialUpManagerMSW::ResetRasWindow();
+        }
+
+        if ( gs_classForDialUpWindow )
+        {
+            ::UnregisterClass(wxMSWDIALUP_WNDCLASSNAME, wxGetInstance());
+            gs_classForDialUpWindow = NULL;
+        }
+    }
+
+private:
+    DECLARE_DYNAMIC_CLASS(wxDialUpManagerModule)
+};
+
+IMPLEMENT_DYNAMIC_CLASS(wxDialUpManagerModule, wxModule)
 
 // ----------------------------------------------------------------------------
 // private functions
@@ -910,8 +947,10 @@ bool wxDialUpManagerMSW::HangUp()
         return false;
     }
 
-    DWORD dwRet = ms_pfnRasHangUp(hRasConn);
-    if ( dwRet != 0 )
+    // note that it's not an error if the connection had been already
+    // terminated
+    const DWORD dwRet = ms_pfnRasHangUp(hRasConn);
+    if ( dwRet != 0 && dwRet != ERROR_NO_CONNECTION )
     {
         wxLogError(_("Failed to terminate the dialup connection: %s"),
                    GetErrorString(dwRet).c_str());
@@ -1067,11 +1106,12 @@ bool wxDialUpManagerMSW::EnableAutoCheckOnlineStatus(size_t nSeconds)
     {
         // create a hidden window to receive notification about connections
         // status change
-        extern const wxChar *wxCanvasClassName;
-        ms_hwndRas = ::CreateWindow(wxCanvasClassName, NULL,
-                                    0, 0, 0, 0,
-                                    0, NULL,
-                                    (HMENU)NULL, wxGetInstance(), 0);
+        ms_hwndRas = wxCreateHiddenWindow
+                     (
+                        &gs_classForDialUpWindow,
+                        wxMSWDIALUP_WNDCLASSNAME,
+                        wxRasStatusWindowProc
+                     );
         if ( !ms_hwndRas )
         {
             wxLogLastError(wxT("CreateWindow(RasHiddenWindow)"));
@@ -1080,9 +1120,6 @@ bool wxDialUpManagerMSW::EnableAutoCheckOnlineStatus(size_t nSeconds)
 
             ok = false;
         }
-
-        // and subclass it
-        wxSetWindowProc(ms_hwndRas, wxRasStatusWindowProc);
     }
 
     m_data->hWnd = ms_hwndRas;

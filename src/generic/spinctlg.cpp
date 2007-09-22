@@ -4,7 +4,7 @@
 // Author:      Vadim Zeitlin
 // Modified by:
 // Created:     29.01.01
-// RCS-ID:      $Id: spinctlg.cpp,v 1.29 2004/07/20 10:09:30 ABX Exp $
+// RCS-ID:      $Id: spinctlg.cpp,v 1.30 2005/09/12 20:06:31 MBN Exp $
 // Copyright:   (c) 2001 Vadim Zeitlin <zeitlin@dptmaths.ens-cachan.fr>
 // License:     wxWindows licence
 ///////////////////////////////////////////////////////////////////////////////
@@ -157,7 +157,7 @@ void wxSpinCtrl::Init()
 bool wxSpinCtrl::Create(wxWindow *parent,
                         wxWindowID id,
                         const wxString& value,
-                        const wxPoint& WXUNUSED(pos),
+                        const wxPoint& pos,
                         const wxSize& size,
                         long style,
                         int min,
@@ -188,6 +188,7 @@ bool wxSpinCtrl::Create(wxWindow *parent,
     m_btn->SetRange(min, max);
     m_btn->SetValue(initial);
     SetBestSize(size);
+    Move(pos);
 
     // have to disable this window to avoid interfering it with message
     // processing to the text and the button... but pretend it is enabled to

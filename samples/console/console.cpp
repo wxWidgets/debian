@@ -4,7 +4,7 @@
 // Author:      Vadim Zeitlin
 // Modified by:
 // Created:     04.10.99
-// RCS-ID:      $Id: console.cpp,v 1.190 2005/05/31 09:19:03 JS Exp $
+// RCS-ID:      $Id: console.cpp,v 1.192.2.2 2005/09/29 12:34:47 ABX Exp $
 // Copyright:   (c) 1999 Vadim Zeitlin <zeitlin@dptmaths.ens-cachan.fr>
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -53,7 +53,7 @@
     #define TEST_CMDLINE
     #define TEST_DATETIME
     #define TEST_DIR
-    #define TEST_DLLLOADER
+    #define TEST_DYNLIB
     #define TEST_ENVIRON
     #define TEST_EXECUTE
     #define TEST_FILE
@@ -85,7 +85,7 @@
     #define TEST_WCHAR
     #define TEST_ZIP
 #else // #if TEST_ALL
-    #define TEST_STACKWALKER
+    #define TEST_DIR
 #endif
 
 // some tests are interactive, define this to run them
@@ -201,7 +201,7 @@ static void TestCmdLineConvert()
 #ifdef __UNIX__
     static const wxChar *ROOTDIR = _T("/");
     static const wxChar *TESTDIR = _T("/usr/local/share");
-#elif defined(__WXMSW__)
+#elif defined(__WXMSW__) || defined(__DOS__) || defined(__OS2__)
     static const wxChar *ROOTDIR = _T("c:\\");
     static const wxChar *TESTDIR = _T("d:\\");
 #else
@@ -227,6 +227,8 @@ static void TestDirEnumHelper(wxDir& dir,
 
     wxPuts(wxEmptyString);
 }
+
+#if TEST_ALL
 
 static void TestDirEnum()
 {
@@ -283,6 +285,8 @@ static void TestDirEnum()
     TestDirEnumHelper(dirNo);
 }
 
+#endif // TEST_ALL
+
 class DirPrintTraverser : public wxDirTraverser
 {
 public:
@@ -333,6 +337,8 @@ static void TestDirTraverse()
     dir.Traverse(traverser, wxEmptyString, wxDIR_DIRS | wxDIR_HIDDEN);
 }
 
+#if TEST_ALL
+
 static void TestDirExists()
 {
     wxPuts(_T("*** Testing wxDir::Exists() ***"));
@@ -366,13 +372,15 @@ static void TestDirExists()
     }
 }
 
+#endif // TEST_ALL
+
 #endif // TEST_DIR
 
 // ----------------------------------------------------------------------------
 // wxDllLoader
 // ----------------------------------------------------------------------------
 
-#ifdef TEST_DLLLOADER
+#ifdef TEST_DYNLIB
 
 #include "wx/dynlib.h"
 
@@ -398,7 +406,7 @@ static void TestDllLoad()
     }
     else
     {
-        typedef int (*wxStrlenType)(const char *);
+        typedef int (wxSTDCALL *wxStrlenType)(const char *);
         wxStrlenType pfnStrlen = (wxStrlenType)lib.GetSymbol(FUNC_NAME);
         if ( !pfnStrlen )
         {
@@ -419,6 +427,26 @@ static void TestDllLoad()
                 wxPuts(_T("... ok"));
             }
         }
+
+#ifdef __WXMSW__
+        static const wxChar *FUNC_NAME_AW = _T("lstrlen");
+
+        typedef int (wxSTDCALL *wxStrlenTypeAorW)(const wxChar *);
+        wxStrlenTypeAorW
+            pfnStrlenAorW = (wxStrlenTypeAorW)lib.GetSymbolAorW(FUNC_NAME_AW);
+        if ( !pfnStrlenAorW )
+        {
+            wxPrintf(_T("ERROR: function '%s' wasn't found in '%s'.\n"),
+                     FUNC_NAME_AW, LIB_NAME);
+        }
+        else
+        {
+            if ( pfnStrlenAorW(_T("foobar")) != 6 )
+            {
+                wxPrintf(_T("ERROR: loaded function is not wxStrlen()!\n"));
+            }
+        }
+#endif // __WXMSW__
     }
 }
 
@@ -450,7 +478,7 @@ static void TestDllListLoaded()
 
 #endif
 
-#endif // TEST_DLLLOADER
+#endif // TEST_DYNLIB
 
 // ----------------------------------------------------------------------------
 // wxGet/SetEnv
@@ -4119,10 +4147,10 @@ int main(int argc, char **argv)
     TestDirTraverse();
 #endif // TEST_DIR
 
-#ifdef TEST_DLLLOADER
+#ifdef TEST_DYNLIB
     TestDllLoad();
     TestDllListLoaded();
-#endif // TEST_DLLLOADER
+#endif // TEST_DYNLIB
 
 #ifdef TEST_ENVIRON
     TestEnvironment();
@@ -4365,4 +4393,3 @@ int main(int argc, char **argv)
     wxUnusedVar(argv);
     return 0;
 }
-

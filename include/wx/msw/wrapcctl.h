@@ -4,7 +4,7 @@
 // Author:      Vadim Zeitlin
 // Modified by:
 // Created:     03.08.2003
-// RCS-ID:      $Id: wrapcctl.h,v 1.9 2005/04/23 18:59:28 JS Exp $
+// RCS-ID:      $Id: wrapcctl.h,v 1.10 2005/07/01 13:38:51 ABX Exp $
 // Copyright:   (c) 2003 Vadim Zeitlin <vadim@wxwidgets.org>
 // Licence:     wxWindows licence
 ///////////////////////////////////////////////////////////////////////////////
@@ -40,13 +40,12 @@
 #include "wx/msw/missing.h"
 
 // Set Unicode format for a common control
-inline void wxSetCCUnicodeFormat(HWND hwnd)
+inline void wxSetCCUnicodeFormat(HWND WXUNUSED_IN_WINCE(hwnd))
 {
 #ifndef __WXWINCE__
     ::SendMessage(hwnd, CCM_SETUNICODEFORMAT, wxUSE_UNICODE, 0);
 #else // !__WXWINCE__
     // here it should be already in Unicode anyhow
-    wxUnusedVar(hwnd);
 #endif // __WXWINCE__/!__WXWINCE__
 }
 

@@ -1,10 +1,10 @@
 /////////////////////////////////////////////////////////////////////////////
-// Name:        joystick.cpp
+// Name:        src/msw/joystick.cpp
 // Purpose:     wxJoystick class
 // Author:      Julian Smart
 // Modified by:
 // Created:     04/01/98
-// RCS-ID:      $Id: joystick.cpp,v 1.22 2005/04/23 18:59:31 JS Exp $
+// RCS-ID:      $Id: joystick.cpp,v 1.23.2.2 2006/01/25 19:41:08 JS Exp $
 // Copyright:   (c) Julian Smart
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -20,6 +20,9 @@
 #pragma hdrstop
 #endif
 
+#if wxUSE_JOYSTICK
+
+#include "wx/joystick.h"
 #include "wx/string.h"
 #include "wx/window.h"
 #include "wx/msw/private.h"
@@ -28,17 +31,15 @@
     #include <mmsystem.h>
 #endif
 
-#if !defined(__WIN32__) && !defined(_MMRESULT_)
-typedef UINT MMRESULT;
-#endif
-
 // Why doesn't BC++ have joyGetPosEx?
 #if !defined(__WIN32__) || defined(__BORLANDC__)
 #define NO_JOYGETPOSEX
 #endif
 
 #include "wx/window.h"
-#include "wx/msw/joystick.h"
+#include "wx/msw/registry.h"
+
+#include <regstr.h>
 
 IMPLEMENT_DYNAMIC_CLASS(wxJoystick, wxObject)
 
@@ -298,11 +299,27 @@ int wxJoystick::GetProductId() const
 
 wxString wxJoystick::GetProductName() const
 {
+#ifdef __WINE__
+    return wxEmptyString;
+#else
     JOYCAPS joyCaps;
-    if (joyGetDevCaps(m_joystick, & joyCaps, sizeof(JOYCAPS)) != JOYERR_NOERROR)
+    if (joyGetDevCaps(m_joystick, &joyCaps, sizeof(joyCaps)) != JOYERR_NOERROR)
         return wxEmptyString;
-    else
-        return wxString(joyCaps.szPname);
+
+    wxRegKey key1(wxString::Format(wxT("HKEY_LOCAL_MACHINE\\%s\\%s\\%s"),
+                   REGSTR_PATH_JOYCONFIG, joyCaps.szRegKey, REGSTR_KEY_JOYCURR));
+
+    wxString str;
+    key1.QueryValue(wxString::Format(wxT("Joystick%d%s"),
+                                     m_joystick + 1, REGSTR_VAL_JOYOEMNAME),
+                    str);
+
+    wxRegKey key2(wxString::Format(wxT("HKEY_LOCAL_MACHINE\\%s\\%s"),
+                                        REGSTR_PATH_JOYOEM, str.c_str()));
+    key2.QueryValue(REGSTR_VAL_JOYOEMNAME, str);
+
+    return str;
+#endif
 }
 
 int wxJoystick::GetXMin() const
@@ -611,3 +628,4 @@ bool wxJoystick::ReleaseCapture()
     return (res == JOYERR_NOERROR);
 }
 
+#endif // wxUSE_JOYSTICK

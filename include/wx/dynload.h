@@ -5,7 +5,7 @@
 //               (derived in part from dynlib.cpp (c) 1998 Guilhem Lavaux)
 // Modified by:
 // Created:      03/12/01
-// RCS-ID:       $Id: dynload.h,v 1.24 2005/01/07 20:03:08 ABX Exp $
+// RCS-ID:       $Id: dynload.h,v 1.24.2.2 2006/01/18 16:32:38 JS Exp $
 // Copyright:    (c) 2001 Ron Lee <ron@debian.org>
 // Licence:      wxWindows licence
 /////////////////////////////////////////////////////////////////////////////

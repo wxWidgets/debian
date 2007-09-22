@@ -2,7 +2,7 @@
 // Name:        wx/gtk/stabox.h
 // Purpose:
 // Author:      Robert Roebling
-// Id:          $Id: statbox.h,v 1.15 2004/07/03 16:58:06 VS Exp $
+// Id:          $Id: statbox.h,v 1.16 2005/08/02 22:57:58 MW Exp $
 // Copyright:   (c) 1998 Robert Roebling
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -19,7 +19,7 @@
 // wxStaticBox
 //-----------------------------------------------------------------------------
 
-class wxStaticBox : public wxStaticBoxBase
+class WXDLLIMPEXP_CORE wxStaticBox : public wxStaticBoxBase
 {
 public:
     wxStaticBox();

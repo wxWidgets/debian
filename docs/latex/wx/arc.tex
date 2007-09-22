@@ -2,7 +2,7 @@
 %% Name:        arc.tex
 %% Purpose:     Overview of the archive classes
 %% Author:      M.J.Wetherell
-%% RCS-ID:      $Id: arc.tex,v 1.3 2005/03/25 22:32:27 MW Exp $
+%% RCS-ID:      $Id: arc.tex,v 1.4 2005/07/04 12:21:35 MW Exp $
 %% Copyright:   2004 M.J.Wetherell
 %% License:     wxWindows license
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -52,14 +52,18 @@ For example:
     wxFFileOutputStream out(_T("test.zip"));
     wxZipOutputStream zip(out);
     wxTextOutputStream txt(zip);
+    wxString sep(wxFileName::GetPathSeparator());
 
     zip.PutNextEntry(_T("entry1.txt"));
-    txt << _T("Some text for entry1\n");
+    txt << _T("Some text for entry1.txt\n");
 
-    zip.PutNextEntry(_T("entry2.txt"));
-    txt << _T("Some text for entry2\n");
+    zip.PutNextEntry(_T("subdir") + sep + _T("entry2.txt"));
+    txt << _T("Some text for subdir/entry2.txt\n");
 
 \end{verbatim}
+
+The name of each entry can be a full path, which makes it possible to
+store entries in subdirectories.
 
 
 \subsection{Extracting an archive}\label{wxarcextract}

@@ -4,7 +4,7 @@
 // Author:      Vadim Zeitlin
 // Modified by:
 // Created:     2005-01-17
-// RCS-ID:      $Id: debugrpt.cpp,v 1.18 2005/04/23 12:54:24 VZ Exp $
+// RCS-ID:      $Id: debugrpt.cpp,v 1.19 2005/07/21 16:19:39 ABX Exp $
 // Copyright:   (c) 2005 Vadim Zeitlin <zeitlin@dptmaths.ens-cachan.fr>
 // License:     wxWindows licence
 ///////////////////////////////////////////////////////////////////////////////
@@ -103,7 +103,7 @@ TextElement(wxXmlNode *node, const wxChar *name, const wxString& value)
 {
     wxXmlNode *nodeChild = new wxXmlNode(wxXML_ELEMENT_NODE, name);
     node->AddChild(nodeChild);
-    nodeChild->AddChild(new wxXmlNode(wxXML_TEXT_NODE, _T(""), value));
+    nodeChild->AddChild(new wxXmlNode(wxXML_TEXT_NODE, wxEmptyString, value));
 }
 
 static inline void
@@ -690,4 +690,3 @@ bool wxDebugReportUpload::DoProcess()
 #endif // wxUSE_ZIPSTREAM
 
 #endif // wxUSE_DEBUGREPORT
-

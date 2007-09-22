@@ -4,7 +4,7 @@
 // Author:      Vadim Zeitlin
 // Modified by:
 // Created:     11.09.00
-// RCS-ID:      $Id: radiobox.h,v 1.19 2005/02/23 16:52:29 ABX Exp $
+// RCS-ID:      $Id: radiobox.h,v 1.20 2005/08/26 08:21:43 JS Exp $
 // Copyright:   (c) 2000 SciTech Software, Inc. (www.scitechsoft.com)
 // Licence:     wxWindows licence
 ///////////////////////////////////////////////////////////////////////////////
@@ -88,7 +88,7 @@ public:
     virtual void SetSelection(int n);
     virtual int GetSelection() const;
 
-    virtual int GetCount() const { return m_buttons.GetCount(); }
+    virtual int GetCount() const { return (int) m_buttons.GetCount(); }
     virtual int GetColumnCount() const { return m_numCols; }
     virtual int GetRowCount() const { return m_numRows; }
 

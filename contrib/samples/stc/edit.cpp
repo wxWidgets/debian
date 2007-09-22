@@ -3,7 +3,7 @@
 // Purpose:     STC test module
 // Maintainer:  Wyo
 // Created:     2003-09-01
-// RCS-ID:      $Id: edit.cpp,v 1.8 2005/03/03 19:50:33 ABX Exp $
+// RCS-ID:      $Id: edit.cpp,v 1.10 2005/09/16 18:25:44 ABX Exp $
 // Copyright:   (c) wxGuide
 // Licence:     wxWindows licence
 //////////////////////////////////////////////////////////////////////////////
@@ -18,7 +18,7 @@
 //----------------------------------------------------------------------------
 
 // For compilers that support precompilation, includes <wx/wx.h>.
-#include <wx/wxprec.h>
+#include "wx/wxprec.h"
 
 #ifdef __BORLANDC__
     #pragma hdrstop
@@ -27,12 +27,12 @@
 // for all others, include the necessary headers (this file is usually all you
 // need because it includes almost all 'standard' wxWidgets headers)
 #ifndef WX_PRECOMP
-    #include <wx/wx.h>
+    #include "wx/wx.h"
 #endif
 
 //! wxWidgets headers
-#include <wx/file.h>     // raw file io support
-#include <wx/filename.h> // filename support
+#include "wx/file.h"     // raw file io support
+#include "wx/filename.h" // filename support
 
 //! application headers
 #include "defsext.h"     // additional definitions
@@ -502,8 +502,9 @@ bool Edit::InitializePrefs (const wxString &name) {
     return true;
 }
 
-bool Edit::LoadFile () {
-
+bool Edit::LoadFile ()
+{
+#if wxUSE_FILEDLG
     // get filname
     if (!m_filename) {
         wxFileDialog dlg (this, _T("Open file"), wxEmptyString, wxEmptyString,
@@ -514,6 +515,9 @@ bool Edit::LoadFile () {
 
     // load file
     return LoadFile (m_filename);
+#else
+    return false;
+#endif // wxUSE_FILEDLG
 }
 
 bool Edit::LoadFile (const wxString &filename) {
@@ -544,8 +548,9 @@ bool Edit::LoadFile (const wxString &filename) {
     return true;
 }
 
-bool Edit::SaveFile () {
-
+bool Edit::SaveFile ()
+{
+#if wxUSE_FILEDLG
     // return if no change
     if (!Modified()) return true;
 
@@ -559,6 +564,9 @@ bool Edit::SaveFile () {
 
     // save file
     return SaveFile (m_filename);
+#else
+    return false;
+#endif // wxUSE_FILEDLG
 }
 
 bool Edit::SaveFile (const wxString &filename) {
@@ -695,6 +703,8 @@ EditProperties::EditProperties (Edit *edit,
     ShowModal();
 }
 
+#if wxUSE_PRINTING_ARCHITECTURE
+
 //----------------------------------------------------------------------------
 // EditPrint
 //----------------------------------------------------------------------------
@@ -821,3 +831,4 @@ bool EditPrint::PrintScaling (wxDC *dc){
     return true;
 }
 
+#endif // wxUSE_PRINTING_ARCHITECTURE

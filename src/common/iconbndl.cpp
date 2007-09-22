@@ -3,7 +3,7 @@
 // Purpose:     wxIconBundle
 // Author:      Mattia Barbon
 // Created:     23.03.2002
-// RCS-ID:      $Id: iconbndl.cpp,v 1.11 2004/05/23 20:52:02 JS Exp $
+// RCS-ID:      $Id: iconbndl.cpp,v 1.11.4.1 2006/01/21 16:46:33 JS Exp $
 // Copyright:   (c) Mattia barbon
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -60,7 +60,7 @@ void wxIconBundle::AddIcon( const wxString& file, long type )
 void wxIconBundle::AddIcon( const wxString& WXUNUSED(file), long WXUNUSED(type) )
 #endif
 {
-#if wxUSE_IMAGE
+#if wxUSE_IMAGE && (!defined(__WXMSW__) || wxUSE_WXDIB)
     size_t count = wxImage::GetImageCount( file, type );
     size_t i;
     wxImage image;

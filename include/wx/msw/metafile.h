@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by: VZ 07.01.00: implemented wxMetaFileDataObject
 // Created:     01/02/97
-// RCS-ID:      $Id: metafile.h,v 1.13 2004/08/30 10:18:43 ABX Exp $
+// RCS-ID:      $Id: metafile.h,v 1.14 2005/08/19 13:48:21 MW Exp $
 // Copyright:   (c) Julian Smart
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -15,10 +15,6 @@
 #if defined(__GNUG__) && !defined(NO_GCC_PRAGMA)
     #pragma interface "metafile.h"
 #endif
-
-#include "wx/setup.h"
-
-#if wxUSE_METAFILE
 
 #include "wx/dc.h"
 #include "wx/gdiobj.h"
@@ -168,7 +164,6 @@ protected:
 
 #endif // wxUSE_DRAG_AND_DROP
 
-#endif // wxUSE_METAFILE
 #endif
     // _WX_METAFIILE_H_
 

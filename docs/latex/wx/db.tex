@@ -711,11 +711,19 @@ If the view does not exist, this function will return true.  Note that views are
 
 \func{bool}{ExecSql}{\param{const wxString \&}{pSqlStmt}}
 
+\func{bool}{ExecSql}{\param{const wxString \&}{pSqlStmt}, \param{wxDbColInf **}{columns}, \param{short \&}{numcols}}
+
 Allows a native SQL command to be executed directly against the datasource.  In addition to being able to run any standard SQL command, use of this function allows a user to (potentially) utilize features specific to the datasource they are connected to that may not be available through ODBC.  The ODBC driver will pass the specified command directly to the datasource.
+
+To get column amount and column names or other information about returned columns, pass {\it 'columns'} and {\it 'numcols'} parameters to the function also.
 
 \wxheading{Parameters}
 
 \docparam{pSqlStmt}{Pointer to the SQL statement to be executed.}
+
+\docparam{columns}{On success, this function will set this pointer to point to array of \helpref{wxDbColInf}{wxdbcolinf} objects, holding information about columns returned by the query. You need to call delete[] for the pointer you pass here after you don't use it anymore to prevent memory leak.}
+
+\docparam{numcols}{Reference to variable where amount of objects in {\it 'columns'}-parameter will be set.}
 
 \wxheading{Remarks}
 
@@ -1622,12 +1630,12 @@ Beginning support for handling international formatting specifically on dates
 and floats.
 
 \begin{verbatim}
-    wxString       s_Field;       // Formated String for Output
-    wxString       s_Format[7];   // Formated Objects - TIMESTAMP has
+    wxString       s_Field;       // Formatted String for Output
+    wxString       s_Format[7];   // Formatted Objects - TIMESTAMP has
                                      the biggest (7)
-    wxString       s_Amount[7];   // Formated Objects - amount of
+    wxString       s_Amount[7];   // Formatted Objects - amount of
                                      things that can be formatted
-    int            i_Amount[7];   // Formated Objects -
+    int            i_Amount[7];   // Formatted Objects -
                                         TT MM YYYY HH MM SS m
     int            i_Nation;      // 0 = timestamp
                                      1 = EU

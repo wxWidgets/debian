@@ -8,7 +8,7 @@
 //              3) Fixed ShowPage() bug on displaying bitmaps
 //              Robert Vazan (sizers)
 // Created:     15.08.99
-// RCS-ID:      $Id: wizard.cpp,v 1.58 2004/10/12 18:15:59 JS Exp $
+// RCS-ID:      $Id: wizard.cpp,v 1.63 2005/09/20 10:06:58 JS Exp $
 // Copyright:   (c) 1999 Vadim Zeitlin <zeitlin@dptmaths.ens-cachan.fr>
 // Licence:     wxWindows licence
 ///////////////////////////////////////////////////////////////////////////////
@@ -43,6 +43,7 @@
 
 #include "wx/statline.h"
 #include "wx/sizer.h"
+#include "wx/settings.h"
 
 #include "wx/wizard.h"
 
@@ -266,6 +267,13 @@ wxSize wxWizardSizer::SiblingSize(wxSizerItem *child)
 // generic wxWizard implementation
 // ----------------------------------------------------------------------------
 
+#if wxCHECK_VERSION(2, 7, 0)
+    #error "Fix wxGTK vs. wxMSW difference other way"
+#else
+    WX_DEFINE_ARRAY_PTR(wxWizard *, wxModelessWizards);
+    wxModelessWizards modelessWizards;
+#endif
+
 void wxWizard::Init()
 {
     m_posWizard = wxDefaultPosition;
@@ -277,6 +285,7 @@ void wxWizard::Init()
     m_calledSetBorder = false;
     m_border = 0;
     m_started = false;
+    modelessWizards.Add(this);
 }
 
 bool wxWizard::Create(wxWindow *parent,
@@ -390,6 +399,9 @@ void wxWizard::AddButtonRow(wxBoxSizer *mainColumn)
     // key to TAB to the next entry field and page. This would not be possible, if the 'back' button
     // was created before the 'next' button.
 
+    bool isPda = (wxSystemSettings::GetScreenType() <= wxSYS_SCREEN_PDA);
+    int buttonStyle = isPda ? wxBU_EXACTFIT : 0;    
+
     wxBoxSizer *buttonRow = new wxBoxSizer(wxHORIZONTAL);
 #ifdef __WXMAC__
     if (GetExtraStyle() & wxWIZARD_EX_HELPBUTTON)
@@ -411,16 +423,16 @@ void wxWizard::AddButtonRow(wxBoxSizer *mainColumn)
     wxButton *btnHelp=0;
 #ifdef __WXMAC__
     if (GetExtraStyle() & wxWIZARD_EX_HELPBUTTON)
-        btnHelp=new wxButton(this, wxID_HELP, _("&Help"));
+        btnHelp=new wxButton(this, wxID_HELP, _("&Help"), wxDefaultPosition, wxDefaultSize, buttonStyle);
 #endif
 
     m_btnNext = new wxButton(this, wxID_FORWARD, _("&Next >"));
-    wxButton *btnCancel=new wxButton(this, wxID_CANCEL, _("&Cancel"));
+    wxButton *btnCancel=new wxButton(this, wxID_CANCEL, _("&Cancel"), wxDefaultPosition, wxDefaultSize, buttonStyle);
 #ifndef __WXMAC__
     if (GetExtraStyle() & wxWIZARD_EX_HELPBUTTON)
-        btnHelp=new wxButton(this, wxID_HELP, _("&Help"));
+        btnHelp=new wxButton(this, wxID_HELP, _("&Help"), wxDefaultPosition, wxDefaultSize, buttonStyle);
 #endif
-    m_btnPrev = new wxButton(this, wxID_BACKWARD, _("< &Back"));
+    m_btnPrev = new wxButton(this, wxID_BACKWARD, _("< &Back"), wxDefaultPosition, wxDefaultSize, buttonStyle);
 
     if (btnHelp)
     {
@@ -452,6 +464,11 @@ void wxWizard::DoCreateControls()
     if ( WasCreated() )
         return;
 
+    bool isPda = (wxSystemSettings::GetScreenType() <= wxSYS_SCREEN_PDA);
+    
+    // Horizontal stretching, and if not PDA, border all around
+    int mainColumnSizerFlags = isPda ? wxEXPAND : wxALL|wxEXPAND ;
+    
     // wxWindow::SetSizer will be called at end
     wxBoxSizer *windowSizer = new wxBoxSizer(wxVERTICAL);
 
@@ -459,12 +476,15 @@ void wxWizard::DoCreateControls()
     windowSizer->Add(
         mainColumn,
         1, // Vertical stretching
-        wxALL | wxEXPAND, // Border all around, horizontal stretching
+        mainColumnSizerFlags,
         5 // Border width
     );
 
     AddBitmapRow(mainColumn);
-    AddStaticLine(mainColumn);
+    
+    if (!isPda)
+        AddStaticLine(mainColumn);
+    
     AddButtonRow(mainColumn);
 
     // wxWindow::SetSizer should be followed by wxWindow::Fit, but
@@ -480,6 +500,11 @@ void wxWizard::SetPageSize(const wxSize& size)
 
 void wxWizard::FinishLayout()
 {
+    bool isPda = (wxSystemSettings::GetScreenType() <= wxSYS_SCREEN_PDA);
+    
+    // Set to enable wxWizardSizer::GetMaxChildSize
+    m_started = true;
+
     m_sizerBmpAndPage->Add(
         m_sizerPage,
         1, // Horizontal stretching
@@ -487,9 +512,12 @@ void wxWizard::FinishLayout()
         m_sizerPage->Border()
     );
 
-    GetSizer()->SetSizeHints(this);
-    if ( m_posWizard == wxDefaultPosition )
-        CentreOnScreen();
+    if (!isPda)
+    {
+        GetSizer()->SetSizeHints(this);
+        if ( m_posWizard == wxDefaultPosition )
+            CentreOnScreen();
+    }
 }
 
 void wxWizard::FitToPage(const wxWizardPage *page)
@@ -555,7 +583,15 @@ bool wxWizard::ShowPage(wxWizardPage *page, bool goingForward)
     if ( !m_page )
     {
         // terminate successfully
-        EndModal(wxID_OK);
+        if(IsModal())
+        {
+            EndModal(wxID_OK);
+        }
+        else
+        {
+            SetReturnCode(wxID_OK);
+            Hide();
+        }
 
         // and notify the user code (this is especially useful for modeless
         // wizards)
@@ -625,15 +661,14 @@ bool wxWizard::RunWizard(wxWizardPage *firstPage)
 {
     wxCHECK_MSG( firstPage, false, wxT("can't run empty wizard") );
 
-    // Set before FinishLayout to enable wxWizardSizer::GetMaxChildSize
-    m_started = true;
-
     // This cannot be done sooner, because user can change layout options
     // up to this moment
     FinishLayout();
 
     // can't return false here because there is no old page
     (void)ShowPage(firstPage, true /* forward */);
+
+    modelessWizards.Remove(this);
 
     return ShowModal() == wxID_OK;
 }
@@ -666,13 +701,16 @@ void wxWizard::SetBorder(int border)
 wxSize wxWizard::GetManualPageSize() const
 {
     // default width and height of the page
-    static const int DEFAULT_PAGE_WIDTH = 270;
-    //static const int DEFAULT_PAGE_HEIGHT = 290;
-    // For compatibility with 2.4: there's too much
-    // space under the bitmap, probably due to differences in
-    // the sizer implementation. This makes it reasonable again.
-    static const int DEFAULT_PAGE_HEIGHT = 270;
-
+    int DEFAULT_PAGE_WIDTH = 270;
+    int DEFAULT_PAGE_HEIGHT = 270;
+    bool isPda = (wxSystemSettings::GetScreenType() <= wxSYS_SCREEN_PDA);
+    if (isPda)
+    {
+        // Make the default page size small enough to fit on screen
+        DEFAULT_PAGE_WIDTH = wxSystemSettings::GetMetric(wxSYS_SCREEN_X) / 2;
+        DEFAULT_PAGE_HEIGHT = wxSystemSettings::GetMetric(wxSYS_SCREEN_Y) / 2;
+    }
+    
     wxSize totalPageSize(DEFAULT_PAGE_WIDTH,DEFAULT_PAGE_HEIGHT);
 
     totalPageSize.IncTo(m_sizePage);
@@ -695,7 +733,15 @@ void wxWizard::OnCancel(wxCommandEvent& WXUNUSED(eventUnused))
     if ( !win->GetEventHandler()->ProcessEvent(event) || event.IsAllowed() )
     {
         // no objections - close the dialog
-        EndModal(wxID_CANCEL);
+        if(IsModal())
+        {
+            EndModal(wxID_CANCEL);
+        }
+        else
+        {
+            SetReturnCode(wxID_CANCEL);
+            Hide();
+        }
     }
     //else: request to Cancel ignored
 }
@@ -755,14 +801,26 @@ void wxWizard::OnWizEvent(wxWizardEvent& event)
     {
         // the event will be propagated anyhow
         event.Skip();
-        return;
+    }
+    else
+    {
+        wxWindow *parent = GetParent();
+
+        if ( !parent || !parent->GetEventHandler()->ProcessEvent(event) )
+        {
+            event.Skip();
+        }
     }
 
-    wxWindow *parent = GetParent();
-
-    if ( !parent || !parent->GetEventHandler()->ProcessEvent(event) )
+    if ( ( modelessWizards.Index(this) != wxNOT_FOUND ) &&
+         event.IsAllowed() &&
+         ( event.GetEventType() == wxEVT_WIZARD_FINISHED ||
+           event.GetEventType() == wxEVT_WIZARD_CANCEL
+         )
+       )
     {
-        event.Skip();
+        modelessWizards.Remove(this);
+        Destroy();
     }
 }
 

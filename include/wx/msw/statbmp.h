@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     01/02/97
-// RCS-ID:      $Id: statbmp.h,v 1.33 2005/02/24 08:26:46 JS Exp $
+// RCS-ID:      $Id: statbmp.h,v 1.34 2005/08/30 13:54:24 VZ Exp $
 // Copyright:   (c) Julian Smart
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -72,9 +72,6 @@ public:
 
     // implementation only from now on
     // -------------------------------
-
-    // implement base class virtuals
-    virtual WXLRESULT MSWWindowProc(WXUINT nMsg, WXWPARAM wParam, WXLPARAM lParam);
 
 protected:
     virtual wxBorder GetDefaultBorder() const;

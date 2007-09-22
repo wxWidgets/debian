@@ -4,7 +4,7 @@
 // Author:      Vadim Zeitlin
 // Modified by:
 // Created:     09.02.01
-// RCS-ID:      $Id: slider.cpp,v 1.16 2005/05/31 09:28:45 JS Exp $
+// RCS-ID:      $Id: slider.cpp,v 1.17 2005/08/24 06:32:56 ABX Exp $
 // Copyright:   (c) 2001 SciTech Software, Inc. (www.scitechsoft.com)
 // Licence:     wxWindows licence
 ///////////////////////////////////////////////////////////////////////////////
@@ -743,7 +743,7 @@ bool wxSlider::PerformAction(const wxControlAction& action,
                              long numArg,
                              const wxString& strArg)
 {
-     if ( action == wxACTION_SLIDER_START )
+    if ( action == wxACTION_SLIDER_START )
     {
         ChangeValueTo(m_min);
     }
@@ -823,13 +823,13 @@ wxScrollThumb::Shaft wxSlider::HitTest(const wxPoint& pt) const
         x3 = rectThumb.GetRight();
         x4 = rectShaft.GetRight();
     }
-    if ((x1 <= x) & (x < x2))
+    if ((x1 <= x) && (x < x2))
     {
         // or to the left
         return wxScrollThumb::Shaft_Above;
     }
 
-    if ((x3 < x) & (x <= x4)) {
+    if ((x3 < x) && (x <= x4)) {
         // or to the right
         return wxScrollThumb::Shaft_Below;
     }
@@ -952,7 +952,7 @@ bool wxStdSliderButtonInputHandler::HandleKey(wxInputConsumer *consumer,
                                               const wxKeyEvent& event,
                                               bool pressed)
 {
-   if ( pressed )
+    if ( pressed )
     {
         int keycode = event.GetKeyCode();
 

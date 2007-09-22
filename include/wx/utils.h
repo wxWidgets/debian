@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     29/01/98
-// RCS-ID:      $Id: utils.h,v 1.115 2005/04/21 20:13:37 RN Exp $
+// RCS-ID:      $Id: utils.h,v 1.118.2.2 2006/01/09 12:32:18 VZ Exp $
 // Copyright:   (c) 1998 Julian Smart
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -90,7 +90,12 @@ wxDEPRECATED( WXDLLIMPEXP_BASE wxChar* copystring(const wxChar *s) );
 // ----------------------------------------------------------------------------
 
 // Sound the bell
+#if !defined __EMX__ && \
+    (defined __WXMOTIF__ || defined __WXGTK__ || defined __WXX11__)
+WXDLLIMPEXP_CORE void wxBell();
+#else
 WXDLLIMPEXP_BASE void wxBell();
+#endif
 
 // Get OS description as a user-readable string
 WXDLLIMPEXP_BASE wxString wxGetOsDescription();
@@ -120,6 +125,73 @@ WXDLLEXPORT bool wxGetKeyState(wxKeyCode key);
 // KeyDown events with autorepeat. On by default and always on
 // in wxMSW.
 WXDLLEXPORT bool wxSetDetectableAutoRepeat( bool flag );
+
+
+#if wxABI_VERSION > 20602
+
+// wxMouseState is used to hold information about button and modifier state
+// and is what is returned from wxGetMouseState.
+class WXDLLEXPORT wxMouseState
+{
+public:
+    wxMouseState()
+        : m_x(0), m_y(0),
+          m_leftDown(false), m_middleDown(false), m_rightDown(false),
+          m_controlDown(false), m_shiftDown(false), m_altDown(false),
+          m_metaDown(false)
+    {}
+
+    wxCoord     GetX() { return m_x; }
+    wxCoord     GetY() { return m_y; }
+
+    bool        LeftDown()    { return m_leftDown; }
+    bool        MiddleDown()  { return m_middleDown; }
+    bool        RightDown()   { return m_rightDown; }
+
+    bool        ControlDown() { return m_controlDown; }
+    bool        ShiftDown()   { return m_shiftDown; }
+    bool        AltDown()     { return m_altDown; }
+    bool        MetaDown()    { return m_metaDown; }
+    bool        CmdDown()
+    {
+#if defined(__WXMAC__) || defined(__WXCOCOA__)
+        return MetaDown();
+#else
+        return ControlDown();
+#endif
+    }
+
+    void        SetX(wxCoord x) { m_x = x; }
+    void        SetY(wxCoord y) { m_y = y; }
+
+    void        SetLeftDown(bool down)   { m_leftDown = down; }
+    void        SetMiddleDown(bool down) { m_middleDown = down; }
+    void        SetRightDown(bool down)  { m_rightDown = down; }
+
+    void        SetControlDown(bool down) { m_controlDown = down; }
+    void        SetShiftDown(bool down)   { m_shiftDown = down; }
+    void        SetAltDown(bool down)     { m_altDown = down; }
+    void        SetMetaDown(bool down)    { m_metaDown = down; }
+
+private:
+    wxCoord     m_x;
+    wxCoord     m_y;
+
+    bool        m_leftDown;
+    bool        m_middleDown;
+    bool        m_rightDown;
+
+    bool        m_controlDown;
+    bool        m_shiftDown;
+    bool        m_altDown;
+    bool        m_metaDown;
+};
+
+
+// Returns the current state of the mouse position, buttons and modifers
+WXDLLEXPORT wxMouseState wxGetMouseState();
+
+#endif // wxABI_VERSION > 2.6.2
 
 // ----------------------------------------------------------------------------
 // Window ID management
@@ -324,8 +396,10 @@ WXDLLIMPEXP_BASE bool wxHandleFatalExceptions(bool doit = true);
 
 #endif // wxUSE_ON_FATAL_EXCEPTION
 
+#if wxABI_VERSION >= 20601
 // Launch url in the user's default internet browser
 WXDLLIMPEXP_BASE bool wxLaunchDefaultBrowser(const wxString& url);
+#endif
 
 // ----------------------------------------------------------------------------
 // Environment variables
@@ -521,9 +595,9 @@ void WXDLLEXPORT wxGetMousePosition( int* x, int* y );
 #endif
 
 #ifdef __X__
-    WXDisplay *wxGetDisplay();
-    bool wxSetDisplay(const wxString& display_name);
-    wxString wxGetDisplayName();
+    WXDLLIMPEXP_CORE WXDisplay *wxGetDisplay();
+    WXDLLIMPEXP_CORE bool wxSetDisplay(const wxString& display_name);
+    WXDLLIMPEXP_CORE wxString wxGetDisplayName();
 #endif // X or GTK+
 
 #ifdef __X__

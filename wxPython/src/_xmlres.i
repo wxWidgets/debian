@@ -5,7 +5,7 @@
 // Author:      Robin Dunn
 //
 // Created:     4-June-2001
-// RCS-ID:      $Id: _xmlres.i,v 1.2 2004/12/23 20:43:48 RD Exp $
+// RCS-ID:      $Id: _xmlres.i,v 1.2.2.1 2005/12/16 20:02:28 RD Exp $
 // Copyright:   (c) 2003 by Total Control Software
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -91,6 +91,9 @@ public:
         }
     }
 
+    // Unload resource from the given XML file (wildcards not allowed)
+    bool Unload(const wxString& filename);
+    
     // Initialize handlers for all supported controls/windows. 
     void InitAllHandlers();
 

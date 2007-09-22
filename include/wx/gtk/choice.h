@@ -2,7 +2,7 @@
 // Name:        choice.h
 // Purpose:
 // Author:      Robert Roebling
-// Id:          $Id: choice.h,v 1.39 2004/12/18 13:13:52 RR Exp $
+// Id:          $Id: choice.h,v 1.41 2005/08/17 14:22:37 VZ Exp $
 // Copyright:   (c) 1998 Robert Roebling
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -21,7 +21,7 @@ class WXDLLIMPEXP_BASE wxArrayString;
 // wxChoice
 //-----------------------------------------------------------------------------
 
-class wxChoice : public wxChoiceBase
+class WXDLLIMPEXP_CORE wxChoice : public wxChoiceBase
 {
 public:
     wxChoice();
@@ -70,6 +70,9 @@ public:
     void Clear();
 
     int GetSelection() const;
+#if wxABI_VERSION >= 20602
+    int GetCurrentSelection() const { return GetSelection(); }
+#endif
     void SetSelection( int n );
 
     virtual int GetCount() const;

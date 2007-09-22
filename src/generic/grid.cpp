@@ -4,7 +4,7 @@
 // Author:      Michael Bedward (based on code by Julian Smart, Robin Dunn)
 // Modified by: Robin Dunn, Vadim Zeitlin
 // Created:     1/08/1999
-// RCS-ID:      $Id: grid.cpp,v 1.341 2005/06/09 14:49:54 JS Exp $
+// RCS-ID:      $Id: grid.cpp,v 1.345.2.3 2006/03/07 14:50:50 JS Exp $
 // Copyright:   (c) Michael Bedward (mbedward@ozemail.com.au)
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -260,7 +260,7 @@ private:
     // Work around the fact that a focus kill event can be sent to
     // a combobox within a set focus event.
     bool                m_inSetFocus;
-    
+
     DECLARE_EVENT_TABLE()
     DECLARE_DYNAMIC_CLASS(wxGridCellEditorEvtHandler)
     DECLARE_NO_COPY_CLASS(wxGridCellEditorEvtHandler)
@@ -1162,19 +1162,24 @@ void wxGridCellFloatEditor::SetParameters(const wxString& params)
 wxString wxGridCellFloatEditor::GetString() const
 {
     wxString fmt;
-    if ( m_width == -1 )
-    {
-        // default width/precision
-        fmt = _T("%f");
-    }
-    else if ( m_precision == -1 )
+    if ( m_precision == -1 && m_width != -1)
     {
         // default precision
         fmt.Printf(_T("%%%d.f"), m_width);
     }
-    else
+    else if ( m_precision != -1 && m_width == -1)
+    {
+        // default width
+        fmt.Printf(_T("%%.%df"), m_precision);
+    }
+    else if ( m_precision != -1 && m_width != -1 )
     {
         fmt.Printf(_T("%%%d.%df"), m_width, m_precision);
+    }
+    else
+    {
+        // default width/precision
+        fmt = _T("%f");
     }
 
     return wxString::Format(fmt, m_valueOld);
@@ -1491,7 +1496,13 @@ void wxGridCellChoiceEditor::BeginEdit(int row, int col, wxGrid* grid)
     Combo()->SetFocus();
 
     if (evtHandler)
+    {
+        // When dropping down the menu, a kill focus event
+        // happens after this point, so we can't reset the flag yet.
+#if !defined(__WXGTK20__)
         evtHandler->SetInSetFocus(false);
+#endif
+    }
 }
 
 bool wxGridCellChoiceEditor::EndEdit(int row, int col,
@@ -1972,21 +1983,19 @@ void wxGridCellFloatRenderer::SetParameters(const wxString& params)
             {
                 wxLogDebug(_T("Invalid wxGridCellFloatRenderer width parameter string '%s ignored"), params.c_str());
             }
-
         }
-                tmp = params.AfterFirst(_T(','));
-                if ( !tmp.empty() )
-                {
-                    long precision;
+        tmp = params.AfterFirst(_T(','));
+        if ( !tmp.empty() )
+        {
+            long precision;
             if ( tmp.ToLong(&precision) )
-                    {
+            {
                 SetPrecision((int)precision);
-                    }
-                    else
-                    {
+            }
+            else
+            {
                 wxLogDebug(_T("Invalid wxGridCellFloatRenderer precision parameter string '%s ignored"), params.c_str());
-        }
-
+            }
         }
     }
 }
@@ -3694,7 +3703,8 @@ void wxGridCornerLabelWindow::OnPaint( wxPaintEvent& WXUNUSED(event) )
     int client_width = 0;
     GetClientSize( &client_width, &client_height );
 
-#if __WXGTK__
+    // VZ: any reason for this ifdef? (FIXME)
+#ifdef __WXGTK__
     wxRect rect;
     rect.SetX( 1 );
     rect.SetY( 1 );
@@ -3702,7 +3712,7 @@ void wxGridCornerLabelWindow::OnPaint( wxPaintEvent& WXUNUSED(event) )
     rect.SetHeight( client_height - 2 );
 
     wxRendererNative::Get().DrawHeaderButton( this, dc, rect, 0 );
-#else
+#else // !__WXGTK__
     dc.SetPen( wxPen(wxSystemSettings::GetColour(wxSYS_COLOUR_3DDKSHADOW),1, wxSOLID) );
     dc.DrawLine( client_width-1, client_height-1, client_width-1, 0 );
     dc.DrawLine( client_width-1, client_height-1, 0, client_height-1 );
@@ -3712,7 +3722,7 @@ void wxGridCornerLabelWindow::OnPaint( wxPaintEvent& WXUNUSED(event) )
     dc.SetPen( *wxWHITE_PEN );
     dc.DrawLine( 1, 1, client_width-1, 1 );
     dc.DrawLine( 1, 1, 1, client_height-1 );
-#endif
+#endif // __WXGTK__/!__WXGTK__
 }
 
 
@@ -4161,8 +4171,7 @@ bool wxGrid::SetTable( wxGridTableBase *table, bool takeOwnership,
 
         m_table = table;
         m_table->SetView( this );
-        if (takeOwnership)
-            m_ownTable = true;
+        m_ownTable = takeOwnership;
         m_selection = new wxGridSelection( this, selmode );
 
         CalcDimensions();
@@ -7863,7 +7872,9 @@ void wxGrid::HideCellEditControl()
         editor->Show( false );
         editor->DecRef();
         attr->DecRef();
+
         m_gridWin->SetFocus();
+
         // refresh whole row to the right
         wxRect rect( CellToRect(row, col) );
         CalcScrolledPosition(rect.x, rect.y, &rect.x, &rect.y );

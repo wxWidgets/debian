@@ -4,7 +4,7 @@
 // Author:      Denis Pershin
 // Modified by:
 // Created:     08/08/98
-// RCS-ID:      $Id: treectrl.h,v 1.19 2005/05/23 10:28:20 ABX Exp $
+// RCS-ID:      $Id: treectrl.h,v 1.20 2005/08/02 22:57:59 MW Exp $
 // Copyright:   (c) Denis Pershin
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -25,13 +25,13 @@
 typedef long wxDataType;
 
 // fwd decl
-class  wxImageList;
+class  WXDLLIMPEXP_CORE wxImageList;
 struct wxTreeViewItem;
 
 // a callback function used for sorting tree items, it should return -1 if the
 // first item precedes the second, +1 if the second precedes the first or 0 if
 // they're equivalent
-class wxTreeItemData;
+class WXDLLIMPEXP_CORE wxTreeItemData;
 typedef int (*wxTreeItemCmpFunc)(wxTreeItemData *item1, wxTreeItemData *item2);
 
 // ----------------------------------------------------------------------------

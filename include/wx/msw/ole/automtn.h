@@ -4,17 +4,17 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     11/6/98
-// RCS-ID:      $Id: automtn.h,v 1.11 2004/08/16 12:45:40 ABX Exp $
+// RCS-ID:      $Id: automtn.h,v 1.11.4.1 2005/09/25 20:46:32 MW Exp $
 // Copyright:   (c) 1998, Julian Smart
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
 
+#ifndef _WX_AUTOMTN_H_
+#define _WX_AUTOMTN_H_
+
 #if defined(__GNUG__) && !defined(NO_GCC_PRAGMA)
 #pragma interface "automtn.h"
 #endif
-
-#ifndef _WX_AUTOMTN_H_
-#define _WX_AUTOMTN_H_
 
 #include "wx/object.h"
 #include "wx/variant.h"

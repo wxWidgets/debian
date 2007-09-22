@@ -4,7 +4,7 @@
 // Author:      Vadim Zeitlin, Ryan Norton
 // Modified by:
 // Created:     29/01/98
-// RCS-ID:      $Id: string.cpp,v 1.255 2005/05/04 19:32:53 VZ Exp $
+// RCS-ID:      $Id: string.cpp,v 1.258.2.1 2005/11/30 13:30:08 VZ Exp $
 // Copyright:   (c) 1998 Vadim Zeitlin <zeitlin@dptmaths.ens-cachan.fr>
 //              (c) 2004 Ryan Norton <wxprojects@comcast.net>
 // Licence:     wxWindows licence
@@ -38,10 +38,6 @@
 #include <ctype.h>
 #include <string.h>
 #include <stdlib.h>
-
-#ifndef __WXMSW__
-#include <errno.h>
-#endif
 
 #ifdef __SALFORDC__
   #include <clib.h>
@@ -435,35 +431,35 @@ wxStringBase::iterator wxStringBase::erase(iterator it)
 
 wxStringBase& wxStringBase::erase(size_t nStart, size_t nLen)
 {
-  wxASSERT(nStart <= length());
-  size_t strLen = length() - nStart;
-  // delete nLen or up to the end of the string characters
-  nLen = strLen < nLen ? strLen : nLen;
-  wxString strTmp(c_str(), nStart);
-  strTmp.append(c_str() + nStart + nLen, length() - nStart - nLen);
+    wxASSERT(nStart <= length());
+    size_t strLen = length() - nStart;
+    // delete nLen or up to the end of the string characters
+    nLen = strLen < nLen ? strLen : nLen;
+    wxString strTmp(c_str(), nStart);
+    strTmp.append(c_str() + nStart + nLen, length() - nStart - nLen);
 
-  swap(strTmp);
-  return *this;
+    swap(strTmp);
+    return *this;
 }
 
 wxStringBase& wxStringBase::insert(size_t nPos, const wxChar *sz, size_t n)
 {
-  wxASSERT( nPos <= length() );
+    wxASSERT( nPos <= length() );
 
-  if ( n == npos ) n = wxStrlen(sz);
-  if ( n == 0 ) return *this;
+    if ( n == npos ) n = wxStrlen(sz);
+    if ( n == 0 ) return *this;
 
-  if ( !Alloc(length() + n) || !CopyBeforeWrite() ) {
-    wxFAIL_MSG( _T("out of memory in wxStringBase::insert") );
-  }
+    if ( !Alloc(length() + n) || !CopyBeforeWrite() ) {
+        wxFAIL_MSG( _T("out of memory in wxStringBase::insert") );
+    }
 
-  memmove(m_pchData + nPos + n, m_pchData + nPos,
-          (length() - nPos) * sizeof(wxChar));
-  memcpy(m_pchData + nPos, sz, n * sizeof(wxChar));
-  GetStringData()->nDataLength = length() + n;
-  m_pchData[length()] = '\0';
+    memmove(m_pchData + nPos + n, m_pchData + nPos,
+            (length() - nPos) * sizeof(wxChar));
+    memcpy(m_pchData + nPos, sz, n * sizeof(wxChar));
+    GetStringData()->nDataLength = length() + n;
+    m_pchData[length()] = '\0';
 
-  return *this;
+    return *this;
 }
 
 void wxStringBase::swap(wxStringBase& str)
@@ -475,50 +471,50 @@ void wxStringBase::swap(wxStringBase& str)
 
 size_t wxStringBase::find(const wxStringBase& str, size_t nStart) const
 {
-  wxASSERT( str.GetStringData()->IsValid() );
-  wxASSERT( nStart <= length() );
+    wxASSERT( str.GetStringData()->IsValid() );
+    wxASSERT( nStart <= length() );
 
-  //anchor
-  const wxChar* p = (const wxChar*)wxTmemchr(c_str() + nStart,
-                                            str.c_str()[0],
-                                            length() - nStart);
+    //anchor
+    const wxChar* p = (const wxChar*)wxTmemchr(c_str() + nStart,
+                                               str.c_str()[0],
+                                               length() - nStart);
 
-  if(!p)
-      return npos;
+    if(!p)
+        return npos;
 
-  while(p - c_str() + str.length() <= length() &&
-        wxTmemcmp(p, str.c_str(), str.length()) )
-  {
-      //Previosly passed as the first argument to wxTmemchr,
-      //but C/C++ standard does not specify evaluation order
-      //of arguments to functions -
-      //http://embedded.com/showArticle.jhtml?articleID=9900607
-      ++p;
+    while(p - c_str() + str.length() <= length() &&
+          wxTmemcmp(p, str.c_str(), str.length()) )
+    {
+        //Previosly passed as the first argument to wxTmemchr,
+        //but C/C++ standard does not specify evaluation order
+        //of arguments to functions -
+        //http://embedded.com/showArticle.jhtml?articleID=9900607
+        ++p;
 
-      //anchor again
-      p = (const wxChar*)wxTmemchr(p,
-                                  str.c_str()[0],
-                                  length() - (p - c_str()));
+        //anchor again
+        p = (const wxChar*)wxTmemchr(p,
+                                     str.c_str()[0],
+                                     length() - (p - c_str()));
 
-      if(!p)
-          return npos;
-  }
+        if(!p)
+            return npos;
+    }
 
-   return (p - c_str() + str.length() <= length()) ? p - c_str() : npos;
+    return (p - c_str() + str.length() <= length()) ? p - c_str() : npos;
 }
 
 size_t wxStringBase::find(const wxChar* sz, size_t nStart, size_t n) const
 {
-  return find(wxStringBase(sz, n), nStart);
+    return find(wxStringBase(sz, n), nStart);
 }
 
 size_t wxStringBase::find(wxChar ch, size_t nStart) const
 {
-  wxASSERT( nStart <= length() );
+    wxASSERT( nStart <= length() );
 
-  const wxChar *p = (const wxChar*)wxTmemchr(c_str() + nStart, ch, length() - nStart);
+    const wxChar *p = (const wxChar*)wxTmemchr(c_str() + nStart, ch, length() - nStart);
 
-  return p == NULL ? npos : p - c_str();
+    return p == NULL ? npos : p - c_str();
 }
 
 size_t wxStringBase::rfind(const wxStringBase& str, size_t nStart) const
@@ -1397,32 +1393,33 @@ const wxCharBuffer wxString::ToAscii() const
 // extract string of length nCount starting at nFirst
 wxString wxString::Mid(size_t nFirst, size_t nCount) const
 {
-  size_t nLen = length();
+    size_t nLen = length();
 
-  // default value of nCount is npos and means "till the end"
-  if ( nCount == npos )
-  {
-    nCount = nLen - nFirst;
-  }
+    // default value of nCount is npos and means "till the end"
+    if ( nCount == npos )
+    {
+        nCount = nLen - nFirst;
+    }
 
-  // out-of-bounds requests return sensible things
-  if ( nFirst + nCount > nLen )
-  {
-    nCount = nLen - nFirst;
-  }
+    // out-of-bounds requests return sensible things
+    if ( nFirst + nCount > nLen )
+    {
+        nCount = nLen - nFirst;
+    }
 
-  if ( nFirst > nLen )
-  {
-    // AllocCopy() will return empty string
-    nCount = 0;
-  }
+    if ( nFirst > nLen )
+    {
+        // AllocCopy() will return empty string
+        return wxEmptyString;
+    }
 
-  wxString dest(*this, nFirst, nCount);
-  if ( dest.length() != nCount ) {
-      wxFAIL_MSG( _T("out of memory in wxString::Mid") );
-  }
+    wxString dest(*this, nFirst, nCount);
+    if ( dest.length() != nCount )
+    {
+        wxFAIL_MSG( _T("out of memory in wxString::Mid") );
+    }
 
-  return dest;
+    return dest;
 }
 
 // check that the string starts with prefix and return the rest of the string
@@ -1838,22 +1835,12 @@ int wxString::PrintfV(const wxChar* pszFormat, va_list argptr)
 
         // vsnprintf() may return either -1 (traditional Unix behaviour) or the
         // total number of characters which would have been written if the
-        // buffer were large enough
+        // buffer were large enough (newer standards such as Unix98)
         if ( len >= 0 && len <= size )
         {
             // ok, there was enough space
             break;
         }
-
-#ifdef EOVERFLOW
-        // if the error is not due to not having enough space (it could be e.g.
-        // EILSEQ), break too -- we'd just eat all available memory uselessly
-        if ( errno != EOVERFLOW )
-        {
-            // no sense in continuing
-            break;
-        }
-#endif // EOVERFLOW
 
         // still not enough, double it again
         size *= 2;
@@ -2496,7 +2483,11 @@ void wxArrayString::Sort(CompareFunction compareFunction)
   END_SORT();
 }
 
-typedef  int (wxC_CALLING_CONV * wxStringCompareFn)(const void *first, const void *second);
+extern "C"
+{
+    typedef int (wxC_CALLING_CONV * wxStringCompareFn)(const void *first,
+                                                       const void *second);
+}
 
 void wxArrayString::Sort(CompareFunction2 compareFunction)
 {

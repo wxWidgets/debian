@@ -4,7 +4,7 @@
 // Author:      Vadim Zeitlin
 // Modified by:
 // Created:     04.06.02 (extracted from src/*/thread.cpp files)
-// RCS-ID:      $Id: thrimpl.cpp,v 1.5 2004/05/23 20:50:25 JS Exp $
+// RCS-ID:      $Id: thrimpl.cpp,v 1.5.4.1 2006/01/18 16:55:57 JS Exp $
 // Copyright:   (c) Vadim Zeitlin (2002)
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -174,7 +174,12 @@ wxCondError wxConditionInternal::WaitTimeout(unsigned long milliseconds)
 
     m_mutex.Lock();
 
-    return err == wxSEMA_NO_ERROR ? wxCOND_NO_ERROR : wxCOND_MISC_ERROR;
+    if ( err == wxSEMA_NO_ERROR )
+        return wxCOND_NO_ERROR;
+    else if ( err == wxSEMA_TIMEOUT )
+        return wxCOND_TIMEOUT;
+    else
+        return wxCOND_MISC_ERROR;
 }
 
 wxCondError wxConditionInternal::Signal()

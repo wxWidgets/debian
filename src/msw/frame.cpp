@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     01/02/97
-// RCS-ID:      $Id: frame.cpp,v 1.190 2005/06/20 00:24:08 VZ Exp $
+// RCS-ID:      $Id: frame.cpp,v 1.190.2.1 2005/10/23 11:05:46 JS Exp $
 // Copyright:   (c) Julian Smart
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -522,8 +522,27 @@ bool wxFrame::ShowFullScreen(bool show, long style)
         }
 #endif // wxUSE_TOOLBAR
 
-        if ((m_fsStyle & wxFULLSCREEN_NOMENUBAR) && m_hMenu)
-            ::SetMenu(GetHwnd(), (HMENU)m_hMenu);
+        if (m_fsStyle & wxFULLSCREEN_NOMENUBAR)
+        {
+            WXHMENU menu = m_hMenu;
+
+#if wxUSE_MDI_ARCHITECTURE
+            wxMDIParentFrame *frame = wxDynamicCast(this, wxMDIParentFrame);
+            if (frame)
+            {
+                wxMDIChildFrame *child = frame->GetActiveChild();
+                if (child)
+                {
+                    menu = child->GetWinMenu();
+                }
+            }
+#endif // wxUSE_MDI_ARCHITECTURE
+
+            if (menu)
+            {
+                ::SetMenu(GetHwnd(), (HMENU)menu);
+            }
+        }
 
 #if wxUSE_STATUSBAR
         wxStatusBar *theStatusBar = GetStatusBar();
@@ -958,7 +977,7 @@ WXLRESULT wxFrame::MSWWindowProc(WXUINT message, WXWPARAM wParam, WXLPARAM lPara
             SHACTIVATEINFO* info = (SHACTIVATEINFO*) m_activateInfo;
             if (info)
                 SHHandleWMActivate(GetHwnd(), wParam, lParam, info, FALSE);
-            
+
             // This implicitly sends a wxEVT_ACTIVATE_APP event
             if (wxTheApp)
                 wxTheApp->SetActive(wParam != 0, FindFocus());

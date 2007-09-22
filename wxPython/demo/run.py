@@ -6,7 +6,7 @@
 # Author:       Robin Dunn
 #
 # Created:      6-March-2000
-# RCS-ID:       $Id: run.py,v 1.29 2005/02/03 03:09:17 RD Exp $
+# RCS-ID:       $Id: run.py,v 1.29.2.1 2006/01/26 00:33:39 RD Exp $
 # Copyright:    (c) 2000 by Total Control Software
 # Licence:      wxWindows license
 #----------------------------------------------------------------------------
@@ -21,7 +21,7 @@ import wx                  # This module uses the new wx namespace
 import sys, os
 
 # stuff for debugging
-print "wx.VERSION_STRING = ", wx.VERSION_STRING
+print "wx.VERSION_STRING = %s (%s)" % (wx.VERSION_STRING, wx.USE_UNICODE and 'unicode' or 'ansi')
 print "pid:", os.getpid()
 ##raw_input("Press Enter...")
 

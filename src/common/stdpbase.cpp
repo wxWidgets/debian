@@ -4,7 +4,7 @@
 // Author:      Vadim Zeitlin
 // Modified by:
 // Created:     2004-10-19
-// RCS-ID:      $Id: stdpbase.cpp,v 1.7 2005/05/31 09:19:52 JS Exp $
+// RCS-ID:      $Id: stdpbase.cpp,v 1.8 2005/07/29 14:15:26 VZ Exp $
 // Copyright:   (c) 2004 Vadim Zeitlin <vadim@wxwindows.org>
 // License:     wxWindows license
 ///////////////////////////////////////////////////////////////////////////////
@@ -47,7 +47,10 @@ static wxStandardPaths gs_stdPaths;
 /* static */
 wxStandardPathsBase& wxStandardPathsBase::Get()
 {
-    return wxTheApp->GetTraits()->GetStandardPaths();
+    wxAppTraits * const traits = wxTheApp ? wxTheApp->GetTraits() : NULL;
+    wxCHECK_MSG( traits, gs_stdPaths, _T("create wxApp before calling this") );
+
+    return traits->GetStandardPaths();
 }
 
 wxStandardPathsBase& wxAppTraitsBase::GetStandardPaths()

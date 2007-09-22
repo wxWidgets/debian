@@ -3,7 +3,7 @@
  * Name:    gsockgtk.c
  * Purpose: GSocket: GTK part
  * Licence: The wxWindows licence
- * CVSID:   $Id: gsockgtk.cpp,v 1.5 2005/03/21 23:42:17 VZ Exp $
+ * CVSID:   $Id: gsockgtk.cpp,v 1.6 2005/09/03 01:01:06 KH Exp $
  * -------------------------------------------------------------------------
  */
 #include "wx/setup.h"
@@ -109,9 +109,10 @@ void GSocketGUIFunctionsTableConcrete::Uninstall_Callback(GSocket *socket, GSock
   }
 
   if (m_id[c] != -1)
+  {
     gdk_input_remove(m_id[c]);
-
-  m_id[c] = -1;
+    m_id[c] = -1;
+  }
 }
 
 void GSocketGUIFunctionsTableConcrete::Enable_Events(GSocket *socket)

@@ -5,7 +5,7 @@
 // Author:      John Norris, minor changes by Axel Schlueter
 // Modified by:
 // Created:     08.02.01
-// RCS-ID:      $Id: tglbtn.h,v 1.7 2004/11/22 15:55:28 JS Exp $
+// RCS-ID:      $Id: tglbtn.h,v 1.8 2005/08/02 22:57:58 MW Exp $
 // Copyright:   (c) 2000 Johnny C. Norris II
 // License:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -19,20 +19,20 @@
 // classes
 //-----------------------------------------------------------------------------
 
-class wxToggleButton;
-class wxToggleBitmapButton;
+class WXDLLIMPEXP_CORE wxToggleButton;
+class WXDLLIMPEXP_CORE wxToggleBitmapButton;
 
 //-----------------------------------------------------------------------------
 // global data
 //-----------------------------------------------------------------------------
 
-extern const wxChar *wxCheckBoxNameStr;
+extern WXDLLIMPEXP_CORE const wxChar *wxCheckBoxNameStr;
 
 //-----------------------------------------------------------------------------
 // wxToggleBitmapButton
 //-----------------------------------------------------------------------------
 
-class wxToggleBitmapButton: public wxControl
+class WXDLLIMPEXP_CORE wxToggleBitmapButton: public wxControl
 {
 public:
     // construction/destruction
@@ -88,7 +88,7 @@ private:
 // wxToggleButton
 //-----------------------------------------------------------------------------
 
-class wxToggleButton: public wxControl
+class WXDLLIMPEXP_CORE wxToggleButton: public wxControl
 {
 public:
     // construction/destruction

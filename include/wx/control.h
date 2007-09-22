@@ -4,7 +4,7 @@
 // Author:      Vadim Zeitlin
 // Modified by:
 // Created:     26.07.99
-// RCS-ID:      $Id: control.h,v 1.44 2005/06/24 16:44:18 RL Exp $
+// RCS-ID:      $Id: control.h,v 1.45 2005/06/26 15:46:07 RR Exp $
 // Copyright:   (c) wxWidgets team
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -65,6 +65,19 @@ public:
 
     virtual void SetLabel( const wxString &label );
     virtual bool SetFont(const wxFont& font);
+
+#if WX_USE_RESERVED_VIRTUALS
+    // Reserved for future use
+    virtual void ReservedControlFunc1() {}
+    virtual void ReservedControlFunc2() {}
+    virtual void ReservedControlFunc3() {}
+    virtual void ReservedControlFunc4() {}
+    virtual void ReservedControlFunc5() {}
+    virtual void ReservedControlFunc6() {}
+    virtual void ReservedControlFunc7() {}
+    virtual void ReservedControlFunc8() {}
+    virtual void ReservedControlFunc9() {}
+#endif
 
 protected:
     // creates the control (calls wxWindowBase::CreateBase inside) and adds it

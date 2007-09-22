@@ -4,7 +4,7 @@
 // Author:      Karsten Ballueder
 // Modified by:
 // Created:     04/01/98
-// RCS-ID:      $Id: helpext.cpp,v 1.41 2005/04/05 16:09:39 ABX Exp $
+// RCS-ID:      $Id: helpext.cpp,v 1.41.2.1 2005/10/26 21:10:00 CE Exp $
 // Copyright:   (c) Karsten Ballueder
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -41,6 +41,10 @@
 
 #if !defined(__WINDOWS__) && !defined(__OS2__)
     #include   <unistd.h>
+#endif
+
+#ifdef __WINDOWS__
+#include "wx/msw/mslu.h"
 #endif
 
 #ifdef __WXMSW__

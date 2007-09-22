@@ -3,7 +3,7 @@
 // Purpose:     wxNotebook class (a.k.a. property sheet, tabbed dialog)
 // Author:      Julian Smart
 // Modified by:
-// RCS-ID:      $Id: notebook.h,v 1.18 2005/01/13 20:29:16 ABX Exp $
+// RCS-ID:      $Id: notebook.h,v 1.20 2005/08/28 08:00:20 MBN Exp $
 // Copyright:   (c) Julian Smart
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -34,7 +34,7 @@ class WXDLLEXPORT wxTabView;
 // wxNotebook
 // ----------------------------------------------------------------------------
 
-class wxNotebook : public wxNotebookBase
+class WXDLLIMPEXP_CORE wxNotebook : public wxNotebookBase
 {
 public:
   // ctors
@@ -125,6 +125,8 @@ public:
   virtual void Command(wxCommandEvent& event);
   virtual void SetConstraintSizes(bool recurse = true);
   virtual bool DoPhase(int nPhase);
+
+  virtual wxSize CalcSizeFromPage(const wxSize& sizePage) const;
 
   // Implementation
 

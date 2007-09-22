@@ -4,7 +4,7 @@
 %% Author:      Vadim Zeitlin
 %% Modified by:
 %% Created:     2004-09-07 (partly extracted from frame.tex)
-%% RCS-ID:      $Id: tlw.tex,v 1.8 2005/02/22 15:09:54 ABX Exp $
+%% RCS-ID:      $Id: tlw.tex,v 1.9.2.1 2006/02/05 20:40:25 MR Exp $
 %% Copyright:   (c) 2004 Vadim Zeitlin
 %% License:     wxWindows license
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -125,10 +125,6 @@ Maximizes or restores the window.
 
 \docparam{maximize}{If \true, maximizes the window, otherwise it restores it.}
 
-\wxheading{Remarks}
-
-This function only works under Windows.
-
 \wxheading{See also}
 
 \helpref{wxTopLevelWindow::Iconize}{wxtoplevelwindowiconize}
@@ -148,8 +144,8 @@ action. When in doubt, use the default value.
 Note that this function should normally be only used when the application is
 not already in foreground.
 
-This function is currently only implemented for Win32 where it flashes the
-window icon in the taskbar.
+This function is currently implemented for Win32 where it flashes the
+window icon in the taskbar, and for wxGTK with task bars supporting it.
 
 
 \membersection{wxTopLevelWindow::SetIcon}\label{wxtoplevelwindowseticon}

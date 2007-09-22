@@ -4,7 +4,7 @@
 // Author:      Robert Roebling
 // Modified by:
 // Created:
-// RCS-ID:      $Id: scroll.cpp,v 1.40 2005/06/02 12:04:28 JS Exp $
+// RCS-ID:      $Id: scroll.cpp,v 1.42 2005/07/21 10:16:57 VZ Exp $
 // Copyright:   (C) 1998 Robert Roebling, 2002 Ron Lee, 2003 Matt Gregory
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -45,7 +45,8 @@ public:
     void OnDeleteButton( wxCommandEvent &event );
     void OnMoveButton( wxCommandEvent &event );
     void OnScrollWin( wxCommandEvent &event );
-    void OnMouseDown( wxMouseEvent &event );
+    void OnMouseRightDown( wxMouseEvent &event );
+    void OnMouseWheel( wxMouseEvent &event );
 
     wxButton *m_button;
 
@@ -170,12 +171,13 @@ public: // interface
     static wxRect DCNormalize(wxCoord x, wxCoord y, wxCoord w, wxCoord h);
 
 protected: // event stuff
-    DECLARE_EVENT_TABLE()
     void OnDraw(wxDC& dc);
     void OnMouseLeftDown(wxMouseEvent& event);
     void OnMouseLeftUp(wxMouseEvent& event);
     void OnMouseMove(wxMouseEvent& event);
     void OnScroll(wxScrollWinEvent& event);
+
+    DECLARE_EVENT_TABLE()
 };
 
 // ----------------------------------------------------------------------------
@@ -234,7 +236,8 @@ IMPLEMENT_DYNAMIC_CLASS(MyCanvas, wxScrolledWindow)
 
 BEGIN_EVENT_TABLE(MyCanvas, wxScrolledWindow)
   EVT_PAINT(                  MyCanvas::OnPaint)
-  EVT_MOUSE_EVENTS(           MyCanvas::OnMouseDown)
+  EVT_RIGHT_DOWN(             MyCanvas::OnMouseRightDown)
+  EVT_MOUSEWHEEL(             MyCanvas::OnMouseWheel)
   EVT_BUTTON( ID_QUERYPOS,    MyCanvas::OnQueryPosition)
   EVT_BUTTON( ID_ADDBUTTON,   MyCanvas::OnAddButton)
   EVT_BUTTON( ID_DELBUTTON,   MyCanvas::OnDeleteButton)
@@ -322,18 +325,25 @@ MyCanvas::MyCanvas( wxWindow *parent, wxWindowID id,
     SetCursor( wxCursor( wxCURSOR_IBEAM ) );
 }
 
-void MyCanvas::OnMouseDown( wxMouseEvent &event )
+void MyCanvas::OnMouseRightDown( wxMouseEvent &event )
 {
-    if (event.LeftDown())
-    {
-        wxPoint pt( event.GetPosition() );
-        int x,y;
-        CalcUnscrolledPosition( pt.x, pt.y, &x, &y );
-        wxLogMessage( wxT("Mouse down event at: %d %d, scrolled: %d %d"), pt.x, pt.y, x, y );
+    wxPoint pt( event.GetPosition() );
+    int x,y;
+    CalcUnscrolledPosition( pt.x, pt.y, &x, &y );
+    wxLogMessage( wxT("Mouse down event at: %d %d, scrolled: %d %d"), pt.x, pt.y, x, y );
+}
 
-        if ( !event.LeftIsDown() )
-            wxLogMessage( wxT("Error: LeftIsDown() should be true if for LeftDown()") );
-    }
+void MyCanvas::OnMouseWheel( wxMouseEvent &event )
+{
+    wxPoint pt( event.GetPosition() );
+    int x,y;
+    CalcUnscrolledPosition( pt.x, pt.y, &x, &y );
+    wxLogMessage( wxT("Mouse wheel event at: %d %d, scrolled: %d %d\n")
+                  wxT("Rotation: %d, delta = %d"),
+                  pt.x, pt.y, x, y,
+                  event.GetWheelRotation(), event.GetWheelDelta() );
+
+    event.Skip();
 }
 
 void MyCanvas::OnPaint( wxPaintEvent &WXUNUSED(event) )
@@ -930,7 +940,7 @@ void MyAutoTimedScrollingWindow::OnScroll(wxScrollWinEvent& event)
 const int MyAutoTimedScrollingWindow::sm_lineCnt = 125;
 const int MyAutoTimedScrollingWindow::sm_lineLen = 79;
 const wxChar* MyAutoTimedScrollingWindow::sm_testData =
-_T("162 Cult of the genius out of vanity.— Because we think well of ourselves, but ")
+_T("162 Cult of the genius out of vanity. Because we think well of ourselves, but ")
 _T("nonetheless never suppose ourselves capable of producing a painting like one of ")
 _T("Raphael's or a dramatic scene like one of Shakespeare's, we convince ourselves ")
 _T("that the capacity to do so is quite extraordinarily marvelous, a wholly ")
@@ -938,7 +948,7 @@ _T("uncommon accident, or, if we are still religiously inclined, a mercy from on
 _T("high. Thus our vanity, our self-love, promotes the cult of the genius: for only ")
 _T("if we think of him as being very remote from us, as a miraculum, does he not ")
 _T("aggrieve us (even Goethe, who was without envy, called Shakespeare his star of ")
-_T("the most distant heights [\"William! Stern der schönsten Ferne\": from Goethe's, ")
+_T("the most distant heights [\"William! Stern der schonsten Ferne\": from Goethe's, ")
 _T("\"Between Two Worlds\"]; in regard to which one might recall the lines: \"the ")
 _T("stars, these we do not desire\" [from Goethe's, \"Comfort in Tears\"]). But, aside ")
 _T("from these suggestions of our vanity, the activity of the genius seems in no ")
@@ -951,7 +961,7 @@ _T("incentives, who never tire of combining together the means available to them
 _T("Genius too does nothing except learn first how to lay bricks then how to build, ")
 _T("except continually seek for material and continually form itself around it. ")
 _T("Every activity of man is amazingly complicated, not only that of the genius: ")
-_T("but none is a \"miracle.\"— Whence, then, the belief that genius exists only in ")
+_T("but none is a \"miracle.\" Whence, then, the belief that genius exists only in ")
 _T("the artist, orator and philosopher? that only they have \"intuition\"? (Whereby ")
 _T("they are supposed to possess a kind of miraculous eyeglass with which they can ")
 _T("see directly into \"the essence of the thing\"!) It is clear that people speak of ")
@@ -968,7 +978,7 @@ _T("with genius and why men of science do not. In reality, this evaluation of th
 _T("former and undervaluation of the latter is only a piece of childishness in the ")
 _T("realm of reason. ")
 _T("\n\n")
-_T("163 The serious workman.— Do not talk about giftedness, inborn talents! One can ")
+_T("163 The serious workman. Do not talk about giftedness, inborn talents! One can ")
 _T("name great men of all kinds who were very little gifted. The acquired ")
 _T("greatness, became \"geniuses\" (as we put it), through qualities the lack of ")
 _T("which no one who knew what they were would boast of: they all possessed that ")
@@ -990,15 +1000,15 @@ _T("everything that will produce an artistic effect when it is well described, o
 _T("should, finally, reflect on the motives of human actions, disdain no signpost ")
 _T("to instruction about them and be a collector of these things by day and night. ")
 _T("One should continue in this many-sided exercise some ten years: what is then ")
-_T("created in the workshop, however, will be fit to go out into the world.— What, ")
+_T("created in the workshop, however, will be fit to go out into the world. What, ")
 _T("however, do most people do? They begin, not with the parts, but with the whole. ")
 _T("Perhaps they chance to strike a right note, excite attention and from then on ")
-_T("strike worse and worse notes, for good, natural reasons.— Sometimes, when the ")
+_T("strike worse and worse notes, for good, natural reasons. Sometimes, when the ")
 _T("character and intellect needed to formulate such a life-plan are lacking, fate ")
 _T("and need take their place and lead the future master step by step through all ")
 _T("the stipulations of his trade. ")
 _T("\n\n")
-_T("164 Peril and profit in the cult of the genius.— The belief in great, superior, ")
+_T("164 Peril and profit in the cult of the genius. The belief in great, superior, ")
 _T("fruitful spirits is not necessarily, yet nonetheless is very frequently ")
 _T("associated with that religious or semi-religious superstition that these ")
 _T("spirits are of supra-human origin and possess certain miraculous abilities by ")
@@ -1041,7 +1051,7 @@ _T("they render men will-less and sweep them away into the delusion that the ")
 _T("leaders they are following are supra-natural. Indeed, it elevates and inspires ")
 _T("men to believe that someone is in possession of supra-natural powers: to this ")
 _T("extent Plato was right to say [Plato: Phaedrus, 244a] that madness has brought ")
-_T("the greatest of blessings upon mankind.— In rare individual cases this portion ")
+_T("the greatest of blessings upon mankind. In rare individual cases this portion ")
 _T("of madness may, indeed, actually have been the means by which such a nature, ")
 _T("excessive in all directions, was held firmly together: in the life of ")
 _T("individuals, too, illusions that are in themselves poisons often play the role ")

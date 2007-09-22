@@ -4,7 +4,7 @@
 // Author:      Vadim Zeitlin
 // Modified by:
 // Created:     07.04.02
-// RCS-ID:      $Id: keyboard.cpp,v 1.11 2004/10/02 12:36:02 VS Exp $
+// RCS-ID:      $Id: keyboard.cpp,v 1.11.4.1 2006/01/22 05:10:28 JG Exp $
 // Copyright:   (c) 2002 Vadim Zeitlin
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -448,6 +448,7 @@ void TextWindow::LogEvent(const wxChar *name, wxKeyEvent& event)
         case WXK_NUMPAD_RIGHT: key = _T("NUMPAD_RIGHT"); break;
         case WXK_NUMPAD_DOWN: key = _T("NUMPAD_DOWN"); break;
         case WXK_NUMPAD_PRIOR: key = _T("NUMPAD_PRIOR"); break;
+        case WXK_NUMPAD_NEXT: key = _T("NUMPAD_NEXT"); break;
         case WXK_NUMPAD_PAGEUP: key = _T("NUMPAD_PAGEUP"); break;
         case WXK_NUMPAD_PAGEDOWN: key = _T("NUMPAD_PAGEDOWN"); break;
         case WXK_NUMPAD_END: key = _T("NUMPAD_END"); break;

@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     04/01/98
-// RCS-ID:      $Id: listctrl.cpp,v 1.230 2005/05/31 09:20:31 JS Exp $
+// RCS-ID:      $Id: listctrl.cpp,v 1.233.2.6 2006/03/10 21:37:18 RD Exp $
 // Copyright:   (c) Julian Smart
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -62,7 +62,8 @@
 #if defined(__VISUALC__) || defined(__BORLANDC__) || defined(NMLVFINDITEM)
     #define HAVE_NMLVFINDITEM 1
 #elif defined(__DMC__) || defined(NM_FINDITEM)
-    #define HAVE_NM_FINDITEM 1
+    #define HAVE_NMLVFINDITEM 1
+    #define NMLVFINDITEM NM_FINDITEM
 #endif
 
 // ----------------------------------------------------------------------------
@@ -371,7 +372,7 @@ bool wxListCtrl::Create(wxWindow *parent,
     if ( InReportView() && wxApp::GetComCtl32Version() >= 470 )
     {
         ::SendMessage(GetHwnd(), LVM_SETEXTENDEDLISTVIEWSTYLE,
-                      0, LVS_EX_LABELTIP | LVS_EX_FULLROWSELECT);
+                      0, LVS_EX_LABELTIP | LVS_EX_FULLROWSELECT | LVS_EX_SUBITEMIMAGES);
     }
 
     return true;
@@ -914,14 +915,23 @@ bool wxListCtrl::SetItemState(long item, long state, long stateMask)
 // Sets the item image
 bool wxListCtrl::SetItemImage(long item, int image, int WXUNUSED(selImage))
 {
+    return SetItemColumnImage(item, 0, image);
+}
+
+#if wxABI_VERSION >= 20603
+// Sets the item image
+bool wxListCtrl::SetItemColumnImage(long item, long column, int image)
+{
     wxListItem info;
 
     info.m_mask = wxLIST_MASK_IMAGE;
     info.m_image = image;
     info.m_itemId = item;
+    info.m_col = column;
 
     return SetItem(info);
 }
+#endif
 
 // Gets the item text
 wxString wxListCtrl::GetItemText(long item) const
@@ -1092,6 +1102,24 @@ wxColour wxListCtrl::GetItemBackgroundColour( long item ) const
     return col;
 }
 
+void wxListCtrl::SetItemFont( long item, const wxFont &f )
+{
+    wxListItem info;
+    info.m_itemId = item;
+    info.SetFont( f );
+    SetItem( info );
+}
+
+wxFont wxListCtrl::GetItemFont( long item ) const
+{
+    wxFont f;
+    wxListItemInternalData *data = wxGetInternalData(this, item);
+    if ( data && data->attr )
+        f = data->attr->GetFont();
+
+    return f;
+}
+
 // Gets the number of selected items in the list control
 int wxListCtrl::GetSelectedItemCount() const
 {
@@ -1196,7 +1224,7 @@ void wxListCtrl::SetImageList(wxImageList *imageList, int which)
         m_imageListState = imageList;
         m_ownsImageListState = false;
     }
-    ListView_SetImageList(GetHwnd(), (HIMAGELIST) imageList ? imageList->GetHIMAGELIST() : 0, flags);
+    (void) ListView_SetImageList(GetHwnd(), (HIMAGELIST) imageList ? imageList->GetHIMAGELIST() : 0, flags);
 }
 
 void wxListCtrl::AssignImageList(wxImageList *imageList, int which)
@@ -1349,11 +1377,25 @@ wxTextCtrl* wxListCtrl::EditLabel(long item, wxClassInfo* textControlClass)
 }
 
 // End label editing, optionally cancelling the edit
-bool wxListCtrl::EndEditLabel(bool WXUNUSED(cancel))
+bool wxListCtrl::EndEditLabel(bool cancel)
 {
-    wxFAIL_MSG( _T("not implemented") );
-
-    return false;
+    // m_textCtrl is not always ready, ie. in EVT_LIST_BEGIN_LABEL_EDIT
+    HWND hwnd = ListView_GetEditControl(GetHwnd());
+    bool b = (hwnd != NULL);
+    if (b)
+    {
+        if (cancel)
+            ::SetWindowText(hwnd, wxEmptyString); // dubious but better than nothing
+        if (m_textCtrl)
+        {
+            m_textCtrl->UnsubclassWin();
+            m_textCtrl->SetHWND(0);
+            delete m_textCtrl;
+            m_textCtrl = NULL;
+        }
+        ::DestroyWindow(hwnd);
+    }
+    return b;
 }
 
 // Ensures this item is visible
@@ -2142,7 +2184,7 @@ bool wxListCtrl::MSWOnNotify(int idCtrl, WXLPARAM lParam, WXLPARAM *result)
                 }
                 break;
 
-#if HAVE_NMLVFINDITEM || HAVE_NM_FINDITEM
+#ifdef HAVE_NMLVFINDITEM
             case LVN_ODFINDITEM:
                 // this message is only used with the virtual list control but
                 // even there we don't want to always use it: in a control with
@@ -2151,11 +2193,7 @@ bool wxListCtrl::MSWOnNotify(int idCtrl, WXLPARAM lParam, WXLPARAM *result)
                 // application waiting while it performs linear search
                 if ( IsVirtual() && GetItemCount() <= 1000 )
                 {
-#if HAVE_NMLVFINDITEM
                     NMLVFINDITEM* pFindInfo = (NMLVFINDITEM*)lParam;
-#else
-                    NM_FINDITEM* pFindInfo = (NM_FINDITEM*)lParam;
-#endif
 
                     // no match by default
                     *result = -1;
@@ -2216,7 +2254,7 @@ bool wxListCtrl::MSWOnNotify(int idCtrl, WXLPARAM lParam, WXLPARAM *result)
                     processed = false;
                 }
                 break;
-#endif // HAVE_NMLVFINDITEM || HAVE_NM_FINDITEM
+#endif // HAVE_NMLVFINDITEM
 
             case LVN_GETDISPINFO:
                 if ( IsVirtual() )
@@ -2236,7 +2274,10 @@ bool wxListCtrl::MSWOnNotify(int idCtrl, WXLPARAM lParam, WXLPARAM *result)
 #ifdef NM_CUSTOMDRAW
                     if ( lvi.mask & LVIF_IMAGE )
                     {
-                        lvi.iImage = OnGetItemImage(item);
+                        if ( lvi.iSubItem == 0 )
+                            lvi.iImage = OnGetItemImage(item);
+                        else
+                            lvi.iImage = -1;
                     }
 #endif // NM_CUSTOMDRAW
 
@@ -2810,7 +2851,8 @@ static void wxConvertToMSWListCol(int WXUNUSED(col), const wxListItem& item,
             //
             // we don't use LVCFMT_COL_HAS_IMAGES because it doesn't seem to
             // make any difference in my tests -- but maybe we should?
-            lvCol.fmt |= LVCFMT_BITMAP_ON_RIGHT | LVCFMT_IMAGE;
+            if ( item.m_image != -1 )
+                lvCol.fmt |= LVCFMT_BITMAP_ON_RIGHT | LVCFMT_IMAGE;
 
             lvCol.iImage = item.m_image;
         }
@@ -2820,4 +2862,3 @@ static void wxConvertToMSWListCol(int WXUNUSED(col), const wxListItem& item,
 }
 
 #endif // wxUSE_LISTCTRL
-

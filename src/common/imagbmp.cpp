@@ -2,7 +2,7 @@
 // Name:        imagbmp.cpp
 // Purpose:     wxImage BMP,ICO and CUR handlers
 // Author:      Robert Roebling, Chris Elliott
-// RCS-ID:      $Id: imagbmp.cpp,v 1.56 2005/01/25 15:49:14 ABX Exp $
+// RCS-ID:      $Id: imagbmp.cpp,v 1.58 2005/09/13 16:06:41 ABX Exp $
 // Copyright:   (c) Robert Roebling, Chris Elliott
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -1023,7 +1023,7 @@ bool wxICOHandler::SaveFile(wxImage *image,
         return false;
     }
 
-    int images = 1; // only generate one image
+    const int images = 1; // only generate one image
 
     // VS: This is a hack of sort - since ICO and CUR files are almost
     //     identical, we have all the meat in wxICOHandler and check for
@@ -1051,7 +1051,7 @@ bool wxICOHandler::SaveFile(wxImage *image,
 
     // for each iamage write a description ICONDIRENTRY:
     ICONDIRENTRY icondirentry;
-    for (int i = 0; i < images; i++)
+    for (int img = 0; img < images; img++)
     {
         wxImage mask;
 

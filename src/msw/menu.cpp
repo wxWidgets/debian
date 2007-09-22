@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by: Vadim Zeitlin
 // Created:     04/01/98
-// RCS-ID:      $Id: menu.cpp,v 1.122 2005/06/24 00:09:34 VZ Exp $
+// RCS-ID:      $Id: menu.cpp,v 1.124.2.4 2006/03/15 09:55:55 JS Exp $
 // Copyright:   (c) Julian Smart
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -89,7 +89,8 @@ static const int idMenuTitle = -3;
 // ----------------------------------------------------------------------------
 
 // make the given menu item default
-static void SetDefaultMenuItem(HMENU hmenu, UINT id)
+static void SetDefaultMenuItem(HMENU WXUNUSED_IN_WINCE(hmenu),
+                               UINT WXUNUSED_IN_WINCE(id))
 {
 #ifndef __WXWINCE__
     MENUITEMINFO mii;
@@ -102,9 +103,6 @@ static void SetDefaultMenuItem(HMENU hmenu, UINT id)
     {
         wxLogLastError(wxT("SetMenuItemInfo"));
     }
-#else
-    wxUnusedVar(hmenu);
-    wxUnusedVar(id);
 #endif
 }
 
@@ -307,6 +305,16 @@ void wxMenu::UpdateAccel(wxMenuItem *item)
     }
     else if ( !item->IsSeparator() )
     {
+        // recurse upwards: we should only modify m_accels of the top level
+        // menus, not of the submenus as wxMenuBar doesn't look at them
+        // (alternative and arguable cleaner solution would be to recurse
+        // downwards in GetAccelCount() and CopyAccels())
+        if ( GetParent() )
+        {
+            GetParent()->UpdateAccel(item);
+            return;
+        }
+
         // find the (new) accel for this item
         wxAcceleratorEntry *accel = wxGetAccelFromString(item->GetText());
         if ( accel )
@@ -404,7 +412,8 @@ bool wxMenu::DoInsertOrAppend(wxMenuItem *pItem, size_t pos)
         if ( pItem->GetBitmap().Ok() &&
                 !pItem->GetTextColour().Ok() &&
                     !pItem->GetBackgroundColour().Ok() &&
-                        !pItem->GetFont().Ok() )
+                        !pItem->GetFont().Ok() &&
+                            !pItem->GetBitmap(true).Ok() )
         {
             // try to use InsertMenuItem() as it's guaranteed to look correctly
             // while our owner-drawning code is not
@@ -416,10 +425,20 @@ bool wxMenu::DoInsertOrAppend(wxMenuItem *pItem, size_t pos)
             // now run-time one: MIIM_BITMAP only works under WinME/2000+
             if ( wxGetWinVersion() >= wxWinVersion_98 )
             {
-                mii.fMask = MIIM_ID | MIIM_STRING | MIIM_DATA | MIIM_BITMAP;
-                mii.wID = id;
+                mii.fMask = MIIM_STRING | MIIM_DATA | MIIM_BITMAP;
                 mii.cch = itemText.length();
                 mii.dwTypeData = wx_const_cast(wxChar *, itemText.c_str());
+
+                if (flags & MF_POPUP)
+                {
+                    mii.fMask |= MIIM_SUBMENU;
+                    mii.hSubMenu = (HMENU)pItem->GetSubMenu()->GetHMenu();
+                }
+                else
+                {
+                    mii.fMask |= MIIM_ID;
+                    mii.wID = id;
+                }
 
                 // we can't pass HBITMAP directly as hbmpItem for 2 reasons:
                 //  1. we can't draw it with transparency then (this is not
@@ -859,7 +878,9 @@ WXHMENU wxMenuBar::Create()
 
     HWND hCommandBar = (HWND) GetToolBar()->GetHWND();
     HMENU hMenu = (HMENU)::SendMessage(hCommandBar, SHCMBM_GETMENU, (WPARAM)0, (LPARAM)0);
-    if (hMenu)
+
+	// hMenu may be zero on Windows Mobile 5. So add the menus anyway.
+    if (1) // (hMenu)
     {
         TBBUTTON tbButton;
         memset(&tbButton, 0, sizeof(TBBUTTON));
@@ -1039,7 +1060,11 @@ wxMenu *wxMenuBar::Replace(size_t pos, wxMenu *menu, const wxString& title)
 
     m_titles[pos] = title;
 
-    if ( IsAttached() )
+#if defined(WINCE_WITHOUT_COMMANDBAR)
+    if (IsAttached())
+#else
+    if (GetHmenu())
+#endif
     {
         int mswpos = MSWPositionForWxMenu(menuOld,pos);
 
@@ -1064,7 +1089,8 @@ wxMenu *wxMenuBar::Replace(size_t pos, wxMenu *menu, const wxString& title)
         }
 #endif // wxUSE_ACCEL
 
-        Refresh();
+        if (IsAttached())
+            Refresh();
     }
 
     return menuOld;
@@ -1075,7 +1101,13 @@ bool wxMenuBar::Insert(size_t pos, wxMenu *menu, const wxString& title)
     // Find out which MSW item before which we'll be inserting before
     // wxMenuBarBase::Insert is called and GetMenu(pos) is the new menu.
     // If IsAttached() is false this won't be used anyway
-    int mswpos = (!IsAttached() || (pos == m_menus.GetCount()))
+    bool isAttached =
+#if defined(WINCE_WITHOUT_COMMANDBAR)
+        IsAttached();
+#else
+        (GetHmenu() != 0);
+#endif
+    int mswpos = (!isAttached || (pos == m_menus.GetCount()))
         ?   -1 // append the menu
         :   MSWPositionForWxMenu(GetMenu(pos),pos);
 
@@ -1084,9 +1116,9 @@ bool wxMenuBar::Insert(size_t pos, wxMenu *menu, const wxString& title)
 
     m_titles.Insert(title, pos);
 
-    if ( IsAttached() )
+    if ( isAttached )
     {
-#if defined(WINCE_WITHOUT_COMMANDAR)
+#if defined(WINCE_WITHOUT_COMMANDBAR)
         if (!GetToolBar())
             return false;
         TBBUTTON tbButton;
@@ -1122,7 +1154,8 @@ bool wxMenuBar::Insert(size_t pos, wxMenu *menu, const wxString& title)
         }
 #endif // wxUSE_ACCEL
 
-        Refresh();
+        if (IsAttached())
+            Refresh();
     }
 
     return true;
@@ -1138,9 +1171,13 @@ bool wxMenuBar::Append(wxMenu *menu, const wxString& title)
 
     m_titles.Add(title);
 
-    if ( IsAttached() )
+#if defined(WINCE_WITHOUT_COMMANDBAR)
+    if (IsAttached())
+#else
+    if (GetHmenu())
+#endif
     {
-#if defined(WINCE_WITHOUT_COMMANDAR)
+#if defined(WINCE_WITHOUT_COMMANDBAR)
         if (!GetToolBar())
             return false;
         TBBUTTON tbButton;
@@ -1177,7 +1214,8 @@ bool wxMenuBar::Append(wxMenu *menu, const wxString& title)
         }
 #endif // wxUSE_ACCEL
 
-        Refresh();
+        if (IsAttached())
+            Refresh();
     }
 
     return true;
@@ -1189,9 +1227,13 @@ wxMenu *wxMenuBar::Remove(size_t pos)
     if ( !menu )
         return NULL;
 
-    if ( IsAttached() )
+#if defined(WINCE_WITHOUT_COMMANDBAR)
+    if (IsAttached())
+#else
+    if (GetHmenu())
+#endif
     {
-#if defined(WINCE_WITHOUT_COMMANDAR)
+#if defined(WINCE_WITHOUT_COMMANDBAR)
         if (GetToolBar())
         {
             if (!::SendMessage((HWND) GetToolBar()->GetHWND(), TB_DELETEBUTTON, (UINT) pos, (LPARAM) 0))
@@ -1214,7 +1256,8 @@ wxMenu *wxMenuBar::Remove(size_t pos)
         }
 #endif // wxUSE_ACCEL
 
-        Refresh();
+        if (IsAttached())
+            Refresh();
     }
 
 

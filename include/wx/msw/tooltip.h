@@ -4,10 +4,15 @@
 // Author:      Vadim Zeitlin
 // Modified by:
 // Created:     31.01.99
-// RCS-ID:      $Id: tooltip.h,v 1.13 2005/02/28 01:22:35 VZ Exp $
+// RCS-ID:      $Id: tooltip.h,v 1.13.2.2 2006/01/06 12:53:09 VZ Exp $
 // Copyright:   (c) 1999 Robert Roebling, Vadim Zeitlin
 // Licence:     wxWindows licence
 ///////////////////////////////////////////////////////////////////////////////
+
+#ifndef _WX_MSW_TOOLTIP_H_
+#define _WX_MSW_TOOLTIP_H_
+
+#include "wx/object.h"
 
 class WXDLLEXPORT wxToolTip : public wxObject
 {
@@ -58,3 +63,4 @@ private:
     DECLARE_NO_COPY_CLASS(wxToolTip)
 };
 
+#endif // _WX_MSW_TOOLTIP_H_

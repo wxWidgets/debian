@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     29/2/2000
-// RCS-ID:      $Id: dragimgg.cpp,v 1.17 2005/02/10 21:33:54 ABX Exp $
+// RCS-ID:      $Id: dragimgg.cpp,v 1.17.2.1 2006/01/21 16:46:38 JS Exp $
 // Copyright:   (c) Julian Smart
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -158,7 +158,7 @@ bool wxGenericDragImage::Create(const wxString& str, const wxCursor& cursor)
 
     dc2.SelectObject(wxNullBitmap);
 
-#if wxUSE_IMAGE_IN_DRAGIMAGE
+#if wxUSE_IMAGE_IN_DRAGIMAGE && (!defined(__WXMSW__) || wxUSE_WXDIB)
     // Make the bitmap masked
     wxImage image = bitmap.ConvertToImage();
     image.SetMaskColour(255, 255, 255);

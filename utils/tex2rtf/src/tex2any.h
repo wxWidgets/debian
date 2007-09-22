@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     7.9.93
-// RCS-ID:      $Id: tex2any.h,v 1.19 2004/10/31 08:31:03 VS Exp $
+// RCS-ID:      $Id: tex2any.h,v 1.21.2.1 2006/01/23 15:09:03 ABX Exp $
 // Copyright:   (c) Julian Smart
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -14,13 +14,15 @@
 #include "wx/list.h"
 #include "wx/hash.h"
 #include "wx/tokenzr.h"
+#include "wx/wfstream.h"
+#include "wx/txtstrm.h"
 #include "wxhlpblk.h"
 
 /*
  * Conversion modes
  *
  */
- 
+
 #define TEX_RTF  1
 #define TEX_XLP  2
 #define TEX_HTML 3
@@ -145,7 +147,7 @@ extern wxHashTable  MacroDefs;
 extern wxStringList IgnorableInputFiles; // Ignorable \input files, e.g. psbox.tex
 
 bool read_a_line(wxChar *buf);
-bool TexLoadFile(wxChar *filename);
+bool TexLoadFile(const wxString& filename);
 int ParseArg(TexChunk *thisArg, wxList& children, wxChar *buffer, int pos,
            wxChar *environment = NULL, bool parseArgToBrace = true, TexChunk *customMacroArgs = NULL);
 int ParseMacroBody(const wxChar *macro_name, TexChunk *parent, int no_args,
@@ -173,12 +175,10 @@ int GetCurrentColumn(void);         // number of characters on current line
 wxChar *ConvertCase(wxChar *s);         // Convert case, according to upperCaseNames setting.
 extern wxPathList TexPathList;      // Path list, can be used for file searching.
 
-#if !WXWIN_COMPATIBILITY_2
 extern bool StringMatch(const wxChar *one, const wxChar *two, bool subString = true, bool exact = false);
-#endif
 
 // Define a variable value from the .ini file
-wxChar *RegisterSetting(wxChar *settingName, wxChar *settingValue, bool interactive = true);
+wxChar *RegisterSetting(const wxString& settingName, const wxString& settingValue, bool interactive = true);
 
 // Major document styles
 #define LATEX_REPORT    1
@@ -330,7 +330,7 @@ extern void FakeCurrentSection(wxChar *fakeSection, bool addToContents = true);
  * Local to Tex2Any library
  *
  */
- 
+
 extern wxChar *currentArgData;
 extern bool haveArgData; // If true, we're simulating the data.
 void StartSimulateArgument(wxChar *data);
@@ -387,7 +387,7 @@ void SetFontSizes(int pointSize);
  * IF one exists. Inserts zero into buffer.
  *
  */
- 
+
 void StripExtension(wxChar *buffer);
 
 /*
@@ -410,7 +410,7 @@ class TexRef: public wxObject
  * Add a reference
  *
  */
- 
+
 void AddTexRef(wxChar *name, wxChar *file = NULL, wxChar *sectionName = NULL,
          int chapter = 0, int section = 0, int subsection = 0, int subsubsection = 0);
 
@@ -502,23 +502,23 @@ extern wxList CustomMacroList;
 
 class CustomMacro: public wxObject
 {
- public:
-  wxChar *macroName;
-  wxChar *macroBody;
-  int noArgs;
-  inline CustomMacro(wxChar *name, int args, wxChar *body)
-  {
-    noArgs = args;
-    macroName = wxStrcpy(new wxChar[wxStrlen(name) + 1], name);
-    if (body)
-      macroBody = wxStrcpy(new wxChar[wxStrlen(body) + 1], body);
-    else
-      macroBody = NULL;
-  }
-  ~CustomMacro();
+public:
+    wxChar *macroName;
+    wxChar *macroBody;
+    int noArgs;
+    inline CustomMacro(const wxChar *name, int args, wxChar *body)
+    {
+        noArgs = args;
+        macroName = wxStrcpy(new wxChar[wxStrlen(name) + 1], name);
+        if (body)
+            macroBody = wxStrcpy(new wxChar[wxStrlen(body) + 1], body);
+        else
+            macroBody = NULL;
+    }
+    ~CustomMacro();
 };
 
-bool ReadCustomMacros(wxChar *filename);
+bool ReadCustomMacros(const wxString& filename);
 void ShowCustomMacros(void);
 CustomMacro *FindCustomMacro(wxChar *name);
 wxChar *ParseMultifieldString(wxChar *s, int *pos);
@@ -830,7 +830,7 @@ extern void InitialiseColourTable(void);
 #define ltURLREF            551
 #define ltUPPERCASE         552
 #define ltUSEPACKAGE        553
-  
+
 #define ltVDOTS             570
 #define ltVERBATIMINPUT     571
 #define ltVERBATIM          572
@@ -1068,6 +1068,3 @@ extern void InitialiseColourTable(void);
 #define ltTOPLEVEL          15000
 #define ltCUSTOM_MACRO      15001
 #define ltSOLO_BLOCK        15002
-
-
-

@@ -6,7 +6,7 @@
 // Author:      Vadim Zeitlin
 // Modified by:
 // Created:     06.08.00
-// RCS-ID:      $Id: window.h,v 1.34 2005/03/02 10:57:07 ABX Exp $
+// RCS-ID:      $Id: window.h,v 1.35 2005/08/16 20:32:31 ABX Exp $
 // Copyright:   (c) 2000 SciTech Software, Inc. (www.scitechsoft.com)
 // Licence:     wxWindows licence
 ///////////////////////////////////////////////////////////////////////////////
@@ -254,8 +254,13 @@ protected:
     bool m_isCurrent:1;
 
 #ifdef __WXMSW__
+
+#if wxABI_VERSION >= 20602
+public:
+#endif
     // override MSWWindowProc() to process WM_NCHITTEST
     WXLRESULT MSWWindowProc(WXUINT message, WXWPARAM wParam, WXLPARAM lParam);
+
 #endif // __WXMSW__
 
 private:

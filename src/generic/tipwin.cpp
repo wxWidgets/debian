@@ -4,7 +4,7 @@
 // Author:      Vadim Zeitlin
 // Modified by:
 // Created:     10.09.00
-// RCS-ID:      $Id: tipwin.cpp,v 1.28 2005/02/16 20:34:22 ABX Exp $
+// RCS-ID:      $Id: tipwin.cpp,v 1.28.2.1 2005/10/18 14:33:33 MW Exp $
 // Copyright:   (c) 2000 Vadim Zeitlin <zeitlin@dptmaths.ens-cachan.fr>
 // Licence:     wxWindows licence
 ///////////////////////////////////////////////////////////////////////////////
@@ -319,7 +319,7 @@ void wxTipWindowView::Adjust(const wxString& text, wxCoord maxLength)
 
     // take into account the border size and the margins
     width  = 2*(TEXT_MARGIN_X + 1) + widthMax;
-    height = 2*(TEXT_MARGIN_Y + 1) + m_parent->m_textLines.GetCount()*m_parent->m_heightLine;
+    height = 2*(TEXT_MARGIN_Y + 1) + wx_truncate_cast(wxCoord, m_parent->m_textLines.GetCount())*m_parent->m_heightLine;
     m_parent->SetClientSize(width, height);
     SetSize(0, 0, width, height);
 }

@@ -4,7 +4,7 @@
 // Author:      Robert Roebling
 // Modified by:
 // Created:     04/01/98
-// RCS-ID:      $Id: minifram.cpp,v 1.9 2004/07/20 10:09:12 ABX Exp $
+// RCS-ID:      $Id: minifram.cpp,v 1.10 2005/08/23 15:54:33 ABX Exp $
 // Copyright:   (c) Julian Smart and Robert Roebling
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -23,7 +23,7 @@
 #include "wx/toolbar.h"
 #include "minifram.h"
 
-#if !defined(__WXMSW__) 
+#if !defined(__WXMSW__) && !defined(__WXPM__)
 #include "mondrian.xpm"
 #endif
 #include "bitmaps/new.xpm"
@@ -195,5 +195,3 @@ void MyMainFrame::OnReparent(wxCommandEvent& WXUNUSED(event))
     mini_frame->SendSizeEvent();
   }
 }
-
-

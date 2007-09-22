@@ -4,7 +4,7 @@
 // Author:      Vadim Zeitlin
 // Modified by:
 // Created:     19.02.1998
-// RCS-ID:      $Id: oleutils.h,v 1.22 2005/04/14 15:11:20 ABX Exp $
+// RCS-ID:      $Id: oleutils.h,v 1.25.2.1 2006/02/11 09:19:20 JS Exp $
 // Copyright:   (c) 1998 Vadim Zeitlin <zeitlin@dptmaths.ens-cachan.fr>
 // Licence:     wxWindows licence
 ///////////////////////////////////////////////////////////////////////////////
@@ -20,9 +20,12 @@
 
 #if wxUSE_OLE
 
+// ole2.h includes windows.h, so include wrapwin.h first
+#include "wx/msw/wrapwin.h"
 // get IUnknown, REFIID &c
 #include <ole2.h>
 #include "wx/intl.h"
+#include "wx/log.h"
 
 // ============================================================================
 // General purpose functions and macros
@@ -230,16 +233,16 @@ private:
 };
 
 // Convert variants
-class WXDLLEXPORT wxVariant;
+class WXDLLIMPEXP_BASE wxVariant;
 
-bool wxConvertVariantToOle(const wxVariant& variant, VARIANTARG& oleVariant) ;
-bool wxConvertOleToVariant(const VARIANTARG& oleVariant, wxVariant& variant) ;
+WXDLLEXPORT bool wxConvertVariantToOle(const wxVariant& variant, VARIANTARG& oleVariant) ;
+WXDLLEXPORT bool wxConvertOleToVariant(const VARIANTARG& oleVariant, wxVariant& variant) ;
 
 // Convert string to Unicode
-BSTR wxConvertStringToOle(const wxString& str);
+WXDLLEXPORT BSTR wxConvertStringToOle(const wxString& str);
 
 // Convert string from BSTR to wxString
-wxString wxConvertStringFromOle(BSTR bStr);
+WXDLLEXPORT wxString wxConvertStringFromOle(BSTR bStr);
 
 #else // !wxUSE_OLE
 
@@ -253,4 +256,3 @@ inline void wxOleUninitialize() { }
 #endif // wxUSE_OLE/!wxUSE_OLE
 
 #endif  //_WX_OLEUTILS_H
-

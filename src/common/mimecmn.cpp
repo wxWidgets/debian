@@ -5,7 +5,7 @@
 // Modified by:
 //  Chris Elliott (biol75@york.ac.uk) 5 Dec 00: write support for Win32
 // Created:     23.09.98
-// RCS-ID:      $Id: mimecmn.cpp,v 1.39 2005/04/25 10:28:56 MW Exp $
+// RCS-ID:      $Id: mimecmn.cpp,v 1.40 2005/07/21 16:19:40 ABX Exp $
 // Copyright:   (c) 1998 Vadim Zeitlin <zeitlin@dptmaths.ens-cachan.fr>
 // Licence:     wxWindows licence (part of wxExtra library)
 /////////////////////////////////////////////////////////////////////////////
@@ -412,12 +412,16 @@ bool wxFileType::Unassociate()
 #endif
 }
 
-bool wxFileType::SetCommand(const wxString& cmd, const wxString& verb,
-bool overwriteprompt)
+bool wxFileType::SetCommand(const wxString& cmd,
+                            const wxString& verb,
+                            bool overwriteprompt)
 {
 #if defined (__WXMSW__)  || defined(__UNIX__)
     return m_impl->SetCommand(cmd, verb, overwriteprompt);
 #else
+    wxUnusedVar(cmd);
+    wxUnusedVar(verb);
+    wxUnusedVar(overwriteprompt);
     wxFAIL_MSG(_T("not implemented"));
     return false;
 #endif
@@ -437,8 +441,8 @@ bool wxFileType::SetDefaultIcon(const wxString& cmd, int index)
 #if defined (__WXMSW__) || defined(__UNIX__)
     return m_impl->SetDefaultIcon (cmd, index);
 #else
+    wxUnusedVar(index);
     wxFAIL_MSG(_T("not implemented"));
-
     return false;
 #endif
 }
@@ -506,6 +510,7 @@ wxMimeTypesManager::Associate(const wxFileTypeInfo& ftInfo)
 #if defined(__WXMSW__) || defined(__UNIX__)
     return m_impl->Associate(ftInfo);
 #else // other platforms
+    wxUnusedVar(ftInfo);
     wxFAIL_MSG( _T("not implemented") ); // TODO
     return NULL;
 #endif // platforms

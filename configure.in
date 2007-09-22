@@ -1,7 +1,5 @@
 dnl Process this file with autoconf to produce a configure script.
-AC_REVISION($Id: configure.in,v 1.1017 2005/06/23 01:26:19 RL Exp $)dnl
-
-AC_PREREQ(2.58)
+AC_REVISION($Id: configure.in,v 1.1063.2.16 2006/03/30 17:05:49 RD Exp $)dnl
 
 dnl ---------------------------------------------------------------------------
 dnl
@@ -10,14 +8,14 @@ dnl Vadim Zeitlin and Ron Lee
 dnl
 dnl This script is under the wxWidgets licence.
 dnl
-dnl Version: $Id: configure.in,v 1.1017 2005/06/23 01:26:19 RL Exp $
+dnl Version: $Id: configure.in,v 1.1063.2.16 2006/03/30 17:05:49 RD Exp $
 dnl ---------------------------------------------------------------------------
 
 dnl ---------------------------------------------------------------------------
 dnl initialization
 dnl ---------------------------------------------------------------------------
 
-AC_INIT([wxWidgets], [2.6.1], [wx-dev@lists.wxwidgets.org])
+AC_INIT([wxWidgets], [2.6.3], [wx-dev@lists.wxwidgets.org])
 
 dnl the file passed to AC_CONFIG_SRCDIR should be specific to our package
 AC_CONFIG_SRCDIR([wx-config.in])
@@ -31,32 +29,10 @@ AC_CANONICAL_TARGET
 dnl When making releases do:
 dnl
 dnl wx_release_number += 1
-dnl
-dnl ..and update WX_CURRENT, WX_REVISION and WX_AGE according to the
-dnl following rules:
-dnl
-dnl    If any changes have been made to the public interface, that is if any
-dnl    exported class, method, global or global type has been added, removed
-dnl    or changed in any way, then do:  WX_CURRENT += 1
-dnl
-dnl    If source changes have been made that *do not* alter the public
-dnl    interface then do:  WX_REVISION += 1
-dnl    If WX_CURRENT was incremented (as above) instead do:  WX_REVISION = 0
-dnl
-dnl    If any public interface was added, do:  WX_AGE += 1
-dnl    If any public interface was removed (or altered in a way effectively
-dnl    removing the previous definition), instead do:  WX_AGE = 0
-dnl
-dnl When the major or minor version numbers are incremented, all the above
-dnl variables should be reset to 0. wx_subrelease_number should be set to zero
-dnl when major, minor or release numbers change.
-dnl
-dnl The resulting library name will be of the form:
-dnl   libwx_$(TOOLKIT)-$(WX_RELEASE).so.$(WX_CURRENT).$(WX_REVISION).$(WX_AGE)
 
 wx_major_version_number=2
 wx_minor_version_number=6
-wx_release_number=1
+wx_release_number=3
 wx_subrelease_number=2
 
 WX_RELEASE=$wx_major_version_number.$wx_minor_version_number
@@ -65,9 +41,6 @@ WX_SUBVERSION=$WX_VERSION.$wx_subrelease_number
 
 WX_MSW_VERSION=$wx_major_version_number$wx_minor_version_number$wx_release_number
 
-WX_CURRENT=0
-WX_REVISION=0
-WX_AGE=0
 
 
 dnl ------------------------------------------------------------------------
@@ -277,7 +250,6 @@ case "${host}" in
     dnl      USE_UNIX  must be set and not USE_WIN32
     SO_SUFFIX=dll
     PROGRAM_EXT=".exe"
-    RESCOMP=windres
     DEFAULT_DEFAULT_wxUSE_MSW=1
     DEFAULT_STD_FLAG=no
   ;;
@@ -324,8 +296,8 @@ case "${host}" in
     DEFAULT_STD_FLAG=no
   ;;
 
-  powerpc-*-darwin* )
-    dnl PowerPC Darwin based distributions (including Mac OS X)
+  *-*-darwin* )
+    dnl Darwin based distributions (including Mac OS X)
     USE_BSD=1
     USE_DARWIN=1
     SO_SUFFIX=dylib
@@ -417,6 +389,7 @@ if test $DEBUG_CONFIGURE = 1; then
   DEFAULT_wxUSE_LIBMSPACK=no
   DEFAULT_wxUSE_LIBSDL=no
   DEFAULT_wxUSE_LIBGNOMEPRINT=no
+  DEFAULT_wxUSE_LIBHILDON=no
   DEFAULT_wxUSE_ODBC=no
   DEFAULT_wxUSE_OPENGL=no
 
@@ -613,6 +586,7 @@ else
   DEFAULT_wxUSE_LIBMSPACK=yes
   DEFAULT_wxUSE_LIBSDL=no
   DEFAULT_wxUSE_LIBGNOMEPRINT=no
+  DEFAULT_wxUSE_LIBHILDON=no
   DEFAULT_wxUSE_ODBC=no
   DEFAULT_wxUSE_OPENGL=no
 
@@ -833,6 +807,7 @@ WX_ARG_SYS_WITH(libxpm,    [  --with-libxpm           use libxpm (XPM file forma
 WX_ARG_WITH(libmspack,     [  --with-libmspack        use libmspack (CHM help files loading)], wxUSE_LIBMSPACK)
 WX_ARG_WITH(sdl,           [  --with-sdl              use SDL for audio on Unix], wxUSE_LIBSDL)
 WX_ARG_WITH(gnomeprint,    [  --with-gnomeprint       use GNOME print for printing under Unix], wxUSE_LIBGNOMEPRINT)
+WX_ARG_WITH(hildon,        [  --with-hildon           use Hildon framework for Nokia 770], wxUSE_LIBHILDON)
 WX_ARG_WITH(opengl,        [  --with-opengl           use OpenGL (or Mesa)], wxUSE_OPENGL)
 
 fi
@@ -877,9 +852,13 @@ WX_ARG_ENABLE(no_rtti,       [  --enable-no_rtti        create code without RTTI
 WX_ARG_ENABLE(no_exceptions, [  --enable-no_exceptions  create code without C++ exceptions handling], wxUSE_NO_EXCEPTIONS)
 WX_ARG_ENABLE(permissive,    [  --enable-permissive     compile code disregarding strict ANSI], wxUSE_PERMISSIVE)
 WX_ARG_ENABLE(no_deps,       [  --enable-no_deps        create code without dependency information], wxUSE_NO_DEPS)
+WX_ARG_ENABLE(universal_binary, [  --enable-universal_binary create Mac PowerPC and Intel Universal binary (not yet working)], wxUSE_UNIVERSAL_BINARY)
 
 WX_ARG_ENABLE(compat22,      [  --enable-compat22       enable wxWidgets 2.2 compatibility], WXWIN_COMPATIBILITY_2_2)
 WX_ARG_ENABLE(compat24,      [  --disable-compat24      disable wxWidgets 2.4 compatibility], WXWIN_COMPATIBILITY_2_4, disable)
+
+DEFAULT_WX_USE_RESERVED_VIRTUALS=yes
+WX_ARG_ENABLE(reserved_virtual, [  --disable-reserved_virtual do not create unused vtable entries], WX_USE_RESERVED_VIRTUALS, disable)
 
 WX_ARG_ENABLE(rpath,         [  --disable-rpath         disable use of rpath for uninstalled builds], wxUSE_RPATH)
 
@@ -1164,9 +1143,13 @@ WX_ARG_ENABLE(mousewheel,  [  --enable-mousewheel     use mousewheel], wxUSE_MOU
 WX_ARG_ENABLE(validators,  [  --enable-validators     use wxValidator and derived classes], wxUSE_VALIDATORS)
 WX_ARG_ENABLE(busyinfo,    [  --enable-busyinfo       use wxBusyInfo], wxUSE_BUSYINFO)
 WX_ARG_ENABLE(joystick,    [  --enable-joystick       use wxJoystick], wxUSE_JOYSTICK)
-WX_ARG_ENABLE(metafile,    [  --enable-metafiles      use wxMetaFile (Windows only)], wxUSE_METAFILE)
+WX_ARG_ENABLE(metafile,    [  --enable-metafiles      use wxMetaFile (Win32 only)], wxUSE_METAFILE)
 WX_ARG_ENABLE(dragimage,   [  --enable-dragimage      use wxDragImage], wxUSE_DRAGIMAGE)
 WX_ARG_ENABLE(accessibility,[  --enable-accessibility  enable accessibility support], wxUSE_ACCESSIBILITY)
+
+if test "$wxUSE_MSW" = "1"; then
+    WX_ARG_ENABLE(dccache, [  --enable-dccache        cache temporary wxDC objects (Win32 only)], wxUSE_DC_CACHEING)
+fi
 
 dnl ---------------------------------------------------------------------------
 dnl support for image formats that do not rely on external library
@@ -1346,7 +1329,6 @@ if test "$wxUSE_WINE" = "yes"; then
     dnl FIXME: we should do a better job of testing for these
     CC=winegcc
     CXX=wineg++
-    RESCOMP=wrc
     LDFLAGS_GUI="-mwindows"
 fi
 
@@ -1379,24 +1361,6 @@ dnl ---------------------------------------------------------------------------
 
 dnl flush the cache because checking for programs might abort
 AC_CACHE_SAVE
-
-dnl cross-compiling support: we're cross compiling if the build system is
-dnl different from the target one (assume host and target be always the same)
-if test "$build" != "$host" ; then
-    if test "$USE_WIN32" = 1 -o "$USE_DOS" = 1 -o "$USE_UNIX" = 1; then
-        CC=$host_alias-gcc
-        CXX=$host_alias-c++
-        AR=$host_alias-ar
-        RANLIB=$host_alias-ranlib
-        DLLTOOL=$host_alias-dlltool
-        RESCOMP=$host_alias-windres
-        STRIP=$host_alias-strip
-    elif test "x$CC" '!=' "x"; then
-        echo "You set CC, I assume you know what you are doing."
-    else
-        AC_MSG_ERROR($build_alias -> $host_alias cross compilation not supported yet.)
-    fi
-fi
 
 dnl C-compiler checks
 dnl   defines CC with the compiler to use
@@ -1435,7 +1399,7 @@ AC_PROG_RANLIB
 
 dnl ar command
 dnl   defines AR with the appropriate command
-AC_CHECK_PROG(AR, ar, ar)
+AC_CHECK_TOOL(AR, ar)
 if test "x$AR" = "x" ; then
     AC_MSG_ERROR([ar is needed to build wxWidgets])
 fi
@@ -1461,7 +1425,7 @@ case "${host}" in
     dnl The other BSD's should probably go in here too, since this is
     dnl to workaround a strange static lib BSDism.
     dnl Mac OS X install seems to ignore -p option...
-    powerpc-*-darwin* )
+    *-*-darwin* )
         INSTALL_PROGRAM="cp -fp"
         INSTALL_DATA="cp -fp"
         ;;
@@ -1470,8 +1434,20 @@ case "${host}" in
 esac
 
 dnl strip command
-dnl   defines STRIP as strip or nothing if not found
-AC_CHECK_PROG(STRIP, strip, strip, true)
+dnl   defines STRIP as strip or nothing (true) if not found
+AC_CHECK_TOOL(STRIP, strip, true)
+
+dnl Win32 tools
+if test "$wxUSE_WINE" = "yes"; then
+    AC_CHECK_TOOL(RESCOMP, wrc)
+else
+    case "${host}" in
+    *-*-cygwin* | *-*-mingw32* )
+        AC_CHECK_TOOL(RESCOMP, windres)
+        AC_CHECK_TOOL(DLLTOOL, dlltool)
+        ;;
+    esac
+fi
 
 dnl does make support "-include" (only GNU make does AFAIK)?
 AC_CACHE_CHECK([if make is GNU make], wx_cv_prog_makeisgnu,
@@ -1540,14 +1516,14 @@ dnl ------------------------------------------------------------------------
 dnl Platform specific tests
 dnl ------------------------------------------------------------------------
 
-dnl xlC needs -qunique (at least on AIX) so that one source file can be
+dnl xlC needs -qunique under AIX so that one source file can be
 dnl compiled to multiple object files and safely linked together.
-if test "x$XLCXX" = "xyes"; then
+if test "x$XLCXX" = "xyes" -a "x$USE_AIX" = "x1"; then
     CXXFLAGS="$CXXFLAGS -qunique"
 fi
 
 
-dnl This case is for OS X vs. everything else
+dnl This case is for PowerPC OS X vs. everything else
 case "${host}" in
   powerpc-*-darwin* )
     AC_MSG_CHECKING([if __POWERPC__ is already defined])
@@ -1559,6 +1535,12 @@ case "${host}" in
         [AC_MSG_RESULT([no])
         AC_DEFINE(__POWERPC__)
     ])
+  ;;
+esac
+
+dnl This case is for OS X vs. everything else
+case "${host}" in
+  *-*-darwin* )
     AC_MSG_CHECKING([if CoreFoundation/CFBase.h is usable])
     AC_TRY_COMPILE([#include <CoreFoundation/CFBase.h>
 ],[],
@@ -1638,7 +1620,7 @@ case "${host}" in
           LDFLAGS="$LDFLAGS -Zsysv-signals"
       else
           if test "$wx_cv_gccversion" = "EMX3"; then
-              LIBS="$LIBS -lstdcxx"
+              LIBS="$LIBS -lstdcxx -lgcc"
               LDFLAGS="$LDFLAGS -Zsysv-signals"
           else
               LIBS="$LIBS -lstdc++"
@@ -1723,10 +1705,6 @@ fi
 dnl defines HAVE_FNMATCH_H
 AC_CHECK_HEADERS(fnmatch.h)
 
-if test "x$ac_cv_header_fnmatch_h" = "xyes"; then
-    AC_CHECK_FUNCS(fnmatch)
-fi
-
 dnl defines HAVE_LANGINFO_H (GNU libc locale parameters)
 AC_CHECK_HEADERS(langinfo.h)
 
@@ -1742,19 +1720,6 @@ case "${host}" in
       fi
   ;;
 esac
-
-if test "$wxUSE_GUI" = "yes"; then
-    if test "$wxUSE_UNIX" = "yes" -a "$wxUSE_PM" != 1; then
-        dnl defines HAVE_X11_XKBLIB_H
-        AC_CHECK_HEADERS(X11/Xlib.h)
-        AC_CHECK_HEADERS([X11/XKBlib.h], [], [], 
-                         [
-                          #if HAVE_X11_XLIB_H
-                            #include <X11/Xlib.h>
-                          #endif
-                         ])
-    fi
-fi
 
 dnl ---------------------------------------------------------------------------
 dnl Checks for compiler characteristics
@@ -1891,6 +1856,37 @@ dnl problems
 if test "x$wx_largefile" = "xyes"; then
     if test "x$ac_cv_sys_file_offset_bits" = "x64"; then
         WX_LARGEFILE_FLAGS="-D_FILE_OFFSET_BITS=64 -D_LARGE_FILES"
+
+        dnl We get "Large Files (ILP32) not supported in strict ANSI mode."
+        dnl #error from HP standard headers unless __STDC_EXT__ is defined.
+        dnl The compiler should define it automatically, but some old g++
+        dnl versions don't define it, so test and add it if necessary. AFAIK
+        dnl the problem only affects the C++ compiler so it is added to
+        dnl CXXFLAGS only.
+        if test "$USE_HPUX" = 1 -a "$GXX" = "yes"; then
+            AC_CACHE_CHECK(
+                [if -D__STDC_EXT__ is required],
+                wx_cv_STDC_EXT_required,
+                [
+                    AC_LANG_SAVE
+                    AC_LANG_CPLUSPLUS
+                    AC_TRY_COMPILE(
+                        [],
+                        [
+                            #ifndef __STDC_EXT__
+                                choke me
+                            #endif
+                        ],
+                        wx_cv_STDC_EXT_required=no,
+                        wx_cv_STDC_EXT_required=yes
+                    )
+                    AC_LANG_RESTORE
+                ]
+            )
+            if test "x$wx_cv_STDC_EXT_required" = "xyes"; then
+                CXXFLAGS="$CXXFLAGS -D__STDC_EXT__"
+            fi
+        fi
     else
         WX_LARGEFILE_FLAGS="-D_LARGE_FILES"
     fi
@@ -1920,6 +1916,34 @@ AC_CXX_REINTERPRET_CAST
 AC_CXX_STATIC_CAST
 dnl we don't use HAVE_DYNAMIC_CAST anywhere right now...
 dnl AC_CXX_DYNAMIC_CAST
+
+dnl With Sun CC, temporaries have block scope by default. This flag is needed
+dnl to get the expression scope behaviour that conforms to the standard.
+if test "x$SUNCXX" = xyes; then
+    CXXFLAGS="$CXXFLAGS -features=tmplife"
+fi
+
+dnl Sun X11 headers are (still, in 2005!) non-ANSI and the best they could do
+dnl was to hack their C++ compiler to accept them silently -- but C compiler
+dnl still spits out dozens of warnings for each X include file, so suppress
+dnl them
+if test "x$SUNCC" = xyes; then
+    CFLAGS="$CFLAGS -erroff=E_NO_EXPLICIT_TYPE_GIVEN"
+fi
+
+dnl SGI mipsPro compiler gives this warning for "conversion from pointer to
+dnl same-sized integral type" even when there is an explicit cast and as there
+dnl is no way to turn it off and there are hundreds of these warnings in wx
+dnl sources, just turn it off for now
+dnl
+dnl a better long term solution would be to use #pragma set/reset woff in
+dnl wxPtrToUInt() and use it instead of casts elsewhere
+if test "x$SGICC" = "xyes"; then
+    CFLAGS="$CFLAGS -woff 3970"
+fi
+if test "x$SGICXX" = "xyes"; then
+    CXXFLAGS="$CXXFLAGS -woff 3970"
+fi
 
 dnl check for std::string or std::wstring
 if test "$wxUSE_STD_STRING" = "yes" -o "$wxUSE_STL" = "yes"; then
@@ -2072,9 +2096,6 @@ SEARCH_INCLUDE="\
     /usr/Motif-2.1/include    \
     /usr/Motif-1.2/include    \
     /usr/include/Motif1.2     \
-    /opt/xpm/include/X11      \
-    /opt/GBxpm/include/       \
-    /opt/GBxpm/X11/include/   \
                               \
     /usr/dt/include           \
     /usr/openwin/include      \
@@ -2103,42 +2124,105 @@ SEARCH_INCLUDE="\
     /usr/local/X11/include    \
     /usr/local/include/X11    \
                               \
-    /usr/X386/include         \
-    /usr/x386/include         \
     /usr/XFree86/include/X11  \
-                              \
-    X:/XFree86/include        \
-    X:/XFree86/include/X11    \
-                              \
-    /usr/include/gtk          \
-    /usr/local/include/gtk    \
-    /usr/include/glib         \
-    /usr/local/include/glib   \
-                              \
-    /usr/include/qt           \
-    /usr/local/include/qt     \
-                              \
-    /usr/local/arm/3.3.2/include     \
-                              \
-    /usr/include/windows      \
-    /usr/include/wine         \
-    /usr/local/include/wine   \
-                              \
-    /usr/unsupported/include  \
-    /usr/athena/include       \
-    /usr/local/x11r5/include  \
-    /usr/lpp/Xamples/include  \
+    /usr/pkg/include          \
                               \
     /usr/openwin/share/include"
 
-dnl prepend lib and lib32 for IRIX where the files in these directories should
-dnl be found before the ones in lib64 for 32bit compilation -- of course, this
-dnl probably/surely breaks 64bit compilation... IMO the only real solution is to
-dnl stop using WX_PATH_FIND_LIBRARIES() at all and use AC_CHECK_LIB() instead
-dnl
-dnl also put 64 bit versions for Linux on AMD, they must come before the usual
-dnl locations or 64 bit compilation failed
-SEARCH_LIB="/usr/lib /usr/lib32 /usr/lib64 /usr/X11R6/lib64 `echo "$SEARCH_INCLUDE" | sed s/include/lib/g`"
+dnl try to find out the standard lib locations for the systems with multiple
+dnl ABIs
+AC_MSG_CHECKING([for libraries directory])
+
+case "${host}" in
+    *-*-irix6* )
+        AC_CACHE_VAL(
+            wx_cv_std_libpath,
+            [
+                for d in WX_STD_LIBPATH(); do
+                    for e in a so sl dylib dll.a; do
+                        libc="$d/libc.$e"
+                        if test -f $libc; then
+                            save_LIBS="$LIBS"
+                            LIBS="$libc"
+                            AC_LINK_IFELSE([int main() { return 0; }],
+                                wx_cv_std_libpath=`echo $d | sed s@/usr/@@`)
+                            LIBS="$save_LIBS"
+                            if test "x$wx_cv_std_libpath" != "x"; then
+                                break 2
+                            fi
+                        fi
+                    done
+                done
+                if test "x$wx_cv_std_libpath" = "x"; then
+                    wx_cv_std_libpath="lib"
+                fi
+            ]
+        )
+        ;;
+
+    *-*-solaris2* )
+        dnl use ../lib or ../lib/64 depending on the size of void*
+        if test "$ac_cv_sizeof_void_p" = 8 -a -d "/usr/lib/64"; then
+            wx_cv_std_libpath="lib/64"
+        else
+            wx_cv_std_libpath="lib"
+        fi
+        ;;
+
+    *-*-linux* )
+        dnl use ../lib or ../lib64 depending on the size of void*
+        if test "$ac_cv_sizeof_void_p" = 8 -a \
+                -d "/usr/lib64" -a ! -h "/usr/lib64"; then
+            wx_cv_std_libpath="lib64"
+        else
+            wx_cv_std_libpath="lib"
+        fi
+        ;;
+
+    *)
+        wx_cv_std_libpath="lib";
+        ;;
+esac
+
+AC_MSG_RESULT($wx_cv_std_libpath)
+
+SEARCH_LIB="`echo "$SEARCH_INCLUDE" | sed s@include@$wx_cv_std_libpath@g` /usr/$wx_cv_std_libpath"
+
+dnl Cross compiling with gcc?
+if test "$build" != "$host" -a "$GCC" = yes; then
+    dnl for gcc cross-compilers "$CC -print-prog-name=ld" prints the path to
+    dnl the linker. Stripping off the trailing '/bin/ld' gives us a candiate
+    dnl for a 'root' below which libraries and headers for the target system
+    dnl might be installed.
+    if cross_root=`$CC -print-prog-name=ld 2>/dev/null`; then
+        cross_root=`dirname $cross_root`
+        cross_root=`dirname $cross_root`
+
+        dnl substitute this candiate root for '^/usr' in the search lists,
+        dnl strip out any that don't start '^/usr'.
+        SEARCH_LIB=`for x in $SEARCH_LIB; do echo $x; done | sed -ne "s|^/usr|$cross_root|p"`
+        SEARCH_INCLUDE=`for x in $SEARCH_INCLUDE; do echo $x; done | sed -ne "s|^/usr|$cross_root|p"`
+        SEARCH_INCLUDE="$SEARCH_INCLUDE $cross_root/include"
+
+        dnl also have pkg-config search for *.pc files under this 'root'
+        if test -z "$PKG_CONFIG_PATH"; then
+            PKG_CONFIG_PATH="$cross_root/local/lib/pkgconfig:$cross_root/lib/pkgconfig"
+            export PKG_CONFIG_PATH
+        fi
+
+        dnl AC_PATH_XTRA doesn't work currently unless -x-includes and
+        dnl -x-libraries are given on the command line. So if they are not
+        dnl set then set them here to plausible defaults.
+        if test -z "$x_includes" -o "$x_includes" = NONE; then
+            WX_PATH_FIND_INCLUDES($SEARCH_INCLUDE, X11/Intrinsic.h)
+            x_includes=$ac_find_includes
+        fi
+        if test -z "$x_libraries" -o "$x_libraries" = NONE; then
+            WX_PATH_FIND_LIBRARIES($SEARCH_LIB, Xt)
+            x_libraries=$ac_find_libraries
+        fi
+    fi
+fi
 
 dnl ------------------------------------------------------------------------
 dnl Check for libraries
@@ -2156,7 +2240,7 @@ if test "$USE_LINUX" = 1 -o "$USE_GNU" = 1; then
         AC_TRY_COMPILE([#include <features.h>],
             [
                 #if (__GLIBC__ < 2) || (__GLIBC_MINOR__ < 1)
-                    #error not glibc2.1
+                not glibc 2.1
                 #endif
             ],
             [
@@ -2221,7 +2305,7 @@ if test "$wxUSE_REGEX" != "no"; then
     if test "$wxUSE_REGEX" = "sys" -o "$wxUSE_REGEX" = "yes" ; then
         dnl according to Unix 98 specs, regcomp() is in libc but I believe that
         dnl on some old systems it may be in libregex - check for it too?
-        AC_CHECK_HEADER(regex.h, [AC_CHECK_FUNCS(regcomp)])
+        AC_CHECK_HEADER(regex.h, [AC_CHECK_FUNCS(regcomp re_search)])
 
         if test "x$ac_cv_func_regcomp" != "xyes"; then
             if test "$wxUSE_REGEX" = "sys" ; then
@@ -2665,8 +2749,32 @@ if test "$wxUSE_GUI" = "yes"; then
 
                 dnl detect GTK2
                 wx_cv_lib_gtk=
-                if test "x$wxGTK_VERSION" != "x1"; then
+                if test "x$wxGTK_VERSION" != "x1"
+                then
+                    dnl The gthread.pc that ships with solaris returns '-mt',
+                    dnl it's correct for Sun CC, but gcc requires '-pthreads'.
+                    dnl So disable the compile check and remove the -mt below.
+                    case "${host}" in
+                        *-*-solaris2* )
+                            if test "$wxUSE_THREADS" = "yes" -a "$GCC" = yes; then
+		                enable_gtktest=no
+                            fi
+                    esac
+
                     AM_PATH_GTK_2_0(2.0.0, wx_cv_lib_gtk=2.0, , $GTK_MODULES)
+
+                    dnl Remove the '-mt' for gcc on solaris
+                    case "${host}" in
+                        *-*-solaris2* )
+                            if test "$wxUSE_THREADS" = "yes" -a "$GCC" = yes; then
+                                GTK_CFLAGS=`echo $GTK_CFLAGS | sed 's/-mt//'`
+                                GTK_LIBS=`echo $GTK_LIBS | sed 's/-mt//'`
+                            fi
+                            dnl solaris also requires -lX11 for static lib
+                            if test "$wxUSE_SHARED" != "yes"; then
+                                GTK_LIBS="$GTK_LIBS -lX11"
+                            fi
+                    esac
                 fi
 
                 dnl detect GTK1.x
@@ -2687,7 +2795,7 @@ if test "$wxUSE_GUI" = "yes"; then
                     dnl we need to cache GTK_CFLAGS and GTK_LIBS for the
                     dnl subsequent runs
                     wx_cv_cflags_gtk=$GTK_CFLAGS
-                    wx_cv_libs_gtk=$GTK_LIBS
+                    wx_cv_libs_gtk=`echo $GTK_LIBS | sed -e 's/ -l[[^ ]]*cairo[[^ ]]*//g'`
                 fi
             ]
         )
@@ -2723,8 +2831,6 @@ libraries returned by 'pkg-config gtk+-2.0 --libs' or 'gtk-config
             save_LIBS="$LIBS"
             CFLAGS="$CFLAGS $wx_cv_cflags_gtk"
             LIBS="$LIBS $wx_cv_libs_gtk"
-            
-            AC_CHECK_FUNCS([pango_font_family_is_monospace])
 
             dnl gtk_icon_size_lookup is not available in the GTK+ headers
             dnl that have shipped with some versions of Sun's JDS. Not using
@@ -2744,7 +2850,7 @@ libraries returned by 'pkg-config gtk+-2.0 --libs' or 'gtk-config
                             AC_DEFINE(NEED_GTK_ICON_SIZE_LOOKUP)
                             AC_MSG_RESULT([yes])
                            ])
-            
+
             dnl test if we have at least GTK+ 2.4:
             AC_MSG_CHECKING([if GTK+ is version >= 2.4])
             AC_TRY_COMPILE([
@@ -2752,7 +2858,7 @@ libraries returned by 'pkg-config gtk+-2.0 --libs' or 'gtk-config
                            ],
                            [
                             #if !GTK_CHECK_VERSION(2,4,0)
-                            #error "Not GTK+ 2.4"
+                            Not GTK+ 2.4
                             #endif
                            ],
                            [
@@ -2762,7 +2868,7 @@ libraries returned by 'pkg-config gtk+-2.0 --libs' or 'gtk-config
                            [
                             AC_MSG_RESULT([no])
                            ])
-            
+
             CFLAGS="$save_CFLAGS"
             LIBS="$save_LIBS"
         else
@@ -2799,7 +2905,7 @@ libraries returned by 'pkg-config gtk+-2.0 --libs' or 'gtk-config
                 dnl we guess its path from the prefix
                 GUI_TK_LIBRARY="-L${prefix}/lib -lgpewidget $GUI_TK_LIBRARY"
                 WXGPE=1
-                AC_MSG_RESULT(found at $ac_find_libraries)
+                AC_MSG_RESULT([found in $ac_find_libraries])
             else
                 AC_MSG_RESULT(not found)
             fi
@@ -2809,7 +2915,7 @@ libraries returned by 'pkg-config gtk+-2.0 --libs' or 'gtk-config
             dnl if test "$ac_find_libraries" != "" ; then
             dnl     WX_LINK_PATH_EXIST($ac_find_libraries,$GUI_TK_LIBRARY)
             dnl     GUI_TK_LIBRARY="$GUI_TK_LIBRARY -lgpe"
-            dnl     AC_MSG_RESULT(found at $ac_find_libraries)
+            dnl     AC_MSG_RESULT(found in $ac_find_libraries)
             dnl else
             dnl     AC_MSG_RESULT(not found)
             dnl fi
@@ -3009,6 +3115,9 @@ libraries returned by 'pkg-config gtk+-2.0 --libs' or 'gtk-config
             WX_INCLUDE_PATH_EXIST($ac_find_includes, $TOOLKIT_INCLUDE)
             TOOLKIT_INCLUDE="$TOOLKIT_INCLUDE$ac_path_to_include"
         else
+            save_CFLAGS=$CFLAGS
+            CFLAGS="$CFLAGS $TOOLKIT_INCLUDE"
+
             AC_TRY_COMPILE(
                 [
                     #include <Xm/Xm.h>
@@ -3023,46 +3132,51 @@ libraries returned by 'pkg-config gtk+-2.0 --libs' or 'gtk-config
                 ],
                 [
                     AC_MSG_RESULT(no)
-                    AC_MSG_ERROR(please set CFLAGS to contain the location of Xm/Xm.h)
+                    AC_MSG_ERROR(please set CPPFLAGS to contain the location of Xm/Xm.h)
                 ]
             )
+
+            CFLAGS=$save_CFLAGS
         fi
 
-        if test "$COMPILED_X_PROGRAM" = 0; then
-            AC_MSG_CHECKING(for Motif/Lesstif library)
-            WX_PATH_FIND_LIBRARIES($SEARCH_LIB, Xm)
-            if test "$ac_find_libraries" != "" ; then
-                AC_MSG_RESULT(found at $ac_find_libraries)
 
-                WX_LINK_PATH_EXIST($ac_find_libraries, $GUI_TK_LIBRARY)
-                GUI_TK_LIBRARY="$GUI_TK_LIBRARY$ac_path_to_link"
-            else
-                dnl it might happen that we found headers in one of the
-                dnl standard paths but the libs are elsewhere - we do need to
-                dnl try to compile a sample program then here
-                save_CFLAGS=$CFLAGS
-                CFLAGS="$CFLAGS $TOOLKIT_INCLUDE"
+        AC_MSG_CHECKING(for Motif/Lesstif library)
+        WX_PATH_FIND_LIBRARIES($SEARCH_LIB, Xm)
 
-                AC_TRY_COMPILE(
-                    [
-                        #include <Xm/Xm.h>
-                    ],
-                    [
-                        int version;
-                        version = xmUseVersion;
-                    ],
-                    [
-                        AC_MSG_RESULT(found in default search path)
-                        COMPILED_X_PROGRAM=1
-                    ],
-                    [
-                        AC_MSG_RESULT(no)
-                        AC_MSG_ERROR(please set LDFLAGS to contain the location of libXm)
-                    ]
-                )
+        if test "x$ac_find_libraries" != "x" ; then
+            AC_MSG_RESULT(found in $ac_find_libraries)
 
-                CFLAGS=$save_CFLAGS
-            fi
+            WX_LINK_PATH_EXIST($ac_find_libraries, $GUI_TK_LIBRARY)
+            GUI_TK_LIBRARY="$GUI_TK_LIBRARY$ac_path_to_link"
+        else
+            dnl it might happen that we found headers in one of the standard
+            dnl paths but the libs are elsewhere but still in default (linker)
+            dnl path -- try to compile a test program to check for this
+            save_CFLAGS=$CFLAGS
+            CFLAGS="$CFLAGS $TOOLKIT_INCLUDE"
+            save_LIBS="$LIBS"
+            LIBS="$GUI_TK_LIBRARY -lXm -lXmu -lXext -lX11"
+
+            AC_TRY_LINK(
+                [
+                    #include <Xm/Xm.h>
+                ],
+                [
+                    int version;
+                    version = xmUseVersion;
+                ],
+                [
+                    AC_MSG_RESULT(found in default search path)
+                    COMPILED_X_PROGRAM=1
+                ],
+                [
+                    AC_MSG_RESULT(no)
+                    AC_MSG_ERROR(please set LDFLAGS to contain the location of libXm)
+                ]
+            )
+
+            CFLAGS=$save_CFLAGS
+            LIBS="$save_LIBS"
         fi
 
         AC_MSG_CHECKING([if we need -lXp and/or -lSM -lICE])
@@ -3110,28 +3224,53 @@ libraries returned by 'pkg-config gtk+-2.0 --libs' or 'gtk-config
             AC_MSG_ERROR([can't link a simple motif program])
         fi
 
+        dnl this seems to be needed under IRIX and shouldn't do any harm
+        dnl elsewhere
+        AC_CHECK_LIB(Sgm, [SgCreateList], [libsgm_link=" -lSgm"])
+
         save_CFLAGS=$CFLAGS
         CFLAGS="$CFLAGS $TOOLKIT_INCLUDE"
-        AC_MSG_CHECKING([for Motif 2])
-        AC_TRY_COMPILE([
-                        #include <Xm/Xm.h>
-                       ],
-                       [
-                        #if XmVersion < 2000
-                        #error "Not Motif 2"
-                        #endif
-                       ],
-                       [
-                        AC_DEFINE(__WXMOTIF20__,1)
-                        AC_MSG_RESULT([found])
-                       ],
-                       [
-                        AC_DEFINE(__WXMOTIF20__,0)
-                        AC_MSG_RESULT([not found])
-                       ])
+
+        AC_CACHE_CHECK([for Motif 2],
+            wx_cv_lib_motif2,
+            AC_TRY_COMPILE([
+                            #include <Xm/Xm.h>
+                           ],
+                           [
+                            #if XmVersion < 2000
+                            Not Motif 2
+                            #endif
+                           ],
+                           wx_cv_lib_motif2="yes",
+                           wx_cv_lib_motif2="no"))
+        if test "$wx_cv_lib_motif2" = "yes"; then
+            AC_DEFINE(__WXMOTIF20__,1)
+        else
+            AC_DEFINE(__WXMOTIF20__,0)
+        fi
+
+        AC_CACHE_CHECK([whether Motif is Lesstif],
+            wx_cv_lib_lesstif,
+            AC_TRY_COMPILE([
+                            #include <Xm/Xm.h>
+                           ],
+                           [
+                            #if !defined(LesstifVersion) || LesstifVersion <= 0
+                            Not Lesstif
+                            #endif
+                           ],
+                           wx_cv_lib_lesstif="yes",
+                           wx_cv_lib_lesstif="no")
+        )
+        if test "$wx_cv_lib_lesstif" = "yes"; then
+            AC_DEFINE(__WXLESSTIF__,1)
+        else
+            AC_DEFINE(__WXLESSTIF__,0)
+        fi
+
         CFLAGS=$save_CFLAGS
 
-        GUI_TK_LIBRARY="$GUI_TK_LIBRARY -lXm${libp_link} -lXmu -lXext -lXt${libsm_ice_link} -lX11"
+        GUI_TK_LIBRARY="$GUI_TK_LIBRARY${libsgm_link} -lXm${libp_link} -lXmu -lXext -lXt${libsm_ice_link} -lX11"
         TOOLKIT=MOTIF
         GUIDIST=MOTIF_DIST
     fi
@@ -3145,7 +3284,7 @@ libraries returned by 'pkg-config gtk+-2.0 --libs' or 'gtk-config
             if test "$ac_find_libraries" != "" ; then
                 WX_LINK_PATH_EXIST($ac_find_libraries,$GUI_TK_LIBRARY)
                 GUI_TK_LIBRARY="$GUI_TK_LIBRARY$ac_path_to_link"
-                AC_MSG_RESULT(found at $ac_find_libraries)
+                AC_MSG_RESULT(found in $ac_find_libraries)
 
                 AC_CACHE_CHECK([for X11/xpm.h],
                     wx_cv_x11_xpm_h,
@@ -3307,6 +3446,20 @@ fi
 dnl ---------------------------------------------------------------------------
 dnl Optional libraries included when system library is not used
 dnl ---------------------------------------------------------------------------
+
+dnl do this after test for X11 above so that we have a chance of finding Xlib.h
+if test "$wxUSE_GUI" = "yes"; then
+    if test "$wxUSE_UNIX" = "yes" -a "$wxUSE_PM" != 1; then
+        dnl defines HAVE_X11_XKBLIB_H
+        AC_CHECK_HEADERS(X11/Xlib.h)
+        AC_CHECK_HEADERS([X11/XKBlib.h], [], [], 
+                         [
+                          #if HAVE_X11_XLIB_H
+                            #include <X11/Xlib.h>
+                          #endif
+                         ])
+    fi
+fi
 
 
 dnl ----------------------------------------------------------------
@@ -3530,7 +3683,7 @@ if test "$wxUSE_SHARED" = "yes"; then
       *-*-linux* | *-*-gnu* )
         SAMPLES_RPATH_FLAG="-Wl,-rpath,\$(top_builddir)lib"
         WXCONFIG_RPATH="-Wl,-rpath,\$libdir"
-	;;
+        ;;
 
       *-*-solaris2* )
         if test "$GCC" = yes ; then
@@ -3570,7 +3723,7 @@ if test "$wxUSE_SHARED" = "yes"; then
         fi
       ;;
       
-      powerpc-*-darwin* )
+      *-*-darwin* )
         install_name_tool=`which install_name_tool`
         if test "$install_name_tool" -a -x "$install_name_tool"; then
             SAMPLES_RPATH_POSTLINK="\$(top_builddir)change-install-names \$(LIBDIRNAME) \$(prefix) \$@"
@@ -3859,14 +4012,21 @@ if test "$wxUSE_WCHAR_T" = "yes"; then
         AC_DEFINE(HAVE_WCSLEN)
     fi
 
-    dnl on HP-UX aCC and g++ need this define to find mbstrtowcs() &c
-    if test "$USE_HPUX" = 1; then
+    dnl On HP-UX aCC need this define to find mbstrtowcs() &c
+    dnl Can't be used for g++ since the mbstate_t in wchar.h can conflict
+    dnl with g++'s in <cwchar> (unless -D_INCLUDE__STDC_A1_SOURCE is in the
+    dnl flags when g++ is configured, it will declare it's own).
+    if test "$USE_HPUX" = 1 -a "$GCC" != "yes"; then
         CPPFLAGS="$CPPFLAGS -D_INCLUDE__STDC_A1_SOURCE "
     fi
 
-    dnl try to use wcsrtombs instead of wcstombs which is buggy in old GNU
-    dnl libc versions if possible
-    AC_CHECK_FUNCS(wcsrtombs)
+    dnl Try to use wcsrtombs instead of wcstombs which is buggy in old GNU
+    dnl libc versions if possible. AC_CHECK_FUNCS only checks it's in the
+    dnl library, not the header, so do a header check for mbstate_t first.
+    AC_CHECK_TYPES([mbstate_t],
+                   [AC_CHECK_FUNCS(wcsrtombs)],
+                   [],
+                   [#include <wchar.h>])
 else
     AC_MSG_WARN([Wide character support is unavailable])
 fi
@@ -3879,22 +4039,32 @@ AC_LANG_CPLUSPLUS
 
 dnl check for vsnprintf() -- a safe version of vsprintf())
 dnl
-dnl the trouble here is that on some systems (notable HP-UX) this function is
+dnl the trouble here is that on some systems (e.g HP-UX 10) this function is
 dnl present in libc but not in the system headers and so AC_CHECK_FUNCS (which,
 dnl stupidly, provides a dummy function declaration inside its extension)
 dnl succeeds, even with C++ compiler, but the compilation of wxWidgets fails
 dnl
 dnl so we first check if the function is in the library
-AC_CHECK_FUNCS(vsnprintf)
+AC_CHECK_FUNCS(snprintf vsnprintf)
 
 if test "$ac_cv_func_vsnprintf" = "yes"; then
     dnl yes it is -- now check if it is in the headers
     AC_CACHE_CHECK([for vsnprintf declaration], wx_cv_func_vsnprintf_decl,
         [
+            dnl our troubles are not over: HP-UX 11 prototypes vsnprintf() as
+            dnl taking "char *" and not "const char *" while Metrowerks does
+            dnl provide a correct vsnprintf declaration but in C++ mode it's
+            dnl always in std namespace and so we have to bring it in scope
             AC_TRY_COMPILE(
                 [
                     #include <stdio.h>
                     #include <stdarg.h>
+                    #ifdef __MSL__
+                    #if __MSL__ >= 0x6000
+                    namespace std {}
+                    using namespace std;
+                    #endif
+                    #endif
                 ],
                 [
                     char *buf;
@@ -3902,33 +4072,105 @@ if test "$ac_cv_func_vsnprintf" = "yes"; then
                     vsnprintf(buf, 10u, "%s", ap);
                 ],
                 wx_cv_func_vsnprintf_decl=yes,
-                [
-                    dnl Metrowerks does provide a vsnprintf declaration
-                    dnl but in C++ mode it's always in std namespace.
-                    dnl FIXME: Do we have any UNIX C++ compilers that would
-                    dnl fail this test if using namespace std; was
-                    dnl simply always included?
-                    AC_TRY_COMPILE(
-                        [
-                            #include <stdio.h>
-                            #include <stdarg.h>
-                            using namespace std;
-                        ],
-                        [
-                            char *buf;
-                            va_list ap;
-                            vsnprintf(buf, 10u, "%s", ap);
-                        ],
-                        wx_cv_func_vsnprintf_decl=yes,
-                        wx_cv_func_vsnprintf_decl=no
-                    )
-                ]
+                wx_cv_func_vsnprintf_decl=no
             )
         ]
     )
 
     if test "$wx_cv_func_vsnprintf_decl" = "yes"; then
         AC_DEFINE(HAVE_VSNPRINTF_DECL)
+
+        dnl we know there is a vsnprintf declaration, but some old headers
+        dnl may have one taking a "char *" format instead of "const char *"
+        AC_CACHE_CHECK([if vsnprintf declaration is broken], wx_cv_func_broken_vsnprintf_decl,
+            [
+                AC_TRY_COMPILE(
+                    [
+                        #include <stdio.h>
+                        #include <stdarg.h>
+                        #ifdef __MSL__
+                        #if __MSL__ >= 0x6000
+                        namespace std {}
+                        using namespace std;
+                        #endif
+                        #endif
+                    ],
+                    [
+                        char *buf;
+                        va_list ap;
+                        const char *fmt = "%s";
+                        vsnprintf(buf, 10u, fmt, ap);
+                    ],
+                    wx_cv_func_broken_vsnprintf_decl=no,
+                    wx_cv_func_broken_vsnprintf_decl=yes
+                )
+            ]
+        )
+
+        if test "$wx_cv_func_broken_vsnprintf_decl" = "yes"; then
+            AC_DEFINE(HAVE_BROKEN_VSNPRINTF_DECL)
+        fi
+    fi
+fi
+
+dnl the same as above but for snprintf() now: it's not present in at least AIX
+dnl 4.2 headers
+if test "$ac_cv_func_snprintf" = "yes"; then
+    AC_CACHE_CHECK([for snprintf declaration], wx_cv_func_snprintf_decl,
+        [
+            AC_TRY_COMPILE(
+                [
+                    #include <stdio.h>
+                    #include <stdarg.h>
+                    #ifdef __MSL__
+                    #if __MSL__ >= 0x6000
+                    namespace std {}
+                    using namespace std;
+                    #endif
+                    #endif
+                ],
+                [
+                    char *buf;
+                    snprintf(buf, 10u, "%s", "wx");
+                ],
+                wx_cv_func_snprintf_decl=yes,
+                wx_cv_func_snprintf_decl=no
+            )
+        ]
+    )
+
+    if test "$wx_cv_func_snprintf_decl" = "yes"; then
+        AC_DEFINE(HAVE_SNPRINTF_DECL)
+
+        dnl we know there is an snprintf declaration, but some old headers
+        dnl may have one taking a "char *" format instead of "const char *"
+        AC_CACHE_CHECK([if snprintf declaration is broken], wx_cv_func_broken_snprintf_decl,
+            [
+                AC_TRY_COMPILE(
+                    [
+                        #include <stdio.h>
+                        #include <stdarg.h>
+                        #ifdef __MSL__
+                        #if __MSL__ >= 0x6000
+                        namespace std {}
+                        using namespace std;
+                        #endif
+                        #endif
+                    ],
+                    [
+                        char *buf;
+                        const char *fmt = "%s";
+                        snprintf(buf, 10u, fmt, "wx");
+                    ],
+                    wx_cv_func_broken_snprintf_decl=no,
+                    wx_cv_func_broken_snprintf_decl=yes
+                )
+            ]
+        )
+
+        if test "$wx_cv_func_broken_snprintf_decl" = "yes"; then
+            AC_DEFINE(HAVE_BROKEN_SNPRINTF_DECL)
+        fi
     fi
 fi
 
@@ -3949,6 +4191,13 @@ fi
 
 AC_LANG_RESTORE
 
+if test "x$ac_cv_header_fnmatch_h" = "xyes"; then
+    AC_CHECK_FUNCS(fnmatch)
+fi
+
+if test "$wxUSE_FILE" = "yes"; then
+    AC_CHECK_FUNCS(fsync)
+fi
 
 
 dnl the following tests are for Unix(like) systems only
@@ -4058,10 +4307,10 @@ AC_CACHE_CHECK(for statfs, wx_cv_func_statfs,
     AC_TRY_COMPILE(
         [
              #if defined(__BSD__)
-               #include <sys/param.h>
-               #include <sys/mount.h>
+             #include <sys/param.h>
+             #include <sys/mount.h>
              #else
-               #include <sys/vfs.h>
+             #include <sys/vfs.h>
              #endif
         ],
         [
@@ -4072,16 +4321,39 @@ AC_CACHE_CHECK(for statfs, wx_cv_func_statfs,
              l += fs.f_blocks;
              l += fs.f_bavail;
         ],
-        [
-             wx_cv_func_statfs=yes
-        ],
-        [
-             wx_cv_func_statfs=no
-        ]
+         wx_cv_func_statfs=yes,
+         wx_cv_func_statfs=no
     )
 )
 
 if test "$wx_cv_func_statfs" = "yes"; then
+    dnl check whether we have its dcelaration too: some systems (AIX 4) lack it
+    AC_LANG_SAVE
+    AC_LANG_CPLUSPLUS
+    AC_CACHE_CHECK(for statfs declaration, wx_cv_func_statfs_decl,
+        AC_TRY_COMPILE(
+            [
+                 #if defined(__BSD__)
+                 #include <sys/param.h>
+                 #include <sys/mount.h>
+                 #else
+                 #include <sys/vfs.h>
+                 #endif
+            ],
+            [
+                struct statfs fs;
+                statfs("", &fs);
+            ],
+            wx_cv_func_statfs_decl=yes,
+            wx_cv_func_statfs_decl=no
+        )
+    )
+    AC_LANG_RESTORE
+
+    if test "$wx_cv_func_statfs_decl" = "yes"; then
+        AC_DEFINE(HAVE_STATFS_DECL)
+    fi
+
     wx_cv_type_statvfs_t="struct statfs"
     AC_DEFINE(HAVE_STATFS)
 else
@@ -4365,10 +4637,14 @@ if test "$TOOLKIT" != "MSW" -a "$USE_OS2" != 1; then
                 THREAD_OPTS="pthreads"
                 ;;
           *-hp-hpux* )
-                dnl HP-UX aCC only gives a warning, not an error about
-                dnl -pthread but it doesn't work and we have to use -lpthread
-                dnl there
-                if test "x$GCC" != "xyes"; then
+                if test "x$GCC" = "xyes"; then
+                    dnl g++ versions before 3.3.2 don't support -pthread.
+                    $CXX -dumpspecs | grep 'pthread:' >/dev/null ||
+                        THREAD_OPTS="" 
+                else
+                    dnl HP-UX aCC only gives a warning, not an error about
+                    dnl -pthread but it doesn't work and we have to use
+                    dnl -lpthread there
                     THREAD_OPTS=""
                 fi
                 ;;
@@ -4487,6 +4763,28 @@ if test "$TOOLKIT" != "MSW" -a "$USE_OS2" != 1; then
     dnl do other tests only if we are using threads
     if test "$wxUSE_THREADS" = "yes" ; then
       AC_CHECK_FUNCS(thr_setconcurrency)
+
+      dnl can't use AC_CHECK_FUNCS for this one as it's usually a macro and so
+      dnl wouldn't be found by it
+      AC_CACHE_CHECK([for pthread_cleanup_push/pop], wx_cv_func_pthread_cleanup,
+      [
+        AC_TRY_COMPILE([#include <pthread.h>
+               void ThreadCleanupFunc(void *p);
+            ],
+            [
+                void *p;
+                pthread_cleanup_push(ThreadCleanupFunc, p);
+                pthread_cleanup_pop(0);
+            ], [
+               wx_cv_func_pthread_cleanup=yes
+            ], [
+               wx_cv_func_pthread_cleanup=no
+            ]
+        )
+      ])
+      if test "x$wx_cv_func_pthread_cleanup" = "xyes"; then
+        AC_DEFINE(wxHAVE_PTHREAD_CLEANUP)
+      fi
 
       AC_CHECK_HEADERS(sched.h)
       if test "$ac_cv_header_sched_h" = "yes"; then
@@ -4739,7 +5037,19 @@ if test "$wxUSE_OPTIMISE" = "no" ; then
     fi
 else
     if test "$GCC" = yes ; then
-        OPTIMISE="-O2"
+        case "${host}" in
+            *-pc-os2_emx | *-pc-os2-emx )
+                dnl Not all of the supported gcc versions understand
+                dnl -fstrict-aliasing and none actually needs it (yet).
+                OPTIMISE="-O2"
+            ;;
+            *)
+                dnl Switch on optimisation but keep strict-aliasing off for
+                dnl now (see -fstrict-aliasing in the gcc manual). When it is
+                dnl switched back on consider using -Wstrict-aliasing=2.
+                OPTIMISE="-O2 -fno-strict-aliasing"
+            ;;
+        esac
 
         dnl VZ: does anybody know what does this do??
         case "${host}" in
@@ -4764,6 +5074,11 @@ fi
 
 if test "x$WXWIN_COMPATIBILITY_2_4" != "xno"; then
     AC_DEFINE(WXWIN_COMPATIBILITY_2_4)
+fi
+
+dnl This one is enabled by default in setup.h, it must be turned off manually.
+if test "x$WX_USE_RESERVED_VIRTUALS" = "xno"; then
+    AC_DEFINE(WX_USE_RESERVED_VIRTUALS,0)
 fi
 
 dnl ---------------------------------------------------------------------------
@@ -4915,8 +5230,41 @@ fi
 dnl Unix implementation needs additional checks because audio support
 dnl comes in many favours:
 if test "$USE_UNIX" = "1" ; then
-    AC_CHECK_HEADERS([sys/soundcard.h],,
-                     [DISABLED_CONTRIB="$DISABLED_CONTRIB mmedia"])
+    dnl it's not enough to check for just the header because OSS under NetBSD
+    dnl redefines ioctl as oss_ioctrl inside it and so we also need to test
+    dnl whether we need -lossaudio at link-time
+    AC_CACHE_CHECK([for ioctl() in sys/soundcard.h], ac_cv_header_sys_soundcard, [
+        AC_TRY_LINK([
+                #include <sys/soundcard.h>
+            ],
+            [
+                ioctl(0, SNDCTL_DSP_SYNC, 0);
+            ],
+            ac_cv_header_sys_soundcard=yes,
+            [
+                saveLibs="$LIBS"
+                LIBS="$saveLibs -lossaudio"
+                AC_TRY_LINK([
+                        #include <sys/soundcard.h>
+                    ],
+                    [
+                        ioctl(0, SNDCTL_DSP_SYNC, 0);
+                    ],
+                    ac_cv_header_sys_soundcard=yes,
+                    [
+                        LIBS="$saveLibs"
+                        ac_cv_header_sys_soundcard=no
+                    ]
+                )
+            ]
+        )
+    ])
+
+    if test "$ac_cv_header_sys_soundcard" = "yes"; then
+        AC_DEFINE(HAVE_SYS_SOUNDCARD_H)
+    else
+        DISABLED_CONTRIB="$DISABLED_CONTRIB mmedia"
+    fi
 fi
 WITH_PLUGIN_SDL=0
 if test "$wxUSE_SOUND" = "yes"; then
@@ -4956,6 +5304,23 @@ dnl                     EXTRALIBS_GNOMEPRINT="$LIBGNOMEPRINTUI_LIBS"
                     ]
                 )
         fi
+    fi
+fi
+
+if test "$WXGTK20" = 1; then
+    if test "$wxUSE_LIBHILDON" = "yes" ; then
+        PKG_CHECK_MODULES(HILDON, 
+                          [hildon-lgpl >= 0.9],
+            [
+                EXTRALIBS_HILDON="$HILDON_LIBS"
+                CXXFLAGS="$CXXFLAGS $HILDON_CFLAGS"
+                AC_DEFINE(wxUSE_LIBHILDON)
+            ],
+            [
+                AC_MSG_WARN([libhildon_lgpl not found])
+                        wxUSE_LIBHILDON="no"
+            ]
+        )
     fi
 fi
 
@@ -5352,7 +5717,7 @@ if test "$wxUSE_SOCKETS" = "yes" ; then
             wxUSE_SOCKETS=no
             AC_MSG_WARN([Couldn't find socklen_t synonym for this system])
         else
-            AC_DEFINE_UNQUOTED(SOCKLEN_T, $wx_cv_type_getsockname3)
+            AC_DEFINE_UNQUOTED(WX_SOCKLEN_T, $wx_cv_type_getsockname3)
         fi
         dnl Do this again for getsockopt as it may be different
         AC_CACHE_CHECK([what is the type of the fifth argument of getsockopt],
@@ -5609,6 +5974,17 @@ if test "$wxUSE_PROLOGIO" = "yes" -o  "$wxUSE_RESOURCES" = "yes"; then
 fi
 
 dnl ---------------------------------------------------------------------------
+dnl wxMetafile availability
+dnl ---------------------------------------------------------------------------
+
+if test "$wxUSE_METAFILE" = "yes"; then
+    if test "$wxUSE_MSW" != 1 -a "$wxUSE_MAC" != 1 -a "$wxUSE_PM" != 1; then
+        AC_MSG_WARN([wxMetafile is not available on this system... disabled])
+        wxUSE_METAFILE=no
+    fi
+fi
+
+dnl ---------------------------------------------------------------------------
 dnl IPC: IPC, Drag'n'Drop, Clipboard, ...
 dnl ---------------------------------------------------------------------------
 
@@ -5673,6 +6049,19 @@ if test "$wxUSE_IPC" = "yes"; then
     fi
 fi
 
+if test "$wxUSE_DATAOBJ" = "yes"; then
+    if test "$wxUSE_MGL" = 1; then
+        AC_MSG_WARN([wxDataObject not yet supported under MGL... disabled])
+        wxUSE_DATAOBJ=no
+    else
+        AC_DEFINE(wxUSE_DATAOBJ)
+    fi
+else
+    AC_MSG_WARN([Clipboard and drag-and-drop require wxDataObject -- disabled])
+    wxUSE_CLIPBOARD=no
+    wxUSE_DRAG_AND_DROP=no
+fi
+
 if test "$wxUSE_CLIPBOARD" = "yes"; then
     if test "$wxUSE_MGL" = 1; then
         AC_MSG_WARN([Clipboard not yet supported under MGL... disabled])
@@ -5681,9 +6070,6 @@ if test "$wxUSE_CLIPBOARD" = "yes"; then
 
     if test "$wxUSE_CLIPBOARD" = "yes"; then
         AC_DEFINE(wxUSE_CLIPBOARD)
-
-        dnl required by clipboard code in configuration check
-        AC_DEFINE(wxUSE_DATAOBJ)
     fi
 fi
 
@@ -6035,6 +6421,10 @@ if test "$wxUSE_ACCESSIBILITY" = "yes"; then
     SAMPLES_SUBDIRS="$SAMPLES_SUBDIRS access"
 fi
 
+if test "$wxUSE_DC_CACHEING" = "yes"; then
+    AC_DEFINE(wxUSE_DC_CACHEING)
+fi
+
 if test "$wxUSE_DRAGIMAGE" = "yes"; then
     AC_DEFINE(wxUSE_DRAGIMAGE)
     SAMPLES_SUBDIRS="$SAMPLES_SUBDIRS dragimag"
@@ -6381,7 +6771,6 @@ fi
 AC_SUBST(CORE_BASE_LIBS)
 AC_SUBST(CORE_GUI_LIBS)
 
-
 dnl ---------------------------------------------------------------------------
 dnl Output the makefiles and such from the results found above
 dnl ---------------------------------------------------------------------------
@@ -6502,10 +6891,8 @@ INCLUDES="-I\${top_builddir}lib/wx/include/${TOOLCHAIN_FULLNAME} \
 dnl C/C++ compiler options used to compile wxWidgets
 if test "$GXX" = yes ; then
     dnl CXXWARNINGS="-Wall -W -Wcast-qual -Werror"
-    CWARNINGS="-Wall" 
+    CWARNINGS="-Wall -Wundef"
     CXXWARNINGS="$CWARNINGS -Wno-ctor-dtor-privacy" 
-    dnl should enable this one day...
-    dnl CXXWARNINGS="-Wall -Werror"
 fi
 
 EXTRA_CFLAGS="$WXDEBUG $WXODBCFLAG $PROFILE $OPTIMISE"
@@ -6514,7 +6901,7 @@ dnl remove the extra white space from the cc/c++/ld options
 CPPFLAGS=`echo $WXDEBUG_DEFINE $INCLUDES $CPPFLAGS`
 CFLAGS=`echo $CODE_GEN_FLAGS $EXTRA_CFLAGS $CFLAGS $CWARNINGS`
 CXXFLAGS=`echo $CODE_GEN_FLAGS $CODE_GEN_FLAGS_CXX $EXTRA_CFLAGS $CXXFLAGS $CXXWARNINGS`
-    
+
 if test "x$MWCC" = "xyes"; then
     dnl Correct MW 8.3 to be more similar to GCC.  In particular we
     dnl must use <regex.h> from system not our local copy on OS X,
@@ -6537,7 +6924,7 @@ EXTRALIBS_XML="$EXPAT_LINK"
 EXTRALIBS_HTML="$MSPACK_LINK"
 EXTRALIBS_ODBC="$ODBC_LINK"
 if test "$wxUSE_GUI" = "yes"; then
-    EXTRALIBS_GUI=`echo $GUI_TK_LIBRARY $PNG_LINK $JPEG_LINK $TIFF_LINK $WEBKIT_LINK $EXTRALIBS_GNOMEPRINT`
+    EXTRALIBS_GUI=`echo $GUI_TK_LIBRARY $PNG_LINK $JPEG_LINK $TIFF_LINK $WEBKIT_LINK $EXTRALIBS_HILDON $EXTRALIBS_GNOMEPRINT`
 fi
 if test "$wxUSE_OPENGL" = "yes"; then
     EXTRALIBS_OPENGL="$LDFLAGS_GL $OPENGL_LIBS"
@@ -6644,6 +7031,7 @@ AC_SUBST(EXTRALIBS_OPENGL)
 AC_SUBST(EXTRALIBS_SDL)
 AC_SUBST(WITH_PLUGIN_SDL)
 AC_SUBST(EXTRALIBS_GNOMEPRINT)
+AC_SUBST(EXTRALIBS_HILDON)
 AC_SUBST(UNICODE)
 AC_SUBST(BUILD)
 AC_SUBST(DEBUG_INFO)
@@ -6674,10 +7062,37 @@ if test "$wxUSE_WINE" = "yes"; then
     BAKEFILE_FORCE_PLATFORM=win32
 fi
 
+dnl ---------------------------------------------------------------------------
+dnl Add Universal binary support 
+dnl Note we don't do this earlier because adding these cpp/ld flags could
+dnl cause configure tests to fail.
+dnl ---------------------------------------------------------------------------
+if test "$wxUSE_MAC" = 1 ; then
+    if test "$wxUSE_UNIVERSAL_BINARY" = "yes" ; then
+        CXXFLAGS="-isysroot /Developer/SDKs/MacOSX10.4u.sdk -arch ppc -arch i386 $CXXFLAGS"
+        CFLAGS="-isysroot /Developer/SDKs/MacOSX10.4u.sdk -arch ppc -arch i386 $CFLAGS"
+        LDFLAGS="-isysroot /Developer/SDKs/MacOSX10.4u.sdk -arch ppc -arch i386 $LDFLAGS"
+        bk_use_pch=no
+    fi
+    # TODO: where do we add "-syslibroot,/Developer/SDKs/MacOSX10.4u.sdk" for libtool (static builds only)?
+    #       The makefile currently uses AR and RANLIB, which libtool apparently supercedes.
+    # TODO: how can we avoid a hardwired reference to the SDK, above? (Someone used -lSystemStubs to avoid it)
+fi
+
 AC_BAKEFILE([m4_include(autoconf_inc.m4)])
 
-if test "$wxUSE_WINE" = "yes"; then
-    RESCOMP=wrc
+dnl HACK ALERT!! 
+dnl For now, we need to alter bk-deps not to generate deps
+dnl when we've configured a Universal binary build.
+dnl The next version of Bakefile will have the correct fix for this
+dnl at which time, this hack can be removed.
+
+if test "$wxUSE_MAC" = 1 ; then
+    if test "$wxUSE_UNIVERSAL_BINARY" = "yes" ; then
+        sed "s/DEPSMODE=gcc/DEPSMODE=none/" < bk-deps > temp
+        mv temp bk-deps
+        chmod +x bk-deps
+    fi
 fi
 
 if test "$wxUSE_SHARED" = "yes"; then
@@ -6718,13 +7133,76 @@ if test "$wxUSE_OMF" = "yes"; then
     esac
 fi
 
-if test $GCC_PCH = 1 ; then
-    CPPFLAGS="-DWX_PRECOMP $CPPFLAGS"
-fi
+dnl According to Vaclav, if NO_GCC_PRAGMA is used for any reason it needs to
+dnl be in wx-config output.  Not doing so could result in link problems.
+GCC_PRAGMA_FLAGS=""
+PCH_FLAGS=""
 
-dnl FIXME: This is a temporary measure until the need for it is also
-dnl        removed from the headers.
-CPPFLAGS="-DNO_GCC_PRAGMA $CPPFLAGS"
+dnl Find out if we have to define WX_PRECOMP (and thus NO_GCC_PRAGMA)
+if test $GCC_PCH = 1 ; then
+    PCH_FLAGS="-DWX_PRECOMP"
+    GCC_PRAGMA_FLAGS="-DNO_GCC_PRAGMA"
+else
+    dnl Find out if we have to define NO_GCC_PRAGMA
+    if test "$GCC" = yes; then
+        AC_MSG_CHECKING([if this GCC version is >= 4.0 and needs -DNO_GCC_PRAGMA])
+        AC_TRY_COMPILE([],
+            [#if (__GNUC__ < 4)
+             Not GCC 4.0 or greater
+             #endif
+            ],
+            [GCC_PRAGMA_FLAGS="-DNO_GCC_PRAGMA"
+             AC_MSG_RESULT([yes])],
+            [AC_MSG_RESULT([no])
+            case "${host}" in
+                *-*-darwin* )
+                    dnl Some Apple's GCC version are broken and can't handle the
+                    dnl pragmas:
+                    GCC_PRAGMA_FLAGS="-DNO_GCC_PRAGMA"
+                ;;
+                *-*-mingw32* )
+                    dnl MinGW GCC versions > 3.2 have problems with
+                    dnl static member of classes derived from templates
+                    dnl in combination with #pragma interface/implementation
+                    dnl (the test case uses 4 files)
+                    dnl ... and with exceptions handling (undefined symbols needed
+                    dnl to correctly calls dtors when unwinding) as well
+                    if test "$wxUSE_STL" = "yes" -o \
+                    "$wxUSE_NO_EXCEPTIONS" != "yes" -o \
+                    "$wxUSE_NO_RTTI" != "yes"; then
+                        AC_MSG_CHECKING([if this MinGW version needs -DNO_GCC_PRAGMA])
+                        AC_TRY_COMPILE([],
+                            [#if !(__GNUC__ > 3 || (__GNUC__ == 3 && __GNUC_MINOR__ >= 2))
+                             Not GCC 3.2 or greater
+                             #endif
+                            ],
+                            [GCC_PRAGMA_FLAGS="-DNO_GCC_PRAGMA"
+                             AC_MSG_RESULT([yes])],
+                            [AC_MSG_RESULT([no])])
+                    fi
+                    ;;
+                *-pc-os2_emx | *-pc-os2-emx )
+                    dnl GCC versions ported to OS/2 have similar problems with
+                    dnl static member of classes in combination with STL and
+                    dnl pragma interface/implementation
+                    if test "$wxUSE_STL" = "yes"; then
+                        AC_MSG_CHECKING([if this gcc version needs -DNO_GCC_PRAGMA])
+                        AC_TRY_COMPILE([],
+                            [#if !(__GNUC__ > 3 || (__GNUC__ == 3 && __GNUC_MINOR__ >= 2))
+                             Not GCC 3.2 or greater
+                             #endif
+                            ],
+                            [GCC_PRAGMA_FLAGS="-DNO_GCC_PRAGMA"
+                             AC_MSG_RESULT([yes])],
+                            [AC_MSG_RESULT([no])])
+                    fi
+                    ;;
+            esac
+dnl  closing bracket of if GCC < 4.0
+        ] ) 
+    fi
+fi
+CPPFLAGS="$PCH_FLAGS $GCC_PRAGMA_FLAGS $CPPFLAGS"
 
 
 dnl for convenience, sort the samples in alphabetical order
@@ -6775,6 +7253,7 @@ AC_SUBST(WXCONFIG_INCLUDE)
 AC_SUBST(WXCONFIG_RPATH)
 AC_SUBST(WXCONFIG_LDFLAGS_GUI)
 AC_SUBST(WX_LARGEFILE_FLAGS)
+AC_SUBST(GCC_PRAGMA_FLAGS)
 AC_SUBST(CODE_GEN_FLAGS)
 AC_SUBST(CODE_GEN_FLAGS_CXX)
 AC_SUBST(EXE_LINKER)
@@ -6819,6 +7298,23 @@ AC_PROG_MAKE_SET
 
 
 AC_CONFIG_HEADERS([lib/wx/include/${TOOLCHAIN_FULLNAME}/wx/setup.h:setup.h.in])
+
+if test "$USE_WIN32" = 1; then
+    AC_CONFIG_COMMANDS(
+        [
+            rcdefs.h
+        ],
+        [
+            mkdir -p $outdir &&
+            $CPP $infile | sed 's/^# *[1-9].*//;s/^ *//;/./,/^$/!d' > $outdir/rcdefs.h
+        ],
+        [
+            CPP="$CPP"
+            infile="$srcdir/include/wx/msw/genrcdefs.h"
+            outdir="lib/wx/include/$TOOLCHAIN_FULLNAME/wx/msw"
+        ]
+    )
+fi
 
 AC_CONFIG_FILES([ lib/wx/config/${TOOLCHAIN_FULLNAME}:wx-config.in ],
                 [ chmod +x lib/wx/config/${TOOLCHAIN_FULLNAME} ],
@@ -6936,6 +7432,7 @@ echo "                                       expat              ${wxUSE_EXPAT}"
 echo "                                       libmspack          ${wxUSE_LIBMSPACK}"
 echo "                                       sdl                ${wxUSE_LIBSDL}"
 echo "                                       gnomeprint         ${wxUSE_LIBGNOMEPRINT-none}"
+echo "                                       hildon             ${wxUSE_LIBHILDON-none}"
 
 echo ""
 

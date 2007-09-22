@@ -6,7 +6,7 @@
 //              not documented and is for private use only.
 // Modified by:
 // Created:     10.02.99
-// RCS-ID:      $Id: longlong.cpp,v 1.39 2005/05/04 18:38:08 VZ Exp $
+// RCS-ID:      $Id: longlong.cpp,v 1.41 2005/08/28 00:03:27 VZ Exp $
 // Copyright:   (c) 1998 Vadim Zeitlin <zeitlin@dptmaths.ens-cachan.fr>
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -132,6 +132,19 @@ wxLongLongWx& wxLongLongWx::Assign(double d)
         Negate();
 
     return *this;
+}
+
+double wxLongLongWx::ToDouble() const
+{
+    double d = m_hi;
+    d *= 1.0 + (double)ULONG_MAX;
+    d += m_lo;
+
+#ifdef wxLONGLONG_TEST_MODE
+    wxASSERT( d == m_ll );
+#endif // wxLONGLONG_TEST_MODE
+
+    return d;
 }
 
 wxLongLongWx wxLongLongWx::operator<<(int shift) const
@@ -779,9 +792,11 @@ wxULongLongWx& wxULongLongWx::operator*=(const wxULongLongWx& ll)
 
 // division
 
+#define IS_MSB_SET(ll)  ((ll.GetHi()) & (1 << (8*sizeof(long) - 1)))
+
 void wxLongLongWx::Divide(const wxLongLongWx& divisorIn,
                           wxLongLongWx& quotient,
-                          wxLongLongWx& remainder) const
+                          wxLongLongWx& remainderIO) const
 {
     if ((divisorIn.m_lo == 0) && (divisorIn.m_hi == 0))
     {
@@ -805,8 +820,7 @@ void wxLongLongWx::Divide(const wxLongLongWx& divisorIn,
     //     all responsibility for using this code.
 
     // init everything
-    wxLongLongWx dividend = *this,
-                 divisor = divisorIn;
+    wxULongLongWx dividend, divisor, remainder;
 
     quotient = 0l;
     remainder = 0l;
@@ -819,17 +833,21 @@ void wxLongLongWx::Divide(const wxLongLongWx& divisorIn,
     //      dividend = quotient*divisor + remainder
     //
     // with 0 <= abs(remainder) < abs(divisor)
-    bool negRemainder = dividend.m_hi < 0;
+    bool negRemainder = GetHi() < 0;
     bool negQuotient = false;   // assume positive
-    if ( dividend.m_hi < 0 )
+    if ( GetHi() < 0 )
     {
         negQuotient = !negQuotient;
-        dividend = -dividend;
+        dividend = -*this;
+    } else {
+        dividend = *this;
     }
-    if ( divisor.m_hi < 0 )
+    if ( divisorIn.GetHi() < 0 )
     {
         negQuotient = !negQuotient;
-        divisor = -divisor;
+        divisor = -divisorIn;
+    } else {
+        divisor = divisorIn;
     }
 
     // check for some particular cases
@@ -846,8 +864,6 @@ void wxLongLongWx::Divide(const wxLongLongWx& divisorIn,
         // here: dividend > divisor and both are positive: do unsigned division
         size_t nBits = 64u;
         wxLongLongWx d;
-
-        #define IS_MSB_SET(ll)  ((ll.m_hi) & (1 << (8*sizeof(long) - 1)))
 
         while ( remainder < divisor )
         {
@@ -888,10 +904,12 @@ void wxLongLongWx::Divide(const wxLongLongWx& divisorIn,
         }
     }
 
+    remainderIO = remainder;
+
     // adjust signs
     if ( negRemainder )
     {
-        remainder = -remainder;
+        remainderIO = -remainderIO;
     }
 
     if ( negQuotient )
@@ -946,8 +964,6 @@ void wxULongLongWx::Divide(const wxULongLongWx& divisorIn,
         // here: dividend > divisor
         size_t nBits = 64u;
         wxULongLongWx d;
-
-        #define IS_MSB_SET(ll)  ((ll.m_hi) & (1 << (8*sizeof(long) - 1)))
 
         while ( remainder < divisor )
         {

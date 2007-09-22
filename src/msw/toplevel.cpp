@@ -4,7 +4,7 @@
 // Author:      Vadim Zeitlin
 // Modified by:
 // Created:     24.09.01
-// RCS-ID:      $Id: toplevel.cpp,v 1.117 2005/06/07 20:20:07 VZ Exp $
+// RCS-ID:      $Id: toplevel.cpp,v 1.120.2.3 2006/03/16 23:15:36 ABX Exp $
 // Copyright:   (c) 2001 SciTech Software, Inc. (www.scitechsoft.com)
 // License:     wxWindows licence
 ///////////////////////////////////////////////////////////////////////////////
@@ -527,21 +527,23 @@ bool wxTopLevelWindowMSW::Create(wxWindow *parent,
     }
 #endif
 
-    // for some reason we need to manually send ourselves this message as
-    // otherwise the mnemonics are always shown -- even if they're configured
-    // to be hidden until "Alt" is pressed in the control panel
-    //
-    // this could indicate a bug somewhere else but for now this is the only
-    // fix we have
+    // for standard dialogs the dialog manager generates WM_CHANGEUISTATE
+    // itself but for custom windows we have to do it ourselves in order to
+    // make the keyboard indicators (such as underlines for accelerators and
+    // focus rectangles) work under Win2k+
     if ( ret )
     {
-        ::SendMessage
-        (
-            GetHwnd(),
-            WM_UPDATEUISTATE,
-            MAKEWPARAM(UIS_INITIALIZE, UISF_HIDEFOCUS | UISF_HIDEACCEL),
-            0
-        );
+        static int s_needToUpdate = -1;
+        if ( s_needToUpdate == -1 )
+        {
+            int verMaj, verMin;
+            s_needToUpdate = wxGetOsVersion(&verMaj, &verMin) == wxWINDOWS_NT &&
+                                verMaj >= 5;
+        }
+
+        if ( s_needToUpdate )
+            ::SendMessage(GetHwnd(), WM_CHANGEUISTATE,
+                          MAKEWPARAM(UIS_INITIALIZE, 0), 0);
     }
 
     // Note: if we include PocketPC in this test, dialogs can fail to show up,
@@ -668,6 +670,17 @@ void wxTopLevelWindowMSW::Maximize(bool maximize)
         // we can't maximize the hidden frame because it shows it as well, so
         // just remember that we should do it later in this case
         m_maximizeOnShow = maximize;
+
+        // after calling Maximize() the client code expects to get the frame
+        // "real" size and doesn't want to know that, because of implementation
+        // details, the frame isn't really maximized yet but will be only once
+        // it's shown, so return our size as it will be then in this case
+        if ( maximize )
+        {
+            // we don't know which display we're on yet so use the default one
+            SetSize(wxGetClientDisplayRect().GetSize());
+        }
+        //else: can't do anything in this case, we don't have the old size
     }
 }
 
@@ -676,7 +689,7 @@ bool wxTopLevelWindowMSW::IsMaximized() const
 #ifdef __WXWINCE__
     return false;
 #else
-    return ::IsZoomed(GetHwnd()) != 0;
+    return m_maximizeOnShow || ::IsZoomed(GetHwnd()) != 0;
 #endif
 }
 
@@ -1057,6 +1070,15 @@ wxDlgProc(HWND hDlg,
         SHInitDialog( &shidi );
 #else // no SHInitDialog()
         wxUnusedVar(hDlg);
+#endif
+
+        // eVC3 with PPC SDK 2002 seem to miss initial positioning
+        // of subcontrols so we force it making dummy resize
+#if defined(__POCKETPC__) && (defined(__WXWINCE__) && _WIN32_WCE < 400)
+        RECT r = wxGetWindowRect(hDlg);
+
+        (void)::PostMessage(hDlg, WM_SIZE, SIZE_RESTORED,
+                            MAKELPARAM(r.right - r.left, r.bottom - r.top));
 #endif
     }
 

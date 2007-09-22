@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     01/02/97
-// RCS-ID:      $Id: paper.h,v 1.11 2005/01/21 18:48:20 ABX Exp $
+// RCS-ID:      $Id: paper.h,v 1.11.2.2 2006/01/18 16:32:39 JS Exp $
 // Copyright:   (c) Julian Smart
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////

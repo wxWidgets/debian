@@ -4,7 +4,7 @@
 // Author:      Vadim Zeitlin
 // Modified by:
 // Created:     18.10.99
-// RCS-ID:      $Id: appcmn.cpp,v 1.105 2005/06/21 09:56:15 VS Exp $
+// RCS-ID:      $Id: appcmn.cpp,v 1.106 2005/09/14 14:22:16 VZ Exp $
 // Copyright:   (c) Vadim Zeitlin
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -100,9 +100,9 @@ wxAppBase::wxAppBase()
     m_exitOnFrameDelete = Later;
 }
 
-bool wxAppBase::Initialize(int& argc, wxChar **argv)
+bool wxAppBase::Initialize(int& argcOrig, wxChar **argvOrig)
 {
-    if ( !wxAppConsole::Initialize(argc, argv) )
+    if ( !wxAppConsole::Initialize(argcOrig, argvOrig) )
         return false;
 
 #if wxUSE_THREADS

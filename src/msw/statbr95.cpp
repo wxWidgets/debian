@@ -4,7 +4,7 @@
 // Author:      Vadim Zeitlin
 // Modified by:
 // Created:     04.04.98
-// RCS-ID:      $Id: statbr95.cpp,v 1.58 2004/09/30 16:32:19 VS Exp $
+// RCS-ID:      $Id: statbr95.cpp,v 1.61.2.4 2006/01/17 19:56:36 JS Exp $
 // Copyright:   (c) 1998 Vadim Zeitlin <zeitlin@dptmaths.ens-cachan.fr>
 // Licence:     wxWindows licence
 ///////////////////////////////////////////////////////////////////////////////
@@ -38,6 +38,10 @@
 
 #if defined(__WIN95__) && !(defined(__GNUWIN32_OLD__) && !defined(__CYGWIN10__))
     #include <commctrl.h>
+#endif
+
+#if wxUSE_UXTHEME
+    #include "wx/msw/uxtheme.h"
 #endif
 
 // ----------------------------------------------------------------------------
@@ -119,7 +123,7 @@ bool wxStatusBar95::Create(wxWindow *parent,
     InheritAttributes();
 
     SetBackgroundColour(wxSystemSettings::GetColour(wxSYS_COLOUR_MENUBAR));
-    
+
     // we must refresh the frame size when the statusbar is created, because
     // its client area might change
     wxFrame *frame = wxDynamicCast(GetParent(), wxFrame);
@@ -272,6 +276,23 @@ bool wxStatusBar95::GetFieldRect(int i, wxRect& rect) const
         wxLogLastError(wxT("SendMessage(SB_GETRECT)"));
     }
 
+#if wxUSE_UXTHEME
+    wxUxThemeHandle theme((wxStatusBar95 *)this, L"Status"); // const_cast
+    if ( theme )
+    {
+        // by default Windows has a 2 pixel border to the right of the left
+        // divider (or it could be a bug) but it looks wrong so remove it
+        if ( i != 0 )
+        {
+            r.left -= 2;
+        }
+
+        wxUxThemeEngine::Get()->GetThemeBackgroundContentRect(theme, NULL,
+                                                              1 /* SP_PANE */, 0,
+                                                              &r, &r);
+    }
+#endif
+
     wxCopyRECTToRect(r, rect);
 
     return true;
@@ -279,18 +300,23 @@ bool wxStatusBar95::GetFieldRect(int i, wxRect& rect) const
 
 void wxStatusBar95::DoMoveWindow(int x, int y, int width, int height)
 {
-    // the status bar wnd proc must be forwarded the WM_SIZE message whenever
-    // the stat bar position/size is changed because it normally positions the
-    // control itself along bottom or top side of the parent window - failing
-    // to do so will result in nasty visual effects
-    FORWARD_WM_SIZE(GetHwnd(), SIZE_RESTORED, x, y, SendMessage);
-
-    // but now, when the standard status bar wnd proc did all it wanted to do,
-    // move the status bar to its correct location - usually this call may be
-    // omitted because for normal status bars (positioned along the bottom
-    // edge) the position is already set correctly, but if the user wants to
-    // position them in some exotic location, this is really needed
-    wxWindowMSW::DoMoveWindow(x, y, width, height);
+    if ( GetParent()->IsSizeDeferred() )
+    {
+        wxWindowMSW::DoMoveWindow(x, y, width, height);
+    }
+    else
+    {
+        // parent pos/size isn't deferred so do it now but don't send
+        // WM_WINDOWPOSCHANGING since we don't want to change pos/size later
+        // we must use SWP_NOCOPYBITS here otherwise it paints incorrectly
+        // if other windows are size deferred
+        ::SetWindowPos(GetHwnd(), NULL, x, y, width, height,
+                       SWP_NOZORDER | SWP_NOOWNERZORDER | SWP_NOACTIVATE
+#ifndef __WXWINCE__
+                       | SWP_NOCOPYBITS | SWP_NOSENDCHANGING
+#endif
+                       );
+    }
 
     // adjust fields widths to the new size
     SetFieldsWidth();
@@ -338,6 +364,53 @@ void wxStatusBar95::SetStatusStyles(int n, const int styles[])
             wxLogLastError(wxT("StatusBar_SetText"));
         }
     }
+}
+
+WXLRESULT
+wxStatusBar95::MSWWindowProc(WXUINT nMsg, WXWPARAM wParam, WXLPARAM lParam)
+{
+#ifndef __WXWINCE__
+    if ( nMsg == WM_WINDOWPOSCHANGING )
+    {
+        WINDOWPOS *lpPos = (WINDOWPOS *)lParam;
+        int x, y, w, h;
+        GetPosition(&x, &y);
+        GetSize(&w, &h);
+
+        // we need real window coords and not wx client coords
+        AdjustForParentClientOrigin(x, y);
+
+        lpPos->x  = x;
+        lpPos->y  = y;
+        lpPos->cx = w;
+        lpPos->cy = h;
+
+        return 0;
+    }
+
+    if ( nMsg == WM_NCLBUTTONDOWN )
+    {
+        // if hit-test is on gripper then send message to TLW to begin
+        // resizing. It is possible to send this message to any window.
+        if ( wParam == HTBOTTOMRIGHT )
+        {
+            wxWindow *win;
+
+            for ( win = GetParent(); win; win = win->GetParent() )
+            {
+                if ( win->IsTopLevel() )
+                {
+                    SendMessage(GetHwndOf(win), WM_NCLBUTTONDOWN,
+                                wParam, lParam);
+
+                    return 0;
+                }
+            }
+        }
+    }
+#endif
+
+    return wxStatusBarBase::MSWWindowProc(nMsg, wParam, lParam);
 }
 
 #endif // __WIN95__ && wxUSE_NATIVE_STATUSBAR

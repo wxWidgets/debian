@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     10/09/98
-// RCS-ID:      $Id: variant.cpp,v 1.67 2005/04/12 20:57:09 ABX Exp $
+// RCS-ID:      $Id: variant.cpp,v 1.68.2.2 2006/03/07 14:52:22 JS Exp $
 // Copyright:   (c)
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -473,7 +473,7 @@ bool wxVariantDataReal::Write(wxSTD ostream& str) const
 
 bool wxVariantDataReal::Write(wxString& str) const
 {
-    str.Printf(wxT("%.4f"), m_value);
+    str.Printf(wxT("%.14g"), m_value);
     return true;
 }
 
@@ -709,7 +709,7 @@ bool wxVariantDataChar::Read(wxInputStream& str)
 
 bool wxVariantDataChar::Read(wxString& str)
 {
-    m_value = str.ToAscii()[0u];
+    m_value = str.ToAscii()[size_t(0)];
     return true;
 }
 
@@ -2038,9 +2038,9 @@ bool wxVariant::Convert(bool* value) const
     {
         wxString val(((wxVariantDataString*)GetData())->GetValue());
         val.MakeLower();
-        if (val == wxT("true") || val == wxT("yes"))
+        if (val == wxT("true") || val == wxT("yes") || val == wxT('1') )
             *value = true;
-        else if (val == wxT("false") || val == wxT("no"))
+        else if (val == wxT("false") || val == wxT("no") || val == wxT('0') )
             *value = false;
         else
             return false;

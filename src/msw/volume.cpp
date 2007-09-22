@@ -4,7 +4,7 @@
 // Author:      George Policello
 // Modified by:
 // Created:     28 Jan 02
-// RCS-ID:      $Id: volume.cpp,v 1.26 2004/09/07 11:11:05 ABX Exp $
+// RCS-ID:      $Id: volume.cpp,v 1.28.2.1 2006/01/21 16:46:47 JS Exp $
 // Copyright:   (c) 2002 George Policello
 // Licence:     wxWindows licence
 ///////////////////////////////////////////////////////////////////////////////
@@ -53,7 +53,9 @@
 // Dynamic library function defs.
 //+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
+#if wxUSE_DYNLIB_CLASS
 static wxDynamicLibrary s_mprLib;
+#endif
 
 typedef DWORD (WINAPI* WNetOpenEnumPtr)(DWORD, DWORD, DWORD, LPNETRESOURCE, LPHANDLE);
 typedef DWORD (WINAPI* WNetEnumResourcePtr)(HANDLE, LPDWORD, LPVOID, LPDWORD);
@@ -336,9 +338,8 @@ static bool BuildRemoteList(wxArrayString& list, NETRESOURCE* pResSrc,
         mounted.Sort(CompareFcn);
 
         // apply list from bottom to top to preserve indexes if removing items.
-        int iList = list.GetCount()-1;
-        int iMounted;
-        for (iMounted = mounted.GetCount()-1; iMounted >= 0 && iList >= 0; iMounted--)
+        ssize_t iList = list.GetCount()-1;
+        for (ssize_t iMounted = mounted.GetCount()-1; iMounted >= 0 && iList >= 0; iMounted--)
         {
             int compare;
             wxString all(list[iList]);
@@ -383,6 +384,7 @@ wxArrayString wxFSVolumeBase::GetVolumes(int flagsSet, int flagsUnset)
 {
     ::InterlockedExchange(&s_cancelSearch, FALSE);     // reset
 
+#if wxUSE_DYNLIB_CLASS
     if (!s_mprLib.IsLoaded() && s_mprLib.Load(_T("mpr.dll")))
     {
 #ifdef UNICODE
@@ -394,6 +396,7 @@ wxArrayString wxFSVolumeBase::GetVolumes(int flagsSet, int flagsUnset)
 #endif
         s_pWNetCloseEnum = (WNetCloseEnumPtr)s_mprLib.GetSymbol(_T("WNetCloseEnum"));
     }
+#endif
 
     wxArrayString list;
 
@@ -401,7 +404,7 @@ wxArrayString wxFSVolumeBase::GetVolumes(int flagsSet, int flagsUnset)
     // Local and mapped drives first.
     //-------------------------------
     // Allocate the required space for the API call.
-    size_t chars = GetLogicalDriveStrings(0, 0);
+    const DWORD chars = GetLogicalDriveStrings(0, NULL);
     TCHAR* buf = new TCHAR[chars+1];
 
     // Get the list of drives.
@@ -607,4 +610,3 @@ wxIcon wxFSVolume::GetIcon(wxFSIconType type) const
 #endif // wxUSE_GUI
 
 #endif // wxUSE_FSVOLUME
-

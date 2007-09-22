@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     2001-08-21
-// RCS-ID:      $Id: email.h,v 1.5 2004/05/25 11:13:34 JS Exp $
+// RCS-ID:      $Id: email.h,v 1.6 2005/09/02 23:36:19 VZ Exp $
 // Copyright:   (c) Julian Smart
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -34,7 +34,7 @@ public:
     // Send a message.
     // Specify profile, or leave it to wxWidgets to find the current user name
     static bool Send(wxMailMessage& message, const wxString& profileName = wxEmptyString,
-        const wxString& sendMail = wxT("/usr/lib/sendmail -t"));
+        const wxString& sendMail = wxT("/usr/sbin/sendmail -t"));
     
 protected:
 };

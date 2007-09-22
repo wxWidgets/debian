@@ -3,7 +3,7 @@
 // Purpose:     XRC resource for dialogs
 // Author:      Vaclav Slavik & Aleks.
 // Created:     2000/03/05
-// RCS-ID:      $Id: xh_frame.cpp,v 1.19 2005/03/28 09:28:08 VS Exp $
+// RCS-ID:      $Id: xh_frame.cpp,v 1.20 2005/08/16 15:06:39 JS Exp $
 // Copyright:   (c) 2000 Vaclav Slavik
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -53,6 +53,7 @@ wxFrameXmlHandler::wxFrameXmlHandler() : wxXmlResourceHandler()
     XRC_ADD_STYLE(wxTAB_TRAVERSAL);
     XRC_ADD_STYLE(wxWS_EX_VALIDATE_RECURSIVELY);
     XRC_ADD_STYLE(wxFRAME_EX_METAL);
+    XRC_ADD_STYLE(wxFRAME_EX_CONTEXTHELP);
 
     AddWindowStyles();
 }

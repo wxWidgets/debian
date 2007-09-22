@@ -8,7 +8,7 @@
  *              Guillermo Rodriguez Garcia <guille@iies.es>
  * Purpose:     GSocket main Unix and OS/2 file
  * Licence:     The wxWindows licence
- * CVSID:       $Id: gsocket.cpp,v 1.42 2005/05/31 09:28:53 JS Exp $
+ * CVSID:       $Id: gsocket.cpp,v 1.51.2.3 2006/02/22 01:55:43 KH Exp $
  * -------------------------------------------------------------------------
  */
 
@@ -16,14 +16,17 @@
  * PLEASE don't put C++ comments here - this is a C source file.
  */
 
+#if defined(__WATCOMC__)
+#include "wx/wxprec.h"
+#include <errno.h>
+#include <nerrno.h>
+#endif
+
 #ifndef __GSOCKET_STANDALONE__
-#include "wx/setup.h"
+#include "wx/defs.h"
 #endif
 
 #if defined(__VISAGECPP__)
-/* Seems to be needed by Visual Age C++, though I don't see how it manages
-   to not break on including a C++ header into a plain C source file      */
-#include "wx/defs.h"
 #define BSD_SELECT /* use Berkley Sockets select */
 #endif
 
@@ -108,26 +111,26 @@ int _System soclose(int);
 #endif
 #include <signal.h>
 
-#ifndef SOCKLEN_T
+#ifndef WX_SOCKLEN_T
 
 #ifdef VMS
-#  define SOCKLEN_T unsigned int
+#  define WX_SOCKLEN_T unsigned int
 #else
 #  ifdef __GLIBC__
 #    if __GLIBC__ == 2
-#      define SOCKLEN_T socklen_t
+#      define WX_SOCKLEN_T socklen_t
 #    endif
 #  elif defined(__WXMAC__)
-#	   define SOCKLEN_T socklen_t
+#    define WX_SOCKLEN_T socklen_t
 #  else
-#    define SOCKLEN_T int
+#    define WX_SOCKLEN_T int
 #  endif
 #endif
 
 #endif /* SOCKLEN_T */
 
 #ifndef SOCKOPTLEN_T
-#define SOCKOPTLEN_T SOCKLEN_T
+#define SOCKOPTLEN_T WX_SOCKLEN_T
 #endif
 
 /*
@@ -150,15 +153,23 @@ int _System soclose(int);
 #define INADDR_NONE INADDR_BROADCAST
 #endif
 
-#define MASK_SIGNAL()                       \
-{                                           \
-  void (*old_handler)(int);                 \
-                                            \
-  old_handler = signal(SIGPIPE, SIG_IGN);
+#if defined(__VISAGECPP__) || defined(__WATCOMC__)
 
-#define UNMASK_SIGNAL()                     \
-  signal(SIGPIPE, old_handler);             \
-}
+    #define MASK_SIGNAL() {
+    #define UNMASK_SIGNAL() }
+
+#else
+    extern "C" { typedef void (*wxSigHandler)(int); }
+
+    #define MASK_SIGNAL()                       \
+    {                                           \
+        wxSigHandler old_handler = signal(SIGPIPE, SIG_IGN);
+
+    #define UNMASK_SIGNAL()                     \
+        signal(SIGPIPE, old_handler);           \
+    }
+
+#endif
 
 /* If a SIGPIPE is issued by a socket call on a remotely closed socket,
    the program will "crash" unless it explicitly handles the SIGPIPE.
@@ -176,6 +187,9 @@ int _System soclose(int);
 #else
 #  include "gsockunx.h"
 #  include "gsocket.h"
+#  ifndef WXUNUSED
+#    define WXUNUSED(x)
+#  endif
 #endif /* __GSOCKET_STANDALONE__ */
 
 /* debugging helpers */
@@ -210,17 +224,17 @@ void GSocketGUIFunctionsTableNull::OnExit()
 {}
 bool GSocketGUIFunctionsTableNull::CanUseEventLoop()
 {   return false; }
-bool GSocketGUIFunctionsTableNull::Init_Socket(GSocket *socket)
+bool GSocketGUIFunctionsTableNull::Init_Socket(GSocket *WXUNUSED(socket))
 {   return true; }
-void GSocketGUIFunctionsTableNull::Destroy_Socket(GSocket *socket)
+void GSocketGUIFunctionsTableNull::Destroy_Socket(GSocket *WXUNUSED(socket))
 {}
-void GSocketGUIFunctionsTableNull::Install_Callback(GSocket *socket, GSocketEvent event)
+void GSocketGUIFunctionsTableNull::Install_Callback(GSocket *WXUNUSED(socket), GSocketEvent WXUNUSED(event))
 {}
-void GSocketGUIFunctionsTableNull::Uninstall_Callback(GSocket *socket, GSocketEvent event)
+void GSocketGUIFunctionsTableNull::Uninstall_Callback(GSocket *WXUNUSED(socket), GSocketEvent WXUNUSED(event))
 {}
-void GSocketGUIFunctionsTableNull::Enable_Events(GSocket *socket)
+void GSocketGUIFunctionsTableNull::Enable_Events(GSocket *WXUNUSED(socket))
 {}
-void GSocketGUIFunctionsTableNull::Disable_Events(GSocket *socket)
+void GSocketGUIFunctionsTableNull::Disable_Events(GSocket *WXUNUSED(socket))
 {}
 /* Global initialisers */
 
@@ -317,6 +331,9 @@ void GSocket::Shutdown()
 
   assert(this);
 
+  /* Don't allow events to fire after socket has been closed */
+  gs_gui_functions->Disable_Events(this);
+
   /* If socket has been created, shutdown it */
   if (m_fd != INVALID_SOCKET)
   {
@@ -396,7 +413,7 @@ GAddress *GSocket::GetLocal()
 {
   GAddress *address;
   struct sockaddr addr;
-  SOCKLEN_T size = sizeof(addr);
+  WX_SOCKLEN_T size = sizeof(addr);
   GSocketError err;
 
   assert(this);
@@ -412,7 +429,7 @@ GAddress *GSocket::GetLocal()
     return NULL;
   }
 
-  if (getsockname(m_fd, &addr, (SOCKLEN_T *) &size) < 0)
+  if (getsockname(m_fd, &addr, (WX_SOCKLEN_T *) &size) < 0)
   {
     m_error = GSOCK_IOERR;
     return NULL;
@@ -514,7 +531,7 @@ GSocketError GSocket::SetServer()
   if ((bind(m_fd, m_local->m_addr, m_local->m_len) != 0) ||
       (getsockname(m_fd,
                    m_local->m_addr,
-                   (SOCKLEN_T *) &m_local->m_len) != 0) ||
+                   (WX_SOCKLEN_T *) &m_local->m_len) != 0) ||
       (listen(m_fd, 5) != 0))
   {
     Close();
@@ -540,7 +557,7 @@ GSocketError GSocket::SetServer()
 GSocket *GSocket::WaitConnection()
 {
   struct sockaddr from;
-  SOCKLEN_T fromlen = sizeof(from);
+  WX_SOCKLEN_T fromlen = sizeof(from);
   GSocket *connection;
   GSocketError err;
   int arg = 1;
@@ -571,7 +588,7 @@ GSocket *GSocket::WaitConnection()
     return NULL;
   }
 
-  connection->m_fd = accept(m_fd, &from, (SOCKLEN_T *) &fromlen);
+  connection->m_fd = accept(m_fd, &from, (WX_SOCKLEN_T *) &fromlen);
 
   /* Reenable CONNECTION events */
   Enable(GSOCK_CONNECTION);
@@ -702,9 +719,15 @@ GSocketError GSocket::Connect(GSocketStream stream)
   /* Connect it to the peer address, with a timeout (see below) */
   ret = connect(m_fd, m_peer->m_addr, m_peer->m_len);
 
-  /* We only call Enable_Events if we know e aren't shutting down the socket */
-
-  if (m_non_blocking)
+  /* We only call Enable_Events if we know we aren't shutting down the socket.
+   * NB: Enable_Events needs to be called whether the socket is blocking or
+   * non-blocking, it just shouldn't be called prior to knowing there is a
+   * connection _if_ blocking sockets are being used.
+   * If connect above returns 0, we are already connected and need to make the
+   * call to Enable_Events now.  
+   */
+  
+  if (m_non_blocking || ret == 0)
   {
     gs_gui_functions->Enable_Events(this);
   }
@@ -820,7 +843,7 @@ GSocketError GSocket::SetNonOriented()
   if ((bind(m_fd, m_local->m_addr, m_local->m_len) != 0) ||
       (getsockname(m_fd,
                    m_local->m_addr,
-                   (SOCKLEN_T *) &m_local->m_len) != 0))
+                   (WX_SOCKLEN_T *) &m_local->m_len) != 0))
   {
     Close();
     m_error = GSOCK_IOERR;
@@ -860,8 +883,13 @@ int GSocket::Read(char *buffer, int size)
       ret = Recv_Dgram(buffer, size);
   }
 
-  if (ret == -1)
-  {
+  /* If recv returned zero, then the connection is lost, and errno is not set.
+   * Otherwise, recv has returned an error (-1), in which case we have lost the
+   * socket only if errno does _not_ indicate that there may be more data to read.
+   */
+  if (ret == 0)
+    m_error = GSOCK_IOERR;
+  else if (ret == -1) {
     if ((errno == EWOULDBLOCK) || (errno == EAGAIN))
       m_error = GSOCK_WOULDBLOCK;
     else
@@ -906,7 +934,7 @@ int GSocket::Write(const char *buffer, int size)
 
   if (ret == -1)
   {
-    if ((errno == EWOULDBLOCK) || (errno == EAGAIN))	  
+    if ((errno == EWOULDBLOCK) || (errno == EAGAIN))
     {
       m_error = GSOCK_WOULDBLOCK;
       GSocket_Debug(( "GSocket_Write error WOULDBLOCK\n" ));
@@ -951,6 +979,9 @@ GSocketEventFlags GSocket::Select(GSocketEventFlags flags)
 
     assert(this);
 
+    if (m_fd == -1)
+        return (GSOCK_LOST_FLAG & flags);
+    
     /* Do not use a static struct, Linux can garble it */
     tv.tv_sec = m_timeout / 1000;
     tv.tv_usec = (m_timeout % 1000) * 1000;
@@ -983,32 +1014,28 @@ GSocketEventFlags GSocket::Select(GSocketEventFlags flags)
       return (result & flags);
     }
 
+    /* Check for exceptions and errors */
+    if (FD_ISSET(m_fd, &exceptfds))
+    {
+      m_establishing = false;
+      m_detected = GSOCK_LOST_FLAG;
+
+      /* LOST event: Abort any further processing */
+      return (GSOCK_LOST_FLAG & flags);
+    }
+
     /* Check for readability */
     if (FD_ISSET(m_fd, &readfds))
     {
-      char c;
+      result |= GSOCK_INPUT_FLAG;
 
-      int num = recv(m_fd, &c, 1, MSG_PEEK | GSOCKET_MSG_NOSIGNAL);
-
-      if (num > 0)
+      if (m_server && m_stream)
       {
-        result |= GSOCK_INPUT_FLAG;
-      }
-      else
-      {
-        if (m_server && m_stream)
-        {
-          result |= GSOCK_CONNECTION_FLAG;
-          m_detected |= GSOCK_CONNECTION_FLAG;
-        }
-        else if ((errno != EWOULDBLOCK) && (errno != EAGAIN) && (errno != EINTR))
-        {
-          m_detected = GSOCK_LOST_FLAG;
-          m_establishing = false;
-
-          /* LOST event: Abort any further processing */
-          return (GSOCK_LOST_FLAG & flags);
-        }
+        /* This is a TCP server socket that detected a connection.
+          While the INPUT_FLAG is also set, it doesn't matter on
+          this kind of  sockets, as we can only Accept() from them. */        
+        result |= GSOCK_CONNECTION_FLAG;
+        m_detected |= GSOCK_CONNECTION_FLAG;
       }
     }
 
@@ -1041,16 +1068,6 @@ GSocketEventFlags GSocket::Select(GSocketEventFlags flags)
       {
         result |= GSOCK_OUTPUT_FLAG;
       }
-    }
-
-    /* Check for exceptions and errors (is this useful in Unices?) */
-    if (FD_ISSET(m_fd, &exceptfds))
-    {
-      m_establishing = false;
-      m_detected = GSOCK_LOST_FLAG;
-
-      /* LOST event: Abort any further processing */
-      return (GSOCK_LOST_FLAG & flags);
     }
 
     return (result & flags);
@@ -1303,7 +1320,7 @@ GSocketError GSocket::Output_Timeout()
 int GSocket::Recv_Stream(char *buffer, int size)
 {
   int ret;
-  do 
+  do
   {
     ret = recv(m_fd, buffer, size, GSOCKET_MSG_NOSIGNAL);
   } while (ret == -1 && errno == EINTR); /* Loop until not interrupted */
@@ -1313,15 +1330,15 @@ int GSocket::Recv_Stream(char *buffer, int size)
 int GSocket::Recv_Dgram(char *buffer, int size)
 {
   struct sockaddr from;
-  SOCKLEN_T fromlen = sizeof(from);
+  WX_SOCKLEN_T fromlen = sizeof(from);
   int ret;
   GSocketError err;
 
   fromlen = sizeof(from);
 
-  do 
+  do
   {
-    ret = recvfrom(m_fd, buffer, size, 0, &from, (SOCKLEN_T *) &fromlen);
+    ret = recvfrom(m_fd, buffer, size, 0, &from, (WX_SOCKLEN_T *) &fromlen);
   } while (ret == -1 && errno == EINTR); /* Loop until not interrupted */
 
   if (ret == -1)
@@ -1353,16 +1370,14 @@ int GSocket::Send_Stream(const char *buffer, int size)
 {
   int ret;
 
-#ifndef __VISAGECPP__
-   MASK_SIGNAL();
-#endif 
-  do 
+  MASK_SIGNAL();
+
+  do
   {
     ret = send(m_fd, (char *)buffer, size, GSOCKET_MSG_NOSIGNAL);
   } while (ret == -1 && errno == EINTR); /* Loop until not interrupted */
-#ifndef __VISAGECPP__
+
   UNMASK_SIGNAL();
-#endif
 
   return ret;
 }
@@ -1386,16 +1401,14 @@ int GSocket::Send_Dgram(const char *buffer, int size)
     return -1;
   }
 
-#ifndef __VISAGECPP__
   MASK_SIGNAL();
-#endif
-  do 
+
+  do
   {
     ret = sendto(m_fd, (char *)buffer, size, 0, addr, len);
   } while (ret == -1 && errno == EINTR); /* Loop until not interrupted */
-#ifndef __VISAGECPP__
+
   UNMASK_SIGNAL();
-#endif
 
   /* Frees memory allocated from _GAddress_translate_to */
   free(addr);
@@ -1440,15 +1453,15 @@ void GSocket::Detected_Read()
     else
     {
       /* Do not throw a lost event in cases where the socket isn't really lost */
-      if ((errno == EWOULDBLOCK) || (errno == EAGAIN) || (errno == EINTR)) 
+      if ((errno == EWOULDBLOCK) || (errno == EAGAIN) || (errno == EINTR))
       {
         CALL_CALLBACK(this, GSOCK_INPUT);
       }
-      else 
+      else
       {
         CALL_CALLBACK(this, GSOCK_LOST);
         Shutdown();
-      } 
+      }
     }
   }
 }
@@ -1916,4 +1929,3 @@ GSocketError GAddress_UNIX_GetPath(GAddress *address, char *path, size_t sbuf)
 }
 #endif  /* !defined(__VISAGECPP__) */
 #endif  /* wxUSE_SOCKETS || defined(__GSOCKET_STANDALONE__) */
-

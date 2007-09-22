@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     04/01/98
-// RCS-ID:      $Id: pen.cpp,v 1.34 2005/04/13 16:27:05 VZ Exp $
+// RCS-ID:      $Id: pen.cpp,v 1.35 2005/07/22 17:13:46 ABX Exp $
 // Copyright:   (c) Julian Smart
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -263,41 +263,41 @@ bool wxPen::RealizeResource()
 
 WXHANDLE wxPen::GetResourceHandle() const
 {
-        if ( !M_PENDATA )
-                return 0;
-        else
-                return (WXHANDLE)M_PENDATA->m_hPen;
+    if ( !M_PENDATA )
+        return 0;
+    else
+        return (WXHANDLE)M_PENDATA->m_hPen;
 }
 
 bool wxPen::FreeResource(bool WXUNUSED(force))
 {
-  if (M_PENDATA && (M_PENDATA->m_hPen != 0))
-  {
-    DeleteObject((HPEN) M_PENDATA->m_hPen);
-    M_PENDATA->m_hPen = 0;
-    return true;
-  }
-  else return false;
+    if (M_PENDATA && (M_PENDATA->m_hPen != 0))
+    {
+        DeleteObject((HPEN) M_PENDATA->m_hPen);
+        M_PENDATA->m_hPen = 0;
+        return true;
+    }
+    else return false;
 }
 
 bool wxPen::IsFree() const
 {
-  return (M_PENDATA && M_PENDATA->m_hPen == 0);
+    return (M_PENDATA && M_PENDATA->m_hPen == 0);
 }
 
 void wxPen::Unshare()
 {
-        // Don't change shared data
-        if (!m_refData)
+    // Don't change shared data
+    if (!m_refData)
     {
-                m_refData = new wxPenRefData();
-        }
+        m_refData = new wxPenRefData();
+    }
     else
     {
-                wxPenRefData* ref = new wxPenRefData(*(wxPenRefData*)m_refData);
-                UnRef();
-                m_refData = ref;
-        }
+        wxPenRefData* ref = new wxPenRefData(*(wxPenRefData*)m_refData);
+        UnRef();
+        m_refData = ref;
+    }
 }
 
 void wxPen::SetColour(const wxColour& col)

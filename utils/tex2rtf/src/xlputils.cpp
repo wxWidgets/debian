@@ -5,7 +5,7 @@
 // Modified by: Wlodzimiez ABX Skiba 2003/2004 Unicode support
 //              Ron Lee
 // Created:     7.9.93
-// RCS-ID:      $Id: xlputils.cpp,v 1.9 2004/09/30 18:41:55 JS Exp $
+// RCS-ID:      $Id: xlputils.cpp,v 1.10 2005/08/24 17:56:29 ABX Exp $
 // Copyright:   (c) Julian Smart
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -113,7 +113,7 @@ void XLPOnMacro(int macroId, int no_args, bool start)
 
       if (macroId != ltSECTIONSTAR)
         sectionNo ++;
-        
+
       SetCurrentOutputs(Chapters, Sections);
       long id1 = NewBlockId();
       currentBlockId = NewBlockId();
@@ -659,7 +659,7 @@ bool XLPOnArgument(int macroId, int arg_no, bool start)
     if (start)
     {
       wxChar *sec = NULL;
-      
+
       wxChar *refName = GetArgData();
       if (refName)
       {
@@ -698,7 +698,7 @@ bool XLPOnArgument(int macroId, int arg_no, bool start)
         wxChar *label = GetArgData();
         hyperLinks.Append(currentBlockId, (wxObject *)copystring(label));
       }
-      
+
       return false;
     }
     break;
@@ -1142,7 +1142,7 @@ bool XLPGo(void)
 {
   xlpBlockId = 0;
 
-  if (InputFile && OutputFile)
+  if (!InputFile.empty() && !OutputFile.empty())
   {
     Contents = wxFopen(TmpContentsName, _T("w"));
     Chapters = wxFopen(_T("chapters.xlp"), _T("w"));
@@ -1213,4 +1213,3 @@ bool XLPGo(void)
   }
   return false;
 }
-

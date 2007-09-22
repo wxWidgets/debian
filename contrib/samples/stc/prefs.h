@@ -1,9 +1,9 @@
-    //////////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////////
 // File:        prefs.h
 // Purpose:     STC test Preferences initialization
 // Maintainer:  Wyo
 // Created:     2003-09-01
-// RCS-ID:      $Id: prefs.h,v 1.2 2004/05/25 11:14:03 JS Exp $
+// RCS-ID:      $Id: prefs.h,v 1.3 2005/09/16 18:25:44 ABX Exp $
 // Copyright:   (c) wxGuide
 // Licence:     wxWindows licence
 //////////////////////////////////////////////////////////////////////////////
@@ -23,7 +23,7 @@
 //! wxWidgets headers
 
 //! wxWidgets/contrib headers
-#include <wx/stc/stc.h>  // styled text control
+#include "wx/stc/stc.h"  // styled text control
 
 //! application headers
 
@@ -150,4 +150,3 @@ extern const StyleInfo g_StylePrefs[];
 extern const int g_StylePrefsSize;
 
 #endif // _PREFS_H_
-

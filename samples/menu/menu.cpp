@@ -4,7 +4,7 @@
 // Author:      Vadim Zeitlin
 // Modified by:
 // Created:     01.11.99
-// RCS-ID:      $Id: menu.cpp,v 1.50 2005/06/10 17:53:11 ABX Exp $
+// RCS-ID:      $Id: menu.cpp,v 1.51.2.2 2006/02/28 13:26:55 JS Exp $
 // Copyright:   (c) 1999 Vadim Zeitlin
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -414,7 +414,7 @@ MyFrame::MyFrame()
 
     wxMenu* subMenu = new wxMenu;
     subMenu->Append(Menu_SubMenu_Normal, _T("&Normal submenu item"), _T("Disabled submenu item"));
-    subMenu->AppendCheckItem(Menu_SubMenu_Check, _T("&Unchecked submenu item"), _T("Unchecked submenu item"));
+    subMenu->AppendCheckItem(Menu_SubMenu_Check, _T("&Check submenu item"), _T("Check submenu item"));
     subMenu->AppendRadioItem(Menu_SubMenu_Radio1, _T("Radio item &1"), _T("Radio item"));
     subMenu->AppendRadioItem(Menu_SubMenu_Radio2, _T("Radio item &2"), _T("Radio item"));
     subMenu->AppendRadioItem(Menu_SubMenu_Radio3, _T("Radio item &3"), _T("Radio item"));
@@ -496,6 +496,9 @@ MyFrame::MyFrame()
                  _T("menubar itself.\n\n")
                  _T("Right click the band below to test popup menus.\n"));
 #endif
+#ifdef __POCKETPC__
+    EnableContextMenu();
+#endif
 }
 
 MyFrame::~MyFrame()
@@ -547,11 +550,13 @@ wxMenuItem *MyFrame::GetLastMenuItem() const
 void MyFrame::LogMenuEvent(const wxCommandEvent& event)
 {
     int id = event.GetId();
-    if ( !GetMenuBar()->FindItem(id) )
-        return;
 
     wxString msg = wxString::Format(_T("Menu command %d"), id);
-    if ( GetMenuBar()->FindItem(id)->IsCheckable() )
+
+    // catch all checkable menubar items and also the check item from the popup
+    // menu
+    wxMenuItem *item = GetMenuBar()->FindItem(id);
+    if ( (item && item->IsCheckable()) || id == Menu_Popup_ToBeChecked )
     {
         msg += wxString::Format(_T(" (the item is currently %schecked)"),
                                 event.IsChecked() ? _T("") : _T("not "));
@@ -928,7 +933,7 @@ void MyFrame::OnFindMenuItem(wxCommandEvent& WXUNUSED(event))
 
 void MyFrame::ShowContextMenu(const wxPoint& pos)
 {
-    wxMenu menu(_T("Test popup"));
+    wxMenu menu;
 
     menu.Append(Menu_Help_About, _T("&About"));
     menu.Append(Menu_Popup_Submenu, _T("&Submenu"), CreateDummyMenu(NULL));
@@ -992,7 +997,6 @@ void MyFrame::OnUpdateSubMenuNormal(wxUpdateUIEvent& event)
 void MyFrame::OnUpdateSubMenuCheck(wxUpdateUIEvent& event)
 {
     event.Enable(true);
-    event.Check(true);
 }
 
 void MyFrame::OnUpdateSubMenuRadio(wxUpdateUIEvent& event)

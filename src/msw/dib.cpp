@@ -4,7 +4,7 @@
 // Author:      Vadim Zeitlin
 // Modified by:
 // Created:     03.03.03 (replaces the old file with the same name)
-// RCS-ID:      $Id: dib.cpp,v 1.60 2005/06/21 20:17:42 MBN Exp $
+// RCS-ID:      $Id: dib.cpp,v 1.63 2005/07/29 11:17:28 VZ Exp $
 // Copyright:   (c) 2003 Vadim Zeitlin <vadim@wxwindows.org>
 // License:     wxWindows licence
 ///////////////////////////////////////////////////////////////////////////////
@@ -566,7 +566,7 @@ HGLOBAL wxDIB::ConvertFromBitmap(HBITMAP hbmp)
         return NULL;
     }
 
-    if ( !ConvertFromBitmap((BITMAPINFO *)(void *)GlobalPtr(hDIB), hbmp) )
+    if ( !ConvertFromBitmap((BITMAPINFO *)(void *)GlobalPtrLock(hDIB), hbmp) )
     {
         // this really shouldn't happen... it worked the first time, why not
         // now?
@@ -588,6 +588,10 @@ HGLOBAL wxDIB::ConvertFromBitmap(HBITMAP hbmp)
 
 wxPalette *wxDIB::CreatePalette() const
 {
+    // GetDIBColorTable not available in eVC3
+#if defined(_WIN32_WCE) && _WIN32_WCE < 400
+    return NULL;
+#else
     wxCHECK_MSG( m_handle, NULL, _T("wxDIB::CreatePalette(): invalid object") );
 
     DIBSECTION ds;
@@ -630,7 +634,7 @@ wxPalette *wxDIB::CreatePalette() const
     // and the colour table
     wxCharBuffer rgb(sizeof(RGBQUAD) * biClrUsed);
     RGBQUAD *pRGB = (RGBQUAD*)rgb.data();
-    SelectInHDC(hDC, m_handle);
+    SelectInHDC selectHandle(hDC, m_handle);
     ::GetDIBColorTable(hDC, 0, biClrUsed, pRGB);
     for ( DWORD i = 0; i < biClrUsed; i++, pRGB++ )
     {
@@ -655,6 +659,7 @@ wxPalette *wxDIB::CreatePalette() const
     palette->SetHPALETTE((WXHPALETTE)hPalette);
 
     return palette;
+#endif
 }
 
 #endif // wxUSE_PALETTE

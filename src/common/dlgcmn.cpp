@@ -4,7 +4,7 @@
 // Author:      Vadim Zeitlin
 // Modified by:
 // Created:     28.06.99
-// RCS-ID:      $Id: dlgcmn.cpp,v 1.41 2005/03/22 10:34:35 JS Exp $
+// RCS-ID:      $Id: dlgcmn.cpp,v 1.47.2.1 2006/01/27 22:51:56 VZ Exp $
 // Copyright:   (c) Vadim Zeitlin
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -40,11 +40,66 @@
     #include "wx/containr.h"
 #endif
 
-//--------------------------------------------------------------------------
-// wxDialogBase
-//--------------------------------------------------------------------------
+#if wxUSE_STATTEXT
 
-// FIXME - temporary hack in absence of wxtopLevelWindow, should be always used
+// ----------------------------------------------------------------------------
+// wxTextWrapper
+// ----------------------------------------------------------------------------
+
+// this class is used to wrap the text on word boundary: wrapping is done by
+// calling OnStartLine() and OnOutputLine() functions
+class wxTextWrapper
+{
+public:
+    wxTextWrapper() { m_eol = false; }
+
+    // win is used for getting the font, text is the text to wrap, width is the
+    // max line width or -1 to disable wrapping
+    void Wrap(wxWindow *win, const wxString& text, int widthMax);
+
+    // we don't need it, but just to avoid compiler warnings
+    virtual ~wxTextWrapper() { }
+
+protected:
+    // line may be empty
+    virtual void OnOutputLine(const wxString& line) = 0;
+
+    // called at the start of every new line (except the very first one)
+    virtual void OnNewLine() { }
+
+private:
+    // call OnOutputLine() and set m_eol to true
+    void DoOutputLine(const wxString& line)
+    {
+        OnOutputLine(line);
+
+        m_eol = true;
+    }
+
+    // this function is a destructive inspector: when it returns true it also
+    // resets the flag to false so calling it again woulnd't return true any
+    // more
+    bool IsStartOfNewLine()
+    {
+        if ( !m_eol )
+            return false;
+
+        m_eol = false;
+
+        return true;
+    }
+
+
+    bool m_eol;
+};
+
+#endif // wxUSE_STATTEXT
+
+// ----------------------------------------------------------------------------
+// wxDialogBase
+// ----------------------------------------------------------------------------
+
+// FIXME - temporary hack in absence of wxTopLevelWindow, should be always used
 #ifdef wxTopLevelWindowNative
 BEGIN_EVENT_TABLE(wxDialogBase, wxTopLevelWindow)
     WX_EVENT_TABLE_CONTROL_CONTAINER(wxDialogBase)
@@ -68,104 +123,160 @@ void wxDialogBase::Init()
 #endif
 }
 
-#if wxUSE_STATTEXT // && wxUSE_TEXTCTRL
+#if wxUSE_STATTEXT
 
-wxSizer *wxDialogBase::CreateTextSizer( const wxString& message )
+void wxTextWrapper::Wrap(wxWindow *win, const wxString& text, int widthMax)
 {
-    bool is_pda = (wxSystemSettings::GetScreenType() <= wxSYS_SCREEN_PDA);
+    const wxChar *lastSpace = NULL;
+    wxString line;
 
-    wxString text = message;
-
-    // I admit that this is complete bogus, but it makes
-    // message boxes work for pda screens temporarily..
-    int max_width = -1;
-    if (is_pda)
+    const wxChar *lineStart = text.c_str();
+    for ( const wxChar *p = lineStart; ; p++ )
     {
-        max_width = wxSystemSettings::GetMetric( wxSYS_SCREEN_X ) - 25;
-        text += wxT('\n');
+        if ( IsStartOfNewLine() )
+        {
+            OnNewLine();
+
+            lastSpace = NULL;
+            line.clear();
+            lineStart = p;
+        }
+
+        if ( *p == _T('\n') || *p == _T('\0') )
+        {
+            DoOutputLine(line);
+
+            if ( *p == _T('\0') )
+                break;
+        }
+        else // not EOL
+        {
+            if ( *p == _T(' ') )
+                lastSpace = p;
+
+            line += *p;
+
+            if ( widthMax >= 0 && lastSpace )
+            {
+                int width;
+                win->GetTextExtent(line, &width, NULL);
+
+                if ( width > widthMax )
+                {
+                    // remove the last word from this line
+                    line.erase(lastSpace - lineStart, p + 1 - lineStart);
+                    DoOutputLine(line);
+
+                    // go back to the last word of this line which we didn't
+                    // output yet
+                    p = lastSpace;
+                }
+            }
+            //else: no wrapping at all or impossible to wrap
+        }
+    }
+}
+
+class wxTextSizerWrapper : public wxTextWrapper
+{
+public:
+    wxTextSizerWrapper(wxWindow *win)
+    {
+        m_win = win;
+        m_hLine = 0;
     }
 
-
-    wxBoxSizer *box = new wxBoxSizer( wxVERTICAL );
-
-    // get line height for empty lines
-    int y = 0;
-    wxFont font( GetFont() );
-    if (!font.Ok())
-        font = *wxSWISS_FONT;
-    GetTextExtent( wxT("H"), (int*)NULL, &y, (int*)NULL, (int*)NULL, &font);
-
-    size_t last_space = 0;
-    wxString line;
-    for ( size_t pos = 0; pos < text.length(); pos++ )
+    wxSizer *CreateSizer(const wxString& text, int widthMax)
     {
-        switch ( text[pos] )
+        m_sizer = new wxBoxSizer(wxVERTICAL);
+        Wrap(m_win, text, widthMax);
+        return m_sizer;
+    }
+
+protected:
+    virtual void OnOutputLine(const wxString& line)
+    {
+        if ( !line.empty() )
         {
-            case wxT('\n'):
-                if (!line.empty())
-                {
-                    wxStaticText *s = new wxStaticText( this, wxID_ANY, line );
-                    box->Add( s );
-                    line = wxEmptyString;
-                }
-                else
-                {
-                    box->Add( 5, y );
-                }
-                break;
+            m_sizer->Add(new wxStaticText(m_win, wxID_ANY, line));
+        }
+        else // empty line, no need to create a control for it
+        {
+            if ( !m_hLine )
+                m_hLine = m_win->GetCharHeight();
 
-            case wxT('&'):
-                // this is used as accel mnemonic prefix in the wxWidgets
-                // controls but in the static messages created by
-                // CreateTextSizer() (used by wxMessageBox, for example), we
-                // don't want this special meaning, so we need to quote it
-                line += wxT('&');
-
-                // fall through to add it normally too
-
-            default:
-                if (text[pos] == wxT(' '))
-                    last_space = pos;
-
-                line += message[pos];
-
-                if (is_pda)
-                {
-                    int width = 0;
-                    GetTextExtent( line, &width, (int*)NULL, (int*)NULL, (int*)NULL, &font );
-
-                    if (width > max_width)
-                    {
-                        // exception if there was no previous space
-                        if (last_space == 0)
-                            last_space = pos;
-
-                        int diff = pos-last_space;
-                        int len = line.Len();
-                        line.Remove( len-diff, diff );
-
-                        wxStaticText *s = new wxStaticText( this, wxID_ANY, line );
-                        box->Add( s );
-
-                        pos = last_space;
-                        last_space = 0;
-                        line = wxEmptyString;
-                    }
-                }
+            m_sizer->Add(5, m_hLine);
         }
     }
 
-    // remaining text behind last '\n'
-    if (!line.empty())
+private:
+    wxWindow *m_win;
+    wxSizer *m_sizer;
+    int m_hLine;
+};
+
+wxSizer *wxDialogBase::CreateTextSizer(const wxString& message)
+{
+    // I admit that this is complete bogus, but it makes
+    // message boxes work for pda screens temporarily..
+    int widthMax = -1;
+    const bool is_pda = wxSystemSettings::GetScreenType() <= wxSYS_SCREEN_PDA;
+    if (is_pda)
     {
-        wxStaticText *s2 = new wxStaticText( this, wxID_ANY, line );
-        box->Add( s2 );
+        widthMax = wxSystemSettings::GetMetric( wxSYS_SCREEN_X ) - 25;
     }
 
-    return box;
+    // '&' is used as accel mnemonic prefix in the wxWidgets controls but in
+    // the static messages created by CreateTextSizer() (used by wxMessageBox,
+    // for example), we don't want this special meaning, so we need to quote it
+    wxString text(message);
+    text.Replace(_T("&"), _T("&&"));
+
+    wxTextSizerWrapper wrapper(this);
+
+    return wrapper.CreateSizer(text, widthMax);
 }
 
-#endif // wxUSE_STATTEXT // && wxUSE_TEXTCTRL
+class wxLabelWrapper : public wxTextWrapper
+{
+public:
+    void WrapLabel(wxWindow *text, int widthMax)
+    {
+        m_text.clear();
+        Wrap(text, text->GetLabel(), widthMax);
+        text->SetLabel(m_text);
+    }
+
+protected:
+    virtual void OnOutputLine(const wxString& line)
+    {
+        m_text += line;
+    }
+
+    virtual void OnNewLine()
+    {
+        m_text += _T('\n');
+    }
+
+private:
+    wxString m_text;
+};
+
+// NB: don't "factor out" the scope operator, SGI MIPSpro 7.3 (but not 7.4)
+//     gets confused if it doesn't immediately follow the class name
+void
+#if defined(__WXGTK__) && !defined(__WXUNIVERSAL__)
+wxStaticText::
+#else
+wxStaticTextBase::
+#endif
+Wrap(int width)
+{
+    wxLabelWrapper wrapper;
+    wrapper.WrapLabel(this, width);
+}
+
+#endif // wxUSE_STATTEXT
 
 #if wxUSE_BUTTON
 
@@ -227,8 +338,6 @@ wxStdDialogButtonSizer *wxDialogBase::CreateStdDialogButtonSizer( long flags )
         sizer->AddButton(help);
     }
 
-    sizer->Realize();
-
     if (flags & wxNO_DEFAULT)
     {
         if (no)
@@ -250,11 +359,13 @@ wxStdDialogButtonSizer *wxDialogBase::CreateStdDialogButtonSizer( long flags )
             yes->SetFocus();
         }
     }
-    
+
     if (flags & wxOK)
         SetAffirmativeId(wxID_OK);
     else if (flags & wxYES)
         SetAffirmativeId(wxID_YES);
+
+    sizer->Realize();
 
     return sizer;
 }

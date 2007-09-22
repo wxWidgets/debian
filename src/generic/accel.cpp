@@ -3,7 +3,7 @@
 // Purpose:     generic implementation of wxAcceleratorTable class
 // Author:      Robert Roebling
 // Modified:    VZ pn 31.05.01: use typed lists, Unicode cleanup, Add/Remove
-// Id:          $Id: accel.cpp,v 1.12 2004/12/10 16:20:13 ABX Exp $
+// Id:          $Id: accel.cpp,v 1.12.2.1 2006/03/20 12:14:12 VZ Exp $
 // Copyright:   (c) 1998 Robert Roebling
 // Licence:     wxWindows licence
 ///////////////////////////////////////////////////////////////////////////////
@@ -97,7 +97,9 @@ wxAcceleratorTable::wxAcceleratorTable(int n, const wxAcceleratorEntry entries[]
     {
         const wxAcceleratorEntry& entry = entries[i];
 
-        int keycode = wxToupper(entry.GetKeyCode());
+        int keycode = entry.GetKeyCode();
+        if ( isascii(keycode) )
+            keycode = toupper(keycode);
 
         M_ACCELDATA->m_accels.Append(new wxAcceleratorEntry(entry.GetFlags(),
                                                             keycode,

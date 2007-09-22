@@ -5,7 +5,7 @@
 // Author:      Robin Dunn
 //
 // Created:     9-Aug-2003
-// RCS-ID:      $Id: _printfw.i,v 1.22 2005/03/09 22:28:40 RD Exp $
+// RCS-ID:      $Id: _printfw.i,v 1.22.2.2 2006/01/21 08:08:38 RD Exp $
 // Copyright:   (c) 2003 by Total Control Software
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -647,7 +647,7 @@ class wxPyPrintPreview : public wxPrintPreview
 public:
     wxPyPrintPreview(wxPyPrintout* printout,
                      wxPyPrintout* printoutForPrinting,
-                     wxPrintDialogData* data=NULL)
+                     wxPrintDialogData* data)
         : wxPrintPreview(printout, printoutForPrinting, data)
     {}
     wxPyPrintPreview(wxPyPrintout* printout,
@@ -717,7 +717,7 @@ public:
 %{
 class wxPyPreviewFrame : public wxPreviewFrame
 {
-    DECLARE_CLASS(wxPyPreviewFrame);
+    DECLARE_CLASS(wxPyPreviewFrame)
 public:
     wxPyPreviewFrame(wxPrintPreview* preview, wxFrame* parent,
                      const wxString& title,
@@ -776,7 +776,7 @@ public:
 %{
 class wxPyPreviewControlBar : public wxPreviewControlBar
 {
-    DECLARE_CLASS(wxPyPreviewControlBar);
+    DECLARE_CLASS(wxPyPreviewControlBar)
 public:
     wxPyPreviewControlBar(wxPrintPreview *preview,
                           long buttons,

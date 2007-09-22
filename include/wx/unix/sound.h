@@ -4,7 +4,7 @@
 // Author:      Julian Smart, Vaclav Slavik
 // Modified by:
 // Created:     25/10/98
-// RCS-ID:      $Id: sound.h,v 1.5 2004/05/23 20:51:50 JS Exp $
+// RCS-ID:      $Id: sound.h,v 1.6 2005/08/02 18:16:42 MW Exp $
 // Copyright:   (c) Julian Smart, Vaclav Slavik
 // Licence:   	wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -26,12 +26,12 @@
 // wxSound: simple audio playback class
 // ----------------------------------------------------------------------------
 
-class wxSoundBackend;
-class wxSound;
-class wxDynamicLibrary;
+class WXDLLIMPEXP_ADV wxSoundBackend;
+class WXDLLIMPEXP_ADV wxSound;
+class WXDLLIMPEXP_BASE wxDynamicLibrary;
 
 /// Sound data, as loaded from .wav file:
-class wxSoundData
+class WXDLLIMPEXP_ADV wxSoundData
 {
 public:
     wxSoundData() : m_refCnt(1) {}
@@ -59,7 +59,7 @@ private:
 
 
 /// Simple sound class:
-class wxSound : public wxSoundBase
+class WXDLLIMPEXP_ADV wxSound : public wxSoundBase
 {
 public:
     wxSound();
@@ -121,7 +121,7 @@ struct wxSoundPlaybackStatus
 };
 
 // Audio backend interface
-class wxSoundBackend
+class WXDLLIMPEXP_ADV wxSoundBackend
 {
 public:
     virtual ~wxSoundBackend() {}

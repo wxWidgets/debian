@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     01/02/97
-// RCS-ID:      $Id: textdlgg.h,v 1.28 2005/01/21 18:26:01 ABX Exp $
+// RCS-ID:      $Id: textdlgg.h,v 1.29 2005/08/31 23:48:11 VZ Exp $
 // Copyright:   (c) Julian Smart
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -16,8 +16,9 @@
     #pragma interface "textdlgg.h"
 #endif
 
-#if wxUSE_TEXTDLG
 #include "wx/defs.h"
+
+#if wxUSE_TEXTDLG
 
 #include "wx/dialog.h"
 

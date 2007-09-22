@@ -4,7 +4,7 @@
 %% Author:      wxWidgets Team
 %% Modified by:
 %% Created:     
-%% RCS-ID:      $Id: window.tex,v 1.183 2005/06/23 09:57:09 JS Exp $
+%% RCS-ID:      $Id: window.tex,v 1.186.2.2 2006/01/24 23:11:44 JS Exp $
 %% Copyright:   (c) wxWidgets Team
 %% License:     wxWindows license
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -355,7 +355,7 @@ Usually it is only used with the top level windows (wxFrame and wxDialog
 classes) as the others are not supposed to have any special OnClose() logic.
 
 The close handler should check whether the window is being deleted forcibly,
-using \helpref{wxCloseEvent::GetForce}{wxcloseeventgetforce}, in which case it
+using \helpref{wxCloseEvent::CanVeto}{wxcloseeventcanveto}, in which case it
 should destroy the window using \helpref{wxWindow::Destroy}{wxwindowdestroy}.
 
 {\it Note} that calling Close does not guarantee that the window will be
@@ -1498,8 +1498,11 @@ This is just a wrapper for \helpref{ScrollLines}{wxwindowscrolllines}$(-1)$.
 
 \func{void}{Lower}{\void}
 
-Lowers the window to the bottom of the window hierarchy if it is a managed window (dialog
-or frame).
+Lowers the window to the bottom of the window hierarchy.
+
+\wxheading{See also}
+
+\helpref{Raise}{wxwindowraise}
 
 
 \membersection{wxWindow::MakeModal}\label{wxwindowmakemodal}
@@ -2217,8 +2220,13 @@ remove the event handler.
 
 \func{void}{Raise}{\void}
 
-Raises the window to the top of the window hierarchy if it is a managed window (dialog
-or frame).
+Raises the window to the top of the window hierarchy.
+
+In current version of wxWidgets this works both for manage and child windows.
+
+\wxheading{See also}
+
+\helpref{Lower}{wxwindowlower}
 
 
 \membersection{wxWindow::Refresh}\label{wxwindowrefresh}
@@ -2993,7 +3001,8 @@ from your \helpref{wxSizeEvent}{wxsizeevent} handler function.
 \wxheading{See also}
 
 \helpref{Scrolling overview}{scrollingoverview},\rtfsp
-\helpref{wxScrollBar}{wxscrollbar}, \helpref{wxScrolledWindow}{wxscrolledwindow}
+\helpref{wxScrollBar}{wxscrollbar}, \helpref{wxScrolledWindow}{wxscrolledwindow},\rtfsp
+\helpref{wxScrollWinEvent}{wxscrollwinevent}
 
 \begin{comment}
 
@@ -3133,16 +3142,20 @@ value should be used.}
 
 \docparam{sizeFlags}{Indicates the interpretation of other parameters. It is a bit list of the following:
 
-{\bf wxSIZE\_AUTO\_WIDTH}: a -1 width value is taken to indicate
+{\bf wxSIZE\_AUTO\_WIDTH}: a $-1$ width value is taken to indicate
 a wxWidgets-supplied default width.\\
-{\bf wxSIZE\_AUTO\_HEIGHT}: a -1 height value is taken to indicate
+{\bf wxSIZE\_AUTO\_HEIGHT}: a $-1$ height value is taken to indicate
 a wxWidgets-supplied default width.\\
 {\bf wxSIZE\_AUTO}: -1 size values are taken to indicate
 a wxWidgets-supplied default size.\\
 {\bf wxSIZE\_USE\_EXISTING}: existing dimensions should be used
 if -1 values are supplied.\\
-{\bf wxSIZE\_ALLOW\_MINUS\_ONE}: allow dimensions of -1 and less to be interpreted
+{\bf wxSIZE\_ALLOW\_MINUS\_ONE}: allow dimensions of $-1$ and less to be interpreted
 as real dimensions, not default values.
+{\bf wxSIZE\_FORCE}: normally, if the position and the size of the window are
+already the same as the parameters of this function, nothing is done. but with
+this flag a window resize may be forced even in this case (supported in wx
+2.6.2 and later and only implemented for MSW and ignored elsewhere currently)
 }
 
 \wxheading{Remarks}
@@ -3170,7 +3183,7 @@ implements the following methods:\par
 
 \membersection{wxWindow::SetSizeHints}\label{wxwindowsetsizehints}
 
-\func{virtual void}{SetSizeHints}{\param{int}{ minW=-1}, \param{int}{ minH=-1}, \param{int}{ maxW=-1}, \param{int}{ maxH=-1},
+\func{virtual void}{SetSizeHints}{\param{int}{ minW}, \param{int}{ minH}, \param{int}{ maxW=-1}, \param{int}{ maxH=-1},
  \param{int}{ incW=-1}, \param{int}{ incH=-1}}
 
 \func{void}{SetSizeHints}{\param{const wxSize\&}{ minSize},

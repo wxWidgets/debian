@@ -3,7 +3,7 @@
 // Purpose:
 // Author:      Robert Roebling
 // Created:     01/02/97
-// Id:          $Id: combobox.h,v 1.49 2005/02/13 17:07:46 VZ Exp $
+// Id:          $Id: combobox.h,v 1.51 2005/08/17 14:22:37 VZ Exp $
 // Copyright:   (c) 1998 Robert Roebling
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -26,20 +26,20 @@
 // classes
 //-----------------------------------------------------------------------------
 
-class wxComboBox;
+class WXDLLIMPEXP_CORE wxComboBox;
 
 //-----------------------------------------------------------------------------
 // global data
 //-----------------------------------------------------------------------------
 
-extern const wxChar* wxComboBoxNameStr;
-extern const wxChar* wxEmptyString;
+extern WXDLLIMPEXP_CORE const wxChar* wxComboBoxNameStr;
+extern WXDLLIMPEXP_BASE const wxChar* wxEmptyString;
 
 //-----------------------------------------------------------------------------
 // wxComboBox
 //-----------------------------------------------------------------------------
 
-class wxComboBox : public wxControl, public wxComboBoxBase
+class WXDLLIMPEXP_CORE wxComboBox : public wxControl, public wxComboBoxBase
 {
 public:
     inline wxComboBox() {}
@@ -90,6 +90,9 @@ public:
 
     virtual int FindString( const wxString &item ) const;
     int GetSelection() const;
+#if wxABI_VERSION >= 20602
+    int GetCurrentSelection() const;
+#endif
     wxString GetString( int n ) const;
     wxString GetStringSelection() const;
     int GetCount() const;

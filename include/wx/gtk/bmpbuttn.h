@@ -2,7 +2,7 @@
 // Name:        wx/gtk/bmpbutton.h
 // Purpose:
 // Author:      Robert Roebling
-// Id:          $Id: bmpbuttn.h,v 1.29 2004/10/18 13:12:39 VS Exp $
+// Id:          $Id: bmpbuttn.h,v 1.30 2005/08/02 22:57:51 MW Exp $
 // Copyright:   (c) 1998 Robert Roebling
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -19,7 +19,7 @@
 // wxBitmapButton
 // ----------------------------------------------------------------------------
 
-class wxBitmapButton: public wxBitmapButtonBase
+class WXDLLIMPEXP_CORE wxBitmapButton: public wxBitmapButtonBase
 {
 public:
     wxBitmapButton() { Init(); }

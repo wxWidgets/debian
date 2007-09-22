@@ -3,7 +3,7 @@
 # Author:       Will Sadkin
 # Created:      03/21/2003
 # Copyright:    (c) 2003 by Will Sadkin
-# RCS-ID:       $Id: scrolledpanel.py,v 1.9 2005/05/04 00:03:00 RD Exp $
+# RCS-ID:       $Id: scrolledpanel.py,v 1.9.2.1 2006/01/31 17:47:29 RD Exp $
 # License:      wxWindows license
 #----------------------------------------------------------------------------
 # 12/11/2003 - Jeff Grimmett (grimmtooth@softhome.net)
@@ -65,10 +65,13 @@ class ScrolledPanel( wx.PyScrolledWindow ):
             if rate_y:
                 h += rate_y - (h % rate_y)
             self.SetVirtualSize( (w, h) )
-            self.SetVirtualSizeHints( w, h )
+        self.SetScrollRate(rate_x, rate_y)        
+        wx.CallAfter(self._SetupAfter) # scroll back to top after initial events
 
-        self.SetScrollRate(rate_x, rate_y)
-        wx.CallAfter(self.Scroll, 0, 0) # scroll back to top after initial events
+
+    def _SetupAfter(self):
+        self.SetVirtualSize(self.GetBestVirtualSize())
+        self.Scroll(0,0)
 
 
     def OnChildFocus(self, evt):

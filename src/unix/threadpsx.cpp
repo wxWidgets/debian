@@ -4,7 +4,7 @@
 // Author:      Original from Wolfram Gloger/Guilhem Lavaux
 // Modified by: K. S. Sreeram (2002): POSIXified wxCondition, added wxSemaphore
 // Created:     04/22/98
-// RCS-ID:      $Id: threadpsx.cpp,v 1.80 2005/03/17 09:10:35 JS Exp $
+// RCS-ID:      $Id: threadpsx.cpp,v 1.83.2.1 2006/01/17 19:17:24 JS Exp $
 // Copyright:   (c) Wolfram Gloger (1996, 1997)
 //                  Guilhem Lavaux (1998)
 //                  Vadim Zeitlin (1999-2002)
@@ -44,7 +44,7 @@
 #include <pthread.h>
 #include <errno.h>
 #include <time.h>
-#if HAVE_SCHED_H
+#ifdef HAVE_SCHED_H
     #include <sched.h>
 #endif
 
@@ -100,7 +100,7 @@ static void DeleteThread(wxThread *This);
 // ----------------------------------------------------------------------------
 
 // an (non owning) array of pointers to threads
-WX_DEFINE_ARRAY(wxThread *, wxArrayThread);
+WX_DEFINE_ARRAY_PTR(wxThread *, wxArrayThread);
 
 // an entry for a thread we can wait for
 
@@ -591,10 +591,10 @@ wxSemaError wxSemaphoreInternal::Post()
 extern "C"
 {
 
-#if HAVE_THREAD_CLEANUP_FUNCTIONS
+#ifdef wxHAVE_PTHREAD_CLEANUP
     // thread exit function
     void wxPthreadCleanup(void *ptr);
-#endif // HAVE_THREAD_CLEANUP_FUNCTIONS
+#endif // wxHAVE_PTHREAD_CLEANUP
 
 void *wxPthreadStart(void *ptr);
 
@@ -671,10 +671,10 @@ public:
         m_isDetached = TRUE;
     }
 
-#if HAVE_THREAD_CLEANUP_FUNCTIONS
+#ifdef wxHAVE_PTHREAD_CLEANUP
     // this is used by wxPthreadCleanup() only
     static void Cleanup(wxThread *thread);
-#endif // HAVE_THREAD_CLEANUP_FUNCTIONS
+#endif // wxHAVE_PTHREAD_CLEANUP
 
 private:
     pthread_t     m_threadId;   // id of the thread
@@ -735,11 +735,11 @@ void *wxThreadInternal::PthreadStart(wxThread *thread)
     // block!
     bool dontRunAtAll;
 
-#if HAVE_THREAD_CLEANUP_FUNCTIONS
+#ifdef wxHAVE_PTHREAD_CLEANUP
     // install the cleanup handler which will be called if the thread is
     // cancelled
     pthread_cleanup_push(wxPthreadCleanup, thread);
-#endif // HAVE_THREAD_CLEANUP_FUNCTIONS
+#endif // wxHAVE_PTHREAD_CLEANUP
 
     // wait for the semaphore to be posted from Run()
     pthread->m_semRun.Wait();
@@ -779,10 +779,10 @@ void *wxThreadInternal::PthreadStart(wxThread *thread)
     // NB: at least under Linux, pthread_cleanup_push/pop are macros and pop
     //     contains the matching '}' for the '{' in push, so they must be used
     //     in the same block!
-#if HAVE_THREAD_CLEANUP_FUNCTIONS
+#ifdef wxHAVE_PTHREAD_CLEANUP
     // remove the cleanup handler without executing it
     pthread_cleanup_pop(FALSE);
-#endif // HAVE_THREAD_CLEANUP_FUNCTIONS
+#endif // wxHAVE_PTHREAD_CLEANUP
 
     if ( dontRunAtAll )
     {
@@ -802,7 +802,7 @@ void *wxThreadInternal::PthreadStart(wxThread *thread)
     }
 }
 
-#if HAVE_THREAD_CLEANUP_FUNCTIONS
+#ifdef wxHAVE_PTHREAD_CLEANUP
 
 // this handler is called when the thread is cancelled
 extern "C" void wxPthreadCleanup(void *ptr)
@@ -812,6 +812,7 @@ extern "C" void wxPthreadCleanup(void *ptr)
 
 void wxThreadInternal::Cleanup(wxThread *thread)
 {
+    if (pthread_getspecific(gs_keySelf) == 0) return;
     {
         wxCriticalSectionLocker lock(thread->m_critsect);
         if ( thread->m_internal->GetState() == STATE_EXITED )
@@ -825,7 +826,7 @@ void wxThreadInternal::Cleanup(wxThread *thread)
     thread->Exit(EXITCODE_CANCELLED);
 }
 
-#endif // HAVE_THREAD_CLEANUP_FUNCTIONS
+#endif // wxHAVE_PTHREAD_CLEANUP
 
 // ----------------------------------------------------------------------------
 // wxThreadInternal
@@ -1435,14 +1436,14 @@ wxThreadError wxThread::Kill()
             {
                 // if we use cleanup function, this will be done from
                 // wxPthreadCleanup()
-#if !HAVE_THREAD_CLEANUP_FUNCTIONS
+#ifndef wxHAVE_PTHREAD_CLEANUP
                 ScheduleThreadForDeletion();
 
                 // don't call OnExit() here, it can only be called in the
                 // threads context and we're in the context of another thread
 
                 DeleteThread(this);
-#endif // HAVE_THREAD_CLEANUP_FUNCTIONS
+#endif // wxHAVE_PTHREAD_CLEANUP
             }
             else
             {
@@ -1483,6 +1484,7 @@ void wxThread::Exit(ExitCode status)
         //       we make it a global object, but this would mean that we can
         //       only call one thread function at a time :-(
         DeleteThread(this);
+        pthread_setspecific(gs_keySelf, 0);
     }
     else
     {

@@ -2,7 +2,7 @@
 // Name:        wx/gtk/checkbox.h
 // Purpose:
 // Author:      Robert Roebling
-// Id:          $Id: checkbox.h,v 1.30 2004/06/26 15:53:06 VS Exp $
+// Id:          $Id: checkbox.h,v 1.31 2005/08/02 22:57:51 MW Exp $
 // Copyright:   (c) 1998 Robert Roebling
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -18,7 +18,7 @@
 // wxCheckBox
 // ----------------------------------------------------------------------------
 
-class wxCheckBox : public wxCheckBoxBase
+class WXDLLIMPEXP_CORE wxCheckBox : public wxCheckBoxBase
 {
 public:
     wxCheckBox();

@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     04/01/98
-// RCS-ID:      $Id: utils.cpp,v 1.178 2005/06/16 23:48:50 VZ Exp $
+// RCS-ID:      $Id: utils.cpp,v 1.181.2.3 2005/11/23 12:49:36 ABX Exp $
 // Copyright:   (c) Julian Smart
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -31,6 +31,7 @@
     #include "wx/log.h"
 #endif  //WX_PRECOMP
 
+#include "wx/msw/registry.h"
 #include "wx/apptrait.h"
 #include "wx/dynlib.h"
 #include "wx/dynload.h"
@@ -122,12 +123,11 @@ static const wxChar eUSERNAME[]  = wxT("UserName");
 // ----------------------------------------------------------------------------
 
 // Get hostname only (without domain name)
-bool wxGetHostName(wxChar *buf, int maxSize)
+bool wxGetHostName(wxChar *WXUNUSED_IN_WINCE(buf),
+                   int WXUNUSED_IN_WINCE(maxSize))
 {
 #if defined(__WXWINCE__)
     // TODO-CE
-    wxUnusedVar(buf);
-    wxUnusedVar(maxSize);
     return false;
 #elif defined(__WIN32__) && !defined(__WXMICROWIN__)
     DWORD nSize = maxSize;
@@ -237,12 +237,11 @@ bool wxGetFullHostName(wxChar *buf, int maxSize)
 }
 
 // Get user ID e.g. jacs
-bool wxGetUserId(wxChar *buf, int maxSize)
+bool wxGetUserId(wxChar *WXUNUSED_IN_WINCE(buf),
+                 int WXUNUSED_IN_WINCE(maxSize))
 {
 #if defined(__WXWINCE__)
     // TODO-CE
-    wxUnusedVar(buf);
-    wxUnusedVar(maxSize);
     return false;
 #elif defined(__WIN32__) && !defined(__WXMICROWIN__)
     DWORD nSize = maxSize;
@@ -282,11 +281,19 @@ bool wxGetUserId(wxChar *buf, int maxSize)
 // Get user name e.g. Julian Smart
 bool wxGetUserName(wxChar *buf, int maxSize)
 {
+    wxCHECK_MSG( buf && ( maxSize > 0 ), false,
+                    _T("empty buffer in wxGetUserName") );
 #if defined(__WXWINCE__)
-    // TODO-CE
-    wxUnusedVar(buf);
-    wxUnusedVar(maxSize);
-    return false;
+    wxLogNull noLog;
+    wxRegKey key(wxRegKey::HKCU, wxT("ControlPanel\\Owner"));
+    if(!key.Open(wxRegKey::Read))
+        return false;
+    wxString name;
+    if(!key.QueryValue(wxT("Owner"),name))
+        return false;
+    wxStrncpy(buf, name.c_str(), maxSize-1);
+    buf[maxSize-1] = _T('\0');
+    return true;
 #elif defined(USE_NET_API)
     CHAR szUserName[256];
     if ( !wxGetUserId(szUserName, WXSIZEOF(szUserName)) )
@@ -467,13 +474,12 @@ wxChar *wxGetUserHome(const wxString& WXUNUSED(user))
     return (wxChar *)wxGetHomeDir(&s_home);
 }
 
-bool wxGetDiskSpace(const wxString& path, wxLongLong *pTotal, wxLongLong *pFree)
+bool wxGetDiskSpace(const wxString& WXUNUSED_IN_WINCE(path),
+                    wxLongLong *WXUNUSED_IN_WINCE(pTotal),
+                    wxLongLong *WXUNUSED_IN_WINCE(pFree))
 {
 #ifdef __WXWINCE__
     // TODO-CE
-    wxUnusedVar(path);
-    wxUnusedVar(pTotal);
-    wxUnusedVar(pFree);
     return false;
 #else
     if ( path.empty() )
@@ -583,12 +589,11 @@ bool wxGetDiskSpace(const wxString& path, wxLongLong *pTotal, wxLongLong *pFree)
 // env vars
 // ----------------------------------------------------------------------------
 
-bool wxGetEnv(const wxString& var, wxString *value)
+bool wxGetEnv(const wxString& WXUNUSED_IN_WINCE(var),
+              wxString *WXUNUSED_IN_WINCE(value))
 {
 #ifdef __WXWINCE__
     // no environment variables under CE
-    wxUnusedVar(var);
-    wxUnusedVar(value);
     return false;
 #else // Win32
     // first get the size of the buffer
@@ -609,11 +614,15 @@ bool wxGetEnv(const wxString& var, wxString *value)
 #endif // WinCE/32
 }
 
-bool wxSetEnv(const wxString& var, const wxChar *value)
+bool wxSetEnv(const wxString& WXUNUSED_IN_WINCE(var),
+              const wxChar *WXUNUSED_IN_WINCE(value))
 {
     // some compilers have putenv() or _putenv() or _wputenv() but it's better
     // to always use Win32 function directly instead of dealing with them
-#if defined(__WIN32__) && !defined(__WXWINCE__)
+#ifdef __WXWINCE__
+    // no environment variables under CE
+    return false;
+#else
     if ( !::SetEnvironmentVariable(var, value) )
     {
         wxLogLastError(_T("SetEnvironmentVariable"));
@@ -622,11 +631,6 @@ bool wxSetEnv(const wxString& var, const wxChar *value)
     }
 
     return true;
-#else // no way to set env vars
-    // no environment variables under CE
-    wxUnusedVar(var);
-    wxUnusedVar(value);
-    return false;
 #endif
 }
 
@@ -812,9 +816,11 @@ int wxKill(long pid, wxSignal sig, wxKillError *krc, int flags)
     return 0;
 }
 
-HANDLE (WINAPI *lpfCreateToolhelp32Snapshot)(DWORD,DWORD) ;
-BOOL (WINAPI *lpfProcess32First)(HANDLE,LPPROCESSENTRY32) ;
-BOOL (WINAPI *lpfProcess32Next)(HANDLE,LPPROCESSENTRY32) ;
+typedef HANDLE (WINAPI *CreateToolhelp32Snapshot_t)(DWORD,DWORD);
+typedef BOOL (WINAPI *Process32_t)(HANDLE,LPPROCESSENTRY32);
+
+CreateToolhelp32Snapshot_t lpfCreateToolhelp32Snapshot;
+Process32_t lpfProcess32First, lpfProcess32Next;
 
 static void InitToolHelp32()
 {
@@ -829,9 +835,9 @@ static void InitToolHelp32()
     lpfProcess32First = NULL;
     lpfProcess32Next = NULL;
 
-    HINSTANCE hInstLib = LoadLibrary( wxT("Kernel32.DLL") ) ;
-    if( hInstLib == NULL )
-        return ;
+#if wxUSE_DYNLIB_CLASS
+
+    wxDynamicLibrary dllKernel(_T("kernel32.dll"), wxDL_VERBATIM);
 
     // Get procedure addresses.
     // We are linking to these functions of Kernel32
@@ -839,37 +845,16 @@ static void InitToolHelp32()
     // this code would fail to load under Windows NT,
     // which does not have the Toolhelp32
     // functions in the Kernel 32.
-    lpfCreateToolhelp32Snapshot=
-        (HANDLE(WINAPI *)(DWORD,DWORD))
-        GetProcAddress( hInstLib,
-#ifdef __WXWINCE__
-        wxT("CreateToolhelp32Snapshot")
-#else
-        "CreateToolhelp32Snapshot"
-#endif
-        ) ;
+    lpfCreateToolhelp32Snapshot =
+        (CreateToolhelp32Snapshot_t)dllKernel.RawGetSymbol(_T("CreateToolhelp32Snapshot"));
 
-    lpfProcess32First=
-        (BOOL(WINAPI *)(HANDLE,LPPROCESSENTRY32))
-        GetProcAddress( hInstLib,
-#ifdef __WXWINCE__
-        wxT("Process32First")
-#else
-        "Process32First"
-#endif
-        ) ;
+    lpfProcess32First =
+        (Process32_t)dllKernel.RawGetSymbol(_T("Process32First"));
 
-    lpfProcess32Next=
-        (BOOL(WINAPI *)(HANDLE,LPPROCESSENTRY32))
-        GetProcAddress( hInstLib,
-#ifdef __WXWINCE__
-        wxT("Process32Next")
-#else
-        "Process32Next"
-#endif
-        ) ;
+    lpfProcess32Next =
+        (Process32_t)dllKernel.RawGetSymbol(_T("Process32Next"));
 
-    FreeLibrary( hInstLib ) ;
+#endif // wxUSE_DYNLIB_CLASS
 }
 
 // By John Skiff
@@ -946,11 +931,10 @@ bool wxShell(const wxString& command)
 }
 
 // Shutdown or reboot the PC
-bool wxShutdown(wxShutdownFlags wFlags)
+bool wxShutdown(wxShutdownFlags WXUNUSED_IN_WINCE(wFlags))
 {
 #ifdef __WXWINCE__
     // TODO-CE
-    wxUnusedVar(wFlags);
     return false;
 #elif defined(__WIN32__)
     bool bOK = true;

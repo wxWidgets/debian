@@ -4,7 +4,7 @@
 // Author:      Vadim Zeitlin/Julian Smart
 // Modified by:
 // Created:     04/01/98
-// RCS-ID:      $Id: internat.cpp,v 1.44 2005/06/16 17:57:21 JS Exp $
+// RCS-ID:      $Id: internat.cpp,v 1.45 2005/07/31 09:42:11 MBN Exp $
 // Copyright:   (c) Julian Smart
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -131,8 +131,10 @@ bool MyApp::OnInit()
         wxLANGUAGE_CZECH,
         wxLANGUAGE_POLISH,
         wxLANGUAGE_SWEDISH,
-#if wxUSE_UNICODE
+#if wxUSE_UNICODE || defined(__WXMOTIF__)
         wxLANGUAGE_JAPANESE,
+#endif
+#if wxUSE_UNICODE
         wxLANGUAGE_GEORGIAN,
 #endif
         wxLANGUAGE_ENGLISH,
@@ -153,8 +155,10 @@ bool MyApp::OnInit()
             _T("Czech"),
             _T("Polish"),
             _T("Swedish"),
-#if wxUSE_UNICODE
+#if wxUSE_UNICODE || defined(__WXMOTIF__)
             _T("Japanese"),
+#endif
+#if wxUSE_UNICODE
             _T("Georgian"),
 #endif
             _T("English"),

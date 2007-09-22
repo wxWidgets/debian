@@ -2,7 +2,7 @@
 // Name:        clipboard.h
 // Purpose:
 // Author:      Robert Roebling
-// Id:          $Id: clipbrd.h,v 1.20 2004/05/23 20:50:52 JS Exp $
+// Id:          $Id: clipbrd.h,v 1.21 2005/08/02 22:57:52 MW Exp $
 // Copyright:   (c) 1998 Robert Roebling
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -27,7 +27,7 @@
 // wxClipboard
 // ----------------------------------------------------------------------------
 
-class wxClipboard : public wxClipboardBase
+class WXDLLIMPEXP_CORE wxClipboard : public wxClipboardBase
 {
 public:
     wxClipboard();

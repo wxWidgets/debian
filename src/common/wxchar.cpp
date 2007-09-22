@@ -4,7 +4,7 @@
 // Author:      Ove Kåven
 // Modified by: Ron Lee
 // Created:     09/04/99
-// RCS-ID:      $Id: wxchar.cpp,v 1.103 2005/05/30 13:50:23 JS Exp $
+// RCS-ID:      $Id: wxchar.cpp,v 1.105.2.1 2006/01/06 17:06:41 VZ Exp $
 // Copyright:   (c) wxWidgets copyright
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -65,7 +65,7 @@ using namespace std ;
 size_t WXDLLEXPORT wxMB2WC(wchar_t *buf, const char *psz, size_t n)
 {
   // assume that we have mbsrtowcs() too if we have wcsrtombs()
-#if HAVE_WCSRTOMBS
+#ifdef HAVE_WCSRTOMBS
   mbstate_t mbstate;
   memset(&mbstate, 0, sizeof(mbstate_t));
 #endif
@@ -91,7 +91,7 @@ size_t WXDLLEXPORT wxMB2WC(wchar_t *buf, const char *psz, size_t n)
 
 size_t WXDLLEXPORT wxWC2MB(char *buf, const wchar_t *pwz, size_t n)
 {
-#if HAVE_WCSRTOMBS
+#ifdef HAVE_WCSRTOMBS
   mbstate_t mbstate;
   memset(&mbstate, 0, sizeof(mbstate_t));
 #endif
@@ -102,14 +102,14 @@ size_t WXDLLEXPORT wxWC2MB(char *buf, const wchar_t *pwz, size_t n)
       if (n) *buf = '\0';
       return 0;
     }
-#if HAVE_WCSRTOMBS
+#ifdef HAVE_WCSRTOMBS
     return wcsrtombs(buf, &pwz, n, &mbstate);
 #else
     return wxWcstombs(buf, pwz, n);
 #endif
   }
 
-#if HAVE_WCSRTOMBS
+#ifdef HAVE_WCSRTOMBS
   return wcsrtombs((char *) NULL, &pwz, 0, &mbstate);
 #else
   return wxWcstombs((char *) NULL, pwz, 0);
@@ -1070,7 +1070,7 @@ WXDLLEXPORT int wxTolower(wxChar ch) { return (wxChar)CharLower((LPTSTR)(ch)); }
 WXDLLEXPORT int wxToupper(wxChar ch) { return (wxChar)CharUpper((LPTSTR)(ch)); }
 #endif
 
-#if defined(__DARWIN__) && ( MAC_OS_X_VERSION_MAX_ALLOWED <= MAC_OS_X_VERSION_10_2 )
+#ifdef wxNEED_WX_MBSTOWCS
 
 WXDLLEXPORT size_t wxMbstowcs (wchar_t * out, const char * in, size_t outlen)
 {
@@ -1116,6 +1116,8 @@ WXDLLEXPORT size_t	wxWcstombs (char * out, const wchar_t * in, size_t outlen)
     return in - origin;
 }
 
+#endif // wxNEED_WX_MBSTOWCS
+
 #if defined(wxNEED_WX_CTYPE_H)
 
 #include <CoreFoundation/CoreFoundation.h>
@@ -1146,8 +1148,6 @@ WXDLLEXPORT int wxTolower(wxChar ch) { return (wxChar)tolower((char)(ch)); }
 WXDLLEXPORT int wxToupper(wxChar ch) { return (wxChar)toupper((char)(ch)); }
 
 #endif  // wxNEED_WX_CTYPE_H
-
-#endif  // defined(__DARWIN__) and OSX <= 10.2
 
 #ifndef wxStrdupA
 
@@ -1578,7 +1578,7 @@ WXDLLEXPORT wxChar * wxStrtok(wxChar *psz, const wxChar *delim, wxChar **save_pt
 // missing C RTL functions
 // ----------------------------------------------------------------------------
 
-#if wxNEED_STRDUP
+#ifdef wxNEED_STRDUP
 
 char *strdup(const char *s)
 {

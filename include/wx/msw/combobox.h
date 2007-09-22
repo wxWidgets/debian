@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     01/02/97
-// RCS-ID:      $Id: combobox.h,v 1.33 2005/03/18 19:32:14 ABX Exp $
+// RCS-ID:      $Id: combobox.h,v 1.33.2.2 2006/04/04 03:56:46 RD Exp $
 // Copyright:   (c) Julian Smart
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -79,7 +79,7 @@ public:
     // List functions: see wxChoice
 
     // Text field functions
-    wxString GetValue() const { return m_value; }
+    wxString GetValue() const; 
     virtual void SetValue(const wxString& value);
 
     // Clipboard operations
@@ -95,12 +95,12 @@ public:
     virtual wxTextPos GetLastPosition() const;
     virtual void Replace(long from, long to, const wxString& value);
     virtual void Remove(long from, long to);
-    virtual void SetSelection(int n) { wxChoice::SetSelection(n); }
+    virtual void SetSelection(int n);
     virtual void SetSelection(long from, long to);
     virtual int GetSelection() const;
     virtual void GetSelection(long* from, long* to) const;
     virtual void SetEditable(bool editable);
-    virtual void Clear() { wxChoice::Clear(); m_selectionOld = -1; }
+    virtual void Clear() { wxChoice::Clear(); }
 
     virtual void Undo() ;
     virtual void Redo() ;
@@ -138,8 +138,7 @@ protected:
     virtual WXDWORD MSWGetStyle(long style, WXDWORD *exstyle) const;
 
     // common part of all ctors
-    void Init() { m_selectionOld = -1; }
-
+    void Init() { }
 
     // the previous selection (see MSWCommand() to see why it is needed)
     int m_selectionOld;

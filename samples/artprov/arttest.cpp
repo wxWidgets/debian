@@ -4,7 +4,7 @@
 // Author:      Vaclav Slavik
 // Modified by:
 // Created:     2002/03/25
-// RCS-ID:      $Id: arttest.cpp,v 1.6 2004/07/20 19:02:40 ABX Exp $
+// RCS-ID:      $Id: arttest.cpp,v 1.7 2005/08/23 15:54:21 ABX Exp $
 // Copyright:   (c) Vaclav Slavik
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -20,7 +20,7 @@
 #include "wx/wx.h"
 #endif
 
-#ifndef __WXMSW__
+#if !defined(__WXMSW__) && !defined(__WXPM__)
     #include "mondrian.xpm"
 #endif
 
@@ -52,7 +52,7 @@ private:
 #endif // wxUSE_LOG
     void OnBrowser(wxCommandEvent& event);
     void OnPlugProvider(wxCommandEvent& event);
-    
+
     DECLARE_EVENT_TABLE()
 };
 
@@ -156,7 +156,7 @@ MyFrame::MyFrame(const wxString& title, const wxPoint& pos, const wxSize& size, 
     wxMenu *helpMenu = new wxMenu;
     helpMenu->Append(wxID_ABOUT, _T("&About...\tF1"), _T("Show about dialog"));
 
-    menuFile->AppendCheckItem(ID_PlugProvider, _T("&Plug-in art provider"), _T("Enable custom art provider"));   
+    menuFile->AppendCheckItem(ID_PlugProvider, _T("&Plug-in art provider"), _T("Enable custom art provider"));
     menuFile->AppendSeparator();
 
 #if wxUSE_LOG

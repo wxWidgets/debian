@@ -2,7 +2,7 @@
 // Name:        wx/gtk/radiobox.h
 // Purpose:
 // Author:      Robert Roebling
-// Id:          $Id: radiobox.h,v 1.41 2005/02/28 20:31:31 RR Exp $
+// Id:          $Id: radiobox.h,v 1.42 2005/08/02 22:57:57 MW Exp $
 // Copyright:   (c) 1998 Robert Roebling
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -21,7 +21,7 @@
 // wxRadioBox
 //-----------------------------------------------------------------------------
 
-class wxRadioBox: public wxControl
+class WXDLLIMPEXP_CORE wxRadioBox: public wxControl
 {
 public:
     wxRadioBox() { Init(); }

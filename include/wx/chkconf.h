@@ -4,7 +4,7 @@
  * Author:      Vadim Zeitlin
  * Modified by:
  * Created:     09.08.00
- * RCS-ID:      $Id: chkconf.h,v 1.106 2005/06/06 00:05:56 VZ Exp $
+ * RCS-ID:      $Id: chkconf.h,v 1.109 2005/08/24 11:14:27 VZ Exp $
  * Copyright:   (c) 2000 Vadim Zeitlin <vadim@wxwidgets.org>
  * Licence:     wxWindows licence
  */
@@ -12,7 +12,7 @@
 /* THIS IS A C FILE, DON'T USE C++ FEATURES (IN PARTICULAR COMMENTS) IN IT */
 
 /*
-   Compiler-specific checking.
+   Platform-specific checking.
  */
 
 #if defined(__WXPALMOS__)
@@ -29,9 +29,9 @@
 
 /*
    this global setting determines what should we do if the setting FOO
-   requires BAR and BAR is not set: we can either silently define BAR
-   (default, recommended) or give an error and abort (mainly useful for
-   developers only)
+   requires BAR and BAR is not set: we can either silently unset FOO as well
+   (do this if you're trying to build the smallest possible library) or give an
+   error and abort (default as leads to least surprizing behaviour)
  */
 #define wxABORT_ON_CONFIG_ERROR
 
@@ -1168,63 +1168,6 @@
 #   endif
 #endif /* wxGTK && !wxUniv */
 
-/* wxMSW-specific dependencies */
-#ifdef __WXMSW__
-#   ifndef wxUSE_UNICODE_MSLU
-#       ifdef wxABORT_ON_CONFIG_ERROR
-#           error "wxUSE_UNICODE_MSLU must be defined."
-#       else
-#           define wxUSE_UNICODE_MSLU 0
-#       endif
-#   endif  /* wxUSE_UNICODE_MSLU */
-#   ifndef wxUSE_UXTHEME
-#       ifdef wxABORT_ON_CONFIG_ERROR
-#           error "wxUSE_UXTHEME must be defined."
-#       else
-#           define wxUSE_UXTHEME 0
-#       endif
-#   endif  /* wxUSE_UXTHEME */
-#   ifndef wxUSE_UXTHEME_AUTO
-#       ifdef wxABORT_ON_CONFIG_ERROR
-#           error "wxUSE_UXTHEME_AUTO must be defined."
-#       else
-#           define wxUSE_UXTHEME_AUTO 0
-#       endif
-#   endif  /* wxUSE_UXTHEME_AUTO */
-#   ifndef wxUSE_MS_HTML_HELP
-#       ifdef wxABORT_ON_CONFIG_ERROR
-#           error "wxUSE_MS_HTML_HELP must be defined."
-#       else
-#           define wxUSE_MS_HTML_HELP 0
-#       endif
-#   endif /* !defined(wxUSE_MS_HTML_HELP) */
-#   ifndef wxUSE_DIALUP_MANAGER
-#       ifdef wxABORT_ON_CONFIG_ERROR
-#           error "wxUSE_DIALUP_MANAGER must be defined."
-#       else
-#           define wxUSE_DIALUP_MANAGER 0
-#       endif
-#   endif /* !defined(wxUSE_DIALUP_MANAGER) */
-
-#   if !wxUSE_DYNAMIC_LOADER
-#       if wxUSE_MS_HTML_HELP
-#           ifdef wxABORT_ON_CONFIG_ERROR
-#               error "wxUSE_MS_HTML_HELP requires wxUSE_DYNAMIC_LOADER."
-#           else
-#               define wxUSE_DYNAMIC_LOADER 1
-#           endif
-#       endif
-#       if wxUSE_DIALUP_MANAGER
-#           ifdef wxABORT_ON_CONFIG_ERROR
-#               error "wxUSE_DIALUP_MANAGER requires wxUSE_DYNAMIC_LOADER."
-#           else
-#               define wxUSE_DYNAMIC_LOADER 1
-#           endif
-#       endif
-#   endif  /* wxUSE_DYNAMIC_LOADER */
-
-#endif /* wxMSW */
-
 /* wxMGL-specific dependencies */
 #ifdef __WXMGL__
 #   if !wxUSE_PALETTE
@@ -1513,7 +1456,7 @@
 
 #   if !wxUSE_DOC_VIEW_ARCHITECTURE
 #        ifdef wxABORT_ON_CONFIG_ERROR
-#            error "MDI requires wxUSE_DOC_VIEW_ARCHITECTURE"
+#            error "wxUSE_MDI_ARCHITECTURE requires wxUSE_DOC_VIEW_ARCHITECTURE"
 #        else
 #            undef wxUSE_DOC_VIEW_ARCHITECTURE
 #            define wxUSE_DOC_VIEW_ARCHITECTURE 1
@@ -1524,7 +1467,7 @@
 #if !wxUSE_FILEDLG
 #   if wxUSE_DOC_VIEW_ARCHITECTURE || wxUSE_WXHTML_HELP
 #       ifdef wxABORT_ON_CONFIG_ERROR
-#           error "wxFileDialog must be compiled as well"
+#           error "wxUSE_FILEDLG is required by wxUSE_DOC_VIEW_ARCHITECTURE and wxUSE_WXHTML_HELP!"
 #       else
 #           undef wxUSE_FILEDLG
 #           define wxUSE_FILEDLG 1
@@ -1684,4 +1627,3 @@
 #endif /* wxUSE_SOCKETS */
 
 #endif /* wxUSE_GUI */
-

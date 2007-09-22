@@ -3,7 +3,7 @@
 // Purpose:     TextCtrl wxWidgets sample
 // Author:      Robert Roebling
 // Modified by:
-// RCS-ID:      $Id: text.cpp,v 1.81 2005/06/02 12:04:38 JS Exp $
+// RCS-ID:      $Id: text.cpp,v 1.81.2.1 2005/11/30 20:48:19 MW Exp $
 // Copyright:   (c) Robert Roebling, Julian Smart, Vadim Zeitlin
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -925,14 +925,14 @@ MyPanel::MyPanel( wxFrame *frame, int x, int y, int w, int h )
                 m_horizontal->SetFont(wxFont(18, wxSWISS, wxNORMAL, wxNORMAL,
                                              false, _T(""),
                                              wxFONTENCODING_ISO8859_2));
-                m_horizontal->AppendText(_T("®lu»ouèký kùò zbìsile èe¹tina «»"));
+                m_horizontal->AppendText(_T("\256lu\273ou\350k\375 k\371\362 zb\354sile \350e\271tina \253\273"));
                 break;
 
             case '1':
                 m_horizontal->SetFont(wxFont(18, wxSWISS, wxNORMAL, wxNORMAL,
                                              false, _T(""),
                                              wxFONTENCODING_CP1251));
-                m_horizontal->AppendText(_T("Ïðèâåò!"));
+                m_horizontal->AppendText(_T("\317\360\350\342\345\362!"));
                 break;
 
             case '8':
@@ -942,7 +942,7 @@ MyPanel::MyPanel( wxFrame *frame, int x, int y, int w, int h )
 #if wxUSE_UNICODE
                 m_horizontal->AppendText(L"\x0412\x0430\x0434\x0438\x043c \x0426");
 #else
-                m_horizontal->AppendText("ËÁÖÅÔÓÑ ÕÄÁÞÎÙÍ");
+                m_horizontal->AppendText("\313\301\326\305\324\323\321 \325\304\301\336\316\331\315");
 #endif
         }
     }

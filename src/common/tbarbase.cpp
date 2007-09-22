@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by: VZ at 11.12.99 (wxScrollableToolBar split off)
 // Created:     04/01/98
-// RCS-ID:      $Id: tbarbase.cpp,v 1.78 2005/05/31 09:19:53 JS Exp $
+// RCS-ID:      $Id: tbarbase.cpp,v 1.78.2.1 2006/02/16 03:03:43 RD Exp $
 // Copyright:   (c) Julian Smart
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -437,7 +437,10 @@ void wxToolBarBase::UnToggleRadioGroup(wxToolBarToolBase *tool)
 
 void wxToolBarBase::ClearTools()
 {
-    WX_CLEAR_LIST(wxToolBarToolsList, m_tools);
+    while ( GetToolsCount() )
+    {
+        DeleteToolByPos(0);
+    }
 }
 
 bool wxToolBarBase::Realize()

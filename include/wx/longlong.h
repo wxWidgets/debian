@@ -5,7 +5,7 @@
 // Author:      Jeffrey C. Ollie <jeff@ollie.clive.ia.us>, Vadim Zeitlin
 // Modified by:
 // Created:     10.02.99
-// RCS-ID:      $Id: longlong.h,v 1.62 2005/06/13 12:19:14 ABX Exp $
+// RCS-ID:      $Id: longlong.h,v 1.64 2005/08/28 00:34:37 VZ Exp $
 // Copyright:   (c) 1998 Vadim Zeitlin <zeitlin@dptmaths.ens-cachan.fr>
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -163,6 +163,11 @@ public:
 
         return (long)m_ll;
     }
+
+#if wxABI_VERSION >= 20602
+        // convert to double
+    double ToDouble() const { return m_ll; }
+#endif // ABI >= 2.6.2
 
     // don't provide implicit conversion to wxLongLong_t or we will have an
     // ambiguity for all arithmetic operations
@@ -589,6 +594,11 @@ public:
 
         return (long)m_lo;
     }
+
+#if wxABI_VERSION >= 20602
+        // convert to double
+    double ToDouble() const;
+#endif // ABI >= 2.6.2
 
     // operations
         // addition

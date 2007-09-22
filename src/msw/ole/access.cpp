@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     2003-02-12
-// RCS-ID:      $Id: access.cpp,v 1.16 2004/08/16 12:45:45 ABX Exp $
+// RCS-ID:      $Id: access.cpp,v 1.16.4.2 2006/03/11 18:41:10 ABX Exp $
 // Copyright:   (c) 2003 Julian Smart
 // Licence:     wxWindows licence
 ///////////////////////////////////////////////////////////////////////////////
@@ -302,8 +302,8 @@ public:
 
 // Obsolete
 
-    STDMETHODIMP put_accName(VARIANT varChild, BSTR szName) { return E_FAIL; }
-    STDMETHODIMP put_accValue(VARIANT varChild, BSTR szName) { return E_FAIL; }
+    STDMETHODIMP put_accName(VARIANT WXUNUSED(varChild), BSTR WXUNUSED(szName)) { return E_FAIL; }
+    STDMETHODIMP put_accValue(VARIANT WXUNUSED(varChild), BSTR WXUNUSED(szName)) { return E_FAIL; }
 
 // IDispatch
 

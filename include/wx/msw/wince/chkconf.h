@@ -4,7 +4,7 @@
 // Author:      Vadim Zeitlin
 // Modified by:
 // Created:     2005-03-07
-// RCS-ID:      $Id: chkconf.h,v 1.6 2005/05/23 11:10:17 JS Exp $
+// RCS-ID:      $Id: chkconf.h,v 1.7 2005/07/30 12:46:11 VZ Exp $
 // Copyright:   (c) 2005 Vadim Zeitlin <vadim@wxwindows.org>
 // Licence:     wxWindows licence
 ///////////////////////////////////////////////////////////////////////////////
@@ -52,6 +52,21 @@
 
 #undef wxUSE_DEBUGREPORT
 #define wxUSE_DEBUGREPORT 0
+
+// other MSW settings not supported by CE
+#undef wxUSE_RICHEDIT
+#define wxUSE_RICHEDIT 0
+#undef wxUSE_RICHEDIT2
+#define wxUSE_RICHEDIT2 0
+
+#undef wxUSE_UXTHEME
+#define wxUSE_UXTHEME 0
+#undef wxUSE_UXTHEME_AUTO
+#define wxUSE_UXTHEME_AUTO 0
+
+#undef wxUSE_UNICODE_MSLU
+#define wxUSE_UNICODE_MSLU 0
+
 
 // Disable features which don't make sense for MS Smartphones
 // (due to pointer device usage, limited controls, file system)

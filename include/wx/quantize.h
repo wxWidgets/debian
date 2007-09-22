@@ -4,10 +4,13 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     22/6/2000
-// RCS-ID:      $Id: quantize.h,v 1.7 2004/09/20 11:31:41 ABX Exp $
+// RCS-ID:      $Id: quantize.h,v 1.7.4.1 2005/09/25 20:46:18 MW Exp $
 // Copyright:   (c) Julian Smart
 // Licence:
 /////////////////////////////////////////////////////////////////////////////
+
+#ifndef _WX_QUANTIZE_H_
+#define _WX_QUANTIZE_H_
 
 /*
  * From jquant2.c
@@ -20,9 +23,6 @@
 #if defined(__GNUG__) && !defined(NO_GCC_PRAGMA)
 #pragma interface "quantize.h"
 #endif
-
-#ifndef _WX_QUANTIZE_H_
-#define _WX_QUANTIZE_H_
 
 class WXDLLEXPORT wxImage;
 

@@ -4,12 +4,12 @@
 ** Maintainer:  Ryan Norton
 ** Modified by:
 ** Created:     11/24/04
-** RCS-ID:      $Id: extended.c,v 1.24 2005/03/07 19:50:02 VZ Exp $
+** RCS-ID:      $Id: extended.c,v 1.24.2.1 2006/01/18 10:24:57 JS Exp $
 *****************************************************************************/
 
 
 #if defined(_WIN32_WCE)
-    // eVC cause warnings in its own headers: stdlib.h and winnt.h
+    /* eVC cause warnings in its own headers: stdlib.h and winnt.h */
     #pragma warning (disable:4115)
     #pragma warning (disable:4214)
 #endif

@@ -4,7 +4,7 @@
 // Author:      Guilhem Lavaux (created from minimal by J. Smart)
 // Modified by:
 // Created:     13/02/2000
-// RCS-ID:      $Id: mmboard.cpp,v 1.16 2005/06/10 14:45:39 MW Exp $
+// RCS-ID:      $Id: mmboard.cpp,v 1.17 2005/08/23 16:02:22 ABX Exp $
 // Copyright:   (c) Guilhem Lavaux
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -425,8 +425,10 @@ void MMBoardFrame::OnOpen(wxCommandEvent& WXUNUSED(event))
     }
 
     // select a file to be opened
+#if wxUSE_FILEDLG
     selected_file = wxLoadFileSelector(_T("multimedia"), _T("*"), NULL, this);
-    if (selected_file.IsNull())
+#endif // wxUSE_FILEDLG
+    if (selected_file.empty())
         return;
 
     m_opened_file = MMBoardManager::Open(selected_file);
@@ -590,4 +592,3 @@ void MMBoardFrame::OnSetPosition(wxCommandEvent& WXUNUSED(event))
 
     UpdateMMedInfo();
 }
-

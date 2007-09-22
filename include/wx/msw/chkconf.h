@@ -4,7 +4,7 @@
  * Author:      Julian Smart
  * Modified by:
  * Created:     01/02/97
- * RCS-ID:      $Id: chkconf.h,v 1.15 2005/06/07 12:28:31 VZ Exp $
+ * RCS-ID:      $Id: chkconf.h,v 1.23.2.3 2006/01/21 16:46:53 JS Exp $
  * Copyright:   (c) Julian Smart
  * Licence:     wxWindows licence
  */
@@ -13,6 +13,16 @@
 
 #ifndef _WX_MSW_CHKCONF_H_
 #define _WX_MSW_CHKCONF_H_
+
+/* ensure that MSW-specific settings are defined */
+#ifndef wxUSE_DC_CACHEING
+#   ifdef wxABORT_ON_CONFIG_ERROR
+#       error "wxUSE_DC_CACHEING must be defined"
+#   else
+#       define wxUSE_DC_CACHEING 1
+#   endif
+#endif /* wxUSE_DC_CACHEING */
+
 
 /*
  * disable the settings which don't work for some compilers
@@ -60,7 +70,7 @@
 
 #    undef wxUSE_STACKWALKER
 #    define wxUSE_STACKWALKER 0
-#endif // compiler doesn't support SEH
+#endif /* compiler doesn't support SEH */
 
 /* wxUSE_DEBUG_NEW_ALWAYS doesn't work with CodeWarrior */
 #if defined(__MWERKS__)
@@ -88,6 +98,12 @@
 #endif
 
 #endif /* __GNUWIN32__ */
+
+/* wxUSE_MFC is not defined when using configure as it doesn't make sense for
+   gcc or mingw32 anyhow */
+#ifndef wxUSE_MFC
+    #define wxUSE_MFC 0
+#endif /* !defined(wxUSE_MFC) */
 
 /* MFC duplicates these operators */
 #if wxUSE_MFC
@@ -120,6 +136,25 @@
 #   endif
 #endif
 
+/*
+   Win64-specific checks.
+ */
+#ifdef __WIN64__
+#   if wxUSE_STACKWALKER
+        /* this is not currently supported under Win64, volunteers needed to
+           make it work */
+#       undef wxUSE_STACKWALKER
+#       define wxUSE_STACKWALKER 0
+
+#       undef wxUSE_CRASHREPORT
+#       define wxUSE_CRASHREPORT 0
+#   endif
+#endif /* __WIN64__ */
+
+
+/*
+   Compiler-specific checks.
+ */
 #if defined(__BORLANDC__) && (__BORLANDC__ < 0x500)
     /* BC++ 4.0 can't compile JPEG library */
 #   undef wxUSE_LIBJPEG
@@ -149,5 +184,82 @@
 #   define wxUSE_DATEPICKCTRL_GENERIC 1
 #endif
 
-#endif /* _WX_MSW_CHKCONF_H_ */
+#ifndef wxUSE_UNICODE_MSLU
+#    ifdef wxABORT_ON_CONFIG_ERROR
+#        error "wxUSE_UNICODE_MSLU must be defined."
+#    else
+#        define wxUSE_UNICODE_MSLU 0
+#    endif
+#endif  /* wxUSE_UNICODE_MSLU */
 
+#ifndef wxUSE_UXTHEME
+#    ifdef wxABORT_ON_CONFIG_ERROR
+#        error "wxUSE_UXTHEME must be defined."
+#    else
+#        define wxUSE_UXTHEME 0
+#    endif
+#endif  /* wxUSE_UXTHEME */
+
+#ifndef wxUSE_UXTHEME_AUTO
+#    ifdef wxABORT_ON_CONFIG_ERROR
+#        error "wxUSE_UXTHEME_AUTO must be defined."
+#    else
+#        define wxUSE_UXTHEME_AUTO 0
+#    endif
+#endif  /* wxUSE_UXTHEME_AUTO */
+
+#ifndef wxUSE_MS_HTML_HELP
+#    ifdef wxABORT_ON_CONFIG_ERROR
+#        error "wxUSE_MS_HTML_HELP must be defined."
+#    else
+#        define wxUSE_MS_HTML_HELP 0
+#    endif
+#endif /* !defined(wxUSE_MS_HTML_HELP) */
+
+#ifndef wxUSE_DIALUP_MANAGER
+#    ifdef wxABORT_ON_CONFIG_ERROR
+#        error "wxUSE_DIALUP_MANAGER must be defined."
+#    else
+#        define wxUSE_DIALUP_MANAGER 0
+#    endif
+#endif /* !defined(wxUSE_DIALUP_MANAGER) */
+
+#if !wxUSE_DYNAMIC_LOADER
+#    if wxUSE_MS_HTML_HELP
+#        ifdef wxABORT_ON_CONFIG_ERROR
+#            error "wxUSE_MS_HTML_HELP requires wxUSE_DYNAMIC_LOADER."
+#        else
+#            undef wxUSE_MS_HTML_HELP
+#            define wxUSE_MS_HTML_HELP 0
+#        endif
+#    endif
+#    if wxUSE_DIALUP_MANAGER
+#        ifdef wxABORT_ON_CONFIG_ERROR
+#            error "wxUSE_DIALUP_MANAGER requires wxUSE_DYNAMIC_LOADER."
+#        else
+#            undef wxUSE_DIALUP_MANAGER
+#            define wxUSE_DIALUP_MANAGER 0
+#        endif
+#    endif
+#endif  /* wxUSE_DYNAMIC_LOADER */
+
+#if !wxUSE_DYNLIB_CLASS
+#   if wxUSE_UXTHEME
+#       ifdef wxABORT_ON_CONFIG_ERROR
+#           error "wxUSE_UXTHEME requires wxUSE_DYNLIB_CLASS"
+#       else
+#           undef wxUSE_UXTHEME
+#           define wxUSE_UXTHEME 0
+#       endif
+#   endif
+#   if wxUSE_MEDIACTRL
+#       ifdef wxABORT_ON_CONFIG_ERROR
+#           error "wxUSE_MEDIACTRL requires wxUSE_DYNLIB_CLASS"
+#       else
+#           undef wxUSE_MEDIACTRL
+#           define wxUSE_MEDIACTRL 0
+#       endif
+#   endif
+#endif  /* wxUSE_DYNLIB_CLASS */
+
+#endif /* _WX_MSW_CHKCONF_H_ */

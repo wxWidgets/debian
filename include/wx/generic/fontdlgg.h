@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     01/02/97
-// RCS-ID:      $Id: fontdlgg.h,v 1.18 2005/05/04 18:52:32 JS Exp $
+// RCS-ID:      $Id: fontdlgg.h,v 1.18.2.1 2006/03/02 12:57:18 JS Exp $
 // Copyright:   (c) Julian Smart
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -21,6 +21,13 @@
 #include "wx/font.h"
 #include "wx/dialog.h"
 #include "wx/cmndata.h"
+
+#ifdef __WXWINCE__
+#define USE_SPINCTRL_FOR_POINT_SIZE 1
+class WXDLLEXPORT wxSpinEvent;
+#else
+#define USE_SPINCTRL_FOR_POINT_SIZE 0
+#endif
 
 /*
  * FONT DIALOG
@@ -63,6 +70,10 @@ public:
 
     void OnChangeFont(wxCommandEvent& event);
 
+#if USE_SPINCTRL_FOR_POINT_SIZE
+    void OnChangeSize(wxSpinEvent& event);
+#endif
+
 protected:
     // common part of all ctors
     void Init();
@@ -76,7 +87,10 @@ protected:
     wxChoice *weightChoice;
     wxChoice *colourChoice;
     wxCheckBox *underLineCheckBox;
+
+#if !USE_SPINCTRL_FOR_POINT_SIZE
     wxChoice   *pointSizeChoice;
+#endif
 
     wxFontPreviewer *m_previewer;
     bool       m_useEvents;

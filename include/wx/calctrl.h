@@ -4,7 +4,7 @@
 // Author:      Vadim Zeitlin
 // Modified by:
 // Created:     29.12.99
-// RCS-ID:      $Id: calctrl.h,v 1.25 2005/03/08 20:53:15 ABX Exp $
+// RCS-ID:      $Id: calctrl.h,v 1.26 2005/09/17 20:56:29 VZ Exp $
 // Copyright:   (c) 1999 Vadim Zeitlin <zeitlin@dptmaths.ens-cachan.fr>
 // Licence:     wxWindows licence
 ///////////////////////////////////////////////////////////////////////////////
@@ -166,7 +166,7 @@ class WXDLLIMPEXP_ADV wxCalendarEvent : public wxDateEvent
 friend class wxCalendarCtrl;
 public:
     wxCalendarEvent() { Init(); }
-    wxCalendarEvent(wxCalendarCtrl *cal, wxEventType type);
+    inline wxCalendarEvent(wxCalendarCtrl *cal, wxEventType type);
 
     void SetWeekDay(const wxDateTime::WeekDay wd) { m_wday = wd; }
     wxDateTime::WeekDay GetWeekDay() const { return m_wday; }

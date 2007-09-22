@@ -4,7 +4,7 @@
 // Author:      Vaclav Slavik
 // Modified by:
 // Created:     2002/02/17
-// RCS-ID:      $Id: mslu.cpp,v 1.20 2005/04/05 16:10:22 ABX Exp $
+// RCS-ID:      $Id: mslu.cpp,v 1.20.2.1 2005/12/13 13:43:52 CE Exp $
 // Copyright:   (c) 2002 Vaclav Slavik
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -226,6 +226,17 @@ WXDLLIMPEXP_BASE int wxMSLU__wstat(const wxChar *name, struct _stat *buffer)
         return _wstat(name, buffer);
 }
 
+#ifdef __BORLANDC__
+//here _stati64 is defined as stati64, see msw/mslu.h line 62 
+#undef _stati64
+WXDLLIMPEXP_BASE int wxMSLU__wstati64(const wxChar *name, struct _stati64 *buffer)
+ {
+     if ( wxUsingUnicowsDll() )
+        return _stati64((const char*)wxConvFile.cWX2MB(name), (stati64 *) buffer);
+    else
+        return _wstati64(name, (stati64 *) buffer);
+}
+#else
 WXDLLIMPEXP_BASE int wxMSLU__wstati64(const wxChar *name, struct _stati64 *buffer)
 {
     if ( wxUsingUnicowsDll() )
@@ -233,6 +244,7 @@ WXDLLIMPEXP_BASE int wxMSLU__wstati64(const wxChar *name, struct _stati64 *buffe
     else
         return _wstati64(name, buffer);
 }
+#endif //__BORLANDC__
 
 #endif // compilers having wopen() &c
 

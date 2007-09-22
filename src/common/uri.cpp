@@ -3,7 +3,7 @@
 // Purpose:     Implementation of a uri parser
 // Author:      Ryan Norton
 // Created:     10/26/04
-// RCS-ID:      $Id: uri.cpp,v 1.25 2005/06/07 12:17:29 VZ Exp $
+// RCS-ID:      $Id: uri.cpp,v 1.26.2.1 2006/02/09 03:12:27 VZ Exp $
 // Copyright:   (c) 2004 Ryan Norton
 // Licence:     wxWindows
 /////////////////////////////////////////////////////////////////////////////
@@ -436,11 +436,18 @@ const wxChar* wxURI::ParseAuthority(const wxChar* uri)
     // authority     = [ userinfo "@" ] host [ ":" port ]
     if (*uri == wxT('/') && *(uri+1) == wxT('/'))
     {
+        //skip past the two slashes
         uri += 2;
 
+        // ############# DEVIATION FROM RFC #########################
+        // Don't parse the server component for file URIs
+        if(m_scheme != wxT("file"))
+        {
+            //normal way
         uri = ParseUserInfo(uri);
         uri = ParseServer(uri);
         return ParsePort(uri);
+        }
     }
 
     return uri;
@@ -1288,90 +1295,6 @@ bool wxURI::IsAlpha(const wxChar& c)
 bool wxURI::IsDigit(const wxChar& c)
 {   return c >= wxT('0') && c <= wxT('9');        }
 
-
-// ---------------------------------------------------------------------------
-//
-//                        wxURL Compatibility
-//
-// ---------------------------------------------------------------------------
-
-#if wxUSE_URL
-
-#if WXWIN_COMPATIBILITY_2_4
-
-#include "wx/url.h"
-
-wxString wxURL::GetProtocolName() const
-{
-    return m_scheme;
-}
-
-wxString wxURL::GetHostName() const
-{
-    return m_server;
-}
-
-wxString wxURL::GetPath() const
-{
-    return m_path;
-}
-
-//Note that this old code really doesn't convert to a URI that well and looks
-//more like a dirty hack than anything else...
-
-wxString wxURL::ConvertToValidURI(const wxString& uri, const wxChar* delims)
-{
-  wxString out_str;
-  wxString hexa_code;
-  size_t i;
-
-  for (i = 0; i < uri.Len(); i++)
-  {
-    wxChar c = uri.GetChar(i);
-
-    if (c == wxT(' '))
-    {
-      // GRG, Apr/2000: changed to "%20" instead of '+'
-
-      out_str += wxT("%20");
-    }
-    else
-    {
-      // GRG, Apr/2000: modified according to the URI definition (RFC 2396)
-      //
-      // - Alphanumeric characters are never escaped
-      // - Unreserved marks are never escaped
-      // - Delimiters must be escaped if they appear within a component
-      //     but not if they are used to separate components. Here we have
-      //     no clear way to distinguish between these two cases, so they
-      //     are escaped unless they are passed in the 'delims' parameter
-      //     (allowed delimiters).
-
-      static const wxChar marks[] = wxT("-_.!~*()'");
-
-      if ( !wxIsalnum(c) && !wxStrchr(marks, c) && !wxStrchr(delims, c) )
-      {
-        hexa_code.Printf(wxT("%%%02X"), c);
-        out_str += hexa_code;
-      }
-      else
-      {
-        out_str += c;
-      }
-    }
-  }
-
-  return out_str;
-}
-
-wxString wxURL::ConvertFromURI(const wxString& uri)
-{
-    return wxURI::Unescape(uri);
-}
-
-#endif //WXWIN_COMPATIBILITY_2_4
-
-#endif //wxUSE_URL
 
 //end of uri.cpp
 

@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by: Ron Lee
 // Created:     01/02/97
-// RCS-ID:      $Id: object.h,v 1.117 2005/06/24 16:44:18 RL Exp $
+// RCS-ID:      $Id: object.h,v 1.119 2005/07/22 16:56:23 ABX Exp $
 // Copyright:   (c) 1997 Julian Smart
 //              (c) 2001 Ron Lee <ron@debian.org>
 // Licence:     wxWindows licence
@@ -409,9 +409,9 @@ public:
     virtual ~wxObject() { UnRef(); }
 
     wxObject(const wxObject& other)
-        {
-            InitFrom(other);
-        }
+    {
+        InitFrom(other);
+    }
 
     wxObject& operator=(const wxObject& other)
     {
@@ -467,6 +467,20 @@ public:
 
     // destroy a reference
     void UnRef();
+
+
+#if WX_USE_RESERVED_VIRTUALS
+    // Reserved for future use
+    virtual void ReservedObjectFunc1() {}
+    virtual void ReservedObjectFunc2() {}
+    virtual void ReservedObjectFunc3() {}
+    virtual void ReservedObjectFunc4() {}
+    virtual void ReservedObjectFunc5() {}
+    virtual void ReservedObjectFunc6() {}
+    virtual void ReservedObjectFunc7() {}
+    virtual void ReservedObjectFunc8() {}
+    virtual void ReservedObjectFunc9() {}
+#endif
 
 protected:
     // ensure that our data is not shared with anybody else: if we have no

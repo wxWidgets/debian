@@ -5,7 +5,7 @@
 // Modified by: Wlodzimierz ABX Skiba 2003/2004 Unicode support
 //              Ron Lee
 // Created:     01/01/99
-// RCS-ID:      $Id: tex2any.cpp,v 1.37 2005/03/24 20:01:54 ABX Exp $
+// RCS-ID:      $Id: tex2any.cpp,v 1.38.2.2 2006/01/23 15:09:03 ABX Exp $
 // Copyright:   (c) Julian Smart
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -305,81 +305,84 @@ void ForbidWarning(TexMacroDef *def)
 
 TexMacroDef *MatchMacro(wxChar *buffer, int *pos, wxChar **env, bool *parseToBrace)
 {
-  *parseToBrace = true;
-  int i = (*pos);
-  TexMacroDef *def = NULL;
-  wxChar macroBuf[40];
+    *parseToBrace = true;
+    int i = (*pos);
+    TexMacroDef *def = NULL;
+    wxChar macroBuf[40];
 
-  // First, try to find begin{thing}
-  if (wxStrncmp(buffer+i, _T("begin{"), 6) == 0)
-  {
-    i += 6;
-
-    int j = i;
-    while ((isalpha(buffer[j]) || buffer[j] == '*') && ((j - i) < 39))
+    // First, try to find begin{thing}
+    if (wxStrncmp(buffer+i, _T("begin{"), 6) == 0)
     {
-      macroBuf[j-i] = buffer[j];
-      j ++;
+        i += 6;
+
+        int j = i;
+        while ((isalpha(buffer[j]) || buffer[j] == '*') && ((j - i) < 39))
+        {
+            macroBuf[j-i] = buffer[j];
+            j ++;
+        }
+        macroBuf[j-i] = 0;
+        def = (TexMacroDef *)MacroDefs.Get(macroBuf);
+
+        if (def)
+        {
+            *pos = j + 1;  // BUGBUG Should this be + 1???
+            *env = def->name;
+            ForbidWarning(def);
+            return def;
+        }
+        else
+        {
+            return NULL;
+        }
     }
-    macroBuf[j-i] = 0;
-    def = (TexMacroDef *)MacroDefs.Get(macroBuf);
+
+    // Failed, so try to find macro from definition list
+    int j = i;
+
+    // First try getting a one-character macro, but ONLY
+    // if these TWO characters are not both alphabetical (could
+    // be a longer macro)
+    if (!(isalpha(buffer[i]) && isalpha(buffer[i+1])))
+    {
+        macroBuf[0] = buffer[i];
+        macroBuf[1] = 0;
+
+        def = (TexMacroDef *)MacroDefs.Get(macroBuf);
+        if (def) j ++;
+    }
+
+    if (!def)
+    {
+        while ((isalpha(buffer[j]) || buffer[j] == '*') && ((j - i) < 39))
+        {
+            macroBuf[j-i] = buffer[j];
+            j ++;
+        }
+        macroBuf[j-i] = 0;
+        def = (TexMacroDef *)MacroDefs.Get(macroBuf);
+    }
 
     if (def)
     {
-      *pos = j + 1;  // BUGBUG Should this be + 1???
-      *env = def->name;
-      ForbidWarning(def);
-      return def;
+        i = j;
+
+        // We want to check whether this is a space-consuming macro
+        // (e.g. {\bf word})
+        // No brace, e.g. \input thing.tex instead of \input{thing};
+        // or a numeric argument, such as \parindent0pt
+        if ((def->no_args > 0) && ((buffer[i] == 32) || (buffer[i] == '=') || (isdigit(buffer[i]))))
+        {
+            if ((buffer[i] == 32) || (buffer[i] == '='))
+                i ++;
+
+            *parseToBrace = false;
+        }
+        *pos = i;
+        ForbidWarning(def);
+        return def;
     }
-    else return NULL;
-  }
-
-  // Failed, so try to find macro from definition list
-  int j = i;
-
-  // First try getting a one-character macro, but ONLY
-  // if these TWO characters are not both alphabetical (could
-  // be a longer macro)
-  if (!(isalpha(buffer[i]) && isalpha(buffer[i+1])))
-  {
-    macroBuf[0] = buffer[i];
-    macroBuf[1] = 0;
-
-    def = (TexMacroDef *)MacroDefs.Get(macroBuf);
-    if (def) j ++;
-  }
-
-  if (!def)
-  {
-    while ((isalpha(buffer[j]) || buffer[j] == '*') && ((j - i) < 39))
-    {
-      macroBuf[j-i] = buffer[j];
-      j ++;
-    }
-    macroBuf[j-i] = 0;
-    def = (TexMacroDef *)MacroDefs.Get(macroBuf);
-  }
-
-  if (def)
-  {
-    i = j;
-
-    // We want to check whether this is a space-consuming macro
-    // (e.g. {\bf word})
-    // No brace, e.g. \input thing.tex instead of \input{thing};
-    // or a numeric argument, such as \parindent0pt
-    if ((def->no_args > 0) && ((buffer[i] == 32) || (buffer[i] == '=') || (isdigit(buffer[i]))))
-    {
-      if ((buffer[i] == 32) || (buffer[i] == '='))
-        i ++;
-
-      *parseToBrace = false;
-    }
-    *pos = i;
-    ForbidWarning(def);
-    return def;
-  }
-  return NULL;
+    return NULL;
 }
 
 void EatWhiteSpace(wxChar *buffer, int *pos)
@@ -430,7 +433,7 @@ bool readInVerbatim = false;  // Within a verbatim, but not nec. verbatiminput
 
 unsigned long leftCurly = 0;
 unsigned long rightCurly = 0;
-static wxString currentFileName = _T("");
+static wxString currentFileName = wxEmptyString;
 
 bool read_a_line(wxChar *buf)
 {
@@ -693,7 +696,7 @@ bool read_a_line(wxChar *buf)
 
     wxString actualFile = TexPathList.FindValidPath(fileName);
     currentFileName = actualFile;
-    if (actualFile == _T(""))
+    if (actualFile.empty())
     {
       wxString errBuf;
       errBuf.Printf(_T("Could not find file: %s"),fileName);
@@ -767,7 +770,7 @@ bool read_a_line(wxChar *buf)
       return read_a_line(buf);
 
     wxString actualFile = TexPathList.FindValidPath(fileNameStr);
-    if (actualFile == _T(""))
+    if (actualFile.empty())
     {
       wxChar buf2[400];
       wxSnprintf(buf2, sizeof(buf2), _T("%s.tex"), fileNameStr.c_str());
@@ -775,7 +778,7 @@ bool read_a_line(wxChar *buf)
     }
     currentFileName = actualFile;
 
-    if (actualFile == _T(""))
+    if (actualFile.empty())
     {
       wxString errBuf;
       errBuf.Printf(_T("Could not find file: %s"),fileName);
@@ -1258,53 +1261,57 @@ int ParseArg(TexChunk *thisArg, wxList& children, wxChar *buffer, int pos, wxCha
         }
         else
         {
-          wxChar *env = NULL;
-          bool tmpParseToBrace = true;
-          TexMacroDef *def = MatchMacro(buffer, &pos, &env, &tmpParseToBrace);
-          if (def)
-          {
-          CustomMacro *customMacro = FindCustomMacro(def->name);
-
-          TexChunk *chunk = new TexChunk(CHUNK_TYPE_MACRO, def);
-
-          chunk->no_args = def->no_args;
-//          chunk->name = copystring(def->name);
-          chunk->macroId = def->macroId;
-
-          if  (!customMacro)
-            children.Append((wxObject *)chunk);
-
-          // Eliminate newline after a \begin{} or a \\ if possible
-          if (env || wxStrcmp(def->name, _T("\\")) == 0)
-            if (buffer[pos] == 13)
+            wxChar *env = NULL;
+            bool tmpParseToBrace = true;
+            TexMacroDef *def = MatchMacro(buffer, &pos, &env, &tmpParseToBrace);
+            if (def)
             {
-              pos ++;
-              if (buffer[pos] == 10)
-                pos ++;
+                CustomMacro *customMacro = FindCustomMacro(def->name);
+
+                TexChunk *chunk = new TexChunk(CHUNK_TYPE_MACRO, def);
+
+                chunk->no_args = def->no_args;
+//                chunk->name = copystring(def->name);
+                chunk->macroId = def->macroId;
+
+                if  (!customMacro)
+                    children.Append((wxObject *)chunk);
+
+                // Eliminate newline after a \begin{} or a \\ if possible
+                if ((env || wxStrcmp(def->name, _T("\\")) == 0) && (buffer[pos] == 13))
+                {
+                    pos ++;
+                    if (buffer[pos] == 10)
+                        pos ++;
+                }
+
+                pos = ParseMacroBody(def->name,
+                                     chunk, chunk->no_args,
+                                     buffer,
+                                     pos,
+                                     env,
+                                     tmpParseToBrace,
+                                     customMacroArgs);
+
+                // If custom macro, parse the body substituting the above found args.
+                if (customMacro)
+                {
+                    if (customMacro->macroBody)
+                    {
+                        wxChar macroBuf[300];
+//                        wxStrcpy(macroBuf, _T("{"));
+                        wxStrcpy(macroBuf, customMacro->macroBody);
+                        wxStrcat(macroBuf, _T("}"));
+                        ParseArg(thisArg, children, macroBuf, 0, NULL, true, chunk);
+                    }
+
+//                    delete chunk; // Might delete children
+                }
             }
-
-          pos = ParseMacroBody(def->name, chunk, chunk->no_args,
-                     buffer, pos, env, tmpParseToBrace, customMacroArgs);
-
-          // If custom macro, parse the body substituting the above found args.
-          if (customMacro)
-          {
-            if (customMacro->macroBody)
+            else
             {
-              wxChar macroBuf[300];
-//              wxStrcpy(macroBuf, _T("{"));
-              wxStrcpy(macroBuf, customMacro->macroBody);
-              wxStrcat(macroBuf, _T("}"));
-              ParseArg(thisArg, children, macroBuf, 0, NULL, true, chunk);
+                MacroError(buffer+pos);
             }
-
-//            delete chunk; // Might delete children
-          }
-        }
-        else
-        {
-          MacroError(buffer+pos);
-        }
         }
         break;
       }
@@ -1663,34 +1670,34 @@ int ParseMacroBody(const wxChar *WXUNUSED(macro_name), TexChunk *parent,
   return pos;
 }
 
-bool TexLoadFile(wxChar *filename)
+bool TexLoadFile(const wxString& filename)
 {
-  static wxChar *line_buffer;
-  stopRunning = false;
-  wxStrcpy(TexFileRoot, filename);
-  StripExtension(TexFileRoot);
-  wxSnprintf(TexBibName, 300, _T("%s.bb"), TexFileRoot);
-  wxSnprintf(TexTmpBibName, 300, _T("%s.bb1"), TexFileRoot);
+    static wxChar *line_buffer;
+    stopRunning = false;
+    wxStrcpy(TexFileRoot, filename);
+    StripExtension(TexFileRoot);
+    wxSnprintf(TexBibName, 300, _T("%s.bb"), TexFileRoot);
+    wxSnprintf(TexTmpBibName, 300, _T("%s.bb1"), TexFileRoot);
 
-  TexPathList.EnsureFileAccessible(filename);
+    TexPathList.EnsureFileAccessible(filename);
 
-  if (line_buffer)
-      delete line_buffer;
+    if (line_buffer)
+        delete line_buffer;
 
-  line_buffer = new wxChar[MAX_LINE_BUFFER_SIZE];
+    line_buffer = new wxChar[MAX_LINE_BUFFER_SIZE];
 
-  Inputs[0] = wxFopen(filename, _T("r"));
-  LineNumbers[0] = 1;
-  FileNames[0] = copystring(filename);
-  if (Inputs[0])
-  {
-    read_a_line(line_buffer);
-    ParseMacroBody(_T("toplevel"), TopLevel, 1, line_buffer, 0, NULL, true);
-    if (Inputs[0]) fclose(Inputs[0]);
-    return true;
-  }
+    Inputs[0] = wxFopen(filename, _T("r"));
+    LineNumbers[0] = 1;
+    FileNames[0] = copystring(filename);
+    if (Inputs[0])
+    {
+        read_a_line(line_buffer);
+        ParseMacroBody(_T("toplevel"), TopLevel, 1, line_buffer, 0, NULL, true);
+        if (Inputs[0]) fclose(Inputs[0]);
+        return true;
+    }
 
-  return false;
+    return false;
 }
 
 TexMacroDef::TexMacroDef(int the_id, const wxChar *the_name, int n, bool ig, bool forbidLevel)
@@ -1952,24 +1959,24 @@ void TraverseFromChunk(TexChunk *chunk, wxNode *thisNode, bool childrenOnly)
 
 void TraverseDocument(void)
 {
-  TraverseFromChunk(TopLevel, NULL);
+    TraverseFromChunk(TopLevel, NULL);
 }
 
 void SetCurrentOutput(FILE *fd)
 {
-  CurrentOutput1 = fd;
-  CurrentOutput2 = NULL;
+    CurrentOutput1 = fd;
+    CurrentOutput2 = NULL;
 }
 
 void SetCurrentOutputs(FILE *fd1, FILE *fd2)
 {
-  CurrentOutput1 = fd1;
-  CurrentOutput2 = fd2;
+    CurrentOutput1 = fd1;
+    CurrentOutput2 = fd2;
 }
 
 void AddMacroDef(int the_id, const wxChar *name, int n, bool ignore, bool forbid)
 {
-  MacroDefs.Put(name, new TexMacroDef(the_id, name, n, ignore, forbid));
+    MacroDefs.Put(name, new TexMacroDef(the_id, name, n, ignore, forbid));
 }
 
 void TexInitialize(int bufSize)
@@ -2620,11 +2627,21 @@ void DefaultOnMacro(int macroId, int no_args, bool start)
 
     case ltCINSERT:
       if (start)
-        TexOutput(_T("<<"), true);
+      {
+        if (convertMode == TEX_HTML)
+            TexOutput(_T("&lt;&lt;"));
+        else
+            TexOutput(_T("<<"), true);
+      }
       break;
     case ltCEXTRACT:
       if (start)
-        TexOutput(_T(">>"), true);
+      {
+        if (convertMode == TEX_HTML)
+            TexOutput(_T("&gt;&gt;"));
+        else
+            TexOutput(_T(">>"), true);
+      }
       break;
     case ltDESTRUCT:
       if (start)
@@ -2859,10 +2876,22 @@ void DefaultOnMacro(int macroId, int no_args, bool start)
     // Binary operation symbols
     case ltLE:
     case ltLEQ:
-      if (start) TexOutput(_T("<="));
+      if (start)
+      {
+        if (convertMode == TEX_HTML)
+            TexOutput(_T("&lt;="));
+        else
+            TexOutput(_T("<="));
+      }
       break;
     case ltLL:
-      if (start) TexOutput(_T("<<"));
+      if (start)
+      {
+        if (convertMode == TEX_HTML)
+            TexOutput(_T("&lt;&lt;"));
+        else
+            TexOutput(_T("<<"));
+      }
       break;
     case ltSUBSET:
       if (start) TexOutput(_T("SUBSET"));
@@ -2881,10 +2910,24 @@ void DefaultOnMacro(int macroId, int no_args, bool start)
       break;
     case ltGE:
     case ltGEQ:
-      if (start) TexOutput(_T(">="));
+    {
+      if (start)
+      {
+        if (convertMode == TEX_HTML)
+            TexOutput(_T("&gt;="));
+        else
+            TexOutput(_T(">="));
+      }
       break;
+    }
     case ltGG:
-      if (start) TexOutput(_T(">>"));
+      if (start)
+      {
+        if (convertMode == TEX_HTML)
+            TexOutput(_T("&gt;&gt;"));
+        else
+            TexOutput(_T(">>"));
+      }
       break;
     case ltSUPSET:
       if (start) TexOutput(_T("SUPSET"));
@@ -2966,22 +3009,58 @@ void DefaultOnMacro(int macroId, int no_args, bool start)
 
     // Arrows
     case ltLEFTARROW:
-      if (start) TexOutput(_T("<--"));
+      if (start)
+      {
+        if (convertMode == TEX_HTML)
+            TexOutput(_T("&lt;--"));
+        else
+            TexOutput(_T("<--"));
+      }
       break;
     case ltLEFTARROW2:
-      if (start) TexOutput(_T("<=="));
+      if (start)
+      {
+        if (convertMode == TEX_HTML)
+            TexOutput(_T("&lt;=="));
+        else
+            TexOutput(_T("<=="));
+      }
       break;
     case ltRIGHTARROW:
-      if (start) TexOutput(_T("-->"));
+      if (start)
+      {
+        if (convertMode == TEX_HTML)
+            TexOutput(_T("--&gt;"));
+        else
+            TexOutput(_T("-->"));
+      }
       break;
     case ltRIGHTARROW2:
-      if (start) TexOutput(_T("==>"));
+      if (start)
+      {
+        if (convertMode == TEX_HTML)
+            TexOutput(_T("==&gt;"));
+        else
+            TexOutput(_T("==>"));
+      }
       break;
     case ltLEFTRIGHTARROW:
-      if (start) TexOutput(_T("<-->"));
+      if (start)
+      {
+        if (convertMode == TEX_HTML)
+            TexOutput(_T("&lt;--&gt;"));
+        else
+            TexOutput(_T("<-->"));
+      }
       break;
     case ltLEFTRIGHTARROW2:
-      if (start) TexOutput(_T("<==>"));
+      if (start)
+      {
+        if (convertMode == TEX_HTML)
+            TexOutput(_T("&lt;==&gt;"));
+        else
+            TexOutput(_T("<==>"));
+      }
       break;
     case ltUPARROW:
       if (start) TexOutput(_T("UPARROW"));
@@ -3460,12 +3539,12 @@ bool DefaultOnArgument(int macroId, int arg_no, bool start)
         wxChar fileBuf[300];
         wxStrcpy(fileBuf, bibFile);
         wxString actualFile = TexPathList.FindValidPath(fileBuf);
-        if (actualFile == _T(""))
+        if (actualFile.empty())
         {
           wxStrcat(fileBuf, _T(".bib"));
           actualFile = TexPathList.FindValidPath(fileBuf);
         }
-        if (actualFile != _T(""))
+        if (!actualFile.empty())
         {
           if (!ReadBib((wxChar*) (const wxChar*) actualFile))
           {
@@ -3714,4 +3793,3 @@ bool DefaultOnArgument(int macroId, int arg_no, bool start)
   }
   return true;
 }
-

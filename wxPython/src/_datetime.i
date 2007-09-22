@@ -5,7 +5,7 @@
 // Author:      Robin Dunn
 //
 // Created:     25-Nov-1998
-// RCS-ID:      $Id: _datetime.i,v 1.20 2005/04/09 20:07:25 RD Exp $
+// RCS-ID:      $Id: _datetime.i,v 1.20.2.2 2006/02/24 23:07:21 RD Exp $
 // Copyright:   (c) 2003 by Total Control Software
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -426,6 +426,7 @@ public:
                                      wxDateTime_t minute = 0,
                                      wxDateTime_t second = 0,
                                      wxDateTime_t millisec = 0));
+    %RenameCtor(DateTimeFromDateTime, wxDateTime(const wxDateTime& date));
             
     ~wxDateTime();
 
@@ -586,10 +587,22 @@ public:
     wxDateTime ToTimezone(const wxDateTime::TimeZone& tz, bool noDST = false);
     wxDateTime& MakeTimezone(const wxDateTime::TimeZone& tz, bool noDST = false);
 
-        // transform to GMT/UTC
-    wxDateTime ToGMT(bool noDST = false);
+        // interpret current value as being in another timezone and transform
+        // it to local one
+    wxDateTime FromTimezone(const wxDateTime::TimeZone& tz, bool noDST = false) const;
+    wxDateTime& MakeFromTimezone(const wxDateTime::TimeZone& tz, bool noDST = false);
+
+        // transform to/from GMT/UTC
+    wxDateTime ToUTC(bool noDST = false) const;
+    wxDateTime& MakeUTC(bool noDST = false);
+
+    wxDateTime ToGMT(bool noDST = false) const;
     wxDateTime& MakeGMT(bool noDST = false);
 
+    wxDateTime FromUTC(bool noDST = false) const;
+    wxDateTime& MakeFromUTC(bool noDST = false);
+
+    
         // is daylight savings time in effect at this moment according to the
         // rules of the specified country?
         //

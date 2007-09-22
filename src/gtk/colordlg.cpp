@@ -4,7 +4,7 @@
 // Author:      Vaclav Slavik
 // Modified by:
 // Created:     2004/06/04
-// RCS-ID:      $Id: colordlg.cpp,v 1.3 2005/06/13 12:19:23 ABX Exp $
+// RCS-ID:      $Id: colordlg.cpp,v 1.3.2.1 2005/11/03 02:48:00 KH Exp $
 // Copyright:   (c) Vaclav Slavik, 2004
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -46,8 +46,11 @@ bool wxColourDialog::Create(wxWindow *parent, wxColourData *data)
     m_widget = gtk_color_selection_dialog_new(wxGTK_CONV(title));
 
     if (parent)
+    {
+        GtkWindow* gtk_parent = GTK_WINDOW( gtk_widget_get_toplevel(parent->m_widget) );
         gtk_window_set_transient_for(GTK_WINDOW(m_widget),
-                                     GTK_WINDOW(parent->m_widget));
+                                     gtk_parent);
+    }
 
     GtkColorSelection *sel =
         GTK_COLOR_SELECTION(GTK_COLOR_SELECTION_DIALOG(m_widget)->colorsel);

@@ -4,7 +4,7 @@
 // Author:      Vadim Zeitlin
 // Modified by:
 // Created:     01.02.01
-// RCS-ID:      $Id: notebook.h,v 1.20 2005/01/13 20:30:04 ABX Exp $
+// RCS-ID:      $Id: notebook.h,v 1.21 2005/08/26 08:21:43 JS Exp $
 // Copyright:   (c) 2001 SciTech Software, Inc. (www.scitechsoft.com)
 // Licence:     wxWindows licence
 ///////////////////////////////////////////////////////////////////////////////
@@ -68,7 +68,7 @@ public:
     // --------------------------------------
 
     virtual int SetSelection(size_t nPage);
-    virtual int GetSelection() const { return m_sel; }
+    virtual int GetSelection() const { return (int) m_sel; }
 
     virtual bool SetPageText(size_t nPage, const wxString& strText);
     virtual wxString GetPageText(size_t nPage) const;

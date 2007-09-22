@@ -6,7 +6,7 @@
 // Author:      Vadim Zeitlin
 // Modified by:
 // Created:     20.08.02
-// RCS-ID:      $Id: execcmn.cpp,v 1.7 2004/05/23 20:52:00 JS Exp $
+// RCS-ID:      $Id: execcmn.cpp,v 1.8 2005/08/23 23:12:48 VZ Exp $
 // Copyright:   (c) 2002 Vadim Zeitlin <vadim@wxwindows.org>
 // Licence:     wxWindows licence
 ///////////////////////////////////////////////////////////////////////////////
@@ -88,7 +88,10 @@ void wxStreamTempInputBuffer::Update()
     {
         // realloc in blocks of 4Kb: this is the default (and minimal) buffer
         // size of the Unix pipes so it should be the optimal step
-        static const size_t incSize = 4096;
+        //
+        // NB: don't use "static int" in this inline function, some compilers
+        //     (e.g. IBM xlC) don't like it
+        enum { incSize = 4096 };
 
         void *buf = realloc(m_buffer, m_size + incSize);
         if ( !buf )

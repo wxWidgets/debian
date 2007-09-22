@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     01/02/97
-// RCS-ID:      $Id: wxprec.h,v 1.35 2005/05/04 18:52:06 JS Exp $
+// RCS-ID:      $Id: wxprec.h,v 1.36 2005/07/01 19:36:47 ABX Exp $
 // Copyright:   (c) Julian Smart
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -43,6 +43,11 @@
 // include standard Windows headers
 #if defined(__WXMSW__)
     #include "wx/msw/wrapwin.h"
+#endif
+
+// include all PalmOS headers at once
+#ifdef __WXPALMOS__
+#   include <PalmOS.h>
 #endif
 
 // include the most common wx headers

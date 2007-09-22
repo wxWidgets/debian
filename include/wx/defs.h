@@ -4,7 +4,7 @@
 *  Author:      Julian Smart and others
 *  Modified by: Ryan Norton (Converted to C)
 *  Created:     01/02/97
-*  RCS-ID:      $Id: defs.h,v 1.502 2005/06/10 17:53:06 ABX Exp $
+*  RCS-ID:      $Id: defs.h,v 1.513.2.4 2006/01/26 13:15:47 JS Exp $
 *  Copyright:   (c) Julian Smart
 *  Licence:     wxWindows licence
 */
@@ -77,6 +77,13 @@
 /*  This one is really annoying, since it occurs for each cast to (HANDLE)... */
 #   pragma warning(disable:4305)    /*  truncation of long to near ptr */
 #endif
+
+/* Deprecated functions such as sprintf, localtime */
+#if __VISUALC__ >= 1400
+#define _CRT_SECURE_NO_DEPRECATE 1
+#define _CRT_NON_CONFORMING_SWPRINTFS 1
+#endif
+
 #endif /*  __VISUALC__ */
 
 /*  suppress some Salford C++ warnings */
@@ -291,6 +298,50 @@ typedef int wxWindowID;
 #else
     #define wx_reinterpret_cast(t, x) ((t)(x))
 #endif
+
+/*
+   This one is a wx invention: like static cast but used when we intentionally
+   truncate from a larger to smaller type, static_cast<> can't be used for it
+   as it results in warnings when using some compilers (SGI mipspro for example)
+ */
+#if defined(__cplusplus) && wxABI_VERSION >= 20603
+    #if defined(__INTELC__)
+        template <typename T, typename X>
+        inline T wx_truncate_cast_impl(X x)
+        {
+            #pragma warning(push)
+            /* implicit conversion of a 64-bit integral type to a smaller integral type */
+            #pragma warning(disable: 1682)
+            /* conversion from "X" to "T" may lose significant bits */
+            #pragma warning(disable: 810)
+
+            return x;
+
+            #pragma warning(pop)
+        }
+
+        #define wx_truncate_cast(t, x) wx_truncate_cast_impl<t>(x)
+
+    #elif defined(__VISUALC__) && __VISUALC__ >= 1310
+        template <typename T, typename X>
+        inline T wx_truncate_cast_impl(X x)
+        {
+            #pragma warning(push)
+            /* conversion from 'X' to 'T', possible loss of data */
+            #pragma warning(disable: 4267)
+
+            return x;
+
+            #pragma warning(pop)
+        }
+
+        #define wx_truncate_cast(t, x) wx_truncate_cast_impl<t>(x)
+    #else
+        #define wx_truncate_cast(t, x) ((t)(x))
+    #endif
+#else  /* defined(__cplusplus) && wxABI_VERSION >= 20603 */
+    #define wx_truncate_cast(t, x) ((t)(x))
+#endif /* defined(__cplusplus) && wxABI_VERSION >= 20603 */
 
 /* for consistency with wxStatic/DynamicCast defined in wx/object.h */
 #define wxConstCast(obj, className) wx_const_cast(className *, obj)
@@ -515,6 +566,20 @@ typedef int wxWindowID;
     #define WXUNUSED_UNLESS_DEBUG(param)  WXUNUSED(param)
 #endif
 
+/*  some arguments are not used in unicode mode */
+#if wxUSE_UNICODE
+    #define WXUNUSED_IN_UNICODE(param)  WXUNUSED(param)
+#else
+    #define WXUNUSED_IN_UNICODE(param)  param
+#endif
+
+/*  some arguments are not used in WinCE build */
+#ifdef __WXWINCE__
+    #define WXUNUSED_IN_WINCE(param)  WXUNUSED(param)
+#else
+    #define WXUNUSED_IN_WINCE(param)  param
+#endif
+
 /*  some compilers give warning about a possibly unused variable if it is */
 /*  initialized in both branches of if/else and shut up if it is initialized */
 /*  when declared, but other compilers then give warnings about unused variable */
@@ -559,7 +624,7 @@ typedef int wxWindowID;
     #define except(x) catch(...)
 #endif /*  Metrowerks */
 
-#if defined(__WATCOMC__)
+#if wxONLY_WATCOM_EARLIER_THAN(1,4)
     typedef short mode_t;
 #endif
 
@@ -624,20 +689,17 @@ enum
 /*  ---------------------------------------------------------------------------- */
 
 /*  the type for screen and DC coordinates */
-
-#if wxUSE_COMPATIBLE_COORD_TYPES
-    /*  to ensure compatibility with 2.0, we must use long */
-    #define wxCoord long
-#else  /*  !wxUSE_COMPATIBLE_COORD_TYPES */
-        /*  other platforms we support have at least 32bit int - quite enough */
-        typedef int wxCoord;
-#endif /*  wxUSE_COMPATIBLE_COORD_TYPES/!wxUSE_COMPATIBLE_COORD_TYPES */
+typedef int wxCoord;
 
 enum {  wxDefaultCoord = -1 };
 
 /*  ---------------------------------------------------------------------------- */
 /*  define fixed length types */
 /*  ---------------------------------------------------------------------------- */
+
+#if defined(__WXPALMOS__) || defined(__MINGW32__)
+    #include <sys/types.h>
+#endif
 
 /*  chars are always one byte (by definition), shorts are always two (in */
 /*  practice) */
@@ -884,7 +946,7 @@ inline void *wxUIntToPtr(wxUIntPtr p)
     #define wxLongLong_t __int64
     #define wxLongLongSuffix i64
     #define wxLongLongFmtSpec _T("L")
-#elif (defined(__WATCOMC__) && (defined(__WIN32__) || defined(__DOS__)))
+#elif (defined(__WATCOMC__) && (defined(__WIN32__) || defined(__DOS__) || defined(__OS2__)))
       #define wxLongLong_t __int64
       #define wxLongLongSuffix i64
       #define wxLongLongFmtSpec _T("L")
@@ -938,12 +1000,14 @@ inline void *wxUIntToPtr(wxUIntPtr p)
 /* Make sure ssize_t is defined (a signed type the same size as size_t) */
 /* HAVE_SSIZE_T should be defined for compiliers that already have it */
 #ifdef __MINGW32__
-    #include <sys/types.h>
     #if defined(_SSIZE_T_) && !defined(HAVE_SSIZE_T)
         #define HAVE_SSIZE_T
     #endif
 #endif
 #if defined(__PALMOS__) && !defined(HAVE_SSIZE_T)
+    #define HAVE_SSIZE_T
+#endif
+#if wxCHECK_WATCOM_VERSION(1,4)
     #define HAVE_SSIZE_T
 #endif
 #ifndef HAVE_SSIZE_T
@@ -1600,22 +1664,21 @@ enum wxBackgroundStyle
 /*  standard IDs */
 /*  ---------------------------------------------------------------------------- */
 
-/*  any id: means that we don't care about the id, whether when installing an */
-/*  event handler or when creating a new window */
-enum
-{
-    wxID_ANY = -1
-};
-
-/*  id for a separator line in the menu (invalid for normal item) */
-enum
-{
-    wxID_SEPARATOR = -2
-};
-
 /*  Standard menu IDs */
 enum
 {
+    /* no id matches this one when compared to it */
+    wxID_NONE = -3,
+
+    /*  id for a separator line in the menu (invalid for normal item) */
+    wxID_SEPARATOR = -2,
+
+    /* any id: means that we don't care about the id, whether when installing
+     * an event handler or when creating a new window */
+    wxID_ANY = -1,
+
+
+    /* all predefined ids are between wxID_LOWEST and wxID_HIGHEST */
     wxID_LOWEST = 4999,
 
     wxID_OPEN,
@@ -1787,6 +1850,11 @@ enum wxHitTest
 #define wxSIZE_ALLOW_MINUS_ONE  0x0004
 /*  Don't do parent client adjustments (for implementation only) */
 #define wxSIZE_NO_ADJUSTMENTS   0x0008
+
+#if wxABI_VERSION >= 20602
+/*  Change the window position even if it seems to be already correct */
+#define wxSIZE_FORCE            0x0010
+#endif // 2.6.2+
 
 /*  ---------------------------------------------------------------------------- */
 /*  GDI descriptions */
@@ -2438,6 +2506,7 @@ typedef WX_NSView WXWidget; /*  wxWidgets BASE definition */
 
 #if defined(__WXPALMOS__)
 
+typedef void *          WXHWND;
 typedef void *          WXHANDLE;
 typedef void *          WXHICON;
 typedef void *          WXHFONT;
@@ -2460,8 +2529,12 @@ typedef unsigned short  WXWORD;
 typedef unsigned long   WXCOLORREF;
 typedef struct tagMSG   WXMSG;
 
-typedef WinHandle       WXWINHANDLE;
+typedef WXHWND          WXWINHANDLE; /* WinHandle of PalmOS */
 typedef WXWINHANDLE     WXWidget;
+
+typedef void *          WXFORMPTR;
+typedef void *          WXEVENTPTR;
+typedef void *          WXRECTANGLEPTR;
 
 #endif /* __WXPALMOS__ */
 
@@ -2651,6 +2724,7 @@ typedef void*           WXRegion;
 typedef void*           WXFont;
 typedef void*           WXImage;
 typedef void*           WXFontList;
+typedef void*           WXFontSet;
 typedef void*           WXRendition;
 typedef void*           WXRenderTable;
 typedef void*           WXFontType; /* either a XmFontList or XmRenderTable */
@@ -2785,6 +2859,33 @@ typedef struct window_t *WXWidget;
 #define DECLARE_NO_ASSIGN_CLASS(classname)      \
     private:                                    \
         classname& operator=(const classname&);
+
+/*  --------------------------------------------------------------------------- */
+/*  If a manifest is being automatically generated, add common controls 6 to it */
+/*  --------------------------------------------------------------------------- */
+
+#if (!defined wxUSE_NO_MANIFEST || wxUSE_NO_MANIFEST == 0 ) && \
+    ( defined _MSC_FULL_VER && _MSC_FULL_VER >= 140040130 )
+
+#define WX_CC_MANIFEST(cpu)                     \
+    "/manifestdependency:\"type='win32'         \
+     name='Microsoft.Windows.Common-Controls'   \
+     version='6.0.0.0'                          \
+     processorArchitecture='"cpu"'              \
+     publicKeyToken='6595b64144ccf1df'          \
+     language='*'\""
+
+#if defined _M_IX86
+    #pragma comment(linker, WX_CC_MANIFEST("x86"))
+#elif defined _M_X64
+    #pragma comment(linker, WX_CC_MANIFEST("amd64"))
+#elif defined _M_IA64
+    #pragma comment(linker, WX_CC_MANIFEST("ia64"))
+#else
+    #pragma comment(linker, WX_CC_MANIFEST("*"))
+#endif
+
+#endif /* !wxUSE_NO_MANIFEST && _MSC_FULL_VER >= 140040130 */
 
 #endif
     /*  _WX_DEFS_H_ */

@@ -4,7 +4,7 @@
 // Author:      Original from Wolfram Gloger/Guilhem Lavaux
 // Modified by: Vadim Zeitlin to make it work :-)
 // Created:     04/22/98
-// RCS-ID:      $Id: thread.cpp,v 1.94 2005/05/17 11:41:46 JS Exp $
+// RCS-ID:      $Id: thread.cpp,v 1.95 2005/07/01 13:38:58 ABX Exp $
 // Copyright:   (c) Wolfram Gloger (1996, 1997), Guilhem Lavaux (1998);
 //                  Vadim Zeitlin (1999-2002)
 // Licence:     wxWindows licence
@@ -888,10 +888,9 @@ unsigned long wxThread::GetCurrentId()
     return (unsigned long)::GetCurrentThreadId();
 }
 
-bool wxThread::SetConcurrency(size_t level)
+bool wxThread::SetConcurrency(size_t WXUNUSED_IN_WINCE(level))
 {
 #ifdef __WXWINCE__
-    wxUnusedVar(level);
     return false;
 #else
     wxASSERT_MSG( IsMain(), _T("should only be called from the main thread") );

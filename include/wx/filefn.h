@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     29/01/98
-// RCS-ID:      $Id: filefn.h,v 1.125 2005/05/19 17:03:10 MW Exp $
+// RCS-ID:      $Id: filefn.h,v 1.127.2.1 2006/01/11 13:21:18 ABX Exp $
 // Copyright:   (c) 1998 Julian Smart
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -49,6 +49,9 @@
 // __OS2__ and __UNIX__ are defined.
     #include <process.h>
     #include "wx/os2/private.h"
+    #ifdef __WATCOMC__
+        #include <direct.h>
+    #endif
     #include <io.h>
     #ifdef __EMX__
         #include <unistd.h>
@@ -275,16 +278,17 @@ enum wxFileKind
         #endif
     #endif
 
-    // types: notice that Watcom is the only compiler to have a wide char
-    // version of struct stat as well as a wide char stat function variant
+    // Types: Notice that Watcom is the only compiler to have a wide char
+    // version of struct stat as well as a wide char stat function variant.
+    // This was droped since OW 1.4 "for consistency across platforms".
     #if wxHAS_HUGE_FILES
-        #if wxUSE_UNICODE && defined(__WATCOMC__)
+        #if wxUSE_UNICODE && wxONLY_WATCOM_EARLIER_THAN(1,4)
             #define   wxStructStat struct _wstati64
         #else
             #define   wxStructStat struct _stati64
         #endif
     #else
-        #if wxUSE_UNICODE && defined(__WATCOMC__)
+        #if wxUSE_UNICODE && wxONLY_WATCOM_EARLIER_THAN(1,4)
             #define   wxStructStat struct _wstat
         #else
             #define   wxStructStat struct _stat
@@ -326,7 +330,7 @@ enum wxFileKind
     #define   wxWrite      ::write
     #define   wxLseek      lseek
     #define   wxSeek       lseek
-    #define   wxFsync      commit
+    #define   wxFsync      fsync
     #define   wxEof        eof
 
     #define   wxMkDir      mkdir

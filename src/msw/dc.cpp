@@ -1,10 +1,10 @@
 /////////////////////////////////////////////////////////////////////////////
-// Name:        dc.cpp
-// Purpose:     wxDC class
+// Name:        src/msw/dc.cpp
+// Purpose:     wxDC class for MSW port
 // Author:      Julian Smart
 // Modified by:
 // Created:     01/02/97
-// RCS-ID:      $Id: dc.cpp,v 1.189 2005/05/17 16:03:24 DS Exp $
+// RCS-ID:      $Id: dc.cpp,v 1.193.2.3 2006/03/15 09:50:11 JS Exp $
 // Copyright:   (c) Julian Smart
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -44,7 +44,7 @@
 #include "wx/sysopt.h"
 #include "wx/dcprint.h"
 #include "wx/module.h"
-#include "wx/dynload.h"
+#include "wx/dynlib.h"
 
 #ifdef wxHAVE_RAW_BITMAP
 #include "wx/rawbmp.h"
@@ -170,15 +170,14 @@ private:
 class StretchBltModeChanger
 {
 public:
-    StretchBltModeChanger(HDC hdc, int mode)
+    StretchBltModeChanger(HDC hdc,
+                          int WXUNUSED_IN_WINCE(mode))
         : m_hdc(hdc)
     {
 #ifndef __WXWINCE__
         m_modeOld = ::SetStretchBltMode(m_hdc, mode);
         if ( !m_modeOld )
             wxLogLastError(_T("SetStretchBltMode"));
-#else
-        wxUnusedVar(mode);
 #endif
     }
 
@@ -471,6 +470,14 @@ void wxDC::DestroyClippingRegion()
 
     if (m_clipping && m_hDC)
     {
+#ifdef __WXWINCE__
+        // On a PocketPC device (not necessarily emulator), resetting
+        // the clip region as per the old method causes bad display
+        // problems. In fact setting a null region is probably OK
+        // on desktop WIN32 also, since the WIN32 docs imply that the user
+        // clipping region is independent from the paint clipping region.
+        ::SelectClipRgn(GetHdc(), 0);
+#else        
         // TODO: this should restore the previous clipping region,
         //       so that OnPaint processing works correctly, and the update
         //       clipping region doesn't get destroyed after the first
@@ -478,6 +485,7 @@ void wxDC::DestroyClippingRegion()
         HRGN rgn = CreateRectRgn(0, 0, 32000, 32000);
         ::SelectClipRgn(GetHdc(), rgn);
         ::DeleteObject(rgn);
+#endif
     }
 
     wxDCBase::DestroyClippingRegion();
@@ -560,16 +568,14 @@ void wxDC::Clear()
 #endif
 }
 
-bool wxDC::DoFloodFill(wxCoord x, wxCoord y, const wxColour& col, int style)
+bool wxDC::DoFloodFill(wxCoord WXUNUSED_IN_WINCE(x),
+                       wxCoord WXUNUSED_IN_WINCE(y),
+                       const wxColour& WXUNUSED_IN_WINCE(col),
+                       int WXUNUSED_IN_WINCE(style))
 {
 #ifdef __WXWINCE__
-    wxUnusedVar(x);
-    wxUnusedVar(y);
-    wxUnusedVar(col);
-    wxUnusedVar(style);
     return false;
 #else
-
     WXMICROWIN_CHECK_HDC_RET(false)
 
     bool success = (0 != ::ExtFloodFill(GetHdc(), XLOG2DEV(x), YLOG2DEV(y),
@@ -758,7 +764,11 @@ void wxDC::DoDrawPoint(wxCoord x, wxCoord y)
     CalcBoundingBox(x, y);
 }
 
-void wxDC::DoDrawPolygon(int n, wxPoint points[], wxCoord xoffset, wxCoord yoffset,int fillStyle)
+void wxDC::DoDrawPolygon(int n,
+                         wxPoint points[],
+                         wxCoord xoffset,
+                         wxCoord yoffset,
+                         int WXUNUSED_IN_WINCE(fillStyle))
 {
     WXMICROWIN_CHECK_HDC
 
@@ -778,8 +788,6 @@ void wxDC::DoDrawPolygon(int n, wxPoint points[], wxCoord xoffset, wxCoord yoffs
         }
 #ifndef __WXWINCE__
         int prev = SetPolyFillMode(GetHdc(),fillStyle==wxODDEVEN_RULE?ALTERNATE:WINDING);
-#else
-        wxUnusedVar(fillStyle);
 #endif
         (void)Polygon(GetHdc(), cpoints, n);
 #ifndef __WXWINCE__
@@ -977,6 +985,105 @@ void wxDC::DoDrawEllipse(wxCoord x, wxCoord y, wxCoord width, wxCoord height)
     CalcBoundingBox(x, y);
     CalcBoundingBox(x2, y2);
 }
+
+#if wxUSE_SPLINES
+void wxDC::DoDrawSpline(wxList *points)
+{
+#ifdef  __WXWINCE__
+    // WinCE does not support ::PolyBezier so use generic version
+    wxDCBase::DoDrawSpline(points);
+#else
+    // quadratic b-spline to cubic bezier spline conversion
+    //
+    // quadratic spline with control points P0,P1,P2
+    // P(s) = P0*(1-s)^2 + P1*2*(1-s)*s + P2*s^2
+    //
+    // bezier spline with control points B0,B1,B2,B3
+    // B(s) = B0*(1-s)^3 + B1*3*(1-s)^2*s + B2*3*(1-s)*s^2 + B3*s^3
+    //
+    // control points of bezier spline calculated from b-spline
+    // B0 = P0
+    // B1 = (2*P1 + P0)/3
+    // B2 = (2*P1 + P2)/3
+    // B3 = P2
+
+    WXMICROWIN_CHECK_HDC
+
+    wxASSERT_MSG( points, wxT("NULL pointer to spline points?") );
+
+    const size_t n_points = points->GetCount();
+    wxASSERT_MSG( n_points > 2 , wxT("incomplete list of spline points?") );
+
+    const size_t n_bezier_points = n_points * 3 + 1;
+    POINT *lppt = (POINT *)malloc(n_bezier_points*sizeof(POINT));
+    size_t bezier_pos = 0;
+    wxCoord x1, y1, x2, y2, cx1, cy1, cx4, cy4;
+
+    wxList::compatibility_iterator node = points->GetFirst();
+    wxPoint *p = (wxPoint *)node->GetData();
+    lppt[ bezier_pos ].x = x1 = p->x;
+    lppt[ bezier_pos ].y = y1 = p->y;
+    bezier_pos++;
+    lppt[ bezier_pos ] = lppt[ bezier_pos-1 ];
+    bezier_pos++;
+
+    node = node->GetNext();
+    p = (wxPoint *)node->GetData();
+
+    x2 = p->x;
+    y2 = p->y;
+    cx1 = ( x1 + x2 ) / 2;
+    cy1 = ( y1 + y2 ) / 2;
+    lppt[ bezier_pos ].x = XLOG2DEV(cx1);
+    lppt[ bezier_pos ].y = YLOG2DEV(cy1);
+    bezier_pos++;
+    lppt[ bezier_pos ] = lppt[ bezier_pos-1 ];
+    bezier_pos++;
+
+#if !wxUSE_STL
+    while ((node = node->GetNext()) != NULL)
+#else
+    while ((node = node->GetNext()))
+#endif // !wxUSE_STL
+    {
+        p = (wxPoint *)node->GetData();
+        x1 = x2;
+        y1 = y2;
+        x2 = p->x;
+        y2 = p->y;
+        cx4 = (x1 + x2) / 2;
+        cy4 = (y1 + y2) / 2;
+        // B0 is B3 of previous segment
+        // B1:
+        lppt[ bezier_pos ].x = XLOG2DEV((x1*2+cx1)/3);
+        lppt[ bezier_pos ].y = YLOG2DEV((y1*2+cy1)/3);
+        bezier_pos++;
+        // B2:
+        lppt[ bezier_pos ].x = XLOG2DEV((x1*2+cx4)/3);
+        lppt[ bezier_pos ].y = YLOG2DEV((y1*2+cy4)/3);
+        bezier_pos++;
+        // B3:
+        lppt[ bezier_pos ].x = XLOG2DEV(cx4);
+        lppt[ bezier_pos ].y = YLOG2DEV(cy4);
+        bezier_pos++;
+        cx1 = cx4;
+        cy1 = cy4;
+    }
+
+    lppt[ bezier_pos ] = lppt[ bezier_pos-1 ];
+    bezier_pos++;
+    lppt[ bezier_pos ].x = XLOG2DEV(x2);
+    lppt[ bezier_pos ].y = YLOG2DEV(y2);
+    bezier_pos++;
+    lppt[ bezier_pos ] = lppt[ bezier_pos-1 ];
+    bezier_pos++;
+
+    ::PolyBezier( GetHdc(), lppt, bezier_pos );
+
+    free(lppt);
+#endif
+}
+#endif
 
 // Chris Breeze 20/5/98: first implementation of DrawEllipticArc on Windows
 void wxDC::DoDrawEllipticArc(wxCoord x,wxCoord y,wxCoord w,wxCoord h,double sa,double ea)
@@ -1675,6 +1782,8 @@ bool wxDC::DoGetPartialTextExtents(const wxString& text, wxArrayInt& widths) con
 
     widths.Empty();
     widths.Add(0, stlen);  // fill the array with zeros
+    if (stlen == 0)
+        return true;
 
     if (!::GetTextExtentExPoint(GetHdc(),
                                 text.c_str(),           // string to check
@@ -1780,7 +1889,8 @@ void wxDC::SetUserScale(double x, double y)
     this->SetMapMode(m_mappingMode);
 }
 
-void wxDC::SetAxisOrientation(bool xLeftRight, bool yBottomUp)
+void wxDC::SetAxisOrientation(bool WXUNUSED_IN_WINCE(xLeftRight),
+                              bool WXUNUSED_IN_WINCE(yBottomUp))
 {
     WXMICROWIN_CHECK_HDC
 
@@ -1795,9 +1905,6 @@ void wxDC::SetAxisOrientation(bool xLeftRight, bool yBottomUp)
 
         SetMapMode(m_mappingMode);
     }
-#else
-    wxUnusedVar(xLeftRight);
-    wxUnusedVar(yBottomUp);
 #endif
 }
 
@@ -2473,7 +2580,7 @@ wxAlphaBlend(HDC hdcDst, int xDst, int yDst, int w, int h, int srcX, int srcY, c
     MemoryHDC hdcMem;
     SelectInHDC select(hdcMem, GetHbitmapOf(bmpDst));
 
-    if ( !::BitBlt(hdcMem, 0, 0, w, h, hdcDst, 0, 0, SRCCOPY) )
+    if ( !::BitBlt(hdcMem, 0, 0, w, h, hdcDst, xDst, yDst, SRCCOPY) )
     {
         wxLogLastError(_T("BitBlt"));
     }
@@ -2494,7 +2601,7 @@ wxAlphaBlend(HDC hdcDst, int xDst, int yDst, int w, int h, int srcX, int srcY, c
     {
         wxAlphaPixelData::Iterator pDstRowStart = pDst,
                                    pSrcRowStart = pSrc;
-                                   
+
         for ( int x = 0; x < w; x++ )
         {
             // note that source bitmap uses premultiplied alpha (as required by

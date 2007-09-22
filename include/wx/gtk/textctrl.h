@@ -3,7 +3,7 @@
 // Purpose:
 // Author:      Robert Roebling
 // Created:     01/02/97
-// Id:          $Id: textctrl.h,v 1.55 2005/02/19 02:55:23 KH Exp $
+// Id:          $Id: textctrl.h,v 1.56 2005/08/02 22:57:58 MW Exp $
 // Copyright:   (c) 1998 Robert Roebling
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -19,7 +19,7 @@
 // wxTextCtrl
 //-----------------------------------------------------------------------------
 
-class wxTextCtrl: public wxTextCtrlBase
+class WXDLLIMPEXP_CORE wxTextCtrl: public wxTextCtrlBase
 {
 public:
     wxTextCtrl() { Init(); }

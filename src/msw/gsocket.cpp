@@ -6,7 +6,7 @@
  * Author:      Guillermo Rodriguez Garcia <guille@iies.es>
  * Purpose:     GSocket main MSW file
  * Licence:     The wxWindows licence
- * CVSID:       $Id: gsocket.cpp,v 1.17 2005/06/13 12:19:28 ABX Exp $
+ * CVSID:       $Id: gsocket.cpp,v 1.18.2.1 2006/02/22 01:55:41 KH Exp $
  * -------------------------------------------------------------------------
  */
 
@@ -84,9 +84,9 @@
 #include <stddef.h>
 #include <ctype.h>
 
-/* if we use configure for MSW SOCKLEN_T will be already defined */
-#ifndef SOCKLEN_T
-#  define SOCKLEN_T int
+/* if we use configure for MSW WX_SOCKLEN_T will be already defined */
+#ifndef WX_SOCKLEN_T
+#  define WX_SOCKLEN_T int
 #endif
 
 /* Table of GUI-related functions. We must call them indirectly because
@@ -299,7 +299,7 @@ GAddress *GSocket::GetLocal()
 {
   GAddress *address;
   struct sockaddr addr;
-  SOCKLEN_T size = sizeof(addr);
+  WX_SOCKLEN_T size = sizeof(addr);
   GSocketError err;
 
   assert(this);
@@ -411,7 +411,7 @@ GSocketError GSocket::SetServer()
   if ((bind(m_fd, m_local->m_addr, m_local->m_len) != 0) ||
       (getsockname(m_fd,
                    m_local->m_addr,
-                   (SOCKLEN_T *)&m_local->m_len) != 0) ||
+                   (WX_SOCKLEN_T *)&m_local->m_len) != 0) ||
       (listen(m_fd, 5) != 0))
   {
     Close();
@@ -438,7 +438,7 @@ GSocket *GSocket::WaitConnection()
 {
   GSocket *connection;
   struct sockaddr from;
-  SOCKLEN_T fromlen = sizeof(from);
+  WX_SOCKLEN_T fromlen = sizeof(from);
   GSocketError err;
   u_long arg = 1;
 
@@ -696,7 +696,7 @@ GSocketError GSocket::SetNonOriented()
   if ((bind(m_fd, m_local->m_addr, m_local->m_len) != 0) ||
       (getsockname(m_fd,
                    m_local->m_addr,
-                   (SOCKLEN_T *)&m_local->m_len) != 0))
+                   (WX_SOCKLEN_T *)&m_local->m_len) != 0))
   {
     Close();
     m_error = GSOCK_IOERR;
@@ -834,30 +834,28 @@ GSocketEventFlags GSocket::Select(GSocketEventFlags flags)
       return (result & flags);
     }
 
+    /* Check for exceptions and errors */
+    if (FD_ISSET(m_fd, &exceptfds))
+    {
+      m_establishing = false;
+      m_detected = GSOCK_LOST_FLAG;
+
+      /* LOST event: Abort any further processing */
+      return (GSOCK_LOST_FLAG & flags);
+    }
+
     /* Check for readability */
     if (FD_ISSET(m_fd, &readfds))
     {
-      char c;
+      result |= GSOCK_INPUT_FLAG;
 
-      if (!m_stream || recv(m_fd, &c, 1, MSG_PEEK) > 0)
-      {
-        result |= GSOCK_INPUT_FLAG;
-      }
-      else
-      {
-        if (m_server && m_stream)
-        {
-          result |= GSOCK_CONNECTION_FLAG;
-          m_detected |= GSOCK_CONNECTION_FLAG;
-        }
-        else
-        {
-          m_detected = GSOCK_LOST_FLAG;
-          m_establishing = false;
-
-          /* LOST event: Abort any further processing */
-          return (GSOCK_LOST_FLAG & flags);
-        }
+      if (m_server && m_stream)
+      { 
+        /* This is a TCP server socket that detected a connection. 
+           While the INPUT_FLAG is also set, it doesn't matter on 
+           this kind of  sockets, as we can only Accept() from them. */
+        result |= GSOCK_CONNECTION_FLAG;
+        m_detected |= GSOCK_CONNECTION_FLAG;
       }
     }
 
@@ -867,7 +865,7 @@ GSocketEventFlags GSocket::Select(GSocketEventFlags flags)
       if (m_establishing && !m_server)
       {
         int error;
-        SOCKLEN_T len = sizeof(error);
+        WX_SOCKLEN_T len = sizeof(error);
 
         m_establishing = false;
 
@@ -890,16 +888,6 @@ GSocketEventFlags GSocket::Select(GSocketEventFlags flags)
       {
         result |= GSOCK_OUTPUT_FLAG;
       }
-    }
-
-    /* Check for exceptions and errors (is this useful in Unices?) */
-    if (FD_ISSET(m_fd, &exceptfds))
-    {
-      m_establishing = false;
-      m_detected = GSOCK_LOST_FLAG;
-
-      /* LOST event: Abort any further processing */
-      return (GSOCK_LOST_FLAG & flags);
     }
 
     return (result & flags);
@@ -1114,7 +1102,7 @@ int GSocket::Recv_Stream(char *buffer, int size)
 int GSocket::Recv_Dgram(char *buffer, int size)
 {
   struct sockaddr from;
-  SOCKLEN_T fromlen = sizeof(from);
+  WX_SOCKLEN_T fromlen = sizeof(from);
   int ret;
   GSocketError err;
 

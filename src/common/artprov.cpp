@@ -4,7 +4,7 @@
 // Author:      Vaclav Slavik
 // Modified by:
 // Created:     18/03/2002
-// RCS-ID:      $Id: artprov.cpp,v 1.21 2005/06/10 12:04:14 MW Exp $
+// RCS-ID:      $Id: artprov.cpp,v 1.21.2.3 2006/01/21 16:46:33 JS Exp $
 // Copyright:   (c) Vaclav Slavik
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -169,7 +169,7 @@ wxArtProviderCache *wxArtProvider::sm_cache = NULL;
             bmp = node->GetData()->CreateBitmap(id, client, size);
             if ( bmp.Ok() )
             {
-#if wxUSE_IMAGE
+#if wxUSE_IMAGE && (!defined(__WXMSW__) || wxUSE_WXDIB)
                 if ( size != wxDefaultSize &&
                      (bmp.GetWidth() != size.x || bmp.GetHeight() != size.y) )
                 {

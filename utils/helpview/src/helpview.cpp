@@ -5,7 +5,7 @@
 // Author:      Vaclav Slavik, Julian Smart
 // Modified by:
 // Created:     2002-07-09
-// RCS-ID:      $Id: helpview.cpp,v 1.14 2005/05/30 09:24:08 ABX Exp $
+// RCS-ID:      $Id: helpview.cpp,v 1.14.2.1 2006/03/30 11:35:12 JS Exp $
 // Copyright:   (c) 2002 Vaclav Slavik, Julian Smart and others
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -63,7 +63,7 @@ bool hvApp::OnInit()
 
 #ifdef __WXMAC__
     wxApp::s_macAboutMenuItemId = wxID_ABOUT;
-    wxFileName::MacRegisterDefaultTypeAndCreator( "htb" , 'HTBD' , 'HTBA' ) ;
+    wxFileName::MacRegisterDefaultTypeAndCreator( wxT("htb") , 'HTBD' , 'HTBA' ) ;
 #endif
 
     int istyle = wxHF_DEFAULT_STYLE;

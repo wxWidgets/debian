@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by: Vadim Zeitlin to add support for font encodings
 // Created:     04/01/98
-// RCS-ID:      $Id: fontenum.cpp,v 1.41 2004/10/07 13:36:41 ABX Exp $
+// RCS-ID:      $Id: fontenum.cpp,v 1.41.4.1 2006/03/09 23:53:00 ABX Exp $
 // Copyright:   (c) Julian Smart
 // Licence:     wxWindows licence
 ///////////////////////////////////////////////////////////////////////////////
@@ -162,8 +162,10 @@ void wxFontEnumeratorHelper::DoEnumerate()
     HDC hDC = ::GetDC(NULL);
 
 #ifdef __WXWINCE__
-    ::EnumFontFamilies(hDC, m_facename, (wxFONTENUMPROC)wxFontEnumeratorProc,
-                         (LPARAM)this) ;
+    ::EnumFontFamilies(hDC,
+                       m_facename.empty() ? NULL : m_facename.c_str(),
+                       (wxFONTENUMPROC)wxFontEnumeratorProc,
+                       (LPARAM)this) ;
 #else // __WIN32__
     LOGFONT lf;
     lf.lfCharSet = (BYTE)m_charset;

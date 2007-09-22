@@ -4,17 +4,17 @@
 // Author:      Royce Mitchell III
 // Modified by:
 // Created:     06/21/02
-// RCS-ID:      $Id: display.h,v 1.9 2004/11/07 00:48:36 RN Exp $
+// RCS-ID:      $Id: display.h,v 1.9.2.1 2005/09/25 20:46:29 MW Exp $
 // Copyright:   (c) wxWidgets team
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
 
+#ifndef _WX_MSW_DISPLAY_H_
+#define _WX_MSW_DISPLAY_H_
+
 #if defined(__GNUG__) && !defined(NO_GCC_PRAGMA)
     #pragma interface "display.h"
 #endif
-
-#ifndef _WX_MSW_DISPLAY_H_
-#define _WX_MSW_DISPLAY_H_
 
 class WXDLLEXPORT wxDisplay : public wxDisplayBase
 {

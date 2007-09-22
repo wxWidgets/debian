@@ -2,7 +2,7 @@
 // Name:        menuitem.h
 // Purpose:     wxMenuItem class
 // Author:      Robert Roebling
-// RCS-ID:      $Id: menuitem.h,v 1.23 2004/05/23 20:50:53 JS Exp $
+// RCS-ID:      $Id: menuitem.h,v 1.24 2005/08/02 22:57:56 MW Exp $
 // Copyright:   (c) 1998 Robert Roebling
 // Licence:     wxWindows licence
 ///////////////////////////////////////////////////////////////////////////////
@@ -20,7 +20,7 @@
 // wxMenuItem
 //-----------------------------------------------------------------------------
 
-class wxMenuItem : public wxMenuItemBase
+class WXDLLIMPEXP_CORE wxMenuItem : public wxMenuItemBase
 {
 public:
     wxMenuItem(wxMenu *parentMenu = (wxMenu *)NULL,

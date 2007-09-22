@@ -4,7 +4,7 @@
 // Author:      Vadim Zeitlin
 // Modified by:
 // Created:     01.06.01
-// RCS-ID:      $Id: evtloop.cpp,v 1.30 2005/06/21 09:56:18 VS Exp $
+// RCS-ID:      $Id: evtloop.cpp,v 1.32.2.1 2005/12/22 17:55:36 KO Exp $
 // Copyright:   (c) 2001 Vadim Zeitlin <zeitlin@dptmaths.ens-cachan.fr>
 // License:     wxWindows licence
 ///////////////////////////////////////////////////////////////////////////////
@@ -85,6 +85,7 @@ private:
 // ============================================================================
 
 wxEventLoop *wxEventLoopBase::ms_activeLoop = NULL;
+wxWindowMSW *wxEventLoop::ms_winCritical = NULL;
 
 // ----------------------------------------------------------------------------
 // ctor/dtor
@@ -111,25 +112,61 @@ void wxEventLoop::ProcessMessage(WXMSG *msg)
     }
 }
 
+bool wxEventLoop::IsChildOfCriticalWindow(wxWindowMSW *win)
+{
+    while ( win )
+    {
+        if ( win == ms_winCritical )
+            return true;
+
+        win = win->GetParent();
+    }
+
+    return false;
+}
+
 bool wxEventLoop::PreProcessMessage(WXMSG *msg)
 {
     HWND hwnd = msg->hwnd;
     wxWindow *wndThis = wxGetWindowFromHWND((WXHWND)hwnd);
+    wxWindow *wnd;
 
-    // this may happen if the event occurred in a standard modeless dialog (the
-    // only example of which I know of is the find/replace dialog) - then call
-    // IsDialogMessage() to make TAB navigation in it work
+    // this might happen if we're in a modeless dialog, or if a wx control has
+    // children which themselves were not created by wx (i.e. wxActiveX control children)
     if ( !wndThis )
     {
-        // we need to find the dialog containing this control as
-        // IsDialogMessage() just eats all the messages (i.e. returns true for
-        // them) if we call it for the control itself
-        while ( hwnd && ::GetWindowLong(hwnd, GWL_STYLE) & WS_CHILD )
+        while ( hwnd && (::GetWindowLong(hwnd, GWL_STYLE) & WS_CHILD ))
         {
             hwnd = ::GetParent(hwnd);
+
+            // If the control has a wx parent, break and give the parent a chance
+            // to process the window message
+            wndThis = wxGetWindowFromHWND((WXHWND)hwnd);
+            if (wndThis != NULL)
+                break;
         }
 
-        return hwnd && ::IsDialogMessage(hwnd, msg) != 0;
+        if ( !wndThis )
+        {
+            // this may happen if the event occurred in a standard modeless dialog (the
+            // only example of which I know of is the find/replace dialog) - then call
+            // IsDialogMessage() to make TAB navigation in it work
+
+            // NOTE: IsDialogMessage() just eats all the messages (i.e. returns true for
+            // them) if we call it for the control itself
+            return hwnd && ::IsDialogMessage(hwnd, msg) != 0;
+        }
+    }
+
+    if ( !AllowProcessing(wndThis) )
+    {
+        // not a child of critical window, so we eat the event but take care to
+        // stop an endless stream of WM_PAINTs which would have resulted if we
+        // didn't validate the invalidated part of the window
+        if ( msg->message == WM_PAINT )
+            ::ValidateRect(hwnd, NULL);
+
+        return true;
     }
 
 #if wxUSE_TOOLTIPS
@@ -154,8 +191,6 @@ bool wxEventLoop::PreProcessMessage(WXMSG *msg)
     }
 
     // try translations first: the accelerators override everything
-    wxWindow *wnd;
-
     for ( wnd = wndThis; wnd; wnd = wnd->GetParent() )
     {
         if ( wnd->MSWTranslateMessage((WXMSG *)msg))

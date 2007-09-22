@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     01/02/97
-// RCS-ID:      $Id: combobox.cpp,v 1.111 2005/05/23 10:54:43 ABX Exp $
+// RCS-ID:      $Id: combobox.cpp,v 1.112.2.2 2006/04/04 03:56:41 RD Exp $
 // Copyright:   (c) Julian Smart
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -249,15 +249,6 @@ WXLRESULT wxComboBox::MSWWindowProc(WXUINT nMsg, WXWPARAM wParam, WXLPARAM lPara
 
     switch ( nMsg )
     {
-        case CB_SETCURSEL:
-            // Selection was set with SetSelection.  Update the value too.
-            if ((int)wParam > GetCount())
-                m_value.clear();
-            else
-                m_value = GetString(wParam);
-            m_selectionOld = -1;
-            break;
-
         case WM_SIZE:
         // wxStaticBox can generate this message, when modifying the control's style.
         // This causes the content of the combobox to be selected, for some reason.
@@ -328,41 +319,28 @@ bool wxComboBox::MSWProcessEditMsg(WXUINT msg, WXWPARAM wParam, WXLPARAM lParam)
     return false;
 }
 
-bool wxComboBox::MSWCommand(WXUINT param, WXWORD WXUNUSED(id))
+bool wxComboBox::MSWCommand(WXUINT param, WXWORD id)
 {
-    wxString value;
     int sel = -1;
+    wxString value;
+
     switch ( param )
     {
         case CBN_SELENDOK:
-        case CBN_SELCHANGE:
+            // we need to reset this to prevent the selection from being undone
+            // by wxChoice, see wxChoice::MSWCommand() and comments there
+            m_lastAcceptedSelection = wxID_NONE;
+
+            // set these variables so that they could be also fixed in
+            // CBN_EDITCHANGE below
             sel = GetSelection();
-
-            // we may sometimes get 2 CBN_SELCHANGE events or a CBN_SELENDOK
-            // before CBN_SELCHANGE with the same index when the user selects
-            // an item in the combobox -- ignore duplicates
-            if ( sel > -1 && sel != m_selectionOld )
+            value = GetStringSelection();
             {
-                m_selectionOld = sel;
-
-                // GetValue() would still return the old value from here but
-                // according to the docs we should return the new value if the
-                // user calls it in his event handler, so update internal
-                // m_value
-                m_value = GetString(sel);
-
                 wxCommandEvent event(wxEVT_COMMAND_COMBOBOX_SELECTED, GetId());
-                event.SetInt(sel);
                 event.SetEventObject(this);
-                event.SetString(m_value);
+                event.SetInt(sel);
+                event.SetString(value);
                 ProcessCommand(event);
-            }
-            else // no valid selection
-            {
-                m_selectionOld = sel;
-
-                // hence no EVT_TEXT neither
-                break;
             }
 
             // fall through: for compability with wxGTK, also send the text
@@ -372,37 +350,26 @@ bool wxComboBox::MSWCommand(WXUINT param, WXWORD WXUNUSED(id))
         case CBN_EDITCHANGE:
             {
                 wxCommandEvent event(wxEVT_COMMAND_TEXT_UPDATED, GetId());
+                event.SetEventObject(this);
 
-                // if sel != -1, value was initialized above (and we can't use
-                // GetValue() here as it would return the old selection and we
-                // want the new one)
+                // if sel != -1, value was already initialized above
                 if ( sel == -1 )
                 {
-                    m_value = wxGetWindowText(GetHwnd());
-                    m_selectionOld = -1;
-                }
-                else // we're synthesizing text updated event from sel change
-                {
-                    // We need to retrieve the current selection because the
-                    // user may have changed it in the previous handler (for
-                    // CBN_SELCHANGE above).
-                    sel = GetSelection();
-                    if ( sel > -1 )
-                    {
-                        m_value = GetString(sel);
-                    }
+                    value = wxGetWindowText(GetHwnd());
                 }
 
-                event.SetString(m_value);
-                event.SetEventObject(this);
+                event.SetString(value);
                 ProcessCommand(event);
             }
             break;
+
+        default:
+            return wxChoice::MSWCommand(param, id);
     }
 
-    // there is no return value for the CBN_ notifications, so always return
-    // false from here to pass the message to DefWindowProc()
-    return false;
+    // skip wxChoice version as it would generate its own events for
+    // CBN_SELENDOK
+    return wxControl::MSWCommand(param, id);
 }
 
 WXHWND wxComboBox::GetEditHWND() const
@@ -517,15 +484,17 @@ WXDWORD wxComboBox::MSWGetStyle(long style, WXDWORD *exstyle) const
 // wxComboBox text control-like methods
 // ----------------------------------------------------------------------------
 
+wxString wxComboBox::GetValue() const
+{
+    return wxGetWindowText(GetHwnd());
+}
+
 void wxComboBox::SetValue(const wxString& value)
 {
     if ( HasFlag(wxCB_READONLY) )
         SetStringSelection(value);
     else
         SetWindowText(GetHwnd(), value.c_str());
-
-    m_value = value;
-    m_selectionOld = GetSelection();
 }
 
 // Clipboard operations
@@ -746,6 +715,15 @@ void wxComboBox::GetSelection(long* from, long* to) const
 int wxComboBox::GetSelection() const
 {
     return wxChoice::GetSelection();
+}
+
+// ----------------------------------------------------------------------------
+// overridden wxChoice methods
+// ----------------------------------------------------------------------------
+
+void wxComboBox::SetSelection(int n)
+{
+    wxChoice::SetSelection(n);
 }
 
 // ----------------------------------------------------------------------------

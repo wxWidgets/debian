@@ -117,6 +117,7 @@ the corresponding topic.
 \helpref{wxGetLocalTimeMillis}{wxgetlocaltimemillis}\\
 \helpref{wxGetLocalTime}{wxgetlocaltime}\\
 \helpref{wxGetMousePosition}{wxgetmouseposition}\\
+\helpref{wxGetMouseState}{wxgetmousestate}\\
 \helpref{wxGetMultipleChoices}{wxgetmultiplechoices}\\
 \helpref{wxGetMultipleChoice}{wxgetmultiplechoice}\\
 \helpref{wxGetNumberFromUser}{wxgetnumberfromuser}\\
@@ -252,6 +253,7 @@ the corresponding topic.
 \helpref{wx\_const\_cast}{wxconstcastraw}\\
 \helpref{wx\_reinterpret\_cast}{wxreinterpretcastraw}\\
 \helpref{wx\_static\_cast}{wxstaticcastraw}\\
+\helpref{wx\_truncate\_cast}{wxtruncatecast}\\
 \helpref{\_}{underscore}\\
 \helpref{wxPLURAL}{wxplural}\\
 \helpref{\_T}{underscoret}
@@ -588,7 +590,7 @@ happening, i.e. with this flag the child process window will be shown normally.
 Under Unix the flag {\tt wxEXEC\_MAKE\_GROUP\_LEADER} may be used to ensure
 that the new process is a group leader (this will create a new session if
 needed). Calling \helpref{wxKill}{wxkill} passing wxKILL\_CHILDREN will
-will kill this process as well as all of its children (except those which have
+kill this process as well as all of its children (except those which have
 started their own session).
 
 Finally, you may use the third overloaded version of this function to execute
@@ -1070,7 +1072,9 @@ Returns the directory part of the filename.
 
 \membersection{::wxUnix2DosFilename}\label{wxunix2dosfilename}
 
-\func{void}{wxUnix2DosFilename}{\param{const wxString\& }{s}}
+\func{void}{wxUnix2DosFilename}{\param{wxChar *}{s}}
+
+This function is deprecated, use \helpref{wxFileName}{wxfilename} instead.
 
 Converts a Unix to a DOS filename by replacing forward
 slashes with backslashes.
@@ -1328,7 +1332,8 @@ Return the (current) user's home directory.
 
 \wxheading{See also}
 
-\helpref{wxGetUserHome}{wxgetuserhome}
+\helpref{wxGetUserHome}{wxgetuserhome}\\
+\helpref{wxStandardPaths}{wxstandardpaths}
 
 \wxheading{Include files}
 
@@ -2162,7 +2167,7 @@ following identifiers:
 \begin{twocollist}\itemsep=0pt
 \twocolitem{wxYES\_NO}{Puts Yes and No buttons on the message box. May be combined with
 wxCANCEL.}
-\twocolitem{wxCANCEL}{Puts a Cancel button on the message box. May be combined with
+\twocolitem{wxCANCEL}{Puts a Cancel button on the message box. May only be combined with
 wxYES\_NO or wxOK.}
 \twocolitem{wxOK}{Puts an Ok button on the message box. May be combined with wxCANCEL.}
 \twocolitem{wxICON\_EXCLAMATION}{Displays an exclamation mark symbol.}
@@ -2552,7 +2557,7 @@ Empties the clipboard.
 
 \membersection{::wxEnumClipboardFormats}\label{wxenumclipboardformats}
 
-\func{int}{wxEnumClipboardFormats}{\param{int}{dataFormat}}
+\func{int}{wxEnumClipboardFormats}{\param{int}{ dataFormat}}
 
 Enumerates the formats found in a list of available formats that belong
 to the clipboard. Each call to this  function specifies a known
@@ -2573,7 +2578,7 @@ wxOpenClipboard function.
 
 \membersection{::wxGetClipboardData}\label{wxgetclipboarddata}
 
-\func{wxObject *}{wxGetClipboardData}{\param{int}{dataFormat}}
+\func{wxObject *}{wxGetClipboardData}{\param{int}{ dataFormat}}
 
 Gets data from the clipboard.
 
@@ -2589,7 +2594,7 @@ The clipboard must have previously been opened for this call to succeed.
 
 \membersection{::wxGetClipboardFormatName}\label{wxgetclipboardformatname}
 
-\func{bool}{wxGetClipboardFormatName}{\param{int}{dataFormat}, \param{const wxString\& }{formatName}, \param{int}{maxCount}}
+\func{bool}{wxGetClipboardFormatName}{\param{int}{ dataFormat}, \param{const wxString\& }{formatName}, \param{int}{ maxCount}}
 
 Gets the name of a registered clipboard format, and puts it into the buffer {\it formatName} which is of maximum
 length {\it maxCount}. {\it dataFormat} must not specify a predefined clipboard format.
@@ -2597,7 +2602,7 @@ length {\it maxCount}. {\it dataFormat} must not specify a predefined clipboard 
 
 \membersection{::wxIsClipboardFormatAvailable}\label{wxisclipboardformatavailable}
 
-\func{bool}{wxIsClipboardFormatAvailable}{\param{int}{dataFormat}}
+\func{bool}{wxIsClipboardFormatAvailable}{\param{int}{ dataFormat}}
 
 Returns true if the given data format is available on the clipboard.
 
@@ -2618,7 +2623,7 @@ Registers the clipboard data format name and returns an identifier.
 
 \membersection{::wxSetClipboardData}\label{wxsetclipboarddata}
 
-\func{bool}{wxSetClipboardData}{\param{int}{dataFormat}, \param{wxObject *}{data}, \param{int}{width}, \param{int}{height}}
+\func{bool}{wxSetClipboardData}{\param{int}{ dataFormat}, \param{wxObject*}{ data}, \param{int}{ width}, \param{int}{ height}}
 
 Passes data to the clipboard.
 
@@ -2632,8 +2637,6 @@ Passes data to the clipboard.
 \end{itemize}
 
 The clipboard must have previously been opened for this call to succeed.
-
-
 
 
 \section{Miscellaneous functions}\label{miscellany}
@@ -2840,7 +2843,7 @@ See also \helpref{wxDDEServer}{wxddeserver}, \helpref{wxDDEClient}{wxddeclient},
 
 \membersection{::wxEnableTopLevelWindows}\label{wxenabletoplevelwindows}
 
-\func{void}{wxEnableTopLevelWindow}{\param{bool}{ enable = true}}
+\func{void}{wxEnableTopLevelWindows}{\param{bool}{ enable = true}}
 
 This function enables or disables all top level windows. It is used by
 \helpref{::wxSafeYield}{wxsafeyield}.
@@ -2973,6 +2976,55 @@ Returns the mouse position in screen coordinates.
 \wxheading{Include files}
 
 <wx/utils.h>
+
+
+\membersection{::wxGetMouseState}\label{wxgetmousestate}
+
+\func{wxMouseState}{wxGetMouseState}{\void}
+
+Returns the current state of the mouse.  Returns a wxMouseState
+instance that contains the current position of the mouse pointer in
+screen coordinants, as well as boolean values indicating the up/down
+status of the mouse buttons and the modifier keys.
+
+\wxheading{Include files}
+
+<wx/utils.h>
+
+wxMouseState has the following interface:
+
+\begin{verbatim}
+class wxMouseState
+{
+public:
+    wxMouseState();
+
+    wxCoord     GetX();
+    wxCoord     GetY();
+
+    bool        LeftDown();
+    bool        MiddleDown();
+    bool        RightDown();
+
+    bool        ControlDown();
+    bool        ShiftDown();
+    bool        AltDown();
+    bool        MetaDown();
+    bool        CmdDown();
+
+    void        SetX(wxCoord x);
+    void        SetY(wxCoord y);
+
+    void        SetLeftDown(bool down);
+    void        SetMiddleDown(bool down);
+    void        SetRightDown(bool down);
+    
+    void        SetControlDown(bool down);
+    void        SetShiftDown(bool down);
+    void        SetAltDown(bool down);
+    void        SetMetaDown(bool down);
+};
+\end{verbatim}
 
 
 \membersection{::wxGetResource}\label{wxgetresource}
@@ -3169,7 +3221,7 @@ allows to define unsigned 64 bit compile time constants:
 
 \membersection{wxVaCopy}\label{wxvacopy}
 
-\func{void}{wxVaCopy}{\param{va\_list }{argptrDst}, \param{va\_list}{argptrSrc}}
+\func{void}{wxVaCopy}{\param{va\_list }{argptrDst}, \param{va\_list}{ argptrSrc}}
 
 This macro is the same as the standard C99 \texttt{va\_copy} for the compilers
 which support it or its replacement for those that don't. It must be used to
@@ -3662,8 +3714,20 @@ star is not appended to it.
 \wxheading{See also}
 
 \helpref{wx\_const\_cast}{wxconstcastraw},\\
-\helpref{wx\_reinterpret\_cast}{wxreinterpretcastraw}
+\helpref{wx\_reinterpret\_cast}{wxreinterpretcastraw},\\
+\helpref{wx\_truncate\_cast}{wxtruncatecast}
 
+
+\membersection{wx\_truncate\_cast}\label{wxtruncatecast}
+
+\func{T}{wx\_truncate\_cast}{T, x}
+
+This case doesn't correspond to any standard cast but exists solely to make
+casts which possibly result in a truncation of an integer value more readable.
+
+\wxheading{See also}
+
+\helpref{wx\_static\_cast}{wxstaticcastraw}
 
 
 \section{Log functions}\label{logfunctions}

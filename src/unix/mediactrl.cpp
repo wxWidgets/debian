@@ -4,7 +4,7 @@
 // Author:      Ryan Norton <wxprojects@comcast.net>
 // Modified by:
 // Created:     02/04/05
-// RCS-ID:      $Id: mediactrl.cpp,v 1.7 2005/02/12 23:24:40 RN Exp $
+// RCS-ID:      $Id: mediactrl.cpp,v 1.8.2.1 2006/03/09 00:59:48 RD Exp $
 // Copyright:   (c) 2004-2005 Ryan Norton
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -113,6 +113,7 @@ public:
 
     void Cleanup();
 
+    bool DoLoad(const wxString& locstring);
     static void OnFinish(GstElement *play,  gpointer data);
     static void OnError (GstElement *play,  GstElement *src,
                          GError     *err,   gchar      *debug,
@@ -274,13 +275,15 @@ bool wxGStreamerMediaBackend::TransCapsToVideoSize(wxGStreamerMediaBackend* be, 
         gst_structure_get_int (s, "width", &be->m_videoSize.x);
         gst_structure_get_int (s, "height", &be->m_videoSize.y);
 
+        wxLogDebug(wxT("Native video size: [%i,%i]"), be->m_videoSize.x, be->m_videoSize.y);
+
         const GValue *par;
         par = gst_structure_get_value (s, "pixel-aspect-ratio");
 
         if (par)
         {
-            int num = gst_value_get_fraction_numerator (par),
-                den = gst_value_get_fraction_denominator (par);
+            int num = par->data[0].v_int,
+                den = par->data[1].v_int;
 
             //TODO: maybe better fraction normalization...
             if (num > den)
@@ -288,6 +291,8 @@ bool wxGStreamerMediaBackend::TransCapsToVideoSize(wxGStreamerMediaBackend* be, 
             else
                 be->m_videoSize.y = (int) ((float) den * be->m_videoSize.y / num);
         }
+
+        wxLogDebug(wxT("Adjusted video size: [%i,%i]"), be->m_videoSize.x, be->m_videoSize.y);
 
         be->PostRecalcSize();        
         return true;
@@ -308,6 +313,7 @@ void wxGStreamerMediaBackend::PostRecalcSize()
         m_ctrl->GetParent()->Layout();
         m_ctrl->GetParent()->Refresh();
         m_ctrl->GetParent()->Update();
+        m_ctrl->SetSize(m_ctrl->GetSize());
 }
 
 //---------------------------------------------------------------------------
@@ -363,18 +369,38 @@ void wxGStreamerMediaBackend::OnError(GstElement *play,
 }
 
 
-//---------------------------------------------------------------------------
+//-----------------------------------------------------------------------------
 // wxGStreamerMediaBackend::Load (File version)
 //
-// Just calls the URI version
-//---------------------------------------------------------------------------
+// Just calls DoLoad() with a prepended file scheme
+//-----------------------------------------------------------------------------
 bool wxGStreamerMediaBackend::Load(const wxString& fileName)
 {
-    return Load( 
-                    wxURI( 
-                            wxString( wxT("file://") ) + fileName 
-                         ) 
+    return DoLoad(wxString( wxT("file://") ) + fileName);
+}
+
+//-----------------------------------------------------------------------------
+// wxGStreamerMediaBackend::Load (URI version)
+//
+// In the case of a file URI passes it unencoded -
+// also, as of 0.10.3 and earlier GstURI (the uri parser for gstreamer)
+// is sort of broken and only accepts uris with at least two slashes
+// after the scheme (i.e. file: == not ok, file:// == ok)
+//-----------------------------------------------------------------------------
+bool wxGStreamerMediaBackend::Load(const wxURI& location)
+{
+    if(location.GetScheme().CmpNoCase(wxT("file")) == 0)
+    {
+        wxString uristring = location.BuildUnescapedURI();
+
+        //Workaround GstURI leading "//" problem and make sure it leads
+        //with that
+        return DoLoad(wxString(wxT("file://")) + 
+                      uristring.Right(uristring.Length() - 5)
                );
+    }
+    else 
+        return DoLoad(location.BuildURI());
 }
 
 //---------------------------------------------------------------------------
@@ -388,7 +414,7 @@ void wxGStreamerMediaBackend::OnVideoCapsReady(GstPad* pad, GParamSpec* pspec, g
 }
 
 //---------------------------------------------------------------------------
-// wxGStreamerMediaBackend::Load (URI version)
+// wxGStreamerMediaBackend::DoLoad
 //
 // 1) Stops/Cleanups the previous instance if there is any
 // 2) Creates the gstreamer playbin
@@ -399,7 +425,7 @@ void wxGStreamerMediaBackend::OnVideoCapsReady(GstPad* pad, GParamSpec* pspec, g
 // 7) Use the xoverlay extension to tell gstreamer to play in our window
 // 8) Get the video size - pause required to set the stream in action
 //---------------------------------------------------------------------------
-bool wxGStreamerMediaBackend::Load(const wxURI& location)
+bool wxGStreamerMediaBackend::DoLoad(const wxString& locstring)
 {
     //1
     Cleanup();
@@ -418,6 +444,7 @@ bool wxGStreamerMediaBackend::Load(const wxURI& location)
     //5
     GstElement* overlay = NULL;
     GstElement* videosink;
+    GstElement* audiosink = NULL; //NULL usually autodetects on gstreamer
 
 #if defined(__WXGTK__) && wxUSE_DYNLIB_CLASS
 
@@ -428,9 +455,13 @@ bool wxGStreamerMediaBackend::Load(const wxURI& location)
     if(gstgconf.Load(gstgconf.CanonicalizeName(wxT("gstgconf-0.8"))))
     {
         typedef GstElement* (*LPgst_gconf_get_default_video_sink) (void);
+        typedef GstElement* (*LPgst_gconf_get_default_audio_sink) (void);
         LPgst_gconf_get_default_video_sink pGst_gconf_get_default_video_sink = 
         (LPgst_gconf_get_default_video_sink)
             gstgconf.GetSymbol(wxT("gst_gconf_get_default_video_sink"));
+        LPgst_gconf_get_default_audio_sink pGst_gconf_get_default_audio_sink = 
+        (LPgst_gconf_get_default_audio_sink)
+            gstgconf.GetSymbol(wxT("gst_gconf_get_default_audio_sink"));
 
         if (pGst_gconf_get_default_video_sink)        
         {
@@ -439,6 +470,10 @@ bool wxGStreamerMediaBackend::Load(const wxURI& location)
             overlay = gst_bin_get_by_interface (GST_BIN (videosink),
                                             GST_TYPE_X_OVERLAY);
         }
+        if (pGst_gconf_get_default_audio_sink)        
+        {
+            audiosink = (*pGst_gconf_get_default_audio_sink) ();
+        }
         
         gstgconf.Detach();
     }
@@ -446,6 +481,7 @@ bool wxGStreamerMediaBackend::Load(const wxURI& location)
         if ( ! GST_IS_X_OVERLAY(overlay) )
         {
 #endif
+            wxLogDebug(wxT("Could not load Gnome preferences, reverting to xvimagesink for video for gstreamer"));
             videosink = gst_element_factory_make ("xvimagesink", "videosink");
             if ( !GST_IS_OBJECT(videosink) )
                 videosink = gst_element_factory_make ("ximagesink", "videosink");
@@ -461,11 +497,10 @@ bool wxGStreamerMediaBackend::Load(const wxURI& location)
 
     g_object_set (G_OBJECT (m_player),
                     "video-sink", videosink,
-//                    "audio-sink", m_audiosink,
+                    "audio-sink", audiosink,
                     NULL);    
 
     //6
-    wxString locstring = location.BuildUnescapedURI();
     wxASSERT(gst_uri_protocol_is_valid("file"));
     wxASSERT(gst_uri_is_valid(locstring.mb_str()));
 
@@ -502,12 +537,17 @@ bool wxGStreamerMediaBackend::Load(const wxURI& location)
 #endif 
     
     //8
-    
-    wxASSERT(gst_element_set_state (m_player,
-                GST_STATE_PAUSED)    == GST_STATE_SUCCESS);            
+	int nResult = gst_element_set_state (m_player, GST_STATE_PAUSED);
+	if(nResult != GST_STATE_SUCCESS)
+	{
+	    wxLogDebug(wxT("Could not set initial state to paused!"));
+	    return false;
+	}
 
     const GList *list = NULL;
     g_object_get (G_OBJECT (m_player), "stream-info", &list, NULL);
+
+    bool bVideoFound = false;
 
     for ( ; list != NULL; list = list->next)
     {
@@ -546,6 +586,9 @@ bool wxGStreamerMediaBackend::Load(const wxURI& location)
                 G_CALLBACK(wxGStreamerMediaBackend::OnVideoCapsReady),
                 this);
             }
+
+            bVideoFound = true;
+            break;
         }//end if video
         else
         {
@@ -554,7 +597,17 @@ bool wxGStreamerMediaBackend::Load(const wxURI& location)
         }
     }//end searching through info list    
 
+    if(!bVideoFound)
+    {
+        wxLogDebug(wxT("No video found for gstreamer stream"));
+    }
     m_nPausedPos = 0;
+
+    //send loaded event
+    wxMediaEvent theEvent(wxEVT_MEDIA_LOADED,
+                            m_ctrl->GetId());
+    m_ctrl->AddPendingEvent(theEvent);
+    
     return true;
 }
 

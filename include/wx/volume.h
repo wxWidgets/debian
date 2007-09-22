@@ -4,7 +4,7 @@
 // Author:      George Policello
 // Modified by:
 // Created:     28 Jan 02
-// RCS-ID:      $Id: volume.h,v 1.14 2004/05/23 20:50:26 JS Exp $
+// RCS-ID:      $Id: volume.h,v 1.14.4.1 2005/12/23 00:59:49 VZ Exp $
 // Copyright:   (c) 2002 George Policello
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -121,7 +121,7 @@ enum wxFSIconType
 };
 
 // wxFSVolume adds GetIcon() to wxFSVolumeBase
-class wxFSVolume : public wxFSVolumeBase
+class WXDLLIMPEXP_CORE wxFSVolume : public wxFSVolumeBase
 {
 public:
     wxFSVolume() : wxFSVolumeBase() { InitIcons(); }

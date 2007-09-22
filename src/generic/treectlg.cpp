@@ -4,7 +4,7 @@
 // Author:      Robert Roebling
 // Created:     01/02/97
 // Modified:    22/10/98 - almost total rewrite, simpler interface (VZ)
-// Id:          $Id: treectlg.cpp,v 1.171 2005/06/08 23:07:06 RD Exp $
+// Id:          $Id: treectlg.cpp,v 1.173.2.4 2006/02/27 21:49:48 RR Exp $
 // Copyright:   (c) 1998 Robert Roebling and Julian Smart
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -263,12 +263,12 @@ private:
     int                 m_height;       // height of this item
 
     // use bitfields to save size
-    int                 m_isCollapsed :1;
-    int                 m_hasHilight  :1; // same as focused
-    int                 m_hasPlus     :1; // used for item which doesn't have
+    unsigned int        m_isCollapsed :1;
+    unsigned int        m_hasHilight  :1; // same as focused
+    unsigned int        m_hasPlus     :1; // used for item which doesn't have
                                           // children but has a [+] button
-    int                 m_isBold      :1; // render the label in bold font
-    int                 m_ownsAttr    :1; // delete attribute when done
+    unsigned int        m_isBold      :1; // render the label in bold font
+    unsigned int        m_ownsAttr    :1; // delete attribute when done
 
     DECLARE_NO_COPY_CLASS(wxGenericTreeItem)
 };
@@ -896,7 +896,8 @@ wxGenericTreeCtrl::GetChildrenCount(const wxTreeItemId& item,
 
 void wxGenericTreeCtrl::SetWindowStyle(const long styles)
 {
-    if (!HasFlag(wxTR_HIDE_ROOT) && (styles & wxTR_HIDE_ROOT))
+    // Do not try to expand the root node if it hasn't been created yet
+    if (m_anchor && !HasFlag(wxTR_HIDE_ROOT) && (styles & wxTR_HIDE_ROOT))
     {
         // if we will hide the root, make sure children are visible
         m_anchor->SetHasPlus();
@@ -1890,8 +1891,6 @@ void wxGenericTreeCtrl::DoSelectItem(const wxTreeItemId& itemId,
         parent = GetItemParent( parent );
     }
 
-    EnsureVisible( itemId );
-
     // ctrl press
     if (unselect_others)
     {
@@ -1922,6 +1921,11 @@ void wxGenericTreeCtrl::DoSelectItem(const wxTreeItemId& itemId,
         m_current->SetHilight(select);
         RefreshLine( m_current );
     }
+
+    // This can cause idle processing to select the root
+    // if no item is selected, so it must be after the
+    // selection is set
+    EnsureVisible( itemId );
 
     event.SetEventType(wxEVT_COMMAND_TREE_SEL_CHANGED);
     GetEventHandler()->ProcessEvent( event );
@@ -2395,7 +2399,15 @@ void wxGenericTreeCtrl::PaintLevel( wxGenericTreeItem *item, wxDC &dc, int level
             wxTRANSPARENT_PEN;
 
         wxColour colText;
-        if ( item->IsSelected() )
+        if ( item->IsSelected()
+#ifdef __WXMAC__
+            // On wxMac, if the tree doesn't have the focus we draw an empty
+            // rectangle, so we want to make sure that the text is visible
+            // against the normal background, not the highlightbackground, so
+            // don't use the highlight text colour unless we have the focus.
+             && m_hasFocus
+#endif
+            )
         {
             colText = wxSystemSettings::GetColour(wxSYS_COLOUR_HIGHLIGHTTEXT);
         }
@@ -3120,7 +3132,7 @@ void wxGenericTreeCtrl::OnMouse( wxMouseEvent &event )
         wxTreeEvent nevent( command, GetId() );
         nevent.m_item = m_current;
         nevent.SetEventObject(this);
-        nevent.SetPoint(pt);
+        nevent.SetPoint(CalcScrolledPosition(pt));
 
         // by default the dragging is not supported, the user code must
         // explicitly allow the event for it to take place
@@ -3171,6 +3183,8 @@ void wxGenericTreeCtrl::OnMouse( wxMouseEvent &event )
     }
     else if ( (event.LeftUp() || event.RightUp()) && m_isDragging )
     {
+        ReleaseMouse();
+
         // erase the highlighting
         DrawDropEffect(m_dropTarget);
 
@@ -3185,15 +3199,13 @@ void wxGenericTreeCtrl::OnMouse( wxMouseEvent &event )
         wxTreeEvent event(wxEVT_COMMAND_TREE_END_DRAG, GetId());
 
         event.m_item = item;
-        event.m_pointDrag = pt;
+        event.m_pointDrag = CalcScrolledPosition(pt);
         event.SetEventObject(this);
 
         (void)GetEventHandler()->ProcessEvent(event);
 
         m_isDragging = false;
         m_dropTarget = (wxGenericTreeItem *)NULL;
-
-        ReleaseMouse();
 
         SetCursor(m_oldCursor);
 

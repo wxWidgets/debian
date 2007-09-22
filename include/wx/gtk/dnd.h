@@ -2,7 +2,7 @@
 // Name:        dnd.h
 // Purpose:     declaration of the wxDropTarget class
 // Author:      Robert Roebling
-// RCS-ID:      $Id: dnd.h,v 1.46 2004/05/23 20:50:53 JS Exp $
+// RCS-ID:      $Id: dnd.h,v 1.47 2005/08/02 22:57:54 MW Exp $
 // Copyright:   (c) 1998 Vadim Zeitlin, Robert Roebling
 // Licence:     wxWindows licence
 ///////////////////////////////////////////////////////////////////////////////
@@ -28,13 +28,13 @@
 // classes
 //-------------------------------------------------------------------------
 
-class wxWindow;
+class WXDLLIMPEXP_CORE wxWindow;
 
-class wxDropTarget;
-class wxTextDropTarget;
-class wxFileDropTarget;
+class WXDLLIMPEXP_CORE wxDropTarget;
+class WXDLLIMPEXP_CORE wxTextDropTarget;
+class WXDLLIMPEXP_CORE wxFileDropTarget;
 
-class wxDropSource;
+class WXDLLIMPEXP_CORE wxDropSource;
 
 // ----------------------------------------------------------------------------
 // macros
@@ -50,7 +50,7 @@ class wxDropSource;
 // wxDropTarget
 //-------------------------------------------------------------------------
 
-class wxDropTarget: public wxDropTargetBase
+class WXDLLIMPEXP_CORE wxDropTarget: public wxDropTargetBase
 {
 public:
     wxDropTarget(wxDataObject *dataObject = (wxDataObject*) NULL );
@@ -83,7 +83,7 @@ public:
 // wxDropSource
 //-------------------------------------------------------------------------
 
-class wxDropSource: public wxDropSourceBase
+class WXDLLIMPEXP_CORE wxDropSource: public wxDropSourceBase
 {
 public:
     // constructor. set data later with SetData()

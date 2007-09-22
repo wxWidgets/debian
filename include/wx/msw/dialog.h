@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     01/02/97
-// RCS-ID:      $Id: dialog.h,v 1.48 2005/03/19 12:06:49 JS Exp $
+// RCS-ID:      $Id: dialog.h,v 1.50 2005/09/16 10:28:40 VZ Exp $
 // Copyright:   (c) Julian Smart
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -24,6 +24,7 @@ class WXDLLEXPORT wxDialogModalData;
 
 #if wxUSE_TOOLBAR && (defined(__SMARTPHONE__) || defined(__POCKETPC__))
 class WXDLLEXPORT wxToolBar;
+extern WXDLLEXPORT_DATA(const wxChar*) wxToolBarNameStr;
 #endif
 
 // Dialog boxes
@@ -63,6 +64,8 @@ public:
     // may be called to terminate the dialog with the given return code
     virtual void EndModal(int retCode);
 
+
+    // we treat dialog toolbars specially under Windows CE
 #if wxUSE_TOOLBAR && defined(__POCKETPC__)
     // create main toolbar by calling OnCreateToolBar()
     virtual wxToolBar* CreateToolBar(long style = -1,
@@ -75,7 +78,8 @@ public:
 
     // get the main toolbar
     wxToolBar *GetToolBar() const { return m_dialogToolBar; }
-#endif
+#endif // wxUSE_TOOLBAR && __POCKETPC__
+
 
     // implementation only from now on
     // -------------------------------
@@ -136,6 +140,14 @@ protected:
 
     // end either modal or modeless dialog
     void EndDialog(int rc);
+
+    // emulate click of a button with the given id if it's present in the dialog
+    //
+    // return true if button was "clicked" or false if we don't have it
+    bool EmulateButtonClickIfPresent(int id);
+
+    // handle Escape here
+    virtual bool MSWProcessMessage(WXMSG* pMsg);
 
 private:
     wxWindow*   m_oldFocus;

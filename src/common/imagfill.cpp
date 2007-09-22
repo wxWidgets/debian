@@ -2,7 +2,7 @@
 // Name:        imagfill.cpp
 // Purpose:     FloodFill for wxImage
 // Author:      Julian Smart
-// RCS-ID:      $Id: imagfill.cpp,v 1.16 2005/05/06 12:16:04 JS Exp $
+// RCS-ID:      $Id: imagfill.cpp,v 1.17 2005/07/21 16:19:40 ABX Exp $
 // Copyright:   (c) Julian Smart
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -62,7 +62,7 @@ static void LINKAGEMODE
 wxImageFloodFill(wxImage *image,
                  wxCoord x, wxCoord y, const wxBrush & fillBrush,
                  const wxColour& testColour, int style,
-                int LogicalFunction)
+                 int WXUNUSED(LogicalFunction))
 {
     /* A diamond flood-fill using a circular queue system.
     Each pixel surrounding the current pixel is added to
@@ -309,4 +309,3 @@ bool wxDoFloodFill(wxDC *dc, wxCoord x, wxCoord y,
 }
 
 #endif // wxUSE_IMAGE
-

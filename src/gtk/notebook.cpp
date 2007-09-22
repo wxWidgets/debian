@@ -2,7 +2,7 @@
 // Name:        notebook.cpp
 // Purpose:
 // Author:      Robert Roebling
-// Id:          $Id: notebook.cpp,v 1.118 2005/03/21 23:42:18 VZ Exp $
+// Id:          $Id: notebook.cpp,v 1.120.2.2 2006/03/06 02:20:17 MR Exp $
 // Copyright:   (c) 1998 Robert Roebling, Vadim Zeitlin
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -73,7 +73,7 @@ public:
         m_page = (GtkNotebookPage *) NULL;
         m_box = (GtkWidget *) NULL;
     }
-    
+
     wxString           m_text;
     int                m_image;
     GtkNotebookPage   *m_page;
@@ -199,7 +199,7 @@ static gint gtk_notebook_key_press_callback( GtkWidget *widget, GdkEventKey *gdk
 
     if (!notebook->m_hasVMT) return FALSE;
     if (g_blockEventsOnDrag) return FALSE;
-    
+
     /* win is a control: tab can be propagated up */
     if ((gdk_event->keyval == GDK_Left) || (gdk_event->keyval == GDK_Right))
     {
@@ -219,10 +219,10 @@ static gint gtk_notebook_key_press_callback( GtkWidget *widget, GdkEventKey *gdk
         {
             return FALSE;
         }
-    
+
         // m_selection = page;
         gtk_notebook_set_page( GTK_NOTEBOOK(widget), page );
-        
+
         gtk_signal_emit_stop_by_name( GTK_OBJECT(widget), "key_press_event" );
         return TRUE;
     }
@@ -241,7 +241,7 @@ static gint gtk_notebook_key_press_callback( GtkWidget *widget, GdkEventKey *gdk
         /* GDK reports GDK_ISO_Left_Tab for SHIFT-TAB */
         event.SetDirection( (gdk_event->keyval == GDK_Tab) );
         /* CTRL-TAB changes the (parent) window, i.e. switch notebook page */
-        event.SetWindowChange( (gdk_event->state & GDK_CONTROL_MASK) || 
+        event.SetWindowChange( (gdk_event->state & GDK_CONTROL_MASK) ||
                                (gdk_event->keyval == GDK_Left) || (gdk_event->keyval == GDK_Right) );
         event.SetCurrentFocus( notebook );
 
@@ -654,7 +654,7 @@ bool wxNotebook::InsertPage( size_t position,
     if ( position == GetPageCount() )
         m_pagesData.Append( nb_page );
     else
-        m_pagesData.Insert( m_pagesData.Item( position ), nb_page );
+        m_pagesData.Insert( position, nb_page );
 
     m_pages.Insert(win, position);
 
@@ -710,8 +710,8 @@ bool wxNotebook::InsertPage( size_t position,
     {
         gtk_widget_modify_style(GTK_WIDGET(nb_page->m_label), style);
         gtk_rc_style_unref(style);
-    }    
-    
+    }
+
     /* show the label */
     gtk_widget_show( GTK_WIDGET(nb_page->m_label) );
     if (select && (m_pagesData.GetCount() > 1))
@@ -722,7 +722,7 @@ bool wxNotebook::InsertPage( size_t position,
             SetSelection( GetPageCount()-1 );
         else
 #endif
-	    SetSelection( position );
+            SetSelection( position );
     }
 
     gtk_signal_connect( GTK_OBJECT(m_widget), "switch_page",
@@ -752,7 +752,15 @@ int wxNotebook::HitTest(const wxPoint& pt, long *flags) const
     const gint y = m_widget->allocation.y;
 
     const size_t count = GetPageCount();
-    for ( size_t i = 0; i < count; i++ )
+    size_t i = 0;
+
+#ifdef __WXGTK20__
+    GtkNotebook * notebook = GTK_NOTEBOOK(m_widget);
+    if (gtk_notebook_get_scrollable(notebook))
+        i = g_list_position( notebook->children, notebook->first_tab );
+#endif
+
+    for ( ; i < count; i++ )
     {
         wxGtkNotebookPage* nb_page = GetNotebookPage(i);
         GtkWidget *box = nb_page->m_box;

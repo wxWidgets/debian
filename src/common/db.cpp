@@ -16,7 +16,7 @@
 //                -Set ODBC option to only read committed writes to the DB so all
 //                   databases operate the same in that respect
 // Created:     9.96
-// RCS-ID:      $Id: db.cpp,v 1.123 2005/05/31 09:19:49 JS Exp $
+// RCS-ID:      $Id: db.cpp,v 1.125.2.2 2006/01/17 16:51:03 JS Exp $
 // Copyright:   (c) 1996 Remstar International, Inc.
 // Licence:     wxWindows licence
 ///////////////////////////////////////////////////////////////////////////////
@@ -204,37 +204,37 @@ void wxDbConnectInf::FreeHenv()
 
 void wxDbConnectInf::SetDsn(const wxString &dsn)
 {
-    wxASSERT(dsn.Length() < sizeof(Dsn));
+    wxASSERT(dsn.Length() < WXSIZEOF(Dsn));
 
-    wxStrncpy(Dsn, dsn, sizeof(Dsn)-1);
-    Dsn[sizeof(Dsn)-1] = 0;  // Prevent buffer overrun
+    wxStrncpy(Dsn, dsn, WXSIZEOF(Dsn)-1);
+    Dsn[WXSIZEOF(Dsn)-1] = 0;  // Prevent buffer overrun
 }  // wxDbConnectInf::SetDsn()
 
 
 void wxDbConnectInf::SetUserID(const wxString &uid)
 {
-    wxASSERT(uid.Length() < sizeof(Uid));
-    wxStrncpy(Uid, uid, sizeof(Uid)-1);
-    Uid[sizeof(Uid)-1] = 0;  // Prevent buffer overrun
+    wxASSERT(uid.Length() < WXSIZEOF(Uid));
+    wxStrncpy(Uid, uid, WXSIZEOF(Uid)-1);
+    Uid[WXSIZEOF(Uid)-1] = 0;  // Prevent buffer overrun
 }  // wxDbConnectInf::SetUserID()
 
 
 void wxDbConnectInf::SetPassword(const wxString &password)
 {
-    wxASSERT(password.Length() < sizeof(AuthStr));
+    wxASSERT(password.Length() < WXSIZEOF(AuthStr));
 
-    wxStrncpy(AuthStr, password, sizeof(AuthStr)-1);
-    AuthStr[sizeof(AuthStr)-1] = 0;  // Prevent buffer overrun
+    wxStrncpy(AuthStr, password, WXSIZEOF(AuthStr)-1);
+    AuthStr[WXSIZEOF(AuthStr)-1] = 0;  // Prevent buffer overrun
 }  // wxDbConnectInf::SetPassword()
 
 void wxDbConnectInf::SetConnectionStr(const wxString &connectStr)
 {
-    wxASSERT(connectStr.Length() < sizeof(ConnectionStr));
+    wxASSERT(connectStr.Length() < WXSIZEOF(ConnectionStr));
 
     useConnectionStr = wxStrlen(connectStr) > 0;
 
-    wxStrncpy(ConnectionStr, connectStr, sizeof(ConnectionStr)-1);
-    ConnectionStr[sizeof(ConnectionStr)-1] = 0;  // Prevent buffer overrun
+    wxStrncpy(ConnectionStr, connectStr, WXSIZEOF(ConnectionStr)-1);
+    ConnectionStr[WXSIZEOF(ConnectionStr)-1] = 0;  // Prevent buffer overrun
 }  // wxDbConnectInf::SetConnectionStr()
 
 
@@ -326,8 +326,7 @@ int wxDbColFor::Format(int Nation, int dbDataType, SWORD sqlDataType,
         case DB_DATA_TYPE_FLOAT:
             if (decimalDigits == 0)
                 decimalDigits = 2;
-            tempStr = wxT("%");
-            tempStr.Printf(wxT("%s%d.%d"), tempStr.c_str(),columnLength, decimalDigits);
+            tempStr.Printf(wxT("%%%d.%d"), columnLength, decimalDigits);
             s_Field.Printf(wxT("%sf"), tempStr.c_str());
             break;
         case DB_DATA_TYPE_DATE:
@@ -1612,7 +1611,7 @@ bool wxDb::getDataTypeInfo(SWORD fSqlType, wxDbSqlTypeInfo &structSQLTypeInfo)
  * wxDbSqlTypeInfo is a structure that is filled in with data type information,
  */
     RETCODE retcode;
-    SDWORD  cbRet;
+    SQLLEN  cbRet;
 
     // Get information about the data type specified
     if (SQLGetTypeInfo(hstmt, fSqlType) != SQL_SUCCESS)
@@ -2250,7 +2249,7 @@ bool wxDb::ExecSql(const wxString &pSqlStmt, wxDbColInf** columns, short& numcol
     short colNum;
     wxChar name[DB_MAX_COLUMN_NAME_LEN+1];
     SWORD Sword;
-    SDWORD Sdword;
+    SQLLEN Sqllen;
     wxDbColInf* pColInf = new wxDbColInf[noCols];
 
     // Fill in column information (name, datatype)
@@ -2258,7 +2257,7 @@ bool wxDb::ExecSql(const wxString &pSqlStmt, wxDbColInf** columns, short& numcol
     {
         if (SQLColAttributes(hstmt, (UWORD)(colNum+1), SQL_COLUMN_NAME,
             name, sizeof(name),
-            &Sword, &Sdword) != SQL_SUCCESS)
+            &Sword, &Sqllen) != SQL_SUCCESS)
         {
             DispAllErrors(henv, hdbc, hstmt);
             delete[] pColInf;
@@ -2269,14 +2268,14 @@ bool wxDb::ExecSql(const wxString &pSqlStmt, wxDbColInf** columns, short& numcol
         pColInf[colNum].colName[DB_MAX_COLUMN_NAME_LEN] = 0;  // Prevent buffer overrun
 
         if (SQLColAttributes(hstmt, (UWORD)(colNum+1), SQL_COLUMN_TYPE,
-            NULL, 0, &Sword, &Sdword) != SQL_SUCCESS)
+            NULL, 0, &Sword, &Sqllen) != SQL_SUCCESS)
         {
             DispAllErrors(henv, hdbc, hstmt);
             delete[] pColInf;
             return false;
         }
 
-        switch (Sdword)
+        switch (Sqllen)
         {
 #if wxUSE_UNICODE
     #if defined(SQL_WCHAR)
@@ -2313,7 +2312,7 @@ bool wxDb::ExecSql(const wxString &pSqlStmt, wxDbColInf** columns, short& numcol
 #ifdef __WXDEBUG__
             default:
                 wxString errMsg;
-                errMsg.Printf(wxT("SQL Data type %ld currently not supported by wxWidgets"), (long)Sdword);
+                errMsg.Printf(wxT("SQL Data type %ld currently not supported by wxWidgets"), (long)Sqllen);
                 wxLogDebug(errMsg,wxT("ODBC DEBUG MESSAGE"));
 #endif
         }
@@ -2338,7 +2337,7 @@ bool wxDb::GetNext(void)
 
 
 /********** wxDb::GetData()  **********/
-bool wxDb::GetData(UWORD colNo, SWORD cType, PTR pData, SDWORD maxLen, SDWORD FAR *cbReturned)
+bool wxDb::GetData(UWORD colNo, SWORD cType, PTR pData, SDWORD maxLen, SQLLEN FAR *cbReturned)
 {
     wxASSERT(pData);
     wxASSERT(cbReturned);
@@ -2368,7 +2367,7 @@ int wxDb::GetKeyFields(const wxString &tableName, wxDbColInf* colInf, UWORD noCo
     wxChar       szPkCol[DB_MAX_COLUMN_NAME_LEN+1];   /* Primary key column     */
     wxChar       szFkCol[DB_MAX_COLUMN_NAME_LEN+1];   /* Foreign key column     */
     SQLRETURN    retcode;
-    SDWORD       cb;
+    SQLLEN       cb;
     SWORD        i;
     wxString     tempStr;
     /*
@@ -2438,7 +2437,7 @@ int wxDb::GetKeyFields(const wxString &tableName, wxDbColInf* colInf, UWORD noCo
             GetData( 5, SQL_C_SSHORT, &iKeySeq,     0,                         &cb);
             GetData( 7, SQL_C_WXCHAR,  szFkTable,   DB_MAX_TABLE_NAME_LEN+1,   &cb);
             GetData( 8, SQL_C_WXCHAR,  szFkCol,     DB_MAX_COLUMN_NAME_LEN+1,  &cb);
-            tempStr.Printf(wxT("%s[%s] "),tempStr.c_str(),szFkTable);  // [ ] in case there is a blank in the Table name
+            tempStr << _T('[') << szFkTable << _T(']');  // [ ] in case there is a blank in the Table name
         }  // if
     }  // while
 
@@ -2535,7 +2534,7 @@ wxDbColInf *wxDb::GetColumns(wxChar *tableName[], const wxChar *userID)
     wxDbColInf *colInf = 0;
 
     RETCODE  retcode;
-    SDWORD   cb;
+    SQLLEN   cb;
 
     wxString TableName;
 
@@ -2694,7 +2693,7 @@ wxDbColInf *wxDb::GetColumns(const wxString &tableName, UWORD *numCols, const wx
     wxDbColInf *colInf = 0;
 
     RETCODE  retcode;
-    SDWORD   cb;
+    SQLLEN   cb;
 
     wxString TableName;
 
@@ -3307,7 +3306,7 @@ wxDbInf *wxDb::GetCatalog(const wxChar *userID)
     int      noTab = 0;     // Counter while filling table entries
     int      pass;
     RETCODE  retcode;
-    SDWORD   cb;
+    SQLLEN   cb;
     wxString tblNameSave;
 
     wxString UserID;
@@ -3418,7 +3417,7 @@ bool wxDb::Catalog(const wxChar *userID, const wxString &fileName)
     wxASSERT(fileName.Length());
 
     RETCODE   retcode;
-    SDWORD    cb;
+    SQLLEN    cb;
     wxChar    tblName[DB_MAX_TABLE_NAME_LEN+1];
     wxString  tblNameSave;
     wxChar    colName[DB_MAX_COLUMN_NAME_LEN+1];
@@ -3615,7 +3614,7 @@ bool wxDb::TablePrivileges(const wxString &tableName, const wxString &priv, cons
     wxASSERT(tableName.Length());
 
     wxDbTablePrivilegeInfo  result;
-    SDWORD  cbRetVal;
+    SQLLEN  cbRetVal;
     RETCODE retcode;
 
     // We probably need to be able to dynamically set this based on
@@ -3952,7 +3951,7 @@ wxDBMS wxDb::Dbms(void)
 
     baseName[3] = 0;
     if (!wxStricmp(baseName,wxT("DB2")))
-        return((wxDBMS)(dbmsType = dbmsDBASE));
+        return((wxDBMS)(dbmsType = dbmsDB2));
 
     return((wxDBMS)(dbmsType = dbmsUNIDENTIFIED));
 

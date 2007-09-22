@@ -3,7 +3,7 @@
 // Purpose:     STC test module
 // Maintainer:  Wyo
 // Created:     2003-09-01
-// RCS-ID:      $Id: edit.h,v 1.3 2004/09/28 15:13:24 ABX Exp $
+// RCS-ID:      $Id: edit.h,v 1.5 2005/09/16 18:25:44 ABX Exp $
 // Copyright:   (c) wxGuide
 // Licence:     wxWindows licence
 //////////////////////////////////////////////////////////////////////////////
@@ -23,7 +23,7 @@
 //! wxWidgets headers
 
 //! wxWidgets/contrib headers
-#include <wx/stc/stc.h>  // styled text control
+#include "wx/stc/stc.h"  // styled text control
 
 //! application headers
 #include "prefs.h"       // preferences
@@ -139,6 +139,8 @@ private:
 
 };
 
+#if wxUSE_PRINTING_ARCHITECTURE
+
 //----------------------------------------------------------------------------
 //! EditPrint
 class EditPrint: public wxPrintout {
@@ -165,5 +167,6 @@ private:
     bool PrintScaling (wxDC *dc);
 };
 
-#endif // _EDIT_H_
+#endif // wxUSE_PRINTING_ARCHITECTURE
 
+#endif // _EDIT_H_

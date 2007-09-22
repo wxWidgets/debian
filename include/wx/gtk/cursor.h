@@ -2,7 +2,7 @@
 // Name:        cursor.h
 // Purpose:
 // Author:      Robert Roebling
-// Id:          $Id: cursor.h,v 1.11 2004/05/23 20:50:53 JS Exp $
+// Id:          $Id: cursor.h,v 1.12 2005/08/02 22:57:53 MW Exp $
 // Copyright:   (c) 1998 Robert Roebling
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -27,7 +27,7 @@
 // wxCursor
 //-----------------------------------------------------------------------------
 
-class wxCursor: public wxObject
+class WXDLLIMPEXP_CORE wxCursor: public wxObject
 {
 public:
 

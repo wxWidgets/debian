@@ -4,7 +4,7 @@
 // Author:      Vadim Zeitlin
 // Modified by:
 // Created:     07.04.98 (adapted from appconf.cpp)
-// RCS-ID:      $Id: fileconf.h,v 1.55 2005/04/08 14:33:55 MW Exp $
+// RCS-ID:      $Id: fileconf.h,v 1.56 2005/07/01 18:05:10 VZ Exp $
 // Copyright:   (c) 1997 Karsten Ballüder   &  Vadim Zeitlin
 //                       Ballueder@usa.net     <zeitlin@dptmaths.ens-cachan.fr>
 // Licence:     wxWindows licence
@@ -208,6 +208,10 @@ private:
 
   // the same as SetPath("/")
   void SetRootPath();
+
+  // real SetPath() implementation, returns true if path could be set or false
+  // if path doesn't exist and createMissingComponents == false
+  bool DoSetPath(const wxString& strPath, bool createMissingComponents);
 
   // set/test the dirty flag
   void SetDirty() { m_isDirty = true; }

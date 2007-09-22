@@ -4,7 +4,7 @@
 // Author:      Chris Breeze
 // Modified by:
 // Created:     21/07/97
-// RCS-ID:      $Id: card.cpp,v 1.9 2004/10/05 15:38:06 ABX Exp $
+// RCS-ID:      $Id: card.cpp,v 1.10 2005/08/23 15:49:27 ABX Exp $
 // Copyright:   (c) 1993-1998 Chris Breeze
 // Licence:     wxWindows licence
 //---------------------------------------------------------------------------
@@ -41,7 +41,7 @@
 #include "forty.h"
 #include "card.h"
 
-#if defined(__WXGTK__) || defined(__WXMOTIF__) || defined(__WXMAC__) || defined(__WXX11__)
+#ifndef __WXMSW__
 #include "pictures.xpm"
 #include "symbols.xbm"
 #endif
@@ -565,5 +565,3 @@ void Card::DrawNullCard(wxDC& dc, int x, int y)
     dc.SetPen(*pen);
     dc.DrawRoundedRectangle(x, y, m_width, m_height, 4);
 } // Card::DrawNullCard()
-
-

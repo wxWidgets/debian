@@ -4,7 +4,7 @@
 // Author:      Julian Smart, Vadim Zeitlin
 // Modified by:
 // Created:     13/07/98
-// RCS-ID:      $Id: wincmn.cpp,v 1.233 2005/06/24 16:44:20 RL Exp $
+// RCS-ID:      $Id: wincmn.cpp,v 1.237.2.5 2006/03/04 20:52:21 ABX Exp $
 // Copyright:   (c) wxWidgets team
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -44,6 +44,7 @@
     #include "wx/dialog.h"
     #include "wx/msgdlg.h"
     #include "wx/statusbr.h"
+    #include "wx/toolbar.h"
     #include "wx/dcclient.h"
 #endif //WX_PRECOMP
 
@@ -216,6 +217,10 @@ wxWindowBase::wxWindowBase()
     // VZ: this one shouldn't exist...
     m_isBeingDeleted = false;
 
+#if WX_USE_RESERVED_VIRTUALS
+    // Reserved for future use
+    m_windowReserved = NULL;
+#endif
 }
 
 // common part of window creation process
@@ -492,8 +497,8 @@ void wxWindowBase::Centre(int direction)
     yNew += posParent.y;
 
     // FIXME:  This needs to get the client display rect of the display
-    // the window is (via wxDisplay::GetFromWindow). 
-    
+    // the window is (via wxDisplay::GetFromWindow).
+
     // Base size of the visible dimensions of the display
     // to take into account the taskbar. And the Mac menu bar at top.
     wxRect clientrect = wxGetClientDisplayRect();
@@ -568,8 +573,10 @@ void wxWindowBase::InvalidateBestSize()
     m_bestSizeCache = wxDefaultSize;
 
     // parent's best size calculation may depend on its children's
-    // best sizes, so let's invalidate it as well to be safe:
-    if (m_parent)
+    // as long as child window we are in is not top level window itself
+    // (because the TLW size is never resized automatically)
+    // so let's invalidate it as well to be safe:
+    if (m_parent && !IsTopLevel())
         m_parent->InvalidateBestSize();
 }
 
@@ -680,11 +687,15 @@ wxSize wxWindowBase::DoGetBestSize() const
         // then, when the containing window is shrunk back (because our initial
         // best size had been used for computing the parent min size), we can't
         // be shrunk back any more because our best size is now bigger
-        if ( !GetMinSize().IsFullySpecified() )
-            wxConstCast(this, wxWindowBase)->SetMinSize(GetSize());
+        wxSize size = GetMinSize();
+        if ( !size.IsFullySpecified() )
+        {
+            size.SetDefaults(GetSize());
+            wxConstCast(this, wxWindowBase)->SetMinSize(size);
+        }
 
         // return as-is, unadjusted by the client size difference.
-        return GetMinSize();
+        return size;
     }
 
     // Add any difference between size and client size
@@ -2248,32 +2259,36 @@ void wxWindowBase::OnMiddleClick( wxMouseEvent& event )
 
         switch ( wxGetOsVersion() )
         {
-            case wxMOTIF_X:     port += _T("Motif"); break;
+            case wxMOTIF_X:            port += _T("Motif"); break;
             case wxMAC:
-            case wxMAC_DARWIN:  port += _T("Mac"); break;
-            case wxBEOS:        port += _T("BeOS"); break;
+            case wxMAC_DARWIN:         port += _T("Mac"); break;
+            case wxBEOS:               port += _T("BeOS"); break;
             case wxGTK:
             case wxGTK_WIN32:
             case wxGTK_OS2:
-            case wxGTK_BEOS:    port += _T("GTK"); break;
+            case wxGTK_BEOS:           port += _T("GTK"); break;
             case wxWINDOWS:
             case wxPENWINDOWS:
             case wxWINDOWS_NT:
             case wxWIN32S:
             case wxWIN95:
-            case wxWIN386:      port += _T("MS Windows"); break;
+            case wxWIN386:             port += _T("MS Windows"); break;
             case wxMGL_UNIX:
             case wxMGL_X:
             case wxMGL_WIN32:
-            case wxMGL_OS2:     port += _T("MGL"); break;
+            case wxMGL_OS2:            port += _T("MGL"); break;
             case wxWINDOWS_OS2:
-            case wxOS2_PM:      port += _T("OS/2"); break;
+            case wxOS2_PM:             port += _T("OS/2"); break;
+            case wxPALMOS:             port += _T("Palm OS"); break;
+            case wxWINDOWS_CE:         port += _T("Windows CE (generic)"); break;
+            case wxWINDOWS_POCKETPC:   port += _T("Windows CE PocketPC"); break;
+            case wxWINDOWS_SMARTPHONE: port += _T("Windows CE Smartphone"); break;
             default:            port += _T("unknown"); break;
         }
 
         wxMessageBox(wxString::Format(
                                       _T(
-                                        "       wxWidgets Library (%s port)\nVersion %u.%u.%u%s%s, compiled at %s %s\n   Copyright (c) 1995-2005 wxWidgets team"
+                                        "       wxWidgets Library (%s port)\nVersion %u.%u.%u%s%s, compiled at %s %s\n   Copyright (c) 1995-2006 wxWidgets team"
                                         ),
                                       port.c_str(),
                                       wxMAJOR_VERSION,
@@ -2339,7 +2354,7 @@ wxAccessible* wxWindowBase::CreateAccessible()
 
 #if wxUSE_STL
 
-#include <wx/listimpl.cpp>
+#include "wx/listimpl.cpp"
 WX_DEFINE_LIST(wxWindowList);
 
 #else

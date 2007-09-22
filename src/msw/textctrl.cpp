@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     04/01/98
-// RCS-ID:      $Id: textctrl.cpp,v 1.246 2005/05/18 02:26:37 RD Exp $
+// RCS-ID:      $Id: textctrl.cpp,v 1.248.2.6 2006/01/19 15:37:55 JG Exp $
 // Copyright:   (c) Julian Smart
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -358,9 +358,12 @@ bool wxTextCtrl::Create(wxWindow *parent, wxWindowID id,
                 // only give the error msg once if the DLL can't be loaded
                 static bool s_errorGiven = false; // MT ok as only used by GUI
 
-                wxLogError(_("Impossible to create a rich edit control, using simple text control instead. Please reinstall riched32.dll"));
+                if ( !s_errorGiven )
+                {
+                    wxLogError(_("Impossible to create a rich edit control, using simple text control instead. Please reinstall riched32.dll"));
 
-                s_errorGiven = true;
+                    s_errorGiven = true;
+                }
 
                 m_verRichEdit = 0;
             }
@@ -810,7 +813,10 @@ wxTextCtrl::StreamIn(const wxString& value,
                   (selectionOnly ? SFF_SELECTION : 0),
                   (LPARAM)&eds);
 
-    wxASSERT_MSG( ucf.GotUpdate(), _T("EM_STREAMIN didn't send EN_UPDATE?") );
+    // It's okay for EN_UPDATE to not be sent if the selection is empty and
+    // the text is empty, otherwise warn the programmer about it.
+    wxASSERT_MSG( ucf.GotUpdate() || ( !HasSelection() && value.empty() ),
+                  _T("EM_STREAMIN didn't send EN_UPDATE?") );
 
     if ( eds.dwError )
     {
@@ -962,7 +968,8 @@ void wxTextCtrl::DoWriteText(const wxString& value, bool selectionOnly)
         UpdatesCountFilter ucf(m_updatesCount);
 
         ::SendMessage(GetHwnd(), selectionOnly ? EM_REPLACESEL : WM_SETTEXT,
-                      0, (LPARAM)valueDos.c_str());
+                      // EM_REPLACESEL takes 1 to indicate the operation should be redoable
+                      selectionOnly ? 1 : 0, (LPARAM)valueDos.c_str());
 
         if ( !ucf.GotUpdate() )
         {
@@ -1258,10 +1265,14 @@ void wxTextCtrl::DoSetSelection(long from, long to, bool scrollCaret)
         // ES_DISABLENOSCROLL
         //
         // this is very ugly but I don't see any other way to make this work
+        long style = 0;
         if ( GetRichVersion() > 1 )
         {
             if ( !HasFlag(wxTE_NOHIDESEL) )
             {
+                // setting ECO_NOHIDESEL also sets WS_VISIBLE and possibly
+                // others, remember the style so we can reset it later if needed
+                style = ::GetWindowLong(GetHwnd(), GWL_STYLE);
                 ::SendMessage(GetHwnd(), EM_SETOPTIONS,
                               ECOOP_OR, ECO_NOHIDESEL);
             }
@@ -1277,6 +1288,8 @@ void wxTextCtrl::DoSetSelection(long from, long to, bool scrollCaret)
         {
             ::SendMessage(GetHwnd(), EM_SETOPTIONS,
                           ECOOP_AND, ~ECO_NOHIDESEL);
+            if ( style != ::GetWindowLong(GetHwnd(), GWL_STYLE) )
+                ::SetWindowLong(GetHwnd(), GWL_STYLE, style);
         }
 #endif // wxUSE_RICHEDIT
     }
@@ -1560,11 +1573,22 @@ wxString wxTextCtrl::GetLineText(long lineNo) const
 void wxTextCtrl::SetMaxLength(unsigned long len)
 {
 #if wxUSE_RICHEDIT
-    if (IsRich())
-        ::SendMessage(GetHwnd(), EM_EXLIMITTEXT, 0, (LPARAM) (DWORD) len);
+    if ( IsRich() )
+    {
+        ::SendMessage(GetHwnd(), EM_EXLIMITTEXT, 0, len ? len : 0x7fffffff);
+    }
     else
-#endif
-    ::SendMessage(GetHwnd(), EM_LIMITTEXT, len, 0);
+#endif // wxUSE_RICHEDIT
+    {
+        if ( len >= 0xffff )
+        {
+            // this will set it to a platform-dependent maximum (much more
+            // than 64Kb under NT)
+            len = 0;
+        }
+
+        ::SendMessage(GetHwnd(), EM_LIMITTEXT, len, 0);
+    }
 }
 
 // ----------------------------------------------------------------------------
@@ -1762,6 +1786,7 @@ void wxTextCtrl::OnChar(wxKeyEvent& event)
                 // Insert tab since calling the default Windows handler
                 // doesn't seem to do it
                 WriteText(wxT("\t"));
+                return;
             }
             break;
     }
@@ -1894,48 +1919,36 @@ WXHBRUSH wxTextCtrl::MSWControlColor(WXHDC hDC, WXHWND hWnd)
     return wxTextCtrlBase::MSWControlColor(hDC, hWnd);
 }
 
-bool wxTextCtrl::AdjustSpaceLimit()
+bool wxTextCtrl::HasSpaceLimit(unsigned int *len) const
 {
-    unsigned int limit = ::SendMessage(GetHwnd(), EM_GETLIMITTEXT, 0, 0);
-
     // HACK: we try to automatically extend the limit for the amount of text
     //       to allow (interactively) entering more than 64Kb of text under
     //       Win9x but we shouldn't reset the text limit which was previously
     //       set explicitly with SetMaxLength()
     //
-    //       we could solve this by storing the limit we set in wxTextCtrl but
-    //       to save space we prefer to simply test here the actual limit
-    //       value: we consider that SetMaxLength() can only be called for
-    //       values < 32Kb
-    if ( limit < 0x8000 )
-    {
-        // we've got more text than limit set by SetMaxLength()
+    //       Unfortunately there is no EM_GETLIMITTEXTSETBYUSER and so we don't
+    //       know the limit we set (if any). We could solve this by storing the
+    //       limit we set in wxTextCtrl but to save space we prefer to simply
+    //       test here the actual limit value: we consider that SetMaxLength()
+    //       can only be called for small values while EN_MAXTEXT is only sent
+    //       for large values (in practice the default limit seems to be 30000
+    //       but make it smaller just to be on the safe side)
+    *len = ::SendMessage(GetHwnd(), EM_GETLIMITTEXT, 0, 0);
+    return *len < 10001;
+
+}
+
+bool wxTextCtrl::AdjustSpaceLimit()
+{
+    unsigned int limit;
+    if ( HasSpaceLimit(&limit) )
         return false;
-    }
 
     unsigned int len = ::GetWindowTextLength(GetHwnd());
     if ( len >= limit )
     {
-        limit = len + 0x8000;    // 32Kb
-
-#if wxUSE_RICHEDIT
-        if ( IsRich() )
-        {
-            // as a nice side effect, this also allows passing limit > 64Kb
-            ::SendMessage(GetHwnd(), EM_EXLIMITTEXT, 0, limit);
-        }
-        else
-#endif // wxUSE_RICHEDIT
-        {
-            if ( limit > 0xffff )
-            {
-                // this will set it to a platform-dependent maximum (much more
-                // than 64Kb under NT)
-                limit = 0;
-            }
-
-            ::SendMessage(GetHwnd(), EM_LIMITTEXT, limit, 0);
-        }
+        // increment in 32Kb chunks
+        SetMaxLength(len + 0x8000);
     }
 
     // we changed the limit
@@ -1960,7 +1973,7 @@ wxSize wxTextCtrl::DoGetBestSize() const
     int hText = cy;
     if ( m_windowStyle & wxTE_MULTILINE )
     {
-        hText *= wxMax(wxMin(GetNumberOfLines(), 10), 2); 
+        hText *= wxMax(wxMin(GetNumberOfLines(), 10), 2);
     }
     //else: for single line control everything is ok
 
@@ -2521,7 +2534,7 @@ bool wxTextCtrl::GetStyle(long position, wxTextAttr& style)
 
     if ( changeSel )
     {
-        DoSetSelection(position, position, false /* don't scroll caret into view */);
+        DoSetSelection(position, position+1, false /* don't scroll caret into view */);
     }
 
     // get the selection formatting

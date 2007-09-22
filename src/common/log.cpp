@@ -4,7 +4,7 @@
 // Author:      Vadim Zeitlin
 // Modified by:
 // Created:     29/01/98
-// RCS-ID:      $Id: log.cpp,v 1.159 2005/06/17 11:45:25 VZ Exp $
+// RCS-ID:      $Id: log.cpp,v 1.161.2.1 2006/01/18 13:20:40 JS Exp $
 // Copyright:   (c) 1998 Vadim Zeitlin <zeitlin@dptmaths.ens-cachan.fr>
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -550,7 +550,8 @@ void wxLogBuffer::DoLog(wxLogLevel level, const wxChar *szString, time_t t)
                 TimeStamp(&str);
                 str += szString;
 
-                wxMessageOutputDebug().Printf(_T("%s\n"), str.c_str());
+                wxMessageOutputDebug dbgout;
+                dbgout.Printf(_T("%s\n"), str.c_str());
             }
 #endif // __WXDEBUG__
             break;
@@ -620,7 +621,7 @@ void wxLogStream::DoLogString(const wxChar *szString, time_t WXUNUSED(t))
 {
     wxString str;
     TimeStamp(&str);
-    (*m_ostr) << str << wxConvertWX2MB(szString) << wxSTD endl;
+    (*m_ostr) << wxConvertWX2MB(str) << wxConvertWX2MB(szString) << wxSTD endl;
 }
 #endif // wxUSE_STD_IOSTREAM
 
@@ -794,14 +795,15 @@ const wxChar *wxSysErrorMsg(unsigned long nErrCode)
         // if this happens, something is seriously wrong, so don't use _() here
         // for safety
         wxSprintf(s_szBuf, _T("unknown error %lx"), nErrCode);
-		return s_szBuf;
+        return s_szBuf;
     }
 
 
     // copy it to our buffer and free memory
     // Crashes on SmartPhone (FIXME)
 #if !defined(__SMARTPHONE__) /* of WinCE */
-     if( lpMsgBuf != 0 ) {
+    if( lpMsgBuf != 0 )
+    {
         wxStrncpy(s_szBuf, (const wxChar *)lpMsgBuf, WXSIZEOF(s_szBuf) - 1);
         s_szBuf[WXSIZEOF(s_szBuf) - 1] = wxT('\0');
 

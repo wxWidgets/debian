@@ -4,7 +4,7 @@
  * Author:      Joel Farley, Ove Kåven
  * Modified by: Vadim Zeitlin, Robert Roebling, Ron Lee
  * Created:     1998/06/12
- * RCS-ID:      $Id: wxchar.h,v 1.175 2005/05/30 13:50:19 JS Exp $
+ * RCS-ID:      $Id: wxchar.h,v 1.180.2.6 2006/03/17 14:23:35 SC Exp $
  * Copyright:   (c) 1998-2002 Joel Farley, Ove Kåven, Robert Roebling, Ron Lee
  * Licence:     wxWindows licence
  */
@@ -18,10 +18,12 @@
     #pragma interface "wxchar.h"
 #endif
 
-#include "wx/defs.h"        /* for wxUSE_UNICODE */
+/* defs.h indirectly includes this file, so don't include it here */
+#include "wx/platform.h"
+#include "wx/dlimpexp.h"
 
 #if defined(HAVE_STRTOK_R) && defined(__DARWIN__) && defined(_MSL_USING_MW_C_HEADERS) && _MSL_USING_MW_C_HEADERS
-    char	*strtok_r(char *, const char *, char **);
+    char *strtok_r(char *, const char *, char **);
 #endif
 
 /* check whether we have wchar_t and which size it is if we do */
@@ -52,7 +54,7 @@
 /*
     Standard headers we need here.
 
-    NB: don't include any wxWidgets headers here because almost of them include
+    NB: don't include any wxWidgets headers here because almost all of them include
         this one!
  */
 
@@ -61,7 +63,9 @@
 
 /* Almost all compiler have strdup(), but not quite all: CodeWarrior under Mac */
 /* and VC++ for Windows CE don't provide it */
-#if !(defined(__MWERKS__) && defined(__WXMAC__)) && !defined(__WXWINCE__)
+#if defined(__VISUALC__) && __VISUALC__ >= 1400
+    #define wxStrdupA _strdup
+#elif !(defined(__MWERKS__) && defined(__WXMAC__)) && !defined(__WXWINCE__)
     /* use #define, not inline wrapper, as it is tested with #ifndef below */
     #define wxStrdupA strdup
 #endif
@@ -127,7 +131,9 @@
     #define wxHAVE_TCHAR_SUPPORT
 #elif defined(__DMC__)
     #define wxHAVE_TCHAR_SUPPORT
-#elif defined(__MINGW32__) && wxCHECK_W32API_VERSION( 1, 0 ) && !defined(__WXPALMOS__)
+#elif defined(__WXPALMOS__)
+    #include <stddef.h>
+#elif defined(__MINGW32__) && wxCHECK_W32API_VERSION( 1, 0 )
     #define wxHAVE_TCHAR_SUPPORT
     #include <stddef.h>
     #include <string.h>
@@ -177,6 +183,13 @@
     /*     signed/unsigned version of it which (a) makes sense to me (unlike */
     /*     char wchar_t is always unsigned) and (b) was how the previous */
     /*     definitions worked so keep it like this */
+
+    /* Sun's SunPro compiler supports the wchar_t type and wide character */
+    /* functions, but does not define __WCHAR_TYPE__. Define it here to */
+    /* allow unicode enabled builds. */
+    #if defined(__SUNPRO_CC) || defined(__SUNPRO_C)
+    #define __WCHAR_TYPE__ wxchar_t
+    #endif
 
     /* GNU libc has __WCHAR_TYPE__ which requires special treatment, see */
     /* comment below */
@@ -387,12 +400,33 @@
     /* time.h functions */
     #define  wxAsctime   _tasctime
     #define  wxCtime     _tctime
-    
+
     #define wxMbstowcs mbstowcs
     #define wxWcstombs wcstombs
 #else /* !TCHAR-aware compilers */
 
-    #if !defined(__MWERKS__) && defined(__DARWIN__) && ( MAC_OS_X_VERSION_MAX_ALLOWED <= MAC_OS_X_VERSION_10_2 )
+    /*
+        There are 2 unrelated problems with these functions under Mac:
+            a) Metrowerks MSL CRT implements them strictly in C99 sense and
+               doesn't support (very common) extension of allowing to call
+               mbstowcs(NULL, ...) which makes it pretty useless as you can't
+               know the size of the needed buffer
+            b) OS X <= 10.2 declares and even defined these functions but
+               doesn't really implement them -- they always return an error
+
+        So use our own replacements in both cases.
+     */
+    #if defined(__MWERKS__) && defined(__MSL__)
+        #define wxNEED_WX_MBSTOWCS
+    #endif
+
+    #ifdef __DARWIN__
+        #if MAC_OS_X_VERSION_MAX_ALLOWED <= MAC_OS_X_VERSION_10_2
+            #define wxNEED_WX_MBSTOWCS
+        #endif
+    #endif
+
+    #ifdef wxNEED_WX_MBSTOWCS
         /* even though they are defined and "implemented", they are bad and just
            stubs so we need our own - we need these even in ANSI builds!! */
         WXDLLIMPEXP_BASE size_t wxMbstowcs (wchar_t *, const char *, size_t);
@@ -779,7 +813,7 @@ WXDLLIMPEXP_BASE bool wxOKlibc(); /* for internal use */
 /* printf() family saga */
 
 /*
-   For some systems vsnprintf() exists in the system libraries but not in the
+   For some systems [v]snprintf() exists in the system libraries but not in the
    headers, so we need to declare it ourselves to be able to use it.
  */
 #if defined(HAVE_VSNPRINTF) && !defined(HAVE_VSNPRINTF_DECL)
@@ -790,6 +824,25 @@ WXDLLIMPEXP_BASE bool wxOKlibc(); /* for internal use */
 #endif
     int vsnprintf(char *str, size_t size, const char *format, va_list ap);
 #endif /* !HAVE_VSNPRINTF_DECL */
+
+#if defined(HAVE_SNPRINTF) && !defined(HAVE_SNPRINTF_DECL)
+#ifdef __cplusplus
+    extern "C"
+#else
+    extern
+#endif
+    int snprintf(char *str, size_t size, const char *format, ...);
+#endif /* !HAVE_SNPRINTF_DECL */
+
+/* Wrapper for vsnprintf if it's 3rd parameter is non-const. Note: the
+ * same isn't done for snprintf below, the builtin wxSnprintf_ is used
+ * instead since it's already a simple wrapper */
+#if defined __cplusplus && defined HAVE_BROKEN_VSNPRINTF_DECL
+    inline int wx_fixed_vsnprintf(char *str, size_t size, const char *format, va_list ap)
+    {
+        return vsnprintf(str, size, (char*)format, ap);
+    }
+#endif
 
 /*
    First of all, we always want to define safe snprintf() function to be used
@@ -813,16 +866,24 @@ WXDLLIMPEXP_BASE bool wxOKlibc(); /* for internal use */
         #if defined(HAVE__VSNWPRINTF)
             #define wxVsnprintf_    _vsnwprintf
         /* MinGW?MSVCRT has the wrong vswprintf */
-        #elif defined(HAVE_VSWPRINTF) && !defined(__MINGW32__)
+		/* Mac OS X has a somehow buggy vswprintf */
+        #elif defined(HAVE_VSWPRINTF) && !defined(__MINGW32__) && !defined(__DARWIN__)
             #define wxVsnprintf_    vswprintf
         #endif
     #else /* ASCII */
         /* all versions of CodeWarrior supported by wxWidgets apparently have */
-        /* vsnprintf() */
+        /* both snprintf() and vsnprintf() */
+        #if defined(HAVE_SNPRINTF) || defined(__MWERKS__) || defined(__WATCOMC__)
+            #ifndef HAVE_BROKEN_SNPRINTF_DECL
+                #define wxSnprintf_     snprintf
+            #endif
+        #endif
         #if defined(HAVE_VSNPRINTF) || defined(__MWERKS__) || defined(__WATCOMC__)
-            /* assume we have snprintf() too if we have vsnprintf() */
-            #define wxVsnprintf_    vsnprintf
-            #define wxSnprintf_     snprintf
+            #if defined __cplusplus && defined HAVE_BROKEN_VSNPRINTF_DECL
+                #define wxVsnprintf_    wx_fixed_vsnprintf
+            #else
+                #define wxVsnprintf_    vsnprintf
+            #endif
         #endif
     #endif
 #endif /* wxVsnprintf_ not defined yet */

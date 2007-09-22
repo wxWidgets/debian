@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by: Ron Lee
 // Created:     04/01/98
-// RCS-ID:      $Id: object.cpp,v 1.91 2005/02/06 23:21:59 VZ Exp $
+// RCS-ID:      $Id: object.cpp,v 1.95 2005/09/17 20:58:55 VZ Exp $
 // Copyright:   (c) 1998 Julian Smart
 //              (c) 2001 Ron Lee <ron@debian.org>
 // Licence:     wxWindows licence
@@ -96,9 +96,7 @@ wxClassInfo *wxObject::GetClassInfo() const
 
 #endif // wxUSE_EXTENDED_RTTI
 
-// These are here so we can avoid 'always true/false' warnings
-// by referring to these instead of true/false
-const bool wxTrue = true;
+// this variable exists only so that we can avoid 'always true/false' warnings
 const bool wxFalse = false;
 
 // Is this object a kind of (a subclass of) 'info'?
@@ -230,13 +228,18 @@ void wxClassInfo::Register()
         sm_classTable = new wxHashTable(wxKEY_STRING);
     }
 
-    // using IMPLEMENT_DYNAMIC_CLASS() macro twice (which may happen if you
-    // link any object module twice mistakenly) will break this function
-    // because it will enter an infinite loop and eventually die with "out of
-    // memory" - as this is quite hard to detect if you're unaware of this,
-    // try to do some checks here
+    // Using IMPLEMENT_DYNAMIC_CLASS() macro twice (which may happen if you
+    // link any object module twice mistakenly, or link twice against wx shared
+    // library) will break this function because it will enter an infinite loop
+    // and eventually die with "out of memory" - as this is quite hard to
+    // detect if you're unaware of this, try to do some checks here.
     wxASSERT_MSG( sm_classTable->Get(m_className) == NULL,
-                  _T("class already in RTTI table - have you used IMPLEMENT_DYNAMIC_CLASS() twice (may be by linking some object module(s) twice)?") );
+        wxString::Format
+        (
+            _T("Class \"%s\" already in RTTI table - have you used IMPLEMENT_DYNAMIC_CLASS() multiple times or linked some object file twice)?"),
+            m_className
+        )
+    );
 
     sm_classTable->Put(m_className, (wxObject *)this);
 }

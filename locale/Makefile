@@ -7,7 +7,8 @@
 # being called with this dir as the cwd, but if we generate this file
 # with configure an explicit path should be specified -- RL.
 
-WX_LINGUAS := `ls *.po 2> /dev/null | sed -n 's/\(wxstd\)\?\.po//p'`
+WX_LINGUAS := `ls *.po */*.po 2> /dev/null | sed -n 's/\(wxstd\)\?\.po//p'`
+WX_LINGUAS_UPDATE := `ls *.po 2> /dev/null | sed -n 's/\(wxstd\)\?\.po//p'`
 
 # the programs we use (TODO: use configure to detect them)
 MSGFMT=msgfmt --verbose
@@ -34,7 +35,7 @@ wxstd.po:
 	find ../contrib/src -name "*.cpp" | $(XARGS) $(XGETTEXT) $(XGETTEXT_ARGS) -o wxstd.po
 
 allpo: force-update
-	@-for t in $(WX_LINGUAS); do $(MAKE) $$t.po; done
+	@-for t in $(WX_LINGUAS_UPDATE); do $(MAKE) $$t.po; done
 
 allmo:
 	@for t in $(WX_LINGUAS); do $(MAKE) $$t.mo; done
@@ -59,4 +60,4 @@ FORCE:
 
 .PHONY: allpo allmo force-update percentage FORCE
 
-# $Id: Makefile,v 1.12 2005/06/01 21:16:29 VZ Exp $
+# $Id: Makefile,v 1.14 2005/08/21 16:02:07 MBN Exp $

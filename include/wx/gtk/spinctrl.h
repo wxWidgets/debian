@@ -3,7 +3,7 @@
 // Purpose:     wxSpinCtrl class
 // Author:      Robert Roebling
 // Modified by:
-// RCS-ID:      $Id: spinctrl.h,v 1.14 2004/06/14 17:31:26 VS Exp $
+// RCS-ID:      $Id: spinctrl.h,v 1.15 2005/08/02 22:57:57 MW Exp $
 // Copyright:   (c) Robert Roebling
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -25,7 +25,7 @@
 // wxSpinCtrl
 //-----------------------------------------------------------------------------
 
-class wxSpinCtrl : public wxControl
+class WXDLLIMPEXP_CORE wxSpinCtrl : public wxControl
 {
 public:
     wxSpinCtrl() {}

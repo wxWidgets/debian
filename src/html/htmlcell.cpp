@@ -2,7 +2,7 @@
 // Name:        htmlcell.cpp
 // Purpose:     wxHtmlCell - basic element of HTML output
 // Author:      Vaclav Slavik
-// RCS-ID:      $Id: htmlcell.cpp,v 1.100 2005/05/31 09:20:12 JS Exp $
+// RCS-ID:      $Id: htmlcell.cpp,v 1.102 2005/09/11 12:09:35 VZ Exp $
 // Copyright:   (c) 1999 Vaclav Slavik
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -285,7 +285,6 @@ void wxHtmlWordCell::Split(wxDC& dc,
     wxPoint pt2 = (selTo == wxDefaultPosition) ?
                    wxPoint(m_Width, wxDefaultCoord) : selTo - GetAbsPos();
 
-    wxCoord charW, charH;
     unsigned len = m_Word.length();
     unsigned i = 0;
     pos1 = 0;
@@ -298,6 +297,14 @@ void wxHtmlWordCell::Split(wxDC& dc,
         pt2.x = m_Width;
 
     // before selection:
+#ifdef __WXMAC__
+    // implementation using PartialExtents to support fractional widths
+    wxArrayInt widths ;
+    dc.GetPartialTextExtents(m_Word,widths) ;
+    while( i < len && pt1.x >= widths[i] )
+        i++ ;
+#else // __WXMAC__
+    wxCoord charW, charH;
     while ( pt1.x > 0 && i < len )
     {
         dc.GetTextExtent(m_Word[i], &charW, &charH);
@@ -308,9 +315,14 @@ void wxHtmlWordCell::Split(wxDC& dc,
             i++;
         }
     }
+#endif // __WXMAC__/!__WXMAC__
 
     // in selection:
     unsigned j = i;
+#ifdef __WXMAC__
+    while( j < len && pt2.x >= widths[j] )
+        j++ ;
+#else // __WXMAC__
     pos2 = pos1;
     pt2.x -= pos2;
     while ( pt2.x > 0 && j < len )
@@ -323,6 +335,7 @@ void wxHtmlWordCell::Split(wxDC& dc,
             j++;
         }
     }
+#endif // __WXMAC__/!__WXMAC__
 
     pos1 = i;
     pos2 = j;
@@ -902,7 +915,7 @@ void wxHtmlContainerCell::Draw(wxDC& dc, int x, int y, int view_y1, int view_y2,
     dc.SetPen(*wxRED_PEN);
     dc.DrawRectangle(x+m_PosX,y+m_PosY,m_Width,m_Height);
 #endif
-            
+
     int xlocal = x + m_PosX;
     int ylocal = y + m_PosY;
 
@@ -936,7 +949,7 @@ void wxHtmlContainerCell::Draw(wxDC& dc, int x, int y, int view_y1, int view_y2,
         // draw container's contents:
         for (wxHtmlCell *cell = m_Cells; cell; cell = cell->GetNext())
         {
-            
+
             // optimize drawing: don't render off-screen content:
             if ((ylocal + cell->GetPosY() <= view_y2) &&
                 (ylocal + cell->GetPosY() + cell->GetHeight() > view_y1))

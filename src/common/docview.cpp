@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     01/02/97
-// RCS-ID:      $Id: docview.cpp,v 1.133 2005/03/30 16:40:41 JS Exp $
+// RCS-ID:      $Id: docview.cpp,v 1.136.2.2 2006/02/21 19:51:32 ABX Exp $
 // Copyright:   (c) Julian Smart
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -54,8 +54,8 @@
 #endif
 
 #if wxUSE_PRINTING_ARCHITECTURE
-  #include "wx/prntbase.h"
-  #include "wx/printdlg.h"
+    #include "wx/prntbase.h"
+    #include "wx/printdlg.h"
 #endif
 
 #include "wx/msgdlg.h"
@@ -64,19 +64,20 @@
 #include "wx/confbase.h"
 #include "wx/file.h"
 #include "wx/cmdproc.h"
+#include "wx/tokenzr.h"
 
 #include <stdio.h>
 #include <string.h>
 
 #if wxUSE_STD_IOSTREAM
-  #include "wx/ioswrap.h"
-  #if wxUSE_IOSTREAMH
-    #include <fstream.h>
-  #else
-    #include <fstream>
-  #endif
+    #include "wx/ioswrap.h"
+    #if wxUSE_IOSTREAMH
+        #include <fstream.h>
+    #else
+        #include <fstream>
+    #endif
 #else
-  #include "wx/wfstream.h"
+    #include "wx/wfstream.h"
 #endif
 
 // ----------------------------------------------------------------------------
@@ -571,7 +572,7 @@ bool wxDocument::DoSaveDocument(const wxString& file)
         msgTitle = wxString(_("File error"));
 
 #if wxUSE_STD_IOSTREAM
-    wxSTD ofstream store(file.mb_str());
+    wxSTD ofstream store(file.mb_str(), wxSTD ios::binary);
     if (store.fail() || store.bad())
 #else
     wxFileOutputStream store(file);
@@ -596,39 +597,26 @@ bool wxDocument::DoSaveDocument(const wxString& file)
 
 bool wxDocument::DoOpenDocument(const wxString& file)
 {
-    wxString msgTitle;
-    if (!wxTheApp->GetAppName().empty())
-        msgTitle = wxTheApp->GetAppName();
-    else
-        msgTitle = wxString(_("File error"));
-
 #if wxUSE_STD_IOSTREAM
-    wxSTD ifstream store(file.mb_str());
-    if (store.fail() || store.bad())
+    wxSTD ifstream store(file.mb_str(), wxSTD ios::binary);
+    if (!store.fail() && !store.bad())
 #else
     wxFileInputStream store(file);
-    if (store.GetLastError() != wxSTREAM_NO_ERROR)
+    if (store.GetLastError() == wxSTREAM_NO_ERROR)
 #endif
     {
-        (void)wxMessageBox(_("Sorry, could not open this file."), msgTitle, wxOK|wxICON_EXCLAMATION,
-                           GetDocumentWindow());
-        return false;
-    }
 #if wxUSE_STD_IOSTREAM
-    LoadObject(store);
-    if ( !store && !store.eof() )
+        LoadObject(store);
+        if ( !!store || store.eof() )
 #else
-    int res = LoadObject(store).GetLastError();
-    if ((res != wxSTREAM_NO_ERROR) &&
-        (res != wxSTREAM_EOF))
+        int res = LoadObject(store).GetLastError();
+        if ( res == wxSTREAM_NO_ERROR || res == wxSTREAM_EOF )
 #endif
-    {
-        (void)wxMessageBox(_("Sorry, could not open this file."), msgTitle, wxOK|wxICON_EXCLAMATION,
-                           GetDocumentWindow());
-        return false;
+            return true;
     }
 
-    return true;
+    wxLogError(_("Sorry, could not open this file."));
+    return false;
 }
 
 
@@ -809,6 +797,17 @@ wxView *wxDocTemplate::CreateView(wxDocument *doc, long flags)
 // that of the template
 bool wxDocTemplate::FileMatchesTemplate(const wxString& path)
 {
+    wxStringTokenizer parser (GetFileFilter(), wxT(";"));
+    wxString anything = wxT ("*");
+    while (parser.HasMoreTokens())
+    {
+        wxString filter = parser.GetNextToken();
+        wxString filterExt = FindExtension (filter);
+        if ( filter.IsSameAs (anything)    ||
+             filterExt.IsSameAs (anything) ||
+             filterExt.IsSameAs (FindExtension (path)) )
+            return true;
+    }
     return GetDefaultExtension().IsSameAs(FindExtension(path));
 }
 
@@ -2178,6 +2177,8 @@ void wxFileHistory::AddFileToHistory(const wxString& file)
                 pathInMenu = m_fileHistory[i];
             }
 
+            // we need to quote '&' characters which are used for mnemonics
+            pathInMenu.Replace(_T("&"), _T("&&"));
             wxString buf;
             buf.Printf(s_MRUEntryFormat, i + 1, pathInMenu.c_str());
             wxList::compatibility_iterator node = m_fileMenus.GetFirst();
@@ -2208,20 +2209,20 @@ void wxFileHistory::RemoveFileFromHistory(size_t i)
     wxList::compatibility_iterator node = m_fileMenus.GetFirst();
     while ( node )
     {
-         wxMenu* menu = (wxMenu*) node->GetData();
+        wxMenu* menu = (wxMenu*) node->GetData();
 
-         // shuffle filenames up
-         wxString buf;
-         for ( j = i; j < m_fileHistoryN - 1; j++ )
-         {
-             buf.Printf(s_MRUEntryFormat, j + 1, m_fileHistory[j]);
-             menu->SetLabel(m_idBase + j, buf);
-         }
+        // shuffle filenames up
+        wxString buf;
+        for ( j = i; j < m_fileHistoryN - 1; j++ )
+        {
+            buf.Printf(s_MRUEntryFormat, j + 1, m_fileHistory[j]);
+            menu->SetLabel(m_idBase + j, buf);
+        }
 
-         node = node->GetNext();
+        node = node->GetNext();
 
         // delete the last menu item which is unused now
-        wxWindowID lastItemId = m_idBase + m_fileHistoryN - 1;
+        wxWindowID lastItemId = m_idBase + wx_truncate_cast(wxWindowID, m_fileHistoryN) - 1;
         if (menu->FindItem(lastItemId))
         {
             menu->Delete(lastItemId);
@@ -2456,4 +2457,3 @@ bool wxTransferStreamToFile(wxInputStream& stream, const wxString& filename)
 #endif // wxUSE_STD_IOSTREAM/!wxUSE_STD_IOSTREAM
 
 #endif // wxUSE_DOC_VIEW_ARCHITECTURE
-

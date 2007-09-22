@@ -2,7 +2,7 @@
 // Name:        wx/gtk/statline.h
 // Purpose:
 // Author:      Robert Roebling
-// Id:          $Id: statline.h,v 1.11 2005/03/11 02:12:46 VZ Exp $
+// Id:          $Id: statline.h,v 1.12 2005/08/02 22:57:58 MW Exp $
 // Copyright:   (c) 1998 Robert Roebling
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -23,7 +23,7 @@
 // wxStaticLine
 // ----------------------------------------------------------------------------
 
-class wxStaticLine : public wxStaticLineBase
+class WXDLLIMPEXP_CORE wxStaticLine : public wxStaticLineBase
 {
 public:
     wxStaticLine();

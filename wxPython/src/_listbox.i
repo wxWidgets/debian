@@ -5,7 +5,7 @@
 // Author:      Robin Dunn
 //
 // Created:     10-June-1998
-// RCS-ID:      $Id: _listbox.i,v 1.16 2005/05/27 00:53:05 RD Exp $
+// RCS-ID:      $Id: _listbox.i,v 1.16.2.1 2006/04/11 01:18:23 RD Exp $
 // Copyright:   (c) 2003 by Total Control Software
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -80,12 +80,14 @@ public:
     //virtual int GetSelections(wxArrayInt& aSelections) const;
     %extend {
       PyObject* GetSelections() {
+          wxPyBlock_t blocked = wxPyBeginBlockThreads();
           wxArrayInt lst;
           self->GetSelections(lst);
           PyObject *tup = PyTuple_New(lst.GetCount());
           for(size_t i=0; i<lst.GetCount(); i++) {
               PyTuple_SetItem(tup, i, PyInt_FromLong(lst[i]));
           }
+          wxPyEndBlockThreads(blocked);
           return tup;
       }
     }

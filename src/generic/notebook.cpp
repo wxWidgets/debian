@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     17/09/98
-// RCS-ID:      $Id: notebook.cpp,v 1.33 2004/12/20 12:44:16 ABX Exp $
+// RCS-ID:      $Id: notebook.cpp,v 1.36 2005/09/17 21:00:47 VZ Exp $
 // Copyright:   (c) Julian Smart
 // Licence:     wxWindows licence
 ///////////////////////////////////////////////////////////////////////////////
@@ -47,7 +47,7 @@
 // ----------------------------------------------------------------------------
 
 // check that the page index is valid
-#define IS_VALID_PAGE(nPage) (((nPage) >= 0) && ((nPage) < GetPageCount()))
+#define IS_VALID_PAGE(nPage) ((nPage) < GetPageCount())
 
 // ----------------------------------------------------------------------------
 // event table
@@ -304,7 +304,7 @@ bool wxNotebook::RemovePage(size_t nPage)
 // remove one page from the notebook
 wxWindow* wxNotebook::DoRemovePage(size_t nPage)
 {
-    wxCHECK( IS_VALID_PAGE(nPage), false );
+    wxCHECK( IS_VALID_PAGE(nPage), NULL );
 
     m_pages[nPage]->Show(false);
     //    m_pages[nPage]->Lower();
@@ -620,6 +620,17 @@ void wxNotebook::OnPaint(wxPaintEvent& WXUNUSED(event) )
     wxPaintDC dc(this);
     if (m_tabView)
         m_tabView->Draw(dc);
+}
+
+wxSize wxNotebook::CalcSizeFromPage(const wxSize& sizePage) const
+{
+    // MBN: since the total tab height is really a function of the
+    // width, this should really call
+    // GetTotalTabHeightPretendingWidthIs(), but the current
+    // implementation will suffice, provided the wxNotebook has been
+    // created with a sensible initial width.
+    return wxSize( sizePage.x + 12,
+                   sizePage.y + m_tabView->GetTotalTabHeight() + 6 + 4 );
 }
 
 wxRect wxNotebook::GetAvailableClientSize()

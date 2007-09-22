@@ -5,7 +5,7 @@
 // Author:      Robin Dunn
 //
 // Created:     18-June-1999
-// RCS-ID:      $Id: _timer.i,v 1.16 2005/05/13 00:00:38 RD Exp $
+// RCS-ID:      $Id: _timer.i,v 1.16.2.1 2006/03/10 18:29:21 RD Exp $
 // Copyright:   (c) 2003 by Total Control Software
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -106,7 +106,7 @@ public:
     // return True if the timer is running
     virtual bool IsRunning() const;
 
-    // get the (last) timer interval in the milliseconds
+    // get the (last) timer interval in milliseconds
     int GetInterval() const;
 
     // return True if the timer is one shot
@@ -117,7 +117,7 @@ public:
 
     %pythoncode {
         def Destroy(self):
-            """NO-OP: Timers must be destroyed by normal refrence counting"""
+            """NO-OP: Timers must be destroyed by normal reference counting"""
             pass
     }
 };

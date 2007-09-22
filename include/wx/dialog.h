@@ -4,7 +4,7 @@
 // Author:      Vadim Zeitlin
 // Modified by:
 // Created:     29.06.99
-// RCS-ID:      $Id: dialog.h,v 1.40 2005/04/02 21:40:59 JS Exp $
+// RCS-ID:      $Id: dialog.h,v 1.42.2.1 2006/01/09 12:30:28 VZ Exp $
 // Copyright:   (c) Vadim Zeitlin
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -49,6 +49,12 @@ public:
     // The identifier for the affirmative button
     void SetAffirmativeId(int affirmativeId) { m_affirmativeId = affirmativeId; }
     int GetAffirmativeId() const { return m_affirmativeId; }
+
+#if wxABI_VERSION > 20601
+    // just a stub for 2.6, this allows the code using it to build with both
+    // 2.7 and 2.6 (even though it only really works with 2.7)
+    int GetEscapeId() const { return wxID_ANY; }
+#endif
 
 #if wxUSE_STATTEXT // && wxUSE_TEXTCTRL
     // splits text up at newlines and places the

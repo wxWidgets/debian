@@ -2,7 +2,7 @@
 // Name:        cursor.cpp
 // Purpose:
 // Author:      Robert Roebling
-// Id:          $Id: cursor.cpp,v 1.43 2004/05/23 20:52:19 JS Exp $
+// Id:          $Id: cursor.cpp,v 1.44 2005/08/08 09:35:27 MR Exp $
 // Copyright:   (c) 1998 Robert Roebling
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -256,14 +256,14 @@ wxCursor::wxCursor( const wxImage & image )
 
     int fg_intensity = fg.Red() + fg.Green() + fg.Blue();
     int bg_intensity = bg.Red() + bg.Green() + bg.Blue();
-	
-	if (bg_intensity > fg_intensity)
-	{
+
+    if (bg_intensity > fg_intensity)
+    {
         //swap fg and bg
         wxColour tmp = fg;
         fg = bg;
         bg = tmp;
-	}							 
+    }
 
     int hotSpotX;
     int hotSpotY;

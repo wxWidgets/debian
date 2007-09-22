@@ -4,7 +4,7 @@
 // Author:      Vadim Zeitlin
 // Modified by: Ryan Norton (UTF8 UNICODE)
 // Created:     2004-09-19
-// RCS-ID:      $Id: sstream.cpp,v 1.8 2005/04/07 20:49:34 RN Exp $
+// RCS-ID:      $Id: sstream.cpp,v 1.9 2005/09/17 21:03:43 VZ Exp $
 // Copyright:   (c) 2004 Vadim Zeitlin <vadim@wxwindows.org>
 // Licence:     wxWindows licence
 ///////////////////////////////////////////////////////////////////////////////
@@ -93,10 +93,11 @@ wxFileOffset wxStringInputStream::OnSysSeek(wxFileOffset ofs, wxSeekMode mode)
             return wxInvalidOffset;
     }
 
-    if ( ofs < 0 || wx_static_cast(size_t, ofs) > m_len )
+    if ( ofs < 0 || ofs > wx_static_cast(wxFileOffset, m_len) )
         return wxInvalidOffset;
 
-    m_pos = wx_static_cast(size_t, ofs);
+    // FIXME: this can't be right
+    m_pos = wx_truncate_cast(size_t, ofs);
 
     return ofs;
 }

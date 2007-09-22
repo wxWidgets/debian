@@ -4,7 +4,7 @@
 // Author:      Andreas Pflug
 // Modified by:
 // Created:     2005-01-19
-// RCS-ID:      $Id: datectlg.cpp,v 1.35 2005/05/22 22:17:47 VZ Exp $
+// RCS-ID:      $Id: datectlg.cpp,v 1.36 2005/08/04 00:34:03 VZ Exp $
 // Copyright:   (c) 2005 Andreas Pflug <pgadmin@pse-consulting.de>
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -29,7 +29,8 @@
 
 // use this version if we're explicitly requested to do it or if it's the only
 // one we have
-#if wxUSE_DATEPICKCTRL_GENERIC || !defined(wxHAS_NATIVE_DATEPICKCTRL)
+#if !defined(wxHAS_NATIVE_DATEPICKCTRL) || \
+        (defined(wxUSE_DATEPICKCTRL_GENERIC) && wxUSE_DATEPICKCTRL_GENERIC)
 
 #ifndef WX_PRECOMP
     #include "wx/bmpbuttn.h"

@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by: Vadim Zeitlin (wxMenuItem is now in separate file)
 // Created:     01/02/97
-// RCS-ID:      $Id: menu.h,v 1.61 2005/05/31 09:18:31 JS Exp $
+// RCS-ID:      $Id: menu.h,v 1.62 2005/08/04 20:35:07 VZ Exp $
 // Copyright:   (c) Julian Smart
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -68,17 +68,6 @@ public:
     virtual void Break();
 
     virtual void SetTitle(const wxString& title);
-
-    // deprecated functions
-#if wxUSE_MENU_CALLBACK
-    wxMenu(const wxString& title, const wxFunction func)
-        : wxMenuBase(title)
-    {
-        Init();
-
-        Callback(func);
-    }
-#endif // wxUSE_MENU_CALLBACK
 
     // implementation only from now on
     // -------------------------------

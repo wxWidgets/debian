@@ -2,7 +2,7 @@
 // Name:        htmldefs.h
 // Purpose:     constants for wxhtml library
 // Author:      Vaclav Slavik
-// RCS-ID:      $Id: htmldefs.h,v 1.13 2004/09/27 19:06:39 ABX Exp $
+// RCS-ID:      $Id: htmldefs.h,v 1.13.4.1 2005/11/20 09:17:01 RR Exp $
 // Copyright:   (c) 1999 Vaclav Slavik
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -98,7 +98,7 @@
 
 
     /* default font sizes */
-#ifdef __WXMSW__
+#if defined(__WXMSW__)
    #define wxHTML_FONT_SIZE_1              7
    #define wxHTML_FONT_SIZE_2              8
    #define wxHTML_FONT_SIZE_3             10
@@ -114,6 +114,14 @@
    #define wxHTML_FONT_SIZE_5             24
    #define wxHTML_FONT_SIZE_6             30
    #define wxHTML_FONT_SIZE_7             36
+#elif defined(__WXGPE__)
+   #define wxHTML_FONT_SIZE_1              6
+   #define wxHTML_FONT_SIZE_2              7
+   #define wxHTML_FONT_SIZE_3              8
+   #define wxHTML_FONT_SIZE_4              9
+   #define wxHTML_FONT_SIZE_5             10
+   #define wxHTML_FONT_SIZE_6             12
+   #define wxHTML_FONT_SIZE_7             14
 #else
    #define wxHTML_FONT_SIZE_1             10
    #define wxHTML_FONT_SIZE_2             12

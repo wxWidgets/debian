@@ -2,7 +2,7 @@
 # Purpose:      XRC editor, XML_tree class
 # Author:       Roman Rolinsky <rolinsky@mema.ucl.ac.be>
 # Created:      02.12.2002
-# RCS-ID:       $Id: tree.py,v 1.17 2005/06/14 22:59:20 RD Exp $
+# RCS-ID:       $Id: tree.py,v 1.26.2.3 2006/03/24 01:49:57 RD Exp $
 
 from xxx import *                       # xxx imports globals and params
 import types
@@ -56,6 +56,7 @@ class ID_NEW:
     TOOL = wxNewId()
     MENU_BAR = wxNewId()
     MENU = wxNewId()
+    STATUS_BAR = wxNewId()
 
     STATIC_TEXT = wxNewId()
     TEXT_CTRL = wxNewId()
@@ -82,16 +83,21 @@ class ID_NEW:
     LIST_CTRL = wxNewId()
     CHECK_LIST = wxNewId()
     NOTEBOOK = wxNewId()
+    CHOICEBOOK = wxNewId()
+    LISTBOOK = wxNewId()
     SPLITTER_WINDOW = wxNewId()
     SCROLLED_WINDOW = wxNewId()
     HTML_WINDOW = wxNewId()
     CALENDAR_CTRL = wxNewId()
+    DATE_CTRL = wxNewId()
     GENERIC_DIR_CTRL = wxNewId()
     SPIN_CTRL = wxNewId()
     UNKNOWN = wxNewId()
     WIZARD = wxNewId()
     WIZARD_PAGE = wxNewId()
     WIZARD_PAGE_SIMPLE = wxNewId()
+    BITMAP = wxNewId()
+    ICON = wxNewId()
     STATUS_BAR = wxNewId()
 
     BOX_SIZER = wxNewId()
@@ -107,7 +113,21 @@ class ID_NEW:
     MENU = wxNewId()
     MENU_ITEM = wxNewId()
     SEPARATOR = wxNewId()
+
+    OK_BUTTON = wxNewId()
+    YES_BUTTON = wxNewId()
+    SAVE_BUTTON = wxNewId()
+    APPLY_BUTTON = wxNewId()
+    NO_BUTTON = wxNewId()
+    CANCEL_BUTTON = wxNewId()
+    HELP_BUTTON = wxNewId()
+    CONTEXT_HELP_BUTTON = wxNewId()
+
+    REF = wxNewId()
+
     LAST = wxNewId()
+
+    
 
 class PullDownMenu:
     ID_EXPAND = wxNewId()
@@ -137,9 +157,12 @@ class PullDownMenu:
             ID_NEW.WIZARD_PAGE_SIMPLE: 'wxWizardPageSimple',
             ID_NEW.TOOL_BAR: 'wxToolBar',
             ID_NEW.TOOL: 'tool',
+            ID_NEW.STATUS_BAR: 'wxStatusBar',
             ID_NEW.MENU_BAR: 'wxMenuBar',
             ID_NEW.MENU: 'wxMenu',
             ID_NEW.MENU_ITEM: 'wxMenuItem',
+            ID_NEW.BITMAP: 'wxBitmap',
+            ID_NEW.ICON: 'wxIcon',
             ID_NEW.SEPARATOR: 'separator',
 
             ID_NEW.STATIC_TEXT: 'wxStaticText',
@@ -156,6 +179,7 @@ class PullDownMenu:
             ID_NEW.RADIO_BOX: 'wxRadioBox',
             ID_NEW.COMBO_BOX: 'wxComboBox',
             ID_NEW.LIST_BOX: 'wxListBox',
+            ID_NEW.CHECK_LIST: 'wxCheckListBox',
 
             ID_NEW.STATIC_LINE: 'wxStaticLine',
             ID_NEW.STATIC_BITMAP: 'wxStaticBitmap',
@@ -165,12 +189,14 @@ class PullDownMenu:
             ID_NEW.SCROLL_BAR: 'wxScrollBar',
             ID_NEW.TREE_CTRL: 'wxTreeCtrl',
             ID_NEW.LIST_CTRL: 'wxListCtrl',
-            ID_NEW.CHECK_LIST: 'wxCheckListBox',
             ID_NEW.NOTEBOOK: 'wxNotebook',
+            ID_NEW.CHOICEBOOK: 'wxChoicebook',
+            ID_NEW.LISTBOOK: 'wxListbook',
             ID_NEW.SPLITTER_WINDOW: 'wxSplitterWindow',
             ID_NEW.SCROLLED_WINDOW: 'wxScrolledWindow',
             ID_NEW.HTML_WINDOW: 'wxHtmlWindow',
             ID_NEW.CALENDAR_CTRL: 'wxCalendarCtrl',
+            ID_NEW.DATE_CTRL: 'wxDatePickerCtrl',
             ID_NEW.GENERIC_DIR_CTRL: 'wxGenericDirCtrl',
             ID_NEW.SPIN_CTRL: 'wxSpinCtrl',
 
@@ -182,6 +208,15 @@ class PullDownMenu:
             ID_NEW.STD_DIALOG_BUTTON_SIZER: 'wxStdDialogButtonSizer',
             ID_NEW.SPACER: 'spacer',
             ID_NEW.UNKNOWN: 'unknown',
+
+            ID_NEW.OK_BUTTON: 'wxButton',
+            ID_NEW.YES_BUTTON: 'wxButton',
+            ID_NEW.SAVE_BUTTON: 'wxButton',
+            ID_NEW.APPLY_BUTTON: 'wxButton',
+            ID_NEW.NO_BUTTON: 'wxButton',
+            ID_NEW.CANCEL_BUTTON: 'wxButton',
+            ID_NEW.HELP_BUTTON: 'wxButton',
+            ID_NEW.CONTEXT_HELP_BUTTON: 'wxButton',
             }
         self.topLevel = [
             (ID_NEW.PANEL, 'Panel', 'Create panel'),
@@ -191,13 +226,19 @@ class PullDownMenu:
             None,
             (ID_NEW.TOOL_BAR, 'ToolBar', 'Create toolbar'),
             (ID_NEW.MENU_BAR, 'MenuBar', 'Create menubar'),
-            (ID_NEW.MENU, 'Menu', 'Create menu')
+            (ID_NEW.MENU, 'Menu', 'Create menu'),
+            None,
+            (ID_NEW.BITMAP, 'Bitmap', 'Create bitmap'),
+            (ID_NEW.ICON, 'Icon', 'Create icon'),
             ]
         self.containers = [
              (ID_NEW.PANEL, 'Panel', 'Create panel'),
              (ID_NEW.NOTEBOOK, 'Notebook', 'Create notebook control'),
+             (ID_NEW.CHOICEBOOK, 'Choicebook', 'Create choicebook control'),
+             (ID_NEW.LISTBOOK, 'Listbook', 'Create listbook control'),
              (ID_NEW.SPLITTER_WINDOW, 'SplitterWindow', 'Create splitter window'),
              (ID_NEW.TOOL_BAR, 'ToolBar', 'Create toolbar'),
+             (ID_NEW.STATUS_BAR, 'StatusBar', 'Create status bar'),
 #             (ID_NEW.WIZARD_PAGE, 'WizardPage', 'Create wizard page'),
              (ID_NEW.WIZARD_PAGE_SIMPLE, 'WizardPageSimple', 'Create simple wizard page'),
             ]
@@ -227,10 +268,10 @@ class PullDownMenu:
              (ID_NEW.SCROLL_BAR, 'ScrollBar', 'Create scroll bar'),
              (ID_NEW.TREE_CTRL, 'TreeCtrl', 'Create tree'),
              (ID_NEW.LIST_CTRL, 'ListCtrl', 'Create list'),
-             (ID_NEW.CHECK_LIST, 'CheckList', 'Create check list'),
              (ID_NEW.SCROLLED_WINDOW, 'ScrolledWindow', 'Create scrolled window'),
              (ID_NEW.HTML_WINDOW, 'HtmlWindow', 'Create HTML window'),
              (ID_NEW.CALENDAR_CTRL, 'CalendarCtrl', 'Create calendar control'),
+             (ID_NEW.DATE_CTRL, 'DatePickerCtrl', 'Create date picker control'),
              (ID_NEW.GENERIC_DIR_CTRL, 'GenericDirCtrl', 'Create generic dir control'),
              (ID_NEW.UNKNOWN, 'Unknown', 'Create custom control placeholder'),
              ],
@@ -247,12 +288,17 @@ class PullDownMenu:
              (ID_NEW.RADIO_BOX, 'RadioBox', 'Create radio box'),
              (ID_NEW.COMBO_BOX, 'ComboBox', 'Create combo box'),
              (ID_NEW.LIST_BOX, 'ListBox', 'Create list box'),
+             (ID_NEW.CHECK_LIST, 'CheckListBox', 'Create checklist box'),
              ],
             ['container', 'Containers',
              (ID_NEW.PANEL, 'Panel', 'Create panel'),
              (ID_NEW.NOTEBOOK, 'Notebook', 'Create notebook control'),
+             (ID_NEW.CHOICEBOOK, 'Choicebook', 'Create choicebook control'),
+             (ID_NEW.LISTBOOK, 'Listbook', 'Create listbook control'),
              (ID_NEW.SPLITTER_WINDOW, 'SplitterWindow', 'Create splitter window'),
              (ID_NEW.TOOL_BAR, 'ToolBar', 'Create toolbar'),
+             (ID_NEW.STATUS_BAR, 'StatusBar', 'Create status bar'),
+             (ID_NEW.MENU_BAR, 'MenuBar', 'Create menubar'),
 #             (ID_NEW.WIZARD_PAGE, 'Wizard Page', 'Create wizard page'),
              (ID_NEW.WIZARD_PAGE_SIMPLE, 'WizardPageSimple', 'Create simple wizard page'),
              ],
@@ -288,7 +334,6 @@ class PullDownMenu:
              (ID_NEW.GAUGE, 'Gauge', 'Create gauge'),
              (ID_NEW.SCROLL_BAR, 'ScrollBar', 'Create scroll bar'),
              (ID_NEW.LIST_CTRL, 'ListCtrl', 'Create list control'),
-             (ID_NEW.CHECK_LIST, 'CheckList', 'Create check list'),
              ],
             ['button', 'Buttons',
              (ID_NEW.BUTTON, 'Button', 'Create button'),
@@ -302,35 +347,48 @@ class PullDownMenu:
              (ID_NEW.RADIO_BOX, 'RadioBox', 'Create radio box'),
              (ID_NEW.COMBO_BOX, 'ComboBox', 'Create combo box'),
              (ID_NEW.LIST_BOX, 'ListBox', 'Create list box'),
+             (ID_NEW.CHECK_LIST, 'CheckListBox', 'Create checklist box'),
              ],
             ]
+        self.stdButtons = [
+            (ID_NEW.OK_BUTTON, 'OK Button', 'Create standard button'),
+            (ID_NEW.YES_BUTTON, 'YES Button', 'Create standard button'),
+            (ID_NEW.SAVE_BUTTON, 'SAVE Button',  'Create standard button'),
+            (ID_NEW.APPLY_BUTTON, 'APPLY Button',  'Create standard button'),
+            (ID_NEW.NO_BUTTON, 'NO Button',  'Create standard button'),
+            (ID_NEW.CANCEL_BUTTON, 'CANCEL Button',  'Create standard button'),
+            (ID_NEW.HELP_BUTTON, 'HELP Button',  'Create standard button'),
+            (ID_NEW.CONTEXT_HELP_BUTTON, 'CONTEXT HELP Button', 'Create standard button'),
+            ]
+        self.stdButtonIDs = {
+            ID_NEW.OK_BUTTON: ('wxID_OK', '&Ok'),
+            ID_NEW.YES_BUTTON: ('wxID_YES', '&Yes'),
+            ID_NEW.SAVE_BUTTON: ('wxID_SAVE', '&Save'),
+            ID_NEW.APPLY_BUTTON: ('wxID_APPLY', '&Apply'),
+            ID_NEW.NO_BUTTON: ('wxID_NO', '&No'),
+            ID_NEW.CANCEL_BUTTON: ('wxID_CANCEL', '&Cancel'),
+            ID_NEW.HELP_BUTTON: ('wxID_HELP', '&Help'),
+            ID_NEW.CONTEXT_HELP_BUTTON: ('wxID_CONTEXT_HELP', '&Help'),
+            }
+            
+
 
 ################################################################################
 
 # Set menu to list items.
 # Each menu command is a tuple (id, label, help)
 # submenus are lists [id, label, help, submenu]
-# and separators are any other type
-def SetMenu(m, list):
-    for l in list:
-        if type(l) == types.TupleType:
-            apply(m.Append, l)
-        elif type(l) == types.ListType:
-            subMenu = wxMenu()
-            SetMenu(subMenu, l[2:])
-            m.AppendMenu(wxNewId(), l[0], subMenu, l[1])
-        else:                           # separator
-            m.AppendSeparator()
-# Same, but adds 1000 to all IDs
-def SetMenu2(m, list):
+# and separators are any other type. Shift is for making
+# alternative sets of IDs. (+1000).
+def SetMenu(m, list, shift=False):
     for l in list:
         if type(l) == types.TupleType:
             # Shift ID
-            l = (1000 + l[0],) + l[1:]
+            if shift:  l = (1000 + l[0],) + l[1:]
             apply(m.Append, l)
         elif type(l) == types.ListType:
             subMenu = wxMenu()
-            SetMenu2(subMenu, l[2:])
+            SetMenu(subMenu, l[2:], shift)
             m.AppendMenu(wxNewId(), l[0], subMenu, l[1])
         else:                           # separator
             m.AppendSeparator()
@@ -370,7 +428,7 @@ class HighLightBox:
 
 class XML_Tree(wxTreeCtrl):
     def __init__(self, parent, id):
-        wxTreeCtrl.__init__(self, parent, id, style = wxTR_HAS_BUTTONS)
+        wxTreeCtrl.__init__(self, parent, id, style = wxTR_HAS_BUTTONS | wxTR_MULTIPLE)
         self.SetBackgroundColour(wxColour(224, 248, 224))
         # Register events
         EVT_TREE_SEL_CHANGED(self, self.GetId(), self.OnSelChanged)
@@ -384,6 +442,7 @@ class XML_Tree(wxTreeCtrl):
         EVT_TREE_ITEM_COLLAPSED(self, self.GetId(), self.OnItemExpandedCollapsed)
 
         self.selection = None
+	self.selectionChanging = False
         self.needUpdate = False
         self.pendingHighLight = None
         self.ctrl = self.shift = False
@@ -416,11 +475,6 @@ class XML_Tree(wxTreeCtrl):
         EVT_ENTER_WINDOW(self, g.tools.OnMouse)
         EVT_LEAVE_WINDOW(self, g.tools.OnMouse)
 
-    def Unselect(self):
-        self.selection = None
-        wxTreeCtrl.Unselect(self)
-        g.tools.UpdateUI()
-
     def ExpandAll(self, item):
         if self.ItemHasChildren(item):
             self.Expand(item)
@@ -444,6 +498,8 @@ class XML_Tree(wxTreeCtrl):
 
     # Clear tree
     def Clear(self):
+        self.selection = None
+        self.UnselectAll()
         self.DeleteAllItems()
         # Add minimal structure
         if self.dom: self.dom.unlink()
@@ -456,11 +512,14 @@ class XML_Tree(wxTreeCtrl):
         self.root = self.AddRoot('XML tree', self.rootImage,
                                  data=wxTreeItemData(self.rootObj))
         self.SetItemHasChildren(self.root)
-        self.Unselect()
+        self.testElem = self.dom.createElement('dummy')
+        self.mainNode.appendChild(self.testElem)
         self.Expand(self.root)
 
     # Clear old data and set new
     def SetData(self, dom):
+        self.selection = None
+        self.UnselectAll()
         self.DeleteAllItems()
         # Add minimal structure
         if self.dom: self.dom.unlink()
@@ -479,11 +538,16 @@ class XML_Tree(wxTreeCtrl):
             else:
                 self.mainNode.removeChild(node)
                 node.unlink()
+        if self.mainNode.firstChild:
+            self.testElem = self.dom.createElement('dummy')
+            self.mainNode.insertBefore(self.testElem, self.mainNode.firstChild)
+        else:
+            self.testElem = self.dom.createElement('dummy')
+            self.mainNode.appendChild(self.testElem)
         self.Expand(self.root)
-        self.Unselect()
 
     # Add tree item for given parent item if node is DOM element node with
-    # 'object' tag. xxxParent is parent xxx object
+    # object/object_ref tag. xxxParent is parent xxx object
     def AddNode(self, itemParent, xxxParent, node):
         # Set item data to current node
         try:
@@ -496,6 +560,9 @@ class XML_Tree(wxTreeCtrl):
         item = self.AppendItem(itemParent, treeObj.treeName(),
                                image=treeObj.treeImage(),
                                data=wxTreeItemData(xxx))
+        # Different color for references
+        if treeObj.ref:
+            self.SetItemTextColour(item, 'DarkGreen')
         # Try to find children objects
         if treeObj.hasChildren:
             nodes = treeObj.element.childNodes[:]
@@ -523,6 +590,8 @@ class XML_Tree(wxTreeCtrl):
             parent.element.appendChild(elem)
             newItem = self.AppendItem(itemParent, xxx.treeName(), image=xxx.treeImage(),
                                       data=wxTreeItemData(xxx))
+        # Different color for references
+        if xxx.treeObject().ref:  self.SetItemTextColour(newItem, 'DarkGreen')
         # Add children items
         if xxx.hasChildren:
             treeObj = xxx.treeObject()
@@ -542,19 +611,20 @@ class XML_Tree(wxTreeCtrl):
         self.selection = None
         return node
     # Find position relative to the top-level window
-    def FindNodePos(self, item):
+    def FindNodePos(self, item, obj=None):
         # Root at (0,0)
         if item == g.testWin.item: return wxPoint(0, 0)
         itemParent = self.GetItemParent(item)
-        # Select NB page
-        obj = self.FindNodeObject(item)
-        if self.GetPyData(itemParent).treeObject().__class__ == xxxNotebook:
-            notebook = self.FindNodeObject(itemParent)
+        # Select book page
+        if not obj: obj = self.FindNodeObject(item)
+        if self.GetPyData(itemParent).treeObject().__class__ in \
+               [xxxNotebook, xxxChoicebook, xxxListbook]:
+            book = self.FindNodeObject(itemParent)
             # Find position
-            for i in range(notebook.GetPageCount()):
-                if notebook.GetPage(i) == obj:
-                    if notebook.GetSelection() != i:
-                        notebook.SetSelection(i)
+            for i in range(book.GetPageCount()):
+                if book.GetPage(i) == obj:
+                    if book.GetSelection() != i:
+                        book.SetSelection(i)
                         # Remove highlight - otherwise highlight window won't be visible
                         if g.testWin.highLight:
                             g.testWin.highLight.Remove()
@@ -584,6 +654,22 @@ class XML_Tree(wxTreeCtrl):
         # Top-level sizer? return window's sizer
         if xxx.isSizer and isinstance(parentWin, wxWindow):
             return parentWin.GetSizer()
+        elif xxx.__class__ in [xxxStatusBar, xxxMenu, xxxMenuItem, xxxSeparator]:  return None
+        elif xxx.__class__ in [xxxToolBar, xxxMenuBar]:
+            # If it's the main toolbar or menubar, we can't really select it
+            if xxx.parent.__class__ == xxxFrame:  return None
+        elif isinstance(xxx.parent, xxxToolBar):
+            # Select complete toolbar
+            return parentWin
+        elif isinstance(xxx.parent, xxxStdDialogButtonSizer):
+            # This sizer returns non-existing children
+            for ch in parentWin.GetChildren():
+                if ch.GetWindow() and ch.GetWindow().GetName() == xxx.name:
+                    return ch.GetWindow()
+            return None
+        elif xxx.parent.__class__ in [xxxChoicebook, xxxListbook]:
+            # First window is controld
+            return parentWin.GetChildren()[self.ItemIndex(item)+1]
         # Otherwise get parent's object and it's child
         child = parentWin.GetChildren()[self.ItemIndex(item)]
         # Return window or sizer for sizer items
@@ -591,13 +677,17 @@ class XML_Tree(wxTreeCtrl):
             if child.IsWindow(): child = child.GetWindow()
             elif child.IsSizer():
                 child = child.GetSizer()
-                # Test for notebook sizers
+                # Test for notebook sizers (deprecated)
                 if isinstance(child, wxNotebookSizer):
-                    child = child.GetNotebook()
+                    child = child.GetNotebook()        
         return child
 
     def OnSelChanged(self, evt):
-        self.ChangeSelection(evt.GetItem())
+        if self.selectionChanging: return
+	self.selectionChanging = True
+        self.UnselectAll()
+        self.SelectItem(evt.GetItem())
+	self.selectionChanging = False
 
     def ChangeSelection(self, item):
         # Apply changes
@@ -650,7 +740,9 @@ class XML_Tree(wxTreeCtrl):
             if g.testWin.highLight: g.testWin.highLight.Remove()
             return
         # Get window/sizer object
-        obj, pos = self.FindNodeObject(item), self.FindNodePos(item)
+        obj = self.FindNodeObject(item)
+        if not obj: return
+        pos = self.FindNodePos(item, obj)
         size = obj.GetSize()
         # Highlight
         # Negative positions are not working quite well
@@ -665,18 +757,29 @@ class XML_Tree(wxTreeCtrl):
         xxx = self.GetPyData(item)
         if g.panel.IsModified():
             self.Apply(xxx, item)       # apply changes
-        treeObj = xxx.treeObject()
-        if treeObj.className not in ['wxFrame', 'wxPanel', 'wxDialog',
-                                     'wxMenuBar', 'wxToolBar', 'wxWizard',
-                                     'wxWizardPageSimple']:
+        availableViews = ['wxFrame', 'wxPanel', 'wxDialog',  
+                          'wxMenuBar', 'wxToolBar', 'wxWizard',  
+                          'wxWizardPageSimple']
+        originalItem = item
+        # Walk up the tree until we find an item that has a view
+        while item and self.GetPyData(item).treeObject().className not in availableViews:
+            item = self.GetItemParent(item)
+        if not item or not item.IsOk():
             wxLogMessage('No view for this element (yet)')
             return
         # Show item in bold
         if g.testWin:     # Reset old
             self.SetItemBold(g.testWin.item, False)
-        self.CreateTestWin(item)
+        try:
+            wxBeginBusyCursor()
+            self.CreateTestWin(item)
+        finally:
+            wxEndBusyCursor()
         # Maybe an error occurred, so we need to test
-        if g.testWin: self.SetItemBold(g.testWin.item)
+        if g.testWin:
+            self.SetItemBold(g.testWin.item)
+            # Select original item
+            self.ChangeSelection(originalItem)
 
     # Double-click on Linux
     def OnItemActivated(self, evt):
@@ -714,8 +817,6 @@ class XML_Tree(wxTreeCtrl):
 #                self.CreateTestWin(child)
 #                return
 
-        wxBeginBusyCursor()
-        wxYield()
         # Close old window, remember where it was
         highLight = None
         if testWin:
@@ -740,43 +841,31 @@ class XML_Tree(wxTreeCtrl):
             pos = g.testWinPos
         # Save in memory FS
         memFile = MemoryFile('xxx.xrc')
-        # Create partial XML file - faster for big files
-
-        dom = MyDocument()
-        mainNode = dom.createElement('resource')
-        dom.appendChild(mainNode)
-
-        # Remove temporarily from old parent
-        elem = xxx.element
-        # Change window id to _XRCED_T_W. This gives some name for
-        # unnamed windows, and for named gives the possibility to
-        # write sawfish scripts.
+        # Create memory XML file
+        elem = xxx.element.cloneNode(True)
         if not xxx.name:
             name = 'noname'
         else:
             name = xxx.name
         elem.setAttribute('name', STD_NAME)
+        oldTestNode = self.testElem
+        self.testElem = elem
+        self.mainNode.replaceChild(elem, oldTestNode)
+        oldTestNode.unlink()
         # Replace wizard page class temporarily
         if xxx.__class__ in [xxxWizardPage, xxxWizardPageSimple]:
             oldCl = elem.getAttribute('class')
             elem.setAttribute('class', 'wxPanel')
         parent = elem.parentNode
-        next = elem.nextSibling
-        parent.replaceChild(self.dummyNode, elem)
-        # Append to new DOM, write it
-        mainNode.appendChild(elem)
-        dom.writexml(memFile, encoding=self.rootObj.params['encoding'].value())
-        # Put back in place
-        mainNode.removeChild(elem)
-        dom.unlink()
-        parent.replaceChild(elem, self.dummyNode)
-        # Remove temporary name or restore changed
-        if not xxx.name:
-            elem.removeAttribute('name')
-        else:
-            elem.setAttribute('name', xxx.name)
-        if xxx.__class__ in [xxxWizardPage, xxxWizardPageSimple]:
-            elem.setAttribute('class', oldCl)            
+        encd = self.rootObj.params['encoding'].value()
+        if not encd: encd = None
+        try:
+            self.dom.writexml(memFile, encoding=encd)
+        except:
+            inf = sys.exc_info()
+            wxLogError(traceback.format_exception(inf[0], inf[1], None)[-1])
+            wxLogError('Error writing temporary file')
+            if debug: raise            
         memFile.close()                 # write to wxMemoryFS
         xmlFlags = wxXRC_NO_SUBCLASSING
         # Use translations if encoding is not specified
@@ -800,7 +889,7 @@ class XML_Tree(wxTreeCtrl):
                 res.LoadOnFrame(testWin, g.frame, STD_NAME)
                 # Create status bar
                 testWin.panel = testWin
-                testWin.CreateStatusBar()
+                #testWin.CreateStatusBar()
                 testWin.SetClientSize(testWin.GetBestSize())
                 testWin.SetPosition(pos)
                 testWin.Show(True)
@@ -881,7 +970,6 @@ class XML_Tree(wxTreeCtrl):
             wxLogError(traceback.format_exception(inf[0], inf[1], None)[-1])
             wxLogError('Error loading resource')
         wxMemoryFSHandler_RemoveFile('xxx.xrc')
-        wxEndBusyCursor()
 
     def CloseTestWindow(self):
         if not g.testWin: return
@@ -928,6 +1016,14 @@ class XML_Tree(wxTreeCtrl):
             return False
         return not (self.IsExpanded(item) and self.GetChildrenCount(item, False))
 
+    # Override to use like single-selection tree
+    def GetSelection(self):
+        return self.selection
+    def SelectItem(self, item):
+        self.UnselectAll()
+        self.ChangeSelection(item)
+        wxTreeCtrl.SelectItem(self, item)
+
     # Pull-down
     def OnRightDown(self, evt):
         pullDownMenu = g.pullDownMenu
@@ -954,6 +1050,8 @@ class XML_Tree(wxTreeCtrl):
                 needInsert = self.NeedInsert(item)
             if item == self.root or needInsert and self.GetItemParent(item) == self.root:
                 SetMenu(m, pullDownMenu.topLevel)
+                m.AppendSeparator()
+                m.Append(ID_NEW.REF, 'reference...', 'Create object_ref node')
             else:
                 xxx = self.GetPyData(item).treeObject()
                 # Check parent for possible child nodes if inserting sibling
@@ -965,12 +1063,18 @@ class XML_Tree(wxTreeCtrl):
                     SetMenu(m, pullDownMenu.toolBarControls)
                 elif xxx.__class__ in [xxxMenu, xxxMenuItem]:
                     SetMenu(m, pullDownMenu.menuControls)
+                elif xxx.__class__ == xxxStdDialogButtonSizer:
+                    SetMenu(m, pullDownMenu.stdButtons)
                 else:
                     SetMenu(m, pullDownMenu.controls)
-                    if xxx.__class__ == xxxNotebook:
+                    if xxx.__class__ in [xxxNotebook, xxxChoicebook, xxxListbook]:
                         m.Enable(m.FindItem('sizer'), False)
                     elif not (xxx.isSizer or xxx.parent and xxx.parent.isSizer):
                         m.Enable(ID_NEW.SPACER, False)
+                    if xxx.__class__ is not xxxFrame:
+                        m.Enable(ID_NEW.MENU_BAR, False)
+                m.AppendSeparator()
+                m.Append(ID_NEW.REF, 'reference...', 'Create object_ref node')
             # Select correct label for create menu
             if not needInsert:
                 if self.shift:
@@ -993,24 +1097,24 @@ class XML_Tree(wxTreeCtrl):
                 if xxx.__class__ == xxxMenuBar:
                     m.Append(1000 + ID_NEW.MENU, 'Menu', 'Create menu')
                 elif xxx.__class__ in [xxxMenu, xxxMenuItem]:
-                    SetMenu2(m, pullDownMenu.menuControls)
+                    SetMenu(m, pullDownMenu.menuControls, shift=True)
                 elif xxx.__class__ == xxxToolBar and \
                          self.GetItemParent(item) == self.root:
-                    SetMenu2(m, [])
+                    SetMenu(m, [], shift=True)
                 elif xxx.__class__ in [xxxFrame, xxxDialog, xxxPanel]:
-                    SetMenu2(m, [
+                    SetMenu(m, [
                         (ID_NEW.PANEL, 'Panel', 'Create panel'),
                         (ID_NEW.DIALOG, 'Dialog', 'Create dialog'),
-                        (ID_NEW.FRAME, 'Frame', 'Create frame')])
+                        (ID_NEW.FRAME, 'Frame', 'Create frame')], shift=True)
                 elif xxx.isSizer:
-                    SetMenu2(m, pullDownMenu.sizers)
+                    SetMenu(m, pullDownMenu.sizers, shift=True)
                 else:
-                    SetMenu2(m, pullDownMenu.controls)
+                    SetMenu(m, pullDownMenu.controls, shift=True)
                 id = wxNewId()
                 menu.AppendMenu(id, 'Replace With', m)
                 if not m.GetMenuItemCount(): menu.Enable(id, False)
                 menu.Append(pullDownMenu.ID_SUBCLASS, 'Subclass...',
-                            'Set subclass property')
+                            'Set "subclass" property')
             menu.AppendSeparator()
             # Not using standart IDs because we don't want to show shortcuts
             menu.Append(wxID_CUT, 'Cut', 'Cut to the clipboard')
@@ -1043,5 +1147,5 @@ class XML_Tree(wxTreeCtrl):
         if isinstance(xxx, xxxBoxSizer):
             self.SetItemImage(item, xxx.treeImage())
         # Set global modified state
-        g.frame.modified = True
+        g.frame.SetModified()
 

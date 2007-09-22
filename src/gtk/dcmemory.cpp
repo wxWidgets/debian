@@ -2,7 +2,7 @@
 // Name:        dcmemory.cpp
 // Purpose:
 // Author:      Robert Roebling
-// RCS-ID:      $Id: dcmemory.cpp,v 1.25 2004/08/21 22:48:45 VS Exp $
+// RCS-ID:      $Id: dcmemory.cpp,v 1.26.2.1 2006/01/02 15:44:55 MW Exp $
 // Copyright:   (c) 1998 Robert Roebling
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -33,6 +33,9 @@ wxMemoryDC::wxMemoryDC() : wxWindowDC()
     
 #ifdef __WXGTK20__
     m_context = gdk_pango_context_get();
+    // Note: The Sun customised version of Pango shipping with Solaris 10
+    // crashes if the language is left NULL (see bug 1374114)
+    pango_context_set_language( m_context, gtk_get_default_language() );
     m_layout = pango_layout_new( m_context );
     m_fontdesc = pango_font_description_copy( pango_context_get_font_description( m_context ) );
 #endif
@@ -47,6 +50,7 @@ wxMemoryDC::wxMemoryDC( wxDC *WXUNUSED(dc) )
     
 #ifdef __WXGTK20__
     m_context = gdk_pango_context_get();
+    pango_context_set_language( m_context, gtk_get_default_language() );
     m_layout = pango_layout_new( m_context );
     m_fontdesc = pango_font_description_copy( pango_context_get_font_description( m_context ) );
 #endif
@@ -54,6 +58,9 @@ wxMemoryDC::wxMemoryDC( wxDC *WXUNUSED(dc) )
 
 wxMemoryDC::~wxMemoryDC()
 {
+#ifdef __WXGTK20__
+    g_object_unref(m_context);
+#endif
 }
 
 void wxMemoryDC::SelectObject( const wxBitmap& bitmap )

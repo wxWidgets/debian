@@ -2,7 +2,7 @@
 // Name:        dcscreen.h
 // Purpose:
 // Author:      Robert Roebling
-// Id:          $Id: dcscreen.h,v 1.10 2004/05/23 20:50:53 JS Exp $
+// Id:          $Id: dcscreen.h,v 1.11 2005/08/02 22:57:54 MW Exp $
 // Copyright:   (c) 1998 Robert Roebling
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -16,13 +16,13 @@
 // classes
 //-----------------------------------------------------------------------------
 
-class wxScreenDC;
+class WXDLLIMPEXP_CORE wxScreenDC;
 
 //-----------------------------------------------------------------------------
 // wxScreenDC
 //-----------------------------------------------------------------------------
 
-class wxScreenDC : public wxPaintDC
+class WXDLLIMPEXP_CORE wxScreenDC : public wxPaintDC
 {
 public:
     wxScreenDC();

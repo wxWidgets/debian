@@ -6,7 +6,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     01/02/97
-// RCS-ID:      $Id: private.h,v 1.142 2005/06/19 23:48:43 VZ Exp $
+// RCS-ID:      $Id: private.h,v 1.147 2005/08/04 20:31:06 VZ Exp $
 // Copyright:   (c) Julian Smart
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -107,22 +107,6 @@ extern WXDLLIMPEXP_DATA_BASE(HINSTANCE) wxhInstance;
     #define DLGPROC FARPROC
 #endif
 #endif
-
-#if wxUSE_PENWIN
-    WXDLLEXPORT void wxRegisterPenWin();
-    WXDLLEXPORT void wxCleanUpPenWin();
-    WXDLLEXPORT void wxEnablePenAppHooks (bool hook);
-#endif // wxUSE_PENWIN
-
-#if wxUSE_ITSY_BITSY
-    #define IBS_HORZCAPTION    0x4000L
-    #define IBS_VERTCAPTION    0x8000L
-
-    UINT    WINAPI ibGetCaptionSize( HWND hWnd  ) ;
-    UINT    WINAPI ibSetCaptionSize( HWND hWnd, UINT nSize ) ;
-    LRESULT WINAPI ibDefWindowProc( HWND hWnd, UINT uiMsg, WPARAM wParam, LPARAM lParam ) ;
-    VOID    WINAPI ibAdjustWindowRect( HWND hWnd, LPRECT lprc ) ;
-#endif // wxUSE_ITSY_BITSY
 
 /*
  * Decide what window classes we're going to use
@@ -535,13 +519,40 @@ private:
     DECLARE_NO_COPY_CLASS(HDCClipper)
 };
 
-// when working with global pointers (which is unfortunately still necessary
-// sometimes, e.g. for clipboard) it is important to unlock them exactly as
-// many times as we lock them which just asks for using a "smart lock" class
+// smart buffeer using GlobalAlloc/GlobalFree()
 class GlobalPtr
 {
 public:
-    GlobalPtr(HGLOBAL hGlobal) : m_hGlobal(hGlobal)
+    // allocates a block of given size
+    GlobalPtr(size_t size, unsigned flags = GMEM_MOVEABLE)
+    {
+        m_hGlobal = ::GlobalAlloc(flags, size);
+        if ( !m_hGlobal )
+            wxLogLastError(_T("GlobalAlloc"));
+    }
+
+    ~GlobalPtr()
+    {
+        if ( m_hGlobal && ::GlobalFree(m_hGlobal) )
+            wxLogLastError(_T("GlobalFree"));
+    }
+
+    // implicit conversion
+    operator HGLOBAL() const { return m_hGlobal; }
+
+private:
+    HGLOBAL m_hGlobal;
+
+    DECLARE_NO_COPY_CLASS(GlobalPtr)
+};
+
+// when working with global pointers (which is unfortunately still necessary
+// sometimes, e.g. for clipboard) it is important to unlock them exactly as
+// many times as we lock them which just asks for using a "smart lock" class
+class GlobalPtrLock
+{
+public:
+    GlobalPtrLock(HGLOBAL hGlobal) : m_hGlobal(hGlobal)
     {
         m_ptr = GlobalLock(hGlobal);
         if ( !m_ptr )
@@ -550,7 +561,7 @@ public:
         }
     }
 
-    ~GlobalPtr()
+    ~GlobalPtrLock()
     {
         if ( !GlobalUnlock(m_hGlobal) )
         {
@@ -571,7 +582,7 @@ private:
     HGLOBAL m_hGlobal;
     void *m_ptr;
 
-    DECLARE_NO_COPY_CLASS(GlobalPtr)
+    DECLARE_NO_COPY_CLASS(GlobalPtrLock)
 };
 
 // register the class when it is first needed and unregister it in dtor
@@ -790,9 +801,6 @@ inline bool wxStyleHasBorder(long style)
     return (style & (wxSIMPLE_BORDER | wxRAISED_BORDER |
                      wxSUNKEN_BORDER | wxDOUBLE_BORDER)) != 0;
 }
-
-// Deferred window moving
-bool wxMoveWindowDeferred(HDWP& hdwp, wxWindowBase* win, HWND hWnd, int x, int y, int width, int height);
 
 // ----------------------------------------------------------------------------
 // functions mapping HWND to wxWindow

@@ -3,7 +3,7 @@
 // Purpose:
 // Author:      Robert Roebling
 // Created:
-// Id:          $Id: popupwin.h,v 1.9 2004/05/23 20:50:54 JS Exp $
+// Id:          $Id: popupwin.h,v 1.10 2005/08/02 22:57:56 MW Exp $
 // Copyright:   (c) 2001 Robert Roebling
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -23,7 +23,7 @@
 // wxPopUpWindow
 //-----------------------------------------------------------------------------
 
-class wxPopupWindow: public wxPopupWindowBase
+class WXDLLIMPEXP_CORE wxPopupWindow: public wxPopupWindowBase
 {
 public:
     wxPopupWindow() { }

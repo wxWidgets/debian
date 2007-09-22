@@ -3,7 +3,7 @@
 // Purpose:     XRC resources
 // Author:      Vaclav Slavik
 // Created:     2000/03/05
-// RCS-ID:      $Id: xmlres.cpp,v 1.70 2005/05/31 22:31:13 VS Exp $
+// RCS-ID:      $Id: xmlres.cpp,v 1.72.2.4 2006/03/04 18:55:38 VZ Exp $
 // Copyright:   (c) 2000 Vaclav Slavik
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -84,6 +84,46 @@ wxXmlResource::~wxXmlResource()
 }
 
 
+/* static */
+wxString wxXmlResource::ConvertFileNameToURL(const wxString& filename)
+{
+    wxString fnd(filename);
+
+    // NB: as Load() and Unload() accept both filenames and URLs (should
+    //     probably be changed to filenames only, but embedded resources
+    //     currently rely on its ability to handle URLs - FIXME) we need to
+    //     determine whether found name is filename and not URL and this is the
+    //     fastest/simplest way to do it
+    if (wxFileName::FileExists(fnd))
+    {
+        // Make the name absolute filename, because the app may
+        // change working directory later:
+        wxFileName fn(fnd);
+        if (fn.IsRelative())
+        {
+            fn.MakeAbsolute();
+            fnd = fn.GetFullPath();
+        }
+#if wxUSE_FILESYSTEM
+        fnd = wxFileSystem::FileNameToURL(fnd);
+#endif
+    }
+
+    return fnd;
+}
+
+#if wxUSE_FILESYSTEM
+
+/* static */
+bool wxXmlResource::IsArchive(const wxString& filename)
+{
+    const wxString fnd = filename.Lower();
+
+    return fnd.Matches(wxT("*.zip")) || fnd.Matches(wxT("*.xrs"));
+}
+
+#endif // wxUSE_FILESYSTEM
+
 bool wxXmlResource::Load(const wxString& filemask)
 {
     wxString fnd;
@@ -105,34 +145,15 @@ bool wxXmlResource::Load(const wxString& filemask)
         fnd = filemask;
     while (!fnd.empty())
     {
-        // NB: Load() accepts both filenames and URLs (should probably be
-        //     changed to filenames only, but embedded resources currently
-        //     rely on its ability to handle URLs - FIXME). This check
-        //     serves as a quick way to determine whether found name is
-        //     filename and not URL:
-        if (wxFileName::FileExists(fnd))
-        {
-            // Make the name absolute filename, because the app may
-            // change working directory later:
-            wxFileName fn(fnd);
-            if (fn.IsRelative())
-            {
-                fn.MakeAbsolute();
-                fnd = fn.GetFullPath();
-            }
-#if wxUSE_FILESYSTEM
-            fnd = wxFileSystem::FileNameToURL(fnd);
-#endif
-        }
+        fnd = ConvertFileNameToURL(fnd);
 
 #if wxUSE_FILESYSTEM
-        if (fnd.Lower().Matches(wxT("*.zip")) ||
-            fnd.Lower().Matches(wxT("*.xrs")))
+        if ( IsArchive(fnd) )
         {
             rt = rt && Load(fnd + wxT("#zip:*.xrc"));
         }
-        else
-#endif
+        else // a single resource URL
+#endif // wxUSE_FILESYSTEM
         {
             drec = new wxXmlResourceDataRecord;
             drec->File = fnd;
@@ -147,6 +168,46 @@ bool wxXmlResource::Load(const wxString& filemask)
 #   undef wxXmlFindFirst
 #   undef wxXmlFindNext
     return rt && UpdateResources();
+}
+
+bool wxXmlResource::Unload(const wxString& filename)
+{
+    wxASSERT_MSG( !wxIsWild(filename),
+                    _T("wildcards not supported by wxXmlResource::Unload()") );
+
+    wxString fnd = ConvertFileNameToURL(filename);
+#if wxUSE_FILESYSTEM
+    const bool isArchive = IsArchive(fnd);
+    if ( isArchive )
+        fnd += _T("#zip:");
+#endif // wxUSE_FILESYSTEM
+
+    bool unloaded = false;
+    const size_t count = m_data.GetCount();
+    for ( size_t i = 0; i < count; i++ )
+    {
+#if wxUSE_FILESYSTEM
+        if ( isArchive )
+        {
+            if ( m_data[i].File.StartsWith(fnd) )
+                unloaded = true;
+            // don't break from the loop, we can have other matching files
+        }
+        else // a single resource URL
+#endif // wxUSE_FILESYSTEM
+        {
+            if ( m_data[i].File == fnd )
+            {
+                m_data.RemoveAt(i);
+                unloaded = true;
+
+                // no sense in continuing, there is only one file with this URL
+                break;
+            }
+        }
+    }
+
+    return unloaded;
 }
 
 
@@ -719,19 +780,24 @@ void wxXmlResourceHandler::AddStyle(const wxString& name, int value)
 void wxXmlResourceHandler::AddWindowStyles()
 {
     XRC_ADD_STYLE(wxCLIP_CHILDREN);
-    XRC_ADD_STYLE(wxSIMPLE_BORDER);
-    XRC_ADD_STYLE(wxSUNKEN_BORDER);
-    XRC_ADD_STYLE(wxDOUBLE_BORDER);
-    XRC_ADD_STYLE(wxRAISED_BORDER);
-    XRC_ADD_STYLE(wxSTATIC_BORDER);
-    XRC_ADD_STYLE(wxNO_BORDER);
+
+    // the border styles all have the old and new names, recognize both for now
+    XRC_ADD_STYLE(wxSIMPLE_BORDER); XRC_ADD_STYLE(wxBORDER_SIMPLE);
+    XRC_ADD_STYLE(wxSUNKEN_BORDER); XRC_ADD_STYLE(wxBORDER_SUNKEN);
+    XRC_ADD_STYLE(wxDOUBLE_BORDER); XRC_ADD_STYLE(wxBORDER_DOUBLE);
+    XRC_ADD_STYLE(wxRAISED_BORDER); XRC_ADD_STYLE(wxBORDER_RAISED);
+    XRC_ADD_STYLE(wxSTATIC_BORDER); XRC_ADD_STYLE(wxBORDER_STATIC);
+    XRC_ADD_STYLE(wxNO_BORDER);     XRC_ADD_STYLE(wxBORDER_NONE);
+
     XRC_ADD_STYLE(wxTRANSPARENT_WINDOW);
     XRC_ADD_STYLE(wxWANTS_CHARS);
     XRC_ADD_STYLE(wxTAB_TRAVERSAL);
     XRC_ADD_STYLE(wxNO_FULL_REPAINT_ON_RESIZE);
     XRC_ADD_STYLE(wxFULL_REPAINT_ON_RESIZE);
+    XRC_ADD_STYLE(wxALWAYS_SHOW_SB);
     XRC_ADD_STYLE(wxWS_EX_BLOCK_EVENTS);
     XRC_ADD_STYLE(wxWS_EX_VALIDATE_RECURSIVELY);
+    XRC_ADD_STYLE(wxALWAYS_SHOW_SB);
 }
 
 
@@ -1033,8 +1099,11 @@ wxBitmap wxXmlResourceHandler::GetBitmap(const wxString& param,
         return wxNullBitmap;
     }
     if (!(size == wxDefaultSize)) img.Rescale(size.x, size.y);
+#if !defined(__WXMSW__) || wxUSE_WXDIB
     return wxBitmap(img);
-
+#else
+    return wxBitmap();
+#endif
 }
 
 
@@ -1356,6 +1425,8 @@ void wxXmlResourceHandler::SetupWindow(wxWindow *wnd)
 #endif
     if (HasParam(wxT("font")))
         wnd->SetFont(GetFont());
+    if (HasParam(wxT("help")))
+        wnd->SetHelpText(GetText(wxT("help")));
 }
 
 

@@ -3,7 +3,7 @@
 // Purpose:     STC test Preferences initialization
 // Maintainer:  Wyo
 // Created:     2003-09-01
-// RCS-ID:      $Id: prefs.cpp,v 1.3 2004/05/25 11:14:03 JS Exp $
+// RCS-ID:      $Id: prefs.cpp,v 1.4 2005/09/16 18:25:44 ABX Exp $
 // Copyright:   (c) wxGuide
 // Licence:     wxWindows licence
 //////////////////////////////////////////////////////////////////////////////
@@ -13,7 +13,7 @@
 //----------------------------------------------------------------------------
 
 // For compilers that support precompilation, includes <wx/wx.h>.
-#include <wx/wxprec.h>
+#include "wx/wxprec.h"
 
 #ifdef __BORLANDC__
     #pragma hdrstop
@@ -22,7 +22,7 @@
 // for all others, include the necessary headers (this file is usually all you
 // need because it includes almost all 'standard' wxWidgets headers)
 #ifndef WX_PRECOMP
-    #include <wx/wx.h>
+    #include "wx/wx.h"
 #endif
 
 //! wxWidgets headers
@@ -376,4 +376,3 @@ const StyleInfo g_StylePrefs [] = {
     };
 
 const int g_StylePrefsSize = WXSIZEOF(g_StylePrefs);
-

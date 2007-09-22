@@ -2,7 +2,7 @@
 // Name:        m_layout.cpp
 // Purpose:     wxHtml module for basic paragraphs/layout handling
 // Author:      Vaclav Slavik
-// RCS-ID:      $Id: m_layout.cpp,v 1.37 2005/04/22 15:12:46 MW Exp $
+// RCS-ID:      $Id: m_layout.cpp,v 1.37.2.1 2006/01/21 16:46:41 JS Exp $
 // Copyright:   (c) 1999 Vaclav Slavik
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -344,9 +344,11 @@ TAG_HANDLER_BEGIN(BODY, "BODY")
                 wxInputStream *is = fileBgImage->GetStream();
                 if ( is )
                 {
+#if !defined(__WXMSW__) || wxUSE_WXDIB
                     wxImage image(*is);
                     if ( image.Ok() )
                         m_WParser->GetWindow()->SetBackgroundImage(image);
+#endif                    
                 }
             }
         }

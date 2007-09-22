@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     01/02/97
-// RCS-ID:      $Id: listctrl.h,v 1.54 2005/02/19 19:24:44 VZ Exp $
+// RCS-ID:      $Id: listctrl.h,v 1.55.2.3 2006/03/10 21:37:30 RD Exp $
 // Copyright:   (c) Julian Smart
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -161,6 +161,9 @@ public:
 
     // Sets the item image
     bool SetItemImage(long item, int image, int selImage = -1) ;
+#if wxABI_VERSION >= 20603
+    bool SetItemColumnImage(long item, long column, int image);
+#endif
 
     // Gets the item text
     wxString GetItemText(long item) const ;
@@ -199,6 +202,12 @@ public:
     // Background colour of an item.
     void SetItemBackgroundColour( long item, const wxColour &col);
     wxColour GetItemBackgroundColour( long item ) const;
+
+#if wxABI_VERSION >= 20602
+    // Font of an item.
+    void SetItemFont( long item, const wxFont &f);
+    wxFont GetItemFont( long item ) const;
+#endif
 
     // Gets the number of selected items in the list control
     int GetSelectedItemCount() const;

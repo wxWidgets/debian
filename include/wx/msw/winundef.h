@@ -4,7 +4,7 @@
 // Author:      Vadim Zeitlin
 // Modified by:
 // Created:     16.05.99
-// RCS-ID:      $Id: winundef.h,v 1.35 2004/12/13 21:30:39 VZ Exp $
+// RCS-ID:      $Id: winundef.h,v 1.37 2005/09/02 15:54:06 VS Exp $
 // Copyright:   (c) wxWidgets team
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -338,10 +338,9 @@
 
 #ifdef IsMaximized
     #undef IsMaximized
-    inline BOOL IsMaximized(HWND hwnd)
+    inline BOOL IsMaximized(HWND WXUNUSED_IN_WINCE(hwnd))
     {
 #ifdef __WXWINCE__
-        wxUnusedVar(hwnd);
         return FALSE;
 #else
         return IsZoomed(hwnd);
@@ -353,14 +352,33 @@
 
 #ifdef GetFirstChild
     #undef GetFirstChild
-    inline HWND GetFirstChild(HWND hwnd)
+    inline HWND GetFirstChild(HWND WXUNUSED_IN_WINCE(hwnd))
     {
 #ifdef __WXWINCE__
-        wxUnusedVar(hwnd);
         return 0;
 #else
         return GetTopWindow(hwnd);
 #endif
+    }
+#endif
+
+// GetFirstSibling
+
+#ifdef GetFirstSibling
+    #undef GetFirstSibling
+    inline HWND GetFirstSibling(HWND hwnd)
+    {
+        return GetWindow(hwnd,GW_HWNDFIRST);
+    }
+#endif
+
+// GetLastSibling
+
+#ifdef GetLastSibling
+    #undef GetLastSibling
+    inline HWND GetLastSibling(HWND hwnd)
+    {
+        return GetWindow(hwnd,GW_HWNDLAST);
     }
 #endif
 

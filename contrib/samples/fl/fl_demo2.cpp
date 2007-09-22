@@ -4,7 +4,7 @@
 // Author:      Aleksandras Gluchovas
 // Modified by: Sebastian Haase (June 21, 2001)
 // Created:     04/11/98
-// RCS-ID:      $Id: fl_demo2.cpp,v 1.9 2004/07/19 15:10:23 ABX Exp $
+// RCS-ID:      $Id: fl_demo2.cpp,v 1.10 2005/07/22 16:43:04 MR Exp $
 // Copyright:   (c) Aleksandras Gluchovas
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -622,7 +622,7 @@ wxWindow* MyFrame::CreateDevLayout( wxFrameLayout& layout, wxWindow* pParent )
 {
     bool isNested = (pParent != mpInternalFrm);
 
-    // check if we're craeting nested layout
+    // check if we're creating nested layout
     if ( isNested )
     {
         layout.mBorderPen.SetColour( 128,255,128 );

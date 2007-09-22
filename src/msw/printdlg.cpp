@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     04/01/98
-// RCS-ID:      $Id: printdlg.cpp,v 1.32 2005/06/13 12:19:28 ABX Exp $
+// RCS-ID:      $Id: printdlg.cpp,v 1.33.2.1 2006/01/17 09:52:53 JS Exp $
 // Copyright:   (c) Julian Smart
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -176,12 +176,38 @@ bool wxWindowsPrintNativeData::TransferTo( wxPrintData &data )
         if (devMode->dmFields & DM_COPIES)
             data.SetNoCopies( devMode->dmCopies );
 
-        if (devMode->dmFields & DM_DEFAULTSOURCE)
-            data.SetBin( (wxPrintBin)devMode->dmDefaultSource );
+        //// Bin
+        if (devMode->dmFields & DM_DEFAULTSOURCE) {
+            switch (devMode->dmDefaultSource) {
+                case DMBIN_ONLYONE        : data.SetBin(wxPRINTBIN_ONLYONE       ); break;
+                case DMBIN_LOWER          : data.SetBin(wxPRINTBIN_LOWER         ); break;
+                case DMBIN_MIDDLE         : data.SetBin(wxPRINTBIN_MIDDLE        ); break;
+                case DMBIN_MANUAL         : data.SetBin(wxPRINTBIN_MANUAL        ); break;
+                case DMBIN_ENVELOPE       : data.SetBin(wxPRINTBIN_ENVELOPE      ); break;
+                case DMBIN_ENVMANUAL      : data.SetBin(wxPRINTBIN_ENVMANUAL     ); break;
+                case DMBIN_AUTO           : data.SetBin(wxPRINTBIN_AUTO          ); break;
+                case DMBIN_TRACTOR        : data.SetBin(wxPRINTBIN_TRACTOR       ); break;
+                case DMBIN_SMALLFMT       : data.SetBin(wxPRINTBIN_SMALLFMT      ); break;
+                case DMBIN_LARGEFMT       : data.SetBin(wxPRINTBIN_LARGEFMT      ); break;
+                case DMBIN_LARGECAPACITY  : data.SetBin(wxPRINTBIN_LARGECAPACITY ); break;
+                case DMBIN_CASSETTE       : data.SetBin(wxPRINTBIN_CASSETTE      ); break;
+                case DMBIN_FORMSOURCE     : data.SetBin(wxPRINTBIN_FORMSOURCE    ); break;
+                default:
+                    if (devMode->dmDefaultSource>=DMBIN_USER) {
+                        data.SetBin((wxPrintBin)((devMode->dmDefaultSource)-DMBIN_USER+(int)wxPRINTBIN_USER));
+                    } else {
+                        data.SetBin(wxPRINTBIN_DEFAULT);
+                    }
+                    break;
+            }
+        } else {
+            data.SetBin(wxPRINTBIN_DEFAULT);
+        }
 
         //// Printer name
         if (devMode->dmDeviceName[0] != 0)
-            data.SetPrinterName( devMode->dmDeviceName );
+            // This syntax fixes a crash when using VS 7.1
+            data.SetPrinterName( wxString(devMode->dmDeviceName, CCHDEVICENAME) );
 
         //// Colour
         if (devMode->dmFields & DM_COLOR)
@@ -228,22 +254,24 @@ bool wxWindowsPrintNativeData::TransferTo( wxPrintData &data )
             }
         }
 
-        if (!foundPaperSize && (devMode->dmFields & DM_PAPERWIDTH) && (devMode->dmFields & DM_PAPERLENGTH))
-        {
-            // DEVMODE is in tenths of a milimeter
-            data.SetPaperSize( wxSize(devMode->dmPaperWidth / 10, devMode->dmPaperLength / 10) );
-            data.SetPaperId( wxPAPER_NONE );
-            m_customWindowsPaperId = devMode->dmPaperSize;
-        }
-        else
-        {
-            // Often will reach this for non-standard paper sizes (sizes which
-            // wouldn't be in wxWidget's paper database). Setting
-            // m_customWindowsPaperId to devMode->dmPaperSize should be enough
-            // to get this paper size working.
-            data.SetPaperSize( wxSize(0,0) );
-            data.SetPaperId( wxPAPER_NONE );
-            m_customWindowsPaperId = devMode->dmPaperSize;
+        if (!foundPaperSize) {
+            if ((devMode->dmFields & DM_PAPERWIDTH) && (devMode->dmFields & DM_PAPERLENGTH))
+            {
+                // DEVMODE is in tenths of a millimeter
+                data.SetPaperSize( wxSize(devMode->dmPaperWidth / 10, devMode->dmPaperLength / 10) );
+                data.SetPaperId( wxPAPER_NONE );
+                m_customWindowsPaperId = devMode->dmPaperSize;
+            }
+            else
+            {
+                // Often will reach this for non-standard paper sizes (sizes which
+                // wouldn't be in wxWidget's paper database). Setting
+                // m_customWindowsPaperId to devMode->dmPaperSize should be enough
+                // to get this paper size working.
+                data.SetPaperSize( wxSize(0,0) );
+                data.SetPaperId( wxPAPER_NONE );
+                m_customWindowsPaperId = devMode->dmPaperSize;
+            }
         }
 
         //// Duplex
@@ -518,7 +546,7 @@ bool wxWindowsPrintNativeData::TransferFrom( const wxPrintData &data )
                 case wxPRINTBIN_FORMSOURCE:     devMode->dmDefaultSource = DMBIN_FORMSOURCE;    break;
 
                 default:
-                    devMode->dmDefaultSource = (short)(DMBIN_USER + data.GetBin() - wxPRINTBIN_USER);
+                    devMode->dmDefaultSource = (short)(DMBIN_USER + data.GetBin() - wxPRINTBIN_USER); // 256 + data.GetBin() - 14 = 242 + data.GetBin()
                     break;
             }
 

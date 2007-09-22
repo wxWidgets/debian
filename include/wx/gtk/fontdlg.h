@@ -3,7 +3,7 @@
 // Purpose:     wxFontDialog
 // Author:      Robert Roebling
 // Created:
-// RCS-ID:      $Id: fontdlg.h,v 1.7 2004/05/23 20:50:53 JS Exp $
+// RCS-ID:      $Id: fontdlg.h,v 1.8 2005/08/02 22:57:55 MW Exp $
 // Copyright:   (c) Robert Roebling
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -19,7 +19,7 @@
 // wxFontDialog
 //-----------------------------------------------------------------------------
 
-class wxFontDialog : public wxFontDialogBase
+class WXDLLIMPEXP_CORE wxFontDialog : public wxFontDialogBase
 {
 public:
     wxFontDialog() : wxFontDialogBase() { /* must be Create()d later */ }

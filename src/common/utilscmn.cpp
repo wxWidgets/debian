@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     29/01/98
-// RCS-ID:      $Id: utilscmn.cpp,v 1.143 2005/06/10 17:53:13 ABX Exp $
+// RCS-ID:      $Id: utilscmn.cpp,v 1.145.2.1 2005/10/06 13:29:33 VZ Exp $
 // Copyright:   (c) 1998 Julian Smart
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -553,12 +553,13 @@ bool wxLaunchDefaultBrowser(const wxString& url)
         wxRegKey keyDDE(key, wxT("DDEExec"));
         if ( keyDDE.Exists() )
         {
-            wxString ddeTopic = wxRegKey(keyDDE, wxT("topic"));
+            wxRegKey keyTopic(keyDDE, wxT("topic"));
+            wxString ddeTopic = keyTopic.QueryDefaultValue();
 
             // we only know the syntax of WWW_OpenURL DDE request
             if ( ddeTopic == wxT("WWW_OpenURL") )
             {
-                wxString ddeCmd = keyDDE;
+                wxString ddeCmd = keyDDE.QueryDefaultValue();
 
                 // this is a bit naive but should work as -1 can't appear
                 // elsewhere in the DDE topic, normally
@@ -583,7 +584,7 @@ bool wxLaunchDefaultBrowser(const wxString& url)
     //Try wxExecute - if it doesn't work or the regkey stuff
     //above failed, fallback to opening the file in the same
     //browser window
-    if ( command.empty() || wxExecute(command) == -1)
+    if ( command.empty() || !wxExecute(command) )
     {
         int nResult; //HINSTANCE error code
 
@@ -604,7 +605,7 @@ bool wxLaunchDefaultBrowser(const wxString& url)
             (LPShellExecute) ::GetProcAddress(hShellDll,
             wxString::Format(wxT("ShellExecute%s"),
 
-#ifdef __WXUNICODE__
+#if wxUSE_UNICODE
             wxT("W")
 #else
             wxT("A")
@@ -690,7 +691,7 @@ bool wxLaunchDefaultBrowser(const wxString& url)
 
     if (ok)
     {
-        if( wxExecute (cmd, wxEXEC_ASYNC) == -1 )
+        if ( !wxExecute(cmd) )
         {
             wxLogError(_T("Failed to launch application for wxLaunchDefaultBrowser"));
             return false;
@@ -700,7 +701,7 @@ bool wxLaunchDefaultBrowser(const wxString& url)
     {
         // fallback to checking for the BROWSER environment variable
         cmd = wxGetenv(wxT("BROWSER"));
-        if ( cmd.empty() || wxExecute(cmd + wxT(" ") + finalurl) == -1)
+        if ( cmd.empty() || !wxExecute(cmd + wxT(" ") + finalurl) )
             return false;
     }
 
@@ -1155,4 +1156,3 @@ bool wxSetDetectableAutoRepeat( bool WXUNUSED(flag) )
 #endif // !wxGTK
 
 #endif // wxUSE_GUI
-

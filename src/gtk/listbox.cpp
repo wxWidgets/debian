@@ -2,7 +2,7 @@
 // Name:        listbox.cpp
 // Purpose:
 // Author:      Robert Roebling
-// Id:          $Id: listbox.cpp,v 1.152 2005/03/21 23:42:17 VZ Exp $
+// Id:          $Id: listbox.cpp,v 1.152.2.1 2006/03/21 20:23:16 JS Exp $
 // Copyright:   (c) 1998 Robert Roebling
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -242,6 +242,9 @@ gtk_listbox_button_press_callback( GtkWidget *widget,
     }
 #endif // wxUSE_CHECKLISTBOX
 
+    /* emit wxEVT_COMMAND_LISTBOX_DOUBLECLICKED later */
+    g_hasDoubleClicked = (gdk_event->type == GDK_2BUTTON_PRESS);
+
     if ((gdk_event->state == 0) &&
          (((listbox->GetWindowStyleFlag() & wxLB_MULTIPLE) != 0) ||
           ((listbox->GetWindowStyleFlag() & wxLB_EXTENDED) != 0)) )
@@ -257,9 +260,6 @@ gtk_listbox_button_press_callback( GtkWidget *widget,
             
             return false;
     }
-
-    /* emit wxEVT_COMMAND_LISTBOX_DOUBLECLICKED later */
-    g_hasDoubleClicked = (gdk_event->type == GDK_2BUTTON_PRESS);
 
     return FALSE;
 }

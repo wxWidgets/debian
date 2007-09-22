@@ -2,7 +2,7 @@
 // Name:        wx/gtk/pen.h
 // Purpose:
 // Author:      Robert Roebling
-// Id:          $Id: pen.h,v 1.19 2004/05/23 20:50:54 JS Exp $
+// Id:          $Id: pen.h,v 1.20 2005/08/02 22:57:56 MW Exp $
 // Copyright:   (c) 1998 Robert Roebling
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -25,7 +25,7 @@
 // classes
 //-----------------------------------------------------------------------------
 
-class wxPen;
+class WXDLLIMPEXP_CORE wxPen;
 
 #if defined(__WXGTK127__) || defined(__WXGTK20__)
 typedef    gint8 wxGTKDash;
@@ -37,7 +37,7 @@ typedef    gchar wxGTKDash;
 // wxPen
 //-----------------------------------------------------------------------------
 
-class wxPen: public wxGDIObject
+class WXDLLIMPEXP_CORE wxPen: public wxGDIObject
 {
 public:
     wxPen() { }

@@ -3,7 +3,7 @@
 // Purpose:     Declarations for parts of the Win32 SDK that are missing in
 //              the versions that come with some compilers
 // Created:     2002/04/23
-// RCS-ID:      $Id: missing.h,v 1.54 2005/06/17 10:34:49 ABX Exp $
+// RCS-ID:      $Id: missing.h,v 1.55.2.3 2006/03/07 16:20:47 JS Exp $
 // Copyright:   (c) 2002 Mattia Barbon
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -34,12 +34,18 @@
     #define WM_UPDATEUISTATE    0x0128
 #endif
 
+#ifndef WM_CHANGEUISTATE
+    #define WM_CHANGEUISTATE    0x0127
+#endif
+
 #ifndef WM_PRINTCLIENT
     #define WM_PRINTCLIENT 0x318
 #endif
 
 // Needed by toplevel.cpp
-#ifndef UIS_INITIALIZE
+#ifndef UIS_SET
+    #define UIS_SET         1
+    #define UIS_CLEAR       2
     #define UIS_INITIALIZE  3
 #endif
 
@@ -103,6 +109,14 @@
     #define LVS_EX_LABELTIP 0x00004000
 #endif
 
+#ifndef LVS_EX_SUBITEMIMAGES
+    #define LVS_EX_SUBITEMIMAGES 0x00000002
+#endif
+
+#ifndef HDN_GETDISPINFOW
+    #define HDN_GETDISPINFOW (HDN_FIRST-29)
+#endif
+
  /*
   * In addition to the above, the following are required for several compilers.
   */
@@ -119,6 +133,31 @@
     #define CFM_BACKCOLOR 0x04000000
 #endif
 
+#ifndef HANGUL_CHARSET
+    #define HANGUL_CHARSET 129
+#endif
+
+#ifndef CCM_SETUNICODEFORMAT
+    #define CCM_SETUNICODEFORMAT 8197
+#endif
+
+// ----------------------------------------------------------------------------
+// Tree control
+// ----------------------------------------------------------------------------
+
+#ifndef TV_FIRST
+    #define TV_FIRST                0x1100
+#endif
+
+#ifndef TVS_FULLROWSELECT
+    #define TVS_FULLROWSELECT       0x1000
+#endif
+
+#ifndef TVM_SETBKCOLOR
+    #define TVM_SETBKCOLOR          (TV_FIRST + 29)
+    #define TVM_SETTEXTCOLOR        (TV_FIRST + 30)
+#endif
+
  /*
   * The following are required for BC++ 5.5 (none at present.)
   */
@@ -128,10 +167,6 @@
   */
 
 #ifdef __DMC__
-
-#ifndef CCM_SETUNICODEFORMAT
-    #define CCM_SETUNICODEFORMAT 8197
-#endif
 
 #ifdef __DMC__
     #ifndef _TrackMouseEvent
@@ -156,10 +191,6 @@
     #define HDM_GETITEMRECT (HDM_FIRST+7)
 #endif
 
-#ifndef HDN_GETDISPINFOW
-    #define HDN_GETDISPINFOW (HDN_FIRST-29)
-#endif
-
 #ifndef ListView_GetHeader
     #define ListView_GetHeader(w) (HWND)SendMessage((w),LVM_GETHEADER,0,0)
 #endif
@@ -181,21 +212,8 @@
     #define TVIS_FOCUSED            0x0001
 #endif
 
-#ifndef TV_FIRST
-    #define TV_FIRST                0x1100
-#endif
-
 #ifndef TVS_CHECKBOXES
     #define TVS_CHECKBOXES          0x0100
-#endif
-
-#ifndef TVS_FULLROWSELECT
-    #define TVS_FULLROWSELECT       0x1000
-#endif
-
-#ifndef TVM_SETBKCOLOR
-    #define TVM_SETBKCOLOR          (TV_FIRST + 29)
-    #define TVM_SETTEXTCOLOR        (TV_FIRST + 30)
 #endif
 
 #ifndef TVITEM

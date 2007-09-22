@@ -2,7 +2,7 @@
 // Name:        unix/execute.h
 // Purpose:     private details of wxExecute() implementation
 // Author:      Vadim Zeitlin
-// Id:          $Id: execute.h,v 1.8 2004/10/24 07:36:09 DE Exp $
+// Id:          $Id: execute.h,v 1.9 2005/08/02 22:58:05 MW Exp $
 // Copyright:   (c) 1998 Robert Roebling, Julian Smart, Vadim Zeitlin
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -12,7 +12,7 @@
 
 #include "wx/unix/pipe.h"
 
-class wxProcess;
+class WXDLLIMPEXP_BASE wxProcess;
 class wxStreamTempInputBuffer;
 
 // if pid > 0, the execution is async and the data is freed in the callback
@@ -65,11 +65,11 @@ struct wxExecuteData
 
 // this function is called when the process terminates from port specific
 // callback function and is common to all ports (src/unix/utilsunx.cpp)
-extern void wxHandleProcessTermination(wxEndProcessData *proc_data);
+extern WXDLLIMPEXP_BASE void wxHandleProcessTermination(wxEndProcessData *proc_data);
 
 // this function is called to associate the port-specific callback with the
 // child process. The return valus is port-specific.
-extern int wxAddProcessCallback(wxEndProcessData *proc_data, int fd);
+extern WXDLLIMPEXP_CORE int wxAddProcessCallback(wxEndProcessData *proc_data, int fd);
 
 #if defined(__DARWIN__) && (defined(__WXMAC__) || defined(__WXCOCOA__))
 // For ports (e.g. DARWIN) which can add callbacks based on the pid

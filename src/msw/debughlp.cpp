@@ -4,7 +4,7 @@
 // Author:      Vadim Zeitlin
 // Modified by:
 // Created:     2005-01-08 (extracted from crashrpt.cpp)
-// RCS-ID:      $Id: debughlp.cpp,v 1.5 2005/05/05 20:15:35 VZ Exp $
+// RCS-ID:      $Id: debughlp.cpp,v 1.9.2.1 2006/01/21 16:46:44 JS Exp $
 // Copyright:   (c) 2003-2005 Vadim Zeitlin <vadim@wxwindows.org>
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -25,7 +25,15 @@
 
 #include "wx/msw/debughlp.h"
 
-#if wxUSE_DBGHELP
+#if wxUSE_DBGHELP && wxUSE_DYNLIB_CLASS
+
+// ----------------------------------------------------------------------------
+// constants
+// ----------------------------------------------------------------------------
+
+// to prevent recursion which could result from corrupted data we limit
+// ourselves to that many levels of embedded fields inside structs
+static const unsigned MAX_DUMP_DEPTH = 20;
 
 // ----------------------------------------------------------------------------
 // globals
@@ -286,7 +294,7 @@ wxDbgHelpDLL::DumpField(PSYMBOL_INFO pSym, void *pVariable, unsigned level)
     wxString s;
 
     // avoid infinite recursion
-    if ( level > 100 )
+    if ( level > MAX_DUMP_DEPTH )
     {
         return s;
     }
@@ -390,7 +398,25 @@ wxDbgHelpDLL::DumpUDT(PSYMBOL_INFO pSym, void *pVariable, unsigned level)
     if ( s == _T("wxString") )
     {
         wxString *ps = (wxString *)pVariable;
-        s << _T("(\"") << *ps << _T(")\"");
+
+        // we can't just dump wxString directly as it could be corrupted or
+        // invalid and it could also be locked for writing (i.e. if we're
+        // between GetWriteBuf() and UngetWriteBuf() calls) and assert when we
+        // try to access it contents using public methods, so instead use our
+        // knowledge of its internals
+        const wxChar *p = NULL;
+        if ( !::IsBadReadPtr(ps, sizeof(wxString)) )
+        {
+            p = ps->data();
+            wxStringData *data = (wxStringData *)p - 1;
+            if ( ::IsBadReadPtr(data, sizeof(wxStringData)) ||
+                    ::IsBadReadPtr(p, sizeof(wxChar *)*data->nAllocLength) )
+            {
+                p = NULL; // don't touch this pointer with 10 feet pole
+            }
+        }
+
+        s << _T("(\"") << (p ? p : _T("???")) << _T(")\"");
     }
     else // any other UDT
 #endif // !wxUSE_STL

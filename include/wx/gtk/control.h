@@ -2,7 +2,7 @@
 // Name:        control.h
 // Purpose:
 // Author:      Robert Roebling
-// Id:          $Id: control.h,v 1.28 2005/03/21 23:42:11 VZ Exp $
+// Id:          $Id: control.h,v 1.29 2005/08/02 22:57:53 MW Exp $
 // Copyright:   (c) 1998 Robert Roebling, Julian Smart
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -23,7 +23,7 @@
 // classes
 //-----------------------------------------------------------------------------
 
-class wxControl;
+class WXDLLIMPEXP_CORE wxControl;
 
 //-----------------------------------------------------------------------------
 // wxControl
@@ -36,7 +36,7 @@ extern "C" {
     typedef GtkWidget* (*wxGtkWidgetNewFromAdj_t)(GtkAdjustment*);
 }
 
-class wxControl : public wxControlBase
+class WXDLLIMPEXP_CORE wxControl : public wxControlBase
 {
 public:
     wxControl();

@@ -2,7 +2,7 @@
 // Name:        htmltag.cpp
 // Purpose:     wxHtmlTag class (represents single tag)
 // Author:      Vaclav Slavik
-// RCS-ID:      $Id: htmltag.cpp,v 1.47 2005/05/31 09:20:13 JS Exp $
+// RCS-ID:      $Id: htmltag.cpp,v 1.49 2005/07/22 17:08:42 ABX Exp $
 // Copyright:   (c) 1999 Vaclav Slavik
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -114,14 +114,14 @@ wxHtmlTagsCache::wxHtmlTagsCache(const wxString& source)
             else
             {
                 m_Cache[tg].End1 = m_Cache[tg].End2 = -1;
-                
+
                 if (wxIsCDATAElement(tagBuffer))
                 {
                     // store the orig pos in case we are missing the closing
                     // tag (see below)
-                    wxInt32 old_pos = pos; 
+                    wxInt32 old_pos = pos;
                     bool foundCloseTag = false;
-                    
+
                     // find next matching tag
                     int tag_len = wxStrlen(tagBuffer);
                     while (pos < lng)
@@ -152,7 +152,7 @@ wxHtmlTagsCache::wxHtmlTagsCache(const wxString& source)
                         }
 
                         // found a match
-                        if (match_pos == tag_len) 
+                        if (match_pos == tag_len)
                         {
                             pos = pos - tag_len - 3;
                             foundCloseTag = true;
@@ -194,6 +194,16 @@ void wxHtmlTagsCache::QueryTag(int at, int* end1, int* end2)
         int delta = (at < m_Cache[m_CachePos].Key) ? -1 : 1;
         do
         {
+            if ( m_CachePos < 0 || m_CachePos == m_CacheSize )
+            {
+                // something is very wrong with HTML, give up by returning an
+                // impossibly large value which is going to be ignored by the
+                // caller
+                *end1 =
+                *end2 = INT_MAX;
+                return;
+            }
+
             m_CachePos += delta;
         }
         while (m_Cache[m_CachePos].Key != at);
@@ -355,12 +365,12 @@ wxHtmlTag::wxHtmlTag(wxHtmlTag *parent,
         }
 
         #undef IS_WHITE
-   }
-   m_Begin = i;
+    }
+    m_Begin = i;
 
-   cache->QueryTag(pos, &m_End1, &m_End2);
-   if (m_End1 > end_pos) m_End1 = end_pos;
-   if (m_End2 > end_pos) m_End2 = end_pos;
+    cache->QueryTag(pos, &m_End1, &m_End2);
+    if (m_End1 > end_pos) m_End1 = end_pos;
+    if (m_End2 > end_pos) m_End2 = end_pos;
 }
 
 wxHtmlTag::~wxHtmlTag()

@@ -4,7 +4,7 @@
 // Author:      Vadim Zeitlin
 // Modified by:
 // Created:     01.10.99
-// RCS-ID:      $Id: fontenum.cpp,v 1.23 2004/06/06 15:31:29 VS Exp $
+// RCS-ID:      $Id: fontenum.cpp,v 1.25 2005/08/29 04:33:15 MR Exp $
 // Copyright:   (c) Vadim Zeitlin
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -52,7 +52,7 @@ cmp_families (const void *a, const void *b)
 {
   const char *a_name = pango_font_family_get_name (*(PangoFontFamily **)a);
   const char *b_name = pango_font_family_get_name (*(PangoFontFamily **)b);
-  
+
   return g_utf8_collate (a_name, b_name);
 }
 
@@ -60,9 +60,13 @@ cmp_families (const void *a, const void *b)
 bool wxFontEnumerator::EnumerateFacenames(wxFontEncoding encoding,
                                           bool fixedWidthOnly)
 {
-#ifndef HAVE_PANGO_FONT_FAMILY_IS_MONOSPACE
-    if ( fixedWidthOnly )
-    {
+#if defined(__WXGTK20__) || !defined(HAVE_PANGO_FONT_FAMILY_IS_MONOSPACE)
+    if ( fixedWidthOnly
+#if defined(__WXGTK24__)
+        && (gtk_check_version(2,4,0) != NULL)
+#endif
+       )
+{
         OnFacename( wxT("monospace") );
     }
     else
@@ -81,17 +85,22 @@ bool wxFontEnumerator::EnumerateFacenames(wxFontEncoding encoding,
 
         for (int i=0; i<n_families; i++)
         {
-#ifdef HAVE_PANGO_FONT_FAMILY_IS_MONOSPACE
-            if (!fixedWidthOnly ||
-                pango_font_family_is_monospace(families[i]))
+#if defined(__WXGTK24__) || defined(HAVE_PANGO_FONT_FAMILY_IS_MONOSPACE)
+            if (!fixedWidthOnly || (
+#ifdef __WXGTK24__
+                !gtk_check_version(2,4,0) &&
+#endif
+                pango_font_family_is_monospace(families[i])
+                                   ) )
 #endif
             {
                 const gchar *name = pango_font_family_get_name(families[i]);
                 OnFacename(wxString(name, wxConvUTF8));
             }
         }
+        g_free(families);
     }
-    
+
     return TRUE;
 }
 

@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     04/01/98
-// RCS-ID:      $Id: app.cpp,v 1.234 2005/06/20 00:23:44 VZ Exp $
+// RCS-ID:      $Id: app.cpp,v 1.238.2.2 2006/02/11 14:57:10 JS Exp $
 // Copyright:   (c) Julian Smart
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -87,12 +87,27 @@
 #include "wx/msw/wince/missing.h"
 #endif
 
-// For DLLVER_PLATFORM_WINDOWS
-#if (!defined(__MINGW32__) || wxCHECK_W32API_VERSION( 2, 0 )) && \
-    !defined(__CYGWIN__) && !defined(__DIGITALMARS__) && !defined(__WXWINCE__) && \
-    (!defined(_MSC_VER) || (_MSC_VER > 1100))
-    #include <shlwapi.h>
-#endif
+// instead of including <shlwapi.h> which is not part of the core SDK and not
+// shipped at all with other compilers, we always define the parts of it we
+// need here ourselves
+//
+// NB: DLLVER_PLATFORM_WINDOWS will be defined if shlwapi.h had been somehow
+//     included already
+#ifndef DLLVER_PLATFORM_WINDOWS
+    // hopefully we don't need to change packing as DWORDs should be already
+    // correctly aligned
+    struct DLLVERSIONINFO
+    {
+        DWORD cbSize;
+        DWORD dwMajorVersion;                   // Major version
+        DWORD dwMinorVersion;                   // Minor version
+        DWORD dwBuildNumber;                    // Build number
+        DWORD dwPlatformID;                     // DLLVER_PLATFORM_*
+    };
+
+    typedef HRESULT (CALLBACK* DLLGETVERSIONPROC)(DLLVERSIONINFO *);
+#endif // defined(DLLVERSIONINFO)
+
 
 // ---------------------------------------------------------------------------
 // global variables
@@ -289,13 +304,15 @@ bool wxApp::Initialize(int& argc, wxChar **argv)
     SHInitExtraControls();
 #endif
 
+#ifndef __WXWINCE__
+    // Don't show a message box if a function such as SHGetFileInfo
+    // fails to find a device.
+    SetErrorMode(SEM_FAILCRITICALERRORS|SEM_NOOPENFILEERRORBOX);
+#endif
+    
     wxOleInitialize();
 
     RegisterWindowClasses();
-
-#if wxUSE_PENWINDOWS
-    wxRegisterPenWin();
-#endif
 
     wxWinHandleHash = new wxWinHashTable(wxKEY_INTEGER, 100);
 
@@ -462,10 +479,6 @@ void wxApp::CleanUp()
     wxSetKeyboardHook(false);
 #endif
 
-#if wxUSE_PENWINDOWS
-    wxCleanUpPenWin();
-#endif
-
     wxOleUninitialize();
 
     // for an EXE the classes are unregistered when it terminates but DLL may
@@ -586,24 +599,14 @@ int wxApp::GetComCtl32Version()
         // we're prepared to handle the errors
         wxLogNull noLog;
 
+#if wxUSE_DYNLIB_CLASS
         // do we have it?
         wxDynamicLibrary dllComCtl32(_T("comctl32.dll"), wxDL_VERBATIM);
 
         // if so, then we can check for the version
         if ( dllComCtl32.IsLoaded() )
         {
-#ifndef DLLVER_PLATFORM_WINDOWS
-			typedef struct _DllVersionInfo
-			{
-				DWORD cbSize;
-				DWORD dwMajorVersion;                   // Major version
-				DWORD dwMinorVersion;                   // Minor version
-				DWORD dwBuildNumber;                    // Build number
-				DWORD dwPlatformID;                     // DLLVER_PLATFORM_*
-			} DLLVERSIONINFO;
-			typedef HRESULT (CALLBACK* DLLGETVERSIONPROC)(DLLVERSIONINFO *);
-#endif
-            // try to use DllGetVersion() if available in _headers_
+            // now check if the function is available during run-time
             wxDYNLIB_FUNCTION( DLLGETVERSIONPROC, DllGetVersion, dllComCtl32 );
             if ( pfnDllGetVersion )
             {
@@ -654,6 +657,7 @@ int wxApp::GetComCtl32Version()
                 }
             }
         }
+#endif        
     }
 
     return s_verComCtl32;

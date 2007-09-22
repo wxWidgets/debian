@@ -1,7 +1,7 @@
 /*
  *  isql.h
  *
- *  $Id: isql.h,v 1.8 2005/04/16 09:45:32 JS Exp $
+ *  $Id: isql.h,v 1.9 2005/09/16 11:22:35 JS Exp $
  *
  *  iODBC defines
  *
@@ -48,6 +48,7 @@ typedef short int SWORD;
 typedef unsigned long int UDWORD;
 typedef unsigned short int UWORD;
 typedef long SQLINTEGER;
+typedef UDWORD SQLUINTEGER;
 
 typedef void FAR *PTR;
 typedef void FAR *HENV;

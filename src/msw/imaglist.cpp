@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     04/01/98
-// RCS-ID:      $Id: imaglist.cpp,v 1.29 2005/05/31 09:20:31 JS Exp $
+// RCS-ID:      $Id: imaglist.cpp,v 1.29.2.2 2006/01/21 16:46:45 JS Exp $
 // Copyright:   (c) Julian Smart
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -214,7 +214,7 @@ bool wxImageList::Replace(int index,
 // Replaces a bitmap and mask from an icon.
 bool wxImageList::Replace(int i, const wxIcon& icon)
 {
-    bool ok = ImageList_ReplaceIcon(GetHImageList(), i, GetHiconOf(icon)) != 0;
+    bool ok = ImageList_ReplaceIcon(GetHImageList(), i, GetHiconOf(icon)) != -1;
     if ( !ok )
     {
         wxLogLastError(wxT("ImageList_ReplaceIcon()"));
@@ -297,6 +297,7 @@ bool wxImageList::Draw(int index,
 // Get the bitmap
 wxBitmap wxImageList::GetBitmap(int index) const
 {
+#if wxUSE_WXDIB
     int bmp_width = 0, bmp_height = 0;
     GetSize(index, bmp_width, bmp_height);
 
@@ -327,7 +328,9 @@ wxBitmap wxImageList::GetBitmap(int index) const
     image = bitmap.ConvertToImage();
     image.SetMaskColour(r, g, b);
     bitmap = wxBitmap(image);
-    
+#else
+    wxBitmap bitmap;
+#endif    
     return bitmap;
 }
 

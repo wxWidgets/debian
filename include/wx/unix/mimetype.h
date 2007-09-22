@@ -4,7 +4,7 @@
 // Author:      Vadim Zeitlin
 // Modified by:
 // Created:     23.09.98
-// RCS-ID:      $Id: mimetype.h,v 1.15 2004/05/23 20:51:50 JS Exp $
+// RCS-ID:      $Id: mimetype.h,v 1.16.2.1 2006/03/17 15:05:06 RR Exp $
 // Copyright:   (c) 1998 Vadim Zeitlin <zeitlin@dptmaths.ens-cachan.fr>
 // Licence:     wxWindows licence (part of wxExtra library)
 /////////////////////////////////////////////////////////////////////////////
@@ -18,11 +18,11 @@
 
 #include "wx/mimetype.h"
 
-#if (wxUSE_FILE && wxUSE_TEXTFILE)
+#if wxUSE_MIMETYPE
 
 class wxMimeTypeCommands;
 
-WX_DEFINE_ARRAY(wxMimeTypeCommands *, wxMimeCommandsArray);
+WX_DEFINE_ARRAY_PTR(wxMimeTypeCommands *, wxMimeCommandsArray);
 
 // this is the real wxMimeTypesManager for Unix
 class WXDLLEXPORT wxMimeTypesManagerImpl
@@ -97,11 +97,6 @@ private:
     void LoadGnomeMimeFilesFromDir(const wxString& dirbase,
                                    const wxArrayString& dirs);
     void GetGnomeMimeInfo(const wxString& sExtraDir);
-
-    // write gnome files
-    bool CheckGnomeDirsExist();
-    bool WriteGnomeKeyFile(int index, bool delete_index);
-    bool WriteGnomeMimeFile(int index, bool delete_index);
 
     // read KDE
     void LoadKDELinksForMimeSubtype(const wxString& dirbase,
@@ -215,9 +210,8 @@ private:
     wxArrayInt              m_index; // in the wxMimeTypesManagerImpl arrays
 };
 
-#endif
-  // wxUSE_FILE
+#endif // wxUSE_MIMETYPE
 
-#endif
-  //_MIMETYPE_IMPL_H
+#endif // _MIMETYPE_IMPL_H
+
 

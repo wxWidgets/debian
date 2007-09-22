@@ -4,7 +4,7 @@
 // Author:      Robert Roebling
 // Modified by:
 // Created:     1998
-// RCS-ID:      $Id: image.cpp,v 1.105 2005/06/13 12:19:18 ABX Exp $
+// RCS-ID:      $Id: image.cpp,v 1.107.2.1 2006/01/29 15:37:57 RR Exp $
 // Copyright:   (c) 1998-2005 Robert Roebling
 // License:     wxWindows licence
 ///////////////////////////////////////////////////////////////////////////////
@@ -84,6 +84,8 @@ public:
     wxBitmap  *my_horse_asciigrey_pnm;
     wxBitmap  *my_horse_rawgrey_pnm;
 
+    wxBitmap  *colorized_horse_jpeg;
+
     int xH, yH ;
     int m_ani_images ;
 
@@ -149,11 +151,12 @@ public:
 
     void OnSave(wxMouseEvent& WXUNUSED(event))
     {
+#if wxUSE_FILEDLG
         wxImage image = m_bitmap.ConvertToImage();
 
         wxString savefilename = wxFileSelector( wxT("Save Image"),
-                                                wxT(""),
-                                                wxT(""),
+                                                wxEmptyString,
+                                                wxEmptyString,
                                                 (const wxChar *)NULL,
                                                 wxT("BMP files (*.bmp)|*.bmp|")
                                                 wxT("PNG files (*.png)|*.png|")
@@ -269,6 +272,7 @@ public:
             // (it may fail if the extension is not recognized):
             image.SaveFile(savefilename);
         }
+#endif // wxUSE_FILEDLG
     }
 
 private:
@@ -300,8 +304,33 @@ public:
         // another possibility: wxNativePixelData (don't forget to remove code
         // setting alpha in the loop below then)
         typedef wxAlphaPixelData Data;
+        // typedef wxNativePixelData Data;
+        
+        // First, clear the whole bitmap by making it alpha
+        {
+            Data data( m_bitmap, wxPoint(0,0), wxSize(SIZE, SIZE) );
+            if ( !data )
+            {
+                wxLogError(_T("Failed to gain raw access to bitmap data"));
+                return;
+            }
+            data.UseAlpha();
+            Data::Iterator p(data);
+            for ( int y = 0; y < SIZE; ++y )
+            {
+                Data::Iterator rowStart = p;
+                for ( int x = 0; x < SIZE; ++x )
+                {
+                    p.Alpha() = 0;
+                    ++p; // same as p.OffsetX(1)
+                }
+                p = rowStart;
+                p.OffsetY(data, 1);
+            }
+        }
 
-        Data data(m_bitmap, wxPoint(BORDER, BORDER), wxSize(REAL_SIZE, REAL_SIZE));
+        // Then, draw colourful alpha-blended stripes
+        Data data(m_bitmap, wxPoint(BORDER, BORDER) , wxSize(REAL_SIZE, REAL_SIZE));
         if ( !data )
         {
             wxLogError(_T("Failed to gain raw access to bitmap data"));
@@ -408,6 +437,7 @@ MyCanvas::MyCanvas( wxWindow *parent, wxWindowID id,
     my_horse_ico = (wxBitmap*) NULL;
     my_horse_cur = (wxBitmap*) NULL;
     my_horse_ani = (wxBitmap*) NULL;
+    colorized_horse_jpeg = (wxBitmap*) NULL;
 
     my_smile_xbm = (wxBitmap*) NULL;
     my_square = (wxBitmap*) NULL;
@@ -465,7 +495,14 @@ MyCanvas::MyCanvas( wxWindow *parent, wxWindowID id,
     if ( !image.LoadFile( dir + _T("horse.jpg")) )
         wxLogError(wxT("Can't load JPG image"));
     else
+    {
         my_horse_jpeg = new wxBitmap( image );
+        // Colorize by rotating green hue to red
+        wxImage::HSVValue greenHSV = wxImage::RGBtoHSV(wxImage::RGBValue(0, 255, 0));
+        wxImage::HSVValue redHSV = wxImage::RGBtoHSV(wxImage::RGBValue(255, 0, 0));
+        image.RotateHue(redHSV.hue - greenHSV.hue);
+        colorized_horse_jpeg = new wxBitmap( image );
+    }
 #endif // wxUSE_LIBJPEG
 
 #if wxUSE_GIF
@@ -644,6 +681,7 @@ MyCanvas::~MyCanvas()
     delete my_anti;
     delete my_horse_asciigrey_pnm;
     delete my_horse_rawgrey_pnm;
+    delete colorized_horse_jpeg;
 }
 
 void MyCanvas::OnPaint( wxPaintEvent &WXUNUSED(event) )
@@ -843,6 +881,14 @@ void MyCanvas::OnPaint( wxPaintEvent &WXUNUSED(event) )
         {
             dc.DrawBitmap( my_horse_ani[i], 230 + i * 2 * my_horse_ani[i].GetWidth() , 2420, true );
         }
+#if wxUSE_LIBJPEG
+    if (colorized_horse_jpeg)
+    {
+        dc.DrawText( _T("Colorize image by rotating green hue to red"), 30, 2490 );
+        dc.DrawBitmap( *colorized_horse_jpeg, 30, 2520 );
+    }
+#endif // wxUSE_LIBJPEG
+
 }
 
 void MyCanvas::CreateAntiAliasedBitmap()
@@ -955,8 +1001,8 @@ MyFrame::MyFrame()
 
   m_canvas = new MyCanvas( this, wxID_ANY, wxPoint(0,0), wxSize(10,10) );
 
-  // 500 width * 2500 height
-  m_canvas->SetScrollbars( 10, 10, 50, 250 );
+  // 500 width * 2750 height
+  m_canvas->SetScrollbars( 10, 10, 50, 275 );
 }
 
 void MyFrame::OnQuit( wxCommandEvent &WXUNUSED(event) )
@@ -973,6 +1019,7 @@ void MyFrame::OnAbout( wxCommandEvent &WXUNUSED(event) )
 
 void MyFrame::OnNewFrame( wxCommandEvent &WXUNUSED(event) )
 {
+#if wxUSE_FILEDLG
     wxString filename = wxFileSelector(_T("Select image file"));
     if ( !filename )
         return;
@@ -986,6 +1033,7 @@ void MyFrame::OnNewFrame( wxCommandEvent &WXUNUSED(event) )
     }
 
     (new MyImageFrame(this, wxBitmap(image)))->Show();
+#endif // wxUSE_FILEDLG
 }
 
 #ifdef wxHAVE_RAW_BITMAP
@@ -1077,4 +1125,3 @@ bool MyApp::OnInit()
 
   return true;
 }
-

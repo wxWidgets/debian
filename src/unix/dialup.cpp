@@ -4,7 +4,7 @@
 // Author:      Karsten Ballüder
 // Modified by:
 // Created:     03.10.99
-// RCS-ID:      $Id: dialup.cpp,v 1.42 2005/05/24 10:10:40 ABX Exp $
+// RCS-ID:      $Id: dialup.cpp,v 1.44.2.1 2005/10/06 22:52:03 MW Exp $
 // Copyright:   (c) Karsten Ballüder
 // Licence:     wxWindows licence
 ///////////////////////////////////////////////////////////////////////////////
@@ -654,6 +654,7 @@ wxDialUpManagerImpl::CheckIfconfig()
             _T("/sbin"),         // Linux, FreeBSD, Darwin
             _T("/usr/sbin"),     // SunOS, Solaris, AIX, HP-UX
             _T("/usr/etc"),      // IRIX
+            _T("/etc"),          // AIX 5
         };
 
         for ( size_t n = 0; n < WXSIZEOF(ifconfigLocations); n++ )
@@ -679,7 +680,7 @@ wxDialUpManagerImpl::CheckIfconfig()
         wxString tmpfile = wxGetTempFileName( wxT("_wxdialuptest") );
         wxString cmd = wxT("/bin/sh -c \'");
         cmd << m_IfconfigPath;
-#if defined(__SOLARIS__) || defined (__SUNOS__)
+#if defined(__AIX__) || defined(__SOLARIS__) || defined (__SUNOS__)
         // need to add -a flag
         cmd << wxT(" -a");
 #elif defined(__LINUX__) || defined(__SGI__)
@@ -729,7 +730,7 @@ wxDialUpManagerImpl::CheckIfconfig()
                         || strstr(output.fn_str(),"pl"); // plip
                     hasLAN = strstr(output.fn_str(), "eth") != NULL;
 #elif defined(__SGI__)  // IRIX
-                    hasModem = strstr(output, "ppp") != NULL; // PPP
+                    hasModem = strstr(output.fn_str(), "ppp") != NULL; // PPP
 #elif defined(__HPUX__)
                     // if could run ifconfig on interface, then it exists
                     hasModem = true;
@@ -766,6 +767,10 @@ wxDialUpManagerImpl::NetConnection wxDialUpManagerImpl::CheckPing()
 #ifdef __VMS
         if (wxFileExists( wxT("SYS$SYSTEM:TCPIP$PING.EXE") ))
             m_PingPath = wxT("$SYS$SYSTEM:TCPIP$PING");
+#elif defined(__AIX__)
+        m_PingPath = _T("/etc/ping"); 
+#elif defined(__SGI__)
+        m_PingPath = _T("/usr/etc/ping"); 
 #else
         if (wxFileExists( wxT("/bin/ping") ))
             m_PingPath = wxT("/bin/ping");
@@ -790,7 +795,7 @@ wxDialUpManagerImpl::NetConnection wxDialUpManagerImpl::CheckPing()
     cmd << m_PingPath << wxT(' ');
 #if defined(__SOLARIS__) || defined (__SUNOS__)
     // nothing to add to ping command
-#elif defined(__LINUX__) || defined (__BSD__) || defined( __VMS )
+#elif defined(__AIX__) || defined(__LINUX__) || defined (__BSD__) || defined(__VMS) || defined(__SGI__)
     cmd << wxT("-c 1 "); // only ping once
 #elif defined(__HPUX__)
     cmd << wxT("64 1 "); // only ping once (need also specify the packet size)

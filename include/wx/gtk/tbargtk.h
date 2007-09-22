@@ -2,7 +2,7 @@
 // Name:        tbargtk.h
 // Purpose:     GTK toolbar
 // Author:      Robert Roebling
-// RCS-ID:      $Id: tbargtk.h,v 1.33 2004/06/14 13:27:26 VS Exp $
+// RCS-ID:      $Id: tbargtk.h,v 1.34 2005/08/02 22:57:58 MW Exp $
 // Copyright:   (c) Robert Roebling
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -20,7 +20,7 @@
 // wxToolBar
 // ----------------------------------------------------------------------------
 
-class wxToolBar : public wxToolBarBase
+class WXDLLIMPEXP_CORE wxToolBar : public wxToolBarBase
 {
 public:
     // construction/destruction

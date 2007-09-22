@@ -4,17 +4,17 @@
 // Author:      Vadim Zeitlin
 // Modified by:
 // Created:     29.12.99
-// RCS-ID:      $Id: calctrl.h,v 1.28 2005/05/24 21:50:01 MW Exp $
+// RCS-ID:      $Id: calctrl.h,v 1.28.2.1 2005/09/25 20:46:21 MW Exp $
 // Copyright:   (c) 1999 Vadim Zeitlin <zeitlin@dptmaths.ens-cachan.fr>
 // Licence:     wxWindows licence
 ///////////////////////////////////////////////////////////////////////////////
 
+#ifndef _WX_GENERIC_CALCTRL_H
+#define _WX_GENERIC_CALCTRL_H
+
 #if defined(__GNUG__) && !defined(NO_GCC_PRAGMA)
     #pragma interface "calctrl.h"
 #endif
-
-#ifndef _WX_GENERIC_CALCTRL_H
-#define _WX_GENERIC_CALCTRL_H
 
 #include "wx/control.h"         // the base class
 #include "wx/dcclient.h"        // for wxPaintDC

@@ -3,7 +3,7 @@
 // Purpose:     ZIP file system
 // Author:      Vaclav Slavik
 // Copyright:   (c) 1999 Vaclav Slavik
-// CVS-ID:      $Id: fs_zip.cpp,v 1.40 2005/04/09 03:06:19 MW Exp $
+// CVS-ID:      $Id: fs_zip.cpp,v 1.41 2005/07/28 21:00:44 VZ Exp $
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
 
@@ -71,12 +71,16 @@ wxZipFSHandler::wxZipFSHandler() : wxFileSystemHandler()
 
 wxZipFSHandler::~wxZipFSHandler()
 {
-    if (m_Archive)
-        delete m_Archive;
-    if (m_DirsFound)
-        delete m_DirsFound;
+    Cleanup();
 }
 
+
+void wxZipFSHandler::Cleanup()
+{
+    wxDELETE(m_Archive);
+    wxDELETE(m_DirsFound);
+}
+ 
 
 
 bool wxZipFSHandler::CanOpen(const wxString& location)

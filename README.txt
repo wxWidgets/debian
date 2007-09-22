@@ -1,5 +1,5 @@
-wxWidgets 2.6.1
----------------------------------------------------------
+wxWidgets 2.6.3
+---------------
 
 Welcome to wxWidgets, a sophisticated cross-platform C++
 framework for writing advanced GUI applications using
@@ -153,5 +153,5 @@ web site.
 
 Have fun!
 
-The wxWidgets Team, June 2005
+The wxWidgets Team, March 2006
 

@@ -5,7 +5,7 @@
 // Modified by: ABX - 19/12/2004 : possibility of horizontal orientation
 //                               : wxWidgets coding standards
 // Created:     22/06/2004
-// RCS-ID:      $Id: captionbar.h,v 1.6 2005/05/31 09:17:23 JS Exp $
+// RCS-ID:      $Id: captionbar.h,v 1.7 2005/07/28 23:23:22 VZ Exp $
 // Copyright:   (c) Jorgen Bodde
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -52,7 +52,7 @@ enum
     applied to the wxCaptionBar in question, meaning it will be created using the default internals. When setting i.e
     the color, font or panel style, these styles become active to be used.
 */
-class wxCaptionBarStyle
+class WXDLLIMPEXP_FOLDBAR wxCaptionBarStyle
 {
 private:
     // boolean flags for default transparency on styles

@@ -2,7 +2,7 @@
 // Name:        filedlg.h
 // Purpose:
 // Author:      Robert Roebling
-// Id:          $Id: filedlg.h,v 1.27 2005/04/25 19:13:25 RR Exp $
+// Id:          $Id: filedlg.h,v 1.28 2005/08/02 22:57:55 MW Exp $
 // Copyright:   (c) 1998 Robert Roebling
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -21,7 +21,7 @@
 // wxFileDialog
 //-------------------------------------------------------------------------
 
-class wxFileDialog: public wxGenericFileDialog
+class WXDLLIMPEXP_CORE wxFileDialog: public wxGenericFileDialog
 {
 public:
     wxFileDialog() { }

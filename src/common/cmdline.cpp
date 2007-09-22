@@ -4,7 +4,7 @@
 // Author:      Vadim Zeitlin
 // Modified by:
 // Created:     05.01.00
-// RCS-ID:      $Id: cmdline.cpp,v 1.41 2004/12/25 01:58:36 VZ Exp $
+// RCS-ID:      $Id: cmdline.cpp,v 1.42 2005/08/16 10:08:04 VZ Exp $
 // Copyright:   (c) 2000 Vadim Zeitlin <zeitlin@dptmaths.ens-cachan.fr>
 // Licence:     wxWindows licence
 ///////////////////////////////////////////////////////////////////////////////
@@ -38,13 +38,13 @@
     #include "wx/intl.h"
     #include "wx/app.h"
     #include "wx/dynarray.h"
-    #include "wx/filefn.h"
 #endif //WX_PRECOMP
 
 #include <ctype.h>
 
 #include "wx/datetime.h"
 #include "wx/msgout.h"
+#include "wx/filename.h"
 
 // ----------------------------------------------------------------------------
 // private functions
@@ -245,7 +245,7 @@ void wxCmdLineParserData::SetArguments(const wxString& cmdLine)
 {
     m_arguments.clear();
 
-    m_arguments.push_back(wxTheApp->GetAppName());
+    m_arguments.push_back(wxTheApp ? wxTheApp->argv[0] : _T(""));
 
     wxArrayString args = wxCmdLineParser::ConvertStringToArgs(cmdLine);
 
@@ -929,14 +929,15 @@ void wxCmdLineParser::Usage()
 
 wxString wxCmdLineParser::GetUsageString()
 {
-    wxString appname = wxTheApp->GetAppName();
-    if ( !appname )
+    wxString appname;
+    if ( m_data->m_arguments.empty() )
     {
-        wxCHECK_MSG( m_data->m_arguments.size() != 0, wxEmptyString,
-                     _T("no program name") );
-
-        appname = wxFileNameFromPath(m_data->m_arguments[0]);
-        wxStripExtension(appname);
+        if ( wxTheApp )
+            appname = wxTheApp->GetAppName();
+    }
+    else // use argv[0]
+    {
+        appname = wxFileName(m_data->m_arguments[0]).GetName();
     }
 
     // we construct the brief cmd line desc on the fly, but not the detailed

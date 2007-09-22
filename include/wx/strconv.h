@@ -4,7 +4,7 @@
 // Author:      Robert Roebling, Ove Kaaven
 // Modified by:
 // Created:     29/01/98
-// RCS-ID:      $Id: strconv.h,v 1.42 2005/04/13 20:05:51 MW Exp $
+// RCS-ID:      $Id: strconv.h,v 1.43 2005/08/08 22:04:56 MW Exp $
 // Copyright:   (c) 1998 Ove Kaaven, Robert Roebling, Vadim Zeitlin
 // Licence:     wxWindows licence
 ///////////////////////////////////////////////////////////////////////////////
@@ -166,7 +166,7 @@ public:
 };
 
 // ----------------------------------------------------------------------------
-// wxMBConvUCS4LE (for conversion using UTF32 Little Endian encoding)
+// wxMBConvUTF32LE (for conversion using UTF32 Little Endian encoding)
 // ----------------------------------------------------------------------------
 
 class WXDLLIMPEXP_BASE wxMBConvUTF32LE : public wxMBConv
@@ -177,7 +177,7 @@ public:
 };
 
 // ----------------------------------------------------------------------------
-// wxMBConvUCS4BE (for conversion using UTF32 Big Endian encoding)
+// wxMBConvUTF32BE (for conversion using UTF32 Big Endian encoding)
 // ----------------------------------------------------------------------------
 
 class WXDLLIMPEXP_BASE wxMBConvUTF32BE : public wxMBConv

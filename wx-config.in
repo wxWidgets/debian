@@ -5,7 +5,7 @@
 # Author:      Ron <ron@debian.org>
 # Modified by:
 # Created:     8/9/2004
-# RCS-ID:      $Id: wx-config.in,v 1.120 2005/06/17 14:57:13 RL Exp $
+# RCS-ID:      $Id: wx-config.in,v 1.122.2.1 2006/02/15 18:58:13 MW Exp $
 # Copyright:   (c) 2004 Ron <ron@debian.org>
 #              Essentially a fresh start this time around, but for maximum
 #              compatibility basic code was taken from, and heavy reference
@@ -17,7 +17,7 @@
 # Licence:     wxWindows licence
 ############################################################################
 
-# Extra^2 debug mode, for if things ever get really wierd.
+# Extra^2 debug mode, for if things ever get really weird.
 [ -z "$WXDEBUG_X" ] || set -x
 
 # We expect a posix shell, so if this is a Bourne shell,
@@ -145,7 +145,7 @@ wxconfig_input_options="prefix exec_prefix utility $wxconfig_schema"
 wxconfig_yesno_options="universal unicode debug static"
 
 # Boolean options that do something or not.
-wxconfig_flag_options="$wxconfig_yesno_options no_rpath inplace"
+wxconfig_flag_options="$wxconfig_yesno_options selected_config no_rpath inplace"
 
 
 
@@ -874,16 +874,17 @@ libdir="@libdir@"
 bindir="@bindir@"
 
 # Trivial queries we can answer now.
-[ -z "$output_option_prefix"       ] || echo $prefix
-[ -z "$output_option_exec_prefix"  ] || echo $exec_prefix
-[ -z "$output_option_release"      ] || echo "@WX_RELEASE@"
-[ -z "$output_option_version"      ] || echo "@WX_VERSION@"
-[ -z "$output_option_version_full" ] || echo "@WX_SUBVERSION@"
-[ -z "$output_option_basename"     ] || echo "@WX_LIBRARY_BASENAME_GUI@"
-[ -z "$output_option_rezflags"     ] || echo $(eval echo "@MACRESWXCONFIG@")
-[ -z "$output_option_cc"           ] || echo "@CC@"
-[ -z "$output_option_cxx"          ] || echo "@CXX@"
-[ -z "$output_option_ld"           ] || echo "@EXE_LINKER@"
+[ -z "$output_option_prefix"        ] || echo $prefix
+[ -z "$output_option_exec_prefix"   ] || echo $exec_prefix
+[ -z "$output_option_release"       ] || echo "@WX_RELEASE@"
+[ -z "$output_option_version"       ] || echo "@WX_VERSION@"
+[ -z "$output_option_version_full"  ] || echo "@WX_SUBVERSION@"
+[ -z "$output_option_basename"      ] || echo "@WX_LIBRARY_BASENAME_GUI@"
+[ -z "$output_option_rezflags"      ] || echo $(eval echo "@MACRESWXCONFIG@")
+[ -z "$output_option_cc"            ] || echo "@CC@"
+[ -z "$output_option_cxx"           ] || echo "@CXX@"
+[ -z "$output_option_ld"            ] || echo "@EXE_LINKER@"
+[ -z "$flag_option_selected_config" ] || echo "$this_config"
 
 
 # The rest are going to need a little more work.
@@ -1083,7 +1084,7 @@ if is_monolithic; then
     # We still need the core lib deps for a static build though
     if is_static; then
         link_deps="${libdir}/libwx_@TOOLCHAIN_NAME@.a" 
-        wx_libs="$wx_libs $link_deps $ldlibs_core @LIBS@"
+        wx_libs="$wx_libs $link_deps $ldlibs_core $ldlibs_base"
     else
         wx_libs="$wx_libs -lwx_@TOOLCHAIN_NAME@"
     fi
@@ -1142,11 +1143,7 @@ else
     _include_cppflags="-I${includedir} -I${prefix}/contrib/include"
 fi
 
-_cppflags=$(echo "-I${libdir}/wx/include/@TOOLCHAIN_FULLNAME@" $_include_cppflags "@WXDEBUG_DEFINE@" "@TOOLCHAIN_DEFS@" "@TOOLCHAIN_DLL_DEFS@" $_gui_cppflags "@WXCONFIG_INCLUDE@" "@WX_LARGEFILE_FLAGS@" "-DNO_GCC_PRAGMA")
-
-# FIXME: NO_GCC_PRAGMA is defined here to cover for a historical accident.
-#        it may be removed once it is purged from the wx/headers also.
-
+_cppflags=$(echo "-I${libdir}/wx/include/@TOOLCHAIN_FULLNAME@" $_include_cppflags "@WXDEBUG_DEFINE@" "@TOOLCHAIN_DEFS@" "@TOOLCHAIN_DLL_DEFS@" $_gui_cppflags "@WXCONFIG_INCLUDE@" "@WX_LARGEFILE_FLAGS@" "@GCC_PRAGMA_FLAGS@")  
 
 # now without further ado, we can answer these too.
 [ -z "$output_option_cppflags" ] || echo $_cppflags

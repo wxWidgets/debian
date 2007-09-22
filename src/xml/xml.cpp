@@ -3,7 +3,7 @@
 // Purpose:     wxXmlDocument - XML parser & data holder class
 // Author:      Vaclav Slavik
 // Created:     2000/03/05
-// RCS-ID:      $Id: xml.cpp,v 1.15 2005/03/29 17:28:58 ABX Exp $
+// RCS-ID:      $Id: xml.cpp,v 1.15.2.1 2005/12/18 14:55:42 VZ Exp $
 // Copyright:   (c) 2000 Vaclav Slavik
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -691,7 +691,7 @@ static void OutputNode(wxOutputStream& stream, wxXmlNode *node, int indent,
             {
                 OutputString(stream, wxT(" ") + prop->GetName() +  wxT("=\""),
                              NULL, NULL);
-                OutputStringEnt(stream, prop->GetValue(), NULL, NULL,
+                OutputStringEnt(stream, prop->GetValue(), convMem, convFile,
                                 true/*escapeQuotes*/);
                 OutputString(stream, wxT("\""), NULL, NULL);
                 prop = prop->GetNext();

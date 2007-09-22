@@ -6,7 +6,7 @@
 //              Bart Jourquin
 //              Mark Johnson
 // Created:     9.96
-// RCS-ID:      $Id: dbtable.h,v 1.46 2005/05/31 09:18:14 JS Exp $
+// RCS-ID:      $Id: dbtable.h,v 1.47 2005/09/16 11:03:48 JS Exp $
 // Copyright:   (c) 1996 Remstar International, Inc.
 // Licence:     wxWindows licence
 ///////////////////////////////////////////////////////////////////////////////
@@ -59,7 +59,7 @@ public:
     bool    Updateable;                         // Specifies whether this column is updateable
     bool    InsertAllowed;                      // Specifies whether this column should be included in an INSERT statement
     bool    DerivedCol;                         // Specifies whether this column is a derived value
-    SDWORD  CbValue;                            // Internal use only!!!
+    SQLLEN  CbValue;                            // Internal use only!!!
     bool    Null;                               // NOT FULLY IMPLEMENTED - Allows NULL values in Inserts and Updates
 
     wxDbColDef();

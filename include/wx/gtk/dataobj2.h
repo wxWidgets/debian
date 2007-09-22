@@ -3,7 +3,7 @@
 // Purpose:     declaration of standard wxDataObjectSimple-derived classes
 // Author:      Robert Roebling
 // Created:     19.10.99 (extracted from gtk/dataobj.h)
-// RCS-ID:      $Id: dataobj2.h,v 1.9 2004/05/23 20:50:53 JS Exp $
+// RCS-ID:      $Id: dataobj2.h,v 1.10 2005/08/02 22:57:54 MW Exp $
 // Copyright:   (c) 1998, 1999 Vadim Zeitlin, Robert Roebling
 // Licence:     wxWindows licence
 ///////////////////////////////////////////////////////////////////////////////
@@ -19,7 +19,7 @@
 // wxBitmapDataObject is a specialization of wxDataObject for bitmaps
 // ----------------------------------------------------------------------------
 
-class wxBitmapDataObject : public wxBitmapDataObjectBase
+class WXDLLIMPEXP_CORE wxBitmapDataObject : public wxBitmapDataObjectBase
 {
 public:
     // ctors
@@ -63,7 +63,7 @@ private:
 // wxFileDataObject is a specialization of wxDataObject for file names
 // ----------------------------------------------------------------------------
 
-class wxFileDataObject : public wxFileDataObjectBase
+class WXDLLIMPEXP_CORE wxFileDataObject : public wxFileDataObjectBase
 {
 public:
     // implement base class pure virtuals

@@ -4,7 +4,7 @@
 // Author:      Vadim Zeitlin
 // Modified by:
 // Created:     29/01/98
-// RCS-ID:      $Id: string.h,v 1.204 2005/06/08 14:29:06 ABX Exp $
+// RCS-ID:      $Id: string.h,v 1.206.2.3 2005/12/15 19:26:27 VZ Exp $
 // Copyright:   (c) 1998 Vadim Zeitlin <zeitlin@dptmaths.ens-cachan.fr>
 // Licence:     wxWindows licence
 ///////////////////////////////////////////////////////////////////////////////
@@ -187,6 +187,7 @@ inline int Stricmp(const char *psz1, const char *psz2)
     // we don't need an extra ctor from std::string when copy ctor already does
     // the work
     #undef wxUSE_STD_STRING
+    #define wxUSE_STD_STRING 0
 
     #if (defined(__GNUG__) && (__GNUG__ < 3)) || \
         (defined(_MSC_VER) && (_MSC_VER <= 1200))
@@ -954,6 +955,22 @@ public:
       // insert an unsigned long into string
   wxString& operator<<(unsigned long ul)
     { return (*this) << Format(_T("%lu"), ul); }
+#if wxABI_VERSION >= 20603
+#if defined wxLongLong_t && !defined wxLongLongIsLong
+      // insert a long long if they exist and aren't longs
+  wxString& operator<<(wxLongLong_t ll)
+    {
+      const wxChar *fmt = _T("%") wxLongLongFmtSpec _T("d");
+      return (*this) << Format(fmt, ll);
+    }
+      // insert an unsigned long long
+  wxString& operator<<(wxULongLong_t ull)
+    {
+      const wxChar *fmt = _T("%") wxLongLongFmtSpec _T("u");
+      return (*this) << Format(fmt , ull);
+    }
+#endif
+#endif
       // insert a float into string
   wxString& operator<<(float f)
     { return (*this) << Format(_T("%f"), f); }
@@ -1273,6 +1290,16 @@ public:
   wxString& operator+=(wxChar ch)
     { return (wxString&)wxStringBase::operator+=(ch); }
 };
+
+// notice that even though for many compilers the friend declarations above are
+// enough, from the point of view of C++ standard we must have the declarations
+// here as friend ones are not injected in the enclosing namespace and without
+// them the code fails to compile with conforming compilers such as xlC or g++4
+wxString WXDLLIMPEXP_BASE operator+(const wxString& string1,  const wxString& string2);
+wxString WXDLLIMPEXP_BASE operator+(const wxString& string, wxChar ch);
+wxString WXDLLIMPEXP_BASE operator+(wxChar ch, const wxString& string);
+wxString WXDLLIMPEXP_BASE operator+(const wxString& string, const wxChar *psz);
+wxString WXDLLIMPEXP_BASE operator+(const wxChar *psz, const wxString& string);
 
 // define wxArrayString, for compatibility
 #if WXWIN_COMPATIBILITY_2_4 && !wxUSE_STL

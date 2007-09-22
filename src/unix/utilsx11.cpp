@@ -4,7 +4,7 @@
 // Author:      Mattia Barbon, Vaclav Slavik, Robert Roebling
 // Modified by:
 // Created:     25.03.02
-// RCS-ID:      $Id: utilsx11.cpp,v 1.26 2005/05/31 09:28:53 JS Exp $
+// RCS-ID:      $Id: utilsx11.cpp,v 1.27 2005/09/13 16:23:46 VZ Exp $
 // Copyright:   (c) wxWidgets team
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -65,9 +65,13 @@ static bool IsMapped(Display *display, Window window)
 
 // Suspends X11 errors. Used when we expect errors but they are not fatal
 // for us.
-extern "C" {
+extern "C"
+{
+    typedef int (*wxX11ErrorHandler)(Display *, XErrorEvent *);
+
     static int wxX11ErrorsSuspender_handler(Display*, XErrorEvent*) { return 0; }
 }
+
 class wxX11ErrorsSuspender
 {
 public:
@@ -83,7 +87,7 @@ public:
 
 private:
     Display *m_display;
-    int (*m_old)(Display*, XErrorEvent *);
+    wxX11ErrorHandler m_old;
 };
 
 

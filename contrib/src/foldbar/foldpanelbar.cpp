@@ -5,7 +5,7 @@
 // Modified by: ABX - 19/12/2004 : possibility of horizontal orientation
 //                               : wxWidgets coding standards
 // Created:     22/06/2004
-// RCS-ID:      $Id: foldpanelbar.cpp,v 1.6 2005/05/31 09:17:35 JS Exp $
+// RCS-ID:      $Id: foldpanelbar.cpp,v 1.7 2005/07/28 23:23:27 VZ Exp $
 // Copyright:   (c) Jorgen Bodde
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -30,7 +30,7 @@
 // wxFoldPanelBar
 //----------------------------------------------------------------------------
 
-IMPLEMENT_CLASS( wxFoldPanelBar, wxPanel )
+IMPLEMENT_DYNAMIC_CLASS( wxFoldPanelBar, wxPanel )
 
 BEGIN_EVENT_TABLE(wxFoldPanelBar,wxPanel)
     EVT_SIZE(wxFoldPanelBar::OnSizePanel)
@@ -39,13 +39,18 @@ BEGIN_EVENT_TABLE(wxFoldPanelBar,wxPanel)
 END_EVENT_TABLE()
 
 wxFoldPanelBar::wxFoldPanelBar()
+    : wxPanel()
+    , m_foldPanel(NULL)
+    , m_bottomPanel(NULL)
+    , m_controlCreated(false)
 {
 
 }
 
 wxFoldPanelBar::wxFoldPanelBar( wxWindow *parent, wxWindowID id, const wxPoint &position,
                                 const wxSize& size, long style, long extraStyle)
-    : m_foldPanel(NULL)
+    : wxPanel()
+    , m_foldPanel(NULL)
     , m_bottomPanel(NULL)
     , m_controlCreated(false)
 {

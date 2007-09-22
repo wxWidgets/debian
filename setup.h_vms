@@ -3,7 +3,7 @@
  * Template for the set.h file for VMS                                       *
  * Created from setup.h_in                                                   *
  * Author : J.Jansen (joukj@hrem.stm.tudelft.nl)                             *
- * Date : 15 March 2005                                                      *
+ * Date : 18 August 2005                                                     *
  *                                                                           *
  *****************************************************************************/
 
@@ -71,6 +71,9 @@
 
 /* Define this if your version of Motif is greater than 2.0 */
 /* #undef __WXMOTIF20__ */
+
+/* Define this if you are using Lesstif */
+/* #undef __WXLESSTIF__ */
 
 #ifdef __WXGTK__
 /* Define this if your version of GTK+ is greater than 1.2 */
@@ -184,8 +187,6 @@
     #define wxUSE_UNICODE 0
 #endif
 
-#define wxUSE_UNICODE_MSLU 0
-
 #define wxUSE_WCHAR_T 1
 
 
@@ -283,10 +284,6 @@
 #define wxUSE_SOUND      1
 
 #define wxUSE_MEDIACTRL     1
-
-#define wxUSE_QUICKTIME     1
-
-#define wxUSE_DIRECTSHOW    1
 
 #define wxUSE_GSTREAMER     0
 
@@ -417,9 +414,9 @@
 #define wxUSE_WIZARDDLG 1
 
 
-#define wxUSE_METAFILE              1
-#define wxUSE_ENH_METAFILE          1
-#define wxUSE_WIN_METAFILES_ALWAYS  1
+#define wxUSE_METAFILE              0
+#define wxUSE_ENH_METAFILE          0
+#define wxUSE_WIN_METAFILES_ALWAYS  0
 
 
 #define wxUSE_MDI 1
@@ -538,6 +535,12 @@
 #define wxUSE_RICHEDIT2 0
 #endif
 
+#define wxUSE_UNICODE_MSLU 0
+
+#define wxUSE_DC_CACHEING 1
+
+#define wxUSE_GADGETS 1
+
 /*
  * Supports bool type
  */
@@ -605,6 +608,11 @@
  */
 #undef WX_NO_REGEX_ADVANCED
 /*
+ * On GNU systems use re_search instead of regexec, since the latter does a
+ * strlen on the search text affecting the performance of some operations.
+ */
+#undef HAVE_RE_SEARCH
+/*
  * Use SDL for audio (Unix)
  */
 #define wxUSE_LIBSDL 0
@@ -628,6 +636,10 @@
  * Use libXpm
  */
 #define wxHAVE_LIB_XPM 1
+/*
+ * Define if you have pthread_cleanup_push/pop()
+ */
+#define wxHAVE_PTHREAD_CLEANUP 1
 /*
  * Use consistent PostScript fonts for AFM and printing (!)
  */
@@ -722,7 +734,7 @@
 #undef WX_TIMEZONE
  
 /* The type of 3rd argument to getsockname() - usually size_t or int */
-#define SOCKLEN_T size_t
+#define WX_SOCKLEN_T size_t
 
 /* The type of 5th argument to getsockopt() - usually size_t or int */
 #define SOCKOPTLEN_T size_t
@@ -755,6 +767,9 @@
 /* Define if you have gettimeofday() */
 #define HAVE_GETTIMEOFDAY
 
+/* Define if fsync() is available */
+#define HAVE_FSYNC 1
+
 /* Define if you have ftime() */
 #define HAVE_FTIME
 
@@ -779,6 +794,9 @@
 /* Define if you have pthread_cancel */
 #define HAVE_PTHREAD_CANCEL 1
 
+/* Define if you have pthread_attr_setstacksize */
+#define HAVE_PTHREAD_ATTR_SETSTACKSIZE 1
+
 /* Define if you have sigaction() */
 #define HAVE_SIGACTION 1
 
@@ -794,8 +812,21 @@
 /* Define if you have shl_load() */
 #undef HAVE_SHL_LOAD
 
+/* Define if you have snprintf() */
+#undef HAVE_SNPRINTF
+
+/* Define if you have snprintf() declaration in the header */
+#undef HAVE_SNPRINTF_DECL
+
+/* Define if you have a _broken_ snprintf() declaration in the header,
+ * with 'char*' for the 3rd parameter instead of 'const char*' */
+#undef HAVE_BROKEN_SNPRINTF_DECL
+
 /* define if you have statfs function */
 #undef HAVE_STATFS
+
+/* define if you have statfs prototype */
+#undef HAVE_STATFS_DECL
 
 /* define if you have statvfs function */
 #undef HAVE_STATVFS
@@ -806,9 +837,6 @@
 /* Define if you have all functions to set thread priority */
 #define HAVE_THREAD_PRIORITY_FUNCTIONS 1
 
-/* Define if you can specify exit functions to a thread */
-#define HAVE_THREAD_CLEANUP_FUNCTIONS 1
-
 /* Define if you have timegm() function */
 #undef HAVE_TIMEGM
 
@@ -817,6 +845,10 @@
 
 /* Define if you have vsnprintf() declaration in the header */
 #undef HAVE_VSNPRINTF_DECL
+
+/* Define if you have a _broken_ vsnprintf() declaration in the header,
+ * with 'char*' for the 3rd parameter instead of 'const char*' */
+#undef HAVE_BROKEN_VSNPRINTF_DECL
 
 /* Define if you have usleep() */
 #define HAVE_USLEEP 1

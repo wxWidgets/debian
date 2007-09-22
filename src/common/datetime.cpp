@@ -4,7 +4,7 @@
 // Author:      Vadim Zeitlin
 // Modified by:
 // Created:     11.05.99
-// RCS-ID:      $Id: datetime.cpp,v 1.132 2005/06/02 07:47:57 MW Exp $
+// RCS-ID:      $Id: datetime.cpp,v 1.136.2.1 2006/02/05 15:19:09 rgammans Exp $
 // Copyright:   (c) 1999 Vadim Zeitlin <zeitlin@dptmaths.ens-cachan.fr>
 //              parts of code taken from sndcal library by Scott E. Lee:
 //
@@ -692,7 +692,7 @@ wxDateTime::TimeZone::TimeZone(wxDateTime::TZ tz)
 
         case wxDateTime::A_CST:
             // Central Standard Time in use in Australia = UTC + 9.5
-            m_offset = 60l*(9*60 + 30);
+            m_offset = 60l*(9*MIN_PER_HOUR + MIN_PER_HOUR/2);
             break;
 
         default:
@@ -1405,20 +1405,9 @@ wxDateTime& wxDateTime::Set(double jdn)
     // EPOCH_JDN + 0.5
     jdn -= EPOCH_JDN + 0.5;
 
-    jdn *= MILLISECONDS_PER_DAY;
+    m_time.Assign(jdn*MILLISECONDS_PER_DAY);
 
-    m_time.Assign(jdn);
-
-    // JDNs always suppose an UTC date, so bring it back to local time zone
-    // (also see GetJulianDayNumber() implementation)
-    long tzDiff = GetTimeZone();
-    if ( IsDST() == 1 )
-    {
-        // FIXME: again, we suppose that DST is always one hour
-        tzDiff -= 3600;
-    }
-
-    m_time += tzDiff*1000; // tzDiff is in seconds
+    // JDNs always are in UTC, so we don't need any adjustments for time zone
 
     return *this;
 }
@@ -1637,14 +1626,14 @@ wxDateTime::Tm wxDateTime::GetTm(const TimeZone& tz) const
     timeOnly -= tm.msec;
     timeOnly /= 1000;               // now we have time in seconds
 
-    tm.sec = (wxDateTime_t)(timeOnly % 60);
+    tm.sec = (wxDateTime_t)(timeOnly % SEC_PER_MIN);
     timeOnly -= tm.sec;
-    timeOnly /= 60;                 // now we have time in minutes
+    timeOnly /= SEC_PER_MIN;        // now we have time in minutes
 
-    tm.min = (wxDateTime_t)(timeOnly % 60);
+    tm.min = (wxDateTime_t)(timeOnly % MIN_PER_HOUR);
     timeOnly -= tm.min;
 
-    tm.hour = (wxDateTime_t)(timeOnly / 60);
+    tm.hour = (wxDateTime_t)(timeOnly / MIN_PER_HOUR);
 
     return tm;
 }
@@ -2110,16 +2099,7 @@ wxDateTime& wxDateTime::SetToYearDay(wxDateTime::wxDateTime_t yday)
 
 double wxDateTime::GetJulianDayNumber() const
 {
-    // JDN are always expressed for the UTC dates
-    Tm tm(ToTimezone(UTC).GetTm(UTC));
-
-    double result = GetTruncatedJDN(tm.mday, tm.mon, tm.year);
-
-    // add the part GetTruncatedJDN() neglected
-    result += 0.5;
-
-    // and now add the time: 86400 sec = 1 JDN
-    return result + ((double)(60*(60*tm.hour + tm.min) + tm.sec)) / 86400;
+    return m_time.ToDouble() / MILLISECONDS_PER_DAY + EPOCH_JDN + 0.5;
 }
 
 double wxDateTime::GetRataDie() const
@@ -2162,6 +2142,21 @@ int wxDateTime::IsDST(wxDateTime::Country country) const
 }
 
 wxDateTime& wxDateTime::MakeTimezone(const TimeZone& tz, bool noDST)
+{
+    long secDiff = GetTimeZone() + tz.GetOffset();
+
+    // we need to know whether DST is or not in effect for this date unless
+    // the test disabled by the caller
+    if ( !noDST && (IsDST() == 1) )
+    {
+        // FIXME we assume that the DST is always shifted by 1 hour
+        secDiff -= 3600;
+    }
+
+    return Add(wxTimeSpan::Seconds(secDiff));
+}
+
+wxDateTime& wxDateTime::MakeFromTimezone(const TimeZone& tz, bool noDST)
 {
     long secDiff = GetTimeZone() + tz.GetOffset();
 
@@ -2369,33 +2364,40 @@ wxString wxDateTime::Format(const wxChar *format, const TimeZone& tz) const
                             nLostWeekDays += year++ % 4 ? 1 : 2;
                         }
 
+                        // Keep year below 2000 so the 2digit year number
+                        // can never match the month or day of the month
+                        if (year>=2000) year-=28;
+			
                         // at any rate, we couldn't go further than 1988 + 9 + 28!
-                        wxASSERT_MSG( year < 2030,
+			            wxASSERT_MSG( year < 2030,
                                       _T("logic error in wxDateTime::Format") );
 
                         wxString strYear, strYear2;
                         strYear.Printf(_T("%d"), year);
                         strYear2.Printf(_T("%d"), year % 100);
 
-                        // find two strings not occurring in format (this is surely
+                        // find four strings not occurring in format (this is surely
                         // not the optimal way of doing it... improvements welcome!)
                         wxString fmt = format;
-                        wxString replacement = (wxChar)-1;
-                        while ( fmt.Find(replacement) != wxNOT_FOUND )
-                        {
-                            replacement << (wxChar)-1;
-                        }
-
-                        wxString replacement2 = (wxChar)-2;
-                        while ( fmt.Find(replacement) != wxNOT_FOUND )
-                        {
-                            replacement << (wxChar)-2;
+                        wxString replacement,replacement2,replacement3,replacement4;
+                        for (int rnr=1; rnr<5 ; rnr++) {
+                            wxString r = (wxChar)-rnr;
+ 	                    while ( fmt.Find(r) != wxNOT_FOUND ) {
+                 	            r << (wxChar)-rnr;
+                            }
+ 
+                            switch (rnr) {
+                               case 1: replacement=r; break;
+                               case 2: replacement2=r; break;
+                               case 3: replacement3=r; break;
+                               case 4: replacement4=r; break;
+                           }
                         }
 
                         // replace all occurrences of year with it
                         bool wasReplaced = fmt.Replace(strYear, replacement) > 0;
-                        if ( !wasReplaced )
-                            wasReplaced = fmt.Replace(strYear2, replacement2) > 0;
+                        // evaluation order ensures we always attempt the replacement.
+                        wasReplaced = (fmt.Replace(strYear2, replacement2) > 0) | wasReplaced ;
 
                         // use strftime() to format the same date but in supported
                         // year
@@ -2420,11 +2422,17 @@ wxString wxDateTime::Format(const wxChar *format, const TimeZone& tz) const
                                                     &tmAdjusted);
 
                         // now replace the occurrence of 1999 with the real year
+			// we do this in two stages to stop the 2 digit year
+			// matching any substring of the 4 digit year.
+			// Any day,month hours and minutes components should be safe due
+			// to ensuring the range of the years.
                         wxString strYearReal, strYearReal2;
                         strYearReal.Printf(_T("%04d"), yearReal);
                         strYearReal2.Printf(_T("%02d"), yearReal % 100);
-                        str.Replace(strYear, strYearReal);
-                        str.Replace(strYear2, strYearReal2);
+                        str.Replace(strYear, replacement3);
+                        str.Replace(strYear2,replacement4);
+                        str.Replace(replacement3, strYearReal);
+                        str.Replace(replacement4, strYearReal2);
 
                         // and replace back all occurrences of replacement string
                         if ( wasReplaced )
@@ -2771,7 +2779,7 @@ const wxChar *wxDateTime::ParseRfc822Date(const wxChar* date)
         }
 
         // hours
-        offset = 60*(10*(*p - _T('0')) + (*(p + 1) - _T('0')));
+        offset = MIN_PER_HOUR*(10*(*p - _T('0')) + (*(p + 1) - _T('0')));
 
         p += 2;
 
@@ -2849,14 +2857,14 @@ const wxChar *wxDateTime::ParseRfc822Date(const wxChar* date)
 
             p += tz.length();
         }
-
+        
         // make it minutes
-        offset *= 60;
+        offset *= MIN_PER_HOUR;
     }
 
-    // the spec was correct
+    // the spec was correct, construct the date from the values we found
     Set(day, mon, year, hour, min, sec);
-    MakeTimezone((wxDateTime_t)(60*offset));
+    MakeFromTimezone(TimeZone((wxDateTime_t)(offset*SEC_PER_MIN)));
 
     return p;
 }

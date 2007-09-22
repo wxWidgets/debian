@@ -4,7 +4,7 @@
 // Author:      Vadim Zeitlin
 // Modified by:
 // Created:     20.08.00
-// RCS-ID:      $Id: scrolbar.cpp,v 1.24 2005/05/31 09:28:45 JS Exp $
+// RCS-ID:      $Id: scrolbar.cpp,v 1.25 2005/07/28 21:38:43 VZ Exp $
 // Copyright:   (c) 2000 SciTech Software, Inc. (www.scitechsoft.com)
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -554,12 +554,18 @@ bool wxScrollBar::PerformAction(const wxControlAction& action,
             // NB: we assume that scrollbar events are sequentially numbered
             //     but this should be ok as other code relies on this as well
             scrollType += wxEVT_SCROLL_TOP - wxEVT_SCROLLWIN_TOP;
+            wxScrollEvent event(scrollType, this->GetId(), m_thumbPos,
+                                IsVertical() ? wxVERTICAL : wxHORIZONTAL);
+            event.SetEventObject(this);
+            GetParent()->GetEventHandler()->ProcessEvent(event);
         }
-
-        wxScrollWinEvent event(scrollType, m_thumbPos,
-                               IsVertical() ? wxVERTICAL : wxHORIZONTAL);
-        event.SetEventObject(this);
-        GetParent()->GetEventHandler()->ProcessEvent(event);
+        else // part of the window
+        {
+            wxScrollWinEvent event(scrollType, m_thumbPos,
+                                   IsVertical() ? wxVERTICAL : wxHORIZONTAL);
+            event.SetEventObject(this);
+            GetParent()->GetEventHandler()->ProcessEvent(event);
+        }
     }
 
     return true;

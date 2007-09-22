@@ -2,7 +2,7 @@
 // Name:        gauge.h
 // Purpose:
 // Author:      Robert Roebling
-// Id:          $Id: gauge.h,v 1.19 2004/06/14 17:31:25 VS Exp $
+// Id:          $Id: gauge.h,v 1.20 2005/08/02 22:57:55 MW Exp $
 // Copyright:   (c) 1998 Robert Roebling
 // Licence:   	wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -27,19 +27,19 @@
 // classes
 //-----------------------------------------------------------------------------
 
-class wxGauge;
+class WXDLLIMPEXP_CORE wxGauge;
 
 //-----------------------------------------------------------------------------
 // global data
 //-----------------------------------------------------------------------------
 
-extern const wxChar* wxGaugeNameStr;
+extern WXDLLIMPEXP_CORE const wxChar* wxGaugeNameStr;
 
 //-----------------------------------------------------------------------------
 // wxGaugeBox
 //-----------------------------------------------------------------------------
 
-class wxGauge: public wxControl
+class WXDLLIMPEXP_CORE wxGauge: public wxControl
 {
 public:
     wxGauge() { Init(); }

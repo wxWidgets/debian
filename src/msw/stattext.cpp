@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     04/01/98
-// RCS-ID:      $Id: stattext.cpp,v 1.64 2005/05/18 02:22:59 RD Exp $
+// RCS-ID:      $Id: stattext.cpp,v 1.66.2.1 2006/01/18 16:16:22 JS Exp $
 // Copyright:   (c) Julian Smart
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -123,6 +123,9 @@ WXDWORD wxStaticText::MSWGetStyle(long style, WXDWORD *exstyle) const
     else
         msStyle |= SS_LEFT;
 
+    // this style is necessary to receive mouse events
+    msStyle |= SS_NOTIFY;
+
     return msStyle;
 }
 
@@ -132,16 +135,47 @@ wxSize wxStaticText::DoGetBestSize() const
     wxFont font(GetFont());
     if (!font.Ok())
         font = wxSystemSettings::GetFont(wxSYS_DEFAULT_GUI_FONT);
-    
+
     dc.SetFont(font);
 
     wxCoord widthTextMax, heightTextTotal;
-    dc.GetMultiLineTextExtent(GetLabel(), &widthTextMax, &heightTextTotal);
+    dc.GetMultiLineTextExtent(::wxStripMenuCodes(GetLabel()), &widthTextMax, &heightTextTotal);
 
 #ifdef __WXWINCE__
     if ( widthTextMax )
         widthTextMax += 2;
 #endif // __WXWINCE__
+
+    // border takes extra space
+    //
+    // TODO: this is probably not wxStaticText-specific and should be moved
+    wxCoord border;
+    switch ( GetBorder() )
+    {
+        case wxBORDER_STATIC:
+        case wxBORDER_SIMPLE:
+            border = 1;
+            break;
+
+        case wxBORDER_SUNKEN:
+            border = 2;
+            break;
+
+        case wxBORDER_RAISED:
+        case wxBORDER_DOUBLE:
+            border = 3;
+            break;
+
+        default:
+            wxFAIL_MSG( _T("unknown border style") );
+            // fall through
+
+        case wxBORDER_NONE:
+            border = 0;
+    }
+
+    widthTextMax += 2*border;
+    heightTextTotal += 2*border;
 
     wxSize best(widthTextMax, heightTextTotal);
     CacheBestSize(best);

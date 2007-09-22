@@ -3,7 +3,7 @@
 // Purpose:     MSW version of wxStaticLine class
 // Author:      Vadim Zeitlin
 // Created:     28.06.99
-// Version:     $Id: statline.cpp,v 1.26 2004/09/04 01:53:42 ABX Exp $
+// Version:     $Id: statline.cpp,v 1.29 2005/09/09 20:45:04 JS Exp $
 // Copyright:   (c) 1998 Vadim Zeitlin
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -32,15 +32,7 @@
 #if wxUSE_STATLINE
 
 #include "wx/msw/private.h"
-#include "wx/log.h"
-
-#ifndef SS_SUNKEN
-    #define SS_SUNKEN 0x00001000L
-#endif
-
-#ifndef SS_NOTIFY
-    #define SS_NOTIFY 0x00000100L
-#endif
+#include "wx/msw/missing.h"
 
 // ============================================================================
 // implementation

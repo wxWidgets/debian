@@ -3,7 +3,7 @@
 // Purpose:     XML resources
 // Author:      Vaclav Slavik
 // Created:     2000/03/05
-// RCS-ID:      $Id: xmlres.h,v 1.43 2005/05/31 09:18:59 JS Exp $
+// RCS-ID:      $Id: xmlres.h,v 1.46 2005/07/17 13:00:11 MW Exp $
 // Copyright:   (c) 2000 Vaclav Slavik
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -104,6 +104,9 @@ public:
     //        wxXRC_NO_SUBCLASSING
     //              subclass property of object nodes will be ignored
     //              (useful for previews in XRC editors)
+    //        wxXRC_NO_RELOADING
+    //              don't check the modification time of the XRC files and
+    //              reload them if they have changed on disk
     wxXmlResource(int flags = wxXRC_USE_LOCALE);
 
     // Constructor.
@@ -120,6 +123,11 @@ public:
     // Loads resources from XML files that match given filemask.
     // This method understands VFS (see filesys.h).
     bool Load(const wxString& filemask);
+
+#if wxABI_VERSION > 20601
+    // Unload resource from the given XML file (wildcards not allowed)
+    bool Unload(const wxString& filename);
+#endif // wxABI_VERSION
 
     // Initialize handlers for all supported controls/windows. This will
     // make the executable quite big because it forces linking against
@@ -246,6 +254,20 @@ protected:
     wxObject *CreateResFromNode(wxXmlNode *node, wxObject *parent,
                                 wxObject *instance = NULL,
                                 wxXmlResourceHandler *handlerToUse = NULL);
+
+#if wxABI_VERSION > 20601
+    // Helper of Load() and Unload(): returns the URL corresponding to the
+    // given file if it's indeed a file, otherwise returns the original string
+    // unmodified
+    static wxString ConvertFileNameToURL(const wxString& filename);
+
+    // loading resources from archives is impossible without wxFileSystem
+#if wxUSE_FILESYSTEM
+    // Another helper: detect if the filename is a ZIP or XRS file
+    static bool IsArchive(const wxString& filename);
+#endif // wxUSE_FILESYSTEM
+
+#endif // wxABI_VERSION
 
 private:
     long m_version;

@@ -2,7 +2,7 @@
 // Name:        wx/gtk/radiobut.h
 // Purpose:
 // Author:      Robert Roebling
-// Id:          $Id: radiobut.h,v 1.24 2004/06/14 17:31:25 VS Exp $
+// Id:          $Id: radiobut.h,v 1.25 2005/08/02 22:57:57 MW Exp $
 // Copyright:   (c) 1998 Robert Roebling
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -19,7 +19,7 @@
 // wxRadioButton
 //-----------------------------------------------------------------------------
 
-class wxRadioButton: public wxControl
+class WXDLLIMPEXP_CORE wxRadioButton: public wxControl
 {
 public:
     wxRadioButton() { }

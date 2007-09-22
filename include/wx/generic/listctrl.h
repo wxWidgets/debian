@@ -3,7 +3,7 @@
 // Purpose:     Generic list control
 // Author:      Robert Roebling
 // Created:     01/02/97
-// RCS-ID:      $Id: listctrl.h,v 1.99 2005/03/30 04:24:20 SC Exp $
+// RCS-ID:      $Id: listctrl.h,v 1.100.2.6 2006/03/10 21:37:36 RD Exp $
 // Copyright:   (c) 1998 Robert Roebling and Julian Smart
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -103,6 +103,9 @@ public:
     int  GetItemState( long item, long stateMask ) const;
     bool SetItemState( long item, long state, long stateMask);
     bool SetItemImage( long item, int image, int selImage = -1 );
+#if wxABI_VERSION >= 20603
+    bool SetItemColumnImage( long item, long column, int image );
+#endif
     wxString GetItemText( long item ) const;
     void SetItemText( long item, const wxString& str );
     wxUIntPtr GetItemData( long item ) const;
@@ -118,6 +121,10 @@ public:
     wxColour GetItemTextColour( long item ) const;
     void SetItemBackgroundColour( long item, const wxColour &col);
     wxColour GetItemBackgroundColour( long item ) const;
+#if wxABI_VERSION >= 20602
+    void SetItemFont( long item, const wxFont &f);
+    wxFont GetItemFont( long item ) const;
+#endif
     int GetSelectedItemCount() const;
     wxColour GetTextColour() const;
     void SetTextColour(const wxColour& col);
@@ -242,6 +249,13 @@ protected:
 
     // it calls our OnGetXXX() functions
     friend class WXDLLEXPORT wxListMainWindow;
+
+#if wxABI_VERSION >= 20603
+    // take into account the coordinates difference between the container
+    // window and the list control window itself here
+    virtual void DoClientToScreen( int *x, int *y ) const;
+    virtual void DoScreenToClient( int *x, int *y ) const;
+#endif // 2.6.3
 
 private:
     // Virtual function hiding supression

@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     01/02/97
-// RCS-ID:      $Id: cursor.cpp,v 1.64 2005/06/01 13:38:03 DS Exp $
+// RCS-ID:      $Id: cursor.cpp,v 1.64.2.1 2006/01/21 16:46:44 JS Exp $
 // Copyright:   (c) 1997-2003 Julian Smart and Vadim Zeitlin
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -210,8 +210,12 @@ wxCursor::wxCursor(const wxImage& image)
         imageSized = image.Scale(w, h);
     }
 
+#if wxUSE_WXDIB
     HCURSOR hcursor = wxBitmapToHCURSOR( wxBitmap(imageSized),
                                          hotSpotX, hotSpotY );
+#else
+    HCURSOR hcursor = 0;
+#endif                                         
 
     if ( !hcursor )
     {

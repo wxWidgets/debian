@@ -2,7 +2,7 @@
 // Name:        wx/gtk/region.h
 // Purpose:
 // Author:      Robert Roebling
-// Id:          $Id: region.h,v 1.30 2005/02/09 15:01:45 JJ Exp $
+// Id:          $Id: region.h,v 1.31 2005/08/02 22:57:57 MW Exp $
 // Copyright:   (c) 1998 Robert Roebling
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -22,7 +22,7 @@
 // classes
 //-----------------------------------------------------------------------------
 
-class wxRegion;
+class WXDLLIMPEXP_CORE wxRegion;
 
 //-----------------------------------------------------------------------------
 // constants
@@ -49,7 +49,7 @@ enum wxRegionOp
 // wxRegion
 // ----------------------------------------------------------------------------
 
-class wxRegion : public wxGDIObject
+class WXDLLIMPEXP_CORE wxRegion : public wxGDIObject
 {
 public:
     wxRegion() { }
@@ -162,7 +162,7 @@ private:
 // wxRegionIterator: decomposes a region into rectangles
 // ----------------------------------------------------------------------------
 
-class wxRegionIterator: public wxObject
+class WXDLLIMPEXP_CORE wxRegionIterator: public wxObject
 {
 public:
     wxRegionIterator();

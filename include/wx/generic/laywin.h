@@ -7,7 +7,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     04/01/98
-// RCS-ID:      $Id: laywin.h,v 1.27 2005/03/31 05:08:24 SC Exp $
+// RCS-ID:      $Id: laywin.h,v 1.27.2.1 2006/01/05 23:16:29 MR Exp $
 // Copyright:   (c) Julian Smart
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -22,6 +22,8 @@
 #if wxUSE_SASH
     #include "wx/sashwin.h"
 #endif // wxUSE_SASH
+
+#include "wx/event.h"
 
 BEGIN_DECLARE_EVENT_TYPES()
     DECLARE_EXPORTED_EVENT_TYPE(WXDLLIMPEXP_ADV, wxEVT_QUERY_LAYOUT_INFO, 1500)

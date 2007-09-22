@@ -2,7 +2,7 @@
 // Name:        wx/gtk/app.h
 // Purpose:
 // Author:      Robert Roebling
-// Id:          $Id: app.h,v 1.55 2005/04/13 20:05:54 MW Exp $
+// Id:          $Id: app.h,v 1.56 2005/08/02 22:57:51 MW Exp $
 // Copyright:   (c) 1998 Robert Roebling, Julian Smart
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -22,14 +22,14 @@
 // classes
 //-----------------------------------------------------------------------------
 
-class wxApp;
-class wxLog;
+class WXDLLIMPEXP_CORE wxApp;
+class WXDLLIMPEXP_BASE wxLog;
 
 //-----------------------------------------------------------------------------
 // wxApp
 //-----------------------------------------------------------------------------
 
-class wxApp: public wxAppBase
+class WXDLLIMPEXP_CORE wxApp: public wxAppBase
 {
 public:
     wxApp();
