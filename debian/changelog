@@ -1,3 +1,10 @@
+wxwidgets2.6 (2.6.3.2.1-1) unstable; urgency=low
+
+  * Split /debian into a diff.gz, ready for a shift to cvs-buildpackage
+    style maintainance of this one.
+
+ -- Ron Lee <ron@debian.org>  Sun, 25 Jun 2006 20:02:39 +0930
+
 wxwidgets2.6 (2.6.3.2.1) unstable; urgency=low
 
   * Add 'Replaces' for the wxbase packages when upgrading from
