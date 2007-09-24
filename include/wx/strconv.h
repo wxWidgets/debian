@@ -339,10 +339,14 @@ extern WXDLLIMPEXP_DATA_BASE(wxMBConv *) wxConvCurrent;
 #if wxUSE_UNICODE
     #define wxConvertWX2MB(s)   wxConvCurrent->cWX2MB(s)
     #define wxConvertMB2WX(s)   wxConvCurrent->cMB2WX(s)
+    wxWCharBuffer wxSafeConvertMB2WX(const char *s);
+    wxCharBuffer wxSafeConvertWX2MB(const wchar_t *ws);
 #else // ANSI
     // no conversions to do
     #define wxConvertWX2MB(s)   (s)
     #define wxConvertMB2WX(s)   (s)
+    #define wxSafeConvertMB2WX(s) (s)
+    #define wxSafeConvertWX2MB(s) (s)
 #endif // Unicode/ANSI
 
 #endif

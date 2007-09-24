@@ -477,7 +477,7 @@ long wxExecute(wxChar **argv,
 
     while (argv[mb_argc])
     {
-        wxWX2MBbuf mb_arg = wxConvertWX2MB(argv[mb_argc]);
+        wxWX2MBbuf mb_arg = wxSafeConvertWX2MB(argv[mb_argc]);
         mb_argv[mb_argc] = strdup(mb_arg);
         mb_argc++;
     }
@@ -728,7 +728,7 @@ char *wxGetUserHome( const wxString &user )
         }
         if ((ptr = wxGetenv(wxT("USER"))) != NULL || (ptr = wxGetenv(wxT("LOGNAME"))) != NULL)
         {
-            who = getpwnam(wxConvertWX2MB(ptr));
+            who = getpwnam(wxSafeConvertWX2MB(ptr));
         }
 
         // We now make sure the the user exists!
@@ -742,7 +742,7 @@ char *wxGetUserHome( const wxString &user )
       who = getpwnam (user.mb_str());
     }
 
-    return wxConvertMB2WX(who ? who->pw_dir : 0);
+    return wxSafeConvertMB2WX(who ? who->pw_dir : 0);
 }
 
 // ----------------------------------------------------------------------------
@@ -764,7 +764,7 @@ static bool wxGetHostNameInternal(wxChar *buf, int sz)
     bool ok = uname(&uts) != -1;
     if ( ok )
     {
-        wxStrncpy(buf, wxConvertMB2WX(uts.nodename), sz - 1);
+        wxStrncpy(buf, wxSafeConvertMB2WX(uts.nodename), sz - 1);
         buf[sz] = wxT('\0');
     }
 #elif defined(HAVE_GETHOSTNAME)
@@ -810,7 +810,7 @@ bool wxGetFullHostName(wxChar *buf, int sz)
     {
         if ( !wxStrchr(buf, wxT('.')) )
         {
-            struct hostent *host = gethostbyname(wxConvertWX2MB(buf));
+            struct hostent *host = gethostbyname(wxSafeConvertWX2MB(buf));
             if ( !host )
             {
                 wxLogSysError(_("Cannot get the official hostname"));
@@ -820,7 +820,7 @@ bool wxGetFullHostName(wxChar *buf, int sz)
             else
             {
                 // the canonical name
-                wxStrncpy(buf, wxConvertMB2WX(host->h_name), sz);
+                wxStrncpy(buf, wxSafeConvertMB2WX(host->h_name), sz);
             }
         }
         //else: it's already a FQDN (BSD behaves this way)
@@ -836,7 +836,7 @@ bool wxGetUserId(wxChar *buf, int sz)
     *buf = wxT('\0');
     if ((who = getpwuid(getuid ())) != NULL)
     {
-        wxStrncpy (buf, wxConvertMB2WX(who->pw_name), sz - 1);
+        wxStrncpy (buf, wxSafeConvertMB2WX(who->pw_name), sz - 1);
         return true;
     }
 
@@ -855,9 +855,9 @@ bool wxGetUserName(wxChar *buf, int sz)
        char *comma = strchr(who->pw_gecos, ',');
        if (comma)
            *comma = '\0'; // cut off non-name comment fields
-       wxStrncpy (buf, wxConvertMB2WX(who->pw_gecos), sz - 1);
+       wxStrncpy (buf, wxSafeConvertMB2WX(who->pw_gecos), sz - 1);
 #else // !HAVE_PW_GECOS
-       wxStrncpy (buf, wxConvertMB2WX(who->pw_name), sz - 1);
+       wxStrncpy (buf, wxSafeConvertMB2WX(who->pw_name), sz - 1);
 #endif // HAVE_PW_GECOS/!HAVE_PW_GECOS
        return true;
     }
