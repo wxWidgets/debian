@@ -183,9 +183,9 @@ Description: wxWidgets Cross-platform C++ GUI toolkit (common support files)
  GUI components and other facilities on several popular platforms (and some
  unpopular ones as well).  For more information see http://wxwidgets.org
  .
- This package provides common support files not bound to any
- particular wxWidgets release, such as font metrics required by some
- ports, and miscellaneous developer aids and binary utilities.
+ This package provides common support files such as miscellaneous developer
+ aids, binary utilities and manual pages, that are not bound to any particular
+ wxWidgets release.
 
 Package: wx=V-headers
 Architecture: any
