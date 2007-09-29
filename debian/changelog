@@ -1,3 +1,16 @@
+wxwidgets2.6 (2.6.3.2.2-1) unstable; urgency=low
+
+  * Use the right gtk free function.                 Closes: #441766
+  * Fix unsafe unicode handling.                     Closes: #421632
+  * Make debian/rules compatible with old make too.  Closes: #369720
+  * Updated fr.po, thanks to Guilhelm Panaget.       Closes: #392691
+  * Merge the python updates.  Ack NMU changes.      Closes: #374178, #373410
+  * Suggest wx-common from the wxbase-dev packages too.
+  * Drop package description references to font metrics that we no longer
+    provide or need.
+
+ -- Ron Lee <ron@debian.org>  Sun, 30 Sep 2007 02:15:33 +0930
+
 wxwidgets2.6 (2.6.3.2.1-1) unstable; urgency=low
 
   * Split /debian into a diff.gz, ready for a shift to cvs-buildpackage
