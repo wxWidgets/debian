@@ -6,6 +6,8 @@
 # It makes copious use of the debhelper utilities written by
 # Joey Hess and others.
 
+SHELL = /bin/bash
+
 #export DH_VERBOSE=1
 export DH_OPTIONS
 
