@@ -1,10 +1,14 @@
 Source: wxwidgets=V
 Section: libs
 Priority: optional
-Build-Depends: debhelper (>= 5.0.37.1), flex, bison, gettext, libgtk2.0-dev, python-all-dev (>= 2.4.3), zlib1g-dev, libjpeg62-dev, libpng12-dev, libtiff4-dev, libgl1-mesa-dev | libgl-dev, libglu1-mesa-dev | libglu-dev, libesd0-dev, libgnomeprintui2.2-dev, python-central
+Build-Depends: debhelper (>= 5.0.37.1), flex, bison, gettext, libgtk2.0-dev,
+ python-all-dev, python-all-dbg, python-central,
+ zlib1g-dev, libjpeg62-dev, libpng12-dev, libtiff4-dev,
+ libgl1-mesa-dev | libgl-dev, libglu1-mesa-dev | libglu-dev,
+ libesd0-dev, libgnomeprintui2.2-dev,
 Maintainer: Ron Lee <ron@debian.org>
-XS-Python-Version: current
-Standards-Version: 3.7.0.0
+XS-Python-Version: all
+Standards-Version: 3.7.3
 
 Package: libwxbase=SOV
 Architecture: any
@@ -108,7 +112,7 @@ Description: wxWidgets Cross-platform C++ GUI toolkit (GTK+ development)
 Package: python-wxgtk=V
 Architecture: any
 Section: python
-Depends: python-wxversion, ${python:Depends}, ${shlibs:Depends}
+Depends: python-wxversion (>= 2.6.3.2.2-2), ${python:Depends}, ${shlibs:Depends}
 Suggests: wx=V-doc, wx=V-examples, =PY-xml
 Conflicts: libwxgtk2.6-0-python, wxpython2.6-0
 Replaces: libwxgtk2.6-0-python, wxpython2.6-0
@@ -124,30 +128,24 @@ Description: wxWidgets Cross-platform C++ GUI toolkit (wxPython binding)
  need the =PY-xml package installed.
 
 Package: python-wxgtk=V-dbg
+Priority: extra
 Architecture: any
 Section: python
-Depends: python-wxversion, ${python:Depends}, ${shlibs:Depends}
-Conflicts: python-wxgtk=V
-Replaces: python-wxgtk=V
-Provides: python-wxgtk=V
-XB-Python-Version: ${python:Versions}
-Description: wxWidgets Cross-platform C++ GUI toolkit (wxPython binding)
+Depends: python-wxgtk=V (= ${Source-Version}), python-dbg, ${shlibs:Depends}
+Suggests: python-xml-dbg
+Description: wxWidgets Cross-platform C++ GUI toolkit (wxPython binding, debug version)
  wxWidgets is a class library for C++ providing GUI (Graphical User
  Interface) and other facilities on more than one platform.  Version =V
  currently supports subsets of GTK+, Motif, and MS Windows.
  .
  This package provides a Python binding to the wxGTK debug library.
- It is useful for developers as many common errors may be caught, but
- you should _never_ upload packages to Debian that depend upon this
- package explicitly, use the python-wxgtk=V package instead.
- .
- If you wish to use xrc you'll also need the =PY-xml package installed.
+ This package contains the extensions built for the python debug interpreter.
 
 Package: python-wxversion
 Architecture: all
 Section: python
-Depends: ${python:Depends}
-Conflicts: wxpython2.6-0
+Depends: ${python:Depends}, python-wxgtk2.6 (>= 2.6.3.2.2-2) | python-wxgtk2.8 (>= 2.8.6.1-0.1)
+Conflicts: wxpython2.6-0, python-wxgtk2.8 (<< 2.8.6.1-0.1), python-wxgtk2.6 (<< 2.6.3.2.2-2), python-wxgtk2.4 (<< 2.4.5.1.2)
 Replaces: wxpython2.6-0
 XB-Python-Version: ${python:Versions}
 Description: wxWidgets Cross-platform C++ GUI toolkit (wxPython version selector)

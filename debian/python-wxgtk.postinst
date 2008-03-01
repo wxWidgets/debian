@@ -2,8 +2,7 @@
 
 set -e
 
-update-alternatives --install /usr/lib/=PY/site-packages/wx.pth  wx.pth	\
+update-alternatives --install /usr/lib/wx/python/wx.pth  wx.pth	\
 			      /usr/lib/wx/python/wx=V.pth        =PRIO
 
 #DEBHELPER#
-

@@ -777,11 +777,12 @@ elif os.name == 'posix':
 
     cflags = os.popen(WX_CONFIG + ' --cxxflags', 'r').read()[:-1]
     cflags = cflags.split()
-    if debug:
-        cflags.append('-g')
-        cflags.append('-O0')
-    else:
-        cflags.append('-O3')
+    # Use the default python flags
+    #if debug:
+    #    cflags.append('-g')
+    #    cflags.append('-O0')
+    #else:
+    #    cflags.append('-O3')
 
     lflags = os.popen(WX_CONFIG + ' --libs', 'r').read()[:-1]
     lflags = lflags.split()

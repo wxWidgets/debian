@@ -2,7 +2,7 @@
 // Name:        notebook.cpp
 // Purpose:
 // Author:      Robert Roebling
-// Id:          $Id: notebook.cpp,v 1.120.2.2 2006/03/06 02:20:17 MR Exp $
+// Id:          $Id: notebook.cpp,v 1.120.2.3 2006/11/14 16:23:20 JS Exp $
 // Copyright:   (c) 1998 Robert Roebling, Vadim Zeitlin
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -599,6 +599,7 @@ wxNotebookPage *wxNotebook::DoRemovePage( size_t page )
 
     gtk_widget_ref( client->m_widget );
     gtk_widget_unrealize( client->m_widget );
+    gtk_widget_unparent( client->m_widget );
 
     // gtk_notebook_remove_page() sends "switch_page" signal with some strange
     // new page index (when deleting selected page 0, new page is 1 although,

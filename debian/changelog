@@ -6,7 +6,24 @@ wxwidgets2.6 (2.6.3.2.2-2) unstable; urgency=low
 
   [ Matthias Klose ]
   * Merge the following changes from Ubuntu:
-    - Fix build failure with python2.5.
+    - Fix build failure with python2.5. Closes: #439002.
+    - Build for all supported python versions.
+    - Build a python-wxgtk2.6-dbg package.
+    - Move the wx.pth symlink handled by update-alternatives into
+      the python-wxversion package; adjust dependencies accordingly.
+    - Build using debhelper v5.
+    - Fix build failures with g++-4.2.
+    - Install wxPython header files in wx2.6-headers. Closes: #326440.
+    - Remove extra '-' in the index.html symlink destination in rules.
+      Closes: #374337, #402472, #422306, #436737.
+    - debian/rules (clean): Be cleaner. Closes: #374176.
+    - src/gtk/settings.cpp: Patch from upstream SVN (r48002) to stop using
+      private Gtk API which results in segfaults since Gtk 2.11.6.
+      https://sourceforge.net/tracker/?func=detail&atid=109863&aid=1767485&group_id=9863
+    - Fix for GTK warnings in wxNotebook::DoRemovePage.
+    - wxPython/config.py: Use the default python cflags.
+  * Fix build failure on the Hurd. Closes: #458289.
+  * Make wxGetKeyState() work for non-meta keys too. Closes: #410491.
 
  -- Matthias Klose <doko@debian.org>  Sun, 10 Feb 2008 20:14:20 +0100
 
