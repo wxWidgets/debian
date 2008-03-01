@@ -1,11 +1,11 @@
 """Provides a variety of introspective-type support functions for
 things like call tips and command auto completion."""
 
+from __future__ import nested_scopes
+
 __author__ = "Patrick K. O'Brien <pobrien@orbtech.com>"
 __cvsid__ = "$Id: introspect.py,v 1.11 2005/03/25 20:34:52 RD Exp $"
 __revision__ = "$Revision: 1.11 $"[11:-2]
-
-from __future__ import nested_scopes
 
 import cStringIO
 import inspect
