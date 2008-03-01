@@ -121,8 +121,7 @@ package_msw_dbg         := libwxmsw$(release)-dbg
 package_headers_msw     := wx$(release)-headers-msw
 
 # The packages listed here will not be built by default.
-extra_packages := \
-		  $(package_msw_dev) $(package_msw_dbg) $(package_headers_msw)
+extra_packages := $(package_msw_dev) $(package_msw_dbg) $(package_headers_msw)
 
 ifdef DEBIAN_WX_DEFAULT_VERSION
 
@@ -213,7 +212,7 @@ pyd_wxconfig := wx-config --version=$(release) --toolkit=$(pytoolkit)     \
 
 # The Rules:
 
-debian/control: $(addprefix debian/,control.in)
+debian/control: debian/control.in
 	sed -e "s/=V/$(release)/g;s/=SOV/$(sorelease)/g;s/=PY/python/g"\
 		< debian/control.in > debian/control
 
