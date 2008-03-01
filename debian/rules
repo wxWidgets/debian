@@ -213,7 +213,7 @@ pyd_wxconfig := wx-config --version=$(release) --toolkit=$(pytoolkit)     \
 # The Rules:
 
 debian/control: debian/control.in
-	sed -e "s/=V/$(release)/g;s/=SOV/$(sorelease)/g;s/=PY/python/g"\
+	sed -e "s/=V/$(release)/g;s/=SOV/$(sorelease)/g" \
 		< debian/control.in > debian/control
 
 control-files-stamp: debian/control
@@ -248,8 +248,7 @@ control-files-stamp: debian/control
 	done;
 	@for f in docs postinst prerm; do                                    \
 		echo "generating control file $(package_gtk_py_lib).$$f";    \
-		sed -e "s/=PY/$(PYVER)/g;                               \
-			s|=WXPYDIR|$(wxpydir)|g;                             \
+		sed -e "s|=WXPYDIR|$(wxpydir)|g;                             \
 			s/=V/$(release)/g;                                   \
 			s/=PRIO/$(alt_prio)/g"                               \
 			< debian/python-wxgtk.$$f                            \
